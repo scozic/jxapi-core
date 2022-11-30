@@ -18,5 +18,5 @@ public enum EndpointParameterType {
 	/** Nested structure (JSON block) */
 	STRUCT,
 	/** Repeated nested structure (JSON array) */
-	STRUCT_LIST
+	STRUCT_LIST;
 }
