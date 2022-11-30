@@ -9,6 +9,25 @@ import com.scz.jcex.util.EncodingUtil;
  * Such field can be recursive, see {@link EndpointParameterType#STRUCT} or {@link EndpointParameterType#STRUCT_LIST}.
  */
 public class EndpointParameter {
+	
+	public static EndpointParameter create(EndpointParameterType type, String name, String description, List<EndpointParameter> parameters) {
+		EndpointParameter p = new EndpointParameter();
+		p.setType(type);
+		p.setName(name);
+		p.setDescription(description);
+		p.setParameters(parameters);
+		return p;
+	}
+	
+	public static EndpointParameter create(EndpointParameterType type, String name, String description, String sampleValue) {
+		EndpointParameter p = new EndpointParameter();
+		p.setType(type);
+		p.setName(name);
+		p.setDescription(description);
+		p.setSampleValue(sampleValue);
+		return p;
+	}
+	
 	private String name;
 	
 	private String description;
