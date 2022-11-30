@@ -19,7 +19,7 @@ public class JUPojoGenerator {
 				+ "import x.y.t.Bar;\n"
 				+ "\n"
 				+ "\n"
-				+ "public class {\n"
+				+ "public class Foo {\n"
 				+ "  private Bar bar;\n"
 				+ "  private String name;\n"
 				+ "  \n"
@@ -56,7 +56,7 @@ public class JUPojoGenerator {
 				+ "    return EncodingUtil.pojoToString(this);\n"
 				+ "  }\n"
 				+ "  \n"
-				+ "}\n", generator.generate());
+				+ "}\n" , generator.generate());
 	}
 	
 }
