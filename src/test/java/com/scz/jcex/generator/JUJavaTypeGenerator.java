@@ -23,8 +23,12 @@ public class JUJavaTypeGenerator {
 		JavaTypeGenerator gen = new JavaTypeGenerator("x.y.z.HelloInterface");
 		gen.addImport("java.util.Date");
 		gen.addImport("java.text.SimpleDateFormat");
+		// Import that should be ignored in generated code because same package as generated type.
+		gen.addImport("x.y.z.Foo");
+		// Import that should be ignored in generated code because starts with 'java.lang'
+		gen.addImport("java.lang.Boolean");
 		gen.setDescription("Hello interface");
-		gen.setTypeDeclaration("public interface HelloInterface");
+		gen.setTypeDeclaration("public interface");
 		gen.appendToBody("void sayHello();");
 		Assert.assertEquals("package x.y.z;\n"
 				+ "\n"
@@ -57,7 +61,7 @@ public class JUJavaTypeGenerator {
 		gen.addImport("java.util.Date");
 		gen.addImport("java.text.SimpleDateFormat");
 		gen.setDescription("Hello interface");
-		gen.setTypeDeclaration("public interface HelloInterface");
+		gen.setTypeDeclaration("public interface");
 		gen.appendToBody("void sayHello();");
 		srcFolder = Paths.get("tmp" + Math.random());
 		gen.writeJavaFile(srcFolder);

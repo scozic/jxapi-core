@@ -76,12 +76,19 @@ public class JavaTypeGenerator {
 		StringBuilder sb = new StringBuilder();
 		sb.append("package ").append(getPackage()).append(";\n\n");
 		for (String im: imports) {
-			sb.append("import ").append(im).append(";\n");
+			String imPkg = JavaCodeGenerationUtil.getClassPackage(im);
+			if (!imPkg.equals(getPackage())
+				&& !imPkg.startsWith("java.lang")
+				&& imPkg.contains(".")) {
+				sb.append("import ").append(im).append(";\n");
+			}
 		}
 		return sb.append("\n")
 				 .append(JavaCodeGenerationUtil.generateJavaDoc(description))
 				 .append("\n")
 				 .append(typeDeclaration)
+				 .append(" ")
+				 .append(getSimpleName())
 				 .append(" ")
 				 .append(JavaCodeGenerationUtil.generateCodeBlock(body.toString()))
 				 .toString();
