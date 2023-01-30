@@ -16,23 +16,24 @@ public class JUExchangeDescriptorParser {
 		ExchangeDescriptor ex = new ExchangeDescriptorParser().fromJson(Paths.get(".", "src", "test", "resources", "testCEXDescriptor.json"));
 		Assert.assertEquals("MyTestCEX", ex.getName());
 		Assert.assertEquals("A sample CEX descriptor file", ex.getDescription());
-		List<ExchangeApi> apis = ex.getApis(); 
+		Assert.assertEquals("com.foo.bar", ex.getBasePackage());
+		List<ExchangeApiDescriptor> apis = ex.getApis(); 
 		Assert.assertEquals(1, apis.size());
 		checkMarketDataApi(apis.get(0));
 	}
 	
-	private void checkMarketDataApi(ExchangeApi marketDataApi) {
+	private void checkMarketDataApi(ExchangeApiDescriptor marketDataApi) {
 		Assert.assertEquals("MarketData", marketDataApi.getName());
 		Assert.assertEquals("The market data API of MyTestCEX", marketDataApi.getDescription());
-		List<RestEndpoint> restEndpoints = marketDataApi.getRestEndpoints();
+		List<RestEndpointDescriptor> restEndpoints = marketDataApi.getRestEndpoints();
 		Assert.assertEquals(1, restEndpoints.size());
 		checkExchangeInfoRestEndpoint(restEndpoints.get(0));
-		List<WebsocketEndpoint> websocketEndpoints = marketDataApi.getWebsocketEndpoints();
+		List<WebsocketEndpointDescriptor> websocketEndpoints = marketDataApi.getWebsocketEndpoints();
 		Assert.assertEquals(1, websocketEndpoints.size());
 		checkTickerStreamWebsocketEndpoint(websocketEndpoints.get(0));
 	}
 
-	private void checkExchangeInfoRestEndpoint(RestEndpoint exchangeInfoEndPoint) {
+	private void checkExchangeInfoRestEndpoint(RestEndpointDescriptor exchangeInfoEndPoint) {
 		Assert.assertEquals("exchangeInfo", exchangeInfoEndPoint.getName());
 		Assert.assertEquals("Fetch market information of symbols that can be traded", exchangeInfoEndPoint.getDescription());
 		Assert.assertEquals("GET", exchangeInfoEndPoint.getHttpMethod());
@@ -78,7 +79,7 @@ public class JUExchangeDescriptorParser {
 	}
 	
 
-	private void checkTickerStreamWebsocketEndpoint(WebsocketEndpoint tickerStreamEndpoint) {
+	private void checkTickerStreamWebsocketEndpoint(WebsocketEndpointDescriptor tickerStreamEndpoint) {
 		Assert.assertEquals("tickerStream", tickerStreamEndpoint.getName());
 		Assert.assertEquals("Subscribe to ticker stream", tickerStreamEndpoint.getDescription());
 		Assert.assertEquals("ticker", tickerStreamEndpoint.getTopic());

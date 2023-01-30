@@ -9,23 +9,23 @@ import com.scz.jcex.util.EncodingUtil;
  * Websocket endpoints. This is a functional grouping of API endpoints: There
  * should be one for market data/public API endpoints and one for
  * trading/private endpoints.
- * Endpoints are expected to be {@link RestEndpoint} and {@link WebsocketEndpoint} lists.
+ * Endpoints are expected to be {@link RestEndpointDescriptor} and {@link WebsocketEndpointDescriptor} lists.
  */
-public class ExchangeApi {
+public class ExchangeApiDescriptor {
 	
 	private String name;
 	
 	private String description;
 	
-	private List<RestEndpoint> restEndpoints;
+	private List<RestEndpointDescriptor> restEndpoints;
 	
-	private List<WebsocketEndpoint> websocketEndpoints;
+	private List<WebsocketEndpointDescriptor> websocketEndpoints;
 
-	public List<RestEndpoint> getRestEndpoints() {
+	public List<RestEndpointDescriptor> getRestEndpoints() {
 		return restEndpoints;
 	}
 
-	public void setRestEndpoints(List<RestEndpoint> restEndpoints) {
+	public void setRestEndpoints(List<RestEndpointDescriptor> restEndpoints) {
 		this.restEndpoints = restEndpoints;
 	}
 
@@ -45,11 +45,11 @@ public class ExchangeApi {
 		this.description = description;
 	}
 
-	public List<WebsocketEndpoint> getWebsocketEndpoints() {
+	public List<WebsocketEndpointDescriptor> getWebsocketEndpoints() {
 		return websocketEndpoints;
 	}
 
-	public void setWebsocketEndpoints(List<WebsocketEndpoint> websocketEndpoints) {
+	public void setWebsocketEndpoints(List<WebsocketEndpointDescriptor> websocketEndpoints) {
 		this.websocketEndpoints = websocketEndpoints;
 	}
 	

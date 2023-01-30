@@ -58,9 +58,66 @@ public class ExchangeJavaWrapperGeneratorUtil {
 	}
 	
 	private static void generateStructParameterTypePojoField(Path src, String className, PojoGenerator generator, EndpointParameter field) throws IOException {
+//		String structTypeSimpleName = JavaCodeGenerationUtil.firstLetterToUpperCase(field.getName());
 		String structTypeName = className + JavaCodeGenerationUtil.firstLetterToUpperCase(field.getName());
 		generatePojo(src, structTypeName, field.getDescription(), field.getParameters());
-		generator.addField(PojoField.create(structTypeName, field.getName(), field.getDescription()));
+		String parameterTypeName = structTypeName;
+		generator.addImport(structTypeName);
+		if (field.getType() == EndpointParameterType.STRUCT_LIST) {
+			parameterTypeName = "java.util.List<" + JavaCodeGenerationUtil.getClassNameWithoutPackage(structTypeName) + ">";
+		}
+		generator.addField(PojoField.create(parameterTypeName, field.getName(), field.getDescription()));
+	}
+	
+	public static void generateCEX(ExchangeDescriptor exchangeDescriptor, Path ouputFolder) throws IOException {
+		generateCEXPojos(exchangeDescriptor, ouputFolder);
+		
+		
+	}
+	
+	private static void generateCEXPojos(ExchangeDescriptor exchangeDescriptor, Path ouputFolder) throws IOException {
+		for (ExchangeApiDescriptor api: exchangeDescriptor.getApis()) {
+			String pkgPrefix =  exchangeDescriptor.getBasePackage() + "." + api.getName().toLowerCase() + ".pojo.";
+			for (RestEndpointDescriptor restEndpointDescriptor: api.getRestEndpoints()) {
+				ExchangeJavaWrapperGeneratorUtil.generatePojo(ouputFolder, 
+											pkgPrefix
+											+ JavaCodeGenerationUtil.firstLetterToUpperCase(exchangeDescriptor.getName()) 
+											+ JavaCodeGenerationUtil.firstLetterToUpperCase(restEndpointDescriptor.getName())
+											+ "Request", 
+										"Request for " + exchangeDescriptor.getName() + " " + api.getName() + " API " 
+											+ restEndpointDescriptor.getName() + " REST endpoint",
+										restEndpointDescriptor.getParameters());
+				ExchangeJavaWrapperGeneratorUtil.generatePojo(ouputFolder, 
+						pkgPrefix 
+							+ JavaCodeGenerationUtil.firstLetterToUpperCase(exchangeDescriptor.getName()) 
+							+ JavaCodeGenerationUtil.firstLetterToUpperCase(restEndpointDescriptor.getName())
+							+ "Response", 
+						"Response to " + exchangeDescriptor.getName() + " " + api.getName() + " API " 
+							+ restEndpointDescriptor.getName() + " REST endpoint request",
+						restEndpointDescriptor.getResponse());
+			}
+			
+			for (WebsocketEndpointDescriptor wsEndpointDescriptor: api.getWebsocketEndpoints()) {
+				ExchangeJavaWrapperGeneratorUtil.generatePojo(ouputFolder, 
+											pkgPrefix 
+											+ JavaCodeGenerationUtil.firstLetterToUpperCase(exchangeDescriptor.getName()) 
+											+ JavaCodeGenerationUtil.firstLetterToUpperCase(wsEndpointDescriptor.getName())
+											+ "Request", 
+										"Subscription request to" + exchangeDescriptor.getName() + " " + api.getName() + " API " 
+											+ wsEndpointDescriptor.getName() + " REST endpoint",
+											wsEndpointDescriptor.getParameters());
+				ExchangeJavaWrapperGeneratorUtil.generatePojo(ouputFolder, 
+							pkgPrefix
+							+ JavaCodeGenerationUtil.firstLetterToUpperCase(exchangeDescriptor.getName()) 
+							+ JavaCodeGenerationUtil.firstLetterToUpperCase(wsEndpointDescriptor.getName())
+							+ "Response", 
+						"Response to " + exchangeDescriptor.getName() + " " + api.getName() + " API " 
+							+ wsEndpointDescriptor.getName() + " REST endpoint request",
+							wsEndpointDescriptor.getResponse());
+			}
+		}
+		
+		
 	}
 
 }

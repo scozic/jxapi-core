@@ -7,6 +7,8 @@ package com.scz.jcex.generator.exchange;
 public enum EndpointParameterType {
 	/** Plain {@link String} value*/
 	STRING,
+	/** Boolean value*/
+	BOOLEAN,
 	/** String containing a comma separated list of values*/
 	STRING_LIST,
 	/** Floating point value*/

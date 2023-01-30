@@ -6,20 +6,21 @@ import com.scz.jcex.util.EncodingUtil;
 
 /**
  * Root element of a JSON crypto exchange API descriptor.
- * API will be described in groups of endpoints, as {@link ExchangeApi} list. 
+ * API will be described in groups of endpoints, as {@link ExchangeApiDescriptor} list. 
  */
 public class ExchangeDescriptor {
 	
 	private String name;
 	private String description;
+	private String basePackage;
 	
-	private List<ExchangeApi> apis;
+	private List<ExchangeApiDescriptor> apis;
 
-	public List<ExchangeApi> getApis() {
+	public List<ExchangeApiDescriptor> getApis() {
 		return apis;
 	}
 
-	public void setApis(List<ExchangeApi> apis) {
+	public void setApis(List<ExchangeApiDescriptor> apis) {
 		this.apis = apis;
 	}
 
@@ -37,6 +38,14 @@ public class ExchangeDescriptor {
 
 	public void setDescription(String description) {
 		this.description = description;
+	}
+	
+	public String getBasePackage() {
+		return basePackage;
+	}
+
+	public void setBasePackage(String basePackage) {
+		this.basePackage = basePackage;
 	}
 	
 	public String toString() {

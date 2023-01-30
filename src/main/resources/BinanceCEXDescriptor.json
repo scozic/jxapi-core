@@ -1,0 +1,82 @@
+{
+	"name": "Binance",
+	"description": "Binance Spot and futures API",
+	"basePackage": "com.scz.jcex.binance",
+	"apis":[
+		{ 
+			"name": "SpotMarketData",
+			"description": "Binance spot market data API",
+			"restEndpoints": [
+				{
+					"name": "exchangeInformation",
+					"httpMethod": "GET",
+					"description": "Current exchange trading rules and symbol information",
+					"url": "https://api.binance.com/api/v3/exchangeInfo",
+					"parameters": [],
+					"response": [
+						{"name":"timezone", "type": "STRING", "description":"Server timezone", "sampleValue": "UTC"},
+						{"name":"serverTime", "type": "TIMESTAMP", "description":"Server timezone", "sampleValue": "1565246363776"},
+						{"name":"symbols", "type": "STRUCT_LIST", "description":"List of market information for each market symbol", "parameters":
+							[
+								{"name":"symbol", "type": "STRING", "description":"Market symbol", "sampleValue":"BTCUSDT"},
+								{"name":"status", "type": "STRING", "description":"Current trading status", "sampleValue":"TRADING"},
+								{"name":"baseAsset", "type": "STRING", "description":"Market base asset that is bought with buy order", "sampleValue":"BTC"},
+								{"name":"quoteAsset", "type": "STRING", "description":"Market base asset that is bought with sell order", "sampleValue":"USDT"},
+								{"name":"quotePrecision", "type": "INT", "description":"Quote asset precision", "sampleValue": "8"},
+								{"name":"quoteAssetPrecision", "type": "INT", "description":"Quote asset precision", "sampleValue": "8"},
+								{"name":"orderTypes", "type": "STRING_LIST", "description":"Quote asset precision", "sampleValue": "[\"LIMIT\", \"MARKET]\""},
+								{"name":"icebergAllowed", "type": "BOOLEAN", "description":"True if iceberg orders are allowed", "sampleValue": "true"},
+								{"name":"ocoAllowed", "type": "BOOLEAN", "description":"True if OCO orders are allowed", "sampleValue": "true"},
+								{"name":"quoteOrderQtyMarketAllowed", "type": "BOOLEAN", "description":"", "sampleValue": "true"},
+								{"name":"allowTrailingStop", "type": "BOOLEAN", "description":"True if trailing stop orders are supported", "sampleValue": "true"},
+								{"name":"cancelReplaceAllowed", "type": "BOOLEAN", "description":"", "sampleValue": "true"},
+								{"name":"isSpotTradingAllowed", "type": "BOOLEAN", "description":"", "sampleValue": "true"},
+								{"name":"isMarginTradingAllowed", "type": "BOOLEAN", "description":"", "sampleValue": "true"},
+								{"name":"filters", "type": "STRUCT_LIST", "description":"", "sampleValue": "true", "parameters":
+									[
+										{"name":"filterType", "type": "STRING", "description":"Price filter, see <a href=\"https://binance-docs.github.io/apidocs/spot/en/#filters\">API</a> documentation.", "sampleValue": "true"},
+										{"name":"minPrice", "type": "BIGDECIMAL", "description":"Provided with PRICE_FILTER filter type", "sampleValue": "0.00000100"},
+										{"name":"maxPrice", "type": "BIGDECIMAL", "description":"Provided with PRICE_FILTER filter type", "sampleValue": "100000.00000000"},
+										{"name":"tickSize", "type": "BIGDECIMAL", "description":"Provided with PRICE_FILTER filter type", "sampleValue": "0.00000100"}
+									]
+								},
+								{"name":"permissions", "type": "STRING_LIST", "description":"", "sampleValue": "[\"SPOT\", \"MARGIN]\""},
+								{"name":"defaultSelfTradePreventionMode", "type": "STRING", "description":"", "sampleValue": "NONE"},
+								{"name":"allowedSelfTradePreventionModes", "type": "STRING_LIST", "description":"", "sampleValue": "[\"NONE\"]"}
+							]
+						}
+					]
+				}
+			],
+			"websocketEndpoints": [
+				{
+					"name": "AllMarketTickersStream",
+					"topic": "!ticker@arr",
+					"description": "All Market Tickers Stream, see <a href=\"https://binance-docs.github.io/apidocs/spot/en/#all-market-tickers-stream\">API</a>",
+					"parameters": [
+						
+					],
+					"response": [
+						{"name":"e", "type": "STRING", "description":"Event type", "sampleValue":"1hTicker"},
+						{"name":"E", "type": "TIMESTAMP", "description":"Event time", "sampleValue":"123456789"},
+						{"name":"s", "type": "STRING", "description":"Symbol", "sampleValue":"BNBBTC"},
+						{"name":"p", "type": "BIGDECIMAL", "description":"Price change", "sampleValue":"0.0015"},
+						{"name":"P", "type": "BIGDECIMAL", "description":"Price change percent", "sampleValue":"250.00"},
+						{"name":"o", "type": "BIGDECIMAL", "description":"Open price", "sampleValue":"0.0010"},
+						{"name":"h", "type": "BIGDECIMAL", "description":"High price", "sampleValue":"0.0025"},
+						{"name":"l", "type": "BIGDECIMAL", "description":"Low price", "sampleValue":"0.010"},
+						{"name":"c", "type": "BIGDECIMAL", "description":"Last price", "sampleValue":"0.0025"},
+						{"name":"w", "type": "BIGDECIMAL", "description":"Weighted average price", "sampleValue":"0.0018"},
+						{"name":"v", "type": "BIGDECIMAL", "description":"Total traded base asset volume", "sampleValue":"10000"},
+						{"name":"q", "type": "BIGDECIMAL", "description":"Total traded quote asset volume", "sampleValue":"18"},
+						{"name":"O", "type": "TIMESTAMP", "description":"Statistics open time", "sampleValue":"0"},
+						{"name":"C", "type": "TIMESTAMP", "description":"Statistics close time", "sampleValue":"86400000"},
+						{"name":"F", "type": "INT", "description":"First trade ID", "sampleValue":"0"},
+						{"name":"L", "type": "INT", "description":"Last trade ID", "sampleValue":"18150"},
+						{"name":"n", "type": "INT", "description":"Total number of trades", "sampleValue":"18150"}
+					]
+				}
+			]
+		}
+	]
+}

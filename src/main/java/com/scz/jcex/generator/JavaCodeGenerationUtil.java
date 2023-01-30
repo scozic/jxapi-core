@@ -1,5 +1,10 @@
 package com.scz.jcex.generator;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.Comparator;
 import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
@@ -43,23 +48,25 @@ public class JavaCodeGenerationUtil {
 			String type = field.getType();
 			type = getClassNameWithoutPackage(type);
 			String name = field.getName();
+			String accessorSuffix = name;
+			// If there is another field with same name but different case, keep the part after accessor as is to make sure it is unique,
+			// otherwise use first letter uppercase for more readable camel case accessor name.
+			if (!fields.stream().anyMatch(f -> !name.equals(f.getName()) && name.equalsIgnoreCase(f.getName()))) {
+				accessorSuffix = firstLetterToUpperCase(name);
+			}
 			String description = field.getDescription();
 			
 			if (description != null) {
 				accessorsDeclarations.append(generateJavaDoc("@return " + description)).append("\n");
 			}
-			accessorsDeclarations.append("public void ");
+			accessorsDeclarations.append("public ").append(type).append(" ");
 			if ("boolean".equals(type)) {
 				accessorsDeclarations.append("is");	
 			} else {
 				accessorsDeclarations.append("get");
 			}
-			accessorsDeclarations.append(firstLetterToUpperCase(name))
-			.append("(")
-			.append(type)
-			.append(" ")
-			.append(name)
-			.append(") ")
+			accessorsDeclarations.append(accessorSuffix)
+			.append("()")
 			.append(generateCodeBlock("return " + name + ";"))
 			.append("\n");
 			
@@ -69,7 +76,7 @@ public class JavaCodeGenerationUtil {
 			}
 			accessorsDeclarations
 				.append("public void set")
-				.append(firstLetterToUpperCase(name))
+				.append(accessorSuffix)
 				.append("(")
 				.append(type)
 				.append(" ")
@@ -108,4 +115,10 @@ public class JavaCodeGenerationUtil {
 		return "";
 	}
 
+	public static void deletePath(Path path) throws IOException {
+		Files.walk(path)
+	      .sorted(Comparator.reverseOrder())
+	      .map(Path::toFile)
+	      .forEach(File::delete);
+	}
 }

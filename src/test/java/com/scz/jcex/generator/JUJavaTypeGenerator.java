@@ -27,19 +27,24 @@ public class JUJavaTypeGenerator {
 		gen.addImport("x.y.z.Foo");
 		// Import that should be ignored in generated code because starts with 'java.lang'
 		gen.addImport("java.lang.Boolean");
+		// Import where type is provided as generic, the <..> part should be removed.
+		gen.addImport("java.util.List<String>");
 		gen.setDescription("Hello interface");
 		gen.setTypeDeclaration("public interface");
-		gen.appendToBody("void sayHello();");
+		gen.appendToBody("void sayHello();\n\n");
+		gen.appendToBody("List<String> getHellos();");
 		Assert.assertEquals("package x.y.z;\n"
 				+ "\n"
 				+ "import java.text.SimpleDateFormat;\n"
 				+ "import java.util.Date;\n"
+				+ "import java.util.List;\n"
 				+ "\n"
 				+ "/**\n"
 				+ " * Hello interface\n"
 				+ " */\n"
 				+ "public interface HelloInterface {\n"
-				+ "  void sayHello();\n"
+				+ "  void sayHello();\n  \n"
+				+ "  List<String> getHellos();\n"
 				+ "}\n", gen.generate());
 		
 	}

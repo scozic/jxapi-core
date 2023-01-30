@@ -1,6 +1,7 @@
 {
 	"name": "MyTestCEX",
-	"description":"A sample CEX descriptor file",
+	"description": "A sample CEX descriptor file",
+	"basePackage": "com.foo.bar",
 	"apis":[
 		{ 
 			"name": "MarketData",

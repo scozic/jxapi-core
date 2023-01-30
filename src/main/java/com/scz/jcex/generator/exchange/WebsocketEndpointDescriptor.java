@@ -8,7 +8,7 @@ import com.scz.jcex.util.EncodingUtil;
  * Part of JSON document describing a crypo exchange API, describes a websocket endpoint where clients subscription can be performed using specified topic and eventual additional parameters.
  * The structure of additional subscription parameters and response format are described as {@link EndpointParameter} lists.
  */
-public class WebsocketEndpoint {
+public class WebsocketEndpointDescriptor {
 	
 	private String name;
 	

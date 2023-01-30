@@ -13,6 +13,8 @@ public class JUPojoGenerator {
 		PojoGenerator generator = new PojoGenerator("x.y.z.Foo");
 		generator.addField(PojoField.create("String", "name", "the name"));
 		generator.addField(PojoField.create("x.y.t.Bar", "bar", "my bar"));
+		generator.addField(PojoField.create("int", "a", "lower case 'a'"));
+		generator.addField(PojoField.create("int", "A", "upper case 'A'"));
 		Assert.assertEquals("package x.y.z;\n"
 				+ "\n"
 				+ "import com.scz.jcex.util.EncodingUtil;\n"
@@ -20,13 +22,43 @@ public class JUPojoGenerator {
 				+ "\n"
 				+ "\n"
 				+ "public class Foo {\n"
+				+ "  private int A;\n"
+				+ "  private int a;\n"
 				+ "  private Bar bar;\n"
 				+ "  private String name;\n"
 				+ "  \n"
 				+ "  /**\n"
+				+ "   * @return upper case 'A'\n"
+				+ "   */\n"
+				+ "  public int getA(){\n"
+				+ "    return A;\n"
+				+ "  }\n"
+				+ "  \n"
+				+ "  /**\n"
+				+ "   * @param A upper case 'A'\n"
+				+ "   */\n"
+				+ "  public void setA(int A) {\n"
+				+ "    this.A = A;\n"
+				+ "  }\n"
+				+ "  \n"
+				+ "  /**\n"
+				+ "   * @return lower case 'a'\n"
+				+ "   */\n"
+				+ "  public int geta(){\n"
+				+ "    return a;\n"
+				+ "  }\n"
+				+ "  \n"
+				+ "  /**\n"
+				+ "   * @param a lower case 'a'\n"
+				+ "   */\n"
+				+ "  public void seta(int a) {\n"
+				+ "    this.a = a;\n"
+				+ "  }\n"
+				+ "  \n"
+				+ "  /**\n"
 				+ "   * @return my bar\n"
 				+ "   */\n"
-				+ "  public void getBar(Bar bar) {\n"
+				+ "  public Bar getBar(){\n"
 				+ "    return bar;\n"
 				+ "  }\n"
 				+ "  \n"
@@ -40,7 +72,7 @@ public class JUPojoGenerator {
 				+ "  /**\n"
 				+ "   * @return the name\n"
 				+ "   */\n"
-				+ "  public void getName(String name) {\n"
+				+ "  public String getName(){\n"
 				+ "    return name;\n"
 				+ "  }\n"
 				+ "  \n"
@@ -56,7 +88,8 @@ public class JUPojoGenerator {
 				+ "    return EncodingUtil.pojoToString(this);\n"
 				+ "  }\n"
 				+ "  \n"
-				+ "}\n" , generator.generate());
+				+ "}\n"
+				+ "" , generator.generate());
 	}
 	
 }

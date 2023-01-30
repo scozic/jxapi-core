@@ -1,33 +1,30 @@
 package com.scz.jcex.generator.exchange;
 
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Comparator;
 import java.util.List;
 
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Test;
 
+import com.scz.jcex.generator.JavaCodeGenerationUtil;
+
 /**
  * Unit test for {@link ExchangeJavaWrapperGeneratorUtil}
  */
-public class JUExchangeJavaWrapperGeneratorUtil {
+public class ExchangeJavaWrapperGeneratorUtilTest {
 	
 	private Path srcFolder;
 	
 	@After
 	public void tearDown() throws IOException {
 		if (srcFolder != null) {
-			Files.walk(srcFolder)
-		      .sorted(Comparator.reverseOrder())
-		      .map(Path::toFile)
-		      .forEach(File::delete);
+			JavaCodeGenerationUtil.deletePath(srcFolder);
 			srcFolder = null;
 		}
 	}
@@ -48,7 +45,7 @@ public class JUExchangeJavaWrapperGeneratorUtil {
 		 *               
 		 */
 		String typeName = "com.x.MyPojo";
-		String typeDescription = "Used in JUExchangeJavaWrapperGeneratorUtil";
+		String typeDescription = "Used in ExchangeJavaWrapperGeneratorUtilTest";
 		List<EndpointParameter> endpointParameters = new ArrayList<>();
 		endpointParameters.add(EndpointParameter.create(EndpointParameterType.STRING, "id", "identifier", "toto"));
 		endpointParameters.add(EndpointParameter.create(EndpointParameterType.INT, "score", "Current score", "0"));
@@ -65,33 +62,34 @@ public class JUExchangeJavaWrapperGeneratorUtil {
 		Assert.assertEquals("package com.x;\n"
 				+ "\n"
 				+ "import com.scz.jcex.util.EncodingUtil;\n"
+				+ "import java.util.List;\n"
 				+ "\n"
 				+ "/**\n"
-				+ " * Used in JUExchangeJavaWrapperGeneratorUtil\n"
+				+ " * Used in ExchangeJavaWrapperGeneratorUtilTest\n"
 				+ " */\n"
 				+ "public class MyPojo {\n"
-				+ "  private MyPojoFoo foo;\n"
+				+ "  private List<MyPojoFoo> foo;\n"
 				+ "  private String id;\n"
 				+ "  private int score;\n"
 				+ "  \n"
 				+ "  /**\n"
 				+ "   * @return Foo list\n"
 				+ "   */\n"
-				+ "  public void getFoo(MyPojoFoo foo) {\n"
+				+ "  public List<MyPojoFoo> getFoo(){\n"
 				+ "    return foo;\n"
 				+ "  }\n"
 				+ "  \n"
 				+ "  /**\n"
 				+ "   * @param foo Foo list\n"
 				+ "   */\n"
-				+ "  public void setFoo(MyPojoFoo foo) {\n"
+				+ "  public void setFoo(List<MyPojoFoo> foo) {\n"
 				+ "    this.foo = foo;\n"
 				+ "  }\n"
 				+ "  \n"
 				+ "  /**\n"
 				+ "   * @return identifier\n"
 				+ "   */\n"
-				+ "  public void getId(String id) {\n"
+				+ "  public String getId(){\n"
 				+ "    return id;\n"
 				+ "  }\n"
 				+ "  \n"
@@ -105,7 +103,7 @@ public class JUExchangeJavaWrapperGeneratorUtil {
 				+ "  /**\n"
 				+ "   * @return Current score\n"
 				+ "   */\n"
-				+ "  public void getScore(int score) {\n"
+				+ "  public int getScore(){\n"
 				+ "    return score;\n"
 				+ "  }\n"
 				+ "  \n"
@@ -122,6 +120,7 @@ public class JUExchangeJavaWrapperGeneratorUtil {
 				+ "  }\n"
 				+ "  \n"
 				+ "}\n"
+				+ ""
 				, Files.readString(pkgFolder.resolve(Paths.get("MyPojo.java"))));
 		
 		Assert.assertEquals("package com.x;\n"
@@ -138,7 +137,7 @@ public class JUExchangeJavaWrapperGeneratorUtil {
 				+ "  /**\n"
 				+ "   * @return The bar\n"
 				+ "   */\n"
-				+ "  public void getBar(MyPojoFooBar bar) {\n"
+				+ "  public MyPojoFooBar getBar(){\n"
 				+ "    return bar;\n"
 				+ "  }\n"
 				+ "  \n"
@@ -152,7 +151,7 @@ public class JUExchangeJavaWrapperGeneratorUtil {
 				+ "  /**\n"
 				+ "   * @return Creation time\n"
 				+ "   */\n"
-				+ "  public void getTime(long time) {\n"
+				+ "  public long getTime(){\n"
 				+ "    return time;\n"
 				+ "  }\n"
 				+ "  \n"
@@ -168,7 +167,8 @@ public class JUExchangeJavaWrapperGeneratorUtil {
 				+ "    return EncodingUtil.pojoToString(this);\n"
 				+ "  }\n"
 				+ "  \n"
-				+ "}\n", Files.readString(pkgFolder.resolve(Paths.get("MyPojoFoo.java"))));
+				+ "}\n"
+				+ "", Files.readString(pkgFolder.resolve(Paths.get("MyPojoFoo.java"))));
 		
 		Assert.assertEquals("package com.x;\n"
 				+ "\n"
@@ -183,7 +183,7 @@ public class JUExchangeJavaWrapperGeneratorUtil {
 				+ "  /**\n"
 				+ "   * @return Bar name\n"
 				+ "   */\n"
-				+ "  public void getName(String name) {\n"
+				+ "  public String getName(){\n"
 				+ "    return name;\n"
 				+ "  }\n"
 				+ "  \n"
@@ -199,7 +199,8 @@ public class JUExchangeJavaWrapperGeneratorUtil {
 				+ "    return EncodingUtil.pojoToString(this);\n"
 				+ "  }\n"
 				+ "  \n"
-				+ "}\n" , Files.readString(pkgFolder.resolve(Paths.get("MyPojoFooBar.java"))));
+				+ "}\n"
+				+ "" , Files.readString(pkgFolder.resolve(Paths.get("MyPojoFooBar.java"))));
 		
 	}
 

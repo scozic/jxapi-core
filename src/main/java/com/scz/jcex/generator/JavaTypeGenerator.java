@@ -25,6 +25,9 @@ public class JavaTypeGenerator {
 	}
 	
 	public void addImport(String im) {
+		if (im.contains("<")) {
+			im = im.substring(0, im.indexOf('<'));
+		}
 		imports.add(im);
 	}
 

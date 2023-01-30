@@ -9,7 +9,7 @@ import com.scz.jcex.util.EncodingUtil;
  * Such endpoints are expecting an HTTP request to given URL endpoint, with given request parameters, and a response should be received.
  * Request and response parameters are detailed as {@link EndpointParameter} lists. 
  */
-public class RestEndpoint {
+public class RestEndpointDescriptor {
 	private String name;
 	
 	private String description;
