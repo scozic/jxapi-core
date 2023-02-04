@@ -7,16 +7,16 @@ import com.scz.jcex.util.EncodingUtil;
  *
  * @param <T> the 'Pojo' containing endpoint specific subscription parameters
  */
-public class WebsocketSubscribeRequest<T> {
+public class WebsocketSubscribeRequest<T extends WebsocketSubscribeParameters> {
 
-	private String url;
+	private String baseUrl;
 	private String topic;
 	private T parameters;
-	public String getUrl() {
-		return url;
+	public String getBaseUrl() {
+		return baseUrl;
 	}
-	public void setUrl(String url) {
-		this.url = url;
+	public void setBaseUrl(String url) {
+		this.baseUrl = url;
 	}
 	public String getTopic() {
 		return topic;

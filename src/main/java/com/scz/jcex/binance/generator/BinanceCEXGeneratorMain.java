@@ -21,6 +21,7 @@ public class BinanceCEXGeneratorMain {
 			Path outputFolder = Paths.get(".", "target", "jcex-generated");
 			JavaCodeGenerationUtil.deletePath(outputFolder);
 			ExchangeJavaWrapperGeneratorUtil.generateCEX(exchangeDescriptor, outputFolder);
+			log.info("Done generating BinanceCEXDescriptor java code in:" + outputFolder);
 		} catch (Throwable t) {
 			log.error("Error in " + BinanceCEXGeneratorMain.class.getName() + " main", t);
 		}

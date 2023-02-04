@@ -22,7 +22,7 @@ public class JUEncodingUtil {
 	}
 	
 	@Test
-	public void testPojoToStringWithNestedPojoAttribute() {
+	public void testPojoToJsonStringWithNestedPojoAttribute() {
 		Bar bar = new Bar();
 		bar.setName("babar");
 		bar.setActive(true);
@@ -33,6 +33,12 @@ public class JUEncodingUtil {
 		foo.setBar(bar);
 		
 		Assert.assertEquals("Foo{\"hello\":\"Hi\",\"bar\":{\"name\":\"babar\",\"active\":true,\"score\":1.23}}", EncodingUtil.pojoToString(foo));
+	}
+	
+	@Test
+	public void testSubstituteArguments() {
+		Assert.assertEquals("Nothing to substitute!", EncodingUtil.substituteArguments("Nothing to substitute!"));
+		Assert.assertEquals("Hello Bob, I am Roger", EncodingUtil.substituteArguments("Hello ${stranger}, I am ${me}", "stranger", "Bob", "me", "Roger"));
 	}
 	
 	

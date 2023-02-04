@@ -18,6 +18,8 @@ public class JavaCodeGenerationUtil {
 	
 	public static final String INDENTATION = "  ";
 	
+	public static final String GENERATED_CODE_WARNING = "<br><strong>THIS CODE IS GENERATED. DO NOT EDIT MANUALLY!</strong>";
+	
 	public static final String indent(String code) {
 		return indent(code, INDENTATION);
 	}

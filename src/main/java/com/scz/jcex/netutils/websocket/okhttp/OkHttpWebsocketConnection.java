@@ -37,21 +37,22 @@ public class OkHttpWebsocketConnection extends WebSocketListener {
     private final WebsocketWatchDog watchDog;
     private final int connectionId;
 
-    private String subscriptionUrl;
-
 	private final WebsocketListener<String> messageListener;
 
     public OkHttpWebsocketConnection(WebsocketSubscribeRequest<?> request, WebsocketListener<String> messageListener, WebsocketWatchDog watchDog) {
         this.connectionId = CONNECTION_COUNTER.getAndIncrement();
         this.request = request;
         this.messageListener = messageListener;
-        this.okhttpRequest = new Request.Builder().url(subscriptionUrl).build();
+        this.okhttpRequest = new Request.Builder().url(request.getBaseUrl()).build();
         this.watchDog = watchDog;
-        log.info("[Sub] Connection [id: " + this.connectionId + "] created for " + request);
     }
 
     int getConnectionId() {
         return this.connectionId;
+    }
+    
+    protected String getSubscriptionUrl(WebsocketSubscribeRequest<?> request) {
+    	return request.getBaseUrl() + request.getParameters().getTopic();
     }
 
     void connect() {
@@ -59,9 +60,7 @@ public class OkHttpWebsocketConnection extends WebSocketListener {
             log.info("[Sub][" + this.connectionId + "] Already connected");
             return;
         }
-        log.info("[Sub][" + this.connectionId + "] Connecting...");
         
-//        webSocket = RestApiInvoker.createWebSocket(okhttpRequest, this);
         if (log.isInfoEnabled())
     		log.info("Opening webSocket:" + connectionId + " (request:" + this.request + ")");
         client = new OkHttpClient();

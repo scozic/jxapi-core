@@ -9,9 +9,10 @@ import com.scz.jcex.generator.exchange.ExchangeApiDescriptor;
 import com.scz.jcex.netutils.websocket.WebsocketEndpoint;
 import com.scz.jcex.netutils.websocket.WebsocketListener;
 import com.scz.jcex.netutils.websocket.WebsocketMessageDeserializer;
+import com.scz.jcex.netutils.websocket.WebsocketSubscribeParameters;
 import com.scz.jcex.netutils.websocket.WebsocketSubscribeRequest;
 
-public class AbstractOkHttpWebsocketEndpoint<T, M> implements WebsocketEndpoint<T, M> {
+public class AbstractOkHttpWebsocketEndpoint<T extends WebsocketSubscribeParameters, M> implements WebsocketEndpoint<T, M> {
 	
 	protected final AtomicInteger subscriptionIdGenerator = new AtomicInteger(0);
 	
@@ -23,8 +24,7 @@ public class AbstractOkHttpWebsocketEndpoint<T, M> implements WebsocketEndpoint<
 	protected ExchangeApiDescriptor exchangeApi;
 	 
 
-    AbstractOkHttpWebsocketEndpoint(SubscriptionOptions options) {
-        this.watchDog = null;
+    public AbstractOkHttpWebsocketEndpoint(SubscriptionOptions options) {
         this.options = Objects.requireNonNull(options);
     }
 

@@ -36,7 +36,7 @@ public class PojoGenerator extends JavaTypeGenerator {
 	@Override
 	public String generate() {
 		List<PojoField> l = new ArrayList<PojoField>(fields.values());
-		appendToBody(JavaCodeGenerationUtil.generateJavaPojoFieldsWithAccessors(l));
+		body.insert(0, JavaCodeGenerationUtil.generateJavaPojoFieldsWithAccessors(l));
 		generateToStringMethod();
 		return super.generate();
 	}

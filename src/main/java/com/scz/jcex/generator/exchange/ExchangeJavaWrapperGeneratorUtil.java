@@ -3,12 +3,15 @@ package com.scz.jcex.generator.exchange;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.nio.file.Path;
+import java.util.Arrays;
 import java.util.EnumMap;
 import java.util.List;
 
 import com.scz.jcex.generator.JavaCodeGenerationUtil;
 import com.scz.jcex.generator.PojoField;
 import com.scz.jcex.generator.PojoGenerator;
+import com.scz.jcex.netutils.websocket.WebsocketSubscribeParameters;
+import com.scz.jcex.util.EncodingUtil;
 
 /**
  * Helper methods for generation of Java classes of a given crypto exchange wrapper
@@ -25,8 +28,13 @@ public class ExchangeJavaWrapperGeneratorUtil {
 	}
 	
 	public static void generatePojo(Path src, String className, String description, List<EndpointParameter> fields) throws IOException {
+		generatePojo(src, className, description, fields, null, null);
+	}
+	
+	public static void generatePojo(Path src, String className, String description, List<EndpointParameter> fields, List<String> implementedInterfaces, String additionnalClassBody) throws IOException {
 		PojoGenerator generator = new PojoGenerator(className);
 		generator.setDescription(description);
+		generator.setImplementedInterfaces(implementedInterfaces);
 		for (EndpointParameter field: fields) {
 			switch (field.getType()) {
 			case BIGDECIMAL:
@@ -44,7 +52,9 @@ public class ExchangeJavaWrapperGeneratorUtil {
 				break;	
 			}
 		}
-		
+		if (additionnalClassBody != null) {
+			generator.appendToBody(additionnalClassBody);
+		}
 		generator.writeJavaFile(src);
 	}
 	
@@ -85,39 +95,78 @@ public class ExchangeJavaWrapperGeneratorUtil {
 											+ JavaCodeGenerationUtil.firstLetterToUpperCase(restEndpointDescriptor.getName())
 											+ "Request", 
 										"Request for " + exchangeDescriptor.getName() + " " + api.getName() + " API " 
-											+ restEndpointDescriptor.getName() + " REST endpoint",
+											+ restEndpointDescriptor.getName() + " REST endpoint"
+											+ restEndpointDescriptor.getDescription()
+											+ JavaCodeGenerationUtil.GENERATED_CODE_WARNING,
 										restEndpointDescriptor.getParameters());
 				ExchangeJavaWrapperGeneratorUtil.generatePojo(ouputFolder, 
 						pkgPrefix 
 							+ JavaCodeGenerationUtil.firstLetterToUpperCase(exchangeDescriptor.getName()) 
 							+ JavaCodeGenerationUtil.firstLetterToUpperCase(restEndpointDescriptor.getName())
 							+ "Response", 
-						"Response to " + exchangeDescriptor.getName() + " " + api.getName() + " API " 
-							+ restEndpointDescriptor.getName() + " REST endpoint request",
+						"Response to " + exchangeDescriptor.getName() 
+							+ " " + api.getName() + " API " 
+							+ restEndpointDescriptor.getName() 
+							+ " REST endpoint request<br/>"
+							+ restEndpointDescriptor.getDescription()
+							+ JavaCodeGenerationUtil.GENERATED_CODE_WARNING,
 						restEndpointDescriptor.getResponse());
 			}
 			
 			for (WebsocketEndpointDescriptor wsEndpointDescriptor: api.getWebsocketEndpoints()) {
 				ExchangeJavaWrapperGeneratorUtil.generatePojo(ouputFolder, 
-											pkgPrefix 
+										pkgPrefix 
 											+ JavaCodeGenerationUtil.firstLetterToUpperCase(exchangeDescriptor.getName()) 
 											+ JavaCodeGenerationUtil.firstLetterToUpperCase(wsEndpointDescriptor.getName())
 											+ "Request", 
-										"Subscription request to" + exchangeDescriptor.getName() + " " + api.getName() + " API " 
-											+ wsEndpointDescriptor.getName() + " REST endpoint",
-											wsEndpointDescriptor.getParameters());
+										"Subscription request to" + exchangeDescriptor.getName() 
+											+ " " + api.getName() + " API " 
+											+ wsEndpointDescriptor.getName() 
+											+ " websocket endpoint<br/>" 
+											+ wsEndpointDescriptor.getDescription()
+											+ JavaCodeGenerationUtil.GENERATED_CODE_WARNING,
+										wsEndpointDescriptor.getParameters(), 
+										Arrays.asList(WebsocketSubscribeParameters.class.getName()), 
+										generateWebsocketSubscribeParametersGetTopicMethod(wsEndpointDescriptor));
 				ExchangeJavaWrapperGeneratorUtil.generatePojo(ouputFolder, 
-							pkgPrefix
+						pkgPrefix
 							+ JavaCodeGenerationUtil.firstLetterToUpperCase(exchangeDescriptor.getName()) 
 							+ JavaCodeGenerationUtil.firstLetterToUpperCase(wsEndpointDescriptor.getName())
 							+ "Response", 
-						"Response to " + exchangeDescriptor.getName() + " " + api.getName() + " API " 
-							+ wsEndpointDescriptor.getName() + " REST endpoint request",
-							wsEndpointDescriptor.getResponse());
+						"Response message disseminated upon subscription to " 
+							+ exchangeDescriptor.getName() + " " 
+							+ api.getName() + " API " 
+							+ wsEndpointDescriptor.getName() + " websocket endpoint request<br/>"
+							+ wsEndpointDescriptor.getDescription()
+							+ JavaCodeGenerationUtil.GENERATED_CODE_WARNING,
+						wsEndpointDescriptor.getResponse());
 			}
 		}
 		
 		
+	}
+	
+	private static String generateWebsocketSubscribeParametersGetTopicMethod(WebsocketEndpointDescriptor wsEndpointDescriptor) {
+		StringBuilder sb = new StringBuilder();
+		sb.append("\n@Override\npublic String getTopic() {\n")
+		  .append(JavaCodeGenerationUtil.INDENTATION)
+		  .append("return ")
+		  .append(EncodingUtil.class.getName())
+		  .append(".substituteArguments(\"")
+		  .append(wsEndpointDescriptor.getTopic())
+		  .append("\"");
+		int n = wsEndpointDescriptor.getParameters().size();
+		for (int i = 0; i < n; i++) {
+			sb.append(", ");
+			String name = wsEndpointDescriptor.getParameters().get(i).getName();
+			sb.append("\"").append(name).append("\", ").append(name);
+			if (i < n - 1) {
+				sb.append(", ");
+			}
+		}
+		
+		sb.append(");\n}\n\n");
+		return sb.toString(); 
 	}
 
 }

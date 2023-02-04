@@ -3,6 +3,7 @@ package com.scz.jcex.generator;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 
@@ -13,12 +14,14 @@ public class JavaTypeGenerator {
 
 	private final Set<String> imports = new TreeSet<String>();
 	private final String name;
+	private String parentClassName;
+	private List<String> implementedInterfaces;
 	
 	private String typeDeclaration;
 	
 	private String description;
 	
-	private final StringBuilder body = new StringBuilder();
+	protected final StringBuilder body = new StringBuilder();
 	
 	public JavaTypeGenerator(String fullTypeName) {
 		this.name = fullTypeName;
@@ -52,7 +55,7 @@ public class JavaTypeGenerator {
 	}
 	
 	public void appendMethod(String methodDeclaration, String methodBody) {
-		appendToBody(methodDeclaration + JavaCodeGenerationUtil.generateCodeBlock(methodBody));
+		appendToBody(methodDeclaration + " " + JavaCodeGenerationUtil.generateCodeBlock(methodBody));
 	}
 	
 	public String getName() {
@@ -75,10 +78,35 @@ public class JavaTypeGenerator {
 		this.description = description;
 	}
 	
+	public String getParentClassName() {
+		return parentClassName;
+	}
+
+	public void setParentClassName(String parentClassName) {
+		this.parentClassName = parentClassName;
+	}
+
+	public List<String> getImplementedInterfaces() {
+		return implementedInterfaces;
+	}
+
+	public void setImplementedInterfaces(List<String> implementedInterfaces) {
+		this.implementedInterfaces = implementedInterfaces;
+	}
+	
 	public String generate() {
 		StringBuilder sb = new StringBuilder();
+		Set<String> allImports = new TreeSet<>();
+		allImports.addAll(imports);
+		if (parentClassName != null) {
+			allImports.add(parentClassName);
+		}
+		if (implementedInterfaces != null) {
+			implementedInterfaces.forEach(i -> allImports.add(i) );
+		}
+		
 		sb.append("package ").append(getPackage()).append(";\n\n");
-		for (String im: imports) {
+		for (String im: allImports) {
 			String imPkg = JavaCodeGenerationUtil.getClassPackage(im);
 			if (!imPkg.equals(getPackage())
 				&& !imPkg.startsWith("java.lang")
@@ -86,15 +114,31 @@ public class JavaTypeGenerator {
 				sb.append("import ").append(im).append(";\n");
 			}
 		}
-		return sb.append("\n")
-				 .append(JavaCodeGenerationUtil.generateJavaDoc(description))
-				 .append("\n")
-				 .append(typeDeclaration)
-				 .append(" ")
-				 .append(getSimpleName())
-				 .append(" ")
-				 .append(JavaCodeGenerationUtil.generateCodeBlock(body.toString()))
-				 .toString();
+		sb.append("\n")
+		  .append(JavaCodeGenerationUtil.generateJavaDoc(description))
+		  .append("\n")
+		  .append(typeDeclaration)
+		  .append(" ")
+		  .append(getSimpleName())
+		  .append(" ");
+		if (parentClassName != null) {
+			sb.append("extends ")
+			  .append(JavaCodeGenerationUtil.getClassNameWithoutPackage(parentClassName))
+			  .append(" ");
+		}
+		if (implementedInterfaces != null && implementedInterfaces.size() > 0) {
+			sb.append("implements ");
+			for (int i = 0; i < implementedInterfaces.size(); i++) {
+				sb.append(JavaCodeGenerationUtil.getClassNameWithoutPackage(implementedInterfaces.get(i)));
+				if (i < implementedInterfaces.size() - 1) {
+					sb.append(", ");
+				}
+			}
+			sb.append(" ");
+		}
+		
+	    sb.append(JavaCodeGenerationUtil.generateCodeBlock(body.toString()));
+		return sb.toString();
 	}
 
 	/**

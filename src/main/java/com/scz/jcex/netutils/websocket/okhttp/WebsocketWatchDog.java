@@ -18,7 +18,6 @@ public class WebsocketWatchDog {
     private final CopyOnWriteArrayList<OkHttpWebsocketConnection> TIME_HELPER = new CopyOnWriteArrayList<>();
     private final SubscriptionOptions options;
     
-
     public WebsocketWatchDog(SubscriptionOptions subscriptionOptions) {
         this.options = Objects.requireNonNull(subscriptionOptions);
         long t = 1000;
@@ -28,6 +27,9 @@ public class WebsocketWatchDog {
                 if (connection.getState() == ConnectionState.DELAY_CONNECT) {
                     connection.reConnect();
                 } else if (connection.getState() == ConnectionState.CLOSED_ON_ERROR) {
+                	if (log.isInfoEnabled()) {
+                		log.info("Connection timed out, reconnect:" + options.isAutoReconnect());
+                	}
                     if (options.isAutoReconnect()) {
                         connection.reConnect(options.getConnectionDelayOnFailure());
                     }

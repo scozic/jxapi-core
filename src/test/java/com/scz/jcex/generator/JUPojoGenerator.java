@@ -84,7 +84,7 @@ public class JUPojoGenerator {
 				+ "  }\n"
 				+ "  \n"
 				+ "  @Override\n"
-				+ "  public String toString(){\n"
+				+ "  public String toString() {\n"
 				+ "    return EncodingUtil.pojoToString(this);\n"
 				+ "  }\n"
 				+ "  \n"

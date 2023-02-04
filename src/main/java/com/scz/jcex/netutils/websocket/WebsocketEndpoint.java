@@ -9,7 +9,7 @@ import com.scz.jcex.generator.exchange.ExchangeApiDescriptor;
  * @param <T> The request object containing fields for subscription
  * @param <M> The message object disseminated by this websocket endpoint
  */
-public interface WebsocketEndpoint<T, M> {
+public interface WebsocketEndpoint<T extends WebsocketSubscribeParameters, M> {
 	
 	void init(ExchangeApiDescriptor exchangeApi);
 

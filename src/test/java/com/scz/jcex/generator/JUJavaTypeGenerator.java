@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Arrays;
 import java.util.Comparator;
 
 import org.junit.After;
@@ -72,5 +73,32 @@ public class JUJavaTypeGenerator {
 		gen.writeJavaFile(srcFolder);
 		String actualJavaFileContent = Files.readString(srcFolder.resolve(Paths.get("x", "y", "z", "HelloInterface.java")));
 		Assert.assertEquals(gen.generate(), actualJavaFileContent);
+	}
+	
+	@Test
+	public void testGenerateJavaClassWithSuperClassAndInterfaces() {
+		JavaTypeGenerator gen = new JavaTypeGenerator("x.y.z.HelloInterface");
+		gen.setParentClassName("a.b.c.HelloParent"); 
+		gen.setImplementedInterfaces(Arrays.asList("d.e.f.HelloInterface", "f.g.h.OtherInterface"));
+		gen.setDescription("Hello class");
+		gen.setTypeDeclaration("public interface");
+		gen.appendMethod("@Override\npublic void sayHello()", "Sytem.out.println(\"Hello\");");
+		Assert.assertEquals("package x.y.z;\n"
+				+ "\n"
+				+ "import a.b.c.HelloParent;\n"
+				+ "import d.e.f.HelloInterface;\n"
+				+ "import f.g.h.OtherInterface;\n"
+				+ "\n"
+				+ "/**\n"
+				+ " * Hello class\n"
+				+ " */\n"
+				+ "public interface HelloInterface extends HelloParent implements HelloInterface, OtherInterface {\n"
+				+ "  @Override\n"
+				+ "  public void sayHello() {\n"
+				+ "    Sytem.out.println(\"Hello\");\n"
+				+ "  }\n"
+				+ "  \n"
+				+ "}\n", gen.generate());
+		
 	}
 }
