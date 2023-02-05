@@ -4,7 +4,7 @@ import com.scz.jcex.util.EncodingUtil;
 import java.util.List;
 
 /**
- * Response to Binance SpotMarketData API exchangeInformation REST endpoint request
+ * Response to Binance SpotMarketData API exchangeInformation REST endpoint request<br/>Current exchange trading rules and symbol information<br><strong>THIS CODE IS GENERATED. DO NOT EDIT MANUALLY!</strong>
  */
 public class BinanceExchangeInformationResponse {
   private long serverTime;
@@ -54,7 +54,7 @@ public class BinanceExchangeInformationResponse {
   }
   
   @Override
-  public String toString(){
+  public String toString() {
     return EncodingUtil.pojoToString(this);
   }
   

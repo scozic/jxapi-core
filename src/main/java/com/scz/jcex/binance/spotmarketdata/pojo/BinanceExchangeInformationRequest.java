@@ -3,12 +3,12 @@ package com.scz.jcex.binance.spotmarketdata.pojo;
 import com.scz.jcex.util.EncodingUtil;
 
 /**
- * Request for Binance SpotMarketData API exchangeInformation REST endpoint
+ * Request for Binance SpotMarketData API exchangeInformation REST endpointCurrent exchange trading rules and symbol information<br><strong>THIS CODE IS GENERATED. DO NOT EDIT MANUALLY!</strong>
  */
 public class BinanceExchangeInformationRequest {
   
   @Override
-  public String toString(){
+  public String toString() {
     return EncodingUtil.pojoToString(this);
   }
   

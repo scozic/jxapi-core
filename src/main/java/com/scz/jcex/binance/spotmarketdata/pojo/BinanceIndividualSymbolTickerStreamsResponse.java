@@ -4,9 +4,9 @@ import com.scz.jcex.util.EncodingUtil;
 import java.math.BigDecimal;
 
 /**
- * Response message disseminated upon subscription to Binance SpotMarketData API AllMarketTickersStream websocket endpoint request<br/>All Market Tickers Stream, see <a href="https://binance-docs.github.io/apidocs/spot/en/#all-market-tickers-stream">API</a><br><strong>THIS CODE IS GENERATED. DO NOT EDIT MANUALLY!</strong>
+ * Response message disseminated upon subscription to Binance SpotMarketData API IndividualSymbolTickerStreams websocket endpoint request<br/>24hr rolling window ticker statistics for a single symbol. These are NOT the statistics of the UTC day, but a 24hr rolling window for the previous 24hrs, see <a href="https://binance-docs.github.io/apidocs/spot/en/#individual-symbol-ticker-streams">API</a><br><strong>THIS CODE IS GENERATED. DO NOT EDIT MANUALLY!</strong>
  */
-public class BinanceAllMarketTickersStreamResponse {
+public class BinanceIndividualSymbolTickerStreamsResponse {
   private long C;
   private long E;
   private int F;

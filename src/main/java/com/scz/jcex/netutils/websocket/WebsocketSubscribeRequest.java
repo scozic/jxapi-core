@@ -10,7 +10,6 @@ import com.scz.jcex.util.EncodingUtil;
 public class WebsocketSubscribeRequest<T extends WebsocketSubscribeParameters> {
 
 	private String baseUrl;
-	private String topic;
 	private T parameters;
 	public String getBaseUrl() {
 		return baseUrl;
@@ -18,12 +17,7 @@ public class WebsocketSubscribeRequest<T extends WebsocketSubscribeParameters> {
 	public void setBaseUrl(String url) {
 		this.baseUrl = url;
 	}
-	public String getTopic() {
-		return topic;
-	}
-	public void setTopic(String topic) {
-		this.topic = topic;
-	}
+	
 	public T getParameters() {
 		return parameters;
 	}

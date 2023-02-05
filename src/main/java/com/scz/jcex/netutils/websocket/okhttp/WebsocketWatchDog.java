@@ -1,6 +1,5 @@
 package com.scz.jcex.netutils.websocket.okhttp;
 
-import java.util.Objects;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -16,11 +15,12 @@ public class WebsocketWatchDog {
 	private static final Logger log = LoggerFactory.getLogger(OkHttpWebsocketConnection.class);
 
     private final CopyOnWriteArrayList<OkHttpWebsocketConnection> TIME_HELPER = new CopyOnWriteArrayList<>();
-    private final SubscriptionOptions options;
     
-    public WebsocketWatchDog(SubscriptionOptions subscriptionOptions) {
-        this.options = Objects.requireNonNull(subscriptionOptions);
-        long t = 1000;
+    public WebsocketWatchDog() {
+    	this(false, -1);
+    }
+    
+    public WebsocketWatchDog(boolean isAutoReconnect, int connectionDelayOnFailure) {
         ScheduledExecutorService exec = Executors.newScheduledThreadPool(1);
         exec.scheduleAtFixedRate(() -> {
             TIME_HELPER.forEach(connection -> {
@@ -28,14 +28,14 @@ public class WebsocketWatchDog {
                     connection.reConnect();
                 } else if (connection.getState() == ConnectionState.CLOSED_ON_ERROR) {
                 	if (log.isInfoEnabled()) {
-                		log.info("Connection timed out, reconnect:" + options.isAutoReconnect());
+                		log.info("Connection timed out, reconnect:" + isAutoReconnect);
                 	}
-                    if (options.isAutoReconnect()) {
-                        connection.reConnect(options.getConnectionDelayOnFailure());
+                    if (isAutoReconnect) {
+                        connection.reConnect(connectionDelayOnFailure);
                     }
                 }
             });
-        }, t, t, TimeUnit.MILLISECONDS);
+        }, 1000L, 1000L, TimeUnit.MILLISECONDS);
         Runtime.getRuntime().addShutdownHook(new Thread(exec::shutdown));
     }
 

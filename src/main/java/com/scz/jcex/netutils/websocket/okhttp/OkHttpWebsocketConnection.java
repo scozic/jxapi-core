@@ -43,21 +43,17 @@ public class OkHttpWebsocketConnection extends WebSocketListener {
         this.connectionId = CONNECTION_COUNTER.getAndIncrement();
         this.request = request;
         this.messageListener = messageListener;
-        this.okhttpRequest = new Request.Builder().url(request.getBaseUrl()).build();
+        this.okhttpRequest = new Request.Builder().url(request.getBaseUrl() + request.getParameters().getTopic()).build();
         this.watchDog = watchDog;
     }
 
     int getConnectionId() {
         return this.connectionId;
     }
-    
-    protected String getSubscriptionUrl(WebsocketSubscribeRequest<?> request) {
-    	return request.getBaseUrl() + request.getParameters().getTopic();
-    }
 
-    void connect() {
+    public void connect() {
         if (state == ConnectionState.CONNECTED) {
-            log.info("[Sub][" + this.connectionId + "] Already connected");
+            log.info("[" + this.connectionId + "] Already connected");
             return;
         }
         
@@ -67,7 +63,7 @@ public class OkHttpWebsocketConnection extends WebSocketListener {
         webSocket = client.newWebSocket(okhttpRequest, this);
     }
 
-    void reConnect(int delayInSecond) {
+    public void reConnect(int delayInSecond) {
         log.warn("[Sub][" + this.connectionId + "] Reconnecting after " + delayInSecond + " seconds later");
         if (webSocket != null) {
         	disposeWebSocket();
@@ -76,19 +72,19 @@ public class OkHttpWebsocketConnection extends WebSocketListener {
         state = ConnectionState.DELAY_CONNECT;
     }
 
-    void reConnect() {
-        if (delayInSecond != 0) {
+    public void reConnect() {
+        if (delayInSecond > 0) {
             delayInSecond--;
         } else {
             connect();
         }
     }
 
-    long getLastReceivedTime() {
+    public long getLastReceivedTime() {
         return this.lastReceivedTime;
     }
 
-    void send(String str) {
+    public void send(String str) {
         boolean result = false;
         log.debug("[Send]{}", str);
         if (webSocket != null) {
@@ -108,17 +104,13 @@ public class OkHttpWebsocketConnection extends WebSocketListener {
         try {
         	messageListener.handleMessage(text);
         } catch (Exception e) {
-            log.error("[On Message][{}]: catch exception:", connectionId, e);
+            log.error("[" + connectionId + "]:Error handling message[" + text + "]", e);
             closeOnError();
         }
     }
 
     private void onError(String errorMessage, Throwable e) {
-//        if (request.errorHandler != null) {
-//            BinanceApiException exception = new BinanceApiException(BinanceApiException.SUBSCRIPTION_ERROR, errorMessage, e);
-//            request.errorHandler.onError(exception);
-//        }
-        log.error("[Sub][" + this.connectionId + "] " + errorMessage, e);
+        log.error("[" + this.connectionId + "]:onError:" + errorMessage, e);
     }
 
 
@@ -127,7 +119,7 @@ public class OkHttpWebsocketConnection extends WebSocketListener {
     }
 
     public void close() {
-        log.info("[Sub][" + this.connectionId + "] Closing normally");
+        log.info("[" + this.connectionId + "] Closing normally");
         disposeWebSocket();
         watchDog.onClosedNormally(this);
     }

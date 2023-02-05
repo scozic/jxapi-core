@@ -69,7 +69,7 @@ public class BinanceExchangeInformationResponseSymbolsFilters {
   }
   
   @Override
-  public String toString(){
+  public String toString() {
     return EncodingUtil.pojoToString(this);
   }
   
