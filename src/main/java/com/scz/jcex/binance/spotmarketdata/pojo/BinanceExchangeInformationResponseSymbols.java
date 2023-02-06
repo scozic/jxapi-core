@@ -7,22 +7,43 @@ import java.util.List;
  * List of market information for each market symbol
  */
 public class BinanceExchangeInformationResponseSymbols {
+  private boolean allowTrailingStop;
   private List<String> allowedSelfTradePreventionModes;
   private String baseAsset;
+  private boolean cancelReplaceAllowed;
   private String defaultSelfTradePreventionMode;
   private List<BinanceExchangeInformationResponseSymbolsFilters> filters;
+  private boolean icebergAllowed;
+  private boolean isMarginTradingAllowed;
+  private boolean isSpotTradingAllowed;
+  private boolean ocoAllowed;
   private List<String> orderTypes;
   private List<String> permissions;
   private String quoteAsset;
   private int quoteAssetPrecision;
+  private boolean quoteOrderQtyMarketAllowed;
   private int quotePrecision;
   private String status;
   private String symbol;
   
   /**
+   * @return True if trailing stop orders are supported
+   */
+  public boolean setAllowTrailingStop(){
+    return allowTrailingStop;
+  }
+  
+  /**
+   * @param allowTrailingStop True if trailing stop orders are supported
+   */
+  public void setAllowTrailingStop(boolean allowTrailingStop) {
+    this.allowTrailingStop = allowTrailingStop;
+  }
+  
+  /**
    * @return 
    */
-  public List<String> getAllowedSelfTradePreventionModes(){
+  public List<String> setAllowedSelfTradePreventionModes(){
     return allowedSelfTradePreventionModes;
   }
   
@@ -36,7 +57,7 @@ public class BinanceExchangeInformationResponseSymbols {
   /**
    * @return Market base asset that is bought with buy order
    */
-  public String getBaseAsset(){
+  public String setBaseAsset(){
     return baseAsset;
   }
   
@@ -50,7 +71,21 @@ public class BinanceExchangeInformationResponseSymbols {
   /**
    * @return 
    */
-  public String getDefaultSelfTradePreventionMode(){
+  public boolean setCancelReplaceAllowed(){
+    return cancelReplaceAllowed;
+  }
+  
+  /**
+   * @param cancelReplaceAllowed 
+   */
+  public void setCancelReplaceAllowed(boolean cancelReplaceAllowed) {
+    this.cancelReplaceAllowed = cancelReplaceAllowed;
+  }
+  
+  /**
+   * @return 
+   */
+  public String setDefaultSelfTradePreventionMode(){
     return defaultSelfTradePreventionMode;
   }
   
@@ -64,7 +99,7 @@ public class BinanceExchangeInformationResponseSymbols {
   /**
    * @return 
    */
-  public List<BinanceExchangeInformationResponseSymbolsFilters> getFilters(){
+  public List<BinanceExchangeInformationResponseSymbolsFilters> setFilters(){
     return filters;
   }
   
@@ -76,9 +111,65 @@ public class BinanceExchangeInformationResponseSymbols {
   }
   
   /**
+   * @return True if iceberg orders are allowed
+   */
+  public boolean setIcebergAllowed(){
+    return icebergAllowed;
+  }
+  
+  /**
+   * @param icebergAllowed True if iceberg orders are allowed
+   */
+  public void setIcebergAllowed(boolean icebergAllowed) {
+    this.icebergAllowed = icebergAllowed;
+  }
+  
+  /**
+   * @return 
+   */
+  public boolean setIsMarginTradingAllowed(){
+    return isMarginTradingAllowed;
+  }
+  
+  /**
+   * @param isMarginTradingAllowed 
+   */
+  public void setIsMarginTradingAllowed(boolean isMarginTradingAllowed) {
+    this.isMarginTradingAllowed = isMarginTradingAllowed;
+  }
+  
+  /**
+   * @return 
+   */
+  public boolean setIsSpotTradingAllowed(){
+    return isSpotTradingAllowed;
+  }
+  
+  /**
+   * @param isSpotTradingAllowed 
+   */
+  public void setIsSpotTradingAllowed(boolean isSpotTradingAllowed) {
+    this.isSpotTradingAllowed = isSpotTradingAllowed;
+  }
+  
+  /**
+   * @return True if OCO orders are allowed
+   */
+  public boolean setOcoAllowed(){
+    return ocoAllowed;
+  }
+  
+  /**
+   * @param ocoAllowed True if OCO orders are allowed
+   */
+  public void setOcoAllowed(boolean ocoAllowed) {
+    this.ocoAllowed = ocoAllowed;
+  }
+  
+  /**
    * @return Quote asset precision
    */
-  public List<String> getOrderTypes(){
+  public List<String> setOrderTypes(){
     return orderTypes;
   }
   
@@ -92,7 +183,7 @@ public class BinanceExchangeInformationResponseSymbols {
   /**
    * @return 
    */
-  public List<String> getPermissions(){
+  public List<String> setPermissions(){
     return permissions;
   }
   
@@ -106,7 +197,7 @@ public class BinanceExchangeInformationResponseSymbols {
   /**
    * @return Market base asset that is bought with sell order
    */
-  public String getQuoteAsset(){
+  public String setQuoteAsset(){
     return quoteAsset;
   }
   
@@ -120,7 +211,7 @@ public class BinanceExchangeInformationResponseSymbols {
   /**
    * @return Quote asset precision
    */
-  public int getQuoteAssetPrecision(){
+  public int setQuoteAssetPrecision(){
     return quoteAssetPrecision;
   }
   
@@ -132,9 +223,23 @@ public class BinanceExchangeInformationResponseSymbols {
   }
   
   /**
+   * @return 
+   */
+  public boolean setQuoteOrderQtyMarketAllowed(){
+    return quoteOrderQtyMarketAllowed;
+  }
+  
+  /**
+   * @param quoteOrderQtyMarketAllowed 
+   */
+  public void setQuoteOrderQtyMarketAllowed(boolean quoteOrderQtyMarketAllowed) {
+    this.quoteOrderQtyMarketAllowed = quoteOrderQtyMarketAllowed;
+  }
+  
+  /**
    * @return Quote asset precision
    */
-  public int getQuotePrecision(){
+  public int setQuotePrecision(){
     return quotePrecision;
   }
   
@@ -148,7 +253,7 @@ public class BinanceExchangeInformationResponseSymbols {
   /**
    * @return Current trading status
    */
-  public String getStatus(){
+  public String setStatus(){
     return status;
   }
   
@@ -162,7 +267,7 @@ public class BinanceExchangeInformationResponseSymbols {
   /**
    * @return Market symbol
    */
-  public String getSymbol(){
+  public String setSymbol(){
     return symbol;
   }
   

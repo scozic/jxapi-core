@@ -1,8 +1,9 @@
 package com.scz.jcex.binance.websocket;
 
+import com.scz.jcex.binance.spotmarketdata.deserializers.BinanceAllMarketTickersStreamResponseDeserializer;
 import com.scz.jcex.binance.spotmarketdata.pojo.BinanceAllMarketTickersStreamRequest;
 import com.scz.jcex.binance.spotmarketdata.pojo.BinanceAllMarketTickersStreamResponse;
-import com.scz.jcex.netutils.websocket.DefaultJsonWebsocketMessageDeserializer;
+import com.scz.jcex.netutils.websocket.DefaultJsonMessageDeserializer;
 import com.scz.jcex.netutils.websocket.WebsocketListener;
 import com.scz.jcex.netutils.websocket.WebsocketSubscribeRequest;
 import com.scz.jcex.netutils.websocket.okhttp.AbstractOkHttpWebsocketEndpoint;
@@ -13,13 +14,14 @@ public class BinanceAllMarketTickerPublicWebsocketEndpoint extends AbstractOkHtt
 	
 	public BinanceAllMarketTickerPublicWebsocketEndpoint() {
 		super();
-		setWebsocketMessageDeserializer(new DefaultJsonWebsocketMessageDeserializer<BinanceAllMarketTickersStreamResponse>(BinanceAllMarketTickersStreamResponse.class));
+		setWebsocketMessageDeserializer(new DefaultJsonMessageDeserializer<BinanceAllMarketTickersStreamResponse>(BinanceAllMarketTickersStreamResponse.class));
 	}
 	
 	public void subscribe(BinanceAllMarketTickersStreamRequest request, WebsocketListener<BinanceAllMarketTickersStreamResponse> listener) {
 		WebsocketSubscribeRequest<BinanceAllMarketTickersStreamRequest> wsRequest = new WebsocketSubscribeRequest<>();
 		wsRequest.setParameters(request);
 		wsRequest.setBaseUrl(BINANCE_PUBLIC_WS_BASE_URL);
+		this.setWebsocketMessageDeserializer(new BinanceAllMarketTickersStreamResponseDeserializer());
 		this.subscribe(wsRequest, listener);
 	}
 

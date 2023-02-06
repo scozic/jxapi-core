@@ -15,7 +15,7 @@ public class BinanceExchangeInformationResponseSymbolsFilters {
   /**
    * @return Price filter, see <a href="https://binance-docs.github.io/apidocs/spot/en/#filters">API</a> documentation.
    */
-  public String getFilterType(){
+  public String setFilterType(){
     return filterType;
   }
   
@@ -29,7 +29,7 @@ public class BinanceExchangeInformationResponseSymbolsFilters {
   /**
    * @return Provided with PRICE_FILTER filter type
    */
-  public BigDecimal getMaxPrice(){
+  public BigDecimal setMaxPrice(){
     return maxPrice;
   }
   
@@ -43,7 +43,7 @@ public class BinanceExchangeInformationResponseSymbolsFilters {
   /**
    * @return Provided with PRICE_FILTER filter type
    */
-  public BigDecimal getMinPrice(){
+  public BigDecimal setMinPrice(){
     return minPrice;
   }
   
@@ -57,7 +57,7 @@ public class BinanceExchangeInformationResponseSymbolsFilters {
   /**
    * @return Provided with PRICE_FILTER filter type
    */
-  public BigDecimal getTickSize(){
+  public BigDecimal setTickSize(){
     return tickSize;
   }
   

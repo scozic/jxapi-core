@@ -96,17 +96,15 @@ public class JavaTypeGenerator {
 	
 	public String generate() {
 		StringBuilder sb = new StringBuilder();
-		Set<String> allImports = new TreeSet<>();
-		allImports.addAll(imports);
 		if (parentClassName != null) {
-			allImports.add(parentClassName);
+			addImport(parentClassName);
 		}
 		if (implementedInterfaces != null) {
-			implementedInterfaces.forEach(i -> allImports.add(i) );
+			implementedInterfaces.forEach(this::addImport);
 		}
 		
 		sb.append("package ").append(getPackage()).append(";\n\n");
-		for (String im: allImports) {
+		for (String im: imports) {
 			String imPkg = JavaCodeGenerationUtil.getClassPackage(im);
 			if (!imPkg.equals(getPackage())
 				&& !imPkg.startsWith("java.lang")

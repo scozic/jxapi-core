@@ -28,7 +28,7 @@ public class BinanceIndividualSymbolTickerStreamsResponse {
   /**
    * @return Statistics close time
    */
-  public long getC(){
+  public long setC(){
     return C;
   }
   
@@ -42,7 +42,7 @@ public class BinanceIndividualSymbolTickerStreamsResponse {
   /**
    * @return Event time
    */
-  public long getE(){
+  public long setE(){
     return E;
   }
   
@@ -56,7 +56,7 @@ public class BinanceIndividualSymbolTickerStreamsResponse {
   /**
    * @return First trade ID
    */
-  public int getF(){
+  public int setF(){
     return F;
   }
   
@@ -70,7 +70,7 @@ public class BinanceIndividualSymbolTickerStreamsResponse {
   /**
    * @return Last trade ID
    */
-  public int getL(){
+  public int setL(){
     return L;
   }
   
@@ -84,7 +84,7 @@ public class BinanceIndividualSymbolTickerStreamsResponse {
   /**
    * @return Statistics open time
    */
-  public long getO(){
+  public long setO(){
     return O;
   }
   
@@ -98,7 +98,7 @@ public class BinanceIndividualSymbolTickerStreamsResponse {
   /**
    * @return Price change percent
    */
-  public BigDecimal getP(){
+  public BigDecimal setP(){
     return P;
   }
   
@@ -112,7 +112,7 @@ public class BinanceIndividualSymbolTickerStreamsResponse {
   /**
    * @return Last price
    */
-  public BigDecimal getc(){
+  public BigDecimal setc(){
     return c;
   }
   
@@ -126,7 +126,7 @@ public class BinanceIndividualSymbolTickerStreamsResponse {
   /**
    * @return Event type
    */
-  public String gete(){
+  public String sete(){
     return e;
   }
   
@@ -140,7 +140,7 @@ public class BinanceIndividualSymbolTickerStreamsResponse {
   /**
    * @return High price
    */
-  public BigDecimal getH(){
+  public BigDecimal setH(){
     return h;
   }
   
@@ -154,7 +154,7 @@ public class BinanceIndividualSymbolTickerStreamsResponse {
   /**
    * @return Low price
    */
-  public BigDecimal getl(){
+  public BigDecimal setl(){
     return l;
   }
   
@@ -168,7 +168,7 @@ public class BinanceIndividualSymbolTickerStreamsResponse {
   /**
    * @return Total number of trades
    */
-  public int getN(){
+  public int setN(){
     return n;
   }
   
@@ -182,7 +182,7 @@ public class BinanceIndividualSymbolTickerStreamsResponse {
   /**
    * @return Open price
    */
-  public BigDecimal geto(){
+  public BigDecimal seto(){
     return o;
   }
   
@@ -196,7 +196,7 @@ public class BinanceIndividualSymbolTickerStreamsResponse {
   /**
    * @return Price change
    */
-  public BigDecimal getp(){
+  public BigDecimal setp(){
     return p;
   }
   
@@ -210,7 +210,7 @@ public class BinanceIndividualSymbolTickerStreamsResponse {
   /**
    * @return Total traded quote asset volume
    */
-  public BigDecimal getQ(){
+  public BigDecimal setQ(){
     return q;
   }
   
@@ -224,7 +224,7 @@ public class BinanceIndividualSymbolTickerStreamsResponse {
   /**
    * @return Symbol
    */
-  public String getS(){
+  public String setS(){
     return s;
   }
   
@@ -238,7 +238,7 @@ public class BinanceIndividualSymbolTickerStreamsResponse {
   /**
    * @return Total traded base asset volume
    */
-  public BigDecimal getV(){
+  public BigDecimal setV(){
     return v;
   }
   
@@ -252,7 +252,7 @@ public class BinanceIndividualSymbolTickerStreamsResponse {
   /**
    * @return Weighted average price
    */
-  public BigDecimal getW(){
+  public BigDecimal setW(){
     return w;
   }
   

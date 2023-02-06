@@ -5,10 +5,10 @@ import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import com.scz.jcex.generator.exchange.ExchangeApiDescriptor;
-import com.scz.jcex.netutils.websocket.DefaultJsonWebsocketMessageDeserializer;
+import com.scz.jcex.netutils.deserialization.MessageDeserializer;
+import com.scz.jcex.netutils.websocket.DefaultJsonMessageDeserializer;
 import com.scz.jcex.netutils.websocket.WebsocketEndpoint;
 import com.scz.jcex.netutils.websocket.WebsocketListener;
-import com.scz.jcex.netutils.websocket.WebsocketMessageDeserializer;
 import com.scz.jcex.netutils.websocket.WebsocketSubscribeParameters;
 import com.scz.jcex.netutils.websocket.WebsocketSubscribeRequest;
 
@@ -19,7 +19,7 @@ public class AbstractOkHttpWebsocketEndpoint<T extends WebsocketSubscribeParamet
     private WebsocketWatchDog watchDog;
 
     private final Map<String, OkHttpWebsocketConnection> connections = new HashMap<>();
-	private WebsocketMessageDeserializer<M> websocketMessageDeserializer = new DefaultJsonWebsocketMessageDeserializer<>(null);
+	private MessageDeserializer<M> websocketMessageDeserializer = new DefaultJsonMessageDeserializer<>(null);
 	protected ExchangeApiDescriptor exchangeApi;
 
 	private boolean reconnectOnFailure = true;
@@ -50,11 +50,11 @@ public class AbstractOkHttpWebsocketEndpoint<T extends WebsocketSubscribeParamet
 		return "websocketSubscription#" + subscriptionIdGenerator.getAndIncrement();
 	}
 
-	public WebsocketMessageDeserializer<M> getWebsocketMessageDeserializer() {
+	public MessageDeserializer<M> getWebsocketMessageDeserializer() {
 		return websocketMessageDeserializer;
 	}
 
-	public void setWebsocketMessageDeserializer(WebsocketMessageDeserializer<M> websocketMessageDeserializer) {
+	public void setWebsocketMessageDeserializer(MessageDeserializer<M> websocketMessageDeserializer) {
 		this.websocketMessageDeserializer = websocketMessageDeserializer;
 	}
 	

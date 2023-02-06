@@ -7,7 +7,10 @@ import java.util.Arrays;
 import java.util.EnumMap;
 import java.util.List;
 
+import org.apache.commons.lang3.StringUtils;
+
 import com.scz.jcex.generator.JavaCodeGenerationUtil;
+import com.scz.jcex.generator.JsonMessageDeserializerGenerator;
 import com.scz.jcex.generator.PojoField;
 import com.scz.jcex.generator.PojoGenerator;
 import com.scz.jcex.netutils.websocket.WebsocketSubscribeParameters;
@@ -21,6 +24,7 @@ public class ExchangeJavaWrapperGeneratorUtil {
 	private static final EnumMap<EndpointParameterType, String> PARAMETER_TYPE_CLASSES = new EnumMap<>(EndpointParameterType.class);
 	static {
 		PARAMETER_TYPE_CLASSES.put(EndpointParameterType.BIGDECIMAL, BigDecimal.class.getName());
+		PARAMETER_TYPE_CLASSES.put(EndpointParameterType.BOOLEAN, "boolean");
 		PARAMETER_TYPE_CLASSES.put(EndpointParameterType.INT, "int");
 		PARAMETER_TYPE_CLASSES.put(EndpointParameterType.TIMESTAMP, "long");
 		PARAMETER_TYPE_CLASSES.put(EndpointParameterType.STRING, "String");
@@ -39,6 +43,7 @@ public class ExchangeJavaWrapperGeneratorUtil {
 			switch (field.getType()) {
 			case BIGDECIMAL:
 			case INT:
+			case BOOLEAN:
 			case STRING:
 			case TIMESTAMP:
 			case STRING_LIST:
@@ -56,6 +61,18 @@ public class ExchangeJavaWrapperGeneratorUtil {
 			generator.appendToBody(additionnalClassBody);
 		}
 		generator.writeJavaFile(src);
+	}
+	
+	public static void generateDeserializer(Path src, String deserializedClassName, List<EndpointParameter> fields) throws IOException {
+		for (EndpointParameter field: fields) {
+			if (field.getType() == EndpointParameterType.STRUCT 
+				|| field.getType() == EndpointParameterType.STRUCT_LIST) {
+				generateDeserializer(src, deserializedClassName + JavaCodeGenerationUtil.firstLetterToUpperCase(field.getName()), field.getParameters());
+			}
+		}
+		String pkg = StringUtils.substringBefore(JavaCodeGenerationUtil.getClassPackage(deserializedClassName), ".pojo") + ".deserializers";
+		JsonMessageDeserializerGenerator deserializerGenerator = new JsonMessageDeserializerGenerator(pkg, deserializedClassName, fields);
+		deserializerGenerator.writeJavaFile(src);
 	}
 	
 	public static void generateSimpleParameterTypePojoField(PojoGenerator generator, EndpointParameter field) {
@@ -81,11 +98,48 @@ public class ExchangeJavaWrapperGeneratorUtil {
 	
 	public static void generateCEX(ExchangeDescriptor exchangeDescriptor, Path ouputFolder) throws IOException {
 		generateCEXPojos(exchangeDescriptor, ouputFolder);
-		
+		generateCEXPojoDeserializers(exchangeDescriptor, ouputFolder);
 		
 	}
 	
-	private static void generateCEXPojos(ExchangeDescriptor exchangeDescriptor, Path ouputFolder) throws IOException {
+	public static void generateCEXPojoDeserializers(ExchangeDescriptor exchangeDescriptor, Path ouputFolder) throws IOException {
+		for (ExchangeApiDescriptor api: exchangeDescriptor.getApis()) {
+			String pkgPrefix =  exchangeDescriptor.getBasePackage() + "." + api.getName().toLowerCase() + ".pojo.";
+			for (RestEndpointDescriptor restEndpointDescriptor: api.getRestEndpoints()) {
+				ExchangeJavaWrapperGeneratorUtil.generateDeserializer(ouputFolder, 
+						pkgPrefix 
+							+ JavaCodeGenerationUtil.firstLetterToUpperCase(exchangeDescriptor.getName()) 
+							+ JavaCodeGenerationUtil.firstLetterToUpperCase(restEndpointDescriptor.getName())
+							+ "Response",
+						restEndpointDescriptor.getResponse());
+			}
+			
+			for (WebsocketEndpointDescriptor wsEndpointDescriptor: api.getWebsocketEndpoints()) {
+				ExchangeJavaWrapperGeneratorUtil.generatePojo(ouputFolder, 
+										pkgPrefix 
+											+ JavaCodeGenerationUtil.firstLetterToUpperCase(exchangeDescriptor.getName()) 
+											+ JavaCodeGenerationUtil.firstLetterToUpperCase(wsEndpointDescriptor.getName())
+											+ "Request", 
+										"Subscription request to" + exchangeDescriptor.getName() 
+											+ " " + api.getName() + " API " 
+											+ wsEndpointDescriptor.getName() 
+											+ " websocket endpoint<br/>" 
+											+ wsEndpointDescriptor.getDescription()
+											+ JavaCodeGenerationUtil.GENERATED_CODE_WARNING,
+										wsEndpointDescriptor.getParameters(), 
+										Arrays.asList(WebsocketSubscribeParameters.class.getName()), 
+										generateWebsocketSubscribeParametersGetTopicMethod(wsEndpointDescriptor));
+				ExchangeJavaWrapperGeneratorUtil.generateDeserializer(ouputFolder, 
+						pkgPrefix
+							+ JavaCodeGenerationUtil.firstLetterToUpperCase(exchangeDescriptor.getName()) 
+							+ JavaCodeGenerationUtil.firstLetterToUpperCase(wsEndpointDescriptor.getName())
+							+ "Response",
+						wsEndpointDescriptor.getResponse());
+			}
+		}
+	}
+
+	public static void generateCEXPojos(ExchangeDescriptor exchangeDescriptor, Path ouputFolder) throws IOException {
 		for (ExchangeApiDescriptor api: exchangeDescriptor.getApis()) {
 			String pkgPrefix =  exchangeDescriptor.getBasePackage() + "." + api.getName().toLowerCase() + ".pojo.";
 			for (RestEndpointDescriptor restEndpointDescriptor: api.getRestEndpoints()) {

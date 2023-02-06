@@ -14,7 +14,7 @@ public class BinanceExchangeInformationResponse {
   /**
    * @return Server timezone
    */
-  public long getServerTime(){
+  public long setServerTime(){
     return serverTime;
   }
   
@@ -28,7 +28,7 @@ public class BinanceExchangeInformationResponse {
   /**
    * @return List of market information for each market symbol
    */
-  public List<BinanceExchangeInformationResponseSymbols> getSymbols(){
+  public List<BinanceExchangeInformationResponseSymbols> setSymbols(){
     return symbols;
   }
   
@@ -42,7 +42,7 @@ public class BinanceExchangeInformationResponse {
   /**
    * @return Server timezone
    */
-  public String getTimezone(){
+  public String setTimezone(){
     return timezone;
   }
   

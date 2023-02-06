@@ -12,7 +12,7 @@ public class BinanceIndividualSymbolTickerStreamsRequest implements WebsocketSub
   /**
    * @return Market symbol
    */
-  public String getSymbol(){
+  public String setSymbol(){
     return symbol;
   }
   

@@ -6,6 +6,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -50,35 +51,28 @@ public class JavaCodeGenerationUtil {
 			String type = field.getType();
 			type = getClassNameWithoutPackage(type);
 			String name = field.getName();
-			String accessorSuffix = name;
-			// If there is another field with same name but different case, keep the part after accessor as is to make sure it is unique,
-			// otherwise use first letter uppercase for more readable camel case accessor name.
-			if (!fields.stream().anyMatch(f -> !name.equals(f.getName()) && name.equalsIgnoreCase(f.getName()))) {
-				accessorSuffix = firstLetterToUpperCase(name);
-			}
 			String description = field.getDescription();
 			
 			if (description != null) {
 				accessorsDeclarations.append(generateJavaDoc("@return " + description)).append("\n");
 			}
-			accessorsDeclarations.append("public ").append(type).append(" ");
-			if ("boolean".equals(type)) {
-				accessorsDeclarations.append("is");	
-			} else {
-				accessorsDeclarations.append("get");
-			}
-			accessorsDeclarations.append(accessorSuffix)
-			.append("()")
-			.append(generateCodeBlock("return " + name + ";"))
-			.append("\n");
+			List<String> allFieldNames = fields.stream().map(f -> f.getName()).collect(Collectors.toList());
+			accessorsDeclarations
+				.append("public ")
+				.append(type)
+				.append(" ")
+				.append(getGetAccessorMethodName(field.getName(), field.getType(), allFieldNames))
+				.append("()")
+				.append(generateCodeBlock("return " + name + ";"))
+				.append("\n");
 			
 			fieldDeclarations.append("private ").append(type).append(" ").append(name).append(";\n");
 			if (description != null) {
 				accessorsDeclarations.append(generateJavaDoc("@param " + name + " " + description)).append("\n");
 			}
 			accessorsDeclarations
-				.append("public void set")
-				.append(accessorSuffix)
+				.append("public void ")
+				.append(getSetAccessorMethodName(field.getName(), allFieldNames))
 				.append("(")
 				.append(type)
 				.append(" ")
@@ -89,6 +83,28 @@ public class JavaCodeGenerationUtil {
 		}
 		
 		return fieldDeclarations.toString() + "\n" + accessorsDeclarations.toString();
+	}
+	
+	public static String getGetAccessorMethodName(String fieldName, String fieldType, List<String> allFieldNames) {
+		String prefix = "get";
+		if ("boolean".equals(fieldType)) {
+			prefix = "is";
+		}
+		return getAccessorMethodName(prefix, fieldName, allFieldNames);
+	}
+	
+	public static String getSetAccessorMethodName(String fieldName, List<String> allFieldNames) {
+		return getAccessorMethodName("set", fieldName, allFieldNames);
+	}
+	
+	public static String getAccessorMethodName(String prefix, String name, List<String> allFields) {
+		String accessorSuffix = name;
+		// If there is another field with same name but different case, keep the part after accessor as is to make sure it is unique,
+		// otherwise use first letter uppercase for more readable camel case accessor name.
+		if (!allFields.stream().anyMatch(n -> !name.equals(n) && name.equalsIgnoreCase(n))) {
+			accessorSuffix = firstLetterToUpperCase(name);
+		}
+		return "set" + accessorSuffix;
 	}
 	
 	public static String firstLetterToUpperCase(String s) {

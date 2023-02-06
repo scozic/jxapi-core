@@ -2,14 +2,15 @@ package com.scz.jcex.netutils.websocket;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.scz.jcex.netutils.deserialization.MessageDeserializer;
 
-public class DefaultJsonWebsocketMessageDeserializer<T> implements WebsocketMessageDeserializer<T> {
+public class DefaultJsonMessageDeserializer<T> implements MessageDeserializer<T> {
 	
 	protected final ObjectMapper objectMapper;
 	
 	protected final Class<T> messagePojoClass;
 	
-	public DefaultJsonWebsocketMessageDeserializer(Class<T> messagePojoClass) {
+	public DefaultJsonMessageDeserializer(Class<T> messagePojoClass) {
 		this.objectMapper = new ObjectMapper();
 		this.messagePojoClass = messagePojoClass;
 	}
