@@ -62,13 +62,13 @@ public class BinanceIndividualSymbolTickerStreamsResponseDeserializer extends Ab
         msg.setC(parser.nextLongValue(0L));
       break;
       case "F":
-        msg.setF(parser.nextIntValue(0));
+        msg.setF(parser.nextLongValue(0));
       break;
       case "L":
-        msg.setL(parser.nextIntValue(0));
+        msg.setL(parser.nextLongValue(0));
       break;
       case "n":
-        msg.setN(parser.nextIntValue(0));
+        msg.setN(parser.nextLongValue(0));
       break;
       default:
       }

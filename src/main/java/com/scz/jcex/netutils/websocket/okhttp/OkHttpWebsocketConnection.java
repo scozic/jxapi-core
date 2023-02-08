@@ -91,7 +91,7 @@ public class OkHttpWebsocketConnection extends WebSocketListener {
             result = webSocket.send(str);
         }
         if (!result) {
-            log.error("[Sub][" + this.connectionId + "] Failed to send message");
+            log.error("[" + this.connectionId + "] Failed to send message");
             closeOnError();
         }
     }
@@ -136,11 +136,8 @@ public class OkHttpWebsocketConnection extends WebSocketListener {
     public void onOpen(WebSocket webSocket, Response response) {
         super.onOpen(webSocket, response);
         this.webSocket = webSocket;
-        log.info("[Sub][" + this.connectionId + "] Connected to server");
+        log.info("[" + this.connectionId + "] Connected to server");
         watchDog.onConnectionCreated(this);
-//        if (request.connectionHandler != null) {
-//            request.connectionHandler.handle(this);
-//        }
         state = ConnectionState.CONNECTED;
         lastReceivedTime = System.currentTimeMillis();
     }

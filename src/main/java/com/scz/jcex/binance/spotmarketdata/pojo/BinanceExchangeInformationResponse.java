@@ -1,11 +1,14 @@
 package com.scz.jcex.binance.spotmarketdata.pojo;
 
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.scz.jcex.binance.spotmarketdata.serializers.BinanceExchangeInformationResponseSerializer;
 import com.scz.jcex.util.EncodingUtil;
 import java.util.List;
 
 /**
  * Response to Binance SpotMarketData API exchangeInformation REST endpoint request<br/>Current exchange trading rules and symbol information<br><strong>THIS CODE IS GENERATED. DO NOT EDIT MANUALLY!</strong>
  */
+@JsonSerialize(using = BinanceExchangeInformationResponseSerializer.class)
 public class BinanceExchangeInformationResponse {
   private long serverTime;
   private List<BinanceExchangeInformationResponseSymbols> symbols;
@@ -14,7 +17,7 @@ public class BinanceExchangeInformationResponse {
   /**
    * @return Server timezone
    */
-  public long setServerTime(){
+  public long getServerTime(){
     return serverTime;
   }
   
@@ -28,7 +31,7 @@ public class BinanceExchangeInformationResponse {
   /**
    * @return List of market information for each market symbol
    */
-  public List<BinanceExchangeInformationResponseSymbols> setSymbols(){
+  public List<BinanceExchangeInformationResponseSymbols> getSymbols(){
     return symbols;
   }
   
@@ -42,7 +45,7 @@ public class BinanceExchangeInformationResponse {
   /**
    * @return Server timezone
    */
-  public String setTimezone(){
+  public String getTimezone(){
     return timezone;
   }
   

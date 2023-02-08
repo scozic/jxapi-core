@@ -47,7 +47,7 @@ public class ExchangeJavaWrapperGeneratorUtilTest {
 		String typeName = "com.x.MyPojo";
 		String typeDescription = "Used in ExchangeJavaWrapperGeneratorUtilTest";
 		List<EndpointParameter> endpointParameters = new ArrayList<>();
-		endpointParameters.add(EndpointParameter.create(EndpointParameterType.STRING, "id", "identifier", "toto"));
+		endpointParameters.add(EndpointParameter.create(EndpointParameterType.LONG, "id", "identifier", "123"));
 		endpointParameters.add(EndpointParameter.create(EndpointParameterType.INT, "score", "Current score", "0"));
 		endpointParameters.add(EndpointParameter.create(EndpointParameterType.STRUCT_LIST, "foo", "Foo list",
 				Arrays.asList(EndpointParameter.create(EndpointParameterType.TIMESTAMP, "time", "Creation time", "0"),
@@ -69,7 +69,7 @@ public class ExchangeJavaWrapperGeneratorUtilTest {
 				+ " */\n"
 				+ "public class MyPojo {\n"
 				+ "  private List<MyPojoFoo> foo;\n"
-				+ "  private String id;\n"
+				+ "  private long id;\n"
 				+ "  private int score;\n"
 				+ "  \n"
 				+ "  /**\n"
@@ -89,14 +89,14 @@ public class ExchangeJavaWrapperGeneratorUtilTest {
 				+ "  /**\n"
 				+ "   * @return identifier\n"
 				+ "   */\n"
-				+ "  public String getId(){\n"
+				+ "  public long getId(){\n"
 				+ "    return id;\n"
 				+ "  }\n"
 				+ "  \n"
 				+ "  /**\n"
 				+ "   * @param id identifier\n"
 				+ "   */\n"
-				+ "  public void setId(String id) {\n"
+				+ "  public void setId(long id) {\n"
 				+ "    this.id = id;\n"
 				+ "  }\n"
 				+ "  \n"
@@ -116,7 +116,7 @@ public class ExchangeJavaWrapperGeneratorUtilTest {
 				+ "  \n"
 				+ "  @Override\n"
 				+ "  public String toString() {\n"
-				+ "    return EncodingUtil.pojoToString(this);\n"
+				+ "    return EncodingUtil.formatArgsToJsonStruct(\"foo\", foo, \"id\", id, \"score\", score);\n"
 				+ "  }\n"
 				+ "  \n"
 				+ "}\n"
@@ -164,7 +164,7 @@ public class ExchangeJavaWrapperGeneratorUtilTest {
 				+ "  \n"
 				+ "  @Override\n"
 				+ "  public String toString() {\n"
-				+ "    return EncodingUtil.pojoToString(this);\n"
+				+ "    return EncodingUtil.formatArgsToJsonStruct(\"bar\", bar, \"time\", time);\n"
 				+ "  }\n"
 				+ "  \n"
 				+ "}\n"
@@ -196,7 +196,7 @@ public class ExchangeJavaWrapperGeneratorUtilTest {
 				+ "  \n"
 				+ "  @Override\n"
 				+ "  public String toString() {\n"
-				+ "    return EncodingUtil.pojoToString(this);\n"
+				+ "    return EncodingUtil.formatArgsToJsonStruct(\"name\", name);\n"
 				+ "  }\n"
 				+ "  \n"
 				+ "}\n"

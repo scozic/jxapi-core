@@ -69,9 +69,9 @@
 						{"name":"q", "type": "BIGDECIMAL", "description":"Total traded quote asset volume", "sampleValue":"18"},
 						{"name":"O", "type": "TIMESTAMP", "description":"Statistics open time", "sampleValue":"0"},
 						{"name":"C", "type": "TIMESTAMP", "description":"Statistics close time", "sampleValue":"86400000"},
-						{"name":"F", "type": "INT", "description":"First trade ID", "sampleValue":"0"},
-						{"name":"L", "type": "INT", "description":"Last trade ID", "sampleValue":"18150"},
-						{"name":"n", "type": "INT", "description":"Total number of trades", "sampleValue":"18150"}
+						{"name":"F", "type": "LONG", "description":"First trade ID", "sampleValue":"0"},
+						{"name":"L", "type": "LONG", "description":"Last trade ID", "sampleValue":"18150"},
+						{"name":"n", "type": "LONG", "description":"Total number of trades", "sampleValue":"18150"}
 					]
 				},
 				{
@@ -96,9 +96,9 @@
 						{"name":"q", "type": "BIGDECIMAL", "description":"Total traded quote asset volume", "sampleValue":"18"},
 						{"name":"O", "type": "TIMESTAMP", "description":"Statistics open time", "sampleValue":"0"},
 						{"name":"C", "type": "TIMESTAMP", "description":"Statistics close time", "sampleValue":"86400000"},
-						{"name":"F", "type": "INT", "description":"First trade ID", "sampleValue":"0"},
-						{"name":"L", "type": "INT", "description":"Last trade ID", "sampleValue":"18150"},
-						{"name":"n", "type": "INT", "description":"Total number of trades", "sampleValue":"18150"}
+						{"name":"F", "type": "LONG", "description":"First trade ID", "sampleValue":"0"},
+						{"name":"L", "type": "LONG", "description":"Last trade ID", "sampleValue":"18150"},
+						{"name":"n", "type": "LONG", "description":"Total number of trades", "sampleValue":"18150"}
 					]
 				}
 			]

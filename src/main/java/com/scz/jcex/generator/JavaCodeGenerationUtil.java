@@ -104,7 +104,7 @@ public class JavaCodeGenerationUtil {
 		if (!allFields.stream().anyMatch(n -> !name.equals(n) && name.equalsIgnoreCase(n))) {
 			accessorSuffix = firstLetterToUpperCase(name);
 		}
-		return "set" + accessorSuffix;
+		return prefix + accessorSuffix;
 	}
 	
 	public static String firstLetterToUpperCase(String s) {

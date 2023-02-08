@@ -5,17 +5,19 @@ package com.scz.jcex.generator.exchange;
  * @see EndpointParameter
  */
 public enum EndpointParameterType {
-	/** Plain {@link String} value*/
+	/** Plain {@link String} value */
 	STRING,
-	/** Boolean value*/
+	/** Boolean value */
 	BOOLEAN,
-	/** String containing a comma separated list of values*/
+	/** String containing a comma separated list of values */
 	STRING_LIST,
-	/** Floating point value*/
+	/** Floating point value */
 	BIGDECIMAL,
-	/** Integer value*/
+	/** Integer value */
 	INT,
-	/** Timestamp (or datetime) value*/
+	/** Long value */
+	LONG,
+	/** Timestamp (or datetime) value */
 	TIMESTAMP,
 	/** Nested structure (JSON block) */
 	STRUCT,

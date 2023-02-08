@@ -1,23 +1,26 @@
 package com.scz.jcex.binance.spotmarketdata.pojo;
 
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.scz.jcex.binance.spotmarketdata.serializers.BinanceAllMarketTickersStreamResponseSerializer;
 import com.scz.jcex.util.EncodingUtil;
 import java.math.BigDecimal;
 
 /**
  * Response message disseminated upon subscription to Binance SpotMarketData API AllMarketTickersStream websocket endpoint request<br/>All Market Tickers Stream, see <a href="https://binance-docs.github.io/apidocs/spot/en/#all-market-tickers-stream">API</a><br><strong>THIS CODE IS GENERATED. DO NOT EDIT MANUALLY!</strong>
  */
+@JsonSerialize(using = BinanceAllMarketTickersStreamResponseSerializer.class)
 public class BinanceAllMarketTickersStreamResponse {
   private long C;
   private long E;
-  private int F;
-  private int L;
+  private long F;
+  private long L;
   private long O;
   private BigDecimal P;
   private BigDecimal c;
   private String e;
   private BigDecimal h;
   private BigDecimal l;
-  private int n;
+  private long n;
   private BigDecimal o;
   private BigDecimal p;
   private BigDecimal q;
@@ -28,7 +31,7 @@ public class BinanceAllMarketTickersStreamResponse {
   /**
    * @return Statistics close time
    */
-  public long setC(){
+  public long getC(){
     return C;
   }
   
@@ -42,7 +45,7 @@ public class BinanceAllMarketTickersStreamResponse {
   /**
    * @return Event time
    */
-  public long setE(){
+  public long getE(){
     return E;
   }
   
@@ -56,35 +59,35 @@ public class BinanceAllMarketTickersStreamResponse {
   /**
    * @return First trade ID
    */
-  public int setF(){
+  public long getF(){
     return F;
   }
   
   /**
    * @param F First trade ID
    */
-  public void setF(int F) {
+  public void setF(long F) {
     this.F = F;
   }
   
   /**
    * @return Last trade ID
    */
-  public int setL(){
+  public long getL(){
     return L;
   }
   
   /**
    * @param L Last trade ID
    */
-  public void setL(int L) {
+  public void setL(long L) {
     this.L = L;
   }
   
   /**
    * @return Statistics open time
    */
-  public long setO(){
+  public long getO(){
     return O;
   }
   
@@ -98,7 +101,7 @@ public class BinanceAllMarketTickersStreamResponse {
   /**
    * @return Price change percent
    */
-  public BigDecimal setP(){
+  public BigDecimal getP(){
     return P;
   }
   
@@ -112,7 +115,7 @@ public class BinanceAllMarketTickersStreamResponse {
   /**
    * @return Last price
    */
-  public BigDecimal setc(){
+  public BigDecimal getc(){
     return c;
   }
   
@@ -126,7 +129,7 @@ public class BinanceAllMarketTickersStreamResponse {
   /**
    * @return Event type
    */
-  public String sete(){
+  public String gete(){
     return e;
   }
   
@@ -140,7 +143,7 @@ public class BinanceAllMarketTickersStreamResponse {
   /**
    * @return High price
    */
-  public BigDecimal setH(){
+  public BigDecimal getH(){
     return h;
   }
   
@@ -154,7 +157,7 @@ public class BinanceAllMarketTickersStreamResponse {
   /**
    * @return Low price
    */
-  public BigDecimal setl(){
+  public BigDecimal getl(){
     return l;
   }
   
@@ -168,21 +171,21 @@ public class BinanceAllMarketTickersStreamResponse {
   /**
    * @return Total number of trades
    */
-  public int setN(){
+  public long getN(){
     return n;
   }
   
   /**
    * @param n Total number of trades
    */
-  public void setN(int n) {
+  public void setN(long n) {
     this.n = n;
   }
   
   /**
    * @return Open price
    */
-  public BigDecimal seto(){
+  public BigDecimal geto(){
     return o;
   }
   
@@ -196,7 +199,7 @@ public class BinanceAllMarketTickersStreamResponse {
   /**
    * @return Price change
    */
-  public BigDecimal setp(){
+  public BigDecimal getp(){
     return p;
   }
   
@@ -210,7 +213,7 @@ public class BinanceAllMarketTickersStreamResponse {
   /**
    * @return Total traded quote asset volume
    */
-  public BigDecimal setQ(){
+  public BigDecimal getQ(){
     return q;
   }
   
@@ -224,7 +227,7 @@ public class BinanceAllMarketTickersStreamResponse {
   /**
    * @return Symbol
    */
-  public String setS(){
+  public String getS(){
     return s;
   }
   
@@ -238,7 +241,7 @@ public class BinanceAllMarketTickersStreamResponse {
   /**
    * @return Total traded base asset volume
    */
-  public BigDecimal setV(){
+  public BigDecimal getV(){
     return v;
   }
   
@@ -252,7 +255,7 @@ public class BinanceAllMarketTickersStreamResponse {
   /**
    * @return Weighted average price
    */
-  public BigDecimal setW(){
+  public BigDecimal getW(){
     return w;
   }
   

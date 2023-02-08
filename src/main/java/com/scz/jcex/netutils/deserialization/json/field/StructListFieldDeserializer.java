@@ -6,9 +6,10 @@ import java.util.List;
 
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonToken;
+import com.scz.jcex.netutils.deserialization.json.AbstractJsonMessageDeserializer;
 import com.scz.jcex.netutils.deserialization.json.JsonDeserializer;
 
-public class StructListFieldDeserializer<T> implements JsonDeserializer<List<T>> {
+public class StructListFieldDeserializer<T> extends AbstractJsonMessageDeserializer<List<T>> {
 
 	private final JsonDeserializer<T> itemDeserializer;
 	
@@ -17,6 +18,7 @@ public class StructListFieldDeserializer<T> implements JsonDeserializer<List<T>>
 	}
 	@Override
 	public List<T> deserialize(JsonParser parser) throws IOException {
+		parser.nextToken();
 		if (parser.currentToken() != JsonToken.START_ARRAY) {
 			throw new IllegalStateException("Expecting start array of items to be deserialized using " + this.itemDeserializer);
 		}

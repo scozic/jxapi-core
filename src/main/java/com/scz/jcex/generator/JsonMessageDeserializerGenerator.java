@@ -93,6 +93,8 @@ public class JsonMessageDeserializerGenerator extends JavaTypeGenerator {
 			return "parser.nextBooleanValue()";
 		case INT:
 			return "parser.nextIntValue(0)";
+		case LONG:
+			return "parser.nextLongValue(0)";
 		case STRING:
 			return "parser.nextTextValue()";
 		case STRING_LIST:

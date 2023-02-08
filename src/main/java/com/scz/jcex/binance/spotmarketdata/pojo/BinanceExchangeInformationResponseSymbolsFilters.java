@@ -1,11 +1,14 @@
 package com.scz.jcex.binance.spotmarketdata.pojo;
 
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.scz.jcex.binance.spotmarketdata.serializers.BinanceExchangeInformationResponseSymbolsFiltersSerializer;
 import com.scz.jcex.util.EncodingUtil;
 import java.math.BigDecimal;
 
 /**
  * 
  */
+@JsonSerialize(using = BinanceExchangeInformationResponseSymbolsFiltersSerializer.class)
 public class BinanceExchangeInformationResponseSymbolsFilters {
   private String filterType;
   private BigDecimal maxPrice;
@@ -15,7 +18,7 @@ public class BinanceExchangeInformationResponseSymbolsFilters {
   /**
    * @return Price filter, see <a href="https://binance-docs.github.io/apidocs/spot/en/#filters">API</a> documentation.
    */
-  public String setFilterType(){
+  public String getFilterType(){
     return filterType;
   }
   
@@ -29,7 +32,7 @@ public class BinanceExchangeInformationResponseSymbolsFilters {
   /**
    * @return Provided with PRICE_FILTER filter type
    */
-  public BigDecimal setMaxPrice(){
+  public BigDecimal getMaxPrice(){
     return maxPrice;
   }
   
@@ -43,7 +46,7 @@ public class BinanceExchangeInformationResponseSymbolsFilters {
   /**
    * @return Provided with PRICE_FILTER filter type
    */
-  public BigDecimal setMinPrice(){
+  public BigDecimal getMinPrice(){
     return minPrice;
   }
   
@@ -57,7 +60,7 @@ public class BinanceExchangeInformationResponseSymbolsFilters {
   /**
    * @return Provided with PRICE_FILTER filter type
    */
-  public BigDecimal setTickSize(){
+  public BigDecimal getTickSize(){
     return tickSize;
   }
   
