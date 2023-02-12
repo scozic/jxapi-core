@@ -7,6 +7,7 @@ import com.scz.jcex.binance.spotmarketdata.pojo.BinanceExchangeInformationRespon
 import com.scz.jcex.netutils.deserialization.json.AbstractJsonMessageDeserializer;
 import com.scz.jcex.netutils.deserialization.json.field.StringListFieldDeserializer;
 import com.scz.jcex.netutils.deserialization.json.field.StructListFieldDeserializer;
+import com.scz.jcex.netutils.serialization.json.JsonParserUtil;
 import java.io.IOException;
 
 /**
@@ -78,6 +79,7 @@ public class BinanceExchangeInformationResponseSymbolsDeserializer extends Abstr
         msg.setAllowedSelfTradePreventionModes(StringListFieldDeserializer.getInstance().deserialize(parser));
       break;
       default:
+        JsonParserUtil.skipNextValue(parser);
       }
     }
     

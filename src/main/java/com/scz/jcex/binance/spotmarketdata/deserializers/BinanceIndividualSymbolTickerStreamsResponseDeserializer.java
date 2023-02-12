@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonToken;
 import com.scz.jcex.binance.spotmarketdata.pojo.BinanceIndividualSymbolTickerStreamsResponse;
 import com.scz.jcex.netutils.deserialization.json.AbstractJsonMessageDeserializer;
+import com.scz.jcex.netutils.serialization.json.JsonParserUtil;
 import java.io.IOException;
 import java.math.BigDecimal;
 
@@ -71,6 +72,7 @@ public class BinanceIndividualSymbolTickerStreamsResponseDeserializer extends Ab
         msg.setN(parser.nextLongValue(0));
       break;
       default:
+        JsonParserUtil.skipNextValue(parser);
       }
     }
     

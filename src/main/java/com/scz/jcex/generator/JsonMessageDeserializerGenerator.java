@@ -10,6 +10,7 @@ import java.util.stream.Collectors;
 import com.scz.jcex.generator.exchange.EndpointParameter;
 import com.scz.jcex.netutils.deserialization.json.field.StringListFieldDeserializer;
 import com.scz.jcex.netutils.deserialization.json.field.StructListFieldDeserializer;
+import com.scz.jcex.netutils.serialization.json.JsonParserUtil;
 
 public class JsonMessageDeserializerGenerator extends JavaTypeGenerator {
 
@@ -35,6 +36,7 @@ public class JsonMessageDeserializerGenerator extends JavaTypeGenerator {
 		addImport(IOException.class.getName());
 		addImport(com.fasterxml.jackson.core.JsonParser.class.getName());
 		addImport(com.fasterxml.jackson.core.JsonToken.class.getName());
+		addImport(JsonParserUtil.class.getName());
 		addImport(deserializedTypeClassName);
 		generateDeserializeMethod();
 		return super.generate();
@@ -73,6 +75,10 @@ public class JsonMessageDeserializerGenerator extends JavaTypeGenerator {
 				.append(indent).append("break;\n");
 		});
 		body.append(indent).append("default:\n")
+			.append(dblIndent)
+				.append(JsonParserUtil.class.getSimpleName())
+				.append(".")
+				.append("skipNextValue(parser);\n")
 			.append(indent).append("}\n")
 			.append("}\n")
 			.append("\n return msg;");

@@ -22,12 +22,12 @@ public class StructListFieldDeserializer<T> extends AbstractJsonMessageDeseriali
 		if (parser.currentToken() != JsonToken.START_ARRAY) {
 			throw new IllegalStateException("Expecting start array of items to be deserialized using " + this.itemDeserializer);
 		}
-		parser.nextToken();
+		
 		List<T> res = new ArrayList<>();
-        while (parser.currentToken() != JsonToken.END_ARRAY) {
+        while (parser.nextToken() != JsonToken.END_ARRAY) {
             res.add(itemDeserializer.deserialize(parser));
-            parser.nextToken();
         }
+        
 		return res;
 	}
 
