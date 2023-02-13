@@ -2,17 +2,12 @@ package com.scz.jcex.netutils.serialization.json;
 
 import java.io.IOException;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.fasterxml.jackson.core.JsonParser;
 
 /**
  * Helper static methods around {@link JsonParser}
  */
 public class JsonParserUtil {
-	
-	private static final Logger log = LoggerFactory.getLogger(JsonParserUtil.class);
 
 	private JsonParserUtil() {}
 	
@@ -37,8 +32,6 @@ public class JsonParserUtil {
 			break;
 		default:
 			throw new IllegalStateException("Unexpected JsonToken:" + jsonParser.currentToken());
-		
 		}
-	
 	}
 }

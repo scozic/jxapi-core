@@ -1,5 +1,7 @@
 package com.scz.jcex.binance.spotmarketdata.deserializers;
 
+import java.io.IOException;
+
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonToken;
 import com.scz.jcex.binance.spotmarketdata.pojo.BinanceExchangeInformationResponse;
@@ -7,9 +9,6 @@ import com.scz.jcex.binance.spotmarketdata.pojo.BinanceExchangeInformationRespon
 import com.scz.jcex.netutils.deserialization.json.AbstractJsonMessageDeserializer;
 import com.scz.jcex.netutils.deserialization.json.field.StructListFieldDeserializer;
 import com.scz.jcex.netutils.serialization.json.JsonParserUtil;
-import java.io.IOException;
-
-import org.slf4j.LoggerFactory;
 
 /**
  * Parses incoming JSON messages into com.scz.jcex.binance.spotmarketdata.pojo.BinanceExchangeInformationResponse instances
@@ -24,8 +23,6 @@ public class BinanceExchangeInformationResponseDeserializer extends AbstractJson
   public BinanceExchangeInformationResponse deserialize(JsonParser parser) throws IOException {
     BinanceExchangeInformationResponse msg = new BinanceExchangeInformationResponse();
     while(parser.nextToken() != JsonToken.END_OBJECT) {
-        // FIXME
-      	LoggerFactory.getLogger(getClass()).info("Current token:" + parser.getCurrentToken() + "name:" + parser.currentName());
       switch(parser.getCurrentName()) {
       case "timezone":
         msg.setTimezone(parser.nextTextValue());

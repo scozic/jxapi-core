@@ -10,6 +10,10 @@ public class OkHttpRestEndpointFactory implements RestEndpointFactory {
 	
 	private final OkHttpClient okHttpClient;
 	
+	public OkHttpRestEndpointFactory() {
+		this(new OkHttpClient());
+	}
+	
 	public OkHttpRestEndpointFactory(OkHttpClient okHttpClient) {
 		this.okHttpClient = okHttpClient;
 	}

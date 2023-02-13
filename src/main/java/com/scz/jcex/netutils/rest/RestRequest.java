@@ -1,5 +1,7 @@
 package com.scz.jcex.netutils.rest;
 
+import com.scz.jcex.util.EncodingUtil;
+
 public class RestRequest<T> {
 	
 	public static <T> RestRequest<T> create(String url, String httpMethod, T request) {
@@ -40,4 +42,7 @@ public class RestRequest<T> {
 		this.request = request;
 	}
 
+	public String toString() {
+		return EncodingUtil.pojoToString(this);
+	}
 }
