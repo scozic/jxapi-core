@@ -5,15 +5,13 @@ import java.io.IOException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.scz.jcex.binance.net.BinancePublicApiRestEndpointFactory;
 import com.scz.jcex.binance.spotmarketdata.deserializers.BinanceExchangeInformationResponseDeserializer;
 import com.scz.jcex.binance.spotmarketdata.pojo.BinanceExchangeInformationRequest;
 import com.scz.jcex.binance.spotmarketdata.pojo.BinanceExchangeInformationResponse;
 import com.scz.jcex.netutils.rest.RestEndpoint;
 import com.scz.jcex.netutils.rest.RestEndpointFactory;
 import com.scz.jcex.netutils.rest.RestRequest;
-import com.scz.jcex.netutils.rest.okhttp.OkHttpRestEndpointFactory;
-
-import okhttp3.OkHttpClient;
 
 public class BinanceSpotApiImpl implements BinanceSpotApi {
 	
@@ -21,7 +19,7 @@ public class BinanceSpotApiImpl implements BinanceSpotApi {
 	
 	public static final String BINANCE_SPOT_API_BASE_URL = "https://data.binance.com/api/v3/";
 
-	private final RestEndpointFactory restEndpointFactory = new OkHttpRestEndpointFactory(new OkHttpClient());
+	private final RestEndpointFactory restEndpointFactory = new BinancePublicApiRestEndpointFactory();
 	
 	RestEndpoint<BinanceExchangeInformationRequest, BinanceExchangeInformationResponse> binanceExchangeInformationApi = restEndpointFactory.createRestEndpoint(new BinanceExchangeInformationResponseDeserializer());
 
