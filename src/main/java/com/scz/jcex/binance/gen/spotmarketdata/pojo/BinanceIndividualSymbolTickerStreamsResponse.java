@@ -1,7 +1,7 @@
-package com.scz.jcex.binance.spotmarketdata.pojo;
+package com.scz.jcex.binance.gen.spotmarketdata.pojo;
 
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.scz.jcex.binance.spotmarketdata.serializers.BinanceIndividualSymbolTickerStreamsResponseSerializer;
+import com.scz.jcex.binance.gen.spotmarketdata.serializers.BinanceIndividualSymbolTickerStreamsResponseSerializer;
 import com.scz.jcex.util.EncodingUtil;
 import java.math.BigDecimal;
 

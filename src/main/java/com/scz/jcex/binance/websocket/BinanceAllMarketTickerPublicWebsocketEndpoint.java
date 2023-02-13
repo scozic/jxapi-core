@@ -2,9 +2,9 @@ package com.scz.jcex.binance.websocket;
 
 import java.util.List;
 
-import com.scz.jcex.binance.spotmarketdata.deserializers.BinanceAllMarketTickersStreamResponseDeserializer;
-import com.scz.jcex.binance.spotmarketdata.pojo.BinanceAllMarketTickersStreamRequest;
-import com.scz.jcex.binance.spotmarketdata.pojo.BinanceAllMarketTickersStreamResponse;
+import com.scz.jcex.binance.gen.spotmarketdata.deserializers.BinanceAllMarketTickersStreamResponseDeserializer;
+import com.scz.jcex.binance.gen.spotmarketdata.pojo.BinanceAllMarketTickersStreamRequest;
+import com.scz.jcex.binance.gen.spotmarketdata.pojo.BinanceAllMarketTickersStreamResponse;
 import com.scz.jcex.netutils.deserialization.json.field.StructListFieldDeserializer;
 import com.scz.jcex.netutils.websocket.WebsocketListener;
 import com.scz.jcex.netutils.websocket.WebsocketSubscribeRequest;

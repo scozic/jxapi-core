@@ -1,17 +1,17 @@
-package com.scz.jcex.binance.spotmarketdata.deserializers;
+package com.scz.jcex.binance.gen.spotmarketdata.deserializers;
 
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonToken;
-import com.scz.jcex.binance.spotmarketdata.pojo.BinanceAllMarketTickersStreamResponse;
+import com.scz.jcex.binance.gen.spotmarketdata.pojo.BinanceAllMarketTickersStreamResponse;
 import com.scz.jcex.netutils.deserialization.json.AbstractJsonMessageDeserializer;
 import com.scz.jcex.netutils.serialization.json.JsonParserUtil;
 import java.io.IOException;
 import java.math.BigDecimal;
 
 /**
- * Parses incoming JSON messages into com.scz.jcex.binance.spotmarketdata.pojo.BinanceAllMarketTickersStreamResponse instances
+ * Parses incoming JSON messages into com.scz.jcex.binance.gen.spotmarketdata.pojo.BinanceAllMarketTickersStreamResponse instances
  * <br><strong>THIS CODE IS GENERATED. DO NOT EDIT MANUALLY!</strong>
- * @see com.scz.jcex.binance.spotmarketdata.pojo.BinanceAllMarketTickersStreamResponse
+ * @see com.scz.jcex.binance.gen.spotmarketdata.pojo.BinanceAllMarketTickersStreamResponse
  */
 public class BinanceAllMarketTickersStreamResponseDeserializer extends AbstractJsonMessageDeserializer<BinanceAllMarketTickersStreamResponse> {
   

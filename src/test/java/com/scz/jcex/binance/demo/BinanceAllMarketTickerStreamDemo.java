@@ -1,6 +1,6 @@
 package com.scz.jcex.binance.demo;
 
-import com.scz.jcex.binance.spotmarketdata.pojo.BinanceAllMarketTickersStreamRequest;
+import com.scz.jcex.binance.gen.spotmarketdata.pojo.BinanceAllMarketTickersStreamRequest;
 import com.scz.jcex.binance.websocket.BinanceAllMarketTickerPublicWebsocketEndpoint;
 
 public class BinanceAllMarketTickerStreamDemo {

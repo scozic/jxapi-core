@@ -1,9 +1,9 @@
-package com.scz.jcex.binance.spotmarketdata.deserializers;
+package com.scz.jcex.binance.gen.spotmarketdata.deserializers;
 
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonToken;
-import com.scz.jcex.binance.spotmarketdata.pojo.BinanceExchangeInformationResponseSymbols;
-import com.scz.jcex.binance.spotmarketdata.pojo.BinanceExchangeInformationResponseSymbolsFilters;
+import com.scz.jcex.binance.gen.spotmarketdata.pojo.BinanceExchangeInformationResponseSymbols;
+import com.scz.jcex.binance.gen.spotmarketdata.pojo.BinanceExchangeInformationResponseSymbolsFilters;
 import com.scz.jcex.netutils.deserialization.json.AbstractJsonMessageDeserializer;
 import com.scz.jcex.netutils.deserialization.json.field.StringListFieldDeserializer;
 import com.scz.jcex.netutils.deserialization.json.field.StructListFieldDeserializer;
@@ -11,9 +11,9 @@ import com.scz.jcex.netutils.serialization.json.JsonParserUtil;
 import java.io.IOException;
 
 /**
- * Parses incoming JSON messages into com.scz.jcex.binance.spotmarketdata.pojo.BinanceExchangeInformationResponseSymbols instances
+ * Parses incoming JSON messages into com.scz.jcex.binance.gen.spotmarketdata.pojo.BinanceExchangeInformationResponseSymbols instances
  * <br><strong>THIS CODE IS GENERATED. DO NOT EDIT MANUALLY!</strong>
- * @see com.scz.jcex.binance.spotmarketdata.pojo.BinanceExchangeInformationResponseSymbols
+ * @see com.scz.jcex.binance.gen.spotmarketdata.pojo.BinanceExchangeInformationResponseSymbols
  */
 public class BinanceExchangeInformationResponseSymbolsDeserializer extends AbstractJsonMessageDeserializer<BinanceExchangeInformationResponseSymbols> {
   private final BinanceExchangeInformationResponseSymbolsFiltersDeserializer binanceExchangeInformationResponseSymbolsFiltersDeserializer = new BinanceExchangeInformationResponseSymbolsFiltersDeserializer();

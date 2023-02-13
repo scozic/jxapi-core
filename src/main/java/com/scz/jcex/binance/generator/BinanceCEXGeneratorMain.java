@@ -18,8 +18,9 @@ public class BinanceCEXGeneratorMain {
 	public static void main(String[] args) {
 		try {
 			ExchangeDescriptor exchangeDescriptor = new ExchangeDescriptorParser().fromJson(Paths.get(".", "src", "main", "resources", "BinanceCEXDescriptor.json"));
-			Path outputFolder = Paths.get(".", "target", "jcex-generated");
-			JavaCodeGenerationUtil.deletePath(outputFolder);
+			Path outputFolder = Paths.get(".", "src", "main", "java");
+			Path genPackagesFolder = outputFolder.resolve(Paths.get("com", "scz", "jcex", "binance", "gen"));
+			JavaCodeGenerationUtil.deletePath(genPackagesFolder);
 			ExchangeJavaWrapperGeneratorUtil.generateCEX(exchangeDescriptor, outputFolder);
 			log.info("Done generating BinanceCEXDescriptor java code in:" + outputFolder);
 		} catch (Throwable t) {

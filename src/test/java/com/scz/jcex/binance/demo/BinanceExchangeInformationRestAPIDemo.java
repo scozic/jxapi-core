@@ -5,8 +5,8 @@ import org.slf4j.LoggerFactory;
 
 import com.scz.jcex.binance.exchange.spot.BinanceSpotApi;
 import com.scz.jcex.binance.exchange.spot.BinanceSpotApiImpl;
-import com.scz.jcex.binance.spotmarketdata.pojo.BinanceExchangeInformationRequest;
-import com.scz.jcex.binance.spotmarketdata.pojo.BinanceExchangeInformationResponse;
+import com.scz.jcex.binance.gen.spotmarketdata.pojo.BinanceExchangeInformationRequest;
+import com.scz.jcex.binance.gen.spotmarketdata.pojo.BinanceExchangeInformationResponse;
 
 public class BinanceExchangeInformationRestAPIDemo {
 
