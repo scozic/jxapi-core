@@ -6,6 +6,7 @@
 		{ 
 			"name": "SpotMarketData",
 			"description": "Binance spot market data API",
+			"restEndpointFactory": "com.scz.jcex.binance.net.BinancePublicApiRestEndpointFactory",
 			"restEndpoints": [
 				{
 					"name": "exchangeInformation",

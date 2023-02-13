@@ -61,12 +61,15 @@ public class ExchangeJavaWrapperGeneratorUtilTest {
 		Path pkgFolder = srcFolder.resolve(Paths.get("com", "x"));
 		Assert.assertEquals("package com.x;\n"
 				+ "\n"
+				+ "import com.fasterxml.jackson.databind.annotation.JsonSerialize;\n"
 				+ "import com.scz.jcex.util.EncodingUtil;\n"
+				+ "import com.x.serializers.MyPojoSerializer;\n"
 				+ "import java.util.List;\n"
 				+ "\n"
 				+ "/**\n"
 				+ " * Used in ExchangeJavaWrapperGeneratorUtilTest\n"
 				+ " */\n"
+				+ "@JsonSerialize(using = MyPojoSerializer.class)\n"
 				+ "public class MyPojo {\n"
 				+ "  private List<MyPojoFoo> foo;\n"
 				+ "  private long id;\n"
@@ -116,7 +119,7 @@ public class ExchangeJavaWrapperGeneratorUtilTest {
 				+ "  \n"
 				+ "  @Override\n"
 				+ "  public String toString() {\n"
-				+ "    return EncodingUtil.formatArgsToJsonStruct(\"foo\", foo, \"id\", id, \"score\", score);\n"
+				+ "    return EncodingUtil.pojoToString(this);\n"
 				+ "  }\n"
 				+ "  \n"
 				+ "}\n"
@@ -125,11 +128,14 @@ public class ExchangeJavaWrapperGeneratorUtilTest {
 		
 		Assert.assertEquals("package com.x;\n"
 				+ "\n"
+				+ "import com.fasterxml.jackson.databind.annotation.JsonSerialize;\n"
 				+ "import com.scz.jcex.util.EncodingUtil;\n"
+				+ "import com.x.serializers.MyPojoFooSerializer;\n"
 				+ "\n"
 				+ "/**\n"
 				+ " * Foo list\n"
 				+ " */\n"
+				+ "@JsonSerialize(using = MyPojoFooSerializer.class)\n"
 				+ "public class MyPojoFoo {\n"
 				+ "  private MyPojoFooBar bar;\n"
 				+ "  private long time;\n"
@@ -164,19 +170,22 @@ public class ExchangeJavaWrapperGeneratorUtilTest {
 				+ "  \n"
 				+ "  @Override\n"
 				+ "  public String toString() {\n"
-				+ "    return EncodingUtil.formatArgsToJsonStruct(\"bar\", bar, \"time\", time);\n"
+				+ "    return EncodingUtil.pojoToString(this);\n"
 				+ "  }\n"
 				+ "  \n"
-				+ "}\n"
-				+ "", Files.readString(pkgFolder.resolve(Paths.get("MyPojoFoo.java"))));
+				+ "}\n", 
+				Files.readString(pkgFolder.resolve(Paths.get("MyPojoFoo.java"))));
 		
 		Assert.assertEquals("package com.x;\n"
 				+ "\n"
+				+ "import com.fasterxml.jackson.databind.annotation.JsonSerialize;\n"
 				+ "import com.scz.jcex.util.EncodingUtil;\n"
+				+ "import com.x.serializers.MyPojoFooBarSerializer;\n"
 				+ "\n"
 				+ "/**\n"
 				+ " * The bar\n"
 				+ " */\n"
+				+ "@JsonSerialize(using = MyPojoFooBarSerializer.class)\n"
 				+ "public class MyPojoFooBar {\n"
 				+ "  private String name;\n"
 				+ "  \n"
@@ -196,11 +205,11 @@ public class ExchangeJavaWrapperGeneratorUtilTest {
 				+ "  \n"
 				+ "  @Override\n"
 				+ "  public String toString() {\n"
-				+ "    return EncodingUtil.formatArgsToJsonStruct(\"name\", name);\n"
+				+ "    return EncodingUtil.pojoToString(this);\n"
 				+ "  }\n"
 				+ "  \n"
-				+ "}\n"
-				+ "" , Files.readString(pkgFolder.resolve(Paths.get("MyPojoFooBar.java"))));
+				+ "}\n", 
+				Files.readString(pkgFolder.resolve(Paths.get("MyPojoFooBar.java"))));
 		
 	}
 

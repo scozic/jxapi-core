@@ -17,6 +17,8 @@ public class ExchangeApiDescriptor {
 	
 	private String description;
 	
+	private String restEndpointFactory;
+	
 	private List<RestEndpointDescriptor> restEndpoints;
 	
 	private List<WebsocketEndpointDescriptor> websocketEndpoints;
@@ -55,6 +57,14 @@ public class ExchangeApiDescriptor {
 	
 	public String toString() {
 		return EncodingUtil.pojoToString(this);
+	}
+
+	public String getRestEndpointFactory() {
+		return restEndpointFactory;
+	}
+
+	public void setRestEndpointFactory(String restEndpointFactory) {
+		this.restEndpointFactory = restEndpointFactory;
 	}
 
 }
