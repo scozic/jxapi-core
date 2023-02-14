@@ -22,6 +22,8 @@ public class WebsocketEndpointDescriptor {
 	
 	private List<EndpointParameter> response;
 	
+	private String topicParametersListSeparator;
+	
 	public String getName() {
 		return name;
 	}
@@ -57,6 +59,12 @@ public class WebsocketEndpointDescriptor {
 	}
 	public void setResponse(List<EndpointParameter> response) {
 		this.response = response;
+	}
+	public String getTopicParametersListSeparator() {
+		return topicParametersListSeparator;
+	}
+	public void setTopicParametersListSeparator(String topicParametersListSeparator) {
+		this.topicParametersListSeparator = topicParametersListSeparator;
 	}
 	
 	public String toString() {

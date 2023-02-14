@@ -21,6 +21,9 @@ public class RestEndpointDescriptor {
 	private List<EndpointParameter> parameters;
 	private List<EndpointParameter> response;
 
+	private String urlParameters;
+	private String urlParametersListSeparator;
+	
 	public String getName() {
 		return name;
 	}
@@ -68,9 +71,24 @@ public class RestEndpointDescriptor {
 	public void setParameters(List<EndpointParameter> parameters) {
 		this.parameters = parameters;
 	}
+	
+	public String getUrlParameters() {
+		return urlParameters;
+	}
+
+	public void setUrlParameters(String urlParameteters) {
+		this.urlParameters = urlParameteters;
+	}
+
+	public String getUrlParametersListSeparator() {
+		return urlParametersListSeparator;
+	}
+
+	public void setUrlParametersListSeparator(String urlParametersListSeparator) {
+		this.urlParametersListSeparator = urlParametersListSeparator;
+	}
 
 	public String toString() {
 		return EncodingUtil.pojoToString(this);
 	}
-
 }

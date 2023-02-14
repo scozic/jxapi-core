@@ -9,10 +9,11 @@
 			"restEndpointFactory": "com.scz.jcex.binance.net.BinancePublicApiRestEndpointFactory",
 			"restEndpoints": [
 				{
-					"name": "exchangeInformation",
+					"name": "exchangeInformationAll",
 					"httpMethod": "GET",
-					"description": "Current exchange trading rules and symbol information",
+					"description": "Current exchange trading rules and symbol information for all spot trading pairs",
 					"url": "https://api.binance.com/api/v3/exchangeInfo",
+					"urlParameters": "",
 					"parameters": [],
 					"response": [
 						{"name":"timezone", "type": "STRING", "description":"Server timezone", "sampleValue": "UTC"},
@@ -25,7 +26,51 @@
 								{"name":"quoteAsset", "type": "STRING", "description":"Market base asset that is bought with sell order", "sampleValue":"USDT"},
 								{"name":"quotePrecision", "type": "INT", "description":"Quote asset precision", "sampleValue": "8"},
 								{"name":"quoteAssetPrecision", "type": "INT", "description":"Quote asset precision", "sampleValue": "8"},
-								{"name":"orderTypes", "type": "STRING_LIST", "description":"Quote asset precision", "sampleValue": "[\"LIMIT\", \"MARKET]\""},
+								{"name":"orderTypes", "type": "STRING_LIST", "description":"Quote asset precision", "sampleValue": "[\"LIMIT\", \"MARKET\"]"},
+								{"name":"icebergAllowed", "type": "BOOLEAN", "description":"True if iceberg orders are allowed", "sampleValue": "true"},
+								{"name":"ocoAllowed", "type": "BOOLEAN", "description":"True if OCO orders are allowed", "sampleValue": "true"},
+								{"name":"quoteOrderQtyMarketAllowed", "type": "BOOLEAN", "description":"", "sampleValue": "true"},
+								{"name":"allowTrailingStop", "type": "BOOLEAN", "description":"True if trailing stop orders are supported", "sampleValue": "true"},
+								{"name":"cancelReplaceAllowed", "type": "BOOLEAN", "description":"", "sampleValue": "true"},
+								{"name":"isSpotTradingAllowed", "type": "BOOLEAN", "description":"", "sampleValue": "true"},
+								{"name":"isMarginTradingAllowed", "type": "BOOLEAN", "description":"", "sampleValue": "true"},
+								{"name":"filters", "type": "STRUCT_LIST", "description":"", "sampleValue": "true", "parameters":
+									[
+										{"name":"filterType", "type": "STRING", "description":"Price filter, see <a href=\"https://binance-docs.github.io/apidocs/spot/en/#filters\">API</a> documentation.", "sampleValue": "true"},
+										{"name":"minPrice", "type": "BIGDECIMAL", "description":"Provided with PRICE_FILTER filter type", "sampleValue": "0.00000100"},
+										{"name":"maxPrice", "type": "BIGDECIMAL", "description":"Provided with PRICE_FILTER filter type", "sampleValue": "100000.00000000"},
+										{"name":"tickSize", "type": "BIGDECIMAL", "description":"Provided with PRICE_FILTER filter type", "sampleValue": "0.00000100"}
+									]
+								},
+								{"name":"permissions", "type": "STRING_LIST", "description":"", "sampleValue": "[\"SPOT\", \"MARGIN]\""},
+								{"name":"defaultSelfTradePreventionMode", "type": "STRING", "description":"", "sampleValue": "NONE"},
+								{"name":"allowedSelfTradePreventionModes", "type": "STRING_LIST", "description":"", "sampleValue": "[\"NONE\"]"}
+							]
+						}
+					]
+				},
+								{
+					"name": "exchangeInformation",
+					"httpMethod": "GET",
+					"description": "Current exchange trading rules and symbol information for a list of spot trading pairs",
+					"url": "https://api.binance.com/api/v3/exchangeInfo",
+					"urlParameters": "symbols=%5B%22${symbols}%22%5D",
+					"urlParametersListSeparator": "%22,%22",
+					"parameters": [
+						{"name":"symbols", "type": "STRING_LIST", "description":"List of market symbols to retrieve exchange information for.", "sampleValue": "[\"ETHBTC\", \"BNBUSDT\"]"}
+					],
+					"response": [
+						{"name":"timezone", "type": "STRING", "description":"Server timezone", "sampleValue": "UTC"},
+						{"name":"serverTime", "type": "TIMESTAMP", "description":"Server timezone", "sampleValue": "1565246363776"},
+						{"name":"symbols", "type": "STRUCT_LIST", "description":"List of market information for each market symbol", "parameters":
+							[
+								{"name":"symbol", "type": "STRING", "description":"Market symbol", "sampleValue":"BTCUSDT"},
+								{"name":"status", "type": "STRING", "description":"Current trading status", "sampleValue":"TRADING"},
+								{"name":"baseAsset", "type": "STRING", "description":"Market base asset that is bought with buy order", "sampleValue":"BTC"},
+								{"name":"quoteAsset", "type": "STRING", "description":"Market base asset that is bought with sell order", "sampleValue":"USDT"},
+								{"name":"quotePrecision", "type": "INT", "description":"Quote asset precision", "sampleValue": "8"},
+								{"name":"quoteAssetPrecision", "type": "INT", "description":"Quote asset precision", "sampleValue": "8"},
+								{"name":"orderTypes", "type": "STRING_LIST", "description":"Quote asset precision", "sampleValue": "[\"LIMIT\", \"MARKET\"]"},
 								{"name":"icebergAllowed", "type": "BOOLEAN", "description":"True if iceberg orders are allowed", "sampleValue": "true"},
 								{"name":"ocoAllowed", "type": "BOOLEAN", "description":"True if OCO orders are allowed", "sampleValue": "true"},
 								{"name":"quoteOrderQtyMarketAllowed", "type": "BOOLEAN", "description":"", "sampleValue": "true"},

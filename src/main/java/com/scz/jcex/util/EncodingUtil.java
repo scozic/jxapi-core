@@ -1,6 +1,7 @@
 package com.scz.jcex.util;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.text.StringSubstitutor;
@@ -85,5 +86,16 @@ public class EncodingUtil {
 		}
 		return "\"" + String.valueOf(o) + "\"";
 			
+	}
+	
+	public static String listToString(List<String> items, String separator) {
+		StringBuilder sb = new StringBuilder();
+		for (int i = 0; i < items.size(); i++) {
+			sb.append(items.get(i));
+			if (i < items.size() -1) {
+				sb.append(separator);
+			}
+		}
+		return sb.toString();
 	}
 }

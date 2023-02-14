@@ -23,8 +23,10 @@ public class BinanceCEXGeneratorMain {
 			JavaCodeGenerationUtil.deletePath(genPackagesFolder);
 			ExchangeJavaWrapperGeneratorUtil.generateCEX(exchangeDescriptor, outputFolder);
 			log.info("Done generating BinanceCEXDescriptor java code in:" + outputFolder);
+			System.exit(0);
 		} catch (Throwable t) {
 			log.error("Error in " + BinanceCEXGeneratorMain.class.getName() + " main", t);
+			System.exit(-1);
 		}
 	}
 }

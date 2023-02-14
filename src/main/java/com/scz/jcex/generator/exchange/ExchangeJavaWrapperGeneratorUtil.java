@@ -14,6 +14,7 @@ import com.scz.jcex.generator.JsonMessageDeserializerGenerator;
 import com.scz.jcex.generator.JsonPojoSerializerGenerator;
 import com.scz.jcex.generator.PojoField;
 import com.scz.jcex.generator.PojoGenerator;
+import com.scz.jcex.netutils.rest.RestEndpointUrlParameters;
 import com.scz.jcex.netutils.websocket.WebsocketSubscribeParameters;
 import com.scz.jcex.util.EncodingUtil;
 
@@ -23,6 +24,7 @@ import com.scz.jcex.util.EncodingUtil;
 public class ExchangeJavaWrapperGeneratorUtil {
 	
 	private static final EnumMap<EndpointParameterType, String> PARAMETER_TYPE_CLASSES = new EnumMap<>(EndpointParameterType.class);
+	private static final String DEFAULT_STRING_LIST_SEPARATOR = ",";
 	static {
 		PARAMETER_TYPE_CLASSES.put(EndpointParameterType.BIGDECIMAL, BigDecimal.class.getName());
 		PARAMETER_TYPE_CLASSES.put(EndpointParameterType.BOOLEAN, "boolean");
@@ -196,6 +198,13 @@ public class ExchangeJavaWrapperGeneratorUtil {
 		for (ExchangeApiDescriptor api: exchangeDescriptor.getApis()) {
 			String pkgPrefix =  exchangeDescriptor.getBasePackage() + "." + api.getName().toLowerCase() + ".pojo.";
 			for (RestEndpointDescriptor restEndpointDescriptor: api.getRestEndpoints()) {
+				String urlParams = restEndpointDescriptor.getUrlParameters();
+				List<String> implementedInterfaces = null;
+				String additionalBody = null;
+				if (urlParams != null) {
+					implementedInterfaces = Arrays.asList(RestEndpointUrlParameters.class.getName());
+					additionalBody = generateRestEndpointGetUrlParametersMethod(restEndpointDescriptor);
+				}
 				ExchangeJavaWrapperGeneratorUtil.generatePojo(ouputFolder, 
 											pkgPrefix
 											+ JavaCodeGenerationUtil.firstLetterToUpperCase(exchangeDescriptor.getName()) 
@@ -205,7 +214,9 @@ public class ExchangeJavaWrapperGeneratorUtil {
 											+ restEndpointDescriptor.getName() + " REST endpoint"
 											+ restEndpointDescriptor.getDescription()
 											+ JavaCodeGenerationUtil.GENERATED_CODE_WARNING,
-										restEndpointDescriptor.getParameters());
+										restEndpointDescriptor.getParameters(),
+										implementedInterfaces,
+										additionalBody);
 				ExchangeJavaWrapperGeneratorUtil.generatePojo(ouputFolder, 
 						pkgPrefix 
 							+ JavaCodeGenerationUtil.firstLetterToUpperCase(exchangeDescriptor.getName()) 
@@ -253,27 +264,49 @@ public class ExchangeJavaWrapperGeneratorUtil {
 		
 	}
 	
+	private static String generateRestEndpointGetUrlParametersMethod(RestEndpointDescriptor restEndpointDescriptor) {
+		StringBuilder sb = new StringBuilder();
+		sb.append("\n@Override\npublic String getUrlParameters() {\n")
+		  .append(JavaCodeGenerationUtil.INDENTATION)
+		  .append(generateGetUrlParametersBody(restEndpointDescriptor.getUrlParameters(), restEndpointDescriptor.getParameters(), restEndpointDescriptor.getUrlParametersListSeparator()))
+		  .append("}\n\n");
+		return sb.toString(); 
+	}
+
 	private static String generateWebsocketSubscribeParametersGetTopicMethod(WebsocketEndpointDescriptor wsEndpointDescriptor) {
 		StringBuilder sb = new StringBuilder();
 		sb.append("\n@Override\npublic String getTopic() {\n")
 		  .append(JavaCodeGenerationUtil.INDENTATION)
-		  .append("return ")
+		  .append(generateGetUrlParametersBody(wsEndpointDescriptor.getTopic(), wsEndpointDescriptor.getParameters(), wsEndpointDescriptor.getTopicParametersListSeparator()))
+		  .append("}\n\n");
+		return sb.toString(); 
+	}
+	
+	private static String generateGetUrlParametersBody(String urlParametersTemplate, List<EndpointParameter> endpointParameters, String stringListSeparator) {
+		if (stringListSeparator == null) {
+			stringListSeparator = DEFAULT_STRING_LIST_SEPARATOR;
+		}
+		StringBuilder sb = new StringBuilder();
+		sb.append("return ")
 		  .append(EncodingUtil.class.getName())
 		  .append(".substituteArguments(\"")
-		  .append(wsEndpointDescriptor.getTopic())
+		  .append(urlParametersTemplate)
 		  .append("\"");
-		int n = wsEndpointDescriptor.getParameters().size();
+		int n = endpointParameters.size();
 		for (int i = 0; i < n; i++) {
 			sb.append(", ");
-			String name = wsEndpointDescriptor.getParameters().get(i).getName();
-			sb.append("\"").append(name).append("\", ").append(name);
+			String name = endpointParameters.get(i).getName();
+			String value = name;
+			if (endpointParameters.get(i).getType() == EndpointParameterType.STRING_LIST) {
+				value = EncodingUtil.class.getName() + ".listToString(" + name + ", \"" + stringListSeparator + "\")"; 
+			}
+			sb.append("\"").append(name).append("\", ").append(value);
 			if (i < n - 1) {
 				sb.append(", ");
 			}
 		}
-		
-		sb.append(");\n}\n\n");
-		return sb.toString(); 
+		sb.append(");\n");
+		return sb.toString();
 	}
 
 }

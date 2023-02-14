@@ -9,8 +9,10 @@ import java.net.URL;
 
 import javax.net.ssl.HttpsURLConnection;
 
+import com.scz.jcex.binance.gen.spotmarketdata.pojo.BinanceExchangeInformationRequest;
 import com.scz.jcex.netutils.deserialization.MessageDeserializer;
 import com.scz.jcex.netutils.rest.RestEndpoint;
+import com.scz.jcex.netutils.rest.RestEndpointUrlParameters;
 import com.scz.jcex.netutils.rest.RestRequest;
 import com.scz.jcex.util.EncodingUtil;
 
@@ -77,7 +79,14 @@ public class JavaxNetRestEndpoint<R, A> implements RestEndpoint<R, A> {
 	 */
 	protected URL getFullUrl(RestRequest<R> request) {
 		try {
-			return new URL(request.getUrl());
+			String url = request.getUrl();
+			if (request.getRequest() instanceof RestEndpointUrlParameters) {
+				String urlParams = ((RestEndpointUrlParameters) request.getRequest()).getUrlParameters();
+				if (urlParams != null && !urlParams.isEmpty()) {
+					url += "?" + urlParams;
+				}
+			}
+			return new URL(url);
 		} catch (MalformedURLException e) {
 			throw new IllegalArgumentException("Invalid URL in request:" + request, e);
 		}

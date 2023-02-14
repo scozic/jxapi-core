@@ -19,6 +19,7 @@ public class BinanceExchangeInformationRequestSerializer extends StdSerializer<B
   @Override
   public void serialize(BinanceExchangeInformationRequest value, JsonGenerator gen, SerializerProvider provider) throws IOException {
     gen.writeStartObject();
+    gen.writeObjectField("symbols", value.getSymbols());
     gen.writeEndObject();
   }
   

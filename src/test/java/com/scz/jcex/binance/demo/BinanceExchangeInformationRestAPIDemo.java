@@ -1,5 +1,7 @@
 package com.scz.jcex.binance.demo;
 
+import java.util.Arrays;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -16,7 +18,9 @@ public class BinanceExchangeInformationRestAPIDemo {
 		try {
 			BinanceSpotApi api = new BinanceSpotApiImpl();
 			log.info("Sending request...");
-			BinanceExchangeInformationResponse response = api.exchangeInformation(new BinanceExchangeInformationRequest());
+			BinanceExchangeInformationRequest request = new BinanceExchangeInformationRequest();
+			request.setSymbols(Arrays.asList("BTCUSDT", "BNBUSDT"));
+			BinanceExchangeInformationResponse response = api.exchangeInformation(request);
 			log.info("Response received:" + response);
 			System.exit(0);
 		} catch (Throwable t) {
