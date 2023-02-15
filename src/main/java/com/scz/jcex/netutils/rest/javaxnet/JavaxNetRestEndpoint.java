@@ -9,7 +9,6 @@ import java.net.URL;
 
 import javax.net.ssl.HttpsURLConnection;
 
-import com.scz.jcex.binance.gen.spotmarketdata.pojo.BinanceExchangeInformationRequest;
 import com.scz.jcex.netutils.deserialization.MessageDeserializer;
 import com.scz.jcex.netutils.rest.RestEndpoint;
 import com.scz.jcex.netutils.rest.RestEndpointUrlParameters;

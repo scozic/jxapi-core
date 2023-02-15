@@ -49,7 +49,7 @@
 						}
 					]
 				},
-								{
+				{
 					"name": "exchangeInformation",
 					"httpMethod": "GET",
 					"description": "Current exchange trading rules and symbol information for a list of spot trading pairs",
@@ -147,6 +147,53 @@
 						{"name":"n", "type": "LONG", "description":"Total number of trades", "sampleValue":"18150"}
 					]
 				}
+			]
+		},
+		{ 
+			"name": "SpotTrading",
+			"description": "Binance spot trading API",
+			"restEndpointFactory": "com.scz.jcex.binance.net.BinancePublicApiRestEndpointFactory",
+			"restEndpoints": [
+				{
+					"name": "account",
+					"httpMethod": "GET",
+					"description": "Current exchange trading rules and symbol information for all spot trading pairs",
+					"url": "https://api.binance.com/api/v3/account",
+					"urlParameters": "",
+					"parameters": [
+						{"name":"recvWindow", "type": "LONG", "description":"Server timezone", "sampleValue": "60000"},
+						{"name":"timestamp", "type": "LONG", "description":"", "sampleValue": "1565246363776"}
+					],
+					"response": [
+						{"name":"makerCommission", "type": "BIGDECIMAL", "description":"", "sampleValue": "15"},
+						{"name":"takerCommission", "type": "BIGDECIMAL", "description":"", "sampleValue": "15"},
+						{"name":"buyerCommission", "type": "BIGDECIMAL", "description":"", "sampleValue": "0"},
+						{"name":"sellerCommission", "type": "BIGDECIMAL", "description":"", "sampleValue": "0"},
+						{"name":"commissionRates", "type": "STRUCT", "description":"", "parameters": [
+							{"name":"maker", "type": "BIGDECIMAL", "description":"", "sampleValue": "0.00150000"},
+							{"name":"taker", "type": "BIGDECIMAL", "description":"", "sampleValue": "0.00150000"},
+							{"name":"buyer", "type": "BIGDECIMAL", "description":"", "sampleValue": "0.00000000"},
+							{"name":"seller", "type": "BIGDECIMAL", "description":"", "sampleValue": "0.00000000"}
+						]},
+						{"name":"canTrade", "type": "BOOLEAN", "description":"", "sampleValue": "true"},
+						{"name":"canWithdraw", "type": "BOOLEAN", "description":"", "sampleValue": "true"},
+						{"name":"canDeposit", "type": "BOOLEAN", "description":"", "sampleValue": "true"},
+						{"name":"brokered", "type": "BOOLEAN", "description":"", "sampleValue": "true"},
+						{"name":"requireSelfTradePrevention", "type": "BOOLEAN", "description":"", "sampleValue": "false"},
+						{"name":"updateTime", "type": "LONG", "description":"", "sampleValue": "1565246363776"},
+						{"name":"accountType", "type": "STRING", "description":"", "sampleValue": "SPOT"},
+						{"name":"balances", "type": "STRUCT_LIST", "description":"List of market information for each market symbol", "parameters":
+							[
+								{"name":"asset", "type": "STRING", "description":"", "sampleValue":"BTC"},
+								{"name":"free", "type": "BIGDECIMAL", "description":"", "sampleValue":"0.12300000"},
+								{"name":"locked", "type": "BIGDECIMAL", "description":"", "sampleValue":"0.00000000"}
+							]
+						},
+						{"name":"permissions", "type": "STRING_LIST", "description":"", "sampleValue": "[SPOT]"}
+					]
+				}
+			],
+			"websocketEndpoints": [
 			]
 		}
 	]
