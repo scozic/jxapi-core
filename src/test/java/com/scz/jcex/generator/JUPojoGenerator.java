@@ -85,7 +85,7 @@ public class JUPojoGenerator {
 				+ "  \n"
 				+ "  @Override\n"
 				+ "  public String toString() {\n"
-				+ "    return EncodingUtil.formatArgsToJsonStruct(\"A\", A, \"a\", a, \"bar\", bar, \"name\", name);\n"
+				+ "    return EncodingUtil.pojoToString(this);\n"
 				+ "  }\n"
 				+ "  \n"
 				+ "}\n"

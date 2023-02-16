@@ -27,6 +27,10 @@ public class JavaTypeGenerator {
 		this.name = fullTypeName;
 	}
 	
+	public void addImport(Class<?> cls) {
+		addImport(cls.getName());
+	}
+	
 	public void addImport(String im) {
 		if (im.contains("<")) {
 			im = im.substring(0, im.indexOf('<'));

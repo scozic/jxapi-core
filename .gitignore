@@ -67,3 +67,5 @@ testem.log
 .DS_Store
 Thumbs.db
 logs/
+
+src/test/resources/test-cex-api.properties

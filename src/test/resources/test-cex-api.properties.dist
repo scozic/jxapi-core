@@ -1,0 +1,6 @@
+# Test CEX API properties
+# All exchanges properties are listed here, prefixed with exchange specific name
+# This is the template file to be copied without '.dist' file extension and filled with your exchange API keys (.props file without suffix is ignored on GIT! not to version it) 
+
+binance.apiKey=<your_api_key>
+binance.apiSecret=<your_api_secret>

@@ -14,7 +14,7 @@ public class BinanceAllMarketTickersStreamRequest implements WebsocketSubscribeP
   
   @Override
   public String getTopic() {
-    return com.scz.jcex.util.EncodingUtil.substituteArguments("!ticker@arr");
+    return "!ticker@arr";
   }
   
   @Override

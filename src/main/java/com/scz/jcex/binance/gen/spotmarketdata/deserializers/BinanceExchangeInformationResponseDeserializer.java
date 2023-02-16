@@ -30,6 +30,7 @@ public class BinanceExchangeInformationResponseDeserializer extends AbstractJson
         msg.setServerTime(parser.nextLongValue(0L));
       break;
       case "symbols":
+        parser.nextToken();
         msg.setSymbols(binanceExchangeInformationResponseSymbolsListDeserializer.deserialize(parser));
       break;
       default:

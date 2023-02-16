@@ -1,8 +1,10 @@
 package com.scz.jcex.util;
 
+import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import org.apache.commons.text.StringSubstitutor;
 
@@ -97,5 +99,9 @@ public class EncodingUtil {
 			}
 		}
 		return sb.toString();
+	}
+	
+	public static String bigDecimalToString(BigDecimal bd) {
+		return Optional.ofNullable(bd).orElse(BigDecimal.ZERO).toPlainString();
 	}
 }

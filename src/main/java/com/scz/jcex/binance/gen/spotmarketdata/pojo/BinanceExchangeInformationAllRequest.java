@@ -14,7 +14,7 @@ public class BinanceExchangeInformationAllRequest implements RestEndpointUrlPara
   
   @Override
   public String getUrlParameters() {
-    return com.scz.jcex.util.EncodingUtil.substituteArguments("");
+    return "";
   }
   
   @Override

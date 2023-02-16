@@ -283,6 +283,9 @@ public class ExchangeJavaWrapperGeneratorUtil {
 	}
 	
 	private static String generateGetUrlParametersBody(String urlParametersTemplate, List<EndpointParameter> endpointParameters, String stringListSeparator) {
+		if (endpointParameters.isEmpty()) {
+			return "return \"" + urlParametersTemplate + "\";\n";
+		}
 		if (stringListSeparator == null) {
 			stringListSeparator = DEFAULT_STRING_LIST_SEPARATOR;
 		}
@@ -291,10 +294,9 @@ public class ExchangeJavaWrapperGeneratorUtil {
 		  .append(EncodingUtil.class.getName())
 		  .append(".substituteArguments(\"")
 		  .append(urlParametersTemplate)
-		  .append("\"");
+		  .append("\", ");
 		int n = endpointParameters.size();
 		for (int i = 0; i < n; i++) {
-			sb.append(", ");
 			String name = endpointParameters.get(i).getName();
 			String value = name;
 			if (endpointParameters.get(i).getType() == EndpointParameterType.STRING_LIST) {

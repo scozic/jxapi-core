@@ -8,6 +8,7 @@ import java.util.TreeSet;
 import java.util.stream.Collectors;
 
 import com.scz.jcex.generator.exchange.EndpointParameter;
+import com.scz.jcex.generator.exchange.EndpointParameterType;
 import com.scz.jcex.netutils.deserialization.json.field.StringListFieldDeserializer;
 import com.scz.jcex.netutils.deserialization.json.field.StructListFieldDeserializer;
 import com.scz.jcex.netutils.serialization.json.JsonParserUtil;
@@ -62,8 +63,14 @@ public class JsonMessageDeserializerGenerator extends JavaTypeGenerator {
 			body.append(indent)
 				.append("case \"")
 				.append(field.getName())
-				.append("\":\n")
-				.append(dblIndent)
+				.append("\":\n");
+			if (field.getType() == EndpointParameterType.STRUCT 
+				|| field.getType() == EndpointParameterType.STRUCT_LIST
+				|| field.getType() == EndpointParameterType.STRING_LIST) {
+				body.append(dblIndent)
+					.append("parser.nextToken();\n");
+			}
+			body.append(dblIndent)
 				.append("msg.")
 				.append(
 					JavaCodeGenerationUtil.	getSetAccessorMethodName(

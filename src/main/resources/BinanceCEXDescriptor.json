@@ -157,18 +157,18 @@
 				{
 					"name": "account",
 					"httpMethod": "GET",
-					"description": "Current exchange trading rules and symbol information for all spot trading pairs",
+					"description": "Get current account information, see <a href=\"https://binance-docs.github.io/apidocs/spot/en/#account-information-user_data\">API</a>",
 					"url": "https://api.binance.com/api/v3/account",
-					"urlParameters": "",
+					"urlParameters": "recvWindow=${recvWindow}&timestamp=${timestamp}",
 					"parameters": [
-						{"name":"recvWindow", "type": "LONG", "description":"Server timezone", "sampleValue": "60000"},
-						{"name":"timestamp", "type": "LONG", "description":"", "sampleValue": "1565246363776"}
+						{"name":"recvWindow", "type": "LONG", "description": "Server timezone", "sampleValue": "60000"},
+						{"name":"timestamp", "type": "LONG", "description": "", "sampleValue": "1565246363776"}
 					],
 					"response": [
-						{"name":"makerCommission", "type": "BIGDECIMAL", "description":"", "sampleValue": "15"},
-						{"name":"takerCommission", "type": "BIGDECIMAL", "description":"", "sampleValue": "15"},
-						{"name":"buyerCommission", "type": "BIGDECIMAL", "description":"", "sampleValue": "0"},
-						{"name":"sellerCommission", "type": "BIGDECIMAL", "description":"", "sampleValue": "0"},
+						{"name":"makerCommission", "type": "INT", "description":"", "sampleValue": "15"},
+						{"name":"takerCommission", "type": "INT", "description":"", "sampleValue": "15"},
+						{"name":"buyerCommission", "type": "INT", "description":"", "sampleValue": "0"},
+						{"name":"sellerCommission", "type": "INT", "description":"", "sampleValue": "0"},
 						{"name":"commissionRates", "type": "STRUCT", "description":"", "parameters": [
 							{"name":"maker", "type": "BIGDECIMAL", "description":"", "sampleValue": "0.00150000"},
 							{"name":"taker", "type": "BIGDECIMAL", "description":"", "sampleValue": "0.00150000"},

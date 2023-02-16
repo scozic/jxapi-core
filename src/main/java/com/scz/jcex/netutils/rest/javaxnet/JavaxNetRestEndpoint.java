@@ -9,6 +9,9 @@ import java.net.URL;
 
 import javax.net.ssl.HttpsURLConnection;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.scz.jcex.netutils.deserialization.MessageDeserializer;
 import com.scz.jcex.netutils.rest.RestEndpoint;
 import com.scz.jcex.netutils.rest.RestEndpointUrlParameters;
@@ -16,6 +19,8 @@ import com.scz.jcex.netutils.rest.RestRequest;
 import com.scz.jcex.util.EncodingUtil;
 
 public class JavaxNetRestEndpoint<R, A> implements RestEndpoint<R, A> {
+	
+	private static final Logger log = LoggerFactory.getLogger(JavaxNetRestEndpoint.class);
 	
 	private final char[] buf = new char[2048];
 	private final StringBuilder sb = new StringBuilder(8192);
@@ -29,7 +34,8 @@ public class JavaxNetRestEndpoint<R, A> implements RestEndpoint<R, A> {
 	public A call(RestRequest<R> request) throws IOException {
 		URL url = getFullUrl(request);
 		String body = getBody(request);
-		
+		if (log.isDebugEnabled())
+			log.debug("Issuing REST request:" + request + ", full URL:[" + url + "], request body:" + body);
 		HttpsURLConnection con = (HttpsURLConnection) url.openConnection();
 		con.setRequestMethod(request.getHttpMethod());
 		setHeadersForRequest(request, con, body);
@@ -52,6 +58,8 @@ public class JavaxNetRestEndpoint<R, A> implements RestEndpoint<R, A> {
 				}
 			}
 			String response = sb.toString();
+			if (log.isDebugEnabled())
+				log.debug("Got response to request:[" + request + "]:" + response);
 			return deserialize(response);
 		} else {
 			throw new IOException("Got HTTP code:" + responseCode + " in response to request:" + request + ", " + con.getResponseMessage());

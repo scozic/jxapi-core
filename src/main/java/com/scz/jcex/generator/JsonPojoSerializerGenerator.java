@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import com.scz.jcex.generator.exchange.EndpointParameter;
+import com.scz.jcex.util.EncodingUtil;
 
 public class JsonPojoSerializerGenerator extends JavaTypeGenerator {
 
@@ -27,9 +28,9 @@ public class JsonPojoSerializerGenerator extends JavaTypeGenerator {
 	
 	public String generate() {
 		addImport(IOException.class.getName());
-		addImport(com.fasterxml.jackson.core.JsonGenerator.class.getName());
-		addImport(com.fasterxml.jackson.databind.SerializerProvider.class.getName());
-		addImport(com.fasterxml.jackson.databind.ser.std.StdSerializer.class.getName());
+		addImport(com.fasterxml.jackson.core.JsonGenerator.class);
+		addImport(com.fasterxml.jackson.databind.SerializerProvider.class);
+		addImport(com.fasterxml.jackson.databind.ser.std.StdSerializer.class);
 		addImport(serializedTypeClassName);
 		generateConstructor();
 		generateDeserializeMethod();
@@ -62,8 +63,10 @@ public class JsonPojoSerializerGenerator extends JavaTypeGenerator {
 				fields.stream().map(f -> f.getName()).collect(Collectors.toList())) + "()";
 		switch (field.getType()) {
 		case STRING:
-		case BIGDECIMAL:
 			return "gen.writeStringField(\"" + field.getName() + "\", String.valueOf(" + getFieldValue + "));\n";
+		case BIGDECIMAL:
+			addImport(EncodingUtil.class);
+			return "gen.writeStringField(\"" + field.getName() + "\", EncodingUtil.bigDecimalToString(" + getFieldValue + "));\n";
 		case BOOLEAN:
 			return "gen.writeBooleanField(\"" + field.getName() + "\", " + getFieldValue + ");\n";
 		case INT:

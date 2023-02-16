@@ -43,6 +43,7 @@ public class BinanceExchangeInformationAllResponseSymbolsDeserializer extends Ab
         msg.setQuoteAssetPrecision(parser.nextIntValue(0));
       break;
       case "orderTypes":
+        parser.nextToken();
         msg.setOrderTypes(StringListFieldDeserializer.getInstance().deserialize(parser));
       break;
       case "icebergAllowed":
@@ -67,15 +68,18 @@ public class BinanceExchangeInformationAllResponseSymbolsDeserializer extends Ab
         msg.setIsMarginTradingAllowed(parser.nextBooleanValue());
       break;
       case "filters":
+        parser.nextToken();
         msg.setFilters(binanceExchangeInformationAllResponseSymbolsFiltersListDeserializer.deserialize(parser));
       break;
       case "permissions":
+        parser.nextToken();
         msg.setPermissions(StringListFieldDeserializer.getInstance().deserialize(parser));
       break;
       case "defaultSelfTradePreventionMode":
         msg.setDefaultSelfTradePreventionMode(parser.nextTextValue());
       break;
       case "allowedSelfTradePreventionModes":
+        parser.nextToken();
         msg.setAllowedSelfTradePreventionModes(StringListFieldDeserializer.getInstance().deserialize(parser));
       break;
       default:

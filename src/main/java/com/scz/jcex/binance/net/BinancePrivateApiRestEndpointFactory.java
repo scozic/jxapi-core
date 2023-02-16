@@ -21,7 +21,7 @@ public class BinancePrivateApiRestEndpointFactory implements RestEndpointFactory
 	public <R, A> RestEndpoint<R, A> createRestEndpoint(MessageDeserializer<A> messageDeserializer) {
 		BinancePrivateApiRestEndpoint<R, A> endpoint = new BinancePrivateApiRestEndpoint<>(messageDeserializer);
 		endpoint.setApiKey(properties.getProperty(API_KEY_PROPERTY));
-		endpoint.setApiSecret(API_SECRET_PROPERTY);
+		endpoint.setApiSecret(properties.getProperty(API_SECRET_PROPERTY));
 		return endpoint;
 	}
 
