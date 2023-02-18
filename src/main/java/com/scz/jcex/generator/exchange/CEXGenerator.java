@@ -37,7 +37,7 @@ public class CEXGenerator {
 			
 			for (WebsocketEndpointDescriptor wsEndpointDescriptor: api.getWebsocketEndpoints()) {
 				ExchangeJavaWrapperGeneratorUtil.generatePojo(ouputFolder, 
-										pojoPackage + "." 
+										pojoPackage + ".gen." 
 											+ JavaCodeGenerationUtil.firstLetterToUpperCase(exchangeDescriptor.getName()) 
 											+ JavaCodeGenerationUtil.firstLetterToUpperCase(wsEndpointDescriptor.getName())
 											+ "Request", 

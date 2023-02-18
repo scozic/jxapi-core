@@ -10,11 +10,14 @@ import java.util.List;
 import org.apache.commons.lang3.StringUtils;
 
 import com.scz.jcex.generator.JavaCodeGenerationUtil;
+import com.scz.jcex.generator.JavaTypeGenerator;
 import com.scz.jcex.generator.JsonMessageDeserializerGenerator;
 import com.scz.jcex.generator.JsonPojoSerializerGenerator;
 import com.scz.jcex.generator.PojoField;
 import com.scz.jcex.generator.PojoGenerator;
+import com.scz.jcex.netutils.rest.RestEndpoint;
 import com.scz.jcex.netutils.rest.RestEndpointUrlParameters;
+import com.scz.jcex.netutils.rest.RestRequest;
 import com.scz.jcex.netutils.websocket.WebsocketSubscribeParameters;
 import com.scz.jcex.util.EncodingUtil;
 
@@ -87,8 +90,7 @@ public class ExchangeJavaWrapperGeneratorUtil {
 				generateDeserializer(src, deserializedClassName + JavaCodeGenerationUtil.firstLetterToUpperCase(field.getName()), field.getParameters());
 			}
 		}
-		String pkg = StringUtils.substringBefore(JavaCodeGenerationUtil.getClassPackage(deserializedClassName), ".pojo") + ".deserializers";
-		JsonMessageDeserializerGenerator deserializerGenerator = new JsonMessageDeserializerGenerator(pkg, deserializedClassName, fields);
+		JsonMessageDeserializerGenerator deserializerGenerator = new JsonMessageDeserializerGenerator(deserializedClassName, fields);
 		deserializerGenerator.writeJavaFile(src);
 	}
 	
@@ -206,10 +208,7 @@ public class ExchangeJavaWrapperGeneratorUtil {
 					additionalBody = generateRestEndpointGetUrlParametersMethod(restEndpointDescriptor);
 				}
 				ExchangeJavaWrapperGeneratorUtil.generatePojo(ouputFolder, 
-											pkgPrefix
-											+ JavaCodeGenerationUtil.firstLetterToUpperCase(exchangeDescriptor.getName()) 
-											+ JavaCodeGenerationUtil.firstLetterToUpperCase(restEndpointDescriptor.getName())
-											+ "Request", 
+										generateRestEnpointRequestClassName(exchangeDescriptor, api, restEndpointDescriptor), 
 										"Request for " + exchangeDescriptor.getName() + " " + api.getName() + " API " 
 											+ restEndpointDescriptor.getName() + " REST endpoint"
 											+ restEndpointDescriptor.getDescription()
@@ -218,10 +217,7 @@ public class ExchangeJavaWrapperGeneratorUtil {
 										implementedInterfaces,
 										additionalBody);
 				ExchangeJavaWrapperGeneratorUtil.generatePojo(ouputFolder, 
-						pkgPrefix 
-							+ JavaCodeGenerationUtil.firstLetterToUpperCase(exchangeDescriptor.getName()) 
-							+ JavaCodeGenerationUtil.firstLetterToUpperCase(restEndpointDescriptor.getName())
-							+ "Response", 
+						generateRestEnpointResponseClassName(exchangeDescriptor, api, restEndpointDescriptor), 
 						"Response to " + exchangeDescriptor.getName() 
 							+ " " + api.getName() + " API " 
 							+ restEndpointDescriptor.getName() 
@@ -260,8 +256,114 @@ public class ExchangeJavaWrapperGeneratorUtil {
 						wsEndpointDescriptor.getResponse());
 			}
 		}
+	}
+	
+	public static String generateRestEnpointRequestClassName(ExchangeDescriptor exchangeDescriptor, ExchangeApiDescriptor exchangeApiDescriptor, RestEndpointDescriptor restEndpointDescriptor) {
+		return generateRestEnpointPojoClassName(exchangeDescriptor, exchangeApiDescriptor, restEndpointDescriptor, "Request");
+	}
+	
+	public static String generateRestEnpointResponseClassName(ExchangeDescriptor exchangeDescriptor, ExchangeApiDescriptor exchangeApiDescriptor, RestEndpointDescriptor restEndpointDescriptor) {
+		return generateRestEnpointPojoClassName(exchangeDescriptor, exchangeApiDescriptor, restEndpointDescriptor, "Response");
+	}
+	
+	private static String generateRestEnpointPojoClassName(ExchangeDescriptor exchangeDescriptor, ExchangeApiDescriptor exchangeApiDescriptor, RestEndpointDescriptor restEndpointDescriptor, String suffix) {
+		return exchangeDescriptor.getBasePackage() + "." + exchangeApiDescriptor.getName().toLowerCase() + ".pojo."
+				+ JavaCodeGenerationUtil.firstLetterToUpperCase(exchangeDescriptor.getName()) 
+				+ JavaCodeGenerationUtil.firstLetterToUpperCase(restEndpointDescriptor.getName())
+				+ suffix;
+	}
+	
+	public static void generateExchangeApiInterface(ExchangeDescriptor exchangeDescriptor, ExchangeApiDescriptor exchangeApiDescriptor, Path outputFolder) throws IOException {
+		String pkgPrefix =  exchangeDescriptor.getBasePackage() + "." + exchangeApiDescriptor.getName().toLowerCase() + ".";
+		String simpleInterfaceName = JavaCodeGenerationUtil.firstLetterToUpperCase(exchangeApiDescriptor.getName()) + JavaCodeGenerationUtil.firstLetterToUpperCase(exchangeApiDescriptor.getName());
+		String fullInterfaceName = pkgPrefix + simpleInterfaceName;
+		String simpleImplementationName = simpleInterfaceName + "Impl";
+		String fullImplementationName = pkgPrefix + simpleImplementationName;
 		
+		JavaTypeGenerator interfaceGenerator = new JavaTypeGenerator(fullInterfaceName);
+		interfaceGenerator.setDescription(exchangeApiDescriptor.getName() + " CEX " + exchangeApiDescriptor.getName() + " API</br>\n" 
+				+ exchangeApiDescriptor.getDescription() + "\n" 
+				+ JavaCodeGenerationUtil.GENERATED_CODE_WARNING);
+		interfaceGenerator.setTypeDeclaration("public interface ");
 		
+		JavaTypeGenerator implementationGenerator = new JavaTypeGenerator(fullImplementationName);
+		implementationGenerator.setTypeDeclaration("public class ");
+		implementationGenerator.setImplementedInterfaces(Arrays.asList(fullInterfaceName));
+		implementationGenerator.setDescription("Actual implementation of {@link " + simpleInterfaceName + "}<br/>\n"
+				   + JavaCodeGenerationUtil.GENERATED_CODE_WARNING);
+		JavaCodeGenerationUtil.generateLoggerDeclaration(implementationGenerator);
+		String restApiFactoryFullClassName = exchangeApiDescriptor.getRestEndpointFactory();
+		implementationGenerator.addImport(restApiFactoryFullClassName);
+		String restApiFactorySimpleClassName = JavaCodeGenerationUtil.getClassNameWithoutPackage(restApiFactoryFullClassName);
+		String restApiFactoryVariableName = "restEndpointFactory";
+		implementationGenerator.appendToBody("private final "
+				  							 + restApiFactorySimpleClassName
+				  							 + " "
+				  							 + restApiFactoryVariableName
+				  							 + " = new "
+				  							 + restApiFactorySimpleClassName + "();\n\n");
+		
+		StringBuilder implementationConstructorBody = new StringBuilder();
+		implementationConstructorBody.append("this." + restApiFactoryVariableName + ".setProperties(properties);\n");
+		
+		for (RestEndpointDescriptor restApi: exchangeApiDescriptor.getRestEndpoints()) {
+			implementationGenerator.addImport(RestEndpoint.class);
+			String requestClassName = generateRestEnpointRequestClassName(exchangeDescriptor, exchangeApiDescriptor, restApi);
+			String requestSimpleClassName = JavaCodeGenerationUtil.getClassNameWithoutPackage(requestClassName);
+			implementationGenerator.addImport(requestClassName);
+			String responseClassName = generateRestEnpointResponseClassName(exchangeDescriptor, exchangeApiDescriptor, restApi);
+			String responseSimpleClassName = JavaCodeGenerationUtil.getClassNameWithoutPackage(responseClassName);
+			implementationGenerator.addImport(responseClassName);
+			String responseDeserializerClassName = JsonMessageDeserializerGenerator.getJsonMessageDeserializerClassName(responseClassName);
+			implementationGenerator.addImport(responseDeserializerClassName);
+			
+			String apiMethodName = JavaCodeGenerationUtil.firstLetterToLowerCase(restApi.getName());
+			String restEndpointVariableName = apiMethodName + "Api";
+			
+			implementationGenerator.appendToBody("private final RestEndpoint<" + requestSimpleClassName + ", " + responseSimpleClassName + "> " + restEndpointVariableName + " = " 
+												 + restApiFactoryVariableName + ";\n"); 
+			implementationConstructorBody.append("this." + restEndpointVariableName + ".createRestEnpoint(new " 
+												 			  + JavaCodeGenerationUtil.getClassNameWithoutPackage(responseDeserializerClassName) 
+												 			  + "());\n");
+			
+			String apiMethodSignature = responseSimpleClassName + " " + apiMethodName + "(" + requestSimpleClassName + "request) throws IOException"; 
+			
+			interfaceGenerator.addImport(IOException.class);
+			interfaceGenerator.addImport(requestClassName);
+			interfaceGenerator.addImport(responseClassName);
+			interfaceGenerator.appendToBody(JavaCodeGenerationUtil.generateJavaDoc(restApi.getDescription()));
+			interfaceGenerator.appendToBody(apiMethodSignature + ";\n");
+			
+			implementationGenerator.addImport(IOException.class);
+			implementationGenerator.addImport(RestRequest.class);
+			StringBuilder apiMethodBody = new StringBuilder()
+					.append("if (log.isDebugEnabled())\n")
+					.append(JavaCodeGenerationUtil.INDENTATION)
+					.append("log.debug(\"")
+					.append(restApi.getHttpMethod().toUpperCase())
+					.append(" ")
+					.append(restApi.getName())
+					.append(" > \" + request)\n;")
+					.append(responseSimpleClassName)
+					.append(" response = ")
+					.append(restEndpointVariableName)
+					.append(".call(RestRequest.create(\"")
+					.append(restApi.getUrl())
+					.append("\", \"")
+					.append(restApi.getHttpMethod().toUpperCase())
+					.append("\", request));\n")
+					.append("if (log.isDebugEnabled())\n")
+					.append(JavaCodeGenerationUtil.INDENTATION)
+					.append("log.debug(\"")
+					.append(" ")
+					.append(restApi.getName())
+					.append(" < \" + response)\n;");
+			implementationGenerator.appendMethod("@Override\n public " + apiMethodSignature, apiMethodBody.toString());
+		}
+		
+		implementationGenerator.appendMethod("public " + simpleImplementationName + "(Properties properties)", implementationConstructorBody.toString());
+		interfaceGenerator.writeJavaFile(outputFolder);
+		implementationGenerator.writeJavaFile(outputFolder);
 	}
 	
 	private static String generateRestEndpointGetUrlParametersMethod(RestEndpointDescriptor restEndpointDescriptor) {

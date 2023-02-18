@@ -9,6 +9,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Helper methods around java code generation
@@ -138,5 +140,11 @@ public class JavaCodeGenerationUtil {
 	      .sorted(Comparator.reverseOrder())
 	      .map(Path::toFile)
 	      .forEach(File::delete);
+	}
+	
+	public static void generateLoggerDeclaration(JavaTypeGenerator typeGenerator) {
+		typeGenerator.addImport(Logger.class);
+		typeGenerator.addImport(LoggerFactory.class);
+		typeGenerator.appendToBody("private static final Logger log = LoggerFactory.getLogger(" + typeGenerator.getSimpleName() + ".class);\n\n");
 	}
 }

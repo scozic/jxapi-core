@@ -7,6 +7,8 @@ import java.util.Set;
 import java.util.TreeSet;
 import java.util.stream.Collectors;
 
+import org.apache.commons.lang3.StringUtils;
+
 import com.scz.jcex.generator.exchange.EndpointParameter;
 import com.scz.jcex.generator.exchange.EndpointParameterType;
 import com.scz.jcex.netutils.deserialization.json.field.StringListFieldDeserializer;
@@ -14,13 +16,18 @@ import com.scz.jcex.netutils.deserialization.json.field.StructListFieldDeseriali
 import com.scz.jcex.netutils.serialization.json.JsonParserUtil;
 
 public class JsonMessageDeserializerGenerator extends JavaTypeGenerator {
+	
+	public static String getJsonMessageDeserializerClassName(String deserializedTypeClassName) {
+		String pkg = StringUtils.substringBefore(JavaCodeGenerationUtil.getClassPackage(deserializedTypeClassName), ".pojo") + ".deserializers";
+		return pkg + "." + JavaCodeGenerationUtil.getClassNameWithoutPackage(deserializedTypeClassName) + "Deserializer";
+	}
 
 	private final String deserializedTypeClassName;
 	private final List<EndpointParameter> fields;
 	private final Set<String> deserializerDeclarations = new TreeSet<>();
 	
-	public JsonMessageDeserializerGenerator(String packageName, String deserializedTypeClassName, List<EndpointParameter> fields) {
-		super(packageName + "." + JavaCodeGenerationUtil.getClassNameWithoutPackage(deserializedTypeClassName) + "Deserializer");
+	public JsonMessageDeserializerGenerator(String deserializedTypeClassName, List<EndpointParameter> fields) {
+		super(getJsonMessageDeserializerClassName(deserializedTypeClassName));
 		this.deserializedTypeClassName = deserializedTypeClassName;
 		this.fields = fields;
 		setTypeDeclaration("public class");
