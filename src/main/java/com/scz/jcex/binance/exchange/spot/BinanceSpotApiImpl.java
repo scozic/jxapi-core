@@ -13,6 +13,9 @@ import com.scz.jcex.netutils.rest.RestEndpoint;
 import com.scz.jcex.netutils.rest.RestEndpointFactory;
 import com.scz.jcex.netutils.rest.RestRequest;
 
+/**
+ * Implementation of {@link BinanceSpotApi}
+ */
 public class BinanceSpotApiImpl implements BinanceSpotApi {
 	
 	private static final Logger log = LoggerFactory.getLogger(BinanceSpotApiImpl.class);

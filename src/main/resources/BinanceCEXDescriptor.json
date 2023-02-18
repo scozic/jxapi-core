@@ -152,7 +152,7 @@
 		{ 
 			"name": "SpotTrading",
 			"description": "Binance spot trading API",
-			"restEndpointFactory": "com.scz.jcex.binance.net.BinancePublicApiRestEndpointFactory",
+			"restEndpointFactory": "com.scz.jcex.binance.net.BinancePrivateApiRestEndpointFactory",
 			"restEndpoints": [
 				{
 					"name": "account",

@@ -6,6 +6,7 @@ import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.EnumMap;
 import java.util.List;
+import java.util.Properties;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -255,6 +256,8 @@ public class ExchangeJavaWrapperGeneratorUtil {
 							+ JavaCodeGenerationUtil.GENERATED_CODE_WARNING,
 						wsEndpointDescriptor.getResponse());
 			}
+			
+			generateExchangeApiInterface(exchangeDescriptor, api, ouputFolder);
 		}
 	}
 	
@@ -275,7 +278,7 @@ public class ExchangeJavaWrapperGeneratorUtil {
 	
 	public static void generateExchangeApiInterface(ExchangeDescriptor exchangeDescriptor, ExchangeApiDescriptor exchangeApiDescriptor, Path outputFolder) throws IOException {
 		String pkgPrefix =  exchangeDescriptor.getBasePackage() + "." + exchangeApiDescriptor.getName().toLowerCase() + ".";
-		String simpleInterfaceName = JavaCodeGenerationUtil.firstLetterToUpperCase(exchangeApiDescriptor.getName()) + JavaCodeGenerationUtil.firstLetterToUpperCase(exchangeApiDescriptor.getName());
+		String simpleInterfaceName = JavaCodeGenerationUtil.firstLetterToUpperCase(exchangeDescriptor.getName()) + JavaCodeGenerationUtil.firstLetterToUpperCase(exchangeApiDescriptor.getName());
 		String fullInterfaceName = pkgPrefix + simpleInterfaceName;
 		String simpleImplementationName = simpleInterfaceName + "Impl";
 		String fullImplementationName = pkgPrefix + simpleImplementationName;
@@ -320,18 +323,18 @@ public class ExchangeJavaWrapperGeneratorUtil {
 			String apiMethodName = JavaCodeGenerationUtil.firstLetterToLowerCase(restApi.getName());
 			String restEndpointVariableName = apiMethodName + "Api";
 			
-			implementationGenerator.appendToBody("private final RestEndpoint<" + requestSimpleClassName + ", " + responseSimpleClassName + "> " + restEndpointVariableName + " = " 
-												 + restApiFactoryVariableName + ";\n"); 
-			implementationConstructorBody.append("this." + restEndpointVariableName + ".createRestEnpoint(new " 
-												 			  + JavaCodeGenerationUtil.getClassNameWithoutPackage(responseDeserializerClassName) 
-												 			  + "());\n");
+			implementationGenerator.appendToBody("\nprivate final RestEndpoint<" + requestSimpleClassName + ", " + responseSimpleClassName + "> " + restEndpointVariableName + ";\n\n"); 
+			implementationConstructorBody.append("this." + restEndpointVariableName + " = "  
+												 		 + restApiFactoryVariableName + ".createRestEndpoint(new " 
+												 		 + JavaCodeGenerationUtil.getClassNameWithoutPackage(responseDeserializerClassName) 
+												 		 + "());\n");
 			
-			String apiMethodSignature = responseSimpleClassName + " " + apiMethodName + "(" + requestSimpleClassName + "request) throws IOException"; 
+			String apiMethodSignature = responseSimpleClassName + " " + apiMethodName + "(" + requestSimpleClassName + " request) throws IOException"; 
 			
 			interfaceGenerator.addImport(IOException.class);
 			interfaceGenerator.addImport(requestClassName);
 			interfaceGenerator.addImport(responseClassName);
-			interfaceGenerator.appendToBody(JavaCodeGenerationUtil.generateJavaDoc(restApi.getDescription()));
+			interfaceGenerator.appendToBody(JavaCodeGenerationUtil.generateJavaDoc(restApi.getDescription()) + "\n");
 			interfaceGenerator.appendToBody(apiMethodSignature + ";\n");
 			
 			implementationGenerator.addImport(IOException.class);
@@ -343,7 +346,7 @@ public class ExchangeJavaWrapperGeneratorUtil {
 					.append(restApi.getHttpMethod().toUpperCase())
 					.append(" ")
 					.append(restApi.getName())
-					.append(" > \" + request)\n;")
+					.append(" > \" + request);\n")
 					.append(responseSimpleClassName)
 					.append(" response = ")
 					.append(restEndpointVariableName)
@@ -355,12 +358,15 @@ public class ExchangeJavaWrapperGeneratorUtil {
 					.append("if (log.isDebugEnabled())\n")
 					.append(JavaCodeGenerationUtil.INDENTATION)
 					.append("log.debug(\"")
+					.append(restApi.getHttpMethod().toUpperCase())
 					.append(" ")
 					.append(restApi.getName())
-					.append(" < \" + response)\n;");
-			implementationGenerator.appendMethod("@Override\n public " + apiMethodSignature, apiMethodBody.toString());
+					.append(" < \" + response);\n")
+					.append("return response;\n");
+			implementationGenerator.appendMethod("@Override\npublic " + apiMethodSignature, apiMethodBody.toString());
 		}
 		
+		implementationGenerator.addImport(Properties.class);
 		implementationGenerator.appendMethod("public " + simpleImplementationName + "(Properties properties)", implementationConstructorBody.toString());
 		interfaceGenerator.writeJavaFile(outputFolder);
 		implementationGenerator.writeJavaFile(outputFolder);
