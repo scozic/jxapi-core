@@ -121,7 +121,6 @@ public class ExchangeJavaWrapperGeneratorUtilTest {
 				+ "  public String toString() {\n"
 				+ "    return EncodingUtil.pojoToString(this);\n"
 				+ "  }\n"
-				+ "  \n"
 				+ "}\n"
 				+ ""
 				, Files.readString(pkgFolder.resolve(Paths.get("MyPojo.java"))));
@@ -172,7 +171,6 @@ public class ExchangeJavaWrapperGeneratorUtilTest {
 				+ "  public String toString() {\n"
 				+ "    return EncodingUtil.pojoToString(this);\n"
 				+ "  }\n"
-				+ "  \n"
 				+ "}\n", 
 				Files.readString(pkgFolder.resolve(Paths.get("MyPojoFoo.java"))));
 		
@@ -207,7 +205,6 @@ public class ExchangeJavaWrapperGeneratorUtilTest {
 				+ "  public String toString() {\n"
 				+ "    return EncodingUtil.pojoToString(this);\n"
 				+ "  }\n"
-				+ "  \n"
 				+ "}\n", 
 				Files.readString(pkgFolder.resolve(Paths.get("MyPojoFooBar.java"))));
 		

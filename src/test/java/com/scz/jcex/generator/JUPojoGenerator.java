@@ -87,7 +87,6 @@ public class JUPojoGenerator {
 				+ "  public String toString() {\n"
 				+ "    return EncodingUtil.pojoToString(this);\n"
 				+ "  }\n"
-				+ "  \n"
 				+ "}\n"
 				+ "" , generator.generate());
 	}

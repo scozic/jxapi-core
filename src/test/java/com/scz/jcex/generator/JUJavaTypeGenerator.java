@@ -97,7 +97,6 @@ public class JUJavaTypeGenerator {
 				+ "  public void sayHello() {\n"
 				+ "    Sytem.out.println(\"Hello\");\n"
 				+ "  }\n"
-				+ "  \n"
 				+ "}\n", gen.generate());
 		
 	}
