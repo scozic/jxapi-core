@@ -198,7 +198,9 @@ public class ExchangeJavaWrapperGeneratorUtil {
 	}
 
 	public static void generateCEXPojos(ExchangeDescriptor exchangeDescriptor, Path ouputFolder) throws IOException {
+		generateExchangeInterface(exchangeDescriptor, ouputFolder);
 		for (ExchangeApiDescriptor api: exchangeDescriptor.getApis()) {
+			generateExchangeApiInterface(exchangeDescriptor, api, ouputFolder);
 			String pkgPrefix =  exchangeDescriptor.getBasePackage() + "." + api.getName().toLowerCase() + ".pojo.";
 			for (RestEndpointDescriptor restEndpointDescriptor: api.getRestEndpoints()) {
 				String urlParams = restEndpointDescriptor.getUrlParameters();
@@ -256,8 +258,6 @@ public class ExchangeJavaWrapperGeneratorUtil {
 							+ JavaCodeGenerationUtil.GENERATED_CODE_WARNING,
 						wsEndpointDescriptor.getResponse());
 			}
-			
-			generateExchangeApiInterface(exchangeDescriptor, api, ouputFolder);
 		}
 	}
 	
@@ -277,11 +277,10 @@ public class ExchangeJavaWrapperGeneratorUtil {
 	}
 	
 	public static void generateExchangeApiInterface(ExchangeDescriptor exchangeDescriptor, ExchangeApiDescriptor exchangeApiDescriptor, Path outputFolder) throws IOException {
-		String pkgPrefix =  exchangeDescriptor.getBasePackage() + "." + exchangeApiDescriptor.getName().toLowerCase() + ".";
-		String simpleInterfaceName = JavaCodeGenerationUtil.firstLetterToUpperCase(exchangeDescriptor.getName()) + JavaCodeGenerationUtil.firstLetterToUpperCase(exchangeApiDescriptor.getName());
-		String fullInterfaceName = pkgPrefix + simpleInterfaceName;
+		String fullInterfaceName = getApiInterfaceClassName(exchangeDescriptor, exchangeApiDescriptor);
+		String simpleInterfaceName = JavaCodeGenerationUtil.getClassNameWithoutPackage(fullInterfaceName);
 		String simpleImplementationName = simpleInterfaceName + "Impl";
-		String fullImplementationName = pkgPrefix + simpleImplementationName;
+		String fullImplementationName = fullInterfaceName + "Impl";
 		
 		JavaTypeGenerator interfaceGenerator = new JavaTypeGenerator(fullInterfaceName);
 		interfaceGenerator.setDescription(exchangeApiDescriptor.getName() + " CEX " + exchangeApiDescriptor.getName() + " API</br>\n" 
@@ -370,6 +369,58 @@ public class ExchangeJavaWrapperGeneratorUtil {
 		implementationGenerator.appendMethod("public " + simpleImplementationName + "(Properties properties)", implementationConstructorBody.toString());
 		interfaceGenerator.writeJavaFile(outputFolder);
 		implementationGenerator.writeJavaFile(outputFolder);
+	}
+	
+	public static void generateExchangeInterface(ExchangeDescriptor exchangeDescriptor, Path outputFolder) throws IOException {
+		String pkgPrefix =  exchangeDescriptor.getBasePackage() + ".";
+		String simpleInterfaceName = JavaCodeGenerationUtil.firstLetterToUpperCase(exchangeDescriptor.getName());
+		String fullInterfaceName = pkgPrefix + simpleInterfaceName;
+		String simpleImplementationName = simpleInterfaceName + "Impl";
+		String fullImplementationName = pkgPrefix + simpleImplementationName;
+		
+		JavaTypeGenerator interfaceGenerator = new JavaTypeGenerator(fullInterfaceName);
+		interfaceGenerator.setDescription(exchangeDescriptor.getName() + " CEX API</br>\n" 
+				+ exchangeDescriptor.getDescription() + "\n" 
+				+ JavaCodeGenerationUtil.GENERATED_CODE_WARNING);
+		interfaceGenerator.setTypeDeclaration("public interface ");
+		
+		JavaTypeGenerator implementationGenerator = new JavaTypeGenerator(fullImplementationName);
+		implementationGenerator.setTypeDeclaration("public class ");
+		implementationGenerator.setImplementedInterfaces(Arrays.asList(fullInterfaceName));
+		implementationGenerator.setDescription("Actual implementation of {@link " + simpleInterfaceName + "}<br/>\n"
+				   + JavaCodeGenerationUtil.GENERATED_CODE_WARNING);
+		
+		StringBuilder implementationConstructorBody = new StringBuilder();
+		for (ExchangeApiDescriptor api: exchangeDescriptor.getApis()) {
+			String apiClassName = getApiInterfaceClassName(exchangeDescriptor, api);
+			String apiSimpleClassName = JavaCodeGenerationUtil.getClassNameWithoutPackage(apiClassName);
+			String apiImplClassName = apiClassName + "Impl";
+			String simpleApiImplClassName = JavaCodeGenerationUtil.getClassNameWithoutPackage(apiImplClassName);
+			String getApiMethodSignature = apiSimpleClassName + " get" + apiSimpleClassName + "()";
+			
+			interfaceGenerator.addImport(apiClassName);
+			interfaceGenerator.appendToBody("\n" + getApiMethodSignature + ";\n");
+			
+			implementationGenerator.addImport(apiClassName);
+			implementationGenerator.addImport(apiImplClassName);
+			String apiVariableName = JavaCodeGenerationUtil.firstLetterToLowerCase(apiSimpleClassName);
+			implementationGenerator.appendToBody("private final " + apiSimpleClassName + " " + apiVariableName + ";\n\n");
+			
+			implementationConstructorBody.append("this." + apiVariableName + " = new " + simpleApiImplClassName + "(properties);\n");
+			implementationGenerator.appendMethod("@Override\npublic " + getApiMethodSignature, "return this." + apiVariableName + ";\n");
+			implementationGenerator.appendToBody("\n");
+		}
+		
+		implementationGenerator.addImport(Properties.class);
+		implementationGenerator.appendMethod("public " + simpleImplementationName + "(Properties properties)", implementationConstructorBody.toString());
+		interfaceGenerator.writeJavaFile(outputFolder);
+		implementationGenerator.writeJavaFile(outputFolder);
+	}
+	
+	private static String getApiInterfaceClassName(ExchangeDescriptor exchangeDescriptor, ExchangeApiDescriptor exchangeApiDescriptor) {
+		String pkgPrefix =  exchangeDescriptor.getBasePackage() + "." + exchangeApiDescriptor.getName().toLowerCase() + ".";
+		String simpleInterfaceName = JavaCodeGenerationUtil.firstLetterToUpperCase(exchangeDescriptor.getName()) + JavaCodeGenerationUtil.firstLetterToUpperCase(exchangeApiDescriptor.getName());
+		return pkgPrefix + simpleInterfaceName;
 	}
 	
 	private static String generateRestEndpointGetUrlParametersMethod(RestEndpointDescriptor restEndpointDescriptor) {
