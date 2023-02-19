@@ -78,5 +78,4 @@ public class BinanceAllMarketTickersStreamResponseDeserializer extends AbstractJ
     
      return msg;
   }
-  
 }

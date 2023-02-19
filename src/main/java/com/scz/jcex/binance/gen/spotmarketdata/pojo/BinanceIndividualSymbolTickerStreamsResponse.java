@@ -270,5 +270,4 @@ public class BinanceIndividualSymbolTickerStreamsResponse {
   public String toString() {
     return EncodingUtil.pojoToString(this);
   }
-  
 }

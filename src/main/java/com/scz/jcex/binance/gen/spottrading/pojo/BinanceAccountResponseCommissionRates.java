@@ -75,5 +75,4 @@ public class BinanceAccountResponseCommissionRates {
   public String toString() {
     return EncodingUtil.pojoToString(this);
   }
-  
 }

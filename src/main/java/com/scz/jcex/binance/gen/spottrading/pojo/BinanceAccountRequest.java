@@ -51,5 +51,4 @@ public class BinanceAccountRequest implements RestEndpointUrlParameters {
   public String toString() {
     return EncodingUtil.pojoToString(this);
   }
-  
 }

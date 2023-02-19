@@ -285,5 +285,4 @@ public class BinanceExchangeInformationResponseSymbols {
   public String toString() {
     return EncodingUtil.pojoToString(this);
   }
-  
 }

@@ -31,12 +31,9 @@ public class  BinanceSpotTradingImpl implements BinanceSpotTrading {
     if (log.isDebugEnabled())
       log.debug("GET account < " + response);
     return response;
-    
   }
   public BinanceSpotTradingImpl(Properties properties) {
     this.restEndpointFactory.setProperties(properties);
     this.accountApi = restEndpointFactory.createRestEndpoint(new BinanceAccountResponseDeserializer());
-    
   }
-  
 }

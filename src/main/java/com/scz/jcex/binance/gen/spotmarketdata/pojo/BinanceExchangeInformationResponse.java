@@ -60,5 +60,4 @@ public class BinanceExchangeInformationResponse {
   public String toString() {
     return EncodingUtil.pojoToString(this);
   }
-  
 }

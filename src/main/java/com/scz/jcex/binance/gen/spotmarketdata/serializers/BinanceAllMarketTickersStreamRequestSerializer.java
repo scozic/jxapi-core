@@ -21,5 +21,4 @@ public class BinanceAllMarketTickersStreamRequestSerializer extends StdSerialize
     gen.writeStartObject();
     gen.writeEndObject();
   }
-  
 }

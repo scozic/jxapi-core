@@ -270,5 +270,4 @@ public class BinanceAllMarketTickersStreamResponse {
   public String toString() {
     return EncodingUtil.pojoToString(this);
   }
-  
 }

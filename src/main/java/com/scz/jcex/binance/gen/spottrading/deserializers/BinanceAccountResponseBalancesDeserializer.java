@@ -36,5 +36,4 @@ public class BinanceAccountResponseBalancesDeserializer extends AbstractJsonMess
     
      return msg;
   }
-  
 }

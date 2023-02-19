@@ -20,5 +20,4 @@ public interface  BinanceSpotMarketData {
    * Current exchange trading rules and symbol information for a list of spot trading pairs
    */
   BinanceExchangeInformationResponse exchangeInformation(BinanceExchangeInformationRequest request) throws IOException;
-  
 }

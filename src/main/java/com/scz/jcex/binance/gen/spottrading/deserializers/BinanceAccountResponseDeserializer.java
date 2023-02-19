@@ -78,5 +78,4 @@ public class BinanceAccountResponseDeserializer extends AbstractJsonMessageDeser
     
      return msg;
   }
-  
 }

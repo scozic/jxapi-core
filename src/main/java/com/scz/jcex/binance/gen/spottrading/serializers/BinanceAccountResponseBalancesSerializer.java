@@ -25,5 +25,4 @@ public class BinanceAccountResponseBalancesSerializer extends StdSerializer<Bina
     gen.writeStringField("locked", EncodingUtil.bigDecimalToString(value.getLocked()));
     gen.writeEndObject();
   }
-  
 }

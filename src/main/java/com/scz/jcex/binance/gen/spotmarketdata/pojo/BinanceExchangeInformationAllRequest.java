@@ -21,5 +21,4 @@ public class BinanceExchangeInformationAllRequest implements RestEndpointUrlPara
   public String toString() {
     return EncodingUtil.pojoToString(this);
   }
-  
 }

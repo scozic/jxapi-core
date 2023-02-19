@@ -32,6 +32,9 @@ public class JavaCodeGenerationUtil {
 	}
 	
 	public static final String generateCodeBlock(String codeBlockContent) {
+		if (codeBlockContent.endsWith("\n")) {
+			codeBlockContent = codeBlockContent.substring(0, codeBlockContent.length() - 1);
+		}
 		return "{\n" + indent(codeBlockContent) + "\n}\n";
 	}
 	

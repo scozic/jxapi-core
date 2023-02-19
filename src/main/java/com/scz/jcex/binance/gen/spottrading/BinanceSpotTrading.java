@@ -14,5 +14,4 @@ public interface  BinanceSpotTrading {
    * Get current account information, see <a href="https://binance-docs.github.io/apidocs/spot/en/#account-information-user_data">API</a>
    */
   BinanceAccountResponse account(BinanceAccountRequest request) throws IOException;
-  
 }

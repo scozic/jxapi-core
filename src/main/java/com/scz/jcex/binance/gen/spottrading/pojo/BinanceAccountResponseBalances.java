@@ -60,5 +60,4 @@ public class BinanceAccountResponseBalances {
   public String toString() {
     return EncodingUtil.pojoToString(this);
   }
-  
 }

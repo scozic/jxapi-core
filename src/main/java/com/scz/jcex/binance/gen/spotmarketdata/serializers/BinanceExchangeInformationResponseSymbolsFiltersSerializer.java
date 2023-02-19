@@ -26,5 +26,4 @@ public class BinanceExchangeInformationResponseSymbolsFiltersSerializer extends 
     gen.writeStringField("tickSize", EncodingUtil.bigDecimalToString(value.getTickSize()));
     gen.writeEndObject();
   }
-  
 }

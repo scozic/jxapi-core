@@ -39,5 +39,4 @@ public class BinanceAccountResponseCommissionRatesDeserializer extends AbstractJ
     
      return msg;
   }
-  
 }

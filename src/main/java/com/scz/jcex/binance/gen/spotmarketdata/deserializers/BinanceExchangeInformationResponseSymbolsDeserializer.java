@@ -89,5 +89,4 @@ public class BinanceExchangeInformationResponseSymbolsDeserializer extends Abstr
     
      return msg;
   }
-  
 }

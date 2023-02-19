@@ -24,5 +24,4 @@ public class BinanceExchangeInformationAllResponseSerializer extends StdSerializ
     gen.writeObjectField("symbols", value.getSymbols());
     gen.writeEndObject();
   }
-  
 }

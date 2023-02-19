@@ -26,5 +26,4 @@ public class BinanceAccountResponseCommissionRatesSerializer extends StdSerializ
     gen.writeStringField("seller", EncodingUtil.bigDecimalToString(value.getSeller()));
     gen.writeEndObject();
   }
-  
 }

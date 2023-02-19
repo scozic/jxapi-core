@@ -78,5 +78,4 @@ public class BinanceIndividualSymbolTickerStreamsResponseDeserializer extends Ab
     
      return msg;
   }
-  
 }

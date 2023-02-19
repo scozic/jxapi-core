@@ -21,5 +21,4 @@ public class BinanceExchangeInformationAllRequestSerializer extends StdSerialize
     gen.writeStartObject();
     gen.writeEndObject();
   }
-  
 }

@@ -39,5 +39,4 @@ public class BinanceAllMarketTickersStreamResponseSerializer extends StdSerializ
     gen.writeNumberField("n", value.getN());
     gen.writeEndObject();
   }
-  
 }

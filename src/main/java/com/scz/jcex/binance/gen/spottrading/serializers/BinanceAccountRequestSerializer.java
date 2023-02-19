@@ -23,5 +23,4 @@ public class BinanceAccountRequestSerializer extends StdSerializer<BinanceAccoun
     gen.writeNumberField("timestamp", value.getTimestamp());
     gen.writeEndObject();
   }
-  
 }

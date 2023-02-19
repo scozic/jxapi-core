@@ -39,5 +39,4 @@ public class BinanceExchangeInformationResponseSymbolsFiltersDeserializer extend
     
      return msg;
   }
-  
 }

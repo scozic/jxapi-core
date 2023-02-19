@@ -225,5 +225,4 @@ public class BinanceAccountResponse {
   public String toString() {
     return EncodingUtil.pojoToString(this);
   }
-  
 }

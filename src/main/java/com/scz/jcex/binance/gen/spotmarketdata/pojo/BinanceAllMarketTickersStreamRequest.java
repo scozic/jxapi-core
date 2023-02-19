@@ -21,5 +21,4 @@ public class BinanceAllMarketTickersStreamRequest implements WebsocketSubscribeP
   public String toString() {
     return EncodingUtil.pojoToString(this);
   }
-  
 }

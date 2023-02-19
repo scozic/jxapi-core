@@ -39,5 +39,4 @@ public class BinanceIndividualSymbolTickerStreamsResponseSerializer extends StdS
     gen.writeNumberField("n", value.getN());
     gen.writeEndObject();
   }
-  
 }

@@ -39,5 +39,4 @@ public class BinanceExchangeInformationResponseSymbolsSerializer extends StdSeri
     gen.writeObjectField("allowedSelfTradePreventionModes", value.getAllowedSelfTradePreventionModes());
     gen.writeEndObject();
   }
-  
 }

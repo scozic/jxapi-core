@@ -37,5 +37,4 @@ public class BinanceExchangeInformationRequest implements RestEndpointUrlParamet
   public String toString() {
     return EncodingUtil.pojoToString(this);
   }
-  
 }

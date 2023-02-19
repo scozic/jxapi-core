@@ -35,5 +35,4 @@ public class BinanceAccountResponseSerializer extends StdSerializer<BinanceAccou
     gen.writeObjectField("permissions", value.getPermissions());
     gen.writeEndObject();
   }
-  
 }

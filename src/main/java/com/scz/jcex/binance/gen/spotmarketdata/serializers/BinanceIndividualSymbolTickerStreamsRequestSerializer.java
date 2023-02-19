@@ -22,5 +22,4 @@ public class BinanceIndividualSymbolTickerStreamsRequestSerializer extends StdSe
     gen.writeStringField("symbol", String.valueOf(value.getSymbol()));
     gen.writeEndObject();
   }
-  
 }

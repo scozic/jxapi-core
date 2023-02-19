@@ -34,7 +34,6 @@ public class  BinanceSpotMarketDataImpl implements BinanceSpotMarketData {
     if (log.isDebugEnabled())
       log.debug("GET exchangeInformationAll < " + response);
     return response;
-    
   }
   
   private final RestEndpoint<BinanceExchangeInformationRequest, BinanceExchangeInformationResponse> exchangeInformationApi;
@@ -47,13 +46,10 @@ public class  BinanceSpotMarketDataImpl implements BinanceSpotMarketData {
     if (log.isDebugEnabled())
       log.debug("GET exchangeInformation < " + response);
     return response;
-    
   }
   public BinanceSpotMarketDataImpl(Properties properties) {
     this.restEndpointFactory.setProperties(properties);
     this.exchangeInformationAllApi = restEndpointFactory.createRestEndpoint(new BinanceExchangeInformationAllResponseDeserializer());
     this.exchangeInformationApi = restEndpointFactory.createRestEndpoint(new BinanceExchangeInformationResponseDeserializer());
-    
   }
-  
 }
