@@ -82,25 +82,39 @@ public class JUExchangeDescriptorParser {
 	private void checkTickerStreamWebsocketEndpoint(WebsocketEndpointDescriptor tickerStreamEndpoint) {
 		Assert.assertEquals("tickerStream", tickerStreamEndpoint.getName());
 		Assert.assertEquals("Subscribe to ticker stream", tickerStreamEndpoint.getDescription());
-		Assert.assertEquals("ticker", tickerStreamEndpoint.getTopic());
+		Assert.assertEquals("${symbol}@ticker", tickerStreamEndpoint.getTopic());
+		Assert.assertEquals("|", tickerStreamEndpoint.getTopicParametersListSeparator());
 		
 		List<EndpointParameter> parameters = tickerStreamEndpoint.getParameters();
 		EndpointParameter symbols = parameters.get(0);
-		Assert.assertEquals("symbols", symbols.getName());
-		Assert.assertEquals("List of symbols to subscribe to ticker stream of", symbols.getDescription());
-		Assert.assertEquals(EndpointParameterType.STRING_LIST, symbols.getType());
-		Assert.assertEquals("[BTC_USDT,ETH_USDT]", symbols.getSampleValue());
+		Assert.assertEquals("symbol", symbols.getName());
+		Assert.assertEquals("Symbol to subscribe to ticker stream of", symbols.getDescription());
+		Assert.assertEquals(EndpointParameterType.STRING, symbols.getType());
+		Assert.assertEquals("BTC_USDT", symbols.getSampleValue());
+		
+		List<WebsocketMessageTopicMatcherFieldDescriptor> messageTopicMatcherFields = tickerStreamEndpoint.getMessageTopicMatcherFields();
+		Assert.assertEquals(2, messageTopicMatcherFields.size());
+		Assert.assertEquals("topic", messageTopicMatcherFields.get(0).getName());
+		Assert.assertEquals("ticker", messageTopicMatcherFields.get(0).getValue());
+		Assert.assertEquals("symbol", messageTopicMatcherFields.get(1).getName());
+		Assert.assertEquals("${symbol}", messageTopicMatcherFields.get(1).getValue());
 		
 		List<EndpointParameter> response = tickerStreamEndpoint.getResponse();
-		Assert.assertEquals(2, response.size());
+		Assert.assertEquals(3, response.size());
 		
-		EndpointParameter symbol = response.get(0);
+		EndpointParameter topic = response.get(0);
+		Assert.assertEquals("topic", topic.getName());
+		Assert.assertEquals("Topic", topic.getDescription());
+		Assert.assertEquals(EndpointParameterType.STRING, topic.getType());
+		Assert.assertEquals("ticker", topic.getSampleValue());
+		
+		EndpointParameter symbol = response.get(1);
 		Assert.assertEquals("symbol", symbol.getName());
 		Assert.assertEquals("Symbol name", symbol.getDescription());
 		Assert.assertEquals(EndpointParameterType.STRING, symbol.getType());
 		Assert.assertEquals("BTC_USDT", symbol.getSampleValue());
 		
-		EndpointParameter last = response.get(1);
+		EndpointParameter last = response.get(2);
 		Assert.assertEquals("last", last.getName());
 		Assert.assertEquals("Last traded price", last.getDescription());
 		Assert.assertEquals(EndpointParameterType.BIGDECIMAL, last.getType());

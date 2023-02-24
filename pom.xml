@@ -74,6 +74,28 @@
         <artifactId>okhttp</artifactId>
         <version>3.12.1</version>
     </dependency>
+    
+    <!-- https://mvnrepository.com/artifact/org.springframework/spring-websocket -->
+	<dependency>
+    	<groupId>org.springframework</groupId>
+    	<artifactId>spring-websocket</artifactId>
+    	<version>5.2.2.RELEASE</version>
+	</dependency>
+	
+	<!-- https://mvnrepository.com/artifact/org.springframework/spring-messaging -->
+	<dependency>
+    	<groupId>org.springframework</groupId>
+    	<artifactId>spring-messaging</artifactId>
+    	<version>5.2.2.RELEASE</version>
+	</dependency>
+
+	<!-- https://stackoverflow.com/questions/48309357/java-lang-noclassdeffounderror-javax-websocket-clientendpointconfigconfigurato -->
+	<dependency>
+     	<groupId>org.glassfish.tyrus.bundles</groupId>
+     	<artifactId>tyrus-standalone-client</artifactId>
+     	<version>1.9</version>
+	</dependency>
+
   </dependencies>
 
   <build>

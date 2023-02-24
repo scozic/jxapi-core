@@ -24,42 +24,50 @@ public class WebsocketEndpointDescriptor {
 	
 	private String topicParametersListSeparator;
 	
+	private List<WebsocketMessageTopicMatcherFieldDescriptor> messageTopicMatcherFields;
+	
 	public String getName() {
 		return name;
 	}
 	public void setName(String name) {
 		this.name = name;
 	}
+	
 	public String getTopic() {
 		return topic;
 	}
 	public void setTopic(String topic) {
 		this.topic = topic;
 	}
+	
 	public String getDescription() {
 		return description;
 	}
 	public void setDescription(String description) {
 		this.description = description;
 	}
+	
 	public String getUrl() {
 		return url;
 	}
 	public void setUrl(String url) {
 		this.url = url;
 	}
+	
 	public List<EndpointParameter> getParameters() {
 		return parameters;
 	}
 	public void setParameters(List<EndpointParameter> parameters) {
 		this.parameters = parameters;
 	}
+	
 	public List<EndpointParameter> getResponse() {
 		return response;
 	}
 	public void setResponse(List<EndpointParameter> response) {
 		this.response = response;
 	}
+	
 	public String getTopicParametersListSeparator() {
 		return topicParametersListSeparator;
 	}
@@ -67,7 +75,15 @@ public class WebsocketEndpointDescriptor {
 		this.topicParametersListSeparator = topicParametersListSeparator;
 	}
 	
+	public List<WebsocketMessageTopicMatcherFieldDescriptor> getMessageTopicMatcherFields() {
+		return messageTopicMatcherFields;
+	}
+	public void setMessageTopicMatcherFields(List<WebsocketMessageTopicMatcherFieldDescriptor> messageTopicMatcherFields) {
+		this.messageTopicMatcherFields = messageTopicMatcherFields;
+	}
+	
 	public String toString() {
 		return EncodingUtil.pojoToString(this);
 	}
+	
 }

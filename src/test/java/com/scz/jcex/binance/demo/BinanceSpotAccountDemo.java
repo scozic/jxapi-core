@@ -20,7 +20,6 @@ public class BinanceSpotAccountDemo {
 			BinancePrivateApiRestEndpointFactory fac = new BinancePrivateApiRestEndpointFactory();
 			fac.setProperties(TestApiProperties.filterProperties("binance", true));
 			RestEndpoint<BinanceAccountRequest, BinanceAccountResponse> endpoint = fac.createRestEndpoint(new BinanceAccountResponseDeserializer());
-			
 			log.info("Sending request...");
 			BinanceAccountRequest request = new BinanceAccountRequest();
 			request.setRecvWindow(60000L);

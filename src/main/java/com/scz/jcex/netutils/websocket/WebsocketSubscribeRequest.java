@@ -11,6 +11,8 @@ public class WebsocketSubscribeRequest<T extends WebsocketSubscribeParameters> {
 
 	private String baseUrl;
 	private T parameters;
+	private WebsocketMessageTopicMatcher messageTopicMatcher;
+	
 	public String getBaseUrl() {
 		return baseUrl;
 	}
@@ -23,6 +25,13 @@ public class WebsocketSubscribeRequest<T extends WebsocketSubscribeParameters> {
 	}
 	public void setParameters(T parameters) {
 		this.parameters = parameters;
+	}
+	
+	public WebsocketMessageTopicMatcher getMessageTopicMatcher() {
+		return messageTopicMatcher;
+	}
+	public void setMessageTopicMatcher(WebsocketMessageTopicMatcher messageTopicMatcher) {
+		this.messageTopicMatcher = messageTopicMatcher;
 	}
 	
 	public String toString() {

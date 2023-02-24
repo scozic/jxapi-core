@@ -27,12 +27,18 @@
 			"websocketEndpoints": [
 				{
 					"name": "tickerStream",
-					"topic": "ticker",
+					"topic": "${symbol}@ticker",
 					"description": "Subscribe to ticker stream",
 					"parameters": [
-						{"name": "symbols", "type":"STRING_LIST", "description":"List of symbols to subscribe to ticker stream of", "sampleValue":"[BTC_USDT,ETH_USDT]"}
+						{"name": "symbol", "type":"STRING", "description":"Symbol to subscribe to ticker stream of", "sampleValue":"BTC_USDT"}
+					],
+					"topicParametersListSeparator": "|",
+					"messageTopicMatcherFields": [
+						{"name": "topic",  "value": "ticker"},
+						{"name": "symbol",  "value": "${symbol}"}
 					],
 					"response": [
+						{"name":"topic", "type": "STRING", "description":"Topic", "sampleValue":"ticker"},
 						{"name":"symbol", "type": "STRING", "description":"Symbol name", "sampleValue":"BTC_USDT"},
 						{"name":"last", "type": "BIGDECIMAL", "description":"Last traded price", "sampleValue":"16000.00"}
 					]

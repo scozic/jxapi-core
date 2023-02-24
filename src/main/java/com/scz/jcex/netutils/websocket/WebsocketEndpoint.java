@@ -1,7 +1,5 @@
 package com.scz.jcex.netutils.websocket;
 
-import com.scz.jcex.generator.exchange.ExchangeApiDescriptor;
-
 /**
  * Generic interface for a websocket enppoint.
  * Subscriptions are performed with for a given topic, using a given request, response to request and message structure. 
@@ -10,8 +8,6 @@ import com.scz.jcex.generator.exchange.ExchangeApiDescriptor;
  * @param <M> The message object disseminated by this websocket endpoint
  */
 public interface WebsocketEndpoint<T extends WebsocketSubscribeParameters, M> {
-	
-	void init(ExchangeApiDescriptor exchangeApi);
 
 	/**
 	 * Subscribes a listener to this websocket feed.

@@ -20,7 +20,6 @@ public class AbstractOkHttpWebsocketEndpoint<T extends WebsocketSubscribeParamet
 
     private final Map<String, OkHttpWebsocketConnection> connections = new HashMap<>();
 	private MessageDeserializer<M> websocketMessageDeserializer = new DefaultJsonMessageDeserializer<>(null);
-	protected ExchangeApiDescriptor exchangeApi;
 
 	private boolean reconnectOnFailure = true;
 
@@ -39,11 +38,6 @@ public class AbstractOkHttpWebsocketEndpoint<T extends WebsocketSubscribeParamet
 		connections.put(subscriptionId, connection);
 		connection.connect();
 		return subscriptionId;
-	}
-
-	@Override
-	public void init(ExchangeApiDescriptor exchangeApi) {
-		this.exchangeApi = exchangeApi;
 	}
 	
 	protected String generateSubscriptionId() {
