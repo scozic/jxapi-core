@@ -1,6 +1,8 @@
 package com.scz.jcex.netutils.websocket;
 
+import com.scz.jcex.netutils.deserialization.MessageDeserializer;
+
 public interface WebsocketEndpointFactory {
 
-	WebsocketEndpoint<?, ?> createWebsocketEndpoint(String endpoitName);
+	<S extends WebsocketSubscribeParameters, M> WebsocketEndpoint<S, M> createWebsocketEndpoint(String endpoitName, MessageDeserializer<M> messageDeserializer);
 }

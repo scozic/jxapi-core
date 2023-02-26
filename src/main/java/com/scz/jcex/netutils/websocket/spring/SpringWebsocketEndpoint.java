@@ -12,6 +12,7 @@ import org.springframework.web.socket.client.standard.StandardWebSocketClient;
 import com.scz.jcex.generator.exchange.ExchangeApiDescriptor;
 import com.scz.jcex.netutils.websocket.WebsocketEndpoint;
 import com.scz.jcex.netutils.websocket.WebsocketListener;
+import com.scz.jcex.netutils.websocket.WebsocketManager;
 import com.scz.jcex.netutils.websocket.WebsocketSubscribeParameters;
 import com.scz.jcex.netutils.websocket.WebsocketSubscribeRequest;
 
@@ -19,7 +20,7 @@ public class SpringWebsocketEndpoint<T extends WebsocketSubscribeParameters, M> 
 	
 	private static final Logger log = LoggerFactory.getLogger(SpringWebsocketEndpoint.class);
 	
-	public SpringWebsocketEndpoint(WebSocketClient websocketClient) {
+	public SpringWebsocketEndpoint(WebsocketManager websocketManager) {
 		
 	}
 

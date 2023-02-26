@@ -10,8 +10,6 @@ import org.glassfish.tyrus.client.ClientManager;
 import org.glassfish.tyrus.container.grizzly.client.GrizzlyClientProperties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.core.task.AsyncListenableTaskExecutor;
-import org.springframework.core.task.SimpleAsyncTaskExecutor;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.util.concurrent.ListenableFuture;
 import org.springframework.util.concurrent.ListenableFutureCallback;
@@ -21,7 +19,6 @@ import org.springframework.web.socket.WebSocketHandler;
 import org.springframework.web.socket.WebSocketHttpHeaders;
 import org.springframework.web.socket.WebSocketMessage;
 import org.springframework.web.socket.WebSocketSession;
-import org.springframework.web.socket.client.WebSocketClient;
 import org.springframework.web.socket.client.standard.StandardWebSocketClient;
 
 public class SpringWebsocketClientDemo {
@@ -34,8 +31,6 @@ public class SpringWebsocketClientDemo {
 	
 	public SpringWebsocketClientDemo() throws URISyntaxException, InterruptedException, IOException {
 		ClientManager clientManager = ClientManager.createClient();
-//		clientManager.set
-//	    clientManager.getProperties().put(GrizzlyClientProperties.SELECTOR_THREAD_POOL_CONFIG, ThreadPoolConfig.defaultConfig().setCorePoolSize(2).setMaxPoolSize(2).setPoolName("WSDEMO_SEL"));
 	    clientManager.getProperties().put(GrizzlyClientProperties.SELECTOR_THREAD_POOL_CONFIG, null);
 	    clientManager.getProperties().put(GrizzlyClientProperties.WORKER_THREAD_POOL_CONFIG, ThreadPoolConfig.defaultConfig().setCorePoolSize(1).setMaxPoolSize(1).setPoolName("WSDEMO_WORK"));
 		StandardWebSocketClient client = new StandardWebSocketClient(clientManager);
@@ -55,11 +50,7 @@ public class SpringWebsocketClientDemo {
 			throw new IllegalStateException("Failed to initialize websocketSession");
 		}
 		String topic = "!ticker@arr";
-//		String topic = "\"btcusdt@depth\"";
-		
-		
 		log.info("Subscribing to:" + topic);
-		int subscriptionId = 1;
 		String request = "{"
 				+ "\"method\": \"SUBSCRIBE\","
 				+ "\"params\":"
@@ -68,31 +59,11 @@ public class SpringWebsocketClientDemo {
 				+ "],"
 				+ "\"id\": 1"
 				+ "}";
-//		webSocketSession.sendMessage(new WebSocketMessage<String>() {
-//
-//			@Override
-//			public String getPayload() {
-//				return request;
-//			}
-//
-//			@Override
-//			public int getPayloadLength() {
-//				return request.length();
-//			}
-//
-//			@Override
-//			public boolean isLast() {
-//				return true;
-//			}
-//		});
 		webSocketSession.sendMessage(new TextMessage(request.getBytes()));
 		Thread.sleep(15000L);
 		log.info("Closing websocket");
 		webSocketSession.close(CloseStatus.NORMAL);
 		log.info("Websocket is closed");
-//		clientManager.getExecutorService()
-		
-		
 	}
 	
 	public static void main(String[] args) {
@@ -114,8 +85,6 @@ public class SpringWebsocketClientDemo {
 		@Override
 		public void handleMessage(WebSocketSession session, WebSocketMessage<?> message) throws Exception {
 			log.info("handleMessage:session:" + session + ", message:" + message);
-			// FIXME
-//			log.error("DUMMY", new Exception("DUMMY"));
 		}
 
 		@Override
@@ -130,7 +99,6 @@ public class SpringWebsocketClientDemo {
 
 		@Override
 		public boolean supportsPartialMessages() {
-			// TODO Auto-generated method stub
 			return false;
 		}
 		

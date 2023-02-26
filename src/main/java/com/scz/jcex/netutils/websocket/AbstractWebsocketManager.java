@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,37 +23,63 @@ public abstract class AbstractWebsocketManager implements WebsocketManager {
 	
 	private final JsonFactory jsonFactory = new JsonFactory();
 	
-	private final Map<String, TopicManager> topics = new HashMap<>();
+	protected final Map<String, TopicManager> topics = new HashMap<>();
+	
+	protected final List<TopicManager> systemMessageHandlers = new ArrayList<>();
+	
+	protected final AtomicBoolean connected = new AtomicBoolean(false);
 
 	@Override
-	public void dispose() {
-		topics.clear();
-		errorHandlers.clear();
-	}
-
-	@Override
-	public void registerHandler(String topic, WebsocketMessageTopicMatcher matcher,
-			RawWebsocketMessageHandler messageHandler) {
+	public void subscribe(String topic, 
+						  WebsocketMessageTopicMatcher matcher,
+						  RawWebsocketMessageHandler messageHandler) {
 		TopicManager t = topics.get(topic);
 		if (t == null) {
-			t = new TopicManager(topic, matcher, messageHandler);
+			t = new TopicManager(topic, matcher, messageHandler, false);
 			topics.put(topic, t);
 		} else {
-			t.messageHandlers.add(messageHandler);
+			throw new IllegalArgumentException("Already have a subscription for topic [" + topic + "]");
 		}
 	}
 	
-	public boolean removeHandler(String topic, RawWebsocketMessageHandler handler) {
-		TopicManager t = topics.get(topic);
+	@Override
+	public boolean unsubscribe(String topic) {
+		TopicManager t = topics.remove(topic);
 		if (t != null) {
-			if (t.messageHandlers.remove(handler)) {
-				if (t.messageHandlers.isEmpty()) {
-					topics.remove(topic);
-				}
-				return true;
+			try {
+				send(getSubscribeRequestMessage(topic));
+			} catch (IOException ex) {
+				log.error("Error raised while unsubscribing from topic:" + topic);
 			}
+			
+			return true;
 		}
 		return false;
+	}
+	
+	@Override
+	public final void connect() throws IOException {
+		if (isConnected()) {
+			return;
+		}
+		doConnect();
+		connected.set(true);
+	}
+	
+	public final void disconnect() throws IOException {
+		if (!isConnected()) {
+			return;
+		}
+		doDisconnect();
+		connected.set(false);
+	}
+	
+	public boolean isConnected() {
+		return this.connected.get();
+	}
+
+	public boolean removeHandler(String topic) {
+		return topics.remove(topic) != null;
 	}
 
 	@Override
@@ -65,20 +92,30 @@ public abstract class AbstractWebsocketManager implements WebsocketManager {
 		return errorHandlers.remove(websocketErrorHandler);
 	}
 	
+	@Override
+	public void addSystemMessageHandler(String topic, WebsocketMessageTopicMatcher matcher, RawWebsocketMessageHandler messageHandler) {
+		this.systemMessageHandlers.add(new TopicManager(topic, matcher, messageHandler, true));
+	}
+	
 	protected void dispatchWebsocketError(IOException error) {
 		errorHandlers.forEach(h -> h.handleWebsocketError(error));
 	}
 	
 	protected void dispatchMessage(String message) {
-		List<TopicManager> allTopics = new ArrayList<>(topics.size());
-		topics.values().stream().filter(t -> !t.messageHandlers.isEmpty()).forEach(allTopics::add);
+		List<TopicManager> allTopics = new ArrayList<>(topics.size() + systemMessageHandlers.size());
+		allTopics.addAll(systemMessageHandlers);
+		allTopics.addAll(topics.values());
+		allTopics.forEach(t -> t.matcher.reset());
+		systemMessageHandlers.forEach(h -> h.matcher.reset());
 		try {
 			JsonParser jsonParser = jsonFactory.createParser(message.getBytes());
 			for (JsonToken tok = jsonParser.nextToken(); tok != null && !allTopics.isEmpty(); tok = jsonParser.nextToken()) {
 				if (tok == JsonToken.FIELD_NAME) {
 					String fieldName = jsonParser.currentName();
 					String value = getNextValue(jsonParser);
-					dispatchToMessageTopicMatchers(fieldName, value, allTopics, message);
+					if (dispatchToMessageTopicMatchers(fieldName, value, allTopics, message)) {
+						break;
+					}
 				}
 			}
  			
@@ -104,15 +141,27 @@ public abstract class AbstractWebsocketManager implements WebsocketManager {
 		}
 	}
 	
-	private void dispatchToMessageTopicMatchers(String name, String value, List<TopicManager> topics, String rawMessage) {
-		for (Iterator<TopicManager> it = topics.iterator(); it.hasNext();) {
+	protected abstract void doConnect() throws IOException;
+	protected abstract void doDisconnect() throws IOException;
+	protected abstract String getSubscribeRequestMessage(String topic);
+	protected abstract String getUnSubscribeRequestMessage(String topic);
+	
+	private boolean dispatchToMessageTopicMatchers(String name, 
+												String value,  
+												List<TopicManager> messageHandlers, 
+												String rawMessage) {
+		for (Iterator<TopicManager> it = messageHandlers.iterator(); it.hasNext();) {
 			TopicManager topic = it.next();
 			WebsocketMessageTopicMatchStatus matchResult = topic.matcher.matches(name, value);
 			switch (matchResult) {
 			case MATCHED:
 				if (log.isDebugEnabled())
-					log.debug("Dispatching message to " + topic.messageHandlers.size() + " handlers for topic [" + topic.topic + "]:[" + rawMessage + "]");
-				topic.messageHandlers.forEach(t -> t.handleWebsocketMessage(rawMessage));
+					log.debug("Dispatching message to handler for topic:["+ topic.topic + "  :[" + rawMessage + "]");
+				topic.messageHandler.handleWebsocketMessage(rawMessage);
+				if (topic.systemMessage) {
+					// System message handler matched that message. No need to keep processing to find other handlers.
+					return true;
+				}
 				// Fallback
 			case CANT_MATCH:
 				it.remove();
@@ -123,19 +172,33 @@ public abstract class AbstractWebsocketManager implements WebsocketManager {
 				throw new IllegalArgumentException("Unexpected WebsocketMessageTopicMatchStatus:" + matchResult);
 			}
 		}
+		return false;
 	}
 	
-	public class TopicManager {
-		final String topic;
+	protected class TopicManager {
 		final WebsocketMessageTopicMatcher matcher;
-		final List<RawWebsocketMessageHandler> messageHandlers = new ArrayList<>();
+		final RawWebsocketMessageHandler messageHandler;
+		final String topic;
+		final boolean systemMessage;
 		
 		public TopicManager(String topic, WebsocketMessageTopicMatcher matcher,
-				RawWebsocketMessageHandler messageHandler) {
+				RawWebsocketMessageHandler messageHandler, boolean systemMessage) {
 			this.topic = topic;
 			this.matcher = matcher;
-			this.messageHandlers.add(messageHandler);
+			this.messageHandler = messageHandler;
+			this.systemMessage = systemMessage;
 		}
 	}
+	
+//	protected class MessageHandler {
+//		final WebsocketMessageTopicMatcher matcher;
+//		final RawWebsocketMessageHandler messageHandler;
+//		
+//		public MessageHandler(WebsocketMessageTopicMatcher matcher, RawWebsocketMessageHandler messageHandler) {
+//			this.matcher = matcher;
+//			this.messageHandler = messageHandler;
+//		}
+//	}
 
+	protected abstract void send(String message) throws IOException;
 }
