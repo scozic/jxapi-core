@@ -6,6 +6,8 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.slf4j.Logger;
@@ -14,8 +16,13 @@ import org.slf4j.LoggerFactory;
 import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonToken;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ArrayNode;
 
 public abstract class AbstractWebsocketManager implements WebsocketManager {
+	
+	public static final long WRITE_EXECUTOR_KEEP_ALIVE = 30000L;
 	
 	private static final Logger log = LoggerFactory.getLogger(AbstractWebsocketManager.class);
 	
@@ -28,50 +35,99 @@ public abstract class AbstractWebsocketManager implements WebsocketManager {
 	protected final List<TopicManager> systemMessageHandlers = new ArrayList<>();
 	
 	protected final AtomicBoolean connected = new AtomicBoolean(false);
+	protected final AtomicBoolean disposed = new AtomicBoolean(false);
+	
+	protected ExecutorService writeExecutor = null;
+	
+	private long reconnectDelay = -1L;
+	
+//	private long totalElapsedTimeParsing = 0L;
+//	private int nbMsgProcessed; 
+	
+	protected AbstractWebsocketManager() {
+		this.writeExecutor = Executors.newFixedThreadPool(1); //;new ThreadPoolExecutor(0, 1, WRITE_EXECUTOR_KEEP_ALIVE, TimeUnit.MILLISECONDS, new LinkedBlockingQueue<>());
+		
+	}
 
 	@Override
 	public void subscribe(String topic, 
 						  WebsocketMessageTopicMatcher matcher,
-						  RawWebsocketMessageHandler messageHandler) {
-		TopicManager t = topics.get(topic);
-		if (t == null) {
-			t = new TopicManager(topic, matcher, messageHandler, false);
-			topics.put(topic, t);
-		} else {
-			throw new IllegalArgumentException("Already have a subscription for topic [" + topic + "]");
-		}
-	}
-	
-	@Override
-	public boolean unsubscribe(String topic) {
-		TopicManager t = topics.remove(topic);
-		if (t != null) {
+						  RawWebsocketMessageHandler messageHandler) {	
+		if (!isConnected())
+			connect();
+		writeExecutor.execute(() -> {
 			try {
-				send(getSubscribeRequestMessage(topic));
-			} catch (IOException ex) {
-				log.error("Error raised while unsubscribing from topic:" + topic);
+				TopicManager t = topics.get(topic);
+				if (t == null) {
+					t = new TopicManager(topic, matcher, messageHandler, false);
+					topics.put(topic, t);
+					try {
+						send(getSubscribeRequestMessage(topic));
+					} catch (IOException e) {
+						onError(e);
+					}
+				} else {
+					throw new IllegalArgumentException("Already have a subscription for this topic");
+				}
+			} catch (Exception ex) {
+				dispatchWebsocketError(new IOException("Error while subscribing to webscoket for topic [" + topic + "]", ex));
 			}
-			
-			return true;
-		}
-		return false;
+		});
 	}
 	
 	@Override
-	public final void connect() throws IOException {
-		if (isConnected()) {
+	public void unsubscribe(String topic) {
+		writeExecutor.execute(() -> {
+			try {
+				TopicManager t = topics.remove(topic);
+				if (t != null) {
+					send(getUnSubscribeRequestMessage(topic));
+				}
+			} catch (Exception ex) {
+				dispatchWebsocketError(new IOException("Error while unsubscribing from websocket topic [" + topic + "]", ex));
+			}
+		});
+	}
+	
+	protected final void connect() {
+		if (isConnected() || isDisposed()) {
 			return;
 		}
-		doConnect();
+		writeExecutor = Executors.newFixedThreadPool(1);
+		writeExecutor.execute(() -> {
+			try {
+				doConnect();
+			} catch (Exception exception) {
+				onError(new IOException("Error while connecting websocket", exception));
+			}
+		});
 		connected.set(true);
 	}
 	
-	public final void disconnect() throws IOException {
+	public boolean isDisposed() {
+		return disposed.get();
+	}
+
+	public final void disconnect() {
 		if (!isConnected()) {
 			return;
 		}
-		doDisconnect();
+		writeExecutor.execute(() -> {
+			try {
+				doDisconnect();
+			} catch (Exception e) {
+				dispatchWebsocketError(new IOException("Error while disconnecting websocket", e));
+			}
+		});
+		writeExecutor.shutdown();
+		writeExecutor = null;
 		connected.set(false);
+	}
+	
+	@Override
+	public void dispose() {
+		disconnect();
+		
 	}
 	
 	public boolean isConnected() {
@@ -97,18 +153,40 @@ public abstract class AbstractWebsocketManager implements WebsocketManager {
 		this.systemMessageHandlers.add(new TopicManager(topic, matcher, messageHandler, true));
 	}
 	
+	public long getReconnectDelay() {
+		return reconnectDelay;
+	}
+
+	public void setReconnectDelay(long reconnectDelay) {
+		this.reconnectDelay = reconnectDelay;
+	}
+	
 	protected void dispatchWebsocketError(IOException error) {
 		errorHandlers.forEach(h -> h.handleWebsocketError(error));
 	}
 	
 	protected void dispatchMessage(String message) {
+//		long start = System.nanoTime();
+		
+//		 EncodingUtil.splitJsonArrayStr(message).forEach(this::dispatchSingleMessage);
+		splitJsonArray(message).forEach(this::dispatchSingleMessage);
+		
+//		this.totalElapsedTimeParsing += System.nanoTime() - start;
+//		this.nbMsgProcessed++;
+//		if (nbMsgProcessed % 100 == 0) {
+//			if (log.isInfoEnabled())
+//				log.info("Average time nanos to process 1 message:" + (BigDecimal.valueOf(totalElapsedTimeParsing).divide(BigDecimal.valueOf(nbMsgProcessed), RoundingMode.CEILING)));
+//		}
+	}
+	
+	private void dispatchSingleMessage(String message) {
 		List<TopicManager> allTopics = new ArrayList<>(topics.size() + systemMessageHandlers.size());
 		allTopics.addAll(systemMessageHandlers);
 		allTopics.addAll(topics.values());
 		allTopics.forEach(t -> t.matcher.reset());
-		systemMessageHandlers.forEach(h -> h.matcher.reset());
 		try {
 			JsonParser jsonParser = jsonFactory.createParser(message.getBytes());
+			
 			for (JsonToken tok = jsonParser.nextToken(); tok != null && !allTopics.isEmpty(); tok = jsonParser.nextToken()) {
 				if (tok == JsonToken.FIELD_NAME) {
 					String fieldName = jsonParser.currentName();
@@ -122,6 +200,28 @@ public abstract class AbstractWebsocketManager implements WebsocketManager {
 		} catch (IOException e) {
 			log.error("Error parsing websocket message [" + message + "]", e);
 		} 
+	}
+	
+	private List<String> splitJsonArray(String messages) {
+		try {
+			JsonParser jsonParser = jsonFactory.createParser(messages.getBytes());
+			if (jsonParser.nextToken() != JsonToken.START_ARRAY) {
+				return List.of(messages);
+			}
+			
+			ObjectMapper m = new ObjectMapper();
+			ArrayNode array;
+			array = (ArrayNode) m.readTree(messages);
+			List<String> res = new ArrayList<>(array.size());
+			for (Iterator<JsonNode> it = array.elements(); it.hasNext();) {
+				JsonNode node = it.next();
+				res.add(m.writeValueAsString(node));
+			}
+			return res;
+		} catch (IOException e) {
+			log.error("Error while splitting array message:" + messages, e);
+			return List.of();
+		}
 	}
 	
 	private String getNextValue(JsonParser jsonParser) throws IOException {
@@ -141,8 +241,45 @@ public abstract class AbstractWebsocketManager implements WebsocketManager {
 		}
 	}
 	
+	protected void onError(IOException exception) {
+		log.error("Error raised on Websocket [" + toString() + "]", exception);
+		this.dispatchWebsocketError(exception);
+		if (reconnectDelay > 0) {
+			if (log.isInfoEnabled()) {
+				log.info("Disconnecting websocket [" +toString() + "] after error");
+			}
+			
+			disconnect();
+			if (log.isInfoEnabled()) {
+				log.info("Will try to reconnect websocket [" + toString() + "] in " + reconnectDelay + "ms");
+			}
+			try {
+				Thread.sleep(reconnectDelay);
+			} catch (InterruptedException e) {
+				log.warn("Interrupted while sleeping till reconnect delay has elapsed for websocket [" + toString() + "]");
+			}
+			try {
+				connect();
+				resubscribeTopics();
+			} catch (IOException e) {
+				onError(e);
+			}
+		}
+	}
+	
+	private void resubscribeTopics() throws IOException {
+		if (log.isInfoEnabled())
+			log.info("Resubscribing " + topics.size() + " topics after successful reconnection");
+		for (String topic : topics.keySet()) {
+			send(getSubscribeRequestMessage(topic));
+		}
+		if (log.isInfoEnabled())
+			log.info("Successfully resubscribed to " + topics.size() + " topics after successful reconnection");
+	}
+	
 	protected abstract void doConnect() throws IOException;
 	protected abstract void doDisconnect() throws IOException;
+	protected abstract void send(String message) throws IOException;
 	protected abstract String getSubscribeRequestMessage(String topic);
 	protected abstract String getUnSubscribeRequestMessage(String topic);
 	
@@ -189,16 +326,6 @@ public abstract class AbstractWebsocketManager implements WebsocketManager {
 			this.systemMessage = systemMessage;
 		}
 	}
-	
-//	protected class MessageHandler {
-//		final WebsocketMessageTopicMatcher matcher;
-//		final RawWebsocketMessageHandler messageHandler;
-//		
-//		public MessageHandler(WebsocketMessageTopicMatcher matcher, RawWebsocketMessageHandler messageHandler) {
-//			this.matcher = matcher;
-//			this.messageHandler = messageHandler;
-//		}
-//	}
 
-	protected abstract void send(String message) throws IOException;
+	
 }

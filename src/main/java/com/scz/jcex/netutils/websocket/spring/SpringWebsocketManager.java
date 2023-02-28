@@ -48,8 +48,6 @@ public abstract class SpringWebsocketManager extends AbstractWebsocketManager {
 	
 	private AtomicBoolean heartBeatTaskCancelled = null;
 	
-	private long reconnectDelay = -1L;
-	
 	public SpringWebsocketManager(String baseUrl) {
 		try {
 			this.baseUri = new URI(baseUrl);
@@ -67,16 +65,18 @@ public abstract class SpringWebsocketManager extends AbstractWebsocketManager {
 
 	@Override
 	protected void doConnect() throws IOException {
-		this.clientManager = ClientManager.createClient();
-		this.clientManager.getProperties().put(GrizzlyClientProperties.SELECTOR_THREAD_POOL_CONFIG, null);
-		this.clientManager.getProperties().put(GrizzlyClientProperties.WORKER_THREAD_POOL_CONFIG, ThreadPoolConfig.defaultConfig().setCorePoolSize(1).setMaxPoolSize(1).setPoolName("WSDEMO_WORK"));
-		StandardWebSocketClient client = new StandardWebSocketClient(clientManager);
+
 		this.taskExecutor = new ThreadPoolTaskExecutor();
 		this.taskExecutor.setThreadNamePrefix(baseUri + "-" + taskExecutorCounter++);
 		this.taskExecutor.setCorePoolSize(0);
 		this.taskExecutor.setMaxPoolSize(2);
 		this.taskExecutor.setKeepAliveSeconds(5);
 		this.taskExecutor.initialize();
+		
+		this.clientManager = ClientManager.createClient();
+		this.clientManager.getProperties().put(GrizzlyClientProperties.SELECTOR_THREAD_POOL_CONFIG, null);
+		this.clientManager.getProperties().put(GrizzlyClientProperties.WORKER_THREAD_POOL_CONFIG, ThreadPoolConfig.defaultConfig().setCorePoolSize(1).setMaxPoolSize(1).setPoolName("WSDEMO_WORK"));
+		StandardWebSocketClient client = new StandardWebSocketClient(clientManager);
 		client.setTaskExecutor(taskExecutor);
 		lastHeartBeatTime.set(System.currentTimeMillis());
 		log.debug("Performing handshake");
@@ -101,35 +101,7 @@ public abstract class SpringWebsocketManager extends AbstractWebsocketManager {
 			scheduleHeartBeatTask(new HeartBeakTask(this.heartBeatTaskCancelled));
 		}
 	}
-	
-	private void onError(IOException exception) {
-		log.error("Error raised on Websocket [" + baseUri + "]", exception);
-		this.dispatchWebsocketError(exception);
-		if (reconnectDelay > 0) {
-			if (log.isInfoEnabled()) {
-				log.info("Disconnecting websocket [" + this.baseUri + "] after error");
-			}
-			try {
-				disconnect();
-			} catch (IOException e) {
-				this.dispatchWebsocketError(e);
-			}
-			if (log.isInfoEnabled()) {
-				log.info("Will try to reconnect websocket [" + this.baseUri + "] in " + reconnectDelay + "ms");
-			}
-			try {
-				Thread.sleep(reconnectDelay);
-			} catch (InterruptedException e) {
-				log.warn("Interrupted while sleeping till reconnect delay has elapsed for websocket [" + this.baseUri + "]");
-			}
-			try {
-				connect();
-			} catch (IOException e) {
-				onError(e);
-			}
-		}
-	}
-	
+
 	private void scheduleHeartBeatTask(HeartBeakTask heartBeakTask) {
 		this.taskExecutor.execute(heartBeakTask, heartBeatInterval);
 	}
@@ -161,14 +133,6 @@ public abstract class SpringWebsocketManager extends AbstractWebsocketManager {
 
 	public void setNoHeartBeatResponseTimeout(long noHeartBeatResponseTimeout) {
 		this.noHeartBeatResponseTimeout = noHeartBeatResponseTimeout;
-	}
-
-	public long getReconnectDelay() {
-		return reconnectDelay;
-	}
-
-	public void setReconnectDelay(long reconnectDelay) {
-		this.reconnectDelay = reconnectDelay;
 	}
 
 	private class SpringWebsocketHandler implements WebSocketHandler {

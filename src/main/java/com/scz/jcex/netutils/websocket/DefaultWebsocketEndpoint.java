@@ -1,5 +1,6 @@
 package com.scz.jcex.netutils.websocket;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -26,7 +27,7 @@ public class DefaultWebsocketEndpoint<T extends WebsocketSubscribeParameters, M>
 	}
 
 	@Override
-	public String subscribe(WebsocketSubscribeRequest<T> request, WebsocketListener<M> listener) {
+	public String subscribe(WebsocketSubscribeRequest<T> request, WebsocketListener<M> listener) throws IOException {
 		String topic = request.getParameters().getTopic();
 		Subscription sub = subscriptionsByTopic.get(topic);
 		if (sub == null ) {
@@ -44,7 +45,7 @@ public class DefaultWebsocketEndpoint<T extends WebsocketSubscribeParameters, M>
 	}
 
 	@Override
-	public boolean unsubscribe(String unsubscriptionId) {
+	public boolean unsubscribe(String unsubscriptionId) throws IOException {
 		Subscription sub = subscriptionsById.get(unsubscriptionId);
 		sub.removeListener(unsubscriptionId);
 		return false;
@@ -58,7 +59,7 @@ public class DefaultWebsocketEndpoint<T extends WebsocketSubscribeParameters, M>
 			this.request = request;
 		}
 		
-		public void addListener(String subscriptionId, WebsocketListener<M> listener) {
+		public void addListener(String subscriptionId, WebsocketListener<M> listener) throws IOException {
 			listeners.put(subscriptionId, listener);
 			if (listeners.size() == 1) {
 				// First subscription
@@ -66,7 +67,7 @@ public class DefaultWebsocketEndpoint<T extends WebsocketSubscribeParameters, M>
 			}
 		}
 		
-		public boolean removeListener(String subscriptionId) {
+		public boolean removeListener(String subscriptionId) throws IOException {
 			if (listeners.remove(subscriptionId) != null) {
 				if (listeners.size() <= 0) {
 					websocketManager.unsubscribe(request.getParameters().getTopic());

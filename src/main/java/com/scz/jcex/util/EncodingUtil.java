@@ -1,6 +1,7 @@
 package com.scz.jcex.util;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -103,5 +104,39 @@ public class EncodingUtil {
 	
 	public static String bigDecimalToString(BigDecimal bd) {
 		return Optional.ofNullable(bd).orElse(BigDecimal.ZERO).toPlainString();
+	}
+	
+	public static List<String> splitJsonArrayStr(String jsonArrayStr) {
+		if (jsonArrayStr == null || jsonArrayStr.isEmpty()) {
+			return List.of();
+		}
+		if (!jsonArrayStr.startsWith("[")) {
+			return List.of(jsonArrayStr);
+		}
+		List<String> res = new ArrayList<>();
+		int depth = 0;
+		int off = 1;
+		boolean inStr = false;
+		StringBuilder sb = new StringBuilder();
+		for (int i = 1; i < jsonArrayStr.length(); i++) {
+			char c = jsonArrayStr.charAt(i);
+			if (c == '"' && !(inStr && jsonArrayStr.charAt(i - 1) == '\\')) {
+				inStr = !inStr;
+			} else if (!inStr) {
+				if (depth == 0 && ( c == ']' || c == ',')) {
+					res.add(jsonArrayStr.substring(off, i));
+					off = i + 1;
+					sb.delete(0, sb.length());
+					continue;
+				} else if (c == '{' || c == '[') {
+					depth++;
+				} else if (c == '}' || c == ']') {
+					depth--;
+				}
+			}
+			sb.append(c);
+		}
+		
+		return res;
 	}
 }
