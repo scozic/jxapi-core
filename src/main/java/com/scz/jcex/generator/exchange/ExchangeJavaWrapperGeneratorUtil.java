@@ -16,10 +16,14 @@ import com.scz.jcex.generator.JsonMessageDeserializerGenerator;
 import com.scz.jcex.generator.JsonPojoSerializerGenerator;
 import com.scz.jcex.generator.PojoField;
 import com.scz.jcex.generator.PojoGenerator;
+import com.scz.jcex.netutils.deserialization.MessageDeserializer;
 import com.scz.jcex.netutils.rest.RestEndpoint;
 import com.scz.jcex.netutils.rest.RestEndpointUrlParameters;
 import com.scz.jcex.netutils.rest.RestRequest;
+import com.scz.jcex.netutils.websocket.DefaultWebsocketEndpoint;
+import com.scz.jcex.netutils.websocket.WebsocketEndpoint;
 import com.scz.jcex.netutils.websocket.WebsocketSubscribeParameters;
+import com.scz.jcex.netutils.websocket.WebsocketSubscribeRequest;
 import com.scz.jcex.util.EncodingUtil;
 
 /**
@@ -305,6 +309,18 @@ public class ExchangeJavaWrapperGeneratorUtil {
 				  							 + " = new "
 				  							 + restApiFactorySimpleClassName + "();\n\n");
 		
+		String websocketEndpointFactoryFullClassName = exchangeApiDescriptor.getWebsocketEndpointFactory();
+		implementationGenerator.addImport(websocketEndpointFactoryFullClassName);
+		String websocketEndpointFactorySimpleClassName = JavaCodeGenerationUtil.getClassNameWithoutPackage(websocketEndpointFactoryFullClassName);
+		String websocketEndpointFactoryVariableName = "websocketEndpointFactory";
+		implementationGenerator.appendToBody("private final "
+					 + websocketEndpointFactorySimpleClassName
+					 + " "
+					 + websocketEndpointFactoryVariableName
+					 + " = new "
+					 + websocketEndpointFactorySimpleClassName + "();\n\n");
+		
+		
 		StringBuilder implementationConstructorBody = new StringBuilder();
 		implementationConstructorBody.append("this." + restApiFactoryVariableName + ".setProperties(properties);\n");
 		
@@ -331,8 +347,6 @@ public class ExchangeJavaWrapperGeneratorUtil {
 			String apiMethodSignature = responseSimpleClassName + " " + apiMethodName + "(" + requestSimpleClassName + " request) throws IOException"; 
 			
 			interfaceGenerator.addImport(IOException.class);
-			interfaceGenerator.addImport(requestClassName);
-			interfaceGenerator.addImport(responseClassName);
 			interfaceGenerator.appendToBody(JavaCodeGenerationUtil.generateJavaDoc(restApi.getDescription()) + "\n");
 			interfaceGenerator.appendToBody(apiMethodSignature + ";\n");
 			
@@ -365,12 +379,86 @@ public class ExchangeJavaWrapperGeneratorUtil {
 			implementationGenerator.appendMethod("@Override\npublic " + apiMethodSignature, apiMethodBody.toString());
 		}
 		
+		for (WebsocketEndpointDescriptor websocketApi : exchangeApiDescriptor.getWebsocketEndpoints()) {
+			implementationGenerator.addImport(WebsocketEndpoint.class);
+			String requestClassName = generateWebsocketEndpointRequestClassName(exchangeDescriptor, exchangeApiDescriptor, websocketApi);
+			String requestClassSimpleName = JavaCodeGenerationUtil.getClassNameWithoutPackage(requestClassName);
+			implementationGenerator.addImport(requestClassName);
+			String messageClassName = generateWebsocketEndpointMessageClassName(exchangeDescriptor, exchangeApiDescriptor, websocketApi);
+			String messageClassSimpleName = JavaCodeGenerationUtil.getClassNameWithoutPackage(messageClassName);
+			implementationGenerator.addImport(messageClassName);
+			String messageDeserializerClassName = JsonMessageDeserializerGenerator.getJsonMessageDeserializerClassName(messageClassName);
+			implementationGenerator.addImport(messageDeserializerClassName);
+			String subscribeMethodName = "subscribe" + websocketApi.getName();
+			String unsubscribeMethodName = "subscribe" + websocketApi.getName();
+			String websocketEndpointVariableName = JavaCodeGenerationUtil.firstLetterToLowerCase(websocketApi.getName()) + "Ws";
+			implementationGenerator.appendToBody("\nprivate final WebsocketEndpoint<" + requestClassSimpleName + ", " + messageClassSimpleName + "> " + websocketEndpointVariableName + ";\n\n");
+			
+			/*
+			 * 	@Override
+	public <S extends WebsocketSubscribeParameters, M> WebsocketEndpoint<S, M> createWebsocketEndpoint(
+			String endpoitName, MessageDeserializer<M> messageDeserializer) {
+		return new DefaultWebsocketEndpoint<>(websocketManager, messageDeserializer);
+	}
+			 */
+			implementationGenerator.appendToBody("\nprivate final RestEndpoint<" + requestClassSimpleName + ", " + messageClassSimpleName + "> " + websocketEndpointVariableName + ";\n\n");
+			implementationConstructorBody.append("this." + websocketEndpointVariableName + " = "  
+												 		 + websocketEndpointFactoryVariableName + ".createWebsocketEndpoint(new " 
+												 		 + JavaCodeGenerationUtil.getClassNameWithoutPackage(messageDeserializerClassName) 
+												 		 + "());\n");
+			String subscribeMethodSignature = "String " + subscribeMethodName + "(" + requestClassSimpleName + " request)";
+			interfaceGenerator.appendToBody("Subscribe to " + websocketApi.getName() + " stream.<br/>\n" 
+											+ JavaCodeGenerationUtil.generateJavaDoc(websocketApi.getDescription()) 
+											+ "\n"
+											+ "\n@return client subscriptionId to use for unsubscription");
+			interfaceGenerator.appendToBody(subscribeMethodSignature + ";\n");
+			
+			String unsubscribeMethodSignature = " void " + unsubscribeMethodName + "(String subscriptionId)";
+			interfaceGenerator.appendToBody("Unsubscribe from " + websocketApi + " stream.\n"
+											+ "\n@param subscriptionId ID of subscription returned by #" + subscribeMethodName + "()");
+			interfaceGenerator.appendToBody(unsubscribeMethodSignature + ";\n");
+			implementationGenerator.addImport(WebsocketSubscribeRequest.class);
+			
+			// TODO
+//			StringBuilder apiMethodBody = new StringBuilder()
+//					.append("if (log.isDebugEnabled())\n")
+//					.append(JavaCodeGenerationUtil.INDENTATION)
+//					.append("log.debug(\"")
+//					.append(restApi.getHttpMethod().toUpperCase())
+//					.append(" ")
+//					.append(restApi.getName())
+//					.append(" > \" + request);\n")
+//					.append(responseSimpleClassName)
+//					.append(" response = ")
+//					.append(restEndpointVariableName)
+//					.append(".call(RestRequest.create(\"")
+//					.append(restApi.getUrl())
+//					.append("\", \"")
+//					.append(restApi.getHttpMethod().toUpperCase())
+//					.append("\", request));\n")
+//					.append("return response;\n");
+//			implementationGenerator.appendMethod("@Override\npublic " + apiMethodSignature, apiMethodBody.toString());
+		}
+		
+		
 		implementationGenerator.addImport(Properties.class);
 		implementationGenerator.appendMethod("public " + simpleImplementationName + "(Properties properties)", implementationConstructorBody.toString());
 		interfaceGenerator.writeJavaFile(outputFolder);
 		implementationGenerator.writeJavaFile(outputFolder);
 	}
 	
+	private static String generateWebsocketEndpointMessageClassName(ExchangeDescriptor exchangeDescriptor,
+			ExchangeApiDescriptor exchangeApiDescriptor, WebsocketEndpointDescriptor websocketApi) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	private static String generateWebsocketEndpointRequestClassName(ExchangeDescriptor exchangeDescriptor,
+			ExchangeApiDescriptor exchangeApiDescriptor, WebsocketEndpointDescriptor websocketApi) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 	public static void generateExchangeInterface(ExchangeDescriptor exchangeDescriptor, Path outputFolder) throws IOException {
 		String pkgPrefix =  exchangeDescriptor.getBasePackage() + ".";
 		String simpleInterfaceName = JavaCodeGenerationUtil.firstLetterToUpperCase(exchangeDescriptor.getName());
@@ -410,6 +498,8 @@ public class ExchangeJavaWrapperGeneratorUtil {
 			implementationGenerator.appendMethod("@Override\npublic " + getApiMethodSignature, "return this." + apiVariableName + ";\n");
 			implementationGenerator.appendToBody("\n");
 		}
+		
+		
 		
 		implementationGenerator.addImport(Properties.class);
 		implementationGenerator.appendMethod("public " + simpleImplementationName + "(Properties properties)", implementationConstructorBody.toString());

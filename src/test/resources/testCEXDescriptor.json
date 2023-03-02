@@ -1,11 +1,12 @@
 {
 	"name": "MyTestCEX",
 	"description": "A sample CEX descriptor file",
-	"basePackage": "com.foo.bar",
+	"basePackage": "com.foo.bar.gen",
 	"apis":[
 		{ 
 			"name": "MarketData",
 			"description": "The market data API of MyTestCEX",
+			"restEndpointFactory": "com.foo.bar.BarRestEndpointFactory",
 			"restEndpoints": [
 				{
 					"name": "exchangeInfo",
@@ -24,6 +25,7 @@
 					]
 				}
 			],
+			"websocketEndpointFactory": "com.foo.bar.BarWebsocketEndpointFactory",
 			"websocketEndpoints": [
 				{
 					"name": "tickerStream",

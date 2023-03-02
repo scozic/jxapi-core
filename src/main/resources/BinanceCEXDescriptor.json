@@ -94,6 +94,7 @@
 					]
 				}
 			],
+			"websocketEndpointFactory": "com.scz.jcex.binance.net.BinancePublicWebsocketEndpointFactory",
 			"websocketEndpoints": [
 				{
 					"name": "AllMarketTickersStream",

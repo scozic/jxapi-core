@@ -21,6 +21,8 @@ public class ExchangeApiDescriptor {
 	
 	private List<RestEndpointDescriptor> restEndpoints;
 	
+	private String websocketEndpointFactory;
+	
 	private List<WebsocketEndpointDescriptor> websocketEndpoints;
 
 	public List<RestEndpointDescriptor> getRestEndpoints() {
@@ -55,16 +57,25 @@ public class ExchangeApiDescriptor {
 		this.websocketEndpoints = websocketEndpoints;
 	}
 	
-	public String toString() {
-		return EncodingUtil.pojoToString(this);
-	}
-
 	public String getRestEndpointFactory() {
 		return restEndpointFactory;
 	}
 
 	public void setRestEndpointFactory(String restEndpointFactory) {
 		this.restEndpointFactory = restEndpointFactory;
+	}
+
+	public String getWebsocketEndpointFactory() {
+		return websocketEndpointFactory;
+	}
+
+	public void setWebsocketEndpointFactory(String websocketEndpointFactory) {
+		this.websocketEndpointFactory = websocketEndpointFactory;
+	}
+	
+	@Override
+	public String toString() {
+		return EncodingUtil.pojoToString(this);
 	}
 
 }

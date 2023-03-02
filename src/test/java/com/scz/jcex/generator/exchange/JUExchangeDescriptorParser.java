@@ -16,7 +16,7 @@ public class JUExchangeDescriptorParser {
 		ExchangeDescriptor ex = new ExchangeDescriptorParser().fromJson(Paths.get(".", "src", "test", "resources", "testCEXDescriptor.json"));
 		Assert.assertEquals("MyTestCEX", ex.getName());
 		Assert.assertEquals("A sample CEX descriptor file", ex.getDescription());
-		Assert.assertEquals("com.foo.bar", ex.getBasePackage());
+		Assert.assertEquals("com.foo.bar.gen", ex.getBasePackage());
 		List<ExchangeApiDescriptor> apis = ex.getApis(); 
 		Assert.assertEquals(1, apis.size());
 		checkMarketDataApi(apis.get(0));
@@ -25,9 +25,11 @@ public class JUExchangeDescriptorParser {
 	private void checkMarketDataApi(ExchangeApiDescriptor marketDataApi) {
 		Assert.assertEquals("MarketData", marketDataApi.getName());
 		Assert.assertEquals("The market data API of MyTestCEX", marketDataApi.getDescription());
+		Assert.assertEquals("com.foo.bar.BarRestEndpointFactory", marketDataApi.getRestEndpointFactory());
 		List<RestEndpointDescriptor> restEndpoints = marketDataApi.getRestEndpoints();
 		Assert.assertEquals(1, restEndpoints.size());
 		checkExchangeInfoRestEndpoint(restEndpoints.get(0));
+		Assert.assertEquals("com.foo.bar.BarWebsocketEndpointFactory", marketDataApi.getWebsocketEndpointFactory());
 		List<WebsocketEndpointDescriptor> websocketEndpoints = marketDataApi.getWebsocketEndpoints();
 		Assert.assertEquals(1, websocketEndpoints.size());
 		checkTickerStreamWebsocketEndpoint(websocketEndpoints.get(0));

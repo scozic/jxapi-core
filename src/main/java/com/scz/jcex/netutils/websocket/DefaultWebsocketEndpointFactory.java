@@ -11,8 +11,7 @@ public class DefaultWebsocketEndpointFactory implements WebsocketEndpointFactory
 	}
 
 	@Override
-	public <S extends WebsocketSubscribeParameters, M> WebsocketEndpoint<S, M> createWebsocketEndpoint(
-			String endpoitName, MessageDeserializer<M> messageDeserializer) {
+	public <S extends WebsocketSubscribeParameters, M> WebsocketEndpoint<S, M> createWebsocketEndpoint(MessageDeserializer<M> messageDeserializer) {
 		return new DefaultWebsocketEndpoint<>(websocketManager, messageDeserializer);
 	}
 

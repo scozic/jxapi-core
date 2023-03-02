@@ -8,6 +8,13 @@ import com.scz.jcex.util.EncodingUtil;
  * @param <T> the 'Pojo' containing endpoint specific subscription parameters
  */
 public class WebsocketSubscribeRequest<T extends WebsocketSubscribeParameters> {
+	
+	public static <T extends WebsocketSubscribeParameters> WebsocketSubscribeRequest<T> createWebsocketSubscribeReques(T parameters, WebsocketMessageTopicMatcher messageTopicMatcher) {
+		WebsocketSubscribeRequest<T> request = new WebsocketSubscribeRequest<>();
+		request.parameters = parameters;
+		request.messageTopicMatcher = messageTopicMatcher;
+		return request;
+	}
 
 	private String baseUrl;
 	private T parameters;

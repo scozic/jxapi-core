@@ -50,6 +50,7 @@ public class BinanceSpotApiImpl implements BinanceSpotApi {
 		return response;
 	}
 	
+	@Override
 	public String subscribeAllMarketsTicker(BinanceAllMarketTickersStreamRequest request, WebsocketListener<BinanceAllMarketTickersStreamResponse> listener) throws IOException {
 		WebsocketSubscribeRequest<BinanceAllMarketTickersStreamRequest> websocketSubscribeRequest = new WebsocketSubscribeRequest<>();
 		websocketSubscribeRequest.setBaseUrl(BINANCE_SPOT_API_BASE_URL);
