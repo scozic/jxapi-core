@@ -1,7 +1,7 @@
 package com.scz.jcex.netutils.websocket;
 
 /**
- * As for sake of performance, websockets are multiplexed and messages of many topics will be received on same socket, each Websocket Endpoint is expected to 
+ * As for sake of performance, websockets are multiplexed and messages of different topics will can received on same socket, each Websocket Endpoint is expected to 
  * provide an implementation of this parser interface to route relevant messages to it. 
  */
 public interface WebsocketMessageTopicMatcher {
@@ -11,8 +11,8 @@ public interface WebsocketMessageTopicMatcher {
 	 * be performed and this method will be called on every
 	 * {@link WebsocketMessageTopicMatcher} (one for each endpoint), for each field
 	 * of message with is value, until it returns true for one endpoint.<br/>
-	 * Implementations may match a message across multiple fields. <code>true</code>
-	 * should be returned when all fields have been matched.
+	 * Implementations may match a message across multiple fields. {@link WebsocketMessageTopicMatchStatus#MATCHED}.
+	 * should be returned only when all fields have been matched.
 	 * 
 	 * @param fieldName
 	 * @param value

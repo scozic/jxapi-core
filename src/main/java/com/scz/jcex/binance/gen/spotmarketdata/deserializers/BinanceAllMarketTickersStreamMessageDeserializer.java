@@ -2,22 +2,22 @@ package com.scz.jcex.binance.gen.spotmarketdata.deserializers;
 
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonToken;
-import com.scz.jcex.binance.gen.spotmarketdata.pojo.BinanceIndividualSymbolTickerStreamsResponse;
+import com.scz.jcex.binance.gen.spotmarketdata.pojo.BinanceAllMarketTickersStreamMessage;
 import com.scz.jcex.netutils.deserialization.json.AbstractJsonMessageDeserializer;
 import com.scz.jcex.netutils.serialization.json.JsonParserUtil;
 import java.io.IOException;
 import java.math.BigDecimal;
 
 /**
- * Parses incoming JSON messages into com.scz.jcex.binance.gen.spotmarketdata.pojo.BinanceIndividualSymbolTickerStreamsResponse instances
+ * Parses incoming JSON messages into com.scz.jcex.binance.gen.spotmarketdata.pojo.BinanceAllMarketTickersStreamMessage instances
  * <br><strong>THIS CODE IS GENERATED. DO NOT EDIT MANUALLY!</strong>
- * @see com.scz.jcex.binance.gen.spotmarketdata.pojo.BinanceIndividualSymbolTickerStreamsResponse
+ * @see com.scz.jcex.binance.gen.spotmarketdata.pojo.BinanceAllMarketTickersStreamMessage
  */
-public class BinanceIndividualSymbolTickerStreamsResponseDeserializer extends AbstractJsonMessageDeserializer<BinanceIndividualSymbolTickerStreamsResponse> {
+public class BinanceAllMarketTickersStreamMessageDeserializer extends AbstractJsonMessageDeserializer<BinanceAllMarketTickersStreamMessage> {
   
   @Override
-  public BinanceIndividualSymbolTickerStreamsResponse deserialize(JsonParser parser) throws IOException {
-    BinanceIndividualSymbolTickerStreamsResponse msg = new BinanceIndividualSymbolTickerStreamsResponse();
+  public BinanceAllMarketTickersStreamMessage deserialize(JsonParser parser) throws IOException {
+    BinanceAllMarketTickersStreamMessage msg = new BinanceAllMarketTickersStreamMessage();
     while(parser.nextToken() != JsonToken.END_OBJECT) {
       switch(parser.getCurrentName()) {
       case "e":

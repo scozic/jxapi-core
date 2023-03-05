@@ -3,10 +3,12 @@ package com.scz.jcex.generator.exchange;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.EnumMap;
 import java.util.List;
 import java.util.Properties;
+import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -21,6 +23,7 @@ import com.scz.jcex.netutils.rest.RestEndpointUrlParameters;
 import com.scz.jcex.netutils.rest.RestRequest;
 import com.scz.jcex.netutils.websocket.DefaultWebsocketMessageTopicMatcher;
 import com.scz.jcex.netutils.websocket.WebsocketEndpoint;
+import com.scz.jcex.netutils.websocket.WebsocketListener;
 import com.scz.jcex.netutils.websocket.WebsocketMessageTopicMatcherField;
 import com.scz.jcex.netutils.websocket.WebsocketSubscribeParameters;
 import com.scz.jcex.netutils.websocket.WebsocketSubscribeRequest;
@@ -129,36 +132,23 @@ public class ExchangeJavaWrapperGeneratorUtil {
 	
 	public static void generateCEXPojoSerializers(ExchangeDescriptor exchangeDescriptor, Path ouputFolder) throws IOException {
 		for (ExchangeApiDescriptor api: exchangeDescriptor.getApis()) {
-			String pkgPrefix =  exchangeDescriptor.getBasePackage() + "." + api.getName().toLowerCase() + ".pojo.";
 			for (RestEndpointDescriptor restEndpointDescriptor: api.getRestEndpoints()) {
 				ExchangeJavaWrapperGeneratorUtil.generateSerializer(ouputFolder, 
-						pkgPrefix
-						+ JavaCodeGenerationUtil.firstLetterToUpperCase(exchangeDescriptor.getName()) 
-						+ JavaCodeGenerationUtil.firstLetterToUpperCase(restEndpointDescriptor.getName())
-						+ "Request",
+						generateRestEnpointRequestClassName(exchangeDescriptor, api, restEndpointDescriptor),
 						restEndpointDescriptor.getParameters());
 				
 				ExchangeJavaWrapperGeneratorUtil.generateSerializer(ouputFolder, 
-						pkgPrefix 
-							+ JavaCodeGenerationUtil.firstLetterToUpperCase(exchangeDescriptor.getName()) 
-							+ JavaCodeGenerationUtil.firstLetterToUpperCase(restEndpointDescriptor.getName())
-							+ "Response",
+						generateRestEnpointResponseClassName(exchangeDescriptor, api, restEndpointDescriptor),
 						restEndpointDescriptor.getResponse());
 			}
 			
 			for (WebsocketEndpointDescriptor wsEndpointDescriptor: api.getWebsocketEndpoints()) {
 				ExchangeJavaWrapperGeneratorUtil.generateSerializer(ouputFolder, 
-						pkgPrefix 
-							+ JavaCodeGenerationUtil.firstLetterToUpperCase(exchangeDescriptor.getName()) 
-							+ JavaCodeGenerationUtil.firstLetterToUpperCase(wsEndpointDescriptor.getName())
-							+ "Request"
-							, wsEndpointDescriptor.getParameters());
+							generateWebsocketEndpointRequestClassName(exchangeDescriptor, api, wsEndpointDescriptor),
+							wsEndpointDescriptor.getParameters());
 				
 				ExchangeJavaWrapperGeneratorUtil.generateSerializer(ouputFolder, 
-						pkgPrefix
-							+ JavaCodeGenerationUtil.firstLetterToUpperCase(exchangeDescriptor.getName()) 
-							+ JavaCodeGenerationUtil.firstLetterToUpperCase(wsEndpointDescriptor.getName())
-							+ "Response",
+						generateWebsocketEndpointMessageClassName(exchangeDescriptor, api, wsEndpointDescriptor),
 						wsEndpointDescriptor.getResponse());
 			}
 		}
@@ -180,22 +170,15 @@ public class ExchangeJavaWrapperGeneratorUtil {
 
 	public static void generateCEXPojoDeserializers(ExchangeDescriptor exchangeDescriptor, Path ouputFolder) throws IOException {
 		for (ExchangeApiDescriptor api: exchangeDescriptor.getApis()) {
-			String pkgPrefix =  exchangeDescriptor.getBasePackage() + "." + api.getName().toLowerCase() + ".pojo.";
 			for (RestEndpointDescriptor restEndpointDescriptor: api.getRestEndpoints()) {
 				ExchangeJavaWrapperGeneratorUtil.generateDeserializer(ouputFolder, 
-						pkgPrefix 
-							+ JavaCodeGenerationUtil.firstLetterToUpperCase(exchangeDescriptor.getName()) 
-							+ JavaCodeGenerationUtil.firstLetterToUpperCase(restEndpointDescriptor.getName())
-							+ "Response",
+						generateRestEnpointResponseClassName(exchangeDescriptor, api, restEndpointDescriptor),
 						restEndpointDescriptor.getResponse());
 			}
 			
 			for (WebsocketEndpointDescriptor wsEndpointDescriptor: api.getWebsocketEndpoints()) {
 				ExchangeJavaWrapperGeneratorUtil.generateDeserializer(ouputFolder, 
-						pkgPrefix
-							+ JavaCodeGenerationUtil.firstLetterToUpperCase(exchangeDescriptor.getName()) 
-							+ JavaCodeGenerationUtil.firstLetterToUpperCase(wsEndpointDescriptor.getName())
-							+ "Response",
+						generateWebsocketEndpointMessageClassName(exchangeDescriptor, api, wsEndpointDescriptor),
 						wsEndpointDescriptor.getResponse());
 			}
 		}
@@ -205,7 +188,6 @@ public class ExchangeJavaWrapperGeneratorUtil {
 		generateExchangeInterface(exchangeDescriptor, ouputFolder);
 		for (ExchangeApiDescriptor api: exchangeDescriptor.getApis()) {
 			generateExchangeApiInterface(exchangeDescriptor, api, ouputFolder);
-			String pkgPrefix =  exchangeDescriptor.getBasePackage() + "." + api.getName().toLowerCase() + ".pojo.";
 			for (RestEndpointDescriptor restEndpointDescriptor: api.getRestEndpoints()) {
 				String urlParams = restEndpointDescriptor.getUrlParameters();
 				List<String> implementedInterfaces = null;
@@ -233,13 +215,9 @@ public class ExchangeJavaWrapperGeneratorUtil {
 							+ JavaCodeGenerationUtil.GENERATED_CODE_WARNING,
 						restEndpointDescriptor.getResponse());
 			}
-			
 			for (WebsocketEndpointDescriptor wsEndpointDescriptor: api.getWebsocketEndpoints()) {
 				ExchangeJavaWrapperGeneratorUtil.generatePojo(ouputFolder, 
-										pkgPrefix 
-											+ JavaCodeGenerationUtil.firstLetterToUpperCase(exchangeDescriptor.getName()) 
-											+ JavaCodeGenerationUtil.firstLetterToUpperCase(wsEndpointDescriptor.getName())
-											+ "Request", 
+										generateWebsocketEndpointRequestClassName(exchangeDescriptor, api, wsEndpointDescriptor), 
 										"Subscription request to" + exchangeDescriptor.getName() 
 											+ " " + api.getName() + " API " 
 											+ wsEndpointDescriptor.getName() 
@@ -250,11 +228,8 @@ public class ExchangeJavaWrapperGeneratorUtil {
 										Arrays.asList(WebsocketSubscribeParameters.class.getName()), 
 										generateWebsocketSubscribeParametersGetTopicMethod(wsEndpointDescriptor));
 				ExchangeJavaWrapperGeneratorUtil.generatePojo(ouputFolder, 
-						pkgPrefix
-							+ JavaCodeGenerationUtil.firstLetterToUpperCase(exchangeDescriptor.getName()) 
-							+ JavaCodeGenerationUtil.firstLetterToUpperCase(wsEndpointDescriptor.getName())
-							+ "Response", 
-						"Response message disseminated upon subscription to " 
+						generateWebsocketEndpointMessageClassName(exchangeDescriptor, api, wsEndpointDescriptor), 
+						"Message disseminated upon subscription to " 
 							+ exchangeDescriptor.getName() + " " 
 							+ api.getName() + " API " 
 							+ wsEndpointDescriptor.getName() + " websocket endpoint request<br/>"
@@ -310,16 +285,17 @@ public class ExchangeJavaWrapperGeneratorUtil {
 				  							 + restApiFactorySimpleClassName + "();\n\n");
 		
 		String websocketEndpointFactoryFullClassName = exchangeApiDescriptor.getWebsocketEndpointFactory();
-		implementationGenerator.addImport(websocketEndpointFactoryFullClassName);
-		String websocketEndpointFactorySimpleClassName = JavaCodeGenerationUtil.getClassNameWithoutPackage(websocketEndpointFactoryFullClassName);
 		String websocketEndpointFactoryVariableName = "websocketEndpointFactory";
-		implementationGenerator.appendToBody("private final "
-					 + websocketEndpointFactorySimpleClassName
-					 + " "
-					 + websocketEndpointFactoryVariableName
-					 + " = new "
-					 + websocketEndpointFactorySimpleClassName + "();\n\n");
-		
+		if (websocketEndpointFactoryFullClassName != null) {
+			implementationGenerator.addImport(websocketEndpointFactoryFullClassName);
+			String websocketEndpointFactorySimpleClassName = JavaCodeGenerationUtil.getClassNameWithoutPackage(websocketEndpointFactoryFullClassName);
+			implementationGenerator.appendToBody("private final "
+						 + websocketEndpointFactorySimpleClassName
+						 + " "
+						 + websocketEndpointFactoryVariableName
+						 + " = new "
+						 + websocketEndpointFactorySimpleClassName + "();\n\n");
+		}
 		
 		StringBuilder implementationConstructorBody = new StringBuilder();
 		implementationConstructorBody.append("this." + restApiFactoryVariableName + ".setProperties(properties);\n");
@@ -328,9 +304,11 @@ public class ExchangeJavaWrapperGeneratorUtil {
 			implementationGenerator.addImport(RestEndpoint.class);
 			String requestClassName = generateRestEnpointRequestClassName(exchangeDescriptor, exchangeApiDescriptor, restApi);
 			String requestSimpleClassName = JavaCodeGenerationUtil.getClassNameWithoutPackage(requestClassName);
+			interfaceGenerator.addImport(requestClassName);
 			implementationGenerator.addImport(requestClassName);
 			String responseClassName = generateRestEnpointResponseClassName(exchangeDescriptor, exchangeApiDescriptor, restApi);
 			String responseSimpleClassName = JavaCodeGenerationUtil.getClassNameWithoutPackage(responseClassName);
+			interfaceGenerator.addImport(responseClassName);
 			implementationGenerator.addImport(responseClassName);
 			String responseDeserializerClassName = JsonMessageDeserializerGenerator.getJsonMessageDeserializerClassName(responseClassName);
 			implementationGenerator.addImport(responseDeserializerClassName);
@@ -380,35 +358,59 @@ public class ExchangeJavaWrapperGeneratorUtil {
 		}
 		
 		for (WebsocketEndpointDescriptor websocketApi : exchangeApiDescriptor.getWebsocketEndpoints()) {
+			if (websocketEndpointFactoryFullClassName == null) {
+				throw new IllegalStateException("No 'websocketEndpointFactory' defined on " + exchangeApiDescriptor.getName());
+			}
 			implementationGenerator.addImport(WebsocketEndpoint.class);
 			String requestClassName = generateWebsocketEndpointRequestClassName(exchangeDescriptor, exchangeApiDescriptor, websocketApi);
 			String requestClassSimpleName = JavaCodeGenerationUtil.getClassNameWithoutPackage(requestClassName);
+			interfaceGenerator.addImport(requestClassName);
 			implementationGenerator.addImport(requestClassName);
 			String messageClassName = generateWebsocketEndpointMessageClassName(exchangeDescriptor, exchangeApiDescriptor, websocketApi);
 			String messageClassSimpleName = JavaCodeGenerationUtil.getClassNameWithoutPackage(messageClassName);
+			interfaceGenerator.addImport(messageClassName);
 			implementationGenerator.addImport(messageClassName);
 			String messageDeserializerClassName = JsonMessageDeserializerGenerator.getJsonMessageDeserializerClassName(messageClassName);
 			implementationGenerator.addImport(messageDeserializerClassName);
 			String subscribeMethodName = "subscribe" + websocketApi.getName();
-			String unsubscribeMethodName = "subscribe" + websocketApi.getName();
+			String unsubscribeMethodName = "unsubscribe" + websocketApi.getName();
 			String websocketEndpointVariableName = JavaCodeGenerationUtil.firstLetterToLowerCase(websocketApi.getName()) + "Ws";
 			implementationGenerator.appendToBody("\nprivate final WebsocketEndpoint<" + requestClassSimpleName + ", " + messageClassSimpleName + "> " + websocketEndpointVariableName + ";\n\n");
 			implementationConstructorBody.append("this." + websocketEndpointVariableName + " = "  
 												 		 + websocketEndpointFactoryVariableName + ".createWebsocketEndpoint(new " 
 												 		 + JavaCodeGenerationUtil.getClassNameWithoutPackage(messageDeserializerClassName) 
 												 		 + "());\n");
-			String subscribeMethodSignature = "String " + subscribeMethodName + "(" + requestClassSimpleName + " request)";
-			interfaceGenerator.appendToBody("Subscribe to " + websocketApi.getName() + " stream.<br/>\n" 
-											+ JavaCodeGenerationUtil.generateJavaDoc(websocketApi.getDescription()) 
-											+ "\n"
-											+ "\n@return client subscriptionId to use for unsubscription");
+			interfaceGenerator.addImport(WebsocketListener.class);
+			implementationGenerator.addImport(WebsocketListener.class);
+			String subscribeMethodSignature = "String " 
+											  + subscribeMethodName 
+											  + "(" + requestClassSimpleName 
+											  + " request, WebsocketListener<" 
+											  + messageClassSimpleName  
+											  + "> listener)";
+			interfaceGenerator.appendToBody("\n" 
+											+ JavaCodeGenerationUtil.generateJavaDoc(
+												"Subscribe to " + websocketApi.getName() + " stream.<br/>\n" 
+												+ websocketApi.getDescription() 
+												+ "\n"
+												+ "\n@return client subscriptionId to use for unsubscription")
+											+ "\n");
 			interfaceGenerator.appendToBody(subscribeMethodSignature + ";\n");
 			
-			String unsubscribeMethodSignature = " void " + unsubscribeMethodName + "(String subscriptionId)";
-			interfaceGenerator.appendToBody("Unsubscribe from " + websocketApi + " stream.\n"
-											+ "\n@param subscriptionId ID of subscription returned by #" + subscribeMethodName + "()");
+			String unsubscribeMethodSignature = "boolean " + unsubscribeMethodName + "(String subscriptionId)";
+			interfaceGenerator.appendToBody("\n" 
+											+ JavaCodeGenerationUtil.generateJavaDoc(
+													"Unsubscribe from " 
+													+ websocketApi.getName() 
+													+ " stream.\n"
+													+ "\n@param subscriptionId ID of subscription returned by #" 
+													+ subscribeMethodName 
+													+ "()") 
+											+ "\n");
 			interfaceGenerator.appendToBody(unsubscribeMethodSignature + ";\n");
 			implementationGenerator.addImport(WebsocketSubscribeRequest.class);
+			implementationGenerator.addImport(DefaultWebsocketMessageTopicMatcher.class);
+			implementationGenerator.addImport(WebsocketMessageTopicMatcherField.class);
 			
 			StringBuilder subscribeMethodBody = new StringBuilder()
 				.append("if (log.isDebugEnabled())\n")
@@ -422,24 +424,51 @@ public class ExchangeJavaWrapperGeneratorUtil {
 				.append(">")
 				.append(" websocketSubscribeRequest = new ")
 				.append(WebsocketSubscribeRequest.class.getSimpleName())
-				.append("();\n")
-				.append("websocketSubscribeRequest.setMesssageTopicMatcher(new ")
+				.append("<>();\n")
+				.append("websocketSubscribeRequest.setMessageTopicMatcher(new ")
 				.append(DefaultWebsocketMessageTopicMatcher.class.getSimpleName())
 				.append("(")
 				.append(WebsocketMessageTopicMatcherField.class.getSimpleName())
 				.append(".createList(");
+			List<String> replacements = new ArrayList<>();
+			replacements.add("topic");
+			replacements.add("\" + request.getTopic() + \"");
+			websocketApi.getParameters().forEach(param -> {
+				replacements.add(param.getName());
+				String parameterClass = PARAMETER_TYPE_CLASSES.get(param.getType());
+				if (!parameterClass.startsWith("java.lang") && parameterClass.contains(".")) {
+					parameterClass = JavaCodeGenerationUtil.getClassNameWithoutPackage(parameterClass);
+				}
+				replacements.add("\" + request." 
+									 + JavaCodeGenerationUtil.getGetAccessorMethodName(
+											 		param.getName(), 
+											 		parameterClass, 
+											 		websocketApi.getResponse().stream()
+											 						.map(f1 -> f1.getName())
+											 						.collect(Collectors.toList())) 
+									 + "() + \"");
+			});
+			
 			for (int i = 0; i < websocketApi.getMessageTopicMatcherFields().size(); i++) {
-				subscribeMethodBody.append("\"").append(websocketApi.getMessageTopicMatcherFields().get(i)).append("\"");
+				WebsocketMessageTopicMatcherFieldDescriptor topicMatcherField = websocketApi.getMessageTopicMatcherFields().get(i);
+				subscribeMethodBody
+					.append("\"")
+					.append(topicMatcherField.getName())
+					.append("\", ")
+					.append(EncodingUtil.substituteArguments("\"" + topicMatcherField.getValue() + "\"", (Object[]) replacements.toArray(new String[replacements.size()])));
+					
 				if (i < websocketApi.getMessageTopicMatcherFields().size() - 1) {
 					subscribeMethodBody.append(", ");
 				}
 			}
-			subscribeMethodBody.append(");\n")
+			subscribeMethodBody.append(")));\n")
 				.append("websocketSubscribeRequest.setParameters(request);\n")
 				.append("return ")
 				.append(websocketEndpointVariableName)
 				.append (".subscribe(websocketSubscribeRequest, listener);");
+			implementationGenerator.appendToBody("\n");
 			implementationGenerator.appendMethod("@Override\npublic " + subscribeMethodSignature, subscribeMethodBody.toString());
+			
 			
 			StringBuilder unsubscribeMethodBody = new StringBuilder()
 					.append("if (log.isDebugEnabled())\n")
@@ -450,6 +479,7 @@ public class ExchangeJavaWrapperGeneratorUtil {
 					.append("return ")
 					.append(websocketEndpointVariableName)
 					.append(".unsubscribe(subscriptionId);\n");
+			implementationGenerator.appendToBody("\n");
 			implementationGenerator.appendMethod("@Override\npublic " + unsubscribeMethodSignature, unsubscribeMethodBody.toString());
 		}
 		
@@ -462,14 +492,18 @@ public class ExchangeJavaWrapperGeneratorUtil {
 	
 	private static String generateWebsocketEndpointMessageClassName(ExchangeDescriptor exchangeDescriptor,
 			ExchangeApiDescriptor exchangeApiDescriptor, WebsocketEndpointDescriptor websocketApi) {
-		// TODO Auto-generated method stub
-		return null;
+		return exchangeDescriptor.getBasePackage() + "." + exchangeApiDescriptor.getName().toLowerCase() + ".pojo."
+				+ JavaCodeGenerationUtil.firstLetterToUpperCase(exchangeDescriptor.getName()) 
+				+ JavaCodeGenerationUtil.firstLetterToUpperCase(websocketApi.getName())
+				+ "Message";
 	}
 
 	private static String generateWebsocketEndpointRequestClassName(ExchangeDescriptor exchangeDescriptor,
 			ExchangeApiDescriptor exchangeApiDescriptor, WebsocketEndpointDescriptor websocketApi) {
-		// TODO Auto-generated method stub
-		return null;
+		return exchangeDescriptor.getBasePackage() + "." + exchangeApiDescriptor.getName().toLowerCase() + ".pojo."
+				+ JavaCodeGenerationUtil.firstLetterToUpperCase(exchangeDescriptor.getName()) 
+				+ JavaCodeGenerationUtil.firstLetterToUpperCase(websocketApi.getName())
+				+ "Request";
 	}
 
 	public static void generateExchangeInterface(ExchangeDescriptor exchangeDescriptor, Path outputFolder) throws IOException {

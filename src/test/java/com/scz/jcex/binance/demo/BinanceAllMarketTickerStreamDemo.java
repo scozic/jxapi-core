@@ -1,7 +1,9 @@
 package com.scz.jcex.binance.demo;
 
-import com.scz.jcex.binance.exchange.spot.BinanceSpotApi;
-import com.scz.jcex.binance.exchange.spot.BinanceSpotApiImpl;
+import java.util.Properties;
+
+import com.scz.jcex.binance.gen.spotmarketdata.BinanceSpotMarketData;
+import com.scz.jcex.binance.gen.spotmarketdata.BinanceSpotMarketDataImpl;
 import com.scz.jcex.binance.gen.spotmarketdata.pojo.BinanceAllMarketTickersStreamRequest;
 
 public class BinanceAllMarketTickerStreamDemo {
@@ -10,9 +12,9 @@ public class BinanceAllMarketTickerStreamDemo {
 		try {
 //			BinanceAllMarketTickerPublicWebsocketEndpoint endpoint = new BinanceAllMarketTickerPublicWebsocketEndpoint();
 //			endpoint.subscribe(new BinanceAllMarketTickersStreamRequest(), m -> System.out.println("Received message[" + m + "]"));
-			BinanceSpotApi api = new BinanceSpotApiImpl();
-			api.subscribeAllMarketsTicker(new BinanceAllMarketTickersStreamRequest(), m -> {
-//				 System.out.println("Received message[" + m + "]")
+			BinanceSpotMarketData api = new BinanceSpotMarketDataImpl(new Properties());
+			api.subscribeAllMarketTickersStream(new BinanceAllMarketTickersStreamRequest(), m -> {
+				 System.out.println("Received message[" + m + "]");
 			});
 			
 		} catch (Throwable t) {

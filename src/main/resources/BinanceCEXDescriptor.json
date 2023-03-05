@@ -101,8 +101,11 @@
 					"topic": "!ticker@arr",
 					"description": "All Market Tickers Stream, see <a href=\"https://binance-docs.github.io/apidocs/spot/en/#all-market-tickers-stream\">API</a>",
 					"parameters": [],
+					"messageTopicMatcherFields": [
+						{"name": "e",  "value": "24hrTicker"}
+					],
 					"response": [
-						{"name":"e", "type": "STRING", "description":"Event type", "sampleValue":"1hTicker"},
+						{"name":"e", "type": "STRING", "description":"Event type", "sampleValue":"24hTicker"},
 						{"name":"E", "type": "TIMESTAMP", "description":"Event time", "sampleValue":"123456789"},
 						{"name":"s", "type": "STRING", "description":"Symbol", "sampleValue":"BNBBTC"},
 						{"name":"p", "type": "BIGDECIMAL", "description":"Price change", "sampleValue":"0.0015"},
@@ -128,8 +131,12 @@
 					"parameters": [
 						{"name":"symbol", "type": "STRING", "description":"Market symbol", "sampleValue":"BNBBTC"}
 					],
+					"messageTopicMatcherFields": [
+						{"name": "e",  "value": "24hTicker"},
+						{"name": "s",  "value": "${symbol}"}
+					],
 					"response": [
-						{"name":"e", "type": "STRING", "description":"Event type", "sampleValue":"1hTicker"},
+						{"name":"e", "type": "STRING", "description":"Event type", "sampleValue":"24hTicker"},
 						{"name":"E", "type": "TIMESTAMP", "description":"Event time", "sampleValue":"123456789"},
 						{"name":"s", "type": "STRING", "description":"Symbol", "sampleValue":"BNBBTC"},
 						{"name":"p", "type": "BIGDECIMAL", "description":"Price change", "sampleValue":"0.0015"},

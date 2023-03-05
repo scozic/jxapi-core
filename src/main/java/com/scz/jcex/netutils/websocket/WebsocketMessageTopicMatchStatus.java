@@ -12,7 +12,7 @@ public enum WebsocketMessageTopicMatchStatus {
 	
 	/**
 	 * Parser has not matched and will not matched against current input, because
-	 * one of selecting field has been found, with invalid value
+	 * one of selecting fields has been found, with invalid value
 	 */
 	CANT_MATCH
 }
