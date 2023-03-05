@@ -4,7 +4,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import com.scz.jcex.generator.exchange.ExchangeApiDescriptor;
 import com.scz.jcex.netutils.deserialization.MessageDeserializer;
 import com.scz.jcex.netutils.websocket.DefaultJsonMessageDeserializer;
 import com.scz.jcex.netutils.websocket.WebsocketEndpoint;

@@ -12,11 +12,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Actual implementation of {@link BinanceSpotTrading}<br/>
+ * Actual implementation of {@link BinanceSpotTradingApi}<br/>
  * <br><strong>THIS CODE IS GENERATED. DO NOT EDIT MANUALLY!</strong>
  */
-public class  BinanceSpotTradingImpl implements BinanceSpotTrading {
-  private static final Logger log = LoggerFactory.getLogger(BinanceSpotTradingImpl.class);
+public class  BinanceSpotTradingApiImpl implements BinanceSpotTradingApi {
+  private static final Logger log = LoggerFactory.getLogger(BinanceSpotTradingApiImpl.class);
   
   private final BinancePrivateApiRestEndpointFactory restEndpointFactory = new BinancePrivateApiRestEndpointFactory();
   
@@ -32,7 +32,7 @@ public class  BinanceSpotTradingImpl implements BinanceSpotTrading {
       log.debug("GET account < " + response);
     return response;
   }
-  public BinanceSpotTradingImpl(Properties properties) {
+  public BinanceSpotTradingApiImpl(Properties properties) {
     this.restEndpointFactory.setProperties(properties);
     this.accountApi = restEndpointFactory.createRestEndpoint(new BinanceAccountResponseDeserializer());
   }

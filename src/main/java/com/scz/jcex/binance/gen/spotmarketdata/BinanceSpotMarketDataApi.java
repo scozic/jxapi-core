@@ -16,7 +16,7 @@ import java.io.IOException;
  * Binance spot market data API
  * <br><strong>THIS CODE IS GENERATED. DO NOT EDIT MANUALLY!</strong>
  */
-public interface  BinanceSpotMarketData {
+public interface  BinanceSpotMarketDataApi {
   /**
    * Current exchange trading rules and symbol information for all spot trading pairs
    */

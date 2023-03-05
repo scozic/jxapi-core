@@ -4,7 +4,6 @@ import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonToken;
 import com.scz.jcex.binance.gen.spottrading.pojo.BinanceAccountResponse;
 import com.scz.jcex.binance.gen.spottrading.pojo.BinanceAccountResponseBalances;
-import com.scz.jcex.binance.gen.spottrading.pojo.BinanceAccountResponseCommissionRates;
 import com.scz.jcex.netutils.deserialization.json.AbstractJsonMessageDeserializer;
 import com.scz.jcex.netutils.deserialization.json.field.StringListFieldDeserializer;
 import com.scz.jcex.netutils.deserialization.json.field.StructListFieldDeserializer;

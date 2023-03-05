@@ -508,7 +508,7 @@ public class ExchangeJavaWrapperGeneratorUtil {
 
 	public static void generateExchangeInterface(ExchangeDescriptor exchangeDescriptor, Path outputFolder) throws IOException {
 		String pkgPrefix =  exchangeDescriptor.getBasePackage() + ".";
-		String simpleInterfaceName = JavaCodeGenerationUtil.firstLetterToUpperCase(exchangeDescriptor.getName());
+		String simpleInterfaceName = JavaCodeGenerationUtil.firstLetterToUpperCase(exchangeDescriptor.getName()) + "Exchange";
 		String fullInterfaceName = pkgPrefix + simpleInterfaceName;
 		String simpleImplementationName = simpleInterfaceName + "Impl";
 		String fullImplementationName = pkgPrefix + simpleImplementationName;
@@ -556,7 +556,7 @@ public class ExchangeJavaWrapperGeneratorUtil {
 	
 	private static String getApiInterfaceClassName(ExchangeDescriptor exchangeDescriptor, ExchangeApiDescriptor exchangeApiDescriptor) {
 		String pkgPrefix =  exchangeDescriptor.getBasePackage() + "." + exchangeApiDescriptor.getName().toLowerCase() + ".";
-		String simpleInterfaceName = JavaCodeGenerationUtil.firstLetterToUpperCase(exchangeDescriptor.getName()) + JavaCodeGenerationUtil.firstLetterToUpperCase(exchangeApiDescriptor.getName());
+		String simpleInterfaceName = JavaCodeGenerationUtil.firstLetterToUpperCase(exchangeDescriptor.getName()) + JavaCodeGenerationUtil.firstLetterToUpperCase(exchangeApiDescriptor.getName()) + "Api";
 		return pkgPrefix + simpleInterfaceName;
 	}
 	

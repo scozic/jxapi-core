@@ -27,11 +27,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Actual implementation of {@link BinanceSpotMarketData}<br/>
+ * Actual implementation of {@link BinanceSpotMarketDataApi}<br/>
  * <br><strong>THIS CODE IS GENERATED. DO NOT EDIT MANUALLY!</strong>
  */
-public class  BinanceSpotMarketDataImpl implements BinanceSpotMarketData {
-  private static final Logger log = LoggerFactory.getLogger(BinanceSpotMarketDataImpl.class);
+public class  BinanceSpotMarketDataApiImpl implements BinanceSpotMarketDataApi {
+  private static final Logger log = LoggerFactory.getLogger(BinanceSpotMarketDataApiImpl.class);
   
   private final BinancePublicApiRestEndpointFactory restEndpointFactory = new BinancePublicApiRestEndpointFactory();
   
@@ -101,7 +101,7 @@ public class  BinanceSpotMarketDataImpl implements BinanceSpotMarketData {
       log.debug("unsubscribeIndividualSymbolTickerStreams: subscriptionId:" + subscriptionId);
     return individualSymbolTickerStreamsWs.unsubscribe(subscriptionId);
   }
-  public BinanceSpotMarketDataImpl(Properties properties) {
+  public BinanceSpotMarketDataApiImpl(Properties properties) {
     this.restEndpointFactory.setProperties(properties);
     this.exchangeInformationAllApi = restEndpointFactory.createRestEndpoint(new BinanceExchangeInformationAllResponseDeserializer());
     this.exchangeInformationApi = restEndpointFactory.createRestEndpoint(new BinanceExchangeInformationResponseDeserializer());

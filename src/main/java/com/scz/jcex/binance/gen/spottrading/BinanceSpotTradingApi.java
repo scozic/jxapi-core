@@ -9,7 +9,7 @@ import java.io.IOException;
  * Binance spot trading API
  * <br><strong>THIS CODE IS GENERATED. DO NOT EDIT MANUALLY!</strong>
  */
-public interface  BinanceSpotTrading {
+public interface  BinanceSpotTradingApi {
   /**
    * Get current account information, see <a href="https://binance-docs.github.io/apidocs/spot/en/#account-information-user_data">API</a>
    */
