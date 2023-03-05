@@ -1,6 +1,5 @@
 package com.scz.jcex.netutils.websocket;
 
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -27,7 +26,7 @@ public class DefaultWebsocketEndpoint<T extends WebsocketSubscribeParameters, M>
 	}
 
 	@Override
-	public String subscribe(WebsocketSubscribeRequest<T> request, WebsocketListener<M> listener) throws IOException {
+	public String subscribe(WebsocketSubscribeRequest<T> request, WebsocketListener<M> listener) {
 		String topic = request.getParameters().getTopic();
 		Subscription sub = subscriptionsByTopic.get(topic);
 		if (sub == null ) {
@@ -36,7 +35,7 @@ public class DefaultWebsocketEndpoint<T extends WebsocketSubscribeParameters, M>
 			
 		}
 		String subId = generateSubscriptionId(request);
-		sub.addListener(generateSubscriptionId(request), listener);
+		sub.addListener(subId, listener);
 		return subId;
 	}
 	
@@ -45,7 +44,7 @@ public class DefaultWebsocketEndpoint<T extends WebsocketSubscribeParameters, M>
 	}
 
 	@Override
-	public boolean unsubscribe(String unsubscriptionId) throws IOException {
+	public boolean unsubscribe(String unsubscriptionId) {
 		Subscription sub = subscriptionsById.get(unsubscriptionId);
 		sub.removeListener(unsubscriptionId);
 		return false;
@@ -59,7 +58,7 @@ public class DefaultWebsocketEndpoint<T extends WebsocketSubscribeParameters, M>
 			this.request = request;
 		}
 		
-		public void addListener(String subscriptionId, WebsocketListener<M> listener) throws IOException {
+		public void addListener(String subscriptionId, WebsocketListener<M> listener) {
 			listeners.put(subscriptionId, listener);
 			if (listeners.size() == 1) {
 				// First subscription
@@ -67,7 +66,7 @@ public class DefaultWebsocketEndpoint<T extends WebsocketSubscribeParameters, M>
 			}
 		}
 		
-		public boolean removeListener(String subscriptionId) throws IOException {
+		public boolean removeListener(String subscriptionId) {
 			if (listeners.remove(subscriptionId) != null) {
 				if (listeners.size() <= 0) {
 					websocketManager.unsubscribe(request.getParameters().getTopic());

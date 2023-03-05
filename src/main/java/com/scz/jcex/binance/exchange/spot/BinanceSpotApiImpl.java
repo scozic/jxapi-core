@@ -38,7 +38,7 @@ public class BinanceSpotApiImpl implements BinanceSpotApi {
 	
 	private final WebsocketEndpointFactory publicWebsocketEndpointFactory = new BinancePublicWebsocketEndpointFactory();
 	
-	WebsocketEndpoint<BinanceAllMarketTickersStreamRequest, BinanceAllMarketTickersStreamResponse> allMarketTickersStreamWebsocketEndpoint = publicWebsocketEndpointFactory.createWebsocketEndpoint("allMarketTickersStream", new BinanceAllMarketTickersStreamResponseDeserializer());
+	WebsocketEndpoint<BinanceAllMarketTickersStreamRequest, BinanceAllMarketTickersStreamResponse> allMarketTickersStreamWebsocketEndpoint = publicWebsocketEndpointFactory.createWebsocketEndpoint(new BinanceAllMarketTickersStreamResponseDeserializer());
 
 	@Override
 	public BinanceExchangeInformationResponse exchangeInformation(BinanceExchangeInformationRequest request) throws IOException {
@@ -57,5 +57,11 @@ public class BinanceSpotApiImpl implements BinanceSpotApi {
 		websocketSubscribeRequest.setMessageTopicMatcher(new DefaultWebsocketMessageTopicMatcher(WebsocketMessageTopicMatcherField.createList("e", "24hrTicker")));
 		websocketSubscribeRequest.setParameters(request);
 		return allMarketTickersStreamWebsocketEndpoint.subscribe(websocketSubscribeRequest, listener);
+	}
+
+	@Override
+	public boolean unsubscribeAllMarketsTicker(String subscriptionId) {
+		return allMarketTickersStreamWebsocketEndpoint.unsubscribe(subscriptionId);
+		
 	}
 }

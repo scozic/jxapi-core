@@ -16,12 +16,12 @@ import com.scz.jcex.generator.JsonMessageDeserializerGenerator;
 import com.scz.jcex.generator.JsonPojoSerializerGenerator;
 import com.scz.jcex.generator.PojoField;
 import com.scz.jcex.generator.PojoGenerator;
-import com.scz.jcex.netutils.deserialization.MessageDeserializer;
 import com.scz.jcex.netutils.rest.RestEndpoint;
 import com.scz.jcex.netutils.rest.RestEndpointUrlParameters;
 import com.scz.jcex.netutils.rest.RestRequest;
-import com.scz.jcex.netutils.websocket.DefaultWebsocketEndpoint;
+import com.scz.jcex.netutils.websocket.DefaultWebsocketMessageTopicMatcher;
 import com.scz.jcex.netutils.websocket.WebsocketEndpoint;
+import com.scz.jcex.netutils.websocket.WebsocketMessageTopicMatcherField;
 import com.scz.jcex.netutils.websocket.WebsocketSubscribeParameters;
 import com.scz.jcex.netutils.websocket.WebsocketSubscribeRequest;
 import com.scz.jcex.util.EncodingUtil;
@@ -393,15 +393,6 @@ public class ExchangeJavaWrapperGeneratorUtil {
 			String unsubscribeMethodName = "subscribe" + websocketApi.getName();
 			String websocketEndpointVariableName = JavaCodeGenerationUtil.firstLetterToLowerCase(websocketApi.getName()) + "Ws";
 			implementationGenerator.appendToBody("\nprivate final WebsocketEndpoint<" + requestClassSimpleName + ", " + messageClassSimpleName + "> " + websocketEndpointVariableName + ";\n\n");
-			
-			/*
-			 * 	@Override
-	public <S extends WebsocketSubscribeParameters, M> WebsocketEndpoint<S, M> createWebsocketEndpoint(
-			String endpoitName, MessageDeserializer<M> messageDeserializer) {
-		return new DefaultWebsocketEndpoint<>(websocketManager, messageDeserializer);
-	}
-			 */
-			implementationGenerator.appendToBody("\nprivate final RestEndpoint<" + requestClassSimpleName + ", " + messageClassSimpleName + "> " + websocketEndpointVariableName + ";\n\n");
 			implementationConstructorBody.append("this." + websocketEndpointVariableName + " = "  
 												 		 + websocketEndpointFactoryVariableName + ".createWebsocketEndpoint(new " 
 												 		 + JavaCodeGenerationUtil.getClassNameWithoutPackage(messageDeserializerClassName) 
@@ -419,25 +410,47 @@ public class ExchangeJavaWrapperGeneratorUtil {
 			interfaceGenerator.appendToBody(unsubscribeMethodSignature + ";\n");
 			implementationGenerator.addImport(WebsocketSubscribeRequest.class);
 			
-			// TODO
-//			StringBuilder apiMethodBody = new StringBuilder()
-//					.append("if (log.isDebugEnabled())\n")
-//					.append(JavaCodeGenerationUtil.INDENTATION)
-//					.append("log.debug(\"")
-//					.append(restApi.getHttpMethod().toUpperCase())
-//					.append(" ")
-//					.append(restApi.getName())
-//					.append(" > \" + request);\n")
-//					.append(responseSimpleClassName)
-//					.append(" response = ")
-//					.append(restEndpointVariableName)
-//					.append(".call(RestRequest.create(\"")
-//					.append(restApi.getUrl())
-//					.append("\", \"")
-//					.append(restApi.getHttpMethod().toUpperCase())
-//					.append("\", request));\n")
-//					.append("return response;\n");
-//			implementationGenerator.appendMethod("@Override\npublic " + apiMethodSignature, apiMethodBody.toString());
+			StringBuilder subscribeMethodBody = new StringBuilder()
+				.append("if (log.isDebugEnabled())\n")
+				.append(JavaCodeGenerationUtil.INDENTATION)
+				.append("log.debug(\"")
+				.append(subscribeMethodName)
+				.append(":request:\" + request);\n")
+				.append(WebsocketSubscribeRequest.class.getSimpleName())
+				.append("<")
+				.append(requestClassSimpleName)
+				.append(">")
+				.append(" websocketSubscribeRequest = new ")
+				.append(WebsocketSubscribeRequest.class.getSimpleName())
+				.append("();\n")
+				.append("websocketSubscribeRequest.setMesssageTopicMatcher(new ")
+				.append(DefaultWebsocketMessageTopicMatcher.class.getSimpleName())
+				.append("(")
+				.append(WebsocketMessageTopicMatcherField.class.getSimpleName())
+				.append(".createList(");
+			for (int i = 0; i < websocketApi.getMessageTopicMatcherFields().size(); i++) {
+				subscribeMethodBody.append("\"").append(websocketApi.getMessageTopicMatcherFields().get(i)).append("\"");
+				if (i < websocketApi.getMessageTopicMatcherFields().size() - 1) {
+					subscribeMethodBody.append(", ");
+				}
+			}
+			subscribeMethodBody.append(");\n")
+				.append("websocketSubscribeRequest.setParameters(request);\n")
+				.append("return ")
+				.append(websocketEndpointVariableName)
+				.append (".subscribe(websocketSubscribeRequest, listener);");
+			implementationGenerator.appendMethod("@Override\npublic " + subscribeMethodSignature, subscribeMethodBody.toString());
+			
+			StringBuilder unsubscribeMethodBody = new StringBuilder()
+					.append("if (log.isDebugEnabled())\n")
+					.append(JavaCodeGenerationUtil.INDENTATION)
+					.append("log.debug(\"")
+					.append(unsubscribeMethodName)
+					.append(": subscriptionId:\" + subscriptionId);\n")
+					.append("return ")
+					.append(websocketEndpointVariableName)
+					.append(".unsubscribe(subscriptionId);\n");
+			implementationGenerator.appendMethod("@Override\npublic " + unsubscribeMethodSignature, unsubscribeMethodBody.toString());
 		}
 		
 		

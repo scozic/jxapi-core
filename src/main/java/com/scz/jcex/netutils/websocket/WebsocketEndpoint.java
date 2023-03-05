@@ -1,7 +1,5 @@
 package com.scz.jcex.netutils.websocket;
 
-import java.io.IOException;
-
 /**
  * Generic interface for a websocket enppoint.
  * Subscriptions are performed with for a given topic, using a given request, response to request and message structure. 
@@ -17,7 +15,7 @@ public interface WebsocketEndpoint<T extends WebsocketSubscribeParameters, M> {
 	 * @param listener the listener that will receive incoming messages
 	 * @return Subscription id, unique identifier that can be used to unsubscribe
 	 */
-	String subscribe(WebsocketSubscribeRequest<T> request, WebsocketListener<M> listener) throws IOException;
+	String subscribe(WebsocketSubscribeRequest<T> request, WebsocketListener<M> listener);
 	
-	boolean unsubscribe(String unsubscriptionId) throws IOException;
+	boolean unsubscribe(String unsubscriptionId);
 }

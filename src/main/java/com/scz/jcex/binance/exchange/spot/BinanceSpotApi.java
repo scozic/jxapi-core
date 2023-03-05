@@ -13,4 +13,6 @@ public interface BinanceSpotApi {
 	BinanceExchangeInformationResponse exchangeInformation(BinanceExchangeInformationRequest request) throws IOException;
 	
 	String subscribeAllMarketsTicker(BinanceAllMarketTickersStreamRequest request, WebsocketListener<BinanceAllMarketTickersStreamResponse> listener) throws IOException;
+	
+	boolean unsubscribeAllMarketsTicker(String subscriptionId);
 }
