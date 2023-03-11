@@ -2,9 +2,9 @@ package com.scz.jcex.binance.demo;
 
 import java.util.Properties;
 
-import com.scz.jcex.binance.gen.spotmarketdata.BinanceSpotMarketDataApi;
-import com.scz.jcex.binance.gen.spotmarketdata.BinanceSpotMarketDataApiImpl;
-import com.scz.jcex.binance.gen.spotmarketdata.pojo.BinanceAllMarketTickersStreamRequest;
+import com.scz.jcex.exchanges.binance.gen.spotmarketdata.BinanceSpotMarketDataApi;
+import com.scz.jcex.exchanges.binance.gen.spotmarketdata.BinanceSpotMarketDataApiImpl;
+import com.scz.jcex.exchanges.binance.gen.spotmarketdata.pojo.BinanceAllMarketTickersStreamRequest;
 
 public class BinanceAllMarketTickerStreamDemo {
 

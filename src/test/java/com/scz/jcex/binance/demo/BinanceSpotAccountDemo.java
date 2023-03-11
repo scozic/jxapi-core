@@ -3,10 +3,10 @@ package com.scz.jcex.binance.demo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.scz.jcex.binance.gen.spottrading.deserializers.BinanceAccountResponseDeserializer;
-import com.scz.jcex.binance.gen.spottrading.pojo.BinanceAccountRequest;
-import com.scz.jcex.binance.gen.spottrading.pojo.BinanceAccountResponse;
-import com.scz.jcex.binance.net.BinancePrivateApiRestEndpointFactory;
+import com.scz.jcex.exchanges.binance.gen.spottrading.deserializers.BinanceAccountResponseDeserializer;
+import com.scz.jcex.exchanges.binance.gen.spottrading.pojo.BinanceAccountRequest;
+import com.scz.jcex.exchanges.binance.gen.spottrading.pojo.BinanceAccountResponse;
+import com.scz.jcex.exchanges.binance.net.BinancePrivateApiRestEndpointFactory;
 import com.scz.jcex.netutils.rest.RestEndpoint;
 import com.scz.jcex.netutils.rest.RestRequest;
 import com.scz.jcex.util.TestApiProperties;

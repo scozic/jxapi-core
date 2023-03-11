@@ -1,10 +1,10 @@
 package com.scz.jcex.binance.demo;
 
-import com.scz.jcex.binance.gen.spottrading.BinanceSpotTradingApi;
-import com.scz.jcex.binance.gen.spottrading.BinanceSpotTradingApiImpl;
-import com.scz.jcex.binance.gen.spottrading.pojo.BinanceBalanceUpdateUserDataStreamRequest;
-import com.scz.jcex.binance.gen.spottrading.pojo.BinanceExecutionReportUserDataStreamRequest;
-import com.scz.jcex.binance.gen.spottrading.pojo.BinanceOutboundAccountPositionUserDataStreamRequest;
+import com.scz.jcex.exchanges.binance.gen.spottrading.BinanceSpotTradingApi;
+import com.scz.jcex.exchanges.binance.gen.spottrading.BinanceSpotTradingApiImpl;
+import com.scz.jcex.exchanges.binance.gen.spottrading.pojo.BinanceBalanceUpdateUserDataStreamRequest;
+import com.scz.jcex.exchanges.binance.gen.spottrading.pojo.BinanceExecutionReportUserDataStreamRequest;
+import com.scz.jcex.exchanges.binance.gen.spottrading.pojo.BinanceOutboundAccountPositionUserDataStreamRequest;
 import com.scz.jcex.util.TestApiProperties;
 
 public class BinanceSpotPrivateStreamSubscribeDemo {

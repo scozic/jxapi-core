@@ -5,10 +5,11 @@ import java.util.Arrays;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.scz.jcex.binance.exchange.spot.BinanceSpotApi;
-import com.scz.jcex.binance.exchange.spot.BinanceSpotApiImpl;
-import com.scz.jcex.binance.gen.spotmarketdata.pojo.BinanceExchangeInformationRequest;
-import com.scz.jcex.binance.gen.spotmarketdata.pojo.BinanceExchangeInformationResponse;
+import com.scz.jcex.exchanges.binance.gen.spotmarketdata.BinanceSpotMarketDataApi;
+import com.scz.jcex.exchanges.binance.gen.spotmarketdata.BinanceSpotMarketDataApiImpl;
+import com.scz.jcex.exchanges.binance.gen.spotmarketdata.pojo.BinanceExchangeInformationRequest;
+import com.scz.jcex.exchanges.binance.gen.spotmarketdata.pojo.BinanceExchangeInformationResponse;
+import com.scz.jcex.util.TestApiProperties;
 
 public class BinanceExchangeInformationRestAPIDemo {
 
@@ -16,7 +17,7 @@ public class BinanceExchangeInformationRestAPIDemo {
 	
 	public static void main(String[] args) {
 		try {
-			BinanceSpotApi api = new BinanceSpotApiImpl();
+			BinanceSpotMarketDataApi api = new BinanceSpotMarketDataApiImpl(TestApiProperties.filterProperties("binance", true));
 			log.info("Sending request...");
 			BinanceExchangeInformationRequest request = new BinanceExchangeInformationRequest();
 			request.setSymbols(Arrays.asList("BTCUSDT", "BNBUSDT"));

@@ -3,10 +3,10 @@ package com.scz.jcex.binance.demo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.scz.jcex.binance.gen.spottrading.BinanceSpotTradingApi;
-import com.scz.jcex.binance.gen.spottrading.BinanceSpotTradingApiImpl;
-import com.scz.jcex.binance.gen.spottrading.pojo.BinanceSpotListenKeyRequest;
-import com.scz.jcex.binance.gen.spottrading.pojo.BinanceSpotListenKeyResponse;
+import com.scz.jcex.exchanges.binance.gen.spottrading.BinanceSpotTradingApi;
+import com.scz.jcex.exchanges.binance.gen.spottrading.BinanceSpotTradingApiImpl;
+import com.scz.jcex.exchanges.binance.gen.spottrading.pojo.BinanceSpotListenKeyRequest;
+import com.scz.jcex.exchanges.binance.gen.spottrading.pojo.BinanceSpotListenKeyResponse;
 import com.scz.jcex.util.TestApiProperties;
 
 public class BinanceSpotListenKeyDemo {

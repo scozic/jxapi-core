@@ -1,7 +1,7 @@
 {
 	"name": "Binance",
 	"description": "Binance Spot and futures API",
-	"basePackage": "com.scz.jcex.binance.gen",
+	"basePackage": "com.scz.jcex.exchanges.binance.gen",
 	"apis":[
 		{ 
 			"name": "SpotMarketData",
