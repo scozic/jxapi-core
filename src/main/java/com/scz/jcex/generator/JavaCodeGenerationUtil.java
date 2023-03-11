@@ -57,6 +57,15 @@ public class JavaCodeGenerationUtil {
 			type = getClassNameWithoutPackage(type);
 			String name = field.getName();
 			String description = field.getDescription();
+			String msgFieldDescription = "";
+			if (field.getMsgField() != null) {
+				msgFieldDescription = " Message field <strong>" + field.getMsgField() + "</strong>";
+				if (description == null) {
+					description = msgFieldDescription;
+				} else {
+					description += msgFieldDescription;
+				}
+			}
 			
 			if (description != null) {
 				accessorsDeclarations.append(generateJavaDoc("@return " + description)).append("\n");

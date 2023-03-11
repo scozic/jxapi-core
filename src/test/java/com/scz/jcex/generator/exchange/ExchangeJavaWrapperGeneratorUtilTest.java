@@ -47,12 +47,12 @@ public class ExchangeJavaWrapperGeneratorUtilTest {
 		String typeName = "com.x.MyPojo";
 		String typeDescription = "Used in ExchangeJavaWrapperGeneratorUtilTest";
 		List<EndpointParameter> endpointParameters = new ArrayList<>();
-		endpointParameters.add(EndpointParameter.create(EndpointParameterType.LONG, "id", "identifier", "123"));
-		endpointParameters.add(EndpointParameter.create(EndpointParameterType.INT, "score", "Current score", "0"));
-		endpointParameters.add(EndpointParameter.create(EndpointParameterType.STRUCT_LIST, "foo", "Foo list",
-				Arrays.asList(EndpointParameter.create(EndpointParameterType.TIMESTAMP, "time", "Creation time", "0"),
-							  EndpointParameter.create(EndpointParameterType.STRUCT, "bar", "The bar",
-									  Arrays.asList(EndpointParameter.create(EndpointParameterType.STRING, "name", "Bar name", "my bar")))
+		endpointParameters.add(EndpointParameter.create(EndpointParameterType.LONG, "id", null, "identifier", "123"));
+		endpointParameters.add(EndpointParameter.create(EndpointParameterType.INT, "score", null, "Current score", "0"));
+		endpointParameters.add(EndpointParameter.create(EndpointParameterType.STRUCT_LIST, "foo", "f", null,
+				Arrays.asList(EndpointParameter.create(EndpointParameterType.TIMESTAMP, "time", null, "Creation time", "0"),
+							  EndpointParameter.create(EndpointParameterType.STRUCT, "bar", "b", "The bar",
+									  Arrays.asList(EndpointParameter.create(EndpointParameterType.STRING, "name", null, "Bar name", "my bar")))
 						)
 				));
 		
@@ -76,14 +76,14 @@ public class ExchangeJavaWrapperGeneratorUtilTest {
 				+ "  private int score;\n"
 				+ "  \n"
 				+ "  /**\n"
-				+ "   * @return Foo list\n"
+				+ "   * @return  Message field <strong>f</strong>\n"
 				+ "   */\n"
 				+ "  public List<MyPojoFoo> getFoo(){\n"
 				+ "    return foo;\n"
 				+ "  }\n"
 				+ "  \n"
 				+ "  /**\n"
-				+ "   * @param foo Foo list\n"
+				+ "   * @param foo  Message field <strong>f</strong>\n"
 				+ "   */\n"
 				+ "  public void setFoo(List<MyPojoFoo> foo) {\n"
 				+ "    this.foo = foo;\n"
@@ -131,23 +131,21 @@ public class ExchangeJavaWrapperGeneratorUtilTest {
 				+ "import com.scz.jcex.util.EncodingUtil;\n"
 				+ "import com.x.serializers.MyPojoFooSerializer;\n"
 				+ "\n"
-				+ "/**\n"
-				+ " * Foo list\n"
-				+ " */\n"
+				+ "\n"
 				+ "@JsonSerialize(using = MyPojoFooSerializer.class)\n"
 				+ "public class MyPojoFoo {\n"
 				+ "  private MyPojoFooBar bar;\n"
 				+ "  private long time;\n"
 				+ "  \n"
 				+ "  /**\n"
-				+ "   * @return The bar\n"
+				+ "   * @return The bar Message field <strong>b</strong>\n"
 				+ "   */\n"
 				+ "  public MyPojoFooBar getBar(){\n"
 				+ "    return bar;\n"
 				+ "  }\n"
 				+ "  \n"
 				+ "  /**\n"
-				+ "   * @param bar The bar\n"
+				+ "   * @param bar The bar Message field <strong>b</strong>\n"
 				+ "   */\n"
 				+ "  public void setBar(MyPojoFooBar bar) {\n"
 				+ "    this.bar = bar;\n"

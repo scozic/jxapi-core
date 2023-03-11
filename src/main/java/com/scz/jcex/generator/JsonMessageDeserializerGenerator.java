@@ -69,7 +69,7 @@ public class JsonMessageDeserializerGenerator extends JavaTypeGenerator {
 		fields.forEach(field -> {
 			body.append(indent)
 				.append("case \"")
-				.append(field.getName())
+				.append(field.getMsgField() != null? field.getMsgField() : field.getName())
 				.append("\":\n");
 			if (field.getType() == EndpointParameterType.STRUCT 
 				|| field.getType() == EndpointParameterType.STRUCT_LIST

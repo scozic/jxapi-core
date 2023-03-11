@@ -108,7 +108,7 @@ public class ExchangeJavaWrapperGeneratorUtil {
 			generator.addImport(parameterClass);
 			parameterClass = JavaCodeGenerationUtil.getClassNameWithoutPackage(parameterClass);
 		}
-		generator.addField(PojoField.create(parameterClass, field.getName(), field.getDescription()));
+		generator.addField(PojoField.create(parameterClass, field.getName(), field.getMsgField(), field.getDescription()));
 	}
 	
 	private static void generateStructParameterTypePojoField(Path src, String className, PojoGenerator generator, EndpointParameter field) throws IOException {
@@ -120,7 +120,7 @@ public class ExchangeJavaWrapperGeneratorUtil {
 		if (field.getType() == EndpointParameterType.STRUCT_LIST) {
 			parameterTypeName = "java.util.List<" + JavaCodeGenerationUtil.getClassNameWithoutPackage(structTypeName) + ">";
 		}
-		generator.addField(PojoField.create(parameterTypeName, field.getName(), field.getDescription()));
+		generator.addField(PojoField.create(parameterTypeName, field.getName(), field.getMsgField(), field.getDescription()));
 	}
 	
 	public static void generateCEX(ExchangeDescriptor exchangeDescriptor, Path ouputFolder) throws IOException {

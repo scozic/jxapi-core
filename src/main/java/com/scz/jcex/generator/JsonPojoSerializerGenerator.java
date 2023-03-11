@@ -63,23 +63,27 @@ public class JsonPojoSerializerGenerator extends JavaTypeGenerator {
 				fields.stream().map(f -> f.getName()).collect(Collectors.toList())) + "()";
 		switch (field.getType()) {
 		case STRING:
-			return "gen.writeStringField(\"" + field.getName() + "\", String.valueOf(" + getFieldValue + "));\n";
+			return "gen.writeStringField(\"" + msgFieldName(field) + "\", String.valueOf(" + getFieldValue + "));\n";
 		case BIGDECIMAL:
 			addImport(EncodingUtil.class);
-			return "gen.writeStringField(\"" + field.getName() + "\", EncodingUtil.bigDecimalToString(" + getFieldValue + "));\n";
+			return "gen.writeStringField(\"" + msgFieldName(field) + "\", EncodingUtil.bigDecimalToString(" + getFieldValue + "));\n";
 		case BOOLEAN:
-			return "gen.writeBooleanField(\"" + field.getName() + "\", " + getFieldValue + ");\n";
+			return "gen.writeBooleanField(\"" + msgFieldName(field) + "\", " + getFieldValue + ");\n";
 		case INT:
 		case LONG:
 		case TIMESTAMP:
-			return "gen.writeNumberField(\"" + field.getName() + "\", " + getFieldValue + ");\n";
+			return "gen.writeNumberField(\"" + msgFieldName(field) + "\", " + getFieldValue + ");\n";
 		case STRING_LIST:
 		case STRUCT:
 		case STRUCT_LIST:
-			return "gen.writeObjectField(\"" + field.getName() + "\", " + getFieldValue + ");\n";
+			return "gen.writeObjectField(\"" + msgFieldName(field) + "\", " + getFieldValue + ");\n";
 		default:
 			throw new IllegalArgumentException("Unexpected field type for:" + field);
 		}
+	}
+	
+	private static String msgFieldName(EndpointParameter field) {
+		return field.getMsgField() != null? field.getMsgField() : field.getName();
 	}
 
 }

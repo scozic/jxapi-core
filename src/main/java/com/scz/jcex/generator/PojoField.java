@@ -8,20 +8,22 @@ import com.scz.jcex.util.EncodingUtil;
 public class PojoField {
 	
 	public static PojoField create(String type, String name) {
-		return create(type, name, null);
+		return create(type, name, null, null);
 	}
 	
-	public static PojoField create(String type, String name, String description) {
+	public static PojoField create(String type, String name, String msgField, String description) {
 		PojoField res = new PojoField();
 		res.setType(type);
 		res.setName(name);
 		res.setDescription(description);
+		res.setMsgField(msgField);
 		return res;
 	}
 
 	private String type;
 	private String name;
 	private String description;
+	private String msgField;
 	
 	public String getDescription() {
 		return description;
@@ -44,6 +46,14 @@ public class PojoField {
 		this.type = type;
 	}
 	
+	public String getMsgField() {
+		return msgField;
+	}
+
+	public void setMsgField(String msgField) {
+		this.msgField = msgField;
+	}
+
 	@Override
 	public String toString() {
 		return EncodingUtil.pojoToString(this);

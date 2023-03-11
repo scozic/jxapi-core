@@ -50,7 +50,7 @@ public class JUJavaCodeGenerationUtil {
 		List<PojoField> l = Arrays.asList(
 								PojoField.create("String", "foo"),
 								PojoField.create("boolean", "bar"),
-								PojoField.create("com.xyz.Toto", "myToto", "you know toto?")
+								PojoField.create("com.xyz.Toto", "myToto", "mt", "you know toto?")
 							);
 		String actual = JavaCodeGenerationUtil.generateJavaPojoFieldsWithAccessors(l);
 		Assert.assertEquals("private String foo;\n"
@@ -74,14 +74,15 @@ public class JUJavaCodeGenerationUtil {
 				+ "}\n"
 				+ "\n"
 				+ "/**\n"
-				+ " * @return you know toto?\n"
+				+ " * @return you know toto? Message field <strong>mt</strong>\n"
+				
 				+ " */\n"
 				+ "public Toto getMyToto(){\n"
 				+ "  return myToto;\n"
 				+ "}\n"
 				+ "\n"
 				+ "/**\n"
-				+ " * @param myToto you know toto?\n"
+				+ " * @param myToto you know toto? Message field <strong>mt</strong>\n"
 				+ " */\n"
 				+ "public void setMyToto(Toto myToto) {\n"
 				+ "  this.myToto = myToto;\n"

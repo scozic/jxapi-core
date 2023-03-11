@@ -10,19 +10,21 @@ import com.scz.jcex.util.EncodingUtil;
  */
 public class EndpointParameter {
 	
-	public static EndpointParameter create(EndpointParameterType type, String name, String description, List<EndpointParameter> parameters) {
+	public static EndpointParameter create(EndpointParameterType type, String name, String msgField, String description, List<EndpointParameter> parameters) {
 		EndpointParameter p = new EndpointParameter();
 		p.setType(type);
 		p.setName(name);
+		p.setMsgField(msgField);
 		p.setDescription(description);
 		p.setParameters(parameters);
 		return p;
 	}
 	
-	public static EndpointParameter create(EndpointParameterType type, String name, String description, String sampleValue) {
+	public static EndpointParameter create(EndpointParameterType type, String name, String msgField, String description, String sampleValue) {
 		EndpointParameter p = new EndpointParameter();
 		p.setType(type);
 		p.setName(name);
+		p.setMsgField(msgField);
 		p.setDescription(description);
 		p.setSampleValue(sampleValue);
 		return p;
@@ -35,6 +37,8 @@ public class EndpointParameter {
 	private EndpointParameterType type;
 	
 	private Object sampleValue;
+	
+	private String msgField;
 	
 	private List<EndpointParameter> parameters;
 
@@ -68,6 +72,14 @@ public class EndpointParameter {
 
 	public void setSampleValue(Object sampleValue) {
 		this.sampleValue = sampleValue;
+	}
+	
+	public String getMsgField() {
+		return msgField;
+	}
+
+	public void setMsgField(String msgField) {
+		this.msgField = msgField;
 	}
 	
 	/**

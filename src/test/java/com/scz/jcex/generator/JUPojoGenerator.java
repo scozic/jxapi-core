@@ -11,10 +11,10 @@ public class JUPojoGenerator {
 	@Test
 	public void testGeneratePojoCode() {
 		PojoGenerator generator = new PojoGenerator("x.y.z.Foo");
-		generator.addField(PojoField.create("String", "name", "the name"));
-		generator.addField(PojoField.create("x.y.t.Bar", "bar", "my bar"));
-		generator.addField(PojoField.create("int", "a", "lower case 'a'"));
-		generator.addField(PojoField.create("int", "A", "upper case 'A'"));
+		generator.addField(PojoField.create("String", "name", null, "the name"));
+		generator.addField(PojoField.create("x.y.t.Bar", "bar", "b", "my bar"));
+		generator.addField(PojoField.create("int", "a", null, "lower case 'a'"));
+		generator.addField(PojoField.create("int", "A", null, "upper case 'A'"));
 		Assert.assertEquals("package x.y.z;\n"
 				+ "\n"
 				+ "import com.scz.jcex.util.EncodingUtil;\n"
@@ -56,14 +56,14 @@ public class JUPojoGenerator {
 				+ "  }\n"
 				+ "  \n"
 				+ "  /**\n"
-				+ "   * @return my bar\n"
+				+ "   * @return my bar Message field <strong>b</strong>\n"
 				+ "   */\n"
 				+ "  public Bar getBar(){\n"
 				+ "    return bar;\n"
 				+ "  }\n"
 				+ "  \n"
 				+ "  /**\n"
-				+ "   * @param bar my bar\n"
+				+ "   * @param bar my bar Message field <strong>b</strong>\n"
 				+ "   */\n"
 				+ "  public void setBar(Bar bar) {\n"
 				+ "    this.bar = bar;\n"
