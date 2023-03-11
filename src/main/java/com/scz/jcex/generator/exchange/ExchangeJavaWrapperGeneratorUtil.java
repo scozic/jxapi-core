@@ -437,7 +437,7 @@ public class ExchangeJavaWrapperGeneratorUtil {
 			replacements.add("topic");
 			replacements.add("\" + request.getTopic() + \"");
 			websocketApi.getParameters().forEach(param -> {
-				replacements.add(param.getName());
+				replacements.add(param.getMsgField() != null? param.getMsgField(): param.getName());
 				String parameterClass = PARAMETER_TYPE_CLASSES.get(param.getType());
 				if (!parameterClass.startsWith("java.lang") && parameterClass.contains(".")) {
 					parameterClass = JavaCodeGenerationUtil.getClassNameWithoutPackage(parameterClass);

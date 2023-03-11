@@ -10,650 +10,650 @@ import java.math.BigDecimal;
  */
 @JsonSerialize(using = BinanceExecutionReportUserDataStreamMessageSerializer.class)
 public class BinanceExecutionReportUserDataStreamMessage {
-  private BigDecimal A;
-  private BigDecimal B;
-  private String C;
-  private long D;
-  private long E;
-  private BigDecimal F;
-  private long I;
-  private long J;
-  private BigDecimal L;
-  private boolean M;
-  private String N;
-  private long O;
-  private BigDecimal P;
-  private BigDecimal Q;
-  private String S;
-  private long T;
-  private long U;
-  private String V;
-  private long W;
-  private String X;
-  private BigDecimal Y;
-  private BigDecimal Z;
-  private String c;
-  private int d;
-  private String e;
-  private String f;
-  private int g;
-  private String i;
-  private long j;
-  private BigDecimal l;
-  private boolean m;
-  private int n;
-  private String o;
-  private BigDecimal p;
-  private BigDecimal q;
-  private String r;
-  private String s;
-  private long t;
-  private long u;
-  private long v;
-  private boolean w;
-  private String x;
-  private BigDecimal z;
+  private String clientOrderID;
+  private String comissionAsset;
+  private int commissionAmount;
+  private long counterOrderId;
+  private BigDecimal cumQty;
+  private BigDecimal cumQuoteQty;
+  private String currentExecutionType;
+  private String currentOrderStatus;
+  private long eventTime;
+  private String eventType;
+  private BigDecimal icebergQuantity;
+  private long ignore0;
+  private boolean ignore1;
+  private BigDecimal lastExecPrice;
+  private BigDecimal lastExecQty;
+  private BigDecimal lastPreventedQty;
+  private BigDecimal lastQuoteQty;
+  private long orderCreationTime;
+  private String orderID;
+  private int orderListId;
+  private boolean orderOnBook;
+  private BigDecimal orderPrice;
+  private BigDecimal orderQuantity;
+  private String orderRejectReason;
+  private String orderType;
+  private String origClientOrderID;
+  private long preventedMatchID;
+  private BigDecimal preventedQty;
+  private BigDecimal quoteQty;
+  private String selfTradePreventionMode;
+  private String side;
+  private BigDecimal stopPrice;
+  private long strategyID;
+  private long strategyType;
+  private String symbol;
+  private String timeInForce;
+  private long tradeGroupId;
+  private long tradeID;
+  private boolean tradeMakerSide;
+  private int trailingDelta;
+  private long trailingTime;
+  private long transactionTime;
+  private long workingTime;
   
   /**
-   * @return Prevented Quantity; This is only visible if the order expired due to STP trigger.
+   * @return Client order ID. Message field <strong>c</strong>
    */
-  public BigDecimal getA(){
-    return A;
+  public String getClientOrderID(){
+    return clientOrderID;
   }
   
   /**
-   * @param A Prevented Quantity; This is only visible if the order expired due to STP trigger.
+   * @param clientOrderID Client order ID. Message field <strong>c</strong>
    */
-  public void setA(BigDecimal A) {
-    this.A = A;
+  public void setClientOrderID(String clientOrderID) {
+    this.clientOrderID = clientOrderID;
   }
   
   /**
-   * @return Last Prevented Quantity; This is only visible if the order expired due to STP trigger.
+   * @return Commission asset. Message field <strong>N</strong>
    */
-  public BigDecimal getB(){
-    return B;
+  public String getComissionAsset(){
+    return comissionAsset;
   }
   
   /**
-   * @param B Last Prevented Quantity; This is only visible if the order expired due to STP trigger.
+   * @param comissionAsset Commission asset. Message field <strong>N</strong>
    */
-  public void setB(BigDecimal B) {
-    this.B = B;
+  public void setComissionAsset(String comissionAsset) {
+    this.comissionAsset = comissionAsset;
   }
   
   /**
-   * @return Original client order ID; This is the ID of the order being canceled
+   * @return Commission amount. Message field <strong>n</strong>
    */
-  public String getC(){
-    return C;
+  public int getCommissionAmount(){
+    return commissionAmount;
   }
   
   /**
-   * @param C Original client order ID; This is the ID of the order being canceled
+   * @param commissionAmount Commission amount. Message field <strong>n</strong>
    */
-  public void setC(String C) {
-    this.C = C;
+  public void setCommissionAmount(int commissionAmount) {
+    this.commissionAmount = commissionAmount;
   }
   
   /**
-   * @return Trailing Time; This is only visible if the trailing stop order has been activated.
+   * @return CounterOrderId; This is only visible if the order expired due to STP trigger. Message field <strong>U</strong>
    */
-  public long getD(){
-    return D;
+  public long getCounterOrderId(){
+    return counterOrderId;
   }
   
   /**
-   * @param D Trailing Time; This is only visible if the trailing stop order has been activated.
+   * @param counterOrderId CounterOrderId; This is only visible if the order expired due to STP trigger. Message field <strong>U</strong>
    */
-  public void setD(long D) {
-    this.D = D;
+  public void setCounterOrderId(long counterOrderId) {
+    this.counterOrderId = counterOrderId;
   }
   
   /**
-   * @return Event time
+   * @return Cumulative filled quantity. Message field <strong>z</strong>
    */
-  public long getE(){
-    return E;
+  public BigDecimal getCumQty(){
+    return cumQty;
   }
   
   /**
-   * @param E Event time
+   * @param cumQty Cumulative filled quantity. Message field <strong>z</strong>
    */
-  public void setE(long E) {
-    this.E = E;
+  public void setCumQty(BigDecimal cumQty) {
+    this.cumQty = cumQty;
   }
   
   /**
-   * @return Iceberg quantity
+   * @return Cumulative quote asset transacted quantity Message field <strong>Z</strong>
    */
-  public BigDecimal getF(){
-    return F;
+  public BigDecimal getCumQuoteQty(){
+    return cumQuoteQty;
   }
   
   /**
-   * @param F Iceberg quantity
+   * @param cumQuoteQty Cumulative quote asset transacted quantity Message field <strong>Z</strong>
    */
-  public void setF(BigDecimal F) {
-    this.F = F;
+  public void setCumQuoteQty(BigDecimal cumQuoteQty) {
+    this.cumQuoteQty = cumQuoteQty;
   }
   
   /**
-   * @return Ignore
+   * @return Current execution type. Message field <strong>x</strong>
    */
-  public long getI(){
-    return I;
+  public String getCurrentExecutionType(){
+    return currentExecutionType;
   }
   
   /**
-   * @param I Ignore
+   * @param currentExecutionType Current execution type. Message field <strong>x</strong>
    */
-  public void setI(long I) {
-    this.I = I;
+  public void setCurrentExecutionType(String currentExecutionType) {
+    this.currentExecutionType = currentExecutionType;
   }
   
   /**
-   * @return Strategy Type; This is only visible if the strategyType parameter was provided upon order placement
+   * @return Current order status. Message field <strong>X</strong>
    */
-  public long getJ(){
-    return J;
+  public String getCurrentOrderStatus(){
+    return currentOrderStatus;
   }
   
   /**
-   * @param J Strategy Type; This is only visible if the strategyType parameter was provided upon order placement
+   * @param currentOrderStatus Current order status. Message field <strong>X</strong>
    */
-  public void setJ(long J) {
-    this.J = J;
+  public void setCurrentOrderStatus(String currentOrderStatus) {
+    this.currentOrderStatus = currentOrderStatus;
   }
   
   /**
-   * @return Last executed price
+   * @return Event time. Message field <strong>E</strong>
    */
-  public BigDecimal getL(){
-    return L;
+  public long getEventTime(){
+    return eventTime;
   }
   
   /**
-   * @param L Last executed price
+   * @param eventTime Event time. Message field <strong>E</strong>
    */
-  public void setL(BigDecimal L) {
-    this.L = L;
+  public void setEventTime(long eventTime) {
+    this.eventTime = eventTime;
   }
   
   /**
-   * @return Ignore
+   * @return Event type. Message field <strong>e</strong>
    */
-  public boolean isM(){
-    return M;
+  public String getEventType(){
+    return eventType;
   }
   
   /**
-   * @param M Ignore
+   * @param eventType Event type. Message field <strong>e</strong>
    */
-  public void setM(boolean M) {
-    this.M = M;
+  public void setEventType(String eventType) {
+    this.eventType = eventType;
   }
   
   /**
-   * @return Commission asset
+   * @return Iceberg quantity. Message field <strong>F</strong>
    */
-  public String getN(){
-    return N;
+  public BigDecimal getIcebergQuantity(){
+    return icebergQuantity;
   }
   
   /**
-   * @param N Commission asset
+   * @param icebergQuantity Iceberg quantity. Message field <strong>F</strong>
    */
-  public void setN(String N) {
-    this.N = N;
+  public void setIcebergQuantity(BigDecimal icebergQuantity) {
+    this.icebergQuantity = icebergQuantity;
   }
   
   /**
-   * @return Order creation time
+   * @return Ignore Message field <strong>I</strong>
    */
-  public long getO(){
-    return O;
+  public long getIgnore0(){
+    return ignore0;
   }
   
   /**
-   * @param O Order creation time
+   * @param ignore0 Ignore Message field <strong>I</strong>
    */
-  public void setO(long O) {
-    this.O = O;
+  public void setIgnore0(long ignore0) {
+    this.ignore0 = ignore0;
   }
   
   /**
-   * @return Stop price
+   * @return Ignore Message field <strong>M</strong>
    */
-  public BigDecimal getP(){
-    return P;
+  public boolean isIgnore1(){
+    return ignore1;
   }
   
   /**
-   * @param P Stop price
+   * @param ignore1 Ignore Message field <strong>M</strong>
    */
-  public void setP(BigDecimal P) {
-    this.P = P;
+  public void setIgnore1(boolean ignore1) {
+    this.ignore1 = ignore1;
   }
   
   /**
-   * @return Quote Order Quantity
+   * @return Last executed price. Message field <strong>L</strong>
    */
-  public BigDecimal getQ(){
-    return Q;
+  public BigDecimal getLastExecPrice(){
+    return lastExecPrice;
   }
   
   /**
-   * @param Q Quote Order Quantity
+   * @param lastExecPrice Last executed price. Message field <strong>L</strong>
    */
-  public void setQ(BigDecimal Q) {
-    this.Q = Q;
+  public void setLastExecPrice(BigDecimal lastExecPrice) {
+    this.lastExecPrice = lastExecPrice;
   }
   
   /**
-   * @return Side
+   * @return Last executed quantity. Message field <strong>l</strong>
    */
-  public String getS(){
-    return S;
+  public BigDecimal getLastExecQty(){
+    return lastExecQty;
   }
   
   /**
-   * @param S Side
+   * @param lastExecQty Last executed quantity. Message field <strong>l</strong>
    */
-  public void setS(String S) {
-    this.S = S;
+  public void setLastExecQty(BigDecimal lastExecQty) {
+    this.lastExecQty = lastExecQty;
   }
   
   /**
-   * @return Transaction time
+   * @return Last Prevented Quantity; This is only visible if the order expired due to STP trigger. Message field <strong>B</strong>
    */
-  public long getT(){
-    return T;
+  public BigDecimal getLastPreventedQty(){
+    return lastPreventedQty;
   }
   
   /**
-   * @param T Transaction time
+   * @param lastPreventedQty Last Prevented Quantity; This is only visible if the order expired due to STP trigger. Message field <strong>B</strong>
    */
-  public void setT(long T) {
-    this.T = T;
+  public void setLastPreventedQty(BigDecimal lastPreventedQty) {
+    this.lastPreventedQty = lastPreventedQty;
   }
   
   /**
-   * @return CounterOrderId; This is only visible if the order expired due to STP trigger.
+   * @return Last quote asset transacted quantity (i.e. lastPrice * lastQty). Message field <strong>Y</strong>
    */
-  public long getU(){
-    return U;
+  public BigDecimal getLastQuoteQty(){
+    return lastQuoteQty;
   }
   
   /**
-   * @param U CounterOrderId; This is only visible if the order expired due to STP trigger.
+   * @param lastQuoteQty Last quote asset transacted quantity (i.e. lastPrice * lastQty). Message field <strong>Y</strong>
    */
-  public void setU(long U) {
-    this.U = U;
+  public void setLastQuoteQty(BigDecimal lastQuoteQty) {
+    this.lastQuoteQty = lastQuoteQty;
   }
   
   /**
-   * @return selfTradePreventionMode
+   * @return Order creation time. Message field <strong>O</strong>
    */
-  public String getV(){
-    return V;
+  public long getOrderCreationTime(){
+    return orderCreationTime;
   }
   
   /**
-   * @param V selfTradePreventionMode
+   * @param orderCreationTime Order creation time. Message field <strong>O</strong>
    */
-  public void setV(String V) {
-    this.V = V;
+  public void setOrderCreationTime(long orderCreationTime) {
+    this.orderCreationTime = orderCreationTime;
   }
   
   /**
-   * @return Working Time; This is only visible if the order has been placed on the book.
+   * @return Order ID Message field <strong>i</strong>
    */
-  public long getW(){
-    return W;
+  public String getOrderID(){
+    return orderID;
   }
   
   /**
-   * @param W Working Time; This is only visible if the order has been placed on the book.
+   * @param orderID Order ID Message field <strong>i</strong>
    */
-  public void setW(long W) {
-    this.W = W;
+  public void setOrderID(String orderID) {
+    this.orderID = orderID;
   }
   
   /**
-   * @return Current order status
+   * @return OrderListId Message field <strong>g</strong>
    */
-  public String getX(){
-    return X;
+  public int getOrderListId(){
+    return orderListId;
   }
   
   /**
-   * @param X Current order status
+   * @param orderListId OrderListId Message field <strong>g</strong>
    */
-  public void setX(String X) {
-    this.X = X;
+  public void setOrderListId(int orderListId) {
+    this.orderListId = orderListId;
   }
   
   /**
-   * @return Last quote asset transacted quantity (i.e. lastPrice * lastQty)
+   * @return Is the order on the book? Message field <strong>w</strong>
    */
-  public BigDecimal getY(){
-    return Y;
+  public boolean isOrderOnBook(){
+    return orderOnBook;
   }
   
   /**
-   * @param Y Last quote asset transacted quantity (i.e. lastPrice * lastQty)
+   * @param orderOnBook Is the order on the book? Message field <strong>w</strong>
    */
-  public void setY(BigDecimal Y) {
-    this.Y = Y;
+  public void setOrderOnBook(boolean orderOnBook) {
+    this.orderOnBook = orderOnBook;
   }
   
   /**
-   * @return Cumulative quote asset transacted quantity
+   * @return Order price. Message field <strong>p</strong>
    */
-  public BigDecimal getZ(){
-    return Z;
+  public BigDecimal getOrderPrice(){
+    return orderPrice;
   }
   
   /**
-   * @param Z Cumulative quote asset transacted quantity
+   * @param orderPrice Order price. Message field <strong>p</strong>
    */
-  public void setZ(BigDecimal Z) {
-    this.Z = Z;
+  public void setOrderPrice(BigDecimal orderPrice) {
+    this.orderPrice = orderPrice;
   }
   
   /**
-   * @return Client
+   * @return Order quantity. Message field <strong>q</strong>
    */
-  public String getc(){
-    return c;
+  public BigDecimal getOrderQuantity(){
+    return orderQuantity;
   }
   
   /**
-   * @param c Client
+   * @param orderQuantity Order quantity. Message field <strong>q</strong>
    */
-  public void setc(String c) {
-    this.c = c;
+  public void setOrderQuantity(BigDecimal orderQuantity) {
+    this.orderQuantity = orderQuantity;
   }
   
   /**
-   * @return Trailing Delta; This is only visible if the order was a trailing stop order
+   * @return Order reject reason, ; will be an error code. Message field <strong>r</strong>
    */
-  public int getd(){
-    return d;
+  public String getOrderRejectReason(){
+    return orderRejectReason;
   }
   
   /**
-   * @param d Trailing Delta; This is only visible if the order was a trailing stop order
+   * @param orderRejectReason Order reject reason, ; will be an error code. Message field <strong>r</strong>
    */
-  public void setd(int d) {
-    this.d = d;
+  public void setOrderRejectReason(String orderRejectReason) {
+    this.orderRejectReason = orderRejectReason;
   }
   
   /**
-   * @return Event type
+   * @return Order type. Message field <strong>o</strong>
    */
-  public String gete(){
-    return e;
+  public String getOrderType(){
+    return orderType;
   }
   
   /**
-   * @param e Event type
+   * @param orderType Order type. Message field <strong>o</strong>
    */
-  public void sete(String e) {
-    this.e = e;
+  public void setOrderType(String orderType) {
+    this.orderType = orderType;
   }
   
   /**
-   * @return Time in force
+   * @return Original client order ID; This is the ID of the order being canceled Message field <strong>C</strong>
    */
-  public String getf(){
-    return f;
+  public String getOrigClientOrderID(){
+    return origClientOrderID;
   }
   
   /**
-   * @param f Time in force
+   * @param origClientOrderID Original client order ID; This is the ID of the order being canceled Message field <strong>C</strong>
    */
-  public void setf(String f) {
-    this.f = f;
+  public void setOrigClientOrderID(String origClientOrderID) {
+    this.origClientOrderID = origClientOrderID;
   }
   
   /**
-   * @return OrderListId
+   * @return Prevented Match Id; This is only visible if the order expire due to STP trigger. Message field <strong>v</strong>
    */
-  public int getG(){
-    return g;
+  public long getPreventedMatchID(){
+    return preventedMatchID;
   }
   
   /**
-   * @param g OrderListId
+   * @param preventedMatchID Prevented Match Id; This is only visible if the order expire due to STP trigger. Message field <strong>v</strong>
    */
-  public void setG(int g) {
-    this.g = g;
+  public void setPreventedMatchID(long preventedMatchID) {
+    this.preventedMatchID = preventedMatchID;
   }
   
   /**
-   * @return Order ID
+   * @return Prevented Quantity; This is only visible if the order expired due to STP trigger. Message field <strong>A</strong>
    */
-  public String geti(){
-    return i;
+  public BigDecimal getPreventedQty(){
+    return preventedQty;
   }
   
   /**
-   * @param i Order ID
+   * @param preventedQty Prevented Quantity; This is only visible if the order expired due to STP trigger. Message field <strong>A</strong>
    */
-  public void seti(String i) {
-    this.i = i;
+  public void setPreventedQty(BigDecimal preventedQty) {
+    this.preventedQty = preventedQty;
   }
   
   /**
-   * @return Strategy ID; This is only visible if the strategyId parameter was provided upon order placement
+   * @return Quote Order Quantity Message field <strong>Q</strong>
    */
-  public long getj(){
-    return j;
+  public BigDecimal getQuoteQty(){
+    return quoteQty;
   }
   
   /**
-   * @param j Strategy ID; This is only visible if the strategyId parameter was provided upon order placement
+   * @param quoteQty Quote Order Quantity Message field <strong>Q</strong>
    */
-  public void setj(long j) {
-    this.j = j;
+  public void setQuoteQty(BigDecimal quoteQty) {
+    this.quoteQty = quoteQty;
   }
   
   /**
-   * @return Last executed quantity
+   * @return selfTradePreventionMode Message field <strong>V</strong>
    */
-  public BigDecimal getl(){
-    return l;
+  public String getSelfTradePreventionMode(){
+    return selfTradePreventionMode;
   }
   
   /**
-   * @param l Last executed quantity
+   * @param selfTradePreventionMode selfTradePreventionMode Message field <strong>V</strong>
    */
-  public void setl(BigDecimal l) {
-    this.l = l;
+  public void setSelfTradePreventionMode(String selfTradePreventionMode) {
+    this.selfTradePreventionMode = selfTradePreventionMode;
   }
   
   /**
-   * @return Is this trade the maker side?
+   * @return Side Message field <strong>S</strong>
    */
-  public boolean ism(){
-    return m;
+  public String getSide(){
+    return side;
   }
   
   /**
-   * @param m Is this trade the maker side?
+   * @param side Side Message field <strong>S</strong>
    */
-  public void setm(boolean m) {
-    this.m = m;
+  public void setSide(String side) {
+    this.side = side;
   }
   
   /**
-   * @return Commission amount
+   * @return Stop price. Message field <strong>P</strong>
    */
-  public int getn(){
-    return n;
+  public BigDecimal getStopPrice(){
+    return stopPrice;
   }
   
   /**
-   * @param n Commission amount
+   * @param stopPrice Stop price. Message field <strong>P</strong>
    */
-  public void setn(int n) {
-    this.n = n;
+  public void setStopPrice(BigDecimal stopPrice) {
+    this.stopPrice = stopPrice;
   }
   
   /**
-   * @return Order type
+   * @return Strategy ID; This is only visible if the strategyId parameter was provided upon order placement. Message field <strong>j</strong>
    */
-  public String geto(){
-    return o;
+  public long getStrategyID(){
+    return strategyID;
   }
   
   /**
-   * @param o Order type
+   * @param strategyID Strategy ID; This is only visible if the strategyId parameter was provided upon order placement. Message field <strong>j</strong>
    */
-  public void seto(String o) {
-    this.o = o;
+  public void setStrategyID(long strategyID) {
+    this.strategyID = strategyID;
   }
   
   /**
-   * @return Order price
+   * @return Strategy Type; This is only visible if the strategyType parameter was provided upon order placement. Message field <strong>J</strong>
    */
-  public BigDecimal getp(){
-    return p;
+  public long getStrategyType(){
+    return strategyType;
   }
   
   /**
-   * @param p Order price
+   * @param strategyType Strategy Type; This is only visible if the strategyType parameter was provided upon order placement. Message field <strong>J</strong>
    */
-  public void setp(BigDecimal p) {
-    this.p = p;
+  public void setStrategyType(long strategyType) {
+    this.strategyType = strategyType;
   }
   
   /**
-   * @return Order quantity
+   * @return Symbol. Message field <strong>s</strong>
    */
-  public BigDecimal getq(){
-    return q;
+  public String getSymbol(){
+    return symbol;
   }
   
   /**
-   * @param q Order quantity
+   * @param symbol Symbol. Message field <strong>s</strong>
    */
-  public void setq(BigDecimal q) {
-    this.q = q;
+  public void setSymbol(String symbol) {
+    this.symbol = symbol;
   }
   
   /**
-   * @return Order reject reason, ; will be an error code
+   * @return Time in force. Message field <strong>f</strong>
    */
-  public String getR(){
-    return r;
+  public String getTimeInForce(){
+    return timeInForce;
   }
   
   /**
-   * @param r Order reject reason, ; will be an error code
+   * @param timeInForce Time in force. Message field <strong>f</strong>
    */
-  public void setR(String r) {
-    this.r = r;
+  public void setTimeInForce(String timeInForce) {
+    this.timeInForce = timeInForce;
   }
   
   /**
-   * @return Symbol
+   * @return TradeGroupId; This is only visible if the account is part of a trade group and the order expired due to STP trigger. Message field <strong>u</strong>
    */
-  public String gets(){
-    return s;
+  public long getTradeGroupId(){
+    return tradeGroupId;
   }
   
   /**
-   * @param s Symbol
+   * @param tradeGroupId TradeGroupId; This is only visible if the account is part of a trade group and the order expired due to STP trigger. Message field <strong>u</strong>
    */
-  public void sets(String s) {
-    this.s = s;
+  public void setTradeGroupId(long tradeGroupId) {
+    this.tradeGroupId = tradeGroupId;
   }
   
   /**
-   * @return Trade ID
+   * @return Trade ID Message field <strong>t</strong>
    */
-  public long gett(){
-    return t;
+  public long getTradeID(){
+    return tradeID;
   }
   
   /**
-   * @param t Trade ID
+   * @param tradeID Trade ID Message field <strong>t</strong>
    */
-  public void sett(long t) {
-    this.t = t;
+  public void setTradeID(long tradeID) {
+    this.tradeID = tradeID;
   }
   
   /**
-   * @return TradeGroupId; This is only visible if the account is part of a trade group and the order expired due to STP trigger.
+   * @return Is this trade the maker side? Message field <strong>m</strong>
    */
-  public long getu(){
-    return u;
+  public boolean isTradeMakerSide(){
+    return tradeMakerSide;
   }
   
   /**
-   * @param u TradeGroupId; This is only visible if the account is part of a trade group and the order expired due to STP trigger.
+   * @param tradeMakerSide Is this trade the maker side? Message field <strong>m</strong>
    */
-  public void setu(long u) {
-    this.u = u;
+  public void setTradeMakerSide(boolean tradeMakerSide) {
+    this.tradeMakerSide = tradeMakerSide;
   }
   
   /**
-   * @return Prevented Match Id; This is only visible if the order expire due to STP trigger.
+   * @return Trailing Delta; This is only visible if the order was a trailing stop order. Message field <strong>d</strong>
    */
-  public long getv(){
-    return v;
+  public int getTrailingDelta(){
+    return trailingDelta;
   }
   
   /**
-   * @param v Prevented Match Id; This is only visible if the order expire due to STP trigger.
+   * @param trailingDelta Trailing Delta; This is only visible if the order was a trailing stop order. Message field <strong>d</strong>
    */
-  public void setv(long v) {
-    this.v = v;
+  public void setTrailingDelta(int trailingDelta) {
+    this.trailingDelta = trailingDelta;
   }
   
   /**
-   * @return Is the order on the book?
+   * @return Trailing Time; This is only visible if the trailing stop order has been activated. Message field <strong>D</strong>
    */
-  public boolean isw(){
-    return w;
+  public long getTrailingTime(){
+    return trailingTime;
   }
   
   /**
-   * @param w Is the order on the book?
+   * @param trailingTime Trailing Time; This is only visible if the trailing stop order has been activated. Message field <strong>D</strong>
    */
-  public void setw(boolean w) {
-    this.w = w;
+  public void setTrailingTime(long trailingTime) {
+    this.trailingTime = trailingTime;
   }
   
   /**
-   * @return Current execution type
+   * @return Transaction time Message field <strong>T</strong>
    */
-  public String getx(){
-    return x;
+  public long getTransactionTime(){
+    return transactionTime;
   }
   
   /**
-   * @param x Current execution type
+   * @param transactionTime Transaction time Message field <strong>T</strong>
    */
-  public void setx(String x) {
-    this.x = x;
+  public void setTransactionTime(long transactionTime) {
+    this.transactionTime = transactionTime;
   }
   
   /**
-   * @return Cumulative filled quantity
+   * @return Working Time; This is only visible if the order has been placed on the book. Message field <strong>W</strong>
    */
-  public BigDecimal getz(){
-    return z;
+  public long getWorkingTime(){
+    return workingTime;
   }
   
   /**
-   * @param z Cumulative filled quantity
+   * @param workingTime Working Time; This is only visible if the order has been placed on the book. Message field <strong>W</strong>
    */
-  public void setz(BigDecimal z) {
-    this.z = z;
+  public void setWorkingTime(long workingTime) {
+    this.workingTime = workingTime;
   }
   
   @Override

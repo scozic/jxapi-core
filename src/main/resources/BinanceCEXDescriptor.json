@@ -105,23 +105,23 @@
 						{"name": "e",  "value": "24hrTicker"}
 					],
 					"response": [
-						{"name":"e", "type": "STRING", "description":"Event type", "sampleValue":"24hTicker"},
-						{"name":"E", "type": "TIMESTAMP", "description":"Event time", "sampleValue":"123456789"},
-						{"name":"s", "type": "STRING", "description":"Symbol", "sampleValue":"BNBBTC"},
-						{"name":"p", "type": "BIGDECIMAL", "description":"Price change", "sampleValue":"0.0015"},
-						{"name":"P", "type": "BIGDECIMAL", "description":"Price change percent", "sampleValue":"250.00"},
-						{"name":"o", "type": "BIGDECIMAL", "description":"Open price", "sampleValue":"0.0010"},
-						{"name":"h", "type": "BIGDECIMAL", "description":"High price", "sampleValue":"0.0025"},
-						{"name":"l", "type": "BIGDECIMAL", "description":"Low price", "sampleValue":"0.010"},
-						{"name":"c", "type": "BIGDECIMAL", "description":"Last price", "sampleValue":"0.0025"},
-						{"name":"w", "type": "BIGDECIMAL", "description":"Weighted average price", "sampleValue":"0.0018"},
-						{"name":"v", "type": "BIGDECIMAL", "description":"Total traded base asset volume", "sampleValue":"10000"},
-						{"name":"q", "type": "BIGDECIMAL", "description":"Total traded quote asset volume", "sampleValue":"18"},
-						{"name":"O", "type": "TIMESTAMP", "description":"Statistics open time", "sampleValue":"0"},
-						{"name":"C", "type": "TIMESTAMP", "description":"Statistics close time", "sampleValue":"86400000"},
-						{"name":"F", "type": "LONG", "description":"First trade ID", "sampleValue":"0"},
-						{"name":"L", "type": "LONG", "description":"Last trade ID", "sampleValue":"18150"},
-						{"name":"n", "type": "LONG", "description":"Total number of trades", "sampleValue":"18150"}
+						{"msgField":"e", "name":"eventType", "type": "STRING", "description":"Event type.", "sampleValue":"24hTicker"},
+						{"msgField":"E", "name":"eventTime", "type": "TIMESTAMP", "description":"Event time.", "sampleValue":"123456789"},
+						{"msgField":"s", "name":"symbol", "type": "STRING", "description":"Symbol.", "sampleValue":"BNBBTC"},
+						{"msgField":"p", "name":"priceChange", "type": "BIGDECIMAL", "description":"Price change.", "sampleValue":"0.0015"},
+						{"msgField":"P", "name":"priceChangePercent", "type": "BIGDECIMAL", "description":"Price change percent.", "sampleValue":"250.00"},
+						{"msgField":"o", "name":"openPrice","type": "BIGDECIMAL", "description":"Open price.", "sampleValue":"0.0010"},
+						{"msgField":"h", "name":"highPrice", "type": "BIGDECIMAL", "description":"High price.", "sampleValue":"0.0025"},
+						{"msgField":"l", "name":"lowPrice", "type": "BIGDECIMAL", "description":"Low price.", "sampleValue":"0.010"},
+						{"msgField":"c", "name":"lastPrice", "type": "BIGDECIMAL", "description":"Last price", "sampleValue":"0.0025"},
+						{"msgField":"w", "name":"weightedAvgPrice", "type": "BIGDECIMAL", "description":"Weighted average price.", "sampleValue":"0.0018"},
+						{"msgField":"v", "name":"baseAssetVolume", "type": "BIGDECIMAL", "description":"Total traded base asset volume.", "sampleValue":"10000"},
+						{"msgField":"q", "name":"quoteAssetVolume", "type": "BIGDECIMAL", "description":"Total traded quote asset volume.", "sampleValue":"18"},
+						{"msgField":"O", "name":"openTime", "type": "TIMESTAMP", "description":"Statistics open time.", "sampleValue":"0"},
+						{"msgField":"C", "name":"closeTime", "type": "TIMESTAMP", "description":"Statistics close time.", "sampleValue":"86400000"},
+						{"msgField":"F", "name":"firstTradeID", "type": "LONG", "description":"First trade ID.", "sampleValue":"0"},
+						{"msgField":"L", "name":"lastTradeID", "type": "LONG", "description":"Last trade ID.", "sampleValue":"18150"},
+						{"msgField":"n", "name":"tradeCount", "type": "LONG", "description":"Total number of trades.", "sampleValue":"18150"}
 					]
 				},
 				{
@@ -136,23 +136,23 @@
 						{"name": "s",  "value": "${symbol}"}
 					],
 					"response": [
-						{"name":"e", "type": "STRING", "description":"Event type", "sampleValue":"24hTicker"},
-						{"name":"E", "type": "TIMESTAMP", "description":"Event time", "sampleValue":"123456789"},
-						{"name":"s", "type": "STRING", "description":"Symbol", "sampleValue":"BNBBTC"},
-						{"name":"p", "type": "BIGDECIMAL", "description":"Price change", "sampleValue":"0.0015"},
-						{"name":"P", "type": "BIGDECIMAL", "description":"Price change percent", "sampleValue":"250.00"},
-						{"name":"o", "type": "BIGDECIMAL", "description":"Open price", "sampleValue":"0.0010"},
-						{"name":"h", "type": "BIGDECIMAL", "description":"High price", "sampleValue":"0.0025"},
-						{"name":"l", "type": "BIGDECIMAL", "description":"Low price", "sampleValue":"0.010"},
-						{"name":"c", "type": "BIGDECIMAL", "description":"Last price", "sampleValue":"0.0025"},
-						{"name":"w", "type": "BIGDECIMAL", "description":"Weighted average price", "sampleValue":"0.0018"},
-						{"name":"v", "type": "BIGDECIMAL", "description":"Total traded base asset volume", "sampleValue":"10000"},
-						{"name":"q", "type": "BIGDECIMAL", "description":"Total traded quote asset volume", "sampleValue":"18"},
-						{"name":"O", "type": "TIMESTAMP", "description":"Statistics open time", "sampleValue":"0"},
-						{"name":"C", "type": "TIMESTAMP", "description":"Statistics close time", "sampleValue":"86400000"},
-						{"name":"F", "type": "LONG", "description":"First trade ID", "sampleValue":"0"},
-						{"name":"L", "type": "LONG", "description":"Last trade ID", "sampleValue":"18150"},
-						{"name":"n", "type": "LONG", "description":"Total number of trades", "sampleValue":"18150"}
+						{"msgField":"e", "name":"eventType", "type": "STRING", "description":"Event type.", "sampleValue":"24hTicker"},
+						{"msgField":"E", "name":"eventTime", "type": "TIMESTAMP", "description":"Event time.", "sampleValue":"123456789"},
+						{"msgField":"s", "name":"symbol", "type": "STRING", "description":"Symbol.", "sampleValue":"BNBBTC"},
+						{"msgField":"p", "name":"priceChange", "type": "BIGDECIMAL", "description":"Price change.", "sampleValue":"0.0015"},
+						{"msgField":"P", "name":"priceChangePercent", "type": "BIGDECIMAL", "description":"Price change percent.", "sampleValue":"250.00"},
+						{"msgField":"o", "name":"openPrice","type": "BIGDECIMAL", "description":"Open price.", "sampleValue":"0.0010"},
+						{"msgField":"h", "name":"highPrice", "type": "BIGDECIMAL", "description":"High price.", "sampleValue":"0.0025"},
+						{"msgField":"l", "name":"lowPrice", "type": "BIGDECIMAL", "description":"Low price.", "sampleValue":"0.010"},
+						{"msgField":"c", "name":"lastPrice", "type": "BIGDECIMAL", "description":"Last price", "sampleValue":"0.0025"},
+						{"msgField":"w", "name":"weightedAvgPrice", "type": "BIGDECIMAL", "description":"Weighted average price.", "sampleValue":"0.0018"},
+						{"msgField":"v", "name":"baseAssetVolume", "type": "BIGDECIMAL", "description":"Total traded base asset volume.", "sampleValue":"10000"},
+						{"msgField":"q", "name":"quoteAssetVolume", "type": "BIGDECIMAL", "description":"Total traded quote asset volume.", "sampleValue":"18"},
+						{"msgField":"O", "name":"openTime", "type": "TIMESTAMP", "description":"Statistics open time.", "sampleValue":"0"},
+						{"msgField":"C", "name":"closeTime", "type": "TIMESTAMP", "description":"Statistics close time.", "sampleValue":"86400000"},
+						{"msgField":"F", "name":"firstTradeID", "type": "LONG", "description":"First trade ID.", "sampleValue":"0"},
+						{"msgField":"L", "name":"lastTradeID", "type": "LONG", "description":"Last trade ID.", "sampleValue":"18150"},
+						{"msgField":"n", "name":"tradeCount", "type": "LONG", "description":"Total number of trades.", "sampleValue":"18150"}
 					]
 				}
 			]
@@ -249,14 +249,14 @@
 						{"name": "e",  "value": "outboundAccountPosition"}
 					],
 					"response": [
-						{"name":"e", "type": "STRING", "description":"Event type", "sampleValue":"outboundAccountPosition"},
-						{"name":"E", "type": "TIMESTAMP", "description":"Event time", "sampleValue":"1564034571105"},
-						{"name":"u", "type": "TIMESTAMP", "description":"Time of last account update", "sampleValue":"1564034571105"},
-						{"name":"B", "type": "STRUCT_LIST", "description":"Balances array", "parameters":
+						{"msgField":"e", "name":"eventType", "type": "STRING", "description":"Event type.", "sampleValue":"outboundAccountPosition"},
+						{"msgField":"E", "name":"eventTime", "type": "TIMESTAMP", "description":"Event time.", "sampleValue":"1564034571105"},
+						{"msgField":"u", "name":"lastAccountUpdateTime", "type": "TIMESTAMP", "description":"Time of last account update.", "sampleValue":"1564034571105"},
+						{"msgField":"B", "name":"balancesArray", "type": "STRUCT_LIST", "description":"Balances array.", "parameters":
 							[
-								{"name":"a", "type": "STRING", "description":"asset", "sampleValue":"ETH"},
-								{"name":"f", "type": "BIGDECIMAL", "description":"free", "sampleValue":"10000.000000"},
-								{"name":"l", "type": "BIGDECIMAL", "description":"locked", "sampleValue":"0.000000"}
+								{"msgField":"a", "name":"asset", "type": "STRING", "description":"asset.", "sampleValue":"ETH"},
+								{"msgField":"f", "name":"free", "type": "BIGDECIMAL", "description":"free.", "sampleValue":"10000.000000"},
+								{"msgField":"l", "name":"locked", "type": "BIGDECIMAL", "description":"locked.", "sampleValue":"0.000000"}
 							]
 						}
 					]
@@ -270,11 +270,11 @@
 						{"name": "e",  "value": "balanceUpdate"}
 					],
 					"response": [
-						{"name":"e", "type": "STRING", "description":"Event type", "sampleValue":"outboundAccountPosition"},
-						{"name":"E", "type": "TIMESTAMP", "description":"Event time", "sampleValue":"1564034571105"},
-						{"name":"a", "type": "STRING", "description":"Asset", "sampleValue":"BTC"},
-						{"name":"d", "type": "BIGDECIMAL", "description":"Balance delta", "sampleValue":"100.000000"},
-						{"name":"T", "type": "TIMESTAMP", "description":"Clear Time", "sampleValue":"1573200697068"}
+						{"msgField":"e", "name":"eventType", "type": "STRING", "description":"Event type.", "sampleValue":"outboundAccountPosition"},
+						{"msgField":"E", "name":"eventTime", "type": "TIMESTAMP", "description":"Event time.", "sampleValue":"1564034571105"},
+						{"msgField":"a", "name":"asset", "type": "STRING", "description":"Asset.", "sampleValue":"BTC"},
+						{"msgField":"d", "name":"balanceDelta", "type": "BIGDECIMAL", "description":"Balance delta.", "sampleValue":"100.000000"},
+						{"msgField":"T", "name":"clearTime", "type": "TIMESTAMP", "description":"Clear Time.", "sampleValue":"1573200697068"}
 					]
 				},
 				{
@@ -286,49 +286,49 @@
 						{"name": "e",  "value": "executionReport"}
 					],
 					"response": [
-						{"name":"e", "type": "STRING", "description":"Event type", "sampleValue":"outboundAccountPosition"},
-						{"name":"E", "type": "TIMESTAMP", "description":"Event time", "sampleValue":"1564034571105"},
-						{"name":"s", "type": "STRING", "description":"Symbol", "sampleValue":"ETHBTC"},
-						{"name":"c", "type": "STRING", "description":"Client", "sampleValue":"mUvoqJxFIILMdfAW5iGSOW"},
-						{"name":"S", "type": "STRING", "description":"Side", "sampleValue":"BUY"},
-						{"name":"o", "type": "STRING", "description":"Order type", "sampleValue":"LIMIT"},
-						{"name":"f", "type": "STRING", "description":"Time in force", "sampleValue":"GTC"},
-						{"name":"q", "type": "BIGDECIMAL", "description":"Order quantity", "sampleValue":"1.00000000"},
-						{"name":"p", "type": "BIGDECIMAL", "description":"Order price", "sampleValue":"0.10264410"},
-						{"name":"P", "type": "BIGDECIMAL", "description":"Stop price", "sampleValue":"0.10000000"},
-						{"name":"d", "type": "INT", "description":"Trailing Delta; This is only visible if the order was a trailing stop order", "sampleValue":"4"},
-						{"name":"F", "type": "BIGDECIMAL", "description":"Iceberg quantity", "sampleValue":"0.00000000"},
-						{"name":"g", "type": "INT", "description":"OrderListId", "sampleValue":"-1"},
-						{"name":"C", "type": "STRING", "description":"Original client order ID; This is the ID of the order being canceled", "sampleValue":""},
-						{"name":"x", "type": "STRING", "description":"Current execution type", "sampleValue":"NEW"},
-						{"name":"X", "type": "STRING", "description":"Current order status", "sampleValue":"NEW"},
-						{"name":"r", "type": "STRING", "description":"Order reject reason, ; will be an error code", "sampleValue":"NONE"},
-						{"name":"i", "type": "STRING", "description":"Order ID", "sampleValue":"NONE"},
-						{"name":"l", "type": "BIGDECIMAL", "description":"Last executed quantity", "sampleValue":"0.0000000"},
-						{"name":"z", "type": "BIGDECIMAL", "description":"Cumulative filled quantity", "sampleValue":"0.0000000"},
-						{"name":"L", "type": "BIGDECIMAL", "description":"Last executed price", "sampleValue":"0.0000000"},
-						{"name":"n", "type": "INT", "description":"Commission amount", "sampleValue":"0"},
-						{"name":"N", "type": "STRING", "description":"Commission asset", "sampleValue":"null"},
-						{"name":"T", "type": "TIMESTAMP", "description":"Transaction time", "sampleValue":"1499405658657"},
-						{"name":"t", "type": "LONG", "description":"Trade ID", "sampleValue":"-1"},
-						{"name":"v", "type": "LONG", "description":"Prevented Match Id; This is only visible if the order expire due to STP trigger.", "sampleValue":"3"},
-						{"name":"I", "type": "LONG", "description":"Ignore", "sampleValue":"8641984"},
-						{"name":"w", "type": "BOOLEAN", "description":"Is the order on the book?", "sampleValue":"true"},
-						{"name":"m", "type": "BOOLEAN", "description":"Is this trade the maker side?", "sampleValue":"true"},
-						{"name":"M", "type": "BOOLEAN", "description":"Ignore", "sampleValue":"false"},
-						{"name":"O", "type": "TIMESTAMP", "description":"Order creation time", "sampleValue":"1499405658657"},
-						{"name":"Z", "type": "BIGDECIMAL", "description":"Cumulative quote asset transacted quantity", "sampleValue":"0.00000000"},
-						{"name":"Y", "type": "BIGDECIMAL", "description":"Last quote asset transacted quantity (i.e. lastPrice * lastQty)", "sampleValue":"0.00000000"},
-						{"name":"Q", "type": "BIGDECIMAL", "description":"Quote Order Quantity", "sampleValue":"0.00000000"},
-						{"name":"D", "type": "TIMESTAMP", "description":"Trailing Time; This is only visible if the trailing stop order has been activated.", "sampleValue":"1668680518494"},
-						{"name":"j", "type": "LONG", "description":"Strategy ID; This is only visible if the strategyId parameter was provided upon order placement", "sampleValue":"1668680518494"},
-						{"name":"J", "type": "LONG", "description":"Strategy Type; This is only visible if the strategyType parameter was provided upon order placement", "sampleValue":"1000000"},
-						{"name":"W", "type": "TIMESTAMP", "description":"Working Time; This is only visible if the order has been placed on the book.", "sampleValue":"1000000"},
-						{"name":"V", "type": "STRING", "description":"selfTradePreventionMode", "sampleValue":"NONE"},
-						{"name":"u", "type": "LONG", "description":"TradeGroupId; This is only visible if the account is part of a trade group and the order expired due to STP trigger.", "sampleValue":"1"},
-						{"name":"U", "type": "LONG", "description":"CounterOrderId; This is only visible if the order expired due to STP trigger.", "sampleValue":"37"},
-						{"name":"A", "type": "BIGDECIMAL", "description":"Prevented Quantity; This is only visible if the order expired due to STP trigger.", "sampleValue":"3.000000"},
-						{"name":"B", "type": "BIGDECIMAL", "description":"Last Prevented Quantity; This is only visible if the order expired due to STP trigger.", "sampleValue":"3.000000"}
+						{"msgField":"e", "name":"eventType", "type": "STRING", "description":"Event type.", "sampleValue":"outboundAccountPosition"},
+						{"msgField":"E", "name":"eventTime", "type": "TIMESTAMP", "description":"Event time.", "sampleValue":"1564034571105"},
+						{"msgField":"s", "name":"symbol", "type": "STRING", "description":"Symbol.", "sampleValue":"ETHBTC"},
+						{"msgField":"c", "name":"clientOrderID", "type": "STRING", "description":"Client order ID.", "sampleValue":"mUvoqJxFIILMdfAW5iGSOW"},
+						{"msgField":"S", "name":"side", "type": "STRING", "description":"Side", "sampleValue":"BUY"},
+						{"msgField":"o", "name":"orderType", "type": "STRING", "description":"Order type.", "sampleValue":"LIMIT"},
+						{"msgField":"f", "name":"timeInForce", "type": "STRING", "description":"Time in force.", "sampleValue":"GTC"},
+						{"msgField":"q", "name":"orderQuantity", "type": "BIGDECIMAL", "description":"Order quantity.", "sampleValue":"1.00000000"},
+						{"msgField":"p", "name":"orderPrice", "type": "BIGDECIMAL", "description":"Order price.", "sampleValue":"0.10264410"},
+						{"msgField":"P", "name":"stopPrice", "type": "BIGDECIMAL", "description":"Stop price.", "sampleValue":"0.10000000"},
+						{"msgField":"d", "name":"trailingDelta", "type": "INT", "description":"Trailing Delta; This is only visible if the order was a trailing stop order.", "sampleValue":"4"},
+						{"msgField":"F", "name":"icebergQuantity", "type": "BIGDECIMAL", "description":"Iceberg quantity.", "sampleValue":"0.00000000"},
+						{"msgField":"g", "name":"orderListId", "type": "INT", "description":"OrderListId", "sampleValue":"-1"},
+						{"msgField":"C", "name":"origClientOrderID", "type": "STRING", "description":"Original client order ID; This is the ID of the order being canceled", "sampleValue":""},
+						{"msgField":"x", "name":"currentExecutionType", "type": "STRING", "description":"Current execution type.", "sampleValue":"NEW"},
+						{"msgField":"X", "name":"currentOrderStatus", "type": "STRING", "description":"Current order status.", "sampleValue":"NEW"},
+						{"msgField":"r", "name":"orderRejectReason", "type": "STRING", "description":"Order reject reason, ; will be an error code.", "sampleValue":"NONE"},
+						{"msgField":"i", "name":"orderID", "type": "STRING", "description":"Order ID", "sampleValue":"NONE"},
+						{"msgField":"l", "name":"lastExecQty", "type": "BIGDECIMAL", "description":"Last executed quantity.", "sampleValue":"0.0000000"},
+						{"msgField":"z", "name":"cumQty", "type": "BIGDECIMAL", "description":"Cumulative filled quantity.", "sampleValue":"0.0000000"},
+						{"msgField":"L", "name":"lastExecPrice", "type": "BIGDECIMAL", "description":"Last executed price.", "sampleValue":"0.0000000"},
+						{"msgField":"n", "name":"commissionAmount", "type": "INT", "description":"Commission amount.", "sampleValue":"0"},
+						{"msgField":"N", "name":"comissionAsset", "type": "STRING", "description":"Commission asset.", "sampleValue":"null"},
+						{"msgField":"T", "name":"transactionTime", "type": "TIMESTAMP", "description":"Transaction time", "sampleValue":"1499405658657"},
+						{"msgField":"t", "name":"tradeID", "type": "LONG", "description":"Trade ID", "sampleValue":"-1"},
+						{"msgField":"v", "name":"preventedMatchID", "type": "LONG", "description":"Prevented Match Id; This is only visible if the order expire due to STP trigger.", "sampleValue":"3"},
+						{"msgField":"I", "name":"ignore0", "type": "LONG", "description":"Ignore", "sampleValue":"8641984"},
+						{"msgField":"w", "name":"orderOnBook", "type": "BOOLEAN", "description":"Is the order on the book?", "sampleValue":"true"},
+						{"msgField":"m", "name":"tradeMakerSide", "type": "BOOLEAN", "description":"Is this trade the maker side?", "sampleValue":"true"},
+						{"msgField":"M", "name":"ignore1", "type": "BOOLEAN", "description":"Ignore", "sampleValue":"false"},
+						{"msgField":"O", "name":"orderCreationTime", "type": "TIMESTAMP", "description":"Order creation time.", "sampleValue":"1499405658657"},
+						{"msgField":"Z", "name":"cumQuoteQty", "type": "BIGDECIMAL", "description":"Cumulative quote asset transacted quantity", "sampleValue":"0.00000000"},
+						{"msgField":"Y", "name":"lastQuoteQty", "type": "BIGDECIMAL", "description":"Last quote asset transacted quantity (i.e. lastPrice * lastQty).", "sampleValue":"0.00000000"},
+						{"msgField":"Q", "name":"quoteQty", "type": "BIGDECIMAL", "description":"Quote Order Quantity", "sampleValue":"0.00000000"},
+						{"msgField":"D", "name":"trailingTime", "type": "TIMESTAMP", "description":"Trailing Time; This is only visible if the trailing stop order has been activated.", "sampleValue":"1668680518494"},
+						{"msgField":"j", "name":"strategyID", "type": "LONG", "description":"Strategy ID; This is only visible if the strategyId parameter was provided upon order placement.", "sampleValue":"1668680518494"},
+						{"msgField":"J", "name":"strategyType", "type": "LONG", "description":"Strategy Type; This is only visible if the strategyType parameter was provided upon order placement.", "sampleValue":"1000000"},
+						{"msgField":"W", "name":"workingTime", "type": "TIMESTAMP", "description":"Working Time; This is only visible if the order has been placed on the book.", "sampleValue":"1000000"},
+						{"msgField":"V", "name":"selfTradePreventionMode", "type": "STRING", "description":"selfTradePreventionMode", "sampleValue":"NONE"},
+						{"msgField":"u", "name":"tradeGroupId", "type": "LONG", "description":"TradeGroupId; This is only visible if the account is part of a trade group and the order expired due to STP trigger.", "sampleValue":"1"},
+						{"msgField":"U", "name":"counterOrderId", "type": "LONG", "description":"CounterOrderId; This is only visible if the order expired due to STP trigger.", "sampleValue":"37"},
+						{"msgField":"A", "name":"preventedQty", "type": "BIGDECIMAL", "description":"Prevented Quantity; This is only visible if the order expired due to STP trigger.", "sampleValue":"3.000000"},
+						{"msgField":"B", "name":"lastPreventedQty", "type": "BIGDECIMAL", "description":"Last Prevented Quantity; This is only visible if the order expired due to STP trigger.", "sampleValue":"3.000000"}
 					]
 				},
 				{
@@ -340,11 +340,11 @@
 						{"name": "e",  "value": "listStatus"}
 					],
 					"response": [
-						{"name":"e", "type": "STRING", "description":"Event type", "sampleValue":"outboundAccountPosition"},
-						{"name":"E", "type": "TIMESTAMP", "description":"Event time", "sampleValue":"1564034571105"},
-						{"name":"a", "type": "STRING", "description":"Asset", "sampleValue":"BTC"},
-						{"name":"d", "type": "BIGDECIMAL", "description":"Balance delta", "sampleValue":"100.000000"},
-						{"name":"T", "type": "TIMESTAMP", "description":"Clear Time", "sampleValue":"1573200697068"}
+						{"msgField":"e", "name":"eventType", "type": "STRING", "description":"Event type.", "sampleValue":"outboundAccountPosition"},
+						{"msgField":"E", "name":"eventTime", "type": "TIMESTAMP", "description":"Event time.", "sampleValue":"1564034571105"},
+						{"msgField":"a", "name":"asset", "type": "STRING", "description":"Asset.", "sampleValue":"BTC"},
+						{"msgField":"d", "name":"balanceDelta", "type": "BIGDECIMAL", "description":"Balance delta.", "sampleValue":"100.000000"},
+						{"msgField":"T", "name":"clearTime", "type": "TIMESTAMP", "description":"Clear Time.", "sampleValue":"1573200697068"}
 					]
 				}		
 			]

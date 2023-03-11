@@ -16,7 +16,6 @@ import com.scz.jcex.netutils.deserialization.MessageDeserializer;
 import com.scz.jcex.netutils.rest.RestEndpoint;
 import com.scz.jcex.netutils.rest.RestEndpointUrlParameters;
 import com.scz.jcex.netutils.rest.RestRequest;
-import com.scz.jcex.util.EncodingUtil;
 
 public class JavaxNetRestEndpoint<R, A> implements RestEndpoint<R, A> {
 	
@@ -41,7 +40,6 @@ public class JavaxNetRestEndpoint<R, A> implements RestEndpoint<R, A> {
 		setHeadersForRequest(request, con, body);
 		con.setUseCaches(false);
 		con.setDoOutput(true);
-//		con.setRequestProperty("User-Agent", "PostmanRuntime/7.29.2");
 		
 		if (body != null) {
 			try (DataOutputStream wr = new DataOutputStream(con.getOutputStream())) {
@@ -73,10 +71,6 @@ public class JavaxNetRestEndpoint<R, A> implements RestEndpoint<R, A> {
 
 	protected String getBody(RestRequest<R> request) {
 		return null;
-//		if ("GET".equals(request.getHttpMethod())) {
-//			return null;
-//		}
-//		return EncodingUtil.pojoToJsonString(request);
 	}
 
 	/**

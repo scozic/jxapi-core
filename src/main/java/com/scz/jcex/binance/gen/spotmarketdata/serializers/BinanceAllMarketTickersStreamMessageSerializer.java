@@ -20,23 +20,23 @@ public class BinanceAllMarketTickersStreamMessageSerializer extends StdSerialize
   @Override
   public void serialize(BinanceAllMarketTickersStreamMessage value, JsonGenerator gen, SerializerProvider provider) throws IOException {
     gen.writeStartObject();
-    gen.writeStringField("e", String.valueOf(value.gete()));
-    gen.writeNumberField("E", value.getE());
-    gen.writeStringField("s", String.valueOf(value.getS()));
-    gen.writeStringField("p", EncodingUtil.bigDecimalToString(value.getp()));
-    gen.writeStringField("P", EncodingUtil.bigDecimalToString(value.getP()));
-    gen.writeStringField("o", EncodingUtil.bigDecimalToString(value.geto()));
-    gen.writeStringField("h", EncodingUtil.bigDecimalToString(value.getH()));
-    gen.writeStringField("l", EncodingUtil.bigDecimalToString(value.getl()));
-    gen.writeStringField("c", EncodingUtil.bigDecimalToString(value.getc()));
-    gen.writeStringField("w", EncodingUtil.bigDecimalToString(value.getW()));
-    gen.writeStringField("v", EncodingUtil.bigDecimalToString(value.getV()));
-    gen.writeStringField("q", EncodingUtil.bigDecimalToString(value.getQ()));
-    gen.writeNumberField("O", value.getO());
-    gen.writeNumberField("C", value.getC());
-    gen.writeNumberField("F", value.getF());
-    gen.writeNumberField("L", value.getL());
-    gen.writeNumberField("n", value.getN());
+    gen.writeStringField("e", String.valueOf(value.getEventType()));
+    gen.writeNumberField("E", value.getEventTime());
+    gen.writeStringField("s", String.valueOf(value.getSymbol()));
+    gen.writeStringField("p", EncodingUtil.bigDecimalToString(value.getPriceChange()));
+    gen.writeStringField("P", EncodingUtil.bigDecimalToString(value.getPriceChangePercent()));
+    gen.writeStringField("o", EncodingUtil.bigDecimalToString(value.getOpenPrice()));
+    gen.writeStringField("h", EncodingUtil.bigDecimalToString(value.getHighPrice()));
+    gen.writeStringField("l", EncodingUtil.bigDecimalToString(value.getLowPrice()));
+    gen.writeStringField("c", EncodingUtil.bigDecimalToString(value.getLastPrice()));
+    gen.writeStringField("w", EncodingUtil.bigDecimalToString(value.getWeightedAvgPrice()));
+    gen.writeStringField("v", EncodingUtil.bigDecimalToString(value.getBaseAssetVolume()));
+    gen.writeStringField("q", EncodingUtil.bigDecimalToString(value.getQuoteAssetVolume()));
+    gen.writeNumberField("O", value.getOpenTime());
+    gen.writeNumberField("C", value.getCloseTime());
+    gen.writeNumberField("F", value.getFirstTradeID());
+    gen.writeNumberField("L", value.getLastTradeID());
+    gen.writeNumberField("n", value.getTradeCount());
     gen.writeEndObject();
   }
 }

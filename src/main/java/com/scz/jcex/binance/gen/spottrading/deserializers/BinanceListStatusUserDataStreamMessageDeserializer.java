@@ -21,19 +21,19 @@ public class BinanceListStatusUserDataStreamMessageDeserializer extends Abstract
     while(parser.nextToken() != JsonToken.END_OBJECT) {
       switch(parser.getCurrentName()) {
       case "e":
-        msg.sete(parser.nextTextValue());
+        msg.setEventType(parser.nextTextValue());
       break;
       case "E":
-        msg.setE(parser.nextLongValue(0L));
+        msg.setEventTime(parser.nextLongValue(0L));
       break;
       case "a":
-        msg.setA(parser.nextTextValue());
+        msg.setAsset(parser.nextTextValue());
       break;
       case "d":
-        msg.setD(new BigDecimal(parser.nextTextValue()));
+        msg.setBalanceDelta(new BigDecimal(parser.nextTextValue()));
       break;
       case "T":
-        msg.setT(parser.nextLongValue(0L));
+        msg.setClearTime(parser.nextLongValue(0L));
       break;
       default:
         JsonParserUtil.skipNextValue(parser);

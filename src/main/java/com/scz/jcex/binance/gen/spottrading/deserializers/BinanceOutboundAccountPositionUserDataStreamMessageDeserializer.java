@@ -3,7 +3,7 @@ package com.scz.jcex.binance.gen.spottrading.deserializers;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonToken;
 import com.scz.jcex.binance.gen.spottrading.pojo.BinanceOutboundAccountPositionUserDataStreamMessage;
-import com.scz.jcex.binance.gen.spottrading.pojo.BinanceOutboundAccountPositionUserDataStreamMessageB;
+import com.scz.jcex.binance.gen.spottrading.pojo.BinanceOutboundAccountPositionUserDataStreamMessageBalancesArray;
 import com.scz.jcex.netutils.deserialization.json.AbstractJsonMessageDeserializer;
 import com.scz.jcex.netutils.deserialization.json.field.StructListFieldDeserializer;
 import com.scz.jcex.netutils.serialization.json.JsonParserUtil;
@@ -15,8 +15,8 @@ import java.io.IOException;
  * @see com.scz.jcex.binance.gen.spottrading.pojo.BinanceOutboundAccountPositionUserDataStreamMessage
  */
 public class BinanceOutboundAccountPositionUserDataStreamMessageDeserializer extends AbstractJsonMessageDeserializer<BinanceOutboundAccountPositionUserDataStreamMessage> {
-  private final BinanceOutboundAccountPositionUserDataStreamMessageBDeserializer binanceOutboundAccountPositionUserDataStreamMessageBDeserializer = new BinanceOutboundAccountPositionUserDataStreamMessageBDeserializer();
-  private final StructListFieldDeserializer<BinanceOutboundAccountPositionUserDataStreamMessageB> binanceOutboundAccountPositionUserDataStreamMessageBListDeserializer = new StructListFieldDeserializer<BinanceOutboundAccountPositionUserDataStreamMessageB>(binanceOutboundAccountPositionUserDataStreamMessageBDeserializer);
+  private final BinanceOutboundAccountPositionUserDataStreamMessageBalancesArrayDeserializer binanceOutboundAccountPositionUserDataStreamMessageBalancesArrayDeserializer = new BinanceOutboundAccountPositionUserDataStreamMessageBalancesArrayDeserializer();
+  private final StructListFieldDeserializer<BinanceOutboundAccountPositionUserDataStreamMessageBalancesArray> binanceOutboundAccountPositionUserDataStreamMessageBalancesArrayListDeserializer = new StructListFieldDeserializer<BinanceOutboundAccountPositionUserDataStreamMessageBalancesArray>(binanceOutboundAccountPositionUserDataStreamMessageBalancesArrayDeserializer);
   
   @Override
   public BinanceOutboundAccountPositionUserDataStreamMessage deserialize(JsonParser parser) throws IOException {
@@ -24,17 +24,17 @@ public class BinanceOutboundAccountPositionUserDataStreamMessageDeserializer ext
     while(parser.nextToken() != JsonToken.END_OBJECT) {
       switch(parser.getCurrentName()) {
       case "e":
-        msg.sete(parser.nextTextValue());
+        msg.setEventType(parser.nextTextValue());
       break;
       case "E":
-        msg.setE(parser.nextLongValue(0L));
+        msg.setEventTime(parser.nextLongValue(0L));
       break;
       case "u":
-        msg.setU(parser.nextLongValue(0L));
+        msg.setLastAccountUpdateTime(parser.nextLongValue(0L));
       break;
       case "B":
         parser.nextToken();
-        msg.setB(binanceOutboundAccountPositionUserDataStreamMessageBListDeserializer.deserialize(parser));
+        msg.setBalancesArray(binanceOutboundAccountPositionUserDataStreamMessageBalancesArrayListDeserializer.deserialize(parser));
       break;
       default:
         JsonParserUtil.skipNextValue(parser);

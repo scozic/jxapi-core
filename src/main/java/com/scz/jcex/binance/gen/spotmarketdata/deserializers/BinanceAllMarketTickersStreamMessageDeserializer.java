@@ -21,55 +21,55 @@ public class BinanceAllMarketTickersStreamMessageDeserializer extends AbstractJs
     while(parser.nextToken() != JsonToken.END_OBJECT) {
       switch(parser.getCurrentName()) {
       case "e":
-        msg.sete(parser.nextTextValue());
+        msg.setEventType(parser.nextTextValue());
       break;
       case "E":
-        msg.setE(parser.nextLongValue(0L));
+        msg.setEventTime(parser.nextLongValue(0L));
       break;
       case "s":
-        msg.setS(parser.nextTextValue());
+        msg.setSymbol(parser.nextTextValue());
       break;
       case "p":
-        msg.setp(new BigDecimal(parser.nextTextValue()));
+        msg.setPriceChange(new BigDecimal(parser.nextTextValue()));
       break;
       case "P":
-        msg.setP(new BigDecimal(parser.nextTextValue()));
+        msg.setPriceChangePercent(new BigDecimal(parser.nextTextValue()));
       break;
       case "o":
-        msg.seto(new BigDecimal(parser.nextTextValue()));
+        msg.setOpenPrice(new BigDecimal(parser.nextTextValue()));
       break;
       case "h":
-        msg.setH(new BigDecimal(parser.nextTextValue()));
+        msg.setHighPrice(new BigDecimal(parser.nextTextValue()));
       break;
       case "l":
-        msg.setl(new BigDecimal(parser.nextTextValue()));
+        msg.setLowPrice(new BigDecimal(parser.nextTextValue()));
       break;
       case "c":
-        msg.setc(new BigDecimal(parser.nextTextValue()));
+        msg.setLastPrice(new BigDecimal(parser.nextTextValue()));
       break;
       case "w":
-        msg.setW(new BigDecimal(parser.nextTextValue()));
+        msg.setWeightedAvgPrice(new BigDecimal(parser.nextTextValue()));
       break;
       case "v":
-        msg.setV(new BigDecimal(parser.nextTextValue()));
+        msg.setBaseAssetVolume(new BigDecimal(parser.nextTextValue()));
       break;
       case "q":
-        msg.setQ(new BigDecimal(parser.nextTextValue()));
+        msg.setQuoteAssetVolume(new BigDecimal(parser.nextTextValue()));
       break;
       case "O":
-        msg.setO(parser.nextLongValue(0L));
+        msg.setOpenTime(parser.nextLongValue(0L));
       break;
       case "C":
-        msg.setC(parser.nextLongValue(0L));
+        msg.setCloseTime(parser.nextLongValue(0L));
       break;
       case "F":
-        msg.setF(parser.nextLongValue(0));
+        msg.setFirstTradeID(parser.nextLongValue(0));
       break;
       case "L":
-        msg.setL(parser.nextLongValue(0));
+        msg.setLastTradeID(parser.nextLongValue(0));
       break;
       case "n":
-        msg.setN(parser.nextLongValue(0));
+        msg.setTradeCount(parser.nextLongValue(0));
       break;
       default:
         JsonParserUtil.skipNextValue(parser);

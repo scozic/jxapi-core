@@ -10,65 +10,65 @@ import java.util.List;
  */
 @JsonSerialize(using = BinanceOutboundAccountPositionUserDataStreamMessageSerializer.class)
 public class BinanceOutboundAccountPositionUserDataStreamMessage {
-  private List<BinanceOutboundAccountPositionUserDataStreamMessageB> B;
-  private long E;
-  private String e;
-  private long u;
+  private List<BinanceOutboundAccountPositionUserDataStreamMessageBalancesArray> balancesArray;
+  private long eventTime;
+  private String eventType;
+  private long lastAccountUpdateTime;
   
   /**
-   * @return Balances array
+   * @return Balances array. Message field <strong>B</strong>
    */
-  public List<BinanceOutboundAccountPositionUserDataStreamMessageB> getB(){
-    return B;
+  public List<BinanceOutboundAccountPositionUserDataStreamMessageBalancesArray> getBalancesArray(){
+    return balancesArray;
   }
   
   /**
-   * @param B Balances array
+   * @param balancesArray Balances array. Message field <strong>B</strong>
    */
-  public void setB(List<BinanceOutboundAccountPositionUserDataStreamMessageB> B) {
-    this.B = B;
+  public void setBalancesArray(List<BinanceOutboundAccountPositionUserDataStreamMessageBalancesArray> balancesArray) {
+    this.balancesArray = balancesArray;
   }
   
   /**
-   * @return Event time
+   * @return Event time. Message field <strong>E</strong>
    */
-  public long getE(){
-    return E;
+  public long getEventTime(){
+    return eventTime;
   }
   
   /**
-   * @param E Event time
+   * @param eventTime Event time. Message field <strong>E</strong>
    */
-  public void setE(long E) {
-    this.E = E;
+  public void setEventTime(long eventTime) {
+    this.eventTime = eventTime;
   }
   
   /**
-   * @return Event type
+   * @return Event type. Message field <strong>e</strong>
    */
-  public String gete(){
-    return e;
+  public String getEventType(){
+    return eventType;
   }
   
   /**
-   * @param e Event type
+   * @param eventType Event type. Message field <strong>e</strong>
    */
-  public void sete(String e) {
-    this.e = e;
+  public void setEventType(String eventType) {
+    this.eventType = eventType;
   }
   
   /**
-   * @return Time of last account update
+   * @return Time of last account update. Message field <strong>u</strong>
    */
-  public long getU(){
-    return u;
+  public long getLastAccountUpdateTime(){
+    return lastAccountUpdateTime;
   }
   
   /**
-   * @param u Time of last account update
+   * @param lastAccountUpdateTime Time of last account update. Message field <strong>u</strong>
    */
-  public void setU(long u) {
-    this.u = u;
+  public void setLastAccountUpdateTime(long lastAccountUpdateTime) {
+    this.lastAccountUpdateTime = lastAccountUpdateTime;
   }
   
   @Override

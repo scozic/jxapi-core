@@ -21,133 +21,133 @@ public class BinanceExecutionReportUserDataStreamMessageDeserializer extends Abs
     while(parser.nextToken() != JsonToken.END_OBJECT) {
       switch(parser.getCurrentName()) {
       case "e":
-        msg.sete(parser.nextTextValue());
+        msg.setEventType(parser.nextTextValue());
       break;
       case "E":
-        msg.setE(parser.nextLongValue(0L));
+        msg.setEventTime(parser.nextLongValue(0L));
       break;
       case "s":
-        msg.sets(parser.nextTextValue());
+        msg.setSymbol(parser.nextTextValue());
       break;
       case "c":
-        msg.setc(parser.nextTextValue());
+        msg.setClientOrderID(parser.nextTextValue());
       break;
       case "S":
-        msg.setS(parser.nextTextValue());
+        msg.setSide(parser.nextTextValue());
       break;
       case "o":
-        msg.seto(parser.nextTextValue());
+        msg.setOrderType(parser.nextTextValue());
       break;
       case "f":
-        msg.setf(parser.nextTextValue());
+        msg.setTimeInForce(parser.nextTextValue());
       break;
       case "q":
-        msg.setq(new BigDecimal(parser.nextTextValue()));
+        msg.setOrderQuantity(new BigDecimal(parser.nextTextValue()));
       break;
       case "p":
-        msg.setp(new BigDecimal(parser.nextTextValue()));
+        msg.setOrderPrice(new BigDecimal(parser.nextTextValue()));
       break;
       case "P":
-        msg.setP(new BigDecimal(parser.nextTextValue()));
+        msg.setStopPrice(new BigDecimal(parser.nextTextValue()));
       break;
       case "d":
-        msg.setd(parser.nextIntValue(0));
+        msg.setTrailingDelta(parser.nextIntValue(0));
       break;
       case "F":
-        msg.setF(new BigDecimal(parser.nextTextValue()));
+        msg.setIcebergQuantity(new BigDecimal(parser.nextTextValue()));
       break;
       case "g":
-        msg.setG(parser.nextIntValue(0));
+        msg.setOrderListId(parser.nextIntValue(0));
       break;
       case "C":
-        msg.setC(parser.nextTextValue());
+        msg.setOrigClientOrderID(parser.nextTextValue());
       break;
       case "x":
-        msg.setx(parser.nextTextValue());
+        msg.setCurrentExecutionType(parser.nextTextValue());
       break;
       case "X":
-        msg.setX(parser.nextTextValue());
+        msg.setCurrentOrderStatus(parser.nextTextValue());
       break;
       case "r":
-        msg.setR(parser.nextTextValue());
+        msg.setOrderRejectReason(parser.nextTextValue());
       break;
       case "i":
-        msg.seti(parser.nextTextValue());
+        msg.setOrderID(parser.nextTextValue());
       break;
       case "l":
-        msg.setl(new BigDecimal(parser.nextTextValue()));
+        msg.setLastExecQty(new BigDecimal(parser.nextTextValue()));
       break;
       case "z":
-        msg.setz(new BigDecimal(parser.nextTextValue()));
+        msg.setCumQty(new BigDecimal(parser.nextTextValue()));
       break;
       case "L":
-        msg.setL(new BigDecimal(parser.nextTextValue()));
+        msg.setLastExecPrice(new BigDecimal(parser.nextTextValue()));
       break;
       case "n":
-        msg.setn(parser.nextIntValue(0));
+        msg.setCommissionAmount(parser.nextIntValue(0));
       break;
       case "N":
-        msg.setN(parser.nextTextValue());
+        msg.setComissionAsset(parser.nextTextValue());
       break;
       case "T":
-        msg.setT(parser.nextLongValue(0L));
+        msg.setTransactionTime(parser.nextLongValue(0L));
       break;
       case "t":
-        msg.sett(parser.nextLongValue(0));
+        msg.setTradeID(parser.nextLongValue(0));
       break;
       case "v":
-        msg.setv(parser.nextLongValue(0));
+        msg.setPreventedMatchID(parser.nextLongValue(0));
       break;
       case "I":
-        msg.setI(parser.nextLongValue(0));
+        msg.setIgnore0(parser.nextLongValue(0));
       break;
       case "w":
-        msg.setw(parser.nextBooleanValue());
+        msg.setOrderOnBook(parser.nextBooleanValue());
       break;
       case "m":
-        msg.setm(parser.nextBooleanValue());
+        msg.setTradeMakerSide(parser.nextBooleanValue());
       break;
       case "M":
-        msg.setM(parser.nextBooleanValue());
+        msg.setIgnore1(parser.nextBooleanValue());
       break;
       case "O":
-        msg.setO(parser.nextLongValue(0L));
+        msg.setOrderCreationTime(parser.nextLongValue(0L));
       break;
       case "Z":
-        msg.setZ(new BigDecimal(parser.nextTextValue()));
+        msg.setCumQuoteQty(new BigDecimal(parser.nextTextValue()));
       break;
       case "Y":
-        msg.setY(new BigDecimal(parser.nextTextValue()));
+        msg.setLastQuoteQty(new BigDecimal(parser.nextTextValue()));
       break;
       case "Q":
-        msg.setQ(new BigDecimal(parser.nextTextValue()));
+        msg.setQuoteQty(new BigDecimal(parser.nextTextValue()));
       break;
       case "D":
-        msg.setD(parser.nextLongValue(0L));
+        msg.setTrailingTime(parser.nextLongValue(0L));
       break;
       case "j":
-        msg.setj(parser.nextLongValue(0));
+        msg.setStrategyID(parser.nextLongValue(0));
       break;
       case "J":
-        msg.setJ(parser.nextLongValue(0));
+        msg.setStrategyType(parser.nextLongValue(0));
       break;
       case "W":
-        msg.setW(parser.nextLongValue(0L));
+        msg.setWorkingTime(parser.nextLongValue(0L));
       break;
       case "V":
-        msg.setV(parser.nextTextValue());
+        msg.setSelfTradePreventionMode(parser.nextTextValue());
       break;
       case "u":
-        msg.setu(parser.nextLongValue(0));
+        msg.setTradeGroupId(parser.nextLongValue(0));
       break;
       case "U":
-        msg.setU(parser.nextLongValue(0));
+        msg.setCounterOrderId(parser.nextLongValue(0));
       break;
       case "A":
-        msg.setA(new BigDecimal(parser.nextTextValue()));
+        msg.setPreventedQty(new BigDecimal(parser.nextTextValue()));
       break;
       case "B":
-        msg.setB(new BigDecimal(parser.nextTextValue()));
+        msg.setLastPreventedQty(new BigDecimal(parser.nextTextValue()));
       break;
       default:
         JsonParserUtil.skipNextValue(parser);

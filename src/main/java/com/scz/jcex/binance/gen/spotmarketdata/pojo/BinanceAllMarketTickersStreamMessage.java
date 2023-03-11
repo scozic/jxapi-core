@@ -10,260 +10,260 @@ import java.math.BigDecimal;
  */
 @JsonSerialize(using = BinanceAllMarketTickersStreamMessageSerializer.class)
 public class BinanceAllMarketTickersStreamMessage {
-  private long C;
-  private long E;
-  private long F;
-  private long L;
-  private long O;
-  private BigDecimal P;
-  private BigDecimal c;
-  private String e;
-  private BigDecimal h;
-  private BigDecimal l;
-  private long n;
-  private BigDecimal o;
-  private BigDecimal p;
-  private BigDecimal q;
-  private String s;
-  private BigDecimal v;
-  private BigDecimal w;
+  private BigDecimal baseAssetVolume;
+  private long closeTime;
+  private long eventTime;
+  private String eventType;
+  private long firstTradeID;
+  private BigDecimal highPrice;
+  private BigDecimal lastPrice;
+  private long lastTradeID;
+  private BigDecimal lowPrice;
+  private BigDecimal openPrice;
+  private long openTime;
+  private BigDecimal priceChange;
+  private BigDecimal priceChangePercent;
+  private BigDecimal quoteAssetVolume;
+  private String symbol;
+  private long tradeCount;
+  private BigDecimal weightedAvgPrice;
   
   /**
-   * @return Statistics close time
+   * @return Total traded base asset volume. Message field <strong>v</strong>
    */
-  public long getC(){
-    return C;
+  public BigDecimal getBaseAssetVolume(){
+    return baseAssetVolume;
   }
   
   /**
-   * @param C Statistics close time
+   * @param baseAssetVolume Total traded base asset volume. Message field <strong>v</strong>
    */
-  public void setC(long C) {
-    this.C = C;
+  public void setBaseAssetVolume(BigDecimal baseAssetVolume) {
+    this.baseAssetVolume = baseAssetVolume;
   }
   
   /**
-   * @return Event time
+   * @return Statistics close time. Message field <strong>C</strong>
    */
-  public long getE(){
-    return E;
+  public long getCloseTime(){
+    return closeTime;
   }
   
   /**
-   * @param E Event time
+   * @param closeTime Statistics close time. Message field <strong>C</strong>
    */
-  public void setE(long E) {
-    this.E = E;
+  public void setCloseTime(long closeTime) {
+    this.closeTime = closeTime;
   }
   
   /**
-   * @return First trade ID
+   * @return Event time. Message field <strong>E</strong>
    */
-  public long getF(){
-    return F;
+  public long getEventTime(){
+    return eventTime;
   }
   
   /**
-   * @param F First trade ID
+   * @param eventTime Event time. Message field <strong>E</strong>
    */
-  public void setF(long F) {
-    this.F = F;
+  public void setEventTime(long eventTime) {
+    this.eventTime = eventTime;
   }
   
   /**
-   * @return Last trade ID
+   * @return Event type. Message field <strong>e</strong>
    */
-  public long getL(){
-    return L;
+  public String getEventType(){
+    return eventType;
   }
   
   /**
-   * @param L Last trade ID
+   * @param eventType Event type. Message field <strong>e</strong>
    */
-  public void setL(long L) {
-    this.L = L;
+  public void setEventType(String eventType) {
+    this.eventType = eventType;
   }
   
   /**
-   * @return Statistics open time
+   * @return First trade ID. Message field <strong>F</strong>
    */
-  public long getO(){
-    return O;
+  public long getFirstTradeID(){
+    return firstTradeID;
   }
   
   /**
-   * @param O Statistics open time
+   * @param firstTradeID First trade ID. Message field <strong>F</strong>
    */
-  public void setO(long O) {
-    this.O = O;
+  public void setFirstTradeID(long firstTradeID) {
+    this.firstTradeID = firstTradeID;
   }
   
   /**
-   * @return Price change percent
+   * @return High price. Message field <strong>h</strong>
    */
-  public BigDecimal getP(){
-    return P;
+  public BigDecimal getHighPrice(){
+    return highPrice;
   }
   
   /**
-   * @param P Price change percent
+   * @param highPrice High price. Message field <strong>h</strong>
    */
-  public void setP(BigDecimal P) {
-    this.P = P;
+  public void setHighPrice(BigDecimal highPrice) {
+    this.highPrice = highPrice;
   }
   
   /**
-   * @return Last price
+   * @return Last price Message field <strong>c</strong>
    */
-  public BigDecimal getc(){
-    return c;
+  public BigDecimal getLastPrice(){
+    return lastPrice;
   }
   
   /**
-   * @param c Last price
+   * @param lastPrice Last price Message field <strong>c</strong>
    */
-  public void setc(BigDecimal c) {
-    this.c = c;
+  public void setLastPrice(BigDecimal lastPrice) {
+    this.lastPrice = lastPrice;
   }
   
   /**
-   * @return Event type
+   * @return Last trade ID. Message field <strong>L</strong>
    */
-  public String gete(){
-    return e;
+  public long getLastTradeID(){
+    return lastTradeID;
   }
   
   /**
-   * @param e Event type
+   * @param lastTradeID Last trade ID. Message field <strong>L</strong>
    */
-  public void sete(String e) {
-    this.e = e;
+  public void setLastTradeID(long lastTradeID) {
+    this.lastTradeID = lastTradeID;
   }
   
   /**
-   * @return High price
+   * @return Low price. Message field <strong>l</strong>
    */
-  public BigDecimal getH(){
-    return h;
+  public BigDecimal getLowPrice(){
+    return lowPrice;
   }
   
   /**
-   * @param h High price
+   * @param lowPrice Low price. Message field <strong>l</strong>
    */
-  public void setH(BigDecimal h) {
-    this.h = h;
+  public void setLowPrice(BigDecimal lowPrice) {
+    this.lowPrice = lowPrice;
   }
   
   /**
-   * @return Low price
+   * @return Open price. Message field <strong>o</strong>
    */
-  public BigDecimal getl(){
-    return l;
+  public BigDecimal getOpenPrice(){
+    return openPrice;
   }
   
   /**
-   * @param l Low price
+   * @param openPrice Open price. Message field <strong>o</strong>
    */
-  public void setl(BigDecimal l) {
-    this.l = l;
+  public void setOpenPrice(BigDecimal openPrice) {
+    this.openPrice = openPrice;
   }
   
   /**
-   * @return Total number of trades
+   * @return Statistics open time. Message field <strong>O</strong>
    */
-  public long getN(){
-    return n;
+  public long getOpenTime(){
+    return openTime;
   }
   
   /**
-   * @param n Total number of trades
+   * @param openTime Statistics open time. Message field <strong>O</strong>
    */
-  public void setN(long n) {
-    this.n = n;
+  public void setOpenTime(long openTime) {
+    this.openTime = openTime;
   }
   
   /**
-   * @return Open price
+   * @return Price change. Message field <strong>p</strong>
    */
-  public BigDecimal geto(){
-    return o;
+  public BigDecimal getPriceChange(){
+    return priceChange;
   }
   
   /**
-   * @param o Open price
+   * @param priceChange Price change. Message field <strong>p</strong>
    */
-  public void seto(BigDecimal o) {
-    this.o = o;
+  public void setPriceChange(BigDecimal priceChange) {
+    this.priceChange = priceChange;
   }
   
   /**
-   * @return Price change
+   * @return Price change percent. Message field <strong>P</strong>
    */
-  public BigDecimal getp(){
-    return p;
+  public BigDecimal getPriceChangePercent(){
+    return priceChangePercent;
   }
   
   /**
-   * @param p Price change
+   * @param priceChangePercent Price change percent. Message field <strong>P</strong>
    */
-  public void setp(BigDecimal p) {
-    this.p = p;
+  public void setPriceChangePercent(BigDecimal priceChangePercent) {
+    this.priceChangePercent = priceChangePercent;
   }
   
   /**
-   * @return Total traded quote asset volume
+   * @return Total traded quote asset volume. Message field <strong>q</strong>
    */
-  public BigDecimal getQ(){
-    return q;
+  public BigDecimal getQuoteAssetVolume(){
+    return quoteAssetVolume;
   }
   
   /**
-   * @param q Total traded quote asset volume
+   * @param quoteAssetVolume Total traded quote asset volume. Message field <strong>q</strong>
    */
-  public void setQ(BigDecimal q) {
-    this.q = q;
+  public void setQuoteAssetVolume(BigDecimal quoteAssetVolume) {
+    this.quoteAssetVolume = quoteAssetVolume;
   }
   
   /**
-   * @return Symbol
+   * @return Symbol. Message field <strong>s</strong>
    */
-  public String getS(){
-    return s;
+  public String getSymbol(){
+    return symbol;
   }
   
   /**
-   * @param s Symbol
+   * @param symbol Symbol. Message field <strong>s</strong>
    */
-  public void setS(String s) {
-    this.s = s;
+  public void setSymbol(String symbol) {
+    this.symbol = symbol;
   }
   
   /**
-   * @return Total traded base asset volume
+   * @return Total number of trades. Message field <strong>n</strong>
    */
-  public BigDecimal getV(){
-    return v;
+  public long getTradeCount(){
+    return tradeCount;
   }
   
   /**
-   * @param v Total traded base asset volume
+   * @param tradeCount Total number of trades. Message field <strong>n</strong>
    */
-  public void setV(BigDecimal v) {
-    this.v = v;
+  public void setTradeCount(long tradeCount) {
+    this.tradeCount = tradeCount;
   }
   
   /**
-   * @return Weighted average price
+   * @return Weighted average price. Message field <strong>w</strong>
    */
-  public BigDecimal getW(){
-    return w;
+  public BigDecimal getWeightedAvgPrice(){
+    return weightedAvgPrice;
   }
   
   /**
-   * @param w Weighted average price
+   * @param weightedAvgPrice Weighted average price. Message field <strong>w</strong>
    */
-  public void setW(BigDecimal w) {
-    this.w = w;
+  public void setWeightedAvgPrice(BigDecimal weightedAvgPrice) {
+    this.weightedAvgPrice = weightedAvgPrice;
   }
   
   @Override

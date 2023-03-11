@@ -10,80 +10,80 @@ import java.math.BigDecimal;
  */
 @JsonSerialize(using = BinanceBalanceUpdateUserDataStreamMessageSerializer.class)
 public class BinanceBalanceUpdateUserDataStreamMessage {
-  private long E;
-  private long T;
-  private String a;
-  private BigDecimal d;
-  private String e;
+  private String asset;
+  private BigDecimal balanceDelta;
+  private long clearTime;
+  private long eventTime;
+  private String eventType;
   
   /**
-   * @return Event time
+   * @return Asset. Message field <strong>a</strong>
    */
-  public long getE(){
-    return E;
+  public String getAsset(){
+    return asset;
   }
   
   /**
-   * @param E Event time
+   * @param asset Asset. Message field <strong>a</strong>
    */
-  public void setE(long E) {
-    this.E = E;
+  public void setAsset(String asset) {
+    this.asset = asset;
   }
   
   /**
-   * @return Clear Time
+   * @return Balance delta. Message field <strong>d</strong>
    */
-  public long getT(){
-    return T;
+  public BigDecimal getBalanceDelta(){
+    return balanceDelta;
   }
   
   /**
-   * @param T Clear Time
+   * @param balanceDelta Balance delta. Message field <strong>d</strong>
    */
-  public void setT(long T) {
-    this.T = T;
+  public void setBalanceDelta(BigDecimal balanceDelta) {
+    this.balanceDelta = balanceDelta;
   }
   
   /**
-   * @return Asset
+   * @return Clear Time. Message field <strong>T</strong>
    */
-  public String getA(){
-    return a;
+  public long getClearTime(){
+    return clearTime;
   }
   
   /**
-   * @param a Asset
+   * @param clearTime Clear Time. Message field <strong>T</strong>
    */
-  public void setA(String a) {
-    this.a = a;
+  public void setClearTime(long clearTime) {
+    this.clearTime = clearTime;
   }
   
   /**
-   * @return Balance delta
+   * @return Event time. Message field <strong>E</strong>
    */
-  public BigDecimal getD(){
-    return d;
+  public long getEventTime(){
+    return eventTime;
   }
   
   /**
-   * @param d Balance delta
+   * @param eventTime Event time. Message field <strong>E</strong>
    */
-  public void setD(BigDecimal d) {
-    this.d = d;
+  public void setEventTime(long eventTime) {
+    this.eventTime = eventTime;
   }
   
   /**
-   * @return Event type
+   * @return Event type. Message field <strong>e</strong>
    */
-  public String gete(){
-    return e;
+  public String getEventType(){
+    return eventType;
   }
   
   /**
-   * @param e Event type
+   * @param eventType Event type. Message field <strong>e</strong>
    */
-  public void sete(String e) {
-    this.e = e;
+  public void setEventType(String eventType) {
+    this.eventType = eventType;
   }
   
   @Override

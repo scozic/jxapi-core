@@ -20,11 +20,11 @@ public class BinanceBalanceUpdateUserDataStreamMessageSerializer extends StdSeri
   @Override
   public void serialize(BinanceBalanceUpdateUserDataStreamMessage value, JsonGenerator gen, SerializerProvider provider) throws IOException {
     gen.writeStartObject();
-    gen.writeStringField("e", String.valueOf(value.gete()));
-    gen.writeNumberField("E", value.getE());
-    gen.writeStringField("a", String.valueOf(value.getA()));
-    gen.writeStringField("d", EncodingUtil.bigDecimalToString(value.getD()));
-    gen.writeNumberField("T", value.getT());
+    gen.writeStringField("e", String.valueOf(value.getEventType()));
+    gen.writeNumberField("E", value.getEventTime());
+    gen.writeStringField("a", String.valueOf(value.getAsset()));
+    gen.writeStringField("d", EncodingUtil.bigDecimalToString(value.getBalanceDelta()));
+    gen.writeNumberField("T", value.getClearTime());
     gen.writeEndObject();
   }
 }
