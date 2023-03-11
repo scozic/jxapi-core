@@ -24,6 +24,4 @@ public class BinancePrivateApiRestEndpointFactory implements RestEndpointFactory
 		endpoint.setApiSecret(properties.getProperty(API_SECRET_PROPERTY));
 		return endpoint;
 	}
-
-	
 }

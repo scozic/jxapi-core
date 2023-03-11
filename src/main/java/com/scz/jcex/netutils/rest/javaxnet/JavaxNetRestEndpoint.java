@@ -72,10 +72,11 @@ public class JavaxNetRestEndpoint<R, A> implements RestEndpoint<R, A> {
 	}
 
 	protected String getBody(RestRequest<R> request) {
-		if ("GET".equals(request.getHttpMethod())) {
-			return null;
-		}
-		return EncodingUtil.pojoToJsonString(request);
+		return null;
+//		if ("GET".equals(request.getHttpMethod())) {
+//			return null;
+//		}
+//		return EncodingUtil.pojoToJsonString(request);
 	}
 
 	/**

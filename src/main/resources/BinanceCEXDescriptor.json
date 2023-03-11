@@ -11,7 +11,7 @@
 				{
 					"name": "exchangeInformationAll",
 					"httpMethod": "GET",
-					"description": "Current exchange trading rules and symbol information for all spot trading pairs",
+					"description": "Current exchange trading rules and symbol information for all spot trading pairs.<br/>See <a href=\"https://binance-docs.github.io/apidocs/spot/en/#exchange-information\">API</a>",
 					"url": "https://api.binance.com/api/v3/exchangeInfo",
 					"urlParameters": "",
 					"parameters": [],
@@ -52,7 +52,7 @@
 				{
 					"name": "exchangeInformation",
 					"httpMethod": "GET",
-					"description": "Current exchange trading rules and symbol information for a list of spot trading pairs",
+					"description": "Current exchange trading rules and symbol information for a list of spot trading pairs.<br/>See <a href=\"https://binance-docs.github.io/apidocs/spot/en/#exchange-information\">API</a>",
 					"url": "https://api.binance.com/api/v3/exchangeInfo",
 					"urlParameters": "symbols=%5B%22${symbols}%22%5D",
 					"urlParametersListSeparator": "%22,%22",
@@ -99,7 +99,7 @@
 				{
 					"name": "AllMarketTickersStream",
 					"topic": "!ticker@arr",
-					"description": "All Market Tickers Stream, see <a href=\"https://binance-docs.github.io/apidocs/spot/en/#all-market-tickers-stream\">API</a>",
+					"description": "All Market Tickers Stream.<br/>See <a href=\"https://binance-docs.github.io/apidocs/spot/en/#all-market-tickers-stream\">API</a>",
 					"parameters": [],
 					"messageTopicMatcherFields": [
 						{"name": "e",  "value": "24hrTicker"}
@@ -127,7 +127,7 @@
 				{
 					"name": "IndividualSymbolTickerStreams",
 					"topic": "${symbol}@arr",
-					"description": "24hr rolling window ticker statistics for a single symbol. These are NOT the statistics of the UTC day, but a 24hr rolling window for the previous 24hrs, see <a href=\"https://binance-docs.github.io/apidocs/spot/en/#individual-symbol-ticker-streams\">API</a>",
+					"description": "24hr rolling window ticker statistics for a single symbol. These are NOT the statistics of the UTC day, but a 24hr rolling window for the previous 24hrs.<br/>See <a href=\"https://binance-docs.github.io/apidocs/spot/en/#individual-symbol-ticker-streams\">API</a>",
 					"parameters": [
 						{"name":"symbol", "type": "STRING", "description":"Market symbol", "sampleValue":"BNBBTC"}
 					],
@@ -165,7 +165,7 @@
 				{
 					"name": "account",
 					"httpMethod": "GET",
-					"description": "Get current account information, see <a href=\"https://binance-docs.github.io/apidocs/spot/en/#account-information-user_data\">API</a>",
+					"description": "Get current account information.<br/>See <a href=\"https://binance-docs.github.io/apidocs/spot/en/#account-information-user_data\">API</a>",
 					"url": "https://api.binance.com/api/v3/account",
 					"urlParameters": "recvWindow=${recvWindow}&timestamp=${timestamp}",
 					"parameters": [
@@ -190,7 +190,7 @@
 						{"name":"requireSelfTradePrevention", "type": "BOOLEAN", "description":"", "sampleValue": "false"},
 						{"name":"updateTime", "type": "LONG", "description":"", "sampleValue": "1565246363776"},
 						{"name":"accountType", "type": "STRING", "description":"", "sampleValue": "SPOT"},
-						{"name":"balances", "type": "STRUCT_LIST", "description":"List of market information for each market symbol", "parameters":
+						{"name":"balances", "type": "STRUCT_LIST", "description":"Balances array", "parameters":
 							[
 								{"name":"asset", "type": "STRING", "description":"", "sampleValue":"BTC"},
 								{"name":"free", "type": "BIGDECIMAL", "description":"", "sampleValue":"0.12300000"},
@@ -199,9 +199,154 @@
 						},
 						{"name":"permissions", "type": "STRING_LIST", "description":"", "sampleValue": "[SPOT]"}
 					]
+				},
+				{
+					"name": "spotListenKey",
+					"httpMethod": "POST",
+					"description": "Start a new user data stream. The stream will close after 60 minutes unless a keepalive is sent. If the account has an active listenKey, that listenKey will be returned and its validity will be extended for 60 minutes.<br/>See <a href=\"https://binance-docs.github.io/apidocs/spot/en/#listen-key-spot\">API</a><br/>Remark: This API is used internally by websocket wrapper, which creates, keeps alive and eventually refreshes listeny key.",
+					"url": "https://api.binance.com/api/v3/userDataStream",
+					"urlParameters": "",
+					"parameters": [
+					],
+					"response": [
+						{"name":"listenKey", "type": "STRING", "description":"", "sampleValue": "pqia91ma19a5s61cv6a81va65sdf19v8a65a1a5s61cv6a81va65sdf19v8a65a1"}
+					]
+				},
+				{
+					"name": "spotKeepAliveListenKey",
+					"httpMethod": "PUT",
+					"description": "Keepalive a user data stream to prevent a time out. User data streams will close after 60 minutes. It's recommended to send a ping about every 30 minutes.<br/>See <a href=\"https://binance-docs.github.io/apidocs/spot/en/#listen-key-spot\">API</a><br/>Remark: This API is used internally by websocket wrapper, which creates, keeps alive and eventually refreshes listeny key.",
+					"url": "https://api.binance.com/api/v3/userDataStream",
+					"urlParameters": "listenKey=${listenKey}",
+					"parameters": [
+						{"name":"listenKey", "type": "STRING", "description":"", "sampleValue": "pqia91ma19a5s61cv6a81va65sdf19v8a65a1a5s61cv6a81va65sdf19v8a65a1"}
+					],
+					"response": [
+					]
+				},
+				{
+					"name": "spotDeleteListenKey",
+					"httpMethod": "DELETE",
+					"description": "Close out a user data stream..<br/>See <a href=\"https://binance-docs.github.io/apidocs/spot/en/#listen-key-spot\">API</a><br/>Remark: This API is used internally by websocket wrapper, which creates, keeps alive and eventually refreshes listeny key.",
+					"url": "https://api.binance.com/api/v3/userDataStream",
+					"urlParameters": "listenKey=${listenKey}",
+					"parameters": [
+						{"name":"listenKey", "type": "STRING", "description":"", "sampleValue": "pqia91ma19a5s61cv6a81va65sdf19v8a65a1a5s61cv6a81va65sdf19v8a65a1"}
+					],
+					"response": [
+					]
 				}
+				
 			],
+			"websocketEndpointFactory": "com.scz.jcex.binance.net.BinancePrivateSpotApiWebsocketEndpointFactory",
 			"websocketEndpoints": [
+				{
+					"name": "outboundAccountPositionUserDataStream",
+					"topic": "outboundAccountPosition",
+					"description": "User data Stream.<br/>See <a href=\"https://binance-docs.github.io/apidocs/spot/en/#user-data-streams\">API</a>",
+					"parameters": [],
+					"messageTopicMatcherFields": [
+						{"name": "e",  "value": "outboundAccountPosition"}
+					],
+					"response": [
+						{"name":"e", "type": "STRING", "description":"Event type", "sampleValue":"outboundAccountPosition"},
+						{"name":"E", "type": "TIMESTAMP", "description":"Event time", "sampleValue":"1564034571105"},
+						{"name":"u", "type": "TIMESTAMP", "description":"Time of last account update", "sampleValue":"1564034571105"},
+						{"name":"B", "type": "STRUCT_LIST", "description":"Balances array", "parameters":
+							[
+								{"name":"a", "type": "STRING", "description":"asset", "sampleValue":"ETH"},
+								{"name":"f", "type": "BIGDECIMAL", "description":"free", "sampleValue":"10000.000000"},
+								{"name":"l", "type": "BIGDECIMAL", "description":"locked", "sampleValue":"0.000000"}
+							]
+						}
+					]
+				},
+				{
+					"name": "balanceUpdateUserDataStream",
+					"topic": "balanceUpdate",
+					"description": "User data Stream.<br/>See <a href=\"https://binance-docs.github.io/apidocs/spot/en/#user-data-streams\">API</a>",
+					"parameters": [],
+					"messageTopicMatcherFields": [
+						{"name": "e",  "value": "balanceUpdate"}
+					],
+					"response": [
+						{"name":"e", "type": "STRING", "description":"Event type", "sampleValue":"outboundAccountPosition"},
+						{"name":"E", "type": "TIMESTAMP", "description":"Event time", "sampleValue":"1564034571105"},
+						{"name":"a", "type": "STRING", "description":"Asset", "sampleValue":"BTC"},
+						{"name":"d", "type": "BIGDECIMAL", "description":"Balance delta", "sampleValue":"100.000000"},
+						{"name":"T", "type": "TIMESTAMP", "description":"Clear Time", "sampleValue":"1573200697068"}
+					]
+				},
+				{
+					"name": "executionReportUserDataStream",
+					"topic": "executionReport",
+					"description": "User data Stream.<br/>See <a href=\"https://binance-docs.github.io/apidocs/spot/en/#user-data-streams\">API</a>",
+					"parameters": [],
+					"messageTopicMatcherFields": [
+						{"name": "e",  "value": "executionReport"}
+					],
+					"response": [
+						{"name":"e", "type": "STRING", "description":"Event type", "sampleValue":"outboundAccountPosition"},
+						{"name":"E", "type": "TIMESTAMP", "description":"Event time", "sampleValue":"1564034571105"},
+						{"name":"s", "type": "STRING", "description":"Symbol", "sampleValue":"ETHBTC"},
+						{"name":"c", "type": "STRING", "description":"Client", "sampleValue":"mUvoqJxFIILMdfAW5iGSOW"},
+						{"name":"S", "type": "STRING", "description":"Side", "sampleValue":"BUY"},
+						{"name":"o", "type": "STRING", "description":"Order type", "sampleValue":"LIMIT"},
+						{"name":"f", "type": "STRING", "description":"Time in force", "sampleValue":"GTC"},
+						{"name":"q", "type": "BIGDECIMAL", "description":"Order quantity", "sampleValue":"1.00000000"},
+						{"name":"p", "type": "BIGDECIMAL", "description":"Order price", "sampleValue":"0.10264410"},
+						{"name":"P", "type": "BIGDECIMAL", "description":"Stop price", "sampleValue":"0.10000000"},
+						{"name":"d", "type": "INT", "description":"Trailing Delta; This is only visible if the order was a trailing stop order", "sampleValue":"4"},
+						{"name":"F", "type": "BIGDECIMAL", "description":"Iceberg quantity", "sampleValue":"0.00000000"},
+						{"name":"g", "type": "INT", "description":"OrderListId", "sampleValue":"-1"},
+						{"name":"C", "type": "STRING", "description":"Original client order ID; This is the ID of the order being canceled", "sampleValue":""},
+						{"name":"x", "type": "STRING", "description":"Current execution type", "sampleValue":"NEW"},
+						{"name":"X", "type": "STRING", "description":"Current order status", "sampleValue":"NEW"},
+						{"name":"r", "type": "STRING", "description":"Order reject reason, ; will be an error code", "sampleValue":"NONE"},
+						{"name":"i", "type": "STRING", "description":"Order ID", "sampleValue":"NONE"},
+						{"name":"l", "type": "BIGDECIMAL", "description":"Last executed quantity", "sampleValue":"0.0000000"},
+						{"name":"z", "type": "BIGDECIMAL", "description":"Cumulative filled quantity", "sampleValue":"0.0000000"},
+						{"name":"L", "type": "BIGDECIMAL", "description":"Last executed price", "sampleValue":"0.0000000"},
+						{"name":"n", "type": "INT", "description":"Commission amount", "sampleValue":"0"},
+						{"name":"N", "type": "BIGDECIMAL", "description":"Commission asset", "sampleValue":"null"},
+						{"name":"T", "type": "TIMESTAMP", "description":"Transaction time", "sampleValue":"1499405658657"},
+						{"name":"t", "type": "LONG", "description":"Trade ID", "sampleValue":"-1"},
+						{"name":"v", "type": "LONG", "description":"Prevented Match Id; This is only visible if the order expire due to STP trigger.", "sampleValue":"3"},
+						{"name":"I", "type": "LONG", "description":"Ignore", "sampleValue":"8641984"},
+						{"name":"w", "type": "BOOLEAN", "description":"Is the order on the book?", "sampleValue":"true"},
+						{"name":"m", "type": "BOOLEAN", "description":"Is this trade the maker side?", "sampleValue":"true"},
+						{"name":"M", "type": "BOOLEAN", "description":"Ignore", "sampleValue":"false"},
+						{"name":"O", "type": "TIMESTAMP", "description":"Order creation time", "sampleValue":"1499405658657"},
+						{"name":"Z", "type": "BIGDECIMAL", "description":"Cumulative quote asset transacted quantity", "sampleValue":"0.00000000"},
+						{"name":"Y", "type": "BIGDECIMAL", "description":"Last quote asset transacted quantity (i.e. lastPrice * lastQty)", "sampleValue":"0.00000000"},
+						{"name":"Q", "type": "BIGDECIMAL", "description":"Quote Order Quantity", "sampleValue":"0.00000000"},
+						{"name":"D", "type": "TIMESTAMP", "description":"Trailing Time; This is only visible if the trailing stop order has been activated.", "sampleValue":"1668680518494"},
+						{"name":"j", "type": "LONG", "description":"Strategy ID; This is only visible if the strategyId parameter was provided upon order placement", "sampleValue":"1668680518494"},
+						{"name":"j", "type": "LONG", "description":"Strategy Type; This is only visible if the strategyType parameter was provided upon order placement", "sampleValue":"1000000"},
+						{"name":"W", "type": "TIMESTAMP", "description":"Working Time; This is only visible if the order has been placed on the book.", "sampleValue":"1000000"},
+						{"name":"V", "type": "STRING", "description":"selfTradePreventionMode", "sampleValue":"NONE"},
+						{"name":"u", "type": "LONG", "description":"TradeGroupId; This is only visible if the account is part of a trade group and the order expired due to STP trigger.", "sampleValue":"1"},
+						{"name":"U", "type": "LONG", "description":"CounterOrderId; This is only visible if the order expired due to STP trigger.", "sampleValue":"37"},
+						{"name":"A", "type": "BIGDECIMAL", "description":"Prevented Quantity; This is only visible if the order expired due to STP trigger.", "sampleValue":"3.000000"},
+						{"name":"B", "type": "BIGDECIMAL", "description":"Last Prevented Quantity; This is only visible if the order expired due to STP trigger.", "sampleValue":"3.000000"}
+					]
+				},
+				{
+					"name": "listStatusUserDataStream",
+					"topic": "listStatus",
+					"description": "User data Stream.<br/>See <a href=\"https://binance-docs.github.io/apidocs/spot/en/#user-data-streams\">API</a>",
+					"parameters": [],
+					"messageTopicMatcherFields": [
+						{"name": "e",  "value": "listStatus"}
+					],
+					"response": [
+						{"name":"e", "type": "STRING", "description":"Event type", "sampleValue":"outboundAccountPosition"},
+						{"name":"E", "type": "TIMESTAMP", "description":"Event time", "sampleValue":"1564034571105"},
+						{"name":"a", "type": "STRING", "description":"Asset", "sampleValue":"BTC"},
+						{"name":"d", "type": "BIGDECIMAL", "description":"Balance delta", "sampleValue":"100.000000"},
+						{"name":"T", "type": "TIMESTAMP", "description":"Clear Time", "sampleValue":"1573200697068"}
+					]
+				}		
 			]
 		}
 	]

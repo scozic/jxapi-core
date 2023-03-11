@@ -18,17 +18,17 @@ import java.io.IOException;
  */
 public interface  BinanceSpotMarketDataApi {
   /**
-   * Current exchange trading rules and symbol information for all spot trading pairs
+   * Current exchange trading rules and symbol information for all spot trading pairs.<br/>See <a href="https://binance-docs.github.io/apidocs/spot/en/#exchange-information">API</a>
    */
   BinanceExchangeInformationAllResponse exchangeInformationAll(BinanceExchangeInformationAllRequest request) throws IOException;
   /**
-   * Current exchange trading rules and symbol information for a list of spot trading pairs
+   * Current exchange trading rules and symbol information for a list of spot trading pairs.<br/>See <a href="https://binance-docs.github.io/apidocs/spot/en/#exchange-information">API</a>
    */
   BinanceExchangeInformationResponse exchangeInformation(BinanceExchangeInformationRequest request) throws IOException;
   
   /**
    * Subscribe to AllMarketTickersStream stream.<br/>
-   * All Market Tickers Stream, see <a href="https://binance-docs.github.io/apidocs/spot/en/#all-market-tickers-stream">API</a>
+   * All Market Tickers Stream.<br/>See <a href="https://binance-docs.github.io/apidocs/spot/en/#all-market-tickers-stream">API</a>
    * 
    * @return client subscriptionId to use for unsubscription
    */
@@ -43,7 +43,7 @@ public interface  BinanceSpotMarketDataApi {
   
   /**
    * Subscribe to IndividualSymbolTickerStreams stream.<br/>
-   * 24hr rolling window ticker statistics for a single symbol. These are NOT the statistics of the UTC day, but a 24hr rolling window for the previous 24hrs, see <a href="https://binance-docs.github.io/apidocs/spot/en/#individual-symbol-ticker-streams">API</a>
+   * 24hr rolling window ticker statistics for a single symbol. These are NOT the statistics of the UTC day, but a 24hr rolling window for the previous 24hrs.<br/>See <a href="https://binance-docs.github.io/apidocs/spot/en/#individual-symbol-ticker-streams">API</a>
    * 
    * @return client subscriptionId to use for unsubscription
    */

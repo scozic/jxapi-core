@@ -6,7 +6,7 @@ import com.scz.jcex.netutils.websocket.WebsocketSubscribeParameters;
 import com.scz.jcex.util.EncodingUtil;
 
 /**
- * Subscription request toBinance SpotMarketData API AllMarketTickersStream websocket endpoint<br/>All Market Tickers Stream, see <a href="https://binance-docs.github.io/apidocs/spot/en/#all-market-tickers-stream">API</a><br><strong>THIS CODE IS GENERATED. DO NOT EDIT MANUALLY!</strong>
+ * Subscription request toBinance SpotMarketData API AllMarketTickersStream websocket endpoint<br/>All Market Tickers Stream.<br/>See <a href="https://binance-docs.github.io/apidocs/spot/en/#all-market-tickers-stream">API</a><br><strong>THIS CODE IS GENERATED. DO NOT EDIT MANUALLY!</strong>
  */
 @JsonSerialize(using = BinanceAllMarketTickersStreamRequestSerializer.class)
 public class BinanceAllMarketTickersStreamRequest implements WebsocketSubscribeParameters {

@@ -6,7 +6,7 @@ import com.scz.jcex.netutils.rest.RestEndpointUrlParameters;
 import com.scz.jcex.util.EncodingUtil;
 
 /**
- * Request for Binance SpotTrading API account REST endpointGet current account information, see <a href="https://binance-docs.github.io/apidocs/spot/en/#account-information-user_data">API</a><br><strong>THIS CODE IS GENERATED. DO NOT EDIT MANUALLY!</strong>
+ * Request for Binance SpotTrading API account REST endpointGet current account information.<br/>See <a href="https://binance-docs.github.io/apidocs/spot/en/#account-information-user_data">API</a><br><strong>THIS CODE IS GENERATED. DO NOT EDIT MANUALLY!</strong>
  */
 @JsonSerialize(using = BinanceAccountRequestSerializer.class)
 public class BinanceAccountRequest implements RestEndpointUrlParameters {

@@ -6,7 +6,7 @@ import com.scz.jcex.util.EncodingUtil;
 import java.util.List;
 
 /**
- * Response to Binance SpotMarketData API exchangeInformationAll REST endpoint request<br/>Current exchange trading rules and symbol information for all spot trading pairs<br><strong>THIS CODE IS GENERATED. DO NOT EDIT MANUALLY!</strong>
+ * Response to Binance SpotMarketData API exchangeInformationAll REST endpoint request<br/>Current exchange trading rules and symbol information for all spot trading pairs.<br/>See <a href="https://binance-docs.github.io/apidocs/spot/en/#exchange-information">API</a><br><strong>THIS CODE IS GENERATED. DO NOT EDIT MANUALLY!</strong>
  */
 @JsonSerialize(using = BinanceExchangeInformationAllResponseSerializer.class)
 public class BinanceExchangeInformationAllResponse {

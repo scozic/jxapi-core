@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicLong;
 
@@ -30,7 +31,7 @@ public abstract class SpringWebsocketManager extends AbstractWebsocketManager {
 	
 	private static final Logger log = LoggerFactory.getLogger(SpringWebsocketManager.class);
 	
-	protected final URI baseUri;
+	protected final String baseUrl;
 	
 	private ClientManager clientManager;
 	
@@ -49,11 +50,7 @@ public abstract class SpringWebsocketManager extends AbstractWebsocketManager {
 	private AtomicBoolean heartBeatTaskCancelled = null;
 	
 	public SpringWebsocketManager(String baseUrl) {
-		try {
-			this.baseUri = new URI(baseUrl);
-		} catch (URISyntaxException e) {
-			throw new IllegalArgumentException("Error creating URI for websocket base URL:" + baseUrl);
-		}
+		this.baseUrl = baseUrl;
 	}
 	
 	protected abstract String createHeartBeatMessage();
@@ -67,7 +64,7 @@ public abstract class SpringWebsocketManager extends AbstractWebsocketManager {
 	protected void doConnect() throws IOException {
 
 		this.taskExecutor = new ThreadPoolTaskExecutor();
-		this.taskExecutor.setThreadNamePrefix(baseUri + "-" + taskExecutorCounter++);
+		this.taskExecutor.setThreadNamePrefix(baseUrl + "-" + taskExecutorCounter++);
 		this.taskExecutor.setCorePoolSize(0);
 		this.taskExecutor.setMaxPoolSize(2);
 		this.taskExecutor.setKeepAliveSeconds(5);
@@ -81,7 +78,7 @@ public abstract class SpringWebsocketManager extends AbstractWebsocketManager {
 		lastHeartBeatTime.set(System.currentTimeMillis());
 		log.debug("Performing handshake");
 		CountDownLatch websocketSessionAvailable = new CountDownLatch(1);
-		ListenableFuture<WebSocketSession> futureSession = client.doHandshake(new SpringWebsocketHandler(this.taskExecutor), new WebSocketHttpHeaders(), baseUri);
+		ListenableFuture<WebSocketSession> futureSession = client.doHandshake(new SpringWebsocketHandler(this.taskExecutor), new WebSocketHttpHeaders(), getHandShakeURI());
 		futureSession.addCallback(new WebsocketSessionCallback(websocketSessionAvailable));
 		try {
 			websocketSessionAvailable.await();
@@ -101,9 +98,17 @@ public abstract class SpringWebsocketManager extends AbstractWebsocketManager {
 			scheduleHeartBeatTask(new HeartBeakTask(this.heartBeatTaskCancelled));
 		}
 	}
+	
+	protected URI getHandShakeURI() throws IOException {
+		try {
+			return new URI(baseUrl);
+		} catch (URISyntaxException e) {
+			throw new IOException("Error creating URI for websocket base URL:" + baseUrl);
+		}
+	}
 
 	private void scheduleHeartBeatTask(HeartBeakTask heartBeakTask) {
-		this.taskExecutor.execute(heartBeakTask, heartBeatInterval);
+		this.writeExecutor.schedule(heartBeakTask, heartBeatInterval, TimeUnit.MILLISECONDS);
 	}
 
 	@Override

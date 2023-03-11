@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.slf4j.Logger;
@@ -37,7 +38,7 @@ public abstract class AbstractWebsocketManager implements WebsocketManager {
 	protected final AtomicBoolean connected = new AtomicBoolean(false);
 	protected final AtomicBoolean disposed = new AtomicBoolean(false);
 	
-	protected ExecutorService writeExecutor = null;
+	protected ScheduledExecutorService writeExecutor = null;
 	
 	private long reconnectDelay = -1L;
 	
@@ -45,26 +46,29 @@ public abstract class AbstractWebsocketManager implements WebsocketManager {
 //	private int nbMsgProcessed; 
 	
 	protected AbstractWebsocketManager() {
-		this.writeExecutor = Executors.newFixedThreadPool(1); //;new ThreadPoolExecutor(0, 1, WRITE_EXECUTOR_KEEP_ALIVE, TimeUnit.MILLISECONDS, new LinkedBlockingQueue<>());
-		
+		this.writeExecutor = Executors.newSingleThreadScheduledExecutor(); 
 	}
 
 	@Override
 	public void subscribe(String topic, 
 						  WebsocketMessageTopicMatcher matcher,
 						  RawWebsocketMessageHandler messageHandler) {	
-		if (!isConnected())
-			connect();
 		writeExecutor.execute(() -> {
 			try {
 				TopicManager t = topics.get(topic);
 				if (t == null) {
 					t = new TopicManager(topic, matcher, messageHandler, false);
 					topics.put(topic, t);
-					try {
-						send(getSubscribeRequestMessage(topic));
-					} catch (IOException e) {
-						onError(e);
+					String subscribeRequestMessage = getSubscribeRequestMessage(topic);
+					// Remark: registered TopicManager before checking connection status and connecting if not already connected.
+					// This is because the url provided for handshake may stand for a stream endpoint and message would be disseminated right after handshake. Message handler must be registered before.
+					if (!isConnected()) {
+						connect();
+						if (subscribeRequestMessage != null) {
+							writeExecutor.execute(() -> sendTopicSubscribeRequest(subscribeRequestMessage));
+						}
+					} else if (subscribeRequestMessage != null) {
+						sendTopicSubscribeRequest(subscribeRequestMessage);
 					}
 				} else {
 					throw new IllegalArgumentException("Already have a subscription for this topic");
@@ -73,6 +77,14 @@ public abstract class AbstractWebsocketManager implements WebsocketManager {
 				dispatchWebsocketError(new IOException("Error while subscribing to webscoket for topic [" + topic + "]", ex));
 			}
 		});
+	}
+	
+	private void sendTopicSubscribeRequest(String subscribeRequestMessage) {
+		try {
+			send(subscribeRequestMessage);
+		} catch (IOException e) {
+			onError(e);
+		}
 	}
 	
 	@Override
@@ -93,7 +105,7 @@ public abstract class AbstractWebsocketManager implements WebsocketManager {
 		if (isConnected() || isDisposed()) {
 			return;
 		}
-		writeExecutor = Executors.newFixedThreadPool(1);
+		writeExecutor = Executors.newSingleThreadScheduledExecutor();
 		writeExecutor.execute(() -> {
 			try {
 				doConnect();

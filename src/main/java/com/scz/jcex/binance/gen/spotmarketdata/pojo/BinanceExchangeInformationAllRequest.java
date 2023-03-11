@@ -6,7 +6,7 @@ import com.scz.jcex.netutils.rest.RestEndpointUrlParameters;
 import com.scz.jcex.util.EncodingUtil;
 
 /**
- * Request for Binance SpotMarketData API exchangeInformationAll REST endpointCurrent exchange trading rules and symbol information for all spot trading pairs<br><strong>THIS CODE IS GENERATED. DO NOT EDIT MANUALLY!</strong>
+ * Request for Binance SpotMarketData API exchangeInformationAll REST endpointCurrent exchange trading rules and symbol information for all spot trading pairs.<br/>See <a href="https://binance-docs.github.io/apidocs/spot/en/#exchange-information">API</a><br><strong>THIS CODE IS GENERATED. DO NOT EDIT MANUALLY!</strong>
  */
 @JsonSerialize(using = BinanceExchangeInformationAllRequestSerializer.class)
 public class BinanceExchangeInformationAllRequest implements RestEndpointUrlParameters {

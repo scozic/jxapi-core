@@ -32,15 +32,31 @@ public class BinancePrivateApiRestEndpoint<R, A> extends JavaxNetRestEndpoint<R,
 		try {
 			String url = request.getUrl();
 			String urlParams = ((RestEndpointUrlParameters) request.getRequest()).getUrlParameters();
-			url += "?" + urlParams;
-			if (apiSecret == null) {
-				throw new IllegalStateException("Missing apiSecret");
+			if (!urlParams.isEmpty()) {
+				url += "?" + urlParams;
 			}
-			url += "&signature=" + HmacSHA256Signer.sign(urlParams, apiSecret);
+			
+			if (!isUserStreamEndpoint(request.getUrl())) {
+				if (apiSecret == null) {
+					throw new IllegalStateException("Missing apiSecret");
+				}
+				if (!urlParams.isEmpty()) {
+					url += "&";
+				}
+				url += "signature=" + HmacSHA256Signer.sign(urlParams, apiSecret);
+			}
+			
 			return new URL(url);
 		} catch (MalformedURLException e) {
 			throw new IllegalArgumentException("Invalid URL in request:" + request, e);
 		}
+	}
+	
+	/**
+	 * See https://binance-docs.github.io/apidocs/spot/en/#endpoint-security-type
+	 */
+	private boolean isUserStreamEndpoint(String url) {
+		return url.endsWith("userDataStream");
 	}
 
 	public void setApiKey(String apiKey) {

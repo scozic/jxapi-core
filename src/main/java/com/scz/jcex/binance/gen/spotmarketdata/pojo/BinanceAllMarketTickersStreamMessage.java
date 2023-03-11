@@ -6,7 +6,7 @@ import com.scz.jcex.util.EncodingUtil;
 import java.math.BigDecimal;
 
 /**
- * Message disseminated upon subscription to Binance SpotMarketData API AllMarketTickersStream websocket endpoint request<br/>All Market Tickers Stream, see <a href="https://binance-docs.github.io/apidocs/spot/en/#all-market-tickers-stream">API</a><br><strong>THIS CODE IS GENERATED. DO NOT EDIT MANUALLY!</strong>
+ * Message disseminated upon subscription to Binance SpotMarketData API AllMarketTickersStream websocket endpoint request<br/>All Market Tickers Stream.<br/>See <a href="https://binance-docs.github.io/apidocs/spot/en/#all-market-tickers-stream">API</a><br><strong>THIS CODE IS GENERATED. DO NOT EDIT MANUALLY!</strong>
  */
 @JsonSerialize(using = BinanceAllMarketTickersStreamMessageSerializer.class)
 public class BinanceAllMarketTickersStreamMessage {

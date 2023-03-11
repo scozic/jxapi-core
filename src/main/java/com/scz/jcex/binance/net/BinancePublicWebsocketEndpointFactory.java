@@ -1,8 +1,8 @@
 package com.scz.jcex.binance.net;
 
-import com.scz.jcex.netutils.websocket.DefaultWebsocketEndpointFactory;
+import com.scz.jcex.netutils.websocket.AbstractWebsocketEndpointFactory;
 
-public class BinancePublicWebsocketEndpointFactory extends DefaultWebsocketEndpointFactory {
+public class BinancePublicWebsocketEndpointFactory extends AbstractWebsocketEndpointFactory {
 	
 	public static final String BASE_URL = "wss://data-stream.binance.com/ws";
 
