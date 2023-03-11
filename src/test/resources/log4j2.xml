@@ -30,7 +30,7 @@
         </Root>
 
         <!-- Loggers -->
-        <Logger name="com.scz.jcex" level="INFO"></Logger>
+        <Logger name="com.scz.jcex" level="DEBUG"></Logger>
         
         
     </Loggers>

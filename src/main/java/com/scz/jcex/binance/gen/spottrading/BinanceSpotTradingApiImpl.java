@@ -1,11 +1,23 @@
 package com.scz.jcex.binance.gen.spottrading;
 
 import com.scz.jcex.binance.gen.spottrading.deserializers.BinanceAccountResponseDeserializer;
+import com.scz.jcex.binance.gen.spottrading.deserializers.BinanceBalanceUpdateUserDataStreamMessageDeserializer;
+import com.scz.jcex.binance.gen.spottrading.deserializers.BinanceExecutionReportUserDataStreamMessageDeserializer;
+import com.scz.jcex.binance.gen.spottrading.deserializers.BinanceListStatusUserDataStreamMessageDeserializer;
+import com.scz.jcex.binance.gen.spottrading.deserializers.BinanceOutboundAccountPositionUserDataStreamMessageDeserializer;
 import com.scz.jcex.binance.gen.spottrading.deserializers.BinanceSpotDeleteListenKeyResponseDeserializer;
 import com.scz.jcex.binance.gen.spottrading.deserializers.BinanceSpotKeepAliveListenKeyResponseDeserializer;
 import com.scz.jcex.binance.gen.spottrading.deserializers.BinanceSpotListenKeyResponseDeserializer;
 import com.scz.jcex.binance.gen.spottrading.pojo.BinanceAccountRequest;
 import com.scz.jcex.binance.gen.spottrading.pojo.BinanceAccountResponse;
+import com.scz.jcex.binance.gen.spottrading.pojo.BinanceBalanceUpdateUserDataStreamMessage;
+import com.scz.jcex.binance.gen.spottrading.pojo.BinanceBalanceUpdateUserDataStreamRequest;
+import com.scz.jcex.binance.gen.spottrading.pojo.BinanceExecutionReportUserDataStreamMessage;
+import com.scz.jcex.binance.gen.spottrading.pojo.BinanceExecutionReportUserDataStreamRequest;
+import com.scz.jcex.binance.gen.spottrading.pojo.BinanceListStatusUserDataStreamMessage;
+import com.scz.jcex.binance.gen.spottrading.pojo.BinanceListStatusUserDataStreamRequest;
+import com.scz.jcex.binance.gen.spottrading.pojo.BinanceOutboundAccountPositionUserDataStreamMessage;
+import com.scz.jcex.binance.gen.spottrading.pojo.BinanceOutboundAccountPositionUserDataStreamRequest;
 import com.scz.jcex.binance.gen.spottrading.pojo.BinanceSpotDeleteListenKeyRequest;
 import com.scz.jcex.binance.gen.spottrading.pojo.BinanceSpotDeleteListenKeyResponse;
 import com.scz.jcex.binance.gen.spottrading.pojo.BinanceSpotKeepAliveListenKeyRequest;
@@ -13,8 +25,14 @@ import com.scz.jcex.binance.gen.spottrading.pojo.BinanceSpotKeepAliveListenKeyRe
 import com.scz.jcex.binance.gen.spottrading.pojo.BinanceSpotListenKeyRequest;
 import com.scz.jcex.binance.gen.spottrading.pojo.BinanceSpotListenKeyResponse;
 import com.scz.jcex.binance.net.BinancePrivateApiRestEndpointFactory;
+import com.scz.jcex.binance.net.BinancePrivateSpotApiWebsocketEndpointFactory;
 import com.scz.jcex.netutils.rest.RestEndpoint;
 import com.scz.jcex.netutils.rest.RestRequest;
+import com.scz.jcex.netutils.websocket.DefaultWebsocketMessageTopicMatcher;
+import com.scz.jcex.netutils.websocket.WebsocketEndpoint;
+import com.scz.jcex.netutils.websocket.WebsocketListener;
+import com.scz.jcex.netutils.websocket.WebsocketMessageTopicMatcherField;
+import com.scz.jcex.netutils.websocket.WebsocketSubscribeRequest;
 import java.io.IOException;
 import java.util.Properties;
 import org.slf4j.Logger;
@@ -28,6 +46,8 @@ public class  BinanceSpotTradingApiImpl implements BinanceSpotTradingApi {
   private static final Logger log = LoggerFactory.getLogger(BinanceSpotTradingApiImpl.class);
   
   private final BinancePrivateApiRestEndpointFactory restEndpointFactory = new BinancePrivateApiRestEndpointFactory();
+  
+  private final BinancePrivateSpotApiWebsocketEndpointFactory websocketEndpointFactory = new BinancePrivateSpotApiWebsocketEndpointFactory();
   
   
   private final RestEndpoint<BinanceAccountRequest, BinanceAccountResponse> accountApi;
@@ -77,11 +97,96 @@ public class  BinanceSpotTradingApiImpl implements BinanceSpotTradingApi {
       log.debug("DELETE spotDeleteListenKey < " + response);
     return response;
   }
+  
+  private final WebsocketEndpoint<BinanceOutboundAccountPositionUserDataStreamRequest, BinanceOutboundAccountPositionUserDataStreamMessage> outboundAccountPositionUserDataStreamWs;
+  
+  
+  @Override
+  public String subscribeOutboundAccountPositionUserDataStream(BinanceOutboundAccountPositionUserDataStreamRequest request, WebsocketListener<BinanceOutboundAccountPositionUserDataStreamMessage> listener) {
+    if (log.isDebugEnabled())
+      log.debug("subscribeOutboundAccountPositionUserDataStream:request:" + request);
+    WebsocketSubscribeRequest<BinanceOutboundAccountPositionUserDataStreamRequest> websocketSubscribeRequest = new WebsocketSubscribeRequest<>();
+    websocketSubscribeRequest.setMessageTopicMatcher(new DefaultWebsocketMessageTopicMatcher(WebsocketMessageTopicMatcherField.createList("e", "outboundAccountPosition")));
+    websocketSubscribeRequest.setParameters(request);
+    return outboundAccountPositionUserDataStreamWs.subscribe(websocketSubscribeRequest, listener);
+  }
+  
+  @Override
+  public boolean unsubscribeOutboundAccountPositionUserDataStream(String subscriptionId) {
+    if (log.isDebugEnabled())
+      log.debug("unsubscribeOutboundAccountPositionUserDataStream: subscriptionId:" + subscriptionId);
+    return outboundAccountPositionUserDataStreamWs.unsubscribe(subscriptionId);
+  }
+  
+  private final WebsocketEndpoint<BinanceBalanceUpdateUserDataStreamRequest, BinanceBalanceUpdateUserDataStreamMessage> balanceUpdateUserDataStreamWs;
+  
+  
+  @Override
+  public String subscribeBalanceUpdateUserDataStream(BinanceBalanceUpdateUserDataStreamRequest request, WebsocketListener<BinanceBalanceUpdateUserDataStreamMessage> listener) {
+    if (log.isDebugEnabled())
+      log.debug("subscribeBalanceUpdateUserDataStream:request:" + request);
+    WebsocketSubscribeRequest<BinanceBalanceUpdateUserDataStreamRequest> websocketSubscribeRequest = new WebsocketSubscribeRequest<>();
+    websocketSubscribeRequest.setMessageTopicMatcher(new DefaultWebsocketMessageTopicMatcher(WebsocketMessageTopicMatcherField.createList("e", "balanceUpdate")));
+    websocketSubscribeRequest.setParameters(request);
+    return balanceUpdateUserDataStreamWs.subscribe(websocketSubscribeRequest, listener);
+  }
+  
+  @Override
+  public boolean unsubscribeBalanceUpdateUserDataStream(String subscriptionId) {
+    if (log.isDebugEnabled())
+      log.debug("unsubscribeBalanceUpdateUserDataStream: subscriptionId:" + subscriptionId);
+    return balanceUpdateUserDataStreamWs.unsubscribe(subscriptionId);
+  }
+  
+  private final WebsocketEndpoint<BinanceExecutionReportUserDataStreamRequest, BinanceExecutionReportUserDataStreamMessage> executionReportUserDataStreamWs;
+  
+  
+  @Override
+  public String subscribeExecutionReportUserDataStream(BinanceExecutionReportUserDataStreamRequest request, WebsocketListener<BinanceExecutionReportUserDataStreamMessage> listener) {
+    if (log.isDebugEnabled())
+      log.debug("subscribeExecutionReportUserDataStream:request:" + request);
+    WebsocketSubscribeRequest<BinanceExecutionReportUserDataStreamRequest> websocketSubscribeRequest = new WebsocketSubscribeRequest<>();
+    websocketSubscribeRequest.setMessageTopicMatcher(new DefaultWebsocketMessageTopicMatcher(WebsocketMessageTopicMatcherField.createList("e", "executionReport")));
+    websocketSubscribeRequest.setParameters(request);
+    return executionReportUserDataStreamWs.subscribe(websocketSubscribeRequest, listener);
+  }
+  
+  @Override
+  public boolean unsubscribeExecutionReportUserDataStream(String subscriptionId) {
+    if (log.isDebugEnabled())
+      log.debug("unsubscribeExecutionReportUserDataStream: subscriptionId:" + subscriptionId);
+    return executionReportUserDataStreamWs.unsubscribe(subscriptionId);
+  }
+  
+  private final WebsocketEndpoint<BinanceListStatusUserDataStreamRequest, BinanceListStatusUserDataStreamMessage> listStatusUserDataStreamWs;
+  
+  
+  @Override
+  public String subscribeListStatusUserDataStream(BinanceListStatusUserDataStreamRequest request, WebsocketListener<BinanceListStatusUserDataStreamMessage> listener) {
+    if (log.isDebugEnabled())
+      log.debug("subscribeListStatusUserDataStream:request:" + request);
+    WebsocketSubscribeRequest<BinanceListStatusUserDataStreamRequest> websocketSubscribeRequest = new WebsocketSubscribeRequest<>();
+    websocketSubscribeRequest.setMessageTopicMatcher(new DefaultWebsocketMessageTopicMatcher(WebsocketMessageTopicMatcherField.createList("e", "listStatus")));
+    websocketSubscribeRequest.setParameters(request);
+    return listStatusUserDataStreamWs.subscribe(websocketSubscribeRequest, listener);
+  }
+  
+  @Override
+  public boolean unsubscribeListStatusUserDataStream(String subscriptionId) {
+    if (log.isDebugEnabled())
+      log.debug("unsubscribeListStatusUserDataStream: subscriptionId:" + subscriptionId);
+    return listStatusUserDataStreamWs.unsubscribe(subscriptionId);
+  }
   public BinanceSpotTradingApiImpl(Properties properties) {
     this.restEndpointFactory.setProperties(properties);
+    this.websocketEndpointFactory.setProperties(properties);
     this.accountApi = restEndpointFactory.createRestEndpoint(new BinanceAccountResponseDeserializer());
     this.spotListenKeyApi = restEndpointFactory.createRestEndpoint(new BinanceSpotListenKeyResponseDeserializer());
     this.spotKeepAliveListenKeyApi = restEndpointFactory.createRestEndpoint(new BinanceSpotKeepAliveListenKeyResponseDeserializer());
     this.spotDeleteListenKeyApi = restEndpointFactory.createRestEndpoint(new BinanceSpotDeleteListenKeyResponseDeserializer());
+    this.outboundAccountPositionUserDataStreamWs = websocketEndpointFactory.createWebsocketEndpoint(new BinanceOutboundAccountPositionUserDataStreamMessageDeserializer());
+    this.balanceUpdateUserDataStreamWs = websocketEndpointFactory.createWebsocketEndpoint(new BinanceBalanceUpdateUserDataStreamMessageDeserializer());
+    this.executionReportUserDataStreamWs = websocketEndpointFactory.createWebsocketEndpoint(new BinanceExecutionReportUserDataStreamMessageDeserializer());
+    this.listStatusUserDataStreamWs = websocketEndpointFactory.createWebsocketEndpoint(new BinanceListStatusUserDataStreamMessageDeserializer());
   }
 }

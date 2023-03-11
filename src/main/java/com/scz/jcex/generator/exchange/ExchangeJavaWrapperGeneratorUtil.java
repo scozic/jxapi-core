@@ -299,6 +299,9 @@ public class ExchangeJavaWrapperGeneratorUtil {
 		
 		StringBuilder implementationConstructorBody = new StringBuilder();
 		implementationConstructorBody.append("this." + restApiFactoryVariableName + ".setProperties(properties);\n");
+		if (websocketEndpointFactoryFullClassName != null) {
+			implementationConstructorBody.append("this." + websocketEndpointFactoryVariableName + ".setProperties(properties);\n");
+		}
 		
 		for (RestEndpointDescriptor restApi: exchangeApiDescriptor.getRestEndpoints()) {
 			implementationGenerator.addImport(RestEndpoint.class);
@@ -372,8 +375,8 @@ public class ExchangeJavaWrapperGeneratorUtil {
 			implementationGenerator.addImport(messageClassName);
 			String messageDeserializerClassName = JsonMessageDeserializerGenerator.getJsonMessageDeserializerClassName(messageClassName);
 			implementationGenerator.addImport(messageDeserializerClassName);
-			String subscribeMethodName = "subscribe" + websocketApi.getName();
-			String unsubscribeMethodName = "unsubscribe" + websocketApi.getName();
+			String subscribeMethodName = "subscribe" + JavaCodeGenerationUtil.firstLetterToUpperCase(websocketApi.getName());
+			String unsubscribeMethodName = "unsubscribe" + JavaCodeGenerationUtil.firstLetterToUpperCase(websocketApi.getName());
 			String websocketEndpointVariableName = JavaCodeGenerationUtil.firstLetterToLowerCase(websocketApi.getName()) + "Ws";
 			implementationGenerator.appendToBody("\nprivate final WebsocketEndpoint<" + requestClassSimpleName + ", " + messageClassSimpleName + "> " + websocketEndpointVariableName + ";\n\n");
 			implementationConstructorBody.append("this." + websocketEndpointVariableName + " = "  
@@ -545,8 +548,6 @@ public class ExchangeJavaWrapperGeneratorUtil {
 			implementationGenerator.appendMethod("@Override\npublic " + getApiMethodSignature, "return this." + apiVariableName + ";\n");
 			implementationGenerator.appendToBody("\n");
 		}
-		
-		
 		
 		implementationGenerator.addImport(Properties.class);
 		implementationGenerator.appendMethod("public " + simpleImplementationName + "(Properties properties)", implementationConstructorBody.toString());

@@ -103,6 +103,7 @@ public class  BinanceSpotMarketDataApiImpl implements BinanceSpotMarketDataApi {
   }
   public BinanceSpotMarketDataApiImpl(Properties properties) {
     this.restEndpointFactory.setProperties(properties);
+    this.websocketEndpointFactory.setProperties(properties);
     this.exchangeInformationAllApi = restEndpointFactory.createRestEndpoint(new BinanceExchangeInformationAllResponseDeserializer());
     this.exchangeInformationApi = restEndpointFactory.createRestEndpoint(new BinanceExchangeInformationResponseDeserializer());
     this.allMarketTickersStreamWs = websocketEndpointFactory.createWebsocketEndpoint(new BinanceAllMarketTickersStreamMessageDeserializer());

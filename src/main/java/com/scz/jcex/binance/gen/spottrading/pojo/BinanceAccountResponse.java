@@ -40,14 +40,14 @@ public class BinanceAccountResponse {
   }
   
   /**
-   * @return List of market information for each market symbol
+   * @return Balances array
    */
   public List<BinanceAccountResponseBalances> getBalances(){
     return balances;
   }
   
   /**
-   * @param balances List of market information for each market symbol
+   * @param balances Balances array
    */
   public void setBalances(List<BinanceAccountResponseBalances> balances) {
     this.balances = balances;

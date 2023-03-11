@@ -6,7 +6,7 @@ import com.scz.jcex.util.EncodingUtil;
 import java.math.BigDecimal;
 
 /**
- * List of market information for each market symbol
+ * Balances array
  */
 @JsonSerialize(using = BinanceAccountResponseBalancesSerializer.class)
 public class BinanceAccountResponseBalances {
