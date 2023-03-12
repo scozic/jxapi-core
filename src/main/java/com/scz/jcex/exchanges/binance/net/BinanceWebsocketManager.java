@@ -35,7 +35,7 @@ public class BinanceWebsocketManager extends SpringWebsocketManager {
 			requestIdCounter = 0;
 		}
 		int requestId = requestIdCounter++;
-		return String.format(SUBSCRIPTION_REQUEST_TEMPLATE, method, topic, requestId);
+		return String.format(SUBSCRIPTION_REQUEST_TEMPLATE, method, topic.toLowerCase(), requestId);
 	}
 	
 	

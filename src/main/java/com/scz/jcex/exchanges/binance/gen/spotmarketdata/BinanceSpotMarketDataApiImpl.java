@@ -90,7 +90,7 @@ public class  BinanceSpotMarketDataApiImpl implements BinanceSpotMarketDataApi {
     if (log.isDebugEnabled())
       log.debug("subscribeIndividualSymbolTickerStreams:request:" + request);
     WebsocketSubscribeRequest<BinanceIndividualSymbolTickerStreamsRequest> websocketSubscribeRequest = new WebsocketSubscribeRequest<>();
-    websocketSubscribeRequest.setMessageTopicMatcher(new DefaultWebsocketMessageTopicMatcher(WebsocketMessageTopicMatcherField.createList("e", "24hTicker", "s", "" + request.getSymbol() + "")));
+    websocketSubscribeRequest.setMessageTopicMatcher(new DefaultWebsocketMessageTopicMatcher(WebsocketMessageTopicMatcherField.createList("e", "24hrTicker", "s", "" + request.getSymbol() + "")));
     websocketSubscribeRequest.setParameters(request);
     return individualSymbolTickerStreamsWs.subscribe(websocketSubscribeRequest, listener);
   }

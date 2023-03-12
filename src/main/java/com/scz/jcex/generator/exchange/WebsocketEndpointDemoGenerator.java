@@ -63,7 +63,7 @@ public class WebsocketEndpointDemoGenerator extends JavaTypeGenerator {
 			.append("() websocket stream with request:\" + request);\n");
 		body.append("api.")
 			.append(apiMethodName)
-			.append("(request, m -> log.info(m));");
+			.append("(request, m -> log.info(\"Received message:\" + m));");
 		
 		appendMethod("public static void main(String[] args)", 
 					"try {\n" 

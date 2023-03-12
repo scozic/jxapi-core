@@ -29,7 +29,7 @@ public class BinanceIndividualSymbolTickerStreamsRequest implements WebsocketSub
   
   @Override
   public String getTopic() {
-    return com.scz.jcex.util.EncodingUtil.substituteArguments("${symbol}@arr", "symbol", symbol);
+    return com.scz.jcex.util.EncodingUtil.substituteArguments("${symbol}@ticker", "symbol", symbol);
   }
   
   @Override

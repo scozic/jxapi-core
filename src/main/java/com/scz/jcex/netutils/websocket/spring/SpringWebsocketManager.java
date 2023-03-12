@@ -57,6 +57,8 @@ public abstract class SpringWebsocketManager extends AbstractWebsocketManager {
 
 	@Override
 	protected void send(String message) throws IOException {
+		if (log.isDebugEnabled())
+			log.debug("Sending >" + message);
 		webSocketSession.sendMessage(new TextMessage(message));
 	}
 

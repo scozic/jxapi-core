@@ -126,13 +126,13 @@
 				},
 				{
 					"name": "IndividualSymbolTickerStreams",
-					"topic": "${symbol}@arr",
+					"topic": "${symbol}@ticker",
 					"description": "24hr rolling window ticker statistics for a single symbol. These are NOT the statistics of the UTC day, but a 24hr rolling window for the previous 24hrs.<br/>See <a href=\"https://binance-docs.github.io/apidocs/spot/en/#individual-symbol-ticker-streams\">API</a>",
 					"parameters": [
-						{"name":"symbol", "type": "STRING", "description":"Market symbol", "sampleValue":"BNBBTC"}
+						{"name":"symbol", "type": "STRING", "description":"Market symbol", "sampleValue":"BTCUSDT"}
 					],
 					"messageTopicMatcherFields": [
-						{"name": "e",  "value": "24hTicker"},
+						{"name": "e",  "value": "24hrTicker"},
 						{"name": "s",  "value": "${symbol}"}
 					],
 					"response": [
