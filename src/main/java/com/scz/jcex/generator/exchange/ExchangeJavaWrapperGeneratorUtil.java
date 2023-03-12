@@ -127,7 +127,17 @@ public class ExchangeJavaWrapperGeneratorUtil {
 		generateCEXPojos(exchangeDescriptor, ouputFolder);
 		generateCEXPojoDeserializers(exchangeDescriptor, ouputFolder);
 		generateCEXPojoSerializers(exchangeDescriptor, ouputFolder);
-		
+	}
+	
+	public static void generateCEXDemos(ExchangeDescriptor exchangeDescriptor, Path ouputFolder) throws IOException {
+		for (ExchangeApiDescriptor api: exchangeDescriptor.getApis()) {
+			// Generate rest endpoints demos
+			for (RestEndpointDescriptor restApi: api.getRestEndpoints()) {
+				RestEndpointDemoGenerator restEndpointDemoGenerator = new RestEndpointDemoGenerator(exchangeDescriptor, api, restApi);
+				restEndpointDemoGenerator.writeJavaFile(ouputFolder);
+			}
+			// TODO Generate websocket endpoints demos
+		}
 	}
 	
 	public static void generateCEXPojoSerializers(ExchangeDescriptor exchangeDescriptor, Path ouputFolder) throws IOException {
@@ -493,6 +503,14 @@ public class ExchangeJavaWrapperGeneratorUtil {
 		implementationGenerator.writeJavaFile(outputFolder);
 	}
 	
+	public static String getRestApiDemoClassName(ExchangeDescriptor exchangeDescriptor, ExchangeApiDescriptor exchangeApiDescriptor, RestEndpointDescriptor restApi) {
+		String pkgPrefix =  exchangeDescriptor.getBasePackage() + "." + exchangeApiDescriptor.getName().toLowerCase() + ".demo.";
+		return pkgPrefix + JavaCodeGenerationUtil.firstLetterToUpperCase(exchangeDescriptor.getName()) 
+									 + JavaCodeGenerationUtil.firstLetterToUpperCase(exchangeApiDescriptor.getName())
+									 + JavaCodeGenerationUtil.firstLetterToUpperCase(restApi.getName())
+									 + "Demo";
+	}
+	
 	private static String generateWebsocketEndpointMessageClassName(ExchangeDescriptor exchangeDescriptor,
 			ExchangeApiDescriptor exchangeApiDescriptor, WebsocketEndpointDescriptor websocketApi) {
 		return exchangeDescriptor.getBasePackage() + "." + exchangeApiDescriptor.getName().toLowerCase() + ".pojo."
@@ -555,7 +573,7 @@ public class ExchangeJavaWrapperGeneratorUtil {
 		implementationGenerator.writeJavaFile(outputFolder);
 	}
 	
-	private static String getApiInterfaceClassName(ExchangeDescriptor exchangeDescriptor, ExchangeApiDescriptor exchangeApiDescriptor) {
+	public static String getApiInterfaceClassName(ExchangeDescriptor exchangeDescriptor, ExchangeApiDescriptor exchangeApiDescriptor) {
 		String pkgPrefix =  exchangeDescriptor.getBasePackage() + "." + exchangeApiDescriptor.getName().toLowerCase() + ".";
 		String simpleInterfaceName = JavaCodeGenerationUtil.firstLetterToUpperCase(exchangeDescriptor.getName()) + JavaCodeGenerationUtil.firstLetterToUpperCase(exchangeApiDescriptor.getName()) + "Api";
 		return pkgPrefix + simpleInterfaceName;
