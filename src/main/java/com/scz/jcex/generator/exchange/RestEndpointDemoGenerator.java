@@ -22,7 +22,8 @@ public class RestEndpointDemoGenerator extends JavaTypeGenerator {
 						+ ExchangeJavaWrapperGeneratorUtil.getApiInterfaceClassName(exchangeDescriptor, exchangeApiDescriptor) 
 						+ "#" 
 						+ apiMethodName 
-						+ "(" + requestClassName + ")");
+						+ "(" + requestClassName + ")}\n"
+						+ JavaCodeGenerationUtil.GENERATED_CODE_WARNING);
 		JavaCodeGenerationUtil.generateLoggerDeclaration(this);
 		restApi.getParameters().forEach(p -> generateParameterValueConstantDeclaration(exchangeDescriptor, exchangeApiDescriptor, restApi, p));
 		generateMainMethodBody(requestSimpleClassName, 
@@ -62,12 +63,14 @@ public class RestEndpointDemoGenerator extends JavaTypeGenerator {
 			.append("() API with request:\" + request);\n");
 		body.append("log.info(\"Response:\" + api.")
 			.append(apiMethodName)
-			.append("(request));\n");
-		appendToBody("try {" 
-				+ JavaCodeGenerationUtil.indent(body.toString()) 
-				+ "} catch (Throwable t) {\n"
-				+ JavaCodeGenerationUtil.indent("log.error(t);\n")
-				+ "}");
+			.append("(request));");
+		
+		appendMethod("public static void main(String[] args)", 
+					"try {\n" 
+						+ JavaCodeGenerationUtil.indent(body.toString(), JavaCodeGenerationUtil.INDENTATION) 
+						+ "\n} catch (Throwable t) {\n"
+						+ JavaCodeGenerationUtil.indent("log.error(\"Exception raised from main()\", t);", JavaCodeGenerationUtil.INDENTATION)
+						+ "\n}");
 	}
 
 	private void generateParameterValueConstantDeclaration(ExchangeDescriptor exchangeDescriptor, 
@@ -79,7 +82,7 @@ public class RestEndpointDemoGenerator extends JavaTypeGenerator {
 																+ parameter.getName() 
 																+ "</i> parameter of <i>" 
 																+ restApi.getName() 
-																+ "</i> API"));
+																+ "</i> API") + "\n");
 			constantDeclaration.append("public static final ")
 								.append(getParameterTypeDeclaration(parameter.getType()))
 								.append(" ")
@@ -93,15 +96,35 @@ public class RestEndpointDemoGenerator extends JavaTypeGenerator {
 	private String getParameterValueDeclaration(EndpointParameter parameter) {
 		Object v = parameter.getSampleValue();
 		switch (parameter.getType()) {
-		case TIMESTAMP:
 		case BIGDECIMAL:
+			addImport(BigDecimal.class);
+			if (v == null)
+				return "BigDecimal.ZERO";
+			return "new BigDecimal(\"" + String.valueOf(v) + "\");";
 		case BOOLEAN:
 		case INT:
-		case LONG:
-		case STRING_LIST:
 			return String.valueOf(v);
+		case STRING_LIST:
+			addImport(List.class);
+			if (v == null) {
+				return "List.of()";
+			}
+			String strList = v.toString().trim();
+			if (!strList.startsWith("[") || !strList.endsWith("]")) {
+				throw new IllegalArgumentException("Sample value for parameter:" + parameter + ":" + strList + " does must be surrounded with '[]'");
+			}
+			return "List.of(" + strList.substring(1, strList.length() - 1) + ")";
 		case STRING:
 			return "\"" + v + "\"";
+		case TIMESTAMP:
+		case LONG:
+			if (v == null) {
+				return "0L";
+			}
+			if ("now()".equalsIgnoreCase(v.toString())) {
+				return "System.currentTimeMillis()";
+			}
+			return String.valueOf(v) + "L";
 		case STRUCT:
 		case STRUCT_LIST:
 		default:

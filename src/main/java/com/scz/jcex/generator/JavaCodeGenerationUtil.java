@@ -148,6 +148,8 @@ public class JavaCodeGenerationUtil {
 	}
 
 	public static void deletePath(Path path) throws IOException {
+		if (!path.toFile().exists())
+			return;
 		Files.walk(path)
 	      .sorted(Comparator.reverseOrder())
 	      .map(Path::toFile)

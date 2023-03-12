@@ -8,7 +8,7 @@ import com.scz.jcex.util.EncodingUtil;
 import java.io.IOException;
 
 /**
- * Jackson JSON Serializer for com.scz.jcex.binance.gen.spotmarketdata.pojo.BinanceIndividualSymbolTickerStreamsMessage
+ * Jackson JSON Serializer for com.scz.jcex.exchanges.binance.gen.spotmarketdata.pojo.BinanceIndividualSymbolTickerStreamsMessage
  * <br><strong>THIS CODE IS GENERATED. DO NOT EDIT MANUALLY!</strong>
  * @see BinanceIndividualSymbolTickerStreamsMessage
  */

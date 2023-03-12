@@ -6,7 +6,7 @@
 		{ 
 			"name": "SpotMarketData",
 			"description": "Binance spot market data API",
-			"restEndpointFactory": "com.scz.jcex.binance.net.BinancePublicApiRestEndpointFactory",
+			"restEndpointFactory": "com.scz.jcex.exchanges.binance.net.BinancePublicApiRestEndpointFactory",
 			"restEndpoints": [
 				{
 					"name": "exchangeInformationAll",
@@ -61,7 +61,7 @@
 					],
 					"response": [
 						{"name":"timezone", "type": "STRING", "description":"Server timezone", "sampleValue": "UTC"},
-						{"name":"serverTime", "type": "TIMESTAMP", "description":"Server timezone", "sampleValue": "1565246363776"},
+						{"name":"serverTime", "type": "TIMESTAMP", "description":"Server timezone", "sampleValue": "now()"},
 						{"name":"symbols", "type": "STRUCT_LIST", "description":"List of market information for each market symbol", "parameters":
 							[
 								{"name":"symbol", "type": "STRING", "description":"Market symbol", "sampleValue":"BTCUSDT"},
@@ -94,7 +94,7 @@
 					]
 				}
 			],
-			"websocketEndpointFactory": "com.scz.jcex.binance.net.BinancePublicWebsocketEndpointFactory",
+			"websocketEndpointFactory": "com.scz.jcex.exchanges.binance.net.BinancePublicWebsocketEndpointFactory",
 			"websocketEndpoints": [
 				{
 					"name": "AllMarketTickersStream",
@@ -160,7 +160,7 @@
 		{ 
 			"name": "SpotTrading",
 			"description": "Binance spot trading API",
-			"restEndpointFactory": "com.scz.jcex.binance.net.BinancePrivateApiRestEndpointFactory",
+			"restEndpointFactory": "com.scz.jcex.exchanges.binance.net.BinancePrivateApiRestEndpointFactory",
 			"restEndpoints": [
 				{
 					"name": "account",
@@ -170,7 +170,7 @@
 					"urlParameters": "recvWindow=${recvWindow}&timestamp=${timestamp}",
 					"parameters": [
 						{"name":"recvWindow", "type": "LONG", "description": "Server timezone", "sampleValue": "60000"},
-						{"name":"timestamp", "type": "LONG", "description": "", "sampleValue": "1565246363776"}
+						{"name":"timestamp", "type": "LONG", "description": "", "sampleValue": "now()"}
 					],
 					"response": [
 						{"name":"makerCommission", "type": "INT", "description":"", "sampleValue": "15"},
@@ -238,7 +238,7 @@
 				}
 				
 			],
-			"websocketEndpointFactory": "com.scz.jcex.binance.net.BinancePrivateSpotApiWebsocketEndpointFactory",
+			"websocketEndpointFactory": "com.scz.jcex.exchanges.binance.net.BinancePrivateSpotApiWebsocketEndpointFactory",
 			"websocketEndpoints": [
 				{
 					"name": "outboundAccountPositionUserDataStream",

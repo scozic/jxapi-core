@@ -9,7 +9,7 @@ import java.io.IOException;
 import java.math.BigDecimal;
 
 /**
- * Parses incoming JSON messages into com.scz.jcex.binance.gen.spottrading.pojo.BinanceBalanceUpdateUserDataStreamMessage instances
+ * Parses incoming JSON messages into com.scz.jcex.exchanges.binance.gen.spottrading.pojo.BinanceBalanceUpdateUserDataStreamMessage instances
  * <br><strong>THIS CODE IS GENERATED. DO NOT EDIT MANUALLY!</strong>
  * @see com.scz.jcex.exchanges.binance.gen.spottrading.pojo.BinanceBalanceUpdateUserDataStreamMessage
  */

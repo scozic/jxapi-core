@@ -11,7 +11,7 @@ import com.scz.jcex.netutils.serialization.json.JsonParserUtil;
 import java.io.IOException;
 
 /**
- * Parses incoming JSON messages into com.scz.jcex.binance.gen.spotmarketdata.pojo.BinanceExchangeInformationAllResponseSymbols instances
+ * Parses incoming JSON messages into com.scz.jcex.exchanges.binance.gen.spotmarketdata.pojo.BinanceExchangeInformationAllResponseSymbols instances
  * <br><strong>THIS CODE IS GENERATED. DO NOT EDIT MANUALLY!</strong>
  * @see com.scz.jcex.exchanges.binance.gen.spotmarketdata.pojo.BinanceExchangeInformationAllResponseSymbols
  */
