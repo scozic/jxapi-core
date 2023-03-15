@@ -1,0 +1,195 @@
+{
+	"name": "Kucoin",
+	"description": "Kucoin Spot and futures API",
+	"basePackage": "com.scz.jcex.exchanges.kucoin.gen",
+	"apis":[
+		{ 
+			"name": "SpotMarketData",
+			"description": "Kucoin spot market data API",
+			"restEndpointFactory": "com.scz.jcex.exchanges.kucoin.net.KucoinPublicApiRestEndpointFactory",
+			"restEndpoints": [
+				{
+					"name": "getSymbolsList",
+					"httpMethod": "GET",
+					"description": "Request via this endpoint to get a list of available currency pairs for trading. If you want to get the market information of the trading symbol, please use Get All Tickers.<br/>See <a href=\"https://docs.kucoin.com/#get-symbols-list\">API</a>",
+					"url": "https://api.kucoin.com/api/v2/symbols",
+					"urlParameters": "",
+					"parameters": [],
+					"response": [
+						{"name":"code", "type": "STRING", "description":"System error code, see <a href=\"https://docs.kucoin.com/#request\">API</a>", "sampleValue": "0"},
+						{"name":"msg", "type": "STRING", "description":"System error code description, provided in error response when code is not '0', see <a href=\"https://docs.kucoin.com/#request\">API</a>", "sampleValue": "0"},
+						{"name":"data", "type": "STRUCT_LIST", "description":"List of market information for each market symbol", "parameters":
+							[
+								{"name":"symbol", "type": "STRING", "description":"unique code of a symbol, it would not change after renaming", "sampleValue":"GALAX-USDT"},
+								{"name":"name", "type": "STRING", "description":"Name of trading pairs, it would change after renaming", "sampleValue":"GALA-USDT"},
+								{"name":"baseCurrency", "type": "STRING", "description":"Base currency,e.g. BTC.", "sampleValue":"GALAX"},
+								{"name":"quoteCurrency", "type": "STRING", "description":"Quote currency,e.g. USDT.", "sampleValue":"USDT"},
+								{"name":"feeCurrency", "type": "STRING", "description":"The currency of charged fees.", "sampleValue":"USDT"},
+								{"name":"market", "type": "STRING", "description":"The trading  <a href=\"https://docs.kucoin.com/#get-market-list\">market</a>.", "sampleValue":"USDS"},
+								{"name":"baseMinSize", "type": "BIGDECIMAL", "description":"The minimum order quantity requried to place an order.", "sampleValue": "10"},
+								{"name":"quoteMinSize", "type": "BIGDECIMAL", "description":"The minimum order funds required to place a market order.", "sampleValue": "0.001"},
+								{"name":"baseMaxSize", "type": "BIGDECIMAL", "description":"The maximum order size required to place an order.", "sampleValue": "10000000000"},
+								{"name":"quoteMaxSize", "type": "BIGDECIMAL", "description":"The maximum order funds required to place a market order.", "sampleValue": "99999999"},
+								{"name":"baseIncrement", "type": "BIGDECIMAL", "description":"The increment of the order size. The value shall be a positive multiple of the baseIncrement.", "sampleValue": "0.0001"},
+								{"name":"quoteIncrement", "type": "BIGDECIMAL", "description":"The increment of the funds required to place a market order. The value shall be a positive multiple of the quoteIncrement.", "sampleValue": "0.00001"},
+								{"name":"priceIncrement", "type": "BIGDECIMAL", "description":"The increment of the price required to place a limit order. The value shall be a positive multiple of the priceIncrement.", "sampleValue": "0.00001"},
+								{"name":"priceLLimitRate", "type": "BIGDECIMAL", "description":"Threshold for price portection", "sampleValue": "0.1"},
+								{"name":"minFunds", "type": "BIGDECIMAL", "description":"The minimum spot and margin trading amounts", "sampleValue": "0.1"},
+								{"name":"enableTrading", "type": "BOOLEAN", "description":"Available for transaction or not.", "sampleValue": true},
+								{"name":"isMarginEnabled", "type": "BOOLEAN", "description":"Available for margin or not.", "sampleValue": true}
+							]
+						}
+					]
+				},
+				{
+					"name": "getTicker",
+					"httpMethod": "GET",
+					"description": "Request via this endpoint to get Level 1 Market Data. The returned value includes the best bid price and size, the best ask price and size as well as the last traded price and the last traded size.<br/>See <a href=\"https://docs.kucoin.com/#get-ticker\">API</a>",
+					"url": "https://api.kucoin.com/api/v1/market/orderbook/level1",
+					"urlParameters": "symbol=${symbol}",
+					"parameters": [
+						{"name":"symbol", "type": "STRING", "description":"<a href=\"https://docs.kucoin.com/#get-symbols-list\">symbol</a>", "sampleValue": "BTC-USDT"}
+					],
+					"response": [
+						{"name":"code", "type": "STRING", "description":"System error code, see <a href=\"https://docs.kucoin.com/#request\">API</a>", "sampleValue": "0"},
+						{"name":"msg", "type": "STRING", "description":"System error code description, provided in error response when code is not '0', see <a href=\"https://docs.kucoin.com/#request\">API</a>", "sampleValue": "0"},
+						{"name":"data", "type": "STRUCT", "description":"List of market information for each market symbol", "parameters":
+							[
+								{"name":"sequence", "type": "STRING", "description":"Sequence", "sampleValue":"1550467636704"},
+								{"name":"bestAsk", "type": "BIGDECIMAL", "description":"Best ask price", "sampleValue":"0.03715004"},
+								{"name":"size", "type": "BIGDECIMAL", "description":"Last traded size", "sampleValue":"0.17"},
+								{"name":"price", "type": "BIGDECIMAL", "description":"Last traded price", "sampleValue":"0.09715005"},
+								{"name":"bestBidSize", "type": "BIGDECIMAL", "description":"Best bid size", "sampleValue":"3.803"},
+								{"name":"bestBid", "type": "BIGDECIMAL", "description":"Best bid price", "sampleValue":"0.03710768"},
+								{"name":"bestAskSize", "type": "BIGDECIMAL", "description":"Best ask size", "sampleValue":"1.788"},
+								{"name":"time", "type": "TIMESTAMP", "description":"Timestamp", "sampleValue":1550653727731}
+							]
+						}
+					]
+				},
+				{
+					"name": "getAllTickers",
+					"httpMethod": "GET",
+					"description": "Request via this endpoint to get Level 1 Market Data. The returned value includes the best bid price and size, the best ask price and size as well as the last traded price and the last traded size.<br/>See <a href=\"https://docs.kucoin.com/#get-all-tickers\">API</a>",
+					"url": "https://api.kucoin.com/api/v1/market/orderbook/level1",
+					"urlParameters": "symbol=${symbol}",
+					"parameters": [
+						{"name":"symbol", "type": "STRING", "description":"<a href=\"https://docs.kucoin.com/#get-symbols-list\">symbol</a>", "sampleValue": "BTC-USDT"}
+					],
+					"response": [
+						{"name":"code", "type": "STRING", "description":"System error code, see <a href=\"https://docs.kucoin.com/#request\">API</a>", "sampleValue": "0"},
+						{"name":"msg", "type": "STRING", "description":"System error code description, provided in error response when code is not '0', see <a href=\"https://docs.kucoin.com/#request\">API</a>", "sampleValue": "0"},
+						{"name":"data", "type": "STRUCT_LIST", "description":"List of market information for each market symbol", "parameters":
+							[
+								{"name":"time", "type": "TIMESTAMP", "description":"Timestamp", "sampleValue":1550653727731},
+								{"name":"ticker", "type": "STRUCT_LIST", "description":"List of market information for each market symbol", "parameters":
+									[
+										{"name":"symbol", "type": "STRING", "description":"<a href=\"https://docs.kucoin.com/#get-symbols-list\">symbol</a>", "sampleValue": "BTC-USDT"},
+										{"name":"symbolName", "type": "STRING", "description":"Name of trading pairs, it would change after renaming", "sampleValue":"GALA-USDT"},
+										{"name":"buy", "type": "BIGDECIMAL", "description":"Best bid price", "sampleValue":"11328.9"},
+										{"name":"sell", "type": "BIGDECIMAL", "description":"Best ask price", "sampleValue":"11329"},
+										{"name":"changeRate", "type": "BIGDECIMAL", "description":"24h change rate", "sampleValue":"-0.0055"},
+										{"name":"changePrice", "type": "BIGDECIMAL", "description":"24h change price", "sampleValue":"-63.6"},
+										{"name":"high", "type": "BIGDECIMAL", "description":"24h highest price", "sampleValue":"11610"},
+										{"name":"low", "type": "BIGDECIMAL", "description":"24h lowest price", "sampleValue":"11200"},
+										{"name":"vol", "type": "BIGDECIMAL", "description":"24h volume, executed based on base currency", "sampleValue":"2282.70993217"},
+										{"name":"volValue", "type": "BIGDECIMAL", "description":"24h traded amount in quote currency", "sampleValue":"25984946.157790431"},
+										{"name":"last", "type": "BIGDECIMAL", "description":"Last price", "sampleValue":"25984946.157790431"},
+										{"name":"averagePrice", "type": "BIGDECIMAL", "description":"Average trading price in the last 24 hours", "sampleValue":"11360.66065903"},
+										{"name":"takerFeeRate", "type": "BIGDECIMAL", "description":"Basic Taker Fee", "sampleValue":"0.001"},
+										{"name":"makerFeeRate", "type": "BIGDECIMAL", "description":"Basic Maker Fee", "sampleValue":"0.001"},
+										{"name":"takerCoefficient", "type": "BIGDECIMAL", "description":"Taker fee coefficient", "sampleValue":"1"},
+										{"name":"makerCoefficient", "type": "BIGDECIMAL", "description":"Maker fee coefficient", "sampleValue":"1"}
+									]
+								}		
+							]
+						}
+					]
+				},
+				{
+					"name": "ApplyConnectTokenPublic",
+					"httpMethod": "GET",
+					"description": "You need to apply for one of the two tokens below to create a websocket connection..<br/>See <a href=\"https://docs.kucoin.com/#apply-connect-token\">API</a>",
+					"url": "https://api.kucoin.com/api/v1/bullet-public",
+					"urlParameters": "",
+					"parameters": [
+					],
+					"response": [
+						{"name":"code", "type": "STRING", "description":"System error code, see <a href=\"https://docs.kucoin.com/#request\">API</a>", "sampleValue": "0"},
+						{"name":"msg", "type": "STRING", "description":"System error code description, provided in error response when code is not '0', see <a href=\"https://docs.kucoin.com/#request\">API</a>", "sampleValue": "0"},
+						{"name":"data", "type": "STRUCT_LIST", "description":"List of market information for each market symbol", "parameters":
+							[
+								{"name":"token", "type": "STRING", "description":"Token", "sampleValue":"2neAiuYvAU61ZDXANAGAsiL4-iAExhsBXZxftpOeh_55i3Ysy2q2LEsEWU64mdzUOPusi34M_wGoSf7iNyEWJ4aBZXpWhrmY9jKtqkdWoFa75w3istPvPtiYB9J6i9GjsxUuhPw3BlrzazF6ghq4L_u0MhKxG3x8TeN4aVbNiYo=.mvnekBb8DJegZIgYLs2FBQ=="},
+								{"name":"instanceServers", "type": "STRUCT_LIST", "description":"List of market information for each market symbol", "parameters":
+									[
+										{"name":"endpoint", "type": "STRING", "description":"Websocket server address for establishing connection", "sampleValue": "wss://ws-api-spot.kucoin.com/"},
+										{"name":"protocol", "type": "STRING", "description":"Protocol supported", "sampleValue":"websocket"},
+										{"name":"encrypt", "type": "BOOLEAN", "description":"Indicate whether SSL encryption is used", "sampleValue":true},
+										{"name":"pingInterval", "type": "LONG", "description":"Recommended to send ping interval in millisecond", "sampleValue":18000},
+										{"name":"pingTimeout", "type": "LONG", "description":"Recommended to send ping interval in millisecond", "sampleValue":10000}
+									]
+								}		
+							]
+						}
+					]
+				}
+				
+			],
+			"websocketEndpointFactory": "com.scz.jcex.exchanges.kucoin.net.KucoinPublicWebsocketEndpointFactory",
+			"websocketEndpoints": [
+				{
+					"name": "AllSymbolsTickerStream",
+					"topic": "/market/ticker:all",
+					"description": "Subscribe to this topic to get the push of all market symbols BBO change. Push frequency: once every 100ms. <br/>See <a href=\"https://docs.kucoin.com/#all-symbols-ticker\">API</a>",
+					"parameters": [],
+					"messageTopicMatcherFields": [
+						{"name": "topic",  "value": "${topic}"}
+					],
+					"response": [
+						{"name":"type", "type": "STRING", "description":"", "sampleValue":"message"},
+						{"name":"topic", "type": "TIMESTAMP", "description":".", "sampleValue":"/market/ticker:all"},
+						{"name":"subject", "type": "STRING", "description":"Symbol", "sampleValue":"BTC-USDT"},
+						{"name":"data", "type": "STRUCT_LIST", "description":"", "parameters":
+							[
+								{"name":"sequence", "type": "STRING", "description":"Sequence", "sampleValue":"1550467636704"},
+								{"name":"bestAsk", "type": "BIGDECIMAL", "description":"Best ask price", "sampleValue":"0.03715004"},
+								{"name":"size", "type": "BIGDECIMAL", "description":"Last traded size", "sampleValue":"0.17"},
+								{"name":"price", "type": "BIGDECIMAL", "description":"Last traded price", "sampleValue":"0.09715005"},
+								{"name":"bestBidSize", "type": "BIGDECIMAL", "description":"Best bid size", "sampleValue":"3.803"},
+								{"name":"bestBid", "type": "BIGDECIMAL", "description":"Best bid price", "sampleValue":"0.03710768"},
+								{"name":"bestAskSize", "type": "BIGDECIMAL", "description":"Best ask size", "sampleValue":"1.788"}
+							]
+						}
+					]
+				},
+				{
+					"name": "IndividualSymbolTickerStreams",
+					"topic": "/market/ticker:${symbol}",
+					"description": "24hr rolling window ticker statistics for a single symbol. These are NOT the statistics of the UTC day, but a 24hr rolling window for the previous 24hrs.<br/>See <a href=\"https://docs.kucoin.com/#symbol-ticker\">API</a>",
+					"parameters": [
+						{"name":"symbol", "type": "STRING", "description":"Market symbol", "sampleValue":"BTC-USDT"}
+					],
+					"messageTopicMatcherFields": [
+						{"name": "topic",  "value": "${topic}"}
+					],
+					"response": [
+						{"name":"type", "type": "STRING", "description":"", "sampleValue":"message"},
+						{"name":"topic", "type": "STRING", "description":".", "sampleValue":"/market/ticker:BTC-USDT"},
+						{"name":"subject", "type": "STRING", "description":"Symbol", "sampleValue":"BTC-USDT"},
+						{"name":"data", "type": "STRUCT_LIST", "description":"", "parameters":
+							[
+								{"name":"sequence", "type": "STRING", "description":"Sequence", "sampleValue":"1550467636704"},
+								{"name":"bestAsk", "type": "BIGDECIMAL", "description":"Best ask price", "sampleValue":"0.03715004"},
+								{"name":"size", "type": "BIGDECIMAL", "description":"Last traded size", "sampleValue":"0.17"},
+								{"name":"price", "type": "BIGDECIMAL", "description":"Last traded price", "sampleValue":"0.09715005"},
+								{"name":"bestBidSize", "type": "BIGDECIMAL", "description":"Best bid size", "sampleValue":"3.803"},
+								{"name":"bestBid", "type": "BIGDECIMAL", "description":"Best bid price", "sampleValue":"0.03710768"},
+								{"name":"bestAskSize", "type": "BIGDECIMAL", "description":"Best ask size", "sampleValue":"1.788"}
+							]
+						}
+					]
+				}
+			]
+		}
+	]
+}
