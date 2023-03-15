@@ -9,6 +9,7 @@ import com.scz.jcex.netutils.deserialization.MessageDeserializer;
 import com.scz.jcex.netutils.rest.RestEndpointUrlParameters;
 import com.scz.jcex.netutils.rest.RestRequest;
 import com.scz.jcex.netutils.rest.javaxnet.JavaxNetRestEndpoint;
+import com.scz.jcex.util.HmacSHA256Signer;
 
 public class BinancePrivateApiRestEndpoint<R, A> extends JavaxNetRestEndpoint<R, A> {
 	

@@ -1,4 +1,4 @@
-package com.scz.jcex.exchanges.binance.net;
+package com.scz.jcex.util;
 
 import org.apache.commons.codec.binary.Hex;
 
