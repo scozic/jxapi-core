@@ -48,6 +48,7 @@ public abstract class SpringWebsocketManager extends AbstractWebsocketManager {
 	protected AtomicLong lastHeartBeatTime = new AtomicLong(0L);
 	
 	private AtomicBoolean heartBeatTaskCancelled = null;
+	private AtomicBoolean heartBeatTimeoutTaskCancelled = null;
 	
 	public SpringWebsocketManager(String baseUrl) {
 		this.baseUrl = baseUrl;
@@ -96,6 +97,10 @@ public abstract class SpringWebsocketManager extends AbstractWebsocketManager {
 			this.heartBeatTaskCancelled.set(true);
 		}
 		this.heartBeatTaskCancelled = new AtomicBoolean(false);
+		if (this.heartBeatTimeoutTaskCancelled != null) {
+			this.heartBeatTimeoutTaskCancelled.set(true);
+		}
+		this.heartBeatTimeoutTaskCancelled = new AtomicBoolean(false);
 		
 		if (heartBeatInterval > 0) {
 			scheduleHeartBeatTask(new HeartBeakTask(this.heartBeatTaskCancelled));
@@ -111,7 +116,15 @@ public abstract class SpringWebsocketManager extends AbstractWebsocketManager {
 	}
 
 	private void scheduleHeartBeatTask(HeartBeakTask heartBeakTask) {
+		if (log.isDebugEnabled())
+			log.debug("Scheduling heartbeat task in " + heartBeatInterval + " ms");
 		this.writeExecutor.schedule(heartBeakTask, heartBeatInterval, TimeUnit.MILLISECONDS);
+	}
+	
+	private void scheduleHeartTimeoutBeatTask() {
+		if (log.isDebugEnabled())
+			log.debug("Scheduling heartbeat timeout task in " + noHeartBeatResponseTimeout + " ms");
+		this.writeExecutor.schedule(new HeartBeakTimeoutTask(heartBeatTaskCancelled), noHeartBeatResponseTimeout, TimeUnit.MILLISECONDS);
 	}
 
 	@Override
@@ -223,22 +236,45 @@ public abstract class SpringWebsocketManager extends AbstractWebsocketManager {
 					return;
 				}
 				
-				// Raise error if max delay without heartbeat response timeout has elapsed
-				long timeElapsedSinceLastHeartBeat = System.currentTimeMillis() - lastHeartBeatTime.get();
-				if (noHeartBeatResponseTimeout > 0 && (timeElapsedSinceLastHeartBeat > noHeartBeatResponseTimeout)) {
-					onError(new IOException("No heartbeat response since " + timeElapsedSinceLastHeartBeat + "ms"));
-				} else {
-					if (log.isDebugEnabled())
-						log.debug("Sending heartBeat");
-					send(createHeartBeatMessage());
-					scheduleHeartBeatTask(this);
-				}
+				send(createHeartBeatMessage());
+				scheduleHeartBeatTask(this);
+				scheduleHeartTimeoutBeatTask();
 			} catch (Exception ex) {
 				onError(new IOException("Error while sending heartbeat", ex));
 			}
 			
 		}
 	}
+	
+	private class HeartBeakTimeoutTask implements Runnable {
+		
+		private final AtomicBoolean cancelled;
+		
+		HeartBeakTimeoutTask(AtomicBoolean cancelled) {
+			this.cancelled = cancelled;
+		}
+
+		@Override
+		public void run() {
+			try {
+				if (cancelled.get()) {
+					log.debug("Not running cancelled heartbeat task");
+					return;
+				}
+				
+				// Raise error if max delay without heartbeat response timeout has elapsed
+				long timeElapsedSinceLastHeartBeat = System.currentTimeMillis() - lastHeartBeatTime.get();
+				if (noHeartBeatResponseTimeout > 0 && (timeElapsedSinceLastHeartBeat > noHeartBeatResponseTimeout)) {
+					onError(new IOException("No heartbeat response since " + timeElapsedSinceLastHeartBeat + "ms, timeout:" + noHeartBeatResponseTimeout));
+				}
+			} catch (Exception ex) {
+				onError(new IOException("Error while running heartbeat timeout task", ex));
+			}
+			
+		}
+		
+	}
+
 	
 	private class DispatchTextMessageTask implements Runnable {
 		

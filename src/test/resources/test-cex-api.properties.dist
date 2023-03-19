@@ -4,3 +4,7 @@
 
 binance.apiKey=<your_api_key>
 binance.apiSecret=<your_api_secret>
+
+kucoin.apiKey=<your_api_key>
+kucoin.apiSecret=<your_api_secret>
+kucoin.apiPassphrase=<your_api_secret>

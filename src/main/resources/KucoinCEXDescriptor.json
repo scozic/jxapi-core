@@ -190,6 +190,114 @@
 					]
 				}
 			]
+		},
+		{ 
+			"name": "SpotTrading",
+			"description": "Kucoin spot trading API",
+			"restEndpointFactory": "com.scz.jcex.exchanges.kucoin.net.KucoinPrivateApiRestEndpointFactory",
+			"restEndpoints": [
+				{
+					"name": "ApplyConnectTokenPrivate",
+					"httpMethod": "POST",
+					"description": "You need to apply for one of the two tokens below to create a websocket connection..<br/>See <a href=\"https://docs.kucoin.com/#apply-connect-token\">API</a>",
+					"url": "https://api.kucoin.com/api/v1/bullet-public",
+					"urlParameters": "",
+					"parameters": [],
+					"response": [
+						{"name":"code", "type": "STRING", "description":"System error code, see <a href=\"https://docs.kucoin.com/#request\">API</a>", "sampleValue": "0"},
+						{"name":"msg", "type": "STRING", "description":"System error code description, provided in error response when code is not '0', see <a href=\"https://docs.kucoin.com/#request\">API</a>", "sampleValue": "0"},
+						{"name":"data", "type": "STRUCT", "description":"Response payload", "parameters":
+							[
+								{"name":"token", "type": "STRING", "description":"Token", "sampleValue":"2neAiuYvAU61ZDXANAGAsiL4-iAExhsBXZxftpOeh_55i3Ysy2q2LEsEWU64mdzUOPusi34M_wGoSf7iNyEWJ4aBZXpWhrmY9jKtqkdWoFa75w3istPvPtiYB9J6i9GjsxUuhPw3BlrzazF6ghq4L_u0MhKxG3x8TeN4aVbNiYo=.mvnekBb8DJegZIgYLs2FBQ=="},
+								{"name":"instanceServers", "type": "STRUCT_LIST", "description":"List of market information for each market symbol", "parameters":
+									[
+										{"name":"endpoint", "type": "STRING", "description":"Websocket server address for establishing connection", "sampleValue": "wss://ws-api-spot.kucoin.com/"},
+										{"name":"protocol", "type": "STRING", "description":"Protocol supported", "sampleValue":"websocket"},
+										{"name":"encrypt", "type": "BOOLEAN", "description":"Indicate whether SSL encryption is used", "sampleValue":true},
+										{"name":"pingInterval", "type": "LONG", "description":"Recommended to send ping interval in millisecond", "sampleValue":18000},
+										{"name":"pingTimeout", "type": "LONG", "description":"Recommended to send ping interval in millisecond", "sampleValue":10000}
+									]
+								}		
+							]
+						}
+					]
+				}
+				
+			],
+			"websocketEndpointFactory": "com.scz.jcex.exchanges.kucoin.net.KucoinPrivateWebsocketEndpointFactory",
+			"websocketEndpoints": [
+				{
+					"name": "PrivateOrderChangeV2",
+					"topic": "/spotMarket/tradeOrdersV2",
+					"description": "This topic will push all change events of your orders. Compared with v1, v2 adds an Order Status: \"new\", there is no difference in push speed. <br/>See <a href=\"https://docs.kucoin.com/#private-order-change-v2\">API</a>",
+					"parameters": [],
+					"messageTopicMatcherFields": [
+						{"name": "topic",  "value": "${topic}"}
+					],
+					"response": [
+						{"name":"type", "type": "STRING", "description":"", "sampleValue":"message"},
+						{"name":"topic", "type": "TIMESTAMP", "description":".", "sampleValue":"/spotMarket/tradeOrdersV2"},
+						{"name":"subject", "type": "STRING", "description":"", "sampleValue":"orderChange"},
+						{"name":"data", "type": "STRUCT", "description":"", "parameters":
+							[
+								{"name":"symbol", "type": "STRING", "description":"", "sampleValue":"KCS-USDT"},
+								{"name":"orderType", "type": "STRING", "description":"", "sampleValue":"limit"},
+								{"name":"side", "type": "STRING", "description":"", "sampleValue":"buy"},
+								{"name":"orderId", "type": "STRING", "description":"", "sampleValue":"5efab07953bdea00089965d2"},
+								{"name":"liquidity", "type": "STRING", "description":"Provided only wheny message type is <i>match</i>", "sampleValue":"taker"},
+								{"name":"type", "type": "STRING", "description":"received, open, match, filled or canceled.", "sampleValue":"received"},
+								{"name":"orderTime", "type": "TIMESTAMP", "description":"", "sampleValue":1593487481683297666},
+								{"name":"size", "type": "BIGDECIMAL", "description":"Provided only wheny message type is <i>new</i>", "sampleValue":"0.1"},
+								{"name":"filledSize", "type": "BIGDECIMAL", "description":"Provided only wheny message type is <i>new</i>, <i>match</i>, <i>filled/i> or <i>canceled</i>", "sampleValue":"0"},
+								{"name":"price", "type": "BIGDECIMAL", "description":"", "sampleValue":"0.937"},
+								{"name":"matchPrice", "type": "BIGDECIMAL", "description":"Provided only wheny message type is <i>match</i>", "sampleValue":"0.96738"},
+								{"name":"matchSize", "type": "BIGDECIMAL", "description":"Provided only wheny message type is <i>match</i>", "sampleValue":"0.1"},
+								{"name":"tradeId", "type": "STRING", "description":"Provided only wheny message type is <i>match</i>", "sampleValue":"0.1"},
+								{"name":"clientOid", "type": "STRING", "description":"", "sampleValue":"1593487481000906"},
+								{"name":"remainSize", "type": "BIGDECIMAL", "description":"Provided only wheny message type is <i>new</i>, <i>match</i>, <i>filled/i> or <i>canceled</i>", "sampleValue":"0.1"},
+								{"name":"status", "type": "STRING", "description":"", "sampleValue":"new"},
+								{"name":"canceledSize", "type": "BIGDECIMAL", "description":"Cumulative number of cancellations. Provided only wheny message type is <i>new</i>, <i>match</i>, <i>filled/i> or <i>canceled</i>", "sampleValue":"0.1"},
+								{"name":"canceledFunds", "type": "BIGDECIMAL", "description":"Market order accumulative cancellation funds. Provided only wheny message type is <i>new</i>, <i>match</i>, <i>filled/i> or <i>canceled</i>", "sampleValue":"0.1"},
+								{"name":"originSize", "type": "BIGDECIMAL", "description":"original quantity. Provided only wheny message type is <i>new</i>, <i>match</i>, <i>filled/i> or <i>canceled</i>", "sampleValue":"new"},
+								{"name":"originFunds", "type": "BIGDECIMAL", "description":"The original funds of the market order. Provided only wheny message type is <i>new</i>, <i>match</i>, <i>filled/i> or <i>canceled</i>", "sampleValue":"new"},
+								{"name":"ts", "type": "TIMESTAMP", "description":"", "sampleValue":"now()"}
+							]
+						}
+					]
+				},
+				{
+					"name": "AccountBalanceNotice",
+					"topic": "/account/balance",
+					"description": "You will receive this message when an account balance changes. The message contains the details of the change.<br/>See <a href=\"https://docs.kucoin.com/#account-balance-notice\">API</a>",
+					"parameters": [],
+					"messageTopicMatcherFields": [
+						{"name": "topic",  "value": "${topic}"}
+					],
+					"response": [
+						{"name":"type", "type": "STRING", "description":"", "sampleValue":"message"},
+						{"name":"topic", "type": "STRING", "description":".", "sampleValue":"/account/balance"},
+						{"name":"subject", "type": "STRING", "description":"", "sampleValue":"account.balance"},
+						{"name":"data", "type": "STRUCT", "description":"", "parameters":
+							[
+								{"name":"total", "type": "BIGDECIMAL", "description":"Total balance", "sampleValue":"88"},
+								{"name":"available", "type": "BIGDECIMAL", "description":"Available balance", "sampleValue":"88"},
+								{"name":"availableChange", "type": "BIGDECIMAL", "description":"The change of available balance", "sampleValue":"88"},
+								{"name":"currency", "type": "STRING", "description":"Currency", "sampleValue":"KCS"},
+								{"name":"hold", "type": "BIGDECIMAL", "description":"Hold amount", "sampleValue":"0"},
+								{"name":"holdChange", "type": "BIGDECIMAL", "description":"The change of hold balance", "sampleValue":"0"},
+								{"name":"relationEvent", "type": "STRING", "description":"Relation event, see <a href=\"https://docs.kucoin.com/#account-balance-notice\">API</a>", "sampleValue":"trade.settled"},
+								{"name":"relationContext", "type": "STRUCT", "description":"The context of trade event", "parameters": [
+										{"name":"symbol", "type": "STRING", "description":"", "sampleValue":"BTC-USDT"},
+										{"name":"tradeId", "type": "STRING", "description":"", "sampleValue":"5e6a5dca9e16882a7d83b7a4"},
+										{"name":"orderId", "type": "STRING", "description":"", "sampleValue":"5ea10479415e2f0009949d54"}			
+									]
+								},
+								{"name":"time", "type": "TIMESTAMP", "description":"", "sampleValue":"now()"}
+							]
+						}
+					]
+				}
+			]
 		}
 	]
 }

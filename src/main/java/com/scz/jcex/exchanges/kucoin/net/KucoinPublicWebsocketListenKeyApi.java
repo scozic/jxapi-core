@@ -31,10 +31,10 @@ public class KucoinPublicWebsocketListenKeyApi implements KucoinWebsocketListenK
 	@Override
 	public KucoinWebsocketTokenInfo requestToken() throws IOException {
 		if (log.isDebugEnabled())
-			log.debug("GET ApplyConnectTokenPublic > " + APPLY_TOKEN_REQUEST);
+			log.debug("POST ApplyConnectTokenPublic > " + APPLY_TOKEN_REQUEST);
 		KucoinApplyConnectTokenPublicResponse response = applyConnectTokenPublicApi.call(RestRequest.create("https://api.kucoin.com/api/v1/bullet-public", "POST", APPLY_TOKEN_REQUEST));
 		if (log.isDebugEnabled())
-			log.debug("GET ApplyConnectTokenPublic < " + response);
+			log.debug("POST ApplyConnectTokenPublic < " + response);
 		KucoinWebsocketTokenInfo info = new KucoinWebsocketTokenInfo();
 		KucoinApplyConnectTokenPublicResponseData data = response.getData();
 		info.setToken(data.getToken());

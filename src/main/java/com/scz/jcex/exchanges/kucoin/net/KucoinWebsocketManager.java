@@ -5,10 +5,21 @@ import java.net.URI;
 import java.net.URISyntaxException;
 
 import org.apache.commons.lang3.RandomUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import com.scz.jcex.netutils.websocket.DefaultWebsocketMessageTopicMatcher;
+import com.scz.jcex.netutils.websocket.WebsocketMessageTopicMatcher;
 import com.scz.jcex.netutils.websocket.spring.SpringWebsocketManager;
 
 public class KucoinWebsocketManager extends SpringWebsocketManager {
+	
+	private static final Logger log = LoggerFactory.getLogger(KucoinWebsocketManager.class);
+	
+
+	private static final String HEARTBEAT_REQUEST_TEMPLATE = "{\"id\":\"%d\", \"type\":\"ping\"}";
+	private static final String SUBSCRIBE_REQUEST_TEMPLATE = "{\"id\": %d, \"type\": \"subscribe\", \"topic\": \"%s\", \"privateChannel\": false, \"response\": false}";
+	private static final String UNSUBSCRIBE_REQUEST_TEMPLATE = "{\"id\": %d, \"type\": \"unsubscribe\", \"topic\": \"%s\", \"privateChannel\": false, \"response\": false}";
 	
 	private int requestIdCounter = RandomUtils.nextInt();
 	private final KucoinWebsocketListenKeyApi listenKeyApi;
@@ -20,11 +31,14 @@ public class KucoinWebsocketManager extends SpringWebsocketManager {
 	public KucoinWebsocketManager(String baseUrl, KucoinWebsocketListenKeyApi listenKeyApi) {
 		super(baseUrl);
 		this.listenKeyApi = listenKeyApi;
+		this.addSystemMessageHandler("ping", DefaultWebsocketMessageTopicMatcher.create("type", "pong"), m -> handlePongMessage(m));
 	}
 
-	private static final String HEARTBEAT_REQUEST_TEMPLATE = "{id\":\"%d\", \"type\":\"ping\"}";
-	private static final String SUBSCRIBE_REQUEST_TEMPLATE = "{\"id\": %d, \"type\": \"subscribe\", \"topic\": \"%s\", \"privateChannel\": false, \"response\": false}";
-	private static final String UNSUBSCRIBE_REQUEST_TEMPLATE = "{\"id\": %d, \"type\": \"unsubscribe\", \"topic\": \"%s\", \"privateChannel\": false, \"response\": false}";
+	private void handlePongMessage(String m) {
+		if (log.isDebugEnabled())
+			log.debug("Received 'pong' message:" + m);
+		this.lastHeartBeatTime.set(System.currentTimeMillis());
+	}
 	
 	private int connectionIdCounter = 1;
 	private int connectionId = 1;
