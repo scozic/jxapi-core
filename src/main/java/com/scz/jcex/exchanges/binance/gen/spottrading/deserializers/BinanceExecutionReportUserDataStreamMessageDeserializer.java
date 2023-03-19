@@ -6,7 +6,7 @@ import com.scz.jcex.exchanges.binance.gen.spottrading.pojo.BinanceExecutionRepor
 import com.scz.jcex.netutils.deserialization.json.AbstractJsonMessageDeserializer;
 import com.scz.jcex.netutils.serialization.json.JsonParserUtil;
 import java.io.IOException;
-import java.math.BigDecimal;
+import static com.scz.jcex.util.EncodingUtil.toBigDecimal;
 
 /**
  * Parses incoming JSON messages into com.scz.jcex.exchanges.binance.gen.spottrading.pojo.BinanceExecutionReportUserDataStreamMessage instances
@@ -42,19 +42,19 @@ public class BinanceExecutionReportUserDataStreamMessageDeserializer extends Abs
         msg.setTimeInForce(parser.nextTextValue());
       break;
       case "q":
-        msg.setOrderQuantity(new BigDecimal(parser.nextTextValue()));
+        msg.setOrderQuantity(toBigDecimal(parser.nextTextValue()));
       break;
       case "p":
-        msg.setOrderPrice(new BigDecimal(parser.nextTextValue()));
+        msg.setOrderPrice(toBigDecimal(parser.nextTextValue()));
       break;
       case "P":
-        msg.setStopPrice(new BigDecimal(parser.nextTextValue()));
+        msg.setStopPrice(toBigDecimal(parser.nextTextValue()));
       break;
       case "d":
         msg.setTrailingDelta(parser.nextIntValue(0));
       break;
       case "F":
-        msg.setIcebergQuantity(new BigDecimal(parser.nextTextValue()));
+        msg.setIcebergQuantity(toBigDecimal(parser.nextTextValue()));
       break;
       case "g":
         msg.setOrderListId(parser.nextIntValue(0));
@@ -75,13 +75,13 @@ public class BinanceExecutionReportUserDataStreamMessageDeserializer extends Abs
         msg.setOrderID(parser.nextTextValue());
       break;
       case "l":
-        msg.setLastExecQty(new BigDecimal(parser.nextTextValue()));
+        msg.setLastExecQty(toBigDecimal(parser.nextTextValue()));
       break;
       case "z":
-        msg.setCumQty(new BigDecimal(parser.nextTextValue()));
+        msg.setCumQty(toBigDecimal(parser.nextTextValue()));
       break;
       case "L":
-        msg.setLastExecPrice(new BigDecimal(parser.nextTextValue()));
+        msg.setLastExecPrice(toBigDecimal(parser.nextTextValue()));
       break;
       case "n":
         msg.setCommissionAmount(parser.nextIntValue(0));
@@ -114,13 +114,13 @@ public class BinanceExecutionReportUserDataStreamMessageDeserializer extends Abs
         msg.setOrderCreationTime(parser.nextLongValue(0L));
       break;
       case "Z":
-        msg.setCumQuoteQty(new BigDecimal(parser.nextTextValue()));
+        msg.setCumQuoteQty(toBigDecimal(parser.nextTextValue()));
       break;
       case "Y":
-        msg.setLastQuoteQty(new BigDecimal(parser.nextTextValue()));
+        msg.setLastQuoteQty(toBigDecimal(parser.nextTextValue()));
       break;
       case "Q":
-        msg.setQuoteQty(new BigDecimal(parser.nextTextValue()));
+        msg.setQuoteQty(toBigDecimal(parser.nextTextValue()));
       break;
       case "D":
         msg.setTrailingTime(parser.nextLongValue(0L));
@@ -144,10 +144,10 @@ public class BinanceExecutionReportUserDataStreamMessageDeserializer extends Abs
         msg.setCounterOrderId(parser.nextLongValue(0));
       break;
       case "A":
-        msg.setPreventedQty(new BigDecimal(parser.nextTextValue()));
+        msg.setPreventedQty(toBigDecimal(parser.nextTextValue()));
       break;
       case "B":
-        msg.setLastPreventedQty(new BigDecimal(parser.nextTextValue()));
+        msg.setLastPreventedQty(toBigDecimal(parser.nextTextValue()));
       break;
       default:
         JsonParserUtil.skipNextValue(parser);

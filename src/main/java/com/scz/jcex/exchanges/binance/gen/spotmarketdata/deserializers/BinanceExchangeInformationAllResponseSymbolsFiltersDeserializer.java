@@ -6,7 +6,7 @@ import com.scz.jcex.exchanges.binance.gen.spotmarketdata.pojo.BinanceExchangeInf
 import com.scz.jcex.netutils.deserialization.json.AbstractJsonMessageDeserializer;
 import com.scz.jcex.netutils.serialization.json.JsonParserUtil;
 import java.io.IOException;
-import java.math.BigDecimal;
+import static com.scz.jcex.util.EncodingUtil.toBigDecimal;
 
 /**
  * Parses incoming JSON messages into com.scz.jcex.exchanges.binance.gen.spotmarketdata.pojo.BinanceExchangeInformationAllResponseSymbolsFilters instances
@@ -24,13 +24,13 @@ public class BinanceExchangeInformationAllResponseSymbolsFiltersDeserializer ext
         msg.setFilterType(parser.nextTextValue());
       break;
       case "minPrice":
-        msg.setMinPrice(new BigDecimal(parser.nextTextValue()));
+        msg.setMinPrice(toBigDecimal(parser.nextTextValue()));
       break;
       case "maxPrice":
-        msg.setMaxPrice(new BigDecimal(parser.nextTextValue()));
+        msg.setMaxPrice(toBigDecimal(parser.nextTextValue()));
       break;
       case "tickSize":
-        msg.setTickSize(new BigDecimal(parser.nextTextValue()));
+        msg.setTickSize(toBigDecimal(parser.nextTextValue()));
       break;
       default:
         JsonParserUtil.skipNextValue(parser);

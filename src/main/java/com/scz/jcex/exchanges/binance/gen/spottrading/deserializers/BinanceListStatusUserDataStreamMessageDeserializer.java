@@ -6,7 +6,7 @@ import com.scz.jcex.exchanges.binance.gen.spottrading.pojo.BinanceListStatusUser
 import com.scz.jcex.netutils.deserialization.json.AbstractJsonMessageDeserializer;
 import com.scz.jcex.netutils.serialization.json.JsonParserUtil;
 import java.io.IOException;
-import java.math.BigDecimal;
+import static com.scz.jcex.util.EncodingUtil.toBigDecimal;
 
 /**
  * Parses incoming JSON messages into com.scz.jcex.exchanges.binance.gen.spottrading.pojo.BinanceListStatusUserDataStreamMessage instances
@@ -30,7 +30,7 @@ public class BinanceListStatusUserDataStreamMessageDeserializer extends Abstract
         msg.setAsset(parser.nextTextValue());
       break;
       case "d":
-        msg.setBalanceDelta(new BigDecimal(parser.nextTextValue()));
+        msg.setBalanceDelta(toBigDecimal(parser.nextTextValue()));
       break;
       case "T":
         msg.setClearTime(parser.nextLongValue(0L));

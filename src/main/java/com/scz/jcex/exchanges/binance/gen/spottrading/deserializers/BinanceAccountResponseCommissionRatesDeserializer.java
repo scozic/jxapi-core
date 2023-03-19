@@ -6,7 +6,7 @@ import com.scz.jcex.exchanges.binance.gen.spottrading.pojo.BinanceAccountRespons
 import com.scz.jcex.netutils.deserialization.json.AbstractJsonMessageDeserializer;
 import com.scz.jcex.netutils.serialization.json.JsonParserUtil;
 import java.io.IOException;
-import java.math.BigDecimal;
+import static com.scz.jcex.util.EncodingUtil.toBigDecimal;
 
 /**
  * Parses incoming JSON messages into com.scz.jcex.exchanges.binance.gen.spottrading.pojo.BinanceAccountResponseCommissionRates instances
@@ -21,16 +21,16 @@ public class BinanceAccountResponseCommissionRatesDeserializer extends AbstractJ
     while(parser.nextToken() != JsonToken.END_OBJECT) {
       switch(parser.getCurrentName()) {
       case "maker":
-        msg.setMaker(new BigDecimal(parser.nextTextValue()));
+        msg.setMaker(toBigDecimal(parser.nextTextValue()));
       break;
       case "taker":
-        msg.setTaker(new BigDecimal(parser.nextTextValue()));
+        msg.setTaker(toBigDecimal(parser.nextTextValue()));
       break;
       case "buyer":
-        msg.setBuyer(new BigDecimal(parser.nextTextValue()));
+        msg.setBuyer(toBigDecimal(parser.nextTextValue()));
       break;
       case "seller":
-        msg.setSeller(new BigDecimal(parser.nextTextValue()));
+        msg.setSeller(toBigDecimal(parser.nextTextValue()));
       break;
       default:
         JsonParserUtil.skipNextValue(parser);

@@ -6,7 +6,7 @@ import com.scz.jcex.exchanges.binance.gen.spotmarketdata.pojo.BinanceIndividualS
 import com.scz.jcex.netutils.deserialization.json.AbstractJsonMessageDeserializer;
 import com.scz.jcex.netutils.serialization.json.JsonParserUtil;
 import java.io.IOException;
-import java.math.BigDecimal;
+import static com.scz.jcex.util.EncodingUtil.toBigDecimal;
 
 /**
  * Parses incoming JSON messages into com.scz.jcex.exchanges.binance.gen.spotmarketdata.pojo.BinanceIndividualSymbolTickerStreamsMessage instances
@@ -30,31 +30,31 @@ public class BinanceIndividualSymbolTickerStreamsMessageDeserializer extends Abs
         msg.setSymbol(parser.nextTextValue());
       break;
       case "p":
-        msg.setPriceChange(new BigDecimal(parser.nextTextValue()));
+        msg.setPriceChange(toBigDecimal(parser.nextTextValue()));
       break;
       case "P":
-        msg.setPriceChangePercent(new BigDecimal(parser.nextTextValue()));
+        msg.setPriceChangePercent(toBigDecimal(parser.nextTextValue()));
       break;
       case "o":
-        msg.setOpenPrice(new BigDecimal(parser.nextTextValue()));
+        msg.setOpenPrice(toBigDecimal(parser.nextTextValue()));
       break;
       case "h":
-        msg.setHighPrice(new BigDecimal(parser.nextTextValue()));
+        msg.setHighPrice(toBigDecimal(parser.nextTextValue()));
       break;
       case "l":
-        msg.setLowPrice(new BigDecimal(parser.nextTextValue()));
+        msg.setLowPrice(toBigDecimal(parser.nextTextValue()));
       break;
       case "c":
-        msg.setLastPrice(new BigDecimal(parser.nextTextValue()));
+        msg.setLastPrice(toBigDecimal(parser.nextTextValue()));
       break;
       case "w":
-        msg.setWeightedAvgPrice(new BigDecimal(parser.nextTextValue()));
+        msg.setWeightedAvgPrice(toBigDecimal(parser.nextTextValue()));
       break;
       case "v":
-        msg.setBaseAssetVolume(new BigDecimal(parser.nextTextValue()));
+        msg.setBaseAssetVolume(toBigDecimal(parser.nextTextValue()));
       break;
       case "q":
-        msg.setQuoteAssetVolume(new BigDecimal(parser.nextTextValue()));
+        msg.setQuoteAssetVolume(toBigDecimal(parser.nextTextValue()));
       break;
       case "O":
         msg.setOpenTime(parser.nextLongValue(0L));
