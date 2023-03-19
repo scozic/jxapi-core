@@ -106,6 +106,12 @@ public class EncodingUtil {
 		return Optional.ofNullable(bd).orElse(BigDecimal.ZERO).toPlainString();
 	}
 	
+	public static BigDecimal toBigDecimal(String s) {
+		if (s == null)
+			return null;
+		return new BigDecimal(s);
+	}
+	
 	public static List<String> splitJsonArrayStr(String jsonArrayStr) {
 		if (jsonArrayStr == null || jsonArrayStr.isEmpty()) {
 			return List.of();

@@ -1,6 +1,11 @@
 package com.scz.jcex.exchanges.kucoin.net;
 
+import java.io.IOException;
+
+/**
+ * Interface for API to retrieve token for applying websocket connection. See <a href="https://docs.kucoin.com/#apply-connect-token">Kucoin API</a>.
+ */
 public interface KucoinWebsocketListenKeyApi {
 
-//	void 
+	KucoinWebsocketTokenInfo requestToken() throws IOException;
 }

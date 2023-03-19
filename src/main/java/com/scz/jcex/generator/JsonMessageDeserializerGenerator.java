@@ -1,7 +1,6 @@
 package com.scz.jcex.generator;
 
 import java.io.IOException;
-import java.math.BigDecimal;
 import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
@@ -14,6 +13,7 @@ import com.scz.jcex.generator.exchange.EndpointParameterType;
 import com.scz.jcex.netutils.deserialization.json.field.StringListFieldDeserializer;
 import com.scz.jcex.netutils.deserialization.json.field.StructListFieldDeserializer;
 import com.scz.jcex.netutils.serialization.json.JsonParserUtil;
+import com.scz.jcex.util.EncodingUtil;
 
 public class JsonMessageDeserializerGenerator extends JavaTypeGenerator {
 	
@@ -107,8 +107,8 @@ public class JsonMessageDeserializerGenerator extends JavaTypeGenerator {
 	private String getParseFieldInstruction(EndpointParameter field) {
 		switch (field.getType()) {
 		case BIGDECIMAL:
-			addImport(BigDecimal.class.getName());
-			return "new BigDecimal(parser.nextTextValue())";
+			addImport("static " + EncodingUtil.class.getName() + ".toBigDecimal");
+			return "toBigDecimal(parser.nextTextValue())";
 		case BOOLEAN:
 			return "parser.nextBooleanValue()";
 		case INT:

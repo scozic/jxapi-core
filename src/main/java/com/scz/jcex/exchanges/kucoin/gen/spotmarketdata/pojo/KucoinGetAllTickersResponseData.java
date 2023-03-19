@@ -1,0 +1,48 @@
+package com.scz.jcex.exchanges.kucoin.gen.spotmarketdata.pojo;
+
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.scz.jcex.exchanges.kucoin.gen.spotmarketdata.serializers.KucoinGetAllTickersResponseDataSerializer;
+import com.scz.jcex.util.EncodingUtil;
+import java.util.List;
+
+/**
+ * List of market information for each market symbol
+ */
+@JsonSerialize(using = KucoinGetAllTickersResponseDataSerializer.class)
+public class KucoinGetAllTickersResponseData {
+  private List<KucoinGetAllTickersResponseDataTicker> ticker;
+  private long time;
+  
+  /**
+   * @return List of market information for each market symbol
+   */
+  public List<KucoinGetAllTickersResponseDataTicker> getTicker(){
+    return ticker;
+  }
+  
+  /**
+   * @param ticker List of market information for each market symbol
+   */
+  public void setTicker(List<KucoinGetAllTickersResponseDataTicker> ticker) {
+    this.ticker = ticker;
+  }
+  
+  /**
+   * @return Timestamp
+   */
+  public long getTime(){
+    return time;
+  }
+  
+  /**
+   * @param time Timestamp
+   */
+  public void setTime(long time) {
+    this.time = time;
+  }
+  
+  @Override
+  public String toString() {
+    return EncodingUtil.pojoToString(this);
+  }
+}

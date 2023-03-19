@@ -78,9 +78,10 @@ public abstract class SpringWebsocketManager extends AbstractWebsocketManager {
 		StandardWebSocketClient client = new StandardWebSocketClient(clientManager);
 		client.setTaskExecutor(taskExecutor);
 		lastHeartBeatTime.set(System.currentTimeMillis());
-		log.debug("Performing handshake");
+		URI uri = getHandShakeURI();
+		log.debug("Connecting websocket, URI:" + uri);
 		CountDownLatch websocketSessionAvailable = new CountDownLatch(1);
-		ListenableFuture<WebSocketSession> futureSession = client.doHandshake(new SpringWebsocketHandler(this.taskExecutor), new WebSocketHttpHeaders(), getHandShakeURI());
+		ListenableFuture<WebSocketSession> futureSession = client.doHandshake(new SpringWebsocketHandler(this.taskExecutor), new WebSocketHttpHeaders(), uri);
 		futureSession.addCallback(new WebsocketSessionCallback(websocketSessionAvailable));
 		try {
 			websocketSessionAvailable.await();
