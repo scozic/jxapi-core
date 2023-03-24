@@ -10,7 +10,7 @@ public class KucoinPrivateApiRestEndpointFactory implements RestEndpointFactory 
 	
 	public static final String API_KEY_PROPERTY = "apiKey";
 	public static final String API_SECRET_PROPERTY = "apiSecret";
-	public static final String API_PASSPHRASE_PROPERTY = "apiSecret";
+	public static final String API_PASSPHRASE_PROPERTY = "apiPassphrase";
 	private Properties properties;
 	
 	public void setProperties(Properties properties) {

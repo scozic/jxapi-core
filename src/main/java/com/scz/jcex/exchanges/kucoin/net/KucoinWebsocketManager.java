@@ -9,7 +9,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.scz.jcex.netutils.websocket.DefaultWebsocketMessageTopicMatcher;
-import com.scz.jcex.netutils.websocket.WebsocketMessageTopicMatcher;
 import com.scz.jcex.netutils.websocket.spring.SpringWebsocketManager;
 
 public class KucoinWebsocketManager extends SpringWebsocketManager {

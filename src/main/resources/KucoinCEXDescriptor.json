@@ -221,6 +221,30 @@
 							]
 						}
 					]
+				},
+				{
+					"name": "ListAccounts",
+					"httpMethod": "GET",
+					"description": "Get a list of accounts. Please deposit funds to the main account firstly, then transfer the funds to the trade account via Inner Transfer before transaction..<br/>See <a href=\"https://docs.kucoin.com/#list-accounts\">API</a>",
+					"url": "https://api.kucoin.com/api/v1/accounts",
+					"urlParameters": "type=${type}",
+					"parameters": [
+						{"name":"type", "type": "STRING", "description":"Account type: <strong>main</strong>, <strong>trade</strong>, <strong>margin</strong>", "sampleValue":"trade"}
+					],
+					"response": [
+						{"name":"code", "type": "STRING", "description": "System error code, see <a href=\"https://docs.kucoin.com/#request\">API</a>", "sampleValue": "0"},
+						{"name":"msg", "type": "STRING", "description": "System error code description, provided in error response when code is not '0', see <a href=\"https://docs.kucoin.com/#request\">API</a>", "sampleValue": "0"},
+						{"name":"data", "type": "STRUCT_LIST", "description": "Response payload", "parameters":
+							[
+								{"name":"id", "type": "STRING", "description":"The ID of the account", "sampleValue":"5bd6e9286d99522a52e458de"},
+								{"name":"currency", "type": "STRING", "description":"Currency", "sampleValue":"BTC"},
+								{"name":"type", "type": "STRING", "description":"Account type: <strong>main</strong>, <strong>trade</strong>, <strong>margin</strong>", "sampleValue":"trade"},
+								{"name":"balance", "type": "BIGDECIMAL", "description":"Total funds in the account", "sampleValue":"237582.04299"},
+								{"name":"available", "type": "BIGDECIMAL", "description":"Funds available to withdraw or trade", "sampleValue":"237582.032"},
+								{"name":"holds", "type": "BIGDECIMAL", "description":"Funds on hold (not available for use)", "sampleValue":"0.01099"}		
+							]
+						}
+					]
 				}
 				
 			],

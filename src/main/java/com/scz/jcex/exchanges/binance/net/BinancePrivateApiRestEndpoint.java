@@ -44,7 +44,7 @@ public class BinancePrivateApiRestEndpoint<R, A> extends JavaxNetRestEndpoint<R,
 				if (!urlParams.isEmpty()) {
 					url += "&";
 				}
-				url += "signature=" + HmacSHA256Signer.sign(urlParams, apiSecret);
+				url += "signature=" + HmacSHA256Signer.hexSign(urlParams, apiSecret);
 			}
 			
 			return new URL(url);

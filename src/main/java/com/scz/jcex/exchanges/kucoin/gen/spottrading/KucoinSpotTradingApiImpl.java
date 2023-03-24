@@ -2,11 +2,14 @@ package com.scz.jcex.exchanges.kucoin.gen.spottrading;
 
 import com.scz.jcex.exchanges.kucoin.gen.spottrading.deserializers.KucoinAccountBalanceNoticeMessageDeserializer;
 import com.scz.jcex.exchanges.kucoin.gen.spottrading.deserializers.KucoinApplyConnectTokenPrivateResponseDeserializer;
+import com.scz.jcex.exchanges.kucoin.gen.spottrading.deserializers.KucoinListAccountsResponseDeserializer;
 import com.scz.jcex.exchanges.kucoin.gen.spottrading.deserializers.KucoinPrivateOrderChangeV2MessageDeserializer;
 import com.scz.jcex.exchanges.kucoin.gen.spottrading.pojo.KucoinAccountBalanceNoticeMessage;
 import com.scz.jcex.exchanges.kucoin.gen.spottrading.pojo.KucoinAccountBalanceNoticeRequest;
 import com.scz.jcex.exchanges.kucoin.gen.spottrading.pojo.KucoinApplyConnectTokenPrivateRequest;
 import com.scz.jcex.exchanges.kucoin.gen.spottrading.pojo.KucoinApplyConnectTokenPrivateResponse;
+import com.scz.jcex.exchanges.kucoin.gen.spottrading.pojo.KucoinListAccountsRequest;
+import com.scz.jcex.exchanges.kucoin.gen.spottrading.pojo.KucoinListAccountsResponse;
 import com.scz.jcex.exchanges.kucoin.gen.spottrading.pojo.KucoinPrivateOrderChangeV2Message;
 import com.scz.jcex.exchanges.kucoin.gen.spottrading.pojo.KucoinPrivateOrderChangeV2Request;
 import com.scz.jcex.exchanges.kucoin.net.KucoinPrivateApiRestEndpointFactory;
@@ -44,6 +47,18 @@ public class  KucoinSpotTradingApiImpl implements KucoinSpotTradingApi {
     KucoinApplyConnectTokenPrivateResponse response = applyConnectTokenPrivateApi.call(RestRequest.create("https://api.kucoin.com/api/v1/bullet-public", "POST", request));
     if (log.isDebugEnabled())
       log.debug("POST ApplyConnectTokenPrivate < " + response);
+    return response;
+  }
+  
+  private final RestEndpoint<KucoinListAccountsRequest, KucoinListAccountsResponse> listAccountsApi;
+  
+  @Override
+  public KucoinListAccountsResponse listAccounts(KucoinListAccountsRequest request) throws IOException {
+    if (log.isDebugEnabled())
+      log.debug("GET ListAccounts > " + request);
+    KucoinListAccountsResponse response = listAccountsApi.call(RestRequest.create("https://openapi-v2.kucoin.com/api/v1/accounts", "GET", request));
+    if (log.isDebugEnabled())
+      log.debug("GET ListAccounts < " + response);
     return response;
   }
   
@@ -90,6 +105,7 @@ public class  KucoinSpotTradingApiImpl implements KucoinSpotTradingApi {
     this.restEndpointFactory.setProperties(properties);
     this.websocketEndpointFactory.setProperties(properties);
     this.applyConnectTokenPrivateApi = restEndpointFactory.createRestEndpoint(new KucoinApplyConnectTokenPrivateResponseDeserializer());
+    this.listAccountsApi = restEndpointFactory.createRestEndpoint(new KucoinListAccountsResponseDeserializer());
     this.privateOrderChangeV2Ws = websocketEndpointFactory.createWebsocketEndpoint(new KucoinPrivateOrderChangeV2MessageDeserializer());
     this.accountBalanceNoticeWs = websocketEndpointFactory.createWebsocketEndpoint(new KucoinAccountBalanceNoticeMessageDeserializer());
   }

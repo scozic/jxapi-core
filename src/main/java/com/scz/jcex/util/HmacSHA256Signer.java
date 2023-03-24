@@ -2,28 +2,52 @@ package com.scz.jcex.util;
 
 import org.apache.commons.codec.binary.Hex;
 
+import java.util.Base64;
+
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 
 /**
- * Utility class to sign messages using HMAC-SHA256.
+ * Helper methods around HMAC-SHA256 encryption
  */
 public class HmacSHA256Signer {
 
   /**
+   * Encrypt given message with HMAC using the given secret and returns Hexadecimal encoded value of the result.
+   * @param message message to sign
+   * @param secret secret key
+   * @return MAC operation result as hex string
+   */
+  public static String hexSign(String message, String secret) {
+	  return new String(Hex.encodeHex(sign(message, secret)));
+  }
+  
+  /**
    * Sign the given message using the given secret.
    * @param message message to sign
    * @param secret secret key
-   * @return a signed message
+   * @return MAC result of HmacSHA256
    */
-  public static String sign(String message, String secret) {
+  public static byte[] sign(String message, String secret) {
     try {
       Mac sha256_HMAC = Mac.getInstance("HmacSHA256");
       SecretKeySpec secretKeySpec = new SecretKeySpec(secret.getBytes(), "HmacSHA256");
       sha256_HMAC.init(secretKeySpec);
-      return new String(Hex.encodeHex(sha256_HMAC.doFinal(message.getBytes())));
+      return sha256_HMAC.doFinal(message.getBytes());
     } catch (Exception e) {
       throw new RuntimeException("Unable to sign message.", e);
     }
   }
+  
+  /**
+   * Encrypt given message with HMAC using the given secret and returns base64 encoded value of the result.
+   * @param message message to sign
+   * @param secret secret key
+   * @return MAC operation result as base64 string 
+   */
+  public static String base64Sign(String message, String secret) {
+	  return Base64.getEncoder().encodeToString(sign(message, secret));
+  }
+  
+  
 }
