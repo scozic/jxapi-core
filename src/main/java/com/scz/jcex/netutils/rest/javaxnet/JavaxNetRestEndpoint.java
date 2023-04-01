@@ -20,9 +20,9 @@ import com.scz.jcex.netutils.rest.RestRequest;
 public class JavaxNetRestEndpoint<R, A> implements RestEndpoint<R, A> {
 	
 	private static final Logger log = LoggerFactory.getLogger(JavaxNetRestEndpoint.class);
-	
-	private final char[] buf = new char[2048];
-	private final StringBuilder sb = new StringBuilder(8192);
+	private static final int BUFFER_SIZE = 1024 * 512;
+	private final char[] buf = new char[BUFFER_SIZE];
+	private final StringBuilder sb = new StringBuilder(BUFFER_SIZE);
 	protected final MessageDeserializer<A> messageDeserializer;
 	
 	public JavaxNetRestEndpoint(MessageDeserializer<A> deserializer) {

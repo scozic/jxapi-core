@@ -1,8 +1,6 @@
 package com.scz.jcex.exchanges.kucoin.net;
 
 
-import javax.net.ssl.HttpsURLConnection;
-
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.codec.digest.HmacAlgorithms;
 import org.apache.commons.codec.digest.HmacUtils;
@@ -10,27 +8,30 @@ import org.apache.commons.codec.digest.HmacUtils;
 import com.scz.jcex.netutils.deserialization.MessageDeserializer;
 import com.scz.jcex.netutils.rest.RestEndpointUrlParameters;
 import com.scz.jcex.netutils.rest.RestRequest;
-import com.scz.jcex.netutils.rest.javaxnet.JavaxNetRestEndpoint;
+import com.scz.jcex.netutils.rest.okhttp.OkHttpRestEndpoint;
 
-public class KucoinPrivateApiRestEndpoint<R, A> extends JavaxNetRestEndpoint<R, A> {
+import okhttp3.OkHttpClient;
+import okhttp3.Request.Builder;
+
+public class KucoinOkHttpPrivateApiRestEndpoint<R, A> extends OkHttpRestEndpoint<R, A> {
 	
 	private String apiKey;
 	private String apiPassphrase;
 	private HmacUtils hmacUtils;
 
-	public KucoinPrivateApiRestEndpoint(MessageDeserializer<A> deserializer) {
-		super(deserializer);
+	public KucoinOkHttpPrivateApiRestEndpoint(OkHttpClient okHttpClient, MessageDeserializer<A> deserializer) {
+		super(okHttpClient, deserializer);
 	}
 	
 	@Override
-	protected void setHeadersForRequest(RestRequest<R> request, HttpsURLConnection connection, String body) {
+	protected void setHeadersForRequest(RestRequest<R> request, Builder builder, String body) {
 		if (apiKey == null) {
 			throw new IllegalStateException("Missing apiKey");
 		}
-		connection.setRequestProperty("KC-API-KEY", apiKey);
+		builder.addHeader("KC-API-KEY", apiKey);
 		long timestamp = System.currentTimeMillis();
 		String timestampStr = "" + timestamp;
-		connection.setRequestProperty("KC-API-TIMESTAMP", timestampStr);
+		builder.addHeader("KC-API-TIMESTAMP", "" + timestampStr);
 		String requestPath = request.getUrl();
 		int requestPathOff = requestPath.indexOf("/api/");
 		if (requestPathOff < 0)
@@ -43,11 +44,11 @@ public class KucoinPrivateApiRestEndpoint<R, A> extends JavaxNetRestEndpoint<R, 
 		String strToSign = timestampStr + request.getHttpMethod().toUpperCase() + requestPath + (body != null? body: "");
 		String signature = digest(strToSign);
 		
-//		System.out.println(getClass().getName() + " Api passPhrase:" + apiPassphrase + ", encrypted:" + digest(apiPassphrase) + " signature:" + signature + " strToSign:" + strToSign);
-		connection.setRequestProperty("KC-API-SIGN", signature);
-		connection.setRequestProperty("KC-API-PASSPHRASE", digest(apiPassphrase));
-		connection.setRequestProperty("KC-API-KEY-VERSION", "2");
-		connection.setRequestProperty("User-Agent", "KuCoin-Java-SDK:2");
+//		System.out.println("Api passPhrase:" + apiPassphrase + ", encrypted:" + digest(apiPassphrase) + " signature:" + signature + " strToSign:" + strToSign);
+		builder.addHeader("KC-API-SIGN", signature);
+		builder.addHeader("KC-API-PASSPHRASE", digest(apiPassphrase));
+		builder.addHeader("KC-API-KEY-VERSION", "2");
+		builder.addHeader("User-Agent", "KuCoin-Java-SDK:2");
 	}
 	
 	private String digest(String toDigest) {
@@ -66,8 +67,8 @@ public class KucoinPrivateApiRestEndpoint<R, A> extends JavaxNetRestEndpoint<R, 
 		} else {
 			this.hmacUtils = null;
 		}
-		
 	}
+		
 	
 	public void setApiPassphrase(String apiPassPhrase) {
 		this.apiPassphrase = apiPassPhrase;

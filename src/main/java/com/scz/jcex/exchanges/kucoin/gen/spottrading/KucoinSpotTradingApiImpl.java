@@ -56,7 +56,7 @@ public class  KucoinSpotTradingApiImpl implements KucoinSpotTradingApi {
   public KucoinListAccountsResponse listAccounts(KucoinListAccountsRequest request) throws IOException {
     if (log.isDebugEnabled())
       log.debug("GET ListAccounts > " + request);
-    KucoinListAccountsResponse response = listAccountsApi.call(RestRequest.create("https://openapi-v2.kucoin.com/api/v1/accounts", "GET", request));
+    KucoinListAccountsResponse response = listAccountsApi.call(RestRequest.create("https://api.kucoin.com/api/v1/accounts", "GET", request));
     if (log.isDebugEnabled())
       log.debug("GET ListAccounts < " + response);
     return response;

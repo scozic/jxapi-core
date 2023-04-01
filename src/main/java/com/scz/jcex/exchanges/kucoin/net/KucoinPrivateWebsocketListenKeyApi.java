@@ -20,7 +20,7 @@ public class KucoinPrivateWebsocketListenKeyApi implements KucoinWebsocketListen
 	
 	private static final KucoinApplyConnectTokenPrivateRequest APPLY_TOKEN_REQUEST = new KucoinApplyConnectTokenPrivateRequest();
 	
-	private final KucoinPrivateApiRestEndpointFactory restEndpointFactory = new KucoinPrivateApiRestEndpointFactory();
+	private final KucoinOkHttpPrivateApiRestEndpointFactory restEndpointFactory = new KucoinOkHttpPrivateApiRestEndpointFactory();
 	private final RestEndpoint<KucoinApplyConnectTokenPrivateRequest, KucoinApplyConnectTokenPrivateResponse> applyConnectTokenPrivateApi;
 	
 	public KucoinPrivateWebsocketListenKeyApi(Properties properties) {
