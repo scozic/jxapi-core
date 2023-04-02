@@ -245,8 +245,35 @@
 							]
 						}
 					]
+				},
+				{
+					"name": "PlaceNewOrder",
+					"httpMethod": "POST",
+					"description": "You can place two types of orders: limit and market. Orders can only be placed if your account has sufficient funds. Once an order is placed, your account funds will be put on hold for the duration of the order. How much and which funds are put on hold depends on the order type and parameters specified. See the Holds details below.<br/><strong>Placing an order will enable price protection. When the price of the limit order is outside the threshold range, the price protection mechanism will be triggered, causing the order to fail.</strong><br/>Please note that the system will frozen the fees from the orders that entered the order book in advance. Read List Fills to learn more.<br/>Before placing an order, please read <a href=\"https://docs.kucoin.com/#get-symbols-list\">Get Symbol List</a> to understand the requirements for the quantity parameters for each trading pair..<br/>See <a href=\"https://docs.kucoin.com/#place-a-new-order\">API</a><br/>",
+					"url": "https://api.binance.com/api/v1/orders",
+					"urlParameters": "",
+					"parameters": [
+						{"name":"clientOid", "type": "STRING", "description":"Unique order id created by users to identify their orders, e.g. UUID, with a maximum length of 128 bits.", "sampleValue": "testKCOrderID"},
+						{"name":"side", "type": "STRING", "description":"<strong>buy</strong> or <strong>sell</strong>", "sampleValue": "buy"},
+						{"name":"symbol", "type": "STRING", "description":"A valid trading symbol code. e.g. ETH-BTC", "sampleValue": "ETH-BTC"},
+						{"name":"type", "type": "STRING", "description":"[Optional] <strong>limit</strong> or <strong>market</strong> (default is <strong>limit</strong>", "sampleValue": "limit"},
+						{"name":"remark", "type": "STRING", "description":"[Optional] remark for the order, length cannot exceed 100 utf8 characters", "sampleValue": "Default remark"},
+						{"name":"stp", "type": "STRING", "description":"[Optional] self trade prevention , <strong>CN</strong>, <strong>CO</strong>, <strong>CB</strong> or <strong>DC</strong>", "sampleValue": "CN"},
+						{"name":"tradeType", "type": "STRING", "description":"[Optional] The type of trading : <strong>TRADE</strong> （Spot Trade）, <strong>MARGIN_TRADE</strong> (Margin Trade). Default is <strong>TRADE</strong>. <strong>Note: To improve the system performance and to accelerate order placing and processing, KuCoin has added a new interface for order placing of margin. For traders still using the current interface, please move to the new one as soon as possible. The current one will no longer accept margin orders by May 1st, 2021 (UTC). At the time, KuCoin will notify users via the announcement, please pay attention to it.</strong>", "sampleValue": "TRADE"},
+						{"name":"price", "type": "STRING", "description":"<i>LIMIT order parameter</i><br/>Price per base currency", "sampleValue": "1.234"},
+						{"name":"size", "type": "STRING", "description":"<ul><li>For LIMIT orders: price per base currency</li><li>For MARKET orders:[Optional should be provided unless <strong>funds</strong> parameter is] Desired amount in base currency", "sampleValue": "10.0"},
+						{"name":"timeInForce", "type": "STRING", "description":"<i>LIMIT order parameter</i><br/>[Optional] <strong>GTC</strong>, <strong>GTT</strong>, <strong>IOC</strong>, or <strong>FOK</strong> (default is <strong>GTC</strong>), read <a href=\"https://docs.kucoin.com/#time-in-force\">Time In Force</a>.", "sampleValue": "GTC"},
+						{"name":"cancelAfter", "type": "LONG", "description":"<i>LIMIT order parameter</i><br/>[Optional] cancel after <strong>n</strong> seconds, requires timeInForce to be <strong>GTT</strong>.", "sampleValue": "120"},
+						{"name":"postOnly", "type": "BOOLEAN", "description":"<i>LIMIT order parameter</i><br/>[Optional] Post only flag, invalid when timeInForce is <strong>IOC</strong> or <strong>FOK</strong>", "sampleValue": false},
+						{"name":"hidden", "type": "BOOLEAN", "description":"<i>LIMIT order parameter</i><br/>[Optional] Order will not be displayed in the order book", "sampleValue": false},
+						{"name":"iceberg", "type": "BOOLEAN", "description":"<i>LIMIT order parameter</i><br/>[Optional] Only a portion of the order is displayed in the order book", "sampleValue": false},
+						{"name":"visibleSize", "type": "STRING", "description":"<i>LIMIT order parameter</i><br/>[Optional] The maximum visible size of an iceberg order", "sampleValue": "100.00"},
+						{"name":"funds", "type": "STRING", "description":"<i>MARKET order parameter</i><br/>[Optional] The desired amount of quote currency to use", "sampleValue": "22.333"}
+					],
+					"response": [
+						{"name":"orderId", "type": "STRING", "description":"The ID of the order", "sampleValue": "testKCOrderID"}
+					]
 				}
-				
 			],
 			"websocketEndpointFactory": "com.scz.jcex.exchanges.kucoin.net.KucoinPrivateWebsocketEndpointFactory",
 			"websocketEndpoints": [
@@ -274,8 +301,8 @@
 								{"name":"size", "type": "BIGDECIMAL", "description":"Provided only wheny message type is <i>new</i>", "sampleValue":"0.1"},
 								{"name":"filledSize", "type": "BIGDECIMAL", "description":"Provided only wheny message type is <i>new</i>, <i>match</i>, <i>filled/i> or <i>canceled</i>", "sampleValue":"0"},
 								{"name":"price", "type": "BIGDECIMAL", "description":"", "sampleValue":"0.937"},
-								{"name":"matchPrice", "type": "BIGDECIMAL", "description":"Provided only wheny message type is <i>match</i>", "sampleValue":"0.96738"},
-								{"name":"matchSize", "type": "BIGDECIMAL", "description":"Provided only wheny message type is <i>match</i>", "sampleValue":"0.1"},
+								{"name":"matchPrice", "type": "BIGDECIMAL", "description":"Provided only when message type is <i>match</i>", "sampleValue":"0.96738"},
+								{"name":"matchSize", "type": "BIGDECIMAL", "description":"Provided only when message type is <i>match</i>", "sampleValue":"0.1"},
 								{"name":"tradeId", "type": "STRING", "description":"Provided only wheny message type is <i>match</i>", "sampleValue":"0.1"},
 								{"name":"clientOid", "type": "STRING", "description":"", "sampleValue":"1593487481000906"},
 								{"name":"remainSize", "type": "BIGDECIMAL", "description":"Provided only wheny message type is <i>new</i>, <i>match</i>, <i>filled/i> or <i>canceled</i>", "sampleValue":"0.1"},

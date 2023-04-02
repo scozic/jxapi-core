@@ -236,7 +236,6 @@
 					"response": [
 					]
 				}
-				
 			],
 			"websocketEndpointFactory": "com.scz.jcex.exchanges.binance.net.BinancePrivateSpotApiWebsocketEndpointFactory",
 			"websocketEndpoints": [

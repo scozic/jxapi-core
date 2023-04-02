@@ -3,6 +3,7 @@ package com.scz.jcex.exchanges.kucoin.gen.spottrading;
 import com.scz.jcex.exchanges.kucoin.gen.spottrading.deserializers.KucoinAccountBalanceNoticeMessageDeserializer;
 import com.scz.jcex.exchanges.kucoin.gen.spottrading.deserializers.KucoinApplyConnectTokenPrivateResponseDeserializer;
 import com.scz.jcex.exchanges.kucoin.gen.spottrading.deserializers.KucoinListAccountsResponseDeserializer;
+import com.scz.jcex.exchanges.kucoin.gen.spottrading.deserializers.KucoinPlaceNewOrderResponseDeserializer;
 import com.scz.jcex.exchanges.kucoin.gen.spottrading.deserializers.KucoinPrivateOrderChangeV2MessageDeserializer;
 import com.scz.jcex.exchanges.kucoin.gen.spottrading.pojo.KucoinAccountBalanceNoticeMessage;
 import com.scz.jcex.exchanges.kucoin.gen.spottrading.pojo.KucoinAccountBalanceNoticeRequest;
@@ -10,6 +11,8 @@ import com.scz.jcex.exchanges.kucoin.gen.spottrading.pojo.KucoinApplyConnectToke
 import com.scz.jcex.exchanges.kucoin.gen.spottrading.pojo.KucoinApplyConnectTokenPrivateResponse;
 import com.scz.jcex.exchanges.kucoin.gen.spottrading.pojo.KucoinListAccountsRequest;
 import com.scz.jcex.exchanges.kucoin.gen.spottrading.pojo.KucoinListAccountsResponse;
+import com.scz.jcex.exchanges.kucoin.gen.spottrading.pojo.KucoinPlaceNewOrderRequest;
+import com.scz.jcex.exchanges.kucoin.gen.spottrading.pojo.KucoinPlaceNewOrderResponse;
 import com.scz.jcex.exchanges.kucoin.gen.spottrading.pojo.KucoinPrivateOrderChangeV2Message;
 import com.scz.jcex.exchanges.kucoin.gen.spottrading.pojo.KucoinPrivateOrderChangeV2Request;
 import com.scz.jcex.exchanges.kucoin.net.KucoinPrivateApiRestEndpointFactory;
@@ -62,6 +65,18 @@ public class  KucoinSpotTradingApiImpl implements KucoinSpotTradingApi {
     return response;
   }
   
+  private final RestEndpoint<KucoinPlaceNewOrderRequest, KucoinPlaceNewOrderResponse> placeNewOrderApi;
+  
+  @Override
+  public KucoinPlaceNewOrderResponse placeNewOrder(KucoinPlaceNewOrderRequest request) throws IOException {
+    if (log.isDebugEnabled())
+      log.debug("POST PlaceNewOrder > " + request);
+    KucoinPlaceNewOrderResponse response = placeNewOrderApi.call(RestRequest.create("https://api.binance.com/api/v1/orders", "POST", request));
+    if (log.isDebugEnabled())
+      log.debug("POST PlaceNewOrder < " + response);
+    return response;
+  }
+  
   private final WebsocketEndpoint<KucoinPrivateOrderChangeV2Request, KucoinPrivateOrderChangeV2Message> privateOrderChangeV2Ws;
   
   
@@ -106,6 +121,7 @@ public class  KucoinSpotTradingApiImpl implements KucoinSpotTradingApi {
     this.websocketEndpointFactory.setProperties(properties);
     this.applyConnectTokenPrivateApi = restEndpointFactory.createRestEndpoint(new KucoinApplyConnectTokenPrivateResponseDeserializer());
     this.listAccountsApi = restEndpointFactory.createRestEndpoint(new KucoinListAccountsResponseDeserializer());
+    this.placeNewOrderApi = restEndpointFactory.createRestEndpoint(new KucoinPlaceNewOrderResponseDeserializer());
     this.privateOrderChangeV2Ws = websocketEndpointFactory.createWebsocketEndpoint(new KucoinPrivateOrderChangeV2MessageDeserializer());
     this.accountBalanceNoticeWs = websocketEndpointFactory.createWebsocketEndpoint(new KucoinAccountBalanceNoticeMessageDeserializer());
   }
