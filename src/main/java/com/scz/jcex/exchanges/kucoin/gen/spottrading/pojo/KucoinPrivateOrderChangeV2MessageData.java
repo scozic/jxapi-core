@@ -103,28 +103,28 @@ public class KucoinPrivateOrderChangeV2MessageData {
   }
   
   /**
-   * @return Provided only wheny message type is <i>match</i>
+   * @return Provided only when message type is <i>match</i>
    */
   public BigDecimal getMatchPrice(){
     return matchPrice;
   }
   
   /**
-   * @param matchPrice Provided only wheny message type is <i>match</i>
+   * @param matchPrice Provided only when message type is <i>match</i>
    */
   public void setMatchPrice(BigDecimal matchPrice) {
     this.matchPrice = matchPrice;
   }
   
   /**
-   * @return Provided only wheny message type is <i>match</i>
+   * @return Provided only when message type is <i>match</i>
    */
   public BigDecimal getMatchSize(){
     return matchSize;
   }
   
   /**
-   * @param matchSize Provided only wheny message type is <i>match</i>
+   * @param matchSize Provided only when message type is <i>match</i>
    */
   public void setMatchSize(BigDecimal matchSize) {
     this.matchSize = matchSize;
