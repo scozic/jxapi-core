@@ -71,7 +71,7 @@ public class  KucoinSpotTradingApiImpl implements KucoinSpotTradingApi {
   public KucoinPlaceNewOrderResponse placeNewOrder(KucoinPlaceNewOrderRequest request) throws IOException {
     if (log.isDebugEnabled())
       log.debug("POST PlaceNewOrder > " + request);
-    KucoinPlaceNewOrderResponse response = placeNewOrderApi.call(RestRequest.create("https://api.binance.com/api/v1/orders", "POST", request));
+    KucoinPlaceNewOrderResponse response = placeNewOrderApi.call(RestRequest.create("https://api.kucoin.com/api/v1/orders", "POST", request));
     if (log.isDebugEnabled())
       log.debug("POST PlaceNewOrder < " + response);
     return response;

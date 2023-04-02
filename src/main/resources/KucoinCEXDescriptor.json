@@ -250,7 +250,7 @@
 					"name": "PlaceNewOrder",
 					"httpMethod": "POST",
 					"description": "You can place two types of orders: limit and market. Orders can only be placed if your account has sufficient funds. Once an order is placed, your account funds will be put on hold for the duration of the order. How much and which funds are put on hold depends on the order type and parameters specified. See the Holds details below.<br/><strong>Placing an order will enable price protection. When the price of the limit order is outside the threshold range, the price protection mechanism will be triggered, causing the order to fail.</strong><br/>Please note that the system will frozen the fees from the orders that entered the order book in advance. Read List Fills to learn more.<br/>Before placing an order, please read <a href=\"https://docs.kucoin.com/#get-symbols-list\">Get Symbol List</a> to understand the requirements for the quantity parameters for each trading pair..<br/>See <a href=\"https://docs.kucoin.com/#place-a-new-order\">API</a><br/>",
-					"url": "https://api.binance.com/api/v1/orders",
+					"url": "https://api.kucoin.com/api/v1/orders",
 					"urlParameters": "",
 					"parameters": [
 						{"name":"clientOid", "type": "STRING", "description":"Unique order id created by users to identify their orders, e.g. UUID, with a maximum length of 128 bits.", "sampleValue": "testKCOrderID"},
