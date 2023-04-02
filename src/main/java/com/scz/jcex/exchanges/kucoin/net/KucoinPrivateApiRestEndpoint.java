@@ -48,6 +48,7 @@ public class KucoinPrivateApiRestEndpoint<R, A> extends JavaxNetRestEndpoint<R, 
 		connection.setRequestProperty("KC-API-PASSPHRASE", digest(apiPassphrase));
 		connection.setRequestProperty("KC-API-KEY-VERSION", "2");
 		connection.setRequestProperty("User-Agent", "KuCoin-Java-SDK:2");
+		connection.setRequestProperty("Content-Type", "application/json");
 	}
 	
 	private String digest(String toDigest) {
