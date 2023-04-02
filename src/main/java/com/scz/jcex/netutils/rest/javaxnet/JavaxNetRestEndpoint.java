@@ -16,6 +16,7 @@ import com.scz.jcex.netutils.deserialization.MessageDeserializer;
 import com.scz.jcex.netutils.rest.RestEndpoint;
 import com.scz.jcex.netutils.rest.RestEndpointUrlParameters;
 import com.scz.jcex.netutils.rest.RestRequest;
+import com.scz.jcex.util.EncodingUtil;
 
 public class JavaxNetRestEndpoint<R, A> implements RestEndpoint<R, A> {
 	
@@ -41,7 +42,7 @@ public class JavaxNetRestEndpoint<R, A> implements RestEndpoint<R, A> {
 		con.setUseCaches(false);
 		con.setDoOutput(true);
 		
-		if (body != null) {
+		if (body != null && !"GET".equalsIgnoreCase(request.getHttpMethod())) {
 			try (DataOutputStream wr = new DataOutputStream(con.getOutputStream())) {
 				wr.writeBytes(body.toString());
 				wr.flush();
@@ -70,7 +71,7 @@ public class JavaxNetRestEndpoint<R, A> implements RestEndpoint<R, A> {
 	}
 
 	protected String getBody(RestRequest<R> request) {
-		return null;
+		return EncodingUtil.pojoToJsonString(request.getRequest());
 	}
 
 	/**
