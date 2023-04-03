@@ -4,6 +4,10 @@ import com.scz.jcex.exchanges.kucoin.gen.spottrading.pojo.KucoinAccountBalanceNo
 import com.scz.jcex.exchanges.kucoin.gen.spottrading.pojo.KucoinAccountBalanceNoticeRequest;
 import com.scz.jcex.exchanges.kucoin.gen.spottrading.pojo.KucoinApplyConnectTokenPrivateRequest;
 import com.scz.jcex.exchanges.kucoin.gen.spottrading.pojo.KucoinApplyConnectTokenPrivateResponse;
+import com.scz.jcex.exchanges.kucoin.gen.spottrading.pojo.KucoinCancelOrderRequest;
+import com.scz.jcex.exchanges.kucoin.gen.spottrading.pojo.KucoinCancelOrderResponse;
+import com.scz.jcex.exchanges.kucoin.gen.spottrading.pojo.KucoinCancelSingleOrderByClientOidRequest;
+import com.scz.jcex.exchanges.kucoin.gen.spottrading.pojo.KucoinCancelSingleOrderByClientOidResponse;
 import com.scz.jcex.exchanges.kucoin.gen.spottrading.pojo.KucoinListAccountsRequest;
 import com.scz.jcex.exchanges.kucoin.gen.spottrading.pojo.KucoinListAccountsResponse;
 import com.scz.jcex.exchanges.kucoin.gen.spottrading.pojo.KucoinPlaceNewOrderRequest;
@@ -31,6 +35,14 @@ public interface  KucoinSpotTradingApi {
    * You can place two types of orders: limit and market. Orders can only be placed if your account has sufficient funds. Once an order is placed, your account funds will be put on hold for the duration of the order. How much and which funds are put on hold depends on the order type and parameters specified. See the Holds details below.<br/><strong>Placing an order will enable price protection. When the price of the limit order is outside the threshold range, the price protection mechanism will be triggered, causing the order to fail.</strong><br/>Please note that the system will frozen the fees from the orders that entered the order book in advance. Read List Fills to learn more.<br/>Before placing an order, please read <a href="https://docs.kucoin.com/#get-symbols-list">Get Symbol List</a> to understand the requirements for the quantity parameters for each trading pair..<br/>See <a href="https://docs.kucoin.com/#place-a-new-order">API</a><br/>
    */
   KucoinPlaceNewOrderResponse placeNewOrder(KucoinPlaceNewOrderRequest request) throws IOException;
+  /**
+   *  Request via this endpoint to cancel a single order previously placed.<p><i>This interface is only for cancellation requests. The cancellation result needs to be obtained by querying the order status or subscribing to websocket. It is recommended that you DO NOT cancel the order until receiving the Open message, otherwise the order cannot be cancelled successfully. </i></p> <br/>See <a href="https://docs.kucoin.com/#cancel-an-order">API</a><br/>
+   */
+  KucoinCancelOrderResponse cancelOrder(KucoinCancelOrderRequest request) throws IOException;
+  /**
+   *  Request via this endpoint to cancel a single order previously placed.<p><i>This interface is only for cancellation requests. The cancellation result needs to be obtained by querying the order status or subscribing to websocket. It is recommended that you DO NOT cancel the order until receiving the Open message, otherwise the order cannot be cancelled successfully. </i></p> <br/>See <a href="https://docs.kucoin.com/#cancel-an-order">API</a><br/>
+   */
+  KucoinCancelSingleOrderByClientOidResponse cancelSingleOrderByClientOid(KucoinCancelSingleOrderByClientOidRequest request) throws IOException;
   
   /**
    * Subscribe to PrivateOrderChangeV2 stream.<br/>

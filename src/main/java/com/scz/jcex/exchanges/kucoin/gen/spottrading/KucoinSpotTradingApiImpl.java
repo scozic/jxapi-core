@@ -2,6 +2,8 @@ package com.scz.jcex.exchanges.kucoin.gen.spottrading;
 
 import com.scz.jcex.exchanges.kucoin.gen.spottrading.deserializers.KucoinAccountBalanceNoticeMessageDeserializer;
 import com.scz.jcex.exchanges.kucoin.gen.spottrading.deserializers.KucoinApplyConnectTokenPrivateResponseDeserializer;
+import com.scz.jcex.exchanges.kucoin.gen.spottrading.deserializers.KucoinCancelOrderResponseDeserializer;
+import com.scz.jcex.exchanges.kucoin.gen.spottrading.deserializers.KucoinCancelSingleOrderByClientOidResponseDeserializer;
 import com.scz.jcex.exchanges.kucoin.gen.spottrading.deserializers.KucoinListAccountsResponseDeserializer;
 import com.scz.jcex.exchanges.kucoin.gen.spottrading.deserializers.KucoinPlaceNewOrderResponseDeserializer;
 import com.scz.jcex.exchanges.kucoin.gen.spottrading.deserializers.KucoinPrivateOrderChangeV2MessageDeserializer;
@@ -9,6 +11,10 @@ import com.scz.jcex.exchanges.kucoin.gen.spottrading.pojo.KucoinAccountBalanceNo
 import com.scz.jcex.exchanges.kucoin.gen.spottrading.pojo.KucoinAccountBalanceNoticeRequest;
 import com.scz.jcex.exchanges.kucoin.gen.spottrading.pojo.KucoinApplyConnectTokenPrivateRequest;
 import com.scz.jcex.exchanges.kucoin.gen.spottrading.pojo.KucoinApplyConnectTokenPrivateResponse;
+import com.scz.jcex.exchanges.kucoin.gen.spottrading.pojo.KucoinCancelOrderRequest;
+import com.scz.jcex.exchanges.kucoin.gen.spottrading.pojo.KucoinCancelOrderResponse;
+import com.scz.jcex.exchanges.kucoin.gen.spottrading.pojo.KucoinCancelSingleOrderByClientOidRequest;
+import com.scz.jcex.exchanges.kucoin.gen.spottrading.pojo.KucoinCancelSingleOrderByClientOidResponse;
 import com.scz.jcex.exchanges.kucoin.gen.spottrading.pojo.KucoinListAccountsRequest;
 import com.scz.jcex.exchanges.kucoin.gen.spottrading.pojo.KucoinListAccountsResponse;
 import com.scz.jcex.exchanges.kucoin.gen.spottrading.pojo.KucoinPlaceNewOrderRequest;
@@ -77,6 +83,30 @@ public class  KucoinSpotTradingApiImpl implements KucoinSpotTradingApi {
     return response;
   }
   
+  private final RestEndpoint<KucoinCancelOrderRequest, KucoinCancelOrderResponse> cancelOrderApi;
+  
+  @Override
+  public KucoinCancelOrderResponse cancelOrder(KucoinCancelOrderRequest request) throws IOException {
+    if (log.isDebugEnabled())
+      log.debug("DELETE CancelOrder > " + request);
+    KucoinCancelOrderResponse response = cancelOrderApi.call(RestRequest.create("https://api.kucoin.com/api/v1/orders", "DELETE", request));
+    if (log.isDebugEnabled())
+      log.debug("DELETE CancelOrder < " + response);
+    return response;
+  }
+  
+  private final RestEndpoint<KucoinCancelSingleOrderByClientOidRequest, KucoinCancelSingleOrderByClientOidResponse> cancelSingleOrderByClientOidApi;
+  
+  @Override
+  public KucoinCancelSingleOrderByClientOidResponse cancelSingleOrderByClientOid(KucoinCancelSingleOrderByClientOidRequest request) throws IOException {
+    if (log.isDebugEnabled())
+      log.debug("DELETE CancelSingleOrderByClientOid > " + request);
+    KucoinCancelSingleOrderByClientOidResponse response = cancelSingleOrderByClientOidApi.call(RestRequest.create("https://api.kucoin.com/api/v1/orders/client-order", "DELETE", request));
+    if (log.isDebugEnabled())
+      log.debug("DELETE CancelSingleOrderByClientOid < " + response);
+    return response;
+  }
+  
   private final WebsocketEndpoint<KucoinPrivateOrderChangeV2Request, KucoinPrivateOrderChangeV2Message> privateOrderChangeV2Ws;
   
   
@@ -122,6 +152,8 @@ public class  KucoinSpotTradingApiImpl implements KucoinSpotTradingApi {
     this.applyConnectTokenPrivateApi = restEndpointFactory.createRestEndpoint(new KucoinApplyConnectTokenPrivateResponseDeserializer());
     this.listAccountsApi = restEndpointFactory.createRestEndpoint(new KucoinListAccountsResponseDeserializer());
     this.placeNewOrderApi = restEndpointFactory.createRestEndpoint(new KucoinPlaceNewOrderResponseDeserializer());
+    this.cancelOrderApi = restEndpointFactory.createRestEndpoint(new KucoinCancelOrderResponseDeserializer());
+    this.cancelSingleOrderByClientOidApi = restEndpointFactory.createRestEndpoint(new KucoinCancelSingleOrderByClientOidResponseDeserializer());
     this.privateOrderChangeV2Ws = websocketEndpointFactory.createWebsocketEndpoint(new KucoinPrivateOrderChangeV2MessageDeserializer());
     this.accountBalanceNoticeWs = websocketEndpointFactory.createWebsocketEndpoint(new KucoinAccountBalanceNoticeMessageDeserializer());
   }
