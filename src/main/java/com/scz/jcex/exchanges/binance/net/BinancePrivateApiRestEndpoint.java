@@ -34,7 +34,7 @@ public class BinancePrivateApiRestEndpoint<R, A> extends JavaxNetRestEndpoint<R,
 			String url = request.getUrl();
 			String urlParams = ((RestEndpointUrlParameters) request.getRequest()).getUrlParameters();
 			if (!urlParams.isEmpty()) {
-				url += "?" + urlParams;
+				url += urlParams;
 			}
 			
 			if (!isUserStreamEndpoint(request.getUrl())) {
@@ -44,7 +44,8 @@ public class BinancePrivateApiRestEndpoint<R, A> extends JavaxNetRestEndpoint<R,
 				if (!urlParams.isEmpty()) {
 					url += "&";
 				}
-				url += "signature=" + HmacSHA256Signer.hexSign(urlParams, apiSecret);
+				// Signature created using URL params without heading '?'
+				url += "signature=" + HmacSHA256Signer.hexSign(urlParams.substring(1), apiSecret);
 			}
 			
 			return new URL(url);

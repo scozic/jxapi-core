@@ -93,7 +93,7 @@ public class EncodingUtil {
 		}
 		StringBuilder s = new StringBuilder();
 		s.append("?");
-		boolean first = false;
+		boolean first = true;
 		for (int i = 0; i < keysAndValues.length; i++) {
 			Object key = keysAndValues[i++];
 			if (key == null) {

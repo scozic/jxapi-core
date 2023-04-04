@@ -11,7 +11,6 @@ import com.scz.jcex.util.EncodingUtil;
 @JsonSerialize(using = KucoinGetSymbolsListRequestSerializer.class)
 public class KucoinGetSymbolsListRequest implements RestEndpointUrlParameters {
   
-  
   @Override
   public String getUrlParameters() {
     return "";

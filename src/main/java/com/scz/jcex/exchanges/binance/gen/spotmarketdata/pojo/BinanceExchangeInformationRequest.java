@@ -27,10 +27,9 @@ public class BinanceExchangeInformationRequest implements RestEndpointUrlParamet
     this.symbols = symbols;
   }
   
-  
   @Override
   public String getUrlParameters() {
-    return com.scz.jcex.util.EncodingUtil.substituteArguments("symbols=%5B%22${symbols}%22%5D", "symbols", com.scz.jcex.util.EncodingUtil.listToString(symbols, "%22,%22"));
+    return EncodingUtil.substituteArguments("symbols=%5B%22${symbols}%22%5D", "symbols", EncodingUtil.listToString(symbols, "%22,%22"));
   }
   
   @Override

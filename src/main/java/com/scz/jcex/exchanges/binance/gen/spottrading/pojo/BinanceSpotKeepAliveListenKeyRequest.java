@@ -26,10 +26,9 @@ public class BinanceSpotKeepAliveListenKeyRequest implements RestEndpointUrlPara
     this.listenKey = listenKey;
   }
   
-  
   @Override
   public String getUrlParameters() {
-    return com.scz.jcex.util.EncodingUtil.substituteArguments("listenKey=${listenKey}", "listenKey", listenKey);
+    return EncodingUtil.createUrlQueryParameters("listenKey", listenKey);
   }
   
   @Override

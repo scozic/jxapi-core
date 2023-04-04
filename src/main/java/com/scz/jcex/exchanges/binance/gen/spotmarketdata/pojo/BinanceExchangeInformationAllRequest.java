@@ -11,7 +11,6 @@ import com.scz.jcex.util.EncodingUtil;
 @JsonSerialize(using = BinanceExchangeInformationAllRequestSerializer.class)
 public class BinanceExchangeInformationAllRequest implements RestEndpointUrlParameters {
   
-  
   @Override
   public String getUrlParameters() {
     return "";

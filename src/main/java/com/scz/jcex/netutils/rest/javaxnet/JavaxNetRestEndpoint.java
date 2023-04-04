@@ -86,7 +86,7 @@ public class JavaxNetRestEndpoint<R, A> implements RestEndpoint<R, A> {
 			if (request.getRequest() instanceof RestEndpointUrlParameters) {
 				String urlParams = ((RestEndpointUrlParameters) request.getRequest()).getUrlParameters();
 				if (urlParams != null && !urlParams.isEmpty()) {
-					url += "?" + urlParams;
+					url += urlParams;
 				}
 			}
 			return new URL(url);

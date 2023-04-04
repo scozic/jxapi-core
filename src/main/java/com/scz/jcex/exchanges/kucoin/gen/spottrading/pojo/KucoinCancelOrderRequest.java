@@ -26,10 +26,9 @@ public class KucoinCancelOrderRequest implements RestEndpointUrlParameters {
     this.orderId = orderId;
   }
   
-  
   @Override
   public String getUrlParameters() {
-    return com.scz.jcex.util.EncodingUtil.substituteArguments("${orderId}", "orderId", orderId);
+    return com.scz.jcex.util.EncodingUtil.substituteArguments("/${orderId}", "orderId", orderId);
   }
   
   @Override

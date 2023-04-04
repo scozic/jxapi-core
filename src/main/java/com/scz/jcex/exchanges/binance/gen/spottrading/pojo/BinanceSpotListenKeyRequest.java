@@ -11,7 +11,6 @@ import com.scz.jcex.util.EncodingUtil;
 @JsonSerialize(using = BinanceSpotListenKeyRequestSerializer.class)
 public class BinanceSpotListenKeyRequest implements RestEndpointUrlParameters {
   
-  
   @Override
   public String getUrlParameters() {
     return "";

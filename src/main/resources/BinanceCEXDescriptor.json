@@ -13,7 +13,6 @@
 					"httpMethod": "GET",
 					"description": "Current exchange trading rules and symbol information for all spot trading pairs.<br/>See <a href=\"https://binance-docs.github.io/apidocs/spot/en/#exchange-information\">API</a>",
 					"url": "https://api.binance.com/api/v3/exchangeInfo",
-					"urlParameters": "",
 					"parameters": [],
 					"response": [
 						{"name":"timezone", "type": "STRING", "description":"Server timezone", "sampleValue": "UTC"},
@@ -167,7 +166,7 @@
 					"httpMethod": "GET",
 					"description": "Get current account information.<br/>See <a href=\"https://binance-docs.github.io/apidocs/spot/en/#account-information-user_data\">API</a>",
 					"url": "https://api.binance.com/api/v3/account",
-					"urlParameters": "recvWindow=${recvWindow}&timestamp=${timestamp}",
+					"queryParams": true,
 					"parameters": [
 						{"name":"recvWindow", "type": "LONG", "description": "Server timezone", "sampleValue": "60000"},
 						{"name":"timestamp", "type": "LONG", "description": "", "sampleValue": "now()"}
@@ -205,7 +204,6 @@
 					"httpMethod": "POST",
 					"description": "Start a new user data stream. The stream will close after 60 minutes unless a keepalive is sent. If the account has an active listenKey, that listenKey will be returned and its validity will be extended for 60 minutes.<br/>See <a href=\"https://binance-docs.github.io/apidocs/spot/en/#listen-key-spot\">API</a><br/>Remark: This API is used internally by websocket wrapper, which creates, keeps alive and eventually refreshes listeny key.",
 					"url": "https://api.binance.com/api/v3/userDataStream",
-					"urlParameters": "",
 					"parameters": [
 					],
 					"response": [
@@ -217,7 +215,7 @@
 					"httpMethod": "PUT",
 					"description": "Keepalive a user data stream to prevent a time out. User data streams will close after 60 minutes. It's recommended to send a ping about every 30 minutes.<br/>See <a href=\"https://binance-docs.github.io/apidocs/spot/en/#listen-key-spot\">API</a><br/>Remark: This API is used internally by websocket wrapper, which creates, keeps alive and eventually refreshes listeny key.",
 					"url": "https://api.binance.com/api/v3/userDataStream",
-					"urlParameters": "listenKey=${listenKey}",
+					"queryParams": true,
 					"parameters": [
 						{"name":"listenKey", "type": "STRING", "description":"", "sampleValue": "pqia91ma19a5s61cv6a81va65sdf19v8a65a1a5s61cv6a81va65sdf19v8a65a1"}
 					],
@@ -229,7 +227,7 @@
 					"httpMethod": "DELETE",
 					"description": "Close out a user data stream..<br/>See <a href=\"https://binance-docs.github.io/apidocs/spot/en/#listen-key-spot\">API</a><br/>Remark: This API is used internally by websocket wrapper, which creates, keeps alive and eventually refreshes listeny key.",
 					"url": "https://api.binance.com/api/v3/userDataStream",
-					"urlParameters": "listenKey=${listenKey}",
+					"queryParams": true,
 					"parameters": [
 						{"name":"listenKey", "type": "STRING", "description":"", "sampleValue": "pqia91ma19a5s61cv6a81va65sdf19v8a65a1a5s61cv6a81va65sdf19v8a65a1"}
 					],

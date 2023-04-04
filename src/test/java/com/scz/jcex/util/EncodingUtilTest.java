@@ -89,7 +89,7 @@ public class EncodingUtilTest {
 	
 	@Test
 	public void testCreateUrlQueryParametersWithOneNullValueAndOneValueEscapedInUrlEncoding() {
-		Assert.assertEquals("?&key0=val0&key2=%26val2%5B", 
+		Assert.assertEquals("?key0=val0&key2=%26val2%5B", 
 							EncodingUtil.createUrlQueryParameters("key0", "val0", "ke1", null, "key2", "&val2["));
 	}
 	

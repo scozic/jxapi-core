@@ -279,7 +279,7 @@
 					"httpMethod": "DELETE",
 					"description": " Request via this endpoint to cancel a single order previously placed.<p><i>This interface is only for cancellation requests. The cancellation result needs to be obtained by querying the order status or subscribing to websocket. It is recommended that you DO NOT cancel the order until receiving the Open message, otherwise the order cannot be cancelled successfully. </i></p> <br/>See <a href=\"https://docs.kucoin.com/#cancel-an-order\">API</a><br/>",
 					"url": "https://api.kucoin.com/api/v1/orders",
-					"urlParameters": "${orderId}",
+					"urlParameters": "/${orderId}",
 					"parameters": [
 						{"name":"orderId", "type": "STRING", "description":"<a href=\"https://docs.kucoin.com/#list-orders\">Order ID</a>, unique ID of the order.", "sampleValue": "5bd6e9286d99522a52e458de"}
 					],
@@ -297,7 +297,7 @@
 					"httpMethod": "DELETE",
 					"description": " Request via this endpoint to cancel a single order previously placed.<p><i>This interface is only for cancellation requests. The cancellation result needs to be obtained by querying the order status or subscribing to websocket. It is recommended that you DO NOT cancel the order until receiving the Open message, otherwise the order cannot be cancelled successfully. </i></p> <br/>See <a href=\"https://docs.kucoin.com/#cancel-an-order\">API</a><br/>",
 					"url": "https://api.kucoin.com/api/v1/orders/client-order",
-					"urlParameters": "${clientOid}",
+					"urlParameters": "/${clientOid}",
 					"parameters": [
 						{"name":"clientOid", "type": "STRING", "description":"Unique order id created by users to identify their orders.", "sampleValue": "myClientOid"}
 					],

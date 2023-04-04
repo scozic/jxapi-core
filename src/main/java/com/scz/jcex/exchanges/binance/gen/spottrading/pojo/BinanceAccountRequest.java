@@ -41,10 +41,9 @@ public class BinanceAccountRequest implements RestEndpointUrlParameters {
     this.timestamp = timestamp;
   }
   
-  
   @Override
   public String getUrlParameters() {
-    return com.scz.jcex.util.EncodingUtil.substituteArguments("recvWindow=${recvWindow}&timestamp=${timestamp}", "recvWindow", recvWindow, "timestamp", timestamp);
+    return EncodingUtil.createUrlQueryParameters("recvWindow", recvWindow,"timestamp", timestamp);
   }
   
   @Override

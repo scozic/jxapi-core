@@ -11,7 +11,6 @@ import com.scz.jcex.util.EncodingUtil;
 @JsonSerialize(using = KucoinApplyConnectTokenPrivateRequestSerializer.class)
 public class KucoinApplyConnectTokenPrivateRequest implements RestEndpointUrlParameters {
   
-  
   @Override
   public String getUrlParameters() {
     return "";

@@ -26,7 +26,6 @@ public class KucoinListAccountsRequest implements RestEndpointUrlParameters {
     this.type = type;
   }
   
-  
   @Override
   public String getUrlParameters() {
     return com.scz.jcex.util.EncodingUtil.substituteArguments("type=${type}", "type", type);
