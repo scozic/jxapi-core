@@ -592,10 +592,18 @@ public class ExchangeJavaWrapperGeneratorUtil {
 	}
 	
 	private static String generateRestEndpointGetUrlParametersMethod(RestEndpointDescriptor restEndpointDescriptor) {
+		String getUrlParametersBody = "return \"\";";
+		if (restEndpointDescriptor.getUrlParameters() != null) {
+			getUrlParametersBody =	generateGetUrlParametersBodyFromTemplate(restEndpointDescriptor.getUrlParameters(), 
+																			 restEndpointDescriptor.getParameters(), 
+																			 restEndpointDescriptor.getUrlParametersListSeparator());
+		} else if (restEndpointDescriptor.isQueryParams() || "GET".equalsIgnoreCase(restEndpointDescriptor.getHttpMethod())) {
+			getUrlParametersBody = generateGetUrlParametersBodyUsingQueryParams(restEndpointDescriptor.getParameters());
+		}
 		StringBuilder sb = new StringBuilder();
 		sb.append("\n@Override\npublic String getUrlParameters() {\n")
 		  .append(JavaCodeGenerationUtil.INDENTATION)
-		  .append(generateGetUrlParametersBody(restEndpointDescriptor.getUrlParameters(), restEndpointDescriptor.getParameters(), restEndpointDescriptor.getUrlParametersListSeparator()))
+		  .append(getUrlParametersBody)
 		  .append("}\n\n");
 		return sb.toString(); 
 	}
@@ -604,12 +612,12 @@ public class ExchangeJavaWrapperGeneratorUtil {
 		StringBuilder sb = new StringBuilder();
 		sb.append("\n@Override\npublic String getTopic() {\n")
 		  .append(JavaCodeGenerationUtil.INDENTATION)
-		  .append(generateGetUrlParametersBody(wsEndpointDescriptor.getTopic(), wsEndpointDescriptor.getParameters(), wsEndpointDescriptor.getTopicParametersListSeparator()))
+		  .append(generateGetUrlParametersBodyFromTemplate(wsEndpointDescriptor.getTopic(), wsEndpointDescriptor.getParameters(), wsEndpointDescriptor.getTopicParametersListSeparator()))
 		  .append("}\n\n");
 		return sb.toString(); 
 	}
 	
-	private static String generateGetUrlParametersBody(String urlParametersTemplate, List<EndpointParameter> endpointParameters, String stringListSeparator) {
+	private static String generateGetUrlParametersBodyFromTemplate(String urlParametersTemplate, List<EndpointParameter> endpointParameters, String stringListSeparator) {
 		if (endpointParameters.isEmpty()) {
 			return "return \"" + urlParametersTemplate + "\";\n";
 		}
@@ -636,6 +644,21 @@ public class ExchangeJavaWrapperGeneratorUtil {
 		}
 		sb.append(");\n");
 		return sb.toString();
+	}
+	
+	private static String generateGetUrlParametersBodyUsingQueryParams(List<EndpointParameter> endpointParameters) {
+		StringBuilder s = new StringBuilder().append("return " + EncodingUtil.class.getName() + ".createUrlQueryParameters(");
+		for (int i = 0; i < endpointParameters.size(); i++) {
+			if (i > 0) {
+				s.append(",");
+			}
+			String n = endpointParameters.get(i).getName();
+			s.append("\"")
+			 .append(n)
+			 .append("\", ")
+			 .append(n);
+		}
+		return s.append(");").toString();
 	}
 
 }

@@ -23,6 +23,7 @@ public class RestEndpointDescriptor {
 
 	private String urlParameters;
 	private String urlParametersListSeparator;
+	private boolean queryParams;
 	
 	public String getName() {
 		return name;
@@ -76,8 +77,8 @@ public class RestEndpointDescriptor {
 		return urlParameters;
 	}
 
-	public void setUrlParameters(String urlParameteters) {
-		this.urlParameters = urlParameteters;
+	public void setUrlParameters(String urlParameters) {
+		this.urlParameters = urlParameters;
 	}
 
 	public String getUrlParametersListSeparator() {
@@ -86,6 +87,14 @@ public class RestEndpointDescriptor {
 
 	public void setUrlParametersListSeparator(String urlParametersListSeparator) {
 		this.urlParametersListSeparator = urlParametersListSeparator;
+	}
+	
+	public boolean isQueryParams() {
+		return queryParams;
+	}
+
+	public void setQueryParams(boolean queryParams) {
+		this.queryParams = queryParams;
 	}
 
 	public String toString() {
