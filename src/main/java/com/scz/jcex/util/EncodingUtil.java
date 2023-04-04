@@ -1,7 +1,11 @@
 package com.scz.jcex.util;
 
+import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -76,6 +80,42 @@ public class EncodingUtil {
 			s.append(fmt(keysAndValues[i]));
 		}
 		return s.append("}").toString();
+	}
+	
+	public static String createUrlQueryParameters(Object...keysAndValues) {
+		if (keysAndValues.length <= 0) {
+			return "";
+		}
+		if (keysAndValues.length % 2 != 0) {
+			throw new IllegalArgumentException("Invalid arguments: should even size but got" 
+												+ keysAndValues.length + ":" 
+												+ Arrays.toString(keysAndValues));
+		}
+		StringBuilder s = new StringBuilder();
+		s.append("?");
+		boolean first = false;
+		for (int i = 0; i < keysAndValues.length; i++) {
+			Object key = keysAndValues[i++];
+			if (key == null) {
+				throw new IllegalArgumentException("null key in for parameter #" + (i / 2) + " in:" + Arrays.toString(keysAndValues));
+			}
+			Object value = keysAndValues[i];
+			if (value == null) {
+				continue;
+			}
+			if (first) {
+				first = false;
+			} else {
+				s.append("&");
+			}
+			try {
+				value = URLEncoder.encode(String.valueOf(value), StandardCharsets.UTF_8.toString());
+			} catch (UnsupportedEncodingException e) {
+				throw new RuntimeException("Invalid value for parameter:" + key + ":" + keysAndValues[i], e);
+			}
+			s.append(key).append("=").append(value);
+		}
+		return s.toString();
 	}
 	
 	private static String fmt(Object o) {
