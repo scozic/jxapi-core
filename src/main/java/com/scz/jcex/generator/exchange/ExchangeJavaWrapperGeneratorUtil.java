@@ -651,11 +651,20 @@ public class ExchangeJavaWrapperGeneratorUtil {
 			if (i > 0) {
 				s.append(",");
 			}
-			String n = endpointParameters.get(i).getName();
+			EndpointParameter param = endpointParameters.get(i);
+			String name = param.getName();
 			s.append("\"")
-			 .append(n)
-			 .append("\", ")
-			 .append(n);
+			 .append(name)
+			 .append("\", ");
+			if (param.getType() == EndpointParameterType.STRING_LIST) {
+				s.append(EncodingUtil.class.getSimpleName())
+				 .append(".listToUrlParamString(")
+				 .append(name)
+				 .append(")");
+			} else {
+				s.append(name);
+			}
+			
 		}
 		return s.append(");\n").toString();
 	}

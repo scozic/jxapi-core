@@ -92,7 +92,6 @@ public class EncodingUtil {
 												+ Arrays.toString(keysAndValues));
 		}
 		StringBuilder s = new StringBuilder();
-		s.append("?");
 		boolean first = true;
 		for (int i = 0; i < keysAndValues.length; i++) {
 			Object key = keysAndValues[i++];
@@ -104,6 +103,7 @@ public class EncodingUtil {
 				continue;
 			}
 			if (first) {
+				s.append("?");
 				first = false;
 			} else {
 				s.append("&");
@@ -117,6 +117,31 @@ public class EncodingUtil {
 		}
 		return s.toString();
 	}
+	
+	/**
+	 * @param items Value of an URL param of String list type. Can be
+	 *              <code>null</code> if argument is optional for corresponding API,
+	 *              in which case <code>null</code> will be returned and URL
+	 *              argument will be ignored.
+	 * @return String like '["a","b","c"]'. This value is expected to be URL encoded
+	 *         in final URL.
+	 */
+	public static String listToUrlParamString(List<String> items) {
+		if (items == null)
+			return null;
+		StringBuilder sb = new StringBuilder();
+		sb.append("[");
+		for (int i = 0; i < items.size(); i++) {
+			
+			sb.append("\"").append(items.get(i)).append("\"");
+			if (i < items.size() -1) {
+				sb.append(",");
+			}
+		}
+		return sb.append("]").toString();
+	}
+	
+	
 	
 	private static String fmt(Object o) {
 		if (o == null)
