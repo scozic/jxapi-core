@@ -29,7 +29,7 @@ public class KucoinIndividualSymbolTickerStreamsRequest implements WebsocketSubs
   
   @Override
   public String getTopic() {
-    return com.scz.jcex.util.EncodingUtil.substituteArguments("/market/ticker:${symbol}", "symbol", symbol);
+    return EncodingUtil.substituteArguments("/market/ticker:${symbol}", "symbol", symbol);
   }
   
   @Override

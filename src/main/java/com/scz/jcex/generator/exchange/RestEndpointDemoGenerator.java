@@ -63,13 +63,13 @@ public class RestEndpointDemoGenerator extends JavaTypeGenerator {
 			.append("() API with request:\" + request);\n");
 		body.append("log.info(\"Response:\" + api.")
 			.append(apiMethodName)
-			.append("(request));");
+			.append("(request));\nSystem.exit(0);");
 		
 		appendMethod("public static void main(String[] args)", 
 					"try {\n" 
 						+ JavaCodeGenerationUtil.indent(body.toString(), JavaCodeGenerationUtil.INDENTATION) 
 						+ "\n} catch (Throwable t) {\n"
-						+ JavaCodeGenerationUtil.indent("log.error(\"Exception raised from main()\", t);", JavaCodeGenerationUtil.INDENTATION)
+						+ JavaCodeGenerationUtil.indent("log.error(\"Exception raised from main()\", t);\nSystem.exit(-1);", JavaCodeGenerationUtil.INDENTATION)
 						+ "\n}");
 	}
 

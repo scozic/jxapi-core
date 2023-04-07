@@ -26,8 +26,10 @@ public class KucoinSpotMarketDataGetAllTickersDemo {
       request.setSymbol(SYMBOL);
       log.info("Calling 'com.scz.jcex.exchanges.kucoin.gen.spotmarketdata.KucoinSpotMarketDataApi.getAllTickers() API with request:" + request);
       log.info("Response:" + api.getAllTickers(request));
+      System.exit(0);
     } catch (Throwable t) {
       log.error("Exception raised from main()", t);
+      System.exit(-1);
     }
   }
 }

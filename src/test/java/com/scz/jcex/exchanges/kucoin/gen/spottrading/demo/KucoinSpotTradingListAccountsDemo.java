@@ -26,8 +26,10 @@ public class KucoinSpotTradingListAccountsDemo {
       request.setType(TYPE);
       log.info("Calling 'com.scz.jcex.exchanges.kucoin.gen.spottrading.KucoinSpotTradingApi.listAccounts() API with request:" + request);
       log.info("Response:" + api.listAccounts(request));
+      System.exit(0);
     } catch (Throwable t) {
       log.error("Exception raised from main()", t);
+      System.exit(-1);
     }
   }
 }

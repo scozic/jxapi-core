@@ -20,8 +20,10 @@ public class BinanceSpotMarketDataExchangeInformationAllDemo {
       BinanceExchangeInformationAllRequest request = new BinanceExchangeInformationAllRequest();
       log.info("Calling 'com.scz.jcex.exchanges.binance.gen.spotmarketdata.BinanceSpotMarketDataApi.exchangeInformationAll() API with request:" + request);
       log.info("Response:" + api.exchangeInformationAll(request));
+      System.exit(0);
     } catch (Throwable t) {
       log.error("Exception raised from main()", t);
+      System.exit(-1);
     }
   }
 }

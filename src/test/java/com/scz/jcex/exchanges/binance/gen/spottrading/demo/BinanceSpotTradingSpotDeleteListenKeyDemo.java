@@ -26,8 +26,10 @@ public class BinanceSpotTradingSpotDeleteListenKeyDemo {
       request.setListenKey(LISTENKEY);
       log.info("Calling 'com.scz.jcex.exchanges.binance.gen.spottrading.BinanceSpotTradingApi.spotDeleteListenKey() API with request:" + request);
       log.info("Response:" + api.spotDeleteListenKey(request));
+      System.exit(0);
     } catch (Throwable t) {
       log.error("Exception raised from main()", t);
+      System.exit(-1);
     }
   }
 }

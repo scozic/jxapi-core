@@ -20,8 +20,10 @@ public class KucoinSpotMarketDataGetSymbolsListDemo {
       KucoinGetSymbolsListRequest request = new KucoinGetSymbolsListRequest();
       log.info("Calling 'com.scz.jcex.exchanges.kucoin.gen.spotmarketdata.KucoinSpotMarketDataApi.getSymbolsList() API with request:" + request);
       log.info("Response:" + api.getSymbolsList(request));
+      System.exit(0);
     } catch (Throwable t) {
       log.error("Exception raised from main()", t);
+      System.exit(-1);
     }
   }
 }

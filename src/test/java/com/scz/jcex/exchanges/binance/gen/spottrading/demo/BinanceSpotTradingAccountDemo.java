@@ -32,8 +32,10 @@ public class BinanceSpotTradingAccountDemo {
       request.setTimestamp(TIMESTAMP);
       log.info("Calling 'com.scz.jcex.exchanges.binance.gen.spottrading.BinanceSpotTradingApi.account() API with request:" + request);
       log.info("Response:" + api.account(request));
+      System.exit(0);
     } catch (Throwable t) {
       log.error("Exception raised from main()", t);
+      System.exit(-1);
     }
   }
 }

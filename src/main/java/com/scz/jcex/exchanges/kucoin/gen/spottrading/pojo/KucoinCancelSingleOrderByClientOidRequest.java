@@ -28,7 +28,7 @@ public class KucoinCancelSingleOrderByClientOidRequest implements RestEndpointUr
   
   @Override
   public String getUrlParameters() {
-    return com.scz.jcex.util.EncodingUtil.substituteArguments("/${clientOid}", "clientOid", clientOid);
+    return EncodingUtil.substituteArguments("/${clientOid}", "clientOid", clientOid);
   }
   
   @Override

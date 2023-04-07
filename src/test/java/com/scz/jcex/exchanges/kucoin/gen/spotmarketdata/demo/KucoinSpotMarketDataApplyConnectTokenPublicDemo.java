@@ -20,8 +20,10 @@ public class KucoinSpotMarketDataApplyConnectTokenPublicDemo {
       KucoinApplyConnectTokenPublicRequest request = new KucoinApplyConnectTokenPublicRequest();
       log.info("Calling 'com.scz.jcex.exchanges.kucoin.gen.spotmarketdata.KucoinSpotMarketDataApi.applyConnectTokenPublic() API with request:" + request);
       log.info("Response:" + api.applyConnectTokenPublic(request));
+      System.exit(0);
     } catch (Throwable t) {
       log.error("Exception raised from main()", t);
+      System.exit(-1);
     }
   }
 }

@@ -20,8 +20,10 @@ public class BinanceSpotTradingSpotListenKeyDemo {
       BinanceSpotListenKeyRequest request = new BinanceSpotListenKeyRequest();
       log.info("Calling 'com.scz.jcex.exchanges.binance.gen.spottrading.BinanceSpotTradingApi.spotListenKey() API with request:" + request);
       log.info("Response:" + api.spotListenKey(request));
+      System.exit(0);
     } catch (Throwable t) {
       log.error("Exception raised from main()", t);
+      System.exit(-1);
     }
   }
 }

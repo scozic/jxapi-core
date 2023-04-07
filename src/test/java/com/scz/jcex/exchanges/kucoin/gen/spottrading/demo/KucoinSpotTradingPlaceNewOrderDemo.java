@@ -116,8 +116,10 @@ public class KucoinSpotTradingPlaceNewOrderDemo {
       request.setFunds(FUNDS);
       log.info("Calling 'com.scz.jcex.exchanges.kucoin.gen.spottrading.KucoinSpotTradingApi.placeNewOrder() API with request:" + request);
       log.info("Response:" + api.placeNewOrder(request));
+      System.exit(0);
     } catch (Throwable t) {
       log.error("Exception raised from main()", t);
+      System.exit(-1);
     }
   }
 }

@@ -53,7 +53,7 @@
 					"httpMethod": "GET",
 					"description": "Current exchange trading rules and symbol information for a list of spot trading pairs.<br/>See <a href=\"https://binance-docs.github.io/apidocs/spot/en/#exchange-information\">API</a>",
 					"url": "https://api.binance.com/api/v3/exchangeInfo",
-					"urlParameters": "symbols=%5B%22${symbols}%22%5D",
+					"urlParameters": "?symbols=%5B%22${symbols}%22%5D",
 					"urlParametersListSeparator": "%22,%22",
 					"parameters": [
 						{"name":"symbols", "type": "STRING_LIST", "description":"List of market symbols to retrieve exchange information for.", "sampleValue": "[\"ETHBTC\", \"BNBUSDT\"]"}
@@ -166,7 +166,6 @@
 					"httpMethod": "GET",
 					"description": "Get current account information.<br/>See <a href=\"https://binance-docs.github.io/apidocs/spot/en/#account-information-user_data\">API</a>",
 					"url": "https://api.binance.com/api/v3/account",
-					"queryParams": true,
 					"parameters": [
 						{"name":"recvWindow", "type": "LONG", "description": "Server timezone", "sampleValue": "60000"},
 						{"name":"timestamp", "type": "LONG", "description": "", "sampleValue": "now()"}

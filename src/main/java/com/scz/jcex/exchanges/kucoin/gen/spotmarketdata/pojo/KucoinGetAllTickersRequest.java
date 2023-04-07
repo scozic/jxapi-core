@@ -28,7 +28,7 @@ public class KucoinGetAllTickersRequest implements RestEndpointUrlParameters {
   
   @Override
   public String getUrlParameters() {
-    return com.scz.jcex.util.EncodingUtil.substituteArguments("symbol=${symbol}", "symbol", symbol);
+    return EncodingUtil.substituteArguments("symbol=${symbol}", "symbol", symbol);
   }
   
   @Override

@@ -253,7 +253,7 @@ public class KucoinPlaceNewOrderRequest implements RestEndpointUrlParameters {
   
   @Override
   public String getUrlParameters() {
-    return com.scz.jcex.util.EncodingUtil.substituteArguments("", "clientOid", clientOid, "side", side, "symbol", symbol, "type", type, "remark", remark, "stp", stp, "tradeType", tradeType, "price", price, "size", size, "timeInForce", timeInForce, "cancelAfter", cancelAfter, "postOnly", postOnly, "hidden", hidden, "iceberg", iceberg, "visibleSize", visibleSize, "funds", funds);
+    return EncodingUtil.substituteArguments("", "clientOid", clientOid, "side", side, "symbol", symbol, "type", type, "remark", remark, "stp", stp, "tradeType", tradeType, "price", price, "size", size, "timeInForce", timeInForce, "cancelAfter", cancelAfter, "postOnly", postOnly, "hidden", hidden, "iceberg", iceberg, "visibleSize", visibleSize, "funds", funds);
   }
   
   @Override

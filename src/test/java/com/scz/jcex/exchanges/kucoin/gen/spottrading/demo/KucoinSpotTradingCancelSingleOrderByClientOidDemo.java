@@ -26,8 +26,10 @@ public class KucoinSpotTradingCancelSingleOrderByClientOidDemo {
       request.setClientOid(CLIENTOID);
       log.info("Calling 'com.scz.jcex.exchanges.kucoin.gen.spottrading.KucoinSpotTradingApi.cancelSingleOrderByClientOid() API with request:" + request);
       log.info("Response:" + api.cancelSingleOrderByClientOid(request));
+      System.exit(0);
     } catch (Throwable t) {
       log.error("Exception raised from main()", t);
+      System.exit(-1);
     }
   }
 }
