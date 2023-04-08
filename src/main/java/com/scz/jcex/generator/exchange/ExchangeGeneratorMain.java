@@ -1,61 +1,58 @@
 package com.scz.jcex.generator.exchange;
 
 import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.concurrent.atomic.AtomicInteger;
+
+import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.scz.jcex.generator.JavaCodeGenerationUtil;
 
-public class CEXGenerator {
+public class ExchangeGeneratorMain {
 	
-	public void generateCEX(ExchangeDescriptor exchangeDescriptor, Path ouputFolder) throws IOException {
-		generateCEXPojos(exchangeDescriptor, ouputFolder);
-		
-		
+	private static final Logger log = LoggerFactory.getLogger(ExchangeGeneratorMain.class);
+	
+	/**
+	 * @param args 1 argument expected : Name of exchange JSON descriptor file located in src/main/resources.
+	 */
+	public static void main(String[] args) {
+		try {
+			final AtomicInteger exitCode = new AtomicInteger(0);
+			Path resources = Paths.get(".", "src", "main", "resources");
+			Files.walk(resources).filter(p -> p.getFileName().endsWith("Descriptor.json")).forEach(path -> {
+				try {
+					generateExchangeApi(path);
+				} catch (Exception ex) {
+					log.error("Error while generating exchange descriptor for file:" + path.getFileName(), ex);
+					exitCode.set(-1);
+				}
+			});
+			System.exit(exitCode.get());
+		} catch (Throwable t) {
+			log.error("Error from " + ExchangeGeneratorMain.class.getName() + ".main", t);
+			System.exit(-1);
+		}
 	}
 	
-	private void generateCEXPojos(ExchangeDescriptor exchangeDescriptor, Path ouputFolder) throws IOException {
-		String pojoPackage = exchangeDescriptor.getBasePackage() + ".pojo";
-		for (ExchangeApiDescriptor api: exchangeDescriptor.getApis()) {
-			for (RestEndpointDescriptor restEndpointDescriptor: api.getRestEndpoints()) {
-				ExchangeJavaWrapperGeneratorUtil.generatePojo(ouputFolder, 
-										pojoPackage + "." 
-											+ JavaCodeGenerationUtil.firstLetterToUpperCase(exchangeDescriptor.getName()) 
-											+ JavaCodeGenerationUtil.firstLetterToUpperCase(restEndpointDescriptor.getName())
-											+ "Request", 
-										"Request for " + exchangeDescriptor.getName() + " " + api.getName() + " API " 
-											+ restEndpointDescriptor.getName() + " REST endpoint",
-										restEndpointDescriptor.getParameters());
-				ExchangeJavaWrapperGeneratorUtil.generatePojo(ouputFolder, 
-						pojoPackage + "." 
-							+ JavaCodeGenerationUtil.firstLetterToUpperCase(exchangeDescriptor.getName()) 
-							+ JavaCodeGenerationUtil.firstLetterToUpperCase(restEndpointDescriptor.getName())
-							+ "Response", 
-						"Response to " + exchangeDescriptor.getName() + " " + api.getName() + " API " 
-							+ restEndpointDescriptor.getName() + " REST endpoint request",
-						restEndpointDescriptor.getResponse());
-			}
-			
-			for (WebsocketEndpointDescriptor wsEndpointDescriptor: api.getWebsocketEndpoints()) {
-				ExchangeJavaWrapperGeneratorUtil.generatePojo(ouputFolder, 
-										pojoPackage + ".gen." 
-											+ JavaCodeGenerationUtil.firstLetterToUpperCase(exchangeDescriptor.getName()) 
-											+ JavaCodeGenerationUtil.firstLetterToUpperCase(wsEndpointDescriptor.getName())
-											+ "Request", 
-										"Subscription request to" + exchangeDescriptor.getName() + " " + api.getName() + " API " 
-											+ wsEndpointDescriptor.getName() + " REST endpoint",
-											wsEndpointDescriptor.getParameters());
-				ExchangeJavaWrapperGeneratorUtil.generatePojo(ouputFolder, 
-						pojoPackage + "." 
-							+ JavaCodeGenerationUtil.firstLetterToUpperCase(exchangeDescriptor.getName()) 
-							+ JavaCodeGenerationUtil.firstLetterToUpperCase(wsEndpointDescriptor.getName())
-							+ "Response", 
-						"Response to " + exchangeDescriptor.getName() + " " + api.getName() + " API " 
-							+ wsEndpointDescriptor.getName() + " REST endpoint request",
-							wsEndpointDescriptor.getResponse());
-			}
-		}
+	private static void generateExchangeApi(Path jsonFile) throws IOException {
+		log.info("Generating exchangeApi code for descriptor:" + jsonFile.getFileName());
+		ExchangeDescriptor exchangeDescriptor = new ExchangeDescriptorParser().fromJson(jsonFile);
+		Path outputSrcMainFolder = Paths.get(".", "src", "main", "java");
+		Path packagePath = Paths.get(StringUtils.replace(exchangeDescriptor.getBasePackage(), ".", "/"));
+		Path genPackagesFolder = outputSrcMainFolder.resolve(packagePath);
+		JavaCodeGenerationUtil.deletePath(genPackagesFolder);
+		ExchangeJavaWrapperGeneratorUtil.generateCEX(exchangeDescriptor, outputSrcMainFolder);
 		
+		Path outputSrcTestFolder = Paths.get(".", "src", "test", "java");
+		Path genTestPackagesFolder = outputSrcTestFolder.resolve(packagePath);
+		JavaCodeGenerationUtil.deletePath(genTestPackagesFolder);
 		
+		ExchangeJavaWrapperGeneratorUtil.generateCEXDemos(exchangeDescriptor, outputSrcTestFolder);
+		log.info("Done generating java code for " + jsonFile.getFileName() + " in:" + outputSrcMainFolder);
 	}
 
 }
