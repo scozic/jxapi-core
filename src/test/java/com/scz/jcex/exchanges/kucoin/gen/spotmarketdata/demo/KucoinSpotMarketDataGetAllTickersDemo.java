@@ -14,16 +14,10 @@ import org.slf4j.LoggerFactory;
 public class KucoinSpotMarketDataGetAllTickersDemo {
   private static final Logger log = LoggerFactory.getLogger(KucoinSpotMarketDataGetAllTickersDemo.class);
   
-  /**
-   * Sample value for <i>symbol</i> parameter of <i>getAllTickers</i> API
-   */
-  public static final String SYMBOL = "BTC-USDT";
-  
   public static void main(String[] args) {
     try {
       KucoinSpotMarketDataApi api = new KucoinSpotMarketDataApiImpl(TestApiProperties.filterProperties("kucoin", true));
       KucoinGetAllTickersRequest request = new KucoinGetAllTickersRequest();
-      request.setSymbol(SYMBOL);
       log.info("Calling 'com.scz.jcex.exchanges.kucoin.gen.spotmarketdata.KucoinSpotMarketDataApi.getAllTickers() API with request:" + request);
       log.info("Response:" + api.getAllTickers(request));
       System.exit(0);

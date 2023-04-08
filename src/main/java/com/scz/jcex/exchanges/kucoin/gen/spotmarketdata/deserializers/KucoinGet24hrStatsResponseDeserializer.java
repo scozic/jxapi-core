@@ -2,22 +2,22 @@ package com.scz.jcex.exchanges.kucoin.gen.spotmarketdata.deserializers;
 
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonToken;
-import com.scz.jcex.exchanges.kucoin.gen.spotmarketdata.pojo.KucoinGetAllTickersResponse;
+import com.scz.jcex.exchanges.kucoin.gen.spotmarketdata.pojo.KucoinGet24hrStatsResponse;
 import com.scz.jcex.netutils.deserialization.json.AbstractJsonMessageDeserializer;
 import com.scz.jcex.netutils.serialization.json.JsonParserUtil;
 import java.io.IOException;
 
 /**
- * Parses incoming JSON messages into com.scz.jcex.exchanges.kucoin.gen.spotmarketdata.pojo.KucoinGetAllTickersResponse instances
+ * Parses incoming JSON messages into com.scz.jcex.exchanges.kucoin.gen.spotmarketdata.pojo.KucoinGet24hrStatsResponse instances
  * <br><strong>THIS CODE IS GENERATED. DO NOT EDIT MANUALLY!</strong>
- * @see com.scz.jcex.exchanges.kucoin.gen.spotmarketdata.pojo.KucoinGetAllTickersResponse
+ * @see com.scz.jcex.exchanges.kucoin.gen.spotmarketdata.pojo.KucoinGet24hrStatsResponse
  */
-public class KucoinGetAllTickersResponseDeserializer extends AbstractJsonMessageDeserializer<KucoinGetAllTickersResponse> {
-  private final KucoinGetAllTickersResponseDataDeserializer kucoinGetAllTickersResponseDataDeserializer = new KucoinGetAllTickersResponseDataDeserializer();
+public class KucoinGet24hrStatsResponseDeserializer extends AbstractJsonMessageDeserializer<KucoinGet24hrStatsResponse> {
+  private final KucoinGet24hrStatsResponseDataDeserializer kucoinGet24hrStatsResponseDataDeserializer = new KucoinGet24hrStatsResponseDataDeserializer();
   
   @Override
-  public KucoinGetAllTickersResponse deserialize(JsonParser parser) throws IOException {
-    KucoinGetAllTickersResponse msg = new KucoinGetAllTickersResponse();
+  public KucoinGet24hrStatsResponse deserialize(JsonParser parser) throws IOException {
+    KucoinGet24hrStatsResponse msg = new KucoinGet24hrStatsResponse();
     while(parser.nextToken() != JsonToken.END_OBJECT) {
       switch(parser.getCurrentName()) {
       case "code":
@@ -28,7 +28,7 @@ public class KucoinGetAllTickersResponseDeserializer extends AbstractJsonMessage
       break;
       case "data":
         parser.nextToken();
-        msg.setData(kucoinGetAllTickersResponseDataDeserializer.deserialize(parser));
+        msg.setData(kucoinGet24hrStatsResponseDataDeserializer.deserialize(parser));
       break;
       default:
         JsonParserUtil.skipNextValue(parser);

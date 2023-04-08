@@ -1,16 +1,16 @@
 package com.scz.jcex.exchanges.kucoin.gen.spotmarketdata.pojo;
 
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.scz.jcex.exchanges.kucoin.gen.spotmarketdata.serializers.KucoinGetAllTickersResponseSerializer;
+import com.scz.jcex.exchanges.kucoin.gen.spotmarketdata.serializers.KucoinGet24hrStatsResponseSerializer;
 import com.scz.jcex.util.EncodingUtil;
 
 /**
- * Response to Kucoin SpotMarketData API getAllTickers REST endpoint request<br/>Request market tickers for all the trading pairs in the market (including 24h volume). On the rare occasion that we will change the currency name, if you still want the changed symbol name, you can use the symbolName field instead of the symbol field via 'Get all tickers' endpoint.<br/>See <a href="https://docs.kucoin.com/#get-all-tickers">API</a><br><strong>THIS CODE IS GENERATED. DO NOT EDIT MANUALLY!</strong>
+ * Response to Kucoin SpotMarketData API get24hrStats REST endpoint request<br/>Request via this endpoint to get the statistics of the specified ticker in the last 24 hours.<br/>See <a href="https://docs.kucoin.com/#get-24hr-stats">API</a><br><strong>THIS CODE IS GENERATED. DO NOT EDIT MANUALLY!</strong>
  */
-@JsonSerialize(using = KucoinGetAllTickersResponseSerializer.class)
-public class KucoinGetAllTickersResponse {
+@JsonSerialize(using = KucoinGet24hrStatsResponseSerializer.class)
+public class KucoinGet24hrStatsResponse {
   private String code;
-  private KucoinGetAllTickersResponseData data;
+  private KucoinGet24hrStatsResponseData data;
   private String msg;
   
   /**
@@ -30,14 +30,14 @@ public class KucoinGetAllTickersResponse {
   /**
    * @return List of market information for each market symbol
    */
-  public KucoinGetAllTickersResponseData getData(){
+  public KucoinGet24hrStatsResponseData getData(){
     return data;
   }
   
   /**
    * @param data List of market information for each market symbol
    */
-  public void setData(KucoinGetAllTickersResponseData data) {
+  public void setData(KucoinGet24hrStatsResponseData data) {
     this.data = data;
   }
   

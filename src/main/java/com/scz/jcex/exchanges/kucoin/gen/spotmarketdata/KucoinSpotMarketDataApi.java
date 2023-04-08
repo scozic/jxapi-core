@@ -4,6 +4,8 @@ import com.scz.jcex.exchanges.kucoin.gen.spotmarketdata.pojo.KucoinAllSymbolsTic
 import com.scz.jcex.exchanges.kucoin.gen.spotmarketdata.pojo.KucoinAllSymbolsTickerStreamRequest;
 import com.scz.jcex.exchanges.kucoin.gen.spotmarketdata.pojo.KucoinApplyConnectTokenPublicRequest;
 import com.scz.jcex.exchanges.kucoin.gen.spotmarketdata.pojo.KucoinApplyConnectTokenPublicResponse;
+import com.scz.jcex.exchanges.kucoin.gen.spotmarketdata.pojo.KucoinGet24hrStatsRequest;
+import com.scz.jcex.exchanges.kucoin.gen.spotmarketdata.pojo.KucoinGet24hrStatsResponse;
 import com.scz.jcex.exchanges.kucoin.gen.spotmarketdata.pojo.KucoinGetAllTickersRequest;
 import com.scz.jcex.exchanges.kucoin.gen.spotmarketdata.pojo.KucoinGetAllTickersResponse;
 import com.scz.jcex.exchanges.kucoin.gen.spotmarketdata.pojo.KucoinGetSymbolsListRequest;
@@ -30,9 +32,13 @@ public interface  KucoinSpotMarketDataApi {
    */
   KucoinGetTickerResponse getTicker(KucoinGetTickerRequest request) throws IOException;
   /**
-   * Request via this endpoint to get Level 1 Market Data. The returned value includes the best bid price and size, the best ask price and size as well as the last traded price and the last traded size.<br/>See <a href="https://docs.kucoin.com/#get-all-tickers">API</a>
+   * Request market tickers for all the trading pairs in the market (including 24h volume). On the rare occasion that we will change the currency name, if you still want the changed symbol name, you can use the symbolName field instead of the symbol field via 'Get all tickers' endpoint.<br/>See <a href="https://docs.kucoin.com/#get-all-tickers">API</a>
    */
   KucoinGetAllTickersResponse getAllTickers(KucoinGetAllTickersRequest request) throws IOException;
+  /**
+   * Request via this endpoint to get the statistics of the specified ticker in the last 24 hours.<br/>See <a href="https://docs.kucoin.com/#get-24hr-stats">API</a>
+   */
+  KucoinGet24hrStatsResponse get24hrStats(KucoinGet24hrStatsRequest request) throws IOException;
   /**
    * You need to apply for one of the two tokens below to create a websocket connection..<br/>See <a href="https://docs.kucoin.com/#apply-connect-token">API</a>
    */

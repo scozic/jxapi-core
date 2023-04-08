@@ -1,15 +1,15 @@
 package com.scz.jcex.exchanges.kucoin.gen.spotmarketdata.pojo;
 
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.scz.jcex.exchanges.kucoin.gen.spotmarketdata.serializers.KucoinGetTickerRequestSerializer;
+import com.scz.jcex.exchanges.kucoin.gen.spotmarketdata.serializers.KucoinGet24hrStatsRequestSerializer;
 import com.scz.jcex.netutils.rest.RestEndpointUrlParameters;
 import com.scz.jcex.util.EncodingUtil;
 
 /**
- * Request for Kucoin SpotMarketData API getTicker REST endpointRequest via this endpoint to get Level 1 Market Data. The returned value includes the best bid price and size, the best ask price and size as well as the last traded price and the last traded size.<br/>See <a href="https://docs.kucoin.com/#get-ticker">API</a><br><strong>THIS CODE IS GENERATED. DO NOT EDIT MANUALLY!</strong>
+ * Request for Kucoin SpotMarketData API get24hrStats REST endpointRequest via this endpoint to get the statistics of the specified ticker in the last 24 hours.<br/>See <a href="https://docs.kucoin.com/#get-24hr-stats">API</a><br><strong>THIS CODE IS GENERATED. DO NOT EDIT MANUALLY!</strong>
  */
-@JsonSerialize(using = KucoinGetTickerRequestSerializer.class)
-public class KucoinGetTickerRequest implements RestEndpointUrlParameters {
+@JsonSerialize(using = KucoinGet24hrStatsRequestSerializer.class)
+public class KucoinGet24hrStatsRequest implements RestEndpointUrlParameters {
   private String symbol;
   
   /**

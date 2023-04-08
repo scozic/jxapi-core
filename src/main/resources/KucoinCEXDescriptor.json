@@ -13,7 +13,6 @@
 					"httpMethod": "GET",
 					"description": "Request via this endpoint to get a list of available currency pairs for trading. If you want to get the market information of the trading symbol, please use Get All Tickers.<br/>See <a href=\"https://docs.kucoin.com/#get-symbols-list\">API</a>",
 					"url": "https://api.kucoin.com/api/v2/symbols",
-					"urlParameters": "",
 					"parameters": [],
 					"response": [
 						{"name":"code", "type": "STRING", "description":"System error code, see <a href=\"https://docs.kucoin.com/#request\">API</a>", "sampleValue": "0"},
@@ -46,7 +45,6 @@
 					"httpMethod": "GET",
 					"description": "Request via this endpoint to get Level 1 Market Data. The returned value includes the best bid price and size, the best ask price and size as well as the last traded price and the last traded size.<br/>See <a href=\"https://docs.kucoin.com/#get-ticker\">API</a>",
 					"url": "https://api.kucoin.com/api/v1/market/orderbook/level1",
-					"urlParameters": "symbol=${symbol}",
 					"parameters": [
 						{"name":"symbol", "type": "STRING", "description":"<a href=\"https://docs.kucoin.com/#get-symbols-list\">symbol</a>", "sampleValue": "BTC-USDT"}
 					],
@@ -70,16 +68,13 @@
 				{
 					"name": "getAllTickers",
 					"httpMethod": "GET",
-					"description": "Request via this endpoint to get Level 1 Market Data. The returned value includes the best bid price and size, the best ask price and size as well as the last traded price and the last traded size.<br/>See <a href=\"https://docs.kucoin.com/#get-all-tickers\">API</a>",
-					"url": "https://api.kucoin.com/api/v1/market/orderbook/level1",
-					"urlParameters": "symbol=${symbol}",
-					"parameters": [
-						{"name":"symbol", "type": "STRING", "description":"<a href=\"https://docs.kucoin.com/#get-symbols-list\">symbol</a>", "sampleValue": "BTC-USDT"}
-					],
+					"description": "Request market tickers for all the trading pairs in the market (including 24h volume). On the rare occasion that we will change the currency name, if you still want the changed symbol name, you can use the symbolName field instead of the symbol field via 'Get all tickers' endpoint.<br/>See <a href=\"https://docs.kucoin.com/#get-all-tickers\">API</a>",
+					"url": "https://api.kucoin.com/api/v1/market/allTickers",
+					"parameters": [],
 					"response": [
 						{"name":"code", "type": "STRING", "description":"System error code, see <a href=\"https://docs.kucoin.com/#request\">API</a>", "sampleValue": "0"},
 						{"name":"msg", "type": "STRING", "description":"System error code description, provided in error response when code is not '0', see <a href=\"https://docs.kucoin.com/#request\">API</a>", "sampleValue": "0"},
-						{"name":"data", "type": "STRUCT_LIST", "description":"List of market information for each market symbol", "parameters":
+						{"name":"data", "type": "STRUCT", "description":"List of market information for each market symbol", "parameters":
 							[
 								{"name":"time", "type": "TIMESTAMP", "description":"Timestamp", "sampleValue":1550653727731},
 								{"name":"ticker", "type": "STRUCT_LIST", "description":"List of market information for each market symbol", "parameters":
@@ -102,6 +97,39 @@
 										{"name":"makerCoefficient", "type": "BIGDECIMAL", "description":"Maker fee coefficient", "sampleValue":"1"}
 									]
 								}		
+							]
+						}
+					]
+				},
+				{
+					"name": "get24hrStats",
+					"httpMethod": "GET",
+					"description": "Request via this endpoint to get the statistics of the specified ticker in the last 24 hours.<br/>See <a href=\"https://docs.kucoin.com/#get-24hr-stats\">API</a>",
+					"url": "https://api.kucoin.com/api/v1/market/stats",
+					"parameters": [
+						{"name":"symbol", "type": "STRING", "description":"<a href=\"https://docs.kucoin.com/#get-symbols-list\">symbol</a>", "sampleValue": "BTC-USDT"}
+					],
+					"response": [
+						{"name":"code", "type": "STRING", "description":"System error code, see <a href=\"https://docs.kucoin.com/#request\">API</a>", "sampleValue": "0"},
+						{"name":"msg", "type": "STRING", "description":"System error code description, provided in error response when code is not '0', see <a href=\"https://docs.kucoin.com/#request\">API</a>", "sampleValue": "0"},
+						{"name":"data", "type": "STRUCT", "description":"List of market information for each market symbol", "parameters":
+							[
+								{"name":"time", "type": "TIMESTAMP", "description":"Timestamp", "sampleValue":1602832092060},
+								{"name":"symbol", "type": "STRING", "description":"<a href=\"https://docs.kucoin.com/#get-symbols-list\">symbol</a>", "sampleValue": "BTC-USDT"},
+								{"name":"buy", "type": "BIGDECIMAL", "description":"Best bid price", "sampleValue":"11328.9"},
+								{"name":"sell", "type": "BIGDECIMAL", "description":"Best ask price", "sampleValue":"11329"},
+								{"name":"changeRate", "type": "BIGDECIMAL", "description":"24h change rate", "sampleValue":"-0.0055"},
+								{"name":"changePrice", "type": "BIGDECIMAL", "description":"24h change price", "sampleValue":"-63.6"},
+								{"name":"high", "type": "BIGDECIMAL", "description":"24h highest price", "sampleValue":"11610"},
+								{"name":"low", "type": "BIGDECIMAL", "description":"24h lowest price", "sampleValue":"11200"},
+								{"name":"vol", "type": "BIGDECIMAL", "description":"24h volume, executed based on base currency", "sampleValue":"2282.70993217"},
+								{"name":"volValue", "type": "BIGDECIMAL", "description":"24h traded amount in quote currency", "sampleValue":"25984946.157790431"},
+								{"name":"last", "type": "BIGDECIMAL", "description":"Last price", "sampleValue":"25984946.157790431"},
+								{"name":"averagePrice", "type": "BIGDECIMAL", "description":"Average trading price in the last 24 hours", "sampleValue":"11360.66065903"},
+								{"name":"takerFeeRate", "type": "BIGDECIMAL", "description":"Basic Taker Fee", "sampleValue":"0.001"},
+								{"name":"makerFeeRate", "type": "BIGDECIMAL", "description":"Basic Maker Fee", "sampleValue":"0.001"},
+								{"name":"takerCoefficient", "type": "BIGDECIMAL", "description":"Taker fee coefficient", "sampleValue":"1"},
+								{"name":"makerCoefficient", "type": "BIGDECIMAL", "description":"Maker fee coefficient", "sampleValue":"1"}		
 							]
 						}
 					]

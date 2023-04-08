@@ -19,7 +19,6 @@ public class KucoinGetAllTickersRequestSerializer extends StdSerializer<KucoinGe
   @Override
   public void serialize(KucoinGetAllTickersRequest value, JsonGenerator gen, SerializerProvider provider) throws IOException {
     gen.writeStartObject();
-    gen.writeStringField("symbol", String.valueOf(value.getSymbol()));
     gen.writeEndObject();
   }
 }

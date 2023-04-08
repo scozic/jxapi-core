@@ -2,6 +2,7 @@ package com.scz.jcex.exchanges.kucoin.gen.spotmarketdata;
 
 import com.scz.jcex.exchanges.kucoin.gen.spotmarketdata.deserializers.KucoinAllSymbolsTickerStreamMessageDeserializer;
 import com.scz.jcex.exchanges.kucoin.gen.spotmarketdata.deserializers.KucoinApplyConnectTokenPublicResponseDeserializer;
+import com.scz.jcex.exchanges.kucoin.gen.spotmarketdata.deserializers.KucoinGet24hrStatsResponseDeserializer;
 import com.scz.jcex.exchanges.kucoin.gen.spotmarketdata.deserializers.KucoinGetAllTickersResponseDeserializer;
 import com.scz.jcex.exchanges.kucoin.gen.spotmarketdata.deserializers.KucoinGetSymbolsListResponseDeserializer;
 import com.scz.jcex.exchanges.kucoin.gen.spotmarketdata.deserializers.KucoinGetTickerResponseDeserializer;
@@ -10,6 +11,8 @@ import com.scz.jcex.exchanges.kucoin.gen.spotmarketdata.pojo.KucoinAllSymbolsTic
 import com.scz.jcex.exchanges.kucoin.gen.spotmarketdata.pojo.KucoinAllSymbolsTickerStreamRequest;
 import com.scz.jcex.exchanges.kucoin.gen.spotmarketdata.pojo.KucoinApplyConnectTokenPublicRequest;
 import com.scz.jcex.exchanges.kucoin.gen.spotmarketdata.pojo.KucoinApplyConnectTokenPublicResponse;
+import com.scz.jcex.exchanges.kucoin.gen.spotmarketdata.pojo.KucoinGet24hrStatsRequest;
+import com.scz.jcex.exchanges.kucoin.gen.spotmarketdata.pojo.KucoinGet24hrStatsResponse;
 import com.scz.jcex.exchanges.kucoin.gen.spotmarketdata.pojo.KucoinGetAllTickersRequest;
 import com.scz.jcex.exchanges.kucoin.gen.spotmarketdata.pojo.KucoinGetAllTickersResponse;
 import com.scz.jcex.exchanges.kucoin.gen.spotmarketdata.pojo.KucoinGetSymbolsListRequest;
@@ -74,9 +77,21 @@ public class  KucoinSpotMarketDataApiImpl implements KucoinSpotMarketDataApi {
   public KucoinGetAllTickersResponse getAllTickers(KucoinGetAllTickersRequest request) throws IOException {
     if (log.isDebugEnabled())
       log.debug("GET getAllTickers > " + request);
-    KucoinGetAllTickersResponse response = getAllTickersApi.call(RestRequest.create("https://api.kucoin.com/api/v1/market/orderbook/level1", "GET", request));
+    KucoinGetAllTickersResponse response = getAllTickersApi.call(RestRequest.create("https://api.kucoin.com/api/v1/market/allTickers", "GET", request));
     if (log.isDebugEnabled())
       log.debug("GET getAllTickers < " + response);
+    return response;
+  }
+  
+  private final RestEndpoint<KucoinGet24hrStatsRequest, KucoinGet24hrStatsResponse> get24hrStatsApi;
+  
+  @Override
+  public KucoinGet24hrStatsResponse get24hrStats(KucoinGet24hrStatsRequest request) throws IOException {
+    if (log.isDebugEnabled())
+      log.debug("GET get24hrStats > " + request);
+    KucoinGet24hrStatsResponse response = get24hrStatsApi.call(RestRequest.create("https://api.kucoin.com/api/v1/market/stats", "GET", request));
+    if (log.isDebugEnabled())
+      log.debug("GET get24hrStats < " + response);
     return response;
   }
   
@@ -137,6 +152,7 @@ public class  KucoinSpotMarketDataApiImpl implements KucoinSpotMarketDataApi {
     this.getSymbolsListApi = restEndpointFactory.createRestEndpoint(new KucoinGetSymbolsListResponseDeserializer());
     this.getTickerApi = restEndpointFactory.createRestEndpoint(new KucoinGetTickerResponseDeserializer());
     this.getAllTickersApi = restEndpointFactory.createRestEndpoint(new KucoinGetAllTickersResponseDeserializer());
+    this.get24hrStatsApi = restEndpointFactory.createRestEndpoint(new KucoinGet24hrStatsResponseDeserializer());
     this.applyConnectTokenPublicApi = restEndpointFactory.createRestEndpoint(new KucoinApplyConnectTokenPublicResponseDeserializer());
     this.allSymbolsTickerStreamWs = websocketEndpointFactory.createWebsocketEndpoint(new KucoinAllSymbolsTickerStreamMessageDeserializer());
     this.individualSymbolTickerStreamsWs = websocketEndpointFactory.createWebsocketEndpoint(new KucoinIndividualSymbolTickerStreamsMessageDeserializer());
