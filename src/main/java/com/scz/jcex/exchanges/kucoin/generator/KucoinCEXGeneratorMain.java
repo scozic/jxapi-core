@@ -33,7 +33,7 @@ public class KucoinCEXGeneratorMain {
 			log.info("Done generating KucoinCEXDescriptor java code in:" + outputSrcMainFolder);
 			System.exit(0);
 		} catch (Throwable t) {
-			log.error("Error in " + BinanceCEXGeneratorMain.class.getName() + " main", t);
+			log.error("Error in " + KucoinCEXGeneratorMain.class.getName() + " main", t);
 			System.exit(-1);
 		}
 	}
