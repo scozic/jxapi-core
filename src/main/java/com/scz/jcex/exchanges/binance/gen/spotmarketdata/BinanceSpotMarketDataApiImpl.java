@@ -1,13 +1,10 @@
 package com.scz.jcex.exchanges.binance.gen.spotmarketdata;
 
 import com.scz.jcex.exchanges.binance.gen.spotmarketdata.deserializers.BinanceAllMarketTickersStreamMessageDeserializer;
-import com.scz.jcex.exchanges.binance.gen.spotmarketdata.deserializers.BinanceExchangeInformationAllResponseDeserializer;
 import com.scz.jcex.exchanges.binance.gen.spotmarketdata.deserializers.BinanceExchangeInformationResponseDeserializer;
 import com.scz.jcex.exchanges.binance.gen.spotmarketdata.deserializers.BinanceIndividualSymbolTickerStreamsMessageDeserializer;
 import com.scz.jcex.exchanges.binance.gen.spotmarketdata.pojo.BinanceAllMarketTickersStreamMessage;
 import com.scz.jcex.exchanges.binance.gen.spotmarketdata.pojo.BinanceAllMarketTickersStreamRequest;
-import com.scz.jcex.exchanges.binance.gen.spotmarketdata.pojo.BinanceExchangeInformationAllRequest;
-import com.scz.jcex.exchanges.binance.gen.spotmarketdata.pojo.BinanceExchangeInformationAllResponse;
 import com.scz.jcex.exchanges.binance.gen.spotmarketdata.pojo.BinanceExchangeInformationRequest;
 import com.scz.jcex.exchanges.binance.gen.spotmarketdata.pojo.BinanceExchangeInformationResponse;
 import com.scz.jcex.exchanges.binance.gen.spotmarketdata.pojo.BinanceIndividualSymbolTickerStreamsMessage;
@@ -37,18 +34,6 @@ public class  BinanceSpotMarketDataApiImpl implements BinanceSpotMarketDataApi {
   
   private final BinancePublicWebsocketEndpointFactory websocketEndpointFactory = new BinancePublicWebsocketEndpointFactory();
   
-  
-  private final RestEndpoint<BinanceExchangeInformationAllRequest, BinanceExchangeInformationAllResponse> exchangeInformationAllApi;
-  
-  @Override
-  public BinanceExchangeInformationAllResponse exchangeInformationAll(BinanceExchangeInformationAllRequest request) throws IOException {
-    if (log.isDebugEnabled())
-      log.debug("GET exchangeInformationAll > " + request);
-    BinanceExchangeInformationAllResponse response = exchangeInformationAllApi.call(RestRequest.create("https://api.binance.com/api/v3/exchangeInfo", "GET", request));
-    if (log.isDebugEnabled())
-      log.debug("GET exchangeInformationAll < " + response);
-    return response;
-  }
   
   private final RestEndpoint<BinanceExchangeInformationRequest, BinanceExchangeInformationResponse> exchangeInformationApi;
   
@@ -104,7 +89,6 @@ public class  BinanceSpotMarketDataApiImpl implements BinanceSpotMarketDataApi {
   public BinanceSpotMarketDataApiImpl(Properties properties) {
     this.restEndpointFactory.setProperties(properties);
     this.websocketEndpointFactory.setProperties(properties);
-    this.exchangeInformationAllApi = restEndpointFactory.createRestEndpoint(new BinanceExchangeInformationAllResponseDeserializer());
     this.exchangeInformationApi = restEndpointFactory.createRestEndpoint(new BinanceExchangeInformationResponseDeserializer());
     this.allMarketTickersStreamWs = websocketEndpointFactory.createWebsocketEndpoint(new BinanceAllMarketTickersStreamMessageDeserializer());
     this.individualSymbolTickerStreamsWs = websocketEndpointFactory.createWebsocketEndpoint(new BinanceIndividualSymbolTickerStreamsMessageDeserializer());

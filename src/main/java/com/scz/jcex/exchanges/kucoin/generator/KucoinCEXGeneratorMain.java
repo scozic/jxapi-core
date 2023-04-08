@@ -6,7 +6,6 @@ import java.nio.file.Paths;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.scz.jcex.exchanges.binance.generator.BinanceCEXGeneratorMain;
 import com.scz.jcex.generator.JavaCodeGenerationUtil;
 import com.scz.jcex.generator.exchange.ExchangeDescriptor;
 import com.scz.jcex.generator.exchange.ExchangeDescriptorParser;
