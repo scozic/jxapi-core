@@ -43,7 +43,7 @@ public class ExchangeGeneratorMain {
 		}
 	}
 	
-	private static void generateExchangeApi(Path jsonFile) throws IOException {
+	public static void generateExchangeApi(Path jsonFile) throws IOException {
 		log.info("Generating exchangeApi code for descriptor:" + jsonFile.getFileName());
 		ExchangeDescriptor exchangeDescriptor = new ExchangeDescriptorParser().fromJson(jsonFile);
 		Path outputSrcMainFolder = Paths.get(".", "src", "main", "java");
