@@ -12,6 +12,9 @@ import org.slf4j.LoggerFactory;
 
 import com.scz.jcex.generator.JavaCodeGenerationUtil;
 
+/**
+ * Java main class that performs generation of exchange APIs for every file found with name ending with 'Descriptor.json' in 'src/main/resources/' folder. 
+ */
 public class ExchangeGeneratorMain {
 	
 	private static final Logger log = LoggerFactory.getLogger(ExchangeGeneratorMain.class);
@@ -23,7 +26,9 @@ public class ExchangeGeneratorMain {
 		try {
 			final AtomicInteger exitCode = new AtomicInteger(0);
 			Path resources = Paths.get(".", "src", "main", "resources");
-			Files.walk(resources).filter(p -> p.getFileName().endsWith("Descriptor.json")).forEach(path -> {
+			Files.walk(resources)
+				 .filter(p -> p.toFile().getName().endsWith("Descriptor.json"))
+				 .forEach(path -> {
 				try {
 					generateExchangeApi(path);
 				} catch (Exception ex) {
