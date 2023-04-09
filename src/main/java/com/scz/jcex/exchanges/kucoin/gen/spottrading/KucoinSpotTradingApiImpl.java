@@ -2,21 +2,27 @@ package com.scz.jcex.exchanges.kucoin.gen.spottrading;
 
 import com.scz.jcex.exchanges.kucoin.gen.spottrading.deserializers.KucoinAccountBalanceNoticeMessageDeserializer;
 import com.scz.jcex.exchanges.kucoin.gen.spottrading.deserializers.KucoinApplyConnectTokenPrivateResponseDeserializer;
+import com.scz.jcex.exchanges.kucoin.gen.spottrading.deserializers.KucoinCancelAllOrdersResponseDeserializer;
 import com.scz.jcex.exchanges.kucoin.gen.spottrading.deserializers.KucoinCancelOrderResponseDeserializer;
 import com.scz.jcex.exchanges.kucoin.gen.spottrading.deserializers.KucoinCancelSingleOrderByClientOidResponseDeserializer;
 import com.scz.jcex.exchanges.kucoin.gen.spottrading.deserializers.KucoinListAccountsResponseDeserializer;
+import com.scz.jcex.exchanges.kucoin.gen.spottrading.deserializers.KucoinListOrdersResponseDeserializer;
 import com.scz.jcex.exchanges.kucoin.gen.spottrading.deserializers.KucoinPlaceNewOrderResponseDeserializer;
 import com.scz.jcex.exchanges.kucoin.gen.spottrading.deserializers.KucoinPrivateOrderChangeV2MessageDeserializer;
 import com.scz.jcex.exchanges.kucoin.gen.spottrading.pojo.KucoinAccountBalanceNoticeMessage;
 import com.scz.jcex.exchanges.kucoin.gen.spottrading.pojo.KucoinAccountBalanceNoticeRequest;
 import com.scz.jcex.exchanges.kucoin.gen.spottrading.pojo.KucoinApplyConnectTokenPrivateRequest;
 import com.scz.jcex.exchanges.kucoin.gen.spottrading.pojo.KucoinApplyConnectTokenPrivateResponse;
+import com.scz.jcex.exchanges.kucoin.gen.spottrading.pojo.KucoinCancelAllOrdersRequest;
+import com.scz.jcex.exchanges.kucoin.gen.spottrading.pojo.KucoinCancelAllOrdersResponse;
 import com.scz.jcex.exchanges.kucoin.gen.spottrading.pojo.KucoinCancelOrderRequest;
 import com.scz.jcex.exchanges.kucoin.gen.spottrading.pojo.KucoinCancelOrderResponse;
 import com.scz.jcex.exchanges.kucoin.gen.spottrading.pojo.KucoinCancelSingleOrderByClientOidRequest;
 import com.scz.jcex.exchanges.kucoin.gen.spottrading.pojo.KucoinCancelSingleOrderByClientOidResponse;
 import com.scz.jcex.exchanges.kucoin.gen.spottrading.pojo.KucoinListAccountsRequest;
 import com.scz.jcex.exchanges.kucoin.gen.spottrading.pojo.KucoinListAccountsResponse;
+import com.scz.jcex.exchanges.kucoin.gen.spottrading.pojo.KucoinListOrdersRequest;
+import com.scz.jcex.exchanges.kucoin.gen.spottrading.pojo.KucoinListOrdersResponse;
 import com.scz.jcex.exchanges.kucoin.gen.spottrading.pojo.KucoinPlaceNewOrderRequest;
 import com.scz.jcex.exchanges.kucoin.gen.spottrading.pojo.KucoinPlaceNewOrderResponse;
 import com.scz.jcex.exchanges.kucoin.gen.spottrading.pojo.KucoinPrivateOrderChangeV2Message;
@@ -107,6 +113,30 @@ public class  KucoinSpotTradingApiImpl implements KucoinSpotTradingApi {
     return response;
   }
   
+  private final RestEndpoint<KucoinCancelAllOrdersRequest, KucoinCancelAllOrdersResponse> cancelAllOrdersApi;
+  
+  @Override
+  public KucoinCancelAllOrdersResponse cancelAllOrders(KucoinCancelAllOrdersRequest request) throws IOException {
+    if (log.isDebugEnabled())
+      log.debug("DELETE CancelAllOrders > " + request);
+    KucoinCancelAllOrdersResponse response = cancelAllOrdersApi.call(RestRequest.create("https://api.kucoin.com/api/v1/orders", "DELETE", request));
+    if (log.isDebugEnabled())
+      log.debug("DELETE CancelAllOrders < " + response);
+    return response;
+  }
+  
+  private final RestEndpoint<KucoinListOrdersRequest, KucoinListOrdersResponse> listOrdersApi;
+  
+  @Override
+  public KucoinListOrdersResponse listOrders(KucoinListOrdersRequest request) throws IOException {
+    if (log.isDebugEnabled())
+      log.debug("GET ListOrders > " + request);
+    KucoinListOrdersResponse response = listOrdersApi.call(RestRequest.create("https://api.kucoin.com/api/v1/orders", "GET", request));
+    if (log.isDebugEnabled())
+      log.debug("GET ListOrders < " + response);
+    return response;
+  }
+  
   private final WebsocketEndpoint<KucoinPrivateOrderChangeV2Request, KucoinPrivateOrderChangeV2Message> privateOrderChangeV2Ws;
   
   
@@ -154,6 +184,8 @@ public class  KucoinSpotTradingApiImpl implements KucoinSpotTradingApi {
     this.placeNewOrderApi = restEndpointFactory.createRestEndpoint(new KucoinPlaceNewOrderResponseDeserializer());
     this.cancelOrderApi = restEndpointFactory.createRestEndpoint(new KucoinCancelOrderResponseDeserializer());
     this.cancelSingleOrderByClientOidApi = restEndpointFactory.createRestEndpoint(new KucoinCancelSingleOrderByClientOidResponseDeserializer());
+    this.cancelAllOrdersApi = restEndpointFactory.createRestEndpoint(new KucoinCancelAllOrdersResponseDeserializer());
+    this.listOrdersApi = restEndpointFactory.createRestEndpoint(new KucoinListOrdersResponseDeserializer());
     this.privateOrderChangeV2Ws = websocketEndpointFactory.createWebsocketEndpoint(new KucoinPrivateOrderChangeV2MessageDeserializer());
     this.accountBalanceNoticeWs = websocketEndpointFactory.createWebsocketEndpoint(new KucoinAccountBalanceNoticeMessageDeserializer());
   }

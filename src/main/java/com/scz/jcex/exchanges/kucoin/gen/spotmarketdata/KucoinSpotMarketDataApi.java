@@ -8,6 +8,8 @@ import com.scz.jcex.exchanges.kucoin.gen.spotmarketdata.pojo.KucoinGet24hrStatsR
 import com.scz.jcex.exchanges.kucoin.gen.spotmarketdata.pojo.KucoinGet24hrStatsResponse;
 import com.scz.jcex.exchanges.kucoin.gen.spotmarketdata.pojo.KucoinGetAllTickersRequest;
 import com.scz.jcex.exchanges.kucoin.gen.spotmarketdata.pojo.KucoinGetAllTickersResponse;
+import com.scz.jcex.exchanges.kucoin.gen.spotmarketdata.pojo.KucoinGetMarketListRequest;
+import com.scz.jcex.exchanges.kucoin.gen.spotmarketdata.pojo.KucoinGetMarketListResponse;
 import com.scz.jcex.exchanges.kucoin.gen.spotmarketdata.pojo.KucoinGetSymbolsListRequest;
 import com.scz.jcex.exchanges.kucoin.gen.spotmarketdata.pojo.KucoinGetSymbolsListResponse;
 import com.scz.jcex.exchanges.kucoin.gen.spotmarketdata.pojo.KucoinGetTickerRequest;
@@ -39,6 +41,10 @@ public interface  KucoinSpotMarketDataApi {
    * Request via this endpoint to get the statistics of the specified ticker in the last 24 hours.<br/>See <a href="https://docs.kucoin.com/#get-24hr-stats">API</a>
    */
   KucoinGet24hrStatsResponse get24hrStats(KucoinGet24hrStatsRequest request) throws IOException;
+  /**
+   * Request via this endpoint to get the transaction currency for the entire trading market.<br/>See <a href="https://docs.kucoin.com/#get-market-list">API</a>
+   */
+  KucoinGetMarketListResponse getMarketList(KucoinGetMarketListRequest request) throws IOException;
   /**
    * You need to apply for one of the two tokens below to create a websocket connection..<br/>See <a href="https://docs.kucoin.com/#apply-connect-token">API</a>
    */

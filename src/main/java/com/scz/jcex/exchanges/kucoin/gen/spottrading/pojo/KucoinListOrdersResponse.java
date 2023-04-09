@@ -1,16 +1,16 @@
 package com.scz.jcex.exchanges.kucoin.gen.spottrading.pojo;
 
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.scz.jcex.exchanges.kucoin.gen.spottrading.serializers.KucoinCancelSingleOrderByClientOidResponseSerializer;
+import com.scz.jcex.exchanges.kucoin.gen.spottrading.serializers.KucoinListOrdersResponseSerializer;
 import com.scz.jcex.util.EncodingUtil;
 
 /**
- * Response to Kucoin SpotTrading API CancelSingleOrderByClientOid REST endpoint request<br/> Request via this interface to cancel an order via the clientOid.<br/>See <a href="https://docs.kucoin.com/#cancel-single-order-by-clientoid">API</a><br/><br><strong>THIS CODE IS GENERATED. DO NOT EDIT MANUALLY!</strong>
+ * Response to Kucoin SpotTrading API ListOrders REST endpoint request<br/>Request via this endpoint to get your current order list. Items are paginated and sorted to show the latest first. See the <a href="https://docs.kucoin.com/#pagination">Pagination</a> section for retrieving additional entries after the first page.</p> <br/>See <a href="https://docs.kucoin.com/#list-orders">API</a><br/><br><strong>THIS CODE IS GENERATED. DO NOT EDIT MANUALLY!</strong>
  */
-@JsonSerialize(using = KucoinCancelSingleOrderByClientOidResponseSerializer.class)
-public class KucoinCancelSingleOrderByClientOidResponse {
+@JsonSerialize(using = KucoinListOrdersResponseSerializer.class)
+public class KucoinListOrdersResponse {
   private String code;
-  private KucoinCancelSingleOrderByClientOidResponseData data;
+  private KucoinListOrdersResponseData data;
   private String msg;
   
   /**
@@ -30,14 +30,14 @@ public class KucoinCancelSingleOrderByClientOidResponse {
   /**
    * @return Response payload
    */
-  public KucoinCancelSingleOrderByClientOidResponseData getData(){
+  public KucoinListOrdersResponseData getData(){
     return data;
   }
   
   /**
    * @param data Response payload
    */
-  public void setData(KucoinCancelSingleOrderByClientOidResponseData data) {
+  public void setData(KucoinListOrdersResponseData data) {
     this.data = data;
   }
   

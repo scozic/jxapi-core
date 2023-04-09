@@ -11,7 +11,6 @@ import com.scz.jcex.netutils.deserialization.MessageDeserializer;
 import com.scz.jcex.netutils.rest.RestEndpointUrlParameters;
 import com.scz.jcex.netutils.rest.RestRequest;
 import com.scz.jcex.netutils.rest.javaxnet.JavaxNetRestEndpoint;
-import com.scz.jcex.util.EncodingUtil;
 
 public class KucoinPrivateApiRestEndpoint<R, A> extends JavaxNetRestEndpoint<R, A> {
 	
@@ -39,7 +38,7 @@ public class KucoinPrivateApiRestEndpoint<R, A> extends JavaxNetRestEndpoint<R, 
 		requestPath = requestPath.substring(requestPathOff);
 		String urlParams = ((RestEndpointUrlParameters) request.getRequest()).getUrlParameters();
 		if (urlParams != null && !urlParams.isEmpty()) {
-			requestPath += "?" + urlParams;
+			requestPath += urlParams;
 		}
 		String strToSign = timestampStr + request.getHttpMethod().toUpperCase() + requestPath + (body != null? body: "");
 		String signature = digest(strToSign);
@@ -50,14 +49,6 @@ public class KucoinPrivateApiRestEndpoint<R, A> extends JavaxNetRestEndpoint<R, 
 		connection.setRequestProperty("KC-API-KEY-VERSION", "2");
 		connection.setRequestProperty("User-Agent", "KuCoin-Java-SDK:2");
 		connection.setRequestProperty("Content-Type", "application/json");
-	}
-	
-	@Override
-	protected String getBody(RestRequest<R> request) {
-		if ("DELETE".equals(request.getHttpMethod())) {
-			return null;
-		}
-		return EncodingUtil.pojoToJsonString(request.getRequest());
 	}
 	
 	private String digest(String toDigest) {

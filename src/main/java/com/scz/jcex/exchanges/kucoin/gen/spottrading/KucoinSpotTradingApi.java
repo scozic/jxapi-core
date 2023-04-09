@@ -4,12 +4,16 @@ import com.scz.jcex.exchanges.kucoin.gen.spottrading.pojo.KucoinAccountBalanceNo
 import com.scz.jcex.exchanges.kucoin.gen.spottrading.pojo.KucoinAccountBalanceNoticeRequest;
 import com.scz.jcex.exchanges.kucoin.gen.spottrading.pojo.KucoinApplyConnectTokenPrivateRequest;
 import com.scz.jcex.exchanges.kucoin.gen.spottrading.pojo.KucoinApplyConnectTokenPrivateResponse;
+import com.scz.jcex.exchanges.kucoin.gen.spottrading.pojo.KucoinCancelAllOrdersRequest;
+import com.scz.jcex.exchanges.kucoin.gen.spottrading.pojo.KucoinCancelAllOrdersResponse;
 import com.scz.jcex.exchanges.kucoin.gen.spottrading.pojo.KucoinCancelOrderRequest;
 import com.scz.jcex.exchanges.kucoin.gen.spottrading.pojo.KucoinCancelOrderResponse;
 import com.scz.jcex.exchanges.kucoin.gen.spottrading.pojo.KucoinCancelSingleOrderByClientOidRequest;
 import com.scz.jcex.exchanges.kucoin.gen.spottrading.pojo.KucoinCancelSingleOrderByClientOidResponse;
 import com.scz.jcex.exchanges.kucoin.gen.spottrading.pojo.KucoinListAccountsRequest;
 import com.scz.jcex.exchanges.kucoin.gen.spottrading.pojo.KucoinListAccountsResponse;
+import com.scz.jcex.exchanges.kucoin.gen.spottrading.pojo.KucoinListOrdersRequest;
+import com.scz.jcex.exchanges.kucoin.gen.spottrading.pojo.KucoinListOrdersResponse;
 import com.scz.jcex.exchanges.kucoin.gen.spottrading.pojo.KucoinPlaceNewOrderRequest;
 import com.scz.jcex.exchanges.kucoin.gen.spottrading.pojo.KucoinPlaceNewOrderResponse;
 import com.scz.jcex.exchanges.kucoin.gen.spottrading.pojo.KucoinPrivateOrderChangeV2Message;
@@ -40,9 +44,17 @@ public interface  KucoinSpotTradingApi {
    */
   KucoinCancelOrderResponse cancelOrder(KucoinCancelOrderRequest request) throws IOException;
   /**
-   *  Request via this endpoint to cancel a single order previously placed.<p><i>This interface is only for cancellation requests. The cancellation result needs to be obtained by querying the order status or subscribing to websocket. It is recommended that you DO NOT cancel the order until receiving the Open message, otherwise the order cannot be cancelled successfully. </i></p> <br/>See <a href="https://docs.kucoin.com/#cancel-an-order">API</a><br/>
+   *  Request via this interface to cancel an order via the clientOid.<br/>See <a href="https://docs.kucoin.com/#cancel-single-order-by-clientoid">API</a><br/>
    */
   KucoinCancelSingleOrderByClientOidResponse cancelSingleOrderByClientOid(KucoinCancelSingleOrderByClientOidRequest request) throws IOException;
+  /**
+   * Request via this endpoint to cancel all open orders. The response is a list of ids of the canceled orders.<br/>See <a href="https://docs.kucoin.com/#cancel-all-orders">API</a><br/>
+   */
+  KucoinCancelAllOrdersResponse cancelAllOrders(KucoinCancelAllOrdersRequest request) throws IOException;
+  /**
+   * Request via this endpoint to get your current order list. Items are paginated and sorted to show the latest first. See the <a href="https://docs.kucoin.com/#pagination">Pagination</a> section for retrieving additional entries after the first page.</p> <br/>See <a href="https://docs.kucoin.com/#list-orders">API</a><br/>
+   */
+  KucoinListOrdersResponse listOrders(KucoinListOrdersRequest request) throws IOException;
   
   /**
    * Subscribe to PrivateOrderChangeV2 stream.<br/>

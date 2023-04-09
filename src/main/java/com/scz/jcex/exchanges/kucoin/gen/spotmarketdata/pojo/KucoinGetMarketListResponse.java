@@ -1,16 +1,17 @@
-package com.scz.jcex.exchanges.kucoin.gen.spottrading.pojo;
+package com.scz.jcex.exchanges.kucoin.gen.spotmarketdata.pojo;
 
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.scz.jcex.exchanges.kucoin.gen.spottrading.serializers.KucoinCancelSingleOrderByClientOidResponseSerializer;
+import com.scz.jcex.exchanges.kucoin.gen.spotmarketdata.serializers.KucoinGetMarketListResponseSerializer;
 import com.scz.jcex.util.EncodingUtil;
+import java.util.List;
 
 /**
- * Response to Kucoin SpotTrading API CancelSingleOrderByClientOid REST endpoint request<br/> Request via this interface to cancel an order via the clientOid.<br/>See <a href="https://docs.kucoin.com/#cancel-single-order-by-clientoid">API</a><br/><br><strong>THIS CODE IS GENERATED. DO NOT EDIT MANUALLY!</strong>
+ * Response to Kucoin SpotMarketData API getMarketList REST endpoint request<br/>Request via this endpoint to get the transaction currency for the entire trading market.<br/>See <a href="https://docs.kucoin.com/#get-market-list">API</a><br><strong>THIS CODE IS GENERATED. DO NOT EDIT MANUALLY!</strong>
  */
-@JsonSerialize(using = KucoinCancelSingleOrderByClientOidResponseSerializer.class)
-public class KucoinCancelSingleOrderByClientOidResponse {
+@JsonSerialize(using = KucoinGetMarketListResponseSerializer.class)
+public class KucoinGetMarketListResponse {
   private String code;
-  private KucoinCancelSingleOrderByClientOidResponseData data;
+  private List<String> data;
   private String msg;
   
   /**
@@ -28,16 +29,16 @@ public class KucoinCancelSingleOrderByClientOidResponse {
   }
   
   /**
-   * @return Response payload
+   * @return Transaction currency list
    */
-  public KucoinCancelSingleOrderByClientOidResponseData getData(){
+  public List<String> getData(){
     return data;
   }
   
   /**
-   * @param data Response payload
+   * @param data Transaction currency list
    */
-  public void setData(KucoinCancelSingleOrderByClientOidResponseData data) {
+  public void setData(List<String> data) {
     this.data = data;
   }
   

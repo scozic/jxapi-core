@@ -70,8 +70,21 @@ public class JavaxNetRestEndpoint<R, A> implements RestEndpoint<R, A> {
 		return messageDeserializer.deserialize(response);
 	}
 
+	/**
+	 * 2nd hook called in {@link #call(RestRequest)}, can be overridden if for
+	 * instance, exchange API requires POST rest calls not to carry a body but URL
+	 * parameters. Default implementation returns JSON String resulting of
+	 * {@link RestRequest#getRequest()} encoding if request is a POST,
+	 * <code>null</code> otherwise.
+	 * 
+	 * @param request
+	 * @return
+	 */
 	protected String getBody(RestRequest<R> request) {
-		return EncodingUtil.pojoToJsonString(request.getRequest());
+		if ("POST".equalsIgnoreCase(request.getHttpMethod())) {
+			return EncodingUtil.pojoToJsonString(request.getRequest());
+		}
+		return null;
 	}
 
 	/**

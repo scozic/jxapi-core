@@ -8,6 +8,8 @@ import com.scz.jcex.generator.JavaCodeGenerationUtil;
 import com.scz.jcex.generator.JavaTypeGenerator;
 
 public class RestEndpointDemoGenerator extends JavaTypeGenerator {
+	
+	private static final String NULL = "null";
 
 	public RestEndpointDemoGenerator(ExchangeDescriptor exchangeDescriptor, ExchangeApiDescriptor exchangeApiDescriptor, RestEndpointDescriptor restApi) {
 		super(ExchangeJavaWrapperGeneratorUtil.getRestApiDemoClassName(exchangeDescriptor, exchangeApiDescriptor, restApi));
@@ -97,17 +99,22 @@ public class RestEndpointDemoGenerator extends JavaTypeGenerator {
 		Object v = parameter.getSampleValue();
 		switch (parameter.getType()) {
 		case BIGDECIMAL:
-			addImport(BigDecimal.class);
 			if (v == null)
-				return "BigDecimal.ZERO";
+				return NULL;
+			addImport(BigDecimal.class);
 			return "new BigDecimal(\"" + String.valueOf(v) + "\");";
 		case BOOLEAN:
+			if (v == null) {
+				return Boolean.FALSE.toString();
+			}
 		case INT:
+			if (v == null)
+				return "0";
 			return String.valueOf(v);
 		case STRING_LIST:
 			addImport(List.class);
 			if (v == null) {
-				return "List.of()";
+				return NULL;
 			}
 			String strList = v.toString().trim();
 			if (!strList.startsWith("[") || !strList.endsWith("]")) {
@@ -115,6 +122,9 @@ public class RestEndpointDemoGenerator extends JavaTypeGenerator {
 			}
 			return "List.of(" + strList.substring(1, strList.length() - 1) + ")";
 		case STRING:
+			if (v == null) {
+				return NULL;
+			}
 			return "\"" + v + "\"";
 		case TIMESTAMP:
 		case LONG:

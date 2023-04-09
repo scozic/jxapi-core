@@ -135,6 +135,18 @@
 					]
 				},
 				{
+					"name": "getMarketList",
+					"httpMethod": "GET",
+					"description": "Request via this endpoint to get the transaction currency for the entire trading market.<br/>See <a href=\"https://docs.kucoin.com/#get-market-list\">API</a>",
+					"url": "https://api.kucoin.com/api/v1/markets",
+					"parameters": [],
+					"response": [
+						{"name":"code", "type": "STRING", "description":"System error code, see <a href=\"https://docs.kucoin.com/#request\">API</a>", "sampleValue": "0"},
+						{"name":"msg", "type": "STRING", "description":"System error code description, provided in error response when code is not '0', see <a href=\"https://docs.kucoin.com/#request\">API</a>", "sampleValue": "0"},
+						{"name":"data", "type": "STRING_LIST", "description":"Transaction currency list"}
+					]
+				},
+				{
 					"name": "ApplyConnectTokenPublic",
 					"httpMethod": "POST",
 					"description": "You need to apply for one of the two tokens below to create a websocket connection..<br/>See <a href=\"https://docs.kucoin.com/#apply-connect-token\">API</a>",
@@ -323,7 +335,7 @@
 				{
 					"name": "CancelSingleOrderByClientOid",
 					"httpMethod": "DELETE",
-					"description": " Request via this endpoint to cancel a single order previously placed.<p><i>This interface is only for cancellation requests. The cancellation result needs to be obtained by querying the order status or subscribing to websocket. It is recommended that you DO NOT cancel the order until receiving the Open message, otherwise the order cannot be cancelled successfully. </i></p> <br/>See <a href=\"https://docs.kucoin.com/#cancel-an-order\">API</a><br/>",
+					"description": " Request via this interface to cancel an order via the clientOid.<br/>See <a href=\"https://docs.kucoin.com/#cancel-single-order-by-clientoid\">API</a><br/>",
 					"url": "https://api.kucoin.com/api/v1/orders/client-order",
 					"urlParameters": "/${clientOid}",
 					"parameters": [
@@ -335,6 +347,85 @@
 						{"name":"data", "type": "STRUCT", "description": "Response payload", "parameters":[
 								{"name":"cancelledOrderId", "type": "STRING", "description":"Order ID of cancelled order", "sampleValue": "6d539dc614db3"},
 								{"name":"clientOid", "type": "STRING", "description":"Unique ID of the cancelled order", "sampleValue": "myClientOid"}
+							]
+						}
+					]
+				},
+				{
+					"name": "CancelAllOrders",
+					"httpMethod": "DELETE",
+					"description": "Request via this endpoint to cancel all open orders. The response is a list of ids of the canceled orders.<br/>See <a href=\"https://docs.kucoin.com/#cancel-all-orders\">API</a><br/>",
+					"url": "https://api.kucoin.com/api/v1/orders",
+					"parameters": [
+						{"name":"symbol", "type": "STRING", "description":"[Optional] symbol, cancel the orders for the specified trade pair.", "sampleValue": null},
+						{"name":"tradeType", "type": "STRING", "description":"[Optional] the type of trading:<strong>TRADE</strong> (Spot Trading), <strong>MARGIN_TRADE</strong> (Cross Margin Trading), <strong>MARGIN_ISOLATED_TRADE</strong>(Isolated Margin Trading), and the default is <strong>TRADE</strong> to cancel the spot trading orders.", "sampleValue": null}
+					],
+					"response": [
+						{"name":"code", "type": "STRING", "description": "System error code, see <a href=\"https://docs.kucoin.com/#request\">API</a>", "sampleValue": "0"},
+						{"name":"msg", "type": "STRING", "description": "System error code description, provided in error response when code is not '0', see <a href=\"https://docs.kucoin.com/#request\">API</a>", "sampleValue": "0"},
+						{"name":"data", "type": "STRUCT", "description": "Response payload", "parameters":[
+								{"name":"cancelledOrderIds", "type": "STRING_LIST", "description":"Unique ID of the cancelled order", "sampleValue": "5bd6e9286d99522a52e458de"}
+							]
+						}
+					]
+				},
+				{
+					"name": "ListOrders",
+					"httpMethod": "GET",
+					"description": "Request via this endpoint to get your current order list. Items are paginated and sorted to show the latest first. See the <a href=\"https://docs.kucoin.com/#pagination\">Pagination</a> section for retrieving additional entries after the first page.</p> <br/>See <a href=\"https://docs.kucoin.com/#list-orders\">API</a><br/>",
+					"url": "https://api.kucoin.com/api/v1/orders",
+					"parameters": [
+						{"name":"currentPage", "type": "INT", "description":"[Optional] Current request page.", "sampleValue": 1},
+						{"name":"pageSize", "type": "INT", "description":"[Optional] Number of results per request. Minimum is 10, maximum is 500.", "sampleValue": 50},
+						{"name":"status", "type": "STRING", "description":"[Optional] <strong>active</strong> or <strong>done</strong>(<strong>done</strong> as default), Only list orders with a specific status.", "sampleValue": "active"},
+						{"name":"symbol", "type": "STRING", "description":"[Optional] Only list orders for a specific symbol.", "sampleValue": null},
+						{"name":"side", "type": "STRING", "description":"[Optional] <strong>buy</strong> or <strong>sell</strong>.", "sampleValue": null},
+						{"name":"type", "type": "STRING", "description":"[Optional] <strong>limit</strong>, <strong>market</strong>, <strong>limit_stop</strong> or <strong>market_stop</strong>", "sampleValue": null},
+						{"name":"tradeType", "type": "STRING", "description":"[Optional] the type of trading:<strong>TRADE</strong> (Spot Trading), <strong>MARGIN_TRADE</strong> (Cross Margin Trading), <strong>MARGIN_ISOLATED_TRADE</strong>(Isolated Margin Trading), and the default is <strong>TRADE</strong> to cancel the spot trading orders.", "sampleValue": "TRADE"},
+						{"name":"startAt", "type": "TIMESTAMP", "description":"[Optional] Start time (milisecond).", "sampleValue": 0},
+						{"name":"endAt", "type": "TIMESTAMP", "description":"[Optional] End time (milisecond).", "sampleValue": "now()"}
+					],
+					"response": [
+						{"name": "code", "type": "STRING", "description": "System error code, see <a href=\"https://docs.kucoin.com/#request\">API</a>", "sampleValue": "0"},
+						{"name": "msg", "type": "STRING", "description": "System error code description, provided in error response when code is not '0', see <a href=\"https://docs.kucoin.com/#request\">API</a>", "sampleValue": "0"},
+						{"name": "data", "type": "STRUCT", "description": "Response payload", "parameters":[
+								{"name": "currentPage", "type": "INT", "description":"Current page", "sampleValue": 1},
+								{"name": "pageSize", "type": "INT", "description":"Request max number of items", "sampleValue": 500},
+								{"name": "totalPages", "type": "INT", "description":"Page count", "sampleValue": 1},
+								{"name": "totalNum", "type": "INT", "description":"Request max number of items", "sampleValue": 153408},
+								{"name": "items", "type": "STRUCT_LIST", "description": "Order list", "parameters":[
+										{"name":"id", "type": "STRING", "description":"Order ID, the ID of an order.", "sampleValue": "5c35c02703aa673ceec2a168"},
+										{"name":"symbol", "type": "STRING", "description":"symbol", "sampleValue": "ETH-USDT"},
+										{"name":"opType", "type": "STRING", "description":"Operation type: DEAL", "sampleValue": "DEAL"},
+										{"name":"type", "type": "STRING", "description":"Order type", "sampleValue": "DEAL"},
+										{"name":"side", "type": "STRING", "description":"Transaction direction,include buy and sell", "sampleValue": "buy"},
+										{"name":"price", "type": "BIGDECIMAL", "description":"Order price", "sampleValue": "10"},
+										{"name":"size", "type": "BIGDECIMAL", "description":"Order size", "sampleValue": "2"},
+										{"name":"funds", "type": "BIGDECIMAL", "description":"Order funds", "sampleValue": "0"},
+										{"name":"dealFunds", "type": "BIGDECIMAL", "description":"Executed size of funds", "sampleValue": "0.166"},
+										{"name":"dealSize", "type": "BIGDECIMAL", "description":"Executed quantity", "sampleValue": "2"},
+										{"name":"fee", "type": "BIGDECIMAL", "description":"Fee", "sampleValue": "0"},
+										{"name":"feeCurrency", "type": "STRING", "description":"Charg fee currency", "sampleValue": "USDT"},
+										{"name":"stp", "type": "STRING", "description":"Self trade prevention,include <strong>CN</strong>,<strong>CO</strong>,<strong>DC</strong>,<strong>CB</strong>", "sampleValue": ""},
+										{"name":"stop", "type": "STRING", "description":"Stop type, include entry and loss", "sampleValue": ""},
+										{"name":"stopTriggered", "type": "BOOLEAN", "description":"Stop order is triggered or not", "sampleValue": false},
+										{"name":"stopPrice", "type": "BIGDECIMAL", "description":"Stop price", "sampleValue": "10"},
+										{"name":"timeInForce", "type": "STRING", "description":"Time In Force,include <strong>GTC</strong>,<strong>GTT</strong>,<strong>IOC</strong>,<strong>FOK</strong>", "sampleValue": "10"},
+										{"name":"postOnly", "type": "BOOLEAN", "description":"Post only", "sampleValue": false},
+										{"name":"hidden", "type": "BOOLEAN", "description":"Hidden order", "sampleValue": false},
+										{"name":"iceberg", "type": "BOOLEAN", "description":"Iceberg order", "sampleValue": false},
+										{"name":"visibleSize", "type": "BIGDECIMAL", "description":"Displayed quantity for iceberg order", "sampleValue": "0"},
+										{"name":"cancelAfter", "type": "BIGDECIMAL", "description":"Cancel orders time，requires timeInForce to be <strong>GTT</strong>", "sampleValue": "0"},
+										{"name":"channel", "type": "STRING", "description":"Order source", "sampleValue": "IOS"},
+										{"name":"clientOid", "type": "STRING", "description":"User-entered order unique mark", "sampleValue": "myClientID"},
+										{"name":"remark", "type": "STRING", "description":"Remark", "sampleValue": "myClientID"},
+										{"name":"tags", "type": "STRING", "description":"Tag order source", "sampleValue": ""},
+										{"name":"isActive", "type": "BOOLEAN", "description":"Order status, <strong>true</strong> and <strong>false</strong>. If <strong>true</strong>, the order is active, if <strong>false</strong>, the order is filled or cancelled", "sampleValue": false},
+										{"name":"cancelExist", "type": "BOOLEAN", "description":"Order cancellation transaction record", "sampleValue": false},
+										{"name":"createdAt", "type": "TIMESTAMP", "description":"Create time", "sampleValue": 1547026471000},
+										{"name":"tradeType", "type": "STRING", "description":"The type of trading", "sampleValue": "TRADE"}
+									]
+								}
 							]
 						}
 					]

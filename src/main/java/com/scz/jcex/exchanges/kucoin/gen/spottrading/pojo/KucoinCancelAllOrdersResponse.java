@@ -1,16 +1,16 @@
 package com.scz.jcex.exchanges.kucoin.gen.spottrading.pojo;
 
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.scz.jcex.exchanges.kucoin.gen.spottrading.serializers.KucoinCancelSingleOrderByClientOidResponseSerializer;
+import com.scz.jcex.exchanges.kucoin.gen.spottrading.serializers.KucoinCancelAllOrdersResponseSerializer;
 import com.scz.jcex.util.EncodingUtil;
 
 /**
- * Response to Kucoin SpotTrading API CancelSingleOrderByClientOid REST endpoint request<br/> Request via this interface to cancel an order via the clientOid.<br/>See <a href="https://docs.kucoin.com/#cancel-single-order-by-clientoid">API</a><br/><br><strong>THIS CODE IS GENERATED. DO NOT EDIT MANUALLY!</strong>
+ * Response to Kucoin SpotTrading API CancelAllOrders REST endpoint request<br/>Request via this endpoint to cancel all open orders. The response is a list of ids of the canceled orders.<br/>See <a href="https://docs.kucoin.com/#cancel-all-orders">API</a><br/><br><strong>THIS CODE IS GENERATED. DO NOT EDIT MANUALLY!</strong>
  */
-@JsonSerialize(using = KucoinCancelSingleOrderByClientOidResponseSerializer.class)
-public class KucoinCancelSingleOrderByClientOidResponse {
+@JsonSerialize(using = KucoinCancelAllOrdersResponseSerializer.class)
+public class KucoinCancelAllOrdersResponse {
   private String code;
-  private KucoinCancelSingleOrderByClientOidResponseData data;
+  private KucoinCancelAllOrdersResponseData data;
   private String msg;
   
   /**
@@ -30,14 +30,14 @@ public class KucoinCancelSingleOrderByClientOidResponse {
   /**
    * @return Response payload
    */
-  public KucoinCancelSingleOrderByClientOidResponseData getData(){
+  public KucoinCancelAllOrdersResponseData getData(){
     return data;
   }
   
   /**
    * @param data Response payload
    */
-  public void setData(KucoinCancelSingleOrderByClientOidResponseData data) {
+  public void setData(KucoinCancelAllOrdersResponseData data) {
     this.data = data;
   }
   
