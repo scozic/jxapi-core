@@ -11,7 +11,7 @@ import java.util.List;
 @JsonSerialize(using = KucoinGetAllTickersResponseDataSerializer.class)
 public class KucoinGetAllTickersResponseData {
   private List<KucoinGetAllTickersResponseDataTicker> ticker;
-  private long time;
+  private Long time;
   
   /**
    * @return List of market information for each market symbol
@@ -30,14 +30,14 @@ public class KucoinGetAllTickersResponseData {
   /**
    * @return Timestamp
    */
-  public long getTime(){
+  public Long getTime(){
     return time;
   }
   
   /**
    * @param time Timestamp
    */
-  public void setTime(long time) {
+  public void setTime(Long time) {
     this.time = time;
   }
   

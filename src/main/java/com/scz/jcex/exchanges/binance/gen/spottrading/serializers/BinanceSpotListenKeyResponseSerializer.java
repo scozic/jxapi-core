@@ -19,7 +19,9 @@ public class BinanceSpotListenKeyResponseSerializer extends StdSerializer<Binanc
   @Override
   public void serialize(BinanceSpotListenKeyResponse value, JsonGenerator gen, SerializerProvider provider) throws IOException {
     gen.writeStartObject();
-    gen.writeStringField("listenKey", String.valueOf(value.getListenKey()));
+    if (value.getListenKey() != null){
+      gen.writeStringField("listenKey", String.valueOf(value.getListenKey()));
+    }
     gen.writeEndObject();
   }
 }

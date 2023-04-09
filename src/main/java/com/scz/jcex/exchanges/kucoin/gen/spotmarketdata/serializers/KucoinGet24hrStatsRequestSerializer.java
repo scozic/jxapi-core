@@ -19,7 +19,9 @@ public class KucoinGet24hrStatsRequestSerializer extends StdSerializer<KucoinGet
   @Override
   public void serialize(KucoinGet24hrStatsRequest value, JsonGenerator gen, SerializerProvider provider) throws IOException {
     gen.writeStartObject();
-    gen.writeStringField("symbol", String.valueOf(value.getSymbol()));
+    if (value.getSymbol() != null){
+      gen.writeStringField("symbol", String.valueOf(value.getSymbol()));
+    }
     gen.writeEndObject();
   }
 }

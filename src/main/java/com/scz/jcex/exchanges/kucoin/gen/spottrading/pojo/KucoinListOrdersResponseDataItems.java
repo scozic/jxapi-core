@@ -11,28 +11,28 @@ import java.math.BigDecimal;
 @JsonSerialize(using = KucoinListOrdersResponseDataItemsSerializer.class)
 public class KucoinListOrdersResponseDataItems {
   private BigDecimal cancelAfter;
-  private boolean cancelExist;
+  private Boolean cancelExist;
   private String channel;
   private String clientOid;
-  private long createdAt;
+  private Long createdAt;
   private BigDecimal dealFunds;
   private BigDecimal dealSize;
   private BigDecimal fee;
   private String feeCurrency;
   private BigDecimal funds;
-  private boolean hidden;
-  private boolean iceberg;
+  private Boolean hidden;
+  private Boolean iceberg;
   private String id;
-  private boolean isActive;
+  private Boolean isActive;
   private String opType;
-  private boolean postOnly;
+  private Boolean postOnly;
   private BigDecimal price;
   private String remark;
   private String side;
   private BigDecimal size;
   private String stop;
   private BigDecimal stopPrice;
-  private boolean stopTriggered;
+  private Boolean stopTriggered;
   private String stp;
   private String symbol;
   private String tags;
@@ -58,14 +58,14 @@ public class KucoinListOrdersResponseDataItems {
   /**
    * @return Order cancellation transaction record
    */
-  public boolean isCancelExist(){
+  public Boolean isCancelExist(){
     return cancelExist;
   }
   
   /**
    * @param cancelExist Order cancellation transaction record
    */
-  public void setCancelExist(boolean cancelExist) {
+  public void setCancelExist(Boolean cancelExist) {
     this.cancelExist = cancelExist;
   }
   
@@ -100,14 +100,14 @@ public class KucoinListOrdersResponseDataItems {
   /**
    * @return Create time
    */
-  public long getCreatedAt(){
+  public Long getCreatedAt(){
     return createdAt;
   }
   
   /**
    * @param createdAt Create time
    */
-  public void setCreatedAt(long createdAt) {
+  public void setCreatedAt(Long createdAt) {
     this.createdAt = createdAt;
   }
   
@@ -184,28 +184,28 @@ public class KucoinListOrdersResponseDataItems {
   /**
    * @return Hidden order
    */
-  public boolean isHidden(){
+  public Boolean isHidden(){
     return hidden;
   }
   
   /**
    * @param hidden Hidden order
    */
-  public void setHidden(boolean hidden) {
+  public void setHidden(Boolean hidden) {
     this.hidden = hidden;
   }
   
   /**
    * @return Iceberg order
    */
-  public boolean isIceberg(){
+  public Boolean isIceberg(){
     return iceberg;
   }
   
   /**
    * @param iceberg Iceberg order
    */
-  public void setIceberg(boolean iceberg) {
+  public void setIceberg(Boolean iceberg) {
     this.iceberg = iceberg;
   }
   
@@ -226,14 +226,14 @@ public class KucoinListOrdersResponseDataItems {
   /**
    * @return Order status, <strong>true</strong> and <strong>false</strong>. If <strong>true</strong>, the order is active, if <strong>false</strong>, the order is filled or cancelled
    */
-  public boolean isIsActive(){
+  public Boolean isIsActive(){
     return isActive;
   }
   
   /**
    * @param isActive Order status, <strong>true</strong> and <strong>false</strong>. If <strong>true</strong>, the order is active, if <strong>false</strong>, the order is filled or cancelled
    */
-  public void setIsActive(boolean isActive) {
+  public void setIsActive(Boolean isActive) {
     this.isActive = isActive;
   }
   
@@ -254,14 +254,14 @@ public class KucoinListOrdersResponseDataItems {
   /**
    * @return Post only
    */
-  public boolean isPostOnly(){
+  public Boolean isPostOnly(){
     return postOnly;
   }
   
   /**
    * @param postOnly Post only
    */
-  public void setPostOnly(boolean postOnly) {
+  public void setPostOnly(Boolean postOnly) {
     this.postOnly = postOnly;
   }
   
@@ -352,14 +352,14 @@ public class KucoinListOrdersResponseDataItems {
   /**
    * @return Stop order is triggered or not
    */
-  public boolean isStopTriggered(){
+  public Boolean isStopTriggered(){
     return stopTriggered;
   }
   
   /**
    * @param stopTriggered Stop order is triggered or not
    */
-  public void setStopTriggered(boolean stopTriggered) {
+  public void setStopTriggered(Boolean stopTriggered) {
     this.stopTriggered = stopTriggered;
   }
   

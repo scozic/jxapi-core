@@ -24,16 +24,16 @@ public class KucoinListOrdersResponseDataDeserializer extends AbstractJsonMessag
     while(parser.nextToken() != JsonToken.END_OBJECT) {
       switch(parser.getCurrentName()) {
       case "currentPage":
-        msg.setCurrentPage(parser.nextIntValue(0));
+        msg.setCurrentPage(Integer.valueOf(parser.nextIntValue(0)));
       break;
       case "pageSize":
-        msg.setPageSize(parser.nextIntValue(0));
+        msg.setPageSize(Integer.valueOf(parser.nextIntValue(0)));
       break;
       case "totalPages":
-        msg.setTotalPages(parser.nextIntValue(0));
+        msg.setTotalPages(Integer.valueOf(parser.nextIntValue(0)));
       break;
       case "totalNum":
-        msg.setTotalNum(parser.nextIntValue(0));
+        msg.setTotalNum(Integer.valueOf(parser.nextIntValue(0)));
       break;
       case "items":
         parser.nextToken();

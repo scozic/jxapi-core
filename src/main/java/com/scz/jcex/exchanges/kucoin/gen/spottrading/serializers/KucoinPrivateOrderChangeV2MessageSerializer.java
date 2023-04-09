@@ -19,10 +19,18 @@ public class KucoinPrivateOrderChangeV2MessageSerializer extends StdSerializer<K
   @Override
   public void serialize(KucoinPrivateOrderChangeV2Message value, JsonGenerator gen, SerializerProvider provider) throws IOException {
     gen.writeStartObject();
-    gen.writeStringField("type", String.valueOf(value.getType()));
-    gen.writeNumberField("topic", value.getTopic());
-    gen.writeStringField("subject", String.valueOf(value.getSubject()));
-    gen.writeObjectField("data", value.getData());
+    if (value.getType() != null){
+      gen.writeStringField("type", String.valueOf(value.getType()));
+    }
+    if (value.getTopic() != null){
+      gen.writeNumberField("topic", value.getTopic());
+    }
+    if (value.getSubject() != null){
+      gen.writeStringField("subject", String.valueOf(value.getSubject()));
+    }
+    if (value.getData() != null){
+      gen.writeObjectField("data", value.getData());
+    }
     gen.writeEndObject();
   }
 }

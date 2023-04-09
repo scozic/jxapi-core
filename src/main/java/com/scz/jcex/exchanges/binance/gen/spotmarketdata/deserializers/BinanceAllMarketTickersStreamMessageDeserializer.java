@@ -63,13 +63,13 @@ public class BinanceAllMarketTickersStreamMessageDeserializer extends AbstractJs
         msg.setCloseTime(parser.nextLongValue(0L));
       break;
       case "F":
-        msg.setFirstTradeID(parser.nextLongValue(0));
+        msg.setFirstTradeID(Long.valueOf(parser.nextLongValue(0)));
       break;
       case "L":
-        msg.setLastTradeID(parser.nextLongValue(0));
+        msg.setLastTradeID(Long.valueOf(parser.nextLongValue(0)));
       break;
       case "n":
-        msg.setTradeCount(parser.nextLongValue(0));
+        msg.setTradeCount(Long.valueOf(parser.nextLongValue(0)));
       break;
       default:
         JsonParserUtil.skipNextValue(parser);

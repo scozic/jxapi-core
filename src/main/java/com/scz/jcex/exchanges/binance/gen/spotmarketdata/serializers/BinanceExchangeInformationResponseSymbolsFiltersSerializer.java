@@ -20,10 +20,18 @@ public class BinanceExchangeInformationResponseSymbolsFiltersSerializer extends 
   @Override
   public void serialize(BinanceExchangeInformationResponseSymbolsFilters value, JsonGenerator gen, SerializerProvider provider) throws IOException {
     gen.writeStartObject();
-    gen.writeStringField("filterType", String.valueOf(value.getFilterType()));
-    gen.writeStringField("minPrice", EncodingUtil.bigDecimalToString(value.getMinPrice()));
-    gen.writeStringField("maxPrice", EncodingUtil.bigDecimalToString(value.getMaxPrice()));
-    gen.writeStringField("tickSize", EncodingUtil.bigDecimalToString(value.getTickSize()));
+    if (value.getFilterType() != null){
+      gen.writeStringField("filterType", String.valueOf(value.getFilterType()));
+    }
+    if (value.getMinPrice() != null){
+      gen.writeStringField("minPrice", EncodingUtil.bigDecimalToString(value.getMinPrice()));
+    }
+    if (value.getMaxPrice() != null){
+      gen.writeStringField("maxPrice", EncodingUtil.bigDecimalToString(value.getMaxPrice()));
+    }
+    if (value.getTickSize() != null){
+      gen.writeStringField("tickSize", EncodingUtil.bigDecimalToString(value.getTickSize()));
+    }
     gen.writeEndObject();
   }
 }

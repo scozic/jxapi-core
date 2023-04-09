@@ -19,11 +19,21 @@ public class KucoinApplyConnectTokenPublicResponseDataInstanceServersSerializer 
   @Override
   public void serialize(KucoinApplyConnectTokenPublicResponseDataInstanceServers value, JsonGenerator gen, SerializerProvider provider) throws IOException {
     gen.writeStartObject();
-    gen.writeStringField("endpoint", String.valueOf(value.getEndpoint()));
-    gen.writeStringField("protocol", String.valueOf(value.getProtocol()));
-    gen.writeBooleanField("encrypt", value.isEncrypt());
-    gen.writeNumberField("pingInterval", value.getPingInterval());
-    gen.writeNumberField("pingTimeout", value.getPingTimeout());
+    if (value.getEndpoint() != null){
+      gen.writeStringField("endpoint", String.valueOf(value.getEndpoint()));
+    }
+    if (value.getProtocol() != null){
+      gen.writeStringField("protocol", String.valueOf(value.getProtocol()));
+    }
+    if (value.isEncrypt() != null){
+      gen.writeBooleanField("encrypt", value.isEncrypt());
+    }
+    if (value.getPingInterval() != null){
+      gen.writeNumberField("pingInterval", value.getPingInterval());
+    }
+    if (value.getPingTimeout() != null){
+      gen.writeNumberField("pingTimeout", value.getPingTimeout());
+    }
     gen.writeEndObject();
   }
 }

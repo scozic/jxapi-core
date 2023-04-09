@@ -63,7 +63,7 @@ public class KucoinListOrdersResponseDataItemsDeserializer extends AbstractJsonM
         msg.setStop(parser.nextTextValue());
       break;
       case "stopTriggered":
-        msg.setStopTriggered(parser.nextBooleanValue());
+        msg.setStopTriggered(Boolean.valueOf(parser.nextBooleanValue()));
       break;
       case "stopPrice":
         msg.setStopPrice(toBigDecimal(parser.nextTextValue()));
@@ -72,13 +72,13 @@ public class KucoinListOrdersResponseDataItemsDeserializer extends AbstractJsonM
         msg.setTimeInForce(parser.nextTextValue());
       break;
       case "postOnly":
-        msg.setPostOnly(parser.nextBooleanValue());
+        msg.setPostOnly(Boolean.valueOf(parser.nextBooleanValue()));
       break;
       case "hidden":
-        msg.setHidden(parser.nextBooleanValue());
+        msg.setHidden(Boolean.valueOf(parser.nextBooleanValue()));
       break;
       case "iceberg":
-        msg.setIceberg(parser.nextBooleanValue());
+        msg.setIceberg(Boolean.valueOf(parser.nextBooleanValue()));
       break;
       case "visibleSize":
         msg.setVisibleSize(toBigDecimal(parser.nextTextValue()));
@@ -99,10 +99,10 @@ public class KucoinListOrdersResponseDataItemsDeserializer extends AbstractJsonM
         msg.setTags(parser.nextTextValue());
       break;
       case "isActive":
-        msg.setIsActive(parser.nextBooleanValue());
+        msg.setIsActive(Boolean.valueOf(parser.nextBooleanValue()));
       break;
       case "cancelExist":
-        msg.setCancelExist(parser.nextBooleanValue());
+        msg.setCancelExist(Boolean.valueOf(parser.nextBooleanValue()));
       break;
       case "createdAt":
         msg.setCreatedAt(parser.nextLongValue(0L));

@@ -37,35 +37,35 @@ public class BinanceExchangeInformationResponseSymbolsDeserializer extends Abstr
         msg.setQuoteAsset(parser.nextTextValue());
       break;
       case "quotePrecision":
-        msg.setQuotePrecision(parser.nextIntValue(0));
+        msg.setQuotePrecision(Integer.valueOf(parser.nextIntValue(0)));
       break;
       case "quoteAssetPrecision":
-        msg.setQuoteAssetPrecision(parser.nextIntValue(0));
+        msg.setQuoteAssetPrecision(Integer.valueOf(parser.nextIntValue(0)));
       break;
       case "orderTypes":
         parser.nextToken();
         msg.setOrderTypes(StringListFieldDeserializer.getInstance().deserialize(parser));
       break;
       case "icebergAllowed":
-        msg.setIcebergAllowed(parser.nextBooleanValue());
+        msg.setIcebergAllowed(Boolean.valueOf(parser.nextBooleanValue()));
       break;
       case "ocoAllowed":
-        msg.setOcoAllowed(parser.nextBooleanValue());
+        msg.setOcoAllowed(Boolean.valueOf(parser.nextBooleanValue()));
       break;
       case "quoteOrderQtyMarketAllowed":
-        msg.setQuoteOrderQtyMarketAllowed(parser.nextBooleanValue());
+        msg.setQuoteOrderQtyMarketAllowed(Boolean.valueOf(parser.nextBooleanValue()));
       break;
       case "allowTrailingStop":
-        msg.setAllowTrailingStop(parser.nextBooleanValue());
+        msg.setAllowTrailingStop(Boolean.valueOf(parser.nextBooleanValue()));
       break;
       case "cancelReplaceAllowed":
-        msg.setCancelReplaceAllowed(parser.nextBooleanValue());
+        msg.setCancelReplaceAllowed(Boolean.valueOf(parser.nextBooleanValue()));
       break;
       case "isSpotTradingAllowed":
-        msg.setIsSpotTradingAllowed(parser.nextBooleanValue());
+        msg.setIsSpotTradingAllowed(Boolean.valueOf(parser.nextBooleanValue()));
       break;
       case "isMarginTradingAllowed":
-        msg.setIsMarginTradingAllowed(parser.nextBooleanValue());
+        msg.setIsMarginTradingAllowed(Boolean.valueOf(parser.nextBooleanValue()));
       break;
       case "filters":
         parser.nextToken();

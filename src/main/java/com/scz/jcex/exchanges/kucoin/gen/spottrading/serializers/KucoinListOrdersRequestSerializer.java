@@ -19,15 +19,33 @@ public class KucoinListOrdersRequestSerializer extends StdSerializer<KucoinListO
   @Override
   public void serialize(KucoinListOrdersRequest value, JsonGenerator gen, SerializerProvider provider) throws IOException {
     gen.writeStartObject();
-    gen.writeNumberField("currentPage", value.getCurrentPage());
-    gen.writeNumberField("pageSize", value.getPageSize());
-    gen.writeStringField("status", String.valueOf(value.getStatus()));
-    gen.writeStringField("symbol", String.valueOf(value.getSymbol()));
-    gen.writeStringField("side", String.valueOf(value.getSide()));
-    gen.writeStringField("type", String.valueOf(value.getType()));
-    gen.writeStringField("tradeType", String.valueOf(value.getTradeType()));
-    gen.writeNumberField("startAt", value.getStartAt());
-    gen.writeNumberField("endAt", value.getEndAt());
+    if (value.getCurrentPage() != null){
+      gen.writeNumberField("currentPage", value.getCurrentPage());
+    }
+    if (value.getPageSize() != null){
+      gen.writeNumberField("pageSize", value.getPageSize());
+    }
+    if (value.getStatus() != null){
+      gen.writeStringField("status", String.valueOf(value.getStatus()));
+    }
+    if (value.getSymbol() != null){
+      gen.writeStringField("symbol", String.valueOf(value.getSymbol()));
+    }
+    if (value.getSide() != null){
+      gen.writeStringField("side", String.valueOf(value.getSide()));
+    }
+    if (value.getType() != null){
+      gen.writeStringField("type", String.valueOf(value.getType()));
+    }
+    if (value.getTradeType() != null){
+      gen.writeStringField("tradeType", String.valueOf(value.getTradeType()));
+    }
+    if (value.getStartAt() != null){
+      gen.writeNumberField("startAt", value.getStartAt());
+    }
+    if (value.getEndAt() != null){
+      gen.writeNumberField("endAt", value.getEndAt());
+    }
     gen.writeEndObject();
   }
 }

@@ -17,12 +17,12 @@ public class BinanceSpotTradingAccountDemo {
   /**
    * Sample value for <i>recvWindow</i> parameter of <i>account</i> API
    */
-  public static final long RECVWINDOW = 60000L;
+  public static final Long RECVWINDOW = 60000L;
   
   /**
    * Sample value for <i>timestamp</i> parameter of <i>account</i> API
    */
-  public static final long TIMESTAMP = System.currentTimeMillis();
+  public static final Long TIMESTAMP = System.currentTimeMillis();
   
   public static void main(String[] args) {
     try {

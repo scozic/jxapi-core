@@ -19,22 +19,54 @@ public class KucoinPlaceNewOrderRequestSerializer extends StdSerializer<KucoinPl
   @Override
   public void serialize(KucoinPlaceNewOrderRequest value, JsonGenerator gen, SerializerProvider provider) throws IOException {
     gen.writeStartObject();
-    gen.writeStringField("clientOid", String.valueOf(value.getClientOid()));
-    gen.writeStringField("side", String.valueOf(value.getSide()));
-    gen.writeStringField("symbol", String.valueOf(value.getSymbol()));
-    gen.writeStringField("type", String.valueOf(value.getType()));
-    gen.writeStringField("remark", String.valueOf(value.getRemark()));
-    gen.writeStringField("stp", String.valueOf(value.getStp()));
-    gen.writeStringField("tradeType", String.valueOf(value.getTradeType()));
-    gen.writeStringField("price", String.valueOf(value.getPrice()));
-    gen.writeStringField("size", String.valueOf(value.getSize()));
-    gen.writeStringField("timeInForce", String.valueOf(value.getTimeInForce()));
-    gen.writeNumberField("cancelAfter", value.getCancelAfter());
-    gen.writeBooleanField("postOnly", value.isPostOnly());
-    gen.writeBooleanField("hidden", value.isHidden());
-    gen.writeBooleanField("iceberg", value.isIceberg());
-    gen.writeStringField("visibleSize", String.valueOf(value.getVisibleSize()));
-    gen.writeStringField("funds", String.valueOf(value.getFunds()));
+    if (value.getClientOid() != null){
+      gen.writeStringField("clientOid", String.valueOf(value.getClientOid()));
+    }
+    if (value.getSide() != null){
+      gen.writeStringField("side", String.valueOf(value.getSide()));
+    }
+    if (value.getSymbol() != null){
+      gen.writeStringField("symbol", String.valueOf(value.getSymbol()));
+    }
+    if (value.getType() != null){
+      gen.writeStringField("type", String.valueOf(value.getType()));
+    }
+    if (value.getRemark() != null){
+      gen.writeStringField("remark", String.valueOf(value.getRemark()));
+    }
+    if (value.getStp() != null){
+      gen.writeStringField("stp", String.valueOf(value.getStp()));
+    }
+    if (value.getTradeType() != null){
+      gen.writeStringField("tradeType", String.valueOf(value.getTradeType()));
+    }
+    if (value.getPrice() != null){
+      gen.writeStringField("price", String.valueOf(value.getPrice()));
+    }
+    if (value.getSize() != null){
+      gen.writeStringField("size", String.valueOf(value.getSize()));
+    }
+    if (value.getTimeInForce() != null){
+      gen.writeStringField("timeInForce", String.valueOf(value.getTimeInForce()));
+    }
+    if (value.getCancelAfter() != null){
+      gen.writeNumberField("cancelAfter", value.getCancelAfter());
+    }
+    if (value.isPostOnly() != null){
+      gen.writeBooleanField("postOnly", value.isPostOnly());
+    }
+    if (value.isHidden() != null){
+      gen.writeBooleanField("hidden", value.isHidden());
+    }
+    if (value.isIceberg() != null){
+      gen.writeBooleanField("iceberg", value.isIceberg());
+    }
+    if (value.getVisibleSize() != null){
+      gen.writeStringField("visibleSize", String.valueOf(value.getVisibleSize()));
+    }
+    if (value.getFunds() != null){
+      gen.writeStringField("funds", String.valueOf(value.getFunds()));
+    }
     gen.writeEndObject();
   }
 }

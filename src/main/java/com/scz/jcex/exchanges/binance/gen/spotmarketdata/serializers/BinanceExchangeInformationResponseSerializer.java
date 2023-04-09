@@ -19,9 +19,15 @@ public class BinanceExchangeInformationResponseSerializer extends StdSerializer<
   @Override
   public void serialize(BinanceExchangeInformationResponse value, JsonGenerator gen, SerializerProvider provider) throws IOException {
     gen.writeStartObject();
-    gen.writeStringField("timezone", String.valueOf(value.getTimezone()));
-    gen.writeNumberField("serverTime", value.getServerTime());
-    gen.writeObjectField("symbols", value.getSymbols());
+    if (value.getTimezone() != null){
+      gen.writeStringField("timezone", String.valueOf(value.getTimezone()));
+    }
+    if (value.getServerTime() != null){
+      gen.writeNumberField("serverTime", value.getServerTime());
+    }
+    if (value.getSymbols() != null){
+      gen.writeObjectField("symbols", value.getSymbols());
+    }
     gen.writeEndObject();
   }
 }

@@ -67,22 +67,22 @@ public class KucoinSpotTradingPlaceNewOrderDemo {
   /**
    * Sample value for <i>cancelAfter</i> parameter of <i>PlaceNewOrder</i> API
    */
-  public static final long CANCELAFTER = 120L;
+  public static final Long CANCELAFTER = 120L;
   
   /**
    * Sample value for <i>postOnly</i> parameter of <i>PlaceNewOrder</i> API
    */
-  public static final boolean POSTONLY = false;
+  public static final Boolean POSTONLY = false;
   
   /**
    * Sample value for <i>hidden</i> parameter of <i>PlaceNewOrder</i> API
    */
-  public static final boolean HIDDEN = false;
+  public static final Boolean HIDDEN = false;
   
   /**
    * Sample value for <i>iceberg</i> parameter of <i>PlaceNewOrder</i> API
    */
-  public static final boolean ICEBERG = false;
+  public static final Boolean ICEBERG = false;
   
   /**
    * Sample value for <i>visibleSize</i> parameter of <i>PlaceNewOrder</i> API

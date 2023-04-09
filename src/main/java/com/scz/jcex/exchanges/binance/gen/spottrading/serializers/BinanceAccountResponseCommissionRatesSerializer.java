@@ -20,10 +20,18 @@ public class BinanceAccountResponseCommissionRatesSerializer extends StdSerializ
   @Override
   public void serialize(BinanceAccountResponseCommissionRates value, JsonGenerator gen, SerializerProvider provider) throws IOException {
     gen.writeStartObject();
-    gen.writeStringField("maker", EncodingUtil.bigDecimalToString(value.getMaker()));
-    gen.writeStringField("taker", EncodingUtil.bigDecimalToString(value.getTaker()));
-    gen.writeStringField("buyer", EncodingUtil.bigDecimalToString(value.getBuyer()));
-    gen.writeStringField("seller", EncodingUtil.bigDecimalToString(value.getSeller()));
+    if (value.getMaker() != null){
+      gen.writeStringField("maker", EncodingUtil.bigDecimalToString(value.getMaker()));
+    }
+    if (value.getTaker() != null){
+      gen.writeStringField("taker", EncodingUtil.bigDecimalToString(value.getTaker()));
+    }
+    if (value.getBuyer() != null){
+      gen.writeStringField("buyer", EncodingUtil.bigDecimalToString(value.getBuyer()));
+    }
+    if (value.getSeller() != null){
+      gen.writeStringField("seller", EncodingUtil.bigDecimalToString(value.getSeller()));
+    }
     gen.writeEndObject();
   }
 }

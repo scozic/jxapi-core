@@ -19,11 +19,21 @@ public class KucoinListOrdersResponseDataSerializer extends StdSerializer<Kucoin
   @Override
   public void serialize(KucoinListOrdersResponseData value, JsonGenerator gen, SerializerProvider provider) throws IOException {
     gen.writeStartObject();
-    gen.writeNumberField("currentPage", value.getCurrentPage());
-    gen.writeNumberField("pageSize", value.getPageSize());
-    gen.writeNumberField("totalPages", value.getTotalPages());
-    gen.writeNumberField("totalNum", value.getTotalNum());
-    gen.writeObjectField("items", value.getItems());
+    if (value.getCurrentPage() != null){
+      gen.writeNumberField("currentPage", value.getCurrentPage());
+    }
+    if (value.getPageSize() != null){
+      gen.writeNumberField("pageSize", value.getPageSize());
+    }
+    if (value.getTotalPages() != null){
+      gen.writeNumberField("totalPages", value.getTotalPages());
+    }
+    if (value.getTotalNum() != null){
+      gen.writeNumberField("totalNum", value.getTotalNum());
+    }
+    if (value.getItems() != null){
+      gen.writeObjectField("items", value.getItems());
+    }
     gen.writeEndObject();
   }
 }

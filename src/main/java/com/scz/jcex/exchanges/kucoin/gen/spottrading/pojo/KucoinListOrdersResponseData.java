@@ -10,23 +10,23 @@ import java.util.List;
  */
 @JsonSerialize(using = KucoinListOrdersResponseDataSerializer.class)
 public class KucoinListOrdersResponseData {
-  private int currentPage;
+  private Integer currentPage;
   private List<KucoinListOrdersResponseDataItems> items;
-  private int pageSize;
-  private int totalNum;
-  private int totalPages;
+  private Integer pageSize;
+  private Integer totalNum;
+  private Integer totalPages;
   
   /**
    * @return Current page
    */
-  public int getCurrentPage(){
+  public Integer getCurrentPage(){
     return currentPage;
   }
   
   /**
    * @param currentPage Current page
    */
-  public void setCurrentPage(int currentPage) {
+  public void setCurrentPage(Integer currentPage) {
     this.currentPage = currentPage;
   }
   
@@ -47,42 +47,42 @@ public class KucoinListOrdersResponseData {
   /**
    * @return Request max number of items
    */
-  public int getPageSize(){
+  public Integer getPageSize(){
     return pageSize;
   }
   
   /**
    * @param pageSize Request max number of items
    */
-  public void setPageSize(int pageSize) {
+  public void setPageSize(Integer pageSize) {
     this.pageSize = pageSize;
   }
   
   /**
    * @return Request max number of items
    */
-  public int getTotalNum(){
+  public Integer getTotalNum(){
     return totalNum;
   }
   
   /**
    * @param totalNum Request max number of items
    */
-  public void setTotalNum(int totalNum) {
+  public void setTotalNum(Integer totalNum) {
     this.totalNum = totalNum;
   }
   
   /**
    * @return Page count
    */
-  public int getTotalPages(){
+  public Integer getTotalPages(){
     return totalPages;
   }
   
   /**
    * @param totalPages Page count
    */
-  public void setTotalPages(int totalPages) {
+  public void setTotalPages(Integer totalPages) {
     this.totalPages = totalPages;
   }
   

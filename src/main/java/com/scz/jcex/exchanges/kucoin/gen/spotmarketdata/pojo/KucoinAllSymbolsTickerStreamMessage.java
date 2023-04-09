@@ -11,7 +11,7 @@ import com.scz.jcex.util.EncodingUtil;
 public class KucoinAllSymbolsTickerStreamMessage {
   private KucoinAllSymbolsTickerStreamMessageData data;
   private String subject;
-  private long topic;
+  private Long topic;
   private String type;
   
   /**
@@ -45,14 +45,14 @@ public class KucoinAllSymbolsTickerStreamMessage {
   /**
    * @return .
    */
-  public long getTopic(){
+  public Long getTopic(){
     return topic;
   }
   
   /**
    * @param topic .
    */
-  public void setTopic(long topic) {
+  public void setTopic(Long topic) {
     this.topic = topic;
   }
   

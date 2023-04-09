@@ -10,34 +10,34 @@ import com.scz.jcex.util.EncodingUtil;
  */
 @JsonSerialize(using = BinanceAccountRequestSerializer.class)
 public class BinanceAccountRequest implements RestEndpointUrlParameters {
-  private long recvWindow;
-  private long timestamp;
+  private Long recvWindow;
+  private Long timestamp;
   
   /**
    * @return Server timezone
    */
-  public long getRecvWindow(){
+  public Long getRecvWindow(){
     return recvWindow;
   }
   
   /**
    * @param recvWindow Server timezone
    */
-  public void setRecvWindow(long recvWindow) {
+  public void setRecvWindow(Long recvWindow) {
     this.recvWindow = recvWindow;
   }
   
   /**
    * @return 
    */
-  public long getTimestamp(){
+  public Long getTimestamp(){
     return timestamp;
   }
   
   /**
    * @param timestamp 
    */
-  public void setTimestamp(long timestamp) {
+  public void setTimestamp(Long timestamp) {
     this.timestamp = timestamp;
   }
   

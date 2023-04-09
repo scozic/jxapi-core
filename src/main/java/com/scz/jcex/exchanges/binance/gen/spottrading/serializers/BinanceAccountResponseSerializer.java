@@ -19,20 +19,48 @@ public class BinanceAccountResponseSerializer extends StdSerializer<BinanceAccou
   @Override
   public void serialize(BinanceAccountResponse value, JsonGenerator gen, SerializerProvider provider) throws IOException {
     gen.writeStartObject();
-    gen.writeNumberField("makerCommission", value.getMakerCommission());
-    gen.writeNumberField("takerCommission", value.getTakerCommission());
-    gen.writeNumberField("buyerCommission", value.getBuyerCommission());
-    gen.writeNumberField("sellerCommission", value.getSellerCommission());
-    gen.writeObjectField("commissionRates", value.getCommissionRates());
-    gen.writeBooleanField("canTrade", value.isCanTrade());
-    gen.writeBooleanField("canWithdraw", value.isCanWithdraw());
-    gen.writeBooleanField("canDeposit", value.isCanDeposit());
-    gen.writeBooleanField("brokered", value.isBrokered());
-    gen.writeBooleanField("requireSelfTradePrevention", value.isRequireSelfTradePrevention());
-    gen.writeNumberField("updateTime", value.getUpdateTime());
-    gen.writeStringField("accountType", String.valueOf(value.getAccountType()));
-    gen.writeObjectField("balances", value.getBalances());
-    gen.writeObjectField("permissions", value.getPermissions());
+    if (value.getMakerCommission() != null){
+      gen.writeNumberField("makerCommission", value.getMakerCommission());
+    }
+    if (value.getTakerCommission() != null){
+      gen.writeNumberField("takerCommission", value.getTakerCommission());
+    }
+    if (value.getBuyerCommission() != null){
+      gen.writeNumberField("buyerCommission", value.getBuyerCommission());
+    }
+    if (value.getSellerCommission() != null){
+      gen.writeNumberField("sellerCommission", value.getSellerCommission());
+    }
+    if (value.getCommissionRates() != null){
+      gen.writeObjectField("commissionRates", value.getCommissionRates());
+    }
+    if (value.isCanTrade() != null){
+      gen.writeBooleanField("canTrade", value.isCanTrade());
+    }
+    if (value.isCanWithdraw() != null){
+      gen.writeBooleanField("canWithdraw", value.isCanWithdraw());
+    }
+    if (value.isCanDeposit() != null){
+      gen.writeBooleanField("canDeposit", value.isCanDeposit());
+    }
+    if (value.isBrokered() != null){
+      gen.writeBooleanField("brokered", value.isBrokered());
+    }
+    if (value.isRequireSelfTradePrevention() != null){
+      gen.writeBooleanField("requireSelfTradePrevention", value.isRequireSelfTradePrevention());
+    }
+    if (value.getUpdateTime() != null){
+      gen.writeNumberField("updateTime", value.getUpdateTime());
+    }
+    if (value.getAccountType() != null){
+      gen.writeStringField("accountType", String.valueOf(value.getAccountType()));
+    }
+    if (value.getBalances() != null){
+      gen.writeObjectField("balances", value.getBalances());
+    }
+    if (value.getPermissions() != null){
+      gen.writeObjectField("permissions", value.getPermissions());
+    }
     gen.writeEndObject();
   }
 }

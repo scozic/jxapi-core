@@ -20,9 +20,15 @@ public class BinanceAccountResponseBalancesSerializer extends StdSerializer<Bina
   @Override
   public void serialize(BinanceAccountResponseBalances value, JsonGenerator gen, SerializerProvider provider) throws IOException {
     gen.writeStartObject();
-    gen.writeStringField("asset", String.valueOf(value.getAsset()));
-    gen.writeStringField("free", EncodingUtil.bigDecimalToString(value.getFree()));
-    gen.writeStringField("locked", EncodingUtil.bigDecimalToString(value.getLocked()));
+    if (value.getAsset() != null){
+      gen.writeStringField("asset", String.valueOf(value.getAsset()));
+    }
+    if (value.getFree() != null){
+      gen.writeStringField("free", EncodingUtil.bigDecimalToString(value.getFree()));
+    }
+    if (value.getLocked() != null){
+      gen.writeStringField("locked", EncodingUtil.bigDecimalToString(value.getLocked()));
+    }
     gen.writeEndObject();
   }
 }

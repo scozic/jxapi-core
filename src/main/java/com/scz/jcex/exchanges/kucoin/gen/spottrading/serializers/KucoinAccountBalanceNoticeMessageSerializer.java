@@ -19,10 +19,18 @@ public class KucoinAccountBalanceNoticeMessageSerializer extends StdSerializer<K
   @Override
   public void serialize(KucoinAccountBalanceNoticeMessage value, JsonGenerator gen, SerializerProvider provider) throws IOException {
     gen.writeStartObject();
-    gen.writeStringField("type", String.valueOf(value.getType()));
-    gen.writeStringField("topic", String.valueOf(value.getTopic()));
-    gen.writeStringField("subject", String.valueOf(value.getSubject()));
-    gen.writeObjectField("data", value.getData());
+    if (value.getType() != null){
+      gen.writeStringField("type", String.valueOf(value.getType()));
+    }
+    if (value.getTopic() != null){
+      gen.writeStringField("topic", String.valueOf(value.getTopic()));
+    }
+    if (value.getSubject() != null){
+      gen.writeStringField("subject", String.valueOf(value.getSubject()));
+    }
+    if (value.getData() != null){
+      gen.writeObjectField("data", value.getData());
+    }
     gen.writeEndObject();
   }
 }

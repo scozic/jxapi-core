@@ -10,11 +10,11 @@ import com.scz.jcex.util.EncodingUtil;
  */
 @JsonSerialize(using = KucoinListOrdersRequestSerializer.class)
 public class KucoinListOrdersRequest implements RestEndpointUrlParameters {
-  private int currentPage;
-  private long endAt;
-  private int pageSize;
+  private Integer currentPage;
+  private Long endAt;
+  private Integer pageSize;
   private String side;
-  private long startAt;
+  private Long startAt;
   private String status;
   private String symbol;
   private String tradeType;
@@ -23,42 +23,42 @@ public class KucoinListOrdersRequest implements RestEndpointUrlParameters {
   /**
    * @return [Optional] Current request page.
    */
-  public int getCurrentPage(){
+  public Integer getCurrentPage(){
     return currentPage;
   }
   
   /**
    * @param currentPage [Optional] Current request page.
    */
-  public void setCurrentPage(int currentPage) {
+  public void setCurrentPage(Integer currentPage) {
     this.currentPage = currentPage;
   }
   
   /**
    * @return [Optional] End time (milisecond).
    */
-  public long getEndAt(){
+  public Long getEndAt(){
     return endAt;
   }
   
   /**
    * @param endAt [Optional] End time (milisecond).
    */
-  public void setEndAt(long endAt) {
+  public void setEndAt(Long endAt) {
     this.endAt = endAt;
   }
   
   /**
    * @return [Optional] Number of results per request. Minimum is 10, maximum is 500.
    */
-  public int getPageSize(){
+  public Integer getPageSize(){
     return pageSize;
   }
   
   /**
    * @param pageSize [Optional] Number of results per request. Minimum is 10, maximum is 500.
    */
-  public void setPageSize(int pageSize) {
+  public void setPageSize(Integer pageSize) {
     this.pageSize = pageSize;
   }
   
@@ -79,14 +79,14 @@ public class KucoinListOrdersRequest implements RestEndpointUrlParameters {
   /**
    * @return [Optional] Start time (milisecond).
    */
-  public long getStartAt(){
+  public Long getStartAt(){
     return startAt;
   }
   
   /**
    * @param startAt [Optional] Start time (milisecond).
    */
-  public void setStartAt(long startAt) {
+  public void setStartAt(Long startAt) {
     this.startAt = startAt;
   }
   

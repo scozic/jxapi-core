@@ -19,7 +19,9 @@ public class KucoinCancelSingleOrderByClientOidRequestSerializer extends StdSeri
   @Override
   public void serialize(KucoinCancelSingleOrderByClientOidRequest value, JsonGenerator gen, SerializerProvider provider) throws IOException {
     gen.writeStartObject();
-    gen.writeStringField("clientOid", String.valueOf(value.getClientOid()));
+    if (value.getClientOid() != null){
+      gen.writeStringField("clientOid", String.valueOf(value.getClientOid()));
+    }
     gen.writeEndObject();
   }
 }

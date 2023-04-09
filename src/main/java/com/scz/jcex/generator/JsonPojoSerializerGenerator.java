@@ -47,7 +47,12 @@ public class JsonPojoSerializerGenerator extends JavaTypeGenerator {
 		String simpleDeserializedClassName = JavaCodeGenerationUtil.getClassNameWithoutPackage(serializedTypeClassName);
 		body.append("gen.writeStartObject();\n");
 		fields.forEach(field -> {
-			body.append(genWriteFieldInstruction(field));
+			String getFieldValue = "value." + JavaCodeGenerationUtil.getGetAccessorMethodName(
+					field.getName(),
+					field.getType().name().toLowerCase(),
+					fields.stream().map(f -> f.getName()).collect(Collectors.toList())) + "()";
+			body.append("if (").append(getFieldValue).append(" != null)");
+			body.append(JavaCodeGenerationUtil.generateCodeBlock(genWriteFieldInstruction(field, getFieldValue)));
 		});
 		body.append("gen.writeEndObject();");
 		appendMethod("@Override\npublic void serialize(" 
@@ -56,11 +61,7 @@ public class JsonPojoSerializerGenerator extends JavaTypeGenerator {
 					 body.toString());
 	}
 	
-	private String genWriteFieldInstruction(EndpointParameter field) {
-		String getFieldValue = "value." + JavaCodeGenerationUtil.getGetAccessorMethodName(
-				field.getName(),
-				field.getType().name().toLowerCase(),
-				fields.stream().map(f -> f.getName()).collect(Collectors.toList())) + "()";
+	private String genWriteFieldInstruction(EndpointParameter field, String getFieldValue) {
 		switch (field.getType()) {
 		case STRING:
 			return "gen.writeStringField(\"" + msgFieldName(field) + "\", String.valueOf(" + getFieldValue + "));\n";

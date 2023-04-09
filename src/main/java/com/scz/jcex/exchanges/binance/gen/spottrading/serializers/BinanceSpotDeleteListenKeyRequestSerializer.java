@@ -19,7 +19,9 @@ public class BinanceSpotDeleteListenKeyRequestSerializer extends StdSerializer<B
   @Override
   public void serialize(BinanceSpotDeleteListenKeyRequest value, JsonGenerator gen, SerializerProvider provider) throws IOException {
     gen.writeStartObject();
-    gen.writeStringField("listenKey", String.valueOf(value.getListenKey()));
+    if (value.getListenKey() != null){
+      gen.writeStringField("listenKey", String.valueOf(value.getListenKey()));
+    }
     gen.writeEndObject();
   }
 }

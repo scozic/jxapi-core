@@ -20,15 +20,33 @@ public class KucoinAccountBalanceNoticeMessageDataSerializer extends StdSerializ
   @Override
   public void serialize(KucoinAccountBalanceNoticeMessageData value, JsonGenerator gen, SerializerProvider provider) throws IOException {
     gen.writeStartObject();
-    gen.writeStringField("total", EncodingUtil.bigDecimalToString(value.getTotal()));
-    gen.writeStringField("available", EncodingUtil.bigDecimalToString(value.getAvailable()));
-    gen.writeStringField("availableChange", EncodingUtil.bigDecimalToString(value.getAvailableChange()));
-    gen.writeStringField("currency", String.valueOf(value.getCurrency()));
-    gen.writeStringField("hold", EncodingUtil.bigDecimalToString(value.getHold()));
-    gen.writeStringField("holdChange", EncodingUtil.bigDecimalToString(value.getHoldChange()));
-    gen.writeStringField("relationEvent", String.valueOf(value.getRelationEvent()));
-    gen.writeObjectField("relationContext", value.getRelationContext());
-    gen.writeNumberField("time", value.getTime());
+    if (value.getTotal() != null){
+      gen.writeStringField("total", EncodingUtil.bigDecimalToString(value.getTotal()));
+    }
+    if (value.getAvailable() != null){
+      gen.writeStringField("available", EncodingUtil.bigDecimalToString(value.getAvailable()));
+    }
+    if (value.getAvailableChange() != null){
+      gen.writeStringField("availableChange", EncodingUtil.bigDecimalToString(value.getAvailableChange()));
+    }
+    if (value.getCurrency() != null){
+      gen.writeStringField("currency", String.valueOf(value.getCurrency()));
+    }
+    if (value.getHold() != null){
+      gen.writeStringField("hold", EncodingUtil.bigDecimalToString(value.getHold()));
+    }
+    if (value.getHoldChange() != null){
+      gen.writeStringField("holdChange", EncodingUtil.bigDecimalToString(value.getHoldChange()));
+    }
+    if (value.getRelationEvent() != null){
+      gen.writeStringField("relationEvent", String.valueOf(value.getRelationEvent()));
+    }
+    if (value.getRelationContext() != null){
+      gen.writeObjectField("relationContext", value.getRelationContext());
+    }
+    if (value.getTime() != null){
+      gen.writeNumberField("time", value.getTime());
+    }
     gen.writeEndObject();
   }
 }

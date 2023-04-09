@@ -51,13 +51,13 @@ public class BinanceExecutionReportUserDataStreamMessageDeserializer extends Abs
         msg.setStopPrice(toBigDecimal(parser.nextTextValue()));
       break;
       case "d":
-        msg.setTrailingDelta(parser.nextIntValue(0));
+        msg.setTrailingDelta(Integer.valueOf(parser.nextIntValue(0)));
       break;
       case "F":
         msg.setIcebergQuantity(toBigDecimal(parser.nextTextValue()));
       break;
       case "g":
-        msg.setOrderListId(parser.nextIntValue(0));
+        msg.setOrderListId(Integer.valueOf(parser.nextIntValue(0)));
       break;
       case "C":
         msg.setOrigClientOrderID(parser.nextTextValue());
@@ -84,7 +84,7 @@ public class BinanceExecutionReportUserDataStreamMessageDeserializer extends Abs
         msg.setLastExecPrice(toBigDecimal(parser.nextTextValue()));
       break;
       case "n":
-        msg.setCommissionAmount(parser.nextIntValue(0));
+        msg.setCommissionAmount(Integer.valueOf(parser.nextIntValue(0)));
       break;
       case "N":
         msg.setComissionAsset(parser.nextTextValue());
@@ -93,22 +93,22 @@ public class BinanceExecutionReportUserDataStreamMessageDeserializer extends Abs
         msg.setTransactionTime(parser.nextLongValue(0L));
       break;
       case "t":
-        msg.setTradeID(parser.nextLongValue(0));
+        msg.setTradeID(Long.valueOf(parser.nextLongValue(0)));
       break;
       case "v":
-        msg.setPreventedMatchID(parser.nextLongValue(0));
+        msg.setPreventedMatchID(Long.valueOf(parser.nextLongValue(0)));
       break;
       case "I":
-        msg.setIgnore0(parser.nextLongValue(0));
+        msg.setIgnore0(Long.valueOf(parser.nextLongValue(0)));
       break;
       case "w":
-        msg.setOrderOnBook(parser.nextBooleanValue());
+        msg.setOrderOnBook(Boolean.valueOf(parser.nextBooleanValue()));
       break;
       case "m":
-        msg.setTradeMakerSide(parser.nextBooleanValue());
+        msg.setTradeMakerSide(Boolean.valueOf(parser.nextBooleanValue()));
       break;
       case "M":
-        msg.setIgnore1(parser.nextBooleanValue());
+        msg.setIgnore1(Boolean.valueOf(parser.nextBooleanValue()));
       break;
       case "O":
         msg.setOrderCreationTime(parser.nextLongValue(0L));
@@ -126,10 +126,10 @@ public class BinanceExecutionReportUserDataStreamMessageDeserializer extends Abs
         msg.setTrailingTime(parser.nextLongValue(0L));
       break;
       case "j":
-        msg.setStrategyID(parser.nextLongValue(0));
+        msg.setStrategyID(Long.valueOf(parser.nextLongValue(0)));
       break;
       case "J":
-        msg.setStrategyType(parser.nextLongValue(0));
+        msg.setStrategyType(Long.valueOf(parser.nextLongValue(0)));
       break;
       case "W":
         msg.setWorkingTime(parser.nextLongValue(0L));
@@ -138,10 +138,10 @@ public class BinanceExecutionReportUserDataStreamMessageDeserializer extends Abs
         msg.setSelfTradePreventionMode(parser.nextTextValue());
       break;
       case "u":
-        msg.setTradeGroupId(parser.nextLongValue(0));
+        msg.setTradeGroupId(Long.valueOf(parser.nextLongValue(0)));
       break;
       case "U":
-        msg.setCounterOrderId(parser.nextLongValue(0));
+        msg.setCounterOrderId(Long.valueOf(parser.nextLongValue(0)));
       break;
       case "A":
         msg.setPreventedQty(toBigDecimal(parser.nextTextValue()));

@@ -101,7 +101,7 @@ public class JavaCodeGenerationUtil {
 	
 	public static String getGetAccessorMethodName(String fieldName, String fieldType, List<String> allFieldNames) {
 		String prefix = "get";
-		if ("boolean".equals(fieldType)) {
+		if ("boolean".equals(fieldType) || Boolean.class.getName().equals(fieldType)) {
 			prefix = "is";
 		}
 		return getAccessorMethodName(prefix, fieldName, allFieldNames);

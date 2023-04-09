@@ -11,9 +11,9 @@ import java.util.List;
 @JsonSerialize(using = BinanceOutboundAccountPositionUserDataStreamMessageSerializer.class)
 public class BinanceOutboundAccountPositionUserDataStreamMessage {
   private List<BinanceOutboundAccountPositionUserDataStreamMessageBalancesArray> balancesArray;
-  private long eventTime;
+  private Long eventTime;
   private String eventType;
-  private long lastAccountUpdateTime;
+  private Long lastAccountUpdateTime;
   
   /**
    * @return Balances array. Message field <strong>B</strong>
@@ -32,14 +32,14 @@ public class BinanceOutboundAccountPositionUserDataStreamMessage {
   /**
    * @return Event time. Message field <strong>E</strong>
    */
-  public long getEventTime(){
+  public Long getEventTime(){
     return eventTime;
   }
   
   /**
    * @param eventTime Event time. Message field <strong>E</strong>
    */
-  public void setEventTime(long eventTime) {
+  public void setEventTime(Long eventTime) {
     this.eventTime = eventTime;
   }
   
@@ -60,14 +60,14 @@ public class BinanceOutboundAccountPositionUserDataStreamMessage {
   /**
    * @return Time of last account update. Message field <strong>u</strong>
    */
-  public long getLastAccountUpdateTime(){
+  public Long getLastAccountUpdateTime(){
     return lastAccountUpdateTime;
   }
   
   /**
    * @param lastAccountUpdateTime Time of last account update. Message field <strong>u</strong>
    */
-  public void setLastAccountUpdateTime(long lastAccountUpdateTime) {
+  public void setLastAccountUpdateTime(Long lastAccountUpdateTime) {
     this.lastAccountUpdateTime = lastAccountUpdateTime;
   }
   

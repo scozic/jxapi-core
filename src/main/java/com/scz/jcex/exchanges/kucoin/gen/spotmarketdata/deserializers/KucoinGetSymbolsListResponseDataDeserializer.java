@@ -66,10 +66,10 @@ public class KucoinGetSymbolsListResponseDataDeserializer extends AbstractJsonMe
         msg.setMinFunds(toBigDecimal(parser.nextTextValue()));
       break;
       case "enableTrading":
-        msg.setEnableTrading(parser.nextBooleanValue());
+        msg.setEnableTrading(Boolean.valueOf(parser.nextBooleanValue()));
       break;
       case "isMarginEnabled":
-        msg.setIsMarginEnabled(parser.nextBooleanValue());
+        msg.setIsMarginEnabled(Boolean.valueOf(parser.nextBooleanValue()));
       break;
       default:
         JsonParserUtil.skipNextValue(parser);

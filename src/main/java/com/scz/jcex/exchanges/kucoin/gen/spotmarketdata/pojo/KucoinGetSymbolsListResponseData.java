@@ -14,9 +14,9 @@ public class KucoinGetSymbolsListResponseData {
   private BigDecimal baseIncrement;
   private BigDecimal baseMaxSize;
   private BigDecimal baseMinSize;
-  private boolean enableTrading;
+  private Boolean enableTrading;
   private String feeCurrency;
-  private boolean isMarginEnabled;
+  private Boolean isMarginEnabled;
   private String market;
   private BigDecimal minFunds;
   private String name;
@@ -87,14 +87,14 @@ public class KucoinGetSymbolsListResponseData {
   /**
    * @return Available for transaction or not.
    */
-  public boolean isEnableTrading(){
+  public Boolean isEnableTrading(){
     return enableTrading;
   }
   
   /**
    * @param enableTrading Available for transaction or not.
    */
-  public void setEnableTrading(boolean enableTrading) {
+  public void setEnableTrading(Boolean enableTrading) {
     this.enableTrading = enableTrading;
   }
   
@@ -115,14 +115,14 @@ public class KucoinGetSymbolsListResponseData {
   /**
    * @return Available for margin or not.
    */
-  public boolean isIsMarginEnabled(){
+  public Boolean isIsMarginEnabled(){
     return isMarginEnabled;
   }
   
   /**
    * @param isMarginEnabled Available for margin or not.
    */
-  public void setIsMarginEnabled(boolean isMarginEnabled) {
+  public void setIsMarginEnabled(Boolean isMarginEnabled) {
     this.isMarginEnabled = isMarginEnabled;
   }
   

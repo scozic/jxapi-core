@@ -19,7 +19,9 @@ public class KucoinPlaceNewOrderResponseSerializer extends StdSerializer<KucoinP
   @Override
   public void serialize(KucoinPlaceNewOrderResponse value, JsonGenerator gen, SerializerProvider provider) throws IOException {
     gen.writeStartObject();
-    gen.writeStringField("orderId", String.valueOf(value.getOrderId()));
+    if (value.getOrderId() != null){
+      gen.writeStringField("orderId", String.valueOf(value.getOrderId()));
+    }
     gen.writeEndObject();
   }
 }

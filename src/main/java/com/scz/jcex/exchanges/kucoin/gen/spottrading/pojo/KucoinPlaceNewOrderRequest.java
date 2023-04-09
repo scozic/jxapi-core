@@ -10,12 +10,12 @@ import com.scz.jcex.util.EncodingUtil;
  */
 @JsonSerialize(using = KucoinPlaceNewOrderRequestSerializer.class)
 public class KucoinPlaceNewOrderRequest implements RestEndpointUrlParameters {
-  private long cancelAfter;
+  private Long cancelAfter;
   private String clientOid;
   private String funds;
-  private boolean hidden;
-  private boolean iceberg;
-  private boolean postOnly;
+  private Boolean hidden;
+  private Boolean iceberg;
+  private Boolean postOnly;
   private String price;
   private String remark;
   private String side;
@@ -30,14 +30,14 @@ public class KucoinPlaceNewOrderRequest implements RestEndpointUrlParameters {
   /**
    * @return <i>LIMIT order parameter</i><br/>[Optional] cancel after <strong>n</strong> seconds, requires timeInForce to be <strong>GTT</strong>.
    */
-  public long getCancelAfter(){
+  public Long getCancelAfter(){
     return cancelAfter;
   }
   
   /**
    * @param cancelAfter <i>LIMIT order parameter</i><br/>[Optional] cancel after <strong>n</strong> seconds, requires timeInForce to be <strong>GTT</strong>.
    */
-  public void setCancelAfter(long cancelAfter) {
+  public void setCancelAfter(Long cancelAfter) {
     this.cancelAfter = cancelAfter;
   }
   
@@ -72,42 +72,42 @@ public class KucoinPlaceNewOrderRequest implements RestEndpointUrlParameters {
   /**
    * @return <i>LIMIT order parameter</i><br/>[Optional] Order will not be displayed in the order book
    */
-  public boolean isHidden(){
+  public Boolean isHidden(){
     return hidden;
   }
   
   /**
    * @param hidden <i>LIMIT order parameter</i><br/>[Optional] Order will not be displayed in the order book
    */
-  public void setHidden(boolean hidden) {
+  public void setHidden(Boolean hidden) {
     this.hidden = hidden;
   }
   
   /**
    * @return <i>LIMIT order parameter</i><br/>[Optional] Only a portion of the order is displayed in the order book
    */
-  public boolean isIceberg(){
+  public Boolean isIceberg(){
     return iceberg;
   }
   
   /**
    * @param iceberg <i>LIMIT order parameter</i><br/>[Optional] Only a portion of the order is displayed in the order book
    */
-  public void setIceberg(boolean iceberg) {
+  public void setIceberg(Boolean iceberg) {
     this.iceberg = iceberg;
   }
   
   /**
    * @return <i>LIMIT order parameter</i><br/>[Optional] Post only flag, invalid when timeInForce is <strong>IOC</strong> or <strong>FOK</strong>
    */
-  public boolean isPostOnly(){
+  public Boolean isPostOnly(){
     return postOnly;
   }
   
   /**
    * @param postOnly <i>LIMIT order parameter</i><br/>[Optional] Post only flag, invalid when timeInForce is <strong>IOC</strong> or <strong>FOK</strong>
    */
-  public void setPostOnly(boolean postOnly) {
+  public void setPostOnly(Boolean postOnly) {
     this.postOnly = postOnly;
   }
   

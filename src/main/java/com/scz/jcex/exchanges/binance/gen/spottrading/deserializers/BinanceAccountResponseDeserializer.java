@@ -26,38 +26,38 @@ public class BinanceAccountResponseDeserializer extends AbstractJsonMessageDeser
     while(parser.nextToken() != JsonToken.END_OBJECT) {
       switch(parser.getCurrentName()) {
       case "makerCommission":
-        msg.setMakerCommission(parser.nextIntValue(0));
+        msg.setMakerCommission(Integer.valueOf(parser.nextIntValue(0)));
       break;
       case "takerCommission":
-        msg.setTakerCommission(parser.nextIntValue(0));
+        msg.setTakerCommission(Integer.valueOf(parser.nextIntValue(0)));
       break;
       case "buyerCommission":
-        msg.setBuyerCommission(parser.nextIntValue(0));
+        msg.setBuyerCommission(Integer.valueOf(parser.nextIntValue(0)));
       break;
       case "sellerCommission":
-        msg.setSellerCommission(parser.nextIntValue(0));
+        msg.setSellerCommission(Integer.valueOf(parser.nextIntValue(0)));
       break;
       case "commissionRates":
         parser.nextToken();
         msg.setCommissionRates(binanceAccountResponseCommissionRatesDeserializer.deserialize(parser));
       break;
       case "canTrade":
-        msg.setCanTrade(parser.nextBooleanValue());
+        msg.setCanTrade(Boolean.valueOf(parser.nextBooleanValue()));
       break;
       case "canWithdraw":
-        msg.setCanWithdraw(parser.nextBooleanValue());
+        msg.setCanWithdraw(Boolean.valueOf(parser.nextBooleanValue()));
       break;
       case "canDeposit":
-        msg.setCanDeposit(parser.nextBooleanValue());
+        msg.setCanDeposit(Boolean.valueOf(parser.nextBooleanValue()));
       break;
       case "brokered":
-        msg.setBrokered(parser.nextBooleanValue());
+        msg.setBrokered(Boolean.valueOf(parser.nextBooleanValue()));
       break;
       case "requireSelfTradePrevention":
-        msg.setRequireSelfTradePrevention(parser.nextBooleanValue());
+        msg.setRequireSelfTradePrevention(Boolean.valueOf(parser.nextBooleanValue()));
       break;
       case "updateTime":
-        msg.setUpdateTime(parser.nextLongValue(0));
+        msg.setUpdateTime(Long.valueOf(parser.nextLongValue(0)));
       break;
       case "accountType":
         msg.setAccountType(parser.nextTextValue());

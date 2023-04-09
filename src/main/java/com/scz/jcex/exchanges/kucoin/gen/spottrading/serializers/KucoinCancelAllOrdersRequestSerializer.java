@@ -19,8 +19,12 @@ public class KucoinCancelAllOrdersRequestSerializer extends StdSerializer<Kucoin
   @Override
   public void serialize(KucoinCancelAllOrdersRequest value, JsonGenerator gen, SerializerProvider provider) throws IOException {
     gen.writeStartObject();
-    gen.writeStringField("symbol", String.valueOf(value.getSymbol()));
-    gen.writeStringField("tradeType", String.valueOf(value.getTradeType()));
+    if (value.getSymbol() != null){
+      gen.writeStringField("symbol", String.valueOf(value.getSymbol()));
+    }
+    if (value.getTradeType() != null){
+      gen.writeStringField("tradeType", String.valueOf(value.getTradeType()));
+    }
     gen.writeEndObject();
   }
 }

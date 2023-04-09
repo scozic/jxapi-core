@@ -20,12 +20,24 @@ public class KucoinListAccountsResponseDataSerializer extends StdSerializer<Kuco
   @Override
   public void serialize(KucoinListAccountsResponseData value, JsonGenerator gen, SerializerProvider provider) throws IOException {
     gen.writeStartObject();
-    gen.writeStringField("id", String.valueOf(value.getId()));
-    gen.writeStringField("currency", String.valueOf(value.getCurrency()));
-    gen.writeStringField("type", String.valueOf(value.getType()));
-    gen.writeStringField("balance", EncodingUtil.bigDecimalToString(value.getBalance()));
-    gen.writeStringField("available", EncodingUtil.bigDecimalToString(value.getAvailable()));
-    gen.writeStringField("holds", EncodingUtil.bigDecimalToString(value.getHolds()));
+    if (value.getId() != null){
+      gen.writeStringField("id", String.valueOf(value.getId()));
+    }
+    if (value.getCurrency() != null){
+      gen.writeStringField("currency", String.valueOf(value.getCurrency()));
+    }
+    if (value.getType() != null){
+      gen.writeStringField("type", String.valueOf(value.getType()));
+    }
+    if (value.getBalance() != null){
+      gen.writeStringField("balance", EncodingUtil.bigDecimalToString(value.getBalance()));
+    }
+    if (value.getAvailable() != null){
+      gen.writeStringField("available", EncodingUtil.bigDecimalToString(value.getAvailable()));
+    }
+    if (value.getHolds() != null){
+      gen.writeStringField("holds", EncodingUtil.bigDecimalToString(value.getHolds()));
+    }
     gen.writeEndObject();
   }
 }

@@ -10,36 +10,36 @@ import java.util.List;
  */
 @JsonSerialize(using = BinanceExchangeInformationResponseSymbolsSerializer.class)
 public class BinanceExchangeInformationResponseSymbols {
-  private boolean allowTrailingStop;
+  private Boolean allowTrailingStop;
   private List<String> allowedSelfTradePreventionModes;
   private String baseAsset;
-  private boolean cancelReplaceAllowed;
+  private Boolean cancelReplaceAllowed;
   private String defaultSelfTradePreventionMode;
   private List<BinanceExchangeInformationResponseSymbolsFilters> filters;
-  private boolean icebergAllowed;
-  private boolean isMarginTradingAllowed;
-  private boolean isSpotTradingAllowed;
-  private boolean ocoAllowed;
+  private Boolean icebergAllowed;
+  private Boolean isMarginTradingAllowed;
+  private Boolean isSpotTradingAllowed;
+  private Boolean ocoAllowed;
   private List<String> orderTypes;
   private List<String> permissions;
   private String quoteAsset;
-  private int quoteAssetPrecision;
-  private boolean quoteOrderQtyMarketAllowed;
-  private int quotePrecision;
+  private Integer quoteAssetPrecision;
+  private Boolean quoteOrderQtyMarketAllowed;
+  private Integer quotePrecision;
   private String status;
   private String symbol;
   
   /**
    * @return True if trailing stop orders are supported
    */
-  public boolean isAllowTrailingStop(){
+  public Boolean isAllowTrailingStop(){
     return allowTrailingStop;
   }
   
   /**
    * @param allowTrailingStop True if trailing stop orders are supported
    */
-  public void setAllowTrailingStop(boolean allowTrailingStop) {
+  public void setAllowTrailingStop(Boolean allowTrailingStop) {
     this.allowTrailingStop = allowTrailingStop;
   }
   
@@ -74,14 +74,14 @@ public class BinanceExchangeInformationResponseSymbols {
   /**
    * @return 
    */
-  public boolean isCancelReplaceAllowed(){
+  public Boolean isCancelReplaceAllowed(){
     return cancelReplaceAllowed;
   }
   
   /**
    * @param cancelReplaceAllowed 
    */
-  public void setCancelReplaceAllowed(boolean cancelReplaceAllowed) {
+  public void setCancelReplaceAllowed(Boolean cancelReplaceAllowed) {
     this.cancelReplaceAllowed = cancelReplaceAllowed;
   }
   
@@ -116,56 +116,56 @@ public class BinanceExchangeInformationResponseSymbols {
   /**
    * @return True if iceberg orders are allowed
    */
-  public boolean isIcebergAllowed(){
+  public Boolean isIcebergAllowed(){
     return icebergAllowed;
   }
   
   /**
    * @param icebergAllowed True if iceberg orders are allowed
    */
-  public void setIcebergAllowed(boolean icebergAllowed) {
+  public void setIcebergAllowed(Boolean icebergAllowed) {
     this.icebergAllowed = icebergAllowed;
   }
   
   /**
    * @return 
    */
-  public boolean isIsMarginTradingAllowed(){
+  public Boolean isIsMarginTradingAllowed(){
     return isMarginTradingAllowed;
   }
   
   /**
    * @param isMarginTradingAllowed 
    */
-  public void setIsMarginTradingAllowed(boolean isMarginTradingAllowed) {
+  public void setIsMarginTradingAllowed(Boolean isMarginTradingAllowed) {
     this.isMarginTradingAllowed = isMarginTradingAllowed;
   }
   
   /**
    * @return 
    */
-  public boolean isIsSpotTradingAllowed(){
+  public Boolean isIsSpotTradingAllowed(){
     return isSpotTradingAllowed;
   }
   
   /**
    * @param isSpotTradingAllowed 
    */
-  public void setIsSpotTradingAllowed(boolean isSpotTradingAllowed) {
+  public void setIsSpotTradingAllowed(Boolean isSpotTradingAllowed) {
     this.isSpotTradingAllowed = isSpotTradingAllowed;
   }
   
   /**
    * @return True if OCO orders are allowed
    */
-  public boolean isOcoAllowed(){
+  public Boolean isOcoAllowed(){
     return ocoAllowed;
   }
   
   /**
    * @param ocoAllowed True if OCO orders are allowed
    */
-  public void setOcoAllowed(boolean ocoAllowed) {
+  public void setOcoAllowed(Boolean ocoAllowed) {
     this.ocoAllowed = ocoAllowed;
   }
   
@@ -214,42 +214,42 @@ public class BinanceExchangeInformationResponseSymbols {
   /**
    * @return Quote asset precision
    */
-  public int getQuoteAssetPrecision(){
+  public Integer getQuoteAssetPrecision(){
     return quoteAssetPrecision;
   }
   
   /**
    * @param quoteAssetPrecision Quote asset precision
    */
-  public void setQuoteAssetPrecision(int quoteAssetPrecision) {
+  public void setQuoteAssetPrecision(Integer quoteAssetPrecision) {
     this.quoteAssetPrecision = quoteAssetPrecision;
   }
   
   /**
    * @return 
    */
-  public boolean isQuoteOrderQtyMarketAllowed(){
+  public Boolean isQuoteOrderQtyMarketAllowed(){
     return quoteOrderQtyMarketAllowed;
   }
   
   /**
    * @param quoteOrderQtyMarketAllowed 
    */
-  public void setQuoteOrderQtyMarketAllowed(boolean quoteOrderQtyMarketAllowed) {
+  public void setQuoteOrderQtyMarketAllowed(Boolean quoteOrderQtyMarketAllowed) {
     this.quoteOrderQtyMarketAllowed = quoteOrderQtyMarketAllowed;
   }
   
   /**
    * @return Quote asset precision
    */
-  public int getQuotePrecision(){
+  public Integer getQuotePrecision(){
     return quotePrecision;
   }
   
   /**
    * @param quotePrecision Quote asset precision
    */
-  public void setQuotePrecision(int quotePrecision) {
+  public void setQuotePrecision(Integer quotePrecision) {
     this.quotePrecision = quotePrecision;
   }
   

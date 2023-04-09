@@ -20,9 +20,15 @@ public class BinanceOutboundAccountPositionUserDataStreamMessageBalancesArraySer
   @Override
   public void serialize(BinanceOutboundAccountPositionUserDataStreamMessageBalancesArray value, JsonGenerator gen, SerializerProvider provider) throws IOException {
     gen.writeStartObject();
-    gen.writeStringField("a", String.valueOf(value.getAsset()));
-    gen.writeStringField("f", EncodingUtil.bigDecimalToString(value.getFree()));
-    gen.writeStringField("l", EncodingUtil.bigDecimalToString(value.getLocked()));
+    if (value.getAsset() != null){
+      gen.writeStringField("a", String.valueOf(value.getAsset()));
+    }
+    if (value.getFree() != null){
+      gen.writeStringField("f", EncodingUtil.bigDecimalToString(value.getFree()));
+    }
+    if (value.getLocked() != null){
+      gen.writeStringField("l", EncodingUtil.bigDecimalToString(value.getLocked()));
+    }
     gen.writeEndObject();
   }
 }

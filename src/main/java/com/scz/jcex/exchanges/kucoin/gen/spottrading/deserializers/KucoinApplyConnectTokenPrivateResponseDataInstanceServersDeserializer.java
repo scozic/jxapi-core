@@ -26,13 +26,13 @@ public class KucoinApplyConnectTokenPrivateResponseDataInstanceServersDeserializ
         msg.setProtocol(parser.nextTextValue());
       break;
       case "encrypt":
-        msg.setEncrypt(parser.nextBooleanValue());
+        msg.setEncrypt(Boolean.valueOf(parser.nextBooleanValue()));
       break;
       case "pingInterval":
-        msg.setPingInterval(parser.nextLongValue(0));
+        msg.setPingInterval(Long.valueOf(parser.nextLongValue(0)));
       break;
       case "pingTimeout":
-        msg.setPingTimeout(parser.nextLongValue(0));
+        msg.setPingTimeout(Long.valueOf(parser.nextLongValue(0)));
       break;
       default:
         JsonParserUtil.skipNextValue(parser);

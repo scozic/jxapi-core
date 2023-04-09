@@ -17,7 +17,7 @@ public class KucoinGetTickerResponseData {
   private BigDecimal price;
   private String sequence;
   private BigDecimal size;
-  private long time;
+  private Long time;
   
   /**
    * @return Best ask price
@@ -120,14 +120,14 @@ public class KucoinGetTickerResponseData {
   /**
    * @return Timestamp
    */
-  public long getTime(){
+  public Long getTime(){
     return time;
   }
   
   /**
    * @param time Timestamp
    */
-  public void setTime(long time) {
+  public void setTime(Long time) {
     this.time = time;
   }
   

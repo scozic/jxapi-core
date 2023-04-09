@@ -97,40 +97,26 @@ public class RestEndpointDemoGenerator extends JavaTypeGenerator {
 	
 	private String getParameterValueDeclaration(EndpointParameter parameter) {
 		Object v = parameter.getSampleValue();
+		if (v == null)
+			return NULL;
 		switch (parameter.getType()) {
 		case BIGDECIMAL:
-			if (v == null)
-				return NULL;
 			addImport(BigDecimal.class);
 			return "new BigDecimal(\"" + String.valueOf(v) + "\");";
 		case BOOLEAN:
-			if (v == null) {
-				return Boolean.FALSE.toString();
-			}
 		case INT:
-			if (v == null)
-				return "0";
 			return String.valueOf(v);
 		case STRING_LIST:
 			addImport(List.class);
-			if (v == null) {
-				return NULL;
-			}
 			String strList = v.toString().trim();
 			if (!strList.startsWith("[") || !strList.endsWith("]")) {
 				throw new IllegalArgumentException("Sample value for parameter:" + parameter + ":" + strList + " does must be surrounded with '[]'");
 			}
 			return "List.of(" + strList.substring(1, strList.length() - 1) + ")";
 		case STRING:
-			if (v == null) {
-				return NULL;
-			}
 			return "\"" + v + "\"";
 		case TIMESTAMP:
 		case LONG:
-			if (v == null) {
-				return "0L";
-			}
 			if ("now()".equalsIgnoreCase(v.toString())) {
 				return "System.currentTimeMillis()";
 			}
@@ -148,12 +134,12 @@ public class RestEndpointDemoGenerator extends JavaTypeGenerator {
 			addImport(BigDecimal.class);
 			return BigDecimal.class.getSimpleName();
 		case BOOLEAN:
-			return "boolean";
+			return "Boolean";
 		case INT:
-			return "int";
+			return "Integer";
 		case TIMESTAMP:
 		case LONG:
-			return "long";
+			return "Long";
 		case STRING:
 			return "String";
 		case STRING_LIST:

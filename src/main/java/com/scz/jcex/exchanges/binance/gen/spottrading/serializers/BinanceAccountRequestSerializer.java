@@ -19,8 +19,12 @@ public class BinanceAccountRequestSerializer extends StdSerializer<BinanceAccoun
   @Override
   public void serialize(BinanceAccountRequest value, JsonGenerator gen, SerializerProvider provider) throws IOException {
     gen.writeStartObject();
-    gen.writeNumberField("recvWindow", value.getRecvWindow());
-    gen.writeNumberField("timestamp", value.getTimestamp());
+    if (value.getRecvWindow() != null){
+      gen.writeNumberField("recvWindow", value.getRecvWindow());
+    }
+    if (value.getTimestamp() != null){
+      gen.writeNumberField("timestamp", value.getTimestamp());
+    }
     gen.writeEndObject();
   }
 }

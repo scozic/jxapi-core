@@ -19,10 +19,18 @@ public class BinanceOutboundAccountPositionUserDataStreamMessageSerializer exten
   @Override
   public void serialize(BinanceOutboundAccountPositionUserDataStreamMessage value, JsonGenerator gen, SerializerProvider provider) throws IOException {
     gen.writeStartObject();
-    gen.writeStringField("e", String.valueOf(value.getEventType()));
-    gen.writeNumberField("E", value.getEventTime());
-    gen.writeNumberField("u", value.getLastAccountUpdateTime());
-    gen.writeObjectField("B", value.getBalancesArray());
+    if (value.getEventType() != null){
+      gen.writeStringField("e", String.valueOf(value.getEventType()));
+    }
+    if (value.getEventTime() != null){
+      gen.writeNumberField("E", value.getEventTime());
+    }
+    if (value.getLastAccountUpdateTime() != null){
+      gen.writeNumberField("u", value.getLastAccountUpdateTime());
+    }
+    if (value.getBalancesArray() != null){
+      gen.writeObjectField("B", value.getBalancesArray());
+    }
     gen.writeEndObject();
   }
 }

@@ -17,12 +17,12 @@ public class KucoinSpotTradingListOrdersDemo {
   /**
    * Sample value for <i>currentPage</i> parameter of <i>ListOrders</i> API
    */
-  public static final int CURRENTPAGE = 1;
+  public static final Integer CURRENTPAGE = 1;
   
   /**
    * Sample value for <i>pageSize</i> parameter of <i>ListOrders</i> API
    */
-  public static final int PAGESIZE = 50;
+  public static final Integer PAGESIZE = 50;
   
   /**
    * Sample value for <i>status</i> parameter of <i>ListOrders</i> API
@@ -52,12 +52,12 @@ public class KucoinSpotTradingListOrdersDemo {
   /**
    * Sample value for <i>startAt</i> parameter of <i>ListOrders</i> API
    */
-  public static final long STARTAT = 0L;
+  public static final Long STARTAT = null;
   
   /**
    * Sample value for <i>endAt</i> parameter of <i>ListOrders</i> API
    */
-  public static final long ENDAT = System.currentTimeMillis();
+  public static final Long ENDAT = null;
   
   public static void main(String[] args) {
     try {

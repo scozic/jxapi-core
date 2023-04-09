@@ -20,11 +20,21 @@ public class BinanceListStatusUserDataStreamMessageSerializer extends StdSeriali
   @Override
   public void serialize(BinanceListStatusUserDataStreamMessage value, JsonGenerator gen, SerializerProvider provider) throws IOException {
     gen.writeStartObject();
-    gen.writeStringField("e", String.valueOf(value.getEventType()));
-    gen.writeNumberField("E", value.getEventTime());
-    gen.writeStringField("a", String.valueOf(value.getAsset()));
-    gen.writeStringField("d", EncodingUtil.bigDecimalToString(value.getBalanceDelta()));
-    gen.writeNumberField("T", value.getClearTime());
+    if (value.getEventType() != null){
+      gen.writeStringField("e", String.valueOf(value.getEventType()));
+    }
+    if (value.getEventTime() != null){
+      gen.writeNumberField("E", value.getEventTime());
+    }
+    if (value.getAsset() != null){
+      gen.writeStringField("a", String.valueOf(value.getAsset()));
+    }
+    if (value.getBalanceDelta() != null){
+      gen.writeStringField("d", EncodingUtil.bigDecimalToString(value.getBalanceDelta()));
+    }
+    if (value.getClearTime() != null){
+      gen.writeNumberField("T", value.getClearTime());
+    }
     gen.writeEndObject();
   }
 }

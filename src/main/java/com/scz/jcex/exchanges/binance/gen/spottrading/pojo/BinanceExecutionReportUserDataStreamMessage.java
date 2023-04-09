@@ -12,47 +12,47 @@ import java.math.BigDecimal;
 public class BinanceExecutionReportUserDataStreamMessage {
   private String clientOrderID;
   private String comissionAsset;
-  private int commissionAmount;
-  private long counterOrderId;
+  private Integer commissionAmount;
+  private Long counterOrderId;
   private BigDecimal cumQty;
   private BigDecimal cumQuoteQty;
   private String currentExecutionType;
   private String currentOrderStatus;
-  private long eventTime;
+  private Long eventTime;
   private String eventType;
   private BigDecimal icebergQuantity;
-  private long ignore0;
-  private boolean ignore1;
+  private Long ignore0;
+  private Boolean ignore1;
   private BigDecimal lastExecPrice;
   private BigDecimal lastExecQty;
   private BigDecimal lastPreventedQty;
   private BigDecimal lastQuoteQty;
-  private long orderCreationTime;
+  private Long orderCreationTime;
   private String orderID;
-  private int orderListId;
-  private boolean orderOnBook;
+  private Integer orderListId;
+  private Boolean orderOnBook;
   private BigDecimal orderPrice;
   private BigDecimal orderQuantity;
   private String orderRejectReason;
   private String orderType;
   private String origClientOrderID;
-  private long preventedMatchID;
+  private Long preventedMatchID;
   private BigDecimal preventedQty;
   private BigDecimal quoteQty;
   private String selfTradePreventionMode;
   private String side;
   private BigDecimal stopPrice;
-  private long strategyID;
-  private long strategyType;
+  private Long strategyID;
+  private Long strategyType;
   private String symbol;
   private String timeInForce;
-  private long tradeGroupId;
-  private long tradeID;
-  private boolean tradeMakerSide;
-  private int trailingDelta;
-  private long trailingTime;
-  private long transactionTime;
-  private long workingTime;
+  private Long tradeGroupId;
+  private Long tradeID;
+  private Boolean tradeMakerSide;
+  private Integer trailingDelta;
+  private Long trailingTime;
+  private Long transactionTime;
+  private Long workingTime;
   
   /**
    * @return Client order ID. Message field <strong>c</strong>
@@ -85,28 +85,28 @@ public class BinanceExecutionReportUserDataStreamMessage {
   /**
    * @return Commission amount. Message field <strong>n</strong>
    */
-  public int getCommissionAmount(){
+  public Integer getCommissionAmount(){
     return commissionAmount;
   }
   
   /**
    * @param commissionAmount Commission amount. Message field <strong>n</strong>
    */
-  public void setCommissionAmount(int commissionAmount) {
+  public void setCommissionAmount(Integer commissionAmount) {
     this.commissionAmount = commissionAmount;
   }
   
   /**
    * @return CounterOrderId; This is only visible if the order expired due to STP trigger. Message field <strong>U</strong>
    */
-  public long getCounterOrderId(){
+  public Long getCounterOrderId(){
     return counterOrderId;
   }
   
   /**
    * @param counterOrderId CounterOrderId; This is only visible if the order expired due to STP trigger. Message field <strong>U</strong>
    */
-  public void setCounterOrderId(long counterOrderId) {
+  public void setCounterOrderId(Long counterOrderId) {
     this.counterOrderId = counterOrderId;
   }
   
@@ -169,14 +169,14 @@ public class BinanceExecutionReportUserDataStreamMessage {
   /**
    * @return Event time. Message field <strong>E</strong>
    */
-  public long getEventTime(){
+  public Long getEventTime(){
     return eventTime;
   }
   
   /**
    * @param eventTime Event time. Message field <strong>E</strong>
    */
-  public void setEventTime(long eventTime) {
+  public void setEventTime(Long eventTime) {
     this.eventTime = eventTime;
   }
   
@@ -211,28 +211,28 @@ public class BinanceExecutionReportUserDataStreamMessage {
   /**
    * @return Ignore Message field <strong>I</strong>
    */
-  public long getIgnore0(){
+  public Long getIgnore0(){
     return ignore0;
   }
   
   /**
    * @param ignore0 Ignore Message field <strong>I</strong>
    */
-  public void setIgnore0(long ignore0) {
+  public void setIgnore0(Long ignore0) {
     this.ignore0 = ignore0;
   }
   
   /**
    * @return Ignore Message field <strong>M</strong>
    */
-  public boolean isIgnore1(){
+  public Boolean isIgnore1(){
     return ignore1;
   }
   
   /**
    * @param ignore1 Ignore Message field <strong>M</strong>
    */
-  public void setIgnore1(boolean ignore1) {
+  public void setIgnore1(Boolean ignore1) {
     this.ignore1 = ignore1;
   }
   
@@ -295,14 +295,14 @@ public class BinanceExecutionReportUserDataStreamMessage {
   /**
    * @return Order creation time. Message field <strong>O</strong>
    */
-  public long getOrderCreationTime(){
+  public Long getOrderCreationTime(){
     return orderCreationTime;
   }
   
   /**
    * @param orderCreationTime Order creation time. Message field <strong>O</strong>
    */
-  public void setOrderCreationTime(long orderCreationTime) {
+  public void setOrderCreationTime(Long orderCreationTime) {
     this.orderCreationTime = orderCreationTime;
   }
   
@@ -323,28 +323,28 @@ public class BinanceExecutionReportUserDataStreamMessage {
   /**
    * @return OrderListId Message field <strong>g</strong>
    */
-  public int getOrderListId(){
+  public Integer getOrderListId(){
     return orderListId;
   }
   
   /**
    * @param orderListId OrderListId Message field <strong>g</strong>
    */
-  public void setOrderListId(int orderListId) {
+  public void setOrderListId(Integer orderListId) {
     this.orderListId = orderListId;
   }
   
   /**
    * @return Is the order on the book? Message field <strong>w</strong>
    */
-  public boolean isOrderOnBook(){
+  public Boolean isOrderOnBook(){
     return orderOnBook;
   }
   
   /**
    * @param orderOnBook Is the order on the book? Message field <strong>w</strong>
    */
-  public void setOrderOnBook(boolean orderOnBook) {
+  public void setOrderOnBook(Boolean orderOnBook) {
     this.orderOnBook = orderOnBook;
   }
   
@@ -421,14 +421,14 @@ public class BinanceExecutionReportUserDataStreamMessage {
   /**
    * @return Prevented Match Id; This is only visible if the order expire due to STP trigger. Message field <strong>v</strong>
    */
-  public long getPreventedMatchID(){
+  public Long getPreventedMatchID(){
     return preventedMatchID;
   }
   
   /**
    * @param preventedMatchID Prevented Match Id; This is only visible if the order expire due to STP trigger. Message field <strong>v</strong>
    */
-  public void setPreventedMatchID(long preventedMatchID) {
+  public void setPreventedMatchID(Long preventedMatchID) {
     this.preventedMatchID = preventedMatchID;
   }
   
@@ -505,28 +505,28 @@ public class BinanceExecutionReportUserDataStreamMessage {
   /**
    * @return Strategy ID; This is only visible if the strategyId parameter was provided upon order placement. Message field <strong>j</strong>
    */
-  public long getStrategyID(){
+  public Long getStrategyID(){
     return strategyID;
   }
   
   /**
    * @param strategyID Strategy ID; This is only visible if the strategyId parameter was provided upon order placement. Message field <strong>j</strong>
    */
-  public void setStrategyID(long strategyID) {
+  public void setStrategyID(Long strategyID) {
     this.strategyID = strategyID;
   }
   
   /**
    * @return Strategy Type; This is only visible if the strategyType parameter was provided upon order placement. Message field <strong>J</strong>
    */
-  public long getStrategyType(){
+  public Long getStrategyType(){
     return strategyType;
   }
   
   /**
    * @param strategyType Strategy Type; This is only visible if the strategyType parameter was provided upon order placement. Message field <strong>J</strong>
    */
-  public void setStrategyType(long strategyType) {
+  public void setStrategyType(Long strategyType) {
     this.strategyType = strategyType;
   }
   
@@ -561,98 +561,98 @@ public class BinanceExecutionReportUserDataStreamMessage {
   /**
    * @return TradeGroupId; This is only visible if the account is part of a trade group and the order expired due to STP trigger. Message field <strong>u</strong>
    */
-  public long getTradeGroupId(){
+  public Long getTradeGroupId(){
     return tradeGroupId;
   }
   
   /**
    * @param tradeGroupId TradeGroupId; This is only visible if the account is part of a trade group and the order expired due to STP trigger. Message field <strong>u</strong>
    */
-  public void setTradeGroupId(long tradeGroupId) {
+  public void setTradeGroupId(Long tradeGroupId) {
     this.tradeGroupId = tradeGroupId;
   }
   
   /**
    * @return Trade ID Message field <strong>t</strong>
    */
-  public long getTradeID(){
+  public Long getTradeID(){
     return tradeID;
   }
   
   /**
    * @param tradeID Trade ID Message field <strong>t</strong>
    */
-  public void setTradeID(long tradeID) {
+  public void setTradeID(Long tradeID) {
     this.tradeID = tradeID;
   }
   
   /**
    * @return Is this trade the maker side? Message field <strong>m</strong>
    */
-  public boolean isTradeMakerSide(){
+  public Boolean isTradeMakerSide(){
     return tradeMakerSide;
   }
   
   /**
    * @param tradeMakerSide Is this trade the maker side? Message field <strong>m</strong>
    */
-  public void setTradeMakerSide(boolean tradeMakerSide) {
+  public void setTradeMakerSide(Boolean tradeMakerSide) {
     this.tradeMakerSide = tradeMakerSide;
   }
   
   /**
    * @return Trailing Delta; This is only visible if the order was a trailing stop order. Message field <strong>d</strong>
    */
-  public int getTrailingDelta(){
+  public Integer getTrailingDelta(){
     return trailingDelta;
   }
   
   /**
    * @param trailingDelta Trailing Delta; This is only visible if the order was a trailing stop order. Message field <strong>d</strong>
    */
-  public void setTrailingDelta(int trailingDelta) {
+  public void setTrailingDelta(Integer trailingDelta) {
     this.trailingDelta = trailingDelta;
   }
   
   /**
    * @return Trailing Time; This is only visible if the trailing stop order has been activated. Message field <strong>D</strong>
    */
-  public long getTrailingTime(){
+  public Long getTrailingTime(){
     return trailingTime;
   }
   
   /**
    * @param trailingTime Trailing Time; This is only visible if the trailing stop order has been activated. Message field <strong>D</strong>
    */
-  public void setTrailingTime(long trailingTime) {
+  public void setTrailingTime(Long trailingTime) {
     this.trailingTime = trailingTime;
   }
   
   /**
    * @return Transaction time Message field <strong>T</strong>
    */
-  public long getTransactionTime(){
+  public Long getTransactionTime(){
     return transactionTime;
   }
   
   /**
    * @param transactionTime Transaction time Message field <strong>T</strong>
    */
-  public void setTransactionTime(long transactionTime) {
+  public void setTransactionTime(Long transactionTime) {
     this.transactionTime = transactionTime;
   }
   
   /**
    * @return Working Time; This is only visible if the order has been placed on the book. Message field <strong>W</strong>
    */
-  public long getWorkingTime(){
+  public Long getWorkingTime(){
     return workingTime;
   }
   
   /**
    * @param workingTime Working Time; This is only visible if the order has been placed on the book. Message field <strong>W</strong>
    */
-  public void setWorkingTime(long workingTime) {
+  public void setWorkingTime(Long workingTime) {
     this.workingTime = workingTime;
   }
   

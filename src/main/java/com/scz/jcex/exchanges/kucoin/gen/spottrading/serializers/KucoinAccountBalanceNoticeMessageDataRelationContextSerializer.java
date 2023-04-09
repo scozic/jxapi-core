@@ -19,9 +19,15 @@ public class KucoinAccountBalanceNoticeMessageDataRelationContextSerializer exte
   @Override
   public void serialize(KucoinAccountBalanceNoticeMessageDataRelationContext value, JsonGenerator gen, SerializerProvider provider) throws IOException {
     gen.writeStartObject();
-    gen.writeStringField("symbol", String.valueOf(value.getSymbol()));
-    gen.writeStringField("tradeId", String.valueOf(value.getTradeId()));
-    gen.writeStringField("orderId", String.valueOf(value.getOrderId()));
+    if (value.getSymbol() != null){
+      gen.writeStringField("symbol", String.valueOf(value.getSymbol()));
+    }
+    if (value.getTradeId() != null){
+      gen.writeStringField("tradeId", String.valueOf(value.getTradeId()));
+    }
+    if (value.getOrderId() != null){
+      gen.writeStringField("orderId", String.valueOf(value.getOrderId()));
+    }
     gen.writeEndObject();
   }
 }

@@ -19,7 +19,9 @@ public class KucoinCancelAllOrdersResponseDataSerializer extends StdSerializer<K
   @Override
   public void serialize(KucoinCancelAllOrdersResponseData value, JsonGenerator gen, SerializerProvider provider) throws IOException {
     gen.writeStartObject();
-    gen.writeObjectField("cancelledOrderIds", value.getCancelledOrderIds());
+    if (value.getCancelledOrderIds() != null){
+      gen.writeObjectField("cancelledOrderIds", value.getCancelledOrderIds());
+    }
     gen.writeEndObject();
   }
 }

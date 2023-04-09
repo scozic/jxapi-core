@@ -20,27 +20,69 @@ public class KucoinPrivateOrderChangeV2MessageDataSerializer extends StdSerializ
   @Override
   public void serialize(KucoinPrivateOrderChangeV2MessageData value, JsonGenerator gen, SerializerProvider provider) throws IOException {
     gen.writeStartObject();
-    gen.writeStringField("symbol", String.valueOf(value.getSymbol()));
-    gen.writeStringField("orderType", String.valueOf(value.getOrderType()));
-    gen.writeStringField("side", String.valueOf(value.getSide()));
-    gen.writeStringField("orderId", String.valueOf(value.getOrderId()));
-    gen.writeStringField("liquidity", String.valueOf(value.getLiquidity()));
-    gen.writeStringField("type", String.valueOf(value.getType()));
-    gen.writeNumberField("orderTime", value.getOrderTime());
-    gen.writeStringField("size", EncodingUtil.bigDecimalToString(value.getSize()));
-    gen.writeStringField("filledSize", EncodingUtil.bigDecimalToString(value.getFilledSize()));
-    gen.writeStringField("price", EncodingUtil.bigDecimalToString(value.getPrice()));
-    gen.writeStringField("matchPrice", EncodingUtil.bigDecimalToString(value.getMatchPrice()));
-    gen.writeStringField("matchSize", EncodingUtil.bigDecimalToString(value.getMatchSize()));
-    gen.writeStringField("tradeId", String.valueOf(value.getTradeId()));
-    gen.writeStringField("clientOid", String.valueOf(value.getClientOid()));
-    gen.writeStringField("remainSize", EncodingUtil.bigDecimalToString(value.getRemainSize()));
-    gen.writeStringField("status", String.valueOf(value.getStatus()));
-    gen.writeStringField("canceledSize", EncodingUtil.bigDecimalToString(value.getCanceledSize()));
-    gen.writeStringField("canceledFunds", EncodingUtil.bigDecimalToString(value.getCanceledFunds()));
-    gen.writeStringField("originSize", EncodingUtil.bigDecimalToString(value.getOriginSize()));
-    gen.writeStringField("originFunds", EncodingUtil.bigDecimalToString(value.getOriginFunds()));
-    gen.writeNumberField("ts", value.getTs());
+    if (value.getSymbol() != null){
+      gen.writeStringField("symbol", String.valueOf(value.getSymbol()));
+    }
+    if (value.getOrderType() != null){
+      gen.writeStringField("orderType", String.valueOf(value.getOrderType()));
+    }
+    if (value.getSide() != null){
+      gen.writeStringField("side", String.valueOf(value.getSide()));
+    }
+    if (value.getOrderId() != null){
+      gen.writeStringField("orderId", String.valueOf(value.getOrderId()));
+    }
+    if (value.getLiquidity() != null){
+      gen.writeStringField("liquidity", String.valueOf(value.getLiquidity()));
+    }
+    if (value.getType() != null){
+      gen.writeStringField("type", String.valueOf(value.getType()));
+    }
+    if (value.getOrderTime() != null){
+      gen.writeNumberField("orderTime", value.getOrderTime());
+    }
+    if (value.getSize() != null){
+      gen.writeStringField("size", EncodingUtil.bigDecimalToString(value.getSize()));
+    }
+    if (value.getFilledSize() != null){
+      gen.writeStringField("filledSize", EncodingUtil.bigDecimalToString(value.getFilledSize()));
+    }
+    if (value.getPrice() != null){
+      gen.writeStringField("price", EncodingUtil.bigDecimalToString(value.getPrice()));
+    }
+    if (value.getMatchPrice() != null){
+      gen.writeStringField("matchPrice", EncodingUtil.bigDecimalToString(value.getMatchPrice()));
+    }
+    if (value.getMatchSize() != null){
+      gen.writeStringField("matchSize", EncodingUtil.bigDecimalToString(value.getMatchSize()));
+    }
+    if (value.getTradeId() != null){
+      gen.writeStringField("tradeId", String.valueOf(value.getTradeId()));
+    }
+    if (value.getClientOid() != null){
+      gen.writeStringField("clientOid", String.valueOf(value.getClientOid()));
+    }
+    if (value.getRemainSize() != null){
+      gen.writeStringField("remainSize", EncodingUtil.bigDecimalToString(value.getRemainSize()));
+    }
+    if (value.getStatus() != null){
+      gen.writeStringField("status", String.valueOf(value.getStatus()));
+    }
+    if (value.getCanceledSize() != null){
+      gen.writeStringField("canceledSize", EncodingUtil.bigDecimalToString(value.getCanceledSize()));
+    }
+    if (value.getCanceledFunds() != null){
+      gen.writeStringField("canceledFunds", EncodingUtil.bigDecimalToString(value.getCanceledFunds()));
+    }
+    if (value.getOriginSize() != null){
+      gen.writeStringField("originSize", EncodingUtil.bigDecimalToString(value.getOriginSize()));
+    }
+    if (value.getOriginFunds() != null){
+      gen.writeStringField("originFunds", EncodingUtil.bigDecimalToString(value.getOriginFunds()));
+    }
+    if (value.getTs() != null){
+      gen.writeNumberField("ts", value.getTs());
+    }
     gen.writeEndObject();
   }
 }

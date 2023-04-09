@@ -110,11 +110,11 @@ public class JsonMessageDeserializerGenerator extends JavaTypeGenerator {
 			addImport("static " + EncodingUtil.class.getName() + ".toBigDecimal");
 			return "toBigDecimal(parser.nextTextValue())";
 		case BOOLEAN:
-			return "parser.nextBooleanValue()";
+			return "Boolean.valueOf(parser.nextBooleanValue())";
 		case INT:
-			return "parser.nextIntValue(0)";
+			return "Integer.valueOf(parser.nextIntValue(0))";
 		case LONG:
-			return "parser.nextLongValue(0)";
+			return "Long.valueOf(parser.nextLongValue(0))";
 		case STRING:
 			return "parser.nextTextValue()";
 		case STRING_LIST:

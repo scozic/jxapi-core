@@ -11,21 +11,21 @@ import java.math.BigDecimal;
 @JsonSerialize(using = BinanceAllMarketTickersStreamMessageSerializer.class)
 public class BinanceAllMarketTickersStreamMessage {
   private BigDecimal baseAssetVolume;
-  private long closeTime;
-  private long eventTime;
+  private Long closeTime;
+  private Long eventTime;
   private String eventType;
-  private long firstTradeID;
+  private Long firstTradeID;
   private BigDecimal highPrice;
   private BigDecimal lastPrice;
-  private long lastTradeID;
+  private Long lastTradeID;
   private BigDecimal lowPrice;
   private BigDecimal openPrice;
-  private long openTime;
+  private Long openTime;
   private BigDecimal priceChange;
   private BigDecimal priceChangePercent;
   private BigDecimal quoteAssetVolume;
   private String symbol;
-  private long tradeCount;
+  private Long tradeCount;
   private BigDecimal weightedAvgPrice;
   
   /**
@@ -45,28 +45,28 @@ public class BinanceAllMarketTickersStreamMessage {
   /**
    * @return Statistics close time. Message field <strong>C</strong>
    */
-  public long getCloseTime(){
+  public Long getCloseTime(){
     return closeTime;
   }
   
   /**
    * @param closeTime Statistics close time. Message field <strong>C</strong>
    */
-  public void setCloseTime(long closeTime) {
+  public void setCloseTime(Long closeTime) {
     this.closeTime = closeTime;
   }
   
   /**
    * @return Event time. Message field <strong>E</strong>
    */
-  public long getEventTime(){
+  public Long getEventTime(){
     return eventTime;
   }
   
   /**
    * @param eventTime Event time. Message field <strong>E</strong>
    */
-  public void setEventTime(long eventTime) {
+  public void setEventTime(Long eventTime) {
     this.eventTime = eventTime;
   }
   
@@ -87,14 +87,14 @@ public class BinanceAllMarketTickersStreamMessage {
   /**
    * @return First trade ID. Message field <strong>F</strong>
    */
-  public long getFirstTradeID(){
+  public Long getFirstTradeID(){
     return firstTradeID;
   }
   
   /**
    * @param firstTradeID First trade ID. Message field <strong>F</strong>
    */
-  public void setFirstTradeID(long firstTradeID) {
+  public void setFirstTradeID(Long firstTradeID) {
     this.firstTradeID = firstTradeID;
   }
   
@@ -129,14 +129,14 @@ public class BinanceAllMarketTickersStreamMessage {
   /**
    * @return Last trade ID. Message field <strong>L</strong>
    */
-  public long getLastTradeID(){
+  public Long getLastTradeID(){
     return lastTradeID;
   }
   
   /**
    * @param lastTradeID Last trade ID. Message field <strong>L</strong>
    */
-  public void setLastTradeID(long lastTradeID) {
+  public void setLastTradeID(Long lastTradeID) {
     this.lastTradeID = lastTradeID;
   }
   
@@ -171,14 +171,14 @@ public class BinanceAllMarketTickersStreamMessage {
   /**
    * @return Statistics open time. Message field <strong>O</strong>
    */
-  public long getOpenTime(){
+  public Long getOpenTime(){
     return openTime;
   }
   
   /**
    * @param openTime Statistics open time. Message field <strong>O</strong>
    */
-  public void setOpenTime(long openTime) {
+  public void setOpenTime(Long openTime) {
     this.openTime = openTime;
   }
   
@@ -241,14 +241,14 @@ public class BinanceAllMarketTickersStreamMessage {
   /**
    * @return Total number of trades. Message field <strong>n</strong>
    */
-  public long getTradeCount(){
+  public Long getTradeCount(){
     return tradeCount;
   }
   
   /**
    * @param tradeCount Total number of trades. Message field <strong>n</strong>
    */
-  public void setTradeCount(long tradeCount) {
+  public void setTradeCount(Long tradeCount) {
     this.tradeCount = tradeCount;
   }
   

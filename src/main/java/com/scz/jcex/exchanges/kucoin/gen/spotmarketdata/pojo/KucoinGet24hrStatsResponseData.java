@@ -23,7 +23,7 @@ public class KucoinGet24hrStatsResponseData {
   private String symbol;
   private BigDecimal takerCoefficient;
   private BigDecimal takerFeeRate;
-  private long time;
+  private Long time;
   private BigDecimal vol;
   private BigDecimal volValue;
   
@@ -212,14 +212,14 @@ public class KucoinGet24hrStatsResponseData {
   /**
    * @return Timestamp
    */
-  public long getTime(){
+  public Long getTime(){
     return time;
   }
   
   /**
    * @param time Timestamp
    */
-  public void setTime(long time) {
+  public void setTime(Long time) {
     this.time = time;
   }
   

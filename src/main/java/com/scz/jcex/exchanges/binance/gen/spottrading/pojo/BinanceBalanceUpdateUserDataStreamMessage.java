@@ -12,8 +12,8 @@ import java.math.BigDecimal;
 public class BinanceBalanceUpdateUserDataStreamMessage {
   private String asset;
   private BigDecimal balanceDelta;
-  private long clearTime;
-  private long eventTime;
+  private Long clearTime;
+  private Long eventTime;
   private String eventType;
   
   /**
@@ -47,28 +47,28 @@ public class BinanceBalanceUpdateUserDataStreamMessage {
   /**
    * @return Clear Time. Message field <strong>T</strong>
    */
-  public long getClearTime(){
+  public Long getClearTime(){
     return clearTime;
   }
   
   /**
    * @param clearTime Clear Time. Message field <strong>T</strong>
    */
-  public void setClearTime(long clearTime) {
+  public void setClearTime(Long clearTime) {
     this.clearTime = clearTime;
   }
   
   /**
    * @return Event time. Message field <strong>E</strong>
    */
-  public long getEventTime(){
+  public Long getEventTime(){
     return eventTime;
   }
   
   /**
    * @param eventTime Event time. Message field <strong>E</strong>
    */
-  public void setEventTime(long eventTime) {
+  public void setEventTime(Long eventTime) {
     this.eventTime = eventTime;
   }
   

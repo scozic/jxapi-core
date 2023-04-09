@@ -18,7 +18,7 @@ public class KucoinPrivateOrderChangeV2MessageData {
   private BigDecimal matchPrice;
   private BigDecimal matchSize;
   private String orderId;
-  private long orderTime;
+  private Long orderTime;
   private String orderType;
   private BigDecimal originFunds;
   private BigDecimal originSize;
@@ -29,7 +29,7 @@ public class KucoinPrivateOrderChangeV2MessageData {
   private String status;
   private String symbol;
   private String tradeId;
-  private long ts;
+  private Long ts;
   private String type;
   
   /**
@@ -147,14 +147,14 @@ public class KucoinPrivateOrderChangeV2MessageData {
   /**
    * @return 
    */
-  public long getOrderTime(){
+  public Long getOrderTime(){
     return orderTime;
   }
   
   /**
    * @param orderTime 
    */
-  public void setOrderTime(long orderTime) {
+  public void setOrderTime(Long orderTime) {
     this.orderTime = orderTime;
   }
   
@@ -301,14 +301,14 @@ public class KucoinPrivateOrderChangeV2MessageData {
   /**
    * @return 
    */
-  public long getTs(){
+  public Long getTs(){
     return ts;
   }
   
   /**
    * @param ts 
    */
-  public void setTs(long ts) {
+  public void setTs(Long ts) {
     this.ts = ts;
   }
   

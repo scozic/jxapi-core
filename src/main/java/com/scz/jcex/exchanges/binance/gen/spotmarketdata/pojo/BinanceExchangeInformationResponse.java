@@ -10,21 +10,21 @@ import java.util.List;
  */
 @JsonSerialize(using = BinanceExchangeInformationResponseSerializer.class)
 public class BinanceExchangeInformationResponse {
-  private long serverTime;
+  private Long serverTime;
   private List<BinanceExchangeInformationResponseSymbols> symbols;
   private String timezone;
   
   /**
    * @return Server timezone
    */
-  public long getServerTime(){
+  public Long getServerTime(){
     return serverTime;
   }
   
   /**
    * @param serverTime Server timezone
    */
-  public void setServerTime(long serverTime) {
+  public void setServerTime(Long serverTime) {
     this.serverTime = serverTime;
   }
   

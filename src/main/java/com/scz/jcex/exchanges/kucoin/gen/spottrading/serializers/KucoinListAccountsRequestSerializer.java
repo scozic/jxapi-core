@@ -19,7 +19,9 @@ public class KucoinListAccountsRequestSerializer extends StdSerializer<KucoinLis
   @Override
   public void serialize(KucoinListAccountsRequest value, JsonGenerator gen, SerializerProvider provider) throws IOException {
     gen.writeStartObject();
-    gen.writeStringField("type", String.valueOf(value.getType()));
+    if (value.getType() != null){
+      gen.writeStringField("type", String.valueOf(value.getType()));
+    }
     gen.writeEndObject();
   }
 }

@@ -17,7 +17,7 @@ public class KucoinAccountBalanceNoticeMessageData {
   private BigDecimal holdChange;
   private KucoinAccountBalanceNoticeMessageDataRelationContext relationContext;
   private String relationEvent;
-  private long time;
+  private Long time;
   private BigDecimal total;
   
   /**
@@ -121,14 +121,14 @@ public class KucoinAccountBalanceNoticeMessageData {
   /**
    * @return 
    */
-  public long getTime(){
+  public Long getTime(){
     return time;
   }
   
   /**
    * @param time 
    */
-  public void setTime(long time) {
+  public void setTime(Long time) {
     this.time = time;
   }
   

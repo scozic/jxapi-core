@@ -19,24 +19,60 @@ public class BinanceExchangeInformationResponseSymbolsSerializer extends StdSeri
   @Override
   public void serialize(BinanceExchangeInformationResponseSymbols value, JsonGenerator gen, SerializerProvider provider) throws IOException {
     gen.writeStartObject();
-    gen.writeStringField("symbol", String.valueOf(value.getSymbol()));
-    gen.writeStringField("status", String.valueOf(value.getStatus()));
-    gen.writeStringField("baseAsset", String.valueOf(value.getBaseAsset()));
-    gen.writeStringField("quoteAsset", String.valueOf(value.getQuoteAsset()));
-    gen.writeNumberField("quotePrecision", value.getQuotePrecision());
-    gen.writeNumberField("quoteAssetPrecision", value.getQuoteAssetPrecision());
-    gen.writeObjectField("orderTypes", value.getOrderTypes());
-    gen.writeBooleanField("icebergAllowed", value.isIcebergAllowed());
-    gen.writeBooleanField("ocoAllowed", value.isOcoAllowed());
-    gen.writeBooleanField("quoteOrderQtyMarketAllowed", value.isQuoteOrderQtyMarketAllowed());
-    gen.writeBooleanField("allowTrailingStop", value.isAllowTrailingStop());
-    gen.writeBooleanField("cancelReplaceAllowed", value.isCancelReplaceAllowed());
-    gen.writeBooleanField("isSpotTradingAllowed", value.isIsSpotTradingAllowed());
-    gen.writeBooleanField("isMarginTradingAllowed", value.isIsMarginTradingAllowed());
-    gen.writeObjectField("filters", value.getFilters());
-    gen.writeObjectField("permissions", value.getPermissions());
-    gen.writeStringField("defaultSelfTradePreventionMode", String.valueOf(value.getDefaultSelfTradePreventionMode()));
-    gen.writeObjectField("allowedSelfTradePreventionModes", value.getAllowedSelfTradePreventionModes());
+    if (value.getSymbol() != null){
+      gen.writeStringField("symbol", String.valueOf(value.getSymbol()));
+    }
+    if (value.getStatus() != null){
+      gen.writeStringField("status", String.valueOf(value.getStatus()));
+    }
+    if (value.getBaseAsset() != null){
+      gen.writeStringField("baseAsset", String.valueOf(value.getBaseAsset()));
+    }
+    if (value.getQuoteAsset() != null){
+      gen.writeStringField("quoteAsset", String.valueOf(value.getQuoteAsset()));
+    }
+    if (value.getQuotePrecision() != null){
+      gen.writeNumberField("quotePrecision", value.getQuotePrecision());
+    }
+    if (value.getQuoteAssetPrecision() != null){
+      gen.writeNumberField("quoteAssetPrecision", value.getQuoteAssetPrecision());
+    }
+    if (value.getOrderTypes() != null){
+      gen.writeObjectField("orderTypes", value.getOrderTypes());
+    }
+    if (value.isIcebergAllowed() != null){
+      gen.writeBooleanField("icebergAllowed", value.isIcebergAllowed());
+    }
+    if (value.isOcoAllowed() != null){
+      gen.writeBooleanField("ocoAllowed", value.isOcoAllowed());
+    }
+    if (value.isQuoteOrderQtyMarketAllowed() != null){
+      gen.writeBooleanField("quoteOrderQtyMarketAllowed", value.isQuoteOrderQtyMarketAllowed());
+    }
+    if (value.isAllowTrailingStop() != null){
+      gen.writeBooleanField("allowTrailingStop", value.isAllowTrailingStop());
+    }
+    if (value.isCancelReplaceAllowed() != null){
+      gen.writeBooleanField("cancelReplaceAllowed", value.isCancelReplaceAllowed());
+    }
+    if (value.isIsSpotTradingAllowed() != null){
+      gen.writeBooleanField("isSpotTradingAllowed", value.isIsSpotTradingAllowed());
+    }
+    if (value.isIsMarginTradingAllowed() != null){
+      gen.writeBooleanField("isMarginTradingAllowed", value.isIsMarginTradingAllowed());
+    }
+    if (value.getFilters() != null){
+      gen.writeObjectField("filters", value.getFilters());
+    }
+    if (value.getPermissions() != null){
+      gen.writeObjectField("permissions", value.getPermissions());
+    }
+    if (value.getDefaultSelfTradePreventionMode() != null){
+      gen.writeStringField("defaultSelfTradePreventionMode", String.valueOf(value.getDefaultSelfTradePreventionMode()));
+    }
+    if (value.getAllowedSelfTradePreventionModes() != null){
+      gen.writeObjectField("allowedSelfTradePreventionModes", value.getAllowedSelfTradePreventionModes());
+    }
     gen.writeEndObject();
   }
 }

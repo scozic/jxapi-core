@@ -241,7 +241,6 @@
 					"httpMethod": "POST",
 					"description": "You need to apply for one of the two tokens below to create a websocket connection..<br/>See <a href=\"https://docs.kucoin.com/#apply-connect-token\">API</a>",
 					"url": "https://api.kucoin.com/api/v1/bullet-public",
-					"urlParameters": "",
 					"parameters": [],
 					"response": [
 						{"name":"code", "type": "STRING", "description":"System error code, see <a href=\"https://docs.kucoin.com/#request\">API</a>", "sampleValue": "0"},
@@ -267,7 +266,6 @@
 					"httpMethod": "GET",
 					"description": "Get a list of accounts. Please deposit funds to the main account firstly, then transfer the funds to the trade account via Inner Transfer before transaction..<br/>See <a href=\"https://docs.kucoin.com/#list-accounts\">API</a>",
 					"url": "https://api.kucoin.com/api/v1/accounts",
-					"urlParameters": "type=${type}",
 					"parameters": [
 						{"name":"type", "type": "STRING", "description":"Account type: <strong>main</strong>, <strong>trade</strong>, <strong>margin</strong>", "sampleValue":"trade"}
 					],
@@ -382,8 +380,8 @@
 						{"name":"side", "type": "STRING", "description":"[Optional] <strong>buy</strong> or <strong>sell</strong>.", "sampleValue": null},
 						{"name":"type", "type": "STRING", "description":"[Optional] <strong>limit</strong>, <strong>market</strong>, <strong>limit_stop</strong> or <strong>market_stop</strong>", "sampleValue": null},
 						{"name":"tradeType", "type": "STRING", "description":"[Optional] the type of trading:<strong>TRADE</strong> (Spot Trading), <strong>MARGIN_TRADE</strong> (Cross Margin Trading), <strong>MARGIN_ISOLATED_TRADE</strong>(Isolated Margin Trading), and the default is <strong>TRADE</strong> to cancel the spot trading orders.", "sampleValue": "TRADE"},
-						{"name":"startAt", "type": "TIMESTAMP", "description":"[Optional] Start time (milisecond).", "sampleValue": 0},
-						{"name":"endAt", "type": "TIMESTAMP", "description":"[Optional] End time (milisecond).", "sampleValue": "now()"}
+						{"name":"startAt", "type": "TIMESTAMP", "description":"[Optional] Start time (milisecond).", "sampleValue": null},
+						{"name":"endAt", "type": "TIMESTAMP", "description":"[Optional] End time (milisecond).", "sampleValue": null}
 					],
 					"response": [
 						{"name": "code", "type": "STRING", "description": "System error code, see <a href=\"https://docs.kucoin.com/#request\">API</a>", "sampleValue": "0"},

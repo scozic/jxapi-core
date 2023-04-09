@@ -19,8 +19,12 @@ public class KucoinGetAllTickersResponseDataSerializer extends StdSerializer<Kuc
   @Override
   public void serialize(KucoinGetAllTickersResponseData value, JsonGenerator gen, SerializerProvider provider) throws IOException {
     gen.writeStartObject();
-    gen.writeNumberField("time", value.getTime());
-    gen.writeObjectField("ticker", value.getTicker());
+    if (value.getTime() != null){
+      gen.writeNumberField("time", value.getTime());
+    }
+    if (value.getTicker() != null){
+      gen.writeObjectField("ticker", value.getTicker());
+    }
     gen.writeEndObject();
   }
 }

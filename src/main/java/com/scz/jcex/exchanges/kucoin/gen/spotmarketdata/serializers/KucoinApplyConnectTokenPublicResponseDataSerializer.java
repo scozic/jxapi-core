@@ -19,8 +19,12 @@ public class KucoinApplyConnectTokenPublicResponseDataSerializer extends StdSeri
   @Override
   public void serialize(KucoinApplyConnectTokenPublicResponseData value, JsonGenerator gen, SerializerProvider provider) throws IOException {
     gen.writeStartObject();
-    gen.writeStringField("token", String.valueOf(value.getToken()));
-    gen.writeObjectField("instanceServers", value.getInstanceServers());
+    if (value.getToken() != null){
+      gen.writeStringField("token", String.valueOf(value.getToken()));
+    }
+    if (value.getInstanceServers() != null){
+      gen.writeObjectField("instanceServers", value.getInstanceServers());
+    }
     gen.writeEndObject();
   }
 }

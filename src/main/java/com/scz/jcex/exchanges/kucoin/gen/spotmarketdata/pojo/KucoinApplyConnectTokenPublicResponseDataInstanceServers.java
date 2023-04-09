@@ -9,23 +9,23 @@ import com.scz.jcex.util.EncodingUtil;
  */
 @JsonSerialize(using = KucoinApplyConnectTokenPublicResponseDataInstanceServersSerializer.class)
 public class KucoinApplyConnectTokenPublicResponseDataInstanceServers {
-  private boolean encrypt;
+  private Boolean encrypt;
   private String endpoint;
-  private long pingInterval;
-  private long pingTimeout;
+  private Long pingInterval;
+  private Long pingTimeout;
   private String protocol;
   
   /**
    * @return Indicate whether SSL encryption is used
    */
-  public boolean isEncrypt(){
+  public Boolean isEncrypt(){
     return encrypt;
   }
   
   /**
    * @param encrypt Indicate whether SSL encryption is used
    */
-  public void setEncrypt(boolean encrypt) {
+  public void setEncrypt(Boolean encrypt) {
     this.encrypt = encrypt;
   }
   
@@ -46,28 +46,28 @@ public class KucoinApplyConnectTokenPublicResponseDataInstanceServers {
   /**
    * @return Recommended to send ping interval in millisecond
    */
-  public long getPingInterval(){
+  public Long getPingInterval(){
     return pingInterval;
   }
   
   /**
    * @param pingInterval Recommended to send ping interval in millisecond
    */
-  public void setPingInterval(long pingInterval) {
+  public void setPingInterval(Long pingInterval) {
     this.pingInterval = pingInterval;
   }
   
   /**
    * @return Recommended to send ping interval in millisecond
    */
-  public long getPingTimeout(){
+  public Long getPingTimeout(){
     return pingTimeout;
   }
   
   /**
    * @param pingTimeout Recommended to send ping interval in millisecond
    */
-  public void setPingTimeout(long pingTimeout) {
+  public void setPingTimeout(Long pingTimeout) {
     this.pingTimeout = pingTimeout;
   }
   

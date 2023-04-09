@@ -38,10 +38,10 @@ public class ExchangeJavaWrapperGeneratorUtil {
 	private static final String DEFAULT_STRING_LIST_SEPARATOR = ",";
 	static {
 		PARAMETER_TYPE_CLASSES.put(EndpointParameterType.BIGDECIMAL, BigDecimal.class.getName());
-		PARAMETER_TYPE_CLASSES.put(EndpointParameterType.BOOLEAN, "boolean");
-		PARAMETER_TYPE_CLASSES.put(EndpointParameterType.INT, "int");
-		PARAMETER_TYPE_CLASSES.put(EndpointParameterType.LONG, "long");
-		PARAMETER_TYPE_CLASSES.put(EndpointParameterType.TIMESTAMP, "long");
+		PARAMETER_TYPE_CLASSES.put(EndpointParameterType.BOOLEAN, "java.lang.Boolean");
+		PARAMETER_TYPE_CLASSES.put(EndpointParameterType.INT, "java.lang.Integer");
+		PARAMETER_TYPE_CLASSES.put(EndpointParameterType.LONG, "java.lang.Long");
+		PARAMETER_TYPE_CLASSES.put(EndpointParameterType.TIMESTAMP, "java.lang.Long");
 		PARAMETER_TYPE_CLASSES.put(EndpointParameterType.STRING, "String");
 		PARAMETER_TYPE_CLASSES.put(EndpointParameterType.STRING_LIST, "java.util.List<String>");
 	}

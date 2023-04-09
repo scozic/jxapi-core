@@ -19,7 +19,9 @@ public class BinanceIndividualSymbolTickerStreamsRequestSerializer extends StdSe
   @Override
   public void serialize(BinanceIndividualSymbolTickerStreamsRequest value, JsonGenerator gen, SerializerProvider provider) throws IOException {
     gen.writeStartObject();
-    gen.writeStringField("symbol", String.valueOf(value.getSymbol()));
+    if (value.getSymbol() != null){
+      gen.writeStringField("symbol", String.valueOf(value.getSymbol()));
+    }
     gen.writeEndObject();
   }
 }

@@ -20,14 +20,30 @@ public class KucoinGetTickerResponseDataSerializer extends StdSerializer<KucoinG
   @Override
   public void serialize(KucoinGetTickerResponseData value, JsonGenerator gen, SerializerProvider provider) throws IOException {
     gen.writeStartObject();
-    gen.writeStringField("sequence", String.valueOf(value.getSequence()));
-    gen.writeStringField("bestAsk", EncodingUtil.bigDecimalToString(value.getBestAsk()));
-    gen.writeStringField("size", EncodingUtil.bigDecimalToString(value.getSize()));
-    gen.writeStringField("price", EncodingUtil.bigDecimalToString(value.getPrice()));
-    gen.writeStringField("bestBidSize", EncodingUtil.bigDecimalToString(value.getBestBidSize()));
-    gen.writeStringField("bestBid", EncodingUtil.bigDecimalToString(value.getBestBid()));
-    gen.writeStringField("bestAskSize", EncodingUtil.bigDecimalToString(value.getBestAskSize()));
-    gen.writeNumberField("time", value.getTime());
+    if (value.getSequence() != null){
+      gen.writeStringField("sequence", String.valueOf(value.getSequence()));
+    }
+    if (value.getBestAsk() != null){
+      gen.writeStringField("bestAsk", EncodingUtil.bigDecimalToString(value.getBestAsk()));
+    }
+    if (value.getSize() != null){
+      gen.writeStringField("size", EncodingUtil.bigDecimalToString(value.getSize()));
+    }
+    if (value.getPrice() != null){
+      gen.writeStringField("price", EncodingUtil.bigDecimalToString(value.getPrice()));
+    }
+    if (value.getBestBidSize() != null){
+      gen.writeStringField("bestBidSize", EncodingUtil.bigDecimalToString(value.getBestBidSize()));
+    }
+    if (value.getBestBid() != null){
+      gen.writeStringField("bestBid", EncodingUtil.bigDecimalToString(value.getBestBid()));
+    }
+    if (value.getBestAskSize() != null){
+      gen.writeStringField("bestAskSize", EncodingUtil.bigDecimalToString(value.getBestAskSize()));
+    }
+    if (value.getTime() != null){
+      gen.writeNumberField("time", value.getTime());
+    }
     gen.writeEndObject();
   }
 }
