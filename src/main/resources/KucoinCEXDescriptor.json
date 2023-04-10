@@ -635,6 +635,41 @@
 					]
 				}
 			]
+		},
+		{ 
+			"name": "FuturesTrading",
+			"description": "Kucoin Futures trading API",
+			"restEndpointFactory": "com.scz.jcex.exchanges.kucoin.net.KucoinPrivateApiRestEndpointFactory",
+			"restEndpoints": [
+			{
+					"name": "GetAccountOverview",
+					"httpMethod": "GET",
+					"description": "Get account overview.<br/>See <a href=\"https://docs.kucoin.com/futures/#get-account-overview\">API</a>",
+					"url": "https://api-futures.kucoin.com/api/v1/account-overview",
+					"parameters": [
+						{"name":"currency", "type": "STRING", "description":"[Optional] Currecny ,including XBT,USDT,Default XBT", "sampleValue":"USDT"}
+					],
+					"response": [
+						{"name":"code", "type": "STRING", "description":"System error code, see <a href=\"https://docs.kucoin.com/#request\">API</a>", "sampleValue": "0"},
+						{"name":"msg", "type": "STRING", "description":"System error code description, provided in error response when code is not '0', see <a href=\"https://docs.kucoin.com/#request\">API</a>", "sampleValue": "0"},
+						{"name":"data", "type": "STRUCT", "description":"List of market information for each market symbol", "parameters":
+							[
+								{"name":"accountEquity", "type": "BIGDECIMAL", "description":"Account equity = marginBalance + Unrealised PNL", "sampleValue":99.8999305281},
+								{"name":"unrealisedPNL", "type": "BIGDECIMAL", "description":"Unrealised profit and loss", "sampleValue":0},
+								{"name":"marginBalance", "type": "BIGDECIMAL", "description":"Margin balance = positionMargin + orderMargin + frozenFunds + availableBalance - unrealisedPNL", "sampleValue":99.8999305281},
+								{"name":"positionMargin", "type": "BIGDECIMAL", "description":"Position margin", "sampleValue":0},
+								{"name":"orderMargin", "type": "BIGDECIMAL", "description":"Order margin", "sampleValue":0},
+								{"name":"frozenFunds", "type": "BIGDECIMAL", "description":"Frozen funds for withdrawal and out-transfer", "sampleValue":0},
+								{"name":"availableBalance", "type": "BIGDECIMAL", "description":"Available balance", "sampleValue":0},
+								{"name":"currency", "type": "STRING", "description":"Currency code", "sampleValue":"XBT"}
+							]
+						}
+					]
+				}
+			],
+			"websocketEndpointFactory": "com.scz.jcex.exchanges.kucoin.net.KucoinPrivateWebsocketEndpointFactory",
+			"websocketEndpoints": [
+			]
 		}
 	]
 }
