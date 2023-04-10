@@ -8,6 +8,7 @@ import com.scz.jcex.netutils.deserialization.json.AbstractJsonMessageDeserialize
 import com.scz.jcex.netutils.deserialization.json.field.StructListFieldDeserializer;
 import com.scz.jcex.netutils.serialization.json.JsonParserUtil;
 import java.io.IOException;
+import static com.scz.jcex.util.EncodingUtil.readNextLong;
 
 /**
  * Parses incoming JSON messages into com.scz.jcex.exchanges.binance.gen.spotmarketdata.pojo.BinanceExchangeInformationResponse instances
@@ -27,7 +28,7 @@ public class BinanceExchangeInformationResponseDeserializer extends AbstractJson
         msg.setTimezone(parser.nextTextValue());
       break;
       case "serverTime":
-        msg.setServerTime(parser.nextLongValue(0L));
+        msg.setServerTime(readNextLong(parser));
       break;
       case "symbols":
         parser.nextToken();

@@ -107,14 +107,17 @@ public class JsonMessageDeserializerGenerator extends JavaTypeGenerator {
 	private String getParseFieldInstruction(EndpointParameter field) {
 		switch (field.getType()) {
 		case BIGDECIMAL:
-			addImport("static " + EncodingUtil.class.getName() + ".toBigDecimal");
-			return "toBigDecimal(parser.nextTextValue())";
+			addImport("static " + EncodingUtil.class.getName() + ".readNextBigDecimal");
+			return "readNextBigDecimal(parser)";
 		case BOOLEAN:
 			return "Boolean.valueOf(parser.nextBooleanValue())";
 		case INT:
-			return "Integer.valueOf(parser.nextIntValue(0))";
+			addImport("static " + EncodingUtil.class.getName() + ".readNextInteger");
+			return "readNextInteger(parser)";
 		case LONG:
-			return "Long.valueOf(parser.nextLongValue(0))";
+		case TIMESTAMP:
+			addImport("static " + EncodingUtil.class.getName() + ".readNextLong");
+			return "readNextLong(parser)";
 		case STRING:
 			return "parser.nextTextValue()";
 		case STRING_LIST:
@@ -123,8 +126,6 @@ public class JsonMessageDeserializerGenerator extends JavaTypeGenerator {
 		case STRUCT:
 		case STRUCT_LIST:
 			return generateStructDeserializer(field) +".deserialize(parser)";
-		case TIMESTAMP:
-			return "parser.nextLongValue(0L)";
 		default:
 			throw new IllegalArgumentException("Unexpected field type for field:" + field);
 		}

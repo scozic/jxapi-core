@@ -6,7 +6,8 @@ import com.scz.jcex.exchanges.binance.gen.spotmarketdata.pojo.BinanceIndividualS
 import com.scz.jcex.netutils.deserialization.json.AbstractJsonMessageDeserializer;
 import com.scz.jcex.netutils.serialization.json.JsonParserUtil;
 import java.io.IOException;
-import static com.scz.jcex.util.EncodingUtil.toBigDecimal;
+import static com.scz.jcex.util.EncodingUtil.readNextBigDecimal;
+import static com.scz.jcex.util.EncodingUtil.readNextLong;
 
 /**
  * Parses incoming JSON messages into com.scz.jcex.exchanges.binance.gen.spotmarketdata.pojo.BinanceIndividualSymbolTickerStreamsMessage instances
@@ -24,52 +25,52 @@ public class BinanceIndividualSymbolTickerStreamsMessageDeserializer extends Abs
         msg.setEventType(parser.nextTextValue());
       break;
       case "E":
-        msg.setEventTime(parser.nextLongValue(0L));
+        msg.setEventTime(readNextLong(parser));
       break;
       case "s":
         msg.setSymbol(parser.nextTextValue());
       break;
       case "p":
-        msg.setPriceChange(toBigDecimal(parser.nextTextValue()));
+        msg.setPriceChange(readNextBigDecimal(parser));
       break;
       case "P":
-        msg.setPriceChangePercent(toBigDecimal(parser.nextTextValue()));
+        msg.setPriceChangePercent(readNextBigDecimal(parser));
       break;
       case "o":
-        msg.setOpenPrice(toBigDecimal(parser.nextTextValue()));
+        msg.setOpenPrice(readNextBigDecimal(parser));
       break;
       case "h":
-        msg.setHighPrice(toBigDecimal(parser.nextTextValue()));
+        msg.setHighPrice(readNextBigDecimal(parser));
       break;
       case "l":
-        msg.setLowPrice(toBigDecimal(parser.nextTextValue()));
+        msg.setLowPrice(readNextBigDecimal(parser));
       break;
       case "c":
-        msg.setLastPrice(toBigDecimal(parser.nextTextValue()));
+        msg.setLastPrice(readNextBigDecimal(parser));
       break;
       case "w":
-        msg.setWeightedAvgPrice(toBigDecimal(parser.nextTextValue()));
+        msg.setWeightedAvgPrice(readNextBigDecimal(parser));
       break;
       case "v":
-        msg.setBaseAssetVolume(toBigDecimal(parser.nextTextValue()));
+        msg.setBaseAssetVolume(readNextBigDecimal(parser));
       break;
       case "q":
-        msg.setQuoteAssetVolume(toBigDecimal(parser.nextTextValue()));
+        msg.setQuoteAssetVolume(readNextBigDecimal(parser));
       break;
       case "O":
-        msg.setOpenTime(parser.nextLongValue(0L));
+        msg.setOpenTime(readNextLong(parser));
       break;
       case "C":
-        msg.setCloseTime(parser.nextLongValue(0L));
+        msg.setCloseTime(readNextLong(parser));
       break;
       case "F":
-        msg.setFirstTradeID(Long.valueOf(parser.nextLongValue(0)));
+        msg.setFirstTradeID(readNextLong(parser));
       break;
       case "L":
-        msg.setLastTradeID(Long.valueOf(parser.nextLongValue(0)));
+        msg.setLastTradeID(readNextLong(parser));
       break;
       case "n":
-        msg.setTradeCount(Long.valueOf(parser.nextLongValue(0)));
+        msg.setTradeCount(readNextLong(parser));
       break;
       default:
         JsonParserUtil.skipNextValue(parser);

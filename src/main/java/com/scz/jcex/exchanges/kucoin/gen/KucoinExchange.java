@@ -1,5 +1,6 @@
 package com.scz.jcex.exchanges.kucoin.gen;
 
+import com.scz.jcex.exchanges.kucoin.gen.futuresmarketdata.KucoinFuturesMarketDataApi;
 import com.scz.jcex.exchanges.kucoin.gen.spotmarketdata.KucoinSpotMarketDataApi;
 import com.scz.jcex.exchanges.kucoin.gen.spottrading.KucoinSpotTradingApi;
 
@@ -13,4 +14,6 @@ public interface  KucoinExchange {
   KucoinSpotMarketDataApi getKucoinSpotMarketDataApi();
   
   KucoinSpotTradingApi getKucoinSpotTradingApi();
+  
+  KucoinFuturesMarketDataApi getKucoinFuturesMarketDataApi();
 }

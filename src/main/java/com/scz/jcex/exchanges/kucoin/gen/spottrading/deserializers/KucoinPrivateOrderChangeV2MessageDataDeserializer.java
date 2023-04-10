@@ -6,7 +6,8 @@ import com.scz.jcex.exchanges.kucoin.gen.spottrading.pojo.KucoinPrivateOrderChan
 import com.scz.jcex.netutils.deserialization.json.AbstractJsonMessageDeserializer;
 import com.scz.jcex.netutils.serialization.json.JsonParserUtil;
 import java.io.IOException;
-import static com.scz.jcex.util.EncodingUtil.toBigDecimal;
+import static com.scz.jcex.util.EncodingUtil.readNextBigDecimal;
+import static com.scz.jcex.util.EncodingUtil.readNextLong;
 
 /**
  * Parses incoming JSON messages into com.scz.jcex.exchanges.kucoin.gen.spottrading.pojo.KucoinPrivateOrderChangeV2MessageData instances
@@ -39,22 +40,22 @@ public class KucoinPrivateOrderChangeV2MessageDataDeserializer extends AbstractJ
         msg.setType(parser.nextTextValue());
       break;
       case "orderTime":
-        msg.setOrderTime(parser.nextLongValue(0L));
+        msg.setOrderTime(readNextLong(parser));
       break;
       case "size":
-        msg.setSize(toBigDecimal(parser.nextTextValue()));
+        msg.setSize(readNextBigDecimal(parser));
       break;
       case "filledSize":
-        msg.setFilledSize(toBigDecimal(parser.nextTextValue()));
+        msg.setFilledSize(readNextBigDecimal(parser));
       break;
       case "price":
-        msg.setPrice(toBigDecimal(parser.nextTextValue()));
+        msg.setPrice(readNextBigDecimal(parser));
       break;
       case "matchPrice":
-        msg.setMatchPrice(toBigDecimal(parser.nextTextValue()));
+        msg.setMatchPrice(readNextBigDecimal(parser));
       break;
       case "matchSize":
-        msg.setMatchSize(toBigDecimal(parser.nextTextValue()));
+        msg.setMatchSize(readNextBigDecimal(parser));
       break;
       case "tradeId":
         msg.setTradeId(parser.nextTextValue());
@@ -63,25 +64,25 @@ public class KucoinPrivateOrderChangeV2MessageDataDeserializer extends AbstractJ
         msg.setClientOid(parser.nextTextValue());
       break;
       case "remainSize":
-        msg.setRemainSize(toBigDecimal(parser.nextTextValue()));
+        msg.setRemainSize(readNextBigDecimal(parser));
       break;
       case "status":
         msg.setStatus(parser.nextTextValue());
       break;
       case "canceledSize":
-        msg.setCanceledSize(toBigDecimal(parser.nextTextValue()));
+        msg.setCanceledSize(readNextBigDecimal(parser));
       break;
       case "canceledFunds":
-        msg.setCanceledFunds(toBigDecimal(parser.nextTextValue()));
+        msg.setCanceledFunds(readNextBigDecimal(parser));
       break;
       case "originSize":
-        msg.setOriginSize(toBigDecimal(parser.nextTextValue()));
+        msg.setOriginSize(readNextBigDecimal(parser));
       break;
       case "originFunds":
-        msg.setOriginFunds(toBigDecimal(parser.nextTextValue()));
+        msg.setOriginFunds(readNextBigDecimal(parser));
       break;
       case "ts":
-        msg.setTs(parser.nextLongValue(0L));
+        msg.setTs(readNextLong(parser));
       break;
       default:
         JsonParserUtil.skipNextValue(parser);

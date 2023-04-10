@@ -9,6 +9,7 @@ import com.scz.jcex.netutils.deserialization.json.field.StringListFieldDeseriali
 import com.scz.jcex.netutils.deserialization.json.field.StructListFieldDeserializer;
 import com.scz.jcex.netutils.serialization.json.JsonParserUtil;
 import java.io.IOException;
+import static com.scz.jcex.util.EncodingUtil.readNextInteger;
 
 /**
  * Parses incoming JSON messages into com.scz.jcex.exchanges.binance.gen.spotmarketdata.pojo.BinanceExchangeInformationResponseSymbols instances
@@ -37,10 +38,10 @@ public class BinanceExchangeInformationResponseSymbolsDeserializer extends Abstr
         msg.setQuoteAsset(parser.nextTextValue());
       break;
       case "quotePrecision":
-        msg.setQuotePrecision(Integer.valueOf(parser.nextIntValue(0)));
+        msg.setQuotePrecision(readNextInteger(parser));
       break;
       case "quoteAssetPrecision":
-        msg.setQuoteAssetPrecision(Integer.valueOf(parser.nextIntValue(0)));
+        msg.setQuoteAssetPrecision(readNextInteger(parser));
       break;
       case "orderTypes":
         parser.nextToken();

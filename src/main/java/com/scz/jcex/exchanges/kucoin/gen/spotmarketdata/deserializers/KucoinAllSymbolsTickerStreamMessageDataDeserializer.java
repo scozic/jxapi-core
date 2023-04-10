@@ -6,7 +6,7 @@ import com.scz.jcex.exchanges.kucoin.gen.spotmarketdata.pojo.KucoinAllSymbolsTic
 import com.scz.jcex.netutils.deserialization.json.AbstractJsonMessageDeserializer;
 import com.scz.jcex.netutils.serialization.json.JsonParserUtil;
 import java.io.IOException;
-import static com.scz.jcex.util.EncodingUtil.toBigDecimal;
+import static com.scz.jcex.util.EncodingUtil.readNextBigDecimal;
 
 /**
  * Parses incoming JSON messages into com.scz.jcex.exchanges.kucoin.gen.spotmarketdata.pojo.KucoinAllSymbolsTickerStreamMessageData instances
@@ -24,22 +24,22 @@ public class KucoinAllSymbolsTickerStreamMessageDataDeserializer extends Abstrac
         msg.setSequence(parser.nextTextValue());
       break;
       case "bestAsk":
-        msg.setBestAsk(toBigDecimal(parser.nextTextValue()));
+        msg.setBestAsk(readNextBigDecimal(parser));
       break;
       case "size":
-        msg.setSize(toBigDecimal(parser.nextTextValue()));
+        msg.setSize(readNextBigDecimal(parser));
       break;
       case "price":
-        msg.setPrice(toBigDecimal(parser.nextTextValue()));
+        msg.setPrice(readNextBigDecimal(parser));
       break;
       case "bestBidSize":
-        msg.setBestBidSize(toBigDecimal(parser.nextTextValue()));
+        msg.setBestBidSize(readNextBigDecimal(parser));
       break;
       case "bestBid":
-        msg.setBestBid(toBigDecimal(parser.nextTextValue()));
+        msg.setBestBid(readNextBigDecimal(parser));
       break;
       case "bestAskSize":
-        msg.setBestAskSize(toBigDecimal(parser.nextTextValue()));
+        msg.setBestAskSize(readNextBigDecimal(parser));
       break;
       default:
         JsonParserUtil.skipNextValue(parser);

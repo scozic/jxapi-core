@@ -8,6 +8,7 @@ import com.scz.jcex.netutils.deserialization.json.AbstractJsonMessageDeserialize
 import com.scz.jcex.netutils.deserialization.json.field.StructListFieldDeserializer;
 import com.scz.jcex.netutils.serialization.json.JsonParserUtil;
 import java.io.IOException;
+import static com.scz.jcex.util.EncodingUtil.readNextLong;
 
 /**
  * Parses incoming JSON messages into com.scz.jcex.exchanges.binance.gen.spottrading.pojo.BinanceOutboundAccountPositionUserDataStreamMessage instances
@@ -27,10 +28,10 @@ public class BinanceOutboundAccountPositionUserDataStreamMessageDeserializer ext
         msg.setEventType(parser.nextTextValue());
       break;
       case "E":
-        msg.setEventTime(parser.nextLongValue(0L));
+        msg.setEventTime(readNextLong(parser));
       break;
       case "u":
-        msg.setLastAccountUpdateTime(parser.nextLongValue(0L));
+        msg.setLastAccountUpdateTime(readNextLong(parser));
       break;
       case "B":
         parser.nextToken();

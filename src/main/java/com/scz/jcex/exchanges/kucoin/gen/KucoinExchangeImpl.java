@@ -1,5 +1,7 @@
 package com.scz.jcex.exchanges.kucoin.gen;
 
+import com.scz.jcex.exchanges.kucoin.gen.futuresmarketdata.KucoinFuturesMarketDataApi;
+import com.scz.jcex.exchanges.kucoin.gen.futuresmarketdata.KucoinFuturesMarketDataApiImpl;
 import com.scz.jcex.exchanges.kucoin.gen.spotmarketdata.KucoinSpotMarketDataApi;
 import com.scz.jcex.exchanges.kucoin.gen.spotmarketdata.KucoinSpotMarketDataApiImpl;
 import com.scz.jcex.exchanges.kucoin.gen.spottrading.KucoinSpotTradingApi;
@@ -25,8 +27,16 @@ public class  KucoinExchangeImpl implements KucoinExchange {
     return this.kucoinSpotTradingApi;
   }
   
+  private final KucoinFuturesMarketDataApi kucoinFuturesMarketDataApi;
+  
+  @Override
+  public KucoinFuturesMarketDataApi getKucoinFuturesMarketDataApi() {
+    return this.kucoinFuturesMarketDataApi;
+  }
+  
   public KucoinExchangeImpl(Properties properties) {
     this.kucoinSpotMarketDataApi = new KucoinSpotMarketDataApiImpl(properties);
     this.kucoinSpotTradingApi = new KucoinSpotTradingApiImpl(properties);
+    this.kucoinFuturesMarketDataApi = new KucoinFuturesMarketDataApiImpl(properties);
   }
 }

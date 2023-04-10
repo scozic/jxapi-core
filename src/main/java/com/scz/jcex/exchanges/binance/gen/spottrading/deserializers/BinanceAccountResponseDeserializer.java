@@ -9,6 +9,8 @@ import com.scz.jcex.netutils.deserialization.json.field.StringListFieldDeseriali
 import com.scz.jcex.netutils.deserialization.json.field.StructListFieldDeserializer;
 import com.scz.jcex.netutils.serialization.json.JsonParserUtil;
 import java.io.IOException;
+import static com.scz.jcex.util.EncodingUtil.readNextInteger;
+import static com.scz.jcex.util.EncodingUtil.readNextLong;
 
 /**
  * Parses incoming JSON messages into com.scz.jcex.exchanges.binance.gen.spottrading.pojo.BinanceAccountResponse instances
@@ -26,16 +28,16 @@ public class BinanceAccountResponseDeserializer extends AbstractJsonMessageDeser
     while(parser.nextToken() != JsonToken.END_OBJECT) {
       switch(parser.getCurrentName()) {
       case "makerCommission":
-        msg.setMakerCommission(Integer.valueOf(parser.nextIntValue(0)));
+        msg.setMakerCommission(readNextInteger(parser));
       break;
       case "takerCommission":
-        msg.setTakerCommission(Integer.valueOf(parser.nextIntValue(0)));
+        msg.setTakerCommission(readNextInteger(parser));
       break;
       case "buyerCommission":
-        msg.setBuyerCommission(Integer.valueOf(parser.nextIntValue(0)));
+        msg.setBuyerCommission(readNextInteger(parser));
       break;
       case "sellerCommission":
-        msg.setSellerCommission(Integer.valueOf(parser.nextIntValue(0)));
+        msg.setSellerCommission(readNextInteger(parser));
       break;
       case "commissionRates":
         parser.nextToken();
@@ -57,7 +59,7 @@ public class BinanceAccountResponseDeserializer extends AbstractJsonMessageDeser
         msg.setRequireSelfTradePrevention(Boolean.valueOf(parser.nextBooleanValue()));
       break;
       case "updateTime":
-        msg.setUpdateTime(Long.valueOf(parser.nextLongValue(0)));
+        msg.setUpdateTime(readNextLong(parser));
       break;
       case "accountType":
         msg.setAccountType(parser.nextTextValue());

@@ -6,6 +6,7 @@ import com.scz.jcex.exchanges.kucoin.gen.spottrading.pojo.KucoinPrivateOrderChan
 import com.scz.jcex.netutils.deserialization.json.AbstractJsonMessageDeserializer;
 import com.scz.jcex.netutils.serialization.json.JsonParserUtil;
 import java.io.IOException;
+import static com.scz.jcex.util.EncodingUtil.readNextLong;
 
 /**
  * Parses incoming JSON messages into com.scz.jcex.exchanges.kucoin.gen.spottrading.pojo.KucoinPrivateOrderChangeV2Message instances
@@ -24,7 +25,7 @@ public class KucoinPrivateOrderChangeV2MessageDeserializer extends AbstractJsonM
         msg.setType(parser.nextTextValue());
       break;
       case "topic":
-        msg.setTopic(parser.nextLongValue(0L));
+        msg.setTopic(readNextLong(parser));
       break;
       case "subject":
         msg.setSubject(parser.nextTextValue());

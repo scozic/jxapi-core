@@ -8,6 +8,7 @@ import com.scz.jcex.netutils.deserialization.json.AbstractJsonMessageDeserialize
 import com.scz.jcex.netutils.deserialization.json.field.StructListFieldDeserializer;
 import com.scz.jcex.netutils.serialization.json.JsonParserUtil;
 import java.io.IOException;
+import static com.scz.jcex.util.EncodingUtil.readNextInteger;
 
 /**
  * Parses incoming JSON messages into com.scz.jcex.exchanges.kucoin.gen.spottrading.pojo.KucoinListOrdersResponseData instances
@@ -24,16 +25,16 @@ public class KucoinListOrdersResponseDataDeserializer extends AbstractJsonMessag
     while(parser.nextToken() != JsonToken.END_OBJECT) {
       switch(parser.getCurrentName()) {
       case "currentPage":
-        msg.setCurrentPage(Integer.valueOf(parser.nextIntValue(0)));
+        msg.setCurrentPage(readNextInteger(parser));
       break;
       case "pageSize":
-        msg.setPageSize(Integer.valueOf(parser.nextIntValue(0)));
+        msg.setPageSize(readNextInteger(parser));
       break;
       case "totalPages":
-        msg.setTotalPages(Integer.valueOf(parser.nextIntValue(0)));
+        msg.setTotalPages(readNextInteger(parser));
       break;
       case "totalNum":
-        msg.setTotalNum(Integer.valueOf(parser.nextIntValue(0)));
+        msg.setTotalNum(readNextInteger(parser));
       break;
       case "items":
         parser.nextToken();

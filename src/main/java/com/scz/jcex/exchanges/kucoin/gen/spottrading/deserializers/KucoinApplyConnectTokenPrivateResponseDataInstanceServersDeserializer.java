@@ -6,6 +6,7 @@ import com.scz.jcex.exchanges.kucoin.gen.spottrading.pojo.KucoinApplyConnectToke
 import com.scz.jcex.netutils.deserialization.json.AbstractJsonMessageDeserializer;
 import com.scz.jcex.netutils.serialization.json.JsonParserUtil;
 import java.io.IOException;
+import static com.scz.jcex.util.EncodingUtil.readNextLong;
 
 /**
  * Parses incoming JSON messages into com.scz.jcex.exchanges.kucoin.gen.spottrading.pojo.KucoinApplyConnectTokenPrivateResponseDataInstanceServers instances
@@ -29,10 +30,10 @@ public class KucoinApplyConnectTokenPrivateResponseDataInstanceServersDeserializ
         msg.setEncrypt(Boolean.valueOf(parser.nextBooleanValue()));
       break;
       case "pingInterval":
-        msg.setPingInterval(Long.valueOf(parser.nextLongValue(0)));
+        msg.setPingInterval(readNextLong(parser));
       break;
       case "pingTimeout":
-        msg.setPingTimeout(Long.valueOf(parser.nextLongValue(0)));
+        msg.setPingTimeout(readNextLong(parser));
       break;
       default:
         JsonParserUtil.skipNextValue(parser);

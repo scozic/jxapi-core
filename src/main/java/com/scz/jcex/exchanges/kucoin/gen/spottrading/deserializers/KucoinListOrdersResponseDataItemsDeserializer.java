@@ -6,7 +6,8 @@ import com.scz.jcex.exchanges.kucoin.gen.spottrading.pojo.KucoinListOrdersRespon
 import com.scz.jcex.netutils.deserialization.json.AbstractJsonMessageDeserializer;
 import com.scz.jcex.netutils.serialization.json.JsonParserUtil;
 import java.io.IOException;
-import static com.scz.jcex.util.EncodingUtil.toBigDecimal;
+import static com.scz.jcex.util.EncodingUtil.readNextBigDecimal;
+import static com.scz.jcex.util.EncodingUtil.readNextLong;
 
 /**
  * Parses incoming JSON messages into com.scz.jcex.exchanges.kucoin.gen.spottrading.pojo.KucoinListOrdersResponseDataItems instances
@@ -36,22 +37,22 @@ public class KucoinListOrdersResponseDataItemsDeserializer extends AbstractJsonM
         msg.setSide(parser.nextTextValue());
       break;
       case "price":
-        msg.setPrice(toBigDecimal(parser.nextTextValue()));
+        msg.setPrice(readNextBigDecimal(parser));
       break;
       case "size":
-        msg.setSize(toBigDecimal(parser.nextTextValue()));
+        msg.setSize(readNextBigDecimal(parser));
       break;
       case "funds":
-        msg.setFunds(toBigDecimal(parser.nextTextValue()));
+        msg.setFunds(readNextBigDecimal(parser));
       break;
       case "dealFunds":
-        msg.setDealFunds(toBigDecimal(parser.nextTextValue()));
+        msg.setDealFunds(readNextBigDecimal(parser));
       break;
       case "dealSize":
-        msg.setDealSize(toBigDecimal(parser.nextTextValue()));
+        msg.setDealSize(readNextBigDecimal(parser));
       break;
       case "fee":
-        msg.setFee(toBigDecimal(parser.nextTextValue()));
+        msg.setFee(readNextBigDecimal(parser));
       break;
       case "feeCurrency":
         msg.setFeeCurrency(parser.nextTextValue());
@@ -66,7 +67,7 @@ public class KucoinListOrdersResponseDataItemsDeserializer extends AbstractJsonM
         msg.setStopTriggered(Boolean.valueOf(parser.nextBooleanValue()));
       break;
       case "stopPrice":
-        msg.setStopPrice(toBigDecimal(parser.nextTextValue()));
+        msg.setStopPrice(readNextBigDecimal(parser));
       break;
       case "timeInForce":
         msg.setTimeInForce(parser.nextTextValue());
@@ -81,10 +82,10 @@ public class KucoinListOrdersResponseDataItemsDeserializer extends AbstractJsonM
         msg.setIceberg(Boolean.valueOf(parser.nextBooleanValue()));
       break;
       case "visibleSize":
-        msg.setVisibleSize(toBigDecimal(parser.nextTextValue()));
+        msg.setVisibleSize(readNextBigDecimal(parser));
       break;
       case "cancelAfter":
-        msg.setCancelAfter(toBigDecimal(parser.nextTextValue()));
+        msg.setCancelAfter(readNextBigDecimal(parser));
       break;
       case "channel":
         msg.setChannel(parser.nextTextValue());
@@ -105,7 +106,7 @@ public class KucoinListOrdersResponseDataItemsDeserializer extends AbstractJsonM
         msg.setCancelExist(Boolean.valueOf(parser.nextBooleanValue()));
       break;
       case "createdAt":
-        msg.setCreatedAt(parser.nextLongValue(0L));
+        msg.setCreatedAt(readNextLong(parser));
       break;
       case "tradeType":
         msg.setTradeType(parser.nextTextValue());

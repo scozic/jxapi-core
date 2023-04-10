@@ -6,7 +6,7 @@ import com.scz.jcex.exchanges.kucoin.gen.spotmarketdata.pojo.KucoinGetSymbolsLis
 import com.scz.jcex.netutils.deserialization.json.AbstractJsonMessageDeserializer;
 import com.scz.jcex.netutils.serialization.json.JsonParserUtil;
 import java.io.IOException;
-import static com.scz.jcex.util.EncodingUtil.toBigDecimal;
+import static com.scz.jcex.util.EncodingUtil.readNextBigDecimal;
 
 /**
  * Parses incoming JSON messages into com.scz.jcex.exchanges.kucoin.gen.spotmarketdata.pojo.KucoinGetSymbolsListResponseData instances
@@ -39,31 +39,31 @@ public class KucoinGetSymbolsListResponseDataDeserializer extends AbstractJsonMe
         msg.setMarket(parser.nextTextValue());
       break;
       case "baseMinSize":
-        msg.setBaseMinSize(toBigDecimal(parser.nextTextValue()));
+        msg.setBaseMinSize(readNextBigDecimal(parser));
       break;
       case "quoteMinSize":
-        msg.setQuoteMinSize(toBigDecimal(parser.nextTextValue()));
+        msg.setQuoteMinSize(readNextBigDecimal(parser));
       break;
       case "baseMaxSize":
-        msg.setBaseMaxSize(toBigDecimal(parser.nextTextValue()));
+        msg.setBaseMaxSize(readNextBigDecimal(parser));
       break;
       case "quoteMaxSize":
-        msg.setQuoteMaxSize(toBigDecimal(parser.nextTextValue()));
+        msg.setQuoteMaxSize(readNextBigDecimal(parser));
       break;
       case "baseIncrement":
-        msg.setBaseIncrement(toBigDecimal(parser.nextTextValue()));
+        msg.setBaseIncrement(readNextBigDecimal(parser));
       break;
       case "quoteIncrement":
-        msg.setQuoteIncrement(toBigDecimal(parser.nextTextValue()));
+        msg.setQuoteIncrement(readNextBigDecimal(parser));
       break;
       case "priceIncrement":
-        msg.setPriceIncrement(toBigDecimal(parser.nextTextValue()));
+        msg.setPriceIncrement(readNextBigDecimal(parser));
       break;
       case "priceLLimitRate":
-        msg.setPriceLLimitRate(toBigDecimal(parser.nextTextValue()));
+        msg.setPriceLLimitRate(readNextBigDecimal(parser));
       break;
       case "minFunds":
-        msg.setMinFunds(toBigDecimal(parser.nextTextValue()));
+        msg.setMinFunds(readNextBigDecimal(parser));
       break;
       case "enableTrading":
         msg.setEnableTrading(Boolean.valueOf(parser.nextBooleanValue()));

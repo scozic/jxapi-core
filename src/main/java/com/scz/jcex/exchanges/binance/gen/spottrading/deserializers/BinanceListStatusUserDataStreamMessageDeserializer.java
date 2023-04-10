@@ -6,7 +6,8 @@ import com.scz.jcex.exchanges.binance.gen.spottrading.pojo.BinanceListStatusUser
 import com.scz.jcex.netutils.deserialization.json.AbstractJsonMessageDeserializer;
 import com.scz.jcex.netutils.serialization.json.JsonParserUtil;
 import java.io.IOException;
-import static com.scz.jcex.util.EncodingUtil.toBigDecimal;
+import static com.scz.jcex.util.EncodingUtil.readNextBigDecimal;
+import static com.scz.jcex.util.EncodingUtil.readNextLong;
 
 /**
  * Parses incoming JSON messages into com.scz.jcex.exchanges.binance.gen.spottrading.pojo.BinanceListStatusUserDataStreamMessage instances
@@ -24,16 +25,16 @@ public class BinanceListStatusUserDataStreamMessageDeserializer extends Abstract
         msg.setEventType(parser.nextTextValue());
       break;
       case "E":
-        msg.setEventTime(parser.nextLongValue(0L));
+        msg.setEventTime(readNextLong(parser));
       break;
       case "a":
         msg.setAsset(parser.nextTextValue());
       break;
       case "d":
-        msg.setBalanceDelta(toBigDecimal(parser.nextTextValue()));
+        msg.setBalanceDelta(readNextBigDecimal(parser));
       break;
       case "T":
-        msg.setClearTime(parser.nextLongValue(0L));
+        msg.setClearTime(readNextLong(parser));
       break;
       default:
         JsonParserUtil.skipNextValue(parser);

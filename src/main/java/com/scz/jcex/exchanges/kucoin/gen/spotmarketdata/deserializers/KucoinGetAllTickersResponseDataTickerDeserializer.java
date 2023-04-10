@@ -6,7 +6,7 @@ import com.scz.jcex.exchanges.kucoin.gen.spotmarketdata.pojo.KucoinGetAllTickers
 import com.scz.jcex.netutils.deserialization.json.AbstractJsonMessageDeserializer;
 import com.scz.jcex.netutils.serialization.json.JsonParserUtil;
 import java.io.IOException;
-import static com.scz.jcex.util.EncodingUtil.toBigDecimal;
+import static com.scz.jcex.util.EncodingUtil.readNextBigDecimal;
 
 /**
  * Parses incoming JSON messages into com.scz.jcex.exchanges.kucoin.gen.spotmarketdata.pojo.KucoinGetAllTickersResponseDataTicker instances
@@ -27,46 +27,46 @@ public class KucoinGetAllTickersResponseDataTickerDeserializer extends AbstractJ
         msg.setSymbolName(parser.nextTextValue());
       break;
       case "buy":
-        msg.setBuy(toBigDecimal(parser.nextTextValue()));
+        msg.setBuy(readNextBigDecimal(parser));
       break;
       case "sell":
-        msg.setSell(toBigDecimal(parser.nextTextValue()));
+        msg.setSell(readNextBigDecimal(parser));
       break;
       case "changeRate":
-        msg.setChangeRate(toBigDecimal(parser.nextTextValue()));
+        msg.setChangeRate(readNextBigDecimal(parser));
       break;
       case "changePrice":
-        msg.setChangePrice(toBigDecimal(parser.nextTextValue()));
+        msg.setChangePrice(readNextBigDecimal(parser));
       break;
       case "high":
-        msg.setHigh(toBigDecimal(parser.nextTextValue()));
+        msg.setHigh(readNextBigDecimal(parser));
       break;
       case "low":
-        msg.setLow(toBigDecimal(parser.nextTextValue()));
+        msg.setLow(readNextBigDecimal(parser));
       break;
       case "vol":
-        msg.setVol(toBigDecimal(parser.nextTextValue()));
+        msg.setVol(readNextBigDecimal(parser));
       break;
       case "volValue":
-        msg.setVolValue(toBigDecimal(parser.nextTextValue()));
+        msg.setVolValue(readNextBigDecimal(parser));
       break;
       case "last":
-        msg.setLast(toBigDecimal(parser.nextTextValue()));
+        msg.setLast(readNextBigDecimal(parser));
       break;
       case "averagePrice":
-        msg.setAveragePrice(toBigDecimal(parser.nextTextValue()));
+        msg.setAveragePrice(readNextBigDecimal(parser));
       break;
       case "takerFeeRate":
-        msg.setTakerFeeRate(toBigDecimal(parser.nextTextValue()));
+        msg.setTakerFeeRate(readNextBigDecimal(parser));
       break;
       case "makerFeeRate":
-        msg.setMakerFeeRate(toBigDecimal(parser.nextTextValue()));
+        msg.setMakerFeeRate(readNextBigDecimal(parser));
       break;
       case "takerCoefficient":
-        msg.setTakerCoefficient(toBigDecimal(parser.nextTextValue()));
+        msg.setTakerCoefficient(readNextBigDecimal(parser));
       break;
       case "makerCoefficient":
-        msg.setMakerCoefficient(toBigDecimal(parser.nextTextValue()));
+        msg.setMakerCoefficient(readNextBigDecimal(parser));
       break;
       default:
         JsonParserUtil.skipNextValue(parser);

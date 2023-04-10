@@ -6,7 +6,8 @@ import com.scz.jcex.exchanges.kucoin.gen.spottrading.pojo.KucoinAccountBalanceNo
 import com.scz.jcex.netutils.deserialization.json.AbstractJsonMessageDeserializer;
 import com.scz.jcex.netutils.serialization.json.JsonParserUtil;
 import java.io.IOException;
-import static com.scz.jcex.util.EncodingUtil.toBigDecimal;
+import static com.scz.jcex.util.EncodingUtil.readNextBigDecimal;
+import static com.scz.jcex.util.EncodingUtil.readNextLong;
 
 /**
  * Parses incoming JSON messages into com.scz.jcex.exchanges.kucoin.gen.spottrading.pojo.KucoinAccountBalanceNoticeMessageData instances
@@ -22,22 +23,22 @@ public class KucoinAccountBalanceNoticeMessageDataDeserializer extends AbstractJ
     while(parser.nextToken() != JsonToken.END_OBJECT) {
       switch(parser.getCurrentName()) {
       case "total":
-        msg.setTotal(toBigDecimal(parser.nextTextValue()));
+        msg.setTotal(readNextBigDecimal(parser));
       break;
       case "available":
-        msg.setAvailable(toBigDecimal(parser.nextTextValue()));
+        msg.setAvailable(readNextBigDecimal(parser));
       break;
       case "availableChange":
-        msg.setAvailableChange(toBigDecimal(parser.nextTextValue()));
+        msg.setAvailableChange(readNextBigDecimal(parser));
       break;
       case "currency":
         msg.setCurrency(parser.nextTextValue());
       break;
       case "hold":
-        msg.setHold(toBigDecimal(parser.nextTextValue()));
+        msg.setHold(readNextBigDecimal(parser));
       break;
       case "holdChange":
-        msg.setHoldChange(toBigDecimal(parser.nextTextValue()));
+        msg.setHoldChange(readNextBigDecimal(parser));
       break;
       case "relationEvent":
         msg.setRelationEvent(parser.nextTextValue());
@@ -47,7 +48,7 @@ public class KucoinAccountBalanceNoticeMessageDataDeserializer extends AbstractJ
         msg.setRelationContext(kucoinAccountBalanceNoticeMessageDataRelationContextDeserializer.deserialize(parser));
       break;
       case "time":
-        msg.setTime(parser.nextLongValue(0L));
+        msg.setTime(readNextLong(parser));
       break;
       default:
         JsonParserUtil.skipNextValue(parser);

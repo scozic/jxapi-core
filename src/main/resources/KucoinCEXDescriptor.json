@@ -503,6 +503,86 @@
 					]
 				}
 			]
+		},
+		{ 
+			"name": "FuturesMarketData",
+			"description": "Kucoin Futures market data API",
+			"restEndpointFactory": "com.scz.jcex.exchanges.kucoin.net.KucoinPublicApiRestEndpointFactory",
+			"restEndpoints": [
+			{
+					"name": "GetOpenContractList",
+					"httpMethod": "GET",
+					"description": "Submit request to get the info of all open contracts.<br/>See <a href=\"https://docs.kucoin.com/futures/#get-open-contract-list\">API</a>",
+					"url": "https://api-futures.kucoin.com/api/v1/contracts/active",
+					"parameters": [],
+					"response": [
+						{"name":"code", "type": "STRING", "description":"System error code, see <a href=\"https://docs.kucoin.com/#request\">API</a>", "sampleValue": "0"},
+						{"name":"msg", "type": "STRING", "description":"System error code description, provided in error response when code is not '0', see <a href=\"https://docs.kucoin.com/#request\">API</a>", "sampleValue": "0"},
+						{"name":"data", "type": "STRUCT_LIST", "description":"List of market information for each market symbol", "parameters":
+							[
+								{"name":"symbol", "type": "STRING", "description":"Contract status", "sampleValue":"GALAX-USDT"},
+								{"name":"rootSymbol", "type": "STRING", "description":"Contract group", "sampleValue":"USDT"},
+								{"name":"type", "type": "STRING", "description":"Type of the contract", "sampleValue":"FFWCSX"},
+								{"name":"firstOpenDate", "type": "TIMESTAMP", "description":"First Open Date", "sampleValue":1585555200000},
+								{"name":"expireDate", "type": "TIMESTAMP", "description":"Expiration date. Null means it will never expire", "sampleValue":null},
+								{"name":"settleDate", "type": "TIMESTAMP", "description":"Settlement date. Null indicates that automatic settlement is not supported", "sampleValue":null},
+								{"name":"baseCurrency", "type": "STRING", "description":"Base currency", "sampleValue":"XBT"},
+								{"name":"quoteCurrency", "type": "STRING", "description":"Quote currency", "sampleValue":"USDT"},
+								{"name":"settleCurrency", "type": "STRING", "description":"Currency used to clear and settle the trades", "sampleValue":"USDT"},
+								{"name":"maxOrderQty", "type": "INT", "description":"Maximum order quantity", "sampleValue":10000},
+								{"name":"maxPrice", "type": "BIGDECIMAL", "description":"Maximum order price", "sampleValue":"1000000.0"},
+								{"name":"lotSize", "type": "INT", "description":" Minimum lot size", "sampleValue":1},
+								{"name":"tickSize", "type": "BIGDECIMAL", "description":" Minimum price changes", "sampleValue":1.0},
+								{"name":"indexPriceTickSize", "type": "BIGDECIMAL", "description":"Index price of tick size", "sampleValue":0.01},
+								{"name":"multiplier", "type": "BIGDECIMAL", "description":"Contract multiplier", "sampleValue":0.001},
+								{"name":"initialMargin", "type": "BIGDECIMAL", "description":"Initial margin requirement", "sampleValue":0.01},
+								{"name":"maintainMargin", "type": "BIGDECIMAL", "description":"Maintenance margin requirement", "sampleValue":0.005},
+								{"name":"maxRiskLimit", "type": "INT", "description":"Maximum risk limit (unit: XBT)", "sampleValue":2000000},
+								{"name":"minRiskLimit", "type": "INT", "description":"Minimum risk limit (unit: XBT)", "sampleValue":2000000},
+								{"name":"riskStep", "type": "INT", "description":"Risk limit increment value (unit: XBT)", "sampleValue":1000000},
+								{"name":"makerFeeRate", "type": "BIGDECIMAL", "description":"Maker fees", "sampleValue":0.0002},
+								{"name":"takerFeeRate", "type": "BIGDECIMAL", "description":"Taker fees", "sampleValue":0.0006},
+								{"name":"makerFixFee", "type": "BIGDECIMAL", "description":"Fixed maker fees(Deprecated field, no actual use of the value field)", "sampleValue":0.0},
+								{"name":"takerFixFee", "type": "BIGDECIMAL", "description":"Fixed taker fees(Deprecated field, no actual use of the value field)", "sampleValue":0.0},
+								{"name":"settlementFee", "type": "BIGDECIMAL", "description":"Settlement fee", "sampleValue":null},
+								{"name":"isDeleverage", "type": "BOOLEAN", "description":"Enabled ADL or not", "sampleValue":true},
+								{"name":"isQuanto", "type": "BOOLEAN", "description":"Whether quanto or not(Deprecated field, no actual use of the value field)", "sampleValue":true},
+								{"name":"isInverse", "type": "BOOLEAN", "description":"Reverse contract or not", "sampleValue":false},
+								{"name":"markMethod", "type": "STRING", "description":"Marking method", "sampleValue":"FairPrice"},
+								{"name":"fairMethod", "type": "STRING", "description":"Fair price marking method", "sampleValue":"FundingRate"},
+								{"name":"fundingBaseSymbol", "type": "STRING", "description":"Ticker symbol of the base currency", "sampleValue":".XBTINT8H"},
+								{"name":"fundingQuoteSymbol", "type": "STRING", "description":"Ticker symbol of the quote currency", "sampleValue":".USDTINT8H"},
+								{"name":"fundingRateSymbol", "type": "STRING", "description":"Funding rate symbol", "sampleValue":".XBTUSDTMFPI8H"},
+								{"name":"indexSymbol", "type": "STRING", "description":"Index symbol", "sampleValue":".KXBTUSDT"},
+								{"name":"settlementSymbol", "type": "STRING", "description":"Settlement Symbol", "sampleValue":".KXBTUSDT"},
+								{"name":"status", "type": "STRING", "description":"Contract status", "sampleValue":"Open"},
+								{"name":"fundingFeeRate", "type": "BIGDECIMAL", "description":"Funding fee rate", "sampleValue":0.0001},
+								{"name":"predictedFundingFeeRate", "type": "BIGDECIMAL", "description":"Predicted funding fee rate", "sampleValue":0.0001},
+								{"name":"openInterest", "type": "STRING", "description":"Open interest", "sampleValue":"5191275"},
+								{"name":"turnoverOf24h", "type": "BIGDECIMAL", "description":"Turnover of 24 hours", "sampleValue":2361994501.712677},
+								{"name":"volumeOf24h", "type": "BIGDECIMAL", "description":"Volume of 24 hours", "sampleValue":56067.116},
+								{"name":"markPrice", "type": "BIGDECIMAL", "description":"Mark price", "sampleValue":44514.03},
+								{"name":"indexPrice", "type": "BIGDECIMAL", "description":"Index price", "sampleValue":44510.78},
+								{"name":"lastTradePrice", "type": "BIGDECIMAL", "description":"Last trade price", "sampleValue":44493.0},
+								{"name":"nextFundingRateTime", "type": "LONG", "description":"Next funding rate time", "sampleValue":21031525},
+								{"name":"maxLeverage", "type": "BIGDECIMAL", "description":"Maximum leverage", "sampleValue":100},
+								{"name":"sourceExchanges", "type": "STRING_LIST", "description":"The contract index source exchange", "sampleValue":"[\"huobi\",\"Okex\",\"Binance\",\"Kucoin\",\"Poloniex\",\"Hitbtc\"],"},
+								{"name":"premiumsSymbol1M", "type": "STRING", "description":"Premium index symbol (1 minute)", "sampleValue":".XBTUSDTMPI"},
+								{"name":"premiumsSymbol8H", "type": "STRING", "description":"Premium index symbol (8 hours)", "sampleValue":".XBTUSDTMPI8H"},
+								{"name":"fundingBaseSymbol1M", "type": "STRING", "description":"Base currency interest rate symbol (1 minute)", "sampleValue":".XBTINT"},
+								{"name":"fundingQuoteSymbol1M", "type": "STRING", "description":"Quote currency interest rate symbol (1 minute)", "sampleValue":".USDTINT"},
+								{"name":"lowPrice", "type": "BIGDECIMAL", "description":"24H Low", "sampleValue":38040},
+								{"name":"highPrice", "type": "BIGDECIMAL", "description":"24H High", "sampleValue":44948},
+								{"name":"priceChgPct", "type": "BIGDECIMAL", "description":"24H Change%", "sampleValue":0.1702},
+								{"name":"priceChg", "type": "BIGDECIMAL", "description":"24H Change", "sampleValue":6476}
+							]
+						}
+					]
+				}
+			],
+			"websocketEndpointFactory": "com.scz.jcex.exchanges.kucoin.net.KucoinPublicWebsocketEndpointFactory",
+			"websocketEndpoints": [
+			]
 		}
 	]
 }

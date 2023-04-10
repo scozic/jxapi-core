@@ -6,7 +6,7 @@ import com.scz.jcex.exchanges.kucoin.gen.spottrading.pojo.KucoinListAccountsResp
 import com.scz.jcex.netutils.deserialization.json.AbstractJsonMessageDeserializer;
 import com.scz.jcex.netutils.serialization.json.JsonParserUtil;
 import java.io.IOException;
-import static com.scz.jcex.util.EncodingUtil.toBigDecimal;
+import static com.scz.jcex.util.EncodingUtil.readNextBigDecimal;
 
 /**
  * Parses incoming JSON messages into com.scz.jcex.exchanges.kucoin.gen.spottrading.pojo.KucoinListAccountsResponseData instances
@@ -30,13 +30,13 @@ public class KucoinListAccountsResponseDataDeserializer extends AbstractJsonMess
         msg.setType(parser.nextTextValue());
       break;
       case "balance":
-        msg.setBalance(toBigDecimal(parser.nextTextValue()));
+        msg.setBalance(readNextBigDecimal(parser));
       break;
       case "available":
-        msg.setAvailable(toBigDecimal(parser.nextTextValue()));
+        msg.setAvailable(readNextBigDecimal(parser));
       break;
       case "holds":
-        msg.setHolds(toBigDecimal(parser.nextTextValue()));
+        msg.setHolds(readNextBigDecimal(parser));
       break;
       default:
         JsonParserUtil.skipNextValue(parser);

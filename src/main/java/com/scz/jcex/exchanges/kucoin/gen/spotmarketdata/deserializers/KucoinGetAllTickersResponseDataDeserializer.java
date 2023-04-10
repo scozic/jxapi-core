@@ -8,6 +8,7 @@ import com.scz.jcex.netutils.deserialization.json.AbstractJsonMessageDeserialize
 import com.scz.jcex.netutils.deserialization.json.field.StructListFieldDeserializer;
 import com.scz.jcex.netutils.serialization.json.JsonParserUtil;
 import java.io.IOException;
+import static com.scz.jcex.util.EncodingUtil.readNextLong;
 
 /**
  * Parses incoming JSON messages into com.scz.jcex.exchanges.kucoin.gen.spotmarketdata.pojo.KucoinGetAllTickersResponseData instances
@@ -24,7 +25,7 @@ public class KucoinGetAllTickersResponseDataDeserializer extends AbstractJsonMes
     while(parser.nextToken() != JsonToken.END_OBJECT) {
       switch(parser.getCurrentName()) {
       case "time":
-        msg.setTime(parser.nextLongValue(0L));
+        msg.setTime(readNextLong(parser));
       break;
       case "ticker":
         parser.nextToken();

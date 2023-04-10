@@ -6,7 +6,7 @@ import com.scz.jcex.exchanges.binance.gen.spottrading.pojo.BinanceAccountRespons
 import com.scz.jcex.netutils.deserialization.json.AbstractJsonMessageDeserializer;
 import com.scz.jcex.netutils.serialization.json.JsonParserUtil;
 import java.io.IOException;
-import static com.scz.jcex.util.EncodingUtil.toBigDecimal;
+import static com.scz.jcex.util.EncodingUtil.readNextBigDecimal;
 
 /**
  * Parses incoming JSON messages into com.scz.jcex.exchanges.binance.gen.spottrading.pojo.BinanceAccountResponseBalances instances
@@ -24,10 +24,10 @@ public class BinanceAccountResponseBalancesDeserializer extends AbstractJsonMess
         msg.setAsset(parser.nextTextValue());
       break;
       case "free":
-        msg.setFree(toBigDecimal(parser.nextTextValue()));
+        msg.setFree(readNextBigDecimal(parser));
       break;
       case "locked":
-        msg.setLocked(toBigDecimal(parser.nextTextValue()));
+        msg.setLocked(readNextBigDecimal(parser));
       break;
       default:
         JsonParserUtil.skipNextValue(parser);

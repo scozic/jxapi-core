@@ -1,5 +1,6 @@
 package com.scz.jcex.util;
 
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
 import java.net.URLEncoder;
@@ -13,6 +14,8 @@ import java.util.Optional;
 
 import org.apache.commons.text.StringSubstitutor;
 
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
@@ -169,6 +172,50 @@ public class EncodingUtil {
 	
 	public static String bigDecimalToString(BigDecimal bd) {
 		return Optional.ofNullable(bd).orElse(BigDecimal.ZERO).toPlainString();
+	}
+	
+	public static BigDecimal readNextBigDecimal(JsonParser parser) throws IOException {
+		parser.nextToken();
+		switch (parser.currentToken()) {
+		case VALUE_NUMBER_FLOAT:
+			return parser.getDecimalValue();
+		case VALUE_STRING:
+			return toBigDecimal(parser.getText());
+		case VALUE_NULL:
+			return null;
+		case VALUE_NUMBER_INT:
+			return new BigDecimal(parser.getLongValue());
+		default:
+			throw new JsonParseException(parser, "Expected floating point value, but got " + parser.currentToken());
+		}
+	}
+	
+	public static Integer readNextInteger(JsonParser parser) throws IOException {
+		parser.nextToken();
+		switch (parser.currentToken()) {
+		case VALUE_STRING:
+			return Integer.valueOf(parser.getText());
+		case VALUE_NULL:
+			return null;
+		case VALUE_NUMBER_INT:
+			return Integer.valueOf(parser.getIntValue());
+		default:
+			throw new JsonParseException(parser, "Expected integer value, but got " + parser.currentToken());
+		}
+	}
+	
+	public static Long readNextLong(JsonParser parser) throws IOException {
+		parser.nextToken();
+		switch (parser.currentToken()) {
+		case VALUE_STRING:
+			return Long.valueOf(parser.getText());
+		case VALUE_NULL:
+			return null;
+		case VALUE_NUMBER_INT:
+			return Long.valueOf(parser.getLongValue());
+		default:
+			throw new JsonParseException(parser, "Expected long value, but got " + parser.currentToken());
+		}
 	}
 	
 	public static BigDecimal toBigDecimal(String s) {
