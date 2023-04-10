@@ -5,7 +5,7 @@ import com.scz.jcex.exchanges.kucoin.gen.futurestrading.serializers.KucoinTradeO
 import com.scz.jcex.util.EncodingUtil;
 
 /**
- * Message disseminated upon subscription to Kucoin FuturesTrading API TradeOrders websocket endpoint request<br/>Trade Orders.<br/>See <a href="https://docs.kucoin.com/futures/#trade-orders">API</a><br><strong>THIS CODE IS GENERATED. DO NOT EDIT MANUALLY!</strong>
+ * Message disseminated upon subscription to Kucoin FuturesTrading API TradeOrders websocket endpoint request<br/>Trade Orders websocket stream.<br/>See <a href="https://docs.kucoin.com/futures/#trade-orders">API</a><br><strong>THIS CODE IS GENERATED. DO NOT EDIT MANUALLY!</strong>
  */
 @JsonSerialize(using = KucoinTradeOrdersMessageSerializer.class)
 public class KucoinTradeOrdersMessage {

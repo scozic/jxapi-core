@@ -2,6 +2,8 @@ package com.scz.jcex.exchanges.kucoin.gen.futurestrading;
 
 import com.scz.jcex.exchanges.kucoin.gen.futurestrading.pojo.KucoinGetAccountOverviewRequest;
 import com.scz.jcex.exchanges.kucoin.gen.futurestrading.pojo.KucoinGetAccountOverviewResponse;
+import com.scz.jcex.exchanges.kucoin.gen.futurestrading.pojo.KucoinStopOrderLifecycleEventMessage;
+import com.scz.jcex.exchanges.kucoin.gen.futurestrading.pojo.KucoinStopOrderLifecycleEventRequest;
 import com.scz.jcex.exchanges.kucoin.gen.futurestrading.pojo.KucoinTradeOrdersMessage;
 import com.scz.jcex.exchanges.kucoin.gen.futurestrading.pojo.KucoinTradeOrdersRequest;
 import com.scz.jcex.netutils.websocket.WebsocketListener;
@@ -20,7 +22,7 @@ public interface  KucoinFuturesTradingApi {
   
   /**
    * Subscribe to TradeOrders stream.<br/>
-   * Trade Orders.<br/>See <a href="https://docs.kucoin.com/futures/#trade-orders">API</a>
+   * Trade Orders websocket stream.<br/>See <a href="https://docs.kucoin.com/futures/#trade-orders">API</a>
    * 
    * @return client subscriptionId to use for unsubscription
    */
@@ -32,4 +34,19 @@ public interface  KucoinFuturesTradingApi {
    * @param subscriptionId ID of subscription returned by #subscribeTradeOrders()
    */
   boolean unsubscribeTradeOrders(String subscriptionId);
+  
+  /**
+   * Subscribe to StopOrderLifecycleEvent stream.<br/>
+   * Stop Order Lifecycle Event websocket stream.<br/>See <a href="https://docs.kucoin.com/futures/#stop-order-lifecycle-event">API</a>
+   * 
+   * @return client subscriptionId to use for unsubscription
+   */
+  String subscribeStopOrderLifecycleEvent(KucoinStopOrderLifecycleEventRequest request, WebsocketListener<KucoinStopOrderLifecycleEventMessage> listener);
+  
+  /**
+   * Unsubscribe from StopOrderLifecycleEvent stream.
+   * 
+   * @param subscriptionId ID of subscription returned by #subscribeStopOrderLifecycleEvent()
+   */
+  boolean unsubscribeStopOrderLifecycleEvent(String subscriptionId);
 }

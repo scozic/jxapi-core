@@ -672,7 +672,7 @@
 				{
 					"name": "TradeOrders",
 					"topic": "/contractMarket/tradeOrders",
-					"description": "Trade Orders.<br/>See <a href=\"https://docs.kucoin.com/futures/#trade-orders\">API</a>",
+					"description": "Trade Orders websocket stream.<br/>See <a href=\"https://docs.kucoin.com/futures/#trade-orders\">API</a>",
 					"parameters": [],
 					"messageTopicMatcherFields": [
 						{"name": "topic",  "value": "${topic}"}
@@ -703,6 +703,38 @@
 								{"name":"oldSize", "type": "BIGDECIMAL", "description":"Size Before Update (when the type is <strongg>update</strong>)", "sampleValue":15000},
 								{"name":"liquidity", "type": "STRING", "description":"Trading direction, buy or sell in taker", "sampleValue":"maker"},
 								{"name":"ts", "type": "LONG", "description":"Timestamp", "sampleValue":"1545914149935808589"}
+							]
+						}
+					]
+				},
+				{
+					"name": "StopOrderLifecycleEvent",
+					"topic": "/contractMarket/advancedOrders",
+					"description": "Stop Order Lifecycle Event websocket stream.<br/>See <a href=\"https://docs.kucoin.com/futures/#stop-order-lifecycle-event\">API</a>",
+					"parameters": [],
+					"messageTopicMatcherFields": [
+						{"name": "topic",  "value": "${topic}"}
+					],
+					"response": [
+						{"name":"userId", "type": "STRING", "description":"Deprecated, will delete later", "sampleValue":"5cd3f1a7b7ebc19ae9558591"},
+						{"name":"topic", "type": "STRING", "description":"", "sampleValue":"/contractMarket/advancedOrders"},
+						{"name":"subject", "type": "STRING", "description":"", "sampleValue":"stopOrder"},
+						{"name":"data", "type": "STRUCT", "description":"", "parameters":
+							[
+								{"name":"orderId", "type": "STRING", "description":"Order ID", "sampleValue":"5cdfc138b21023a909e5ad55"},
+								{"name":"symbol", "type": "STRING", "description":"Symbol of the contract", "sampleValue":"XBTUSDM"},
+								{"name":"type", "type": "STRING", "description":"Message type: <strong>open</strong> (place order), <strong>triggered</strong> (order triggered), <strong>cancel</strong> (cancel order)", "sampleValue":"open"},
+								{"name":"status", "type": "STRING", "description":"Order Status Descriptions<ul><li><strong>match</strong>: when taker order executes with orders in the order book, the taker order status is “match”;</li>  <li><strong>open</strong>: the order is in the order book;</li><li><strong>done</strong>: the order is fully executed successfully;</li></ul> ", "sampleValue":"XBTUSDM"},
+								{"name":"orderType", "type": "STRING", "description":"Order type: stop order", "sampleValue":"stop"},
+								{"name":"side", "type": "STRING", "description":"<strong>buy</strong> or <strong>sell</strong>", "sampleValue":"buy"},
+								{"name":"orderPrice", "type": "BIGDECIMAL", "description":"Order price. For market orders, the value is <code>null</code>", "sampleValue":"9000"},
+								{"name":"size", "type": "BIGDECIMAL", "description":"Quantity", "sampleValue":"1000"},
+								{"name":"stop", "type": "STRING", "description":"Stop order types", "sampleValue":"up"},
+								{"name":"stopPrice", "type": "BIGDECIMAL", "description":"Trigger price of stop orders", "sampleValue":"9100"},
+								{"name":"stopPriceType", "type": "STRING", "description":"Trigger price type of stop orders", "sampleValue":"TP"},
+								{"name":"triggerSuccess", "type": "BOOLEAN", "description":"Mark to show whether the order is triggered. Only for triggered type of orders", "sampleValue":true},
+								{"name":"error", "type": "STRING", "description":"Error code, which is used only when the trigger of the triggered type of orders fails", "sampleValue":"error.createOrder.accountBalanceInsufficient"},
+								{"name":"ts", "type": "LONG", "description":"Timestamp - nanosecond", "sampleValue":"1545914149935808589"}
 							]
 						}
 					]

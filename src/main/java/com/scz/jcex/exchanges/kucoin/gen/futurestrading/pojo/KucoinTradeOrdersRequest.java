@@ -6,7 +6,7 @@ import com.scz.jcex.netutils.websocket.WebsocketSubscribeParameters;
 import com.scz.jcex.util.EncodingUtil;
 
 /**
- * Subscription request toKucoin FuturesTrading API TradeOrders websocket endpoint<br/>Trade Orders.<br/>See <a href="https://docs.kucoin.com/futures/#trade-orders">API</a><br><strong>THIS CODE IS GENERATED. DO NOT EDIT MANUALLY!</strong>
+ * Subscription request toKucoin FuturesTrading API TradeOrders websocket endpoint<br/>Trade Orders websocket stream.<br/>See <a href="https://docs.kucoin.com/futures/#trade-orders">API</a><br><strong>THIS CODE IS GENERATED. DO NOT EDIT MANUALLY!</strong>
  */
 @JsonSerialize(using = KucoinTradeOrdersRequestSerializer.class)
 public class KucoinTradeOrdersRequest implements WebsocketSubscribeParameters {
