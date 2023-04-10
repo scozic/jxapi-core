@@ -520,7 +520,7 @@
 						{"name":"msg", "type": "STRING", "description":"System error code description, provided in error response when code is not '0', see <a href=\"https://docs.kucoin.com/#request\">API</a>", "sampleValue": "0"},
 						{"name":"data", "type": "STRUCT_LIST", "description":"List of market information for each market symbol", "parameters":
 							[
-								{"name":"symbol", "type": "STRING", "description":"Contract status", "sampleValue":"GALAX-USDT"},
+								{"name":"symbol", "type": "STRING", "description":"Contract status", "sampleValue":"XBTUSDM"},
 								{"name":"rootSymbol", "type": "STRING", "description":"Contract group", "sampleValue":"USDT"},
 								{"name":"type", "type": "STRING", "description":"Type of the contract", "sampleValue":"FFWCSX"},
 								{"name":"firstOpenDate", "type": "TIMESTAMP", "description":"First Open Date", "sampleValue":1585555200000},
@@ -578,10 +578,62 @@
 							]
 						}
 					]
+				},
+				{
+					"name": "GetRealTimeTicker",
+					"httpMethod": "GET",
+					"description": "The real-time ticker includes the last traded price, the last traded size, transaction ID, the side of liquidity taker, the best bid price and size, the best ask price and size as well as the transaction time of the orders. These messages can also be obtained through Websocket. The Sequence Number is used to judge whether the messages pushed by Websocket is continuous.<br/>See <a href=\"https://docs.kucoin.com/futures/#get-real-time-ticker\">API</a>",
+					"url": "https://api-futures.kucoin.com/api/v1/ticker",
+					"parameters": [
+						{"name":"symbol", "type": "STRING", "description":"Symbol of the contract", "sampleValue":"XBTUSDM"}
+					],
+					"response": [
+						{"name":"code", "type": "STRING", "description":"System error code, see <a href=\"https://docs.kucoin.com/#request\">API</a>", "sampleValue": "0"},
+						{"name":"msg", "type": "STRING", "description":"System error code description, provided in error response when code is not '0', see <a href=\"https://docs.kucoin.com/#request\">API</a>", "sampleValue": "0"},
+						{"name":"data", "type": "STRUCT", "description":"List of market information for each market symbol", "parameters":
+							[
+								{"name":"sequence", "type": "LONG", "description":"Sequence number", "sampleValue":1001},
+								{"name":"symbol", "type": "STRING", "description":"Symbol of the contract", "sampleValue":"XBTUSDM"},
+								{"name":"side", "type": "STRING", "description":"", "sampleValue":"buy"},
+								{"name":"size", "type": "BIGDECIMAL", "description":"", "sampleValue":10},
+								{"name":"price", "type": "BIGDECIMAL", "description":"", "sampleValue":"7000.0"},
+								{"name":"bestBidSize", "type": "BIGDECIMAL", "description":"", "sampleValue":20},
+								{"name":"bestBidPrice", "type": "BIGDECIMAL", "description":"", "sampleValue":"7000.0"},
+								{"name":"bestAskPrice", "type": "BIGDECIMAL", "description":"", "sampleValue":"7001.0"},
+								{"name":"bestAskSize", "type": "BIGDECIMAL", "description":"", "sampleValue":30},
+								{"name":"tradeId", "type": "STRING", "description":"", "sampleValue":"5cbd7377a6ffab0c7ba98b26"},
+								{"name":"ts", "type": "LONG", "description":"Filled time - nanosecond", "sampleValue":1550653727731}
+							]
+						}
+					]
 				}
 			],
 			"websocketEndpointFactory": "com.scz.jcex.exchanges.kucoin.net.KucoinPublicWebsocketEndpointFactory",
 			"websocketEndpoints": [
+				{
+					"name": "RealTimeSymbolTickerV2",
+					"topic": "/contractMarket/tickerV2:${symbol}",
+					"description": "24hr rolling window ticker statistics for a single symbol. These are NOT the statistics of the UTC day, but a 24hr rolling window for the previous 24hrs.<br/>See <a href=\"https://docs.kucoin.com/#symbol-ticker\">API</a>",
+					"parameters": [
+						{"name":"symbol", "type": "STRING", "description":"Market symbol", "sampleValue":"XBTUSDM"}
+					],
+					"messageTopicMatcherFields": [
+						{"name": "topic",  "value": "${topic}"}
+					],
+					"response": [
+						{"name":"subject", "type": "STRING", "description":"Symbol", "sampleValue":"XBTUSDM"},
+						{"name":"topic", "type": "STRING", "description":"", "sampleValue":"/contractMarket/tickerV2:XBTUSDM"},
+						{"name":"data", "type": "STRUCT", "description":"", "parameters":
+							[
+								{"name":"symbol", "type": "STRING", "description":"Symbol of the contract", "sampleValue":"XBTUSDM"},
+								{"name":"bestAskPrice", "type": "BIGDECIMAL", "description":"Best ask price", "sampleValue":"3600.00"},
+								{"name":"bestBidSize", "type": "BIGDECIMAL", "description":"Best bid size", "sampleValue":795},
+								{"name":"bestBidPrice", "type": "BIGDECIMAL", "description":"Best bid price", "sampleValue":"3200.00"},
+								{"name":"bestAskSize", "type": "BIGDECIMAL", "description":"Best ask size", "sampleValue":284}
+							]
+						}
+					]
+				}
 			]
 		}
 	]
