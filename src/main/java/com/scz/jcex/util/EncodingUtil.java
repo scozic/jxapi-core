@@ -219,7 +219,7 @@ public class EncodingUtil {
 	}
 	
 	public static BigDecimal toBigDecimal(String s) {
-		if (s == null)
+		if (s == null || s.isEmpty())
 			return null;
 		return new BigDecimal(s);
 	}

@@ -9,8 +9,8 @@ import com.scz.jcex.exchanges.kucoin.gen.futuresmarketdata.pojo.KucoinGetRealTim
 import com.scz.jcex.exchanges.kucoin.gen.futuresmarketdata.pojo.KucoinGetRealTimeTickerResponse;
 import com.scz.jcex.exchanges.kucoin.gen.futuresmarketdata.pojo.KucoinRealTimeSymbolTickerV2Message;
 import com.scz.jcex.exchanges.kucoin.gen.futuresmarketdata.pojo.KucoinRealTimeSymbolTickerV2Request;
+import com.scz.jcex.exchanges.kucoin.net.KucoinFuturesPublicWebsocketEndpointFactory;
 import com.scz.jcex.exchanges.kucoin.net.KucoinPublicApiRestEndpointFactory;
-import com.scz.jcex.exchanges.kucoin.net.KucoinPublicWebsocketEndpointFactory;
 import com.scz.jcex.netutils.rest.RestEndpoint;
 import com.scz.jcex.netutils.rest.RestRequest;
 import com.scz.jcex.netutils.websocket.DefaultWebsocketMessageTopicMatcher;
@@ -32,7 +32,7 @@ public class  KucoinFuturesMarketDataApiImpl implements KucoinFuturesMarketDataA
   
   private final KucoinPublicApiRestEndpointFactory restEndpointFactory = new KucoinPublicApiRestEndpointFactory();
   
-  private final KucoinPublicWebsocketEndpointFactory websocketEndpointFactory = new KucoinPublicWebsocketEndpointFactory();
+  private final KucoinFuturesPublicWebsocketEndpointFactory websocketEndpointFactory = new KucoinFuturesPublicWebsocketEndpointFactory();
   
   
   private final RestEndpoint<KucoinGetOpenContractListRequest, KucoinGetOpenContractListResponse> getOpenContractListApi;

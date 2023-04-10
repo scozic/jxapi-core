@@ -22,17 +22,19 @@ public class KucoinPrivateWebsocketListenKeyApi implements KucoinWebsocketListen
 	
 	private final KucoinOkHttpPrivateApiRestEndpointFactory restEndpointFactory = new KucoinOkHttpPrivateApiRestEndpointFactory();
 	private final RestEndpoint<KucoinApplyConnectTokenPrivateRequest, KucoinApplyConnectTokenPrivateResponse> applyConnectTokenPrivateApi;
+	private final String baseTokenApiUrl;
 	
-	public KucoinPrivateWebsocketListenKeyApi(Properties properties) {
+	public KucoinPrivateWebsocketListenKeyApi(Properties properties, String baseTokenApiUrl) {
 		restEndpointFactory.setProperties(properties);
 		this.applyConnectTokenPrivateApi = restEndpointFactory.createRestEndpoint(new KucoinApplyConnectTokenPrivateResponseDeserializer());
+		this.baseTokenApiUrl = baseTokenApiUrl;
 	}
 	
 	@Override
 	public KucoinWebsocketTokenInfo requestToken() throws IOException {
 		if (log.isDebugEnabled())
 			log.debug("POST ApplyConnectTokenPrivate > " + APPLY_TOKEN_REQUEST);
-		KucoinApplyConnectTokenPrivateResponse response = applyConnectTokenPrivateApi.call(RestRequest.create("https://api.kucoin.com/api/v1/bullet-public", "POST", APPLY_TOKEN_REQUEST));
+		KucoinApplyConnectTokenPrivateResponse response = applyConnectTokenPrivateApi.call(RestRequest.create(baseTokenApiUrl + "bullet-private", "POST", APPLY_TOKEN_REQUEST));
 		if (log.isDebugEnabled())
 			log.debug("POST ApplyConnectTokenPrivate < " + response);
 		KucoinWebsocketTokenInfo info = new KucoinWebsocketTokenInfo();

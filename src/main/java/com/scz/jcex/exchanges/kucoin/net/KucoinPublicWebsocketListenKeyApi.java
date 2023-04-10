@@ -22,17 +22,19 @@ public class KucoinPublicWebsocketListenKeyApi implements KucoinWebsocketListenK
 	
 	private final KucoinPublicApiRestEndpointFactory restEndpointFactory = new KucoinPublicApiRestEndpointFactory();
 	private final RestEndpoint<KucoinApplyConnectTokenPublicRequest, KucoinApplyConnectTokenPublicResponse> applyConnectTokenPublicApi;
+	private final String baseTokenApiUrl;
 	
-	public KucoinPublicWebsocketListenKeyApi(Properties properties) {
+	public KucoinPublicWebsocketListenKeyApi(Properties properties, String baseTokenApiUrl) {
 		restEndpointFactory.setProperties(properties);
 		this.applyConnectTokenPublicApi = restEndpointFactory.createRestEndpoint(new KucoinApplyConnectTokenPublicResponseDeserializer());
+		this.baseTokenApiUrl = baseTokenApiUrl;
 	}
 	
 	@Override
 	public KucoinWebsocketTokenInfo requestToken() throws IOException {
 		if (log.isDebugEnabled())
 			log.debug("POST ApplyConnectTokenPublic > " + APPLY_TOKEN_REQUEST);
-		KucoinApplyConnectTokenPublicResponse response = applyConnectTokenPublicApi.call(RestRequest.create("https://api.kucoin.com/api/v1/bullet-public", "POST", APPLY_TOKEN_REQUEST));
+		KucoinApplyConnectTokenPublicResponse response = applyConnectTokenPublicApi.call(RestRequest.create(baseTokenApiUrl + "bullet-public", "POST", APPLY_TOKEN_REQUEST));
 		if (log.isDebugEnabled())
 			log.debug("POST ApplyConnectTokenPublic < " + response);
 		KucoinWebsocketTokenInfo info = new KucoinWebsocketTokenInfo();

@@ -608,7 +608,7 @@
 					]
 				}
 			],
-			"websocketEndpointFactory": "com.scz.jcex.exchanges.kucoin.net.KucoinPublicWebsocketEndpointFactory",
+			"websocketEndpointFactory": "com.scz.jcex.exchanges.kucoin.net.KucoinFuturesPublicWebsocketEndpointFactory",
 			"websocketEndpoints": [
 				{
 					"name": "RealTimeSymbolTickerV2",
@@ -641,7 +641,7 @@
 			"description": "Kucoin Futures trading API",
 			"restEndpointFactory": "com.scz.jcex.exchanges.kucoin.net.KucoinPrivateApiRestEndpointFactory",
 			"restEndpoints": [
-			{
+				{
 					"name": "GetAccountOverview",
 					"httpMethod": "GET",
 					"description": "Get account overview.<br/>See <a href=\"https://docs.kucoin.com/futures/#get-account-overview\">API</a>",
@@ -667,8 +667,46 @@
 					]
 				}
 			],
-			"websocketEndpointFactory": "com.scz.jcex.exchanges.kucoin.net.KucoinPrivateWebsocketEndpointFactory",
+			"websocketEndpointFactory": "com.scz.jcex.exchanges.kucoin.net.KucoinFuturesPrivateWebsocketEndpointFactory",
 			"websocketEndpoints": [
+				{
+					"name": "TradeOrders",
+					"topic": "/contractMarket/tradeOrders",
+					"description": "Trade Orders.<br/>See <a href=\"https://docs.kucoin.com/futures/#trade-orders\">API</a>",
+					"parameters": [],
+					"messageTopicMatcherFields": [
+						{"name": "topic",  "value": "${topic}"}
+					],
+					"response": [
+						{"name":"type", "type": "STRING", "description":"", "sampleValue":"message"},
+						{"name":"subject", "type": "STRING", "description":"", "sampleValue":"orderChange"},
+						{"name":"topic", "type": "STRING", "description":"", "sampleValue":"/contractMarket/tickerV2:XBTUSDM"},
+						{"name":"channelType", "type": "STRING", "description":"", "sampleValue":"private"},
+						{"name":"data", "type": "STRUCT", "description":"", "parameters":
+							[
+								{"name":"orderId", "type": "STRING", "description":"Order ID", "sampleValue":"5cdfc138b21023a909e5ad55"},
+								{"name":"symbol", "type": "STRING", "description":"Symbol of the contract", "sampleValue":"XBTUSDM"},
+								{"name":"type", "type": "STRING", "description":"Type Descriptions:<ul><li><strong>open</strong>: when the order enters into the order book;</li><li><strong>match</strong>: when the order has been executed;</li><li><strong>filled</strong>: when the order has been executed and its status was changed into DONE;</li><li><strong>canceled</strong>: when the order has been cancelled and its status was changed into DONE;</li><li><strong>update</strong>: when the order has been updated;</li></ul>", "sampleValue":"match"},
+								{"name":"status", "type": "STRING", "description":"Order Status Descriptions<ul><li><strong>match</strong>: when taker order executes with orders in the order book, the taker order status is “match”;</li>  <li><strong>open</strong>: the order is in the order book;</li><li><strong>done</strong>: the order is fully executed successfully;</li></ul> ", "sampleValue":"XBTUSDM"},
+								{"name":"matchSize", "type": "BIGDECIMAL", "description":"Match Size (when the type is <strong>match</strong>", "sampleValue":"0"},
+								{"name":"matchPrice", "type": "BIGDECIMAL", "description":"Match Price (when the type is <strong>match</strong>", "sampleValue":"0"},
+								{"name":"orderType", "type": "STRING", "description":"Order type, <strong>market</strong> or <strong>limit</strong>", "sampleValue":"limit"},
+								{"name":"side", "type": "STRING", "description":"Trading direction, <strong>buy</strong> or <strong>sell</strong>", "sampleValue":"buy"},
+								{"name":"price", "type": "BIGDECIMAL", "description":"Order price", "sampleValue":3600},
+								{"name":"size", "type": "BIGDECIMAL", "description":"Order size", "sampleValue":20000},
+								{"name":"remainSize", "type": "BIGDECIMAL", "description":"Remaining size for trading", "sampleValue":20001},
+								{"name":"filledSize", "type": "BIGDECIMAL", "description":"Filled size", "sampleValue":20000},
+								{"name":"canceledSize", "type": "BIGDECIMAL", "description":"In the update message, the size of order reduced", "sampleValue":0},
+								{"name":"tradeId", "type": "STRING", "description":"Trade ID (when the type is <strong>match</strong>", "sampleValue":"5ce24c16b210233c36eexxxx"},
+								{"name":"clientOId", "type": "STRING", "description":"Client order ID", "sampleValue":"5ce24c16b210233c36ee321d"},
+								{"name":"orderTime", "type": "LONG", "description":"Order Time", "sampleValue":"1545914149935808589"},
+								{"name":"oldSize", "type": "BIGDECIMAL", "description":"Size Before Update (when the type is <strongg>update</strong>)", "sampleValue":15000},
+								{"name":"liquidity", "type": "STRING", "description":"Trading direction, buy or sell in taker", "sampleValue":"maker"},
+								{"name":"ts", "type": "LONG", "description":"Timestamp", "sampleValue":"1545914149935808589"}
+							]
+						}
+					]
+				}
 			]
 		}
 	]

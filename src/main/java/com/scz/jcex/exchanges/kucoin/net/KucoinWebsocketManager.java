@@ -17,20 +17,22 @@ public class KucoinWebsocketManager extends SpringWebsocketManager {
 	
 
 	private static final String HEARTBEAT_REQUEST_TEMPLATE = "{\"id\":\"%d\", \"type\":\"ping\"}";
-	private static final String SUBSCRIBE_REQUEST_TEMPLATE = "{\"id\": %d, \"type\": \"subscribe\", \"topic\": \"%s\", \"privateChannel\": false, \"response\": false}";
+	private static final String SUBSCRIBE_REQUEST_TEMPLATE = "{\"id\": %d, \"type\": \"subscribe\", \"topic\": \"%s\", \"privateChannel\": %s, \"response\": false}";
 	private static final String UNSUBSCRIBE_REQUEST_TEMPLATE = "{\"id\": %d, \"type\": \"unsubscribe\", \"topic\": \"%s\", \"privateChannel\": false, \"response\": false}";
 	
 	private int requestIdCounter = RandomUtils.nextInt();
 	private final KucoinWebsocketListenKeyApi listenKeyApi;
+	private final String privateChannel;
 	
 	/** 
 	 * @param baseUrl Used for logging purpose (naming thread executors), actual endpoint url used will be the one provided in return of {@link KucoinWebsocketListenKeyApi#requestToken()}
 	 * @param listenKeyApi
 	 */
-	public KucoinWebsocketManager(String baseUrl, KucoinWebsocketListenKeyApi listenKeyApi) {
+	public KucoinWebsocketManager(String baseUrl, KucoinWebsocketListenKeyApi listenKeyApi, boolean privateChannel) {
 		super(baseUrl);
 		this.listenKeyApi = listenKeyApi;
 		this.addSystemMessageHandler("ping", DefaultWebsocketMessageTopicMatcher.create("type", "pong"), m -> handlePongMessage(m));
+		this.privateChannel = "" + privateChannel;
 	}
 
 	private void handlePongMessage(String m) {
@@ -49,7 +51,7 @@ public class KucoinWebsocketManager extends SpringWebsocketManager {
 
 	@Override
 	protected String getSubscribeRequestMessage(String topic) {
-		return String.format(SUBSCRIBE_REQUEST_TEMPLATE, generateRequestId(), topic) ;
+		return String.format(SUBSCRIBE_REQUEST_TEMPLATE, generateRequestId(), topic, privateChannel) ;
 	}
 
 	@Override
