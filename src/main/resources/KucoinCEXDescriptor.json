@@ -738,6 +738,30 @@
 							]
 						}
 					]
+				},
+				{
+					"name": "AccountBalanceEvents",
+					"topic": "/contractAccount/wallet",
+					"description": "Stop Order Lifecycle Event websocket stream.<br/>See <a href=\"https://docs.kucoin.com/futures/#stop-order-lifecycle-event\">API</a>",
+					"parameters": [],
+					"messageTopicMatcherFields": [
+						{"name": "topic",  "value": "${topic}"}
+					],
+					"response": [
+						{"name":"userId", "type": "STRING", "description":"Deprecated, will delete later", "sampleValue":"5cd3f1a7b7ebc19ae9558591"},
+						{"name":"topic", "type": "STRING", "description":"", "sampleValue":"/contractAccount/wallet"},
+						{"name":"subject", "type": "STRING", "description":"Either <strong>orderMargin.change</strong>, <strong>availableBalance.change</strong> or <strong>withdrawHold.change</strong>", "sampleValue":"availableBalance.change"},
+						{"name":"data", "type": "STRUCT", "description":"", "parameters":
+							[
+								{"name":"orderMargin", "type": "BIGDECIMAL", "description":"Provided when <subject>subject</strong> is <strong>orderMargin.change</strong>. Current order margin", "sampleValue":5923},
+								{"name":"withdrawHold", "type": "BIGDECIMAL", "description":"Provided when <strong>subject</strong> is <strong>withdrawHold.change</strong>. Current frozen amount for withdrawal", "sampleValue":"1553842862614"},
+								{"name":"availableBalance", "type": "BIGDECIMAL", "description":"Provided when <strong>subject</strong> is <strong>availableBalance.change</strong>. Current available amount", "sampleValue":5923},
+								{"name":"holdBalance", "type": "BIGDECIMAL", "description":"Provided when <strong>subject</strong> is <strong>availableBalance.change</strong>. Current available amount", "sampleValue":5923},
+								{"name":"currency", "type": "STRING", "description":"Currency", "sampleValue":"USDT"},
+								{"name":"timestamp", "type": "LONG", "description":"Timestamp", "sampleValue":"1553842862614"}
+							]
+						}
+					]
 				}
 			]
 		}

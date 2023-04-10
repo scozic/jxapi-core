@@ -1,8 +1,11 @@
 package com.scz.jcex.exchanges.kucoin.gen.futurestrading;
 
+import com.scz.jcex.exchanges.kucoin.gen.futurestrading.deserializers.KucoinAccountBalanceEventsMessageDeserializer;
 import com.scz.jcex.exchanges.kucoin.gen.futurestrading.deserializers.KucoinGetAccountOverviewResponseDeserializer;
 import com.scz.jcex.exchanges.kucoin.gen.futurestrading.deserializers.KucoinStopOrderLifecycleEventMessageDeserializer;
 import com.scz.jcex.exchanges.kucoin.gen.futurestrading.deserializers.KucoinTradeOrdersMessageDeserializer;
+import com.scz.jcex.exchanges.kucoin.gen.futurestrading.pojo.KucoinAccountBalanceEventsMessage;
+import com.scz.jcex.exchanges.kucoin.gen.futurestrading.pojo.KucoinAccountBalanceEventsRequest;
 import com.scz.jcex.exchanges.kucoin.gen.futurestrading.pojo.KucoinGetAccountOverviewRequest;
 import com.scz.jcex.exchanges.kucoin.gen.futurestrading.pojo.KucoinGetAccountOverviewResponse;
 import com.scz.jcex.exchanges.kucoin.gen.futurestrading.pojo.KucoinStopOrderLifecycleEventMessage;
@@ -86,11 +89,32 @@ public class  KucoinFuturesTradingApiImpl implements KucoinFuturesTradingApi {
       log.debug("unsubscribeStopOrderLifecycleEvent: subscriptionId:" + subscriptionId);
     return stopOrderLifecycleEventWs.unsubscribe(subscriptionId);
   }
+  
+  private final WebsocketEndpoint<KucoinAccountBalanceEventsRequest, KucoinAccountBalanceEventsMessage> accountBalanceEventsWs;
+  
+  
+  @Override
+  public String subscribeAccountBalanceEvents(KucoinAccountBalanceEventsRequest request, WebsocketListener<KucoinAccountBalanceEventsMessage> listener) {
+    if (log.isDebugEnabled())
+      log.debug("subscribeAccountBalanceEvents:request:" + request);
+    WebsocketSubscribeRequest<KucoinAccountBalanceEventsRequest> websocketSubscribeRequest = new WebsocketSubscribeRequest<>();
+    websocketSubscribeRequest.setMessageTopicMatcher(new DefaultWebsocketMessageTopicMatcher(WebsocketMessageTopicMatcherField.createList("topic", "" + request.getTopic() + "")));
+    websocketSubscribeRequest.setParameters(request);
+    return accountBalanceEventsWs.subscribe(websocketSubscribeRequest, listener);
+  }
+  
+  @Override
+  public boolean unsubscribeAccountBalanceEvents(String subscriptionId) {
+    if (log.isDebugEnabled())
+      log.debug("unsubscribeAccountBalanceEvents: subscriptionId:" + subscriptionId);
+    return accountBalanceEventsWs.unsubscribe(subscriptionId);
+  }
   public KucoinFuturesTradingApiImpl(Properties properties) {
     this.restEndpointFactory.setProperties(properties);
     this.websocketEndpointFactory.setProperties(properties);
     this.getAccountOverviewApi = restEndpointFactory.createRestEndpoint(new KucoinGetAccountOverviewResponseDeserializer());
     this.tradeOrdersWs = websocketEndpointFactory.createWebsocketEndpoint(new KucoinTradeOrdersMessageDeserializer());
     this.stopOrderLifecycleEventWs = websocketEndpointFactory.createWebsocketEndpoint(new KucoinStopOrderLifecycleEventMessageDeserializer());
+    this.accountBalanceEventsWs = websocketEndpointFactory.createWebsocketEndpoint(new KucoinAccountBalanceEventsMessageDeserializer());
   }
 }

@@ -1,5 +1,7 @@
 package com.scz.jcex.exchanges.kucoin.gen.futurestrading;
 
+import com.scz.jcex.exchanges.kucoin.gen.futurestrading.pojo.KucoinAccountBalanceEventsMessage;
+import com.scz.jcex.exchanges.kucoin.gen.futurestrading.pojo.KucoinAccountBalanceEventsRequest;
 import com.scz.jcex.exchanges.kucoin.gen.futurestrading.pojo.KucoinGetAccountOverviewRequest;
 import com.scz.jcex.exchanges.kucoin.gen.futurestrading.pojo.KucoinGetAccountOverviewResponse;
 import com.scz.jcex.exchanges.kucoin.gen.futurestrading.pojo.KucoinStopOrderLifecycleEventMessage;
@@ -49,4 +51,19 @@ public interface  KucoinFuturesTradingApi {
    * @param subscriptionId ID of subscription returned by #subscribeStopOrderLifecycleEvent()
    */
   boolean unsubscribeStopOrderLifecycleEvent(String subscriptionId);
+  
+  /**
+   * Subscribe to AccountBalanceEvents stream.<br/>
+   * Stop Order Lifecycle Event websocket stream.<br/>See <a href="https://docs.kucoin.com/futures/#stop-order-lifecycle-event">API</a>
+   * 
+   * @return client subscriptionId to use for unsubscription
+   */
+  String subscribeAccountBalanceEvents(KucoinAccountBalanceEventsRequest request, WebsocketListener<KucoinAccountBalanceEventsMessage> listener);
+  
+  /**
+   * Unsubscribe from AccountBalanceEvents stream.
+   * 
+   * @param subscriptionId ID of subscription returned by #subscribeAccountBalanceEvents()
+   */
+  boolean unsubscribeAccountBalanceEvents(String subscriptionId);
 }
