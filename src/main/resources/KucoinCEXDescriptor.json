@@ -742,7 +742,7 @@
 				{
 					"name": "AccountBalanceEvents",
 					"topic": "/contractAccount/wallet",
-					"description": "Stop Order Lifecycle Event websocket stream.<br/>See <a href=\"https://docs.kucoin.com/futures/#stop-order-lifecycle-event\">API</a>",
+					"description": "Stop Order Lifecycle Event websocket stream.<br/>See <a href=\"https://docs.kucoin.com/futures/#account-balance-events\">API</a>",
 					"parameters": [],
 					"messageTopicMatcherFields": [
 						{"name": "topic",  "value": "${topic}"}
@@ -762,7 +762,74 @@
 							]
 						}
 					]
+				},
+				{
+					"name": "PositionChangeEvents",
+					"topic": "/contract/position:${symbol}",
+					"description": "Stop Order Lifecycle Event websocket stream.<br/>See <a href=\"https://docs.kucoin.com/futures/#account-balance-events\">API</a>",
+					"parameters": [
+						{"name":"symbol", "type": "STRING", "description":"Symbol of the contract, ex:'XBTUSDTM'. Empty string to subscribe for all symbols.", "sampleValue":""}
+					],
+					"messageTopicMatcherFields": [
+						{"name": "topic",  "value": "${topic}"}
+					],
+					"response": [
+						{"name":"type", "type": "STRING", "description":"", "sampleValue":"message"},
+						{"name":"userId", "type": "STRING", "description":"Deprecated, will delete later", "sampleValue":"5cd3f1a7b7ebc19ae9558591"},
+						{"name":"channelType", "type": "STRING", "description":"", "sampleValue":"private"},
+						{"name":"topic", "type": "STRING", "description":"", "sampleValue":"/contractAccount/wallet"},
+						{"name":"subject", "type": "STRING", "description":"Either <strong>position.change</strong>, <strong>position.settlement</strong> or <strong>position.adjustRiskLimit</strong>", "sampleValue":"position.change"},
+						{"name":"data", "type": "STRUCT", "description":"", "parameters":
+							[
+								{"name":"realisedGrossPnl", "type": "BIGDECIMAL", "description":"Provided when <subject>subject</strong> is <strong>position.change</strong> and <strong>changeReason</strong> is <strong>position.change</strong>. Accumulated realised profit and loss", "sampleValue":0},
+								{"name":"symbol", "type": "STRING", "description":"Provided when <subject>subject</strong> is <strong>position.change</strong> and <strong>changeReason</strong> is <strong>position.change</strong>. Symbol", "sampleValue":"XBTUSDTM"},
+								{"name":"crossMode", "type": "BOOLEAN", "description":"Provided when <subject>subject</strong> is <strong>position.change</strong> and <strong>changeReason</strong> is <strong>position.change</strong>. Cross mode or not", "sampleValue":false},
+								{"name":"liquidationPrice", "type": "BIGDECIMAL", "description":"Provided when <subject>subject</strong> is <strong>position.change</strong> and <strong>changeReason</strong> is <strong>position.change</strong>. Liquidation price", "sampleValue":1000000.0},
+								{"name":"posLoss", "type": "BIGDECIMAL", "description":"Provided when <subject>subject</strong> is <strong>position.change</strong> and <strong>changeReason</strong> is <strong>position.change</strong>. Manually added margin amount", "sampleValue":0},
+								{"name":"avgEntryPrice", "type": "BIGDECIMAL", "description":"Provided when <subject>subject</strong> is <strong>position.change</strong> and <strong>changeReason</strong> is <strong>position.change</strong>. Average entry price", "sampleValue":7508.22},
+								{"name":"unrealisedPnl", "type": "BIGDECIMAL", "description":"Provided when <subject>subject</strong> is <strong>position.change</strong>. Unrealised profit and loss", "sampleValue":-0.00014735},
+								{"name":"markPrice", "type": "BIGDECIMAL", "description":"Provided when <subject>subject</strong> is <strong>position.change</strong> or <strong>position.settlement</strong>. Mark price", "sampleValue":7947.83},
+								{"name":"posMargin", "type": "BIGDECIMAL", "description":"Provided when <subject>subject</strong> is <strong>position.change</strong> and <strong>changeReason</strong> is <strong>position.change</strong>. Position margin", "sampleValue":0.00266779},
+								{"name":"autoDeposit", "type": "BOOLEAN", "description":"Provided when <subject>subject</strong> is <strong>position.change</strong> and <strong>changeReason</strong> is <strong>position.change</strong>. Auto deposit margin or not", "sampleValue":false},
+								{"name":"riskLimit", "type": "BIGDECIMAL", "description":"Provided when <subject>subject</strong> is <strong>position.change</strong> and <strong>changeReason</strong> is <strong>position.change</strong>. Risk limit", "sampleValue":100000},
+								{"name":"unrealisedCost", "type": "BIGDECIMAL", "description":"Provided when <subject>subject</strong> is <strong>position.change</strong> and <strong>changeReason</strong> is <strong>position.change</strong>. Unrealised value", "sampleValue":0.00266375},
+								{"name":"posComm", "type": "BIGDECIMAL", "description":"Provided when <subject>subject</strong> is <strong>position.change</strong> and <strong>changeReason</strong> is <strong>position.change</strong>. Bankruptcy cost", "sampleValue":0.00000392},
+								{"name":"posMaint", "type": "BIGDECIMAL", "description":"Provided when <subject>subject</strong> is <strong>position.change</strong> and <strong>changeReason</strong> is <strong>position.change</strong>. Maintenance margin", "sampleValue":0.00001724},
+								{"name":"posCost", "type": "BIGDECIMAL", "description":"Provided when <subject>subject</strong> is <strong>position.change</strong> and <strong>changeReason</strong> is <strong>position.change</strong>. Position value", "sampleValue":0.00266375},
+								{"name":"maintMarginReq", "type": "BIGDECIMAL", "description":"Provided when <subject>subject</strong> is <strong>position.change</strong> and <strong>changeReason</strong> is <strong>position.change</strong>. Maintenance margin rate", "sampleValue":0.005},
+								{"name":"bankruptPrice", "type": "BIGDECIMAL", "description":"Provided when <subject>subject</strong> is <strong>position.change</strong> and <strong>changeReason</strong> is <strong>position.change</strong>. Bankruptcy price", "sampleValue":1000000.0},
+								{"name":"realisedCost", "type": "BIGDECIMAL", "description":"Provided when <subject>subject</strong> is <strong>position.change</strong> and <strong>changeReason</strong> is <strong>position.change</strong>. Currently accumulated realised position value", "sampleValue":0.00000271},
+								{"name":"markValue", "type": "BIGDECIMAL", "description":"Provided when <subject>subject</strong> is <strong>position.change</strong>. Mark value", "sampleValue":0.00251640},
+								{"name":"posInit", "type": "BIGDECIMAL", "description":"Provided when <subject>subject</strong> is <strong>position.change</strong> and <strong>changeReason</strong> is <strong>position.change</strong>. Position margin", "sampleValue":0.00266375},
+								{"name":"realisedPnl", "type": "BIGDECIMAL", "description":"Provided when <subject>subject</strong> is <strong>position.change</strong> and <strong>changeReason</strong> is <strong>position.change</strong>. Realised profit and losts", "sampleValue":-0.00000253},
+								{"name":"maintMargin", "type": "BIGDECIMAL", "description":"Provided when <subject>subject</strong> is <strong>position.change</strong>. Position margin", "sampleValue":0.00252044},
+								{"name":"realLeverage", "type": "BIGDECIMAL", "description":"Provided when <subject>subject</strong> is <strong>position.change</strong>. Leverage of the order", "sampleValue":1.06},
+								{"name":"changeReason", "type": "STRING", "description":"Provided when <subject>subject</strong> is <strong>position.change</strong> and <strong>changeReason</strong> is <strong>position.change</strong>. ChangeReason: <strong>marginChange</strong>, <strong>positionChange</strong>, <strong>liquidation</strong>, <strong>autoAppendMarginStatusChange</strong>, <strong>adl</strong>", "sampleValue":"positionChange"},
+								{"name":"currentCost", "type": "BIGDECIMAL", "description":"Provided when <subject>subject</strong> is <strong>position.change</strong> and <strong>changeReason</strong> is <strong>position.change</strong>. Current position value", "sampleValue":0.00266375},
+								{"name":"openingTimestamp", "type": "LONG", "description":"Provided when <subject>subject</strong> is <strong>position.change</strong> and <strong>changeReason</strong> is <strong>position.change</strong>. Open time", "sampleValue":1558433191000},
+								{"name":"currentQty", "type": "BIGDECIMAL", "description":"Provided when <subject>subject</strong> is <strong>position.change</strong> and <strong>changeReason</strong> is <strong>position.change</strong>. Current position", "sampleValue":-20},
+								{"name":"delevPercentage", "type": "BIGDECIMAL", "description":"Provided when <subject>subject</strong> is <strong>position.change</strong>. ADL ranking percentile", "sampleValue":0.52},
+								{"name":"currentComm", "type": "BIGDECIMAL", "description":"Provided when <subject>subject</strong> is <strong>position.change</strong> and <strong>changeReason</strong> is <strong>position.change</strong>. Current commission", "sampleValue":0.00000271},
+								{"name":"realisedGrossCost", "type": "BIGDECIMAL", "description":"Provided when <subject>subject</strong> is <strong>position.change</strong> and <strong>changeReason</strong> is <strong>position.change</strong>. Accumulated reliased gross profit value", "sampleValue":0},
+								{"name":"isOpen", "type": "BOOLEAN", "description":"Provided when <subject>subject</strong> is <strong>position.change</strong> and <strong>changeReason</strong> is <strong>position.change</strong>. Opened position or not", "sampleValue":true},
+								{"name":"posCross", "type": "BIGDECIMAL", "description":"Provided when <subject>subject</strong> is <strong>position.change</strong> and <strong>changeReason</strong> is <strong>position.change</strong>. Manually added margin", "sampleValue":0.00000012},
+								{"name":"currentTimestamp", "type": "LONG", "description":"Provided when <subject>subject</strong> is <strong>position.change</strong>. Current timestamp", "sampleValue":1558506060394},
+								{"name":"unrealisedRoePcnt", "type": "BIGDECIMAL", "description":"Provided when <subject>subject</strong> is <strong>position.change</strong>. Rate of return on investment", "sampleValue":-0.0553},
+								{"name":"unrealisedPnlPcnt", "type": "BIGDECIMAL", "description":"Provided when <subject>subject</strong> is <strong>position.change</strong>. Position profit and loss ratio", "sampleValue":-0.0553},
+								{"name":"settleCurrency", "type": "STRING", "description":"Currency used to clear and settle the trades", "sampleValue":"XBT"},
+								{"name":"fundingTime", "type": "TIMESTAMP", "description":"Provided when <subject>subject</strong> is <strong>position.settlement</strong>. Funding time", "sampleValue":1551770400000},
+								{"name":"qty", "type": "BIGDECIMAL", "description":"Provided when <subject>subject</strong> is <strong>position.settlement</strong>. Position size", "sampleValue":100},
+								{"name":"fundingRate", "type": "BIGDECIMAL", "description":"Provided when <subject>subject</strong> is <strong>position.settlement</strong>. Funding rate", "sampleValue":-0.002966},
+								{"name":"fundingFee", "type": "BIGDECIMAL", "description":"Provided when <subject>subject</strong> is <strong>position.settlement</strong>. Funding fees", "sampleValue":-296},
+								{"name":"ts", "type": "LONG", "description":"Provided when <subject>subject</strong> is <strong>position.settlement</strong>. Current time (nanosecond)", "sampleValue":1547697294838004923},
+								{"name":"success", "type": "BOOLEAN", "description":"Provided when <subject>subject</strong> is <strong>position.adjustRiskLimit</strong>. Successful or not", "sampleValue":true},
+								{"name":"riskLimitLevel", "type": "BIGDECIMAL", "description":"Provided when <subject>subject</strong> is <strong>position.adjustRiskLimit</strong>. Current risk limit level", "sampleValue":1},
+								{"name":"msg", "type": "STRING", "description":"Provided when <subject>subject</strong> is <strong>position.adjustRiskLimit</strong>. Failure reason", "sampleValue":""}
+							]
+						}
+					]
 				}
+				
 			]
 		}
 	]

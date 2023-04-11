@@ -6,7 +6,7 @@ import com.scz.jcex.netutils.websocket.WebsocketSubscribeParameters;
 import com.scz.jcex.util.EncodingUtil;
 
 /**
- * Subscription request toKucoin FuturesTrading API AccountBalanceEvents websocket endpoint<br/>Stop Order Lifecycle Event websocket stream.<br/>See <a href="https://docs.kucoin.com/futures/#stop-order-lifecycle-event">API</a><br><strong>THIS CODE IS GENERATED. DO NOT EDIT MANUALLY!</strong>
+ * Subscription request toKucoin FuturesTrading API AccountBalanceEvents websocket endpoint<br/>Stop Order Lifecycle Event websocket stream.<br/>See <a href="https://docs.kucoin.com/futures/#account-balance-events">API</a><br><strong>THIS CODE IS GENERATED. DO NOT EDIT MANUALLY!</strong>
  */
 @JsonSerialize(using = KucoinAccountBalanceEventsRequestSerializer.class)
 public class KucoinAccountBalanceEventsRequest implements WebsocketSubscribeParameters {

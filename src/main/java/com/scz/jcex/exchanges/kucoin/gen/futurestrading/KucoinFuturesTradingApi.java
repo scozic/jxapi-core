@@ -4,6 +4,8 @@ import com.scz.jcex.exchanges.kucoin.gen.futurestrading.pojo.KucoinAccountBalanc
 import com.scz.jcex.exchanges.kucoin.gen.futurestrading.pojo.KucoinAccountBalanceEventsRequest;
 import com.scz.jcex.exchanges.kucoin.gen.futurestrading.pojo.KucoinGetAccountOverviewRequest;
 import com.scz.jcex.exchanges.kucoin.gen.futurestrading.pojo.KucoinGetAccountOverviewResponse;
+import com.scz.jcex.exchanges.kucoin.gen.futurestrading.pojo.KucoinPositionChangeEventsMessage;
+import com.scz.jcex.exchanges.kucoin.gen.futurestrading.pojo.KucoinPositionChangeEventsRequest;
 import com.scz.jcex.exchanges.kucoin.gen.futurestrading.pojo.KucoinStopOrderLifecycleEventMessage;
 import com.scz.jcex.exchanges.kucoin.gen.futurestrading.pojo.KucoinStopOrderLifecycleEventRequest;
 import com.scz.jcex.exchanges.kucoin.gen.futurestrading.pojo.KucoinTradeOrdersMessage;
@@ -54,7 +56,7 @@ public interface  KucoinFuturesTradingApi {
   
   /**
    * Subscribe to AccountBalanceEvents stream.<br/>
-   * Stop Order Lifecycle Event websocket stream.<br/>See <a href="https://docs.kucoin.com/futures/#stop-order-lifecycle-event">API</a>
+   * Stop Order Lifecycle Event websocket stream.<br/>See <a href="https://docs.kucoin.com/futures/#account-balance-events">API</a>
    * 
    * @return client subscriptionId to use for unsubscription
    */
@@ -66,4 +68,19 @@ public interface  KucoinFuturesTradingApi {
    * @param subscriptionId ID of subscription returned by #subscribeAccountBalanceEvents()
    */
   boolean unsubscribeAccountBalanceEvents(String subscriptionId);
+  
+  /**
+   * Subscribe to PositionChangeEvents stream.<br/>
+   * Stop Order Lifecycle Event websocket stream.<br/>See <a href="https://docs.kucoin.com/futures/#account-balance-events">API</a>
+   * 
+   * @return client subscriptionId to use for unsubscription
+   */
+  String subscribePositionChangeEvents(KucoinPositionChangeEventsRequest request, WebsocketListener<KucoinPositionChangeEventsMessage> listener);
+  
+  /**
+   * Unsubscribe from PositionChangeEvents stream.
+   * 
+   * @param subscriptionId ID of subscription returned by #subscribePositionChangeEvents()
+   */
+  boolean unsubscribePositionChangeEvents(String subscriptionId);
 }
