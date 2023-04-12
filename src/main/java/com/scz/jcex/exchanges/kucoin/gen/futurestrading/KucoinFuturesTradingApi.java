@@ -4,6 +4,8 @@ import com.scz.jcex.exchanges.kucoin.gen.futurestrading.pojo.KucoinAccountBalanc
 import com.scz.jcex.exchanges.kucoin.gen.futurestrading.pojo.KucoinAccountBalanceEventsRequest;
 import com.scz.jcex.exchanges.kucoin.gen.futurestrading.pojo.KucoinGetAccountOverviewRequest;
 import com.scz.jcex.exchanges.kucoin.gen.futurestrading.pojo.KucoinGetAccountOverviewResponse;
+import com.scz.jcex.exchanges.kucoin.gen.futurestrading.pojo.KucoinPlaceAnOrderRequest;
+import com.scz.jcex.exchanges.kucoin.gen.futurestrading.pojo.KucoinPlaceAnOrderResponse;
 import com.scz.jcex.exchanges.kucoin.gen.futurestrading.pojo.KucoinPositionChangeEventsMessage;
 import com.scz.jcex.exchanges.kucoin.gen.futurestrading.pojo.KucoinPositionChangeEventsRequest;
 import com.scz.jcex.exchanges.kucoin.gen.futurestrading.pojo.KucoinStopOrderLifecycleEventMessage;
@@ -23,6 +25,10 @@ public interface  KucoinFuturesTradingApi {
    * Get account overview.<br/>See <a href="https://docs.kucoin.com/futures/#get-account-overview">API</a>
    */
   KucoinGetAccountOverviewResponse getAccountOverview(KucoinGetAccountOverviewRequest request) throws IOException;
+  /**
+   * You can place two types of orders: limit and market. Orders can only be placed if your account has sufficient funds. Once an order is placed, your funds will be put on hold for the duration of the order. The amount of funds on hold depends on the order type and parameters specified. <br/>Please be noted that the system would hold the fees from the orders entered the orderbook in advance. Read Get Fills to learn more.<br/>See <a href="https://docs.kucoin.com/futures/#place-an-order">API</a>
+   */
+  KucoinPlaceAnOrderResponse placeAnOrder(KucoinPlaceAnOrderRequest request) throws IOException;
   
   /**
    * Subscribe to TradeOrders stream.<br/>

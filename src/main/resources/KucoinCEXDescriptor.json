@@ -665,6 +665,42 @@
 							]
 						}
 					]
+				},
+				{
+					"name": "PlaceAnOrder",
+					"httpMethod": "POST",
+					"description": "You can place two types of orders: limit and market. Orders can only be placed if your account has sufficient funds. Once an order is placed, your funds will be put on hold for the duration of the order. The amount of funds on hold depends on the order type and parameters specified. <br/>Please be noted that the system would hold the fees from the orders entered the orderbook in advance. Read Get Fills to learn more.<br/>See <a href=\"https://docs.kucoin.com/futures/#place-an-order\">API</a>",
+					"url": "https://api-futures.kucoin.com/api/v1/orders",
+					"parameters": [
+						{"name":"clientOid", "type": "STRING", "description":"Unique order id created by users to identify their orders, the maximum length cannot exceed 40, e.g. UUID, Only allows numbers, characters, underline(_), and separator(-)", "sampleValue":"myClientOrderID"},
+						{"name":"side", "type": "STRING", "description":"<strong>buy</strong> or sell", "sampleValue":"buy"},
+						{"name":"symbol", "type": "STRING", "description":"a valid contract code. e.g. XBTUSDM", "sampleValue":"XBTUSDM"},
+						{"name":"type", "type": "STRING", "description":"[optional] Either <strong>limit<strong> or <strong>market</strong>", "sampleValue":"limit"},
+						{"name":"leverage", "type": "BIGDECIMAL", "description":"Leverage of the order", "sampleValue":"10.1"},
+						{"name":"remark", "type": "STRING", "description":"[optional] remark for the order, length cannot exceed 100 utf8 characters", "sampleValue":"free text remark"},
+						{"name":"stop", "type": "STRING", "description":"[optional] Either <strong>down</strong> or <strong>up</strong>. Requires <strong>stopPrice</strong> and <strong>stopPriceType</strong> to be defined", "sampleValue":null},
+						{"name":"stopPriceType", "type": "STRING", "description":"[optional] Either <strong>TP</strong>, <strong>IP</strong> or <strong>MP</strong>, Need to be defined if stop is specified.", "sampleValue":null},
+						{"name":"stopPrice", "type": "BIGDECIMAL", "description":"[optional] Need to be defined if <strong>stop</strong> is specified.", "sampleValue":null},
+						{"name":"reduceOnly", "type": "BOOLEAN", "description":"[optional] A mark to reduce the position size only. Set to false by default. Need to set the position size when <strong>reduceOnly</strong> is <strong>true</strong>.", "sampleValue":false},
+						{"name":"closeOrder", "type": "BOOLEAN", "description":"[optional] A mark to close the position. Set to false by default. It will close all the positions when closeOrder is true.", "sampleValue":false},
+						{"name":"forceHold", "type": "BOOLEAN", "description":"[optional] A mark to forcely hold the funds for an order, even though it's an order to reduce the position size. This helps the order stay on the order book and not get canceled when the position size changes. Set to <strong>false</strong> by default.", "sampleValue":false},
+						{"name":"price", "type": "BIGDECIMAL", "description":"<strong>limit</strong> order parameter. Limit price", "sampleValue":1.12},
+						{"name":"size", "type": "INT", "description":"Order size (amount of contract to buy or sell). Must be a positive number.", "sampleValue":100},
+						{"name":"timeInForce", "type": "STRING", "description":"<strong>limit</strong> order parameter. [optional] <strong>GTC</strong>, <strong>IOC</strong>(default is GTC), read <a href=\"https://docs.kucoin.com/futures/#time-in-force\">Time In Force</a>", "sampleValue":"GTC"},
+						{"name":"postOnly", "type": "BOOLEAN", "description":"<strong>limit</strong> order parameter. [optional] Post only flag, invalid when <strong>timeInForce</strong> is <strong>IOC</strong>. When postOnly chose, not allowed choose hidden or iceberg.", "sampleValue":false},
+						{"name":"hidden", "type": "BOOLEAN", "description":"<strong>limit</strong> order parameter. [optional] Orders not displaying in order book. When hidden chose, not allowed choose postOnly.", "sampleValue":false},
+						{"name":"iceberg", "type": "BOOLEAN", "description":"<strong>limit</strong> order parameter. [optional] Only visible portion of the order is displayed in the order book. When iceberg chose, not allowed choose postOnly.", "sampleValue":false},
+						{"name":"visibleSize", "type": "BIGDECIMAL", "description":"<strong>limit</strong> order parameter. [optional] The maximum visible size of an iceberg order", "sampleValue":null}
+					],
+					"response": [
+						{"name":"code", "type": "STRING", "description":"System error code, see <a href=\"https://docs.kucoin.com/#request\">API</a>", "sampleValue": "0"},
+						{"name":"msg", "type": "STRING", "description":"System error code description, provided in error response when code is not '0', see <a href=\"https://docs.kucoin.com/#request\">API</a>", "sampleValue": "0"},
+						{"name":"data", "type": "STRUCT", "description":"List of market information for each market symbol", "parameters":
+							[
+								{"name":"orderId", "type": "STRING", "description":"ID of order on market", "sampleValue":"5bd6e9286d99522a52e458de"}
+							]
+						}
+					]
 				}
 			],
 			"websocketEndpointFactory": "com.scz.jcex.exchanges.kucoin.net.KucoinFuturesPrivateWebsocketEndpointFactory",
