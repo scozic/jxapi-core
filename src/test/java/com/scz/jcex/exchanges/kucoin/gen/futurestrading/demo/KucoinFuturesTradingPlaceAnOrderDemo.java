@@ -28,7 +28,7 @@ public class KucoinFuturesTradingPlaceAnOrderDemo {
   /**
    * Sample value for <i>symbol</i> parameter of <i>PlaceAnOrder</i> API
    */
-  public static final String SYMBOL = "DOGEUSDTM";
+  public static final String SYMBOL = "XBTUSDM";
   
   /**
    * Sample value for <i>type</i> parameter of <i>PlaceAnOrder</i> API
@@ -38,7 +38,7 @@ public class KucoinFuturesTradingPlaceAnOrderDemo {
   /**
    * Sample value for <i>leverage</i> parameter of <i>PlaceAnOrder</i> API
    */
-  public static final BigDecimal LEVERAGE = new BigDecimal("1.1");;
+  public static final BigDecimal LEVERAGE = new BigDecimal("10.1");;
   
   /**
    * Sample value for <i>remark</i> parameter of <i>PlaceAnOrder</i> API
@@ -78,12 +78,12 @@ public class KucoinFuturesTradingPlaceAnOrderDemo {
   /**
    * Sample value for <i>price</i> parameter of <i>PlaceAnOrder</i> API
    */
-  public static final BigDecimal PRICE = new BigDecimal("0.05");;
+  public static final BigDecimal PRICE = new BigDecimal("1.12");;
   
   /**
    * Sample value for <i>size</i> parameter of <i>PlaceAnOrder</i> API
    */
-  public static final Integer SIZE = 1;
+  public static final Integer SIZE = 100;
   
   /**
    * Sample value for <i>timeInForce</i> parameter of <i>PlaceAnOrder</i> API

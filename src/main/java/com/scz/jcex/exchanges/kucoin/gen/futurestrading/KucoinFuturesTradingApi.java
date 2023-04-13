@@ -2,6 +2,8 @@ package com.scz.jcex.exchanges.kucoin.gen.futurestrading;
 
 import com.scz.jcex.exchanges.kucoin.gen.futurestrading.pojo.KucoinAccountBalanceEventsMessage;
 import com.scz.jcex.exchanges.kucoin.gen.futurestrading.pojo.KucoinAccountBalanceEventsRequest;
+import com.scz.jcex.exchanges.kucoin.gen.futurestrading.pojo.KucoinCancelAnOrderRequest;
+import com.scz.jcex.exchanges.kucoin.gen.futurestrading.pojo.KucoinCancelAnOrderResponse;
 import com.scz.jcex.exchanges.kucoin.gen.futurestrading.pojo.KucoinGetAccountOverviewRequest;
 import com.scz.jcex.exchanges.kucoin.gen.futurestrading.pojo.KucoinGetAccountOverviewResponse;
 import com.scz.jcex.exchanges.kucoin.gen.futurestrading.pojo.KucoinPlaceAnOrderRequest;
@@ -29,6 +31,10 @@ public interface  KucoinFuturesTradingApi {
    * You can place two types of orders: limit and market. Orders can only be placed if your account has sufficient funds. Once an order is placed, your funds will be put on hold for the duration of the order. The amount of funds on hold depends on the order type and parameters specified. <br/>Please be noted that the system would hold the fees from the orders entered the orderbook in advance. Read Get Fills to learn more.<br/>See <a href="https://docs.kucoin.com/futures/#place-an-order">API</a>
    */
   KucoinPlaceAnOrderResponse placeAnOrder(KucoinPlaceAnOrderRequest request) throws IOException;
+  /**
+   * Cancel an order (including a stop order).<br/> You will receive success message once the system has received the cancellation request. The cancellation request will be processed by matching engine in sequence. To know if the request has been processed, you may check the order status or update message from the pushes.<br/>The order id is the server-assigned order id, not the specified clientOid.<br/>If the order can not be canceled (already filled or previously canceled, etc), then an error response will indicate the reason in the message field.<br/>See <a href="https://docs.kucoin.com/futures/#cancel-an-order">API</a>
+   */
+  KucoinCancelAnOrderResponse cancelAnOrder(KucoinCancelAnOrderRequest request) throws IOException;
   
   /**
    * Subscribe to TradeOrders stream.<br/>
