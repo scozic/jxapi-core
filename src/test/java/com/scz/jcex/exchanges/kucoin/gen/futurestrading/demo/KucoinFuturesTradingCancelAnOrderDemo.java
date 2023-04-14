@@ -15,7 +15,7 @@ public class KucoinFuturesTradingCancelAnOrderDemo {
   private static final Logger log = LoggerFactory.getLogger(KucoinFuturesTradingCancelAnOrderDemo.class);
   
   /**
-   * Sample value for <i>orderId</i> parameter of <i>cancelAnOrder</i> API
+   * Sample value for <i>orderId</i> parameter of <i>CancelAnOrder</i> API
    */
   public static final String ORDERID = "5bd6e9286d99522a52e458de";
   

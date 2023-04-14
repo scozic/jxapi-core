@@ -3,6 +3,7 @@ package com.scz.jcex.exchanges.kucoin.gen.futurestrading;
 import com.scz.jcex.exchanges.kucoin.gen.futurestrading.deserializers.KucoinAccountBalanceEventsMessageDeserializer;
 import com.scz.jcex.exchanges.kucoin.gen.futurestrading.deserializers.KucoinCancelAnOrderResponseDeserializer;
 import com.scz.jcex.exchanges.kucoin.gen.futurestrading.deserializers.KucoinGetAccountOverviewResponseDeserializer;
+import com.scz.jcex.exchanges.kucoin.gen.futurestrading.deserializers.KucoinGetOrderListResponseDeserializer;
 import com.scz.jcex.exchanges.kucoin.gen.futurestrading.deserializers.KucoinPlaceAnOrderResponseDeserializer;
 import com.scz.jcex.exchanges.kucoin.gen.futurestrading.deserializers.KucoinPositionChangeEventsMessageDeserializer;
 import com.scz.jcex.exchanges.kucoin.gen.futurestrading.deserializers.KucoinStopOrderLifecycleEventMessageDeserializer;
@@ -13,6 +14,8 @@ import com.scz.jcex.exchanges.kucoin.gen.futurestrading.pojo.KucoinCancelAnOrder
 import com.scz.jcex.exchanges.kucoin.gen.futurestrading.pojo.KucoinCancelAnOrderResponse;
 import com.scz.jcex.exchanges.kucoin.gen.futurestrading.pojo.KucoinGetAccountOverviewRequest;
 import com.scz.jcex.exchanges.kucoin.gen.futurestrading.pojo.KucoinGetAccountOverviewResponse;
+import com.scz.jcex.exchanges.kucoin.gen.futurestrading.pojo.KucoinGetOrderListRequest;
+import com.scz.jcex.exchanges.kucoin.gen.futurestrading.pojo.KucoinGetOrderListResponse;
 import com.scz.jcex.exchanges.kucoin.gen.futurestrading.pojo.KucoinPlaceAnOrderRequest;
 import com.scz.jcex.exchanges.kucoin.gen.futurestrading.pojo.KucoinPlaceAnOrderResponse;
 import com.scz.jcex.exchanges.kucoin.gen.futurestrading.pojo.KucoinPositionChangeEventsMessage;
@@ -76,10 +79,22 @@ public class  KucoinFuturesTradingApiImpl implements KucoinFuturesTradingApi {
   @Override
   public KucoinCancelAnOrderResponse cancelAnOrder(KucoinCancelAnOrderRequest request) throws IOException {
     if (log.isDebugEnabled())
-      log.debug("DELETE cancelAnOrder > " + request);
+      log.debug("DELETE CancelAnOrder > " + request);
     KucoinCancelAnOrderResponse response = cancelAnOrderApi.call(RestRequest.create("https://api-futures.kucoin.com/api/v1/orders", "DELETE", request));
     if (log.isDebugEnabled())
-      log.debug("DELETE cancelAnOrder < " + response);
+      log.debug("DELETE CancelAnOrder < " + response);
+    return response;
+  }
+  
+  private final RestEndpoint<KucoinGetOrderListRequest, KucoinGetOrderListResponse> getOrderListApi;
+  
+  @Override
+  public KucoinGetOrderListResponse getOrderList(KucoinGetOrderListRequest request) throws IOException {
+    if (log.isDebugEnabled())
+      log.debug("GET GetOrderList > " + request);
+    KucoinGetOrderListResponse response = getOrderListApi.call(RestRequest.create("https://api-futures.kucoin.com/api/v1/orders", "GET", request));
+    if (log.isDebugEnabled())
+      log.debug("GET GetOrderList < " + response);
     return response;
   }
   
@@ -168,6 +183,7 @@ public class  KucoinFuturesTradingApiImpl implements KucoinFuturesTradingApi {
     this.getAccountOverviewApi = restEndpointFactory.createRestEndpoint(new KucoinGetAccountOverviewResponseDeserializer());
     this.placeAnOrderApi = restEndpointFactory.createRestEndpoint(new KucoinPlaceAnOrderResponseDeserializer());
     this.cancelAnOrderApi = restEndpointFactory.createRestEndpoint(new KucoinCancelAnOrderResponseDeserializer());
+    this.getOrderListApi = restEndpointFactory.createRestEndpoint(new KucoinGetOrderListResponseDeserializer());
     this.tradeOrdersWs = websocketEndpointFactory.createWebsocketEndpoint(new KucoinTradeOrdersMessageDeserializer());
     this.stopOrderLifecycleEventWs = websocketEndpointFactory.createWebsocketEndpoint(new KucoinStopOrderLifecycleEventMessageDeserializer());
     this.accountBalanceEventsWs = websocketEndpointFactory.createWebsocketEndpoint(new KucoinAccountBalanceEventsMessageDeserializer());
