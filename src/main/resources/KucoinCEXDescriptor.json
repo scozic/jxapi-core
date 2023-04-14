@@ -724,7 +724,7 @@
 				{
 					"name": "GetOrderList",
 					"httpMethod": "GET",
-					"description": "Cancel an order (including a stop order).<br/> You will receive success message once the system has received the cancellation request. The cancellation request will be processed by matching engine in sequence. To know if the request has been processed, you may check the order status or update message from the pushes.<br/>The order id is the server-assigned order id, not the specified clientOid.<br/>If the order can not be canceled (already filled or previously canceled, etc), then an error response will indicate the reason in the message field.<br/>See <a href=\"https://docs.kucoin.com/futures/#cancel-an-order\">API</a>",
+					"description": "List your current orders. <br/>See <a href=\"https://docs.kucoin.com/futures/#get-order-list\">API</a>",
 					"url": "https://api-futures.kucoin.com/api/v1/orders",
 					"parameters": [
 						{"name":"currentPage", "type": "INT", "description":"[Optional] Current request page.", "sampleValue": 1},
@@ -751,6 +751,70 @@
 										{"name":"side", "type": "STRING", "description":"Transaction side", "sampleValue": "buy"},
 										{"name":"price", "type": "BIGDECIMAL", "description":"Order price", "sampleValue": "10"},
 										{"name":"size", "type": "BIGDECIMAL", "description":"Order quantity", "sampleValue": "2"},
+										{"name":"stp", "type": "STRING", "description":"Self trade prevention,include <strong>CN</strong>,<strong>CO</strong>,<strong>DC</strong>,<strong>CB</strong>", "sampleValue": ""},
+										{"name":"stop", "type": "STRING", "description":"Stop type, include entry and loss", "sampleValue": ""},
+										{"name":"stopTriggered", "type": "BOOLEAN", "description":"Stop order is triggered or not", "sampleValue": false},
+										{"name":"stopPrice", "type": "BIGDECIMAL", "description":"Stop price", "sampleValue": "10"},
+										{"name":"timeInForce", "type": "STRING", "description":"Time In Force,include <strong>GTC</strong>,<strong>GTT</strong>,<strong>IOC</strong>,<strong>FOK</strong>", "sampleValue": "10"},
+										{"name":"postOnly", "type": "BOOLEAN", "description":"Post only", "sampleValue": false},
+										{"name":"hidden", "type": "BOOLEAN", "description":"Hidden order", "sampleValue": false},
+										{"name":"iceberg", "type": "BOOLEAN", "description":"Iceberg order", "sampleValue": false},
+										{"name":"leverage", "type": "BIGDECIMAL", "description":"Leverage of the order", "sampleValue": "20"},
+										{"name":"forceHold", "type": "BOOLEAN", "description":"A mark to forcely hold the funds for an order", "sampleValue": false},
+										{"name":"closeOrder", "type": "BOOLEAN", "description":"A mark to close the position", "sampleValue": false},
+										{"name":"visibleSize", "type": "BIGDECIMAL", "description":"Visible size of the iceberg order", "sampleValue": "0"},
+										{"name":"clientOid", "type": "STRING", "description":"User-entered order unique mark", "sampleValue": "myClientID"},
+										{"name":"remark", "type": "STRING", "description":"Remark", "sampleValue": "myClientID"},
+										{"name":"tags", "type": "STRING", "description":"Tag order source", "sampleValue": ""},
+										{"name":"isActive", "type": "BOOLEAN", "description":"Order status, <strong>true</strong> and <strong>false</strong>. If <strong>true</strong>, the order is active, if <strong>false</strong>, the order is filled or cancelled", "sampleValue": false},
+										{"name":"cancelExist", "type": "BOOLEAN", "description":"Order cancellation transaction record", "sampleValue": false},
+										{"name":"createdAt", "type": "LONG", "description":"Time the order created", "sampleValue": 1547026471000},
+										{"name":"updatedAt", "type": "LONG", "description":"End time", "sampleValue": 1547026471000},
+										{"name":"endAt", "type": "LONG", "description":"End time", "sampleValue": 1547026471000},
+										{"name":"orderTime", "type": "LONG", "description":"Order create time in nanoseconds", "sampleValue": 1547026471000},
+										{"name":"settleCurrency", "type": "STRING", "description":"Settlement currency", "sampleValue": "XBT"},
+										{"name":"status", "type": "STRING", "description":"order status: <strongg>open</strong> or <strong>done</strong>", "sampleValue": "open"},
+										{"name":"tradeType", "type": "STRING", "description":"The type of trading", "sampleValue": "TRADE"},
+										{"name":"filledValue", "type": "BIGDECIMAL", "description":"Value of the executed orders", "sampleValue": "0"},
+										{"name":"filledSize", "type": "BIGDECIMAL", "description":"Executed order quantity", "sampleValue": "0"},
+										{"name":"reduceOnly", "type": "BOOLEAN", "description":"A mark to reduce the position size only", "sampleValue": "0"}
+									]
+								}
+							]
+						}
+					]
+				},
+								{
+					"name": "GetUntriggeredStopOrderList",
+					"httpMethod": "GET",
+					"description": "Get the un-triggered stop orders list. <br/>See <a href=\"https://docs.kucoin.com/futures/#get-untriggered-stop-order-list\">API</a>",
+					"url": "https://api-futures.kucoin.com/api/v1/stopOrders",
+					"parameters": [
+						{"name":"currentPage", "type": "INT", "description":"[Optional] Current request page.", "sampleValue": 1},
+						{"name":"pageSize", "type": "INT", "description":"[Optional] pageSize, The default pageSize is 50, The maximum cannot exceed 1000", "sampleValue": 50},
+						{"name":"status", "type": "STRING", "description":"[Optional] <strong>active</strong> or <strong>done</strong>(<strong>done</strong> as default), Only list orders with a specific status.", "sampleValue": "active"},
+						{"name":"symbol", "type": "STRING", "description":"[Optional] Symbol of the contract", "sampleValue": null},
+						{"name":"side", "type": "STRING", "description":"[Optional] <strong>buy</strong> or <strong>sell</strong>.", "sampleValue": null},
+						{"name":"type", "type": "STRING", "description":"[Optional] <strong>limit</strong>, <strong>market</strong>, <strong>limit_stop</strong> or <strong>market_stop</strong>", "sampleValue": null},
+						{"name":"startAt", "type": "TIMESTAMP", "description":"[Optional] Start time (milisecond).", "sampleValue": null},
+						{"name":"endAt", "type": "TIMESTAMP", "description":"[Optional] End time (milisecond).", "sampleValue": null}
+					],
+					"response": [
+						{"name": "code", "type": "STRING", "description": "System error code, see <a href=\"https://docs.kucoin.com/#request\">API</a>", "sampleValue": "0"},
+						{"name": "msg", "type": "STRING", "description": "System error code description, provided in error response when code is not '0', see <a href=\"https://docs.kucoin.com/#request\">API</a>", "sampleValue": "0"},
+						{"name": "data", "type": "STRUCT", "description": "Response payload", "parameters":[
+								{"name": "currentPage", "type": "INT", "description":"Current page", "sampleValue": 1},
+								{"name": "pageSize", "type": "INT", "description":"Request max number of items", "sampleValue": 500},
+								{"name": "totalPages", "type": "INT", "description":"Page count", "sampleValue": 1},
+								{"name": "totalNum", "type": "INT", "description":"Request max number of items", "sampleValue": 153408},
+								{"name": "items", "type": "STRUCT_LIST", "description": "Order list", "parameters":[
+										{"name":"id", "type": "STRING", "description":"Order ID, the ID of an order.", "sampleValue": "5c35c02703aa673ceec2a168"},
+										{"name":"symbol", "type": "STRING", "description":"Symbol of the contract", "sampleValue": "ETH-USDT"},
+										{"name":"type", "type": "STRING", "description":"Order type, <strong>market</strong> order or <strong>limit</strong> order", "sampleValue": "limit"},
+										{"name":"side", "type": "STRING", "description":"Transaction side", "sampleValue": "buy"},
+										{"name":"price", "type": "BIGDECIMAL", "description":"Order price", "sampleValue": "10"},
+										{"name":"size", "type": "BIGDECIMAL", "description":"Order quantity", "sampleValue": "2"},
+										{"name":"value", "type": "BIGDECIMAL", "description":"Order value", "sampleValue": "0"},
 										{"name":"stp", "type": "STRING", "description":"Self trade prevention,include <strong>CN</strong>,<strong>CO</strong>,<strong>DC</strong>,<strong>CB</strong>", "sampleValue": ""},
 										{"name":"stop", "type": "STRING", "description":"Stop type, include entry and loss", "sampleValue": ""},
 										{"name":"stopTriggered", "type": "BOOLEAN", "description":"Stop order is triggered or not", "sampleValue": false},

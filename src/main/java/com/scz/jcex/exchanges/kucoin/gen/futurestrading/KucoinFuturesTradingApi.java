@@ -8,6 +8,8 @@ import com.scz.jcex.exchanges.kucoin.gen.futurestrading.pojo.KucoinGetAccountOve
 import com.scz.jcex.exchanges.kucoin.gen.futurestrading.pojo.KucoinGetAccountOverviewResponse;
 import com.scz.jcex.exchanges.kucoin.gen.futurestrading.pojo.KucoinGetOrderListRequest;
 import com.scz.jcex.exchanges.kucoin.gen.futurestrading.pojo.KucoinGetOrderListResponse;
+import com.scz.jcex.exchanges.kucoin.gen.futurestrading.pojo.KucoinGetUntriggeredStopOrderListRequest;
+import com.scz.jcex.exchanges.kucoin.gen.futurestrading.pojo.KucoinGetUntriggeredStopOrderListResponse;
 import com.scz.jcex.exchanges.kucoin.gen.futurestrading.pojo.KucoinPlaceAnOrderRequest;
 import com.scz.jcex.exchanges.kucoin.gen.futurestrading.pojo.KucoinPlaceAnOrderResponse;
 import com.scz.jcex.exchanges.kucoin.gen.futurestrading.pojo.KucoinPositionChangeEventsMessage;
@@ -38,9 +40,13 @@ public interface  KucoinFuturesTradingApi {
    */
   KucoinCancelAnOrderResponse cancelAnOrder(KucoinCancelAnOrderRequest request) throws IOException;
   /**
-   * Cancel an order (including a stop order).<br/> You will receive success message once the system has received the cancellation request. The cancellation request will be processed by matching engine in sequence. To know if the request has been processed, you may check the order status or update message from the pushes.<br/>The order id is the server-assigned order id, not the specified clientOid.<br/>If the order can not be canceled (already filled or previously canceled, etc), then an error response will indicate the reason in the message field.<br/>See <a href="https://docs.kucoin.com/futures/#cancel-an-order">API</a>
+   * List your current orders. <br/>See <a href="https://docs.kucoin.com/futures/#get-order-list">API</a>
    */
   KucoinGetOrderListResponse getOrderList(KucoinGetOrderListRequest request) throws IOException;
+  /**
+   * Get the un-triggered stop orders list. <br/>See <a href="https://docs.kucoin.com/futures/#get-untriggered-stop-order-list">API</a>
+   */
+  KucoinGetUntriggeredStopOrderListResponse getUntriggeredStopOrderList(KucoinGetUntriggeredStopOrderListRequest request) throws IOException;
   
   /**
    * Subscribe to TradeOrders stream.<br/>

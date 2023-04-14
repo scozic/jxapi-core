@@ -1,16 +1,16 @@
 package com.scz.jcex.exchanges.kucoin.gen.futurestrading.pojo;
 
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.scz.jcex.exchanges.kucoin.gen.futurestrading.serializers.KucoinGetOrderListResponseSerializer;
+import com.scz.jcex.exchanges.kucoin.gen.futurestrading.serializers.KucoinGetUntriggeredStopOrderListResponseSerializer;
 import com.scz.jcex.util.EncodingUtil;
 
 /**
- * Response to Kucoin FuturesTrading API GetOrderList REST endpoint request<br/>List your current orders. <br/>See <a href="https://docs.kucoin.com/futures/#get-order-list">API</a><br><strong>THIS CODE IS GENERATED. DO NOT EDIT MANUALLY!</strong>
+ * Response to Kucoin FuturesTrading API GetUntriggeredStopOrderList REST endpoint request<br/>Get the un-triggered stop orders list. <br/>See <a href="https://docs.kucoin.com/futures/#get-untriggered-stop-order-list">API</a><br><strong>THIS CODE IS GENERATED. DO NOT EDIT MANUALLY!</strong>
  */
-@JsonSerialize(using = KucoinGetOrderListResponseSerializer.class)
-public class KucoinGetOrderListResponse {
+@JsonSerialize(using = KucoinGetUntriggeredStopOrderListResponseSerializer.class)
+public class KucoinGetUntriggeredStopOrderListResponse {
   private String code;
-  private KucoinGetOrderListResponseData data;
+  private KucoinGetUntriggeredStopOrderListResponseData data;
   private String msg;
   
   /**
@@ -30,14 +30,14 @@ public class KucoinGetOrderListResponse {
   /**
    * @return Response payload
    */
-  public KucoinGetOrderListResponseData getData(){
+  public KucoinGetUntriggeredStopOrderListResponseData getData(){
     return data;
   }
   
   /**
    * @param data Response payload
    */
-  public void setData(KucoinGetOrderListResponseData data) {
+  public void setData(KucoinGetUntriggeredStopOrderListResponseData data) {
     this.data = data;
   }
   

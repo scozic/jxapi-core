@@ -1,15 +1,15 @@
 package com.scz.jcex.exchanges.kucoin.gen.futurestrading.pojo;
 
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.scz.jcex.exchanges.kucoin.gen.futurestrading.serializers.KucoinGetOrderListRequestSerializer;
+import com.scz.jcex.exchanges.kucoin.gen.futurestrading.serializers.KucoinGetUntriggeredStopOrderListRequestSerializer;
 import com.scz.jcex.netutils.rest.RestEndpointUrlParameters;
 import com.scz.jcex.util.EncodingUtil;
 
 /**
- * Request for Kucoin FuturesTrading API GetOrderList REST endpointList your current orders. <br/>See <a href="https://docs.kucoin.com/futures/#get-order-list">API</a><br><strong>THIS CODE IS GENERATED. DO NOT EDIT MANUALLY!</strong>
+ * Request for Kucoin FuturesTrading API GetUntriggeredStopOrderList REST endpointGet the un-triggered stop orders list. <br/>See <a href="https://docs.kucoin.com/futures/#get-untriggered-stop-order-list">API</a><br><strong>THIS CODE IS GENERATED. DO NOT EDIT MANUALLY!</strong>
  */
-@JsonSerialize(using = KucoinGetOrderListRequestSerializer.class)
-public class KucoinGetOrderListRequest implements RestEndpointUrlParameters {
+@JsonSerialize(using = KucoinGetUntriggeredStopOrderListRequestSerializer.class)
+public class KucoinGetUntriggeredStopOrderListRequest implements RestEndpointUrlParameters {
   private Integer currentPage;
   private Long endAt;
   private Integer pageSize;
