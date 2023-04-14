@@ -3,6 +3,7 @@ package com.scz.jcex.exchanges.kucoin.gen.futurestrading;
 import com.scz.jcex.exchanges.kucoin.gen.futurestrading.deserializers.KucoinAccountBalanceEventsMessageDeserializer;
 import com.scz.jcex.exchanges.kucoin.gen.futurestrading.deserializers.KucoinCancelAnOrderResponseDeserializer;
 import com.scz.jcex.exchanges.kucoin.gen.futurestrading.deserializers.KucoinGetAccountOverviewResponseDeserializer;
+import com.scz.jcex.exchanges.kucoin.gen.futurestrading.deserializers.KucoinGetListOfOrdersCompletedIn24hResponseDeserializer;
 import com.scz.jcex.exchanges.kucoin.gen.futurestrading.deserializers.KucoinGetOrderListResponseDeserializer;
 import com.scz.jcex.exchanges.kucoin.gen.futurestrading.deserializers.KucoinGetUntriggeredStopOrderListResponseDeserializer;
 import com.scz.jcex.exchanges.kucoin.gen.futurestrading.deserializers.KucoinPlaceAnOrderResponseDeserializer;
@@ -15,6 +16,8 @@ import com.scz.jcex.exchanges.kucoin.gen.futurestrading.pojo.KucoinCancelAnOrder
 import com.scz.jcex.exchanges.kucoin.gen.futurestrading.pojo.KucoinCancelAnOrderResponse;
 import com.scz.jcex.exchanges.kucoin.gen.futurestrading.pojo.KucoinGetAccountOverviewRequest;
 import com.scz.jcex.exchanges.kucoin.gen.futurestrading.pojo.KucoinGetAccountOverviewResponse;
+import com.scz.jcex.exchanges.kucoin.gen.futurestrading.pojo.KucoinGetListOfOrdersCompletedIn24hRequest;
+import com.scz.jcex.exchanges.kucoin.gen.futurestrading.pojo.KucoinGetListOfOrdersCompletedIn24hResponse;
 import com.scz.jcex.exchanges.kucoin.gen.futurestrading.pojo.KucoinGetOrderListRequest;
 import com.scz.jcex.exchanges.kucoin.gen.futurestrading.pojo.KucoinGetOrderListResponse;
 import com.scz.jcex.exchanges.kucoin.gen.futurestrading.pojo.KucoinGetUntriggeredStopOrderListRequest;
@@ -113,6 +116,18 @@ public class  KucoinFuturesTradingApiImpl implements KucoinFuturesTradingApi {
     return response;
   }
   
+  private final RestEndpoint<KucoinGetListOfOrdersCompletedIn24hRequest, KucoinGetListOfOrdersCompletedIn24hResponse> getListOfOrdersCompletedIn24hApi;
+  
+  @Override
+  public KucoinGetListOfOrdersCompletedIn24hResponse getListOfOrdersCompletedIn24h(KucoinGetListOfOrdersCompletedIn24hRequest request) throws IOException {
+    if (log.isDebugEnabled())
+      log.debug("GET GetListOfOrdersCompletedIn24h > " + request);
+    KucoinGetListOfOrdersCompletedIn24hResponse response = getListOfOrdersCompletedIn24hApi.call(RestRequest.create("https://api-futures.kucoin.com/api/v1/recentDoneOrders", "GET", request));
+    if (log.isDebugEnabled())
+      log.debug("GET GetListOfOrdersCompletedIn24h < " + response);
+    return response;
+  }
+  
   private final WebsocketEndpoint<KucoinTradeOrdersRequest, KucoinTradeOrdersMessage> tradeOrdersWs;
   
   
@@ -200,6 +215,7 @@ public class  KucoinFuturesTradingApiImpl implements KucoinFuturesTradingApi {
     this.cancelAnOrderApi = restEndpointFactory.createRestEndpoint(new KucoinCancelAnOrderResponseDeserializer());
     this.getOrderListApi = restEndpointFactory.createRestEndpoint(new KucoinGetOrderListResponseDeserializer());
     this.getUntriggeredStopOrderListApi = restEndpointFactory.createRestEndpoint(new KucoinGetUntriggeredStopOrderListResponseDeserializer());
+    this.getListOfOrdersCompletedIn24hApi = restEndpointFactory.createRestEndpoint(new KucoinGetListOfOrdersCompletedIn24hResponseDeserializer());
     this.tradeOrdersWs = websocketEndpointFactory.createWebsocketEndpoint(new KucoinTradeOrdersMessageDeserializer());
     this.stopOrderLifecycleEventWs = websocketEndpointFactory.createWebsocketEndpoint(new KucoinStopOrderLifecycleEventMessageDeserializer());
     this.accountBalanceEventsWs = websocketEndpointFactory.createWebsocketEndpoint(new KucoinAccountBalanceEventsMessageDeserializer());
