@@ -3,6 +3,8 @@ package com.scz.jcex.exchanges.kucoin.gen.futurestrading;
 import com.scz.jcex.exchanges.kucoin.gen.futurestrading.deserializers.KucoinAccountBalanceEventsMessageDeserializer;
 import com.scz.jcex.exchanges.kucoin.gen.futurestrading.deserializers.KucoinCancelAnOrderResponseDeserializer;
 import com.scz.jcex.exchanges.kucoin.gen.futurestrading.deserializers.KucoinGetAccountOverviewResponseDeserializer;
+import com.scz.jcex.exchanges.kucoin.gen.futurestrading.deserializers.KucoinGetDetailsOfASingleOrderByClientOidResponseDeserializer;
+import com.scz.jcex.exchanges.kucoin.gen.futurestrading.deserializers.KucoinGetDetailsOfASingleOrderResponseDeserializer;
 import com.scz.jcex.exchanges.kucoin.gen.futurestrading.deserializers.KucoinGetListOfOrdersCompletedIn24hResponseDeserializer;
 import com.scz.jcex.exchanges.kucoin.gen.futurestrading.deserializers.KucoinGetOrderListResponseDeserializer;
 import com.scz.jcex.exchanges.kucoin.gen.futurestrading.deserializers.KucoinGetUntriggeredStopOrderListResponseDeserializer;
@@ -16,6 +18,10 @@ import com.scz.jcex.exchanges.kucoin.gen.futurestrading.pojo.KucoinCancelAnOrder
 import com.scz.jcex.exchanges.kucoin.gen.futurestrading.pojo.KucoinCancelAnOrderResponse;
 import com.scz.jcex.exchanges.kucoin.gen.futurestrading.pojo.KucoinGetAccountOverviewRequest;
 import com.scz.jcex.exchanges.kucoin.gen.futurestrading.pojo.KucoinGetAccountOverviewResponse;
+import com.scz.jcex.exchanges.kucoin.gen.futurestrading.pojo.KucoinGetDetailsOfASingleOrderByClientOidRequest;
+import com.scz.jcex.exchanges.kucoin.gen.futurestrading.pojo.KucoinGetDetailsOfASingleOrderByClientOidResponse;
+import com.scz.jcex.exchanges.kucoin.gen.futurestrading.pojo.KucoinGetDetailsOfASingleOrderRequest;
+import com.scz.jcex.exchanges.kucoin.gen.futurestrading.pojo.KucoinGetDetailsOfASingleOrderResponse;
 import com.scz.jcex.exchanges.kucoin.gen.futurestrading.pojo.KucoinGetListOfOrdersCompletedIn24hRequest;
 import com.scz.jcex.exchanges.kucoin.gen.futurestrading.pojo.KucoinGetListOfOrdersCompletedIn24hResponse;
 import com.scz.jcex.exchanges.kucoin.gen.futurestrading.pojo.KucoinGetOrderListRequest;
@@ -128,6 +134,30 @@ public class  KucoinFuturesTradingApiImpl implements KucoinFuturesTradingApi {
     return response;
   }
   
+  private final RestEndpoint<KucoinGetDetailsOfASingleOrderRequest, KucoinGetDetailsOfASingleOrderResponse> getDetailsOfASingleOrderApi;
+  
+  @Override
+  public KucoinGetDetailsOfASingleOrderResponse getDetailsOfASingleOrder(KucoinGetDetailsOfASingleOrderRequest request) throws IOException {
+    if (log.isDebugEnabled())
+      log.debug("GET GetDetailsOfASingleOrder > " + request);
+    KucoinGetDetailsOfASingleOrderResponse response = getDetailsOfASingleOrderApi.call(RestRequest.create("https://api-futures.kucoin.com/api/v1/orders", "GET", request));
+    if (log.isDebugEnabled())
+      log.debug("GET GetDetailsOfASingleOrder < " + response);
+    return response;
+  }
+  
+  private final RestEndpoint<KucoinGetDetailsOfASingleOrderByClientOidRequest, KucoinGetDetailsOfASingleOrderByClientOidResponse> getDetailsOfASingleOrderByClientOidApi;
+  
+  @Override
+  public KucoinGetDetailsOfASingleOrderByClientOidResponse getDetailsOfASingleOrderByClientOid(KucoinGetDetailsOfASingleOrderByClientOidRequest request) throws IOException {
+    if (log.isDebugEnabled())
+      log.debug("GET GetDetailsOfASingleOrderByClientOid > " + request);
+    KucoinGetDetailsOfASingleOrderByClientOidResponse response = getDetailsOfASingleOrderByClientOidApi.call(RestRequest.create("https://api-futures.kucoin.com/api/v1/orders/byClientOid", "GET", request));
+    if (log.isDebugEnabled())
+      log.debug("GET GetDetailsOfASingleOrderByClientOid < " + response);
+    return response;
+  }
+  
   private final WebsocketEndpoint<KucoinTradeOrdersRequest, KucoinTradeOrdersMessage> tradeOrdersWs;
   
   
@@ -216,6 +246,8 @@ public class  KucoinFuturesTradingApiImpl implements KucoinFuturesTradingApi {
     this.getOrderListApi = restEndpointFactory.createRestEndpoint(new KucoinGetOrderListResponseDeserializer());
     this.getUntriggeredStopOrderListApi = restEndpointFactory.createRestEndpoint(new KucoinGetUntriggeredStopOrderListResponseDeserializer());
     this.getListOfOrdersCompletedIn24hApi = restEndpointFactory.createRestEndpoint(new KucoinGetListOfOrdersCompletedIn24hResponseDeserializer());
+    this.getDetailsOfASingleOrderApi = restEndpointFactory.createRestEndpoint(new KucoinGetDetailsOfASingleOrderResponseDeserializer());
+    this.getDetailsOfASingleOrderByClientOidApi = restEndpointFactory.createRestEndpoint(new KucoinGetDetailsOfASingleOrderByClientOidResponseDeserializer());
     this.tradeOrdersWs = websocketEndpointFactory.createWebsocketEndpoint(new KucoinTradeOrdersMessageDeserializer());
     this.stopOrderLifecycleEventWs = websocketEndpointFactory.createWebsocketEndpoint(new KucoinStopOrderLifecycleEventMessageDeserializer());
     this.accountBalanceEventsWs = websocketEndpointFactory.createWebsocketEndpoint(new KucoinAccountBalanceEventsMessageDeserializer());

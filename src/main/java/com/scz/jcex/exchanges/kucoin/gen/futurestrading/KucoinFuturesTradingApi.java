@@ -6,6 +6,10 @@ import com.scz.jcex.exchanges.kucoin.gen.futurestrading.pojo.KucoinCancelAnOrder
 import com.scz.jcex.exchanges.kucoin.gen.futurestrading.pojo.KucoinCancelAnOrderResponse;
 import com.scz.jcex.exchanges.kucoin.gen.futurestrading.pojo.KucoinGetAccountOverviewRequest;
 import com.scz.jcex.exchanges.kucoin.gen.futurestrading.pojo.KucoinGetAccountOverviewResponse;
+import com.scz.jcex.exchanges.kucoin.gen.futurestrading.pojo.KucoinGetDetailsOfASingleOrderByClientOidRequest;
+import com.scz.jcex.exchanges.kucoin.gen.futurestrading.pojo.KucoinGetDetailsOfASingleOrderByClientOidResponse;
+import com.scz.jcex.exchanges.kucoin.gen.futurestrading.pojo.KucoinGetDetailsOfASingleOrderRequest;
+import com.scz.jcex.exchanges.kucoin.gen.futurestrading.pojo.KucoinGetDetailsOfASingleOrderResponse;
 import com.scz.jcex.exchanges.kucoin.gen.futurestrading.pojo.KucoinGetListOfOrdersCompletedIn24hRequest;
 import com.scz.jcex.exchanges.kucoin.gen.futurestrading.pojo.KucoinGetListOfOrdersCompletedIn24hResponse;
 import com.scz.jcex.exchanges.kucoin.gen.futurestrading.pojo.KucoinGetOrderListRequest;
@@ -53,6 +57,14 @@ public interface  KucoinFuturesTradingApi {
    * Get a list of recent 1000 orders in the last 24 hours.<br/>If you need to get your recent traded order history with low latency, you may query this endpoint.<br/>See <a href="https://docs.kucoin.com/futures/#get-list-of-orders-completed-in-24h">API</a>
    */
   KucoinGetListOfOrdersCompletedIn24hResponse getListOfOrdersCompletedIn24h(KucoinGetListOfOrdersCompletedIn24hRequest request) throws IOException;
+  /**
+   * Get a single order by order id (including a stop order), querying it by its exchange assigned <strong>orderId</strong>.<br/>See <a href="https://docs.kucoin.com/futures/#get-details-of-a-single-order">API</a>
+   */
+  KucoinGetDetailsOfASingleOrderResponse getDetailsOfASingleOrder(KucoinGetDetailsOfASingleOrderRequest request) throws IOException;
+  /**
+   * Get a single order by order id (including a stop order), querying it by its client side assigned <strong>clientOid</strong>.<br/>See <a href="https://docs.kucoin.com/futures/#get-details-of-a-single-order">API</a>
+   */
+  KucoinGetDetailsOfASingleOrderByClientOidResponse getDetailsOfASingleOrderByClientOid(KucoinGetDetailsOfASingleOrderByClientOidRequest request) throws IOException;
   
   /**
    * Subscribe to TradeOrders stream.<br/>
