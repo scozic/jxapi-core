@@ -1,0 +1,9 @@
+# Test JXAPI properties
+# This is a sample file as one should be created without 'dist' suffix and populated with tested API specific properties in order to run demos. 
+
+binance.apiKey=<your_api_key>
+binance.apiSecret=<your_api_secret>
+
+kucoin.apiKey=<your_api_key>
+kucoin.apiSecret=<your_api_secret>
+kucoin.apiPassphrase=<your_api_secret>

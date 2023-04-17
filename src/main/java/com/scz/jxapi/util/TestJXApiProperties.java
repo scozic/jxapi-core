@@ -10,7 +10,7 @@ import org.apache.commons.lang3.StringUtils;
 
 public class TestJXApiProperties {
 	
-	public static final String TEST_CEX_API_PROPERTIES_FILE = "test-cex-api.properties";
+	public static final String TEST_CEX_API_PROPERTIES_FILE = "test-jxapi.properties";
 
 	private static final Properties props = loadProperties();
 
