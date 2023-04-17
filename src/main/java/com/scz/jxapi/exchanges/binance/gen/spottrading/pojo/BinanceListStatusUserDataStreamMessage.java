@@ -3,7 +3,6 @@ package com.scz.jxapi.exchanges.binance.gen.spottrading.pojo;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.scz.jxapi.exchanges.binance.gen.spottrading.serializers.BinanceListStatusUserDataStreamMessageSerializer;
 import com.scz.jxapi.util.EncodingUtil;
-
 import java.math.BigDecimal;
 
 /**

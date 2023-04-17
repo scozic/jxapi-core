@@ -8,13 +8,11 @@ import com.scz.jxapi.netutils.deserialization.json.AbstractJsonMessageDeserializ
 import com.scz.jxapi.netutils.deserialization.json.field.StringListFieldDeserializer;
 import com.scz.jxapi.netutils.deserialization.json.field.StructListFieldDeserializer;
 import com.scz.jxapi.netutils.serialization.json.JsonParserUtil;
-
+import java.io.IOException;
 import static com.scz.jxapi.util.EncodingUtil.readNextInteger;
 
-import java.io.IOException;
-
 /**
- * Parses incoming JSON messages into com.scz.jcex.exchanges.binance.gen.spotmarketdata.pojo.BinanceExchangeInformationResponseSymbols instances
+ * Parses incoming JSON messages into com.scz.jxapi.exchanges.binance.gen.spotmarketdata.pojo.BinanceExchangeInformationResponseSymbols instances
  * <br><strong>THIS CODE IS GENERATED. DO NOT EDIT MANUALLY!</strong>
  * @see com.scz.jxapi.exchanges.binance.gen.spotmarketdata.pojo.BinanceExchangeInformationResponseSymbols
  */

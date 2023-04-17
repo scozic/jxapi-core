@@ -4,7 +4,6 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.scz.jxapi.exchanges.kucoin.gen.futurestrading.serializers.KucoinPlaceAnOrderRequestSerializer;
 import com.scz.jxapi.netutils.rest.RestEndpointUrlParameters;
 import com.scz.jxapi.util.EncodingUtil;
-
 import java.math.BigDecimal;
 
 /**

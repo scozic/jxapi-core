@@ -4,7 +4,6 @@ import com.scz.jxapi.exchanges.kucoin.gen.futurestrading.KucoinFuturesTradingApi
 import com.scz.jxapi.exchanges.kucoin.gen.futurestrading.KucoinFuturesTradingApiImpl;
 import com.scz.jxapi.exchanges.kucoin.gen.futurestrading.pojo.KucoinGetDetailsOfASingleOrderRequest;
 import com.scz.jxapi.util.TestJXApiProperties;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -25,7 +24,7 @@ public class KucoinFuturesTradingGetDetailsOfASingleOrderDemo {
       KucoinFuturesTradingApi api = new KucoinFuturesTradingApiImpl(TestJXApiProperties.filterProperties("kucoin", true));
       KucoinGetDetailsOfASingleOrderRequest request = new KucoinGetDetailsOfASingleOrderRequest();
       request.setOrderId(ORDERID);
-      log.info("Calling 'com.scz.jcex.exchanges.kucoin.gen.futurestrading.KucoinFuturesTradingApi.getDetailsOfASingleOrder() API with request:" + request);
+      log.info("Calling 'com.scz.jxapi.exchanges.kucoin.gen.futurestrading.KucoinFuturesTradingApi.getDetailsOfASingleOrder() API with request:" + request);
       log.info("Response:" + api.getDetailsOfASingleOrder(request));
       System.exit(0);
     } catch (Throwable t) {

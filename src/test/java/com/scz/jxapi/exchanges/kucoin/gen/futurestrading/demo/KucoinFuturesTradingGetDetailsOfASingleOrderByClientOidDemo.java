@@ -4,7 +4,6 @@ import com.scz.jxapi.exchanges.kucoin.gen.futurestrading.KucoinFuturesTradingApi
 import com.scz.jxapi.exchanges.kucoin.gen.futurestrading.KucoinFuturesTradingApiImpl;
 import com.scz.jxapi.exchanges.kucoin.gen.futurestrading.pojo.KucoinGetDetailsOfASingleOrderByClientOidRequest;
 import com.scz.jxapi.util.TestJXApiProperties;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -18,14 +17,14 @@ public class KucoinFuturesTradingGetDetailsOfASingleOrderByClientOidDemo {
   /**
    * Sample value for <i>clientOid</i> parameter of <i>GetDetailsOfASingleOrderByClientOid</i> API
    */
-  public static final String CLIENTOID = "KCFUT_B_DOGEUSDT_62360000000002";
+  public static final String CLIENTOID = "5cdfc138b21023a909e5ad55";
   
   public static void main(String[] args) {
     try {
       KucoinFuturesTradingApi api = new KucoinFuturesTradingApiImpl(TestJXApiProperties.filterProperties("kucoin", true));
       KucoinGetDetailsOfASingleOrderByClientOidRequest request = new KucoinGetDetailsOfASingleOrderByClientOidRequest();
       request.setClientOid(CLIENTOID);
-      log.info("Calling 'com.scz.jcex.exchanges.kucoin.gen.futurestrading.KucoinFuturesTradingApi.getDetailsOfASingleOrderByClientOid() API with request:" + request);
+      log.info("Calling 'com.scz.jxapi.exchanges.kucoin.gen.futurestrading.KucoinFuturesTradingApi.getDetailsOfASingleOrderByClientOid() API with request:" + request);
       log.info("Response:" + api.getDetailsOfASingleOrderByClientOid(request));
       System.exit(0);
     } catch (Throwable t) {

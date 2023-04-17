@@ -5,11 +5,10 @@ import com.fasterxml.jackson.core.JsonToken;
 import com.scz.jxapi.exchanges.binance.gen.spottrading.pojo.BinanceSpotListenKeyResponse;
 import com.scz.jxapi.netutils.deserialization.json.AbstractJsonMessageDeserializer;
 import com.scz.jxapi.netutils.serialization.json.JsonParserUtil;
-
 import java.io.IOException;
 
 /**
- * Parses incoming JSON messages into com.scz.jcex.exchanges.binance.gen.spottrading.pojo.BinanceSpotListenKeyResponse instances
+ * Parses incoming JSON messages into com.scz.jxapi.exchanges.binance.gen.spottrading.pojo.BinanceSpotListenKeyResponse instances
  * <br><strong>THIS CODE IS GENERATED. DO NOT EDIT MANUALLY!</strong>
  * @see com.scz.jxapi.exchanges.binance.gen.spottrading.pojo.BinanceSpotListenKeyResponse
  */

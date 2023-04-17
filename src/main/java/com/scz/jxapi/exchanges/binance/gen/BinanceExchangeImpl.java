@@ -4,7 +4,6 @@ import com.scz.jxapi.exchanges.binance.gen.spotmarketdata.BinanceSpotMarketDataA
 import com.scz.jxapi.exchanges.binance.gen.spotmarketdata.BinanceSpotMarketDataApiImpl;
 import com.scz.jxapi.exchanges.binance.gen.spottrading.BinanceSpotTradingApi;
 import com.scz.jxapi.exchanges.binance.gen.spottrading.BinanceSpotTradingApiImpl;
-
 import java.util.Properties;
 
 /**

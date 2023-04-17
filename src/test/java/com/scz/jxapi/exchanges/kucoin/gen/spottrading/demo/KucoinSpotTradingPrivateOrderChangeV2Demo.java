@@ -4,7 +4,6 @@ import com.scz.jxapi.exchanges.kucoin.gen.spottrading.KucoinSpotTradingApi;
 import com.scz.jxapi.exchanges.kucoin.gen.spottrading.KucoinSpotTradingApiImpl;
 import com.scz.jxapi.exchanges.kucoin.gen.spottrading.pojo.KucoinPrivateOrderChangeV2Request;
 import com.scz.jxapi.util.TestJXApiProperties;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -19,7 +18,7 @@ public class KucoinSpotTradingPrivateOrderChangeV2Demo {
     try {
       KucoinSpotTradingApi api = new KucoinSpotTradingApiImpl(TestJXApiProperties.filterProperties("kucoin", true));
       KucoinPrivateOrderChangeV2Request request = new KucoinPrivateOrderChangeV2Request();
-      log.info("Subscribing to stream com.scz.jcex.exchanges.kucoin.gen.spottrading.KucoinSpotTradingApi.subscribePrivateOrderChangeV2() websocket stream with request:" + request);
+      log.info("Subscribing to stream com.scz.jxapi.exchanges.kucoin.gen.spottrading.KucoinSpotTradingApi.subscribePrivateOrderChangeV2() websocket stream with request:" + request);
       api.subscribePrivateOrderChangeV2(request, m -> log.info("Received message:" + m));
     } catch (Throwable t) {
       log.error("Exception raised from main()", t);

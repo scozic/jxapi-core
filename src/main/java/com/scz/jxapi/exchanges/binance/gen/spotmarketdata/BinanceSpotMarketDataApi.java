@@ -7,7 +7,6 @@ import com.scz.jxapi.exchanges.binance.gen.spotmarketdata.pojo.BinanceExchangeIn
 import com.scz.jxapi.exchanges.binance.gen.spotmarketdata.pojo.BinanceIndividualSymbolTickerStreamsMessage;
 import com.scz.jxapi.exchanges.binance.gen.spotmarketdata.pojo.BinanceIndividualSymbolTickerStreamsRequest;
 import com.scz.jxapi.netutils.websocket.WebsocketListener;
-
 import java.io.IOException;
 
 /**

@@ -7,11 +7,10 @@ import com.scz.jxapi.exchanges.kucoin.gen.spotmarketdata.pojo.KucoinGetSymbolsLi
 import com.scz.jxapi.netutils.deserialization.json.AbstractJsonMessageDeserializer;
 import com.scz.jxapi.netutils.deserialization.json.field.StructListFieldDeserializer;
 import com.scz.jxapi.netutils.serialization.json.JsonParserUtil;
-
 import java.io.IOException;
 
 /**
- * Parses incoming JSON messages into com.scz.jcex.exchanges.kucoin.gen.spotmarketdata.pojo.KucoinGetSymbolsListResponse instances
+ * Parses incoming JSON messages into com.scz.jxapi.exchanges.kucoin.gen.spotmarketdata.pojo.KucoinGetSymbolsListResponse instances
  * <br><strong>THIS CODE IS GENERATED. DO NOT EDIT MANUALLY!</strong>
  * @see com.scz.jxapi.exchanges.kucoin.gen.spotmarketdata.pojo.KucoinGetSymbolsListResponse
  */

@@ -25,7 +25,6 @@ import com.scz.jxapi.exchanges.kucoin.gen.futurestrading.pojo.KucoinStopOrderLif
 import com.scz.jxapi.exchanges.kucoin.gen.futurestrading.pojo.KucoinTradeOrdersMessage;
 import com.scz.jxapi.exchanges.kucoin.gen.futurestrading.pojo.KucoinTradeOrdersRequest;
 import com.scz.jxapi.netutils.websocket.WebsocketListener;
-
 import java.io.IOException;
 
 /**

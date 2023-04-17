@@ -4,7 +4,6 @@ import com.scz.jxapi.exchanges.kucoin.gen.futurestrading.KucoinFuturesTradingApi
 import com.scz.jxapi.exchanges.kucoin.gen.futurestrading.KucoinFuturesTradingApiImpl;
 import com.scz.jxapi.exchanges.kucoin.gen.futurestrading.pojo.KucoinPositionChangeEventsRequest;
 import com.scz.jxapi.util.TestJXApiProperties;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -25,7 +24,7 @@ public class KucoinFuturesTradingPositionChangeEventsDemo {
       KucoinFuturesTradingApi api = new KucoinFuturesTradingApiImpl(TestJXApiProperties.filterProperties("kucoin", true));
       KucoinPositionChangeEventsRequest request = new KucoinPositionChangeEventsRequest();
       request.setSymbol(SYMBOL);
-      log.info("Subscribing to stream com.scz.jcex.exchanges.kucoin.gen.futurestrading.KucoinFuturesTradingApi.subscribePositionChangeEvents() websocket stream with request:" + request);
+      log.info("Subscribing to stream com.scz.jxapi.exchanges.kucoin.gen.futurestrading.KucoinFuturesTradingApi.subscribePositionChangeEvents() websocket stream with request:" + request);
       api.subscribePositionChangeEvents(request, m -> log.info("Received message:" + m));
     } catch (Throwable t) {
       log.error("Exception raised from main()", t);

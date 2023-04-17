@@ -3,7 +3,6 @@ package com.scz.jxapi.exchanges.binance.gen.spotmarketdata.pojo;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.scz.jxapi.exchanges.binance.gen.spotmarketdata.serializers.BinanceExchangeInformationResponseSerializer;
 import com.scz.jxapi.util.EncodingUtil;
-
 import java.util.List;
 
 /**

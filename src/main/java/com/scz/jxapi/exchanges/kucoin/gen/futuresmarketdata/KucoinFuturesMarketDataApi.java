@@ -7,7 +7,6 @@ import com.scz.jxapi.exchanges.kucoin.gen.futuresmarketdata.pojo.KucoinGetRealTi
 import com.scz.jxapi.exchanges.kucoin.gen.futuresmarketdata.pojo.KucoinRealTimeSymbolTickerV2Message;
 import com.scz.jxapi.exchanges.kucoin.gen.futuresmarketdata.pojo.KucoinRealTimeSymbolTickerV2Request;
 import com.scz.jxapi.netutils.websocket.WebsocketListener;
-
 import java.io.IOException;
 
 /**

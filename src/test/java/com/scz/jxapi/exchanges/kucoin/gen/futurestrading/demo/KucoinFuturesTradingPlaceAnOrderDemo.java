@@ -4,7 +4,6 @@ import com.scz.jxapi.exchanges.kucoin.gen.futurestrading.KucoinFuturesTradingApi
 import com.scz.jxapi.exchanges.kucoin.gen.futurestrading.KucoinFuturesTradingApiImpl;
 import com.scz.jxapi.exchanges.kucoin.gen.futurestrading.pojo.KucoinPlaceAnOrderRequest;
 import com.scz.jxapi.util.TestJXApiProperties;
-
 import java.math.BigDecimal;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -134,7 +133,7 @@ public class KucoinFuturesTradingPlaceAnOrderDemo {
       request.setHidden(HIDDEN);
       request.setIceberg(ICEBERG);
       request.setVisibleSize(VISIBLESIZE);
-      log.info("Calling 'com.scz.jcex.exchanges.kucoin.gen.futurestrading.KucoinFuturesTradingApi.placeAnOrder() API with request:" + request);
+      log.info("Calling 'com.scz.jxapi.exchanges.kucoin.gen.futurestrading.KucoinFuturesTradingApi.placeAnOrder() API with request:" + request);
       log.info("Response:" + api.placeAnOrder(request));
       System.exit(0);
     } catch (Throwable t) {

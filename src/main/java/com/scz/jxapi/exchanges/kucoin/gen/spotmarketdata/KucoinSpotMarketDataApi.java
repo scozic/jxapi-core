@@ -17,7 +17,6 @@ import com.scz.jxapi.exchanges.kucoin.gen.spotmarketdata.pojo.KucoinGetTickerRes
 import com.scz.jxapi.exchanges.kucoin.gen.spotmarketdata.pojo.KucoinIndividualSymbolTickerStreamsMessage;
 import com.scz.jxapi.exchanges.kucoin.gen.spotmarketdata.pojo.KucoinIndividualSymbolTickerStreamsRequest;
 import com.scz.jxapi.netutils.websocket.WebsocketListener;
-
 import java.io.IOException;
 
 /**

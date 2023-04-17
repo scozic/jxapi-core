@@ -4,7 +4,6 @@ import com.scz.jxapi.exchanges.binance.gen.spottrading.BinanceSpotTradingApi;
 import com.scz.jxapi.exchanges.binance.gen.spottrading.BinanceSpotTradingApiImpl;
 import com.scz.jxapi.exchanges.binance.gen.spottrading.pojo.BinanceSpotListenKeyRequest;
 import com.scz.jxapi.util.TestJXApiProperties;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -19,7 +18,7 @@ public class BinanceSpotTradingSpotListenKeyDemo {
     try {
       BinanceSpotTradingApi api = new BinanceSpotTradingApiImpl(TestJXApiProperties.filterProperties("binance", true));
       BinanceSpotListenKeyRequest request = new BinanceSpotListenKeyRequest();
-      log.info("Calling 'com.scz.jcex.exchanges.binance.gen.spottrading.BinanceSpotTradingApi.spotListenKey() API with request:" + request);
+      log.info("Calling 'com.scz.jxapi.exchanges.binance.gen.spottrading.BinanceSpotTradingApi.spotListenKey() API with request:" + request);
       log.info("Response:" + api.spotListenKey(request));
       System.exit(0);
     } catch (Throwable t) {

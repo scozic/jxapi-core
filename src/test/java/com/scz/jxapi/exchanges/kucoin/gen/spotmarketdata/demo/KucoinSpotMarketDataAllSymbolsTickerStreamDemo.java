@@ -4,7 +4,6 @@ import com.scz.jxapi.exchanges.kucoin.gen.spotmarketdata.KucoinSpotMarketDataApi
 import com.scz.jxapi.exchanges.kucoin.gen.spotmarketdata.KucoinSpotMarketDataApiImpl;
 import com.scz.jxapi.exchanges.kucoin.gen.spotmarketdata.pojo.KucoinAllSymbolsTickerStreamRequest;
 import com.scz.jxapi.util.TestJXApiProperties;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -19,7 +18,7 @@ public class KucoinSpotMarketDataAllSymbolsTickerStreamDemo {
     try {
       KucoinSpotMarketDataApi api = new KucoinSpotMarketDataApiImpl(TestJXApiProperties.filterProperties("kucoin", true));
       KucoinAllSymbolsTickerStreamRequest request = new KucoinAllSymbolsTickerStreamRequest();
-      log.info("Subscribing to stream com.scz.jcex.exchanges.kucoin.gen.spotmarketdata.KucoinSpotMarketDataApi.subscribeAllSymbolsTickerStream() websocket stream with request:" + request);
+      log.info("Subscribing to stream com.scz.jxapi.exchanges.kucoin.gen.spotmarketdata.KucoinSpotMarketDataApi.subscribeAllSymbolsTickerStream() websocket stream with request:" + request);
       api.subscribeAllSymbolsTickerStream(request, m -> log.info("Received message:" + m));
     } catch (Throwable t) {
       log.error("Exception raised from main()", t);

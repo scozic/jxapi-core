@@ -4,7 +4,6 @@ import com.scz.jxapi.exchanges.kucoin.gen.spotmarketdata.KucoinSpotMarketDataApi
 import com.scz.jxapi.exchanges.kucoin.gen.spotmarketdata.KucoinSpotMarketDataApiImpl;
 import com.scz.jxapi.exchanges.kucoin.gen.spotmarketdata.pojo.KucoinGetSymbolsListRequest;
 import com.scz.jxapi.util.TestJXApiProperties;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -19,7 +18,7 @@ public class KucoinSpotMarketDataGetSymbolsListDemo {
     try {
       KucoinSpotMarketDataApi api = new KucoinSpotMarketDataApiImpl(TestJXApiProperties.filterProperties("kucoin", true));
       KucoinGetSymbolsListRequest request = new KucoinGetSymbolsListRequest();
-      log.info("Calling 'com.scz.jcex.exchanges.kucoin.gen.spotmarketdata.KucoinSpotMarketDataApi.getSymbolsList() API with request:" + request);
+      log.info("Calling 'com.scz.jxapi.exchanges.kucoin.gen.spotmarketdata.KucoinSpotMarketDataApi.getSymbolsList() API with request:" + request);
       log.info("Response:" + api.getSymbolsList(request));
       System.exit(0);
     } catch (Throwable t) {

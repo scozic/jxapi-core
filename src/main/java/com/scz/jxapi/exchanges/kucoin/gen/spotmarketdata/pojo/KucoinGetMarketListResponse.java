@@ -3,7 +3,6 @@ package com.scz.jxapi.exchanges.kucoin.gen.spotmarketdata.pojo;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.scz.jxapi.exchanges.kucoin.gen.spotmarketdata.serializers.KucoinGetMarketListResponseSerializer;
 import com.scz.jxapi.util.EncodingUtil;
-
 import java.util.List;
 
 /**

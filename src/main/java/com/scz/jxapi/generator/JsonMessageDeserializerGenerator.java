@@ -10,6 +10,7 @@ import org.apache.commons.lang3.StringUtils;
 
 import com.scz.jxapi.generator.exchange.EndpointParameter;
 import com.scz.jxapi.generator.exchange.EndpointParameterType;
+import com.scz.jxapi.netutils.deserialization.json.AbstractJsonMessageDeserializer;
 import com.scz.jxapi.netutils.deserialization.json.field.StringListFieldDeserializer;
 import com.scz.jxapi.netutils.deserialization.json.field.StructListFieldDeserializer;
 import com.scz.jxapi.netutils.serialization.json.JsonParserUtil;
@@ -32,7 +33,7 @@ public class JsonMessageDeserializerGenerator extends JavaTypeGenerator {
 		this.fields = fields;
 		setTypeDeclaration("public class");
 		String simpleDeserializedClassName = JavaCodeGenerationUtil.getClassNameWithoutPackage(deserializedTypeClassName);
-		setParentClassName("com.scz.jcex.netutils.deserialization.json.AbstractJsonMessageDeserializer<" + simpleDeserializedClassName + ">");
+		setParentClassName(AbstractJsonMessageDeserializer.class.getName() + "<" + simpleDeserializedClassName + ">");
 		setDescription("Parses incoming JSON messages into " 
 						+ deserializedTypeClassName 
 						+ " instances\n"

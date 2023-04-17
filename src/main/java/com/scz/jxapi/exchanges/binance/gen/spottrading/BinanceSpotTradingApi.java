@@ -17,7 +17,6 @@ import com.scz.jxapi.exchanges.binance.gen.spottrading.pojo.BinanceSpotKeepAlive
 import com.scz.jxapi.exchanges.binance.gen.spottrading.pojo.BinanceSpotListenKeyRequest;
 import com.scz.jxapi.exchanges.binance.gen.spottrading.pojo.BinanceSpotListenKeyResponse;
 import com.scz.jxapi.netutils.websocket.WebsocketListener;
-
 import java.io.IOException;
 
 /**

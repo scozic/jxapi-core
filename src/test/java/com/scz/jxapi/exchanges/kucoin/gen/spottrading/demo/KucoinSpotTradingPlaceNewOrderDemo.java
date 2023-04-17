@@ -4,7 +4,6 @@ import com.scz.jxapi.exchanges.kucoin.gen.spottrading.KucoinSpotTradingApi;
 import com.scz.jxapi.exchanges.kucoin.gen.spottrading.KucoinSpotTradingApiImpl;
 import com.scz.jxapi.exchanges.kucoin.gen.spottrading.pojo.KucoinPlaceNewOrderRequest;
 import com.scz.jxapi.util.TestJXApiProperties;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -115,7 +114,7 @@ public class KucoinSpotTradingPlaceNewOrderDemo {
       request.setIceberg(ICEBERG);
       request.setVisibleSize(VISIBLESIZE);
       request.setFunds(FUNDS);
-      log.info("Calling 'com.scz.jcex.exchanges.kucoin.gen.spottrading.KucoinSpotTradingApi.placeNewOrder() API with request:" + request);
+      log.info("Calling 'com.scz.jxapi.exchanges.kucoin.gen.spottrading.KucoinSpotTradingApi.placeNewOrder() API with request:" + request);
       log.info("Response:" + api.placeNewOrder(request));
       System.exit(0);
     } catch (Throwable t) {

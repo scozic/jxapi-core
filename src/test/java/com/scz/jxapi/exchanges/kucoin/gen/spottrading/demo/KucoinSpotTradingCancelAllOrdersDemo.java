@@ -4,7 +4,6 @@ import com.scz.jxapi.exchanges.kucoin.gen.spottrading.KucoinSpotTradingApi;
 import com.scz.jxapi.exchanges.kucoin.gen.spottrading.KucoinSpotTradingApiImpl;
 import com.scz.jxapi.exchanges.kucoin.gen.spottrading.pojo.KucoinCancelAllOrdersRequest;
 import com.scz.jxapi.util.TestJXApiProperties;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -31,7 +30,7 @@ public class KucoinSpotTradingCancelAllOrdersDemo {
       KucoinCancelAllOrdersRequest request = new KucoinCancelAllOrdersRequest();
       request.setSymbol(SYMBOL);
       request.setTradeType(TRADETYPE);
-      log.info("Calling 'com.scz.jcex.exchanges.kucoin.gen.spottrading.KucoinSpotTradingApi.cancelAllOrders() API with request:" + request);
+      log.info("Calling 'com.scz.jxapi.exchanges.kucoin.gen.spottrading.KucoinSpotTradingApi.cancelAllOrders() API with request:" + request);
       log.info("Response:" + api.cancelAllOrders(request));
       System.exit(0);
     } catch (Throwable t) {

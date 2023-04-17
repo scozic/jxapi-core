@@ -4,7 +4,6 @@ import com.scz.jxapi.exchanges.binance.gen.spottrading.BinanceSpotTradingApi;
 import com.scz.jxapi.exchanges.binance.gen.spottrading.BinanceSpotTradingApiImpl;
 import com.scz.jxapi.exchanges.binance.gen.spottrading.pojo.BinanceBalanceUpdateUserDataStreamRequest;
 import com.scz.jxapi.util.TestJXApiProperties;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -19,7 +18,7 @@ public class BinanceSpotTradingBalanceUpdateUserDataStreamDemo {
     try {
       BinanceSpotTradingApi api = new BinanceSpotTradingApiImpl(TestJXApiProperties.filterProperties("binance", true));
       BinanceBalanceUpdateUserDataStreamRequest request = new BinanceBalanceUpdateUserDataStreamRequest();
-      log.info("Subscribing to stream com.scz.jcex.exchanges.binance.gen.spottrading.BinanceSpotTradingApi.subscribeBalanceUpdateUserDataStream() websocket stream with request:" + request);
+      log.info("Subscribing to stream com.scz.jxapi.exchanges.binance.gen.spottrading.BinanceSpotTradingApi.subscribeBalanceUpdateUserDataStream() websocket stream with request:" + request);
       api.subscribeBalanceUpdateUserDataStream(request, m -> log.info("Received message:" + m));
     } catch (Throwable t) {
       log.error("Exception raised from main()", t);

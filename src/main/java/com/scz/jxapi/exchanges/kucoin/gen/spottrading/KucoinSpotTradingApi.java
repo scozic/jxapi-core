@@ -19,7 +19,6 @@ import com.scz.jxapi.exchanges.kucoin.gen.spottrading.pojo.KucoinPlaceNewOrderRe
 import com.scz.jxapi.exchanges.kucoin.gen.spottrading.pojo.KucoinPrivateOrderChangeV2Message;
 import com.scz.jxapi.exchanges.kucoin.gen.spottrading.pojo.KucoinPrivateOrderChangeV2Request;
 import com.scz.jxapi.netutils.websocket.WebsocketListener;
-
 import java.io.IOException;
 
 /**

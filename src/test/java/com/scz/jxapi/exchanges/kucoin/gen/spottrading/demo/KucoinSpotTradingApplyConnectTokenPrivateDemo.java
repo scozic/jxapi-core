@@ -4,7 +4,6 @@ import com.scz.jxapi.exchanges.kucoin.gen.spottrading.KucoinSpotTradingApi;
 import com.scz.jxapi.exchanges.kucoin.gen.spottrading.KucoinSpotTradingApiImpl;
 import com.scz.jxapi.exchanges.kucoin.gen.spottrading.pojo.KucoinApplyConnectTokenPrivateRequest;
 import com.scz.jxapi.util.TestJXApiProperties;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -19,7 +18,7 @@ public class KucoinSpotTradingApplyConnectTokenPrivateDemo {
     try {
       KucoinSpotTradingApi api = new KucoinSpotTradingApiImpl(TestJXApiProperties.filterProperties("kucoin", true));
       KucoinApplyConnectTokenPrivateRequest request = new KucoinApplyConnectTokenPrivateRequest();
-      log.info("Calling 'com.scz.jcex.exchanges.kucoin.gen.spottrading.KucoinSpotTradingApi.applyConnectTokenPrivate() API with request:" + request);
+      log.info("Calling 'com.scz.jxapi.exchanges.kucoin.gen.spottrading.KucoinSpotTradingApi.applyConnectTokenPrivate() API with request:" + request);
       log.info("Response:" + api.applyConnectTokenPrivate(request));
       System.exit(0);
     } catch (Throwable t) {

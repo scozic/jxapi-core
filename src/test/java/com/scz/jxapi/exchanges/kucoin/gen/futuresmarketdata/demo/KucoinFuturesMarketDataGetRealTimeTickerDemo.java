@@ -4,7 +4,6 @@ import com.scz.jxapi.exchanges.kucoin.gen.futuresmarketdata.KucoinFuturesMarketD
 import com.scz.jxapi.exchanges.kucoin.gen.futuresmarketdata.KucoinFuturesMarketDataApiImpl;
 import com.scz.jxapi.exchanges.kucoin.gen.futuresmarketdata.pojo.KucoinGetRealTimeTickerRequest;
 import com.scz.jxapi.util.TestJXApiProperties;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -25,7 +24,7 @@ public class KucoinFuturesMarketDataGetRealTimeTickerDemo {
       KucoinFuturesMarketDataApi api = new KucoinFuturesMarketDataApiImpl(TestJXApiProperties.filterProperties("kucoin", true));
       KucoinGetRealTimeTickerRequest request = new KucoinGetRealTimeTickerRequest();
       request.setSymbol(SYMBOL);
-      log.info("Calling 'com.scz.jcex.exchanges.kucoin.gen.futuresmarketdata.KucoinFuturesMarketDataApi.getRealTimeTicker() API with request:" + request);
+      log.info("Calling 'com.scz.jxapi.exchanges.kucoin.gen.futuresmarketdata.KucoinFuturesMarketDataApi.getRealTimeTicker() API with request:" + request);
       log.info("Response:" + api.getRealTimeTicker(request));
       System.exit(0);
     } catch (Throwable t) {

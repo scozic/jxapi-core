@@ -8,7 +8,6 @@ import com.scz.jxapi.exchanges.kucoin.gen.spotmarketdata.KucoinSpotMarketDataApi
 import com.scz.jxapi.exchanges.kucoin.gen.spotmarketdata.KucoinSpotMarketDataApiImpl;
 import com.scz.jxapi.exchanges.kucoin.gen.spottrading.KucoinSpotTradingApi;
 import com.scz.jxapi.exchanges.kucoin.gen.spottrading.KucoinSpotTradingApiImpl;
-
 import java.util.Properties;
 
 /**

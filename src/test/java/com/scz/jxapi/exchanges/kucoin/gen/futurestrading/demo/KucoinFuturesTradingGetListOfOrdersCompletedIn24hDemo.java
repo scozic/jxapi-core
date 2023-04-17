@@ -4,7 +4,6 @@ import com.scz.jxapi.exchanges.kucoin.gen.futurestrading.KucoinFuturesTradingApi
 import com.scz.jxapi.exchanges.kucoin.gen.futurestrading.KucoinFuturesTradingApiImpl;
 import com.scz.jxapi.exchanges.kucoin.gen.futurestrading.pojo.KucoinGetListOfOrdersCompletedIn24hRequest;
 import com.scz.jxapi.util.TestJXApiProperties;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -25,7 +24,7 @@ public class KucoinFuturesTradingGetListOfOrdersCompletedIn24hDemo {
       KucoinFuturesTradingApi api = new KucoinFuturesTradingApiImpl(TestJXApiProperties.filterProperties("kucoin", true));
       KucoinGetListOfOrdersCompletedIn24hRequest request = new KucoinGetListOfOrdersCompletedIn24hRequest();
       request.setSymbol(SYMBOL);
-      log.info("Calling 'com.scz.jcex.exchanges.kucoin.gen.futurestrading.KucoinFuturesTradingApi.getListOfOrdersCompletedIn24h() API with request:" + request);
+      log.info("Calling 'com.scz.jxapi.exchanges.kucoin.gen.futurestrading.KucoinFuturesTradingApi.getListOfOrdersCompletedIn24h() API with request:" + request);
       log.info("Response:" + api.getListOfOrdersCompletedIn24h(request));
       System.exit(0);
     } catch (Throwable t) {

@@ -4,7 +4,6 @@ import com.scz.jxapi.exchanges.kucoin.gen.spottrading.KucoinSpotTradingApi;
 import com.scz.jxapi.exchanges.kucoin.gen.spottrading.KucoinSpotTradingApiImpl;
 import com.scz.jxapi.exchanges.kucoin.gen.spottrading.pojo.KucoinCancelSingleOrderByClientOidRequest;
 import com.scz.jxapi.util.TestJXApiProperties;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -25,7 +24,7 @@ public class KucoinSpotTradingCancelSingleOrderByClientOidDemo {
       KucoinSpotTradingApi api = new KucoinSpotTradingApiImpl(TestJXApiProperties.filterProperties("kucoin", true));
       KucoinCancelSingleOrderByClientOidRequest request = new KucoinCancelSingleOrderByClientOidRequest();
       request.setClientOid(CLIENTOID);
-      log.info("Calling 'com.scz.jcex.exchanges.kucoin.gen.spottrading.KucoinSpotTradingApi.cancelSingleOrderByClientOid() API with request:" + request);
+      log.info("Calling 'com.scz.jxapi.exchanges.kucoin.gen.spottrading.KucoinSpotTradingApi.cancelSingleOrderByClientOid() API with request:" + request);
       log.info("Response:" + api.cancelSingleOrderByClientOid(request));
       System.exit(0);
     } catch (Throwable t) {

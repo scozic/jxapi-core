@@ -4,7 +4,6 @@ import com.scz.jxapi.exchanges.binance.gen.spotmarketdata.BinanceSpotMarketDataA
 import com.scz.jxapi.exchanges.binance.gen.spotmarketdata.BinanceSpotMarketDataApiImpl;
 import com.scz.jxapi.exchanges.binance.gen.spotmarketdata.pojo.BinanceExchangeInformationRequest;
 import com.scz.jxapi.util.TestJXApiProperties;
-
 import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,7 +25,7 @@ public class BinanceSpotMarketDataExchangeInformationDemo {
       BinanceSpotMarketDataApi api = new BinanceSpotMarketDataApiImpl(TestJXApiProperties.filterProperties("binance", true));
       BinanceExchangeInformationRequest request = new BinanceExchangeInformationRequest();
       request.setSymbols(SYMBOLS);
-      log.info("Calling 'com.scz.jcex.exchanges.binance.gen.spotmarketdata.BinanceSpotMarketDataApi.exchangeInformation() API with request:" + request);
+      log.info("Calling 'com.scz.jxapi.exchanges.binance.gen.spotmarketdata.BinanceSpotMarketDataApi.exchangeInformation() API with request:" + request);
       log.info("Response:" + api.exchangeInformation(request));
       System.exit(0);
     } catch (Throwable t) {

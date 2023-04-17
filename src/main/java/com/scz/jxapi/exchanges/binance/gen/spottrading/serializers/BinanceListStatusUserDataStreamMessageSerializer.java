@@ -5,11 +5,10 @@ import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.ser.std.StdSerializer;
 import com.scz.jxapi.exchanges.binance.gen.spottrading.pojo.BinanceListStatusUserDataStreamMessage;
 import com.scz.jxapi.util.EncodingUtil;
-
 import java.io.IOException;
 
 /**
- * Jackson JSON Serializer for com.scz.jcex.exchanges.binance.gen.spottrading.pojo.BinanceListStatusUserDataStreamMessage
+ * Jackson JSON Serializer for com.scz.jxapi.exchanges.binance.gen.spottrading.pojo.BinanceListStatusUserDataStreamMessage
  * <br><strong>THIS CODE IS GENERATED. DO NOT EDIT MANUALLY!</strong>
  * @see BinanceListStatusUserDataStreamMessage
  */

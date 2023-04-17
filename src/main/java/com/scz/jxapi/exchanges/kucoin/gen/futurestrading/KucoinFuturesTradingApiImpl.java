@@ -45,7 +45,6 @@ import com.scz.jxapi.netutils.websocket.WebsocketEndpoint;
 import com.scz.jxapi.netutils.websocket.WebsocketListener;
 import com.scz.jxapi.netutils.websocket.WebsocketMessageTopicMatcherField;
 import com.scz.jxapi.netutils.websocket.WebsocketSubscribeRequest;
-
 import java.io.IOException;
 import java.util.Properties;
 import org.slf4j.Logger;

@@ -4,7 +4,6 @@ import com.scz.jxapi.exchanges.kucoin.gen.spotmarketdata.KucoinSpotMarketDataApi
 import com.scz.jxapi.exchanges.kucoin.gen.spotmarketdata.KucoinSpotMarketDataApiImpl;
 import com.scz.jxapi.exchanges.kucoin.gen.spotmarketdata.pojo.KucoinGet24hrStatsRequest;
 import com.scz.jxapi.util.TestJXApiProperties;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -25,7 +24,7 @@ public class KucoinSpotMarketDataGet24hrStatsDemo {
       KucoinSpotMarketDataApi api = new KucoinSpotMarketDataApiImpl(TestJXApiProperties.filterProperties("kucoin", true));
       KucoinGet24hrStatsRequest request = new KucoinGet24hrStatsRequest();
       request.setSymbol(SYMBOL);
-      log.info("Calling 'com.scz.jcex.exchanges.kucoin.gen.spotmarketdata.KucoinSpotMarketDataApi.get24hrStats() API with request:" + request);
+      log.info("Calling 'com.scz.jxapi.exchanges.kucoin.gen.spotmarketdata.KucoinSpotMarketDataApi.get24hrStats() API with request:" + request);
       log.info("Response:" + api.get24hrStats(request));
       System.exit(0);
     } catch (Throwable t) {

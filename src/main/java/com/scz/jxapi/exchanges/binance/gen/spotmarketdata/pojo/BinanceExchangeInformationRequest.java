@@ -4,7 +4,6 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.scz.jxapi.exchanges.binance.gen.spotmarketdata.serializers.BinanceExchangeInformationRequestSerializer;
 import com.scz.jxapi.netutils.rest.RestEndpointUrlParameters;
 import com.scz.jxapi.util.EncodingUtil;
-
 import java.util.List;
 
 /**

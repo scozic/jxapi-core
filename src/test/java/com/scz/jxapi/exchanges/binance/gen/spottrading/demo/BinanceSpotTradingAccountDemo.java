@@ -4,7 +4,6 @@ import com.scz.jxapi.exchanges.binance.gen.spottrading.BinanceSpotTradingApi;
 import com.scz.jxapi.exchanges.binance.gen.spottrading.BinanceSpotTradingApiImpl;
 import com.scz.jxapi.exchanges.binance.gen.spottrading.pojo.BinanceAccountRequest;
 import com.scz.jxapi.util.TestJXApiProperties;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -31,7 +30,7 @@ public class BinanceSpotTradingAccountDemo {
       BinanceAccountRequest request = new BinanceAccountRequest();
       request.setRecvWindow(RECVWINDOW);
       request.setTimestamp(TIMESTAMP);
-      log.info("Calling 'com.scz.jcex.exchanges.binance.gen.spottrading.BinanceSpotTradingApi.account() API with request:" + request);
+      log.info("Calling 'com.scz.jxapi.exchanges.binance.gen.spottrading.BinanceSpotTradingApi.account() API with request:" + request);
       log.info("Response:" + api.account(request));
       System.exit(0);
     } catch (Throwable t) {
