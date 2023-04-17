@@ -3,7 +3,7 @@ package com.scz.jxapi.exchanges.binance.gen.spottrading.demo;
 import com.scz.jxapi.exchanges.binance.gen.spottrading.BinanceSpotTradingApi;
 import com.scz.jxapi.exchanges.binance.gen.spottrading.BinanceSpotTradingApiImpl;
 import com.scz.jxapi.exchanges.binance.gen.spottrading.pojo.BinanceAccountRequest;
-import com.scz.jxapi.util.TestApiProperties;
+import com.scz.jxapi.util.TestJXApiProperties;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,7 +27,7 @@ public class BinanceSpotTradingAccountDemo {
   
   public static void main(String[] args) {
     try {
-      BinanceSpotTradingApi api = new BinanceSpotTradingApiImpl(TestApiProperties.filterProperties("binance", true));
+      BinanceSpotTradingApi api = new BinanceSpotTradingApiImpl(TestJXApiProperties.filterProperties("binance", true));
       BinanceAccountRequest request = new BinanceAccountRequest();
       request.setRecvWindow(RECVWINDOW);
       request.setTimestamp(TIMESTAMP);

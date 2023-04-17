@@ -3,7 +3,7 @@ package com.scz.jxapi.exchanges.kucoin.gen.spotmarketdata.demo;
 import com.scz.jxapi.exchanges.kucoin.gen.spotmarketdata.KucoinSpotMarketDataApi;
 import com.scz.jxapi.exchanges.kucoin.gen.spotmarketdata.KucoinSpotMarketDataApiImpl;
 import com.scz.jxapi.exchanges.kucoin.gen.spotmarketdata.pojo.KucoinApplyConnectTokenPublicRequest;
-import com.scz.jxapi.util.TestApiProperties;
+import com.scz.jxapi.util.TestJXApiProperties;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,7 +17,7 @@ public class KucoinSpotMarketDataApplyConnectTokenPublicDemo {
   
   public static void main(String[] args) {
     try {
-      KucoinSpotMarketDataApi api = new KucoinSpotMarketDataApiImpl(TestApiProperties.filterProperties("kucoin", true));
+      KucoinSpotMarketDataApi api = new KucoinSpotMarketDataApiImpl(TestJXApiProperties.filterProperties("kucoin", true));
       KucoinApplyConnectTokenPublicRequest request = new KucoinApplyConnectTokenPublicRequest();
       log.info("Calling 'com.scz.jcex.exchanges.kucoin.gen.spotmarketdata.KucoinSpotMarketDataApi.applyConnectTokenPublic() API with request:" + request);
       log.info("Response:" + api.applyConnectTokenPublic(request));

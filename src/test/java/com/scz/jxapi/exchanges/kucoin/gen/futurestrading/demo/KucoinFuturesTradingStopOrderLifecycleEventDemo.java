@@ -3,7 +3,7 @@ package com.scz.jxapi.exchanges.kucoin.gen.futurestrading.demo;
 import com.scz.jxapi.exchanges.kucoin.gen.futurestrading.KucoinFuturesTradingApi;
 import com.scz.jxapi.exchanges.kucoin.gen.futurestrading.KucoinFuturesTradingApiImpl;
 import com.scz.jxapi.exchanges.kucoin.gen.futurestrading.pojo.KucoinStopOrderLifecycleEventRequest;
-import com.scz.jxapi.util.TestApiProperties;
+import com.scz.jxapi.util.TestJXApiProperties;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,7 +17,7 @@ public class KucoinFuturesTradingStopOrderLifecycleEventDemo {
   
   public static void main(String[] args) {
     try {
-      KucoinFuturesTradingApi api = new KucoinFuturesTradingApiImpl(TestApiProperties.filterProperties("kucoin", true));
+      KucoinFuturesTradingApi api = new KucoinFuturesTradingApiImpl(TestJXApiProperties.filterProperties("kucoin", true));
       KucoinStopOrderLifecycleEventRequest request = new KucoinStopOrderLifecycleEventRequest();
       log.info("Subscribing to stream com.scz.jcex.exchanges.kucoin.gen.futurestrading.KucoinFuturesTradingApi.subscribeStopOrderLifecycleEvent() websocket stream with request:" + request);
       api.subscribeStopOrderLifecycleEvent(request, m -> log.info("Received message:" + m));

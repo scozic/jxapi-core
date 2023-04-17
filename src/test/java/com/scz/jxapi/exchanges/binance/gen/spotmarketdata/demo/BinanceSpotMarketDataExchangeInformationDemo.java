@@ -3,7 +3,7 @@ package com.scz.jxapi.exchanges.binance.gen.spotmarketdata.demo;
 import com.scz.jxapi.exchanges.binance.gen.spotmarketdata.BinanceSpotMarketDataApi;
 import com.scz.jxapi.exchanges.binance.gen.spotmarketdata.BinanceSpotMarketDataApiImpl;
 import com.scz.jxapi.exchanges.binance.gen.spotmarketdata.pojo.BinanceExchangeInformationRequest;
-import com.scz.jxapi.util.TestApiProperties;
+import com.scz.jxapi.util.TestJXApiProperties;
 
 import java.util.List;
 import org.slf4j.Logger;
@@ -23,7 +23,7 @@ public class BinanceSpotMarketDataExchangeInformationDemo {
   
   public static void main(String[] args) {
     try {
-      BinanceSpotMarketDataApi api = new BinanceSpotMarketDataApiImpl(TestApiProperties.filterProperties("binance", true));
+      BinanceSpotMarketDataApi api = new BinanceSpotMarketDataApiImpl(TestJXApiProperties.filterProperties("binance", true));
       BinanceExchangeInformationRequest request = new BinanceExchangeInformationRequest();
       request.setSymbols(SYMBOLS);
       log.info("Calling 'com.scz.jcex.exchanges.binance.gen.spotmarketdata.BinanceSpotMarketDataApi.exchangeInformation() API with request:" + request);

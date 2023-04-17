@@ -3,7 +3,7 @@ package com.scz.jxapi.exchanges.kucoin.gen.futuresmarketdata.demo;
 import com.scz.jxapi.exchanges.kucoin.gen.futuresmarketdata.KucoinFuturesMarketDataApi;
 import com.scz.jxapi.exchanges.kucoin.gen.futuresmarketdata.KucoinFuturesMarketDataApiImpl;
 import com.scz.jxapi.exchanges.kucoin.gen.futuresmarketdata.pojo.KucoinRealTimeSymbolTickerV2Request;
-import com.scz.jxapi.util.TestApiProperties;
+import com.scz.jxapi.util.TestJXApiProperties;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,7 +22,7 @@ public class KucoinFuturesMarketDataRealTimeSymbolTickerV2Demo {
   
   public static void main(String[] args) {
     try {
-      KucoinFuturesMarketDataApi api = new KucoinFuturesMarketDataApiImpl(TestApiProperties.filterProperties("kucoin", true));
+      KucoinFuturesMarketDataApi api = new KucoinFuturesMarketDataApiImpl(TestJXApiProperties.filterProperties("kucoin", true));
       KucoinRealTimeSymbolTickerV2Request request = new KucoinRealTimeSymbolTickerV2Request();
       request.setSymbol(SYMBOL);
       log.info("Subscribing to stream com.scz.jcex.exchanges.kucoin.gen.futuresmarketdata.KucoinFuturesMarketDataApi.subscribeRealTimeSymbolTickerV2() websocket stream with request:" + request);

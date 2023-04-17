@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 
 import com.scz.jxapi.generator.JavaCodeGenerationUtil;
 import com.scz.jxapi.generator.JavaTypeGenerator;
+import com.scz.jxapi.util.TestJXApiProperties;
 
 public class RestEndpointDemoGenerator extends JavaTypeGenerator {
 	
@@ -38,12 +39,12 @@ public class RestEndpointDemoGenerator extends JavaTypeGenerator {
 	private void generateMainMethodBody(String requestSimpleClassName, String apiInterfaceClassName, String exchangeName, List<EndpointParameter> parameters, String apiMethodName) {
 		String apiImplClassName = apiInterfaceClassName + "Impl";
 		addImport(apiImplClassName);
-		addImport("com.scz.jcex.util.TestApiProperties");
+		addImport(TestJXApiProperties.class);
 		StringBuilder body = new StringBuilder();
 		body.append(JavaCodeGenerationUtil.getClassNameWithoutPackage(apiInterfaceClassName))
 			.append(" api = new ")
 			.append(JavaCodeGenerationUtil.getClassNameWithoutPackage(apiImplClassName))
-			.append("(TestApiProperties.filterProperties(\"")
+			.append("(TestJXApiProperties.filterProperties(\"")
 			.append(exchangeName)
 			.append("\", true));\n")
 			.append(requestSimpleClassName)

@@ -3,7 +3,7 @@ package com.scz.jxapi.exchanges.binance.gen.spotmarketdata.demo;
 import com.scz.jxapi.exchanges.binance.gen.spotmarketdata.BinanceSpotMarketDataApi;
 import com.scz.jxapi.exchanges.binance.gen.spotmarketdata.BinanceSpotMarketDataApiImpl;
 import com.scz.jxapi.exchanges.binance.gen.spotmarketdata.pojo.BinanceAllMarketTickersStreamRequest;
-import com.scz.jxapi.util.TestApiProperties;
+import com.scz.jxapi.util.TestJXApiProperties;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,7 +17,7 @@ public class BinanceSpotMarketDataAllMarketTickersStreamDemo {
   
   public static void main(String[] args) {
     try {
-      BinanceSpotMarketDataApi api = new BinanceSpotMarketDataApiImpl(TestApiProperties.filterProperties("binance", true));
+      BinanceSpotMarketDataApi api = new BinanceSpotMarketDataApiImpl(TestJXApiProperties.filterProperties("binance", true));
       BinanceAllMarketTickersStreamRequest request = new BinanceAllMarketTickersStreamRequest();
       log.info("Subscribing to stream com.scz.jcex.exchanges.binance.gen.spotmarketdata.BinanceSpotMarketDataApi.subscribeAllMarketTickersStream() websocket stream with request:" + request);
       api.subscribeAllMarketTickersStream(request, m -> log.info("Received message:" + m));

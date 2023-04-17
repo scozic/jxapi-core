@@ -3,7 +3,7 @@ package com.scz.jxapi.exchanges.kucoin.gen.spotmarketdata.demo;
 import com.scz.jxapi.exchanges.kucoin.gen.spotmarketdata.KucoinSpotMarketDataApi;
 import com.scz.jxapi.exchanges.kucoin.gen.spotmarketdata.KucoinSpotMarketDataApiImpl;
 import com.scz.jxapi.exchanges.kucoin.gen.spotmarketdata.pojo.KucoinIndividualSymbolTickerStreamsRequest;
-import com.scz.jxapi.util.TestApiProperties;
+import com.scz.jxapi.util.TestJXApiProperties;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,7 +22,7 @@ public class KucoinSpotMarketDataIndividualSymbolTickerStreamsDemo {
   
   public static void main(String[] args) {
     try {
-      KucoinSpotMarketDataApi api = new KucoinSpotMarketDataApiImpl(TestApiProperties.filterProperties("kucoin", true));
+      KucoinSpotMarketDataApi api = new KucoinSpotMarketDataApiImpl(TestJXApiProperties.filterProperties("kucoin", true));
       KucoinIndividualSymbolTickerStreamsRequest request = new KucoinIndividualSymbolTickerStreamsRequest();
       request.setSymbol(SYMBOL);
       log.info("Subscribing to stream com.scz.jcex.exchanges.kucoin.gen.spotmarketdata.KucoinSpotMarketDataApi.subscribeIndividualSymbolTickerStreams() websocket stream with request:" + request);

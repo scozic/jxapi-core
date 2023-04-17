@@ -3,7 +3,7 @@ package com.scz.jxapi.exchanges.kucoin.gen.futurestrading.demo;
 import com.scz.jxapi.exchanges.kucoin.gen.futurestrading.KucoinFuturesTradingApi;
 import com.scz.jxapi.exchanges.kucoin.gen.futurestrading.KucoinFuturesTradingApiImpl;
 import com.scz.jxapi.exchanges.kucoin.gen.futurestrading.pojo.KucoinPlaceAnOrderRequest;
-import com.scz.jxapi.util.TestApiProperties;
+import com.scz.jxapi.util.TestJXApiProperties;
 
 import java.math.BigDecimal;
 import org.slf4j.Logger;
@@ -113,7 +113,7 @@ public class KucoinFuturesTradingPlaceAnOrderDemo {
   
   public static void main(String[] args) {
     try {
-      KucoinFuturesTradingApi api = new KucoinFuturesTradingApiImpl(TestApiProperties.filterProperties("kucoin", true));
+      KucoinFuturesTradingApi api = new KucoinFuturesTradingApiImpl(TestJXApiProperties.filterProperties("kucoin", true));
       KucoinPlaceAnOrderRequest request = new KucoinPlaceAnOrderRequest();
       request.setClientOid(CLIENTOID);
       request.setSide(SIDE);

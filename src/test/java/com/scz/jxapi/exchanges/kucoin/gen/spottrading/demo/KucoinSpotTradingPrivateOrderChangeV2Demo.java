@@ -3,7 +3,7 @@ package com.scz.jxapi.exchanges.kucoin.gen.spottrading.demo;
 import com.scz.jxapi.exchanges.kucoin.gen.spottrading.KucoinSpotTradingApi;
 import com.scz.jxapi.exchanges.kucoin.gen.spottrading.KucoinSpotTradingApiImpl;
 import com.scz.jxapi.exchanges.kucoin.gen.spottrading.pojo.KucoinPrivateOrderChangeV2Request;
-import com.scz.jxapi.util.TestApiProperties;
+import com.scz.jxapi.util.TestJXApiProperties;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,7 +17,7 @@ public class KucoinSpotTradingPrivateOrderChangeV2Demo {
   
   public static void main(String[] args) {
     try {
-      KucoinSpotTradingApi api = new KucoinSpotTradingApiImpl(TestApiProperties.filterProperties("kucoin", true));
+      KucoinSpotTradingApi api = new KucoinSpotTradingApiImpl(TestJXApiProperties.filterProperties("kucoin", true));
       KucoinPrivateOrderChangeV2Request request = new KucoinPrivateOrderChangeV2Request();
       log.info("Subscribing to stream com.scz.jcex.exchanges.kucoin.gen.spottrading.KucoinSpotTradingApi.subscribePrivateOrderChangeV2() websocket stream with request:" + request);
       api.subscribePrivateOrderChangeV2(request, m -> log.info("Received message:" + m));

@@ -8,7 +8,7 @@ import java.util.Properties;
 
 import org.apache.commons.lang3.StringUtils;
 
-public class TestApiProperties {
+public class TestJXApiProperties {
 	
 	public static final String TEST_CEX_API_PROPERTIES_FILE = "test-cex-api.properties";
 
@@ -17,7 +17,7 @@ public class TestApiProperties {
 	private static Properties loadProperties() {
 		Properties props = new Properties();
 		try {
-		File propsFile = new File(TestApiProperties.class.getClassLoader().getResource(TEST_CEX_API_PROPERTIES_FILE).getFile());
+		File propsFile = new File(TestJXApiProperties.class.getClassLoader().getResource(TEST_CEX_API_PROPERTIES_FILE).getFile());
 		try (InputStream in = new BufferedInputStream(new FileInputStream(propsFile))) {
 			props.load(in);
 		}

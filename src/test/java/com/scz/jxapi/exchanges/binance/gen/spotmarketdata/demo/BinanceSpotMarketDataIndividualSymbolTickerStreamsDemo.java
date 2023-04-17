@@ -3,7 +3,7 @@ package com.scz.jxapi.exchanges.binance.gen.spotmarketdata.demo;
 import com.scz.jxapi.exchanges.binance.gen.spotmarketdata.BinanceSpotMarketDataApi;
 import com.scz.jxapi.exchanges.binance.gen.spotmarketdata.BinanceSpotMarketDataApiImpl;
 import com.scz.jxapi.exchanges.binance.gen.spotmarketdata.pojo.BinanceIndividualSymbolTickerStreamsRequest;
-import com.scz.jxapi.util.TestApiProperties;
+import com.scz.jxapi.util.TestJXApiProperties;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,7 +22,7 @@ public class BinanceSpotMarketDataIndividualSymbolTickerStreamsDemo {
   
   public static void main(String[] args) {
     try {
-      BinanceSpotMarketDataApi api = new BinanceSpotMarketDataApiImpl(TestApiProperties.filterProperties("binance", true));
+      BinanceSpotMarketDataApi api = new BinanceSpotMarketDataApiImpl(TestJXApiProperties.filterProperties("binance", true));
       BinanceIndividualSymbolTickerStreamsRequest request = new BinanceIndividualSymbolTickerStreamsRequest();
       request.setSymbol(SYMBOL);
       log.info("Subscribing to stream com.scz.jcex.exchanges.binance.gen.spotmarketdata.BinanceSpotMarketDataApi.subscribeIndividualSymbolTickerStreams() websocket stream with request:" + request);
