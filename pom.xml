@@ -4,12 +4,12 @@
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
-  <groupId>com.scz.jcex</groupId>
-  <artifactId>jcex</artifactId>
+  <groupId>com.scz.jxapi</groupId>
+  <artifactId>jxapi-core</artifactId>
   <version>0.0.2-SNAPSHOT</version>
   <!--<packaging>jar</packaging>-->
 
-  <name>jcex</name>
+  <name>jxapi-core</name>
   <!-- FIXME change it to the project's website -->
   <url>http://www.example.com</url>
 
@@ -147,7 +147,7 @@
 		<artifactId>exec-maven-plugin</artifactId>
 		<!--<version>1.6.0</version>-->
 		<configuration>
-			<mainClass>com.scz.jcex.generator.exchange.ExchangeGeneratorMain</mainClass>
+			<mainClass>com.scz.jxapi.generator.exchange.ExchangeGeneratorMain</mainClass>
 		</configuration>
 		</plugin>
 

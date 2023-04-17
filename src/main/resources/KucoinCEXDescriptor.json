@@ -1,12 +1,12 @@
 {
 	"name": "Kucoin",
 	"description": "Kucoin Spot and futures API",
-	"basePackage": "com.scz.jcex.exchanges.kucoin.gen",
+	"basePackage": "com.scz.jxapi.exchanges.kucoin.gen",
 	"apis":[
 		{ 
 			"name": "SpotMarketData",
 			"description": "Kucoin spot market data API",
-			"restEndpointFactory": "com.scz.jcex.exchanges.kucoin.net.KucoinPublicApiRestEndpointFactory",
+			"restEndpointFactory": "com.scz.jxapi.exchanges.kucoin.net.KucoinPublicApiRestEndpointFactory",
 			"restEndpoints": [
 				{
 					"name": "getSymbolsList",
@@ -175,7 +175,7 @@
 				}
 				
 			],
-			"websocketEndpointFactory": "com.scz.jcex.exchanges.kucoin.net.KucoinPublicWebsocketEndpointFactory",
+			"websocketEndpointFactory": "com.scz.jxapi.exchanges.kucoin.net.KucoinPublicWebsocketEndpointFactory",
 			"websocketEndpoints": [
 				{
 					"name": "AllSymbolsTickerStream",
@@ -234,7 +234,7 @@
 		{ 
 			"name": "SpotTrading",
 			"description": "Kucoin spot trading API",
-			"restEndpointFactory": "com.scz.jcex.exchanges.kucoin.net.KucoinPrivateApiRestEndpointFactory",
+			"restEndpointFactory": "com.scz.jxapi.exchanges.kucoin.net.KucoinPrivateApiRestEndpointFactory",
 			"restEndpoints": [
 				{
 					"name": "ApplyConnectTokenPrivate",
@@ -429,7 +429,7 @@
 					]
 				}
 			],
-			"websocketEndpointFactory": "com.scz.jcex.exchanges.kucoin.net.KucoinPrivateWebsocketEndpointFactory",
+			"websocketEndpointFactory": "com.scz.jxapi.exchanges.kucoin.net.KucoinPrivateWebsocketEndpointFactory",
 			"websocketEndpoints": [
 				{
 					"name": "PrivateOrderChangeV2",
@@ -507,7 +507,7 @@
 		{ 
 			"name": "FuturesMarketData",
 			"description": "Kucoin Futures market data API",
-			"restEndpointFactory": "com.scz.jcex.exchanges.kucoin.net.KucoinPublicApiRestEndpointFactory",
+			"restEndpointFactory": "com.scz.jxapi.exchanges.kucoin.net.KucoinPublicApiRestEndpointFactory",
 			"restEndpoints": [
 			{
 					"name": "GetOpenContractList",
@@ -608,7 +608,7 @@
 					]
 				}
 			],
-			"websocketEndpointFactory": "com.scz.jcex.exchanges.kucoin.net.KucoinFuturesPublicWebsocketEndpointFactory",
+			"websocketEndpointFactory": "com.scz.jxapi.exchanges.kucoin.net.KucoinFuturesPublicWebsocketEndpointFactory",
 			"websocketEndpoints": [
 				{
 					"name": "RealTimeSymbolTickerV2",
@@ -639,7 +639,7 @@
 		{ 
 			"name": "FuturesTrading",
 			"description": "Kucoin Futures trading API",
-			"restEndpointFactory": "com.scz.jcex.exchanges.kucoin.net.KucoinPrivateApiRestEndpointFactory",
+			"restEndpointFactory": "com.scz.jxapi.exchanges.kucoin.net.KucoinPrivateApiRestEndpointFactory",
 			"restEndpoints": [
 				{
 					"name": "GetAccountOverview",
@@ -998,7 +998,7 @@
 					]
 				}
 			],
-			"websocketEndpointFactory": "com.scz.jcex.exchanges.kucoin.net.KucoinFuturesPrivateWebsocketEndpointFactory",
+			"websocketEndpointFactory": "com.scz.jxapi.exchanges.kucoin.net.KucoinFuturesPrivateWebsocketEndpointFactory",
 			"websocketEndpoints": [
 				{
 					"name": "TradeOrders",

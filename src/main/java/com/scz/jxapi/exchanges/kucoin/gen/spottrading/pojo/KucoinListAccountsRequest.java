@@ -1,0 +1,38 @@
+package com.scz.jxapi.exchanges.kucoin.gen.spottrading.pojo;
+
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.scz.jxapi.exchanges.kucoin.gen.spottrading.serializers.KucoinListAccountsRequestSerializer;
+import com.scz.jxapi.netutils.rest.RestEndpointUrlParameters;
+import com.scz.jxapi.util.EncodingUtil;
+
+/**
+ * Request for Kucoin SpotTrading API ListAccounts REST endpointGet a list of accounts. Please deposit funds to the main account firstly, then transfer the funds to the trade account via Inner Transfer before transaction..<br/>See <a href="https://docs.kucoin.com/#list-accounts">API</a><br><strong>THIS CODE IS GENERATED. DO NOT EDIT MANUALLY!</strong>
+ */
+@JsonSerialize(using = KucoinListAccountsRequestSerializer.class)
+public class KucoinListAccountsRequest implements RestEndpointUrlParameters {
+  private String type;
+  
+  /**
+   * @return Account type: <strong>main</strong>, <strong>trade</strong>, <strong>margin</strong>
+   */
+  public String getType(){
+    return type;
+  }
+  
+  /**
+   * @param type Account type: <strong>main</strong>, <strong>trade</strong>, <strong>margin</strong>
+   */
+  public void setType(String type) {
+    this.type = type;
+  }
+  
+  @Override
+  public String getUrlParameters() {
+    return EncodingUtil.createUrlQueryParameters("type", type);
+  }
+  
+  @Override
+  public String toString() {
+    return EncodingUtil.pojoToString(this);
+  }
+}

@@ -1,12 +1,12 @@
 {
 	"name": "Binance",
 	"description": "Binance Spot and futures API",
-	"basePackage": "com.scz.jcex.exchanges.binance.gen",
+	"basePackage": "com.scz.jxapi.exchanges.binance.gen",
 	"apis":[
 		{ 
 			"name": "SpotMarketData",
 			"description": "Binance spot market data API",
-			"restEndpointFactory": "com.scz.jcex.exchanges.binance.net.BinancePublicApiRestEndpointFactory",
+			"restEndpointFactory": "com.scz.jxapi.exchanges.binance.net.BinancePublicApiRestEndpointFactory",
 			"restEndpoints": [
 				{
 					"name": "exchangeInformation",
@@ -52,7 +52,7 @@
 					]
 				}
 			],
-			"websocketEndpointFactory": "com.scz.jcex.exchanges.binance.net.BinancePublicWebsocketEndpointFactory",
+			"websocketEndpointFactory": "com.scz.jxapi.exchanges.binance.net.BinancePublicWebsocketEndpointFactory",
 			"websocketEndpoints": [
 				{
 					"name": "AllMarketTickersStream",
@@ -118,7 +118,7 @@
 		{ 
 			"name": "SpotTrading",
 			"description": "Binance spot trading API",
-			"restEndpointFactory": "com.scz.jcex.exchanges.binance.net.BinancePrivateApiRestEndpointFactory",
+			"restEndpointFactory": "com.scz.jxapi.exchanges.binance.net.BinancePrivateApiRestEndpointFactory",
 			"restEndpoints": [
 				{
 					"name": "account",
@@ -193,7 +193,7 @@
 					]
 				}
 			],
-			"websocketEndpointFactory": "com.scz.jcex.exchanges.binance.net.BinancePrivateSpotApiWebsocketEndpointFactory",
+			"websocketEndpointFactory": "com.scz.jxapi.exchanges.binance.net.BinancePrivateSpotApiWebsocketEndpointFactory",
 			"websocketEndpoints": [
 				{
 					"name": "outboundAccountPositionUserDataStream",
