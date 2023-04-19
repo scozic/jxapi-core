@@ -20,7 +20,7 @@ public enum EndpointParameterType {
 	/** Timestamp (or datetime) value */
 	TIMESTAMP,
 	/** Nested structure (JSON block) */
-	STRUCT,
+	OBJECT,
 	/** Repeated nested structure (JSON array) */
-	STRUCT_LIST;
+	OBJECT_LIST;
 }

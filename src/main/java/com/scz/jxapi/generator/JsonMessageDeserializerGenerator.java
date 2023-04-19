@@ -12,7 +12,7 @@ import com.scz.jxapi.generator.exchange.EndpointParameter;
 import com.scz.jxapi.generator.exchange.EndpointParameterType;
 import com.scz.jxapi.netutils.deserialization.json.AbstractJsonMessageDeserializer;
 import com.scz.jxapi.netutils.deserialization.json.field.StringListFieldDeserializer;
-import com.scz.jxapi.netutils.deserialization.json.field.StructListFieldDeserializer;
+import com.scz.jxapi.netutils.deserialization.json.field.ObjectListFieldDeserializer;
 import com.scz.jxapi.netutils.serialization.json.JsonParserUtil;
 import com.scz.jxapi.util.EncodingUtil;
 
@@ -72,8 +72,8 @@ public class JsonMessageDeserializerGenerator extends JavaTypeGenerator {
 				.append("case \"")
 				.append(field.getMsgField() != null? field.getMsgField() : field.getName())
 				.append("\":\n");
-			if (field.getType() == EndpointParameterType.STRUCT 
-				|| field.getType() == EndpointParameterType.STRUCT_LIST
+			if (field.getType() == EndpointParameterType.OBJECT 
+				|| field.getType() == EndpointParameterType.OBJECT_LIST
 				|| field.getType() == EndpointParameterType.STRING_LIST) {
 				body.append(dblIndent)
 					.append("parser.nextToken();\n");
@@ -124,15 +124,15 @@ public class JsonMessageDeserializerGenerator extends JavaTypeGenerator {
 		case STRING_LIST:
 			addImport(StringListFieldDeserializer.class.getName());
 			return StringListFieldDeserializer.class.getSimpleName() + ".getInstance().deserialize(parser)";
-		case STRUCT:
-		case STRUCT_LIST:
-			return generateStructDeserializer(field) +".deserialize(parser)";
+		case OBJECT:
+		case OBJECT_LIST:
+			return generateObjectDeserializer(field) +".deserialize(parser)";
 		default:
 			throw new IllegalArgumentException("Unexpected field type for field:" + field);
 		}
 	}
 	
-	private String generateStructDeserializer(EndpointParameter field) {
+	private String generateObjectDeserializer(EndpointParameter field) {
 		String fieldTypeName = deserializedTypeClassName + JavaCodeGenerationUtil.firstLetterToUpperCase(field.getName());
 		String deserializerTypeName = this.getPackage() + "." + JavaCodeGenerationUtil.getClassNameWithoutPackage(fieldTypeName + "Deserializer");
 		addImport(deserializerTypeName);
@@ -141,12 +141,12 @@ public class JsonMessageDeserializerGenerator extends JavaTypeGenerator {
 		deserializerDeclarations.add("private final " + simpleDeserializerTypeName + " " + deserializerVariableName 
 										+ " = new " + simpleDeserializerTypeName + "();\n");
 		switch (field.getType()) {
-		case STRUCT:
+		case OBJECT:
 			return deserializerVariableName;
-		case STRUCT_LIST:
-			addImport(StructListFieldDeserializer.class.getName());
+		case OBJECT_LIST:
+			addImport(ObjectListFieldDeserializer.class.getName());
 			addImport(fieldTypeName);
-			String listDeserializerTypeName = StructListFieldDeserializer.class.getSimpleName() + "<" + JavaCodeGenerationUtil.getClassNameWithoutPackage(fieldTypeName) + ">";
+			String listDeserializerTypeName = ObjectListFieldDeserializer.class.getSimpleName() + "<" + JavaCodeGenerationUtil.getClassNameWithoutPackage(fieldTypeName) + ">";
 			String simpleListDeserializerTypeName = JavaCodeGenerationUtil.getClassNameWithoutPackage(listDeserializerTypeName);
 			String listDeserializerVariableName = JavaCodeGenerationUtil.firstLetterToLowerCase(JavaCodeGenerationUtil.getClassNameWithoutPackage(fieldTypeName + "ListDeserializer"));
 			deserializerDeclarations.add("private final " + simpleListDeserializerTypeName + " " + listDeserializerVariableName 

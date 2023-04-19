@@ -126,8 +126,8 @@ public class WebsocketEndpointDemoGenerator extends JavaTypeGenerator {
 				return "System.currentTimeMillis()";
 			}
 			return String.valueOf(v) + "L";
-		case STRUCT:
-		case STRUCT_LIST:
+		case OBJECT:
+		case OBJECT_LIST:
 		default:
 			throw new IllegalArgumentException("Unexpected parameter type for parameter:" + parameter);
 		}
@@ -150,8 +150,8 @@ public class WebsocketEndpointDemoGenerator extends JavaTypeGenerator {
 		case STRING_LIST:
 			addImport(List.class);
 			return "List<String>";
-		case STRUCT:
-		case STRUCT_LIST:
+		case OBJECT:
+		case OBJECT_LIST:
 			// FIXME not managed yet: Construction of demo values for parameters that are structured object types.
 			// Usually, requests do not use struct parameters
 		default:

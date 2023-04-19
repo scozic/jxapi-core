@@ -6,7 +6,7 @@ import com.scz.jxapi.util.EncodingUtil;
 
 /**
  * Part of JSON document describing a crypto exchange API that describes a given field of a request to an endpoint or its response.
- * Such field can be recursive, see {@link EndpointParameterType#STRUCT} or {@link EndpointParameterType#STRUCT_LIST}.
+ * Such field can be recursive, see {@link EndpointParameterType#OBJECT} or {@link EndpointParameterType#OBJECT_LIST}.
  */
 public class EndpointParameter {
 	
@@ -83,7 +83,7 @@ public class EndpointParameter {
 	}
 	
 	/**
-	 * @return For a {@link EndpointParameterType#STRUCT} or {@link EndpointParameterType#STRUCT_LIST}, the parameters in nested 'struct'.
+	 * @return For a {@link EndpointParameterType#OBJECT} or {@link EndpointParameterType#OBJECT_LIST}, the parameters in nested 'struct'.
 	 */
 	public List<EndpointParameter> getParameters() {
 		return parameters;

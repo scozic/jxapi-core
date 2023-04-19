@@ -63,7 +63,7 @@ public class JUExchangeDescriptorParser {
 		EndpointParameter payload = exchangeInfoResponse.get(1);
 		Assert.assertEquals("payload", payload.getName());
 		Assert.assertEquals("List of market information for each requested symbol", payload.getDescription());
-		Assert.assertEquals(EndpointParameterType.STRUCT_LIST, payload.getType());
+		Assert.assertEquals(EndpointParameterType.OBJECT_LIST, payload.getType());
 		List<EndpointParameter> payloadParameters = payload.getParameters();
 		Assert.assertEquals(2, payloadParameters.size());
 		

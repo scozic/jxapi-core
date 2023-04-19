@@ -75,8 +75,8 @@ public class JsonPojoSerializerGenerator extends JavaTypeGenerator {
 		case TIMESTAMP:
 			return "gen.writeNumberField(\"" + msgFieldName(field) + "\", " + getFieldValue + ");\n";
 		case STRING_LIST:
-		case STRUCT:
-		case STRUCT_LIST:
+		case OBJECT:
+		case OBJECT_LIST:
 			return "gen.writeObjectField(\"" + msgFieldName(field) + "\", " + getFieldValue + ");\n";
 		default:
 			throw new IllegalArgumentException("Unexpected field type for:" + field);

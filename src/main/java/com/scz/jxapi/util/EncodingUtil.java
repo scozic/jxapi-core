@@ -69,10 +69,10 @@ public class EncodingUtil {
 	
 	/**
 	 * 
-	 * @param keysAndValues <pre>key1,value1,key2,value2...
+	 * @param keysAndValues key1,value1,key2,value2...
 	 * @return "{"key1": "value1", "key2: "value2"...}"
 	 */
-	public static String formatArgsToJsonStruct(Object...keysAndValues) {
+	public static String formatArgsToJsonObject(Object...keysAndValues) {
 		StringBuilder s = new StringBuilder();
 		s.append("{");
 		for (int i = 0; i < keysAndValues.length; i++) {
