@@ -1,4 +1,4 @@
-# JCEX
+# JXAPI
 
 A wrapper for Cryptocurrency Exchanges API written in Java.
 
