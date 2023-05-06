@@ -218,6 +218,22 @@ public class EncodingUtil {
 		}
 	}
 	
+	public static Boolean readNextBoolean(JsonParser parser) throws IOException {
+		parser.nextToken();
+		switch (parser.currentToken()) {
+		case VALUE_TRUE:
+			return Boolean.TRUE;
+		case VALUE_FALSE:
+			return Boolean.FALSE;
+		case VALUE_NULL:
+			return null;
+		case VALUE_STRING:
+			return Boolean.valueOf(parser.getText());
+		default:
+			throw new JsonParseException(parser, "Expected long value, but got " + parser.currentToken());
+		}
+	}
+	
 	public static BigDecimal toBigDecimal(String s) {
 		if (s == null || s.isEmpty())
 			return null;

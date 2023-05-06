@@ -111,7 +111,8 @@ public class JsonMessageDeserializerGenerator extends JavaTypeGenerator {
 			addImport("static " + EncodingUtil.class.getName() + ".readNextBigDecimal");
 			return "readNextBigDecimal(parser)";
 		case BOOLEAN:
-			return "Boolean.valueOf(parser.nextBooleanValue())";
+			addImport("static " + EncodingUtil.class.getName() + ".readNextBoolean");
+			return "readNextBoolean(parser)";
 		case INT:
 			addImport("static " + EncodingUtil.class.getName() + ".readNextInteger");
 			return "readNextInteger(parser)";
