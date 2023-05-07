@@ -41,9 +41,6 @@ public abstract class AbstractWebsocketManager implements WebsocketManager {
 	
 	private long reconnectDelay = -1L;
 	
-//	private long totalElapsedTimeParsing = 0L;
-//	private int nbMsgProcessed; 
-	
 	protected AbstractWebsocketManager() {
 		this.writeExecutor = Executors.newSingleThreadScheduledExecutor(); 
 	}
@@ -51,9 +48,13 @@ public abstract class AbstractWebsocketManager implements WebsocketManager {
 	@Override
 	public void subscribe(String topic, 
 						  WebsocketMessageTopicMatcher matcher,
-						  RawWebsocketMessageHandler messageHandler) {	
+						  RawWebsocketMessageHandler messageHandler) {
+		if (log.isDebugEnabled())
+			log.debug("Scheduling subscribe request for topic:" + topic);
 		writeExecutor.execute(() -> {
 			try {
+				if (log.isDebugEnabled())
+					log.debug("Executing subscribe request for topic:" + topic);
 				TopicManager t = topics.get(topic);
 				if (t == null) {
 					t = new TopicManager(topic, matcher, messageHandler, false);
@@ -62,16 +63,18 @@ public abstract class AbstractWebsocketManager implements WebsocketManager {
 					// Remark: registered TopicManager before checking connection status and connecting if not already connected.
 					// This is because the url provided for handshake may stand for a stream endpoint and message would be disseminated right after handshake. Message handler must be registered before.
 					if (!isConnected()) {
-						connect();
-						if (subscribeRequestMessage != null) {
-							writeExecutor.execute(() -> sendTopicSubscribeRequest(subscribeRequestMessage));
-						}
-					} else if (subscribeRequestMessage != null) {
+						if (log.isDebugEnabled())
+							log.debug("Executing subscribe request for topic:" + topic + ": not connected, connecting");
+						connect();	
+					}
+					if (subscribeRequestMessage != null) {
 						sendTopicSubscribeRequest(subscribeRequestMessage);
 					}
 				} else {
 					throw new IllegalArgumentException("Already have a subscription for this topic");
 				}
+				if (log.isDebugEnabled())
+					log.debug("DONE Executing subscribe request for topic:" + topic);
 			} catch (Exception ex) {
 				dispatchWebsocketError(new IOException("Error while subscribing to webscoket for topic [" + topic + "]", ex));
 			}
@@ -80,6 +83,8 @@ public abstract class AbstractWebsocketManager implements WebsocketManager {
 	
 	private void sendTopicSubscribeRequest(String subscribeRequestMessage) {
 		try {
+			if (log.isDebugEnabled())
+				log.debug("Sending topic subscribe request:" + subscribeRequestMessage);
 			send(subscribeRequestMessage);
 		} catch (IOException e) {
 			onError(e);
@@ -104,14 +109,11 @@ public abstract class AbstractWebsocketManager implements WebsocketManager {
 		if (isConnected() || isDisposed()) {
 			return;
 		}
-		writeExecutor = Executors.newSingleThreadScheduledExecutor();
-		writeExecutor.execute(() -> {
-			try {
-				doConnect();
-			} catch (Exception exception) {
-				onError(new IOException("Error while connecting websocket", exception));
-			}
-		});
+		try {
+			doConnect();
+		} catch (Exception exception) {
+			onError(new IOException("Error while connecting websocket", exception));
+		}
 		connected.set(true);
 	}
 	
@@ -130,15 +132,15 @@ public abstract class AbstractWebsocketManager implements WebsocketManager {
 				dispatchWebsocketError(new IOException("Error while disconnecting websocket", e));
 			}
 		});
-		writeExecutor.shutdown();
-		writeExecutor = null;
+		
 		connected.set(false);
 	}
 	
 	@Override
 	public void dispose() {
 		disconnect();
-		
+		writeExecutor.shutdown();
+		writeExecutor = null;
 	}
 	
 	public boolean isConnected() {
@@ -179,7 +181,6 @@ public abstract class AbstractWebsocketManager implements WebsocketManager {
 	protected void dispatchMessage(String message) {
 //		long start = System.nanoTime();
 		
-//		 EncodingUtil.splitJsonArrayStr(message).forEach(this::dispatchSingleMessage);
 		splitJsonArray(message).forEach(this::dispatchSingleMessage);
 		
 //		this.totalElapsedTimeParsing += System.nanoTime() - start;
@@ -255,7 +256,7 @@ public abstract class AbstractWebsocketManager implements WebsocketManager {
 	protected void onError(IOException exception) {
 		log.error("Error raised on Websocket [" + toString() + "]", exception);
 		this.dispatchWebsocketError(exception);
-		if (reconnectDelay > 0) {
+		if (!isDisposed() && reconnectDelay > 0) {
 			if (log.isInfoEnabled()) {
 				log.info("Disconnecting websocket [" +toString() + "] after error");
 			}
@@ -337,6 +338,4 @@ public abstract class AbstractWebsocketManager implements WebsocketManager {
 			this.systemMessage = systemMessage;
 		}
 	}
-
-	
 }

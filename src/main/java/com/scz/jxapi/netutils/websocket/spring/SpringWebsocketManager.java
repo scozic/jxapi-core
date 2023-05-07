@@ -216,6 +216,7 @@ public abstract class SpringWebsocketManager extends AbstractWebsocketManager {
 		public void onFailure(Throwable ex) {
 			log.error("WebsocketSessionCallback:onFailure:" + ex, ex);
 			websocketSessionAvailable.countDown();
+			writeExecutor.execute(() -> onError(new IOException("Error raised on " + baseUrl + " websocket", ex)));
 		}
 		
 	}
