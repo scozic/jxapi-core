@@ -266,7 +266,10 @@ public abstract class SpringWebsocketManager extends AbstractWebsocketManager {
 				// Raise error if max delay without heartbeat response timeout has elapsed
 				long timeElapsedSinceLastHeartBeat = System.currentTimeMillis() - lastHeartBeatTime.get();
 				if (noHeartBeatResponseTimeout > 0 && (timeElapsedSinceLastHeartBeat > noHeartBeatResponseTimeout)) {
-					onError(new IOException("No heartbeat response since " + timeElapsedSinceLastHeartBeat + "ms, timeout:" + noHeartBeatResponseTimeout));
+					onError(new IOException("No heartbeat response since " 
+											+ timeElapsedSinceLastHeartBeat 
+											+ "ms, timeout:" + noHeartBeatResponseTimeout 
+											+ " reconnect delay:" + getReconnectDelay()));
 				}
 			} catch (Exception ex) {
 				onError(new IOException("Error while running heartbeat timeout task", ex));
