@@ -69,3 +69,5 @@ Thumbs.db
 logs/
 
 src/test/resources/test-cex-api.properties
+
+bin/
