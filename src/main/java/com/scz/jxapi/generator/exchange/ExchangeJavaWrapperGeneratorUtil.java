@@ -93,9 +93,10 @@ public class ExchangeJavaWrapperGeneratorUtil {
 
 	public static void generateDeserializer(Path src, String deserializedClassName, List<EndpointParameter> fields) throws IOException {
 		for (EndpointParameter field: fields) {
-			if (field.getType() == EndpointParameterType.OBJECT 
-				|| field.getType() == EndpointParameterType.OBJECT_LIST) {
-				generateDeserializer(src, deserializedClassName + JavaCodeGenerationUtil.firstLetterToUpperCase(field.getName()), field.getParameters());
+			if ((field.getType() == EndpointParameterType.OBJECT 
+					|| field.getType() == EndpointParameterType.OBJECT_LIST)
+				&& field.getParameters() != null) {
+				generateDeserializer(src, getObjectParameterClassName(deserializedClassName, field), field.getParameters());
 			}
 		}
 		JsonMessageDeserializerGenerator deserializerGenerator = new JsonMessageDeserializerGenerator(deserializedClassName, fields);
@@ -111,13 +112,23 @@ public class ExchangeJavaWrapperGeneratorUtil {
 		generator.addField(PojoField.create(parameterClass, field.getName(), field.getMsgField(), field.getDescription()));
 	}
 	
+	public static String getObjectParameterClassName(String className, EndpointParameter field) {
+		String objectName = field.getObjectName();
+		if (objectName != null) {
+			return JavaCodeGenerationUtil.getClassPackage(className) + "." + objectName; 
+		}
+		return className + JavaCodeGenerationUtil.firstLetterToUpperCase(field.getName());
+	}
+	
 	private static void generateObjectParameterTypePojoField(Path src, String className, PojoGenerator generator, EndpointParameter field) throws IOException {
-		String objectTypeName = className + JavaCodeGenerationUtil.firstLetterToUpperCase(field.getName());
-		generatePojo(src, objectTypeName, field.getDescription(), field.getParameters());
-		String parameterTypeName = objectTypeName;
-		generator.addImport(objectTypeName);
+		String objectName = getObjectParameterClassName(className, field);
+		if (field.getParameters() != null) {
+			generatePojo(src, objectName, field.getDescription(), field.getParameters());
+		}
+		String parameterTypeName = objectName;
+		generator.addImport(objectName);
 		if (field.getType() == EndpointParameterType.OBJECT_LIST) {
-			parameterTypeName = "java.util.List<" + JavaCodeGenerationUtil.getClassNameWithoutPackage(objectTypeName) + ">";
+			parameterTypeName = "java.util.List<" + JavaCodeGenerationUtil.getClassNameWithoutPackage(objectName) + ">";
 		}
 		generator.addField(PojoField.create(parameterTypeName, field.getName(), field.getMsgField(), field.getDescription()));
 	}
@@ -172,9 +183,10 @@ public class ExchangeJavaWrapperGeneratorUtil {
 		JsonPojoSerializerGenerator generator = new JsonPojoSerializerGenerator(serializerPkg, pojoClassName, fields);
 		
 		for (EndpointParameter field: fields) {
-			if (field.getType() == EndpointParameterType.OBJECT 
-				|| field.getType() == EndpointParameterType.OBJECT_LIST) {
-				generateSerializer(ouputFolder, pojoClassName + JavaCodeGenerationUtil.firstLetterToUpperCase(field.getName()), field.getParameters());
+			if ((field.getType() == EndpointParameterType.OBJECT 
+					|| field.getType() == EndpointParameterType.OBJECT_LIST)
+				&& field.getParameters() != null) {
+				generateSerializer(ouputFolder, getObjectParameterClassName(pojoClassName, field), field.getParameters());
 			}
 		}
 		
@@ -206,7 +218,6 @@ public class ExchangeJavaWrapperGeneratorUtil {
 				String additionalBody = null;
 				implementedInterfaces = Arrays.asList(RestEndpointUrlParameters.class.getName());
 				additionalBody = generateRestEndpointGetUrlParametersMethod(restEndpointDescriptor);
-				
 				ExchangeJavaWrapperGeneratorUtil.generatePojo(ouputFolder, 
 										generateRestEnpointRequestClassName(exchangeDescriptor, api, restEndpointDescriptor), 
 										"Request for " + exchangeDescriptor.getName() + " " + api.getName() + " API " 

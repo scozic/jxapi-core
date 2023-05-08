@@ -40,6 +40,8 @@ public class EndpointParameter {
 	
 	private String msgField;
 	
+	private String objectName;
+	
 	private List<EndpointParameter> parameters;
 
 	public String getName() {
@@ -95,5 +97,27 @@ public class EndpointParameter {
 	
 	public String toString() {
 		return EncodingUtil.pojoToString(this);
+	}
+
+	/**
+	 * @return The simple (without package) name of java class to represent
+	 *         corresponding to object defined by this parameter. Relevant only when
+	 *         type is {@link EndpointParameterType#OBJECT} or
+	 *         {@link EndpointParameterType#OBJECT_LIST}. Remark: in a descriptor
+	 *         file, the first parameter defining a given object name should define
+	 *         sub-parameters, other parameters using same object name need not
+	 *         define sub-parameters. This allow not to repeat identical structures
+	 *         in different APIs.
+	 */
+	public String getObjectName() {
+		return objectName;
+	}
+
+	/**
+	 * @param objectName
+	 * @see #getObjectName()
+	 */
+	public void setObjectName(String objectName) {
+		this.objectName = objectName;
 	}
 }
