@@ -10,6 +10,7 @@ import org.apache.commons.lang3.StringUtils;
 
 import com.scz.jxapi.generator.exchange.EndpointParameter;
 import com.scz.jxapi.generator.exchange.EndpointParameterType;
+import com.scz.jxapi.generator.exchange.ExchangeJavaWrapperGeneratorUtil;
 import com.scz.jxapi.netutils.deserialization.json.AbstractJsonMessageDeserializer;
 import com.scz.jxapi.netutils.deserialization.json.field.StringListFieldDeserializer;
 import com.scz.jxapi.netutils.deserialization.json.field.ObjectListFieldDeserializer;
@@ -134,7 +135,7 @@ public class JsonMessageDeserializerGenerator extends JavaTypeGenerator {
 	}
 	
 	private String generateObjectDeserializer(EndpointParameter field) {
-		String fieldTypeName = deserializedTypeClassName + JavaCodeGenerationUtil.firstLetterToUpperCase(field.getName());
+		String fieldTypeName = ExchangeJavaWrapperGeneratorUtil.getObjectParameterClassName(deserializedTypeClassName, field);
 		String deserializerTypeName = this.getPackage() + "." + JavaCodeGenerationUtil.getClassNameWithoutPackage(fieldTypeName + "Deserializer");
 		addImport(deserializerTypeName);
 		String simpleDeserializerTypeName = JavaCodeGenerationUtil.getClassNameWithoutPackage(deserializerTypeName);
