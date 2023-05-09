@@ -121,24 +121,24 @@ public abstract class AbstractWebsocketManager implements WebsocketManager {
 		return disposed.get();
 	}
 
-	public final void disconnect() {
+	protected final void disconnect() {
 		if (!isConnected()) {
 			return;
 		}
-		writeExecutor.execute(() -> {
-			try {
-				doDisconnect();
-			} catch (Exception e) {
-				dispatchWebsocketError(new IOException("Error while disconnecting websocket", e));
-			}
-		});
-		
+		try {
+			doDisconnect();
+		} catch (Exception e) {
+			dispatchWebsocketError(new IOException("Error while disconnecting websocket", e));
+		}
 		connected.set(false);
 	}
 	
 	@Override
 	public void dispose() {
-		disconnect();
+		writeExecutor.execute(() -> {
+			disconnect();
+		});
+		
 		writeExecutor.shutdown();
 		writeExecutor = null;
 	}
