@@ -181,7 +181,8 @@ public abstract class AbstractWebsocketManager implements WebsocketManager {
 	protected void dispatchMessage(String message) {
 //		long start = System.nanoTime();
 		
-		splitJsonArray(message).forEach(this::dispatchSingleMessage);
+//		splitJsonArray(message).forEach(this::dispatchSingleMessage);
+		this.dispatchSingleMessage(message);
 		
 //		this.totalElapsedTimeParsing += System.nanoTime() - start;
 //		this.nbMsgProcessed++;
@@ -214,27 +215,27 @@ public abstract class AbstractWebsocketManager implements WebsocketManager {
 		} 
 	}
 	
-	private List<String> splitJsonArray(String messages) {
-		try {
-			JsonParser jsonParser = jsonFactory.createParser(messages.getBytes());
-			if (jsonParser.nextToken() != JsonToken.START_ARRAY) {
-				return List.of(messages);
-			}
-			
-			ObjectMapper m = new ObjectMapper();
-			ArrayNode array;
-			array = (ArrayNode) m.readTree(messages);
-			List<String> res = new ArrayList<>(array.size());
-			for (Iterator<JsonNode> it = array.elements(); it.hasNext();) {
-				JsonNode node = it.next();
-				res.add(m.writeValueAsString(node));
-			}
-			return res;
-		} catch (IOException e) {
-			log.error("Error while splitting array message:" + messages, e);
-			return List.of();
-		}
-	}
+//	private List<String> splitJsonArray(String messages) {
+//		try {
+//			JsonParser jsonParser = jsonFactory.createParser(messages.getBytes());
+//			if (jsonParser.nextToken() != JsonToken.START_ARRAY) {
+//				return List.of(messages);
+//			}
+//			
+//			ObjectMapper m = new ObjectMapper();
+//			ArrayNode array;
+//			array = (ArrayNode) m.readTree(messages);
+//			List<String> res = new ArrayList<>(array.size());
+//			for (Iterator<JsonNode> it = array.elements(); it.hasNext();) {
+//				JsonNode node = it.next();
+//				res.add(m.writeValueAsString(node));
+//			}
+//			return res;
+//		} catch (IOException e) {
+//			log.error("Error while splitting array message:" + messages, e);
+//			return List.of();
+//		}
+//	}
 	
 	private String getNextValue(JsonParser jsonParser) throws IOException {
 		switch (jsonParser.nextToken()) {

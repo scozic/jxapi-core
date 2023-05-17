@@ -26,6 +26,8 @@ public class WebsocketEndpointDescriptor {
 	
 	private List<WebsocketMessageTopicMatcherFieldDescriptor> messageTopicMatcherFields;
 	
+	private ResponseDataType responseDataType = ResponseDataType.JSON_OBJECT;
+	
 	public String getName() {
 		return name;
 	}
@@ -80,6 +82,13 @@ public class WebsocketEndpointDescriptor {
 	}
 	public void setMessageTopicMatcherFields(List<WebsocketMessageTopicMatcherFieldDescriptor> messageTopicMatcherFields) {
 		this.messageTopicMatcherFields = messageTopicMatcherFields;
+	}
+	
+	public ResponseDataType getResponseDataType() {
+		return responseDataType;
+	}
+	public void setResponseDataType(ResponseDataType responseDataType) {
+		this.responseDataType = responseDataType;
 	}
 	
 	public String toString() {

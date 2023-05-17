@@ -430,18 +430,47 @@ public class ExchangeJavaWrapperGeneratorUtil {
 			implementationGenerator.addImport(requestClassName);
 			String messageClassName = generateWebsocketEndpointMessageClassName(exchangeDescriptor, exchangeApiDescriptor, websocketApi);
 			String messageClassSimpleName = JavaCodeGenerationUtil.getClassNameWithoutPackage(messageClassName);
-			interfaceGenerator.addImport(messageClassName);
-			implementationGenerator.addImport(messageClassName);
-			String messageDeserializerClassName = JsonMessageDeserializerGenerator.getJsonMessageDeserializerClassName(messageClassName);
-			implementationGenerator.addImport(messageDeserializerClassName);
+//			interfaceGenerator.addImport(messageClassName);
+//			implementationGenerator.addImport(messageClassName);
+//			String messageDeserializerClassName = JsonMessageDeserializerGenerator.getJsonMessageDeserializerClassName(messageClassName);
+//			implementationGenerator.addImport(messageDeserializerClassName);
 			String subscribeMethodName = "subscribe" + JavaCodeGenerationUtil.firstLetterToUpperCase(websocketApi.getName());
 			String unsubscribeMethodName = "unsubscribe" + JavaCodeGenerationUtil.firstLetterToUpperCase(websocketApi.getName());
 			String websocketEndpointVariableName = JavaCodeGenerationUtil.firstLetterToLowerCase(websocketApi.getName()) + "Ws";
+			
+			String messageDeserializerClassName = null;
+			String getResponseDeserializerInstance = null;
+			switch (websocketApi.getResponseDataType()) {
+			case JSON_OBJECT:
+				interfaceGenerator.addImport(messageClassName);
+				implementationGenerator.addImport(messageClassName);
+				messageDeserializerClassName = JsonMessageDeserializerGenerator.getJsonMessageDeserializerClassName(messageClassName);
+				getResponseDeserializerInstance = "new " + JavaCodeGenerationUtil.getClassNameWithoutPackage(messageDeserializerClassName) + "()";
+				break;
+			case JSON_OBJECT_LIST:
+				interfaceGenerator.addImport(messageClassName);
+				implementationGenerator.addImport(messageClassName);
+				messageDeserializerClassName = JsonMessageDeserializerGenerator.getJsonMessageDeserializerClassName(messageClassName);
+				implementationGenerator.addImport(ObjectListFieldDeserializer.class);
+				implementationGenerator.addImport(List.class);
+				interfaceGenerator.addImport(List.class);
+				getResponseDeserializerInstance = "new ObjectListFieldDeserializer<" + messageClassSimpleName + ">(new " + JavaCodeGenerationUtil.getClassNameWithoutPackage(messageDeserializerClassName) + "())";
+				messageClassSimpleName = "List<" + messageClassSimpleName + ">";
+				break;
+			case STRING:
+				messageDeserializerClassName = RawStringMessageDeserializer.class.getName();
+				getResponseDeserializerInstance = "RawStringMessageDeserializer.INSTANCE";
+				break;
+			default:
+				throw new IllegalArgumentException("Unexpected responseDataType" + websocketApi.getResponseDataType() + " for:" + websocketApi);
+			}
+			implementationGenerator.addImport(messageDeserializerClassName);
+			
 			implementationGenerator.appendToBody("\nprivate final WebsocketEndpoint<" + requestClassSimpleName + ", " + messageClassSimpleName + "> " + websocketEndpointVariableName + ";\n\n");
 			implementationConstructorBody.append("this." + websocketEndpointVariableName + " = "  
-												 		 + websocketEndpointFactoryVariableName + ".createWebsocketEndpoint(new " 
-												 		 + JavaCodeGenerationUtil.getClassNameWithoutPackage(messageDeserializerClassName) 
-												 		 + "());\n");
+												 		 + websocketEndpointFactoryVariableName + ".createWebsocketEndpoint(" 
+												 		 + getResponseDeserializerInstance 
+												 		 + ");\n");
 			interfaceGenerator.addImport(WebsocketListener.class);
 			implementationGenerator.addImport(WebsocketListener.class);
 			String subscribeMethodSignature = "String " 
@@ -570,6 +599,9 @@ public class ExchangeJavaWrapperGeneratorUtil {
 	
 	public static String generateWebsocketEndpointMessageClassName(ExchangeDescriptor exchangeDescriptor,
 			ExchangeApiDescriptor exchangeApiDescriptor, WebsocketEndpointDescriptor websocketApi) {
+		if (ResponseDataType.STRING.equals(websocketApi.getResponseDataType())) {
+			return String.class.getName();
+		}
 		return exchangeDescriptor.getBasePackage() + "." + exchangeApiDescriptor.getName().toLowerCase() + ".pojo."
 				+ JavaCodeGenerationUtil.firstLetterToUpperCase(exchangeDescriptor.getName()) 
 				+ JavaCodeGenerationUtil.firstLetterToUpperCase(websocketApi.getName())
