@@ -8,7 +8,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicLong;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,9 +18,6 @@ import org.slf4j.LoggerFactory;
 import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonToken;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ArrayNode;
 
 public abstract class AbstractWebsocketManager implements WebsocketManager {
 	
@@ -36,10 +35,15 @@ public abstract class AbstractWebsocketManager implements WebsocketManager {
 	
 	protected final AtomicBoolean connected = new AtomicBoolean(false);
 	protected final AtomicBoolean disposed = new AtomicBoolean(false);
+	private final AtomicLong messageReceivedCount = new AtomicLong(0);
 	
 	protected ScheduledExecutorService writeExecutor = null;
 	
 	private long reconnectDelay = -1L;
+	
+	private long noMessageTimeout = -1L;
+	
+	private NoMessageTimeoutTask noMessageTimeoutTask = null;
 	
 	protected AbstractWebsocketManager() {
 		this.writeExecutor = Executors.newSingleThreadScheduledExecutor(); 
@@ -111,6 +115,7 @@ public abstract class AbstractWebsocketManager implements WebsocketManager {
 		}
 		try {
 			doConnect();
+			scheduleNoMessageTimeoutTask(this.messageReceivedCount.get());
 		} catch (Exception exception) {
 			onError(new IOException("Error while connecting websocket", exception));
 		}
@@ -126,6 +131,9 @@ public abstract class AbstractWebsocketManager implements WebsocketManager {
 			return;
 		}
 		try {
+			if (this.noMessageTimeoutTask != null) {
+				this.noMessageTimeoutTask.cancelled.set(true);
+			}
 			doDisconnect();
 		} catch (Exception e) {
 			dispatchWebsocketError(new IOException("Error while disconnecting websocket", e));
@@ -174,6 +182,14 @@ public abstract class AbstractWebsocketManager implements WebsocketManager {
 		this.reconnectDelay = reconnectDelay;
 	}
 	
+	public long getNoMessageTimeout() {
+		return noMessageTimeout;
+	}
+
+	public void setNoMessageTimeout(long noMessageTimeout) {
+		this.noMessageTimeout = noMessageTimeout;
+	}
+	
 	protected void dispatchWebsocketError(IOException error) {
 		errorHandlers.forEach(h -> h.handleWebsocketError(error));
 	}
@@ -193,6 +209,7 @@ public abstract class AbstractWebsocketManager implements WebsocketManager {
 	}
 	
 	private void dispatchSingleMessage(String message) {
+		messageReceivedCount.incrementAndGet();
 		List<TopicManager> allTopics = new ArrayList<>(topics.size() + systemMessageHandlers.size());
 		allTopics.addAll(systemMessageHandlers);
 		allTopics.addAll(topics.values());
@@ -324,7 +341,7 @@ public abstract class AbstractWebsocketManager implements WebsocketManager {
 		}
 		return false;
 	}
-	
+
 	protected class TopicManager {
 		final WebsocketMessageTopicMatcher matcher;
 		final RawWebsocketMessageHandler messageHandler;
@@ -338,5 +355,51 @@ public abstract class AbstractWebsocketManager implements WebsocketManager {
 			this.messageHandler = messageHandler;
 			this.systemMessage = systemMessage;
 		}
+	}
+	
+	private void scheduleNoMessageTimeoutTask(long lastReceivedMessageCount) {
+		if (this.noMessageTimeout > 0) {
+			if (this.noMessageTimeoutTask != null) {
+				this.noMessageTimeoutTask.cancelled.set(true);
+			}
+			this.noMessageTimeoutTask = new NoMessageTimeoutTask(lastReceivedMessageCount);
+			if (log.isDebugEnabled()) {
+				log.debug("Will check in " + this.noMessageTimeout + "ms if received message count has increased, current:" + lastReceivedMessageCount);
+			}
+			writeExecutor.schedule(noMessageTimeoutTask, this.noMessageTimeout, TimeUnit.MILLISECONDS);
+		}
+	}
+	
+	private class NoMessageTimeoutTask implements Runnable {
+		
+		final AtomicBoolean cancelled = new AtomicBoolean(false);
+		
+		final long lastReceivedMessageCount;
+		public NoMessageTimeoutTask(long lastReceivedMessageCount) {
+			this.lastReceivedMessageCount = lastReceivedMessageCount;
+		}
+
+		@Override
+		public void run() {
+			if (isDisposed() || cancelled.get() || !isConnected()) {
+				if (log.isDebugEnabled()) {
+					log.debug("No executing " + this);
+				}
+				return;
+			}
+			long newLastReceivedMessageCount = messageReceivedCount.get();
+			try {
+				if (log.isDebugEnabled()) {
+					log.debug("Checking message count has increased, lastReceivedMessageCount:" + lastReceivedMessageCount + ", current:" + newLastReceivedMessageCount);
+				}
+				if (newLastReceivedMessageCount <= this.lastReceivedMessageCount) {
+					onError(new IOException("No message received last " + noMessageTimeout + "ms, on websocket" + AbstractWebsocketManager.this + " reconnecting websocket"));
+				}
+			} catch (Exception ex) {
+				log.error("Error while running NoMessageTimeout task", ex);
+			}
+			scheduleNoMessageTimeoutTask(newLastReceivedMessageCount);
+		}
+		
 	}
 }

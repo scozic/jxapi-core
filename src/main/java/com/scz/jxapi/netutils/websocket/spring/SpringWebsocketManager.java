@@ -92,7 +92,10 @@ public abstract class SpringWebsocketManager extends AbstractWebsocketManager {
 		if (webSocketSession == null) {
 			throw new IllegalStateException("Handshake failed to initialize websocketSession");
 		}
-		log.debug("Done handshake");
+		if (log.isDebugEnabled()) {
+			log.debug("Websocket " + baseUrl + ":Done handshake");
+		}
+		
 		if (this.heartBeatTaskCancelled != null) {
 			this.heartBeatTaskCancelled.set(true);
 		}
@@ -155,6 +158,10 @@ public abstract class SpringWebsocketManager extends AbstractWebsocketManager {
 	public void setNoHeartBeatResponseTimeout(long noHeartBeatResponseTimeout) {
 		this.noHeartBeatResponseTimeout = noHeartBeatResponseTimeout;
 	}
+	
+	public String toString() {
+		return getClass().getSimpleName() + "[" + baseUrl + "]";
+	}
 
 	private class SpringWebsocketHandler implements WebSocketHandler {
 		
@@ -182,7 +189,9 @@ public abstract class SpringWebsocketManager extends AbstractWebsocketManager {
 
 		@Override
 		public void handleTransportError(WebSocketSession session, Throwable exception) throws Exception {
-			log.debug("handleTransportError:session:" + session + ", throwable:" + exception, exception);
+			String errMsg = SpringWebsocketManager.this.toString() + "handleTransportError:session:" + session + ", throwable:" + exception;
+			log.error(errMsg, exception);
+			writeExecutor.execute(() -> onError(new IOException(errMsg, exception)));
 		}
 
 		@Override
