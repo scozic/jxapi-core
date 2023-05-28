@@ -19,11 +19,18 @@ public class RestEndpointDescriptor {
 	private String httpMethod;
 	
 	private List<EndpointParameter> parameters;
+	
 	private List<EndpointParameter> response;
 
 	private String urlParameters;
+	
 	private String urlParametersListSeparator;
+	
 	private boolean queryParams;
+	
+	private ResponseDataType responseDataType = ResponseDataType.JSON_OBJECT;
+	
+	private String responseObjectName;
 	
 	public String getName() {
 		return name;
@@ -95,6 +102,22 @@ public class RestEndpointDescriptor {
 
 	public void setQueryParams(boolean queryParams) {
 		this.queryParams = queryParams;
+	}
+	
+	public ResponseDataType getResponseDataType() {
+		return responseDataType;
+	}
+
+	public void setResponseDataType(ResponseDataType responseDataType) {
+		this.responseDataType = responseDataType;
+	}
+
+	public String getResponseObjectName() {
+		return responseObjectName;
+	}
+
+	public void setResponseObjectName(String responseObjectName) {
+		this.responseObjectName = responseObjectName;
 	}
 
 	public String toString() {

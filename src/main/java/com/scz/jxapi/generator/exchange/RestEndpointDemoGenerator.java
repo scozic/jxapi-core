@@ -4,6 +4,8 @@ import java.math.BigDecimal;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.apache.commons.lang3.StringUtils;
+
 import com.scz.jxapi.generator.JavaCodeGenerationUtil;
 import com.scz.jxapi.generator.JavaTypeGenerator;
 import com.scz.jxapi.util.TestJXApiProperties;
@@ -115,7 +117,7 @@ public class RestEndpointDemoGenerator extends JavaTypeGenerator {
 			}
 			return "List.of(" + strList.substring(1, strList.length() - 1) + ")";
 		case STRING:
-			return "\"" + v + "\"";
+			return "\"" + StringUtils.replace(v.toString(), "\"", "\\\"")  + "\"";
 		case TIMESTAMP:
 		case LONG:
 			if ("now()".equalsIgnoreCase(v.toString())) {
