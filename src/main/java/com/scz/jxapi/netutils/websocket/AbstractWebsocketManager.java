@@ -271,6 +271,11 @@ public abstract class AbstractWebsocketManager implements WebsocketManager {
 		}
 	}
 	
+	/**
+	 * To be called from {@link #writeExecutor} thread when an error occurred.
+	 * Will disconnect websocket, and try reconnect it after reconnect delay.
+	 * @param exception
+	 */
 	protected void onError(IOException exception) {
 		log.error("Error raised on Websocket [" + toString() + "]", exception);
 		this.dispatchWebsocketError(exception);
@@ -292,7 +297,7 @@ public abstract class AbstractWebsocketManager implements WebsocketManager {
 				connect();
 				resubscribeTopics();
 			} catch (IOException e) {
-				onError(e);
+				writeExecutor.execute(() -> onError(e));
 			}
 		}
 	}
