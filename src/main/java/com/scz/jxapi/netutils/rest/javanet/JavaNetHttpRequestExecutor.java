@@ -6,6 +6,7 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest.BodyPublishers;
 import java.net.http.HttpRequest.Builder;
 import java.net.http.HttpResponse.BodyHandlers;
+import java.util.List;
 import java.util.Map.Entry;
 
 import org.slf4j.Logger;
@@ -54,16 +55,18 @@ public class JavaNetHttpRequestExecutor implements HttpRequestExecutor {
 				throw new IllegalArgumentException("Unexpected verb:[" + request.getHttpMethod() + "] for request:" + request);
 			}
 			
-			for (Entry<String, String> entry: request.getHeaders().entrySet()) {
-				builder = builder.header(entry.getKey(), entry.getValue());
+			if (request.getHeaders() != null) {
+				for (Entry<String, List<String>> entry: request.getHeaders().entrySet()) {
+					for (String val : entry.getValue()) {
+						builder = builder.header(entry.getKey(), val);
+					}
+				}
 			}
 			
 			httpClient.sendAsync(builder.build(), BodyHandlers.ofString())
 		    	.thenAccept(r -> {
 		    		response.setResponseCode(r.statusCode());
-		    		r.headers().map().forEach((headerName, headerValues) -> {
-		    			response.setHeader(headerName, headerValues.toString());
-		    		});
+		    		response.setHeaders(r.headers().map());
 		    		response.setBody(r.body());
 		    		if (log.isDebugEnabled()) {
 		    			log.debug("Got response to request:[" + request + "], response[" + response + "]");

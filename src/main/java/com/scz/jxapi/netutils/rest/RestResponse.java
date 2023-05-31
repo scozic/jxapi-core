@@ -34,6 +34,10 @@ public class RestResponse<A> {
 		this.response = response;
 	}
 	
+	public boolean isOk() {
+		return exception == null && httpResponseCode == 200;
+	}
+	
 	public String toString() {
 		return getClass().getSimpleName() + EncodingUtil.pojoToString(this);
 	}

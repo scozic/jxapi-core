@@ -1,7 +1,5 @@
 package com.scz.jxapi.netutils.rest;
 
-import java.io.IOException;
-
 import com.scz.jxapi.netutils.deserialization.MessageDeserializer;
 
 public class DefaultRestEndpoint<R, A> implements RestEndpoint<R, A> {
@@ -25,7 +23,7 @@ public class DefaultRestEndpoint<R, A> implements RestEndpoint<R, A> {
 	}
 
 	@Override
-	public void call(RestRequest<R> request, Callback<RestResponse<A>> callback) throws IOException {
+	public void call(RestRequest<R> request, Callback<RestResponse<A>> callback) {
 		executor.execute(requestBuilder.build(request), httpResponse -> callback.handle(createRestResponse(httpResponse)));
 	}
 

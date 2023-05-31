@@ -20,9 +20,11 @@ import com.scz.jxapi.generator.PojoField;
 import com.scz.jxapi.generator.PojoGenerator;
 import com.scz.jxapi.netutils.deserialization.RawStringMessageDeserializer;
 import com.scz.jxapi.netutils.deserialization.json.field.ObjectListFieldDeserializer;
+import com.scz.jxapi.netutils.rest.Callback;
 import com.scz.jxapi.netutils.rest.RestEndpoint;
 import com.scz.jxapi.netutils.rest.RestEndpointUrlParameters;
 import com.scz.jxapi.netutils.rest.RestRequest;
+import com.scz.jxapi.netutils.rest.RestResponse;
 import com.scz.jxapi.netutils.websocket.DefaultWebsocketMessageTopicMatcher;
 import com.scz.jxapi.netutils.websocket.WebsocketEndpoint;
 import com.scz.jxapi.netutils.websocket.WebsocketListener;
@@ -384,14 +386,17 @@ public class ExchangeJavaWrapperGeneratorUtil {
 			implementationConstructorBody.append("this." + restEndpointVariableName + " = "  
 												 		 + restApiFactoryVariableName + ".createRestEndpoint(" + getResponseDeserializerInstance + ");\n");
 			
-			String apiMethodSignature = responseSimpleClassName + " " + apiMethodName + "(" + requestSimpleClassName + " request) throws IOException"; 
+			String apiMethodSignature = "void " + apiMethodName + "(" + requestSimpleClassName + " request, " 
+									    + Callback.class.getSimpleName() + "<" + RestResponse.class.getSimpleName() + "<" + responseSimpleClassName + ">> callback)"; 
 			
-			interfaceGenerator.addImport(IOException.class);
 			interfaceGenerator.appendToBody(JavaCodeGenerationUtil.generateJavaDoc(restApi.getDescription()) + "\n");
 			interfaceGenerator.appendToBody(apiMethodSignature + ";\n");
 			
-			implementationGenerator.addImport(IOException.class);
 			implementationGenerator.addImport(RestRequest.class);
+			implementationGenerator.addImport(Callback.class);
+			interfaceGenerator.addImport(Callback.class);
+			implementationGenerator.addImport(RestResponse.class);
+			interfaceGenerator.addImport(RestResponse.class);
 			StringBuilder apiMethodBody = new StringBuilder()
 					.append("if (log.isDebugEnabled())\n")
 					.append(JavaCodeGenerationUtil.INDENTATION)
@@ -400,22 +405,12 @@ public class ExchangeJavaWrapperGeneratorUtil {
 					.append(" ")
 					.append(restApi.getName())
 					.append(" > \" + request);\n")
-					.append(responseSimpleClassName)
-					.append(" response = ")
 					.append(restEndpointVariableName)
 					.append(".call(RestRequest.create(\"")
 					.append(restApi.getUrl())
 					.append("\", \"")
 					.append(restApi.getHttpMethod().toUpperCase())
-					.append("\", request));\n")
-					.append("if (log.isDebugEnabled())\n")
-					.append(JavaCodeGenerationUtil.INDENTATION)
-					.append("log.debug(\"")
-					.append(restApi.getHttpMethod().toUpperCase())
-					.append(" ")
-					.append(restApi.getName())
-					.append(" < \" + response);\n")
-					.append("return response;\n");
+					.append("\", request), callback);\n");
 			implementationGenerator.appendMethod("@Override\npublic " + apiMethodSignature, apiMethodBody.toString());
 		}
 		
@@ -430,10 +425,6 @@ public class ExchangeJavaWrapperGeneratorUtil {
 			implementationGenerator.addImport(requestClassName);
 			String messageClassName = generateWebsocketEndpointMessageClassName(exchangeDescriptor, exchangeApiDescriptor, websocketApi);
 			String messageClassSimpleName = JavaCodeGenerationUtil.getClassNameWithoutPackage(messageClassName);
-//			interfaceGenerator.addImport(messageClassName);
-//			implementationGenerator.addImport(messageClassName);
-//			String messageDeserializerClassName = JsonMessageDeserializerGenerator.getJsonMessageDeserializerClassName(messageClassName);
-//			implementationGenerator.addImport(messageDeserializerClassName);
 			String subscribeMethodName = "subscribe" + JavaCodeGenerationUtil.firstLetterToUpperCase(websocketApi.getName());
 			String unsubscribeMethodName = "unsubscribe" + JavaCodeGenerationUtil.firstLetterToUpperCase(websocketApi.getName());
 			String websocketEndpointVariableName = JavaCodeGenerationUtil.firstLetterToLowerCase(websocketApi.getName()) + "Ws";
