@@ -8,6 +8,7 @@ import java.net.http.HttpRequest.Builder;
 import java.net.http.HttpResponse.BodyHandlers;
 import java.util.List;
 import java.util.Map.Entry;
+import java.util.Optional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -43,7 +44,7 @@ public class JavaNetHttpRequestExecutor implements HttpRequestExecutor {
 				builder.GET();
 				break;
 			case "POST":
-				builder.POST(BodyPublishers.ofString(request.getBody()));
+				builder.POST(BodyPublishers.ofString(Optional.ofNullable(request.getBody()).orElse("")));
 				break;
 			case "DELETE":
 				builder.DELETE();
