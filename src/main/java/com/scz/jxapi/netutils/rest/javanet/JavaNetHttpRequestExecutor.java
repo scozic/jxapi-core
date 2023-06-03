@@ -9,11 +9,11 @@ import java.net.http.HttpResponse.BodyHandlers;
 import java.util.List;
 import java.util.Map.Entry;
 import java.util.Optional;
+import java.util.function.Consumer;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.scz.jxapi.netutils.rest.Callback;
 import com.scz.jxapi.netutils.rest.HttpRequest;
 import com.scz.jxapi.netutils.rest.HttpRequestExecutor;
 import com.scz.jxapi.netutils.rest.HttpResponse;
@@ -33,7 +33,7 @@ public class JavaNetHttpRequestExecutor implements HttpRequestExecutor {
 	}
 
 	@Override
-	public void execute(HttpRequest request, Callback<HttpResponse> callback) {
+	public void execute(HttpRequest request, Consumer<HttpResponse> callback) {
 		final HttpResponse response = new HttpResponse();
 		try {
 			if (log.isDebugEnabled())
@@ -72,13 +72,13 @@ public class JavaNetHttpRequestExecutor implements HttpRequestExecutor {
 		    		if (log.isDebugEnabled()) {
 		    			log.debug("Got response to request:[" + request + "], response[" + response + "]");
 		    		}
-		    		callback.handle(response);
+		    		callback.accept(response);
 		    	});
 			
 			
 		} catch (URISyntaxException e) {
 			response.setException(e);
-			callback.handle(response);
+			callback.accept(response);
 		}   
 	}
 

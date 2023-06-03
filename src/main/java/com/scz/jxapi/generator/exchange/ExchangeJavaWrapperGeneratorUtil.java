@@ -20,11 +20,10 @@ import com.scz.jxapi.generator.PojoField;
 import com.scz.jxapi.generator.PojoGenerator;
 import com.scz.jxapi.netutils.deserialization.RawStringMessageDeserializer;
 import com.scz.jxapi.netutils.deserialization.json.field.ObjectListFieldDeserializer;
-import com.scz.jxapi.netutils.rest.Callback;
+import com.scz.jxapi.netutils.rest.RestCallback;
 import com.scz.jxapi.netutils.rest.RestEndpoint;
 import com.scz.jxapi.netutils.rest.RestEndpointUrlParameters;
 import com.scz.jxapi.netutils.rest.RestRequest;
-import com.scz.jxapi.netutils.rest.RestResponse;
 import com.scz.jxapi.netutils.websocket.DefaultWebsocketMessageTopicMatcher;
 import com.scz.jxapi.netutils.websocket.WebsocketEndpoint;
 import com.scz.jxapi.netutils.websocket.WebsocketListener;
@@ -387,16 +386,14 @@ public class ExchangeJavaWrapperGeneratorUtil {
 												 		 + restApiFactoryVariableName + ".createRestEndpoint(" + getResponseDeserializerInstance + ");\n");
 			
 			String apiMethodSignature = "void " + apiMethodName + "(" + requestSimpleClassName + " request, " 
-									    + Callback.class.getSimpleName() + "<" + RestResponse.class.getSimpleName() + "<" + responseSimpleClassName + ">> callback)"; 
+									    + RestCallback.class.getSimpleName() + "<" + responseSimpleClassName + "> callback)"; 
 			
 			interfaceGenerator.appendToBody(JavaCodeGenerationUtil.generateJavaDoc(restApi.getDescription()) + "\n");
 			interfaceGenerator.appendToBody(apiMethodSignature + ";\n");
 			
 			implementationGenerator.addImport(RestRequest.class);
-			implementationGenerator.addImport(Callback.class);
-			interfaceGenerator.addImport(Callback.class);
-			implementationGenerator.addImport(RestResponse.class);
-			interfaceGenerator.addImport(RestResponse.class);
+			implementationGenerator.addImport(RestCallback.class);
+			interfaceGenerator.addImport(RestCallback.class);
 			StringBuilder apiMethodBody = new StringBuilder()
 					.append("if (log.isDebugEnabled())\n")
 					.append(JavaCodeGenerationUtil.INDENTATION)
