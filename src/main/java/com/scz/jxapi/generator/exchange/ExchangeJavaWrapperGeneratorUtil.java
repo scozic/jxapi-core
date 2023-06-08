@@ -20,7 +20,7 @@ import com.scz.jxapi.generator.PojoField;
 import com.scz.jxapi.generator.PojoGenerator;
 import com.scz.jxapi.netutils.deserialization.RawStringMessageDeserializer;
 import com.scz.jxapi.netutils.deserialization.json.field.ObjectListFieldDeserializer;
-import com.scz.jxapi.netutils.rest.RestCallback;
+import com.scz.jxapi.netutils.rest.FutureRestResponse;
 import com.scz.jxapi.netutils.rest.RestEndpoint;
 import com.scz.jxapi.netutils.rest.RestEndpointUrlParameters;
 import com.scz.jxapi.netutils.rest.RestRequest;
@@ -385,15 +385,14 @@ public class ExchangeJavaWrapperGeneratorUtil {
 			implementationConstructorBody.append("this." + restEndpointVariableName + " = "  
 												 		 + restApiFactoryVariableName + ".createRestEndpoint(" + getResponseDeserializerInstance + ");\n");
 			
-			String apiMethodSignature = "void " + apiMethodName + "(" + requestSimpleClassName + " request, " 
-									    + RestCallback.class.getSimpleName() + "<" + responseSimpleClassName + "> callback)"; 
+			String apiMethodSignature = FutureRestResponse.class.getSimpleName() + "<" + responseSimpleClassName + "> " + apiMethodName + "(" + requestSimpleClassName + " request)"; 
 			
 			interfaceGenerator.appendToBody(JavaCodeGenerationUtil.generateJavaDoc(restApi.getDescription()) + "\n");
 			interfaceGenerator.appendToBody(apiMethodSignature + ";\n");
 			
 			implementationGenerator.addImport(RestRequest.class);
-			implementationGenerator.addImport(RestCallback.class);
-			interfaceGenerator.addImport(RestCallback.class);
+			implementationGenerator.addImport(FutureRestResponse.class);
+			interfaceGenerator.addImport(FutureRestResponse.class);
 			StringBuilder apiMethodBody = new StringBuilder()
 					.append("if (log.isDebugEnabled())\n")
 					.append(JavaCodeGenerationUtil.INDENTATION)
@@ -402,12 +401,13 @@ public class ExchangeJavaWrapperGeneratorUtil {
 					.append(" ")
 					.append(restApi.getName())
 					.append(" > \" + request);\n")
+					.append(" return ")
 					.append(restEndpointVariableName)
 					.append(".call(RestRequest.create(\"")
 					.append(restApi.getUrl())
 					.append("\", \"")
 					.append(restApi.getHttpMethod().toUpperCase())
-					.append("\", request), callback);\n");
+					.append("\", request));\n");
 			implementationGenerator.appendMethod("@Override\npublic " + apiMethodSignature, apiMethodBody.toString());
 		}
 		

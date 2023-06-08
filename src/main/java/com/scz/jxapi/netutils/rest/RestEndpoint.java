@@ -14,6 +14,6 @@ public interface RestEndpoint<R, A> {
 	 * @param request
 	 * @throws IOException 
 	 */
-	void call(RestRequest<R> request, RestCallback<A> callback);
+	FutureRestResponse<A> call(RestRequest<R> request);
 	
 }

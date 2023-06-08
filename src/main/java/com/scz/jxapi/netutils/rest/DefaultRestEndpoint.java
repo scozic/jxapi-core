@@ -23,8 +23,10 @@ public class DefaultRestEndpoint<R, A> implements RestEndpoint<R, A> {
 	}
 
 	@Override
-	public void call(RestRequest<R> request, RestCallback<A> callback) {
-		executor.execute(requestBuilder.build(request), httpResponse -> callback.accept(createRestResponse(httpResponse)));
+	public FutureRestResponse<A> call(RestRequest<R> request) {
+		FutureRestResponse<A> callback = new FutureRestResponse<>();
+		executor.execute(requestBuilder.build(request), httpResponse -> callback.complete(createRestResponse(httpResponse)));
+		return callback;
 	}
 
 }
