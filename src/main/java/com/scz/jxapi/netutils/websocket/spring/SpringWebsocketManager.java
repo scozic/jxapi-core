@@ -300,7 +300,10 @@ public abstract class SpringWebsocketManager extends AbstractWebsocketManager {
 		@Override
 		public void run() {
 			try {
-				dispatchMessage(new String(textMessage.asBytes()));
+				String msg = new String(textMessage.asBytes());
+				if (log.isDebugEnabled())
+					log.debug("Dispatching message:" + msg);
+				dispatchMessage(msg);
 			} catch (Exception ex) {
 				log.error("Error while dispatching message [" + new String(textMessage.asBytes()) + "]", ex);
 			}

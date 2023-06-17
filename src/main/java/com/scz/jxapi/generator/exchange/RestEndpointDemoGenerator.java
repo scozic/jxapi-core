@@ -65,10 +65,16 @@ public class RestEndpointDemoGenerator extends JavaTypeGenerator {
 			.append(apiInterfaceClassName)
 			.append(".")
 			.append(apiMethodName)
-			.append("() API with request:\" + request);\n");
-		body.append("log.info(\"Response:\" + api.")
+			.append("() API with request:\" + request);\n")
+			
+//			.append(JavaCodeGenerationUtil.INDENTATION)
+			.append("log.info(\"Response:\" + ")
+			.append("api.")
 			.append(apiMethodName)
-			.append("(request));\nSystem.exit(0);");
+			.append("(request).get());\n")
+//			.append(JavaCodeGenerationUtil.INDENTATION)
+			.append("System.exit(0);");
+//			.append("});");
 		
 		appendMethod("public static void main(String[] args)", 
 					"try {\n" 
