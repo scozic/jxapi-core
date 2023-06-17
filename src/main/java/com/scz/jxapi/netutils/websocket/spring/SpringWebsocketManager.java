@@ -189,9 +189,7 @@ public abstract class SpringWebsocketManager extends AbstractWebsocketManager {
 
 		@Override
 		public void handleTransportError(WebSocketSession session, Throwable exception) throws Exception {
-			String errMsg = SpringWebsocketManager.this.toString() + "handleTransportError:session:" + session + ", throwable:" + exception;
-			log.error(errMsg, exception);
-			writeExecutor.execute(() -> onError(new IOException(errMsg, exception)));
+			onError(SpringWebsocketManager.this.toString() + ":handleTransportError:session:" + session, exception);
 		}
 
 		@Override
@@ -223,9 +221,7 @@ public abstract class SpringWebsocketManager extends AbstractWebsocketManager {
 
 		@Override
 		public void onFailure(Throwable ex) {
-			log.error("WebsocketSessionCallback:onFailure:" + ex, ex);
-			websocketSessionAvailable.countDown();
-			writeExecutor.execute(() -> onError(new IOException("Error raised on " + baseUrl + " websocket", ex)));
+			onError("Error raised on " + baseUrl + " websocket session callback", ex);
 		}
 		
 	}
@@ -249,11 +245,15 @@ public abstract class SpringWebsocketManager extends AbstractWebsocketManager {
 				send(createHeartBeatMessage());
 				scheduleHeartBeatTask(this);
 				scheduleHeartTimeoutBeatTask();
-			} catch (Exception ex) {
-				onError(new IOException("Error while sending heartbeat", ex));
+			} catch (Exception ex) {				
+				onError("Error while sending heartbeat", ex);
 			}
 			
 		}
+	}
+	
+	private void onError(String errorMsg, Throwable ex) {
+		writeExecutor.execute(() -> onError(new IOException(errorMsg, ex)));
 	}
 	
 	private class HeartBeakTimeoutTask implements Runnable {
@@ -275,13 +275,13 @@ public abstract class SpringWebsocketManager extends AbstractWebsocketManager {
 				// Raise error if max delay without heartbeat response timeout has elapsed
 				long timeElapsedSinceLastHeartBeat = System.currentTimeMillis() - lastHeartBeatTime.get();
 				if (noHeartBeatResponseTimeout > 0 && (timeElapsedSinceLastHeartBeat > noHeartBeatResponseTimeout)) {
-					onError(new IOException("No heartbeat response since " 
+					onError("No heartbeat response since " 
 											+ timeElapsedSinceLastHeartBeat 
 											+ "ms, timeout:" + noHeartBeatResponseTimeout 
-											+ " reconnect delay:" + getReconnectDelay()));
+											+ " reconnect delay:" + getReconnectDelay(), null);
 				}
 			} catch (Exception ex) {
-				onError(new IOException("Error while running heartbeat timeout task", ex));
+				onError("Error while running heartbeat timeout task", ex);
 			}
 			
 		}
@@ -300,7 +300,10 @@ public abstract class SpringWebsocketManager extends AbstractWebsocketManager {
 		@Override
 		public void run() {
 			try {
-				dispatchMessage(new String(textMessage.asBytes()));
+				String msg = new String(textMessage.asBytes());
+				if (log.isDebugEnabled())
+					log.debug("Dispatching message:" + msg);
+				dispatchMessage(msg);
 			} catch (Exception ex) {
 				log.error("Error while dispatching message [" + new String(textMessage.asBytes()) + "]", ex);
 			}
