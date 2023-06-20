@@ -1,7 +1,6 @@
 package com.scz.jxapi.util;
 
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.Future;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -12,7 +11,6 @@ public class TestCompleteFutureTask {
 
 	public static void main(String[] args) {
 		try {
-//			String myFutureImpl = new CompletableFuture<>();
 			CompletableFuture<String> myFuture = new CompletableFuture<>();
 			new Thread("WORKER") {
 				@Override

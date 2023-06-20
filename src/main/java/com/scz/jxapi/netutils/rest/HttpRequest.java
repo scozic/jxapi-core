@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.scz.jxapi.netutils.rest.ratelimits.RateLimitRule;
 import com.scz.jxapi.util.EncodingUtil;
 
 /**
@@ -93,7 +94,7 @@ public class HttpRequest {
 	public void setBody(String body) {
 		this.body = body;
 	}
-	
+
 	@Override
 	public String toString() {
 		return getClass().getSimpleName() + EncodingUtil.pojoToString(this);
