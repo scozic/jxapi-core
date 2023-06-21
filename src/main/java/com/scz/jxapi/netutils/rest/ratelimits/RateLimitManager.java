@@ -20,7 +20,7 @@ public class RateLimitManager {
 	 */
 	public static boolean isLimitReached(RateLimitRule rateLimit, int requestCount, int weight) {
 		int maxRequestCount = rateLimit.getMaxRequestCount();
-		if (maxRequestCount >= 0 && requestCount >=0 && requestCount >= maxRequestCount) {
+		if (maxRequestCount >= 0 && requestCount >=0 && requestCount > maxRequestCount) {
 			return true;
 		}
 		int totalWeight = rateLimit.getMaxTotalWeight();
@@ -96,6 +96,7 @@ public class RateLimitManager {
 		}
 		return mss;
 	}
+	
 	public RateLimitManagerStat getCurrentStat() {
 		return getCurrentStat(System.currentTimeMillis());
 	}
@@ -140,7 +141,6 @@ public class RateLimitManager {
 			}
 			return 0;
 		}
-		
 	}
 	
 }

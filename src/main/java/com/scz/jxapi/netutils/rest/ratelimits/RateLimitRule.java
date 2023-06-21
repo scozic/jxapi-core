@@ -16,6 +16,22 @@ import com.scz.jxapi.util.EncodingUtil;
  */
 public class RateLimitRule {
 	
+	public static RateLimitRule create(String id, long timeFrame, int maxRequestCount) {
+		RateLimitRule rule = new RateLimitRule();
+		rule.setId(id);
+		rule.setTimeFrame(timeFrame);
+		rule.setMaxRequestCount(maxRequestCount);
+		return rule;
+	}
+	
+	public static RateLimitRule createWeightedRule(String id, long timeFrame, int maxWeight) {
+		RateLimitRule rule = new RateLimitRule();
+		rule.setId(id);
+		rule.setTimeFrame(timeFrame);
+		rule.setMaxTotalWeight(maxWeight);
+		return rule;
+	}
+	
 	private String id;
 	
 	private long timeFrame;
