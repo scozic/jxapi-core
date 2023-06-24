@@ -13,6 +13,7 @@ import org.slf4j.LoggerFactory;
 import com.scz.jxapi.netutils.rest.FutureRestResponse;
 import com.scz.jxapi.netutils.rest.RestEndpoint;
 import com.scz.jxapi.netutils.rest.RestRequest;
+import com.scz.jxapi.util.ThreadUtil;
 
 /**
  * Enforces a list of applicable {@link RateLimitRule} to incoming requests. Submitted requests may be throttled before being actually sent, see {@link #submit(RestRequest, RestEndpoint)} 
@@ -23,7 +24,7 @@ public class RequestThrottler {
 
 	private final Map<String, RateLimitThrottling> rateLimitManagers = new HashMap<>();
 	
-	private ScheduledExecutorService writeExecutor = Executors.newSingleThreadScheduledExecutor();
+	private ScheduledExecutorService throttlingExecutor = null;
 	
 	/**
 	 * Submits a {@link RestRequest} for asynchronous execution, enforcing rate
@@ -53,6 +54,8 @@ public class RequestThrottler {
 	public synchronized <R, A> FutureRestResponse<A> submit(RestRequest<R> request, RestEndpoint<R, A> restEndpoint) {
 		List<RateLimitRule> rateLimits = request.getRateLimits();
 		if (rateLimits == null || rateLimits.isEmpty()) {
+			if (log.isDebugEnabled())
+				log.debug("No rate limit set, submitting now:" + request);
 			return restEndpoint.call(request);
 		}
 		for (RateLimitRule rateLimit: rateLimits) {
@@ -77,6 +80,8 @@ public class RequestThrottler {
 				return queue(request, restEndpoint, delay, rlManager);
 			}
 		}
+		if (log.isDebugEnabled())
+			log.debug("All request rules checked, submitting now:" + request);
 		return restEndpoint.call(request);
 	}
 	
@@ -93,12 +98,12 @@ public class RequestThrottler {
 	private <R, A> FutureRestResponse<A> queue(RestRequest<R> request, RestEndpoint<R, A> restEndpoint, long delay, RateLimitThrottling rateLimit) {
 		FutureRestResponse<A> r = new FutureRestResponse<>();
 		rateLimit.queued = r;
-		if (writeExecutor == null) {
-			writeExecutor = Executors.newSingleThreadScheduledExecutor();
+		if (throttlingExecutor == null) {
+			throttlingExecutor = Executors.newSingleThreadScheduledExecutor(ThreadUtil.createNamePrefixThreadFactory("THROTTLE"));
 		}
-		writeExecutor.schedule(() -> {
+		throttlingExecutor.schedule(() -> {
+			queuedRequestCompleted(rateLimit);
 			submit(request, restEndpoint).thenAccept(httpResponse -> {
-				queuedRequestCompleted(rateLimit);
 				r.complete(httpResponse);
 			});
 		}, delay, TimeUnit.MILLISECONDS);
