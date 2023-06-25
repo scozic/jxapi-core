@@ -9,7 +9,7 @@ import org.junit.Test;
 /**
  * Unit test for {@link JavaCodeGenerationUtil}
  */
-public class JUJavaCodeGenerationUtil {
+public class JavaCodeGenerationUtilTest {
 	
 	@Test
 	public void testIndent() {
