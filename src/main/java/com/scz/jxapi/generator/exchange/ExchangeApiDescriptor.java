@@ -2,6 +2,7 @@ package com.scz.jxapi.generator.exchange;
 
 import java.util.List;
 
+import com.scz.jxapi.netutils.rest.ratelimits.RateLimitRule;
 import com.scz.jxapi.util.EncodingUtil;
 
 /**
@@ -24,6 +25,8 @@ public class ExchangeApiDescriptor {
 	private String websocketEndpointFactory;
 	
 	private List<WebsocketEndpointDescriptor> websocketEndpoints;
+	
+	private List<RateLimitRule> rateLimits;
 
 	public List<RestEndpointDescriptor> getRestEndpoints() {
 		return restEndpoints;
@@ -71,6 +74,14 @@ public class ExchangeApiDescriptor {
 
 	public void setWebsocketEndpointFactory(String websocketEndpointFactory) {
 		this.websocketEndpointFactory = websocketEndpointFactory;
+	}
+	
+	public List<RateLimitRule> getRateLimits() {
+		return rateLimits;
+	}
+
+	public void setRateLimits(List<RateLimitRule> rateLimits) {
+		this.rateLimits = rateLimits;
 	}
 	
 	@Override

@@ -32,6 +32,8 @@ public class RestEndpointDescriptor {
 	
 	private String responseObjectName;
 	
+	private List<String> rateLimits;
+ 	
 	public String getName() {
 		return name;
 	}
@@ -118,6 +120,14 @@ public class RestEndpointDescriptor {
 
 	public void setResponseObjectName(String responseObjectName) {
 		this.responseObjectName = responseObjectName;
+	}
+	
+	public List<String> getRateLimits() {
+		return rateLimits;
+	}
+
+	public void setRateLimits(List<String> rateLimits) {
+		this.rateLimits = rateLimits;
 	}
 
 	public String toString() {

@@ -25,6 +25,22 @@ public class RequestThrottler {
 	private final Map<String, RateLimitThrottling> rateLimitManagers = new HashMap<>();
 	
 	private ScheduledExecutorService throttlingExecutor = null;
+
+	private final String apiName;
+	
+	public RequestThrottler() {
+		this(null);
+	}
+	
+	public RequestThrottler(String apiName) {
+		this.apiName = apiName;
+	}
+	
+	public String getApiName() {
+		return apiName;
+	}
+
+	
 	
 	/**
 	 * Submits a {@link RestRequest} for asynchronous execution, enforcing rate
@@ -99,6 +115,10 @@ public class RequestThrottler {
 		FutureRestResponse<A> r = new FutureRestResponse<>();
 		rateLimit.queued = r;
 		if (throttlingExecutor == null) {
+			String namePrefix = "THROTTLE";
+			if (this.apiName != null) {
+				namePrefix = this.apiName + "-" + namePrefix;
+			}
 			throttlingExecutor = Executors.newSingleThreadScheduledExecutor(ThreadUtil.createNamePrefixThreadFactory("THROTTLE"));
 		}
 		throttlingExecutor.schedule(() -> {
