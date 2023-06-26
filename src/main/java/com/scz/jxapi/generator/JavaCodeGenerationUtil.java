@@ -176,6 +176,6 @@ public class JavaCodeGenerationUtil {
 	public static void generateLoggerDeclaration(JavaTypeGenerator typeGenerator) {
 		typeGenerator.addImport(Logger.class);
 		typeGenerator.addImport(LoggerFactory.class);
-		typeGenerator.appendToBody("private static final Logger log = LoggerFactory.getLogger(" + typeGenerator.getSimpleName() + ".class);\n");
+		typeGenerator.appendToBody("private static final Logger log = LoggerFactory.getLogger(" + typeGenerator.getSimpleName() + ".class);\n\n");
 	}
 }

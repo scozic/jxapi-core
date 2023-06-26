@@ -83,7 +83,7 @@ public class ExchangeApiInterfaceImplementationGenerator extends JavaTypeGenerat
 		
 		if (hasRateLimits) {
 			addImport(RequestThrottler.class);
-			finalMembersDeclarations.append("private final " 
+			finalMembersDeclarations.append("\nprivate final " 
 										+ RequestThrottler.class.getSimpleName() 
 										+ " " + REQUEST_THROTTLER_VARIABLE_NAME 
 										+ " = new " + RequestThrottler.class.getSimpleName() + "();");
@@ -104,7 +104,7 @@ public class ExchangeApiInterfaceImplementationGenerator extends JavaTypeGenerat
 					  							 + " "
 					  							 + restApiFactoryVariableName
 					  							 + " = new "
-					  							 + restApiFactorySimpleClassName + "();\n");
+					  							 + restApiFactorySimpleClassName + "();");
 		}
 		
 		String websocketEndpointFactoryFullClassName = exchangeApiDescriptor.getWebsocketEndpointFactory();
@@ -117,7 +117,7 @@ public class ExchangeApiInterfaceImplementationGenerator extends JavaTypeGenerat
 						 + " "
 						 + websocketEndpointFactoryVariableName
 						 + " = new "
-						 + websocketEndpointFactorySimpleClassName + "();\n");
+						 + websocketEndpointFactorySimpleClassName + "();");
 		}
 		
 		constructorBody.append("this." + restApiFactoryVariableName + ".setProperties(properties);\n");
@@ -145,7 +145,7 @@ public class ExchangeApiInterfaceImplementationGenerator extends JavaTypeGenerat
 		}
 		if (finalMembersDeclarations.length() > 0) {
 			appendToBody(finalMembersDeclarations.toString());
-			appendToBody("\n");	
+			appendToBody("\n\n");	
 		}
 		addImport(Properties.class);
 		appendMethod("public " + simpleImplementationName + "(Properties properties)", constructorBody.toString());
@@ -167,7 +167,7 @@ public class ExchangeApiInterfaceImplementationGenerator extends JavaTypeGenerat
 		if (staticMembersDeclaration.length() > 0) {
 			staticMembersDeclaration.append("\n");
 		}
-		staticMembersDeclaration.append("private static final " + staticMemberDeclaration);
+		staticMembersDeclaration.append("private static final ").append( staticMemberDeclaration);//.append("\n");
 	}
 
 	private void generateWebsocketApiMethodsDeclarations(WebsocketEndpointDescriptor websocketApi) {
@@ -209,11 +209,11 @@ public class ExchangeApiInterfaceImplementationGenerator extends JavaTypeGenerat
 		}
 		addImport(messageDeserializerClassName);
 		
-		finalMembersDeclarations.append("\nprivate final WebsocketEndpoint<" + requestClassSimpleName + ", " + messageClassSimpleName + "> " + websocketEndpointVariableName + ";\n");
+		finalMembersDeclarations.append("\nprivate final WebsocketEndpoint<" + requestClassSimpleName + ", " + messageClassSimpleName + "> " + websocketEndpointVariableName + ";");
 		constructorBody.append("this." + websocketEndpointVariableName + " = "  
 											 		 + websocketEndpointFactoryVariableName + ".createWebsocketEndpoint(" 
 											 		 + getResponseDeserializerInstance 
-											 		 + ");\n");
+											 		 + ");");
 		addImport(WebsocketListener.class);
 		String subscribeMethodSignature = "String " 
 										  + subscribeMethodName 
@@ -331,7 +331,7 @@ public class ExchangeApiInterfaceImplementationGenerator extends JavaTypeGenerat
 		String apiMethodName = JavaCodeGenerationUtil.firstLetterToLowerCase(restApi.getName());
 		String restEndpointVariableName = apiMethodName + "Api";
 		
-		finalMembersDeclarations.append("\nprivate final RestEndpoint<" + requestSimpleClassName + ", " + responseSimpleClassName + "> " + restEndpointVariableName + ";\n");
+		finalMembersDeclarations.append("\nprivate final RestEndpoint<" + requestSimpleClassName + ", " + responseSimpleClassName + "> " + restEndpointVariableName + ";");
 		constructorBody.append("this." + restEndpointVariableName + " = "  + restApiFactoryVariableName + ".createRestEndpoint(" + getResponseDeserializerInstance + ");\n");
 		
 		String apiMethodSignature = FutureRestResponse.class.getSimpleName() + "<" + responseSimpleClassName + "> " + apiMethodName + "(" + requestSimpleClassName + " request)"; 
@@ -379,7 +379,7 @@ public class ExchangeApiInterfaceImplementationGenerator extends JavaTypeGenerat
 				apiMethodBody.append(", ")
 							 .append(restApi.getRequestWeight().intValue());
 			}
-			apiMethodBody.append(")), ")
+			apiMethodBody.append("), ")
 				 .append(restEndpointVariableName)
 				 .append(");\n");
 		}
@@ -416,9 +416,9 @@ public class ExchangeApiInterfaceImplementationGenerator extends JavaTypeGenerat
 			String declaration = RateLimitRule.class.getSimpleName() + " " + variableName + " = ";
 			addImport(RateLimitRule.class);
 			if (rateLimitRule.getMaxTotalWeight() >= 0) {
-				declaration +=  "RateLimitRule.createWeightedRule(name, " + rateLimitRule.getTimeFrame()+ ", " + rateLimitRule.getMaxTotalWeight() + ");";
+				declaration +=  "RateLimitRule.createWeightedRule(\"" + name + "\", " + rateLimitRule.getTimeFrame()+ ", " + rateLimitRule.getMaxTotalWeight() + ");";
 			} else {
-				declaration +=  "RateLimitRule.createRule(name, " + rateLimitRule.getTimeFrame()+ ", " + rateLimitRule.getMaxRequestCount() + ");";
+				declaration +=  "RateLimitRule.createRule(\"" + name + "\", " + rateLimitRule.getTimeFrame()+ ", " + rateLimitRule.getMaxRequestCount() + ");";
 			}
 			addPrivateStaticFinalMember(declaration);
 		}
@@ -427,6 +427,7 @@ public class ExchangeApiInterfaceImplementationGenerator extends JavaTypeGenerat
 	}
 	
 	private void generateRateLimitListVariable(String variableName, List<String> rateLimitRuleVariableNames) {
+		addImport(List.class);
 		StringBuilder declaration = new StringBuilder()
 										.append("List<")
 										.append(RateLimitRule.class.getSimpleName())

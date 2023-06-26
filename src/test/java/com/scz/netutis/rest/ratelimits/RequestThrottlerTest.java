@@ -31,7 +31,7 @@ public class RequestThrottlerTest {
 		RequestThrottler throttler = new RequestThrottler();
 		RestEndpointStub endpoint = new RestEndpointStub();
 		
-		RateLimitRule rule1 = RateLimitRule.create("RULE1", 1000L, 1);
+		RateLimitRule rule1 = RateLimitRule.createRule("RULE1", 1000L, 1);
 		RateLimitRule rule2 = RateLimitRule.createWeightedRule("RULE2", 3000L, 100);
 		
 		RestRequestStub request1 = new RestRequestStub(rule1, rule2);

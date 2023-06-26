@@ -16,7 +16,7 @@ import com.scz.jxapi.util.EncodingUtil;
  */
 public class RateLimitRule {
 	
-	public static RateLimitRule create(String id, long timeFrame, int maxRequestCount) {
+	public static RateLimitRule createRule(String id, long timeFrame, int maxRequestCount) {
 		RateLimitRule rule = new RateLimitRule();
 		rule.setId(id);
 		rule.setTimeFrame(timeFrame);
