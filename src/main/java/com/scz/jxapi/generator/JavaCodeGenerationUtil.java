@@ -146,6 +146,23 @@ public class JavaCodeGenerationUtil {
 		}
 		return "";
 	}
+	
+	public static String getStaticVariableName(String camelCaseVariableName) {
+		if (camelCaseVariableName == null || camelCaseVariableName.isEmpty()) {
+			return camelCaseVariableName;
+		}
+		StringBuilder res = new StringBuilder();
+		res.append(Character.toUpperCase(camelCaseVariableName.charAt(0)));
+		for (int i = 1; i < camelCaseVariableName.length(); i++) {
+			char c = camelCaseVariableName.charAt(i);
+			if (Character.isUpperCase(c)) {
+				res.append("_").append(c);
+			} else {
+				res.append(Character.toUpperCase(c));
+			}
+		}
+		return res.toString();
+	}
 
 	public static void deletePath(Path path) throws IOException {
 		if (!path.toFile().exists())
@@ -159,6 +176,6 @@ public class JavaCodeGenerationUtil {
 	public static void generateLoggerDeclaration(JavaTypeGenerator typeGenerator) {
 		typeGenerator.addImport(Logger.class);
 		typeGenerator.addImport(LoggerFactory.class);
-		typeGenerator.appendToBody("private static final Logger log = LoggerFactory.getLogger(" + typeGenerator.getSimpleName() + ".class);\n\n");
+		typeGenerator.appendToBody("private static final Logger log = LoggerFactory.getLogger(" + typeGenerator.getSimpleName() + ".class);\n");
 	}
 }

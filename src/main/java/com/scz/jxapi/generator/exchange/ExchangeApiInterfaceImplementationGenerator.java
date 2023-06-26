@@ -16,6 +16,8 @@ import com.scz.jxapi.netutils.deserialization.json.field.ObjectListFieldDeserial
 import com.scz.jxapi.netutils.rest.FutureRestResponse;
 import com.scz.jxapi.netutils.rest.RestEndpoint;
 import com.scz.jxapi.netutils.rest.RestRequest;
+import com.scz.jxapi.netutils.rest.ratelimits.RateLimitRule;
+import com.scz.jxapi.netutils.rest.ratelimits.RequestThrottler;
 import com.scz.jxapi.netutils.websocket.DefaultWebsocketMessageTopicMatcher;
 import com.scz.jxapi.netutils.websocket.WebsocketEndpoint;
 import com.scz.jxapi.netutils.websocket.WebsocketListener;
@@ -24,6 +26,8 @@ import com.scz.jxapi.netutils.websocket.WebsocketSubscribeRequest;
 import com.scz.jxapi.util.EncodingUtil;
 
 public class ExchangeApiInterfaceImplementationGenerator extends JavaTypeGenerator {
+	
+	private static final String REQUEST_THROTTLER_VARIABLE_NAME = "requestThrottler";
 	
 	private final ExchangeDescriptor exchangeDescriptor;
 	
@@ -40,6 +44,9 @@ public class ExchangeApiInterfaceImplementationGenerator extends JavaTypeGenerat
 	private final String restApiFactoryVariableName = "restEndpointFactory";
 	private final String websocketEndpointFactoryVariableName = "websocketEndpointFactory";
 	private final String websocketEndpointFactoryFullClassName;
+	private final boolean hasRateLimits;
+	private List<String> apiGlobalRateLimitVariables;
+	private int rateLimitCounter;
 	
 	
 	public ExchangeApiInterfaceImplementationGenerator(ExchangeDescriptor exchangeDescriptor, ExchangeApiDescriptor exchangeApiDescriptor) {
@@ -53,6 +60,7 @@ public class ExchangeApiInterfaceImplementationGenerator extends JavaTypeGenerat
 		setDescription("Actual implementation of {@link " + simpleInterfaceName + "}<br/>\n"
 				   + JavaCodeGenerationUtil.GENERATED_CODE_WARNING);
 		websocketEndpointFactoryFullClassName = exchangeApiDescriptor.getWebsocketEndpointFactory();
+		hasRateLimits = checkHasRateLimits();
 	}
 
 	@Override
@@ -62,23 +70,38 @@ public class ExchangeApiInterfaceImplementationGenerator extends JavaTypeGenerat
 		constructorBody = new StringBuilder();
 		methodSignatures = new ArrayList<>();
 		methods = new HashMap<>();
-		
+		rateLimitCounter = 0;
+		apiGlobalRateLimitVariables = new ArrayList<>();
 		
 		String fullInterfaceName = ExchangeJavaWrapperGeneratorUtil.getApiInterfaceClassName(exchangeDescriptor, exchangeApiDescriptor);
 		String simpleInterfaceName = JavaCodeGenerationUtil.getClassNameWithoutPackage(fullInterfaceName);
 		String simpleImplementationName = simpleInterfaceName + "Impl";
 		
+		if (hasRateLimits) {
+			addImport(RequestThrottler.class);
+			finalMembersDeclarations.append("private final " 
+										+ RequestThrottler.class.getSimpleName() 
+										+ " " + REQUEST_THROTTLER_VARIABLE_NAME 
+										+ " = new " + RequestThrottler.class.getSimpleName() + "();");
+			List<RateLimitRule> apiGlobalLimits = exchangeApiDescriptor.getRateLimits();
+			if (apiGlobalLimits != null && !apiGlobalLimits.isEmpty()) {
+				for (RateLimitRule apiGlobalLimit: apiGlobalLimits) {
+					apiGlobalRateLimitVariables.add(generateRateLimitVariable(apiGlobalLimit, exchangeApiDescriptor.getName() + rateLimitCounter++));
+				}
+			}
+		}
 
 		String restApiFactoryFullClassName = exchangeApiDescriptor.getRestEndpointFactory();
-		addImport(restApiFactoryFullClassName);
-		String restApiFactorySimpleClassName = JavaCodeGenerationUtil.getClassNameWithoutPackage(restApiFactoryFullClassName);
-		
-		finalMembersDeclarations.append("\nprivate final "
-				  							 + restApiFactorySimpleClassName
-				  							 + " "
-				  							 + restApiFactoryVariableName
-				  							 + " = new "
-				  							 + restApiFactorySimpleClassName + "();\n");
+		if (restApiFactoryFullClassName != null) {
+			addImport(restApiFactoryFullClassName);
+			String restApiFactorySimpleClassName = JavaCodeGenerationUtil.getClassNameWithoutPackage(restApiFactoryFullClassName);	
+			finalMembersDeclarations.append("\nprivate final "
+					  							 + restApiFactorySimpleClassName
+					  							 + " "
+					  							 + restApiFactoryVariableName
+					  							 + " = new "
+					  							 + restApiFactorySimpleClassName + "();\n");
+		}
 		
 		String websocketEndpointFactoryFullClassName = exchangeApiDescriptor.getWebsocketEndpointFactory();
 		
@@ -98,24 +121,31 @@ public class ExchangeApiInterfaceImplementationGenerator extends JavaTypeGenerat
 			constructorBody.append("this." + websocketEndpointFactoryVariableName + ".setProperties(properties);\n");
 		}
 		
-		for (RestEndpointDescriptor restApi: exchangeApiDescriptor.getRestEndpoints()) {
-			generateRestEndpointMethodDeclaration(restApi);
+		if (exchangeApiDescriptor.getRestEndpoints() != null) {
+			for (RestEndpointDescriptor restApi: exchangeApiDescriptor.getRestEndpoints()) {
+				generateRestEndpointMethodDeclaration(restApi);
+			}
 		}
 		
-		for (WebsocketEndpointDescriptor websocketApi : exchangeApiDescriptor.getWebsocketEndpoints()) {
-			generateWebsocketApiMethodsDeclarations(websocketApi);
+		if (exchangeApiDescriptor.getWebsocketEndpoints() != null) {
+			for (WebsocketEndpointDescriptor websocketApi : exchangeApiDescriptor.getWebsocketEndpoints()) {
+				generateWebsocketApiMethodsDeclarations(websocketApi);
+			}
 		}
 		
-		JavaCodeGenerationUtil.generateLoggerDeclaration(this);
-		
-		appendToBody(staticMembersDeclaration.toString());
-		appendToBody(finalMembersDeclarations.toString());
 		appendToBody("\n");
-		
+		JavaCodeGenerationUtil.generateLoggerDeclaration(this);
+		if (staticMembersDeclaration.length() > 0) {
+			appendToBody(staticMembersDeclaration.toString());
+			appendToBody("\n");
+		}
+		if (finalMembersDeclarations.length() > 0) {
+			appendToBody(finalMembersDeclarations.toString());
+			appendToBody("\n");	
+		}
 		addImport(Properties.class);
 		appendMethod("public " + simpleImplementationName + "(Properties properties)", constructorBody.toString());
 		appendToBody("\n");
-		
 		for (String methodSignature : methodSignatures) {
 			appendMethod(methodSignature, methods.get(methodSignature));
 			appendToBody("\n");
@@ -127,6 +157,13 @@ public class ExchangeApiInterfaceImplementationGenerator extends JavaTypeGenerat
 	private void addMethod(String methodDeclaration, String methodBody) {
 		methodSignatures.add(methodDeclaration);
 		methods.put(methodDeclaration, methodBody);
+	}
+	
+	private void addPrivateStaticFinalMember(String staticMemberDeclaration) {
+		if (staticMembersDeclaration.length() > 0) {
+			staticMembersDeclaration.append("\n");
+		}
+		staticMembersDeclaration.append("private static final " + staticMemberDeclaration);
 	}
 
 	private void generateWebsocketApiMethodsDeclarations(WebsocketEndpointDescriptor websocketApi) {
@@ -304,14 +341,96 @@ public class ExchangeApiInterfaceImplementationGenerator extends JavaTypeGenerat
 				.append(restApi.getHttpMethod().toUpperCase())
 				.append(" ")
 				.append(restApi.getName())
-				.append(" > \" + request);\n")
-				.append(" return ")
-				.append(restEndpointVariableName)
+				.append(" > \" + request);\nreturn ");
+		
+		List<String> rateLimitVariables = new ArrayList<>();
+		if (apiGlobalRateLimitVariables != null) {
+			rateLimitVariables.addAll(apiGlobalRateLimitVariables);
+		}
+		if (restApi.getRateLimits() != null) {
+			for (RateLimitRule rateLimit: restApi.getRateLimits()) {
+				rateLimitVariables.add(generateRateLimitVariable(rateLimit, restApi.getName() + rateLimitCounter++));
+			}
+		}
+		
+		if (rateLimitVariables.isEmpty()) {
+			apiMethodBody.append(restEndpointVariableName)
 				.append(".call(RestRequest.create(\"")
 				.append(restApi.getUrl())
 				.append("\", \"")
 				.append(restApi.getHttpMethod().toUpperCase())
 				.append("\", request));\n");
+		} else {
+			String rateLimitsVariable = "RATE_LIMITS_" + JavaCodeGenerationUtil.getStaticVariableName(restEndpointVariableName);
+			generateRateLimitListVariable(rateLimitsVariable, rateLimitVariables);
+			apiMethodBody.append(REQUEST_THROTTLER_VARIABLE_NAME)
+				 .append(".submit(")
+				 .append("RestRequest.create(\"")
+				 .append(restApi.getUrl())
+				 .append("\", \"")
+				 .append(restApi.getHttpMethod().toUpperCase())
+				 .append("\", request, ")
+				 .append(rateLimitsVariable);
+			if (restApi.getRequestWeight() != null) {
+				apiMethodBody.append(", ")
+							 .append(restApi.getRequestWeight().intValue());
+			}
+			apiMethodBody.append(")), ")
+				 .append(restEndpointVariableName)
+				 .append(");\n");
+		}
+		
 		addMethod("@Override\npublic " + apiMethodSignature, apiMethodBody.toString());
+	}
+	
+	private boolean checkHasRateLimits() {
+		List<RateLimitRule> rateLimits = exchangeApiDescriptor.getRateLimits();
+		if (rateLimits != null && rateLimits.size() > 0) {
+			return true;
+		}
+		for (RestEndpointDescriptor restEndpoint : exchangeApiDescriptor.getRestEndpoints()) {
+			rateLimits = restEndpoint.getRateLimits();
+			if (rateLimits != null && rateLimits.size() > 0) {
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	private String generateRateLimitVariable(RateLimitRule rateLimitRule, String defaultName) {
+		String name = rateLimitRule.getId();
+		if (name == null) {
+			name = defaultName;
+		}
+		if (name == null) {
+			throw new IllegalArgumentException("rateLimitRule:" + rateLimitRule + " should have an id in API " + exchangeApiDescriptor.getName());
+		}
+		String variableName = "RATE_LIMIT_" + JavaCodeGenerationUtil.getStaticVariableName(name);
+		String declaration = RateLimitRule.class.getSimpleName() + " " + variableName + " = ";
+		addImport(RateLimitRule.class);
+		if (rateLimitRule.getMaxTotalWeight() >= 0) {
+			declaration +=  "RateLimitRule.createWeightedRule(name, " + rateLimitRule.getTimeFrame()+ ", " + rateLimitRule.getMaxTotalWeight() + ");";
+		} else {
+			declaration +=  "RateLimitRule.createRule(name, " + rateLimitRule.getTimeFrame()+ ", " + rateLimitRule.getMaxRequestCount() + ");";
+		}
+		addPrivateStaticFinalMember(declaration);
+		return variableName;
+	}
+	
+	private void generateRateLimitListVariable(String variableName, List<String> rateLimitRuleVariableNames) {
+		StringBuilder declaration = new StringBuilder()
+										.append("List<")
+										.append(RateLimitRule.class.getSimpleName())
+										.append("> ")
+										.append(variableName)
+										.append(" = List.of(");
+		for (int i = 0; i < rateLimitRuleVariableNames.size(); i++) {
+			declaration.append(rateLimitRuleVariableNames.get(i));
+			if (i < rateLimitRuleVariableNames.size() - 1) {
+				declaration.append(", ");
+			}
+		}
+		declaration.append(");");
+		addPrivateStaticFinalMember(declaration.toString());
 	}
 }

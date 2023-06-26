@@ -100,4 +100,12 @@ public class JavaCodeGenerationUtilTest {
 		Assert.assertEquals("hellO", JavaCodeGenerationUtil.firstLetterToLowerCase("HellO"));
 	}
 	
+	@Test
+	public void testGetStaticVariableName() {
+		Assert.assertNull(JavaCodeGenerationUtil.getStaticVariableName(null));
+		Assert.assertEquals("", JavaCodeGenerationUtil.getStaticVariableName(""));
+		Assert.assertEquals("X", JavaCodeGenerationUtil.getStaticVariableName("x"));
+		Assert.assertEquals("MY_VARIABLE_NAME0", JavaCodeGenerationUtil.getStaticVariableName("myVariableName0"));
+	}
+	
 }
