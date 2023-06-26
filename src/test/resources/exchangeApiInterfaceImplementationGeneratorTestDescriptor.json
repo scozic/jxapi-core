@@ -85,9 +85,24 @@
 					"httpMethod": "GET",
 					"description": "Fetch market information of symbols that can be traded",
 					"url": "https://com.sample.mycex/exchangeInfo",
-					"rateLimits": [
-						{"timeFrame": 3000,  "maxRequestCount": 30}
+					"rateLimits": [{"id":"exchangeInfoRateLimit", "timeFrame": 3000,  "maxRequestCount": 30}],
+					"parameters": [
+							{"name":"symbols", "type": "STRING_LIST", "description":"The list of symbol to fetch market information for. Leave empty to fetch all markets", "sampleValue":""}
 					],
+					"response": [
+						{"name":"responseCode", "type": "INT", "description":"Request response code", "sampleValue":"0"},
+						{"name":"payload", "type": "OBJECT_LIST", "description":"List of market information for each requested symbol", "parameters":[
+							{"name":"symbol", "type": "STRING", "description":"Market symbol", "sampleValue":"BTC_USDT"},
+							{"name":"minOrderSize", "type": "BIGDECIMAL", "description":"Minimum order amount", "sampleValue":"0.0001"}
+						]}
+					]
+				},
+				{
+					"name": "exchangeInfo2",
+					"httpMethod": "GET",
+					"description": "Same as exchangeInfo, uses same rate limit rule defined below without timeframe and maxRequest count attributes, because using same id is enough to reference previous.",
+					"url": "https://com.sample.mycex/exchangeInfo2",
+					"rateLimits": [{"id":"exchangeInfoRateLimit"}],
 					"parameters": [
 							{"name":"symbols", "type": "STRING_LIST", "description":"The list of symbol to fetch market information for. Leave empty to fetch all markets", "sampleValue":""}
 					],

@@ -3,9 +3,11 @@ package com.scz.jxapi.generator.exchange;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import com.scz.jxapi.generator.JavaCodeGenerationUtil;
@@ -46,6 +48,7 @@ public class ExchangeApiInterfaceImplementationGenerator extends JavaTypeGenerat
 	private final String websocketEndpointFactoryFullClassName;
 	private final boolean hasRateLimits;
 	private List<String> apiGlobalRateLimitVariables;
+	private Set<String> endpointSpecificRateLimitIds;
 	private int rateLimitCounter;
 	
 	
@@ -72,6 +75,7 @@ public class ExchangeApiInterfaceImplementationGenerator extends JavaTypeGenerat
 		methods = new HashMap<>();
 		rateLimitCounter = 0;
 		apiGlobalRateLimitVariables = new ArrayList<>();
+		endpointSpecificRateLimitIds = new HashSet<>();
 		
 		String fullInterfaceName = ExchangeJavaWrapperGeneratorUtil.getApiInterfaceClassName(exchangeDescriptor, exchangeApiDescriptor);
 		String simpleInterfaceName = JavaCodeGenerationUtil.getClassNameWithoutPackage(fullInterfaceName);
@@ -406,14 +410,19 @@ public class ExchangeApiInterfaceImplementationGenerator extends JavaTypeGenerat
 			throw new IllegalArgumentException("rateLimitRule:" + rateLimitRule + " should have an id in API " + exchangeApiDescriptor.getName());
 		}
 		String variableName = "RATE_LIMIT_" + JavaCodeGenerationUtil.getStaticVariableName(name);
-		String declaration = RateLimitRule.class.getSimpleName() + " " + variableName + " = ";
-		addImport(RateLimitRule.class);
-		if (rateLimitRule.getMaxTotalWeight() >= 0) {
-			declaration +=  "RateLimitRule.createWeightedRule(name, " + rateLimitRule.getTimeFrame()+ ", " + rateLimitRule.getMaxTotalWeight() + ");";
-		} else {
-			declaration +=  "RateLimitRule.createRule(name, " + rateLimitRule.getTimeFrame()+ ", " + rateLimitRule.getMaxRequestCount() + ");";
+		// Add new rule definition if no one exists with same name. Otherwise, rule is expected to be a reference to existing one.
+		if (!endpointSpecificRateLimitIds.contains(name)) {
+			endpointSpecificRateLimitIds.add(name);
+			String declaration = RateLimitRule.class.getSimpleName() + " " + variableName + " = ";
+			addImport(RateLimitRule.class);
+			if (rateLimitRule.getMaxTotalWeight() >= 0) {
+				declaration +=  "RateLimitRule.createWeightedRule(name, " + rateLimitRule.getTimeFrame()+ ", " + rateLimitRule.getMaxTotalWeight() + ");";
+			} else {
+				declaration +=  "RateLimitRule.createRule(name, " + rateLimitRule.getTimeFrame()+ ", " + rateLimitRule.getMaxRequestCount() + ");";
+			}
+			addPrivateStaticFinalMember(declaration);
 		}
-		addPrivateStaticFinalMember(declaration);
+		
 		return variableName;
 	}
 	
