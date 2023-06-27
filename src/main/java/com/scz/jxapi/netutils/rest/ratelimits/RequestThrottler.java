@@ -119,7 +119,7 @@ public class RequestThrottler {
 			if (this.apiName != null) {
 				namePrefix = this.apiName + "-" + namePrefix;
 			}
-			throttlingExecutor = Executors.newSingleThreadScheduledExecutor(ThreadUtil.createNamePrefixThreadFactory("THROTTLE"));
+			throttlingExecutor = Executors.newSingleThreadScheduledExecutor(ThreadUtil.createNamePrefixThreadFactory(namePrefix));
 		}
 		throttlingExecutor.schedule(() -> {
 			queuedRequestCompleted(rateLimit);

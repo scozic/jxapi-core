@@ -83,10 +83,17 @@ public class ExchangeApiInterfaceImplementationGenerator extends JavaTypeGenerat
 		
 		if (hasRateLimits) {
 			addImport(RequestThrottler.class);
-			finalMembersDeclarations.append("\nprivate final " 
-										+ RequestThrottler.class.getSimpleName() 
-										+ " " + REQUEST_THROTTLER_VARIABLE_NAME 
-										+ " = new " + RequestThrottler.class.getSimpleName() + "();");
+			finalMembersDeclarations.append("\nprivate final ")
+									.append(RequestThrottler.class.getSimpleName())
+									.append(" ")
+									.append(REQUEST_THROTTLER_VARIABLE_NAME)
+									.append(" = new ")
+									.append(RequestThrottler.class.getSimpleName())
+									.append("(\"")
+									.append(exchangeDescriptor.getName())
+									.append(exchangeApiDescriptor.getName())
+									.append("\");");
+
 			List<RateLimitRule> apiGlobalLimits = exchangeApiDescriptor.getRateLimits();
 			if (apiGlobalLimits != null && !apiGlobalLimits.isEmpty()) {
 				for (RateLimitRule apiGlobalLimit: apiGlobalLimits) {
