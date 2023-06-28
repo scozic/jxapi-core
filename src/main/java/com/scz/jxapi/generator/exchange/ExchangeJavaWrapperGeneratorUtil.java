@@ -330,7 +330,7 @@ public class ExchangeJavaWrapperGeneratorUtil {
 		String fullImplementationName = pkgPrefix + simpleImplementationName;
 		
 		JavaTypeGenerator interfaceGenerator = new JavaTypeGenerator(fullInterfaceName);
-		interfaceGenerator.setDescription(exchangeDescriptor.getName() + " CEX API</br>\n" 
+		interfaceGenerator.setDescription(exchangeDescriptor.getName() + " API</br>\n" 
 				+ exchangeDescriptor.getDescription() + "\n" 
 				+ JavaCodeGenerationUtil.GENERATED_CODE_WARNING);
 		interfaceGenerator.setTypeDeclaration("public interface ");

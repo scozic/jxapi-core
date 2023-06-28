@@ -22,7 +22,7 @@ public class TestJXApiProperties {
 			props.load(in);
 		}
 		} catch (Exception ex) {
-			throw new RuntimeException("Failed to load " + TEST_CEX_API_PROPERTIES_FILE + " properties file");
+			throw new RuntimeException("Failed to load " + TEST_CEX_API_PROPERTIES_FILE + " properties file", ex);
 		}
 		return props;
 	}
