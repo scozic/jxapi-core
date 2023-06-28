@@ -6,6 +6,9 @@ import java.util.Properties;
 import com.scz.jxapi.generator.JavaCodeGenerationUtil;
 import com.scz.jxapi.generator.JavaTypeGenerator;
 
+/**
+ * Generates source code of implementation of an interface  {@link ExchangeDescriptor}
+ */
 public class ExchangeInterfaceImplementationGenerator extends JavaTypeGenerator {
 	
 	public static String getExchangeInterfaceName(ExchangeDescriptor exchangeDescriptor) {
@@ -25,7 +28,6 @@ public class ExchangeInterfaceImplementationGenerator extends JavaTypeGenerator 
 		String simpleInterfaceName = JavaCodeGenerationUtil.firstLetterToUpperCase(exchangeDescriptor.getName()) + "Exchange";
 		String fullInterfaceName = pkgPrefix + simpleInterfaceName;
 		String simpleImplementationName = simpleInterfaceName + "Impl";
-		
 		setTypeDeclaration("public class ");
 		setImplementedInterfaces(Arrays.asList(fullInterfaceName));
 		setDescription("Actual implementation of {@link " + simpleInterfaceName + "}<br/>\n"
@@ -41,8 +43,8 @@ public class ExchangeInterfaceImplementationGenerator extends JavaTypeGenerator 
 			addImport(apiClassName);
 			addImport(apiImplClassName);
 			String apiVariableName = JavaCodeGenerationUtil.firstLetterToLowerCase(apiSimpleClassName);
-			implementationConstructorBody.append("this." + apiVariableName + " = new " + simpleApiImplClassName + "(properties);\n");
 			appendToBody("private final " + apiSimpleClassName + " " + apiVariableName + ";\n");
+			implementationConstructorBody.append("this." + apiVariableName + " = new " + simpleApiImplClassName + "(properties);\n");
 		}
 		addImport(Properties.class);
 		

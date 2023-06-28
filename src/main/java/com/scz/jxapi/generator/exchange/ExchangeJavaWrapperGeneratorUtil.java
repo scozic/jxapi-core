@@ -11,7 +11,6 @@ import java.util.Properties;
 import org.apache.commons.lang3.StringUtils;
 
 import com.scz.jxapi.generator.JavaCodeGenerationUtil;
-import com.scz.jxapi.generator.JavaTypeGenerator;
 import com.scz.jxapi.generator.JsonMessageDeserializerGenerator;
 import com.scz.jxapi.generator.JsonPojoSerializerGenerator;
 import com.scz.jxapi.generator.PojoField;
@@ -21,7 +20,7 @@ import com.scz.jxapi.netutils.websocket.WebsocketSubscribeParameters;
 import com.scz.jxapi.util.EncodingUtil;
 
 /**
- * Helper methods for generation of Java classes of a given crypto exchange wrapper
+ * Helper methods for generation of Java classes of a given exchange wrapper
  */
 public class ExchangeJavaWrapperGeneratorUtil {
 	
@@ -323,47 +322,9 @@ public class ExchangeJavaWrapperGeneratorUtil {
 	}
 
 	public static void generateExchangeInterface(ExchangeDescriptor exchangeDescriptor, Path outputFolder) throws IOException {
-		String pkgPrefix =  exchangeDescriptor.getBasePackage() + ".";
-		String simpleInterfaceName = JavaCodeGenerationUtil.firstLetterToUpperCase(exchangeDescriptor.getName()) + "Exchange";
-		String fullInterfaceName = pkgPrefix + simpleInterfaceName;
-		String simpleImplementationName = simpleInterfaceName + "Impl";
-		String fullImplementationName = pkgPrefix + simpleImplementationName;
-		
-		JavaTypeGenerator interfaceGenerator = new JavaTypeGenerator(fullInterfaceName);
-		interfaceGenerator.setDescription(exchangeDescriptor.getName() + " API</br>\n" 
-				+ exchangeDescriptor.getDescription() + "\n" 
-				+ JavaCodeGenerationUtil.GENERATED_CODE_WARNING);
-		interfaceGenerator.setTypeDeclaration("public interface ");
-		
-		JavaTypeGenerator implementationGenerator = new JavaTypeGenerator(fullImplementationName);
-		implementationGenerator.setTypeDeclaration("public class ");
-		implementationGenerator.setImplementedInterfaces(Arrays.asList(fullInterfaceName));
-		implementationGenerator.setDescription("Actual implementation of {@link " + simpleInterfaceName + "}<br/>\n"
-				   + JavaCodeGenerationUtil.GENERATED_CODE_WARNING);
-		
-		StringBuilder implementationConstructorBody = new StringBuilder();
-		for (ExchangeApiDescriptor api: exchangeDescriptor.getApis()) {
-			String apiClassName = getApiInterfaceClassName(exchangeDescriptor, api);
-			String apiSimpleClassName = JavaCodeGenerationUtil.getClassNameWithoutPackage(apiClassName);
-			String apiImplClassName = apiClassName + "Impl";
-			String simpleApiImplClassName = JavaCodeGenerationUtil.getClassNameWithoutPackage(apiImplClassName);
-			String getApiMethodSignature = apiSimpleClassName + " get" + apiSimpleClassName + "()";
-			
-			interfaceGenerator.addImport(apiClassName);
-			interfaceGenerator.appendToBody("\n" + getApiMethodSignature + ";\n");
-			
-			implementationGenerator.addImport(apiClassName);
-			implementationGenerator.addImport(apiImplClassName);
-			String apiVariableName = JavaCodeGenerationUtil.firstLetterToLowerCase(apiSimpleClassName);
-			implementationGenerator.appendToBody("private final " + apiSimpleClassName + " " + apiVariableName + ";\n\n");
-			
-			implementationConstructorBody.append("this." + apiVariableName + " = new " + simpleApiImplClassName + "(properties);\n");
-			implementationGenerator.appendMethod("@Override\npublic " + getApiMethodSignature, "return this." + apiVariableName + ";\n");
-			implementationGenerator.appendToBody("\n");
-		}
-		
+		ExchangeInterfaceGenerator interfaceGenerator = new ExchangeInterfaceGenerator(exchangeDescriptor);
+		ExchangeInterfaceImplementationGenerator implementationGenerator = new ExchangeInterfaceImplementationGenerator(exchangeDescriptor);
 		implementationGenerator.addImport(Properties.class);
-		implementationGenerator.appendMethod("public " + simpleImplementationName + "(Properties properties)", implementationConstructorBody.toString());
 		interfaceGenerator.writeJavaFile(outputFolder);
 		implementationGenerator.writeJavaFile(outputFolder);
 	}
