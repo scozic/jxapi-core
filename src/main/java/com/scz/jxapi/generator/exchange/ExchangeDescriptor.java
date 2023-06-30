@@ -2,6 +2,7 @@ package com.scz.jxapi.generator.exchange;
 
 import java.util.List;
 
+import com.scz.jxapi.netutils.rest.ratelimits.RateLimitRule;
 import com.scz.jxapi.util.EncodingUtil;
 
 /**
@@ -15,6 +16,8 @@ public class ExchangeDescriptor {
 	private String basePackage;
 	
 	private List<ExchangeApiDescriptor> apis;
+	
+	private List<RateLimitRule> rateLimits;
 
 	public List<ExchangeApiDescriptor> getApis() {
 		return apis;
@@ -46,6 +49,14 @@ public class ExchangeDescriptor {
 
 	public void setBasePackage(String basePackage) {
 		this.basePackage = basePackage;
+	}
+	
+	public List<RateLimitRule> getRateLimits() {
+		return rateLimits;
+	}
+
+	public void setRateLimits(List<RateLimitRule> rateLimits) {
+		this.rateLimits = rateLimits;
 	}
 	
 	public String toString() {

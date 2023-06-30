@@ -1,21 +1,29 @@
 package com.scz.jxapi.generator.exchange;
 
 import java.util.Arrays;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Properties;
+import java.util.Set;
 
 import com.scz.jxapi.generator.JavaCodeGenerationUtil;
 import com.scz.jxapi.generator.JavaTypeGenerator;
+import com.scz.jxapi.netutils.rest.ratelimits.RateLimitRule;
+import com.scz.jxapi.netutils.rest.ratelimits.RequestThrottler;
 
 /**
  * Generates source code of implementation of an interface  {@link ExchangeDescriptor}
  */
 public class ExchangeInterfaceImplementationGenerator extends JavaTypeGenerator {
 	
+	private static final String REQUEST_THROTTLER_VARIABLE_NAME = "requestThrottler";
+	
 	public static String getExchangeInterfaceName(ExchangeDescriptor exchangeDescriptor) {
 		return exchangeDescriptor.getBasePackage() + "." + JavaCodeGenerationUtil.firstLetterToUpperCase(exchangeDescriptor.getName()) + "ExchangeImpl";
 	}
 
-	private final ExchangeDescriptor exchangeDescriptor; 
+	private final ExchangeDescriptor exchangeDescriptor;
+	private final Set<String> rateLimitVariableNames = new HashSet<>();
 	
 	public ExchangeInterfaceImplementationGenerator(ExchangeDescriptor exchangeDescriptor) {
 		super(getExchangeInterfaceName(exchangeDescriptor));
@@ -34,6 +42,23 @@ public class ExchangeInterfaceImplementationGenerator extends JavaTypeGenerator 
 				   + JavaCodeGenerationUtil.GENERATED_CODE_WARNING);
 		appendToBody("\n");
 		
+		List<RateLimitRule> rateLimits = exchangeDescriptor.getRateLimits();
+		boolean hasRateLimits = rateLimits != null && !rateLimits.isEmpty();
+		if (hasRateLimits) {
+			rateLimits.forEach(rateLimit -> generateRateLimitVariable(rateLimit));
+//			generateRateLimitListVariable(JavaCodeGenerationUtil.getStaticVariableName(exchangeDescriptor.getName()) + "_RATE_LIMIT");
+			addImport(RequestThrottler.class);
+			appendToBody("\nprivate final ");
+			appendToBody(RequestThrottler.class.getSimpleName());
+			appendToBody(" ");
+			appendToBody(REQUEST_THROTTLER_VARIABLE_NAME);
+			appendToBody(" = new ");
+			appendToBody(RequestThrottler.class.getSimpleName());
+			appendToBody("(\"");
+			appendToBody(exchangeDescriptor.getName());
+			appendToBody("\");\n");
+		}
+		
 		StringBuilder implementationConstructorBody = new StringBuilder();
 		for (ExchangeApiDescriptor api: exchangeDescriptor.getApis()) {
 			String apiClassName = ExchangeJavaWrapperGeneratorUtil.getApiInterfaceClassName(exchangeDescriptor, api);
@@ -44,7 +69,17 @@ public class ExchangeInterfaceImplementationGenerator extends JavaTypeGenerator 
 			addImport(apiImplClassName);
 			String apiVariableName = JavaCodeGenerationUtil.firstLetterToLowerCase(apiSimpleClassName);
 			appendToBody("private final " + apiSimpleClassName + " " + apiVariableName + ";\n");
-			implementationConstructorBody.append("this." + apiVariableName + " = new " + simpleApiImplClassName + "(properties);\n");
+			implementationConstructorBody
+					.append("this.")
+					.append(apiVariableName)
+					.append(" = new ")
+					.append(simpleApiImplClassName)
+					.append("(properties");
+			if (hasRateLimits) {
+				implementationConstructorBody.append(", ").append(REQUEST_THROTTLER_VARIABLE_NAME);
+			}
+			
+			implementationConstructorBody.append(");\n");
 		}
 		addImport(Properties.class);
 		
@@ -61,5 +96,50 @@ public class ExchangeInterfaceImplementationGenerator extends JavaTypeGenerator 
 		
 		return super.generate();
 	}
+	
+	private String generateRateLimitVariable(RateLimitRule rateLimitRule) {
+		String name = rateLimitRule.getId();
+		if (name == null) {
+			throw new IllegalArgumentException("rateLimitRule:" + rateLimitRule + " should have an id");
+		}
+		String variableName = ExchangeJavaWrapperGeneratorUtil.generateRateLimitVariableName(name);
+		// Add new rule definition if no one exists with same name. Otherwise, rule is expected to be a reference to existing one.
+		if (!rateLimitVariableNames.contains(name)) {
+			rateLimitVariableNames.add(name);
+			String declaration = RateLimitRule.class.getSimpleName() + " " + variableName + " = ";
+			addImport(RateLimitRule.class);
+			if (rateLimitRule.getMaxTotalWeight() >= 0) {
+				declaration +=  "RateLimitRule.createWeightedRule(\"" + name + "\", " + rateLimitRule.getTimeFrame()+ ", " + rateLimitRule.getMaxTotalWeight() + ");";
+			} else {
+				declaration +=  "RateLimitRule.createRule(\"" + name + "\", " + rateLimitRule.getTimeFrame()+ ", " + rateLimitRule.getMaxRequestCount() + ");";
+			}
+			appendToBody("private static final " + declaration + "\n");
+		}
+		
+		return variableName;
+	}
+	
+//	private void addPrivateStaticFinalMember(String staticMemberDeclaration) {
+//		appendToBody("private static final " + staticMemberDeclaration);
+//	}
+	
+//	private void generateRateLimitListVariable(String variableName) {
+//		addImport(List.class);
+//		StringBuilder declaration = new StringBuilder()
+//										.append("List<")
+//										.append(RateLimitRule.class.getSimpleName())
+//										.append("> ")
+//										.append(variableName)
+//										.append(" = List.of(");
+//		List<String> rateLimitRuleVariableNames = List.copyOf(rateLimitVariableNames);
+//		for (int i = 0; i < rateLimitRuleVariableNames.size(); i++) {
+//			declaration.append(rateLimitRuleVariableNames.get(i));
+//			if (i < rateLimitRuleVariableNames.size() - 1) {
+//				declaration.append(", ");
+//			}
+//		}
+//		declaration.append(");");
+//		addPrivateStaticFinalMember(declaration.toString());
+//	}
 
 }

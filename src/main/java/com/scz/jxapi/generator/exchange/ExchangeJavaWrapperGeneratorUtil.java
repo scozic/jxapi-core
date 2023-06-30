@@ -414,5 +414,24 @@ public class ExchangeJavaWrapperGeneratorUtil {
 		}
 		return s.append(");\n").toString();
 	}
+	
+	public static boolean exchangeApiHasRateLimits(ExchangeApiDescriptor exchangeApiDescriptor, ExchangeDescriptor exchangeDescriptor) {
+		if (exchangeDescriptor.getRateLimits() != null && !exchangeDescriptor.getRateLimits().isEmpty()) {
+			return true;
+		}
+		if (exchangeApiDescriptor.getRateLimits() != null && !exchangeDescriptor.getRateLimits().isEmpty()) {
+			return true;
+		}
+		for (RestEndpointDescriptor api : exchangeApiDescriptor.getRestEndpoints()) {
+			if (api.getRateLimits() != null && !api.getRateLimits().isEmpty()) {
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	public static String generateRateLimitVariableName(String rateLimitName) {
+		return "RATE_LIMIT_" + JavaCodeGenerationUtil.getStaticVariableName(rateLimitName);
+	}
 
 }
