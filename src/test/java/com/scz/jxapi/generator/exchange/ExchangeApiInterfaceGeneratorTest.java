@@ -30,7 +30,7 @@ public class ExchangeApiInterfaceGeneratorTest {
 				+ " * The market data API of MyTestCEX\n"
 				+ " * <br><strong>THIS CODE IS GENERATED. DO NOT EDIT MANUALLY!</strong>\n"
 				+ " */\n"
-				+ "public interface  MyTestCEXMarketDataApi {\n"
+				+ "public interface MyTestCEXMarketDataApi {\n"
 				+ "  /**\n"
 				+ "   * Fetch market information of symbols that can be traded\n"
 				+ "   */\n"

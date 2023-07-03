@@ -20,7 +20,7 @@ public class ExchangeApiInterfaceGenerator extends JavaTypeGenerator {
 		setDescription(exchangeApiDescriptor.getName() + " CEX " + exchangeApiDescriptor.getName() + " API</br>\n" 
 				+ exchangeApiDescriptor.getDescription() + "\n" 
 				+ JavaCodeGenerationUtil.GENERATED_CODE_WARNING);
-		setTypeDeclaration("public interface ");
+		setTypeDeclaration("public interface");
 	}
 	
 	@Override

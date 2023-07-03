@@ -20,7 +20,7 @@ public class ExchangeInterfaceGeneratorTest {
 				+ " * A sample CEX descriptor file\n"
 				+ " * <br><strong>THIS CODE IS GENERATED. DO NOT EDIT MANUALLY!</strong>\n"
 				+ " */\n"
-				+ "public interface  MyTestCEXExchange {\n"
+				+ "public interface MyTestCEXExchange {\n"
 				+ "  \n"
 				+ "  MyTestCEXMarketDataApi getMyTestCEXMarketDataApi();\n"
 				+ "}\n", 

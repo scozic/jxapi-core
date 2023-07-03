@@ -434,4 +434,8 @@ public class ExchangeJavaWrapperGeneratorUtil {
 		return "RATE_LIMIT_" + JavaCodeGenerationUtil.getStaticVariableName(rateLimitName);
 	}
 
+	public static String getExchangeInterfaceName(ExchangeDescriptor exchangeDescriptor) {
+		return exchangeDescriptor.getBasePackage() + "." + JavaCodeGenerationUtil.firstLetterToUpperCase(exchangeDescriptor.getName()) + "Exchange";
+	}
+
 }

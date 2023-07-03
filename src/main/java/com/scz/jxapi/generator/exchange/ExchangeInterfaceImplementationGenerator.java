@@ -36,7 +36,7 @@ public class ExchangeInterfaceImplementationGenerator extends JavaTypeGenerator 
 		String simpleInterfaceName = JavaCodeGenerationUtil.firstLetterToUpperCase(exchangeDescriptor.getName()) + "Exchange";
 		String fullInterfaceName = pkgPrefix + simpleInterfaceName;
 		String simpleImplementationName = simpleInterfaceName + "Impl";
-		setTypeDeclaration("public class ");
+		setTypeDeclaration("public class");
 		setImplementedInterfaces(Arrays.asList(fullInterfaceName));
 		setDescription("Actual implementation of {@link " + simpleInterfaceName + "}<br/>\n"
 				   + JavaCodeGenerationUtil.GENERATED_CODE_WARNING);
@@ -46,7 +46,6 @@ public class ExchangeInterfaceImplementationGenerator extends JavaTypeGenerator 
 		boolean hasRateLimits = rateLimits != null && !rateLimits.isEmpty();
 		if (hasRateLimits) {
 			rateLimits.forEach(rateLimit -> generateRateLimitVariable(rateLimit));
-//			generateRateLimitListVariable(JavaCodeGenerationUtil.getStaticVariableName(exchangeDescriptor.getName()) + "_RATE_LIMIT");
 			addImport(RequestThrottler.class);
 			appendToBody("\nprivate final ");
 			appendToBody(RequestThrottler.class.getSimpleName());
@@ -113,33 +112,10 @@ public class ExchangeInterfaceImplementationGenerator extends JavaTypeGenerator 
 			} else {
 				declaration +=  "RateLimitRule.createRule(\"" + name + "\", " + rateLimitRule.getTimeFrame()+ ", " + rateLimitRule.getMaxRequestCount() + ");";
 			}
-			appendToBody("private static final " + declaration + "\n");
+			appendToBody("public static final " + declaration + "\n");
 		}
 		
 		return variableName;
 	}
-	
-//	private void addPrivateStaticFinalMember(String staticMemberDeclaration) {
-//		appendToBody("private static final " + staticMemberDeclaration);
-//	}
-	
-//	private void generateRateLimitListVariable(String variableName) {
-//		addImport(List.class);
-//		StringBuilder declaration = new StringBuilder()
-//										.append("List<")
-//										.append(RateLimitRule.class.getSimpleName())
-//										.append("> ")
-//										.append(variableName)
-//										.append(" = List.of(");
-//		List<String> rateLimitRuleVariableNames = List.copyOf(rateLimitVariableNames);
-//		for (int i = 0; i < rateLimitRuleVariableNames.size(); i++) {
-//			declaration.append(rateLimitRuleVariableNames.get(i));
-//			if (i < rateLimitRuleVariableNames.size() - 1) {
-//				declaration.append(", ");
-//			}
-//		}
-//		declaration.append(");");
-//		addPrivateStaticFinalMember(declaration.toString());
-//	}
 
 }

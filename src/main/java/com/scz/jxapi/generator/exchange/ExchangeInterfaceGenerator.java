@@ -8,14 +8,10 @@ import com.scz.jxapi.generator.JavaTypeGenerator;
  */
 public class ExchangeInterfaceGenerator extends JavaTypeGenerator {
 	
-	public static String getExchangeInterfaceName(ExchangeDescriptor exchangeDescriptor) {
-		return exchangeDescriptor.getBasePackage() + "." + JavaCodeGenerationUtil.firstLetterToUpperCase(exchangeDescriptor.getName()) + "Exchange";
-	}
-
 	private final ExchangeDescriptor exchangeDescriptor;
 	
 	public ExchangeInterfaceGenerator(ExchangeDescriptor exchangeDescriptor) {
-		super(getExchangeInterfaceName(exchangeDescriptor));
+		super(ExchangeJavaWrapperGeneratorUtil.getExchangeInterfaceName(exchangeDescriptor));
 		this.exchangeDescriptor = exchangeDescriptor;
 	}
 	
@@ -24,7 +20,7 @@ public class ExchangeInterfaceGenerator extends JavaTypeGenerator {
 		setDescription(exchangeDescriptor.getName() + " API</br>\n" 
 				+ exchangeDescriptor.getDescription() + "\n" 
 				+ JavaCodeGenerationUtil.GENERATED_CODE_WARNING);
-		setTypeDeclaration("public interface ");
+		setTypeDeclaration("public interface");
 		for (ExchangeApiDescriptor api: exchangeDescriptor.getApis()) {
 			String apiClassName = ExchangeJavaWrapperGeneratorUtil.getApiInterfaceClassName(exchangeDescriptor, api);
 			String apiSimpleClassName = JavaCodeGenerationUtil.getClassNameWithoutPackage(apiClassName);

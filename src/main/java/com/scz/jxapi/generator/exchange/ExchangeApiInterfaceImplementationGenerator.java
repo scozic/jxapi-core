@@ -55,7 +55,7 @@ public class ExchangeApiInterfaceImplementationGenerator extends JavaTypeGenerat
 		super(ExchangeJavaWrapperGeneratorUtil.getApiInterfaceClassName(exchangeDescriptor, exchangeApiDescriptor) + "Impl");
 		this.exchangeDescriptor = exchangeDescriptor;
 		this.exchangeApiDescriptor = exchangeApiDescriptor;
-		setTypeDeclaration("public class ");
+		setTypeDeclaration("public class");
 		String fullInterfaceName = ExchangeJavaWrapperGeneratorUtil.getApiInterfaceClassName(exchangeDescriptor, exchangeApiDescriptor);
 		String simpleInterfaceName = JavaCodeGenerationUtil.getClassNameWithoutPackage(fullInterfaceName);
 		setImplementedInterfaces(Arrays.asList(fullInterfaceName));
@@ -82,7 +82,7 @@ public class ExchangeApiInterfaceImplementationGenerator extends JavaTypeGenerat
 		
 		boolean hasExchangeLimits = exchangeDescriptor.getRateLimits() != null 
 										&& !exchangeDescriptor.getRateLimits().isEmpty();
-		if (hasRateLimits) {
+		if (hasRateLimits || hasExchangeLimits) {
 			addImport(RequestThrottler.class);
 			StringBuilder requestThrottlerDeclaration = new StringBuilder().append("\nprivate final ")
 					.append(RequestThrottler.class.getSimpleName())
@@ -175,7 +175,11 @@ public class ExchangeApiInterfaceImplementationGenerator extends JavaTypeGenerat
 							.append(simpleImplementationName)
 							.append("(Properties properties");
 		if (hasExchangeLimits) {
-			constructorSignature.append(", ").append(REQUEST_THROTTLER_VARIABLE_NAME);
+			addImport(RequestThrottler.class);
+			constructorSignature.append(", ")
+								.append(RequestThrottler.class.getSimpleName())
+								.append(" ")
+								.append(REQUEST_THROTTLER_VARIABLE_NAME);
 		}
 		constructorSignature.append(")");
 		appendMethod(constructorSignature.toString(), constructorBody.toString());
@@ -403,6 +407,7 @@ public class ExchangeApiInterfaceImplementationGenerator extends JavaTypeGenerat
 				.append(restApi.getHttpMethod().toUpperCase())
 				.append("\", request));\n");
 		} else {
+			addImport(RateLimitRule.class);
 			String rateLimitsVariable = "RATE_LIMITS_" + JavaCodeGenerationUtil.getStaticVariableName(restEndpointVariableName);
 			generateRateLimitListVariable(rateLimitsVariable, rateLimitVariables);
 			apiMethodBody.append(REQUEST_THROTTLER_VARIABLE_NAME)
