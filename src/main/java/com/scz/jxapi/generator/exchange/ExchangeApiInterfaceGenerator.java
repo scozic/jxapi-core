@@ -6,6 +6,7 @@ import com.scz.jxapi.generator.JavaCodeGenerationUtil;
 import com.scz.jxapi.generator.JavaTypeGenerator;
 import com.scz.jxapi.netutils.rest.FutureRestResponse;
 import com.scz.jxapi.netutils.websocket.WebsocketListener;
+import com.scz.jxapi.util.HasProperties;
 
 public class ExchangeApiInterfaceGenerator extends JavaTypeGenerator {
 	
@@ -21,6 +22,7 @@ public class ExchangeApiInterfaceGenerator extends JavaTypeGenerator {
 				+ exchangeApiDescriptor.getDescription() + "\n" 
 				+ JavaCodeGenerationUtil.GENERATED_CODE_WARNING);
 		setTypeDeclaration("public interface");
+		this.setParentClassName(HasProperties.class.getName());
 	}
 	
 	@Override

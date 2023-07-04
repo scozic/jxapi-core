@@ -82,6 +82,10 @@ public class ExchangeApiInterfaceImplementationGenerator extends JavaTypeGenerat
 		
 		boolean hasExchangeLimits = exchangeDescriptor.getRateLimits() != null 
 										&& !exchangeDescriptor.getRateLimits().isEmpty();
+		
+		finalMembersDeclarations.append("\nprivate final Properties properties;");
+		constructorBody.append("this.properties = properties;\n");
+		
 		if (hasRateLimits || hasExchangeLimits) {
 			addImport(RequestThrottler.class);
 			StringBuilder requestThrottlerDeclaration = new StringBuilder().append("\nprivate final ")
@@ -144,7 +148,7 @@ public class ExchangeApiInterfaceImplementationGenerator extends JavaTypeGenerat
 		
 		constructorBody.append("this." + REST_API_FACTORY_VARIABLE_NAME + ".setProperties(properties);\n");
 		if (websocketEndpointFactoryFullClassName != null) {
-			constructorBody.append("this." + WEBSOCKET_ENDPOINT_FACTORY_VARIABLE_NAME + ".setProperties(properties);\n");
+			constructorBody.append("this." + WEBSOCKET_ENDPOINT_FACTORY_VARIABLE_NAME + ".setApi(this);\n");
 		}
 		
 		if (exchangeApiDescriptor.getRestEndpoints() != null) {
@@ -183,6 +187,8 @@ public class ExchangeApiInterfaceImplementationGenerator extends JavaTypeGenerat
 		}
 		constructorSignature.append(")");
 		appendMethod(constructorSignature.toString(), constructorBody.toString());
+		appendToBody("\n");
+		appendMethod("@Override\npublic Properties getProperties()", "return this.properties;");
 		appendToBody("\n");
 		for (String methodSignature : methodSignatures) {
 			appendMethod(methodSignature, methods.get(methodSignature));
