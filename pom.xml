@@ -6,7 +6,7 @@
 
   <groupId>com.scz.jxapi</groupId>
   <artifactId>jxapi-core</artifactId>
-  <version>0.5.1-RATE_LIMITS-SNAPSHOT</version>
+  <version>0.6.0</version>
   <!--<packaging>jar</packaging>-->
 
   <name>jxapi-core</name>
