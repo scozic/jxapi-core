@@ -15,7 +15,7 @@ import org.junit.Test;
 /**
  * Unit test for {@link JavaTypeGenerator}
  */
-public class JUJavaTypeGenerator {
+public class JavaTypeGeneratorTest {
 	
 	private Path srcFolder;
 	

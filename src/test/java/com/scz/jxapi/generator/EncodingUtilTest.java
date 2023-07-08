@@ -10,7 +10,7 @@ import com.scz.jxapi.util.EncodingUtil;
 /**
  * Unit test for {@link EncodingUtil}
  */
-public class JUEncodingUtil {
+public class EncodingUtilTest {
 	
 	@Test
 	public void testPojoToString() {

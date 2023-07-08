@@ -93,7 +93,7 @@ public class HttpRequest {
 	public void setBody(String body) {
 		this.body = body;
 	}
-	
+
 	@Override
 	public String toString() {
 		return getClass().getSimpleName() + EncodingUtil.pojoToString(this);
