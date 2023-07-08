@@ -6,7 +6,7 @@ import org.junit.Test;
 /**
  * Unit test for {@link PojoGenerator}
  */
-public class JUPojoGenerator {
+public class PojoGeneratorTest {
 
 	@Test
 	public void testGeneratePojoCode() {

@@ -31,24 +31,29 @@ public class RestEndpointDemoGenerator extends JavaTypeGenerator {
 						+ JavaCodeGenerationUtil.GENERATED_CODE_WARNING);
 		JavaCodeGenerationUtil.generateLoggerDeclaration(this);
 		restApi.getParameters().forEach(p -> generateParameterValueConstantDeclaration(exchangeDescriptor, exchangeApiDescriptor, restApi, p));
+		String exchangeInterfaceClassName = ExchangeJavaWrapperGeneratorUtil.getExchangeInterfaceName(exchangeDescriptor);
 		generateMainMethodBody(requestSimpleClassName, 
 							   apiInterfaceClassName, 
+							   exchangeInterfaceClassName,
 							   JavaCodeGenerationUtil.firstLetterToLowerCase(exchangeDescriptor.getName()), 
 							   restApi.getParameters(), 
 							   apiMethodName);
 	}
 	
-	private void generateMainMethodBody(String requestSimpleClassName, String apiInterfaceClassName, String exchangeName, List<EndpointParameter> parameters, String apiMethodName) {
-		String apiImplClassName = apiInterfaceClassName + "Impl";
-		addImport(apiImplClassName);
+	private void generateMainMethodBody(String requestSimpleClassName, String apiInterfaceClassName, String exchangeInterfaceClassName, String exchangeName, List<EndpointParameter> parameters, String apiMethodName) {
+		String exchangeImplClassName = exchangeInterfaceClassName + "Impl";
+		String simpleApiClassName = JavaCodeGenerationUtil.getClassNameWithoutPackage(apiInterfaceClassName);
+		addImport(exchangeImplClassName);
 		addImport(TestJXApiProperties.class);
 		StringBuilder body = new StringBuilder();
-		body.append(JavaCodeGenerationUtil.getClassNameWithoutPackage(apiInterfaceClassName))
+		body.append(simpleApiClassName)
 			.append(" api = new ")
-			.append(JavaCodeGenerationUtil.getClassNameWithoutPackage(apiImplClassName))
+			.append(JavaCodeGenerationUtil.getClassNameWithoutPackage(exchangeImplClassName))
 			.append("(TestJXApiProperties.filterProperties(\"")
 			.append(exchangeName)
-			.append("\", true));\n")
+			.append("\", true)).get")
+			.append(simpleApiClassName)
+			.append("();\n")
 			.append(requestSimpleClassName)
 			.append(" request = new ")
 			.append(requestSimpleClassName)

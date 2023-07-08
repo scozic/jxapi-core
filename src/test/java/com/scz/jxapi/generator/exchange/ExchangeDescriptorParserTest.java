@@ -9,7 +9,7 @@ import org.junit.Test;
 /**
  * Unit test for {@link ExchangeDescriptorParser}
  */
-public class JUExchangeDescriptorParser {
+public class ExchangeDescriptorParserTest {
 	
 	@Test
 	public void testParseExchangeDescriptor() throws Exception {
@@ -47,7 +47,7 @@ public class JUExchangeDescriptorParser {
 		Assert.assertEquals("symbols", symbolsParameter.getName());
 		Assert.assertEquals("The list of symbol to fetch market information for. Leave empty to fetch all markets", symbolsParameter.getDescription());
 		Assert.assertEquals(EndpointParameterType.STRING_LIST, symbolsParameter.getType());
-		Assert.assertEquals("", symbolsParameter.getSampleValue());
+		Assert.assertEquals(null, symbolsParameter.getSampleValue());
 		
 		checkExchangeInfoResponse(exchangeInfoEndPoint.getResponse());
 	}

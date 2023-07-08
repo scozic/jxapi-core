@@ -2,6 +2,7 @@ package com.scz.jxapi.generator.exchange;
 
 import java.util.List;
 
+import com.scz.jxapi.netutils.rest.ratelimits.RateLimitRule;
 import com.scz.jxapi.util.EncodingUtil;
 
 /**
@@ -32,6 +33,10 @@ public class RestEndpointDescriptor {
 	
 	private String responseObjectName;
 	
+	private Integer requestWeight;
+	
+	private List<RateLimitRule> rateLimits;
+ 	
 	public String getName() {
 		return name;
 	}
@@ -118,6 +123,22 @@ public class RestEndpointDescriptor {
 
 	public void setResponseObjectName(String responseObjectName) {
 		this.responseObjectName = responseObjectName;
+	}
+	
+	public List<RateLimitRule> getRateLimits() {
+		return rateLimits;
+	}
+
+	public void setRateLimits(List<RateLimitRule> rateLimits) {
+		this.rateLimits = rateLimits;
+	}
+	
+	public Integer getRequestWeight() {
+		return requestWeight;
+	}
+
+	public void setRequestWeight(Integer requestWeight) {
+		this.requestWeight = requestWeight;
 	}
 
 	public String toString() {

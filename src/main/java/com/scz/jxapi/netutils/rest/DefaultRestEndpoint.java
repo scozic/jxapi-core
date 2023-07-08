@@ -25,7 +25,7 @@ public class DefaultRestEndpoint<R, A> implements RestEndpoint<R, A> {
 	@Override
 	public FutureRestResponse<A> call(RestRequest<R> request) {
 		FutureRestResponse<A> callback = new FutureRestResponse<>();
-		executor.execute(requestBuilder.build(request), httpResponse -> callback.complete(createRestResponse(httpResponse)));
+		executor.execute(requestBuilder.build(request)).thenAccept(httpResponse -> callback.complete(createRestResponse(httpResponse)));
 		return callback;
 	}
 

@@ -9,7 +9,7 @@ import org.junit.Test;
 /**
  * Unit test for {@link JavaCodeGenerationUtil}
  */
-public class JUJavaCodeGenerationUtil {
+public class JavaCodeGenerationUtilTest {
 	
 	@Test
 	public void testIndent() {
@@ -98,6 +98,14 @@ public class JUJavaCodeGenerationUtil {
 	@Test
 	public void testFirstLetterToLowerCase() {
 		Assert.assertEquals("hellO", JavaCodeGenerationUtil.firstLetterToLowerCase("HellO"));
+	}
+	
+	@Test
+	public void testGetStaticVariableName() {
+		Assert.assertNull(JavaCodeGenerationUtil.getStaticVariableName(null));
+		Assert.assertEquals("", JavaCodeGenerationUtil.getStaticVariableName(""));
+		Assert.assertEquals("X", JavaCodeGenerationUtil.getStaticVariableName("x"));
+		Assert.assertEquals("MY_VARIABLE_NAME0", JavaCodeGenerationUtil.getStaticVariableName("myVariableName0"));
 	}
 	
 }

@@ -146,6 +146,23 @@ public class JavaCodeGenerationUtil {
 		}
 		return "";
 	}
+	
+	public static String getStaticVariableName(String camelCaseVariableName) {
+		if (camelCaseVariableName == null || camelCaseVariableName.isEmpty()) {
+			return camelCaseVariableName;
+		}
+		StringBuilder res = new StringBuilder();
+		res.append(Character.toUpperCase(camelCaseVariableName.charAt(0)));
+		for (int i = 1; i < camelCaseVariableName.length(); i++) {
+			char c = camelCaseVariableName.charAt(i);
+			if (Character.isUpperCase(c)) {
+				res.append("_").append(c);
+			} else {
+				res.append(Character.toUpperCase(c));
+			}
+		}
+		return res.toString();
+	}
 
 	public static void deletePath(Path path) throws IOException {
 		if (!path.toFile().exists())
