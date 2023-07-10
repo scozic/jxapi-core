@@ -441,10 +441,12 @@ public class ExchangeApiInterfaceImplementationGenerator extends JavaTypeGenerat
 		if (rateLimits != null && rateLimits.size() > 0) {
 			return true;
 		}
-		for (RestEndpointDescriptor restEndpoint : exchangeApiDescriptor.getRestEndpoints()) {
-			rateLimits = restEndpoint.getRateLimits();
-			if (rateLimits != null && rateLimits.size() > 0) {
-				return true;
+		if (exchangeApiDescriptor.getRestEndpoints() != null) {
+			for (RestEndpointDescriptor restEndpoint : exchangeApiDescriptor.getRestEndpoints()) {
+				rateLimits = restEndpoint.getRateLimits();
+				if (rateLimits != null && rateLimits.size() > 0) {
+					return true;
+				}
 			}
 		}
 		return false;

@@ -27,12 +27,16 @@ public class ExchangeApiInterfaceGenerator extends JavaTypeGenerator {
 	
 	@Override
 	public String generate() {
-		for (RestEndpointDescriptor restApi: exchangeApiDescriptor.getRestEndpoints()) {
-			generateRestEndpointMethodDeclaration(restApi);
+		if (exchangeApiDescriptor.getRestEndpoints() != null) {
+			for (RestEndpointDescriptor restApi: exchangeApiDescriptor.getRestEndpoints()) {
+				generateRestEndpointMethodDeclaration(restApi);
+			}
 		}
 		
-		for (WebsocketEndpointDescriptor websocketApi : exchangeApiDescriptor.getWebsocketEndpoints()) {
-			generateWebsocketApiMethodsDeclarations(websocketApi);
+		if (exchangeApiDescriptor.getWebsocketEndpoints() != null) {
+			for (WebsocketEndpointDescriptor websocketApi : exchangeApiDescriptor.getWebsocketEndpoints()) {
+				generateWebsocketApiMethodsDeclarations(websocketApi);
+			}
 		}
 		
 		return super.generate();
