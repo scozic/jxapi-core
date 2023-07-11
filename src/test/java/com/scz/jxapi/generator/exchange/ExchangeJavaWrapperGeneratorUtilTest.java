@@ -56,13 +56,14 @@ public class ExchangeJavaWrapperGeneratorUtilTest {
 						)
 				));
 		
-		ExchangeJavaWrapperGeneratorUtil.generatePojo(srcFolder, typeName, typeDescription, endpointParameters);
+		ExchangeJavaWrapperGeneratorUtil.generatePojo(srcFolder, typeName, typeDescription, endpointParameters, List.of("com.x.common.MyInterface"), "// Additionnal body here\n\n");
 		
 		Path pkgFolder = srcFolder.resolve(Paths.get("com", "x"));
 		Assert.assertEquals("package com.x;\n"
 				+ "\n"
 				+ "import com.fasterxml.jackson.databind.annotation.JsonSerialize;\n"
 				+ "import com.scz.jxapi.util.EncodingUtil;\n"
+				+ "import com.x.common.MyInterface;\n"
 				+ "import com.x.serializers.MyPojoSerializer;\n"
 				+ "import java.util.List;\n"
 				+ "\n"
@@ -70,7 +71,7 @@ public class ExchangeJavaWrapperGeneratorUtilTest {
 				+ " * Used in ExchangeJavaWrapperGeneratorUtilTest\n"
 				+ " */\n"
 				+ "@JsonSerialize(using = MyPojoSerializer.class)\n"
-				+ "public class MyPojo {\n"
+				+ "public class MyPojo implements MyInterface {\n"
 				+ "  private List<MyPojoFoo> foo;\n"
 				+ "  private Long id;\n"
 				+ "  private Integer score;\n"
@@ -117,12 +118,14 @@ public class ExchangeJavaWrapperGeneratorUtilTest {
 				+ "    this.score = score;\n"
 				+ "  }\n"
 				+ "  \n"
+				+ "  // Additionnal body here\n"
+				+ "  \n"
 				+ "  @Override\n"
 				+ "  public String toString() {\n"
 				+ "    return EncodingUtil.pojoToString(this);\n"
 				+ "  }\n"
-				+ "}\n"
-				, Files.readString(pkgFolder.resolve(Paths.get("MyPojo.java"))));
+				+ "}\n", 
+				Files.readString(pkgFolder.resolve(Paths.get("MyPojo.java"))));
 		
 		Assert.assertEquals("package com.x;\n"
 				+ "\n"
@@ -205,7 +208,6 @@ public class ExchangeJavaWrapperGeneratorUtilTest {
 				+ "  }\n"
 				+ "}\n", 
 				Files.readString(pkgFolder.resolve(Paths.get("MyPojoFooBar.java"))));
-		
 	}
 
 }

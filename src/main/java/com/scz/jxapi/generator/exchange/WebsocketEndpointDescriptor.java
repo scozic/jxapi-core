@@ -28,6 +28,10 @@ public class WebsocketEndpointDescriptor {
 	
 	private ResponseDataType responseDataType = ResponseDataType.JSON_OBJECT;
 	
+	private List<String> requestInterfaces;
+	
+	private List<String> responseInterfaces;
+	
 	public String getName() {
 		return name;
 	}
@@ -87,12 +91,46 @@ public class WebsocketEndpointDescriptor {
 	public ResponseDataType getResponseDataType() {
 		return responseDataType;
 	}
+	
 	public void setResponseDataType(ResponseDataType responseDataType) {
 		this.responseDataType = responseDataType;
 	}
 	
-	public String toString() {
-		return EncodingUtil.pojoToString(this);
+	/**
+	 * @return List of implemented interfaces if generated POJO for this endpoint request
+	 *         implements some specific ones. It may be useful for instance if all
+	 *         API endpoints provide request with common fields that could be
+	 *         extracted to super class.
+	 */
+	public List<String> getRequestInterfaces() {
+		return requestInterfaces;
+	}
+
+	/**
+	 * @see #getRequestInterfaces()
+	 */
+	public void setRequestInterfaces(List<String> requestInterfaces) {
+		this.requestInterfaces = requestInterfaces;
+	}
+
+	/**
+	 * @return List of implemented interfaces if generated POJO for this endpoint response
+	 *         implements some specific ones. It may be useful for instance if all
+	 *         API endpoints provide response with common fields that could be
+	 *         extracted to super class.
+	 */
+	public List<String> getResponseInterfaces() {
+		return responseInterfaces;
+	}
+
+	/**
+	 * @see #getResponseInterfaces()
+	 */
+	public void setResponseInterfaces(List<String> responseInterfaces) {
+		this.responseInterfaces = responseInterfaces;
 	}
 	
+	public String toString() {
+		return EncodingUtil.pojoToString(this);
+	}	
 }
