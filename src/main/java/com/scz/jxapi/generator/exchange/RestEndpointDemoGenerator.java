@@ -8,6 +8,7 @@ import org.apache.commons.lang3.StringUtils;
 
 import com.scz.jxapi.generator.JavaCodeGenerationUtil;
 import com.scz.jxapi.generator.JavaTypeGenerator;
+import com.scz.jxapi.util.DemoUtil;
 import com.scz.jxapi.util.TestJXApiProperties;
 
 public class RestEndpointDemoGenerator extends JavaTypeGenerator {
@@ -45,6 +46,7 @@ public class RestEndpointDemoGenerator extends JavaTypeGenerator {
 		String simpleApiClassName = JavaCodeGenerationUtil.getClassNameWithoutPackage(apiInterfaceClassName);
 		addImport(exchangeImplClassName);
 		addImport(TestJXApiProperties.class);
+		addImport(DemoUtil.class);
 		StringBuilder body = new StringBuilder();
 		body.append(simpleApiClassName)
 			.append(" api = new ")
@@ -73,10 +75,9 @@ public class RestEndpointDemoGenerator extends JavaTypeGenerator {
 			.append("() API with request:\" + request);\n")
 			
 //			.append(JavaCodeGenerationUtil.INDENTATION)
-			.append("log.info(\"Response:\" + ")
-			.append("api.")
+			.append("DemoUtil.checkResponse(api.")
 			.append(apiMethodName)
-			.append("(request).get());\n")
+			.append("(request));\n")
 //			.append(JavaCodeGenerationUtil.INDENTATION)
 			.append("System.exit(0);");
 //			.append("});");

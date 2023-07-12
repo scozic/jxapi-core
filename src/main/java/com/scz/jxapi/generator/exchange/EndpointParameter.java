@@ -43,6 +43,8 @@ public class EndpointParameter {
 	private String objectName;
 	
 	private List<EndpointParameter> parameters;
+	
+	private List<String> implementedInterfaces;
 
 	public String getName() {
 		return name;
@@ -95,10 +97,6 @@ public class EndpointParameter {
 		this.parameters = parameters;
 	}
 	
-	public String toString() {
-		return EncodingUtil.pojoToString(this);
-	}
-
 	/**
 	 * @return The simple (without package) name of java class to represent
 	 *         corresponding to object defined by this parameter. Relevant only when
@@ -119,5 +117,17 @@ public class EndpointParameter {
 	 */
 	public void setObjectName(String objectName) {
 		this.objectName = objectName;
+	}
+	
+	public List<String> getImplementedInterfaces() {
+		return implementedInterfaces;
+	}
+
+	public void setImplementedInterfaces(List<String> implementedInterfaces) {
+		this.implementedInterfaces = implementedInterfaces;
+	}
+	
+	public String toString() {
+		return EncodingUtil.pojoToString(this);
 	}
 }

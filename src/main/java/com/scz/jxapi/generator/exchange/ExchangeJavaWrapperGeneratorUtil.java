@@ -3,6 +3,7 @@ package com.scz.jxapi.generator.exchange;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.EnumMap;
 import java.util.List;
@@ -36,9 +37,9 @@ public class ExchangeJavaWrapperGeneratorUtil {
 		PARAMETER_TYPE_CLASSES.put(EndpointParameterType.STRING_LIST, "java.util.List<String>");
 	}
 	
-	public static void generatePojo(Path src, String className, String description, List<EndpointParameter> fields) throws IOException {
-		generatePojo(src, className, description, fields, null, null);
-	}
+//	public static void generatePojo(Path src, String className, String description, List<EndpointParameter> fields) throws IOException {
+//		generatePojo(src, className, description, fields, null, null);
+//	}
 	
 	public static void generatePojo(Path src, String className, String description, List<EndpointParameter> fields, List<String> implementedInterfaces, String additionnalClassBody) throws IOException {
 		PojoGenerator generator = new PojoGenerator(className);
@@ -113,7 +114,7 @@ public class ExchangeJavaWrapperGeneratorUtil {
 	private static void generateObjectParameterTypePojoField(Path src, String className, PojoGenerator generator, EndpointParameter field) throws IOException {
 		String objectName = getObjectParameterClassName(className, field);
 		if (field.getParameters() != null) {
-			generatePojo(src, objectName, field.getDescription(), field.getParameters());
+			generatePojo(src, objectName, field.getDescription(), field.getParameters(), field.getImplementedInterfaces(), null);
 		}
 		String parameterTypeName = objectName;
 		generator.addImport(objectName);
@@ -131,40 +132,48 @@ public class ExchangeJavaWrapperGeneratorUtil {
 	
 	public static void generateCEXDemos(ExchangeDescriptor exchangeDescriptor, Path ouputFolder) throws IOException {
 		for (ExchangeApiDescriptor api: exchangeDescriptor.getApis()) {
-			// Generate rest endpoints demos
-			for (RestEndpointDescriptor restApi: api.getRestEndpoints()) {
-				RestEndpointDemoGenerator restEndpointDemoGenerator = new RestEndpointDemoGenerator(exchangeDescriptor, api, restApi);
-				restEndpointDemoGenerator.writeJavaFile(ouputFolder);
+			
+			if (api.getRestEndpoints() != null) {
+				for (RestEndpointDescriptor restApi: api.getRestEndpoints()) {
+					RestEndpointDemoGenerator restEndpointDemoGenerator = new RestEndpointDemoGenerator(exchangeDescriptor, api, restApi);
+					restEndpointDemoGenerator.writeJavaFile(ouputFolder);
+				}
 			}
 			
-			for (WebsocketEndpointDescriptor websocketApi: api.getWebsocketEndpoints()) {
-				WebsocketEndpointDemoGenerator websocketEndpointDemoGenerator = new WebsocketEndpointDemoGenerator(exchangeDescriptor, api, websocketApi);
-				websocketEndpointDemoGenerator.writeJavaFile(ouputFolder);
+			if (api.getWebsocketEndpoints() != null) {
+				for (WebsocketEndpointDescriptor websocketApi: api.getWebsocketEndpoints()) {
+					WebsocketEndpointDemoGenerator websocketEndpointDemoGenerator = new WebsocketEndpointDemoGenerator(exchangeDescriptor, api, websocketApi);
+					websocketEndpointDemoGenerator.writeJavaFile(ouputFolder);
+				}
 			}
 		}
 	}
 	
 	public static void generateCEXPojoSerializers(ExchangeDescriptor exchangeDescriptor, Path ouputFolder) throws IOException {
 		for (ExchangeApiDescriptor api: exchangeDescriptor.getApis()) {
-			for (RestEndpointDescriptor restEndpointDescriptor: api.getRestEndpoints()) {
-				ExchangeJavaWrapperGeneratorUtil.generateSerializer(ouputFolder, 
-						generateRestEnpointRequestClassName(exchangeDescriptor, api, restEndpointDescriptor),
-						restEndpointDescriptor.getParameters());
-				if (restEndpointDescriptor.getResponse() != null) {
+			if (api.getRestEndpoints() != null) {
+				for (RestEndpointDescriptor restEndpointDescriptor: api.getRestEndpoints()) {
 					ExchangeJavaWrapperGeneratorUtil.generateSerializer(ouputFolder, 
-							generateRestEnpointResponseClassName(exchangeDescriptor, api, restEndpointDescriptor),
-							restEndpointDescriptor.getResponse());
+							generateRestEnpointRequestClassName(exchangeDescriptor, api, restEndpointDescriptor),
+							restEndpointDescriptor.getParameters());
+					if (restEndpointDescriptor.getResponse() != null) {
+						ExchangeJavaWrapperGeneratorUtil.generateSerializer(ouputFolder, 
+								generateRestEnpointResponseClassName(exchangeDescriptor, api, restEndpointDescriptor),
+								restEndpointDescriptor.getResponse());
+					}
 				}
 			}
 			
-			for (WebsocketEndpointDescriptor wsEndpointDescriptor: api.getWebsocketEndpoints()) {
-				ExchangeJavaWrapperGeneratorUtil.generateSerializer(ouputFolder, 
-							generateWebsocketEndpointRequestClassName(exchangeDescriptor, api, wsEndpointDescriptor),
-							wsEndpointDescriptor.getParameters());
-				
-				ExchangeJavaWrapperGeneratorUtil.generateSerializer(ouputFolder, 
-						generateWebsocketEndpointMessageClassName(exchangeDescriptor, api, wsEndpointDescriptor),
-						wsEndpointDescriptor.getResponse());
+			if (api.getWebsocketEndpoints() != null) {
+				for (WebsocketEndpointDescriptor wsEndpointDescriptor: api.getWebsocketEndpoints()) {
+					ExchangeJavaWrapperGeneratorUtil.generateSerializer(ouputFolder, 
+								generateWebsocketEndpointRequestClassName(exchangeDescriptor, api, wsEndpointDescriptor),
+								wsEndpointDescriptor.getParameters());
+					
+					ExchangeJavaWrapperGeneratorUtil.generateSerializer(ouputFolder, 
+							generateWebsocketEndpointMessageClassName(exchangeDescriptor, api, wsEndpointDescriptor),
+							wsEndpointDescriptor.getResponse());
+				}
 			}
 		}
 	}
@@ -186,18 +195,22 @@ public class ExchangeJavaWrapperGeneratorUtil {
 
 	public static void generateCEXPojoDeserializers(ExchangeDescriptor exchangeDescriptor, Path ouputFolder) throws IOException {
 		for (ExchangeApiDescriptor api: exchangeDescriptor.getApis()) {
-			for (RestEndpointDescriptor restEndpointDescriptor: api.getRestEndpoints()) {
-				if (restEndpointDescriptor.getResponse() != null) {
-					ExchangeJavaWrapperGeneratorUtil.generateDeserializer(ouputFolder, 
-							generateRestEnpointResponseClassName(exchangeDescriptor, api, restEndpointDescriptor),
-							restEndpointDescriptor.getResponse());
+			if (api.getRestEndpoints() != null) {
+				for (RestEndpointDescriptor restEndpointDescriptor: api.getRestEndpoints()) {
+					if (restEndpointDescriptor.getResponse() != null) {
+						ExchangeJavaWrapperGeneratorUtil.generateDeserializer(ouputFolder, 
+								generateRestEnpointResponseClassName(exchangeDescriptor, api, restEndpointDescriptor),
+								restEndpointDescriptor.getResponse());
+					}
 				}
 			}
 			
-			for (WebsocketEndpointDescriptor wsEndpointDescriptor: api.getWebsocketEndpoints()) {
-				ExchangeJavaWrapperGeneratorUtil.generateDeserializer(ouputFolder, 
-						generateWebsocketEndpointMessageClassName(exchangeDescriptor, api, wsEndpointDescriptor),
-						wsEndpointDescriptor.getResponse());
+			if (api.getWebsocketEndpoints() != null) {
+				for (WebsocketEndpointDescriptor wsEndpointDescriptor: api.getWebsocketEndpoints()) {
+					ExchangeJavaWrapperGeneratorUtil.generateDeserializer(ouputFolder, 
+							generateWebsocketEndpointMessageClassName(exchangeDescriptor, api, wsEndpointDescriptor),
+							wsEndpointDescriptor.getResponse());
+				}
 			}
 		}
 	}
@@ -206,53 +219,70 @@ public class ExchangeJavaWrapperGeneratorUtil {
 		generateExchangeInterface(exchangeDescriptor, ouputFolder);
 		for (ExchangeApiDescriptor api: exchangeDescriptor.getApis()) {
 			generateExchangeApiInterface(exchangeDescriptor, api, ouputFolder);
-			for (RestEndpointDescriptor restEndpointDescriptor: api.getRestEndpoints()) {
-				List<String> implementedInterfaces = null;
-				String additionalBody = null;
-				implementedInterfaces = Arrays.asList(RestEndpointUrlParameters.class.getName());
-				additionalBody = generateRestEndpointGetUrlParametersMethod(restEndpointDescriptor);
-				ExchangeJavaWrapperGeneratorUtil.generatePojo(ouputFolder, 
-										generateRestEnpointRequestClassName(exchangeDescriptor, api, restEndpointDescriptor), 
-										"Request for " + exchangeDescriptor.getName() + " " + api.getName() + " API " 
-											+ restEndpointDescriptor.getName() + " REST endpoint"
-											+ restEndpointDescriptor.getDescription()
-											+ JavaCodeGenerationUtil.GENERATED_CODE_WARNING,
-										restEndpointDescriptor.getParameters(),
-										implementedInterfaces,
-										additionalBody);
-				if (restEndpointDescriptor.getResponse() != null) {
+			if (api.getRestEndpoints() != null) {
+				for (RestEndpointDescriptor restEndpointDescriptor: api.getRestEndpoints()) {
+					List<String> requestInterfaces = new ArrayList<>();
+					requestInterfaces.add(RestEndpointUrlParameters.class.getName());
+					if (restEndpointDescriptor.getRequestInterfaces() != null) {
+						requestInterfaces.addAll(restEndpointDescriptor.getRequestInterfaces());
+					}
+					String additionalBody = null;
+					additionalBody = generateRestEndpointGetUrlParametersMethod(restEndpointDescriptor);
 					ExchangeJavaWrapperGeneratorUtil.generatePojo(ouputFolder, 
-							generateRestEnpointResponseClassName(exchangeDescriptor, api, restEndpointDescriptor), 
-							"Response to " + exchangeDescriptor.getName() 
-								+ " " + api.getName() + " API " 
-								+ restEndpointDescriptor.getName() 
-								+ " REST endpoint request<br/>"
-								+ restEndpointDescriptor.getDescription()
-								+ JavaCodeGenerationUtil.GENERATED_CODE_WARNING,
-							restEndpointDescriptor.getResponse());
+											generateRestEnpointRequestClassName(exchangeDescriptor, api, restEndpointDescriptor), 
+											"Request for " + exchangeDescriptor.getName() + " " + api.getName() + " API " 
+												+ restEndpointDescriptor.getName() + " REST endpoint"
+												+ restEndpointDescriptor.getDescription()
+												+ JavaCodeGenerationUtil.GENERATED_CODE_WARNING,
+											restEndpointDescriptor.getParameters(),
+											requestInterfaces,
+											additionalBody);
+					if (restEndpointDescriptor.getResponse() != null) {
+						ExchangeJavaWrapperGeneratorUtil.generatePojo(ouputFolder, 
+								generateRestEnpointResponseClassName(exchangeDescriptor, api, restEndpointDescriptor), 
+								"Response to " + exchangeDescriptor.getName() 
+									+ " " + api.getName() + " API " 
+									+ restEndpointDescriptor.getName() 
+									+ " REST endpoint request<br/>"
+									+ restEndpointDescriptor.getDescription()
+									+ JavaCodeGenerationUtil.GENERATED_CODE_WARNING,
+								restEndpointDescriptor.getResponse(),
+								restEndpointDescriptor.getResponseInterfaces(),
+								null);
+					}
 				}
 			}
-			for (WebsocketEndpointDescriptor wsEndpointDescriptor: api.getWebsocketEndpoints()) {
-				ExchangeJavaWrapperGeneratorUtil.generatePojo(ouputFolder, 
-										generateWebsocketEndpointRequestClassName(exchangeDescriptor, api, wsEndpointDescriptor), 
-										"Subscription request to" + exchangeDescriptor.getName() 
-											+ " " + api.getName() + " API " 
-											+ wsEndpointDescriptor.getName() 
-											+ " websocket endpoint<br/>" 
-											+ wsEndpointDescriptor.getDescription()
-											+ JavaCodeGenerationUtil.GENERATED_CODE_WARNING,
-										wsEndpointDescriptor.getParameters(), 
-										Arrays.asList(WebsocketSubscribeParameters.class.getName()), 
-										generateWebsocketSubscribeParametersGetTopicMethod(wsEndpointDescriptor));
-				ExchangeJavaWrapperGeneratorUtil.generatePojo(ouputFolder, 
-						generateWebsocketEndpointMessageClassName(exchangeDescriptor, api, wsEndpointDescriptor), 
-						"Message disseminated upon subscription to " 
-							+ exchangeDescriptor.getName() + " " 
-							+ api.getName() + " API " 
-							+ wsEndpointDescriptor.getName() + " websocket endpoint request<br/>"
-							+ wsEndpointDescriptor.getDescription()
-							+ JavaCodeGenerationUtil.GENERATED_CODE_WARNING,
-						wsEndpointDescriptor.getResponse());
+
+			if (api.getWebsocketEndpoints() != null) {
+				for (WebsocketEndpointDescriptor wsEndpointDescriptor: api.getWebsocketEndpoints()) {
+					List<String> requestInterfaces = new ArrayList<>();
+					requestInterfaces.add(WebsocketSubscribeParameters.class.getName());
+					if (wsEndpointDescriptor.getRequestInterfaces() != null) {
+						requestInterfaces.addAll(wsEndpointDescriptor.getRequestInterfaces());
+					}
+					ExchangeJavaWrapperGeneratorUtil.generatePojo(ouputFolder, 
+											generateWebsocketEndpointRequestClassName(exchangeDescriptor, api, wsEndpointDescriptor), 
+											"Subscription request to" + exchangeDescriptor.getName() 
+												+ " " + api.getName() + " API " 
+												+ wsEndpointDescriptor.getName() 
+												+ " websocket endpoint<br/>" 
+												+ wsEndpointDescriptor.getDescription()
+												+ JavaCodeGenerationUtil.GENERATED_CODE_WARNING,
+											wsEndpointDescriptor.getParameters(), 
+											Arrays.asList(WebsocketSubscribeParameters.class.getName()), 
+											generateWebsocketSubscribeParametersGetTopicMethod(wsEndpointDescriptor));
+					ExchangeJavaWrapperGeneratorUtil.generatePojo(ouputFolder, 
+							generateWebsocketEndpointMessageClassName(exchangeDescriptor, api, wsEndpointDescriptor), 
+							"Message disseminated upon subscription to " 
+								+ exchangeDescriptor.getName() + " " 
+								+ api.getName() + " API " 
+								+ wsEndpointDescriptor.getName() + " websocket endpoint request<br/>"
+								+ wsEndpointDescriptor.getDescription()
+								+ JavaCodeGenerationUtil.GENERATED_CODE_WARNING,
+							wsEndpointDescriptor.getResponse(), 
+							wsEndpointDescriptor.getResponseInterfaces(), 
+							null);
+				}
 			}
 		}
 	}
@@ -350,7 +380,7 @@ public class ExchangeJavaWrapperGeneratorUtil {
 		  .append(JavaCodeGenerationUtil.INDENTATION)
 		  .append(getUrlParametersBody)
 		  .append("}\n\n");
-		return sb.toString(); 
+		return sb.toString();
 	}
 
 	private static String generateWebsocketSubscribeParametersGetTopicMethod(WebsocketEndpointDescriptor wsEndpointDescriptor) {

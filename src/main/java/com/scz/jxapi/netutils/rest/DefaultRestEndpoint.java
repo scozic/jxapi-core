@@ -17,8 +17,17 @@ public class DefaultRestEndpoint<R, A> implements RestEndpoint<R, A> {
 	private RestResponse<A> createRestResponse(HttpResponse httpResponse) {
 		RestResponse<A> response = new RestResponse<>();
 		response.setHttpResponseCode(httpResponse.getResponseCode());
-		response.setException(httpResponse.getException());
-		response.setResponse(this.messageDeserializer.deserialize(httpResponse.getBody()));
+		Exception ex = httpResponse.getException();
+		if (ex != null) {
+			response.setException(ex);
+		} else {
+			try {
+				response.setResponse(this.messageDeserializer.deserialize(httpResponse.getBody()));
+			} catch (Exception e) {
+				response.setException(e);
+			}
+		}
+		
 		return response;
 	}
 
