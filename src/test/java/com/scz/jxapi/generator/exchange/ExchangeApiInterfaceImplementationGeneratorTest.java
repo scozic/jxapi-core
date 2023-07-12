@@ -499,7 +499,6 @@ public class ExchangeApiInterfaceImplementationGeneratorTest {
 				+ "  \n"
 				+ "  public MyTestCEXMarketDataApiImpl(Properties properties) {\n"
 				+ "    this.properties = properties;\n"
-				+ "    this.restEndpointFactory.setProperties(properties);\n"
 				+ "    this.websocketEndpointFactory.setApi(this);\n"
 				+ "    this.tickerStreamWs = websocketEndpointFactory.createWebsocketEndpoint(new MyTestCEXTickerStreamMessageDeserializer());\n"
 				+ "  }\n"

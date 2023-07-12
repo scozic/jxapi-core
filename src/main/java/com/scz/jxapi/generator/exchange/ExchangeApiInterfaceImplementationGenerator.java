@@ -146,7 +146,9 @@ public class ExchangeApiInterfaceImplementationGenerator extends JavaTypeGenerat
 						 + websocketEndpointFactorySimpleClassName + "();");
 		}
 		
-		constructorBody.append("this." + REST_API_FACTORY_VARIABLE_NAME + ".setProperties(properties);\n");
+		if (restApiFactoryFullClassName != null) {
+			constructorBody.append("this." + REST_API_FACTORY_VARIABLE_NAME + ".setProperties(properties);\n");
+		}
 		if (websocketEndpointFactoryFullClassName != null) {
 			constructorBody.append("this." + WEBSOCKET_ENDPOINT_FACTORY_VARIABLE_NAME + ".setApi(this);\n");
 		}
