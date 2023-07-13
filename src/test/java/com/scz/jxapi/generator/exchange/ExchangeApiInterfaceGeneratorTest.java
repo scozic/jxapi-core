@@ -18,10 +18,10 @@ public class ExchangeApiInterfaceGeneratorTest {
 		ExchangeApiInterfaceGenerator apiInterfaceGenerator = new ExchangeApiInterfaceGenerator(exchangeDescriptor, exchangeApiDescriptor);
 		Assert.assertEquals("package com.foo.bar.gen.marketdata;\n"
 				+ "\n"
-				+ "import com.foo.bar.gen.marketdata.pojo.MyTestCEXExchangeInfoRequest;\n"
-				+ "import com.foo.bar.gen.marketdata.pojo.MyTestCEXExchangeInfoResponse;\n"
-				+ "import com.foo.bar.gen.marketdata.pojo.MyTestCEXTickerStreamMessage;\n"
-				+ "import com.foo.bar.gen.marketdata.pojo.MyTestCEXTickerStreamRequest;\n"
+				+ "import com.foo.bar.gen.marketdata.pojo.MyTestCEXMarketDataExchangeInfoRequest;\n"
+				+ "import com.foo.bar.gen.marketdata.pojo.MyTestCEXMarketDataExchangeInfoResponse;\n"
+				+ "import com.foo.bar.gen.marketdata.pojo.MyTestCEXMarketDataTickerStreamMessage;\n"
+				+ "import com.foo.bar.gen.marketdata.pojo.MyTestCEXMarketDataTickerStreamRequest;\n"
 				+ "import com.scz.jxapi.netutils.rest.FutureRestResponse;\n"
 				+ "import com.scz.jxapi.netutils.websocket.WebsocketListener;\n"
 				+ "import com.scz.jxapi.util.HasProperties;\n"
@@ -35,7 +35,7 @@ public class ExchangeApiInterfaceGeneratorTest {
 				+ "  /**\n"
 				+ "   * Fetch market information of symbols that can be traded\n"
 				+ "   */\n"
-				+ "  FutureRestResponse<MyTestCEXExchangeInfoResponse> exchangeInfo(MyTestCEXExchangeInfoRequest request);\n"
+				+ "  FutureRestResponse<MyTestCEXMarketDataExchangeInfoResponse> exchangeInfo(MyTestCEXMarketDataExchangeInfoRequest request);\n"
 				+ "  \n"
 				+ "  /**\n"
 				+ "   * Subscribe to tickerStream stream.<br/>\n"
@@ -43,7 +43,7 @@ public class ExchangeApiInterfaceGeneratorTest {
 				+ "   * \n"
 				+ "   * @return client subscriptionId to use for unsubscription\n"
 				+ "   */\n"
-				+ "  String subscribeTickerStream(MyTestCEXTickerStreamRequest request, WebsocketListener<MyTestCEXTickerStreamMessage> listener);\n"
+				+ "  String subscribeTickerStream(MyTestCEXMarketDataTickerStreamRequest request, WebsocketListener<MyTestCEXMarketDataTickerStreamMessage> listener);\n"
 				+ "  \n"
 				+ "  /**\n"
 				+ "   * Unsubscribe from tickerStream stream.\n"
@@ -62,8 +62,8 @@ public class ExchangeApiInterfaceGeneratorTest {
 		ExchangeApiInterfaceGenerator apiInterfaceGenerator = new ExchangeApiInterfaceGenerator(exchangeDescriptor, exchangeApiDescriptor);
 		Assert.assertEquals("package com.foo.bar.gen.marketdata;\n"
 				+ "\n"
-				+ "import com.foo.bar.gen.marketdata.pojo.MyTestCEXExchangeInfoRequest;\n"
-				+ "import com.foo.bar.gen.marketdata.pojo.MyTestCEXExchangeInfoResponse;\n"
+				+ "import com.foo.bar.gen.marketdata.pojo.MyTestCEXMarketDataExchangeInfoRequest;\n"
+				+ "import com.foo.bar.gen.marketdata.pojo.MyTestCEXMarketDataExchangeInfoResponse;\n"
 				+ "import com.scz.jxapi.netutils.rest.FutureRestResponse;\n"
 				+ "import com.scz.jxapi.util.HasProperties;\n"
 				+ "\n"
@@ -76,7 +76,7 @@ public class ExchangeApiInterfaceGeneratorTest {
 				+ "  /**\n"
 				+ "   * Fetch market information of symbols that can be traded\n"
 				+ "   */\n"
-				+ "  FutureRestResponse<MyTestCEXExchangeInfoResponse> exchangeInfo(MyTestCEXExchangeInfoRequest request);\n"
+				+ "  FutureRestResponse<MyTestCEXMarketDataExchangeInfoResponse> exchangeInfo(MyTestCEXMarketDataExchangeInfoRequest request);\n"
 				+ "}\n", 
 				apiInterfaceGenerator.generate());
 	}
@@ -88,8 +88,8 @@ public class ExchangeApiInterfaceGeneratorTest {
 		ExchangeApiInterfaceGenerator apiInterfaceGenerator = new ExchangeApiInterfaceGenerator(exchangeDescriptor, exchangeApiDescriptor);
 		Assert.assertEquals("package com.foo.bar.gen.marketdata;\n"
 				+ "\n"
-				+ "import com.foo.bar.gen.marketdata.pojo.MyTestCEXTickerStreamMessage;\n"
-				+ "import com.foo.bar.gen.marketdata.pojo.MyTestCEXTickerStreamRequest;\n"
+				+ "import com.foo.bar.gen.marketdata.pojo.MyTestCEXMarketDataTickerStreamMessage;\n"
+				+ "import com.foo.bar.gen.marketdata.pojo.MyTestCEXMarketDataTickerStreamRequest;\n"
 				+ "import com.scz.jxapi.netutils.websocket.WebsocketListener;\n"
 				+ "import com.scz.jxapi.util.HasProperties;\n"
 				+ "\n"
@@ -106,7 +106,7 @@ public class ExchangeApiInterfaceGeneratorTest {
 				+ "   * \n"
 				+ "   * @return client subscriptionId to use for unsubscription\n"
 				+ "   */\n"
-				+ "  String subscribeTickerStream(MyTestCEXTickerStreamRequest request, WebsocketListener<MyTestCEXTickerStreamMessage> listener);\n"
+				+ "  String subscribeTickerStream(MyTestCEXMarketDataTickerStreamRequest request, WebsocketListener<MyTestCEXMarketDataTickerStreamMessage> listener);\n"
 				+ "  \n"
 				+ "  /**\n"
 				+ "   * Unsubscribe from tickerStream stream.\n"
@@ -114,8 +114,7 @@ public class ExchangeApiInterfaceGeneratorTest {
 				+ "   * @param subscriptionId ID of subscription returned by #subscribeTickerStream()\n"
 				+ "   */\n"
 				+ "  boolean unsubscribeTickerStream(String subscriptionId);\n"
-				+ "}\n"
-				+ "", 
+				+ "}\n", 
 				apiInterfaceGenerator.generate());
 	}
 }
