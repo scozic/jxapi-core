@@ -19,7 +19,7 @@ public class RestEndpointDemoGeneratorTest {
 				+ "\n"
 				+ "import com.foo.bar.gen.MyTestCEXExchangeImpl;\n"
 				+ "import com.foo.bar.gen.marketdata.MyTestCEXMarketDataApi;\n"
-				+ "import com.foo.bar.gen.marketdata.pojo.MyTestCEXExchangeInfoRequest;\n"
+				+ "import com.foo.bar.gen.marketdata.pojo.MyTestCEXMarketDataExchangeInfoRequest;\n"
 				+ "import com.scz.jxapi.util.DemoUtil;\n"
 				+ "import com.scz.jxapi.util.TestJXApiProperties;\n"
 				+ "import java.util.List;\n"
@@ -27,7 +27,7 @@ public class RestEndpointDemoGeneratorTest {
 				+ "import org.slf4j.LoggerFactory;\n"
 				+ "\n"
 				+ "/**\n"
-				+ " * Snippet to test call to {@link com.foo.bar.gen.marketdata.MyTestCEXMarketDataApi#exchangeInfo(com.foo.bar.gen.marketdata.pojo.MyTestCEXExchangeInfoRequest)}\n"
+				+ " * Snippet to test call to {@link com.foo.bar.gen.marketdata.MyTestCEXMarketDataApi#exchangeInfo(com.foo.bar.gen.marketdata.pojo.MyTestCEXMarketDataExchangeInfoRequest)}\n"
 				+ " * <br><strong>THIS CODE IS GENERATED. DO NOT EDIT MANUALLY!</strong>\n"
 				+ " */\n"
 				+ "public class MyTestCEXMarketDataExchangeInfoDemo {\n"
@@ -41,7 +41,7 @@ public class RestEndpointDemoGeneratorTest {
 				+ "  public static void main(String[] args) {\n"
 				+ "    try {\n"
 				+ "      MyTestCEXMarketDataApi api = new MyTestCEXExchangeImpl(TestJXApiProperties.filterProperties(\"myTestCEX\", true)).getMyTestCEXMarketDataApi();\n"
-				+ "      MyTestCEXExchangeInfoRequest request = new MyTestCEXExchangeInfoRequest();\n"
+				+ "      MyTestCEXMarketDataExchangeInfoRequest request = new MyTestCEXMarketDataExchangeInfoRequest();\n"
 				+ "      request.setSymbols(SYMBOLS);\n"
 				+ "      log.info(\"Calling 'com.foo.bar.gen.marketdata.MyTestCEXMarketDataApi.exchangeInfo() API with request:\" + request);\n"
 				+ "      DemoUtil.checkResponse(api.exchangeInfo(request));\n"
@@ -51,7 +51,7 @@ public class RestEndpointDemoGeneratorTest {
 				+ "      System.exit(-1);\n"
 				+ "    }\n"
 				+ "  }\n"
-				+ "}\n"
-				, new RestEndpointDemoGenerator(exchangeDescriptor, exchangeApiDescriptor, restEndpointDescriptor).generate());
+				+ "}\n", 
+				new RestEndpointDemoGenerator(exchangeDescriptor, exchangeApiDescriptor, restEndpointDescriptor).generate());
 	}
 }

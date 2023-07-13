@@ -307,6 +307,7 @@ public class ExchangeJavaWrapperGeneratorUtil {
 	private static String generateRestEnpointPojoClassName(ExchangeDescriptor exchangeDescriptor, ExchangeApiDescriptor exchangeApiDescriptor, RestEndpointDescriptor restEndpointDescriptor, String suffix) {
 		return exchangeDescriptor.getBasePackage() + "." + exchangeApiDescriptor.getName().toLowerCase() + ".pojo."
 				+ JavaCodeGenerationUtil.firstLetterToUpperCase(exchangeDescriptor.getName()) 
+				+ JavaCodeGenerationUtil.firstLetterToUpperCase(exchangeApiDescriptor.getName())
 				+ JavaCodeGenerationUtil.firstLetterToUpperCase(restEndpointDescriptor.getName())
 				+ suffix;
 	}
@@ -338,7 +339,8 @@ public class ExchangeJavaWrapperGeneratorUtil {
 			return String.class.getName();
 		}
 		return exchangeDescriptor.getBasePackage() + "." + exchangeApiDescriptor.getName().toLowerCase() + ".pojo."
-				+ JavaCodeGenerationUtil.firstLetterToUpperCase(exchangeDescriptor.getName()) 
+				+ JavaCodeGenerationUtil.firstLetterToUpperCase(exchangeDescriptor.getName())
+				+ JavaCodeGenerationUtil.firstLetterToUpperCase(exchangeApiDescriptor.getName())
 				+ JavaCodeGenerationUtil.firstLetterToUpperCase(websocketApi.getName())
 				+ "Message";
 	}
@@ -347,6 +349,7 @@ public class ExchangeJavaWrapperGeneratorUtil {
 			ExchangeApiDescriptor exchangeApiDescriptor, WebsocketEndpointDescriptor websocketApi) {
 		return exchangeDescriptor.getBasePackage() + "." + exchangeApiDescriptor.getName().toLowerCase() + ".pojo."
 				+ JavaCodeGenerationUtil.firstLetterToUpperCase(exchangeDescriptor.getName()) 
+				+ JavaCodeGenerationUtil.firstLetterToUpperCase(exchangeApiDescriptor.getName())
 				+ JavaCodeGenerationUtil.firstLetterToUpperCase(websocketApi.getName())
 				+ "Request";
 	}

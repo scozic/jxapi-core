@@ -19,13 +19,13 @@ public class WebsocketEndpointDemoGeneratorTest {
 				+ "\n"
 				+ "import com.foo.bar.gen.MyTestCEXExchangeImpl;\n"
 				+ "import com.foo.bar.gen.marketdata.MyTestCEXMarketDataApi;\n"
-				+ "import com.foo.bar.gen.marketdata.pojo.MyTestCEXTickerStreamRequest;\n"
+				+ "import com.foo.bar.gen.marketdata.pojo.MyTestCEXMarketDataTickerStreamRequest;\n"
 				+ "import com.scz.jxapi.util.TestJXApiProperties;\n"
 				+ "import org.slf4j.Logger;\n"
 				+ "import org.slf4j.LoggerFactory;\n"
 				+ "\n"
 				+ "/**\n"
-				+ " * Snippet to test call to {@link com.foo.bar.gen.marketdata.MyTestCEXMarketDataApi#subscribeTickerStream(com.foo.bar.gen.marketdata.pojo.MyTestCEXTickerStreamRequest)}\n"
+				+ " * Snippet to test call to {@link com.foo.bar.gen.marketdata.MyTestCEXMarketDataApi#subscribeTickerStream(com.foo.bar.gen.marketdata.pojo.MyTestCEXMarketDataTickerStreamRequest)}\n"
 				+ " * <br><strong>THIS CODE IS GENERATED. DO NOT EDIT MANUALLY!</strong>\n"
 				+ " */\n"
 				+ "public class MyTestCEXMarketDataTickerStreamDemo {\n"
@@ -39,7 +39,7 @@ public class WebsocketEndpointDemoGeneratorTest {
 				+ "  public static void main(String[] args) {\n"
 				+ "    try {\n"
 				+ "      MyTestCEXMarketDataApi api = new MyTestCEXExchangeImpl(TestJXApiProperties.filterProperties(\"myTestCEX\", true)).getMyTestCEXMarketDataApi();\n"
-				+ "      MyTestCEXTickerStreamRequest request = new MyTestCEXTickerStreamRequest();\n"
+				+ "      MyTestCEXMarketDataTickerStreamRequest request = new MyTestCEXMarketDataTickerStreamRequest();\n"
 				+ "      request.setSymbol(SYMBOL);\n"
 				+ "      log.info(\"Subscribing to stream com.foo.bar.gen.marketdata.MyTestCEXMarketDataApi.subscribeTickerStream() websocket stream with request:\" + request);\n"
 				+ "      api.subscribeTickerStream(request, m -> log.info(\"Received message:\" + m));\n"
@@ -47,8 +47,8 @@ public class WebsocketEndpointDemoGeneratorTest {
 				+ "      log.error(\"Exception raised from main()\", t);\n"
 				+ "    }\n"
 				+ "  }\n"
-				+ "}\n"
-				, new WebsocketEndpointDemoGenerator(exchangeDescriptor, exchangeApiDescriptor, websocketEndpointDescriptor).generate());
+				+ "}\n", 
+				new WebsocketEndpointDemoGenerator(exchangeDescriptor, exchangeApiDescriptor, websocketEndpointDescriptor).generate());
 	}
 
 }
