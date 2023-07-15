@@ -78,7 +78,10 @@ public class DefaultWebsocketEndpoint<T extends WebsocketSubscribeParameters, M>
 		
 		private void dispatch(String message) {
 			try {
-				listeners.values().forEach(l -> l.handleMessage(messageDeserializer.deserialize(message)));
+				if (!listeners.isEmpty()) {
+					M msg = messageDeserializer.deserialize(message);
+					listeners.values().forEach(l -> l.handleMessage(msg));
+				}
 			} catch (Exception ex) {
 				log.error("Error while dispatching message [" + message + "]", ex);
 			}
