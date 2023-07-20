@@ -1,11 +1,17 @@
 package com.scz.jxapi.netutils.rest;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.function.BiConsumer;
 import java.util.function.BinaryOperator;
 import java.util.function.Function;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.scz.jxapi.exchanges.bybit.gen.v5.pojo.BybitV5GetPositionInfoRequest;
+import com.scz.jxapi.exchanges.bybit.gen.v5.pojo.BybitV5GetPositionInfoResponse;
+import com.scz.jxapi.exchanges.bybit.gen.v5.pojo.BybitV5PositionData;
 
 /**
  * 
@@ -23,6 +29,26 @@ public class RestRequestPagination {
 	
 	/**
 	 * Fetches all pages of response to given request.
+	 * Example:
+	 * <pre>{@code
+	 * // api: Interface exposing method FutureRestResponse<BybitV5GetPositionInfoResponse> getPositionInfo(BybitV5GetPositionInfoRequest request)
+	 * // request: Request object prepared with parameters
+	 * FutureRestResponse<BybitV5GetPositionInfoResponse> response = RestRequestPagination.fetchAllPages(         
+     *    request, // Initial request to send
+     *    api::getPositionInfo, // API method: 
+     *    (index, r) -> r.setCursor(index), // Method to set next request page index.
+     *    r -> { String index = r.getResult().getNextPageCursor(); return (index == null || index.isEmpty())? null : index;}, // Method to retrieve next page index from a single page response.  
+     *    (r1, r2) -> // Accumulator to merge results and create response object containing both page items.
+     *        {
+     *            List<BybitV5PositionData> l1 = r1.getResult().getList();
+     *            List<BybitV5PositionData> l2 = r2.getResult().getList();
+     *            List<BybitV5PositionData> l = new ArrayList<>(l1.size() + l2.size());
+     *            l.addAll(l1);
+     *            l.addAll(l2);
+     *            r2.getResult().setList(l);
+     *            return r2;
+     *         });
+	 * }</pre>
 	 * 
 	 * @param request             the request to send with initial page index set. 
 	 * 							  If multiple response pages are found,
