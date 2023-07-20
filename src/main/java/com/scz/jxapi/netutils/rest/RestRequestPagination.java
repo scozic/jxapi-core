@@ -14,8 +14,8 @@ import org.slf4j.LoggerFactory;
  * request parameter "index" to indicate page index, and response parameter
  * "index" indicating the next page index, or none if last page is found.
  *
- * @param <R> Type of request data
- * @param <A> Type of response data
+ * @param <R> Type of request
+ * @param <A> Type of response data in {@link FutureRestResponse} 
  */
 public class RestRequestPagination {
 	
@@ -39,16 +39,16 @@ public class RestRequestPagination {
 	 *         accumulated results. If an error occurs when fetching one page, the
 	 *         response returned is the error one.
 	 */
-	public static <R, A> FutureRestResponse<A> fetchAllPages(RestRequest<R> request, 
-										 RestEndpoint<R, A> endpoint, 
-										 BiConsumer<String, R> setRequestIndex, 
-										 Function<A, String> getResponseIndex,
-										 BinaryOperator<A> responseAccumulator) {
+	public static <R, A> FutureRestResponse<A> fetchAllPages(R request, 
+										 					 Function<R, FutureRestResponse<A>> endpoint, 
+										 					 BiConsumer<String, R> setRequestIndex, 
+										 					 Function<A, String> getResponseIndex,
+										 					 BinaryOperator<A> responseAccumulator) {
 		return fetchAllPages(request, endpoint, setRequestIndex, getResponseIndex, responseAccumulator, null);
 	}
 	
-	private static <R, A> FutureRestResponse<A> fetchAllPages(RestRequest<R> request, 
-			 												  RestEndpoint<R, A> endpoint, 
+	private static <R, A> FutureRestResponse<A> fetchAllPages(R request, 
+			 												  Function<R, FutureRestResponse<A>> endpoint, 
 			 												  BiConsumer<String, R> setRequestIndex, 
 			 												  Function<A, String> getResponseIndex,
 			 												  BinaryOperator<A> responseAccumulator,
@@ -57,7 +57,7 @@ public class RestRequestPagination {
 		if (log.isDebugEnabled() ) {
 			log.debug("Fetching page for request:" + request);
 		}
-		endpoint.call(request).thenAccept(responsePage -> {
+		endpoint.apply(request).thenAccept(responsePage -> {
 			if (!responsePage.isOk()) {
 				response.complete(responsePage);
 			} else {
@@ -70,7 +70,7 @@ public class RestRequestPagination {
 					 log.debug("Next page index:" + nextPageIndex + " in response to request:" + request);
 				 if (nextPageIndex != null) {
 					 // Fetch next page
-					 setRequestIndex.accept(nextPageIndex, request.getRequest());
+					 setRequestIndex.accept(nextPageIndex, request);
 					 fetchAllPages(request, endpoint, setRequestIndex, getResponseIndex, responseAccumulator, responsePage.getResponse()).thenAccept(response::complete);
 				 } else {
 					 // last page found

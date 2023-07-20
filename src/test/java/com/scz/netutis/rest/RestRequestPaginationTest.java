@@ -7,8 +7,6 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import com.scz.jxapi.netutils.rest.FutureRestResponse;
-import com.scz.jxapi.netutils.rest.RestEndpoint;
-import com.scz.jxapi.netutils.rest.RestRequest;
 import com.scz.jxapi.netutils.rest.RestRequestPagination;
 import com.scz.jxapi.netutils.rest.RestResponse;
 
@@ -17,10 +15,11 @@ import com.scz.jxapi.netutils.rest.RestResponse;
  */
 public class RestRequestPaginationTest {
 
-	private static RestRequest<TestRequest> createRequest(int index) {
+	private static TestRequest createRequest(int index) {
 		TestRequest request = new TestRequest();
 		request.setIndex("" + index);
-		return RestRequest.create("http://my/paginated/api", "GET", request);
+		return request;
+		//return RestRequest.create("http://my/paginated/api", "GET", request);
 	}
 	
 	private static TestResponse createResponse(int index) {
@@ -56,7 +55,7 @@ public class RestRequestPaginationTest {
 		endpoint.addPreparedResponses(-1);
 		RestResponse<TestResponse> response = RestRequestPagination.fetchAllPages(
 				createRequest(0), 
-				endpoint, 
+				endpoint::call,
 				(index, r) -> r.setIndex(index), 
 				TestResponse::getIndex, 
 				RestRequestPaginationTest::mergeResponses).get();
@@ -70,7 +69,7 @@ public class RestRequestPaginationTest {
 		endpoint.addPreparedResponses(1, 2, -1);
 		RestResponse<TestResponse> response = RestRequestPagination.fetchAllPages(
 				createRequest(0), 
-				endpoint, 
+				endpoint::call,
 				(index, r) -> r.setIndex(index), 
 				TestResponse::getIndex, 
 				RestRequestPaginationTest::mergeResponses).get();
@@ -90,7 +89,7 @@ public class RestRequestPaginationTest {
 		endpoint.addPreparedResponses(errorResponse);
 		RestResponse<TestResponse> response = RestRequestPagination.fetchAllPages(
 				createRequest(0), 
-				endpoint, 
+				endpoint::call, 
 				(index, r) -> r.setIndex(index), 
 				TestResponse::getIndex, 
 				RestRequestPaginationTest::mergeResponses).get();
@@ -100,8 +99,16 @@ public class RestRequestPaginationTest {
 	}
 	
 	private static class TestRequest {
+		
+		private String index;
 
-		public void setIndex(String index) {}
+		public void setIndex(String index) {
+			this.index = index;
+		}
+		
+		public String toString() {
+			return "TestRequest#" + index;
+		}
 	}
 	
 	private static class TestResponse {
@@ -125,12 +132,11 @@ public class RestRequestPaginationTest {
 		}
 	}
 	
-	private static class TestEndpoint implements RestEndpoint<TestRequest, TestResponse> {
+	private static class TestEndpoint  {
 
 		List<RestResponse<TestResponse>> preparedResponses = new ArrayList<>();
 		
-		@Override
-		public FutureRestResponse<TestResponse> call(RestRequest<TestRequest> request) {
+		public FutureRestResponse<TestResponse> call(TestRequest request) {
 			FutureRestResponse<TestResponse> response = new FutureRestResponse<>();
 			response.complete(preparedResponses.remove(0));
 			return response;
