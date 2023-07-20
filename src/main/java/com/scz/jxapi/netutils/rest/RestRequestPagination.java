@@ -78,24 +78,30 @@ public class RestRequestPagination {
 			log.debug("Fetching page for request:" + request);
 		}
 		endpoint.apply(request).thenAccept(responsePage -> {
-			if (!responsePage.isOk()) {
+			try {
+				if (!responsePage.isOk()) {
+					response.complete(responsePage);
+				} else {
+					 A page = responsePage.getResponse();
+					 if (cumulativeResult != null) {
+						 responsePage.setResponse(responseAccumulator.apply(cumulativeResult, page));
+					 }
+					 String nextPageIndex = getResponseIndex.apply(page);
+					 if (log.isDebugEnabled())
+						 log.debug("Next page index:" + nextPageIndex + " in response to request:" + request);
+					 if (nextPageIndex != null) {
+						 // Fetch next page
+						 setRequestIndex.accept(nextPageIndex, request);
+						 fetchAllPages(request, endpoint, setRequestIndex, getResponseIndex, responseAccumulator, responsePage.getResponse()).thenAccept(response::complete);
+					 } else {
+						 // last page found
+						 response.complete(responsePage);
+					 }
+				}
+			} catch (Exception ex) {
+				log.error("Error processing response:" + responsePage, ex);
+				responsePage.setException(ex);
 				response.complete(responsePage);
-			} else {
-				 A page = responsePage.getResponse();
-				 if (cumulativeResult != null) {
-					 responsePage.setResponse(responseAccumulator.apply(cumulativeResult, page));
-				 }
-				 String nextPageIndex = getResponseIndex.apply(page);
-				 if (log.isDebugEnabled())
-					 log.debug("Next page index:" + nextPageIndex + " in response to request:" + request);
-				 if (nextPageIndex != null) {
-					 // Fetch next page
-					 setRequestIndex.accept(nextPageIndex, request);
-					 fetchAllPages(request, endpoint, setRequestIndex, getResponseIndex, responseAccumulator, responsePage.getResponse()).thenAccept(response::complete);
-				 } else {
-					 // last page found
-					 response.complete(responsePage);
-				 }
 			}
 		});
 		return response;
