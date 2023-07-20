@@ -1,17 +1,11 @@
 package com.scz.jxapi.netutils.rest;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.function.BiConsumer;
 import java.util.function.BinaryOperator;
 import java.util.function.Function;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.scz.jxapi.exchanges.bybit.gen.v5.pojo.BybitV5GetPositionInfoRequest;
-import com.scz.jxapi.exchanges.bybit.gen.v5.pojo.BybitV5GetPositionInfoResponse;
-import com.scz.jxapi.exchanges.bybit.gen.v5.pojo.BybitV5PositionData;
 
 /**
  * 
