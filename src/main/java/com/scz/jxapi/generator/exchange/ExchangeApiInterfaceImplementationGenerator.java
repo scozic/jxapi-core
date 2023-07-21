@@ -86,7 +86,8 @@ public class ExchangeApiInterfaceImplementationGenerator extends JavaTypeGenerat
 		finalMembersDeclarations.append("\nprivate final Properties properties;");
 		constructorBody.append("this.properties = properties;\n");
 		
-		if (hasRateLimits || hasExchangeLimits) {
+		if ((hasRateLimits || hasExchangeLimits) 
+				&& (exchangeApiDescriptor.getRestEndpoints() != null && !exchangeApiDescriptor.getRestEndpoints().isEmpty())) {
 			addImport(RequestThrottler.class);
 			StringBuilder requestThrottlerDeclaration = new StringBuilder().append("\nprivate final ")
 					.append(RequestThrottler.class.getSimpleName())
@@ -180,7 +181,7 @@ public class ExchangeApiInterfaceImplementationGenerator extends JavaTypeGenerat
 							.append("public ")
 							.append(simpleImplementationName)
 							.append("(Properties properties");
-		if (hasExchangeLimits) {
+		if (hasExchangeLimits && exchangeApiDescriptor.getRestEndpoints() != null && !exchangeApiDescriptor.getRestEndpoints().isEmpty()) {
 			addImport(RequestThrottler.class);
 			constructorSignature.append(", ")
 								.append(RequestThrottler.class.getSimpleName())

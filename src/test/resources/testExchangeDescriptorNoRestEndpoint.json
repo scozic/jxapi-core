@@ -2,6 +2,7 @@
 	"name": "MyTestCEX",
 	"description": "A sample CEX descriptor file",
 	"basePackage": "com.foo.bar.gen",
+	"rateLimits": [{"id":"MyTestCEXGlobalRateLimit", "timeFrame": 1000,  "maxRequestCount": 10}],
 	"apis":[
 		{ 
 			"name": "MarketData",

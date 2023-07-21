@@ -74,7 +74,7 @@ public class ExchangeInterfaceImplementationGenerator extends JavaTypeGenerator 
 					.append(" = new ")
 					.append(simpleApiImplClassName)
 					.append("(properties");
-			if (hasRateLimits) {
+			if (hasRateLimits && api.getRestEndpoints() != null && !api.getRestEndpoints().isEmpty()) {
 				implementationConstructorBody.append(", ").append(REQUEST_THROTTLER_VARIABLE_NAME);
 			}
 			
