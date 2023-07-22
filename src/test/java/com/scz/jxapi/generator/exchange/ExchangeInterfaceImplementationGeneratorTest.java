@@ -69,7 +69,9 @@ public class ExchangeInterfaceImplementationGeneratorTest {
 		List<ExchangeApiDescriptor> apis = new ArrayList<>();
 		ExchangeApiDescriptor api1 = new ExchangeApiDescriptor();
 		api1.setName("api1");
+		api1.setRestEndpoints(List.of(new RestEndpointDescriptor()));
 		apis.add(api1);
+		// api2 has 0 REST endpoints and should not be provided request throttler in constructor.
 		ExchangeApiDescriptor api2 = new ExchangeApiDescriptor();
 		api2.setName("api2");
 		apis.add(api2);
@@ -100,7 +102,7 @@ public class ExchangeInterfaceImplementationGeneratorTest {
 				+ "  \n"
 				+ "  public FooExchangeImpl(Properties properties) {\n"
 				+ "    this.fooApi1Api = new FooApi1ApiImpl(properties, requestThrottler);\n"
-				+ "    this.fooApi2Api = new FooApi2ApiImpl(properties, requestThrottler);\n"
+				+ "    this.fooApi2Api = new FooApi2ApiImpl(properties);\n"
 				+ "  }\n"
 				+ "  \n"
 				+ "  @Override\n"

@@ -36,6 +36,7 @@ public class DefaultWebsocketEndpoint<T extends WebsocketSubscribeParameters, M>
 		}
 		String subId = generateSubscriptionId(request);
 		sub.addListener(subId, listener);
+		subscriptionsById.put(subId, sub);
 		return subId;
 	}
 	
@@ -46,8 +47,10 @@ public class DefaultWebsocketEndpoint<T extends WebsocketSubscribeParameters, M>
 	@Override
 	public boolean unsubscribe(String unsubscriptionId) {
 		Subscription sub = subscriptionsById.get(unsubscriptionId);
-		sub.removeListener(unsubscriptionId);
-		return false;
+		if (sub == null) {
+			return false;
+		}
+		return sub.removeListener(unsubscriptionId);
 	}
 	
 	private class Subscription {
@@ -78,7 +81,10 @@ public class DefaultWebsocketEndpoint<T extends WebsocketSubscribeParameters, M>
 		
 		private void dispatch(String message) {
 			try {
-				listeners.values().forEach(l -> l.handleMessage(messageDeserializer.deserialize(message)));
+				if (!listeners.isEmpty()) {
+					M msg = messageDeserializer.deserialize(message);
+					listeners.values().forEach(l -> l.handleMessage(msg));
+				}
 			} catch (Exception ex) {
 				log.error("Error while dispatching message [" + message + "]", ex);
 			}
