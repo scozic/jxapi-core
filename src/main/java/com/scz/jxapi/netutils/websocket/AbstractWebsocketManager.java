@@ -2,10 +2,11 @@ package com.scz.jxapi.netutils.websocket;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -29,9 +30,9 @@ public abstract class AbstractWebsocketManager implements WebsocketManager {
 	
 	private final JsonFactory jsonFactory = new JsonFactory();
 	
-	protected final Map<String, TopicManager> topics = new HashMap<>();
+	protected final Map<String, TopicManager> topics = new ConcurrentHashMap<>();
 	
-	protected final List<TopicManager> systemMessageHandlers = new ArrayList<>();
+	protected final List<TopicManager> systemMessageHandlers = Collections.synchronizedList(new ArrayList<>());
 	
 	protected final AtomicBoolean connected = new AtomicBoolean(false);
 	protected final AtomicBoolean disposed = new AtomicBoolean(false);
@@ -55,6 +56,9 @@ public abstract class AbstractWebsocketManager implements WebsocketManager {
 						  RawWebsocketMessageHandler messageHandler) {
 		if (log.isDebugEnabled())
 			log.debug("Scheduling subscribe request for topic:" + topic);
+		if (topic == null) {
+			throw new IllegalArgumentException("null topic");
+		}
 		writeExecutor.execute(() -> {
 			try {
 				if (log.isDebugEnabled())

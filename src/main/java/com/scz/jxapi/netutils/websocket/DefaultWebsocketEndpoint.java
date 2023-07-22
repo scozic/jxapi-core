@@ -36,6 +36,7 @@ public class DefaultWebsocketEndpoint<T extends WebsocketSubscribeParameters, M>
 		}
 		String subId = generateSubscriptionId(request);
 		sub.addListener(subId, listener);
+		subscriptionsById.put(subId, sub);
 		return subId;
 	}
 	
@@ -46,8 +47,10 @@ public class DefaultWebsocketEndpoint<T extends WebsocketSubscribeParameters, M>
 	@Override
 	public boolean unsubscribe(String unsubscriptionId) {
 		Subscription sub = subscriptionsById.get(unsubscriptionId);
-		sub.removeListener(unsubscriptionId);
-		return false;
+		if (sub == null) {
+			return false;
+		}
+		return sub.removeListener(unsubscriptionId);
 	}
 	
 	private class Subscription {
