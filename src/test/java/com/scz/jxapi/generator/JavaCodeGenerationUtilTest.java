@@ -57,7 +57,7 @@ public class JavaCodeGenerationUtilTest {
 				+ "private boolean bar;\n"
 				+ "private Toto myToto;\n"
 				+ "\n"
-				+ "public String getFoo(){\n"
+				+ "public String getFoo() {\n"
 				+ "  return foo;\n"
 				+ "}\n"
 				+ "\n"
@@ -65,7 +65,7 @@ public class JavaCodeGenerationUtilTest {
 				+ "  this.foo = foo;\n"
 				+ "}\n"
 				+ "\n"
-				+ "public boolean isBar(){\n"
+				+ "public boolean isBar() {\n"
 				+ "  return bar;\n"
 				+ "}\n"
 				+ "\n"
@@ -75,9 +75,8 @@ public class JavaCodeGenerationUtilTest {
 				+ "\n"
 				+ "/**\n"
 				+ " * @return you know toto? Message field <strong>mt</strong>\n"
-				
 				+ " */\n"
-				+ "public Toto getMyToto(){\n"
+				+ "public Toto getMyToto() {\n"
 				+ "  return myToto;\n"
 				+ "}\n"
 				+ "\n"
@@ -86,7 +85,9 @@ public class JavaCodeGenerationUtilTest {
 				+ " */\n"
 				+ "public void setMyToto(Toto myToto) {\n"
 				+ "  this.myToto = myToto;\n"
-				+ "}\n\n"
+				+ "}\n"
+				+ "\n"
+				+ ""
 				, actual);
 	}
 	

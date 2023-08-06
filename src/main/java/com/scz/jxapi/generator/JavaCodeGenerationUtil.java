@@ -76,7 +76,7 @@ public class JavaCodeGenerationUtil {
 				.append(type)
 				.append(" ")
 				.append(getGetAccessorMethodName(field.getName(), field.getType(), allFieldNames))
-				.append("()")
+				.append("() ")
 				.append(generateCodeBlock("return " + name + ";"))
 				.append("\n");
 			
