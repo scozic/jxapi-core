@@ -30,7 +30,7 @@ public class PojoGeneratorTest {
 				+ "  /**\n"
 				+ "   * @return upper case 'A'\n"
 				+ "   */\n"
-				+ "  public int getA(){\n"
+				+ "  public int getA() {\n"
 				+ "    return A;\n"
 				+ "  }\n"
 				+ "  \n"
@@ -44,7 +44,7 @@ public class PojoGeneratorTest {
 				+ "  /**\n"
 				+ "   * @return lower case 'a'\n"
 				+ "   */\n"
-				+ "  public int geta(){\n"
+				+ "  public int geta() {\n"
 				+ "    return a;\n"
 				+ "  }\n"
 				+ "  \n"
@@ -58,7 +58,7 @@ public class PojoGeneratorTest {
 				+ "  /**\n"
 				+ "   * @return my bar Message field <strong>b</strong>\n"
 				+ "   */\n"
-				+ "  public Bar getBar(){\n"
+				+ "  public Bar getBar() {\n"
 				+ "    return bar;\n"
 				+ "  }\n"
 				+ "  \n"
@@ -72,7 +72,7 @@ public class PojoGeneratorTest {
 				+ "  /**\n"
 				+ "   * @return the name\n"
 				+ "   */\n"
-				+ "  public String getName(){\n"
+				+ "  public String getName() {\n"
 				+ "    return name;\n"
 				+ "  }\n"
 				+ "  \n"
@@ -88,7 +88,7 @@ public class PojoGeneratorTest {
 				+ "    return EncodingUtil.pojoToString(this);\n"
 				+ "  }\n"
 				+ "}\n"
-				+ "" , generator.generate());
+				, generator.generate());
 	}
 	
 }
