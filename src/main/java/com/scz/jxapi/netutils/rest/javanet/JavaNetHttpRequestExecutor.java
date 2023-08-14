@@ -65,18 +65,24 @@ public class JavaNetHttpRequestExecutor implements HttpRequestExecutor {
 				}
 			}
 			
-			httpClient.sendAsync(builder.build(), BodyHandlers.ofString())
-		    	.thenAccept(r -> {
-		    		response.setResponseCode(r.statusCode());
+			httpClient.sendAsync(builder.build(), BodyHandlers.ofString()).whenComplete((r, error) -> {
+	    		try {
+	    			if (error != null) {
+	    				throw new Exception(error);
+	    			}
+	    			response.setResponseCode(r.statusCode());
 		    		response.setHeaders(r.headers().map());
 		    		response.setBody(r.body());
 		    		if (log.isDebugEnabled()) {
 		    			log.debug("Got response to request:[" + request + "], response[" + response + "]");
 		    		}
-		    		callback.complete(response);
-		    	});
-			
-			
+	    		} catch (Exception ex) {
+	    			log.error("Error executing request:" + request, ex);
+	    			response.setException(ex);
+	    		} finally {
+	    			callback.complete(response);
+	    		}
+			}); 
 		} catch (URISyntaxException e) {
 			response.setException(e);
 			callback.complete(response);
