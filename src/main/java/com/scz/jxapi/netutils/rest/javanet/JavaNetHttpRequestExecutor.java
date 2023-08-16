@@ -6,6 +6,9 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest.BodyPublishers;
 import java.net.http.HttpRequest.Builder;
 import java.net.http.HttpResponse.BodyHandlers;
+import java.time.Duration;
+import java.time.Period;
+import java.time.temporal.TemporalUnit;
 import java.util.List;
 import java.util.Map.Entry;
 import java.util.Optional;
@@ -26,6 +29,8 @@ public class JavaNetHttpRequestExecutor implements HttpRequestExecutor {
 	
 	private static final Logger log = LoggerFactory.getLogger(JavaNetHttpRequestExecutor.class);
 	
+	private static final Duration REQUEST_TIMEOUT = Duration.ofMillis(5000L);
+	
 	private final HttpClient httpClient;
 
 	public JavaNetHttpRequestExecutor(HttpClient httpClient) {
@@ -39,7 +44,7 @@ public class JavaNetHttpRequestExecutor implements HttpRequestExecutor {
 		try {
 			if (log.isDebugEnabled())
 				log.debug("Executing request:" + request);
-			Builder builder = java.net.http.HttpRequest.newBuilder().uri(new URI(request.getUrl()));
+			Builder builder = java.net.http.HttpRequest.newBuilder().uri(new URI(request.getUrl())).timeout(REQUEST_TIMEOUT);
 			switch (request.getHttpMethod()) {
 			case "GET":
 				builder.GET();
