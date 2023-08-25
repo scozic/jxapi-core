@@ -18,6 +18,9 @@ public class ObjectListFieldDeserializer<T> extends AbstractJsonMessageDeseriali
 	}
 	@Override
 	public List<T> deserialize(JsonParser parser) throws IOException {
+		if (parser.currentToken() == JsonToken.VALUE_NULL) {
+			return null;
+		}
 		if (parser.currentToken() != JsonToken.START_ARRAY) {
 			throw new IllegalStateException("Expecting start array of items to be deserialized using " + this.itemDeserializer);
 		}
