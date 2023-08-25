@@ -20,6 +20,9 @@ public class StringListFieldDeserializer extends AbstractJsonMessageDeserializer
 	
 	@Override
 	public List<String> deserialize(JsonParser parser) throws IOException {
+		if (parser.currentToken() == JsonToken.VALUE_NULL) {
+			return null;
+		}
 		if (parser.currentToken() != JsonToken.START_ARRAY) {
 			throw new IllegalStateException("Expecting start array of String, got:" + parser.currentToken() + " with name:" + parser.currentName());
 		}
