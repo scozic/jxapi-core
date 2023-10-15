@@ -117,6 +117,8 @@ public abstract class AbstractWebsocketManager implements WebsocketManager {
 		if (isConnected() || isDisposed()) {
 			return;
 		}
+		if(log.isInfoEnabled())
+			log.info("Connecting WS:" + this);
 		try {
 			doConnect();
 			scheduleNoMessageTimeoutTask(this.messageReceivedCount.get());
@@ -124,6 +126,8 @@ public abstract class AbstractWebsocketManager implements WebsocketManager {
 			onError(new IOException("Error while connecting websocket", exception));
 		}
 		connected.set(true);
+		if(log.isInfoEnabled())
+			log.info("Connected WS:" + this);
 	}
 	
 	public boolean isDisposed() {

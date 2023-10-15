@@ -80,7 +80,8 @@ public abstract class SpringWebsocketManager extends AbstractWebsocketManager {
 		client.setTaskExecutor(taskExecutor);
 		lastHeartBeatTime.set(System.currentTimeMillis());
 		URI uri = getHandShakeURI();
-		log.debug("Connecting websocket, URI:" + uri);
+		if (log.isInfoEnabled())
+			log.info("Connecting websocket, URI:" + uri);
 		CountDownLatch websocketSessionAvailable = new CountDownLatch(1);
 		ListenableFuture<WebSocketSession> futureSession = client.doHandshake(new SpringWebsocketHandler(this.taskExecutor), new WebSocketHttpHeaders(), uri);
 		futureSession.addCallback(new WebsocketSessionCallback(websocketSessionAvailable));
@@ -92,8 +93,8 @@ public abstract class SpringWebsocketManager extends AbstractWebsocketManager {
 		if (webSocketSession == null) {
 			throw new IllegalStateException("Handshake failed to initialize websocketSession");
 		}
-		if (log.isDebugEnabled()) {
-			log.debug("Websocket " + baseUrl + ":Done handshake");
+		if (log.isInfoEnabled()) {
+			log.info("Websocket " + baseUrl + ":Done handshake");
 		}
 		
 		if (this.heartBeatTaskCancelled != null) {
