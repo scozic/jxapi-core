@@ -25,7 +25,7 @@ public class WebsocketEndpointDemoGenerator extends JavaTypeGenerator {
 						+ subscribeMethodName 
 						+ "(" + requestClassName + ")}\n"
 						+ JavaCodeGenerationUtil.GENERATED_CODE_WARNING);
-		JavaCodeGenerationUtil.generateLoggerDeclaration(this);
+		JavaCodeGenerationUtil.generateSlf4jLoggerDeclaration(this);
 		websocketApi.getParameters().forEach(p -> generateParameterValueConstantDeclaration(exchangeDescriptor, exchangeApiDescriptor, websocketApi, p));
 		String exchangeInterfaceClassName = ExchangeJavaWrapperGeneratorUtil.getExchangeInterfaceName(exchangeDescriptor);
 		generateMainMethodBody(requestSimpleClassName, 

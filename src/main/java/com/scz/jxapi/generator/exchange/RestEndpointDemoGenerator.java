@@ -30,7 +30,7 @@ public class RestEndpointDemoGenerator extends JavaTypeGenerator {
 						+ apiMethodName 
 						+ "(" + requestClassName + ")}\n"
 						+ JavaCodeGenerationUtil.GENERATED_CODE_WARNING);
-		JavaCodeGenerationUtil.generateLoggerDeclaration(this);
+		JavaCodeGenerationUtil.generateSlf4jLoggerDeclaration(this);
 		restApi.getParameters().forEach(p -> generateParameterValueConstantDeclaration(exchangeDescriptor, exchangeApiDescriptor, restApi, p));
 		String exchangeInterfaceClassName = ExchangeJavaWrapperGeneratorUtil.getExchangeInterfaceName(exchangeDescriptor);
 		generateMainMethodBody(requestSimpleClassName, 
