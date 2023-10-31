@@ -7,6 +7,9 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.Comparator;
+import java.util.Date;
+import java.util.Iterator;
+import java.util.List;
 
 import org.junit.After;
 import org.junit.Assert;
@@ -14,6 +17,7 @@ import org.junit.Test;
 
 /**
  * Unit test for {@link JavaTypeGenerator}
+ * @author Sylvestre COZIC
  */
 public class JavaTypeGeneratorTest {
 	
@@ -22,18 +26,32 @@ public class JavaTypeGeneratorTest {
 	@Test
 	public void testGenerateInterface() {
 		JavaTypeGenerator gen = new JavaTypeGenerator("x.y.z.HelloInterface");
-		gen.addImport("java.util.Date");
+		gen.addImport(Date.class);
 		gen.addImport("java.text.SimpleDateFormat");
 		// Import that should be ignored in generated code because same package as generated type.
 		gen.addImport("x.y.z.Foo");
+		gen.addImport("Bar");
 		// Import that should be ignored in generated code because starts with 'java.lang'
 		gen.addImport("java.lang.Boolean");
 		// Import where type is provided as generic, the <..> part should be removed.
-		gen.addImport("java.util.List<String>");
+		gen.addImport("java.util.List<String>");		
+		
 		gen.setDescription("Hello interface");
 		gen.setTypeDeclaration("public interface");
 		gen.appendToBody("void sayHello();\n\n");
 		gen.appendToBody("List<String> getHellos();");
+		
+		Iterator<String> importsIterator = gen.getImports().iterator();
+		Assert.assertEquals("Bar", importsIterator.next());
+		Assert.assertEquals("java.lang.Boolean", importsIterator.next());
+		Assert.assertEquals("java.text.SimpleDateFormat", importsIterator.next());
+		Assert.assertEquals("java.util.Date", importsIterator.next());
+		Assert.assertEquals("java.util.List", importsIterator.next());
+		Assert.assertEquals("x.y.z.Foo", importsIterator.next());
+		Assert.assertFalse(importsIterator.hasNext());
+		Assert.assertEquals("x.y.z.HelloInterface", gen.getName());
+		Assert.assertEquals("public interface", gen.getTypeDeclaration());
+		
 		Assert.assertEquals("package x.y.z;\n"
 				+ "\n"
 				+ "import java.text.SimpleDateFormat;\n"
@@ -63,26 +81,65 @@ public class JavaTypeGeneratorTest {
 
 	@Test
 	public void testGenerateJavaFile() throws IOException {
-		JavaTypeGenerator gen = new JavaTypeGenerator("x.y.z.HelloInterface");
+		JavaTypeGenerator gen = new JavaTypeGenerator("x.y.z.Hello");
+		gen.addImport("java.util.Date");
+		gen.addImport("java.text.SimpleDateFormat");
+		gen.setDescription("Hello interface");
+		gen.setTypeDeclaration("public class");
+		gen.appendToBody("void sayHello();");
+		srcFolder = Paths.get("tmp" + Math.random());
+		gen.writeJavaFile(srcFolder);
+		String actualJavaFileContent = Files.readString(srcFolder.resolve(Paths.get("x", "y", "z", "Hello.java")));
+		Assert.assertEquals(gen.generate(), actualJavaFileContent);
+	}
+	
+	@Test
+	public void testGeneratorWithEmptyImplementedInterfacesList() {
+		JavaTypeGenerator gen = new JavaTypeGenerator("x.y.z.MyClass");
+		gen.appendToBody("void sayHello();\n\n");
+		gen.setImplementedInterfaces(List.of());
+		gen.setTypeDeclaration("public class");
+		Assert.assertEquals(0, gen.getImplementedInterfaces().size());
+		Assert.assertEquals("package x.y.z;\n"
+				+ "\n"
+				+ "\n"
+				+ "\n"
+				+ "public class MyClass {\n"
+				+ "  void sayHello();\n"
+				+ "  \n"
+				+ "}\n", gen.generate());
+	}
+	
+	@Test
+	public void testGenerateJavaFileDefaultPackageSrcFolderAlreadyExists() throws IOException {
+		JavaTypeGenerator gen = new JavaTypeGenerator("HelloInterface");
 		gen.addImport("java.util.Date");
 		gen.addImport("java.text.SimpleDateFormat");
 		gen.setDescription("Hello interface");
 		gen.setTypeDeclaration("public interface");
 		gen.appendToBody("void sayHello();");
 		srcFolder = Paths.get("tmp" + Math.random());
+		Files.createDirectories(srcFolder);
 		gen.writeJavaFile(srcFolder);
-		String actualJavaFileContent = Files.readString(srcFolder.resolve(Paths.get("x", "y", "z", "HelloInterface.java")));
+		String actualJavaFileContent = Files.readString(srcFolder.resolve(Paths.get("HelloInterface.java")));
 		Assert.assertEquals(gen.generate(), actualJavaFileContent);
 	}
 	
 	@Test
 	public void testGenerateJavaClassWithSuperClassAndInterfaces() {
 		JavaTypeGenerator gen = new JavaTypeGenerator("x.y.z.HelloInterface");
-		gen.setParentClassName("a.b.c.HelloParent"); 
-		gen.setImplementedInterfaces(Arrays.asList("d.e.f.HelloInterface", "f.g.h.OtherInterface"));
-		gen.setDescription("Hello class");
+		String parentClassName = "a.b.c.HelloParent";
+		gen.setParentClassName(parentClassName);
+		List<String> implmentedInterfaces = Arrays.asList("d.e.f.HelloInterface", "f.g.h.OtherInterface");
+		gen.setImplementedInterfaces(implmentedInterfaces);
+		String description = "Hello class";
+		gen.setDescription(description);
 		gen.setTypeDeclaration("public interface");
 		gen.appendMethod("@Override\npublic void sayHello()", "Sytem.out.println(\"Hello\");");
+		
+		Assert.assertEquals(implmentedInterfaces, gen.getImplementedInterfaces());
+		Assert.assertEquals(parentClassName, gen.getParentClassName());
+		Assert.assertEquals(description, gen.getDescription());
 		Assert.assertEquals("package x.y.z;\n"
 				+ "\n"
 				+ "import a.b.c.HelloParent;\n"

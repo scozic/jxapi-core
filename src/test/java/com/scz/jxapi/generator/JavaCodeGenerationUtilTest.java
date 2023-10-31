@@ -34,9 +34,6 @@ public class JavaCodeGenerationUtilTest {
 		Assert.assertEquals(expected, JavaCodeGenerationUtil.generateCodeBlock(content));
 	}
 
-	/**
-	 * Some piece of Javadoc
-	 */
 	@Test
 	public void testGenerateJavaDoc() {
 		String content = "Some piece of\n Javadoc";
