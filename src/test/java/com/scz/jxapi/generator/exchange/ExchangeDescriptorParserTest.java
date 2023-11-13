@@ -65,7 +65,7 @@ public class ExchangeDescriptorParserTest {
 		Assert.assertEquals("List of market information for each requested symbol", payload.getDescription());
 		Assert.assertEquals(EndpointParameterType.OBJECT_LIST, payload.getType());
 		List<EndpointParameter> payloadParameters = payload.getParameters();
-		Assert.assertEquals(2, payloadParameters.size());
+		Assert.assertEquals(3, payloadParameters.size());
 		
 		EndpointParameter symbol = payloadParameters.get(0);
 		Assert.assertEquals("symbol", symbol.getName());
@@ -78,6 +78,12 @@ public class ExchangeDescriptorParserTest {
 		Assert.assertEquals("Minimum order amount", minOrderSize.getDescription());
 		Assert.assertEquals(EndpointParameterType.BIGDECIMAL, minOrderSize.getType());
 		Assert.assertEquals("0.0001", minOrderSize.getSampleValue());
+		
+		EndpointParameter levels = payloadParameters.get(2);
+		Assert.assertEquals("levels", levels.getName());
+		Assert.assertEquals("Amount precision levels", levels.getDescription());
+		Assert.assertEquals(EndpointParameterType.INT_LIST, levels.getType());
+		Assert.assertEquals(List.of(1, 10, 500).toString(), levels.getSampleValue().toString());
 	}
 	
 

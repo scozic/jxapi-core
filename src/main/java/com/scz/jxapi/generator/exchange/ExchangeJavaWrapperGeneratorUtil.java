@@ -35,6 +35,7 @@ public class ExchangeJavaWrapperGeneratorUtil {
 		PARAMETER_TYPE_CLASSES.put(EndpointParameterType.TIMESTAMP, "java.lang.Long");
 		PARAMETER_TYPE_CLASSES.put(EndpointParameterType.STRING, "String");
 		PARAMETER_TYPE_CLASSES.put(EndpointParameterType.STRING_LIST, "java.util.List<String>");
+		PARAMETER_TYPE_CLASSES.put(EndpointParameterType.INT_LIST, "java.util.List<Integer>");
 	}
 	
 //	public static void generatePojo(Path src, String className, String description, List<EndpointParameter> fields) throws IOException {
@@ -61,6 +62,7 @@ public class ExchangeJavaWrapperGeneratorUtil {
 			case STRING:
 			case TIMESTAMP:
 			case STRING_LIST:
+			case INT_LIST:
 				generateSimpleParameterTypePojoField(generator, field);
 				break;
 			case OBJECT:

@@ -185,8 +185,13 @@ public class JavaCodeGenerationUtilTest {
 	}
 	
 	@Test
+	public void testGetGetAccessorMethodName_JavaLangBooleanFieldType() {
+		Assert.assertEquals("isBar", JavaCodeGenerationUtil.getGetAccessorMethodName("bar", Boolean.class.getName(), List.of()));
+	}
+	
+	@Test
 	public void testGetGetAccessorMethodName_BooleanFieldType() {
-		Assert.assertEquals("isBar", JavaCodeGenerationUtil.getGetAccessorMethodName("bar", "Boolean", List.of()));
+		Assert.assertEquals("isBar", JavaCodeGenerationUtil.getGetAccessorMethodName("bar", Boolean.class.getSimpleName(), List.of()));
 	}
 	
 	@Test

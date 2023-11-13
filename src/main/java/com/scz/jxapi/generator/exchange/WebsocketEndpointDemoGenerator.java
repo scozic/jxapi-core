@@ -120,6 +120,16 @@ public class WebsocketEndpointDemoGenerator extends JavaTypeGenerator {
 				throw new IllegalArgumentException("Sample value for parameter:" + parameter + ":" + strList + " does must be surrounded with '[]'");
 			}
 			return "List.of(" + strList.substring(1, strList.length() - 1) + ")";
+		case INT_LIST:
+			addImport(List.class);
+			if (v == null) {
+				return "List.of()";
+			}
+			String intList = v.toString().trim();
+			if (!intList.startsWith("[") || !intList.endsWith("]")) {
+				throw new IllegalArgumentException("Sample value for parameter:" + parameter + ":" + intList + " must be surrounded with '[]'");
+			}
+			return "List.of(" + intList.substring(1, intList.length() - 1) + ")";
 		case STRING:
 			return "\"" + v + "\"";
 		case TIMESTAMP:
@@ -155,6 +165,9 @@ public class WebsocketEndpointDemoGenerator extends JavaTypeGenerator {
 		case STRING_LIST:
 			addImport(List.class);
 			return "List<String>";
+		case INT_LIST:
+			addImport(List.class);
+			return "List<Integer>";
 		case OBJECT:
 		case OBJECT_LIST:
 			// FIXME not managed yet: Construction of demo values for parameters that are structured object types.
