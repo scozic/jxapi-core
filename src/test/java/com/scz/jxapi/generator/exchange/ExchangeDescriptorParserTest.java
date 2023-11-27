@@ -27,12 +27,48 @@ public class ExchangeDescriptorParserTest {
 		Assert.assertEquals("The market data API of MyTestCEX", marketDataApi.getDescription());
 		Assert.assertEquals("com.foo.bar.BarRestEndpointFactory", marketDataApi.getRestEndpointFactory());
 		List<RestEndpointDescriptor> restEndpoints = marketDataApi.getRestEndpoints();
-		Assert.assertEquals(1, restEndpoints.size());
+		Assert.assertEquals(2, restEndpoints.size());
 		checkExchangeInfoRestEndpoint(restEndpoints.get(0));
+		checkTickersRestEndpooint(restEndpoints.get(1));
 		Assert.assertEquals("com.foo.bar.BarWebsocketEndpointFactory", marketDataApi.getWebsocketEndpointFactory());
 		List<WebsocketEndpointDescriptor> websocketEndpoints = marketDataApi.getWebsocketEndpoints();
 		Assert.assertEquals(1, websocketEndpoints.size());
 		checkTickerStreamWebsocketEndpoint(websocketEndpoints.get(0));
+	}
+
+	private void checkTickersRestEndpooint(RestEndpointDescriptor tickersEndPoint) {
+		Assert.assertEquals("tickers", tickersEndPoint.getName());
+		Assert.assertEquals("Fetch current tickers", tickersEndPoint.getDescription());
+		Assert.assertEquals("GET", tickersEndPoint.getHttpMethod());
+		Assert.assertEquals("https://com.sample.mycex/tickers", tickersEndPoint.getUrl());
+		List<EndpointParameter> exchangeInfoParameters = tickersEndPoint.getParameters();
+		Assert.assertEquals(0, exchangeInfoParameters.size());
+		
+		checkTickersResponse(tickersEndPoint.getResponse());
+		
+	}
+
+	private void checkTickersResponse(List<EndpointParameter> tickersResponse) {
+		Assert.assertEquals(2, tickersResponse.size());
+		EndpointParameter responseCode = tickersResponse.get(0);
+		Assert.assertEquals("responseCode", responseCode.getName());
+		Assert.assertEquals("Request response code", responseCode.getDescription());
+		Assert.assertEquals(EndpointParameterType.INT, responseCode.getType());
+		Assert.assertEquals("0", responseCode.getSampleValue());
+		
+		EndpointParameter payload = tickersResponse.get(1);
+		Assert.assertEquals("payload", payload.getName());
+		Assert.assertEquals("Tickers for each symbol", payload.getDescription());
+		Assert.assertEquals(EndpointParameterType.OBJECT_MAP, payload.getType());
+		List<EndpointParameter> payloadParameters = payload.getParameters();
+		Assert.assertEquals(1, payloadParameters.size());
+		
+		EndpointParameter last = payloadParameters.get(0);
+		Assert.assertEquals("last", last.getName());
+		Assert.assertEquals("Last traded price", last.getDescription());
+		Assert.assertEquals(EndpointParameterType.BIGDECIMAL, last.getType());
+		Assert.assertEquals(Double.valueOf("10.0"), last.getSampleValue());
+		
 	}
 
 	private void checkExchangeInfoRestEndpoint(RestEndpointDescriptor exchangeInfoEndPoint) {

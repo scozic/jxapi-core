@@ -1,0 +1,48 @@
+package com.scz.jxapi.netutils.deserialization.json.field;
+
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
+
+import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.core.JsonToken;
+import com.scz.jxapi.netutils.deserialization.json.AbstractJsonMessageDeserializer;
+import com.scz.jxapi.netutils.deserialization.json.JsonDeserializer;
+
+public class ObjectMapFieldDeserializer<T> extends AbstractJsonMessageDeserializer<Map<String, T>> {
+	
+	private final JsonDeserializer<T> itemDeserializer;
+	
+	public ObjectMapFieldDeserializer(JsonDeserializer<T> structDeserializer) {
+		this.itemDeserializer = structDeserializer;
+	}
+
+	@Override
+	public Map<String, T> deserialize(JsonParser parser) throws IOException {
+		if (parser.currentToken() == JsonToken.VALUE_NULL) {
+			return null;
+		}
+		if (parser.currentToken() != JsonToken.START_OBJECT) {
+			throw new IllegalStateException("Expecting start object of map of string keys, and values objects to be deserialized using " 
+											+ this.itemDeserializer 
+											+ " but found:" 
+											+ parser.currentToken());
+		}
+		
+		Map<String, T> res = new HashMap<>();
+        while (parser.nextToken() != JsonToken.END_OBJECT) {
+        	if (parser.currentToken() != JsonToken.FIELD_NAME) {
+        		throw new IllegalStateException("Expecting field name in map of objects to be deserialized using " 
+						+ this.itemDeserializer 
+						+ " but found:" 
+						+ parser.currentToken());
+        	}
+            String key = parser.getCurrentName();
+            parser.nextToken();
+            res.put(key, itemDeserializer.deserialize(parser));
+        }
+        
+		return res;
+	}
+
+}

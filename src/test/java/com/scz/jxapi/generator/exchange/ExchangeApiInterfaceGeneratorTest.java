@@ -22,6 +22,8 @@ public class ExchangeApiInterfaceGeneratorTest {
 				+ "import com.foo.bar.gen.marketdata.pojo.MyTestCEXMarketDataExchangeInfoResponse;\n"
 				+ "import com.foo.bar.gen.marketdata.pojo.MyTestCEXMarketDataTickerStreamMessage;\n"
 				+ "import com.foo.bar.gen.marketdata.pojo.MyTestCEXMarketDataTickerStreamRequest;\n"
+				+ "import com.foo.bar.gen.marketdata.pojo.MyTestCEXMarketDataTickersRequest;\n"
+				+ "import com.foo.bar.gen.marketdata.pojo.MyTestCEXMarketDataTickersResponse;\n"
 				+ "import com.scz.jxapi.netutils.rest.FutureRestResponse;\n"
 				+ "import com.scz.jxapi.netutils.websocket.WebsocketListener;\n"
 				+ "import com.scz.jxapi.util.HasProperties;\n"
@@ -36,6 +38,10 @@ public class ExchangeApiInterfaceGeneratorTest {
 				+ "   * Fetch market information of symbols that can be traded\n"
 				+ "   */\n"
 				+ "  FutureRestResponse<MyTestCEXMarketDataExchangeInfoResponse> exchangeInfo(MyTestCEXMarketDataExchangeInfoRequest request);\n"
+				+ "  /**\n"
+				+ "   * Fetch current tickers\n"
+				+ "   */\n"
+				+ "  FutureRestResponse<MyTestCEXMarketDataTickersResponse> tickers(MyTestCEXMarketDataTickersRequest request);\n"
 				+ "  \n"
 				+ "  /**\n"
 				+ "   * Subscribe to tickerStream stream.<br/>\n"
@@ -51,7 +57,8 @@ public class ExchangeApiInterfaceGeneratorTest {
 				+ "   * @param subscriptionId ID of subscription returned by #subscribeTickerStream()\n"
 				+ "   */\n"
 				+ "  boolean unsubscribeTickerStream(String subscriptionId);\n"
-				+ "}\n", 
+				+ "}\n"
+				+ "", 
 				apiInterfaceGenerator.generate());
 	}
 	

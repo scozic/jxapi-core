@@ -146,6 +146,7 @@ public class RestEndpointDemoGenerator extends JavaTypeGenerator {
 			return String.valueOf(v) + "L";
 		case OBJECT:
 		case OBJECT_LIST:
+		case OBJECT_MAP:
 		default:
 			throw new IllegalArgumentException("Unexpected parameter type for parameter:" + parameter);
 		}
@@ -173,6 +174,7 @@ public class RestEndpointDemoGenerator extends JavaTypeGenerator {
 			return "List<Integer>";
 		case OBJECT:
 		case OBJECT_LIST:
+		case OBJECT_MAP:
 			// FIXME not managed yet: Construction of demo values for parameters that are structured object types.
 			// Usually, requests do not use struct parameters
 		default:

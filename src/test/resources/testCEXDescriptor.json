@@ -24,6 +24,20 @@
 							{"name":"levels", "type": "INT_LIST", "description":"Amount precision levels", "sampleValue":[1,10,500]}
 						]}
 					]
+				},
+				{
+					"name": "tickers",
+					"httpMethod": "GET",
+					"description": "Fetch current tickers",
+					"url": "https://com.sample.mycex/tickers",
+					"parameters": [
+					],
+					"response": [
+						{"name":"responseCode", "type": "INT", "description":"Request response code", "sampleValue":"0"},
+						{"name":"payload", "type": "OBJECT_MAP", "description":"Tickers for each symbol", "parameters":[
+							{"name":"last", "type": "BIGDECIMAL", "description":"Last traded price", "sampleValue":10.0}
+						]}
+					]
 				}
 			],
 			"websocketEndpointFactory": "com.foo.bar.BarWebsocketEndpointFactory",

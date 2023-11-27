@@ -77,6 +77,7 @@ public class JsonPojoSerializerGenerator extends JavaTypeGenerator {
 		case STRING_LIST:
 		case OBJECT:
 		case OBJECT_LIST:
+		case OBJECT_MAP:
 		case INT_LIST:
 			return "gen.writeObjectField(\"" + msgFieldName(field) + "\", " + getFieldValue + ");\n";
 		default:

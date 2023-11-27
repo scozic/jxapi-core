@@ -24,5 +24,8 @@ public enum EndpointParameterType {
 	/** Nested structure (JSON block) */
 	OBJECT,
 	/** Repeated nested structure (JSON array) like <code>[{"x":"xval1"},{"x":"xval2"}]</code>*/
-	OBJECT_LIST;
+	OBJECT_LIST,
+	
+	/**Nested JSON map with keys of type String and values of same JSON object structure attributes*/
+	OBJECT_MAP;
 }
