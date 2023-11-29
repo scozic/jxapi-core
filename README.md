@@ -101,7 +101,8 @@ A few lines of Java code have to be written manually to manage API specific auth
 
 #### REST requests factory
 
-The generator needs and implementation of `com.scz.jxapi.netutils.rest.RestEndpointFactory` interface. 
+If the API descriptor file it contains REST endpoints, an implementation of [RestEndpointFactory](src/main/java/com/scz/jxapi/netutils/rest/RestEndpointFactory.java)
+ interface is required. 
 Let's do this in a class named `com.scz.jxapi.exchanges.bybit.net.BybitRestEndpointFactory`:
 
 ```java
@@ -128,7 +129,9 @@ public class BybitRestEndpointFactory implements RestEndpointFactory {
 }
 ```
  * API specific configuration properties will be passed in a `java.util.Properties` object, passed from `setProperties` object
- * We need a generic `com.scz.jxapi.netutils.rest.HttpRequestExecutor` implementation to execute REST requests. The default `JavaNetHttpRequestExecutor` is usually suitable.
+ * We need a generic [HttpRequestExecutor](src/main/java/com/scz/jxapi/netutils/rest/HttpRequestExecutor.java)
+ implementation to execute REST requests. The default [JavaNetHttpRequestExecutor](src/main/java/com/scz/jxapi/netutils/rest/javanet/JavaNetHttpRequestExecutor.java)
+ is usually suitable.
  * Actual REST requests customization are performed in `com.scz.jxapi.exchanges.bybit.net.BybitHttpRequestBuilder`. In this class we intercept outgoing REST request calls by overriding `com.scz.jxapi.netutils.rest.DefaultHttpRequestBuilder.build()` method:
  
 ```java
@@ -149,10 +152,35 @@ public class BybitRestEndpointFactory implements RestEndpointFactory {
 	}
 ```
 
-This method transcodes generic `com.scz.jxapi.netutils.rest.RestRequest` to raw `com.scz.jxapi.netutils.rest.HttpRequest` to be executed. The result is added specific headers here but body, request URL with query string parameters and body can be also tuned.
+This method transcodes generic [RestRequest](src/main/java/com/scz/jxapi/netutils/rest/RestRequest.java)
+ to raw [HttpRequest](src/main/java/com/scz/jxapi/netutils/rest/HttpRequest.java)
+ to be executed. The result is added specific headers here but body, request URL with query string parameters and body can be also tuned.
 
 #### Websocket management
-TODO
+If the API descriptor file it contains Websocket endpoints, an implementation of [WebsocketEndpointFactory](src/main/java/com/scz/jxapi/netutils/websocket/WebsocketEndpointFactory.java)
+ interface is required.
+For Bybit 'Spot' related WS endpoints, let's do this in a class named `com.scz.jxapi.exchanges.bybit.net.BybitSpotWebsocketEndpointFactory`:
+
+```java
+public class BybitSpotWebsocketEndpointFactory extends AbstractWebsocketEndpointFactory {
+
+	public static final String BASE_URL = "wss://stream.bybit.com/v5/public/spot";
+	
+	@Override
+	public void setApi(HasProperties api) {
+		this.websocketManager = new BybitWebsocketManager(BASE_URL);
+	}
+}
+```
+
+ * API specific configuration properties will be passed in a [HasProperties](src/main/java/com/scz/jxapi/util/HasProperties.java) object, passed from `setProperties()`. This objects not only wraps properties with API specific configuration, but can be cast to Api implementation that exposes other REST/Websocket endpoints this factory will be used to create websocket endpoints for.
+This may be useful for instance if websocket handshake involves a REST call to retrieve authentication token.
+ * Specific handshake, heartbeat management, subscription/unsubscription to topics, is performed in a [WebsocketManager](src/main/java/com/scz/jxapi/netutils/websocket/WebsocketManager.java)
+ implementation, here is the specific one for Bybit API `BybitWebsocketManager`
+ * This class extends [SpringWebsocketManager](src/main/java/com/scz/jxapi/netutils/websocket/spring/SpringWebsocketManager.java) (SpringWebsocketManager)[src/main/java/com/scz/jxapi/netutils/websocket/spring/SpringWebsocketManager.java] which manages most the actual websocket creation.
+ * Overrides `doConnect()` method to perform Bybit specific API handshake. This involves sending a message on websocket and waiting for response as websocket should be connected and ready to receive subscriptions when `doConnect()` method returns. 
+ * Overrides `createHeartBeatMessage()` to send Bybit specific hearbeat message
+ * Overrides `getSubscribeRequestMessage(String topic)` and `getUnSubscribeRequestMessage(String topic)` to send Bybit specific subscribe/unsubscribe topic messages.
 
 ### Write JSON file for API descriptor
 Now the tedious work is done, let's create some API wrappers.
@@ -181,8 +209,12 @@ Such API description file looks as follows:
 }	
 ```
 
-TODO
-
+ * Such file contains one [ExchangeDescriptor](com.scz.jxapi.generator.exchange.ExchangeDescriptor) object (top level), with `name` and `description` fields. `basePackage` property tells the generator which base package to generate classes in. This should be a dedicated package with no other code than generated one. One suggestion is to include `gen` in package name to make it clear package contains generated code.
+ * `rateLimits` property contains an array of objects describing API specific limitation for RESt request rate. In the example above, no more than 120 requests per second are allowed. Generated code REST endpoints implementation will delay requests that exceed this limitation to avoid breaching API limits. This may be dangerous because if client using API example above sends 120 requests in 100ms, the next request will wait 900ms before being sent. However, this may be not be as dangerous as breaching API limits, because it may cause client ban. Notice `rateLimits` property can be set at [ExchangeDescriptor](com.scz.jxapi.generator.exchange.ExchangeDescriptor), [ExchangeApiDescriptor](com.scz.jxapi.generator.exchange.ExchangeApiDescriptor) or [RestEndpointDescriptor](com.scz.jxapi.generator.exchange.RestEndpointDescriptor) level. Resource quota of a rate limit is shared among REST endpoints in its hierarchy.
+ * `apis` property of [ExchangeDescriptor](com.scz.jxapi.generator.exchange.ExchangeDescriptor) object contains an array of [ExchangeApiDescriptor](com.scz.jxapi.generator.exchange.ExchangeApiDescriptor) objects. Each of these objects describe a set of REST or Websocket API endpoints with `name` and `description` properties.
+ * When any REST endpoint is defined in a [ExchangeApiDescriptor](com.scz.jxapi.generator.exchange.ExchangeApiDescriptor) object, `restEndpointFactory` property of that object must be defined with the name of an existing [RestEndpointFactory](src/main/java/com/scz/jxapi/netutils/rest/RestEndpointFactory.java) implementation class.
+ * `restEndpoints` property of [ExchangeApiDescriptor](com.scz.jxapi.generator.exchange.ExchangeApiDescriptor) object contains the list of available REST API endpoints. 
+ 
 
 ## Supported exchanges
 TODO! Currently under development :)
