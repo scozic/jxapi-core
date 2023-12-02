@@ -201,9 +201,12 @@ Such API description file looks as follows:
 			"description": "Bybit V5 unified API",
 			"restEndpointFactory": "com.scz.jxapi.exchanges.bybit.net.BybitRestEndpointFactory",
 			"restEndpoints": [
-				{
-				}
-			}
+				// REST endpoints definition
+			],
+			"websocketEndpointFactory": "com.scz.jxapi.exchanges.bybit.net.BybitPrivateWebsocketEndpointFactory",
+			"websocketEndpoints": [
+				// Websocket endpoints definitions
+			]
 		}
 	]
 }	
@@ -213,8 +216,71 @@ Such API description file looks as follows:
  * `rateLimits` property contains an array of objects describing API specific limitation for RESt request rate. In the example above, no more than 120 requests per second are allowed. Generated code REST endpoints implementation will delay requests that exceed this limitation to avoid breaching API limits. This may be dangerous because if client using API example above sends 120 requests in 100ms, the next request will wait 900ms before being sent. However, this may be not be as dangerous as breaching API limits, because it may cause client ban. Notice `rateLimits` property can be set at [ExchangeDescriptor](com.scz.jxapi.generator.exchange.ExchangeDescriptor), [ExchangeApiDescriptor](com.scz.jxapi.generator.exchange.ExchangeApiDescriptor) or [RestEndpointDescriptor](com.scz.jxapi.generator.exchange.RestEndpointDescriptor) level. Resource quota of a rate limit is shared among REST endpoints in its hierarchy.
  * `apis` property of [ExchangeDescriptor](com.scz.jxapi.generator.exchange.ExchangeDescriptor) object contains an array of [ExchangeApiDescriptor](com.scz.jxapi.generator.exchange.ExchangeApiDescriptor) objects. Each of these objects describe a set of REST or Websocket API endpoints with `name` and `description` properties.
  * When any REST endpoint is defined in a [ExchangeApiDescriptor](com.scz.jxapi.generator.exchange.ExchangeApiDescriptor) object, `restEndpointFactory` property of that object must be defined with the name of an existing [RestEndpointFactory](src/main/java/com/scz/jxapi/netutils/rest/RestEndpointFactory.java) implementation class.
- * `restEndpoints` property of [ExchangeApiDescriptor](com.scz.jxapi.generator.exchange.ExchangeApiDescriptor) object contains the list of available REST API endpoints. 
- 
+ * `restEndpoints` property of [ExchangeApiDescriptor](com.scz.jxapi.generator.exchange.ExchangeApiDescriptor) object contains a JSON array of available REST API endpoints.
+ * When any websocket endpoint is defined in a [ExchangeApiDescriptor](com.scz.jxapi.generator.exchange.ExchangeApiDescriptor) object, `websocketEndpointFactory` property of that object must be defined with the name of an existing [WebsocketEndpointFactory](src/main/java/com/scz/jxapi/netutils/websocket/WebsocketEndpointFactory.java) implementation class. 
+ * `websocketEndpoints` property of [ExchangeApiDescriptor](src/main/java/com/scz/jxapi/generator/exchange/ExchangeApiDescriptor.java) object contains a JSON array of available Websocket API endpoints.
+
+
+#### REST API Endpoints
+
+Let's have a look at an example of REST endpoint definition:
+
+```json
+                {
+					"name": "placeOrder",
+					"httpMethod": "POST",
+					"description": "This endpoint supports to create the order for spot, spot margin, USDT perpetual, USDC perpetual, USDC futures, inverse futures and options.<br/>See <a href=\"https://bybit-exchange.github.io/docs/v5/order/create-order\">API</a>",
+					"url": "https://api.bybit.com/v5/order/create",
+					"rateLimits": [{"id":"BybitV5PlaceOrderRateLimit", "timeFrame": 1000,  "maxRequestCount": 10}],
+					"parameters": [
+						{"name":"category", "type": "STRING", "description":"Product type. Unified account: spot, linear, inverse, option. Normal account: spot, linear, inverse", "sampleValue":"spot"},
+						{"name":"symbol", "type": "STRING", "description":"Symbol name", "sampleValue":"1INCHUSDT"},
+						{"name":"isLeverage", "type": "INT", "description":"Whether to borrow. Valid for Unified spot only. 0(default): false then spot trading, 1: true then margin trading", "sampleValue":0},
+						{"name":"side", "type": "STRING", "description":"Buy, Sell", "sampleValue":"Buy"},
+						{"name":"orderType", "type": "STRING", "description":"Market, Limit", "sampleValue":"Limit"},
+						// Other parameters
+					],
+                    "responseInterfaces": ["com.scz.jxapi.exchanges.bybit.common.BybitResponse"],
+                    "response": [
+                        {"name":"retCode", "type": "INT", "description":"Success/Error code", "sampleValue": 0},
+                        {"name":"retMsg", "type": "STRING", "description":"Success/Error msg. OK, success, SUCCESS indicate a successful response", "sampleValue": 0},
+                        {"name":"time", "type": "TIMESTAMP", "description":"Current timestamp (ms)", "sampleValue": 0},
+                        {"name":"result", "type": "OBJECT", "description":"Business data result list of tickers.", "parameters":[ 		
+								{"name":"orderId", "type":"STRING", "description":"Order ID", "sampleValue":"1321003749386327552"},
+								{"name":"orderLinkId", "type":"STRING", "description":"User customised order ID", "sampleValue":"spot-test-postonly"}
+                            ] 
+                        } 
+                    ]
+                }
+```
+
+ * The `name` property is the generated function name.
+ * `httpMethod` property is HTTP verb to use for calls to that API
+ * `url` property contains full URL for this API endpoint without request or query parameters
+ * `rateLimit` is optional specific rate limit for that API endpoint
+ * `parameters` is the list of parameters to pass for that API call. When `POST` is used as HTTP method for that API, the parameters are expected to be passed as property of a JSON object submitted as HTTP request body. If another HTTP method (`GET`, `DELETE`) is used, the parameters are expected to be passed as query parameters ( _param1=value1&param2=value2..._ ).
+ * `responseInterface` is optional String array of names of interfaces implemented by generated POJO for response parameters. That interface should be written manually. This is useful for instance when response data to any API of a given exchange uses common fields like return code and error description.
+ * `response` contains the list of parameters received in response. Such parameters may be nested structure like JSON object or object array, see [EndpointParameterType](src/main/java/com/scz/jxapi/generator/exchange/EndpointParameterType.java) for the full list of possible parameter types.
+  * When a response parameter is of `OBJECT` or `OBJECT_ARRAY` type it should have `parameters` property exposing parameters of sub-structure. Such parameter may also define `objectName` property with full class name of generated POJO for corresponding structure. This is useful when same given structure is used across different APIs, for instance order data returned as object in 'get single order by ID' API and 'get all orders'. When a parameters stands for such object with objectName already defined in another API, the `parameters` property can be omitted, this simplifies the JSON as object structured needs not be repeated twice in JSON descriptor file.
+
+#### Websocket API Endpoints
+TODO!
+
+### Tip to write JSON descriptor file: AI may help you :)
+The API JSON description file described above has a structure simple enough for an AI like OpenAI to write most of it.
+Give an  example of API documentation page and resulting JSON description and ask it to do the same using other API endpoint documentation pages.
+
+
+### Resulting generated code
+When finally done writing JSON descriptor file (actually it is recommanded to generate code and run demo after writing each enpoint), run Maven `mvn exec:java` command to run generator. If JSON descriptor file is placed in `src/main/resources/` folder and has file name ending with `Descriptor.json` the generator will generate for that file:
+ * Exchange interface, with getter function to retrieve any exchange API.
+ * Exchange interface implementation, with constructor expecting a single `java.util.Properties` argument containing API configuration parameters like API KEY/Secret
+ * Exchange API interface for each exchange API defined in root exchange, and implementation of that interface with
+  * One function for each REST API. Calls are performed asynchronously and return an instance of [FutureRestResponse](src/main/java/com/scz/jxapi/netutils/rest/FutureRestResponse.java) which is a `java.util.concurrent.Future` object.
+   * REST API method take a request object as parameter and a response object as returned type which are generated Java POJOs carrying properties corresponding to parameters defined in JSON file.
+  * One _subscribe_ and one _unsubscribe_ method to subscribe/unsubscribe to Websocket endpoint topics. Subscription and stream message parameters and are carried in generated POJOs.
+
+TODO
 
 ## Supported exchanges
 TODO! Currently under development :)
