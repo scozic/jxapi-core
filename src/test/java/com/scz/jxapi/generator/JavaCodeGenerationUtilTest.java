@@ -1,5 +1,7 @@
 package com.scz.jxapi.generator;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 
@@ -21,7 +23,7 @@ public class JavaCodeGenerationUtilTest {
 		String content = 
 				  "for (int i = 0; i < 10; i++) {\n"
 				+ "  System.out.println(\"Hello #\" + i);\n"
-				+ "}";
+				+ "}\n";
 		
 		String expected = 
 				  "{\n"
@@ -32,9 +34,6 @@ public class JavaCodeGenerationUtilTest {
 		Assert.assertEquals(expected, JavaCodeGenerationUtil.generateCodeBlock(content));
 	}
 
-	/**
-	 * Some piece of Javadoc
-	 */
 	@Test
 	public void testGenerateJavaDoc() {
 		String content = "Some piece of\n Javadoc";
@@ -46,10 +45,15 @@ public class JavaCodeGenerationUtilTest {
 	}
 	
 	@Test
+	public void testGenerateJavaDocNullContent() {
+		Assert.assertEquals("", JavaCodeGenerationUtil.generateJavaDoc(null));
+	}
+	
+	@Test
 	public void testGenerateJavaPojoFieldsWithAccessors() {
 		List<PojoField> l = Arrays.asList(
 								PojoField.create("String", "foo"),
-								PojoField.create("boolean", "bar"),
+								PojoField.create("boolean", "bar", "b", null),
 								PojoField.create("com.xyz.Toto", "myToto", "mt", "you know toto?")
 							);
 		String actual = JavaCodeGenerationUtil.generateJavaPojoFieldsWithAccessors(l);
@@ -65,10 +69,16 @@ public class JavaCodeGenerationUtilTest {
 				+ "  this.foo = foo;\n"
 				+ "}\n"
 				+ "\n"
+				+ "/**\n"
+				+ " * @return  Message field <strong>b</strong>\n"
+				+ " */\n"
 				+ "public boolean isBar() {\n"
 				+ "  return bar;\n"
 				+ "}\n"
 				+ "\n"
+				+ "/**\n"
+				+ " * @param bar  Message field <strong>b</strong>\n"
+				+ " */\n"
 				+ "public void setBar(boolean bar) {\n"
 				+ "  this.bar = bar;\n"
 				+ "}\n"
@@ -97,8 +107,28 @@ public class JavaCodeGenerationUtilTest {
 	}
 	
 	@Test
+	public void testFirstLetterToUpperCaseNullString() {
+		Assert.assertEquals(null, JavaCodeGenerationUtil.firstLetterToUpperCase(null));
+	}
+	
+	@Test
+	public void testFirstLetterToUpperCaseEmptyString() {
+		Assert.assertEquals("", JavaCodeGenerationUtil.firstLetterToUpperCase(""));
+	}
+	
+	@Test
 	public void testFirstLetterToLowerCase() {
 		Assert.assertEquals("hellO", JavaCodeGenerationUtil.firstLetterToLowerCase("HellO"));
+	}
+	
+	@Test
+	public void testFirstLetterToLowerCaseNullString() {
+		Assert.assertEquals(null, JavaCodeGenerationUtil.firstLetterToLowerCase(null));
+	}
+	
+	@Test
+	public void testFirstLetterToLowerCaseEmptyString() {
+		Assert.assertEquals("", JavaCodeGenerationUtil.firstLetterToLowerCase(""));
 	}
 	
 	@Test
@@ -109,4 +139,115 @@ public class JavaCodeGenerationUtilTest {
 		Assert.assertEquals("MY_VARIABLE_NAME0", JavaCodeGenerationUtil.getStaticVariableName("myVariableName0"));
 	}
 	
+	@Test
+	public void testClassPackage() {
+		Assert.assertEquals("com.x.y.z", JavaCodeGenerationUtil.getClassPackage("com.x.y.z.Foo"));
+	}
+	
+	@Test
+	public void testClassPackageDefaultPackage() {
+		Assert.assertEquals("", JavaCodeGenerationUtil.getClassPackage("Foo"));
+	}
+	
+	@Test
+	public void testClassPackageNullClassPackage() {
+		Assert.assertEquals("", JavaCodeGenerationUtil.getClassPackage(null));
+	}
+	
+	@Test
+	public void testGetAccessorMethodName() {
+		Assert.assertEquals("setBar", JavaCodeGenerationUtil.getAccessorMethodName("set", "bar", List.of()));
+	}
+	
+	@Test
+	public void testGetAccessorMethodNameNullFieldList() {
+		Assert.assertEquals("setBar", JavaCodeGenerationUtil.getAccessorMethodName("set", "bar", null));
+	}
+	
+	@Test
+	public void testGetAccessorMethodNameSameFieldDifferentCaseInFieldList() {
+		Assert.assertEquals("setbAr", JavaCodeGenerationUtil.getAccessorMethodName("set", "bAr", List.of("BAR")));
+	}
+	
+	@Test
+	public void testGetAccessorMethodNameSameFieldInFieldList() {
+		Assert.assertEquals("setBar", JavaCodeGenerationUtil.getAccessorMethodName("set", "bar", List.of("bar")));
+	}
+	
+	@Test
+	public void testGetGetAccessorMethodName_StringFieldType() {
+		Assert.assertEquals("getBar", JavaCodeGenerationUtil.getGetAccessorMethodName("bar", "String", List.of()));
+	}
+	
+	@Test
+	public void testGetGetAccessorMethodName_booleanFieldType() {
+		Assert.assertEquals("isBar", JavaCodeGenerationUtil.getGetAccessorMethodName("bar", "boolean", List.of()));
+	}
+	
+	@Test
+	public void testGetGetAccessorMethodName_JavaLangBooleanFieldType() {
+		Assert.assertEquals("isBar", JavaCodeGenerationUtil.getGetAccessorMethodName("bar", Boolean.class.getName(), List.of()));
+	}
+	
+	@Test
+	public void testGetGetAccessorMethodName_BooleanFieldType() {
+		Assert.assertEquals("isBar", JavaCodeGenerationUtil.getGetAccessorMethodName("bar", Boolean.class.getSimpleName(), List.of()));
+	}
+	
+	@Test
+	public void testGetClassNameWithoutPackage_FullClassName() {
+		Assert.assertEquals("Bar", JavaCodeGenerationUtil.getClassNameWithoutPackage("com.x.y.z.Bar"));
+	}
+	
+	@Test
+	public void testGetClassNameWithoutPackage_NullClassName() {
+		Assert.assertEquals(null, JavaCodeGenerationUtil.getClassNameWithoutPackage(null));
+	}
+	
+	@Test
+	public void testGetClassNameWithoutPackage_SimpleClassName() {
+		Assert.assertEquals("Bar", JavaCodeGenerationUtil.getClassNameWithoutPackage("Bar"));
+	}
+	
+	@Test
+	public void testDeletePathPathDoesNotExist() throws IOException {
+		File dir = new File("tmpDir" + Math.random());
+		Assert.assertFalse(dir.exists());
+		JavaCodeGenerationUtil.deletePath(dir.toPath());
+		Assert.assertFalse(new File(dir.getName()).exists());
+	}
+	
+	@Test
+	public void testDeletePathPathExistsAndContainsSubDirAndFiles() throws IOException {
+		File dir = new File("tmpDir" + Math.random());
+		Assert.assertFalse(new File(dir.getName()).exists());
+		dir.mkdir();
+		File f1 = new File(dir, "file1");
+		f1.createNewFile();
+		File subDir = new File(dir, "subDir");
+		subDir.mkdir();
+		File f2 = new File(subDir, "file2");
+		f2.createNewFile();
+		File f3 = new File(subDir, "file3");
+		f3.createNewFile();
+		JavaCodeGenerationUtil.deletePath(dir.toPath());
+		Assert.assertFalse(new File(dir.getName()).exists());
+	}
+	
+	@Test
+	public void testGenerateSlf4jLoggerDeclaration() {
+		JavaTypeGenerator gen = new JavaTypeGenerator("com.foo.Bar");
+		gen.setTypeDeclaration("class");
+		JavaCodeGenerationUtil.generateSlf4jLoggerDeclaration(gen);
+		Assert.assertEquals("package com.foo;\n"
+				+ "\n"
+				+ "import org.slf4j.Logger;\n"
+				+ "import org.slf4j.LoggerFactory;\n"
+				+ "\n"
+				+ "\n"
+				+ "class Bar {\n"
+				+ "  private static final Logger log = LoggerFactory.getLogger(Bar.class);\n"
+				+ "  \n"
+				+ "}\n", gen.generate());
+	}
 }

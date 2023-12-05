@@ -6,7 +6,7 @@ import com.scz.jxapi.netutils.rest.ratelimits.RateLimitRule;
 import com.scz.jxapi.util.EncodingUtil;
 
 /**
- * Root element of a JSON crypto exchange API descriptor.
+ * Root element of a JSON Exchange descriptor.
  * API will be described in groups of endpoints, as {@link ExchangeApiDescriptor} list. 
  */
 public class ExchangeDescriptor {

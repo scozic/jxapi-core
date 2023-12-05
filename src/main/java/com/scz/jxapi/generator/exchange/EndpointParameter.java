@@ -87,7 +87,7 @@ public class EndpointParameter {
 	}
 	
 	/**
-	 * @return For a {@link EndpointParameterType#OBJECT} or {@link EndpointParameterType#OBJECT_LIST}, the parameters in nested 'struct'.
+	 * @return For a {@link EndpointParameterType#OBJECT}, {@link EndpointParameterType#OBJECT_LIST} or {@link EndpointParameterType#OBJECT_MAP} the parameters in nested structure.
 	 */
 	public List<EndpointParameter> getParameters() {
 		return parameters;
@@ -100,8 +100,8 @@ public class EndpointParameter {
 	/**
 	 * @return The simple (without package) name of java class to represent
 	 *         corresponding to object defined by this parameter. Relevant only when
-	 *         type is {@link EndpointParameterType#OBJECT} or
-	 *         {@link EndpointParameterType#OBJECT_LIST}. Remark: in a descriptor
+	 *         type is {@link EndpointParameterType#OBJECT},
+	 *         {@link EndpointParameterType#OBJECT_LIST} or {@link EndpointParameterType#OBJECT_MAP}. Remark: in a descriptor
 	 *         file, the first parameter defining a given object name should define
 	 *         sub-parameters, other parameters using same object name need not
 	 *         define sub-parameters. This allow not to repeat identical structures

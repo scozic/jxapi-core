@@ -38,10 +38,12 @@ public class ExchangeJavaWrapperGeneratorUtilTest {
 		 * MyPojo
 		 *  +- id: string
 		 *  +- score: int
-		 *  +- foos
+		 *  +- foo: objectList
 		 *     +- time: timestamp
 		 *     +- bar
 		 *        +- name: string
+		 *  +- toto: objectMap
+		 *        +- id: string             
 		 *               
 		 */
 		String typeName = "com.x.MyPojo";
@@ -55,6 +57,9 @@ public class ExchangeJavaWrapperGeneratorUtilTest {
 									  Arrays.asList(EndpointParameter.create(EndpointParameterType.STRING, "name", null, "Bar name", "my bar")))
 						)
 				));
+		endpointParameters.add(EndpointParameter.create(EndpointParameterType.OBJECT_MAP, "toto", "toto", null,
+				Arrays.asList(EndpointParameter.create(EndpointParameterType.STRING, "id", null, "Toto ID", "toto#1"))
+				));
 		
 		ExchangeJavaWrapperGeneratorUtil.generatePojo(srcFolder, typeName, typeDescription, endpointParameters, List.of("com.x.common.MyInterface"), "// Additionnal body here\n\n");
 		
@@ -66,6 +71,7 @@ public class ExchangeJavaWrapperGeneratorUtilTest {
 				+ "import com.x.common.MyInterface;\n"
 				+ "import com.x.serializers.MyPojoSerializer;\n"
 				+ "import java.util.List;\n"
+				+ "import java.util.Map;\n"
 				+ "\n"
 				+ "/**\n"
 				+ " * Used in ExchangeJavaWrapperGeneratorUtilTest\n"
@@ -75,6 +81,7 @@ public class ExchangeJavaWrapperGeneratorUtilTest {
 				+ "  private List<MyPojoFoo> foo;\n"
 				+ "  private Long id;\n"
 				+ "  private Integer score;\n"
+				+ "  private Map<String, MyPojoToto> toto;\n"
 				+ "  \n"
 				+ "  /**\n"
 				+ "   * @return  Message field <strong>f</strong>\n"
@@ -118,13 +125,28 @@ public class ExchangeJavaWrapperGeneratorUtilTest {
 				+ "    this.score = score;\n"
 				+ "  }\n"
 				+ "  \n"
+				+ "  /**\n"
+				+ "   * @return  Message field <strong>toto</strong>\n"
+				+ "   */\n"
+				+ "  public Map<String, MyPojoToto> getToto() {\n"
+				+ "    return toto;\n"
+				+ "  }\n"
+				+ "  \n"
+				+ "  /**\n"
+				+ "   * @param toto  Message field <strong>toto</strong>\n"
+				+ "   */\n"
+				+ "  public void setToto(Map<String, MyPojoToto> toto) {\n"
+				+ "    this.toto = toto;\n"
+				+ "  }\n"
+				+ "  \n"
 				+ "  // Additionnal body here\n"
 				+ "  \n"
 				+ "  @Override\n"
 				+ "  public String toString() {\n"
 				+ "    return EncodingUtil.pojoToString(this);\n"
 				+ "  }\n"
-				+ "}\n", 
+				+ "}\n"
+				+ "", 
 				Files.readString(pkgFolder.resolve(Paths.get("MyPojo.java"))));
 		
 		Assert.assertEquals("package com.x;\n"

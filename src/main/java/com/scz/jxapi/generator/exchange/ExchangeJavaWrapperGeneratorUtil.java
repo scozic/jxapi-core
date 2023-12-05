@@ -35,6 +35,7 @@ public class ExchangeJavaWrapperGeneratorUtil {
 		PARAMETER_TYPE_CLASSES.put(EndpointParameterType.TIMESTAMP, "java.lang.Long");
 		PARAMETER_TYPE_CLASSES.put(EndpointParameterType.STRING, "String");
 		PARAMETER_TYPE_CLASSES.put(EndpointParameterType.STRING_LIST, "java.util.List<String>");
+		PARAMETER_TYPE_CLASSES.put(EndpointParameterType.INT_LIST, "java.util.List<Integer>");
 	}
 	
 //	public static void generatePojo(Path src, String className, String description, List<EndpointParameter> fields) throws IOException {
@@ -61,10 +62,12 @@ public class ExchangeJavaWrapperGeneratorUtil {
 			case STRING:
 			case TIMESTAMP:
 			case STRING_LIST:
+			case INT_LIST:
 				generateSimpleParameterTypePojoField(generator, field);
 				break;
 			case OBJECT:
 			case OBJECT_LIST:
+			case OBJECT_MAP:
 				generateObjectParameterTypePojoField(src, className, generator, field);
 				break;
 			default:
@@ -85,7 +88,8 @@ public class ExchangeJavaWrapperGeneratorUtil {
 	public static void generateDeserializer(Path src, String deserializedClassName, List<EndpointParameter> fields) throws IOException {
 		for (EndpointParameter field: fields) {
 			if ((field.getType() == EndpointParameterType.OBJECT 
-					|| field.getType() == EndpointParameterType.OBJECT_LIST)
+					|| field.getType() == EndpointParameterType.OBJECT_LIST
+					|| field.getType() == EndpointParameterType.OBJECT_MAP)
 				&& field.getParameters() != null) {
 				generateDeserializer(src, getObjectParameterClassName(deserializedClassName, field), field.getParameters());
 			}
@@ -120,6 +124,9 @@ public class ExchangeJavaWrapperGeneratorUtil {
 		generator.addImport(objectName);
 		if (field.getType() == EndpointParameterType.OBJECT_LIST) {
 			parameterTypeName = "java.util.List<" + JavaCodeGenerationUtil.getClassNameWithoutPackage(objectName) + ">";
+		}
+		if (field.getType() == EndpointParameterType.OBJECT_MAP) {
+			parameterTypeName = "java.util.Map<String, " + JavaCodeGenerationUtil.getClassNameWithoutPackage(objectName) + ">";
 		}
 		generator.addField(PojoField.create(parameterTypeName, field.getName(), field.getMsgField(), field.getDescription()));
 	}
@@ -184,7 +191,8 @@ public class ExchangeJavaWrapperGeneratorUtil {
 		
 		for (EndpointParameter field: fields) {
 			if ((field.getType() == EndpointParameterType.OBJECT 
-					|| field.getType() == EndpointParameterType.OBJECT_LIST)
+					|| field.getType() == EndpointParameterType.OBJECT_LIST
+					|| field.getType() == EndpointParameterType.OBJECT_MAP)
 				&& field.getParameters() != null) {
 				generateSerializer(ouputFolder, getObjectParameterClassName(pojoClassName, field), field.getParameters());
 			}

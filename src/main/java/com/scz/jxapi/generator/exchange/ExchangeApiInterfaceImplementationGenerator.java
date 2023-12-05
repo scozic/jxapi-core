@@ -167,7 +167,7 @@ public class ExchangeApiInterfaceImplementationGenerator extends JavaTypeGenerat
 		}
 		
 		appendToBody("\n");
-		JavaCodeGenerationUtil.generateLoggerDeclaration(this);
+		JavaCodeGenerationUtil.generateSlf4jLoggerDeclaration(this);
 		if (staticMembersDeclaration.length() > 0) {
 			appendToBody(staticMembersDeclaration.toString());
 			appendToBody("\n");
