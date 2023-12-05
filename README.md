@@ -272,13 +272,14 @@ Give an  example of API documentation page and resulting JSON description and as
 
 
 ### Resulting generated code
-When finally done writing JSON descriptor file (actually it is recommanded to generate code and run demo after writing each enpoint), run Maven `mvn exec:java` command to run generator. If JSON descriptor file is placed in `src/main/resources/` folder and has file name ending with `Descriptor.json` the generator will generate for that file:
+When finally done writing JSON descriptor file (actually it is recommended to generate code and run demo after writing each enpoint), run Maven `mvn exec:java` command to run generator. If JSON descriptor file is placed in `src/main/resources/` folder and has file name ending with `Descriptor.json` the generator will generate for that file:
  * Exchange interface, with getter function to retrieve any exchange API.
  * Exchange interface implementation, with constructor expecting a single `java.util.Properties` argument containing API configuration parameters like API KEY/Secret
  * Exchange API interface for each exchange API defined in root exchange, and implementation of that interface with
   * One function for each REST API. Calls are performed asynchronously and return an instance of [FutureRestResponse](src/main/java/com/scz/jxapi/netutils/rest/FutureRestResponse.java) which is a `java.util.concurrent.Future` object.
    * REST API method take a request object as parameter and a response object as returned type which are generated Java POJOs carrying properties corresponding to parameters defined in JSON file.
   * One _subscribe_ and one _unsubscribe_ method to subscribe/unsubscribe to Websocket endpoint topics. Subscription and stream message parameters and are carried in generated POJOs.
+  * 
 
 TODO
 
