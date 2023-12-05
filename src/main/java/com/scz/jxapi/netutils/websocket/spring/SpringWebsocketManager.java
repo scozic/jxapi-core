@@ -30,6 +30,8 @@ import com.scz.jxapi.netutils.websocket.AbstractWebsocketManager;
 public abstract class SpringWebsocketManager extends AbstractWebsocketManager {
 	
 	private static final Logger log = LoggerFactory.getLogger(SpringWebsocketManager.class);
+
+	private static final long CONNECT_TIMEOUT = 30000L;
 	
 	protected final String baseUrl;
 	
@@ -65,14 +67,12 @@ public abstract class SpringWebsocketManager extends AbstractWebsocketManager {
 
 	@Override
 	protected void doConnect() throws IOException {
-
 		this.taskExecutor = new ThreadPoolTaskExecutor();
 		this.taskExecutor.setThreadNamePrefix(baseUrl + "-" + taskExecutorCounter++);
 		this.taskExecutor.setCorePoolSize(0);
 		this.taskExecutor.setMaxPoolSize(2);
 		this.taskExecutor.setKeepAliveSeconds(5);
 		this.taskExecutor.initialize();
-		
 		this.clientManager = ClientManager.createClient();
 		this.clientManager.getProperties().put(GrizzlyClientProperties.SELECTOR_THREAD_POOL_CONFIG, null);
 		this.clientManager.getProperties().put(GrizzlyClientProperties.WORKER_THREAD_POOL_CONFIG, ThreadPoolConfig.defaultConfig().setCorePoolSize(1).setMaxPoolSize(1).setPoolName("WSDEMO_WORK"));
@@ -85,13 +85,17 @@ public abstract class SpringWebsocketManager extends AbstractWebsocketManager {
 		CountDownLatch websocketSessionAvailable = new CountDownLatch(1);
 		ListenableFuture<WebSocketSession> futureSession = client.doHandshake(new SpringWebsocketHandler(this.taskExecutor), new WebSocketHttpHeaders(), uri);
 		futureSession.addCallback(new WebsocketSessionCallback(websocketSessionAvailable));
+		boolean sessionAvailable = false;
 		try {
-			websocketSessionAvailable.await();
+			sessionAvailable = websocketSessionAvailable.await(CONNECT_TIMEOUT, TimeUnit.MILLISECONDS );
 		} catch (InterruptedException e) {
 			log.warn("Interrupted while waiting for websocket handshake");
 		}
-		if (webSocketSession == null) {
-			throw new IllegalStateException("Handshake failed to initialize websocketSession");
+		if (!sessionAvailable || webSocketSession == null) {
+			String handShakeError = "Handshake failed: websocketSession not initialized";
+			log.error(handShakeError + ". Disposing resources before reconnection attempt");
+			doDisconnect();
+			throw new IllegalStateException(handShakeError);
 		}
 		if (log.isInfoEnabled()) {
 			log.info("Websocket " + baseUrl + ":Done handshake");
