@@ -62,6 +62,10 @@ public class JsonPojoSerializerGenerator extends JavaTypeGenerator {
 	}
 	
 	private String genWriteFieldInstruction(EndpointParameter field, String getFieldValue) {
+		if (!field.getType().isPrimitive) {
+			return "gen.writeObjectField(\"" + msgFieldName(field) + "\", " + getFieldValue + ");\n";
+		}
+		
 		switch (field.getType()) {
 		case STRING:
 			return "gen.writeStringField(\"" + msgFieldName(field) + "\", String.valueOf(" + getFieldValue + "));\n";
@@ -74,12 +78,6 @@ public class JsonPojoSerializerGenerator extends JavaTypeGenerator {
 		case LONG:
 		case TIMESTAMP:
 			return "gen.writeNumberField(\"" + msgFieldName(field) + "\", " + getFieldValue + ");\n";
-		case STRING_LIST:
-		case OBJECT:
-		case OBJECT_LIST:
-		case OBJECT_MAP:
-		case INT_LIST:
-			return "gen.writeObjectField(\"" + msgFieldName(field) + "\", " + getFieldValue + ");\n";
 		default:
 			throw new IllegalArgumentException("Unexpected field type for:" + field);
 		}

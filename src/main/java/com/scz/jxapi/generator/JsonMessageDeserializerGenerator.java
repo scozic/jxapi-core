@@ -9,13 +9,12 @@ import java.util.stream.Collectors;
 import org.apache.commons.lang3.StringUtils;
 
 import com.scz.jxapi.generator.exchange.EndpointParameter;
-import com.scz.jxapi.generator.exchange.EndpointParameterType;
 import com.scz.jxapi.generator.exchange.ExchangeJavaWrapperGeneratorUtil;
 import com.scz.jxapi.netutils.deserialization.json.AbstractJsonMessageDeserializer;
-import com.scz.jxapi.netutils.deserialization.json.field.StringListFieldDeserializer;
 import com.scz.jxapi.netutils.deserialization.json.field.IntListFieldDeserializer;
 import com.scz.jxapi.netutils.deserialization.json.field.ObjectListFieldDeserializer;
 import com.scz.jxapi.netutils.deserialization.json.field.ObjectMapFieldDeserializer;
+import com.scz.jxapi.netutils.deserialization.json.field.StringListFieldDeserializer;
 import com.scz.jxapi.netutils.serialization.json.JsonParserUtil;
 import com.scz.jxapi.util.EncodingUtil;
 
@@ -77,11 +76,7 @@ public class JsonMessageDeserializerGenerator extends JavaTypeGenerator {
 				.append("case \"")
 				.append(field.getMsgField() != null? field.getMsgField() : field.getName())
 				.append("\":\n");
-			if (field.getType() == EndpointParameterType.OBJECT 
-				|| field.getType() == EndpointParameterType.OBJECT_LIST
-				|| field.getType() == EndpointParameterType.STRING_LIST
-				|| field.getType() == EndpointParameterType.OBJECT_MAP
-				|| field.getType() == EndpointParameterType.INT_LIST) {
+			if (!field.getType().isPrimitive) {
 				body.append(dblIndent)
 					.append("parser.nextToken();\n");
 			}
@@ -113,6 +108,10 @@ public class JsonMessageDeserializerGenerator extends JavaTypeGenerator {
 	}
 
 	private String getParseFieldInstruction(EndpointParameter field) {
+		if (field.getType().isObject) {
+			return generateObjectDeserializer(field) +".deserialize(parser)";
+		}
+		
 		switch (field.getType()) {
 		case BIGDECIMAL:
 			addImport("static " + EncodingUtil.class.getName() + ".readNextBigDecimal");
@@ -135,10 +134,6 @@ public class JsonMessageDeserializerGenerator extends JavaTypeGenerator {
 		case INT_LIST:
 			addImport(IntListFieldDeserializer.class.getName());
 			return IntListFieldDeserializer.class.getSimpleName() + ".getInstance().deserialize(parser)";
-		case OBJECT:
-		case OBJECT_LIST:
-		case OBJECT_MAP:
-			return generateObjectDeserializer(field) +".deserialize(parser)";
 		default:
 			throw new IllegalArgumentException("Unexpected field type for field:" + field);
 		}
