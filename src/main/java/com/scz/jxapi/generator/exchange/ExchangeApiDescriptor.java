@@ -3,7 +3,7 @@ package com.scz.jxapi.generator.exchange;
 import java.util.List;
 
 import com.scz.jxapi.netutils.rest.ratelimits.RateLimitRule;
-import com.scz.jxapi.util.EncodingUtil;
+import com.scz.jxapi.util.JsonUtil;
 
 /**
  * Part of a JSON document descriptor that describes a group of REST and or
@@ -86,7 +86,7 @@ public class ExchangeApiDescriptor {
 	
 	@Override
 	public String toString() {
-		return EncodingUtil.pojoToString(this);
+		return JsonUtil.pojoToString(this);
 	}
 
 }

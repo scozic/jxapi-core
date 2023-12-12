@@ -1,6 +1,6 @@
 package com.scz.jxapi.netutils.rest;
 
-import com.scz.jxapi.util.EncodingUtil;
+import com.scz.jxapi.util.JsonUtil;
 
 /**
  * Default {@link HttpRequestBuilder} implementation.
@@ -67,7 +67,7 @@ public class DefaultHttpRequestBuilder implements HttpRequestBuilder {
 	 */
 	protected String getBody(RestRequest<?> request) {
 		if ("POST".equalsIgnoreCase(request.getHttpMethod())) {
-			return EncodingUtil.pojoToJsonString(request.getRequest());
+			return JsonUtil.pojoToJsonString(request.getRequest());
 		}
 		return null;
 	}

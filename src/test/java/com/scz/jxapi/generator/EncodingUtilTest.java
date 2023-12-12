@@ -6,6 +6,7 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import com.scz.jxapi.util.EncodingUtil;
+import com.scz.jxapi.util.JsonUtil;
 
 /**
  * Unit test for {@link EncodingUtil}
@@ -18,7 +19,7 @@ public class EncodingUtilTest {
 		bar.setName("babar");
 		bar.setActive(true);
 		bar.setScore(new BigDecimal("1.23"));
-		Assert.assertEquals("Bar{\"name\":\"babar\",\"active\":true,\"score\":1.23}", EncodingUtil.pojoToString(bar));
+		Assert.assertEquals("Bar{\"name\":\"babar\",\"active\":true,\"score\":1.23}", JsonUtil.pojoToString(bar));
 	}
 	
 	@Test
@@ -32,7 +33,7 @@ public class EncodingUtilTest {
 		foo.setHello("Hi");
 		foo.setBar(bar);
 		
-		Assert.assertEquals("Foo{\"hello\":\"Hi\",\"bar\":{\"name\":\"babar\",\"active\":true,\"score\":1.23}}", EncodingUtil.pojoToString(foo));
+		Assert.assertEquals("Foo{\"hello\":\"Hi\",\"bar\":{\"name\":\"babar\",\"active\":true,\"score\":1.23}}", JsonUtil.pojoToString(foo));
 	}
 	
 	@Test

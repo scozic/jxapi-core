@@ -2,7 +2,7 @@ package com.scz.jxapi.generator.exchange;
 
 import java.util.List;
 
-import com.scz.jxapi.util.EncodingUtil;
+import com.scz.jxapi.util.JsonUtil;
 
 /**
  * Part of JSON document describing a crypo exchange API, describes a websocket endpoint where clients subscription can be performed using specified topic and eventual additional parameters.
@@ -131,6 +131,6 @@ public class WebsocketEndpointDescriptor {
 	}
 	
 	public String toString() {
-		return EncodingUtil.pojoToString(this);
+		return JsonUtil.pojoToString(this);
 	}	
 }

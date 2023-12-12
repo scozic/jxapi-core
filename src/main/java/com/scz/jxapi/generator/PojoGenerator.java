@@ -6,12 +6,13 @@ import java.util.Map;
 import java.util.TreeMap;
 
 import com.scz.jxapi.util.EncodingUtil;
+import com.scz.jxapi.util.JsonUtil;
 
 /**
  * Specialized {@link JavaTypeGenerator} to create a 'Plain Old Java Object' (POJO) 
  * that is a class containing only a default public constructor, private field with getter and setter methods.
  * In addition, such generated objects will have {@link #toString()} method overridden to return result 
- * of {@link EncodingUtil#pojoToString(Object)}
+ * of {@link JsonUtil#pojoToString(Object)}
  */
 public class PojoGenerator extends JavaTypeGenerator {
 	

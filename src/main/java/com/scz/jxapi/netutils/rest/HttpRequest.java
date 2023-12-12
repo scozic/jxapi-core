@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.scz.jxapi.util.EncodingUtil;
+import com.scz.jxapi.util.JsonUtil;
 
 /**
  * Generic HTTP request for a REST API call.
@@ -96,6 +96,6 @@ public class HttpRequest {
 
 	@Override
 	public String toString() {
-		return getClass().getSimpleName() + EncodingUtil.pojoToString(this);
+		return getClass().getSimpleName() + JsonUtil.pojoToString(this);
 	}
 }

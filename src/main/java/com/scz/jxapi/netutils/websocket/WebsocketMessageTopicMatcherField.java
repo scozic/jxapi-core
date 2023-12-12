@@ -3,7 +3,7 @@ package com.scz.jxapi.netutils.websocket;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.scz.jxapi.util.EncodingUtil;
+import com.scz.jxapi.util.JsonUtil;
 
 public class WebsocketMessageTopicMatcherField {
 	
@@ -40,6 +40,6 @@ public class WebsocketMessageTopicMatcherField {
 	
 	@Override
 	public String toString() {
-		return EncodingUtil.pojoToString(this);
+		return JsonUtil.pojoToString(this);
 	}
 }
