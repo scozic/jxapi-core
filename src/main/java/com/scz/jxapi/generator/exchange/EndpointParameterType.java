@@ -2,6 +2,13 @@ package com.scz.jxapi.generator.exchange;
 
 /**
  * Supported types of parameters in request or response data.
+ * Any value for a field in request or response payload can be a 'primitive' ({@link #STRING}, {@link #INT} ...) or nested object that may be repeated as:
+ * <ul>
+ * <li>Once, {@link #OBJECT} type</li>
+ * <li>A list of values (JSON array), see {@link #isList}</li>
+ * <li>A list of list, 'matrix' of values (JSON array containing nested arrays), see {@link #isMatrix}</li>
+ * <li>A map of values (JSON array containing nested arrays), see {@link #isMap}</li>
+ * </ul>
  * 
  * @see EndpointParameter
  */
