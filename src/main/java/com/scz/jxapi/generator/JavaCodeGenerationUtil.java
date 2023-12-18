@@ -18,6 +18,8 @@ import org.slf4j.LoggerFactory;
  */
 public class JavaCodeGenerationUtil {
 	
+	public static final String NULL = "null";
+
 	private JavaCodeGenerationUtil() {}
 	
 	/**

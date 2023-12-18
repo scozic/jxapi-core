@@ -14,7 +14,7 @@ import com.scz.jxapi.generator.JavaCodeGenerationUtil;
 import com.scz.jxapi.generator.JavaTypeGenerator;
 import com.scz.jxapi.generator.JsonMessageDeserializerGenerator;
 import com.scz.jxapi.netutils.deserialization.RawStringMessageDeserializer;
-import com.scz.jxapi.netutils.deserialization.json.field.ObjectListFieldDeserializer;
+import com.scz.jxapi.netutils.deserialization.json.field.ListJsonFieldDeserializer;
 import com.scz.jxapi.netutils.rest.FutureRestResponse;
 import com.scz.jxapi.netutils.rest.RestEndpoint;
 import com.scz.jxapi.netutils.rest.RestRequest;
@@ -238,9 +238,9 @@ public class ExchangeApiInterfaceImplementationGenerator extends JavaTypeGenerat
 		case JSON_OBJECT_LIST:
 			addImport(messageClassName);
 			messageDeserializerClassName = JsonMessageDeserializerGenerator.getJsonMessageDeserializerClassName(messageClassName);
-			addImport(ObjectListFieldDeserializer.class);
+			addImport(ListJsonFieldDeserializer.class);
 			addImport(List.class);
-			getResponseDeserializerInstance = "new ObjectListFieldDeserializer<" + messageClassSimpleName + ">(new " + JavaCodeGenerationUtil.getClassNameWithoutPackage(messageDeserializerClassName) + "())";
+			getResponseDeserializerInstance = "new " + ListJsonFieldDeserializer.class.getSimpleName() + "<" + messageClassSimpleName + ">(new " + JavaCodeGenerationUtil.getClassNameWithoutPackage(messageDeserializerClassName) + "())";
 			messageClassSimpleName = "List<" + messageClassSimpleName + ">";
 			break;
 		case STRING:
@@ -293,7 +293,7 @@ public class ExchangeApiInterfaceImplementationGenerator extends JavaTypeGenerat
 		replacements.add("\" + request.getTopic() + \"");
 		websocketApi.getParameters().forEach(param -> {
 			replacements.add(param.getMsgField() != null? param.getMsgField(): param.getName());
-			String parameterClass = ExchangeJavaWrapperGeneratorUtil.PARAMETER_TYPE_CLASSES.get(param.getType());
+			String parameterClass = EndpointParameterTypeGenerationUtil.getClassNameForParameterType(param.getType(), getImports(), param.getObjectName());
 			if (!parameterClass.startsWith("java.lang") && parameterClass.contains(".")) {
 				parameterClass = JavaCodeGenerationUtil.getClassNameWithoutPackage(parameterClass);
 			}
@@ -357,9 +357,9 @@ public class ExchangeApiInterfaceImplementationGenerator extends JavaTypeGenerat
 		case JSON_OBJECT_LIST:
 			addImport(responseClassName);
 			responseDeserializerClassName = JsonMessageDeserializerGenerator.getJsonMessageDeserializerClassName(responseClassName);
-			addImport(ObjectListFieldDeserializer.class);
+			addImport(ListJsonFieldDeserializer.class);
 			addImport(List.class);
-			getResponseDeserializerInstance = "new ObjectListFieldDeserializer<" + responseSimpleClassName + ">(new " + JavaCodeGenerationUtil.getClassNameWithoutPackage(responseDeserializerClassName) + "())";
+			getResponseDeserializerInstance = "new " + ListJsonFieldDeserializer.class.getSimpleName() + "<" + responseSimpleClassName + ">(new " + JavaCodeGenerationUtil.getClassNameWithoutPackage(responseDeserializerClassName) + "())";
 			responseSimpleClassName = "List<" + responseSimpleClassName + ">";
 			break;
 		case STRING:

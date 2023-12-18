@@ -124,4 +124,8 @@ public class EncodingUtil {
 			return null;
 		return new BigDecimal(s);
 	}
+
+	public static String pojoToString(Object pojo) {
+		return pojo.getClass().getSimpleName() + JsonUtil.pojoToJsonString(pojo); 
+	}
 }

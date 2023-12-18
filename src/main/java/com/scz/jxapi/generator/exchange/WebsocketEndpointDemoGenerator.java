@@ -4,6 +4,8 @@ import java.math.BigDecimal;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.apache.commons.lang3.StringUtils;
+
 import com.scz.jxapi.generator.JavaCodeGenerationUtil;
 import com.scz.jxapi.generator.JavaTypeGenerator;
 import com.scz.jxapi.util.TestJXApiProperties;
@@ -90,7 +92,11 @@ public class WebsocketEndpointDemoGenerator extends JavaTypeGenerator {
 																+ websocketApi.getName() 
 																+ "</i> API") + "\n");
 			constantDeclaration.append("public static final ")
-								.append(getParameterTypeDeclaration(parameter.getType()))
+								.append(EndpointParameterTypeGenerationUtil.getClassNameForEndpointParameter(parameter, 
+										 getImports(), 
+										 exchangeDescriptor.getName(), 
+										 exchangeApiDescriptor.getName(), 
+										 websocketApi.getName()))
 								.append(" ")
 								.append(getParameterValueConstantName(parameter))
 								.append(" = ")
@@ -101,83 +107,118 @@ public class WebsocketEndpointDemoGenerator extends JavaTypeGenerator {
 	
 	private String getParameterValueDeclaration(EndpointParameter parameter) {
 		Object v = parameter.getSampleValue();
-		switch (parameter.getType()) {
+		if (v == null)
+			return JavaCodeGenerationUtil.NULL;
+		switch (parameter.getType().getType()) {
 		case BIGDECIMAL:
 			addImport(BigDecimal.class);
-			if (v == null)
-				return "BigDecimal.ZERO";
 			return "new BigDecimal(\"" + String.valueOf(v) + "\");";
 		case BOOLEAN:
 		case INT:
 			return String.valueOf(v);
-		case STRING_LIST:
+		case LIST:
 			addImport(List.class);
-			if (v == null) {
-				return "List.of()";
-			}
 			String strList = v.toString().trim();
 			if (!strList.startsWith("[") || !strList.endsWith("]")) {
 				throw new IllegalArgumentException("Sample value for parameter:" + parameter + ":" + strList + " does must be surrounded with '[]'");
 			}
 			return "List.of(" + strList.substring(1, strList.length() - 1) + ")";
-		case INT_LIST:
-			addImport(List.class);
-			if (v == null) {
-				return "List.of()";
-			}
-			String intList = v.toString().trim();
-			if (!intList.startsWith("[") || !intList.endsWith("]")) {
-				throw new IllegalArgumentException("Sample value for parameter:" + parameter + ":" + intList + " must be surrounded with '[]'");
-			}
-			return "List.of(" + intList.substring(1, intList.length() - 1) + ")";
 		case STRING:
-			return "\"" + v + "\"";
+			return "\"" + StringUtils.replace(v.toString(), "\"", "\\\"")  + "\"";
 		case TIMESTAMP:
 		case LONG:
-			if (v == null) {
-				return "0L";
-			}
 			if ("now()".equalsIgnoreCase(v.toString())) {
 				return "System.currentTimeMillis()";
 			}
 			return String.valueOf(v) + "L";
 		case OBJECT:
-		case OBJECT_LIST:
-		case OBJECT_MAP:
+		case MAP:
+			// TODO generate deserialize instruction 
+			return JavaCodeGenerationUtil.NULL;
 		default:
 			throw new IllegalArgumentException("Unexpected parameter type for parameter:" + parameter);
 		}
 	}
-
-	private String getParameterTypeDeclaration(EndpointParameterType endpointParameterType) {
-		switch (endpointParameterType) {
-		case BIGDECIMAL:
-			addImport(BigDecimal.class);
-			return BigDecimal.class.getSimpleName();
-		case BOOLEAN:
-			return "boolean";
-		case INT:
-			return "int";
-		case TIMESTAMP:
-		case LONG:
-			return "long";
-		case STRING:
-			return "String";
-		case STRING_LIST:
-			addImport(List.class);
-			return "List<String>";
-		case INT_LIST:
-			addImport(List.class);
-			return "List<Integer>";
-		case OBJECT:
-		case OBJECT_LIST:
-		case OBJECT_MAP:
-			// FIXME not managed yet: Construction of demo values for parameters that are structured object types.
-			// Usually, requests do not use struct parameters
-		default:
-			throw new IllegalArgumentException("Unexpected parameter type:" + endpointParameterType);
-		}
-	}
+	
+//	private String getParameterValueDeclaration(EndpointParameter parameter) {
+//		Object v = parameter.getSampleValue();
+//		switch (parameter.getType()) {
+//		case BIGDECIMAL:
+//			addImport(BigDecimal.class);
+//			if (v == null)
+//				return "BigDecimal.ZERO";
+//			return "new BigDecimal(\"" + String.valueOf(v) + "\");";
+//		case BOOLEAN:
+//		case INT:
+//			return String.valueOf(v);
+//		case STRING_LIST:
+//			addImport(List.class);
+//			if (v == null) {
+//				return "List.of()";
+//			}
+//			String strList = v.toString().trim();
+//			if (!strList.startsWith("[") || !strList.endsWith("]")) {
+//				throw new IllegalArgumentException("Sample value for parameter:" + parameter + ":" + strList + " does must be surrounded with '[]'");
+//			}
+//			return "List.of(" + strList.substring(1, strList.length() - 1) + ")";
+//		case INT_LIST:
+//			addImport(List.class);
+//			if (v == null) {
+//				return "List.of()";
+//			}
+//			String intList = v.toString().trim();
+//			if (!intList.startsWith("[") || !intList.endsWith("]")) {
+//				throw new IllegalArgumentException("Sample value for parameter:" + parameter + ":" + intList + " must be surrounded with '[]'");
+//			}
+//			return "List.of(" + intList.substring(1, intList.length() - 1) + ")";
+//		case STRING:
+//			return "\"" + v + "\"";
+//		case TIMESTAMP:
+//		case LONG:
+//			if (v == null) {
+//				return "0L";
+//			}
+//			if ("now()".equalsIgnoreCase(v.toString())) {
+//				return "System.currentTimeMillis()";
+//			}
+//			return String.valueOf(v) + "L";
+//		case OBJECT:
+//		case OBJECT_LIST:
+//		case OBJECT_MAP:
+//		default:
+//			throw new IllegalArgumentException("Unexpected parameter type for parameter:" + parameter);
+//		}
+//	}
+//
+//	private String getParameterTypeDeclaration(EndpointParameterTypes endpointParameterType) {
+//		switch (endpointParameterType) {
+//		case BIGDECIMAL:
+//			addImport(BigDecimal.class);
+//			return BigDecimal.class.getSimpleName();
+//		case BOOLEAN:
+//			return "boolean";
+//		case INT:
+//			return "int";
+//		case TIMESTAMP:
+//		case LONG:
+//			return "long";
+//		case STRING:
+//			return "String";
+//		case STRING_LIST:
+//			addImport(List.class);
+//			return "List<String>";
+//		case INT_LIST:
+//			addImport(List.class);
+//			return "List<Integer>";
+//		case OBJECT:
+//		case OBJECT_LIST:
+//		case OBJECT_MAP:
+//			// FIXME not managed yet: Construction of demo values for parameters that are structured object types.
+//			// Usually, requests do not use struct parameters
+//		default:
+//			throw new IllegalArgumentException("Unexpected parameter type:" + endpointParameterType);
+//		}
+//	}
 	
 	private static String getParameterValueConstantName(EndpointParameter parameter) {
 		return parameter.getName().toUpperCase();

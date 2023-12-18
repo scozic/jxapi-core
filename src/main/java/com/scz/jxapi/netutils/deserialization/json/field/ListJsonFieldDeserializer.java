@@ -9,16 +9,16 @@ import com.fasterxml.jackson.core.JsonToken;
 import com.scz.jxapi.netutils.deserialization.json.AbstractJsonMessageDeserializer;
 import com.scz.jxapi.netutils.deserialization.json.JsonDeserializer;
 
-public class MatrixFieldDeserializer<T> extends AbstractJsonMessageDeserializer<List<List<T>>> {
+public class ListJsonFieldDeserializer<T> extends AbstractJsonMessageDeserializer<List<T>> {
 	
-	protected final JsonDeserializer<List<T>> itemDeserializer;
+	protected final JsonDeserializer<T> itemDeserializer;
 	
-	public MatrixFieldDeserializer(JsonDeserializer<T> itemDeserializer) {
-		this.itemDeserializer = new ListFieldDeserializer<>(itemDeserializer);
+	public ListJsonFieldDeserializer(JsonDeserializer<T> itemDeserializer) {
+		this.itemDeserializer = itemDeserializer;
 	}
 
 	@Override
-	public List<List<T>> deserialize(JsonParser parser) throws IOException {
+	public List<T> deserialize(JsonParser parser) throws IOException {
 		if (parser.currentToken() == JsonToken.VALUE_NULL) {
 			return null;
 		}
@@ -26,7 +26,7 @@ public class MatrixFieldDeserializer<T> extends AbstractJsonMessageDeserializer<
 			throw new IllegalStateException("Expecting start array of String, got:" + parser.currentToken() + " with name:" + parser.currentName());
 		}
 		
-		List<List<T>> res = new ArrayList<>();
+		List<T> res = new ArrayList<>();
         for (parser.nextToken(); parser.currentToken() != JsonToken.END_ARRAY; parser.nextToken()) {
             res.add(itemDeserializer.deserialize(parser));
         }

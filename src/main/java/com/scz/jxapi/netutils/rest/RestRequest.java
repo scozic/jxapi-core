@@ -3,7 +3,7 @@ package com.scz.jxapi.netutils.rest;
 import java.util.List;
 
 import com.scz.jxapi.netutils.rest.ratelimits.RateLimitRule;
-import com.scz.jxapi.util.JsonUtil;
+import com.scz.jxapi.util.EncodingUtil;
 
 public class RestRequest<T> {
 	
@@ -76,7 +76,7 @@ public class RestRequest<T> {
 	}
 
 	public String toString() {
-		return JsonUtil.pojoToString(this);
+		return EncodingUtil.pojoToString(this);
 	}
 
 }

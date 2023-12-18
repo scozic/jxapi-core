@@ -13,8 +13,6 @@ import com.scz.jxapi.util.TestJXApiProperties;
 
 public class RestEndpointDemoGenerator extends JavaTypeGenerator {
 	
-	private static final String NULL = "null";
-
 	public RestEndpointDemoGenerator(ExchangeDescriptor exchangeDescriptor, ExchangeApiDescriptor exchangeApiDescriptor, RestEndpointDescriptor restApi) {
 		super(ExchangeJavaWrapperGeneratorUtil.getRestApiDemoClassName(exchangeDescriptor, exchangeApiDescriptor, restApi));
 		setTypeDeclaration("public class");
@@ -101,7 +99,11 @@ public class RestEndpointDemoGenerator extends JavaTypeGenerator {
 																+ restApi.getName() 
 																+ "</i> API") + "\n");
 			constantDeclaration.append("public static final ")
-								.append(getParameterTypeDeclaration(parameter.getType()))
+								.append(EndpointParameterTypeGenerationUtil.getClassNameForEndpointParameter(parameter, 
+																											 getImports(), 
+																											 exchangeDescriptor.getName(), 
+																											 exchangeApiDescriptor.getName(), 
+																											 restApi.getName()))
 								.append(" ")
 								.append(getParameterValueConstantName(parameter))
 								.append(" = ")
@@ -113,29 +115,21 @@ public class RestEndpointDemoGenerator extends JavaTypeGenerator {
 	private String getParameterValueDeclaration(EndpointParameter parameter) {
 		Object v = parameter.getSampleValue();
 		if (v == null)
-			return NULL;
-		switch (parameter.getType()) {
+			return JavaCodeGenerationUtil.NULL;
+		switch (parameter.getType().getType()) {
 		case BIGDECIMAL:
 			addImport(BigDecimal.class);
 			return "new BigDecimal(\"" + String.valueOf(v) + "\");";
 		case BOOLEAN:
 		case INT:
 			return String.valueOf(v);
-		case STRING_LIST:
+		case LIST:
 			addImport(List.class);
 			String strList = v.toString().trim();
 			if (!strList.startsWith("[") || !strList.endsWith("]")) {
 				throw new IllegalArgumentException("Sample value for parameter:" + parameter + ":" + strList + " does must be surrounded with '[]'");
 			}
 			return "List.of(" + strList.substring(1, strList.length() - 1) + ")";
-		case INT_LIST:
-			addImport(List.class);
-			String intList = v.toString().trim();
-			if (!intList.startsWith("[") || !intList.endsWith("]")) {
-				throw new IllegalArgumentException("Sample value for parameter:" + parameter + ":" + intList + " does must be surrounded with '[]'");
-			}
-			return "List.of(" + intList.substring(1, intList.length() - 1) + ")";
-			
 		case STRING:
 			return "\"" + StringUtils.replace(v.toString(), "\"", "\\\"")  + "\"";
 		case TIMESTAMP:
@@ -145,42 +139,43 @@ public class RestEndpointDemoGenerator extends JavaTypeGenerator {
 			}
 			return String.valueOf(v) + "L";
 		case OBJECT:
-		case OBJECT_LIST:
-		case OBJECT_MAP:
+		case MAP:
+			// TODO generate deserialize instruction 
+			return JavaCodeGenerationUtil.NULL;
 		default:
 			throw new IllegalArgumentException("Unexpected parameter type for parameter:" + parameter);
 		}
 	}
 
-	private String getParameterTypeDeclaration(EndpointParameterType endpointParameterType) {
-		switch (endpointParameterType) {
-		case BIGDECIMAL:
-			addImport(BigDecimal.class);
-			return BigDecimal.class.getSimpleName();
-		case BOOLEAN:
-			return "Boolean";
-		case INT:
-			return "Integer";
-		case TIMESTAMP:
-		case LONG:
-			return "Long";
-		case STRING:
-			return "String";
-		case STRING_LIST:
-			addImport(List.class);
-			return "List<String>";
-		case INT_LIST:
-			addImport(List.class);
-			return "List<Integer>";
-		case OBJECT:
-		case OBJECT_LIST:
-		case OBJECT_MAP:
-			// FIXME not managed yet: Construction of demo values for parameters that are structured object types.
-			// Usually, requests do not use struct parameters
-		default:
-			throw new IllegalArgumentException("Unexpected parameter type:" + endpointParameterType);
-		}
-	}
+//	private String getParameterTypeDeclaration(EndpointParameterTypes endpointParameterType) {
+//		switch (endpointParameterType) {
+//		case BIGDECIMAL:
+//			addImport(BigDecimal.class);
+//			return BigDecimal.class.getSimpleName();
+//		case BOOLEAN:
+//			return "Boolean";
+//		case INT:
+//			return "Integer";
+//		case TIMESTAMP:
+//		case LONG:
+//			return "Long";
+//		case STRING:
+//			return "String";
+//		case STRING_LIST:
+//			addImport(List.class);
+//			return "List<String>";
+//		case INT_LIST:
+//			addImport(List.class);
+//			return "List<Integer>";
+//		case OBJECT:
+//		case OBJECT_LIST:
+//		case OBJECT_MAP:
+//			// FIXME not managed yet: Construction of demo values for parameters that are structured object types.
+//			// Usually, requests do not use struct parameters
+//		default:
+//			throw new IllegalArgumentException("Unexpected parameter type:" + endpointParameterType);
+//		}
+//	}
 	
 	private static String getParameterValueConstantName(EndpointParameter parameter) {
 		return parameter.getName().toUpperCase();

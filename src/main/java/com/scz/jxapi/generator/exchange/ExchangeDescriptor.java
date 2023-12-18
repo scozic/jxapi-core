@@ -3,7 +3,7 @@ package com.scz.jxapi.generator.exchange;
 import java.util.List;
 
 import com.scz.jxapi.netutils.rest.ratelimits.RateLimitRule;
-import com.scz.jxapi.util.JsonUtil;
+import com.scz.jxapi.util.EncodingUtil;
 
 /**
  * Root element of a JSON Exchange descriptor.
@@ -60,6 +60,6 @@ public class ExchangeDescriptor {
 	}
 	
 	public String toString() {
-		return JsonUtil.pojoToString(this);
+		return EncodingUtil.pojoToString(this);
 	}
 }

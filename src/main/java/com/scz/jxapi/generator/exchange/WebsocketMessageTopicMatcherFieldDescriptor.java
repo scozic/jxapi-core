@@ -1,6 +1,6 @@
 package com.scz.jxapi.generator.exchange;
 
-import com.scz.jxapi.util.JsonUtil;
+import com.scz.jxapi.util.EncodingUtil;
 
 public class WebsocketMessageTopicMatcherFieldDescriptor {
 
@@ -26,6 +26,6 @@ public class WebsocketMessageTopicMatcherFieldDescriptor {
 	
 	@Override
 	public String toString() {
-		return JsonUtil.pojoToString(this);
+		return EncodingUtil.pojoToString(this);
 	}
 }

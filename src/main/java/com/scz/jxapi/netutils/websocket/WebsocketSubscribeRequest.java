@@ -1,6 +1,6 @@
 package com.scz.jxapi.netutils.websocket;
 
-import com.scz.jxapi.util.JsonUtil;
+import com.scz.jxapi.util.EncodingUtil;
 
 /**
  * Encapsulates a subscription to a websocket feed
@@ -42,7 +42,7 @@ public class WebsocketSubscribeRequest<T extends WebsocketSubscribeParameters> {
 	}
 	
 	public String toString() {
-		return JsonUtil.pojoToString(this);
+		return EncodingUtil.pojoToString(this);
 	}
 	
 }

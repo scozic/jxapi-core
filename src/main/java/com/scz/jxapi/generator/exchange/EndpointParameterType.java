@@ -1,126 +1,86 @@
 package com.scz.jxapi.generator.exchange;
 
+import com.scz.jxapi.util.EncodingUtil;
+
 /**
- * Supported types of parameters in request or response data.
- * Any value for a field in request or response payload can be a 'primitive' ({@link #STRING}, {@link #INT} ...) or nested object that may be repeated as:
- * <ul>
- * <li>Once, {@link #OBJECT} type</li>
- * <li>A list of values (JSON array), see {@link #isList}</li>
- * <li>A list of list, 'matrix' of values (JSON array containing nested arrays), see {@link #isMatrix}</li>
- * <li>A map of values (JSON array containing nested arrays), see {@link #isMap}</li>
- * </ul>
- * 
- * @see EndpointParameter
+ * Describes the data type of a REST request, response or websocket message
+ * field. This type can be a primitive type (see
+ * {@link EndpointParameterTypes#isPrimitive}, an object (
+ * {@link EndpointParameterTypes#OBJECT}), or a list or ( {@link String} key)
+ * map of data with a nested type.
  */
-public enum EndpointParameterType {
-	/** Plain {@link String} value */
-	STRING(false, false, false, false),
+public class EndpointParameterType {
 	
-	/** Boolean value */
-	BOOLEAN(false, false, false, false),
+	public static EndpointParameterType fromTypeName(String typeName) {
+		if (typeName == null) {
+			return null;
+		}
+		EndpointParameterTypes type = null;
+		EndpointParameterType subType = null;
+		int off = typeName.lastIndexOf('_');
+		if (off >= 0) {
+			if (off >= typeName.length() - 1) {
+				throw new IllegalArgumentException("Invalide type:[" 
+													+ typeName 
+													+ "], expected "
+													+ EndpointParameterTypes.class.getName() 
+													+ " (non primitive) value after last '_'");
+			}
+			String typeStr = typeName.substring(off + 1);
+			String subTypeStr = typeName.substring(0, off);
+			type = EndpointParameterTypes.valueOf(typeStr);
+			if (type.isPrimitive) {
+				throw new IllegalArgumentException("Invalid type:[" 
+													+ type 
+													+ "] in type name[" 
+													+ typeName
+													+ "], should not be a primitive type when a subtype [" 
+													+ subTypeStr 
+													+ "] is used");
+			}
+			subType = fromTypeName(subTypeStr);
+		} else {
+			type = EndpointParameterTypes.valueOf(typeName);
+		}
+		EndpointParameterType et = new EndpointParameterType();
+		et.type = type;
+		et.subType = subType;
+		return et;
+	}
+
+	private EndpointParameterTypes type;
 	
-	/** String array like <code>["a","b","c"]</code> */
-	STRING_LIST(true, false, false, false),
+	private EndpointParameterType subType;
+
+	public EndpointParameterTypes getType() {
+		return type;
+	}
+
+	public void setType(EndpointParameterTypes type) {
+		this.type = type;
+	}
+
+	public EndpointParameterType getSubType() {
+		return subType;
+	}
+
+	public void setSubType(EndpointParameterType subType) {
+		this.subType = subType;
+	}
 	
-	/** Floating point value */
-	BIGDECIMAL(false, false, false, false),
+	public EndpointParameterType getLeafSubType() {
+		EndpointParameterType res = this;
+		while (res.subType != null) {
+			res = res.subType;
+		}
+		return res;
+	}
 	
-	/** Integer value */
-	INT(false, false, false, false),
+	public boolean isObject() {
+		return getLeafSubType().type == EndpointParameterTypes.OBJECT;
+	}
 	
-	/**Integer array like <code>[1,2,3]</code> */
-	INT_LIST(true, false, false, false),
-	
-	/** Long value */
-	LONG(false, false, false, false),
-	
-	/** Timestamp (or datetime) value */
-	TIMESTAMP(false, false, false, false),
-	
-	/** 
-	 * Nested structure (JSON block) like:<br/>
-	 * <code>{"a":"val", "b":1}</code>
-	 * Such structure will contain a list of fields of a type matching one {@link #EndpointParameterType} values.
-	 * <br/>Flags: <i>object</i>
-	 */
-	OBJECT(false, true, false, false),
-	
-	/** Repeated nested structure (JSON array) like:<br/>
-	 * <code>[{"x":"xval1"},{"x":"xval2"}]</code>
-	 */
-	OBJECT_LIST(true, true, false, false),
-	
-	/**
-	 * Nested JSON map with keys of type String and values of same JSON object structure attributes, like:<br/>
-	 * <code>{"a": {"key1":"ava11", "key2":"aval2"}, "b":{"key1":"bva11", "key2":"bval2"}}</code>
-	 * Flags: object, map.
-	 * */
-	OBJECT_MAP(false, true, false, true);
-	
-	/**
-	 * Flag set to <code>true</code> when type is a JSON array structure of simple types or objects but not nested arrays or maps.
-	 * Matching types:
-	 * <ul>
-	 * <li>{@link #STRING_LIST}</li>
-	 * <li>{@link #INT_LIST}</li>
-	 * <li>{@link #OBJECT_LIST}</li>
-	 * </ul>
-	 */
-	public final boolean isList;
-	
-	/**
-	 * Flag set <code>true</code> when type is either a JSON object like
-	 * <code>{"key1":"ava11", "key2":"aval2"}</code> or a repeated array, map or matrix of such JSON
-	 * object.
-	 * Matching types:
-	 * <ul>
-	 * <li>{@link #OBJECT}</li>
-	 * <li>{@link #OBJECT_LIST}</li>
-	 * <li>{@link #OBJECT_MAP}</li>
-	 * </ul>
-	 */
-	public final boolean isObject;
-	
-	/**
-	 * Flag set <code>true</code> when type stands for a JSON map.
-	 * Matching types:
-	 * <ul>
-	 * <li>{@link #OBJECT_MAP}</li>
-	 * </ul>  
-	 */
-	public final boolean isMap;
-	
-	/**
-	 * Flag set <code>true</code> when type stands for a JSON array of arrays like
-	 * <br/>
-	 * <code>[[1,2],[3,4]]</code>. The nested values in array can be of any
-	 * primitive {@link EndpointParameterType} or {@link #OBJECT}, but not an array,
-	 * map or matrix.
-	 * Matching types:
-	 * <ul>
-	 * </ul>
-	 */
-	public final boolean isMatrix;
-	
-	/**
-	 * Flag set <code>true</code> when type stands for a primitive value e.g. not a JSON object, array or map.
-	 * Matching types:
-	 * <ul>
-	 * <li>{@link #INT}</li>
-	 * <li>{@link #LONG}</li>
-	 * <li>{@link #TIMESTAMP}</li>
-	 * <li>{@link #BIGDECIMAL}</li>
-	 * <li>{@link #STRING}</li>
-	 * <li>{@link #BOOLEAN}</li>
-	 * </ul>
-	 */
-	public final boolean isPrimitive;
-	
-	private EndpointParameterType(boolean isList, boolean isObject, boolean isMap, boolean isMatrix) {
-		this.isList = isList;
-		this.isObject = isObject;
-		this.isMap = isMap;
-		this.isMatrix = isMatrix;
-		this.isPrimitive = !isList && !isObject && !isMap && !isMatrix;
+	public String toString() {
+		return EncodingUtil.pojoToString(subType);
 	}
 }

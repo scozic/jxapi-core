@@ -3,7 +3,7 @@ package com.scz.jxapi.generator.exchange;
 import java.util.List;
 
 import com.scz.jxapi.netutils.rest.ratelimits.RateLimitRule;
-import com.scz.jxapi.util.JsonUtil;
+import com.scz.jxapi.util.EncodingUtil;
 
 /**
  * Part of JSON document describing a crypto exchange API, describes a specific REST endpoint.
@@ -180,6 +180,6 @@ public class RestEndpointDescriptor {
 	}
 
 	public String toString() {
-		return JsonUtil.pojoToString(this);
+		return EncodingUtil.pojoToString(this);
 	}
 }

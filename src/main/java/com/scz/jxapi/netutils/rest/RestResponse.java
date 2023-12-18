@@ -1,6 +1,6 @@
 package com.scz.jxapi.netutils.rest;
 
-import com.scz.jxapi.util.JsonUtil;
+import com.scz.jxapi.util.EncodingUtil;
 
 public class RestResponse<A> {
 	
@@ -39,7 +39,7 @@ public class RestResponse<A> {
 	}
 	
 	public String toString() {
-		return getClass().getSimpleName() + JsonUtil.pojoToString(this);
+		return getClass().getSimpleName() + EncodingUtil.pojoToString(this);
 	}
 
 }

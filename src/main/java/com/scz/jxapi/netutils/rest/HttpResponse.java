@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.scz.jxapi.util.JsonUtil;
+import com.scz.jxapi.util.EncodingUtil;
 
 public class HttpResponse {
 
@@ -74,7 +74,7 @@ public class HttpResponse {
 	
 	@Override
 	public String toString() {
-		return getClass().getSimpleName() + JsonUtil.pojoToString(this);
+		return getClass().getSimpleName() + EncodingUtil.pojoToString(this);
 	}
 
 

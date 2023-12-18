@@ -9,14 +9,15 @@ import java.util.stream.Collectors;
 import org.apache.commons.lang3.StringUtils;
 
 import com.scz.jxapi.generator.exchange.EndpointParameter;
+import com.scz.jxapi.generator.exchange.EndpointParameterType;
+import com.scz.jxapi.generator.exchange.EndpointParameterTypeGenerationUtil;
+import com.scz.jxapi.generator.exchange.EndpointParameterTypes;
 import com.scz.jxapi.generator.exchange.ExchangeJavaWrapperGeneratorUtil;
 import com.scz.jxapi.netutils.deserialization.json.AbstractJsonMessageDeserializer;
-import com.scz.jxapi.netutils.deserialization.json.field.IntListFieldDeserializer;
-import com.scz.jxapi.netutils.deserialization.json.field.ObjectListFieldDeserializer;
-import com.scz.jxapi.netutils.deserialization.json.field.ObjectMapFieldDeserializer;
-import com.scz.jxapi.netutils.deserialization.json.field.StringListFieldDeserializer;
+import com.scz.jxapi.netutils.deserialization.json.field.ListJsonFieldDeserializer;
+import com.scz.jxapi.netutils.deserialization.json.field.MapJsonFieldDeserializer;
 import com.scz.jxapi.netutils.serialization.json.JsonParserUtil;
-import com.scz.jxapi.util.EncodingUtil;
+import com.scz.jxapi.util.JsonUtil;
 
 public class JsonMessageDeserializerGenerator extends JavaTypeGenerator {
 	
@@ -27,8 +28,8 @@ public class JsonMessageDeserializerGenerator extends JavaTypeGenerator {
 
 	private final String deserializedTypeClassName;
 	private final List<EndpointParameter> fields;
-	private final Set<String> simpleDeserializerDeclarations = new TreeSet<>();
-	private final Set<String> listDeserializerDeclarations = new TreeSet<>();
+	private final Set<String> nonPrimitiveTypeFieldsDeserializerDeclarations = new TreeSet<>();
+//	private final Set<String> listDeserializerDeclarations = new TreeSet<>();
 	
 	public JsonMessageDeserializerGenerator(String deserializedTypeClassName, List<EndpointParameter> fields) {
 		super(getJsonMessageDeserializerClassName(deserializedTypeClassName));
@@ -55,8 +56,7 @@ public class JsonMessageDeserializerGenerator extends JavaTypeGenerator {
 	}
 
 	private void generateDeserializerDeclarations() {
-		simpleDeserializerDeclarations.forEach(this::appendToBody);
-		listDeserializerDeclarations.forEach(this::appendToBody);
+		nonPrimitiveTypeFieldsDeserializerDeclarations.forEach(this::appendToBody);
 		appendToBody("\n");
 	}
 
@@ -76,7 +76,7 @@ public class JsonMessageDeserializerGenerator extends JavaTypeGenerator {
 				.append("case \"")
 				.append(field.getMsgField() != null? field.getMsgField() : field.getName())
 				.append("\":\n");
-			if (!field.getType().isPrimitive) {
+			if (!field.getType().getType().isPrimitive) {
 				body.append(dblIndent)
 					.append("parser.nextToken();\n");
 			}
@@ -108,68 +108,57 @@ public class JsonMessageDeserializerGenerator extends JavaTypeGenerator {
 	}
 
 	private String getParseFieldInstruction(EndpointParameter field) {
-		if (field.getType().isObject) {
-			return generateObjectDeserializer(field) +".deserialize(parser)";
+		EndpointParameterTypes canonicalType = field.getType().getType();
+		if (!canonicalType.isPrimitive) {
+			return generateNonPrimitiveTypeParameterDeserializerDeclaration(field) +".deserialize(parser)";
 		}
 		
-		switch (field.getType()) {
+		switch (canonicalType) {
 		case BIGDECIMAL:
-			addImport("static " + EncodingUtil.class.getName() + ".readNextBigDecimal");
+			addImport("static " + JsonUtil.class.getName() + ".readNextBigDecimal");
 			return "readNextBigDecimal(parser)";
 		case BOOLEAN:
-			addImport("static " + EncodingUtil.class.getName() + ".readNextBoolean");
+			addImport("static " + JsonUtil.class.getName() + ".readNextBoolean");
 			return "readNextBoolean(parser)";
 		case INT:
-			addImport("static " + EncodingUtil.class.getName() + ".readNextInteger");
+			addImport("static " + JsonUtil.class.getName() + ".readNextInteger");
 			return "readNextInteger(parser)";
 		case LONG:
 		case TIMESTAMP:
-			addImport("static " + EncodingUtil.class.getName() + ".readNextLong");
+			addImport("static " + JsonUtil.class.getName() + ".readNextLong");
 			return "readNextLong(parser)";
 		case STRING:
 			return "parser.nextTextValue()";
-		case STRING_LIST:
-			addImport(StringListFieldDeserializer.class.getName());
-			return StringListFieldDeserializer.class.getSimpleName() + ".getInstance().deserialize(parser)";
-		case INT_LIST:
-			addImport(IntListFieldDeserializer.class.getName());
-			return IntListFieldDeserializer.class.getSimpleName() + ".getInstance().deserialize(parser)";
 		default:
 			throw new IllegalArgumentException("Unexpected field type for field:" + field);
 		}
 	}
 	
-	private String generateObjectDeserializer(EndpointParameter field) {
-		String fieldTypeName = ExchangeJavaWrapperGeneratorUtil.getObjectParameterClassName(deserializedTypeClassName, field);
-		String deserializerTypeName = this.getPackage() + "." + JavaCodeGenerationUtil.getClassNameWithoutPackage(fieldTypeName + "Deserializer");
-		addImport(deserializerTypeName);
-		String simpleDeserializerTypeName = JavaCodeGenerationUtil.getClassNameWithoutPackage(deserializerTypeName);
-		String deserializerVariableName = JavaCodeGenerationUtil.firstLetterToLowerCase(simpleDeserializerTypeName);
-		simpleDeserializerDeclarations.add("private final " + simpleDeserializerTypeName + " " + deserializerVariableName 
-										+ " = new " + simpleDeserializerTypeName + "();\n");
-		switch (field.getType()) {
+	private String generateNonPrimitiveTypeParameterDeserializerDeclaration(EndpointParameter field) {
+		EndpointParameterType type = field.getType();
+		String objectParameterClassName = ExchangeJavaWrapperGeneratorUtil.getObjectParameterClassName(deserializedTypeClassName, field);
+		String simpleDeserializerTypeName = generateNonPrimitiveParameterDeserializerClassName(field.getType(), objectParameterClassName, getImports());
+		String deserializerVariableName = JavaCodeGenerationUtil.firstLetterToLowerCase(field.getName() + "Deserializer");
+		String variableDeclaration = "private final " + simpleDeserializerTypeName + " " + deserializerVariableName + " = " 
+										+ EndpointParameterTypeGenerationUtil.getNewNonPrimitiveParameterDeserializerInstruction(type, simpleDeserializerTypeName, getImports()) + ";\n";
+		nonPrimitiveTypeFieldsDeserializerDeclarations.add(variableDeclaration);
+		return deserializerVariableName;
+	}
+	
+	public static String generateNonPrimitiveParameterDeserializerClassName(EndpointParameterType type, String objectClassName, Set<String> imports) {	
+		switch (type.getType()) {
 		case OBJECT:
-			return deserializerVariableName;
-		case OBJECT_LIST:
-			addImport(ObjectListFieldDeserializer.class.getName());
-			addImport(fieldTypeName);
-			String listDeserializerTypeName = ObjectListFieldDeserializer.class.getSimpleName() + "<" + JavaCodeGenerationUtil.getClassNameWithoutPackage(fieldTypeName) + ">";
-			String simpleListDeserializerTypeName = JavaCodeGenerationUtil.getClassNameWithoutPackage(listDeserializerTypeName);
-			String listDeserializerVariableName = JavaCodeGenerationUtil.firstLetterToLowerCase(JavaCodeGenerationUtil.getClassNameWithoutPackage(fieldTypeName + "ListDeserializer"));
-			listDeserializerDeclarations.add("private final " + simpleListDeserializerTypeName + " " + listDeserializerVariableName 
-											+ " = new " + simpleListDeserializerTypeName + "(" + deserializerVariableName + ");\n");
-			return listDeserializerVariableName;
-		case OBJECT_MAP:
-			addImport(ObjectMapFieldDeserializer.class.getName());
-			addImport(fieldTypeName);
-			String mapDeserializerTypeName = ObjectMapFieldDeserializer.class.getSimpleName() + "<" + JavaCodeGenerationUtil.getClassNameWithoutPackage(fieldTypeName) + ">";
-			String simpleMapDeserializerTypeName = JavaCodeGenerationUtil.getClassNameWithoutPackage(mapDeserializerTypeName);
-			String mapDeserializerVariableName = JavaCodeGenerationUtil.firstLetterToLowerCase(JavaCodeGenerationUtil.getClassNameWithoutPackage(fieldTypeName + "MapDeserializer"));
-			listDeserializerDeclarations.add("private final " + simpleMapDeserializerTypeName + " " + mapDeserializerVariableName 
-											+ " = new " + simpleMapDeserializerTypeName + "(" + deserializerVariableName + ");\n");
-			return mapDeserializerVariableName;
+			String deserializerTypeName = objectClassName + "Deserializer";
+			imports.add(deserializerTypeName);
+			return JavaCodeGenerationUtil.getClassNameWithoutPackage(deserializerTypeName);
+		case LIST:
+			imports.add(ListJsonFieldDeserializer.class.getName());
+			return ListJsonFieldDeserializer.class.getSimpleName() + "<" + EndpointParameterTypeGenerationUtil.getClassNameForParameterType(type.getSubType(), imports, objectClassName) + ">";
+		case MAP:
+			imports.add(MapJsonFieldDeserializer.class.getName());
+			return MapJsonFieldDeserializer.class.getSimpleName() + "<" + EndpointParameterTypeGenerationUtil.getClassNameForParameterType(type.getSubType(), imports, objectClassName) + ">";
 		default:
-			throw new IllegalArgumentException("Unexpected field type for field:" + field);
+			throw new IllegalArgumentException("Unexpected field type:" + type);
 		}
 	}
 	

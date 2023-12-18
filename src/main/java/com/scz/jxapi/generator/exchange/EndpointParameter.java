@@ -2,13 +2,17 @@ package com.scz.jxapi.generator.exchange;
 
 import java.util.List;
 
-import com.scz.jxapi.util.JsonUtil;
+import com.scz.jxapi.util.EncodingUtil;
 
 /**
  * Part of JSON document describing a crypto exchange API that describes a given field of a request to an endpoint or its response.
- * Such field can be recursive, see {@link EndpointParameterType#OBJECT} or {@link EndpointParameterType#OBJECT_LIST}.
+ * Such field can be recursive, see {@link EndpointParameterTypes#OBJECT} or {@link EndpointParameterTypes#OBJECT_LIST}.
  */
 public class EndpointParameter {
+	
+	public static EndpointParameter createObject(String name, String msgField, String description, List<EndpointParameter> parameters) {
+		return create(EndpointParameterType.fromTypeName(EndpointParameterTypes.OBJECT.name()), name, msgField, description, parameters);
+	}
 	
 	public static EndpointParameter create(EndpointParameterType type, String name, String msgField, String description, List<EndpointParameter> parameters) {
 		EndpointParameter p = new EndpointParameter();
@@ -20,9 +24,9 @@ public class EndpointParameter {
 		return p;
 	}
 	
-	public static EndpointParameter create(EndpointParameterType type, String name, String msgField, String description, String sampleValue) {
+	public static EndpointParameter create(EndpointParameterTypes type, String name, String msgField, String description, String sampleValue) {
 		EndpointParameter p = new EndpointParameter();
-		p.setType(type);
+		p.setType(EndpointParameterType.fromTypeName(type.name()));
 		p.setName(name);
 		p.setMsgField(msgField);
 		p.setDescription(description);
@@ -88,7 +92,7 @@ public class EndpointParameter {
 	
 	/**
 	 * @return For an 'object' type parameter, see
-	 *         {@link EndpointParameterType#isObject}, the parameters in nested
+	 *         {@link EndpointParameterTypes#isObject}, the parameters in nested
 	 *         structure, <code>null</code> otherwise.
 	 */
 	public List<EndpointParameter> getParameters() {
@@ -102,7 +106,7 @@ public class EndpointParameter {
 	/**
 	 * @return The simple (without package) name of java class to represent
 	 *         corresponding to object defined by this parameter. Relevant only when
-	 *         type is an object see {@link EndpointParameterType#isObject}. Remark: in a descriptor
+	 *         type is an object see {@link EndpointParameterTypes#isObject}. Remark: in a descriptor
 	 *         file, the first parameter defining a given object name should define
 	 *         sub-parameters, other parameters using same object name need not
 	 *         define sub-parameters. This allow not to repeat identical structures
@@ -129,6 +133,6 @@ public class EndpointParameter {
 	}
 	
 	public String toString() {
-		return JsonUtil.pojoToString(this);
+		return EncodingUtil.pojoToString(this);
 	}
 }

@@ -49,16 +49,16 @@ public class ExchangeJavaWrapperGeneratorUtilTest {
 		String typeName = "com.x.MyPojo";
 		String typeDescription = "Used in ExchangeJavaWrapperGeneratorUtilTest";
 		List<EndpointParameter> endpointParameters = new ArrayList<>();
-		endpointParameters.add(EndpointParameter.create(EndpointParameterType.LONG, "id", null, "identifier", "123"));
-		endpointParameters.add(EndpointParameter.create(EndpointParameterType.INT, "score", null, "Current score", "0"));
-		endpointParameters.add(EndpointParameter.create(EndpointParameterType.OBJECT_LIST, "foo", "f", null,
-				Arrays.asList(EndpointParameter.create(EndpointParameterType.TIMESTAMP, "time", null, "Creation time", "0"),
-							  EndpointParameter.create(EndpointParameterType.OBJECT, "bar", "b", "The bar",
-									  Arrays.asList(EndpointParameter.create(EndpointParameterType.STRING, "name", null, "Bar name", "my bar")))
+		endpointParameters.add(EndpointParameter.create(EndpointParameterTypes.LONG, "id", null, "identifier", "123"));
+		endpointParameters.add(EndpointParameter.create(EndpointParameterTypes.INT, "score", null, "Current score", "0"));
+		endpointParameters.add(EndpointParameter.create(EndpointParameterType.fromTypeName("OBJECT_LIST"), "foo", "f", null,
+				Arrays.asList(EndpointParameter.create(EndpointParameterTypes.TIMESTAMP, "time", null, "Creation time", "0"),
+							  EndpointParameter.createObject("bar", "b", "The bar",
+									  Arrays.asList(EndpointParameter.create(EndpointParameterTypes.STRING, "name", null, "Bar name", "my bar")))
 						)
 				));
-		endpointParameters.add(EndpointParameter.create(EndpointParameterType.OBJECT_MAP, "toto", "toto", null,
-				Arrays.asList(EndpointParameter.create(EndpointParameterType.STRING, "id", null, "Toto ID", "toto#1"))
+		endpointParameters.add(EndpointParameter.create( EndpointParameterType.fromTypeName("OBJECT_MAP"), "toto", "toto", null,
+				Arrays.asList(EndpointParameter.create(EndpointParameterTypes.STRING, "id", null, "Toto ID", "toto#1"))
 				));
 		
 		ExchangeJavaWrapperGeneratorUtil.generatePojo(srcFolder, typeName, typeDescription, endpointParameters, List.of("com.x.common.MyInterface"), "// Additionnal body here\n\n");

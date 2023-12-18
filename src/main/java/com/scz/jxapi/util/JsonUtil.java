@@ -22,10 +22,6 @@ public class JsonUtil {
 	
 	private JsonUtil() {}
 
-	public static String pojoToString(Object pojo) {
-		return pojo.getClass().getSimpleName() + JsonUtil.pojoToJsonString(pojo); 
-	}
-
 	public static String pojoToJsonString(Object pojo) { 
 		try {
 			ObjectMapper om = new ObjectMapper();

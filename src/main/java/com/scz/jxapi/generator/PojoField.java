@@ -1,6 +1,6 @@
 package com.scz.jxapi.generator;
 
-import com.scz.jxapi.util.JsonUtil;
+import com.scz.jxapi.util.EncodingUtil;
 
 /**
  * Describes one field of a POJO to be generated using {@link PojoGenerator}
@@ -56,6 +56,6 @@ public class PojoField {
 
 	@Override
 	public String toString() {
-		return JsonUtil.pojoToString(this);
+		return EncodingUtil.pojoToString(this);
 	}
 }
