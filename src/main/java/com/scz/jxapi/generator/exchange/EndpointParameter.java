@@ -5,16 +5,21 @@ import java.util.List;
 import com.scz.jxapi.util.EncodingUtil;
 
 /**
- * Part of JSON document describing a crypto exchange API that describes a given field of a request to an endpoint or its response.
+ * Part of exchange descriptor JSON document describing a given field of a request to an endpoint or its response.
  * Such field can be recursive, see {@link EndpointParameterTypes#OBJECT} or {@link EndpointParameterTypes#OBJECT_LIST}.
  */
 public class EndpointParameter {
 	
-	public static EndpointParameter createObject(String name, String msgField, String description, List<EndpointParameter> parameters) {
-		return create(EndpointParameterType.fromTypeName(EndpointParameterTypes.OBJECT.name()), name, msgField, description, parameters);
+	public static EndpointParameter create(String type, String name, String msgField, String description, String sampleValue) {
+		EndpointParameter p = new EndpointParameter();
+		p.setType(type);
+		p.setName(name);
+		p.setMsgField(msgField);
+		p.setDescription(description);
+		return p;
 	}
 	
-	public static EndpointParameter create(EndpointParameterType type, String name, String msgField, String description, List<EndpointParameter> parameters) {
+	public static EndpointParameter create(String type, String name, String msgField, String description, List<EndpointParameter> parameters) {
 		EndpointParameter p = new EndpointParameter();
 		p.setType(type);
 		p.setName(name);
@@ -24,21 +29,11 @@ public class EndpointParameter {
 		return p;
 	}
 	
-	public static EndpointParameter create(EndpointParameterTypes type, String name, String msgField, String description, String sampleValue) {
-		EndpointParameter p = new EndpointParameter();
-		p.setType(EndpointParameterType.fromTypeName(type.name()));
-		p.setName(name);
-		p.setMsgField(msgField);
-		p.setDescription(description);
-		p.setSampleValue(sampleValue);
-		return p;
-	}
-	
 	private String name;
 	
 	private String description;
 	
-	private EndpointParameterType type;
+	private String type;
 	
 	private Object sampleValue;
 	
@@ -58,11 +53,15 @@ public class EndpointParameter {
 		this.name = name;
 	}
 
-	public EndpointParameterType getType() {
-		return type;
+	public EndpointParameterType getEndpointParameterType() {
+		return EndpointParameterType.fromTypeName(type);
 	}
 
-	public void setType(EndpointParameterType type) {
+	public String setType() {
+		return this.type;
+	}
+
+	public void setType(String type) {
 		this.type = type;
 	}
 

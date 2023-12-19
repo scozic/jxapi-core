@@ -1,7 +1,7 @@
 package com.scz.jxapi.generator.exchange;
 
-import java.awt.List;
 import java.math.BigDecimal;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -21,28 +21,42 @@ import com.scz.jxapi.netutils.deserialization.json.field.TimestampJsonFieldDeser
 public class EndpointParameterTypeGenerationUtil {
 
 	private EndpointParameterTypeGenerationUtil() {}
-
-	public static String getClassNameForEndpointParameter(EndpointParameter endpointParameter, Set<String> imports, String exchangeName, String exchangeApiName, String apiName) {
+	
+	public static String getClassNameForEndpointParameter(EndpointParameter endpointParameter, Set<String> imports, String enclosingClassName) {
 		String objectClassName = null;
-		if (endpointParameter.getType().isObject()) {
+		if (endpointParameter.getEndpointParameterType().isObject()) {
 			 if (endpointParameter.getObjectName() != null) {
 				 objectClassName = endpointParameter.getObjectName();
 			 } else {
-				 objectClassName = "";
-				 if (exchangeName != null) {
-					 objectClassName += JavaCodeGenerationUtil.firstLetterToUpperCase(exchangeName);
-				 }
-				 if (exchangeApiName != null) {
-					 objectClassName += JavaCodeGenerationUtil.firstLetterToUpperCase(exchangeApiName);
-				 }
-				 if (apiName != null) {
-					 objectClassName += JavaCodeGenerationUtil.firstLetterToUpperCase(apiName);
-				 }
-				 objectClassName += JavaCodeGenerationUtil.firstLetterToUpperCase(endpointParameter.getName());
+
+				 objectClassName = enclosingClassName + JavaCodeGenerationUtil.firstLetterToUpperCase(endpointParameter.getName());
 			 }
 		}
-		return getClassNameForParameterType(endpointParameter.getType(), imports, objectClassName);
+		return getClassNameForParameterType(endpointParameter.getEndpointParameterType(), imports, objectClassName);
 	}
+
+//	public static String getClassNameForEndpointParameter(EndpointParameter endpointParameter, Set<String> imports, String exchangeName, String exchangeApiName, String apiName) {
+//		String enclosingClassName = null;
+//		if (endpointParameter.getEndpointParameterType().isObject()) {
+//			 if (endpointParameter.getObjectName() != null) {
+//				 enclosingClassName = endpointParameter.getObjectName();
+//			 } else {
+//
+//			 }
+//		}
+//		 enclosingClassName = "";
+//		 if (exchangeName != null) {
+//			 enclosingClassName += JavaCodeGenerationUtil.firstLetterToUpperCase(exchangeName);
+//		 }
+//		 if (exchangeApiName != null) {
+//			 enclosingClassName += JavaCodeGenerationUtil.firstLetterToUpperCase(exchangeApiName);
+//		 }
+//		 if (apiName != null) {
+//			 enclosingClassName += JavaCodeGenerationUtil.firstLetterToUpperCase(apiName);
+//		 }
+//		enclosingClassName += JavaCodeGenerationUtil.firstLetterToUpperCase(endpointParameter.getName());
+//		return getClassNameForParameterType(endpointParameter.getEndpointParameterType(), imports, enclosingClassName);
+//	}
 	
 	public static String getClassNameForParameterType(EndpointParameterType type, Set<String> imports, String objectClassName) {
 		switch(type.getType()) {
@@ -60,11 +74,18 @@ public class EndpointParameterTypeGenerationUtil {
 			return String.class.getSimpleName();
 		case LIST:
 			imports.add(List.class.getName());
-			return List.class.getSimpleName() + "<" + getClassNameForParameterType(type.getSubType(), imports, objectClassName) + ">";
+			return List.class.getSimpleName() 
+					+ "<" 
+					+ JavaCodeGenerationUtil.getClassNameWithoutPackage(getClassNameForParameterType(type.getSubType(), imports, objectClassName)) 
+					+ ">";
 		case MAP:
 			imports.add(Map.class.getName());
-			return Map.class.getSimpleName() + "<String, " + getClassNameForParameterType(type.getSubType(), imports, objectClassName) + ">";
+			return Map.class.getSimpleName() 
+					+ "<String, " 
+					+ JavaCodeGenerationUtil.getClassNameWithoutPackage(getClassNameForParameterType(type.getSubType(), imports, objectClassName)) 
+					+ ">";
 		case OBJECT:
+			imports.add(objectClassName);
 			return objectClassName;
 		default:
 			throw new IllegalArgumentException("Unexpected type for:" + type);

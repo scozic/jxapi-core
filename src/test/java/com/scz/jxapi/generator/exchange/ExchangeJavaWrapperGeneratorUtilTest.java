@@ -49,16 +49,16 @@ public class ExchangeJavaWrapperGeneratorUtilTest {
 		String typeName = "com.x.MyPojo";
 		String typeDescription = "Used in ExchangeJavaWrapperGeneratorUtilTest";
 		List<EndpointParameter> endpointParameters = new ArrayList<>();
-		endpointParameters.add(EndpointParameter.create(EndpointParameterTypes.LONG, "id", null, "identifier", "123"));
-		endpointParameters.add(EndpointParameter.create(EndpointParameterTypes.INT, "score", null, "Current score", "0"));
-		endpointParameters.add(EndpointParameter.create(EndpointParameterType.fromTypeName("OBJECT_LIST"), "foo", "f", null,
-				Arrays.asList(EndpointParameter.create(EndpointParameterTypes.TIMESTAMP, "time", null, "Creation time", "0"),
-							  EndpointParameter.createObject("bar", "b", "The bar",
-									  Arrays.asList(EndpointParameter.create(EndpointParameterTypes.STRING, "name", null, "Bar name", "my bar")))
+		endpointParameters.add(EndpointParameter.create(EndpointParameterTypes.LONG.name(), "id", null, "identifier", "123"));
+		endpointParameters.add(EndpointParameter.create(EndpointParameterTypes.INT.name(), "score", null, "Current score", "0"));
+		endpointParameters.add(EndpointParameter.create("OBJECT_LIST", "foo", "f", null,
+				Arrays.asList(EndpointParameter.create(EndpointParameterTypes.TIMESTAMP.name(), "time", null, "Creation time", "0"),
+							  EndpointParameter.create(EndpointParameterTypes.OBJECT.name(), "bar", "b", "The bar",
+									  Arrays.asList(EndpointParameter.create(EndpointParameterTypes.STRING.name(), "name", null, "Bar name", "my bar")))
 						)
 				));
-		endpointParameters.add(EndpointParameter.create( EndpointParameterType.fromTypeName("OBJECT_MAP"), "toto", "toto", null,
-				Arrays.asList(EndpointParameter.create(EndpointParameterTypes.STRING, "id", null, "Toto ID", "toto#1"))
+		endpointParameters.add(EndpointParameter.create( "OBJECT_LIST_MAP", "toto", "toto", null,
+				Arrays.asList(EndpointParameter.create(EndpointParameterTypes.STRING.name(), "id", null, "Toto ID", "toto#1"))
 				));
 		
 		ExchangeJavaWrapperGeneratorUtil.generatePojo(srcFolder, typeName, typeDescription, endpointParameters, List.of("com.x.common.MyInterface"), "// Additionnal body here\n\n");
@@ -81,7 +81,7 @@ public class ExchangeJavaWrapperGeneratorUtilTest {
 				+ "  private List<MyPojoFoo> foo;\n"
 				+ "  private Long id;\n"
 				+ "  private Integer score;\n"
-				+ "  private Map<String, MyPojoToto> toto;\n"
+				+ "  private Map<String, List<MyPojoToto>> toto;\n"
 				+ "  \n"
 				+ "  /**\n"
 				+ "   * @return  Message field <strong>f</strong>\n"
@@ -128,14 +128,14 @@ public class ExchangeJavaWrapperGeneratorUtilTest {
 				+ "  /**\n"
 				+ "   * @return  Message field <strong>toto</strong>\n"
 				+ "   */\n"
-				+ "  public Map<String, MyPojoToto> getToto() {\n"
+				+ "  public Map<String, List<MyPojoToto>> getToto() {\n"
 				+ "    return toto;\n"
 				+ "  }\n"
 				+ "  \n"
 				+ "  /**\n"
 				+ "   * @param toto  Message field <strong>toto</strong>\n"
 				+ "   */\n"
-				+ "  public void setToto(Map<String, MyPojoToto> toto) {\n"
+				+ "  public void setToto(Map<String, List<MyPojoToto>> toto) {\n"
 				+ "    this.toto = toto;\n"
 				+ "  }\n"
 				+ "  \n"

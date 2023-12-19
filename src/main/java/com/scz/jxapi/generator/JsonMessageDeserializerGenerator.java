@@ -12,7 +12,6 @@ import com.scz.jxapi.generator.exchange.EndpointParameter;
 import com.scz.jxapi.generator.exchange.EndpointParameterType;
 import com.scz.jxapi.generator.exchange.EndpointParameterTypeGenerationUtil;
 import com.scz.jxapi.generator.exchange.EndpointParameterTypes;
-import com.scz.jxapi.generator.exchange.ExchangeJavaWrapperGeneratorUtil;
 import com.scz.jxapi.netutils.deserialization.json.AbstractJsonMessageDeserializer;
 import com.scz.jxapi.netutils.deserialization.json.field.ListJsonFieldDeserializer;
 import com.scz.jxapi.netutils.deserialization.json.field.MapJsonFieldDeserializer;
@@ -76,7 +75,7 @@ public class JsonMessageDeserializerGenerator extends JavaTypeGenerator {
 				.append("case \"")
 				.append(field.getMsgField() != null? field.getMsgField() : field.getName())
 				.append("\":\n");
-			if (!field.getType().getType().isPrimitive) {
+			if (!field.getEndpointParameterType().getType().isPrimitive) {
 				body.append(dblIndent)
 					.append("parser.nextToken();\n");
 			}
@@ -108,7 +107,7 @@ public class JsonMessageDeserializerGenerator extends JavaTypeGenerator {
 	}
 
 	private String getParseFieldInstruction(EndpointParameter field) {
-		EndpointParameterTypes canonicalType = field.getType().getType();
+		EndpointParameterTypes canonicalType = field.getEndpointParameterType().getType();
 		if (!canonicalType.isPrimitive) {
 			return generateNonPrimitiveTypeParameterDeserializerDeclaration(field) +".deserialize(parser)";
 		}
@@ -135,9 +134,9 @@ public class JsonMessageDeserializerGenerator extends JavaTypeGenerator {
 	}
 	
 	private String generateNonPrimitiveTypeParameterDeserializerDeclaration(EndpointParameter field) {
-		EndpointParameterType type = field.getType();
-		String objectParameterClassName = ExchangeJavaWrapperGeneratorUtil.getObjectParameterClassName(deserializedTypeClassName, field);
-		String simpleDeserializerTypeName = generateNonPrimitiveParameterDeserializerClassName(field.getType(), objectParameterClassName, getImports());
+		EndpointParameterType type = field.getEndpointParameterType();
+		String objectParameterClassName = EndpointParameterTypeGenerationUtil.getClassNameForEndpointParameter(field, getImports(), deserializedTypeClassName);
+		String simpleDeserializerTypeName = generateNonPrimitiveParameterDeserializerClassName(field.getEndpointParameterType(), objectParameterClassName, getImports());
 		String deserializerVariableName = JavaCodeGenerationUtil.firstLetterToLowerCase(field.getName() + "Deserializer");
 		String variableDeclaration = "private final " + simpleDeserializerTypeName + " " + deserializerVariableName + " = " 
 										+ EndpointParameterTypeGenerationUtil.getNewNonPrimitiveParameterDeserializerInstruction(type, simpleDeserializerTypeName, getImports()) + ";\n";

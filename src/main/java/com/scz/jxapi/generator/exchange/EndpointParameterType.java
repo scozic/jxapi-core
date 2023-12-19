@@ -11,6 +11,14 @@ import com.scz.jxapi.util.EncodingUtil;
  */
 public class EndpointParameterType {
 	
+	public static EndpointParameterType getLeafSubType(EndpointParameterType type) {
+		EndpointParameterType res = type;
+		while (res.subType != null) {
+			res = res.subType;
+		}
+		return res;
+	}
+	
 	public static EndpointParameterType fromTypeName(String typeName) {
 		if (typeName == null) {
 			return null;
@@ -68,19 +76,11 @@ public class EndpointParameterType {
 		this.subType = subType;
 	}
 	
-	public EndpointParameterType getLeafSubType() {
-		EndpointParameterType res = this;
-		while (res.subType != null) {
-			res = res.subType;
-		}
-		return res;
-	}
-	
 	public boolean isObject() {
-		return getLeafSubType().type == EndpointParameterTypes.OBJECT;
+		return getLeafSubType(this).type == EndpointParameterTypes.OBJECT;
 	}
 	
 	public String toString() {
-		return EncodingUtil.pojoToString(subType);
+		return EncodingUtil.pojoToString(this);
 	}
 }

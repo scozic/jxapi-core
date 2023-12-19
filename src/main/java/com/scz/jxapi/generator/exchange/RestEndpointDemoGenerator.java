@@ -99,11 +99,15 @@ public class RestEndpointDemoGenerator extends JavaTypeGenerator {
 																+ restApi.getName() 
 																+ "</i> API") + "\n");
 			constantDeclaration.append("public static final ")
-								.append(EndpointParameterTypeGenerationUtil.getClassNameForEndpointParameter(parameter, 
-																											 getImports(), 
-																											 exchangeDescriptor.getName(), 
-																											 exchangeApiDescriptor.getName(), 
-																											 restApi.getName()))
+								.append(EndpointParameterTypeGenerationUtil
+										.getClassNameForEndpointParameter(
+												parameter, 
+												getImports(),
+												ExchangeJavaWrapperGeneratorUtil
+												.generateRestEnpointRequestClassName(
+														exchangeDescriptor, 
+														exchangeApiDescriptor, 
+														restApi)))
 								.append(" ")
 								.append(getParameterValueConstantName(parameter))
 								.append(" = ")
@@ -116,7 +120,7 @@ public class RestEndpointDemoGenerator extends JavaTypeGenerator {
 		Object v = parameter.getSampleValue();
 		if (v == null)
 			return JavaCodeGenerationUtil.NULL;
-		switch (parameter.getType().getType()) {
+		switch (parameter.getEndpointParameterType().getType()) {
 		case BIGDECIMAL:
 			addImport(BigDecimal.class);
 			return "new BigDecimal(\"" + String.valueOf(v) + "\");";
