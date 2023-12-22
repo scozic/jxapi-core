@@ -70,7 +70,8 @@ public class ExchangeJavaWrapperGeneratorUtil {
 		for (EndpointParameter field: fields) {
 			if ((field.getEndpointParameterType().isObject())
 				&& field.getParameters() != null) {
-				generateDeserializer(src, EndpointParameterTypeGenerationUtil.getClassNameForEndpointParameter(field, imports, deserializedClassName), field.getParameters());
+				EndpointParameter objectParam = EndpointParameter.create(EndpointParameterTypes.OBJECT.name(), field.getName(), field.getMsgField(), field.getDescription(), field.getParameters());
+				generateDeserializer(src, EndpointParameterTypeGenerationUtil.getClassNameForEndpointParameter(objectParam, imports, deserializedClassName), field.getParameters());
 			}
 		}
 		JsonMessageDeserializerGenerator deserializerGenerator = new JsonMessageDeserializerGenerator(deserializedClassName, fields);
@@ -88,13 +89,10 @@ public class ExchangeJavaWrapperGeneratorUtil {
 	}
 	
 	private static void generateObjectParameterTypePojoField(Path src, String className, PojoGenerator generator, EndpointParameter field) throws IOException {
-		String objectName = EndpointParameterTypeGenerationUtil.getClassNameForParameterType(
-										  EndpointParameterType.getLeafSubType(field.getEndpointParameterType())
-										  ,generator.getImports()
-										  , className) 
-										+ JavaCodeGenerationUtil.firstLetterToUpperCase(field.getName());
+		String objectParamClassName = EndpointParameterTypeGenerationUtil.getLeafObjectParameterClassName(field.getName(), field.getEndpointParameterType(), generator.getImports(), className);
+		generator.addImport(objectParamClassName);
 		if (field.getParameters() != null) {
-			generatePojo(src, objectName, field.getDescription(), field.getParameters(), field.getImplementedInterfaces(), null);
+			generatePojo(src, objectParamClassName, field.getDescription(), field.getParameters(), field.getImplementedInterfaces(), null);
 		}
 		String objectClass = EndpointParameterTypeGenerationUtil.getClassNameForEndpointParameter(field, generator.getImports(), className);
 		generator.addField(PojoField.create(objectClass, field.getName(), field.getMsgField(), field.getDescription()));

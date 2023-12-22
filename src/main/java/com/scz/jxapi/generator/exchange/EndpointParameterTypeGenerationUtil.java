@@ -6,16 +6,16 @@ import java.util.Map;
 import java.util.Set;
 
 import com.scz.jxapi.generator.JavaCodeGenerationUtil;
-import com.scz.jxapi.generator.JsonMessageDeserializerGenerator;
 import com.scz.jxapi.netutils.deserialization.json.field.BigDecimalJsonFieldDeserializer;
 import com.scz.jxapi.netutils.deserialization.json.field.BooleanJsonFieldDeserializer;
 import com.scz.jxapi.netutils.deserialization.json.field.IntegerJsonFieldDeserializer;
+import com.scz.jxapi.netutils.deserialization.json.field.ListJsonFieldDeserializer;
 import com.scz.jxapi.netutils.deserialization.json.field.LongJsonFieldDeserializer;
+import com.scz.jxapi.netutils.deserialization.json.field.MapJsonFieldDeserializer;
 import com.scz.jxapi.netutils.deserialization.json.field.StringJsonFieldDeserializer;
 import com.scz.jxapi.netutils.deserialization.json.field.TimestampJsonFieldDeserializer;
 
 /**
- * 
  * Helper static methods around generation of {@link EndpointParameterType} related Java code.
  */
 public class EndpointParameterTypeGenerationUtil {
@@ -25,40 +25,21 @@ public class EndpointParameterTypeGenerationUtil {
 	public static String getClassNameForEndpointParameter(EndpointParameter endpointParameter, Set<String> imports, String enclosingClassName) {
 		String objectClassName = null;
 		if (endpointParameter.getEndpointParameterType().isObject()) {
-			 if (endpointParameter.getObjectName() != null) {
-				 objectClassName = endpointParameter.getObjectName();
-			 } else {
-
-				 objectClassName = enclosingClassName + JavaCodeGenerationUtil.firstLetterToUpperCase(endpointParameter.getName());
-			 }
+			 objectClassName = getParameterObjectClassName(endpointParameter, imports, enclosingClassName);
 		}
 		return getClassNameForParameterType(endpointParameter.getEndpointParameterType(), imports, objectClassName);
 	}
-
-//	public static String getClassNameForEndpointParameter(EndpointParameter endpointParameter, Set<String> imports, String exchangeName, String exchangeApiName, String apiName) {
-//		String enclosingClassName = null;
-//		if (endpointParameter.getEndpointParameterType().isObject()) {
-//			 if (endpointParameter.getObjectName() != null) {
-//				 enclosingClassName = endpointParameter.getObjectName();
-//			 } else {
-//
-//			 }
-//		}
-//		 enclosingClassName = "";
-//		 if (exchangeName != null) {
-//			 enclosingClassName += JavaCodeGenerationUtil.firstLetterToUpperCase(exchangeName);
-//		 }
-//		 if (exchangeApiName != null) {
-//			 enclosingClassName += JavaCodeGenerationUtil.firstLetterToUpperCase(exchangeApiName);
-//		 }
-//		 if (apiName != null) {
-//			 enclosingClassName += JavaCodeGenerationUtil.firstLetterToUpperCase(apiName);
-//		 }
-//		enclosingClassName += JavaCodeGenerationUtil.firstLetterToUpperCase(endpointParameter.getName());
-//		return getClassNameForParameterType(endpointParameter.getEndpointParameterType(), imports, enclosingClassName);
-//	}
 	
-	public static String getClassNameForParameterType(EndpointParameterType type, Set<String> imports, String objectClassName) {
+	public static String getParameterObjectClassName(EndpointParameter endpointParameter, Set<String> imports, String enclosingClassName) {
+		if (endpointParameter.getObjectName() != null) {
+			 return endpointParameter.getObjectName();
+		 } else {
+			 return enclosingClassName + JavaCodeGenerationUtil.firstLetterToUpperCase(endpointParameter.getName());
+		 }
+	}
+	
+	public static String getClassNameForParameterType(EndpointParameterType type, Set<String> imports, String enclosingClassName) {
+		String subTypeClassName = null;
 		switch(type.getType()) {
 		case BIGDECIMAL:
 			imports.add(BigDecimal.class.getName());
@@ -74,22 +55,34 @@ public class EndpointParameterTypeGenerationUtil {
 			return String.class.getSimpleName();
 		case LIST:
 			imports.add(List.class.getName());
+			subTypeClassName = getClassNameForParameterType(type.getSubType(), imports, enclosingClassName);
+			imports.add(subTypeClassName);
 			return List.class.getSimpleName() 
 					+ "<" 
-					+ JavaCodeGenerationUtil.getClassNameWithoutPackage(getClassNameForParameterType(type.getSubType(), imports, objectClassName)) 
+					+ JavaCodeGenerationUtil.getClassNameWithoutPackage(subTypeClassName) 
 					+ ">";
 		case MAP:
 			imports.add(Map.class.getName());
+			subTypeClassName = getClassNameForParameterType(type.getSubType(), imports, enclosingClassName);
+			imports.add(subTypeClassName);
 			return Map.class.getSimpleName() 
 					+ "<String, " 
-					+ JavaCodeGenerationUtil.getClassNameWithoutPackage(getClassNameForParameterType(type.getSubType(), imports, objectClassName)) 
+					+ JavaCodeGenerationUtil.getClassNameWithoutPackage(subTypeClassName) 
 					+ ">";
 		case OBJECT:
-			imports.add(objectClassName);
-			return objectClassName;
+			imports.add(enclosingClassName);
+			return enclosingClassName;
 		default:
 			throw new IllegalArgumentException("Unexpected type for:" + type);
 		}
+	}
+	
+	public static String getLeafObjectParameterClassName(String endpointParameterName, EndpointParameterType type, Set<String> imports, String objectClassName) {
+		return getClassNameForParameterType(
+				  EndpointParameterType.getLeafSubType(type)
+				  ,imports
+				  , objectClassName) 
+				+ JavaCodeGenerationUtil.firstLetterToUpperCase(endpointParameterName);
 	}
 
 	public static String getNewNonPrimitiveParameterDeserializerInstruction(EndpointParameterType type, String objectClassName, Set<String> imports) {
@@ -113,10 +106,14 @@ public class EndpointParameterTypeGenerationUtil {
 			imports.add(TimestampJsonFieldDeserializer.class.getName());
 			return  TimestampJsonFieldDeserializer.class.getSimpleName() + ".getInstance()";
 		case LIST:
-		case OBJECT:
+			imports.add(ListJsonFieldDeserializer.class.getName());
+			return "new " + ListJsonFieldDeserializer.class.getSimpleName() + "<>(" + getNewNonPrimitiveParameterDeserializerInstruction(type.getSubType(), objectClassName, imports) + ")";
 		case MAP:
-			return "new " + JsonMessageDeserializerGenerator.generateNonPrimitiveParameterDeserializerClassName(type, objectClassName, imports) 
-						  + "(" + getNewNonPrimitiveParameterDeserializerInstruction(type.getSubType(), objectClassName, imports) + ")";
+			imports.add(MapJsonFieldDeserializer.class.getName());
+			return "new " + MapJsonFieldDeserializer.class.getSimpleName() + "<>(" + getNewNonPrimitiveParameterDeserializerInstruction(type.getSubType(), objectClassName, imports) +")";
+		case OBJECT:
+			imports.add(objectClassName);
+			return "new " + JavaCodeGenerationUtil.getClassNameWithoutPackage(objectClassName) + "Deserializer()";
 		default:
 			throw new IllegalArgumentException("Unexpected field type:" + type);
 		}
