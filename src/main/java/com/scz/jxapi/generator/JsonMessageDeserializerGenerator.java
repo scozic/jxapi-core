@@ -6,33 +6,24 @@ import java.util.Set;
 import java.util.TreeSet;
 import java.util.stream.Collectors;
 
-import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.scz.jxapi.generator.exchange.EndpointParameter;
 import com.scz.jxapi.generator.exchange.EndpointParameterType;
 import com.scz.jxapi.generator.exchange.EndpointParameterTypeGenerationUtil;
 import com.scz.jxapi.generator.exchange.EndpointParameterTypes;
+import com.scz.jxapi.generator.exchange.ExchangeJavaWrapperGeneratorUtil;
 import com.scz.jxapi.netutils.deserialization.json.AbstractJsonMessageDeserializer;
 import com.scz.jxapi.netutils.deserialization.json.field.ListJsonFieldDeserializer;
 import com.scz.jxapi.netutils.deserialization.json.field.MapJsonFieldDeserializer;
-import com.scz.jxapi.netutils.serialization.json.JsonParserUtil;
 import com.scz.jxapi.util.JsonUtil;
 
 public class JsonMessageDeserializerGenerator extends JavaTypeGenerator {
 	
-	public static String getJsonMessageDeserializerClassName(String deserializedTypeClassName) {
-		String pkg = StringUtils.substringBefore(JavaCodeGenerationUtil.getClassPackage(deserializedTypeClassName), ".pojo") + ".deserializers";
-		return pkg + "." + JavaCodeGenerationUtil.getClassNameWithoutPackage(deserializedTypeClassName) + "Deserializer";
-	}
-
 	private final String deserializedTypeClassName;
 	private final List<EndpointParameter> fields;
 	private final Set<String> nonPrimitiveTypeFieldsDeserializerDeclarations = new TreeSet<>();
 	
 	public JsonMessageDeserializerGenerator(String deserializedTypeClassName, List<EndpointParameter> fields) {
-		super(getJsonMessageDeserializerClassName(deserializedTypeClassName));
+		super(ExchangeJavaWrapperGeneratorUtil.getJsonMessageDeserializerClassName(deserializedTypeClassName));
 		this.deserializedTypeClassName = deserializedTypeClassName;
 		this.fields = fields;
 		setTypeDeclaration("public class");
@@ -49,7 +40,6 @@ public class JsonMessageDeserializerGenerator extends JavaTypeGenerator {
 		addImport(IOException.class.getName());
 		addImport(com.fasterxml.jackson.core.JsonParser.class.getName());
 		addImport(com.fasterxml.jackson.core.JsonToken.class.getName());
-		addImport(JsonParserUtil.class.getName());
 		addImport(deserializedTypeClassName);
 		generateDeserializeMethod();
 		return super.generate();
@@ -91,10 +81,9 @@ public class JsonMessageDeserializerGenerator extends JavaTypeGenerator {
 				.append(");\n")	
 				.append(indent).append("break;\n");
 		});
+		addImport("static " + JsonUtil.class.getName() + ".skipNextValue");
 		body.append(indent).append("default:\n")
 			.append(dblIndent)
-				.append(JsonParserUtil.class.getSimpleName())
-				.append(".")
 				.append("skipNextValue(parser);\n")
 			.append(indent).append("}\n")
 			.append("}\n")
@@ -161,7 +150,7 @@ public class JsonMessageDeserializerGenerator extends JavaTypeGenerator {
 		String parameterClass = null;
 		switch (type.getType()) {
 		case OBJECT:
-			String deserializerTypeName = getJsonMessageDeserializerClassName(objectClassName);
+			String deserializerTypeName = ExchangeJavaWrapperGeneratorUtil.getJsonMessageDeserializerClassName(objectClassName);
 			imports.add(deserializerTypeName);
 			return JavaCodeGenerationUtil.getClassNameWithoutPackage(deserializerTypeName);
 		case LIST:

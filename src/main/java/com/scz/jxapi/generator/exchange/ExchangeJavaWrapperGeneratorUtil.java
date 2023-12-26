@@ -66,7 +66,7 @@ public class ExchangeJavaWrapperGeneratorUtil {
 		generator.writeJavaFile(src);
 	}
 	
-	private static String getSerializerClassName(String pojoClassName) {
+	public static String getSerializerClassName(String pojoClassName) {
 		String pkg = StringUtils.substringBefore(JavaCodeGenerationUtil.getClassPackage(pojoClassName), ".pojo");
 		return pkg + ".serializers." + JavaCodeGenerationUtil.getClassNameWithoutPackage(pojoClassName) + "Serializer";
 	}
@@ -173,8 +173,7 @@ public class ExchangeJavaWrapperGeneratorUtil {
 	private static void generateSerializer(Path ouputFolder, String pojoClassName, List<EndpointParameter> fields) throws IOException {
 		if (log.isDebugEnabled())
 			log.debug("Generating serializer for :" + pojoClassName + " with fields:" + StringUtils.truncate(String.valueOf(fields), 192) + " to:" + ouputFolder);
-		String serializerPkg = JavaCodeGenerationUtil.getClassPackage(getSerializerClassName(pojoClassName));
-		JsonPojoSerializerGenerator generator = new JsonPojoSerializerGenerator(serializerPkg, pojoClassName, fields);
+		JsonPojoSerializerGenerator generator = new JsonPojoSerializerGenerator(pojoClassName, fields);
 		
 		for (EndpointParameter field: fields) {
 			if ((field.getEndpointParameterType().isObject())
@@ -469,6 +468,11 @@ public class ExchangeJavaWrapperGeneratorUtil {
 
 	public static String getExchangeInterfaceName(ExchangeDescriptor exchangeDescriptor) {
 		return exchangeDescriptor.getBasePackage() + "." + JavaCodeGenerationUtil.firstLetterToUpperCase(exchangeDescriptor.getName()) + "Exchange";
+	}
+
+	public static String getJsonMessageDeserializerClassName(String deserializedTypeClassName) {
+		String pkg = StringUtils.substringBefore(JavaCodeGenerationUtil.getClassPackage(deserializedTypeClassName), ".pojo") + ".deserializers";
+		return pkg + "." + JavaCodeGenerationUtil.getClassNameWithoutPackage(deserializedTypeClassName) + "Deserializer";
 	}
 
 }

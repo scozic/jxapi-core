@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import com.scz.jxapi.generator.exchange.EndpointParameter;
+import com.scz.jxapi.generator.exchange.ExchangeJavaWrapperGeneratorUtil;
 import com.scz.jxapi.util.EncodingUtil;
 
 public class JsonPojoSerializerGenerator extends JavaTypeGenerator {
@@ -12,8 +13,8 @@ public class JsonPojoSerializerGenerator extends JavaTypeGenerator {
 	private final String serializedTypeClassName;
 	private final List<EndpointParameter> fields;
 	
-	public JsonPojoSerializerGenerator(String packageName, String serializedTypeClassName, List<EndpointParameter> fields) {
-		super(packageName + "." + JavaCodeGenerationUtil.getClassNameWithoutPackage(serializedTypeClassName) + "Serializer");
+	public JsonPojoSerializerGenerator(String serializedTypeClassName, List<EndpointParameter> fields) {
+		super(ExchangeJavaWrapperGeneratorUtil.getSerializerClassName(serializedTypeClassName));
 		this.serializedTypeClassName = serializedTypeClassName;
 		this.fields = fields;
 		setTypeDeclaration("public class");

@@ -40,7 +40,6 @@ public class JsonMessageDeserializerGeneratorTest {
 				+ "import com.scz.jxapi.netutils.deserialization.json.AbstractJsonMessageDeserializer;\n"
 				+ "import com.scz.jxapi.netutils.deserialization.json.field.ListJsonFieldDeserializer;\n"
 				+ "import com.scz.jxapi.netutils.deserialization.json.field.MapJsonFieldDeserializer;\n"
-				+ "import com.scz.jxapi.netutils.serialization.json.JsonParserUtil;\n"
 				+ "import com.x.MyPojo;\n"
 				+ "import com.x.MyPojoFoo;\n"
 				+ "import com.x.MyPojoToto;\n"
@@ -48,6 +47,7 @@ public class JsonMessageDeserializerGeneratorTest {
 				+ "import java.util.List;\n"
 				+ "import static com.scz.jxapi.util.JsonUtil.readNextInteger;\n"
 				+ "import static com.scz.jxapi.util.JsonUtil.readNextLong;\n"
+				+ "import static com.scz.jxapi.util.JsonUtil.skipNextValue;\n"
 				+ "\n"
 				+ "/**\n"
 				+ " * Parses incoming JSON messages into com.x.MyPojo instances\n"
@@ -78,13 +78,12 @@ public class JsonMessageDeserializerGeneratorTest {
 				+ "        msg.setToto(totoDeserializer.deserialize(parser));\n"
 				+ "      break;\n"
 				+ "      default:\n"
-				+ "        JsonParserUtil.skipNextValue(parser);\n"
+				+ "        skipNextValue(parser);\n"
 				+ "      }\n"
 				+ "    }\n"
 				+ "    \n"
 				+ "     return msg;\n"
 				+ "  }\n"
-				+ "}\n"
-				+ "", generator.generate());
+				+ "}\n", generator.generate());
 	}
 }

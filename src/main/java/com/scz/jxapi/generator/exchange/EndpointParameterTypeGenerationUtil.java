@@ -6,7 +6,6 @@ import java.util.Map;
 import java.util.Set;
 
 import com.scz.jxapi.generator.JavaCodeGenerationUtil;
-import com.scz.jxapi.generator.JsonMessageDeserializerGenerator;
 import com.scz.jxapi.netutils.deserialization.json.field.BigDecimalJsonFieldDeserializer;
 import com.scz.jxapi.netutils.deserialization.json.field.BooleanJsonFieldDeserializer;
 import com.scz.jxapi.netutils.deserialization.json.field.IntegerJsonFieldDeserializer;
@@ -115,7 +114,7 @@ public class EndpointParameterTypeGenerationUtil {
 			imports.add(MapJsonFieldDeserializer.class.getName());
 			return "new " + MapJsonFieldDeserializer.class.getSimpleName() + "<>(" + getNewNonPrimitiveParameterDeserializerInstruction(type.getSubType(), objectClassName, imports) +")";
 		case OBJECT:
-			String objectDeserializerClass = JsonMessageDeserializerGenerator.getJsonMessageDeserializerClassName(objectClassName);
+			String objectDeserializerClass = ExchangeJavaWrapperGeneratorUtil.getJsonMessageDeserializerClassName(objectClassName);
 			imports.add(objectDeserializerClass);
 			return "new " +  JavaCodeGenerationUtil.getClassNameWithoutPackage(objectDeserializerClass) + "()";
 		default:

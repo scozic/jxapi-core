@@ -13,7 +13,6 @@ import java.util.stream.Collectors;
 
 import com.scz.jxapi.generator.JavaCodeGenerationUtil;
 import com.scz.jxapi.generator.JavaTypeGenerator;
-import com.scz.jxapi.generator.JsonMessageDeserializerGenerator;
 import com.scz.jxapi.netutils.deserialization.RawStringMessageDeserializer;
 import com.scz.jxapi.netutils.deserialization.json.field.ListJsonFieldDeserializer;
 import com.scz.jxapi.netutils.rest.FutureRestResponse;
@@ -233,12 +232,12 @@ public class ExchangeApiInterfaceImplementationGenerator extends JavaTypeGenerat
 		switch (websocketApi.getResponseDataType()) {
 		case JSON_OBJECT:
 			addImport(messageClassName);
-			messageDeserializerClassName = JsonMessageDeserializerGenerator.getJsonMessageDeserializerClassName(messageClassName);
+			messageDeserializerClassName = ExchangeJavaWrapperGeneratorUtil.getJsonMessageDeserializerClassName(messageClassName);
 			getResponseDeserializerInstance = "new " + JavaCodeGenerationUtil.getClassNameWithoutPackage(messageDeserializerClassName) + "()";
 			break;
 		case JSON_OBJECT_LIST:
 			addImport(messageClassName);
-			messageDeserializerClassName = JsonMessageDeserializerGenerator.getJsonMessageDeserializerClassName(messageClassName);
+			messageDeserializerClassName = ExchangeJavaWrapperGeneratorUtil.getJsonMessageDeserializerClassName(messageClassName);
 			addImport(ListJsonFieldDeserializer.class);
 			addImport(List.class);
 			getResponseDeserializerInstance = "new " + ListJsonFieldDeserializer.class.getSimpleName() + "<" + messageClassSimpleName + ">(new " + JavaCodeGenerationUtil.getClassNameWithoutPackage(messageDeserializerClassName) + "())";
@@ -352,12 +351,12 @@ public class ExchangeApiInterfaceImplementationGenerator extends JavaTypeGenerat
 		switch (restApi.getResponseDataType()) {
 		case JSON_OBJECT:
 			addImport(responseClassName);
-			responseDeserializerClassName = JsonMessageDeserializerGenerator.getJsonMessageDeserializerClassName(responseClassName);
+			responseDeserializerClassName = ExchangeJavaWrapperGeneratorUtil.getJsonMessageDeserializerClassName(responseClassName);
 			getResponseDeserializerInstance = "new " + JavaCodeGenerationUtil.getClassNameWithoutPackage(responseDeserializerClassName) + "()";
 			break;
 		case JSON_OBJECT_LIST:
 			addImport(responseClassName);
-			responseDeserializerClassName = JsonMessageDeserializerGenerator.getJsonMessageDeserializerClassName(responseClassName);
+			responseDeserializerClassName = ExchangeJavaWrapperGeneratorUtil.getJsonMessageDeserializerClassName(responseClassName);
 			addImport(ListJsonFieldDeserializer.class);
 			addImport(List.class);
 			getResponseDeserializerInstance = "new " + ListJsonFieldDeserializer.class.getSimpleName() + "<" + responseSimpleClassName + ">(new " + JavaCodeGenerationUtil.getClassNameWithoutPackage(responseDeserializerClassName) + "())";
