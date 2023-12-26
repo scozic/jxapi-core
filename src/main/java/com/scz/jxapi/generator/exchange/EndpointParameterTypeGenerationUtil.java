@@ -6,6 +6,7 @@ import java.util.Map;
 import java.util.Set;
 
 import com.scz.jxapi.generator.JavaCodeGenerationUtil;
+import com.scz.jxapi.generator.JsonMessageDeserializerGenerator;
 import com.scz.jxapi.netutils.deserialization.json.field.BigDecimalJsonFieldDeserializer;
 import com.scz.jxapi.netutils.deserialization.json.field.BooleanJsonFieldDeserializer;
 import com.scz.jxapi.netutils.deserialization.json.field.IntegerJsonFieldDeserializer;
@@ -32,13 +33,13 @@ public class EndpointParameterTypeGenerationUtil {
 	
 	public static String getParameterObjectClassName(EndpointParameter endpointParameter, Set<String> imports, String enclosingClassName) {
 		if (endpointParameter.getObjectName() != null) {
-			 return endpointParameter.getObjectName();
+			 return JavaCodeGenerationUtil.getClassPackage(enclosingClassName) + "." + endpointParameter.getObjectName();
 		 } else {
 			 return enclosingClassName + JavaCodeGenerationUtil.firstLetterToUpperCase(endpointParameter.getName());
 		 }
 	}
 	
-	public static String getClassNameForParameterType(EndpointParameterType type, Set<String> imports, String enclosingClassName) {
+	public static String getClassNameForParameterType(EndpointParameterType type, Set<String> imports, String objectClassName) {
 		String subTypeClassName = null;
 		switch(type.getType()) {
 		case BIGDECIMAL:
@@ -55,7 +56,7 @@ public class EndpointParameterTypeGenerationUtil {
 			return String.class.getSimpleName();
 		case LIST:
 			imports.add(List.class.getName());
-			subTypeClassName = getClassNameForParameterType(type.getSubType(), imports, enclosingClassName);
+			subTypeClassName = getClassNameForParameterType(type.getSubType(), imports, objectClassName);
 			imports.add(subTypeClassName);
 			return List.class.getSimpleName() 
 					+ "<" 
@@ -63,25 +64,27 @@ public class EndpointParameterTypeGenerationUtil {
 					+ ">";
 		case MAP:
 			imports.add(Map.class.getName());
-			subTypeClassName = getClassNameForParameterType(type.getSubType(), imports, enclosingClassName);
+			subTypeClassName = getClassNameForParameterType(type.getSubType(), imports, objectClassName);
 			imports.add(subTypeClassName);
 			return Map.class.getSimpleName() 
 					+ "<String, " 
 					+ JavaCodeGenerationUtil.getClassNameWithoutPackage(subTypeClassName) 
 					+ ">";
 		case OBJECT:
-			imports.add(enclosingClassName);
-			return enclosingClassName;
+			return objectClassName;
 		default:
 			throw new IllegalArgumentException("Unexpected type for:" + type);
 		}
 	}
 	
-	public static String getLeafObjectParameterClassName(String endpointParameterName, EndpointParameterType type, Set<String> imports, String objectClassName) {
+	public static String getLeafObjectParameterClassName(String endpointParameterName, EndpointParameterType type, String endpointParameterObjectName, Set<String> imports, String enclosingPojoClassName) {
+		if (type.isObject() && endpointParameterObjectName != null) {
+			return JavaCodeGenerationUtil.getClassPackage(enclosingPojoClassName) + "."  + endpointParameterObjectName;
+		}
 		return getClassNameForParameterType(
 				  EndpointParameterType.getLeafSubType(type)
 				  ,imports
-				  , objectClassName) 
+				  , enclosingPojoClassName) 
 				+ JavaCodeGenerationUtil.firstLetterToUpperCase(endpointParameterName);
 	}
 
@@ -112,8 +115,9 @@ public class EndpointParameterTypeGenerationUtil {
 			imports.add(MapJsonFieldDeserializer.class.getName());
 			return "new " + MapJsonFieldDeserializer.class.getSimpleName() + "<>(" + getNewNonPrimitiveParameterDeserializerInstruction(type.getSubType(), objectClassName, imports) +")";
 		case OBJECT:
-			imports.add(objectClassName);
-			return "new " + JavaCodeGenerationUtil.getClassNameWithoutPackage(objectClassName) + "Deserializer()";
+			String objectDeserializerClass = JsonMessageDeserializerGenerator.getJsonMessageDeserializerClassName(objectClassName);
+			imports.add(objectDeserializerClass);
+			return "new " +  JavaCodeGenerationUtil.getClassNameWithoutPackage(objectDeserializerClass) + "()";
 		default:
 			throw new IllegalArgumentException("Unexpected field type:" + type);
 		}
