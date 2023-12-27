@@ -170,7 +170,7 @@ public class ExchangeJavaWrapperGeneratorUtil {
 		}
 	}
 
-	private static void generateSerializer(Path ouputFolder, String pojoClassName, List<EndpointParameter> fields) throws IOException {
+	public static void generateSerializer(Path ouputFolder, String pojoClassName, List<EndpointParameter> fields) throws IOException {
 		if (log.isDebugEnabled())
 			log.debug("Generating serializer for :" + pojoClassName + " with fields:" + StringUtils.truncate(String.valueOf(fields), 192) + " to:" + ouputFolder);
 		JsonPojoSerializerGenerator generator = new JsonPojoSerializerGenerator(pojoClassName, fields);
@@ -367,7 +367,7 @@ public class ExchangeJavaWrapperGeneratorUtil {
 		return pkgPrefix + simpleInterfaceName;
 	}
 	
-	private static String generateRestEndpointGetUrlParametersMethod(RestEndpointDescriptor restEndpointDescriptor) {
+	public static String generateRestEndpointGetUrlParametersMethod(RestEndpointDescriptor restEndpointDescriptor) {
 		String getUrlParametersBody = "return \"\";\n";
 		if (restEndpointDescriptor.getUrlParameters() != null) {
 			getUrlParametersBody =	generateGetUrlParametersBodyFromTemplate(restEndpointDescriptor.getUrlParameters(), 
