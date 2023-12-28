@@ -37,6 +37,11 @@ public class RestEndpointClassesGenerator {
 		this.restEndpointDescriptor = restEndpointDescriptor;
 	}
 	
+	/**
+	 * Triggers generation of all java files bases in main source folder.
+	 * @param outputFolder source folder, for instance <code>src/main/java</code>
+	 * @throws IOException
+	 */
 	public void generateClasses(Path outputFolder) throws IOException {
 		// Generate POJOs for request and response
 		generatePojos(outputFolder);
@@ -57,17 +62,21 @@ public class RestEndpointClassesGenerator {
 		}
 		String additionalBody = null;
 		additionalBody = ExchangeJavaWrapperGeneratorUtil.generateRestEndpointGetUrlParametersMethod(restEndpointDescriptor);
-		ExchangeJavaWrapperGeneratorUtil.generatePojo(outputFolder, 
+		
+		
+		new EndpointPojoClassesGenerator(
 				ExchangeJavaWrapperGeneratorUtil.generateRestEnpointRequestClassName(exchangeDescriptor, apiDescriptor, restEndpointDescriptor), 
-								"Request for " + exchangeDescriptor.getName() + " " + apiDescriptor.getName() + " API " 
-									+ restEndpointDescriptor.getName() + " REST endpoint"
-									+ restEndpointDescriptor.getDescription()
-									+ JavaCodeGenerationUtil.GENERATED_CODE_WARNING,
-								restEndpointDescriptor.getParameters(),
-								requestInterfaces,
-								additionalBody);
+				"Request for " + exchangeDescriptor.getName() + " " + apiDescriptor.getName() + " API " 
+						+ restEndpointDescriptor.getName() + " REST endpoint"
+						+ restEndpointDescriptor.getDescription()
+						+ JavaCodeGenerationUtil.GENERATED_CODE_WARNING,
+						restEndpointDescriptor.getParameters(),
+						requestInterfaces,
+						additionalBody).generateClasses(outputFolder);
+		
+		
 		if (restEndpointDescriptor.getResponse() != null) {
-			ExchangeJavaWrapperGeneratorUtil.generatePojo(outputFolder, 
+			new EndpointPojoClassesGenerator( 
 					ExchangeJavaWrapperGeneratorUtil.generateRestEnpointResponseClassName(exchangeDescriptor, apiDescriptor, restEndpointDescriptor), 
 					"Response to " + exchangeDescriptor.getName() 
 						+ " " + apiDescriptor.getName() + " API " 
@@ -77,7 +86,7 @@ public class RestEndpointClassesGenerator {
 						+ JavaCodeGenerationUtil.GENERATED_CODE_WARNING,
 					restEndpointDescriptor.getResponse(),
 					restEndpointDescriptor.getResponseInterfaces(),
-					null);
+					null).generateClasses(outputFolder);
 		}
 	}
 	

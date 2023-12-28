@@ -89,7 +89,7 @@ public class ExchangeJavaWrapperGeneratorUtil {
 	}
 	
 	public static void generateSimpleParameterTypePojoField(PojoGenerator generator, EndpointParameter field) {
-		String parameterClass = EndpointParameterTypeGenerationUtil.getClassNameForParameterType(field.getEndpointParameterType(), generator.getImports(), DEFAULT_STRING_LIST_SEPARATOR);
+		String parameterClass = EndpointParameterTypeGenerationUtil.getClassNameForParameterType(field.getEndpointParameterType(), generator.getImports(), null);
 		if (!parameterClass.startsWith("java.lang") && parameterClass.contains(".")) {
 			generator.addImport(parameterClass);
 			parameterClass = JavaCodeGenerationUtil.getClassNameWithoutPackage(parameterClass);
