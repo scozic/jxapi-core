@@ -99,16 +99,12 @@ public class RestEndpointClassesGenerator {
 	}
 	
 	private void generateSerializers(Path ouputFolder) throws IOException {
-		for (RestEndpointDescriptor restEndpointDescriptor: apiDescriptor.getRestEndpoints()) {
-			ExchangeJavaWrapperGeneratorUtil.generateSerializer(ouputFolder, 
-						ExchangeJavaWrapperGeneratorUtil.generateRestEnpointRequestClassName(exchangeDescriptor, apiDescriptor, restEndpointDescriptor),
-						restEndpointDescriptor.getParameters());
-			if (restEndpointDescriptor.getResponse() != null) {
-				ExchangeJavaWrapperGeneratorUtil.generateSerializer(ouputFolder, 
-						ExchangeJavaWrapperGeneratorUtil.generateRestEnpointResponseClassName(exchangeDescriptor, apiDescriptor, restEndpointDescriptor),
-						restEndpointDescriptor.getResponse());
-			}
-		}
+		ExchangeJavaWrapperGeneratorUtil.generateSerializer(ouputFolder, 
+				ExchangeJavaWrapperGeneratorUtil.generateRestEnpointRequestClassName(exchangeDescriptor, apiDescriptor, restEndpointDescriptor),
+				restEndpointDescriptor.getParameters());
 		
+		ExchangeJavaWrapperGeneratorUtil.generateSerializer(ouputFolder, 
+				ExchangeJavaWrapperGeneratorUtil.generateRestEnpointResponseClassName(exchangeDescriptor, apiDescriptor, restEndpointDescriptor),
+				restEndpointDescriptor.getResponse());
 	}
 }

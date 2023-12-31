@@ -31,8 +31,6 @@ public class WebsocketEndpointClassesGeneratorTest {
 	@Test
 	public void testGenerateWebsocketEndpointClasses() throws IOException {
 		srcFolder = Paths.get("tmp" + Math.random());
-		
-		srcFolder = Paths.get("tmp" + Math.random());
 		ExchangeDescriptor exchange = new ExchangeDescriptorParser().fromJson(Paths.get(".", "src", "test", "resources", "testCEXDescriptor.json"));
 		ExchangeApiDescriptor api = exchange.getApis().get(0);
 		WebsocketEndpointDescriptor wsEndpoint = api.getWebsocketEndpoints().get(0);

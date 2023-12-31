@@ -46,13 +46,10 @@ public class RestEndpointClassesGeneratorTest {
 		checkResponsePojoContent(checkSourceFileExists(Paths.get("pojo", "MyTestCEXMarketDataExchangeInfoResponse.java")));
 		checkSourceFileExists(Paths.get("pojo", "MyTestCEXMarketDataExchangeInfoResponsePayload.java"));
 		
-		checkJavaFilesCount(Paths.get("serializers"), 6);
+		checkJavaFilesCount(Paths.get("serializers"), 3);
 		checkSourceFileExists(Paths.get("serializers", "MyTestCEXMarketDataExchangeInfoRequestSerializer.java"));        
 		checkSourceFileExists(Paths.get("serializers", "MyTestCEXMarketDataExchangeInfoResponsePayloadSerializer.java"));
-		checkSourceFileExists(Paths.get("serializers", "MyTestCEXMarketDataExchangeInfoResponseSerializer.java"));       
-		checkSourceFileExists(Paths.get("serializers", "MyTestCEXMarketDataTickersRequestSerializer.java"));             
-		checkSourceFileExists(Paths.get("serializers", "MyTestCEXMarketDataTickersResponsePayloadSerializer.java"));     
-		checkSourceFileExists(Paths.get("serializers", "MyTestCEXMarketDataTickersResponseSerializer.java"));            
+		checkSourceFileExists(Paths.get("serializers", "MyTestCEXMarketDataExchangeInfoResponseSerializer.java"));               
 	}
 	
 	private void checkJavaFilesCount(Path relativePkg, int count) throws IOException {

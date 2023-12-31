@@ -102,7 +102,6 @@ public class WebsocketEndpointClassesGenerator {
 		ExchangeJavaWrapperGeneratorUtil.generateDeserializer(outputFolder, 
 				ExchangeJavaWrapperGeneratorUtil.generateWebsocketEndpointMessageClassName(exchangeDescriptor, apiDescriptor, websocketEndpointDescriptor),
 				websocketEndpointDescriptor.getResponse());
-		
 	}
 
 	private void generatePojos(Path outputFolder) throws IOException {
