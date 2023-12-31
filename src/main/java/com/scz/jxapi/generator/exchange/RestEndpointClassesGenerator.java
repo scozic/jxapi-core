@@ -67,8 +67,9 @@ public class RestEndpointClassesGenerator {
 		new EndpointPojoClassesGenerator(
 				ExchangeJavaWrapperGeneratorUtil.generateRestEnpointRequestClassName(exchangeDescriptor, apiDescriptor, restEndpointDescriptor), 
 				"Request for " + exchangeDescriptor.getName() + " " + apiDescriptor.getName() + " API " 
-						+ restEndpointDescriptor.getName() + " REST endpoint"
+						+ restEndpointDescriptor.getName() + " REST endpoint<br/>\n"
 						+ restEndpointDescriptor.getDescription()
+						+ "\n"
 						+ JavaCodeGenerationUtil.GENERATED_CODE_WARNING,
 						restEndpointDescriptor.getParameters(),
 						requestInterfaces,
@@ -79,10 +80,11 @@ public class RestEndpointClassesGenerator {
 			new EndpointPojoClassesGenerator( 
 					ExchangeJavaWrapperGeneratorUtil.generateRestEnpointResponseClassName(exchangeDescriptor, apiDescriptor, restEndpointDescriptor), 
 					"Response to " + exchangeDescriptor.getName() 
-						+ " " + apiDescriptor.getName() + " API " 
+						+ " " + apiDescriptor.getName() + " API <br/>\n" 
 						+ restEndpointDescriptor.getName() 
-						+ " REST endpoint request<br/>"
+						+ " REST endpoint request<br/>\n"
 						+ restEndpointDescriptor.getDescription()
+						+ "\n"
 						+ JavaCodeGenerationUtil.GENERATED_CODE_WARNING,
 					restEndpointDescriptor.getResponse(),
 					restEndpointDescriptor.getResponseInterfaces(),
