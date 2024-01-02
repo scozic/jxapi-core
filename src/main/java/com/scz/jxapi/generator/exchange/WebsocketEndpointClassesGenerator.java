@@ -19,7 +19,7 @@ import com.scz.jxapi.util.EncodingUtil;
  * </ul>
  * @see RestEndpointDescriptor
  */
-public class WebsocketEndpointClassesGenerator {
+public class WebsocketEndpointClassesGenerator implements ClassesGenerator {
 	
 	private static final String DEFAULT_STRING_LIST_SEPARATOR = ",";
 	
@@ -76,6 +76,10 @@ public class WebsocketEndpointClassesGenerator {
 		this.websocketEndpointDescriptor = websocketEndpointDescriptor;
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
 	public void generateClasses(Path outputFolder) throws IOException {
 		// Generate POJOs for request and response
 		generatePojos(outputFolder);

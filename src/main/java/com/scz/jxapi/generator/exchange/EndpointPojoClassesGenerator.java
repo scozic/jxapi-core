@@ -18,7 +18,7 @@ import java.util.Set;
  * @author Sylvestre COZIC
  *
  */
-public class EndpointPojoClassesGenerator {
+public class EndpointPojoClassesGenerator implements ClassesGenerator {
 	
 	private final EndpointPojoGenerator rootPojoGenerator;
 	private final List<EndpointParameter> fields;
@@ -32,6 +32,10 @@ public class EndpointPojoClassesGenerator {
 		this.rootPojoGenerator = new EndpointPojoGenerator(className, description, fields, implementedInterfaces, additionnalClassBody);
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
 	public void generateClasses(Path outputFolder) throws IOException {
 		rootPojoGenerator.writeJavaFile(outputFolder);
 		for (EndpointParameter field: fields) {

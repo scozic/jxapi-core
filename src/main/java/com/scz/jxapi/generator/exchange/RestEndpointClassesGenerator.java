@@ -18,7 +18,7 @@ import com.scz.jxapi.netutils.rest.RestEndpointUrlParameters;
  * </ul>
  * @see RestEndpointDescriptor
  */
-public class RestEndpointClassesGenerator {
+public class RestEndpointClassesGenerator implements ClassesGenerator {
 
 	protected final ExchangeDescriptor exchangeDescriptor;
 	protected final ExchangeApiDescriptor apiDescriptor;
@@ -38,10 +38,9 @@ public class RestEndpointClassesGenerator {
 	}
 	
 	/**
-	 * Triggers generation of all java files bases in main source folder.
-	 * @param outputFolder source folder, for instance <code>src/main/java</code>
-	 * @throws IOException
+	 * {@inheritDoc}
 	 */
+	@Override
 	public void generateClasses(Path outputFolder) throws IOException {
 		// Generate POJOs for request and response
 		generatePojos(outputFolder);

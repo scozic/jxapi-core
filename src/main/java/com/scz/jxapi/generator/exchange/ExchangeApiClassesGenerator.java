@@ -20,7 +20,7 @@ import com.scz.jxapi.netutils.rest.ratelimits.RateLimitManager;
  * 
  * @see ExchangeApiDescriptor
  */
-public class ExchangeApiClassesGenerator {
+public class ExchangeApiClassesGenerator implements ClassesGenerator {
 
 	private final ExchangeDescriptor exchangeDescriptor;
 	private final ExchangeApiDescriptor exchangeApiDescriptor;
@@ -30,6 +30,10 @@ public class ExchangeApiClassesGenerator {
 		this.exchangeApiDescriptor = exchangeApiDescriptor;
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
 	public void generateClasses(Path outputFolder) throws IOException {
 		new ExchangeApiInterfaceGenerator(exchangeDescriptor, exchangeApiDescriptor).writeJavaFile(outputFolder);
 		new ExchangeApiInterfaceImplementationGenerator(exchangeDescriptor, exchangeApiDescriptor).writeJavaFile(outputFolder);
