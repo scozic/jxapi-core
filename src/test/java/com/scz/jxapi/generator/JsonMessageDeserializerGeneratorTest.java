@@ -9,6 +9,7 @@ import org.junit.Test;
 
 import com.scz.jxapi.generator.exchange.EndpointParameter;
 import com.scz.jxapi.generator.exchange.EndpointParameterTypes;
+import com.scz.jxapi.generator.exchange.JsonMessageDeserializerGenerator;
 
 
 /**

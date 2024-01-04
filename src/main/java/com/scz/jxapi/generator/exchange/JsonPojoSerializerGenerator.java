@@ -1,11 +1,11 @@
-package com.scz.jxapi.generator;
+package com.scz.jxapi.generator.exchange;
 
 import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import com.scz.jxapi.generator.exchange.EndpointParameter;
-import com.scz.jxapi.generator.exchange.ExchangeJavaWrapperGeneratorUtil;
+import com.scz.jxapi.generator.JavaCodeGenerationUtil;
+import com.scz.jxapi.generator.JavaTypeGenerator;
 import com.scz.jxapi.util.EncodingUtil;
 
 public class JsonPojoSerializerGenerator extends JavaTypeGenerator {

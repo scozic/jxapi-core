@@ -50,13 +50,15 @@ public class ExchangeGeneratorMain {
 		Path packagePath = Paths.get(StringUtils.replace(exchangeDescriptor.getBasePackage(), ".", "/"));
 		Path genPackagesFolder = outputSrcMainFolder.resolve(packagePath);
 		JavaCodeGenerationUtil.deletePath(genPackagesFolder);
-		ExchangeJavaWrapperGeneratorUtil.generateCEX(exchangeDescriptor, outputSrcMainFolder);
+		new ExchangeClassesGenerator(exchangeDescriptor).generateClasses(outputSrcMainFolder);
+//		ExchangeJavaWrapperGeneratorUtil.generateCEX(exchangeDescriptor, outputSrcMainFolder);
 		
 		Path outputSrcTestFolder = Paths.get(".", "src", "test", "java");
 		Path genTestPackagesFolder = outputSrcTestFolder.resolve(packagePath);
 		JavaCodeGenerationUtil.deletePath(genTestPackagesFolder);
 		
-		ExchangeJavaWrapperGeneratorUtil.generateCEXDemos(exchangeDescriptor, outputSrcTestFolder);
+		new ExchangeDemoClassesGenerator(exchangeDescriptor).generateClasses(outputSrcTestFolder);
+//		ExchangeJavaWrapperGeneratorUtil.generateCEXDemos(exchangeDescriptor, outputSrcTestFolder);
 		log.info("Done generating java code for " + jsonFile.getFileName() + " in:" + outputSrcMainFolder);
 	}
 

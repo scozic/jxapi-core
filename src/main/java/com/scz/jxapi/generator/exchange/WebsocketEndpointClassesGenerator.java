@@ -3,11 +3,9 @@ package com.scz.jxapi.generator.exchange;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Arrays;
-import java.util.List;
 
 import com.scz.jxapi.generator.JavaCodeGenerationUtil;
 import com.scz.jxapi.netutils.websocket.WebsocketSubscribeParameters;
-import com.scz.jxapi.util.EncodingUtil;
 
 /**
  * Generates all classes used by a particular Websocket endpoint defined in an  
@@ -21,44 +19,16 @@ import com.scz.jxapi.util.EncodingUtil;
  */
 public class WebsocketEndpointClassesGenerator implements ClassesGenerator {
 	
-	private static final String DEFAULT_STRING_LIST_SEPARATOR = ",";
-	
 	private static String generateWebsocketSubscribeParametersGetTopicMethod(WebsocketEndpointDescriptor wsEndpointDescriptor) {
 		StringBuilder sb = new StringBuilder();
 		sb.append("\n@Override\npublic String getTopic() {\n")
 		  .append(JavaCodeGenerationUtil.INDENTATION)
-		  .append(generateGetUrlParametersBodyFromTemplate(wsEndpointDescriptor.getTopic(), wsEndpointDescriptor.getParameters(), wsEndpointDescriptor.getTopicParametersListSeparator()))
+		  .append(ExchangeJavaWrapperGeneratorUtil.generateGetUrlParametersBodyFromTemplate(
+				  	wsEndpointDescriptor.getTopic(), 
+				  	wsEndpointDescriptor.getParameters(), 
+				  	wsEndpointDescriptor.getTopicParametersListSeparator()))
 		  .append("}\n\n");
 		return sb.toString(); 
-	}
-	
-	private static String generateGetUrlParametersBodyFromTemplate(String urlParametersTemplate, List<EndpointParameter> endpointParameters, String stringListSeparator) {
-		if (endpointParameters.isEmpty()) {
-			return "return \"" + urlParametersTemplate + "\";\n";
-		}
-		if (stringListSeparator == null) {
-			stringListSeparator = DEFAULT_STRING_LIST_SEPARATOR;
-		}
-		StringBuilder sb = new StringBuilder();
-		sb.append("return ")
-		  .append(EncodingUtil.class.getSimpleName())
-		  .append(".substituteArguments(\"")
-		  .append(urlParametersTemplate)
-		  .append("\", ");
-		int n = endpointParameters.size();
-		for (int i = 0; i < n; i++) {
-			String name = endpointParameters.get(i).getName();
-			String value = name;
-			if (endpointParameters.get(i).getEndpointParameterType().getType() == EndpointParameterTypes.LIST) {
-				value = EncodingUtil.class.getSimpleName() + ".listToString(" + name + ", \"" + stringListSeparator + "\")"; 
-			}
-			sb.append("\"").append(name).append("\", ").append(value);
-			if (i < n - 1) {
-				sb.append(", ");
-			}
-		}
-		sb.append(");\n");
-		return sb.toString();
 	}
 	
 	private final ExchangeDescriptor exchangeDescriptor;

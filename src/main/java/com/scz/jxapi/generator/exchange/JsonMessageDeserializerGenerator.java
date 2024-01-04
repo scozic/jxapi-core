@@ -1,4 +1,4 @@
-package com.scz.jxapi.generator;
+package com.scz.jxapi.generator.exchange;
 
 import java.io.IOException;
 import java.util.List;
@@ -6,11 +6,8 @@ import java.util.Set;
 import java.util.TreeSet;
 import java.util.stream.Collectors;
 
-import com.scz.jxapi.generator.exchange.EndpointParameter;
-import com.scz.jxapi.generator.exchange.EndpointParameterType;
-import com.scz.jxapi.generator.exchange.EndpointParameterTypeGenerationUtil;
-import com.scz.jxapi.generator.exchange.EndpointParameterTypes;
-import com.scz.jxapi.generator.exchange.ExchangeJavaWrapperGeneratorUtil;
+import com.scz.jxapi.generator.JavaCodeGenerationUtil;
+import com.scz.jxapi.generator.JavaTypeGenerator;
 import com.scz.jxapi.netutils.deserialization.json.AbstractJsonMessageDeserializer;
 import com.scz.jxapi.netutils.deserialization.json.field.ListJsonFieldDeserializer;
 import com.scz.jxapi.netutils.deserialization.json.field.MapJsonFieldDeserializer;
