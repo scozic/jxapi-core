@@ -13,10 +13,12 @@ import org.junit.Test;
 import com.scz.jxapi.generator.JavaCodeGenerationUtil;
 
 /**
- * Unit test for {@link EndpointPojoClassesGenerator}
+ * Unit test for JsonPojoSerializerClassesGenerator
  */
-public class EndpointPojoClassesGeneratorTest {
-
+public class JsonPojoSerializerClassesGeneratorTest {
+	
+	private static final Path BASE_PKG = Paths.get("com", "x", "serializers");
+	
 	private Path srcFolder;
 	
 	@After
@@ -26,12 +28,12 @@ public class EndpointPojoClassesGeneratorTest {
 			srcFolder = null;
 		}
 	}
-	
+
 	@Test
-	public void testGenerateClasses() throws Exception {
+	public void testGenerateJsonDeserializerClasses() throws IOException {
 		srcFolder = ClassesGeneratorTestUtil.generateTmpDir();
+		
 		String typeName = "com.x.MyPojo";
-		String typeDescription = "Used in EndpointPojoGeneratorTest";
 		List<EndpointParameter> endpointParameters = new ArrayList<>();
 		endpointParameters.add(EndpointParameter.create(EndpointParameterTypes.LONG.name(), "id", null, "identifier", "123"));
 		endpointParameters.add(EndpointParameter.create(EndpointParameterTypes.INT.name(), "score", null, "Current score", "0"));
@@ -41,24 +43,25 @@ public class EndpointPojoClassesGeneratorTest {
 									  Arrays.asList(EndpointParameter.create(EndpointParameterTypes.STRING.name(), "name", null, "Bar name", "my bar")))
 						)
 				));
-		endpointParameters.add(EndpointParameter.create( "OBJECT_LIST_MAP", "toto", "toto", null,
+		endpointParameters.add(EndpointParameter.create("OBJECT_LIST_MAP", "toto", "toto", null,
 				Arrays.asList(EndpointParameter.create(EndpointParameterTypes.STRING.name(), "id", null, "Toto ID", "toto#1"))
 				));
 		
-		EndpointPojoClassesGenerator generator = new EndpointPojoClassesGenerator(typeName, typeDescription, endpointParameters, List.of("com.x.common.MyInterface"), null);
+		JsonPojoSerializerClassesGenerator generator = new JsonPojoSerializerClassesGenerator(typeName, endpointParameters);
 		generator.generateClasses(srcFolder);
 		checkJavaFilesCount(4);
-		checkSourceFileExists(Path.of("MyPojo.java"));
-		checkSourceFileExists(Path.of("MyPojoFoo.java"));
-		checkSourceFileExists(Path.of("MyPojoFooBar.java"));
-		checkSourceFileExists(Path.of("MyPojoToto.java"));
+		checkSourceFileExists(Path.of("MyPojoSerializer.java"));
+		checkSourceFileExists(Path.of("MyPojoFooSerializer.java"));
+		checkSourceFileExists(Path.of("MyPojoFooBarSerializer.java"));
+		checkSourceFileExists(Path.of("MyPojoTotoSerializer.java"));
 	}
 	
 	private void checkJavaFilesCount(int count) throws IOException {
-		ClassesGeneratorTestUtil.checkJavaFilesCount(srcFolder.resolve(Paths.get("com", "x")), count);
+		ClassesGeneratorTestUtil.checkJavaFilesCount(srcFolder.resolve(BASE_PKG), count);
 	}
 	
 	private void checkSourceFileExists(Path srcFilePath) {
-		ClassesGeneratorTestUtil.checkSourceFileExists(srcFolder.resolve(Paths.get("com", "x")), srcFilePath);
+		ClassesGeneratorTestUtil.checkSourceFileExists(srcFolder.resolve(BASE_PKG), srcFilePath);
 	}
+
 }

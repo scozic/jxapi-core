@@ -15,7 +15,7 @@ public class JsonPojoSerializerGeneratorTest {
 	
 	@Test
 	public void testGenerateSerializer() {
-		String deserialiazedTypeName = "com.x.MyPojo";
+		String deserializedTypeName = "com.x.MyPojo";
 		List<EndpointParameter> endpointParameters = new ArrayList<>();
 		endpointParameters.add(EndpointParameter.create(EndpointParameterTypes.LONG.name(), "id", null, "identifier", "123"));
 		endpointParameters.add(EndpointParameter.create(EndpointParameterTypes.INT.name(), "score", null, "Current score", "0"));
@@ -29,7 +29,7 @@ public class JsonPojoSerializerGeneratorTest {
 				Arrays.asList(EndpointParameter.create(EndpointParameterTypes.STRING.name(), "id", null, "Toto ID", "toto#1"))
 				));
 		
-		JsonPojoSerializerGenerator generator = new JsonPojoSerializerGenerator(deserialiazedTypeName, endpointParameters);
+		JsonPojoSerializerGenerator generator = new JsonPojoSerializerGenerator(deserializedTypeName, endpointParameters);
 		Assert.assertEquals("package com.x.serializers;\n"
 				+ "\n"
 				+ "import com.fasterxml.jackson.core.JsonGenerator;\n"

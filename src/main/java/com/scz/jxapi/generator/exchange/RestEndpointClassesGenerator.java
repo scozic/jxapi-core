@@ -121,7 +121,10 @@ public class RestEndpointClassesGenerator implements ClassesGenerator {
 		
 		if (restEndpointDescriptor.getResponse() != null) {
 			new EndpointPojoClassesGenerator( 
-					ExchangeJavaWrapperGeneratorUtil.generateRestEnpointResponseClassName(exchangeDescriptor, apiDescriptor, restEndpointDescriptor), 
+					ExchangeJavaWrapperGeneratorUtil.generateRestEnpointResponseClassName(
+							exchangeDescriptor, 
+							apiDescriptor, 
+							restEndpointDescriptor), 
 					"Response to " + exchangeDescriptor.getName() 
 						+ " " + apiDescriptor.getName() + " API <br/>\n" 
 						+ restEndpointDescriptor.getName() 
@@ -136,18 +139,27 @@ public class RestEndpointClassesGenerator implements ClassesGenerator {
 	}
 	
 	private void generateDeserializers(Path outputFolder) throws IOException {
-		ExchangeJavaWrapperGeneratorUtil.generateDeserializer(outputFolder, 
-						ExchangeJavaWrapperGeneratorUtil.generateRestEnpointResponseClassName(exchangeDescriptor, apiDescriptor, restEndpointDescriptor),
-						restEndpointDescriptor.getResponse());
+		new JsonMessageDeserializerClassesGenerator( 
+						ExchangeJavaWrapperGeneratorUtil.generateRestEnpointResponseClassName(
+								exchangeDescriptor, 
+								apiDescriptor, 
+								restEndpointDescriptor),
+						restEndpointDescriptor.getResponse()).generateClasses(outputFolder);
 	}
 	
 	private void generateSerializers(Path ouputFolder) throws IOException {
-		ExchangeJavaWrapperGeneratorUtil.generateSerializer(ouputFolder, 
-				ExchangeJavaWrapperGeneratorUtil.generateRestEnpointRequestClassName(exchangeDescriptor, apiDescriptor, restEndpointDescriptor),
-				restEndpointDescriptor.getParameters());
+		new JsonPojoSerializerClassesGenerator( 
+				ExchangeJavaWrapperGeneratorUtil.generateRestEnpointRequestClassName(
+						exchangeDescriptor, 
+						apiDescriptor, 
+						restEndpointDescriptor),
+				restEndpointDescriptor.getParameters()).generateClasses(ouputFolder);
 		
-		ExchangeJavaWrapperGeneratorUtil.generateSerializer(ouputFolder, 
-				ExchangeJavaWrapperGeneratorUtil.generateRestEnpointResponseClassName(exchangeDescriptor, apiDescriptor, restEndpointDescriptor),
-				restEndpointDescriptor.getResponse());
+		new JsonPojoSerializerClassesGenerator(  
+				ExchangeJavaWrapperGeneratorUtil.generateRestEnpointResponseClassName(
+						exchangeDescriptor, 
+						apiDescriptor, 
+						restEndpointDescriptor),
+				restEndpointDescriptor.getResponse()).generateClasses(ouputFolder);
 	}
 }

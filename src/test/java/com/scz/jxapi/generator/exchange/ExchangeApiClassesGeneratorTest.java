@@ -1,13 +1,10 @@
 package com.scz.jxapi.generator.exchange;
 
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Arrays;
 
 import org.junit.After;
-import org.junit.Assert;
 import org.junit.Test;
 
 import com.scz.jxapi.generator.JavaCodeGenerationUtil;
@@ -16,6 +13,8 @@ import com.scz.jxapi.generator.JavaCodeGenerationUtil;
  * Unit test for {@link ExchangeApiClassesGenerator}
  */
 public class ExchangeApiClassesGeneratorTest {
+	
+	private static final Path BASE_PKG = Paths.get("com", "foo", "bar", "gen", "marketdata");
 	
 	private Path srcFolder;
 	
@@ -29,12 +28,11 @@ public class ExchangeApiClassesGeneratorTest {
 
 	@Test
 	public void testGenerateExchangeApiClasses() throws IOException {
-		srcFolder = Paths.get("tmp" + Math.random());
+		srcFolder = ClassesGeneratorTestUtil.generateTmpDir();
 		ExchangeDescriptor exchange = new ExchangeDescriptorParser().fromJson(Paths.get(".", "src", "test", "resources", "testCEXDescriptor.json"));
 		ExchangeApiDescriptor api = exchange.getApis().get(0);
 		ExchangeApiClassesGenerator generator = new ExchangeApiClassesGenerator(exchange, api);
 		generator.generateClasses(srcFolder);
-		
 		
 		checkJavaFilesCount(Paths.get("."), 5);
 		checkSourceFileExists(Paths.get("MyTestCEXMarketDataApi.java"));
@@ -70,20 +68,11 @@ public class ExchangeApiClassesGeneratorTest {
 	}
 	
 	private void checkJavaFilesCount(Path relativePkg, int count) throws IOException {
-		Path pkg = srcFolder.resolve(Paths.get("com", "foo", "bar", "gen", "marketdata"));
-		File folder = pkg.resolve(relativePkg).toFile(); 
-		Assert.assertTrue(folder.exists());
-		Assert.assertTrue(folder.isDirectory());
-		Assert.assertEquals("Expected " + count + " files, but got:" + Arrays.toString(folder.listFiles()),
-							 count,	
-							 folder.listFiles().length);
+		ClassesGeneratorTestUtil.checkJavaFilesCount(srcFolder.resolve(BASE_PKG).resolve(relativePkg), count);
 	}
 	
 	private Path checkSourceFileExists(Path srcFilePath) {
-		Path pkg = srcFolder.resolve(Paths.get("com", "foo", "bar", "gen", "marketdata"));
-		Path fullPath = pkg.resolve(srcFilePath);
-		Assert.assertTrue(fullPath.toFile().exists());
-		return fullPath;
+		return ClassesGeneratorTestUtil.checkSourceFileExists(srcFolder.resolve(BASE_PKG), srcFilePath);
 	}
 
 }

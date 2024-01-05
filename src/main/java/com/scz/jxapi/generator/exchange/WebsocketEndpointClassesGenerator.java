@@ -62,20 +62,29 @@ public class WebsocketEndpointClassesGenerator implements ClassesGenerator {
 	}
 
 	private void generateSerializers(Path outputFolder) throws IOException {
-		ExchangeJavaWrapperGeneratorUtil.generateSerializer(outputFolder, 
-				ExchangeJavaWrapperGeneratorUtil.generateWebsocketEndpointRequestClassName(exchangeDescriptor, apiDescriptor, websocketEndpointDescriptor),
-				websocketEndpointDescriptor.getParameters());
+		new JsonPojoSerializerClassesGenerator( 
+				ExchangeJavaWrapperGeneratorUtil.generateWebsocketEndpointRequestClassName(
+						exchangeDescriptor, 
+						apiDescriptor, 
+						websocketEndpointDescriptor),
+				websocketEndpointDescriptor.getParameters()).generateClasses(outputFolder);
 	
-		ExchangeJavaWrapperGeneratorUtil.generateSerializer(outputFolder, 
-				ExchangeJavaWrapperGeneratorUtil.generateWebsocketEndpointMessageClassName(exchangeDescriptor, apiDescriptor, websocketEndpointDescriptor),
-				websocketEndpointDescriptor.getResponse());
+		new JsonPojoSerializerClassesGenerator( 
+				ExchangeJavaWrapperGeneratorUtil.generateWebsocketEndpointMessageClassName(
+						exchangeDescriptor, 
+						apiDescriptor, 
+						websocketEndpointDescriptor),
+				websocketEndpointDescriptor.getResponse()).generateClasses(outputFolder);;
 		
 	}
 
 	private void generateDeserializers(Path outputFolder) throws IOException {
-		ExchangeJavaWrapperGeneratorUtil.generateDeserializer(outputFolder, 
-				ExchangeJavaWrapperGeneratorUtil.generateWebsocketEndpointMessageClassName(exchangeDescriptor, apiDescriptor, websocketEndpointDescriptor),
-				websocketEndpointDescriptor.getResponse());
+		new JsonMessageDeserializerClassesGenerator(
+				ExchangeJavaWrapperGeneratorUtil.generateWebsocketEndpointMessageClassName(
+						exchangeDescriptor, 
+						apiDescriptor, 
+						websocketEndpointDescriptor),
+				websocketEndpointDescriptor.getResponse()).generateClasses(outputFolder);
 	}
 
 	private void generatePojos(Path outputFolder) throws IOException {
@@ -92,7 +101,10 @@ public class WebsocketEndpointClassesGenerator implements ClassesGenerator {
 				Arrays.asList(WebsocketSubscribeParameters.class.getName()), 
 				generateWebsocketSubscribeParametersGetTopicMethod(websocketEndpointDescriptor)).generateClasses(outputFolder);;
 		new EndpointPojoClassesGenerator( 
-				ExchangeJavaWrapperGeneratorUtil.generateWebsocketEndpointMessageClassName(exchangeDescriptor, apiDescriptor, websocketEndpointDescriptor), 
+				ExchangeJavaWrapperGeneratorUtil.generateWebsocketEndpointMessageClassName(
+						exchangeDescriptor, 
+						apiDescriptor, 
+						websocketEndpointDescriptor), 
 				"Message disseminated upon subscription to " 
 					+ exchangeDescriptor.getName() + " " 
 					+ apiDescriptor.getName() + " API " 
