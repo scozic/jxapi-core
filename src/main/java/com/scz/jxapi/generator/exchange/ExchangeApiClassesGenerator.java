@@ -37,11 +37,16 @@ public class ExchangeApiClassesGenerator implements ClassesGenerator {
 	public void generateClasses(Path outputFolder) throws IOException {
 		new ExchangeApiInterfaceGenerator(exchangeDescriptor, exchangeApiDescriptor).writeJavaFile(outputFolder);
 		new ExchangeApiInterfaceImplementationGenerator(exchangeDescriptor, exchangeApiDescriptor).writeJavaFile(outputFolder);
-		for (RestEndpointDescriptor restEndpointDescriptor: exchangeApiDescriptor.getRestEndpoints()) {
-			new RestEndpointClassesGenerator(exchangeDescriptor, exchangeApiDescriptor, restEndpointDescriptor).generateClasses(outputFolder);
+		if (exchangeApiDescriptor.getRestEndpoints() != null) {
+			for (RestEndpointDescriptor restEndpointDescriptor: exchangeApiDescriptor.getRestEndpoints()) {
+				new RestEndpointClassesGenerator(exchangeDescriptor, exchangeApiDescriptor, restEndpointDescriptor).generateClasses(outputFolder);
+			}
 		}
-		for (WebsocketEndpointDescriptor websocketEndpointDescriptor: exchangeApiDescriptor.getWebsocketEndpoints()) {
-			new WebsocketEndpointClassesGenerator(exchangeDescriptor, exchangeApiDescriptor, websocketEndpointDescriptor).generateClasses(outputFolder);
+		
+		if (exchangeApiDescriptor.getWebsocketEndpoints() != null) {
+			for (WebsocketEndpointDescriptor websocketEndpointDescriptor: exchangeApiDescriptor.getWebsocketEndpoints()) {
+				new WebsocketEndpointClassesGenerator(exchangeDescriptor, exchangeApiDescriptor, websocketEndpointDescriptor).generateClasses(outputFolder);
+			}
 		}
 	}
 }

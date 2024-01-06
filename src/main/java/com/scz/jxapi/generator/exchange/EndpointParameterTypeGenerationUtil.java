@@ -22,6 +22,13 @@ public class EndpointParameterTypeGenerationUtil {
 
 	private EndpointParameterTypeGenerationUtil() {}
 	
+	/**
+	 * Generates expected class 
+	 * @param endpointParameter
+	 * @param imports
+	 * @param enclosingClassName
+	 * @return
+	 */
 	public static String getClassNameForEndpointParameter(EndpointParameter endpointParameter, Set<String> imports, String enclosingClassName) {
 		String objectClassName = null;
 		if (endpointParameter.getEndpointParameterType().isObject()) {
