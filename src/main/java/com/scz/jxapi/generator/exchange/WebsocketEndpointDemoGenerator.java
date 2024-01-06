@@ -113,7 +113,7 @@ public class WebsocketEndpointDemoGenerator extends JavaTypeGenerator {
 		Object v = parameter.getSampleValue();
 		if (v == null)
 			return JavaCodeGenerationUtil.NULL;
-		switch (parameter.getEndpointParameterType().getType()) {
+		switch (parameter.getEndpointParameterType().getCanonicalType()) {
 		case BIGDECIMAL:
 			addImport(BigDecimal.class);
 			return "new BigDecimal(\"" + String.valueOf(v) + "\");";

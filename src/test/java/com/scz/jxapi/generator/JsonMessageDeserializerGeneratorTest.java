@@ -8,7 +8,7 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import com.scz.jxapi.generator.exchange.EndpointParameter;
-import com.scz.jxapi.generator.exchange.EndpointParameterTypes;
+import com.scz.jxapi.generator.exchange.CanonicalEndpointParameterTypes;
 import com.scz.jxapi.generator.exchange.JsonMessageDeserializerGenerator;
 
 
@@ -21,16 +21,16 @@ public class JsonMessageDeserializerGeneratorTest {
 	public void testGenerateDeserializer() {
 		String deserialiazedTypeName = "com.x.MyPojo";
 		List<EndpointParameter> endpointParameters = new ArrayList<>();
-		endpointParameters.add(EndpointParameter.create(EndpointParameterTypes.LONG.name(), "id", null, "identifier", "123"));
-		endpointParameters.add(EndpointParameter.create(EndpointParameterTypes.INT.name(), "score", null, "Current score", "0"));
+		endpointParameters.add(EndpointParameter.create(CanonicalEndpointParameterTypes.LONG.name(), "id", null, "identifier", "123"));
+		endpointParameters.add(EndpointParameter.create(CanonicalEndpointParameterTypes.INT.name(), "score", null, "Current score", "0"));
 		endpointParameters.add(EndpointParameter.create("OBJECT_LIST", "foo", "f", null,
-				Arrays.asList(EndpointParameter.create(EndpointParameterTypes.TIMESTAMP.name(), "time", null, "Creation time", "0"),
-							  EndpointParameter.create(EndpointParameterTypes.OBJECT.name(), "bar", "b", "The bar",
-									  Arrays.asList(EndpointParameter.create(EndpointParameterTypes.STRING.name(), "name", null, "Bar name", "my bar")))
+				Arrays.asList(EndpointParameter.create(CanonicalEndpointParameterTypes.TIMESTAMP.name(), "time", null, "Creation time", "0"),
+							  EndpointParameter.create(CanonicalEndpointParameterTypes.OBJECT.name(), "bar", "b", "The bar",
+									  Arrays.asList(EndpointParameter.create(CanonicalEndpointParameterTypes.STRING.name(), "name", null, "Bar name", "my bar")))
 						)
 				));
 		endpointParameters.add(EndpointParameter.create( "OBJECT_LIST_MAP", "toto", "toto", null,
-				Arrays.asList(EndpointParameter.create(EndpointParameterTypes.STRING.name(), "id", null, "Toto ID", "toto#1"))
+				Arrays.asList(EndpointParameter.create(CanonicalEndpointParameterTypes.STRING.name(), "id", null, "Toto ID", "toto#1"))
 				));
 		
 		JsonMessageDeserializerGenerator generator = new JsonMessageDeserializerGenerator(deserialiazedTypeName, endpointParameters);

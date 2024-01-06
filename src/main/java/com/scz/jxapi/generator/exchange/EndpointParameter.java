@@ -6,7 +6,7 @@ import com.scz.jxapi.util.EncodingUtil;
 
 /**
  * Part of exchange descriptor JSON document describing a given field of a request to an endpoint or its response.
- * Such field can be recursive, see {@link EndpointParameterTypes#OBJECT} or {@link EndpointParameterTypes#OBJECT_LIST}.
+ * Such field can be recursive, see {@link CanonicalEndpointParameterTypes#OBJECT} or {@link CanonicalEndpointParameterTypes#OBJECT_LIST}.
  */
 public class EndpointParameter {
 	
@@ -91,7 +91,7 @@ public class EndpointParameter {
 	
 	/**
 	 * @return For an 'object' type parameter, see
-	 *         {@link EndpointParameterTypes#isObject}, the parameters in nested
+	 *         {@link CanonicalEndpointParameterTypes#isObject}, the parameters in nested
 	 *         structure, <code>null</code> otherwise.
 	 */
 	public List<EndpointParameter> getParameters() {
@@ -105,7 +105,7 @@ public class EndpointParameter {
 	/**
 	 * @return The simple (without package) name of java class to represent
 	 *         corresponding to object defined by this parameter. Relevant only when
-	 *         type is an object see {@link EndpointParameterTypes#isObject}. Remark: in a descriptor
+	 *         type is an object see {@link CanonicalEndpointParameterTypes#isObject}. Remark: in a descriptor
 	 *         file, the first parameter defining a given object name should define
 	 *         sub-parameters, other parameters using same object name need not
 	 *         define sub-parameters. This allow not to repeat identical structures

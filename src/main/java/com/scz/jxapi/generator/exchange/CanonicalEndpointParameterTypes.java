@@ -2,16 +2,16 @@ package com.scz.jxapi.generator.exchange;
 
 /**
  * Supported types of parameters in request or response data.
- * Any value for a field in request or response payload can be a 'primitive' ({@link #STRING}, {@link #INT} ...) or nested object that may be repeated as:
+ * Any value for a field in request or response payload can be a 'primitive' ({@link #STRING}, {@link #INT} ... see {@link #isPrimitive}) or nested object that may be repeated:
  * <ul>
- * <li>Once, {@link #OBJECT} type</li>
- * <li>A list of values of any {@link EndpointParameterTypes} (JSON array), see {@link #isList}</li>
- * <li>A map of values (JSON map with {@link String} keys and values of any {@link EndpointParameterTypes}), see {@link #isMap}</li>
+ * <li>Once, e.g. data type is a plain {@link #OBJECT} type</li>
+ * <li>A list of values of any {@link CanonicalEndpointParameterTypes} (JSON array), see {@link #LIST}</li>
+ * <li>A map of values (JSON map with {@link String} keys and values of any {@link CanonicalEndpointParameterTypes}), see {@link #MAP}</li>
  * </ul>
  * 
  * @see EndpointParameter
  */
-public enum EndpointParameterTypes {
+public enum CanonicalEndpointParameterTypes {
 	/** Plain {@link String} value */
 	STRING(true),
 	
@@ -34,14 +34,11 @@ public enum EndpointParameterTypes {
 	 * Nested structure (JSON block) like:<br/>
 	 * <code>{"a":"val", "b":1}</code>
 	 * Such structure will contain a list of fields of a type matching one {@link #EndpointParameterType} values.
-	 * <br/>Flags: <i>object</i>
 	 */
 	OBJECT(false),
 	
 	/**
-	 * Nested JSON map with keys of type String and values of same JSON object structure attributes, like:<br/>
-	 * <code>{"a": {"key1":"ava11", "key2":"aval2"}, "b":{"key1":"bva11", "key2":"bval2"}}</code>
-	 * Flags: object, map.
+	 * Nested JSON map with keys of type String and values of same type (which can be any of {@link CanonicalEndpointParameterTypes}).
 	 * */
 	MAP(false),
 	
@@ -61,7 +58,7 @@ public enum EndpointParameterTypes {
 	 */
 	public final boolean isPrimitive;
 	
-	private EndpointParameterTypes(boolean isPrimitive) {
+	private CanonicalEndpointParameterTypes(boolean isPrimitive) {
 		this.isPrimitive = isPrimitive;
 	}
 }

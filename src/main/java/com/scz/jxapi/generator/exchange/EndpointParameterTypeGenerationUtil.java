@@ -40,7 +40,7 @@ public class EndpointParameterTypeGenerationUtil {
 	
 	public static String getClassNameForParameterType(EndpointParameterType type, Set<String> imports, String objectClassName) {
 		String subTypeClassName = null;
-		switch(type.getType()) {
+		switch(type.getCanonicalType()) {
 		case BIGDECIMAL:
 			imports.add(BigDecimal.class.getName());
 			return BigDecimal.class.getSimpleName();
@@ -88,7 +88,7 @@ public class EndpointParameterTypeGenerationUtil {
 	}
 
 	public static String getNewNonPrimitiveParameterDeserializerInstruction(EndpointParameterType type, String objectClassName, Set<String> imports) {
-		switch (type.getType()) {
+		switch (type.getCanonicalType()) {
 		case BIGDECIMAL:
 			imports.add(BigDecimalJsonFieldDeserializer.class.getName());
 			return "BigDecimalJsonFieldDeserializer.getInstance()";

@@ -51,7 +51,7 @@ public class RestEndpointClassesGenerator implements ClassesGenerator {
 			s.append("\"")
 			 .append(name)
 			 .append("\", ");
-			if (param.getEndpointParameterType().getType() == EndpointParameterTypes.LIST) {
+			if (param.getEndpointParameterType().getCanonicalType() == CanonicalEndpointParameterTypes.LIST) {
 				s.append(EncodingUtil.class.getSimpleName())
 				 .append(".listToUrlParamString(")
 				 .append(name)

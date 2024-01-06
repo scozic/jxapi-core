@@ -1,13 +1,26 @@
 package com.scz.jxapi.generator.exchange;
 
+import java.math.BigDecimal;
+
 import com.scz.jxapi.util.EncodingUtil;
 
 /**
  * Describes the data type of a REST request, response or websocket message
  * field. This type can be a primitive type (see
- * {@link EndpointParameterTypes#isPrimitive}, an object (
- * {@link EndpointParameterTypes#OBJECT}), or a list or ( {@link String} key)
- * map of data with a nested type.
+ * {@link CanonicalEndpointParameterTypes#isPrimitive}, an object (
+ * {@link CanonicalEndpointParameterTypes#OBJECT}), or a list or (
+ * {@link String} key) map of data with a nested type.<br/>
+ * When a field canonical type is primitive or
+ * {@link CanonicalEndpointParameterTypes#OBJECT}, it subtype is
+ * <code>null</code> as not relevant.<br/>
+ * Otherwise, the type stands for a list or {@link String} key map of values of
+ * same subtype which can be any type.<br/>
+ * This means types are extensible: for instance
+ * <code>BIGDECIMAL_LIST_MAP</code> means value of a field is map of list of
+ * {@link BigDecimal} values. <br/>
+ * When leaf subtype is {@link CanonicalEndpointParameterTypes#OBJECT} (see
+ * {@link #isObject()}), the field definition in endpoint descriptor JSON file
+ * must specify the list of {@link EndpointParameter} that defines the object.
  */
 public class EndpointParameterType {
 	
@@ -23,7 +36,7 @@ public class EndpointParameterType {
 		if (typeName == null) {
 			return null;
 		}
-		EndpointParameterTypes type = null;
+		CanonicalEndpointParameterTypes type = null;
 		EndpointParameterType subType = null;
 		int off = typeName.lastIndexOf('_');
 		if (off >= 0) {
@@ -31,12 +44,12 @@ public class EndpointParameterType {
 				throw new IllegalArgumentException("Invalide type:[" 
 													+ typeName 
 													+ "], expected "
-													+ EndpointParameterTypes.class.getName() 
+													+ CanonicalEndpointParameterTypes.class.getName() 
 													+ " (non primitive) value after last '_'");
 			}
 			String typeStr = typeName.substring(off + 1);
 			String subTypeStr = typeName.substring(0, off);
-			type = EndpointParameterTypes.valueOf(typeStr);
+			type = CanonicalEndpointParameterTypes.valueOf(typeStr);
 			if (type.isPrimitive) {
 				throw new IllegalArgumentException("Invalid type:[" 
 													+ type 
@@ -48,24 +61,24 @@ public class EndpointParameterType {
 			}
 			subType = fromTypeName(subTypeStr);
 		} else {
-			type = EndpointParameterTypes.valueOf(typeName);
+			type = CanonicalEndpointParameterTypes.valueOf(typeName);
 		}
 		EndpointParameterType et = new EndpointParameterType();
-		et.type = type;
+		et.canonicalType = type;
 		et.subType = subType;
 		return et;
 	}
 
-	private EndpointParameterTypes type;
+	private CanonicalEndpointParameterTypes canonicalType;
 	
 	private EndpointParameterType subType;
 
-	public EndpointParameterTypes getType() {
-		return type;
+	public CanonicalEndpointParameterTypes getCanonicalType() {
+		return canonicalType;
 	}
 
-	public void setType(EndpointParameterTypes type) {
-		this.type = type;
+	public void setCanonicalType(CanonicalEndpointParameterTypes type) {
+		this.canonicalType = type;
 	}
 
 	public EndpointParameterType getSubType() {
@@ -77,7 +90,7 @@ public class EndpointParameterType {
 	}
 	
 	public boolean isObject() {
-		return getLeafSubType(this).type == EndpointParameterTypes.OBJECT;
+		return getLeafSubType(this).canonicalType == CanonicalEndpointParameterTypes.OBJECT;
 	}
 	
 	public String toString() {

@@ -143,7 +143,7 @@ public class ExchangeJavaWrapperGeneratorUtil {
 		for (int i = 0; i < n; i++) {
 			String name = endpointParameters.get(i).getName();
 			String value = name;
-			if (endpointParameters.get(i).getEndpointParameterType().getType() == EndpointParameterTypes.LIST) {
+			if (endpointParameters.get(i).getEndpointParameterType().getCanonicalType() == CanonicalEndpointParameterTypes.LIST) {
 				value = EncodingUtil.class.getSimpleName() + ".listToString(" + name + ", \"" + stringListSeparator + "\")"; 
 			}
 			sb.append("\"").append(name).append("\", ").append(value);
