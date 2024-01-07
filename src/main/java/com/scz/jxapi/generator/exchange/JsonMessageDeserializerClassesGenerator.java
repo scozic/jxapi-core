@@ -10,6 +10,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.scz.jxapi.generator.JavaCodeGenerationUtil;
 import com.scz.jxapi.netutils.deserialization.json.AbstractJsonMessageDeserializer;
 
 /**
@@ -48,7 +49,11 @@ public class JsonMessageDeserializerClassesGenerator implements ClassesGenerator
 																		 field.getDescription(), 
 																		 field.getParameters());
 				objectParam.setObjectName(field.getObjectName());
-				new JsonMessageDeserializerClassesGenerator(EndpointParameterTypeGenerationUtil.getClassNameForEndpointParameter(objectParam, imports, deserializedClassName), 
+				new JsonMessageDeserializerClassesGenerator(JavaCodeGenerationUtil.getClassPackage(deserializedClassName) + "."
+																+ EndpointParameterTypeGenerationUtil.getClassNameForEndpointParameter(
+																		objectParam, 
+																		imports, 
+																		deserializedClassName), 
 															field.getParameters()).generateClasses(outputFolder);
 			}
 		}

@@ -2,8 +2,10 @@ package com.scz.jxapi.generator.exchange;
 
 import java.io.IOException;
 import java.nio.file.Path;
+import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
+
+import com.scz.jxapi.generator.JavaCodeGenerationUtil;
 
 /**
  * Generates all java classes for a specific POJO for a REST or Websocket
@@ -48,11 +50,11 @@ public class EndpointPojoClassesGenerator implements ClassesGenerator {
 
 	private void generateObjectParameterTypePojoField(Path outputFolder, String className, EndpointParameter field) throws IOException {
 		String objectParamClassName = EndpointParameterTypeGenerationUtil.getLeafObjectParameterClassName(
-				field.getName(), 
-				field.getEndpointParameterType(), 
-				field.getObjectName(), 
-				Set.of(), 
-				className);
+												field.getName(), 
+												field.getEndpointParameterType(), 
+												field.getObjectName(), 
+												new HashSet<>(), 
+												className);
 		
 		if (field.getParameters() != null) {
 			new EndpointPojoClassesGenerator(objectParamClassName, 
