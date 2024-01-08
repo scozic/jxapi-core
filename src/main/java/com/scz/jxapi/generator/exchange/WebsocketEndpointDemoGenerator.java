@@ -92,7 +92,7 @@ public class WebsocketEndpointDemoGenerator extends JavaTypeGenerator {
 																+ websocketApi.getName() 
 																+ "</i> API") + "\n");
 			constantDeclaration.append("public static final ")
-								.append(EndpointParameterTypeGenerationUtil.
+								.append(ExchangeJavaWrapperGeneratorUtil.
 										getClassNameForEndpointParameter(
 											parameter, 
 											getImports(), 

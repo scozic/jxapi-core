@@ -5,8 +5,6 @@ import java.nio.file.Path;
 import java.util.HashSet;
 import java.util.List;
 
-import com.scz.jxapi.generator.JavaCodeGenerationUtil;
-
 /**
  * Generates all java classes for a specific POJO for a REST or Websocket
  * endpoint. This means the java class for POJO itself, and also, if POJO
@@ -49,7 +47,7 @@ public class EndpointPojoClassesGenerator implements ClassesGenerator {
 
 
 	private void generateObjectParameterTypePojoField(Path outputFolder, String className, EndpointParameter field) throws IOException {
-		String objectParamClassName = EndpointParameterTypeGenerationUtil.getLeafObjectParameterClassName(
+		String objectParamClassName = ExchangeJavaWrapperGeneratorUtil.getLeafObjectParameterClassName(
 												field.getName(), 
 												field.getEndpointParameterType(), 
 												field.getObjectName(), 

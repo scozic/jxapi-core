@@ -43,7 +43,7 @@ public class JsonPojoSerializerClassesGenerator implements ClassesGenerator {
 			if ((field.getEndpointParameterType().isObject())
 				&& field.getParameters() != null) {
 				new JsonPojoSerializerClassesGenerator( 
-								   EndpointParameterTypeGenerationUtil.getLeafObjectParameterClassName(
+								   ExchangeJavaWrapperGeneratorUtil.getLeafObjectParameterClassName(
 										   	field.getName(), 
 										   	field.getEndpointParameterType(), 
 										   	field.getObjectName(), 

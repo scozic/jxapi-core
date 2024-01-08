@@ -293,7 +293,7 @@ public class ExchangeApiInterfaceImplementationGenerator extends JavaTypeGenerat
 		replacements.add("\" + request.getTopic() + \"");
 		websocketApi.getParameters().forEach(param -> {
 			replacements.add(param.getMsgField() != null? param.getMsgField(): param.getName());
-			String parameterClass = EndpointParameterTypeGenerationUtil.getClassNameForParameterType(param.getEndpointParameterType(), getImports(), Optional.ofNullable(param.getObjectName()).orElse(messageClassName));
+			String parameterClass = ExchangeJavaWrapperGeneratorUtil.getClassNameForParameterType(param.getEndpointParameterType(), getImports(), Optional.ofNullable(param.getObjectName()).orElse(messageClassName));
 			if (!parameterClass.startsWith("java.lang") && parameterClass.contains(".")) {
 				parameterClass = JavaCodeGenerationUtil.getClassNameWithoutPackage(parameterClass);
 			}

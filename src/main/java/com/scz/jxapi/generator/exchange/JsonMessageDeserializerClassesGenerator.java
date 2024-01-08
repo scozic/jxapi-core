@@ -50,7 +50,7 @@ public class JsonMessageDeserializerClassesGenerator implements ClassesGenerator
 																		 field.getParameters());
 				objectParam.setObjectName(field.getObjectName());
 				new JsonMessageDeserializerClassesGenerator(JavaCodeGenerationUtil.getClassPackage(deserializedClassName) + "."
-																+ EndpointParameterTypeGenerationUtil.getClassNameForEndpointParameter(
+																+ ExchangeJavaWrapperGeneratorUtil.getClassNameForEndpointParameter(
 																		objectParam, 
 																		imports, 
 																		deserializedClassName), 

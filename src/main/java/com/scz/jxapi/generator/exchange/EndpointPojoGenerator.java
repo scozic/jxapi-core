@@ -53,19 +53,19 @@ public class EndpointPojoGenerator extends PojoGenerator {
 	
 	private void generateObjectParameterTypePojoField(EndpointParameter field) throws IOException {
 		String className = getName();
-		String objectParamClassName = EndpointParameterTypeGenerationUtil.getLeafObjectParameterClassName(
+		String objectParamClassName = ExchangeJavaWrapperGeneratorUtil.getLeafObjectParameterClassName(
 																				field.getName(), 
 																				field.getEndpointParameterType(), 
 																				field.getObjectName(), 
 																				getImports(), 
 																				className);
 		addImport(objectParamClassName);
-		String objectClass = EndpointParameterTypeGenerationUtil.getClassNameForEndpointParameter(field, getImports(), className);
+		String objectClass = ExchangeJavaWrapperGeneratorUtil.getClassNameForEndpointParameter(field, getImports(), className);
 		addField(PojoField.create(objectClass, field.getName(), field.getMsgField(), field.getDescription()));
 	}
 	
 	private void generateSimpleParameterTypePojoField(EndpointParameter field) {
-		String parameterClass = EndpointParameterTypeGenerationUtil.getClassNameForParameterType(field.getEndpointParameterType(), getImports(), null);
+		String parameterClass = ExchangeJavaWrapperGeneratorUtil.getClassNameForParameterType(field.getEndpointParameterType(), getImports(), null);
 		if (!parameterClass.startsWith("java.lang") && parameterClass.contains(".")) {
 			addImport(parameterClass);
 			parameterClass = JavaCodeGenerationUtil.getClassNameWithoutPackage(parameterClass);
