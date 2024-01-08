@@ -26,18 +26,6 @@ public class ExchangeJavaWrapperGeneratorUtil {
 		return pkg + ".serializers." + JavaCodeGenerationUtil.getClassNameWithoutPackage(pojoClassName) + "Serializer";
 	}
 	
-	public static void generateSimpleParameterTypePojoField(PojoGenerator generator, EndpointParameter field) {
-		String parameterClass = ExchangeJavaWrapperGeneratorUtil.getClassNameForParameterType(
-									field.getEndpointParameterType(), 
-									generator.getImports(), 
-									null);
-		if (!parameterClass.startsWith("java.lang") && parameterClass.contains(".")) {
-			generator.addImport(parameterClass);
-			parameterClass = JavaCodeGenerationUtil.getClassNameWithoutPackage(parameterClass);
-		}
-		generator.addField(PojoField.create(parameterClass, field.getName(), field.getMsgField(), field.getDescription()));
-	}
-	
 	public static String generateRestEnpointRequestClassName(ExchangeDescriptor exchangeDescriptor, 
 															 ExchangeApiDescriptor exchangeApiDescriptor, 
 															 RestEndpointDescriptor restEndpointDescriptor) {
