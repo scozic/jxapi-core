@@ -10,8 +10,14 @@ import java.util.Set;
 import org.apache.commons.lang3.StringUtils;
 
 import com.scz.jxapi.generator.JavaCodeGenerationUtil;
-import com.scz.jxapi.generator.PojoField;
-import com.scz.jxapi.generator.PojoGenerator;
+import com.scz.jxapi.netutils.deserialization.json.field.BigDecimalJsonFieldDeserializer;
+import com.scz.jxapi.netutils.deserialization.json.field.BooleanJsonFieldDeserializer;
+import com.scz.jxapi.netutils.deserialization.json.field.IntegerJsonFieldDeserializer;
+import com.scz.jxapi.netutils.deserialization.json.field.ListJsonFieldDeserializer;
+import com.scz.jxapi.netutils.deserialization.json.field.LongJsonFieldDeserializer;
+import com.scz.jxapi.netutils.deserialization.json.field.MapJsonFieldDeserializer;
+import com.scz.jxapi.netutils.deserialization.json.field.StringJsonFieldDeserializer;
+import com.scz.jxapi.netutils.deserialization.json.field.TimestampJsonFieldDeserializer;
 import com.scz.jxapi.util.EncodingUtil;
 
 /**
@@ -21,6 +27,16 @@ public class ExchangeJavaWrapperGeneratorUtil {
 	
 	private static final String DEFAULT_STRING_LIST_SEPARATOR = ",";
 	
+	/**
+	 * Generates the expected full class name of JSON serializer class for a given
+	 * POJO full class name.
+	 * 
+	 * @param pojoClassName The full class name of POJO. It is intended to be a
+	 *                      generated POJO with '.pojo' in package name.
+	 * @return Full class name of JSON serializer class, that is a class in sub
+	 *         package 'serializers' of parent package of 'pojo' package, named
+	 *         <code>&lt;POJO simple class name&gt; + 'Serializer'</code>.
+	 */
 	public static String getSerializerClassName(String pojoClassName) {
 		String pkg = StringUtils.substringBefore(JavaCodeGenerationUtil.getClassPackage(pojoClassName), ".pojo");
 		return pkg + ".serializers." + JavaCodeGenerationUtil.getClassNameWithoutPackage(pojoClassName) + "Serializer";
@@ -29,32 +45,29 @@ public class ExchangeJavaWrapperGeneratorUtil {
 	public static String generateRestEnpointRequestClassName(ExchangeDescriptor exchangeDescriptor, 
 															 ExchangeApiDescriptor exchangeApiDescriptor, 
 															 RestEndpointDescriptor restEndpointDescriptor) {
-		return generateRestEnpointPojoClassName(exchangeDescriptor, exchangeApiDescriptor, restEndpointDescriptor, "Request");
+		return generateRestEnpointPojoClassName(exchangeDescriptor, exchangeApiDescriptor, restEndpointDescriptor.getName(), "Request");
 	}
 	
 	public static String generateRestEnpointResponseClassName(ExchangeDescriptor exchangeDescriptor, 
 															  ExchangeApiDescriptor exchangeApiDescriptor, 
 															  RestEndpointDescriptor restEndpointDescriptor) {
-		if (ResponseDataType.STRING.equals(restEndpointDescriptor.getResponseDataType())) {
-			return String.class.getName();
-		}
 		String responseObjectName = restEndpointDescriptor.getResponseObjectName();
 		if (responseObjectName != null) {
 			return exchangeDescriptor.getBasePackage() + "." 
 					+ exchangeApiDescriptor.getName().toLowerCase() + ".pojo." 
 					+ JavaCodeGenerationUtil.firstLetterToUpperCase(responseObjectName);
 		}
-		return generateRestEnpointPojoClassName(exchangeDescriptor, exchangeApiDescriptor, restEndpointDescriptor, "Response");
+		return generateRestEnpointPojoClassName(exchangeDescriptor, exchangeApiDescriptor, restEndpointDescriptor.getName(), "Response");
 	}
 	
 	private static String generateRestEnpointPojoClassName(ExchangeDescriptor exchangeDescriptor, 
 														   ExchangeApiDescriptor exchangeApiDescriptor, 
-														   RestEndpointDescriptor restEndpointDescriptor, 
+														   String endpointName, 
 														   String suffix) {
 		return exchangeDescriptor.getBasePackage() + "." + exchangeApiDescriptor.getName().toLowerCase() + ".pojo."
 				+ JavaCodeGenerationUtil.firstLetterToUpperCase(exchangeDescriptor.getName()) 
 				+ JavaCodeGenerationUtil.firstLetterToUpperCase(exchangeApiDescriptor.getName())
-				+ JavaCodeGenerationUtil.firstLetterToUpperCase(restEndpointDescriptor.getName())
+				+ JavaCodeGenerationUtil.firstLetterToUpperCase(endpointName)
 				+ suffix;
 	}
 	
@@ -88,23 +101,12 @@ public class ExchangeJavaWrapperGeneratorUtil {
 	public static String generateWebsocketEndpointMessageClassName(ExchangeDescriptor exchangeDescriptor,
 																   ExchangeApiDescriptor exchangeApiDescriptor, 
 																   WebsocketEndpointDescriptor websocketApi) {
-		if (ResponseDataType.STRING.equals(websocketApi.getResponseDataType())) {
-			return String.class.getName();
-		}
-		return exchangeDescriptor.getBasePackage() + "." + exchangeApiDescriptor.getName().toLowerCase() + ".pojo."
-				+ JavaCodeGenerationUtil.firstLetterToUpperCase(exchangeDescriptor.getName())
-				+ JavaCodeGenerationUtil.firstLetterToUpperCase(exchangeApiDescriptor.getName())
-				+ JavaCodeGenerationUtil.firstLetterToUpperCase(websocketApi.getName())
-				+ "Message";
+		return generateRestEnpointPojoClassName(exchangeDescriptor, exchangeApiDescriptor, websocketApi.getName(), "Message");
 	}
 
 	public static String generateWebsocketEndpointRequestClassName(ExchangeDescriptor exchangeDescriptor,
 			ExchangeApiDescriptor exchangeApiDescriptor, WebsocketEndpointDescriptor websocketApi) {
-		return exchangeDescriptor.getBasePackage() + "." + exchangeApiDescriptor.getName().toLowerCase() + ".pojo."
-				+ JavaCodeGenerationUtil.firstLetterToUpperCase(exchangeDescriptor.getName()) 
-				+ JavaCodeGenerationUtil.firstLetterToUpperCase(exchangeApiDescriptor.getName())
-				+ JavaCodeGenerationUtil.firstLetterToUpperCase(websocketApi.getName())
-				+ "Request";
+		return generateRestEnpointPojoClassName(exchangeDescriptor, exchangeApiDescriptor, websocketApi.getName(), "Request");
 	}
 	
 	public static String getApiInterfaceClassName(ExchangeDescriptor exchangeDescriptor, 
@@ -428,6 +430,41 @@ public class ExchangeJavaWrapperGeneratorUtil {
 				  ,imports
 				  , enclosingClassName) 
 				+ JavaCodeGenerationUtil.firstLetterToUpperCase(endpointParameterName);
+	}
+
+	public static String getNewJsonParameterDeserializerInstruction(EndpointParameterType type, String objectClassName, Set<String> imports) {
+		switch (type.getCanonicalType()) {
+		case BIGDECIMAL:
+			imports.add(BigDecimalJsonFieldDeserializer.class.getName());
+			return "BigDecimalJsonFieldDeserializer.getInstance()";
+		case BOOLEAN:
+			imports.add(BooleanJsonFieldDeserializer.class.getName());
+			return  BooleanJsonFieldDeserializer.class.getSimpleName() + ".getInstance()";
+		case INT:
+			imports.add(IntegerJsonFieldDeserializer.class.getName());
+			return  IntegerJsonFieldDeserializer.class.getSimpleName() + ".getInstance()";
+		case LONG:
+			imports.add(LongJsonFieldDeserializer.class.getName());
+			return  LongJsonFieldDeserializer.class.getSimpleName() + ".getInstance()";
+		case STRING:
+			imports.add(StringJsonFieldDeserializer.class.getName());
+			return  StringJsonFieldDeserializer.class.getSimpleName() + ".getInstance()";
+		case TIMESTAMP:
+			imports.add(TimestampJsonFieldDeserializer.class.getName());
+			return  TimestampJsonFieldDeserializer.class.getSimpleName() + ".getInstance()";
+		case LIST:
+			imports.add(ListJsonFieldDeserializer.class.getName());
+			return "new " + ListJsonFieldDeserializer.class.getSimpleName() + "<>(" + getNewJsonParameterDeserializerInstruction(type.getSubType(), objectClassName, imports) + ")";
+		case MAP:
+			imports.add(MapJsonFieldDeserializer.class.getName());
+			return "new " + MapJsonFieldDeserializer.class.getSimpleName() + "<>(" + getNewJsonParameterDeserializerInstruction(type.getSubType(), objectClassName, imports) +")";
+		case OBJECT:
+			String objectDeserializerClass = getJsonMessageDeserializerClassName(objectClassName);
+			imports.add(objectDeserializerClass);
+			return "new " +  JavaCodeGenerationUtil.getClassNameWithoutPackage(objectDeserializerClass) + "()";
+		default:
+			throw new IllegalArgumentException("Unexpected field type:" + type);
+		}
 	}
 
 }

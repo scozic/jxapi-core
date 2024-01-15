@@ -29,7 +29,7 @@ public class RestEndpointDescriptor {
 	
 	private boolean queryParams;
 	
-	private ResponseDataType responseDataType = ResponseDataType.JSON_OBJECT;
+	private String responseDataType = CanonicalEndpointParameterTypes.OBJECT.name();
 	
 	private String responseObjectName;
 	
@@ -113,11 +113,11 @@ public class RestEndpointDescriptor {
 		this.queryParams = queryParams;
 	}
 	
-	public ResponseDataType getResponseDataType() {
+	public String getResponseDataType() {
 		return responseDataType;
 	}
 
-	public void setResponseDataType(ResponseDataType responseDataType) {
+	public void setResponseDataType(String responseDataType) {
 		this.responseDataType = responseDataType;
 	}
 

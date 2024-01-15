@@ -9,14 +9,8 @@ import java.util.stream.Collectors;
 import com.scz.jxapi.generator.JavaCodeGenerationUtil;
 import com.scz.jxapi.generator.JavaTypeGenerator;
 import com.scz.jxapi.netutils.deserialization.json.AbstractJsonMessageDeserializer;
-import com.scz.jxapi.netutils.deserialization.json.field.BigDecimalJsonFieldDeserializer;
-import com.scz.jxapi.netutils.deserialization.json.field.BooleanJsonFieldDeserializer;
-import com.scz.jxapi.netutils.deserialization.json.field.IntegerJsonFieldDeserializer;
 import com.scz.jxapi.netutils.deserialization.json.field.ListJsonFieldDeserializer;
-import com.scz.jxapi.netutils.deserialization.json.field.LongJsonFieldDeserializer;
 import com.scz.jxapi.netutils.deserialization.json.field.MapJsonFieldDeserializer;
-import com.scz.jxapi.netutils.deserialization.json.field.StringJsonFieldDeserializer;
-import com.scz.jxapi.netutils.deserialization.json.field.TimestampJsonFieldDeserializer;
 import com.scz.jxapi.util.JsonUtil;
 
 public class JsonMessageDeserializerGenerator extends JavaTypeGenerator {
@@ -140,7 +134,7 @@ public class JsonMessageDeserializerGenerator extends JavaTypeGenerator {
 												getImports());
 		String deserializerVariableName = JavaCodeGenerationUtil.firstLetterToLowerCase(field.getName() + "Deserializer");
 		String variableDeclaration = "private final " + simpleDeserializerTypeName + " " + deserializerVariableName + " = " 
-										+ getNewNonPrimitiveParameterDeserializerInstruction(
+										+ ExchangeJavaWrapperGeneratorUtil.getNewJsonParameterDeserializerInstruction(
 											type, 
 											objectParameterClassName, 
 											getImports()) 
@@ -149,41 +143,6 @@ public class JsonMessageDeserializerGenerator extends JavaTypeGenerator {
 		return deserializerVariableName;
 	}
 	
-	public static String getNewNonPrimitiveParameterDeserializerInstruction(EndpointParameterType type, String objectClassName, Set<String> imports) {
-		switch (type.getCanonicalType()) {
-		case BIGDECIMAL:
-			imports.add(BigDecimalJsonFieldDeserializer.class.getName());
-			return "BigDecimalJsonFieldDeserializer.getInstance()";
-		case BOOLEAN:
-			imports.add(BooleanJsonFieldDeserializer.class.getName());
-			return  BooleanJsonFieldDeserializer.class.getSimpleName() + ".getInstance()";
-		case INT:
-			imports.add(IntegerJsonFieldDeserializer.class.getName());
-			return  IntegerJsonFieldDeserializer.class.getSimpleName() + ".getInstance()";
-		case LONG:
-			imports.add(LongJsonFieldDeserializer.class.getName());
-			return  LongJsonFieldDeserializer.class.getSimpleName() + ".getInstance()";
-		case STRING:
-			imports.add(StringJsonFieldDeserializer.class.getName());
-			return  StringJsonFieldDeserializer.class.getSimpleName() + ".getInstance()";
-		case TIMESTAMP:
-			imports.add(TimestampJsonFieldDeserializer.class.getName());
-			return  TimestampJsonFieldDeserializer.class.getSimpleName() + ".getInstance()";
-		case LIST:
-			imports.add(ListJsonFieldDeserializer.class.getName());
-			return "new " + ListJsonFieldDeserializer.class.getSimpleName() + "<>(" + getNewNonPrimitiveParameterDeserializerInstruction(type.getSubType(), objectClassName, imports) + ")";
-		case MAP:
-			imports.add(MapJsonFieldDeserializer.class.getName());
-			return "new " + MapJsonFieldDeserializer.class.getSimpleName() + "<>(" + getNewNonPrimitiveParameterDeserializerInstruction(type.getSubType(), objectClassName, imports) +")";
-		case OBJECT:
-			String objectDeserializerClass = ExchangeJavaWrapperGeneratorUtil.getJsonMessageDeserializerClassName(objectClassName);
-			imports.add(objectDeserializerClass);
-			return "new " +  JavaCodeGenerationUtil.getClassNameWithoutPackage(objectDeserializerClass) + "()";
-		default:
-			throw new IllegalArgumentException("Unexpected field type:" + type);
-		}
-	}
-
 	public static String generateNonPrimitiveParameterDeserializerClassName(EndpointParameterType type, String objectClassName, Set<String> imports) {	
 		String parameterClass = null;
 		switch (type.getCanonicalType()) {

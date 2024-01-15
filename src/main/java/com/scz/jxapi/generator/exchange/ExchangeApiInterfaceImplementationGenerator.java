@@ -13,8 +13,19 @@ import java.util.stream.Collectors;
 
 import com.scz.jxapi.generator.JavaCodeGenerationUtil;
 import com.scz.jxapi.generator.JavaTypeGenerator;
+import com.scz.jxapi.netutils.deserialization.RawBigDecimalMessageDeserializer;
+import com.scz.jxapi.netutils.deserialization.RawBooleanMessageDeserializer;
+import com.scz.jxapi.netutils.deserialization.RawIntegerMessageDeserializer;
+import com.scz.jxapi.netutils.deserialization.RawLongMessageDeserializer;
 import com.scz.jxapi.netutils.deserialization.RawStringMessageDeserializer;
+import com.scz.jxapi.netutils.deserialization.json.field.BigDecimalJsonFieldDeserializer;
+import com.scz.jxapi.netutils.deserialization.json.field.BooleanJsonFieldDeserializer;
+import com.scz.jxapi.netutils.deserialization.json.field.IntegerJsonFieldDeserializer;
 import com.scz.jxapi.netutils.deserialization.json.field.ListJsonFieldDeserializer;
+import com.scz.jxapi.netutils.deserialization.json.field.LongJsonFieldDeserializer;
+import com.scz.jxapi.netutils.deserialization.json.field.MapJsonFieldDeserializer;
+import com.scz.jxapi.netutils.deserialization.json.field.StringJsonFieldDeserializer;
+import com.scz.jxapi.netutils.deserialization.json.field.TimestampJsonFieldDeserializer;
 import com.scz.jxapi.netutils.rest.FutureRestResponse;
 import com.scz.jxapi.netutils.rest.RestEndpoint;
 import com.scz.jxapi.netutils.rest.RestRequest;
@@ -218,41 +229,31 @@ public class ExchangeApiInterfaceImplementationGenerator extends JavaTypeGenerat
 			throw new IllegalStateException("No 'websocketEndpointFactory' defined on " + exchangeApiDescriptor.getName());
 		}
 		addImport(WebsocketEndpoint.class);
-		String requestClassName = ExchangeJavaWrapperGeneratorUtil.generateWebsocketEndpointRequestClassName(exchangeDescriptor, exchangeApiDescriptor, websocketApi);
+		String requestClassName = ExchangeJavaWrapperGeneratorUtil.generateWebsocketEndpointRequestClassName(
+										exchangeDescriptor, 
+										exchangeApiDescriptor, 
+										websocketApi);
 		String requestClassSimpleName = JavaCodeGenerationUtil.getClassNameWithoutPackage(requestClassName);
 		addImport(requestClassName);
-		String messageClassName = ExchangeJavaWrapperGeneratorUtil.generateWebsocketEndpointMessageClassName(exchangeDescriptor, exchangeApiDescriptor, websocketApi);
-		String messageClassSimpleName = JavaCodeGenerationUtil.getClassNameWithoutPackage(messageClassName);
+		String messageClassObjectName = ExchangeJavaWrapperGeneratorUtil.generateWebsocketEndpointMessageClassName(
+										exchangeDescriptor, 
+										exchangeApiDescriptor, 
+										websocketApi);
+		String messageClassSimpleName = ExchangeJavaWrapperGeneratorUtil.getClassNameForParameterType(
+											EndpointParameterType.fromTypeName(websocketApi.getResponseDataType()), 
+											getImports(), 
+											messageClassObjectName);
 		String subscribeMethodName = "subscribe" + JavaCodeGenerationUtil.firstLetterToUpperCase(websocketApi.getName());
 		String unsubscribeMethodName = "unsubscribe" + JavaCodeGenerationUtil.firstLetterToUpperCase(websocketApi.getName());
 		String websocketEndpointVariableName = JavaCodeGenerationUtil.firstLetterToLowerCase(websocketApi.getName()) + "Ws";
 		
-		String messageDeserializerClassName = null;
-		String getResponseDeserializerInstance = null;
-		switch (websocketApi.getResponseDataType()) {
-		case JSON_OBJECT:
-			addImport(messageClassName);
-			messageDeserializerClassName = ExchangeJavaWrapperGeneratorUtil.getJsonMessageDeserializerClassName(messageClassName);
-			getResponseDeserializerInstance = "new " + JavaCodeGenerationUtil.getClassNameWithoutPackage(messageDeserializerClassName) + "()";
-			break;
-		case JSON_OBJECT_LIST:
-			addImport(messageClassName);
-			messageDeserializerClassName = ExchangeJavaWrapperGeneratorUtil.getJsonMessageDeserializerClassName(messageClassName);
-			addImport(ListJsonFieldDeserializer.class);
-			addImport(List.class);
-			getResponseDeserializerInstance = "new " + ListJsonFieldDeserializer.class.getSimpleName() + "<" + messageClassSimpleName + ">(new " + JavaCodeGenerationUtil.getClassNameWithoutPackage(messageDeserializerClassName) + "())";
-			messageClassSimpleName = "List<" + messageClassSimpleName + ">";
-			break;
-		case STRING:
-			messageDeserializerClassName = RawStringMessageDeserializer.class.getName();
-			getResponseDeserializerInstance = "RawStringMessageDeserializer.INSTANCE";
-			break;
-		default:
-			throw new IllegalArgumentException("Unexpected responseDataType" + websocketApi.getResponseDataType() + " for:" + websocketApi);
-		}
-		addImport(messageDeserializerClassName);
+//		String messageDeserializerClassName = null;
+		String getResponseDeserializerInstance = getNewMessageDeserializerInstruction(EndpointParameterType.fromTypeName(websocketApi.getResponseDataType()), messageClassObjectName);
 		
-		finalMembersDeclarations.append("\nprivate final WebsocketEndpoint<" + requestClassSimpleName + ", " + messageClassSimpleName + "> " + websocketEndpointVariableName + ";");
+		finalMembersDeclarations.append("\nprivate final WebsocketEndpoint<" 
+											+ requestClassSimpleName 
+											+ ", " + messageClassSimpleName + "> " 
+											+ websocketEndpointVariableName + ";");
 		constructorBody.append("this." + websocketEndpointVariableName + " = "  
 											 		 + WEBSOCKET_ENDPOINT_FACTORY_VARIABLE_NAME + ".createWebsocketEndpoint(" 
 											 		 + getResponseDeserializerInstance 
@@ -293,7 +294,7 @@ public class ExchangeApiInterfaceImplementationGenerator extends JavaTypeGenerat
 		replacements.add("\" + request.getTopic() + \"");
 		websocketApi.getParameters().forEach(param -> {
 			replacements.add(param.getMsgField() != null? param.getMsgField(): param.getName());
-			String parameterClass = ExchangeJavaWrapperGeneratorUtil.getClassNameForParameterType(param.getEndpointParameterType(), getImports(), Optional.ofNullable(param.getObjectName()).orElse(messageClassName));
+			String parameterClass = ExchangeJavaWrapperGeneratorUtil.getClassNameForParameterType(param.getEndpointParameterType(), getImports(), Optional.ofNullable(param.getObjectName()).orElse(messageClassObjectName));
 			if (!parameterClass.startsWith("java.lang") && parameterClass.contains(".")) {
 				parameterClass = JavaCodeGenerationUtil.getClassNameWithoutPackage(parameterClass);
 			}
@@ -338,38 +339,109 @@ public class ExchangeApiInterfaceImplementationGenerator extends JavaTypeGenerat
 				.append(".unsubscribe(subscriptionId);\n");
 		addMethod("@Override\npublic " + unsubscribeMethodSignature, unsubscribeMethodBody.toString());
 	}
+	
+	private String getNewMessageDeserializerInstruction(EndpointParameterType messageType, String messageFullClassName) {
+		switch (messageType.getCanonicalType()) {
+		case BIGDECIMAL:
+			addImport(RawBigDecimalMessageDeserializer.class);
+			return RawBigDecimalMessageDeserializer.class.getSimpleName() + ".getInstance()";
+		case BOOLEAN:
+			addImport(RawBooleanMessageDeserializer.class);
+			return RawBooleanMessageDeserializer.class.getSimpleName() + ".getInstance()";
+		case INT:
+			addImport(RawIntegerMessageDeserializer.class);
+			return RawIntegerMessageDeserializer.class.getSimpleName() + ".getInstance()";
+		case TIMESTAMP:
+		case LONG:
+			addImport(RawLongMessageDeserializer.class);
+			return RawLongMessageDeserializer.class.getSimpleName() + ".getInstance()";
+		case STRING:
+			addImport(RawStringMessageDeserializer.class);
+			return RawStringMessageDeserializer.class.getSimpleName() + ".getInstance()";
+		case OBJECT:
+		case LIST:
+		case MAP:
+		default:
+			return ExchangeJavaWrapperGeneratorUtil.getNewJsonParameterDeserializerInstruction(messageType, messageFullClassName, getImports());
+		}
+	}
+	
+	public static String getNewNonPrimitiveParameterJsonDeserializerInstruction(EndpointParameterType type, String objectClassName, Set<String> imports) {
+		switch (type.getCanonicalType()) {
+		case BIGDECIMAL:
+			imports.add(BigDecimalJsonFieldDeserializer.class.getName());
+			return "BigDecimalJsonFieldDeserializer.getInstance()";
+		case BOOLEAN:
+			imports.add(BooleanJsonFieldDeserializer.class.getName());
+			return  BooleanJsonFieldDeserializer.class.getSimpleName() + ".getInstance()";
+		case INT:
+			imports.add(IntegerJsonFieldDeserializer.class.getName());
+			return  IntegerJsonFieldDeserializer.class.getSimpleName() + ".getInstance()";
+		case LONG:
+			imports.add(LongJsonFieldDeserializer.class.getName());
+			return  LongJsonFieldDeserializer.class.getSimpleName() + ".getInstance()";
+		case STRING:
+			imports.add(StringJsonFieldDeserializer.class.getName());
+			return  StringJsonFieldDeserializer.class.getSimpleName() + ".getInstance()";
+		case TIMESTAMP:
+			imports.add(TimestampJsonFieldDeserializer.class.getName());
+			return  TimestampJsonFieldDeserializer.class.getSimpleName() + ".getInstance()";
+		case LIST:
+			imports.add(ListJsonFieldDeserializer.class.getName());
+			return "new " + ListJsonFieldDeserializer.class.getSimpleName() + "<>(" + getNewNonPrimitiveParameterJsonDeserializerInstruction(type.getSubType(), objectClassName, imports) + ")";
+		case MAP:
+			imports.add(MapJsonFieldDeserializer.class.getName());
+			return "new " + MapJsonFieldDeserializer.class.getSimpleName() + "<>(" + getNewNonPrimitiveParameterJsonDeserializerInstruction(type.getSubType(), objectClassName, imports) +")";
+		case OBJECT:
+			String objectDeserializerClass = ExchangeJavaWrapperGeneratorUtil.getJsonMessageDeserializerClassName(objectClassName);
+			imports.add(objectDeserializerClass);
+			return "new " +  JavaCodeGenerationUtil.getClassNameWithoutPackage(objectDeserializerClass) + "()";
+		default:
+			throw new IllegalArgumentException("Unexpected field type:" + type);
+		}
+	}
 
 	private void generateRestEndpointMethodDeclaration(RestEndpointDescriptor restApi) {
 		addImport(RestEndpoint.class);
 		String requestClassName = ExchangeJavaWrapperGeneratorUtil.generateRestEnpointRequestClassName(exchangeDescriptor, exchangeApiDescriptor, restApi);
 		String requestSimpleClassName = JavaCodeGenerationUtil.getClassNameWithoutPackage(requestClassName);
 		addImport(requestClassName);
-		String responseClassName = ExchangeJavaWrapperGeneratorUtil.generateRestEnpointResponseClassName(exchangeDescriptor, exchangeApiDescriptor, restApi);
-		String responseSimpleClassName = JavaCodeGenerationUtil.getClassNameWithoutPackage(responseClassName);
-		String responseDeserializerClassName = null;
-		String getResponseDeserializerInstance = null;
-		switch (restApi.getResponseDataType()) {
-		case JSON_OBJECT:
-			addImport(responseClassName);
-			responseDeserializerClassName = ExchangeJavaWrapperGeneratorUtil.getJsonMessageDeserializerClassName(responseClassName);
-			getResponseDeserializerInstance = "new " + JavaCodeGenerationUtil.getClassNameWithoutPackage(responseDeserializerClassName) + "()";
-			break;
-		case JSON_OBJECT_LIST:
-			addImport(responseClassName);
-			responseDeserializerClassName = ExchangeJavaWrapperGeneratorUtil.getJsonMessageDeserializerClassName(responseClassName);
-			addImport(ListJsonFieldDeserializer.class);
-			addImport(List.class);
-			getResponseDeserializerInstance = "new " + ListJsonFieldDeserializer.class.getSimpleName() + "<" + responseSimpleClassName + ">(new " + JavaCodeGenerationUtil.getClassNameWithoutPackage(responseDeserializerClassName) + "())";
-			responseSimpleClassName = "List<" + responseSimpleClassName + ">";
-			break;
-		case STRING:
-			responseDeserializerClassName = RawStringMessageDeserializer.class.getName();
-			getResponseDeserializerInstance = "RawStringMessageDeserializer.INSTANCE";
-			break;
-		default:
-			throw new IllegalArgumentException("Unexpected responseDataType" + restApi.getResponseDataType() + " for:" + restApi);
-		}
-		addImport(responseDeserializerClassName);
+//		String responseClassName = ExchangeJavaWrapperGeneratorUtil.generateRestEnpointResponseClassName(exchangeDescriptor, exchangeApiDescriptor, restApi);
+		String restResponseClassName = ExchangeJavaWrapperGeneratorUtil.generateRestEnpointResponseClassName(
+				exchangeDescriptor, 
+				exchangeApiDescriptor, 
+				restApi);
+		String responseSimpleClassName = ExchangeJavaWrapperGeneratorUtil.getClassNameForParameterType(
+				EndpointParameterType.fromTypeName(restApi.getResponseDataType()), 
+				getImports(), 
+				restResponseClassName);
+//		String responseDeserializerClassName = null;
+		String getResponseDeserializerInstance = getNewMessageDeserializerInstruction(EndpointParameterType.fromTypeName(restApi.getResponseDataType()), restResponseClassName);
+		//EndpointParameterType responseDataType = EndpointParameterType.fromTypeName(restApi.getResponseDataType());
+		
+		
+//		switch (restApi.getResponseDataType()) {
+//		case JSON_OBJECT:
+//			addImport(responseClassName);
+//			responseDeserializerClassName = ExchangeJavaWrapperGeneratorUtil.getJsonMessageDeserializerClassName(responseClassName);
+//			getResponseDeserializerInstance = "new " + JavaCodeGenerationUtil.getClassNameWithoutPackage(responseDeserializerClassName) + "()";
+//			break;
+//		case JSON_OBJECT_LIST:
+//			addImport(responseClassName);
+//			responseDeserializerClassName = ExchangeJavaWrapperGeneratorUtil.getJsonMessageDeserializerClassName(responseClassName);
+//			addImport(ListJsonFieldDeserializer.class);
+//			addImport(List.class);
+//			getResponseDeserializerInstance = "new " + ListJsonFieldDeserializer.class.getSimpleName() + "<" + responseSimpleClassName + ">(new " + JavaCodeGenerationUtil.getClassNameWithoutPackage(responseDeserializerClassName) + "())";
+//			responseSimpleClassName = "List<" + responseSimpleClassName + ">";
+//			break;
+//		case STRING:
+//			responseDeserializerClassName = RawStringMessageDeserializer.class.getName();
+//			getResponseDeserializerInstance = "RawStringMessageDeserializer.INSTANCE";
+//			break;
+//		default:
+//			throw new IllegalArgumentException("Unexpected responseDataType" + restApi.getResponseDataType() + " for:" + restApi);
+//		}
+//		addImport(responseDeserializerClassName);
 		
 		String apiMethodName = JavaCodeGenerationUtil.firstLetterToLowerCase(restApi.getName());
 		String restEndpointVariableName = apiMethodName + "Api";

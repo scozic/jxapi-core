@@ -26,7 +26,7 @@ public class WebsocketEndpointDescriptor {
 	
 	private List<WebsocketMessageTopicMatcherFieldDescriptor> messageTopicMatcherFields;
 	
-	private ResponseDataType responseDataType = ResponseDataType.JSON_OBJECT;
+	private String responseDataType = CanonicalEndpointParameterTypes.OBJECT.name();
 	
 	private List<String> requestInterfaces;
 	
@@ -88,11 +88,11 @@ public class WebsocketEndpointDescriptor {
 		this.messageTopicMatcherFields = messageTopicMatcherFields;
 	}
 	
-	public ResponseDataType getResponseDataType() {
+	public String getResponseDataType() {
 		return responseDataType;
 	}
 	
-	public void setResponseDataType(ResponseDataType responseDataType) {
+	public void setResponseDataType(String responseDataType) {
 		this.responseDataType = responseDataType;
 	}
 	

@@ -1,5 +1,7 @@
 package com.scz.jxapi.generator.exchange;
 
+import java.math.BigDecimal;
+
 /**
  * Supported types of parameters in request or response data.
  * Any value for a field in request or response payload can be a 'primitive' ({@link #STRING}, {@link #INT} ... see {@link #isPrimitive}) or nested object that may be repeated:
@@ -13,36 +15,36 @@ package com.scz.jxapi.generator.exchange;
  */
 public enum CanonicalEndpointParameterTypes {
 	/** Plain {@link String} value */
-	STRING(true),
+	STRING(String.class),
 	
 	/** Boolean value */
-	BOOLEAN(true),
+	BOOLEAN(Boolean.class),
 	
 	/** Floating point value */
-	BIGDECIMAL(true),
+	BIGDECIMAL(BigDecimal.class),
 	
 	/** Integer value */
-	INT(true),
+	INT(Integer.class),
 	
 	/** Long value */
-	LONG(true),
+	LONG(Long.class),
 	
 	/** Timestamp (or datetime) value */
-	TIMESTAMP(true),
+	TIMESTAMP(Long.class),
 	
 	/** 
 	 * Nested structure (JSON block) like:<br/>
 	 * <code>{"a":"val", "b":1}</code>
 	 * Such structure will contain a list of fields of a type matching one {@link #EndpointParameterType} values.
 	 */
-	OBJECT(false),
+	OBJECT(),
 	
 	/**
 	 * Nested JSON map with keys of type String and values of same type (which can be any of {@link CanonicalEndpointParameterTypes}).
 	 * */
-	MAP(false),
+	MAP(),
 	
-	LIST(false);
+	LIST();
 	
 	/**
 	 * Flag set <code>true</code> when type stands for a primitive value e.g. not a JSON object, array or map.
@@ -58,7 +60,21 @@ public enum CanonicalEndpointParameterTypes {
 	 */
 	public final boolean isPrimitive;
 	
-	private CanonicalEndpointParameterTypes(boolean isPrimitive) {
-		this.isPrimitive = isPrimitive;
+	/**
+	 * The Class associated to primitive type (see {@link #isPrimitive}, or
+	 * <code>null</code> if not a primitive type. To guess the class associated to a
+	 * non-primitive type, see
+	 * {@link ExchangeJavaWrapperGeneratorUtil#getClassNameForParameterType(EndpointParameterType, java.util.Set, String)}
+	 */
+	public final Class<?> typeClass;
+	
+	private CanonicalEndpointParameterTypes(Class<?> typeClass) {
+		this.isPrimitive = true;
+		this.typeClass = typeClass;
+	}
+	
+	private CanonicalEndpointParameterTypes() {
+		this.isPrimitive = false;
+		this.typeClass = null;
 	}
 }
