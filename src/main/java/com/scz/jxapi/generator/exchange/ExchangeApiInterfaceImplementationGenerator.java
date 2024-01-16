@@ -257,7 +257,7 @@ public class ExchangeApiInterfaceImplementationGenerator extends JavaTypeGenerat
 		constructorBody.append("this." + websocketEndpointVariableName + " = "  
 											 		 + WEBSOCKET_ENDPOINT_FACTORY_VARIABLE_NAME + ".createWebsocketEndpoint(" 
 											 		 + getResponseDeserializerInstance 
-											 		 + ");");
+											 		 + ");\n");
 		addImport(WebsocketListener.class);
 		String subscribeMethodSignature = "String " 
 										  + subscribeMethodName 
@@ -415,33 +415,7 @@ public class ExchangeApiInterfaceImplementationGenerator extends JavaTypeGenerat
 				EndpointParameterType.fromTypeName(restApi.getResponseDataType()), 
 				getImports(), 
 				restResponseClassName);
-//		String responseDeserializerClassName = null;
 		String getResponseDeserializerInstance = getNewMessageDeserializerInstruction(EndpointParameterType.fromTypeName(restApi.getResponseDataType()), restResponseClassName);
-		//EndpointParameterType responseDataType = EndpointParameterType.fromTypeName(restApi.getResponseDataType());
-		
-		
-//		switch (restApi.getResponseDataType()) {
-//		case JSON_OBJECT:
-//			addImport(responseClassName);
-//			responseDeserializerClassName = ExchangeJavaWrapperGeneratorUtil.getJsonMessageDeserializerClassName(responseClassName);
-//			getResponseDeserializerInstance = "new " + JavaCodeGenerationUtil.getClassNameWithoutPackage(responseDeserializerClassName) + "()";
-//			break;
-//		case JSON_OBJECT_LIST:
-//			addImport(responseClassName);
-//			responseDeserializerClassName = ExchangeJavaWrapperGeneratorUtil.getJsonMessageDeserializerClassName(responseClassName);
-//			addImport(ListJsonFieldDeserializer.class);
-//			addImport(List.class);
-//			getResponseDeserializerInstance = "new " + ListJsonFieldDeserializer.class.getSimpleName() + "<" + responseSimpleClassName + ">(new " + JavaCodeGenerationUtil.getClassNameWithoutPackage(responseDeserializerClassName) + "())";
-//			responseSimpleClassName = "List<" + responseSimpleClassName + ">";
-//			break;
-//		case STRING:
-//			responseDeserializerClassName = RawStringMessageDeserializer.class.getName();
-//			getResponseDeserializerInstance = "RawStringMessageDeserializer.INSTANCE";
-//			break;
-//		default:
-//			throw new IllegalArgumentException("Unexpected responseDataType" + restApi.getResponseDataType() + " for:" + restApi);
-//		}
-//		addImport(responseDeserializerClassName);
 		
 		String apiMethodName = JavaCodeGenerationUtil.firstLetterToLowerCase(restApi.getName());
 		String restEndpointVariableName = apiMethodName + "Api";

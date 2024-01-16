@@ -1,0 +1,124 @@
+{
+	"name": "MyTestCEX",
+	"description": "A sample CEX descriptor file",
+	"basePackage": "com.foo.bar.gen",
+	"apis":[
+		{ 
+			"name": "MarketData",
+			"description": "The market data API of MyTestCEX, , with different response data types for websocket and REST endpoints. Remark: Only OBJECT (default) and STRING are usually used, but any data type is supported",
+			"restEndpointFactory": "com.foo.bar.BarRestEndpointFactory",
+			"restEndpoints": [
+				{
+					"name": "getRestResponseDataTypeInt",
+					"httpMethod": "GET",
+					"description": "A sample REST endpoint using INT response data type",
+					"url": "https://com.sample.mycex/getInt",
+					"responseDataType": "INT",
+					"parameters": []
+				},
+				{
+					"name": "getRestResponseDataTypeLong",
+					"httpMethod": "GET",
+					"description": "A sample REST endpoint using LONG response data type",
+					"url": "https://com.sample.mycex/getLong",
+					"responseDataType": "LONG",
+					"parameters": []
+				},
+				{
+					"name": "getRestResponseDataTypeBigDecimal",
+					"httpMethod": "GET",
+					"description": "A sample REST endpoint using BIGDECIMAL response data type",
+					"url": "https://com.sample.mycex/getBigDecimal",
+					"responseDataType": "BIGDECIMAL",
+					"parameters": []
+				},
+				{
+					"name": "getRestResponseDataTypeString",
+					"httpMethod": "GET",
+					"description": "A sample REST endpoint using STRING response data type",
+					"url": "https://com.sample.mycex/getString",
+					"responseDataType": "STRING",
+					"parameters": []
+				},
+				{
+					"name": "getRestResponseDataTypeBigDecimal",
+					"httpMethod": "GET",
+					"description": "A sample REST endpoint using BIGDECIMAL response data type",
+					"url": "https://com.sample.mycex/getBigDecimal",
+					"responseDataType": "BIGDECIMAL",
+					"parameters": []
+				},
+				{
+					"name": "getRestResponseDataTypeBoolean",
+					"httpMethod": "GET",
+					"description": "A sample REST endpoint using BOOLEAN response data type",
+					"url": "https://com.sample.mycex/getBigDecimal",
+					"responseDataType": "BOOLEAN",
+					"parameters": []
+				},
+				{
+					"name": "getRestResponseDataTypeObject",
+					"httpMethod": "GET",
+					"description": "A sample REST endpoint using OBJECT response data type (default type, explicit here)",
+					"url": "https://com.sample.mycex/getBigDecimal",
+					"responseDataType": "OBJECT",
+					"parameters": [],
+					"response": [
+						{"name":"responseCode", "type": "INT", "description":"Request response code", "sampleValue":"0"}
+					]
+				},
+				{
+					"name": "getRestResponseDataTypeIntList",
+					"httpMethod": "GET",
+					"description": "A sample REST endpoint using INT_LIST response data type",
+					"url": "https://com.sample.mycex/getBigDecimal",
+					"responseDataType": "INT_LIST",
+					"parameters": []
+				},
+				{
+					"name": "getRestResponseDataTypeObjectListMap",
+					"httpMethod": "GET",
+					"description": "A sample REST endpoint using OBJECT_LIST_MAP response data type",
+					"url": "https://com.sample.mycex/getBigDecimal",
+					"responseDataType": "OBJECT_LIST_MAP",
+					"parameters": [],
+					"response": [
+						{"name":"responseCode", "type": "INT", "description":"Request response code", "sampleValue":"0"}
+					]
+				}
+			],
+			"websocketEndpointFactory": "com.foo.bar.BarWebsocketEndpointFactory",
+			"websocketEndpoints": [
+				{
+					"name": "subscribeTicker",
+					"topic": "int",
+					"description": "Subscribe to stream with OBJECT message type (default, explicit here)",
+					"parameters": [],
+					"responseDataType":"OBJECT",
+					"messageTopicMatcherFields": [
+						{"name": "topic",  "value": "tickerMapList"}
+					],
+					"response": [
+						{"name":"topic", "msgField":"t", "type": "STRING", "description":"Topic", "sampleValue":"ticker"},
+						{"name":"symbol", "msgField":"s", "type": "STRING", "description":"Symbol name", "sampleValue":"BTC_USDT"},
+						{"name":"last", "msgField":"p", "type": "BIGDECIMAL", "description":"Last traded price", "sampleValue":"16000.00"}
+					]
+				},
+				{
+					"name": "subscribeTickertMapListStream",
+					"topic": "int",
+					"description": "Subscribe to stream with OBJECT_MAP_LIST message type",
+					"parameters": [],
+					"responseDataType":"OBJECT_MAP_LIST",
+					"messageTopicMatcherFields": [
+						{"name": "topic",  "value": "tickerMapList"}
+					],
+					"response": [
+						{"name":"topic", "msgField":"t", "type": "STRING", "description":"Topic", "sampleValue":"tickerMapList"},
+						{"name":"last", "msgField":"p", "type": "BIGDECIMAL", "description":"Last traded price", "sampleValue":"16000.00"}
+					]
+				}
+			]
+		}
+	]
+}
