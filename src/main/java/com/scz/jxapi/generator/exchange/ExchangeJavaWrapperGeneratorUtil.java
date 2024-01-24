@@ -45,25 +45,41 @@ public class ExchangeJavaWrapperGeneratorUtil {
 	public static String generateRestEnpointRequestClassName(ExchangeDescriptor exchangeDescriptor, 
 															 ExchangeApiDescriptor exchangeApiDescriptor, 
 															 RestEndpointDescriptor restEndpointDescriptor) {
-		return generateRestEnpointPojoClassName(exchangeDescriptor, exchangeApiDescriptor, restEndpointDescriptor.getName(), "Request");
+		return generateRestEnpointPojoClassName(exchangeDescriptor, 
+												exchangeApiDescriptor, 
+												restEndpointDescriptor.getName(), 
+												restEndpointDescriptor.getRequestDataType(), 
+												restEndpointDescriptor.getRequestObjectName(), 
+												"Request");
 	}
 	
 	public static String generateRestEnpointResponseClassName(ExchangeDescriptor exchangeDescriptor, 
 															  ExchangeApiDescriptor exchangeApiDescriptor, 
 															  RestEndpointDescriptor restEndpointDescriptor) {
-		String responseObjectName = restEndpointDescriptor.getResponseObjectName();
-		if (responseObjectName != null) {
-			return exchangeDescriptor.getBasePackage() + "." 
-					+ exchangeApiDescriptor.getName().toLowerCase() + ".pojo." 
-					+ JavaCodeGenerationUtil.firstLetterToUpperCase(responseObjectName);
-		}
-		return generateRestEnpointPojoClassName(exchangeDescriptor, exchangeApiDescriptor, restEndpointDescriptor.getName(), "Response");
+		return generateRestEnpointPojoClassName(exchangeDescriptor, 
+												exchangeApiDescriptor, 
+												restEndpointDescriptor.getName(), 
+												restEndpointDescriptor.getResponseDataType(), 
+												restEndpointDescriptor.getResponseObjectName(), 
+												"Response");
 	}
 	
 	private static String generateRestEnpointPojoClassName(ExchangeDescriptor exchangeDescriptor, 
 														   ExchangeApiDescriptor exchangeApiDescriptor, 
 														   String endpointName, 
+														   String dataType,
+														   String objectName,
 														   String suffix) {
+		EndpointParameterType type = EndpointParameterType.fromTypeName(dataType);
+		if (type.isObject() && objectName != null) {
+			return exchangeDescriptor.getBasePackage() + "." 
+					+ exchangeApiDescriptor.getName().toLowerCase() + ".pojo." 
+					+ JavaCodeGenerationUtil.firstLetterToUpperCase(objectName);
+		} else if (objectName != null) {
+			throw new IllegalArgumentException(
+					"Unexpected objectName provided:[" + objectName + "] for a non-object data type:" + dataType
+							+ " in endpoint descriptor:" + endpointName + " " + suffix);
+		}
 		return exchangeDescriptor.getBasePackage() + "." + exchangeApiDescriptor.getName().toLowerCase() + ".pojo."
 				+ JavaCodeGenerationUtil.firstLetterToUpperCase(exchangeDescriptor.getName()) 
 				+ JavaCodeGenerationUtil.firstLetterToUpperCase(exchangeApiDescriptor.getName())
@@ -101,12 +117,22 @@ public class ExchangeJavaWrapperGeneratorUtil {
 	public static String generateWebsocketEndpointMessageClassName(ExchangeDescriptor exchangeDescriptor,
 																   ExchangeApiDescriptor exchangeApiDescriptor, 
 																   WebsocketEndpointDescriptor websocketApi) {
-		return generateRestEnpointPojoClassName(exchangeDescriptor, exchangeApiDescriptor, websocketApi.getName(), "Message");
+		return generateRestEnpointPojoClassName(exchangeDescriptor, 
+												exchangeApiDescriptor, 
+												websocketApi.getName(), 
+												websocketApi.getMessageDataType(), 
+												websocketApi.getMessageObjectName(), 
+												"Message");
 	}
 
 	public static String generateWebsocketEndpointRequestClassName(ExchangeDescriptor exchangeDescriptor,
 			ExchangeApiDescriptor exchangeApiDescriptor, WebsocketEndpointDescriptor websocketApi) {
-		return generateRestEnpointPojoClassName(exchangeDescriptor, exchangeApiDescriptor, websocketApi.getName(), "Request");
+		return generateRestEnpointPojoClassName(exchangeDescriptor, 
+												exchangeApiDescriptor, 
+												websocketApi.getName(), 
+												websocketApi.getRequestDataType(), 
+												websocketApi.getRequestObjectName(), 
+												"Request");
 	}
 	
 	public static String getApiInterfaceClassName(ExchangeDescriptor exchangeDescriptor, 

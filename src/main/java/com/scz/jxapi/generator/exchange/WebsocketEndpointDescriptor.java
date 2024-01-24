@@ -26,11 +26,18 @@ public class WebsocketEndpointDescriptor {
 	
 	private List<WebsocketMessageTopicMatcherFieldDescriptor> messageTopicMatcherFields;
 	
-	private String responseDataType = CanonicalEndpointParameterTypes.OBJECT.name();
+	private String messagegDataType = CanonicalEndpointParameterTypes.OBJECT.name();
 	
 	private List<String> requestInterfaces;
 	
 	private List<String> responseInterfaces;
+	
+	private String requestDataType = CanonicalEndpointParameterTypes.OBJECT.name();
+	
+	private String requestObjectName;
+	
+	private String messageObjectName;
+	
 	
 	public String getName() {
 		return name;
@@ -88,12 +95,12 @@ public class WebsocketEndpointDescriptor {
 		this.messageTopicMatcherFields = messageTopicMatcherFields;
 	}
 	
-	public String getResponseDataType() {
-		return responseDataType;
+	public String getMessageDataType() {
+		return messagegDataType;
 	}
 	
-	public void setResponseDataType(String responseDataType) {
-		this.responseDataType = responseDataType;
+	public void setMessageDataType(String messageDataType) {
+		this.messagegDataType = messageDataType;
 	}
 	
 	/**
@@ -128,6 +135,29 @@ public class WebsocketEndpointDescriptor {
 	 */
 	public void setResponseInterfaces(List<String> responseInterfaces) {
 		this.responseInterfaces = responseInterfaces;
+	}
+	
+	public String getRequestObjectName() {
+		return requestObjectName;
+	}
+	
+	public void setRequestObjectName(String requestObjectName) {
+		this.requestObjectName = requestObjectName;
+	}
+	
+	public String getRequestDataType() {
+		return requestDataType;
+	}
+	
+	public void setRequestDataType(String requestDataType) {
+		this.requestDataType = requestDataType;
+	}
+	
+	public String getMessageObjectName() {
+		return messageObjectName;
+	}
+	public void setMessageObjectName(String messageObjectName) {
+		this.messageObjectName = messageObjectName;
 	}
 	
 	public String toString() {

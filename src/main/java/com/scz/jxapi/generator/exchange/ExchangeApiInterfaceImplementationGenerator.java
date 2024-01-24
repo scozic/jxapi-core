@@ -229,29 +229,34 @@ public class ExchangeApiInterfaceImplementationGenerator extends JavaTypeGenerat
 			throw new IllegalStateException("No 'websocketEndpointFactory' defined on " + exchangeApiDescriptor.getName());
 		}
 		addImport(WebsocketEndpoint.class);
-		String requestClassName = ExchangeJavaWrapperGeneratorUtil.generateWebsocketEndpointRequestClassName(
-										exchangeDescriptor, 
-										exchangeApiDescriptor, 
-										websocketApi);
-		String requestClassSimpleName = JavaCodeGenerationUtil.getClassNameWithoutPackage(requestClassName);
-		addImport(requestClassName);
+//		String requestClassName = ExchangeJavaWrapperGeneratorUtil.generateWebsocketEndpointRequestClassName(
+//										exchangeDescriptor, 
+//										exchangeApiDescriptor, 
+//										websocketApi);
+//		String requestClassSimpleName = JavaCodeGenerationUtil.getClassNameWithoutPackage(requestClassName);
+		String requestClassName = ExchangeJavaWrapperGeneratorUtil.generateWebsocketEndpointRequestClassName(exchangeDescriptor, exchangeApiDescriptor, websocketApi);
+		String requestSimpleClassName = ExchangeJavaWrapperGeneratorUtil.getClassNameForParameterType(
+				EndpointParameterType.fromTypeName(websocketApi.getRequestDataType()), 
+				getImports(), 
+				requestClassName);
+		
+//		addImport(requestClassName);
 		String messageClassObjectName = ExchangeJavaWrapperGeneratorUtil.generateWebsocketEndpointMessageClassName(
 										exchangeDescriptor, 
 										exchangeApiDescriptor, 
 										websocketApi);
 		String messageClassSimpleName = ExchangeJavaWrapperGeneratorUtil.getClassNameForParameterType(
-											EndpointParameterType.fromTypeName(websocketApi.getResponseDataType()), 
+											EndpointParameterType.fromTypeName(websocketApi.getMessageDataType()), 
 											getImports(), 
 											messageClassObjectName);
 		String subscribeMethodName = "subscribe" + JavaCodeGenerationUtil.firstLetterToUpperCase(websocketApi.getName());
 		String unsubscribeMethodName = "unsubscribe" + JavaCodeGenerationUtil.firstLetterToUpperCase(websocketApi.getName());
 		String websocketEndpointVariableName = JavaCodeGenerationUtil.firstLetterToLowerCase(websocketApi.getName()) + "Ws";
 		
-//		String messageDeserializerClassName = null;
-		String getResponseDeserializerInstance = getNewMessageDeserializerInstruction(EndpointParameterType.fromTypeName(websocketApi.getResponseDataType()), messageClassObjectName);
+		String getResponseDeserializerInstance = getNewMessageDeserializerInstruction(EndpointParameterType.fromTypeName(websocketApi.getMessageDataType()), messageClassObjectName);
 		
 		finalMembersDeclarations.append("\nprivate final WebsocketEndpoint<" 
-											+ requestClassSimpleName 
+											+ requestSimpleClassName 
 											+ ", " + messageClassSimpleName + "> " 
 											+ websocketEndpointVariableName + ";");
 		constructorBody.append("this." + websocketEndpointVariableName + " = "  
@@ -261,7 +266,7 @@ public class ExchangeApiInterfaceImplementationGenerator extends JavaTypeGenerat
 		addImport(WebsocketListener.class);
 		String subscribeMethodSignature = "String " 
 										  + subscribeMethodName 
-										  + "(" + requestClassSimpleName 
+										  + "(" + requestSimpleClassName 
 										  + " request, WebsocketListener<" 
 										  + messageClassSimpleName  
 										  + "> listener)";
@@ -279,7 +284,7 @@ public class ExchangeApiInterfaceImplementationGenerator extends JavaTypeGenerat
 			.append(":request:\" + request);\n")
 			.append(WebsocketSubscribeRequest.class.getSimpleName())
 			.append("<")
-			.append(requestClassSimpleName)
+			.append(requestSimpleClassName)
 			.append(">")
 			.append(" websocketSubscribeRequest = new ")
 			.append(WebsocketSubscribeRequest.class.getSimpleName())
@@ -292,7 +297,7 @@ public class ExchangeApiInterfaceImplementationGenerator extends JavaTypeGenerat
 		List<String> replacements = new ArrayList<>();
 		replacements.add("topic");
 		replacements.add("\" + request.getTopic() + \"");
-		websocketApi.getParameters().forEach(param -> {
+		getEndpointParameters(websocketApi.getParameters(), websocketApi.getRequestObjectName()).forEach(param -> {
 			replacements.add(param.getMsgField() != null? param.getMsgField(): param.getName());
 			String parameterClass = ExchangeJavaWrapperGeneratorUtil.getClassNameForParameterType(param.getEndpointParameterType(), getImports(), Optional.ofNullable(param.getObjectName()).orElse(messageClassObjectName));
 			if (!parameterClass.startsWith("java.lang") && parameterClass.contains(".")) {
@@ -302,9 +307,10 @@ public class ExchangeApiInterfaceImplementationGenerator extends JavaTypeGenerat
 								 + JavaCodeGenerationUtil.getGetAccessorMethodName(
 										 		param.getName(), 
 										 		parameterClass, 
-										 		websocketApi.getResponse().stream()
-										 						.map(f1 -> f1.getName())
-										 						.collect(Collectors.toList())) 
+										 		getEndpointParameters(websocketApi.getResponse(), 
+										 							  websocketApi.getMessageObjectName()).stream()
+										 								.map(f1 -> f1.getName())
+										 								.collect(Collectors.toList())) 
 								 + "() + \"");
 		});
 		
@@ -340,6 +346,45 @@ public class ExchangeApiInterfaceImplementationGenerator extends JavaTypeGenerat
 		addMethod("@Override\npublic " + unsubscribeMethodSignature, unsubscribeMethodBody.toString());
 	}
 	
+	private List<EndpointParameter> getEndpointParameters(List<EndpointParameter> parameters, String requestObjectName) {
+		if (parameters != null) {
+			return parameters;
+		} else if (requestObjectName != null) {
+			return findParametersForObjectName(requestObjectName);
+		} else {
+			return List.of();
+		}
+	}
+	
+	private List<EndpointParameter> findParametersForObjectName(String requestObjectName) {
+		for (RestEndpointDescriptor restEndpointDescriptor: this.exchangeApiDescriptor.getRestEndpoints()) {
+			if (requestObjectName.equals(restEndpointDescriptor.getRequestObjectName())) {
+				if (restEndpointDescriptor.getParameters() != null) {
+					return restEndpointDescriptor.getParameters();
+				}
+			}
+			if (requestObjectName.equals(restEndpointDescriptor.getResponseObjectName())) {
+				if (restEndpointDescriptor.getResponse() != null) {
+					return restEndpointDescriptor.getResponse();
+				}
+			}
+		}
+		
+		for (WebsocketEndpointDescriptor restEndpointDescriptor: this.exchangeApiDescriptor.getWebsocketEndpoints()) {
+			if (requestObjectName.equals(restEndpointDescriptor.getRequestObjectName())) {
+				if (restEndpointDescriptor.getParameters() != null) {
+					return restEndpointDescriptor.getParameters();
+				}
+			}
+			if (requestObjectName.equals(restEndpointDescriptor.getMessageObjectName())) {
+				if (restEndpointDescriptor.getResponse() != null) {
+					return restEndpointDescriptor.getResponse();
+				}
+			}
+		}
+		throw new IllegalArgumentException("Found no REST request or response or Websocket request or message with fields defined for objectName:"  + requestObjectName);
+	}
+
 	private String getNewMessageDeserializerInstruction(EndpointParameterType messageType, String messageFullClassName) {
 		switch (messageType.getCanonicalType()) {
 		case BIGDECIMAL:
@@ -404,9 +449,11 @@ public class ExchangeApiInterfaceImplementationGenerator extends JavaTypeGenerat
 	private void generateRestEndpointMethodDeclaration(RestEndpointDescriptor restApi) {
 		addImport(RestEndpoint.class);
 		String requestClassName = ExchangeJavaWrapperGeneratorUtil.generateRestEnpointRequestClassName(exchangeDescriptor, exchangeApiDescriptor, restApi);
-		String requestSimpleClassName = JavaCodeGenerationUtil.getClassNameWithoutPackage(requestClassName);
-		addImport(requestClassName);
-//		String responseClassName = ExchangeJavaWrapperGeneratorUtil.generateRestEnpointResponseClassName(exchangeDescriptor, exchangeApiDescriptor, restApi);
+		String requestSimpleClassName = ExchangeJavaWrapperGeneratorUtil.getClassNameForParameterType(
+				EndpointParameterType.fromTypeName(restApi.getRequestDataType()), 
+				getImports(), 
+				requestClassName);
+//		addImport(requestClassName);
 		String restResponseClassName = ExchangeJavaWrapperGeneratorUtil.generateRestEnpointResponseClassName(
 				exchangeDescriptor, 
 				exchangeApiDescriptor, 

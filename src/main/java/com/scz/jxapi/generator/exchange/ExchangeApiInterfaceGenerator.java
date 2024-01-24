@@ -45,11 +45,16 @@ public class ExchangeApiInterfaceGenerator extends JavaTypeGenerator {
 		if (websocketEndpointFactoryFullClassName == null) {
 			throw new IllegalStateException("No 'websocketEndpointFactory' defined on " + exchangeApiDescriptor.getName());
 		}
-		String requestClassName = ExchangeJavaWrapperGeneratorUtil.generateWebsocketEndpointRequestClassName(exchangeDescriptor, exchangeApiDescriptor, websocketApi);
-		String requestClassSimpleName = JavaCodeGenerationUtil.getClassNameWithoutPackage(requestClassName);
-		addImport(requestClassName);
+		String requestClassName = ExchangeJavaWrapperGeneratorUtil.generateWebsocketEndpointRequestClassName(
+				exchangeDescriptor, 
+				exchangeApiDescriptor, 
+				websocketApi);
+		String requestSimpleClassName = ExchangeJavaWrapperGeneratorUtil.getClassNameForParameterType(
+				EndpointParameterType.fromTypeName(websocketApi.getRequestDataType()), 
+				getImports(), 
+				requestClassName);
 		String messageClassSimpleName = ExchangeJavaWrapperGeneratorUtil.getClassNameForParameterType(
-				EndpointParameterType.fromTypeName(websocketApi.getResponseDataType()), 
+				EndpointParameterType.fromTypeName(websocketApi.getMessageDataType()), 
 				getImports(), 
 				ExchangeJavaWrapperGeneratorUtil.generateWebsocketEndpointMessageClassName(
 						exchangeDescriptor, 
@@ -60,7 +65,7 @@ public class ExchangeApiInterfaceGenerator extends JavaTypeGenerator {
 		addImport(WebsocketListener.class);
 		String subscribeMethodSignature = "String " 
 										  + subscribeMethodName 
-										  + "(" + requestClassSimpleName 
+										  + "(" + requestSimpleClassName 
 										  + " request, WebsocketListener<" 
 										  + messageClassSimpleName  
 										  + "> listener)";
@@ -88,8 +93,10 @@ public class ExchangeApiInterfaceGenerator extends JavaTypeGenerator {
 
 	private void generateRestEndpointMethodDeclaration(RestEndpointDescriptor restApi) {
 		String requestClassName = ExchangeJavaWrapperGeneratorUtil.generateRestEnpointRequestClassName(exchangeDescriptor, exchangeApiDescriptor, restApi);
-		String requestSimpleClassName = JavaCodeGenerationUtil.getClassNameWithoutPackage(requestClassName);
-		addImport(requestClassName);
+		String requestSimpleClassName = ExchangeJavaWrapperGeneratorUtil.getClassNameForParameterType(
+				EndpointParameterType.fromTypeName(restApi.getRequestDataType()), 
+				getImports(), 
+				requestClassName);
 		String responseSimpleClassName = ExchangeJavaWrapperGeneratorUtil.getClassNameForParameterType(
 				EndpointParameterType.fromTypeName(restApi.getResponseDataType()), 
 				getImports(), 

@@ -31,6 +31,10 @@ public class RestEndpointDescriptor {
 	
 	private String responseDataType = CanonicalEndpointParameterTypes.OBJECT.name();
 	
+	private String requestDataType = CanonicalEndpointParameterTypes.OBJECT.name();
+	
+	private String requestObjectName;
+	
 	private String responseObjectName;
 	
 	private Integer requestWeight;
@@ -178,8 +182,26 @@ public class RestEndpointDescriptor {
 	public void setResponseInterfaces(List<String> responseInterfaces) {
 		this.responseInterfaces = responseInterfaces;
 	}
+	
+	public String getRequestDataType() {
+		return requestDataType;
+	}
 
+	public void setRequestDataType(String requestDataType) {
+		this.requestDataType = requestDataType;
+	}
+
+	public String getRequestObjectName() {
+		return requestObjectName;
+	}
+
+	public void setRequestObjectName(String requestObjectName) {
+		this.requestObjectName = requestObjectName;
+	}
+	
+	@Override
 	public String toString() {
 		return EncodingUtil.pojoToString(this);
 	}
+
 }

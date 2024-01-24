@@ -2,7 +2,7 @@
 	"name": "MyTestCEX",
 	"description": "A sample CEX descriptor file",
 	"basePackage": "com.foo.bar.gen",
-	"apis":[
+		"apis":[
 		{ 
 			"name": "MarketData",
 			"description": "The market data API of MyTestCEX, , with different response data types for websocket and REST endpoints. Remark: Only OBJECT (default) and STRING are usually used, but any data type is supported",
@@ -38,14 +38,6 @@
 					"description": "A sample REST endpoint using STRING response data type",
 					"url": "https://com.sample.mycex/getString",
 					"responseDataType": "STRING",
-					"parameters": []
-				},
-				{
-					"name": "getRestResponseDataTypeBigDecimal",
-					"httpMethod": "GET",
-					"description": "A sample REST endpoint using BIGDECIMAL response data type",
-					"url": "https://com.sample.mycex/getBigDecimal",
-					"responseDataType": "BIGDECIMAL",
 					"parameters": []
 				},
 				{
@@ -91,10 +83,10 @@
 			"websocketEndpoints": [
 				{
 					"name": "subscribeTicker",
-					"topic": "int",
+					"topic": "subscribeTickerTopic",
 					"description": "Subscribe to stream with OBJECT message type (default, explicit here)",
 					"parameters": [],
-					"responseDataType":"OBJECT",
+					"messageDataType":"OBJECT",
 					"messageTopicMatcherFields": [
 						{"name": "topic",  "value": "tickerMapList"}
 					],
@@ -106,10 +98,10 @@
 				},
 				{
 					"name": "subscribeTickertMapListStream",
-					"topic": "int",
+					"topic": "subscribeTickerMapListTopic",
 					"description": "Subscribe to stream with OBJECT_MAP_LIST message type",
 					"parameters": [],
-					"responseDataType":"OBJECT_MAP_LIST",
+					"messageDataType":"OBJECT_MAP_LIST",
 					"messageTopicMatcherFields": [
 						{"name": "topic",  "value": "tickerMapList"}
 					],
