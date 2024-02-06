@@ -33,5 +33,5 @@ public interface WebsocketEndpointFactory {
 	 * @param messageDeserializer websocket message stream deserializer.
 	 * @return Suitable {@link WebsocketEndpoint}
 	 */
-	<S extends WebsocketSubscribeParameters, M> WebsocketEndpoint<S, M> createWebsocketEndpoint(MessageDeserializer<M> messageDeserializer);
+	<S, M> WebsocketEndpoint<S, M> createWebsocketEndpoint(MessageDeserializer<M> messageDeserializer);
 }

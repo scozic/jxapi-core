@@ -8,7 +8,7 @@ import org.slf4j.LoggerFactory;
 
 import com.scz.jxapi.netutils.deserialization.MessageDeserializer;
 
-public class DefaultWebsocketEndpoint<T extends WebsocketSubscribeParameters, M> implements WebsocketEndpoint<T, M> {
+public class DefaultWebsocketEndpoint<T, M> implements WebsocketEndpoint<T, M> {
 	
 	private final Logger log = LoggerFactory.getLogger(DefaultWebsocketEndpoint.class);
 	
@@ -27,12 +27,11 @@ public class DefaultWebsocketEndpoint<T extends WebsocketSubscribeParameters, M>
 
 	@Override
 	public String subscribe(WebsocketSubscribeRequest<T> request, WebsocketListener<M> listener) {
-		String topic = request.getParameters().getTopic();
+		String topic = request.getTopicSerializer().getTopic(request.getParameters());
 		Subscription sub = subscriptionsByTopic.get(topic);
 		if (sub == null ) {
 			sub = new Subscription(request);
 			subscriptionsByTopic.put(topic, sub);
-			
 		}
 		String subId = generateSubscriptionId(request);
 		sub.addListener(subId, listener);
@@ -65,18 +64,25 @@ public class DefaultWebsocketEndpoint<T extends WebsocketSubscribeParameters, M>
 			listeners.put(subscriptionId, listener);
 			if (listeners.size() == 1) {
 				// First subscription
-				websocketManager.subscribe(request.getParameters().getTopic(), request.getMessageTopicMatcher(), message -> dispatch(message));
+				websocketManager.subscribe(getTopic(), request.getMessageTopicMatcher(), message -> dispatch(message));
 			}
 		}
 		
 		public boolean removeListener(String subscriptionId) {
 			if (listeners.remove(subscriptionId) != null) {
 				if (listeners.size() <= 0) {
-					websocketManager.unsubscribe(request.getParameters().getTopic());
+					websocketManager.unsubscribe(getTopic());
 				}
 				return true;
 			}
 			return false;
+		}
+		
+		private String getTopic() {
+			if (request.getTopicSerializer() != null) {
+				return request.getTopicSerializer().getTopic(request.getParameters());
+			}
+			return null;
 		}
 		
 		private void dispatch(String message) {

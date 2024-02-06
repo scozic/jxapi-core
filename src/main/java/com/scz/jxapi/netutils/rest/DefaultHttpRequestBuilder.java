@@ -11,7 +11,9 @@ import com.scz.jxapi.util.JsonUtil;
  * <li>Use specific request body encoding. Subclasses may override {@link #getBody(RestRequest)} for this purpose.
  * <ul>
  */
-public class DefaultHttpRequestBuilder implements HttpRequestBuilder {
+public class DefaultHttpRequestBuilder<T> implements HttpRequestBuilder<T> {
+	
+	private RestRequestBodySerializer<T> bodySerializer = request -> JsonUtil.pojoToJsonString(request);
 
 	/**
 	 * Base implementatin creates HttpRequest with:
@@ -24,7 +26,7 @@ public class DefaultHttpRequestBuilder implements HttpRequestBuilder {
 	 * Can be overridden to add specific headers
 	 */
 	@Override
-	public HttpRequest build(RestRequest<?> restRequest) {
+	public HttpRequest build(RestRequest<T> restRequest) {
 		HttpRequest res = new HttpRequest();
 		res.setHttpMethod(restRequest.getHttpMethod());
 		res.setUrl(getFullUrl(restRequest));
@@ -44,14 +46,18 @@ public class DefaultHttpRequestBuilder implements HttpRequestBuilder {
 	 * @return the full URL, including base url, endpoint suffix and URL parameters
 	 *         for given request
 	 */
-	protected String getFullUrl(RestRequest<?> request) {
+	protected String getFullUrl(RestRequest<T> request) {
 		String url = request.getUrl();
-		if (request.getRequest() instanceof RestEndpointUrlParameters) {
-			String urlParams = ((RestEndpointUrlParameters) request.getRequest()).getUrlParameters();
-			if (urlParams != null && !urlParams.isEmpty()) {
-				url += urlParams;
-			}
+		UrlParametersSerializer<T> urlParametersSerializer = request.getUrlParametersSerializer();
+		if (urlParametersSerializer != null) {
+			url += urlParametersSerializer.getUrlParameters(request.getRequest());
 		}
+//		if (request.getRequest() instanceof RestEndpointUrlParameters) {
+//			String urlParams = ((RestEndpointUrlParameters) request.getRequest()).getUrlParameters();
+//			if (urlParams != null && !urlParams.isEmpty()) {
+//				url += urlParams;
+//			}
+//		}
 		return url;
 	}
 	
@@ -65,9 +71,9 @@ public class DefaultHttpRequestBuilder implements HttpRequestBuilder {
 	 * @param request
 	 * @return
 	 */
-	protected String getBody(RestRequest<?> request) {
+	protected String getBody(RestRequest<T> request) {
 		if ("POST".equalsIgnoreCase(request.getHttpMethod())) {
-			return JsonUtil.pojoToJsonString(request.getRequest());
+			return bodySerializer.serializeBody(request.getRequest());
 		}
 		return null;
 	}

@@ -18,14 +18,13 @@ import com.scz.jxapi.netutils.deserialization.json.field.LongJsonFieldDeserializ
 import com.scz.jxapi.netutils.deserialization.json.field.MapJsonFieldDeserializer;
 import com.scz.jxapi.netutils.deserialization.json.field.StringJsonFieldDeserializer;
 import com.scz.jxapi.netutils.deserialization.json.field.TimestampJsonFieldDeserializer;
-import com.scz.jxapi.util.EncodingUtil;
 
 /**
  * Helper methods for generation of Java classes of a given exchange wrapper
  */
 public class ExchangeJavaWrapperGeneratorUtil {
 	
-	private static final String DEFAULT_STRING_LIST_SEPARATOR = ",";
+	static final String DEFAULT_STRING_LIST_SEPARATOR = ",";
 	
 	/**
 	 * Generates the expected full class name of JSON serializer class for a given
@@ -141,37 +140,6 @@ public class ExchangeJavaWrapperGeneratorUtil {
 		String simpleInterfaceName = JavaCodeGenerationUtil.firstLetterToUpperCase(exchangeDescriptor.getName()) 
 										+ JavaCodeGenerationUtil.firstLetterToUpperCase(exchangeApiDescriptor.getName()) + "Api";
 		return pkgPrefix + simpleInterfaceName;
-	}
-	
-	public static String generateGetUrlParametersBodyFromTemplate(String urlParametersTemplate, 
-																  List<EndpointParameter> endpointParameters, 
-																  String stringListSeparator) {
-		if (endpointParameters.isEmpty()) {
-			return "return \"" + urlParametersTemplate + "\";\n";
-		}
-		if (stringListSeparator == null) {
-			stringListSeparator = DEFAULT_STRING_LIST_SEPARATOR;
-		}
-		StringBuilder sb = new StringBuilder();
-		sb.append("return ")
-		  .append(EncodingUtil.class.getSimpleName())
-		  .append(".substituteArguments(\"")
-		  .append(urlParametersTemplate)
-		  .append("\", ");
-		int n = endpointParameters.size();
-		for (int i = 0; i < n; i++) {
-			String name = endpointParameters.get(i).getName();
-			String value = name;
-			if (endpointParameters.get(i).getEndpointParameterType().getCanonicalType() == CanonicalEndpointParameterTypes.LIST) {
-				value = EncodingUtil.class.getSimpleName() + ".listToString(" + name + ", \"" + stringListSeparator + "\")"; 
-			}
-			sb.append("\"").append(name).append("\", ").append(value);
-			if (i < n - 1) {
-				sb.append(", ");
-			}
-		}
-		sb.append(");\n");
-		return sb.toString();
 	}
 	
 	public static boolean exchangeApiHasRateLimits(ExchangeApiDescriptor exchangeApiDescriptor, 
@@ -386,7 +354,9 @@ public class ExchangeJavaWrapperGeneratorUtil {
 		String subTypeClassName = null;
 		switch(type.getCanonicalType()) {
 		case BIGDECIMAL:
-			imports.add(BigDecimal.class.getName());
+			if (imports != null) {
+				imports.add(BigDecimal.class.getName());
+			}
 			return BigDecimal.class.getSimpleName();
 		case BOOLEAN:
 			return Boolean.class.getSimpleName();
@@ -398,23 +368,29 @@ public class ExchangeJavaWrapperGeneratorUtil {
 		case STRING:
 			return String.class.getSimpleName();
 		case LIST:
-			imports.add(List.class.getName());
 			subTypeClassName = getClassNameForParameterType(type.getSubType(), imports, objectClassName);
-			imports.add(subTypeClassName);
+			if (imports != null) {
+				imports.add(List.class.getName());
+				imports.add(subTypeClassName);
+			}
 			return List.class.getSimpleName() 
 					+ "<" 
 					+ JavaCodeGenerationUtil.getClassNameWithoutPackage(subTypeClassName) 
 					+ ">";
 		case MAP:
-			imports.add(Map.class.getName());
 			subTypeClassName = getClassNameForParameterType(type.getSubType(), imports, objectClassName);
-			imports.add(subTypeClassName);
+			if (imports != null) {
+				imports.add(Map.class.getName());
+				imports.add(subTypeClassName);
+			}
 			return Map.class.getSimpleName() 
 					+ "<String, " 
 					+ JavaCodeGenerationUtil.getClassNameWithoutPackage(subTypeClassName) 
 					+ ">";
 		case OBJECT:
-			imports.add(objectClassName);
+			if (imports != null) {
+				imports.add(objectClassName);
+			}
 			return JavaCodeGenerationUtil.getClassNameWithoutPackage(objectClassName);
 			//return objectClassName;
 		default:

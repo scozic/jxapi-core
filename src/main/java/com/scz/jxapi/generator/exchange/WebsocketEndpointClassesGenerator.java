@@ -2,10 +2,8 @@ package com.scz.jxapi.generator.exchange;
 
 import java.io.IOException;
 import java.nio.file.Path;
-import java.util.Arrays;
 
 import com.scz.jxapi.generator.JavaCodeGenerationUtil;
-import com.scz.jxapi.netutils.websocket.WebsocketSubscribeParameters;
 
 /**
  * Generates all classes used by a particular Websocket endpoint defined in an  
@@ -19,17 +17,17 @@ import com.scz.jxapi.netutils.websocket.WebsocketSubscribeParameters;
  */
 public class WebsocketEndpointClassesGenerator implements ClassesGenerator {
 	
-	private static String generateWebsocketSubscribeParametersGetTopicMethod(WebsocketEndpointDescriptor wsEndpointDescriptor) {
-		StringBuilder sb = new StringBuilder();
-		sb.append("\n@Override\npublic String getTopic() {\n")
-		  .append(JavaCodeGenerationUtil.INDENTATION)
-		  .append(ExchangeJavaWrapperGeneratorUtil.generateGetUrlParametersBodyFromTemplate(
-				  	wsEndpointDescriptor.getTopic(), 
-				  	wsEndpointDescriptor.getParameters(), 
-				  	wsEndpointDescriptor.getTopicParametersListSeparator()))
-		  .append("}\n\n");
-		return sb.toString(); 
-	}
+//	private static String generateWebsocketSubscribeParametersGetTopicMethod(WebsocketEndpointDescriptor wsEndpointDescriptor) {
+//		StringBuilder sb = new StringBuilder();
+//		sb.append("\n@Override\npublic String getTopic() {\n")
+//		  .append(JavaCodeGenerationUtil.INDENTATION)
+//		  .append(ExchangeJavaWrapperGeneratorUtil.generateGetUrlParametersBodyFromTemplate(
+//				  	wsEndpointDescriptor.getTopic(), 
+//				  	wsEndpointDescriptor.getParameters(), 
+//				  	wsEndpointDescriptor.getTopicParametersListSeparator()))
+//		  .append("}\n\n");
+//		return sb.toString(); 
+//	}
 	
 	private final ExchangeDescriptor exchangeDescriptor;
 	private final ExchangeApiDescriptor apiDescriptor;
@@ -98,8 +96,8 @@ public class WebsocketEndpointClassesGenerator implements ClassesGenerator {
 					+ "\n"
 					+ JavaCodeGenerationUtil.GENERATED_CODE_WARNING,
 					websocketEndpointDescriptor.getParameters(), 
-				Arrays.asList(WebsocketSubscribeParameters.class.getName()), 
-				generateWebsocketSubscribeParametersGetTopicMethod(websocketEndpointDescriptor)).generateClasses(outputFolder);;
+				null, 
+				null).generateClasses(outputFolder);
 		new EndpointPojoClassesGenerator( 
 				ExchangeJavaWrapperGeneratorUtil.generateWebsocketEndpointMessageClassName(
 						exchangeDescriptor, 
