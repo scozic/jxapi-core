@@ -48,16 +48,10 @@ public class DefaultHttpRequestBuilder<T> implements HttpRequestBuilder<T> {
 	 */
 	protected String getFullUrl(RestRequest<T> request) {
 		String url = request.getUrl();
-		UrlParametersSerializer<T> urlParametersSerializer = request.getUrlParametersSerializer();
-		if (urlParametersSerializer != null) {
-			url += urlParametersSerializer.getUrlParameters(request.getRequest());
+		String urlParameters = request.getUrlParameters();
+		if (urlParameters != null) {
+			url += urlParameters;
 		}
-//		if (request.getRequest() instanceof RestEndpointUrlParameters) {
-//			String urlParams = ((RestEndpointUrlParameters) request.getRequest()).getUrlParameters();
-//			if (urlParams != null && !urlParams.isEmpty()) {
-//				url += urlParams;
-//			}
-//		}
 		return url;
 	}
 	

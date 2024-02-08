@@ -132,6 +132,7 @@ public class JsonMessageDeserializerGenerator extends JavaTypeGenerator {
 												field.getEndpointParameterType(), 
 												objectParameterClassName, 
 												getImports());
+		
 		String deserializerVariableName = JavaCodeGenerationUtil.firstLetterToLowerCase(field.getName() + "Deserializer");
 		String variableDeclaration = "private final " + simpleDeserializerTypeName + " " + deserializerVariableName + " = " 
 										+ ExchangeJavaWrapperGeneratorUtil.getNewJsonParameterDeserializerInstruction(

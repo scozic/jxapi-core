@@ -9,7 +9,7 @@ import com.scz.jxapi.util.EncodingUtil;
  */
 public class WebsocketSubscribeRequest<T> {
 	
-	public static <T> WebsocketSubscribeRequest<T> createWebsocketSubscribeReques(T parameters, WebsocketSubscribeRequestTopicSerializer<T> topicSerializer, WebsocketMessageTopicMatcher messageTopicMatcher) {
+	public static <T> WebsocketSubscribeRequest<T> create(T parameters, String topic, WebsocketMessageTopicMatcher messageTopicMatcher) {
 		WebsocketSubscribeRequest<T> request = new WebsocketSubscribeRequest<>();
 		request.parameters = parameters;
 		request.messageTopicMatcher = messageTopicMatcher;
@@ -18,8 +18,8 @@ public class WebsocketSubscribeRequest<T> {
 
 	private String baseUrl;
 	private T parameters;
-	private WebsocketSubscribeRequestTopicSerializer<T> topicSerializer;
 	private WebsocketMessageTopicMatcher messageTopicMatcher;
+	private String topic;
 	
 	public String getBaseUrl() {
 		return baseUrl;
@@ -42,15 +42,14 @@ public class WebsocketSubscribeRequest<T> {
 		this.messageTopicMatcher = messageTopicMatcher;
 	}
 	
-	public WebsocketSubscribeRequestTopicSerializer<T> getTopicSerializer() {
-		return topicSerializer;
-	}
-	public void setTopicSerializer(WebsocketSubscribeRequestTopicSerializer<T> topicSerializer) {
-		this.topicSerializer = topicSerializer;
-	}
-	
 	public String toString() {
 		return EncodingUtil.pojoToString(this);
+	}
+	public String getTopic() {
+		return topic;
+	}
+	public void setTopic(String topic) {
+		this.topic = topic;
 	}
 	
 }

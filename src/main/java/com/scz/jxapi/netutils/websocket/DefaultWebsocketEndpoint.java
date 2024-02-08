@@ -27,7 +27,7 @@ public class DefaultWebsocketEndpoint<T, M> implements WebsocketEndpoint<T, M> {
 
 	@Override
 	public String subscribe(WebsocketSubscribeRequest<T> request, WebsocketListener<M> listener) {
-		String topic = request.getTopicSerializer().getTopic(request.getParameters());
+		String topic = request.getTopic();
 		Subscription sub = subscriptionsByTopic.get(topic);
 		if (sub == null ) {
 			sub = new Subscription(request);
@@ -64,25 +64,18 @@ public class DefaultWebsocketEndpoint<T, M> implements WebsocketEndpoint<T, M> {
 			listeners.put(subscriptionId, listener);
 			if (listeners.size() == 1) {
 				// First subscription
-				websocketManager.subscribe(getTopic(), request.getMessageTopicMatcher(), message -> dispatch(message));
+				websocketManager.subscribe(request.getTopic(), request.getMessageTopicMatcher(), message -> dispatch(message));
 			}
 		}
 		
 		public boolean removeListener(String subscriptionId) {
 			if (listeners.remove(subscriptionId) != null) {
 				if (listeners.size() <= 0) {
-					websocketManager.unsubscribe(getTopic());
+					websocketManager.unsubscribe(request.getTopic());
 				}
 				return true;
 			}
 			return false;
-		}
-		
-		private String getTopic() {
-			if (request.getTopicSerializer() != null) {
-				return request.getTopicSerializer().getTopic(request.getParameters());
-			}
-			return null;
 		}
 		
 		private void dispatch(String message) {

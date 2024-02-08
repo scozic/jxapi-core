@@ -58,7 +58,7 @@ public class JsonMessageDeserializerClassesGenerator implements ClassesGenerator
 			}
 		}
 		JsonMessageDeserializerGenerator deserializerGenerator = new JsonMessageDeserializerGenerator(deserializedClassName, fields);
-		deserializerGenerator.getImports().addAll(imports);
+//		deserializerGenerator.getImports().addAll(imports);
 		deserializerGenerator.writeJavaFile(outputFolder);
 	}
 }

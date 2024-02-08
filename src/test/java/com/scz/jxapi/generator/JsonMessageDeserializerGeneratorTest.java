@@ -32,6 +32,9 @@ public class JsonMessageDeserializerGeneratorTest {
 		endpointParameters.add(EndpointParameter.create( "OBJECT_LIST_MAP", "toto", "toto", null,
 				Arrays.asList(EndpointParameter.create(CanonicalEndpointParameterTypes.STRING.name(), "id", null, "Toto ID", "toto#1"))
 				));
+		endpointParameters.add(EndpointParameter.create( "OBJECT", "titi", "ti", null,
+				Arrays.asList(EndpointParameter.create(CanonicalEndpointParameterTypes.STRING.name(), "name", null, "Titi name", "TiName"))
+				));
 		
 		JsonMessageDeserializerGenerator generator = new JsonMessageDeserializerGenerator(deserialiazedTypeName, endpointParameters);
 		Assert.assertEquals("package com.x.deserializers;\n"
