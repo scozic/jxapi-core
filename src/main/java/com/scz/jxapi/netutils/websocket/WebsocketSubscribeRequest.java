@@ -12,6 +12,7 @@ public class WebsocketSubscribeRequest<T> {
 	public static <T> WebsocketSubscribeRequest<T> create(T parameters, String topic, WebsocketMessageTopicMatcher messageTopicMatcher) {
 		WebsocketSubscribeRequest<T> request = new WebsocketSubscribeRequest<>();
 		request.parameters = parameters;
+		request.topic = topic;
 		request.messageTopicMatcher = messageTopicMatcher;
 		return request;
 	}

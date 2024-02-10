@@ -39,6 +39,7 @@ public class EndpointPojoGeneratorTest {
 				+ "import com.x.serializers.MyPojoSerializer;\n"
 				+ "import java.util.List;\n"
 				+ "import java.util.Map;\n"
+				+ "import java.util.Objects;\n"
 				+ "\n"
 				+ "/**\n"
 				+ " * Used in EndpointPojoGeneratorTest\n"
@@ -109,9 +110,28 @@ public class EndpointPojoGeneratorTest {
 				+ "  // Additionnal body here\n"
 				+ "  \n"
 				+ "  @Override\n"
+				+ "  public boolean equals(Object other) {\n"
+				+ "    if (other == null)\n"
+				+ "      return false;\n"
+				+ "    if (!getClass().equals(other.getClass()))\n"
+				+ "      return false;\n"
+				+ "    MyPojo o = (MyPojo) other;\n"
+				+ "    return Objects.equals(foo, o.foo)\n"
+				+ "            && Objects.equals(id, o.id)\n"
+				+ "            && Objects.equals(score, o.score)\n"
+				+ "            && Objects.equals(toto, o.toto);\n"
+				+ "  }\n"
+				+ "  \n"
+				+ "  @Override\n"
+				+ "  public int hashCode() {\n"
+				+ "    return Objects.hash(foo, id, score, toto);\n"
+				+ "  }\n"
+				+ "  \n"
+				+ "  @Override\n"
 				+ "  public String toString() {\n"
 				+ "    return EncodingUtil.pojoToString(this);\n"
 				+ "  }\n"
-				+ "}\n", generator.generate());
+				+ "}\n", 
+				generator.generate());
 	}
 }

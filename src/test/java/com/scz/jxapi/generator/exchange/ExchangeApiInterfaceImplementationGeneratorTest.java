@@ -109,6 +109,7 @@ public class ExchangeApiInterfaceImplementationGeneratorTest {
 				+ "import com.scz.jxapi.netutils.rest.RestRequest;\n"
 				+ "import com.scz.jxapi.netutils.rest.ratelimits.RateLimitRule;\n"
 				+ "import com.scz.jxapi.netutils.rest.ratelimits.RequestThrottler;\n"
+				+ "import com.scz.jxapi.util.EncodingUtil;\n"
 				+ "import java.util.List;\n"
 				+ "import java.util.Properties;\n"
 				+ "import org.slf4j.Logger;\n"
@@ -144,12 +145,14 @@ public class ExchangeApiInterfaceImplementationGeneratorTest {
 				+ "  \n"
 				+ "  @Override\n"
 				+ "  public FutureRestResponse<MyTestExchangeTradingExchangeInfoResponse> exchangeInfo(MyTestExchangeTradingExchangeInfoRequest request) {\n"
+				+ "    String urlParameters = EncodingUtil.createUrlQueryParameters(\"symbols\", EncodingUtil.listToUrlParamString(request.getSymbols()));\n"
 				+ "    if (log.isDebugEnabled())\n"
 				+ "      log.debug(\"GET exchangeInfo > \" + request);\n"
-				+ "    return requestThrottler.submit(RestRequest.create(\"https://com.sample.mycex/exchangeInfo\", \"GET\", request, RATE_LIMITS_EXCHANGE_INFO_API, 60), exchangeInfoApi);\n"
+				+ "    return requestThrottler.submit(RestRequest.create(\"https://com.sample.mycex/exchangeInfo\", \"GET\", request, RATE_LIMITS_EXCHANGE_INFO_API, 60, urlParameters), exchangeInfoApi);\n"
 				+ "  }\n"
 				+ "  \n"
-				+ "}\n",	
+				+ "}\n"
+				+ "",	
 				apiInterfaceGenerator.generate());
 	}
 	
@@ -425,6 +428,7 @@ public class ExchangeApiInterfaceImplementationGeneratorTest {
 				+ "import com.scz.jxapi.netutils.rest.FutureRestResponse;\n"
 				+ "import com.scz.jxapi.netutils.rest.RestEndpoint;\n"
 				+ "import com.scz.jxapi.netutils.rest.RestRequest;\n"
+				+ "import com.scz.jxapi.util.EncodingUtil;\n"
 				+ "import java.util.Properties;\n"
 				+ "import org.slf4j.Logger;\n"
 				+ "import org.slf4j.LoggerFactory;\n"
@@ -455,12 +459,14 @@ public class ExchangeApiInterfaceImplementationGeneratorTest {
 				+ "  \n"
 				+ "  @Override\n"
 				+ "  public FutureRestResponse<MyTestCEXMarketDataExchangeInfoResponse> exchangeInfo(MyTestCEXMarketDataExchangeInfoRequest request) {\n"
+				+ "    String urlParameters = EncodingUtil.createUrlQueryParameters(\"symbols\", EncodingUtil.listToUrlParamString(request.getSymbols()));\n"
 				+ "    if (log.isDebugEnabled())\n"
 				+ "      log.debug(\"GET exchangeInfo > \" + request);\n"
-				+ "    return exchangeInfoApi.call(RestRequest.create(\"https://com.sample.mycex/exchangeInfo\", \"GET\", request));\n"
+				+ "    return exchangeInfoApi.call(RestRequest.create(\"https://com.sample.mycex/exchangeInfo\", \"GET\", request, null, 0, urlParameters));\n"
 				+ "  }\n"
 				+ "  \n"
-				+ "}\n",
+				+ "}\n"
+				+ "",
 				apiInterfaceGenerator.generate());
 	}
 	

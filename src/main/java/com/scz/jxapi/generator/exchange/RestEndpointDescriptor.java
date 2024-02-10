@@ -44,6 +44,8 @@ public class RestEndpointDescriptor {
 	private List<String> requestInterfaces;
 	
 	private List<String> responseInterfaces;
+	
+	private String requestArgName;
  	
 	public String getName() {
 		return name;
@@ -197,6 +199,14 @@ public class RestEndpointDescriptor {
 
 	public void setRequestObjectName(String requestObjectName) {
 		this.requestObjectName = requestObjectName;
+	}
+	
+	public String getRequestArgName() {
+		return requestArgName;
+	}
+
+	public void setRequestArgName(String requestArgName) {
+		this.requestArgName = requestArgName;
 	}
 	
 	@Override

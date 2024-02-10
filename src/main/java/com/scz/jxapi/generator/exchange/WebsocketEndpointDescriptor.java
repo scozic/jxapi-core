@@ -38,6 +38,8 @@ public class WebsocketEndpointDescriptor {
 	
 	private String messageObjectName;
 	
+	private String requestArgName;
+	
 	
 	public String getName() {
 		return name;
@@ -160,7 +162,14 @@ public class WebsocketEndpointDescriptor {
 		this.messageObjectName = messageObjectName;
 	}
 	
+	public String getRequestArgName() {
+		return requestArgName;
+	}
+	public void setRequestArgName(String requestArgName) {
+		this.requestArgName = requestArgName;
+	}	
+	
 	public String toString() {
 		return EncodingUtil.pojoToString(this);
-	}	
+	}
 }

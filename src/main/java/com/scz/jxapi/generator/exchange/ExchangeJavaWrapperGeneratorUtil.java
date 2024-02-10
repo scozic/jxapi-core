@@ -351,6 +351,9 @@ public class ExchangeJavaWrapperGeneratorUtil {
 	public static String getClassNameForParameterType(EndpointParameterType type, 
 													  Set<String> imports, 
 													  String objectClassName) {
+		if (type == null) {
+			return null;
+		}
 		String subTypeClassName = null;
 		switch(type.getCanonicalType()) {
 		case BIGDECIMAL:

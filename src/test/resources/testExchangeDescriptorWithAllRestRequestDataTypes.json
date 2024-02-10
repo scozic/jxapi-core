@@ -61,12 +61,14 @@
 					"responseObjectName": "GenericResponse"
 				},
 				{
-					"name": "postRestRequestDataTypeObjectNoParameters",
+					"name": "postRestRequestDataTypeObjectOneParameter",
 					"httpMethod": "POST",
 					"description": "A sample REST endpoint using OBJECT request data type (default, explicit here), and one parameter",
 					"url": "https://com.sample.mycex/postBigDecimal",
 					"requestDataType": "OBJECT",
-					"parameters": [],
+					"parameters": [
+						{"name":"singleArg", "type": "INT", "description":"Request single argument", "sampleValue":"0"}
+					],
 					"responseObjectName": "GenericResponse"
 				},
 				{
