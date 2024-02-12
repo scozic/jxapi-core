@@ -45,14 +45,19 @@ public class ExchangeApiInterfaceGenerator extends JavaTypeGenerator {
 		if (websocketEndpointFactoryFullClassName == null) {
 			throw new IllegalStateException("No 'websocketEndpointFactory' defined on " + exchangeApiDescriptor.getName());
 		}
-		String requestClassName = ExchangeJavaWrapperGeneratorUtil.generateWebsocketEndpointRequestClassName(
-				exchangeDescriptor, 
-				exchangeApiDescriptor, 
-				websocketApi);
-		String requestSimpleClassName = ExchangeJavaWrapperGeneratorUtil.getClassNameForParameterType(
-				EndpointParameterType.fromTypeName(websocketApi.getRequestDataType()), 
-				getImports(), 
-				requestClassName);
+		EndpointParameterType requestDataType = EndpointParameterType.fromTypeName(websocketApi.getRequestDataType());
+		boolean hasArguments = ExchangeJavaWrapperGeneratorUtil.websocketEndpointHasArguments(websocketApi, exchangeApiDescriptor);
+		String requestSimpleClassName = Object.class.getSimpleName();
+		if (hasArguments) {
+			String requestClassName = ExchangeJavaWrapperGeneratorUtil.generateWebsocketEndpointRequestClassName(
+													exchangeDescriptor, 
+													exchangeApiDescriptor, 
+													websocketApi);
+			requestSimpleClassName = ExchangeJavaWrapperGeneratorUtil.getClassNameForParameterType(
+													requestDataType, 
+													getImports(), 
+													requestClassName);
+		}
 		String messageClassSimpleName = ExchangeJavaWrapperGeneratorUtil.getClassNameForParameterType(
 				EndpointParameterType.fromTypeName(websocketApi.getMessageDataType()), 
 				getImports(), 
@@ -63,12 +68,17 @@ public class ExchangeApiInterfaceGenerator extends JavaTypeGenerator {
 		String subscribeMethodName = "subscribe" + JavaCodeGenerationUtil.firstLetterToUpperCase(websocketApi.getName());
 		String unsubscribeMethodName = "unsubscribe" + JavaCodeGenerationUtil.firstLetterToUpperCase(websocketApi.getName());
 		addImport(WebsocketListener.class);
-		String subscribeMethodSignature = "String " 
-										  + subscribeMethodName 
-										  + "(" + requestSimpleClassName 
-										  + " request, WebsocketListener<" 
-										  + messageClassSimpleName  
-										  + "> listener)";
+		String subscribeMethodSignature = new StringBuilder()
+				.append("String ")
+				.append(subscribeMethodName)
+				.append("(")
+				.append(hasArguments? requestSimpleClassName 
+										+ " " + ExchangeJavaWrapperGeneratorUtil.getRequestArgName(websocketApi.getRequestArgName()) 
+										+ ", "
+									: "")
+				.append("WebsocketListener<")
+				.append(messageClassSimpleName)
+				.append("> listener)").toString();
 		appendToBody("\n" 
 		  			+ JavaCodeGenerationUtil.generateJavaDoc(
 					"Subscribe to " + websocketApi.getName() + " stream.<br/>\n" 
@@ -92,11 +102,16 @@ public class ExchangeApiInterfaceGenerator extends JavaTypeGenerator {
 	}
 
 	private void generateRestEndpointMethodDeclaration(RestEndpointDescriptor restApi) {
-		String requestClassName = ExchangeJavaWrapperGeneratorUtil.generateRestEnpointRequestClassName(exchangeDescriptor, exchangeApiDescriptor, restApi);
-		String requestSimpleClassName = ExchangeJavaWrapperGeneratorUtil.getClassNameForParameterType(
-				EndpointParameterType.fromTypeName(restApi.getRequestDataType()), 
-				getImports(), 
-				requestClassName);
+		boolean hasArguments = ExchangeJavaWrapperGeneratorUtil.restEndpointHasArguments(restApi, exchangeApiDescriptor);
+		EndpointParameterType requestDataType = EndpointParameterType.fromTypeName(restApi.getRequestDataType());
+		String requestSimpleClassName = "Object";
+		if (hasArguments) {
+			String requestClassName = ExchangeJavaWrapperGeneratorUtil.generateRestEnpointRequestClassName(exchangeDescriptor, exchangeApiDescriptor, restApi);
+			requestSimpleClassName = ExchangeJavaWrapperGeneratorUtil.getClassNameForParameterType(
+					requestDataType, 
+					getImports(), 
+					requestClassName);
+		}
 		String responseSimpleClassName = ExchangeJavaWrapperGeneratorUtil.getClassNameForParameterType(
 				EndpointParameterType.fromTypeName(restApi.getResponseDataType()), 
 				getImports(), 
@@ -105,7 +120,18 @@ public class ExchangeApiInterfaceGenerator extends JavaTypeGenerator {
 						exchangeApiDescriptor, 
 						restApi));
 		String apiMethodName = JavaCodeGenerationUtil.firstLetterToLowerCase(restApi.getName());
-		String apiMethodSignature = FutureRestResponse.class.getSimpleName() + "<" + responseSimpleClassName + "> " + apiMethodName + "(" + requestSimpleClassName + " request)"; 
+		String apiMethodSignature =  new StringBuilder()
+				.append(FutureRestResponse.class.getSimpleName())
+				.append("<")
+				.append(responseSimpleClassName)
+				.append("> ")
+				.append(apiMethodName)
+				.append("(")
+				.append(hasArguments? requestSimpleClassName 
+									   + " " +
+									   ExchangeJavaWrapperGeneratorUtil.getRequestArgName(restApi.getRequestArgName())
+									 : "")
+				.append(")").toString(); 
 		appendToBody(JavaCodeGenerationUtil.generateJavaDoc(restApi.getDescription()) + "\n");
 		appendToBody(apiMethodSignature + ";\n");
 		addImport(FutureRestResponse.class);

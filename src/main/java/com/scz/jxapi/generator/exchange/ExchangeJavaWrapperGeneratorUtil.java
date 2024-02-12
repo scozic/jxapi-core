@@ -5,6 +5,7 @@ import java.math.BigDecimal;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 
 import org.apache.commons.lang3.StringUtils;
@@ -24,7 +25,8 @@ import com.scz.jxapi.netutils.deserialization.json.field.TimestampJsonFieldDeser
  */
 public class ExchangeJavaWrapperGeneratorUtil {
 	
-	static final String DEFAULT_STRING_LIST_SEPARATOR = ",";
+	public static final String DEFAULT_STRING_LIST_SEPARATOR = ",";
+	public static final String DEFAULT_REQUEST_ARG_NAME = "request";
 	
 	/**
 	 * Generates the expected full class name of JSON serializer class for a given
@@ -470,6 +472,69 @@ public class ExchangeJavaWrapperGeneratorUtil {
 		default:
 			throw new IllegalArgumentException("Unexpected field type:" + type);
 		}
+	}
+
+	public static List<EndpointParameter> findParametersForObjectName(String requestObjectName, ExchangeApiDescriptor exchangeApiDescriptor) {
+		for (RestEndpointDescriptor restEndpointDescriptor: exchangeApiDescriptor.getRestEndpoints()) {
+			if (requestObjectName.equals(restEndpointDescriptor.getRequestObjectName())) {
+				if (restEndpointDescriptor.getParameters() != null) {
+					return restEndpointDescriptor.getParameters();
+				}
+			}
+			if (requestObjectName.equals(restEndpointDescriptor.getResponseObjectName())) {
+				if (restEndpointDescriptor.getResponse() != null) {
+					return restEndpointDescriptor.getResponse();
+				}
+			}
+		}
+		
+		for (WebsocketEndpointDescriptor restEndpointDescriptor: exchangeApiDescriptor.getWebsocketEndpoints()) {
+			if (requestObjectName.equals(restEndpointDescriptor.getRequestObjectName())) {
+				if (restEndpointDescriptor.getParameters() != null) {
+					return restEndpointDescriptor.getParameters();
+				}
+			}
+			if (requestObjectName.equals(restEndpointDescriptor.getMessageObjectName())) {
+				if (restEndpointDescriptor.getResponse() != null) {
+					return restEndpointDescriptor.getResponse();
+				}
+			}
+		}
+		throw new IllegalArgumentException("Found no REST request or response or Websocket request or message with fields defined for objectName:"  + requestObjectName);
+	}
+
+	public static List<EndpointParameter> getEndpointParameters(List<EndpointParameter> endpointDescriptiorParameters, String requestObjectName, ExchangeApiDescriptor exchangeApiDescriptor) {
+		if (endpointDescriptiorParameters != null) {
+			return endpointDescriptiorParameters;
+		} else if (requestObjectName != null) {
+			return findParametersForObjectName(requestObjectName, exchangeApiDescriptor);
+		} else {
+			return List.of();
+		}
+	}
+
+	public static boolean websocketEndpointHasArguments(WebsocketEndpointDescriptor websocketApi, ExchangeApiDescriptor exchangeApiDescriptor) {
+		return ExchangeJavaWrapperGeneratorUtil.endpointHasArguments(websocketApi.getRequestDataType(), 
+									websocketApi.getParameters(), 
+									websocketApi.getRequestObjectName(), 
+									exchangeApiDescriptor);
+	}
+
+	public static boolean restEndpointHasArguments(RestEndpointDescriptor restApi, ExchangeApiDescriptor exchangeApiDescriptor) {
+		return ExchangeJavaWrapperGeneratorUtil.endpointHasArguments(restApi.getRequestDataType(), 
+									restApi.getParameters(), 
+									restApi.getRequestObjectName(), 
+									exchangeApiDescriptor);
+	}
+
+	private static boolean endpointHasArguments(String requestDataType, List<EndpointParameter> parameters, String requestObjectName, ExchangeApiDescriptor exchangeApiDescriptor) {
+		EndpointParameterType dataType = EndpointParameterType.fromTypeName(requestDataType);
+		return (dataType != null && dataType.getCanonicalType() != CanonicalEndpointParameterTypes.OBJECT) 
+				|| getEndpointParameters(parameters, requestObjectName, exchangeApiDescriptor).size() > 0;
+	}
+	
+	public static String getRequestArgName(String requestArgNameFromApiDescriptor) {
+		return Optional.ofNullable(requestArgNameFromApiDescriptor).orElse(DEFAULT_REQUEST_ARG_NAME);
 	}
 
 }
