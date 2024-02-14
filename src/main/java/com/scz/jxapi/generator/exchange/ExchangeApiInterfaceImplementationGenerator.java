@@ -501,7 +501,7 @@ public class ExchangeApiInterfaceImplementationGenerator extends JavaTypeGenerat
 				.append(restApi.getHttpMethod().toUpperCase())
 				.append(" ")
 				.append(restApi.getName())
-				.append(" > \" ")
+				.append(" > \"")
 				.append(hasArguments? " + request" : "")
 				.append(");\n");
 		
