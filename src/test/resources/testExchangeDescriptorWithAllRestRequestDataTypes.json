@@ -55,7 +55,7 @@
 					"name": "postRestRequestDataTypeObjectNoParameters",
 					"httpMethod": "POST",
 					"description": "A sample REST endpoint using OBJECT request data type (implicit), and no parameters",
-					"url": "https://com.sample.mycex/postBigDecimal",
+					"url": "https://com.sample.mycex/postNoParameter",
 					"requestDataType": "OBJECT",
 					"parameters": [],
 					"responseObjectName": "GenericResponse"
@@ -74,7 +74,7 @@
 				{
 					"name": "postRestRequestDataTypeIntList",
 					"httpMethod": "POST",
-					"description": "A sample REST endpoint using INT_LIST response data type",
+					"description": "A sample REST endpoint using INT_LIST request data type",
 					"url": "https://com.sample.mycex/postBigDecimal",
 					"requestDataType": "INT_LIST",
 					"responseObjectName": "GenericResponse"
@@ -82,7 +82,7 @@
 				{
 					"name": "postRestRequestDataTypeObjectListMap",
 					"httpMethod": "POST",
-					"description": "A sample REST endpoint using OBJECT_LIST_MAP response data type",
+					"description": "A sample REST endpoint using OBJECT_LIST_MAP request data type",
 					"url": "https://com.sample.mycex/postBigDecimal",
 					"requestDataType": "OBJECT_LIST_MAP",
 					"parameters": [],
@@ -122,7 +122,6 @@
 					"name": "streamWithIntRequestDataType",
 					"topic": "ticker",
 					"description": "Subscribe to stream with INT request type",
-					"parameters": [],
 					"requestDataType":"INT",
 					"messageTopicMatcherFields": [
 						{"name": "topic",  "value": "streamWithIntRequestDataTypeTopic"}
@@ -133,7 +132,6 @@
 					"name": "streamWithLongRequestDataType",
 					"topic": "ticker",
 					"description": "Subscribe to stream with LONG request type",
-					"parameters": [],
 					"requestDataType":"LONG",
 					"messageTopicMatcherFields": [
 						{"name": "topic",  "value": "streamWithLongRequestDataTypeTopic"}
@@ -144,7 +142,6 @@
 					"name": "streamWithBigDecimalRequestDataType",
 					"topic": "ticker",
 					"description": "Subscribe to stream with BIGDECIMAL request type",
-					"parameters": [],
 					"requestDataType":"LONG",
 					"messageTopicMatcherFields": [
 						{"name": "topic",  "value": "streamWithBigDecimalRequestDataTypeTopic"}
@@ -155,7 +152,6 @@
 					"name": "streamWithStringRequestDataType",
 					"topic": "ticker",
 					"description": "Subscribe to stream with STRING request type",
-					"parameters": [],
 					"requestDataType":"STRING",
 					"messageTopicMatcherFields": [
 						{"name": "topic",  "value": "streamWithStringRequestDataTypeTopic"}
@@ -166,7 +162,6 @@
 					"name": "streamWithBooleanRequestDataType",
 					"topic": "ticker",
 					"description": "Subscribe to stream with BOOLEAN request type",
-					"parameters": [],
 					"requestDataType":"BOOLEAN",
 					"messageTopicMatcherFields": [
 						{"name": "topic",  "value": "streamWithBooleanRequestDataTypeTopic"}
@@ -177,7 +172,6 @@
 					"name": "streamWithStringListRequestDataType",
 					"topic": "ticker",
 					"description": "Subscribe to stream with STRING_LIST request type",
-					"parameters": [],
 					"requestDataType":"STRING_LIST",
 					"messageTopicMatcherFields": [
 						{"name": "topic",  "value": "streamWithBooleanRequestDataTypeTopic"}

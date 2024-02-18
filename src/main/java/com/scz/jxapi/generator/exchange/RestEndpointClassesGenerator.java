@@ -18,49 +18,6 @@ import com.scz.jxapi.generator.JavaCodeGenerationUtil;
  * @see RestEndpointDescriptor
  */
 public class RestEndpointClassesGenerator implements ClassesGenerator {
-	
-//	private static String generateRestEndpointGetUrlParametersMethod(RestEndpointDescriptor restEndpointDescriptor) {
-//		String getUrlParametersBody = "return \"\";\n";
-//		if (restEndpointDescriptor.getUrlParameters() != null) {
-//			getUrlParametersBody =	ExchangeJavaWrapperGeneratorUtil.generateGetUrlParametersBodyFromTemplate(
-//												restEndpointDescriptor.getUrlParameters(), 
-//												restEndpointDescriptor.getParameters(), 
-//												restEndpointDescriptor.getUrlParametersListSeparator());
-//		} else if (restEndpointDescriptor.getParameters().size() > 0
-//					&& (restEndpointDescriptor.isQueryParams()	|| "GET".equalsIgnoreCase(restEndpointDescriptor.getHttpMethod()))) {
-//			getUrlParametersBody = generateGetUrlParametersBodyUsingQueryParams(restEndpointDescriptor.getParameters());
-//		}
-//		StringBuilder sb = new StringBuilder();
-//		sb.append("@Override\npublic String getUrlParameters() {\n")
-//		  .append(JavaCodeGenerationUtil.INDENTATION)
-//		  .append(getUrlParametersBody)
-//		  .append("}\n\n");
-//		return sb.toString();
-//	}
-//	
-//	private static String generateGetUrlParametersBodyUsingQueryParams(List<EndpointParameter> endpointParameters) {
-//		StringBuilder s = new StringBuilder().append("return " + EncodingUtil.class.getSimpleName() + ".createUrlQueryParameters(");
-//		for (int i = 0; i < endpointParameters.size(); i++) {
-//			if (i > 0) {
-//				s.append(",");
-//			}
-//			EndpointParameter param = endpointParameters.get(i);
-//			String name = param.getName();
-//			s.append("\"")
-//			 .append(name)
-//			 .append("\", ");
-//			if (param.getEndpointParameterType().getCanonicalType() == CanonicalEndpointParameterTypes.LIST) {
-//				s.append(EncodingUtil.class.getSimpleName())
-//				 .append(".listToUrlParamString(")
-//				 .append(name)
-//				 .append(")");
-//			} else {
-//				s.append(name);
-//			}
-//			
-//		}
-//		return s.append(");\n").toString();
-//	}
 
 	protected final ExchangeDescriptor exchangeDescriptor;
 	protected final ExchangeApiDescriptor apiDescriptor;
@@ -97,14 +54,14 @@ public class RestEndpointClassesGenerator implements ClassesGenerator {
 	private void generatePojos(Path outputFolder) throws IOException {
 		// Generate POJOs for request and response
 		List<String> requestInterfaces = new ArrayList<>();
-//		requestInterfaces.add(RestEndpointUrlParameters.class.getName());
 		if (restEndpointDescriptor.getRequestInterfaces() != null) {
 			requestInterfaces.addAll(restEndpointDescriptor.getRequestInterfaces());
 		}
 		
-		new EndpointPojoClassesGenerator(
-				ExchangeJavaWrapperGeneratorUtil.generateRestEnpointRequestClassName(exchangeDescriptor, apiDescriptor, restEndpointDescriptor), 
-				"Request for " + exchangeDescriptor.getName() + " " + apiDescriptor.getName() + " API " 
+		if (restEndpointDescriptor.getParameters() != null) {
+			new EndpointPojoClassesGenerator(
+					ExchangeJavaWrapperGeneratorUtil.generateRestEnpointRequestClassName(exchangeDescriptor, apiDescriptor, restEndpointDescriptor), 
+					"Request for " + exchangeDescriptor.getName() + " " + apiDescriptor.getName() + " API " 
 						+ restEndpointDescriptor.getName() + " REST endpoint<br/>\n"
 						+ restEndpointDescriptor.getDescription()
 						+ "\n"
@@ -112,6 +69,7 @@ public class RestEndpointClassesGenerator implements ClassesGenerator {
 						restEndpointDescriptor.getParameters(),
 						requestInterfaces,
 						null).generateClasses(outputFolder);
+		}
 		
 		
 		if (restEndpointDescriptor.getResponse() != null) {
@@ -134,27 +92,33 @@ public class RestEndpointClassesGenerator implements ClassesGenerator {
 	}
 	
 	private void generateDeserializers(Path outputFolder) throws IOException {
-		new JsonMessageDeserializerClassesGenerator( 
-						ExchangeJavaWrapperGeneratorUtil.generateRestEnpointResponseClassName(
-								exchangeDescriptor, 
-								apiDescriptor, 
-								restEndpointDescriptor),
-						restEndpointDescriptor.getResponse()).generateClasses(outputFolder);
+		if (restEndpointDescriptor.getResponse() != null) {
+			new JsonMessageDeserializerClassesGenerator( 
+					ExchangeJavaWrapperGeneratorUtil.generateRestEnpointResponseClassName(
+							exchangeDescriptor, 
+							apiDescriptor, 
+							restEndpointDescriptor),
+					restEndpointDescriptor.getResponse()).generateClasses(outputFolder);
+		}
 	}
 	
 	private void generateSerializers(Path ouputFolder) throws IOException {
-		new JsonPojoSerializerClassesGenerator( 
-				ExchangeJavaWrapperGeneratorUtil.generateRestEnpointRequestClassName(
-						exchangeDescriptor, 
-						apiDescriptor, 
-						restEndpointDescriptor),
-				restEndpointDescriptor.getParameters()).generateClasses(ouputFolder);
+		if (restEndpointDescriptor.getParameters() != null) {
+			new JsonPojoSerializerClassesGenerator( 
+					ExchangeJavaWrapperGeneratorUtil.generateRestEnpointRequestClassName(
+							exchangeDescriptor, 
+							apiDescriptor, 
+							restEndpointDescriptor),
+					restEndpointDescriptor.getParameters()).generateClasses(ouputFolder);
+		}
 		
-		new JsonPojoSerializerClassesGenerator(  
-				ExchangeJavaWrapperGeneratorUtil.generateRestEnpointResponseClassName(
-						exchangeDescriptor, 
-						apiDescriptor, 
-						restEndpointDescriptor),
-				restEndpointDescriptor.getResponse()).generateClasses(ouputFolder);
+		if (restEndpointDescriptor.getResponse() != null) {
+			new JsonPojoSerializerClassesGenerator(  
+					ExchangeJavaWrapperGeneratorUtil.generateRestEnpointResponseClassName(
+							exchangeDescriptor, 
+							apiDescriptor, 
+							restEndpointDescriptor),
+					restEndpointDescriptor.getResponse()).generateClasses(ouputFolder);
+		}
 	}
 }

@@ -879,7 +879,7 @@ public class ExchangeApiInterfaceImplementationGeneratorTest {
 				+ "    String urlParameters = \"\";\n"
 				+ "    if (log.isDebugEnabled())\n"
 				+ "      log.debug(\"POST postRestRequestDataTypeObjectNoParameters > \");\n"
-				+ "    return postRestRequestDataTypeObjectNoParametersApi.call(RestRequest.create(\"https://com.sample.mycex/postBigDecimal\", \"POST\", null, null, 0, urlParameters));\n"
+				+ "    return postRestRequestDataTypeObjectNoParametersApi.call(RestRequest.create(\"https://com.sample.mycex/postNoParameter\", \"POST\", null, null, 0, urlParameters));\n"
 				+ "  }\n"
 				+ "  \n"
 				+ "  @Override\n"

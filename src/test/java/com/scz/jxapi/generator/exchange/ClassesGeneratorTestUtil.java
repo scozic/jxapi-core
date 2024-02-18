@@ -22,13 +22,17 @@ public class ClassesGeneratorTestUtil {
 	private static final Logger log = LoggerFactory.getLogger(ClassesGeneratorTestUtil.class);
 
 	public static void checkJavaFilesCount(Path folderPath, int count) throws IOException {
-		File folder = folderPath.toFile(); 
-		Assert.assertTrue("File does not exist:" + folderPath, folder.exists());
-		Assert.assertTrue(folder.isDirectory());
-		Assert.assertEquals("Expected " + count + " files in " + folder.getAbsolutePath() 
-								+ ", but got:" + Arrays.toString(folder.listFiles()),
-							 count,	
-							 folder.listFiles().length);
+		File folder = folderPath.toFile();
+		if (!folder.exists()) {
+			Assert.assertEquals("Expected " + count + " files but folder does nto exist:" + folderPath, 0, count);
+		} else {
+			Assert.assertTrue(folderPath + "is not a directory", folder.isDirectory());
+			Assert.assertEquals("Expected " + count + " files in " + folder.getAbsolutePath() 
+									+ ", but got:" + Arrays.toString(folder.listFiles()),
+								 count,	
+								 folder.listFiles().length);
+		}
+		
 	}
 	
 	public static Path checkSourceFileExists(Path pkg, Path srcFilePath) {

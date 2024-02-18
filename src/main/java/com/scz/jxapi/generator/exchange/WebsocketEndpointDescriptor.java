@@ -26,7 +26,7 @@ public class WebsocketEndpointDescriptor {
 	
 	private List<WebsocketMessageTopicMatcherFieldDescriptor> messageTopicMatcherFields;
 	
-	private String messagegDataType = CanonicalEndpointParameterTypes.OBJECT.name();
+	private String messageDataType = CanonicalEndpointParameterTypes.OBJECT.name();
 	
 	private List<String> requestInterfaces;
 	
@@ -39,7 +39,6 @@ public class WebsocketEndpointDescriptor {
 	private String messageObjectName;
 	
 	private String requestArgName;
-	
 	
 	public String getName() {
 		return name;
@@ -98,11 +97,11 @@ public class WebsocketEndpointDescriptor {
 	}
 	
 	public String getMessageDataType() {
-		return messagegDataType;
+		return messageDataType;
 	}
 	
 	public void setMessageDataType(String messageDataType) {
-		this.messagegDataType = messageDataType;
+		this.messageDataType = messageDataType;
 	}
 	
 	/**
