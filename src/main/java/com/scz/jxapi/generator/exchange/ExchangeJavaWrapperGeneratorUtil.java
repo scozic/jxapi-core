@@ -537,4 +537,10 @@ public class ExchangeJavaWrapperGeneratorUtil {
 		return Optional.ofNullable(requestArgNameFromApiDescriptor).orElse(DEFAULT_REQUEST_ARG_NAME);
 	}
 
+	public static boolean restEndpointHasResponse(RestEndpointDescriptor restApi, ExchangeApiDescriptor exchangeApiDescriptor) {
+		EndpointParameterType dataType = EndpointParameterType.fromTypeName(restApi.getResponseDataType());
+		return (dataType != null && dataType.getCanonicalType() != CanonicalEndpointParameterTypes.OBJECT) 
+				|| getEndpointParameters(restApi.getResponse(), restApi.getResponseObjectName(), exchangeApiDescriptor).size() > 0;
+	}
+
 }

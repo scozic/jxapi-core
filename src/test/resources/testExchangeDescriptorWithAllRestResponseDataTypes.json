@@ -77,6 +77,13 @@
 					"response": [
 						{"name":"responseCode", "type": "INT", "description":"Request response code", "sampleValue":"0"}
 					]
+				},
+				{
+					"name": "getRestEmptyResponseDataType",
+					"httpMethod": "GET",
+					"description": "A sample REST endpoint using empty response data type",
+					"url": "https://com.sample.mycex/getEmptyResponse",
+					"parameters": []
 				}
 			],
 			"websocketEndpointFactory": "com.foo.bar.BarWebsocketEndpointFactory",

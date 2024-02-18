@@ -112,13 +112,20 @@ public class ExchangeApiInterfaceGenerator extends JavaTypeGenerator {
 					getImports(), 
 					requestClassName);
 		}
-		String responseSimpleClassName = ExchangeJavaWrapperGeneratorUtil.getClassNameForParameterType(
-				EndpointParameterType.fromTypeName(restApi.getResponseDataType()), 
-				getImports(), 
-				ExchangeJavaWrapperGeneratorUtil.generateRestEnpointResponseClassName(
-						exchangeDescriptor, 
-						exchangeApiDescriptor, 
-						restApi));
+		boolean hasResponse = ExchangeJavaWrapperGeneratorUtil.restEndpointHasResponse(restApi, exchangeApiDescriptor);
+		String restResponseClassName = null;
+		String responseSimpleClassName = "String";
+		if (hasResponse) {
+			restResponseClassName = ExchangeJavaWrapperGeneratorUtil.generateRestEnpointResponseClassName(
+					exchangeDescriptor, 
+					exchangeApiDescriptor, 
+					restApi);
+			
+			responseSimpleClassName = ExchangeJavaWrapperGeneratorUtil.getClassNameForParameterType(
+					EndpointParameterType.fromTypeName(restApi.getResponseDataType()), 
+					getImports(), 
+					restResponseClassName);
+		}
 		String apiMethodName = JavaCodeGenerationUtil.firstLetterToLowerCase(restApi.getName());
 		String apiMethodSignature =  new StringBuilder()
 				.append(FutureRestResponse.class.getSimpleName())

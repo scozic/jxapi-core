@@ -388,6 +388,9 @@ public class ExchangeApiInterfaceImplementationGenerator extends JavaTypeGenerat
 	}
 
 	private String getNewMessageDeserializerInstruction(EndpointParameterType messageType, String messageFullClassName) {
+		if (messageType == null) {
+			messageType  = EndpointParameterType.fromTypeName(CanonicalEndpointParameterTypes.STRING.name());
+		}
 		switch (messageType.getCanonicalType()) {
 		case BIGDECIMAL:
 			addImport(RawBigDecimalMessageDeserializer.class);
@@ -460,16 +463,28 @@ public class ExchangeApiInterfaceImplementationGenerator extends JavaTypeGenerat
 					getImports(), 
 					requestClassName);
 		}
+		boolean hasResponse = ExchangeJavaWrapperGeneratorUtil.restEndpointHasResponse(restApi, exchangeApiDescriptor);
+		String restResponseClassName = null;
+		String responseSimpleClassName = "String";
+		String getResponseDeserializerInstance = null;
+		if (hasResponse) {
+			restResponseClassName = ExchangeJavaWrapperGeneratorUtil.generateRestEnpointResponseClassName(
+					exchangeDescriptor, 
+					exchangeApiDescriptor, 
+					restApi);
+			
+			responseSimpleClassName = ExchangeJavaWrapperGeneratorUtil.getClassNameForParameterType(
+					EndpointParameterType.fromTypeName(restApi.getResponseDataType()), 
+					getImports(), 
+					restResponseClassName);
+			getResponseDeserializerInstance = getNewMessageDeserializerInstruction(
+					EndpointParameterType.fromTypeName(restApi.getResponseDataType()), 
+					restResponseClassName);
+		} else {
+			getResponseDeserializerInstance = getNewMessageDeserializerInstruction(null, null);
+		}
 		
-		String restResponseClassName = ExchangeJavaWrapperGeneratorUtil.generateRestEnpointResponseClassName(
-				exchangeDescriptor, 
-				exchangeApiDescriptor, 
-				restApi);
-		String responseSimpleClassName = ExchangeJavaWrapperGeneratorUtil.getClassNameForParameterType(
-				EndpointParameterType.fromTypeName(restApi.getResponseDataType()), 
-				getImports(), 
-				restResponseClassName);
-		String getResponseDeserializerInstance = getNewMessageDeserializerInstruction(EndpointParameterType.fromTypeName(restApi.getResponseDataType()), restResponseClassName);
+
 		
 		String apiMethodName = JavaCodeGenerationUtil.firstLetterToLowerCase(restApi.getName());
 		String restEndpointVariableName = apiMethodName + "Api";
