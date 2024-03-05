@@ -46,39 +46,43 @@ public class ExchangeJavaWrapperGeneratorUtil {
 	public static String generateRestEnpointRequestClassName(ExchangeDescriptor exchangeDescriptor, 
 															 ExchangeApiDescriptor exchangeApiDescriptor, 
 															 RestEndpointDescriptor restEndpointDescriptor) {
+		EndpointParameter request = restEndpointDescriptor.getRequest();
 		return generateRestEnpointPojoClassName(exchangeDescriptor, 
 												exchangeApiDescriptor, 
 												restEndpointDescriptor.getName(), 
-												restEndpointDescriptor.getRequestDataType(), 
-												restEndpointDescriptor.getRequestObjectName(), 
+												request.getEndpointParameterType(), 
+												request.getObjectName(), 
 												"Request");
 	}
 	
 	public static String generateRestEnpointResponseClassName(ExchangeDescriptor exchangeDescriptor, 
 															  ExchangeApiDescriptor exchangeApiDescriptor, 
 															  RestEndpointDescriptor restEndpointDescriptor) {
+		EndpointParameter response = restEndpointDescriptor.getResponse();
 		return generateRestEnpointPojoClassName(exchangeDescriptor, 
 												exchangeApiDescriptor, 
 												restEndpointDescriptor.getName(), 
-												restEndpointDescriptor.getResponseDataType(), 
-												restEndpointDescriptor.getResponseObjectName(), 
+												response.getEndpointParameterType(), 
+												response.getObjectName(), 
 												"Response");
 	}
 	
 	private static String generateRestEnpointPojoClassName(ExchangeDescriptor exchangeDescriptor, 
 														   ExchangeApiDescriptor exchangeApiDescriptor, 
 														   String endpointName, 
-														   String dataType,
+														   EndpointParameterType type,
 														   String objectName,
 														   String suffix) {
-		EndpointParameterType type = EndpointParameterType.fromTypeName(dataType);
+		if (type == null) {
+			type = EndpointParameterType.fromTypeName(CanonicalEndpointParameterTypes.OBJECT.name());
+		}
 		if (type.isObject() && objectName != null) {
 			return exchangeDescriptor.getBasePackage() + "." 
 					+ exchangeApiDescriptor.getName().toLowerCase() + ".pojo." 
 					+ JavaCodeGenerationUtil.firstLetterToUpperCase(objectName);
 		} else if (objectName != null) {
 			throw new IllegalArgumentException(
-					"Unexpected objectName provided:[" + objectName + "] for a non-object data type:" + dataType
+					"Unexpected objectName provided:[" + objectName + "] for a non-object data type:" + type
 							+ " in endpoint descriptor:" + endpointName + " " + suffix);
 		}
 		return exchangeDescriptor.getBasePackage() + "." + exchangeApiDescriptor.getName().toLowerCase() + ".pojo."
@@ -118,21 +122,23 @@ public class ExchangeJavaWrapperGeneratorUtil {
 	public static String generateWebsocketEndpointMessageClassName(ExchangeDescriptor exchangeDescriptor,
 																   ExchangeApiDescriptor exchangeApiDescriptor, 
 																   WebsocketEndpointDescriptor websocketApi) {
+		EndpointParameter message = websocketApi.getMessage();
 		return generateRestEnpointPojoClassName(exchangeDescriptor, 
 												exchangeApiDescriptor, 
 												websocketApi.getName(), 
-												websocketApi.getMessageDataType(), 
-												websocketApi.getMessageObjectName(), 
+												message.getEndpointParameterType(), 
+												message.getObjectName(), 
 												"Message");
 	}
 
 	public static String generateWebsocketEndpointRequestClassName(ExchangeDescriptor exchangeDescriptor,
 			ExchangeApiDescriptor exchangeApiDescriptor, WebsocketEndpointDescriptor websocketApi) {
+		EndpointParameter request = websocketApi.getRequest();
 		return generateRestEnpointPojoClassName(exchangeDescriptor, 
 												exchangeApiDescriptor, 
 												websocketApi.getName(), 
-												websocketApi.getRequestDataType(), 
-												websocketApi.getRequestObjectName(), 
+												request.getEndpointParameterType(), 
+												request.getObjectName(), 
 												"Request");
 	}
 	
@@ -440,6 +446,9 @@ public class ExchangeJavaWrapperGeneratorUtil {
 	}
 
 	public static String getNewJsonParameterDeserializerInstruction(EndpointParameterType type, String objectClassName, Set<String> imports) {
+		if (type == null) {
+			type  = EndpointParameterType.fromTypeName(CanonicalEndpointParameterTypes.STRING.name());
+		}
 		switch (type.getCanonicalType()) {
 		case BIGDECIMAL:
 			imports.add(BigDecimalJsonFieldDeserializer.class.getName());
@@ -476,27 +485,31 @@ public class ExchangeJavaWrapperGeneratorUtil {
 
 	public static List<EndpointParameter> findParametersForObjectName(String requestObjectName, ExchangeApiDescriptor exchangeApiDescriptor) {
 		for (RestEndpointDescriptor restEndpointDescriptor: exchangeApiDescriptor.getRestEndpoints()) {
-			if (requestObjectName.equals(restEndpointDescriptor.getRequestObjectName())) {
-				if (restEndpointDescriptor.getParameters() != null) {
-					return restEndpointDescriptor.getParameters();
+			EndpointParameter request = restEndpointDescriptor.getRequest();
+			if (requestObjectName.equals(request.getObjectName())) {
+				if (request.getParameters() != null) {
+					return request.getParameters();
 				}
 			}
-			if (requestObjectName.equals(restEndpointDescriptor.getResponseObjectName())) {
-				if (restEndpointDescriptor.getResponse() != null) {
-					return restEndpointDescriptor.getResponse();
+			EndpointParameter response = restEndpointDescriptor.getResponse();
+			if (requestObjectName.equals(response.getObjectName())) {
+				if (response.getParameters() != null) {
+					return response.getParameters();
 				}
 			}
 		}
 		
-		for (WebsocketEndpointDescriptor restEndpointDescriptor: exchangeApiDescriptor.getWebsocketEndpoints()) {
-			if (requestObjectName.equals(restEndpointDescriptor.getRequestObjectName())) {
-				if (restEndpointDescriptor.getParameters() != null) {
-					return restEndpointDescriptor.getParameters();
+		for (WebsocketEndpointDescriptor websocketEndpointDescriptor: exchangeApiDescriptor.getWebsocketEndpoints()) {
+			EndpointParameter request = websocketEndpointDescriptor.getRequest();
+			if (requestObjectName.equals(request.getObjectName())) {
+				if (request.getParameters() != null) {
+					return request.getParameters();
 				}
 			}
-			if (requestObjectName.equals(restEndpointDescriptor.getMessageObjectName())) {
-				if (restEndpointDescriptor.getResponse() != null) {
-					return restEndpointDescriptor.getResponse();
+			EndpointParameter message = websocketEndpointDescriptor.getMessage();
+			if (requestObjectName.equals(message.getObjectName())) {
+				if (message.getParameters() != null) {
+					return message.getParameters();
 				}
 			}
 		}
@@ -514,21 +527,28 @@ public class ExchangeJavaWrapperGeneratorUtil {
 	}
 
 	public static boolean websocketEndpointHasArguments(WebsocketEndpointDescriptor websocketApi, ExchangeApiDescriptor exchangeApiDescriptor) {
-		return ExchangeJavaWrapperGeneratorUtil.endpointHasArguments(websocketApi.getRequestDataType(), 
-									websocketApi.getParameters(), 
-									websocketApi.getRequestObjectName(), 
+		EndpointParameter request = websocketApi.getRequest();
+		if (request == null) {
+			return false;
+		}
+		return ExchangeJavaWrapperGeneratorUtil.endpointHasArguments(request.getEndpointParameterType(), 
+									request.getParameters(), 
+									request.getObjectName(), 
 									exchangeApiDescriptor);
 	}
 
 	public static boolean restEndpointHasArguments(RestEndpointDescriptor restApi, ExchangeApiDescriptor exchangeApiDescriptor) {
-		return ExchangeJavaWrapperGeneratorUtil.endpointHasArguments(restApi.getRequestDataType(), 
-									restApi.getParameters(), 
-									restApi.getRequestObjectName(), 
-									exchangeApiDescriptor);
+		EndpointParameter request = restApi.getRequest();
+		if (request == null) {
+			return false;
+		}
+		return ExchangeJavaWrapperGeneratorUtil.endpointHasArguments(request.getEndpointParameterType(),
+																	 request.getParameters(), 
+																	 request.getObjectName(), 
+																	 exchangeApiDescriptor);
 	}
 
-	private static boolean endpointHasArguments(String requestDataType, List<EndpointParameter> parameters, String requestObjectName, ExchangeApiDescriptor exchangeApiDescriptor) {
-		EndpointParameterType dataType = EndpointParameterType.fromTypeName(requestDataType);
+	private static boolean endpointHasArguments(EndpointParameterType dataType, List<EndpointParameter> parameters, String requestObjectName, ExchangeApiDescriptor exchangeApiDescriptor) {
 		return (dataType != null && dataType.getCanonicalType() != CanonicalEndpointParameterTypes.OBJECT) 
 				|| getEndpointParameters(parameters, requestObjectName, exchangeApiDescriptor).size() > 0;
 	}
@@ -538,9 +558,13 @@ public class ExchangeJavaWrapperGeneratorUtil {
 	}
 
 	public static boolean restEndpointHasResponse(RestEndpointDescriptor restApi, ExchangeApiDescriptor exchangeApiDescriptor) {
-		EndpointParameterType dataType = EndpointParameterType.fromTypeName(restApi.getResponseDataType());
+		EndpointParameter response = restApi.getResponse();
+		if (response == null) {
+			return false;
+		}
+		EndpointParameterType dataType = response.getEndpointParameterType();
 		return (dataType != null && dataType.getCanonicalType() != CanonicalEndpointParameterTypes.OBJECT) 
-				|| getEndpointParameters(restApi.getResponse(), restApi.getResponseObjectName(), exchangeApiDescriptor).size() > 0;
+				|| getEndpointParameters(response.getParameters(), response.getObjectName(), exchangeApiDescriptor).size() > 0;
 	}
 
 }

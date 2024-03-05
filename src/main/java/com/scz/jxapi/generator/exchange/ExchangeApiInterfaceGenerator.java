@@ -45,7 +45,7 @@ public class ExchangeApiInterfaceGenerator extends JavaTypeGenerator {
 		if (websocketEndpointFactoryFullClassName == null) {
 			throw new IllegalStateException("No 'websocketEndpointFactory' defined on " + exchangeApiDescriptor.getName());
 		}
-		EndpointParameterType requestDataType = EndpointParameterType.fromTypeName(websocketApi.getRequestDataType());
+		EndpointParameterType requestDataType = websocketApi.getRequest() == null? null: websocketApi.getRequest().getEndpointParameterType();
 		boolean hasArguments = ExchangeJavaWrapperGeneratorUtil.websocketEndpointHasArguments(websocketApi, exchangeApiDescriptor);
 		String requestSimpleClassName = Object.class.getSimpleName();
 		if (hasArguments) {
@@ -58,8 +58,10 @@ public class ExchangeApiInterfaceGenerator extends JavaTypeGenerator {
 													getImports(), 
 													requestClassName);
 		}
+		
+		EndpointParameterType messageDataType = websocketApi.getMessage() == null? null: websocketApi.getMessage().getEndpointParameterType();
 		String messageClassSimpleName = ExchangeJavaWrapperGeneratorUtil.getClassNameForParameterType(
-				EndpointParameterType.fromTypeName(websocketApi.getMessageDataType()), 
+				messageDataType, 
 				getImports(), 
 				ExchangeJavaWrapperGeneratorUtil.generateWebsocketEndpointMessageClassName(
 						exchangeDescriptor, 
@@ -103,7 +105,10 @@ public class ExchangeApiInterfaceGenerator extends JavaTypeGenerator {
 
 	private void generateRestEndpointMethodDeclaration(RestEndpointDescriptor restApi) {
 		boolean hasArguments = ExchangeJavaWrapperGeneratorUtil.restEndpointHasArguments(restApi, exchangeApiDescriptor);
-		EndpointParameterType requestDataType = EndpointParameterType.fromTypeName(restApi.getRequestDataType());
+		EndpointParameter request = restApi.getRequest();
+		EndpointParameterType requestDataType = request == null? null: request.getEndpointParameterType(); //EndpointParameterType.fromTypeName(restApi.getRequestDataType());
+		EndpointParameter response = restApi.getResponse();
+		EndpointParameterType responseDataType = response == null? null: response.getEndpointParameterType();
 		String requestSimpleClassName = "Object";
 		if (hasArguments) {
 			String requestClassName = ExchangeJavaWrapperGeneratorUtil.generateRestEnpointRequestClassName(exchangeDescriptor, exchangeApiDescriptor, restApi);
@@ -122,7 +127,7 @@ public class ExchangeApiInterfaceGenerator extends JavaTypeGenerator {
 					restApi);
 			
 			responseSimpleClassName = ExchangeJavaWrapperGeneratorUtil.getClassNameForParameterType(
-					EndpointParameterType.fromTypeName(restApi.getResponseDataType()), 
+					responseDataType, 
 					getImports(), 
 					restResponseClassName);
 		}
@@ -136,7 +141,7 @@ public class ExchangeApiInterfaceGenerator extends JavaTypeGenerator {
 				.append("(")
 				.append(hasArguments? requestSimpleClassName 
 									   + " " +
-									   ExchangeJavaWrapperGeneratorUtil.getRequestArgName(restApi.getRequestArgName())
+									   ExchangeJavaWrapperGeneratorUtil.getRequestArgName(request.getName())
 									 : "")
 				.append(")").toString(); 
 		appendToBody(JavaCodeGenerationUtil.generateJavaDoc(restApi.getDescription()) + "\n");

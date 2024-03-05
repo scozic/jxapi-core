@@ -18,25 +18,29 @@ public class WebsocketEndpointDescriptor {
 	
 	private String url;
 	
-	private List<EndpointParameter> parameters;
+	private EndpointParameter request;
 	
-	private List<EndpointParameter> response;
+	private EndpointParameter message;
+	
+//	private List<EndpointParameter> parameters;
+//	
+//	private List<EndpointParameter> response;
 	
 	private String topicParametersListSeparator;
 	
 	private List<WebsocketMessageTopicMatcherFieldDescriptor> messageTopicMatcherFields;
 	
-	private String messageDataType = CanonicalEndpointParameterTypes.OBJECT.name();
+//	private String messageDataType = CanonicalEndpointParameterTypes.OBJECT.name();
 	
-	private List<String> requestInterfaces;
+//	private List<String> requestInterfaces;
+//	
+//	private List<String> responseInterfaces;
 	
-	private List<String> responseInterfaces;
-	
-	private String requestDataType = CanonicalEndpointParameterTypes.OBJECT.name();
-	
-	private String requestObjectName;
-	
-	private String messageObjectName;
+//	private String requestDataType = CanonicalEndpointParameterTypes.OBJECT.name();
+//	
+//	private String requestObjectName;
+//	
+//	private String messageObjectName;
 	
 	private String requestArgName;
 	
@@ -68,19 +72,19 @@ public class WebsocketEndpointDescriptor {
 		this.url = url;
 	}
 	
-	public List<EndpointParameter> getParameters() {
-		return parameters;
-	}
-	public void setParameters(List<EndpointParameter> parameters) {
-		this.parameters = parameters;
-	}
-	
-	public List<EndpointParameter> getResponse() {
-		return response;
-	}
-	public void setResponse(List<EndpointParameter> response) {
-		this.response = response;
-	}
+//	public List<EndpointParameter> getParameters() {
+//		return parameters;
+//	}
+//	public void setParameters(List<EndpointParameter> parameters) {
+//		this.parameters = parameters;
+//	}
+//	
+//	public List<EndpointParameter> getResponse() {
+//		return response;
+//	}
+//	public void setResponse(List<EndpointParameter> response) {
+//		this.response = response;
+//	}
 	
 	public String getTopicParametersListSeparator() {
 		return topicParametersListSeparator;
@@ -96,69 +100,76 @@ public class WebsocketEndpointDescriptor {
 		this.messageTopicMatcherFields = messageTopicMatcherFields;
 	}
 	
-	public String getMessageDataType() {
-		return messageDataType;
-	}
+//	public String getMessageDataType() {
+//		return messageDataType;
+//	}
+//	
+//	public void setMessageDataType(String messageDataType) {
+//		this.messageDataType = messageDataType;
+//	}
 	
-	public void setMessageDataType(String messageDataType) {
-		this.messageDataType = messageDataType;
-	}
+//	/**
+//	 * @return List of implemented interfaces if generated POJO for this endpoint request
+//	 *         implements some specific ones. It may be useful for instance if all
+//	 *         API endpoints provide request with common fields that could be
+//	 *         extracted to super class.
+//	 */
+//	public List<String> getRequestInterfaces() {
+//		return requestInterfaces;
+//	}
+//
+//	/**
+//	 * @see #getRequestInterfaces()
+//	 */
+//	public void setRequestInterfaces(List<String> requestInterfaces) {
+//		this.requestInterfaces = requestInterfaces;
+//	}
+//
+//	/**
+//	 * @return List of implemented interfaces if generated POJO for this endpoint response
+//	 *         implements some specific ones. It may be useful for instance if all
+//	 *         API endpoints provide response with common fields that could be
+//	 *         extracted to super class.
+//	 */
+//	public List<String> getResponseInterfaces() {
+//		return responseInterfaces;
+//	}
+//
+//	/**
+//	 * @see #getResponseInterfaces()
+//	 */
+//	public void setResponseInterfaces(List<String> responseInterfaces) {
+//		this.responseInterfaces = responseInterfaces;
+//	}
 	
-	/**
-	 * @return List of implemented interfaces if generated POJO for this endpoint request
-	 *         implements some specific ones. It may be useful for instance if all
-	 *         API endpoints provide request with common fields that could be
-	 *         extracted to super class.
-	 */
-	public List<String> getRequestInterfaces() {
-		return requestInterfaces;
-	}
-
-	/**
-	 * @see #getRequestInterfaces()
-	 */
-	public void setRequestInterfaces(List<String> requestInterfaces) {
-		this.requestInterfaces = requestInterfaces;
-	}
-
-	/**
-	 * @return List of implemented interfaces if generated POJO for this endpoint response
-	 *         implements some specific ones. It may be useful for instance if all
-	 *         API endpoints provide response with common fields that could be
-	 *         extracted to super class.
-	 */
-	public List<String> getResponseInterfaces() {
-		return responseInterfaces;
-	}
-
-	/**
-	 * @see #getResponseInterfaces()
-	 */
-	public void setResponseInterfaces(List<String> responseInterfaces) {
-		this.responseInterfaces = responseInterfaces;
-	}
+//	public String getRequestObjectName() {
+//		return requestObjectName;
+//	}
+//	
+//	public void setRequestObjectName(String requestObjectName) {
+//		this.requestObjectName = requestObjectName;
+//	}
+//	
+//	public String getRequestDataType() {
+//		return requestDataType;
+//	}
+//	
+//	public void setRequestDataType(String requestDataType) {
+//		this.requestDataType = requestDataType;
+//	}
+//	
+//	public String getMessageObjectName() {
+//		return messageObjectName;
+//	}
+//	public void setMessageObjectName(String messageObjectName) {
+//		this.messageObjectName = messageObjectName;
+//	}
 	
-	public String getRequestObjectName() {
-		return requestObjectName;
+	public EndpointParameter getRequest() {
+		return request;
 	}
-	
-	public void setRequestObjectName(String requestObjectName) {
-		this.requestObjectName = requestObjectName;
-	}
-	
-	public String getRequestDataType() {
-		return requestDataType;
-	}
-	
-	public void setRequestDataType(String requestDataType) {
-		this.requestDataType = requestDataType;
-	}
-	
-	public String getMessageObjectName() {
-		return messageObjectName;
-	}
-	public void setMessageObjectName(String messageObjectName) {
-		this.messageObjectName = messageObjectName;
+	public void setRequest(EndpointParameter request) {
+		this.request = request;
 	}
 	
 	public String getRequestArgName() {
@@ -166,7 +177,13 @@ public class WebsocketEndpointDescriptor {
 	}
 	public void setRequestArgName(String requestArgName) {
 		this.requestArgName = requestArgName;
-	}	
+	}
+	public EndpointParameter getMessage() {
+		return message;
+	}
+	public void setMessage(EndpointParameter message) {
+		this.message = message;
+	}
 	
 	public String toString() {
 		return EncodingUtil.pojoToString(this);

@@ -398,27 +398,11 @@ public class WebsocketEndpointClassesGeneratorTest {
 		WebsocketEndpointDescriptor websocketEndpoint = findWebsocketEndpointByName("streamWithObjectListMapRequestDataType", api);
 		WebsocketEndpointClassesGenerator generator = new WebsocketEndpointClassesGenerator(exchange, api, websocketEndpoint);
 		generator.generateClasses(srcFolder);
-		checkJavaFilesCount(Paths.get("."), 2);
-		// FIXME
-//		Files.walk(srcFolder)
-//	      .sorted(Comparator.reverseOrder())
-//	      .map(Path::toFile)
-//	      .forEach(f -> System.out.println(f.getAbsolutePath()));
-		
+		checkJavaFilesCount(Paths.get("."), 2);	
 		checkJavaFilesCount(Paths.get("serializers"), 1);
 		checkSourceFileExists(Paths.get("serializers", "MyTestCEXMarketDataStreamWithObjectListMapRequestDataTypeRequestSerializer.java"));
 		checkJavaFilesCount(Paths.get("pojo"), 1);
 		checkSourceFileExists(Paths.get("pojo", "MyTestCEXMarketDataStreamWithObjectListMapRequestDataTypeRequest.java"));
 	}
-	
-	/*
-	 		
-		// FIXME
-		Files.walk(srcFolder)
-	      .sorted(Comparator.reverseOrder())
-	      .map(Path::toFile)
-	      .forEach(f -> System.out.println(f.getAbsolutePath()));
-		
-	 */
 
 }

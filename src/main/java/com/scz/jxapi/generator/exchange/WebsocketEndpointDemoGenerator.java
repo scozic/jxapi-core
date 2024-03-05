@@ -28,13 +28,13 @@ public class WebsocketEndpointDemoGenerator extends JavaTypeGenerator {
 						+ "(" + requestClassName + ")}\n"
 						+ JavaCodeGenerationUtil.GENERATED_CODE_WARNING);
 		JavaCodeGenerationUtil.generateSlf4jLoggerDeclaration(this);
-		websocketApi.getParameters().forEach(p -> generateParameterValueConstantDeclaration(exchangeDescriptor, exchangeApiDescriptor, websocketApi, p));
+		websocketApi.getRequest().getParameters().forEach(p -> generateParameterValueConstantDeclaration(exchangeDescriptor, exchangeApiDescriptor, websocketApi, p));
 		String exchangeInterfaceClassName = ExchangeJavaWrapperGeneratorUtil.getExchangeInterfaceName(exchangeDescriptor);
 		generateMainMethodBody(requestSimpleClassName, 
 							   apiInterfaceClassName, 
 							   exchangeInterfaceClassName,
 							   JavaCodeGenerationUtil.firstLetterToLowerCase(exchangeDescriptor.getName()), 
-							   websocketApi.getParameters(), 
+							   websocketApi.getRequest().getParameters(), 
 							   subscribeMethodName);
 	}
 	

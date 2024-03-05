@@ -41,10 +41,10 @@ public class ExchangeDescriptorParserTest {
 		Assert.assertEquals("Fetch current tickers", tickersEndPoint.getDescription());
 		Assert.assertEquals("GET", tickersEndPoint.getHttpMethod());
 		Assert.assertEquals("https://com.sample.mycex/tickers", tickersEndPoint.getUrl());
-		List<EndpointParameter> exchangeInfoParameters = tickersEndPoint.getParameters();
+		List<EndpointParameter> exchangeInfoParameters = tickersEndPoint.getRequest().getParameters();
 		Assert.assertEquals(0, exchangeInfoParameters.size());
 		
-		checkTickersResponse(tickersEndPoint.getResponse());
+		checkTickersResponse(tickersEndPoint.getResponse().getParameters());
 		
 	}
 
@@ -77,7 +77,7 @@ public class ExchangeDescriptorParserTest {
 		Assert.assertEquals("Fetch market information of symbols that can be traded", exchangeInfoEndPoint.getDescription());
 		Assert.assertEquals("GET", exchangeInfoEndPoint.getHttpMethod());
 		Assert.assertEquals("https://com.sample.mycex/exchangeInfo", exchangeInfoEndPoint.getUrl());
-		List<EndpointParameter> exchangeInfoParameters = exchangeInfoEndPoint.getParameters();
+		List<EndpointParameter> exchangeInfoParameters = exchangeInfoEndPoint.getRequest().getParameters();
 		
 		Assert.assertEquals(1, exchangeInfoParameters.size());
 		EndpointParameter symbolsParameter = exchangeInfoParameters.get(0);
@@ -87,7 +87,7 @@ public class ExchangeDescriptorParserTest {
 		Assert.assertEquals(CanonicalEndpointParameterTypes.STRING, symbolsParameter.getEndpointParameterType().getSubType().getCanonicalType());
 		Assert.assertEquals(null, symbolsParameter.getSampleValue());
 		
-		checkExchangeInfoResponse(exchangeInfoEndPoint.getResponse());
+		checkExchangeInfoResponse(exchangeInfoEndPoint.getResponse().getParameters());
 	}
 	
 	private void checkExchangeInfoResponse(List<EndpointParameter> exchangeInfoResponse) {
@@ -133,7 +133,7 @@ public class ExchangeDescriptorParserTest {
 		Assert.assertEquals("${symbol}@ticker", tickerStreamEndpoint.getTopic());
 		Assert.assertEquals("|", tickerStreamEndpoint.getTopicParametersListSeparator());
 		
-		List<EndpointParameter> parameters = tickerStreamEndpoint.getParameters();
+		List<EndpointParameter> parameters = tickerStreamEndpoint.getRequest().getParameters();
 		EndpointParameter symbols = parameters.get(0);
 		Assert.assertEquals("symbol", symbols.getName());
 		Assert.assertEquals("Symbol to subscribe to ticker stream of", symbols.getDescription());
@@ -147,7 +147,7 @@ public class ExchangeDescriptorParserTest {
 		Assert.assertEquals("symbol", messageTopicMatcherFields.get(1).getName());
 		Assert.assertEquals("${symbol}", messageTopicMatcherFields.get(1).getValue());
 		
-		List<EndpointParameter> response = tickerStreamEndpoint.getResponse();
+		List<EndpointParameter> response = tickerStreamEndpoint.getMessage().getParameters();
 		Assert.assertEquals(3, response.size());
 		
 		EndpointParameter topic = response.get(0);

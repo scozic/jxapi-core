@@ -192,7 +192,7 @@ public class RestEndpointClassesGeneratorTest {
 	}
 	
 	@Test
-	public void testGenerateRestEndpointClassesWithRequestAndResponseImplmentingCustomInterfaces() throws IOException {
+	public void testGenerateRestEndpointClassesWithRequestAndResponseImplementingCustomInterfaces() throws IOException {
 		srcFolder = ClassesGeneratorTestUtil.generateTmpDir();
 		ExchangeDescriptor exchange = new ExchangeDescriptorParser().fromJson(Paths.get(".", "src", "test", "resources", "testExchangeDescriptorWithRequestAndResponseImplementingCustomInterfaces.json"));
 		ExchangeApiDescriptor api = exchange.getApis().get(0);

@@ -24,6 +24,13 @@ import com.scz.jxapi.util.EncodingUtil;
  */
 public class EndpointParameterType {
 	
+	public static final EndpointParameterType OBJECT = fromTypeName(CanonicalEndpointParameterTypes.OBJECT.name());
+	public static final EndpointParameterType STRING = fromTypeName(CanonicalEndpointParameterTypes.STRING.name());
+	public static final EndpointParameterType INT = fromTypeName(CanonicalEndpointParameterTypes.INT.name());
+	public static final EndpointParameterType LONG = fromTypeName(CanonicalEndpointParameterTypes.LONG.name());
+	public static final EndpointParameterType BIGDECIMAL = fromTypeName(CanonicalEndpointParameterTypes.BIGDECIMAL.name());
+	public static final EndpointParameterType BOOLEAN = fromTypeName(CanonicalEndpointParameterTypes.BOOLEAN.name());
+	
 	public static EndpointParameterType getLeafSubType(EndpointParameterType type) {
 		EndpointParameterType res = type;
 		while (res.subType != null) {

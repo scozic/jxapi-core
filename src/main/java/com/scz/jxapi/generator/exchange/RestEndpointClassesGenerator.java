@@ -2,7 +2,6 @@ package com.scz.jxapi.generator.exchange;
 
 import java.io.IOException;
 import java.nio.file.Path;
-import java.util.ArrayList;
 import java.util.List;
 
 import com.scz.jxapi.generator.JavaCodeGenerationUtil;
@@ -53,12 +52,8 @@ public class RestEndpointClassesGenerator implements ClassesGenerator {
 
 	private void generatePojos(Path outputFolder) throws IOException {
 		// Generate POJOs for request and response
-		List<String> requestInterfaces = new ArrayList<>();
-		if (restEndpointDescriptor.getRequestInterfaces() != null) {
-			requestInterfaces.addAll(restEndpointDescriptor.getRequestInterfaces());
-		}
-		
-		if (restEndpointDescriptor.getParameters() != null) {
+		EndpointParameter request = restEndpointDescriptor.getRequest();
+		if (request != null && request.getParameters() != null) {
 			new EndpointPojoClassesGenerator(
 					ExchangeJavaWrapperGeneratorUtil.generateRestEnpointRequestClassName(exchangeDescriptor, apiDescriptor, restEndpointDescriptor), 
 					"Request for " + exchangeDescriptor.getName() + " " + apiDescriptor.getName() + " API " 
@@ -66,13 +61,13 @@ public class RestEndpointClassesGenerator implements ClassesGenerator {
 						+ restEndpointDescriptor.getDescription()
 						+ "\n"
 						+ JavaCodeGenerationUtil.GENERATED_CODE_WARNING,
-						restEndpointDescriptor.getParameters(),
-						requestInterfaces,
+						request.getParameters(),
+						request.getImplementedInterfaces(),
 						null).generateClasses(outputFolder);
 		}
 		
-		
-		if (restEndpointDescriptor.getResponse() != null) {
+		EndpointParameter response = restEndpointDescriptor.getResponse();
+		if (response != null && response.getParameters() != null) {
 			new EndpointPojoClassesGenerator( 
 					ExchangeJavaWrapperGeneratorUtil.generateRestEnpointResponseClassName(
 							exchangeDescriptor, 
@@ -85,40 +80,44 @@ public class RestEndpointClassesGenerator implements ClassesGenerator {
 						+ restEndpointDescriptor.getDescription()
 						+ "\n"
 						+ JavaCodeGenerationUtil.GENERATED_CODE_WARNING,
-					restEndpointDescriptor.getResponse(),
-					restEndpointDescriptor.getResponseInterfaces(),
+						response.getParameters(),
+						response.getImplementedInterfaces(),
 					null).generateClasses(outputFolder);
 		}
 	}
 	
 	private void generateDeserializers(Path outputFolder) throws IOException {
-		if (restEndpointDescriptor.getResponse() != null) {
+		EndpointParameter response = restEndpointDescriptor.getResponse();
+		if (response != null && response.getParameters() != null) {
 			new JsonMessageDeserializerClassesGenerator( 
 					ExchangeJavaWrapperGeneratorUtil.generateRestEnpointResponseClassName(
 							exchangeDescriptor, 
 							apiDescriptor, 
 							restEndpointDescriptor),
-					restEndpointDescriptor.getResponse()).generateClasses(outputFolder);
+							response.getParameters()).generateClasses(outputFolder);
 		}
 	}
 	
 	private void generateSerializers(Path ouputFolder) throws IOException {
-		if (restEndpointDescriptor.getParameters() != null) {
+		 EndpointParameter request = restEndpointDescriptor.getRequest();
+		 List<EndpointParameter> requestParams = request == null? null : request.getParameters();
+		 if (requestParams != null) {
 			new JsonPojoSerializerClassesGenerator( 
 					ExchangeJavaWrapperGeneratorUtil.generateRestEnpointRequestClassName(
 							exchangeDescriptor, 
 							apiDescriptor, 
 							restEndpointDescriptor),
-					restEndpointDescriptor.getParameters()).generateClasses(ouputFolder);
+							requestParams).generateClasses(ouputFolder);
 		}
-		
-		if (restEndpointDescriptor.getResponse() != null) {
+		EndpointParameter response = restEndpointDescriptor.getResponse();
+		List<EndpointParameter> responseParams = response == null? null : response.getParameters();
+		if (responseParams != null) {
 			new JsonPojoSerializerClassesGenerator(  
 					ExchangeJavaWrapperGeneratorUtil.generateRestEnpointResponseClassName(
 							exchangeDescriptor, 
 							apiDescriptor, 
 							restEndpointDescriptor),
-					restEndpointDescriptor.getResponse()).generateClasses(ouputFolder);
+							responseParams).generateClasses(ouputFolder);
 		}
 	}
 }

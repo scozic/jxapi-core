@@ -3,6 +3,7 @@ package com.scz.jxapi.generator.exchange;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.List;
+import java.util.Optional;
 
 import com.scz.jxapi.generator.JavaCodeGenerationUtil;
 
@@ -55,7 +56,8 @@ public class WebsocketEndpointClassesGenerator implements ClassesGenerator {
 							exchangeDescriptor, 
 							apiDescriptor, 
 							websocketEndpointDescriptor),
-					websocketEndpointDescriptor.getParameters()).generateClasses(outputFolder);
+					websocketEndpointDescriptor.getRequest().getParameters())
+			  .generateClasses(outputFolder);
 		}
 	
 		if (shouldGenerateMessagePojo()) {
@@ -64,24 +66,25 @@ public class WebsocketEndpointClassesGenerator implements ClassesGenerator {
 							exchangeDescriptor, 
 							apiDescriptor, 
 							websocketEndpointDescriptor),
-							websocketEndpointDescriptor.getResponse()).generateClasses(outputFolder);;
+					websocketEndpointDescriptor.getMessage().getParameters())
+			  .generateClasses(outputFolder);;
 		}
 	}
 
 	private void generateDeserializers(Path outputFolder) throws IOException {
-		List<EndpointParameter> response = websocketEndpointDescriptor.getResponse();
+//		List<EndpointParameter> response = websocketEndpointDescriptor.getResponse();
 		if (shouldGenerateMessagePojo()) {
 			new JsonMessageDeserializerClassesGenerator(
 					ExchangeJavaWrapperGeneratorUtil.generateWebsocketEndpointMessageClassName(
 							exchangeDescriptor, 
 							apiDescriptor, 
 							websocketEndpointDescriptor),
-							response).generateClasses(outputFolder);
+							websocketEndpointDescriptor.getMessage().getParameters()).generateClasses(outputFolder);
 		}
 	}
 
 	private void generatePojos(Path outputFolder) throws IOException {
-		List<EndpointParameter> requestParameters = websocketEndpointDescriptor.getParameters();
+//		List<EndpointParameter> requestParameters = websocketEndpointDescriptor.getParameters();
 		if (shouldGenerateRequestPojo()) {
 			new EndpointPojoClassesGenerator( 
 					ExchangeJavaWrapperGeneratorUtil.generateWebsocketEndpointRequestClassName(exchangeDescriptor, apiDescriptor, websocketEndpointDescriptor), 
@@ -92,12 +95,11 @@ public class WebsocketEndpointClassesGenerator implements ClassesGenerator {
 						+ websocketEndpointDescriptor.getDescription()
 						+ "\n"
 						+ JavaCodeGenerationUtil.GENERATED_CODE_WARNING,
-						requestParameters, 
-					websocketEndpointDescriptor.getRequestInterfaces(), 
+					websocketEndpointDescriptor.getRequest().getParameters(), 
+					websocketEndpointDescriptor.getRequest().getImplementedInterfaces(), 
 					null).generateClasses(outputFolder);
 		}
 		
-		List<EndpointParameter> responseParameters = websocketEndpointDescriptor.getResponse();
 		if (shouldGenerateMessagePojo()) {
 			new EndpointPojoClassesGenerator( 
 					ExchangeJavaWrapperGeneratorUtil.generateWebsocketEndpointMessageClassName(
@@ -111,23 +113,34 @@ public class WebsocketEndpointClassesGenerator implements ClassesGenerator {
 						+ websocketEndpointDescriptor.getDescription()
 						+ "\n"
 						+ JavaCodeGenerationUtil.GENERATED_CODE_WARNING,
-					responseParameters, 
-					websocketEndpointDescriptor.getResponseInterfaces(), 
+					websocketEndpointDescriptor.getMessage().getParameters(), 
+					websocketEndpointDescriptor.getMessage().getImplementedInterfaces(), 
 					null).generateClasses(outputFolder);
 		}
 	}
 	
 	private boolean shouldGenerateRequestPojo() {
-		return shouldGeneratePojo(websocketEndpointDescriptor.getParameters(), websocketEndpointDescriptor.getRequestDataType());
+		return shouldGeneratePojo(websocketEndpointDescriptor.getRequest());
 	}
 	
 	private boolean shouldGenerateMessagePojo() {
-		return shouldGeneratePojo(websocketEndpointDescriptor.getResponse(), websocketEndpointDescriptor.getMessageDataType());
+		return shouldGeneratePojo(websocketEndpointDescriptor.getMessage());
 	}
 	
-	private boolean shouldGeneratePojo(List<EndpointParameter> parameters, String dataType) {
-		return parameters != null && 
-			  !(parameters.isEmpty() && websocketEndpointDescriptor.getRequestDataType().equals(CanonicalEndpointParameterTypes.OBJECT.name()));
+	private boolean shouldGeneratePojo(EndpointParameter param) {
+		if (param == null) {
+			return false;
+		}
+		EndpointParameterType type = Optional.ofNullable(param.getEndpointParameterType()).orElse(EndpointParameterType.OBJECT);
+		if (!type.isObject()) {
+			return false;
+		}
+		List<EndpointParameter> parameters = param.getParameters();
+		if (type.getCanonicalType() == CanonicalEndpointParameterTypes.OBJECT) {
+			return parameters != null && !parameters.isEmpty();
+		}
+		
+		return true;
 	}
 	
 

@@ -19,9 +19,13 @@ public class RestEndpointDescriptor {
 	
 	private String httpMethod;
 	
-	private List<EndpointParameter> parameters;
+	private EndpointParameter request;
 	
-	private List<EndpointParameter> response;
+	private EndpointParameter response;
+	
+//	private List<EndpointParameter> parameters;
+//	
+//	private List<EndpointParameter> response;
 
 	private String urlParameters;
 	
@@ -29,23 +33,23 @@ public class RestEndpointDescriptor {
 	
 	private boolean queryParams;
 	
-	private String responseDataType = CanonicalEndpointParameterTypes.OBJECT.name();
-	
-	private String requestDataType = CanonicalEndpointParameterTypes.OBJECT.name();
-	
-	private String requestObjectName;
-	
-	private String responseObjectName;
+//	private String responseDataType = CanonicalEndpointParameterTypes.OBJECT.name();
+//	
+//	private String requestDataType = CanonicalEndpointParameterTypes.OBJECT.name();
+//	
+//	private String requestObjectName;
+//	
+//	private String responseObjectName;
 	
 	private Integer requestWeight;
 	
 	private List<RateLimitRule> rateLimits;
 	
-	private List<String> requestInterfaces;
+//	private List<String> requestInterfaces;
+//	
+//	private List<String> responseInterfaces;
 	
-	private List<String> responseInterfaces;
-	
-	private String requestArgName;
+//	private String requestArgName;
  	
 	public String getName() {
 		return name;
@@ -79,21 +83,21 @@ public class RestEndpointDescriptor {
 		this.httpMethod = httpMethod;
 	}
 
-	public List<EndpointParameter> getResponse() {
-		return response;
-	}
-
-	public void setResponse(List<EndpointParameter> response) {
-		this.response = response;
-	}
-	
-	public List<EndpointParameter> getParameters() {
-		return parameters;
-	}
-
-	public void setParameters(List<EndpointParameter> parameters) {
-		this.parameters = parameters;
-	}
+//	public List<EndpointParameter> getResponse() {
+//		return response;
+//	}
+//
+//	public void setResponse(List<EndpointParameter> response) {
+//		this.response = response;
+//	}
+//	
+//	public List<EndpointParameter> getParameters() {
+//		return parameters;
+//	}
+//
+//	public void setParameters(List<EndpointParameter> parameters) {
+//		this.parameters = parameters;
+//	}
 	
 	public String getUrlParameters() {
 		return urlParameters;
@@ -119,21 +123,21 @@ public class RestEndpointDescriptor {
 		this.queryParams = queryParams;
 	}
 	
-	public String getResponseDataType() {
-		return responseDataType;
-	}
-
-	public void setResponseDataType(String responseDataType) {
-		this.responseDataType = responseDataType;
-	}
-
-	public String getResponseObjectName() {
-		return responseObjectName;
-	}
-
-	public void setResponseObjectName(String responseObjectName) {
-		this.responseObjectName = responseObjectName;
-	}
+//	public String getResponseDataType() {
+//		return responseDataType;
+//	}
+//
+//	public void setResponseDataType(String responseDataType) {
+//		this.responseDataType = responseDataType;
+//	}
+//
+//	public String getResponseObjectName() {
+//		return responseObjectName;
+//	}
+//
+//	public void setResponseObjectName(String responseObjectName) {
+//		this.responseObjectName = responseObjectName;
+//	}
 	
 	public List<RateLimitRule> getRateLimits() {
 		return rateLimits;
@@ -151,62 +155,78 @@ public class RestEndpointDescriptor {
 		this.requestWeight = requestWeight;
 	}
 	
-	/**
-	 * @return List of implemented interfaces if generated POJO for this endpoint request
-	 *         implements some specific ones. It may be useful for instance if all
-	 *         API endpoints provide request with common fields that could be
-	 *         extracted to super class.
-	 */
-	public List<String> getRequestInterfaces() {
-		return requestInterfaces;
-	}
-
-	/**
-	 * @see #getRequestInterfaces()
-	 */
-	public void setRequestInterfaces(List<String> requestInterfaces) {
-		this.requestInterfaces = requestInterfaces;
-	}
-
-	/**
-	 * @return List of implemented interfaces if generated POJO for this endpoint response
-	 *         implements some specific ones. It may be useful for instance if all
-	 *         API endpoints provide response with common fields that could be
-	 *         extracted to super class.
-	 */
-	public List<String> getResponseInterfaces() {
-		return responseInterfaces;
-	}
-
-	/**
-	 * @see #getResponseInterfaces()
-	 */
-	public void setResponseInterfaces(List<String> responseInterfaces) {
-		this.responseInterfaces = responseInterfaces;
-	}
+//	/**
+//	 * @return List of implemented interfaces if generated POJO for this endpoint request
+//	 *         implements some specific ones. It may be useful for instance if all
+//	 *         API endpoints provide request with common fields that could be
+//	 *         extracted to super class.
+//	 */
+//	public List<String> getRequestInterfaces() {
+//		return requestInterfaces;
+//	}
+//
+//	/**
+//	 * @see #getRequestInterfaces()
+//	 */
+//	public void setRequestInterfaces(List<String> requestInterfaces) {
+//		this.requestInterfaces = requestInterfaces;
+//	}
+//
+//	/**
+//	 * @return List of implemented interfaces if generated POJO for this endpoint response
+//	 *         implements some specific ones. It may be useful for instance if all
+//	 *         API endpoints provide response with common fields that could be
+//	 *         extracted to super class.
+//	 */
+//	public List<String> getResponseInterfaces() {
+//		return responseInterfaces;
+//	}
+//
+//	/**
+//	 * @see #getResponseInterfaces()
+//	 */
+//	public void setResponseInterfaces(List<String> responseInterfaces) {
+//		this.responseInterfaces = responseInterfaces;
+//	}
 	
-	public String getRequestDataType() {
-		return requestDataType;
-	}
-
-	public void setRequestDataType(String requestDataType) {
-		this.requestDataType = requestDataType;
-	}
-
-	public String getRequestObjectName() {
-		return requestObjectName;
-	}
-
-	public void setRequestObjectName(String requestObjectName) {
-		this.requestObjectName = requestObjectName;
-	}
+//	public String getRequestDataType() {
+//		return requestDataType;
+//	}
+//
+//	public void setRequestDataType(String requestDataType) {
+//		this.requestDataType = requestDataType;
+//	}
+//
+//	public String getRequestObjectName() {
+//		return requestObjectName;
+//	}
+//
+//	public void setRequestObjectName(String requestObjectName) {
+//		this.requestObjectName = requestObjectName;
+//	}
+//	
+//	public String getRequestArgName() {
+//		return requestArgName;
+//	}
+//
+//	public void setRequestArgName(String requestArgName) {
+//		this.requestArgName = requestArgName;
+//	}
 	
-	public String getRequestArgName() {
-		return requestArgName;
+	public EndpointParameter getRequest() {
+		return request;
 	}
 
-	public void setRequestArgName(String requestArgName) {
-		this.requestArgName = requestArgName;
+	public void setRequest(EndpointParameter request) {
+		this.request = request;
+	}
+
+	public EndpointParameter getResponse() {
+		return response;
+	}
+
+	public void setResponse(EndpointParameter response) {
+		this.response = response;
 	}
 	
 	@Override
