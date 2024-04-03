@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -14,6 +15,12 @@ import com.fasterxml.jackson.core.JsonToken;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.scz.jxapi.netutils.deserialization.json.JsonDeserializer;
+import com.scz.jxapi.netutils.deserialization.json.field.BigDecimalJsonFieldDeserializer;
+import com.scz.jxapi.netutils.deserialization.json.field.BooleanJsonFieldDeserializer;
+import com.scz.jxapi.netutils.deserialization.json.field.IntegerJsonFieldDeserializer;
+import com.scz.jxapi.netutils.deserialization.json.field.ListJsonFieldDeserializer;
+import com.scz.jxapi.netutils.deserialization.json.field.LongJsonFieldDeserializer;
+import com.scz.jxapi.netutils.deserialization.json.field.StringJsonFieldDeserializer;
 
 /**
  * Helper methods around JSON serialization/deserialization.
@@ -157,6 +164,31 @@ public class JsonUtil {
 		default:
 			throw new IllegalStateException("Unexpected JsonToken:" + jsonParser.currentToken());
 		}
+	}
+	
+	public List<Integer> parseIntegerJsonArray(String jsonArray) {
+		return parseJsonArray(jsonArray, IntegerJsonFieldDeserializer.getInstance());
+	}
+	
+	public List<BigDecimal> parseBigDecimalJsonArray(String jsonArray) {
+		return parseJsonArray(jsonArray, BigDecimalJsonFieldDeserializer.getInstance());
+	}
+	
+	public List<Boolean> parseBooleanJsonArray(String jsonArray) {
+		return parseJsonArray(jsonArray, BooleanJsonFieldDeserializer.getInstance());
+	}
+	
+	public List<Long> parseLongJsonArray(String jsonArray) {
+		return parseJsonArray(jsonArray, LongJsonFieldDeserializer.getInstance());
+	}
+	
+	public List<String> parseStringJsonArray(String jsonArray) {
+		return parseJsonArray(jsonArray, StringJsonFieldDeserializer.getInstance());
+	}
+	
+	private static <T> List<T> parseJsonArray(String jsonArray, JsonDeserializer<T> itemDeserializer) {
+		ListJsonFieldDeserializer<T> deserializer = new ListJsonFieldDeserializer<>(itemDeserializer);
+		return deserializer.deserialize(jsonArray);
 	}
 
 }

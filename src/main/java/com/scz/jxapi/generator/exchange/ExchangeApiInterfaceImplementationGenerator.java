@@ -13,11 +13,6 @@ import java.util.stream.Collectors;
 
 import com.scz.jxapi.generator.JavaCodeGenerationUtil;
 import com.scz.jxapi.generator.JavaTypeGenerator;
-import com.scz.jxapi.netutils.deserialization.RawBigDecimalMessageDeserializer;
-import com.scz.jxapi.netutils.deserialization.RawBooleanMessageDeserializer;
-import com.scz.jxapi.netutils.deserialization.RawIntegerMessageDeserializer;
-import com.scz.jxapi.netutils.deserialization.RawLongMessageDeserializer;
-import com.scz.jxapi.netutils.deserialization.RawStringMessageDeserializer;
 import com.scz.jxapi.netutils.deserialization.json.field.BigDecimalJsonFieldDeserializer;
 import com.scz.jxapi.netutils.deserialization.json.field.BooleanJsonFieldDeserializer;
 import com.scz.jxapi.netutils.deserialization.json.field.IntegerJsonFieldDeserializer;
@@ -233,9 +228,9 @@ public class ExchangeApiInterfaceImplementationGenerator extends JavaTypeGenerat
 			throw new IllegalStateException("No 'websocketEndpointFactory' defined on " + exchangeApiDescriptor.getName());
 		}
 		EndpointParameter request = websocketApi.getRequest();
-		EndpointParameterType requestDataType = getEndpointParameterType(request);
+		EndpointParameterType requestDataType = ExchangeJavaWrapperGeneratorUtil.getEndpointParameterType(request);
 		EndpointParameter message = websocketApi.getMessage();
-		EndpointParameterType messageDataType = getEndpointParameterType(message);
+		EndpointParameterType messageDataType = ExchangeJavaWrapperGeneratorUtil.getEndpointParameterType(message);
 		addImport(WebsocketEndpoint.class);
 		boolean hasArguments = ExchangeJavaWrapperGeneratorUtil.websocketEndpointHasArguments(websocketApi, exchangeApiDescriptor);
 		String requestSimpleClassName = Object.class.getSimpleName();
@@ -262,7 +257,7 @@ public class ExchangeApiInterfaceImplementationGenerator extends JavaTypeGenerat
 		String unsubscribeMethodName = "unsubscribe" + JavaCodeGenerationUtil.firstLetterToUpperCase(websocketApi.getName());
 		String websocketEndpointVariableName = JavaCodeGenerationUtil.firstLetterToLowerCase(websocketApi.getName()) + "Ws";
 		
-		String getResponseDeserializerInstance = getNewMessageDeserializerInstruction(messageDataType, messageClassObjectName);
+		String getResponseDeserializerInstance = ExchangeJavaWrapperGeneratorUtil.getNewMessageDeserializerInstruction(messageDataType, messageClassObjectName, getImports());
 		
 		finalMembersDeclarations.append("private final WebsocketEndpoint<" 
 											+ requestSimpleClassName 
@@ -311,10 +306,10 @@ public class ExchangeApiInterfaceImplementationGenerator extends JavaTypeGenerat
 		List<String> replacements = new ArrayList<>();
 		replacements.add("topic");
 		// replacements.add("\"+ topic + \"");
-		replacements.add("topic");
+		replacements.add("\" + topic + \"");
 		List<EndpointParameter> endpointParameters = List.of();
 		if (request != null) {
-			ExchangeJavaWrapperGeneratorUtil.getEndpointParameters(
+			endpointParameters = ExchangeJavaWrapperGeneratorUtil.getEndpointParameters(
 					request.getParameters(), 
 					request.getObjectName(), 
 					exchangeApiDescriptor);
@@ -325,7 +320,7 @@ public class ExchangeApiInterfaceImplementationGenerator extends JavaTypeGenerat
 			if (!parameterClass.startsWith("java.lang") && parameterClass.contains(".")) {
 				parameterClass = JavaCodeGenerationUtil.getClassNameWithoutPackage(parameterClass);
 			}
-			replacements.add("\"+\" + request." 
+			replacements.add("\" + request." 
 								 + JavaCodeGenerationUtil.getGetAccessorMethodName(
 										 		param.getName(), 
 										 		parameterClass, 
@@ -341,12 +336,17 @@ public class ExchangeApiInterfaceImplementationGenerator extends JavaTypeGenerat
 		
 		for (int i = 0; i < websocketApi.getMessageTopicMatcherFields().size(); i++) {
 			WebsocketMessageTopicMatcherFieldDescriptor topicMatcherField = websocketApi.getMessageTopicMatcherFields().get(i);
-			subscribeMethodBody
+			String topicMatcherFieldDeclaration = new StringBuilder()
 				.append("\"")
 				.append(topicMatcherField.getName())
 				.append("\", ")
-				.append(EncodingUtil.substituteArguments(topicMatcherField.getValue(), (Object[]) replacements.toArray(new String[replacements.size()])));
-				
+				.append(EncodingUtil.substituteArguments("\"" + topicMatcherField.getValue() + "\"", (Object[]) replacements.toArray(new String[replacements.size()])))
+				.toString();
+			String emtpyStrAppend = " + \"\"";
+			if (topicMatcherFieldDeclaration.endsWith(emtpyStrAppend)) {
+				topicMatcherFieldDeclaration = topicMatcherFieldDeclaration.substring(0, topicMatcherFieldDeclaration.length() - emtpyStrAppend.length());
+			}
+			subscribeMethodBody.append(topicMatcherFieldDeclaration.toString());	
 			if (i < websocketApi.getMessageTopicMatcherFields().size() - 1) {
 				subscribeMethodBody.append(", ");
 			}
@@ -373,7 +373,7 @@ public class ExchangeApiInterfaceImplementationGenerator extends JavaTypeGenerat
 	
 	private String generateWebsocketTopicSerializerDeclaration(WebsocketEndpointDescriptor websocketApi) {
 		EndpointParameter request = websocketApi.getRequest();
-		EndpointParameterType requestDataType = getEndpointParameterType(request); 
+		EndpointParameterType requestDataType = ExchangeJavaWrapperGeneratorUtil.getEndpointParameterType(request); 
 		String topicSerializerBody = "\"\"";
 		if (ExchangeJavaWrapperGeneratorUtil.websocketEndpointHasArguments(websocketApi, exchangeApiDescriptor)) {
 			if (websocketApi.getTopic() != null) {
@@ -395,35 +395,6 @@ public class ExchangeApiInterfaceImplementationGenerator extends JavaTypeGenerat
 		return topicSerializerBody + ";\n";
 	}
 
-	private String getNewMessageDeserializerInstruction(EndpointParameterType messageType, String messageFullClassName) {
-		if (messageType == null) {
-			messageType  = EndpointParameterType.fromTypeName(CanonicalEndpointParameterTypes.STRING.name());
-		}
-		switch (messageType.getCanonicalType()) {
-		case BIGDECIMAL:
-			addImport(RawBigDecimalMessageDeserializer.class);
-			return RawBigDecimalMessageDeserializer.class.getSimpleName() + ".getInstance()";
-		case BOOLEAN:
-			addImport(RawBooleanMessageDeserializer.class);
-			return RawBooleanMessageDeserializer.class.getSimpleName() + ".getInstance()";
-		case INT:
-			addImport(RawIntegerMessageDeserializer.class);
-			return RawIntegerMessageDeserializer.class.getSimpleName() + ".getInstance()";
-		case TIMESTAMP:
-		case LONG:
-			addImport(RawLongMessageDeserializer.class);
-			return RawLongMessageDeserializer.class.getSimpleName() + ".getInstance()";
-		case STRING:
-			addImport(RawStringMessageDeserializer.class);
-			return RawStringMessageDeserializer.class.getSimpleName() + ".getInstance()";
-		case OBJECT:
-		case LIST:
-		case MAP:
-		default:
-			return ExchangeJavaWrapperGeneratorUtil.getNewJsonParameterDeserializerInstruction(messageType, messageFullClassName, getImports());
-		}
-	}
-	
 	public static String getNewNonPrimitiveParameterJsonDeserializerInstruction(EndpointParameterType type, String objectClassName, Set<String> imports) {
 		switch (type.getCanonicalType()) {
 		case BIGDECIMAL:
@@ -462,9 +433,9 @@ public class ExchangeApiInterfaceImplementationGenerator extends JavaTypeGenerat
 	private void generateRestEndpointMethodDeclaration(RestEndpointDescriptor restApi) {
 		addImport(RestEndpoint.class);
 		EndpointParameter request = restApi.getRequest();
-		EndpointParameterType requestDataType = getEndpointParameterType(request);
+		EndpointParameterType requestDataType = ExchangeJavaWrapperGeneratorUtil.getEndpointParameterType(request);
 		EndpointParameter response = restApi.getResponse();
-		EndpointParameterType responseDataType =  getEndpointParameterType(response);
+		EndpointParameterType responseDataType =  ExchangeJavaWrapperGeneratorUtil.getEndpointParameterType(response);
 		boolean hasArguments = ExchangeJavaWrapperGeneratorUtil.restEndpointHasArguments(restApi, exchangeApiDescriptor);
 		String requestSimpleClassName = "Object";
 		if (hasArguments) {
@@ -488,11 +459,12 @@ public class ExchangeApiInterfaceImplementationGenerator extends JavaTypeGenerat
 					responseDataType, 
 					getImports(), 
 					restResponseClassName);
-			getResponseDeserializerInstance = getNewMessageDeserializerInstruction(
+			getResponseDeserializerInstance = ExchangeJavaWrapperGeneratorUtil.getNewMessageDeserializerInstruction(
 					responseDataType, 
-					restResponseClassName);
+					restResponseClassName,
+					getImports());
 		} else {
-			getResponseDeserializerInstance = getNewMessageDeserializerInstruction(null, null);
+			getResponseDeserializerInstance = ExchangeJavaWrapperGeneratorUtil.getNewMessageDeserializerInstruction(null, null, getImports());
 		}
 		
 
@@ -760,9 +732,5 @@ public class ExchangeApiInterfaceImplementationGenerator extends JavaTypeGenerat
 		
 		sb.append(")");
 		return sb.toString();
-	}
-	
-	private static EndpointParameterType getEndpointParameterType(EndpointParameter parameter) {
-		return parameter == null? null: Optional.ofNullable(parameter.getEndpointParameterType()).orElse(EndpointParameterType.OBJECT);
 	}
 }

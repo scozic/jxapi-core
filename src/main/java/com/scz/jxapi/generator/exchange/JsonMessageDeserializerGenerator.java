@@ -70,7 +70,7 @@ public class JsonMessageDeserializerGenerator extends JavaTypeGenerator {
 			body.append(dblIndent)
 				.append("msg.")
 				.append(
-					JavaCodeGenerationUtil.	getSetAccessorMethodName(
+					JavaCodeGenerationUtil.getSetAccessorMethodName(
 							field.getName(),  
 							fields.stream().map(f -> f.getName()).collect(Collectors.toList())))
 				.append("(")

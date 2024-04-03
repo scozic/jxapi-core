@@ -354,4 +354,22 @@ public class JavaCodeGenerationUtil {
 		typeGenerator.addImport(LoggerFactory.class);
 		typeGenerator.appendToBody("private static final Logger log = LoggerFactory.getLogger(" + typeGenerator.getSimpleName() + ".class);\n\n");
 	}
+
+	public static String getQuotedString(Object sampleValue) {
+		if (sampleValue == null) {
+			  return null;
+		}
+		String sampleValueStr = sampleValue.toString();
+		StringBuilder sb = new StringBuilder();
+		sb.append('"');
+		sb.append(sampleValue.toString());
+		for (int i = 0; i < sampleValueStr.length(); i++) {
+			char c = sampleValueStr.charAt(i);
+			if (c == '"') {
+			  sb.append('\\');
+			}
+			sb.append(c);
+		}
+		return sb.append('"').toString();
+	}
 }

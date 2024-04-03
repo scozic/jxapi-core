@@ -3,14 +3,21 @@ package com.scz.jxapi.generator.exchange;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.nio.file.Path;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
 
 import com.scz.jxapi.generator.JavaCodeGenerationUtil;
+import com.scz.jxapi.netutils.deserialization.RawBigDecimalMessageDeserializer;
+import com.scz.jxapi.netutils.deserialization.RawBooleanMessageDeserializer;
+import com.scz.jxapi.netutils.deserialization.RawIntegerMessageDeserializer;
+import com.scz.jxapi.netutils.deserialization.RawLongMessageDeserializer;
+import com.scz.jxapi.netutils.deserialization.RawStringMessageDeserializer;
 import com.scz.jxapi.netutils.deserialization.json.field.BigDecimalJsonFieldDeserializer;
 import com.scz.jxapi.netutils.deserialization.json.field.BooleanJsonFieldDeserializer;
 import com.scz.jxapi.netutils.deserialization.json.field.IntegerJsonFieldDeserializer;
@@ -19,6 +26,7 @@ import com.scz.jxapi.netutils.deserialization.json.field.LongJsonFieldDeserializ
 import com.scz.jxapi.netutils.deserialization.json.field.MapJsonFieldDeserializer;
 import com.scz.jxapi.netutils.deserialization.json.field.StringJsonFieldDeserializer;
 import com.scz.jxapi.netutils.deserialization.json.field.TimestampJsonFieldDeserializer;
+import com.scz.jxapi.util.JsonUtil;
 
 /**
  * Helper methods for generation of Java classes of a given exchange wrapper
@@ -531,7 +539,7 @@ public class ExchangeJavaWrapperGeneratorUtil {
 		if (request == null) {
 			return false;
 		}
-		return ExchangeJavaWrapperGeneratorUtil.endpointHasArguments(request.getEndpointParameterType(), 
+		return endpointHasArguments(request.getEndpointParameterType(), 
 									request.getParameters(), 
 									request.getObjectName(), 
 									exchangeApiDescriptor);
@@ -542,10 +550,10 @@ public class ExchangeJavaWrapperGeneratorUtil {
 		if (request == null) {
 			return false;
 		}
-		return ExchangeJavaWrapperGeneratorUtil.endpointHasArguments(request.getEndpointParameterType(),
-																	 request.getParameters(), 
-																	 request.getObjectName(), 
-																	 exchangeApiDescriptor);
+		return endpointHasArguments(request.getEndpointParameterType(),
+									request.getParameters(), 
+									request.getObjectName(), 
+									exchangeApiDescriptor);
 	}
 
 	private static boolean endpointHasArguments(EndpointParameterType dataType, List<EndpointParameter> parameters, String requestObjectName, ExchangeApiDescriptor exchangeApiDescriptor) {
@@ -565,6 +573,250 @@ public class ExchangeJavaWrapperGeneratorUtil {
 		EndpointParameterType dataType = response.getEndpointParameterType();
 		return (dataType != null && dataType.getCanonicalType() != CanonicalEndpointParameterTypes.OBJECT) 
 				|| getEndpointParameters(response.getParameters(), response.getObjectName(), exchangeApiDescriptor).size() > 0;
+	}
+	
+	public static String generateEndpointParameterSampleValueDeclaration(EndpointParameter endpointParameter, 
+																		 String sampleValueVariableName, 
+																		 String parameterObjectClassName, 
+																		 Set<String> imports) {
+		EndpointParameterType type = getEndpointParameterType(endpointParameter);
+		Object sampleValue = endpointParameter.getSampleValue();
+		if (sampleValue == null && !type.isObject()) {
+			return null;
+		}
+		CanonicalEndpointParameterTypes canonicalType = type.getCanonicalType();
+		if (canonicalType.isPrimitive) {
+			imports.add(canonicalType.typeClass.getName());
+			return canonicalType.typeClass.getSimpleName() 
+					+ " " + sampleValueVariableName 
+					+ " = " + getPrimitiveTypeParameterSampleValueDeclaration(endpointParameter, imports) 
+					+";";
+		}
+		String parameterDeclaration = new StringBuilder()
+										.append(ExchangeJavaWrapperGeneratorUtil.getClassNameForParameterType(
+													type, 
+													imports, 
+													parameterObjectClassName))
+										.append(" ")
+										.append(sampleValueVariableName)
+										.append(" = ").toString();
+		String parameterValue = null;
+		StringBuilder res = new StringBuilder();
+		String deserializeArg = null;
+		
+		String itemVariableName = sampleValueVariableName;
+		if (type.isObject()) {
+			if (canonicalType != CanonicalEndpointParameterTypes.OBJECT) {
+				itemVariableName = itemVariableName + "Item";
+			}
+			String itemClassName = ExchangeJavaWrapperGeneratorUtil.getClassNameForParameterType(
+										EndpointParameterType.getLeafSubType(type), 
+										imports, 
+										parameterObjectClassName);
+			res.append(itemClassName)
+			   .append(" ")
+			   .append(itemVariableName)
+			   .append(" = new ")
+			   .append(itemClassName)
+			   .append("();\n");
+			String setAccessorName = JavaCodeGenerationUtil.getSetAccessorMethodName(
+					endpointParameter.getName(),  
+					endpointParameter.getParameters().stream()
+									 .map(f -> f.getName()).collect(Collectors.toList()));
+			for (EndpointParameter childParam: endpointParameter.getParameters()) {
+				EndpointParameterType childParamType = childParam.getEndpointParameterType();
+				String setArg = JavaCodeGenerationUtil.getQuotedString(childParam.getSampleValue());
+				if (childParamType.isObject()) {
+					setArg = itemVariableName + "_" + childParam.getName();
+					res.append(generateEndpointParameterSampleValueDeclaration(childParam, 
+									setArg, 
+									getParameterObjectClassName(childParam, imports, parameterObjectClassName), 
+									imports));
+				}
+				if(childParamType.getCanonicalType().isPrimitive) {
+					setArg = getPrimitiveTypeParameterSampleValueDeclaration(childParam, imports);
+				} else if (childParamType.getCanonicalType() != CanonicalEndpointParameterTypes.OBJECT){
+					// List or map
+					if (setArg != null) {
+						setArg = getNewMessageDeserializerInstruction(childParamType, parameterObjectClassName, imports) 
+									+ ".deserialize(" + setArg + ");";
+					}
+				}
+				res.append(itemVariableName).append(setAccessorName).append("(").append(setArg).append(")\n;");
+			}
+			parameterValue = itemVariableName;
+		} else {
+			parameterValue = JavaCodeGenerationUtil.getQuotedString(sampleValue);
+		}
+		
+		if (canonicalType != CanonicalEndpointParameterTypes.OBJECT) {
+			// Not primitive nor object type -> map or list type.
+			if (type.isObject()) {
+				parameterValue = getMapOrListSampleValueDeclaration(
+									type, 
+									parameterValue, 
+									endpointParameter.getSampleMapKeyValue() == null? null: 
+										endpointParameter.getSampleMapKeyValue().iterator(), 
+									imports);
+			} else {
+				parameterValue = getNewMessageDeserializerInstruction(type, parameterObjectClassName, imports) 
+									+ ".deserialize(" + parameterValue + ");";
+			}
+		}
+		
+		if (itemVariableName.equals(sampleValueVariableName)) {
+			// Type is not object or is of OBJECT canonical type: 'new' instruction has not be appended yet
+			res.append(parameterDeclaration).append(parameterValue).append(";");
+		}
+		
+		return res.toString();
+	}
+	
+	private static String getMapOrListSampleValueDeclaration(EndpointParameterType type, String itemValue, Iterator<String> sampleMapKeyValues, Set<String> imports) {
+		if (type.getSubType() == null) {
+			return itemValue;
+		}
+		switch (type.getCanonicalType()) {
+		case LIST:
+			imports.add(List.class.getName());
+			return "List.of(" + getMapOrListSampleValueDeclaration(type.getSubType(), itemValue, sampleMapKeyValues, imports) + ")";
+		case MAP:
+			if (sampleMapKeyValues == null || !sampleMapKeyValues.hasNext()) {
+				return null;
+			}
+			String sampleKeyValue = JavaCodeGenerationUtil.getQuotedString(sampleMapKeyValues.next());
+			return "Map.of(" + sampleKeyValue + ", " + getMapOrListSampleValueDeclaration(type.getSubType(), itemValue, sampleMapKeyValues, imports) + ")";
+		default:
+			throw new IllegalArgumentException("Unexpected type, should be LIST or MAP :" + type);
+		}
+	}
+	
+	private static String getPrimitiveTypeParameterSampleValueDeclaration(EndpointParameter endpointParameter, Set<String> imports) {
+		EndpointParameterType type = endpointParameter.getEndpointParameterType();
+		Object sampleValue = endpointParameter.getSampleValue();
+		if (sampleValue == null && !type.isObject()) {
+			return null;
+		}
+		String sampleValueStr = sampleValue.toString();
+		CanonicalEndpointParameterTypes canonicalType = type.getCanonicalType();
+		imports.add(canonicalType.typeClass.getName());
+		switch (type.getCanonicalType()) {
+		case BIGDECIMAL:
+			imports.add(BigDecimal.class.getName());
+			return "new BigDecimal(" + sampleValueStr + ")";
+		case BOOLEAN:
+			return "Boolean.valueOf(" + sampleValueStr + ")";
+		case INT:
+			return "Integer.valueOf(" + sampleValueStr + ")";
+		case LONG:
+		case TIMESTAMP:
+			return "Long.valueOf(" + sampleValueStr + ")";
+		case STRING:
+			return JavaCodeGenerationUtil.getQuotedString(sampleValueStr);
+		default:
+			throw new IllegalArgumentException("Unexpected primitive canonical type for parameter:" + endpointParameter);
+		}
+	}
+	
+	private static String getObjectParameterSampleValueDeclaration(EndpointParameter endpointParameter, 
+			 					String sampleValueVariableName, 
+			 					String parameterObjectClassName, 
+			 					Set<String> imports) {
+		StringBuilder sb = new StringBuilder();
+		for (EndpointParameter param: endpointParameter.getParameters()) {
+			String setAccessorName = JavaCodeGenerationUtil.getSetAccessorMethodName(
+										param.getName(),  
+										endpointParameter.getParameters().stream()
+														 .map(f -> f.getName()).collect(Collectors.toList()));
+			// FIXME
+//			if (param.g)
+			sb.append(sampleValueVariableName)
+			  .append(".")
+			  .append(setAccessorName)
+			  .append("(");
+			
+			sb.append(");\n");
+			  
+		}
+		return sb.toString();
+	}
+	
+	private static String getListParameterValueDeclaration(String sampleValueVariableName, EndpointParameter endpointParameter, Set<String> imports) {
+		EndpointParameterType type = endpointParameter.getEndpointParameterType();
+		Object sampleValue = endpointParameter.getSampleValue();
+		CanonicalEndpointParameterTypes subTypeCanonicalType = type.getSubType().getCanonicalType();
+		StringBuilder res = new StringBuilder()
+				.append("List<")
+				.append(subTypeCanonicalType.typeClass.getSimpleName())
+				.append("> ")
+				.append(sampleValueVariableName)
+				.append(" = ");
+		if (subTypeCanonicalType.isPrimitive) {
+			imports.add(JsonUtil.class.getName());
+			res.append("JsonUtil.");
+			switch (subTypeCanonicalType) {
+			case BIGDECIMAL:
+				res.append("parseBigDecimalJsonArray");
+				break;
+			case BOOLEAN:
+				res.append("parseBooleanJsonArray");
+				break;
+			case INT:
+				res.append("parseIntegerJsonArray");
+				break;
+			case TIMESTAMP:
+			case LONG:
+				res.append("parseLongJsonArray");
+				break;
+			case STRING:
+				res.append("parseStringJsonArray");
+				break;
+			default:
+				throw new IllegalArgumentException("Unexpected subType:" 
+													+ subTypeCanonicalType 
+													+ " for parameter:" 
+													+ endpointParameter);
+			
+			}
+			return res.append("(\"")
+					  .append(sampleValue)
+					  .append("\");\n").toString();
+		}
+		// FIXME
+		return null;
+	}
+
+	public static String getNewMessageDeserializerInstruction(EndpointParameterType messageType, String messageFullClassName, Set<String> imports) {
+		if (messageType == null) {
+			messageType  = EndpointParameterType.fromTypeName(CanonicalEndpointParameterTypes.STRING.name());
+		}
+		switch (messageType.getCanonicalType()) {
+		case BIGDECIMAL:
+			imports.add(RawBigDecimalMessageDeserializer.class.getName());
+			return RawBigDecimalMessageDeserializer.class.getSimpleName() + ".getInstance()";
+		case BOOLEAN:
+			imports.add(RawBooleanMessageDeserializer.class.getName());
+			return RawBooleanMessageDeserializer.class.getSimpleName() + ".getInstance()";
+		case INT:
+			imports.add(RawIntegerMessageDeserializer.class.getName());
+			return RawIntegerMessageDeserializer.class.getSimpleName() + ".getInstance()";
+		case TIMESTAMP:
+		case LONG:
+			imports.add(RawLongMessageDeserializer.class.getName());
+			return RawLongMessageDeserializer.class.getSimpleName() + ".getInstance()";
+		case STRING:
+			imports.add(RawStringMessageDeserializer.class.getName());
+			return RawStringMessageDeserializer.class.getSimpleName() + ".getInstance()";
+		case OBJECT:
+		case LIST:
+		case MAP:
+		default:
+			return getNewJsonParameterDeserializerInstruction(messageType, messageFullClassName, imports);
+		}
+	}
+
+	public static EndpointParameterType getEndpointParameterType(EndpointParameter parameter) {
+		return parameter == null? null: Optional.ofNullable(parameter.getEndpointParameterType()).orElse(EndpointParameterType.OBJECT);
 	}
 
 }

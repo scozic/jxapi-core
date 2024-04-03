@@ -156,7 +156,7 @@
 						]
 					},
 					"messageTopicMatcherFields": [
-						{"name": "topic",  "value": "streamWithObjectRequestDataTypeZeroParametersTopic"}
+						{"name": "topic",  "value": "${topic}"}
 					],
 					"message": {
 						"objectName":"Ticker"

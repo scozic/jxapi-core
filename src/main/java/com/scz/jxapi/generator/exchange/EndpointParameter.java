@@ -35,6 +35,8 @@ public class EndpointParameter {
 	
 	private String type;
 	
+	private List<String> sampleMapKeyValue;
+	
 	private Object sampleValue;
 	
 	private String msgField;
@@ -129,6 +131,14 @@ public class EndpointParameter {
 
 	public void setImplementedInterfaces(List<String> implementedInterfaces) {
 		this.implementedInterfaces = implementedInterfaces;
+	}
+	
+	public List<String> getSampleMapKeyValue() {
+		return sampleMapKeyValue;
+	}
+
+	public void setSampleMapKeyValue(List<String> sampleMapKeyValue) {
+		this.sampleMapKeyValue = sampleMapKeyValue;
 	}
 	
 	public String toString() {

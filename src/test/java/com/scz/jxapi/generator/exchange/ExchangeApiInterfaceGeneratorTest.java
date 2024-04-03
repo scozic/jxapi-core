@@ -346,7 +346,7 @@ public class ExchangeApiInterfaceGeneratorTest {
 				+ "   * \n"
 				+ "   * @return client subscriptionId to use for unsubscription\n"
 				+ "   */\n"
-				+ "  String subscribeStreamWithBigDecimalRequestDataType(Long request, WebsocketListener<Ticker> listener);\n"
+				+ "  String subscribeStreamWithBigDecimalRequestDataType(BigDecimal request, WebsocketListener<Ticker> listener);\n"
 				+ "  \n"
 				+ "  /**\n"
 				+ "   * Unsubscribe from streamWithBigDecimalRequestDataType stream.\n"
