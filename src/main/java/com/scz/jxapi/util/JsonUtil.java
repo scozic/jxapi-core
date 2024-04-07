@@ -45,7 +45,6 @@ public class JsonUtil {
 	}
 	
 	public static BigDecimal readCurrentBigDecimal(JsonParser parser) throws IOException {
-		parser.nextToken();
 		switch (parser.currentToken()) {
 		case VALUE_NUMBER_FLOAT:
 			return parser.getDecimalValue();
