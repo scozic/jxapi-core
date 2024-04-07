@@ -18,7 +18,7 @@ public class BooleanJsonFieldDeserializer extends AbstractJsonMessageDeserialize
 
 	@Override
 	public Boolean deserialize(JsonParser parser) throws IOException {
-		return JsonUtil.readNextBoolean(parser);
+		return JsonUtil.readCurrentBoolean(parser);
 	}
 
 }

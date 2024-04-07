@@ -362,7 +362,6 @@ public class JavaCodeGenerationUtil {
 		String sampleValueStr = sampleValue.toString();
 		StringBuilder sb = new StringBuilder();
 		sb.append('"');
-		sb.append(sampleValue.toString());
 		for (int i = 0; i < sampleValueStr.length(); i++) {
 			char c = sampleValueStr.charAt(i);
 			if (c == '"') {

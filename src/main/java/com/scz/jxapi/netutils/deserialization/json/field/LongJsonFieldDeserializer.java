@@ -18,7 +18,7 @@ public class LongJsonFieldDeserializer extends AbstractJsonMessageDeserializer<L
 
 	@Override
 	public Long deserialize(JsonParser parser) throws IOException {
-		return JsonUtil.readNextLong(parser);
+		return JsonUtil.readCurrentLong(parser);
 	}
 
 }

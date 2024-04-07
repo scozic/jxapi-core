@@ -17,7 +17,7 @@ public class StringJsonFieldDeserializer extends AbstractJsonMessageDeserializer
 
 	@Override
 	public String deserialize(JsonParser parser) throws IOException {
-		return parser.nextTextValue();
+		return parser.getText();
 	}
 
 }

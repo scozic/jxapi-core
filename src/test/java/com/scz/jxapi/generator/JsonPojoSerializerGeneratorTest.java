@@ -19,13 +19,13 @@ public class JsonPojoSerializerGeneratorTest {
 		List<EndpointParameter> endpointParameters = new ArrayList<>();
 		endpointParameters.add(EndpointParameter.create(CanonicalEndpointParameterTypes.LONG.name(), "id", null, "identifier", "123"));
 		endpointParameters.add(EndpointParameter.create(CanonicalEndpointParameterTypes.INT.name(), "score", null, "Current score", "0"));
-		endpointParameters.add(EndpointParameter.create("OBJECT_LIST", "foo", "f", null,
+		endpointParameters.add(EndpointParameter.createObject("OBJECT_LIST", "foo", "f", null,
 				Arrays.asList(EndpointParameter.create(CanonicalEndpointParameterTypes.TIMESTAMP.name(), "time", null, "Creation time", "0"),
-							  EndpointParameter.create(CanonicalEndpointParameterTypes.OBJECT.name(), "bar", "b", "The bar",
+							  EndpointParameter.createObject(CanonicalEndpointParameterTypes.OBJECT.name(), "bar", "b", "The bar",
 									  Arrays.asList(EndpointParameter.create(CanonicalEndpointParameterTypes.STRING.name(), "name", null, "Bar name", "my bar")))
 						)
 				));
-		endpointParameters.add(EndpointParameter.create( "OBJECT_LIST_MAP", "toto", "toto", null,
+		endpointParameters.add(EndpointParameter.createObject( "OBJECT_LIST_MAP", "toto", "toto", null,
 				Arrays.asList(EndpointParameter.create(CanonicalEndpointParameterTypes.STRING.name(), "id", null, "Toto ID", "toto#1"))
 				));
 		

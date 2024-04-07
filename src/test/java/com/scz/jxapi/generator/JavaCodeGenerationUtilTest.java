@@ -290,4 +290,19 @@ public class JavaCodeGenerationUtilTest {
 		}
 		Assert.fail();
 	}
+	
+	@Test
+	public void testGetQuotedString_NullString() {
+		Assert.assertEquals(null, JavaCodeGenerationUtil.getQuotedString(null));
+	}
+	
+	@Test
+	public void testGetQuotedString_EmptyString() {
+		Assert.assertEquals("\"\"", JavaCodeGenerationUtil.getQuotedString(""));
+	}
+	
+	@Test
+	public void testGetQuotedString_StringWithQuotes() {
+		Assert.assertEquals("\"Hello \\\"World\\\"\"", JavaCodeGenerationUtil.getQuotedString("Hello \"World\""));
+	}
 }

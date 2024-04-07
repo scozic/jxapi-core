@@ -43,7 +43,7 @@ public class JsonMessageDeserializerClassesGenerator implements ClassesGenerator
 		for (EndpointParameter field: fields) {
 			if ((field.getEndpointParameterType().isObject())
 				&& field.getParameters() != null) {
-				EndpointParameter objectParam = EndpointParameter.create(CanonicalEndpointParameterTypes.OBJECT.name(), 
+				EndpointParameter objectParam = EndpointParameter.createObject(CanonicalEndpointParameterTypes.OBJECT.name(), 
 																		 field.getName(), 
 																		 field.getMsgField(), 
 																		 field.getDescription(), 

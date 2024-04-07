@@ -41,6 +41,11 @@ public class JsonUtil {
 
 	public static BigDecimal readNextBigDecimal(JsonParser parser) throws IOException {
 		parser.nextToken();
+		return readCurrentBigDecimal(parser);
+	}
+	
+	public static BigDecimal readCurrentBigDecimal(JsonParser parser) throws IOException {
+		parser.nextToken();
 		switch (parser.currentToken()) {
 		case VALUE_NUMBER_FLOAT:
 			return parser.getDecimalValue();
@@ -57,6 +62,10 @@ public class JsonUtil {
 
 	public static Integer readNextInteger(JsonParser parser) throws IOException {
 		parser.nextToken();
+		return readCurrentInteger(parser);
+	}
+	
+	public static Integer readCurrentInteger(JsonParser parser) throws IOException {
 		switch (parser.currentToken()) {
 		case VALUE_STRING:
 			return Integer.valueOf(parser.getText());
@@ -71,6 +80,10 @@ public class JsonUtil {
 
 	public static Long readNextLong(JsonParser parser) throws IOException {
 		parser.nextToken();
+		return readCurrentLong(parser);
+	}
+	
+	public static Long readCurrentLong(JsonParser parser) throws IOException {
 		switch (parser.currentToken()) {
 		case VALUE_STRING:
 			return Long.valueOf(parser.getText());
@@ -83,7 +96,27 @@ public class JsonUtil {
 		}
 	}
 	
-	public static <T> List<T> readNextList(JsonParser parser, JsonDeserializer<T> itemDeserializer) throws IOException {
+	public static Boolean readNextBoolean(JsonParser parser) throws IOException {
+		parser.nextToken();
+		return readCurrentBoolean(parser);
+	}
+	
+	public static Boolean readCurrentBoolean(JsonParser parser) throws IOException {
+		switch (parser.currentToken()) {
+		case VALUE_TRUE:
+			return Boolean.TRUE;
+		case VALUE_FALSE:
+			return Boolean.FALSE;
+		case VALUE_NULL:
+			return null;
+		case VALUE_STRING:
+			return Boolean.valueOf(parser.getText());
+		default:
+			throw new JsonParseException(parser, "Expected long value, but got " + parser.currentToken());
+		}
+	}
+	
+	public static <T> List<T> readCurrentList(JsonParser parser, JsonDeserializer<T> itemDeserializer) throws IOException {
 		if (parser.currentToken() == JsonToken.VALUE_NULL) {
 			return null;
 		}
@@ -126,22 +159,6 @@ public class JsonUtil {
 		return res;
 	}
 
-	public static Boolean readNextBoolean(JsonParser parser) throws IOException {
-		parser.nextToken();
-		switch (parser.currentToken()) {
-		case VALUE_TRUE:
-			return Boolean.TRUE;
-		case VALUE_FALSE:
-			return Boolean.FALSE;
-		case VALUE_NULL:
-			return null;
-		case VALUE_STRING:
-			return Boolean.valueOf(parser.getText());
-		default:
-			throw new JsonParseException(parser, "Expected long value, but got " + parser.currentToken());
-		}
-	}
-
 	/**
 	 * When {@link JsonParser#currentName()} stands for an unkown/unsupported type during deserialization, this method can be used to skip its value.
 	 * Parser will be moved to token next to value found after calling {@link JsonParser#nextToken()} on provided instance.
@@ -166,22 +183,27 @@ public class JsonUtil {
 		}
 	}
 	
+	@Deprecated
 	public List<Integer> parseIntegerJsonArray(String jsonArray) {
 		return parseJsonArray(jsonArray, IntegerJsonFieldDeserializer.getInstance());
 	}
 	
+	@Deprecated
 	public List<BigDecimal> parseBigDecimalJsonArray(String jsonArray) {
 		return parseJsonArray(jsonArray, BigDecimalJsonFieldDeserializer.getInstance());
 	}
 	
+	@Deprecated
 	public List<Boolean> parseBooleanJsonArray(String jsonArray) {
 		return parseJsonArray(jsonArray, BooleanJsonFieldDeserializer.getInstance());
 	}
 	
+	@Deprecated
 	public List<Long> parseLongJsonArray(String jsonArray) {
 		return parseJsonArray(jsonArray, LongJsonFieldDeserializer.getInstance());
 	}
 	
+	@Deprecated
 	public List<String> parseStringJsonArray(String jsonArray) {
 		return parseJsonArray(jsonArray, StringJsonFieldDeserializer.getInstance());
 	}

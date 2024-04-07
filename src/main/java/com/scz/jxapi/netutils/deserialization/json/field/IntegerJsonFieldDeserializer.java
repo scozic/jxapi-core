@@ -18,7 +18,7 @@ public class IntegerJsonFieldDeserializer extends AbstractJsonMessageDeserialize
 
 	@Override
 	public Integer deserialize(JsonParser parser) throws IOException {
-		return JsonUtil.readNextInteger(parser);
+		return JsonUtil.readCurrentInteger(parser);
 	} 
 
 }

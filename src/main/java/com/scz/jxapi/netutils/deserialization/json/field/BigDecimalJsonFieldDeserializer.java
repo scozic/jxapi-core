@@ -19,6 +19,6 @@ public class BigDecimalJsonFieldDeserializer extends AbstractJsonMessageDeserial
 
 	@Override
 	public BigDecimal deserialize(JsonParser parser) throws IOException {
-		return JsonUtil.readNextBigDecimal(parser);
+		return JsonUtil.readCurrentBigDecimal(parser);
 	}
 }

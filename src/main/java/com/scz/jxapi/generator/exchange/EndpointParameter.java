@@ -10,16 +10,17 @@ import com.scz.jxapi.util.EncodingUtil;
  */
 public class EndpointParameter {
 	
-	public static EndpointParameter create(String type, String name, String msgField, String description, String sampleValue) {
+	public static EndpointParameter create(String type, String name, String msgField, String description, Object sampleValue) {
 		EndpointParameter p = new EndpointParameter();
 		p.setType(type);
 		p.setName(name);
 		p.setMsgField(msgField);
 		p.setDescription(description);
+		p.setSampleValue(sampleValue);
 		return p;
 	}
 	
-	public static EndpointParameter create(String type, String name, String msgField, String description, List<EndpointParameter> parameters) {
+	public static EndpointParameter createObject(String type, String name, String msgField, String description, List<EndpointParameter> parameters) {
 		EndpointParameter p = new EndpointParameter();
 		p.setType(type);
 		p.setName(name);
