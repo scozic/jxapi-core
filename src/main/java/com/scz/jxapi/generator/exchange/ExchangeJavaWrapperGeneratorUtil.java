@@ -7,7 +7,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -25,7 +24,6 @@ import com.scz.jxapi.netutils.deserialization.json.field.LongJsonFieldDeserializ
 import com.scz.jxapi.netutils.deserialization.json.field.MapJsonFieldDeserializer;
 import com.scz.jxapi.netutils.deserialization.json.field.StringJsonFieldDeserializer;
 import com.scz.jxapi.netutils.deserialization.json.field.TimestampJsonFieldDeserializer;
-import com.scz.jxapi.util.JsonUtil;
 
 /**
  * Helper methods for generation of Java classes of a given exchange wrapper
@@ -399,7 +397,6 @@ public class ExchangeJavaWrapperGeneratorUtil {
 			subTypeClassName = getClassNameForParameterType(type.getSubType(), imports, objectClassName);
 			if (imports != null) {
 				imports.add(Map.class.getName());
-				imports.add(subTypeClassName);
 			}
 			return Map.class.getSimpleName() 
 					+ "<String, " 
@@ -574,74 +571,6 @@ public class ExchangeJavaWrapperGeneratorUtil {
 				|| getEndpointParameters(response.getParameters(), response.getObjectName(), exchangeApiDescriptor).size() > 0;
 	}
 	
-	private static String getObjectParameterSampleValueDeclaration(EndpointParameter endpointParameter, 
-			 					String sampleValueVariableName, 
-			 					String parameterObjectClassName, 
-			 					Set<String> imports) {
-		StringBuilder sb = new StringBuilder();
-		for (EndpointParameter param: endpointParameter.getParameters()) {
-			String setAccessorName = JavaCodeGenerationUtil.getSetAccessorMethodName(
-										param.getName(),  
-										endpointParameter.getParameters().stream()
-														 .map(f -> f.getName()).collect(Collectors.toList()));
-			// FIXME
-//			if (param.g)
-			sb.append(sampleValueVariableName)
-			  .append(".")
-			  .append(setAccessorName)
-			  .append("(");
-			
-			sb.append(");\n");
-			  
-		}
-		return sb.toString();
-	}
-	
-	private static String getListParameterValueDeclaration(String sampleValueVariableName, EndpointParameter endpointParameter, Set<String> imports) {
-		EndpointParameterType type = endpointParameter.getEndpointParameterType();
-		Object sampleValue = endpointParameter.getSampleValue();
-		CanonicalEndpointParameterTypes subTypeCanonicalType = type.getSubType().getCanonicalType();
-		StringBuilder res = new StringBuilder()
-				.append("List<")
-				.append(subTypeCanonicalType.typeClass.getSimpleName())
-				.append("> ")
-				.append(sampleValueVariableName)
-				.append(" = ");
-		if (subTypeCanonicalType.isPrimitive) {
-			imports.add(JsonUtil.class.getName());
-			res.append("JsonUtil.");
-			switch (subTypeCanonicalType) {
-			case BIGDECIMAL:
-				res.append("parseBigDecimalJsonArray");
-				break;
-			case BOOLEAN:
-				res.append("parseBooleanJsonArray");
-				break;
-			case INT:
-				res.append("parseIntegerJsonArray");
-				break;
-			case TIMESTAMP:
-			case LONG:
-				res.append("parseLongJsonArray");
-				break;
-			case STRING:
-				res.append("parseStringJsonArray");
-				break;
-			default:
-				throw new IllegalArgumentException("Unexpected subType:" 
-													+ subTypeCanonicalType 
-													+ " for parameter:" 
-													+ endpointParameter);
-			
-			}
-			return res.append("(\"")
-					  .append(sampleValue)
-					  .append("\");\n").toString();
-		}
-		// FIXME
-		return null;
-	}
-
 	public static String getNewMessageDeserializerInstruction(EndpointParameterType messageType, String messageFullClassName, Set<String> imports) {
 		if (messageType == null) {
 			messageType  = EndpointParameterType.fromTypeName(CanonicalEndpointParameterTypes.STRING.name());
