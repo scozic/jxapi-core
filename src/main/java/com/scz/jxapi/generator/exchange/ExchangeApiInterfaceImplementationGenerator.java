@@ -482,10 +482,7 @@ public class ExchangeApiInterfaceImplementationGenerator extends JavaTypeGenerat
 											.append("> ")
 											.append(apiMethodName)
 											.append("(")
-											.append(hasArguments? requestSimpleClassName 
-																   + " " +
-																   ExchangeJavaWrapperGeneratorUtil.getRequestArgName(request.getName())
-																 : "")
+											.append(hasArguments? requestSimpleClassName + " request" : "")
 											.append(")").toString(); 
 		
 		addImport(RestRequest.class);

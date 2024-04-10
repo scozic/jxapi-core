@@ -258,7 +258,7 @@ public class ExchangeApiInterfaceGeneratorTest {
 				+ "  /**\n"
 				+ "   * A sample REST endpoint using STRING response data type\n"
 				+ "   */\n"
-				+ "  FutureRestResponse<GenericResponse> postRestRequestDataTypeString(String request);\n"
+				+ "  FutureRestResponse<GenericResponse> postRestRequestDataTypeString(String hello);\n"
 				+ "  /**\n"
 				+ "   * A sample REST endpoint using BOOLEAN response data type\n"
 				+ "   */\n"

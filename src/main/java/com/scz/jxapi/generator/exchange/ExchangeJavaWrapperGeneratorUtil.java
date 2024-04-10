@@ -104,26 +104,6 @@ public class ExchangeJavaWrapperGeneratorUtil {
 		new ExchangeApiInterfaceImplementationGenerator(exchangeDescriptor, exchangeApiDescriptor).writeJavaFile(outputFolder);
 	}
 	
-	public static String getRestApiDemoClassName(ExchangeDescriptor exchangeDescriptor, 
-												 ExchangeApiDescriptor exchangeApiDescriptor, 
-												 RestEndpointDescriptor restApi) {
-		String pkgPrefix =  exchangeDescriptor.getBasePackage() + "." + exchangeApiDescriptor.getName().toLowerCase() + ".demo.";
-		return pkgPrefix + JavaCodeGenerationUtil.firstLetterToUpperCase(exchangeDescriptor.getName()) 
-									 + JavaCodeGenerationUtil.firstLetterToUpperCase(exchangeApiDescriptor.getName())
-									 + JavaCodeGenerationUtil.firstLetterToUpperCase(restApi.getName())
-									 + "Demo";
-	}
-	
-	public static String getWebsocketApiDemoClassName(ExchangeDescriptor exchangeDescriptor, 
-													  ExchangeApiDescriptor exchangeApiDescriptor, 
-													  WebsocketEndpointDescriptor websocketApi) {
-		String pkgPrefix =  exchangeDescriptor.getBasePackage() + "." + exchangeApiDescriptor.getName().toLowerCase() + ".demo.";
-		return pkgPrefix + JavaCodeGenerationUtil.firstLetterToUpperCase(exchangeDescriptor.getName()) 
-									 + JavaCodeGenerationUtil.firstLetterToUpperCase(exchangeApiDescriptor.getName())
-									 + JavaCodeGenerationUtil.firstLetterToUpperCase(websocketApi.getName())
-									 + "Demo";
-	}
-	
 	public static String generateWebsocketEndpointMessageClassName(ExchangeDescriptor exchangeDescriptor,
 																   ExchangeApiDescriptor exchangeApiDescriptor, 
 																   WebsocketEndpointDescriptor websocketApi) {

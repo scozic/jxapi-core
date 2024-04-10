@@ -13,7 +13,7 @@ import com.scz.jxapi.util.TestJXApiProperties;
 public class WebsocketEndpointDemoGenerator extends JavaTypeGenerator {
 	
 	public WebsocketEndpointDemoGenerator(ExchangeDescriptor exchangeDescriptor, ExchangeApiDescriptor exchangeApiDescriptor, WebsocketEndpointDescriptor websocketApi) {
-		super(ExchangeJavaWrapperGeneratorUtil.getWebsocketApiDemoClassName(exchangeDescriptor, exchangeApiDescriptor, websocketApi));
+		super(EndpointDemoGeneratorUtil.getWebsocketApiDemoClassName(exchangeDescriptor, exchangeApiDescriptor, websocketApi));
 		setTypeDeclaration("public class");
 		String requestClassName = ExchangeJavaWrapperGeneratorUtil.generateWebsocketEndpointRequestClassName(exchangeDescriptor, exchangeApiDescriptor, websocketApi);
 		addImport(requestClassName);

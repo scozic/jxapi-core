@@ -14,7 +14,8 @@
 					"description": "A sample REST endpoint using INT response data type",
 					"url": "https://com.sample.mycex/postInt",
 					"request": {
-						"type": "INT"
+						"type": "INT",
+						"sampleValue": 12345
 					},
 					"response": {
 						"objectName": "GenericResponse",
@@ -29,7 +30,8 @@
 					"description": "A sample REST endpoint using LONG response data type",
 					"url": "https://com.sample.mycex/postLong",
 					"request": {
-						"type": "LONG"
+						"type": "LONG",
+						"sampleValue": 123456789012
 					},
 					"response": {
 						"objectName": "GenericResponse"
@@ -41,7 +43,8 @@
 					"description": "A sample REST endpoint using BIGDECIMAL response data type",
 					"url": "https://com.sample.mycex/postBigDecimal",
 					"request": {
-						"type": "BIGDECIMAL"
+						"type": "BIGDECIMAL",
+						"sampleValue": 12345.678
 					},
 					"response": {
 						"objectName": "GenericResponse"
@@ -53,7 +56,9 @@
 					"description": "A sample REST endpoint using STRING response data type",
 					"url": "https://com.sample.mycex/postString",
 					"request": {
-						"type": "STRING"
+						"name": "hello",
+						"type": "STRING",
+						"sampleValue": "Hello world!"
 					},
 					"response": {
 						"objectName": "GenericResponse"
@@ -65,7 +70,8 @@
 					"description": "A sample REST endpoint using BOOLEAN response data type",
 					"url": "https://com.sample.mycex/postBoolean",
 					"request": {
-						"type": "BOOLEAN"
+						"type": "BOOLEAN",
+						"sampleValue": true
 					},
 					"response": {
 						"objectName": "GenericResponse"
@@ -151,6 +157,7 @@
 					"topic": "ticker",
 					"description": "Subscribe to stream with OBJECT request type (default, explicit here) and parameter",
 					"request": {
+						"name": "symbolObj",
 						"parameters": [
 							{"name":"symbol", "type": "STRING", "description":"Symbol name", "sampleValue":"BTC_USDT"}
 						]

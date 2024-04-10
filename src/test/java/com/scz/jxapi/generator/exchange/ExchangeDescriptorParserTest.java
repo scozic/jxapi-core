@@ -85,7 +85,7 @@ public class ExchangeDescriptorParserTest {
 		Assert.assertEquals("The list of symbol to fetch market information for. Leave empty to fetch all markets", symbolsParameter.getDescription());
 		Assert.assertEquals(CanonicalEndpointParameterTypes.LIST, symbolsParameter.getEndpointParameterType().getCanonicalType());
 		Assert.assertEquals(CanonicalEndpointParameterTypes.STRING, symbolsParameter.getEndpointParameterType().getSubType().getCanonicalType());
-		Assert.assertEquals(null, symbolsParameter.getSampleValue());
+		Assert.assertEquals("[\"BTC\", \"ETH\"]", symbolsParameter.getSampleValue());
 		
 		checkExchangeInfoResponse(exchangeInfoEndPoint.getResponse().getParameters());
 	}

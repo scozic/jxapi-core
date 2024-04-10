@@ -17,18 +17,15 @@ public class EndpointDemoGeneratorUtil {
 												   String sampleValueVariableName, 
 												   String defaultObjectClassName,
 												   Set<String> imports) {
-		EndpointParameterType type = ExchangeJavaWrapperGeneratorUtil.getEndpointParameterType(endpointParameter);
-		String parameterObjectClassName = Optional.ofNullable(endpointParameter.getObjectName()).orElse(defaultObjectClassName);
-		String parameterClassName =	ExchangeJavaWrapperGeneratorUtil.getClassNameForParameterType(
-												type, 
-												imports, 
-												parameterObjectClassName);
+		String parameterObjectClassName = Optional.ofNullable(endpointParameter.getObjectName())
+												  .orElse(defaultObjectClassName);
 		return new StringBuilder()
-					 .append("protected ")
-					 .append(parameterClassName)
-					 .append(" create")
-					 .append(JavaCodeGenerationUtil.firstLetterToUpperCase(sampleValueVariableName))
-					 .append("() ")
+					 .append(generateEndpointParameterCreationMethodDeclaration(
+							 endpointParameter, 
+							 sampleValueVariableName, 
+							 defaultObjectClassName, 
+							 imports))
+					 .append(" ")
 					 .append(JavaCodeGenerationUtil.generateCodeBlock(
 							 	generateEndpointParameterSampleValueDeclaration(
 									 endpointParameter, 
@@ -38,6 +35,28 @@ public class EndpointDemoGeneratorUtil {
 									 "return ") 
 							 	+ ";"))
 					 .toString();
+	}
+	
+	public static String generateEndpointParameterCreationMethodDeclaration(EndpointParameter endpointParameter, 
+																			String sampleValueVariableName,
+																			String defaultObjectClassName,
+																			Set<String> imports) {
+		EndpointParameterType type = ExchangeJavaWrapperGeneratorUtil.getEndpointParameterType(endpointParameter);
+		String parameterObjectClassName = Optional.ofNullable(endpointParameter.getObjectName()).orElse(defaultObjectClassName);
+		String parameterClassName =	ExchangeJavaWrapperGeneratorUtil.getClassNameForParameterType(
+												type, 
+												imports, 
+												parameterObjectClassName);
+		return new StringBuilder().append("public static ")
+								  .append(parameterClassName)
+								  .append(" ")
+								  .append(generateEndpointParameterCreationMethodName(sampleValueVariableName))
+								  .append("()")
+								  .toString();
+	}
+	
+	public static String generateEndpointParameterCreationMethodName(String sampleValueVariableName) {
+		return "create" + JavaCodeGenerationUtil.firstLetterToUpperCase(sampleValueVariableName);
 	}
 
 	private static String generateEndpointParameterSampleValueDeclaration(EndpointParameter endpointParameter, 
@@ -185,6 +204,26 @@ public class EndpointDemoGeneratorUtil {
 		default:
 			throw new IllegalArgumentException("Unexpected primitive canonical type for parameter:" + endpointParameter);
 		}
+	}
+
+	public static String getRestApiDemoClassName(ExchangeDescriptor exchangeDescriptor, 
+												 ExchangeApiDescriptor exchangeApiDescriptor, 
+												 RestEndpointDescriptor restApi) {
+		String pkgPrefix =  exchangeDescriptor.getBasePackage() + "." + exchangeApiDescriptor.getName().toLowerCase() + ".demo.";
+		return pkgPrefix + JavaCodeGenerationUtil.firstLetterToUpperCase(exchangeDescriptor.getName()) 
+									 + JavaCodeGenerationUtil.firstLetterToUpperCase(exchangeApiDescriptor.getName())
+									 + JavaCodeGenerationUtil.firstLetterToUpperCase(restApi.getName())
+									 + "Demo";
+	}
+
+	public static String getWebsocketApiDemoClassName(ExchangeDescriptor exchangeDescriptor, 
+													  ExchangeApiDescriptor exchangeApiDescriptor, 
+													  WebsocketEndpointDescriptor websocketApi) {
+		String pkgPrefix =  exchangeDescriptor.getBasePackage() + "." + exchangeApiDescriptor.getName().toLowerCase() + ".demo.";
+		return pkgPrefix + JavaCodeGenerationUtil.firstLetterToUpperCase(exchangeDescriptor.getName()) 
+									 + JavaCodeGenerationUtil.firstLetterToUpperCase(exchangeApiDescriptor.getName())
+									 + JavaCodeGenerationUtil.firstLetterToUpperCase(websocketApi.getName())
+									 + "Demo";
 	}
 
 }

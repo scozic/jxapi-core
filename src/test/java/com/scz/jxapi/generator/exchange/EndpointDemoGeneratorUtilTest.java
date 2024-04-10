@@ -31,7 +31,7 @@ public class EndpointDemoGeneratorUtilTest {
 		Set<String> imports = new TreeSet<>();
 		String method = EndpointDemoGeneratorUtil.generateEndpointParameterCreationMethod(param, param.getName(), null, imports);
 		Assert.assertEquals(
-				"protected String createMyStringParam() {\n"
+				"public static String createMyStringParam() {\n"
 				+ "  return \"Hello World\";\n"
 				+ "}\n", method);
 	}
@@ -42,7 +42,7 @@ public class EndpointDemoGeneratorUtilTest {
 		Set<String> imports = new TreeSet<>();
 		String method = EndpointDemoGeneratorUtil.generateEndpointParameterCreationMethod(param, param.getName(), null, imports);
 		Assert.assertEquals(
-				"protected String createMyStringParam() {\n"
+				"public static String createMyStringParam() {\n"
 				+ "  return null;\n"
 				+ "}\n", method);
 	}
@@ -54,7 +54,7 @@ public class EndpointDemoGeneratorUtilTest {
 		Set<String> imports = new TreeSet<>();
 		String method = EndpointDemoGeneratorUtil.generateEndpointParameterCreationMethod(param, param.getName(), null, imports);
 		Assert.assertEquals(
-				"protected Integer createMyIntParam() {\n"
+				"public static Integer createMyIntParam() {\n"
 			  + "  return Integer.valueOf(123);\n"
 			  + "}\n", method);
 	}
@@ -66,7 +66,7 @@ public class EndpointDemoGeneratorUtilTest {
 		Set<String> imports = new TreeSet<>();
 		String method = EndpointDemoGeneratorUtil.generateEndpointParameterCreationMethod(param, param.getName(), null, imports);
 		Assert.assertEquals(
-				"protected Long createMyLongParam() {\n"
+				"public static Long createMyLongParam() {\n"
 			  + "  return Long.valueOf(123);\n"
 			  + "}\n", method);
 	}
@@ -78,7 +78,7 @@ public class EndpointDemoGeneratorUtilTest {
 		Set<String> imports = new TreeSet<>();
 		String method = EndpointDemoGeneratorUtil.generateEndpointParameterCreationMethod(param, param.getName(), null, imports);
 		Assert.assertEquals(
-				"protected BigDecimal createMyBigDecimalParam() {\n"
+				"public static BigDecimal createMyBigDecimalParam() {\n"
 			  + "  return new BigDecimal(\"123.45\");\n"
 			  + "}\n", method);
 	}
@@ -90,7 +90,7 @@ public class EndpointDemoGeneratorUtilTest {
 		Set<String> imports = new TreeSet<>();
 		String method = EndpointDemoGeneratorUtil.generateEndpointParameterCreationMethod(param, param.getName(), null, imports);
 		Assert.assertEquals(
-				"protected Boolean createMyBooleanParam() {\n"
+				"public static Boolean createMyBooleanParam() {\n"
 				+ "  return Boolean.valueOf(true);\n"
 				+ "}\n", method);
 	}
@@ -111,7 +111,7 @@ public class EndpointDemoGeneratorUtilTest {
 		Set<String> imports = new TreeSet<>();
 		String method = EndpointDemoGeneratorUtil.generateEndpointParameterCreationMethod(param, param.getName(), "MyRequest", imports);
 		Assert.assertEquals(
-				"protected MyRequest createMyObjParam() {\n"
+				"public static MyRequest createMyObjParam() {\n"
 				+ "  MyRequest myObjParam = new MyRequest();\n"
 				+ "  myObjParam.setFoo(Integer.valueOf(123));\n"
 				+ "  myObjParam.setHello(\"Hello World\");\n"
@@ -142,7 +142,7 @@ public class EndpointDemoGeneratorUtilTest {
 		Set<String> imports = new TreeSet<>();
 		String method = EndpointDemoGeneratorUtil.generateEndpointParameterCreationMethod(param, param.getName(), "MyRequest", imports);
 		Assert.assertEquals(
-				"protected MyRequest createMyObjParam() {\n"
+				"public static MyRequest createMyObjParam() {\n"
 				+ "  MyRequest myObjParam = new MyRequest();\n"
 				+ "  myObjParam.setFoo(Integer.valueOf(123));\n"
 				+ "  myObjParam.setHello(\"Hello World\");\n"
@@ -170,7 +170,7 @@ public class EndpointDemoGeneratorUtilTest {
 		Set<String> imports = new TreeSet<>();
 		String method = EndpointDemoGeneratorUtil.generateEndpointParameterCreationMethod(param, param.getName(), null, imports);
 		Assert.assertEquals(
-				"protected List<Integer> createMyIntListParam() {\n"
+				"public static List<Integer> createMyIntListParam() {\n"
 				+ "  return new ListJsonFieldDeserializer<>(IntegerJsonFieldDeserializer.getInstance()).deserialize(\"[1, 3, 5, 7]\");\n"
 				+ "}\n", method);
 		checkImports(imports, 
@@ -186,7 +186,7 @@ public class EndpointDemoGeneratorUtilTest {
 		Set<String> imports = new TreeSet<>();
 		String method = EndpointDemoGeneratorUtil.generateEndpointParameterCreationMethod(param, param.getName(), null, imports);
 		Assert.assertEquals(
-				"protected List<String> createMyStringListParam() {\n"
+				"public static List<String> createMyStringListParam() {\n"
 				+ "  return new ListJsonFieldDeserializer<>(StringJsonFieldDeserializer.getInstance()).deserialize(\"[\\\"BTC\\\",\\\"ETH\\\"]\");\n"
 				+ "}\n", method);
 		checkImports(imports, 
@@ -202,7 +202,7 @@ public class EndpointDemoGeneratorUtilTest {
 		Set<String> imports = new TreeSet<>();
 		String method = EndpointDemoGeneratorUtil.generateEndpointParameterCreationMethod(param, param.getName(), null, imports);
 		Assert.assertEquals(
-				"protected List<Long> createMyLongListParam() {\n"
+				"public static List<Long> createMyLongListParam() {\n"
 				+ "  return new ListJsonFieldDeserializer<>(LongJsonFieldDeserializer.getInstance()).deserialize(\"[1234567890,9876543210]\");\n"
 				+ "}\n", method);
 		checkImports(imports, 
@@ -218,7 +218,7 @@ public class EndpointDemoGeneratorUtilTest {
 		Set<String> imports = new TreeSet<>();
 		String method = EndpointDemoGeneratorUtil.generateEndpointParameterCreationMethod(param, param.getName(), null, imports);
 		Assert.assertEquals(
-				"protected List<BigDecimal> createMyBigDecimalListParam() {\n"
+				"public static List<BigDecimal> createMyBigDecimalListParam() {\n"
 				+ "  return new ListJsonFieldDeserializer<>(BigDecimalJsonFieldDeserializer.getInstance()).deserialize(\"[1234.56789,9876.54321]\");\n"
 				+ "}\n", method);
 		checkImports(imports, 
@@ -235,7 +235,7 @@ public class EndpointDemoGeneratorUtilTest {
 		Set<String> imports = new TreeSet<>();
 		String method = EndpointDemoGeneratorUtil.generateEndpointParameterCreationMethod(param, param.getName(), null, imports);
 		Assert.assertEquals(
-				"protected List<Boolean> createMyBooleanListParam() {\n"
+				"public static List<Boolean> createMyBooleanListParam() {\n"
 				+ "  return new ListJsonFieldDeserializer<>(BooleanJsonFieldDeserializer.getInstance()).deserialize(\"[true, false]\");\n"
 				+ "}\n", method);
 		checkImports(imports, 
@@ -253,7 +253,7 @@ public class EndpointDemoGeneratorUtilTest {
 		Set<String> imports = new TreeSet<>();
 		String method = EndpointDemoGeneratorUtil.generateEndpointParameterCreationMethod(param, param.getName(), "MyRequest", imports);
 		Assert.assertEquals(
-				"protected List<MyRequest> createMyObjListParam() {\n"
+				"public static List<MyRequest> createMyObjListParam() {\n"
 				+ "  MyRequest myObjListParamItem = new MyRequest();\n"
 				+ "  myObjListParamItem.setFoo(Integer.valueOf(123));\n"
 				+ "  myObjListParamItem.setHello(\"Hello World\");\n"
@@ -272,7 +272,7 @@ public class EndpointDemoGeneratorUtilTest {
 		Set<String> imports = new TreeSet<>();
 		String method = EndpointDemoGeneratorUtil.generateEndpointParameterCreationMethod(param, param.getName(), "MyRequest", imports);
 		Assert.assertEquals(
-				"protected Map<String, MyRequest> createMyObjMapParam() {\n"
+				"public static Map<String, MyRequest> createMyObjMapParam() {\n"
 				+ "  MyRequest myObjMapParamItem = new MyRequest();\n"
 				+ "  myObjMapParamItem.setFoo(Integer.valueOf(123));\n"
 				+ "  myObjMapParamItem.setHello(\"Hello World\");\n"
@@ -291,7 +291,7 @@ public class EndpointDemoGeneratorUtilTest {
 		Set<String> imports = new TreeSet<>();
 		String method = EndpointDemoGeneratorUtil.generateEndpointParameterCreationMethod(param, param.getName(), "MyRequest", imports);
 		Assert.assertEquals(
-				"protected Map<String, MyRequest> createMyObjListParam() {\n"
+				"public static Map<String, MyRequest> createMyObjListParam() {\n"
 				+ "  return null;\n"
 				+ "}\n", method);
 		checkImports(imports, Map.class);
@@ -307,7 +307,7 @@ public class EndpointDemoGeneratorUtilTest {
 		Set<String> imports = new TreeSet<>();
 		String method = EndpointDemoGeneratorUtil.generateEndpointParameterCreationMethod(param, param.getName(), "MyRequest", imports);
 		Assert.assertEquals(
-				"protected Map<String, MyRequest> createMyObjListParam() {\n"
+				"public static Map<String, MyRequest> createMyObjListParam() {\n"
 				+ "  return null;\n"
 				+ "}\n", method);
 		checkImports(imports, Map.class);
@@ -323,7 +323,7 @@ public class EndpointDemoGeneratorUtilTest {
 		Set<String> imports = new TreeSet<>();
 		String method = EndpointDemoGeneratorUtil.generateEndpointParameterCreationMethod(param, param.getName(), "MyRequest", imports);
 		Assert.assertEquals(
-				"protected Map<String, List<Map<String, MyRequest>>> createMyObjListParam() {\n"
+				"public static Map<String, List<Map<String, MyRequest>>> createMyObjListParam() {\n"
 				+ "  MyRequest myObjListParamItem = new MyRequest();\n"
 				+ "  myObjListParamItem.setFoo(Integer.valueOf(123));\n"
 				+ "  myObjListParamItem.setHello(\"Hello World\");\n"
@@ -338,7 +338,7 @@ public class EndpointDemoGeneratorUtilTest {
 		Set<String> imports = new TreeSet<>();
 		String method = EndpointDemoGeneratorUtil.generateEndpointParameterCreationMethod(param, param.getName(), "MyRequest", imports);
 		Assert.assertEquals(
-				"protected Map<String, String> createAdresses() {\n"
+				"public static Map<String, String> createAdresses() {\n"
 				+ "  return new MapJsonFieldDeserializer<>(StringJsonFieldDeserializer.getInstance()).deserialize(\"{\\\"Jamie\\\": \\\"London\\\", \\\"Amina\\\": \\\"Djibouti\\\"}\");\n"
 				+ "}\n", method);
 		checkImports(imports, 
