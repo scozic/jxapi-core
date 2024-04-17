@@ -97,18 +97,25 @@ public class RestEndpointDemoGenerator extends JavaTypeGenerator {
 		}
 			
 		String apiMethodName = JavaCodeGenerationUtil.firstLetterToLowerCase(restApi.getName());
-		body.append("log.info(\"Calling '")
+		body.append("log.info(\"Calling ")
 			.append(apiInterfaceClassName)
 			.append(".")
 			.append(apiMethodName)
-			.append("() API with request:\" + request);\n")
-			.append("DemoUtil.checkResponse(api.")
+			.append("() API");
+		if (hasArguments) {
+			body.append(" with request:\" + request");
+		} else {
+			body.append("\"");
+		}
+		body.append(");\n");
+			
+		body.append("DemoUtil.checkResponse(api.")
 			.append(apiMethodName)
 			.append("(");
 		if (hasArguments) {
 			body.append(requestVar);
 		}
-		body.append(");\nSystem.exit(0);");
+		body.append("));\nSystem.exit(0);");
 		
 		appendMethod("public static void main(String[] args)", 
 					"try {\n" 

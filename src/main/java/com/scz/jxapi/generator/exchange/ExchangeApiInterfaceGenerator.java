@@ -73,8 +73,8 @@ public class ExchangeApiInterfaceGenerator extends JavaTypeGenerator {
 						exchangeDescriptor, 
 						exchangeApiDescriptor, 
 						websocketApi));
-		String subscribeMethodName = "subscribe" + JavaCodeGenerationUtil.firstLetterToUpperCase(websocketApi.getName());
-		String unsubscribeMethodName = "unsubscribe" + JavaCodeGenerationUtil.firstLetterToUpperCase(websocketApi.getName());
+		String subscribeMethodName = ExchangeJavaWrapperGeneratorUtil.getWebsocketSubscribeMethodName(websocketApi);
+		String unsubscribeMethodName = ExchangeJavaWrapperGeneratorUtil.getWebsocketUnsubscribeMethodName(websocketApi);
 		addImport(WebsocketListener.class);
 		String subscribeMethodSignature = new StringBuilder()
 				.append("String ")
