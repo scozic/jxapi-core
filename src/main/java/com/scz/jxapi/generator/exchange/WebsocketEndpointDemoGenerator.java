@@ -9,9 +9,8 @@ import com.scz.jxapi.util.TestJXApiProperties;
 
 public class WebsocketEndpointDemoGenerator extends JavaTypeGenerator {
 	
-	public static final long SUBSCRIPTION_DURATION = 60000L;
-	public static final long DELAY_BEFORE_EXIT_AFTER_UNSUBSCRIPTION = 1000L;
 	private static final String SUBSCRIPTION_DURATION_STATIC_VAR_NAME = "SUBSCRIPTION_DURATION";
+	private static final String DELAY_BEFORE_EXIT_AFTER_UNSUBSCRIPTION_VAR_NAME = "DELAY_BEFORE_EXIT_AFTER_UNSUBSCRIPTION";
 	
 	private final ExchangeDescriptor exchangeDescriptor;
 	private final WebsocketEndpointDescriptor websocketApi;
@@ -68,7 +67,13 @@ public class WebsocketEndpointDemoGenerator extends JavaTypeGenerator {
 		this.appendToBody("private static final long ")
 			.append(SUBSCRIPTION_DURATION_STATIC_VAR_NAME)
 			.append(" = ")
-			.append(SUBSCRIPTION_DURATION).append("L;\n\n");
+			.append(TestJXApiProperties.class.getSimpleName())
+			.append(".DEMO_WS_SUBSCRIPTION_DURATION;\n")
+			.append("private static final long ")
+			.append(DELAY_BEFORE_EXIT_AFTER_UNSUBSCRIPTION_VAR_NAME)
+			.append(" = ")
+			.append(TestJXApiProperties.class.getSimpleName())
+			.append(".DEMO_WS_DELAY_BEFORE_EXIT_AFTER_UNSUBSCRIPTION;\n\n");
 		generateMainMethodBody();
 		return super.generate();
 	}
@@ -99,7 +104,9 @@ public class WebsocketEndpointDemoGenerator extends JavaTypeGenerator {
 								request, 
 								Optional.ofNullable(websocketApi.getRequest().getName()).orElse(requestVar), 
 								requestClassName, 
-								getImports()));
+								getImports()))
+				.append("\n");
+			
 			body.append(requestSimpleClassName)
 				.append(" ")
 				.append(requestVar)
@@ -140,8 +147,8 @@ public class WebsocketEndpointDemoGenerator extends JavaTypeGenerator {
 			.append(unsubscribeMethodName)
 			.append("(subId);\n")
 			.append("Thread.sleep(")
-			.append(DELAY_BEFORE_EXIT_AFTER_UNSUBSCRIPTION)
-			.append("L);\n")
+			.append(DELAY_BEFORE_EXIT_AFTER_UNSUBSCRIPTION_VAR_NAME)
+			.append(");\n")
 			.append("System.exit(0);");
 		
 		appendMethod("public static void main(String[] args)", 
