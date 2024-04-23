@@ -124,7 +124,8 @@
 					"url": "https://com.sample.mycex/postBigDecimal",
 					"request": {
 						"type": "OBJECT_LIST_MAP",
-						"parameters": []
+						"objectName": "SingleSymbol",
+						"sampleMapKeyValue": ["spot"]
 					},
 					"response": {
 						"objectName": "GenericResponse"
@@ -158,6 +159,7 @@
 					"description": "Subscribe to stream with OBJECT request type (default, explicit here) and parameter",
 					"request": {
 						"name": "symbolObj",
+						"objectName": "SingleSymbol",
 						"parameters": [
 							{"name":"symbol", "type": "STRING", "description":"Symbol name", "sampleValue":"BTC_USDT"}
 						]
@@ -216,7 +218,9 @@
 					"topic": "ticker",
 					"description": "Subscribe to stream with STRING request type",
 					"request": {
-						"type": "STRING"
+						"name": "symbol",
+						"type": "STRING",
+						"sampleValue": "BTC_USDT"
 					},
 					"messageTopicMatcherFields": [
 						{"name": "topic",  "value": "streamWithStringRequestDataTypeTopic"}
@@ -256,10 +260,11 @@
 				{
 					"name": "streamWithObjectListMapRequestDataType",
 					"topic": "ticker",
-					"description": "Subscribe to stream with OBJECT_LIST_MAP request type",
+					"description": "Subscribe to stream with OBJECT_LIST_MAP request type. The objectName field is set to a name already defined in other API definition.",
 					"request": {
-						"parameters": [],
-						"type": "OBJECT_LIST_MAP"
+						"objectName": "SingleSymbol",
+						"type": "OBJECT_LIST_MAP",
+						"sampleMapKeyValue": ["spot"]
 					},
 					"messageTopicMatcherFields": [
 						{"name": "topic",  "value": "streamWithObjectListMapRequestDataTypeTopic"}

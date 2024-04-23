@@ -12,9 +12,9 @@ public class RestEndpointDemoGeneratorTest {
 
 	@Test
 	public void testGenerateRestEndpointDemo() throws Exception {
-		ExchangeDescriptor exchangeDescriptor = new ExchangeDescriptorParser().fromJson(Paths.get(".", "src", "test", "resources", "testCEXDescriptor.json"));
-		ExchangeApiDescriptor exchangeApiDescriptor = exchangeDescriptor.getApis().get(0);
-		RestEndpointDescriptor restEndpointDescriptor = exchangeApiDescriptor.getRestEndpoints().get(0);
+		ExchangeDescriptor exchange = new ExchangeDescriptorParser().fromJson(Paths.get(".", "src", "test", "resources", "testCEXDescriptor.json"));
+		ExchangeApiDescriptor api = exchange.getApis().get(0); 
+		RestEndpointDescriptor restEndpointDescriptor = ClassesGeneratorTestUtil.findRestEndpointByName("exchangeInfo", api);;
 		Assert.assertEquals("package com.foo.bar.gen.marketdata.demo;\n"
 				+ "\n"
 				+ "import com.foo.bar.gen.MyTestCEXExchangeImpl;\n"
@@ -52,14 +52,14 @@ public class RestEndpointDemoGeneratorTest {
 				+ "    }\n"
 				+ "  }\n"
 				+ "}\n", 
-				new RestEndpointDemoGenerator(exchangeDescriptor, exchangeApiDescriptor, restEndpointDescriptor).generate());
+				new RestEndpointDemoGenerator(exchange, api, restEndpointDescriptor).generate());
 	}
 	
 	@Test
 	public void testGenerateRestEndpointDemoSpecificRequesTypePrimitiveInt() throws Exception {
 		ExchangeDescriptor exchange = new ExchangeDescriptorParser().fromJson(Paths.get(".", "src", "test", "resources", "testExchangeDescriptorWithAllRestRequestDataTypes.json"));
 		ExchangeApiDescriptor api = exchange.getApis().get(0);
-		RestEndpointDescriptor restEndpoint = findRestEndpointByName("postRestRequestDataTypeInt", api);
+		RestEndpointDescriptor restEndpoint = ClassesGeneratorTestUtil.findRestEndpointByName("postRestRequestDataTypeInt", api);
 		RestEndpointDemoGenerator generator = new RestEndpointDemoGenerator(exchange, api, restEndpoint);
 		Assert.assertEquals("package com.foo.bar.gen.marketdata.demo;\n"
 				+ "\n"
@@ -100,7 +100,7 @@ public class RestEndpointDemoGeneratorTest {
 	public void testGenerateRestEndpointDemoSpecificRequesTypePrimitiveStringWithNamedArg() throws Exception {
 		ExchangeDescriptor exchange = new ExchangeDescriptorParser().fromJson(Paths.get(".", "src", "test", "resources", "testExchangeDescriptorWithAllRestRequestDataTypes.json"));
 		ExchangeApiDescriptor api = exchange.getApis().get(0);
-		RestEndpointDescriptor restEndpoint = findRestEndpointByName("postRestRequestDataTypeString", api);
+		RestEndpointDescriptor restEndpoint = ClassesGeneratorTestUtil.findRestEndpointByName("postRestRequestDataTypeString", api);
 		RestEndpointDemoGenerator generator = new RestEndpointDemoGenerator(exchange, api, restEndpoint);
 		Assert.assertEquals("package com.foo.bar.gen.marketdata.demo;\n"
 				+ "\n"
@@ -141,7 +141,7 @@ public class RestEndpointDemoGeneratorTest {
 	public void testGenerateRestEndpointDemoNoArgEndpoint() throws Exception {
 		ExchangeDescriptor exchange = new ExchangeDescriptorParser().fromJson(Paths.get(".", "src", "test", "resources", "testExchangeDescriptorWithAllRestRequestDataTypes.json"));
 		ExchangeApiDescriptor api = exchange.getApis().get(0);
-		RestEndpointDescriptor restEndpoint = findRestEndpointByName("postRestRequestDataTypeObjectNoParameters", api);
+		RestEndpointDescriptor restEndpoint = ClassesGeneratorTestUtil.findRestEndpointByName("postRestRequestDataTypeObjectNoParameters", api);
 		RestEndpointDemoGenerator generator = new RestEndpointDemoGenerator(exchange, api, restEndpoint);
 		Assert.assertEquals("package com.foo.bar.gen.marketdata.demo;\n"
 				+ "\n"
@@ -174,12 +174,49 @@ public class RestEndpointDemoGeneratorTest {
 				generator.generate());
 	}
 	
-	private RestEndpointDescriptor findRestEndpointByName(String name, ExchangeApiDescriptor exchangeDescriptor) {
-		for (RestEndpointDescriptor api: exchangeDescriptor.getRestEndpoints()) {
-			if (api.getName().equals(name)) {
-				return api;
-			}
-		}
-		throw new AssertionError("No such API:" + name + " in:" + exchangeDescriptor);
+	@Test
+	public void testGenerateRestEndpointSpecificRequestTypeObjectListMapWithReferencedObject() throws Exception {
+		ExchangeDescriptor exchange = new ExchangeDescriptorParser().fromJson(Paths.get(".", "src", "test", "resources", "testExchangeDescriptorWithAllRestRequestDataTypes.json"));
+		ExchangeApiDescriptor api = exchange.getApis().get(0);
+		RestEndpointDescriptor restEndpoint = ClassesGeneratorTestUtil.findRestEndpointByName("postRestRequestDataTypeObjectListMap", api);
+		RestEndpointDemoGenerator generator = new RestEndpointDemoGenerator(exchange, api, restEndpoint);
+		Assert.assertEquals("package com.foo.bar.gen.marketdata.demo;\n"
+				+ "\n"
+				+ "import com.foo.bar.gen.MyTestCEXExchangeImpl;\n"
+				+ "import com.foo.bar.gen.marketdata.MyTestCEXMarketDataApi;\n"
+				+ "import com.foo.bar.gen.marketdata.pojo.SingleSymbol;\n"
+				+ "import com.scz.jxapi.util.DemoUtil;\n"
+				+ "import com.scz.jxapi.util.TestJXApiProperties;\n"
+				+ "import java.util.List;\n"
+				+ "import java.util.Map;\n"
+				+ "import org.slf4j.Logger;\n"
+				+ "import org.slf4j.LoggerFactory;\n"
+				+ "\n"
+				+ "/**\n"
+				+ " * Snippet to test call to {@link com.foo.bar.gen.marketdata.MyTestCEXMarketDataApi#postRestRequestDataTypeObjectListMap(Map<String, List<SingleSymbol>>)}<br/>\n"
+				+ " * <br><strong>THIS CODE IS GENERATED. DO NOT EDIT MANUALLY!</strong>\n"
+				+ " */\n"
+				+ "public class MyTestCEXMarketDataPostRestRequestDataTypeObjectListMapDemo {\n"
+				+ "  private static final Logger log = LoggerFactory.getLogger(MyTestCEXMarketDataPostRestRequestDataTypeObjectListMapDemo.class);\n"
+				+ "  \n"
+				+ "  public static Map<String, List<SingleSymbol>> createRequest() {\n"
+				+ "    SingleSymbol requestItem = new SingleSymbol();\n"
+				+ "    requestItem.setSymbol(\"BTC_USDT\");\n"
+				+ "    return Map.of(\"spot\", List.of(requestItem));\n"
+				+ "  }\n"
+				+ "  public static void main(String[] args) {\n"
+				+ "    try {\n"
+				+ "      MyTestCEXMarketDataApi api = new MyTestCEXExchangeImpl(TestJXApiProperties.filterProperties(\"myTestCEX\", true)).getMyTestCEXMarketDataApi();\n"
+				+ "      Map<String, List<SingleSymbol>> request = createRequest();\n"
+				+ "      log.info(\"Calling com.foo.bar.gen.marketdata.MyTestCEXMarketDataApi.postRestRequestDataTypeObjectListMap() API with request:\" + request);\n"
+				+ "      DemoUtil.checkResponse(api.postRestRequestDataTypeObjectListMap(request));\n"
+				+ "      System.exit(0);\n"
+				+ "    } catch (Throwable t) {\n"
+				+ "      log.error(\"Exception raised from main()\", t);\n"
+				+ "      System.exit(-1);\n"
+				+ "    }\n"
+				+ "  }\n"
+				+ "}\n", 
+				generator.generate());
 	}
 }

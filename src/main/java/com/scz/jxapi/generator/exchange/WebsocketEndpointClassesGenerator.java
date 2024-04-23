@@ -22,6 +22,7 @@ public class WebsocketEndpointClassesGenerator implements ClassesGenerator {
 	private final ExchangeDescriptor exchangeDescriptor;
 	private final ExchangeApiDescriptor apiDescriptor;
 	private final WebsocketEndpointDescriptor websocketEndpointDescriptor;
+	private final EndpointParameter request;
 	
 	/**
 	 * 
@@ -32,6 +33,7 @@ public class WebsocketEndpointClassesGenerator implements ClassesGenerator {
 		this.exchangeDescriptor = exchangeDescriptor;
 		this.apiDescriptor = apiDescriptor;
 		this.websocketEndpointDescriptor = websocketEndpointDescriptor;
+		this.request = ExchangeJavaWrapperGeneratorUtil.resolveEndpointParameters(apiDescriptor, websocketEndpointDescriptor.getRequest());
 	}
 	
 	/**
@@ -56,7 +58,7 @@ public class WebsocketEndpointClassesGenerator implements ClassesGenerator {
 							exchangeDescriptor, 
 							apiDescriptor, 
 							websocketEndpointDescriptor),
-					websocketEndpointDescriptor.getRequest().getParameters())
+							request.getParameters())
 			  .generateClasses(outputFolder);
 		}
 	
@@ -95,8 +97,8 @@ public class WebsocketEndpointClassesGenerator implements ClassesGenerator {
 						+ websocketEndpointDescriptor.getDescription()
 						+ "\n"
 						+ JavaCodeGenerationUtil.GENERATED_CODE_WARNING,
-					websocketEndpointDescriptor.getRequest().getParameters(), 
-					websocketEndpointDescriptor.getRequest().getImplementedInterfaces(), 
+					request.getParameters(), 
+					request.getImplementedInterfaces(), 
 					null).generateClasses(outputFolder);
 		}
 		
@@ -136,11 +138,7 @@ public class WebsocketEndpointClassesGenerator implements ClassesGenerator {
 			return false;
 		}
 		List<EndpointParameter> parameters = param.getParameters();
-		if (type.getCanonicalType() == CanonicalEndpointParameterTypes.OBJECT) {
-			return parameters != null && !parameters.isEmpty();
-		}
-		
-		return true;
+		return parameters != null && !parameters.isEmpty();
 	}
 	
 

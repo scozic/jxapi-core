@@ -1,5 +1,6 @@
 package com.scz.jxapi.generator.exchange;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.scz.jxapi.util.EncodingUtil;
@@ -30,6 +31,10 @@ public class EndpointParameter {
 		return p;
 	}
 	
+	private static <T> List<T> cloneList(List<T> l) {
+		return l == null? null: new ArrayList<>(l);
+	}
+	
 	private String name;
 	
 	private String description;
@@ -47,6 +52,20 @@ public class EndpointParameter {
 	private List<EndpointParameter> parameters;
 	
 	private List<String> implementedInterfaces;
+	
+	public EndpointParameter clone() {
+		EndpointParameter clone = new EndpointParameter();
+		clone.name = this.name;
+		clone.description = this.description;
+		clone.type = this.type;
+		clone.sampleMapKeyValue = cloneList(this.sampleMapKeyValue);
+		clone.sampleValue = this.sampleValue;
+		clone.msgField = this.msgField;
+		clone.objectName = this.objectName;
+		clone.parameters = cloneList(this.parameters);
+		clone.implementedInterfaces = cloneList(this.implementedInterfaces);
+		return clone;
+	}
 
 	public String getName() {
 		return name;

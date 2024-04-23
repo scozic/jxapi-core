@@ -59,4 +59,22 @@ public class ClassesGeneratorTestUtil {
 		}
 		return p;
 	}
+	
+	public static RestEndpointDescriptor findRestEndpointByName(String name, ExchangeApiDescriptor exchangeDescriptor) {
+		for (RestEndpointDescriptor api: exchangeDescriptor.getRestEndpoints()) {
+			if (api.getName().equals(name)) {
+				return api;
+			}
+		}
+		throw new AssertionError("No such API:" + name + " in:" + exchangeDescriptor);
+	}
+	
+	public static WebsocketEndpointDescriptor findWebsocketEndpointByName(String name, ExchangeApiDescriptor exchangeDescriptor) {
+		for (WebsocketEndpointDescriptor api: exchangeDescriptor.getWebsocketEndpoints()) {
+			if (api.getName().equals(name)) {
+				return api;
+			}
+		}
+		throw new AssertionError("No such API:" + name + " in:" + exchangeDescriptor);
+	}
 }

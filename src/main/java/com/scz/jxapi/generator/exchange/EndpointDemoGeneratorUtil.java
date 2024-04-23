@@ -13,8 +13,8 @@ public class EndpointDemoGeneratorUtil {
 	
 	private EndpointDemoGeneratorUtil() {}
 	
-	public static String generateEndpointParameterCreationMethod(EndpointParameter endpointParameter, 
-												   String sampleValueVariableName, 
+	public static String generateEndpointParameterCreationMethod(
+												   EndpointParameter endpointParameter, 
 												   String defaultObjectClassName,
 												   Set<String> imports) {
 		String parameterObjectClassName = Optional.ofNullable(endpointParameter.getObjectName())
@@ -22,14 +22,13 @@ public class EndpointDemoGeneratorUtil {
 		return new StringBuilder()
 					 .append(generateEndpointParameterCreationMethodDeclaration(
 							 endpointParameter, 
-							 sampleValueVariableName, 
 							 defaultObjectClassName, 
 							 imports))
 					 .append(" ")
 					 .append(JavaCodeGenerationUtil.generateCodeBlock(
 							 	generateEndpointParameterSampleValueDeclaration(
-									 endpointParameter, 
-									 sampleValueVariableName, 
+									 endpointParameter,  
+									 "request",
 									 parameterObjectClassName, 
 									 imports,
 									 "return ") 
@@ -38,7 +37,6 @@ public class EndpointDemoGeneratorUtil {
 	}
 	
 	public static String generateEndpointParameterCreationMethodDeclaration(EndpointParameter endpointParameter, 
-																			String sampleValueVariableName,
 																			String defaultObjectClassName,
 																			Set<String> imports) {
 		EndpointParameterType type = ExchangeJavaWrapperGeneratorUtil.getEndpointParameterType(endpointParameter);
@@ -50,13 +48,13 @@ public class EndpointDemoGeneratorUtil {
 		return new StringBuilder().append("public static ")
 								  .append(parameterClassName)
 								  .append(" ")
-								  .append(generateEndpointParameterCreationMethodName(sampleValueVariableName))
+								  .append(generateEndpointParameterCreationMethodName(endpointParameter))
 								  .append("()")
 								  .toString();
 	}
 	
-	public static String generateEndpointParameterCreationMethodName(String sampleValueVariableName) {
-		return "create" + JavaCodeGenerationUtil.firstLetterToUpperCase(sampleValueVariableName);
+	public static String generateEndpointParameterCreationMethodName(EndpointParameter endpointParameter) {
+		return "create" + JavaCodeGenerationUtil.firstLetterToUpperCase(Optional.ofNullable(endpointParameter.getName()).orElse("request"));
 	}
 
 	private static String generateEndpointParameterSampleValueDeclaration(EndpointParameter endpointParameter, 

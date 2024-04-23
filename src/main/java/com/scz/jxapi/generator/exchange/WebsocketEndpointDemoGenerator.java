@@ -13,6 +13,7 @@ public class WebsocketEndpointDemoGenerator extends JavaTypeGenerator {
 	private static final String DELAY_BEFORE_EXIT_AFTER_UNSUBSCRIPTION_VAR_NAME = "DELAY_BEFORE_EXIT_AFTER_UNSUBSCRIPTION";
 	
 	private final ExchangeDescriptor exchangeDescriptor;
+	private final ExchangeApiDescriptor exchangeApiDescriptor;
 	private final WebsocketEndpointDescriptor websocketApi;
 	private StringBuilder body;
 	private final boolean hasArguments;
@@ -27,6 +28,7 @@ public class WebsocketEndpointDemoGenerator extends JavaTypeGenerator {
 										  WebsocketEndpointDescriptor websocketApi) {
 		super(EndpointDemoGeneratorUtil.getWebsocketApiDemoClassName(exchangeDescriptor, exchangeApiDescriptor, websocketApi));
 		this.exchangeDescriptor = exchangeDescriptor;
+		this.exchangeApiDescriptor = exchangeApiDescriptor;
 		this.websocketApi = websocketApi;
 		setTypeDeclaration("public class");
 		this.hasArguments = ExchangeJavaWrapperGeneratorUtil.websocketEndpointHasArguments(websocketApi, exchangeApiDescriptor);
@@ -82,7 +84,7 @@ public class WebsocketEndpointDemoGenerator extends JavaTypeGenerator {
 		body = new StringBuilder();
 		String exchangeInterfaceClassName = ExchangeJavaWrapperGeneratorUtil.getExchangeInterfaceName(exchangeDescriptor);
 		String exchangeName = JavaCodeGenerationUtil.firstLetterToLowerCase(exchangeDescriptor.getName());
-		EndpointParameter request = websocketApi.getRequest();
+		EndpointParameter request = ExchangeJavaWrapperGeneratorUtil.resolveEndpointParameters(exchangeApiDescriptor, websocketApi.getRequest());
 		String exchangeImplClassName = exchangeInterfaceClassName + "Impl";
 		addImport(exchangeImplClassName);
 		addImport(TestJXApiProperties.class);
@@ -97,22 +99,16 @@ public class WebsocketEndpointDemoGenerator extends JavaTypeGenerator {
 			.append(simpleApiClassName)
 			.append("();\n");
 			
-		String requestVar = "";
 		if (hasArguments) {
-			requestVar = "request";
 			this.appendToBody(EndpointDemoGeneratorUtil.generateEndpointParameterCreationMethod(
-								request, 
-								Optional.ofNullable(websocketApi.getRequest().getName()).orElse(requestVar), 
+								request,  
 								requestClassName, 
 								getImports()))
 				.append("\n");
 			
 			body.append(requestSimpleClassName)
-				.append(" ")
-				.append(requestVar)
-				.append(" = ")
-				.append(EndpointDemoGeneratorUtil.generateEndpointParameterCreationMethodName(
-							Optional.ofNullable(websocketApi.getRequest().getName()).orElse(requestVar)))
+				.append(" request = ")
+				.append(EndpointDemoGeneratorUtil.generateEndpointParameterCreationMethodName(request))
 				.append("();\n");
 		}
 		
@@ -133,8 +129,7 @@ public class WebsocketEndpointDemoGenerator extends JavaTypeGenerator {
 			.append(subscribeMethodName)
 			.append("(");
 		if (hasArguments) {
-			body.append(requestVar)
-				.append(", ");
+			body.append("request, ");
 		}
 		body.append("m -> log.info(\"Received message:\" + m));\n")
 			.append("Thread.sleep(")

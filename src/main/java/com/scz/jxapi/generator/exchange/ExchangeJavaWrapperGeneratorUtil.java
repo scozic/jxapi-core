@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -476,34 +477,45 @@ public class ExchangeJavaWrapperGeneratorUtil {
 	}
 
 	public static List<EndpointParameter> findParametersForObjectName(String requestObjectName, ExchangeApiDescriptor exchangeApiDescriptor) {
+		List<EndpointParameter> res = null;
 		for (RestEndpointDescriptor restEndpointDescriptor: exchangeApiDescriptor.getRestEndpoints()) {
 			EndpointParameter request = restEndpointDescriptor.getRequest();
 			if (requestObjectName.equals(request.getObjectName())) {
 				if (request.getParameters() != null) {
-					return request.getParameters();
+					res = request.getParameters();
+					break;
 				}
 			}
 			EndpointParameter response = restEndpointDescriptor.getResponse();
 			if (requestObjectName.equals(response.getObjectName())) {
 				if (response.getParameters() != null) {
-					return response.getParameters();
+					res = response.getParameters();
+					break;
 				}
 			}
 		}
 		
-		for (WebsocketEndpointDescriptor websocketEndpointDescriptor: exchangeApiDescriptor.getWebsocketEndpoints()) {
-			EndpointParameter request = websocketEndpointDescriptor.getRequest();
-			if (requestObjectName.equals(request.getObjectName())) {
-				if (request.getParameters() != null) {
-					return request.getParameters();
+		if (res == null) {
+			for (WebsocketEndpointDescriptor websocketEndpointDescriptor: exchangeApiDescriptor.getWebsocketEndpoints()) {
+				EndpointParameter request = websocketEndpointDescriptor.getRequest();
+				if (requestObjectName.equals(request.getObjectName())) {
+					if (request.getParameters() != null) {
+						res = request.getParameters();
+						break;
+					}
+				}
+				EndpointParameter message = websocketEndpointDescriptor.getMessage();
+				if (requestObjectName.equals(message.getObjectName())) {
+					if (message.getParameters() != null) {
+						res = message.getParameters();
+						break;
+					}
 				}
 			}
-			EndpointParameter message = websocketEndpointDescriptor.getMessage();
-			if (requestObjectName.equals(message.getObjectName())) {
-				if (message.getParameters() != null) {
-					return message.getParameters();
-				}
-			}
+		}
+		
+		if (res != null) {
+			return res.stream().map(e -> resolveEndpointParameters(exchangeApiDescriptor, e)).collect(Collectors.toList());
 		}
 		throw new IllegalArgumentException("Found no REST request or response or Websocket request or message with fields defined for objectName:"  + requestObjectName);
 	}
@@ -516,6 +528,23 @@ public class ExchangeJavaWrapperGeneratorUtil {
 		} else {
 			return List.of();
 		}
+	}
+	
+	public static EndpointParameter resolveEndpointParameters(ExchangeApiDescriptor exchangeApiDescriptor, EndpointParameter parameter) {
+		if (parameter == null) {
+			return null;
+		}
+		if (parameter.getEndpointParameterType() == null) {
+			return parameter; 
+		}
+		if (parameter.getEndpointParameterType() != null 
+			&& parameter.getEndpointParameterType().isObject() 
+			&& parameter.getObjectName() != null 
+			&& (parameter.getParameters() == null || parameter.getParameters().isEmpty())) {
+			parameter = parameter.clone();
+			parameter.setParameters(findParametersForObjectName(parameter.getObjectName(), exchangeApiDescriptor));
+		}
+		return parameter;
 	}
 
 	public static boolean websocketEndpointHasArguments(WebsocketEndpointDescriptor websocketApi, ExchangeApiDescriptor exchangeApiDescriptor) {

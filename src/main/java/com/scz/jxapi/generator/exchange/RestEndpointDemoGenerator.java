@@ -10,6 +10,7 @@ import com.scz.jxapi.util.TestJXApiProperties;
 public class RestEndpointDemoGenerator extends JavaTypeGenerator {
 	
 	private final ExchangeDescriptor exchangeDescriptor;
+	private final ExchangeApiDescriptor exchangeApiDescriptor;
 	private final RestEndpointDescriptor restApi;
 	private StringBuilder body;
 	private final boolean hasArguments;
@@ -18,9 +19,12 @@ public class RestEndpointDemoGenerator extends JavaTypeGenerator {
 	private String apiInterfaceClassName;
 	private final String simpleApiClassName;
 	
-	public RestEndpointDemoGenerator(ExchangeDescriptor exchangeDescriptor, ExchangeApiDescriptor exchangeApiDescriptor, RestEndpointDescriptor restApi) {
+	public RestEndpointDemoGenerator(ExchangeDescriptor exchangeDescriptor, 
+									 ExchangeApiDescriptor exchangeApiDescriptor, 
+									 RestEndpointDescriptor restApi) {
 		super(EndpointDemoGeneratorUtil.getRestApiDemoClassName(exchangeDescriptor, exchangeApiDescriptor, restApi));
 		this.exchangeDescriptor = exchangeDescriptor;
+		this.exchangeApiDescriptor = exchangeApiDescriptor;
 		this.restApi = restApi;
 		setTypeDeclaration("public class");
 		this.hasArguments = ExchangeJavaWrapperGeneratorUtil.restEndpointHasArguments(restApi, exchangeApiDescriptor);
@@ -64,7 +68,7 @@ public class RestEndpointDemoGenerator extends JavaTypeGenerator {
 		body = new StringBuilder();
 		String exchangeInterfaceClassName = ExchangeJavaWrapperGeneratorUtil.getExchangeInterfaceName(exchangeDescriptor);
 		String exchangeName = JavaCodeGenerationUtil.firstLetterToLowerCase(exchangeDescriptor.getName());
-		EndpointParameter request = restApi.getRequest();
+		EndpointParameter request = ExchangeJavaWrapperGeneratorUtil.resolveEndpointParameters(exchangeApiDescriptor, restApi.getRequest());
 		String exchangeImplClassName = exchangeInterfaceClassName + "Impl";
 		addImport(exchangeImplClassName);
 		addImport(TestJXApiProperties.class);
@@ -79,20 +83,14 @@ public class RestEndpointDemoGenerator extends JavaTypeGenerator {
 			.append(simpleApiClassName)
 			.append("();\n");
 			
-		String requestVar = "";
 		if (hasArguments) {
-			requestVar = "request";
 			this.appendToBody(EndpointDemoGeneratorUtil.generateEndpointParameterCreationMethod(
-								request, 
-								Optional.ofNullable(restApi.getRequest().getName()).orElse(requestVar), 
+								request,  
 								requestClassName, 
 								getImports()));
 			body.append(requestSimpleClassName)
-				.append(" ")
-				.append(requestVar)
-				.append(" = ")
-				.append(EndpointDemoGeneratorUtil.generateEndpointParameterCreationMethodName(
-							Optional.ofNullable(restApi.getRequest().getName()).orElse(requestVar)))
+				.append(" request = ")
+				.append(EndpointDemoGeneratorUtil.generateEndpointParameterCreationMethodName(request))
 				.append("();\n");
 		}
 			
@@ -113,7 +111,7 @@ public class RestEndpointDemoGenerator extends JavaTypeGenerator {
 			.append(apiMethodName)
 			.append("(");
 		if (hasArguments) {
-			body.append(requestVar);
+			body.append("request");
 		}
 		body.append("));\nSystem.exit(0);");
 		

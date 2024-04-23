@@ -28,15 +28,6 @@ public class RestEndpointClassesGeneratorTest {
 		}
 	}
 	
-	private RestEndpointDescriptor findRestEndpointByName(String name, ExchangeApiDescriptor exchangeDescriptor) {
-		for (RestEndpointDescriptor api: exchangeDescriptor.getRestEndpoints()) {
-			if (api.getName().equals(name)) {
-				return api;
-			}
-		}
-		throw new AssertionError("No such API:" + name + " in:" + exchangeDescriptor);
-	}
-	
 	private void checkJavaFilesCount(Path relativePkg, int count) throws IOException {
 		ClassesGeneratorTestUtil.checkJavaFilesCount(srcFolder.resolve(BASE_PKG).resolve(relativePkg), count);
 	}
@@ -196,7 +187,7 @@ public class RestEndpointClassesGeneratorTest {
 		srcFolder = ClassesGeneratorTestUtil.generateTmpDir();
 		ExchangeDescriptor exchange = new ExchangeDescriptorParser().fromJson(Paths.get(".", "src", "test", "resources", "testExchangeDescriptorWithRequestAndResponseImplementingCustomInterfaces.json"));
 		ExchangeApiDescriptor api = exchange.getApis().get(0);
-		RestEndpointDescriptor restEndpoint = findRestEndpointByName("exchangeInfo", api);
+		RestEndpointDescriptor restEndpoint = ClassesGeneratorTestUtil.findRestEndpointByName("exchangeInfo", api);
 		RestEndpointClassesGenerator generator = new RestEndpointClassesGenerator(exchange, api, restEndpoint);
 		generator.generateClasses(srcFolder);
 		
@@ -346,7 +337,7 @@ public class RestEndpointClassesGeneratorTest {
 		srcFolder = ClassesGeneratorTestUtil.generateTmpDir();
 		ExchangeDescriptor exchange = new ExchangeDescriptorParser().fromJson(Paths.get(".", "src", "test", "resources", "testExchangeDescriptorWithAllRestRequestDataTypes.json"));
 		ExchangeApiDescriptor api = exchange.getApis().get(0);
-		RestEndpointDescriptor restEndpoint = findRestEndpointByName("postRestRequestDataTypeInt", api);
+		RestEndpointDescriptor restEndpoint = ClassesGeneratorTestUtil.findRestEndpointByName("postRestRequestDataTypeInt", api);
 		RestEndpointClassesGenerator generator = new RestEndpointClassesGenerator(exchange, api, restEndpoint);
 		generator.generateClasses(srcFolder);
 		
@@ -365,7 +356,7 @@ public class RestEndpointClassesGeneratorTest {
 		srcFolder = ClassesGeneratorTestUtil.generateTmpDir();
 		ExchangeDescriptor exchange = new ExchangeDescriptorParser().fromJson(Paths.get(".", "src", "test", "resources", "testExchangeDescriptorWithAllRestRequestDataTypes.json"));
 		ExchangeApiDescriptor api = exchange.getApis().get(0);
-		RestEndpointDescriptor restEndpoint = findRestEndpointByName("postRestRequestDataTypeIntList", api);
+		RestEndpointDescriptor restEndpoint = ClassesGeneratorTestUtil.findRestEndpointByName("postRestRequestDataTypeIntList", api);
 		RestEndpointClassesGenerator generator = new RestEndpointClassesGenerator(exchange, api, restEndpoint);
 		generator.generateClasses(srcFolder);
 		checkJavaFilesCount(srcFolder, 0);        
@@ -376,7 +367,7 @@ public class RestEndpointClassesGeneratorTest {
 		srcFolder = ClassesGeneratorTestUtil.generateTmpDir();
 		ExchangeDescriptor exchange = new ExchangeDescriptorParser().fromJson(Paths.get(".", "src", "test", "resources", "testExchangeDescriptorWithAllRestRequestDataTypes.json"));
 		ExchangeApiDescriptor api = exchange.getApis().get(0);
-		RestEndpointDescriptor restEndpoint = findRestEndpointByName("postRestRequestDataTypeObjectNoParameters", api);
+		RestEndpointDescriptor restEndpoint = ClassesGeneratorTestUtil.findRestEndpointByName("postRestRequestDataTypeObjectNoParameters", api);
 		RestEndpointClassesGenerator generator = new RestEndpointClassesGenerator(exchange, api, restEndpoint);
 		generator.generateClasses(srcFolder);
 		checkJavaFilesCount(srcFolder, 0);        
@@ -387,7 +378,7 @@ public class RestEndpointClassesGeneratorTest {
 		srcFolder = ClassesGeneratorTestUtil.generateTmpDir();
 		ExchangeDescriptor exchange = new ExchangeDescriptorParser().fromJson(Paths.get(".", "src", "test", "resources", "testExchangeDescriptorWithAllRestResponseDataTypes.json"));
 		ExchangeApiDescriptor api = exchange.getApis().get(0);
-		RestEndpointDescriptor restEndpoint = findRestEndpointByName("getRestResponseDataTypeInt", api);
+		RestEndpointDescriptor restEndpoint = ClassesGeneratorTestUtil.findRestEndpointByName("getRestResponseDataTypeInt", api);
 		RestEndpointClassesGenerator generator = new RestEndpointClassesGenerator(exchange, api, restEndpoint);
 		generator.generateClasses(srcFolder);
 		checkJavaFilesCount(srcFolder, 0); 
@@ -398,7 +389,7 @@ public class RestEndpointClassesGeneratorTest {
 		srcFolder = ClassesGeneratorTestUtil.generateTmpDir();
 		ExchangeDescriptor exchange = new ExchangeDescriptorParser().fromJson(Paths.get(".", "src", "test", "resources", "testExchangeDescriptorWithAllRestResponseDataTypes.json"));
 		ExchangeApiDescriptor api = exchange.getApis().get(0);
-		RestEndpointDescriptor restEndpoint = findRestEndpointByName("getRestResponseDataTypeIntList", api);
+		RestEndpointDescriptor restEndpoint = ClassesGeneratorTestUtil.findRestEndpointByName("getRestResponseDataTypeIntList", api);
 		RestEndpointClassesGenerator generator = new RestEndpointClassesGenerator(exchange, api, restEndpoint);
 		generator.generateClasses(srcFolder);
 		checkJavaFilesCount(srcFolder, 0); 
@@ -409,7 +400,7 @@ public class RestEndpointClassesGeneratorTest {
 		srcFolder = ClassesGeneratorTestUtil.generateTmpDir();
 		ExchangeDescriptor exchange = new ExchangeDescriptorParser().fromJson(Paths.get(".", "src", "test", "resources", "testExchangeDescriptorWithAllRestResponseDataTypes.json"));
 		ExchangeApiDescriptor api = exchange.getApis().get(0);
-		RestEndpointDescriptor restEndpoint = findRestEndpointByName("getRestEmptyResponseDataType", api);
+		RestEndpointDescriptor restEndpoint = ClassesGeneratorTestUtil.findRestEndpointByName("getRestEmptyResponseDataType", api);
 		RestEndpointClassesGenerator generator = new RestEndpointClassesGenerator(exchange, api, restEndpoint);
 		generator.generateClasses(srcFolder);
 		checkJavaFilesCount(srcFolder, 0); 

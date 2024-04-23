@@ -35,15 +35,6 @@ public class WebsocketEndpointClassesGeneratorTest {
 	private Path checkSourceFileExists(Path srcFilePath) {
 		return ClassesGeneratorTestUtil.checkSourceFileExists(srcFolder.resolve(BASE_PKG), srcFilePath);
 	}
-	
-	private WebsocketEndpointDescriptor findWebsocketEndpointByName(String name, ExchangeApiDescriptor exchangeDescriptor) {
-		for (WebsocketEndpointDescriptor api: exchangeDescriptor.getWebsocketEndpoints()) {
-			if (api.getName().equals(name)) {
-				return api;
-			}
-		}
-		throw new AssertionError("No such API:" + name + " in:" + exchangeDescriptor);
-	}
 
 	@Test
 	public void testGenerateWebsocketEndpointClasses() throws IOException {
@@ -367,7 +358,7 @@ public class WebsocketEndpointClassesGeneratorTest {
 		srcFolder = ClassesGeneratorTestUtil.generateTmpDir();
 		ExchangeDescriptor exchange = new ExchangeDescriptorParser().fromJson(Paths.get(".", "src", "test", "resources", "testExchangeDescriptorWithAllRestRequestDataTypes.json"));
 		ExchangeApiDescriptor api = exchange.getApis().get(0);
-		WebsocketEndpointDescriptor websocketEndpoint = findWebsocketEndpointByName("streamWithIntRequestDataType", api);
+		WebsocketEndpointDescriptor websocketEndpoint = ClassesGeneratorTestUtil.findWebsocketEndpointByName("streamWithIntRequestDataType", api);
 		WebsocketEndpointClassesGenerator generator = new WebsocketEndpointClassesGenerator(exchange, api, websocketEndpoint);
 		generator.generateClasses(srcFolder);
 		checkJavaFilesCount(Paths.get("."), 0);       
@@ -378,7 +369,7 @@ public class WebsocketEndpointClassesGeneratorTest {
 		srcFolder = ClassesGeneratorTestUtil.generateTmpDir();
 		ExchangeDescriptor exchange = new ExchangeDescriptorParser().fromJson(Paths.get(".", "src", "test", "resources", "testExchangeDescriptorWithAllRestRequestDataTypes.json"));
 		ExchangeApiDescriptor api = exchange.getApis().get(0);
-		WebsocketEndpointDescriptor websocketEndpoint = findWebsocketEndpointByName("streamWithObjectRequestDataTypeZeroParameters", api);
+		WebsocketEndpointDescriptor websocketEndpoint = ClassesGeneratorTestUtil.findWebsocketEndpointByName("streamWithObjectRequestDataTypeZeroParameters", api);
 		WebsocketEndpointClassesGenerator generator = new WebsocketEndpointClassesGenerator(exchange, api, websocketEndpoint);
 		generator.generateClasses(srcFolder);
 		checkJavaFilesCount(Paths.get("."), 3);
@@ -391,18 +382,14 @@ public class WebsocketEndpointClassesGeneratorTest {
 	}
 	
 	@Test
-	public void testGenerateClassesSpecificApiRequestTypesObjectListMapRequestEmptyObject() throws Exception {
+	public void testGenerateClassesSpecificApiRequestTypesObjectListMapRequestReferencedObject() throws Exception {
 		srcFolder = ClassesGeneratorTestUtil.generateTmpDir();
 		ExchangeDescriptor exchange = new ExchangeDescriptorParser().fromJson(Paths.get(".", "src", "test", "resources", "testExchangeDescriptorWithAllRestRequestDataTypes.json"));
 		ExchangeApiDescriptor api = exchange.getApis().get(0);
-		WebsocketEndpointDescriptor websocketEndpoint = findWebsocketEndpointByName("streamWithObjectListMapRequestDataType", api);
+		WebsocketEndpointDescriptor websocketEndpoint = ClassesGeneratorTestUtil.findWebsocketEndpointByName("streamWithObjectListMapRequestDataType", api);
 		WebsocketEndpointClassesGenerator generator = new WebsocketEndpointClassesGenerator(exchange, api, websocketEndpoint);
 		generator.generateClasses(srcFolder);
-		checkJavaFilesCount(Paths.get("."), 2);	
-		checkJavaFilesCount(Paths.get("serializers"), 1);
-		checkSourceFileExists(Paths.get("serializers", "MyTestCEXMarketDataStreamWithObjectListMapRequestDataTypeRequestSerializer.java"));
-		checkJavaFilesCount(Paths.get("pojo"), 1);
-		checkSourceFileExists(Paths.get("pojo", "MyTestCEXMarketDataStreamWithObjectListMapRequestDataTypeRequest.java"));
+		checkJavaFilesCount(Paths.get("."), 0);	
 	}
 
 }
