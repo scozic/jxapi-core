@@ -88,7 +88,6 @@ public class WebsocketEndpointDemoGenerator extends JavaTypeGenerator {
 		String exchangeImplClassName = exchangeInterfaceClassName + "Impl";
 		addImport(exchangeImplClassName);
 		addImport(TestJXApiProperties.class);
-		addImport(DemoUtil.class);
 		
 		body.append(simpleApiClassName)
 			.append(" api = new ")
