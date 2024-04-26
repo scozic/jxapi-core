@@ -57,6 +57,7 @@
 					"url": "https://com.sample.mycex/postString",
 					"request": {
 						"name": "hello",
+						"description": "Say Hi!",
 						"type": "STRING",
 						"sampleValue": "Hello world!"
 					},
@@ -219,6 +220,7 @@
 					"description": "Subscribe to stream with STRING request type",
 					"request": {
 						"name": "symbol",
+						"description": "Market symbol",
 						"type": "STRING",
 						"sampleValue": "BTC_USDT"
 					},

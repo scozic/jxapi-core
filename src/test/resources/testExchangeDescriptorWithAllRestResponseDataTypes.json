@@ -14,6 +14,7 @@
 					"description": "A sample REST endpoint using INT response data type",
 					"url": "https://com.sample.mycex/getInt",
 					"response": {
+						"description": "A random int",
 						"type": "INT"
 					}
 				},

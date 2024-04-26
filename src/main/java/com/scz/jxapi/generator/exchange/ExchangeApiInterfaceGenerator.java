@@ -54,6 +54,8 @@ public class ExchangeApiInterfaceGenerator extends JavaTypeGenerator {
 		EndpointParameterType requestDataType = getEndpointParameterType(websocketApi.getRequest());
 		boolean hasArguments = ExchangeJavaWrapperGeneratorUtil.websocketEndpointHasArguments(websocketApi, exchangeApiDescriptor);
 		String requestSimpleClassName = Object.class.getSimpleName();
+		String requestDescription = null;
+		String requestArgName = null;
 		if (hasArguments) {
 			String requestClassName = ExchangeJavaWrapperGeneratorUtil.generateWebsocketEndpointRequestClassName(
 													exchangeDescriptor, 
@@ -63,6 +65,8 @@ public class ExchangeApiInterfaceGenerator extends JavaTypeGenerator {
 													requestDataType, 
 													getImports(), 
 													requestClassName);
+			requestDescription = websocketApi.getRequest().getDescription();
+			requestArgName = ExchangeJavaWrapperGeneratorUtil.getRequestArgName(websocketApi.getRequestArgName());
 		}
 		
 		EndpointParameterType messageDataType = getEndpointParameterType(websocketApi.getMessage());
@@ -81,19 +85,20 @@ public class ExchangeApiInterfaceGenerator extends JavaTypeGenerator {
 				.append(subscribeMethodName)
 				.append("(")
 				.append(hasArguments? requestSimpleClassName 
-										+ " " + ExchangeJavaWrapperGeneratorUtil.getRequestArgName(websocketApi.getRequestArgName()) 
+										+ " " + requestArgName 
 										+ ", "
 									: "")
 				.append("WebsocketListener<")
 				.append(messageClassSimpleName)
 				.append("> listener)").toString();
-		appendToBody("\n" 
-		  			+ JavaCodeGenerationUtil.generateJavaDoc(
-					"Subscribe to " + websocketApi.getName() + " stream.<br/>\n" 
-			    	+ websocketApi.getDescription() 
-					+ "\n"
-					+ "\n@return client subscriptionId to use for unsubscription")
-					+ "\n");
+		appendToBody("\n")
+			.append(JavaCodeGenerationUtil.generateJavaDoc(
+						"Subscribe to " + websocketApi.getName() + " stream.<br/>\n" 
+						+ (websocketApi.getDescription() != null? websocketApi.getDescription() + "\n": "")
+						+ "\n"
+						+ (requestDescription != null? "@param " + requestArgName + " " + requestDescription + "\n": "") 
+						+ "@return client subscriptionId to use for unsubscription")
+						+ "\n");
 		appendToBody(subscribeMethodSignature + ";\n");
 		
 		String unsubscribeMethodSignature = "boolean " + unsubscribeMethodName + "(String subscriptionId)";
@@ -116,12 +121,14 @@ public class ExchangeApiInterfaceGenerator extends JavaTypeGenerator {
 		EndpointParameter response = restApi.getResponse();
 		EndpointParameterType responseDataType = getEndpointParameterType(response);
 		String requestSimpleClassName = "Object";
+		String requestArgName = null;
 		if (hasArguments) {
 			String requestClassName = ExchangeJavaWrapperGeneratorUtil.generateRestEnpointRequestClassName(exchangeDescriptor, exchangeApiDescriptor, restApi);
 			requestSimpleClassName = ExchangeJavaWrapperGeneratorUtil.getClassNameForParameterType(
 					requestDataType, 
 					getImports(), 
 					requestClassName);
+			requestArgName = ExchangeJavaWrapperGeneratorUtil.getRequestArgName(request.getName());
 		}
 		boolean hasResponse = ExchangeJavaWrapperGeneratorUtil.restEndpointHasResponse(restApi, exchangeApiDescriptor);
 		String restResponseClassName = null;
@@ -147,10 +154,30 @@ public class ExchangeApiInterfaceGenerator extends JavaTypeGenerator {
 				.append("(")
 				.append(hasArguments? requestSimpleClassName 
 									   + " " +
-									   ExchangeJavaWrapperGeneratorUtil.getRequestArgName(request.getName())
+									   requestArgName
 									 : "")
 				.append(")").toString(); 
-		appendToBody(JavaCodeGenerationUtil.generateJavaDoc(restApi.getDescription()) + "\n");
+		StringBuilder javaDoc = new StringBuilder();
+		if (restApi.getDescription() != null) {
+			javaDoc.append(restApi.getDescription())
+				   .append("\n");
+		}
+		if (hasArguments && request.getDescription() != null) {
+			javaDoc.append("@param ")
+				   .append(requestArgName)
+				   .append(" ")
+				   .append(request.getDescription())
+				   .append("\n");
+		}
+		if (hasResponse && response.getDescription() != null) {
+			javaDoc.append("@return ")
+			   .append(response.getDescription())
+			   .append("\n");
+		}
+		if (javaDoc.length() > 0) {
+			javaDoc.deleteCharAt(javaDoc.length() - 1);
+			appendToBody(JavaCodeGenerationUtil.generateJavaDoc(javaDoc.toString())).append("\n");
+		}
 		appendToBody(apiMethodSignature + ";\n");
 		addImport(FutureRestResponse.class);
 	}
