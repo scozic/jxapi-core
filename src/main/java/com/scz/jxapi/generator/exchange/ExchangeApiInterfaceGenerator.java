@@ -66,7 +66,7 @@ public class ExchangeApiInterfaceGenerator extends JavaTypeGenerator {
 													getImports(), 
 													requestClassName);
 			requestDescription = websocketApi.getRequest().getDescription();
-			requestArgName = ExchangeJavaWrapperGeneratorUtil.getRequestArgName(websocketApi.getRequestArgName());
+			requestArgName = ExchangeJavaWrapperGeneratorUtil.getRequestArgName(websocketApi.getRequest().getName());
 		}
 		
 		EndpointParameterType messageDataType = getEndpointParameterType(websocketApi.getMessage());

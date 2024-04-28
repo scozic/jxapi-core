@@ -4,7 +4,6 @@ import java.util.Optional;
 
 import com.scz.jxapi.generator.JavaCodeGenerationUtil;
 import com.scz.jxapi.generator.JavaTypeGenerator;
-import com.scz.jxapi.util.DemoUtil;
 import com.scz.jxapi.util.TestJXApiProperties;
 
 public class WebsocketEndpointDemoGenerator extends JavaTypeGenerator {

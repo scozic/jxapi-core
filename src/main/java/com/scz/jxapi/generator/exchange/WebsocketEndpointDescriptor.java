@@ -26,8 +26,6 @@ public class WebsocketEndpointDescriptor {
 	
 	private List<WebsocketMessageTopicMatcherFieldDescriptor> messageTopicMatcherFields;
 	
-	private String requestArgName;
-	
 	public String getName() {
 		return name;
 	}
@@ -77,12 +75,6 @@ public class WebsocketEndpointDescriptor {
 		this.request = request;
 	}
 	
-	public String getRequestArgName() {
-		return requestArgName;
-	}
-	public void setRequestArgName(String requestArgName) {
-		this.requestArgName = requestArgName;
-	}
 	public EndpointParameter getMessage() {
 		return message;
 	}
