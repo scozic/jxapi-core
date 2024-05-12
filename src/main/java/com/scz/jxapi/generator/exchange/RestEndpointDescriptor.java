@@ -22,10 +22,6 @@ public class RestEndpointDescriptor {
 	private EndpointParameter request;
 	
 	private EndpointParameter response;
-	
-//	private List<EndpointParameter> parameters;
-//	
-//	private List<EndpointParameter> response;
 
 	private String urlParameters;
 	
@@ -33,23 +29,9 @@ public class RestEndpointDescriptor {
 	
 	private boolean queryParams;
 	
-//	private String responseDataType = CanonicalEndpointParameterTypes.OBJECT.name();
-//	
-//	private String requestDataType = CanonicalEndpointParameterTypes.OBJECT.name();
-//	
-//	private String requestObjectName;
-//	
-//	private String responseObjectName;
-	
 	private Integer requestWeight;
 	
 	private List<RateLimitRule> rateLimits;
-	
-//	private List<String> requestInterfaces;
-//	
-//	private List<String> responseInterfaces;
-	
-//	private String requestArgName;
  	
 	public String getName() {
 		return name;

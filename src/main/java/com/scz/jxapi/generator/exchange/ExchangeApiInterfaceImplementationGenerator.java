@@ -634,7 +634,7 @@ public class ExchangeApiInterfaceImplementationGenerator extends JavaTypeGenerat
 														request.getObjectName(), 
 														exchangeApiDescriptor);
 		if (ExchangeJavaWrapperGeneratorUtil.restEndpointHasArguments(restApi, exchangeApiDescriptor)) {
-			EndpointParameterType requestDataType = request.getEndpointParameterType();
+			EndpointParameterType requestDataType = ExchangeJavaWrapperGeneratorUtil.getEndpointParameterType(request);
 			if (restApi.getUrlParameters() != null) {
 				getUrlParametersBody =	generateUrlParametersOrTopicSerializerBodyFromTemplate(
 												restApi.getUrlParameters(), 
@@ -642,10 +642,16 @@ public class ExchangeApiInterfaceImplementationGenerator extends JavaTypeGenerat
 												restApi.getUrlParametersListSeparator(),
 												request.getName());
 			} else if (enpointParameters != null && enpointParameters.size() > 0
-						&& (restApi.isQueryParams()	|| "GET".equalsIgnoreCase(restApi.getHttpMethod()))) {
+						&& (restApi.isQueryParams()	
+							|| "GET".equalsIgnoreCase(restApi.getHttpMethod())
+							|| "DELETE".equalsIgnoreCase(restApi.getHttpMethod()))) {
 				getUrlParametersBody = generateGetUrlParametersBodyUsingQueryParams(enpointParameters);
 			} else if (requestDataType.getCanonicalType().isPrimitive) {
-				getUrlParametersBody = "request == null? \"\": \"/\" + request";
+				if (restApi.isQueryParams()) {
+					getUrlParametersBody = generateGetUrlParametersBodyUsingQueryParams(List.of(request));
+				} else {
+					getUrlParametersBody = "request == null? \"\": \"/\" + request";
+				}
 			}
 		} else if (restApi.getUrlParameters() != null) {
 			getUrlParametersBody = "\"" + restApi.getUrlParameters() + "\"";
@@ -710,9 +716,9 @@ public class ExchangeApiInterfaceImplementationGenerator extends JavaTypeGenerat
 				value = EncodingUtil.class.getSimpleName() + ".listToString(" + value + ", \"" + stringListSeparator + "\")"; 
 			}
 			sb.append(", \"").append(name).append("\", ").append(value);
-			if (i < n - 1) {
-				sb.append(", ");
-			}
+//			if (i < n - 1) {
+//				sb.append(", ");
+//			}
 		}
 		if (urlParametersTemplate.contains("${request}")) {
 			if (n > 0) {

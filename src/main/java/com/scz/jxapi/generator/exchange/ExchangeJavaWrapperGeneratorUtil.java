@@ -5,6 +5,7 @@ import java.math.BigDecimal;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -478,49 +479,62 @@ public class ExchangeJavaWrapperGeneratorUtil {
 
 	public static List<EndpointParameter> findParametersForObjectName(String requestObjectName, ExchangeApiDescriptor exchangeApiDescriptor) {
 		List<EndpointParameter> res = null;
-		for (RestEndpointDescriptor restEndpointDescriptor: exchangeApiDescriptor.getRestEndpoints()) {
-			EndpointParameter request = restEndpointDescriptor.getRequest();
-			if (requestObjectName.equals(request.getObjectName())) {
-				if (request.getParameters() != null) {
-					res = request.getParameters();
-					break;
-				}
+		for (RestEndpointDescriptor restEndpointDescriptor: 
+				Optional.ofNullable(exchangeApiDescriptor.getRestEndpoints()).orElse(List.of())) {
+			res = findParametersForObjectName(requestObjectName, restEndpointDescriptor.getRequest());
+			if (res != null) {
+				break;
 			}
-			EndpointParameter response = restEndpointDescriptor.getResponse();
-			if (requestObjectName.equals(response.getObjectName())) {
-				if (response.getParameters() != null) {
-					res = response.getParameters();
-					break;
-				}
+			res = findParametersForObjectName(requestObjectName, restEndpointDescriptor.getResponse());
+			if (res != null) {
+				break;
 			}
 		}
 		
 		if (res == null) {
-			for (WebsocketEndpointDescriptor websocketEndpointDescriptor: exchangeApiDescriptor.getWebsocketEndpoints()) {
-				EndpointParameter request = websocketEndpointDescriptor.getRequest();
-				if (requestObjectName.equals(request.getObjectName())) {
-					if (request.getParameters() != null) {
-						res = request.getParameters();
-						break;
-					}
+			for (WebsocketEndpointDescriptor websocketEndpointDescriptor: 
+					Optional.ofNullable(exchangeApiDescriptor.getWebsocketEndpoints()).orElse(List.of())) {
+				res = findParametersForObjectName(requestObjectName, websocketEndpointDescriptor.getRequest());
+				if (res != null) {
+					break;
 				}
-				EndpointParameter message = websocketEndpointDescriptor.getMessage();
-				if (requestObjectName.equals(message.getObjectName())) {
-					if (message.getParameters() != null) {
-						res = message.getParameters();
-						break;
-					}
+				res = findParametersForObjectName(requestObjectName, websocketEndpointDescriptor.getMessage());
+				if (res != null) {
+					break;
 				}
 			}
 		}
 		
 		if (res != null) {
-			return res.stream().map(e -> resolveEndpointParameters(exchangeApiDescriptor, e)).collect(Collectors.toList());
+			return resolveEndpointParameters(exchangeApiDescriptor, res);
 		}
-		throw new IllegalArgumentException("Found no REST request or response or Websocket request or message with fields defined for objectName:"  + requestObjectName);
+		throw new IllegalArgumentException("Found no REST request or response or Websocket request or message with fields defined for objectName:"  
+										   + requestObjectName);
+	}
+	
+	private static List<EndpointParameter> findParametersForObjectName(String requestObjetName, EndpointParameter param) {
+		if (param == null) {
+			return null;
+		}
+		List<EndpointParameter> res = param.getParameters();
+		if (res == null) {
+			return null;
+		}
+		if (Objects.equals(requestObjetName, param.getObjectName())) {
+			return res;
+		}
+		for (EndpointParameter p: res) {
+			res = findParametersForObjectName(requestObjetName, p);
+			if (res != null) {
+				return res;
+			}
+		}
+		return null;
 	}
 
-	public static List<EndpointParameter> getEndpointParameters(List<EndpointParameter> endpointDescriptiorParameters, String requestObjectName, ExchangeApiDescriptor exchangeApiDescriptor) {
+	public static List<EndpointParameter> getEndpointParameters(List<EndpointParameter> endpointDescriptiorParameters, 
+																String requestObjectName, 
+																ExchangeApiDescriptor exchangeApiDescriptor) {
 		if (endpointDescriptiorParameters != null) {
 			return endpointDescriptiorParameters;
 		} else if (requestObjectName != null) {
@@ -530,7 +544,8 @@ public class ExchangeJavaWrapperGeneratorUtil {
 		}
 	}
 	
-	public static EndpointParameter resolveEndpointParameters(ExchangeApiDescriptor exchangeApiDescriptor, EndpointParameter parameter) {
+	public static EndpointParameter resolveEndpointParameters(ExchangeApiDescriptor exchangeApiDescriptor, 
+															  EndpointParameter parameter) {
 		if (parameter == null) {
 			return null;
 		}
@@ -540,14 +555,20 @@ public class ExchangeJavaWrapperGeneratorUtil {
 		if (parameter.getEndpointParameterType() != null 
 			&& parameter.getEndpointParameterType().isObject() 
 			&& parameter.getObjectName() != null 
-			&& (parameter.getParameters() == null || parameter.getParameters().isEmpty())) {
+			&& parameter.getParameters() == null) {
 			parameter = parameter.clone();
 			parameter.setParameters(findParametersForObjectName(parameter.getObjectName(), exchangeApiDescriptor));
 		}
 		return parameter;
 	}
+	
+	public static List<EndpointParameter> resolveEndpointParameters(ExchangeApiDescriptor exchangeApiDescriptor, 
+			List<EndpointParameter> parameters) {
+		return parameters.stream().map(e -> resolveEndpointParameters(exchangeApiDescriptor, e)).collect(Collectors.toList());
+	}
 
-	public static boolean websocketEndpointHasArguments(WebsocketEndpointDescriptor websocketApi, ExchangeApiDescriptor exchangeApiDescriptor) {
+	public static boolean websocketEndpointHasArguments(WebsocketEndpointDescriptor websocketApi, 
+														ExchangeApiDescriptor exchangeApiDescriptor) {
 		EndpointParameter request = websocketApi.getRequest();
 		if (request == null) {
 			return false;
@@ -558,7 +579,8 @@ public class ExchangeJavaWrapperGeneratorUtil {
 									exchangeApiDescriptor);
 	}
 
-	public static boolean restEndpointHasArguments(RestEndpointDescriptor restApi, ExchangeApiDescriptor exchangeApiDescriptor) {
+	public static boolean restEndpointHasArguments(RestEndpointDescriptor restApi, 
+												   ExchangeApiDescriptor exchangeApiDescriptor) {
 		EndpointParameter request = restApi.getRequest();
 		if (request == null) {
 			return false;
@@ -569,7 +591,10 @@ public class ExchangeJavaWrapperGeneratorUtil {
 									exchangeApiDescriptor);
 	}
 
-	private static boolean endpointHasArguments(EndpointParameterType dataType, List<EndpointParameter> parameters, String requestObjectName, ExchangeApiDescriptor exchangeApiDescriptor) {
+	private static boolean endpointHasArguments(EndpointParameterType dataType, 
+												List<EndpointParameter> parameters, 
+												String requestObjectName, 
+												ExchangeApiDescriptor exchangeApiDescriptor) {
 		return (dataType != null && dataType.getCanonicalType() != CanonicalEndpointParameterTypes.OBJECT) 
 				|| getEndpointParameters(parameters, requestObjectName, exchangeApiDescriptor).size() > 0;
 	}
@@ -588,7 +613,9 @@ public class ExchangeJavaWrapperGeneratorUtil {
 				|| getEndpointParameters(response.getParameters(), response.getObjectName(), exchangeApiDescriptor).size() > 0;
 	}
 	
-	public static String getNewMessageDeserializerInstruction(EndpointParameterType messageType, String messageFullClassName, Set<String> imports) {
+	public static String getNewMessageDeserializerInstruction(EndpointParameterType messageType, 
+															  String messageFullClassName, 
+															  Set<String> imports) {
 		if (messageType == null) {
 			messageType  = EndpointParameterType.fromTypeName(CanonicalEndpointParameterTypes.STRING.name());
 		}
