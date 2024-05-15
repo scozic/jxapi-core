@@ -31,6 +31,7 @@ import com.scz.jxapi.netutils.websocket.WebsocketEndpoint;
 import com.scz.jxapi.netutils.websocket.WebsocketListener;
 import com.scz.jxapi.netutils.websocket.WebsocketSubscribeRequest;
 import com.scz.jxapi.util.EncodingUtil;
+import com.scz.jxapi.util.JsonUtil;
 
 public class ExchangeApiInterfaceImplementationGenerator extends JavaTypeGenerator {
 	
@@ -635,24 +636,20 @@ public class ExchangeApiInterfaceImplementationGenerator extends JavaTypeGenerat
 														exchangeApiDescriptor);
 		if (ExchangeJavaWrapperGeneratorUtil.restEndpointHasArguments(restApi, exchangeApiDescriptor)) {
 			EndpointParameterType requestDataType = ExchangeJavaWrapperGeneratorUtil.getEndpointParameterType(request);
+			boolean hasQueryParams = restApi.isQueryParams()	
+					|| "GET".equalsIgnoreCase(restApi.getHttpMethod())
+					|| "DELETE".equalsIgnoreCase(restApi.getHttpMethod());
 			if (restApi.getUrlParameters() != null) {
 				getUrlParametersBody =	generateUrlParametersOrTopicSerializerBodyFromTemplate(
 												restApi.getUrlParameters(), 
 												enpointParameters, 
 												restApi.getUrlParametersListSeparator(),
 												request.getName());
-			} else if (enpointParameters != null && enpointParameters.size() > 0
-						&& (restApi.isQueryParams()	
-							|| "GET".equalsIgnoreCase(restApi.getHttpMethod())
-							|| "DELETE".equalsIgnoreCase(restApi.getHttpMethod()))) {
+			} else if (enpointParameters != null && enpointParameters.size() > 0 && hasQueryParams) {
 				getUrlParametersBody = generateGetUrlParametersBodyUsingQueryParams(enpointParameters);
-			} else if (requestDataType.getCanonicalType().isPrimitive) {
-				if (restApi.isQueryParams()) {
-					getUrlParametersBody = generateGetUrlParametersBodyUsingQueryParams(List.of(request));
-				} else {
-					getUrlParametersBody = "request == null? \"\": \"/\" + request";
-				}
-			}
+			} else if (!requestDataType.isObject() && hasQueryParams) {
+				getUrlParametersBody = generateGetUrlParametersBodyUsingQueryParams(List.of(request));
+			} // else object type with 0 properties, no url parameter
 		} else if (restApi.getUrlParameters() != null) {
 			getUrlParametersBody = "\"" + restApi.getUrlParameters() + "\"";
 		}
@@ -679,10 +676,25 @@ public class ExchangeApiInterfaceImplementationGenerator extends JavaTypeGenerat
 							ExchangeJavaWrapperGeneratorUtil.getClassNameForEndpointParameter(param, null, param.getObjectName()), 
 							endpointParameters.stream().map(p -> p.getName()).collect(Collectors.toList()))
 					   + "()";
-			if (param.getEndpointParameterType().getCanonicalType() == CanonicalEndpointParameterTypes.LIST) {
-				value = EncodingUtil.class.getSimpleName() + ".listToUrlParamString(" + value + ")"; 
+			if (param.getEndpointParameterType().getCanonicalType() == CanonicalEndpointParameterTypes.LIST
+				|| param.getEndpointParameterType().getCanonicalType() == CanonicalEndpointParameterTypes.MAP
+				|| param.getEndpointParameterType().isObject()) {
+				addImport(JsonUtil.class);
+				value = new StringBuilder()
+								.append(EncodingUtil.class.getSimpleName())
+								.append(".urlEncode(")
+								.append("JsonUtil.pojoToJsonString(")
+								.append(value)
+								.append("))").toString(); 
+			} else if (param.getEndpointParameterType().getCanonicalType() == CanonicalEndpointParameterTypes.STRING) {
+				value = new StringBuilder()
+						.append(EncodingUtil.class.getSimpleName())
+						.append(".urlEncode(")
+						.append(value)
+						.append(")").toString(); 
 			}
 			s.append(value);
+			
 		}
 		return s.append(")").toString();
 	}
@@ -716,9 +728,6 @@ public class ExchangeApiInterfaceImplementationGenerator extends JavaTypeGenerat
 				value = EncodingUtil.class.getSimpleName() + ".listToString(" + value + ", \"" + stringListSeparator + "\")"; 
 			}
 			sb.append(", \"").append(name).append("\", ").append(value);
-//			if (i < n - 1) {
-//				sb.append(", ");
-//			}
 		}
 		if (urlParametersTemplate.contains("${request}")) {
 			if (n > 0) {

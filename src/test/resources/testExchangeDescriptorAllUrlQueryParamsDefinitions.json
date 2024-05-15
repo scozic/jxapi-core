@@ -12,7 +12,7 @@
 					"name": "getRestRequestDataTypeInt",
 					"httpMethod": "GET",
 					"description": "A sample REST endpoint using INT request data type with GET method. Expecting one query param named id",
-					"url": "https://com.sample.myexchange/getById",
+					"url": "https://com.sample.myexchange/getRestRequestDataTypeInt",
 					"request": {
 						"name": "id",
 						"type": "INT",
@@ -26,7 +26,7 @@
 									{"name":"id", "type": "INT", "description":"Person id", "sampleValue":-1},
 									{"name":"name", "type": "STRING", "description":"Person name", "sampleValue":-1},
 									{"name":"age", "type": "INT", "description":"Person age", "sampleValue":-1},
-									{"name":"city", "type": "INT", "description":"Adress city", "sampleValue":"Rome"}
+									{"name":"city", "type": "STRING", "description":"Address city", "sampleValue":"Rome"}
 								]
 							}
 						]
@@ -36,7 +36,7 @@
 					"name": "getRestRequestDataTypeObject",
 					"httpMethod": "GET",
 					"description": "A sample REST endpoint using INT request data type with GET method. Expecting 2 query param named 'age' and 'city'",
-					"url": "https://com.sample.myexchange/getById",
+					"url": "https://com.sample.myexchange/getRestRequestDataTypeObject",
 					"request": {
 						"objectName":"PersonFilter",
 						"parameters": [
@@ -48,11 +48,30 @@
 						"objectName": "GenericResponse"
 					}
 				},
+								{
+					"name": "getRestRequestDataTypeStringList",
+					"httpMethod": "GET",
+					"description": "A sample REST endpoint using INT request data type with GET method. Expecting one query param named id",
+					"url": "https://com.sample.myexchange/getRestRequestDataTypeStringList",
+					"request": {
+						"name": "ids",
+						"type": "STRING_LIST",
+						"sampleValue": "[\"Joe\",\"Anne\",\"Bill\"]"
+					},
+					"response": {
+						"objectName": "GenericResponse",
+						"type": "OBJECT_LIST", 
+						"parameters": [
+							{"name":"responseCode", "type": "INT", "description":"Request response code", "sampleValue":"0"},
+							{"name":"persons", "type": "OBJECT_LIST", "objectName": "Person"}
+						]
+					}
+				},
 				{
 					"name": "deleteRestRequestDataTypeInt",
 					"httpMethod": "DELETE",
 					"description": "A sample REST endpoint using INT request data type. Expecting single param of primitive type to be passed as url parameter",
-					"url": "https://com.sample.myexchange/deleteById",
+					"url": "https://com.sample.myexchange/deleteRestRequestDataTypeInt",
 					"request": {
 						"name": "id",
 						"type": "INT",
@@ -66,7 +85,7 @@
 					"name": "deleteRestRequestDataTypeIntAsQueryParam",
 					"httpMethod": "DELETE",
 					"description": "A sample REST endpoint using INT request data type. Expecting single param of primitive type to be passed single query param",
-					"url": "https://com.sample.myexchange/deleteByIdAsQueryParam",
+					"url": "https://com.sample.myexchange/deleteRestRequestDataTypeIntAsQueryParam",
 					"queryParams" : true,
 					"request": {
 						"name": "id",
@@ -81,7 +100,7 @@
 					"name": "deleteRestRequestDataTypeObject",
 					"httpMethod": "DELETE",
 					"description": "A sample REST endpoint using INT request data type. Expecting one query param named id",
-					"url": "https://com.sample.myexchange/deleteByFilter",
+					"url": "https://com.sample.myexchange/deleteRestRequestDataTypeObject",
 					"request": {
 						"objectName":"PersonFilter"
 					},
@@ -93,7 +112,7 @@
 					"name": "putRestRequestDataTypeObject",
 					"httpMethod": "PUT",
 					"description": "A sample REST endpoint using OBJECT request data type with PUT method. Expecting no query params as object should be serialized as json in request body when PUT method is used",
-					"url": "https://com.sample.myexchange/getById",
+					"url": "https://com.sample.myexchange/putRestRequestDataTypeObject",
 					"request": {
 						"objectName": "Person"
 					},
@@ -105,7 +124,7 @@
 					"name": "putRestRequestDataTypeObject",
 					"httpMethod": "PUT",
 					"description": "A sample REST endpoint using OBJECT request data type with PUT method. Expecting no query params as object should be serialized as json in request body when PUT method is used",
-					"url": "https://com.sample.myexchange/create",
+					"url": "https://com.sample.myexchange/putRestRequestDataTypeObject",
 					"request": {
 						"objectName": "Person"
 					},
@@ -118,7 +137,7 @@
 					"httpMethod": "PUT",
 					"urlParameters" : "?id=${id}&name=${name}&age=${age}&city=${city}",
 					"description": "A sample REST endpoint using OBJECT request data type with PUT method. Expecting query params as specified in 'urlParams' property",
-					"url": "https://com.sample.myexchange/create",
+					"url": "https://com.sample.myexchange/putRestRequestDataTypeObjectUsingCustomQueryParams",
 					"request": {
 						"objectName": "Person"
 					},
@@ -131,9 +150,23 @@
 					"httpMethod": "PUT",
 					"queryParams" : true,
 					"description": "A sample REST endpoint using OBJECT request data type with PUT method. 'queryParams' is set to 'true' should request should be generated using query params",
-					"url": "https://com.sample.myexchange/create",
+					"url": "https://com.sample.myexchange/putRestRequestDataTypeObjectUsingDefaultQueryParams",
 					"request": {
 						"objectName": "Person"
+					},
+					"response": {
+						"objectName": "GenericResponse"
+					}
+				},
+				{
+					"name": "postRestRequestDataTypeIntListAsQueryParam",
+					"httpMethod": "POST",
+					"queryParams": true,
+					"description": "A sample REST endpoint using INT_LIST request data type",
+					"url": "https://com.sample.myexchange/postRestRequestDataTypeIntListAsQueryParam",
+					"request": {
+						"name": "intListArg",
+						"type": "INT_LIST"
 					},
 					"response": {
 						"objectName": "GenericResponse"
