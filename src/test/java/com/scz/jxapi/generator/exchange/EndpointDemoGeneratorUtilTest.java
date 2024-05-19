@@ -72,6 +72,18 @@ public class EndpointDemoGeneratorUtilTest {
 	}
 	
 	@Test
+	public void  testGenerateEndpointParameterCreationMethodPrimitiveTimestampParameterSpecialValueNow() {
+		EndpointParameter param = EndpointParameter.create("TIMESTAMP", "myLongParam", null, null, List.of());
+		param.setSampleValue("now()");
+		Set<String> imports = new TreeSet<>();
+		String method = EndpointDemoGeneratorUtil.generateEndpointParameterCreationMethod(param, null, imports);
+		Assert.assertEquals(
+				"public static Long createMyLongParam() {\n"
+			  + "  return Long.valueOf(System.currentTimeMillis());\n"
+			  + "}\n", method);
+	}
+	
+	@Test
 	public void  testGenerateEndpointParameterCreationMethodPrimitiveBigDecimalParameter() {
 		EndpointParameter param = EndpointParameter.create("BIGDECIMAL", "myBigDecimalParam", null, null, List.of());
 		param.setSampleValue("123.45");
@@ -118,9 +130,6 @@ public class EndpointDemoGeneratorUtilTest {
 				+ "  request.setALong(Long.valueOf(9876543210));\n"
 				+ "  request.setBDecimal(new BigDecimal(\"123.45\"));\n"
 				+ "  request.setCBool(Boolean.valueOf(true));\n"
-				+ "  request.setTheVoidStr(null);\n"
-				+ "  request.setTheVoidList(null);\n"
-				+ "  request.setTheVoidMap(null);\n"
 				+ "  return request;\n"
 				+ "}\n", method);
 		checkImports(imports, BigDecimal.class);
@@ -149,7 +158,6 @@ public class EndpointDemoGeneratorUtilTest {
 				+ "  MyRequestBar request_barItem = new MyRequestBar();\n"
 				+ "  request_barItem.setId(\"id#0\");\n"
 				+ "  request_barItem.setEnabled(Boolean.valueOf(true));\n"
-				+ "  request_barItem.setTime(null);\n"
 				+ "  request_barItem.setBestBids(new MapJsonFieldDeserializer<>(new ListJsonFieldDeserializer<>(BigDecimalJsonFieldDeserializer.getInstance())).deserialize(\"{\\\"BTC_USDT\\\": [\\\"69268.61\\\", \\\"69268.62\\\"], \\\"ETH_USDT\\\":[\\\"3427.98\\\", \\\"3427.90\\\"]}\"));\n"
 				+ "  request.setBar(List.of(request_barItem));\n"
 				+ "  return request;\n"

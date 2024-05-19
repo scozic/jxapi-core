@@ -11,6 +11,8 @@ import com.scz.jxapi.generator.JavaCodeGenerationUtil;
 
 public class EndpointDemoGeneratorUtil {
 	
+	public static final String SPECIAL_SAMPLE_VALUE_NOW = "now()";
+	
 	private EndpointDemoGeneratorUtil() {}
 	
 	public static String generateEndpointParameterCreationMethod(
@@ -114,16 +116,21 @@ public class EndpointDemoGeneratorUtil {
 									setChildParamInstruction));
 				} else if(childParamType.getCanonicalType().isPrimitive) {
 					setArg = getPrimitiveTypeParameterSampleValueDeclaration(childParam, imports);
-					res.append(setChildParamInstruction).append(setArg);
+					if (setArg != null) {
+						res.append(setChildParamInstruction).append(setArg);
+					}
 				} else {
 					// List or map
 					if (setArg != null) {
 						setArg = ExchangeJavaWrapperGeneratorUtil.getNewMessageDeserializerInstruction(childParamType, itemClassName, imports) 
 									+ ".deserialize(" + setArg + ")";
+						res.append(setChildParamInstruction).append(setArg);
 					}
-					res.append(setChildParamInstruction).append(setArg);
 				}
-				res.append(");\n");
+				if (setArg != null) {
+					res.append(");\n");
+				}
+				
 			}
 			parameterValue = itemVariableName;
 		} else {
@@ -196,6 +203,9 @@ public class EndpointDemoGeneratorUtil {
 			return "Integer.valueOf(" + sampleValueStr + ")";
 		case LONG:
 		case TIMESTAMP:
+			if (SPECIAL_SAMPLE_VALUE_NOW.equals(sampleValueStr)) {
+				return "Long.valueOf(System.currentTimeMillis())";
+			}
 			return "Long.valueOf(" + sampleValueStr + ")";
 		case STRING:
 			return JavaCodeGenerationUtil.getQuotedString(sampleValueStr);
