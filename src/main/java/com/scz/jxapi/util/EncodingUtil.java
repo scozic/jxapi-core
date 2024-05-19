@@ -156,6 +156,9 @@ public class EncodingUtil {
 	 */
 	public static String urlEncode(String value) {
 		try {
+			if (value == null) {
+				return null;
+			}
 			return URLEncoder.encode(value, StandardCharsets.UTF_8.toString());
 		} catch (UnsupportedEncodingException e) {
 			throw new IllegalArgumentException("Error trying to encode url param:[" + value + "]", e);
