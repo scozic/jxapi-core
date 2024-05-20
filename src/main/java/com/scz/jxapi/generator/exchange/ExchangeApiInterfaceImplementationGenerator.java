@@ -13,14 +13,6 @@ import java.util.stream.Collectors;
 
 import com.scz.jxapi.generator.JavaCodeGenerationUtil;
 import com.scz.jxapi.generator.JavaTypeGenerator;
-import com.scz.jxapi.netutils.deserialization.json.field.BigDecimalJsonFieldDeserializer;
-import com.scz.jxapi.netutils.deserialization.json.field.BooleanJsonFieldDeserializer;
-import com.scz.jxapi.netutils.deserialization.json.field.IntegerJsonFieldDeserializer;
-import com.scz.jxapi.netutils.deserialization.json.field.ListJsonFieldDeserializer;
-import com.scz.jxapi.netutils.deserialization.json.field.LongJsonFieldDeserializer;
-import com.scz.jxapi.netutils.deserialization.json.field.MapJsonFieldDeserializer;
-import com.scz.jxapi.netutils.deserialization.json.field.StringJsonFieldDeserializer;
-import com.scz.jxapi.netutils.deserialization.json.field.TimestampJsonFieldDeserializer;
 import com.scz.jxapi.netutils.rest.FutureRestResponse;
 import com.scz.jxapi.netutils.rest.RestEndpoint;
 import com.scz.jxapi.netutils.rest.RestRequest;
@@ -306,8 +298,11 @@ public class ExchangeApiInterfaceImplementationGenerator extends JavaTypeGenerat
 		
 		List<String> replacements = new ArrayList<>();
 		replacements.add("topic");
-		// replacements.add("\"+ topic + \"");
 		replacements.add("\" + topic + \"");
+		if (request != null) {
+			replacements.add(ExchangeJavaWrapperGeneratorUtil.getRequestArgName(request.getName()));
+			replacements.add("\" + " + requestArgName + " + \"");
+		}
 		List<EndpointParameter> endpointParameters = List.of();
 		if (request != null) {
 			endpointParameters = ExchangeJavaWrapperGeneratorUtil.getEndpointParameters(
@@ -394,41 +389,6 @@ public class ExchangeApiInterfaceImplementationGenerator extends JavaTypeGenerat
 		}
 		
 		return topicSerializerBody + ";\n";
-	}
-
-	public static String getNewNonPrimitiveParameterJsonDeserializerInstruction(EndpointParameterType type, String objectClassName, Set<String> imports) {
-		switch (type.getCanonicalType()) {
-		case BIGDECIMAL:
-			imports.add(BigDecimalJsonFieldDeserializer.class.getName());
-			return "BigDecimalJsonFieldDeserializer.getInstance()";
-		case BOOLEAN:
-			imports.add(BooleanJsonFieldDeserializer.class.getName());
-			return  BooleanJsonFieldDeserializer.class.getSimpleName() + ".getInstance()";
-		case INT:
-			imports.add(IntegerJsonFieldDeserializer.class.getName());
-			return  IntegerJsonFieldDeserializer.class.getSimpleName() + ".getInstance()";
-		case LONG:
-			imports.add(LongJsonFieldDeserializer.class.getName());
-			return  LongJsonFieldDeserializer.class.getSimpleName() + ".getInstance()";
-		case STRING:
-			imports.add(StringJsonFieldDeserializer.class.getName());
-			return  StringJsonFieldDeserializer.class.getSimpleName() + ".getInstance()";
-		case TIMESTAMP:
-			imports.add(TimestampJsonFieldDeserializer.class.getName());
-			return  TimestampJsonFieldDeserializer.class.getSimpleName() + ".getInstance()";
-		case LIST:
-			imports.add(ListJsonFieldDeserializer.class.getName());
-			return "new " + ListJsonFieldDeserializer.class.getSimpleName() + "<>(" + getNewNonPrimitiveParameterJsonDeserializerInstruction(type.getSubType(), objectClassName, imports) + ")";
-		case MAP:
-			imports.add(MapJsonFieldDeserializer.class.getName());
-			return "new " + MapJsonFieldDeserializer.class.getSimpleName() + "<>(" + getNewNonPrimitiveParameterJsonDeserializerInstruction(type.getSubType(), objectClassName, imports) +")";
-		case OBJECT:
-			String objectDeserializerClass = ExchangeJavaWrapperGeneratorUtil.getJsonMessageDeserializerClassName(objectClassName);
-			imports.add(objectDeserializerClass);
-			return "new " +  JavaCodeGenerationUtil.getClassNameWithoutPackage(objectDeserializerClass) + "()";
-		default:
-			throw new IllegalArgumentException("Unexpected field type:" + type);
-		}
 	}
 	
 	private void generateRestEndpointMethodDeclaration(RestEndpointDescriptor restApi) {
@@ -646,9 +606,9 @@ public class ExchangeApiInterfaceImplementationGenerator extends JavaTypeGenerat
 												restApi.getUrlParametersListSeparator(),
 												request.getName());
 			} else if (enpointParameters != null && enpointParameters.size() > 0 && hasQueryParams) {
-				getUrlParametersBody = generateGetUrlParametersBodyUsingQueryParams(enpointParameters);
+				getUrlParametersBody = generateGetUrlParametersBodyUsingQueryParams(enpointParameters, false);
 			} else if (!requestDataType.isObject() && hasQueryParams) {
-				getUrlParametersBody = generateGetUrlParametersBodyUsingQueryParams(List.of(request));
+				getUrlParametersBody = generateGetUrlParametersBodyUsingQueryParams(List.of(request), true);
 			} // else object type with 0 properties, no url parameter
 		} else if (restApi.getUrlParameters() != null) {
 			getUrlParametersBody = "\"" + restApi.getUrlParameters() + "\"";
@@ -657,7 +617,7 @@ public class ExchangeApiInterfaceImplementationGenerator extends JavaTypeGenerat
 		return getUrlParametersBody + ";\n";
 	}
 	
-	private String generateGetUrlParametersBodyUsingQueryParams(List<EndpointParameter> endpointParameters) {
+	private String generateGetUrlParametersBodyUsingQueryParams(List<EndpointParameter> endpointParameters, boolean singleRequestParam) {
 		addImport(EncodingUtil.class);
 		StringBuilder s = new StringBuilder().append(EncodingUtil.class.getSimpleName() + ".createUrlQueryParameters(");
 		for (int i = 0; i < endpointParameters.size(); i++) {
@@ -669,13 +629,15 @@ public class ExchangeApiInterfaceImplementationGenerator extends JavaTypeGenerat
 			s.append("\"")
 			 .append(name)
 			 .append("\", ");
-
-			String value = "request." 
-					   + JavaCodeGenerationUtil.getGetAccessorMethodName(
+			String value = "request";
+			if (!singleRequestParam) {
+				value += "." 
+						+ JavaCodeGenerationUtil.getGetAccessorMethodName(
 							name, 
 							ExchangeJavaWrapperGeneratorUtil.getClassNameForEndpointParameter(param, null, param.getObjectName()), 
 							endpointParameters.stream().map(p -> p.getName()).collect(Collectors.toList()))
-					   + "()";
+						+ "()";
+			}
 			if (param.getEndpointParameterType().getCanonicalType() == CanonicalEndpointParameterTypes.LIST
 				|| param.getEndpointParameterType().getCanonicalType() == CanonicalEndpointParameterTypes.MAP
 				|| param.getEndpointParameterType().isObject()) {
@@ -729,20 +691,17 @@ public class ExchangeApiInterfaceImplementationGenerator extends JavaTypeGenerat
 			}
 			sb.append(", \"").append(name).append("\", ").append(value);
 		}
-		if (urlParametersTemplate.contains("${request}")) {
-			if (n > 0) {
-				sb.append(", ");
-				n++;
-			}
-			sb.append("\"request\", ").append(Optional.ofNullable(requestArgName)
-													  .orElse(ExchangeJavaWrapperGeneratorUtil.DEFAULT_REQUEST_ARG_NAME));
-		}
+		if (urlParametersTemplate.contains("${" + requestArgName + "}")) {
+			n++;
+			sb.append(", \"")
+			  .append(requestArgName)
+			  .append("\", ")
+			  .append(ExchangeJavaWrapperGeneratorUtil.DEFAULT_REQUEST_ARG_NAME);
+		} 
 		if (n <= 0) {
 			return "\"" + urlParametersTemplate + "\"";
-		} else {
-			addImport(EncodingUtil.class);
 		}
-		
+		addImport(EncodingUtil.class);
 		sb.append(")");
 		return sb.toString();
 	}
