@@ -1,8 +1,6 @@
 package com.scz.jxapi.generator.exchange;
 
-import java.math.BigDecimal;
-import java.util.List;
-import java.util.stream.Collectors;
+import java.util.Optional;
 
 import com.scz.jxapi.generator.JavaCodeGenerationUtil;
 import com.scz.jxapi.generator.JavaTypeGenerator;
@@ -10,177 +8,149 @@ import com.scz.jxapi.util.TestJXApiProperties;
 
 public class WebsocketEndpointDemoGenerator extends JavaTypeGenerator {
 	
-	public WebsocketEndpointDemoGenerator(ExchangeDescriptor exchangeDescriptor, ExchangeApiDescriptor exchangeApiDescriptor, WebsocketEndpointDescriptor websocketApi) {
-		super(ExchangeJavaWrapperGeneratorUtil.getWebsocketApiDemoClassName(exchangeDescriptor, exchangeApiDescriptor, websocketApi));
+	private static final String SUBSCRIPTION_DURATION_STATIC_VAR_NAME = "SUBSCRIPTION_DURATION";
+	private static final String DELAY_BEFORE_EXIT_AFTER_UNSUBSCRIPTION_VAR_NAME = "DELAY_BEFORE_EXIT_AFTER_UNSUBSCRIPTION";
+	
+	private final ExchangeDescriptor exchangeDescriptor;
+	private final ExchangeApiDescriptor exchangeApiDescriptor;
+	private final WebsocketEndpointDescriptor websocketApi;
+	private StringBuilder body;
+	private final boolean hasArguments;
+	private final String requestClassName;
+	private final String requestSimpleClassName;
+	private String apiInterfaceClassName;
+	private final String simpleApiClassName;
+	private final String fullStreamName;
+	
+	public WebsocketEndpointDemoGenerator(ExchangeDescriptor exchangeDescriptor, 
+										  ExchangeApiDescriptor exchangeApiDescriptor, 
+										  WebsocketEndpointDescriptor websocketApi) {
+		super(EndpointDemoGeneratorUtil.getWebsocketApiDemoClassName(exchangeDescriptor, exchangeApiDescriptor, websocketApi));
+		this.exchangeDescriptor = exchangeDescriptor;
+		this.exchangeApiDescriptor = exchangeApiDescriptor;
+		this.websocketApi = websocketApi;
 		setTypeDeclaration("public class");
-		String requestClassName = ExchangeJavaWrapperGeneratorUtil.generateWebsocketEndpointRequestClassName(exchangeDescriptor, exchangeApiDescriptor, websocketApi);
-		addImport(requestClassName);
-		String requestSimpleClassName = JavaCodeGenerationUtil.getClassNameWithoutPackage(requestClassName);
-		String apiInterfaceClassName = ExchangeJavaWrapperGeneratorUtil.getApiInterfaceClassName(exchangeDescriptor, exchangeApiDescriptor);
+		this.hasArguments = ExchangeJavaWrapperGeneratorUtil.websocketEndpointHasArguments(websocketApi, exchangeApiDescriptor);
+		if (hasArguments) {
+			EndpointParameterType requestDataType =  Optional.ofNullable(websocketApi.getRequest().getEndpointParameterType()).orElse(EndpointParameterType.OBJECT);
+			if (requestDataType.getCanonicalType().isPrimitive) {
+				requestClassName = requestDataType.getCanonicalType().typeClass.getName();
+			} else {
+				requestClassName = ExchangeJavaWrapperGeneratorUtil.generateWebsocketEndpointRequestClassName(exchangeDescriptor, exchangeApiDescriptor, websocketApi);
+			}
+			
+			addImport(requestClassName);
+			requestSimpleClassName = ExchangeJavaWrapperGeneratorUtil.getClassNameForParameterType(
+					requestDataType, 
+					getImports(), 
+					requestClassName);
+		} else {
+			requestClassName = null;
+			requestSimpleClassName = null;
+		}
+		this.apiInterfaceClassName = ExchangeJavaWrapperGeneratorUtil.getApiInterfaceClassName(exchangeDescriptor, exchangeApiDescriptor);
+		this.simpleApiClassName = JavaCodeGenerationUtil.getClassNameWithoutPackage(apiInterfaceClassName);
 		addImport(apiInterfaceClassName);
-		String subscribeMethodName = "subscribe" + JavaCodeGenerationUtil.firstLetterToUpperCase(websocketApi.getName());
+		String apiMethodName = JavaCodeGenerationUtil.firstLetterToLowerCase(websocketApi.getName());
 		setDescription("Snippet to test call to {@link " 
-						+ ExchangeJavaWrapperGeneratorUtil.getApiInterfaceClassName(exchangeDescriptor, exchangeApiDescriptor) 
-						+ "#" 
-						+ subscribeMethodName 
-						+ "(" + requestClassName + ")}\n"
-						+ JavaCodeGenerationUtil.GENERATED_CODE_WARNING);
-		JavaCodeGenerationUtil.generateSlf4jLoggerDeclaration(this);
-		websocketApi.getParameters().forEach(p -> generateParameterValueConstantDeclaration(exchangeDescriptor, exchangeApiDescriptor, websocketApi, p));
-		String exchangeInterfaceClassName = ExchangeJavaWrapperGeneratorUtil.getExchangeInterfaceName(exchangeDescriptor);
-		generateMainMethodBody(requestSimpleClassName, 
-							   apiInterfaceClassName, 
-							   exchangeInterfaceClassName,
-							   JavaCodeGenerationUtil.firstLetterToLowerCase(exchangeDescriptor.getName()), 
-							   websocketApi.getParameters(), 
-							   subscribeMethodName);
+				+ ExchangeJavaWrapperGeneratorUtil.getApiInterfaceClassName(exchangeDescriptor, exchangeApiDescriptor) 
+				+ "#" 
+				+ apiMethodName 
+				+ "(" + (requestClassName == null? "": requestSimpleClassName) + ")}<br/>\n"
+				+ JavaCodeGenerationUtil.GENERATED_CODE_WARNING);
+		this.fullStreamName = exchangeDescriptor.getName() + " " 
+								+ exchangeApiDescriptor.getName() 
+								+ " " + websocketApi.getName();
 	}
 	
-	private void generateMainMethodBody(String requestSimpleClassName, String apiInterfaceClassName, String exchangeInterfaceClassName, String exchangeName, List<EndpointParameter> parameters, String apiMethodName) {
+	public String generate() {
+		JavaCodeGenerationUtil.generateSlf4jLoggerDeclaration(this);
+		this.appendToBody("private static final long ")
+			.append(SUBSCRIPTION_DURATION_STATIC_VAR_NAME)
+			.append(" = ")
+			.append(TestJXApiProperties.class.getSimpleName())
+			.append(".DEMO_WS_SUBSCRIPTION_DURATION;\n")
+			.append("private static final long ")
+			.append(DELAY_BEFORE_EXIT_AFTER_UNSUBSCRIPTION_VAR_NAME)
+			.append(" = ")
+			.append(TestJXApiProperties.class.getSimpleName())
+			.append(".DEMO_WS_DELAY_BEFORE_EXIT_AFTER_UNSUBSCRIPTION;\n\n");
+		generateMainMethodBody();
+		return super.generate();
+	}
+	
+	private void generateMainMethodBody() {
+		body = new StringBuilder();
+		String exchangeInterfaceClassName = ExchangeJavaWrapperGeneratorUtil.getExchangeInterfaceName(exchangeDescriptor);
+		String exchangeName = JavaCodeGenerationUtil.firstLetterToLowerCase(exchangeDescriptor.getName());
+		EndpointParameter request = ExchangeJavaWrapperGeneratorUtil.resolveEndpointParameters(exchangeApiDescriptor, websocketApi.getRequest());
 		String exchangeImplClassName = exchangeInterfaceClassName + "Impl";
-		String simpleApiClassName = JavaCodeGenerationUtil.getClassNameWithoutPackage(apiInterfaceClassName);
 		addImport(exchangeImplClassName);
 		addImport(TestJXApiProperties.class);
-		StringBuilder body = new StringBuilder();
-		body.append(JavaCodeGenerationUtil.getClassNameWithoutPackage(apiInterfaceClassName))
+		
+		body.append(simpleApiClassName)
 			.append(" api = new ")
 			.append(JavaCodeGenerationUtil.getClassNameWithoutPackage(exchangeImplClassName))
 			.append("(TestJXApiProperties.filterProperties(\"")
 			.append(exchangeName)
 			.append("\", true)).get")
 			.append(simpleApiClassName)
-			.append("();\n")
-			.append(requestSimpleClassName)
-			.append(" request = new ")
-			.append(requestSimpleClassName)
 			.append("();\n");
-		List<String> allParametersNames = parameters.stream().map(p -> p.getName()).collect(Collectors.toList());
-		for (EndpointParameter p : parameters) {
-			body.append("request.")
-				.append(JavaCodeGenerationUtil.getSetAccessorMethodName(p.getName(), allParametersNames))
-				.append("(")
-				.append(getParameterValueConstantName(p))
-				.append(");\n");
+			
+		if (hasArguments) {
+			this.appendToBody(EndpointDemoGeneratorUtil.generateEndpointParameterCreationMethod(
+								request,  
+								requestClassName, 
+								getImports()))
+				.append("\n");
+			
+			body.append(requestSimpleClassName)
+				.append(" request = ")
+				.append(EndpointDemoGeneratorUtil.generateEndpointParameterCreationMethodName(request))
+				.append("();\n");
 		}
-		body.append("log.info(\"Subscribing to stream ")
-			.append(apiInterfaceClassName)
-			.append(".")
-			.append(apiMethodName)
-			.append("() websocket stream with request:\" + request);\n");
-		body.append("api.")
-			.append(apiMethodName)
-			.append("(request, m -> log.info(\"Received message:\" + m));");
+		
+		String subscribeMethodName = ExchangeJavaWrapperGeneratorUtil.getWebsocketSubscribeMethodName(websocketApi);
+		String unsubscribeMethodName = ExchangeJavaWrapperGeneratorUtil.getWebsocketUnsubscribeMethodName(websocketApi);
+		body.append("log.info(\"Subscribing to websocket API '")
+			.append(fullStreamName)
+			.append("' for \" + ")
+			.append(SUBSCRIPTION_DURATION_STATIC_VAR_NAME)
+			.append(" + \"ms");
+		if (hasArguments) {
+			body.append(" with request:\" + request);\n");
+		} else {
+			body.append("\");\n");
+		}
+		
+		body.append("String subId = api.")
+			.append(subscribeMethodName)
+			.append("(");
+		if (hasArguments) {
+			body.append("request, ");
+		}
+		body.append("m -> log.info(\"Received message:\" + m));\n")
+			.append("Thread.sleep(")
+			.append(SUBSCRIPTION_DURATION_STATIC_VAR_NAME)
+			.append(");\n")
+			.append("log.info(\"Unubscribing from '")
+			.append(fullStreamName)
+			.append("' stream\");\n")
+			.append("api.")
+			.append(unsubscribeMethodName)
+			.append("(subId);\n")
+			.append("Thread.sleep(")
+			.append(DELAY_BEFORE_EXIT_AFTER_UNSUBSCRIPTION_VAR_NAME)
+			.append(");\n")
+			.append("System.exit(0);");
 		
 		appendMethod("public static void main(String[] args)", 
-					"try {\n" 
-						+ JavaCodeGenerationUtil.indent(body.toString(), JavaCodeGenerationUtil.INDENTATION) 
-						+ "\n} catch (Throwable t) {\n"
-						+ JavaCodeGenerationUtil.indent("log.error(\"Exception raised from main()\", t);", JavaCodeGenerationUtil.INDENTATION)
-						+ "\n}");
-	}
-
-	private void generateParameterValueConstantDeclaration(ExchangeDescriptor exchangeDescriptor, 
-														   ExchangeApiDescriptor exchangeApiDescriptor, 
-														   WebsocketEndpointDescriptor websocketApi, 
-														   EndpointParameter parameter) {
-			StringBuilder constantDeclaration = new StringBuilder();
-			appendToBody(JavaCodeGenerationUtil.generateJavaDoc("Sample value for <i>" 
-																+ parameter.getName() 
-																+ "</i> parameter of <i>" 
-																+ websocketApi.getName() 
-																+ "</i> API") + "\n");
-			constantDeclaration.append("public static final ")
-								.append(getParameterTypeDeclaration(parameter.getType()))
-								.append(" ")
-								.append(getParameterValueConstantName(parameter))
-								.append(" = ")
-								.append(getParameterValueDeclaration(parameter))
-								.append(";\n\n");
-			appendToBody(constantDeclaration.toString());
-	}
-	
-	private String getParameterValueDeclaration(EndpointParameter parameter) {
-		Object v = parameter.getSampleValue();
-		switch (parameter.getType()) {
-		case BIGDECIMAL:
-			addImport(BigDecimal.class);
-			if (v == null)
-				return "BigDecimal.ZERO";
-			return "new BigDecimal(\"" + String.valueOf(v) + "\");";
-		case BOOLEAN:
-		case INT:
-			return String.valueOf(v);
-		case STRING_LIST:
-			addImport(List.class);
-			if (v == null) {
-				return "List.of()";
-			}
-			String strList = v.toString().trim();
-			if (!strList.startsWith("[") || !strList.endsWith("]")) {
-				throw new IllegalArgumentException("Sample value for parameter:" + parameter + ":" + strList + " does must be surrounded with '[]'");
-			}
-			return "List.of(" + strList.substring(1, strList.length() - 1) + ")";
-		case INT_LIST:
-			addImport(List.class);
-			if (v == null) {
-				return "List.of()";
-			}
-			String intList = v.toString().trim();
-			if (!intList.startsWith("[") || !intList.endsWith("]")) {
-				throw new IllegalArgumentException("Sample value for parameter:" + parameter + ":" + intList + " must be surrounded with '[]'");
-			}
-			return "List.of(" + intList.substring(1, intList.length() - 1) + ")";
-		case STRING:
-			return "\"" + v + "\"";
-		case TIMESTAMP:
-		case LONG:
-			if (v == null) {
-				return "0L";
-			}
-			if ("now()".equalsIgnoreCase(v.toString())) {
-				return "System.currentTimeMillis()";
-			}
-			return String.valueOf(v) + "L";
-		case OBJECT:
-		case OBJECT_LIST:
-		case OBJECT_MAP:
-		default:
-			throw new IllegalArgumentException("Unexpected parameter type for parameter:" + parameter);
-		}
-	}
-
-	private String getParameterTypeDeclaration(EndpointParameterType endpointParameterType) {
-		switch (endpointParameterType) {
-		case BIGDECIMAL:
-			addImport(BigDecimal.class);
-			return BigDecimal.class.getSimpleName();
-		case BOOLEAN:
-			return "boolean";
-		case INT:
-			return "int";
-		case TIMESTAMP:
-		case LONG:
-			return "long";
-		case STRING:
-			return "String";
-		case STRING_LIST:
-			addImport(List.class);
-			return "List<String>";
-		case INT_LIST:
-			addImport(List.class);
-			return "List<Integer>";
-		case OBJECT:
-		case OBJECT_LIST:
-		case OBJECT_MAP:
-			// FIXME not managed yet: Construction of demo values for parameters that are structured object types.
-			// Usually, requests do not use struct parameters
-		default:
-			throw new IllegalArgumentException("Unexpected parameter type:" + endpointParameterType);
-		}
-	}
-	
-	private static String getParameterValueConstantName(EndpointParameter parameter) {
-		return parameter.getName().toUpperCase();
+				"try {\n" 
+					+ JavaCodeGenerationUtil.indent(body.toString(), JavaCodeGenerationUtil.INDENTATION) 
+					+ "\n} catch (Throwable t) {\n"
+					+ JavaCodeGenerationUtil.indent("log.error(\"Exception raised from main()\", t);\nSystem.exit(-1);", JavaCodeGenerationUtil.INDENTATION)
+					+ "\n}");
+		
 	}
 
 }

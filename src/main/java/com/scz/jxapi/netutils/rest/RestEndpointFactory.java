@@ -30,7 +30,7 @@ public interface RestEndpointFactory {
 	 * @param <R> the request DTO
 	 * @param <A> the response DTO
 	 * @param messageDeserializer the {@link MessageDeserializer} to use to deserialize response POJO from request response body
-	 * @return the rest enpoint
+	 * @return the rest endpoint
 	 */
 	<R, A> RestEndpoint<R, A> createRestEndpoint(MessageDeserializer<A> messageDeserializer); 
 }

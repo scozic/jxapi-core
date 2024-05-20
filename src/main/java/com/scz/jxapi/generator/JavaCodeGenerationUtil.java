@@ -18,6 +18,8 @@ import org.slf4j.LoggerFactory;
  */
 public class JavaCodeGenerationUtil {
 	
+	public static final String NULL = "null";
+
 	private JavaCodeGenerationUtil() {}
 	
 	/**
@@ -227,10 +229,59 @@ public class JavaCodeGenerationUtil {
 	 *         <code>null</code> or contains no '.'.
 	 */
 	public static String getClassNameWithoutPackage(String fullClassName) {
-		if (fullClassName != null && fullClassName.contains(".")) {
-			return StringUtils.substringAfterLast(fullClassName, ".");
+		if (fullClassName != null) {
+			String genericType = getGenericType(fullClassName);
+			if (genericType != null) {
+				String classNameWithoutGenericType = getClassNameWithoutGenericType(fullClassName);
+				return getClassNameWithoutPackage(classNameWithoutGenericType) + "<" + genericType + ">";
+			}
+			int dotOff = fullClassName.indexOf('.');
+			if (dotOff >=0) {
+				return StringUtils.substringAfterLast(fullClassName, ".");
+				
+			}
 		}
 		return fullClassName;
+	}
+	
+	/**
+	 * @param className full or simple class name with eventual generic parameter
+	 * @return the className, without part after first '<'
+	 */
+	public static String getClassNameWithoutGenericType(String className) {
+		if (className == null) {
+			return null;
+		}
+			
+		int lessOff = className.indexOf('<');
+		if (lessOff >= 0) {
+			return className.substring(0, lessOff);
+		}
+		return className;
+	}
+	
+	/**
+	 * @param className full or simple class name with eventual generic parameter
+	 * @return the generic parameter, e.g. part of class name between first '<' and
+	 *         last '>', or <code>null</code> if there is no generic
+	 *         parameter.@param className full or simple class name with eventual
+	 *         generic parameter
+	 * @throws IllegalArgumentException if no closing '>' is found after first '<'.
+	 */
+	public static String getGenericType(String className) {
+		if (className == null) {
+			return null;
+		}
+			
+		int lessOff = className.indexOf('<');
+		if (lessOff >= 0) {
+			int supOff = className.lastIndexOf('>');
+			if (supOff < lessOff + 1) {
+				throw new IllegalArgumentException("Invalid generic class name, missing closing '>':" + className);
+			}
+			return className.substring(lessOff + 1, supOff);
+		}
+		return null;
 	}
 	
 	/**
@@ -302,5 +353,22 @@ public class JavaCodeGenerationUtil {
 		typeGenerator.addImport(Logger.class);
 		typeGenerator.addImport(LoggerFactory.class);
 		typeGenerator.appendToBody("private static final Logger log = LoggerFactory.getLogger(" + typeGenerator.getSimpleName() + ".class);\n\n");
+	}
+
+	public static String getQuotedString(Object sampleValue) {
+		if (sampleValue == null) {
+			  return null;
+		}
+		String sampleValueStr = sampleValue.toString();
+		StringBuilder sb = new StringBuilder();
+		sb.append('"');
+		for (int i = 0; i < sampleValueStr.length(); i++) {
+			char c = sampleValueStr.charAt(i);
+			if (c == '"') {
+			  sb.append('\\');
+			}
+			sb.append(c);
+		}
+		return sb.append('"').toString();
 	}
 }

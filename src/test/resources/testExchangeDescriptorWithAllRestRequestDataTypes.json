@@ -1,0 +1,282 @@
+{
+	"name": "MyTestCEX",
+	"description": "A sample CEX descriptor file",
+	"basePackage": "com.foo.bar.gen",
+		"apis":[
+		{ 
+			"name": "MarketData",
+			"description": "The market data API of MyTestCEX, , with different request data types for websocket and REST endpoints. Remark: Only OBJECT (default) and STRING are usually used, but any data type is supported",
+			"restEndpointFactory": "com.foo.bar.BarRestEndpointFactory",
+			"restEndpoints": [
+				{
+					"name": "postRestRequestDataTypeInt",
+					"httpMethod": "POST",
+					"description": "A sample REST endpoint using INT response data type",
+					"url": "https://com.sample.mycex/postInt",
+					"request": {
+						"type": "INT",
+						"sampleValue": 12345
+					},
+					"response": {
+						"objectName": "GenericResponse",
+						"parameters": [
+							{"name":"responseCode", "type": "INT", "description":"Request response code", "sampleValue":"0"}
+						]
+					}
+				},
+				{
+					"name": "postRestRequestDataTypeLong",
+					"httpMethod": "POST",
+					"description": "A sample REST endpoint using LONG response data type",
+					"url": "https://com.sample.mycex/postLong",
+					"request": {
+						"type": "LONG",
+						"sampleValue": 123456789012
+					},
+					"response": {
+						"objectName": "GenericResponse"
+					}
+				},
+				{
+					"name": "postRestRequestDataTypeBigDecimal",
+					"httpMethod": "POST",
+					"description": "A sample REST endpoint using BIGDECIMAL response data type",
+					"url": "https://com.sample.mycex/postBigDecimal",
+					"request": {
+						"type": "BIGDECIMAL",
+						"sampleValue": 12345.678
+					},
+					"response": {
+						"objectName": "GenericResponse"
+					}
+				},
+				{
+					"name": "postRestRequestDataTypeString",
+					"httpMethod": "POST",
+					"description": "A sample REST endpoint using STRING response data type",
+					"url": "https://com.sample.mycex/postString",
+					"request": {
+						"name": "hello",
+						"description": "Say Hi!",
+						"type": "STRING",
+						"sampleValue": "Hello world!"
+					},
+					"response": {
+						"objectName": "GenericResponse"
+					}
+				},
+				{
+					"name": "postRestRequestDataTypeBoolean",
+					"httpMethod": "POST",
+					"description": "A sample REST endpoint using BOOLEAN response data type",
+					"url": "https://com.sample.mycex/postBoolean",
+					"request": {
+						"type": "BOOLEAN",
+						"sampleValue": true
+					},
+					"response": {
+						"objectName": "GenericResponse"
+					}
+				},
+				{
+					"name": "postRestRequestDataTypeObjectNoParameters",
+					"httpMethod": "POST",
+					"description": "A sample REST endpoint using OBJECT request data type (implicit), and no parameters",
+					"url": "https://com.sample.mycex/postNoParameter",
+					"request": {
+						"type": "OBJECT",
+						"parameters": []
+					},
+					"response": {
+						"objectName": "GenericResponse"
+					}
+				},
+				{
+					"name": "postRestRequestDataTypeObjectOneParameter",
+					"httpMethod": "POST",
+					"description": "A sample REST endpoint using OBJECT request data type (default, explicit here), and one parameter",
+					"url": "https://com.sample.mycex/postBigDecimal",
+					"request": {
+						"type": "OBJECT",
+						"parameters": [
+							{"name":"singleArg", "type": "INT", "description":"Request single argument", "sampleValue":"0"}
+						]
+					},
+					"response": {
+						"objectName": "GenericResponse"
+					}
+				},
+				{
+					"name": "postRestRequestDataTypeIntList",
+					"httpMethod": "POST",
+					"description": "A sample REST endpoint using INT_LIST request data type",
+					"url": "https://com.sample.mycex/postBigDecimal",
+					"request": {
+						"type": "INT_LIST"
+					},
+					"response": {
+						"objectName": "GenericResponse"
+					}
+				},
+				{
+					"name": "postRestRequestDataTypeObjectListMap",
+					"httpMethod": "POST",
+					"description": "A sample REST endpoint using OBJECT_LIST_MAP request data type",
+					"url": "https://com.sample.mycex/postBigDecimal",
+					"request": {
+						"type": "OBJECT_LIST_MAP",
+						"objectName": "SingleSymbol",
+						"sampleMapKeyValue": ["spot"]
+					},
+					"response": {
+						"objectName": "GenericResponse"
+					}
+				}
+			],
+			"websocketEndpointFactory": "com.foo.bar.BarWebsocketEndpointFactory",
+			"websocketEndpoints": [
+				{
+					"name": "streamWithObjectRequestDataTypeZeroParameters",
+					"topic": "ticker",
+					"description": "Subscribe to stream with OBJECT request type (implicit) and no parameters",
+					"request": {
+						"parameters": []
+					},
+					"messageTopicMatcherFields": [
+						{"name": "topic",  "value": "streamWithObjectRequestDataTypeZeroParametersTopic"}
+					],
+					"message": {
+						"objectName":"Ticker",
+						"parameters": [
+							{"name":"topic", "msgField":"t", "type": "STRING", "description":"Topic", "sampleValue":"ticker"},
+							{"name":"symbol", "msgField":"s", "type": "STRING", "description":"Symbol name", "sampleValue":"BTC_USDT"},
+							{"name":"last", "msgField":"p", "type": "BIGDECIMAL", "description":"Last traded price", "sampleValue":"16000.00"}
+						]
+					}
+				},
+				{
+					"name": "streamWithObjectRequestDataTypeOneParameter",
+					"topic": "ticker",
+					"description": "Subscribe to stream with OBJECT request type (default, explicit here) and parameter",
+					"request": {
+						"name": "symbolObj",
+						"objectName": "SingleSymbol",
+						"parameters": [
+							{"name":"symbol", "type": "STRING", "description":"Symbol name", "sampleValue":"BTC_USDT"}
+						]
+					},
+					"messageTopicMatcherFields": [
+						{"name": "topic",  "value": "${topic}"}
+					],
+					"message": {
+						"objectName":"Ticker"
+					}
+				},
+				{
+					"name": "streamWithIntRequestDataType",
+					"topic": "ticker",
+					"description": "Subscribe to stream with INT request type",
+					"request": {
+						"type": "INT"
+					},
+					"messageTopicMatcherFields": [
+						{"name": "topic",  "value": "streamWithIntRequestDataTypeTopic"}
+					],
+					"message": {
+						"objectName":"Ticker"
+					}
+				},
+				{
+					"name": "streamWithLongRequestDataType",
+					"topic": "ticker",
+					"description": "Subscribe to stream with LONG request type",
+					"request": {
+						"type": "LONG"
+					},
+					"messageTopicMatcherFields": [
+						{"name": "topic",  "value": "streamWithLongRequestDataTypeTopic"}
+					],
+					"message": {
+						"objectName":"Ticker"
+					}
+				},
+				{
+					"name": "streamWithBigDecimalRequestDataType",
+					"topic": "ticker",
+					"description": "Subscribe to stream with BIGDECIMAL request type",
+					"request": {
+						"type": "BIGDECIMAL"
+					},
+					"messageTopicMatcherFields": [
+						{"name": "topic",  "value": "streamWithBigDecimalRequestDataTypeTopic"}
+					],
+					"message": {
+						"objectName":"Ticker"
+					}
+				},
+				{
+					"name": "streamWithStringRequestDataType",
+					"topic": "ticker",
+					"description": "Subscribe to stream with STRING request type",
+					"request": {
+						"name": "symbol",
+						"description": "Market symbol",
+						"type": "STRING",
+						"sampleValue": "BTC_USDT"
+					},
+					"messageTopicMatcherFields": [
+						{"name": "topic",  "value": "streamWithStringRequestDataTypeTopic"}
+					],
+					"message": {
+						"objectName":"Ticker"
+					}
+				},
+				{
+					"name": "streamWithBooleanRequestDataType",
+					"topic": "ticker",
+					"description": "Subscribe to stream with BOOLEAN request type",
+					"request": {
+						"type": "BOOLEAN"
+					},
+					"messageTopicMatcherFields": [
+						{"name": "topic",  "value": "streamWithBooleanRequestDataTypeTopic"}
+					],
+					"message": {
+						"objectName":"Ticker"
+					}
+				},
+				{
+					"name": "streamWithStringListRequestDataType",
+					"topic": "ticker",
+					"description": "Subscribe to stream with STRING_LIST request type",
+					"request": {
+						"type": "STRING_LIST"
+					},
+					"messageTopicMatcherFields": [
+						{"name": "topic",  "value": "streamWithBooleanRequestDataTypeTopic"}
+					],
+					"message": {
+						"objectName":"Ticker"
+					}
+				},
+				{
+					"name": "streamWithObjectListMapRequestDataType",
+					"topic": "ticker",
+					"description": "Subscribe to stream with OBJECT_LIST_MAP request type. The objectName field is set to a name already defined in other API definition.",
+					"request": {
+						"objectName": "SingleSymbol",
+						"type": "OBJECT_LIST_MAP",
+						"sampleMapKeyValue": ["spot"]
+					},
+					"messageTopicMatcherFields": [
+						{"name": "topic",  "value": "streamWithObjectListMapRequestDataTypeTopic"}
+					],
+					"message": {
+						"objectName":"Ticker"
+					}
+				}
+			]
+		}
+	]
+
+}

@@ -12,6 +12,7 @@ package com.scz.jxapi.netutils.rest;
  * to provide expected URL suffix.
  * 
  */
+@Deprecated
 public interface RestEndpointUrlParameters {
 
 	/**

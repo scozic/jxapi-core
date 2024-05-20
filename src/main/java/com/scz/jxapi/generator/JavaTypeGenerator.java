@@ -88,8 +88,8 @@ public class JavaTypeGenerator {
 	 * 
 	 * @param bodyContent
 	 */
-	public void appendToBody(String bodyContent) {
-		body.append(bodyContent);
+	public StringBuilder appendToBody(String bodyContent) {
+		return body.append(bodyContent);
 	}
 	
 	/**

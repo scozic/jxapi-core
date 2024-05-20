@@ -5,10 +5,11 @@ package com.scz.jxapi.netutils.websocket;
  * properly serialize their eventual fields as URL parameters in CEX specific
  * way
  */
+@Deprecated
 public interface WebsocketSubscribeParameters {
 
 	/**
-	 * @return The part of websocket subscription URL that comes after base (domain part). This topic may contain formatted parameters 
+	 * @return The part of  
 	 *  
 	 */
 	String getTopic();

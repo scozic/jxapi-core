@@ -7,21 +7,34 @@ import com.scz.jxapi.util.EncodingUtil;
 
 public class RestRequest<T> {
 	
-	public static <T> RestRequest<T> create(String url, String httpMethod, T request) {
-		return create(url, httpMethod, request, null);
-	}
+//	public static <T> RestRequest<T> create(String url, String httpMethod, T request) {
+//		return create(url, httpMethod, request, null, 0, null);
+//	}
+//	
+//	public static <T> RestRequest<T> create(String url, String httpMethod, T request, List<RateLimitRule> rateLimits) {
+//		return create(url, httpMethod, request, rateLimits, 0, null);
+//	}
+//	
+//	public static <T> RestRequest<T> create(String url, String httpMethod, T request, List<RateLimitRule> rateLimits, int weight) {
+//		return create(url, httpMethod, request, rateLimits, weight, null);
+//	}
+//	
+//	public static <T> RestRequest<T> create(String url, String httpMethod, T request, String urlParametersSerializer) {
+//		return create(url, httpMethod, request, null, 0, urlParametersSerializer);
+//	}
+//	
+//	public static <T> RestRequest<T> create(String url, String httpMethod, T request, List<RateLimitRule> rateLimits, UrlParametersSerializer<T> urlParametersSerializer) {
+//		return create(url, httpMethod, request, rateLimits, 0, urlParametersSerializer);
+//	}
 	
-	public static <T> RestRequest<T> create(String url, String httpMethod, T request, List<RateLimitRule> rateLimits) {
-		return create(url, httpMethod, request, rateLimits, 0);
-	}
-	
-	public static <T> RestRequest<T> create(String url, String httpMethod, T request, List<RateLimitRule> rateLimits, int weight) {
+	public static <T> RestRequest<T> create(String url, String httpMethod, T request, List<RateLimitRule> rateLimits, int weight, String urlParameters) {
 		RestRequest<T> r = new RestRequest<>();
 		r.setUrl(url);
 		r.setHttpMethod(httpMethod);
 		r.setRequest(request);
 		r.setRateLimits(rateLimits);
 		r.setWeight(weight);
+		r.setUrlParameters(urlParameters);
 		return r;
 	}
 	
@@ -34,7 +47,9 @@ public class RestRequest<T> {
 	private int weight;
 	
 	private List<RateLimitRule> rateLimits;
-
+	
+	private String urlParameters;
+ 
 	public String getUrl() {
 		return url;
 	}
@@ -74,9 +89,16 @@ public class RestRequest<T> {
 	public void setWeight(int weight) {
 		this.weight = weight;
 	}
+	
+	public String getUrlParameters() {
+		return urlParameters;
+	}
+
+	public void setUrlParameters(String urlParameters) {
+		this.urlParameters = urlParameters;
+	}
 
 	public String toString() {
 		return EncodingUtil.pojoToString(this);
 	}
-
 }

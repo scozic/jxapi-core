@@ -210,6 +210,16 @@ public class JavaCodeGenerationUtilTest {
 	}
 	
 	@Test
+	public void testGetClassNameWithoutPackage_SimpleGenericClassNameWithFullClassNameVariableType() {
+		Assert.assertEquals("Bar<com.x.y.z.Foo>", JavaCodeGenerationUtil.getClassNameWithoutPackage("Bar<com.x.y.z.Foo>"));
+	}
+	
+	@Test
+	public void testGetClassNameWithoutPackage_FullGenericClassNameWithFullClassNameVariableType() {
+		Assert.assertEquals("Bar<com.x.y.z.Foo>", JavaCodeGenerationUtil.getClassNameWithoutPackage("com.x.y.z.Bar<com.x.y.z.Foo>"));
+	}
+	
+	@Test
 	public void testDeletePathPathDoesNotExist() throws IOException {
 		File dir = new File("tmpDir" + Math.random());
 		Assert.assertFalse(dir.exists());
@@ -249,5 +259,50 @@ public class JavaCodeGenerationUtilTest {
 				+ "  private static final Logger log = LoggerFactory.getLogger(Bar.class);\n"
 				+ "  \n"
 				+ "}\n", gen.generate());
+	}
+	
+	@Test
+	public void testGetClassWithoutGenericType_NoGenericType() {
+		Assert.assertEquals("com.x.y.z.Bar", JavaCodeGenerationUtil.getClassNameWithoutGenericType("com.x.y.z.Bar"));
+	}
+	
+	@Test
+	public void testGetClassWithoutGenericType_GenericType() {
+		Assert.assertEquals("com.x.y.z.Bar", JavaCodeGenerationUtil.getClassNameWithoutGenericType("com.x.y.z.Bar<java.util.List<com.x.y.z.Foo>>"));
+	}
+	
+	@Test
+	public void testGetGenericType_NoGenericType() {
+		Assert.assertNull(JavaCodeGenerationUtil.getGenericType("com.x.y.z.Bar"));
+	}
+	
+	@Test
+	public void testGetGenericType_GenericType() {
+		Assert.assertEquals("java.util.List<com.x.y.z.Foo>", JavaCodeGenerationUtil.getGenericType("com.x.y.z.Bar<java.util.List<com.x.y.z.Foo>>"));
+	}
+	
+	@Test
+	public void testGetGenericType_InvalidGenericType() {
+		try {
+			JavaCodeGenerationUtil.getGenericType("com.x.y.z.Bar<");
+		} catch(IllegalArgumentException ex) {
+			return;
+		}
+		Assert.fail();
+	}
+	
+	@Test
+	public void testGetQuotedString_NullString() {
+		Assert.assertEquals(null, JavaCodeGenerationUtil.getQuotedString(null));
+	}
+	
+	@Test
+	public void testGetQuotedString_EmptyString() {
+		Assert.assertEquals("\"\"", JavaCodeGenerationUtil.getQuotedString(""));
+	}
+	
+	@Test
+	public void testGetQuotedString_StringWithQuotes() {
+		Assert.assertEquals("\"Hello \\\"World\\\"\"", JavaCodeGenerationUtil.getQuotedString("Hello \"World\""));
 	}
 }
