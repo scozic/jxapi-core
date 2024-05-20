@@ -13,16 +13,20 @@
 					"httpMethod": "GET",
 					"description": "Fetch market information of symbols that can be traded",
 					"url": "https://com.sample.mycex/exchangeInfo",
-					"parameters": [
+					"request": {
+						"parameters": [
 							{"name":"symbols", "type": "STRING_LIST", "description":"The list of symbol to fetch market information for. Leave empty to fetch all markets", "sampleValue":""}
-					],
-					"response": [
-						{"name":"responseCode", "type": "INT", "description":"Request response code", "sampleValue":"0"},
-						{"name":"payload", "type": "OBJECT_LIST", "description":"List of market information for each requested symbol", "parameters":[
-							{"name":"symbol", "type": "STRING", "description":"Market symbol", "sampleValue":"BTC_USDT"},
-							{"name":"minOrderSize", "type": "BIGDECIMAL", "description":"Minimum order amount", "sampleValue":"0.0001"}
-						]}
-					]
+						]
+					},
+					"response":{ 
+						"parameters":[
+							{"name":"responseCode", "type": "INT", "description":"Request response code", "sampleValue":"0"},
+							{"name":"payload", "type": "OBJECT_LIST", "description":"List of market information for each requested symbol", "parameters":[
+								{"name":"symbol", "type": "STRING", "description":"Market symbol", "sampleValue":"BTC_USDT"},
+								{"name":"minOrderSize", "type": "BIGDECIMAL", "description":"Minimum order amount", "sampleValue":"0.0001"}
+							]}
+						]
+					}
 				}
 			],
 			"websocketEndpointFactory": "com.foo.bar.BarWebsocketEndpointFactory",
@@ -31,19 +35,23 @@
 					"name": "tickerStream",
 					"topic": "${symbol}@ticker",
 					"description": "Subscribe to ticker stream",
-					"parameters": [
-						{"name": "symbol", "type":"STRING", "description":"Symbol to subscribe to ticker stream of", "sampleValue":"BTC_USDT"}
-					],
+					"request": {
+						"parameters": [
+							{"name": "symbol", "type":"STRING", "description":"Symbol to subscribe to ticker stream of", "sampleValue":"BTC_USDT"}
+						]
+					},
 					"topicParametersListSeparator": "|",
 					"messageTopicMatcherFields": [
 						{"name": "topic",  "value": "ticker"},
 						{"name": "symbol",  "value": "${symbol}"}
 					],
-					"response": [
-						{"name":"topic", "msgField":"t", "type": "STRING", "description":"Topic", "sampleValue":"ticker"},
-						{"name":"symbol", "msgField":"s", "type": "STRING", "description":"Symbol name", "sampleValue":"BTC_USDT"},
-						{"name":"last", "msgField":"p", "type": "BIGDECIMAL", "description":"Last traded price", "sampleValue":"16000.00"}
-					]
+					"message": {
+						"parameters": [
+							{"name":"topic", "msgField":"t", "type": "STRING", "description":"Topic", "sampleValue":"ticker"},
+							{"name":"symbol", "msgField":"s", "type": "STRING", "description":"Symbol name", "sampleValue":"BTC_USDT"},
+							{"name":"last", "msgField":"p", "type": "BIGDECIMAL", "description":"Last traded price", "sampleValue":"16000.00"}
+						]
+					}
 				}
 			]
 		},
@@ -62,16 +70,21 @@
 					"description": "Fetch market information of symbols that can be traded",
 					"url": "https://com.sample.mycex/exchangeInfo",
 					"requestWeight": 60,
-					"parameters": [
-							{"name":"symbols", "type": "STRING_LIST", "description":"The list of symbol to fetch market information for. Leave empty to fetch all markets", "sampleValue":""}
-					],
-					"response": [
-						{"name":"responseCode", "type": "INT", "description":"Request response code", "sampleValue":"0"},
-						{"name":"payload", "type": "OBJECT_LIST", "description":"List of market information for each requested symbol", "parameters":[
-							{"name":"symbol", "type": "STRING", "description":"Market symbol", "sampleValue":"BTC_USDT"},
-							{"name":"minOrderSize", "type": "BIGDECIMAL", "description":"Minimum order amount", "sampleValue":"0.0001"}
-						]}
-					]
+					"request": {
+						"parameters": [
+								{"name":"symbols", "type": "STRING_LIST", "description":"The list of symbol to fetch market information for. Leave empty to fetch all markets", "sampleValue":""}
+						]
+					},
+					"response":{
+						"parameters": [
+							{"name":"responseCode", "type": "INT", "description":"Request response code", "sampleValue":"0"},
+							{"name":"payload", "type": "OBJECT_LIST", "description":"List of market information for each requested symbol", "parameters":[
+									{"name":"symbol", "type": "STRING", "description":"Market symbol", "sampleValue":"BTC_USDT"},
+									{"name":"minOrderSize", "type": "BIGDECIMAL", "description":"Minimum order amount", "sampleValue":"0.0001"}
+								]
+							}
+						]
+					}
 				}
 			]
 		},
@@ -86,16 +99,21 @@
 					"description": "Fetch market information of symbols that can be traded",
 					"url": "https://com.sample.mycex/exchangeInfo",
 					"rateLimits": [{"id":"exchangeInfoRateLimit", "timeFrame": 3000,  "maxRequestCount": 30}],
-					"parameters": [
+					"request":{
+						"parameters": [
 							{"name":"symbols", "type": "STRING_LIST", "description":"The list of symbol to fetch market information for. Leave empty to fetch all markets", "sampleValue":""}
-					],
-					"response": [
-						{"name":"responseCode", "type": "INT", "description":"Request response code", "sampleValue":"0"},
-						{"name":"payload", "type": "OBJECT_LIST", "description":"List of market information for each requested symbol", "parameters":[
-							{"name":"symbol", "type": "STRING", "description":"Market symbol", "sampleValue":"BTC_USDT"},
-							{"name":"minOrderSize", "type": "BIGDECIMAL", "description":"Minimum order amount", "sampleValue":"0.0001"}
-						]}
-					]
+						]
+					},
+					"response":{ 
+						"parameters": [
+							{"name":"responseCode", "type": "INT", "description":"Request response code", "sampleValue":"0"},
+							{"name":"payload", "type": "OBJECT_LIST", "description":"List of market information for each requested symbol", "parameters":[
+									{"name":"symbol", "type": "STRING", "description":"Market symbol", "sampleValue":"BTC_USDT"},
+									{"name":"minOrderSize", "type": "BIGDECIMAL", "description":"Minimum order amount", "sampleValue":"0.0001"}
+								]
+							}
+						]
+					}
 				},
 				{
 					"name": "exchangeInfo2",
@@ -103,16 +121,21 @@
 					"description": "Same as exchangeInfo, uses same rate limit rule defined below without timeframe and maxRequest count attributes, because using same id is enough to reference previous.",
 					"url": "https://com.sample.mycex/exchangeInfo2",
 					"rateLimits": [{"id":"exchangeInfoRateLimit"}],
-					"parameters": [
+					"request": {
+						"parameters": [
 							{"name":"symbols", "type": "STRING_LIST", "description":"The list of symbol to fetch market information for. Leave empty to fetch all markets", "sampleValue":""}
-					],
-					"response": [
-						{"name":"responseCode", "type": "INT", "description":"Request response code", "sampleValue":"0"},
-						{"name":"payload", "type": "OBJECT_LIST", "description":"List of market information for each requested symbol", "parameters":[
-							{"name":"symbol", "type": "STRING", "description":"Market symbol", "sampleValue":"BTC_USDT"},
-							{"name":"minOrderSize", "type": "BIGDECIMAL", "description":"Minimum order amount", "sampleValue":"0.0001"}
-						]}
-					]
+						]
+					},
+					"response":{ 
+						"parameters": [
+							{"name":"responseCode", "type": "INT", "description":"Request response code", "sampleValue":"0"},
+							{"name":"payload", "type": "OBJECT_LIST", "description":"List of market information for each requested symbol", "parameters":[
+									{"name":"symbol", "type": "STRING", "description":"Market symbol", "sampleValue":"BTC_USDT"},
+									{"name":"minOrderSize", "type": "BIGDECIMAL", "description":"Minimum order amount", "sampleValue":"0.0001"}
+								]
+							}
+						]
+					}
 				}
 			]
 		},
@@ -135,16 +158,21 @@
 						{"timeFrame": 3000,  "maxRequestCount": 30},
 						{"id": "customRule", "timeFrame": 1500,  "maxTotalWeight": 300}
 					],
-					"parameters": [
+					"request": {
+						"parameters": [
 							{"name":"symbols", "type": "STRING_LIST", "description":"The list of symbol to fetch market information for. Leave empty to fetch all markets", "sampleValue":""}
-					],
-					"response": [
-						{"name":"responseCode", "type": "INT", "description":"Request response code", "sampleValue":"0"},
-						{"name":"payload", "type": "OBJECT_LIST", "description":"List of market information for each requested symbol", "parameters":[
-							{"name":"symbol", "type": "STRING", "description":"Market symbol", "sampleValue":"BTC_USDT"},
-							{"name":"minOrderSize", "type": "BIGDECIMAL", "description":"Minimum order amount", "sampleValue":"0.0001"}
-						]}
-					]
+						]
+					},
+					"response": {
+						"parameters": [
+							{"name":"responseCode", "type": "INT", "description":"Request response code", "sampleValue":"0"},
+							{"name":"payload", "type": "OBJECT_LIST", "description":"List of market information for each requested symbol", "parameters":[
+									{"name":"symbol", "type": "STRING", "description":"Market symbol", "sampleValue":"BTC_USDT"},
+									{"name":"minOrderSize", "type": "BIGDECIMAL", "description":"Minimum order amount", "sampleValue":"0.0001"}
+								]
+							}
+						]
+					}
 				}
 			]
 		}

@@ -1,26 +1,17 @@
 package com.scz.jxapi.generator.exchange;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.scz.jxapi.util.EncodingUtil;
 
 /**
- * Part of JSON document describing a crypto exchange API that describes a given field of a request to an endpoint or its response.
- * Such field can be recursive, see {@link EndpointParameterType#OBJECT} or {@link EndpointParameterType#OBJECT_LIST}.
+ * Part of exchange descriptor JSON document describing a given field of a request to an endpoint or its response.
+ * Such field can be recursive, see {@link CanonicalEndpointParameterTypes#OBJECT} or {@link CanonicalEndpointParameterTypes#OBJECT_LIST}.
  */
 public class EndpointParameter {
 	
-	public static EndpointParameter create(EndpointParameterType type, String name, String msgField, String description, List<EndpointParameter> parameters) {
-		EndpointParameter p = new EndpointParameter();
-		p.setType(type);
-		p.setName(name);
-		p.setMsgField(msgField);
-		p.setDescription(description);
-		p.setParameters(parameters);
-		return p;
-	}
-	
-	public static EndpointParameter create(EndpointParameterType type, String name, String msgField, String description, String sampleValue) {
+	public static EndpointParameter create(String type, String name, String msgField, String description, Object sampleValue) {
 		EndpointParameter p = new EndpointParameter();
 		p.setType(type);
 		p.setName(name);
@@ -30,11 +21,27 @@ public class EndpointParameter {
 		return p;
 	}
 	
+	public static EndpointParameter createObject(String type, String name, String msgField, String description, List<EndpointParameter> parameters) {
+		EndpointParameter p = new EndpointParameter();
+		p.setType(type);
+		p.setName(name);
+		p.setMsgField(msgField);
+		p.setDescription(description);
+		p.setParameters(parameters);
+		return p;
+	}
+	
+	private static <T> List<T> cloneList(List<T> l) {
+		return l == null? null: new ArrayList<>(l);
+	}
+	
 	private String name;
 	
 	private String description;
 	
-	private EndpointParameterType type;
+	private String type;
+	
+	private List<String> sampleMapKeyValue;
 	
 	private Object sampleValue;
 	
@@ -45,6 +52,20 @@ public class EndpointParameter {
 	private List<EndpointParameter> parameters;
 	
 	private List<String> implementedInterfaces;
+	
+	public EndpointParameter clone() {
+		EndpointParameter clone = new EndpointParameter();
+		clone.name = this.name;
+		clone.description = this.description;
+		clone.type = this.type;
+		clone.sampleMapKeyValue = cloneList(this.sampleMapKeyValue);
+		clone.sampleValue = this.sampleValue;
+		clone.msgField = this.msgField;
+		clone.objectName = this.objectName;
+		clone.parameters = cloneList(this.parameters);
+		clone.implementedInterfaces = cloneList(this.implementedInterfaces);
+		return clone;
+	}
 
 	public String getName() {
 		return name;
@@ -54,11 +75,15 @@ public class EndpointParameter {
 		this.name = name;
 	}
 
-	public EndpointParameterType getType() {
-		return type;
+	public EndpointParameterType getEndpointParameterType() {
+		return EndpointParameterType.fromTypeName(type);
 	}
 
-	public void setType(EndpointParameterType type) {
+	public String setType() {
+		return this.type;
+	}
+
+	public void setType(String type) {
 		this.type = type;
 	}
 
@@ -88,7 +113,7 @@ public class EndpointParameter {
 	
 	/**
 	 * @return For an 'object' type parameter, see
-	 *         {@link EndpointParameterType#isObject}, the parameters in nested
+	 *         {@link CanonicalEndpointParameterTypes#isObject}, the parameters in nested
 	 *         structure, <code>null</code> otherwise.
 	 */
 	public List<EndpointParameter> getParameters() {
@@ -102,7 +127,7 @@ public class EndpointParameter {
 	/**
 	 * @return The simple (without package) name of java class to represent
 	 *         corresponding to object defined by this parameter. Relevant only when
-	 *         type is an object see {@link EndpointParameterType#isObject}. Remark: in a descriptor
+	 *         type is an object see {@link CanonicalEndpointParameterTypes#isObject}. Remark: in a descriptor
 	 *         file, the first parameter defining a given object name should define
 	 *         sub-parameters, other parameters using same object name need not
 	 *         define sub-parameters. This allow not to repeat identical structures
@@ -126,6 +151,14 @@ public class EndpointParameter {
 
 	public void setImplementedInterfaces(List<String> implementedInterfaces) {
 		this.implementedInterfaces = implementedInterfaces;
+	}
+	
+	public List<String> getSampleMapKeyValue() {
+		return sampleMapKeyValue;
+	}
+
+	public void setSampleMapKeyValue(List<String> sampleMapKeyValue) {
+		this.sampleMapKeyValue = sampleMapKeyValue;
 	}
 	
 	public String toString() {

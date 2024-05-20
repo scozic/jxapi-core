@@ -7,11 +7,12 @@ import com.scz.jxapi.util.EncodingUtil;
  *
  * @param <T> the 'Pojo' containing endpoint specific subscription parameters
  */
-public class WebsocketSubscribeRequest<T extends WebsocketSubscribeParameters> {
+public class WebsocketSubscribeRequest<T> {
 	
-	public static <T extends WebsocketSubscribeParameters> WebsocketSubscribeRequest<T> createWebsocketSubscribeReques(T parameters, WebsocketMessageTopicMatcher messageTopicMatcher) {
+	public static <T> WebsocketSubscribeRequest<T> create(T parameters, String topic, WebsocketMessageTopicMatcher messageTopicMatcher) {
 		WebsocketSubscribeRequest<T> request = new WebsocketSubscribeRequest<>();
 		request.parameters = parameters;
+		request.topic = topic;
 		request.messageTopicMatcher = messageTopicMatcher;
 		return request;
 	}
@@ -19,6 +20,7 @@ public class WebsocketSubscribeRequest<T extends WebsocketSubscribeParameters> {
 	private String baseUrl;
 	private T parameters;
 	private WebsocketMessageTopicMatcher messageTopicMatcher;
+	private String topic;
 	
 	public String getBaseUrl() {
 		return baseUrl;
@@ -43,6 +45,12 @@ public class WebsocketSubscribeRequest<T extends WebsocketSubscribeParameters> {
 	
 	public String toString() {
 		return EncodingUtil.pojoToString(this);
+	}
+	public String getTopic() {
+		return topic;
+	}
+	public void setTopic(String topic) {
+		this.topic = topic;
 	}
 	
 }

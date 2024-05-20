@@ -1,10 +1,6 @@
 package com.scz.jxapi.generator.exchange;
 
-import java.math.BigDecimal;
-import java.util.List;
-import java.util.stream.Collectors;
-
-import org.apache.commons.lang3.StringUtils;
+import java.util.Optional;
 
 import com.scz.jxapi.generator.JavaCodeGenerationUtil;
 import com.scz.jxapi.generator.JavaTypeGenerator;
@@ -13,41 +9,71 @@ import com.scz.jxapi.util.TestJXApiProperties;
 
 public class RestEndpointDemoGenerator extends JavaTypeGenerator {
 	
-	private static final String NULL = "null";
-
-	public RestEndpointDemoGenerator(ExchangeDescriptor exchangeDescriptor, ExchangeApiDescriptor exchangeApiDescriptor, RestEndpointDescriptor restApi) {
-		super(ExchangeJavaWrapperGeneratorUtil.getRestApiDemoClassName(exchangeDescriptor, exchangeApiDescriptor, restApi));
+	private final ExchangeDescriptor exchangeDescriptor;
+	private final ExchangeApiDescriptor exchangeApiDescriptor;
+	private final RestEndpointDescriptor restApi;
+	private StringBuilder body;
+	private final boolean hasArguments;
+	private final String requestClassName;
+	private final String requestSimpleClassName;
+	private String apiInterfaceClassName;
+	private final String simpleApiClassName;
+	
+	public RestEndpointDemoGenerator(ExchangeDescriptor exchangeDescriptor, 
+									 ExchangeApiDescriptor exchangeApiDescriptor, 
+									 RestEndpointDescriptor restApi) {
+		super(EndpointDemoGeneratorUtil.getRestApiDemoClassName(exchangeDescriptor, exchangeApiDescriptor, restApi));
+		this.exchangeDescriptor = exchangeDescriptor;
+		this.exchangeApiDescriptor = exchangeApiDescriptor;
+		this.restApi = restApi;
 		setTypeDeclaration("public class");
-		String requestClassName = ExchangeJavaWrapperGeneratorUtil.generateRestEnpointRequestClassName(exchangeDescriptor, exchangeApiDescriptor, restApi);
-		addImport(requestClassName);
-		String requestSimpleClassName = JavaCodeGenerationUtil.getClassNameWithoutPackage(requestClassName);
-		String apiInterfaceClassName = ExchangeJavaWrapperGeneratorUtil.getApiInterfaceClassName(exchangeDescriptor, exchangeApiDescriptor);
+		this.hasArguments = ExchangeJavaWrapperGeneratorUtil.restEndpointHasArguments(restApi, exchangeApiDescriptor);
+		if (hasArguments) {
+			EndpointParameterType requestDataType =  Optional.ofNullable(restApi.getRequest().getEndpointParameterType()).orElse(EndpointParameterType.OBJECT);
+			if (requestDataType.getCanonicalType().isPrimitive) {
+				requestClassName = requestDataType.getCanonicalType().typeClass.getName();
+			} else {
+				requestClassName = ExchangeJavaWrapperGeneratorUtil.generateRestEnpointRequestClassName(exchangeDescriptor, exchangeApiDescriptor, restApi);
+			}
+			
+			addImport(requestClassName);
+			requestSimpleClassName = ExchangeJavaWrapperGeneratorUtil.getClassNameForParameterType(
+					requestDataType, 
+					getImports(), 
+					requestClassName);
+		} else {
+			requestClassName = null;
+			requestSimpleClassName = null;
+		}
+		this.apiInterfaceClassName = ExchangeJavaWrapperGeneratorUtil.getApiInterfaceClassName(exchangeDescriptor, exchangeApiDescriptor);
+		this.simpleApiClassName = JavaCodeGenerationUtil.getClassNameWithoutPackage(apiInterfaceClassName);
 		addImport(apiInterfaceClassName);
 		String apiMethodName = JavaCodeGenerationUtil.firstLetterToLowerCase(restApi.getName());
 		setDescription("Snippet to test call to {@link " 
-						+ ExchangeJavaWrapperGeneratorUtil.getApiInterfaceClassName(exchangeDescriptor, exchangeApiDescriptor) 
-						+ "#" 
-						+ apiMethodName 
-						+ "(" + requestClassName + ")}\n"
-						+ JavaCodeGenerationUtil.GENERATED_CODE_WARNING);
-		JavaCodeGenerationUtil.generateSlf4jLoggerDeclaration(this);
-		restApi.getParameters().forEach(p -> generateParameterValueConstantDeclaration(exchangeDescriptor, exchangeApiDescriptor, restApi, p));
-		String exchangeInterfaceClassName = ExchangeJavaWrapperGeneratorUtil.getExchangeInterfaceName(exchangeDescriptor);
-		generateMainMethodBody(requestSimpleClassName, 
-							   apiInterfaceClassName, 
-							   exchangeInterfaceClassName,
-							   JavaCodeGenerationUtil.firstLetterToLowerCase(exchangeDescriptor.getName()), 
-							   restApi.getParameters(), 
-							   apiMethodName);
+				+ ExchangeJavaWrapperGeneratorUtil.getApiInterfaceClassName(exchangeDescriptor, exchangeApiDescriptor) 
+				+ "#" 
+				+ apiMethodName 
+				+ "(" + (requestClassName == null? "": requestSimpleClassName) + ")}<br/>\n"
+				+ JavaCodeGenerationUtil.GENERATED_CODE_WARNING);
+		
 	}
 	
-	private void generateMainMethodBody(String requestSimpleClassName, String apiInterfaceClassName, String exchangeInterfaceClassName, String exchangeName, List<EndpointParameter> parameters, String apiMethodName) {
+	public String generate() {
+		JavaCodeGenerationUtil.generateSlf4jLoggerDeclaration(this);
+		generateMainMethodBody();
+		return super.generate();
+	}
+	
+	private void generateMainMethodBody() {
+		body = new StringBuilder();
+		String exchangeInterfaceClassName = ExchangeJavaWrapperGeneratorUtil.getExchangeInterfaceName(exchangeDescriptor);
+		String exchangeName = JavaCodeGenerationUtil.firstLetterToLowerCase(exchangeDescriptor.getName());
+		EndpointParameter request = ExchangeJavaWrapperGeneratorUtil.resolveEndpointParameters(exchangeApiDescriptor, restApi.getRequest());
 		String exchangeImplClassName = exchangeInterfaceClassName + "Impl";
-		String simpleApiClassName = JavaCodeGenerationUtil.getClassNameWithoutPackage(apiInterfaceClassName);
 		addImport(exchangeImplClassName);
 		addImport(TestJXApiProperties.class);
 		addImport(DemoUtil.class);
-		StringBuilder body = new StringBuilder();
+		
 		body.append(simpleApiClassName)
 			.append(" api = new ")
 			.append(JavaCodeGenerationUtil.getClassNameWithoutPackage(exchangeImplClassName))
@@ -55,32 +81,39 @@ public class RestEndpointDemoGenerator extends JavaTypeGenerator {
 			.append(exchangeName)
 			.append("\", true)).get")
 			.append(simpleApiClassName)
-			.append("();\n")
-			.append(requestSimpleClassName)
-			.append(" request = new ")
-			.append(requestSimpleClassName)
 			.append("();\n");
-		List<String> allParametersNames = parameters.stream().map(p -> p.getName()).collect(Collectors.toList());
-		for (EndpointParameter p : parameters) {
-			body.append("request.")
-				.append(JavaCodeGenerationUtil.getSetAccessorMethodName(p.getName(), allParametersNames))
-				.append("(")
-				.append(getParameterValueConstantName(p))
-				.append(");\n");
+			
+		if (hasArguments) {
+			this.appendToBody(EndpointDemoGeneratorUtil.generateEndpointParameterCreationMethod(
+								request,  
+								requestClassName, 
+								getImports()));
+			body.append(requestSimpleClassName)
+				.append(" request = ")
+				.append(EndpointDemoGeneratorUtil.generateEndpointParameterCreationMethodName(request))
+				.append("();\n");
 		}
-		body.append("log.info(\"Calling '")
+			
+		String apiMethodName = JavaCodeGenerationUtil.firstLetterToLowerCase(restApi.getName());
+		body.append("log.info(\"Calling ")
 			.append(apiInterfaceClassName)
 			.append(".")
 			.append(apiMethodName)
-			.append("() API with request:\" + request);\n")
+			.append("() API");
+		if (hasArguments) {
+			body.append(" with request:\" + request");
+		} else {
+			body.append("\"");
+		}
+		body.append(");\n");
 			
-//			.append(JavaCodeGenerationUtil.INDENTATION)
-			.append("DemoUtil.checkResponse(api.")
+		body.append("DemoUtil.checkResponse(api.")
 			.append(apiMethodName)
-			.append("(request));\n")
-//			.append(JavaCodeGenerationUtil.INDENTATION)
-			.append("System.exit(0);");
-//			.append("});");
+			.append("(");
+		if (hasArguments) {
+			body.append("request");
+		}
+		body.append("));\nSystem.exit(0);");
 		
 		appendMethod("public static void main(String[] args)", 
 					"try {\n" 
@@ -88,102 +121,6 @@ public class RestEndpointDemoGenerator extends JavaTypeGenerator {
 						+ "\n} catch (Throwable t) {\n"
 						+ JavaCodeGenerationUtil.indent("log.error(\"Exception raised from main()\", t);\nSystem.exit(-1);", JavaCodeGenerationUtil.INDENTATION)
 						+ "\n}");
-	}
-
-	private void generateParameterValueConstantDeclaration(ExchangeDescriptor exchangeDescriptor, 
-														   ExchangeApiDescriptor exchangeApiDescriptor, 
-														   RestEndpointDescriptor restApi, 
-														   EndpointParameter parameter) {
-			StringBuilder constantDeclaration = new StringBuilder();
-			appendToBody(JavaCodeGenerationUtil.generateJavaDoc("Sample value for <i>" 
-																+ parameter.getName() 
-																+ "</i> parameter of <i>" 
-																+ restApi.getName() 
-																+ "</i> API") + "\n");
-			constantDeclaration.append("public static final ")
-								.append(getParameterTypeDeclaration(parameter.getType()))
-								.append(" ")
-								.append(getParameterValueConstantName(parameter))
-								.append(" = ")
-								.append(getParameterValueDeclaration(parameter))
-								.append(";\n\n");
-			appendToBody(constantDeclaration.toString());
-	}
-	
-	private String getParameterValueDeclaration(EndpointParameter parameter) {
-		Object v = parameter.getSampleValue();
-		if (v == null)
-			return NULL;
-		switch (parameter.getType()) {
-		case BIGDECIMAL:
-			addImport(BigDecimal.class);
-			return "new BigDecimal(\"" + String.valueOf(v) + "\");";
-		case BOOLEAN:
-		case INT:
-			return String.valueOf(v);
-		case STRING_LIST:
-			addImport(List.class);
-			String strList = v.toString().trim();
-			if (!strList.startsWith("[") || !strList.endsWith("]")) {
-				throw new IllegalArgumentException("Sample value for parameter:" + parameter + ":" + strList + " does must be surrounded with '[]'");
-			}
-			return "List.of(" + strList.substring(1, strList.length() - 1) + ")";
-		case INT_LIST:
-			addImport(List.class);
-			String intList = v.toString().trim();
-			if (!intList.startsWith("[") || !intList.endsWith("]")) {
-				throw new IllegalArgumentException("Sample value for parameter:" + parameter + ":" + intList + " does must be surrounded with '[]'");
-			}
-			return "List.of(" + intList.substring(1, intList.length() - 1) + ")";
-			
-		case STRING:
-			return "\"" + StringUtils.replace(v.toString(), "\"", "\\\"")  + "\"";
-		case TIMESTAMP:
-		case LONG:
-			if ("now()".equalsIgnoreCase(v.toString())) {
-				return "System.currentTimeMillis()";
-			}
-			return String.valueOf(v) + "L";
-		case OBJECT:
-		case OBJECT_LIST:
-		case OBJECT_MAP:
-		default:
-			throw new IllegalArgumentException("Unexpected parameter type for parameter:" + parameter);
-		}
-	}
-
-	private String getParameterTypeDeclaration(EndpointParameterType endpointParameterType) {
-		switch (endpointParameterType) {
-		case BIGDECIMAL:
-			addImport(BigDecimal.class);
-			return BigDecimal.class.getSimpleName();
-		case BOOLEAN:
-			return "Boolean";
-		case INT:
-			return "Integer";
-		case TIMESTAMP:
-		case LONG:
-			return "Long";
-		case STRING:
-			return "String";
-		case STRING_LIST:
-			addImport(List.class);
-			return "List<String>";
-		case INT_LIST:
-			addImport(List.class);
-			return "List<Integer>";
-		case OBJECT:
-		case OBJECT_LIST:
-		case OBJECT_MAP:
-			// FIXME not managed yet: Construction of demo values for parameters that are structured object types.
-			// Usually, requests do not use struct parameters
-		default:
-			throw new IllegalArgumentException("Unexpected parameter type:" + endpointParameterType);
-		}
-	}
-	
-	private static String getParameterValueConstantName(EndpointParameter parameter) {
-		return parameter.getName().toUpperCase();
 	}
 
 }

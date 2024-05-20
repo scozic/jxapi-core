@@ -31,7 +31,7 @@ public class AbstractWebsocketEndpointFactory implements WebsocketEndpointFactor
 	
 
 	@Override
-	public <S extends WebsocketSubscribeParameters, M> WebsocketEndpoint<S, M> createWebsocketEndpoint(MessageDeserializer<M> messageDeserializer) {
+	public <S, M> WebsocketEndpoint<S, M> createWebsocketEndpoint(MessageDeserializer<M> messageDeserializer) {
 		if (websocketManager == null) {
 			throw new IllegalStateException("null WebsocketManager");
 		}

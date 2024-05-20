@@ -5,10 +5,10 @@ import com.scz.jxapi.netutils.deserialization.MessageDeserializer;
 public class DefaultRestEndpoint<R, A> implements RestEndpoint<R, A> {
 	
 	protected final MessageDeserializer<A> messageDeserializer;
-	protected final HttpRequestBuilder requestBuilder;
+	protected final HttpRequestBuilder<R> requestBuilder;
 	protected final HttpRequestExecutor executor;
 
-	public DefaultRestEndpoint(HttpRequestBuilder requestBuilder, HttpRequestExecutor executor, MessageDeserializer<A> responseDeserializer) {
+	public DefaultRestEndpoint(HttpRequestBuilder<R> requestBuilder, HttpRequestExecutor executor, MessageDeserializer<A> responseDeserializer) {
 		this.requestBuilder = requestBuilder;
 		this.executor = executor;
 		this.messageDeserializer = responseDeserializer;

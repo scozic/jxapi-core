@@ -7,7 +7,7 @@ package com.scz.jxapi.netutils.websocket;
  * @param <T> The request object containing fields for subscription
  * @param <M> The message object disseminated by this websocket endpoint
  */
-public interface WebsocketEndpoint<T extends WebsocketSubscribeParameters, M> {
+public interface WebsocketEndpoint<T, M> {
 
 	/**
 	 * Subscribes a listener to this websocket feed.

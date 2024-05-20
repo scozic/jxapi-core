@@ -1,6 +1,6 @@
 package com.scz.jxapi.netutils.rest.ratelimits;
 
-import com.scz.jxapi.util.EncodingUtil;
+import com.scz.jxapi.util.JsonUtil;
 
 /**
  * Describes status of a {@link RateLimitManager} at a given time: number of requests and total weight counted over rolling time frame.
@@ -31,7 +31,7 @@ public class RateLimitManagerStat {
 	}
 	
 	public String toString() {
-		return EncodingUtil.pojoToJsonString(this);
+		return JsonUtil.pojoToJsonString(this);
 	}
 	
 }

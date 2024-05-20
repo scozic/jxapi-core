@@ -1,6 +1,6 @@
 package com.scz.jxapi.netutils.rest.ratelimits;
 
-import com.scz.jxapi.util.EncodingUtil;
+import com.scz.jxapi.util.JsonUtil;
 
 /**
  * Encapsulates a rate limit definition for an API endpoint, an API group (see
@@ -93,7 +93,7 @@ public class RateLimitRule {
 	}
 	
 	public String toString() {
-		return getClass().getSimpleName() + EncodingUtil.pojoToJsonString(this);
+		return getClass().getSimpleName() + JsonUtil.pojoToJsonString(this);
 	}
 
 }

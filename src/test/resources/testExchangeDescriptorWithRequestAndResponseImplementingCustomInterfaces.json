@@ -1,0 +1,65 @@
+{
+	"name": "MyTestCEX",
+	"description": "A sample CEX descriptor file",
+	"basePackage": "com.foo.bar.gen",
+	"apis":[
+		{ 
+			"name": "MarketData",
+			"description": "The market data API of MyTestCEX",
+			"restEndpointFactory": "com.foo.bar.BarRestEndpointFactory",
+			"restEndpoints": [
+				{
+					"name": "exchangeInfo",
+					"httpMethod": "GET",
+					"description": "Fetch market information of symbols that can be traded",
+					"url": "https://com.sample.mycex/exchangeInfo",
+					"request": {
+						"implementedInterfaces": ["com.foo.bar.ExchangeInfoRequestInterface1", "com.foo.bar.ExchangeInfoRequestInterface2"],
+						"parameters": [
+							{"name":"symbols", "type": "STRING_LIST", "description":"The list of symbol to fetch market information for. Leave empty to fetch all markets", "sampleValue":null}
+						]
+					},
+					"response": {
+						"implementedInterfaces": ["com.foo.bar.ExchangeInfoResponseInterface1", "com.foo.bar.ExchangeInfoResponseInterface2"],
+						"parameters": [
+							{"name":"responseCode", "type": "INT", "description":"Request response code", "sampleValue":"0"},
+							{"name":"payload", "type": "OBJECT_LIST", "description":"List of market information for each requested symbol", "parameters":[
+									{"name":"symbol", "type": "STRING", "description":"Market symbol", "sampleValue":"BTC_USDT"},
+									{"name":"minOrderSize", "type": "BIGDECIMAL", "description":"Minimum order amount", "sampleValue":"0.0001"},
+									{"name":"levels", "type": "INT_LIST", "description":"Amount precision levels", "sampleValue":[1,10,500]}
+								]
+							}
+						]
+					}
+				}
+			],
+			"websocketEndpointFactory": "com.foo.bar.BarWebsocketEndpointFactory",
+			"websocketEndpoints": [
+				{
+					"name": "tickerStream",
+					"topic": "${symbol}@ticker",
+					"description": "Subscribe to ticker stream",
+					"request": {
+						"implementedInterfaces": ["com.foo.bar.TickerStreamRequestInterface1", "com.foo.bar.TickerStreamRequestInterface2"],
+						"parameters": [
+							{"name": "symbol", "type":"STRING", "description":"Symbol to subscribe to ticker stream of", "sampleValue":"BTC_USDT"}
+						]
+					},
+					"topicParametersListSeparator": "|",
+					"messageTopicMatcherFields": [
+						{"name": "topic",  "value": "ticker"},
+						{"name": "symbol",  "value": "${symbol}"}
+					],
+					"message": {
+						"implementedInterfaces": ["com.foo.bar.TickerStreamResponseInterface1", "com.foo.bar.TickerStreamResponseInterface2"],
+						"parameters": [
+							{"name":"topic", "msgField":"t", "type": "STRING", "description":"Topic", "sampleValue":"ticker"},
+							{"name":"symbol", "msgField":"s", "type": "STRING", "description":"Symbol name", "sampleValue":"BTC_USDT"},
+							{"name":"last", "msgField":"p", "type": "BIGDECIMAL", "description":"Last traded price", "sampleValue":"16000.00"}
+						]
+					}
+				}
+			]
+		}
+	]
+}

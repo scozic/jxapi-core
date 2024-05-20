@@ -9,11 +9,11 @@ import com.fasterxml.jackson.core.JsonToken;
 import com.scz.jxapi.netutils.deserialization.json.AbstractJsonMessageDeserializer;
 import com.scz.jxapi.netutils.deserialization.json.JsonDeserializer;
 
-public class ObjectMapFieldDeserializer<T> extends AbstractJsonMessageDeserializer<Map<String, T>> {
+public class MapJsonFieldDeserializer<T> extends AbstractJsonMessageDeserializer<Map<String, T>> {
 	
 	private final JsonDeserializer<T> itemDeserializer;
 	
-	public ObjectMapFieldDeserializer(JsonDeserializer<T> structDeserializer) {
+	public MapJsonFieldDeserializer(JsonDeserializer<T> structDeserializer) {
 		this.itemDeserializer = structDeserializer;
 	}
 

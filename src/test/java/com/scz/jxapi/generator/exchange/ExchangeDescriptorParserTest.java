@@ -41,10 +41,10 @@ public class ExchangeDescriptorParserTest {
 		Assert.assertEquals("Fetch current tickers", tickersEndPoint.getDescription());
 		Assert.assertEquals("GET", tickersEndPoint.getHttpMethod());
 		Assert.assertEquals("https://com.sample.mycex/tickers", tickersEndPoint.getUrl());
-		List<EndpointParameter> exchangeInfoParameters = tickersEndPoint.getParameters();
+		List<EndpointParameter> exchangeInfoParameters = tickersEndPoint.getRequest().getParameters();
 		Assert.assertEquals(0, exchangeInfoParameters.size());
 		
-		checkTickersResponse(tickersEndPoint.getResponse());
+		checkTickersResponse(tickersEndPoint.getResponse().getParameters());
 		
 	}
 
@@ -53,20 +53,21 @@ public class ExchangeDescriptorParserTest {
 		EndpointParameter responseCode = tickersResponse.get(0);
 		Assert.assertEquals("responseCode", responseCode.getName());
 		Assert.assertEquals("Request response code", responseCode.getDescription());
-		Assert.assertEquals(EndpointParameterType.INT, responseCode.getType());
+		Assert.assertEquals(CanonicalEndpointParameterTypes.INT, responseCode.getEndpointParameterType().getCanonicalType());
 		Assert.assertEquals("0", responseCode.getSampleValue());
 		
 		EndpointParameter payload = tickersResponse.get(1);
 		Assert.assertEquals("payload", payload.getName());
 		Assert.assertEquals("Tickers for each symbol", payload.getDescription());
-		Assert.assertEquals(EndpointParameterType.OBJECT_MAP, payload.getType());
+		Assert.assertEquals(CanonicalEndpointParameterTypes.MAP, payload.getEndpointParameterType().getCanonicalType());
+		Assert.assertEquals(CanonicalEndpointParameterTypes.OBJECT, payload.getEndpointParameterType().getSubType().getCanonicalType());
 		List<EndpointParameter> payloadParameters = payload.getParameters();
 		Assert.assertEquals(1, payloadParameters.size());
 		
 		EndpointParameter last = payloadParameters.get(0);
 		Assert.assertEquals("last", last.getName());
 		Assert.assertEquals("Last traded price", last.getDescription());
-		Assert.assertEquals(EndpointParameterType.BIGDECIMAL, last.getType());
+		Assert.assertEquals(CanonicalEndpointParameterTypes.BIGDECIMAL, last.getEndpointParameterType().getCanonicalType());
 		Assert.assertEquals(Double.valueOf("10.0"), last.getSampleValue());
 		
 	}
@@ -76,16 +77,17 @@ public class ExchangeDescriptorParserTest {
 		Assert.assertEquals("Fetch market information of symbols that can be traded", exchangeInfoEndPoint.getDescription());
 		Assert.assertEquals("GET", exchangeInfoEndPoint.getHttpMethod());
 		Assert.assertEquals("https://com.sample.mycex/exchangeInfo", exchangeInfoEndPoint.getUrl());
-		List<EndpointParameter> exchangeInfoParameters = exchangeInfoEndPoint.getParameters();
+		List<EndpointParameter> exchangeInfoParameters = exchangeInfoEndPoint.getRequest().getParameters();
 		
 		Assert.assertEquals(1, exchangeInfoParameters.size());
 		EndpointParameter symbolsParameter = exchangeInfoParameters.get(0);
 		Assert.assertEquals("symbols", symbolsParameter.getName());
 		Assert.assertEquals("The list of symbol to fetch market information for. Leave empty to fetch all markets", symbolsParameter.getDescription());
-		Assert.assertEquals(EndpointParameterType.STRING_LIST, symbolsParameter.getType());
-		Assert.assertEquals(null, symbolsParameter.getSampleValue());
+		Assert.assertEquals(CanonicalEndpointParameterTypes.LIST, symbolsParameter.getEndpointParameterType().getCanonicalType());
+		Assert.assertEquals(CanonicalEndpointParameterTypes.STRING, symbolsParameter.getEndpointParameterType().getSubType().getCanonicalType());
+		Assert.assertEquals("[\"BTC\", \"ETH\"]", symbolsParameter.getSampleValue());
 		
-		checkExchangeInfoResponse(exchangeInfoEndPoint.getResponse());
+		checkExchangeInfoResponse(exchangeInfoEndPoint.getResponse().getParameters());
 	}
 	
 	private void checkExchangeInfoResponse(List<EndpointParameter> exchangeInfoResponse) {
@@ -93,32 +95,34 @@ public class ExchangeDescriptorParserTest {
 		EndpointParameter responseCode = exchangeInfoResponse.get(0);
 		Assert.assertEquals("responseCode", responseCode.getName());
 		Assert.assertEquals("Request response code", responseCode.getDescription());
-		Assert.assertEquals(EndpointParameterType.INT, responseCode.getType());
+		Assert.assertEquals(CanonicalEndpointParameterTypes.INT, responseCode.getEndpointParameterType().getCanonicalType());
 		Assert.assertEquals("0", responseCode.getSampleValue());
 		
 		EndpointParameter payload = exchangeInfoResponse.get(1);
 		Assert.assertEquals("payload", payload.getName());
 		Assert.assertEquals("List of market information for each requested symbol", payload.getDescription());
-		Assert.assertEquals(EndpointParameterType.OBJECT_LIST, payload.getType());
+		Assert.assertEquals(CanonicalEndpointParameterTypes.LIST, payload.getEndpointParameterType().getCanonicalType());
+		Assert.assertEquals(CanonicalEndpointParameterTypes.OBJECT, payload.getEndpointParameterType().getSubType().getCanonicalType());
 		List<EndpointParameter> payloadParameters = payload.getParameters();
 		Assert.assertEquals(3, payloadParameters.size());
 		
 		EndpointParameter symbol = payloadParameters.get(0);
 		Assert.assertEquals("symbol", symbol.getName());
 		Assert.assertEquals("Market symbol", symbol.getDescription());
-		Assert.assertEquals(EndpointParameterType.STRING, symbol.getType());
+		Assert.assertEquals(CanonicalEndpointParameterTypes.STRING, symbol.getEndpointParameterType().getCanonicalType());
 		Assert.assertEquals("BTC_USDT", symbol.getSampleValue());
 		
 		EndpointParameter minOrderSize = payloadParameters.get(1);
 		Assert.assertEquals("minOrderSize", minOrderSize.getName());
 		Assert.assertEquals("Minimum order amount", minOrderSize.getDescription());
-		Assert.assertEquals(EndpointParameterType.BIGDECIMAL, minOrderSize.getType());
+		Assert.assertEquals(CanonicalEndpointParameterTypes.BIGDECIMAL, minOrderSize.getEndpointParameterType().getCanonicalType());
 		Assert.assertEquals("0.0001", minOrderSize.getSampleValue());
 		
 		EndpointParameter levels = payloadParameters.get(2);
 		Assert.assertEquals("levels", levels.getName());
 		Assert.assertEquals("Amount precision levels", levels.getDescription());
-		Assert.assertEquals(EndpointParameterType.INT_LIST, levels.getType());
+		Assert.assertEquals(CanonicalEndpointParameterTypes.LIST, levels.getEndpointParameterType().getCanonicalType());
+		Assert.assertEquals(CanonicalEndpointParameterTypes.INT, levels.getEndpointParameterType().getSubType().getCanonicalType());
 		Assert.assertEquals(List.of(1, 10, 500).toString(), levels.getSampleValue().toString());
 	}
 	
@@ -129,11 +133,11 @@ public class ExchangeDescriptorParserTest {
 		Assert.assertEquals("${symbol}@ticker", tickerStreamEndpoint.getTopic());
 		Assert.assertEquals("|", tickerStreamEndpoint.getTopicParametersListSeparator());
 		
-		List<EndpointParameter> parameters = tickerStreamEndpoint.getParameters();
+		List<EndpointParameter> parameters = tickerStreamEndpoint.getRequest().getParameters();
 		EndpointParameter symbols = parameters.get(0);
 		Assert.assertEquals("symbol", symbols.getName());
 		Assert.assertEquals("Symbol to subscribe to ticker stream of", symbols.getDescription());
-		Assert.assertEquals(EndpointParameterType.STRING, symbols.getType());
+		Assert.assertEquals(CanonicalEndpointParameterTypes.STRING, symbols.getEndpointParameterType().getCanonicalType());
 		Assert.assertEquals("BTC_USDT", symbols.getSampleValue());
 		
 		List<WebsocketMessageTopicMatcherFieldDescriptor> messageTopicMatcherFields = tickerStreamEndpoint.getMessageTopicMatcherFields();
@@ -143,25 +147,25 @@ public class ExchangeDescriptorParserTest {
 		Assert.assertEquals("symbol", messageTopicMatcherFields.get(1).getName());
 		Assert.assertEquals("${symbol}", messageTopicMatcherFields.get(1).getValue());
 		
-		List<EndpointParameter> response = tickerStreamEndpoint.getResponse();
+		List<EndpointParameter> response = tickerStreamEndpoint.getMessage().getParameters();
 		Assert.assertEquals(3, response.size());
 		
 		EndpointParameter topic = response.get(0);
 		Assert.assertEquals("topic", topic.getName());
 		Assert.assertEquals("Topic", topic.getDescription());
-		Assert.assertEquals(EndpointParameterType.STRING, topic.getType());
+		Assert.assertEquals(CanonicalEndpointParameterTypes.STRING, topic.getEndpointParameterType().getCanonicalType());
 		Assert.assertEquals("ticker", topic.getSampleValue());
 		
 		EndpointParameter symbol = response.get(1);
 		Assert.assertEquals("symbol", symbol.getName());
 		Assert.assertEquals("Symbol name", symbol.getDescription());
-		Assert.assertEquals(EndpointParameterType.STRING, symbol.getType());
+		Assert.assertEquals(CanonicalEndpointParameterTypes.STRING, symbol.getEndpointParameterType().getCanonicalType());
 		Assert.assertEquals("BTC_USDT", symbol.getSampleValue());
 		
 		EndpointParameter last = response.get(2);
 		Assert.assertEquals("last", last.getName());
 		Assert.assertEquals("Last traded price", last.getDescription());
-		Assert.assertEquals(EndpointParameterType.BIGDECIMAL, last.getType());
+		Assert.assertEquals(CanonicalEndpointParameterTypes.BIGDECIMAL, last.getEndpointParameterType().getCanonicalType());
 		Assert.assertEquals("16000.00", last.getSampleValue());
 	}
 }

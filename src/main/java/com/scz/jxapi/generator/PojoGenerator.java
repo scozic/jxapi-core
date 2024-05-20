@@ -3,6 +3,7 @@ package com.scz.jxapi.generator;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.TreeMap;
 
 import com.scz.jxapi.util.EncodingUtil;
@@ -37,6 +38,10 @@ public class PojoGenerator extends JavaTypeGenerator {
 	public String generate() {
 		List<PojoField> l = new ArrayList<PojoField>(fields.values());
 		body.insert(0, JavaCodeGenerationUtil.generateJavaPojoFieldsWithAccessors(l));
+		generateEqualsMethod();
+		body.append("\n");
+		generateHashCodeMethod();
+		body.append("\n");
 		generateToStringMethod();
 		return super.generate();
 	}
@@ -46,6 +51,65 @@ public class PojoGenerator extends JavaTypeGenerator {
 		appendMethod("@Override\npublic String toString()", 
 					 "return EncodingUtil.pojoToString(this);");
 
+	}
+	
+	private void generateEqualsMethod() {
+		StringBuilder body = new StringBuilder()
+			.append("if (other == null)\n")
+			.append(JavaCodeGenerationUtil.indent("return false;"))
+			.append("\nif (!getClass().equals(other.getClass()))\n")
+			.append(JavaCodeGenerationUtil.indent("return false;"))
+			.append("\n");
+			
+		if (fields.isEmpty()) {
+			body.append("return true;\n");
+		} else {
+			body.append(getSimpleName())
+				.append(" o = (")
+				.append(getSimpleName())
+				.append(") other;\nreturn ");
+			boolean first = true;
+			for (String f : fields.keySet()) {
+				if (first) {
+					addImport(Objects.class);
+					first = false;
+				} else {
+					body.append("\n")
+						.append(JavaCodeGenerationUtil.INDENTATION)
+						.append(JavaCodeGenerationUtil.INDENTATION)
+						.append(JavaCodeGenerationUtil.INDENTATION)
+						.append(JavaCodeGenerationUtil.INDENTATION)
+						.append("&& ");
+				}
+				body.append("Objects.equals(")
+					.append(f)
+					.append(", o.")
+					.append(f)
+					.append(")");
+			}
+			body.append(";\n");
+		}
+		appendMethod("@Override\npublic boolean equals(Object other)", body.toString());
+	}
+	
+	private void generateHashCodeMethod() {
+		StringBuilder body = new StringBuilder();
+		if (fields.isEmpty()) {
+			body.append("return 31 * getClass().hashCode();\n");
+		} else {
+			boolean first = true;
+			body.append("return Objects.hash(");
+			for (String f : fields.keySet()) {
+				if (first) {
+					first = false;
+				} else {
+					body.append(", ");
+				}
+				body.append(f);
+			}
+			body.append(");\n");
+		}
+		appendMethod("@Override\npublic int hashCode()", body.toString());
 	}
 
 }

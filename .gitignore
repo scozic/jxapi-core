@@ -71,3 +71,6 @@ logs/
 src/test/resources/test-cex-api.properties
 
 bin/
+
+#Temporary files (created during tests)
+tmp*
