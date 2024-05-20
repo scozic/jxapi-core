@@ -282,7 +282,7 @@ public class ExchangeApiInterfaceImplementationGenerator extends JavaTypeGenerat
 				.append(JavaCodeGenerationUtil.INDENTATION)
 				.append("log.debug(\"")
 				.append(subscribeMethodName)
-				.append(hasArguments? ":" + requestArgName + ":\" + " + requestArgName: "\"")
+				.append(hasArguments? ":" + ExchangeJavaWrapperGeneratorUtil.getRequestArgName(request.getName()) + ":\" + " + requestArgName: "\"")
 				.append(");\n")
 				.append(WebsocketSubscribeRequest.class.getSimpleName())
 				.append("<")
