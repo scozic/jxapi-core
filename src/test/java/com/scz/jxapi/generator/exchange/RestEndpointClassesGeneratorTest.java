@@ -39,33 +39,33 @@ public class RestEndpointClassesGeneratorTest {
 	@Test
 	public void testGenerateRestEndpointClasses() throws IOException {
 		srcFolder = ClassesGeneratorTestUtil.generateTmpDir();
-		ExchangeDescriptor exchange = new ExchangeDescriptorParser().fromJson(Paths.get(".", "src", "test", "resources", "testCEXDescriptor.json"));
+		ExchangeDescriptor exchange = new ExchangeDescriptorParser().fromJson(Paths.get(".", "src", "test", "resources", "testExchangeDescriptor.json"));
 		ExchangeApiDescriptor api = exchange.getApis().get(0);
 		RestEndpointDescriptor restEndpoint = api.getRestEndpoints().get(0);
 		RestEndpointClassesGenerator generator = new RestEndpointClassesGenerator(exchange, api, restEndpoint);
 		generator.generateClasses(srcFolder);
 		
 		checkJavaFilesCount(Paths.get("deserializers"), 2);
-		checkSourceFileExists(Paths.get("deserializers", "MyTestCEXMarketDataExchangeInfoResponseDeserializer.java"));
-		checkSourceFileExists(Paths.get("deserializers", "MyTestCEXMarketDataExchangeInfoResponsePayloadDeserializer.java"));
+		checkSourceFileExists(Paths.get("deserializers", "MyTestExchangeMarketDataExchangeInfoResponseDeserializer.java"));
+		checkSourceFileExists(Paths.get("deserializers", "MyTestExchangeMarketDataExchangeInfoResponsePayloadDeserializer.java"));
 		
 		checkJavaFilesCount(Paths.get("pojo"), 3);
 		
 		Assert.assertEquals("package com.foo.bar.gen.marketdata.pojo;\n"
 				+ "\n"
 				+ "import com.fasterxml.jackson.databind.annotation.JsonSerialize;\n"
-				+ "import com.foo.bar.gen.marketdata.serializers.MyTestCEXMarketDataExchangeInfoRequestSerializer;\n"
+				+ "import com.foo.bar.gen.marketdata.serializers.MyTestExchangeMarketDataExchangeInfoRequestSerializer;\n"
 				+ "import com.scz.jxapi.util.EncodingUtil;\n"
 				+ "import java.util.List;\n"
 				+ "import java.util.Objects;\n"
 				+ "\n"
 				+ "/**\n"
-				+ " * Request for MyTestCEX MarketData API exchangeInfo REST endpoint<br/>\n"
+				+ " * Request for MyTestExchange MarketData API exchangeInfo REST endpoint<br/>\n"
 				+ " * Fetch market information of symbols that can be traded\n"
 				+ " * <br><strong>THIS CODE IS GENERATED. DO NOT EDIT MANUALLY!</strong>\n"
 				+ " */\n"
-				+ "@JsonSerialize(using = MyTestCEXMarketDataExchangeInfoRequestSerializer.class)\n"
-				+ "public class MyTestCEXMarketDataExchangeInfoRequest {\n"
+				+ "@JsonSerialize(using = MyTestExchangeMarketDataExchangeInfoRequestSerializer.class)\n"
+				+ "public class MyTestExchangeMarketDataExchangeInfoRequest {\n"
 				+ "  private List<String> symbols;\n"
 				+ "  \n"
 				+ "  /**\n"
@@ -88,7 +88,7 @@ public class RestEndpointClassesGeneratorTest {
 				+ "      return false;\n"
 				+ "    if (!getClass().equals(other.getClass()))\n"
 				+ "      return false;\n"
-				+ "    MyTestCEXMarketDataExchangeInfoRequest o = (MyTestCEXMarketDataExchangeInfoRequest) other;\n"
+				+ "    MyTestExchangeMarketDataExchangeInfoRequest o = (MyTestExchangeMarketDataExchangeInfoRequest) other;\n"
 				+ "    return Objects.equals(symbols, o.symbols);\n"
 				+ "  }\n"
 				+ "  \n"
@@ -102,38 +102,38 @@ public class RestEndpointClassesGeneratorTest {
 				+ "    return EncodingUtil.pojoToString(this);\n"
 				+ "  }\n"
 				+ "}\n", 
-				Files.readString(checkSourceFileExists(Paths.get("pojo", "MyTestCEXMarketDataExchangeInfoRequest.java"))));
+				Files.readString(checkSourceFileExists(Paths.get("pojo", "MyTestExchangeMarketDataExchangeInfoRequest.java"))));
 		
 		Assert.assertEquals("package com.foo.bar.gen.marketdata.pojo;\n"
 				+ "\n"
 				+ "import com.fasterxml.jackson.databind.annotation.JsonSerialize;\n"
-				+ "import com.foo.bar.gen.marketdata.serializers.MyTestCEXMarketDataExchangeInfoResponseSerializer;\n"
+				+ "import com.foo.bar.gen.marketdata.serializers.MyTestExchangeMarketDataExchangeInfoResponseSerializer;\n"
 				+ "import com.scz.jxapi.util.EncodingUtil;\n"
 				+ "import java.util.List;\n"
 				+ "import java.util.Objects;\n"
 				+ "\n"
 				+ "/**\n"
-				+ " * Response to MyTestCEX MarketData API <br/>\n"
+				+ " * Response to MyTestExchange MarketData API <br/>\n"
 				+ " * exchangeInfo REST endpoint request<br/>\n"
 				+ " * Fetch market information of symbols that can be traded\n"
 				+ " * <br><strong>THIS CODE IS GENERATED. DO NOT EDIT MANUALLY!</strong>\n"
 				+ " */\n"
-				+ "@JsonSerialize(using = MyTestCEXMarketDataExchangeInfoResponseSerializer.class)\n"
-				+ "public class MyTestCEXMarketDataExchangeInfoResponse {\n"
-				+ "  private List<MyTestCEXMarketDataExchangeInfoResponsePayload> payload;\n"
+				+ "@JsonSerialize(using = MyTestExchangeMarketDataExchangeInfoResponseSerializer.class)\n"
+				+ "public class MyTestExchangeMarketDataExchangeInfoResponse {\n"
+				+ "  private List<MyTestExchangeMarketDataExchangeInfoResponsePayload> payload;\n"
 				+ "  private Integer responseCode;\n"
 				+ "  \n"
 				+ "  /**\n"
 				+ "   * @return List of market information for each requested symbol\n"
 				+ "   */\n"
-				+ "  public List<MyTestCEXMarketDataExchangeInfoResponsePayload> getPayload() {\n"
+				+ "  public List<MyTestExchangeMarketDataExchangeInfoResponsePayload> getPayload() {\n"
 				+ "    return payload;\n"
 				+ "  }\n"
 				+ "  \n"
 				+ "  /**\n"
 				+ "   * @param payload List of market information for each requested symbol\n"
 				+ "   */\n"
-				+ "  public void setPayload(List<MyTestCEXMarketDataExchangeInfoResponsePayload> payload) {\n"
+				+ "  public void setPayload(List<MyTestExchangeMarketDataExchangeInfoResponsePayload> payload) {\n"
 				+ "    this.payload = payload;\n"
 				+ "  }\n"
 				+ "  \n"
@@ -157,7 +157,7 @@ public class RestEndpointClassesGeneratorTest {
 				+ "      return false;\n"
 				+ "    if (!getClass().equals(other.getClass()))\n"
 				+ "      return false;\n"
-				+ "    MyTestCEXMarketDataExchangeInfoResponse o = (MyTestCEXMarketDataExchangeInfoResponse) other;\n"
+				+ "    MyTestExchangeMarketDataExchangeInfoResponse o = (MyTestExchangeMarketDataExchangeInfoResponse) other;\n"
 				+ "    return Objects.equals(payload, o.payload)\n"
 				+ "            && Objects.equals(responseCode, o.responseCode);\n"
 				+ "  }\n"
@@ -172,14 +172,14 @@ public class RestEndpointClassesGeneratorTest {
 				+ "    return EncodingUtil.pojoToString(this);\n"
 				+ "  }\n"
 				+ "}\n", 
-				Files.readString(checkSourceFileExists(Paths.get("pojo", "MyTestCEXMarketDataExchangeInfoResponse.java"))));
+				Files.readString(checkSourceFileExists(Paths.get("pojo", "MyTestExchangeMarketDataExchangeInfoResponse.java"))));
 		
-		checkSourceFileExists(Paths.get("pojo", "MyTestCEXMarketDataExchangeInfoResponsePayload.java"));
+		checkSourceFileExists(Paths.get("pojo", "MyTestExchangeMarketDataExchangeInfoResponsePayload.java"));
 		
 		checkJavaFilesCount(Paths.get("serializers"), 3);
-		checkSourceFileExists(Paths.get("serializers", "MyTestCEXMarketDataExchangeInfoRequestSerializer.java"));        
-		checkSourceFileExists(Paths.get("serializers", "MyTestCEXMarketDataExchangeInfoResponsePayloadSerializer.java"));
-		checkSourceFileExists(Paths.get("serializers", "MyTestCEXMarketDataExchangeInfoResponseSerializer.java"));               
+		checkSourceFileExists(Paths.get("serializers", "MyTestExchangeMarketDataExchangeInfoRequestSerializer.java"));        
+		checkSourceFileExists(Paths.get("serializers", "MyTestExchangeMarketDataExchangeInfoResponsePayloadSerializer.java"));
+		checkSourceFileExists(Paths.get("serializers", "MyTestExchangeMarketDataExchangeInfoResponseSerializer.java"));               
 	}
 	
 	@Test
@@ -192,8 +192,8 @@ public class RestEndpointClassesGeneratorTest {
 		generator.generateClasses(srcFolder);
 		
 		checkJavaFilesCount(Paths.get("deserializers"), 2);
-		checkSourceFileExists(Paths.get("deserializers", "MyTestCEXMarketDataExchangeInfoResponseDeserializer.java"));
-		checkSourceFileExists(Paths.get("deserializers", "MyTestCEXMarketDataExchangeInfoResponsePayloadDeserializer.java"));
+		checkSourceFileExists(Paths.get("deserializers", "MyTestExchangeMarketDataExchangeInfoResponseDeserializer.java"));
+		checkSourceFileExists(Paths.get("deserializers", "MyTestExchangeMarketDataExchangeInfoResponsePayloadDeserializer.java"));
 		
 		checkJavaFilesCount(Paths.get("pojo"), 3);
 		
@@ -202,18 +202,18 @@ public class RestEndpointClassesGeneratorTest {
 				+ "import com.fasterxml.jackson.databind.annotation.JsonSerialize;\n"
 				+ "import com.foo.bar.ExchangeInfoRequestInterface1;\n"
 				+ "import com.foo.bar.ExchangeInfoRequestInterface2;\n"
-				+ "import com.foo.bar.gen.marketdata.serializers.MyTestCEXMarketDataExchangeInfoRequestSerializer;\n"
+				+ "import com.foo.bar.gen.marketdata.serializers.MyTestExchangeMarketDataExchangeInfoRequestSerializer;\n"
 				+ "import com.scz.jxapi.util.EncodingUtil;\n"
 				+ "import java.util.List;\n"
 				+ "import java.util.Objects;\n"
 				+ "\n"
 				+ "/**\n"
-				+ " * Request for MyTestCEX MarketData API exchangeInfo REST endpoint<br/>\n"
+				+ " * Request for MyTestExchange MarketData API exchangeInfo REST endpoint<br/>\n"
 				+ " * Fetch market information of symbols that can be traded\n"
 				+ " * <br><strong>THIS CODE IS GENERATED. DO NOT EDIT MANUALLY!</strong>\n"
 				+ " */\n"
-				+ "@JsonSerialize(using = MyTestCEXMarketDataExchangeInfoRequestSerializer.class)\n"
-				+ "public class MyTestCEXMarketDataExchangeInfoRequest implements ExchangeInfoRequestInterface1, ExchangeInfoRequestInterface2 {\n"
+				+ "@JsonSerialize(using = MyTestExchangeMarketDataExchangeInfoRequestSerializer.class)\n"
+				+ "public class MyTestExchangeMarketDataExchangeInfoRequest implements ExchangeInfoRequestInterface1, ExchangeInfoRequestInterface2 {\n"
 				+ "  private List<String> symbols;\n"
 				+ "  \n"
 				+ "  /**\n"
@@ -236,7 +236,7 @@ public class RestEndpointClassesGeneratorTest {
 				+ "      return false;\n"
 				+ "    if (!getClass().equals(other.getClass()))\n"
 				+ "      return false;\n"
-				+ "    MyTestCEXMarketDataExchangeInfoRequest o = (MyTestCEXMarketDataExchangeInfoRequest) other;\n"
+				+ "    MyTestExchangeMarketDataExchangeInfoRequest o = (MyTestExchangeMarketDataExchangeInfoRequest) other;\n"
 				+ "    return Objects.equals(symbols, o.symbols);\n"
 				+ "  }\n"
 				+ "  \n"
@@ -250,40 +250,40 @@ public class RestEndpointClassesGeneratorTest {
 				+ "    return EncodingUtil.pojoToString(this);\n"
 				+ "  }\n"
 				+ "}\n", 
-				Files.readString(checkSourceFileExists(Paths.get("pojo", "MyTestCEXMarketDataExchangeInfoRequest.java"))));
+				Files.readString(checkSourceFileExists(Paths.get("pojo", "MyTestExchangeMarketDataExchangeInfoRequest.java"))));
 		
 		Assert.assertEquals("package com.foo.bar.gen.marketdata.pojo;\n"
 				+ "\n"
 				+ "import com.fasterxml.jackson.databind.annotation.JsonSerialize;\n"
 				+ "import com.foo.bar.ExchangeInfoResponseInterface1;\n"
 				+ "import com.foo.bar.ExchangeInfoResponseInterface2;\n"
-				+ "import com.foo.bar.gen.marketdata.serializers.MyTestCEXMarketDataExchangeInfoResponseSerializer;\n"
+				+ "import com.foo.bar.gen.marketdata.serializers.MyTestExchangeMarketDataExchangeInfoResponseSerializer;\n"
 				+ "import com.scz.jxapi.util.EncodingUtil;\n"
 				+ "import java.util.List;\n"
 				+ "import java.util.Objects;\n"
 				+ "\n"
 				+ "/**\n"
-				+ " * Response to MyTestCEX MarketData API <br/>\n"
+				+ " * Response to MyTestExchange MarketData API <br/>\n"
 				+ " * exchangeInfo REST endpoint request<br/>\n"
 				+ " * Fetch market information of symbols that can be traded\n"
 				+ " * <br><strong>THIS CODE IS GENERATED. DO NOT EDIT MANUALLY!</strong>\n"
 				+ " */\n"
-				+ "@JsonSerialize(using = MyTestCEXMarketDataExchangeInfoResponseSerializer.class)\n"
-				+ "public class MyTestCEXMarketDataExchangeInfoResponse implements ExchangeInfoResponseInterface1, ExchangeInfoResponseInterface2 {\n"
-				+ "  private List<MyTestCEXMarketDataExchangeInfoResponsePayload> payload;\n"
+				+ "@JsonSerialize(using = MyTestExchangeMarketDataExchangeInfoResponseSerializer.class)\n"
+				+ "public class MyTestExchangeMarketDataExchangeInfoResponse implements ExchangeInfoResponseInterface1, ExchangeInfoResponseInterface2 {\n"
+				+ "  private List<MyTestExchangeMarketDataExchangeInfoResponsePayload> payload;\n"
 				+ "  private Integer responseCode;\n"
 				+ "  \n"
 				+ "  /**\n"
 				+ "   * @return List of market information for each requested symbol\n"
 				+ "   */\n"
-				+ "  public List<MyTestCEXMarketDataExchangeInfoResponsePayload> getPayload() {\n"
+				+ "  public List<MyTestExchangeMarketDataExchangeInfoResponsePayload> getPayload() {\n"
 				+ "    return payload;\n"
 				+ "  }\n"
 				+ "  \n"
 				+ "  /**\n"
 				+ "   * @param payload List of market information for each requested symbol\n"
 				+ "   */\n"
-				+ "  public void setPayload(List<MyTestCEXMarketDataExchangeInfoResponsePayload> payload) {\n"
+				+ "  public void setPayload(List<MyTestExchangeMarketDataExchangeInfoResponsePayload> payload) {\n"
 				+ "    this.payload = payload;\n"
 				+ "  }\n"
 				+ "  \n"
@@ -307,7 +307,7 @@ public class RestEndpointClassesGeneratorTest {
 				+ "      return false;\n"
 				+ "    if (!getClass().equals(other.getClass()))\n"
 				+ "      return false;\n"
-				+ "    MyTestCEXMarketDataExchangeInfoResponse o = (MyTestCEXMarketDataExchangeInfoResponse) other;\n"
+				+ "    MyTestExchangeMarketDataExchangeInfoResponse o = (MyTestExchangeMarketDataExchangeInfoResponse) other;\n"
 				+ "    return Objects.equals(payload, o.payload)\n"
 				+ "            && Objects.equals(responseCode, o.responseCode);\n"
 				+ "  }\n"
@@ -322,14 +322,14 @@ public class RestEndpointClassesGeneratorTest {
 				+ "    return EncodingUtil.pojoToString(this);\n"
 				+ "  }\n"
 				+ "}\n", 
-				Files.readString(checkSourceFileExists(Paths.get("pojo", "MyTestCEXMarketDataExchangeInfoResponse.java"))));
+				Files.readString(checkSourceFileExists(Paths.get("pojo", "MyTestExchangeMarketDataExchangeInfoResponse.java"))));
 		
-		checkSourceFileExists(Paths.get("pojo", "MyTestCEXMarketDataExchangeInfoResponsePayload.java"));
+		checkSourceFileExists(Paths.get("pojo", "MyTestExchangeMarketDataExchangeInfoResponsePayload.java"));
 		
 		checkJavaFilesCount(Paths.get("serializers"), 3);
-		checkSourceFileExists(Paths.get("serializers", "MyTestCEXMarketDataExchangeInfoRequestSerializer.java"));        
-		checkSourceFileExists(Paths.get("serializers", "MyTestCEXMarketDataExchangeInfoResponsePayloadSerializer.java"));
-		checkSourceFileExists(Paths.get("serializers", "MyTestCEXMarketDataExchangeInfoResponseSerializer.java"));               
+		checkSourceFileExists(Paths.get("serializers", "MyTestExchangeMarketDataExchangeInfoRequestSerializer.java"));        
+		checkSourceFileExists(Paths.get("serializers", "MyTestExchangeMarketDataExchangeInfoResponsePayloadSerializer.java"));
+		checkSourceFileExists(Paths.get("serializers", "MyTestExchangeMarketDataExchangeInfoResponseSerializer.java"));               
 	}
 
 	@Test

@@ -185,7 +185,7 @@ This may be useful for instance if websocket handshake involves a REST call to r
 ### Write JSON file for API descriptor
 Now the tedious work is done, let's create some API wrappers.
 
-Create a file named BybitCEXDescriptor.json file. This file in `src/main/resources` with a name ending with `Descriptor.json` makes it eligible for API wrapper generation using `mvn exec:java` command.
+Create a file named BybitExchangeDescriptor.json file. This file in `src/main/resources` with a name ending with `Descriptor.json` makes it eligible for API wrapper generation using `mvn exec:java` command.
 
 Such API description file looks as follows:
 

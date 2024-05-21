@@ -8,8 +8,8 @@ import com.scz.jxapi.netutils.deserialization.MessageDeserializer;
 /**
  * Interface for a specific {@link RestEndpoint} implementation factory. Actual
  * implementations are expected to have a default constructor. Name of such
- * actual implementation class can be provided in JSON CEX descriptor, see
- * {@link ExchangeApiDescriptor}. CEX code generation will create interface for
+ * actual implementation class can be provided in JSON Exchange descriptor, see
+ * {@link ExchangeApiDescriptor}. Exchange code generation will create interface for
  * corresponding api rest calls using that factory. </br>
  * Some credential specific data may need to be provided in requests if this
  * factory stands for private API calls. The {@link #setProperties(Properties)}
