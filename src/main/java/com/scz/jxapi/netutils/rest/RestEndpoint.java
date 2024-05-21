@@ -7,6 +7,7 @@ import java.io.IOException;
  * @param <R> Request
  * @param <A> Answer (Response)
  */
+@Deprecated
 public interface RestEndpoint<R, A> {
 
 	/**

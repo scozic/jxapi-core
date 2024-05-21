@@ -3,11 +3,13 @@ package com.scz.netutis.rest.ratelimits;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.Function;
 
 import org.junit.Assert;
 import org.junit.Test;
 
 import com.scz.jxapi.netutils.rest.FutureRestResponse;
+import com.scz.jxapi.netutils.rest.HttpRequest;
 import com.scz.jxapi.netutils.rest.RestEndpoint;
 import com.scz.jxapi.netutils.rest.RestRequest;
 import com.scz.jxapi.netutils.rest.RestResponse;
@@ -22,7 +24,7 @@ public class RequestThrottlerTest {
 	public void testSubmitOneRequest() {
 		RequestThrottler throttler = new RequestThrottler();
 		RestEndpointStub endpoint = new RestEndpointStub();
-		RestRequestStub request = new RestRequestStub();
+		HttpRequestStub request = new HttpRequestStub();
 		checkCompletesIn(throttler.submit(request, endpoint), 0L);
 	}
 	
@@ -34,11 +36,11 @@ public class RequestThrottlerTest {
 		RateLimitRule rule1 = RateLimitRule.createRule("RULE1", 1000L, 1);
 		RateLimitRule rule2 = RateLimitRule.createWeightedRule("RULE2", 3000L, 100);
 		
-		RestRequestStub request1 = new RestRequestStub(rule1, rule2);
+		HttpRequestStub request1 = new HttpRequestStub(rule1, rule2);
 		request1.setWeight(50);
-		RestRequestStub request2 = new RestRequestStub(rule1, rule2);
+		HttpRequestStub request2 = new HttpRequestStub(rule1, rule2);
 		request2.setWeight(50);
-		RestRequestStub request3 = new RestRequestStub(rule1, rule2);
+		HttpRequestStub request3 = new HttpRequestStub(rule1, rule2);
 		request3.setWeight(50);
 		// Request1 enforces all rules and will be submitted immediately
 		checkCompletesIn(throttler.submit(request1, endpoint), 0L);
@@ -65,10 +67,10 @@ public class RequestThrottlerTest {
 		Assert.assertTrue("Response received after:" + actualDelay + ", instead of at least:" + delay, actualDelay >= delay - 500L && actualDelay <= delay + 500L);
 	}
 	
-	private class RestEndpointStub implements RestEndpoint<String, Long> {
+	private class RestEndpointStub implements Function<HttpRequest, FutureRestResponse<Long>> {
 
 		@Override
-		public FutureRestResponse<Long> call(RestRequest<String> request) {
+		public FutureRestResponse<Long> apply(HttpRequest request) {
 			FutureRestResponse<Long> response = new FutureRestResponse<>();
 			RestResponse<Long> restResponse = new RestResponse<>();
 			restResponse.setResponse(System.currentTimeMillis());
@@ -78,8 +80,8 @@ public class RequestThrottlerTest {
 		
 	}
 	
-	private class RestRequestStub extends RestRequest<String> {
-		public RestRequestStub(RateLimitRule...limitRules) {
+	private class HttpRequestStub extends HttpRequest {
+		public HttpRequestStub(RateLimitRule...limitRules) {
 			this.setRateLimits(List.of(limitRules));
 			this.setUrl("url" + REQUEST_COUNTER.getAndIncrement());
 		}

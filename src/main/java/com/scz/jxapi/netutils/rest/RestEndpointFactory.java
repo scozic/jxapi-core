@@ -16,6 +16,7 @@ import com.scz.jxapi.netutils.deserialization.MessageDeserializer;
  * method will be called prior to calls to
  * {@link #createRestEndpoint(MessageDeserializer)}
  */
+@Deprecated
 public interface RestEndpointFactory {
 	
 	/**

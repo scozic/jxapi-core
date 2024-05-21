@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.scz.jxapi.netutils.rest.ratelimits.RateLimitRule;
 import com.scz.jxapi.util.EncodingUtil;
 
 /**
@@ -18,6 +19,12 @@ public class HttpRequest {
 	private String httpMethod;
 	
 	private String body;
+	
+	private Object request;
+	
+	private List<RateLimitRule> rateLimits;
+	
+	private int weight;
 
 	/**
 	 * @return full request URL, including request parameters
@@ -92,6 +99,30 @@ public class HttpRequest {
 	 */
 	public void setBody(String body) {
 		this.body = body;
+	}
+	
+	public List<RateLimitRule> getRateLimits() {
+		return rateLimits;
+	}
+
+	public void setRateLimits(List<RateLimitRule> rateLimits) {
+		this.rateLimits = rateLimits;
+	}
+
+	public int getWeight() {
+		return weight;
+	}
+
+	public void setWeight(int weight) {
+		this.weight = weight;
+	}
+
+	public Object getRequest() {
+		return request;
+	}
+
+	public void setRequest(Object request) {
+		this.request = request;
 	}
 
 	@Override

@@ -2,6 +2,7 @@ package com.scz.jxapi.netutils.rest;
 
 import com.scz.jxapi.netutils.deserialization.MessageDeserializer;
 
+@Deprecated
 public class DefaultRestEndpoint<R, A> implements RestEndpoint<R, A> {
 	
 	protected final MessageDeserializer<A> messageDeserializer;

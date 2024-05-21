@@ -6,12 +6,13 @@ import java.util.Map;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
+import java.util.function.Function;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.scz.jxapi.netutils.rest.FutureRestResponse;
-import com.scz.jxapi.netutils.rest.RestEndpoint;
+import com.scz.jxapi.netutils.rest.HttpRequest;
 import com.scz.jxapi.netutils.rest.RestRequest;
 import com.scz.jxapi.util.ThreadUtil;
 
@@ -67,12 +68,12 @@ public class RequestThrottler {
 	 * @param restEndpoint the endpoint to execute this request
 	 * @return Callback that will complete once response is received.
 	 */
-	public synchronized <R, A> FutureRestResponse<A> submit(RestRequest<R> request, RestEndpoint<R, A> restEndpoint) {
+	public synchronized <A> FutureRestResponse<A> submit(HttpRequest request, Function<HttpRequest, FutureRestResponse<A>> executor) {
 		List<RateLimitRule> rateLimits = request.getRateLimits();
 		if (rateLimits == null || rateLimits.isEmpty()) {
 			if (log.isDebugEnabled())
 				log.debug("No rate limit set, submitting now:" + request);
-			return restEndpoint.call(request);
+			return executor.apply(request);
 		}
 		for (RateLimitRule rateLimit: rateLimits) {
 			final RateLimitThrottling rlManager = getOrCreateRateLimit(rateLimit);
@@ -83,7 +84,7 @@ public class RequestThrottler {
 								+ ", request:" + request + " will be submitted again after it completes");
 				}
 				FutureRestResponse<A> r = new FutureRestResponse<>();
-				queued.thenRun(() -> submit(request, restEndpoint).thenAccept(restResponse -> r.complete(restResponse)));
+				queued.thenRun(() -> submit(request, executor).thenAccept(restResponse -> r.complete(restResponse)));
 				return r;
 			}
 			
@@ -93,12 +94,12 @@ public class RequestThrottler {
 					log.debug("Rate limit " + rlManager.rateLimitManager.getRateLimit()
 								+ " reached, scheduling request:" + request + " for later execution in " + delay + "ms");
 				}
-				return queue(request, restEndpoint, delay, rlManager);
+				return queue(request, executor, delay, rlManager);
 			}
 		}
 		if (log.isDebugEnabled())
 			log.debug("All request rules checked, submitting now:" + request);
-		return restEndpoint.call(request);
+		return executor.apply(request);
 	}
 	
 	private RateLimitThrottling getOrCreateRateLimit(RateLimitRule rateLimit) {
@@ -111,7 +112,7 @@ public class RequestThrottler {
 		return r;
 	}
 	
-	private <R, A> FutureRestResponse<A> queue(RestRequest<R> request, RestEndpoint<R, A> restEndpoint, long delay, RateLimitThrottling rateLimit) {
+	private <A> FutureRestResponse<A> queue(HttpRequest request, Function<HttpRequest, FutureRestResponse<A>> executor, long delay, RateLimitThrottling rateLimit) {
 		FutureRestResponse<A> r = new FutureRestResponse<>();
 		rateLimit.queued = r;
 		if (throttlingExecutor == null) {
@@ -123,7 +124,7 @@ public class RequestThrottler {
 		}
 		throttlingExecutor.schedule(() -> {
 			queuedRequestCompleted(rateLimit);
-			submit(request, restEndpoint).thenAccept(httpResponse -> {
+			submit(request, executor).thenAccept(httpResponse -> {
 				r.complete(httpResponse);
 			});
 		}, delay, TimeUnit.MILLISECONDS);
