@@ -1,5 +1,6 @@
 package com.scz.jxapi.netutils.rest;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -11,6 +12,17 @@ import com.scz.jxapi.util.EncodingUtil;
  * Generic HTTP request for a REST API call.
  */
 public class HttpRequest {
+	
+	public static HttpRequest create(String url, String httpMethod, Object request, List<RateLimitRule> rateLimits, int weight) {
+		HttpRequest r = new HttpRequest();
+		r.setUrl(url);
+		r.setHttpMethod(httpMethod);
+		r.setRequest(request);
+		r.setRateLimits(rateLimits);
+		r.setWeight(weight);
+		r.setTime(new Date());
+		return r;
+	}
 
 	private String url;
 	
@@ -25,6 +37,10 @@ public class HttpRequest {
 	private List<RateLimitRule> rateLimits;
 	
 	private int weight;
+	
+	private Date time;
+	
+	private long throttledTime = 0L;
 
 	/**
 	 * @return full request URL, including request parameters
@@ -123,6 +139,22 @@ public class HttpRequest {
 
 	public void setRequest(Object request) {
 		this.request = request;
+	}
+	
+	public Date getTime() {
+		return time;
+	}
+
+	public void setTime(Date time) {
+		this.time = time;
+	}
+	
+	public long getThrottledTime() {
+		return throttledTime;
+	}
+
+	public void setThrottledTime(long throttledTime) {
+		this.throttledTime = throttledTime;
 	}
 
 	@Override

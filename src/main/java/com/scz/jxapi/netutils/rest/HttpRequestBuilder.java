@@ -8,6 +8,7 @@ package com.scz.jxapi.netutils.rest;
  * {@link DefaultHttpRequestBuilder} that performs generic conversion, and
  * override methods according to their needs.
  */
+@Deprecated
 public interface HttpRequestBuilder<T> {
 
 	HttpRequest build(RestRequest<T> restRequest);

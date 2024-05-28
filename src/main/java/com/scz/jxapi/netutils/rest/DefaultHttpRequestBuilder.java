@@ -11,6 +11,7 @@ import com.scz.jxapi.util.JsonUtil;
  * <li>Use specific request body encoding. Subclasses may override {@link #getBody(RestRequest)} for this purpose.
  * <ul>
  */
+@Deprecated
 public class DefaultHttpRequestBuilder<T> implements HttpRequestBuilder<T> {
 	
 	private RestRequestBodySerializer<T> bodySerializer = request -> JsonUtil.pojoToJsonString(request);

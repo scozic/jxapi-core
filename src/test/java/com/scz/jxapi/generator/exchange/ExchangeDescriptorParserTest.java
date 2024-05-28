@@ -25,7 +25,7 @@ public class ExchangeDescriptorParserTest {
 	private void checkMarketDataApi(ExchangeApiDescriptor marketDataApi) {
 		Assert.assertEquals("MarketData", marketDataApi.getName());
 		Assert.assertEquals("The market data API of MyTestExchange", marketDataApi.getDescription());
-		Assert.assertEquals("com.foo.bar.BarRestEndpointFactory", marketDataApi.getRestEndpointFactory());
+		Assert.assertEquals("com.foo.bar.BarHttpRequestInterceptorFactory", marketDataApi.getHttpRequestInterceptorFactory());
 		List<RestEndpointDescriptor> restEndpoints = marketDataApi.getRestEndpoints();
 		Assert.assertEquals(2, restEndpoints.size());
 		checkExchangeInfoRestEndpoint(restEndpoints.get(0));

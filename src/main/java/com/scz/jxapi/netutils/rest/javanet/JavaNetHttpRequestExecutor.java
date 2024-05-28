@@ -7,6 +7,7 @@ import java.net.http.HttpRequest.BodyPublishers;
 import java.net.http.HttpRequest.Builder;
 import java.net.http.HttpResponse.BodyHandlers;
 import java.time.Duration;
+import java.util.Date;
 import java.util.List;
 import java.util.Map.Entry;
 import java.util.Optional;
@@ -39,6 +40,8 @@ public class JavaNetHttpRequestExecutor implements HttpRequestExecutor {
 	public FutureHttpResponse execute(HttpRequest request) {
 		FutureHttpResponse callback = new FutureHttpResponse();
 		final HttpResponse response = new HttpResponse();
+		response.setRequest(request);
+		response.setTime(new Date());
 		try {
 			if (log.isDebugEnabled())
 				log.debug("Executing request:" + request);

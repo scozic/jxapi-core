@@ -13,7 +13,6 @@ import org.slf4j.LoggerFactory;
 
 import com.scz.jxapi.netutils.rest.FutureRestResponse;
 import com.scz.jxapi.netutils.rest.HttpRequest;
-import com.scz.jxapi.netutils.rest.RestRequest;
 import com.scz.jxapi.util.ThreadUtil;
 
 /**

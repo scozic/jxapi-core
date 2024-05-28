@@ -5,6 +5,7 @@ import java.util.List;
 import com.scz.jxapi.netutils.rest.ratelimits.RateLimitRule;
 import com.scz.jxapi.util.EncodingUtil;
 
+@Deprecated
 public class RestRequest<T> {
 	
 //	public static <T> RestRequest<T> create(String url, String httpMethod, T request) {

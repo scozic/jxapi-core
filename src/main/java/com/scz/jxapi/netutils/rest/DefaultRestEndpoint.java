@@ -17,7 +17,7 @@ public class DefaultRestEndpoint<R, A> implements RestEndpoint<R, A> {
 	
 	private RestResponse<A> createRestResponse(HttpResponse httpResponse) {
 		RestResponse<A> response = new RestResponse<>();
-		response.setHttpResponseCode(httpResponse.getResponseCode());
+		response.setHttpStatus(httpResponse.getResponseCode());
 		Exception ex = httpResponse.getException();
 		if (ex != null) {
 			response.setException(ex);
