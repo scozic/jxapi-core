@@ -452,7 +452,7 @@ public class ExchangeApiInterfaceImplementationGenerator extends JavaTypeGenerat
 			getResponseDeserializerInstance = ExchangeJavaWrapperGeneratorUtil.getNewMessageDeserializerInstruction(null, null, getImports());
 		}
 		
-		String deserializerVariableName = JavaCodeGenerationUtil.firstLetterToLowerCase(responseSimpleClassName) + "Deserializer";
+		String deserializerVariableName = JavaCodeGenerationUtil.firstLetterToLowerCase(restApi.getName()) + "ResponseDeserializer";
 		addImport(MessageDeserializer.class);
 		finalMembersDeclarations
 			.append("private final MessageDeserializer<")
@@ -461,7 +461,7 @@ public class ExchangeApiInterfaceImplementationGenerator extends JavaTypeGenerat
 			.append(deserializerVariableName)
 			.append(" = ")
 			.append(getResponseDeserializerInstance)
-			.append(";");
+			.append(";\n");
 		
 		String apiMethodName = JavaCodeGenerationUtil.firstLetterToLowerCase(restApi.getName());
 //		String restEndpointVariableName = apiMethodName + "Api";
@@ -657,7 +657,7 @@ public class ExchangeApiInterfaceImplementationGenerator extends JavaTypeGenerat
 		StringBuilder s = new StringBuilder().append(EncodingUtil.class.getSimpleName() + ".createUrlQueryParameters(");
 		for (int i = 0; i < endpointParameters.size(); i++) {
 			if (i > 0) {
-				s.append(",");
+				s.append(", ");
 			}
 			EndpointParameter param = endpointParameters.get(i);
 			String name = param.getName();
