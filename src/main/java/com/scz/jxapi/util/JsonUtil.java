@@ -29,6 +29,9 @@ public class JsonUtil {
 	private JsonUtil() {}
 
 	public static String pojoToJsonString(Object pojo) { 
+		if (pojo == null) {
+			return null;
+		}
 		try {
 			ObjectMapper om = new ObjectMapper();
 			om.disable(SerializationFeature.FAIL_ON_EMPTY_BEANS);

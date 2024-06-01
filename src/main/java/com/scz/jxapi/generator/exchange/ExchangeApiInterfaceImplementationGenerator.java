@@ -678,17 +678,13 @@ public class ExchangeApiInterfaceImplementationGenerator extends JavaTypeGenerat
 				|| param.getEndpointParameterType().isObject()) {
 				addImport(JsonUtil.class);
 				value = new StringBuilder()
-								.append(EncodingUtil.class.getSimpleName())
-								.append(".urlEncode(")
 								.append("JsonUtil.pojoToJsonString(")
 								.append(value)
-								.append("))").toString(); 
+								.append(")").toString(); 
 			} else if (param.getEndpointParameterType().getCanonicalType() == CanonicalEndpointParameterTypes.STRING) {
 				value = new StringBuilder()
-						.append(EncodingUtil.class.getSimpleName())
-						.append(".urlEncode(")
 						.append(value)
-						.append(")").toString(); 
+						.toString(); 
 			}
 			s.append(value);
 			
@@ -734,7 +730,7 @@ public class ExchangeApiInterfaceImplementationGenerator extends JavaTypeGenerat
 			  .append(ExchangeJavaWrapperGeneratorUtil.DEFAULT_REQUEST_ARG_NAME);
 		} 
 		if (n <= 0) {
-			return "\"" + urlParametersTemplate + "\"";
+			return JavaCodeGenerationUtil.getQuotedString(urlParametersTemplate);
 		}
 		addImport(EncodingUtil.class);
 		sb.append(")");
