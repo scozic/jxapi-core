@@ -6,7 +6,7 @@
 		{ 
 			"name": "MarketData",
 			"description": "The market data API of MyTestExchange, , with different request data types for websocket and REST endpoints. Remark: Only OBJECT (default) and STRING are usually used, but any data type is supported",
-			"restEndpointFactory": "com.foo.bar.BarRestEndpointFactory",
+			"httpRequestInterceptorFactory": "com.foo.bar.BarRequestInterceptorFactory",
 			"restEndpoints": [
 				{
 					"name": "postRestRequestDataTypeInt",
