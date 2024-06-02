@@ -16,6 +16,7 @@ import com.scz.jxapi.generator.JavaCodeGenerationUtil;
 import com.scz.jxapi.generator.JavaTypeGenerator;
 import com.scz.jxapi.netutils.deserialization.MessageDeserializer;
 import com.scz.jxapi.netutils.rest.FutureRestResponse;
+import com.scz.jxapi.netutils.rest.HttpMethod;
 import com.scz.jxapi.netutils.rest.HttpRequest;
 import com.scz.jxapi.netutils.rest.ratelimits.RateLimitRule;
 import com.scz.jxapi.netutils.rest.ratelimits.RequestThrottler;
@@ -491,7 +492,7 @@ public class ExchangeApiInterfaceImplementationGenerator extends JavaTypeGenerat
 				.append("if (log.isDebugEnabled())\n")
 				.append(JavaCodeGenerationUtil.INDENTATION)
 				.append("log.debug(\"")
-				.append(restApi.getHttpMethod().toUpperCase())
+				.append(restApi.getHttpMethod().name())
 				.append(" ")
 				.append(restApi.getName())
 				.append(" >")
@@ -537,9 +538,10 @@ public class ExchangeApiInterfaceImplementationGenerator extends JavaTypeGenerat
 				.append(" + ")
 				.append(urlParametersSerializerVariableName);
 		}
-		createHttpRequestInstruction.append(", \"")
-				.append(restApi.getHttpMethod().toUpperCase())
-				.append("\", ")
+		addImport(HttpMethod.class);
+		createHttpRequestInstruction.append(", HttpMethod.")
+				.append(restApi.getHttpMethod().name())
+				.append(", ")
 				.append(hasArguments? requestArgName: "null")
 				.append(", ")
 				.append(rateLimitsVariable)
@@ -630,8 +632,7 @@ public class ExchangeApiInterfaceImplementationGenerator extends JavaTypeGenerat
 		if (ExchangeJavaWrapperGeneratorUtil.restEndpointHasArguments(restApi, exchangeApiDescriptor)) {
 			EndpointParameterType requestDataType = ExchangeJavaWrapperGeneratorUtil.getEndpointParameterType(request);
 			boolean hasQueryParams = restApi.isQueryParams()	
-					|| "GET".equalsIgnoreCase(restApi.getHttpMethod())
-					|| "DELETE".equalsIgnoreCase(restApi.getHttpMethod());
+					|| !restApi.getHttpMethod().requestHasBody;
 			if (restApi.getUrlParameters() != null) {
 				getUrlParametersBody =	generateUrlParametersOrTopicSerializerBodyFromTemplate(
 												restApi.getUrlParameters(), 

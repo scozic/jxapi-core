@@ -13,7 +13,7 @@ import com.scz.jxapi.util.EncodingUtil;
  */
 public class HttpRequest {
 	
-	public static HttpRequest create(String url, String httpMethod, Object request, List<RateLimitRule> rateLimits, int weight) {
+	public static HttpRequest create(String url, HttpMethod httpMethod, Object request, List<RateLimitRule> rateLimits, int weight) {
 		HttpRequest r = new HttpRequest();
 		r.setUrl(url);
 		r.setHttpMethod(httpMethod);
@@ -28,7 +28,7 @@ public class HttpRequest {
 	
 	private Map<String, List<String>> headers;
 	
-	private String httpMethod;
+	private HttpMethod httpMethod;
 	
 	private String body;
 	
@@ -89,17 +89,16 @@ public class HttpRequest {
 	}
 
 	/**
-	 * Uppercase name of HTTP method like 'GET' or 'POST'
-	 * @return
+	 * @return {@link HttpMethod} used for this request.
 	 */
-	public String getHttpMethod() {
+	public HttpMethod getHttpMethod() {
 		return httpMethod;
 	}
 
 	/**
-	 * @param httpMethod Uppercase name of HTTP method like 'GET' or 'POST'
+	 * @param httpMethod {@link HttpMethod} used for this request.
 	 */
-	public void setHttpMethod(String httpMethod) {
+	public void setHttpMethod(HttpMethod httpMethod) {
 		this.httpMethod = httpMethod;
 	}
 

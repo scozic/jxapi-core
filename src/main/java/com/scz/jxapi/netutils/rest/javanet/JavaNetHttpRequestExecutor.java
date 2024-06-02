@@ -47,16 +47,16 @@ public class JavaNetHttpRequestExecutor implements HttpRequestExecutor {
 				log.debug("Executing request:" + request);
 			Builder builder = java.net.http.HttpRequest.newBuilder().uri(new URI(request.getUrl())).timeout(REQUEST_TIMEOUT);
 			switch (request.getHttpMethod()) {
-			case "GET":
+			case GET:
 				builder.GET();
 				break;
-			case "POST":
+			case POST:
 				builder.POST(BodyPublishers.ofString(Optional.ofNullable(request.getBody()).orElse("")));
 				break;
-			case "DELETE":
+			case DELETE:
 				builder.DELETE();
 				break;
-			case "PUT":
+			case PUT:
 				builder.PUT(BodyPublishers.ofString(request.getBody()));
 				break;
 			default:
