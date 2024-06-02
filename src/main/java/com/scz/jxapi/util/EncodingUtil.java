@@ -164,4 +164,19 @@ public class EncodingUtil {
 			throw new IllegalArgumentException("Error trying to encode url param:[" + value + "]", e);
 		}
 	}
+	
+	public static String prettyPrintLongString(String longString, int maxLength) {
+		if (longString == null) {
+			return null;
+		}
+		String sep = "....";
+		if (maxLength < sep.length()) {
+			throw new IllegalArgumentException("maxLength should be > " + sep.length());
+		}
+		if (longString.length() > maxLength) {
+			int l = (maxLength - sep.length()) / 2;
+			return longString.substring(0, l) + sep + longString.substring(longString.length() - l);
+		}
+		return longString;
+	}
 }

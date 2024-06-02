@@ -41,6 +41,19 @@ public class JsonUtil {
 		}
 	}
 
+	public static String pojoToPrettyPrintJson(Object pojo) {
+		if (pojo == null) {
+			return null;
+		}
+		try {
+			ObjectMapper om = new ObjectMapper();
+			om.disable(SerializationFeature.FAIL_ON_EMPTY_BEANS);
+			return om.writerWithDefaultPrettyPrinter().writeValueAsString(pojo);
+		} catch (JsonProcessingException e) {
+			throw new IllegalArgumentException("Error while trying to serialize " + pojo.getClass().getName() + " instance to JSON", e);
+		}
+	}
+	
 	public static BigDecimal readNextBigDecimal(JsonParser parser) throws IOException {
 		parser.nextToken();
 		return readCurrentBigDecimal(parser);
