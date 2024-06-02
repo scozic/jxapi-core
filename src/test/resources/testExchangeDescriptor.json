@@ -6,7 +6,7 @@
 		{ 
 			"name": "MarketData",
 			"description": "The market data API of MyTestExchange",
-			"restEndpointFactory": "com.foo.bar.BarRestEndpointFactory",
+			"httpRequestInterceptorFactory": "com.foo.bar.BarHttpRequestInterceptorFactory",
 			"restEndpoints": [
 				{
 					"name": "exchangeInfo",

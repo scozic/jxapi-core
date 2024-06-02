@@ -6,7 +6,7 @@
 		{ 
 			"name": "restApi",
 			"description": "Rest endpoints",
-			"restEndpointFactory": "com.foo.bar.BarRestEndpointFactory",
+			"httpRequestInterceptorFactory": "com.foo.bar.BarHttpRequestInterceptorFactory",
 			"restEndpoints": [
 				{
 					"name": "getRestRequestDataTypeInt",

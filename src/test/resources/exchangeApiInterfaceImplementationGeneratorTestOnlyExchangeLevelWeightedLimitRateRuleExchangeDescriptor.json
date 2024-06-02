@@ -9,7 +9,7 @@
 		{ 
 			"name": "FuturesTrading",
 			"description": "An API with both API global and endpoint specific rate limits",
-			"restEndpointFactory": "com.foo.bar.BarRestEndpointFactory",
+			"httpRequestInterceptorFactory": "com.foo.bar.BarRequestInterceptorFactory",
 			"restEndpoints": [
 				{
 					"name": "exchangeInfo",

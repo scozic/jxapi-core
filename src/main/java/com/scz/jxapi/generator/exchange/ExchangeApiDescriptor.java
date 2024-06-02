@@ -18,9 +18,11 @@ public class ExchangeApiDescriptor {
 	
 	private String description;
 	
-	private String restEndpointFactory;
-	
 	private List<RestEndpointDescriptor> restEndpoints;
+	
+	private String httpRequestInterceptorFactory;
+	
+	private String httpRequestExecutorFactory;
 	
 	private String websocketEndpointFactory;
 	
@@ -59,14 +61,6 @@ public class ExchangeApiDescriptor {
 	public void setWebsocketEndpoints(List<WebsocketEndpointDescriptor> websocketEndpoints) {
 		this.websocketEndpoints = websocketEndpoints;
 	}
-	
-	public String getRestEndpointFactory() {
-		return restEndpointFactory;
-	}
-
-	public void setRestEndpointFactory(String restEndpointFactory) {
-		this.restEndpointFactory = restEndpointFactory;
-	}
 
 	public String getWebsocketEndpointFactory() {
 		return websocketEndpointFactory;
@@ -82,6 +76,22 @@ public class ExchangeApiDescriptor {
 
 	public void setRateLimits(List<RateLimitRule> rateLimits) {
 		this.rateLimits = rateLimits;
+	}
+
+	public String getHttpRequestInterceptorFactory() {
+		return httpRequestInterceptorFactory;
+	}
+
+	public void setHttpRequestInterceptorFactory(String httpRequestInterceptorFactory) {
+		this.httpRequestInterceptorFactory = httpRequestInterceptorFactory;
+	}
+	
+	public String getHttpRequestExecutorFactory() {
+		return httpRequestExecutorFactory;
+	}
+
+	public void setHttpRequestExecutorFactory(String httpRequestExecutorFactory) {
+		this.httpRequestExecutorFactory = httpRequestExecutorFactory;
 	}
 	
 	@Override

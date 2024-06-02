@@ -6,7 +6,7 @@
 		{ 
 			"name": "MarketData",
 			"description": "The market data API of MyTestExchange, , with only 1 REST endpoint and no websocket endpoint",
-			"restEndpointFactory": "com.foo.bar.BarRestEndpointFactory",
+			"httpRequestInterceptorFactory": "com.foo.bar.BarRequestInterceptorFactory",
 			"restEndpoints": [
 				{
 					"name": "exchangeInfo",

@@ -13,7 +13,7 @@
 				{"id": "apiGlobalWeightRule", "timeFrame": 2000,  "maxTotalWeight": 500},
 				{"timeFrame": 10000,  "maxRequestCount": 250}
 			],
-			"restEndpointFactory": "com.foo.bar.BarRestEndpointFactory",
+			"httpRequestInterceptorFactory": "com.foo.bar.BarRequestInterceptorFactory",
 			"restEndpoints": [
 				{
 					"name": "exchangeInfo",

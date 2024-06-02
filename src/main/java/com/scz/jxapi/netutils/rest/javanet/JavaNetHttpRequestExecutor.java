@@ -7,6 +7,7 @@ import java.net.http.HttpRequest.BodyPublishers;
 import java.net.http.HttpRequest.Builder;
 import java.net.http.HttpResponse.BodyHandlers;
 import java.time.Duration;
+import java.util.Date;
 import java.util.List;
 import java.util.Map.Entry;
 import java.util.Optional;
@@ -39,21 +40,23 @@ public class JavaNetHttpRequestExecutor implements HttpRequestExecutor {
 	public FutureHttpResponse execute(HttpRequest request) {
 		FutureHttpResponse callback = new FutureHttpResponse();
 		final HttpResponse response = new HttpResponse();
+		response.setRequest(request);
+		response.setTime(new Date());
 		try {
 			if (log.isDebugEnabled())
 				log.debug("Executing request:" + request);
 			Builder builder = java.net.http.HttpRequest.newBuilder().uri(new URI(request.getUrl())).timeout(REQUEST_TIMEOUT);
 			switch (request.getHttpMethod()) {
-			case "GET":
+			case GET:
 				builder.GET();
 				break;
-			case "POST":
+			case POST:
 				builder.POST(BodyPublishers.ofString(Optional.ofNullable(request.getBody()).orElse("")));
 				break;
-			case "DELETE":
+			case DELETE:
 				builder.DELETE();
 				break;
-			case "PUT":
+			case PUT:
 				builder.PUT(BodyPublishers.ofString(request.getBody()));
 				break;
 			default:
@@ -76,6 +79,7 @@ public class JavaNetHttpRequestExecutor implements HttpRequestExecutor {
 	    			response.setResponseCode(r.statusCode());
 		    		response.setHeaders(r.headers().map());
 		    		response.setBody(r.body());
+		    		response.setTime(new Date());
 		    		if (log.isDebugEnabled()) {
 		    			log.debug("Got response to request:[" + request + "], response[" + response + "]");
 		    		}

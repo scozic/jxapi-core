@@ -6,6 +6,8 @@ import java.util.List;
 import org.junit.Assert;
 import org.junit.Test;
 
+import com.scz.jxapi.netutils.rest.HttpMethod;
+
 /**
  * Unit test for {@link ExchangeDescriptorParser}
  */
@@ -25,7 +27,7 @@ public class ExchangeDescriptorParserTest {
 	private void checkMarketDataApi(ExchangeApiDescriptor marketDataApi) {
 		Assert.assertEquals("MarketData", marketDataApi.getName());
 		Assert.assertEquals("The market data API of MyTestExchange", marketDataApi.getDescription());
-		Assert.assertEquals("com.foo.bar.BarRestEndpointFactory", marketDataApi.getRestEndpointFactory());
+		Assert.assertEquals("com.foo.bar.BarHttpRequestInterceptorFactory", marketDataApi.getHttpRequestInterceptorFactory());
 		List<RestEndpointDescriptor> restEndpoints = marketDataApi.getRestEndpoints();
 		Assert.assertEquals(2, restEndpoints.size());
 		checkExchangeInfoRestEndpoint(restEndpoints.get(0));
@@ -39,7 +41,7 @@ public class ExchangeDescriptorParserTest {
 	private void checkTickersRestEndpooint(RestEndpointDescriptor tickersEndPoint) {
 		Assert.assertEquals("tickers", tickersEndPoint.getName());
 		Assert.assertEquals("Fetch current tickers", tickersEndPoint.getDescription());
-		Assert.assertEquals("GET", tickersEndPoint.getHttpMethod());
+		Assert.assertEquals(HttpMethod.GET, tickersEndPoint.getHttpMethod());
 		Assert.assertEquals("https://com.sample.mycex/tickers", tickersEndPoint.getUrl());
 		List<EndpointParameter> exchangeInfoParameters = tickersEndPoint.getRequest().getParameters();
 		Assert.assertEquals(0, exchangeInfoParameters.size());
@@ -75,7 +77,7 @@ public class ExchangeDescriptorParserTest {
 	private void checkExchangeInfoRestEndpoint(RestEndpointDescriptor exchangeInfoEndPoint) {
 		Assert.assertEquals("exchangeInfo", exchangeInfoEndPoint.getName());
 		Assert.assertEquals("Fetch market information of symbols that can be traded", exchangeInfoEndPoint.getDescription());
-		Assert.assertEquals("GET", exchangeInfoEndPoint.getHttpMethod());
+		Assert.assertEquals(HttpMethod.GET, exchangeInfoEndPoint.getHttpMethod());
 		Assert.assertEquals("https://com.sample.mycex/exchangeInfo", exchangeInfoEndPoint.getUrl());
 		List<EndpointParameter> exchangeInfoParameters = exchangeInfoEndPoint.getRequest().getParameters();
 		
