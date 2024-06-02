@@ -79,6 +79,7 @@ public class JavaNetHttpRequestExecutor implements HttpRequestExecutor {
 	    			response.setResponseCode(r.statusCode());
 		    		response.setHeaders(r.headers().map());
 		    		response.setBody(r.body());
+		    		response.setTime(new Date());
 		    		if (log.isDebugEnabled()) {
 		    			log.debug("Got response to request:[" + request + "], response[" + response + "]");
 		    		}
