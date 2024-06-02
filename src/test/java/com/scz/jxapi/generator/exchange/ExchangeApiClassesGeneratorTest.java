@@ -29,102 +29,102 @@ public class ExchangeApiClassesGeneratorTest {
 	@Test
 	public void testGenerateExchangeApiClasses() throws IOException {
 		srcFolder = ClassesGeneratorTestUtil.generateTmpDir();
-		ExchangeDescriptor exchange = new ExchangeDescriptorParser().fromJson(Paths.get(".", "src", "test", "resources", "testCEXDescriptor.json"));
+		ExchangeDescriptor exchange = new ExchangeDescriptorParser().fromJson(Paths.get(".", "src", "test", "resources", "testExchangeDescriptor.json"));
 		ExchangeApiDescriptor api = exchange.getApis().get(0);
 		ExchangeApiClassesGenerator generator = new ExchangeApiClassesGenerator(exchange, api);
 		generator.generateClasses(srcFolder);
 		
 		checkJavaFilesCount(Paths.get("."), 5);
-		checkSourceFileExists(Paths.get("MyTestCEXMarketDataApi.java"));
-		checkSourceFileExists(Paths.get("MyTestCEXMarketDataApiImpl.java"));
+		checkSourceFileExists(Paths.get("MyTestExchangeMarketDataApi.java"));
+		checkSourceFileExists(Paths.get("MyTestExchangeMarketDataApiImpl.java"));
 		
 		checkJavaFilesCount(Paths.get("deserializers"), 5);
-		checkSourceFileExists(Paths.get("deserializers", "MyTestCEXMarketDataExchangeInfoResponseDeserializer.java"));
-		checkSourceFileExists(Paths.get("deserializers", "MyTestCEXMarketDataExchangeInfoResponsePayloadDeserializer.java"));
-		checkSourceFileExists(Paths.get("deserializers", "MyTestCEXMarketDataTickersResponseDeserializer.java"));
-		checkSourceFileExists(Paths.get("deserializers", "MyTestCEXMarketDataTickersResponsePayloadDeserializer.java"));
-		checkSourceFileExists(Paths.get("deserializers", "MyTestCEXMarketDataTickerStreamMessageDeserializer.java"));
+		checkSourceFileExists(Paths.get("deserializers", "MyTestExchangeMarketDataExchangeInfoResponseDeserializer.java"));
+		checkSourceFileExists(Paths.get("deserializers", "MyTestExchangeMarketDataExchangeInfoResponsePayloadDeserializer.java"));
+		checkSourceFileExists(Paths.get("deserializers", "MyTestExchangeMarketDataTickersResponseDeserializer.java"));
+		checkSourceFileExists(Paths.get("deserializers", "MyTestExchangeMarketDataTickersResponsePayloadDeserializer.java"));
+		checkSourceFileExists(Paths.get("deserializers", "MyTestExchangeMarketDataTickerStreamMessageDeserializer.java"));
 		
 		checkJavaFilesCount(Paths.get("pojo"), 8);
-		checkSourceFileExists(Paths.get("pojo", "MyTestCEXMarketDataExchangeInfoRequest.java"));
-		checkSourceFileExists(Paths.get("pojo", "MyTestCEXMarketDataExchangeInfoResponse.java"));
-		checkSourceFileExists(Paths.get("pojo", "MyTestCEXMarketDataExchangeInfoResponsePayload.java"));
-		checkSourceFileExists(Paths.get("pojo", "MyTestCEXMarketDataTickersRequest.java"));
-		checkSourceFileExists(Paths.get("pojo", "MyTestCEXMarketDataTickersResponse.java"));
-		checkSourceFileExists(Paths.get("pojo", "MyTestCEXMarketDataTickersResponsePayload.java"));
-		checkSourceFileExists(Paths.get("pojo", "MyTestCEXMarketDataTickerStreamRequest.java"));
-		checkSourceFileExists(Paths.get("pojo", "MyTestCEXMarketDataTickerStreamMessage.java"));
+		checkSourceFileExists(Paths.get("pojo", "MyTestExchangeMarketDataExchangeInfoRequest.java"));
+		checkSourceFileExists(Paths.get("pojo", "MyTestExchangeMarketDataExchangeInfoResponse.java"));
+		checkSourceFileExists(Paths.get("pojo", "MyTestExchangeMarketDataExchangeInfoResponsePayload.java"));
+		checkSourceFileExists(Paths.get("pojo", "MyTestExchangeMarketDataTickersRequest.java"));
+		checkSourceFileExists(Paths.get("pojo", "MyTestExchangeMarketDataTickersResponse.java"));
+		checkSourceFileExists(Paths.get("pojo", "MyTestExchangeMarketDataTickersResponsePayload.java"));
+		checkSourceFileExists(Paths.get("pojo", "MyTestExchangeMarketDataTickerStreamRequest.java"));
+		checkSourceFileExists(Paths.get("pojo", "MyTestExchangeMarketDataTickerStreamMessage.java"));
 		
 		checkJavaFilesCount(Paths.get("serializers"), 8);
-		checkSourceFileExists(Paths.get("serializers", "MyTestCEXMarketDataExchangeInfoRequestSerializer.java"));        
-		checkSourceFileExists(Paths.get("serializers", "MyTestCEXMarketDataExchangeInfoResponsePayloadSerializer.java"));
-		checkSourceFileExists(Paths.get("serializers", "MyTestCEXMarketDataExchangeInfoResponseSerializer.java"));       
-		checkSourceFileExists(Paths.get("serializers", "MyTestCEXMarketDataTickersRequestSerializer.java"));             
-		checkSourceFileExists(Paths.get("serializers", "MyTestCEXMarketDataTickersResponsePayloadSerializer.java"));     
-		checkSourceFileExists(Paths.get("serializers", "MyTestCEXMarketDataTickersResponseSerializer.java"));
-		checkSourceFileExists(Paths.get("serializers", "MyTestCEXMarketDataTickerStreamRequestSerializer.java"));
-		checkSourceFileExists(Paths.get("serializers", "MyTestCEXMarketDataTickerStreamMessageSerializer.java"));
+		checkSourceFileExists(Paths.get("serializers", "MyTestExchangeMarketDataExchangeInfoRequestSerializer.java"));        
+		checkSourceFileExists(Paths.get("serializers", "MyTestExchangeMarketDataExchangeInfoResponsePayloadSerializer.java"));
+		checkSourceFileExists(Paths.get("serializers", "MyTestExchangeMarketDataExchangeInfoResponseSerializer.java"));       
+		checkSourceFileExists(Paths.get("serializers", "MyTestExchangeMarketDataTickersRequestSerializer.java"));             
+		checkSourceFileExists(Paths.get("serializers", "MyTestExchangeMarketDataTickersResponsePayloadSerializer.java"));     
+		checkSourceFileExists(Paths.get("serializers", "MyTestExchangeMarketDataTickersResponseSerializer.java"));
+		checkSourceFileExists(Paths.get("serializers", "MyTestExchangeMarketDataTickerStreamRequestSerializer.java"));
+		checkSourceFileExists(Paths.get("serializers", "MyTestExchangeMarketDataTickerStreamMessageSerializer.java"));
 	}
 	
 	@Test
 	public void testGenerateExchangeApiClassesNoRestEndpoints() throws IOException {
 		srcFolder = ClassesGeneratorTestUtil.generateTmpDir();
-		ExchangeDescriptor exchange = new ExchangeDescriptorParser().fromJson(Paths.get(".", "src", "test", "resources", "testCEXDescriptor.json"));
+		ExchangeDescriptor exchange = new ExchangeDescriptorParser().fromJson(Paths.get(".", "src", "test", "resources", "testExchangeDescriptor.json"));
 		ExchangeApiDescriptor api = exchange.getApis().get(0);
 		api.setRestEndpoints(null);
 		ExchangeApiClassesGenerator generator = new ExchangeApiClassesGenerator(exchange, api);
 		generator.generateClasses(srcFolder);
 		
 		checkJavaFilesCount(Paths.get("."), 5);
-		checkSourceFileExists(Paths.get("MyTestCEXMarketDataApi.java"));
-		checkSourceFileExists(Paths.get("MyTestCEXMarketDataApiImpl.java"));
+		checkSourceFileExists(Paths.get("MyTestExchangeMarketDataApi.java"));
+		checkSourceFileExists(Paths.get("MyTestExchangeMarketDataApiImpl.java"));
 		
 		checkJavaFilesCount(Paths.get("deserializers"), 1);
-		checkSourceFileExists(Paths.get("deserializers", "MyTestCEXMarketDataTickerStreamMessageDeserializer.java"));
+		checkSourceFileExists(Paths.get("deserializers", "MyTestExchangeMarketDataTickerStreamMessageDeserializer.java"));
 		
 		checkJavaFilesCount(Paths.get("pojo"), 2);
-		checkSourceFileExists(Paths.get("pojo", "MyTestCEXMarketDataTickerStreamRequest.java"));
-		checkSourceFileExists(Paths.get("pojo", "MyTestCEXMarketDataTickerStreamMessage.java"));
+		checkSourceFileExists(Paths.get("pojo", "MyTestExchangeMarketDataTickerStreamRequest.java"));
+		checkSourceFileExists(Paths.get("pojo", "MyTestExchangeMarketDataTickerStreamMessage.java"));
 		
 		checkJavaFilesCount(Paths.get("serializers"), 2);
-		checkSourceFileExists(Paths.get("serializers", "MyTestCEXMarketDataTickerStreamRequestSerializer.java"));
-		checkSourceFileExists(Paths.get("serializers", "MyTestCEXMarketDataTickerStreamMessageSerializer.java"));
+		checkSourceFileExists(Paths.get("serializers", "MyTestExchangeMarketDataTickerStreamRequestSerializer.java"));
+		checkSourceFileExists(Paths.get("serializers", "MyTestExchangeMarketDataTickerStreamMessageSerializer.java"));
 	}
 	
 	@Test
 	public void testGenerateExchangeApiClassesNoWebsocketEndpoint() throws IOException {
 		srcFolder = ClassesGeneratorTestUtil.generateTmpDir();
-		ExchangeDescriptor exchange = new ExchangeDescriptorParser().fromJson(Paths.get(".", "src", "test", "resources", "testCEXDescriptor.json"));
+		ExchangeDescriptor exchange = new ExchangeDescriptorParser().fromJson(Paths.get(".", "src", "test", "resources", "testExchangeDescriptor.json"));
 		ExchangeApiDescriptor api = exchange.getApis().get(0);
 		api.setWebsocketEndpoints(null);
 		ExchangeApiClassesGenerator generator = new ExchangeApiClassesGenerator(exchange, api);
 		generator.generateClasses(srcFolder);
 		
 		checkJavaFilesCount(Paths.get("."), 5);
-		checkSourceFileExists(Paths.get("MyTestCEXMarketDataApi.java"));
-		checkSourceFileExists(Paths.get("MyTestCEXMarketDataApiImpl.java"));
+		checkSourceFileExists(Paths.get("MyTestExchangeMarketDataApi.java"));
+		checkSourceFileExists(Paths.get("MyTestExchangeMarketDataApiImpl.java"));
 		
 		checkJavaFilesCount(Paths.get("deserializers"), 4);
-		checkSourceFileExists(Paths.get("deserializers", "MyTestCEXMarketDataExchangeInfoResponseDeserializer.java"));
-		checkSourceFileExists(Paths.get("deserializers", "MyTestCEXMarketDataExchangeInfoResponsePayloadDeserializer.java"));
-		checkSourceFileExists(Paths.get("deserializers", "MyTestCEXMarketDataTickersResponseDeserializer.java"));
-		checkSourceFileExists(Paths.get("deserializers", "MyTestCEXMarketDataTickersResponsePayloadDeserializer.java"));
+		checkSourceFileExists(Paths.get("deserializers", "MyTestExchangeMarketDataExchangeInfoResponseDeserializer.java"));
+		checkSourceFileExists(Paths.get("deserializers", "MyTestExchangeMarketDataExchangeInfoResponsePayloadDeserializer.java"));
+		checkSourceFileExists(Paths.get("deserializers", "MyTestExchangeMarketDataTickersResponseDeserializer.java"));
+		checkSourceFileExists(Paths.get("deserializers", "MyTestExchangeMarketDataTickersResponsePayloadDeserializer.java"));
 		
 		checkJavaFilesCount(Paths.get("pojo"), 6);
-		checkSourceFileExists(Paths.get("pojo", "MyTestCEXMarketDataExchangeInfoRequest.java"));
-		checkSourceFileExists(Paths.get("pojo", "MyTestCEXMarketDataExchangeInfoResponse.java"));
-		checkSourceFileExists(Paths.get("pojo", "MyTestCEXMarketDataExchangeInfoResponsePayload.java"));
-		checkSourceFileExists(Paths.get("pojo", "MyTestCEXMarketDataTickersRequest.java"));
-		checkSourceFileExists(Paths.get("pojo", "MyTestCEXMarketDataTickersResponse.java"));
-		checkSourceFileExists(Paths.get("pojo", "MyTestCEXMarketDataTickersResponsePayload.java"));
+		checkSourceFileExists(Paths.get("pojo", "MyTestExchangeMarketDataExchangeInfoRequest.java"));
+		checkSourceFileExists(Paths.get("pojo", "MyTestExchangeMarketDataExchangeInfoResponse.java"));
+		checkSourceFileExists(Paths.get("pojo", "MyTestExchangeMarketDataExchangeInfoResponsePayload.java"));
+		checkSourceFileExists(Paths.get("pojo", "MyTestExchangeMarketDataTickersRequest.java"));
+		checkSourceFileExists(Paths.get("pojo", "MyTestExchangeMarketDataTickersResponse.java"));
+		checkSourceFileExists(Paths.get("pojo", "MyTestExchangeMarketDataTickersResponsePayload.java"));
 		
 		checkJavaFilesCount(Paths.get("serializers"), 6);
-		checkSourceFileExists(Paths.get("serializers", "MyTestCEXMarketDataExchangeInfoRequestSerializer.java"));        
-		checkSourceFileExists(Paths.get("serializers", "MyTestCEXMarketDataExchangeInfoResponsePayloadSerializer.java"));
-		checkSourceFileExists(Paths.get("serializers", "MyTestCEXMarketDataExchangeInfoResponseSerializer.java"));       
-		checkSourceFileExists(Paths.get("serializers", "MyTestCEXMarketDataTickersRequestSerializer.java"));             
-		checkSourceFileExists(Paths.get("serializers", "MyTestCEXMarketDataTickersResponsePayloadSerializer.java"));     
-		checkSourceFileExists(Paths.get("serializers", "MyTestCEXMarketDataTickersResponseSerializer.java"));
+		checkSourceFileExists(Paths.get("serializers", "MyTestExchangeMarketDataExchangeInfoRequestSerializer.java"));        
+		checkSourceFileExists(Paths.get("serializers", "MyTestExchangeMarketDataExchangeInfoResponsePayloadSerializer.java"));
+		checkSourceFileExists(Paths.get("serializers", "MyTestExchangeMarketDataExchangeInfoResponseSerializer.java"));       
+		checkSourceFileExists(Paths.get("serializers", "MyTestExchangeMarketDataTickersRequestSerializer.java"));             
+		checkSourceFileExists(Paths.get("serializers", "MyTestExchangeMarketDataTickersResponsePayloadSerializer.java"));     
+		checkSourceFileExists(Paths.get("serializers", "MyTestExchangeMarketDataTickersResponseSerializer.java"));
 	}
 	
 	private void checkJavaFilesCount(Path relativePkg, int count) throws IOException {

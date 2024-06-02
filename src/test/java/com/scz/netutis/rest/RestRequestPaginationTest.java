@@ -83,7 +83,7 @@ public class RestRequestPaginationTest {
 		endpoint.addPreparedResponses(1);
 		RestResponse<TestResponse> errorResponse = new RestResponse<>();
 		int errorCode = 500;
-		errorResponse.setHttpResponseCode(errorCode);
+		errorResponse.setHttpStatus(errorCode);
 		String exceptionMsg = "Internal server error";
 		errorResponse.setException(new Exception(exceptionMsg));
 		endpoint.addPreparedResponses(errorResponse);
@@ -94,7 +94,7 @@ public class RestRequestPaginationTest {
 				TestResponse::getIndex, 
 				RestRequestPaginationTest::mergeResponses).get();
 		Assert.assertFalse(response.isOk());
-		Assert.assertEquals(errorCode, response.getHttpResponseCode());
+		Assert.assertEquals(errorCode, response.getHttpStatus());
 		Assert.assertEquals(exceptionMsg, response.getException().getMessage());
 	}
 	
@@ -149,7 +149,7 @@ public class RestRequestPaginationTest {
 		public void addPreparedResponses(int... responseIndexes) {
 			for (int index: responseIndexes) {
 				RestResponse<TestResponse> response = new RestResponse<>();
-				response.setHttpResponseCode(200);
+				response.setHttpStatus(200);
 				response.setResponse(createResponse(index));
 				addPreparedResponses(response);
 			}

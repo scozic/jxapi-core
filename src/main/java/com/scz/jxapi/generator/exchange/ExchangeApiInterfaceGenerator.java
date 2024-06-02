@@ -2,11 +2,11 @@ package com.scz.jxapi.generator.exchange;
 
 import java.util.Optional;
 
+import com.scz.jxapi.exchange.ExchangeApi;
 import com.scz.jxapi.generator.JavaCodeGenerationUtil;
 import com.scz.jxapi.generator.JavaTypeGenerator;
 import com.scz.jxapi.netutils.rest.FutureRestResponse;
 import com.scz.jxapi.netutils.websocket.WebsocketListener;
-import com.scz.jxapi.util.HasProperties;
 
 public class ExchangeApiInterfaceGenerator extends JavaTypeGenerator {
 	
@@ -22,11 +22,11 @@ public class ExchangeApiInterfaceGenerator extends JavaTypeGenerator {
 		super(ExchangeJavaWrapperGeneratorUtil.getApiInterfaceClassName(exchangeDescriptor, exchangeApiDescriptor));
 		this.exchangeDescriptor = exchangeDescriptor;
 		this.exchangeApiDescriptor = exchangeApiDescriptor;
-		setDescription(exchangeApiDescriptor.getName() + " CEX " + exchangeApiDescriptor.getName() + " API</br>\n" 
+		setDescription(exchangeDescriptor.getName() + " " + exchangeApiDescriptor.getName() + " API</br>\n" 
 				+ exchangeApiDescriptor.getDescription() + "\n" 
 				+ JavaCodeGenerationUtil.GENERATED_CODE_WARNING);
 		setTypeDeclaration("public interface");
-		this.setParentClassName(HasProperties.class.getName());
+		this.setParentClassName(ExchangeApi.class.getName());
 	}
 	
 	@Override

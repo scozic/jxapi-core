@@ -1,21 +1,38 @@
 package com.scz.jxapi.netutils.rest;
 
-import com.scz.jxapi.util.EncodingUtil;
+import java.util.LinkedHashMap;
+import java.util.Map;
+
+import com.scz.jxapi.util.JsonUtil;
 
 public class RestResponse<A> {
 	
-	private int httpResponseCode;
+	private int httpStatus;
 	
 	private Exception exception;
 	
 	private A response;
-
-	public int getHttpResponseCode() {
-		return httpResponseCode;
+	
+	private HttpResponse httpResponse;
+	
+	public RestResponse() {
+		this(null);
+	}
+	
+	public RestResponse(HttpResponse httpResponse) {
+		if (httpResponse != null) {
+			this.httpResponse = httpResponse;
+			this.httpStatus = httpResponse.getResponseCode();
+			this.exception = httpResponse.getException();
+		}
 	}
 
-	public void setHttpResponseCode(int httpResponseCode) {
-		this.httpResponseCode = httpResponseCode;
+	public int getHttpStatus() {
+		return httpStatus;
+	}
+
+	public void setHttpStatus(int httpResponseCode) {
+		this.httpStatus = httpResponseCode;
 	}
 
 	public Exception getException() {
@@ -35,11 +52,29 @@ public class RestResponse<A> {
 	}
 	
 	public boolean isOk() {
-		return exception == null && httpResponseCode == 200;
+		return exception == null && HttpResponse.isStatusCodeOk(httpStatus);
+	}
+	
+	public HttpResponse getHttpResponse() {
+		return httpResponse;
+	}
+
+	public void setHttpResponse(HttpResponse httpResponse) {
+		this.httpResponse = httpResponse;
 	}
 	
 	public String toString() {
-		return getClass().getSimpleName() + EncodingUtil.pojoToString(this);
+		Map<String, Object> fields = new LinkedHashMap<>();
+		fields.put("httpStatus", httpStatus);
+		fields.put("exception", exception);
+		if (response != null) {
+			fields.put("response", response);
+		} else if (httpResponse != null) {
+			fields.put("body", httpResponse.getBody());
+			fields.put("time", httpResponse.getTime());
+			fields.put("roundtrip", httpResponse.getRoundTrip());
+		}
+		return getClass().getSimpleName() + JsonUtil.pojoToJsonString(fields);
 	}
 
 }

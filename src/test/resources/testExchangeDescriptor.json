@@ -1,12 +1,12 @@
 {
-	"name": "MyTestCEX",
-	"description": "A sample CEX descriptor file",
+	"name": "MyTestExchange",
+	"description": "A sample Exchange descriptor file",
 	"basePackage": "com.foo.bar.gen",
 	"apis":[
 		{ 
 			"name": "MarketData",
-			"description": "The market data API of MyTestCEX",
-			"restEndpointFactory": "com.foo.bar.BarRestEndpointFactory",
+			"description": "The market data API of MyTestExchange",
+			"httpRequestInterceptorFactory": "com.foo.bar.BarHttpRequestInterceptorFactory",
 			"restEndpoints": [
 				{
 					"name": "exchangeInfo",

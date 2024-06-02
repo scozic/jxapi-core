@@ -29,7 +29,7 @@ public class ExchangeDemoClassesGeneratorTest {
 	@Test
 	public void testGenerateExchangeDemoClasses() throws IOException {
 		srcFolder = ClassesGeneratorTestUtil.generateTmpDir();
-		ExchangeDescriptor exchange = new ExchangeDescriptorParser().fromJson(Paths.get(".", "src", "test", "resources", "testCEXDescriptor.json"));
+		ExchangeDescriptor exchange = new ExchangeDescriptorParser().fromJson(Paths.get(".", "src", "test", "resources", "testExchangeDescriptor.json"));
 		new ExchangeDemoClassesGenerator(exchange).generateClasses(srcFolder);
 		Path pkgPath = Paths.get(".");
 		checkJavaFilesCount(pkgPath, 1);
@@ -37,9 +37,9 @@ public class ExchangeDemoClassesGeneratorTest {
 		checkJavaFilesCount(pkgPath, 1);
 		pkgPath = pkgPath.resolve("demo");
 		checkJavaFilesCount(pkgPath, 3);
-		checkSourceFileExists(Paths.get("MyTestCEXMarketDataExchangeInfoDemo.java"));
-		checkSourceFileExists(Paths.get("MyTestCEXMarketDataTickersDemo.java"));
-		checkSourceFileExists(Paths.get("MyTestCEXMarketDataTickerStreamDemo.java"));
+		checkSourceFileExists(Paths.get("MyTestExchangeMarketDataExchangeInfoDemo.java"));
+		checkSourceFileExists(Paths.get("MyTestExchangeMarketDataTickersDemo.java"));
+		checkSourceFileExists(Paths.get("MyTestExchangeMarketDataTickerStreamDemo.java"));
 	}
 	
 	private void checkJavaFilesCount(Path relativePkg, int count) throws IOException {

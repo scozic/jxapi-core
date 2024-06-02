@@ -51,14 +51,12 @@ public class ExchangeGeneratorMain {
 		Path genPackagesFolder = outputSrcMainFolder.resolve(packagePath);
 		JavaCodeGenerationUtil.deletePath(genPackagesFolder);
 		new ExchangeClassesGenerator(exchangeDescriptor).generateClasses(outputSrcMainFolder);
-//		ExchangeJavaWrapperGeneratorUtil.generateCEX(exchangeDescriptor, outputSrcMainFolder);
 		
 		Path outputSrcTestFolder = Paths.get(".", "src", "test", "java");
 		Path genTestPackagesFolder = outputSrcTestFolder.resolve(packagePath);
 		JavaCodeGenerationUtil.deletePath(genTestPackagesFolder);
 		
 		new ExchangeDemoClassesGenerator(exchangeDescriptor).generateClasses(outputSrcTestFolder);
-//		ExchangeJavaWrapperGeneratorUtil.generateCEXDemos(exchangeDescriptor, outputSrcTestFolder);
 		log.info("Done generating java code for " + jsonFile.getFileName() + " in:" + outputSrcMainFolder);
 	}
 
