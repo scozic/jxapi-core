@@ -4,21 +4,19 @@ import com.scz.jxapi.util.EncodingUtil;
 
 /**
  * Encapsulates a subscription to a websocket feed
- *
- * @param <T> the 'Pojo' containing endpoint specific subscription parameters
  */
-public class WebsocketSubscribeRequest<T> {
+public class WebsocketSubscribeRequest {
 	
-	public static <T> WebsocketSubscribeRequest<T> create(T parameters, String topic, WebsocketMessageTopicMatcher messageTopicMatcher) {
-		WebsocketSubscribeRequest<T> request = new WebsocketSubscribeRequest<>();
-		request.parameters = parameters;
+	public static WebsocketSubscribeRequest create(Object parameters, String topic, WebsocketMessageTopicMatcher messageTopicMatcher) {
+		WebsocketSubscribeRequest request = new WebsocketSubscribeRequest();
+		request.request = parameters;
 		request.topic = topic;
 		request.messageTopicMatcher = messageTopicMatcher;
 		return request;
 	}
 
 	private String baseUrl;
-	private T parameters;
+	private Object request;
 	private WebsocketMessageTopicMatcher messageTopicMatcher;
 	private String topic;
 	
@@ -29,11 +27,11 @@ public class WebsocketSubscribeRequest<T> {
 		this.baseUrl = url;
 	}
 	
-	public T getParameters() {
-		return parameters;
+	public Object getRequest() {
+		return request;
 	}
-	public void setParameters(T parameters) {
-		this.parameters = parameters;
+	public void setRequest(Object parameters) {
+		this.request = parameters;
 	}
 	
 	public WebsocketMessageTopicMatcher getMessageTopicMatcher() {

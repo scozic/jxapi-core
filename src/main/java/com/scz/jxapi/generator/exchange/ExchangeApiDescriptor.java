@@ -24,7 +24,14 @@ public class ExchangeApiDescriptor {
 	
 	private String httpRequestExecutorFactory;
 	
+	@Deprecated
 	private String websocketEndpointFactory;
+	
+	private String websocketFactory;
+	
+	private String websocketHookFactory;
+	
+	private String websocketUrl;
 	
 	private List<WebsocketEndpointDescriptor> websocketEndpoints;
 	
@@ -36,6 +43,10 @@ public class ExchangeApiDescriptor {
 
 	public void setRestEndpoints(List<RestEndpointDescriptor> restEndpoints) {
 		this.restEndpoints = restEndpoints;
+	}
+	
+	public boolean hasRestEndpoints() {
+		return restEndpoints != null && !restEndpoints.isEmpty();
 	}
 
 	public String getName() {
@@ -61,11 +72,17 @@ public class ExchangeApiDescriptor {
 	public void setWebsocketEndpoints(List<WebsocketEndpointDescriptor> websocketEndpoints) {
 		this.websocketEndpoints = websocketEndpoints;
 	}
+	
+	public boolean hasWebsocketEndpoints() {
+		return this.websocketEndpoints != null && !this.websocketEndpoints.isEmpty();
+	}
 
+	@Deprecated
 	public String getWebsocketEndpointFactory() {
 		return websocketEndpointFactory;
 	}
 
+	@Deprecated
 	public void setWebsocketEndpointFactory(String websocketEndpointFactory) {
 		this.websocketEndpointFactory = websocketEndpointFactory;
 	}
@@ -92,6 +109,30 @@ public class ExchangeApiDescriptor {
 
 	public void setHttpRequestExecutorFactory(String httpRequestExecutorFactory) {
 		this.httpRequestExecutorFactory = httpRequestExecutorFactory;
+	}
+	
+	public String getWebsocketHookFactory() {
+		return websocketHookFactory;
+	}
+
+	public void setWebsocketHookFactory(String websocketHookFactory) {
+		this.websocketHookFactory = websocketHookFactory;
+	}
+	
+	public String getWebsocketFactory() {
+		return websocketFactory;
+	}
+
+	public void setWebsocketFactory(String websocketFactory) {
+		this.websocketFactory = websocketFactory;
+	}
+	
+	public String getWebsocketUrl() {
+		return websocketUrl;
+	}
+
+	public void setWebsocketUrl(String websocketUrl) {
+		this.websocketUrl = websocketUrl;
 	}
 	
 	@Override

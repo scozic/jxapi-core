@@ -1,8 +1,7 @@
 package com.scz.jxapi.netutils.rest;
 
-import java.lang.reflect.InvocationTargetException;
-
 import com.scz.jxapi.exchange.ExchangeApi;
+import com.scz.jxapi.util.FactoryUtil;
 
 /**
  * Factory class for {@link HttpRequestInterceptorFactory}. Class name of such factory implementation can be 
@@ -26,15 +25,7 @@ public interface HttpRequestInterceptorFactory {
 	 *                                  reflection or does not provide a default
 	 *                                  constructor.
 	 */
-	default HttpRequestInterceptorFactory fromClassName(String cls) {
-		try {
-			return (HttpRequestInterceptorFactory) Class.forName(cls).getConstructor().newInstance();
-		} catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
-				| NoSuchMethodException | SecurityException | ClassNotFoundException e) {
-			throw new IllegalArgumentException("Failed to instantiate " 
-												+ HttpRequestInterceptorFactory.class.getName() + 
-												" implementation '" + cls + "'.",
-												e);
-		}
+	public static HttpRequestInterceptorFactory fromClassName(String cls) {
+		return FactoryUtil.fromClassName(cls);
 	}
 }

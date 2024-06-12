@@ -1,24 +1,24 @@
-package com.scz.jxapi.netutils.rest;
+package com.scz.jxapi.netutils.websocket;
 
 import com.scz.jxapi.exchange.ExchangeApi;
 import com.scz.jxapi.util.FactoryUtil;
 
-public interface HttpRequestExecutorFactory {
+public interface WebsocketHookFactory {
 
-	HttpRequestExecutor createExecutor(ExchangeApi exchangeApi);
+	WebsocketHook createWebsocketHook(ExchangeApi exchangeApi);
 	
 	/**
-	 * Factory method to instantiate {@link HttpRequestExecutorFactory} from its
+	 * Factory method to instantiate {@link WebsocketHookFactory} from its
 	 * class name.
 	 * 
-	 * @param cls Name of {@link HttpRequestExecutorFactory} implementation
+	 * @param cls Name of {@link WebsocketHookFactory} implementation
 	 *            class. Should have a default constructor.
 	 * @return factory of <code>cls</code> class.
 	 * @throws IllegalArgumentException If provided class cannot be instantiated by
 	 *                                  reflection or does not provide a default
 	 *                                  constructor.
 	 */
-	public static HttpRequestExecutorFactory fromClassName(String cls) {
+	public static WebsocketHookFactory fromClassName(String cls) {
 		return FactoryUtil.fromClassName(cls);
 	}
 }

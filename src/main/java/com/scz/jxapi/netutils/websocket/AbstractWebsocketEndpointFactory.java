@@ -12,6 +12,7 @@ import com.scz.jxapi.util.HasProperties;
  * calls.
  * 
  */
+@Deprecated
 public class AbstractWebsocketEndpointFactory implements WebsocketEndpointFactory {
 	
 	protected WebsocketManager websocketManager = null;
@@ -31,7 +32,7 @@ public class AbstractWebsocketEndpointFactory implements WebsocketEndpointFactor
 	
 
 	@Override
-	public <S, M> WebsocketEndpoint<S, M> createWebsocketEndpoint(MessageDeserializer<M> messageDeserializer) {
+	public <M> WebsocketEndpoint<M> createWebsocketEndpoint(MessageDeserializer<M> messageDeserializer) {
 		if (websocketManager == null) {
 			throw new IllegalStateException("null WebsocketManager");
 		}

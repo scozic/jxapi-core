@@ -5,8 +5,6 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.atomic.AtomicLong;
 
 import org.glassfish.grizzly.threadpool.ThreadPoolConfig;
 import org.glassfish.tyrus.client.ClientManager;
@@ -25,15 +23,14 @@ import org.springframework.web.socket.WebSocketMessage;
 import org.springframework.web.socket.WebSocketSession;
 import org.springframework.web.socket.client.standard.StandardWebSocketClient;
 
-import com.scz.jxapi.netutils.websocket.AbstractWebsocketManager;
+import com.scz.jxapi.netutils.websocket.AbstractWebsocket;
+import com.scz.jxapi.netutils.websocket.WebsocketException;
 
-public abstract class SpringWebsocketManager extends AbstractWebsocketManager {
+public class SpringWebsocket extends AbstractWebsocket {
 	
-	private static final Logger log = LoggerFactory.getLogger(SpringWebsocketManager.class);
+	private static final Logger log = LoggerFactory.getLogger(SpringWebsocket.class);
 
 	private static final long CONNECT_TIMEOUT = 30000L;
-	
-	protected final String baseUrl;
 	
 	private ClientManager clientManager;
 	
@@ -43,32 +40,23 @@ public abstract class SpringWebsocketManager extends AbstractWebsocketManager {
 	
 	private int taskExecutorCounter = 0;
 	
-	private long heartBeatInterval = -1L;
-	
-	private long  noHeartBeatResponseTimeout = -1L;
-	
-	protected AtomicLong lastHeartBeatTime = new AtomicLong(0L);
-	
-	private AtomicBoolean heartBeatTaskCancelled = null;
-	private AtomicBoolean heartBeatTimeoutTaskCancelled = null;
-	
-	public SpringWebsocketManager(String baseUrl) {
-		this.baseUrl = baseUrl;
-	}
-	
-	protected abstract String createHeartBeatMessage();
+	public SpringWebsocket() {}
 
 	@Override
-	protected void send(String message) throws IOException {
+	protected void doSend(String message) throws WebsocketException {
 		if (log.isDebugEnabled())
 			log.debug("Sending >" + message);
-		webSocketSession.sendMessage(new TextMessage(message));
+		try {
+			webSocketSession.sendMessage(new TextMessage(message));
+		} catch (IOException e) {
+			throw new WebsocketException(toString() + " error occurred while sending message:" + message);
+		}
 	}
 
 	@Override
-	protected void doConnect() throws IOException {
+	protected void doConnect() throws WebsocketException {
 		this.taskExecutor = new ThreadPoolTaskExecutor();
-		this.taskExecutor.setThreadNamePrefix(baseUrl + "-" + taskExecutorCounter++);
+		this.taskExecutor.setThreadNamePrefix(url + "-" + taskExecutorCounter++);
 		this.taskExecutor.setCorePoolSize(0);
 		this.taskExecutor.setMaxPoolSize(2);
 		this.taskExecutor.setKeepAliveSeconds(5);
@@ -78,7 +66,6 @@ public abstract class SpringWebsocketManager extends AbstractWebsocketManager {
 		this.clientManager.getProperties().put(GrizzlyClientProperties.WORKER_THREAD_POOL_CONFIG, ThreadPoolConfig.defaultConfig().setCorePoolSize(1).setMaxPoolSize(1).setPoolName("WSDEMO_WORK"));
 		StandardWebSocketClient client = new StandardWebSocketClient(clientManager);
 		client.setTaskExecutor(taskExecutor);
-		lastHeartBeatTime.set(System.currentTimeMillis());
 		URI uri = getHandShakeURI();
 		if (log.isInfoEnabled())
 			log.info("Connecting websocket, URI:" + uri);
@@ -97,75 +84,32 @@ public abstract class SpringWebsocketManager extends AbstractWebsocketManager {
 			doDisconnect();
 			throw new IllegalStateException(handShakeError);
 		}
-		if (log.isInfoEnabled()) {
-			log.info("Websocket " + baseUrl + ":Done handshake");
-		}
-		
-		if (this.heartBeatTaskCancelled != null) {
-			this.heartBeatTaskCancelled.set(true);
-		}
-		this.heartBeatTaskCancelled = new AtomicBoolean(false);
-		if (this.heartBeatTimeoutTaskCancelled != null) {
-			this.heartBeatTimeoutTaskCancelled.set(true);
-		}
-		this.heartBeatTimeoutTaskCancelled = new AtomicBoolean(false);
-		
-		if (heartBeatInterval > 0) {
-			scheduleHeartBeatTask(new HeartBeakTask(this.heartBeatTaskCancelled));
+		if (log.isDebugEnabled()) {
+			log.debug(toString() + ":Done handshake");
 		}
 	}
 	
-	protected URI getHandShakeURI() throws IOException {
+	protected URI getHandShakeURI() throws WebsocketException {
 		try {
-			return new URI(baseUrl);
+			return new URI(url);
 		} catch (URISyntaxException e) {
-			throw new IOException("Error creating URI for websocket base URL:" + baseUrl);
+			throw new WebsocketException("Error creating URI for websocket base URL:" + url);
 		}
 	}
 
-	private void scheduleHeartBeatTask(HeartBeakTask heartBeakTask) {
-		if (log.isDebugEnabled())
-			log.debug("Scheduling heartbeat task in " + heartBeatInterval + " ms");
-		this.writeExecutor.schedule(heartBeakTask, heartBeatInterval, TimeUnit.MILLISECONDS);
-	}
-	
-	private void scheduleHeartTimeoutBeatTask() {
-		if (log.isDebugEnabled())
-			log.debug("Scheduling heartbeat timeout task in " + noHeartBeatResponseTimeout + " ms");
-		this.writeExecutor.schedule(new HeartBeakTimeoutTask(heartBeatTaskCancelled), noHeartBeatResponseTimeout, TimeUnit.MILLISECONDS);
-	}
+
 
 	@Override
-	protected void doDisconnect() throws IOException {
-		log.info("Closing websocket");
-		if (this.heartBeatTaskCancelled != null) {
-			this.heartBeatTaskCancelled.set(true);
+	protected void doDisconnect() throws WebsocketException {
+		log.debug("Closing websocket");
+		try {
+			webSocketSession.close(CloseStatus.NORMAL);
+		} catch (IOException e) {
+			throw new WebsocketException("Error while disconnecting " + toString(), e);
 		}
-		webSocketSession.close(CloseStatus.NORMAL);
 		clientManager.shutdown();
 		taskExecutor.shutdown();
-		
-		log.info("Websocket is closed");
-	}
-	
-	public long getHeartBeatInterval() {
-		return heartBeatInterval;
-	}
-
-	public void setHeartBeatInterval(long heartBeatInterval) {
-		this.heartBeatInterval = heartBeatInterval;
-	}
-
-	public long getNoHeartBeatResponseTimeout() {
-		return noHeartBeatResponseTimeout;
-	}
-
-	public void setNoHeartBeatResponseTimeout(long noHeartBeatResponseTimeout) {
-		this.noHeartBeatResponseTimeout = noHeartBeatResponseTimeout;
-	}
-	
-	public String toString() {
-		return getClass().getSimpleName() + "[" + baseUrl + "]";
+		log.debug("Websocket is closed");
 	}
 
 	private class SpringWebsocketHandler implements WebSocketHandler {
@@ -194,12 +138,12 @@ public abstract class SpringWebsocketManager extends AbstractWebsocketManager {
 
 		@Override
 		public void handleTransportError(WebSocketSession session, Throwable exception) throws Exception {
-			onError(SpringWebsocketManager.this.toString() + ":handleTransportError:session:" + session, exception);
+			dispatchError(SpringWebsocket.this.toString() + ":handleTransportError:session:" + session, exception);
 		}
 
 		@Override
 		public void afterConnectionClosed(WebSocketSession session, CloseStatus closeStatus) throws Exception {
-			log.debug("afterConnectionClosed:session:" + session + ", closeStatus:" + closeStatus);
+			log.debug(SpringWebsocket.this.toString() + "afterConnectionClosed:session:" + session + ", closeStatus:" + closeStatus);
 		}
 
 		@Override
@@ -226,73 +170,10 @@ public abstract class SpringWebsocketManager extends AbstractWebsocketManager {
 
 		@Override
 		public void onFailure(Throwable ex) {
-			onError("Error raised on " + baseUrl + " websocket session callback", ex);
+			dispatchError(SpringWebsocket.this.toString() +  "Error raised on websocket session callback", ex);
 		}
 		
 	}
-	
-	private class HeartBeakTask implements Runnable {
-		
-		private final AtomicBoolean cancelled;
-
-		public HeartBeakTask(AtomicBoolean cancelled) {
-			this.cancelled = cancelled;
-		}
-
-		@Override
-		public void run() {
-			try {
-				if (cancelled.get()) {
-					log.debug("Not running cancelled heartbeat task");
-					return;
-				}
-				
-				send(createHeartBeatMessage());
-				scheduleHeartBeatTask(this);
-				scheduleHeartTimeoutBeatTask();
-			} catch (Exception ex) {				
-				onError("Error while sending heartbeat", ex);
-			}
-			
-		}
-	}
-	
-	private void onError(String errorMsg, Throwable ex) {
-		writeExecutor.execute(() -> onError(new IOException(errorMsg, ex)));
-	}
-	
-	private class HeartBeakTimeoutTask implements Runnable {
-		
-		private final AtomicBoolean cancelled;
-		
-		HeartBeakTimeoutTask(AtomicBoolean cancelled) {
-			this.cancelled = cancelled;
-		}
-
-		@Override
-		public void run() {
-			try {
-				if (cancelled.get()) {
-					log.debug("Not running cancelled heartbeat task");
-					return;
-				}
-				
-				// Raise error if max delay without heartbeat response timeout has elapsed
-				long timeElapsedSinceLastHeartBeat = System.currentTimeMillis() - lastHeartBeatTime.get();
-				if (noHeartBeatResponseTimeout > 0 && (timeElapsedSinceLastHeartBeat > noHeartBeatResponseTimeout)) {
-					onError("No heartbeat response since " 
-											+ timeElapsedSinceLastHeartBeat 
-											+ "ms, timeout:" + noHeartBeatResponseTimeout 
-											+ " reconnect delay:" + getReconnectDelay(), null);
-				}
-			} catch (Exception ex) {
-				onError("Error while running heartbeat timeout task", ex);
-			}
-			
-		}
-		
-	}
-
 	
 	private class DispatchTextMessageTask implements Runnable {
 		

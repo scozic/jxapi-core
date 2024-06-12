@@ -14,13 +14,24 @@ import com.scz.jxapi.netutils.rest.HttpRequestInterceptorFactory;
 import com.scz.jxapi.netutils.rest.RestResponse;
 import com.scz.jxapi.netutils.rest.javanet.JavaNetHttpRequestExecutor;
 import com.scz.jxapi.netutils.rest.ratelimits.RequestThrottler;
+import com.scz.jxapi.netutils.websocket.DefaultWebsocketEndpoint;
+import com.scz.jxapi.netutils.websocket.DefaultWebsocketFactory;
+import com.scz.jxapi.netutils.websocket.DefaultWebsocketManager;
+import com.scz.jxapi.netutils.websocket.Websocket;
+import com.scz.jxapi.netutils.websocket.WebsocketEndpoint;
+import com.scz.jxapi.netutils.websocket.WebsocketFactory;
+import com.scz.jxapi.netutils.websocket.WebsocketHook;
+import com.scz.jxapi.netutils.websocket.WebsocketHookFactory;
+import com.scz.jxapi.netutils.websocket.WebsocketManager;
+import com.scz.jxapi.netutils.websocket.spring.SpringWebsocket;
 
 public abstract class AbstractExchangeApi implements ExchangeApi {
 	
 	private final Properties properties;
 	private final RequestThrottler requestThrottler;
-	protected HttpRequestExecutor httpRequestExecutor;
+	protected HttpRequestExecutor httpRequestExecutor = null;
 	protected HttpRequestInterceptor httpRequestInterceptor = null;
+	protected WebsocketManager websocketManager = null;
 	  
 	public AbstractExchangeApi(Properties properties) {
 		this(properties, null);
@@ -110,6 +121,23 @@ public abstract class AbstractExchangeApi implements ExchangeApi {
 
 	public void setHttpRequestExecutor(HttpRequestExecutor httpRequestExecutor) {
 		this.httpRequestExecutor = httpRequestExecutor;
+	}
+	
+	protected WebsocketManager createWebsocketManager(String url, String websocketFactoryClassName, String websocketHookFactoryClassName) {
+		WebsocketFactory websocketFactory = websocketFactoryClassName == null? new DefaultWebsocketFactory(): WebsocketFactory.fromClassName(websocketFactoryClassName);
+		Websocket websocket = websocketFactory.createWebsocket(this);
+		if (url != null) {
+			websocket.setUrl(url);
+		}
+		DefaultWebsocketManager wsManager = new DefaultWebsocketManager(websocket);
+		if (websocketHookFactoryClassName != null) {
+			wsManager.setWebsocketHook(WebsocketHookFactory.fromClassName(websocketHookFactoryClassName).createWebsocketHook(this));
+		}
+		return wsManager;
+	}
+	
+	protected <M> WebsocketEndpoint<M> createWebsocketEndpoint(MessageDeserializer<M> messageDeserializer) {
+		return new DefaultWebsocketEndpoint<>(websocketManager, messageDeserializer);
 	}
 
 }
