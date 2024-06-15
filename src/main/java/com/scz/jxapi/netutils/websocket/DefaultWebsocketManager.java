@@ -438,7 +438,8 @@ public class DefaultWebsocketManager implements WebsocketManager {
 					connect();
 					resubscribeTopics();
 				} catch (WebsocketException e) {
-					writeExecutor.execute(() -> onError(e));
+					// Avoid reentrant call, retry in a distinct runnable sublitted to executor
+					notifyError(e);
 				}
 			} else {
 				if (log.isWarnEnabled()) {
@@ -448,9 +449,10 @@ public class DefaultWebsocketManager implements WebsocketManager {
 		}
 	}
 	
-//	protected void onErrorAsync(String errorMsg, Throwable ex) {
-//		writeExecutor.execute(() -> onError(new IOException(errorMsg, ex)));
-//	}
+	@Override
+	public void notifyError(WebsocketException exception) {
+		writeExecutor.execute(() -> onError(exception));
+	}
 	
 	private void resubscribeTopics() throws WebsocketException {
 		if (log.isInfoEnabled())

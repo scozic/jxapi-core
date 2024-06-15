@@ -63,4 +63,6 @@ public interface WebsocketManager {
 	String getUrl();
 	
 	void setUrl(String url);
+
+	void notifyError(WebsocketException exception);
 }
