@@ -347,7 +347,7 @@ public class ExchangeApiInterfaceImplementationGenerator extends JavaTypeGenerat
 			}
 		}
 		subscribeMethodBody.append("));\n")
-			.append(hasArguments? "websocketSubscribeRequest.setParameters(request);\n" : "")
+			.append(hasArguments? "websocketSubscribeRequest.setRequest(request);\n" : "")
 			.append("return ")
 			.append(websocketEndpointVariableName)
 			.append (".subscribe(websocketSubscribeRequest, listener);");
