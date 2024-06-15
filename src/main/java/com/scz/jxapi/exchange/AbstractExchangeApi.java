@@ -20,10 +20,8 @@ import com.scz.jxapi.netutils.websocket.DefaultWebsocketManager;
 import com.scz.jxapi.netutils.websocket.Websocket;
 import com.scz.jxapi.netutils.websocket.WebsocketEndpoint;
 import com.scz.jxapi.netutils.websocket.WebsocketFactory;
-import com.scz.jxapi.netutils.websocket.WebsocketHook;
 import com.scz.jxapi.netutils.websocket.WebsocketHookFactory;
 import com.scz.jxapi.netutils.websocket.WebsocketManager;
-import com.scz.jxapi.netutils.websocket.spring.SpringWebsocket;
 
 public abstract class AbstractExchangeApi implements ExchangeApi {
 	
