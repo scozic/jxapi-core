@@ -57,7 +57,7 @@ public class JavaNetHttpRequestExecutor implements HttpRequestExecutor {
 				builder.DELETE();
 				break;
 			case PUT:
-				builder.PUT(BodyPublishers.ofString(request.getBody()));
+				builder.PUT(BodyPublishers.ofString(Optional.ofNullable(request.getBody()).orElse("")));
 				break;
 			default:
 				throw new IllegalArgumentException("Unexpected verb:[" + request.getHttpMethod() + "] for request:" + request);
