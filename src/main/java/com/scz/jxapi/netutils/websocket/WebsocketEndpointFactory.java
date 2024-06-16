@@ -11,6 +11,7 @@ import com.scz.jxapi.util.HasProperties;
  * endpoint must provide an implementation of this interface to create suitable
  * {@link WebsocketEndpoint} instances.
  */
+@Deprecated
 public interface WebsocketEndpointFactory {
 	
 	/**

@@ -24,7 +24,7 @@ public class DefaultWebsocketManager implements WebsocketManager {
 	
 	public static final long WRITE_EXECUTOR_KEEP_ALIVE = 30000L;
 	
-	private static final Logger log = LoggerFactory.getLogger(DefaultWebsocketManager.class);
+	private static final Logger log = LoggerFactory.getLogger(DefaultWebsocketManager.class); 
 	
 	private final List<WebsocketErrorHandler> errorHandlers = new ArrayList<>();
 	
@@ -58,7 +58,17 @@ public class DefaultWebsocketManager implements WebsocketManager {
 	
 	protected final Websocket websocket;
 
-	private WebsocketHook websocketHook;
+	private final WebsocketHook websocketHook;
+	
+	public DefaultWebsocketManager(Websocket websocket, WebsocketHook websocketHook) {
+		this.websocket = websocket;
+		this.websocketHook = websocketHook;
+		this.writeExecutor = Executors.newSingleThreadScheduledExecutor();
+		this.websocket.addMessageHandler(rawMessageHandler);
+		if (websocketHook != null) {
+			websocketHook.afterInit(this);
+		}
+	}
 	
 	public long getHeartBeatInterval() {
 		return heartBeatInterval;
@@ -78,16 +88,6 @@ public class DefaultWebsocketManager implements WebsocketManager {
 	
 	public WebsocketHook getWebsocketHook() {
 		return websocketHook;
-	}
-
-	public void setWebsocketHook(WebsocketHook websocketHook) {
-		this.websocketHook = websocketHook;
-	}
-	
-	public DefaultWebsocketManager(Websocket websocket) {
-		this.websocket = websocket;
-		this.writeExecutor = Executors.newSingleThreadScheduledExecutor();
-		this.websocket.addMessageHandler(rawMessageHandler);
 	}
 
 	@Override
@@ -208,12 +208,12 @@ public class DefaultWebsocketManager implements WebsocketManager {
 				lastHeartBeatTime.set(System.currentTimeMillis());
 				scheduleHeartBeatTask(new HeartBeakTask(this.heartBeatTaskCancelled));
 			}
+			connected.set(true);
+			if(log.isInfoEnabled())
+				log.info("Connected WS:" + this);
 		} catch (Exception exception) {
-			onError(new WebsocketException("Error while connecting websocket", exception));
+			notifyError(new WebsocketException("Error while connecting websocket", exception));
 		}
-		connected.set(true);
-		if(log.isInfoEnabled())
-			log.info("Connected WS:" + this);
 	}
 	
 	public boolean isDisposed() {

@@ -2,6 +2,8 @@ package com.scz.jxapi.netutils.websocket;
 
 public interface WebsocketHook {
 	
+	default void afterInit(WebsocketManager websocketManager) {}
+	
 	default void beforeConnect(WebsocketManager websocketManager) throws WebsocketException {}
 	
 	default void afterConnect(WebsocketManager websocketManager) throws WebsocketException {}

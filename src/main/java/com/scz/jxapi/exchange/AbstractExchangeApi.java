@@ -20,6 +20,7 @@ import com.scz.jxapi.netutils.websocket.DefaultWebsocketManager;
 import com.scz.jxapi.netutils.websocket.Websocket;
 import com.scz.jxapi.netutils.websocket.WebsocketEndpoint;
 import com.scz.jxapi.netutils.websocket.WebsocketFactory;
+import com.scz.jxapi.netutils.websocket.WebsocketHook;
 import com.scz.jxapi.netutils.websocket.WebsocketHookFactory;
 import com.scz.jxapi.netutils.websocket.WebsocketManager;
 
@@ -43,6 +44,14 @@ public abstract class AbstractExchangeApi implements ExchangeApi {
 	@Override
 	public Properties getProperties() {
 		return properties;
+	}
+	
+	public HttpRequestExecutor getHttpRequestExecutor() {
+		return httpRequestExecutor;
+	}
+
+	public void setHttpRequestExecutor(HttpRequestExecutor httpRequestExecutor) {
+		this.httpRequestExecutor = httpRequestExecutor;
 	}
 	
 	protected HttpRequestInterceptor createHttpRequestInterceptor(String factoryClassName) {
@@ -112,14 +121,6 @@ public abstract class AbstractExchangeApi implements ExchangeApi {
 		});
 		return callback;
 	}
-
-	public HttpRequestExecutor getHttpRequestExecutor() {
-		return httpRequestExecutor;
-	}
-
-	public void setHttpRequestExecutor(HttpRequestExecutor httpRequestExecutor) {
-		this.httpRequestExecutor = httpRequestExecutor;
-	}
 	
 	protected WebsocketManager createWebsocketManager(String url, String websocketFactoryClassName, String websocketHookFactoryClassName) {
 		WebsocketFactory websocketFactory = websocketFactoryClassName == null? new DefaultWebsocketFactory(): WebsocketFactory.fromClassName(websocketFactoryClassName);
@@ -127,11 +128,8 @@ public abstract class AbstractExchangeApi implements ExchangeApi {
 		if (url != null) {
 			websocket.setUrl(url);
 		}
-		DefaultWebsocketManager wsManager = new DefaultWebsocketManager(websocket);
-		if (websocketHookFactoryClassName != null) {
-			wsManager.setWebsocketHook(WebsocketHookFactory.fromClassName(websocketHookFactoryClassName).createWebsocketHook(this));
-		}
-		return wsManager;
+		WebsocketHook websocketHook = websocketHookFactoryClassName == null? null: WebsocketHookFactory.fromClassName(websocketHookFactoryClassName).createWebsocketHook(this);
+		return new DefaultWebsocketManager(websocket, websocketHook);
 	}
 	
 	protected <M> WebsocketEndpoint<M> createWebsocketEndpoint(MessageDeserializer<M> messageDeserializer) {
