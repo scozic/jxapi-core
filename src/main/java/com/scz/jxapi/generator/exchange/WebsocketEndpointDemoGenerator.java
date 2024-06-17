@@ -4,6 +4,7 @@ import java.util.Optional;
 
 import com.scz.jxapi.generator.JavaCodeGenerationUtil;
 import com.scz.jxapi.generator.JavaTypeGenerator;
+import com.scz.jxapi.util.DemoUtil;
 import com.scz.jxapi.util.TestJXApiProperties;
 
 public class WebsocketEndpointDemoGenerator extends JavaTypeGenerator {
@@ -129,7 +130,10 @@ public class WebsocketEndpointDemoGenerator extends JavaTypeGenerator {
 		if (hasArguments) {
 			body.append("request, ");
 		}
-		body.append("m -> log.info(\"Received message:\" + m));\n")
+		addImport(DemoUtil.class);
+		body.append("m -> ")
+			.append(DemoUtil.class.getSimpleName())
+			.append(".logWsMessage(m));\n")
 			.append("Thread.sleep(")
 			.append(SUBSCRIPTION_DURATION_STATIC_VAR_NAME)
 			.append(");\n")
