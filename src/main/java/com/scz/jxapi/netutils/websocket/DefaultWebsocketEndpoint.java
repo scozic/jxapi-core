@@ -8,7 +8,7 @@ import org.slf4j.LoggerFactory;
 
 import com.scz.jxapi.netutils.deserialization.MessageDeserializer;
 
-public class DefaultWebsocketEndpoint<T, M> implements WebsocketEndpoint<T, M> {
+public class DefaultWebsocketEndpoint<M> implements WebsocketEndpoint<M> {
 	
 	private final Logger log = LoggerFactory.getLogger(DefaultWebsocketEndpoint.class);
 	
@@ -18,7 +18,7 @@ public class DefaultWebsocketEndpoint<T, M> implements WebsocketEndpoint<T, M> {
 	protected final Map<String, Subscription> subscriptionsByTopic  = new HashMap<>();
 	protected final Map<String, Subscription> subscriptionsById  = new HashMap<>();
 	
-	private int subscriptionCounter;
+	private int subscriptionCounter = 0;
 
 	public DefaultWebsocketEndpoint(WebsocketManager websocketManager, MessageDeserializer<M> messageDeserializer) {
 		this.messageDeserializer = messageDeserializer;
@@ -26,7 +26,7 @@ public class DefaultWebsocketEndpoint<T, M> implements WebsocketEndpoint<T, M> {
 	}
 
 	@Override
-	public String subscribe(WebsocketSubscribeRequest<T> request, WebsocketListener<M> listener) {
+	public String subscribe(WebsocketSubscribeRequest request, WebsocketListener<M> listener) {
 		String topic = request.getTopic();
 		Subscription sub = subscriptionsByTopic.get(topic);
 		if (sub == null ) {
@@ -39,8 +39,8 @@ public class DefaultWebsocketEndpoint<T, M> implements WebsocketEndpoint<T, M> {
 		return subId;
 	}
 	
-	protected String generateSubscriptionId(WebsocketSubscribeRequest<T> request) {
-		return String.valueOf(Integer.toHexString(request.hashCode()) + "_" + subscriptionCounter++);
+	protected String generateSubscriptionId(WebsocketSubscribeRequest request) {
+		return String.valueOf(request.getTopic() + "-" + subscriptionCounter++);
 	}
 
 	@Override
@@ -53,10 +53,10 @@ public class DefaultWebsocketEndpoint<T, M> implements WebsocketEndpoint<T, M> {
 	}
 	
 	private class Subscription {
-		final WebsocketSubscribeRequest<T> request;
+		final WebsocketSubscribeRequest request;
 		final Map<String , WebsocketListener<M>> listeners = new HashMap<>();
 		
-		public Subscription(WebsocketSubscribeRequest<T> request) {
+		public Subscription(WebsocketSubscribeRequest request) {
 			this.request = request;
 		}
 		

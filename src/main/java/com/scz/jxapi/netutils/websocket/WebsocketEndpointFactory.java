@@ -11,6 +11,7 @@ import com.scz.jxapi.util.HasProperties;
  * endpoint must provide an implementation of this interface to create suitable
  * {@link WebsocketEndpoint} instances.
  */
+@Deprecated
 public interface WebsocketEndpointFactory {
 	
 	/**
@@ -28,10 +29,9 @@ public interface WebsocketEndpointFactory {
 	default void setApi(HasProperties api) {}
 
 	/**
-	 * @param <S> the subscription request
 	 * @param <M> the websocket stream message type
 	 * @param messageDeserializer websocket message stream deserializer.
 	 * @return Suitable {@link WebsocketEndpoint}
 	 */
-	<S, M> WebsocketEndpoint<S, M> createWebsocketEndpoint(MessageDeserializer<M> messageDeserializer);
+	<M> WebsocketEndpoint<M> createWebsocketEndpoint(MessageDeserializer<M> messageDeserializer);
 }

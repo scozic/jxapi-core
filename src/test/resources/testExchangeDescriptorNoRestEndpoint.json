@@ -7,7 +7,9 @@
 		{ 
 			"name": "MarketData",
 			"description": "The market data API of MyTestExchange",
-			"websocketEndpointFactory": "com.foo.bar.BarWebsocketEndpointFactory",
+			"websocketUrl": "wss://com.foo.exchange/ws",
+			"websocketFactory": "com.foo.bar.BarWebsocketFactory",
+			"websocketHookFactory": "com.foo.bar.BarWebsocketHookFactory",
 			"websocketEndpoints": [
 				{
 					"name": "tickerStreamStringObjectType",
