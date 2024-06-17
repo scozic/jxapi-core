@@ -47,10 +47,6 @@ public class ExchangeApiInterfaceGenerator extends JavaTypeGenerator {
 	}
 
 	private void generateWebsocketApiMethodsDeclarations(WebsocketEndpointDescriptor websocketApi) {
-		String websocketEndpointFactoryFullClassName = exchangeApiDescriptor.getWebsocketEndpointFactory();
-		if (websocketEndpointFactoryFullClassName == null) {
-			throw new IllegalStateException("No 'websocketEndpointFactory' defined on " + exchangeApiDescriptor.getName());
-		}
 		EndpointParameterType requestDataType = getEndpointParameterType(websocketApi.getRequest());
 		boolean hasArguments = ExchangeJavaWrapperGeneratorUtil.websocketEndpointHasArguments(websocketApi, exchangeApiDescriptor);
 		String requestSimpleClassName = Object.class.getSimpleName();

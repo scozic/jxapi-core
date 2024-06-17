@@ -53,4 +53,8 @@ public class DemoUtil {
 		
 		return JsonUtil.pojoToPrettyPrintJson(response);
 	}
+	
+	public static void logWsMessage(Object message) {
+		log.info("received message:\n" + JsonUtil.pojoToPrettyPrintJson(message));
+	}
 }
