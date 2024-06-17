@@ -32,7 +32,9 @@ public class ExchangeDescriptorParserTest {
 		Assert.assertEquals(2, restEndpoints.size());
 		checkExchangeInfoRestEndpoint(restEndpoints.get(0));
 		checkTickersRestEndpooint(restEndpoints.get(1));
-		Assert.assertEquals("com.foo.bar.BarWebsocketEndpointFactory", marketDataApi.getWebsocketEndpointFactory());
+		Assert.assertEquals("wss://com.foo.exchange/ws", marketDataApi.getWebsocketUrl());
+		Assert.assertEquals("com.foo.bar.BarWebsocketFactory", marketDataApi.getWebsocketFactory());
+		Assert.assertEquals("com.foo.bar.BarWebsocketHookFactory", marketDataApi.getWebsocketHookFactory());
 		List<WebsocketEndpointDescriptor> websocketEndpoints = marketDataApi.getWebsocketEndpoints();
 		Assert.assertEquals(1, websocketEndpoints.size());
 		checkTickerStreamWebsocketEndpoint(websocketEndpoints.get(0));

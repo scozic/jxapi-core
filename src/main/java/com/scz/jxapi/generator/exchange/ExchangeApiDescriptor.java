@@ -24,9 +24,6 @@ public class ExchangeApiDescriptor {
 	
 	private String httpRequestExecutorFactory;
 	
-	@Deprecated
-	private String websocketEndpointFactory;
-	
 	private String websocketFactory;
 	
 	private String websocketHookFactory;
@@ -75,16 +72,6 @@ public class ExchangeApiDescriptor {
 	
 	public boolean hasWebsocketEndpoints() {
 		return this.websocketEndpoints != null && !this.websocketEndpoints.isEmpty();
-	}
-
-	@Deprecated
-	public String getWebsocketEndpointFactory() {
-		return websocketEndpointFactory;
-	}
-
-	@Deprecated
-	public void setWebsocketEndpointFactory(String websocketEndpointFactory) {
-		this.websocketEndpointFactory = websocketEndpointFactory;
 	}
 	
 	public List<RateLimitRule> getRateLimits() {
