@@ -1,0 +1,10 @@
+package com.scz.jxapi.observability;
+
+public enum ExchangeApiEventType {
+	HTTP_REQUEST,
+	HTTP_RESPONSE,
+	WEBSOCKET_SUBSCRIBE,
+	WEBSOCKET_UNSUBSCRIBE,
+	WEBSOCKET_MESSAGE,
+	WEBSOCKET_ERROR
+}

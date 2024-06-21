@@ -23,24 +23,53 @@ import com.scz.jxapi.netutils.websocket.WebsocketFactory;
 import com.scz.jxapi.netutils.websocket.WebsocketHook;
 import com.scz.jxapi.netutils.websocket.WebsocketHookFactory;
 import com.scz.jxapi.netutils.websocket.WebsocketManager;
+import com.scz.jxapi.observability.ExchangeApiEvent;
+import com.scz.jxapi.observability.ExchangeApiObserver;
+import com.scz.jxapi.observability.Observable;
+import com.scz.jxapi.observability.SynchronizedObservable;
 
 public abstract class AbstractExchangeApi implements ExchangeApi {
-	
-	private final Properties properties;
-	private final RequestThrottler requestThrottler;
+
+	protected final String name;
+	protected final String exchangeName;
+	protected final String exchangeId;
+	protected final Properties properties;
+	protected final RequestThrottler requestThrottler;
 	protected HttpRequestExecutor httpRequestExecutor = null;
 	protected HttpRequestInterceptor httpRequestInterceptor = null;
 	protected WebsocketManager websocketManager = null;
+	protected final Observable<ExchangeApiObserver, ExchangeApiEvent> observable 
+						= new SynchronizedObservable<>((observer, event) -> observer.handleEvent(event));
 	  
-	public AbstractExchangeApi(Properties properties) {
-		this(properties, null);
+	public AbstractExchangeApi(String apiName, 
+							   String exchangeName, 
+							   String exchangeId, 
+							   Properties properties) {
+		this(apiName, exchangeName, exchangeId, properties, null);
 	}  
 
-	public AbstractExchangeApi(Properties properties, RequestThrottler requestThrottler) {
+	public AbstractExchangeApi(String apiName, 
+							   String exchangeName, 
+							   String exchangeId, 
+							   Properties properties, 
+							   RequestThrottler requestThrottler) {
+		this.name = apiName;
+		this.exchangeName = exchangeName;
+		this.exchangeId = exchangeId;
 		this.properties = properties;
 		this.requestThrottler = requestThrottler;
 	}
 
+	@Override
+	public String getExchangeName() {
+		return exchangeName;
+	}
+	
+	@Override
+	public String getName() {
+		return name;
+	}
+	
 	@Override
 	public Properties getProperties() {
 		return properties;
@@ -52,6 +81,16 @@ public abstract class AbstractExchangeApi implements ExchangeApi {
 
 	public void setHttpRequestExecutor(HttpRequestExecutor httpRequestExecutor) {
 		this.httpRequestExecutor = httpRequestExecutor;
+	}
+	
+	@Override
+	public void subscribeObserver(ExchangeApiObserver exchangeApiObserver) {
+		this.observable.subscribe(exchangeApiObserver);
+	}
+
+	@Override
+	public boolean unsubscribeObserver(ExchangeApiObserver exchangeApiObserver) {
+		return this.observable.unsubscribe(exchangeApiObserver);
 	}
 	
 	protected HttpRequestInterceptor createHttpRequestInterceptor(String factoryClassName) {
@@ -106,6 +145,7 @@ public abstract class AbstractExchangeApi implements ExchangeApi {
 		if (httpRequestInterceptor != null) {
 			httpRequestInterceptor.intercept(request);
 		}
+		dispatchApiEvent(ExchangeApiEvent.createRestRequestEvent(request));
 		FutureRestResponse<A> callback = new FutureRestResponse<>();
 		httpRequestExecutor.execute(request).thenAccept(httpResponse -> {
 			RestResponse<A> response = new RestResponse<>(httpResponse);
@@ -117,23 +157,40 @@ public abstract class AbstractExchangeApi implements ExchangeApi {
 					response.setException(ex);
 				}
 			}
+			dispatchApiEvent(ExchangeApiEvent.createRestResponseEvent(response));
 			callback.complete(response);
 		});
 		return callback;
 	}
 	
-	protected WebsocketManager createWebsocketManager(String url, String websocketFactoryClassName, String websocketHookFactoryClassName) {
-		WebsocketFactory websocketFactory = websocketFactoryClassName == null? new DefaultWebsocketFactory(): WebsocketFactory.fromClassName(websocketFactoryClassName);
+	protected WebsocketManager createWebsocketManager(String url, 
+													  String websocketFactoryClassName, 
+													  String websocketHookFactoryClassName) {
+		WebsocketFactory websocketFactory = websocketFactoryClassName == null? 
+												new DefaultWebsocketFactory(): 
+												WebsocketFactory.fromClassName(websocketFactoryClassName);
 		Websocket websocket = websocketFactory.createWebsocket(this);
 		if (url != null) {
 			websocket.setUrl(url);
 		}
-		WebsocketHook websocketHook = websocketHookFactoryClassName == null? null: WebsocketHookFactory.fromClassName(websocketHookFactoryClassName).createWebsocketHook(this);
+		WebsocketHook websocketHook = websocketHookFactoryClassName == null? 
+										null: 
+										WebsocketHookFactory.fromClassName(websocketHookFactoryClassName).createWebsocketHook(this);
 		return new DefaultWebsocketManager(websocket, websocketHook);
 	}
 	
-	protected <M> WebsocketEndpoint<M> createWebsocketEndpoint(MessageDeserializer<M> messageDeserializer) {
-		return new DefaultWebsocketEndpoint<>(websocketManager, messageDeserializer);
+	protected <M> WebsocketEndpoint<M> createWebsocketEndpoint(String endpointName, 
+															   MessageDeserializer<M> messageDeserializer) {
+		return new DefaultWebsocketEndpoint<>(endpointName, 
+				   							  websocketManager, 
+											  messageDeserializer,
+											  this::dispatchApiEvent);
 	}
-
+	
+	protected void dispatchApiEvent(ExchangeApiEvent event) {
+		event.setExchangeName(exchangeName);
+		event.setExchangeApiName(name);
+		event.setExchangeId(exchangeId);
+		observable.dispatch(event);
+	}
 }
