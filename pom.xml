@@ -6,7 +6,7 @@
 
   <groupId>com.scz.jxapi</groupId>
   <artifactId>jxapi-core</artifactId>
-  <version>0.11.1-SNAPSHOT</version>
+  <version>0.12.0-JAVAGENERATOR-REFACTOR-SNAPSHOT</version>
   <!--<packaging>jar</packaging>-->
 
   <name>jxapi-core</name>
