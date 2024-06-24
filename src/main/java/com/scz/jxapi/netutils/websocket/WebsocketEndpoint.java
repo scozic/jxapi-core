@@ -9,4 +9,8 @@ package com.scz.jxapi.netutils.websocket;
 public interface WebsocketEndpoint<M> {
 	
 	String getEndpointName();
+	
+	String subscribe(WebsocketSubscribeRequest request, WebsocketListener<M> listener);
+	
+	boolean unsubscribe(String unsubscriptionId);
 }

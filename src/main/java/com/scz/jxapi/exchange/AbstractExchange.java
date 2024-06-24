@@ -53,8 +53,9 @@ public abstract class AbstractExchange implements Exchange {
 		return res;
 	}
 	
-	protected void addApi(ExchangeApi api) {
+	protected <T extends ExchangeApi> T addApi(T api) {
 		apis.put(api.getName(), api);
+		return api;
 	}
 
 }

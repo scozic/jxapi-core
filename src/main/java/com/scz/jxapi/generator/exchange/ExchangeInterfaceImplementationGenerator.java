@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Properties;
 import java.util.Set;
 
+import com.scz.jxapi.exchange.AbstractExchange;
 import com.scz.jxapi.generator.JavaCodeGenerationUtil;
 import com.scz.jxapi.generator.JavaTypeGenerator;
 import com.scz.jxapi.netutils.rest.ratelimits.RateLimitRule;
@@ -16,6 +17,8 @@ import com.scz.jxapi.netutils.rest.ratelimits.RequestThrottler;
  */
 public class ExchangeInterfaceImplementationGenerator extends JavaTypeGenerator {
 	
+	private static final String EXCHANGE_NAME_PARAMETER = "exchangeName";
+	private static final String PROPERTIES_PARAMETER = "properties";
 	private static final String REQUEST_THROTTLER_VARIABLE_NAME = "requestThrottler";
 	
 	public static String getExchangeInterfaceName(ExchangeDescriptor exchangeDescriptor) {
@@ -38,6 +41,7 @@ public class ExchangeInterfaceImplementationGenerator extends JavaTypeGenerator 
 		String simpleImplementationName = simpleInterfaceName + "Impl";
 		setTypeDeclaration("public class");
 		setImplementedInterfaces(Arrays.asList(fullInterfaceName));
+		setParentClassName(AbstractExchange.class.getName());
 		setDescription("Actual implementation of {@link " + simpleInterfaceName + "}<br/>\n"
 				   + JavaCodeGenerationUtil.GENERATED_CODE_WARNING);
 		appendToBody("\n");
@@ -59,6 +63,15 @@ public class ExchangeInterfaceImplementationGenerator extends JavaTypeGenerator 
 		}
 		
 		StringBuilder implementationConstructorBody = new StringBuilder();
+		implementationConstructorBody
+			.append("super(")
+			.append(ExchangeInterfaceGenerator.EXCHANGE_ID_VARIABLE)
+			.append(", ")
+			.append(EXCHANGE_NAME_PARAMETER)
+			.append(", ")
+			.append(PROPERTIES_PARAMETER)
+			.append(");\n");
+		
 		for (ExchangeApiDescriptor api: exchangeDescriptor.getApis()) {
 			String apiClassName = ExchangeJavaWrapperGeneratorUtil.getApiInterfaceClassName(exchangeDescriptor, api);
 			String apiSimpleClassName = JavaCodeGenerationUtil.getClassNameWithoutPackage(apiClassName);
@@ -71,18 +84,29 @@ public class ExchangeInterfaceImplementationGenerator extends JavaTypeGenerator 
 			implementationConstructorBody
 					.append("this.")
 					.append(apiVariableName)
-					.append(" = new ")
+					.append(" = addApi(new ")
 					.append(simpleApiImplClassName)
-					.append("(properties");
+					.append("(getName(), ")
+					.append(PROPERTIES_PARAMETER);
 			if (hasRateLimits && api.getRestEndpoints() != null && !api.getRestEndpoints().isEmpty()) {
 				implementationConstructorBody.append(", ").append(REQUEST_THROTTLER_VARIABLE_NAME);
 			}
 			
-			implementationConstructorBody.append(");\n");
+			implementationConstructorBody.append("));\n");
 		}
 		addImport(Properties.class);
 		
-		appendMethod("\npublic " + simpleImplementationName + "(Properties properties)", implementationConstructorBody.toString());
+		appendToBody("\n");
+		String implementationConstructorSignature = new StringBuilder()
+					.append("public ")
+					.append(simpleImplementationName)
+					.append("(String ")
+					.append(EXCHANGE_NAME_PARAMETER)
+					.append(", Properties ")
+					.append(PROPERTIES_PARAMETER)
+					.append(")").toString();
+					
+		appendMethod(implementationConstructorSignature, implementationConstructorBody.toString());
 		appendToBody("\n");
 		for (ExchangeApiDescriptor api: exchangeDescriptor.getApis()) {
 			String apiClassName = ExchangeJavaWrapperGeneratorUtil.getApiInterfaceClassName(exchangeDescriptor, api);

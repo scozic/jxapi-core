@@ -33,6 +33,10 @@ public class ExchangeApiInterfaceGeneratorTest {
 				+ " * <br><strong>THIS CODE IS GENERATED. DO NOT EDIT MANUALLY!</strong>\n"
 				+ " */\n"
 				+ "public interface MyTestExchangeMarketDataApi extends ExchangeApi {\n"
+				+ "  String ID = \"MarketData\";\n"
+				+ "  String EXCHANGE_INFO_REST_API = \"exchangeInfo\";\n"
+				+ "  String TICKERS_REST_API = \"tickers\";\n"
+				+ "  String TICKER_STREAM_WS_API = \"tickerStream\";\n"
 				+ "  /**\n"
 				+ "   * Fetch market information of symbols that can be traded\n"
 				+ "   */\n"
@@ -56,7 +60,8 @@ public class ExchangeApiInterfaceGeneratorTest {
 				+ "   * @param subscriptionId ID of subscription returned by #subscribeTickerStream()\n"
 				+ "   */\n"
 				+ "  boolean unsubscribeTickerStream(String subscriptionId);\n"
-				+ "}\n", 
+				+ "}\n"
+				+ "", 
 				apiInterfaceGenerator.generate());
 	}
 	
@@ -78,11 +83,14 @@ public class ExchangeApiInterfaceGeneratorTest {
 				+ " * <br><strong>THIS CODE IS GENERATED. DO NOT EDIT MANUALLY!</strong>\n"
 				+ " */\n"
 				+ "public interface MyTestExchangeMarketDataApi extends ExchangeApi {\n"
+				+ "  String ID = \"MarketData\";\n"
+				+ "  String EXCHANGE_INFO_REST_API = \"exchangeInfo\";\n"
 				+ "  /**\n"
 				+ "   * Fetch market information of symbols that can be traded\n"
 				+ "   */\n"
 				+ "  FutureRestResponse<MyTestExchangeMarketDataExchangeInfoResponse> exchangeInfo(MyTestExchangeMarketDataExchangeInfoRequest request);\n"
-				+ "}\n", 
+				+ "}\n"
+				+ "", 
 				apiInterfaceGenerator.generate());
 	}
 	
@@ -104,6 +112,9 @@ public class ExchangeApiInterfaceGeneratorTest {
 				+ " * <br><strong>THIS CODE IS GENERATED. DO NOT EDIT MANUALLY!</strong>\n"
 				+ " */\n"
 				+ "public interface MyTestExchangeMarketDataApi extends ExchangeApi {\n"
+				+ "  String ID = \"MarketData\";\n"
+				+ "  String TICKER_STREAM_STRING_OBJECT_TYPE_WS_API = \"tickerStreamStringObjectType\";\n"
+				+ "  String TICKER_STREAM_STRING_REQUEST_TYPE_WS_API = \"tickerStreamStringRequestType\";\n"
 				+ "  \n"
 				+ "  /**\n"
 				+ "   * Subscribe to tickerStreamStringObjectType stream.<br/>\n"
@@ -135,7 +146,8 @@ public class ExchangeApiInterfaceGeneratorTest {
 				+ "   * @param subscriptionId ID of subscription returned by #subscribeTickerStreamStringRequestType()\n"
 				+ "   */\n"
 				+ "  boolean unsubscribeTickerStreamStringRequestType(String subscriptionId);\n"
-				+ "}\n", 
+				+ "}\n"
+				+ "", 
 				apiInterfaceGenerator.generate());
 	}
 	
@@ -163,6 +175,18 @@ public class ExchangeApiInterfaceGeneratorTest {
 				+ " * <br><strong>THIS CODE IS GENERATED. DO NOT EDIT MANUALLY!</strong>\n"
 				+ " */\n"
 				+ "public interface MyTestExchangeMarketDataApi extends ExchangeApi {\n"
+				+ "  String ID = \"MarketData\";\n"
+				+ "  String GET_REST_RESPONSE_DATA_TYPE_INT_REST_API = \"getRestResponseDataTypeInt\";\n"
+				+ "  String GET_REST_RESPONSE_DATA_TYPE_LONG_REST_API = \"getRestResponseDataTypeLong\";\n"
+				+ "  String GET_REST_RESPONSE_DATA_TYPE_BIG_DECIMAL_REST_API = \"getRestResponseDataTypeBigDecimal\";\n"
+				+ "  String GET_REST_RESPONSE_DATA_TYPE_STRING_REST_API = \"getRestResponseDataTypeString\";\n"
+				+ "  String GET_REST_RESPONSE_DATA_TYPE_BOOLEAN_REST_API = \"getRestResponseDataTypeBoolean\";\n"
+				+ "  String GET_REST_RESPONSE_DATA_TYPE_OBJECT_REST_API = \"getRestResponseDataTypeObject\";\n"
+				+ "  String GET_REST_RESPONSE_DATA_TYPE_INT_LIST_REST_API = \"getRestResponseDataTypeIntList\";\n"
+				+ "  String GET_REST_RESPONSE_DATA_TYPE_OBJECT_LIST_MAP_REST_API = \"getRestResponseDataTypeObjectListMap\";\n"
+				+ "  String GET_REST_EMPTY_RESPONSE_DATA_TYPE_REST_API = \"getRestEmptyResponseDataType\";\n"
+				+ "  String SUBSCRIBE_TICKER_WS_API = \"subscribeTicker\";\n"
+				+ "  String SUBSCRIBE_TICKERT_MAP_LIST_STREAM_WS_API = \"subscribeTickertMapListStream\";\n"
 				+ "  /**\n"
 				+ "   * A sample REST endpoint using INT response data type\n"
 				+ "   * @return A random int\n"
@@ -230,7 +254,8 @@ public class ExchangeApiInterfaceGeneratorTest {
 				+ "   * @param subscriptionId ID of subscription returned by #subscribeSubscribeTickertMapListStream()\n"
 				+ "   */\n"
 				+ "  boolean unsubscribeSubscribeTickertMapListStream(String subscriptionId);\n"
-				+ "}\n", 
+				+ "}\n"
+				+ "", 
 				apiInterfaceGenerator.generate());
 	}
 	
@@ -258,6 +283,25 @@ public class ExchangeApiInterfaceGeneratorTest {
 				+ " * <br><strong>THIS CODE IS GENERATED. DO NOT EDIT MANUALLY!</strong>\n"
 				+ " */\n"
 				+ "public interface MyTestExchangeMarketDataApi extends ExchangeApi {\n"
+				+ "  String ID = \"MarketData\";\n"
+				+ "  String POST_REST_REQUEST_DATA_TYPE_INT_REST_API = \"postRestRequestDataTypeInt\";\n"
+				+ "  String POST_REST_REQUEST_DATA_TYPE_LONG_REST_API = \"postRestRequestDataTypeLong\";\n"
+				+ "  String POST_REST_REQUEST_DATA_TYPE_BIG_DECIMAL_REST_API = \"postRestRequestDataTypeBigDecimal\";\n"
+				+ "  String POST_REST_REQUEST_DATA_TYPE_STRING_REST_API = \"postRestRequestDataTypeString\";\n"
+				+ "  String POST_REST_REQUEST_DATA_TYPE_BOOLEAN_REST_API = \"postRestRequestDataTypeBoolean\";\n"
+				+ "  String POST_REST_REQUEST_DATA_TYPE_OBJECT_NO_PARAMETERS_REST_API = \"postRestRequestDataTypeObjectNoParameters\";\n"
+				+ "  String POST_REST_REQUEST_DATA_TYPE_OBJECT_ONE_PARAMETER_REST_API = \"postRestRequestDataTypeObjectOneParameter\";\n"
+				+ "  String POST_REST_REQUEST_DATA_TYPE_INT_LIST_REST_API = \"postRestRequestDataTypeIntList\";\n"
+				+ "  String POST_REST_REQUEST_DATA_TYPE_OBJECT_LIST_MAP_REST_API = \"postRestRequestDataTypeObjectListMap\";\n"
+				+ "  String STREAM_WITH_OBJECT_REQUEST_DATA_TYPE_ZERO_PARAMETERS_WS_API = \"streamWithObjectRequestDataTypeZeroParameters\";\n"
+				+ "  String STREAM_WITH_OBJECT_REQUEST_DATA_TYPE_ONE_PARAMETER_WS_API = \"streamWithObjectRequestDataTypeOneParameter\";\n"
+				+ "  String STREAM_WITH_INT_REQUEST_DATA_TYPE_WS_API = \"streamWithIntRequestDataType\";\n"
+				+ "  String STREAM_WITH_LONG_REQUEST_DATA_TYPE_WS_API = \"streamWithLongRequestDataType\";\n"
+				+ "  String STREAM_WITH_BIG_DECIMAL_REQUEST_DATA_TYPE_WS_API = \"streamWithBigDecimalRequestDataType\";\n"
+				+ "  String STREAM_WITH_STRING_REQUEST_DATA_TYPE_WS_API = \"streamWithStringRequestDataType\";\n"
+				+ "  String STREAM_WITH_BOOLEAN_REQUEST_DATA_TYPE_WS_API = \"streamWithBooleanRequestDataType\";\n"
+				+ "  String STREAM_WITH_STRING_LIST_REQUEST_DATA_TYPE_WS_API = \"streamWithStringListRequestDataType\";\n"
+				+ "  String STREAM_WITH_OBJECT_LIST_MAP_REQUEST_DATA_TYPE_WS_API = \"streamWithObjectListMapRequestDataType\";\n"
 				+ "  /**\n"
 				+ "   * A sample REST endpoint using INT response data type\n"
 				+ "   */\n"

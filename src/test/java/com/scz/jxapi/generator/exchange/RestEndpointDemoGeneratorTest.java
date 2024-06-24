@@ -41,7 +41,7 @@ public class RestEndpointDemoGeneratorTest {
 				+ "  }\n"
 				+ "  public static void main(String[] args) {\n"
 				+ "    try {\n"
-				+ "      MyTestExchangeMarketDataApi api = new MyTestExchangeExchangeImpl(TestJXApiProperties.filterProperties(\"myTestExchange\", true)).getMyTestExchangeMarketDataApi();\n"
+				+ "      MyTestExchangeMarketDataApi api = new MyTestExchangeExchangeImpl(\"test-myTestExchange\", TestJXApiProperties.filterProperties(\"myTestExchange\", true)).getMyTestExchangeMarketDataApi();\n"
 				+ "      MyTestExchangeMarketDataExchangeInfoRequest request = createRequest();\n"
 				+ "      log.info(\"Calling com.foo.bar.gen.marketdata.MyTestExchangeMarketDataApi.exchangeInfo() API with request:\" + request);\n"
 				+ "      DemoUtil.checkResponse(api.exchangeInfo(request));\n"
@@ -51,7 +51,8 @@ public class RestEndpointDemoGeneratorTest {
 				+ "      System.exit(-1);\n"
 				+ "    }\n"
 				+ "  }\n"
-				+ "}\n", 
+				+ "}\n"
+				+ "", 
 				new RestEndpointDemoGenerator(exchange, api, restEndpointDescriptor).generate());
 	}
 	
@@ -82,7 +83,7 @@ public class RestEndpointDemoGeneratorTest {
 				+ "  }\n"
 				+ "  public static void main(String[] args) {\n"
 				+ "    try {\n"
-				+ "      MyTestExchangeMarketDataApi api = new MyTestExchangeExchangeImpl(TestJXApiProperties.filterProperties(\"myTestExchange\", true)).getMyTestExchangeMarketDataApi();\n"
+				+ "      MyTestExchangeMarketDataApi api = new MyTestExchangeExchangeImpl(\"test-myTestExchange\", TestJXApiProperties.filterProperties(\"myTestExchange\", true)).getMyTestExchangeMarketDataApi();\n"
 				+ "      Integer request = createRequest();\n"
 				+ "      log.info(\"Calling com.foo.bar.gen.marketdata.MyTestExchangeMarketDataApi.postRestRequestDataTypeInt() API with request:\" + request);\n"
 				+ "      DemoUtil.checkResponse(api.postRestRequestDataTypeInt(request));\n"
@@ -123,7 +124,7 @@ public class RestEndpointDemoGeneratorTest {
 				+ "  }\n"
 				+ "  public static void main(String[] args) {\n"
 				+ "    try {\n"
-				+ "      MyTestExchangeMarketDataApi api = new MyTestExchangeExchangeImpl(TestJXApiProperties.filterProperties(\"myTestExchange\", true)).getMyTestExchangeMarketDataApi();\n"
+				+ "      MyTestExchangeMarketDataApi api = new MyTestExchangeExchangeImpl(\"test-myTestExchange\", TestJXApiProperties.filterProperties(\"myTestExchange\", true)).getMyTestExchangeMarketDataApi();\n"
 				+ "      String request = createHello();\n"
 				+ "      log.info(\"Calling com.foo.bar.gen.marketdata.MyTestExchangeMarketDataApi.postRestRequestDataTypeString() API with request:\" + request);\n"
 				+ "      DemoUtil.checkResponse(api.postRestRequestDataTypeString(request));\n"
@@ -161,7 +162,7 @@ public class RestEndpointDemoGeneratorTest {
 				+ "  \n"
 				+ "  public static void main(String[] args) {\n"
 				+ "    try {\n"
-				+ "      MyTestExchangeMarketDataApi api = new MyTestExchangeExchangeImpl(TestJXApiProperties.filterProperties(\"myTestExchange\", true)).getMyTestExchangeMarketDataApi();\n"
+				+ "      MyTestExchangeMarketDataApi api = new MyTestExchangeExchangeImpl(\"test-myTestExchange\", TestJXApiProperties.filterProperties(\"myTestExchange\", true)).getMyTestExchangeMarketDataApi();\n"
 				+ "      log.info(\"Calling com.foo.bar.gen.marketdata.MyTestExchangeMarketDataApi.postRestRequestDataTypeObjectNoParameters() API\");\n"
 				+ "      DemoUtil.checkResponse(api.postRestRequestDataTypeObjectNoParameters());\n"
 				+ "      System.exit(0);\n"
@@ -170,7 +171,8 @@ public class RestEndpointDemoGeneratorTest {
 				+ "      System.exit(-1);\n"
 				+ "    }\n"
 				+ "  }\n"
-				+ "}\n", 
+				+ "}\n"
+				+ "", 
 				generator.generate());
 	}
 	
@@ -206,7 +208,7 @@ public class RestEndpointDemoGeneratorTest {
 				+ "  }\n"
 				+ "  public static void main(String[] args) {\n"
 				+ "    try {\n"
-				+ "      MyTestExchangeMarketDataApi api = new MyTestExchangeExchangeImpl(TestJXApiProperties.filterProperties(\"myTestExchange\", true)).getMyTestExchangeMarketDataApi();\n"
+				+ "      MyTestExchangeMarketDataApi api = new MyTestExchangeExchangeImpl(\"test-myTestExchange\", TestJXApiProperties.filterProperties(\"myTestExchange\", true)).getMyTestExchangeMarketDataApi();\n"
 				+ "      Map<String, List<SingleSymbol>> request = createRequest();\n"
 				+ "      log.info(\"Calling com.foo.bar.gen.marketdata.MyTestExchangeMarketDataApi.postRestRequestDataTypeObjectListMap() API with request:\" + request);\n"
 				+ "      DemoUtil.checkResponse(api.postRestRequestDataTypeObjectListMap(request));\n"
@@ -216,7 +218,8 @@ public class RestEndpointDemoGeneratorTest {
 				+ "      System.exit(-1);\n"
 				+ "    }\n"
 				+ "  }\n"
-				+ "}\n", 
+				+ "}\n"
+				+ "", 
 				generator.generate());
 	}
 }

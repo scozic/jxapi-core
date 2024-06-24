@@ -647,5 +647,13 @@ public class ExchangeJavaWrapperGeneratorUtil {
 	public static EndpointParameterType getEndpointParameterType(EndpointParameter parameter) {
 		return parameter == null? null: Optional.ofNullable(parameter.getEndpointParameterType()).orElse(EndpointParameterType.OBJECT);
 	}
+	
+	public static String getRestEndpointNameStaticVariable(String restEndpointName) {
+		return JavaCodeGenerationUtil.getStaticVariableName(restEndpointName) + "_REST_API";
+	}
+	
+	public static String getWebsocketEndpointNameStaticVariable(String websocketEndpointName) {
+		return JavaCodeGenerationUtil.getStaticVariableName(websocketEndpointName) + "_WS_API";
+	}
 
 }

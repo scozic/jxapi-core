@@ -27,6 +27,7 @@ public class ExchangeInterfaceImplementationGeneratorTest {
 		ExchangeInterfaceImplementationGenerator exchangeGenerator = new ExchangeInterfaceImplementationGenerator(exchangeDescriptor);
 		Assert.assertEquals("package com.xyz.foo.gen;\n"
 				+ "\n"
+				+ "import com.scz.jxapi.exchange.AbstractExchange;\n"
 				+ "import com.xyz.foo.gen.api1.FooApi1Api;\n"
 				+ "import com.xyz.foo.gen.api1.FooApi1ApiImpl;\n"
 				+ "import com.xyz.foo.gen.api2.FooApi2Api;\n"
@@ -37,14 +38,15 @@ public class ExchangeInterfaceImplementationGeneratorTest {
 				+ " * Actual implementation of {@link FooExchange}<br/>\n"
 				+ " * <br><strong>THIS CODE IS GENERATED. DO NOT EDIT MANUALLY!</strong>\n"
 				+ " */\n"
-				+ "public class FooExchangeImpl implements FooExchange {\n"
+				+ "public class FooExchangeImpl extends AbstractExchange implements FooExchange {\n"
 				+ "  \n"
 				+ "  private final FooApi1Api fooApi1Api;\n"
 				+ "  private final FooApi2Api fooApi2Api;\n"
 				+ "  \n"
-				+ "  public FooExchangeImpl(Properties properties) {\n"
-				+ "    this.fooApi1Api = new FooApi1ApiImpl(properties);\n"
-				+ "    this.fooApi2Api = new FooApi2ApiImpl(properties);\n"
+				+ "  public FooExchangeImpl(String exchangeName, Properties properties) {\n"
+				+ "    super(ID, exchangeName, properties);\n"
+				+ "    this.fooApi1Api = addApi(new FooApi1ApiImpl(getName(), properties));\n"
+				+ "    this.fooApi2Api = addApi(new FooApi2ApiImpl(getName(), properties));\n"
 				+ "  }\n"
 				+ "  \n"
 				+ "  @Override\n"
@@ -57,7 +59,8 @@ public class ExchangeInterfaceImplementationGeneratorTest {
 				+ "    return this.fooApi2Api;\n"
 				+ "  }\n"
 				+ "  \n"
-				+ "}\n", exchangeGenerator.generate());
+				+ "}\n"
+				+ "", exchangeGenerator.generate());
 	}
 	
 	@Test
@@ -80,6 +83,7 @@ public class ExchangeInterfaceImplementationGeneratorTest {
 		ExchangeInterfaceImplementationGenerator exchangeGenerator = new ExchangeInterfaceImplementationGenerator(exchangeDescriptor);
 		Assert.assertEquals("package com.xyz.foo.gen;\n"
 				+ "\n"
+				+ "import com.scz.jxapi.exchange.AbstractExchange;\n"
 				+ "import com.scz.jxapi.netutils.rest.ratelimits.RateLimitRule;\n"
 				+ "import com.scz.jxapi.netutils.rest.ratelimits.RequestThrottler;\n"
 				+ "import com.xyz.foo.gen.api1.FooApi1Api;\n"
@@ -92,7 +96,7 @@ public class ExchangeInterfaceImplementationGeneratorTest {
 				+ " * Actual implementation of {@link FooExchange}<br/>\n"
 				+ " * <br><strong>THIS CODE IS GENERATED. DO NOT EDIT MANUALLY!</strong>\n"
 				+ " */\n"
-				+ "public class FooExchangeImpl implements FooExchange {\n"
+				+ "public class FooExchangeImpl extends AbstractExchange implements FooExchange {\n"
 				+ "  \n"
 				+ "  public static final RateLimitRule RATE_LIMIT_EXCHANGE_GLOBAL_RATE_LIMIT = RateLimitRule.createRule(\"exchangeGlobalRateLimit\", 60000, 1000);\n"
 				+ "  \n"
@@ -100,9 +104,10 @@ public class ExchangeInterfaceImplementationGeneratorTest {
 				+ "  private final FooApi1Api fooApi1Api;\n"
 				+ "  private final FooApi2Api fooApi2Api;\n"
 				+ "  \n"
-				+ "  public FooExchangeImpl(Properties properties) {\n"
-				+ "    this.fooApi1Api = new FooApi1ApiImpl(properties, requestThrottler);\n"
-				+ "    this.fooApi2Api = new FooApi2ApiImpl(properties);\n"
+				+ "  public FooExchangeImpl(String exchangeName, Properties properties) {\n"
+				+ "    super(ID, exchangeName, properties);\n"
+				+ "    this.fooApi1Api = addApi(new FooApi1ApiImpl(getName(), properties, requestThrottler));\n"
+				+ "    this.fooApi2Api = addApi(new FooApi2ApiImpl(getName(), properties));\n"
 				+ "  }\n"
 				+ "  \n"
 				+ "  @Override\n"
@@ -115,7 +120,8 @@ public class ExchangeInterfaceImplementationGeneratorTest {
 				+ "    return this.fooApi2Api;\n"
 				+ "  }\n"
 				+ "  \n"
-				+ "}\n", 
+				+ "}\n"
+				+ "", 
 				exchangeGenerator.generate());
 	}
 

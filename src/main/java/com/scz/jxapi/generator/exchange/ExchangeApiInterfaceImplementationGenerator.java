@@ -29,6 +29,7 @@ import com.scz.jxapi.util.JsonUtil;
 
 public class ExchangeApiInterfaceImplementationGenerator extends JavaTypeGenerator {
 	
+	private static final String EXCHANGE_NAME_ARGUMENT_NAME = "exchangeName";
 	private static final String REQUEST_THROTTLER_VARIABLE_NAME = "requestThrottler";
 	private static final String HTTP_REQUEST_INTERCEPTOR_VARIABLE_NAME = "httpRequestInterceptor";
 	private static final String HTTP_REQUEST_EXECUTOR_VARIABLE_NAME = "httpRequestExecutor";
@@ -82,8 +83,18 @@ public class ExchangeApiInterfaceImplementationGenerator extends JavaTypeGenerat
 		
 		boolean hasExchangeLimits = exchangeDescriptor.getRateLimits() != null 
 										&& !exchangeDescriptor.getRateLimits().isEmpty();
-		
-		constructorBody.append("super(properties");
+		String exchangeClassName = ExchangeJavaWrapperGeneratorUtil.getExchangeInterfaceName(exchangeDescriptor);
+		addImport(exchangeClassName);
+		constructorBody.append("super(")
+					   .append(ExchangeApiInterfaceGenerator.EXCHANGE_API_NAME_VARIABLE)
+					   .append(", ")
+					   .append(EXCHANGE_NAME_ARGUMENT_NAME)
+					   .append(", ")
+					   .append(JavaCodeGenerationUtil.getClassNameWithoutPackage(exchangeClassName))
+					   .append(".")
+					   .append(ExchangeInterfaceGenerator.EXCHANGE_ID_VARIABLE)
+					   .append(", ")
+					   .append("properties");
 		if ((hasRateLimits || hasExchangeLimits) 
 				&& (exchangeApiDescriptor.getRestEndpoints() != null && !exchangeApiDescriptor.getRestEndpoints().isEmpty())) {
 			addImport(RequestThrottler.class);
@@ -175,7 +186,10 @@ public class ExchangeApiInterfaceImplementationGenerator extends JavaTypeGenerat
 		StringBuilder constructorSignature = new StringBuilder()
 							.append("public ")
 							.append(simpleImplementationName)
-							.append("(Properties properties");
+							.append("(String ")
+							.append(EXCHANGE_NAME_ARGUMENT_NAME)
+							.append(", ")
+							.append("Properties properties");
 		if (hasExchangeLimits && exchangeApiDescriptor.getRestEndpoints() != null && !exchangeApiDescriptor.getRestEndpoints().isEmpty()) {
 			addImport(RequestThrottler.class);
 			constructorSignature.append(", ")
@@ -248,6 +262,8 @@ public class ExchangeApiInterfaceImplementationGenerator extends JavaTypeGenerat
 					   .append(websocketEndpointVariableName)
 					   .append(" = ")
 					   .append("createWebsocketEndpoint(")
+					   .append(ExchangeJavaWrapperGeneratorUtil.getWebsocketEndpointNameStaticVariable(websocketApi.getName()))
+					   .append(", ")
 					   .append(getResponseDeserializerInstance)
 					   .append(");\n");
 		addImport(WebsocketListener.class);
@@ -485,9 +501,10 @@ public class ExchangeApiInterfaceImplementationGenerator extends JavaTypeGenerat
 		
 		addImport(HttpRequest.class);
 		StringBuilder createHttpRequestInstruction = new StringBuilder()
-				.append("HttpRequest.create(\"")
-				.append(restApi.getUrl())
-				.append("\"");
+				.append("HttpRequest.create(")
+				.append(ExchangeJavaWrapperGeneratorUtil.getRestEndpointNameStaticVariable(restApi.getName()))
+				.append(", ")
+				.append(JavaCodeGenerationUtil.getQuotedString(restApi.getUrl()));
 		if (urlParametersSerializerDeclaration != null) {
 			createHttpRequestInstruction
 				.append(" + ")

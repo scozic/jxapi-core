@@ -37,6 +37,7 @@ public class DefaultWebsocketEndpoint<M> implements WebsocketEndpoint<M> {
 		}
 	}
 
+	@Override
 	public String subscribe(WebsocketSubscribeRequest request, WebsocketListener<M> listener) {
 		String topic = request.getTopic();
 		Subscription sub = subscriptionsByTopic.get(topic);
@@ -53,6 +54,7 @@ public class DefaultWebsocketEndpoint<M> implements WebsocketEndpoint<M> {
 		return subId;
 	}
 
+	@Override
 	public boolean unsubscribe(String unsubscriptionId) {
 		Subscription sub = subscriptionsById.get(unsubscriptionId);
 		if (sub == null) {
