@@ -1,11 +1,12 @@
 package com.scz.jxapi.netutils.websocket;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.scz.jxapi.observability.DefaultObservable;
+import com.scz.jxapi.observability.Observable;
 
 public abstract class AbstractWebsocket implements Websocket {
 	
@@ -13,8 +14,8 @@ public abstract class AbstractWebsocket implements Websocket {
 	
 	protected final AtomicBoolean connected = new AtomicBoolean(false);
 	
-	private final List<RawWebsocketMessageHandler> messageHandlers = new ArrayList<>();
-	private final List<WebsocketErrorHandler> errorHandlers = new ArrayList<>();
+	private final Observable<RawWebsocketMessageHandler, String> messageObservable = new DefaultObservable<>((handler, message) -> handler.handleWebsocketMessage(message));
+	private final Observable<WebsocketErrorHandler, WebsocketException> errorObservable = new DefaultObservable<>((handler, error) -> handler.handleWebsocketError(error));
 	
 	protected String url;
 
@@ -59,22 +60,22 @@ public abstract class AbstractWebsocket implements Websocket {
 
 	@Override
 	public void addMessageHandler(RawWebsocketMessageHandler messageHandler) {
-		messageHandlers.add(messageHandler);
+		messageObservable.subscribe(messageHandler);
 	}
 
 	@Override
 	public boolean removeMessageHandler(RawWebsocketMessageHandler messageHandler) {
-		return messageHandlers.remove(messageHandler);
+		return messageObservable.unsubscribe(messageHandler);
 	}
 	
 	@Override
 	public void addErrorHandler(WebsocketErrorHandler errorHandler) {
-		this.errorHandlers.add(errorHandler);
+		this.errorObservable.subscribe(errorHandler);
 	}
 	
 	@Override
 	public boolean removeErrorHandler(WebsocketErrorHandler errorHandler) {
-		return this.errorHandlers.remove(errorHandler);
+		return this.errorObservable.unsubscribe(errorHandler);
 	}
 	
 	@Override
@@ -88,7 +89,7 @@ public abstract class AbstractWebsocket implements Websocket {
 	}
 	
 	protected void dispatchMessage(String message) {
-		messageHandlers.forEach(h -> h.handleWebsocketMessage(message));
+		messageObservable.dispatch(message);
 	}
 	
 	protected void dispatchError(String msg, Throwable t) {
@@ -96,7 +97,7 @@ public abstract class AbstractWebsocket implements Websocket {
 	}
 	
 	protected void dispatchError(WebsocketException error) {
-		errorHandlers.forEach(h -> h.handleWebsocketError(error));
+		errorObservable.dispatch(error);
 	}
 	
 	public String toString() {

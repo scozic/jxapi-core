@@ -233,5 +233,20 @@ public class EndpointDemoGeneratorUtil {
 									 + JavaCodeGenerationUtil.firstLetterToUpperCase(websocketApi.getName())
 									 + "Demo";
 	}
+	
+	public static String getNewTestApiInstruction(String exchangeId, String exchangeImplClassName, String simpleApiClassName) {
+		return new StringBuilder()
+				.append(simpleApiClassName)
+				.append(" api = new ")
+				.append(JavaCodeGenerationUtil.getClassNameWithoutPackage(exchangeImplClassName))
+				.append("(\"test-")
+				.append(exchangeId)
+				.append("\", TestJXApiProperties.filterProperties(\"")
+				.append(exchangeId)
+				.append("\", true)).get")
+				.append(simpleApiClassName)
+				.append("();\n")
+				.toString();
+	}
 
 }

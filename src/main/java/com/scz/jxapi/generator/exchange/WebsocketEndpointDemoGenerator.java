@@ -89,14 +89,7 @@ public class WebsocketEndpointDemoGenerator extends JavaTypeGenerator {
 		addImport(exchangeImplClassName);
 		addImport(TestJXApiProperties.class);
 		
-		body.append(simpleApiClassName)
-			.append(" api = new ")
-			.append(JavaCodeGenerationUtil.getClassNameWithoutPackage(exchangeImplClassName))
-			.append("(TestJXApiProperties.filterProperties(\"")
-			.append(exchangeName)
-			.append("\", true)).get")
-			.append(simpleApiClassName)
-			.append("();\n");
+		body.append(EndpointDemoGeneratorUtil.getNewTestApiInstruction(exchangeName, exchangeImplClassName, simpleApiClassName));
 			
 		if (hasArguments) {
 			this.appendToBody(EndpointDemoGeneratorUtil.generateEndpointParameterCreationMethod(

@@ -10,6 +10,8 @@ import com.scz.jxapi.netutils.websocket.WebsocketListener;
 
 public class ExchangeApiInterfaceGenerator extends JavaTypeGenerator {
 	
+	public static final String EXCHANGE_API_NAME_VARIABLE = "ID";
+	
 	private static EndpointParameterType getEndpointParameterType(EndpointParameter parameter) {
 		return parameter == null? null: Optional.ofNullable(parameter.getEndpointParameterType()).orElse(EndpointParameterType.OBJECT);
 	}
@@ -31,6 +33,27 @@ public class ExchangeApiInterfaceGenerator extends JavaTypeGenerator {
 	
 	@Override
 	public String generate() {
+		appendToBody("String ")
+			.append(EXCHANGE_API_NAME_VARIABLE)
+			.append(" = ")
+			.append(JavaCodeGenerationUtil.getQuotedString(exchangeApiDescriptor.getName()))
+			.append(";\n");
+		if (exchangeApiDescriptor.getRestEndpoints() != null) {
+			for (RestEndpointDescriptor restApi: exchangeApiDescriptor.getRestEndpoints()) {
+				generateApiNameVariableDeclaration(
+						restApi.getName(), 
+						ExchangeJavaWrapperGeneratorUtil.getRestEndpointNameStaticVariable(restApi.getName()));
+			}
+		}
+		
+		if (exchangeApiDescriptor.getWebsocketEndpoints() != null) {
+			for (WebsocketEndpointDescriptor websocketApi : exchangeApiDescriptor.getWebsocketEndpoints()) {
+				generateApiNameVariableDeclaration(
+						websocketApi.getName(), 
+						ExchangeJavaWrapperGeneratorUtil.getWebsocketEndpointNameStaticVariable(websocketApi.getName()));
+			}
+		}
+		
 		if (exchangeApiDescriptor.getRestEndpoints() != null) {
 			for (RestEndpointDescriptor restApi: exchangeApiDescriptor.getRestEndpoints()) {
 				generateRestEndpointMethodDeclaration(restApi);
@@ -44,6 +67,14 @@ public class ExchangeApiInterfaceGenerator extends JavaTypeGenerator {
 		}
 		
 		return super.generate();
+	}
+	
+	private void generateApiNameVariableDeclaration(String apiName, String apiNameVariable) {
+		appendToBody("String ")
+			.append(apiNameVariable)
+			.append(" = ")
+			.append(JavaCodeGenerationUtil.getQuotedString(apiName))
+			.append(";\n");
 	}
 
 	private void generateWebsocketApiMethodsDeclarations(WebsocketEndpointDescriptor websocketApi) {
