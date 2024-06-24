@@ -631,7 +631,6 @@ public class DefaultWebsocketManager implements WebsocketManager {
 				onError("Error while running heartbeat timeout task", ex);
 			}
 			
-		}
-		
+		}		
 	}
 }

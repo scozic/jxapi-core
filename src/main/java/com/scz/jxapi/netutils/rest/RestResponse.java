@@ -3,6 +3,7 @@ package com.scz.jxapi.netutils.rest;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+import com.scz.jxapi.util.EncodingUtil;
 import com.scz.jxapi.util.JsonUtil;
 
 public class RestResponse<A> {
@@ -63,12 +64,22 @@ public class RestResponse<A> {
 		this.httpResponse = httpResponse;
 	}
 	
+	public String getEndpoint() {
+		if (httpResponse != null) {
+			HttpRequest request = httpResponse.getRequest();
+			if (request != null) {
+				return request.getEndpoint();
+			}
+		}
+		return null;
+	}
+	
 	public String toString() {
 		Map<String, Object> fields = new LinkedHashMap<>();
 		fields.put("httpStatus", httpStatus);
 		fields.put("exception", exception);
 		if (response != null) {
-			fields.put("response", response);
+			fields.put("response", EncodingUtil.prettyPrintLongString(JsonUtil.pojoToJsonString(response), 512));
 		} else if (httpResponse != null) {
 			fields.put("body", httpResponse.getBody());
 			fields.put("time", httpResponse.getTime());

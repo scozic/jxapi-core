@@ -13,8 +13,9 @@ import com.scz.jxapi.util.EncodingUtil;
  */
 public class HttpRequest {
 	
-	public static HttpRequest create(String url, HttpMethod httpMethod, Object request, List<RateLimitRule> rateLimits, int weight) {
+	public static HttpRequest create(String endpoint, String url, HttpMethod httpMethod, Object request, List<RateLimitRule> rateLimits, int weight) {
 		HttpRequest r = new HttpRequest();
+		r.setEndpoint(endpoint);
 		r.setUrl(url);
 		r.setHttpMethod(httpMethod);
 		r.setRequest(request);
@@ -24,6 +25,8 @@ public class HttpRequest {
 		return r;
 	}
 
+	private String endpoint;
+	
 	private String url;
 	
 	private Map<String, List<String>> headers;
@@ -154,6 +157,14 @@ public class HttpRequest {
 
 	public void setThrottledTime(long throttledTime) {
 		this.throttledTime = throttledTime;
+	}
+	
+	public String getEndpoint() {
+		return endpoint;
+	}
+
+	public void setEndpoint(String endpoint) {
+		this.endpoint = endpoint;
 	}
 
 	@Override
