@@ -12,7 +12,16 @@ import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
 
-import com.scz.jxapi.generator.JavaCodeGenerationUtil;
+import com.scz.jxapi.exchange.descriptor.CanonicalEndpointParameterTypes;
+import com.scz.jxapi.exchange.descriptor.EndpointParameter;
+import com.scz.jxapi.exchange.descriptor.EndpointParameterType;
+import com.scz.jxapi.exchange.descriptor.ExchangeApiDescriptor;
+import com.scz.jxapi.exchange.descriptor.ExchangeDescriptor;
+import com.scz.jxapi.exchange.descriptor.RestEndpointDescriptor;
+import com.scz.jxapi.exchange.descriptor.WebsocketEndpointDescriptor;
+import com.scz.jxapi.generator.exchange.api.ExchangeApiInterfaceGenerator;
+import com.scz.jxapi.generator.exchange.api.ExchangeApiInterfaceImplementationGenerator;
+import com.scz.jxapi.generator.java.JavaCodeGenerationUtil;
 import com.scz.jxapi.netutils.deserialization.RawBigDecimalMessageDeserializer;
 import com.scz.jxapi.netutils.deserialization.RawBooleanMessageDeserializer;
 import com.scz.jxapi.netutils.deserialization.RawIntegerMessageDeserializer;

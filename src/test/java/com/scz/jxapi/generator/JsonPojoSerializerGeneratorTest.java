@@ -7,9 +7,9 @@ import java.util.List;
 import org.junit.Assert;
 import org.junit.Test;
 
-import com.scz.jxapi.generator.exchange.EndpointParameter;
-import com.scz.jxapi.generator.exchange.CanonicalEndpointParameterTypes;
-import com.scz.jxapi.generator.exchange.JsonPojoSerializerGenerator;
+import com.scz.jxapi.exchange.descriptor.CanonicalEndpointParameterTypes;
+import com.scz.jxapi.exchange.descriptor.EndpointParameter;
+import com.scz.jxapi.generator.exchange.api.pojo.JsonPojoSerializerGenerator;
 
 public class JsonPojoSerializerGeneratorTest {
 	

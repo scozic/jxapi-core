@@ -1,8 +1,10 @@
 package com.scz.jxapi.generator.exchange;
 
 import com.scz.jxapi.exchange.Exchange;
-import com.scz.jxapi.generator.JavaCodeGenerationUtil;
-import com.scz.jxapi.generator.JavaTypeGenerator;
+import com.scz.jxapi.exchange.descriptor.ExchangeApiDescriptor;
+import com.scz.jxapi.exchange.descriptor.ExchangeDescriptor;
+import com.scz.jxapi.generator.java.JavaCodeGenerationUtil;
+import com.scz.jxapi.generator.java.JavaTypeGenerator;
 
 /**
  * Generates Source code of Java interface described by a {@link ExchangeInterfaceGenerator}. 

@@ -7,8 +7,10 @@ import java.util.Properties;
 import java.util.Set;
 
 import com.scz.jxapi.exchange.AbstractExchange;
-import com.scz.jxapi.generator.JavaCodeGenerationUtil;
-import com.scz.jxapi.generator.JavaTypeGenerator;
+import com.scz.jxapi.exchange.descriptor.ExchangeApiDescriptor;
+import com.scz.jxapi.exchange.descriptor.ExchangeDescriptor;
+import com.scz.jxapi.generator.java.JavaCodeGenerationUtil;
+import com.scz.jxapi.generator.java.JavaTypeGenerator;
 import com.scz.jxapi.netutils.rest.ratelimits.RateLimitRule;
 import com.scz.jxapi.netutils.rest.ratelimits.RequestThrottler;
 

@@ -5,6 +5,9 @@ import java.nio.file.Paths;
 import org.junit.Assert;
 import org.junit.Test;
 
+import com.scz.jxapi.exchange.descriptor.ExchangeDescriptor;
+import com.scz.jxapi.exchange.descriptor.ExchangeDescriptorParser;
+
 public class ExchangeInterfaceGeneratorTest {
 
 	@Test

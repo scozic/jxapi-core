@@ -8,6 +8,10 @@ import java.util.List;
 import org.junit.Assert;
 import org.junit.Test;
 
+import com.scz.jxapi.generator.java.JavaCodeGenerationUtil;
+import com.scz.jxapi.generator.java.JavaTypeGenerator;
+import com.scz.jxapi.generator.java.PojoField;
+
 /**
  * Unit test for {@link JavaCodeGenerationUtil}
  */

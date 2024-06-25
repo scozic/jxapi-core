@@ -13,6 +13,10 @@ import org.junit.Assert;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.scz.jxapi.exchange.descriptor.ExchangeApiDescriptor;
+import com.scz.jxapi.exchange.descriptor.RestEndpointDescriptor;
+import com.scz.jxapi.exchange.descriptor.WebsocketEndpointDescriptor;
+
 /**
  * Helper methods around .java files generator tests.
  * @see ClassesGenerator

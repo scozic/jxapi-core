@@ -15,6 +15,8 @@ import org.junit.After;
 import org.junit.Assert;
 import org.junit.Test;
 
+import com.scz.jxapi.generator.java.JavaTypeGenerator;
+
 /**
  * Unit test for {@link JavaTypeGenerator}
  * @author Sylvestre COZIC

@@ -3,6 +3,9 @@ package com.scz.jxapi.generator.exchange;
 import java.io.IOException;
 import java.nio.file.Path;
 
+import com.scz.jxapi.exchange.descriptor.ExchangeApiDescriptor;
+import com.scz.jxapi.exchange.descriptor.ExchangeDescriptor;
+import com.scz.jxapi.generator.exchange.api.ExchangeApiClassesGenerator;
 import com.scz.jxapi.netutils.rest.ratelimits.RateLimitManager;
 
 /**

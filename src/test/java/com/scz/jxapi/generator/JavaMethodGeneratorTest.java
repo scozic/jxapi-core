@@ -3,6 +3,8 @@ package com.scz.jxapi.generator;
 import org.junit.Assert;
 import org.junit.Test;
 
+import com.scz.jxapi.generator.java.JavaMethodGenerator;
+
 /**
  * Unit test for {@link JavaMethodGenerator}.
  * @author Sylvestre COZIC

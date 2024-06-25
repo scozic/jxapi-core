@@ -9,7 +9,12 @@ import org.junit.After;
 import org.junit.Assert;
 import org.junit.Test;
 
-import com.scz.jxapi.generator.JavaCodeGenerationUtil;
+import com.scz.jxapi.exchange.descriptor.ExchangeApiDescriptor;
+import com.scz.jxapi.exchange.descriptor.ExchangeDescriptor;
+import com.scz.jxapi.exchange.descriptor.ExchangeDescriptorParser;
+import com.scz.jxapi.exchange.descriptor.WebsocketEndpointDescriptor;
+import com.scz.jxapi.generator.exchange.api.ws.WebsocketEndpointClassesGenerator;
+import com.scz.jxapi.generator.java.JavaCodeGenerationUtil;
 
 /**
  * Unit test for {@link WebsocketEndpointClassesGenerator}

@@ -3,6 +3,9 @@ package com.scz.jxapi.generator;
 import org.junit.Assert;
 import org.junit.Test;
 
+import com.scz.jxapi.generator.java.PojoField;
+import com.scz.jxapi.generator.java.PojoGenerator;
+
 /**
  * Unit test for {@link PojoGenerator}
  */

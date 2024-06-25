@@ -3,6 +3,11 @@ package com.scz.jxapi.generator.exchange;
 import java.io.IOException;
 import java.nio.file.Path;
 
+import com.scz.jxapi.exchange.descriptor.ExchangeApiDescriptor;
+import com.scz.jxapi.exchange.descriptor.ExchangeDescriptor;
+import com.scz.jxapi.exchange.descriptor.RestEndpointDescriptor;
+import com.scz.jxapi.exchange.descriptor.WebsocketEndpointDescriptor;
+
 /**
  * Interface for Java code generators that manage generation of multiple
  * classes. There is one of such implementation for each part of an

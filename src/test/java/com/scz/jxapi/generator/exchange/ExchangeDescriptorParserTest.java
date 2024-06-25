@@ -6,6 +6,14 @@ import java.util.List;
 import org.junit.Assert;
 import org.junit.Test;
 
+import com.scz.jxapi.exchange.descriptor.CanonicalEndpointParameterTypes;
+import com.scz.jxapi.exchange.descriptor.EndpointParameter;
+import com.scz.jxapi.exchange.descriptor.ExchangeApiDescriptor;
+import com.scz.jxapi.exchange.descriptor.ExchangeDescriptor;
+import com.scz.jxapi.exchange.descriptor.ExchangeDescriptorParser;
+import com.scz.jxapi.exchange.descriptor.RestEndpointDescriptor;
+import com.scz.jxapi.exchange.descriptor.WebsocketEndpointDescriptor;
+import com.scz.jxapi.exchange.descriptor.WebsocketMessageTopicMatcherFieldDescriptor;
 import com.scz.jxapi.netutils.rest.HttpMethod;
 
 /**

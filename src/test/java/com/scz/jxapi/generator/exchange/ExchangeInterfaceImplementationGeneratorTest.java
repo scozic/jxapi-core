@@ -6,6 +6,9 @@ import java.util.List;
 import org.junit.Assert;
 import org.junit.Test;
 
+import com.scz.jxapi.exchange.descriptor.ExchangeApiDescriptor;
+import com.scz.jxapi.exchange.descriptor.ExchangeDescriptor;
+import com.scz.jxapi.exchange.descriptor.RestEndpointDescriptor;
 import com.scz.jxapi.netutils.rest.ratelimits.RateLimitRule;
 
 public class ExchangeInterfaceImplementationGeneratorTest {

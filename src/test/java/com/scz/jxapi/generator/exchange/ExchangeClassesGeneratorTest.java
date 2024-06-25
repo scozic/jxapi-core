@@ -7,7 +7,9 @@ import java.nio.file.Paths;
 import org.junit.After;
 import org.junit.Test;
 
-import com.scz.jxapi.generator.JavaCodeGenerationUtil;
+import com.scz.jxapi.exchange.descriptor.ExchangeDescriptor;
+import com.scz.jxapi.exchange.descriptor.ExchangeDescriptorParser;
+import com.scz.jxapi.generator.java.JavaCodeGenerationUtil;
 
 /**
  * Unit test for {@link ExchangeClassesGenerator}
