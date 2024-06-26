@@ -7,12 +7,12 @@ import com.scz.jxapi.util.EncodingUtil;
 
 /**
  * Part of exchange descriptor JSON document describing a given field of a request to an endpoint or its response.
- * Such field can be recursive, see {@link CanonicalEndpointParameterTypes#OBJECT} or {@link CanonicalEndpointParameterTypes#OBJECT_LIST}.
+ * Such field can be recursive, see {@link CanonicalType#OBJECT} or {@link CanonicalType#OBJECT_LIST}.
  */
-public class EndpointParameter {
+public class Field {
 	
-	public static EndpointParameter create(String type, String name, String msgField, String description, Object sampleValue) {
-		EndpointParameter p = new EndpointParameter();
+	public static Field create(String type, String name, String msgField, String description, Object sampleValue) {
+		Field p = new Field();
 		p.setType(type);
 		p.setName(name);
 		p.setMsgField(msgField);
@@ -21,8 +21,8 @@ public class EndpointParameter {
 		return p;
 	}
 	
-	public static EndpointParameter createObject(String type, String name, String msgField, String description, List<EndpointParameter> parameters) {
-		EndpointParameter p = new EndpointParameter();
+	public static Field createObject(String type, String name, String msgField, String description, List<Field> parameters) {
+		Field p = new Field();
 		p.setType(type);
 		p.setName(name);
 		p.setMsgField(msgField);
@@ -49,12 +49,12 @@ public class EndpointParameter {
 	
 	private String objectName;
 	
-	private List<EndpointParameter> parameters;
+	private List<Field> parameters;
 	
 	private List<String> implementedInterfaces;
 	
-	public EndpointParameter clone() {
-		EndpointParameter clone = new EndpointParameter();
+	public Field clone() {
+		Field clone = new Field();
 		clone.name = this.name;
 		clone.description = this.description;
 		clone.type = this.type;
@@ -75,8 +75,8 @@ public class EndpointParameter {
 		this.name = name;
 	}
 
-	public EndpointParameterType getEndpointParameterType() {
-		return EndpointParameterType.fromTypeName(type);
+	public Type getEndpointParameterType() {
+		return Type.fromTypeName(type);
 	}
 
 	public String setType() {
@@ -113,21 +113,21 @@ public class EndpointParameter {
 	
 	/**
 	 * @return For an 'object' type parameter, see
-	 *         {@link CanonicalEndpointParameterTypes#isObject}, the parameters in nested
+	 *         {@link CanonicalType#isObject}, the parameters in nested
 	 *         structure, <code>null</code> otherwise.
 	 */
-	public List<EndpointParameter> getParameters() {
+	public List<Field> getParameters() {
 		return parameters;
 	}
 
-	public void setParameters(List<EndpointParameter> parameters) {
+	public void setParameters(List<Field> parameters) {
 		this.parameters = parameters;
 	}
 	
 	/**
 	 * @return The simple (without package) name of java class to represent
 	 *         corresponding to object defined by this parameter. Relevant only when
-	 *         type is an object see {@link CanonicalEndpointParameterTypes#isObject}. Remark: in a descriptor
+	 *         type is an object see {@link CanonicalType#isObject}. Remark: in a descriptor
 	 *         file, the first parameter defining a given object name should define
 	 *         sub-parameters, other parameters using same object name need not
 	 *         define sub-parameters. This allow not to repeat identical structures

@@ -6,7 +6,7 @@ import com.scz.jxapi.util.EncodingUtil;
 
 /**
  * Part of JSON document describing a crypo exchange API, describes a websocket endpoint where clients subscription can be performed using specified topic and eventual additional parameters.
- * The structure of additional subscription parameters and response format are described as {@link EndpointParameter} lists.
+ * The structure of additional subscription parameters and response format are described as {@link Field} lists.
  */
 public class WebsocketEndpointDescriptor {
 	
@@ -18,9 +18,9 @@ public class WebsocketEndpointDescriptor {
 	
 	private String url;
 	
-	private EndpointParameter request;
+	private Field request;
 	
-	private EndpointParameter message;
+	private Field message;
 	
 	private String topicParametersListSeparator;
 	
@@ -68,17 +68,17 @@ public class WebsocketEndpointDescriptor {
 		this.messageTopicMatcherFields = messageTopicMatcherFields;
 	}
 	
-	public EndpointParameter getRequest() {
+	public Field getRequest() {
 		return request;
 	}
-	public void setRequest(EndpointParameter request) {
+	public void setRequest(Field request) {
 		this.request = request;
 	}
 	
-	public EndpointParameter getMessage() {
+	public Field getMessage() {
 		return message;
 	}
-	public void setMessage(EndpointParameter message) {
+	public void setMessage(Field message) {
 		this.message = message;
 	}
 	

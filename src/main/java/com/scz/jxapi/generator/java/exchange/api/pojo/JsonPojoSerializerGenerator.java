@@ -4,7 +4,7 @@ import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import com.scz.jxapi.exchange.descriptor.EndpointParameter;
+import com.scz.jxapi.exchange.descriptor.Field;
 import com.scz.jxapi.generator.java.JavaCodeGenerationUtil;
 import com.scz.jxapi.generator.java.JavaTypeGenerator;
 import com.scz.jxapi.generator.java.exchange.ExchangeJavaWrapperGeneratorUtil;
@@ -13,9 +13,9 @@ import com.scz.jxapi.util.EncodingUtil;
 public class JsonPojoSerializerGenerator extends JavaTypeGenerator {
 
 	private final String serializedTypeClassName;
-	private final List<EndpointParameter> fields;
+	private final List<Field> fields;
 	
-	public JsonPojoSerializerGenerator(String serializedTypeClassName, List<EndpointParameter> fields) {
+	public JsonPojoSerializerGenerator(String serializedTypeClassName, List<Field> fields) {
 		super(ExchangeJavaWrapperGeneratorUtil.getSerializerClassName(serializedTypeClassName));
 		this.serializedTypeClassName = serializedTypeClassName;
 		this.fields = fields;
@@ -64,7 +64,7 @@ public class JsonPojoSerializerGenerator extends JavaTypeGenerator {
 					 body.toString());
 	}
 	
-	private String genWriteFieldInstruction(EndpointParameter field, String getFieldValue) {
+	private String genWriteFieldInstruction(Field field, String getFieldValue) {
 		if (!field.getEndpointParameterType().getCanonicalType().isPrimitive) {
 			return "gen.writeObjectField(\"" + msgFieldName(field) + "\", " + getFieldValue + ");\n";
 		}
@@ -86,7 +86,7 @@ public class JsonPojoSerializerGenerator extends JavaTypeGenerator {
 		}
 	}
 	
-	private static String msgFieldName(EndpointParameter field) {
+	private static String msgFieldName(Field field) {
 		return field.getMsgField() != null? field.getMsgField() : field.getName();
 	}
 

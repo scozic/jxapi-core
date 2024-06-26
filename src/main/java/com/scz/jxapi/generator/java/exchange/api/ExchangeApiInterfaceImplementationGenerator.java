@@ -12,9 +12,9 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import com.scz.jxapi.exchange.AbstractExchangeApi;
-import com.scz.jxapi.exchange.descriptor.CanonicalEndpointParameterTypes;
-import com.scz.jxapi.exchange.descriptor.EndpointParameter;
-import com.scz.jxapi.exchange.descriptor.EndpointParameterType;
+import com.scz.jxapi.exchange.descriptor.CanonicalType;
+import com.scz.jxapi.exchange.descriptor.Field;
+import com.scz.jxapi.exchange.descriptor.Type;
 import com.scz.jxapi.exchange.descriptor.ExchangeApiDescriptor;
 import com.scz.jxapi.exchange.descriptor.ExchangeDescriptor;
 import com.scz.jxapi.exchange.descriptor.RestEndpointDescriptor;
@@ -231,10 +231,10 @@ public class ExchangeApiInterfaceImplementationGenerator extends JavaTypeGenerat
 	}
 
 	private void generateWebsocketApiMethodsDeclarations(WebsocketEndpointDescriptor websocketApi) {
-		EndpointParameter request = websocketApi.getRequest();
-		EndpointParameterType requestDataType = ExchangeJavaWrapperGeneratorUtil.getEndpointParameterType(request);
-		EndpointParameter message = websocketApi.getMessage();
-		EndpointParameterType messageDataType = ExchangeJavaWrapperGeneratorUtil.getEndpointParameterType(message);
+		Field request = websocketApi.getRequest();
+		Type requestDataType = ExchangeJavaWrapperGeneratorUtil.getEndpointParameterType(request);
+		Field message = websocketApi.getMessage();
+		Type messageDataType = ExchangeJavaWrapperGeneratorUtil.getEndpointParameterType(message);
 		addImport(WebsocketEndpoint.class);
 		boolean hasArguments = ExchangeJavaWrapperGeneratorUtil.websocketEndpointHasArguments(websocketApi, exchangeApiDescriptor);
 		String requestSimpleClassName = Object.class.getSimpleName();
@@ -316,7 +316,7 @@ public class ExchangeApiInterfaceImplementationGenerator extends JavaTypeGenerat
 			replacements.add(ExchangeJavaWrapperGeneratorUtil.getRequestArgName(request.getName()));
 			replacements.add("\" + " + requestArgName + " + \"");
 		}
-		List<EndpointParameter> endpointParameters = List.of();
+		List<Field> endpointParameters = List.of();
 		if (request != null) {
 			endpointParameters = ExchangeJavaWrapperGeneratorUtil.getEndpointParameters(
 					request.getParameters(), 
@@ -381,8 +381,8 @@ public class ExchangeApiInterfaceImplementationGenerator extends JavaTypeGenerat
 	}
 	
 	private String generateWebsocketTopicSerializerDeclaration(WebsocketEndpointDescriptor websocketApi) {
-		EndpointParameter request = websocketApi.getRequest();
-		EndpointParameterType requestDataType = ExchangeJavaWrapperGeneratorUtil.getEndpointParameterType(request); 
+		Field request = websocketApi.getRequest();
+		Type requestDataType = ExchangeJavaWrapperGeneratorUtil.getEndpointParameterType(request); 
 		String topicSerializerBody = "\"\"";
 		if (ExchangeJavaWrapperGeneratorUtil.websocketEndpointHasArguments(websocketApi, exchangeApiDescriptor)) {
 			if (websocketApi.getTopic() != null) {
@@ -405,10 +405,10 @@ public class ExchangeApiInterfaceImplementationGenerator extends JavaTypeGenerat
 	}
 	
 	private void generateRestEndpointMethodDeclaration(RestEndpointDescriptor restApi) {
-		EndpointParameter request = restApi.getRequest();
-		EndpointParameterType requestDataType = ExchangeJavaWrapperGeneratorUtil.getEndpointParameterType(request);
-		EndpointParameter response = restApi.getResponse();
-		EndpointParameterType responseDataType =  ExchangeJavaWrapperGeneratorUtil.getEndpointParameterType(response);
+		Field request = restApi.getRequest();
+		Type requestDataType = ExchangeJavaWrapperGeneratorUtil.getEndpointParameterType(request);
+		Field response = restApi.getResponse();
+		Type responseDataType =  ExchangeJavaWrapperGeneratorUtil.getEndpointParameterType(response);
 		boolean hasArguments = ExchangeJavaWrapperGeneratorUtil.restEndpointHasArguments(restApi, exchangeApiDescriptor);
 		String requestSimpleClassName = "Object";
 		String requestArgName = ExchangeJavaWrapperGeneratorUtil.DEFAULT_REQUEST_ARG_NAME;
@@ -605,15 +605,15 @@ public class ExchangeApiInterfaceImplementationGenerator extends JavaTypeGenerat
 	}
 	
 	private String generateUrlParametersSerializerDeclaration(RestEndpointDescriptor restApi) {
-		EndpointParameter request = restApi.getRequest();
+		Field request = restApi.getRequest();
 		String getUrlParametersBody = null;
-		List<EndpointParameter> enpointParameters = request == null? null:
+		List<Field> enpointParameters = request == null? null:
 													ExchangeJavaWrapperGeneratorUtil.getEndpointParameters(
 														request.getParameters(), 
 														request.getObjectName(), 
 														exchangeApiDescriptor);
 		if (ExchangeJavaWrapperGeneratorUtil.restEndpointHasArguments(restApi, exchangeApiDescriptor)) {
-			EndpointParameterType requestDataType = ExchangeJavaWrapperGeneratorUtil.getEndpointParameterType(request);
+			Type requestDataType = ExchangeJavaWrapperGeneratorUtil.getEndpointParameterType(request);
 			boolean hasQueryParams = restApi.isQueryParams()	
 					|| !restApi.getHttpMethod().requestHasBody;
 			if (restApi.getUrlParameters() != null) {
@@ -636,14 +636,14 @@ public class ExchangeApiInterfaceImplementationGenerator extends JavaTypeGenerat
 		return getUrlParametersBody;
 	}
 	
-	private String generateGetUrlParametersBodyUsingQueryParams(List<EndpointParameter> endpointParameters, boolean singleRequestParam) {
+	private String generateGetUrlParametersBodyUsingQueryParams(List<Field> endpointParameters, boolean singleRequestParam) {
 		addImport(EncodingUtil.class);
 		StringBuilder s = new StringBuilder().append(EncodingUtil.class.getSimpleName() + ".createUrlQueryParameters(");
 		for (int i = 0; i < endpointParameters.size(); i++) {
 			if (i > 0) {
 				s.append(", ");
 			}
-			EndpointParameter param = endpointParameters.get(i);
+			Field param = endpointParameters.get(i);
 			String name = param.getName();
 			s.append("\"")
 			 .append(name)
@@ -657,15 +657,15 @@ public class ExchangeApiInterfaceImplementationGenerator extends JavaTypeGenerat
 							endpointParameters.stream().map(p -> p.getName()).collect(Collectors.toList()))
 						+ "()";
 			}
-			if (param.getEndpointParameterType().getCanonicalType() == CanonicalEndpointParameterTypes.LIST
-				|| param.getEndpointParameterType().getCanonicalType() == CanonicalEndpointParameterTypes.MAP
+			if (param.getEndpointParameterType().getCanonicalType() == CanonicalType.LIST
+				|| param.getEndpointParameterType().getCanonicalType() == CanonicalType.MAP
 				|| param.getEndpointParameterType().isObject()) {
 				addImport(JsonUtil.class);
 				value = new StringBuilder()
 								.append("JsonUtil.pojoToJsonString(")
 								.append(value)
 								.append(")").toString(); 
-			} else if (param.getEndpointParameterType().getCanonicalType() == CanonicalEndpointParameterTypes.STRING) {
+			} else if (param.getEndpointParameterType().getCanonicalType() == CanonicalType.STRING) {
 				value = new StringBuilder()
 						.append(value)
 						.toString(); 
@@ -677,7 +677,7 @@ public class ExchangeApiInterfaceImplementationGenerator extends JavaTypeGenerat
 	}
 
 	private String generateUrlParametersOrTopicSerializerBodyFromTemplate(String urlParametersTemplate, 
-																  List<EndpointParameter> endpointParameters, 
+																  List<Field> endpointParameters, 
 																  String stringListSeparator,
 																  String requestArgName) {
 		if (stringListSeparator == null) {
@@ -690,7 +690,7 @@ public class ExchangeApiInterfaceImplementationGenerator extends JavaTypeGenerat
 		  .append("\"");
 		int n = endpointParameters.size();
 		for (int i = 0; i < n; i++) {
-			EndpointParameter param = endpointParameters.get(i);
+			Field param = endpointParameters.get(i);
 			String name = param.getName();
 			if (!urlParametersTemplate.contains("${" + name + "}")) {
 				continue;
@@ -701,7 +701,7 @@ public class ExchangeApiInterfaceImplementationGenerator extends JavaTypeGenerat
 								ExchangeJavaWrapperGeneratorUtil.getClassNameForEndpointParameter(param, null, param.getObjectName()), 
 								endpointParameters.stream().map(p -> p.getName()).collect(Collectors.toList()))
 						   + "()";
-			if (param.getEndpointParameterType().getCanonicalType() == CanonicalEndpointParameterTypes.LIST) {
+			if (param.getEndpointParameterType().getCanonicalType() == CanonicalType.LIST) {
 				value = EncodingUtil.class.getSimpleName() + ".listToString(" + value + ", \"" + stringListSeparator + "\")"; 
 			}
 			sb.append(", \"").append(name).append("\", ").append(value);

@@ -3,8 +3,8 @@ package com.scz.jxapi.generator.java.exchange.api;
 import java.util.Optional;
 
 import com.scz.jxapi.exchange.ExchangeApi;
-import com.scz.jxapi.exchange.descriptor.EndpointParameter;
-import com.scz.jxapi.exchange.descriptor.EndpointParameterType;
+import com.scz.jxapi.exchange.descriptor.Field;
+import com.scz.jxapi.exchange.descriptor.Type;
 import com.scz.jxapi.exchange.descriptor.ExchangeApiDescriptor;
 import com.scz.jxapi.exchange.descriptor.ExchangeDescriptor;
 import com.scz.jxapi.exchange.descriptor.RestEndpointDescriptor;
@@ -19,8 +19,8 @@ public class ExchangeApiInterfaceGenerator extends JavaTypeGenerator {
 	
 	public static final String EXCHANGE_API_NAME_VARIABLE = "ID";
 	
-	private static EndpointParameterType getEndpointParameterType(EndpointParameter parameter) {
-		return parameter == null? null: Optional.ofNullable(parameter.getEndpointParameterType()).orElse(EndpointParameterType.OBJECT);
+	private static Type getEndpointParameterType(Field parameter) {
+		return parameter == null? null: Optional.ofNullable(parameter.getEndpointParameterType()).orElse(Type.OBJECT);
 	}
 	
 	private final ExchangeDescriptor exchangeDescriptor;
@@ -85,7 +85,7 @@ public class ExchangeApiInterfaceGenerator extends JavaTypeGenerator {
 	}
 
 	private void generateWebsocketApiMethodsDeclarations(WebsocketEndpointDescriptor websocketApi) {
-		EndpointParameterType requestDataType = getEndpointParameterType(websocketApi.getRequest());
+		Type requestDataType = getEndpointParameterType(websocketApi.getRequest());
 		boolean hasArguments = ExchangeJavaWrapperGeneratorUtil.websocketEndpointHasArguments(websocketApi, exchangeApiDescriptor);
 		String requestSimpleClassName = Object.class.getSimpleName();
 		String requestDescription = null;
@@ -103,7 +103,7 @@ public class ExchangeApiInterfaceGenerator extends JavaTypeGenerator {
 			requestArgName = ExchangeJavaWrapperGeneratorUtil.getRequestArgName(websocketApi.getRequest().getName());
 		}
 		
-		EndpointParameterType messageDataType = getEndpointParameterType(websocketApi.getMessage());
+		Type messageDataType = getEndpointParameterType(websocketApi.getMessage());
 		String messageClassSimpleName = ExchangeJavaWrapperGeneratorUtil.getClassNameForParameterType(
 				messageDataType, 
 				getImports(), 
@@ -150,10 +150,10 @@ public class ExchangeApiInterfaceGenerator extends JavaTypeGenerator {
 
 	private void generateRestEndpointMethodDeclaration(RestEndpointDescriptor restApi) {
 		boolean hasArguments = ExchangeJavaWrapperGeneratorUtil.restEndpointHasArguments(restApi, exchangeApiDescriptor);
-		EndpointParameter request = restApi.getRequest();
-		EndpointParameterType requestDataType = getEndpointParameterType(request);
-		EndpointParameter response = restApi.getResponse();
-		EndpointParameterType responseDataType = getEndpointParameterType(response);
+		Field request = restApi.getRequest();
+		Type requestDataType = getEndpointParameterType(request);
+		Field response = restApi.getResponse();
+		Type responseDataType = getEndpointParameterType(response);
 		String requestSimpleClassName = "Object";
 		String requestArgName = null;
 		if (hasArguments) {

@@ -2,8 +2,8 @@ package com.scz.jxapi.generator.java.exchange.api.demo;
 
 import java.util.Optional;
 
-import com.scz.jxapi.exchange.descriptor.EndpointParameter;
-import com.scz.jxapi.exchange.descriptor.EndpointParameterType;
+import com.scz.jxapi.exchange.descriptor.Field;
+import com.scz.jxapi.exchange.descriptor.Type;
 import com.scz.jxapi.exchange.descriptor.ExchangeApiDescriptor;
 import com.scz.jxapi.exchange.descriptor.ExchangeDescriptor;
 import com.scz.jxapi.exchange.descriptor.RestEndpointDescriptor;
@@ -35,7 +35,7 @@ public class RestEndpointDemoGenerator extends JavaTypeGenerator {
 		setTypeDeclaration("public class");
 		this.hasArguments = ExchangeJavaWrapperGeneratorUtil.restEndpointHasArguments(restApi, exchangeApiDescriptor);
 		if (hasArguments) {
-			EndpointParameterType requestDataType =  Optional.ofNullable(restApi.getRequest().getEndpointParameterType()).orElse(EndpointParameterType.OBJECT);
+			Type requestDataType =  Optional.ofNullable(restApi.getRequest().getEndpointParameterType()).orElse(Type.OBJECT);
 			if (requestDataType.getCanonicalType().isPrimitive) {
 				requestClassName = requestDataType.getCanonicalType().typeClass.getName();
 			} else {
@@ -74,7 +74,7 @@ public class RestEndpointDemoGenerator extends JavaTypeGenerator {
 		body = new StringBuilder();
 		String exchangeInterfaceClassName = ExchangeJavaWrapperGeneratorUtil.getExchangeInterfaceName(exchangeDescriptor);
 		String exchangeName = JavaCodeGenerationUtil.firstLetterToLowerCase(exchangeDescriptor.getName());
-		EndpointParameter request = ExchangeJavaWrapperGeneratorUtil.resolveEndpointParameters(exchangeApiDescriptor, restApi.getRequest());
+		Field request = ExchangeJavaWrapperGeneratorUtil.resolveEndpointParameters(exchangeApiDescriptor, restApi.getRequest());
 		String exchangeImplClassName = exchangeInterfaceClassName + "Impl";
 		addImport(exchangeImplClassName);
 		addImport(TestJXApiProperties.class);

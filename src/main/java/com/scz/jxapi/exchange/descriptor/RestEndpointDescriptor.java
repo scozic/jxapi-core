@@ -9,7 +9,7 @@ import com.scz.jxapi.util.EncodingUtil;
 /**
  * Part of JSON document describing a crypto exchange API, describes a specific REST endpoint.
  * Such endpoints are expecting an HTTP request to given URL endpoint, with given request parameters, and a response should be received.
- * Request and response parameters are detailed as {@link EndpointParameter} lists. 
+ * Request and response parameters are detailed as {@link Field} lists. 
  */
 public class RestEndpointDescriptor {
 	private String name;
@@ -20,9 +20,9 @@ public class RestEndpointDescriptor {
 	
 	private HttpMethod httpMethod;
 	
-	private EndpointParameter request;
+	private Field request;
 	
-	private EndpointParameter response;
+	private Field response;
 
 	private String urlParameters;
 	
@@ -106,19 +106,19 @@ public class RestEndpointDescriptor {
 		this.requestWeight = requestWeight;
 	}
 	
-	public EndpointParameter getRequest() {
+	public Field getRequest() {
 		return request;
 	}
 
-	public void setRequest(EndpointParameter request) {
+	public void setRequest(Field request) {
 		this.request = request;
 	}
 
-	public EndpointParameter getResponse() {
+	public Field getResponse() {
 		return response;
 	}
 
-	public void setResponse(EndpointParameter response) {
+	public void setResponse(Field response) {
 		this.response = response;
 	}
 	

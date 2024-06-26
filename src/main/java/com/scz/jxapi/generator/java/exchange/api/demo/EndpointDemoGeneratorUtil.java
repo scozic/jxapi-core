@@ -7,9 +7,9 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import com.scz.jxapi.exchange.descriptor.CanonicalEndpointParameterTypes;
-import com.scz.jxapi.exchange.descriptor.EndpointParameter;
-import com.scz.jxapi.exchange.descriptor.EndpointParameterType;
+import com.scz.jxapi.exchange.descriptor.CanonicalType;
+import com.scz.jxapi.exchange.descriptor.Field;
+import com.scz.jxapi.exchange.descriptor.Type;
 import com.scz.jxapi.exchange.descriptor.ExchangeApiDescriptor;
 import com.scz.jxapi.exchange.descriptor.ExchangeDescriptor;
 import com.scz.jxapi.exchange.descriptor.RestEndpointDescriptor;
@@ -24,7 +24,7 @@ public class EndpointDemoGeneratorUtil {
 	private EndpointDemoGeneratorUtil() {}
 	
 	public static String generateEndpointParameterCreationMethod(
-												   EndpointParameter endpointParameter, 
+												   Field endpointParameter, 
 												   String defaultObjectClassName,
 												   Set<String> imports) {
 		String parameterObjectClassName = Optional.ofNullable(endpointParameter.getObjectName())
@@ -46,10 +46,10 @@ public class EndpointDemoGeneratorUtil {
 					 .toString();
 	}
 	
-	public static String generateEndpointParameterCreationMethodDeclaration(EndpointParameter endpointParameter, 
+	public static String generateEndpointParameterCreationMethodDeclaration(Field endpointParameter, 
 																			String defaultObjectClassName,
 																			Set<String> imports) {
-		EndpointParameterType type = ExchangeJavaWrapperGeneratorUtil.getEndpointParameterType(endpointParameter);
+		Type type = ExchangeJavaWrapperGeneratorUtil.getEndpointParameterType(endpointParameter);
 		String parameterObjectClassName = Optional.ofNullable(endpointParameter.getObjectName()).orElse(defaultObjectClassName);
 		String parameterClassName =	ExchangeJavaWrapperGeneratorUtil.getClassNameForParameterType(
 												type, 
@@ -63,21 +63,21 @@ public class EndpointDemoGeneratorUtil {
 								  .toString();
 	}
 	
-	public static String generateEndpointParameterCreationMethodName(EndpointParameter endpointParameter) {
+	public static String generateEndpointParameterCreationMethodName(Field endpointParameter) {
 		return "create" + JavaCodeGenerationUtil.firstLetterToUpperCase(Optional.ofNullable(endpointParameter.getName()).orElse("request"));
 	}
 
-	private static String generateEndpointParameterSampleValueDeclaration(EndpointParameter endpointParameter, 
+	private static String generateEndpointParameterSampleValueDeclaration(Field endpointParameter, 
 																		 String sampleValueVariableName, 
 																		 String objectClassName, 
 																		 Set<String> imports,
 																		 String returnOrResultAffectation) {
-		EndpointParameterType type = ExchangeJavaWrapperGeneratorUtil.getEndpointParameterType(endpointParameter);
+		Type type = ExchangeJavaWrapperGeneratorUtil.getEndpointParameterType(endpointParameter);
 		Object sampleValue = endpointParameter.getSampleValue();
 		if (sampleValue == null && !type.isObject()) {
 			return returnOrResultAffectation + "null";
 		}
-		CanonicalEndpointParameterTypes canonicalType = type.getCanonicalType();
+		CanonicalType canonicalType = type.getCanonicalType();
 		if (canonicalType.isPrimitive) {
 			imports.add(canonicalType.typeClass.getName());
 			return returnOrResultAffectation + getPrimitiveTypeParameterSampleValueDeclaration(endpointParameter, imports);
@@ -87,11 +87,11 @@ public class EndpointDemoGeneratorUtil {
 		StringBuilder res = new StringBuilder();
 		String itemVariableName = sampleValueVariableName;
 		if (type.isObject()) {
-			if (canonicalType != CanonicalEndpointParameterTypes.OBJECT) {
+			if (canonicalType != CanonicalType.OBJECT) {
 				itemVariableName = itemVariableName + "Item";
 			}
 			String itemClassName = ExchangeJavaWrapperGeneratorUtil.getClassNameForParameterType(
-										EndpointParameterType.getLeafSubType(type), 
+										Type.getLeafSubType(type), 
 										imports, 
 										objectClassName);
 			res.append(itemClassName)
@@ -101,8 +101,8 @@ public class EndpointDemoGeneratorUtil {
 			   .append(itemClassName)
 			   .append("();\n");
 			
-			for (EndpointParameter childParam: endpointParameter.getParameters()) {
-				EndpointParameterType childParamType = childParam.getEndpointParameterType();
+			for (Field childParam: endpointParameter.getParameters()) {
+				Type childParamType = childParam.getEndpointParameterType();
 				String setArg = JavaCodeGenerationUtil.getQuotedString(childParam.getSampleValue());
 				String setAccessorName = JavaCodeGenerationUtil.getSetAccessorMethodName(
 						childParam.getName(),  
@@ -145,7 +145,7 @@ public class EndpointDemoGeneratorUtil {
 			parameterValue = JavaCodeGenerationUtil.getQuotedString(sampleValue);
 		}
 		
-		if (canonicalType != CanonicalEndpointParameterTypes.OBJECT) {
+		if (canonicalType != CanonicalType.OBJECT) {
 			// Not primitive nor object type -> map or list type.
 			if (type.isObject()) {
 				parameterValue = getMapOrListSampleValueDeclaration(
@@ -169,7 +169,7 @@ public class EndpointDemoGeneratorUtil {
 		}
 	}
 	
-	private static String getMapOrListSampleValueDeclaration(EndpointParameterType type, 
+	private static String getMapOrListSampleValueDeclaration(Type type, 
 															 String itemValue, 
 															 Iterator<String> sampleMapKeyValues, 
 															 Set<String> imports) {
@@ -191,15 +191,15 @@ public class EndpointDemoGeneratorUtil {
 		}
 	}
 	
-	private static String getPrimitiveTypeParameterSampleValueDeclaration(EndpointParameter endpointParameter, 
+	private static String getPrimitiveTypeParameterSampleValueDeclaration(Field endpointParameter, 
 																		  Set<String> imports) {
-		EndpointParameterType type = endpointParameter.getEndpointParameterType();
+		Type type = endpointParameter.getEndpointParameterType();
 		Object sampleValue = endpointParameter.getSampleValue();
 		if (sampleValue == null) {
 			return null;
 		}
 		String sampleValueStr = sampleValue.toString();
-		CanonicalEndpointParameterTypes canonicalType = type.getCanonicalType();
+		CanonicalType canonicalType = type.getCanonicalType();
 		imports.add(canonicalType.typeClass.getName());
 		switch (type.getCanonicalType()) {
 		case BIGDECIMAL:

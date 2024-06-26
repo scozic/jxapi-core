@@ -7,7 +7,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.scz.jxapi.exchange.descriptor.EndpointParameter;
+import com.scz.jxapi.exchange.descriptor.Field;
 import com.scz.jxapi.generator.java.JavaCodeGenerationUtil;
 import com.scz.jxapi.generator.java.PojoField;
 import com.scz.jxapi.generator.java.PojoGenerator;
@@ -24,7 +24,7 @@ public class EndpointPojoGenerator extends PojoGenerator {
 
 	public EndpointPojoGenerator(String className, 
 								 String description, 
-								 List<EndpointParameter> fields, 
+								 List<Field> fields, 
 								 List<String> implementedInterfaces, 
 								 String additionnalClassBody) throws IOException {
 		super(className);
@@ -41,7 +41,7 @@ public class EndpointPojoGenerator extends PojoGenerator {
 										+ getTypeDeclaration());
 		setDescription(description);
 		setImplementedInterfaces(implementedInterfaces);
-		for (EndpointParameter field: fields) {
+		for (Field field: fields) {
 			if (field.getEndpointParameterType().isObject()) {
 				generateObjectParameterTypePojoField(field);
 			} else {
@@ -53,7 +53,7 @@ public class EndpointPojoGenerator extends PojoGenerator {
 		}
 	}
 	
-	private void generateObjectParameterTypePojoField(EndpointParameter field) throws IOException {
+	private void generateObjectParameterTypePojoField(Field field) throws IOException {
 		String className = getName();
 		String objectParamClassName = ExchangeJavaWrapperGeneratorUtil.getLeafObjectParameterClassName(
 																				field.getName(), 
@@ -66,7 +66,7 @@ public class EndpointPojoGenerator extends PojoGenerator {
 		addField(PojoField.create(objectClass, field.getName(), field.getMsgField(), field.getDescription()));
 	}
 	
-	private void generateSimpleParameterTypePojoField(EndpointParameter field) {
+	private void generateSimpleParameterTypePojoField(Field field) {
 		String parameterClass = ExchangeJavaWrapperGeneratorUtil.getClassNameForParameterType(field.getEndpointParameterType(), getImports(), null);
 		if (!parameterClass.startsWith("java.lang") && parameterClass.contains(".")) {
 			addImport(parameterClass);

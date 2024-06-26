@@ -5,8 +5,8 @@ import java.nio.file.Path;
 import java.util.List;
 import java.util.Optional;
 
-import com.scz.jxapi.exchange.descriptor.EndpointParameter;
-import com.scz.jxapi.exchange.descriptor.EndpointParameterType;
+import com.scz.jxapi.exchange.descriptor.Field;
+import com.scz.jxapi.exchange.descriptor.Type;
 import com.scz.jxapi.exchange.descriptor.ExchangeApiDescriptor;
 import com.scz.jxapi.exchange.descriptor.ExchangeDescriptor;
 import com.scz.jxapi.exchange.descriptor.RestEndpointDescriptor;
@@ -33,7 +33,7 @@ public class WebsocketEndpointClassesGenerator implements ClassesGenerator {
 	private final ExchangeDescriptor exchangeDescriptor;
 	private final ExchangeApiDescriptor apiDescriptor;
 	private final WebsocketEndpointDescriptor websocketEndpointDescriptor;
-	private final EndpointParameter request;
+	private final Field request;
 	
 	/**
 	 * 
@@ -140,15 +140,15 @@ public class WebsocketEndpointClassesGenerator implements ClassesGenerator {
 		return shouldGeneratePojo(websocketEndpointDescriptor.getMessage());
 	}
 	
-	private boolean shouldGeneratePojo(EndpointParameter param) {
+	private boolean shouldGeneratePojo(Field param) {
 		if (param == null) {
 			return false;
 		}
-		EndpointParameterType type = Optional.ofNullable(param.getEndpointParameterType()).orElse(EndpointParameterType.OBJECT);
+		Type type = Optional.ofNullable(param.getEndpointParameterType()).orElse(Type.OBJECT);
 		if (!type.isObject()) {
 			return false;
 		}
-		List<EndpointParameter> parameters = param.getParameters();
+		List<Field> parameters = param.getParameters();
 		return parameters != null && !parameters.isEmpty();
 	}
 	

@@ -10,8 +10,8 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.scz.jxapi.exchange.descriptor.CanonicalEndpointParameterTypes;
-import com.scz.jxapi.exchange.descriptor.EndpointParameter;
+import com.scz.jxapi.exchange.descriptor.CanonicalType;
+import com.scz.jxapi.exchange.descriptor.Field;
 import com.scz.jxapi.generator.java.JavaCodeGenerationUtil;
 import com.scz.jxapi.generator.java.exchange.ClassesGenerator;
 import com.scz.jxapi.generator.java.exchange.ExchangeJavaWrapperGeneratorUtil;
@@ -21,16 +21,16 @@ import com.scz.jxapi.netutils.deserialization.json.AbstractJsonMessageDeserializ
  * Generator for all classes for deserializing from JSON a particular POJO, that is:
  * <ul>
  * <li>A class extending {@link AbstractJsonMessageDeserializer} for serialization of POJO.
- * <li>For each of 'Object' type {@link EndpointParameter} belonging to that pojo, the deserializer class for corresponding nested POJO.
+ * <li>For each of 'Object' type {@link Field} belonging to that pojo, the deserializer class for corresponding nested POJO.
  * <ul>
  */
 public class JsonMessageDeserializerClassesGenerator implements ClassesGenerator {
 	
 	private static final Logger log = LoggerFactory.getLogger(JsonMessageDeserializerClassesGenerator.class);
 	private String deserializedClassName;
-	private List<EndpointParameter> fields;
+	private List<Field> fields;
 	
-	public JsonMessageDeserializerClassesGenerator(String deserializedClassName, List<EndpointParameter> fields) {
+	public JsonMessageDeserializerClassesGenerator(String deserializedClassName, List<Field> fields) {
 		this.deserializedClassName = deserializedClassName;
 		this.fields = fields;
 	}
@@ -44,10 +44,10 @@ public class JsonMessageDeserializerClassesGenerator implements ClassesGenerator
 						+ StringUtils.truncate(String.valueOf(fields), 192) 
 						+ " to:" + outputFolder);
 		Set<String> imports = new HashSet<>();
-		for (EndpointParameter field: fields) {
+		for (Field field: fields) {
 			if ((field.getEndpointParameterType().isObject())
 				&& field.getParameters() != null) {
-				EndpointParameter objectParam = EndpointParameter.createObject(CanonicalEndpointParameterTypes.OBJECT.name(), 
+				Field objectParam = Field.createObject(CanonicalType.OBJECT.name(), 
 																		 field.getName(), 
 																		 field.getMsgField(), 
 																		 field.getDescription(), 

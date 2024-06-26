@@ -7,13 +7,13 @@ import java.math.BigDecimal;
  * Any value for a field in request or response payload can be a 'primitive' ({@link #STRING}, {@link #INT} ... see {@link #isPrimitive}) or nested object that may be repeated:
  * <ul>
  * <li>Once, e.g. data type is a plain {@link #OBJECT} type</li>
- * <li>A list of values of any {@link CanonicalEndpointParameterTypes} (JSON array), see {@link #LIST}</li>
- * <li>A map of values (JSON map with {@link String} keys and values of any {@link CanonicalEndpointParameterTypes}), see {@link #MAP}</li>
+ * <li>A list of values of any {@link CanonicalType} (JSON array), see {@link #LIST}</li>
+ * <li>A map of values (JSON map with {@link String} keys and values of any {@link CanonicalType}), see {@link #MAP}</li>
  * </ul>
  * 
- * @see EndpointParameter
+ * @see Field
  */
-public enum CanonicalEndpointParameterTypes {
+public enum CanonicalType {
 	/** Plain {@link String} value */
 	STRING(String.class),
 	
@@ -64,16 +64,16 @@ public enum CanonicalEndpointParameterTypes {
 	 * The Class associated to primitive type (see {@link #isPrimitive}, or
 	 * <code>null</code> if not a primitive type. To guess the class associated to a
 	 * non-primitive type, see
-	 * {@link ExchangeJavaWrapperGeneratorUtil#getClassNameForParameterType(EndpointParameterType, java.util.Set, String)}
+	 * {@link ExchangeJavaWrapperGeneratorUtil#getClassNameForParameterType(Type, java.util.Set, String)}
 	 */
 	public final Class<?> typeClass;
 	
-	private CanonicalEndpointParameterTypes(Class<?> typeClass) {
+	private CanonicalType(Class<?> typeClass) {
 		this.isPrimitive = true;
 		this.typeClass = typeClass;
 	}
 	
-	private CanonicalEndpointParameterTypes() {
+	private CanonicalType() {
 		this.isPrimitive = false;
 		this.typeClass = null;
 	}

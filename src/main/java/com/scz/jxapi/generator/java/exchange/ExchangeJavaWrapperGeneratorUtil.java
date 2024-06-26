@@ -12,9 +12,9 @@ import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
 
-import com.scz.jxapi.exchange.descriptor.CanonicalEndpointParameterTypes;
-import com.scz.jxapi.exchange.descriptor.EndpointParameter;
-import com.scz.jxapi.exchange.descriptor.EndpointParameterType;
+import com.scz.jxapi.exchange.descriptor.CanonicalType;
+import com.scz.jxapi.exchange.descriptor.Field;
+import com.scz.jxapi.exchange.descriptor.Type;
 import com.scz.jxapi.exchange.descriptor.ExchangeApiDescriptor;
 import com.scz.jxapi.exchange.descriptor.ExchangeDescriptor;
 import com.scz.jxapi.exchange.descriptor.RestEndpointDescriptor;
@@ -62,7 +62,7 @@ public class ExchangeJavaWrapperGeneratorUtil {
 	public static String generateRestEnpointRequestClassName(ExchangeDescriptor exchangeDescriptor, 
 															 ExchangeApiDescriptor exchangeApiDescriptor, 
 															 RestEndpointDescriptor restEndpointDescriptor) {
-		EndpointParameter request = restEndpointDescriptor.getRequest();
+		Field request = restEndpointDescriptor.getRequest();
 		return generateRestEnpointPojoClassName(exchangeDescriptor, 
 												exchangeApiDescriptor, 
 												restEndpointDescriptor.getName(), 
@@ -74,7 +74,7 @@ public class ExchangeJavaWrapperGeneratorUtil {
 	public static String generateRestEnpointResponseClassName(ExchangeDescriptor exchangeDescriptor, 
 															  ExchangeApiDescriptor exchangeApiDescriptor, 
 															  RestEndpointDescriptor restEndpointDescriptor) {
-		EndpointParameter response = restEndpointDescriptor.getResponse();
+		Field response = restEndpointDescriptor.getResponse();
 		return generateRestEnpointPojoClassName(exchangeDescriptor, 
 												exchangeApiDescriptor, 
 												restEndpointDescriptor.getName(), 
@@ -86,11 +86,11 @@ public class ExchangeJavaWrapperGeneratorUtil {
 	private static String generateRestEnpointPojoClassName(ExchangeDescriptor exchangeDescriptor, 
 														   ExchangeApiDescriptor exchangeApiDescriptor, 
 														   String endpointName, 
-														   EndpointParameterType type,
+														   Type type,
 														   String objectName,
 														   String suffix) {
 		if (type == null) {
-			type = EndpointParameterType.fromTypeName(CanonicalEndpointParameterTypes.OBJECT.name());
+			type = Type.fromTypeName(CanonicalType.OBJECT.name());
 		}
 		if (type.isObject() && objectName != null) {
 			return exchangeDescriptor.getBasePackage() + "." 
@@ -118,7 +118,7 @@ public class ExchangeJavaWrapperGeneratorUtil {
 	public static String generateWebsocketEndpointMessageClassName(ExchangeDescriptor exchangeDescriptor,
 																   ExchangeApiDescriptor exchangeApiDescriptor, 
 																   WebsocketEndpointDescriptor websocketApi) {
-		EndpointParameter message = websocketApi.getMessage();
+		Field message = websocketApi.getMessage();
 		return generateRestEnpointPojoClassName(exchangeDescriptor, 
 												exchangeApiDescriptor, 
 												websocketApi.getName(), 
@@ -129,7 +129,7 @@ public class ExchangeJavaWrapperGeneratorUtil {
 
 	public static String generateWebsocketEndpointRequestClassName(ExchangeDescriptor exchangeDescriptor,
 			ExchangeApiDescriptor exchangeApiDescriptor, WebsocketEndpointDescriptor websocketApi) {
-		EndpointParameter request = websocketApi.getRequest();
+		Field request = websocketApi.getRequest();
 		return generateRestEnpointPojoClassName(exchangeDescriptor, 
 												exchangeApiDescriptor, 
 												websocketApi.getName(), 
@@ -184,22 +184,22 @@ public class ExchangeJavaWrapperGeneratorUtil {
 	}
 
 	/**
-	 * Generates expected class name for an {@link EndpointParameter} instance
+	 * Generates expected class name for an {@link Field} instance
 	 * according to its type (see
-	 * {@link EndpointParameter#getEndpointParameterType()} .
+	 * {@link Field#getEndpointParameterType()} .
 	 * <ul>
-	 * <li>For a primitive (see {@link CanonicalEndpointParameterTypes#isPrimitive}
+	 * <li>For a primitive (see {@link CanonicalType#isPrimitive}
 	 * parameter type, the corresponding primitive type class is returned:
 	 * <code>java.lang.String</code>, <code>java.lang.Integer</code> ...)</li>
-	 * <li>For an object (see {@link CanonicalEndpointParameterTypes#OBJECT}
+	 * <li>For an object (see {@link CanonicalType#OBJECT}
 	 * parameter type), if the <code>objectName</code> (see
-	 * {@link EndpointParameter#getObjectName()} is defined, that object name is
+	 * {@link Field#getObjectName()} is defined, that object name is
 	 * returned.</li>
-	 * <li>For list or map (see {@link CanonicalEndpointParameterTypes#LIST},
-	 * {@link CanonicalEndpointParameterTypes#MAP}), the corresponding generic class
+	 * <li>For list or map (see {@link CanonicalType#LIST},
+	 * {@link CanonicalType#MAP}), the corresponding generic class
 	 * is returned e.g. <code>java.util.List</code> or <code>java.util.Map</code>,
 	 * with generic parameter set with the class for subtype (see
-	 * {@link EndpointParameterType#getSubType()} of <code>endpointParameter</code>
+	 * {@link Type#getSubType()} of <code>endpointParameter</code>
 	 * as returned by this method.</li>
 	 * </ul>
 	 * The returned value is the class simple name (without package prefix). The
@@ -301,7 +301,7 @@ public class ExchangeJavaWrapperGeneratorUtil {
 	 * @return The simple class name for type of <code>enpointParameter</code>
 	 *         parameter.
 	 */
-	public static String getClassNameForEndpointParameter(EndpointParameter endpointParameter, 
+	public static String getClassNameForEndpointParameter(Field endpointParameter, 
 														  Set<String> imports, 
 														  String enclosingClassName) {
 		String objectClassName = null;
@@ -317,8 +317,8 @@ public class ExchangeJavaWrapperGeneratorUtil {
 
 	/**
 	 * Generates the expected full class name for the object described by an
-	 * {@link EndpointParameter}, assuming it is of 'object' type (see
-	 * {@link EndpointParameterType#isObject()}).<br/>
+	 * {@link Field}, assuming it is of 'object' type (see
+	 * {@link Type#isObject()}).<br/>
 	 * The returned class package will be one of
 	 * <code>enclosingClassName</code>.<br/>
 	 * 
@@ -329,10 +329,10 @@ public class ExchangeJavaWrapperGeneratorUtil {
 	 * @param enclosingClassName The POJO class containing the endpoint to generate
 	 *                           class name for type of.
 	 * @return parameter object name with first letter to uppercase if
-	 *         {@link EndpointParameter#getObjectName()} is not <code>null</code>,
+	 *         {@link Field#getObjectName()} is not <code>null</code>,
 	 *         else concatenation of <code>&lt;enclosingClassName&gt;+&lt;enpointParameter name&gt;</code>
 	 */
-	public static String getParameterObjectClassName(EndpointParameter endpointParameter, 
+	public static String getParameterObjectClassName(Field endpointParameter, 
 													 Set<String> imports, 
 													 String enclosingClassName) {
 		if (endpointParameter.getObjectName() != null) {
@@ -358,9 +358,9 @@ public class ExchangeJavaWrapperGeneratorUtil {
 	 *                        {@link getParameterObjectClassName}
 	 * @return simple class name for type
 	 * 
-	 * @see #getClassNameForParameterType(EndpointParameterType, Set, String)
+	 * @see #getClassNameForParameterType(Type, Set, String)
 	 */
-	public static String getClassNameForParameterType(EndpointParameterType type, 
+	public static String getClassNameForParameterType(Type type, 
 													  Set<String> imports, 
 													  String objectClassName) {
 		if (type == null) {
@@ -413,13 +413,13 @@ public class ExchangeJavaWrapperGeneratorUtil {
 	}
 
 	/**
-	 * Generates full class name of an {@link EndpointParameter} instance
+	 * Generates full class name of an {@link Field} instance
 	 * <code>leaf</code> type, see
-	 * {@link EndpointParameterType#getLeafSubType(EndpointParameterType)}.
+	 * {@link Type#getLeafSubType(Type)}.
 	 * 
-	 * @param endpointParameterName See {@link EndpointParameter#getName()} name
-	 * @param type                  See {@link EndpointParameter#getEndpointParameterType()}
-	 * @param objectName            See {@link EndpointParameter#getObjectName()}
+	 * @param endpointParameterName See {@link Field#getName()} name
+	 * @param type                  See {@link Field#getEndpointParameterType()}
+	 * @param objectName            See {@link Field#getObjectName()}
 	 * @param imports               The imports of generator context that will be
 	 *                              populated with classes used by returned type.
 	 *                              That set must be not <code>null</code> and
@@ -429,7 +429,7 @@ public class ExchangeJavaWrapperGeneratorUtil {
 	 * @return the full class name of leaf subType of endpoint parameter.
 	 */
 	public static String getLeafObjectParameterClassName(String endpointParameterName, 
-														 EndpointParameterType type, 
+														 Type type, 
 														 String objectName, 
 														 Set<String> imports, 
 														 String enclosingClassName) {
@@ -442,15 +442,15 @@ public class ExchangeJavaWrapperGeneratorUtil {
 		}
 		
 		return pkg + getClassNameForParameterType(
-				  EndpointParameterType.getLeafSubType(type)
+				  Type.getLeafSubType(type)
 				  ,imports
 				  , enclosingClassName) 
 				+ JavaCodeGenerationUtil.firstLetterToUpperCase(endpointParameterName);
 	}
 
-	public static String getNewJsonParameterDeserializerInstruction(EndpointParameterType type, String objectClassName, Set<String> imports) {
+	public static String getNewJsonParameterDeserializerInstruction(Type type, String objectClassName, Set<String> imports) {
 		if (type == null) {
-			type  = EndpointParameterType.fromTypeName(CanonicalEndpointParameterTypes.STRING.name());
+			type  = Type.fromTypeName(CanonicalType.STRING.name());
 		}
 		switch (type.getCanonicalType()) {
 		case BIGDECIMAL:
@@ -486,8 +486,8 @@ public class ExchangeJavaWrapperGeneratorUtil {
 		}
 	}
 
-	public static List<EndpointParameter> findParametersForObjectName(String requestObjectName, ExchangeApiDescriptor exchangeApiDescriptor) {
-		List<EndpointParameter> res = null;
+	public static List<Field> findParametersForObjectName(String requestObjectName, ExchangeApiDescriptor exchangeApiDescriptor) {
+		List<Field> res = null;
 		for (RestEndpointDescriptor restEndpointDescriptor: 
 				Optional.ofNullable(exchangeApiDescriptor.getRestEndpoints()).orElse(List.of())) {
 			res = findParametersForObjectName(requestObjectName, restEndpointDescriptor.getRequest());
@@ -521,18 +521,18 @@ public class ExchangeJavaWrapperGeneratorUtil {
 										   + requestObjectName);
 	}
 	
-	private static List<EndpointParameter> findParametersForObjectName(String requestObjetName, EndpointParameter param) {
+	private static List<Field> findParametersForObjectName(String requestObjetName, Field param) {
 		if (param == null) {
 			return null;
 		}
-		List<EndpointParameter> res = param.getParameters();
+		List<Field> res = param.getParameters();
 		if (res == null) {
 			return null;
 		}
 		if (Objects.equals(requestObjetName, param.getObjectName())) {
 			return res;
 		}
-		for (EndpointParameter p: res) {
+		for (Field p: res) {
 			res = findParametersForObjectName(requestObjetName, p);
 			if (res != null) {
 				return res;
@@ -541,7 +541,7 @@ public class ExchangeJavaWrapperGeneratorUtil {
 		return null;
 	}
 
-	public static List<EndpointParameter> getEndpointParameters(List<EndpointParameter> endpointDescriptiorParameters, 
+	public static List<Field> getEndpointParameters(List<Field> endpointDescriptiorParameters, 
 																String requestObjectName, 
 																ExchangeApiDescriptor exchangeApiDescriptor) {
 		if (endpointDescriptiorParameters != null) {
@@ -553,8 +553,8 @@ public class ExchangeJavaWrapperGeneratorUtil {
 		}
 	}
 	
-	public static EndpointParameter resolveEndpointParameters(ExchangeApiDescriptor exchangeApiDescriptor, 
-															  EndpointParameter parameter) {
+	public static Field resolveEndpointParameters(ExchangeApiDescriptor exchangeApiDescriptor, 
+															  Field parameter) {
 		if (parameter == null) {
 			return null;
 		}
@@ -571,14 +571,14 @@ public class ExchangeJavaWrapperGeneratorUtil {
 		return parameter;
 	}
 	
-	public static List<EndpointParameter> resolveEndpointParameters(ExchangeApiDescriptor exchangeApiDescriptor, 
-			List<EndpointParameter> parameters) {
+	public static List<Field> resolveEndpointParameters(ExchangeApiDescriptor exchangeApiDescriptor, 
+			List<Field> parameters) {
 		return parameters.stream().map(e -> resolveEndpointParameters(exchangeApiDescriptor, e)).collect(Collectors.toList());
 	}
 
 	public static boolean websocketEndpointHasArguments(WebsocketEndpointDescriptor websocketApi, 
 														ExchangeApiDescriptor exchangeApiDescriptor) {
-		EndpointParameter request = websocketApi.getRequest();
+		Field request = websocketApi.getRequest();
 		if (request == null) {
 			return false;
 		}
@@ -590,7 +590,7 @@ public class ExchangeJavaWrapperGeneratorUtil {
 
 	public static boolean restEndpointHasArguments(RestEndpointDescriptor restApi, 
 												   ExchangeApiDescriptor exchangeApiDescriptor) {
-		EndpointParameter request = restApi.getRequest();
+		Field request = restApi.getRequest();
 		if (request == null) {
 			return false;
 		}
@@ -600,11 +600,11 @@ public class ExchangeJavaWrapperGeneratorUtil {
 									exchangeApiDescriptor);
 	}
 
-	private static boolean endpointHasArguments(EndpointParameterType dataType, 
-												List<EndpointParameter> parameters, 
+	private static boolean endpointHasArguments(Type dataType, 
+												List<Field> parameters, 
 												String requestObjectName, 
 												ExchangeApiDescriptor exchangeApiDescriptor) {
-		return (dataType != null && dataType.getCanonicalType() != CanonicalEndpointParameterTypes.OBJECT) 
+		return (dataType != null && dataType.getCanonicalType() != CanonicalType.OBJECT) 
 				|| getEndpointParameters(parameters, requestObjectName, exchangeApiDescriptor).size() > 0;
 	}
 	
@@ -613,20 +613,20 @@ public class ExchangeJavaWrapperGeneratorUtil {
 	}
 
 	public static boolean restEndpointHasResponse(RestEndpointDescriptor restApi, ExchangeApiDescriptor exchangeApiDescriptor) {
-		EndpointParameter response = restApi.getResponse();
+		Field response = restApi.getResponse();
 		if (response == null) {
 			return false;
 		}
-		EndpointParameterType dataType = response.getEndpointParameterType();
-		return (dataType != null && dataType.getCanonicalType() != CanonicalEndpointParameterTypes.OBJECT) 
+		Type dataType = response.getEndpointParameterType();
+		return (dataType != null && dataType.getCanonicalType() != CanonicalType.OBJECT) 
 				|| getEndpointParameters(response.getParameters(), response.getObjectName(), exchangeApiDescriptor).size() > 0;
 	}
 	
-	public static String getNewMessageDeserializerInstruction(EndpointParameterType messageType, 
+	public static String getNewMessageDeserializerInstruction(Type messageType, 
 															  String messageFullClassName, 
 															  Set<String> imports) {
 		if (messageType == null) {
-			messageType  = EndpointParameterType.fromTypeName(CanonicalEndpointParameterTypes.STRING.name());
+			messageType  = Type.fromTypeName(CanonicalType.STRING.name());
 		}
 		switch (messageType.getCanonicalType()) {
 		case BIGDECIMAL:
@@ -653,8 +653,8 @@ public class ExchangeJavaWrapperGeneratorUtil {
 		}
 	}
 
-	public static EndpointParameterType getEndpointParameterType(EndpointParameter parameter) {
-		return parameter == null? null: Optional.ofNullable(parameter.getEndpointParameterType()).orElse(EndpointParameterType.OBJECT);
+	public static Type getEndpointParameterType(Field parameter) {
+		return parameter == null? null: Optional.ofNullable(parameter.getEndpointParameterType()).orElse(Type.OBJECT);
 	}
 	
 	public static String getRestEndpointNameStaticVariable(String restEndpointName) {

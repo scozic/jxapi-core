@@ -4,7 +4,7 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.util.List;
 
-import com.scz.jxapi.exchange.descriptor.EndpointParameter;
+import com.scz.jxapi.exchange.descriptor.Field;
 import com.scz.jxapi.exchange.descriptor.ExchangeApiDescriptor;
 import com.scz.jxapi.exchange.descriptor.ExchangeDescriptor;
 import com.scz.jxapi.exchange.descriptor.RestEndpointDescriptor;
@@ -61,7 +61,7 @@ public class RestEndpointClassesGenerator implements ClassesGenerator {
 
 	private void generatePojos(Path outputFolder) throws IOException {
 		// Generate POJOs for request and response
-		EndpointParameter request = restEndpointDescriptor.getRequest();
+		Field request = restEndpointDescriptor.getRequest();
 		if (request != null && request.getParameters() != null) {
 			new EndpointPojoClassesGenerator(
 					ExchangeJavaWrapperGeneratorUtil.generateRestEnpointRequestClassName(exchangeDescriptor, apiDescriptor, restEndpointDescriptor), 
@@ -75,7 +75,7 @@ public class RestEndpointClassesGenerator implements ClassesGenerator {
 						null).generateClasses(outputFolder);
 		}
 		
-		EndpointParameter response = restEndpointDescriptor.getResponse();
+		Field response = restEndpointDescriptor.getResponse();
 		if (response != null && response.getParameters() != null) {
 			new EndpointPojoClassesGenerator( 
 					ExchangeJavaWrapperGeneratorUtil.generateRestEnpointResponseClassName(
@@ -96,7 +96,7 @@ public class RestEndpointClassesGenerator implements ClassesGenerator {
 	}
 	
 	private void generateDeserializers(Path outputFolder) throws IOException {
-		EndpointParameter response = restEndpointDescriptor.getResponse();
+		Field response = restEndpointDescriptor.getResponse();
 		if (response != null && response.getParameters() != null) {
 			new JsonMessageDeserializerClassesGenerator( 
 					ExchangeJavaWrapperGeneratorUtil.generateRestEnpointResponseClassName(
@@ -108,8 +108,8 @@ public class RestEndpointClassesGenerator implements ClassesGenerator {
 	}
 	
 	private void generateSerializers(Path ouputFolder) throws IOException {
-		 EndpointParameter request = restEndpointDescriptor.getRequest();
-		 List<EndpointParameter> requestParams = request == null? null : request.getParameters();
+		 Field request = restEndpointDescriptor.getRequest();
+		 List<Field> requestParams = request == null? null : request.getParameters();
 		 if (requestParams != null) {
 			new JsonPojoSerializerClassesGenerator( 
 					ExchangeJavaWrapperGeneratorUtil.generateRestEnpointRequestClassName(
@@ -118,8 +118,8 @@ public class RestEndpointClassesGenerator implements ClassesGenerator {
 							restEndpointDescriptor),
 							requestParams).generateClasses(ouputFolder);
 		}
-		EndpointParameter response = restEndpointDescriptor.getResponse();
-		List<EndpointParameter> responseParams = response == null? null : response.getParameters();
+		Field response = restEndpointDescriptor.getResponse();
+		List<Field> responseParams = response == null? null : response.getParameters();
 		if (responseParams != null) {
 			new JsonPojoSerializerClassesGenerator(  
 					ExchangeJavaWrapperGeneratorUtil.generateRestEnpointResponseClassName(

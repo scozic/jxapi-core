@@ -10,8 +10,8 @@ import java.util.List;
 import org.junit.After;
 import org.junit.Test;
 
-import com.scz.jxapi.exchange.descriptor.CanonicalEndpointParameterTypes;
-import com.scz.jxapi.exchange.descriptor.EndpointParameter;
+import com.scz.jxapi.exchange.descriptor.CanonicalType;
+import com.scz.jxapi.exchange.descriptor.Field;
 import com.scz.jxapi.generator.java.JavaCodeGenerationUtil;
 import com.scz.jxapi.generator.java.exchange.ClassesGeneratorTestUtil;
 
@@ -35,17 +35,17 @@ public class EndpointPojoClassesGeneratorTest {
 		srcFolder = ClassesGeneratorTestUtil.generateTmpDir();
 		String typeName = "com.x.MyPojo";
 		String typeDescription = "Used in EndpointPojoGeneratorTest";
-		List<EndpointParameter> endpointParameters = new ArrayList<>();
-		endpointParameters.add(EndpointParameter.create(CanonicalEndpointParameterTypes.LONG.name(), "id", null, "identifier", "123"));
-		endpointParameters.add(EndpointParameter.create(CanonicalEndpointParameterTypes.INT.name(), "score", null, "Current score", "0"));
-		endpointParameters.add(EndpointParameter.createObject("OBJECT_LIST", "foo", "f", null,
-				Arrays.asList(EndpointParameter.create(CanonicalEndpointParameterTypes.TIMESTAMP.name(), "time", null, "Creation time", "0"),
-							  EndpointParameter.createObject(CanonicalEndpointParameterTypes.OBJECT.name(), "bar", "b", "The bar",
-									  Arrays.asList(EndpointParameter.create(CanonicalEndpointParameterTypes.STRING.name(), "name", null, "Bar name", "my bar")))
+		List<Field> endpointParameters = new ArrayList<>();
+		endpointParameters.add(Field.create(CanonicalType.LONG.name(), "id", null, "identifier", "123"));
+		endpointParameters.add(Field.create(CanonicalType.INT.name(), "score", null, "Current score", "0"));
+		endpointParameters.add(Field.createObject("OBJECT_LIST", "foo", "f", null,
+				Arrays.asList(Field.create(CanonicalType.TIMESTAMP.name(), "time", null, "Creation time", "0"),
+							  Field.createObject(CanonicalType.OBJECT.name(), "bar", "b", "The bar",
+									  Arrays.asList(Field.create(CanonicalType.STRING.name(), "name", null, "Bar name", "my bar")))
 						)
 				));
-		endpointParameters.add(EndpointParameter.createObject( "OBJECT_LIST_MAP", "toto", "toto", null,
-				Arrays.asList(EndpointParameter.create(CanonicalEndpointParameterTypes.STRING.name(), "id", null, "Toto ID", "toto#1"))
+		endpointParameters.add(Field.createObject( "OBJECT_LIST_MAP", "toto", "toto", null,
+				Arrays.asList(Field.create(CanonicalType.STRING.name(), "id", null, "Toto ID", "toto#1"))
 				));
 		
 		EndpointPojoClassesGenerator generator = new EndpointPojoClassesGenerator(typeName, typeDescription, endpointParameters, List.of("com.x.common.MyInterface"), null);
