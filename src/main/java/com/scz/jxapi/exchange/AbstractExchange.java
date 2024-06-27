@@ -7,6 +7,10 @@ import java.util.Properties;
 
 import com.scz.jxapi.observability.ExchangeApiObserver;
 
+/**
+ * Abstract {@link Exchange} implementation to be used as super class of actual
+ * implementations.
+ */
 public abstract class AbstractExchange implements Exchange {
 
 	protected final String name;
@@ -53,6 +57,12 @@ public abstract class AbstractExchange implements Exchange {
 		return res;
 	}
 	
+	/**
+	 * Subclasses should call this method to register every exposed {@link ExchangeApi}. 
+	 * @param <T>
+	 * @param api
+	 * @return
+	 */
 	protected <T extends ExchangeApi> T addApi(T api) {
 		apis.put(api.getName(), api);
 		return api;

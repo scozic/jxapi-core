@@ -71,6 +71,11 @@ public abstract class AbstractExchangeApi implements ExchangeApi {
 	}
 	
 	@Override
+	public String getExchangeId() {
+		return exchangeId;
+	}
+	
+	@Override
 	public Properties getProperties() {
 		return properties;
 	}
