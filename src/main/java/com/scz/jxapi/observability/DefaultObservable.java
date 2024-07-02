@@ -55,4 +55,9 @@ public class DefaultObservable<L, E> implements Observable<L, E> {
 		listeners.forEach(l -> eventDispatchMethod.accept(l, event));
 	}
 
+	@Override
+	public boolean hasListener(L listener) {
+		return listeners.contains(listener);
+	}
+
 }

@@ -1,3 +1,4 @@
+
 package com.scz.jxapi.exchange;
 
 import java.lang.reflect.InvocationTargetException;
@@ -28,6 +29,27 @@ import com.scz.jxapi.observability.ExchangeApiObserver;
 import com.scz.jxapi.observability.Observable;
 import com.scz.jxapi.observability.SynchronizedObservable;
 
+/**
+ * The AbstractExchangeApi class is an abstract base class that provides common functionality and structure for exchange APIs.
+ * It implements the ExchangeApi interface and provides default implementations for some of its methods.
+ * It is designed to be used as a base class by ExchangeApiGenerator to generate concrete exchange API classes.
+ * 
+ * This class contains properties and methods that are shared by all exchange APIs, such as the exchange name, exchange ID,
+ * properties, request throttler, HTTP request executor, and observable for handling exchange API events.
+ * 
+ * Subclasses of AbstractExchangeApi are expected to provide concrete implementations for the remaining methods defined in the
+ * ExchangeApi interface.
+ * 
+ * This class also provides helper methods for creating HTTP request interceptors, HTTP request executors, and websocket managers.
+ * 
+ * @see ExchangeApi
+ * @see HttpRequestInterceptor
+ * @see HttpRequestExecutor
+ * @see WebsocketManager
+ * @see ExchangeApiObserver
+ * @see ExchangeApiEvent
+ * @see Observable
+ */
 public abstract class AbstractExchangeApi implements ExchangeApi {
 
 	protected final String name;
@@ -40,7 +62,14 @@ public abstract class AbstractExchangeApi implements ExchangeApi {
 	protected WebsocketManager websocketManager = null;
 	protected final Observable<ExchangeApiObserver, ExchangeApiEvent> observable 
 						= new SynchronizedObservable<>((observer, event) -> observer.handleEvent(event));
-	  
+	
+	/**
+	 * Creates a new AbstractExchangeApi instance with the specified API name, exchange name, exchange ID, and properties.
+	 * @param apiName The name of the API.
+	 * @param exchangeName The name of the exchange instance.
+	 * @param exchangeId The ID of the exchange.
+	 * @param properties The properties associated with the exchange instance.
+	 */
 	public AbstractExchangeApi(String apiName, 
 							   String exchangeName, 
 							   String exchangeId, 
@@ -48,6 +77,14 @@ public abstract class AbstractExchangeApi implements ExchangeApi {
 		this(apiName, exchangeName, exchangeId, properties, null);
 	}  
 
+	/**
+	 * Creates a new AbstractExchangeApi instance with the specified API name, exchange name, exchange ID, properties, and request throttler.
+	 * @param apiName The name of the API.
+	 * @param exchangeName The name of the exchange instance.
+	 * @param exchangeId The ID of the exchange.
+	 * @param properties The properties associated with the exchange instance.
+	 * @param requestThrottler The request throttler to use for rate limiting.
+	 */
 	public AbstractExchangeApi(String apiName, 
 							   String exchangeName, 
 							   String exchangeId, 
@@ -60,11 +97,18 @@ public abstract class AbstractExchangeApi implements ExchangeApi {
 		this.requestThrottler = requestThrottler;
 	}
 
+	/**
+	 * Returns the name of the exchange instance associated with this API.
+	 * @return The name of the exchange instance.
+	 */
 	@Override
 	public String getExchangeName() {
 		return exchangeName;
 	}
 	
+	/**
+	 * 
+	 */
 	@Override
 	public String getName() {
 		return name;
@@ -186,6 +230,9 @@ public abstract class AbstractExchangeApi implements ExchangeApi {
 	
 	protected <M> WebsocketEndpoint<M> createWebsocketEndpoint(String endpointName, 
 															   MessageDeserializer<M> messageDeserializer) {
+		if (websocketManager == null) {
+			throw new IllegalStateException("Cannot create websocket endpoint as no websocket manager is set");
+		}
 		return new DefaultWebsocketEndpoint<>(endpointName, 
 				   							  websocketManager, 
 											  messageDeserializer,

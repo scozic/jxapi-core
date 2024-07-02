@@ -368,28 +368,6 @@ public class DefaultWebsocketManager implements WebsocketManager {
 		} 
 	}
 	
-//	private List<String> splitJsonArray(String messages) {
-//		try {
-//			JsonParser jsonParser = jsonFactory.createParser(messages.getBytes());
-//			if (jsonParser.nextToken() != JsonToken.START_ARRAY) {
-//				return List.of(messages);
-//			}
-//			
-//			ObjectMapper m = new ObjectMapper();
-//			ArrayNode array;
-//			array = (ArrayNode) m.readTree(messages);
-//			List<String> res = new ArrayList<>(array.size());
-//			for (Iterator<JsonNode> it = array.elements(); it.hasNext();) {
-//				JsonNode node = it.next();
-//				res.add(m.writeValueAsString(node));
-//			}
-//			return res;
-//		} catch (IOException e) {
-//			log.error("Error while splitting array message:" + messages, e);
-//			return List.of();
-//		}
-//	}
-	
 	private String getNextValue(JsonParser jsonParser) throws IOException {
 		switch (jsonParser.nextToken()) {
 		case FIELD_NAME:
@@ -463,13 +441,7 @@ public class DefaultWebsocketManager implements WebsocketManager {
 		if (log.isInfoEnabled())
 			log.info("Successfully resubscribed to " + topics.size() + " topics after successful reconnection");
 	}
-	
-//	protected abstract void doConnect() throws IOException;
-//	protected abstract void doDisconnect() throws IOException;
-//	protected abstract void send(String message) throws IOException;
-//	protected abstract String getSubscribeRequestMessage(String topic);
-//	protected abstract String getUnSubscribeRequestMessage(String topic);
-	
+
 	private boolean dispatchToMessageTopicMatchers(String name, 
 												String value,  
 												List<TopicManager> messageHandlers, 

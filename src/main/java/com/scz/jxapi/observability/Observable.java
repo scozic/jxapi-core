@@ -30,5 +30,11 @@ public interface Observable<L, E> {
 	 * @param event event to dispatch
 	 */
 	void dispatch(E event);
+	
+	/**
+	 * @param listener
+	 * @return <code>true</code> <code>listener</code> is subscribed.
+	 */
+	boolean hasListener(L listener);
 
 }
