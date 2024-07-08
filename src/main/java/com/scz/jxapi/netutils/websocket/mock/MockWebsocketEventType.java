@@ -1,5 +1,8 @@
 package com.scz.jxapi.netutils.websocket.mock;
 
+/**
+ * Enum for the different types of events that can be sent to a {@link MockWebsocketEventListener}.
+ */
 public enum MockWebsocketEventType {
 	CONNECT,
 	DISCONNECT,

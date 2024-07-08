@@ -42,6 +42,11 @@ public class MockWebsocket extends GenericObserver<MockWebsocketEvent> implement
 			super.dispatchMessage(message);
 		}
 
+		@Override
+		public void dispatchError(WebsocketException error) {
+			super.dispatchError(error);
+		}
+
 	}
 
 	/**
@@ -163,6 +168,15 @@ public class MockWebsocket extends GenericObserver<MockWebsocketEvent> implement
 	 */
 	public void dispatchMessage(String message) {
 		this.delegate.dispatchMessage(message);
+	}
+
+	/**
+	 * Dispatches an error to the websocket.
+	 *
+	 * @param error the error to dispatch.
+	 */
+	public void dispatchError(WebsocketException error) {
+		this.delegate.dispatchError(error);
 	}
 
 }

@@ -4,6 +4,9 @@ import com.scz.jxapi.exchange.ExchangeApi;
 import com.scz.jxapi.netutils.websocket.WebsocketHook;
 import com.scz.jxapi.netutils.websocket.WebsocketHookFactory;
 
+/**
+ * {@link WebsocketHookFactory} implementation for creating {@link MockWebsocketHook} instances.
+ */
 public class MockWebsocketHookFactory implements WebsocketHookFactory {
 
 	@Override

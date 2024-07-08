@@ -5,5 +5,10 @@ package com.scz.jxapi.netutils.websocket.mock;
  */
 public interface MockWebsocketEventListener {
 
+	/**
+	 * Handle a {@link MockWebsocketEvent}.
+	 *
+	 * @param event The event to handle
+	 */
 	void handleEvent(MockWebsocketEvent event);
 }
