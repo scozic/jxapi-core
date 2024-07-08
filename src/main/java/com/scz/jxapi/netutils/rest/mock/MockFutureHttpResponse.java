@@ -7,10 +7,12 @@ import com.scz.jxapi.util.EncodingUtil;
 /**
  * This class represents a mock implementation of the FutureHttpResponse class.
  * It is used for testing purposes to simulate a future HTTP response.
+ * 
+ * @see MockHttpRequestExecutor
  */
 public class MockFutureHttpResponse extends FutureHttpResponse {
 
-	private HttpRequest request;
+	private final HttpRequest request;
 
 	/**
 	 * Constructs a new MockFutureHttpResponse object with no associated HttpRequest.
@@ -25,7 +27,7 @@ public class MockFutureHttpResponse extends FutureHttpResponse {
 	 * @param request the HttpRequest associated with this response
 	 */
 	public MockFutureHttpResponse(HttpRequest request) {
-		this.setRequest(request);
+		this.request = request;
 	}
 
 	/**
@@ -35,15 +37,6 @@ public class MockFutureHttpResponse extends FutureHttpResponse {
 	 */
 	public HttpRequest getRequest() {
 		return request;
-	}
-
-	/**
-	 * Sets the HttpRequest associated with this response.
-	 *
-	 * @param request the HttpRequest to be associated with this response
-	 */
-	public void setRequest(HttpRequest request) {
-		this.request = request;
 	}
 
 	/**

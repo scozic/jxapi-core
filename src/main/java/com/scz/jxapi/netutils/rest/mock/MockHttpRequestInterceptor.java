@@ -54,4 +54,7 @@ public class MockHttpRequestInterceptor implements HttpRequestInterceptor {
 	}
 	
 
+	public List<HttpRequestInterceptor> getPreparedInterceptors() {
+		return this.preparedInterceptors;
+	}
 }

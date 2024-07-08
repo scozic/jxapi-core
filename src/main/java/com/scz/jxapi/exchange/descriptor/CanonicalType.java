@@ -41,6 +41,13 @@ public enum CanonicalType {
 	
 	/**
 	 * Nested JSON map with keys of type String and values of same type (which can be any of {@link CanonicalEndpointParameterTypes}).
+	 * <br/>
+	 * Remark: OBJECT and MAP types are bound to similar data structure storing key/values pairs (properties) but: 
+	 * <ul>
+	 * <li>in case of OBJECT, the property keys used are defined by API interface and a POJO can be associated to that data structures with properties matching expected keys.</li>
+	 * <li>in case of MAP the keys used in received data are arbitrary and not kown in advance.
+	 * <li>
+	 * 
 	 * */
 	MAP(),
 	
