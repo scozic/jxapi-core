@@ -1,8 +1,6 @@
-package com.scz.netutis.rest;
+package com.scz.jxapi.netutils.rest;
 
 import com.scz.jxapi.exchange.ExchangeApi;
-import com.scz.jxapi.netutils.rest.HttpRequestExecutor;
-import com.scz.jxapi.netutils.rest.HttpRequestExecutorFactory;
 
 public class MockHttpRequestExecutorFactory implements HttpRequestExecutorFactory {
 

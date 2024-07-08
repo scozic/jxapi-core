@@ -1,8 +1,6 @@
-package com.scz.netutis.websocket;
+package com.scz.jxapi.netutils.websocket;
 
 import com.scz.jxapi.exchange.ExchangeApi;
-import com.scz.jxapi.netutils.websocket.WebsocketHook;
-import com.scz.jxapi.netutils.websocket.WebsocketHookFactory;
 
 public class MockWebsocketHookFactory implements WebsocketHookFactory {
 

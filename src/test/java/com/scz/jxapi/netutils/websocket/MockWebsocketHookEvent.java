@@ -1,6 +1,5 @@
-package com.scz.netutis.websocket;
+package com.scz.jxapi.netutils.websocket;
 
-import com.scz.jxapi.netutils.websocket.WebsocketManager;
 import com.scz.jxapi.util.EncodingUtil;
 
 public class MockWebsocketHookEvent {

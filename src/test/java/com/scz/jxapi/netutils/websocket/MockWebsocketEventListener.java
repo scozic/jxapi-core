@@ -1,4 +1,4 @@
-package com.scz.netutis.websocket;
+package com.scz.jxapi.netutils.websocket;
 
 /**
  * Interface for listening to events from a {@link MockWebsocket}.

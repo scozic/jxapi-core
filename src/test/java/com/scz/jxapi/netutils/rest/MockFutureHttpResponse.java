@@ -1,7 +1,5 @@
-package com.scz.netutis.rest;
+package com.scz.jxapi.netutils.rest;
 
-import com.scz.jxapi.netutils.rest.FutureHttpResponse;
-import com.scz.jxapi.netutils.rest.HttpRequest;
 import com.scz.jxapi.util.EncodingUtil;
 
 /**

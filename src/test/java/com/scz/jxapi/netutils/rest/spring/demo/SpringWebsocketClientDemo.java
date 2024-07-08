@@ -1,4 +1,4 @@
-package com.scz.netutis.rest.spring.demo;
+package com.scz.jxapi.netutils.rest.spring.demo;
 
 import java.io.IOException;
 import java.net.URI;

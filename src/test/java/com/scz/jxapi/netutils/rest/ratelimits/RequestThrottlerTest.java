@@ -1,4 +1,4 @@
-package com.scz.netutis.rest.ratelimits;
+package com.scz.jxapi.netutils.rest.ratelimits;
 
 import java.util.List;
 import java.util.concurrent.ExecutionException;
@@ -11,8 +11,6 @@ import org.junit.Test;
 import com.scz.jxapi.netutils.rest.FutureRestResponse;
 import com.scz.jxapi.netutils.rest.HttpRequest;
 import com.scz.jxapi.netutils.rest.RestResponse;
-import com.scz.jxapi.netutils.rest.ratelimits.RateLimitRule;
-import com.scz.jxapi.netutils.rest.ratelimits.RequestThrottler;
 
 public class RequestThrottlerTest {
 	

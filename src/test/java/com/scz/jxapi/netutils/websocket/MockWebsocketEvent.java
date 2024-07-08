@@ -1,7 +1,5 @@
-package com.scz.netutis.websocket;
+package com.scz.jxapi.netutils.websocket;
 
-import com.scz.jxapi.netutils.websocket.RawWebsocketMessageHandler;
-import com.scz.jxapi.netutils.websocket.WebsocketErrorHandler;
 import com.scz.jxapi.util.EncodingUtil;
 
 /**

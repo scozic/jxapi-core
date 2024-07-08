@@ -1,4 +1,4 @@
-package com.scz.netutis.websocket;
+package com.scz.jxapi.netutils.websocket;
 
 public enum MockWebsocketEventType {
 	CONNECT,

@@ -1,10 +1,7 @@
-package com.scz.netutis.rest.ratelimits;
+package com.scz.jxapi.netutils.rest.ratelimits;
 
 import org.junit.Assert;
 import org.junit.Test;
-
-import com.scz.jxapi.netutils.rest.ratelimits.RateLimitManager;
-import com.scz.jxapi.netutils.rest.ratelimits.RateLimitRule;
 
 /**
  * Unit test for {@link RateLimitManager}

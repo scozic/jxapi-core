@@ -1,14 +1,10 @@
-package com.scz.netutis.rest;
+package com.scz.jxapi.netutils.rest;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.Assert;
 import org.junit.Test;
-
-import com.scz.jxapi.netutils.rest.FutureRestResponse;
-import com.scz.jxapi.netutils.rest.RestRequestPagination;
-import com.scz.jxapi.netutils.rest.RestResponse;
 
 /**
  * Unit test for {@link RestRequestPagination}.
