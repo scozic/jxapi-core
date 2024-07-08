@@ -1,18 +1,15 @@
-package com.scz.jxapi.generator.java.exchange;
+package com.scz.jxapi.exchange;
 
-import com.scz.jxapi.exchange.AbstractExchange;
-import com.scz.jxapi.exchange.AbstractExchangeApi;
-import com.scz.jxapi.exchange.ExchangeApi;
-import com.scz.jxapi.observability.ExchangeApiEvent;
-import com.scz.jxapi.observability.ExchangeApiObserver;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Properties;
 
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Properties;
+import com.scz.jxapi.observability.ExchangeApiEvent;
+import com.scz.jxapi.observability.ExchangeApiObserver;
 
 /**
  * Unit test for {@link AbstractExchange}

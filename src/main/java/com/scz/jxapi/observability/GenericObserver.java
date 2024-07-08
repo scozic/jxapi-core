@@ -24,6 +24,8 @@ public class GenericObserver<T> {
 	 * The list of observed events.
 	 */
 	private final List<T> events = Collections.synchronizedList(new ArrayList<>());
+	
+	private long defaulTimeout = DEFAULT_TIMEOUT;
 
 	/**
 	 * Handles the incoming event by adding it to the list of observed events.
@@ -67,6 +69,7 @@ public class GenericObserver<T> {
 	 * Removes and returns the first observed event from the list.
 	 *
 	 * @return the first observed event
+	 * @throws IndexOutOfBoundsException if observed event list is empty
 	 */
 	public T pop() {
 		return events.remove(0);
@@ -81,7 +84,7 @@ public class GenericObserver<T> {
 	 * @throws TimeoutException if the timeout is reached before the desired count is reached
 	 */
 	public GenericObserver<T> waitUntilCount(int count) throws TimeoutException {
-		return waitUntilCount(count, DEFAULT_TIMEOUT);
+		return waitUntilCount(count, defaulTimeout);
 	}
 
 	/**
@@ -130,5 +133,21 @@ public class GenericObserver<T> {
 	 */
 	public T await(long timeout) throws TimeoutException {
 		return waitUntilCount(1).pop();
+	}
+
+	/**
+	 * Returns the default timeout value.
+	 * @return default timeout in milliseconds
+	 */
+	public long getDefaulTimeout() {
+		return defaulTimeout;
+	}
+
+	/**
+	 * Sets the default timeout value.
+	 * @param defaulTimeout default timeout in milliseconds
+	 */
+	public void setDefaulTimeout(long defaulTimeout) {
+		this.defaulTimeout = defaulTimeout;
 	}
 }

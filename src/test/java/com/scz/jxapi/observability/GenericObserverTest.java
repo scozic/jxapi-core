@@ -64,7 +64,7 @@ public class GenericObserverTest {
     public void testWaitUntilCount() throws TimeoutException {
         new Thread(() -> {
             try {
-                Thread.sleep(10);
+                Thread.sleep(10L);
                 observer.handleEvent("event1");
                 observer.handleEvent("event2");
             } catch (InterruptedException e) {
@@ -85,7 +85,7 @@ public class GenericObserverTest {
     public void testAwait() throws TimeoutException {
         new Thread(() -> {
             try {
-                Thread.sleep(10);
+                Thread.sleep(10L);
                 observer.handleEvent("event1");
             } catch (InterruptedException e) {
                 log.error("InterruptedException occurred", e);
@@ -98,6 +98,7 @@ public class GenericObserverTest {
 
     @Test(expected = TimeoutException.class)
     public void testAwaitWithTimeout() throws TimeoutException {
+    	observer.setDefaulTimeout(10L);
         observer.await();
     }
 }
