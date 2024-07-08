@@ -1,5 +1,7 @@
-package com.scz.jxapi.netutils.rest;
+package com.scz.jxapi.netutils.rest.mock;
 
+import com.scz.jxapi.netutils.rest.FutureHttpResponse;
+import com.scz.jxapi.netutils.rest.HttpRequest;
 import com.scz.jxapi.util.EncodingUtil;
 
 /**

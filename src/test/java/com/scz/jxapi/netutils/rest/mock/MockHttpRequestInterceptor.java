@@ -1,7 +1,10 @@
-package com.scz.jxapi.netutils.rest;
+package com.scz.jxapi.netutils.rest.mock;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import com.scz.jxapi.netutils.rest.HttpRequest;
+import com.scz.jxapi.netutils.rest.HttpRequestInterceptor;
 
 /**
  * A mock implementation of the HttpRequestInterceptor interface.
