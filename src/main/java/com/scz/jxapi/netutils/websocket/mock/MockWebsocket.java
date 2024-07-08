@@ -1,5 +1,10 @@
-package com.scz.jxapi.netutils.websocket;
+package com.scz.jxapi.netutils.websocket.mock;
 
+import com.scz.jxapi.netutils.websocket.AbstractWebsocket;
+import com.scz.jxapi.netutils.websocket.RawWebsocketMessageHandler;
+import com.scz.jxapi.netutils.websocket.Websocket;
+import com.scz.jxapi.netutils.websocket.WebsocketErrorHandler;
+import com.scz.jxapi.netutils.websocket.WebsocketException;
 import com.scz.jxapi.observability.GenericObserver;
 
 /**

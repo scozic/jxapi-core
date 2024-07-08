@@ -1,5 +1,6 @@
-package com.scz.jxapi.netutils.websocket;
+package com.scz.jxapi.netutils.websocket.mock;
 
+import com.scz.jxapi.netutils.websocket.WebsocketListener;
 import com.scz.jxapi.observability.GenericObserver;
 
 public class MockWebsocketListener<M> extends GenericObserver<M> implements WebsocketListener<M> {

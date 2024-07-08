@@ -1,8 +1,11 @@
-package com.scz.jxapi.netutils.websocket;
+package com.scz.jxapi.netutils.websocket.mock;
 
 import java.util.HashMap;
 import java.util.Map;
 
+import com.scz.jxapi.netutils.websocket.WebsocketException;
+import com.scz.jxapi.netutils.websocket.WebsocketHook;
+import com.scz.jxapi.netutils.websocket.WebsocketManager;
 import com.scz.jxapi.observability.GenericObserver;
 
 public class MockWebsocketHook extends GenericObserver<MockWebsocketHookEvent> implements WebsocketHook {

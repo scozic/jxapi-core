@@ -1,4 +1,4 @@
-package com.scz.jxapi.netutils.websocket;
+package com.scz.jxapi.netutils.websocket.mock;
 
 public enum MockWebsocketHookEventType {
 	AFTER_INIT,
