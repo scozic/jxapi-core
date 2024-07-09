@@ -110,7 +110,7 @@ public class MockWebsocketEventTest {
     public void testToString() {
         MockWebsocket source = new MockWebsocket();
         MockWebsocketEvent event = new MockWebsocketEvent(MockWebsocketEventType.CONNECT, source);
-        String expected = "MockWebsocketEvent{\"type\":\"CONNECT\",\"source\":{\"defaulTimeout\":2000,\"connected\":false,\"url\":null,\"allEvents\":[]},\"messageHandler\":null,\"errorHandler\":null,\"message\":null}";
+        String expected = "MockWebsocketEvent{\"type\":\"CONNECT\",\"source\":{\"defaulTimeout\":2000,\"connected\":false,\"allEvents\":[]}}";
         assertEquals(expected, event.toString());
     }
 }

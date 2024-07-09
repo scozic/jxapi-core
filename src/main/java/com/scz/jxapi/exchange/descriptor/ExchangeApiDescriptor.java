@@ -44,8 +44,8 @@ import com.scz.jxapi.util.EncodingUtil;
  * 	"description": "The market data API of MyTestExchange",
  * 	"httpRequestInterceptorFactory": "com.foo.bar.BarHttpRequestInterceptorFactory",
  * 	"rateLimits": [
-		{"id": "customRule", "timeFrame": 1500,  "maxTotalWeight": 300}
-	],
+ *		{"id": "customRule", "timeFrame": 1500,  "maxTotalWeight": 300}
+ *	],
  * 	"restEndpoints": [
  * 		{
  * 			"name": "exchangeInfo",
