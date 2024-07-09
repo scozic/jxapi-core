@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -35,6 +36,7 @@ public class JsonUtil {
 		try {
 			ObjectMapper om = new ObjectMapper();
 			om.disable(SerializationFeature.FAIL_ON_EMPTY_BEANS);
+			om.setSerializationInclusion(Include.NON_NULL);
 			return om.writeValueAsString(pojo);
 		} catch (JsonProcessingException e) {
 			throw new IllegalArgumentException("Error while trying to serialize " + pojo.getClass().getName() + " instance to JSON", e);
