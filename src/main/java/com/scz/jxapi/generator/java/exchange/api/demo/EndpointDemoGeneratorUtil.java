@@ -102,7 +102,7 @@ public class EndpointDemoGeneratorUtil {
 			   .append("();\n");
 			
 			for (Field childParam: endpointParameter.getParameters()) {
-				Type childParamType = childParam.getEndpointParameterType();
+				Type childParamType = childParam.getType();
 				String setArg = JavaCodeGenerationUtil.getQuotedString(childParam.getSampleValue());
 				String setAccessorName = JavaCodeGenerationUtil.getSetAccessorMethodName(
 						childParam.getName(),  
@@ -193,7 +193,7 @@ public class EndpointDemoGeneratorUtil {
 	
 	private static String getPrimitiveTypeParameterSampleValueDeclaration(Field endpointParameter, 
 																		  Set<String> imports) {
-		Type type = endpointParameter.getEndpointParameterType();
+		Type type = endpointParameter.getType();
 		Object sampleValue = endpointParameter.getSampleValue();
 		if (sampleValue == null) {
 			return null;

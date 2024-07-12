@@ -20,7 +20,7 @@ public class ExchangeApiInterfaceGenerator extends JavaTypeGenerator {
 	public static final String EXCHANGE_API_NAME_VARIABLE = "ID";
 	
 	private static Type getEndpointParameterType(Field parameter) {
-		return parameter == null? null: Optional.ofNullable(parameter.getEndpointParameterType()).orElse(Type.OBJECT);
+		return parameter == null? null: Optional.ofNullable(parameter.getType()).orElse(Type.OBJECT);
 	}
 	
 	private final ExchangeDescriptor exchangeDescriptor;

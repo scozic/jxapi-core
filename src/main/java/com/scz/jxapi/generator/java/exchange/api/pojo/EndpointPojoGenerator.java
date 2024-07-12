@@ -42,7 +42,7 @@ public class EndpointPojoGenerator extends PojoGenerator {
 		setDescription(description);
 		setImplementedInterfaces(implementedInterfaces);
 		for (Field field: fields) {
-			if (field.getEndpointParameterType().isObject()) {
+			if (field.getType().isObject()) {
 				generateObjectParameterTypePojoField(field);
 			} else {
 				generateSimpleParameterTypePojoField(field);
@@ -57,7 +57,7 @@ public class EndpointPojoGenerator extends PojoGenerator {
 		String className = getName();
 		String objectParamClassName = ExchangeJavaWrapperGeneratorUtil.getLeafObjectParameterClassName(
 																				field.getName(), 
-																				field.getEndpointParameterType(), 
+																				field.getType(), 
 																				field.getObjectName(), 
 																				getImports(), 
 																				className);
@@ -67,7 +67,7 @@ public class EndpointPojoGenerator extends PojoGenerator {
 	}
 	
 	private void generateSimpleParameterTypePojoField(Field field) {
-		String parameterClass = ExchangeJavaWrapperGeneratorUtil.getClassNameForParameterType(field.getEndpointParameterType(), getImports(), null);
+		String parameterClass = ExchangeJavaWrapperGeneratorUtil.getClassNameForParameterType(field.getType(), getImports(), null);
 		if (!parameterClass.startsWith("java.lang") && parameterClass.contains(".")) {
 			addImport(parameterClass);
 			parameterClass = JavaCodeGenerationUtil.getClassNameWithoutPackage(parameterClass);

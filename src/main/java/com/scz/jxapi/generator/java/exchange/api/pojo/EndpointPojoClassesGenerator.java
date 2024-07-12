@@ -44,7 +44,7 @@ public class EndpointPojoClassesGenerator implements ClassesGenerator {
 	public void generateClasses(Path outputFolder) throws IOException {
 		rootPojoGenerator.writeJavaFile(outputFolder);
 		for (Field field: fields) {
-			if (field.getEndpointParameterType().isObject()) {
+			if (field.getType().isObject()) {
 				generateObjectParameterTypePojoField(outputFolder, rootPojoGenerator.getName(), field);
 			}
 		}
@@ -54,7 +54,7 @@ public class EndpointPojoClassesGenerator implements ClassesGenerator {
 	private void generateObjectParameterTypePojoField(Path outputFolder, String className, Field field) throws IOException {
 		String objectParamClassName = ExchangeJavaWrapperGeneratorUtil.getLeafObjectParameterClassName(
 												field.getName(), 
-												field.getEndpointParameterType(), 
+												field.getType(), 
 												field.getObjectName(), 
 												new HashSet<>(), 
 												className);

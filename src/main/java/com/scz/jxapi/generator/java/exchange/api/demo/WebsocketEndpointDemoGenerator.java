@@ -39,7 +39,7 @@ public class WebsocketEndpointDemoGenerator extends JavaTypeGenerator {
 		setTypeDeclaration("public class");
 		this.hasArguments = ExchangeJavaWrapperGeneratorUtil.websocketEndpointHasArguments(websocketApi, exchangeApiDescriptor);
 		if (hasArguments) {
-			Type requestDataType =  Optional.ofNullable(websocketApi.getRequest().getEndpointParameterType()).orElse(Type.OBJECT);
+			Type requestDataType =  Optional.ofNullable(websocketApi.getRequest().getType()).orElse(Type.OBJECT);
 			if (requestDataType.getCanonicalType().isPrimitive) {
 				requestClassName = requestDataType.getCanonicalType().typeClass.getName();
 			} else {
@@ -90,7 +90,7 @@ public class WebsocketEndpointDemoGenerator extends JavaTypeGenerator {
 		body = new StringBuilder();
 		String exchangeInterfaceClassName = ExchangeJavaWrapperGeneratorUtil.getExchangeInterfaceName(exchangeDescriptor);
 		String exchangeName = JavaCodeGenerationUtil.firstLetterToLowerCase(exchangeDescriptor.getName());
-		Field request = ExchangeJavaWrapperGeneratorUtil.resolveEndpointParameters(exchangeApiDescriptor, websocketApi.getRequest());
+		Field request = ExchangeJavaWrapperGeneratorUtil.resolveEndpointFields(exchangeApiDescriptor, websocketApi.getRequest());
 		String exchangeImplClassName = exchangeInterfaceClassName + "Impl";
 		addImport(exchangeImplClassName);
 		addImport(TestJXApiProperties.class);

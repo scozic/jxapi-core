@@ -52,7 +52,7 @@ public class JsonPojoSerializerGenerator extends JavaTypeGenerator {
 		fields.forEach(field -> {
 			String getFieldValue = "value." + JavaCodeGenerationUtil.getGetAccessorMethodName(
 					field.getName(),
-					field.getEndpointParameterType().getCanonicalType().name().toLowerCase(),
+					field.getType().getCanonicalType().name().toLowerCase(),
 					fields.stream().map(f -> f.getName()).collect(Collectors.toList())) + "()";
 			body.append("if (").append(getFieldValue).append(" != null)");
 			body.append(JavaCodeGenerationUtil.generateCodeBlock(genWriteFieldInstruction(field, getFieldValue)));
@@ -65,11 +65,11 @@ public class JsonPojoSerializerGenerator extends JavaTypeGenerator {
 	}
 	
 	private String genWriteFieldInstruction(Field field, String getFieldValue) {
-		if (!field.getEndpointParameterType().getCanonicalType().isPrimitive) {
+		if (!field.getType().getCanonicalType().isPrimitive) {
 			return "gen.writeObjectField(\"" + msgFieldName(field) + "\", " + getFieldValue + ");\n";
 		}
 		
-		switch (field.getEndpointParameterType().getCanonicalType()) {
+		switch (field.getType().getCanonicalType()) {
 		case STRING:
 			return "gen.writeStringField(\"" + msgFieldName(field) + "\", String.valueOf(" + getFieldValue + "));\n";
 		case BIGDECIMAL:

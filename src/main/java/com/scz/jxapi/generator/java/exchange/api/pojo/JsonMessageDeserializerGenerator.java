@@ -67,7 +67,7 @@ public class JsonMessageDeserializerGenerator extends JavaTypeGenerator {
 				.append("case \"")
 				.append(field.getMsgField() != null? field.getMsgField() : field.getName())
 				.append("\":\n");
-			if (!field.getEndpointParameterType().getCanonicalType().isPrimitive) {
+			if (!field.getType().getCanonicalType().isPrimitive) {
 				body.append(dblIndent)
 					.append("parser.nextToken();\n");
 			}
@@ -98,7 +98,7 @@ public class JsonMessageDeserializerGenerator extends JavaTypeGenerator {
 	}
 
 	private String getParseFieldInstruction(Field field) {
-		CanonicalType canonicalType = field.getEndpointParameterType().getCanonicalType();
+		CanonicalType canonicalType = field.getType().getCanonicalType();
 		if (!canonicalType.isPrimitive) {
 			return generateNonPrimitiveTypeParameterDeserializerDeclaration(field) +".deserialize(parser)";
 		}
@@ -125,15 +125,15 @@ public class JsonMessageDeserializerGenerator extends JavaTypeGenerator {
 	}
 	
 	private String generateNonPrimitiveTypeParameterDeserializerDeclaration(Field field) {
-		Type type = field.getEndpointParameterType();
+		Type type = field.getType();
 		String objectParameterClassName = ExchangeJavaWrapperGeneratorUtil.getLeafObjectParameterClassName(
 													field.getName(), 
-													field.getEndpointParameterType(), 
+													field.getType(), 
 													field.getObjectName(),
 													getImports(), 
 													deserializedTypeClassName);
 		String simpleDeserializerTypeName = generateNonPrimitiveParameterDeserializerClassName(
-												field.getEndpointParameterType(), 
+												field.getType(), 
 												objectParameterClassName, 
 												getImports());
 		

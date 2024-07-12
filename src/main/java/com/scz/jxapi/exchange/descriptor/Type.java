@@ -3,9 +3,8 @@ package com.scz.jxapi.exchange.descriptor;
 import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
-
-import com.scz.jxapi.util.EncodingUtil;
 
 /**
  * Describes the data type of a REST request, response or websocket message
@@ -114,6 +113,28 @@ public class Type {
 	}
 	
 	public String toString() {
-		return EncodingUtil.pojoToString(this);
+		StringBuilder s = new StringBuilder();
+		if (subType != null) {
+			s.append(subType.toString()).append("_");
+		}
+		String ctype = "UNDEFINED_TYPE";
+		if (canonicalType != null) {
+			ctype = canonicalType.name();
+		}
+		return s.append(ctype).toString();
+	}
+	
+	public boolean equals(Object other) {
+		if (other == null) {
+			return false;
+		}
+		if (!Objects.equals(getClass(), other.getClass())) {
+			return false;
+		}
+		Type t = (Type) other;
+		if (this.canonicalType != t.canonicalType) {
+			return false;
+		}
+		return Objects.equals(this.subType, t.subType);	
 	}
 }

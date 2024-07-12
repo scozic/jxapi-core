@@ -44,7 +44,7 @@ public class WebsocketEndpointClassesGenerator implements ClassesGenerator {
 		this.exchangeDescriptor = exchangeDescriptor;
 		this.apiDescriptor = apiDescriptor;
 		this.websocketEndpointDescriptor = websocketEndpointDescriptor;
-		this.request = ExchangeJavaWrapperGeneratorUtil.resolveEndpointParameters(apiDescriptor, websocketEndpointDescriptor.getRequest());
+		this.request = ExchangeJavaWrapperGeneratorUtil.resolveEndpointFields(apiDescriptor, websocketEndpointDescriptor.getRequest());
 	}
 	
 	/**
@@ -144,7 +144,7 @@ public class WebsocketEndpointClassesGenerator implements ClassesGenerator {
 		if (param == null) {
 			return false;
 		}
-		Type type = Optional.ofNullable(param.getEndpointParameterType()).orElse(Type.OBJECT);
+		Type type = Optional.ofNullable(param.getType()).orElse(Type.OBJECT);
 		if (!type.isObject()) {
 			return false;
 		}

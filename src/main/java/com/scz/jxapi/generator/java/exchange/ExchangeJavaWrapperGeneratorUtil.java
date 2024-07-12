@@ -66,7 +66,7 @@ public class ExchangeJavaWrapperGeneratorUtil {
 		return generateRestEnpointPojoClassName(exchangeDescriptor, 
 												exchangeApiDescriptor, 
 												restEndpointDescriptor.getName(), 
-												request.getEndpointParameterType(), 
+												request.getType(), 
 												request.getObjectName(), 
 												"Request");
 	}
@@ -78,7 +78,7 @@ public class ExchangeJavaWrapperGeneratorUtil {
 		return generateRestEnpointPojoClassName(exchangeDescriptor, 
 												exchangeApiDescriptor, 
 												restEndpointDescriptor.getName(), 
-												response.getEndpointParameterType(), 
+												response.getType(), 
 												response.getObjectName(), 
 												"Response");
 	}
@@ -122,7 +122,7 @@ public class ExchangeJavaWrapperGeneratorUtil {
 		return generateRestEnpointPojoClassName(exchangeDescriptor, 
 												exchangeApiDescriptor, 
 												websocketApi.getName(), 
-												message.getEndpointParameterType(), 
+												message.getType(), 
 												message.getObjectName(), 
 												"Message");
 	}
@@ -133,7 +133,7 @@ public class ExchangeJavaWrapperGeneratorUtil {
 		return generateRestEnpointPojoClassName(exchangeDescriptor, 
 												exchangeApiDescriptor, 
 												websocketApi.getName(), 
-												request.getEndpointParameterType(), 
+												request.getType(), 
 												request.getObjectName(), 
 												"Request");
 	}
@@ -186,7 +186,7 @@ public class ExchangeJavaWrapperGeneratorUtil {
 	/**
 	 * Generates expected class name for an {@link Field} instance
 	 * according to its type (see
-	 * {@link Field#getEndpointParameterType()} .
+	 * {@link Field#getType()} .
 	 * <ul>
 	 * <li>For a primitive (see {@link CanonicalType#isPrimitive}
 	 * parameter type, the corresponding primitive type class is returned:
@@ -305,12 +305,12 @@ public class ExchangeJavaWrapperGeneratorUtil {
 														  Set<String> imports, 
 														  String enclosingClassName) {
 		String objectClassName = null;
-		if (endpointParameter.getEndpointParameterType().isObject()) {
+		if (endpointParameter.getType().isObject()) {
 			 objectClassName = getParameterObjectClassName(endpointParameter, imports, enclosingClassName);
 			 
 		}
 		return getClassNameForParameterType(
-					endpointParameter.getEndpointParameterType(), 
+					endpointParameter.getType(), 
 					imports, 
 					objectClassName);
 	}
@@ -418,7 +418,7 @@ public class ExchangeJavaWrapperGeneratorUtil {
 	 * {@link Type#getLeafSubType(Type)}.
 	 * 
 	 * @param endpointParameterName See {@link Field#getName()} name
-	 * @param type                  See {@link Field#getEndpointParameterType()}
+	 * @param type                  See {@link Field#getType()}
 	 * @param objectName            See {@link Field#getObjectName()}
 	 * @param imports               The imports of generator context that will be
 	 *                              populated with classes used by returned type.
@@ -553,27 +553,28 @@ public class ExchangeJavaWrapperGeneratorUtil {
 		}
 	}
 	
-	public static Field resolveEndpointParameters(ExchangeApiDescriptor exchangeApiDescriptor, 
-															  Field parameter) {
-		if (parameter == null) {
+	public static Field resolveEndpointFields(ExchangeApiDescriptor exchangeApiDescriptor, 
+															  Field field) {
+		if (field == null) {
 			return null;
 		}
-		if (parameter.getEndpointParameterType() == null) {
-			return parameter; 
+		if (field.getType() == null) {
+			return field; 
 		}
-		if (parameter.getEndpointParameterType() != null 
-			&& parameter.getEndpointParameterType().isObject() 
-			&& parameter.getObjectName() != null 
-			&& parameter.getParameters() == null) {
-			parameter = parameter.clone();
-			parameter.setParameters(findParametersForObjectName(parameter.getObjectName(), exchangeApiDescriptor));
+		if (field.getType() != null 
+			&& field.getType().isObject() 
+			&& field.getObjectName() != null 
+			&& field.getParameters() == null) {
+			field = field.clone();
+			field.setParameters(findParametersForObjectName(field.getObjectName(), exchangeApiDescriptor));
 		}
-		return parameter;
+		return field;
 	}
 	
 	public static List<Field> resolveEndpointParameters(ExchangeApiDescriptor exchangeApiDescriptor, 
-			List<Field> parameters) {
-		return parameters.stream().map(e -> resolveEndpointParameters(exchangeApiDescriptor, e)).collect(Collectors.toList());
+														List<Field> fields) {
+		return fields.stream().map(e -> resolveEndpointFields(exchangeApiDescriptor, e))
+							  .collect(Collectors.toList());
 	}
 
 	public static boolean websocketEndpointHasArguments(WebsocketEndpointDescriptor websocketApi, 
@@ -582,7 +583,7 @@ public class ExchangeJavaWrapperGeneratorUtil {
 		if (request == null) {
 			return false;
 		}
-		return endpointHasArguments(request.getEndpointParameterType(), 
+		return endpointHasArguments(request.getType(), 
 									request.getParameters(), 
 									request.getObjectName(), 
 									exchangeApiDescriptor);
@@ -594,7 +595,7 @@ public class ExchangeJavaWrapperGeneratorUtil {
 		if (request == null) {
 			return false;
 		}
-		return endpointHasArguments(request.getEndpointParameterType(),
+		return endpointHasArguments(request.getType(),
 									request.getParameters(), 
 									request.getObjectName(), 
 									exchangeApiDescriptor);
@@ -617,7 +618,7 @@ public class ExchangeJavaWrapperGeneratorUtil {
 		if (response == null) {
 			return false;
 		}
-		Type dataType = response.getEndpointParameterType();
+		Type dataType = response.getType();
 		return (dataType != null && dataType.getCanonicalType() != CanonicalType.OBJECT) 
 				|| getEndpointParameters(response.getParameters(), response.getObjectName(), exchangeApiDescriptor).size() > 0;
 	}
@@ -654,7 +655,7 @@ public class ExchangeJavaWrapperGeneratorUtil {
 	}
 
 	public static Type getEndpointParameterType(Field parameter) {
-		return parameter == null? null: Optional.ofNullable(parameter.getEndpointParameterType()).orElse(Type.OBJECT);
+		return parameter == null? null: Optional.ofNullable(parameter.getType()).orElse(Type.OBJECT);
 	}
 	
 	public static String getRestEndpointNameStaticVariable(String restEndpointName) {

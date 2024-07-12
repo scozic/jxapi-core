@@ -325,7 +325,7 @@ public class ExchangeApiInterfaceImplementationGenerator extends JavaTypeGenerat
 		}
 		endpointParameters.forEach(param -> {
 			replacements.add(param.getMsgField() != null? param.getMsgField(): param.getName());
-			String parameterClass = ExchangeJavaWrapperGeneratorUtil.getClassNameForParameterType(param.getEndpointParameterType(), getImports(), Optional.ofNullable(param.getObjectName()).orElse(messageClassObjectName));
+			String parameterClass = ExchangeJavaWrapperGeneratorUtil.getClassNameForParameterType(param.getType(), getImports(), Optional.ofNullable(param.getObjectName()).orElse(messageClassObjectName));
 			if (!parameterClass.startsWith("java.lang") && parameterClass.contains(".")) {
 				parameterClass = JavaCodeGenerationUtil.getClassNameWithoutPackage(parameterClass);
 			}
@@ -657,15 +657,15 @@ public class ExchangeApiInterfaceImplementationGenerator extends JavaTypeGenerat
 							endpointParameters.stream().map(p -> p.getName()).collect(Collectors.toList()))
 						+ "()";
 			}
-			if (param.getEndpointParameterType().getCanonicalType() == CanonicalType.LIST
-				|| param.getEndpointParameterType().getCanonicalType() == CanonicalType.MAP
-				|| param.getEndpointParameterType().isObject()) {
+			if (param.getType().getCanonicalType() == CanonicalType.LIST
+				|| param.getType().getCanonicalType() == CanonicalType.MAP
+				|| param.getType().isObject()) {
 				addImport(JsonUtil.class);
 				value = new StringBuilder()
 								.append("JsonUtil.pojoToJsonString(")
 								.append(value)
 								.append(")").toString(); 
-			} else if (param.getEndpointParameterType().getCanonicalType() == CanonicalType.STRING) {
+			} else if (param.getType().getCanonicalType() == CanonicalType.STRING) {
 				value = new StringBuilder()
 						.append(value)
 						.toString(); 
@@ -701,7 +701,7 @@ public class ExchangeApiInterfaceImplementationGenerator extends JavaTypeGenerat
 								ExchangeJavaWrapperGeneratorUtil.getClassNameForEndpointParameter(param, null, param.getObjectName()), 
 								endpointParameters.stream().map(p -> p.getName()).collect(Collectors.toList()))
 						   + "()";
-			if (param.getEndpointParameterType().getCanonicalType() == CanonicalType.LIST) {
+			if (param.getType().getCanonicalType() == CanonicalType.LIST) {
 				value = EncodingUtil.class.getSimpleName() + ".listToString(" + value + ", \"" + stringListSeparator + "\")"; 
 			}
 			sb.append(", \"").append(name).append("\", ").append(value);

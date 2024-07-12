@@ -45,7 +45,7 @@ public class JsonMessageDeserializerClassesGenerator implements ClassesGenerator
 						+ " to:" + outputFolder);
 		Set<String> imports = new HashSet<>();
 		for (Field field: fields) {
-			if ((field.getEndpointParameterType().isObject())
+			if ((field.getType().isObject())
 				&& field.getParameters() != null) {
 				Field objectParam = Field.createObject(CanonicalType.OBJECT.name(), 
 																		 field.getName(), 
