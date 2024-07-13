@@ -7,22 +7,21 @@ import java.util.Objects;
 import java.util.Optional;
 
 /**
- * Describes the data type of a REST request, response or websocket message
- * field. This type can be a primitive type (see
+ * Describes the type of data of a {@link Field}.
+ * It can be a primitive type (see
  * {@link CanonicalType#isPrimitive}, an object (
- * {@link CanonicalType#OBJECT}), or a list or (
- * {@link String} key) map of data with a nested type.<br/>
+ * {@link CanonicalType#OBJECT}), a list of data of same subtype,  or a
+ * {@link String} key map of data with values of same subtype.<br/>
  * When a field canonical type is primitive or
  * {@link CanonicalType#OBJECT}, it subtype is
  * <code>null</code> as not relevant.<br/>
  * Otherwise, the type stands for a list or {@link String} key map of values of
  * same subtype which can be any type.<br/>
- * This means types are extensible: for instance
- * <code>BIGDECIMAL_LIST_MAP</code> means value of a field is map of list of
+ * Such data ypes are extensible: for instance
+ * <code>BIGDECIMAL_LIST_MAP</code> means value of a field is a map of list of
  * {@link BigDecimal} values. <br/>
  * When leaf subtype is {@link CanonicalType#OBJECT} (see
- * {@link #isObject()}), the field definition in endpoint descriptor JSON file
- * must specify the list of {@link Field} that defines the object.
+ * {@link #isObject()}), the field definition must specify the list of {@link Field} that defines the object.
  */
 public class Type {
 	
@@ -35,6 +34,11 @@ public class Type {
 	public static final Type BIGDECIMAL = createCanonicalType(CanonicalType.BIGDECIMAL);
 	public static final Type BOOLEAN = createCanonicalType(CanonicalType.BOOLEAN);
 	
+	/**
+	 * Create a type for a given canonical type
+	 * @param canonicalType
+	 * @return
+	 */
 	private static Type createCanonicalType(CanonicalType canonicalType) {
 		Type type = new Type();
 		type.setCanonicalType(canonicalType);
@@ -42,7 +46,18 @@ public class Type {
 		return type;
 	}
 	
+	/**
+	 * Get the leaf subtype of a type
+	 * 
+	 * @param type
+	 * @return if type is null, return null, otherwise if type has no subtype,
+	 *         return type canonical type, otherwise return the leaf subtype of
+	 *         subtype
+	 */
 	public static Type getLeafSubType(Type type) {
+		if (type == null) {
+			return null;
+		}
 		Type res = type;
 		while (res.subType != null) {
 			res = res.subType;
@@ -50,6 +65,18 @@ public class Type {
 		return res;
 	}
 	
+	/**
+	 * Create a type from a type name
+	 * A type name can be:
+	 * <ul>
+	 * <li> a canonical type name (OBJECT, STRING, INT, LONG, TIMESTAMP, BIGDECIMAL, BOOLEAN)
+	 * <li> a list of values of same subtype: SUBTYPE_LIST where SUBTYPE is a type name
+	 * <li> a map of values of same subtype: SUBTYPE_MAP where SUBTYPE is a type name
+	 * </ul>
+	 * @param typeName
+	 * @return the type for given type name
+	 * @throws IllegalArgumentException if type name is invalid
+	 */
 	public static Type fromTypeName(String typeName) {
 		if (typeName == null) {
 			return null;
@@ -92,26 +119,49 @@ public class Type {
 	
 	private Type subType;
 
+	/**
+	 * Get the canonical type of the type
+	 * @return the canonical type
+	 */
 	public CanonicalType getCanonicalType() {
 		return canonicalType;
 	}
 
+	/**
+	 * Set the canonical type of the type
+	 * @param type
+	 */
 	public void setCanonicalType(CanonicalType type) {
 		this.canonicalType = type;
 	}
 
+	/**
+	 * Get the subtype of the type
+	 * @return the subtype
+	 */
 	public Type getSubType() {
 		return subType;
 	}
 
+	/**
+	 * Set the subtype of the type
+	 * @param subType
+	 */
 	public void setSubType(Type subType) {
 		this.subType = subType;
 	}
 	
+	/**
+	 * Check if the type is an object that is if leaf subtype is OBJECT
+	 * @return true if the type is an object
+	 */
 	public boolean isObject() {
 		return getLeafSubType(this).canonicalType == CanonicalType.OBJECT;
 	}
 	
+	/**
+	 * @return type name
+	 */
 	public String toString() {
 		StringBuilder s = new StringBuilder();
 		if (subType != null) {
@@ -124,6 +174,7 @@ public class Type {
 		return s.append(ctype).toString();
 	}
 	
+	@Override
 	public boolean equals(Object other) {
 		if (other == null) {
 			return false;
@@ -136,5 +187,10 @@ public class Type {
 			return false;
 		}
 		return Objects.equals(this.subType, t.subType);	
+	}
+	
+	@Override
+	public int hashCode() {
+		return Objects.hash(canonicalType, subType);
 	}
 }
