@@ -270,6 +270,11 @@ public class JavaCodeGenerationUtilTest {
 	public void testGetClassWithoutGenericType_GenericType() {
 		Assert.assertEquals("com.x.y.z.Bar", JavaCodeGenerationUtil.getClassNameWithoutGenericType("com.x.y.z.Bar<java.util.List<com.x.y.z.Foo>>"));
 	}
+
+	@Test
+	public void testGetClassNameWithoutGenericType_NullGenericType() {
+		Assert.assertNull(JavaCodeGenerationUtil.getClassNameWithoutGenericType(null));
+	}
 	
 	@Test
 	public void testGetGenericType_NoGenericType() {
@@ -289,6 +294,11 @@ public class JavaCodeGenerationUtilTest {
 			return;
 		}
 		Assert.fail();
+	}
+
+	@Test
+	public void testGetGenericType_NullGenericType() {
+		Assert.assertNull(JavaCodeGenerationUtil.getGenericType(null));
 	}
 	
 	@Test

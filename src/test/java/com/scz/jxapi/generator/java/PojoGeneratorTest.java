@@ -192,5 +192,19 @@ public class PojoGeneratorTest {
 				+ "}\n"
 				, generator.generate());
 	}
+
+	@Test
+	public void testGetFields() {
+		PojoGenerator generator = new PojoGenerator("x.y.z.Foo");
+		Assert.assertEquals(0, generator.getFields().length);
+		generator.addField(PojoField.create("String", "name", null, "the name"));
+		Assert.assertEquals(1, generator.getFields().length);
+		PojoField f0 = generator.getFields()[0];
+		Assert.assertEquals("name", f0.getName());
+		Assert.assertEquals("String", f0.getType());
+		Assert.assertEquals("the name", f0.getDescription());
+		Assert.assertNull(f0.getMsgField());
+	}
+	
 	
 }

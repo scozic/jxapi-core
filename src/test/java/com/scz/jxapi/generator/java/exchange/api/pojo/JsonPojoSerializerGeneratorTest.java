@@ -1,4 +1,4 @@
-package com.scz.jxapi.generator.java;
+package com.scz.jxapi.generator.java.exchange.api.pojo;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -9,7 +9,6 @@ import org.junit.Test;
 
 import com.scz.jxapi.exchange.descriptor.CanonicalType;
 import com.scz.jxapi.exchange.descriptor.Field;
-import com.scz.jxapi.generator.java.exchange.api.pojo.JsonPojoSerializerGenerator;
 
 public class JsonPojoSerializerGeneratorTest {
 	
