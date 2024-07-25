@@ -10,7 +10,7 @@ import org.slf4j.LoggerFactory;
 
 import com.scz.jxapi.exchange.descriptor.Field;
 import com.scz.jxapi.generator.java.exchange.ClassesGenerator;
-import com.scz.jxapi.generator.java.exchange.ExchangeJavaWrapperGeneratorUtil;
+import com.scz.jxapi.generator.java.exchange.api.ExchangeApiGeneratorUtil;
 import com.scz.jxapi.netutils.deserialization.json.AbstractJsonMessageDeserializer;
 
 /**
@@ -46,7 +46,7 @@ public class JsonPojoSerializerClassesGenerator implements ClassesGenerator {
 			if ((field.getType().isObject())
 				&& field.getParameters() != null) {
 				new JsonPojoSerializerClassesGenerator( 
-								   ExchangeJavaWrapperGeneratorUtil.getLeafObjectParameterClassName(
+								   ExchangeApiGeneratorUtil.getLeafObjectParameterClassName(
 										   	field.getName(), 
 										   	field.getType(), 
 										   	field.getObjectName(), 

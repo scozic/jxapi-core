@@ -12,6 +12,7 @@ import com.scz.jxapi.generator.java.JavaCodeGenerationUtil;
 import com.scz.jxapi.generator.java.PojoField;
 import com.scz.jxapi.generator.java.PojoGenerator;
 import com.scz.jxapi.generator.java.exchange.ExchangeJavaWrapperGeneratorUtil;
+import com.scz.jxapi.generator.java.exchange.api.ExchangeApiGeneratorUtil;
 
 /**
  * Specific {@link PojoGenerator} for REST/Websocket endpoints request/response POJOs.
@@ -32,7 +33,7 @@ public class EndpointPojoGenerator extends PojoGenerator {
 			log.debug("Generating POJO:" + className + " with fields:" 
 						+ StringUtils.truncate(String.valueOf(fields), 192) 
 						+ ", implemented interfaces:" + implementedInterfaces);
-		String serializerClassName = ExchangeJavaWrapperGeneratorUtil.getSerializerClassName(className);
+		String serializerClassName = EndpointPojoGeneratorUtil.getSerializerClassName(className);
 		addImport(serializerClassName);
 		addImport(com.fasterxml.jackson.databind.annotation.JsonSerialize.class.getName());
 		setTypeDeclaration("@JsonSerialize(using = " 
@@ -55,14 +56,14 @@ public class EndpointPojoGenerator extends PojoGenerator {
 	
 	private void generateObjectParameterTypePojoField(Field field) throws IOException {
 		String className = getName();
-		String objectParamClassName = ExchangeJavaWrapperGeneratorUtil.getLeafObjectParameterClassName(
+		String objectParamClassName = ExchangeApiGeneratorUtil.getLeafObjectParameterClassName(
 																				field.getName(), 
 																				field.getType(), 
 																				field.getObjectName(), 
 																				getImports(), 
 																				className);
 		addImport(objectParamClassName);
-		String objectClass = ExchangeJavaWrapperGeneratorUtil.getClassNameForEndpointParameter(field, getImports(), className);
+		String objectClass = ExchangeApiGeneratorUtil.getClassNameForEndpointParameter(field, getImports(), className);
 		addField(PojoField.create(objectClass, field.getName(), field.getMsgField(), field.getDescription()));
 	}
 	

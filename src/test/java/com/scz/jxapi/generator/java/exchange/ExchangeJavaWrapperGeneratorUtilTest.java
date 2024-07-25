@@ -1,222 +1,99 @@
 package com.scz.jxapi.generator.java.exchange;
 
+import java.math.BigDecimal;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import org.junit.Assert;
+import org.junit.Test;
+
+import com.scz.jxapi.exchange.descriptor.ExchangeApiDescriptor;
+import com.scz.jxapi.exchange.descriptor.ExchangeDescriptor;
+import com.scz.jxapi.exchange.descriptor.Type;
+
 /**
  * Unit test for {@link ExchangeJavaWrapperGeneratorUtil}
  */
 public class ExchangeJavaWrapperGeneratorUtilTest {
 	
-	// FIXME implement unit tests for all methods
-//	private Path srcFolder;
-	
-//	@After
-//	public void tearDown() throws IOException {
-//		if (srcFolder != null) {
-//			JavaCodeGenerationUtil.deletePath(srcFolder);
-//			srcFolder = null;
-//		}
-//	}
-	
-//	@Test
-//	public void testGeneratePojoFromEndpointParameters() throws Exception {
-//		srcFolder = Paths.get("tmp" + Math.random());
-//		
-//		/*
-//		 * Expected pojo structure:
-//		 * MyPojo
-//		 *  +- id: string
-//		 *  +- score: int
-//		 *  +- foo: objectList
-//		 *     +- time: timestamp
-//		 *     +- bar
-//		 *        +- name: string
-//		 *  +- toto: objectMap
-//		 *        +- id: string             
-//		 *               
-//		 */
-//		String typeName = "com.x.MyPojo";
-//		String typeDescription = "Used in ExchangeJavaWrapperGeneratorUtilTest";
-//		List<EndpointParameter> endpointParameters = new ArrayList<>();
-//		endpointParameters.add(EndpointParameter.create(EndpointParameterTypes.LONG.name(), "id", null, "identifier", "123"));
-//		endpointParameters.add(EndpointParameter.create(EndpointParameterTypes.INT.name(), "score", null, "Current score", "0"));
-//		endpointParameters.add(EndpointParameter.create("OBJECT_LIST", "foo", "f", null,
-//				Arrays.asList(EndpointParameter.create(EndpointParameterTypes.TIMESTAMP.name(), "time", null, "Creation time", "0"),
-//							  EndpointParameter.create(EndpointParameterTypes.OBJECT.name(), "bar", "b", "The bar",
-//									  Arrays.asList(EndpointParameter.create(EndpointParameterTypes.STRING.name(), "name", null, "Bar name", "my bar")))
-//						)
-//				));
-//		endpointParameters.add(EndpointParameter.create( "OBJECT_LIST_MAP", "toto", "toto", null,
-//				Arrays.asList(EndpointParameter.create(EndpointParameterTypes.STRING.name(), "id", null, "Toto ID", "toto#1"))
-//				));
-//		
-//		ExchangeJavaWrapperGeneratorUtil.generatePojo(srcFolder, typeName, typeDescription, endpointParameters, List.of("com.x.common.MyInterface"), "// Additionnal body here\n\n");
-//		
-//		Path pkgFolder = srcFolder.resolve(Paths.get("com", "x"));
-//		Assert.assertEquals("package com.x;\n"
-//				+ "\n"
-//				+ "import com.fasterxml.jackson.databind.annotation.JsonSerialize;\n"
-//				+ "import com.scz.jxapi.util.EncodingUtil;\n"
-//				+ "import com.x.common.MyInterface;\n"
-//				+ "import com.x.serializers.MyPojoSerializer;\n"
-//				+ "import java.util.List;\n"
-//				+ "import java.util.Map;\n"
-//				+ "\n"
-//				+ "/**\n"
-//				+ " * Used in ExchangeJavaWrapperGeneratorUtilTest\n"
-//				+ " */\n"
-//				+ "@JsonSerialize(using = MyPojoSerializer.class)\n"
-//				+ "public class MyPojo implements MyInterface {\n"
-//				+ "  private List<MyPojoFoo> foo;\n"
-//				+ "  private Long id;\n"
-//				+ "  private Integer score;\n"
-//				+ "  private Map<String, List<MyPojoToto>> toto;\n"
-//				+ "  \n"
-//				+ "  /**\n"
-//				+ "   * @return  Message field <strong>f</strong>\n"
-//				+ "   */\n"
-//				+ "  public List<MyPojoFoo> getFoo() {\n"
-//				+ "    return foo;\n"
-//				+ "  }\n"
-//				+ "  \n"
-//				+ "  /**\n"
-//				+ "   * @param foo  Message field <strong>f</strong>\n"
-//				+ "   */\n"
-//				+ "  public void setFoo(List<MyPojoFoo> foo) {\n"
-//				+ "    this.foo = foo;\n"
-//				+ "  }\n"
-//				+ "  \n"
-//				+ "  /**\n"
-//				+ "   * @return identifier\n"
-//				+ "   */\n"
-//				+ "  public Long getId() {\n"
-//				+ "    return id;\n"
-//				+ "  }\n"
-//				+ "  \n"
-//				+ "  /**\n"
-//				+ "   * @param id identifier\n"
-//				+ "   */\n"
-//				+ "  public void setId(Long id) {\n"
-//				+ "    this.id = id;\n"
-//				+ "  }\n"
-//				+ "  \n"
-//				+ "  /**\n"
-//				+ "   * @return Current score\n"
-//				+ "   */\n"
-//				+ "  public Integer getScore() {\n"
-//				+ "    return score;\n"
-//				+ "  }\n"
-//				+ "  \n"
-//				+ "  /**\n"
-//				+ "   * @param score Current score\n"
-//				+ "   */\n"
-//				+ "  public void setScore(Integer score) {\n"
-//				+ "    this.score = score;\n"
-//				+ "  }\n"
-//				+ "  \n"
-//				+ "  /**\n"
-//				+ "   * @return  Message field <strong>toto</strong>\n"
-//				+ "   */\n"
-//				+ "  public Map<String, List<MyPojoToto>> getToto() {\n"
-//				+ "    return toto;\n"
-//				+ "  }\n"
-//				+ "  \n"
-//				+ "  /**\n"
-//				+ "   * @param toto  Message field <strong>toto</strong>\n"
-//				+ "   */\n"
-//				+ "  public void setToto(Map<String, List<MyPojoToto>> toto) {\n"
-//				+ "    this.toto = toto;\n"
-//				+ "  }\n"
-//				+ "  \n"
-//				+ "  // Additionnal body here\n"
-//				+ "  \n"
-//				+ "  @Override\n"
-//				+ "  public String toString() {\n"
-//				+ "    return EncodingUtil.pojoToString(this);\n"
-//				+ "  }\n"
-//				+ "}\n"
-//				+ "", 
-//				Files.readString(pkgFolder.resolve(Paths.get("MyPojo.java"))));
-//		
-//		Assert.assertEquals("package com.x;\n"
-//				+ "\n"
-//				+ "import com.fasterxml.jackson.databind.annotation.JsonSerialize;\n"
-//				+ "import com.scz.jxapi.util.EncodingUtil;\n"
-//				+ "import com.x.serializers.MyPojoFooSerializer;\n"
-//				+ "\n"
-//				+ "\n"
-//				+ "@JsonSerialize(using = MyPojoFooSerializer.class)\n"
-//				+ "public class MyPojoFoo {\n"
-//				+ "  private MyPojoFooBar bar;\n"
-//				+ "  private Long time;\n"
-//				+ "  \n"
-//				+ "  /**\n"
-//				+ "   * @return The bar Message field <strong>b</strong>\n"
-//				+ "   */\n"
-//				+ "  public MyPojoFooBar getBar() {\n"
-//				+ "    return bar;\n"
-//				+ "  }\n"
-//				+ "  \n"
-//				+ "  /**\n"
-//				+ "   * @param bar The bar Message field <strong>b</strong>\n"
-//				+ "   */\n"
-//				+ "  public void setBar(MyPojoFooBar bar) {\n"
-//				+ "    this.bar = bar;\n"
-//				+ "  }\n"
-//				+ "  \n"
-//				+ "  /**\n"
-//				+ "   * @return Creation time\n"
-//				+ "   */\n"
-//				+ "  public Long getTime() {\n"
-//				+ "    return time;\n"
-//				+ "  }\n"
-//				+ "  \n"
-//				+ "  /**\n"
-//				+ "   * @param time Creation time\n"
-//				+ "   */\n"
-//				+ "  public void setTime(Long time) {\n"
-//				+ "    this.time = time;\n"
-//				+ "  }\n"
-//				+ "  \n"
-//				+ "  @Override\n"
-//				+ "  public String toString() {\n"
-//				+ "    return EncodingUtil.pojoToString(this);\n"
-//				+ "  }\n"
-//				+ "}\n"
-//				, 
-//				Files.readString(pkgFolder.resolve(Paths.get("MyPojoFoo.java"))));
-//		
-//		Assert.assertEquals("package com.x;\n"
-//				+ "\n"
-//				+ "import com.fasterxml.jackson.databind.annotation.JsonSerialize;\n"
-//				+ "import com.scz.jxapi.util.EncodingUtil;\n"
-//				+ "import com.x.serializers.MyPojoFooBarSerializer;\n"
-//				+ "\n"
-//				+ "/**\n"
-//				+ " * The bar\n"
-//				+ " */\n"
-//				+ "@JsonSerialize(using = MyPojoFooBarSerializer.class)\n"
-//				+ "public class MyPojoFooBar {\n"
-//				+ "  private String name;\n"
-//				+ "  \n"
-//				+ "  /**\n"
-//				+ "   * @return Bar name\n"
-//				+ "   */\n"
-//				+ "  public String getName() {\n"
-//				+ "    return name;\n"
-//				+ "  }\n"
-//				+ "  \n"
-//				+ "  /**\n"
-//				+ "   * @param name Bar name\n"
-//				+ "   */\n"
-//				+ "  public void setName(String name) {\n"
-//				+ "    this.name = name;\n"
-//				+ "  }\n"
-//				+ "  \n"
-//				+ "  @Override\n"
-//				+ "  public String toString() {\n"
-//				+ "    return EncodingUtil.pojoToString(this);\n"
-//				+ "  }\n"
-//				+ "}\n", 
-//				Files.readString(pkgFolder.resolve(Paths.get("MyPojoFooBar.java"))));
-//	}
+	@Test
+	public void testGetApiInterfacClassName() {
+		ExchangeDescriptor exchangeDescriptor = new ExchangeDescriptor();
+		exchangeDescriptor.setName("TestExchange");
+		exchangeDescriptor.setBasePackage("com.x.y.z");
+		ExchangeApiDescriptor apiDescriptor = new ExchangeApiDescriptor();
+		apiDescriptor.setName("Spot");
+		Assert.assertEquals("com.x.y.z.spot.TestExchangeSpotApi", ExchangeJavaWrapperGeneratorUtil.getApiInterfaceClassName(exchangeDescriptor, apiDescriptor));
+	}		
+		
+	@Test
+	public void testGetExchangeInterfaceName() {
+		ExchangeDescriptor exchangeDescriptor = new ExchangeDescriptor();
+		exchangeDescriptor.setName("TestExchange");
+		exchangeDescriptor.setBasePackage("com.x.y.z");
+		Assert.assertEquals("com.x.y.z.TestExchangeExchange", ExchangeJavaWrapperGeneratorUtil.getExchangeInterfaceName(exchangeDescriptor));
+	}
+
+	@Test
+	public void testGenerateRateLimitVariableName() {
+		Assert.assertEquals("RATE_LIMIT_TEST_RATE_LIMIT", ExchangeJavaWrapperGeneratorUtil.generateRateLimitVariableName("testRateLimit"));
+	}
+
+	@Test
+	public void testGetJsonMessageDeserializerClassName() {
+		Assert.assertEquals("com.x.y.deserializers.MyObjectDeserializer", ExchangeJavaWrapperGeneratorUtil.getJsonMessageDeserializerClassName("com.x.y.pojo.MyObject"));
+	}
+
+	@Test
+	public void testGetClassNameForParameterType_INT() {
+		Assert.assertEquals("Integer", ExchangeJavaWrapperGeneratorUtil.getClassNameForParameterType(Type.INT, new HashSet<>(), null));
+	}
+
+	@Test
+	public void testGetClassNameForParameterType_STRING() {
+		Assert.assertEquals("String", ExchangeJavaWrapperGeneratorUtil.getClassNameForParameterType(Type.STRING, new HashSet<>(), null));
+	}
+
+	@Test
+	public void testGetClassNameForParameterType_BOOLEAN() {
+		Assert.assertEquals("Boolean", ExchangeJavaWrapperGeneratorUtil.getClassNameForParameterType(Type.BOOLEAN, new HashSet<>(), null));
+	}
+
+	@Test
+	public void testGetClassNameForParameterType_BIGDECIMAL() {
+		Set<String> imports = new HashSet<>();
+		Assert.assertEquals("BigDecimal", ExchangeJavaWrapperGeneratorUtil.getClassNameForParameterType(Type.BIGDECIMAL, imports, null));
+		Assert.assertEquals(1, imports.size());
+		Assert.assertTrue(imports.contains(BigDecimal.class.getName()));
+	}
+
+	@Test
+	public void testGetClassNameForParameterType_LONG() {
+		Assert.assertEquals("Long", ExchangeJavaWrapperGeneratorUtil.getClassNameForParameterType(Type.LONG, new HashSet<>(), null));	
+	}
+
+	@Test
+	public void testGetClassNameForParameterType_TIMESTAMP() {
+		Assert.assertEquals("Long", ExchangeJavaWrapperGeneratorUtil.getClassNameForParameterType(Type.TIMESTAMP, new HashSet<>(), null));
+	}
+
+	@Test
+	public void testGetClassNameForParameterType_STRING_LIST() {
+		Set<String> imports = new HashSet<>();
+		Assert.assertEquals("List<String>", ExchangeJavaWrapperGeneratorUtil.getClassNameForParameterType(Type.fromTypeName("STRING_LIST"), imports, null));
+		Assert.assertEquals(1, imports.size());
+		Assert.assertTrue(imports.contains(List.class.getName()));
+	}
+
+	@Test
+	public void testGetClassNameForParameterType_INT_MAP() {
+		Set<String> imports = new HashSet<>();
+		Assert.assertEquals("Map<String, Integer>", ExchangeJavaWrapperGeneratorUtil.getClassNameForParameterType(Type.fromTypeName("INT_MAP"), imports, null));
+		Assert.assertEquals(1, imports.size());
+		Assert.assertTrue(imports.contains(Map.class.getName()));
+	}
+
 
 }

@@ -8,6 +8,7 @@ import com.scz.jxapi.exchange.descriptor.ExchangeApiDescriptor;
 import com.scz.jxapi.exchange.descriptor.ExchangeDescriptor;
 import com.scz.jxapi.exchange.descriptor.RestEndpointDescriptor;
 import com.scz.jxapi.generator.java.exchange.ExchangeJavaWrapperGeneratorUtil;
+import com.scz.jxapi.generator.java.exchange.api.ExchangeApiGeneratorUtil;
 import com.scz.jxapi.generator.java.JavaCodeGenerationUtil;
 import com.scz.jxapi.generator.java.JavaTypeGenerator;
 import com.scz.jxapi.util.DemoUtil;
@@ -33,13 +34,13 @@ public class RestEndpointDemoGenerator extends JavaTypeGenerator {
 		this.exchangeApiDescriptor = exchangeApiDescriptor;
 		this.restApi = restApi;
 		setTypeDeclaration("public class");
-		this.hasArguments = ExchangeJavaWrapperGeneratorUtil.restEndpointHasArguments(restApi, exchangeApiDescriptor);
+		this.hasArguments = ExchangeApiGeneratorUtil.restEndpointHasArguments(restApi, exchangeApiDescriptor);
 		if (hasArguments) {
 			Type requestDataType =  Optional.ofNullable(restApi.getRequest().getType()).orElse(Type.OBJECT);
 			if (requestDataType.getCanonicalType().isPrimitive) {
 				requestClassName = requestDataType.getCanonicalType().typeClass.getName();
 			} else {
-				requestClassName = ExchangeJavaWrapperGeneratorUtil.generateRestEnpointRequestClassName(exchangeDescriptor, exchangeApiDescriptor, restApi);
+				requestClassName = ExchangeApiGeneratorUtil.generateRestEnpointRequestClassName(exchangeDescriptor, exchangeApiDescriptor, restApi);
 			}
 			
 			addImport(requestClassName);
@@ -74,7 +75,7 @@ public class RestEndpointDemoGenerator extends JavaTypeGenerator {
 		body = new StringBuilder();
 		String exchangeInterfaceClassName = ExchangeJavaWrapperGeneratorUtil.getExchangeInterfaceName(exchangeDescriptor);
 		String exchangeName = JavaCodeGenerationUtil.firstLetterToLowerCase(exchangeDescriptor.getName());
-		Field request = ExchangeJavaWrapperGeneratorUtil.resolveEndpointFields(exchangeApiDescriptor, restApi.getRequest());
+		Field request = ExchangeApiGeneratorUtil.resolveEndpointFields(exchangeApiDescriptor, restApi.getRequest());
 		String exchangeImplClassName = exchangeInterfaceClassName + "Impl";
 		addImport(exchangeImplClassName);
 		addImport(TestJXApiProperties.class);

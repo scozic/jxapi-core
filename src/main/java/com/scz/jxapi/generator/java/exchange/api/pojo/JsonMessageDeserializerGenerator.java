@@ -12,6 +12,7 @@ import com.scz.jxapi.exchange.descriptor.Type;
 import com.scz.jxapi.generator.java.JavaCodeGenerationUtil;
 import com.scz.jxapi.generator.java.JavaTypeGenerator;
 import com.scz.jxapi.generator.java.exchange.ExchangeJavaWrapperGeneratorUtil;
+import com.scz.jxapi.generator.java.exchange.api.ExchangeApiGeneratorUtil;
 import com.scz.jxapi.netutils.deserialization.json.AbstractJsonMessageDeserializer;
 import com.scz.jxapi.netutils.deserialization.json.field.ListJsonFieldDeserializer;
 import com.scz.jxapi.netutils.deserialization.json.field.MapJsonFieldDeserializer;
@@ -126,7 +127,7 @@ public class JsonMessageDeserializerGenerator extends JavaTypeGenerator {
 	
 	private String generateNonPrimitiveTypeParameterDeserializerDeclaration(Field field) {
 		Type type = field.getType();
-		String objectParameterClassName = ExchangeJavaWrapperGeneratorUtil.getLeafObjectParameterClassName(
+		String objectParameterClassName = ExchangeApiGeneratorUtil.getLeafObjectParameterClassName(
 													field.getName(), 
 													field.getType(), 
 													field.getObjectName(),

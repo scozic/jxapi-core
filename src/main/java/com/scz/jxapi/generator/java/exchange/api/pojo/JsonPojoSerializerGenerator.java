@@ -7,7 +7,6 @@ import java.util.stream.Collectors;
 import com.scz.jxapi.exchange.descriptor.Field;
 import com.scz.jxapi.generator.java.JavaCodeGenerationUtil;
 import com.scz.jxapi.generator.java.JavaTypeGenerator;
-import com.scz.jxapi.generator.java.exchange.ExchangeJavaWrapperGeneratorUtil;
 import com.scz.jxapi.util.EncodingUtil;
 
 public class JsonPojoSerializerGenerator extends JavaTypeGenerator {
@@ -16,7 +15,7 @@ public class JsonPojoSerializerGenerator extends JavaTypeGenerator {
 	private final List<Field> fields;
 	
 	public JsonPojoSerializerGenerator(String serializedTypeClassName, List<Field> fields) {
-		super(ExchangeJavaWrapperGeneratorUtil.getSerializerClassName(serializedTypeClassName));
+		super(EndpointPojoGeneratorUtil.getSerializerClassName(serializedTypeClassName));
 		this.serializedTypeClassName = serializedTypeClassName;
 		this.fields = fields;
 		setTypeDeclaration("public class");

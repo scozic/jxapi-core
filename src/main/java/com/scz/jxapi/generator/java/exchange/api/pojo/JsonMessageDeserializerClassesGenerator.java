@@ -14,7 +14,7 @@ import com.scz.jxapi.exchange.descriptor.CanonicalType;
 import com.scz.jxapi.exchange.descriptor.Field;
 import com.scz.jxapi.generator.java.JavaCodeGenerationUtil;
 import com.scz.jxapi.generator.java.exchange.ClassesGenerator;
-import com.scz.jxapi.generator.java.exchange.ExchangeJavaWrapperGeneratorUtil;
+import com.scz.jxapi.generator.java.exchange.api.ExchangeApiGeneratorUtil;
 import com.scz.jxapi.netutils.deserialization.json.AbstractJsonMessageDeserializer;
 
 /**
@@ -54,7 +54,7 @@ public class JsonMessageDeserializerClassesGenerator implements ClassesGenerator
 																		 field.getParameters());
 				objectParam.setObjectName(field.getObjectName());
 				new JsonMessageDeserializerClassesGenerator(JavaCodeGenerationUtil.getClassPackage(deserializedClassName) + "."
-																+ ExchangeJavaWrapperGeneratorUtil.getClassNameForEndpointParameter(
+																+ ExchangeApiGeneratorUtil.getClassNameForEndpointParameter(
 																		objectParam, 
 																		imports, 
 																		deserializedClassName), 

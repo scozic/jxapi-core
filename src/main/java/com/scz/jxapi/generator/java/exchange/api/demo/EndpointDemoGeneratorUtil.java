@@ -15,6 +15,7 @@ import com.scz.jxapi.exchange.descriptor.ExchangeDescriptor;
 import com.scz.jxapi.exchange.descriptor.RestEndpointDescriptor;
 import com.scz.jxapi.exchange.descriptor.WebsocketEndpointDescriptor;
 import com.scz.jxapi.generator.java.exchange.ExchangeJavaWrapperGeneratorUtil;
+import com.scz.jxapi.generator.java.exchange.api.ExchangeApiGeneratorUtil;
 import com.scz.jxapi.generator.java.JavaCodeGenerationUtil;
 
 public class EndpointDemoGeneratorUtil {
@@ -49,7 +50,7 @@ public class EndpointDemoGeneratorUtil {
 	public static String generateEndpointParameterCreationMethodDeclaration(Field endpointParameter, 
 																			String defaultObjectClassName,
 																			Set<String> imports) {
-		Type type = ExchangeJavaWrapperGeneratorUtil.getEndpointParameterType(endpointParameter);
+		Type type = ExchangeApiGeneratorUtil.getEndpointParameterType(endpointParameter);
 		String parameterObjectClassName = Optional.ofNullable(endpointParameter.getObjectName()).orElse(defaultObjectClassName);
 		String parameterClassName =	ExchangeJavaWrapperGeneratorUtil.getClassNameForParameterType(
 												type, 
@@ -72,7 +73,7 @@ public class EndpointDemoGeneratorUtil {
 																		 String objectClassName, 
 																		 Set<String> imports,
 																		 String returnOrResultAffectation) {
-		Type type = ExchangeJavaWrapperGeneratorUtil.getEndpointParameterType(endpointParameter);
+		Type type = ExchangeApiGeneratorUtil.getEndpointParameterType(endpointParameter);
 		Object sampleValue = endpointParameter.getSampleValue();
 		if (sampleValue == null && !type.isObject()) {
 			return returnOrResultAffectation + "null";
@@ -119,7 +120,7 @@ public class EndpointDemoGeneratorUtil {
 					setArg = itemVariableName + "_" + childParam.getName();
 					res.append(generateEndpointParameterSampleValueDeclaration(childParam, 
 									setArg, 
-									ExchangeJavaWrapperGeneratorUtil.getParameterObjectClassName(childParam, imports, itemClassName), 
+									ExchangeApiGeneratorUtil.getParameterObjectClassName(childParam, imports, itemClassName), 
 									imports,
 									setChildParamInstruction));
 				} else if(childParamType.getCanonicalType().isPrimitive) {
@@ -130,7 +131,7 @@ public class EndpointDemoGeneratorUtil {
 				} else {
 					// List or map
 					if (setArg != null) {
-						setArg = ExchangeJavaWrapperGeneratorUtil.getNewMessageDeserializerInstruction(childParamType, itemClassName, imports) 
+						setArg = ExchangeApiGeneratorUtil.getNewMessageDeserializerInstruction(childParamType, itemClassName, imports) 
 									+ ".deserialize(" + setArg + ")";
 						res.append(setChildParamInstruction).append(setArg);
 					}
@@ -156,7 +157,7 @@ public class EndpointDemoGeneratorUtil {
 									imports);
 			} 
 			else {
-				parameterValue = ExchangeJavaWrapperGeneratorUtil.getNewMessageDeserializerInstruction(type, objectClassName, imports) 
+				parameterValue = ExchangeApiGeneratorUtil.getNewMessageDeserializerInstruction(type, objectClassName, imports) 
 									+ ".deserialize(" + parameterValue + ")";
 			}
 		}

@@ -8,7 +8,7 @@ import java.util.List;
 import com.scz.jxapi.exchange.descriptor.Field;
 import com.scz.jxapi.exchange.descriptor.Type;
 import com.scz.jxapi.generator.java.exchange.ClassesGenerator;
-import com.scz.jxapi.generator.java.exchange.ExchangeJavaWrapperGeneratorUtil;
+import com.scz.jxapi.generator.java.exchange.api.ExchangeApiGeneratorUtil;
 
 /**
  * Generates all java classes for a specific POJO for a REST or Websocket
@@ -52,7 +52,7 @@ public class EndpointPojoClassesGenerator implements ClassesGenerator {
 
 
 	private void generateObjectParameterTypePojoField(Path outputFolder, String className, Field field) throws IOException {
-		String objectParamClassName = ExchangeJavaWrapperGeneratorUtil.getLeafObjectParameterClassName(
+		String objectParamClassName = ExchangeApiGeneratorUtil.getLeafObjectParameterClassName(
 												field.getName(), 
 												field.getType(), 
 												field.getObjectName(), 
