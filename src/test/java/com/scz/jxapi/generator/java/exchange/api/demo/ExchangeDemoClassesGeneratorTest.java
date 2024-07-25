@@ -1,4 +1,4 @@
-package com.scz.jxapi.generator.java.exchange;
+package com.scz.jxapi.generator.java.exchange.api.demo;
 
 import java.io.IOException;
 import java.nio.file.Path;
@@ -10,7 +10,7 @@ import org.junit.Test;
 import com.scz.jxapi.exchange.descriptor.ExchangeDescriptor;
 import com.scz.jxapi.exchange.descriptor.ExchangeDescriptorParser;
 import com.scz.jxapi.generator.java.JavaCodeGenerationUtil;
-import com.scz.jxapi.generator.java.exchange.api.demo.ExchangeDemoClassesGenerator;
+import com.scz.jxapi.generator.java.exchange.ClassesGeneratorTestUtil;
 
 /**
  * Unit test for {@link ExchangeDemoClassesGenerator}

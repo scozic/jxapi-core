@@ -8,6 +8,10 @@ import com.scz.jxapi.generator.java.JavaTypeGenerator;
 
 /**
  * Generates Source code of Java interface described by a {@link ExchangeInterfaceGenerator}. 
+ * <ul>
+ * <li>Generates a public static final field for exchange ID</li>
+ * <li>Generates a getter method for each API</li>
+ * </ul>
  */
 public class ExchangeInterfaceGenerator extends JavaTypeGenerator {
 	
