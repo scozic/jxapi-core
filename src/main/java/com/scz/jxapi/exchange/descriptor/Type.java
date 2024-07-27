@@ -26,7 +26,15 @@ import java.util.Optional;
 public class Type {
 	
 	private static final Map<String, Type> CANONICAL_TYPES = new HashMap<>(6);
+
+	/**
+	 * Type with {@link CanaonicalType#OBJECT} as canonical type.
+	 */
 	public static final Type OBJECT = createCanonicalType(CanonicalType.OBJECT);
+
+	/**
+	 * Type with {@link CanaonicalType#STRING} as canonical type.
+	 */
 	public static final Type STRING = createCanonicalType(CanonicalType.STRING);
 	public static final Type INT = createCanonicalType(CanonicalType.INT);
 	public static final Type LONG = createCanonicalType(CanonicalType.LONG);
@@ -136,7 +144,21 @@ public class Type {
 	}
 
 	/**
-	 * Get the subtype of the type
+	 * Get the subtype of the type:
+	 * 
+	 * <ul>
+	 * <li> if the type is a primitive type or an object, the subtype is null
+	 * <li> if the type is a list or a map, the subtype is the type of the values
+	 * </ul>
+	 * Example:
+	 * <ul>
+	 * <li> STRING: subtype is null
+	 * <li> OBJECT: subtype is null
+	 * <li> STRING_LIST: subtype is STRING
+	 * <li> STRING_MAP: subtype is STRING
+	 * <li> INT_LIST_MAP: subtype is INT_LIST
+	 * </ul>
+	 * 
 	 * @return the subtype
 	 */
 	public Type getSubType() {

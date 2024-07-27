@@ -136,9 +136,7 @@ public class ExchangeJavaWrapperGeneratorUtil {
 					+ JavaCodeGenerationUtil.getClassNameWithoutPackage(subTypeClassName) 
 					+ ">";
 		case OBJECT:
-			if (imports != null) {
-				imports.add(objectClassName);
-			}
+			imports.add(objectClassName);
 			return JavaCodeGenerationUtil.getClassNameWithoutPackage(objectClassName);
 		default:
 			throw new IllegalArgumentException("Unexpected type for:" + type);
@@ -183,7 +181,7 @@ public class ExchangeJavaWrapperGeneratorUtil {
 		switch (type.getCanonicalType()) {
 		case BIGDECIMAL:
 			imports.add(BigDecimalJsonFieldDeserializer.class.getName());
-			return "BigDecimalJsonFieldDeserializer.getInstance()";
+			return BigDecimalJsonFieldDeserializer.class.getSimpleName() +".getInstance()";
 		case BOOLEAN:
 			imports.add(BooleanJsonFieldDeserializer.class.getName());
 			return  BooleanJsonFieldDeserializer.class.getSimpleName() + ".getInstance()";
