@@ -127,11 +127,10 @@ public class JsonMessageDeserializerGenerator extends JavaTypeGenerator {
 	
 	private String generateNonPrimitiveTypeParameterDeserializerDeclaration(Field field) {
 		Type type = field.getType();
-		String objectParameterClassName = ExchangeApiGeneratorUtil.getLeafObjectParameterClassName(
+		String objectParameterClassName = ExchangeApiGeneratorUtil.getLeafObjectFieldClassName(
 													field.getName(), 
 													field.getType(), 
 													field.getObjectName(),
-													getImports(), 
 													deserializedTypeClassName);
 		String simpleDeserializerTypeName = generateNonPrimitiveParameterDeserializerClassName(
 												field.getType(), 

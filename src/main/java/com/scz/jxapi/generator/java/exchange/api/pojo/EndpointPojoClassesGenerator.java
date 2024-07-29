@@ -2,7 +2,6 @@ package com.scz.jxapi.generator.java.exchange.api.pojo;
 
 import java.io.IOException;
 import java.nio.file.Path;
-import java.util.HashSet;
 import java.util.List;
 
 import com.scz.jxapi.exchange.descriptor.Field;
@@ -52,11 +51,10 @@ public class EndpointPojoClassesGenerator implements ClassesGenerator {
 
 
 	private void generateObjectParameterTypePojoField(Path outputFolder, String className, Field field) throws IOException {
-		String objectParamClassName = ExchangeApiGeneratorUtil.getLeafObjectParameterClassName(
+		String objectParamClassName = ExchangeApiGeneratorUtil.getLeafObjectFieldClassName(
 												field.getName(), 
 												field.getType(), 
 												field.getObjectName(), 
-												new HashSet<>(), 
 												className);
 		
 		if (field.getParameters() != null) {

@@ -120,7 +120,7 @@ public class EndpointDemoGeneratorUtil {
 					setArg = itemVariableName + "_" + childParam.getName();
 					res.append(generateEndpointParameterSampleValueDeclaration(childParam, 
 									setArg, 
-									ExchangeApiGeneratorUtil.getParameterObjectClassName(childParam, imports, itemClassName), 
+									ExchangeApiGeneratorUtil.getFieldObjectClassName(childParam, itemClassName), 
 									imports,
 									setChildParamInstruction));
 				} else if(childParamType.getCanonicalType().isPrimitive) {

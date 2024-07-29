@@ -1,6 +1,7 @@
 package com.scz.jxapi.generator.java.exchange.api;
 
 import java.math.BigDecimal;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -33,7 +34,7 @@ public class ExchangeApiGeneratorUtil {
 															 ExchangeApiDescriptor exchangeApiDescriptor, 
 															 RestEndpointDescriptor restEndpointDescriptor) {
 		Field request = restEndpointDescriptor.getRequest();
-		return ExchangeApiGeneratorUtil.generateRestEnpointPojoClassName(exchangeDescriptor, 
+		return generateRestEnpointPojoClassName(exchangeDescriptor, 
 												exchangeApiDescriptor, 
 												restEndpointDescriptor.getName(), 
 												request.getType(), 
@@ -45,7 +46,7 @@ public class ExchangeApiGeneratorUtil {
 															  ExchangeApiDescriptor exchangeApiDescriptor, 
 															  RestEndpointDescriptor restEndpointDescriptor) {
 		Field response = restEndpointDescriptor.getResponse();
-		return ExchangeApiGeneratorUtil.generateRestEnpointPojoClassName(exchangeDescriptor, 
+		return generateRestEnpointPojoClassName(exchangeDescriptor, 
 												exchangeApiDescriptor, 
 												restEndpointDescriptor.getName(), 
 												response.getType(), 
@@ -227,12 +228,12 @@ public class ExchangeApiGeneratorUtil {
 	 * @return The simple class name for type of <code>enpointParameter</code>
 	 *         parameter.
 	 */
-	public static String getClassNameForEndpointParameter(Field endpointParameter, 
-														  Set<String> imports, 
-														  String enclosingClassName) {
+	public static String getClassNameForField(Field endpointParameter, 
+											  Set<String> imports, 
+											  String enclosingClassName) {
 		String objectClassName = null;
 		if (endpointParameter.getType().isObject()) {
-			 objectClassName = ExchangeApiGeneratorUtil.getParameterObjectClassName(endpointParameter, imports, enclosingClassName);
+			 objectClassName = getFieldObjectClassName(endpointParameter, enclosingClassName);
 			 
 		}
 		return ExchangeJavaWrapperGeneratorUtil.getClassNameForParameterType(
@@ -249,21 +250,18 @@ public class ExchangeApiGeneratorUtil {
 	 * <code>enclosingClassName</code>.<br/>
 	 * 
 	 * @param endpointParameter  The endpoint parameter
-	 * @param imports            The imports of generator context that will be
-	 *                           populated with classes used by returned type. That
-	 *                           set must be not <code>null</code> and mutable.
 	 * @param enclosingClassName The POJO class containing the endpoint to generate
 	 *                           class name for type of.
 	 * @return parameter object name with first letter to uppercase if
 	 *         {@link Field#getObjectName()} is not <code>null</code>,
 	 *         else concatenation of <code>&lt;enclosingClassName&gt;+&lt;enpointParameter name&gt;</code>
 	 */
-	public static String getParameterObjectClassName(Field endpointParameter, 
-													 Set<String> imports, 
-													 String enclosingClassName) {
+	public static String getFieldObjectClassName(Field endpointParameter, 
+												 String enclosingClassName) {
 		if (endpointParameter.getObjectName() != null) {
-			 return JavaCodeGenerationUtil.getClassPackage(enclosingClassName) + "." 
-					 + JavaCodeGenerationUtil.firstLetterToUpperCase(endpointParameter.getObjectName());
+			 return JavaCodeGenerationUtil.getClassPackage(enclosingClassName) 
+					 		+ "." 
+					 		+ JavaCodeGenerationUtil.firstLetterToUpperCase(endpointParameter.getObjectName());
 		 } else {
 			 return enclosingClassName + JavaCodeGenerationUtil.firstLetterToUpperCase(endpointParameter.getName());
 		 }
@@ -277,31 +275,26 @@ public class ExchangeApiGeneratorUtil {
 	 * @param endpointParameterName See {@link Field#getName()} name
 	 * @param type                  See {@link Field#getType()}
 	 * @param objectName            See {@link Field#getObjectName()}
-	 * @param imports               The imports of generator context that will be
-	 *                              populated with classes used by returned type.
-	 *                              That set must be not <code>null</code> and
-	 *                              mutable.
 	 * @param enclosingClassName    The POJO class containing the endpoint to
 	 *                              generate class name for type of.
 	 * @return the full class name of leaf subType of endpoint parameter.
 	 */
-	public static String getLeafObjectParameterClassName(String endpointParameterName, 
-														 Type type, 
-														 String objectName, 
-														 Set<String> imports, 
-														 String enclosingClassName) {
+	public static String getLeafObjectFieldClassName(String endpointParameterName, 
+													 Type type, 
+													 String objectName,  
+													 String enclosingClassName) {
 		String pkg = "";
 		if (type.isObject()) {
 			pkg = JavaCodeGenerationUtil.getClassPackage(enclosingClassName) + ".";
 			if (objectName != null) {
-				return pkg  + objectName;
+				return pkg + objectName;
 			}
 		}
 		
 		return pkg + ExchangeJavaWrapperGeneratorUtil.getClassNameForParameterType(
-				  Type.getLeafSubType(type)
-				  ,imports
-				  , enclosingClassName) 
+				  Type.getLeafSubType(type),
+				  new HashSet<>(),
+				  enclosingClassName) 
 				+ JavaCodeGenerationUtil.firstLetterToUpperCase(endpointParameterName);
 	}
 
@@ -343,7 +336,7 @@ public class ExchangeApiGeneratorUtil {
 		}
 		Type dataType = response.getType();
 		return (dataType != null && dataType.getCanonicalType() != CanonicalType.OBJECT) 
-				|| ExchangeApiGeneratorUtil.getEndpointParameters(response.getParameters(), response.getObjectName(), exchangeApiDescriptor).size() > 0;
+				|| getEndpointParameters(response.getParameters(), response.getObjectName(), exchangeApiDescriptor).size() > 0;
 	}
 
 	public static Type getEndpointParameterType(Field parameter) {
@@ -360,7 +353,7 @@ public class ExchangeApiGeneratorUtil {
 		if (request == null) {
 			return false;
 		}
-		return ExchangeApiGeneratorUtil.endpointHasArguments(request.getType(),
+		return endpointHasArguments(request.getType(),
 									request.getParameters(), 
 									request.getObjectName(), 
 									exchangeApiDescriptor);
@@ -372,7 +365,7 @@ public class ExchangeApiGeneratorUtil {
 		if (request == null) {
 			return false;
 		}
-		return ExchangeApiGeneratorUtil.endpointHasArguments(request.getType(), 
+		return endpointHasArguments(request.getType(), 
 									request.getParameters(), 
 									request.getObjectName(), 
 									exchangeApiDescriptor);
@@ -383,7 +376,7 @@ public class ExchangeApiGeneratorUtil {
 												String requestObjectName, 
 												ExchangeApiDescriptor exchangeApiDescriptor) {
 		return (dataType != null && dataType.getCanonicalType() != CanonicalType.OBJECT) 
-				|| ExchangeApiGeneratorUtil.getEndpointParameters(parameters, requestObjectName, exchangeApiDescriptor).size() > 0;
+				|| getEndpointParameters(parameters, requestObjectName, exchangeApiDescriptor).size() > 0;
 	}
 
 	public static String getRequestArgName(String requestArgNameFromApiDescriptor) {
@@ -407,7 +400,7 @@ public class ExchangeApiGeneratorUtil {
 			&& field.getObjectName() != null 
 			&& field.getParameters() == null) {
 			field = field.clone();
-			field.setParameters(ExchangeApiGeneratorUtil.findParametersForObjectName(field.getObjectName(), exchangeApiDescriptor));
+			field.setParameters(findParametersForObjectName(field.getObjectName(), exchangeApiDescriptor));
 		}
 		return field;
 	}
@@ -418,7 +411,7 @@ public class ExchangeApiGeneratorUtil {
 		if (endpointDescriptiorParameters != null) {
 			return endpointDescriptiorParameters;
 		} else if (requestObjectName != null) {
-			return ExchangeApiGeneratorUtil.findParametersForObjectName(requestObjectName, exchangeApiDescriptor);
+			return findParametersForObjectName(requestObjectName, exchangeApiDescriptor);
 		} else {
 			return List.of();
 		}
@@ -453,7 +446,7 @@ public class ExchangeApiGeneratorUtil {
 		}
 		
 		if (res != null) {
-			return ExchangeApiGeneratorUtil.resolveEndpointParameters(exchangeApiDescriptor, res);
+			return resolveEndpointParameters(exchangeApiDescriptor, res);
 		}
 		throw new IllegalArgumentException("Found no REST request or response or Websocket request or message with fields defined for objectName:"  
 										   + requestObjectName);

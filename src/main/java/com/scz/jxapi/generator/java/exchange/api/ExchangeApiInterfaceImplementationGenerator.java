@@ -653,7 +653,7 @@ public class ExchangeApiInterfaceImplementationGenerator extends JavaTypeGenerat
 				value += "." 
 						+ JavaCodeGenerationUtil.getGetAccessorMethodName(
 							name, 
-							ExchangeApiGeneratorUtil.getClassNameForEndpointParameter(param, null, param.getObjectName()), 
+							ExchangeApiGeneratorUtil.getClassNameForField(param, null, param.getObjectName()), 
 							endpointParameters.stream().map(p -> p.getName()).collect(Collectors.toList()))
 						+ "()";
 			}
@@ -698,7 +698,7 @@ public class ExchangeApiInterfaceImplementationGenerator extends JavaTypeGenerat
 			String value = "request." 
 						   + JavaCodeGenerationUtil.getGetAccessorMethodName(
 								name, 
-								ExchangeApiGeneratorUtil.getClassNameForEndpointParameter(param, null, param.getObjectName()), 
+								ExchangeApiGeneratorUtil.getClassNameForField(param, null, param.getObjectName()), 
 								endpointParameters.stream().map(p -> p.getName()).collect(Collectors.toList()))
 						   + "()";
 			if (param.getType().getCanonicalType() == CanonicalType.LIST) {
