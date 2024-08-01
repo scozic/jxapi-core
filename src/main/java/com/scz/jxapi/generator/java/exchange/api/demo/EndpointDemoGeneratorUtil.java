@@ -50,7 +50,7 @@ public class EndpointDemoGeneratorUtil {
 	public static String generateEndpointParameterCreationMethodDeclaration(Field endpointParameter, 
 																			String defaultObjectClassName,
 																			Set<String> imports) {
-		Type type = ExchangeApiGeneratorUtil.getEndpointParameterType(endpointParameter);
+		Type type = ExchangeApiGeneratorUtil.getFieldType(endpointParameter);
 		String parameterObjectClassName = Optional.ofNullable(endpointParameter.getObjectName()).orElse(defaultObjectClassName);
 		String parameterClassName =	ExchangeJavaWrapperGeneratorUtil.getClassNameForParameterType(
 												type, 
@@ -73,7 +73,7 @@ public class EndpointDemoGeneratorUtil {
 																		 String objectClassName, 
 																		 Set<String> imports,
 																		 String returnOrResultAffectation) {
-		Type type = ExchangeApiGeneratorUtil.getEndpointParameterType(endpointParameter);
+		Type type = ExchangeApiGeneratorUtil.getFieldType(endpointParameter);
 		Object sampleValue = endpointParameter.getSampleValue();
 		if (sampleValue == null && !type.isObject()) {
 			return returnOrResultAffectation + "null";

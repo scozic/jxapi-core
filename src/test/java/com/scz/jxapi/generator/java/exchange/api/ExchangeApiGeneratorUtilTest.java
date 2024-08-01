@@ -15,6 +15,14 @@ import com.scz.jxapi.exchange.descriptor.Field;
 import com.scz.jxapi.exchange.descriptor.RestEndpointDescriptor;
 import com.scz.jxapi.exchange.descriptor.Type;
 import com.scz.jxapi.exchange.descriptor.WebsocketEndpointDescriptor;
+import com.scz.jxapi.netutils.deserialization.RawBigDecimalMessageDeserializer;
+import com.scz.jxapi.netutils.deserialization.RawBooleanMessageDeserializer;
+import com.scz.jxapi.netutils.deserialization.RawIntegerMessageDeserializer;
+import com.scz.jxapi.netutils.deserialization.RawLongMessageDeserializer;
+import com.scz.jxapi.netutils.deserialization.RawStringMessageDeserializer;
+import com.scz.jxapi.netutils.deserialization.json.field.BigDecimalJsonFieldDeserializer;
+import com.scz.jxapi.netutils.deserialization.json.field.ListJsonFieldDeserializer;
+import com.scz.jxapi.netutils.deserialization.json.field.MapJsonFieldDeserializer;
 
 /**
  * Unit test for {@link ExchangeApiGeneratorUtil}
@@ -270,4 +278,178 @@ public class ExchangeApiGeneratorUtilTest {
         							null, 
         							"com.x.y.gen.pojo.Foo"));
     }
+
+    @Test
+    public void testGetNewMessageDeserializerInstruction_INT() {
+        Set<String> imports = new HashSet<>();
+        Assert.assertEquals("RawIntegerMessageDeserializer.getInstance()", 
+            ExchangeApiGeneratorUtil.getNewMessageDeserializerInstruction(Type.INT, null, imports));
+            Assert.assertEquals(1, imports.size());
+            Assert.assertTrue(imports.contains(RawIntegerMessageDeserializer.class.getName()));
+    }
+
+    @Test
+    public void testGetNewMessageDeserializerInstruction_BIGDECIMAL() {
+        Set<String> imports = new HashSet<>();
+        Assert.assertEquals("RawBigDecimalMessageDeserializer.getInstance()", 
+            ExchangeApiGeneratorUtil.getNewMessageDeserializerInstruction(Type.BIGDECIMAL, null, imports));
+            Assert.assertEquals(1, imports.size());
+            Assert.assertTrue(imports.contains(RawBigDecimalMessageDeserializer.class.getName()));
+    }
+
+    @Test
+    public void testGetNewMessageDeserializerInstruction_BOOLEAN() {
+        Set<String> imports = new HashSet<>();
+        Assert.assertEquals("RawBooleanMessageDeserializer.getInstance()", 
+            ExchangeApiGeneratorUtil.getNewMessageDeserializerInstruction(Type.BOOLEAN, null, imports));
+            Assert.assertEquals(1, imports.size());
+            Assert.assertTrue(imports.contains(RawBooleanMessageDeserializer.class.getName()));
+    }
+
+    @Test
+    public void testGetNewMessageDeserializerInstruction_STRING() {
+        Set<String> imports = new HashSet<>();
+        Assert.assertEquals("RawStringMessageDeserializer.getInstance()", 
+            ExchangeApiGeneratorUtil.getNewMessageDeserializerInstruction(Type.STRING, null, imports));
+            Assert.assertEquals(1, imports.size());
+            Assert.assertTrue(imports.contains(RawStringMessageDeserializer.class.getName()));
+    }
+
+    @Test
+    public void testGetNewMessageDeserializerInstruction_null() {
+        Set<String> imports = new HashSet<>();
+        Assert.assertEquals("RawStringMessageDeserializer.getInstance()", 
+            ExchangeApiGeneratorUtil.getNewMessageDeserializerInstruction(null, null, imports));
+            Assert.assertEquals(1, imports.size());
+            Assert.assertTrue(imports.contains(RawStringMessageDeserializer.class.getName()));
+    }
+
+    @Test
+    public void testGetNewMessageDeserializerInstruction_LONG() {
+        Set<String> imports = new HashSet<>();
+        Assert.assertEquals("RawLongMessageDeserializer.getInstance()", 
+            ExchangeApiGeneratorUtil.getNewMessageDeserializerInstruction(Type.LONG, null, imports));
+            Assert.assertEquals(1, imports.size());
+            Assert.assertTrue(imports.contains(RawLongMessageDeserializer.class.getName()));
+    }
+
+    @Test
+    public void testGetNewMessageDeserializerInstruction_TIMESTAMP() {
+        Set<String> imports = new HashSet<>();
+        Assert.assertEquals("RawLongMessageDeserializer.getInstance()", 
+            ExchangeApiGeneratorUtil.getNewMessageDeserializerInstruction(Type.TIMESTAMP, null, imports));
+            Assert.assertEquals(1, imports.size());
+            Assert.assertTrue(imports.contains(RawLongMessageDeserializer.class.getName()));
+    }
+
+    @Test
+    public void testGetNewMessageDeserializerInstruction_OBJECT() {
+        Set<String> imports = new HashSet<>();
+        Assert.assertEquals("new MyMessageDeserializer()", 
+        				    ExchangeApiGeneratorUtil.getNewMessageDeserializerInstruction(Type.OBJECT, "com.x.y.z.MyMessage", imports));
+        Assert.assertEquals(1, imports.size());
+        Assert.assertTrue(imports.contains("com.x.y.z.deserializers.MyMessageDeserializer")); 
+    }
+
+    @Test
+    public void testGetNewMessageDeserializerInstruction_OBJECT_MAP() {
+        Set<String> imports = new HashSet<>();
+        Assert.assertEquals("new MapJsonFieldDeserializer<>(new MyMessageDeserializer())", 
+        				    ExchangeApiGeneratorUtil.getNewMessageDeserializerInstruction(Type.fromTypeName("OBJECT_MAP"), "com.x.y.z.MyMessage", imports));
+        Assert.assertEquals(2, imports.size());
+        Assert.assertTrue(imports.contains(MapJsonFieldDeserializer.class.getName())); 
+        Assert.assertTrue(imports.contains("com.x.y.z.deserializers.MyMessageDeserializer")); 
+    }
+    
+    @Test
+    public void testGetNewMessageDeserializerInstruction_BIGDECIMAL_LIST() {
+        Set<String> imports = new HashSet<>();
+        Assert.assertEquals("new ListJsonFieldDeserializer<>(BigDecimalJsonFieldDeserializer.getInstance())", 
+        				    ExchangeApiGeneratorUtil.getNewMessageDeserializerInstruction(Type.fromTypeName("BIGDECIMAL_LIST"), "com.x.y.z.MyMessage", imports));
+        Assert.assertEquals(2, imports.size());
+        Assert.assertTrue(imports.contains(BigDecimalJsonFieldDeserializer.class.getName())); 
+        Assert.assertTrue(imports.contains(ListJsonFieldDeserializer.class.getName())); 
+    }
+    
+    @Test
+    public void testRestEndpointHasResponse_NullResponse() {
+        ExchangeApiDescriptor apiDescriptor = new ExchangeApiDescriptor();
+        apiDescriptor.setName("MyApi");
+        RestEndpointDescriptor endpointDescriptor = new RestEndpointDescriptor();
+        endpointDescriptor.setName("GetAccount");
+        Assert.assertFalse(ExchangeApiGeneratorUtil.restEndpointHasResponse(endpointDescriptor, apiDescriptor));
+    }
+    
+    @Test
+    public void testRestEndpointHasResponse_PrimitiveTypeResponse() {
+        ExchangeApiDescriptor apiDescriptor = new ExchangeApiDescriptor();
+        apiDescriptor.setName("MyApi");
+        RestEndpointDescriptor endpointDescriptor = new RestEndpointDescriptor();
+        endpointDescriptor.setName("GetAccount");
+        Field response = new Field();
+        response.setType(Type.INT);
+        endpointDescriptor.setResponse(response);
+        Assert.assertTrue(ExchangeApiGeneratorUtil.restEndpointHasResponse(endpointDescriptor, apiDescriptor));
+    }
+    
+    @Test
+    public void testRestEndpointHasResponse_NullResponseType() {
+        ExchangeApiDescriptor apiDescriptor = new ExchangeApiDescriptor();
+        apiDescriptor.setName("MyApi");
+        RestEndpointDescriptor endpointDescriptor = new RestEndpointDescriptor();
+        endpointDescriptor.setName("GetAccount");
+        Field response = new Field();
+        endpointDescriptor.setResponse(response);
+        Assert.assertFalse(ExchangeApiGeneratorUtil.restEndpointHasResponse(endpointDescriptor, apiDescriptor));
+    }
+    
+    @Test
+    public void testRestEndpointHasResponse_ObjectResponseTypeWithNoParameters() {
+        ExchangeApiDescriptor apiDescriptor = new ExchangeApiDescriptor();
+        apiDescriptor.setName("MyApi");
+        RestEndpointDescriptor endpointDescriptor = new RestEndpointDescriptor();
+        endpointDescriptor.setName("GetAccount");
+        Field response = new Field();
+        response.setType(Type.OBJECT);
+        endpointDescriptor.setResponse(response);
+        Assert.assertFalse(ExchangeApiGeneratorUtil.restEndpointHasResponse(endpointDescriptor, apiDescriptor));
+    }
+    
+    @Test
+    public void testRestEndpointHasResponse_ObjectResponseTypeWithParameters() {
+        ExchangeApiDescriptor apiDescriptor = new ExchangeApiDescriptor();
+        apiDescriptor.setName("MyApi");
+        RestEndpointDescriptor endpointDescriptor = new RestEndpointDescriptor();
+        endpointDescriptor.setName("GetAccount");
+        Field response = new Field();
+        response.setType(Type.OBJECT);
+        Field objectParam = new Field();
+        response.setParameters(List.of(objectParam));
+        endpointDescriptor.setResponse(response);
+        Assert.assertTrue(ExchangeApiGeneratorUtil.restEndpointHasResponse(endpointDescriptor, apiDescriptor));
+    }
+   
+    @Test
+    public void testGetFieldType_NullField() {
+    	Assert.assertNull(ExchangeApiGeneratorUtil.getFieldType(null));
+    }
+    
+    @Test
+    public void testGetFieldType_FieldWithNullType() {
+    	Assert.assertEquals(Type.OBJECT, ExchangeApiGeneratorUtil.getFieldType(new Field()));
+    }
+    
+    @Test
+    public void testGetFieldType_FieldWithPrimitiveType() {
+    	Field field = new Field();
+    	field.setType(Type.BIGDECIMAL);
+    	Assert.assertEquals(Type.BIGDECIMAL, ExchangeApiGeneratorUtil.getFieldType(field));
+    }
+    
+    @Test
+    public void testGetRestEndpointNameStaticVariable() {
+        Assert.assertEquals("GET_ACCOUNT_REST_API", ExchangeApiGeneratorUtil.getRestEndpointNameStaticVariable("GetAccount"));
+    }
+    
+    
 }

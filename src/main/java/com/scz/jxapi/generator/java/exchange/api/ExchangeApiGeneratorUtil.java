@@ -302,7 +302,7 @@ public class ExchangeApiGeneratorUtil {
 															  String messageFullClassName, 
 															  Set<String> imports) {
 		if (messageType == null) {
-			messageType  = Type.fromTypeName(CanonicalType.STRING.name());
+			messageType  = Type.STRING;
 		}
 		switch (messageType.getCanonicalType()) {
 		case BIGDECIMAL:
@@ -339,7 +339,7 @@ public class ExchangeApiGeneratorUtil {
 				|| getEndpointParameters(response.getParameters(), response.getObjectName(), exchangeApiDescriptor).size() > 0;
 	}
 
-	public static Type getEndpointParameterType(Field parameter) {
+	public static Type getFieldType(Field parameter) {
 		return parameter == null? null: Optional.ofNullable(parameter.getType()).orElse(Type.OBJECT);
 	}
 

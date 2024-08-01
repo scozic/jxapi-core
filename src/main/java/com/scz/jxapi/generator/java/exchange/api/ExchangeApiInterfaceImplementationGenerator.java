@@ -232,9 +232,9 @@ public class ExchangeApiInterfaceImplementationGenerator extends JavaTypeGenerat
 
 	private void generateWebsocketApiMethodsDeclarations(WebsocketEndpointDescriptor websocketApi) {
 		Field request = websocketApi.getRequest();
-		Type requestDataType = ExchangeApiGeneratorUtil.getEndpointParameterType(request);
+		Type requestDataType = ExchangeApiGeneratorUtil.getFieldType(request);
 		Field message = websocketApi.getMessage();
-		Type messageDataType = ExchangeApiGeneratorUtil.getEndpointParameterType(message);
+		Type messageDataType = ExchangeApiGeneratorUtil.getFieldType(message);
 		addImport(WebsocketEndpoint.class);
 		boolean hasArguments = ExchangeApiGeneratorUtil.websocketEndpointHasArguments(websocketApi, exchangeApiDescriptor);
 		String requestSimpleClassName = Object.class.getSimpleName();
@@ -382,7 +382,7 @@ public class ExchangeApiInterfaceImplementationGenerator extends JavaTypeGenerat
 	
 	private String generateWebsocketTopicSerializerDeclaration(WebsocketEndpointDescriptor websocketApi) {
 		Field request = websocketApi.getRequest();
-		Type requestDataType = ExchangeApiGeneratorUtil.getEndpointParameterType(request); 
+		Type requestDataType = ExchangeApiGeneratorUtil.getFieldType(request); 
 		String topicSerializerBody = "\"\"";
 		if (ExchangeApiGeneratorUtil.websocketEndpointHasArguments(websocketApi, exchangeApiDescriptor)) {
 			if (websocketApi.getTopic() != null) {
@@ -406,9 +406,9 @@ public class ExchangeApiInterfaceImplementationGenerator extends JavaTypeGenerat
 	
 	private void generateRestEndpointMethodDeclaration(RestEndpointDescriptor restApi) {
 		Field request = restApi.getRequest();
-		Type requestDataType = ExchangeApiGeneratorUtil.getEndpointParameterType(request);
+		Type requestDataType = ExchangeApiGeneratorUtil.getFieldType(request);
 		Field response = restApi.getResponse();
-		Type responseDataType =  ExchangeApiGeneratorUtil.getEndpointParameterType(response);
+		Type responseDataType =  ExchangeApiGeneratorUtil.getFieldType(response);
 		boolean hasArguments = ExchangeApiGeneratorUtil.restEndpointHasArguments(restApi, exchangeApiDescriptor);
 		String requestSimpleClassName = "Object";
 		String requestArgName = ExchangeJavaWrapperGeneratorUtil.DEFAULT_REQUEST_ARG_NAME;
@@ -613,7 +613,7 @@ public class ExchangeApiInterfaceImplementationGenerator extends JavaTypeGenerat
 														request.getObjectName(), 
 														exchangeApiDescriptor);
 		if (ExchangeApiGeneratorUtil.restEndpointHasArguments(restApi, exchangeApiDescriptor)) {
-			Type requestDataType = ExchangeApiGeneratorUtil.getEndpointParameterType(request);
+			Type requestDataType = ExchangeApiGeneratorUtil.getFieldType(request);
 			boolean hasQueryParams = restApi.isQueryParams()	
 					|| !restApi.getHttpMethod().requestHasBody;
 			if (restApi.getUrlParameters() != null) {
