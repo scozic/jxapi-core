@@ -451,5 +451,169 @@ public class ExchangeApiGeneratorUtilTest {
         Assert.assertEquals("GET_ACCOUNT_REST_API", ExchangeApiGeneratorUtil.getRestEndpointNameStaticVariable("GetAccount"));
     }
     
+    @Test
+    public void testRestEnpointHasArguments_NullRequest() {
+        ExchangeDescriptor exchangeDescriptor = new ExchangeDescriptor();
+        exchangeDescriptor.setName("TestExchange");
+        exchangeDescriptor.setBasePackage("com.test.exchange");
+        ExchangeApiDescriptor apiDescriptor = new ExchangeApiDescriptor();
+        apiDescriptor.setName("MyApi");
+        exchangeDescriptor.setApis(List.of(apiDescriptor));
+        RestEndpointDescriptor endpointDescriptor = new RestEndpointDescriptor();
+        endpointDescriptor.setName("GetAccount");
+        Assert.assertFalse(ExchangeApiGeneratorUtil.restEndpointHasArguments(endpointDescriptor, apiDescriptor));
+    }
     
+    @Test
+    public void testRestEnpointHasArguments_HasRequestWithArguments() {
+        ExchangeDescriptor exchangeDescriptor = new ExchangeDescriptor();
+        exchangeDescriptor.setName("TestExchange");
+        exchangeDescriptor.setBasePackage("com.test.exchange");
+        ExchangeApiDescriptor apiDescriptor = new ExchangeApiDescriptor();
+        apiDescriptor.setName("MyApi");
+        exchangeDescriptor.setApis(List.of(apiDescriptor));
+        RestEndpointDescriptor endpointDescriptor = new RestEndpointDescriptor();
+        endpointDescriptor.setName("GetAccount");
+        Field request = new Field();
+        request.setType(Type.INT);
+        endpointDescriptor.setRequest(request);
+        Assert.assertTrue(ExchangeApiGeneratorUtil.restEndpointHasArguments(endpointDescriptor, apiDescriptor));
+    }
+    
+    @Test
+    public void testWebsocketEnpointHasArguments_NullRequest() {
+        ExchangeDescriptor exchangeDescriptor = new ExchangeDescriptor();
+        exchangeDescriptor.setName("TestExchange");
+        exchangeDescriptor.setBasePackage("com.test.exchange");
+        ExchangeApiDescriptor apiDescriptor = new ExchangeApiDescriptor();
+        apiDescriptor.setName("MyApi");
+        exchangeDescriptor.setApis(List.of(apiDescriptor));
+        WebsocketEndpointDescriptor endpointDescriptor = new WebsocketEndpointDescriptor();
+        endpointDescriptor.setName("GetAccount");
+//        Field request = new Field();
+//        request.setType(Type.OBJECT);
+//        endpointDescriptor.setRequest(request);
+        Assert.assertFalse(ExchangeApiGeneratorUtil.websocketEndpointHasArguments(endpointDescriptor, apiDescriptor));
+    }
+    
+	@Test
+	public void testWebsocketEnpointHasArguments_HasRequestWithArgument() {
+		ExchangeApiDescriptor apiDescriptor = new ExchangeApiDescriptor();
+		apiDescriptor.setName("MyApi");
+		WebsocketEndpointDescriptor endpointDescriptor = new WebsocketEndpointDescriptor();
+		endpointDescriptor.setName("GetAccount");
+		Field request = new Field();
+		request.setType(Type.STRING);
+		endpointDescriptor.setRequest(request);
+		Assert.assertTrue(ExchangeApiGeneratorUtil.websocketEndpointHasArguments(endpointDescriptor, apiDescriptor));
+	}
+    
+    @Test
+    public void testEnpointHasArguments_NullType() {
+        Assert.assertFalse(ExchangeApiGeneratorUtil.endpointHasArguments(null, null, null, null));
+    }
+    
+    @Test
+    public void testEnpointHasArguments_PrimitiveType() {
+        Assert.assertTrue(ExchangeApiGeneratorUtil.endpointHasArguments(Type.INT, null, null, null));
+    }
+    
+    @Test
+    public void testEnpointHasArguments_ObjectTypeWithArgs() {
+        ExchangeApiDescriptor apiDescriptor = new ExchangeApiDescriptor();
+        apiDescriptor.setName("MyApi");
+        Assert.assertTrue(ExchangeApiGeneratorUtil.endpointHasArguments(Type.OBJECT, List.of(new Field()), null, apiDescriptor));
+    }
+    
+    @Test
+    public void testGetRequestArgName_Null() {
+    	Assert.assertEquals(ExchangeApiGeneratorUtil.DEFAULT_REQUEST_ARG_NAME,  ExchangeApiGeneratorUtil.getRequestArgName(null));
+    }
+    
+    @Test
+    public void testGetRequestArgName_NotNull() {
+    	String argName = "myRequestArg";
+    	Assert.assertEquals(argName,  ExchangeApiGeneratorUtil.getRequestArgName(argName));
+    }
+    
+    @Test
+    public void testGetWebsocketEndpointNameStaticVariable() {
+    	Assert.assertEquals("SUBSCRIBE_ACCOUNT_WS_API",  ExchangeApiGeneratorUtil.getWebsocketEndpointNameStaticVariable("subscribeAccount"));
+    }
+    
+    @Test
+    public void testResolveFieldProperties_NullField() {
+    	Assert.assertNull(ExchangeApiGeneratorUtil.resolveFieldProperties(null, null));
+    }
+    
+    @Test
+    public void testResolveFieldProperties_NullFieldType() {
+    	Field f = new Field();
+    	f.setName("foo");
+    	Assert.assertEquals(f, ExchangeApiGeneratorUtil.resolveFieldProperties(null, f));
+    }
+    
+    @Test
+    public void testResolveFieldProperties_PrimitiveFieldType() {
+    	Field f = new Field();
+    	f.setName("foo");
+    	f.setType(Type.INT);
+    	Assert.assertEquals(f, ExchangeApiGeneratorUtil.resolveFieldProperties(null, f));
+    }
+    
+    @Test
+    public void testResolveFieldProperties_ObjectFieldTypeWithNullParametersAndObjectNameResolvedInAnotherApi() {
+		ExchangeApiDescriptor apiDescriptor = new ExchangeApiDescriptor();
+		apiDescriptor.setName("MyApi");
+		String objectName = "MyPojo";
+    	Field f = new Field();
+    	f.setName("foo");
+    	f.setType(Type.OBJECT);
+    	f.setObjectName(objectName);
+        RestEndpointDescriptor endpointDescriptor = new RestEndpointDescriptor();
+        endpointDescriptor.setName("GetAccount");
+        endpointDescriptor.setRequest(f);
+    	
+        RestEndpointDescriptor otherEndpointDescriptor = new RestEndpointDescriptor();
+        otherEndpointDescriptor.setName("GetAccountV2");
+        Field otherRequest = new Field();
+        otherRequest.setName("bar");
+        otherRequest.setType(Type.OBJECT);
+        otherRequest.setObjectName(objectName);
+        Field otherRequestProperty = new Field();
+        otherRequestProperty.setName("toto");
+        otherRequestProperty.setType(Type.STRING);
+        otherEndpointDescriptor.setRequest(otherRequest);
+        otherRequest.setParameters(List.of(otherRequestProperty));
+        apiDescriptor.setRestEndpoints(List.of(endpointDescriptor, otherEndpointDescriptor));
+        
+        Field expected = f.clone();
+        expected.setParameters(otherRequest.getParameters());
+        Assert.assertEquals(expected, ExchangeApiGeneratorUtil.resolveFieldProperties(apiDescriptor, f));
+    }
+    
+    @Test
+    public void testResolveFieldProperties_ObjectFieldTypeWithNullObjectNameAndNullParameters() {
+		ExchangeApiDescriptor apiDescriptor = new ExchangeApiDescriptor();
+		apiDescriptor.setName("MyApi");
+    	Field f = new Field();
+    	f.setName("foo");
+    	f.setType(Type.OBJECT);
+    	Assert.assertEquals(f, ExchangeApiGeneratorUtil.resolveFieldProperties(apiDescriptor, f));
+    }
+    
+    @Test
+    public void testResolveFieldProperties_ObjectFieldTypeWithDefinedPropertiesApi() {
+		ExchangeApiDescriptor apiDescriptor = new ExchangeApiDescriptor();
+		apiDescriptor.setName("MyApi");
+    	Field f = new Field();
+    	f.setName("foo");
+    	f.setType(Type.OBJECT);
+    	Field prop = new Field();
+    	prop.setName("bar");
+    	prop.setType(Type.STRING);
+    	f.setObjectName("MyPojo");
+    	f.setParameters(List.of(prop));
+    	Assert.assertEquals(f, ExchangeApiGeneratorUtil.resolveFieldProperties(apiDescriptor, f));
+    }
 }

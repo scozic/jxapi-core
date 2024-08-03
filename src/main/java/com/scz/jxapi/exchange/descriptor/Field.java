@@ -2,6 +2,7 @@ package com.scz.jxapi.exchange.descriptor;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import com.scz.jxapi.util.EncodingUtil;
 
@@ -341,5 +342,18 @@ public class Field {
 	@Override
 	public String toString() {
 		return EncodingUtil.pojoToString(this);
+	}
+	
+	@Override
+	public boolean equals(Object other) {
+		if (other == null) {
+			return false;
+		}
+		return toString().equals(other.toString());
+	}
+	
+	@Override
+	public int hashCode() {
+		return toString().hashCode();
 	}
 }

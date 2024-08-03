@@ -29,6 +29,11 @@ import com.scz.jxapi.netutils.deserialization.RawStringMessageDeserializer;
  * Helper static methods around generation of {@link ExchangeApi} java classes implementation.
  */
 public class ExchangeApiGeneratorUtil {
+	
+	/**
+	 * Default name for request argument
+	 */
+	public static final String DEFAULT_REQUEST_ARG_NAME = "request";
 
 	public static String generateRestEnpointRequestClassName(ExchangeDescriptor exchangeDescriptor, 
 															 ExchangeApiDescriptor exchangeApiDescriptor, 
@@ -380,14 +385,14 @@ public class ExchangeApiGeneratorUtil {
 	}
 
 	public static String getRequestArgName(String requestArgNameFromApiDescriptor) {
-		return Optional.ofNullable(requestArgNameFromApiDescriptor).orElse(ExchangeJavaWrapperGeneratorUtil.DEFAULT_REQUEST_ARG_NAME);
+		return Optional.ofNullable(requestArgNameFromApiDescriptor).orElse(DEFAULT_REQUEST_ARG_NAME);
 	}
 
 	public static String getWebsocketEndpointNameStaticVariable(String websocketEndpointName) {
 		return JavaCodeGenerationUtil.getStaticVariableName(websocketEndpointName) + "_WS_API";
 	}
 
-	public static Field resolveEndpointFields(ExchangeApiDescriptor exchangeApiDescriptor, 
+	public static Field resolveFieldProperties(ExchangeApiDescriptor exchangeApiDescriptor, 
 															  Field field) {
 		if (field == null) {
 			return null;
@@ -395,8 +400,7 @@ public class ExchangeApiGeneratorUtil {
 		if (field.getType() == null) {
 			return field; 
 		}
-		if (field.getType() != null 
-			&& field.getType().isObject() 
+		if (field.getType().isObject() 
 			&& field.getObjectName() != null 
 			&& field.getParameters() == null) {
 			field = field.clone();
@@ -474,7 +478,7 @@ public class ExchangeApiGeneratorUtil {
 
 	public static List<Field> resolveEndpointParameters(ExchangeApiDescriptor exchangeApiDescriptor, 
 														List<Field> fields) {
-		return fields.stream().map(e -> resolveEndpointFields(exchangeApiDescriptor, e))
+		return fields.stream().map(e -> resolveFieldProperties(exchangeApiDescriptor, e))
 							  .collect(Collectors.toList());
 	}
 

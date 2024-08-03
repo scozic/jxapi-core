@@ -44,7 +44,7 @@ public class WebsocketEndpointClassesGenerator implements ClassesGenerator {
 		this.exchangeDescriptor = exchangeDescriptor;
 		this.apiDescriptor = apiDescriptor;
 		this.websocketEndpointDescriptor = websocketEndpointDescriptor;
-		this.request = ExchangeApiGeneratorUtil.resolveEndpointFields(apiDescriptor, websocketEndpointDescriptor.getRequest());
+		this.request = ExchangeApiGeneratorUtil.resolveFieldProperties(apiDescriptor, websocketEndpointDescriptor.getRequest());
 	}
 	
 	/**

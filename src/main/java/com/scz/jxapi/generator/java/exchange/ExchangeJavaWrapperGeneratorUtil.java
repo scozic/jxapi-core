@@ -31,10 +31,10 @@ public class ExchangeJavaWrapperGeneratorUtil {
 	 */
 	public static final String DEFAULT_STRING_LIST_SEPARATOR = ",";
 
-	/**
-	 * Default name for request argument
-	 */
-	public static final String DEFAULT_REQUEST_ARG_NAME = "request";
+//	/**
+//	 * Default name for request argument
+//	 */
+//	public static final String DEFAULT_REQUEST_ARG_NAME = "request";
 	
 	/**
 	 * @return The full name of the ExchangeApi interface class for the given exchange and API.

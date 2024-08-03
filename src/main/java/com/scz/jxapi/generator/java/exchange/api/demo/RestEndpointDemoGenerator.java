@@ -75,7 +75,7 @@ public class RestEndpointDemoGenerator extends JavaTypeGenerator {
 		body = new StringBuilder();
 		String exchangeInterfaceClassName = ExchangeJavaWrapperGeneratorUtil.getExchangeInterfaceName(exchangeDescriptor);
 		String exchangeName = JavaCodeGenerationUtil.firstLetterToLowerCase(exchangeDescriptor.getName());
-		Field request = ExchangeApiGeneratorUtil.resolveEndpointFields(exchangeApiDescriptor, restApi.getRequest());
+		Field request = ExchangeApiGeneratorUtil.resolveFieldProperties(exchangeApiDescriptor, restApi.getRequest());
 		String exchangeImplClassName = exchangeInterfaceClassName + "Impl";
 		addImport(exchangeImplClassName);
 		addImport(TestJXApiProperties.class);

@@ -112,4 +112,52 @@ public class FieldTest {
         field.setMsgField("f");
         Assert.assertEquals("Field{\"name\":\"name\",\"description\":\"description\",\"type\":{\"canonicalType\":\"STRING\",\"object\":false},\"sampleValue\":\"sampleValue\",\"msgField\":\"f\"}", field.toString());
     }
+    
+    @Test
+    public void testEquals_NotEqualsOtherNull() {
+    	Field field = new Field();
+    	Assert.assertFalse(field.equals(null));
+    }
+    
+    @Test
+    public void testEquals_NotEqualsOtherNotField() {
+    	Field field = new Field();
+    	Assert.assertFalse(field.equals(new Object()));
+    }
+    
+    @Test
+    public void testEquals_NotEqualsOtherDifferentField() {
+        Field f1 = new Field();
+        f1.setName("name");
+        f1.setType("STRING");
+        f1.setDescription("description");
+        f1.setSampleValue("sampleValue");
+        f1.setMsgField("f");
+        
+        Field f2 = new Field();
+        f2.setName("bar");
+        f2.setType("STRING");
+        f2.setDescription("description");
+        f2.setSampleValue("sampleValue");
+        f2.setMsgField("f");
+    	Assert.assertFalse(f1.equals(f2));
+    }
+    
+    @Test
+    public void testEquals_SameField() {
+        Field f1 = new Field();
+        f1.setName("name");
+        f1.setType("STRING");
+        f1.setDescription("description");
+        f1.setSampleValue("sampleValue");
+        f1.setMsgField("f");
+        
+        Field f2 = new Field();
+        f2.setName("name");
+        f2.setType("STRING");
+        f2.setDescription("description");
+        f2.setSampleValue("sampleValue");
+        f2.setMsgField("f");
+    	Assert.assertTrue(f1.equals(f2));
+    }
 }

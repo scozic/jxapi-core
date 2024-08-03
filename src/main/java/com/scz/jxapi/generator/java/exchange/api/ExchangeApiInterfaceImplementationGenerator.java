@@ -238,7 +238,7 @@ public class ExchangeApiInterfaceImplementationGenerator extends JavaTypeGenerat
 		addImport(WebsocketEndpoint.class);
 		boolean hasArguments = ExchangeApiGeneratorUtil.websocketEndpointHasArguments(websocketApi, exchangeApiDescriptor);
 		String requestSimpleClassName = Object.class.getSimpleName();
-		String requestArgName = ExchangeJavaWrapperGeneratorUtil.DEFAULT_REQUEST_ARG_NAME;
+		String requestArgName = ExchangeApiGeneratorUtil.DEFAULT_REQUEST_ARG_NAME;
 		if (hasArguments) {
 			String requestClassName = ExchangeApiGeneratorUtil.generateWebsocketEndpointRequestClassName(
 													exchangeDescriptor, 
@@ -411,7 +411,7 @@ public class ExchangeApiInterfaceImplementationGenerator extends JavaTypeGenerat
 		Type responseDataType =  ExchangeApiGeneratorUtil.getFieldType(response);
 		boolean hasArguments = ExchangeApiGeneratorUtil.restEndpointHasArguments(restApi, exchangeApiDescriptor);
 		String requestSimpleClassName = "Object";
-		String requestArgName = ExchangeJavaWrapperGeneratorUtil.DEFAULT_REQUEST_ARG_NAME;
+		String requestArgName = ExchangeApiGeneratorUtil.DEFAULT_REQUEST_ARG_NAME;
 		if (hasArguments) {
 			String requestClassName = ExchangeApiGeneratorUtil.generateRestEnpointRequestClassName(exchangeDescriptor, exchangeApiDescriptor, restApi);
 			requestSimpleClassName = ExchangeJavaWrapperGeneratorUtil.getClassNameForParameterType(
@@ -711,7 +711,7 @@ public class ExchangeApiInterfaceImplementationGenerator extends JavaTypeGenerat
 			sb.append(", \"")
 			  .append(requestArgName)
 			  .append("\", ")
-			  .append(ExchangeJavaWrapperGeneratorUtil.DEFAULT_REQUEST_ARG_NAME);
+			  .append(ExchangeApiGeneratorUtil.DEFAULT_REQUEST_ARG_NAME);
 		} 
 		if (n <= 0) {
 			return JavaCodeGenerationUtil.getQuotedString(urlParametersTemplate);
