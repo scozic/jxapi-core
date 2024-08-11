@@ -2,8 +2,8 @@ package com.scz.jxapi.exchange.descriptor;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
+import com.scz.jxapi.netutils.rest.ratelimits.RateLimitRule;
 import com.scz.jxapi.util.EncodingUtil;
 
 /**

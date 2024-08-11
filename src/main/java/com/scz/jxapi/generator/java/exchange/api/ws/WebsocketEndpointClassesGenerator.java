@@ -65,7 +65,7 @@ public class WebsocketEndpointClassesGenerator implements ClassesGenerator {
 	private void generateSerializers(Path outputFolder) throws IOException {
 		if (shouldGenerateRequestPojo()) {
 			new JsonPojoSerializerClassesGenerator( 
-					ExchangeApiGeneratorUtil.generateWebsocketEndpointRequestClassName(
+					ExchangeApiGeneratorUtil.generateWebsocketEndpointRequestPojoClassName(
 							exchangeDescriptor, 
 							apiDescriptor, 
 							websocketEndpointDescriptor),
@@ -75,7 +75,7 @@ public class WebsocketEndpointClassesGenerator implements ClassesGenerator {
 	
 		if (shouldGenerateMessagePojo()) {
 			new JsonPojoSerializerClassesGenerator( 
-					ExchangeApiGeneratorUtil.generateWebsocketEndpointMessageClassName(
+					ExchangeApiGeneratorUtil.generateWebsocketEndpointMessagePojoClassName(
 							exchangeDescriptor, 
 							apiDescriptor, 
 							websocketEndpointDescriptor),
@@ -88,7 +88,7 @@ public class WebsocketEndpointClassesGenerator implements ClassesGenerator {
 //		List<EndpointParameter> response = websocketEndpointDescriptor.getResponse();
 		if (shouldGenerateMessagePojo()) {
 			new JsonMessageDeserializerClassesGenerator(
-					ExchangeApiGeneratorUtil.generateWebsocketEndpointMessageClassName(
+					ExchangeApiGeneratorUtil.generateWebsocketEndpointMessagePojoClassName(
 							exchangeDescriptor, 
 							apiDescriptor, 
 							websocketEndpointDescriptor),
@@ -100,7 +100,7 @@ public class WebsocketEndpointClassesGenerator implements ClassesGenerator {
 //		List<EndpointParameter> requestParameters = websocketEndpointDescriptor.getParameters();
 		if (shouldGenerateRequestPojo()) {
 			new EndpointPojoClassesGenerator( 
-					ExchangeApiGeneratorUtil.generateWebsocketEndpointRequestClassName(exchangeDescriptor, apiDescriptor, websocketEndpointDescriptor), 
+					ExchangeApiGeneratorUtil.generateWebsocketEndpointRequestPojoClassName(exchangeDescriptor, apiDescriptor, websocketEndpointDescriptor), 
 					"Subscription request to" + exchangeDescriptor.getName() 
 						+ " " + apiDescriptor.getName() + " API " 
 						+ websocketEndpointDescriptor.getName() 
@@ -115,7 +115,7 @@ public class WebsocketEndpointClassesGenerator implements ClassesGenerator {
 		
 		if (shouldGenerateMessagePojo()) {
 			new EndpointPojoClassesGenerator( 
-					ExchangeApiGeneratorUtil.generateWebsocketEndpointMessageClassName(
+					ExchangeApiGeneratorUtil.generateWebsocketEndpointMessagePojoClassName(
 							exchangeDescriptor, 
 							apiDescriptor, 
 							websocketEndpointDescriptor), 

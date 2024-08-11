@@ -44,7 +44,7 @@ public class WebsocketEndpointDemoGenerator extends JavaTypeGenerator {
 			if (requestDataType.getCanonicalType().isPrimitive) {
 				requestClassName = requestDataType.getCanonicalType().typeClass.getName();
 			} else {
-				requestClassName = ExchangeApiGeneratorUtil.generateWebsocketEndpointRequestClassName(exchangeDescriptor, exchangeApiDescriptor, websocketApi);
+				requestClassName = ExchangeApiGeneratorUtil.generateWebsocketEndpointRequestPojoClassName(exchangeDescriptor, exchangeApiDescriptor, websocketApi);
 			}
 			
 			addImport(requestClassName);

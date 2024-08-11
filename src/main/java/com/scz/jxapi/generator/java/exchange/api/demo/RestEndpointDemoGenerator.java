@@ -40,7 +40,7 @@ public class RestEndpointDemoGenerator extends JavaTypeGenerator {
 			if (requestDataType.getCanonicalType().isPrimitive) {
 				requestClassName = requestDataType.getCanonicalType().typeClass.getName();
 			} else {
-				requestClassName = ExchangeApiGeneratorUtil.generateRestEnpointRequestClassName(exchangeDescriptor, exchangeApiDescriptor, restApi);
+				requestClassName = ExchangeApiGeneratorUtil.generateRestEnpointRequestPojoClassName(exchangeDescriptor, exchangeApiDescriptor, restApi);
 			}
 			
 			addImport(requestClassName);

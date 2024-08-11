@@ -1,6 +1,8 @@
 package com.scz.jxapi.exchange.descriptor;
 
 import java.math.BigDecimal;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Supported types of parameters in request or response data.
@@ -37,7 +39,7 @@ public enum CanonicalType {
 	 * <code>{"a":"val", "b":1}</code>
 	 * Such structure will contain a list of fields of a type matching one {@link #EndpointParameterType} values.
 	 */
-	OBJECT(),
+	OBJECT(false, null),
 	
 	/**
 	 * Nested JSON map with keys of type String and values of same type (which can be any of {@link CanonicalEndpointParameterTypes}).
@@ -45,13 +47,13 @@ public enum CanonicalType {
 	 * Remark: OBJECT and MAP types are bound to similar data structure storing key/values pairs (properties) but: 
 	 * <ul>
 	 * <li>in case of OBJECT, the property keys used are defined by API interface and a POJO can be associated to that data structures with properties matching expected keys.</li>
-	 * <li>in case of MAP the keys used in received data are arbitrary and not kown in advance.
+	 * <li>in case of MAP the keys used in received data are arbitrary and not known in advance.
 	 * <li>
 	 * 
 	 * */
-	MAP(),
+	MAP(false, Map.class),
 	
-	LIST();
+	LIST(false, List.class);
 	
 	/**
 	 * Flag set <code>true</code> when type stands for a primitive value e.g. not a JSON object, array or map.
@@ -68,20 +70,28 @@ public enum CanonicalType {
 	public final boolean isPrimitive;
 	
 	/**
-	 * The Class associated to primitive type (see {@link #isPrimitive}, or
-	 * <code>null</code> if not a primitive type. To guess the class associated to a
+	 * The {@link Class} holding values of this type (see {@link #isPrimitive}, or
+	 * <code>null</code> for {@link #OBJECT} type (in which case the associated class is custom). To guess the class associated to a
 	 * non-primitive type, see
 	 * {@link ExchangeJavaWrapperGeneratorUtil#getClassNameForParameterType(Type, java.util.Set, String)}
 	 */
 	public final Class<?> typeClass;
 	
+	/**
+	 * Constructor for primitive type
+	 * @param typeClass
+	 */
 	private CanonicalType(Class<?> typeClass) {
-		this.isPrimitive = true;
-		this.typeClass = typeClass;
+		this(true, typeClass);
 	}
 	
-	private CanonicalType() {
-		this.isPrimitive = false;
-		this.typeClass = null;
+	/**
+	 * Constructor for non-primitive type
+	 * @param isPrimitive
+	 * @param typeClass
+	 */
+	private CanonicalType(boolean isPrimitive, Class<?> typeClass) {
+		this.isPrimitive = isPrimitive;
+		this.typeClass = typeClass;
 	}
 }

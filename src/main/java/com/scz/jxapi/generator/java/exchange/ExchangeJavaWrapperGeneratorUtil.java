@@ -30,11 +30,6 @@ public class ExchangeJavaWrapperGeneratorUtil {
 	 * Default separator for string lists
 	 */
 	public static final String DEFAULT_STRING_LIST_SEPARATOR = ",";
-
-//	/**
-//	 * Default name for request argument
-//	 */
-//	public static final String DEFAULT_REQUEST_ARG_NAME = "request";
 	
 	/**
 	 * @return The full name of the ExchangeApi interface class for the given exchange and API.
@@ -102,40 +97,41 @@ public class ExchangeJavaWrapperGeneratorUtil {
 			return null;
 		}
 		String subTypeClassName = null;
-		switch(type.getCanonicalType()) {
+		CanonicalType canonicalType = type.getCanonicalType();
+		Class<?> canonicalTypeClass = canonicalType.typeClass;
+		switch(canonicalType) {
 		case BIGDECIMAL:
 			if (imports != null) {
 				imports.add(BigDecimal.class.getName());
 			}
-			return BigDecimal.class.getSimpleName();
 		case BOOLEAN:
-			return Boolean.class.getSimpleName();
 		case INT:
-			return Integer.class.getSimpleName();
 		case LONG:
 		case TIMESTAMP:
-			return Long.class.getSimpleName();
 		case STRING:
-			return String.class.getSimpleName();
+			return canonicalTypeClass.getSimpleName();
 		case LIST:
 			subTypeClassName = getClassNameForParameterType(type.getSubType(), imports, objectClassName);
 			if (imports != null) {
-				imports.add(List.class.getName());
+				imports.add(canonicalTypeClass.getName());
 			}
-			return List.class.getSimpleName() 
+			return canonicalTypeClass.getSimpleName() 
 					+ "<" 
 					+ JavaCodeGenerationUtil.getClassNameWithoutPackage(subTypeClassName) 
 					+ ">";
 		case MAP:
 			subTypeClassName = getClassNameForParameterType(type.getSubType(), imports, objectClassName);
 			if (imports != null) {
-				imports.add(Map.class.getName());
+				imports.add(canonicalTypeClass.getName());
 			}
-			return Map.class.getSimpleName() 
+			return canonicalTypeClass.getSimpleName() 
 					+ "<String, " 
 					+ JavaCodeGenerationUtil.getClassNameWithoutPackage(subTypeClassName) 
 					+ ">";
 		case OBJECT:
+			if (objectClassName != null) {
+				
+			}
 			imports.add(objectClassName);
 			return JavaCodeGenerationUtil.getClassNameWithoutPackage(objectClassName);
 		default:

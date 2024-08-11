@@ -64,7 +64,7 @@ public class RestEndpointClassesGenerator implements ClassesGenerator {
 		Field request = restEndpointDescriptor.getRequest();
 		if (request != null && request.getParameters() != null) {
 			new EndpointPojoClassesGenerator(
-					ExchangeApiGeneratorUtil.generateRestEnpointRequestClassName(exchangeDescriptor, apiDescriptor, restEndpointDescriptor), 
+					ExchangeApiGeneratorUtil.generateRestEnpointRequestPojoClassName(exchangeDescriptor, apiDescriptor, restEndpointDescriptor), 
 					"Request for " + exchangeDescriptor.getName() + " " + apiDescriptor.getName() + " API " 
 						+ restEndpointDescriptor.getName() + " REST endpoint<br/>\n"
 						+ restEndpointDescriptor.getDescription()
@@ -78,7 +78,7 @@ public class RestEndpointClassesGenerator implements ClassesGenerator {
 		Field response = restEndpointDescriptor.getResponse();
 		if (response != null && response.getParameters() != null) {
 			new EndpointPojoClassesGenerator( 
-					ExchangeApiGeneratorUtil.generateRestEnpointResponseClassName(
+					ExchangeApiGeneratorUtil.generateRestEnpointResponsePojoClassName(
 							exchangeDescriptor, 
 							apiDescriptor, 
 							restEndpointDescriptor), 
@@ -99,7 +99,7 @@ public class RestEndpointClassesGenerator implements ClassesGenerator {
 		Field response = restEndpointDescriptor.getResponse();
 		if (response != null && response.getParameters() != null) {
 			new JsonMessageDeserializerClassesGenerator( 
-					ExchangeApiGeneratorUtil.generateRestEnpointResponseClassName(
+					ExchangeApiGeneratorUtil.generateRestEnpointResponsePojoClassName(
 							exchangeDescriptor, 
 							apiDescriptor, 
 							restEndpointDescriptor),
@@ -112,7 +112,7 @@ public class RestEndpointClassesGenerator implements ClassesGenerator {
 		 List<Field> requestParams = request == null? null : request.getParameters();
 		 if (requestParams != null) {
 			new JsonPojoSerializerClassesGenerator( 
-					ExchangeApiGeneratorUtil.generateRestEnpointRequestClassName(
+					ExchangeApiGeneratorUtil.generateRestEnpointRequestPojoClassName(
 							exchangeDescriptor, 
 							apiDescriptor, 
 							restEndpointDescriptor),
@@ -122,7 +122,7 @@ public class RestEndpointClassesGenerator implements ClassesGenerator {
 		List<Field> responseParams = response == null? null : response.getParameters();
 		if (responseParams != null) {
 			new JsonPojoSerializerClassesGenerator(  
-					ExchangeApiGeneratorUtil.generateRestEnpointResponseClassName(
+					ExchangeApiGeneratorUtil.generateRestEnpointResponsePojoClassName(
 							exchangeDescriptor, 
 							apiDescriptor, 
 							restEndpointDescriptor),
