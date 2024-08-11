@@ -38,24 +38,20 @@ public class ExchangeApiGeneratorUtil {
 	public static final String DEFAULT_REQUEST_ARG_NAME = "request";
 
 	/**
-	 * Generates expected class name for a REST endpoint request POJO.
-	 *  
-	 * object name and enclosing exchange, API and endpoint name.
+	 * Generates expected POJO class name for a REST endpoint request POJO.
 	 * <p>
-	 * The expected class name is generated as follows according to the type (see {@link Field#getType()}) of endpoint request (see {@link RestEndpointDescriptor#getRequest()}):
+	 * Relevant when request is defined for the endpoint and is of object type (see {@link Type#isObject()}).
+	 * <p>
+	 * The package of the generated class is the sub-package <code>pojo</code> of the base package of the exchange descriptor.
 	 * <ul>
-	 * <li>Endpoint 
-	 * <li>For an object (see {@link Type#isObject()}) or <code>null</code> type, if the <code>objectName</code> (see {@link Field#getObjectName()} is defined, that object name is returned. 
-	 * Otherwise a class name is generated following pattern <code>[ExchangeName][ApiName][EndpointName]Request is returned</li>
+	 * <li>If <code>objectName</code> is defined, the generated class simple name is the object name</li>
+	 * <li>Otherwise, the generated class simple name is the concatenation of the exchange, exchange API, endpoint name and <code>Request</code> suffix</li>
 	 * </ul>
-	 * The returned value 
-	 * 
 	 * @param exchangeDescriptor      The exchange descriptor
 	 * @param exchangeApiDescriptor   The exchange API descriptor
-	 * @param restEndpointDescriptor  The endpoint descriptor
-	 * @return the expected class name for a endpoint request
-	 * @see #generateEnpointPojoClassName(ExchangeDescriptor, ExchangeApiDescriptor, String, Type, String, String)
-	 * @throws IllegalArgumentException if unexpected object name is provided for a non-object data type
+	 * @param restEndpointDescriptor  The REST endpoint descriptor
+	 * @return The expected class name for a endpoint request, for instance <code>com.x.y.api.pojo.MyExchangeMyApiMyEndpointRequest</code>
+	 * @throws IllegalArgumentException if request is not defined for the endpoint or is not of object type (see {@link Type#isObject()})
 	 */
 	public static String generateRestEnpointRequestPojoClassName(ExchangeDescriptor exchangeDescriptor, 
 															 	 ExchangeApiDescriptor exchangeApiDescriptor, 
@@ -73,11 +69,15 @@ public class ExchangeApiGeneratorUtil {
 	}
 
 	/**
-	 * Generates expected class name for a REST endpoint response according to its response data type.
-	 * @param exchangeDescriptor
-	 * @param exchangeApiDescriptor
-	 * @param restEndpointDescriptor
-	 * @return the expected class name for a endpoint response
+	 * Generates expected class name for a REST endpoint response POJO.
+	 * <p>
+	 * Works similarly to {@link #generateRestEnpointRequestPojoClassName(ExchangeDescriptor, ExchangeApiDescriptor, RestEndpointDescriptor)}, 
+	 * but using <code>Response</code> as method name suffix.
+	 * @param exchangeDescriptor      The exchange descriptor
+	 * @param exchangeApiDescriptor   The exchange API descriptor
+	 * @param restEndpointDescriptor  The REST endpoint descriptor
+	 * @return The expected class name for a endpoint response, for instance <code>com.x.y.api.pojo.MyExchangeMyApiMyEndpointResponse</code>
+	 * @throws IllegalArgumentException If response is not defined for the endpoint or is not of object type (see {@link Type#isObject()})
 	 */
 	public static String generateRestEnpointResponsePojoClassName(ExchangeDescriptor exchangeDescriptor, 
 															  	  ExchangeApiDescriptor exchangeApiDescriptor, 
@@ -92,6 +92,61 @@ public class ExchangeApiGeneratorUtil {
 												response.getType(), 
 												response.getObjectName(), 
 												"Response");
+	}
+	
+	/**
+	 * Generates expected class name for a Websocket endpoint message POJO.
+	 * <p>
+	 * Works similarly to {@link #generateRestEnpointRequestPojoClassName(ExchangeDescriptor, ExchangeApiDescriptor, RestEndpointDescriptor)}, 
+	 * but using <code>Message</code> as method name suffix.
+	 * @param exchangeDescriptor      The exchange descriptor
+	 * @param exchangeApiDescriptor   The exchange API descriptor
+	 * @param websocketApi			  The websocket endpoint descriptor
+	 * @return The expected class name for a endpoint message, for instance <code>com.x.y.api.pojo.MyExchangeMyApiMyEndpointMessage</code>
+	 * @throws IllegalArgumentException If message is not defined for the endpoint or is not of object type (see {@link Type#isObject()})
+	 */
+	public static String generateWebsocketEndpointMessagePojoClassName(
+							ExchangeDescriptor exchangeDescriptor,
+							ExchangeApiDescriptor exchangeApiDescriptor, 
+							WebsocketEndpointDescriptor websocketApi) {
+		Field message = websocketApi.getMessage();
+		if (message == null) {
+			throw new IllegalArgumentException("No message for endpoint:" + websocketApi);
+		}
+		return generateEnpointPojoClassName(exchangeDescriptor, 
+						exchangeApiDescriptor, 
+						websocketApi.getName(), 
+						message.getType(), 
+						message.getObjectName(), 
+						"Message");
+	}
+	
+	/**
+	 * Generates expected class name for a websocket endpoint request POJO.
+	 * <p>
+	 * Works similarly to {@link #generateRestEnpointRequestPojoClassName(ExchangeDescriptor, ExchangeApiDescriptor, RestEndpointDescriptor)}, 
+	 * but using <code>Request</code> as method name suffix.
+	 * @param exchangeDescriptor      The exchange descriptor
+	 * @param exchangeApiDescriptor   The exchange API descriptor
+	 * @param websocketApi			  The websocket endpoint descriptor
+	 * @return The expected class name for a endpoint request, for instance <code>com.x.y.api.pojo.MyExchangeMyApiMyEndpointRequest</code>
+	 * @throws IllegalArgumentException If request is not defined for the endpoint or is not of object type (see {@link Type#isObject()})
+	 */
+	public static String generateWebsocketEndpointRequestPojoClassName(
+								ExchangeDescriptor exchangeDescriptor,
+				   				ExchangeApiDescriptor exchangeApiDescriptor, 
+				   				WebsocketEndpointDescriptor websocketApi) {
+		Field request = websocketApi.getRequest();
+		if (request == null) {
+			throw new IllegalArgumentException("No request for endpoint:" + websocketApi);
+		}
+		return generateEnpointPojoClassName(
+					exchangeDescriptor, 
+					exchangeApiDescriptor, 
+					websocketApi.getName(), 
+					request.getType(), 
+					request.getObjectName(), 
+					"Request");
 	}
 
 	private static String generateEnpointPojoClassName(ExchangeDescriptor exchangeDescriptor, 
@@ -115,36 +170,6 @@ public class ExchangeApiGeneratorUtil {
 				+ JavaCodeGenerationUtil.firstLetterToUpperCase(exchangeApiDescriptor.getName())
 				+ JavaCodeGenerationUtil.firstLetterToUpperCase(endpointName)
 				+ suffix;
-	}
-
-	public static String generateWebsocketEndpointMessagePojoClassName(ExchangeDescriptor exchangeDescriptor,
-																   	   ExchangeApiDescriptor exchangeApiDescriptor, 
-																       WebsocketEndpointDescriptor websocketApi) {
-		Field message = websocketApi.getMessage();
-		if (message == null) {
-			throw new IllegalArgumentException("No message for endpoint:" + websocketApi);
-		}
-		return generateEnpointPojoClassName(exchangeDescriptor, 
-											exchangeApiDescriptor, 
-											websocketApi.getName(), 
-											message.getType(), 
-											message.getObjectName(), 
-											"Message");
-	}
-
-	public static String generateWebsocketEndpointRequestPojoClassName(ExchangeDescriptor exchangeDescriptor,
-																	   ExchangeApiDescriptor exchangeApiDescriptor, 
-																	   WebsocketEndpointDescriptor websocketApi) {
-		Field request = websocketApi.getRequest();
-		if (request == null) {
-			throw new IllegalArgumentException("No request for endpoint:" + websocketApi);
-		}
-		return generateEnpointPojoClassName(exchangeDescriptor, 
-											exchangeApiDescriptor, 
-											websocketApi.getName(), 
-											request.getType(), 
-											request.getObjectName(), 
-											"Request");
 	}
 
 	/**
@@ -323,8 +348,7 @@ public class ExchangeApiGeneratorUtil {
 	}
 
 	/**
-	 * Generates full class name of an {@link Field} instance
-	 * <code>leaf</code> type, see
+	 * Generates the expected full class name for the leaf subType of an endpoint.
 	 * {@link Type#getLeafSubType(Type)}.
 	 * 
 	 * @param endpointParameterName See {@link Field#getName()} name
