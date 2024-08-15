@@ -349,6 +349,14 @@ public class ExchangeApiGeneratorUtil {
 
 	/**
 	 * Generates the expected full class name for the leaf subType of an endpoint.
+	 * <ul>
+	 * <li>If the leaf subType canonical type is a primitive type (see {@link CanonicalType#isPrimitive}), the corresponding primitive 
+	 * type class, see {@link CanonicalType#typeClass } is returned.</li>
+	 * <li>If the supplied <code>objectName</code> is not <code>null</code>, the class name is the object name with first letter to 
+	 * uppercase, and its package is the package of the enclosing class name.</li>
+	 * <li>Otherwise, the class name is the concatenation of the package of the enclosing class name and the class name generated 
+	 * by {@link ExchangeJavaWrapperGeneratorUtil#getClassNameForParameterType(Type, Set, String)} for the 
+	 * leaf subType of the endpoint parameter.</li>
 	 * {@link Type#getLeafSubType(Type)}.
 	 * 
 	 * @param endpointParameterName See {@link Field#getName()} name
@@ -378,6 +386,21 @@ public class ExchangeApiGeneratorUtil {
 				+ JavaCodeGenerationUtil.firstLetterToUpperCase(endpointParameterName);
 	}
 
+	/**
+	 * Generates the part of instruction to get a new instance of a message deserializer for a given message type.
+	 * <ul>
+	 * <li>For primitive types, the corresponding deserializer singleton instance is returned, 
+	 * for instance if type is {@link Type.STRING}, <code>RawStringMessageDeserializer.getInstance()</code> is returned.
+	 * The deserializer class is added to imports</li>
+	 * <li>For other 'structured' types (object, list or map) types, the corresponding new 
+	 * Json field deserializer instruction is returned, see {@link ExchangeJavaWrapperGeneratorUtil#getNewJsonFieldDeserializerInstruction(Type, String, Set)}.</li>
+	 * <li>
+	 * </ul>
+	 * @param messageType
+	 * @param messageFullClassName
+	 * @param imports
+	 * @return
+	 */
 	public static String getNewMessageDeserializerInstruction(Type messageType, 
 															  String messageFullClassName, 
 															  Set<String> imports) {
@@ -405,10 +428,16 @@ public class ExchangeApiGeneratorUtil {
 		case LIST:
 		case MAP:
 		default:
-			return ExchangeJavaWrapperGeneratorUtil.getNewJsonParameterDeserializerInstruction(messageType, messageFullClassName, imports);
+			return ExchangeJavaWrapperGeneratorUtil.getNewJsonFieldDeserializerInstruction(messageType, messageFullClassName, imports);
 		}
 	}
 
+	/**
+	 * @param restApi
+	 * @param exchangeApiDescriptor
+	 * @return <code>true</code> if the REST endpoint has a response defined, and that 
+	 * 			response is either a primitive type or an object type has at least one property defined.
+	 */
 	public static boolean restEndpointHasResponse(RestEndpointDescriptor restApi, 
 												  ExchangeApiDescriptor exchangeApiDescriptor) {
 		Field response = restApi.getResponse();
@@ -420,14 +449,33 @@ public class ExchangeApiGeneratorUtil {
 				|| getFieldPropertiesCount(response, exchangeApiDescriptor) > 0;
 	}
 
+	/**
+	 * 
+	 * @param field The field to get the type of, see {@link Field#getType()}
+	 * @return <code>null</code> if parameter is <code>null</code>, otherwise the type of the field or default {@link Type.OBJECT} if this type is null.
+	 */
 	public static Type getFieldType(Field parameter) {
 		return parameter == null? null: Optional.ofNullable(parameter.getType()).orElse(Type.OBJECT);
 	}
 
+	/**
+	 * Generates the name of expected static {@link String} variable holding a REST endpoint name.
+	 * <br/>
+	 * Example: for <code>myRestEndpoint</code>, the returned value is <code>MY_REST_ENDPOINT_REST_API</code>
+	 * @param restEndpointName
+	 * @return the static variable name for the REST endpoint name.
+	 */
 	public static String getRestEndpointNameStaticVariable(String restEndpointName) {
 		return JavaCodeGenerationUtil.getStaticVariableName(restEndpointName) + "_REST_API";
 	}
 
+	/**
+	 * @param restApi The REST endpoint descriptor
+	 * @param exchangeApiDescriptor The exchange API descriptor
+	 * @return <code>true</code> if the REST endpoint has a request defined 
+	 * 			{@link RequestEndpointDescriptor#getRequest()}, and that request field has arguments, 
+	 * 			see {@link #endpointHasArguments(Field, ExchangeApiDescriptor)}
+	 */
 	public static boolean restEndpointHasArguments(RestEndpointDescriptor restApi, 
 												   ExchangeApiDescriptor exchangeApiDescriptor) {
 		Field request = restApi.getRequest();
@@ -437,6 +485,13 @@ public class ExchangeApiGeneratorUtil {
 		return endpointHasArguments(request, exchangeApiDescriptor);
 	}
 
+	/**
+	 * @param websocketApi
+	 * @param exchangeApiDescriptor
+	 * @return <code>true</code> if the websocket endpoint has a request field defined 
+	 * 			see {@link WebsocketEndpointDescriptor#getRequest()}, and that message field has arguments,
+	 * 			see {@link #endpointHasArguments(Field, ExchangeApiDescriptor)}
+	 */
 	public static boolean websocketEndpointHasArguments(WebsocketEndpointDescriptor websocketApi, 
 														ExchangeApiDescriptor exchangeApiDescriptor) {
 		Field request = websocketApi.getRequest();
@@ -446,6 +501,12 @@ public class ExchangeApiGeneratorUtil {
 		return endpointHasArguments(request, exchangeApiDescriptor);
 	}
 
+	/**
+	 * @param endpointRequest The endpoint request field
+	 * @param exchangeApiDescriptor  The exchange API descriptor of the endpoint
+	 * @return <code>true</code> if the endpoint request is not <code>null</code> and its type has arguments, 
+	 * 			see {@link #endpointHasArguments(Field, ExchangeApiDescriptor)}
+	 */
 	public static boolean endpointHasArguments(Field endpointRequest, 
 											   ExchangeApiDescriptor exchangeApiDescriptor) {
 		if (endpointRequest == null) {

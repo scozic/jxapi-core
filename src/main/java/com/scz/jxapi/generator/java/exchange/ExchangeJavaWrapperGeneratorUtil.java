@@ -1,8 +1,6 @@
 package com.scz.jxapi.generator.java.exchange;
 
 import java.math.BigDecimal;
-import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.lang3.StringUtils;
@@ -53,7 +51,8 @@ public class ExchangeJavaWrapperGeneratorUtil {
 	 * @return The name of the Exchange interface class for the given exchange.
 	 */
 	public static String getExchangeInterfaceName(ExchangeDescriptor exchangeDescriptor) {
-		return exchangeDescriptor.getBasePackage() + "." + JavaCodeGenerationUtil.firstLetterToUpperCase(exchangeDescriptor.getName()) + "Exchange";
+		return exchangeDescriptor.getBasePackage() + "." 
+				+ JavaCodeGenerationUtil.firstLetterToUpperCase(exchangeDescriptor.getName()) + "Exchange";
 	}
 
 	/**
@@ -82,9 +81,12 @@ public class ExchangeJavaWrapperGeneratorUtil {
 	 * 		         <li>TIMESTAMP -> {@link Long}</li>
 	 * 		         <li>STRING -> {@link String}</li>
 	 * 		       </ul>
-	 * 		     <li>If this type is a 'List' type, returns generic <code>List<SubTypeClassName></code>, where <code>subTypeClassName</code> is the simple class name of the subType of the list, see {@link Type#getSubType()}.
-	 * 		     <li>If this type is a 'Map' type, returns generic <code>Map<String, SubTypeClassName></code>, where <code>subTypeClassName</code> is the simple class name of the subType of the map, see {@link Type#getSubType()}.
-	 * 		     <li>If this type is an 'Object' type, returns the simple class name of the object class name, see {@link #getClassNameWithoutPackage(String)}.
+	 * 		     <li>If this type is a 'List' type, returns generic <code>List<SubTypeClassName></code>, 
+	 * 				where <code>subTypeClassName</code> is the simple class name of the subType of the list, see {@link Type#getSubType()}.
+	 * 		     <li>If this type is a 'Map' type, returns generic <code>Map<String, SubTypeClassName></code>, 
+	 * 				where <code>subTypeClassName</code> is the simple class name of the subType of the map, see {@link Type#getSubType()}.
+	 * 		     <li>If this type is an 'Object' type, returns the simple class name of the object class name, 
+	 * 				 see {@link #getClassNameWithoutPackage(String)}.
 	 * 		     </li>
 	 * 		   </ul>
 	 * @see #getClassNameForParameterType(Type, Set, String)
@@ -170,7 +172,7 @@ public class ExchangeJavaWrapperGeneratorUtil {
 	 * @see Type
 	 * @throws IllegalArgumentException if the type is not recognized.
 	 */
-	public static String getNewJsonParameterDeserializerInstruction(Type type, String objectClassName, Set<String> imports) {
+	public static String getNewJsonFieldDeserializerInstruction(Type type, String objectClassName, Set<String> imports) {
 		if (type == null) {
 			type  = Type.fromTypeName(CanonicalType.STRING.name());
 		}
@@ -195,10 +197,12 @@ public class ExchangeJavaWrapperGeneratorUtil {
 			return  TimestampJsonFieldDeserializer.class.getSimpleName() + ".getInstance()";
 		case LIST:
 			imports.add(ListJsonFieldDeserializer.class.getName());
-			return "new " + ListJsonFieldDeserializer.class.getSimpleName() + "<>(" + getNewJsonParameterDeserializerInstruction(type.getSubType(), objectClassName, imports) + ")";
+			return "new " + ListJsonFieldDeserializer.class.getSimpleName() + "<>(" 
+					+ getNewJsonFieldDeserializerInstruction(type.getSubType(), objectClassName, imports) + ")";
 		case MAP:
 			imports.add(MapJsonFieldDeserializer.class.getName());
-			return "new " + MapJsonFieldDeserializer.class.getSimpleName() + "<>(" + getNewJsonParameterDeserializerInstruction(type.getSubType(), objectClassName, imports) +")";
+			return "new " + MapJsonFieldDeserializer.class.getSimpleName() 
+					+ "<>(" + getNewJsonFieldDeserializerInstruction(type.getSubType(), objectClassName, imports) +")";
 		case OBJECT:
 			String objectDeserializerClass = getJsonMessageDeserializerClassName(objectClassName);
 			imports.add(objectDeserializerClass);

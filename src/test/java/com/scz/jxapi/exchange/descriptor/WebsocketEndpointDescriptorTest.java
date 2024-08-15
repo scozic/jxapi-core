@@ -19,7 +19,6 @@ public class WebsocketEndpointDescriptorTest {
     private void setTestValues(WebsocketEndpointDescriptor descriptor) {
     	descriptor.setName("name");
         descriptor.setDescription("description");
-        descriptor.setUrl("url");
         descriptor.setTopicParametersListSeparator("|");
         descriptor.setTopic("atopic");
         descriptor.setRequest(Field.create("STRING", "myRequestField", "mf", "Test request", "foo"));
@@ -36,7 +35,6 @@ public class WebsocketEndpointDescriptorTest {
         setTestValues(descriptor);
         Assert.assertEquals("name", descriptor.getName());
         Assert.assertEquals("description", descriptor.getDescription());
-        Assert.assertEquals("url", descriptor.getUrl());
         Assert.assertEquals("atopic", descriptor.getTopic());
         Assert.assertEquals("|", descriptor.getTopicParametersListSeparator());
         Assert.assertEquals(1, descriptor.getMessageTopicMatcherFields().size());
@@ -58,10 +56,11 @@ public class WebsocketEndpointDescriptorTest {
     public void testToString() {
         WebsocketEndpointDescriptor descriptor = new WebsocketEndpointDescriptor();
         setTestValues(descriptor);
-        Assert.assertEquals("WebsocketEndpointDescriptor{\"name\":\"name\",\"topic\":\"atopic\",\"description\":\"description\",\"url\":\"url\","
+        Assert.assertEquals("WebsocketEndpointDescriptor{\"name\":\"name\",\"topic\":\"atopic\",\"description\":\"description\","
         		+ "\"request\":{\"name\":\"myRequestField\",\"description\":\"Test request\",\"type\":{\"canonicalType\":\"STRING\""
         		+ ",\"object\":false},\"sampleValue\":\"foo\",\"msgField\":\"mf\"},"
-        		+ "\"message\":{\"name\":\"myMessageField\",\"description\":\"Test message\",\"type\":{\"canonicalType\":\"STRING\",\"object\":false},\"sampleValue\":\"bar\",\"msgField\":\"mm\"},"
+        		+ "\"message\":{\"name\":\"myMessageField\",\"description\":\"Test message\",\"type\":{\"canonicalType\":\"STRING\"," 
+        		+ "\"object\":false},\"sampleValue\":\"bar\",\"msgField\":\"mm\"},"
         		+ "\"topicParametersListSeparator\":\"|\","
         		+ "\"messageTopicMatcherFields\":[{\"value\":\"value1\",\"name\":\"field1\"}]}", 
         					descriptor.toString());

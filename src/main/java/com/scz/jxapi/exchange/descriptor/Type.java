@@ -10,8 +10,8 @@ import java.util.Optional;
  * Describes the type of data of a {@link Field}.
  * It can be a primitive type (see
  * {@link CanonicalType#isPrimitive}, an object (
- * {@link CanonicalType#OBJECT}), a list of data of same subtype,  or a
- * {@link String} key map of data with values of same subtype.<br/>
+ * {@link CanonicalType#OBJECT}), a list of data of same subtype (see {@link CanonicalType#LIST}) ,  or a
+ *  map indexed with {@link String} keys and values of same subtype (see {@link CanonicalType#MAP}) .<br/>
  * When a field canonical type is primitive or
  * {@link CanonicalType#OBJECT}, it subtype is
  * <code>null</code> as not relevant.<br/>
@@ -144,11 +144,11 @@ public class Type {
 	}
 
 	/**
-	 * Get the subtype of the type:
+	 * Get the subtype of this type:
 	 * 
 	 * <ul>
-	 * <li> if the type is a primitive type or an object, the subtype is null
-	 * <li> if the type is a list or a map, the subtype is the type of the values
+	 * <li>If the type is a primitive type or an object, the subtype is null
+	 * <li>If the type is a list or a map, the subtype is the type of the values
 	 * </ul>
 	 * Example:
 	 * <ul>

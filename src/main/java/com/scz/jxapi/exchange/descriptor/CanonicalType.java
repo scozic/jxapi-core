@@ -5,33 +5,27 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Supported types of parameters in request or response data.
- * Any value for a field in request or response payload can be a 'primitive' ({@link #STRING}, {@link #INT} ... see {@link #isPrimitive}) or nested object that may be repeated:
- * <ul>
- * <li>Once, e.g. data type is a plain {@link #OBJECT} type</li>
- * <li>A list of values of any {@link CanonicalType} (JSON array), see {@link #LIST}</li>
- * <li>A map of values (JSON map with {@link String} keys and values of any {@link CanonicalType}), see {@link #MAP}</li>
- * </ul>
+ * Canonical types for API interface fields, see {@link Type}.<br/>
  * 
- * @see Field
+ * @see Type
  */
 public enum CanonicalType {
-	/** Plain {@link String} value */
+	/** Plain {@link String} value.<br/>TypeClass: {@link String} */ 
 	STRING(String.class),
 	
-	/** Boolean value */
+	/** Boolean value. TypeClass: {@link Boolean} */
 	BOOLEAN(Boolean.class),
 	
-	/** Floating point value */
+	/** Floating point value. TypeClass:<br/>{@link BigDecimal} */
 	BIGDECIMAL(BigDecimal.class),
 	
-	/** Integer value */
+	/** Integer value. TypeClass:<br/>{@link Integer} */
 	INT(Integer.class),
 	
-	/** Long value */
+	/** Long value. TypeClass:<br/>{@link Long} */
 	LONG(Long.class),
 	
-	/** Timestamp (or datetime) value */
+	/** Timestamp (or datetime) value. TypeClass:<br/>{@link Long} */
 	TIMESTAMP(Long.class),
 	
 	/** 
@@ -42,17 +36,21 @@ public enum CanonicalType {
 	OBJECT(false, null),
 	
 	/**
-	 * Nested JSON map with keys of type String and values of same type (which can be any of {@link CanonicalEndpointParameterTypes}).
+	 * Nested JSON map with keys of type String and values of same type (which can be of any {@link Type} ).
 	 * <br/>
 	 * Remark: OBJECT and MAP types are bound to similar data structure storing key/values pairs (properties) but: 
 	 * <ul>
 	 * <li>in case of OBJECT, the property keys used are defined by API interface and a POJO can be associated to that data structures with properties matching expected keys.</li>
 	 * <li>in case of MAP the keys used in received data are arbitrary and not known in advance.
 	 * <li>
-	 * 
-	 * */
+	 * </ul>
+	 * <br/>TypeClass: {@link Map}
+	 **/
 	MAP(false, Map.class),
 	
+	/**
+	 * Nested JSON array with values of same type (which can be any of {@link Type}).
+	 */
 	LIST(false, List.class);
 	
 	/**

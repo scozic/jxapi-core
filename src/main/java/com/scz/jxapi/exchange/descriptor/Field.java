@@ -283,10 +283,10 @@ public class Field {
 	
 	/**
 	 * @return The simple (without package) name of java class to represent
-	 *         corresponding to object defined by this parameter. Relevant only when
-	 *         type is an object see {@link CanonicalType#isObject}. Remark: in a descriptor
-	 *         file, the first parameter defining a given object name should define
-	 *         sub-parameters, other parameters using same object name need not
+	 *         corresponding to object defined by this field. Relevant only when
+	 *         type is an object see {@link CanonicalType#isObject}.<br/> Remark: in a descriptor
+	 *         file, the first field defining a given object name should define that object properties
+	 *         see {@link Field#getParameters()} , other parameters using same object name need not
 	 *         define sub-parameters. This allow not to repeat identical structures
 	 *         in different APIs.
 	 */

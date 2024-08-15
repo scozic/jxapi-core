@@ -144,82 +144,82 @@ public class ExchangeJavaWrapperGeneratorUtilTest {
 	}
 
 	@Test
-	public void testGetNewJsonParameterDeserializerInstruction_INT() {
+	public void testGetNewJsonFieldDeserializerInstruction_INT() {
 		Set<String> imports = new HashSet<>();
-		Assert.assertEquals("IntegerJsonFieldDeserializer.getInstance()", ExchangeJavaWrapperGeneratorUtil.getNewJsonParameterDeserializerInstruction(Type.INT, null, imports));
+		Assert.assertEquals("IntegerJsonFieldDeserializer.getInstance()", ExchangeJavaWrapperGeneratorUtil.getNewJsonFieldDeserializerInstruction(Type.INT, null, imports));
 		Assert.assertEquals(1, imports.size());
 		Assert.assertTrue(imports.contains(IntegerJsonFieldDeserializer.class.getName()));
 	}
 
 	@Test
-	public void testGetNewJsonParameterDeserializerInstruction_BOOLEAN() {
+	public void testGetNewJsonFieldDeserializerInstruction_BOOLEAN() {
 		Set<String> imports = new HashSet<>();
-		Assert.assertEquals("BooleanJsonFieldDeserializer.getInstance()", ExchangeJavaWrapperGeneratorUtil.getNewJsonParameterDeserializerInstruction(Type.BOOLEAN, null, imports));
+		Assert.assertEquals("BooleanJsonFieldDeserializer.getInstance()", ExchangeJavaWrapperGeneratorUtil.getNewJsonFieldDeserializerInstruction(Type.BOOLEAN, null, imports));
 		Assert.assertEquals(1, imports.size());
 		Assert.assertTrue(imports.contains(BooleanJsonFieldDeserializer.class.getName()));
 	}
 
 	@Test
-	public void testGetNewJsonParameterDeserializerInstruction_BIGDECIMAL() {
+	public void testGetNewJsonFieldDeserializerInstruction_BIGDECIMAL() {
 		Set<String> imports = new HashSet<>();
-		Assert.assertEquals("BigDecimalJsonFieldDeserializer.getInstance()", ExchangeJavaWrapperGeneratorUtil.getNewJsonParameterDeserializerInstruction(Type.BIGDECIMAL, null, imports));
+		Assert.assertEquals("BigDecimalJsonFieldDeserializer.getInstance()", ExchangeJavaWrapperGeneratorUtil.getNewJsonFieldDeserializerInstruction(Type.BIGDECIMAL, null, imports));
 		Assert.assertEquals(1, imports.size());
 		Assert.assertTrue(imports.contains(BigDecimalJsonFieldDeserializer.class.getName()));
 	}
 
 	@Test
-	public void testGetNewJsonParameterDeserializerInstruction_LONG() {
+	public void testGetNewJsonFieldDeserializerInstruction_LONG() {
 		Set<String> imports = new HashSet<>();
-		Assert.assertEquals("LongJsonFieldDeserializer.getInstance()", ExchangeJavaWrapperGeneratorUtil.getNewJsonParameterDeserializerInstruction(Type.LONG, null, imports));
+		Assert.assertEquals("LongJsonFieldDeserializer.getInstance()", ExchangeJavaWrapperGeneratorUtil.getNewJsonFieldDeserializerInstruction(Type.LONG, null, imports));
 		Assert.assertEquals(1, imports.size());
 		Assert.assertTrue(imports.contains(LongJsonFieldDeserializer.class.getName()));
 	}
 
 	@Test
-	public void testGetNewJsonParameterDeserializerInstruction_TIMESTAMP() {
+	public void testGetNewJsonFieldDeserializerInstruction_TIMESTAMP() {
 		Set<String> imports = new HashSet<>();
-		Assert.assertEquals("TimestampJsonFieldDeserializer.getInstance()", ExchangeJavaWrapperGeneratorUtil.getNewJsonParameterDeserializerInstruction(Type.TIMESTAMP, null, imports));
+		Assert.assertEquals("TimestampJsonFieldDeserializer.getInstance()", ExchangeJavaWrapperGeneratorUtil.getNewJsonFieldDeserializerInstruction(Type.TIMESTAMP, null, imports));
 		Assert.assertEquals(1, imports.size());
 		Assert.assertTrue(imports.contains(TimestampJsonFieldDeserializer.class.getName()));
 	}
 
 	@Test
-	public void testGetNewJsonParameterDeserializerInstruction_STRING() {
+	public void testGetNewJsonFieldDeserializerInstruction_STRING() {
 		Set<String> imports = new HashSet<>();
-		Assert.assertEquals("StringJsonFieldDeserializer.getInstance()", ExchangeJavaWrapperGeneratorUtil.getNewJsonParameterDeserializerInstruction(Type.STRING, null, imports));
+		Assert.assertEquals("StringJsonFieldDeserializer.getInstance()", ExchangeJavaWrapperGeneratorUtil.getNewJsonFieldDeserializerInstruction(Type.STRING, null, imports));
 		Assert.assertEquals(1, imports.size());
 		Assert.assertTrue(imports.contains(StringJsonFieldDeserializer.class.getName()));
 	}
 	
 	@Test
-	public void testGetNewJsonParameterDeserializerInstruction_STRING_LIST() {
+	public void testGetNewJsonFieldDeserializerInstruction_STRING_LIST() {
 		Set<String> imports = new HashSet<>();
-		Assert.assertEquals("new ListJsonFieldDeserializer<>(StringJsonFieldDeserializer.getInstance())", ExchangeJavaWrapperGeneratorUtil.getNewJsonParameterDeserializerInstruction(Type.fromTypeName("STRING_LIST"), null, imports));
+		Assert.assertEquals("new ListJsonFieldDeserializer<>(StringJsonFieldDeserializer.getInstance())", ExchangeJavaWrapperGeneratorUtil.getNewJsonFieldDeserializerInstruction(Type.fromTypeName("STRING_LIST"), null, imports));
 		Assert.assertEquals(2, imports.size());
 		Assert.assertTrue(imports.contains(ListJsonFieldDeserializer.class.getName()));
 		Assert.assertTrue(imports.contains(StringJsonFieldDeserializer.class.getName()));
 	}
 
 	@Test
-	public void testGetNewJsonParameterDeserializerInstruction_INT_MAP() {
+	public void testGetNewJsonFieldDeserializerInstruction_INT_MAP() {
 		Set<String> imports = new HashSet<>();
-		Assert.assertEquals("new MapJsonFieldDeserializer<>(IntegerJsonFieldDeserializer.getInstance())", ExchangeJavaWrapperGeneratorUtil.getNewJsonParameterDeserializerInstruction(Type.fromTypeName("INT_MAP"), null, imports));
+		Assert.assertEquals("new MapJsonFieldDeserializer<>(IntegerJsonFieldDeserializer.getInstance())", ExchangeJavaWrapperGeneratorUtil.getNewJsonFieldDeserializerInstruction(Type.fromTypeName("INT_MAP"), null, imports));
 		Assert.assertEquals(2, imports.size());
 		Assert.assertTrue(imports.contains(MapJsonFieldDeserializer.class.getName()));
 		Assert.assertTrue(imports.contains(IntegerJsonFieldDeserializer.class.getName()));
 	}
 
 	@Test
-	public void testGetNewJsonParameterDeserializerInstruction_OBJECT() {
+	public void testGetNewJsonFieldDeserializerInstruction_OBJECT() {
 		Set<String> imports = new HashSet<>();
 		String objectClassName = "com.x.y.z.MyObject";
-		Assert.assertEquals("new MyObjectDeserializer()", ExchangeJavaWrapperGeneratorUtil.getNewJsonParameterDeserializerInstruction(Type.fromTypeName("OBJECT"), objectClassName, imports));
+		Assert.assertEquals("new MyObjectDeserializer()", ExchangeJavaWrapperGeneratorUtil.getNewJsonFieldDeserializerInstruction(Type.fromTypeName("OBJECT"), objectClassName, imports));
 		Assert.assertEquals(1, imports.size());
 		Assert.assertTrue(imports.contains("com.x.y.z.deserializers.MyObjectDeserializer"));
 	}
 
 	@Test
-	public void testGetNewJsonParameterDeserializerInstruction_OBJECT_LIST_MAP() {
+	public void testGetNewJsonFieldDeserializerInstruction_OBJECT_LIST_MAP() {
 		Set<String> imports = new HashSet<>();
 		String objectClassName = "com.x.y.z.MyObject";
 		Assert.assertEquals("Map<String, List<MyObject>>", ExchangeJavaWrapperGeneratorUtil.getClassNameForParameterType(Type.fromTypeName("OBJECT_LIST_MAP"), imports, objectClassName));
@@ -230,9 +230,9 @@ public class ExchangeJavaWrapperGeneratorUtilTest {
 	}
 
 	@Test
-	public void testGetNewJsonParameterDeserializerInstruction_NullType() {
+	public void testGetNewJsonFieldDeserializerInstruction_NullType() {
 		Set<String> imports = new HashSet<>();
-		Assert.assertEquals("StringJsonFieldDeserializer.getInstance()", ExchangeJavaWrapperGeneratorUtil.getNewJsonParameterDeserializerInstruction(null, null, imports));
+		Assert.assertEquals("StringJsonFieldDeserializer.getInstance()", ExchangeJavaWrapperGeneratorUtil.getNewJsonFieldDeserializerInstruction(null, null, imports));
 		Assert.assertEquals(1, imports.size());
 		Assert.assertTrue(imports.contains(StringJsonFieldDeserializer.class.getName()));
 	}

@@ -8,7 +8,7 @@ import com.scz.jxapi.netutils.rest.ratelimits.RateLimitRule;
 import com.scz.jxapi.util.EncodingUtil;
 
 /**
- * Part of JSON document describing a crypto exchange API, describes a specific REST endpoint.
+ * Part of JSON document describing a exchange API, describes a specific REST endpoint.
  * Such endpoints are expecting an HTTP request to given URL endpoint, with given request parameters, 
  * and a response should be received.
  * <p>
