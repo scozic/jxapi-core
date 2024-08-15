@@ -350,12 +350,17 @@ public class ExchangeApiGeneratorUtil {
 	/**
 	 * Generates the expected full class name for the leaf subType of an endpoint.
 	 * <ul>
-	 * <li>If the leaf subType canonical type is a primitive type (see {@link CanonicalType#isPrimitive}), the corresponding primitive 
+	 * <li>If the leaf subType canonical type is a primitive type (see
+	 * {@link CanonicalType#isPrimitive}), the corresponding primitive
 	 * type class, see {@link CanonicalType#typeClass } is returned.</li>
-	 * <li>If the supplied <code>objectName</code> is not <code>null</code>, the class name is the object name with first letter to 
+	 * <li>If the supplied <code>objectName</code> is not <code>null</code>, the
+	 * class name is the object name with first letter to
 	 * uppercase, and its package is the package of the enclosing class name.</li>
-	 * <li>Otherwise, the class name is the concatenation of the package of the enclosing class name and the class name generated 
-	 * by {@link ExchangeJavaWrapperGeneratorUtil#getClassNameForParameterType(Type, Set, String)} for the 
+	 * <li>Otherwise, the class name is the concatenation of the package of the
+	 * enclosing class name and the class name generated
+	 * by
+	 * {@link ExchangeJavaWrapperGeneratorUtil#getClassNameForParameterType(Type, Set, String)}
+	 * for the
 	 * leaf subType of the endpoint parameter.</li>
 	 * {@link Type#getLeafSubType(Type)}.
 	 * 
@@ -387,15 +392,21 @@ public class ExchangeApiGeneratorUtil {
 	}
 
 	/**
-	 * Generates the part of instruction to get a new instance of a message deserializer for a given message type.
+	 * Generates the part of instruction to get a new instance of a message
+	 * deserializer for a given message type.
 	 * <ul>
-	 * <li>For primitive types, the corresponding deserializer singleton instance is returned, 
-	 * for instance if type is {@link Type.STRING}, <code>RawStringMessageDeserializer.getInstance()</code> is returned.
+	 * <li>For primitive types, the corresponding deserializer singleton instance is
+	 * returned,
+	 * for instance if type is {@link Type.STRING},
+	 * <code>RawStringMessageDeserializer.getInstance()</code> is returned.
 	 * The deserializer class is added to imports</li>
-	 * <li>For other 'structured' types (object, list or map) types, the corresponding new 
-	 * Json field deserializer instruction is returned, see {@link ExchangeJavaWrapperGeneratorUtil#getNewJsonFieldDeserializerInstruction(Type, String, Set)}.</li>
+	 * <li>For other 'structured' types (object, list or map) types, the
+	 * corresponding new
+	 * Json field deserializer instruction is returned, see
+	 * {@link ExchangeJavaWrapperGeneratorUtil#getNewJsonFieldDeserializerInstruction(Type, String, Set)}.</li>
 	 * <li>
 	 * </ul>
+	 * 
 	 * @param messageType
 	 * @param messageFullClassName
 	 * @param imports
@@ -452,7 +463,9 @@ public class ExchangeApiGeneratorUtil {
 	/**
 	 * 
 	 * @param field The field to get the type of, see {@link Field#getType()}
-	 * @return <code>null</code> if parameter is <code>null</code>, otherwise the type of the field or default {@link Type.OBJECT} if this type is null.
+	 * @return <code>null</code> if parameter is <code>null</code>, otherwise the
+	 *         type of the field or default {@link Type.OBJECT} if this type is
+	 *         null.
 	 */
 	public static Type getFieldType(Field parameter) {
 		return parameter == null? null: Optional.ofNullable(parameter.getType()).orElse(Type.OBJECT);
@@ -517,14 +530,65 @@ public class ExchangeApiGeneratorUtil {
 				|| getFieldPropertiesCount(endpointRequest, exchangeApiDescriptor) > 0;
 	}
 
+	/**
+	 * The name property of Field of a REST request/Websocket subscribe request is
+	 * used to generate the name of the argument in the generated method signature.
+	 * <br/>
+	 * If the name property is not defined, the default name
+	 * {@link #DEFAULT_REQUEST_ARG_NAME} is used.
+	 * Notice this function argument is used in API interface method declaration,
+	 * but not in the generated method implementation.
+	 * This is because the generated method implementation uses a fixed name for the
+	 * request argument, see {@link #DEFAULT_REQUEST_ARG_NAME}
+	 * to make sure there is no collising between this name and the other variables
+	 * used in the generated method implementation or interface implementation
+	 * class.
+	 * 
+	 * @param requestArgNameFromApiDescriptor The name property of the request field of REST request or Websocket subscribe request.
+	 * @return <code>requestArgNameFromApiDescriptor</code> if not
+	 *         <code>null</code>, otherwise {@link #DEFAULT_REQUEST_ARG_NAME}
+	 */
 	public static String getRequestArgName(String requestArgNameFromApiDescriptor) {
 		return Optional.ofNullable(requestArgNameFromApiDescriptor).orElse(DEFAULT_REQUEST_ARG_NAME);
 	}
 
+	/**
+	 * Generates the name of expected static {@link String} variable holding a Websocket endpoint name.
+	 * @param websocketEndpointName
+	 * @return
+	 */
 	public static String getWebsocketEndpointNameStaticVariable(String websocketEndpointName) {
 		return JavaCodeGenerationUtil.getStaticVariableName(websocketEndpointName) + "_WS_API";
 	}
 
+	/**
+	 * A given {@link Field} may have an object name defined, see
+	 * {@link Field#getObjectName()} and properties of this objectName defined in
+	 * another API of the enclosing ExchangeApi, or it could be the case for some
+	 * sub-properties defined, see {@link Field#getParameters()}.
+	 * <br/>
+	 * This method performs a recursive resolution of properties for the given field
+	 * among all 'object' properties of every REST request or response or Websockey
+	 * subscribe request and message.
+	 * <br/>
+	 * If provided {@link Field} has a defined objectName, is of 'object' type (see
+	 * {@Link Type#isObject()}) and has <code>null</code> sub properties then its
+	 * sub properties are set with ones of first field found in any object field of
+	 * any
+	 * REST/Websocket API that has same object name as this field.
+	 * <br/>
+	 * Same is done for all sub-properties of this field recursively.
+	 * 
+	 * @param exchangeApiDescriptor The exchange API descriptor containing the REST
+	 *                              and Websocket endpoints to search for properties
+	 *                              of the object name.
+	 * @param field                 the field to resolve properties for.
+	 * @return The field with resolved properties. Will be a clone of the input
+	 *         field if some properties were resolved, or same field if no
+	 *         properties were resolved.
+	 * @throws IllegalArgumentException if no properties were found for the object
+	 *                                  name of the field in the enclosing API.
+	 */
 	public static Field resolveFieldProperties(ExchangeApiDescriptor exchangeApiDescriptor, 
 											   Field field) {
  		if (field == null) {
@@ -548,12 +612,39 @@ public class ExchangeApiGeneratorUtil {
 		return field;
 	}
 	
+	/**
+	 * Counts the number of properties of a field, eventually resolving these
+	 * properties in enclosing API (see
+	 * {@link #resolveFieldProperties(ExchangeApiDescriptor, Field)}).
+	 * 
+	 * @param field                 The field to count properties of
+	 * @param exchangeApiDescriptor The enclosing API descriptor to resolve
+	 *                              properties in
+	 * @return 0 if field is <code>null</code>, or the number of properties of the
+	 *         field, eventually resolved in enclosing API.
+	 */
 	public static int getFieldPropertiesCount(Field field, 
 											  ExchangeApiDescriptor exchangeApiDescriptor) {
 		return Optional.ofNullable(field == null? null: resolveFieldProperties(exchangeApiDescriptor, field).getParameters())
 		               .orElse(List.of()).size();
 	}
 
+	/**
+	 * Finds the properties of an object name in an API descriptor: return
+	 * properties (see {@link Field#getParameters()})
+	 * of first field found in any object field of any REST/Websocket API that has
+	 * same object name as this field.
+	 * 
+	 * @param requestObjectName     The object name to find properties for.
+	 * @param exchangeApiDescriptor The API descriptor to search for properties of
+	 *                              the object name.
+	 * @return The list of properties of the object name in the API descriptor.
+	 * @throws IllegalArgumentException if no properties were found for the object
+	 *                                  name in the enclosing API, or if either
+	 *                                  <code>requestObjectName</code> or
+	 *                                  <code>exchangeApiDescriptor</code> is
+	 *                                  <code>null</code>.
+	 */
 	public static List<Field> findPropertiesForObjectNameInApi(String requestObjectName, 
 															   ExchangeApiDescriptor exchangeApiDescriptor) {
 		if (requestObjectName == null) {
@@ -596,6 +687,16 @@ public class ExchangeApiGeneratorUtil {
 										   + requestObjectName);
 	}
 
+	/**
+	 * Finds the properties of an object name in a field: return properties (see
+	 * {@link Field#getParameters()}) found in provided field if it has the same
+	 * object name as the one provided, or properties of first field found in its
+	 * sub-properties that carries expected objectName recursively.
+	 * 
+	 * @param objectName The object name to find properties for.
+	 * @param param      The field to search for properties of the object name.
+	 * @return The list of properties of the object name in the field.
+	 */
 	public static List<Field> findPropertiesForObjectNameInField(String objectName, Field param) {
 		if (objectName == null) {
 			return null;
@@ -619,9 +720,18 @@ public class ExchangeApiGeneratorUtil {
 		return null;
 	}
 
+	/**
+	 * Resolves properties of all fields in a list of fields, see
+	 * {@link #resolveFieldProperties(ExchangeApiDescriptor, Field)}.
+	 * 
+	 * @param exchangeApiDescriptor The enclosing API descriptor to resolve
+	 *                              properties in
+	 * @param fields                The list of fields to resolve properties for
+	 * @return The list of fields with resolved properties
+	 */
 	public static List<Field> resolveAllFieldProperties(ExchangeApiDescriptor exchangeApiDescriptor, 
 														List<Field> fields) {
-		return fields.stream().map(e -> resolveFieldProperties(exchangeApiDescriptor, e))
+		return fields.stream().map(f -> resolveFieldProperties(exchangeApiDescriptor, f))
 							  .collect(Collectors.toList());
 	}
 
