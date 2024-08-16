@@ -11,6 +11,9 @@ import java.util.Properties;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import org.slf4j.Logger;
+
+import com.fasterxml.jackson.databind.ser.std.StdSerializer;
 import com.scz.jxapi.exchange.AbstractExchangeApi;
 import com.scz.jxapi.exchange.descriptor.CanonicalType;
 import com.scz.jxapi.exchange.descriptor.Field;
@@ -38,6 +41,111 @@ import com.scz.jxapi.netutils.websocket.WebsocketSubscribeRequest;
 import com.scz.jxapi.util.EncodingUtil;
 import com.scz.jxapi.util.JsonUtil;
 
+/**
+ * Generates the Java source code for the implementation class of an API
+ * interface for an exchange, as described in {@link ExchangeApiDescriptor}.
+ * <p>
+ * This class generates the actual implementation of the API interface, with
+ * methods for every REST endpoint call and subscribe/unsubscribe methods for
+ * every websocket stream.
+ * <p>
+ * <ul>
+ * <li>The generated class extends {@link AbstractExchangeApi} and implements
+ * the API interface.
+ * <li>It contains a constructor that initializes the API implementation with
+ * the exchange name, properties, and eventual rate limit rules.
+ * <li>It contains a method for every REST endpoint call and
+ * subscribe/unsubscribe methods for every websocket stream.
+ * <li>It contains final deserializers (see {@link MessageDeserializer}) final
+ * properties declarations for every REST endpoint response and websocket
+ * message.
+ * <li>When rate limits are defined for the exchange or the API, the generated
+ * class contains final list of rate limit rule declarations for evenry rule
+ * used in REST APIs exposed by this interface. These lists contain both
+ * exchange wide, exchange API wide, and REST endpoint specific rules e.g. all
+ * rules that must be enforced by calling the corresponding API.
+ * <li>A {@link Logger} declaration generated.
+ * </ul>
+ * <p>
+ * Regarding REST endpoint call methods generation:
+ * <ul>
+ * <li>For every REST endpoint, a method is generated with the following
+ * signature:
+ * 
+ * <pre>
+ * {@code
+ * FutureRestResponse<ResponseType> methodName(RequestType request);
+ * }
+ * </pre>
+ * 
+ * <li>For every REST endpoint, a final deserializer is generated for the
+ * response type.
+ * <li>For every REST endpoint, a final rate limit rule declaration is generated
+ * if rate limits are defined for the endpoint.
+ * <li>A REST endpoint call method body contains the following steps:
+ * <ul>
+ * <li>If method has arguments and expects them to be serialized as URL
+ * parameters, generate a URL parameters serializer instruction if the endpoint
+ * has arguments and expects them to be serialized as URL parameters using
+ * {@link EncodingUtil#createUrlQueryParameters(Object...)} method..
+ * <li>Generate a DEBUG log statement with the HTTP method, endpoint name and
+ * eventual request parameters.
+ * <li>Generate a {@link HttpRequest} using
+ * {@link HttpRequest#create(String, String, HttpMethod, Object, RateLimitRule, int)}
+ * method.
+ * <li>Generate a submit request instruction using
+ * {@link AbstractExchangeApi#submit(HttpRequest, MessageDeserializer)} method.
+ * </ul>
+ * </ul>
+ * <p>
+ * Regarding websocket stream subscribe/unsubscribe methods generation:
+ * <ul>
+ * <li>For every websocket endpoint, a subscribe method is generated with the
+ * following signature:
+ * 
+ * <pre>
+ * {@code
+ * String subscribeWebsocketEndpointName(RequestType request, WebsocketListener<ResponseType> listener);
+ * }
+ * </pre>
+ * 
+ * <li>For every websocket endpoint, an unsubscribe method is generated with the
+ * following signature:
+ * 
+ * <pre>
+ * {@code
+ * boolean unsubscribeWebsocketEndpointName(String subscriptionId);
+ * }
+ * </pre>
+ * 
+ * <li>A websocket endpoint subscribe method body contains the following steps:
+ * <ul>
+ * <li>Generate a topic string using
+ * {@link EncodingUtil#substituteArguments(String, Object...)} method with
+ * endpoint specific topic template and eventual request parameters.
+ * <li>Generate a DEBUG log statement with the endpoint name and eventual request
+ * <li>Generate a {@link WebsocketSubscribeRequest} using
+ * {@link WebsocketSubscribeRequest#create(Object, String, DefaultWebsocketMessageTopicMatcher)}
+ * method.
+ * <li>Set the request object in the {@link WebsocketSubscribeRequest} if the
+ * endpoint has arguments.
+ * <li>Submit the {@link WebsocketSubscribeRequest} using
+ * {@link WebsocketEndpoint#subscribe(WebsocketSubscribeRequest, WebsocketListener)}
+ * method.
+ * </ul>
+ * <li>For every websocket endpoint, a final deserializer is generated for the
+ * message type.
+ * <li>For every websocket endpoint, a final {@link WebsocketEndpoint} instance
+ * is created and initialized in the constructor using {@link AbstractExchangeApi#createWebsocketEndpoint(String, MessageDeserializer)} method.
+ * <li>For every websocket endpoint, a {@link WebsocketSubscribeRequest} is
+ * created and submitted using
+ * {@link WebsocketEndpoint#subscribe(WebsocketSubscribeRequest, WebsocketListener)}
+ * method.
+ * </ul>
+ * 
+ * @see ExchangeApiDescriptor
+ * @see AbstractExchangeApi
+ */
 public class ExchangeApiInterfaceImplementationGenerator extends JavaTypeGenerator {
 	
 	private static final String EXCHANGE_NAME_ARGUMENT_NAME = "exchangeName";
@@ -64,7 +172,7 @@ public class ExchangeApiInterfaceImplementationGenerator extends JavaTypeGenerat
 	
 	
 	public ExchangeApiInterfaceImplementationGenerator(ExchangeDescriptor exchangeDescriptor, ExchangeApiDescriptor exchangeApiDescriptor) {
-		super(ExchangeJavaWrapperGeneratorUtil.getApiInterfaceClassName(exchangeDescriptor, exchangeApiDescriptor) + "Impl");
+		super(ExchangeJavaWrapperGeneratorUtil.getApiInterfaceImplementationClassName(exchangeDescriptor, exchangeApiDescriptor));
 		this.exchangeDescriptor = exchangeDescriptor;
 		this.exchangeApiDescriptor = exchangeApiDescriptor;
 		setTypeDeclaration("public class");
@@ -87,10 +195,7 @@ public class ExchangeApiInterfaceImplementationGenerator extends JavaTypeGenerat
 		apiGlobalRateLimitVariables = new ArrayList<>();
 		endpointSpecificRateLimitIds = new HashSet<>();
 		List<String> exchangeRateLimitsVariables = new ArrayList<>();
-		
-		String fullInterfaceName = ExchangeJavaWrapperGeneratorUtil.getApiInterfaceClassName(exchangeDescriptor, exchangeApiDescriptor);
-		String simpleInterfaceName = JavaCodeGenerationUtil.getClassNameWithoutPackage(fullInterfaceName);
-		String simpleImplementationName = simpleInterfaceName + "Impl";
+		String simpleImplementationName =  JavaCodeGenerationUtil.getClassNameWithoutPackage(getName());
 		
 		boolean hasExchangeLimits = exchangeDescriptor.getRateLimits() != null 
 										&& !exchangeDescriptor.getRateLimits().isEmpty();

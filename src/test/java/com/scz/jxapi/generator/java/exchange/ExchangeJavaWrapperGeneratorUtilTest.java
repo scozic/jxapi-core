@@ -27,31 +27,46 @@ import com.scz.jxapi.netutils.deserialization.json.field.TimestampJsonFieldDeser
 public class ExchangeJavaWrapperGeneratorUtilTest {
 	
 	@Test
-	public void testGetApiInterfacClassName() {
+	public void testGetApiInterfaceClassName() {
 		ExchangeDescriptor exchangeDescriptor = new ExchangeDescriptor();
 		exchangeDescriptor.setName("TestExchange");
 		exchangeDescriptor.setBasePackage("com.x.y.z");
 		ExchangeApiDescriptor apiDescriptor = new ExchangeApiDescriptor();
 		apiDescriptor.setName("Spot");
-		Assert.assertEquals("com.x.y.z.spot.TestExchangeSpotApi", ExchangeJavaWrapperGeneratorUtil.getApiInterfaceClassName(exchangeDescriptor, apiDescriptor));
-	}		
+		Assert.assertEquals("com.x.y.z.spot.TestExchangeSpotApi", 
+							ExchangeJavaWrapperGeneratorUtil.getApiInterfaceClassName(exchangeDescriptor, apiDescriptor));
+	}
+	
+	@Test
+	public void testGetApiInterfaceImplementationClassName() {
+		ExchangeDescriptor exchangeDescriptor = new ExchangeDescriptor();
+		exchangeDescriptor.setName("TestExchange");
+		exchangeDescriptor.setBasePackage("com.x.y.z");
+		ExchangeApiDescriptor apiDescriptor = new ExchangeApiDescriptor();
+		apiDescriptor.setName("Spot");
+		Assert.assertEquals("com.x.y.z.spot.TestExchangeSpotApiImpl", 
+							ExchangeJavaWrapperGeneratorUtil.getApiInterfaceImplementationClassName(exchangeDescriptor, apiDescriptor));
+	}	
 		
 	@Test
 	public void testGetExchangeInterfaceName() {
 		ExchangeDescriptor exchangeDescriptor = new ExchangeDescriptor();
 		exchangeDescriptor.setName("TestExchange");
 		exchangeDescriptor.setBasePackage("com.x.y.z");
-		Assert.assertEquals("com.x.y.z.TestExchangeExchange", ExchangeJavaWrapperGeneratorUtil.getExchangeInterfaceName(exchangeDescriptor));
+		Assert.assertEquals("com.x.y.z.TestExchangeExchange", 
+							ExchangeJavaWrapperGeneratorUtil.getExchangeInterfaceName(exchangeDescriptor));
 	}
 
 	@Test
 	public void testGenerateRateLimitVariableName() {
-		Assert.assertEquals("RATE_LIMIT_TEST_RATE_LIMIT", ExchangeJavaWrapperGeneratorUtil.generateRateLimitVariableName("testRateLimit"));
+		Assert.assertEquals("RATE_LIMIT_TEST_RATE_LIMIT", 
+							ExchangeJavaWrapperGeneratorUtil.generateRateLimitVariableName("testRateLimit"));
 	}
 
 	@Test
 	public void testGetJsonMessageDeserializerClassName() {
-		Assert.assertEquals("com.x.y.deserializers.MyObjectDeserializer", ExchangeJavaWrapperGeneratorUtil.getJsonMessageDeserializerClassName("com.x.y.pojo.MyObject"));
+		Assert.assertEquals("com.x.y.deserializers.MyObjectDeserializer", 
+							ExchangeJavaWrapperGeneratorUtil.getJsonMessageDeserializerClassName("com.x.y.pojo.MyObject"));
 	}
 
 	@Test

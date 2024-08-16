@@ -30,7 +30,11 @@ public class ExchangeJavaWrapperGeneratorUtil {
 	public static final String DEFAULT_STRING_LIST_SEPARATOR = ",";
 	
 	/**
-	 * @return The full name of the ExchangeApi interface class for the given exchange and API.
+	 * @return The full name of the ExchangeApi interface class for the given
+	 *         exchange and API. The returned class name package is base package is
+	 *         <code>exchangeBasePackage.exchangeApiDescriptorName</code>. Its named
+	 *         is generated as follows:
+	 *         <code>ExchangeDescriptorNameExchangeApiDescriptorNameApi</code>.
 	 */
 	public static String getApiInterfaceClassName(ExchangeDescriptor exchangeDescriptor, 
 												  ExchangeApiDescriptor exchangeApiDescriptor) {
@@ -38,6 +42,17 @@ public class ExchangeJavaWrapperGeneratorUtil {
 		String simpleInterfaceName = JavaCodeGenerationUtil.firstLetterToUpperCase(exchangeDescriptor.getName()) 
 										+ JavaCodeGenerationUtil.firstLetterToUpperCase(exchangeApiDescriptor.getName()) + "Api";
 		return pkgPrefix + simpleInterfaceName;
+	}
+	
+	/**
+	 * @return The full name of the ExchangeApi interface implmentation class for
+	 *         the given exchange and API, which is interface class name (see
+	 *         {@link #getApiInterfaceClassName(ExchangeDescriptor, ExchangeApiDescriptor)})
+	 *         suffixed with <code>Impl</code>.
+	 */
+	public static String getApiInterfaceImplementationClassName(ExchangeDescriptor exchangeDescriptor, 
+												  ExchangeApiDescriptor exchangeApiDescriptor) {
+		return getApiInterfaceClassName(exchangeDescriptor, exchangeApiDescriptor) + "Impl";
 	}
 	
 	/**

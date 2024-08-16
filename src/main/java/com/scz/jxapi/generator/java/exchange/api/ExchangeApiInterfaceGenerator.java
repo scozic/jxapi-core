@@ -15,6 +15,21 @@ import com.scz.jxapi.generator.java.exchange.ExchangeJavaWrapperGeneratorUtil;
 import com.scz.jxapi.netutils.rest.FutureRestResponse;
 import com.scz.jxapi.netutils.websocket.WebsocketListener;
 
+/**
+ * Generates source code for a Java interface for an
+ * {@link ExchangeApiDescriptor} defined in an exchange descriptor file.
+ * This interface contains:
+ * <ul>
+ * <li>A function for every REST endpoint call, and subscribe and unsubscribe to
+ * websocket stream methods for every websocket endpoint.
+ * <li>A static variable for every REST and Websocket endpoint name.
+ * <li>A static variable for the API name.
+ * </ul>
+ * The static variables are used to identify the API and its endpoints in the
+ * API wrapper implementation, as it is provided in observability events.
+ * 
+ * @see ExchangeApiDescriptor
+ */
 public class ExchangeApiInterfaceGenerator extends JavaTypeGenerator {
 	
 	public static final String EXCHANGE_API_NAME_VARIABLE = "ID";
@@ -38,6 +53,17 @@ public class ExchangeApiInterfaceGenerator extends JavaTypeGenerator {
 		this.setParentClassName(ExchangeApi.class.getName());
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * <p>
+	 * Generates the whole interface source code, including:
+	 * <ul>
+	 * <li>Static variables for the API name and every REST and Websocket endpoint
+	 * name.</li>
+	 * <li>Method declarations for every REST endpoint call, and subscribe and
+	 * unsubscribe to websocket stream methods for every websocket endpoint.</li>
+	 * </ul>
+	 */
 	@Override
 	public String generate() {
 		appendToBody("String ")

@@ -30,17 +30,24 @@ import com.scz.jxapi.observability.Observable;
 import com.scz.jxapi.observability.SynchronizedObservable;
 
 /**
- * The AbstractExchangeApi class is an abstract base class that provides common functionality and structure for exchange APIs.
- * It implements the ExchangeApi interface and provides default implementations for some of its methods.
- * It is designed to be used as a base class by ExchangeApiGenerator to generate concrete exchange API classes.
- * 
- * This class contains properties and methods that are shared by all exchange APIs, such as the exchange name, exchange ID,
- * properties, request throttler, HTTP request executor, and observable for handling exchange API events.
- * 
- * Subclasses of AbstractExchangeApi are expected to provide concrete implementations for the remaining methods defined in the
+ * The AbstractExchangeApi class is an abstract base class that provides common
+ * functionality and structure for exchange APIs.
+ * It implements the ExchangeApi interface and provides default implementations
+ * for some of its methods.
+ * It is designed to be used as a base class by ExchangeApiGenerator to generate
+ * concrete exchange API classes.
+ * <br/>
+ * This class contains properties and methods that are shared by all exchange
+ * APIs, such as the exchange name, exchange ID,
+ * properties, request throttler, HTTP request executor, and observable for
+ * handling exchange API events.
+ * <br/>
+ * Subclasses of AbstractExchangeApi are expected to provide concrete
+ * implementations for the remaining methods defined in the
  * ExchangeApi interface.
- * 
- * This class also provides helper methods for creating HTTP request interceptors, HTTP request executors, and websocket managers.
+ * <br/>
+ * This class also provides helper methods for creating HTTP request
+ * interceptors, HTTP request executors, and websocket managers.
  * 
  * @see ExchangeApi
  * @see HttpRequestInterceptor
@@ -64,11 +71,13 @@ public abstract class AbstractExchangeApi implements ExchangeApi {
 						= new SynchronizedObservable<>((observer, event) -> observer.handleEvent(event));
 	
 	/**
-	 * Creates a new AbstractExchangeApi instance with the specified API name, exchange name, exchange ID, and properties.
-	 * @param apiName The name of the API.
+	 * Creates a new AbstractExchangeApi instance with the specified API name,
+	 * exchange name, exchange ID, and properties.
+	 * 
+	 * @param apiName      The name of the API.
 	 * @param exchangeName The name of the exchange instance.
-	 * @param exchangeId The ID of the exchange.
-	 * @param properties The properties associated with the exchange instance.
+	 * @param exchangeId   The ID of the exchange.
+	 * @param properties   The properties associated with the exchange instance.
 	 */
 	public AbstractExchangeApi(String apiName, 
 							   String exchangeName, 
@@ -78,11 +87,13 @@ public abstract class AbstractExchangeApi implements ExchangeApi {
 	}  
 
 	/**
-	 * Creates a new AbstractExchangeApi instance with the specified API name, exchange name, exchange ID, properties, and request throttler.
-	 * @param apiName The name of the API.
-	 * @param exchangeName The name of the exchange instance.
-	 * @param exchangeId The ID of the exchange.
-	 * @param properties The properties associated with the exchange instance.
+	 * Creates a new AbstractExchangeApi instance with the specified API name,
+	 * exchange name, exchange ID, properties, and request throttler.
+	 * 
+	 * @param apiName          The name of the API.
+	 * @param exchangeName     The name of the exchange instance.
+	 * @param exchangeId       The ID of the exchange.
+	 * @param properties       The properties associated with the exchange instance.
 	 * @param requestThrottler The request throttler to use for rate limiting.
 	 */
 	public AbstractExchangeApi(String apiName, 

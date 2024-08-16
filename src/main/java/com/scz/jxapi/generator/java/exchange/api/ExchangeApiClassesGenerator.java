@@ -13,7 +13,7 @@ import com.scz.jxapi.generator.java.exchange.api.ws.WebsocketEndpointClassesGene
 import com.scz.jxapi.netutils.rest.ratelimits.RateLimitManager;
 
 /**
- * Generates all classes for an {@link ExchangeApiDescriptor} defined in an
+ * Generates all Java classes of an API Wrapper for an {@link ExchangeApiDescriptor} defined in an
  * exchange descriptor file. This covers:
  * <ul>
  * <li>Java interface for the API with a function for every REST endpoint call,
