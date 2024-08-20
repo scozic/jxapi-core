@@ -7,6 +7,7 @@
 			"name": "MarketData",
 			"description": "The market data API of MyTestExchange, , with different request data types for websocket and REST endpoints. Remark: Only OBJECT (default) and STRING are usually used, but any data type is supported",
 			"httpRequestInterceptorFactory": "com.foo.bar.BarRequestInterceptorFactory",
+			"httpRequestExecutorFactory": "com.foo.bar.BarRequestExecutorFactory",
 			"restEndpoints": [
 				{
 					"name": "postRestRequestDataTypeInt",
@@ -131,6 +132,78 @@
 					"response": {
 						"objectName": "GenericResponse"
 					}
+				},
+				{
+					"name": "getRestRequestDataTypeObjectListMap",
+					"httpMethod": "GET",
+					"description": "A sample REST endpoint using GET (hence url query params) and object list map request type. The object used as values contains ",
+					"url": "https://com.sample.mycex/postInt",
+					"request": {
+						"type": "OBJECT_LIST_MAP",
+						"objectName": "MultiSymbol",
+						"sampleMapKeyValue": ["spot"],
+						"parameters": [
+							{"name":"symbolList", "type": "STRING_LIST", "description":"List of full symbol names", "sampleValue":["BTC_USDT", "ETH_USDT"]},
+							{"name":"symbolMap", "type": "STRING_LIST_MAP", "description":"Symbols as a map of quote asset keys map with base asset as values", "sampleValue":{"USDT":["BTC_USDT", "ETH"]}},
+							{"name":"symbolObject", "type": "OBJECT", "msgField":"so", "objectName":"SingleSymbol"}
+						]
+					},
+					"response": {
+						"objectName": "GenericResponse",
+						"parameters": [
+							{"name":"responseCode", "type": "INT", "description":"Request response code", "sampleValue":"0"}
+						]
+					}
+				},
+				{
+					"name": "getRestRequestDataTypeEmptyObject",
+					"httpMethod": "GET",
+					"description": "A sample REST endpoint using GET (hence url query params) and empty request object",
+					"url": "https://com.sample.mycex/postInt",
+					"request": {
+						"type": "OBJECT",
+						"parameters": []
+					},
+					"response": {
+						"objectName": "GenericResponse",
+						"parameters": [
+							{"name":"responseCode", "type": "INT", "description":"Request response code", "sampleValue":"0"}
+						]
+					}
+				},
+				{
+					"name": "getRestRequestDataTypePrimitiveWithMsgField",
+					"httpMethod": "GET",
+					"description": "A sample REST endpoint using GET (hence url query params) primitive request type, with 'msgField' property defined. That msgField value should be used as query param argument name",
+					"url": "https://com.sample.mycex/postInt",
+					"request": {
+						"type": "INT",
+						"name": "age",
+						"msgField": "a"
+					},
+					"response": {
+						"objectName": "GenericResponse",
+						"parameters": [
+							{"name":"responseCode", "type": "INT", "description":"Request response code", "sampleValue":"0"}
+						]
+					}
+				},
+				{
+					"name": "postRestRequestDataTypeNoParamsButUrlParameters",
+					"httpMethod": "POST",
+					"description": "A sample REST endpoint using POST method (hence no url parameters by default), no arguments, but url parameters through 'urlParameters' property",
+					"url": "https://com.sample.mycex/postInt",
+					"urlParameters":"/customUrSuffix",
+					"request": {
+						"type": "OBJECT",
+						"parameters": []
+					},
+					"response": {
+						"objectName": "GenericResponse",
+						"parameters": [
+							{"name":"responseCode", "type": "INT", "description":"Request response code", "sampleValue":"0"}
+						]
+					}
 				}
 			],
 			"websocketUrl": "wss://com.foo.exchange/ws",
@@ -164,7 +237,7 @@
 						"name": "symbolObj",
 						"objectName": "SingleSymbol",
 						"parameters": [
-							{"name":"symbol", "type": "STRING", "description":"Symbol name", "sampleValue":"BTC_USDT"}
+							{"name":"symbol", "type": "STRING", "msgField":"s", "description":"Symbol name", "sampleValue":"BTC_USDT"}
 						]
 					},
 					"messageTopicMatcherFields": [
@@ -263,15 +336,38 @@
 				},
 				{
 					"name": "streamWithObjectListMapRequestDataType",
-					"topic": "ticker",
+					"topic": "ticker:${symbolList}",
+					"topicParametersListSeparator": "|",
 					"description": "Subscribe to stream with OBJECT_LIST_MAP request type. The objectName field is set to a name already defined in other API definition.",
 					"request": {
-						"objectName": "SingleSymbol",
+						"objectName": "MultiSymbol",
 						"type": "OBJECT_LIST_MAP",
 						"sampleMapKeyValue": ["spot"]
 					},
 					"messageTopicMatcherFields": [
 						{"name": "topic",  "value": "streamWithObjectListMapRequestDataTypeTopic"}
+					],
+					"message": {
+						"objectName":"Ticker"
+					}
+				},
+				{
+					"name": "streamWithNullTopicAndNullRequest",
+					"description": "Subscribe to stream with null topic, request and message topic matcher. Remark: No topic matcher situation is realistic only when there is no websocket stream multiplexing, e.g. no 'topic' but a single endpoint handling all messages coming on websocket.",
+					"message": {
+						"objectName":"Ticker"
+					}
+				},
+				{
+					"name": "streamWithNullTopicAndPrimitiveTypeRequest",
+					"description": "Subscribe to stream with null topic, and primitive type request, without message topic matcher. The request is used in message topic matcher field template, so generated method implementation will perform subsitution with method request argument",
+					"request": {
+						"name": "myTopic",
+						"type": "STRING",
+						"sampleValue": "BTC_USDT"
+					},
+					"messageTopicMatcherFields": [
+						{"name": "topic",  "value": "ticker:${myTopic}"}
 					],
 					"message": {
 						"objectName":"Ticker"

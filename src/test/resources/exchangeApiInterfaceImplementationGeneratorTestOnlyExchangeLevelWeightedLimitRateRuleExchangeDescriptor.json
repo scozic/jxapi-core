@@ -10,6 +10,7 @@
 			"name": "FuturesTrading",
 			"description": "An API with both API global and endpoint specific rate limits",
 			"httpRequestInterceptorFactory": "com.foo.bar.BarRequestInterceptorFactory",
+			"rateLimits":[],
 			"restEndpoints": [
 				{
 					"name": "exchangeInfo",
@@ -33,8 +34,8 @@
 						]
 					}
 				}
-			]
+			],
+			"websocketEndpoints": []
 		}
-		
 	]
 }

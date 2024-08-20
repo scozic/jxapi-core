@@ -146,10 +146,9 @@ public class ExchangeJavaWrapperGeneratorUtil {
 					+ JavaCodeGenerationUtil.getClassNameWithoutPackage(subTypeClassName) 
 					+ ">";
 		case OBJECT:
-			if (objectClassName != null) {
-				
+			if (imports != null) {
+				imports.add(objectClassName);
 			}
-			imports.add(objectClassName);
 			return JavaCodeGenerationUtil.getClassNameWithoutPackage(objectClassName);
 		default:
 			throw new IllegalArgumentException("Unexpected type for:" + type);

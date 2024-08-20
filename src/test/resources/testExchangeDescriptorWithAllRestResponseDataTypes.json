@@ -2,7 +2,8 @@
 	"name": "MyTestExchange",
 	"description": "A sample Exchange descriptor file",
 	"basePackage": "com.foo.bar.gen",
-		"apis":[
+	"rateLimits":[],
+	"apis":[
 		{ 
 			"name": "MarketData",
 			"description": "The market data API of MyTestExchange, , with different response data types for websocket and REST endpoints. Remark: Only OBJECT (default) and STRING are usually used, but any data type is supported",
@@ -10,6 +11,7 @@
 			"restEndpoints": [
 				{
 					"name": "getRestResponseDataTypeInt",
+					"rateLimits": [],
 					"httpMethod": "GET",
 					"description": "A sample REST endpoint using INT response data type",
 					"url": "https://com.sample.mycex/getInt",

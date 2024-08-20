@@ -29,7 +29,7 @@
 						"objectName": "TickerMessage",
 						"parameters": [
 							{"name":"subject", "msgField":"t", "type": "STRING", "description":"Topic", "sampleValue":"ticker"},
-							{"name":"symbol", "msgField":"s", "type": "STRING", "description":"Symbol name", "sampleValue":"BTC_USDT"},
+							{"name":"symbol", "type": "STRING", "description":"Symbol name", "sampleValue":"BTC_USDT"},
 							{"name":"last", "msgField":"p", "type": "BIGDECIMAL", "description":"Last traded price", "sampleValue":"16000.00"}
 						]
 					}

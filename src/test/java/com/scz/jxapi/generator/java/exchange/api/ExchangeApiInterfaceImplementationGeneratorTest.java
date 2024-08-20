@@ -1,6 +1,7 @@
 package com.scz.jxapi.generator.java.exchange.api;
 
 import java.nio.file.Paths;
+import java.util.List;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -388,6 +389,37 @@ public class ExchangeApiInterfaceImplementationGeneratorTest {
 	}
 	
 	@Test
+	public void testExchangeApiInterfaceImplementationGeneratorTestExchangeLevelLimitRateRuleButEmptyRestEndpoints() throws Exception {
+		ExchangeDescriptor exchangeDescriptor = new ExchangeDescriptorParser().fromJson(Paths.get(".", "src", "test", "resources", "exchangeApiInterfaceImplementationGeneratorTestOnlyExchangeLevelWeightedLimitRateRuleExchangeDescriptor.json"));
+		ExchangeApiDescriptor exchangeApiDescriptor = exchangeDescriptor.getApis().get(0);
+		exchangeApiDescriptor.setRestEndpoints(List.of());
+		ExchangeApiInterfaceImplementationGenerator apiInterfaceGenerator = new ExchangeApiInterfaceImplementationGenerator(exchangeDescriptor, exchangeApiDescriptor);
+		Assert.assertEquals("package com.foo.bar.gen.futurestrading;\n"
+				+ "\n"
+				+ "import com.foo.bar.gen.MyTestExchangeExchange;\n"
+				+ "import com.scz.jxapi.exchange.AbstractExchangeApi;\n"
+				+ "import java.util.Properties;\n"
+				+ "import org.slf4j.Logger;\n"
+				+ "import org.slf4j.LoggerFactory;\n"
+				+ "\n"
+				+ "/**\n"
+				+ " * Actual implementation of {@link MyTestExchangeFuturesTradingApi}<br/>\n"
+				+ " * <br><strong>THIS CODE IS GENERATED. DO NOT EDIT MANUALLY!</strong>\n"
+				+ " */\n"
+				+ "public class MyTestExchangeFuturesTradingApiImpl extends AbstractExchangeApi implements MyTestExchangeFuturesTradingApi {\n"
+				+ "  \n"
+				+ "  private static final Logger log = LoggerFactory.getLogger(MyTestExchangeFuturesTradingApiImpl.class);\n"
+				+ "  \n"
+				+ "  \n"
+				+ "  public MyTestExchangeFuturesTradingApiImpl(String exchangeName, Properties properties) {\n"
+				+ "    super(ID, exchangeName, MyTestExchangeExchange.ID, properties);\n"
+				+ "  }\n"
+				+ "}\n"
+				+ "",
+				apiInterfaceGenerator.generate());
+	}
+	
+	@Test
 	public void testGenerateExchangeApiNoWsEndpoint() throws Exception {
 		ExchangeDescriptor exchangeDescriptor = new ExchangeDescriptorParser().fromJson(Paths.get(".", "src", "test", "resources", "testExchangeDescriptorNoWebsocketEndpoint.json"));
 		ExchangeApiDescriptor exchangeApiDescriptor = exchangeDescriptor.getApis().get(0);
@@ -422,7 +454,6 @@ public class ExchangeApiInterfaceImplementationGeneratorTest {
 				+ "  public MyTestExchangeMarketDataApiImpl(String exchangeName, Properties properties) {\n"
 				+ "    super(ID, exchangeName, MyTestExchangeExchange.ID, properties);\n"
 				+ "    this.httpRequestExecutor = createHttpRequestExecutor(null);\n"
-				+ "    this.httpRequestInterceptor = createHttpRequestInterceptor(\"com.foo.bar.BarRequestInterceptorFactory\");\n"
 				+ "  }\n"
 				+ "  @Override\n"
 				+ "  public FutureRestResponse<MyTestExchangeMarketDataExchangeInfoResponse> exchangeInfo(MyTestExchangeMarketDataExchangeInfoRequest request) {\n"
@@ -432,8 +463,7 @@ public class ExchangeApiInterfaceImplementationGeneratorTest {
 				+ "    return submit(HttpRequest.create(EXCHANGE_INFO_REST_API, \"https://com.sample.mycex/exchangeInfo\" + urlParameters, HttpMethod.GET, request, null, 0), exchangeInfoResponseDeserializer);\n"
 				+ "  }\n"
 				+ "  \n"
-				+ "}\n"
-				+ "",
+				+ "}\n",
 				apiInterfaceGenerator.generate());
 	}
 	
@@ -692,6 +722,7 @@ public class ExchangeApiInterfaceImplementationGeneratorTest {
 				+ "import com.foo.bar.gen.marketdata.deserializers.GenericResponseDeserializer;\n"
 				+ "import com.foo.bar.gen.marketdata.deserializers.TickerDeserializer;\n"
 				+ "import com.foo.bar.gen.marketdata.pojo.GenericResponse;\n"
+				+ "import com.foo.bar.gen.marketdata.pojo.MultiSymbol;\n"
 				+ "import com.foo.bar.gen.marketdata.pojo.MyTestExchangeMarketDataPostRestRequestDataTypeObjectOneParameterRequest;\n"
 				+ "import com.foo.bar.gen.marketdata.pojo.SingleSymbol;\n"
 				+ "import com.foo.bar.gen.marketdata.pojo.Ticker;\n"
@@ -705,6 +736,7 @@ public class ExchangeApiInterfaceImplementationGeneratorTest {
 				+ "import com.scz.jxapi.netutils.websocket.WebsocketListener;\n"
 				+ "import com.scz.jxapi.netutils.websocket.WebsocketSubscribeRequest;\n"
 				+ "import com.scz.jxapi.util.EncodingUtil;\n"
+				+ "import com.scz.jxapi.util.JsonUtil;\n"
 				+ "import java.math.BigDecimal;\n"
 				+ "import java.util.List;\n"
 				+ "import java.util.Map;\n"
@@ -729,6 +761,10 @@ public class ExchangeApiInterfaceImplementationGeneratorTest {
 				+ "  private final MessageDeserializer<GenericResponse> postRestRequestDataTypeObjectOneParameterResponseDeserializer = new GenericResponseDeserializer();\n"
 				+ "  private final MessageDeserializer<GenericResponse> postRestRequestDataTypeIntListResponseDeserializer = new GenericResponseDeserializer();\n"
 				+ "  private final MessageDeserializer<GenericResponse> postRestRequestDataTypeObjectListMapResponseDeserializer = new GenericResponseDeserializer();\n"
+				+ "  private final MessageDeserializer<GenericResponse> getRestRequestDataTypeObjectListMapResponseDeserializer = new GenericResponseDeserializer();\n"
+				+ "  private final MessageDeserializer<GenericResponse> getRestRequestDataTypeEmptyObjectResponseDeserializer = new GenericResponseDeserializer();\n"
+				+ "  private final MessageDeserializer<GenericResponse> getRestRequestDataTypePrimitiveWithMsgFieldResponseDeserializer = new GenericResponseDeserializer();\n"
+				+ "  private final MessageDeserializer<GenericResponse> postRestRequestDataTypeNoParamsButUrlParametersResponseDeserializer = new GenericResponseDeserializer();\n"
 				+ "  private final WebsocketEndpoint<Ticker> streamWithObjectRequestDataTypeZeroParametersWs;\n"
 				+ "  private final WebsocketEndpoint<Ticker> streamWithObjectRequestDataTypeOneParameterWs;\n"
 				+ "  private final WebsocketEndpoint<Ticker> streamWithIntRequestDataTypeWs;\n"
@@ -738,10 +774,12 @@ public class ExchangeApiInterfaceImplementationGeneratorTest {
 				+ "  private final WebsocketEndpoint<Ticker> streamWithBooleanRequestDataTypeWs;\n"
 				+ "  private final WebsocketEndpoint<Ticker> streamWithStringListRequestDataTypeWs;\n"
 				+ "  private final WebsocketEndpoint<Ticker> streamWithObjectListMapRequestDataTypeWs;\n"
+				+ "  private final WebsocketEndpoint<Ticker> streamWithNullTopicAndNullRequestWs;\n"
+				+ "  private final WebsocketEndpoint<Ticker> streamWithNullTopicAndPrimitiveTypeRequestWs;\n"
 				+ "  \n"
 				+ "  public MyTestExchangeMarketDataApiImpl(String exchangeName, Properties properties) {\n"
 				+ "    super(ID, exchangeName, MyTestExchangeExchange.ID, properties);\n"
-				+ "    this.httpRequestExecutor = createHttpRequestExecutor(null);\n"
+				+ "    this.httpRequestExecutor = createHttpRequestExecutor(\"com.foo.bar.BarRequestExecutorFactory\");\n"
 				+ "    this.httpRequestInterceptor = createHttpRequestInterceptor(\"com.foo.bar.BarRequestInterceptorFactory\");\n"
 				+ "    this.websocketManager = createWebsocketManager(\"wss://com.foo.exchange/ws\", \"com.foo.bar.BarWebsocketFactory\", \"com.foo.bar.BarWebsocketHookFactory\");\n"
 				+ "    this.streamWithObjectRequestDataTypeZeroParametersWs = createWebsocketEndpoint(STREAM_WITH_OBJECT_REQUEST_DATA_TYPE_ZERO_PARAMETERS_WS_API, new TickerDeserializer());\n"
@@ -753,6 +791,8 @@ public class ExchangeApiInterfaceImplementationGeneratorTest {
 				+ "    this.streamWithBooleanRequestDataTypeWs = createWebsocketEndpoint(STREAM_WITH_BOOLEAN_REQUEST_DATA_TYPE_WS_API, new TickerDeserializer());\n"
 				+ "    this.streamWithStringListRequestDataTypeWs = createWebsocketEndpoint(STREAM_WITH_STRING_LIST_REQUEST_DATA_TYPE_WS_API, new TickerDeserializer());\n"
 				+ "    this.streamWithObjectListMapRequestDataTypeWs = createWebsocketEndpoint(STREAM_WITH_OBJECT_LIST_MAP_REQUEST_DATA_TYPE_WS_API, new TickerDeserializer());\n"
+				+ "    this.streamWithNullTopicAndNullRequestWs = createWebsocketEndpoint(STREAM_WITH_NULL_TOPIC_AND_NULL_REQUEST_WS_API, new TickerDeserializer());\n"
+				+ "    this.streamWithNullTopicAndPrimitiveTypeRequestWs = createWebsocketEndpoint(STREAM_WITH_NULL_TOPIC_AND_PRIMITIVE_TYPE_REQUEST_WS_API, new TickerDeserializer());\n"
 				+ "  }\n"
 				+ "  @Override\n"
 				+ "  public FutureRestResponse<GenericResponse> postRestRequestDataTypeInt(Integer request) {\n"
@@ -815,6 +855,37 @@ public class ExchangeApiInterfaceImplementationGeneratorTest {
 				+ "    if (log.isDebugEnabled())\n"
 				+ "      log.debug(\"POST postRestRequestDataTypeObjectListMap > \" + request);\n"
 				+ "    return submit(HttpRequest.create(POST_REST_REQUEST_DATA_TYPE_OBJECT_LIST_MAP_REST_API, \"https://com.sample.mycex/postBigDecimal\", HttpMethod.POST, request, null, 0), postRestRequestDataTypeObjectListMapResponseDeserializer);\n"
+				+ "  }\n"
+				+ "  \n"
+				+ "  @Override\n"
+				+ "  public FutureRestResponse<GenericResponse> getRestRequestDataTypeObjectListMap(Map<String, List<MultiSymbol>> request) {\n"
+				+ "    String urlParameters = EncodingUtil.createUrlQueryParameters(\"symbolList\", JsonUtil.pojoToJsonString(request.getSymbolList()), \"symbolMap\", JsonUtil.pojoToJsonString(request.getSymbolMap()), \"so\", JsonUtil.pojoToJsonString(request.getSymbolObject()));\n"
+				+ "    if (log.isDebugEnabled())\n"
+				+ "      log.debug(\"GET getRestRequestDataTypeObjectListMap > \" + request);\n"
+				+ "    return submit(HttpRequest.create(GET_REST_REQUEST_DATA_TYPE_OBJECT_LIST_MAP_REST_API, \"https://com.sample.mycex/postInt\" + urlParameters, HttpMethod.GET, request, null, 0), getRestRequestDataTypeObjectListMapResponseDeserializer);\n"
+				+ "  }\n"
+				+ "  \n"
+				+ "  @Override\n"
+				+ "  public FutureRestResponse<GenericResponse> getRestRequestDataTypeEmptyObject() {\n"
+				+ "    if (log.isDebugEnabled())\n"
+				+ "      log.debug(\"GET getRestRequestDataTypeEmptyObject >\");\n"
+				+ "    return submit(HttpRequest.create(GET_REST_REQUEST_DATA_TYPE_EMPTY_OBJECT_REST_API, \"https://com.sample.mycex/postInt\", HttpMethod.GET, null, null, 0), getRestRequestDataTypeEmptyObjectResponseDeserializer);\n"
+				+ "  }\n"
+				+ "  \n"
+				+ "  @Override\n"
+				+ "  public FutureRestResponse<GenericResponse> getRestRequestDataTypePrimitiveWithMsgField(Integer request) {\n"
+				+ "    String urlParameters = EncodingUtil.createUrlQueryParameters(\"a\", request);\n"
+				+ "    if (log.isDebugEnabled())\n"
+				+ "      log.debug(\"GET getRestRequestDataTypePrimitiveWithMsgField > \" + request);\n"
+				+ "    return submit(HttpRequest.create(GET_REST_REQUEST_DATA_TYPE_PRIMITIVE_WITH_MSG_FIELD_REST_API, \"https://com.sample.mycex/postInt\" + urlParameters, HttpMethod.GET, request, null, 0), getRestRequestDataTypePrimitiveWithMsgFieldResponseDeserializer);\n"
+				+ "  }\n"
+				+ "  \n"
+				+ "  @Override\n"
+				+ "  public FutureRestResponse<GenericResponse> postRestRequestDataTypeNoParamsButUrlParameters() {\n"
+				+ "    String urlParameters = \"/customUrSuffix\";\n"
+				+ "    if (log.isDebugEnabled())\n"
+				+ "      log.debug(\"POST postRestRequestDataTypeNoParamsButUrlParameters >\");\n"
+				+ "    return submit(HttpRequest.create(POST_REST_REQUEST_DATA_TYPE_NO_PARAMS_BUT_URL_PARAMETERS_REST_API, \"https://com.sample.mycex/postInt\" + urlParameters, HttpMethod.POST, null, null, 0), postRestRequestDataTypeNoParamsButUrlParametersResponseDeserializer);\n"
 				+ "  }\n"
 				+ "  \n"
 				+ "  @Override\n"
@@ -953,8 +1024,8 @@ public class ExchangeApiInterfaceImplementationGeneratorTest {
 				+ "  }\n"
 				+ "  \n"
 				+ "  @Override\n"
-				+ "  public String subscribeStreamWithObjectListMapRequestDataType(Map<String, List<SingleSymbol>> request, WebsocketListener<Ticker> listener) {\n"
-				+ "    String topic = EncodingUtil.substituteArguments(\"ticker\");\n"
+				+ "  public String subscribeStreamWithObjectListMapRequestDataType(Map<String, List<MultiSymbol>> request, WebsocketListener<Ticker> listener) {\n"
+				+ "    String topic = EncodingUtil.substituteArguments(\"ticker:${symbolList}\", \"symbolList\", EncodingUtil.listToString(request.getSymbolList(), \"|\"));\n"
 				+ "    if (log.isDebugEnabled())\n"
 				+ "      log.debug(\"subscribeStreamWithObjectListMapRequestDataType:request:\" + request);\n"
 				+ "    WebsocketSubscribeRequest websocketSubscribeRequest = WebsocketSubscribeRequest.create(request, topic, DefaultWebsocketMessageTopicMatcher.create(\"topic\", \"streamWithObjectListMapRequestDataTypeTopic\"));\n"
@@ -969,8 +1040,40 @@ public class ExchangeApiInterfaceImplementationGeneratorTest {
 				+ "    return streamWithObjectListMapRequestDataTypeWs.unsubscribe(subscriptionId);\n"
 				+ "  }\n"
 				+ "  \n"
-				+ "}\n"
-				+ "",
+				+ "  @Override\n"
+				+ "  public String subscribeStreamWithNullTopicAndNullRequest(WebsocketListener<Ticker> listener) {\n"
+				+ "    String topic = \"\";\n"
+				+ "    if (log.isDebugEnabled())\n"
+				+ "      log.debug(\"subscribeStreamWithNullTopicAndNullRequest\");\n"
+				+ "    WebsocketSubscribeRequest websocketSubscribeRequest = WebsocketSubscribeRequest.create(null, topic, DefaultWebsocketMessageTopicMatcher.create());\n"
+				+ "    return streamWithNullTopicAndNullRequestWs.subscribe(websocketSubscribeRequest, listener);\n"
+				+ "  }\n"
+				+ "  \n"
+				+ "  @Override\n"
+				+ "  public boolean unsubscribeStreamWithNullTopicAndNullRequest(String subscriptionId) {\n"
+				+ "    if (log.isDebugEnabled())\n"
+				+ "      log.debug(\"unsubscribeStreamWithNullTopicAndNullRequest: subscriptionId:\" + subscriptionId);\n"
+				+ "    return streamWithNullTopicAndNullRequestWs.unsubscribe(subscriptionId);\n"
+				+ "  }\n"
+				+ "  \n"
+				+ "  @Override\n"
+				+ "  public String subscribeStreamWithNullTopicAndPrimitiveTypeRequest(String request, WebsocketListener<Ticker> listener) {\n"
+				+ "    String topic = request == null? \"\": \"\" + JsonUtil.pojoToJsonString(request);\n"
+				+ "    if (log.isDebugEnabled())\n"
+				+ "      log.debug(\"subscribeStreamWithNullTopicAndPrimitiveTypeRequest:myTopic:\" + request);\n"
+				+ "    WebsocketSubscribeRequest websocketSubscribeRequest = WebsocketSubscribeRequest.create(request, topic, DefaultWebsocketMessageTopicMatcher.create(\"topic\", \"ticker:\" + request));\n"
+				+ "    websocketSubscribeRequest.setRequest(request);\n"
+				+ "    return streamWithNullTopicAndPrimitiveTypeRequestWs.subscribe(websocketSubscribeRequest, listener);\n"
+				+ "  }\n"
+				+ "  \n"
+				+ "  @Override\n"
+				+ "  public boolean unsubscribeStreamWithNullTopicAndPrimitiveTypeRequest(String subscriptionId) {\n"
+				+ "    if (log.isDebugEnabled())\n"
+				+ "      log.debug(\"unsubscribeStreamWithNullTopicAndPrimitiveTypeRequest: subscriptionId:\" + subscriptionId);\n"
+				+ "    return streamWithNullTopicAndPrimitiveTypeRequestWs.unsubscribe(subscriptionId);\n"
+				+ "  }\n"
+				+ "  \n"
+				+ "}\n",
 				apiInterfaceGenerator.generate());
 	}
 	

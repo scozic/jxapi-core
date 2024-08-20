@@ -4,10 +4,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.scz.jxapi.util.CollectionUtil;
+
 /**
  * Default {@link WebsocketMessageTopicMatcher} implementation. Is configured a list of fields and values.
  * Upon each call to  {@link #matches(String, String)}, checks if its status is still {@link WebsocketMessageTopicMatchStatus#NO_MATCH}:
  * <ul>
+ *  <li>If the list of matching fields configured is emtpty or <code>null</code>, the matcher will match any message field, and will be therefore always in {@link WebsocketMessageTopicMatchStatus#MATCHED} state.  
  *  <li>If it is not, parser is already in a terminal status which is returned.
  *  <li>If it is, checks if field corresponds to an expected one:
  *  <ul>
@@ -61,9 +64,13 @@ public class DefaultWebsocketMessageTopicMatcher implements WebsocketMessageTopi
 
 	@Override
 	public void reset() {
-		this.status = WebsocketMessageTopicMatchStatus.NO_MATCH;
-		valuesToMatch.clear();
-		fields.forEach(f -> valuesToMatch.put(f.getName(), f.getValue()));
+		if (CollectionUtil.isEmpty(fields)) {
+			this.status = WebsocketMessageTopicMatchStatus.MATCHED;
+		} else {
+			this.status = WebsocketMessageTopicMatchStatus.NO_MATCH;
+			valuesToMatch.clear();
+			fields.forEach(f -> valuesToMatch.put(f.getName(), f.getValue()));
+		}
 	}
 
 	@Override
