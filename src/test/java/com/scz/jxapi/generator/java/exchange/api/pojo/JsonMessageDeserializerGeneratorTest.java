@@ -25,14 +25,14 @@ public class JsonMessageDeserializerGeneratorTest {
 		endpointParameters.add(Field.createObject("OBJECT_LIST", "foo", "f", null,
 				Arrays.asList(Field.create(CanonicalType.TIMESTAMP.name(), "time", null, "Creation time", "0"),
 							  Field.createObject(CanonicalType.OBJECT.name(), "bar", "b", "The bar",
-									  Arrays.asList(Field.create(CanonicalType.STRING.name(), "name", null, "Bar name", "my bar")))
-						)
+									  Arrays.asList(Field.create(CanonicalType.STRING.name(), "name", null, "Bar name", "my bar")), null)
+						), null
 				));
 		endpointParameters.add(Field.createObject( "OBJECT_LIST_MAP", "toto", "toto", null,
-				Arrays.asList(Field.create(CanonicalType.STRING.name(), "id", null, "Toto ID", "toto#1"))
+				Arrays.asList(Field.create(CanonicalType.STRING.name(), "id", null, "Toto ID", "toto#1")), null
 				));
 		endpointParameters.add(Field.createObject( "OBJECT", "titi", "ti", null,
-				Arrays.asList(Field.create(CanonicalType.STRING.name(), "name", null, "Titi name", "TiName"))
+				Arrays.asList(Field.create(CanonicalType.STRING.name(), "name", null, "Titi name", "TiName")), null
 				));
 		
 		JsonMessageDeserializerGenerator generator = new JsonMessageDeserializerGenerator(deserialiazedTypeName, endpointParameters);

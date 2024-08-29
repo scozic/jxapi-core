@@ -14,10 +14,10 @@ import com.scz.jxapi.generator.java.exchange.api.ExchangeApiGeneratorUtil;
  * endpoint. This means the java class for POJO itself, and also, if POJO
  * contains 'objects' fields (see {@link Type#isObject()}), the
  * POJOs for those objects. Remark: If an 'object' type field does not specify a
- * list of parameters, corresponding class will not be generated. This can
+ * list of properties, corresponding class will not be generated. This can
  * happen for fields defining an objectName (see
  * {@link Field#getObjectName()} that has fields defined in another
- * enpoint.
+ * endpoint.
  * 
  * @author Sylvestre COZIC
  *

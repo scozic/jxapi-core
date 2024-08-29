@@ -41,11 +41,11 @@ public class EndpointPojoClassesGeneratorTest {
 		endpointParameters.add(Field.createObject("OBJECT_LIST", "foo", "f", null,
 				Arrays.asList(Field.create(CanonicalType.TIMESTAMP.name(), "time", null, "Creation time", "0"),
 							  Field.createObject(CanonicalType.OBJECT.name(), "bar", "b", "The bar",
-									  Arrays.asList(Field.create(CanonicalType.STRING.name(), "name", null, "Bar name", "my bar")))
-						)
+									  Arrays.asList(Field.create(CanonicalType.STRING.name(), "name", null, "Bar name", "my bar")), null)
+						), null
 				));
 		endpointParameters.add(Field.createObject( "OBJECT_LIST_MAP", "toto", "toto", null,
-				Arrays.asList(Field.create(CanonicalType.STRING.name(), "id", null, "Toto ID", "toto#1"))
+				Arrays.asList(Field.create(CanonicalType.STRING.name(), "id", null, "Toto ID", "toto#1")), null
 				));
 		
 		EndpointPojoClassesGenerator generator = new EndpointPojoClassesGenerator(typeName, typeDescription, endpointParameters, List.of("com.x.common.MyInterface"), null);
@@ -55,6 +55,22 @@ public class EndpointPojoClassesGeneratorTest {
 		checkSourceFileExists(Path.of("MyPojoFoo.java"));
 		checkSourceFileExists(Path.of("MyPojoFooBar.java"));
 		checkSourceFileExists(Path.of("MyPojoToto.java"));
+	}
+	
+	@Test
+	public void testGenerateClassesNullFieldParameters() throws Exception {
+		srcFolder = ClassesGeneratorTestUtil.generateTmpDir();
+		String typeName = "com.x.MyPojo";
+		String typeDescription = "Used in EndpointPojoGeneratorTest";
+		List<Field> endpointParameters = new ArrayList<>();
+		endpointParameters.add(Field.create(CanonicalType.LONG.name(), "id", null, "identifier", "123"));
+		endpointParameters.add(Field.create(CanonicalType.INT.name(), "score", null, "Current score", "0"));
+		endpointParameters.add(Field.createObject("OBJECT_LIST", "foo", "f", null, null, null));
+		
+		EndpointPojoClassesGenerator generator = new EndpointPojoClassesGenerator(typeName, typeDescription, endpointParameters, List.of("com.x.common.MyInterface"), null);
+		generator.generateClasses(srcFolder);
+		checkJavaFilesCount(1);
+		checkSourceFileExists(Path.of("MyPojo.java"));
 	}
 	
 	private void checkJavaFilesCount(int count) throws IOException {

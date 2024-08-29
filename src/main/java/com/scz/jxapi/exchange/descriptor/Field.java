@@ -134,15 +134,17 @@ public class Field {
 	 * @param msgField the name of the field in the message sent or received to the endpoint. Usually the actual key in JSON structure.
 	 * @param description field description A human readable description of the field
 	 * @param parameters the fields in nested structure
+	 * @param objectName see {@link #getObjectName()}
 	 * @return the created field
 	 */
-	public static Field createObject(String type, String name, String msgField, String description, List<Field> parameters) {
+	public static Field createObject(String type, String name, String msgField, String description, List<Field> parameters, String objectName) {
 		Field p = new Field();
 		p.setType(type);
 		p.setName(name);
 		p.setMsgField(msgField);
 		p.setDescription(description);
 		p.setParameters(parameters);
+		p.setObjectName(objectName);
 		return p;
 	}
 	
@@ -264,9 +266,11 @@ public class Field {
 	}
 	
 	/**
-	 * @return For an 'object' type parameter, see
-	 *         {@link CanonicalType#isObject}, the parameters in nested
-	 *         structure, <code>null</code> otherwise.
+	 * @return For an 'object' type field, see {@link CanonicalType#isObject}, the
+	 *         parameters in nested structure, <code>null</code> otherwise. An
+	 *         object type property may have <code>null</code> properties if it is
+	 *         defined an object name (see {@link #getObjectName()}). That means
+	 *         properties of that object are defined in another {@link Field}.
 	 */
 	public List<Field> getParameters() {
 		return parameters;

@@ -50,12 +50,13 @@ public class FieldTest {
 
     @Test
     public void testCreateObject() {
-        Field field = Field.createObject("OBJECT", "myName", "m", "myDescription", List.of());
+        Field field = Field.createObject("OBJECT", "myName", "m", "myDescription", List.of(), "MyObjectName");
         Assert.assertEquals("myName", field.getName());
         Assert.assertEquals(Type.fromTypeName("OBJECT"), field.getType());
         Assert.assertEquals("myDescription", field.getDescription());
         Assert.assertEquals("m", field.getMsgField());
         Assert.assertEquals(List.of(), field.getParameters());
+        Assert.assertEquals("MyObjectName", field.getObjectName());
     }
 
     @Test

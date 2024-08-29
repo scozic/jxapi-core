@@ -123,7 +123,7 @@ public class EndpointDemoGeneratorUtilTest {
 					Field.create("STRING", "theVoidStr", null, null, null),
 					Field.create("STRING_LIST", "theVoidList", null, null, null),
 					Field.create("STRING_MAP", "theVoidMap", null, null, null)
-				));
+				), null);
 		param.setSampleValue(123);
 		Set<String> imports = new TreeSet<>();
 		String method = EndpointDemoGeneratorUtil.generateEndpointParameterCreationMethod(param, "MyRequest", imports);
@@ -150,8 +150,8 @@ public class EndpointDemoGeneratorUtilTest {
 							Field.create("BOOLEAN", "enabled", null, null, true),
 							Field.create("TIMESTAMP", "time", null, null, null),
 							Field.create("BIGDECIMAL_LIST_MAP", "bestBids", null, null, "{\"BTC_USDT\": [\"69268.61\", \"69268.62\"], \"ETH_USDT\":[\"3427.98\", \"3427.90\"]}")
-					))
-				));
+					), null)
+				), null);
 		param.setSampleValue(123);
 		Set<String> imports = new TreeSet<>();
 		String method = EndpointDemoGeneratorUtil.generateEndpointParameterCreationMethod(param, "MyRequest", imports);
@@ -262,7 +262,7 @@ public class EndpointDemoGeneratorUtilTest {
 		Field param = Field.createObject("OBJECT_LIST", "myObjListParam", null, null, List.of(
 				Field.create("INT", "foo", null, null, 123),
 				Field.create("STRING", "hello", null, null, "Hello World")
-			));
+			), null);
 		Set<String> imports = new TreeSet<>();
 		String method = EndpointDemoGeneratorUtil.generateEndpointParameterCreationMethod(param, "MyRequest", imports);
 		Assert.assertEquals(
@@ -280,7 +280,7 @@ public class EndpointDemoGeneratorUtilTest {
 		Field param = Field.createObject("OBJECT_MAP", "myObjMapParam", null, null, List.of(
 				Field.create("INT", "foo", null, null, 123),
 				Field.create("STRING", "hello", null, null, "Hello World")
-			));
+			), null);
 		param.setSampleMapKeyValue(List.of("myKey0"));
 		Set<String> imports = new TreeSet<>();
 		String method = EndpointDemoGeneratorUtil.generateEndpointParameterCreationMethod(param, "MyRequest", imports);
@@ -299,7 +299,7 @@ public class EndpointDemoGeneratorUtilTest {
 		Field param = Field.createObject("OBJECT_MAP", "myObjListParam", null, null, List.of(
 				Field.create("INT", "foo", null, null, 123),
 				Field.create("STRING", "hello", null, null, "Hello World")
-			));
+			), null);
 		param.setSampleMapKeyValue(null);
 		Set<String> imports = new TreeSet<>();
 		String method = EndpointDemoGeneratorUtil.generateEndpointParameterCreationMethod(param, "MyRequest", imports);
@@ -315,7 +315,7 @@ public class EndpointDemoGeneratorUtilTest {
 		Field param = Field.createObject("OBJECT_MAP", "myObjListParam", null, null, List.of(
 				Field.create("INT", "foo", null, null, 123),
 				Field.create("STRING", "hello", null, null, "Hello World")
-			));
+			), null);
 		param.setSampleMapKeyValue(List.of());
 		Set<String> imports = new TreeSet<>();
 		String method = EndpointDemoGeneratorUtil.generateEndpointParameterCreationMethod(param, "MyRequest", imports);
@@ -331,7 +331,7 @@ public class EndpointDemoGeneratorUtilTest {
 		Field param = Field.createObject("OBJECT_MAP_LIST_MAP", "myObjListParam", null, null, List.of(
 				Field.create("INT", "foo", null, null, 123),
 				Field.create("STRING", "hello", null, null, "Hello World")
-			));
+			), null);
 		param.setSampleMapKeyValue(List.of("m1Key", "m2Key"));
 		Set<String> imports = new TreeSet<>();
 		String method = EndpointDemoGeneratorUtil.generateEndpointParameterCreationMethod(param, "MyRequest", imports);

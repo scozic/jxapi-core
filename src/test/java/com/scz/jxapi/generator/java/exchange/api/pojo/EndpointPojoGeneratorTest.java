@@ -26,11 +26,11 @@ public class EndpointPojoGeneratorTest {
 		endpointParameters.add(Field.createObject("OBJECT_LIST", "foo", "f", null,
 				Arrays.asList(Field.create(CanonicalType.TIMESTAMP.name(), "time", null, "Creation time", "0"),
 							  Field.createObject(CanonicalType.OBJECT.name(), "bar", "b", "The bar",
-									  Arrays.asList(Field.create(CanonicalType.STRING.name(), "name", null, "Bar name", "my bar")))
-						)
+									  Arrays.asList(Field.create(CanonicalType.STRING.name(), "name", null, "Bar name", "my bar")), null)
+						), null
 				));
 		endpointParameters.add(Field.createObject( "OBJECT_LIST_MAP", "toto", "toto", null,
-				Arrays.asList(Field.create(CanonicalType.STRING.name(), "id", null, "Toto ID", "toto#1"))
+				Arrays.asList(Field.create(CanonicalType.STRING.name(), "id", null, "Toto ID", "toto#1")), null
 				));
 		
 		EndpointPojoGenerator generator = new EndpointPojoGenerator(typeName, typeDescription, endpointParameters, List.of("com.x.common.MyInterface"), "// Additionnal body here\n\n");
