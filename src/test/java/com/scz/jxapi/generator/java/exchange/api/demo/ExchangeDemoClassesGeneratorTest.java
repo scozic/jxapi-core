@@ -45,6 +45,37 @@ public class ExchangeDemoClassesGeneratorTest {
 		checkSourceFileExists(Paths.get("MyTestExchangeMarketDataTickerStreamDemo.java"));
 	}
 	
+	@Test
+	public void testGenerateExchangeDemoClasses_NullRestEndpoints() throws IOException {
+		srcFolder = ClassesGeneratorTestUtil.generateTmpDir();
+		ExchangeDescriptor exchange = new ExchangeDescriptorParser().fromJson(Paths.get(".", "src", "test", "resources", "testExchangeDescriptor.json"));
+		exchange.getApis().get(0).setRestEndpoints(null);
+		new ExchangeDemoClassesGenerator(exchange).generateClasses(srcFolder);
+		Path pkgPath = Paths.get(".");
+		checkJavaFilesCount(pkgPath, 1);
+		pkgPath = pkgPath.resolve("marketData");
+		checkJavaFilesCount(pkgPath, 1);
+		pkgPath = pkgPath.resolve("demo");
+		checkJavaFilesCount(pkgPath, 1);
+		checkSourceFileExists(Paths.get("MyTestExchangeMarketDataTickerStreamDemo.java"));
+	}
+	
+	@Test
+	public void testGenerateExchangeDemoClasses_NullWsEndpoints() throws IOException {
+		srcFolder = ClassesGeneratorTestUtil.generateTmpDir();
+		ExchangeDescriptor exchange = new ExchangeDescriptorParser().fromJson(Paths.get(".", "src", "test", "resources", "testExchangeDescriptor.json"));
+		exchange.getApis().get(0).setWebsocketEndpoints(null);
+		new ExchangeDemoClassesGenerator(exchange).generateClasses(srcFolder);
+		Path pkgPath = Paths.get(".");
+		checkJavaFilesCount(pkgPath, 1);
+		pkgPath = pkgPath.resolve("marketData");
+		checkJavaFilesCount(pkgPath, 1);
+		pkgPath = pkgPath.resolve("demo");
+		checkJavaFilesCount(pkgPath, 2);
+		checkSourceFileExists(Paths.get("MyTestExchangeMarketDataExchangeInfoDemo.java"));
+		checkSourceFileExists(Paths.get("MyTestExchangeMarketDataTickersDemo.java"));
+	}
+	
 	private void checkJavaFilesCount(Path relativePkg, int count) throws IOException {
 		ClassesGeneratorTestUtil.checkJavaFilesCount(srcFolder.resolve(BASE_PKG).resolve(relativePkg), count);
 	}

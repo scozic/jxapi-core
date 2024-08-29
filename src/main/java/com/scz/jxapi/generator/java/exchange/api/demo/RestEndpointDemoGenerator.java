@@ -2,6 +2,8 @@ package com.scz.jxapi.generator.java.exchange.api.demo;
 
 import java.util.Optional;
 
+import org.slf4j.Logger;
+
 import com.scz.jxapi.exchange.descriptor.Field;
 import com.scz.jxapi.exchange.descriptor.Type;
 import com.scz.jxapi.exchange.descriptor.ExchangeApiDescriptor;
@@ -14,6 +16,21 @@ import com.scz.jxapi.generator.java.JavaTypeGenerator;
 import com.scz.jxapi.util.DemoUtil;
 import com.scz.jxapi.util.TestJXApiProperties;
 
+/**
+ * Generates a demo snippet class for a REST endpoint.
+ * Such class contains a main method that calls the REST endpoint API, logs the
+ * response and exits. Also:
+ * <ul>
+ * <li>Has imports declaration with the API interface class, the request class
+ * if any, and the {@link DemoUtil} class.</li>
+ * <li>Has a SLF4J {@link Logger} declaration.</li>
+ * <li>The request is created if the API method has arguments using a generated
+ * <code>public static</code> method for creating that request.</li>
+ * <li>That request creation method uses sample values provided with each field
+ * of the request sample values, see {@link Field#getSampleValue()} and
+ * {@link Field#getSampleMapKeyValue()}.</li>
+ * </ul>
+ */
 public class RestEndpointDemoGenerator extends JavaTypeGenerator {
 	
 	private final ExchangeDescriptor exchangeDescriptor;
@@ -65,6 +82,7 @@ public class RestEndpointDemoGenerator extends JavaTypeGenerator {
 		
 	}
 	
+	@Override
 	public String generate() {
 		JavaCodeGenerationUtil.generateSlf4jLoggerDeclaration(this);
 		generateMainMethodBody();

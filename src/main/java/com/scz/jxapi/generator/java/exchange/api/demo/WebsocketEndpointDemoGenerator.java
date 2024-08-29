@@ -14,6 +14,33 @@ import com.scz.jxapi.generator.java.JavaTypeGenerator;
 import com.scz.jxapi.util.DemoUtil;
 import com.scz.jxapi.util.TestJXApiProperties;
 
+/**
+ * Generates a demo snippet class for a Websocket endpoint.
+ * Such class contains a main method that subscribes to the Websocket endpoint
+ * API, logs subscription request sent and messages received, and after when
+ * some time has elapsed, unsubscribes from websocket stream and exits. Also:
+ * <ul>
+ * <li>Has imports declaration with the API interface class, the request class
+ * if any, and the {@link DemoUtil} class.</li>
+ * <li>Has a SLF4J {@link Logger} declaration.</li>
+ * <li>The subscription request is created if the API method has arguments using
+ * a generated <code>public static</code> method for creating that request.</li>
+ * <li>That request creation method uses sample values provided with each field
+ * of the request sample values, see {@link Field#getSampleValue()} and
+ * {@link Field#getSampleMapKeyValue()}.</li>
+ * <li>Logs the subscription and unsubscription actions.</li>
+ * <li>Logs the messages received from the websocket stream.</li>
+ * <li>Unsubscribes from stream after some delay has elapsed after subscription.
+ * Such delay is set in a <code>public static</code> variable named
+ * <code>SUBSCRIPTION_DURATION</code>. Value of this variable is
+ * {@link TestJXApiProperties#DEMO_WS_SUBSCRIPTION_DURATION}.</li>
+ * <li>Exits after some delay has elased after unsubiscription. Such delay is
+ * set in a <code>public static</code> variable named
+ * <code>DELAY_BEFORE_EXIT_AFTER_UNSUBSCRIPTION</code>. Value of this variable
+ * is
+ * {@link TestJXApiProperties#DEMO_WS_DELAY_BEFORE_EXIT_AFTER_UNSUBSCRIPTION}.</li>
+ * </ul>
+ */
 public class WebsocketEndpointDemoGenerator extends JavaTypeGenerator {
 	
 	private static final String SUBSCRIPTION_DURATION_STATIC_VAR_NAME = "SUBSCRIPTION_DURATION";
@@ -71,6 +98,7 @@ public class WebsocketEndpointDemoGenerator extends JavaTypeGenerator {
 								+ " " + websocketApi.getName();
 	}
 	
+	@Override
 	public String generate() {
 		JavaCodeGenerationUtil.generateSlf4jLoggerDeclaration(this);
 		this.appendToBody("private static final long ")

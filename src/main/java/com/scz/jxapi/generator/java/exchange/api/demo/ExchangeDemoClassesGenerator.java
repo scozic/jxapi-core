@@ -9,6 +9,12 @@ import com.scz.jxapi.exchange.descriptor.RestEndpointDescriptor;
 import com.scz.jxapi.exchange.descriptor.WebsocketEndpointDescriptor;
 import com.scz.jxapi.generator.java.exchange.ClassesGenerator;
 
+/**
+ * Generates demo classes for an exchange, e.g. one snippet class for each REST
+ * and Websocket endpoint.
+ * 
+ * @see ExchangeDescriptor
+ */
 public class ExchangeDemoClassesGenerator implements ClassesGenerator {
 	
 	private ExchangeDescriptor exchangeDescriptor;
