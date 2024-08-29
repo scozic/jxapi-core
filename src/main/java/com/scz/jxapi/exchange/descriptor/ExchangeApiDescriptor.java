@@ -164,14 +164,6 @@ public class ExchangeApiDescriptor {
 	public void setRestEndpoints(List<RestEndpointDescriptor> restEndpoints) {
 		this.restEndpoints = restEndpoints;
 	}
-	
-	/**
-	 * Checks if this API has REST endpoints.
-	 * @return <code>true</code> if this API has REST endpoints, <code>false</code> otherwise.
-	 */
-	public boolean hasRestEndpoints() {
-		return restEndpoints != null && !restEndpoints.isEmpty();
-	}
 
 	/**
 	 * @return Unique name of the API among APIs of parent ExchangeDescriptor.
@@ -215,14 +207,6 @@ public class ExchangeApiDescriptor {
 	 */
 	public void setWebsocketEndpoints(List<WebsocketEndpointDescriptor> websocketEndpoints) {
 		this.websocketEndpoints = websocketEndpoints;
-	}
-	
-	/**
-	 * Checks if this API has Websocket endpoints.
-	 * @return <code>true</code> if this API has Websocket endpoints, <code>false</code> otherwise.
-	 */
-	public boolean hasWebsocketEndpoints() {
-		return this.websocketEndpoints != null && !this.websocketEndpoints.isEmpty();
 	}
 	
 	/**

@@ -2,14 +2,15 @@ package com.scz.jxapi.generator.java.exchange.api.ws;
 
 import java.io.IOException;
 import java.nio.file.Path;
-import java.util.List;
 import java.util.Optional;
 
-import com.scz.jxapi.exchange.descriptor.Field;
-import com.scz.jxapi.exchange.descriptor.Type;
+import org.springframework.util.CollectionUtils;
+
 import com.scz.jxapi.exchange.descriptor.ExchangeApiDescriptor;
 import com.scz.jxapi.exchange.descriptor.ExchangeDescriptor;
+import com.scz.jxapi.exchange.descriptor.Field;
 import com.scz.jxapi.exchange.descriptor.RestEndpointDescriptor;
+import com.scz.jxapi.exchange.descriptor.Type;
 import com.scz.jxapi.exchange.descriptor.WebsocketEndpointDescriptor;
 import com.scz.jxapi.generator.java.JavaCodeGenerationUtil;
 import com.scz.jxapi.generator.java.exchange.ClassesGenerator;
@@ -140,16 +141,15 @@ public class WebsocketEndpointClassesGenerator implements ClassesGenerator {
 		return shouldGeneratePojo(websocketEndpointDescriptor.getMessage());
 	}
 	
-	private boolean shouldGeneratePojo(Field param) {
-		if (param == null) {
+	private boolean shouldGeneratePojo(Field field) {
+		if (field == null) {
 			return false;
 		}
-		Type type = Optional.ofNullable(param.getType()).orElse(Type.OBJECT);
+		Type type = Optional.ofNullable(field.getType()).orElse(Type.OBJECT);
 		if (!type.isObject()) {
 			return false;
 		}
-		List<Field> parameters = param.getParameters();
-		return parameters != null && !parameters.isEmpty();
+		return !CollectionUtils.isEmpty(field.getParameters());
 	}
 	
 

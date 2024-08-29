@@ -48,26 +48,6 @@ public class ExchangeApiDescriptorTest {
     }
 
     @Test
-    public void testHasRestEndpoints() {
-        ExchangeApiDescriptor apiDescriptor = new ExchangeApiDescriptor();
-        Assert.assertFalse(apiDescriptor.hasRestEndpoints());
-        apiDescriptor.setRestEndpoints(List.of());
-        Assert.assertFalse(apiDescriptor.hasRestEndpoints());
-        apiDescriptor.setRestEndpoints(List.of(new RestEndpointDescriptor()));
-        Assert.assertTrue(apiDescriptor.hasRestEndpoints());
-    }
-
-    @Test
-    public void testHasWebsocketEndpoints() {
-        ExchangeApiDescriptor apiDescriptor = new ExchangeApiDescriptor();
-        Assert.assertFalse(apiDescriptor.hasWebsocketEndpoints());
-        apiDescriptor.setWebsocketEndpoints(List.of());
-        Assert.assertFalse(apiDescriptor.hasWebsocketEndpoints());
-        apiDescriptor.setWebsocketEndpoints(List.of(new WebsocketEndpointDescriptor()));
-        Assert.assertTrue(apiDescriptor.hasWebsocketEndpoints());
-    }
-
-    @Test
     public void testToString() {
         ExchangeApiDescriptor apiDescriptor = new ExchangeApiDescriptor();
         apiDescriptor.setName("name");

@@ -6,6 +6,8 @@ import java.util.List;
 import java.util.Properties;
 import java.util.Set;
 
+import org.springframework.util.CollectionUtils;
+
 import com.scz.jxapi.exchange.AbstractExchange;
 import com.scz.jxapi.exchange.Exchange;
 import com.scz.jxapi.exchange.ExchangeApi;
@@ -76,10 +78,10 @@ public class ExchangeInterfaceImplementationGenerator extends JavaTypeGenerator 
 		
 		List<RateLimitRule> rateLimits = exchangeDescriptor.getRateLimits();
 		List<ExchangeApiDescriptor> apis = exchangeDescriptor.getApis();
-		boolean hasRateLimits = rateLimits != null && !rateLimits.isEmpty();
+		boolean hasRateLimits = !CollectionUtils.isEmpty(rateLimits);
 		if (hasRateLimits) {
 			rateLimits.forEach(rateLimit -> generateRateLimitVariable(rateLimit));
-			if (apis != null && apis.stream().anyMatch(api -> api.getRestEndpoints() != null && !api.getRestEndpoints().isEmpty())) {
+			if (apis != null && apis.stream().anyMatch(api -> !CollectionUtils.isEmpty(api.getRestEndpoints()))) {
 				addImport(RequestThrottler.class);
 				appendToBody("\nprivate final ");
 				appendToBody(RequestThrottler.class.getSimpleName());
@@ -120,7 +122,7 @@ public class ExchangeInterfaceImplementationGenerator extends JavaTypeGenerator 
 						.append(simpleApiImplClassName)
 						.append("(getName(), ")
 						.append(PROPERTIES_PARAMETER);
-				if (hasRateLimits && api.getRestEndpoints() != null && !api.getRestEndpoints().isEmpty()) {
+				if (hasRateLimits && !CollectionUtils.isEmpty(api.getRestEndpoints())) {
 					implementationConstructorBody.append(", ").append(REQUEST_THROTTLER_VARIABLE_NAME);
 				}
 				

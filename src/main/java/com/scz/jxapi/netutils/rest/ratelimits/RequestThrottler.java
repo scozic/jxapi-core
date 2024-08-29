@@ -10,6 +10,7 @@ import java.util.function.Function;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.util.CollectionUtils;
 
 import com.scz.jxapi.netutils.rest.FutureRestResponse;
 import com.scz.jxapi.netutils.rest.HttpRequest;
@@ -69,7 +70,7 @@ public class RequestThrottler {
 	 */
 	public synchronized <A> FutureRestResponse<A> submit(HttpRequest request, Function<HttpRequest, FutureRestResponse<A>> executor) {
 		List<RateLimitRule> rateLimits = request.getRateLimits();
-		if (rateLimits == null || rateLimits.isEmpty()) {
+		if (CollectionUtils.isEmpty(rateLimits)) {
 			if (log.isDebugEnabled())
 				log.debug("No rate limit set, submitting now:" + request);
 			return executor.apply(request);

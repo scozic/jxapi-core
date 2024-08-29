@@ -12,6 +12,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
+import org.springframework.util.CollectionUtils;
 
 import com.scz.jxapi.exchange.AbstractExchangeApi;
 import com.scz.jxapi.exchange.descriptor.CanonicalType;
@@ -196,9 +197,10 @@ public class ExchangeApiInterfaceImplementationGenerator extends JavaTypeGenerat
 		endpointSpecificRateLimitIds = new HashSet<>();
 		List<String> exchangeRateLimitsVariables = new ArrayList<>();
 		String simpleImplementationName =  JavaCodeGenerationUtil.getClassNameWithoutPackage(getName());
-		
-		boolean hasExchangeLimits = exchangeDescriptor.getRateLimits() != null 
-										&& !exchangeDescriptor.getRateLimits().isEmpty();
+		List<RateLimitRule> exchangeRateLimits = exchangeDescriptor.getRateLimits();
+		boolean hasExchangeLimits = !CollectionUtils.isEmpty(exchangeRateLimits);
+		boolean hasRestEnpoints = !CollectionUtils.isEmpty(exchangeApiDescriptor.getRestEndpoints());
+		boolean hasWsEnpoints = !CollectionUtils.isEmpty(exchangeApiDescriptor.getWebsocketEndpoints());
 		String exchangeClassName = ExchangeJavaWrapperGeneratorUtil.getExchangeInterfaceName(exchangeDescriptor);
 		addImport(exchangeClassName);
 		constructorBody.append("super(")
@@ -212,12 +214,12 @@ public class ExchangeApiInterfaceImplementationGenerator extends JavaTypeGenerat
 					   .append(", ")
 					   .append("properties");
 		if ((hasRateLimits || hasExchangeLimits) 
-				&& (exchangeApiDescriptor.getRestEndpoints() != null && !exchangeApiDescriptor.getRestEndpoints().isEmpty())) {
+				&& (hasRestEnpoints)) {
 			addImport(RequestThrottler.class);
 			
 			if (hasExchangeLimits) {
 				constructorBody.append(", ").append(REQUEST_THROTTLER_VARIABLE_NAME);
-				exchangeDescriptor.getRateLimits().forEach(r -> exchangeRateLimitsVariables.add(ExchangeJavaWrapperGeneratorUtil.generateRateLimitVariableName(r.getId())));
+				exchangeRateLimits.forEach(r -> exchangeRateLimitsVariables.add(ExchangeJavaWrapperGeneratorUtil.generateRateLimitVariableName(r.getId())));
 			} else {
 				constructorBody
 					.append(", new ")
@@ -239,7 +241,7 @@ public class ExchangeApiInterfaceImplementationGenerator extends JavaTypeGenerat
 		}
 		constructorBody.append(");\n");
 	
-		if (exchangeApiDescriptor.hasRestEndpoints()) {
+		if (hasRestEnpoints) {
 			String httpRequestExecutorFactoryClassName  = exchangeApiDescriptor.getHttpRequestExecutorFactory();
 			constructorBody.append("this.")
 			   .append(HTTP_REQUEST_EXECUTOR_VARIABLE_NAME)
@@ -267,7 +269,7 @@ public class ExchangeApiInterfaceImplementationGenerator extends JavaTypeGenerat
 			}
 		}
 		
-		if (exchangeApiDescriptor.hasWebsocketEndpoints()) {
+		if (hasWsEnpoints) {
 			constructorBody.append("this.")
 						   .append(WEBSOCKET_MANAGER_VARIABLE_NAME)
 						   .append(" = createWebsocketManager(")
@@ -299,7 +301,7 @@ public class ExchangeApiInterfaceImplementationGenerator extends JavaTypeGenerat
 							.append(EXCHANGE_NAME_ARGUMENT_NAME)
 							.append(", ")
 							.append("Properties properties");
-		if (hasExchangeLimits && exchangeApiDescriptor.getRestEndpoints() != null && !exchangeApiDescriptor.getRestEndpoints().isEmpty()) {
+		if (hasExchangeLimits && hasRestEnpoints) {
 			addImport(RequestThrottler.class);
 			constructorSignature.append(", ")
 								.append(RequestThrottler.class.getSimpleName())
@@ -574,7 +576,7 @@ public class ExchangeApiInterfaceImplementationGenerator extends JavaTypeGenerat
 				.append(");\n");
 		
 		List<String> rateLimitVariables = new ArrayList<>();
-		if  (exchangeDescriptor.getRateLimits() != null && !exchangeDescriptor.getRateLimits().isEmpty()) {
+		if  (!CollectionUtils.isEmpty(exchangeDescriptor.getRateLimits())) {
 			String exchangeClassName = ExchangeInterfaceImplementationGenerator.getExchangeInterfaceImplementationName(exchangeDescriptor);
 			addImport(exchangeClassName);
 			String exchangeSimpleClassName = JavaCodeGenerationUtil.getClassNameWithoutPackage(exchangeClassName);
@@ -582,7 +584,7 @@ public class ExchangeApiInterfaceImplementationGenerator extends JavaTypeGenerat
 					rateLimit -> rateLimitVariables.add(exchangeSimpleClassName + "." + ExchangeJavaWrapperGeneratorUtil.generateRateLimitVariableName(rateLimit.getId()))); 
 		}
 		rateLimitVariables.addAll(apiGlobalRateLimitVariables);
-		if (restApi.getRateLimits() != null && !restApi.getRateLimits().isEmpty()) {
+		if (!CollectionUtils.isEmpty(restApi.getRateLimits())) {
 			int rateLimitCounter = 1;
 			for (RateLimitRule rateLimit: restApi.getRateLimits()) {
 				rateLimitVariables.add(generateRateLimitVariable(rateLimit, restApi.getName() + rateLimitCounter++));
