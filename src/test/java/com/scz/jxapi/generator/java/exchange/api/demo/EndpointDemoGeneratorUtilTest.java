@@ -12,7 +12,11 @@ import java.util.stream.Collectors;
 import org.junit.Assert;
 import org.junit.Test;
 
+import com.scz.jxapi.exchange.descriptor.ExchangeApiDescriptor;
+import com.scz.jxapi.exchange.descriptor.ExchangeDescriptor;
 import com.scz.jxapi.exchange.descriptor.Field;
+import com.scz.jxapi.exchange.descriptor.RestEndpointDescriptor;
+import com.scz.jxapi.exchange.descriptor.WebsocketEndpointDescriptor;
 import com.scz.jxapi.netutils.deserialization.json.field.BigDecimalJsonFieldDeserializer;
 import com.scz.jxapi.netutils.deserialization.json.field.BooleanJsonFieldDeserializer;
 import com.scz.jxapi.netutils.deserialization.json.field.IntegerJsonFieldDeserializer;
@@ -373,5 +377,39 @@ public class EndpointDemoGeneratorUtilTest {
 		for (int i = 0; i < expected.length; i++) {
 			Assert.assertEquals(errMsg, expected[i], actual.get(i));
 		}
+	}
+	@Test
+	public void testGetRestApiDemoClassName() {
+			ExchangeDescriptor exchangeDescriptor = new ExchangeDescriptor();
+			exchangeDescriptor.setName("MyExchange");
+			exchangeDescriptor.setBasePackage("com.x.y.z.gen");
+			ExchangeApiDescriptor exchangeApiDescriptor = new ExchangeApiDescriptor();
+			exchangeApiDescriptor.setName("MyApi");
+			RestEndpointDescriptor restEndpointDescriptor = new RestEndpointDescriptor();
+			restEndpointDescriptor.setName("MyRestEndpoint");
+			String className = EndpointDemoGeneratorUtil.getRestApiDemoClassName(exchangeDescriptor, exchangeApiDescriptor, restEndpointDescriptor);
+			Assert.assertEquals("com.x.y.z.gen.myapi.demo.MyExchangeMyApiMyRestEndpointDemo", className);
+	}
+	
+	@Test
+	public void testGetWebsocketApiDemoClassName() {
+		ExchangeDescriptor exchangeDescriptor = new ExchangeDescriptor();
+		exchangeDescriptor.setName("MyExchange");
+		exchangeDescriptor.setBasePackage("com.x.y.z.gen");
+		ExchangeApiDescriptor exchangeApiDescriptor = new ExchangeApiDescriptor();
+		exchangeApiDescriptor.setName("MyApi");
+		WebsocketEndpointDescriptor websocketEndpointDescriptor = new WebsocketEndpointDescriptor();
+		websocketEndpointDescriptor.setName("MyWebsocketEndpoint");
+		String className = EndpointDemoGeneratorUtil.getWebsocketApiDemoClassName(exchangeDescriptor, exchangeApiDescriptor, websocketEndpointDescriptor);
+		Assert.assertEquals("com.x.y.z.gen.myapi.demo.MyExchangeMyApiMyWebsocketEndpointDemo", className);
+	}
+	
+	@Test
+	public void testGetNewTestApiInstruction() {
+		String exchangeId = "MyExchange";
+		String exchangeImplClassName = "com.x.y.z.gen.MyExchangeImpl";
+		String simpleApiClassName  = "MyApi";
+		Assert.assertEquals("MyApi api = new MyExchangeImpl(\"test-MyExchange\", TestJXApiProperties.filterProperties(\"MyExchange\", true)).getMyApi();\n", 
+				EndpointDemoGeneratorUtil.getNewTestApiInstruction(exchangeId, exchangeImplClassName, simpleApiClassName));
 	}
 }
