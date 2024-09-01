@@ -107,6 +107,14 @@ import com.scz.jxapi.util.EncodingUtil;
  * @see WebsocketEndpointDescriptor
  */
 public class Field {
+
+	/**
+	 * @return New Builder for incrementally building a {@link Field} instance
+	 * @see FieldBuilder
+	 */
+	public static FieldBuilder builder() {
+		return new FieldBuilder();
+	}
 	
 	/**
 	 * Create a new field with given properties
