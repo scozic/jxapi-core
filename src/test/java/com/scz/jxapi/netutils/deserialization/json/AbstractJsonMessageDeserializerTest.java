@@ -33,8 +33,7 @@ public class AbstractJsonMessageDeserializerTest {
 		}
 	}
 	
-	public static class TestJsonMessageDeserializer
-			extends AbstractJsonMessageDeserializer<AbstractJsonMessageDeserializerTestItem> {
+	public static class TestJsonMessageDeserializer extends AbstractJsonMessageDeserializer<AbstractJsonMessageDeserializerTestItem> {
 
 		@Override
 		public AbstractJsonMessageDeserializerTestItem deserialize(JsonParser parser) throws IOException {

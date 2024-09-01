@@ -18,7 +18,7 @@ public class TimestampJsonFieldDeserializer extends AbstractJsonMessageDeseriali
 
 	@Override
 	public Long deserialize(JsonParser parser) throws IOException {
-		return JsonUtil.readNextLong(parser);
+		return JsonUtil.readCurrentLong(parser);
 	}
 
 }
