@@ -21,7 +21,10 @@ public class JsonMessageDeserializerGeneratorTest {
 		String deserialiazedTypeName = "com.x.MyPojo";
 		List<Field> endpointParameters = new ArrayList<>();
 		endpointParameters.add(Field.create(CanonicalType.LONG.name(), "id", null, "identifier", "123"));
-		endpointParameters.add(Field.create(CanonicalType.INT.name(), "score", null, "Current score", "0"));
+		endpointParameters.add(Field.create(CanonicalType.STRING.name(), "name", null, "Player name", "Bob"));
+		endpointParameters.add(Field.create(CanonicalType.INT.name(), "level", null, "Current level", "1"));
+		endpointParameters.add(Field.create(CanonicalType.BIGDECIMAL.name(), "score", null, "Current score", "0.00"));
+		endpointParameters.add(Field.create(CanonicalType.BOOLEAN.name(), "over", null, "Game over?", false));
 		endpointParameters.add(Field.createObject("OBJECT_LIST", "foo", "f", null,
 				Arrays.asList(Field.create(CanonicalType.TIMESTAMP.name(), "time", null, "Creation time", "0"),
 							  Field.createObject(CanonicalType.OBJECT.name(), "bar", "b", "The bar",
@@ -48,6 +51,8 @@ public class JsonMessageDeserializerGeneratorTest {
 				+ "import com.x.MyPojoToto;\n"
 				+ "import java.io.IOException;\n"
 				+ "import java.util.List;\n"
+				+ "import static com.scz.jxapi.util.JsonUtil.readNextBigDecimal;\n"
+				+ "import static com.scz.jxapi.util.JsonUtil.readNextBoolean;\n"
 				+ "import static com.scz.jxapi.util.JsonUtil.readNextInteger;\n"
 				+ "import static com.scz.jxapi.util.JsonUtil.readNextLong;\n"
 				+ "import static com.scz.jxapi.util.JsonUtil.skipNextValue;\n"
@@ -70,8 +75,17 @@ public class JsonMessageDeserializerGeneratorTest {
 				+ "      case \"id\":\n"
 				+ "        msg.setId(readNextLong(parser));\n"
 				+ "      break;\n"
+				+ "      case \"name\":\n"
+				+ "        msg.setName(parser.nextTextValue());\n"
+				+ "      break;\n"
+				+ "      case \"level\":\n"
+				+ "        msg.setLevel(readNextInteger(parser));\n"
+				+ "      break;\n"
 				+ "      case \"score\":\n"
-				+ "        msg.setScore(readNextInteger(parser));\n"
+				+ "        msg.setScore(readNextBigDecimal(parser));\n"
+				+ "      break;\n"
+				+ "      case \"over\":\n"
+				+ "        msg.setOver(readNextBoolean(parser));\n"
 				+ "      break;\n"
 				+ "      case \"f\":\n"
 				+ "        parser.nextToken();\n"
@@ -92,6 +106,7 @@ public class JsonMessageDeserializerGeneratorTest {
 				+ "    \n"
 				+ "     return msg;\n"
 				+ "  }\n"
-				+ "}\n", generator.generate());
+				+ "}\n"
+				, generator.generate());
 	}
 }

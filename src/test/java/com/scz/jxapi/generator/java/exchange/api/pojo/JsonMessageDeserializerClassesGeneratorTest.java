@@ -59,13 +59,11 @@ public class JsonMessageDeserializerClassesGeneratorTest {
 		checkSourceFileExists(Path.of("MyPojoTotoDeserializer.java"));
 	}
 	
-	@Test
+	@Test(expected = IllegalArgumentException.class)
 	public void testGenerateJsonDeserializerClasses_NullObjectProperties() throws IOException {
 		srcFolder = ClassesGeneratorTestUtil.generateTmpDir();
 		String typeName = "com.x.MyPojo";
-		JsonMessageDeserializerClassesGenerator generator = new JsonMessageDeserializerClassesGenerator(typeName, null);
-		generator.generateClasses(srcFolder);
-		checkJavaFilesCount(0);
+		new JsonMessageDeserializerClassesGenerator(typeName, null);
 	}
 	
 	@Test

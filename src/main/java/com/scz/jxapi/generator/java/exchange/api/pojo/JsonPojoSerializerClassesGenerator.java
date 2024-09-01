@@ -4,10 +4,6 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.util.List;
 
-import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.scz.jxapi.exchange.descriptor.Field;
 import com.scz.jxapi.generator.java.exchange.ClassesGenerator;
 import com.scz.jxapi.generator.java.exchange.api.ExchangeApiGeneratorUtil;
@@ -22,26 +18,27 @@ import com.scz.jxapi.netutils.deserialization.json.AbstractJsonMessageDeserializ
  */
 public class JsonPojoSerializerClassesGenerator implements ClassesGenerator {
 	
-	private static final Logger log = LoggerFactory.getLogger(JsonPojoSerializerClassesGenerator.class);
-	
 	private String deserializedClassName;
 	private List<Field> fields;
 	
+	/**
+	 * Constructor.
+	 * 
+	 * @param deserializedClassName the fully qualified name of the POJO class to deserialize
+	 * @param fields the properties of the POJO class
+	 * @throws IllegalArgumentException if fields is <code>null</code>
+	 */
 	public JsonPojoSerializerClassesGenerator(String deserializedClassName, List<Field> fields) {
 		this.deserializedClassName = deserializedClassName;
+		if (fields == null) {
+			throw new IllegalArgumentException("null fields for " + deserializedClassName);
+		}
 		this.fields = fields;
 	}
 
 	@Override
 	public void generateClasses(Path outputFolder) throws IOException {
-		if (log.isDebugEnabled())
-			log.debug("Generating serializer for :" 
-						+ deserializedClassName 
-						+ " with fields:" 
-						+ StringUtils.truncate(String.valueOf(fields), 192) 
-						+ " to:" + outputFolder);
 		JsonPojoSerializerGenerator generator = new JsonPojoSerializerGenerator(deserializedClassName, fields);
-		
 		for (Field field: fields) {
 			if ((field.getType().isObject())
 				&& field.getParameters() != null) {

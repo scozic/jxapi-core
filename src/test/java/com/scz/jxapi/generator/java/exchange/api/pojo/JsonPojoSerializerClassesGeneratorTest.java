@@ -33,7 +33,7 @@ public class JsonPojoSerializerClassesGeneratorTest {
 	}
 
 	@Test
-	public void testGenerateJsonDeserializerClasses() throws IOException {
+	public void testGenerateJsonSerializerClasses() throws IOException {
 		srcFolder = ClassesGeneratorTestUtil.generateTmpDir();
 		
 		String typeName = "com.x.MyPojo";
@@ -57,6 +57,29 @@ public class JsonPojoSerializerClassesGeneratorTest {
 		checkSourceFileExists(Path.of("MyPojoFooSerializer.java"));
 		checkSourceFileExists(Path.of("MyPojoFooBarSerializer.java"));
 		checkSourceFileExists(Path.of("MyPojoTotoSerializer.java"));
+	}
+	
+	@Test(expected = IllegalArgumentException.class)
+	public void testGenerateJsonSerializerClasses_NullObjectFieldProperties() throws IOException {
+		srcFolder = ClassesGeneratorTestUtil.generateTmpDir();
+		String typeName = "com.x.MyPojo";
+		new JsonPojoSerializerClassesGenerator(typeName, null);
+	}
+	
+	@Test
+	public void testGenerateJsonSerializerClasses_NullObjectFieldSubProperties() throws IOException {
+		srcFolder = ClassesGeneratorTestUtil.generateTmpDir();
+		
+		String typeName = "com.x.MyPojo";
+		List<Field> endpointParameters = new ArrayList<>();
+		endpointParameters.add(Field.create(CanonicalType.LONG.name(), "id", null, "identifier", "123"));
+		endpointParameters.add(Field.create(CanonicalType.INT.name(), "score", null, "Current score", "0"));
+		endpointParameters.add(Field.createObject("OBJECT_LIST", "foo", "f", null,	null, null));
+		
+		JsonPojoSerializerClassesGenerator generator = new JsonPojoSerializerClassesGenerator(typeName, endpointParameters);
+		generator.generateClasses(srcFolder);
+		checkJavaFilesCount(1);
+		checkSourceFileExists(Path.of("MyPojoSerializer.java"));
 	}
 	
 	private void checkJavaFilesCount(int count) throws IOException {

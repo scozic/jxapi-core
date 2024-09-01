@@ -4,11 +4,25 @@ import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.databind.SerializerProvider;
+import com.fasterxml.jackson.databind.ser.std.StdSerializer;
 import com.scz.jxapi.exchange.descriptor.Field;
 import com.scz.jxapi.generator.java.JavaCodeGenerationUtil;
 import com.scz.jxapi.generator.java.JavaTypeGenerator;
 import com.scz.jxapi.util.EncodingUtil;
 
+/**
+ * Generates a JSON message serializer class for a given POJO class using
+ * Jackson.
+ * The generated serializer class extends
+ * {@link StdSerializer} and implements the
+ * {@link JsonSerializer#serialize(Object, com.fasterxml.jackson.core.JsonGenerator, com.fasterxml.jackson.databind.SerializerProvider)} method.
+ * 
+ * @see JsonGenerator
+ * @see StdSerializer
+ * @see JsonSerializer
+ */
 public class JsonPojoSerializerGenerator extends JavaTypeGenerator {
 
 	private final String serializedTypeClassName;
@@ -20,7 +34,7 @@ public class JsonPojoSerializerGenerator extends JavaTypeGenerator {
 		this.fields = fields;
 		setTypeDeclaration("public class");
 		String simpleDeserializedClassName = JavaCodeGenerationUtil.getClassNameWithoutPackage(serializedTypeClassName);
-		setParentClassName("com.fasterxml.jackson.databind.ser.std.StdSerializer<" + simpleDeserializedClassName + ">");
+		setParentClassName(StdSerializer.class.getName() + "<" + simpleDeserializedClassName + ">");
 		setDescription("Jackson JSON Serializer for " 
 						+ serializedTypeClassName 
 						+ "\n"
@@ -30,9 +44,9 @@ public class JsonPojoSerializerGenerator extends JavaTypeGenerator {
 	
 	public String generate() {
 		addImport(IOException.class.getName());
-		addImport(com.fasterxml.jackson.core.JsonGenerator.class);
-		addImport(com.fasterxml.jackson.databind.SerializerProvider.class);
-		addImport(com.fasterxml.jackson.databind.ser.std.StdSerializer.class);
+		addImport(JsonGenerator.class);
+		addImport(SerializerProvider.class);
+		addImport(StdSerializer.class);
 		addImport(serializedTypeClassName);
 		generateConstructor();
 		generateDeserializeMethod();
@@ -76,12 +90,8 @@ public class JsonPojoSerializerGenerator extends JavaTypeGenerator {
 			return "gen.writeStringField(\"" + msgFieldName(field) + "\", EncodingUtil.bigDecimalToString(" + getFieldValue + "));\n";
 		case BOOLEAN:
 			return "gen.writeBooleanField(\"" + msgFieldName(field) + "\", " + getFieldValue + ");\n";
-		case INT:
-		case LONG:
-		case TIMESTAMP:
+		default: // INT LONG TIMESTAMP
 			return "gen.writeNumberField(\"" + msgFieldName(field) + "\", " + getFieldValue + ");\n";
-		default:
-			throw new IllegalArgumentException("Unexpected field type for:" + field);
 		}
 	}
 	
