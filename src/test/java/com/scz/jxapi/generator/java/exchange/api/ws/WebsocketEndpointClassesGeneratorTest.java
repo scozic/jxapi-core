@@ -396,5 +396,17 @@ public class WebsocketEndpointClassesGeneratorTest {
 		generator.generateClasses(srcFolder);
 		checkJavaFilesCount(Paths.get("."), 0);	
 	}
+	
+	@Test
+	public void testGenerateClassesSpecificApiRequestTypeNullRequest() throws Exception {
+		srcFolder = ClassesGeneratorTestUtil.generateTmpDir();
+		ExchangeDescriptor exchange = new ExchangeDescriptorParser().fromJson(Paths.get(".", "src", "test", "resources", "testExchangeDescriptorWithAllRestRequestDataTypes.json"));
+		ExchangeApiDescriptor api = exchange.getApis().get(0);
+		WebsocketEndpointDescriptor websocketEndpoint = ClassesGeneratorTestUtil.findWebsocketEndpointByName("streamWithIntRequestDataType", api);
+		websocketEndpoint.setRequest(null);
+		WebsocketEndpointClassesGenerator generator = new WebsocketEndpointClassesGenerator(exchange, api, websocketEndpoint);
+		generator.generateClasses(srcFolder);
+		checkJavaFilesCount(Paths.get("."), 0);       
+	}
 
 }
