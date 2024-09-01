@@ -3,25 +3,29 @@ package com.scz.jxapi.generator.java.exchange.api.pojo;
 import java.io.IOException;
 import java.util.List;
 
-import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.scz.jxapi.exchange.descriptor.Field;
 import com.scz.jxapi.generator.java.JavaCodeGenerationUtil;
 import com.scz.jxapi.generator.java.PojoField;
 import com.scz.jxapi.generator.java.PojoGenerator;
 import com.scz.jxapi.generator.java.exchange.ExchangeJavaWrapperGeneratorUtil;
 import com.scz.jxapi.generator.java.exchange.api.ExchangeApiGeneratorUtil;
+import com.scz.jxapi.util.CollectionUtil;
 
 /**
- * Specific {@link PojoGenerator} for REST/Websocket endpoints request/response POJOs.
- * @author Sylvestre COZIC
- *
+ * Specific {@link PojoGenerator} for REST/Websocket endpoints
+ * request/response/message 'object' properties and sub-properties.
+ * <ul>
+ * <li>Such POJOs are annotated with
+ * {@link com.fasterxml.jackson.databind.annotation.JsonSerialize} to use a
+ * custom serializer.</li>
+ * <li>Properties of the POJOs are generated according to the properties of the
+ * API method request/response/message {@link Field} when it is of 'object'
+ * type.</li>
+ * <li>Can be supplemented with additional class body and implemented
+ * interfaces.</li>
+ * </ul>
  */
 public class EndpointPojoGenerator extends PojoGenerator {
-	
-	private static final Logger log = LoggerFactory.getLogger(EndpointPojoGenerator.class);
 
 	public EndpointPojoGenerator(String className, 
 								 String description, 
@@ -29,10 +33,6 @@ public class EndpointPojoGenerator extends PojoGenerator {
 								 List<String> implementedInterfaces, 
 								 String additionnalClassBody) throws IOException {
 		super(className);
-		if (log.isDebugEnabled())
-			log.debug("Generating POJO:" + className + " with fields:" 
-						+ StringUtils.truncate(String.valueOf(fields), 192) 
-						+ ", implemented interfaces:" + implementedInterfaces);
 		String serializerClassName = EndpointPojoGeneratorUtil.getSerializerClassName(className);
 		addImport(serializerClassName);
 		addImport(com.fasterxml.jackson.databind.annotation.JsonSerialize.class.getName());
@@ -42,13 +42,16 @@ public class EndpointPojoGenerator extends PojoGenerator {
 										+ getTypeDeclaration());
 		setDescription(description);
 		setImplementedInterfaces(implementedInterfaces);
-		for (Field field: fields) {
-			if (field.getType().isObject()) {
-				generateObjectParameterTypePojoField(field);
-			} else {
-				generateSimpleParameterTypePojoField(field);
+		if (!CollectionUtil.isEmpty(fields)) {
+			for (Field field: fields) {
+				if (field.getType().isObject()) {
+					generateObjectParameterTypePojoField(field);
+				} else {
+					generateSimpleParameterTypePojoField(field);
+				}
 			}
 		}
+	
 		if (additionnalClassBody != null) {
 			appendToBody(additionnalClassBody);
 		}
@@ -68,10 +71,8 @@ public class EndpointPojoGenerator extends PojoGenerator {
 	
 	private void generateSimpleParameterTypePojoField(Field field) {
 		String parameterClass = ExchangeJavaWrapperGeneratorUtil.getClassNameForParameterType(field.getType(), getImports(), null);
-		if (!parameterClass.startsWith("java.lang") && parameterClass.contains(".")) {
-			addImport(parameterClass);
-			parameterClass = JavaCodeGenerationUtil.getClassNameWithoutPackage(parameterClass);
-		}
+		addImport(parameterClass);
+		parameterClass = JavaCodeGenerationUtil.getClassNameWithoutPackage(parameterClass);
 		addField(PojoField.create(parameterClass, field.getName(), field.getMsgField(), field.getDescription()));
 	}
 

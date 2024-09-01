@@ -14,7 +14,6 @@ import org.slf4j.LoggerFactory;
 
 /**
  * Helper methods around java code generation
- * @author Sylvestre COZIC
  */
 public class JavaCodeGenerationUtil {
 	

@@ -6,10 +6,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.scz.jxapi.exchange.descriptor.CanonicalType;
 import com.scz.jxapi.exchange.descriptor.Field;
 import com.scz.jxapi.generator.java.JavaCodeGenerationUtil;
@@ -26,7 +22,6 @@ import com.scz.jxapi.netutils.deserialization.json.AbstractJsonMessageDeserializ
  */
 public class JsonMessageDeserializerClassesGenerator implements ClassesGenerator {
 	
-	private static final Logger log = LoggerFactory.getLogger(JsonMessageDeserializerClassesGenerator.class);
 	private String deserializedClassName;
 	private List<Field> fields;
 	
@@ -37,12 +32,10 @@ public class JsonMessageDeserializerClassesGenerator implements ClassesGenerator
 
 	@Override
 	public void generateClasses(Path outputFolder) throws IOException {
-		if (log.isDebugEnabled())
-			log.debug("Generating Deserializer for :" 
-						+ deserializedClassName 
-						+ " with fields:" 
-						+ StringUtils.truncate(String.valueOf(fields), 192) 
-						+ " to:" + outputFolder);
+		if (fields == null) {
+			// Object with objectName referencing an object field defined somewhere else in API descriptor.
+			return;
+		}
 		Set<String> imports = new HashSet<>();
 		for (Field field: fields) {
 			if ((field.getType().isObject())
@@ -62,7 +55,7 @@ public class JsonMessageDeserializerClassesGenerator implements ClassesGenerator
 			}
 		}
 		JsonMessageDeserializerGenerator deserializerGenerator = new JsonMessageDeserializerGenerator(deserializedClassName, fields);
-//		deserializerGenerator.getImports().addAll(imports);
 		deserializerGenerator.writeJavaFile(outputFolder);
 	}
+
 }

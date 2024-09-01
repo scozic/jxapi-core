@@ -17,8 +17,6 @@ import com.scz.jxapi.generator.java.exchange.ClassesGeneratorTestUtil;
 
 /**
  * Unit test for {@link JsonMessageDeserializerClassesGenerator}
- * @author Sylvestre COZIC
- *
  */
 public class JsonMessageDeserializerClassesGeneratorTest {
 	
@@ -59,6 +57,27 @@ public class JsonMessageDeserializerClassesGeneratorTest {
 		checkSourceFileExists(Path.of("MyPojoFooDeserializer.java"));
 		checkSourceFileExists(Path.of("MyPojoFooBarDeserializer.java"));
 		checkSourceFileExists(Path.of("MyPojoTotoDeserializer.java"));
+	}
+	
+	@Test
+	public void testGenerateJsonDeserializerClasses_NullObjectProperties() throws IOException {
+		srcFolder = ClassesGeneratorTestUtil.generateTmpDir();
+		String typeName = "com.x.MyPojo";
+		JsonMessageDeserializerClassesGenerator generator = new JsonMessageDeserializerClassesGenerator(typeName, null);
+		generator.generateClasses(srcFolder);
+		checkJavaFilesCount(0);
+	}
+	
+	@Test
+	public void testGenerateJsonDeserializerClasses_NullObjectSubProperties() throws IOException {
+		srcFolder = ClassesGeneratorTestUtil.generateTmpDir();
+		String typeName = "com.x.MyPojo";
+		List<Field> endpointParameters = new ArrayList<>();
+		endpointParameters.add(Field.createObject("OBJECT", "foo", "f", null, null, null));
+		JsonMessageDeserializerClassesGenerator generator = new JsonMessageDeserializerClassesGenerator(typeName, endpointParameters);
+		generator.generateClasses(srcFolder);
+		checkJavaFilesCount(1);
+		checkSourceFileExists(Path.of("MyPojoDeserializer.java"));
 	}
 	
 	private void checkJavaFilesCount(int count) throws IOException {

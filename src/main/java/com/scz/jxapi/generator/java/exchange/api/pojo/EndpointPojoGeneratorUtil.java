@@ -9,6 +9,8 @@ import com.scz.jxapi.generator.java.JavaCodeGenerationUtil;
  * POJOs and associated JSON serializer/deserializers.
  */
 public class EndpointPojoGeneratorUtil {
+	
+	private EndpointPojoGeneratorUtil() {}
 
 	/**
 	 * Generates the expected full class name of JSON serializer class for a given
