@@ -288,14 +288,14 @@ public class AbstractExchangeApiTest {
 	
 	@Test(expected = IllegalStateException.class)
 	public void testCreateWebsocketEndpointNullWebsocketManager() {
-		DefaultWebsocketEndpoint<String> wsEndpoint = (DefaultWebsocketEndpoint<String>) exchangeApi.createWebsocketEndpoint("myWsApi", RawStringMessageDeserializer.INSTANCE);
+		DefaultWebsocketEndpoint<String> wsEndpoint = (DefaultWebsocketEndpoint<String>) exchangeApi.createWebsocketEndpoint("myWsApi", RawStringMessageDeserializer.getInstance());
 		Assert.assertNotNull(wsEndpoint);
 	}
 	
 	@Test
 	public void testCreateWebsocketEndpointOk() { 
 		exchangeApi.createWebsocketManager("wss://myexchange.com/ws", MockWebsocketFactory.class.getName(), null);
-		DefaultWebsocketEndpoint<String> wsEndpoint = (DefaultWebsocketEndpoint<String>) exchangeApi.createWebsocketEndpoint("myWsApi", RawStringMessageDeserializer.INSTANCE);
+		DefaultWebsocketEndpoint<String> wsEndpoint = (DefaultWebsocketEndpoint<String>) exchangeApi.createWebsocketEndpoint("myWsApi", RawStringMessageDeserializer.getInstance());
 		Assert.assertNotNull(wsEndpoint);
 	}
 	
@@ -304,7 +304,7 @@ public class AbstractExchangeApiTest {
 		MockExchangeApiObserver observer = new MockExchangeApiObserver();
 		exchangeApi.subscribeObserver(observer);
 		exchangeApi.createWebsocketManager("wss://myexchange.com/ws", MockWebsocketFactory.class.getName(), null);
-		DefaultWebsocketEndpoint<String> wsEndpoint = (DefaultWebsocketEndpoint<String>) exchangeApi.createWebsocketEndpoint("myWsApi", RawStringMessageDeserializer.INSTANCE);
+		DefaultWebsocketEndpoint<String> wsEndpoint = (DefaultWebsocketEndpoint<String>) exchangeApi.createWebsocketEndpoint("myWsApi", RawStringMessageDeserializer.getInstance());
 		Assert.assertNotNull(wsEndpoint);
 		wsEndpoint.subscribe(WebsocketSubscribeRequest.create(null, "mytopic", DefaultWebsocketMessageTopicMatcher.create()), new MockWebsocketListener<>());
 		ExchangeApiEvent event = observer.pop();

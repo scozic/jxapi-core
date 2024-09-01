@@ -1,5 +1,8 @@
 package com.scz.jxapi.netutils.deserialization;
 
+/**
+ * Deserializer for plain integer values.
+ */
 public class RawIntegerMessageDeserializer implements MessageDeserializer<Integer> {
 	
 	private static final RawIntegerMessageDeserializer INSTANCE = new RawIntegerMessageDeserializer();
@@ -10,6 +13,9 @@ public class RawIntegerMessageDeserializer implements MessageDeserializer<Intege
 
 	@Override
 	public Integer deserialize(String msg) {
+		if (msg == null) {
+			return null;
+		}
 		return Integer.valueOf(msg);
 	}
 

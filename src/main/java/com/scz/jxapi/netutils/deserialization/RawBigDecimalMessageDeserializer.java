@@ -4,6 +4,9 @@ import java.math.BigDecimal;
 
 import com.scz.jxapi.util.EncodingUtil;
 
+/**
+ * Deserializer for plain BigDecimal values.
+ */
 public class RawBigDecimalMessageDeserializer implements MessageDeserializer<BigDecimal> {
 	
 	private static final RawBigDecimalMessageDeserializer INSTANCE = new RawBigDecimalMessageDeserializer();
