@@ -1,14 +1,12 @@
 package com.scz.jxapi.generator.java.exchange.api.pojo;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import org.junit.Assert;
 import org.junit.Test;
 
-import com.scz.jxapi.exchange.descriptor.CanonicalType;
 import com.scz.jxapi.exchange.descriptor.Field;
+import com.scz.jxapi.exchange.descriptor.Type;
 
 
 /**
@@ -19,24 +17,25 @@ public class JsonMessageDeserializerGeneratorTest {
 	@Test
 	public void testGenerateDeserializer() {
 		String deserialiazedTypeName = "com.x.MyPojo";
-		List<Field> endpointParameters = new ArrayList<>();
-		endpointParameters.add(Field.create(CanonicalType.LONG.name(), "id", null, "identifier", "123"));
-		endpointParameters.add(Field.create(CanonicalType.STRING.name(), "name", null, "Player name", "Bob"));
-		endpointParameters.add(Field.create(CanonicalType.INT.name(), "level", null, "Current level", "1"));
-		endpointParameters.add(Field.create(CanonicalType.BIGDECIMAL.name(), "score", null, "Current score", "0.00"));
-		endpointParameters.add(Field.create(CanonicalType.BOOLEAN.name(), "over", null, "Game over?", false));
-		endpointParameters.add(Field.createObject("OBJECT_LIST", "foo", "f", null,
-				Arrays.asList(Field.create(CanonicalType.TIMESTAMP.name(), "time", null, "Creation time", "0"),
-							  Field.createObject(CanonicalType.OBJECT.name(), "bar", "b", "The bar",
-									  Arrays.asList(Field.create(CanonicalType.STRING.name(), "name", null, "Bar name", "my bar")), null)
-						), null
-				));
-		endpointParameters.add(Field.createObject( "OBJECT_LIST_MAP", "toto", "toto", null,
-				Arrays.asList(Field.create(CanonicalType.STRING.name(), "id", null, "Toto ID", "toto#1")), null
-				));
-		endpointParameters.add(Field.createObject( "OBJECT", "titi", "ti", null,
-				Arrays.asList(Field.create(CanonicalType.STRING.name(), "name", null, "Titi name", "TiName")), null
-				));
+		List<Field> endpointParameters = List.of(
+		  Field.builder().type(Type.LONG).name("id").build(),
+		  Field.builder().type(Type.STRING).name("name").build(),
+		  Field.builder().type(Type.INT).name("level").build(),
+		  Field.builder().type(Type.BIGDECIMAL).name("score").build(),
+		  Field.builder().type(Type.BOOLEAN).name("over").build(),
+		  Field.builder().type("OBJECT_LIST").name("foo").msgField("f")
+						 .property(Field.builder().type(Type.TIMESTAMP).name("time").build())
+						 .property(Field.builder().type(Type.OBJECT).name("bar").msgField("b")
+						  			    .property(Field.builder().type(Type.STRING).name("name").build())
+										.build())
+						 .build(),
+		  Field.builder().type("OBJECT_LIST_MAP").name("toto")
+						 .property(Field.builder().type(Type.STRING).name("id").build())
+						 .build(),
+		  Field.builder().type(Type.OBJECT).name("titi").msgField("ti")
+						 .property(Field.builder().type(Type.STRING).name("name").build())
+						 .build()
+		);
 		
 		JsonMessageDeserializerGenerator generator = new JsonMessageDeserializerGenerator(deserialiazedTypeName, endpointParameters);
 		Assert.assertEquals("package com.x.deserializers;\n"

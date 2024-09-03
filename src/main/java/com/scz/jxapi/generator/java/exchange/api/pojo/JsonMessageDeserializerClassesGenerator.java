@@ -6,8 +6,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import com.scz.jxapi.exchange.descriptor.CanonicalType;
 import com.scz.jxapi.exchange.descriptor.Field;
+import com.scz.jxapi.exchange.descriptor.Type;
 import com.scz.jxapi.generator.java.JavaCodeGenerationUtil;
 import com.scz.jxapi.generator.java.exchange.ClassesGenerator;
 import com.scz.jxapi.generator.java.exchange.api.ExchangeApiGeneratorUtil;
@@ -46,12 +46,14 @@ public class JsonMessageDeserializerClassesGenerator implements ClassesGenerator
 		for (Field field: fields) {
 			if ((field.getType().isObject())
 				&& field.getParameters() != null) {
-				Field objectParam = Field.createObject(CanonicalType.OBJECT.name(), 
-																		 field.getName(), 
-																		 field.getMsgField(), 
-																		 field.getDescription(), 
-																		 field.getParameters(),
-																		 field.getObjectName());
+				Field objectParam = Field.builder()
+										 .name(field.getName())
+										 .type(Type.OBJECT)
+										 .description(field.getDescription())
+										 .msgField(field.getMsgField())
+										 .properties(field.getParameters())
+										 .objectName(field.getObjectName())
+										 .build();
 				new JsonMessageDeserializerClassesGenerator(JavaCodeGenerationUtil.getClassPackage(deserializedClassName) + "."
 																+ ExchangeApiGeneratorUtil.getClassNameForField(
 																		objectParam, 

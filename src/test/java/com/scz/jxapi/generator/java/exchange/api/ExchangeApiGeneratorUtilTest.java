@@ -618,7 +618,11 @@ public class ExchangeApiGeneratorUtilTest {
     public void testEnpointHasArguments_ObjectTypeWithArgs() {
         ExchangeApiDescriptor apiDescriptor = new ExchangeApiDescriptor();
         apiDescriptor.setName("MyApi");
-        Field f = Field.createObject(Type.OBJECT.toString(), "foo", null, null, List.of(new Field()), null);
+        Field f = Field.builder()
+        			   .type(Type.OBJECT)
+        			   .name("foo")
+        			   .properties(List.of(new Field()))
+        			   .build();
         Assert.assertTrue(ExchangeApiGeneratorUtil.endpointHasArguments(f, apiDescriptor));
     }
     
@@ -626,7 +630,11 @@ public class ExchangeApiGeneratorUtilTest {
     public void testEnpointHasArguments_ObjectTypeWithZeroArgs() {
         ExchangeApiDescriptor apiDescriptor = new ExchangeApiDescriptor();
         apiDescriptor.setName("MyApi");
-        Field f = Field.createObject(Type.OBJECT.toString(), "foo", null, null, List.of(), null);
+        Field f = Field.builder()
+ 			   		   .type(Type.OBJECT)
+ 			   		   .name("foo")
+ 			   		   .properties(List.of())
+ 			   		   .build();
         Assert.assertFalse(ExchangeApiGeneratorUtil.endpointHasArguments(f, apiDescriptor));
     }
     

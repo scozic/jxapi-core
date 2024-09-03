@@ -116,46 +116,6 @@ public class Field {
 		return new FieldBuilder();
 	}
 	
-	/**
-	 * Create a new field with given properties
-	 * @param type see {@link Type}
-	 * @param name field name
-	 * @param msgField the name of the field in the message sent or received to the endpoint. Usually the actual key in JSON structure.
-	 * @param description field description A human readable description of the field
-	 * @param sampleValue a sample value of the field, used for documentation purpose and sample value creation in demo classes
-	 * @return the created field
-	 */
-	public static Field create(String type, String name, String msgField, String description, Object sampleValue) {
-		Field p = new Field();
-		p.setType(type);
-		p.setName(name);
-		p.setMsgField(msgField);
-		p.setDescription(description);
-		p.setSampleValue(sampleValue);
-		return p;
-	}
-	
-	/**
-	 * Create a new object field with given properties
-	 * @param type see {@link Type}
-	 * @param name field name
-	 * @param msgField the name of the field in the message sent or received to the endpoint. Usually the actual key in JSON structure.
-	 * @param description field description A human readable description of the field
-	 * @param parameters the fields in nested structure
-	 * @param objectName see {@link #getObjectName()}
-	 * @return the created field
-	 */
-	public static Field createObject(String type, String name, String msgField, String description, List<Field> parameters, String objectName) {
-		Field p = new Field();
-		p.setType(type);
-		p.setName(name);
-		p.setMsgField(msgField);
-		p.setDescription(description);
-		p.setParameters(parameters);
-		p.setObjectName(objectName);
-		return p;
-	}
-	
 	private static <T> List<T> cloneList(List<T> l) {
 		return l == null? null: new ArrayList<>(l);
 	}
@@ -225,7 +185,8 @@ public class Field {
 	}
 
 	/**
-	 * @param type The type of the field, see {@link Type}
+	 * Shortcut for <code>setType(Type.fromTypeName(type))</code>
+	 * @param type The type name see {@link Type#toString()}
 	 */
 	public void setType(String type) {
 		this.type = Type.fromTypeName(type);

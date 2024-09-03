@@ -182,6 +182,8 @@ public class Type {
 	}
 	
 	/**
+	 * The name of this type displayed as <code>canonical_type_name[subtype_name]</code>
+	 * When canonical type is null, <code>UNDEFINED_TYPE</code> String is returned.
 	 * @return type name
 	 */
 	public String toString() {

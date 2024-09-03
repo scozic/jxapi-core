@@ -38,27 +38,6 @@ public class FieldTest {
         Assert.assertEquals(List.of("key1", "value1"), field.getSampleMapKeyValue());
     }
 
-    @Test 
-    public void testCreate() {
-        Field field = Field.create("STRING", "myName", "m", "myDescription", "mySampleValue");
-        Assert.assertEquals("myName", field.getName());
-        Assert.assertEquals(Type.STRING, field.getType());
-        Assert.assertEquals("myDescription", field.getDescription());
-        Assert.assertEquals("mySampleValue", field.getSampleValue());
-        Assert.assertEquals("m", field.getMsgField());
-    }
-
-    @Test
-    public void testCreateObject() {
-        Field field = Field.createObject("OBJECT", "myName", "m", "myDescription", List.of(), "MyObjectName");
-        Assert.assertEquals("myName", field.getName());
-        Assert.assertEquals(Type.fromTypeName("OBJECT"), field.getType());
-        Assert.assertEquals("myDescription", field.getDescription());
-        Assert.assertEquals("m", field.getMsgField());
-        Assert.assertEquals(List.of(), field.getParameters());
-        Assert.assertEquals("MyObjectName", field.getObjectName());
-    }
-
     @Test
     public void testCloneObjectField() {
         Field field = new Field();

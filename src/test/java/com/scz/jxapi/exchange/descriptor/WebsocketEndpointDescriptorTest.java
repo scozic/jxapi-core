@@ -21,8 +21,20 @@ public class WebsocketEndpointDescriptorTest {
         descriptor.setDescription("description");
         descriptor.setTopicParametersListSeparator("|");
         descriptor.setTopic("atopic");
-        descriptor.setRequest(Field.create("STRING", "myRequestField", "mf", "Test request", "foo"));
-        descriptor.setMessage(Field.create("STRING", "myMessageField", "mm", "Test message", "bar"));
+        descriptor.setRequest(Field.builder()
+        		   .type(Type.STRING)
+        		   .name("myRequestField")
+        		   .msgField("mf")
+        		   .description("Test request")
+        		   .sampleValue("foo")
+        		   .build());
+        descriptor.setMessage(Field.builder()
+			       .type(Type.STRING)
+			       .name("myMessageField")
+			       .msgField("mm")
+			       .description("Test message")
+			       .sampleValue("bar")
+			       .build());
         WebsocketMessageTopicMatcherFieldDescriptor websocketMessageTopicMatcherDescriptor = new WebsocketMessageTopicMatcherFieldDescriptor();
         websocketMessageTopicMatcherDescriptor.setName("field1");
         websocketMessageTopicMatcherDescriptor.setValue("value1");

@@ -4,14 +4,13 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import org.junit.After;
 import org.junit.Test;
 
-import com.scz.jxapi.exchange.descriptor.CanonicalType;
 import com.scz.jxapi.exchange.descriptor.Field;
+import com.scz.jxapi.exchange.descriptor.Type;
 import com.scz.jxapi.generator.java.JavaCodeGenerationUtil;
 import com.scz.jxapi.generator.java.exchange.ClassesGeneratorTestUtil;
 
@@ -36,19 +35,18 @@ public class EndpointPojoClassesGeneratorTest {
 		String typeName = "com.x.MyPojo";
 		String typeDescription = "Used in EndpointPojoGeneratorTest";
 		List<Field> endpointParameters = new ArrayList<>();
-		endpointParameters.add(Field.create(CanonicalType.LONG.name(), "id", null, "identifier", "123"));
-		endpointParameters.add(Field.create(CanonicalType.INT.name(), "score", null, "Current score", "0"));
-		endpointParameters.add(Field.createObject("OBJECT_LIST", "foo", "f", null,
-				Arrays.asList(Field.create(CanonicalType.TIMESTAMP.name(), "time", null, "Creation time", "0"),
-							  Field.createObject(CanonicalType.OBJECT.name(), "bar", "b", "The bar",
-									  Arrays.asList(Field.create(CanonicalType.STRING.name(), "name", null, "Bar name", "my bar")), null)
-						), null
-				));
-		endpointParameters.add(Field.createObject( "OBJECT_LIST_MAP", "toto", "toto", null,
-				Arrays.asList(Field.create(CanonicalType.STRING.name(), "id", null, "Toto ID", "toto#1")), null
-				));
-		
-		EndpointPojoClassesGenerator generator = new EndpointPojoClassesGenerator(typeName, typeDescription, endpointParameters, List.of("com.x.common.MyInterface"), null);
+		endpointParameters.add(Field.builder().type(Type.LONG).name("id").description("identifier").build());
+		endpointParameters.add(Field.builder().type(Type.INT).name("score").description("Current score").build());
+		endpointParameters.add(Field.builder().type("OBJECT_LIST").name("foo")
+									.property(Field.builder().type(Type.TIMESTAMP).name("time").build())
+									.property(Field.builder().type(Type.OBJECT).name("bar")
+												   .property(Field.builder().type(Type.STRING).name("name").build())
+												   .build())
+									.build());
+		endpointParameters.add(Field.builder().type("OBJECT_LIST_MAP").name("toto")
+									.property(Field.builder().type(Type.STRING).name("id").build())
+									.build());
+		EndpointPojoClassesGenerator generator = new EndpointPojoClassesGenerator(typeName, typeDescription, endpointParameters, null, null);
 		generator.generateClasses(srcFolder);
 		checkJavaFilesCount(4);
 		checkSourceFileExists(Path.of("MyPojo.java"));
@@ -63,11 +61,10 @@ public class EndpointPojoClassesGeneratorTest {
 		String typeName = "com.x.MyPojo";
 		String typeDescription = "Used in EndpointPojoGeneratorTest";
 		List<Field> endpointParameters = new ArrayList<>();
-		endpointParameters.add(Field.create(CanonicalType.LONG.name(), "id", null, "identifier", "123"));
-		endpointParameters.add(Field.create(CanonicalType.INT.name(), "score", null, "Current score", "0"));
-		endpointParameters.add(Field.createObject("OBJECT_LIST", "foo", "f", null, null, null));
-		
-		EndpointPojoClassesGenerator generator = new EndpointPojoClassesGenerator(typeName, typeDescription, endpointParameters, List.of("com.x.common.MyInterface"), null);
+		endpointParameters.add(Field.builder().type(Type.LONG).name("id").description("identifier").build());
+		endpointParameters.add(Field.builder().type(Type.INT).name("score").description("Current score").build());
+		endpointParameters.add(Field.builder().type("OBJECT_LIST").name("foo").build());
+		EndpointPojoClassesGenerator generator = new EndpointPojoClassesGenerator(typeName, typeDescription, endpointParameters, null, null);
 		generator.generateClasses(srcFolder);
 		checkJavaFilesCount(1);
 		checkSourceFileExists(Path.of("MyPojo.java"));

@@ -38,6 +38,16 @@ public class FieldBuilder {
 		field.setType(type);
 		return this;
 	}
+	
+	/**
+	 * Sets the type of the field using type name like <code>STRING_LIST</code>.
+	 * @param type the type of the field to set, see {@link Field#setType(String)}
+	 * @return this builder
+	 */
+	public FieldBuilder type(String type) {
+		field.setType(type);
+		return this;
+	}
 
 	/**
 	 * Sets the description of the field.

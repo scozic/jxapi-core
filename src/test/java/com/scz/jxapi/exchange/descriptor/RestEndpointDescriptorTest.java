@@ -25,9 +25,21 @@ public class RestEndpointDescriptorTest {
         descriptor.setDescription("description");
         descriptor.setUrl("url");
         descriptor.setHttpMethod(HttpMethod.GET);
-        Field request = Field.create("STRING", "request", "r", "request", "sampleValue");
+        Field request = Field.builder()
+        					 .type(Type.STRING)
+        					 .name("request")
+        					 .msgField("r")
+        					 .description("Request data")
+        					 .sampleValue("sampleValue")
+        					 .build();
         descriptor.setRequest(request);
-        Field response = Field.create("STRING", "response", "r", "response", "sampleValue");
+        Field response = Field.builder()
+				 .type(Type.STRING)
+				 .name("response")
+				 .msgField("r")
+				 .description("Request data")
+				 .sampleValue("sampleValue")
+				 .build();
         descriptor.setResponse(response);
         descriptor.setUrlParameters("urlParameters");
         descriptor.setUrlParametersListSeparator("urlParametersListSeparator");

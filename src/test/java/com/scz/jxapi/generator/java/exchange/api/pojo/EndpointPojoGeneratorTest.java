@@ -1,14 +1,12 @@
 package com.scz.jxapi.generator.java.exchange.api.pojo;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import org.junit.Assert;
 import org.junit.Test;
 
-import com.scz.jxapi.exchange.descriptor.CanonicalType;
 import com.scz.jxapi.exchange.descriptor.Field;
+import com.scz.jxapi.exchange.descriptor.Type;
 
 /**
  * Unit test for {@link EndpointPojoGenerator}
@@ -19,18 +17,19 @@ public class EndpointPojoGeneratorTest {
 	public void testGenerate() throws Exception {
 		String typeName = "com.x.MyPojo";
 		String typeDescription = "Used in EndpointPojoGeneratorTest";
-		List<Field> endpointParameters = new ArrayList<>();
-		endpointParameters.add(Field.create(CanonicalType.LONG.name(), "id", null, "identifier", "123"));
-		endpointParameters.add(Field.create(CanonicalType.INT.name(), "score", null, "Current score", "0"));
-		endpointParameters.add(Field.createObject("OBJECT_LIST", "foo", "f", null,
-				Arrays.asList(Field.create(CanonicalType.TIMESTAMP.name(), "time", null, "Creation time", "0"),
-							  Field.createObject(CanonicalType.OBJECT.name(), "bar", "b", "The bar",
-									  Arrays.asList(Field.create(CanonicalType.STRING.name(), "name", null, "Bar name", "my bar")), null)
-						), null
-				));
-		endpointParameters.add(Field.createObject( "OBJECT_LIST_MAP", "toto", "toto", null,
-				Arrays.asList(Field.create(CanonicalType.STRING.name(), "id", null, "Toto ID", "toto#1")), null
-				));
+		List<Field> endpointParameters = List.of(
+		  Field.builder().type(Type.LONG).name("id").description("identifier").build(),
+		  Field.builder().type(Type.INT).name("score").description("Current score").build(),
+		  Field.builder().type("OBJECT_LIST").name("foo").msgField("f").description("The foo")
+						 .property(Field.builder().type(Type.TIMESTAMP).name("time").description("Creation time").build())
+						 .property(Field.builder().type(Type.OBJECT).name("bar").description("The bar")
+								 				  .property(Field.builder().type(Type.STRING).name("name").build())
+								 				  .build())
+						 .build(),
+		  Field.builder().type("OBJECT_LIST_MAP").name("toto").description("Toto")
+						 .property(Field.builder().type(Type.STRING).name("id").description("Toto ID").build())
+						 .build()
+		);
 		
 		EndpointPojoGenerator generator = new EndpointPojoGenerator(typeName, typeDescription, endpointParameters, List.of("com.x.common.MyInterface"), "// Additionnal body here\n\n");
 		Assert.assertEquals("package com.x;\n"
@@ -54,14 +53,14 @@ public class EndpointPojoGeneratorTest {
 				+ "  private Map<String, List<MyPojoToto>> toto;\n"
 				+ "  \n"
 				+ "  /**\n"
-				+ "   * @return  Message field <strong>f</strong>\n"
+				+ "   * @return The foo Message field <strong>f</strong>\n"
 				+ "   */\n"
 				+ "  public List<MyPojoFoo> getFoo() {\n"
 				+ "    return foo;\n"
 				+ "  }\n"
 				+ "  \n"
 				+ "  /**\n"
-				+ "   * @param foo  Message field <strong>f</strong>\n"
+				+ "   * @param foo The foo Message field <strong>f</strong>\n"
 				+ "   */\n"
 				+ "  public void setFoo(List<MyPojoFoo> foo) {\n"
 				+ "    this.foo = foo;\n"
@@ -96,14 +95,14 @@ public class EndpointPojoGeneratorTest {
 				+ "  }\n"
 				+ "  \n"
 				+ "  /**\n"
-				+ "   * @return  Message field <strong>toto</strong>\n"
+				+ "   * @return Toto\n"
 				+ "   */\n"
 				+ "  public Map<String, List<MyPojoToto>> getToto() {\n"
 				+ "    return toto;\n"
 				+ "  }\n"
 				+ "  \n"
 				+ "  /**\n"
-				+ "   * @param toto  Message field <strong>toto</strong>\n"
+				+ "   * @param toto Toto\n"
 				+ "   */\n"
 				+ "  public void setToto(Map<String, List<MyPojoToto>> toto) {\n"
 				+ "    this.toto = toto;\n"
@@ -141,9 +140,9 @@ public class EndpointPojoGeneratorTest {
 	public void testGenerate_NullAdditionnalBody() throws Exception {
 		String typeName = "com.x.MyPojoWithNullAdditionnalBody";
 		String typeDescription = "Used in EndpointPojoGeneratorTest";
-		List<Field> endpointParameters = new ArrayList<>();
-		endpointParameters.add(Field.create(CanonicalType.LONG.name(), "id", null, "identifier", "123"));
-		
+		List<Field> endpointParameters = List.of(
+			Field.builder().type(Type.LONG).name("id").description("identifier").build()
+		);
 		EndpointPojoGenerator generator = new EndpointPojoGenerator(typeName, typeDescription, endpointParameters, null, null);
 		Assert.assertEquals("package com.x;\n"
 				+ "\n"
@@ -200,7 +199,6 @@ public class EndpointPojoGeneratorTest {
 	public void testGenerate_NullProperties() throws Exception {
 		String typeName = "com.x.MyPojoWithNullProperties";
 		String typeDescription = "Used in EndpointPojoGeneratorTest";
-		
 		EndpointPojoGenerator generator = new EndpointPojoGenerator(typeName, typeDescription, null, null, null);
 		Assert.assertEquals("package com.x;\n"
 				+ "\n"
