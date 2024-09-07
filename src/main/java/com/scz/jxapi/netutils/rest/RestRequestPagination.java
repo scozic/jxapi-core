@@ -79,6 +79,8 @@ public class RestRequestPagination {
 		}
 		endpoint.apply(request).thenAccept(responsePage -> {
 			try {
+				if (log.isDebugEnabled())
+					 log.debug("Got response to request" + request + ":" + responsePage);
 				if (!responsePage.isOk()) {
 					response.complete(responsePage);
 				} else {

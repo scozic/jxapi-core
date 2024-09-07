@@ -45,6 +45,15 @@ public class RestRequestPaginationTest {
 		}
 	}
 	
+//	public String throwException() {
+//		throw new RuntimeException("Error processing response");
+//	}
+	
+//	private static  int throwException(TestResponse r) {
+//		
+//		return 0;
+//	}
+	
 	@Test
 	public void testFetchAllPagesOnlyOneResponsePage() throws Exception {
 		TestEndpoint endpoint = new TestEndpoint();
@@ -94,6 +103,20 @@ public class RestRequestPaginationTest {
 		Assert.assertEquals(exceptionMsg, response.getException().getMessage());
 	}
 	
+	@Test
+	public void testExceptionProcessingResponse() throws Exception {
+		TestEndpoint endpoint = new TestEndpoint();
+		endpoint.addPreparedResponses(-1);
+		RestResponse<TestResponse> response = RestRequestPagination.fetchAllPages(
+				createRequest(0), 
+				endpoint::call,
+				(index, r) -> r.setIndex(index), 
+				a -> {throw new RuntimeException("Dummy");}, 
+				RestRequestPaginationTest::mergeResponses).get();
+		Assert.assertFalse(response.isOk());
+		Assert.assertNotNull(response.getException());
+	}
+	
 	private static class TestRequest {
 		
 		private String index;
@@ -126,6 +149,7 @@ public class RestRequestPaginationTest {
 		public void setItems(List<String> items) {
 			this.items = items;
 		}
+
 	}
 	
 	private static class TestEndpoint  {

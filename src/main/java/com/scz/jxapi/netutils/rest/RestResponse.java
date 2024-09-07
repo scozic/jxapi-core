@@ -77,7 +77,9 @@ public class RestResponse<A> {
 	public String toString() {
 		Map<String, Object> fields = new LinkedHashMap<>();
 		fields.put("httpStatus", httpStatus);
-		fields.put("exception", exception);
+		if (exception != null) {
+			fields.put("exception", exception.toString());
+		}
 		if (response != null) {
 			fields.put("response", EncodingUtil.prettyPrintLongString(JsonUtil.pojoToJsonString(response), 512));
 		} else if (httpResponse != null) {

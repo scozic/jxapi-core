@@ -8,12 +8,16 @@ import java.util.List;
 import java.util.Map;
 
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
+import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.JsonToken;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.databind.SerializerProvider;
+import com.fasterxml.jackson.databind.module.SimpleModule;
+import com.fasterxml.jackson.databind.ser.std.StdSerializer;
 import com.scz.jxapi.netutils.deserialization.json.JsonDeserializer;
 import com.scz.jxapi.netutils.deserialization.json.field.BigDecimalJsonFieldDeserializer;
 import com.scz.jxapi.netutils.deserialization.json.field.BooleanJsonFieldDeserializer;
@@ -28,6 +32,18 @@ import com.scz.jxapi.netutils.deserialization.json.field.StringJsonFieldDeserial
 public class JsonUtil {
 	
 	private JsonUtil() {}
+	
+	private static class ExceptionSerializer extends StdSerializer<Exception> {
+		
+		public ExceptionSerializer() {
+			super(Exception.class);
+		}
+
+		@Override
+		public void serialize(Exception value, JsonGenerator gen, SerializerProvider provider) throws IOException {
+			gen.writeString(String.valueOf(value));
+		}
+	}
 
 	public static String pojoToJsonString(Object pojo) { 
 		if (pojo == null) {
@@ -37,6 +53,9 @@ public class JsonUtil {
 			ObjectMapper om = new ObjectMapper();
 			om.disable(SerializationFeature.FAIL_ON_EMPTY_BEANS);
 			om.setSerializationInclusion(Include.NON_NULL);
+			SimpleModule exceptionSerialization = new SimpleModule(); 
+			exceptionSerialization.addSerializer(new ExceptionSerializer());
+			om.registerModule(exceptionSerialization);
 			return om.writeValueAsString(pojo);
 		} catch (JsonProcessingException e) {
 			throw new IllegalArgumentException("Error while trying to serialize " + pojo.getClass().getName() + " instance to JSON", e);

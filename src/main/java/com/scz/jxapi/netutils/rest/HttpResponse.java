@@ -109,7 +109,7 @@ public class HttpResponse {
 	
 	@Override
 	public String toString() {
-		return getClass().getSimpleName() + EncodingUtil.pojoToString(this);
+		return EncodingUtil.pojoToString(this);
 	}
 
 }
