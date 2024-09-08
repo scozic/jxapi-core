@@ -1,6 +1,6 @@
 package com.scz.jxapi.netutils.rest.ratelimits;
 
-import com.scz.jxapi.util.JsonUtil;
+import com.scz.jxapi.util.EncodingUtil;
 
 /**
  * Encapsulates a rate limit definition for an API endpoint, an API group (see
@@ -16,6 +16,14 @@ import com.scz.jxapi.util.JsonUtil;
  */
 public class RateLimitRule {
 	
+	/**
+	 * Creates a new rate limit rule with given id, time frame and maximum request count.
+	 * 
+	 * @param id Unique identifier of this rule.
+	 * @param timeFrame Time frame in ms for which request count should not exceed limit.
+	 * @param maxRequestCount Maximum number of requests that can be attempted within rolling time frame.
+	 * @return A new rate limit rule.
+	 */
 	public static RateLimitRule createRule(String id, long timeFrame, int maxRequestCount) {
 		RateLimitRule rule = new RateLimitRule();
 		rule.setId(id);
@@ -24,6 +32,14 @@ public class RateLimitRule {
 		return rule;
 	}
 	
+	/**
+	 * Creates a new rate limit rule with given id, time frame and maximum total weight.
+	 * 
+	 * @param id Unique identifier of this rule.
+	 * @param timeFrame Time frame in ms for which cumulated weight should not exceed limit.
+	 * @param maxWeight Maximum cumulated weight of calls within time frame limitation.
+	 * @return A new rate limit rule.
+	 */
 	public static RateLimitRule createWeightedRule(String id, long timeFrame, int maxWeight) {
 		RateLimitRule rule = new RateLimitRule();
 		rule.setId(id);
@@ -40,16 +56,23 @@ public class RateLimitRule {
 	
 	private int maxTotalWeight = -1;
 	
+	/**
+	 * @return Unique identifier of this rule.
+	 */
 	public String getId() {
 		return id;
 	}
 
+	/**
+	 * @see #getId()
+	 */
 	public void setId(String id) {
 		this.id = id;
 	}
 
 	/**
-	 * @return time frame in ms for which request count or cumulated weight should not exceed limit.
+	 * @return time frame in ms for which request count or cumulated weight should
+	 *         not exceed limit.
 	 */
 	public long getTimeFrame() {
 		return timeFrame;
@@ -63,7 +86,9 @@ public class RateLimitRule {
 	}
 
 	/**
-	 * @return The maximum number of requests that can be attempted within rolling time frame. A negative value means it should not be taken into account and this rate limit is expressed in cumulated weight.
+	 * @return The maximum number of requests that can be attempted within rolling
+	 *         time frame. A negative value means it should not be taken into
+	 *         account and this rate limit is expressed in cumulated weight.
 	 * @see #getTimeFrame()
 	 * @see #getMaxTotalWeight()
 	 */
@@ -92,8 +117,13 @@ public class RateLimitRule {
 		this.maxTotalWeight = maxTotalWeight;
 	}
 	
+	/**
+	 * @return A string representation of this rate limit rule. See
+	 *         {@link EncodingUtil#pojoToString(Object)}.
+	 */
+	@Override
 	public String toString() {
-		return getClass().getSimpleName() + JsonUtil.pojoToJsonString(this);
+		return EncodingUtil.pojoToString(this);
 	}
 
 }

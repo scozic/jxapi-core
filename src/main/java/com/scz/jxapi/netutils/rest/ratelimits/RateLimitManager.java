@@ -31,10 +31,18 @@ public class RateLimitManager {
 	
 	private final TreeMap<Long, MilliSecondStat> msStats = new TreeMap<>();
 	
+	/**
+	 * Creates a new rate limit manager for given rate limit rule.
+	 * 
+	 * @param limit the rate limit rule to enforce.
+	 */
 	public RateLimitManager(RateLimitRule limit) {
 		this.rateLimit = limit;
 	}
 	
+	/**
+	 * @return the rate limit rule this manager enforces.
+	 */
 	public RateLimitRule getRateLimit() {
 		return rateLimit;
 	}
@@ -61,6 +69,12 @@ public class RateLimitManager {
 		return requestCall(System.currentTimeMillis(), weight);
 	}
 	
+	/**
+	 * Same as {@link #requestCall()} but using weighted request
+	 * @param now the current time in ms.
+	 * @param weight the weight of request to send.
+	 * @return
+	 */
 	public long requestCall(long now, int weight) {
 		long minDelayBeforeNextPossibleCall = getMinDelayBeforeNextPossibleCall(now, weight);
 		if (minDelayBeforeNextPossibleCall <= 0) {
@@ -71,6 +85,11 @@ public class RateLimitManager {
 		return minDelayBeforeNextPossibleCall;
 	}
 	
+	/**
+	 * @param now the current time in ms.
+	 * @param weight the weight of request to send.
+	 * @return the minimum delay in ms before next possible call with given weight.
+	 */
 	public long getMinDelayBeforeNextPossibleCall(long now, int weight) {
 		if (rateLimit.getMaxRequestCount() == 0 || rateLimit.getMaxTotalWeight() >= 0 && weight > rateLimit.getMaxTotalWeight()) {
 			throw new IllegalArgumentException("Cannot submit call with given weight:" + weight + " that is above threshold of:" + rateLimit);
@@ -91,12 +110,14 @@ public class RateLimitManager {
 		MilliSecondStat mss = msStats.get(now);
 		if (mss == null) {
 			mss = new MilliSecondStat();
-			mss.time = now;
 			msStats.put(now, mss);
 		}
 		return mss;
 	}
 	
+	/**
+	 * @return the current state of this manager.
+	 */
 	public RateLimitManagerStat getCurrentStat() {
 		return getCurrentStat(System.currentTimeMillis());
 	}
@@ -124,23 +145,9 @@ public class RateLimitManager {
 		}
 	}
 
-	private class MilliSecondStat implements Comparable<MilliSecondStat> {
-		long time;
+	private class MilliSecondStat {
 		int requestCount;
 		int totalWeight;
-		
-		@Override
-		public int compareTo(MilliSecondStat o) {
-			if (o == null) {
-				return 1;
-			}
-			if (time > o.time) {
-				return 1;
-			} else if (time < o.time) {
-				return -1;
-			}
-			return 0;
-		}
 	}
 	
 }

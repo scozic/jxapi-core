@@ -5,28 +5,55 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Function;
 
+import org.junit.After;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 
 import com.scz.jxapi.netutils.rest.FutureRestResponse;
 import com.scz.jxapi.netutils.rest.HttpRequest;
 import com.scz.jxapi.netutils.rest.RestResponse;
 
+/**
+ * Unit test for {@link RequestThrottler}
+ */
 public class RequestThrottlerTest {
 	
 	private static final AtomicInteger REQUEST_COUNTER = new AtomicInteger(0);
+	
+	private RequestThrottler throttler;
+	
+	@Before
+	public void setUp() {
+		throttler = new RequestThrottler("myApi");
+	}
 
+	@After
+	public void tearDown() {
+		throttler.dispose();
+	}
+	
 	@Test
 	public void testSubmitOneRequest() {
-		RequestThrottler throttler = new RequestThrottler();
 		RestEndpointStub endpoint = new RestEndpointStub();
 		HttpRequestStub request = new HttpRequestStub();
 		checkCompletesIn(throttler.submit(request, endpoint), 0L);
 	}
 	
 	@Test
+	public void testGetApiName() {
+		Assert.assertEquals("myApi", throttler.getApiName());
+	}
+	
+	@Test
+	public void testGetApiName_nullByDefault() {
+		RequestThrottler throttler2 = new RequestThrottler();
+		Assert.assertNull(throttler2.getApiName());
+		throttler2.dispose();
+	}
+	
+	@Test
 	public void testSubmitRequestsWithSeveralRules() {
-		RequestThrottler throttler = new RequestThrottler();
 		RestEndpointStub endpoint = new RestEndpointStub();
 		
 		RateLimitRule rule1 = RateLimitRule.createRule("RULE1", 1000L, 1);
@@ -48,6 +75,14 @@ public class RequestThrottlerTest {
 		checkCompletesIn(response3, 3000L, start);
 	}
 	
+	@Test(expected = IllegalStateException.class)
+	public void testSubmitRequestOnDisposedThrottlerThrowsExceptin() {
+		throttler.dispose();
+		RestEndpointStub endpoint = new RestEndpointStub();
+		HttpRequestStub request = new HttpRequestStub();
+		throttler.submit(request, endpoint);
+	}
+	
 	private void checkCompletesIn(FutureRestResponse<Long> response, long delay) {
 		checkCompletesIn(response, delay, System.currentTimeMillis());
 	}
@@ -60,7 +95,8 @@ public class RequestThrottlerTest {
 			Assert.fail("Error submitting:" + response);
 		}
 		long actualDelay = end - start;
-		Assert.assertTrue("Response received after:" + actualDelay + ", instead of at least:" + delay, actualDelay >= delay - 500L && actualDelay <= delay + 500L);
+		Assert.assertTrue("Response received after:" + actualDelay + ", instead of at least:" + delay, 
+							actualDelay >= delay - 500L && actualDelay <= delay + 500L);
 	}
 	
 	private class RestEndpointStub implements Function<HttpRequest, FutureRestResponse<Long>> {

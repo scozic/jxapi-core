@@ -64,5 +64,73 @@ public class RateLimitManagerTest {
 		Assert.assertEquals(49L, manager.requestCall(101L, 31));
 		Assert.assertEquals(0L, manager.requestCall(101L, 30));
 	}
+	
+	@Test
+	public void testIsLimitReached_MaxRequestCountNotReached() {
+		RateLimitRule rule = RateLimitRule.createRule("MYRULE", 100L, 2);
+		Assert.assertFalse(RateLimitManager.isLimitReached(rule, -1, 0));
+	}
+	
+	@Test
+	public void testIsLimitReached_MaxRequestCountReached() {
+		RateLimitRule rule = RateLimitRule.createRule("MYRULE", 100L, 2);
+		Assert.assertTrue(RateLimitManager.isLimitReached(rule, 3, 0));
+	}
+	
+	@Test
+	public void testIsLimitReached_VoidRule() {
+		RateLimitRule rule = RateLimitRule.createRule("MYRULE", 0L, -1);
+		Assert.assertFalse(RateLimitManager.isLimitReached(rule, 0, 0));
+	}
+	
+	@Test
+	public void testIsLimitReached_WeightedRuleMaxWeightNotReached() {
+		RateLimitRule rule = RateLimitRule.createWeightedRule("MYRULE", 100L, 100);
+		Assert.assertFalse(RateLimitManager.isLimitReached(rule, 0, -1));
+	}
+	
+	@Test
+	public void testIsLimitReached_WeightedRuleMaxWeightReached() {
+		RateLimitRule rule = RateLimitRule.createWeightedRule("MYRULE", 100L, 100);
+		Assert.assertTrue(RateLimitManager.isLimitReached(rule, 0, 101));
+	}
  
+	@Test
+	public void testGetRateLimit() {
+		RateLimitRule rule = RateLimitRule.createRule("MYRULE", 100L, 2);
+		RateLimitManager manager = new RateLimitManager(rule);
+		Assert.assertEquals(rule, manager.getRateLimit());
+	}
+	
+	@Test
+	public void testRequestCall() {
+		RateLimitManager manager = new RateLimitManager(RateLimitRule.createWeightedRule("MYRULE", 100L, 100));
+		Assert.assertEquals(0L, manager.requestCall());
+	}
+	
+	@Test(expected = IllegalArgumentException.class)
+	public void testRequestCallThrowsWhenMaxRequestCountZero() {
+		RateLimitManager manager = new RateLimitManager(RateLimitRule.createRule("MYRULE", 100L, 0));
+		manager.requestCall();
+	}
+	
+	@Test(expected = IllegalArgumentException.class)
+	public void testRequestCallThrowsWhenMaxWeightZero() {
+		RateLimitManager manager = new RateLimitManager(RateLimitRule.createWeightedRule("MYRULE", 100L, 0));
+		manager.requestCall(1);
+	}
+	
+	@Test
+	public void testGetCurrentStat() {
+		RateLimitManager manager = new RateLimitManager(RateLimitRule.createWeightedRule("MYRULE", 100L, 100));
+		RateLimitManagerStat stat = manager.getCurrentStat();
+		Assert.assertNotNull(stat);
+		long delta = 20;
+		long now = System.currentTimeMillis();
+		long min = now - delta;
+		long max = now + delta;
+		long time = stat.getTime();
+		Assert.assertTrue("Unexpected time:" + time + " should be around:" + now, 
+						  time >= min && time < max);
+	}
 }

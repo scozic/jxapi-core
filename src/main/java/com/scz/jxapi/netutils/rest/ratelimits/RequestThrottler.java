@@ -6,6 +6,7 @@ import java.util.Map;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Function;
 
 import org.slf4j.Logger;
@@ -17,7 +18,12 @@ import com.scz.jxapi.netutils.rest.HttpRequest;
 import com.scz.jxapi.util.ThreadUtil;
 
 /**
- * Enforces a list of applicable {@link RateLimitRule} to incoming requests. Submitted requests may be throttled before being actually sent, see {@link #submit(RestRequest, RestEndpoint)} 
+ * Enforces a list of applicable {@link RateLimitRule} to incoming requests.
+ * Submitted requests may be throttled before being actually sent, see
+ * {@link #submit(RestRequest, RestEndpoint)}. In case a request is throttled,
+ * as {@link ScheduledExecutorService} for scheduling retry of submission of
+ * request is instantated. It wiil be shutdown only upon call to
+ * {@link #dispose()} which is duty of client to call when disposing resources.
  */
 public class RequestThrottler {
 	
@@ -29,19 +35,30 @@ public class RequestThrottler {
 
 	private final String apiName;
 	
+	private final AtomicBoolean disposed = new AtomicBoolean(false);
+	
+	/**
+	 * Creates a new instance of {@link RequestThrottler} with no API name.
+	 */
 	public RequestThrottler() {
 		this(null);
 	}
 	
+	/**
+	 * Creates a new instance of {@link RequestThrottler} with given API name.
+	 * 
+	 * @param apiName Name of the API this throttler is used for.
+	 */
 	public RequestThrottler(String apiName) {
 		this.apiName = apiName;
 	}
 	
+	/**
+	 * @return Name of the API this throttler is used for.
+	 */
 	public String getApiName() {
 		return apiName;
 	}
-
-	
 	
 	/**
 	 * Submits a {@link RestRequest} for asynchronous execution, enforcing rate
@@ -67,8 +84,12 @@ public class RequestThrottler {
 	 * @param request      the request submitted for execution
 	 * @param restEndpoint the endpoint to execute this request
 	 * @return Callback that will complete once response is received.
+	 * 
+	 * @throws IllegalStateException if in 'disposed' state when called(see {@link #isDisposed()})
 	 */
 	public synchronized <A> FutureRestResponse<A> submit(HttpRequest request, Function<HttpRequest, FutureRestResponse<A>> executor) {
+		if (isDisposed())
+			throw new IllegalStateException("Disposed");
 		List<RateLimitRule> rateLimits = request.getRateLimits();
 		if (CollectionUtils.isEmpty(rateLimits)) {
 			if (log.isDebugEnabled())
@@ -142,6 +163,28 @@ public class RequestThrottler {
 		public RateLimitThrottling(RateLimitRule rateLimit) {
 			rateLimitManager = new RateLimitManager(rateLimit);
 		}
+	}
+	
+	/**
+	 * Frees all resources is used and marks this instance as 'disposed' so it should not be used any more.
+	 * Has no effect if called more than once.
+	 */
+	public void dispose() {
+		if (disposed.getAndSet(true)) {
+			return;
+		}
+		rateLimitManagers.clear();
+		if (throttlingExecutor != null) {
+			throttlingExecutor.shutdown();
+		}
+	}
+
+	/**
+	 * @return <code>true</code> if this instance has been disposed e.g.
+	 *         {@link #dispose()} has been called and should not be used any more.
+	 */
+	public boolean isDisposed() {
+		return disposed.get();
 	}
 
 }
