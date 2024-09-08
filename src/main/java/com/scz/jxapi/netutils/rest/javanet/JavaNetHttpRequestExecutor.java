@@ -1,7 +1,6 @@
 package com.scz.jxapi.netutils.rest.javanet;
 
 import java.net.URI;
-import java.net.URISyntaxException;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest.BodyPublishers;
 import java.net.http.HttpRequest.Builder;
@@ -90,7 +89,7 @@ public class JavaNetHttpRequestExecutor implements HttpRequestExecutor {
 	    			callback.complete(response);
 	    		}
 			}); 
-		} catch (URISyntaxException e) {
+		} catch (Exception e) {
 			response.setException(e);
 			callback.complete(response);
 		}
