@@ -108,7 +108,8 @@ public class DefaultWebsocketManager implements WebsocketManager {
 					t = new TopicManager(topic, matcher, messageHandler, false);
 					topics.put(topic, t);
 					// Remark: registered TopicManager before checking connection status and connecting if not already connected.
-					// This is because the url provided for handshake may stand for a stream endpoint and message would be disseminated right after handshake. Message handler must be registered before.
+					// This is because the url provided for handshake may stand for a global stream endpoint (no topic/subscription)
+					// and message would be disseminated right after handshake. Message handler must be registered before.
 					if (!isConnected()) {
 						if (log.isDebugEnabled())
 							log.debug("Executing subscribe request for topic:" + topic + ": not connected, connecting");

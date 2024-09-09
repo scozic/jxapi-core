@@ -100,6 +100,7 @@ public abstract class AbstractWebsocket implements Websocket {
 		errorObservable.dispatch(error);
 	}
 	
+	@Override
 	public String toString() {
 		return getClass().getSimpleName() + "[" + url + "]";
 	}
