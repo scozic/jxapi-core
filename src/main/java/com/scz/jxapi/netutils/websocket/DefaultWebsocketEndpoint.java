@@ -32,9 +32,6 @@ public class DefaultWebsocketEndpoint<M> implements WebsocketEndpoint<M> {
 		this.messageDeserializer = messageDeserializer;
 		this.websocketManager = websocketManager;
 		this.observer = observer;
-		if (observer != null) {
-			websocketManager.subscribeErrorHandler(error -> dispatchApiEvent(ExchangeApiEvent.createWebsocketErrorEvent(error)));
-		}
 	}
 
 	@Override
