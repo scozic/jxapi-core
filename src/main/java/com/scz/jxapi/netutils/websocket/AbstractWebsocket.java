@@ -24,8 +24,9 @@ public abstract class AbstractWebsocket implements Websocket {
 		if (log.isDebugEnabled()) {
 			log.debug("Connecting WS " + this);
 		}
-		doConnect();
-		connected.set(true);
+		if (!connected.getAndSet(true)) {
+			doConnect();
+		}
 		if (log.isDebugEnabled()) {
 			log.debug("Connected WS " + this);
 		}
@@ -36,8 +37,9 @@ public abstract class AbstractWebsocket implements Websocket {
 		if (log.isDebugEnabled()) {
 			log.debug("Disonnecting WS " + this);
 		}
-		connected.set(false);
-		doDisconnect();
+		if (connected.getAndSet(false)) {
+			doDisconnect();
+		}
 		if (log.isDebugEnabled()) {
 			log.debug("Disonnected WS " + this);
 		}

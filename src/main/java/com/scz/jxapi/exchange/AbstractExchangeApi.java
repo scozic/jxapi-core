@@ -153,9 +153,9 @@ public abstract class AbstractExchangeApi implements ExchangeApi {
 		return this.observable.unsubscribe(exchangeApiObserver);
 	}
 	
-	protected HttpRequestInterceptor createHttpRequestInterceptor(String factoryClassName) {
+	protected void createHttpRequestInterceptor(String factoryClassName) {
 		try {
-			return ((HttpRequestInterceptorFactory) Class.forName(factoryClassName).getConstructor().newInstance()).createInterceptor(this);
+			httpRequestInterceptor = ((HttpRequestInterceptorFactory) Class.forName(factoryClassName).getConstructor().newInstance()).createInterceptor(this);
 		} catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
 				| NoSuchMethodException | SecurityException | ClassNotFoundException e) {
 			throw new IllegalArgumentException("Failed to instantiate " 
@@ -165,10 +165,10 @@ public abstract class AbstractExchangeApi implements ExchangeApi {
 		}
 	}
 	
-	protected HttpRequestExecutor createHttpRequestExecutor(String factoryClassName) {
+	protected void createHttpRequestExecutor(String factoryClassName) {
 		if  (factoryClassName != null) {
 			try {
-				return ((HttpRequestExecutorFactory) Class.forName(factoryClassName).getConstructor().newInstance()).createExecutor(this);
+				httpRequestExecutor = ((HttpRequestExecutorFactory) Class.forName(factoryClassName).getConstructor().newInstance()).createExecutor(this);
 			} catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
 					| NoSuchMethodException | SecurityException | ClassNotFoundException e) {
 				throw new IllegalArgumentException("Failed to instantiate " 
@@ -176,8 +176,9 @@ public abstract class AbstractExchangeApi implements ExchangeApi {
 													" implementation '" + factoryClassName + "'.",
 													e);
 			}
+		} else {
+			httpRequestExecutor = new JavaNetHttpRequestExecutor(HttpClient.newHttpClient());
 		}
-		return new JavaNetHttpRequestExecutor(HttpClient.newHttpClient());
 	}
 	
 	protected <A> FutureRestResponse<A> submit(HttpRequest request, MessageDeserializer<A> deserializer) {
@@ -223,7 +224,7 @@ public abstract class AbstractExchangeApi implements ExchangeApi {
 		return callback;
 	}
 	
-	protected WebsocketManager createWebsocketManager(String url, 
+	protected void createWebsocketManager(String url, 
 													  String websocketFactoryClassName, 
 													  String websocketHookFactoryClassName) {
 		WebsocketFactory websocketFactory = websocketFactoryClassName == null? 
@@ -236,7 +237,8 @@ public abstract class AbstractExchangeApi implements ExchangeApi {
 		WebsocketHook websocketHook = websocketHookFactoryClassName == null? 
 										null: 
 										WebsocketHookFactory.fromClassName(websocketHookFactoryClassName).createWebsocketHook(this);
-		return new DefaultWebsocketManager(websocket, websocketHook);
+		websocketManager = new DefaultWebsocketManager(websocket, websocketHook);
+		websocketManager.subscribeErrorHandler(error -> dispatchApiEvent(ExchangeApiEvent.createWebsocketErrorEvent(error)));
 	}
 	
 	protected <M> WebsocketEndpoint<M> createWebsocketEndpoint(String endpointName, 

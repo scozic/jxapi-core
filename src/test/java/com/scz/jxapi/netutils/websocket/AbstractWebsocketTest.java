@@ -1,11 +1,12 @@
 package com.scz.jxapi.netutils.websocket;
 
-import org.junit.Before;
-import org.junit.Test;
-
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
 
 import org.junit.Assert;
+import org.junit.Before;
+import org.junit.Test;
 
 /**
  * Unit test for {@link AbstractWebsocket}
@@ -13,19 +14,24 @@ import org.junit.Assert;
 public class AbstractWebsocketTest {
 	
     private static class WebsocketStub extends AbstractWebsocket {
+    	
+    	int doConnectCallCount = 0;
+    	int doDisconnectCallCount = 0;
+    	List<String> sentMessages = new ArrayList<>();
+    	
     	@Override
         protected void doConnect() throws WebsocketException {
-            // Simulate connection logic
+            doConnectCallCount++;
         }
 
         @Override
         protected void doDisconnect() throws WebsocketException {
-            // Simulate disconnection logic
+            doDisconnectCallCount++;
         }
 
         @Override
         protected void doSend(String message) throws WebsocketException {
-            // Simulate sending logic
+            sentMessages.add(message);
         }
         
         protected void dispatchMessage(String message) {
@@ -52,6 +58,10 @@ public class AbstractWebsocketTest {
         public void testConnect() throws WebsocketException {
             websocket.connect();
             Assert.assertTrue(websocket.isConnected());
+            Assert.assertEquals(1, websocket.doConnectCallCount);
+            websocket.connect();
+            Assert.assertTrue(websocket.isConnected());
+            Assert.assertEquals(1, websocket.doConnectCallCount);
         }
 
         @Test
@@ -59,13 +69,22 @@ public class AbstractWebsocketTest {
             websocket.connect();
             websocket.disconnect();
             Assert.assertFalse(websocket.isConnected());
+            Assert.assertEquals(1, websocket.doDisconnectCallCount);
+            websocket.disconnect();
+            Assert.assertFalse(websocket.isConnected());
+            Assert.assertEquals(1, websocket.doDisconnectCallCount);
         }
 
         @Test
         public void testSendWhenConnected() throws WebsocketException {
             websocket.connect();
             try {
-                websocket.send("Test message");
+                websocket.send("Test message 1");
+                Assert.assertEquals(1, websocket.sentMessages.size());
+                Assert.assertEquals("Test message 1", websocket.sentMessages.get(0));
+                websocket.send("Test message 2");
+                Assert.assertEquals(2, websocket.sentMessages.size());
+                Assert.assertEquals("Test message 2", websocket.sentMessages.get(1));
             } catch (WebsocketException e) {
                 Assert.fail("Exception should not be thrown when connected");
             }
@@ -79,6 +98,7 @@ public class AbstractWebsocketTest {
             } catch (WebsocketException e) {
                 Assert.assertEquals("Not connected:" + websocket, e.getMessage());
             }
+            Assert.assertEquals(0, websocket.sentMessages.size());
         }
 
         @Test

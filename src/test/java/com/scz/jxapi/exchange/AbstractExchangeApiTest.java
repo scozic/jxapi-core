@@ -6,6 +6,7 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.Properties;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicReference;
 
 import org.junit.Assert;
@@ -18,7 +19,6 @@ import com.scz.jxapi.netutils.rest.FutureRestResponse;
 import com.scz.jxapi.netutils.rest.HttpMethod;
 import com.scz.jxapi.netutils.rest.HttpRequest;
 import com.scz.jxapi.netutils.rest.HttpRequestExecutor;
-import com.scz.jxapi.netutils.rest.HttpRequestInterceptor;
 import com.scz.jxapi.netutils.rest.HttpResponse;
 import com.scz.jxapi.netutils.rest.RestResponse;
 import com.scz.jxapi.netutils.rest.javanet.JavaNetHttpRequestExecutor;
@@ -31,6 +31,7 @@ import com.scz.jxapi.netutils.rest.ratelimits.RequestThrottler;
 import com.scz.jxapi.netutils.websocket.DefaultWebsocketEndpoint;
 import com.scz.jxapi.netutils.websocket.DefaultWebsocketManager;
 import com.scz.jxapi.netutils.websocket.DefaultWebsocketMessageTopicMatcher;
+import com.scz.jxapi.netutils.websocket.WebsocketException;
 import com.scz.jxapi.netutils.websocket.WebsocketManager;
 import com.scz.jxapi.netutils.websocket.WebsocketSubscribeRequest;
 import com.scz.jxapi.netutils.websocket.mock.MockWebsocket;
@@ -243,21 +244,23 @@ public class AbstractExchangeApiTest {
 	
 	@Test
 	public void testCreateDefaultHttpRequestExecutor() {
-		Assert.assertTrue(exchangeApi.createHttpRequestExecutor(null) instanceof JavaNetHttpRequestExecutor);
+		exchangeApi.createHttpRequestExecutor(null);
+		HttpRequestExecutor executor = exchangeApi.getHttpRequestExecutor();
+		Assert.assertTrue(executor instanceof JavaNetHttpRequestExecutor);
 	}
 	
 	@Test
 	public void testCreateWebsocketanagerWithDefaultWebsocketFactoryAndWithoutHookOk() {
-		DefaultWebsocketManager websocketManager= (DefaultWebsocketManager) exchangeApi
-				.createWebsocketManager(null, null, null);
+		DefaultWebsocketManager websocketManager= createWebsocketManager(null, null, null);
 		Assert.assertNotNull(websocketManager);
 		Assert.assertTrue(websocketManager.getWebsocket() instanceof SpringWebsocket);
 	}
 	
 	@Test
 	public void testCreateWebsocketanagerWithoutHookOk() {
-		DefaultWebsocketManager websocketManager= (DefaultWebsocketManager) exchangeApi
-				.createWebsocketManager("wss://myexchange.com/ws", MockWebsocketFactory.class.getName(), null);
+		DefaultWebsocketManager websocketManager= createWebsocketManager("wss://myexchange.com/ws", 
+																		 MockWebsocketFactory.class.getName(), 
+																		 null);
 		Assert.assertNotNull(websocketManager);
 		Assert.assertEquals("wss://myexchange.com/ws", websocketManager.getUrl());
 		Assert.assertTrue(websocketManager.getWebsocket() instanceof MockWebsocket);
@@ -270,8 +273,9 @@ public class AbstractExchangeApiTest {
 	
 	@Test
 	public void testCreateWebsocketanagerWithHookOk() {
-		DefaultWebsocketManager websocketManager= (DefaultWebsocketManager) exchangeApi
-				.createWebsocketManager("wss://myexchange.com/ws", MockWebsocketFactory.class.getName(), MockWebsocketHookFactory.class.getName());
+		DefaultWebsocketManager websocketManager = createWebsocketManager("wss://myexchange.com/ws", 
+																	  MockWebsocketFactory.class.getName(), 
+																	  MockWebsocketHookFactory.class.getName());
 		Assert.assertNotNull(websocketManager);
 		Assert.assertTrue(websocketManager.getWebsocket() instanceof MockWebsocket);
 		Assert.assertTrue(websocketManager.getWebsocketHook() instanceof MockWebsocketHook);
@@ -279,8 +283,9 @@ public class AbstractExchangeApiTest {
 	
 	@Test(expected = IllegalArgumentException.class)
 	public void testCreateWebsocketanagerWithHooInvalidWebsocketHookFactoryClass() {
-		DefaultWebsocketManager websocketManager= (DefaultWebsocketManager) exchangeApi
-				.createWebsocketManager("wss://myexchange.com/ws", MockWebsocketFactory.class.getName(), "");
+		DefaultWebsocketManager websocketManager = createWebsocketManager("wss://myexchange.com/ws", 
+																		  MockWebsocketFactory.class.getName(), 
+																		  "");
 		Assert.assertNotNull(websocketManager);
 		Assert.assertTrue(websocketManager.getWebsocket() instanceof MockWebsocket);
 		Assert.assertTrue(websocketManager.getWebsocketHook() instanceof MockWebsocketHook);
@@ -309,6 +314,20 @@ public class AbstractExchangeApiTest {
 		wsEndpoint.subscribe(WebsocketSubscribeRequest.create(null, "mytopic", DefaultWebsocketMessageTopicMatcher.create()), new MockWebsocketListener<>());
 		ExchangeApiEvent event = observer.pop();
 		Assert.assertEquals(ExchangeApiEventType.WEBSOCKET_SUBSCRIBE, event.getType());
+	}
+	
+	@Test
+	public void testReceiveWebsocketError() throws TimeoutException {
+		MockExchangeApiObserver observer = new MockExchangeApiObserver();
+		exchangeApi.subscribeObserver(observer);
+		exchangeApi.createWebsocketManager("wss://myexchange.com/ws", MockWebsocketFactory.class.getName(), null);
+		// Sending a message while not connected will throw an exception caught and notified to listener.
+		exchangeApi.getWebsocketManager().sendAsync("foo");
+		ExchangeApiEvent event = observer.await(2000);
+		Assert.assertEquals(ExchangeApiEventType.WEBSOCKET_ERROR, event.getType());
+		WebsocketException ex = event.getWebsocketError();
+		Assert.assertNotNull(ex);
+		Assert.assertEquals("Error while sending message:foo", ex.getMessage());
 	}
 	
 	private HttpRequest createDummyRequest() {
@@ -342,7 +361,15 @@ public class AbstractExchangeApiTest {
 	}
 	
 	private MockHttpRequestExecutor createMockHttpRequestExecutor() {
-		return (MockHttpRequestExecutor) exchangeApi.createHttpRequestExecutor(MockHttpRequestExecutorFactory.class.getName());
+		exchangeApi.createHttpRequestExecutor(MockHttpRequestExecutorFactory.class.getName());
+		return (MockHttpRequestExecutor) exchangeApi.getHttpRequestExecutor();
+	}
+	
+	private DefaultWebsocketManager createWebsocketManager(String url, 
+				  String websocketFactoryClassName, 
+				  String websocketHookFactoryClassName) {
+		exchangeApi.createWebsocketManager(url, websocketFactoryClassName, websocketHookFactoryClassName);
+		return (DefaultWebsocketManager) exchangeApi.getWebsocketManager();
 	}
 
 	private class TestExchangeApi extends AbstractExchangeApi {
@@ -363,18 +390,22 @@ public class AbstractExchangeApiTest {
 			return (MockHttpRequestInterceptor) this.httpRequestInterceptor;
 		}
 		
-		public HttpRequestInterceptor createHttpRequestInterceptor(String factoryClassName) {
-			 return this.httpRequestInterceptor = super.createHttpRequestInterceptor(factoryClassName);
+		public void createHttpRequestInterceptor(String factoryClassName) {
+			 super.createHttpRequestInterceptor(factoryClassName);
 		}
 		
-		public HttpRequestExecutor createHttpRequestExecutor(String factoryClassName) {
-			return this.httpRequestExecutor = super.createHttpRequestExecutor(factoryClassName);
+		public void createHttpRequestExecutor(String factoryClassName) {
+			super.createHttpRequestExecutor(factoryClassName);
 		}
 		
-		protected WebsocketManager createWebsocketManager(String url, 
+		protected void createWebsocketManager(String url, 
 				  String websocketFactoryClassName, 
 				  String websocketHookFactoryClassName) {
-			return this.websocketManager = super.createWebsocketManager(url, websocketFactoryClassName, websocketHookFactoryClassName);
+			super.createWebsocketManager(url, websocketFactoryClassName, websocketHookFactoryClassName);
+		}
+		
+		public WebsocketManager getWebsocketManager() {
+			return this.websocketManager;
 		}
 	}
 }

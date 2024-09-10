@@ -151,9 +151,6 @@ public class ExchangeApiInterfaceImplementationGenerator extends JavaTypeGenerat
 	
 	private static final String EXCHANGE_NAME_ARGUMENT_NAME = "exchangeName";
 	private static final String REQUEST_THROTTLER_VARIABLE_NAME = "requestThrottler";
-	private static final String HTTP_REQUEST_INTERCEPTOR_VARIABLE_NAME = "httpRequestInterceptor";
-	private static final String HTTP_REQUEST_EXECUTOR_VARIABLE_NAME = "httpRequestExecutor";
-	private static final String WEBSOCKET_MANAGER_VARIABLE_NAME = "websocketManager";
 	
 	private final ExchangeDescriptor exchangeDescriptor;
 	
@@ -243,9 +240,7 @@ public class ExchangeApiInterfaceImplementationGenerator extends JavaTypeGenerat
 	
 		if (hasRestEnpoints) {
 			String httpRequestExecutorFactoryClassName  = exchangeApiDescriptor.getHttpRequestExecutorFactory();
-			constructorBody.append("this.")
-			   .append(HTTP_REQUEST_EXECUTOR_VARIABLE_NAME)
-			   .append(" = ")
+			constructorBody
 			   .append("createHttpRequestExecutor(")
 			   .append(httpRequestExecutorFactoryClassName != null? 
 					   	"\"" + httpRequestExecutorFactoryClassName + "\""
@@ -254,10 +249,7 @@ public class ExchangeApiInterfaceImplementationGenerator extends JavaTypeGenerat
 			
 			String httpRequestInterceptorFactoryFullClassName = exchangeApiDescriptor.getHttpRequestInterceptorFactory();
 			if (httpRequestInterceptorFactoryFullClassName != null) {
-				constructorBody.append("this.")
-							   .append(HTTP_REQUEST_INTERCEPTOR_VARIABLE_NAME)
-							   .append(" = ")
-							   .append("createHttpRequestInterceptor(\"")
+				constructorBody.append("createHttpRequestInterceptor(\"")
 							   .append(httpRequestInterceptorFactoryFullClassName)
 							   .append("\");\n");
 			}
@@ -270,9 +262,7 @@ public class ExchangeApiInterfaceImplementationGenerator extends JavaTypeGenerat
 		}
 		
 		if (hasWsEnpoints) {
-			constructorBody.append("this.")
-						   .append(WEBSOCKET_MANAGER_VARIABLE_NAME)
-						   .append(" = createWebsocketManager(")
+			constructorBody.append("createWebsocketManager(")
 						   .append(JavaCodeGenerationUtil.getQuotedString(exchangeApiDescriptor.getWebsocketUrl()))
 						   .append(", ")
 						   .append(JavaCodeGenerationUtil.getQuotedString(exchangeApiDescriptor.getWebsocketFactory()))
