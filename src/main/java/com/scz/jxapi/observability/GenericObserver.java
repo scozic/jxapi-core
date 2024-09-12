@@ -86,6 +86,23 @@ public class GenericObserver<T> {
 	public GenericObserver<T> waitUntilCount(int count) throws TimeoutException {
 		return waitUntilCount(count, defaulTimeout);
 	}
+	
+	/**
+	 * Checks no events are raised for a given period
+	 * @param delay delay during which no events should be raied.
+	 */
+	public void checkNoEvents(long delay) {
+		if (events.size() <= 0) {
+			try {
+				Thread.sleep(delay);
+			} catch (InterruptedException e) {
+				throw new RuntimeException("Interrupted", e);
+			}
+		}
+		if (events.size() > 0) {
+			throw new IllegalStateException("Received " + events.size() + " events, first:" + events.get(0));
+		}
+	}
 
 	/**
 	 * Waits until the number of observed events reaches the specified count within the given timeout.

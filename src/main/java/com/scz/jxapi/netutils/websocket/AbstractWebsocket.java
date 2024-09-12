@@ -8,6 +8,10 @@ import org.slf4j.LoggerFactory;
 import com.scz.jxapi.observability.DefaultObservable;
 import com.scz.jxapi.observability.Observable;
 
+/**
+ * Abstract class for Websocket implementations. All websocket implementations
+ * should extend this class, implementing the abstract methods.
+ */
 public abstract class AbstractWebsocket implements Websocket {
 	
 	private static final Logger log = LoggerFactory.getLogger(AbstractWebsocket.class);
@@ -20,7 +24,7 @@ public abstract class AbstractWebsocket implements Websocket {
 	protected String url;
 
 	@Override
-	public void connect() throws WebsocketException {
+	public final void connect() throws WebsocketException {
 		if (log.isDebugEnabled()) {
 			log.debug("Connecting WS " + this);
 		}
@@ -33,7 +37,7 @@ public abstract class AbstractWebsocket implements Websocket {
 	}
 
 	@Override
-	public void disconnect() throws WebsocketException {
+	public final void disconnect() throws WebsocketException {
 		if (log.isDebugEnabled()) {
 			log.debug("Disonnecting WS " + this);
 		}
@@ -46,7 +50,7 @@ public abstract class AbstractWebsocket implements Websocket {
 	}
 	
 	@Override
-	public void send(String message) throws WebsocketException {
+	public final void send(String message) throws WebsocketException {
 		if (!isConnected()) {
 			throw new WebsocketException("Not connected:" + this);
 		}
@@ -56,7 +60,7 @@ public abstract class AbstractWebsocket implements Websocket {
 		doSend(message);
 	}
 	
-	public boolean isConnected() {
+	public final boolean isConnected() {
 		return connected.get();
 	}
 

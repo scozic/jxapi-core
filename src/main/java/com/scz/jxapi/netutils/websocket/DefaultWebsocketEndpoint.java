@@ -53,14 +53,18 @@ public class DefaultWebsocketEndpoint<M> implements WebsocketEndpoint<M> {
 
 	@Override
 	public boolean unsubscribe(String unsubscriptionId) {
-		Subscription sub = subscriptionsById.get(unsubscriptionId);
+		Subscription sub = subscriptionsById.remove(unsubscriptionId);
 		if (sub == null) {
 			return false;
 		}
 		if (observer != null) {
 			dispatchApiEvent(ExchangeApiEvent.createWebsocketUnsubscribeEvent(unsubscriptionId));
 		}
-		return sub.removeListener(unsubscriptionId);
+		sub.removeListener(unsubscriptionId);
+		if (sub.listeners.size() <= 0) {
+			subscriptionsByTopic.remove(sub.request.getTopic());
+		}
+		return true;
 	}
 
 	@Override
@@ -95,14 +99,11 @@ public class DefaultWebsocketEndpoint<M> implements WebsocketEndpoint<M> {
 			}
 		}
 		
-		public boolean removeListener(String subscriptionId) {
-			if (listeners.remove(subscriptionId) != null) {
-				if (listeners.size() <= 0) {
-					websocketManager.unsubscribe(request.getTopic());
-				}
-				return true;
+		public void removeListener(String subscriptionId) {
+			listeners.remove(subscriptionId);
+			if (listeners.size() <= 0) {
+				websocketManager.unsubscribe(request.getTopic());
 			}
-			return false;
 		}
 		
 		private void dispatch(String message) {
@@ -111,11 +112,13 @@ public class DefaultWebsocketEndpoint<M> implements WebsocketEndpoint<M> {
 					M msg = messageDeserializer.deserialize(message);
 					listeners.values().forEach(l -> l.handleMessage(msg));
 					if (observer != null) {
-						dispatchApiEvent(ExchangeApiEvent.createWebsocketMessageEvent(endpointName, message));
+						dispatchApiEvent(ExchangeApiEvent.createWebsocketMessageEvent(endpointName, request.getTopic(), message));
 					}
 				}
 			} catch (Exception ex) {
-				log.error("Error while dispatching message [" + message + "]", ex);
+				String errMsg = "Error while dispatching message [" + message + "]"; 
+				log.error(errMsg, ex);
+				dispatchApiEvent(ExchangeApiEvent.createWebsocketErrorEvent(new WebsocketException(errMsg, ex)));
 			}
 			
 		}

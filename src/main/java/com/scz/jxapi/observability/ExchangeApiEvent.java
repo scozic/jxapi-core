@@ -26,9 +26,10 @@ public class ExchangeApiEvent {
 		return event;
 	}
 	
-	public static ExchangeApiEvent createWebsocketMessageEvent(String endpointName, String msg) {
+	public static ExchangeApiEvent createWebsocketMessageEvent(String endpointName, String topic, String msg) {
 		ExchangeApiEvent event = new ExchangeApiEvent(ExchangeApiEventType.WEBSOCKET_MESSAGE);
 		event.setWebsocketMessage(msg);
+		event.setWebsocketMessageTopic(topic);
 		return event;
 	}
 	
@@ -41,7 +42,7 @@ public class ExchangeApiEvent {
 	}
 	
 	public static ExchangeApiEvent createWebsocketUnsubscribeEvent(String subId) {
-		ExchangeApiEvent event = new ExchangeApiEvent(ExchangeApiEventType.WEBSOCKET_SUBSCRIBE);
+		ExchangeApiEvent event = new ExchangeApiEvent(ExchangeApiEventType.WEBSOCKET_UNSUBSCRIBE);
 		event.setWebsocketSubscriptionId(subId);
 		return event;
 	}
@@ -61,6 +62,7 @@ public class ExchangeApiEvent {
 	private RestResponse<?> httpResponse;
 	private WebsocketSubscribeRequest websocketSubscribeRequest;
 	private String websocketMessage;
+	private String websocketMessageTopic;
 	private WebsocketException websocketError;
 	private String websocketSubscriptionId;
 
@@ -150,6 +152,14 @@ public class ExchangeApiEvent {
 
 	public void setExchangeId(String exchangeId) {
 		this.exchangeId = exchangeId;
+	}
+	
+	public String getWebsocketMessageTopic() {
+		return websocketMessageTopic;
+	}
+
+	public void setWebsocketMessageTopic(String websocketMessageTopic) {
+		this.websocketMessageTopic = websocketMessageTopic;
 	}
 
 	public String toString() {

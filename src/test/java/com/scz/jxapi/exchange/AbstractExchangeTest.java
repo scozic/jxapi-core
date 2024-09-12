@@ -51,7 +51,7 @@ public class AbstractExchangeTest {
         exchange.addApi(api);
         TestExchangeApiObserver observer = new TestExchangeApiObserver();
         exchange.subscribeObserver(observer);
-        ExchangeApiEvent event = ExchangeApiEvent.createWebsocketMessageEvent("myws", "hello!");
+        ExchangeApiEvent event = ExchangeApiEvent.createWebsocketMessageEvent("myws", "greetings", "hello!");
         api.dispatchApiEvent(event);
         Assert.assertEquals(1, observer.events.size());
         Assert.assertEquals(event, observer.events.get(0));
