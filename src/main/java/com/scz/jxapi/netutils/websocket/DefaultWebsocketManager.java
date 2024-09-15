@@ -55,15 +55,19 @@ public class DefaultWebsocketManager implements WebsocketManager {
 	private AtomicBoolean heartBeatTaskCancelled = null;
 	private AtomicBoolean heartBeatTimeoutTaskCancelled = null;
 	private final RawWebsocketMessageHandler rawMessageHandler = this::dispatchMessage;
+	private final WebsocketErrorHandler websocketErrorHandler = this::notifyError;
 	
 	protected final Websocket websocket;
 
 	private final WebsocketHook websocketHook;
+
+	
 	
 	public DefaultWebsocketManager(Websocket websocket, WebsocketHook websocketHook) {
 		this.websocket = websocket;
 		this.websocketHook = websocketHook;
 		this.writeExecutor = Executors.newSingleThreadScheduledExecutor();
+		this.websocket.addErrorHandler(websocketErrorHandler);
 		this.websocket.addMessageHandler(rawMessageHandler);
 		if (websocketHook != null) {
 			websocketHook.afterInit(this);
@@ -147,7 +151,7 @@ public class DefaultWebsocketManager implements WebsocketManager {
 												websocketHook.getUnSubscribeRequestMessage(topic);
 			if (unsubscribeRequestMessage != null) {
 				if (log.isDebugEnabled())
-					log.debug("Sending topic subscribe request:" + topic);
+					log.debug("Sending topic unsubscribe request:" + topic);
 				websocket.send(unsubscribeRequestMessage);
 			}
 		} catch (WebsocketException e) {
@@ -253,13 +257,16 @@ public class DefaultWebsocketManager implements WebsocketManager {
 	
 	@Override
 	public void dispose() {
-		this.websocket.removeMessageHandler(rawMessageHandler);
-		writeExecutor.execute(() -> {
-			disconnect();
-		});
-		
-		writeExecutor.shutdown();
-		writeExecutor = null;
+		if (!disposed.getAndSet(true)) {
+			this.websocket.removeMessageHandler(rawMessageHandler);
+			writeExecutor.execute(() -> {
+				disconnect();
+			});
+			
+			writeExecutor.shutdown();
+			this.websocket.removeErrorHandler(websocketErrorHandler);
+			writeExecutor = null;
+		}
 	}
 	
 	public boolean isConnected() {

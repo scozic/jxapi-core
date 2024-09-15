@@ -25,7 +25,6 @@ public class MockWebsocketTest {
         Assert.assertTrue(websocket.isConnected());
         MockWebsocketEvent event = websocket.pop();
         Assert.assertEquals(MockWebsocketEventType.CONNECT ,  event.getType());
-        Assert.assertEquals(websocket, event.getSource());
     }
 
     @Test
@@ -37,7 +36,6 @@ public class MockWebsocketTest {
         Assert.assertFalse(websocket.isConnected());
         MockWebsocketEvent event = websocket.pop();
         Assert.assertEquals(MockWebsocketEventType.DISCONNECT,  event.getType());
-        Assert.assertEquals(websocket, event.getSource());
     }
 
     @Test
@@ -50,7 +48,6 @@ public class MockWebsocketTest {
         MockWebsocketEvent event = websocket.pop();
         Assert.assertEquals(MockWebsocketEventType.SEND,  event.getType());
         Assert.assertEquals(message, event.getMessage());
-        Assert.assertEquals(websocket, event.getSource());
     }
 
     @Test
@@ -63,7 +60,6 @@ public class MockWebsocketTest {
         MockWebsocketEvent event = websocket.pop();
         Assert.assertEquals(MockWebsocketEventType.ADD_MESSAGE_HANDLER,  event.getType());
         Assert.assertEquals(messageHandler, event.getMessageHandler());
-        Assert.assertEquals(websocket, event.getSource());
     }
 
     @Test
@@ -87,7 +83,6 @@ public class MockWebsocketTest {
         MockWebsocketEvent event = websocket.pop();
         Assert.assertEquals(MockWebsocketEventType.REMOVE_MESSAGE_HANDLER,  event.getType());
         Assert.assertEquals(messageHandler, event.getMessageHandler());
-        Assert.assertEquals(websocket, event.getSource());
         String message = "Hello";
         websocket.dispatchMessage(message);
         Assert.assertEquals(0, messageHandler.size());
@@ -112,7 +107,6 @@ public class MockWebsocketTest {
         MockWebsocketEvent event = websocket.pop();
         Assert.assertEquals(MockWebsocketEventType.ADD_ERROR_HANDLER,  event.getType());
         Assert.assertEquals(errorHandler, event.getErrorHandler());
-        Assert.assertEquals(websocket, event.getSource());
     }
 
     @Test
@@ -125,7 +119,6 @@ public class MockWebsocketTest {
         MockWebsocketEvent event = websocket.pop();
         Assert.assertEquals(MockWebsocketEventType.REMOVE_ERROR_HANDLER,  event.getType());
         Assert.assertEquals(errorHandler, event.getErrorHandler());
-        Assert.assertEquals(websocket, event.getSource());
         WebsocketException error = new WebsocketException("Test error");
         websocket.dispatchError(error);
         Assert.assertEquals(0, errorHandler.size());

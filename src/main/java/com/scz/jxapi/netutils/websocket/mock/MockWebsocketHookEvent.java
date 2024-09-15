@@ -92,12 +92,12 @@ public class MockWebsocketHookEvent {
 	}
 
 	/**
-	 * Create a new {@link MockWebsocketHookEventType#GET_HEARTBEAT} event for the given {@link MockWebsocketHook}.
+	 * Create a new {@link MockWebsocketHookEventType#GET_HEARTBEAT_MESSAGE} event for the given {@link MockWebsocketHook}.
 	 * @param source
 	 * @return
 	 */
 	public static MockWebsocketHookEvent createGetHeartbeatEvent(MockWebsocketHook source) {
-		MockWebsocketHookEvent e = new MockWebsocketHookEvent(MockWebsocketHookEventType.GET_HEARTBEAT, source);
+		MockWebsocketHookEvent e = new MockWebsocketHookEvent(MockWebsocketHookEventType.GET_HEARTBEAT_MESSAGE, source);
 		return e;
 	}
 

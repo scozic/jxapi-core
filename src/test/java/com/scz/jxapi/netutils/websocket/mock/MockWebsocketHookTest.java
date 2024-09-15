@@ -93,7 +93,7 @@ public class MockWebsocketHookTest {
         mockWebsocketHook.setHeartBeatMessage(expectedMessage);
         assertEquals(expectedMessage, mockWebsocketHook.getHeartBeatMessage());
         MockWebsocketHookEvent event = mockWebsocketHook.pop();
-        assertEquals(MockWebsocketHookEventType.GET_HEARTBEAT, event.getType());
+        assertEquals(MockWebsocketHookEventType.GET_HEARTBEAT_MESSAGE, event.getType());
         assertEquals(mockWebsocketHook, event.getSource());
     }
 

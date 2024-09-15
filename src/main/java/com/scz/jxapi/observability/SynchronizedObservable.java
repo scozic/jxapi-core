@@ -2,6 +2,7 @@ package com.scz.jxapi.observability;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 import java.util.function.BiConsumer;
 
 /**
@@ -9,9 +10,13 @@ import java.util.function.BiConsumer;
  * unsubscription of listeners and dispatch of events may occur in distinct
  * threads.
  * <p>
+ * Implementation takes care of not locking internal listener list during event dispatch, see {@link #dispatch(Object)}.
  * Take care of potential deadlock of listener are likely to wait for another thread that could subscribe/unsubscribe 
  * @param <L>
  * @param <E>
+ * 
+ * @see Observable
+ * @see #dispatch(Object)
  */
 public class SynchronizedObservable<L, E> extends DefaultObservable<L, E> {
 
@@ -20,15 +25,22 @@ public class SynchronizedObservable<L, E> extends DefaultObservable<L, E> {
 	}
 	
 	/**
-	 * Dispatches event to all subscribed listener in thread safe way synchronized
-	 * around internal list.
+	 * Dispatches event to all subscribed listener in thread safe way using internal
+	 * listeners list as monitor. The lock is taken on internal listeners list only
+	 * to make a copy of it before dispatching the event so event is dispatched
+	 * outside lock. This could lead to events being dispatched to a listener
+	 * listener has been unsubscribe, but avoids performance issues because of
+	 * threads waiting too long on lock to add or remove a listener taken by
+	 * dispatch thread.
 	 * 
 	 * @param event event to dispatch
 	 */
 	public void dispatch(E event) {
+		List<L> tmp = null;
 		synchronized (listeners) {
-			super.dispatch(event);
+			tmp = List.copyOf(listeners);
 		}
+		tmp.forEach(l -> eventDispatchMethod.accept(l, event));
 	}
 
 }

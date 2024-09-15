@@ -2,7 +2,6 @@ package com.scz.jxapi.netutils.websocket.mock;
 
 import com.scz.jxapi.netutils.websocket.RawWebsocketMessageHandler;
 import com.scz.jxapi.netutils.websocket.WebsocketErrorHandler;
-import com.scz.jxapi.util.EncodingUtil;
 
 /**
  * The MockWebsocketEvent class represents an event that can occur in a mock websocket.
@@ -16,8 +15,8 @@ public class MockWebsocketEvent {
 	 * @param source The mock websocket source.
 	 * @return The created MockWebsocketEvent object.
 	 */
-	public static MockWebsocketEvent createConnectEvent(MockWebsocket source) {
-		return new MockWebsocketEvent(MockWebsocketEventType.CONNECT, source);
+	public static MockWebsocketEvent createConnectEvent() {
+		return new MockWebsocketEvent(MockWebsocketEventType.CONNECT);
 	}
 	
 	/**
@@ -26,58 +25,54 @@ public class MockWebsocketEvent {
 	 * @param source The mock websocket source.
 	 * @return The created MockWebsocketEvent object.
 	 */
-	public static MockWebsocketEvent createDisconnectEvent(MockWebsocket source) {
-		return new MockWebsocketEvent(MockWebsocketEventType.DISCONNECT, source);
+	public static MockWebsocketEvent createDisconnectEvent() {
+		return new MockWebsocketEvent(MockWebsocketEventType.DISCONNECT);
 	}
 	
 	/**
 	 * Creates a SEND event for the given mock websocket source with the specified message.
 	 * 
-	 * @param source The mock websocket source.
 	 * @param message The message to be sent.
 	 * @return The created MockWebsocketEvent object.
 	 */
-	public static MockWebsocketEvent createSendEvent(MockWebsocket source, String message) {
-		MockWebsocketEvent event = new MockWebsocketEvent(MockWebsocketEventType.SEND, source);
+	public static MockWebsocketEvent createSendEvent(String message) {
+		MockWebsocketEvent event = new MockWebsocketEvent(MockWebsocketEventType.SEND);
 		event.setMessage(message);
 		return event;
 	}
 	
 	/**
-	 * Creates an ADD_MESSAGE_HANDLER event for the given mock websocket source with the specified message handler.
+	 * Creates an ADD_MESSAGE_HANDLER event with the specified message handler.
 	 * 
-	 * @param source The mock websocket source.
 	 * @param messageHandler The message handler to be added.
 	 * @return The created MockWebsocketEvent object.
 	 */
-	public static MockWebsocketEvent createAddMessageHandlerEvent(MockWebsocket source, RawWebsocketMessageHandler messageHandler) {
-		MockWebsocketEvent event = new MockWebsocketEvent(MockWebsocketEventType.ADD_MESSAGE_HANDLER, source);
+	public static MockWebsocketEvent createAddMessageHandlerEvent(RawWebsocketMessageHandler messageHandler) {
+		MockWebsocketEvent event = new MockWebsocketEvent(MockWebsocketEventType.ADD_MESSAGE_HANDLER);
 		event.setMessageHandler(messageHandler);
 		return event;
 	}
 	
 	/**
-	 * Creates a REMOVE_MESSAGE_HANDLER event for the given mock websocket source with the specified message handler.
+	 * Creates a REMOVE_MESSAGE_HANDLER event with the specified message handler.
 	 * 
-	 * @param source The mock websocket source.
 	 * @param messageHandler The message handler to be removed.
 	 * @return The created MockWebsocketEvent object.
 	 */
-	public static MockWebsocketEvent createRemoveMessageHandlerEvent(MockWebsocket source, RawWebsocketMessageHandler messageHandler) {
-		MockWebsocketEvent event = new MockWebsocketEvent(MockWebsocketEventType.REMOVE_MESSAGE_HANDLER, source);
+	public static MockWebsocketEvent createRemoveMessageHandlerEvent(RawWebsocketMessageHandler messageHandler) {
+		MockWebsocketEvent event = new MockWebsocketEvent(MockWebsocketEventType.REMOVE_MESSAGE_HANDLER);
 		event.setMessageHandler(messageHandler);
 		return event;
 	}
 	
 	/**
-	 * Creates an ADD_ERROR_HANDLER event for the given mock websocket source with the specified error handler.
+	 * Creates an ADD_ERROR_HANDLER event with the specified error handler.
 	 * 
-	 * @param source The mock websocket source.
 	 * @param errorHandler The error handler to be added.
 	 * @return The created MockWebsocketEvent object.
 	 */
-	public static MockWebsocketEvent createAddErrorHandlerEvent(MockWebsocket source, WebsocketErrorHandler errorHandler) {
-		MockWebsocketEvent event = new MockWebsocketEvent(MockWebsocketEventType.ADD_ERROR_HANDLER, source);
+	public static MockWebsocketEvent createAddErrorHandlerEvent(WebsocketErrorHandler errorHandler) {
+		MockWebsocketEvent event = new MockWebsocketEvent(MockWebsocketEventType.ADD_ERROR_HANDLER);
 		event.setErrorHandler(errorHandler);
 		return event;
 	}
@@ -89,14 +84,13 @@ public class MockWebsocketEvent {
 	 * @param errorHandler The error handler to be removed.
 	 * @return The created MockWebsocketEvent object.
 	 */
-	public static MockWebsocketEvent createRemoveErrorHandlerEvent(MockWebsocket source, WebsocketErrorHandler errorHandler) {
-		MockWebsocketEvent event = new MockWebsocketEvent(MockWebsocketEventType.REMOVE_ERROR_HANDLER, source);
+	public static MockWebsocketEvent createRemoveErrorHandlerEvent(WebsocketErrorHandler errorHandler) {
+		MockWebsocketEvent event = new MockWebsocketEvent(MockWebsocketEventType.REMOVE_ERROR_HANDLER);
 		event.setErrorHandler(errorHandler);
 		return event;
 	}
 	
 	private final MockWebsocketEventType type;
-	private final MockWebsocket source;
 	private RawWebsocketMessageHandler messageHandler;
 	private WebsocketErrorHandler errorHandler;
 	private String message;
@@ -107,9 +101,8 @@ public class MockWebsocketEvent {
 	 * @param type The type of the event.
 	 * @param source The source of the event.
 	 */
-	public MockWebsocketEvent(MockWebsocketEventType type, MockWebsocket source) {
+	public MockWebsocketEvent(MockWebsocketEventType type) {
 		this.type = type;
-		this.source = source;
 	}
 
 	/**
@@ -119,15 +112,6 @@ public class MockWebsocketEvent {
 	 */
 	public MockWebsocketEventType getType() {
 		return type;
-	}
-
-	/**
-	 * Returns the source of the event.
-	 * 
-	 * @return The source of the event.
-	 */
-	public MockWebsocket getSource() {
-		return source;
 	}
 
 	/**
@@ -190,6 +174,6 @@ public class MockWebsocketEvent {
 	 * @return A string representation of the MockWebsocketEvent object.
 	 */
 	public String toString() {
-		return EncodingUtil.pojoToString(this);
+		return getClass().getSimpleName() + "[" + type + "]";
 	}
 }

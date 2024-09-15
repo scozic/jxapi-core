@@ -87,7 +87,7 @@ public class MockWebsocketHookEventTest {
     @Test
     public void testCreateGetHeartbeatEvent() {
         MockWebsocketHookEvent event = MockWebsocketHookEvent.createGetHeartbeatEvent(mockWebsocketHook);
-        assertEquals(MockWebsocketHookEventType.GET_HEARTBEAT, event.getType());
+        assertEquals(MockWebsocketHookEventType.GET_HEARTBEAT_MESSAGE, event.getType());
         assertEquals(mockWebsocketHook, event.getSource());
     }
 

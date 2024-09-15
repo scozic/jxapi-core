@@ -15,102 +15,84 @@ public class MockWebsocketEventTest {
 
     @Test
     public void testCreateConnectEvent() {
-        MockWebsocket source = new MockWebsocket();
-        MockWebsocketEvent event = MockWebsocketEvent.createConnectEvent(source);
+        MockWebsocketEvent event = MockWebsocketEvent.createConnectEvent();
         assertEquals(MockWebsocketEventType.CONNECT, event.getType());
-        assertEquals(source, event.getSource());
     }
 
     @Test
     public void testCreateDisconnectEvent() {
-        MockWebsocket source = new MockWebsocket();
-        MockWebsocketEvent event = MockWebsocketEvent.createDisconnectEvent(source);
+        MockWebsocketEvent event = MockWebsocketEvent.createDisconnectEvent();
         assertEquals(MockWebsocketEventType.DISCONNECT, event.getType());
-        assertEquals(source, event.getSource());
     }
 
     @Test
     public void testCreateSendEvent() {
-        MockWebsocket source = new MockWebsocket();
         String message = "Hello, world!";
-        MockWebsocketEvent event = MockWebsocketEvent.createSendEvent(source, message);
+        MockWebsocketEvent event = MockWebsocketEvent.createSendEvent(message);
         assertEquals(MockWebsocketEventType.SEND, event.getType());
-        assertEquals(source, event.getSource());
         assertEquals(message, event.getMessage());
     }
 
     @Test
     public void testCreateAddMessageHandlerEvent() {
-        MockWebsocket source = new MockWebsocket();
         RawWebsocketMessageHandler messageHandler = new GenericRawWebsocketMessageHandler();
-        MockWebsocketEvent event = MockWebsocketEvent.createAddMessageHandlerEvent(source, messageHandler);
+        MockWebsocketEvent event = MockWebsocketEvent.createAddMessageHandlerEvent(messageHandler);
         assertEquals(MockWebsocketEventType.ADD_MESSAGE_HANDLER, event.getType());
-        assertEquals(source, event.getSource());
         assertEquals(messageHandler, event.getMessageHandler());
     }
 
     @Test
     public void testCreateRemoveMessageHandlerEvent() {
-        MockWebsocket source = new MockWebsocket();
         RawWebsocketMessageHandler messageHandler = new GenericRawWebsocketMessageHandler();
-        MockWebsocketEvent event = MockWebsocketEvent.createRemoveMessageHandlerEvent(source, messageHandler);
+        MockWebsocketEvent event = MockWebsocketEvent.createRemoveMessageHandlerEvent(messageHandler);
         assertEquals(MockWebsocketEventType.REMOVE_MESSAGE_HANDLER, event.getType());
-        assertEquals(source, event.getSource());
         assertEquals(messageHandler, event.getMessageHandler());
     }
 
     @Test
     public void testCreateAddErrorHandlerEvent() {
-        MockWebsocket source = new MockWebsocket();
         WebsocketErrorHandler errorHandler = new GenericWebsocketErrorHandler();
-        MockWebsocketEvent event = MockWebsocketEvent.createAddErrorHandlerEvent(source, errorHandler);
+        MockWebsocketEvent event = MockWebsocketEvent.createAddErrorHandlerEvent(errorHandler);
         assertEquals(MockWebsocketEventType.ADD_ERROR_HANDLER, event.getType());
-        assertEquals(source, event.getSource());
         assertEquals(errorHandler, event.getErrorHandler());
     }
 
     @Test
     public void testCreateRemoveErrorHandlerEvent() {
-        MockWebsocket source = new MockWebsocket();
         WebsocketErrorHandler errorHandler = new GenericWebsocketErrorHandler();
-        MockWebsocketEvent event = MockWebsocketEvent.createRemoveErrorHandlerEvent(source, errorHandler);
+        MockWebsocketEvent event = MockWebsocketEvent.createRemoveErrorHandlerEvent(errorHandler);
         assertEquals(MockWebsocketEventType.REMOVE_ERROR_HANDLER, event.getType());
-        assertEquals(source, event.getSource());
         assertEquals(errorHandler, event.getErrorHandler());
     }
 
     @Test
     public void testSetMessageHandler() {
-        MockWebsocket source = new MockWebsocket();
         RawWebsocketMessageHandler messageHandler = new GenericRawWebsocketMessageHandler();
-        MockWebsocketEvent event = new MockWebsocketEvent(MockWebsocketEventType.CONNECT, source);
+        MockWebsocketEvent event = new MockWebsocketEvent(MockWebsocketEventType.ADD_MESSAGE_HANDLER);
         event.setMessageHandler(messageHandler);
         assertEquals(messageHandler, event.getMessageHandler());
     }
 
     @Test
     public void testSetErrorHandler() {
-        MockWebsocket source = new MockWebsocket();
         WebsocketErrorHandler errorHandler = new GenericWebsocketErrorHandler();
-        MockWebsocketEvent event = new MockWebsocketEvent(MockWebsocketEventType.CONNECT, source);
+        MockWebsocketEvent event = new MockWebsocketEvent(MockWebsocketEventType.ADD_ERROR_HANDLER);
         event.setErrorHandler(errorHandler);
         assertEquals(errorHandler, event.getErrorHandler());
     }
 
     @Test
     public void testSetMessage() {
-        MockWebsocket source = new MockWebsocket();
         String message = "Hello, world!";
-        MockWebsocketEvent event = new MockWebsocketEvent(MockWebsocketEventType.CONNECT, source);
+        MockWebsocketEvent event = new MockWebsocketEvent(MockWebsocketEventType.SEND);
         event.setMessage(message);
         assertEquals(message, event.getMessage());
     }
 
     @Test
     public void testToString() {
-        MockWebsocket source = new MockWebsocket();
-        MockWebsocketEvent event = new MockWebsocketEvent(MockWebsocketEventType.CONNECT, source);
-        String expected = "MockWebsocketEvent{\"type\":\"CONNECT\",\"source\":{\"defaulTimeout\":2000,\"connected\":false,\"allEvents\":[]}}";
+        MockWebsocketEvent event = new MockWebsocketEvent(MockWebsocketEventType.CONNECT);
+        String expected = "MockWebsocketEvent[CONNECT]";
         assertEquals(expected, event.toString());
     }
 }

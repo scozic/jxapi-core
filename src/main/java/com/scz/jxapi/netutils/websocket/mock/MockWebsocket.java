@@ -24,17 +24,17 @@ public class MockWebsocket extends GenericObserver<MockWebsocketEvent> implement
 
 		@Override
 		protected void doConnect() throws WebsocketException {
-			handleEvent(MockWebsocketEvent.createConnectEvent(MockWebsocket.this));
+			handleEvent(MockWebsocketEvent.createConnectEvent());
 		}
 
 		@Override
 		protected void doDisconnect() throws WebsocketException {
-			handleEvent(MockWebsocketEvent.createDisconnectEvent(MockWebsocket.this));
+			handleEvent(MockWebsocketEvent.createDisconnectEvent());
 		}
 
 		@Override
 		protected void doSend(String message) throws WebsocketException {
-			handleEvent(MockWebsocketEvent.createSendEvent(MockWebsocket.this, message));
+			handleEvent(MockWebsocketEvent.createSendEvent(message));
 		}
 
 		@Override
@@ -87,7 +87,7 @@ public class MockWebsocket extends GenericObserver<MockWebsocketEvent> implement
 	 */
 	@Override
 	public void addMessageHandler(RawWebsocketMessageHandler messageHandler) {
-		handleEvent(MockWebsocketEvent.createAddMessageHandlerEvent(this, messageHandler));
+		handleEvent(MockWebsocketEvent.createAddMessageHandlerEvent(messageHandler));
 		delegate.addMessageHandler(messageHandler);
 	}
 
@@ -99,7 +99,7 @@ public class MockWebsocket extends GenericObserver<MockWebsocketEvent> implement
 	 */
 	@Override
 	public boolean removeMessageHandler(RawWebsocketMessageHandler messageHandler) {
-		handleEvent(MockWebsocketEvent.createRemoveMessageHandlerEvent(this, messageHandler));
+		handleEvent(MockWebsocketEvent.createRemoveMessageHandlerEvent(messageHandler));
 		return delegate.removeMessageHandler(messageHandler);
 	}
 
@@ -110,7 +110,7 @@ public class MockWebsocket extends GenericObserver<MockWebsocketEvent> implement
 	 */
 	@Override
 	public void addErrorHandler(WebsocketErrorHandler errorHandler) {
-		handleEvent(MockWebsocketEvent.createAddErrorHandlerEvent(this, errorHandler));
+		handleEvent(MockWebsocketEvent.createAddErrorHandlerEvent(errorHandler));
 		delegate.addErrorHandler(errorHandler);
 	}
 
@@ -122,7 +122,7 @@ public class MockWebsocket extends GenericObserver<MockWebsocketEvent> implement
 	 */
 	@Override
 	public boolean removeErrorHandler(WebsocketErrorHandler errorHandler) {
-		handleEvent(MockWebsocketEvent.createRemoveErrorHandlerEvent(this, errorHandler));
+		handleEvent(MockWebsocketEvent.createRemoveErrorHandlerEvent(errorHandler));
 		return delegate.removeErrorHandler(errorHandler);
 	}
 
