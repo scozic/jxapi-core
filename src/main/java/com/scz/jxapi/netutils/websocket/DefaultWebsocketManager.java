@@ -24,7 +24,9 @@ public class DefaultWebsocketManager implements WebsocketManager {
 	
 	public static final long WRITE_EXECUTOR_KEEP_ALIVE = 30000L;
 	
-	private static final Logger log = LoggerFactory.getLogger(DefaultWebsocketManager.class); 
+	private static final Logger log = LoggerFactory.getLogger(DefaultWebsocketManager.class);
+
+	public static final long DEFAULT_WRITE_EXECUTOR_TERMINATION_TIMEOUT = 5000L; 
 	
 	private final List<WebsocketErrorHandler> errorHandlers = new ArrayList<>();
 	
@@ -49,6 +51,8 @@ public class DefaultWebsocketManager implements WebsocketManager {
 	private long heartBeatInterval = -1L;
 	
 	private long  noHeartBeatResponseTimeout = -1L;
+	
+	private long writeExecutorWaitTerminationTimeout = DEFAULT_WRITE_EXECUTOR_TERMINATION_TIMEOUT;
 	
 	protected AtomicLong lastHeartBeatTime = new AtomicLong(0L);
 	
@@ -261,20 +265,16 @@ public class DefaultWebsocketManager implements WebsocketManager {
 			this.websocket.removeMessageHandler(rawMessageHandler);
 			writeExecutor.execute(() -> {
 				disconnect();
+				this.websocket.removeErrorHandler(websocketErrorHandler);
 			});
 			
 			writeExecutor.shutdown();
-			this.websocket.removeErrorHandler(websocketErrorHandler);
 			writeExecutor = null;
 		}
 	}
 	
 	public boolean isConnected() {
 		return this.connected.get();
-	}
-
-	public boolean removeHandler(String topic) {
-		return topics.remove(topic) != null;
 	}
 
 	@Override
@@ -405,13 +405,9 @@ public class DefaultWebsocketManager implements WebsocketManager {
 	protected void onError(WebsocketException exception) {
 		log.error("Error raised on Websocket [" + toString() + "]", exception);
 		this.dispatchWebsocketError(exception);
-		if (!isDisposed() && reconnectDelay > 0) {
-			if (log.isInfoEnabled()) {
-				log.info("Disconnecting websocket [" +toString() + "] after error");
-			}
-			
-			disconnect();
+		if (!isDisposed()) {
 			if (reconnectDelay > 0) {
+				disconnect();
 				if (log.isInfoEnabled()) {
 					log.info("Will try to reconnect websocket [" + toString() + "] in " + reconnectDelay + "ms");
 				}
@@ -508,6 +504,14 @@ public class DefaultWebsocketManager implements WebsocketManager {
 	}
 
 
+
+	public long getWriteExecutorWaitTerminationTimeout() {
+		return writeExecutorWaitTerminationTimeout;
+	}
+
+	public void setWriteExecutorWaitTerminationTimeout(long writeExecutorWaitTerminationTimeout) {
+		this.writeExecutorWaitTerminationTimeout = writeExecutorWaitTerminationTimeout;
+	}
 
 	private class NoMessageTimeoutTask implements Runnable {
 		
