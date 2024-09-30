@@ -1,6 +1,7 @@
 package com.scz.jxapi.netutils.websocket;
 
 import java.util.concurrent.TimeoutException;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.junit.After;
@@ -59,6 +60,7 @@ public class DefaultWebsocketManagerTest {
 	public void testGettersAndSetters() throws Exception {
 		wsManager = new DefaultWebsocketManager(ws, wsHook);
 		Assert.assertEquals(wsHook, wsManager.getWebsocketHook());
+		Assert.assertEquals(ws, wsManager.getWebsocket());
 		popWebsocketAddErrorHandlerEvent();
 		popWebsocketAddMessageHandlerEvent();
 		long heartBeatInterval = 1000L;
@@ -85,17 +87,10 @@ public class DefaultWebsocketManagerTest {
 		Assert.assertTrue(wsManager.isDisposed());
 		popWebsocketRemoveMessageHandlerEvent();
 		popWebsocketRemoveErrorHandlerEvent();
-	}
-	
-	@Test(expected = IllegalArgumentException.class)
-	public void testSubscribeNullTopic() throws Exception{
-		wsManager = new DefaultWebsocketManager(ws, null);
-		WebsocketMessageTopicMatcher topicMatcher = DefaultWebsocketMessageTopicMatcher.create("myTopic", "topic1");
-		wsManager.subscribe(null, topicMatcher, wsMessageHandler1);
-	}
+	}	
 	
 	@Test
-	public void testSubscribeToSingleTopicReceiveMessageThenUnsubscribe() throws Exception{
+	public void testSubscribeToSingleTopicReceiveOneMessageForTopicThenUnsubscribeThenReceiveMesssageForTopicNotDispatchedAsUnsubscribedThenDisposeWsManager() throws Exception{
 		wsManager = new DefaultWebsocketManager(ws, wsHook);
 		wsManager.subscribeErrorHandler(errorHandler);
 		popWebsocketAddErrorHandlerEvent();
@@ -116,25 +111,104 @@ public class DefaultWebsocketManagerTest {
 		String msg1 = "{\"myTopic\":\"topic1\", \"payload\":\"Hello!\"}";
 		ws.dispatchMessage(msg1);
 		Assert.assertEquals(msg1, wsMessageHandler1.waitUntilCount(1).pop());
-		
-		// 2nd message that will not be dispatched because topic not matching
-		String msg2 = "{\"myTopic\":\"otherTopic\", \"payload\":\"foo\"}";
-		ws.dispatchMessage(msg2);
-		wsMessageHandler1.checkNoEvents(NO_EVENT_DELAY);
-		
 		wsManager.unsubscribe(topic);
 		popWebsocketHookGetUnsubscribeRequestMessageEvent();
 		popWebsocketSendMessageEvent(unsubscribeTopicMsg);
-		// 3rd message that will not be dispatched after unsubscription from topic
-		String msg3 = "{\"myTopic\":\"topic1\", \"payload\":\"Hello World!\"}";
-		ws.dispatchMessage(msg3);
+		// 2nd message that will not be dispatched after unsubscription from topic
+		String msg2 = "{\"myTopic\":\"topic1\", \"payload\":\"Hello World!\"}";
+		ws.dispatchMessage(msg2);
 		wsMessageHandler1.checkNoEvents(NO_EVENT_DELAY);
+		checkNoEvents();
 		wsManager.dispose();
 		popWebsocketHookBeforeDisconnectEvent();
 		popWebsocketRemoveMessageHandlerEvent();
 		popWebsocketDisconnectEvent();
 		popWebsocketRemoveErrorHandlerEvent();
 		popWebsocketHookAfterDisconnectEvent();
+		checkNoError();
+	}
+	
+	@Test
+	public void testSubscribeToSingleTopicReceiveOneMessageForTopicWithTopicFieldInSubObject() throws Exception{
+		wsManager = new DefaultWebsocketManager(ws, wsHook);
+		wsManager.subscribeErrorHandler(errorHandler);
+		popWebsocketAddErrorHandlerEvent();
+		popWebsocketAddMessageHandlerEvent();
+		popWebsocketHookAfterInitEvent();
+		String topic = "topic1";
+		String subscribeTopicMsg = "subscribe:topic1";
+		String unsubscribeTopicMsg = "unsubscribe:topic1";
+		wsHook.setSubscribeRequestMessage(topic, subscribeTopicMsg);
+		wsHook.setUnSubscribeRequestMessage(topic, unsubscribeTopicMsg);
+		WebsocketMessageTopicMatcher topicMatcher = DefaultWebsocketMessageTopicMatcher.create("myTopic", topic);
+		wsManager.subscribe(topic, topicMatcher, wsMessageHandler1);
+		popWebsocketHookBeforeConnectEvent();
+		popWebsocketConnectEvent();
+		popWebsocketHookAfterConnectEvent();
+		popWebsocketHookGetSubscribeRequestMessageEvent();
+		popWebsocketSendMessageEvent(subscribeTopicMsg);
+		
+		String msg = "{\"payload\":\"Hello!\", \"sub\":{\"myTopic\":\"topic1\"}";
+		ws.dispatchMessage(msg);
+		Assert.assertEquals(msg, wsMessageHandler1.waitUntilCount(1).pop());
+		
+		checkNoEvents();
+		checkNoError();
+	}	
+	
+	@Test
+	public void testSubscribeToSingleTopicReceiveOneMessageForDifferentTopic() throws Exception{
+		wsManager = new DefaultWebsocketManager(ws, wsHook);
+		wsManager.subscribeErrorHandler(errorHandler);
+		popWebsocketAddErrorHandlerEvent();
+		popWebsocketAddMessageHandlerEvent();
+		popWebsocketHookAfterInitEvent();
+		String topic = "topic1";
+		String subscribeTopicMsg = "subscribe:topic1";
+		String unsubscribeTopicMsg = "unsubscribe:topic1";
+		wsHook.setSubscribeRequestMessage(topic, subscribeTopicMsg);
+		wsHook.setUnSubscribeRequestMessage(topic, unsubscribeTopicMsg);
+		WebsocketMessageTopicMatcher topicMatcher = DefaultWebsocketMessageTopicMatcher.create("myTopic", topic);
+		wsManager.subscribe(topic, topicMatcher, wsMessageHandler1);
+		popWebsocketHookBeforeConnectEvent();
+		popWebsocketConnectEvent();
+		popWebsocketHookAfterConnectEvent();
+		popWebsocketHookGetSubscribeRequestMessageEvent();
+		popWebsocketSendMessageEvent(subscribeTopicMsg);
+		
+		// Message that will not be dispatched because topic not matching
+		String msg = "{\"myTopic\":\"otherTopic\", \"payload\":\"foo\"}";
+		ws.dispatchMessage(msg);
+		checkNoEvents();
+	
+		checkNoEvents();
+		checkNoError();
+	}
+	
+	@Test
+	public void testSubscribeToSingleTopicReceiveOneMessageWithoutTopicButDifferentFieldsOfBooleanNumberAndSubObjectTypes() throws Exception{
+		wsManager = new DefaultWebsocketManager(ws, wsHook);
+		wsManager.subscribeErrorHandler(errorHandler);
+		popWebsocketAddErrorHandlerEvent();
+		popWebsocketAddMessageHandlerEvent();
+		popWebsocketHookAfterInitEvent();
+		String topic = "topic1";
+		String subscribeTopicMsg = "subscribe:topic1";
+		String unsubscribeTopicMsg = "unsubscribe:topic1";
+		wsHook.setSubscribeRequestMessage(topic, subscribeTopicMsg);
+		wsHook.setUnSubscribeRequestMessage(topic, unsubscribeTopicMsg);
+		WebsocketMessageTopicMatcher topicMatcher = DefaultWebsocketMessageTopicMatcher.create("myTopic", topic);
+		wsManager.subscribe(topic, topicMatcher, wsMessageHandler1);
+		popWebsocketHookBeforeConnectEvent();
+		popWebsocketConnectEvent();
+		popWebsocketHookAfterConnectEvent();
+		popWebsocketHookGetSubscribeRequestMessageEvent();
+		popWebsocketSendMessageEvent(subscribeTopicMsg);
+		
+		// Message that will not be dispatched because not a message with expected 'topic' field
+		String msg = "{\"foo\":\"bar\", \"flag1\":true, \"flag2\": false, \"count\":3, \"price\":3.24 \"sub\":{}";
+		ws.dispatchMessage(msg);
+		checkNoEvents();
 		checkNoError();
 	}
 	
@@ -299,7 +373,7 @@ public class DefaultWebsocketManagerTest {
 		checkNoEvents();
 		
 		// First heartbeat should be sent
-		popWebsocketHookGetHeartbeatMessageEvent(heartBeatMsg);
+		popWebsocketHookGetHeartbeatMessageEvent();
 		popWebsocketSendMessageEvent(heartBeatMsg);
 		
 		// Dispatch heartBeat response
@@ -308,7 +382,7 @@ public class DefaultWebsocketManagerTest {
 		checkNoEvents();
 		
 		// 2nd heartbeat should be sent
-		popWebsocketHookGetHeartbeatMessageEvent(heartBeatMsg);
+		popWebsocketHookGetHeartbeatMessageEvent();
 		popWebsocketSendMessageEvent(heartBeatMsg);
 		
 		// After no heartbeat timeout elapsed, error should be raised
@@ -317,12 +391,13 @@ public class DefaultWebsocketManagerTest {
 	}
 	
 	@Test
-	public void testHeartBeatInitiatedByServerHandledBySystemMsgHandlerThatRespondsWithHeartBeatResponse() throws Exception {
+	public void testHeartBeatInitiatedByServerHandledBySystemMsgHandlerThatRespondsWithHeartBeatResponseThenHeartBeatTimeoutReconnectionThenAnotherHeartBeatHandled() throws Exception {
 		wsManager = new DefaultWebsocketManager(ws, wsHook);
 		wsManager.setHeartBeatInterval(HEARTBEAT_INTERVAL);
 		long noHeartBeatResponseTimeout = HEARTBEAT_INTERVAL + 25;
 		wsManager.setNoHeartBeatResponseTimeout(noHeartBeatResponseTimeout);
 		wsManager.subscribeErrorHandler(errorHandler);
+		wsManager.setReconnectDelay(NO_EVENT_DELAY * 2);
 		popWebsocketAddErrorHandlerEvent();
 		popWebsocketAddMessageHandlerEvent();
 		popWebsocketHookAfterInitEvent();
@@ -332,7 +407,7 @@ public class DefaultWebsocketManagerTest {
 		wsHook.setSubscribeRequestMessage(topic, subscribeTopicMsg);
 		wsHook.setUnSubscribeRequestMessage(topic, unsubscribeTopicMsg);
 		String heartBeatMsg = "{\"myTopic\":\"heartBeat\", \"payload\":\"PING\"}";
-		wsHook.setHeartBeatMessage(null);
+		wsHook.setHeartBeatMessage(heartBeatMsg);
 		String heartBeatResponseMsg = "{\"myTopic\":\"heartBeat\", \"payload\":\"PONG\"}";
 		WebsocketMessageTopicMatcher topicMatcher = DefaultWebsocketMessageTopicMatcher.create("myTopic", "topic1");
 		HeartBeatRequestSystemMsgHandler hbHandler = new HeartBeatRequestSystemMsgHandler();
@@ -346,10 +421,84 @@ public class DefaultWebsocketManagerTest {
 		popWebsocketHookGetSubscribeRequestMessageEvent();
 		popWebsocketSendMessageEvent(subscribeTopicMsg);
 		ws.dispatchMessage(heartBeatMsg);
+		
 		popWebsocketSendMessageEvent(heartBeatResponseMsg);
-		Assert.assertEquals(1, hbHandler.count());
+		Assert.assertEquals(1, hbHandler.pingCount());
+		popWebsocketHookGetHeartbeatMessageEvent();
+		popWebsocketSendMessageEvent(heartBeatMsg);
+		ws.dispatchMessage(heartBeatResponseMsg);
+		Assert.assertEquals(1, hbHandler.pongCount());
+		
 		checkNoEvents();
 		checkNoError();
+		
+		// Error raised after heart beat response timeout has elapsed
+		Thread.sleep(noHeartBeatResponseTimeout);
+		popWebsocketHookGetHeartbeatMessageEvent();
+		popWebsocketSendMessageEvent(heartBeatMsg);
+		popError();
+		
+		// Disconnection should be initiated upon error
+		popWebsocketHookBeforeDisconnectEvent();
+		popWebsocketDisconnectEvent();
+		popWebsocketHookAfterDisconnectEvent();
+		
+		// Then reconnection should be initiated
+		popWebsocketHookBeforeConnectEvent();
+		popWebsocketConnectEvent();
+		popWebsocketHookAfterConnectEvent();
+		popWebsocketHookGetSubscribeRequestMessageEvent();
+		// Topic resubscription should be performed
+		popWebsocketSendMessageEvent(subscribeTopicMsg);
+		checkNoError();
+		ws.dispatchMessage(heartBeatMsg);
+		popWebsocketSendMessageEvent(heartBeatResponseMsg);
+		Assert.assertEquals(2, hbHandler.pingCount());
+		popWebsocketHookGetHeartbeatMessageEvent();
+		popWebsocketSendMessageEvent(heartBeatMsg);
+		ws.dispatchMessage(heartBeatResponseMsg);
+		Assert.assertEquals(2, hbHandler.pongCount());
+		checkNoEvents();
+		checkNoError();
+	}
+	
+	@Test
+	public void testHeartBeatInitiatedByClientNullHeartBeatMessageFromWebsocketHookTriggersErrorEventButNoDisconnectionThenDisconnectionOccursForHeartBeatTimeout() throws Exception {
+		wsManager = new DefaultWebsocketManager(ws, wsHook);
+		wsManager.setHeartBeatInterval(HEARTBEAT_INTERVAL);
+		long noHeartBeatResponseTimeout = HEARTBEAT_INTERVAL + 25;
+		wsManager.setNoHeartBeatResponseTimeout(noHeartBeatResponseTimeout);
+		wsManager.subscribeErrorHandler(errorHandler);
+		popWebsocketAddErrorHandlerEvent();
+		popWebsocketAddMessageHandlerEvent();
+		popWebsocketHookAfterInitEvent();
+		String topic = "topic1";
+		String subscribeTopicMsg = "subscribe:topic1";
+		String unsubscribeTopicMsg = "unsubscribe:topic1";
+		wsHook.setSubscribeRequestMessage(topic, subscribeTopicMsg);
+		wsHook.setUnSubscribeRequestMessage(topic, unsubscribeTopicMsg);
+//		String heartBeatMsg = "{\"myTopic\":\"heartBeat\", \"payload\":\"PING\"}";
+		wsHook.setHeartBeatMessage(null);
+		WebsocketMessageTopicMatcher topicMatcher = DefaultWebsocketMessageTopicMatcher.create("myTopic", "topic1");
+		checkNoEvents();
+		wsManager.subscribe(topic, topicMatcher, wsMessageHandler1);
+		popWebsocketHookBeforeConnectEvent();
+		popWebsocketConnectEvent();
+		popWebsocketHookAfterConnectEvent();
+		popWebsocketHookGetSubscribeRequestMessageEvent();
+		popWebsocketSendMessageEvent(subscribeTopicMsg);
+		
+		// First heartbeat should not be sent immediately
+		checkNoEvents();
+		
+		// Null heartbeat message returned by websocket hook should trigger error.
+		popWebsocketHookGetHeartbeatMessageEvent();
+		popError();
+		checkNoEvents();
+		
+		// After no heartbeat timeout elapsed, error should be raised
+		Thread.sleep(noHeartBeatResponseTimeout);
+		popError();
 	}
 	
 	@Test
@@ -435,13 +584,348 @@ public class DefaultWebsocketManagerTest {
 	}
 	
 	@Test
-	public void testErrorOnHeartBeatSendTriggersErrorEventAndReconnectionAndHeartBeatTimeoutAfterReonnection() {
-		// TODO Reconnection should not be attempted before hb timeout has elapsed starting from reconnection
+	public void testErrorOnHeartBeatSendTriggersErrorEventAndReconnectionAndHeartBeatTimeoutAfterReonnection() throws Exception {
+		wsManager = new DefaultWebsocketManager(ws, wsHook);
+		wsManager.setReconnectDelay(HEARTBEAT_INTERVAL);
+		wsManager.setHeartBeatInterval(HEARTBEAT_INTERVAL);
+		long noHeartBeatResponseTimeout = HEARTBEAT_INTERVAL + 25;
+		wsManager.setNoHeartBeatResponseTimeout(noHeartBeatResponseTimeout);
+		wsManager.subscribeErrorHandler(errorHandler);
+		popWebsocketAddErrorHandlerEvent();
+		popWebsocketAddMessageHandlerEvent();
+		popWebsocketHookAfterInitEvent();
+		String topic = "topic1";
+		String subscribeTopicMsg = "subscribe:topic1";
+		String unsubscribeTopicMsg = "unsubscribe:topic1";
+		wsHook.setSubscribeRequestMessage(topic, subscribeTopicMsg);
+		wsHook.setUnSubscribeRequestMessage(topic, unsubscribeTopicMsg);
+		String heartBeatMsg = "{\"myTopic\":\"heartBeat\", \"payload\":\"PING\"}";
+		wsHook.setHeartBeatMessage(heartBeatMsg);
+		String heartBeatResponseMsg = "{\"myTopic\":\"heartBeat\", \"payload\":\"PONG\"}";
+		WebsocketMessageTopicMatcher topicMatcher = DefaultWebsocketMessageTopicMatcher.create("myTopic", "topic1");
+		HeartBeatResponseSystemMsgHandler hbHandler = new HeartBeatResponseSystemMsgHandler();
+		wsManager.addSystemMessageHandler("heartBeat",  DefaultWebsocketMessageTopicMatcher.create("myTopic", "heartBeat"), hbHandler);
+		checkNoEvents();
+		wsManager.subscribe(topic, topicMatcher, wsMessageHandler1);
+		popWebsocketHookBeforeConnectEvent();
+		popWebsocketConnectEvent();
+		popWebsocketHookAfterConnectEvent();
+		popWebsocketHookGetSubscribeRequestMessageEvent();
+		popWebsocketSendMessageEvent(subscribeTopicMsg);
+		
+		// Prepare throw for next websocket.send() call
+		ws.addExceptionToThrowOnSend(new WebsocketException("Failed to send heartbeat!"));
+		// First heartbeat should not be sent immediately
+		checkNoEvents();
+		
+		// First heartbeat should be sent
+		popWebsocketHookGetHeartbeatMessageEvent();
+		popWebsocketSendMessageEvent(heartBeatMsg);
+		popError();
+
+		// Expect reconnection attempt
+		// Disconnection should be initiated upon error
+		popWebsocketHookBeforeDisconnectEvent();
+		popWebsocketDisconnectEvent();
+		popWebsocketHookAfterDisconnectEvent();
+		
+		// reconnect delay must be awaited before attempting reconnection
+		checkNoEvents();
+		
+		// Then reconnection should be initiated
+		popWebsocketHookBeforeConnectEvent();
+		popWebsocketConnectEvent();
+		popWebsocketHookAfterConnectEvent();
+		popWebsocketHookGetSubscribeRequestMessageEvent();
+		// Topic resubscription should be performed
+		popWebsocketSendMessageEvent(subscribeTopicMsg);
+		checkNoError();
+		
+		// Dispatch heartBeat response
+		ws.dispatchMessage(heartBeatResponseMsg);
+		Assert.assertEquals(1, hbHandler.count());
+		checkNoEvents();
+		
+		// Heartbeat should be sent after heartbeat interval has elapsed
+		popWebsocketHookGetHeartbeatMessageEvent();
+		popWebsocketSendMessageEvent(heartBeatMsg);
+		
+		// After no heartbeat timeout elapsed, error should be raised
+		Thread.sleep(noHeartBeatResponseTimeout);
+		popError();
 	}
 	
 	@Test
-	public void testNoMessageTimeoutTriggersReconnectionThenAnotherMessageTimeoutTriggersSecondReconnection() {
-		// TODO
+	public void testConnectionInitiatedBySubscribingToDefaultTopicNoMessageTimeoutTriggersReconnectionThenAnotherMessageTimeoutTriggersSecondReconnection() throws Exception {
+		wsManager = new DefaultWebsocketManager(ws, null);
+		popWebsocketAddErrorHandlerEvent();
+		popWebsocketAddMessageHandlerEvent();
+		wsManager.setReconnectDelay(HEARTBEAT_INTERVAL);
+		long noMessageTimeout = NO_EVENT_DELAY * 2 + 50L;
+		wsManager.setNoMessageTimeout(noMessageTimeout);
+		wsManager.subscribeErrorHandler(errorHandler);
+		wsManager.subscribe(null, null, wsMessageHandler1);
+		popWebsocketConnectEvent();
+		
+		checkNoEvents();
+		checkNoEvents();
+		// No message received for longer delay than noMessageTimeout 
+		// triggers error and disconnection/reconnection attempt.
+		popError();
+		
+		// Expect reconnection attempt
+		// Disconnection should be initiated upon error
+		popWebsocketDisconnectEvent();
+		
+		// reconnect delay must be awaited before attempting reconnection
+		checkNoEvents();
+		
+		// Then reconnection should be initiated
+		popWebsocketConnectEvent();
+		
+		checkNoEvents();
+		checkNoEvents();
+		// 2nd no message timeout triggers a 2nd reconnection.
+		popError();
+		
+		// Expect reconnection attempt
+		// Disconnection should be initiated upon error
+		popWebsocketDisconnectEvent();
+		
+		// reconnect delay must be awaited before attempting reconnection
+		checkNoEvents();
+		
+		// Then reconnection should be initiated
+		popWebsocketConnectEvent();
+	}
+	
+	@Test
+	public void testConnectionInitiatedSendingMessageThenErrorRaisedUponSendOfSecondMessageTriggersSuccessfulReconnectionAndAnotherMessagIsSent() throws Exception {
+		wsManager = new DefaultWebsocketManager(ws, null);
+		popWebsocketAddErrorHandlerEvent();
+		popWebsocketAddMessageHandlerEvent();
+		wsManager.setReconnectDelay(HEARTBEAT_INTERVAL);
+		long noMessageTimeout = NO_EVENT_DELAY * 2 + 50L;
+		wsManager.setNoMessageTimeout(noMessageTimeout);
+		wsManager.subscribeErrorHandler(errorHandler);
+		wsManager.subscribe(null, null, wsMessageHandler1);
+		popWebsocketConnectEvent();
+		
+		checkNoEvents();
+		checkNoEvents();
+		// No message received for longer delay than noMessageTimeout 
+		// triggers error and disconnection/reconnection attempt.
+		popError();
+		
+		// Expect reconnection attempt
+		// Disconnection should be initiated upon error
+		popWebsocketDisconnectEvent();
+		
+		// reconnect delay must be awaited before attempting reconnection
+		checkNoEvents();
+		
+		// Then reconnection should be initiated
+		popWebsocketConnectEvent();
+		
+		checkNoEvents();
+		checkNoEvents();
+		// 2nd no message timeout triggers a 2nd reconnection.
+		popError();
+		
+		// Expect reconnection attempt
+		// Disconnection should be initiated upon error
+		popWebsocketDisconnectEvent();
+		
+		// reconnect delay must be awaited before attempting reconnection
+		checkNoEvents();
+		
+		// Then reconnection should be initiated
+		popWebsocketConnectEvent();
+	}
+	
+	@Test(expected = IllegalStateException.class)
+	public void testHeartBeatIntervalSetButNoWebsocketHookThrowsException() throws Exception {
+		wsManager = new DefaultWebsocketManager(ws, null);
+		wsManager.setHeartBeatInterval(HEARTBEAT_INTERVAL);
+	}
+	
+	@Test
+	public void testHeartBeatIntervalSetToNegativeValueWhenNoWebsocketHook() throws Exception {
+		wsManager = new DefaultWebsocketManager(ws, null);
+		wsManager.setHeartBeatInterval(-2L);
+		Assert.assertEquals(-2L, wsManager.getHeartBeatInterval());
+	}
+	
+	@Test
+	public void testErrorRaisedWhenSendingUnsubscriptionFromTopic() throws Exception {
+		wsManager = new DefaultWebsocketManager(ws, wsHook);
+		wsManager.subscribeErrorHandler(errorHandler);
+		popWebsocketAddErrorHandlerEvent();
+		popWebsocketAddMessageHandlerEvent();
+		popWebsocketHookAfterInitEvent();
+		String topic = "topic1";
+		String subscribeTopicMsg = "subscribe:topic1";
+		String unsubscribeTopicMsg = "unsubscribe:topic1";
+		wsHook.setSubscribeRequestMessage(topic, subscribeTopicMsg);
+		wsHook.setUnSubscribeRequestMessage(topic, unsubscribeTopicMsg);
+		WebsocketMessageTopicMatcher topicMatcher = DefaultWebsocketMessageTopicMatcher.create("myTopic", topic);
+		wsManager.subscribe(topic, topicMatcher, wsMessageHandler1);
+		popWebsocketHookBeforeConnectEvent();
+		popWebsocketConnectEvent();
+		popWebsocketHookAfterConnectEvent();
+		popWebsocketHookGetSubscribeRequestMessageEvent();
+		popWebsocketSendMessageEvent(subscribeTopicMsg);
+		String msg1 = "{\"myTopic\":\"topic1\", \"payload\":\"Hello!\"}";
+		ws.dispatchMessage(msg1);
+		Assert.assertEquals(msg1, wsMessageHandler1.waitUntilCount(1).pop());
+		
+		ws.addExceptionToThrowOnSend(new WebsocketException("Error unsubscribing from " + topic));
+		wsManager.unsubscribe(topic);
+		popWebsocketHookGetUnsubscribeRequestMessageEvent();
+		popWebsocketSendMessageEvent(unsubscribeTopicMsg);
+		popError();
+	}
+	
+	@Test
+	public void testErrorAndDisconnectionRaisedFromWebsocketHookOnFirstCallToBeforeConnectThenSuccessfulReconnection() throws Exception {
+		wsManager = new DefaultWebsocketManager(ws, null);
+		wsManager.subscribeErrorHandler(errorHandler);
+		wsManager.setReconnectDelay(NO_EVENT_DELAY * 2);
+		popWebsocketAddErrorHandlerEvent();
+		popWebsocketAddMessageHandlerEvent();
+		
+		// Send first message. Will trigger connection of WS prior to message sending.
+		String msg1 =  "{\"greetings\":\"Hi!\"";
+		wsManager.sendAsync(msg1);
+		popWebsocketConnectEvent();
+		popWebsocketSendMessageEvent(msg1);
+		checkNoEvents();
+		
+		// Send 2nd message that will trigger exception on WS when sending.
+		ws.addExceptionToThrowOnSend(new WebsocketException("Test error on send"));
+		wsManager.sendAsync(msg1);
+		popWebsocketSendMessageEvent(msg1);
+		popError();
+		popWebsocketDisconnectEvent();
+		Assert.assertFalse(wsManager.isConnected());
+		checkNoEvents();
+		
+		// Successful reconnection
+		popWebsocketConnectEvent();
+		Assert.assertTrue(wsManager.isConnected());
+		checkNoEvents();
+		wsManager.sendAsync(msg1);
+		popWebsocketSendMessageEvent(msg1);
+		checkNoEvents();
+		checkNoError();
+	}
+	
+	@Test
+	public void testErrorOnConnectionWhileSubscribingToSecondTopicSuccessfulReconnectionThenUnsubscribeAndDispose() throws Exception{
+		wsManager = new DefaultWebsocketManager(ws, wsHook);
+		wsManager.subscribeErrorHandler(errorHandler);
+		wsManager.setReconnectDelay(NO_EVENT_DELAY * 2);
+		popWebsocketAddErrorHandlerEvent();
+		popWebsocketAddMessageHandlerEvent();
+		popWebsocketHookAfterInitEvent();
+		String topic = "topic1";
+		String subscribeTopicMsg = "subscribe:topic1";
+		String unsubscribeTopicMsg = "unsubscribe:topic1";
+		wsHook.setSubscribeRequestMessage(topic, subscribeTopicMsg);
+		wsHook.setUnSubscribeRequestMessage(topic, unsubscribeTopicMsg);
+		WebsocketMessageTopicMatcher topicMatcher = DefaultWebsocketMessageTopicMatcher.create("myTopic", topic);
+		ws.addExceptionToThrowOnConnect(new WebsocketException("Test error on connect"));
+		wsManager.subscribe(topic, topicMatcher, wsMessageHandler1);
+		popWebsocketHookBeforeConnectEvent();
+		popWebsocketConnectEvent();
+		// Error raised in connect
+		popError();
+		
+		// No event should be raised before reconnect delay has elapsed
+		checkNoEvents();
+		
+		// Successful reconnection
+		popWebsocketHookBeforeConnectEvent();
+		popWebsocketConnectEvent();
+		popWebsocketHookAfterConnectEvent();
+		popWebsocketHookGetSubscribeRequestMessageEvent();
+		popWebsocketSendMessageEvent(subscribeTopicMsg);
+		
+
+		
+		String msg1 = "{\"myTopic\":\"topic1\", \"payload\":\"Hello!\"}";
+		ws.dispatchMessage(msg1);
+		Assert.assertEquals(msg1, wsMessageHandler1.waitUntilCount(1).pop());
+		wsManager.unsubscribe(topic);
+		popWebsocketHookGetUnsubscribeRequestMessageEvent();
+		popWebsocketSendMessageEvent(unsubscribeTopicMsg);
+		wsMessageHandler1.checkNoEvents(NO_EVENT_DELAY);
+		checkNoEvents();
+		
+		wsManager.dispose();
+		popWebsocketHookBeforeDisconnectEvent();
+		popWebsocketRemoveMessageHandlerEvent();
+		popWebsocketDisconnectEvent();
+		popWebsocketRemoveErrorHandlerEvent();
+		popWebsocketHookAfterDisconnectEvent();
+		checkNoError();
+	}
+	
+	@Test
+	public void testSuccessfulConnectionThenDisposeManagerExceptionThrownDuringDisconnectionIsNotified() throws Exception {
+		wsHook = new MockWebsocketHook() {
+			public void beforeDisconnect(WebsocketManager mgr) throws WebsocketException {
+				super.beforeDisconnect(mgr);
+				throw new WebsocketException("Error from WebsocketHook");
+			}
+		};
+		wsManager = new DefaultWebsocketManager(ws, wsHook);
+		wsManager.subscribeErrorHandler(errorHandler);
+		wsManager.setReconnectDelay(NO_EVENT_DELAY * 2);
+		popWebsocketAddErrorHandlerEvent();
+		popWebsocketAddMessageHandlerEvent();
+		popWebsocketHookAfterInitEvent();
+		
+		String subscribeMsg = "subscribe";
+		String unsubscribeMsg = "unsubscribe";
+		wsHook.setSubscribeRequestMessage(null, subscribeMsg);
+		wsHook.setUnSubscribeRequestMessage(null, unsubscribeMsg);
+		wsManager.subscribe(null, null, wsMessageHandler1);
+		popWebsocketHookBeforeConnectEvent();
+		popWebsocketConnectEvent();
+		popWebsocketHookAfterConnectEvent();
+		popWebsocketHookGetSubscribeRequestMessageEvent();
+		popWebsocketSendMessageEvent(subscribeMsg);
+		checkNoEvents();
+		wsManager.dispose();
+		popWebsocketHookBeforeDisconnectEvent();
+		popWebsocketRemoveMessageHandlerEvent();
+		popWebsocketRemoveErrorHandlerEvent();
+		popError();
+		Assert.assertFalse(wsManager.isConnected());
+		checkNoEvents();
+	}
+	
+	@Test
+	public void testSendMessageWhileDisconnectedTriggersConnectionAndSendingOnWsThenDisposeWsManagerAndSendAsyncAndSyncMessageThatShouldNotBeSentToWs() throws Exception {
+		wsManager = new DefaultWebsocketManager(ws, null);
+		wsManager.subscribeErrorHandler(errorHandler);
+		popWebsocketAddErrorHandlerEvent();
+		popWebsocketAddMessageHandlerEvent();
+		String msg =  "{\"greetings\":\"Hi!\"";
+		wsManager.sendAsync(msg);
+		popWebsocketConnectEvent();
+		popWebsocketSendMessageEvent(msg);
+		checkNoEvents();
+		wsManager.dispose();
+		popWebsocketRemoveMessageHandlerEvent();
+		popWebsocketDisconnectEvent();
+		popWebsocketRemoveErrorHandlerEvent();
+		Assert.assertFalse(wsManager.isConnected());
+		checkNoEvents();
+		wsManager.sendAsync(msg);
+		wsManager.send(msg);
+		checkNoEvents();
 	}
 	
 	private MockWebsocketEvent popWebsocketConnectEvent() throws TimeoutException {
@@ -490,10 +974,6 @@ public class DefaultWebsocketManagerTest {
 		Assert.assertNotNull(event.getErrorHandler());
 		return event;
 	}
-	
-//	private void checkNoWebsocketEvent() {
-//		ws.checkNoEvents(NO_EVENT_DELAY);
-//	}
 	
 	private MockWebsocketHookEvent popWebsocketHookAfterInitEvent() throws TimeoutException {
 		MockWebsocketHookEvent event = wsHook.waitUntilCount(1).pop();
@@ -549,7 +1029,7 @@ public class DefaultWebsocketManagerTest {
 		return event;
 	}
 	
-	private MockWebsocketHookEvent popWebsocketHookGetHeartbeatMessageEvent(String heartBeatMessage) throws TimeoutException {
+	private MockWebsocketHookEvent popWebsocketHookGetHeartbeatMessageEvent() throws TimeoutException {
 		MockWebsocketHookEvent event = wsHook.waitUntilCount(1).pop();
 		Assert.assertEquals(MockWebsocketHookEventType.GET_HEARTBEAT_MESSAGE, event.getType());
 		Assert.assertEquals(wsHook, event.getSource());
@@ -566,7 +1046,15 @@ public class DefaultWebsocketManagerTest {
 		}
 		
 		if (wsHook.size() > 0) {
-			Assert.assertEquals("Received unexpected WebsocketHookEvent", 0, wsHook.size());
+			Assert.fail("Received unexpected WebsocketHookEvent:" + wsHook.pop());
+		}
+		
+		if (wsMessageHandler1.size() > 0) {
+			Assert.fail("Received unexpected message event on handler1:" + wsMessageHandler1.pop());
+		}
+		
+		if (wsMessageHandler2.size() > 0) {
+			Assert.fail("Received unexpected message event on handler2:" + wsMessageHandler2.pop());
 		}
 	}
 	
@@ -599,17 +1087,28 @@ public class DefaultWebsocketManagerTest {
 		
 		String heartBeatResponseMsg;
 		
-		AtomicInteger receivedHeartBeatResponses = new AtomicInteger(0);
+		AtomicInteger receivedHeartBeatPings = new AtomicInteger(0);
+		AtomicInteger receivedHeartBeatPongs = new AtomicInteger(0);
 
 		@Override
 		public void handleWebsocketMessage(String message) {
-			receivedHeartBeatResponses.incrementAndGet();
 			wsManager.hearbeatReceived();
-			wsManager.sendAsync(heartBeatResponseMsg);
+			if (message.contains("PING")) {
+				receivedHeartBeatPings.incrementAndGet();
+				wsManager.sendAsync(heartBeatResponseMsg);
+			} else if (message.contains("PONG")) {
+				receivedHeartBeatPongs.incrementAndGet();
+			}
+			
+			
 		}
 		
-		public int count() {
-			return receivedHeartBeatResponses.get();
+		public int pingCount() {
+			return receivedHeartBeatPings.get();
+		}
+		
+		public int pongCount() {
+			return receivedHeartBeatPongs.get();
 		}
 	}
 

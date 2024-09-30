@@ -1,11 +1,17 @@
 package com.scz.jxapi.netutils.websocket.mock;
 
+import java.util.concurrent.LinkedBlockingQueue;
+
+import org.slf4j.LoggerFactory;
+
 import com.scz.jxapi.netutils.websocket.AbstractWebsocket;
 import com.scz.jxapi.netutils.websocket.RawWebsocketMessageHandler;
 import com.scz.jxapi.netutils.websocket.Websocket;
 import com.scz.jxapi.netutils.websocket.WebsocketErrorHandler;
 import com.scz.jxapi.netutils.websocket.WebsocketException;
 import com.scz.jxapi.observability.GenericObserver;
+
+import jdk.internal.org.jline.utils.Log;
 
 /**
  * A mock implementation of the {@link Websocket} interface for testing purposes.
@@ -25,16 +31,24 @@ public class MockWebsocket extends GenericObserver<MockWebsocketEvent> implement
 		@Override
 		protected void doConnect() throws WebsocketException {
 			handleEvent(MockWebsocketEvent.createConnectEvent());
+			WebsocketException ex = exceptionsToThrowOnConnect.poll();
+			if (ex != null) {
+				throw ex;
+			}
 		}
 
 		@Override
-		protected void doDisconnect() throws WebsocketException {
+		protected void doDisconnect() {
 			handleEvent(MockWebsocketEvent.createDisconnectEvent());
 		}
 
 		@Override
 		protected void doSend(String message) throws WebsocketException {
 			handleEvent(MockWebsocketEvent.createSendEvent(message));
+			WebsocketException ex = exceptionsToThrowOnSend.poll();
+			if (ex != null) {
+				throw ex;
+			}
 		}
 
 		@Override
@@ -48,6 +62,9 @@ public class MockWebsocket extends GenericObserver<MockWebsocketEvent> implement
 		}
 
 	}
+	
+	private final LinkedBlockingQueue<WebsocketException> exceptionsToThrowOnConnect = new LinkedBlockingQueue<>();
+	private final LinkedBlockingQueue<WebsocketException> exceptionsToThrowOnSend = new LinkedBlockingQueue<>();
 
 	/**
 	 * Connects to the websocket server.
@@ -77,6 +94,11 @@ public class MockWebsocket extends GenericObserver<MockWebsocketEvent> implement
 	 */
 	@Override
 	public void send(String message) throws WebsocketException {
+		// FIXME
+		if (message == null) {
+			LoggerFactory.getLogger(getClass()).info("Send:null", new Exception("sending null"));
+		}
+		
 		delegate.send(message);
 	}
 
@@ -177,6 +199,14 @@ public class MockWebsocket extends GenericObserver<MockWebsocketEvent> implement
 	 */
 	public void dispatchError(WebsocketException error) {
 		this.delegate.dispatchError(error);
+	}
+	
+	public void addExceptionToThrowOnConnect(WebsocketException ex) {
+		exceptionsToThrowOnConnect.add(ex);
+	}
+	
+	public void addExceptionToThrowOnSend(WebsocketException ex) {
+		exceptionsToThrowOnSend.add(ex);
 	}
 
 }

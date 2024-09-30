@@ -6,6 +6,7 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -20,13 +21,20 @@ import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonToken;
 
+/**
+ * Default implementation of {@link WebsocketManager} that uses {@link Websocket} to manage websocket connection.
+ * <ul>
+ * <li>Manages subscriptions to topics</li>
+ * <li>Manages system message handlers that handle specific / non topic related message  </li>
+ * <li>Manages error handlers</li>
+ * <li>Manages heartbeat</li>
+ * </ul>
+ */
 public class DefaultWebsocketManager implements WebsocketManager {
 	
 	public static final long WRITE_EXECUTOR_KEEP_ALIVE = 30000L;
 	
 	private static final Logger log = LoggerFactory.getLogger(DefaultWebsocketManager.class);
-
-	public static final long DEFAULT_WRITE_EXECUTOR_TERMINATION_TIMEOUT = 5000L; 
 	
 	private final List<WebsocketErrorHandler> errorHandlers = new ArrayList<>();
 	
@@ -52,8 +60,6 @@ public class DefaultWebsocketManager implements WebsocketManager {
 	
 	private long  noHeartBeatResponseTimeout = -1L;
 	
-	private long writeExecutorWaitTerminationTimeout = DEFAULT_WRITE_EXECUTOR_TERMINATION_TIMEOUT;
-	
 	protected AtomicLong lastHeartBeatTime = new AtomicLong(0L);
 	
 	private AtomicBoolean heartBeatTaskCancelled = null;
@@ -64,8 +70,6 @@ public class DefaultWebsocketManager implements WebsocketManager {
 	protected final Websocket websocket;
 
 	private final WebsocketHook websocketHook;
-
-	
 	
 	public DefaultWebsocketManager(Websocket websocket, WebsocketHook websocketHook) {
 		this.websocket = websocket;
@@ -83,6 +87,9 @@ public class DefaultWebsocketManager implements WebsocketManager {
 	}
 
 	public void setHeartBeatInterval(long heartBeatInterval) {
+		if (heartBeatInterval > 0 && websocketHook == null) {
+			throw new IllegalStateException("Cannot set heartbeat interval to " + heartBeatInterval + " > 0, because no websocket hook is set to provide heartbeat message to send");
+		}
 		this.heartBeatInterval = heartBeatInterval;
 	}
 
@@ -104,23 +111,21 @@ public class DefaultWebsocketManager implements WebsocketManager {
 						  RawWebsocketMessageHandler messageHandler) {
 		if (log.isDebugEnabled())
 			log.debug("Scheduling subscribe request for topic:" + topic);
-		if (topic == null) {
-			throw new IllegalArgumentException("null topic");
-		}
 		writeExecutor.execute(() -> {
 			try {
+				String top = Optional.ofNullable(topic).orElse("");
 				if (log.isDebugEnabled())
-					log.debug("Executing subscribe request for topic:" + topic);
-				TopicManager t = topics.get(topic);
+					log.debug("Executing subscribe request for topic:[" + topic + "]");
+				TopicManager t = topics.get(top);
 				if (t == null) {
-					t = new TopicManager(topic, matcher, messageHandler, false);
-					topics.put(topic, t);
+					t = new TopicManager(top, matcher, messageHandler, false);
+					topics.put(top, t);
 					// Remark: registered TopicManager before checking connection status and connecting if not already connected.
 					// This is because the url provided for handshake may stand for a global stream endpoint (no topic/subscription)
 					// and message would be disseminated right after handshake. Message handler must be registered before.
 					if (!isConnected()) {
 						if (log.isDebugEnabled())
-							log.debug("Executing subscribe request for topic:" + topic + ": not connected, connecting");
+							log.debug("Executing subscribe request for topic:[" + top + "]: not connected, connecting");
 						connect();	
 					}
 					sendToTopicSubscription(topic);
@@ -128,9 +133,9 @@ public class DefaultWebsocketManager implements WebsocketManager {
 					throw new IllegalArgumentException("Already have a subscription for this topic");
 				}
 				if (log.isDebugEnabled())
-					log.debug("DONE Executing subscribe request for topic:" + topic);
+					log.debug("DONE Executing subscribe request for topic:[" + top + "]");
 			} catch (Exception ex) {
-				dispatchWebsocketError(new WebsocketException("Error while subscribing to webscoket for topic [" + topic + "]", ex));
+				notifyError(new WebsocketException("Error while subscribing to websocket for topic [" + topic + "]", ex));
 			}
 		});
 	}
@@ -149,17 +154,13 @@ public class DefaultWebsocketManager implements WebsocketManager {
 		}
 	}
 	
-	private void unbscribeFromTopic(String topic) {
-		try {
-			String unsubscribeRequestMessage = websocketHook == null? null: 
-												websocketHook.getUnSubscribeRequestMessage(topic);
-			if (unsubscribeRequestMessage != null) {
-				if (log.isDebugEnabled())
-					log.debug("Sending topic unsubscribe request:" + topic);
-				websocket.send(unsubscribeRequestMessage);
-			}
-		} catch (WebsocketException e) {
-			onError(e);
+	private void unbscribeFromTopic(String topic) throws WebsocketException {
+		String unsubscribeRequestMessage = websocketHook == null? null: 
+											websocketHook.getUnSubscribeRequestMessage(topic);
+		if (unsubscribeRequestMessage != null) {
+			if (log.isDebugEnabled())
+				log.debug("Sending topic unsubscribe request:" + topic);
+			websocket.send(unsubscribeRequestMessage);
 		}
 	}
 	
@@ -189,7 +190,7 @@ public class DefaultWebsocketManager implements WebsocketManager {
 		});
 	}
 	
-	protected final void connect() {
+	protected final void connect() throws WebsocketException {
 		if (isConnected() || isDisposed()) {
 			return;
 		}
@@ -221,7 +222,10 @@ public class DefaultWebsocketManager implements WebsocketManager {
 			if(log.isInfoEnabled())
 				log.info("Connected WS:" + this);
 		} catch (Exception exception) {
-			notifyError(new WebsocketException("Error while connecting websocket", exception));
+			String msg = "Error while connecting websocket";
+			if (log.isErrorEnabled())
+				log.error(msg, exception);
+			throw new WebsocketException(msg, exception);
 		}
 	}
 	
@@ -254,7 +258,9 @@ public class DefaultWebsocketManager implements WebsocketManager {
 				log.info("Disconnected " + this);
 			}
 		} catch (Exception e) {
-			dispatchWebsocketError(new WebsocketException("Error while disconnecting websocket", e));
+			String errMsg = "Error while disconnecting websocket";
+			log.error(errMsg, e);
+			dispatchWebsocketError(new WebsocketException(errMsg, e));
 		}
 		connected.set(false);
 	}
@@ -314,6 +320,12 @@ public class DefaultWebsocketManager implements WebsocketManager {
 	
 	@Override
 	public void send(String msg) throws WebsocketException {
+		if (isDisposed()) {
+			return;
+		}
+		if (!isConnected()) {
+			connect();
+		}
 		websocket.send(msg);
 	}
 
@@ -334,6 +346,9 @@ public class DefaultWebsocketManager implements WebsocketManager {
 
 	@Override
 	public void sendAsync(String msg) {
+		if (isDisposed()) {
+			return;
+		}
 		this.writeExecutor.schedule(() -> {
 			try {
 				send(msg);
@@ -360,11 +375,25 @@ public class DefaultWebsocketManager implements WebsocketManager {
 		allTopics.forEach(t -> t.matcher.reset());
 		try {
 			JsonParser jsonParser = jsonFactory.createParser(message.getBytes());
-			
 			for (JsonToken tok = jsonParser.nextToken(); tok != null && !allTopics.isEmpty(); tok = jsonParser.nextToken()) {
 				if (tok == JsonToken.FIELD_NAME) {
 					String fieldName = jsonParser.currentName();
-					String value = getNextValue(jsonParser);
+					String value = null;
+					switch (jsonParser.nextToken()) {
+					case START_OBJECT:
+						// Continue searching matching fields in nested structure.
+						continue;
+					case VALUE_FALSE:
+						value = Boolean.FALSE.toString();
+						break;
+					case VALUE_TRUE:
+						value = Boolean.TRUE.toString();
+						break;
+					default:
+						value = jsonParser.getText();
+						break;
+					}
+					
 					if (dispatchToMessageTopicMatchers(fieldName, value, allTopics, message)) {
 						break;
 					}
@@ -374,23 +403,6 @@ public class DefaultWebsocketManager implements WebsocketManager {
 		} catch (IOException e) {
 			log.error("Error parsing websocket message [" + message + "]", e);
 		} 
-	}
-	
-	private String getNextValue(JsonParser jsonParser) throws IOException {
-		switch (jsonParser.nextToken()) {
-		case FIELD_NAME:
-			throw new IOException("Unexpected FIELD_NAME token type:" + jsonParser.currentName());
-		case VALUE_FALSE:
-			return Boolean.FALSE.toString();
-		case VALUE_NUMBER_FLOAT:
-		case VALUE_NUMBER_INT:
-		case VALUE_STRING:
-			return jsonParser.getText();
-		case VALUE_TRUE:
-			return Boolean.TRUE.toString();
-		default:
-			return null;
-		}
 	}
 	
 	protected void onError(String msg, Throwable t) {
@@ -420,7 +432,7 @@ public class DefaultWebsocketManager implements WebsocketManager {
 					connect();
 					resubscribeTopics();
 				} catch (WebsocketException e) {
-					// Avoid reentrant call, retry in a distinct runnable sublitted to executor
+					// Avoid reentrant call, retry in a distinct runnable submitted to executor
 					notifyError(e);
 				}
 			} else {
@@ -466,10 +478,8 @@ public class DefaultWebsocketManager implements WebsocketManager {
 			case CANT_MATCH:
 				it.remove();
 				break;
-			case NO_MATCH:
+			default: // no match
 				break;
-			default:
-				throw new IllegalArgumentException("Unexpected WebsocketMessageTopicMatchStatus:" + matchResult);
 			}
 		}
 		return false;
@@ -501,16 +511,6 @@ public class DefaultWebsocketManager implements WebsocketManager {
 			}
 			writeExecutor.schedule(noMessageTimeoutTask, this.noMessageTimeout, TimeUnit.MILLISECONDS);
 		}
-	}
-
-
-
-	public long getWriteExecutorWaitTerminationTimeout() {
-		return writeExecutorWaitTerminationTimeout;
-	}
-
-	public void setWriteExecutorWaitTerminationTimeout(long writeExecutorWaitTerminationTimeout) {
-		this.writeExecutorWaitTerminationTimeout = writeExecutorWaitTerminationTimeout;
 	}
 
 	private class NoMessageTimeoutTask implements Runnable {
@@ -562,22 +562,20 @@ public class DefaultWebsocketManager implements WebsocketManager {
 					return;
 				}
 				
-				if (websocketHook == null) {
-					throw new IllegalStateException("No websocket hook set on " 
-														+ DefaultWebsocketManager.this.toString() 
-														+ " to create heartbeat message");
-				}
 				String hearBeatMessage = websocketHook.getHeartBeatMessage();
 				if (hearBeatMessage == null) {
-					log.error("null heartbeat message provided by websocket hook" 
-								+ websocketHook 
-								+ " while heartbeat interval is set to " 
-								+ heartBeatInterval);
+					String msg = "null heartbeat message provided by websocket hook" 
+							+ websocketHook 
+							+ " while heartbeat interval is set to " 
+							+ heartBeatInterval;
+					dispatchWebsocketError(new WebsocketException(msg));
+				} else {
+					websocket.send(hearBeatMessage);
 				}
 				if (log.isDebugEnabled()) {
 					log.debug("Sending heartbeat:" + hearBeatMessage);
 				}
-				websocket.send(hearBeatMessage);
+				
 				scheduleHeartBeatTask(this);
 				scheduleHeartTimeoutBeatTask();
 			} catch (Exception ex) {				
@@ -597,6 +595,9 @@ public class DefaultWebsocketManager implements WebsocketManager {
 
 		@Override
 		public void run() {
+			// FIXME
+			log.info("Running " + this + " cancelled:" + cancelled.get());
+			
 			try {
 				if (cancelled.get()) {
 					log.debug("Not running cancelled heartbeat task");
@@ -605,7 +606,7 @@ public class DefaultWebsocketManager implements WebsocketManager {
 				
 				// Raise error if max delay without heartbeat response timeout has elapsed
 				long timeElapsedSinceLastHeartBeat = System.currentTimeMillis() - lastHeartBeatTime.get();
-				if (noHeartBeatResponseTimeout > 0 && (timeElapsedSinceLastHeartBeat > noHeartBeatResponseTimeout)) {
+				if (timeElapsedSinceLastHeartBeat > noHeartBeatResponseTimeout) {
 					onError("No heartbeat response since " 
 											+ timeElapsedSinceLastHeartBeat 
 											+ "ms, timeout:" + noHeartBeatResponseTimeout 

@@ -100,12 +100,14 @@ public class SpringWebsocket extends AbstractWebsocket {
 
 
 	@Override
-	protected void doDisconnect() throws WebsocketException {
+	protected void doDisconnect() {
 		log.debug("Closing websocket");
 		try {
 			webSocketSession.close(CloseStatus.NORMAL);
 		} catch (IOException e) {
-			throw new WebsocketException("Error while disconnecting " + toString(), e);
+			WebsocketException ex = new WebsocketException("Error disconnecting websocket " + this, e);
+			log.error(ex.getMessage(), e);
+			dispatchError(ex);
 		}
 		clientManager.shutdown();
 		taskExecutor.shutdown();

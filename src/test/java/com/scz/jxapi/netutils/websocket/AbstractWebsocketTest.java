@@ -25,7 +25,7 @@ public class AbstractWebsocketTest {
         }
 
         @Override
-        protected void doDisconnect() throws WebsocketException {
+        protected void doDisconnect() {
             doDisconnectCallCount++;
         }
 

@@ -29,7 +29,12 @@ public abstract class AbstractWebsocket implements Websocket {
 			log.debug("Connecting WS " + this);
 		}
 		if (!connected.getAndSet(true)) {
-			doConnect();
+			try {
+				doConnect();
+			} catch (WebsocketException ex) {
+				connected.set(false);
+				throw ex;
+			}
 		}
 		if (log.isDebugEnabled()) {
 			log.debug("Connected WS " + this);
@@ -111,8 +116,39 @@ public abstract class AbstractWebsocket implements Websocket {
 		return getClass().getSimpleName() + "[" + url + "]";
 	}
 	
+	/**
+	 * Actual implementations must implement this method to establish actual
+	 * websocket connection. This method will be called from connect only when this
+	 * instance is in 'disconnected' state. {@link #connected} flag will be switched
+	 * to true just before calling it. When this method returns, it is assumed that
+	 * websocket is ready to send outgoing messages using {@link #send(String)} and
+	 * dispatch incoming messages. <br/>
+	 * If an error occurs trying to establish websocket link, a
+	 * {@link WebsocketException} must be thrown. In this case, {@link #connected}
+	 * flag will be set back to <code>false</code> and it is assumed that all
+	 * resources needed for connection are disposed before throwing the exception
+	 *  and {@link #connect()} can be retried.
+	 * 
+	 * @throws WebsocketException if failed to establish socket link.
+	 */
 	protected abstract void doConnect() throws WebsocketException;
-	protected abstract void doDisconnect() throws WebsocketException;
+	
+	/**
+	 * Actual implementations must implement this method to disconnect socket link
+	 * and dispose all resources associated to it. This method will be called from
+	 * {@link #disconnect()} method right after switching {@link #connected} flag to
+	 * <code>false</code> Unlike {@link #doConnect()} method, no exception is
+	 * expected to be thrown. This means disconnection action should fail.
+	 */
+	protected abstract void doDisconnect();
+	
+	/**
+	 * Actual implementations must implement this method to write synchronously a message to socket output stream.
+	 *  
+	 * @param message Bytes of this string will be sent on websocket output stream.
+	 * @throws WebsocketException if I/O error occurs when writing to socket or this websocket is not
+	 *                            connected.
+	 */
 	protected abstract void doSend(String message) throws WebsocketException;
 	
 
