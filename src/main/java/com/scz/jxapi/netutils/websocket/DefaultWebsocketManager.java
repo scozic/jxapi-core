@@ -7,6 +7,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -170,10 +171,10 @@ public class DefaultWebsocketManager implements WebsocketManager {
 		this.writeExecutor.schedule(heartBeakTask, heartBeatInterval, TimeUnit.MILLISECONDS);
 	}
 	
-	private void scheduleHeartTimeoutBeatTask() {
+	private void scheduleHeartBeatTimeoutTask(HeartBeakTimeoutTask heartBeakTimeoutTask) {
 		if (log.isDebugEnabled())
-			log.debug("Scheduling heartbeat timeout task in " + noHeartBeatResponseTimeout + " ms");
-		this.writeExecutor.schedule(new HeartBeakTimeoutTask(heartBeatTaskCancelled), noHeartBeatResponseTimeout, TimeUnit.MILLISECONDS);
+			log.debug("Scheduling heartbeat timeout task in " + noHeartBeatResponseTimeout + " ms " + heartBeatTimeoutTaskCancelled.get());
+		this.writeExecutor.schedule(heartBeakTimeoutTask, noHeartBeatResponseTimeout, TimeUnit.MILLISECONDS);
 	}
 	
 	@Override
@@ -205,19 +206,24 @@ public class DefaultWebsocketManager implements WebsocketManager {
 				websocketHook.afterConnect(this);
 			}
 			scheduleNoMessageTimeoutTask(this.messageReceivedCount.get());
-			if (this.heartBeatTaskCancelled != null) {
-				this.heartBeatTaskCancelled.set(true);
-			}
-			this.heartBeatTaskCancelled = new AtomicBoolean(false);
-			if (this.heartBeatTimeoutTaskCancelled != null) {
-				this.heartBeatTimeoutTaskCancelled.set(true);
-			}
-			this.heartBeatTimeoutTaskCancelled = new AtomicBoolean(false);
-			
-			if (heartBeatInterval > 0) {
+			if (heartBeatInterval > 0 || noHeartBeatResponseTimeout > 0) {
 				lastHeartBeatTime.set(System.currentTimeMillis());
-				scheduleHeartBeatTask(new HeartBeakTask(this.heartBeatTaskCancelled));
+				if (noHeartBeatResponseTimeout > 0) {
+					if (this.heartBeatTimeoutTaskCancelled != null) {
+						this.heartBeatTimeoutTaskCancelled.set(true);
+					}
+					this.heartBeatTimeoutTaskCancelled = new AtomicBoolean(false);
+					scheduleHeartBeatTimeoutTask(new HeartBeakTimeoutTask(this.heartBeatTimeoutTaskCancelled));
+				}
+				if (heartBeatInterval > 0) {
+					if (this.heartBeatTaskCancelled != null) {
+						this.heartBeatTaskCancelled.set(true);
+					}
+					this.heartBeatTaskCancelled = new AtomicBoolean(false);
+					scheduleHeartBeatTask(new HeartBeakTask(this.heartBeatTaskCancelled));
+				}
 			}
+			
 			connected.set(true);
 			if(log.isInfoEnabled())
 				log.info("Connected WS:" + this);
@@ -246,6 +252,9 @@ public class DefaultWebsocketManager implements WebsocketManager {
 			}
 			if (this.noMessageTimeoutTask != null) {
 				this.noMessageTimeoutTask.cancelled.set(true);
+			}
+			if (this.heartBeatTimeoutTaskCancelled != null) {
+				this.heartBeatTimeoutTaskCancelled.set(true);
 			}
 			if (websocketHook != null) {
 				websocketHook.beforeDisconnect(this);
@@ -321,7 +330,7 @@ public class DefaultWebsocketManager implements WebsocketManager {
 	@Override
 	public void send(String msg) throws WebsocketException {
 		if (isDisposed()) {
-			return;
+			throw new WebsocketException("Disposed");
 		}
 		if (!isConnected()) {
 			connect();
@@ -345,18 +354,22 @@ public class DefaultWebsocketManager implements WebsocketManager {
 	}
 
 	@Override
-	public void sendAsync(String msg) {
+	public CompletableFuture<WebsocketException> sendAsync(String msg) {
+		CompletableFuture<WebsocketException> res = new CompletableFuture<>();
 		if (isDisposed()) {
-			return;
+			res.complete(new WebsocketException(toString() + " is disposed"));
+		} else {
+			this.writeExecutor.schedule(() -> {
+				try {
+					send(msg);
+					res.complete(null);
+				} catch (WebsocketException ex) {
+					res.complete(ex);
+					onError("Error while sending message:" + msg, ex);
+				}
+			}, 0L, TimeUnit.MILLISECONDS);
 		}
-		this.writeExecutor.schedule(() -> {
-			try {
-				send(msg);
-			} catch (Exception ex) {
-				onError("Error while sending message:" + msg, ex);
-			}
-		}, 0L, TimeUnit.MILLISECONDS);
-		
+		return res;
 	}
 	
 	protected void dispatchWebsocketError(WebsocketException error) {
@@ -577,7 +590,6 @@ public class DefaultWebsocketManager implements WebsocketManager {
 				}
 				
 				scheduleHeartBeatTask(this);
-				scheduleHeartTimeoutBeatTask();
 			} catch (Exception ex) {				
 				onError(new WebsocketException("Error while sending heartbeat", ex));
 			}
@@ -595,9 +607,6 @@ public class DefaultWebsocketManager implements WebsocketManager {
 
 		@Override
 		public void run() {
-			// FIXME
-			log.info("Running " + this + " cancelled:" + cancelled.get());
-			
 			try {
 				if (cancelled.get()) {
 					log.debug("Not running cancelled heartbeat task");
@@ -611,6 +620,8 @@ public class DefaultWebsocketManager implements WebsocketManager {
 											+ timeElapsedSinceLastHeartBeat 
 											+ "ms, timeout:" + noHeartBeatResponseTimeout 
 											+ " reconnect delay:" + getReconnectDelay(), null);
+				} else {
+					scheduleHeartBeatTimeoutTask(this);
 				}
 			} catch (Exception ex) {
 				onError("Error while running heartbeat timeout task", ex);

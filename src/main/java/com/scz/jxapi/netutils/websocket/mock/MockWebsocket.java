@@ -11,8 +11,6 @@ import com.scz.jxapi.netutils.websocket.WebsocketErrorHandler;
 import com.scz.jxapi.netutils.websocket.WebsocketException;
 import com.scz.jxapi.observability.GenericObserver;
 
-import jdk.internal.org.jline.utils.Log;
-
 /**
  * A mock implementation of the {@link Websocket} interface for testing purposes.
  * This class extends the {@link GenericObserver} class and delegates the actual
@@ -201,8 +199,16 @@ public class MockWebsocket extends GenericObserver<MockWebsocketEvent> implement
 		this.delegate.dispatchError(error);
 	}
 	
+	public void addExceptionToThrowOnConnect(String errorMessage) {
+		addExceptionToThrowOnConnect(new WebsocketException(errorMessage));
+	}
+	
 	public void addExceptionToThrowOnConnect(WebsocketException ex) {
 		exceptionsToThrowOnConnect.add(ex);
+	}
+	
+	public void addExceptionToThrowOnSend(String errorMessage) {
+		addExceptionToThrowOnSend(new WebsocketException(errorMessage));
 	}
 	
 	public void addExceptionToThrowOnSend(WebsocketException ex) {

@@ -6,7 +6,6 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.Properties;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicReference;
 
 import org.junit.Assert;
@@ -317,12 +316,14 @@ public class AbstractExchangeApiTest {
 	}
 	
 	@Test
-	public void testReceiveWebsocketError() throws TimeoutException {
+	public void testReceiveWebsocketErrorOnAsyncSend() throws Exception {
 		MockExchangeApiObserver observer = new MockExchangeApiObserver();
 		exchangeApi.subscribeObserver(observer);
 		exchangeApi.createWebsocketManager("wss://myexchange.com/ws", MockWebsocketFactory.class.getName(), null);
-		// Sending a message while not connected will throw an exception caught and notified to listener.
-		exchangeApi.getWebsocketManager().sendAsync("foo");
+		MockWebsocket ws = (MockWebsocket) ((DefaultWebsocketManager) exchangeApi.getWebsocketManager()).getWebsocket();
+		ws.addExceptionToThrowOnSend("Error sending message");
+		Assert.assertNotNull(exchangeApi.getWebsocketManager().sendAsync("foo").get());
+		
 		ExchangeApiEvent event = observer.await(2000);
 		Assert.assertEquals(ExchangeApiEventType.WEBSOCKET_ERROR, event.getType());
 		WebsocketException ex = event.getWebsocketError();

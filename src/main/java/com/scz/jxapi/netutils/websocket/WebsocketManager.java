@@ -1,6 +1,7 @@
 package com.scz.jxapi.netutils.websocket;
 
 import java.io.IOException;
+import java.util.concurrent.CompletableFuture;
 
 /**
  * 
@@ -40,7 +41,7 @@ public interface WebsocketManager {
 	 */
 	void send(String msg) throws WebsocketException;
 	
-	void sendAsync(String msg);
+	CompletableFuture<WebsocketException> sendAsync(String msg);
 	
 	void hearbeatReceived();
 	
