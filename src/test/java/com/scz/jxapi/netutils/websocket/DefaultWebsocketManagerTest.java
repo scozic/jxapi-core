@@ -1025,6 +1025,23 @@ public class DefaultWebsocketManagerTest {
 		errorHandler.checkNoEvents(NO_EVENT_DELAY);
 	}
 	
+	@Test
+	public void testUnsubscribeInvalidTopicIsIgnored() throws Exception {
+		wsManager = new DefaultWebsocketManager(ws, wsHook);
+		wsManager.subscribeErrorHandler(errorHandler);
+		wsManager.setReconnectDelay(NO_EVENT_DELAY * 2);
+		popWebsocketAddErrorHandlerEvent();
+		popWebsocketAddMessageHandlerEvent();
+		popWebsocketHookAfterInitEvent();
+		
+		String subscribeMsg = "subscribe";
+		String unsubscribeMsg = "unsubscribe";
+		wsHook.setSubscribeRequestMessage(null, subscribeMsg);
+		wsHook.setUnSubscribeRequestMessage(null, unsubscribeMsg);
+		wsManager.unsubscribe("foo");
+		checkNoEvents();
+	}
+	
 	private MockWebsocketEvent popWebsocketConnectEvent() throws TimeoutException {
 		MockWebsocketEvent event = ws.waitUntilCount(1).pop();
 		Assert.assertEquals(MockWebsocketEventType.CONNECT, event.getType());

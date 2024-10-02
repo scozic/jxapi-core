@@ -10,6 +10,16 @@ import com.scz.jxapi.netutils.deserialization.MessageDeserializer;
 import com.scz.jxapi.observability.ExchangeApiEvent;
 import com.scz.jxapi.observability.ExchangeApiObserver;
 
+/**
+ * Default implementation of a {@link WebsocketEndpoint}.
+ * <p>
+ * This class manages the subscriptions to a websocket topic, using a
+ * {@link WebsocketManager} to wrap {@link Websocket} and subscribe/unsubscribe
+ * to topic, and a {@link MessageDeserializer} to deserialize incoming messages.
+ * 
+ * @param <M> the type of messages that this endpoint will handle.
+ * @see WebsocketEndpoint
+ */
 public class DefaultWebsocketEndpoint<M> implements WebsocketEndpoint<M> {
 	
 	private final Logger log = LoggerFactory.getLogger(DefaultWebsocketEndpoint.class);

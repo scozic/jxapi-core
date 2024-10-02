@@ -11,16 +11,29 @@ import com.scz.jxapi.observability.Observable;
 /**
  * Abstract class for Websocket implementations. All websocket implementations
  * should extend this class, implementing the abstract methods.
+ * <p>
+ * <ul>
+ * <li>Implementing {@link #doConnect()} method to establish actual websocket which will be called from {@link #connect()} method only if websocket is currenty in 'disconnected' state.</li>
+ * <li>Implementing {@link #doDisconnect()} method to shut down websocket connection and dispose all resources associated to it. This method will be called from {@link #disconnect()} only if websocket is currently in 'connected' state.</li>
+ * <li>Implementing {@link #doSend(String)} method to send a message to the websocket server.</li>
+ * <li>Calling {@link #dispatchMessage(String)} method to dispatch incoming messages to all message handlers.</li>
+ * <li>Calling {@link #dispatchError(WebsocketException)} method to dispatch errors to all error handlers when a connection failure occurs.</li>
+ * </ul>
+ * 
+ * 
+ * @see Websocket
  */
 public abstract class AbstractWebsocket implements Websocket {
-	
+
 	private static final Logger log = LoggerFactory.getLogger(AbstractWebsocket.class);
-	
+
 	protected final AtomicBoolean connected = new AtomicBoolean(false);
-	
-	private final Observable<RawWebsocketMessageHandler, String> messageObservable = new DefaultObservable<>((handler, message) -> handler.handleWebsocketMessage(message));
-	private final Observable<WebsocketErrorHandler, WebsocketException> errorObservable = new DefaultObservable<>((handler, error) -> handler.handleWebsocketError(error));
-	
+
+	private final Observable<RawWebsocketMessageHandler, String> messageObservable = new DefaultObservable<>(
+			(handler, message) -> handler.handleWebsocketMessage(message));
+	private final Observable<WebsocketErrorHandler, WebsocketException> errorObservable = new DefaultObservable<>(
+			(handler, error) -> handler.handleWebsocketError(error));
+
 	protected String url;
 
 	@Override
@@ -42,7 +55,7 @@ public abstract class AbstractWebsocket implements Websocket {
 	}
 
 	@Override
-	public final void disconnect() throws WebsocketException {
+	public final void disconnect() {
 		if (log.isDebugEnabled()) {
 			log.debug("Disonnecting WS " + this);
 		}
@@ -53,7 +66,7 @@ public abstract class AbstractWebsocket implements Websocket {
 			log.debug("Disonnected WS " + this);
 		}
 	}
-	
+
 	@Override
 	public final void send(String message) throws WebsocketException {
 		if (!isConnected()) {
@@ -64,7 +77,8 @@ public abstract class AbstractWebsocket implements Websocket {
 		}
 		doSend(message);
 	}
-	
+
+	@Override
 	public final boolean isConnected() {
 		return connected.get();
 	}
@@ -78,44 +92,64 @@ public abstract class AbstractWebsocket implements Websocket {
 	public boolean removeMessageHandler(RawWebsocketMessageHandler messageHandler) {
 		return messageObservable.unsubscribe(messageHandler);
 	}
-	
+
 	@Override
 	public void addErrorHandler(WebsocketErrorHandler errorHandler) {
 		this.errorObservable.subscribe(errorHandler);
 	}
-	
+
 	@Override
 	public boolean removeErrorHandler(WebsocketErrorHandler errorHandler) {
 		return this.errorObservable.unsubscribe(errorHandler);
 	}
-	
+
 	@Override
 	public void setUrl(String url) {
 		this.url = url;
 	}
-	
+
 	@Override
 	public String getUrl() {
 		return this.url;
 	}
-	
+
+	/**
+	 * Dispatch a message to all message handlers.
+	 * 
+	 * @param message
+	 */
 	protected void dispatchMessage(String message) {
 		messageObservable.dispatch(message);
 	}
-	
+
+	/**
+	 * Dispatch an error to all error handlers.
+	 * 
+	 * @param msg the error message
+	 * @param t   the exception that caused the error
+	 */
 	protected void dispatchError(String msg, Throwable t) {
 		dispatchError(new WebsocketException(msg, t));
 	}
-	
+
+	/**
+	 * Dispatch an error to all error handlers.
+	 * 
+	 * @param error the error to dispatch
+	 */
 	protected void dispatchError(WebsocketException error) {
 		errorObservable.dispatch(error);
 	}
-	
+
+	/**
+	 * Overrides default toString method to return a string representation of this
+	 * instance. For example: <code>MyWebsocket[ws://example.com:8080]</code>
+	 */
 	@Override
 	public String toString() {
 		return getClass().getSimpleName() + "[" + url + "]";
 	}
-	
+
 	/**
 	 * Actual implementations must implement this method to establish actual
 	 * websocket connection. This method will be called from connect only when this
@@ -127,12 +161,12 @@ public abstract class AbstractWebsocket implements Websocket {
 	 * {@link WebsocketException} must be thrown. In this case, {@link #connected}
 	 * flag will be set back to <code>false</code> and it is assumed that all
 	 * resources needed for connection are disposed before throwing the exception
-	 *  and {@link #connect()} can be retried.
+	 * and {@link #connect()} can be retried.
 	 * 
 	 * @throws WebsocketException if failed to establish socket link.
 	 */
 	protected abstract void doConnect() throws WebsocketException;
-	
+
 	/**
 	 * Actual implementations must implement this method to disconnect socket link
 	 * and dispose all resources associated to it. This method will be called from
@@ -141,15 +175,16 @@ public abstract class AbstractWebsocket implements Websocket {
 	 * expected to be thrown. This means disconnection action should fail.
 	 */
 	protected abstract void doDisconnect();
-	
+
 	/**
-	 * Actual implementations must implement this method to write synchronously a message to socket output stream.
-	 *  
+	 * Actual implementations must implement this method to write synchronously a
+	 * message to socket output stream.
+	 * 
 	 * @param message Bytes of this string will be sent on websocket output stream.
-	 * @throws WebsocketException if I/O error occurs when writing to socket or this websocket is not
+	 * @throws WebsocketException if I/O error occurs when writing to socket or this
+	 *                            websocket is not
 	 *                            connected.
 	 */
 	protected abstract void doSend(String message) throws WebsocketException;
-	
 
 }
