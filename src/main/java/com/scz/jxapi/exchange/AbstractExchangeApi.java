@@ -237,7 +237,7 @@ public abstract class AbstractExchangeApi implements ExchangeApi {
 		WebsocketHook websocketHook = websocketHookFactoryClassName == null? 
 										null: 
 										WebsocketHookFactory.fromClassName(websocketHookFactoryClassName).createWebsocketHook(this);
-		websocketManager = new DefaultWebsocketManager(websocket, websocketHook);
+		websocketManager = new DefaultWebsocketManager(this, websocket, websocketHook);
 		websocketManager.subscribeErrorHandler(error -> dispatchApiEvent(ExchangeApiEvent.createWebsocketErrorEvent(error)));
 	}
 	

@@ -25,21 +25,19 @@ public class MockWebsocketHook extends GenericObserver<MockWebsocketHookEvent> i
 	 * @param websocketManager The initialized WebsocketManager instance.
 	 */
 	@Override
-	public void afterInit(WebsocketManager websocketManager) {
+	public void init(WebsocketManager websocketManager) {
 		this.websocketManager = websocketManager;
-		this.handleEvent(MockWebsocketHookEvent.createAfterInitEvent(this, websocketManager));
+		this.handleEvent(MockWebsocketHookEvent.createInitEvent(this, websocketManager));
 	}
 
 	/**
 	 * Called before the WebsocketManager connects to the server.
 	 * 
-	 * @param websocketManager The WebsocketManager instance.
 	 * @throws WebsocketException If an error occurs during the connection process.
 	 */
 	@Override
-	public void beforeConnect(WebsocketManager websocketManager) throws WebsocketException {
-		this.websocketManager = websocketManager;
-		this.handleEvent(MockWebsocketHookEvent.createBeforeConnectEvent(this, websocketManager));
+	public void beforeConnect() throws WebsocketException {
+		this.handleEvent(MockWebsocketHookEvent.createBeforeConnectEvent(this));
 	}
 
 	/**
@@ -49,9 +47,8 @@ public class MockWebsocketHook extends GenericObserver<MockWebsocketHookEvent> i
 	 * @throws WebsocketException If an error occurs after the connection is established.
 	 */
 	@Override
-	public void afterConnect(WebsocketManager websocketManager) throws WebsocketException {
-		this.websocketManager = websocketManager;
-		this.handleEvent(MockWebsocketHookEvent.createAfterConnectEvent(this, websocketManager));
+	public void afterConnect() throws WebsocketException {
+		this.handleEvent(MockWebsocketHookEvent.createAfterConnectEvent(this));
 	}
 
 	/**
@@ -61,9 +58,8 @@ public class MockWebsocketHook extends GenericObserver<MockWebsocketHookEvent> i
 	 * @throws WebsocketException If an error occurs during the disconnection process.
 	 */
 	@Override
-	public void beforeDisconnect(WebsocketManager websocketManager) throws WebsocketException {
-		this.websocketManager = websocketManager;
-		this.handleEvent(MockWebsocketHookEvent.createBeforeDisconnectEvent(this, websocketManager));
+	public void beforeDisconnect() throws WebsocketException {
+		this.handleEvent(MockWebsocketHookEvent.createBeforeDisconnectEvent(this));
 	}
 
 	/**
@@ -73,9 +69,8 @@ public class MockWebsocketHook extends GenericObserver<MockWebsocketHookEvent> i
 	 * @throws WebsocketException If an error occurs after the disconnection is completed.
 	 */
 	@Override
-	public void afterDisconnect(WebsocketManager websocketManager) throws WebsocketException {
-		this.websocketManager = websocketManager;
-		this.handleEvent(MockWebsocketHookEvent.createAfterDisconnectEvent(this, websocketManager));
+	public void afterDisconnect() throws WebsocketException {
+		this.handleEvent(MockWebsocketHookEvent.createAfterDisconnectEvent(this));
 	}
 
 	/**

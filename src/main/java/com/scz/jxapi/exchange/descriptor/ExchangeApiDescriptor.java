@@ -34,7 +34,7 @@ import com.scz.jxapi.util.EncodingUtil;
  * <li>Each Websocket endpoint share the same WebsocketFactory and WebsocketHook, that are created from factories classes provided in <code>websocketFactory</code> and <code>websocketHookFactory</code> properties</li>
  * <li><code>websocketFactory</code> property may be supplied to specify a factory class that creates Websocket instances, see {@link WebsocketFactory}. When property is not set, default {@link DefaultWebsocketFactory} is used</li>
  * <li><code>websocketHookFactory</code> property may be supplied to specify a factory class that creates WebsocketHook instances, see {@link WebsocketHookFactory}. When property is not set, no websocket hook is used. Such hook is needed though to implement specific handshake, heartbeat management and socket multiplexing (e.g. subscribing to multiple topics using same socket)</li>
- * <li><code>websocketUrl</code> property may be supplied to specify the URL of the websocket endpoint. When property is not set, the URL is expected to be set by WebsocketHook on WebsocketManager during {@link WebsocketHook#afterInit(com.scz.jxapi.netutils.websocket.WebsocketManager)} or {@link WebsocketHook#beforeConnect(com.scz.jxapi.netutils.websocket.WebsocketManager)}</li>
+ * <li><code>websocketUrl</code> property may be supplied to specify the URL of the websocket endpoint. When property is not set, the URL is expected to be set by WebsocketHook on WebsocketManager during {@link WebsocketHook#init(com.scz.jxapi.netutils.websocket.WebsocketManager)} or {@link WebsocketHook#beforeConnect(com.scz.jxapi.netutils.websocket.WebsocketManager)}</li>
  * </ul>
  * 
  * <h3>Example of corresponding JSON, with sample REST endpoint and WebsocketEndpoint</h3>
@@ -195,7 +195,9 @@ public class ExchangeApiDescriptor {
 
 	/**
 	 * Retrieves the list of Websocket endpoints for this API.
-	 * @return The list of Websocket endpoints for this API, may be <code>null</code>.
+	 * 
+	 * @return The list of Websocket endpoints for this API, may be
+	 *         <code>null</code>.
 	 */
 	public List<WebsocketEndpointDescriptor> getWebsocketEndpoints() {
 		return websocketEndpoints;
@@ -203,14 +205,17 @@ public class ExchangeApiDescriptor {
 
 	/**
 	 * Sets the list of Websocket endpoints for this API.
+	 * 
 	 * @param websocketEndpoints The list of Websocket endpoints for this API.
 	 */
 	public void setWebsocketEndpoints(List<WebsocketEndpointDescriptor> websocketEndpoints) {
 		this.websocketEndpoints = websocketEndpoints;
 	}
-	
+
 	/**
-	 * Retrieves the list of rate limits for this API. These limits are shared among all REST endpoints of this API.
+	 * Retrieves the list of rate limits for this API. These limits are shared among
+	 * all REST endpoints of this API.
+	 * 
 	 * @return The list of rate limits for this API, may be <code>null</code>.
 	 */
 	public List<RateLimitRule> getRateLimits() {
@@ -218,7 +223,9 @@ public class ExchangeApiDescriptor {
 	}
 
 	/**
-	 * Sets the list of rate limits for this API. These limits are shared among all REST endpoints of this API.
+	 * Sets the list of rate limits for this API. These limits are shared among all
+	 * REST endpoints of this API.
+	 * 
 	 * @param rateLimits The list of rate limits for this API.
 	 */
 	public void setRateLimits(List<RateLimitRule> rateLimits) {
@@ -226,40 +233,64 @@ public class ExchangeApiDescriptor {
 	}
 
 	/**
-	 * Retrieves the factory class that creates HttpRequestInterceptor instances for this API.
-	 * @return The factory class that creates HttpRequestInterceptor instances for this API, may be <code>null</code>, in which case no request interceptor is used.
+	 * Retrieves the factory class that creates HttpRequestInterceptor instances for
+	 * this API.
+	 * 
+	 * @return The factory class that creates HttpRequestInterceptor instances for
+	 *         this API, may be <code>null</code>, in which case no request
+	 *         interceptor is used.
 	 */
 	public String getHttpRequestInterceptorFactory() {
 		return httpRequestInterceptorFactory;
 	}
 
 	/**
-	 * Sets the factory class that creates HttpRequestInterceptor instances for this API.
-	 * @param httpRequestInterceptorFactory The factory class that creates HttpRequestInterceptor instances for this API, may be <code>null</code>, in which case no request interceptor is used.
+	 * Sets the factory class that creates HttpRequestInterceptor instances for this
+	 * API.
+	 * 
+	 * @param httpRequestInterceptorFactory The factory class that creates
+	 *                                      HttpRequestInterceptor instances for
+	 *                                      this API, may be <code>null</code>, in
+	 *                                      which case no request interceptor is
+	 *                                      used.
 	 */
 	public void setHttpRequestInterceptorFactory(String httpRequestInterceptorFactory) {
 		this.httpRequestInterceptorFactory = httpRequestInterceptorFactory;
 	}
-	
+
 	/**
-	 * Retrieves the factory class that creates HttpRequestExecutor instances for this API.
-	 * @return The factory class that creates HttpRequestExecutor instances for this API, may be <code>null</code>, in which case default {@link JavaNetHttpRequestExecutor} is used.
+	 * Retrieves the factory class that creates HttpRequestExecutor instances for
+	 * this API.
+	 * 
+	 * @return The factory class that creates HttpRequestExecutor instances for this
+	 *         API, may be <code>null</code>, in which case default
+	 *         {@link JavaNetHttpRequestExecutor} is used.
 	 */
 	public String getHttpRequestExecutorFactory() {
 		return httpRequestExecutorFactory;
 	}
 
 	/**
-	 * Sets the factory class that creates HttpRequestExecutor instances for this API.
-	 * @param httpRequestExecutorFactory The factory class that creates HttpRequestExecutor instances for this API, may be <code>null</code>, in which case default {@link JavaNetHttpRequestExecutor} is used.
+	 * Sets the factory class that creates HttpRequestExecutor instances for this
+	 * API.
+	 * 
+	 * @param httpRequestExecutorFactory The factory class that creates
+	 *                                   HttpRequestExecutor instances for this API,
+	 *                                   may be <code>null</code>, in which case
+	 *                                   default {@link JavaNetHttpRequestExecutor}
+	 *                                   is used.
 	 */
 	public void setHttpRequestExecutorFactory(String httpRequestExecutorFactory) {
 		this.httpRequestExecutorFactory = httpRequestExecutorFactory;
 	}
-	
+
 	/**
-	 * Retrieves the factory class that creates WebsocketFactory instances for this API.
-	 * @return The factory class that creates WebsocketFactory instances for this API, may be <code>null</code>, in which case default {@link DefaultWebsocketFactory} is used.
+	 * Retrieves the factory class that creates WebsocketFactory instances for this
+	 * API.
+	 * 
+	 * @return The factory class that creates WebsocketFactory instances for this
+	 *         API, may be <code>null</code>, in which case default
+	 *         {@link DefaultWebsocketFactory} is used.
 	 */
 	public String getWebsocketHookFactory() {
 		return websocketHookFactory;
@@ -267,15 +298,22 @@ public class ExchangeApiDescriptor {
 
 	/**
 	 * Sets the factory class that creates WebsocketFactory instances for this API.
-	 * @param websocketHookFactory The factory class that creates WebsocketFactory instances for this API, may be <code>null</code>, in which case default {@link DefaultWebsocketFactory} is used.
+	 * 
+	 * @param websocketHookFactory The factory class that creates WebsocketFactory
+	 *                             instances for this API, may be <code>null</code>,
+	 *                             in which case default
+	 *                             {@link DefaultWebsocketFactory} is used.
 	 */
 	public void setWebsocketHookFactory(String websocketHookFactory) {
 		this.websocketHookFactory = websocketHookFactory;
 	}
-	
+
 	/**
-	 * Retrieves the factory class that creates WebsocketHook instances for this API.
-	 * @return The factory class that creates WebsocketHook instances for this API, may be <code>null</code>, in which case no websocket hook is used.
+	 * Retrieves the factory class that creates WebsocketHook instances for this
+	 * API.
+	 * 
+	 * @return The factory class that creates WebsocketHook instances for this API,
+	 *         may be <code>null</code>, in which case no websocket hook is used.
 	 */
 	public String getWebsocketFactory() {
 		return websocketFactory;
@@ -283,15 +321,24 @@ public class ExchangeApiDescriptor {
 
 	/**
 	 * Sets the factory class that creates WebsocketHook instances for this API.
-	 * @param websocketFactory The factory class that creates WebsocketHook instances for this API, may be <code>null</code>, in which case no websocket hook is used.
+	 * 
+	 * @param websocketFactory The factory class that creates WebsocketHook
+	 *                         instances for this API, may be <code>null</code>, in
+	 *                         which case no websocket hook is used.
 	 */
 	public void setWebsocketFactory(String websocketFactory) {
 		this.websocketFactory = websocketFactory;
 	}
-	
+
 	/**
 	 * Retrieves the URL of the websocket endpoint for this API.
-	 * @return The URL of the websocket endpoint for this API, may be <code>null</code>, in which case the URL is expected to be set by WebsocketHook on WebsocketManager during {@link WebsocketHook#afterInit(com.scz.jxapi.netutils.websocket.WebsocketManager)} or {@link WebsocketHook#beforeConnect(com.scz.jxapi.netutils.websocket.WebsocketManager)}.	 
+	 * 
+	 * @return The URL of the websocket endpoint for this API, may be
+	 *         <code>null</code>, in which case the URL is expected to be set by
+	 *         WebsocketHook on WebsocketManager during
+	 *         {@link WebsocketHook#init(com.scz.jxapi.netutils.websocket.WebsocketManager)}
+	 *         or
+	 *         {@link WebsocketHook#beforeConnect(com.scz.jxapi.netutils.websocket.WebsocketManager)}.
 	 */
 	public String getWebsocketUrl() {
 		return websocketUrl;
@@ -299,12 +346,18 @@ public class ExchangeApiDescriptor {
 
 	/**
 	 * Sets the URL of the websocket endpoint for this API.
-	 * @param websocketUrl The URL of the websocket endpoint for this API, may be <code>null</code>, in which case the URL is expected to be set by WebsocketHook on WebsocketManager during {@link WebsocketHook#afterInit(com.scz.jxapi.netutils.websocket.WebsocketManager)} or {@link WebsocketHook#beforeConnect(com.scz.jxapi.netutils.websocket.WebsocketManager)}.
+	 * 
+	 * @param websocketUrl The URL of the websocket endpoint for this API, may be
+	 *                     <code>null</code>, in which case the URL is expected to
+	 *                     be set by WebsocketHook on WebsocketManager during
+	 *                     {@link WebsocketHook#init(com.scz.jxapi.netutils.websocket.WebsocketManager)}
+	 *                     or
+	 *                     {@link WebsocketHook#beforeConnect(com.scz.jxapi.netutils.websocket.WebsocketManager)}.
 	 */
 	public void setWebsocketUrl(String websocketUrl) {
 		this.websocketUrl = websocketUrl;
 	}
-	
+
 	@Override
 	public String toString() {
 		return EncodingUtil.pojoToString(this);

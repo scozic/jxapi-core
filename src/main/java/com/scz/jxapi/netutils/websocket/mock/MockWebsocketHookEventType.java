@@ -7,7 +7,7 @@ public enum MockWebsocketHookEventType {
 	/**
 	 * Event that is sent when the {@link MockWebsocketHook#init()} method has been called.
 	 */
-	AFTER_INIT,
+	INIT,
 	BEFORE_CONNECT,
 	AFTER_CONNECT,
 	BEFORE_DISCONNECT,

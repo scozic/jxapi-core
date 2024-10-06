@@ -8,15 +8,15 @@ import com.scz.jxapi.netutils.websocket.WebsocketManager;
 public class MockWebsocketHookEvent {
 
 	/**
-	 * Create a new {@link MockWebsocketHookEventType#AFTER_INIT} event for the given {@link MockWebsocketHook} and {@link WebsocketManager}.
+	 * Create a new {@link MockWebsocketHookEventType#INIT} event for the given {@link MockWebsocketHook} and {@link WebsocketManager}.
 	 * @param source
 	 * @param websocketManager
 	 * @return
 	 */
-	public static MockWebsocketHookEvent createAfterInitEvent(MockWebsocketHook source, WebsocketManager websocketManager) {
-		MockWebsocketHookEvent e = new MockWebsocketHookEvent(MockWebsocketHookEventType.AFTER_INIT, source);
-		e.setWebsocketManager(websocketManager);
-		return e;
+	public static MockWebsocketHookEvent createInitEvent(MockWebsocketHook source, WebsocketManager websocketManager) {
+		MockWebsocketHookEvent res = new MockWebsocketHookEvent(MockWebsocketHookEventType.INIT, source);
+		res.setWebsocketManager(websocketManager);
+		return res;
 	}
 
 	/**
@@ -25,10 +25,8 @@ public class MockWebsocketHookEvent {
 	 * @param websocketManager
 	 * @return
 	 */
-	public static MockWebsocketHookEvent createBeforeConnectEvent(MockWebsocketHook source, WebsocketManager websocketManager) {
-		MockWebsocketHookEvent e = new MockWebsocketHookEvent(MockWebsocketHookEventType.BEFORE_CONNECT, source);
-		e.setWebsocketManager(websocketManager);
-		return e;
+	public static MockWebsocketHookEvent createBeforeConnectEvent(MockWebsocketHook source) {
+		return new MockWebsocketHookEvent(MockWebsocketHookEventType.BEFORE_CONNECT, source);
 	}
 
 	/**
@@ -37,10 +35,8 @@ public class MockWebsocketHookEvent {
 	 * @param websocketManager
 	 * @return
 	 */
-	public static MockWebsocketHookEvent createAfterConnectEvent(MockWebsocketHook source, WebsocketManager websocketManager) {
-		MockWebsocketHookEvent e = new MockWebsocketHookEvent(MockWebsocketHookEventType.AFTER_CONNECT, source);
-		e.setWebsocketManager(websocketManager);
-		return e;
+	public static MockWebsocketHookEvent createAfterConnectEvent(MockWebsocketHook source) {
+		return new MockWebsocketHookEvent(MockWebsocketHookEventType.AFTER_CONNECT, source);
 	}
 
 	/**
@@ -49,10 +45,8 @@ public class MockWebsocketHookEvent {
 	 * @param websocketManager
 	 * @return
 	 */
-	public static MockWebsocketHookEvent createBeforeDisconnectEvent(MockWebsocketHook source, WebsocketManager websocketManager) {
-		MockWebsocketHookEvent e = new MockWebsocketHookEvent(MockWebsocketHookEventType.BEFORE_DISCONNECT, source);
-		e.setWebsocketManager(websocketManager);
-		return e;
+	public static MockWebsocketHookEvent createBeforeDisconnectEvent(MockWebsocketHook source) {
+		return new MockWebsocketHookEvent(MockWebsocketHookEventType.BEFORE_DISCONNECT, source);
 	}
 
 	/**
@@ -61,10 +55,8 @@ public class MockWebsocketHookEvent {
 	 * @param websocketManager
 	 * @return
 	 */
-	public static MockWebsocketHookEvent createAfterDisconnectEvent(MockWebsocketHook source, WebsocketManager websocketManager) {
-		MockWebsocketHookEvent e = new MockWebsocketHookEvent(MockWebsocketHookEventType.AFTER_DISCONNECT, source);
-		e.setWebsocketManager(websocketManager);
-		return e;
+	public static MockWebsocketHookEvent createAfterDisconnectEvent(MockWebsocketHook source) {
+		return new MockWebsocketHookEvent(MockWebsocketHookEventType.AFTER_DISCONNECT, source);
 	}
 
 	/**
@@ -139,7 +131,7 @@ public class MockWebsocketHookEvent {
 
 	/**
 	 * Retrieve the {@link WebsocketManager} associated with this event.
-	 * This field is set when type is {@link MockWebsocketHookEventType#AFTER_INIT}, {@link MockWebsocketHookEventType#BEFORE_CONNECT}, {@link MockWebsocketHookEventType#AFTER_CONNECT}, {@link MockWebsocketHookEventType#BEFORE_DISCONNECT} or {@link MockWebsocketHookEventType#AFTER_DISCONNECT}.
+	 * This field is set when type is {@link MockWebsocketHookEventType#INIT}, {@link MockWebsocketHookEventType#BEFORE_CONNECT}, {@link MockWebsocketHookEventType#AFTER_CONNECT}, {@link MockWebsocketHookEventType#BEFORE_DISCONNECT} or {@link MockWebsocketHookEventType#AFTER_DISCONNECT}.
 	 * @return The {@link WebsocketManager} associated with this event.
 	 */
 	public WebsocketManager getWebsocketManager() {

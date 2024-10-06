@@ -233,7 +233,7 @@ public class DefaultWebsocketEndpointTest {
 	private static class MockWebsocketManager extends DefaultWebsocketManager {
 
 		public MockWebsocketManager() {
-			super(new MockWebsocket(), null);
+			super(null, new MockWebsocket(), null);
 		}
 		
 		final Map<String, RawWebsocketMessageHandler> subscribeRequests = new HashMap<>();

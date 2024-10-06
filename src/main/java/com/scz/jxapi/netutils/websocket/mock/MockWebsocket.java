@@ -2,8 +2,6 @@ package com.scz.jxapi.netutils.websocket.mock;
 
 import java.util.concurrent.LinkedBlockingQueue;
 
-import org.slf4j.LoggerFactory;
-
 import com.scz.jxapi.netutils.websocket.AbstractWebsocket;
 import com.scz.jxapi.netutils.websocket.RawWebsocketMessageHandler;
 import com.scz.jxapi.netutils.websocket.Websocket;
@@ -64,23 +62,13 @@ public class MockWebsocket extends GenericObserver<MockWebsocketEvent> implement
 	private final LinkedBlockingQueue<WebsocketException> exceptionsToThrowOnConnect = new LinkedBlockingQueue<>();
 	private final LinkedBlockingQueue<WebsocketException> exceptionsToThrowOnSend = new LinkedBlockingQueue<>();
 
-	/**
-	 * Connects to the websocket server.
-	 *
-	 * @throws WebsocketException if an error occurs during the connection.
-	 */
 	@Override
 	public void connect() throws WebsocketException {
 		delegate.connect();
 	}
 
-	/**
-	 * Disconnects from the websocket server.
-	 *
-	 * @throws WebsocketException if an error occurs during the disconnection.
-	 */
 	@Override
-	public void disconnect() throws WebsocketException {
+	public void disconnect() {
 		delegate.disconnect();
 	}
 
@@ -91,12 +79,7 @@ public class MockWebsocket extends GenericObserver<MockWebsocketEvent> implement
 	 * @throws WebsocketException if an error occurs while sending the message.
 	 */
 	@Override
-	public void send(String message) throws WebsocketException {
-		// FIXME
-		if (message == null) {
-			LoggerFactory.getLogger(getClass()).info("Send:null", new Exception("sending null"));
-		}
-		
+	public void send(String message) throws WebsocketException {		
 		delegate.send(message);
 	}
 

@@ -3,8 +3,22 @@ package com.scz.jxapi.netutils.websocket;
 import com.scz.jxapi.exchange.ExchangeApi;
 import com.scz.jxapi.util.FactoryUtil;
 
+/**
+ * Factory for creating {@link WebsocketHook} instances.
+ * <p>
+ * Actual implementations of this factory should provide a public
+ * default constructor with no argument so they can be instantiated by
+ * reflection.
+ */
 public interface WebsocketHookFactory {
 
+	/**
+	 * Create a new instance of a {@link WebsocketHook} implementation.
+	 * 
+	 * @param exchangeApi the {@link ExchangeApi} instance that can be used to
+	 *                    retrieve configuration properties.
+	 * @return a new instance of a {@link WebsocketHook} implementation.
+	 */
 	WebsocketHook createWebsocketHook(ExchangeApi exchangeApi);
 	
 	/**

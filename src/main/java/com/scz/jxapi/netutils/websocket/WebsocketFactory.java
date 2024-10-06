@@ -6,7 +6,7 @@ import com.scz.jxapi.util.FactoryUtil;
 
 /**
  * Factory class for {@link Websocket} implementations.
- * Actual implementations are expected to provide a public constructor with no
+ * Actual implementations of this factory are expected to provide a public constructor with no
  * argument so they can be instantiated by reflection.
  * Name of such implementation class can be specified as value of
  * {@link ExchangeApiDescriptor#getWebsocketFactory()}
@@ -24,8 +24,8 @@ public interface WebsocketFactory {
 	Websocket createWebsocket(ExchangeApi exchangeApi);
 
 	/**
-	 * Factory method to instantiate {@link WebsocketFactory} from its
-	 * class name.
+	 * Static method to instantiate {@link WebsocketFactory} from its
+	 * class name, assuming it has a default constructor.
 	 * 
 	 * @param cls Name of {@link WebsocketFactory} implementation
 	 *            class. Should have a default constructor.

@@ -21,15 +21,18 @@ import org.slf4j.LoggerFactory;
 import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonToken;
+import com.scz.jxapi.exchange.ExchangeApi;
 
 /**
- * Default implementation of {@link WebsocketManager} that uses {@link Websocket} to manage websocket connection.
- * <ul>
- * <li>Manages subscriptions to topics</li>
- * <li>Manages system message handlers that handle specific / non topic related message  </li>
- * <li>Manages error handlers</li>
- * <li>Manages heartbeat</li>
- * </ul>
+ * Default and sufficient implementation of {@link WebsocketManager} that wraps
+ * a {@link Websocket} to manage subscriptions to topics (multiplexing), system
+ * message handlers, error handlers, heartbeat and no message timeout features.
+ * It can be provided a {@link WebsocketHook} that will take care of API
+ * specific handshake, heartbeat and subscription messages.
+ * 
+ * @see WebsocketManager
+ * @see Websocket
+ * @see WebsocketHook
  */
 public class DefaultWebsocketManager implements WebsocketManager {
 	
@@ -68,18 +71,23 @@ public class DefaultWebsocketManager implements WebsocketManager {
 	private final RawWebsocketMessageHandler rawMessageHandler = this::dispatchMessage;
 	private final WebsocketErrorHandler websocketErrorHandler = this::notifyError;
 	
+	protected final ExchangeApi exchangeApi;
+	
 	protected final Websocket websocket;
 
-	private final WebsocketHook websocketHook;
+	protected final WebsocketHook websocketHook;
 	
-	public DefaultWebsocketManager(Websocket websocket, WebsocketHook websocketHook) {
+	public DefaultWebsocketManager(ExchangeApi exchangeApi, 
+								   Websocket websocket, 
+								   WebsocketHook websocketHook) {
+		this.exchangeApi = exchangeApi;
 		this.websocket = websocket;
 		this.websocketHook = websocketHook;
 		this.writeExecutor = Executors.newSingleThreadScheduledExecutor();
 		this.websocket.addErrorHandler(websocketErrorHandler);
 		this.websocket.addMessageHandler(rawMessageHandler);
 		if (websocketHook != null) {
-			websocketHook.afterInit(this);
+			websocketHook.init(this);
 		}
 	}
 	
@@ -199,11 +207,11 @@ public class DefaultWebsocketManager implements WebsocketManager {
 			log.info("Connecting WS:" + this);
 		try {
 			if (websocketHook != null) {
-				websocketHook.beforeConnect(this);
+				websocketHook.beforeConnect();
 			}
 			websocket.connect();
 			if (websocketHook != null) {
-				websocketHook.afterConnect(this);
+				websocketHook.afterConnect();
 			}
 			scheduleNoMessageTimeoutTask(this.messageReceivedCount.get());
 			if (heartBeatInterval > 0 || noHeartBeatResponseTimeout > 0) {
@@ -257,11 +265,18 @@ public class DefaultWebsocketManager implements WebsocketManager {
 				this.heartBeatTimeoutTaskCancelled.set(true);
 			}
 			if (websocketHook != null) {
-				websocketHook.beforeDisconnect(this);
+				try {
+					websocketHook.beforeDisconnect();
+				} catch (Exception e) {
+					String errMsg = "Error while calling WebsocketHook#beforeDisconnect";
+					log.error(errMsg, e);
+					dispatchWebsocketError(new WebsocketException(errMsg, e));
+				}
+				
 			}
  			websocket.disconnect();
  			if (websocketHook != null) {
-				websocketHook.afterDisconnect(this);
+				websocketHook.afterDisconnect();
 			}
 			if (log.isInfoEnabled()) {
 				log.info("Disconnected " + this);
@@ -351,6 +366,11 @@ public class DefaultWebsocketManager implements WebsocketManager {
 	
 	public void setUrl(String url) {
 		websocket.setUrl(url);
+	}
+	
+	@Override
+	public ExchangeApi getExchangeApi() {
+		return this.exchangeApi;
 	}
 
 	@Override

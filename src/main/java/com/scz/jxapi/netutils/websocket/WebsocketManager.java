@@ -3,6 +3,8 @@ package com.scz.jxapi.netutils.websocket;
 import java.io.IOException;
 import java.util.concurrent.CompletableFuture;
 
+import com.scz.jxapi.exchange.ExchangeApi;
+
 /**
  * A WebsocketManager is a wrapper around a {@link Websocket} that manages most
  * common operations specified in a Websocket API.
@@ -304,14 +306,14 @@ public interface WebsocketManager {
 	void setNoHeartBeatResponseTimeout(long noHeartBeatResponseTimeout);
 
 	/**
-	 * Gets the URL of the underlying Websocket. See {@link Websocket#getUrl()}.
+	 * Gets the URL of the underlying Websocket. Proxy method for {@link Websocket#getUrl()}.
 	 * 
 	 * @return The URL of the underlying Websocket.
 	 */
 	String getUrl();
 
 	/**
-	 * Sets the URL of the underlying Websocket. See
+	 * Sets the URL of the underlying Websocket. Proxy method for
 	 * {@link Websocket#setUrl(String)}.
 	 * 
 	 * @param url The URL of the underlying Websocket.
@@ -319,9 +321,17 @@ public interface WebsocketManager {
 	void setUrl(String url);
 
 	/**
-	 * Can be called from WebsocketHook to notify of an error.
+	 * Can be called from {@link WebsocketHook} to notify of an error.
 	 * 
 	 * @param exception The exception that caused the error.
 	 */
 	void notifyError(WebsocketException exception);
+	
+	/**
+	 * @return The exchange API this manager wraps websocket connection for. Can be
+	 *         used by {@link WebsocketHook} to retrieve configuration properties,
+	 *         or cast to actual {@link ExchangeApi} implementation to access it
+	 *         APIs such as websocket token retrieval REST API.
+	 */
+	ExchangeApi getExchangeApi();
 }

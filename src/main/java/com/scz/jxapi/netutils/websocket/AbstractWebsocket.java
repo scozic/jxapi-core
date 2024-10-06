@@ -13,11 +13,19 @@ import com.scz.jxapi.observability.Observable;
  * should extend this class, implementing the abstract methods.
  * <p>
  * <ul>
- * <li>Implementing {@link #doConnect()} method to establish actual websocket which will be called from {@link #connect()} method only if websocket is currenty in 'disconnected' state.</li>
- * <li>Implementing {@link #doDisconnect()} method to shut down websocket connection and dispose all resources associated to it. This method will be called from {@link #disconnect()} only if websocket is currently in 'connected' state.</li>
- * <li>Implementing {@link #doSend(String)} method to send a message to the websocket server.</li>
- * <li>Calling {@link #dispatchMessage(String)} method to dispatch incoming messages to all message handlers.</li>
- * <li>Calling {@link #dispatchError(WebsocketException)} method to dispatch errors to all error handlers when a connection failure occurs.</li>
+ * <li>Implementing {@link #doConnect()} method to establish actual websocket
+ * which will be called from {@link #connect()} method only if websocket is
+ * currenty in 'disconnected' state.</li>
+ * <li>Implementing {@link #doDisconnect()} method to shut down websocket
+ * connection and dispose all resources associated to it. This method will be
+ * called from {@link #disconnect()} only if websocket is currently in
+ * 'connected' state.</li>
+ * <li>Implementing {@link #doSend(String)} method to send a message to the
+ * websocket server.</li>
+ * <li>Calling {@link #dispatchMessage(String)} method to dispatch incoming
+ * messages to all message handlers.</li>
+ * <li>Calling {@link #dispatchError(WebsocketException)} method to dispatch
+ * errors to all error handlers when a connection failure occurs.</li>
  * </ul>
  * 
  * 

@@ -7,7 +7,7 @@ import java.util.Map;
 import com.scz.jxapi.util.CollectionUtil;
 
 /**
- * Default {@link WebsocketMessageTopicMatcher} implementation. Is configured a list of fields and values.
+ * Default {@link WebsocketMessageTopicMatcher} implementation. Is configured a list of fields and values incoming messages must match to be considered as matched.
  * Upon each call to  {@link #matches(String, String)}, checks if its status is still {@link WebsocketMessageTopicMatchStatus#NO_MATCH}:
  * <ul>
  *  <li>If the list of matching fields configured is emtpty or <code>null</code>, the matcher will match any message field, and will be therefore always in {@link WebsocketMessageTopicMatchStatus#MATCHED} state.  
@@ -22,6 +22,9 @@ import com.scz.jxapi.util.CollectionUtil;
  *   </ul>
  *  </ul>
  * </ul>
+ * 
+ * @see WebsocketMessageTopicMatcher
+ * @see WebsocketMessageTopicMatchStatus
  */
 public class DefaultWebsocketMessageTopicMatcher implements WebsocketMessageTopicMatcher {
 	
