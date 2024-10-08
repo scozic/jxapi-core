@@ -1,5 +1,6 @@
 package com.scz.jxapi.netutils.websocket;
 
+import com.scz.jxapi.netutils.websocket.multiplexing.WebsocketMessageTopicMatcherFactory;
 import com.scz.jxapi.util.EncodingUtil;
 
 /**
@@ -7,7 +8,7 @@ import com.scz.jxapi.util.EncodingUtil;
  */
 public class WebsocketSubscribeRequest {
 	
-	public static WebsocketSubscribeRequest create(Object parameters, String topic, WebsocketMessageTopicMatcher messageTopicMatcher) {
+	public static WebsocketSubscribeRequest create(Object parameters, String topic, WebsocketMessageTopicMatcherFactory messageTopicMatcher) {
 		WebsocketSubscribeRequest request = new WebsocketSubscribeRequest();
 		request.request = parameters;
 		request.topic = topic;
@@ -17,7 +18,7 @@ public class WebsocketSubscribeRequest {
 
 	private String baseUrl;
 	private Object request;
-	private WebsocketMessageTopicMatcher messageTopicMatcher;
+	private WebsocketMessageTopicMatcherFactory messageTopicMatcher;
 	private String topic;
 	
 	public String getBaseUrl() {
@@ -34,10 +35,10 @@ public class WebsocketSubscribeRequest {
 		this.request = parameters;
 	}
 	
-	public WebsocketMessageTopicMatcher getMessageTopicMatcher() {
+	public WebsocketMessageTopicMatcherFactory getMessageTopicMatcher() {
 		return messageTopicMatcher;
 	}
-	public void setMessageTopicMatcher(WebsocketMessageTopicMatcher messageTopicMatcher) {
+	public void setMessageTopicMatcherFactory(WebsocketMessageTopicMatcherFactory messageTopicMatcher) {
 		this.messageTopicMatcher = messageTopicMatcher;
 	}
 	

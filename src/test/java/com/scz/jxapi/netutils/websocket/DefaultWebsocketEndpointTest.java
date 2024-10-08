@@ -14,6 +14,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.scz.jxapi.netutils.deserialization.MessageDeserializer;
 import com.scz.jxapi.netutils.websocket.mock.MockWebsocket;
+import com.scz.jxapi.netutils.websocket.multiplexing.WebsocketMessageTopicMatcherFactory;
 import com.scz.jxapi.observability.ExchangeApiEvent;
 import com.scz.jxapi.observability.ExchangeApiEventType;
 import com.scz.jxapi.observability.ExchangeApiObserver;
@@ -69,7 +70,7 @@ public class DefaultWebsocketEndpointTest {
 	@Test
 	public void testSubscribeToSingleTopic() {
 		String topic = "topic1";
-		WebsocketSubscribeRequest subscribeRequest = WebsocketSubscribeRequest.create(null, topic, new DefaultWebsocketMessageTopicMatcher(List.of()));
+		WebsocketSubscribeRequest subscribeRequest = WebsocketSubscribeRequest.create(null, topic, WebsocketMessageTopicMatcherFactory.ANY_MATCHER_FACTORY);
 		TestMessageListener listener = new TestMessageListener();
 		String subId = websocketEndpoint.subscribe(subscribeRequest, listener);
 		Assert.assertNotNull(subId);
@@ -83,7 +84,7 @@ public class DefaultWebsocketEndpointTest {
 	@Test
 	public void testSubscribeTwiceToSingleTopic() {
 		String topic = "topic1";
-		WebsocketSubscribeRequest subscribeRequest = WebsocketSubscribeRequest.create(null, topic, new DefaultWebsocketMessageTopicMatcher(List.of()));
+		WebsocketSubscribeRequest subscribeRequest = WebsocketSubscribeRequest.create(null, topic, WebsocketMessageTopicMatcherFactory.ANY_MATCHER_FACTORY);
 		TestMessageListener listener1 = new TestMessageListener();
 		TestMessageListener listener2 = new TestMessageListener();
 		String subId1 = websocketEndpoint.subscribe(subscribeRequest, listener1);
@@ -106,7 +107,7 @@ public class DefaultWebsocketEndpointTest {
 	@Test
 	public void testUnSubscribeFromSingleTopic() {
 		String topic = "topic1";
-		WebsocketSubscribeRequest subscribeRequest = WebsocketSubscribeRequest.create(null, topic, new DefaultWebsocketMessageTopicMatcher(List.of()));
+		WebsocketSubscribeRequest subscribeRequest = WebsocketSubscribeRequest.create(null, topic, WebsocketMessageTopicMatcherFactory.ANY_MATCHER_FACTORY);
 		TestMessageListener listener1 = new TestMessageListener();
 		TestMessageListener listener2 = new TestMessageListener();
 		String subId1 = websocketEndpoint.subscribe(subscribeRequest, listener1);
@@ -145,7 +146,7 @@ public class DefaultWebsocketEndpointTest {
 	@Test
 	public void testUnsubscribeInvalidSubscriptionId() {
 		String topic = "topic1";
-		WebsocketSubscribeRequest subscribeRequest = WebsocketSubscribeRequest.create(null, topic, new DefaultWebsocketMessageTopicMatcher(List.of()));
+		WebsocketSubscribeRequest subscribeRequest = WebsocketSubscribeRequest.create(null, topic, WebsocketMessageTopicMatcherFactory.ANY_MATCHER_FACTORY);
 		TestMessageListener listener = new TestMessageListener();
 		websocketEndpoint.subscribe(subscribeRequest, listener);
 		Assert.assertFalse(websocketEndpoint.unsubscribe("foo"));
@@ -154,7 +155,7 @@ public class DefaultWebsocketEndpointTest {
 	@Test
 	public void testDispatchInvalidMessage() {
 		String topic = "topic1";
-		WebsocketSubscribeRequest subscribeRequest = WebsocketSubscribeRequest.create(null, topic, new DefaultWebsocketMessageTopicMatcher(List.of()));
+		WebsocketSubscribeRequest subscribeRequest = WebsocketSubscribeRequest.create(null, topic, WebsocketMessageTopicMatcherFactory.ANY_MATCHER_FACTORY);
 		TestMessageListener listener = new TestMessageListener();
 		String subId = websocketEndpoint.subscribe(subscribeRequest, listener);
 		Assert.assertNotNull(subId);
@@ -171,7 +172,7 @@ public class DefaultWebsocketEndpointTest {
 	public void testSubscribeAndReceiveMessageAndUnsubscribeNoExchangeApiObserver() {
 		websocketEndpoint = new TestWebsocketEndpoint("myWsEndpoint", websocketManager, null);
 		String topic = "topic1";
-		WebsocketSubscribeRequest subscribeRequest = WebsocketSubscribeRequest.create(null, topic, new DefaultWebsocketMessageTopicMatcher(List.of()));
+		WebsocketSubscribeRequest subscribeRequest = WebsocketSubscribeRequest.create(null, topic, WebsocketMessageTopicMatcherFactory.ANY_MATCHER_FACTORY);
 		TestMessageListener listener = new TestMessageListener();
 		String subId = websocketEndpoint.subscribe(subscribeRequest, listener);
 		Assert.assertNotNull(subId);
@@ -241,7 +242,7 @@ public class DefaultWebsocketEndpointTest {
 		
 		@Override
 		public void subscribe(String topic, 
-							  WebsocketMessageTopicMatcher matcher,
+							  WebsocketMessageTopicMatcherFactory matcherFactory,
 							  RawWebsocketMessageHandler messageHandler) {
 			if (subscribeRequests.containsKey(topic)) {
 				throw new IllegalStateException("Already have a subscription for topic:" + topic);

@@ -1,4 +1,4 @@
-package com.scz.jxapi.netutils.websocket;
+package com.scz.jxapi.netutils.websocket.multiplexing;
 
 /**
  * Possible states of {@link WebsocketMessageTopicMatcher}

@@ -29,7 +29,6 @@ import com.scz.jxapi.netutils.rest.mock.MockHttpRequestInterceptorFactory;
 import com.scz.jxapi.netutils.rest.ratelimits.RequestThrottler;
 import com.scz.jxapi.netutils.websocket.DefaultWebsocketEndpoint;
 import com.scz.jxapi.netutils.websocket.DefaultWebsocketManager;
-import com.scz.jxapi.netutils.websocket.DefaultWebsocketMessageTopicMatcher;
 import com.scz.jxapi.netutils.websocket.WebsocketException;
 import com.scz.jxapi.netutils.websocket.WebsocketManager;
 import com.scz.jxapi.netutils.websocket.WebsocketSubscribeRequest;
@@ -38,6 +37,7 @@ import com.scz.jxapi.netutils.websocket.mock.MockWebsocketFactory;
 import com.scz.jxapi.netutils.websocket.mock.MockWebsocketHook;
 import com.scz.jxapi.netutils.websocket.mock.MockWebsocketHookFactory;
 import com.scz.jxapi.netutils.websocket.mock.MockWebsocketListener;
+import com.scz.jxapi.netutils.websocket.multiplexing.WebsocketMessageTopicMatcherFactory;
 import com.scz.jxapi.netutils.websocket.spring.SpringWebsocket;
 import com.scz.jxapi.observability.ExchangeApiEvent;
 import com.scz.jxapi.observability.ExchangeApiEventType;
@@ -310,7 +310,7 @@ public class AbstractExchangeApiTest {
 		exchangeApi.createWebsocketManager("wss://myexchange.com/ws", MockWebsocketFactory.class.getName(), null);
 		DefaultWebsocketEndpoint<String> wsEndpoint = (DefaultWebsocketEndpoint<String>) exchangeApi.createWebsocketEndpoint("myWsApi", RawStringMessageDeserializer.getInstance());
 		Assert.assertNotNull(wsEndpoint);
-		wsEndpoint.subscribe(WebsocketSubscribeRequest.create(null, "mytopic", DefaultWebsocketMessageTopicMatcher.create()), new MockWebsocketListener<>());
+		wsEndpoint.subscribe(WebsocketSubscribeRequest.create(null, "mytopic", WebsocketMessageTopicMatcherFactory.ANY_MATCHER_FACTORY), new MockWebsocketListener<>());
 		ExchangeApiEvent event = observer.pop();
 		Assert.assertEquals(ExchangeApiEventType.WEBSOCKET_SUBSCRIBE, event.getType());
 	}

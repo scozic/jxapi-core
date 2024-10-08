@@ -22,6 +22,9 @@ import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonToken;
 import com.scz.jxapi.exchange.ExchangeApi;
+import com.scz.jxapi.netutils.websocket.multiplexing.WebsocketMessageTopicMatchStatus;
+import com.scz.jxapi.netutils.websocket.multiplexing.WebsocketMessageTopicMatcher;
+import com.scz.jxapi.netutils.websocket.multiplexing.WebsocketMessageTopicMatcherFactory;
 
 /**
  * Default and sufficient implementation of {@link WebsocketManager} that wraps
@@ -116,7 +119,7 @@ public class DefaultWebsocketManager implements WebsocketManager {
 
 	@Override
 	public void subscribe(String topic, 
-						  WebsocketMessageTopicMatcher matcher,
+						  WebsocketMessageTopicMatcherFactory matcherFactory,
 						  RawWebsocketMessageHandler messageHandler) {
 		if (log.isDebugEnabled())
 			log.debug("Scheduling subscribe request for topic:" + topic);
@@ -127,7 +130,7 @@ public class DefaultWebsocketManager implements WebsocketManager {
 					log.debug("Executing subscribe request for topic:[" + topic + "]");
 				TopicManager t = topics.get(top);
 				if (t == null) {
-					t = new TopicManager(top, matcher, messageHandler, false);
+					t = new TopicManager(top, matcherFactory, messageHandler, false);
 					topics.put(top, t);
 					// Remark: registered TopicManager before checking connection status and connecting if not already connected.
 					// This is because the url provided for handshake may stand for a global stream endpoint (no topic/subscription)
@@ -318,7 +321,7 @@ public class DefaultWebsocketManager implements WebsocketManager {
 	}
 	
 	@Override
-	public void addSystemMessageHandler(String topic, WebsocketMessageTopicMatcher matcher, RawWebsocketMessageHandler messageHandler) {
+	public void addSystemMessageHandler(String topic, WebsocketMessageTopicMatcherFactory matcher, RawWebsocketMessageHandler messageHandler) {
 		this.systemMessageHandlers.add(new TopicManager(topic, matcher, messageHandler, true));
 	}
 	
@@ -405,7 +408,8 @@ public class DefaultWebsocketManager implements WebsocketManager {
 		List<TopicManager> allTopics = new ArrayList<>(topics.size() + systemMessageHandlers.size());
 		allTopics.addAll(systemMessageHandlers);
 		allTopics.addAll(topics.values());
-		allTopics.forEach(t -> t.matcher.reset());
+		List<WebsocketMessageTopicMatcher> topicMatchers = new ArrayList<>(allTopics.size());
+		allTopics.forEach(t -> topicMatchers.add(t.matcher.createWebsocketMessageTopicMatcher()));
 		try {
 			JsonParser jsonParser = jsonFactory.createParser(message.getBytes());
 			for (JsonToken tok = jsonParser.nextToken(); tok != null && !allTopics.isEmpty(); tok = jsonParser.nextToken()) {
@@ -427,7 +431,7 @@ public class DefaultWebsocketManager implements WebsocketManager {
 						break;
 					}
 					
-					if (dispatchToMessageTopicMatchers(fieldName, value, allTopics, message)) {
+					if (dispatchToMessageTopicMatchers(fieldName, value, allTopics, topicMatchers, message)) {
 						break;
 					}
 				}
@@ -494,10 +498,12 @@ public class DefaultWebsocketManager implements WebsocketManager {
 	private boolean dispatchToMessageTopicMatchers(String name, 
 												String value,  
 												List<TopicManager> messageHandlers, 
+												List<WebsocketMessageTopicMatcher> topicMatchers, 
 												String rawMessage) {
-		for (Iterator<TopicManager> it = messageHandlers.iterator(); it.hasNext();) {
+		int i = 0;
+		for (Iterator<TopicManager> it = messageHandlers.iterator(); it.hasNext(); i++) {
 			TopicManager topic = it.next();
-			WebsocketMessageTopicMatchStatus matchResult = topic.matcher.matches(name, value);
+			WebsocketMessageTopicMatchStatus matchResult = topicMatchers.get(i).matches(name, value);
 			switch (matchResult) {
 			case MATCHED:
 				if (log.isDebugEnabled())
@@ -519,15 +525,17 @@ public class DefaultWebsocketManager implements WebsocketManager {
 	}
 
 	protected class TopicManager {
-		final WebsocketMessageTopicMatcher matcher;
+		final WebsocketMessageTopicMatcherFactory matcher;
 		final RawWebsocketMessageHandler messageHandler;
 		final String topic;
 		final boolean systemMessage;
 		
-		public TopicManager(String topic, WebsocketMessageTopicMatcher matcher,
-				RawWebsocketMessageHandler messageHandler, boolean systemMessage) {
+		public TopicManager(String topic, 
+							WebsocketMessageTopicMatcherFactory matcherFactory,
+							RawWebsocketMessageHandler messageHandler, 
+							boolean systemMessage) {
 			this.topic = topic;
-			this.matcher = matcher;
+			this.matcher = matcherFactory;
 			this.messageHandler = messageHandler;
 			this.systemMessage = systemMessage;
 		}

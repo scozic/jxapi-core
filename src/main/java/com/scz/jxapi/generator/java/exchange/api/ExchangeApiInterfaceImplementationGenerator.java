@@ -34,10 +34,10 @@ import com.scz.jxapi.netutils.rest.HttpMethod;
 import com.scz.jxapi.netutils.rest.HttpRequest;
 import com.scz.jxapi.netutils.rest.ratelimits.RateLimitRule;
 import com.scz.jxapi.netutils.rest.ratelimits.RequestThrottler;
-import com.scz.jxapi.netutils.websocket.DefaultWebsocketMessageTopicMatcher;
 import com.scz.jxapi.netutils.websocket.WebsocketEndpoint;
 import com.scz.jxapi.netutils.websocket.WebsocketListener;
 import com.scz.jxapi.netutils.websocket.WebsocketSubscribeRequest;
+import com.scz.jxapi.netutils.websocket.multiplexing.DefaultWebsocketMessageTopicMatcher;
 import com.scz.jxapi.util.CollectionUtil;
 import com.scz.jxapi.util.EncodingUtil;
 import com.scz.jxapi.util.JsonUtil;
@@ -382,7 +382,6 @@ public class ExchangeApiInterfaceImplementationGenerator extends JavaTypeGenerat
 		
 		String unsubscribeMethodSignature = "boolean " + unsubscribeMethodName + "(String subscriptionId)";
 		addImport(WebsocketSubscribeRequest.class);
-		addImport(DefaultWebsocketMessageTopicMatcher.class);
 		
 		StringBuilder subscribeMethodBody = new StringBuilder()
 				.append("String topic = ")
@@ -398,9 +397,7 @@ public class ExchangeApiInterfaceImplementationGenerator extends JavaTypeGenerat
 				.append(WebsocketSubscribeRequest.class.getSimpleName())
 				.append(".create(")
 				.append(hasArguments? requestArgName: "null")
-				.append(", topic, ")
-				.append(DefaultWebsocketMessageTopicMatcher.class.getSimpleName())
-				.append(".create(");
+				.append(", topic, topicMatcher(");
 		
 		List<String> replacements = new ArrayList<>();
 		replacements.add("topic");

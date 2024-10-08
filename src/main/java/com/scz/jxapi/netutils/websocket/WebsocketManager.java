@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.util.concurrent.CompletableFuture;
 
 import com.scz.jxapi.exchange.ExchangeApi;
+import com.scz.jxapi.netutils.websocket.multiplexing.WebsocketMessageTopicMatcher;
+import com.scz.jxapi.netutils.websocket.multiplexing.WebsocketMessageTopicMatcherFactory;
 
 /**
  * A WebsocketManager is a wrapper around a {@link Websocket} that manages most
@@ -115,13 +117,14 @@ public interface WebsocketManager {
 	 * 
 	 * @param topic          The topic for the system message to handle. Should be
 	 *                       unique and not overlap with business messages topics.
-	 * @param matcher        The matcher to use to match incoming messages to the
+	 * @param matcherFactory        The factory matcher to use to match incoming messages to the
 	 *                       topic.
 	 * @param messageHandler The message handler to call when a message related to
 	 *                       topic is received.
 	 */
-	void addSystemMessageHandler(String topic, WebsocketMessageTopicMatcher matcher,
-			RawWebsocketMessageHandler messageHandler);
+	void addSystemMessageHandler(String topic, 
+								 WebsocketMessageTopicMatcherFactory matcherFactory,
+								 RawWebsocketMessageHandler messageHandler);
 
 	/**
 	 * Subscribes a message handler to a topic. The message handler will be called
@@ -141,7 +144,7 @@ public interface WebsocketManager {
 	 * @param messageHandler The message handler to call when a message related to
 	 *                       topic is received.
 	 */
-	void subscribe(String topic, WebsocketMessageTopicMatcher matcher, RawWebsocketMessageHandler messageHandler);
+	void subscribe(String topic, WebsocketMessageTopicMatcherFactory matcher, RawWebsocketMessageHandler messageHandler);
 
 	/**
 	 * Unsubscribes a message handler from a topic.

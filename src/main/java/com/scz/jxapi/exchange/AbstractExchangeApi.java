@@ -24,6 +24,9 @@ import com.scz.jxapi.netutils.websocket.WebsocketFactory;
 import com.scz.jxapi.netutils.websocket.WebsocketHook;
 import com.scz.jxapi.netutils.websocket.WebsocketHookFactory;
 import com.scz.jxapi.netutils.websocket.WebsocketManager;
+import com.scz.jxapi.netutils.websocket.multiplexing.DefaultWebsocketMessageTopicMatcher;
+import com.scz.jxapi.netutils.websocket.multiplexing.WebsocketMessageTopicMatcherFactory;
+import com.scz.jxapi.netutils.websocket.multiplexing.WebsocketMessageTopicMatcherField;
 import com.scz.jxapi.observability.ExchangeApiEvent;
 import com.scz.jxapi.observability.ExchangeApiObserver;
 import com.scz.jxapi.observability.Observable;
@@ -58,6 +61,27 @@ import com.scz.jxapi.observability.SynchronizedObservable;
  * @see Observable
  */
 public abstract class AbstractExchangeApi implements ExchangeApi {
+	
+	/**
+	 * Creates a {@link WebsocketMessageTopicMatcherFactory} for matching the given
+	 * list of property names and expected values
+	 * 
+	 * @param fieldNamesAndValues list of key value pairs like
+	 *                            <code>key1, value1, key2, value2...</code>
+	 * @return WebsocketMessageTopicMatcherFactory instance which will be a
+	 *         {@link DefaultWebsocketMessageTopicMatcher} instance for the list of
+	 *         property key/value list or
+	 *         {@link WebsocketMessageTopicMatcherFactory#ANY_MATCHER_FACTORY} if
+	 *         the list is empty meaning anything will be matched
+	 * 
+	 * @see DefaultWebsocketMessageTopicMatcher#createFactory(String...)
+	 */
+	static WebsocketMessageTopicMatcherFactory topicMatcher(String... fieldNamesAndValues) {
+		if (fieldNamesAndValues.length <= 0) {
+			return WebsocketMessageTopicMatcherFactory.ANY_MATCHER_FACTORY;
+		}
+		return DefaultWebsocketMessageTopicMatcher.createFactory(fieldNamesAndValues);
+	}
 
 	protected final String name;
 	protected final String exchangeName;

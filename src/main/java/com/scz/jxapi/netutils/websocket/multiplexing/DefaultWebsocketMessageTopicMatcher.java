@@ -1,4 +1,4 @@
-package com.scz.jxapi.netutils.websocket;
+package com.scz.jxapi.netutils.websocket.multiplexing;
 
 import java.util.HashMap;
 import java.util.List;
@@ -28,19 +28,27 @@ import com.scz.jxapi.util.CollectionUtil;
  */
 public class DefaultWebsocketMessageTopicMatcher implements WebsocketMessageTopicMatcher {
 	
-	public static DefaultWebsocketMessageTopicMatcher create(String... fieldNamesAndValues) {
-		return new DefaultWebsocketMessageTopicMatcher(WebsocketMessageTopicMatcherField.createList(fieldNamesAndValues));
+	public static WebsocketMessageTopicMatcherFactory createFactory(String... fieldNamesAndValues) {
+		List<WebsocketMessageTopicMatcherField> fieldList = WebsocketMessageTopicMatcherField.createList(fieldNamesAndValues);
+		return () -> new DefaultWebsocketMessageTopicMatcher(fieldList);
 	}
 	
 	private final List<WebsocketMessageTopicMatcherField> fields;
 	
-	private Map<String, String> valuesToMatch = new HashMap<>();
+	private final Map<String, String> valuesToMatch;
 	
 	private WebsocketMessageTopicMatchStatus status = WebsocketMessageTopicMatchStatus.NO_MATCH;
 	
 	public DefaultWebsocketMessageTopicMatcher(List<WebsocketMessageTopicMatcherField> fields) {
 		this.fields = fields;
-		reset();
+		this.valuesToMatch = new HashMap<>(fields.size());
+		if (CollectionUtil.isEmpty(fields)) {
+			this.status = WebsocketMessageTopicMatchStatus.MATCHED;
+		} else {
+			this.status = WebsocketMessageTopicMatchStatus.NO_MATCH;
+			valuesToMatch.clear();
+			getFields().forEach(f -> valuesToMatch.put(f.getName(), f.getValue()));
+		}
 	}
 
 	@Override
@@ -66,19 +74,12 @@ public class DefaultWebsocketMessageTopicMatcher implements WebsocketMessageTopi
 	}
 
 	@Override
-	public void reset() {
-		if (CollectionUtil.isEmpty(fields)) {
-			this.status = WebsocketMessageTopicMatchStatus.MATCHED;
-		} else {
-			this.status = WebsocketMessageTopicMatchStatus.NO_MATCH;
-			valuesToMatch.clear();
-			fields.forEach(f -> valuesToMatch.put(f.getName(), f.getValue()));
-		}
-	}
-
-	@Override
 	public WebsocketMessageTopicMatchStatus getStatus() {
 		return this.status;
+	}
+
+	public List<WebsocketMessageTopicMatcherField> getFields() {
+		return fields;
 	}
 
 }
