@@ -7,7 +7,7 @@ public enum WebsocketMessageTopicMatchStatus {
 	/** Parser has not matched yet, but it could still match*/
 	NO_MATCH,
 	
-	/** Parser  has matched message*/
+	/** Parser has matched message*/
 	MATCHED,
 	
 	/**

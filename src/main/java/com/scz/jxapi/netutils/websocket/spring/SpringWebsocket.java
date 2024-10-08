@@ -26,6 +26,18 @@ import org.springframework.web.socket.client.standard.StandardWebSocketClient;
 import com.scz.jxapi.netutils.websocket.AbstractWebsocket;
 import com.scz.jxapi.netutils.websocket.WebsocketException;
 
+/**
+ * Websocket implementation using Spring's {@link StandardWebSocketClient}.
+ * <p>
+ * Implemntation notes:
+ * <ul>
+ * <li>Uses internal own {@link ThreadPoolTaskExecutor} for handling websocket messages</li>
+ * <li>Uses Grizzly's {@link ClientManager} for websocket connection management</li>
+ * <li>Customizes Grizzly's thread pool configuration to use a single worker thread</li>
+ * </ul>
+ * @see AbstractWebsocket
+ * @see StandardWebSocketClient
+ */
 public class SpringWebsocket extends AbstractWebsocket {
 	
 	private static final Logger log = LoggerFactory.getLogger(SpringWebsocket.class);
@@ -101,7 +113,8 @@ public class SpringWebsocket extends AbstractWebsocket {
 
 	@Override
 	protected void doDisconnect() {
-		log.debug("Closing websocket");
+		if (log.isDebugEnabled())
+			log.debug("Closing websocket");
 		try {
 			webSocketSession.close(CloseStatus.NORMAL);
 		} catch (IOException e) {
@@ -111,7 +124,8 @@ public class SpringWebsocket extends AbstractWebsocket {
 		}
 		clientManager.shutdown();
 		taskExecutor.shutdown();
-		log.debug("Websocket is closed");
+		if (log.isDebugEnabled())
+			log.debug("Websocket is closed");
 	}
 
 	private class SpringWebsocketHandler implements WebSocketHandler {
@@ -124,17 +138,20 @@ public class SpringWebsocket extends AbstractWebsocket {
 
 		@Override
 		public void afterConnectionEstablished(WebSocketSession session) throws Exception {
-			log.debug("afterConnectionEstablished:session:" + session);
+			if (log.isDebugEnabled())
+				log.debug("afterConnectionEstablished:session:" + session);
 		}
 
 		@Override
 		public void handleMessage(WebSocketSession session, WebSocketMessage<?> message) throws Exception {
-			log.debug("handleMessage:session:" + session + ", message:" + message);
+			if (log.isDebugEnabled())
+				log.debug("handleMessage:session:" + session + ", message:" + message);
 			if (message instanceof TextMessage) {
 				TextMessage m  = (TextMessage) message;
 				dispatchMessageExecutor.execute(new DispatchTextMessageTask(m));
 			} else {
-				log.debug("handleMessage:message is not a TextMessage:" + message);
+				if (log.isDebugEnabled())
+					log.debug("handleMessage:message is not a TextMessage:" + message);
 			}
 		}
 
@@ -145,7 +162,8 @@ public class SpringWebsocket extends AbstractWebsocket {
 
 		@Override
 		public void afterConnectionClosed(WebSocketSession session, CloseStatus closeStatus) throws Exception {
-			log.debug(SpringWebsocket.this.toString() + "afterConnectionClosed:session:" + session + ", closeStatus:" + closeStatus);
+			if (log.isDebugEnabled())
+				log.debug(SpringWebsocket.this.toString() + "afterConnectionClosed:session:" + session + ", closeStatus:" + closeStatus);
 		}
 
 		@Override
