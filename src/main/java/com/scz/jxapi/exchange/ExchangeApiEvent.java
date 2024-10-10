@@ -1,4 +1,4 @@
-package com.scz.jxapi.observability;
+package com.scz.jxapi.exchange;
 
 import com.scz.jxapi.netutils.rest.HttpRequest;
 import com.scz.jxapi.netutils.rest.RestResponse;

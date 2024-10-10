@@ -26,9 +26,6 @@ import com.scz.jxapi.netutils.websocket.WebsocketHookFactory;
 import com.scz.jxapi.netutils.websocket.WebsocketManager;
 import com.scz.jxapi.netutils.websocket.multiplexing.DefaultWebsocketMessageTopicMatcher;
 import com.scz.jxapi.netutils.websocket.multiplexing.WebsocketMessageTopicMatcherFactory;
-import com.scz.jxapi.netutils.websocket.multiplexing.WebsocketMessageTopicMatcherField;
-import com.scz.jxapi.observability.ExchangeApiEvent;
-import com.scz.jxapi.observability.ExchangeApiObserver;
 import com.scz.jxapi.observability.Observable;
 import com.scz.jxapi.observability.SynchronizedObservable;
 
@@ -141,9 +138,6 @@ public abstract class AbstractExchangeApi implements ExchangeApi {
 		return exchangeName;
 	}
 	
-	/**
-	 * 
-	 */
 	@Override
 	public String getName() {
 		return name;
@@ -159,10 +153,18 @@ public abstract class AbstractExchangeApi implements ExchangeApi {
 		return properties;
 	}
 	
+	/**
+	 * Returns the request executor used by this exchange API group.
+	 * @return
+	 */
 	public HttpRequestExecutor getHttpRequestExecutor() {
 		return httpRequestExecutor;
 	}
 
+	/**
+	 * Sets the request executor used by this exchange API group.
+	 * @param httpRequestExecutor
+	 */
 	public void setHttpRequestExecutor(HttpRequestExecutor httpRequestExecutor) {
 		this.httpRequestExecutor = httpRequestExecutor;
 	}
@@ -177,6 +179,13 @@ public abstract class AbstractExchangeApi implements ExchangeApi {
 		return this.observable.unsubscribe(exchangeApiObserver);
 	}
 	
+	/**
+	 * Instantiates HTTP request interceptor using the specified factory class name.
+	 * Should be called by subclasses to create the HTTP request interceptor if there is at least one REST API and a {@link HttpRequestInterceptorFactory} class name is specified.
+	 * 
+	 * @param factoryClassName The fully qualified class name of the factory class
+	 *                         that creates the HTTP request interceptor.
+	 */
 	protected void createHttpRequestInterceptor(String factoryClassName) {
 		try {
 			httpRequestInterceptor = ((HttpRequestInterceptorFactory) Class.forName(factoryClassName).getConstructor().newInstance()).createInterceptor(this);
@@ -189,6 +198,17 @@ public abstract class AbstractExchangeApi implements ExchangeApi {
 		}
 	}
 	
+	/**
+	 * Instantiates HTTP request executor using the specified factory class name, or
+	 * the default executor factory which is usually sufficient.
+	 * Should be called by subclasses to create the HTTP request executor if there
+	 * is at least one REST API.
+	 * 
+	 * @param factoryClassName The fully qualified class name of the factory class
+	 *                         that creates the HTTP request executor, or null if
+	 *                         the default executor factory
+	 *                         {@link JavaNetHttpRequestExecutor} should be used.
+	 */
 	protected void createHttpRequestExecutor(String factoryClassName) {
 		if  (factoryClassName != null) {
 			try {
@@ -205,6 +225,16 @@ public abstract class AbstractExchangeApi implements ExchangeApi {
 		}
 	}
 	
+	/**
+	 * Submits a REST request asynchronously using the specified request and message deserializer to deserialize response.
+	 * If a request throttler is set, the request is submitted through the throttler.
+	 * <br/>
+	 * This method should used by subclasses to submit REST requests.
+	 * @param <A>
+	 * @param request
+	 * @param deserializer
+	 * @return
+	 */
 	protected <A> FutureRestResponse<A> submit(HttpRequest request, MessageDeserializer<A> deserializer) {
 		if (requestThrottler != null) {
 			return requestThrottler.submit(request, r -> { 
@@ -248,9 +278,17 @@ public abstract class AbstractExchangeApi implements ExchangeApi {
 		return callback;
 	}
 	
+	/**
+	 * Creates a websocket manager using the specified URL, websocket factory class name, and websocket hook factory class name.
+	 * Should be called by subclasses to create the websocket manager if there is at least one websocket endpoint.
+	 * 
+	 * @param url The URL of the websocket server.
+	 * @param websocketFactoryClassName The fully qualified class name of the websocket factory class that creates the websocket.
+	 * @param websocketHookFactoryClassName The fully qualified class name of the websocket hook factory class that creates the websocket hook.
+	 */
 	protected void createWebsocketManager(String url, 
-													  String websocketFactoryClassName, 
-													  String websocketHookFactoryClassName) {
+										  String websocketFactoryClassName, 
+										  String websocketHookFactoryClassName) {
 		WebsocketFactory websocketFactory = websocketFactoryClassName == null? 
 												new DefaultWebsocketFactory(): 
 												WebsocketFactory.fromClassName(websocketFactoryClassName);
@@ -265,6 +303,15 @@ public abstract class AbstractExchangeApi implements ExchangeApi {
 		websocketManager.subscribeErrorHandler(error -> dispatchApiEvent(ExchangeApiEvent.createWebsocketErrorEvent(error)));
 	}
 	
+	/**
+	 * Creates a websocket endpoint with the specified name and message deserializer.
+	 * Should be called by subclasses to create websocket endpoints.
+	 * 
+	 * @param <M> The type of the message deserialized for this endpoint.
+	 * @param endpointName The name of the websocket endpoint.
+	 * @param messageDeserializer The message deserializer to use for deserializing messages received by the endpoint.
+	 * @return The created websocket endpoint.
+	 */
 	protected <M> WebsocketEndpoint<M> createWebsocketEndpoint(String endpointName, 
 															   MessageDeserializer<M> messageDeserializer) {
 		if (websocketManager == null) {
@@ -276,6 +323,15 @@ public abstract class AbstractExchangeApi implements ExchangeApi {
 											  this::dispatchApiEvent);
 	}
 	
+	/**
+	 * Dispatches the specified exchange API event to all observers.
+	 * <br/>
+	 * Needs usually not be called by subclasses, as it is called for every call to
+	 * {@link #submit(HttpRequest, MessageDeserializer)} and
+	 * {@link #createWebsocketEndpoint(String, MessageDeserializer)}.
+	 * 
+	 * @param event The exchange API event to dispatch.
+	 */
 	protected void dispatchApiEvent(ExchangeApiEvent event) {
 		event.setExchangeName(exchangeName);
 		event.setExchangeApiName(name);

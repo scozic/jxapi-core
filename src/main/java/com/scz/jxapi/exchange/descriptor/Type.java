@@ -45,7 +45,7 @@ public class Type {
 	/**
 	 * Create a type for a given canonical type
 	 * @param canonicalType
-	 * @return
+	 * @return the type
 	 */
 	private static Type createCanonicalType(CanonicalType canonicalType) {
 		Type type = new Type();

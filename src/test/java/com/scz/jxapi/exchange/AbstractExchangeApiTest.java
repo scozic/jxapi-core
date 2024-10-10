@@ -39,9 +39,6 @@ import com.scz.jxapi.netutils.websocket.mock.MockWebsocketHookFactory;
 import com.scz.jxapi.netutils.websocket.mock.MockWebsocketListener;
 import com.scz.jxapi.netutils.websocket.multiplexing.WebsocketMessageTopicMatcherFactory;
 import com.scz.jxapi.netutils.websocket.spring.SpringWebsocket;
-import com.scz.jxapi.observability.ExchangeApiEvent;
-import com.scz.jxapi.observability.ExchangeApiEventType;
-import com.scz.jxapi.observability.ExchangeApiObserver;
 import com.scz.jxapi.observability.MockExchangeApiObserver;
 import com.scz.jxapi.observability.Observable;
 

@@ -6,13 +6,12 @@ import com.scz.jxapi.netutils.rest.HttpRequestExecutor;
 import com.scz.jxapi.netutils.rest.HttpRequestInterceptor;
 import com.scz.jxapi.netutils.rest.ratelimits.RateLimitRule;
 import com.scz.jxapi.netutils.websocket.WebsocketManager;
-import com.scz.jxapi.observability.ExchangeApiObserver;
 import com.scz.jxapi.util.HasProperties;
 
 /**
  * Interface for a set of REST and/or Websocket endpoints of an API belonging to an {@link Exchange}
  * wrapper.</br>
- * Actual implmentations will expose methods for to call REST enpoints, and subscribe / unsubscribe methods for Websocket endpoints.
+ * Actual implmentations will expose methods for calling REST enpoints, and subscribe / unsubscribe methods for Websocket endpoints.
  * </ul>
  * <p>
  * Regarding REST endpoints call methods:
@@ -20,7 +19,7 @@ import com.scz.jxapi.util.HasProperties;
  * <li>Named as API name
  * <li>Have 0 or 1 parameter providing request data (that can be of any {@link Type}).
  * <li>Return a {@link FutureRestResponse} object to receive the response to REST call asynchronously.
- * <li>Is bound to same {@link HttpRequestExecutor} and {@link HttpRequestInterceptor}
+ * <li>Shares the same {@link HttpRequestExecutor} and {@link HttpRequestInterceptor} as other endpoints of this API group
  * <li>Is applied endpoint specific {@link RateLimitRule} throughput limitations, shared limits from API and from {@link Exchange}
  * </ul>
  * </p>
@@ -42,19 +41,31 @@ import com.scz.jxapi.util.HasProperties;
 public interface ExchangeApi extends HasProperties {
 	
 	/**
-	 * @return API group name (unique for every instance of same class)
+	 * @return Unique API Group name (common to all instances).
 	 */
 	String getName();
 	
 	/**
-	 * @return Name of {@link Exchange} this API group belongs to.
+	 * @return Exchange instance name see {@link Exchange#getName()}
 	 */
 	String getExchangeName();
 	
+	/**
+	 * @return Unique exchange name (common to all instances) see {@link Exchange#getId()}
+	 */
 	String getExchangeId();
 	
+	/**
+	 * Subscribes an observer to be notified of all REST or Websocket events of this API group endpoints.
+	 * @param exchangeApiObserver
+	 */
 	void subscribeObserver(ExchangeApiObserver exchangeApiObserver);
 	
+	/**
+	 * Unsubscribes an observer from being notified of all REST or Websocket events of this API group endpoints.
+	 * @param exchangeApiObserver
+	 * @return true if observer was subscribed, false otherwise.
+	 */
 	boolean unsubscribeObserver(ExchangeApiObserver exchangeApiObserver);
 
 	

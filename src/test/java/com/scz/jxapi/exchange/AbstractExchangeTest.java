@@ -8,9 +8,6 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.scz.jxapi.observability.ExchangeApiEvent;
-import com.scz.jxapi.observability.ExchangeApiObserver;
-
 /**
  * Unit test for {@link AbstractExchange}
  */

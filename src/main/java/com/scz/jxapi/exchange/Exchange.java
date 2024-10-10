@@ -2,7 +2,6 @@ package com.scz.jxapi.exchange;
 
 import java.util.Properties;
 
-import com.scz.jxapi.observability.ExchangeApiObserver;
 import com.scz.jxapi.util.HasProperties;
 
 /**

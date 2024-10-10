@@ -6,9 +6,9 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.scz.jxapi.exchange.ExchangeApiEvent;
+import com.scz.jxapi.exchange.ExchangeApiObserver;
 import com.scz.jxapi.netutils.deserialization.MessageDeserializer;
-import com.scz.jxapi.observability.ExchangeApiEvent;
-import com.scz.jxapi.observability.ExchangeApiObserver;
 
 /**
  * Default implementation of a {@link WebsocketEndpoint}.

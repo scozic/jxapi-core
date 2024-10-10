@@ -5,8 +5,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
-import com.scz.jxapi.observability.ExchangeApiObserver;
-
 /**
  * Abstract {@link Exchange} implementation to be used as super class of actual
  * implementations.

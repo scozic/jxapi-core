@@ -1,4 +1,4 @@
-package com.scz.jxapi.observability;
+package com.scz.jxapi.exchange;
 
 public interface ExchangeApiObserver {
 

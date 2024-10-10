@@ -1,4 +1,4 @@
-package com.scz.jxapi.observability;
+package com.scz.jxapi.exchange;
 
 public enum ExchangeApiEventType {
 	HTTP_REQUEST,

@@ -12,12 +12,12 @@ import org.junit.Test;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.scz.jxapi.exchange.ExchangeApiEvent;
+import com.scz.jxapi.exchange.ExchangeApiEventType;
+import com.scz.jxapi.exchange.ExchangeApiObserver;
 import com.scz.jxapi.netutils.deserialization.MessageDeserializer;
 import com.scz.jxapi.netutils.websocket.mock.MockWebsocket;
 import com.scz.jxapi.netutils.websocket.multiplexing.WebsocketMessageTopicMatcherFactory;
-import com.scz.jxapi.observability.ExchangeApiEvent;
-import com.scz.jxapi.observability.ExchangeApiEventType;
-import com.scz.jxapi.observability.ExchangeApiObserver;
 import com.scz.jxapi.observability.GenericObserver;
 import com.scz.jxapi.observability.MockExchangeApiObserver;
 import com.scz.jxapi.util.JsonUtil;
