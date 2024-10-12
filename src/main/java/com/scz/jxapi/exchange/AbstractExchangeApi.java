@@ -260,7 +260,7 @@ public abstract class AbstractExchangeApi implements ExchangeApi {
 		if (httpRequestInterceptor != null) {
 			httpRequestInterceptor.intercept(request);
 		}
-		dispatchApiEvent(ExchangeApiEvent.createRestRequestEvent(request));
+		dispatchApiEvent(ExchangeApiEvent.createHttpRequestEvent(request));
 		FutureRestResponse<A> callback = new FutureRestResponse<>();
 		httpRequestExecutor.execute(request).thenAccept(httpResponse -> {
 			RestResponse<A> response = new RestResponse<>(httpResponse);

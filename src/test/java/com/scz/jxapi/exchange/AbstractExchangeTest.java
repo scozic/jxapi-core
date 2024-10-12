@@ -8,6 +8,8 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.scz.jxapi.netutils.websocket.WebsocketSubscribeRequest;
+
 /**
  * Unit test for {@link AbstractExchange}
  */
@@ -48,7 +50,7 @@ public class AbstractExchangeTest {
         exchange.addApi(api);
         TestExchangeApiObserver observer = new TestExchangeApiObserver();
         exchange.subscribeObserver(observer);
-        ExchangeApiEvent event = ExchangeApiEvent.createWebsocketMessageEvent("myws", "greetings", "hello!");
+        ExchangeApiEvent event = ExchangeApiEvent.createWebsocketMessageEvent(WebsocketSubscribeRequest.create(null, observer, "greetings", null), "hello!");
         api.dispatchApiEvent(event);
         Assert.assertEquals(1, observer.events.size());
         Assert.assertEquals(event, observer.events.get(0));

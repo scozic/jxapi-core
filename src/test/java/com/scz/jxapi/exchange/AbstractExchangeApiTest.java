@@ -307,7 +307,7 @@ public class AbstractExchangeApiTest {
 		exchangeApi.createWebsocketManager("wss://myexchange.com/ws", MockWebsocketFactory.class.getName(), null);
 		DefaultWebsocketEndpoint<String> wsEndpoint = (DefaultWebsocketEndpoint<String>) exchangeApi.createWebsocketEndpoint("myWsApi", RawStringMessageDeserializer.getInstance());
 		Assert.assertNotNull(wsEndpoint);
-		wsEndpoint.subscribe(WebsocketSubscribeRequest.create(null, "mytopic", WebsocketMessageTopicMatcherFactory.ANY_MATCHER_FACTORY), new MockWebsocketListener<>());
+		wsEndpoint.subscribe(WebsocketSubscribeRequest.create("myWsEndpoint", null, "mytopic", WebsocketMessageTopicMatcherFactory.ANY_MATCHER_FACTORY), new MockWebsocketListener<>());
 		ExchangeApiEvent event = observer.pop();
 		Assert.assertEquals(ExchangeApiEventType.WEBSOCKET_SUBSCRIBE, event.getType());
 	}

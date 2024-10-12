@@ -46,6 +46,7 @@ public class DefaultWebsocketEndpoint<M> implements WebsocketEndpoint<M> {
 
 	@Override
 	public String subscribe(WebsocketSubscribeRequest request, WebsocketListener<M> listener) {
+		request.setEnpoint(endpointName);
 		String topic = request.getTopic();
 		Subscription sub = subscriptionsByTopic.get(topic);
 		if (sub == null ) {
@@ -68,7 +69,7 @@ public class DefaultWebsocketEndpoint<M> implements WebsocketEndpoint<M> {
 			return false;
 		}
 		if (observer != null) {
-			dispatchApiEvent(ExchangeApiEvent.createWebsocketUnsubscribeEvent(unsubscriptionId));
+			dispatchApiEvent(ExchangeApiEvent.createWebsocketUnsubscribeEvent(sub.request, unsubscriptionId));
 		}
 		sub.removeListener(unsubscriptionId);
 		if (sub.listeners.size() <= 0) {
@@ -87,7 +88,6 @@ public class DefaultWebsocketEndpoint<M> implements WebsocketEndpoint<M> {
 	}
 	
 	protected void dispatchApiEvent(ExchangeApiEvent event) {
-		event.setEndpointName(endpointName);
 		this.observer.handleEvent(event);
 	}
 	
@@ -122,7 +122,7 @@ public class DefaultWebsocketEndpoint<M> implements WebsocketEndpoint<M> {
 					M msg = messageDeserializer.deserialize(message);
 					listeners.values().forEach(l -> l.handleMessage(msg));
 					if (observer != null) {
-						dispatchApiEvent(ExchangeApiEvent.createWebsocketMessageEvent(endpointName, request.getTopic(), message));
+						dispatchApiEvent(ExchangeApiEvent.createWebsocketMessageEvent(request, message));
 					}
 				}
 			} catch (Exception ex) {

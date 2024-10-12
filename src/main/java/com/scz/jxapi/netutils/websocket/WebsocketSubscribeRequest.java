@@ -19,14 +19,18 @@ public class WebsocketSubscribeRequest {
 	/**
 	 * Factory method
 	 * 
+	 * @param endpoint					 The name of websocket endpoint this request is subscribing to. 
 	 * @param request                    The request data, not serialized
 	 * @param topic                      The topic to subscribe to.
 	 * @param messageTopicMatcherFactory The message topic matcher
 	 * @return The subscription request
 	 */
-	public static WebsocketSubscribeRequest create(Object request, String topic,
-			WebsocketMessageTopicMatcherFactory messageTopicMatcherFactory) {
+	public static WebsocketSubscribeRequest create(String endpoint, 
+												   Object request, 
+												   String topic,
+												   WebsocketMessageTopicMatcherFactory messageTopicMatcherFactory) {
 		WebsocketSubscribeRequest subscribeRequest = new WebsocketSubscribeRequest();
+		subscribeRequest.setEnpoint(endpoint);
 		subscribeRequest.request = request;
 		subscribeRequest.topic = topic;
 		subscribeRequest.messageTopicMatcherFactory = messageTopicMatcherFactory;
@@ -36,6 +40,7 @@ public class WebsocketSubscribeRequest {
 	private Object request;
 	private WebsocketMessageTopicMatcherFactory messageTopicMatcherFactory;
 	private String topic;
+	private String enpoint;
 
 	/**
 	 * @return The request data, not serialized. Used for monitoring purposes.
@@ -87,6 +92,25 @@ public class WebsocketSubscribeRequest {
 	 */
 	public void setTopic(String topic) {
 		this.topic = topic;
+	}
+	
+	/**
+	 * Get the name of endpoint this subscription is made to.
+	 * 
+	 * @return The endpoint name
+	 */
+	public String getEnpoint() {
+		return enpoint;
+	}
+
+	/**
+	 * Set the name of endpoint this subscription is made to.<br/>
+	 * Remark: Is set by WebsocketEndpoint upon subscription
+	 * 
+	 * @param enpointName The endpoint name
+	 */
+	public void setEnpoint(String enpointName) {
+		this.enpoint = enpointName;
 	}
 
 	/*
