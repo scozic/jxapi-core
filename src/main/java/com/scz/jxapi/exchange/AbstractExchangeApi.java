@@ -28,6 +28,7 @@ import com.scz.jxapi.netutils.websocket.multiplexing.DefaultWebsocketMessageTopi
 import com.scz.jxapi.netutils.websocket.multiplexing.WebsocketMessageTopicMatcherFactory;
 import com.scz.jxapi.observability.Observable;
 import com.scz.jxapi.observability.SynchronizedObservable;
+import com.scz.jxapi.util.FactoryUtil;
 
 /**
  * The AbstractExchangeApi class is an abstract base class that provides common
@@ -187,15 +188,7 @@ public abstract class AbstractExchangeApi implements ExchangeApi {
 	 *                         that creates the HTTP request interceptor.
 	 */
 	protected void createHttpRequestInterceptor(String factoryClassName) {
-		try {
-			httpRequestInterceptor = ((HttpRequestInterceptorFactory) Class.forName(factoryClassName).getConstructor().newInstance()).createInterceptor(this);
-		} catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
-				| NoSuchMethodException | SecurityException | ClassNotFoundException e) {
-			throw new IllegalArgumentException("Failed to instantiate " 
-												+ HttpRequestInterceptorFactory.class.getName() + 
-												" implementation '" + factoryClassName + "'.",
-												e);
-		}
+		httpRequestInterceptor = ((HttpRequestInterceptorFactory) FactoryUtil.fromClassName(factoryClassName)).createInterceptor(this);
 	}
 	
 	/**
@@ -211,15 +204,7 @@ public abstract class AbstractExchangeApi implements ExchangeApi {
 	 */
 	protected void createHttpRequestExecutor(String factoryClassName) {
 		if  (factoryClassName != null) {
-			try {
-				httpRequestExecutor = ((HttpRequestExecutorFactory) Class.forName(factoryClassName).getConstructor().newInstance()).createExecutor(this);
-			} catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
-					| NoSuchMethodException | SecurityException | ClassNotFoundException e) {
-				throw new IllegalArgumentException("Failed to instantiate " 
-													+ HttpRequestInterceptorFactory.class.getName() + 
-													" implementation '" + factoryClassName + "'.",
-													e);
-			}
+			httpRequestExecutor = ((HttpRequestExecutorFactory)  FactoryUtil.fromClassName(factoryClassName)).createExecutor(this);
 		} else {
 			httpRequestExecutor = new JavaNetHttpRequestExecutor(HttpClient.newHttpClient());
 		}
