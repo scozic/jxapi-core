@@ -19,7 +19,7 @@ public class FactoryUtil {
 		try {
 			return (T) Class.forName(cls).getConstructor().newInstance();
 		} catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
-				| NoSuchMethodException | SecurityException | ClassNotFoundException e) {
+				| NoSuchMethodException | SecurityException | ClassNotFoundException  |NullPointerException e) {
 			throw new IllegalArgumentException("Failed to instantiate " 
 												+ cls + 
 												" implementation '" + cls + "'.",

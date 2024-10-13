@@ -8,9 +8,16 @@ import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 
 /**
- * Helper methods around HMAC-SHA256 encryption
+ * Helper methods around HMAC-SHA256 encryption.
+ * <p>
+ * Such encryption is used to sign messages in order to verify their authenticity.
+ * It is ofen used in APIs to sign requests and verify responses.
+ * </p>
+ * 
  */
 public class HmacSHA256Signer {
+	
+	private HmacSHA256Signer() {}
 
   /**
    * Encrypt given message with HMAC using the given secret and returns Hexadecimal encoded value of the result.
@@ -35,7 +42,7 @@ public class HmacSHA256Signer {
       sha256_HMAC.init(secretKeySpec);
       return sha256_HMAC.doFinal(message.getBytes());
     } catch (Exception e) {
-      throw new RuntimeException("Unable to sign message.", e);
+      throw new IllegalArgumentException("Unable to sign message.", e);
     }
   }
   
