@@ -15,6 +15,8 @@ import com.scz.jxapi.netutils.rest.RestResponse;
  */
 public class DemoUtil {
 	
+	private DemoUtil() {}
+	
 	private static final int MAX_PRETTY_PRINT_STRING_LENGTH = 512;
 	
 	private static final Logger log = LoggerFactory.getLogger(DemoUtil.class);
@@ -41,7 +43,7 @@ public class DemoUtil {
 		
 	}
 	
-	private static String prettyPrintResponse(RestResponse<?> response) {
+	static String prettyPrintResponse(RestResponse<?> response) {
 		HttpResponse httpResponse = response.getHttpResponse();
 		if (httpResponse != null) {
 			httpResponse.setBody(EncodingUtil.prettyPrintLongString(httpResponse.getBody(), MAX_PRETTY_PRINT_STRING_LENGTH));

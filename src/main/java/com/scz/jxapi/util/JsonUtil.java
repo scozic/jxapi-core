@@ -69,7 +69,7 @@ public class JsonUtil {
 		try {
 			ObjectMapper om = new ObjectMapper();
 			om.disable(SerializationFeature.FAIL_ON_EMPTY_BEANS);
-			return om.writerWithDefaultPrettyPrinter().writeValueAsString(pojo);
+			return om.writerWithDefaultPrettyPrinter().writeValueAsString(pojo).replaceAll("\\r", "");
 		} catch (JsonProcessingException e) {
 			throw new IllegalArgumentException("Error while trying to serialize " + pojo.getClass().getName() + " instance to JSON", e);
 		}

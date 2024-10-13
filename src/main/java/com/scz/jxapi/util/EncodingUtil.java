@@ -16,6 +16,12 @@ import org.apache.commons.text.StringSubstitutor;
  * Helper methods around String encoding.
  */
 public class EncodingUtil {
+	
+	/**
+	 * Separator used to reduce a long string to a maximum length by keeping the first and last characters and replacing the middle by this separator.
+	 * @see #prettyPrintLongString(String, int)
+	 */
+	public static final String PRETTY_PRINT_LONG_STRING_REDUCE_SEPARATOR = "....";
 
 	private EncodingUtil() {}
 	
@@ -86,9 +92,9 @@ public class EncodingUtil {
 	 * Converts a list of String to a plain String with items of list concatenated
 	 * using given separator.
 	 * 
-	 * @param items
-	 * @param separator
-	 * @return
+	 * @param items list of items to concatenate
+	 * @param separator separator to use between items
+	 * @return concatenated items of list using separator between items, for instance "item1;item2;item3"
 	 */
 	public static String listToString(List<String> items, String separator) {
 		StringBuilder sb = new StringBuilder();
@@ -149,10 +155,7 @@ public class EncodingUtil {
 	 * @param value
 	 * @return URL encoded conversion of <code>value</code> See
 	 *         {@link URLEncoder#encode(String, java.nio.charset.Charset)}
-	 * @throws IllegalArgumentException wrapping eventual
-	 *                                  {@link UnsupportedEncodingException} thrown
-	 *                                  by
-	 *                                  {@link URLEncoder#encode(String, java.nio.charset.Charset)}
+	 * @throws IllegalArgumentException If (unlikely) {@link StandardCharsets#UTF_8} is not supported.
 	 */
 	public static String urlEncode(String value) {
 		try {
@@ -165,18 +168,36 @@ public class EncodingUtil {
 		}
 	}
 	
+	/**
+	 * Shortens a long string to a maximum length by keeping the first and last
+	 * characters and replacing the middle by a separator "...." (see
+	 * {@link #PRETTY_PRINT_LONG_STRING_REDUCE_SEPARATOR}).
+	 * <br/>
+	 * If the string is already
+	 * shorter than the maximum length, it is returned as is.
+	 * <br/>
+	 * If the maximum length is too small to keep the separator, an
+	 * {@link IllegalArgumentException} is thrown.
+	 * 
+	 * @param longString the string to shorten
+	 * @param maxLength  the maximum length of the returned string, should be > 4
+	 * @return the shortened string, or the original string if it is already
+	 *         shorter, or <code>null</code> if the input string is
+	 *         <code>null</code>.
+	 * @throws IllegalArgumentException if maxLength is too small
+	 */
 	public static String prettyPrintLongString(String longString, int maxLength) {
 		if (longString == null) {
 			return null;
 		}
-		String sep = "....";
+		if (longString.length() <= maxLength) {
+			return longString;
+		}
+		String sep = PRETTY_PRINT_LONG_STRING_REDUCE_SEPARATOR;
 		if (maxLength < sep.length()) {
 			throw new IllegalArgumentException("maxLength should be > " + sep.length());
 		}
-		if (longString.length() > maxLength) {
-			int l = (maxLength - sep.length()) / 2;
-			return longString.substring(0, l) + sep + longString.substring(longString.length() - l);
-		}
-		return longString;
+		int l = (maxLength - sep.length()) / 2;
+		return longString.substring(0, l) + sep + longString.substring(longString.length() - l);
 	}
 }

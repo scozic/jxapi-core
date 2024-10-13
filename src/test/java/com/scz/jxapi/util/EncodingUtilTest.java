@@ -1,6 +1,7 @@
 package com.scz.jxapi.util;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -9,7 +10,6 @@ import org.junit.Test;
  * Unit test for {@link EncodingUtil}
  */
 public class EncodingUtilTest {
-	
 	
 	@Test(expected = IllegalArgumentException.class)
 	public void testCreateUrlQueryParametersNullKeyThrows() {
@@ -25,6 +25,11 @@ public class EncodingUtilTest {
 	public void testCreateUrlQueryParametersWithOneNullValueAndOneValueEscapedInUrlEncoding() {
 		Assert.assertEquals("?key0=val0&key2=%26val2%5B", 
 							EncodingUtil.createUrlQueryParameters("key0", "val0", "ke1", null, "key2", "&val2["));
+	}
+
+	@Test
+	public void testCreateUrlQueryParametersEmpty() {
+		Assert.assertEquals("", EncodingUtil.createUrlQueryParameters());
 	}
 	
 	@Test
@@ -55,7 +60,81 @@ public class EncodingUtilTest {
 		Assert.assertEquals("Nothing to substitute!", EncodingUtil.substituteArguments("Nothing to substitute!"));
 		Assert.assertEquals("Hello Bob, I am Roger", EncodingUtil.substituteArguments("Hello ${stranger}, I am ${me}", "stranger", "Bob", "me", "Roger"));
 	}
+
+	@Test
+	public void testListToStringEmptyList() {
+		Assert.assertEquals("", EncodingUtil.listToString(List.of(), ";"));
+	}
+
+	@Test
+	public void testListToStringOneElement() {
+		Assert.assertEquals("Hello", EncodingUtil.listToString(List.of("Hello"), ";"));
+	}
+
+	@Test
+	public void testListToStringTwoElements() {
+		Assert.assertEquals("Hello;World", EncodingUtil.listToString(List.of("Hello", "World"), ";"));
+	}
+
+	@Test
+	public void testBigDecimalToString() {
+		Assert.assertEquals("1.23", EncodingUtil.bigDecimalToString(new BigDecimal("1.23")));
+	}
+
+	@Test
+	public void testBigDecimalToStringNull() {
+		Assert.assertEquals("0", EncodingUtil.bigDecimalToString(null));
+	}
+
+	@Test
+	public void testToBigDecimal() {
+		Assert.assertEquals(new BigDecimal("1.23"), EncodingUtil.toBigDecimal("1.23"));
+	}
+
+	@Test
+	public void testToBigDecimalNull() {
+		Assert.assertNull(EncodingUtil.toBigDecimal(null));
+	}
+
+	@Test
+	public void testToBigDecimalEmpty() {
+		Assert.assertNull(EncodingUtil.toBigDecimal(""));
+	}
 	
+	@Test(expected = NumberFormatException.class)
+	public void testToBigDecimalInvalid() {
+		EncodingUtil.toBigDecimal("1.23.45");
+	}
+
+	@Test
+	public void testUrlEncode() {
+		Assert.assertEquals("Hello+World%21", EncodingUtil.urlEncode("Hello World!"));
+	}
+
+	@Test
+	public void testUrlEncodeNull() {
+		Assert.assertNull(EncodingUtil.urlEncode(null));
+	}
+
+	@Test
+	public void testPrettyPrintLongString_StringThatNeedsNotBeShortened() {
+		Assert.assertEquals("Hello World!", EncodingUtil.prettyPrintLongString("Hello World!", 12));
+	}
+
+	@Test
+	public void testPrettyPrintLongString_StringThatNeedsToBeShortened() {
+		Assert.assertEquals("Hell....you?", EncodingUtil.prettyPrintLongString("Hello World! How are you?", 12));
+	}
+
+	@Test
+	public void testPrettyPrintLongString_NullString() {
+		Assert.assertNull(EncodingUtil.prettyPrintLongString(null, 12));
+	}
+	
+	@Test(expected = IllegalArgumentException.class)
+	public void testPrettyPrintLongString_NullString_MaxLengthTooSmall() {
+		EncodingUtil.prettyPrintLongString("Hello World!", 3);
+	}
 	
 	private class Foo {
 		private String hello;

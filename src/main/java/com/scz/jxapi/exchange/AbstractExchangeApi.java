@@ -1,7 +1,6 @@
 
 package com.scz.jxapi.exchange;
 
-import java.lang.reflect.InvocationTargetException;
 import java.net.http.HttpClient;
 import java.util.Properties;
 
