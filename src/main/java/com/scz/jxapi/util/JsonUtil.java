@@ -19,12 +19,6 @@ import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.databind.ser.std.StdSerializer;
 import com.scz.jxapi.netutils.deserialization.json.JsonDeserializer;
-import com.scz.jxapi.netutils.deserialization.json.field.BigDecimalJsonFieldDeserializer;
-import com.scz.jxapi.netutils.deserialization.json.field.BooleanJsonFieldDeserializer;
-import com.scz.jxapi.netutils.deserialization.json.field.IntegerJsonFieldDeserializer;
-import com.scz.jxapi.netutils.deserialization.json.field.ListJsonFieldDeserializer;
-import com.scz.jxapi.netutils.deserialization.json.field.LongJsonFieldDeserializer;
-import com.scz.jxapi.netutils.deserialization.json.field.StringJsonFieldDeserializer;
 
 /**
  * Helper methods around JSON serialization/deserialization.
@@ -45,6 +39,15 @@ public class JsonUtil {
 		}
 	}
 
+	/**
+	 * @param pojo
+	 * @return <code>null</code> if <code>pojo</code> is <code>null</code> or a JSON
+	 *         string representation of this pojo using
+	 *         {@link ObjectMapper#writeValueAsString(Object)}
+	 * @throws IllegalArgumentException wrapping {@link JsonProcessingException}
+	 *                                  eventually thrown by
+	 *                                  {@link ObjectMapper#writeValueAsString(Object)}
+	 */
 	public static String pojoToJsonString(Object pojo) { 
 		if (pojo == null) {
 			return null;
@@ -68,6 +71,7 @@ public class JsonUtil {
 		}
 		try {
 			ObjectMapper om = new ObjectMapper();
+			om.setSerializationInclusion(Include.NON_NULL);
 			om.disable(SerializationFeature.FAIL_ON_EMPTY_BEANS);
 			return om.writerWithDefaultPrettyPrinter().writeValueAsString(pojo).replaceAll("\\r", "");
 		} catch (JsonProcessingException e) {
@@ -180,12 +184,6 @@ public class JsonUtil {
 		
 		Map<String, T> res = new HashMap<>();
         while (parser.nextToken() != JsonToken.END_OBJECT) {
-        	if (parser.currentToken() != JsonToken.FIELD_NAME) {
-        		throw new IllegalStateException("Expecting field name in map of objects to be deserialized using " 
-						+ itemDeserializer 
-						+ " but found:" 
-						+ parser.currentToken());
-        	}
             String key = parser.getCurrentName();
             parser.nextToken();
             res.put(key, itemDeserializer.deserialize(parser));
@@ -206,46 +204,9 @@ public class JsonUtil {
 		case START_OBJECT:
 			jsonParser = jsonParser.skipChildren();
 			break;
-		case VALUE_FALSE:
-		case VALUE_NULL:
-		case VALUE_NUMBER_FLOAT:
-		case VALUE_NUMBER_INT:
-		case VALUE_STRING:
-		case VALUE_TRUE:
-			break;
 		default:
-			throw new IllegalStateException("Unexpected JsonToken:" + jsonParser.currentToken());
+			break;
 		}
-	}
-	
-	@Deprecated
-	public List<Integer> parseIntegerJsonArray(String jsonArray) {
-		return parseJsonArray(jsonArray, IntegerJsonFieldDeserializer.getInstance());
-	}
-	
-	@Deprecated
-	public List<BigDecimal> parseBigDecimalJsonArray(String jsonArray) {
-		return parseJsonArray(jsonArray, BigDecimalJsonFieldDeserializer.getInstance());
-	}
-	
-	@Deprecated
-	public List<Boolean> parseBooleanJsonArray(String jsonArray) {
-		return parseJsonArray(jsonArray, BooleanJsonFieldDeserializer.getInstance());
-	}
-	
-	@Deprecated
-	public List<Long> parseLongJsonArray(String jsonArray) {
-		return parseJsonArray(jsonArray, LongJsonFieldDeserializer.getInstance());
-	}
-	
-	@Deprecated
-	public List<String> parseStringJsonArray(String jsonArray) {
-		return parseJsonArray(jsonArray, StringJsonFieldDeserializer.getInstance());
-	}
-	
-	private static <T> List<T> parseJsonArray(String jsonArray, JsonDeserializer<T> itemDeserializer) {
-		ListJsonFieldDeserializer<T> deserializer = new ListJsonFieldDeserializer<>(itemDeserializer);
-		return deserializer.deserialize(jsonArray);
 	}
 
 }

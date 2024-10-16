@@ -48,11 +48,7 @@ public class DemoUtilTest {
         RestResponse<?> response = new RestResponse<>();
         Assert.assertEquals("{\n"
         		+ "  \"httpStatus\" : 0,\n"
-        		+ "  \"exception\" : null,\n"
-        		+ "  \"response\" : null,\n"
-        		+ "  \"httpResponse\" : null,\n"
-        		+ "  \"ok\" : false,\n"
-        		+ "  \"endpoint\" : null\n"
+        		+ "  \"ok\" : false\n"
         		+ "}", DemoUtil.prettyPrintResponse(response));
     }
     
@@ -64,19 +60,11 @@ public class DemoUtilTest {
         response.setHttpResponse(httpResponse);
         Assert.assertEquals("{\n"
         		+ "  \"httpStatus\" : 0,\n"
-        		+ "  \"exception\" : null,\n"
-        		+ "  \"response\" : null,\n"
         		+ "  \"httpResponse\" : {\n"
         		+ "    \"responseCode\" : 200,\n"
-        		+ "    \"body\" : null,\n"
-        		+ "    \"exception\" : null,\n"
-        		+ "    \"headers\" : null,\n"
-        		+ "    \"request\" : null,\n"
-        		+ "    \"time\" : null,\n"
         		+ "    \"roundTrip\" : 0\n"
         		+ "  },\n"
-        		+ "  \"ok\" : false,\n"
-        		+ "  \"endpoint\" : null\n"
+        		+ "  \"ok\" : false\n"
         		+ "}", DemoUtil.prettyPrintResponse(response));
     }
     
@@ -90,30 +78,15 @@ public class DemoUtilTest {
         response.setHttpResponse(httpResponse);
         Assert.assertEquals("{\n"
         		+ "  \"httpStatus\" : 0,\n"
-        		+ "  \"exception\" : null,\n"
-        		+ "  \"response\" : null,\n"
         		+ "  \"httpResponse\" : {\n"
         		+ "    \"responseCode\" : 200,\n"
-        		+ "    \"body\" : null,\n"
-        		+ "    \"exception\" : null,\n"
-        		+ "    \"headers\" : null,\n"
         		+ "    \"request\" : {\n"
-        		+ "      \"endpoint\" : null,\n"
-        		+ "      \"url\" : null,\n"
-        		+ "      \"headers\" : null,\n"
-        		+ "      \"httpMethod\" : null,\n"
-        		+ "      \"body\" : null,\n"
-        		+ "      \"request\" : null,\n"
-        		+ "      \"rateLimits\" : null,\n"
         		+ "      \"weight\" : 0,\n"
-        		+ "      \"time\" : null,\n"
         		+ "      \"throttledTime\" : 0\n"
         		+ "    },\n"
-        		+ "    \"time\" : null,\n"
         		+ "    \"roundTrip\" : 0\n"
         		+ "  },\n"
-        		+ "  \"ok\" : false,\n"
-        		+ "  \"endpoint\" : null\n"
+        		+ "  \"ok\" : false\n"
         		+ "}", DemoUtil.prettyPrintResponse(response));
     }
     
