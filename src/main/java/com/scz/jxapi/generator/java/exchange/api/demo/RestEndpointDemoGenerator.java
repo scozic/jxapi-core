@@ -43,6 +43,13 @@ public class RestEndpointDemoGenerator extends JavaTypeGenerator {
 	private String apiInterfaceClassName;
 	private final String simpleApiClassName;
 	
+	/**
+	 * Constructor.
+	 * 
+	 * @param exchangeDescriptor the exchange descriptor
+	 * @param exchangeApiDescriptor the exchange API descriptor
+	 * @param restApi the REST endpoint descriptor
+	 */
 	public RestEndpointDemoGenerator(ExchangeDescriptor exchangeDescriptor, 
 									 ExchangeApiDescriptor exchangeApiDescriptor, 
 									 RestEndpointDescriptor restApi) {

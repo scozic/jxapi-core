@@ -10,17 +10,19 @@ import java.util.Optional;
 public class FieldBuilder {
 
 	private final Field field = new Field();
-	
+
 	/**
 	 * Builds the field.
+	 * 
 	 * @return the field
 	 */
 	public Field build() {
 		return field.clone();
 	}
-	
+
 	/**
 	 * Sets the name of the field.
+	 * 
 	 * @param name the name of the field to set, see {@link Field#getName()}
 	 * @return this builder
 	 */
@@ -31,6 +33,7 @@ public class FieldBuilder {
 
 	/**
 	 * Sets the type of the field.
+	 * 
 	 * @param type the type of the field to set, see {@link Field#getType()}
 	 * @return this builder
 	 */
@@ -38,9 +41,10 @@ public class FieldBuilder {
 		field.setType(type);
 		return this;
 	}
-	
+
 	/**
 	 * Sets the type of the field using type name like <code>STRING_LIST</code>.
+	 * 
 	 * @param type the type of the field to set, see {@link Field#setType(String)}
 	 * @return this builder
 	 */
@@ -51,7 +55,9 @@ public class FieldBuilder {
 
 	/**
 	 * Sets the description of the field.
-	 * @param description the description of the field to set, see {@link Field#getDescription()}
+	 * 
+	 * @param description the description of the field to set, see
+	 *                    {@link Field#getDescription()}
 	 * @return this builder
 	 */
 	public FieldBuilder description(String description) {
@@ -61,7 +67,9 @@ public class FieldBuilder {
 
 	/**
 	 * Sets the sample Map key values list of the field.
-	 * @param sampleMapKeyValues the sample Map key values of the field to set, see {@link Field#getSampleMapKeyValue()}
+	 * 
+	 * @param sampleMapKeyValues the sample Map key values of the field to set, see
+	 *                           {@link Field#getSampleMapKeyValue()}
 	 * @return
 	 */
 	public FieldBuilder sampleMapKeyValues(List<String> sampleMapKeyValues) {
@@ -71,12 +79,14 @@ public class FieldBuilder {
 
 	/**
 	 * Adds a sample Map key value to the field.
-	 * @param sampleMapKeyValue the sample Map key value to add, see {@link Field#getSampleMapKeyValue()}
+	 * 
+	 * @param sampleMapKeyValue the sample Map key value to add, see
+	 *                          {@link Field#getSampleMapKeyValue()}
 	 * @return this builder
 	 */
 	public FieldBuilder sampleMapKeyValue(String sampleMapKeyValue) {
 		List<String> sampleMapKeyValues = Optional.ofNullable(field.getSampleMapKeyValue())
-												  .orElse(List.of());
+				.orElse(List.of());
 		List<String> res = new ArrayList<>(sampleMapKeyValues.size() + 1);
 		res.addAll(sampleMapKeyValues);
 		res.add(sampleMapKeyValue);
@@ -86,7 +96,9 @@ public class FieldBuilder {
 
 	/**
 	 * Sets the sample value of the field.
-	 * @param sampleValue the sample value of the field to set, see {@link Field#getSampleValue()}
+	 * 
+	 * @param sampleValue the sample value of the field to set, see
+	 *                    {@link Field#getSampleValue()}
 	 * @return this builder
 	 */
 	public FieldBuilder sampleValue(Object sampleValue) {
@@ -96,7 +108,9 @@ public class FieldBuilder {
 
 	/**
 	 * Sets the message field of the field.
-	 * @param msgField the message field of the field to set, see {@link Field#getMsgField()}
+	 * 
+	 * @param msgField the message field of the field to set, see
+	 *                 {@link Field#getMsgField()}
 	 * @return this builder
 	 */
 	public FieldBuilder msgField(String msgField) {
@@ -106,7 +120,9 @@ public class FieldBuilder {
 
 	/**
 	 * Sets the parameters of the field.
-	 * @param properties the parameters of the field to set, see {@link Field#getParameters()}
+	 * 
+	 * @param properties the parameters of the field to set, see
+	 *                   {@link Field#getParameters()}
 	 * @return this builder
 	 */
 	public FieldBuilder properties(List<Field> properties) {
@@ -116,12 +132,13 @@ public class FieldBuilder {
 
 	/**
 	 * Adds a parameter to the field.
+	 * 
 	 * @param property the parameter to add, see {@link Field#getParameters()}
 	 * @return this builder
 	 */
 	public FieldBuilder property(Field property) {
 		List<Field> properties = Optional.ofNullable(field.getParameters())
-										 .orElse(List.of());
+				.orElse(List.of());
 		List<Field> res = new ArrayList<>(properties.size() + 1);
 		res.addAll(properties);
 		res.add(property);
@@ -131,7 +148,9 @@ public class FieldBuilder {
 
 	/**
 	 * Sets the object name of the field.
-	 * @param objectName the object name of the field to set, see {@link Field#getObjectName()}
+	 * 
+	 * @param objectName the object name of the field to set, see
+	 *                   {@link Field#getObjectName()}
 	 * @return this builder
 	 */
 	public FieldBuilder objectName(String objectName) {
@@ -141,7 +160,9 @@ public class FieldBuilder {
 
 	/**
 	 * Sets the implemented interfaces of the field.
-	 * @param implementedInterfaces the implemented interfaces of the field to set, see {@link Field#getImplementedInterfaces()}
+	 * 
+	 * @param implementedInterfaces the implemented interfaces of the field to set,
+	 *                              see {@link Field#getImplementedInterfaces()}
 	 * @return this builder
 	 */
 	public FieldBuilder implementedInterfaces(List<String> implementedInterfaces) {
@@ -151,12 +172,14 @@ public class FieldBuilder {
 
 	/**
 	 * Adds an implemented interface to the field.
-	 * @param implementedInterface the implemented interface to add, see {@link Field#getImplementedInterfaces()}
+	 * 
+	 * @param implementedInterface the implemented interface to add, see
+	 *                             {@link Field#getImplementedInterfaces()}
 	 * @return this builder
 	 */
 	public FieldBuilder implementedInterface(String implementedInterface) {
 		List<String> implementedInterfaces = Optional.ofNullable(field.getImplementedInterfaces())
-													 .orElse(List.of());
+				.orElse(List.of());
 		List<String> res = new ArrayList<>(implementedInterfaces.size() + 1);
 		res.addAll(implementedInterfaces);
 		res.add(implementedInterface);

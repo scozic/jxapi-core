@@ -37,7 +37,9 @@ public class WebsocketEndpointClassesGenerator implements ClassesGenerator {
 	private final Field request;
 	
 	/**
-	 * 
+	 * @param exchangeDescriptor Exchange descriptor where API with REST endpoint are defined
+	 * @param apiDescriptor API group of exchange descriptor defining the REST endpoint
+	 * @param websocketEndpointDescriptor REST endpoint descriptor to generate related Java classes for.
 	 */
 	public WebsocketEndpointClassesGenerator(ExchangeDescriptor exchangeDescriptor, 
 			ExchangeApiDescriptor apiDescriptor, 
@@ -48,9 +50,6 @@ public class WebsocketEndpointClassesGenerator implements ClassesGenerator {
 		this.request = ExchangeApiGeneratorUtil.resolveFieldProperties(apiDescriptor, websocketEndpointDescriptor.getRequest());
 	}
 	
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public void generateClasses(Path outputFolder) throws IOException {
 		// Generate POJOs for request and response

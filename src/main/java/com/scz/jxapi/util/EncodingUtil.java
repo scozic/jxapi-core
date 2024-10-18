@@ -18,24 +18,31 @@ import org.apache.commons.text.StringSubstitutor;
 public class EncodingUtil {
 	
 	/**
-	 * Separator used to reduce a long string to a maximum length by keeping the first and last characters and replacing the middle by this separator.
+	 * Separator used to reduce a long string to a maximum length by keeping the
+	 * first and last characters and replacing the middle by this separator.
+	 * 
 	 * @see #prettyPrintLongString(String, int)
 	 */
 	public static final String PRETTY_PRINT_LONG_STRING_REDUCE_SEPARATOR = "....";
 
-	private EncodingUtil() {}
-	
+	private EncodingUtil() {
+	}
+
 	/**
 	 * Substitures properties from a map using provided key values pairs.<br/>
 	 * Example:
+	 * 
 	 * <pre>
 	 * substituteArguments("Hello ${stranger}, I am ${me}", "stranger", "Bob", "me", "Roger")
 	 * </pre>
+	 * 
 	 * returns:
+	 * 
 	 * <pre>
 	 * "Hello Bob, I am Roger"
 	 * </pre>
-	 * @param template the template String to perform that contains variables
+	 * 
+	 * @param template      the template String to perform that contains variables
 	 * @param keysAndValues flat list of key, value pair for variable substitutions
 	 * @return
 	 */
@@ -44,17 +51,23 @@ public class EncodingUtil {
 			return template;
 		}
 		Map<String, Object> m = new HashMap<>(keysAndValues.length / 2);
-		for(int i = 0; i < keysAndValues.length;) {
+		for (int i = 0; i < keysAndValues.length;) {
 			m.put(String.valueOf(keysAndValues[i++]), keysAndValues[i++]);
 		}
 		StringSubstitutor sub = new StringSubstitutor(m);
 		return sub.replace(template);
 	}
-	
+
 	/**
-	 * Creates a query param for given list of keys and values. Keys are expected to be plain string that do no contain forbidden URL characters. Values can be of any type, will be converted to string, that string will be URL encoded (see {@link URLEncoder}).
-	 * @param keysAndValues List of keys and values, for instance:<code>"id","myId","name","John Doe","age",28,"height":1.70</code>
-	 * @return Query parameters string to append as URL suffix, for instance: <code>"?id=myId&name=John%20Doe&age=28height=1.170"</code>
+	 * Creates a query param for given list of keys and values. Keys are expected to
+	 * be plain string that do no contain forbidden URL characters. Values can be of
+	 * any type, will be converted to string, that string will be URL encoded (see
+	 * {@link URLEncoder}).
+	 * 
+	 * @param keysAndValues List of keys and values, for
+	 *                      instance:<code>"id","myId","name","John Doe","age",28,"height":1.70</code>
+	 * @return Query parameters string to append as URL suffix, for instance:
+	 *         <code>"?id=myId&name=John%20Doe&age=28height=1.170"</code>
 	 */
 	public static String createUrlQueryParameters(Object...keysAndValues) {
 		if (keysAndValues.length <= 0) {
@@ -92,15 +105,16 @@ public class EncodingUtil {
 	 * Converts a list of String to a plain String with items of list concatenated
 	 * using given separator.
 	 * 
-	 * @param items list of items to concatenate
+	 * @param items     list of items to concatenate
 	 * @param separator separator to use between items
-	 * @return concatenated items of list using separator between items, for instance "item1;item2;item3"
+	 * @return concatenated items of list using separator between items, for
+	 *         instance "item1;item2;item3"
 	 */
 	public static String listToString(List<String> items, String separator) {
 		StringBuilder sb = new StringBuilder();
 		for (int i = 0; i < items.size(); i++) {
 			sb.append(items.get(i));
-			if (i < items.size() -1) {
+			if (i < items.size() - 1) {
 				sb.append(separator);
 			}
 		}

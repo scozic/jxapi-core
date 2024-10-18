@@ -19,6 +19,11 @@ public class ExchangeInterfaceGenerator extends JavaTypeGenerator {
 	
 	private final ExchangeDescriptor exchangeDescriptor;
 	
+	/**
+	 * Constructor.
+	 * 
+	 * @param exchangeDescriptor the exchange descriptor to generate classes for
+	 */
 	public ExchangeInterfaceGenerator(ExchangeDescriptor exchangeDescriptor) {
 		super(ExchangeJavaWrapperGeneratorUtil.getExchangeInterfaceName(exchangeDescriptor));
 		this.exchangeDescriptor = exchangeDescriptor;

@@ -16,6 +16,10 @@ import com.scz.jxapi.util.EncodingUtil;
  */
 public class PojoGenerator extends JavaTypeGenerator {
 	
+	/**
+	 * Creates a new POJO generator for the given type name
+	 * @param fullTypeName Full class name e.g. <i>com.x.y.z.Foo</i>
+	 */
 	public PojoGenerator(String fullTypeName) {
 		super(fullTypeName);
 		setTypeDeclaration("public class");
@@ -23,6 +27,10 @@ public class PojoGenerator extends JavaTypeGenerator {
 
 	private final Map<String, PojoField> fields = new TreeMap<String, PojoField>();
 	
+	/**
+	 * Adds a field to the POJO. If field type is not a primitive or java.lang.* type, it will be added to imports.
+	 * @param field
+	 */
 	public void addField(PojoField field) {
 		if (field.getType().contains(".")) {
 			addImport(field.getType());
@@ -30,6 +38,9 @@ public class PojoGenerator extends JavaTypeGenerator {
 		fields.put(field.getName(), field);
 	}
 
+	/**
+	 * @return Array of fields in the order they were added
+	 */
 	public PojoField[] getFields() {
 		return fields.values().toArray(new PojoField[fields.values().size()]);
 	}

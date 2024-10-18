@@ -12,6 +12,7 @@ public interface Observable<L, E> {
 
 	/**
 	 * Adds a listener to be notified of events dispatched.
+	 * 
 	 * @param listener
 	 */
 	void subscribe(L listener);
@@ -27,10 +28,11 @@ public interface Observable<L, E> {
 
 	/**
 	 * Dispatches an event to all subscribed listeners.
+	 * 
 	 * @param event event to dispatch
 	 */
 	void dispatch(E event);
-	
+
 	/**
 	 * @param listener
 	 * @return <code>true</code> <code>listener</code> is subscribed.

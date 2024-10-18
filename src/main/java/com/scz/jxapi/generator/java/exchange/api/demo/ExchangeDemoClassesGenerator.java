@@ -11,7 +11,7 @@ import com.scz.jxapi.generator.java.exchange.ClassesGenerator;
 
 /**
  * Generates demo classes for an exchange, e.g. one snippet class for each REST
- * and Websocket endpoint.
+ * and Websocket endpoint of each API of the exchange.
  * 
  * @see ExchangeDescriptor
  */
@@ -19,6 +19,11 @@ public class ExchangeDemoClassesGenerator implements ClassesGenerator {
 	
 	private ExchangeDescriptor exchangeDescriptor;
 
+	/**
+	 * Constructor.
+	 * 
+	 * @param exchangeDescriptor the exchange descriptor
+	 */
 	public ExchangeDemoClassesGenerator(ExchangeDescriptor exchangeDescriptor) {
 		this.exchangeDescriptor = exchangeDescriptor;
 	}

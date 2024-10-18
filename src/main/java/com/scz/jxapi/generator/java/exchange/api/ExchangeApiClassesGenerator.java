@@ -32,14 +32,18 @@ public class ExchangeApiClassesGenerator implements ClassesGenerator {
 	private final ExchangeDescriptor exchangeDescriptor;
 	private final ExchangeApiDescriptor exchangeApiDescriptor;
 	
-	public ExchangeApiClassesGenerator(ExchangeDescriptor exchangeDescriptor, ExchangeApiDescriptor exchangeApiDescriptor) {
+	/**
+	 * Constructor.
+	 * 
+	 * @param exchangeDescriptor    the exchange descriptor where the API is defined
+	 * @param exchangeApiDescriptor the API descriptor to generate classes for
+	 */
+	public ExchangeApiClassesGenerator(ExchangeDescriptor exchangeDescriptor,
+									   ExchangeApiDescriptor exchangeApiDescriptor) {
 		this.exchangeDescriptor = exchangeDescriptor;
 		this.exchangeApiDescriptor = exchangeApiDescriptor;
 	}
 	
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public void generateClasses(Path outputFolder) throws IOException {
 		new ExchangeApiInterfaceGenerator(exchangeDescriptor, exchangeApiDescriptor).writeJavaFile(outputFolder);

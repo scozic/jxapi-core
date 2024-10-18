@@ -11,5 +11,12 @@ import com.fasterxml.jackson.core.JsonParser;
  */
 public interface JsonDeserializer<T> {
 
+	/**
+	 * Deserializes the JSON data from the given {@link JsonParser}.
+	 * 
+	 * @param parser the parser to read the JSON data from
+	 * @return the deserialized object
+	 * @throws IOException if an error occurs during deserialization
+	 */
 	T deserialize(JsonParser parser) throws IOException;
 }

@@ -44,30 +44,32 @@ public interface ExchangeApi extends HasProperties {
 	 * @return Unique API Group name (common to all instances).
 	 */
 	String getName();
-	
+
 	/**
 	 * @return Exchange instance name see {@link Exchange#getName()}
 	 */
 	String getExchangeName();
-	
+
 	/**
-	 * @return Unique exchange name (common to all instances) see {@link Exchange#getId()}
+	 * @return Unique exchange name (common to all instances) see
+	 *         {@link Exchange#getId()}
 	 */
 	String getExchangeId();
-	
+
 	/**
-	 * Subscribes an observer to be notified of all REST or Websocket events of this API group endpoints.
+	 * Subscribes an observer to be notified of all REST or Websocket events of this
+	 * API group endpoints.
+	 * 
 	 * @param exchangeApiObserver
 	 */
 	void subscribeObserver(ExchangeApiObserver exchangeApiObserver);
-	
+
 	/**
-	 * Unsubscribes an observer from being notified of all REST or Websocket events of this API group endpoints.
+	 * Unsubscribes an observer from being notified of all REST or Websocket events
+	 * of this API group endpoints.
+	 * 
 	 * @param exchangeApiObserver
 	 * @return true if observer was subscribed, false otherwise.
 	 */
 	boolean unsubscribeObserver(ExchangeApiObserver exchangeApiObserver);
-
-	
-
 }

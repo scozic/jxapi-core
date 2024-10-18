@@ -169,7 +169,14 @@ public class ExchangeApiInterfaceImplementationGenerator extends JavaTypeGenerat
 	private List<String> methodSignatures;
 	
 	
-	public ExchangeApiInterfaceImplementationGenerator(ExchangeDescriptor exchangeDescriptor, ExchangeApiDescriptor exchangeApiDescriptor) {
+	/**
+	 * Constructor.
+	 * 
+	 * @param exchangeDescriptor    the exchange descriptor where the API is defined
+	 * @param exchangeApiDescriptor the API descriptor to generate interface implementation for
+	 */
+	public ExchangeApiInterfaceImplementationGenerator(ExchangeDescriptor exchangeDescriptor, 
+													   ExchangeApiDescriptor exchangeApiDescriptor) {
 		super(ExchangeJavaWrapperGeneratorUtil.getApiInterfaceImplementationClassName(exchangeDescriptor, exchangeApiDescriptor));
 		this.exchangeDescriptor = exchangeDescriptor;
 		this.exchangeApiDescriptor = exchangeApiDescriptor;

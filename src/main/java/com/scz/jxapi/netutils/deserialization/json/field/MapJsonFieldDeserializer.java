@@ -8,11 +8,23 @@ import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonToken;
 import com.scz.jxapi.netutils.deserialization.json.AbstractJsonMessageDeserializer;
 import com.scz.jxapi.netutils.deserialization.json.JsonDeserializer;
+import com.scz.jxapi.netutils.deserialization.MessageDeserializer;
 
+/**
+ * {@link JsonMessageDeserializer} for {@link Map} fields in JSON messages.
+ * <p>
+ * This class is a singleton, use {@link #getInstance()} to get the instance.
+ * 
+ * @see MessageDeserializer
+ * @see JsonDeserializer
+ */
 public class MapJsonFieldDeserializer<T> extends AbstractJsonMessageDeserializer<Map<String, T>> {
 	
 	private final JsonDeserializer<T> itemDeserializer;
 	
+	/**
+	 * @param structDeserializer the deserializer for the values of the map
+	 */
 	public MapJsonFieldDeserializer(JsonDeserializer<T> structDeserializer) {
 		this.itemDeserializer = structDeserializer;
 	}

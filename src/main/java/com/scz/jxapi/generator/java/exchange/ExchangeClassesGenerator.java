@@ -26,6 +26,11 @@ public class ExchangeClassesGenerator implements ClassesGenerator {
 
 	private final ExchangeDescriptor exchangeDescriptor;
 	
+	/**
+	 * Constructor.
+	 * 
+	 * @param exchangeDescriptor the exchange descriptor to generate classes for
+	 */
 	public ExchangeClassesGenerator(ExchangeDescriptor exchangeDescriptor) {
 		this.exchangeDescriptor = exchangeDescriptor;
 	}

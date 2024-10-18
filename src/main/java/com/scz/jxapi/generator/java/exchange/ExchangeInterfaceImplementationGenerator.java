@@ -47,10 +47,20 @@ public class ExchangeInterfaceImplementationGenerator extends JavaTypeGenerator 
 	private static final String PROPERTIES_PARAMETER = "properties";
 	private static final String REQUEST_THROTTLER_VARIABLE_NAME = "requestThrottler";
 	
+	/**
+	 * Generates the name of the interface implementation class for the given exchange descriptor
+	 * @param exchangeDescriptor exchange descriptor
+	 * @return full name of the interface implementation class
+	 */
 	public static String getExchangeInterfaceName(ExchangeDescriptor exchangeDescriptor) {
 		return exchangeDescriptor.getBasePackage() + "." + JavaCodeGenerationUtil.firstLetterToUpperCase(exchangeDescriptor.getName()) + "Exchange";
 	}
 	
+	/**
+	 * Generates the name of the interface implementation class for the given exchange descriptor
+	 * @param exchangeDescriptor exchange descriptor
+	 * @return full name of the interface implementation class
+	 */
 	public static String getExchangeInterfaceImplementationName(ExchangeDescriptor exchangeDescriptor) {
 		return getExchangeInterfaceName(exchangeDescriptor) + "Impl";
 	}
@@ -58,6 +68,11 @@ public class ExchangeInterfaceImplementationGenerator extends JavaTypeGenerator 
 	private final ExchangeDescriptor exchangeDescriptor;
 	private final Set<String> rateLimitNames = new HashSet<>();
 	
+	/**
+	 * Constructor.
+	 * 
+	 * @param exchangeDescriptor the exchange descriptor to generate classes for
+	 */
 	public ExchangeInterfaceImplementationGenerator(ExchangeDescriptor exchangeDescriptor) {
 		super(getExchangeInterfaceImplementationName(exchangeDescriptor));
 		this.exchangeDescriptor = exchangeDescriptor;

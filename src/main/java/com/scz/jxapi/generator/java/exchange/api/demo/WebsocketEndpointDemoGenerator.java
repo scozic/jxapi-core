@@ -57,6 +57,13 @@ public class WebsocketEndpointDemoGenerator extends JavaTypeGenerator {
 	private final String simpleApiClassName;
 	private final String fullStreamName;
 	
+	/**
+	 * Constructor.
+	 * 
+	 * @param exchangeDescriptor the exchange descriptor
+	 * @param exchangeApiDescriptor the exchange API descriptor
+	 * @param websocketApi the Websocket endpoint descriptor
+	 */
 	public WebsocketEndpointDemoGenerator(ExchangeDescriptor exchangeDescriptor, 
 										  ExchangeApiDescriptor exchangeApiDescriptor, 
 										  WebsocketEndpointDescriptor websocketApi) {

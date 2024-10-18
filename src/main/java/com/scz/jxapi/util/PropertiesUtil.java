@@ -4,11 +4,26 @@ import java.util.Properties;
 
 import org.apache.commons.lang3.StringUtils;
 
+/**
+ * Helper methods around properties management.
+ */
 public class PropertiesUtil {
 
 	private PropertiesUtil() {}
 	
-	public static Properties filterProperties(Properties source, String namespace, boolean removeNamespace) {
+	/**
+	 * Filters the properties by namespace, for instance "namespace.key=value".
+	 * 
+	 * @param source          The source properties
+	 * @param namespace       The namespace to filter for instance "namespace"
+	 * @param removeNamespace If true, the namespace is removed from the keys
+	 * @return new Properties instance containing only the properties with the given
+	 *         namespace. The namespace can be removed from the keys if
+	 *         <code>removeNamespace</code> is <code>true</code>.
+	 */
+	public static Properties filterProperties(Properties source, 
+											  String namespace, 
+											  boolean removeNamespace) {
 		if (source == null) {
 			return null;
 		}

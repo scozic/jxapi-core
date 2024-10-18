@@ -10,8 +10,11 @@ import java.util.function.BiConsumer;
  * unsubscription of listeners and dispatch of events may occur in distinct
  * threads.
  * <p>
- * Implementation takes care of not locking internal listener list during event dispatch, see {@link #dispatch(Object)}.
- * Take care of potential deadlock of listener are likely to wait for another thread that could subscribe/unsubscribe 
+ * Implementation takes care of not locking internal listener list during event
+ * dispatch, see {@link #dispatch(Object)}.
+ * Take care of potential deadlock of listener are likely to wait for another
+ * thread that could subscribe/unsubscribe
+ * 
  * @param <L>
  * @param <E>
  * 
@@ -23,7 +26,7 @@ public class SynchronizedObservable<L, E> extends DefaultObservable<L, E> {
 	public SynchronizedObservable(BiConsumer<L, E> eventDispatchMethod) {
 		super(Collections.synchronizedList(new ArrayList<>()), eventDispatchMethod);
 	}
-	
+
 	/**
 	 * Dispatches event to all subscribed listener in thread safe way using internal
 	 * listeners list as monitor. The lock is taken on internal listeners list only

@@ -4,11 +4,24 @@ import java.io.IOException;
 
 import com.fasterxml.jackson.core.JsonParser;
 import com.scz.jxapi.netutils.deserialization.json.AbstractJsonMessageDeserializer;
+import com.scz.jxapi.netutils.deserialization.MessageDeserializer;
+import com.scz.jxapi.netutils.deserialization.json.JsonDeserializer;
 
+/**
+ * {@link JsonMessageDeserializer} for {@link String} fields in JSON messages.
+ * <p>
+ * This class is a singleton, use {@link #getInstance()} to get the instance.
+ * 
+ * @see MessageDeserializer
+ * @see JsonDeserializer
+ */
 public class StringJsonFieldDeserializer extends AbstractJsonMessageDeserializer<String> {
 	
 	private static final StringJsonFieldDeserializer INSTANCE = new StringJsonFieldDeserializer();
 	
+	/**
+	 * @return the singleton instance of this class
+	 */
 	public static StringJsonFieldDeserializer getInstance() {
 		return INSTANCE;
 	}

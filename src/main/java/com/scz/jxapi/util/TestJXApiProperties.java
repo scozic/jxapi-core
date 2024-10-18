@@ -11,51 +11,64 @@ import java.util.Properties;
  * <p>
  * The properties are loaded from the {@value #DEMO_API_PROPERTIES_FILE} file.
  * <p>
- * The properties can be accessed using the {@link #get()} method or by using the {@link #getProperty(String)} method.
+ * The properties can be accessed using the {@link #get()} method or by using
+ * the {@link #getProperty(String)} method.
  * <p>
- * The properties can be filtered by namespace using the {@link #filterProperties(String, boolean)} method.
+ * The properties can be filtered by namespace using the
+ * {@link #filterProperties(String, boolean)} method.
  * <p>
  */
 public class TestJXApiProperties {
-	
+
 	/**
-	 * The name of the properties file containing the JXAPI core and demo classes properties.
+	 * The name of the properties file containing the JXAPI core and demo classes
+	 * properties.
 	 */
 	public static final String DEMO_API_PROPERTIES_FILE = "test-jxapi.properties";
-	
+
 	/**
-	 * The name of the property containing the duration of the subscription in WebSocket endpoint demo classes.
+	 * The name of the property containing the duration of the subscription in
+	 * WebSocket endpoint demo classes.
 	 */
 	public static final String DEMO_WS_SUBSCRIPTION_DURATION_SYS_PROP = "jxapi.demo.ws.subscriptionDuration";
 
 	/**
-	 * The default duration of the subscription in WebSocket endpoint demo classes when the property {@value #DEMO_WS_SUBSCRIPTION_DURATION_SYS_PROP} is not set.
+	 * The default duration of the subscription in WebSocket endpoint demo classes
+	 * when the property {@value #DEMO_WS_SUBSCRIPTION_DURATION_SYS_PROP} is not
+	 * set.
 	 */
 	public static final long DEMO_WS_DEFAULT_SUBSCRIPTION_DURATION = 60000L;
 
 	/**
-	 * The duration of the subscription in WebSocket endpoint demo classes, in milliseconds.
+	 * The duration of the subscription in WebSocket endpoint demo classes, in
+	 * milliseconds.
 	 */
-	public static final long DEMO_WS_SUBSCRIPTION_DURATION = getLongSysProp(DEMO_WS_SUBSCRIPTION_DURATION_SYS_PROP, DEMO_WS_DEFAULT_SUBSCRIPTION_DURATION);
+	public static final long DEMO_WS_SUBSCRIPTION_DURATION = getLongSysProp(DEMO_WS_SUBSCRIPTION_DURATION_SYS_PROP,
+			DEMO_WS_DEFAULT_SUBSCRIPTION_DURATION);
 
 	/**
-	 * The name of the property containing the delay before exiting program after unsubscribing in WebSocket endpoint demo classes.
+	 * The name of the property containing the delay before exiting program after
+	 * unsubscribing in WebSocket endpoint demo classes.
 	 */
 	public static final String DEMO_WS_DELAY_BEFORE_EXIT_AFTER_UNSUBSCRIPTION_SYS_PROP = "jxapi.demo.ws.delayBeforeExitAfterUnsubscription";
 
 	/**
-	 * The default delay before exiting program after unsubscribing in WebSocket endpoint demo classes when the property {@value #DEMO_WS_DELAY_BEFORE_EXIT_AFTER_UNSUBSCRIPTION_SYS_PROP} is not set.
+	 * The default delay before exiting program after unsubscribing in WebSocket
+	 * endpoint demo classes when the property
+	 * {@value #DEMO_WS_DELAY_BEFORE_EXIT_AFTER_UNSUBSCRIPTION_SYS_PROP} is not set.
 	 */
 	public static final long DEMO_WS_DEFAULT_DELAY_BEFORE_EXIT_AFTER_UNSUBSCRIPTION = 1000L;
 
 	/**
-	 * The delay before exiting program after unsubscribing in WebSocket endpoint demo classes, in milliseconds.
+	 * The delay before exiting program after unsubscribing in WebSocket endpoint
+	 * demo classes, in milliseconds.
 	 */
-	public static final long DEMO_WS_DELAY_BEFORE_EXIT_AFTER_UNSUBSCRIPTION = getLongSysProp(DEMO_WS_DELAY_BEFORE_EXIT_AFTER_UNSUBSCRIPTION_SYS_PROP, 
-						   																	 DEMO_WS_DEFAULT_DELAY_BEFORE_EXIT_AFTER_UNSUBSCRIPTION);
-	
+	public static final long DEMO_WS_DELAY_BEFORE_EXIT_AFTER_UNSUBSCRIPTION = getLongSysProp(
+			DEMO_WS_DELAY_BEFORE_EXIT_AFTER_UNSUBSCRIPTION_SYS_PROP,
+			DEMO_WS_DEFAULT_DELAY_BEFORE_EXIT_AFTER_UNSUBSCRIPTION);
+
 	private static final Properties props = loadProperties();
-	
+
 	private static final long getLongSysProp(String key, long def) {
 		try {
 			return Long.parseLong(System.getProperty(key, "" + def));
@@ -67,32 +80,62 @@ public class TestJXApiProperties {
 	private static Properties loadProperties() {
 		Properties props = new Properties();
 		try {
-		File propsFile = new File(TestJXApiProperties.class.getClassLoader().getResource(DEMO_API_PROPERTIES_FILE).getFile());
-		try (InputStream in = new BufferedInputStream(new FileInputStream(propsFile))) {
-			props.load(in);
-		}
+			File propsFile = new File(
+					TestJXApiProperties.class.getClassLoader().getResource(DEMO_API_PROPERTIES_FILE).getFile());
+			try (InputStream in = new BufferedInputStream(new FileInputStream(propsFile))) {
+				props.load(in);
+			}
 		} catch (Exception ex) {
 			throw new RuntimeException("Failed to load " + DEMO_API_PROPERTIES_FILE + " properties file", ex);
 		}
 		return props;
 	}
-	
+
 	/**
 	 * Returns the properties.
+	 * 
 	 * @return the properties
 	 */
 	public static Properties get() {
 		return props;
 	}
-	
+
+	/**
+	 * Returns the property value for the given key.
+	 * 
+	 * @param key The property key
+	 * @return the property value
+	 * 
+	 * @see Properties#getProperty(String)
+	 */
 	public static String getProperty(String key) {
 		return get().getProperty(key);
 	}
-	
+
+	/**
+	 * Returns the property value for the given key and namespace.
+	 * 
+	 * @param namespace The domain of the property for instance "namespace"
+	 * @param key       The property key for instance "key"
+	 * @return the property value for the given key and namespace, for instance
+	 *         value of "namespace.key" property.
+	 * 
+	 * @see Properties#getProperty(String)
+	 */
 	public static String getProperty(String domain, String key) {
 		return getProperty(domain + "." + key);
 	}
-	
+
+	/**
+	 * Filters the properties by namespace, for instance "namespace.key=value".
+	 * 
+	 * @param namespace       The namespace to filter for instance "namespace"
+	 * @param removeNamespace If true, the namespace is removed from the keys
+	 * @return new Properties instance containing only the properties with the given
+	 *         namespace. The namespace can be removed from the keys if
+	 *         <code>removeNamespace</code> is <code>true</code>.
+	 * @see PropertiesUtil#filterProperties(Properties, String, boolean)
+	 */
 	public static Properties filterProperties(String namespace, boolean removeNamespace) {
 		return PropertiesUtil.filterProperties(get(), namespace, removeNamespace);
 	}

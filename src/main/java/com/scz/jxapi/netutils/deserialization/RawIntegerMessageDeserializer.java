@@ -2,6 +2,8 @@ package com.scz.jxapi.netutils.deserialization;
 
 /**
  * Deserializer for plain integer values.
+ * <p>
+ * This class is a singleton, use {@link #getInstance()} to get the instance.
  */
 public class RawIntegerMessageDeserializer implements MessageDeserializer<Integer> {
 	

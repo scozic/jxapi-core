@@ -2,6 +2,8 @@ package com.scz.jxapi.exchange.descriptor;
 
 import java.util.List;
 
+import com.scz.jxapi.generator.java.exchange.api.ExchangeApiClassesGenerator;
+import com.scz.jxapi.generator.java.exchange.api.ExchangeApiInterfaceImplementationGenerator;
 import com.scz.jxapi.generator.java.exchange.api.rest.RestEndpointClassesGenerator;
 import com.scz.jxapi.netutils.rest.HttpMethod;
 import com.scz.jxapi.netutils.rest.ratelimits.RateLimitRule;
@@ -53,7 +55,7 @@ import com.scz.jxapi.util.EncodingUtil;
  * <p>
  * API endpoints are child elements of api element (see ExchangeApiDescriptor ) in the JSON document.<br/>
  * Such descriptor will be used to generate method declaration in API interface and its 
- * implementation, see {@link ExchangeApiImplementationGenerator} and {@link RestEndpointClassesGenerator}.<br/>
+ * implementation, see {@link ExchangeApiInterfaceImplementationGenerator} and {@link ExchangeApiClassesGenerator}.<br/>
  * <p>
  * About <code>request</code> and <code>response</code> properties:<br/> 
  * <ul>
@@ -72,7 +74,7 @@ import com.scz.jxapi.util.EncodingUtil;
  * @see RestEndpointClassesGenerator
  * @see Type
  * @see HttpMethod
- * @see ExchangeApiImplementationGenerator
+ * @see ExchangeApiInterfaceImplementationGenerator
  */
 public class RestEndpointDescriptor {
 	private String name;

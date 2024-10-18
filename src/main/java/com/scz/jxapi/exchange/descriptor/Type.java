@@ -10,8 +10,10 @@ import java.util.Optional;
  * Describes the type of data of a {@link Field}.
  * It can be a primitive type (see
  * {@link CanonicalType#isPrimitive}, an object (
- * {@link CanonicalType#OBJECT}), a list of data of same subtype (see {@link CanonicalType#LIST}) ,  or a
- *  map indexed with {@link String} keys and values of same subtype (see {@link CanonicalType#MAP}) .<br/>
+ * {@link CanonicalType#OBJECT}), a list of data of same subtype (see
+ * {@link CanonicalType#LIST}) , or a
+ * map indexed with {@link String} keys and values of same subtype (see
+ * {@link CanonicalType#MAP}) .<br/>
  * When a field canonical type is primitive or
  * {@link CanonicalType#OBJECT}, it subtype is
  * <code>null</code> as not relevant.<br/>
@@ -21,7 +23,8 @@ import java.util.Optional;
  * <code>BIGDECIMAL_LIST_MAP</code> means value of a field is a map of list of
  * {@link BigDecimal} values. <br/>
  * When leaf subtype is {@link CanonicalType#OBJECT} (see
- * {@link #isObject()}), the field definition must specify the list of {@link Field} that defines the object.
+ * {@link #isObject()}), the field definition must specify the list of
+ * {@link Field} that defines the object.
  */
 public class Type {
 	

@@ -354,6 +354,11 @@ public class JavaCodeGenerationUtil {
 		typeGenerator.appendToBody("private static final Logger log = LoggerFactory.getLogger(" + typeGenerator.getSimpleName() + ".class);\n\n");
 	}
 
+	/**
+	 * Turns a string into a quoted string, escaping double quotes, suitable for JSON or Java code of string value.
+	 * @param sampleValue
+	 * @return
+	 */
 	public static String getQuotedString(Object sampleValue) {
 		if (sampleValue == null) {
 			  return null;

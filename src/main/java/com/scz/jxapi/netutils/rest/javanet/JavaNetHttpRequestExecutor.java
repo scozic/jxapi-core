@@ -31,6 +31,10 @@ public class JavaNetHttpRequestExecutor implements HttpRequestExecutor {
 	
 	private final HttpClient httpClient;
 
+	/**
+	 * Creates a new instance of this class.
+	 * @param httpClient The {@link HttpClient} to use for requests
+	 */
 	public JavaNetHttpRequestExecutor(HttpClient httpClient) {
 		this.httpClient = httpClient;
 	}

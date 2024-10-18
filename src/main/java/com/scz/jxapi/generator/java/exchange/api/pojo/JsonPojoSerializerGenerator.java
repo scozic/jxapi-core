@@ -42,6 +42,7 @@ public class JsonPojoSerializerGenerator extends JavaTypeGenerator {
 						+ "\n@see " + simpleDeserializedClassName);
 	}
 	
+	@Override
 	public String generate() {
 		addImport(IOException.class.getName());
 		addImport(JsonGenerator.class);

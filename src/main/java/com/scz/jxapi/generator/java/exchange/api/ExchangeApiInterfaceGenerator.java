@@ -42,7 +42,14 @@ public class ExchangeApiInterfaceGenerator extends JavaTypeGenerator {
 	
 	private final ExchangeApiDescriptor exchangeApiDescriptor;
 	
-	public ExchangeApiInterfaceGenerator(ExchangeDescriptor exchangeDescriptor, ExchangeApiDescriptor exchangeApiDescriptor) {
+	/**
+	 * Constructor.
+	 * 
+	 * @param exchangeDescriptor    the exchange descriptor where the API is defined
+	 * @param exchangeApiDescriptor the API descriptor to generate interface for
+	 */
+	public ExchangeApiInterfaceGenerator(ExchangeDescriptor exchangeDescriptor, 
+										 ExchangeApiDescriptor exchangeApiDescriptor) {
 		super(ExchangeJavaWrapperGeneratorUtil.getApiInterfaceClassName(exchangeDescriptor, exchangeApiDescriptor));
 		this.exchangeDescriptor = exchangeDescriptor;
 		this.exchangeApiDescriptor = exchangeApiDescriptor;
