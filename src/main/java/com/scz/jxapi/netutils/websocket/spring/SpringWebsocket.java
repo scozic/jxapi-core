@@ -94,7 +94,7 @@ public class SpringWebsocket extends AbstractWebsocket {
 			String handShakeError = "Handshake failed: websocketSession not initialized";
 			log.error(handShakeError + ". Disposing resources before reconnection attempt");
 			doDisconnect();
-			throw new IllegalStateException(handShakeError);
+			throw new WebsocketException(handShakeError);
 		}
 		if (log.isDebugEnabled()) {
 			log.debug(toString() + ":Done handshake");
@@ -102,11 +102,17 @@ public class SpringWebsocket extends AbstractWebsocket {
 	}
 	
 	protected URI getHandShakeURI() throws WebsocketException {
+		URI uri = null;
 		try {
-			return new URI(url);
+			uri = new URI(url);
 		} catch (URISyntaxException e) {
 			throw new WebsocketException("Error creating URI for websocket base URL:" + url);
 		}
+		String scheme = uri.getScheme();
+		if (!"ws".equals(scheme) && !"wss".equals(scheme)) {
+			throw new WebsocketException("Invalid scheme: " + scheme + " for:" + uri);
+		}
+		return uri;
 	}
 
 
@@ -116,7 +122,9 @@ public class SpringWebsocket extends AbstractWebsocket {
 		if (log.isDebugEnabled())
 			log.debug("Closing websocket");
 		try {
-			webSocketSession.close(CloseStatus.NORMAL);
+			if (webSocketSession != null && webSocketSession.isOpen()) {
+				webSocketSession.close(CloseStatus.NORMAL);
+			}
 		} catch (IOException e) {
 			WebsocketException ex = new WebsocketException("Error disconnecting websocket " + this, e);
 			log.error(ex.getMessage(), e);
@@ -164,6 +172,9 @@ public class SpringWebsocket extends AbstractWebsocket {
 		public void afterConnectionClosed(WebSocketSession session, CloseStatus closeStatus) throws Exception {
 			if (log.isDebugEnabled())
 				log.debug(SpringWebsocket.this.toString() + "afterConnectionClosed:session:" + session + ", closeStatus:" + closeStatus);
+			if (closeStatus.getCode() != CloseStatus.NORMAL.getCode()) {
+				dispatchError(new WebsocketException("Connection " + session + " closed abormally:" + closeStatus));
+			}
 		}
 
 		@Override
@@ -191,6 +202,8 @@ public class SpringWebsocket extends AbstractWebsocket {
 		@Override
 		public void onFailure(Throwable ex) {
 			dispatchError(SpringWebsocket.this.toString() +  "Error raised on websocket session callback", ex);
+			webSocketSession = null;
+			websocketSessionAvailable.countDown();
 		}
 		
 	}

@@ -100,7 +100,7 @@ public class AbstractExchangeApiTest {
 	@Test(expected = IllegalStateException.class)
 	public void testSubmitWithoutHttpRequestExecutor() {
 		HttpRequest request = new HttpRequest();
-		MessageDeserializer<String> deserializer = new RawStringMessageDeserializer();
+		MessageDeserializer<String> deserializer = RawStringMessageDeserializer.getInstance();
 		exchangeApi.submit(request, deserializer);
 	}
 
@@ -110,7 +110,7 @@ public class AbstractExchangeApiTest {
 		exchangeApi.subscribeObserver(observer);
 		MockHttpRequestExecutor executor = createMockHttpRequestExecutor();
 		HttpRequest request = createDummyRequest();
-		MessageDeserializer<String> deserializer = new RawStringMessageDeserializer();
+		MessageDeserializer<String> deserializer = RawStringMessageDeserializer.getInstance();
 		FutureRestResponse<String> response = exchangeApi.submit(request, deserializer);
 		ExchangeApiEvent event = observer.pop();
 		Assert.assertEquals(ExchangeApiEventType.HTTP_REQUEST, event.getType());
@@ -133,7 +133,7 @@ public class AbstractExchangeApiTest {
 		exchangeApi.subscribeObserver(observer);
 		MockHttpRequestExecutor executor = createMockHttpRequestExecutor();
 		HttpRequest request = createDummyRequest();
-		MessageDeserializer<String> deserializer = new RawStringMessageDeserializer();
+		MessageDeserializer<String> deserializer = RawStringMessageDeserializer.getInstance();
 		FutureRestResponse<String> response = exchangeApi.submit(request, deserializer);
 		ExchangeApiEvent event = observer.pop();
 		Assert.assertEquals(ExchangeApiEventType.HTTP_REQUEST, event.getType());
@@ -182,7 +182,7 @@ public class AbstractExchangeApiTest {
 		AtomicReference<HttpRequest> interceptedRequest = new AtomicReference<>();
 		((MockHttpRequestInterceptor) exchangeApi.getRequestInterceptor()).addPreparedInterceptor(r -> interceptedRequest.set(r));
 		HttpRequest request = createDummyRequest();
-		MessageDeserializer<String> deserializer = new RawStringMessageDeserializer();
+		MessageDeserializer<String> deserializer = RawStringMessageDeserializer.getInstance();
 		exchangeApi.submit(request, deserializer);
 		Assert.assertEquals(request, interceptedRequest.get());	
 	}
@@ -203,7 +203,7 @@ public class AbstractExchangeApiTest {
 		exchangeApi.subscribeObserver(observer);
 		MockHttpRequestExecutor executor = createMockHttpRequestExecutor();
 		HttpRequest request = createDummyRequest();
-		MessageDeserializer<String> deserializer = new RawStringMessageDeserializer();
+		MessageDeserializer<String> deserializer = RawStringMessageDeserializer.getInstance();
 		FutureRestResponse<String> response = exchangeApi.submit(request, deserializer);
 		ExchangeApiEvent event = observer.pop();
 		Assert.assertEquals(ExchangeApiEventType.HTTP_REQUEST, event.getType());
@@ -226,7 +226,7 @@ public class AbstractExchangeApiTest {
 		MockExchangeApiObserver observer = new MockExchangeApiObserver();
 		exchangeApi.subscribeObserver(observer);
 		HttpRequest request = createDummyRequest();
-		MessageDeserializer<String> deserializer = new RawStringMessageDeserializer();
+		MessageDeserializer<String> deserializer = RawStringMessageDeserializer.getInstance();
 		FutureRestResponse<String> response = exchangeApi.submit(request, deserializer);
 		RestResponse<String> actualResponse = response.get(1, TimeUnit.MILLISECONDS);
 		Assert.assertFalse(actualResponse.isOk());

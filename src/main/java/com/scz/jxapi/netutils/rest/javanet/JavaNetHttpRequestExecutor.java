@@ -14,20 +14,20 @@ import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.scz.jxapi.netutils.rest.AbstractHttpRequestExecutor;
 import com.scz.jxapi.netutils.rest.FutureHttpResponse;
 import com.scz.jxapi.netutils.rest.HttpRequest;
 import com.scz.jxapi.netutils.rest.HttpRequestExecutor;
 import com.scz.jxapi.netutils.rest.HttpResponse;
 
 /**
- * A {@link HttpRequestExecutor} implementation relying on {@link java.net.http.HttpRequest}
+ * A {@link HttpRequestExecutor} implementation relying on {@link java.net.http.HttpClient}
  *
+ *@see HttpClient
  */
-public class JavaNetHttpRequestExecutor implements HttpRequestExecutor {
+public class JavaNetHttpRequestExecutor extends AbstractHttpRequestExecutor {
 	
 	private static final Logger log = LoggerFactory.getLogger(JavaNetHttpRequestExecutor.class);
-	
-	private static final Duration REQUEST_TIMEOUT = Duration.ofMillis(5000L);
 	
 	private final HttpClient httpClient;
 
@@ -48,7 +48,7 @@ public class JavaNetHttpRequestExecutor implements HttpRequestExecutor {
 		try {
 			if (log.isDebugEnabled())
 				log.debug("Executing request:" + request);
-			Builder builder = java.net.http.HttpRequest.newBuilder().uri(new URI(request.getUrl())).timeout(REQUEST_TIMEOUT);
+			Builder builder = java.net.http.HttpRequest.newBuilder().uri(new URI(request.getUrl())).timeout(Duration.ofMillis(getRequestTimeout()));
 			switch (request.getHttpMethod()) {
 			case GET:
 				builder.GET();
