@@ -24,6 +24,8 @@ import com.scz.jxapi.netutils.deserialization.json.field.TimestampJsonFieldDeser
  */
 public class ExchangeJavaWrapperGeneratorUtil {
 	
+	private ExchangeJavaWrapperGeneratorUtil() {}
+	
 	/**
 	 * Default separator for string lists
 	 */
