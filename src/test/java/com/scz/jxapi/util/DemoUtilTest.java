@@ -59,11 +59,11 @@ public class DemoUtilTest {
         httpResponse.setResponseCode(200);
         response.setHttpResponse(httpResponse);
         Assert.assertEquals("{\n"
-        		+ "  \"httpStatus\" : 0,\n"
         		+ "  \"httpResponse\" : {\n"
         		+ "    \"responseCode\" : 200,\n"
         		+ "    \"roundTrip\" : 0\n"
         		+ "  },\n"
+        		+ "  \"httpStatus\" : 0,\n"
         		+ "  \"ok\" : false\n"
         		+ "}", DemoUtil.prettyPrintResponse(response));
     }
@@ -77,15 +77,15 @@ public class DemoUtilTest {
         httpResponse.setResponseCode(200);
         response.setHttpResponse(httpResponse);
         Assert.assertEquals("{\n"
-        		+ "  \"httpStatus\" : 0,\n"
         		+ "  \"httpResponse\" : {\n"
-        		+ "    \"responseCode\" : 200,\n"
         		+ "    \"request\" : {\n"
-        		+ "      \"weight\" : 0,\n"
-        		+ "      \"throttledTime\" : 0\n"
+        		+ "      \"throttledTime\" : 0,\n"
+        		+ "      \"weight\" : 0\n"
         		+ "    },\n"
+        		+ "    \"responseCode\" : 200,\n"
         		+ "    \"roundTrip\" : 0\n"
         		+ "  },\n"
+        		+ "  \"httpStatus\" : 0,\n"
         		+ "  \"ok\" : false\n"
         		+ "}", DemoUtil.prettyPrintResponse(response));
     }

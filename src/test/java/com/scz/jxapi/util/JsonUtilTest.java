@@ -27,7 +27,7 @@ public class JsonUtilTest {
 	public void testPojoToJsonString() {
 		Foo foo = new Foo("foo", List.of(new Bar(1), new Bar(2)));
 		foo.setException(new Exception("My exception!"));
-		String expected = "{\"name\":\"foo\",\"bars\":[{\"id\":1},{\"id\":2}],\"exception\":\"java.lang.Exception: My exception!\"}";
+		String expected = "{\"bars\":[{\"id\":1},{\"id\":2}],\"exception\":\"java.lang.Exception: My exception!\",\"name\":\"foo\"}";
 		String result = JsonUtil.pojoToJsonString(foo);
 		Assert.assertEquals(expected, result);
 	}
@@ -49,12 +49,12 @@ public class JsonUtilTest {
 	public void testPojoToPrettyPrintJson() {
 		Foo foo = new Foo("foo", List.of(new Bar(1), new Bar(2)));
 		String expected = "{\n"
-				+ "  \"name\" : \"foo\",\n"
 				+ "  \"bars\" : [ {\n"
 				+ "    \"id\" : 1\n"
 				+ "  }, {\n"
 				+ "    \"id\" : 2\n"
-				+ "  } ]\n"
+				+ "  } ],\n"
+				+ "  \"name\" : \"foo\"\n"
 				+ "}";
 		String result = JsonUtil.pojoToPrettyPrintJson(foo);
 		Assert.assertEquals(expected, result);

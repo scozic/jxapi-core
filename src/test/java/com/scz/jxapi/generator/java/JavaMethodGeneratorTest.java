@@ -28,7 +28,7 @@ public class JavaMethodGeneratorTest {
 		generator.setMedthodDeclaration("public static int foo() throws FooException");
 		generator.appendToBody("return 1;\n");
 		generator.setJavadoc("foo!\n@return 1\n");
-		Assert.assertEquals("JavaMethodGenerator{\"medthodDeclaration\":\"public static int foo() throws FooException\",\"javadoc\":\"foo!\\n@return 1\\n\"}", generator.toString());
+		Assert.assertEquals("JavaMethodGenerator{\"javadoc\":\"foo!\\n@return 1\\n\",\"medthodDeclaration\":\"public static int foo() throws FooException\"}", generator.toString());
 	}
 	
 	@Test

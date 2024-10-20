@@ -15,7 +15,7 @@ public class RateLimitManagerStatTest {
         stat.setTime(1234567890);
         stat.setRequestCount(100);
         stat.setTotalWeight(1000);
-        Assert.assertEquals("{\"time\":1234567890,\"requestCount\":100,\"totalWeight\":1000}", stat.toString());
+        Assert.assertEquals("{\"requestCount\":100,\"time\":1234567890,\"totalWeight\":1000}", stat.toString());
     }
 
 

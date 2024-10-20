@@ -35,7 +35,7 @@ public class PojoFieldTest {
     public void testToString() {
         PojoField pojoField = new PojoField();
         setDefaultValues(pojoField);
-        Assert.assertEquals("PojoField{\"type\":\"type\",\"name\":\"name\",\"description\":\"description\",\"msgField\":\"msgField\"}", 
+        Assert.assertEquals("PojoField{\"description\":\"description\",\"msgField\":\"msgField\",\"name\":\"name\",\"type\":\"type\"}", 
         					pojoField.toString());
     }
 

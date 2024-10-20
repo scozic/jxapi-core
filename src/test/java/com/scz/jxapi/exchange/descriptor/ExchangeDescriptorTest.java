@@ -41,6 +41,6 @@ public class ExchangeDescriptorTest {
         exchangeDescriptor.setBasePackage("basePackage");
         exchangeDescriptor.setApis(List.of(new ExchangeApiDescriptor()));
         exchangeDescriptor.setRateLimits(List.of(new RateLimitRule()));
-        Assert.assertEquals("ExchangeDescriptor{\"name\":\"name\",\"description\":\"description\",\"basePackage\":\"basePackage\",\"apis\":[{}],\"rateLimits\":[{\"timeFrame\":0,\"maxRequestCount\":-1,\"maxTotalWeight\":-1}]}", exchangeDescriptor.toString());
+        Assert.assertEquals("ExchangeDescriptor{\"apis\":[{}],\"basePackage\":\"basePackage\",\"description\":\"description\",\"name\":\"name\",\"rateLimits\":[{\"maxRequestCount\":-1,\"maxTotalWeight\":-1,\"timeFrame\":0}]}", exchangeDescriptor.toString());
     }
 }

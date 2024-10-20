@@ -13,6 +13,7 @@ import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.JsonToken;
+import com.fasterxml.jackson.databind.MapperFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.SerializerProvider;
@@ -27,6 +28,14 @@ public class JsonUtil {
 
 	private JsonUtil() {
 	}
+	
+	private static final SimpleModule EXCEPTION_SERIALIZATION_MODULE = createExceptionSerializationModule();
+	
+	private static SimpleModule createExceptionSerializationModule() {
+		SimpleModule m = new SimpleModule();
+		m.addSerializer(new ExceptionSerializer());
+		return m;
+	}
 
 	private static class ExceptionSerializer extends StdSerializer<Exception> {
 
@@ -38,6 +47,16 @@ public class JsonUtil {
 		public void serialize(Exception value, JsonGenerator gen, SerializerProvider provider) throws IOException {
 			gen.writeString(String.valueOf(value));
 		}
+	}
+	
+	private static ObjectMapper getDefaultJsonToStringObjectMapper() {
+		ObjectMapper om = new ObjectMapper();
+		om.disable(SerializationFeature.FAIL_ON_EMPTY_BEANS);
+		om.enable(SerializationFeature.ORDER_MAP_ENTRIES_BY_KEYS);
+		om.setSerializationInclusion(Include.NON_NULL);
+		om.registerModule(EXCEPTION_SERIALIZATION_MODULE);
+		om.setConfig(om.getSerializationConfig().with(MapperFeature.SORT_PROPERTIES_ALPHABETICALLY));
+		return om;
 	}
 
 	/**
@@ -54,12 +73,7 @@ public class JsonUtil {
 			return null;
 		}
 		try {
-			ObjectMapper om = new ObjectMapper();
-			om.disable(SerializationFeature.FAIL_ON_EMPTY_BEANS);
-			om.setSerializationInclusion(Include.NON_NULL);
-			SimpleModule exceptionSerialization = new SimpleModule();
-			exceptionSerialization.addSerializer(new ExceptionSerializer());
-			om.registerModule(exceptionSerialization);
+			ObjectMapper om = getDefaultJsonToStringObjectMapper();
 			return om.writeValueAsString(pojo);
 		} catch (JsonProcessingException e) {
 			throw new IllegalArgumentException(
@@ -83,9 +97,7 @@ public class JsonUtil {
 			return null;
 		}
 		try {
-			ObjectMapper om = new ObjectMapper();
-			om.setSerializationInclusion(Include.NON_NULL);
-			om.disable(SerializationFeature.FAIL_ON_EMPTY_BEANS);
+			ObjectMapper om = getDefaultJsonToStringObjectMapper();
 			return om.writerWithDefaultPrettyPrinter().writeValueAsString(pojo).replaceAll("\\r", "");
 		} catch (JsonProcessingException e) {
 			throw new IllegalArgumentException(

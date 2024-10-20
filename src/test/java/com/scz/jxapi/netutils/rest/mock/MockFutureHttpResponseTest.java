@@ -1,5 +1,6 @@
 package com.scz.jxapi.netutils.rest.mock;
 import org.junit.Test;
+import org.slf4j.LoggerFactory;
 
 import com.scz.jxapi.netutils.rest.HttpRequest;
 
@@ -22,7 +23,9 @@ public class MockFutureHttpResponseTest {
     @Test
     public void testToString() {
         MockFutureHttpResponse response = new MockFutureHttpResponse();
-        String expected = "MockFutureHttpResponse{\"done\":false,\"cancelled\":false,\"completedExceptionally\":false,\"numberOfDependents\":0}";
+        String expected = "MockFutureHttpResponse{\"cancelled\":false,\"completedExceptionally\":false,\"done\":false,\"numberOfDependents\":0}";
+    	// FIXME
+        LoggerFactory.getLogger(MockFutureHttpResponseTest.class).info(">>>>>>>>>>>>>>>>> expected:\n" + expected + "\nactual\n" + response.toString());
         assertEquals(expected, response.toString());
     }
     

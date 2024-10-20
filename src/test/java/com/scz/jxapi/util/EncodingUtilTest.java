@@ -38,7 +38,7 @@ public class EncodingUtilTest {
 		bar.setName("babar");
 		bar.setActive(true);
 		bar.setScore(new BigDecimal("1.23"));
-		Assert.assertEquals("Bar{\"name\":\"babar\",\"active\":true,\"score\":1.23}", EncodingUtil.pojoToString(bar));
+		Assert.assertEquals("Bar{\"active\":true,\"name\":\"babar\",\"score\":1.23}", EncodingUtil.pojoToString(bar));
 	}
 	
 	@Test
@@ -52,7 +52,7 @@ public class EncodingUtilTest {
 		foo.setHello("Hi");
 		foo.setBar(bar);
 		
-		Assert.assertEquals("Foo{\"hello\":\"Hi\",\"bar\":{\"name\":\"babar\",\"active\":true,\"score\":1.23}}", EncodingUtil.pojoToString(foo));
+		Assert.assertEquals("Foo{\"bar\":{\"active\":true,\"name\":\"babar\",\"score\":1.23},\"hello\":\"Hi\"}", EncodingUtil.pojoToString(foo));
 	}
 	
 	@Test

@@ -58,7 +58,7 @@ public class ExchangeApiDescriptorTest {
         apiDescriptor.setWebsocketEndpoints(List.of(new WebsocketEndpointDescriptor()));
         apiDescriptor.setRateLimits(List.of(new RateLimitRule()));
         Assert.assertEquals(
-        		"ExchangeApiDescriptor{\"name\":\"name\",\"description\":\"description\",\"restEndpoints\":[{\"queryParams\":false}],\"httpRequestInterceptorFactory\":\"com.scz.jxapi.netutils.rest.mock.MockHttpRequestInterceptorFactory\",\"httpRequestExecutorFactory\":\"com.scz.jxapi.netutils.rest.mock.MockHttpRequestExecutorFactory\",\"websocketEndpoints\":[{}],\"rateLimits\":[{\"timeFrame\":0,\"maxRequestCount\":-1,\"maxTotalWeight\":-1}]}", 
+        		"ExchangeApiDescriptor{\"description\":\"description\",\"httpRequestExecutorFactory\":\"com.scz.jxapi.netutils.rest.mock.MockHttpRequestExecutorFactory\",\"httpRequestInterceptorFactory\":\"com.scz.jxapi.netutils.rest.mock.MockHttpRequestInterceptorFactory\",\"name\":\"name\",\"rateLimits\":[{\"maxRequestCount\":-1,\"maxTotalWeight\":-1,\"timeFrame\":0}],\"restEndpoints\":[{\"queryParams\":false}],\"websocketEndpoints\":[{}]}", 
         		apiDescriptor.toString());
     }
 }

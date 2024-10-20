@@ -50,7 +50,7 @@ public class ExchangeApiEventTest {
         HttpRequest request = new HttpRequest();
         request.setEndpoint("myRestEndpoint");
         ExchangeApiEvent event = ExchangeApiEvent.createHttpRequestEvent(request);
-        Assert.assertEquals("ExchangeApiEvent{\"type\":\"HTTP_REQUEST\",\"httpRequest\":{\"endpoint\":\"myRestEndpoint\",\"weight\":0,\"throttledTime\":0},\"endpoint\":\"myRestEndpoint\"}", event.toString());
+        Assert.assertEquals("ExchangeApiEvent{\"endpoint\":\"myRestEndpoint\",\"httpRequest\":{\"endpoint\":\"myRestEndpoint\",\"throttledTime\":0,\"weight\":0},\"type\":\"HTTP_REQUEST\"}", event.toString());
     }
 
     @Test

@@ -113,7 +113,7 @@ public class HttpRequestTest {
         request.setThrottledTime(1000);
         List<RateLimitRule> rateLimits = List.of(RateLimitRule.createRule("rule1", 60000, 50));
         request.setRateLimits(rateLimits);
-        Assert.assertEquals("HttpRequest{\"endpoint\":\"endpoint\",\"url\":\"http://example.com\",\"httpMethod\":\"GET\",\"body\":\"body\",\"request\":\"request\",\"rateLimits\":[{\"id\":\"rule1\",\"timeFrame\":60000,\"maxRequestCount\":50,\"maxTotalWeight\":-1}],\"weight\":0,\"time\":1000,\"throttledTime\":1000}", request.toString());
+        Assert.assertEquals("HttpRequest{\"body\":\"body\",\"endpoint\":\"endpoint\",\"httpMethod\":\"GET\",\"rateLimits\":[{\"id\":\"rule1\",\"maxRequestCount\":50,\"maxTotalWeight\":-1,\"timeFrame\":60000}],\"request\":\"request\",\"throttledTime\":1000,\"time\":1000,\"url\":\"http://example.com\",\"weight\":0}", request.toString());
     }
 
     @Test

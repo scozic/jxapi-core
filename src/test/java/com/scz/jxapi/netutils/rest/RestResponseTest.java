@@ -110,7 +110,7 @@ public class RestResponseTest {
         HttpResponse httpResponse = new HttpResponse();
         httpResponse.setHeader("headerName", "headerValue");
         response.setHttpResponse(httpResponse);
-        Assert.assertEquals("RestResponse{\"httpStatus\":200,\"exception\":\"java.lang.Exception: fail!\",\"response\":\"\\\"response\\\"\"}", response.toString());
+        Assert.assertEquals("RestResponse{\"exception\":\"java.lang.Exception: fail!\",\"httpStatus\":200,\"response\":\"\\\"response\\\"\"}", response.toString());
     }     
     
     @Test
