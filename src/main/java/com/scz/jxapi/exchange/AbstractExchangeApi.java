@@ -71,13 +71,13 @@ public abstract class AbstractExchangeApi implements ExchangeApi {
 	 *         {@link WebsocketMessageTopicMatcherFactory#ANY_MATCHER_FACTORY} if
 	 *         the list is empty meaning anything will be matched
 	 * 
-	 * @see DefaultWebsocketMessageTopicMatcher#createFactory(String...)
+	 * @see WebsocketMessageTopicMatcherFactory#createFactory(String...)
 	 */
 	static WebsocketMessageTopicMatcherFactory topicMatcher(String... fieldNamesAndValues) {
 		if (fieldNamesAndValues.length <= 0) {
 			return WebsocketMessageTopicMatcherFactory.ANY_MATCHER_FACTORY;
 		}
-		return DefaultWebsocketMessageTopicMatcher.createFactory(fieldNamesAndValues);
+		return WebsocketMessageTopicMatcherFactory.createFactory(fieldNamesAndValues);
 	}
 
 	protected final String name;

@@ -17,6 +17,8 @@ import java.util.Properties;
  * The properties can be filtered by namespace using the
  * {@link #filterProperties(String, boolean)} method.
  * <p>
+ * Though this is used in a 'test' context this class is in main package as it
+ * is used in generated demos code
  */
 public class TestJXApiProperties {
 

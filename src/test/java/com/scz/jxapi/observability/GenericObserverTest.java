@@ -101,4 +101,22 @@ public class GenericObserverTest {
     	observer.setDefaulTimeout(10L);
         observer.await();
     }
+    
+    @Test
+    public void testCheckNoEvents_NoEventsRaised() {
+    	observer.checkNoEvents(10L);
+    }
+    
+    @Test(expected = IllegalStateException.class)
+    public void testCheckNoEvents_OneEventsRaised() {
+    	observer.handleEvent("event1");
+    	observer.checkNoEvents(10L);
+    }
+    
+    @Test
+    public void testGetDefaultTimeout() {
+    	assertEquals(GenericObserver.DEFAULT_TIMEOUT, observer.getDefaulTimeout());
+    	observer.setDefaulTimeout(123L);
+    	assertEquals(123L, observer.getDefaulTimeout());
+    }
 }

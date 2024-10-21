@@ -28,11 +28,6 @@ import com.scz.jxapi.util.CollectionUtil;
  */
 public class DefaultWebsocketMessageTopicMatcher implements WebsocketMessageTopicMatcher {
 	
-	public static WebsocketMessageTopicMatcherFactory createFactory(String... fieldNamesAndValues) {
-		List<WebsocketMessageTopicMatcherField> fieldList = WebsocketMessageTopicMatcherField.createList(fieldNamesAndValues);
-		return () -> new DefaultWebsocketMessageTopicMatcher(fieldList);
-	}
-	
 	private final List<WebsocketMessageTopicMatcherField> fields;
 	
 	private final Map<String, String> valuesToMatch;

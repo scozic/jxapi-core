@@ -3,6 +3,8 @@ package com.scz.jxapi.util;
 import java.lang.reflect.InvocationTargetException;
 
 public class FactoryUtil {
+	
+	private FactoryUtil() {}
 
 	/**
 	 * Factory method to instantiate a given class from its
