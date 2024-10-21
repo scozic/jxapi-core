@@ -580,6 +580,7 @@ public class DefaultWebsocketManager implements WebsocketManager {
 					onError(new WebsocketException("No message received last " + noMessageTimeout + "ms, on websocket" + DefaultWebsocketManager.this + " reconnecting websocket"));
 				}
 			} catch (Exception ex) {
+				// Normally no reachable, but better log exception here or it will missed.
 				log.error("Error while running NoMessageTimeout task", ex);
 			}
 			scheduleNoMessageTimeoutTask(newLastReceivedMessageCount);
