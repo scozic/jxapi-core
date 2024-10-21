@@ -3,11 +3,11 @@ package com.scz.jxapi.generator.java.exchange.api;
 import java.util.Optional;
 
 import com.scz.jxapi.exchange.ExchangeApi;
-import com.scz.jxapi.exchange.descriptor.Field;
-import com.scz.jxapi.exchange.descriptor.Type;
 import com.scz.jxapi.exchange.descriptor.ExchangeApiDescriptor;
 import com.scz.jxapi.exchange.descriptor.ExchangeDescriptor;
+import com.scz.jxapi.exchange.descriptor.Field;
 import com.scz.jxapi.exchange.descriptor.RestEndpointDescriptor;
+import com.scz.jxapi.exchange.descriptor.Type;
 import com.scz.jxapi.exchange.descriptor.WebsocketEndpointDescriptor;
 import com.scz.jxapi.generator.java.JavaCodeGenerationUtil;
 import com.scz.jxapi.generator.java.JavaTypeGenerator;
@@ -161,27 +161,52 @@ public class ExchangeApiInterfaceGenerator extends JavaTypeGenerator {
 				.append("WebsocketListener<")
 				.append(messageClassSimpleName)
 				.append("> listener)").toString();
-		appendToBody("\n")
-			.append(JavaCodeGenerationUtil.generateJavaDoc(
-						"Subscribe to " + websocketApi.getName() + " stream.<br/>\n" 
-						+ (websocketApi.getDescription() != null? websocketApi.getDescription() + "\n": "")
-						+ "\n"
-						+ (requestDescription != null? "@param " + requestArgName + " " + requestDescription + "\n": "") 
-						+ "@return client subscriptionId to use for unsubscription")
-						+ "\n");
-		appendToBody(subscribeMethodSignature + ";\n");
+		
+		StringBuilder subscribeMethodDoc = new StringBuilder()
+				.append("Subscribe to ")
+				.append(websocketApi.getName())
+				.append(" stream.<br/>\n");
+		if (websocketApi.getDocUrl() != null) {
+			subscribeMethodDoc.append(JavaCodeGenerationUtil.getHtmlLink(websocketApi.getDocUrl(), "Reference documentation"))
+			 	   .append(subscribeMethodName)
+				   .append("()\n");
+		}
+		if (websocketApi.getDescription() != null) {
+			subscribeMethodDoc.append(websocketApi.getDescription())
+								  .append("\n");	
+		}
+		subscribeMethodDoc.append("\n");
+		if (requestDescription != null) {
+			subscribeMethodDoc.append("@param ")
+							  .append(requestArgName)
+							  .append(" ")
+							  .append(requestDescription)
+							  .append("\n");
+		}
+		subscribeMethodDoc.append("@return client subscriptionId to use for unsubscription");
+		
+		appendToBody("\n");
+		appendToBody(JavaCodeGenerationUtil.generateJavaDoc(subscribeMethodDoc.toString()));
+		appendToBody("\n");
+		appendToBody(subscribeMethodSignature + ";\n\n");
 		
 		String unsubscribeMethodSignature = "boolean " + unsubscribeMethodName + "(String subscriptionId)";
-		appendToBody("\n" 
-		    		+ JavaCodeGenerationUtil.generateJavaDoc(
-		    			"Unsubscribe from " 
-						+ websocketApi.getName() 
-						+ " stream.\n"
-						+ "\n@param subscriptionId ID of subscription returned by #" 
-						+ subscribeMethodName 
-						+ "()") 
-						+ "\n");
-		appendToBody(unsubscribeMethodSignature + ";\n");
+		StringBuilder unsubscribeMethodDoc = new StringBuilder()
+				.append("Unsubscribe from ")
+				.append(websocketApi.getName())
+				.append(" stream.\n");
+		if (websocketApi.getDocUrl() != null) {
+			unsubscribeMethodDoc.append(JavaCodeGenerationUtil.getHtmlLink(websocketApi.getDocUrl(), "Reference documentation"))
+			 	   .append(subscribeMethodName)
+				   .append("()\n");
+		}
+		unsubscribeMethodDoc.append("\n@param subscriptionId ID of subscription returned by #")
+			   				.append(subscribeMethodName)
+			   				.append("()");
+		appendToBody(JavaCodeGenerationUtil.generateJavaDoc(unsubscribeMethodDoc.toString()))
+			.append("\n")
+			.append(unsubscribeMethodSignature)
+			.append(";\n");
 	}
 
 	private void generateRestEndpointMethodDeclaration(RestEndpointDescriptor restApi) {
@@ -243,13 +268,22 @@ public class ExchangeApiInterfaceGenerator extends JavaTypeGenerator {
 				   .append(request.getDescription())
 				   .append("\n");
 		}
+		
+		javaDoc.append("@return A {@link FutureRestResponse} that will complete when request submitted asynchronously has been processed.");
 		if (hasResponse && response.getDescription() != null) {
-			javaDoc.append("@return ")
-			   .append(response.getDescription())
-			   .append("\n");
+			javaDoc.append("If successful, will provide response:")
+				   .append(response.getDescription())
+			       .append("\n");
+		}
+		
+		if (restApi.getDocUrl() != null) {
+			javaDoc.append("@see ")
+				   .append(JavaCodeGenerationUtil.getHtmlLink(restApi.getDocUrl(), "Reference documentation"))
+			 	   .append("\n");
 		}
 		if (javaDoc.length() > 0) {
-			javaDoc.deleteCharAt(javaDoc.length() - 1);
+			// Remove trailing '\n'
+			javaDoc.delete(javaDoc.length() - 1, javaDoc.length());
 			appendToBody(JavaCodeGenerationUtil.generateJavaDoc(javaDoc.toString())).append("\n");
 		}
 		appendToBody(apiMethodSignature + ";\n");

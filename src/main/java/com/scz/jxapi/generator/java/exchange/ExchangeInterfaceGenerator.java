@@ -32,9 +32,7 @@ public class ExchangeInterfaceGenerator extends JavaTypeGenerator {
 	
 	@Override
 	public String generate() {		
-		setDescription(exchangeDescriptor.getName() + " API</br>\n" 
-				+ exchangeDescriptor.getDescription() + "\n" 
-				+ JavaCodeGenerationUtil.GENERATED_CODE_WARNING);
+		setDescription(generateDescription());
 		setTypeDeclaration("public interface");
 		
 		appendToBody("\nString ")
@@ -51,6 +49,22 @@ public class ExchangeInterfaceGenerator extends JavaTypeGenerator {
 			appendToBody("\n" + getApiMethodSignature + ";\n");
 		}
 		return super.generate();
+	}
+	
+	private String generateDescription() {
+		StringBuilder s = new StringBuilder()
+				.append(exchangeDescriptor.getName())
+				.append(" API</br>\n")
+				.append(exchangeDescriptor.getDescription())
+				.append("\n");
+		String docUrl = exchangeDescriptor.getDocUrl();
+		if (docUrl != null) {
+			s.append("@see ")
+			 .append(JavaCodeGenerationUtil.getHtmlLink(docUrl, "Reference documentation"))
+			 .append("\n");
+		}
+		s.append(JavaCodeGenerationUtil.GENERATED_CODE_WARNING);
+		return s.toString();
 	}
 
 }

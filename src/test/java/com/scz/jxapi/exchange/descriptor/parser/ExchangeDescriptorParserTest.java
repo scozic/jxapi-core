@@ -1,4 +1,4 @@
-package com.scz.jxapi.generator.java.exchange;
+package com.scz.jxapi.exchange.descriptor.parser;
 
 import java.nio.file.Paths;
 import java.util.List;
@@ -10,7 +10,6 @@ import com.scz.jxapi.exchange.descriptor.CanonicalType;
 import com.scz.jxapi.exchange.descriptor.Field;
 import com.scz.jxapi.exchange.descriptor.ExchangeApiDescriptor;
 import com.scz.jxapi.exchange.descriptor.ExchangeDescriptor;
-import com.scz.jxapi.exchange.descriptor.ExchangeDescriptorParser;
 import com.scz.jxapi.exchange.descriptor.RestEndpointDescriptor;
 import com.scz.jxapi.exchange.descriptor.WebsocketEndpointDescriptor;
 import com.scz.jxapi.exchange.descriptor.WebsocketMessageTopicMatcherFieldDescriptor;

@@ -283,7 +283,8 @@ public class JavaCodeGenerationUtilTest {
 	
 	@Test
 	public void testGetGenericType_GenericType() {
-		Assert.assertEquals("java.util.List<com.x.y.z.Foo>", JavaCodeGenerationUtil.getGenericType("com.x.y.z.Bar<java.util.List<com.x.y.z.Foo>>"));
+		Assert.assertEquals("java.util.List<com.x.y.z.Foo>", 
+							JavaCodeGenerationUtil.getGenericType("com.x.y.z.Bar<java.util.List<com.x.y.z.Foo>>"));
 	}
 	
 	@Test
@@ -313,6 +314,13 @@ public class JavaCodeGenerationUtilTest {
 	
 	@Test
 	public void testGetQuotedString_StringWithQuotes() {
-		Assert.assertEquals("\"Hello \\\"World\\\"\"", JavaCodeGenerationUtil.getQuotedString("Hello \"World\""));
+		Assert.assertEquals("\"Hello \\\"World\\\"\"", 
+							JavaCodeGenerationUtil.getQuotedString("Hello \"World\""));
+	}
+	
+	@Test
+	public void testGetHtmlLink() {
+		Assert.assertEquals("<a href=\"https://scam.org\">Click here</a>", 
+							JavaCodeGenerationUtil.getHtmlLink("https://scam.org", "Click here"));
 	}
 }

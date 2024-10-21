@@ -1,6 +1,7 @@
 {
 	"name": "MyTestExchange",
 	"description": "A sample Exchange descriptor file",
+	"docUrl": "https://docs.myexchange.com/api",
 	"basePackage": "com.foo.bar.gen",
 	"apis":[
 		{ 
@@ -12,6 +13,7 @@
 					"name": "exchangeInfo",
 					"httpMethod": "GET",
 					"description": "Fetch market information of symbols that can be traded",
+					"docUrl": "https://docs.myexchange.com/api/rest/marketData/exchangeInfo",
 					"url": "https://com.sample.mycex/exchangeInfo",
 					"request":{
 						"parameters": [
@@ -55,6 +57,7 @@
 			"websocketEndpoints": [
 				{
 					"name": "tickerStream",
+					"docUrl": "https://docs.myexchange.com/api/ws/marketData/tickerStream",
 					"topic": "${symbol}@ticker",
 					"description": "Subscribe to ticker stream",
 					"request": {

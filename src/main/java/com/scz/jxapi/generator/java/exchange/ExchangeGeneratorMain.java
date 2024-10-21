@@ -11,7 +11,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.scz.jxapi.exchange.descriptor.ExchangeDescriptor;
-import com.scz.jxapi.exchange.descriptor.ExchangeDescriptorParser;
+import com.scz.jxapi.exchange.descriptor.parser.ExchangeDescriptorParser;
 import com.scz.jxapi.generator.java.JavaCodeGenerationUtil;
 import com.scz.jxapi.generator.java.exchange.api.demo.ExchangeDemoClassesGenerator;
 

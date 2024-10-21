@@ -23,6 +23,7 @@ public class RestEndpointDescriptorTest {
         RestEndpointDescriptor descriptor = new RestEndpointDescriptor();
         descriptor.setName("name");
         descriptor.setDescription("description");
+        descriptor.setDocUrl("https://doc.myexchange.com/rest/name");
         descriptor.setUrl("url");
         descriptor.setHttpMethod(HttpMethod.GET);
         Field request = Field.builder()
@@ -49,6 +50,7 @@ public class RestEndpointDescriptorTest {
         Assert.assertEquals("name", descriptor.getName());
         Assert.assertEquals("description", descriptor.getDescription());
         Assert.assertEquals("url", descriptor.getUrl());
+        Assert.assertEquals("https://doc.myexchange.com/rest/name", descriptor.getDocUrl());
         Assert.assertEquals(HttpMethod.GET, descriptor.getHttpMethod());
         Assert.assertEquals(request, descriptor.getRequest());
         Assert.assertEquals(response, descriptor.getResponse());

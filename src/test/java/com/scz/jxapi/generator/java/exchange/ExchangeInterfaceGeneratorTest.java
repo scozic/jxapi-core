@@ -6,7 +6,7 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import com.scz.jxapi.exchange.descriptor.ExchangeDescriptor;
-import com.scz.jxapi.exchange.descriptor.ExchangeDescriptorParser;
+import com.scz.jxapi.exchange.descriptor.parser.ExchangeDescriptorParser;
 
 public class ExchangeInterfaceGeneratorTest {
 
@@ -22,6 +22,7 @@ public class ExchangeInterfaceGeneratorTest {
 				+ "/**\n"
 				+ " * MyTestExchange API</br>\n"
 				+ " * A sample Exchange descriptor file\n"
+				+ " * @see <a href=\"https://docs.myexchange.com/api\">Reference documentation</a>\n"
 				+ " * <br><strong>THIS CODE IS GENERATED. DO NOT EDIT MANUALLY!</strong>\n"
 				+ " */\n"
 				+ "public interface MyTestExchangeExchange extends Exchange {\n"

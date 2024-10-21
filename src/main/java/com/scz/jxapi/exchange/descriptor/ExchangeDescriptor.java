@@ -21,6 +21,7 @@ import com.scz.jxapi.util.EncodingUtil;
  * 		"name": "Binance",
  * 		"ID": "BINANCE",
  * 		"description": "Binance exchange",
+ * 		"docUrl": "https://binance-docs.github.io/apidocs",
  * 		"basePackage": "com.scz.jxapi.exchange.binance",
  * 		"apis": [
  * 			{
@@ -69,6 +70,7 @@ public class ExchangeDescriptor {
 	
 	private String name;
 	private String description;
+	private String DocUrl;
 	private String basePackage;
 	
 	private List<ExchangeApiDescriptor> apis;
@@ -125,6 +127,20 @@ public class ExchangeDescriptor {
 	 */
 	public void setDescription(String description) {
 		this.description = description;
+	}
+	
+	/**
+	 * @return Exchange's website API documentation home page
+	 */
+	public String getDocUrl() {
+		return DocUrl;
+	}
+
+	/**
+	 * @param excgangeUrl Exchange's website API documentation home page
+	 */
+	public void setDocUrl(String excgangeUrl) {
+		this.DocUrl = excgangeUrl;
 	}
 	
 	/**

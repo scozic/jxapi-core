@@ -83,6 +83,8 @@ public class RestEndpointDescriptor {
 	
 	private String url;
 	
+	private String docUrl;
+	
 	private HttpMethod httpMethod;
 	
 	private Field request;
@@ -251,6 +253,20 @@ public class RestEndpointDescriptor {
 	 */
 	public void setResponse(Field response) {
 		this.response = response;
+	}
+	
+	/**
+	 * @return Exchange website's documentation URL for this API.
+	 */
+	public String getDocUrl() {
+		return docUrl;
+	}
+
+	/**
+	 * @param docUrl Exchange website's documentation URL for this API.
+	 */
+	public void setDocUrl(String docUrl) {
+		this.docUrl = docUrl;
 	}
 	
 	/**

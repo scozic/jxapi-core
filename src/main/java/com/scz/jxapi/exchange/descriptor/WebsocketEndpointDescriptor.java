@@ -18,6 +18,8 @@ public class WebsocketEndpointDescriptor {
 	private String topic;
 
 	private String description;
+	
+	private String docUrl;
 
 	private Field request;
 
@@ -73,6 +75,20 @@ public class WebsocketEndpointDescriptor {
 	 */
 	public String getDescription() {
 		return description;
+	}
+	
+	/**
+	 * @return Exchange website's documentation URL for this API.
+	 */
+	public String getDocUrl() {
+		return docUrl;
+	}
+
+	/**
+	 * @param docUrl Exchange website's documentation URL for this API.
+	 */
+	public void setDocUrl(String docUrl) {
+		this.docUrl = docUrl;
 	}
 
 	/**

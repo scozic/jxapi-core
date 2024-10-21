@@ -1,4 +1,4 @@
-package com.scz.jxapi.exchange.descriptor;
+package com.scz.jxapi.exchange.descriptor.parser;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -8,6 +8,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
+import com.scz.jxapi.exchange.descriptor.ExchangeDescriptor;
 
 /**
  * The ExchangeDescriptorParser class is responsible for parsing JSON data into ExchangeDescriptor objects.<br>

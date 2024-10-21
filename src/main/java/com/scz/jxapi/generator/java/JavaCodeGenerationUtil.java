@@ -375,4 +375,14 @@ public class JavaCodeGenerationUtil {
 		}
 		return sb.append('"').toString();
 	}
+	
+	/**
+	 * Generates a HTML link with given href and text
+	 * @param href URL to link to
+	 * @param text text to display
+	 * @return HTML link
+	 */
+	public static String getHtmlLink(String href, String text) {
+		return "<a href=\"" + href + "\">" + text + "</a>";
+	}
 }
