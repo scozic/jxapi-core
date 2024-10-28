@@ -32,6 +32,13 @@ public class ExchangeJavaWrapperGeneratorUtil {
 	public static final String DEFAULT_STRING_LIST_SEPARATOR = ",";
 	
 	/**
+	 * Special value that can be used in sample value of
+	 * {@link CanonicalType#LONG},{@link CanonicalType#TIMESTAMP} types, which means
+	 * current time {@link System#currentTimeMillis()} should be used.
+	 */
+	public static final String SPECIAL_SAMPLE_VALUE_NOW = "now()";
+	
+	/**
 	 * @return The full name of the ExchangeApi interface class for the given
 	 *         exchange and API. The returned class name package is base package is
 	 *         <code>exchangeBasePackage.exchangeApiDescriptorName</code>. Its named
@@ -70,6 +77,39 @@ public class ExchangeJavaWrapperGeneratorUtil {
 	public static String getExchangeInterfaceName(ExchangeDescriptor exchangeDescriptor) {
 		return exchangeDescriptor.getBasePackage() + "." 
 				+ JavaCodeGenerationUtil.firstLetterToUpperCase(exchangeDescriptor.getName()) + "Exchange";
+	}
+
+	/**
+	 * @param exchangeDescriptor The exchange where constants are defined
+	 * @return The full class name of constants interface defined at exchange level
+	 * @see ExchangeDescriptor#getConstants()
+	 */
+	public static String getExchangeConstantsInterfaceName(ExchangeDescriptor exchangeDescriptor) {
+		return exchangeDescriptor.getBasePackage() + "." 
+				+ JavaCodeGenerationUtil.firstLetterToUpperCase(exchangeDescriptor.getName()) + "Constants";
+	}
+	
+	/**
+	 * 
+	 * @param exchangeApiDescriptor The exchange API group for which constants interface stands for.
+	 * @return the full class name of constants interface defined at exchange API level.
+	 */
+	public static String getExchangeApiConstantsInterfaceName(ExchangeDescriptor exchangeDescriptor, 
+															  ExchangeApiDescriptor exchangeApiDescriptor) {
+		String pkgPrefix =  exchangeDescriptor.getBasePackage() + "." + exchangeApiDescriptor.getName().toLowerCase() + ".";
+		String simpleInterfaceName = JavaCodeGenerationUtil.firstLetterToUpperCase(exchangeDescriptor.getName()) 
+										+ JavaCodeGenerationUtil.firstLetterToUpperCase(exchangeApiDescriptor.getName()) + "Constants";
+		return pkgPrefix + simpleInterfaceName;
+	}
+	
+	/**
+	 * @param exchangeDescriptor The exchange where constants are defined
+	 * @return The full class name of constants interface defined at exchange level
+	 * @see ExchangeDescriptor#getConstants()
+	 */
+	public static String getExchangePropertiesInterfaceName(ExchangeDescriptor exchangeDescriptor) {
+		return exchangeDescriptor.getBasePackage() + "." 
+				+ JavaCodeGenerationUtil.firstLetterToUpperCase(exchangeDescriptor.getName()) + "Properties";
 	}
 
 	/**
@@ -225,6 +265,44 @@ public class ExchangeJavaWrapperGeneratorUtil {
 			return "new " +  JavaCodeGenerationUtil.getClassNameWithoutPackage(objectDeserializerClass) + "()";
 		default:
 			throw new IllegalArgumentException("Unexpected field type:" + type);
+		}
+	}
+
+	/**
+	 * @param type        must be a primitive type: {@value Type#STRING},
+	 *                    {@value Type#INT}, {@value Type#LONG},
+	 *                    {@value Type#TIMESTAMP}, {@value Type#BIGDECIMAL}.
+	 *                    Otherwise,
+	 * @param sampleValue primitive type sample value which can be a string '\"12\"'
+	 *                    or object value '12'. Can be <code>null</code> in which
+	 *                    case returned value is <code>null</code>
+	 * @param imports     Imports set to add eventual additional classes required by
+	 *                    the generation instruction to
+	 * @return An instruction to create value represented by sample value
+	 */
+	public static String getPrimitiveTypeParameterSampleValueDeclaration(Type type, 
+																		 Object sampleValue,	
+																		 Set<String> imports) {
+		if (sampleValue == null) {
+			return null;
+		}
+		String sampleValueStr = sampleValue.toString();
+		switch (type.getCanonicalType()) {
+		case BIGDECIMAL:
+			imports.add(BigDecimal.class.getName());
+			return "new BigDecimal(" + JavaCodeGenerationUtil.getQuotedString(sampleValueStr) + ")";
+		case BOOLEAN:
+			return "Boolean.valueOf(" + sampleValueStr + ")";
+		case INT:
+			return "Integer.valueOf(" + sampleValueStr + ")";
+		case LONG:
+		case TIMESTAMP:
+			if (SPECIAL_SAMPLE_VALUE_NOW.equals(sampleValueStr)) {
+				return "Long.valueOf(System.currentTimeMillis())";
+			}
+			return "Long.valueOf(" + JavaCodeGenerationUtil.getQuotedString(sampleValueStr) + ")";
+		default: // STRING
+			return JavaCodeGenerationUtil.getQuotedString(sampleValueStr);
 		}
 	}
 

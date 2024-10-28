@@ -1,6 +1,5 @@
 package com.scz.jxapi.generator.java.exchange.api.demo;
 
-import java.math.BigDecimal;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
@@ -8,23 +7,21 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import com.scz.jxapi.exchange.descriptor.CanonicalType;
-import com.scz.jxapi.exchange.descriptor.Field;
-import com.scz.jxapi.exchange.descriptor.Type;
 import com.scz.jxapi.exchange.descriptor.ExchangeApiDescriptor;
 import com.scz.jxapi.exchange.descriptor.ExchangeDescriptor;
+import com.scz.jxapi.exchange.descriptor.Field;
 import com.scz.jxapi.exchange.descriptor.RestEndpointDescriptor;
+import com.scz.jxapi.exchange.descriptor.Type;
 import com.scz.jxapi.exchange.descriptor.WebsocketEndpointDescriptor;
+import com.scz.jxapi.generator.java.JavaCodeGenerationUtil;
 import com.scz.jxapi.generator.java.exchange.ExchangeJavaWrapperGeneratorUtil;
 import com.scz.jxapi.generator.java.exchange.api.ExchangeApiGeneratorUtil;
 import com.scz.jxapi.util.TestJXApiProperties;
-import com.scz.jxapi.generator.java.JavaCodeGenerationUtil;
 
 /**
  * Helper methods around REST or Websocket endpoint demo snippets code generation.
  */
 public class EndpointDemoGeneratorUtil {
-	
-	public static final String SPECIAL_SAMPLE_VALUE_NOW = "now()";
 	
 	private EndpointDemoGeneratorUtil() {}
 	
@@ -87,13 +84,13 @@ public class EndpointDemoGeneratorUtil {
 																			String defaultObjectClassName,
 																			Set<String> imports) {
 		Type type = ExchangeApiGeneratorUtil.getFieldType(endpointParameter);
-		String parameterObjectClassName = Optional.ofNullable(endpointParameter.getObjectName()).orElse(defaultObjectClassName);
-		String parameterClassName =	ExchangeJavaWrapperGeneratorUtil.getClassNameForParameterType(
+		String fieldObjectClassName = Optional.ofNullable(endpointParameter.getObjectName()).orElse(defaultObjectClassName);
+		String fieldClassName =	ExchangeJavaWrapperGeneratorUtil.getClassNameForParameterType(
 												type, 
 												imports, 
-												parameterObjectClassName);
+												fieldObjectClassName);
 		return new StringBuilder().append("public static ")
-								  .append(parameterClassName)
+								  .append(fieldClassName)
 								  .append(" ")
 								  .append(generateEndpointParameterCreationMethodName(endpointParameter))
 								  .append("()")
@@ -236,31 +233,10 @@ public class EndpointDemoGeneratorUtil {
 	
 	private static String getPrimitiveTypeParameterSampleValueDeclaration(Field endpointParameter, 
 																		  Set<String> imports) {
-		Type type = endpointParameter.getType();
-		Object sampleValue = endpointParameter.getSampleValue();
-		if (sampleValue == null) {
-			return null;
-		}
-		String sampleValueStr = sampleValue.toString();
-		CanonicalType canonicalType = type.getCanonicalType();
-		imports.add(canonicalType.typeClass.getName());
-		switch (type.getCanonicalType()) {
-		case BIGDECIMAL:
-			imports.add(BigDecimal.class.getName());
-			return "new BigDecimal(" + JavaCodeGenerationUtil.getQuotedString(sampleValueStr) + ")";
-		case BOOLEAN:
-			return "Boolean.valueOf(" + sampleValueStr + ")";
-		case INT:
-			return "Integer.valueOf(" + sampleValueStr + ")";
-		case LONG:
-		case TIMESTAMP:
-			if (SPECIAL_SAMPLE_VALUE_NOW.equals(sampleValueStr)) {
-				return "Long.valueOf(System.currentTimeMillis())";
-			}
-			return "Long.valueOf(" + sampleValueStr + ")";
-		default: // STRING
-			return JavaCodeGenerationUtil.getQuotedString(sampleValueStr);
-		}
+		return ExchangeJavaWrapperGeneratorUtil.getPrimitiveTypeParameterSampleValueDeclaration(
+					endpointParameter.getType(), 
+					endpointParameter.getSampleValue(), 
+					imports);
 	}
 
 	/**

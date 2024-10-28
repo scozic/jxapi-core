@@ -251,4 +251,97 @@ public class ExchangeJavaWrapperGeneratorUtilTest {
 		Assert.assertEquals(1, imports.size());
 		Assert.assertTrue(imports.contains(StringJsonFieldDeserializer.class.getName()));
 	}
+	
+	@Test 
+	public void testGetPrimitiveTypeParameterSampleValueDeclaration_NullSampleValue() {
+		Set<String> imports = new HashSet<>();
+		Assert.assertEquals(null, ExchangeJavaWrapperGeneratorUtil.getPrimitiveTypeParameterSampleValueDeclaration(Type.INT, null, imports));
+		Assert.assertEquals(0, imports.size());
+	}
+
+	@Test 
+	public void testGetPrimitiveTypeParameterSampleValueDeclaration_BigDecimalSampleValue() {
+		Set<String> imports = new HashSet<>();
+		Assert.assertEquals("new BigDecimal(\"1.23\")", ExchangeJavaWrapperGeneratorUtil.getPrimitiveTypeParameterSampleValueDeclaration(Type.BIGDECIMAL, "1.23", imports));
+		Assert.assertEquals(1, imports.size());
+		Assert.assertTrue(imports.contains(BigDecimal.class.getName()));
+	}
+
+	@Test
+	public void testGetPrimitiveTypeParameterSampleValueDeclaration_LongSampleValue() {
+		Set<String> imports = new HashSet<>();
+		Assert.assertEquals("Long.valueOf(\"123\")", ExchangeJavaWrapperGeneratorUtil.getPrimitiveTypeParameterSampleValueDeclaration(Type.LONG, "123", imports));
+		Assert.assertEquals(0, imports.size());
+	}
+
+	@Test
+	public void testGetPrimitiveTypeParameterSampleValueDeclaration_TimestampSampleValue() {
+		Set<String> imports = new HashSet<>();
+		Assert.assertEquals("Long.valueOf(\"123\")", ExchangeJavaWrapperGeneratorUtil.getPrimitiveTypeParameterSampleValueDeclaration(Type.TIMESTAMP, "123", imports));
+		Assert.assertEquals(0, imports.size());
+	}
+
+	@Test
+	public void testGetPrimitiveTypeParameterSampleValueDeclaration_TimestampNowSampleValue() {
+		Set<String> imports = new HashSet<>();
+		Assert.assertEquals("Long.valueOf(System.currentTimeMillis())", ExchangeJavaWrapperGeneratorUtil.getPrimitiveTypeParameterSampleValueDeclaration(Type.TIMESTAMP, "now()", imports));
+		Assert.assertEquals(0, imports.size());
+	}
+
+	@Test
+	public void testGetPrimitiveTypeParameterSampleValueDeclaration_StringSampleValue() {
+		Set<String> imports = new HashSet<>();
+		Assert.assertEquals("\"test\"", ExchangeJavaWrapperGeneratorUtil.getPrimitiveTypeParameterSampleValueDeclaration(Type.STRING, "test", imports));
+		Assert.assertEquals(0, imports.size());
+	}
+
+	@Test
+	public void testGetPrimitiveTypeParameterSampleValueDeclaration_IntegersSampleValue() {
+		Set<String> imports = new HashSet<>();
+		Assert.assertEquals("Integer.valueOf(1)", ExchangeJavaWrapperGeneratorUtil.getPrimitiveTypeParameterSampleValueDeclaration(Type.INT, "1", imports));
+		Assert.assertEquals(0, imports.size());
+	}
+
+	@Test
+	public void testGetPrimitiveTypeParameterSampleValueDeclaration_BooleanSampleValue() {
+		Set<String> imports = new HashSet<>();
+		Assert.assertEquals("Boolean.valueOf(true)", ExchangeJavaWrapperGeneratorUtil.getPrimitiveTypeParameterSampleValueDeclaration(Type.BOOLEAN, "true", imports));
+		Assert.assertEquals(0, imports.size());
+	}
+
+	@Test
+	public void testGetPrimitiveTypeParameterSampleValueDeclaration_NonPrimitiveType() {
+		Set<String> imports = new HashSet<>();
+		Assert.assertEquals("\"[1, 3, 5]\"", ExchangeJavaWrapperGeneratorUtil.getPrimitiveTypeParameterSampleValueDeclaration(Type.fromTypeName("INT_LIST"), "[1, 3, 5]", imports));
+		Assert.assertEquals(0, imports.size());
+	}
+
+	@Test
+	public void testGetExchangeConstantsInterfaceName() {
+		ExchangeDescriptor exchangeDescriptor = new ExchangeDescriptor();
+		exchangeDescriptor.setName("TestExchange");
+		exchangeDescriptor.setBasePackage("com.x.y.z");
+		Assert.assertEquals("com.x.y.z.TestExchangeConstants", 
+							ExchangeJavaWrapperGeneratorUtil.getExchangeConstantsInterfaceName(exchangeDescriptor));
+	}
+
+	@Test
+	public void testGetExchangeApiConstantsInterfaceName() {
+		ExchangeDescriptor exchangeDescriptor = new ExchangeDescriptor();
+		exchangeDescriptor.setName("TestExchange");
+		exchangeDescriptor.setBasePackage("com.x.y.z");
+		ExchangeApiDescriptor apiDescriptor = new ExchangeApiDescriptor();
+		apiDescriptor.setName("Spot");
+		Assert.assertEquals("com.x.y.z.spot.TestExchangeSpotConstants", 
+							ExchangeJavaWrapperGeneratorUtil.getExchangeApiConstantsInterfaceName(exchangeDescriptor, apiDescriptor));
+	}
+
+	@Test
+	public void testGetExchangePropertiesInterfaceName() {
+		ExchangeDescriptor exchangeDescriptor = new ExchangeDescriptor();
+		exchangeDescriptor.setName("TestExchange");
+		exchangeDescriptor.setBasePackage("com.x.y.z");
+		Assert.assertEquals("com.x.y.z.TestExchangeProperties", 
+							ExchangeJavaWrapperGeneratorUtil.getExchangePropertiesInterfaceName(exchangeDescriptor));
+	}
 }

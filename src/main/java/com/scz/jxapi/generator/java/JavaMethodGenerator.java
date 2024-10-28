@@ -67,6 +67,10 @@ public class JavaMethodGenerator {
 		this.medthodDeclaration = medthodDeclaration;
 	}
 
+	/**
+	 * @return A string representation of this object
+	 * @see EncodingUtil#pojoToString(Object)
+	 */
 	@Override
 	public String toString() {
 		return EncodingUtil.pojoToString(this);

@@ -2,10 +2,15 @@ package com.scz.jxapi.generator.java.exchange;
 
 import java.io.IOException;
 import java.nio.file.Path;
+import java.util.List;
 
+import com.scz.jxapi.exchange.descriptor.Constant;
 import com.scz.jxapi.exchange.descriptor.ExchangeApiDescriptor;
 import com.scz.jxapi.exchange.descriptor.ExchangeDescriptor;
+import com.scz.jxapi.exchange.descriptor.Property;
 import com.scz.jxapi.generator.java.exchange.api.ExchangeApiClassesGenerator;
+import com.scz.jxapi.generator.java.exchange.constants.ConstantsInterfaceGenerator;
+import com.scz.jxapi.generator.java.exchange.constants.PropertiesInterfaceGenerator;
 import com.scz.jxapi.netutils.rest.ratelimits.RateLimitManager;
 
 /**
@@ -40,10 +45,36 @@ public class ExchangeClassesGenerator implements ClassesGenerator {
 	 */
 	@Override
 	public void generateClasses(Path outputFolder) throws IOException {
-		new ExchangeInterfaceGenerator(exchangeDescriptor).writeJavaFile(outputFolder);
+		// Generate exchange interface class
+		ExchangeInterfaceGenerator exchangeInterfaceGenerator = new ExchangeInterfaceGenerator(exchangeDescriptor);
+		exchangeInterfaceGenerator.writeJavaFile(outputFolder);
+		
+		// Generate exchange interface implementation class
 		new ExchangeInterfaceImplementationGenerator(exchangeDescriptor).writeJavaFile(outputFolder);
+		
+		// Generate classes for each exchange API group
 		for (ExchangeApiDescriptor api: exchangeDescriptor.getApis()) {
 			new ExchangeApiClassesGenerator(exchangeDescriptor, api).generateClasses(outputFolder);
+		}
+		
+		// Generate constants interface
+		List<Constant> constants = exchangeDescriptor.getConstants();
+		if (constants != null) {
+			ConstantsInterfaceGenerator cgen = new ConstantsInterfaceGenerator(
+					ExchangeJavaWrapperGeneratorUtil.getExchangeConstantsInterfaceName(exchangeDescriptor), 
+					constants); 
+			cgen.setDescription("Constants used in {@link " + exchangeInterfaceGenerator.getName() + "} API wrapper");
+			cgen.writeJavaFile(outputFolder);
+		}
+		
+		// Generate properties interface
+		List<Property> properties = exchangeDescriptor.getProperties();
+		if (properties != null) {
+			PropertiesInterfaceGenerator pgen = new PropertiesInterfaceGenerator(
+					ExchangeJavaWrapperGeneratorUtil.getExchangePropertiesInterfaceName(exchangeDescriptor), 
+					exchangeDescriptor.getName(), 
+					properties);
+			pgen.writeJavaFile(outputFolder);
 		}
 	}
 }

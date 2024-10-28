@@ -16,6 +16,11 @@ import com.scz.jxapi.util.EncodingUtil;
  * Part of a JSON document descriptor that describes a group of REST and or
  * Websocket endpoints. Child element of ExchangeDescriptor. <br>
  * 
+ * <h3>Constants</h3>
+ * <ul>
+ * <li>Can be specified a List of constants that are used in context of this API group of the exchange wrapper, for instance specific values for some APIs request/response/message properties.</li>
+ * <li>Each constant is described as a {@link Constant}</li>
+ * </ul>
  * <h3>REST endpoints</h3>
  * <ul>
  * <li>There can be multiple REST endpoints, or no such endpoint, in which case <code>restEndpoints</code> property can be <code>null</code></li>
@@ -46,6 +51,10 @@ import com.scz.jxapi.util.EncodingUtil;
  * 	"rateLimits": [
  *		{"id": "customRule", "timeFrame": 1500,  "maxTotalWeight": 300}
  *	],
+ *  "constants": 
+ * 		{"name":"responseCodeOk", "type": "INT", "description":"Value for REST response <i>responseCode</i> field. Success", "value":0},
+ * 		{"name":"responseCodeError", "type": "INT", "description":"Value for REST response <i>responseCode</i> field. Error", "value":-1}
+ * 	],
  * 	"restEndpoints": [
  * 		{
  * 			"name": "exchangeInfo",
@@ -126,6 +135,7 @@ import com.scz.jxapi.util.EncodingUtil;
  * @see HttpRequestExecutorFactory
  * @see WebsocketFactory
  * @see WebsocketHookFactory
+ * @see Constant
  */
 public class ExchangeApiDescriptor {
 	
@@ -148,6 +158,8 @@ public class ExchangeApiDescriptor {
 	private List<WebsocketEndpointDescriptor> websocketEndpoints;
 	
 	private List<RateLimitRule> rateLimits;
+
+	private List<Constant> constants;
 
 	/**
 	 * Retrieves the list of REST endpoints for this API.
@@ -356,6 +368,28 @@ public class ExchangeApiDescriptor {
 	 */
 	public void setWebsocketUrl(String websocketUrl) {
 		this.websocketUrl = websocketUrl;
+	}
+
+		/**
+	 * List of constants that are used in context of the exchange wrapper, for
+	 * instance specific values for some APIs request/response/message properties.
+	 * 
+	 * @see Constant
+	 * @return
+	 */
+	public List<Constant> getConstants() {
+		return constants;
+	}
+
+	/**
+	 * List of constants that are used in context of the exchange wrapper, for
+	 * instance specific values for some APIs request/response/message properties.
+	 * 
+	 * @see Constant
+	 * @param constants
+	 */
+	public void setConstants(List<Constant> constants) {
+		this.constants = constants;
 	}
 
 	@Override

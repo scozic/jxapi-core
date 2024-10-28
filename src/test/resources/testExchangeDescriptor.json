@@ -3,11 +3,22 @@
 	"description": "A sample Exchange descriptor file",
 	"docUrl": "https://docs.myexchange.com/api",
 	"basePackage": "com.foo.bar.gen",
+		"properties": [
+		{"name": "apiKey", "description": "API key"},
+		{"name": "apiSecret", "description": "API secret"}
+	],
+	"constants": [
+		{"name": "pingMessage", "type":"STRING", "description": "Ping message", "value": "Ping!"},
+		{"name": "pongMessage", "type":"STRING", "description": "Pong message", "value": "Pong!"}
+	],
 	"apis":[
 		{ 
 			"name": "MarketData",
 			"description": "The market data API of MyTestExchange",
 			"httpRequestInterceptorFactory": "com.foo.bar.BarHttpRequestInterceptorFactory",
+			"constants": [
+				{"name": "allTickers", "type":"STRING", "description": "Constant for subscribing to all tickers", "value": "ticker@all"}
+			],
 			"restEndpoints": [
 				{
 					"name": "exchangeInfo",

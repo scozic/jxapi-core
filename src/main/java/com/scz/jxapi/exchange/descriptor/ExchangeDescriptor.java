@@ -23,6 +23,20 @@ import com.scz.jxapi.util.EncodingUtil;
  * 		"description": "Binance exchange",
  * 		"docUrl": "https://binance-docs.github.io/apidocs",
  * 		"basePackage": "com.scz.jxapi.exchange.binance",
+ * 		"properties": [
+ * 			{
+ * 				"name": "apiKey",
+ * 				"type": "STRING",
+ * 				"description": "API key for authentication",
+ * 			}
+ * 		],
+ * 		"constants": [
+ * 			{
+ * 				"name": "API_BASE_URL",
+ * 				"description": "Base URL of the API",
+ * 				"type": "STRING",
+ * 				"value": "https://api.myexchange.com"
+ * 			}
  * 		"apis": [
  * 			{
  * 				"name": "Spot",
@@ -58,6 +72,11 @@ import com.scz.jxapi.util.EncodingUtil;
  * <li>rateLimits: the list of rate limits of the exchange. These limits will be
  * applied to all endpoints of each API group of the exchange. See
  * {@link RateLimitRule}</li>
+ * <li>constants: list of constants that are used in context of the exchange
+ * wrapper, for instance specific values for some APIs
+ * request/response/message properties. See {@link Constant}</li>
+ * <li>properties: list of properties that can be configured for the exchange
+ * wrapper, for instance API keys, secret keys, etc. See {@link Property}</li>
  * </ul>
  * 
  * This class is used to map the JSON descriptor of an exchange. It is used to
@@ -76,6 +95,10 @@ public class ExchangeDescriptor {
 	private List<ExchangeApiDescriptor> apis;
 	
 	private List<RateLimitRule> rateLimits;
+	
+	private List<Constant> constants;
+	
+	private List<Property> properties;
 
 	/**
 	 * Returns the list of APIs of the exchange.
@@ -179,6 +202,50 @@ public class ExchangeDescriptor {
 	 */
 	public void setRateLimits(List<RateLimitRule> rateLimits) {
 		this.rateLimits = rateLimits;
+	}
+	
+	/**
+	 * List of constants that are used in context of the exchange wrapper, for
+	 * instance specific values for some APIs request/response/message properties.
+	 * 
+	 * @see Constant
+	 * @return
+	 */
+	public List<Constant> getConstants() {
+		return constants;
+	}
+
+	/**
+	 * List of constants that are used in context of the exchange wrapper, for
+	 * instance specific values for some APIs request/response/message properties.
+	 * 
+	 * @see Constant
+	 * @param constants
+	 */
+	public void setConstants(List<Constant> constants) {
+		this.constants = constants;
+	}
+
+	/**
+	 * List of properties that can be configured for the exchange wrapper, for
+	 * instance API keys, secret keys, etc.
+	 * 
+	 * @see Properties
+	 * @return
+	 */
+	public List<Property> getProperties() {
+		return properties;
+	}
+
+	/**
+	 * List of properties that can be configured for the exchange wrapper, for
+	 * instance API keys, secret keys, etc.
+	 * 
+	 * @see Properties
+	 * @param properties
+	 */
+	public void setProperties(List<Property> properties) {
+		this.properties = properties;
 	}
 	
 	/**

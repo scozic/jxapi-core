@@ -24,7 +24,7 @@ import com.scz.jxapi.util.EncodingUtil;
  * <li><code>response</code> - the response data</li>
  * <li><code>urlParameters</code> - the URL parameters. A String that will be used as suffix to URL endpoint.
  * Can contain place holders like <code>${myArg}</code> that will be replaced with either the 
- * name of <code>request<field>, or, if request field name does not match and field is of 
+ * name of <code>request</code>, or, if request field name does not match and field is of 
  * object type (see {@link Type#isObject()} ), the name of a field of that nested object structure.
  * Can be <code>null</code> if no URL parameters are expected or if request should be serialized 
  * as query parameters (see <code>queryParams</code>).

@@ -17,6 +17,9 @@ import org.slf4j.LoggerFactory;
  */
 public class JavaCodeGenerationUtil {
 	
+	/**
+	 * String value of <code>null</code>
+	 */
 	public static final String NULL = "null";
 
 	private JavaCodeGenerationUtil() {}
@@ -385,4 +388,6 @@ public class JavaCodeGenerationUtil {
 	public static String getHtmlLink(String href, String text) {
 		return "<a href=\"" + href + "\">" + text + "</a>";
 	}
+	
+	
 }

@@ -73,7 +73,7 @@ public class EndpointDemoGeneratorUtilTest {
 		String method = EndpointDemoGeneratorUtil.generateEndpointParameterCreationMethod(param, null, imports);
 		Assert.assertEquals(
 				"public static Long createMyLongParam() {\n"
-			  + "  return Long.valueOf(123);\n"
+			  + "  return Long.valueOf(\"123\");\n"
 			  + "}\n", method);
 		checkImports(imports);
 	}
@@ -136,7 +136,7 @@ public class EndpointDemoGeneratorUtilTest {
 				+ "  MyRequest request = new MyRequest();\n"
 				+ "  request.setFoo(Integer.valueOf(123));\n"
 				+ "  request.setHello(\"Hello World\");\n"
-				+ "  request.setALong(Long.valueOf(9876543210));\n"
+				+ "  request.setALong(Long.valueOf(\"9876543210\"));\n"
 				+ "  request.setBDecimal(new BigDecimal(\"123.45\"));\n"
 				+ "  request.setCBool(Boolean.valueOf(true));\n"
 				+ "  return request;\n"

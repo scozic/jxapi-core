@@ -178,6 +178,7 @@ public class EncodingUtil {
 			}
 			return URLEncoder.encode(value, StandardCharsets.UTF_8.toString());
 		} catch (UnsupportedEncodingException e) {
+			// Should not be thrown since UTF_8 should be supported
 			throw new IllegalArgumentException("Error trying to encode url param:[" + value + "]", e);
 		}
 	}

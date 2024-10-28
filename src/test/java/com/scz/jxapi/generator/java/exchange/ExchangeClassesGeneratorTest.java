@@ -33,13 +33,16 @@ public class ExchangeClassesGeneratorTest {
 		ExchangeClassesGenerator generator = new ExchangeClassesGenerator(exchange);
 		generator.generateClasses(srcFolder);
 		
-		checkJavaFilesCount(Paths.get("."), 3);
+		checkJavaFilesCount(Paths.get("."), 5);
 		checkSourceFileExists(Paths.get("MyTestExchangeExchange.java"));
 		checkSourceFileExists(Paths.get("MyTestExchangeExchangeImpl.java"));
+		checkSourceFileExists(Paths.get("MyTestExchangeConstants.java"));
+		checkSourceFileExists(Paths.get("MyTestExchangeProperties.java"));
 		
-		checkJavaFilesCount(Paths.get("marketData"), 5);
+		checkJavaFilesCount(Paths.get("marketData"), 6);
 		checkSourceFileExists(Paths.get("marketData", "MyTestExchangeMarketDataApi.java"));
 		checkSourceFileExists(Paths.get("marketData", "MyTestExchangeMarketDataApiImpl.java"));
+		checkSourceFileExists(Paths.get("marketData", "MyTestExchangeMarketDataConstants.java"));
 		
 		checkJavaFilesCount(Paths.get("marketData", "deserializers"), 5);
 		checkSourceFileExists(Paths.get("marketData", "deserializers", "MyTestExchangeMarketDataExchangeInfoResponseDeserializer.java"));
@@ -68,6 +71,20 @@ public class ExchangeClassesGeneratorTest {
 		checkSourceFileExists(Paths.get("marketData", "serializers", "MyTestExchangeMarketDataTickersResponseSerializer.java"));
 		checkSourceFileExists(Paths.get("marketData", "serializers", "MyTestExchangeMarketDataTickerStreamRequestSerializer.java"));
 		checkSourceFileExists(Paths.get("marketData", "serializers", "MyTestExchangeMarketDataTickerStreamMessageSerializer.java"));
+	}
+	
+	@Test
+	public void testGenerateExchangeClassesNoConstantsNoProperties() throws IOException {
+		srcFolder = ClassesGeneratorTestUtil.generateTmpDir();
+		ExchangeDescriptor exchange = new ExchangeDescriptorParser().fromJson(Paths.get(".", "src", "test", "resources", "testExchangeDescriptor.json"));
+		exchange.setProperties(null);
+		exchange.setConstants(null);
+		ExchangeClassesGenerator generator = new ExchangeClassesGenerator(exchange);
+		generator.generateClasses(srcFolder);
+		
+		checkJavaFilesCount(Paths.get("."), 3);
+		checkSourceFileExists(Paths.get("MyTestExchangeExchange.java"));
+		checkSourceFileExists(Paths.get("MyTestExchangeExchangeImpl.java"));
 	}
 	
 	private void checkJavaFilesCount(Path relativePkg, int count) throws IOException {

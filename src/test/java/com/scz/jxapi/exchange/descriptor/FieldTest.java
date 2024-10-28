@@ -94,6 +94,17 @@ public class FieldTest {
     }
     
     @Test
+    public void testHashCodeIsToStringHashCode() {
+    	Field field = new Field();
+        field.setName("name");
+        field.setType("STRING");
+        field.setDescription("description");
+        field.setSampleValue("sampleValue");
+        field.setMsgField("f");
+        Assert.assertEquals(field.toString().hashCode(), field.hashCode());
+    }
+    
+    @Test
     public void testEquals_NotEqualsOtherNull() {
     	Field field = new Field();
     	Assert.assertFalse(field.equals(null));

@@ -11,10 +11,11 @@ import java.util.Properties;
  * Stores access to JXAPI core properties and demo classes default values.
  * <p>
  * The properties are loaded from the {@value #DEMO_API_PROPERTIES_FILE} file.
+ * This file is not present initially and should be created from existing
+ * 'test-jxapi.properties.dist' template in exchange wrapper 'template'.
  * Developpers should define that file in <code>src/test/resources</code>
- * folder.
- * If file is not found, empty properties are used. Properties are loaded only
- * once when the class is loaded.
+ * folder. If file is not found, empty properties are used. Properties are
+ * loaded only once when the class is loaded.
  * <p>
  * The properties can be accessed using the {@link #get()} method or by using
  * the {@link #getProperty(String)} method. However, usage of
