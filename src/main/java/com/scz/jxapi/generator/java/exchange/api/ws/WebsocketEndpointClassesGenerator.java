@@ -69,7 +69,7 @@ public class WebsocketEndpointClassesGenerator implements ClassesGenerator {
 							exchangeDescriptor, 
 							apiDescriptor, 
 							websocketEndpointDescriptor),
-							request.getParameters())
+							request.getProperties())
 			  .generateClasses(outputFolder);
 		}
 	
@@ -79,7 +79,7 @@ public class WebsocketEndpointClassesGenerator implements ClassesGenerator {
 							exchangeDescriptor, 
 							apiDescriptor, 
 							websocketEndpointDescriptor),
-					websocketEndpointDescriptor.getMessage().getParameters())
+					websocketEndpointDescriptor.getMessage().getProperties())
 			  .generateClasses(outputFolder);;
 		}
 	}
@@ -92,7 +92,7 @@ public class WebsocketEndpointClassesGenerator implements ClassesGenerator {
 							exchangeDescriptor, 
 							apiDescriptor, 
 							websocketEndpointDescriptor),
-							websocketEndpointDescriptor.getMessage().getParameters()).generateClasses(outputFolder);
+							websocketEndpointDescriptor.getMessage().getProperties()).generateClasses(outputFolder);
 		}
 	}
 
@@ -108,7 +108,7 @@ public class WebsocketEndpointClassesGenerator implements ClassesGenerator {
 						+ websocketEndpointDescriptor.getDescription()
 						+ "\n"
 						+ JavaCodeGenerationUtil.GENERATED_CODE_WARNING,
-					request.getParameters(), 
+					request.getProperties(), 
 					request.getImplementedInterfaces(), 
 					null).generateClasses(outputFolder);
 		}
@@ -126,7 +126,7 @@ public class WebsocketEndpointClassesGenerator implements ClassesGenerator {
 						+ websocketEndpointDescriptor.getDescription()
 						+ "\n"
 						+ JavaCodeGenerationUtil.GENERATED_CODE_WARNING,
-					websocketEndpointDescriptor.getMessage().getParameters(), 
+					websocketEndpointDescriptor.getMessage().getProperties(), 
 					websocketEndpointDescriptor.getMessage().getImplementedInterfaces(), 
 					null).generateClasses(outputFolder);
 		}
@@ -148,7 +148,7 @@ public class WebsocketEndpointClassesGenerator implements ClassesGenerator {
 		if (!type.isObject()) {
 			return false;
 		}
-		return !CollectionUtils.isEmpty(field.getParameters());
+		return !CollectionUtils.isEmpty(field.getProperties());
 	}
 	
 

@@ -45,13 +45,13 @@ public class JsonMessageDeserializerClassesGenerator implements ClassesGenerator
 		Set<String> imports = new HashSet<>();
 		for (Field field: fields) {
 			if ((field.getType().isObject())
-				&& field.getParameters() != null) {
+				&& field.getProperties() != null) {
 				Field objectParam = Field.builder()
 										 .name(field.getName())
 										 .type(Type.OBJECT)
 										 .description(field.getDescription())
 										 .msgField(field.getMsgField())
-										 .properties(field.getParameters())
+										 .properties(field.getProperties())
 										 .objectName(field.getObjectName())
 										 .build();
 				new JsonMessageDeserializerClassesGenerator(JavaCodeGenerationUtil.getClassPackage(deserializedClassName) + "."
@@ -59,7 +59,7 @@ public class JsonMessageDeserializerClassesGenerator implements ClassesGenerator
 																		objectParam, 
 																		imports, 
 																		deserializedClassName), 
-															field.getParameters()).generateClasses(outputFolder);
+															field.getProperties()).generateClasses(outputFolder);
 			}
 		}
 		JsonMessageDeserializerGenerator deserializerGenerator = new JsonMessageDeserializerGenerator(deserializedClassName, fields);

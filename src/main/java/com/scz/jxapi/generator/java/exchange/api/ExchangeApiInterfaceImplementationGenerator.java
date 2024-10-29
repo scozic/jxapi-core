@@ -413,7 +413,7 @@ public class ExchangeApiInterfaceImplementationGenerator extends JavaTypeGenerat
 			replacements.add(ExchangeApiGeneratorUtil.getRequestArgName(request.getName()));
 			replacements.add("\" + " + requestArgName + " + \"");
 		}
-		List<Field> endpointParameters = Optional.ofNullable(request == null? null: request.getParameters()).orElse(List.of());
+		List<Field> endpointParameters = Optional.ofNullable(request == null? null: request.getProperties()).orElse(List.of());
 		endpointParameters.forEach(param -> {
 			replacements.add(param.getMsgField() != null? param.getMsgField(): param.getName());
 			String parameterClass = ExchangeJavaWrapperGeneratorUtil.getClassNameForParameterType(param.getType(), getImports(), Optional.ofNullable(param.getObjectName()).orElse(messageClassObjectName));
@@ -474,7 +474,7 @@ public class ExchangeApiInterfaceImplementationGenerator extends JavaTypeGenerat
 			if (websocketApi.getTopic() != null) {
 				topicSerializerBody =	generateUrlParametersOrTopicSerializerBodyFromTemplate(
 												websocketApi.getTopic(), 
-												request.getParameters(), 
+												request.getProperties(), 
 												websocketApi.getTopicParametersListSeparator(),
 												websocketApi.getRequest().getName());
 			} else {
@@ -692,7 +692,7 @@ public class ExchangeApiInterfaceImplementationGenerator extends JavaTypeGenerat
 		String getUrlParametersBody = null;
 		List<Field> enpointParameters = request == null? null:
 													ExchangeApiGeneratorUtil.resolveFieldProperties(
-														exchangeApiDescriptor, request).getParameters();
+														exchangeApiDescriptor, request).getProperties();
 		if (ExchangeApiGeneratorUtil.restEndpointHasArguments(restApi, exchangeApiDescriptor)) {
 			Type requestDataType = ExchangeApiGeneratorUtil.getFieldType(request);
 			boolean hasQueryParams = restApi.isQueryParams()	

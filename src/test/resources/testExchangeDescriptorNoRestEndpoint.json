@@ -16,7 +16,7 @@
 					"topic": "${symbol}@ticker",
 					"description": "Subscribe to ticker stream",
 					"request":{
-						"parameters": [
+						"properties": [
 							{"name": "symbol", "type":"STRING", "description":"Symbol to subscribe to ticker stream of", "sampleValue":"BTC_USDT"}
 						]
 					},					
@@ -27,7 +27,7 @@
 					],
 					"message": {
 						"objectName": "TickerMessage",
-						"parameters": [
+						"properties": [
 							{"name":"subject", "msgField":"t", "type": "STRING", "description":"Topic", "sampleValue":"ticker"},
 							{"name":"symbol", "type": "STRING", "description":"Symbol name", "sampleValue":"BTC_USDT"},
 							{"name":"last", "msgField":"p", "type": "BIGDECIMAL", "description":"Last traded price", "sampleValue":"16000.00"}

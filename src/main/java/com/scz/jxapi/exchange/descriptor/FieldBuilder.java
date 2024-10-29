@@ -122,7 +122,7 @@ public class FieldBuilder {
 	 * Sets the parameters of the field.
 	 * 
 	 * @param properties the parameters of the field to set, see
-	 *                   {@link Field#getParameters()}
+	 *                   {@link Field#getProperties()}
 	 * @return this builder
 	 */
 	public FieldBuilder properties(List<Field> properties) {
@@ -133,11 +133,11 @@ public class FieldBuilder {
 	/**
 	 * Adds a parameter to the field.
 	 * 
-	 * @param property the parameter to add, see {@link Field#getParameters()}
+	 * @param property the parameter to add, see {@link Field#getProperties()}
 	 * @return this builder
 	 */
 	public FieldBuilder property(Field property) {
-		List<Field> properties = Optional.ofNullable(field.getParameters())
+		List<Field> properties = Optional.ofNullable(field.getProperties())
 				.orElse(List.of());
 		List<Field> res = new ArrayList<>(properties.size() + 1);
 		res.addAll(properties);

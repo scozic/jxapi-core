@@ -67,10 +67,10 @@ public class EndpointPojoClassesGenerator implements ClassesGenerator {
 												field.getObjectName(), 
 												className);
 		
-		if (field.getParameters() != null) {
+		if (field.getProperties() != null) {
 			new EndpointPojoClassesGenerator(objectParamClassName, 
 									  field.getDescription(), 
-									  field.getParameters(),
+									  field.getProperties(),
 									  field.getImplementedInterfaces(), 
 									  null).generateClasses(outputFolder);
 		}

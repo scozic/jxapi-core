@@ -20,9 +20,9 @@
 					},
 					"response": {
 						"objectName": "GenericResponse",
-						"parameters": [
+						"properties": [
 							{"name":"responseCode", "type": "INT", "description":"Request response code", "sampleValue":"0"},
-							{"name":"persons", "type": "OBJECT_LIST", "objectName": "Person", "parameters": [
+							{"name":"persons", "type": "OBJECT_LIST", "objectName": "Person", "properties": [
 									{"name":"id", "type": "INT", "description":"Person id", "sampleValue":-1},
 									{"name":"name", "type": "STRING", "description":"Person name", "sampleValue":-1},
 									{"name":"age", "type": "INT", "description":"Person age", "sampleValue":-1},
@@ -39,7 +39,7 @@
 					"url": "https://com.sample.myexchange/getRestRequestDataTypeObject",
 					"request": {
 						"objectName":"PersonFilter",
-						"parameters": [
+						"properties": [
 							{"name":"age", "type": "INT", "description":"Age filter", "sampleValue":-1},
 							{"name":"city", "type": "INT", "description":"City filter", "sampleValue":"Rome"}
 						]
@@ -61,7 +61,7 @@
 					"response": {
 						"objectName": "GenericResponse",
 						"type": "OBJECT_LIST", 
-						"parameters": [
+						"properties": [
 							{"name":"responseCode", "type": "INT", "description":"Request response code", "sampleValue":"0"},
 							{"name":"persons", "type": "OBJECT_LIST", "objectName": "Person"}
 						]

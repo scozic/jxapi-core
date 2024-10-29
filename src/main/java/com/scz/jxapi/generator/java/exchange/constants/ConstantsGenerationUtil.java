@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.Set;
 
 import com.scz.jxapi.exchange.descriptor.Constant;
-import com.scz.jxapi.exchange.descriptor.Property;
+import com.scz.jxapi.exchange.descriptor.ConfigProperty;
 import com.scz.jxapi.exchange.descriptor.Type;
 import com.scz.jxapi.generator.java.JavaCodeGenerationUtil;
 import com.scz.jxapi.generator.java.exchange.ExchangeJavaWrapperGeneratorUtil;
@@ -58,7 +58,7 @@ public class ConstantsGenerationUtil {
 	 * @param property the property to generate the property key property name for, for instance 'myProperty'.
 	 * @return the property key property name, for instance 'myPropertyProperty'
 	 */
-	public static String getPropertyKeyPropertyName(Property property) {
+	public static String getPropertyKeyPropertyName(ConfigProperty property) {
 		return  property.getName() + "Property";
 	}
 	
@@ -66,7 +66,7 @@ public class ConstantsGenerationUtil {
 	 * @param property the property to generate the property default value property name for, for instance 'myProperty'.
 	 * @return the property default value property name, for instance 'myPropertyDefaultValue'
 	 */
-	public static String getPropertyDefaultValuePropertyName(Property property) {
+	public static String getPropertyDefaultValuePropertyName(ConfigProperty property) {
 		return  property.getName() + "DefaultValue";
 	}
 
@@ -81,7 +81,7 @@ public class ConstantsGenerationUtil {
 	 * @param properties the properties to generate the constants for
 	 * @return the list of constants for the given properties
 	 */
-	public static List<Constant> getConstantsForProperties(List<Property> properties) {
+	public static List<Constant> getConstantsForProperties(List<ConfigProperty> properties) {
 		List<Constant> constants = new ArrayList<>();
 		properties.forEach(p -> {
 			String propKeyName = getPropertyKeyPropertyName(p);

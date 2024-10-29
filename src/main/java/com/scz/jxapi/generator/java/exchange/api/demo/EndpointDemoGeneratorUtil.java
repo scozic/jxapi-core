@@ -143,12 +143,12 @@ public class EndpointDemoGeneratorUtil {
 			   .append(itemClassName)
 			   .append("();\n");
 			
-			for (Field childParam: endpointParameter.getParameters()) {
+			for (Field childParam: endpointParameter.getProperties()) {
 				Type childParamType = childParam.getType();
 				String setArg = JavaCodeGenerationUtil.getQuotedString(childParam.getSampleValue());
 				String setAccessorName = JavaCodeGenerationUtil.getSetAccessorMethodName(
 						childParam.getName(),  
-						endpointParameter.getParameters().stream()
+						endpointParameter.getProperties().stream()
 										 .map(f -> f.getName()).collect(Collectors.toList()));
 				String setChildParamInstruction = 
 							new StringBuilder()

@@ -76,7 +76,7 @@ import com.scz.jxapi.util.EncodingUtil;
  * wrapper, for instance specific values for some APIs
  * request/response/message properties. See {@link Constant}</li>
  * <li>properties: list of properties that can be configured for the exchange
- * wrapper, for instance API keys, secret keys, etc. See {@link Property}</li>
+ * wrapper, for instance API keys, secret keys, etc. See {@link ConfigProperty}</li>
  * </ul>
  * 
  * This class is used to map the JSON descriptor of an exchange. It is used to
@@ -98,7 +98,7 @@ public class ExchangeDescriptor {
 	
 	private List<Constant> constants;
 	
-	private List<Property> properties;
+	private List<ConfigProperty> properties;
 
 	/**
 	 * Returns the list of APIs of the exchange.
@@ -233,7 +233,7 @@ public class ExchangeDescriptor {
 	 * @see Properties
 	 * @return
 	 */
-	public List<Property> getProperties() {
+	public List<ConfigProperty> getProperties() {
 		return properties;
 	}
 
@@ -244,7 +244,7 @@ public class ExchangeDescriptor {
 	 * @see Properties
 	 * @param properties
 	 */
-	public void setProperties(List<Property> properties) {
+	public void setProperties(List<ConfigProperty> properties) {
 		this.properties = properties;
 	}
 	

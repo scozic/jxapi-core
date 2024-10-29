@@ -62,7 +62,7 @@
 					"description": "A sample REST endpoint using OBJECT response data type (default type, explicit here)",
 					"url": "https://com.sample.mycex/getBigDecimal",
 					"response": {
-						"parameters": [
+						"properties": [
 							{"name":"responseCode", "type": "INT", "description":"Request response code", "sampleValue":"0"}
 						]
 					}
@@ -83,7 +83,7 @@
 					"url": "https://com.sample.mycex/getObjectlistMap",
 					"response": {
 						"type": "OBJECT_LIST_MAP",
-						"parameters": [
+						"properties": [
 							{"name":"responseCode", "type": "INT", "description":"Request response code", "sampleValue":"0"}
 						]
 					}
@@ -108,7 +108,7 @@
 					],
 					"message": { 
 						"type":"OBJECT",
-						"parameters": [
+						"properties": [
 							{"name":"topic", "msgField":"t", "type": "STRING", "description":"Topic", "sampleValue":"ticker"},
 							{"name":"symbol", "msgField":"s", "type": "STRING", "description":"Symbol name", "sampleValue":"BTC_USDT"},
 							{"name":"last", "msgField":"p", "type": "BIGDECIMAL", "description":"Last traded price", "sampleValue":"16000.00"}
@@ -124,7 +124,7 @@
 					],
 					"message": {
 						"type": "OBJECT_MAP_LIST",
-						"parameters": [
+						"properties": [
 							{"name":"topic", "msgField":"t", "type": "STRING", "description":"Topic", "sampleValue":"tickerMapList"},
 							{"name":"last", "msgField":"p", "type": "BIGDECIMAL", "description":"Last traded price", "sampleValue":"16000.00"}
 						]

@@ -82,7 +82,7 @@ public class FieldBuilderTest {
         f2.setName("bar");
         List<Field> properties = List.of(f1, f2);
         Field field = builder.properties(properties).build();
-        Assert.assertEquals(properties, field.getParameters());
+        Assert.assertEquals(properties, field.getProperties());
     }
 
     @Test
@@ -93,7 +93,7 @@ public class FieldBuilderTest {
         Field f2 = new Field();
         f2.setName("bar");
         Field field = builder.property(f1).property(f2).build();
-        Assert.assertEquals(List.of(f1, f2), field.getParameters());
+        Assert.assertEquals(List.of(f1, f2), field.getProperties());
     }
 
     @Test

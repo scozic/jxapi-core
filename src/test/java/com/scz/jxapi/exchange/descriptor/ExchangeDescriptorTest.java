@@ -28,7 +28,7 @@ public class ExchangeDescriptorTest {
         exchangeDescriptor.setRateLimits(List.of(new RateLimitRule()));
         exchangeDescriptor.setDocUrl("https://doc.myexchange.com");
         exchangeDescriptor.setConstants(List.of(new Constant()));
-        exchangeDescriptor.setProperties(List.of(new Property()));
+        exchangeDescriptor.setProperties(List.of(new ConfigProperty()));
         Assert.assertEquals("name", exchangeDescriptor.getName());
         Assert.assertEquals("description", exchangeDescriptor.getDescription());
         Assert.assertEquals("basePackage", exchangeDescriptor.getBasePackage());

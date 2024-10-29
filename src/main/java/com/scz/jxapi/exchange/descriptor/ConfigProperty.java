@@ -21,7 +21,7 @@ import com.scz.jxapi.util.EncodingUtil;
  * retrieving there values from properties<br/>
  * 
  */
-public class Property {
+public class ConfigProperty {
 
 	/**
 	 * Factory method to create a property instance
@@ -37,8 +37,8 @@ public class Property {
 	 *                     of that type. Can be <code>null</code> if no default value.
 	 * @return Property instance
 	 */
-	public static Property create(String name, Type type, String description, Object defaultValue) {
-		Property p = new Property();
+	public static ConfigProperty create(String name, Type type, String description, Object defaultValue) {
+		ConfigProperty p = new ConfigProperty();
 		p.setName(name);
 		p.setDescription(description);
 		p.setType(type);

@@ -700,7 +700,7 @@ public class ExchangeApiGeneratorUtilTest {
         apiDescriptor.setRestEndpoints(List.of(endpointDescriptor, otherEndpointDescriptor));
         
         Field expected = f.clone();
-        expected.setParameters(otherRequest.getParameters());
+        expected.setParameters(otherRequest.getProperties());
         expected.setType(Type.OBJECT);
         Assert.assertEquals(expected, ExchangeApiGeneratorUtil.resolveFieldProperties(apiDescriptor, f));
     }
@@ -1022,7 +1022,7 @@ public class ExchangeApiGeneratorUtilTest {
         apiDescriptor.setRestEndpoints(List.of(endpointDescriptor, otherEndpointDescriptor));
         
         Field expected = f.clone();
-        expected.setParameters(otherRequest.getParameters());
+        expected.setParameters(otherRequest.getProperties());
         expected.setType(Type.OBJECT);
         Assert.assertEquals(List.of(expected), ExchangeApiGeneratorUtil.resolveAllFieldProperties(apiDescriptor, List.of(f)));
     }

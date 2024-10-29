@@ -5,7 +5,7 @@ import java.util.List;
 import org.junit.Assert;
 import org.junit.Test;
 
-import com.scz.jxapi.exchange.descriptor.Property;
+import com.scz.jxapi.exchange.descriptor.ConfigProperty;
 import com.scz.jxapi.exchange.descriptor.Type;
 
 /**
@@ -15,12 +15,12 @@ public class PropertiesInterfaceGeneratorTest {
 
 	@Test
     public void testGenerate() {
-        Property stringProp = Property.create("myString", Type.STRING, "My String property", "foo");
-        Property stringPropWithNoDescriptionNoDefaultValue = Property.create("myStringWithNoDescriptionNoDefaultValue", Type.STRING, null, null);
-        Property intProp = Property.create("myInt", Type.INT, "My int property", 42);
-        Property longProp = Property.create("myLong", Type.LONG, "My long property", 1234567890123456L);
-        Property boolProp = Property.create("myBool", Type.BOOLEAN, "My boolean property", true);
-        Property bigDecimalProp = Property.create("myBigDecimal", Type.BIGDECIMAL, "My BigDecimal property", 1.2345);
+        ConfigProperty stringProp = ConfigProperty.create("myString", Type.STRING, "My String property", "foo");
+        ConfigProperty stringPropWithNoDescriptionNoDefaultValue = ConfigProperty.create("myStringWithNoDescriptionNoDefaultValue", Type.STRING, null, null);
+        ConfigProperty intProp = ConfigProperty.create("myInt", Type.INT, "My int property", 42);
+        ConfigProperty longProp = ConfigProperty.create("myLong", Type.LONG, "My long property", 1234567890123456L);
+        ConfigProperty boolProp = ConfigProperty.create("myBool", Type.BOOLEAN, "My boolean property", true);
+        ConfigProperty bigDecimalProp = ConfigProperty.create("myBigDecimal", Type.BIGDECIMAL, "My BigDecimal property", 1.2345);
         PropertiesInterfaceGenerator gen = new PropertiesInterfaceGenerator("com.x.y.MyProperties", "myExchange", 
         		List.of(stringProp, 
         				stringPropWithNoDescriptionNoDefaultValue, 

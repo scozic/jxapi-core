@@ -20,7 +20,7 @@
 					},
 					"response": {
 						"objectName": "GenericResponse",
-						"parameters": [
+						"properties": [
 							{"name":"responseCode", "type": "INT", "description":"Request response code", "sampleValue":"0"}
 						]
 					}
@@ -86,7 +86,7 @@
 					"url": "https://com.sample.mycex/postNoParameter",
 					"request": {
 						"type": "OBJECT",
-						"parameters": []
+						"properties": []
 					},
 					"response": {
 						"objectName": "GenericResponse"
@@ -99,7 +99,7 @@
 					"url": "https://com.sample.mycex/postBigDecimal",
 					"request": {
 						"type": "OBJECT",
-						"parameters": [
+						"properties": [
 							{"name":"singleArg", "type": "INT", "description":"Request single argument", "sampleValue":"0"}
 						]
 					},
@@ -142,7 +142,7 @@
 						"type": "OBJECT_LIST_MAP",
 						"objectName": "MultiSymbol",
 						"sampleMapKeyValue": ["spot"],
-						"parameters": [
+						"properties": [
 							{"name":"symbolList", "type": "STRING_LIST", "description":"List of full symbol names", "sampleValue":["BTC_USDT", "ETH_USDT"]},
 							{"name":"symbolMap", "type": "STRING_LIST_MAP", "description":"Symbols as a map of quote asset keys map with base asset as values", "sampleValue":{"USDT":["BTC_USDT", "ETH"]}},
 							{"name":"symbolObject", "type": "OBJECT", "msgField":"so", "objectName":"SingleSymbol"}
@@ -150,7 +150,7 @@
 					},
 					"response": {
 						"objectName": "GenericResponse",
-						"parameters": [
+						"properties": [
 							{"name":"responseCode", "type": "INT", "description":"Request response code", "sampleValue":"0"}
 						]
 					}
@@ -162,11 +162,11 @@
 					"url": "https://com.sample.mycex/postInt",
 					"request": {
 						"type": "OBJECT",
-						"parameters": []
+						"properties": []
 					},
 					"response": {
 						"objectName": "GenericResponse",
-						"parameters": [
+						"properties": [
 							{"name":"responseCode", "type": "INT", "description":"Request response code", "sampleValue":"0"}
 						]
 					}
@@ -183,7 +183,7 @@
 					},
 					"response": {
 						"objectName": "GenericResponse",
-						"parameters": [
+						"properties": [
 							{"name":"responseCode", "type": "INT", "description":"Request response code", "sampleValue":"0"}
 						]
 					}
@@ -196,11 +196,11 @@
 					"urlParameters":"/customUrSuffix",
 					"request": {
 						"type": "OBJECT",
-						"parameters": []
+						"properties": []
 					},
 					"response": {
 						"objectName": "GenericResponse",
-						"parameters": [
+						"properties": [
 							{"name":"responseCode", "type": "INT", "description":"Request response code", "sampleValue":"0"}
 						]
 					}
@@ -215,14 +215,14 @@
 					"topic": "ticker",
 					"description": "Subscribe to stream with OBJECT request type (implicit) and no parameters",
 					"request": {
-						"parameters": []
+						"properties": []
 					},
 					"messageTopicMatcherFields": [
 						{"name": "topic",  "value": "streamWithObjectRequestDataTypeZeroParametersTopic"}
 					],
 					"message": {
 						"objectName":"Ticker",
-						"parameters": [
+						"properties": [
 							{"name":"topic", "msgField":"t", "type": "STRING", "description":"Topic", "sampleValue":"ticker"},
 							{"name":"symbol", "msgField":"s", "type": "STRING", "description":"Symbol name", "sampleValue":"BTC_USDT"},
 							{"name":"last", "msgField":"p", "type": "BIGDECIMAL", "description":"Last traded price", "sampleValue":"16000.00"}
@@ -236,7 +236,7 @@
 					"request": {
 						"name": "symbolObj",
 						"objectName": "SingleSymbol",
-						"parameters": [
+						"properties": [
 							{"name":"symbol", "type": "STRING", "msgField":"s", "description":"Symbol name", "sampleValue":"BTC_USDT"}
 						]
 					},

@@ -134,7 +134,7 @@ public class Field {
 	
 	private String objectName;
 	
-	private List<Field> parameters;
+	private List<Field> properties;
 	
 	private List<String> implementedInterfaces;
 	
@@ -151,7 +151,7 @@ public class Field {
 		clone.sampleValue = this.sampleValue;
 		clone.msgField = this.msgField;
 		clone.objectName = this.objectName;
-		clone.parameters = cloneList(this.parameters);
+		clone.properties = cloneList(this.properties);
 		clone.implementedInterfaces = cloneList(this.implementedInterfaces);
 		return clone;
 	}
@@ -241,8 +241,8 @@ public class Field {
 	 *         defined an object name (see {@link #getObjectName()}). That means
 	 *         properties of that object are defined in another {@link Field}.
 	 */
-	public List<Field> getParameters() {
-		return parameters;
+	public List<Field> getProperties() {
+		return properties;
 	}
 
 	/**
@@ -251,7 +251,7 @@ public class Field {
 	 *               structure, <code>null</code> otherwise.
 	 */
 	public void setParameters(List<Field> fields) {
-		this.parameters = fields;
+		this.properties = fields;
 	}
 	
 	/**
@@ -259,7 +259,7 @@ public class Field {
 	 *         corresponding to object defined by this field. Relevant only when
 	 *         type is an object see {@link CanonicalType#isObject}.<br/> Remark: in a descriptor
 	 *         file, the first field defining a given object name should define that object properties
-	 *         see {@link Field#getParameters()} , other parameters using same object name need not
+	 *         see {@link Field#getProperties()} , other parameters using same object name need not
 	 *         define sub-parameters. This allow not to repeat identical structures
 	 *         in different APIs.
 	 */

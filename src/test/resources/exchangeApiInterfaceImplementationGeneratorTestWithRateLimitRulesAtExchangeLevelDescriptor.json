@@ -26,12 +26,12 @@
 						{"id": "customRule", "timeFrame": 1500,  "maxTotalWeight": 300}
 					],
 					"request": {
-						"parameters": [
+						"properties": [
 							{"name":"symbols", "type": "STRING_LIST", "description":"The list of symbol to fetch market information for. Leave empty to fetch all markets", "sampleValue":""}
 						]
 					},
 					"response": {
-						"parameters": [
+						"properties": [
 							{"name":"responseCode", "type": "INT", "description":"Request response code", "sampleValue":"0"},
 							{"name":"payload", "type": "OBJECT_LIST", "description":"List of market information for each requested symbol", "parameters":[
 									{"name":"symbol", "type": "STRING", "description":"Market symbol", "sampleValue":"BTC_USDT"},

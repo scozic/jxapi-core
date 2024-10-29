@@ -5,7 +5,7 @@ import java.util.Optional;
 import java.util.Properties;
 import java.util.stream.Collectors;
 
-import com.scz.jxapi.exchange.descriptor.Property;
+import com.scz.jxapi.exchange.descriptor.ConfigProperty;
 import com.scz.jxapi.exchange.descriptor.Type;
 import com.scz.jxapi.generator.java.JavaCodeGenerationUtil;
 import com.scz.jxapi.generator.java.JavaTypeGenerator;
@@ -42,14 +42,14 @@ import com.scz.jxapi.util.PropertiesUtil;
 public class PropertiesInterfaceGenerator extends JavaTypeGenerator {
 	
 	private final String exchangeName;
-	private final List<Property> properties;
+	private final List<ConfigProperty> properties;
 
 	/**
 	 * Constructor
 	 * @param fullClassName Full name of the interface to generate, example: com.example.MyProperties
 	 * @param properties List of properties to generate in the interface
 	 */
-	public PropertiesInterfaceGenerator(String fullClassName, String exchangeName, List<Property> properties) {
+	public PropertiesInterfaceGenerator(String fullClassName, String exchangeName, List<ConfigProperty> properties) {
 		super(fullClassName);
 		this.exchangeName = exchangeName;
 		this.properties = properties;
@@ -69,7 +69,7 @@ public class PropertiesInterfaceGenerator extends JavaTypeGenerator {
 		  .append("    <th>Description</th>\n")
 		  .append("    <th>Default value</th>\n")
 		  .append("  </tr>\n");
-		for (Property p : properties) {
+		for (ConfigProperty p : properties) {
 			String pDesc = Optional.ofNullable(p.getDescription()).orElse("");
 			String pDef = Optional.ofNullable(p.getDefaultValue()).orElse("").toString();
 			sb.append("  <tr>\n")
@@ -94,7 +94,7 @@ public class PropertiesInterfaceGenerator extends JavaTypeGenerator {
 		return super.generate();
 	}
 
-	private void generatePropertyGetterMethod(Property property) {
+	private void generatePropertyGetterMethod(ConfigProperty property) {
 		StringBuilder sb = new StringBuilder()
 				.append("\n");
 		String name = property.getName();
@@ -150,7 +150,7 @@ public class PropertiesInterfaceGenerator extends JavaTypeGenerator {
 		appendToBody(sb.toString());
 	}
 	
-	private String getPropertiesUtilGetPropertyMethodName(Property property) {
+	private String getPropertiesUtilGetPropertyMethodName(ConfigProperty property) {
 		switch (property.getType().getCanonicalType()) {
 		case BIGDECIMAL:
 			return "getBigDecimalProperty";

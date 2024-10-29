@@ -565,7 +565,7 @@ public class ExchangeApiGeneratorUtil {
 	 * A given {@link Field} may have an object name defined, see
 	 * {@link Field#getObjectName()} and properties of this objectName defined in
 	 * another API of the enclosing ExchangeApi, or it could be the case for some
-	 * sub-properties defined, see {@link Field#getParameters()}.
+	 * sub-properties defined, see {@link Field#getProperties()}.
 	 * <br/>
 	 * This method performs a recursive resolution of properties for the given field
 	 * among all 'object' properties of every REST request or response or Websockey
@@ -604,7 +604,7 @@ public class ExchangeApiGeneratorUtil {
 		}
 		if (type.isObject() 
 			&& field.getObjectName() != null 
-			&& field.getParameters() == null) {
+			&& field.getProperties() == null) {
 			field = field.clone();
 			field.setType(type);
 			field.setParameters(findPropertiesForObjectNameInApi(field.getObjectName(), exchangeApiDescriptor));
@@ -625,13 +625,13 @@ public class ExchangeApiGeneratorUtil {
 	 */
 	public static int getFieldPropertiesCount(Field field, 
 											  ExchangeApiDescriptor exchangeApiDescriptor) {
-		return Optional.ofNullable(field == null? null: resolveFieldProperties(exchangeApiDescriptor, field).getParameters())
+		return Optional.ofNullable(field == null? null: resolveFieldProperties(exchangeApiDescriptor, field).getProperties())
 		               .orElse(List.of()).size();
 	}
 
 	/**
 	 * Finds the properties of an object name in an API descriptor: return
-	 * properties (see {@link Field#getParameters()})
+	 * properties (see {@link Field#getProperties()})
 	 * of first field found in any object field of any REST/Websocket API that has
 	 * same object name as this field.
 	 * 
@@ -689,7 +689,7 @@ public class ExchangeApiGeneratorUtil {
 
 	/**
 	 * Finds the properties of an object name in a field: return properties (see
-	 * {@link Field#getParameters()}) found in provided field if it has the same
+	 * {@link Field#getProperties()}) found in provided field if it has the same
 	 * object name as the one provided, or properties of first field found in its
 	 * sub-properties that carries expected objectName recursively.
 	 * 
@@ -704,7 +704,7 @@ public class ExchangeApiGeneratorUtil {
 		if (param == null) {
 			return null;
 		}
-		List<Field> res = param.getParameters();
+		List<Field> res = param.getProperties();
 		if (res == null) {
 			return null;
 		}

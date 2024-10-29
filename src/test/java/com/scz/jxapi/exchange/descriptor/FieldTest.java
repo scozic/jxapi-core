@@ -33,7 +33,7 @@ public class FieldTest {
         Assert.assertEquals("sampleValue", field.getSampleValue());
         Assert.assertEquals("f", field.getMsgField());
         Assert.assertEquals("MyObject", field.getObjectName());
-        Assert.assertEquals(List.of(), field.getParameters());
+        Assert.assertEquals(List.of(), field.getProperties());
         Assert.assertEquals(List.of("com.x.y.MyInterface"), field.getImplementedInterfaces());
         Assert.assertEquals(List.of("key1", "value1"), field.getSampleMapKeyValue());
     }
@@ -59,7 +59,7 @@ public class FieldTest {
         Assert.assertEquals("sampleValue", field.getSampleValue());
         Assert.assertEquals("f", field.getMsgField());
         Assert.assertEquals("MyObject", field.getObjectName());
-        Assert.assertEquals(List.of(), field.getParameters());
+        Assert.assertEquals(List.of(), field.getProperties());
         Assert.assertEquals(List.of("com.x.y.MyInterface"), field.getImplementedInterfaces());
         Assert.assertEquals(List.of("key1", "value1"), field.getSampleMapKeyValue());
     }
