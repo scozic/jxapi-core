@@ -8,8 +8,8 @@ import com.scz.jxapi.util.EncodingUtil;
 
 /**
  * Element of exchange descriptor JSON document describing a given field of a
- * REST request or response or websocket subscribe request or message.<br/>
- * A field is defined by:<br/>
+ * REST request or response or websocket subscribe request or message.<br>
+ * A field is defined by:<br>
  * <ul>
  * <li>Its <code>name</code> property, which has to be unique among fields of
  * same object structure</li>
@@ -28,10 +28,10 @@ import com.scz.jxapi.util.EncodingUtil;
  * can differ from actual name when APIs are designed to minify JSON data
  * transferred by using single letter as field names. In this case it is
  * recommended to define <code>name</code> property in descriptor with
- * understandable name, and set <code>msgField</code> value/li>
+ * understandable name, and set <code>msgField</code> value</li>
  * <li>Its <code>objectName</code>, the simple (without package) name of java
  * class to represent corresponding to object defined by this parameter.
- * Relevant only when type is an object see {@link CanonicalType#isObject}.<br/>
+ * Relevant only when type is an object see {@link CanonicalType#isObject}.<br>
  * <strong>Remarks:</strong>
  * <ul>
  * <li>In a descriptor file, the first field defining a given object name should
@@ -46,7 +46,7 @@ import com.scz.jxapi.util.EncodingUtil;
  * a single class for the object, and reuse it in multiple APIs.</li>
  * <li>The destination package of the generated class is sub package 'pojo' of
  * enclosing API group package, which is sub package 'apiName' of
- * <code>basePackage</code> property in the descriptor file.<br/>
+ * <code>basePackage</code> property in the descriptor file.<br>
  * Example: for a field with objectName <i>Foo</i> in an endpoint of API group
  * named <i>myapi</i> group of exchange with base package <i>com.x.y</i>, the
  * class Foo will be generated in package <i>com.x.y.myapi.pojo</i></i></li>
@@ -60,8 +60,8 @@ import com.scz.jxapi.util.EncodingUtil;
  * an object see {@link CanonicalType#isObject}.</li>
  * </ul>
  * 
- * JSON examples:<br/>
- * <i>Field of simple type STRING:</i><br/>
+ * JSON examples:<br>
+ * <i>Field of simple type STRING:</i><br>
  * 
  * <pre>
  * {
@@ -79,9 +79,9 @@ import com.scz.jxapi.util.EncodingUtil;
  * ["f":"Hello"]
  * </pre>
  * 
- * <br/>
- * <br/>
- * <i>Field of object type OBJECT_MAP:</i><br/>
+ * <br>
+ * <br>
+ * <i>Field of object type OBJECT_MAP:</i><br>
  * 
  * <pre>
  * {
@@ -110,7 +110,7 @@ import com.scz.jxapi.util.EncodingUtil;
  * }
  * </pre>
  * 
- * Expected sample json value of data represented by such field: <br/>
+ * Expected sample json value of data represented by such field: <br>
  * 
  * <pre>
  * [
@@ -127,10 +127,10 @@ import com.scz.jxapi.util.EncodingUtil;
  * ]
  * </pre>
  * 
- * <br/>
+ * <br>
  * Notice in example above f1 and f2 are expected fields in json structure, but
- * "foo" and "bar" are arbitrary keys of MAP field type.<br/>
- * <br/>
+ * "foo" and "bar" are arbitrary keys of MAP field type.<br>
+ * <br>
  * 
  * @see RestEndpointDescriptor
  * @see Type
@@ -289,7 +289,7 @@ public class Field {
 	/**
 	 * @return The simple (without package) name of java class to represent
 	 *         corresponding to object defined by this field. Relevant only when
-	 *         type is an object see {@link CanonicalType#isObject}.<br/> Remark: in a descriptor
+	 *         type is an object see {@link CanonicalType#isObject}.<br> Remark: in a descriptor
 	 *         file, the first field defining a given object name should define that object properties
 	 *         see {@link Field#getProperties()} , other properties using same object name need not
 	 *         define sub-properties. This allow not to repeat identical structures

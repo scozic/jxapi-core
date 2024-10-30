@@ -164,7 +164,7 @@ public abstract class AbstractWebsocket implements Websocket {
 	 * instance is in 'disconnected' state. {@link #connected} flag will be switched
 	 * to true just before calling it. When this method returns, it is assumed that
 	 * websocket is ready to send outgoing messages using {@link #send(String)} and
-	 * dispatch incoming messages. <br/>
+	 * dispatch incoming messages. <br>
 	 * If an error occurs trying to establish websocket link, a
 	 * {@link WebsocketException} must be thrown. In this case, {@link #connected}
 	 * flag will be set back to <code>false</code> and it is assumed that all

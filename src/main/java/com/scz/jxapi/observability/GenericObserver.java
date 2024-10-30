@@ -8,7 +8,7 @@ import java.util.concurrent.TimeoutException;
 /**
  * The GenericObserver class is a generic observer implementation that allows
  * tracking and waiting for events of a specific type.
- * <br/>
+ * <br>
  * Useful for tests.
  *
  * @param <T> the type of events to observe

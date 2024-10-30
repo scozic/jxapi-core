@@ -13,15 +13,15 @@ import java.util.Optional;
  * {@link CanonicalType#OBJECT}), a list of data of same subtype (see
  * {@link CanonicalType#LIST}) , or a
  * map indexed with {@link String} keys and values of same subtype (see
- * {@link CanonicalType#MAP}) .<br/>
+ * {@link CanonicalType#MAP}) .<br>
  * When a field canonical type is primitive or
  * {@link CanonicalType#OBJECT}, it subtype is
- * <code>null</code> as not relevant.<br/>
+ * <code>null</code> as not relevant.<br>
  * Otherwise, the type stands for a list or {@link String} key map of values of
- * same subtype which can be any type.<br/>
+ * same subtype which can be any type.<br>
  * Such data ypes are extensible: for instance
  * <code>BIGDECIMAL_LIST_MAP</code> means value of a field is a map of list of
- * {@link BigDecimal} values. <br/>
+ * {@link BigDecimal} values. <br>
  * When leaf subtype is {@link CanonicalType#OBJECT} (see
  * {@link #isObject()}), the field definition must specify the list of
  * {@link Field} that defines the object.

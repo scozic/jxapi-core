@@ -90,10 +90,10 @@ public class ConstantsGenerationUtil {
 					.append(p.getName())
 					.append("' property key.");
 			if (p.getDescription() != null) {
-				propertyDesc.append("<br/>\n")
+				propertyDesc.append("<br>\n")
 							.append(p.getDescription());
 			}
-			propertyDesc.append("<br/>\nProperty value type:")
+			propertyDesc.append("<br>\nProperty value type:")
 						.append(p.getType());
 			
 			constants.add(Constant.create(propKeyName, Type.STRING, propertyDesc.toString(), p.getName()));

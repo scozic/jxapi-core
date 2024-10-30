@@ -61,7 +61,7 @@ public class PropertiesInterfaceGenerator extends JavaTypeGenerator {
 		StringBuilder sb = new StringBuilder();
 		sb.append("Configurable properties for <strong>")
 		  .append(exchangeName)
-		  .append("</strong> exchange:<br/>\n")
+		  .append("</strong> exchange:<br>\n")
 		  .append("<table>\n")
 		  .append("  <tr>\n")
 		  .append("    <th>Name</th>\n")
@@ -79,7 +79,7 @@ public class PropertiesInterfaceGenerator extends JavaTypeGenerator {
 			  .append("    <td>").append(pDef).append("</td>\n")
 			  .append("  </tr>\n");
 		}
-		sb.append("</table><br/>\n");
+		sb.append("</table><br>\n");
 		sb.append("Exposes helper methods are available to retrieve value of each of these properties "
 					+ "with right type, returning default value if not present in properties");
 		return sb.toString();

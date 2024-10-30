@@ -102,7 +102,7 @@ public class WebsocketEndpointClassesGenerator implements ClassesGenerator {
 					"Subscription request to" + exchangeDescriptor.getName() 
 						+ " " + apiDescriptor.getName() + " API " 
 						+ websocketEndpointDescriptor.getName() 
-						+ " websocket endpoint<br/>\n" 
+						+ " websocket endpoint<br>\n" 
 						+ websocketEndpointDescriptor.getDescription()
 						+ "\n"
 						+ JavaCodeGenerationUtil.GENERATED_CODE_WARNING,
@@ -120,7 +120,7 @@ public class WebsocketEndpointClassesGenerator implements ClassesGenerator {
 					"Message disseminated upon subscription to " 
 						+ exchangeDescriptor.getName() + " " 
 						+ apiDescriptor.getName() + " API " 
-						+ websocketEndpointDescriptor.getName() + " websocket endpoint request<br/>\n"
+						+ websocketEndpointDescriptor.getName() + " websocket endpoint request<br>\n"
 						+ websocketEndpointDescriptor.getDescription()
 						+ "\n"
 						+ JavaCodeGenerationUtil.GENERATED_CODE_WARNING,

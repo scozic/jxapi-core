@@ -7,18 +7,18 @@ import com.scz.jxapi.util.EncodingUtil;
  * Represents a configuration property of an exchange, that client should
  * provide in constructor of an {@link Exchange} implementation to instantiate a
  * wrapper. For instance when an API requires authentication, the client should
- * provide the authentication credentials (API Key,secret) as properties<br/>
+ * provide the authentication credentials (API Key,secret) as properties<br>
  * Exchange descriptor may contain a list of such properties as value of
- * 'properties' property of exchange.<br/>
+ * 'properties' property of exchange.<br>
  * The name of a property should be spelled 'camelCase' like a Java variable
- * name.<br/>
+ * name.<br>
  * The value of a property can be a 'primitive' type e.g. {@link Type#STRING},
  * {@link Type#INT}, {@link Type#BOOLEAN}, {@link Type#BIGDECIMAL},
- * {@link Type#LONG}. It can't be a list, map, or object.<br/>
+ * {@link Type#LONG}. It can't be a list, map, or object.<br>
  * The properties will be exposed in a generated Java interface in the generated
  * Java wrapper class for the exchange. That interface wlll list constants for
  * property names and default values, and default 'getter' methods for
- * retrieving there values from properties<br/>
+ * retrieving there values from properties<br>
  * 
  */
 public class ConfigProperty {

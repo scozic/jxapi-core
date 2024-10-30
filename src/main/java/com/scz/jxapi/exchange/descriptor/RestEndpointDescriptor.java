@@ -33,8 +33,8 @@ import com.scz.jxapi.util.EncodingUtil;
  * items of that list in serialzed request. Remark: If request is of type MAP which is not likely 
  * for an API expected request data as URL parameters or query params, the corresponding serialized 
  * object will be URL encoded value of JSON.</li>
- * <li><code>queryParams</code> - whether the request data should be serialized as URL are query parameters.<br/> 
- * <strong>About query parameters</strong>:<br/>
+ * <li><code>queryParams</code> - whether the request data should be serialized as URL are query parameters.<br> 
+ * <strong>About query parameters</strong>:<br>
  * <ul>
  * <li>The default value used in generated code depends on HTTP method, it will be true for methods
  * where corresponding requests expect a body: <code>GET</code>, </code>DELETE</code>, <code>HEAD</code>, 
@@ -53,14 +53,14 @@ import com.scz.jxapi.util.EncodingUtil;
  * <li><code>rateLimits</code> - the rate limits this REST API subject to</li>
  * </ul>
  * <p>
- * API endpoints are child elements of api element (see ExchangeApiDescriptor ) in the JSON document.<br/>
+ * API endpoints are child elements of api element (see ExchangeApiDescriptor ) in the JSON document.<br>
  * Such descriptor will be used to generate method declaration in API interface and its 
- * implementation, see {@link ExchangeApiInterfaceImplementationGenerator} and {@link ExchangeApiClassesGenerator}.<br/>
+ * implementation, see {@link ExchangeApiInterfaceImplementationGenerator} and {@link ExchangeApiClassesGenerator}.<br>
  * <p>
- * About <code>request</code> and <code>response</code> properties:<br/> 
+ * About <code>request</code> and <code>response</code> properties:<br> 
  * <ul>
  * <li>Request and response parameters are described as {@link Field}. The name of the <code>request</code> field 
- * is the name of single argument of the method that will be generated in the API interface.<br/></li>
+ * is the name of single argument of the method that will be generated in the API interface.<br></li>
  * <li>Request and response parameters are described as {@link Field}. 
  * The name of the <code>response</code> field is not relevant. 
  * <li><code>request</code> property is optional. If not present, the method will be generated with no argument.</li>

@@ -10,7 +10,7 @@ import com.scz.jxapi.util.EncodingUtil;
  * Encapsulates an event that occurs during the execution of an exchange API
  * REST endpoint call or websocket subscription, unsubscription, message, or
  * error. Event is identified by its type, and carries additional information
- * depending on the type. <br/>
+ * depending on the type. <br>
  * {@link ExchangeApi} client can subscribe to this event stream using
  * {@link ExchangeApi#subscribeObserver(ExchangeApiObserver)}
  * 

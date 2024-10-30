@@ -84,7 +84,7 @@ public class RestEndpointDemoGenerator extends JavaTypeGenerator {
 				+ ExchangeJavaWrapperGeneratorUtil.getApiInterfaceClassName(exchangeDescriptor, exchangeApiDescriptor) 
 				+ "#" 
 				+ apiMethodName 
-				+ "(" + (requestClassName == null? "": requestSimpleClassName) + ")}<br/>\n"
+				+ "(" + (requestClassName == null? "": requestSimpleClassName) + ")}<br>\n"
 				+ JavaCodeGenerationUtil.GENERATED_CODE_WARNING);
 		
 	}

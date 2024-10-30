@@ -36,16 +36,16 @@ import com.scz.jxapi.util.FactoryUtil;
  * for some of its methods.
  * It is designed to be used as a base class by ExchangeApiGenerator to generate
  * concrete exchange API classes.
- * <br/>
+ * <br>
  * This class contains properties and methods that are shared by all exchange
  * APIs, such as the exchange name, exchange ID,
  * properties, request throttler, HTTP request executor, and observable for
  * handling exchange API events.
- * <br/>
+ * <br>
  * Subclasses of AbstractExchangeApi are expected to provide concrete
  * implementations for the remaining methods defined in the
  * ExchangeApi interface.
- * <br/>
+ * <br>
  * This class also provides helper methods for creating HTTP request
  * interceptors, HTTP request executors, and websocket managers.
  * 
@@ -212,7 +212,7 @@ public abstract class AbstractExchangeApi implements ExchangeApi {
 	/**
 	 * Submits a REST request asynchronously using the specified request and message deserializer to deserialize response.
 	 * If a request throttler is set, the request is submitted through the throttler.
-	 * <br/>
+	 * <br>
 	 * This method should used by subclasses to submit REST requests.
 	 * @param <A>
 	 * @param request
@@ -309,7 +309,7 @@ public abstract class AbstractExchangeApi implements ExchangeApi {
 	
 	/**
 	 * Dispatches the specified exchange API event to all observers.
-	 * <br/>
+	 * <br>
 	 * Needs usually not be called by subclasses, as it is called for every call to
 	 * {@link #submit(HttpRequest, MessageDeserializer)} and
 	 * {@link #createWebsocketEndpoint(String, MessageDeserializer)}.

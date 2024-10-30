@@ -29,7 +29,7 @@ public class EncodingUtil {
 	}
 
 	/**
-	 * Substitures properties from a map using provided key values pairs.<br/>
+	 * Substitures properties from a map using provided key values pairs.<br>
 	 * Example:
 	 * 
 	 * <pre>
@@ -187,10 +187,10 @@ public class EncodingUtil {
 	 * Shortens a long string to a maximum length by keeping the first and last
 	 * characters and replacing the middle by a separator "...." (see
 	 * {@link #PRETTY_PRINT_LONG_STRING_REDUCE_SEPARATOR}).
-	 * <br/>
+	 * <br>
 	 * If the string is already
 	 * shorter than the maximum length, it is returned as is.
-	 * <br/>
+	 * <br>
 	 * If the maximum length is too small to keep the separator, an
 	 * {@link IllegalArgumentException} is thrown.
 	 * 

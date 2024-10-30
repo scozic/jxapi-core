@@ -4,7 +4,7 @@ package com.scz.jxapi.netutils.websocket.multiplexing;
  * As for sake of performance, websockets are multiplexed and messages of different topics will can received on same socket, each Websocket Endpoint is expected to 
  * provide an implementation of this parser interface to route relevant messages to it. 
  * <p>
- * It is expected to be used a follows:<br/>
+ * It is expected to be used a follows:<br>
  * Upon each call to  {@link #matches(String, String)}, checks if its status is still {@link WebsocketMessageTopicMatchStatus#NO_MATCH}:
  * <ul>
  *  <li>If the list of matching fields configured is emtpty or <code>null</code>, the matcher will match any message field, and will be therefore always in {@link WebsocketMessageTopicMatchStatus#MATCHED} state.  
@@ -29,7 +29,7 @@ public interface WebsocketMessageTopicMatcher {
 	 * {@link WebsocketMessageTopicMatcher} (one for each endpoint), for each field
 	 * of message with is value, until it returns either
 	 * {@link WebsocketMessageTopicMatchStatus#MATCHED} or
-	 * {@link WebsocketMessageTopicMatchStatus#CANT_MATCH} for one endpoint.<br/>
+	 * {@link WebsocketMessageTopicMatchStatus#CANT_MATCH} for one endpoint.<br>
 	 * Implementations may match a message across multiple fields.
 	 * {@link WebsocketMessageTopicMatchStatus#MATCHED}. should be returned only
 	 * when all fields have been matched.

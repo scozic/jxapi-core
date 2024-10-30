@@ -58,7 +58,7 @@ public class WebsocketEndpointDescriptor {
 	 * Set the topic of the websocket endpoint. Will be used to match messages
 	 * associated with this endpoint in the stream of websocket messages
 	 * that may disseminate messages for several multiplexed streams.
-	 * <br/>
+	 * <br>
 	 * Topic can contain reference to whole request of request property value for
 	 * instance
 	 * <code>ticker.${request}</code> topic means actual topic is

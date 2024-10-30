@@ -3,22 +3,22 @@ package com.scz.jxapi.netutils.websocket;
 /**
  * Interface representing a Websocket.
  * A Websocket is a communication protocol that provides full-duplex
- * communication channels over a single TCP connection.<br/>
+ * communication channels over a single TCP connection.<br>
  * A websocket can be used to send and receive text messages between a client
- * and a server.<br/>
+ * and a server.<br>
  * Once established, a websocket connection remains open until the client or
- * server decides to close this connection, or a network error occurs.<br/>
+ * server decides to close this connection, or a network error occurs.<br>
  * It is common in API specifications to specificy a multiplexing protocol: a
  * protocol that allows multiple logical channels to be multiplexed over a
  * single connection.
  * This is achieved by requesting client to issue a subscription message for a
  * given topic. Multiple topics can be subscribed to, and messages can be
- * received on any of the subscribed topics.<br/>
+ * received on any of the subscribed topics.<br>
  * The multiplexing is not managed by this interface that only provides the
  * basic methods to connect, disconnect, send messages, and add/remove message
- * and error handlers.<br/>
+ * and error handlers.<br>
  * Rather, a {@link WebsocketManager} should be used to manage the multiplexing
- * of the websocket connection.<br/>
+ * of the websocket connection.<br>
  * 
  * @see WebsocketManager
  */
@@ -75,7 +75,7 @@ public interface Websocket {
 
 	/**
 	 * Add an error handler to this websocket. The handler will be called when an
-	 * error causes an active connection to be closed unexpecteadly.<br/>
+	 * error causes an active connection to be closed unexpecteadly.<br>
 	 * It may not be called if a connection error occurs during the connection, or
 	 * sending of a message in which case the {@link #connect()} or
 	 * {@link #send(String)} method will throw a {@link WebsocketException}.

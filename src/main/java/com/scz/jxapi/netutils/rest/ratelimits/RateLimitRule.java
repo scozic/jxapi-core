@@ -5,14 +5,14 @@ import com.scz.jxapi.util.EncodingUtil;
 /**
  * Encapsulates a rate limit definition for an API endpoint, an API group (see
  * ExchangeApiDescriptor), or globally for an exchange. Such limit is expressed
- * for a given timeframe maximum request count or maximum total weight.<br/>
+ * for a given timeframe maximum request count or maximum total weight.<br>
  * 
  * Usually, such limitation is defined in cumulated number of calls to an
- * endpoint or any endpoint of API group or exchange.<br/>
+ * endpoint or any endpoint of API group or exchange.<br>
  * 
  * Some APIs like Binance trading API apply limitation in weight, that is every
  * endpoint is assigned a 'weight' that adds at every call and total sum of
- * weights of requests sent within timeframe must not exceed a given limit.<br/>
+ * weights of requests sent within timeframe must not exceed a given limit.<br>
  */
 public class RateLimitRule {
 	

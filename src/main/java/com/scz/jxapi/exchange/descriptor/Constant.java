@@ -3,17 +3,17 @@ package com.scz.jxapi.exchange.descriptor;
 import com.scz.jxapi.util.EncodingUtil;
 
 /**
- * Represents a constant value used across APIs of an exchange.<br/>
+ * Represents a constant value used across APIs of an exchange.<br>
  * Exchange descriptor may contain a list of such constants as value of
- * 'constants' property of exchange or exchange API descriptors.<br/>
+ * 'constants' property of exchange or exchange API descriptors.<br>
  * Such constants will be provided as static fields in a generated Java
- * interface in the generated Java wrapper class for the exchange.<br/>
- * The name of a constant should be a valid Java identifier.<br/>
+ * interface in the generated Java wrapper class for the exchange.<br>
+ * The name of a constant should be a valid Java identifier.<br>
  * The value of a constant must be a 'primitive' type e.g. {@link Type#STRING},
  * {@link Type#INT}, {@link Type#BOOLEAN}, {@link Type#BIGDECIMAL},
- * {@link Type#LONG}. It can't be a list, map, or object.<br/>
+ * {@link Type#LONG}. It can't be a list, map, or object.<br>
  * The name of a constant should provide a more readable name for the value. The
- * description allows to provide semantic details.<br/>
+ * description allows to provide semantic details.<br>
  */
 public class Constant {
 

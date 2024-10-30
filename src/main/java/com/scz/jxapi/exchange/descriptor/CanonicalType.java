@@ -7,31 +7,31 @@ import java.util.Map;
 import com.scz.jxapi.generator.java.exchange.ExchangeJavaWrapperGeneratorUtil;
 
 /**
- * Canonical types for API interface fields, see {@link Type}.<br/>
+ * Canonical types for API interface fields, see {@link Type}.<br>
  * 
  * @see Type
  */
 public enum CanonicalType {
-	/** Plain {@link String} value.<br/>TypeClass: {@link String} */ 
+	/** Plain {@link String} value.<br>TypeClass: {@link String} */ 
 	STRING(String.class),
 	
 	/** Boolean value. TypeClass: {@link Boolean} */
 	BOOLEAN(Boolean.class),
 	
-	/** Floating point value. TypeClass:<br/>{@link BigDecimal} */
+	/** Floating point value. TypeClass:<br>{@link BigDecimal} */
 	BIGDECIMAL(BigDecimal.class),
 	
-	/** Integer value. TypeClass:<br/>{@link Integer} */
+	/** Integer value. TypeClass:<br>{@link Integer} */
 	INT(Integer.class),
 	
-	/** Long value. TypeClass:<br/>{@link Long} */
+	/** Long value. TypeClass:<br>{@link Long} */
 	LONG(Long.class),
 	
-	/** Timestamp (or datetime) value. TypeClass:<br/>{@link Long} */
+	/** Timestamp (or datetime) value. TypeClass:<br>{@link Long} */
 	TIMESTAMP(Long.class),
 	
 	/** 
-	 * Nested structure (JSON block) like:<br/>
+	 * Nested structure (JSON block) like:<br>
 	 * <code>{"a":"val", "b":1}</code>
 	 * Such structure will contain a list of fields of a type matching one {@link Type} values.
 	 */
@@ -39,14 +39,14 @@ public enum CanonicalType {
 	
 	/**
 	 * Nested JSON map with keys of type String and values of same type (which can be of any {@link Type} ).
-	 * <br/>
+	 * <br>
 	 * Remark: OBJECT and MAP types are bound to similar data structure storing key/values pairs (properties) but: 
 	 * <ul>
 	 * <li>in case of OBJECT, the property keys used are defined by API interface and a POJO can be associated to that data structures with properties matching expected keys.</li>
 	 * <li>in case of MAP the keys used in received data are arbitrary and not known in advance.
 	 * <li>
 	 * </ul>
-	 * <br/>TypeClass: {@link Map}
+	 * <br>TypeClass: {@link Map}
 	 **/
 	MAP(false, Map.class),
 	

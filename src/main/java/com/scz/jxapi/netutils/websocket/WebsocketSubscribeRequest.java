@@ -104,7 +104,7 @@ public class WebsocketSubscribeRequest {
 	}
 
 	/**
-	 * Set the name of endpoint this subscription is made to.<br/>
+	 * Set the name of endpoint this subscription is made to.<br>
 	 * Remark: Is set by WebsocketEndpoint upon subscription
 	 * 
 	 * @param enpointName The endpoint name

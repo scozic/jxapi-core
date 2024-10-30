@@ -67,11 +67,11 @@ public class RequestThrottler {
 	 * {@link RateLimitRule} of the request will be created when a rate limit
 	 * with given id is first submitted. Further request submitted with same rate
 	 * limit will be checked for this limiit using same
-	 * {@link RateLimitManager}.<br/>
+	 * {@link RateLimitManager}.<br>
 	 * When one of {@link RateLimitManager} managing a rate lmit applicable to a
 	 * request returns a positive delay to wait (see
 	 * {@link RateLimitManager#requestCall()} the request is scheduled for retry
-	 * after delay where it could be submitted to enforce this rate limit.<br/>
+	 * after delay where it could be submitted to enforce this rate limit.<br>
 	 * If there is already a request queued to wait for some delay to enforce a rate
 	 * limit when a request is submitted that is subject to same limit, this newly
 	 * submitted request will not be retried after the waiting one. This is to make

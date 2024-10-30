@@ -165,7 +165,7 @@ public class ExchangeApiInterfaceGenerator extends JavaTypeGenerator {
 		StringBuilder subscribeMethodDoc = new StringBuilder()
 				.append("Subscribe to ")
 				.append(websocketApi.getName())
-				.append(" stream.<br/>\n");
+				.append(" stream.<br>\n");
 		if (websocketApi.getDocUrl() != null) {
 			subscribeMethodDoc.append(JavaCodeGenerationUtil.getHtmlLink(websocketApi.getDocUrl(), "Reference documentation"))
 			 	   .append(subscribeMethodName)

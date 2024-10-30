@@ -10,7 +10,7 @@ import com.scz.jxapi.netutils.websocket.multiplexing.WebsocketMessageTopicMatche
 /**
  * A WebsocketManager is a wrapper around a {@link Websocket} that manages most
  * common operations specified in a Websocket API.
- * <br/>
+ * <br>
  * <h1>Multiplexing</h1>
  * Given that a Websocket can be used to subscribe to multiple topics, a
  * WebsocketManager allows to subscribe a single message handler to a topic.
@@ -25,7 +25,7 @@ import com.scz.jxapi.netutils.websocket.multiplexing.WebsocketMessageTopicMatche
  * A single message handler can be subscribed to a topic. Subscribing multiple
  * message handlers to the same topic is not supported but managed by
  * {@link WebsocketEndpoint}.
- * <br/>
+ * <br>
  * API specification may not require multiplexing, in which case a single
  * message handler can be subscribed to the WebsocketManager using
  * <code>null</code> as topic.
@@ -36,7 +36,7 @@ import com.scz.jxapi.netutils.websocket.multiplexing.WebsocketMessageTopicMatche
  * Calls to {@link Websocket#connect()}, {@link Websocket#disconnect()},
  * {@link Websocket#send(String)} methods are called asynchronously and thread
  * safe from the WebsocketManager dedicated write executor.
- * <br/>
+ * <br>
  * Errors that occur during the connection process, while sending messages or
  * anytime when connection is alive are dispatched to all error handlers using
  * {@link WebsocketErrorHandler#handleWebsocketError(WebsocketException)}.
@@ -47,12 +47,12 @@ import com.scz.jxapi.netutils.websocket.multiplexing.WebsocketMessageTopicMatche
  * When provided a {@link WebsocketHook}, the WebsocketManager will call the
  * hook methods at specific points in the Websocket lifecycle, allowing to
  * inject API specific logic.
- * <br/>
+ * <br>
  * In particular, when multiplexing is required, the hook will be used to
  * provide the message to send to the server to subscribe to or unsubscribe from
- * a topic.<br/>
+ * a topic.<br>
  * When authentication is required, the hook will be used to provide the message
- * to send to the server to authenticate.<br/>
+ * to send to the server to authenticate.<br>
  * When heartbeat is required, the hook will be used to provide the message to
  * send to the server to keep the connection alive.
  * 
@@ -63,13 +63,13 @@ import com.scz.jxapi.netutils.websocket.multiplexing.WebsocketMessageTopicMatche
  * Usually, the server will respond to the heartbeat message with a heartbeat
  * response message. If no response is received within a timeout, the
  * WebsocketManager will disconnect the underlying Websocket and try to
- * reconnect it if reconnection is configured.<br/>
+ * reconnect it if reconnection is configured.<br>
  * It is the responsibility of the WebsocketHook to provide the heartbeat
- * message to send to the server.<br/>
+ * message to send to the server.<br>
  * It is the responsibility of client implementation to register a specific
  * message handler to handle the heartbeat response message and call
  * #{@link #hearbeatReceived()} when a heartbeat response message is received.
- * <br/>
+ * <br>
  * <ul>
  * <li>When heartbeat interval is set to a positive value means server expects
  * heartbeats for client. A heartbeat message is sent to the server at regular
@@ -129,7 +129,7 @@ public interface WebsocketManager {
 	/**
 	 * Subscribes a message handler to a topic. The message handler will be called
 	 * when a message is received from the server that matches the topic.
-	 * <br/>
+	 * <br>
 	 * Client implementations must take care not to subscribe multiple message
 	 * handlers to the same topic. This is managed by the {@link WebsocketEndpoint}.
 	 * Subscribing a message handler for a topic that already has a message handler
@@ -182,17 +182,17 @@ public interface WebsocketManager {
 
 	/**
 	 * Sends a message to this manager underlying {@link Websocket}.
-	 * <br/>
+	 * <br>
 	 * This method must be called from dedicated write executor thread, which is the
 	 * case in {@link WebsocketHook#beforeConnect(WebsocketManager)},
 	 * {@link WebsocketHook#beforeDisconnect(WebsocketManager)},
 	 * {@link WebsocketHook#afterConnect(WebsocketManager)},
 	 * {@link WebsocketHook#afterDisconnect(WebsocketManager)} methods.
-	 * <br/>
+	 * <br>
 	 * Sending messages from another thread should be done using
 	 * {@link #sendAsync(String)} which will write on websocket output
 	 * asynchronously from WebsocketManager dedicated write excutor.
-	 * <br/>
+	 * <br>
 	 * A typical use case would be sending a message for authentication handshake
 	 * from {@link WebsocketHook#afterConnect(WebsocketManager)}.
 	 * 
@@ -203,7 +203,7 @@ public interface WebsocketManager {
 
 	/**
 	 * Sends a message to this manager underlying {@link Websocket} asynchronously.
-	 * <br/>
+	 * <br>
 	 * This method can be called from any thread. The message will be written on
 	 * websocket output asynchronously from WebsocketManager dedicated write
 	 * executor.

@@ -6,7 +6,7 @@ import java.util.Properties;
 import com.scz.jxapi.util.HasProperties;
 
 /**
- * Entry point of a REST/WEBSOCKET API wrapper.<br/>
+ * Entry point of a REST/WEBSOCKET API wrapper.<br>
  * Such wrapper is instantiated using specific configuration {@link Properties}
  * and name identifier. Actual implementations will expose wrapper endpoints
  * through one or more {@link ExchangeApi}
@@ -15,7 +15,7 @@ import com.scz.jxapi.util.HasProperties;
  * Configuration properties are also supplied.
  * <p>
  * Actual implementations will expose getter methods for each
- * {@link ExchangeApi} implementation belonging to this exchange.<br/>
+ * {@link ExchangeApi} implementation belonging to this exchange.<br>
  * The idea of exposing endpoint in separate {@link ExchangeApi} groups helps
  * regrouping APIs related to same business feature.
  * 

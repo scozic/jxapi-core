@@ -325,9 +325,9 @@ public class ExchangeApiGeneratorUtil {
 	/**
 	 * Generates the expected full class name for the object described by an
 	 * {@link Field}, assuming it is of 'object' type (see
-	 * {@link Type#isObject()}).<br/>
+	 * {@link Type#isObject()}).<br>
 	 * The returned class package will be one of
-	 * <code>enclosingClassName</code>.<br/>
+	 * <code>enclosingClassName</code>.<br>
 	 * 
 	 * @param field  The {@link Type#OBJECT} type field to get object class name for 
 	 * @param enclosingClassName The POJO class containing the endpoint to generate
@@ -473,7 +473,7 @@ public class ExchangeApiGeneratorUtil {
 
 	/**
 	 * Generates the name of expected static {@link String} variable holding a REST endpoint name.
-	 * <br/>
+	 * <br>
 	 * Example: for <code>myRestEndpoint</code>, the returned value is <code>MY_REST_ENDPOINT_REST_API</code>
 	 * @param restEndpointName
 	 * @return the static variable name for the REST endpoint name.
@@ -533,7 +533,7 @@ public class ExchangeApiGeneratorUtil {
 	/**
 	 * The name property of Field of a REST request/Websocket subscribe request is
 	 * used to generate the name of the argument in the generated method signature.
-	 * <br/>
+	 * <br>
 	 * If the name property is not defined, the default name
 	 * {@link #DEFAULT_REQUEST_ARG_NAME} is used.
 	 * Notice this function argument is used in API interface method declaration,
@@ -566,17 +566,17 @@ public class ExchangeApiGeneratorUtil {
 	 * {@link Field#getObjectName()} and properties of this objectName defined in
 	 * another API of the enclosing ExchangeApi, or it could be the case for some
 	 * sub-properties defined, see {@link Field#getProperties()}.
-	 * <br/>
+	 * <br>
 	 * This method performs a recursive resolution of properties for the given field
 	 * among all 'object' properties of every REST request or response or Websockey
 	 * subscribe request and message.
-	 * <br/>
+	 * <br>
 	 * If provided {@link Field} has a defined objectName, is of 'object' type (see
 	 * {@Link Type#isObject()}) and has <code>null</code> sub properties then its
 	 * sub properties are set with ones of first field found in any object field of
 	 * any
 	 * REST/Websocket API that has same object name as this field.
-	 * <br/>
+	 * <br>
 	 * Same is done for all sub-properties of this field recursively.
 	 * 
 	 * @param exchangeApiDescriptor The exchange API descriptor containing the REST
