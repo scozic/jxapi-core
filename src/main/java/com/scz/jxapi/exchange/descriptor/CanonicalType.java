@@ -4,6 +4,8 @@ import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 
+import com.scz.jxapi.generator.java.exchange.ExchangeJavaWrapperGeneratorUtil;
+
 /**
  * Canonical types for API interface fields, see {@link Type}.<br/>
  * 
@@ -31,7 +33,7 @@ public enum CanonicalType {
 	/** 
 	 * Nested structure (JSON block) like:<br/>
 	 * <code>{"a":"val", "b":1}</code>
-	 * Such structure will contain a list of fields of a type matching one {@link #EndpointParameterType} values.
+	 * Such structure will contain a list of fields of a type matching one {@link Type} values.
 	 */
 	OBJECT(false, null),
 	
@@ -71,7 +73,7 @@ public enum CanonicalType {
 	 * The {@link Class} holding values of this type (see {@link #isPrimitive}, or
 	 * <code>null</code> for {@link #OBJECT} type (in which case the associated class is custom). To guess the class associated to a
 	 * non-primitive type, see
-	 * {@link ExchangeJavaWrapperGeneratorUtil#getClassNameForParameterType(Type, java.util.Set, String)}
+	 * {@link ExchangeJavaWrapperGeneratorUtil#getClassNameForType(Type, java.util.Set, String)}
 	 */
 	public final Class<?> typeClass;
 	

@@ -62,14 +62,14 @@ import com.scz.jxapi.util.EncodingUtil;
  * 			"description": "Fetch market information of symbols that can be traded",
  * 			"url": "https://com.sample.mycex/exchangeInfo",
  * 			"request":{
- * 				"parameters": [
+ * 				"properties": [
  * 					{"name":"symbols", "type": "STRING_LIST", "description":"The list of symbol to fetch market information for. Leave empty to fetch all markets", "sampleValue":"[\"BTC\", \"ETH\"]"}
  * 				]
  * 			},
  * 			"response":{ 
- * 				"parameters": [
+ * 				"properties": [
  * 					{"name":"responseCode", "type": "INT", "description":"Request response code", "sampleValue":"0"},
- * 					{"name":"payload", "type": "OBJECT_LIST", "description":"List of market information for each requested symbol", "parameters":[
+ * 					{"name":"payload", "type": "OBJECT_LIST", "description":"List of market information for each requested symbol", "properties":[
  * 							{"name":"symbol", "type": "STRING", "description":"Market symbol", "sampleValue":"BTC_USDT"},
  * 							{"name":"minOrderSize", "type": "BIGDECIMAL", "description":"Minimum order amount", "sampleValue":"0.0001"},
  * 							{"name":"levels", "type": "INT_LIST", "description":"Amount precision levels", "sampleValue":[1,10,500]}
@@ -84,12 +84,12 @@ import com.scz.jxapi.util.EncodingUtil;
  * 			"description": "Fetch current tickers",
  * 			"url": "https://com.sample.mycex/tickers",
  * 			"request":{
- * 				"parameters": []
+ * 				"properties": []
  * 			},
  * 			"response": { 
- * 				"parameters": [
+ * 				"properties": [
  * 					{"name":"responseCode", "type": "INT", "description":"Request response code", "sampleValue":"0"},
- * 					{"name":"payload", "type": "OBJECT_MAP", "description":"Tickers for each symbol", "parameters":[
+ * 					{"name":"payload", "type": "OBJECT_MAP", "description":"Tickers for each symbol", "properties":[
  * 							{"name":"last", "type": "BIGDECIMAL", "description":"Last traded price", "sampleValue":10.0}
  * 						]
  * 					}
@@ -106,7 +106,7 @@ import com.scz.jxapi.util.EncodingUtil;
  * 			"topic": "${symbol}@ticker",
  * 			"description": "Subscribe to ticker stream",
  * 			"request": {
- * 				"parameters": [
+ * 				"properties": [
  * 					{"name": "symbol", "type":"STRING", "description":"Symbol to subscribe to ticker stream of", "sampleValue":"BTC_USDT"}
  * 				]
  * 			},
@@ -116,7 +116,7 @@ import com.scz.jxapi.util.EncodingUtil;
  * 				{"name": "symbol",  "value": "${symbol}"}
  * 			],
  * 			"message": { 
- * 				"parameters": [
+ * 				"properties": [
  * 					{"name":"topic", "msgField":"t", "type": "STRING", "description":"Topic", "sampleValue":"ticker"},
  * 					{"name":"symbol", "msgField":"s", "type": "STRING", "description":"Symbol name", "sampleValue":"BTC_USDT"},
  * 					{"name":"last", "msgField":"p", "type": "BIGDECIMAL", "description":"Last traded price", "sampleValue":"16000.00"}

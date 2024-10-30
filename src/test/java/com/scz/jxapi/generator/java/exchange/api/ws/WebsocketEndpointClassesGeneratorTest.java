@@ -57,10 +57,11 @@ public class WebsocketEndpointClassesGeneratorTest {
 		
 		Assert.assertEquals("package com.foo.bar.gen.marketdata.pojo;\n"
 				+ "\n"
+				+ "import java.util.Objects;\n"
+				+ "\n"
 				+ "import com.fasterxml.jackson.databind.annotation.JsonSerialize;\n"
 				+ "import com.foo.bar.gen.marketdata.serializers.MyTestExchangeMarketDataTickerStreamRequestSerializer;\n"
 				+ "import com.scz.jxapi.util.EncodingUtil;\n"
-				+ "import java.util.Objects;\n"
 				+ "\n"
 				+ "/**\n"
 				+ " * Subscription request toMyTestExchange MarketData API tickerStream websocket endpoint<br/>\n"
@@ -109,11 +110,12 @@ public class WebsocketEndpointClassesGeneratorTest {
 		
 		Assert.assertEquals("package com.foo.bar.gen.marketdata.pojo;\n"
 				+ "\n"
+				+ "import java.math.BigDecimal;\n"
+				+ "import java.util.Objects;\n"
+				+ "\n"
 				+ "import com.fasterxml.jackson.databind.annotation.JsonSerialize;\n"
 				+ "import com.foo.bar.gen.marketdata.serializers.MyTestExchangeMarketDataTickerStreamMessageSerializer;\n"
 				+ "import com.scz.jxapi.util.EncodingUtil;\n"
-				+ "import java.math.BigDecimal;\n"
-				+ "import java.util.Objects;\n"
 				+ "\n"
 				+ "/**\n"
 				+ " * Message disseminated upon subscription to MyTestExchange MarketData API tickerStream websocket endpoint request<br/>\n"
@@ -189,8 +191,7 @@ public class WebsocketEndpointClassesGeneratorTest {
 				+ "  public String toString() {\n"
 				+ "    return EncodingUtil.pojoToString(this);\n"
 				+ "  }\n"
-				+ "}\n"
-				+ "", 
+				+ "}\n", 
 				Files.readString(checkSourceFileExists(Paths.get("pojo", "MyTestExchangeMarketDataTickerStreamMessage.java"))));
 		
 		checkJavaFilesCount(Paths.get("serializers"), 2);
@@ -213,12 +214,13 @@ public class WebsocketEndpointClassesGeneratorTest {
 		
 		Assert.assertEquals("package com.foo.bar.gen.marketdata.pojo;\n"
 				+ "\n"
+				+ "import java.util.Objects;\n"
+				+ "\n"
 				+ "import com.fasterxml.jackson.databind.annotation.JsonSerialize;\n"
 				+ "import com.foo.bar.TickerStreamRequestInterface1;\n"
 				+ "import com.foo.bar.TickerStreamRequestInterface2;\n"
 				+ "import com.foo.bar.gen.marketdata.serializers.MyTestExchangeMarketDataTickerStreamRequestSerializer;\n"
 				+ "import com.scz.jxapi.util.EncodingUtil;\n"
-				+ "import java.util.Objects;\n"
 				+ "\n"
 				+ "/**\n"
 				+ " * Subscription request toMyTestExchange MarketData API tickerStream websocket endpoint<br/>\n"
@@ -267,13 +269,14 @@ public class WebsocketEndpointClassesGeneratorTest {
 		
 		Assert.assertEquals("package com.foo.bar.gen.marketdata.pojo;\n"
 				+ "\n"
+				+ "import java.math.BigDecimal;\n"
+				+ "import java.util.Objects;\n"
+				+ "\n"
 				+ "import com.fasterxml.jackson.databind.annotation.JsonSerialize;\n"
 				+ "import com.foo.bar.TickerStreamResponseInterface1;\n"
 				+ "import com.foo.bar.TickerStreamResponseInterface2;\n"
 				+ "import com.foo.bar.gen.marketdata.serializers.MyTestExchangeMarketDataTickerStreamMessageSerializer;\n"
 				+ "import com.scz.jxapi.util.EncodingUtil;\n"
-				+ "import java.math.BigDecimal;\n"
-				+ "import java.util.Objects;\n"
 				+ "\n"
 				+ "/**\n"
 				+ " * Message disseminated upon subscription to MyTestExchange MarketData API tickerStream websocket endpoint request<br/>\n"

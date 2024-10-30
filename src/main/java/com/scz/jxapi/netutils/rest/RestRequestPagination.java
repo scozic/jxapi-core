@@ -11,7 +11,7 @@ import org.slf4j.LoggerFactory;
  * 
  * Helper methods around REST request where response may come in multiple
  * "pages". It is common that API used to fetch large number of items provides
- * request parameter "index" to indicate page index, and response parameter
+ * request property "index" to indicate page index, and response property
  * "index" indicating the next page index, or none if last page is found.
  *
  * @param <R> Type of request
@@ -26,7 +26,7 @@ public class RestRequestPagination {
 	 * Example:
 	 * <pre>{@code
 	 * // api: Interface exposing method FutureRestResponse<BybitV5GetPositionInfoResponse> getPositionInfo(BybitV5GetPositionInfoRequest request)
-	 * // request: Request object prepared with parameters
+	 * // request: Request object prepared
 	 * FutureRestResponse<BybitV5GetPositionInfoResponse> response = RestRequestPagination.fetchAllPages(         
      *    request, // Initial request to send
      *    api::getPositionInfo, // API method: 

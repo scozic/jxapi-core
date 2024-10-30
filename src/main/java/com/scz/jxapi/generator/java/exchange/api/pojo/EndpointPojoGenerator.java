@@ -55,9 +55,9 @@ public class EndpointPojoGenerator extends PojoGenerator {
 		if (!CollectionUtil.isEmpty(fields)) {
 			for (Field field: fields) {
 				if (field.getType().isObject()) {
-					generateObjectParameterTypePojoField(field);
+					generateObjectTypePojoField(field);
 				} else {
-					generateSimpleParameterTypePojoField(field);
+					generateSimpleTypePojoField(field);
 				}
 			}
 		}
@@ -67,7 +67,7 @@ public class EndpointPojoGenerator extends PojoGenerator {
 		}
 	}
 	
-	private void generateObjectParameterTypePojoField(Field field) throws IOException {
+	private void generateObjectTypePojoField(Field field) throws IOException {
 		String className = getName();
 		String objectParamClassName = ExchangeApiGeneratorUtil.getFieldLeafSubTypeClassName(
 																				field.getName(), 
@@ -79,11 +79,10 @@ public class EndpointPojoGenerator extends PojoGenerator {
 		addField(PojoField.create(objectClass, field.getName(), field.getMsgField(), field.getDescription()));
 	}
 	
-	private void generateSimpleParameterTypePojoField(Field field) {
-		String parameterClass = ExchangeJavaWrapperGeneratorUtil.getClassNameForParameterType(field.getType(), getImports(), null);
-		addImport(parameterClass);
-		parameterClass = JavaCodeGenerationUtil.getClassNameWithoutPackage(parameterClass);
-		addField(PojoField.create(parameterClass, field.getName(), field.getMsgField(), field.getDescription()));
+	private void generateSimpleTypePojoField(Field field) {
+		String fieldClass = ExchangeJavaWrapperGeneratorUtil.getClassNameForType(field.getType(), getImports(), null);
+		fieldClass = JavaCodeGenerationUtil.getClassNameWithoutPackage(fieldClass);
+		addField(PojoField.create(fieldClass, field.getName(), field.getMsgField(), field.getDescription()));
 	}
 
 }

@@ -1,15 +1,14 @@
 package com.scz.jxapi.generator.java.exchange.constants;
 
 import java.util.List;
-import java.util.Set;
-import java.util.TreeSet;
 
 import org.junit.Assert;
 import org.junit.Test;
 
-import com.scz.jxapi.exchange.descriptor.Constant;
 import com.scz.jxapi.exchange.descriptor.ConfigProperty;
+import com.scz.jxapi.exchange.descriptor.Constant;
 import com.scz.jxapi.exchange.descriptor.Type;
+import com.scz.jxapi.generator.java.Imports;
 
 /**
  * Unit test for {@link ConstantsGenerationUtil}
@@ -18,7 +17,7 @@ public class ConstantsGenerationUtilTest {
 
 	@Test
 	public void testCreateStringConstant() {
-		Set<String> imports = new TreeSet<>();
+		Imports imports = new Imports();
 		Constant c = Constant.create("myString", Type.STRING, null, "foo");
 		Assert.assertEquals( "String MY_STRING = \"foo\";\n", ConstantsGenerationUtil.generateConstantDeclaration(c, imports));
 		Assert.assertEquals(0, imports.size());
@@ -26,7 +25,7 @@ public class ConstantsGenerationUtilTest {
 
 	@Test
 	public void testCreateIntConstant_StringValue() {
-		Set<String> imports = new TreeSet<>();
+		Imports imports = new Imports();
 		Constant c = Constant.create("myInt", Type.INT, "My int constant with string value", "42");
 		Assert.assertEquals( "/**\n"
 						   + " * My int constant with string value\n"
@@ -38,7 +37,7 @@ public class ConstantsGenerationUtilTest {
 
 	@Test
 	public void testCreateIntConstant_IntValue() {
-		Set<String> imports = new TreeSet<>();
+		Imports imports = new Imports();
 		Constant c = Constant.create("myInt", Type.INT, "My int constant with int value", 42);
 		Assert.assertEquals( "/**\n"
 						   + " * My int constant with int value\n"
@@ -50,7 +49,7 @@ public class ConstantsGenerationUtilTest {
 
 	@Test
 	public void testCreateLongConstantWithNow() {
-		Set<String> imports = new TreeSet<>();
+		Imports imports = new Imports();
 		Constant c = Constant.create("myTimestamp", Type.TIMESTAMP, null, "now()");
 		Assert.assertEquals( "Long MY_TIMESTAMP = Long.valueOf(System.currentTimeMillis());\n", ConstantsGenerationUtil.generateConstantDeclaration(c, imports));
 		Assert.assertEquals(0, imports.size());
@@ -59,7 +58,7 @@ public class ConstantsGenerationUtilTest {
 	@Test(expected = IllegalArgumentException.class)
 	public void testCreateStringConstantInvalidType() {
 		Constant c = Constant.create("myString", Type.fromTypeName("STRING_LIST"), null, "foo");
-		ConstantsGenerationUtil.generateConstantDeclaration(c, new TreeSet<>());
+		ConstantsGenerationUtil.generateConstantDeclaration(c, new Imports());
 	}
 
 	@Test

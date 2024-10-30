@@ -2,11 +2,11 @@ package com.scz.jxapi.generator.java.exchange.constants;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
-import com.scz.jxapi.exchange.descriptor.Constant;
 import com.scz.jxapi.exchange.descriptor.ConfigProperty;
+import com.scz.jxapi.exchange.descriptor.Constant;
 import com.scz.jxapi.exchange.descriptor.Type;
+import com.scz.jxapi.generator.java.Imports;
 import com.scz.jxapi.generator.java.JavaCodeGenerationUtil;
 import com.scz.jxapi.generator.java.exchange.ExchangeJavaWrapperGeneratorUtil;
 
@@ -31,15 +31,15 @@ public class ConstantsGenerationUtil {
 	 * @param imports the set of imports to add to the generated code
 	 * @return the Java code for the constant declaration
 	 */
-	public static String generateConstantDeclaration(Constant constant, Set<String> imports) {
+	public static String generateConstantDeclaration(Constant constant, Imports imports) {
 		StringBuilder code = new StringBuilder();
 		Type type = constant.getType();
 		if (!type.getCanonicalType().isPrimitive) {
 			throw new IllegalArgumentException("Constant " + constant + " has not a primitive type");
 		}
-		String className = ExchangeJavaWrapperGeneratorUtil.getClassNameForParameterType(type, imports, null);
+		String className = ExchangeJavaWrapperGeneratorUtil.getClassNameForType(type, imports, null);
 		String varName = JavaCodeGenerationUtil.getStaticVariableName(constant.getName());
-		String value = ExchangeJavaWrapperGeneratorUtil.getPrimitiveTypeParameterSampleValueDeclaration(type, constant.getValue(), imports);
+		String value = ExchangeJavaWrapperGeneratorUtil.getPrimitiveTypeFieldSampleValueDeclaration(type, constant.getValue(), imports);
 		String description = constant.getDescription();
 		if (description != null) {
 			code.append(JavaCodeGenerationUtil.generateJavaDoc(description))

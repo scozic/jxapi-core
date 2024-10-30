@@ -1,7 +1,6 @@
 package com.scz.jxapi.generator.java.exchange.api;
 
 import java.math.BigDecimal;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -17,6 +16,7 @@ import com.scz.jxapi.exchange.descriptor.Field;
 import com.scz.jxapi.exchange.descriptor.RestEndpointDescriptor;
 import com.scz.jxapi.exchange.descriptor.Type;
 import com.scz.jxapi.exchange.descriptor.WebsocketEndpointDescriptor;
+import com.scz.jxapi.generator.java.Imports;
 import com.scz.jxapi.generator.java.JavaCodeGenerationUtil;
 import com.scz.jxapi.generator.java.exchange.ExchangeJavaWrapperGeneratorUtil;
 import com.scz.jxapi.netutils.deserialization.RawBigDecimalMessageDeserializer;
@@ -196,17 +196,17 @@ public class ExchangeApiGeneratorUtil {
 	 * {@link Field#getType()} .
 	 * <ul>
 	 * <li>For a primitive (see {@link CanonicalType#isPrimitive}
-	 * parameter type, the corresponding primitive type class is returned:
+	 * field type, the corresponding primitive type class is returned:
 	 * <code>java.lang.String</code>, <code>java.lang.Integer</code> ...)</li>
-	 * <li>For an object (see {@link CanonicalType#OBJECT}
-	 * parameter type), if the <code>objectName</code> (see
+	 * <li>For an object (see {@link Type#OBJECT}
+	 * field type), if the <code>objectName</code> (see
 	 * {@link Field#getObjectName()} is defined, that object name is
 	 * returned.</li>
 	 * <li>For list or map (see {@link CanonicalType#LIST},
 	 * {@link CanonicalType#MAP}), the corresponding generic class
 	 * is returned e.g. <code>java.util.List</code> or <code>java.util.Map</code>,
 	 * with generic parameter set with the class for subtype (see
-	 * {@link Type#getSubType()} of <code>endpointParameter</code>
+	 * {@link Type#getSubType()} of <code>field</code>
 	 * as returned by this method.</li>
 	 * </ul>
 	 * The returned value is the class simple name (without package prefix). The
@@ -215,7 +215,7 @@ public class ExchangeApiGeneratorUtil {
 	 * also added to imports.
 	 * <p>
 	 * A few examples of returned values and import added for some examples of a
-	 * parameter named <code>Bar</code>:
+	 * field named <code>Bar</code>:
 	 * <table border="1">
 	 * <thead>
 	 * <tr>
@@ -233,7 +233,7 @@ public class ExchangeApiGeneratorUtil {
 	 * <td><i>any</i></td>
 	 * <td><code>String</code></td>
 	 * <td><i>none</i></td>
-	 * <td>Primitive parameter type, and {@link String} is in <code>java.lang</code>
+	 * <td>Primitive field type, and {@link String} is in <code>java.lang</code>
 	 * package, no import added.</td>
 	 * </tr>
 	 * 
@@ -245,7 +245,7 @@ public class ExchangeApiGeneratorUtil {
 	 * <td><code><ul><li><code>java.lang.BigDecimal</code></li>
 	 * </ul>
 	 * </td>
-	 * <td>Primitive parameter type, and {@link BigDecimal} is in
+	 * <td>Primitive field type, and {@link BigDecimal} is in
 	 * <code>java.math</code> package, <code>java.lang.BigDecimal</code> import
 	 * added.</td>
 	 * </tr>
@@ -260,8 +260,8 @@ public class ExchangeApiGeneratorUtil {
 	 * <li></code>com.x.y.gen.pojo.FooBar</code></li>
 	 * </ul>
 	 * </td>
-	 * <td><code>OBJECT</code> parameter and no object name specified, the returned
-	 * type is generated name by concatenating enclosing class name with parameter
+	 * <td><code>OBJECT</code> field type and no object name specified, the returned
+	 * type is generated name by concatenating enclosing class name with field
 	 * name</td>
 	 * </tr>
 	 * 
@@ -273,7 +273,7 @@ public class ExchangeApiGeneratorUtil {
 	 * <td><ul><li></code>com.x.y.gen.pojo.MySpecialObjectName</code></li>
 	 * </ul>
 	 * </td>
-	 * <td><code>OBJECT</code> parameter with <code>objectName</code> specified, the
+	 * <td><code>OBJECT</code> field with <code>objectName</code> specified, the
 	 * returned type is <code>objectName</code> as class name, assumed to be in same
 	 * package as enclosing class name package.</td>
 	 * </tr>
@@ -290,34 +290,34 @@ public class ExchangeApiGeneratorUtil {
 	 * <li><code>com.x.y.gen.pojo.FooBar</code></li>
 	 * </ul>
 	 * </td>
-	 * <td><code>OBJECT</code> parameter nested in list of map with no
+	 * <td><code>OBJECT</code> field nested in list of map with no
 	 * <code>objectName</code> specified, the returned type is
 	 * <code>List&lt;Map&lt;String, FooBar&gt;&gt;</code> and {@link Map},
-	 * {@link List} and class for object parameter are added to imports.</td>
+	 * {@link List} and class for object field are added to imports.</td>
 	 * </tr>
 	 * </tbody>
 	 * </table>
 	 * </p>
 	 * 
-	 * @param endpointParameter  The endpoint parameter
+	 * @param field  The field
 	 * @param imports            The imports of generator context that will be
 	 *                           populated with classes used by returned type. That
 	 *                           set must be not <code>null</code> and mutable.
 	 * @param enclosingClassName The POJO class containing the endpoint to generate
 	 *                           class name for type of.
-	 * @return The simple class name for type of <code>enpointParameter</code>
+	 * @return The simple class name for type of <code>field</code>
 	 *         parameter.
 	 */
-	public static String getClassNameForField(Field endpointParameter, 
-											  Set<String> imports, 
+	public static String getClassNameForField(Field field, 
+											  Imports imports, 
 											  String enclosingClassName) {
 		String objectClassName = null;
-		if (endpointParameter.getType().isObject()) {
-			 objectClassName = getFieldObjectClassName(endpointParameter, enclosingClassName);
+		if (field.getType().isObject()) {
+			 objectClassName = getFieldObjectClassName(field, enclosingClassName);
 			 
 		}
-		return ExchangeJavaWrapperGeneratorUtil.getClassNameForParameterType(
-					endpointParameter.getType(), 
+		return ExchangeJavaWrapperGeneratorUtil.getClassNameForType(
+					field.getType(), 
 					imports, 
 					objectClassName);
 	}
@@ -329,21 +329,21 @@ public class ExchangeApiGeneratorUtil {
 	 * The returned class package will be one of
 	 * <code>enclosingClassName</code>.<br/>
 	 * 
-	 * @param endpointParameter  The endpoint parameter
+	 * @param field  The {@link Type#OBJECT} type field to get object class name for 
 	 * @param enclosingClassName The POJO class containing the endpoint to generate
 	 *                           class name for type of.
-	 * @return parameter object name with first letter to uppercase if
+	 * @return field object name with first letter to uppercase if
 	 *         {@link Field#getObjectName()} is not <code>null</code>,
-	 *         else concatenation of <code>&lt;enclosingClassName&gt;+&lt;enpointParameter name&gt;</code>
+	 *         else concatenation of <code>&lt;enclosingClassName&gt;+&lt;Field name&gt;</code>
 	 */
-	public static String getFieldObjectClassName(Field endpointParameter, 
+	public static String getFieldObjectClassName(Field field, 
 												 String enclosingClassName) {
-		if (endpointParameter.getObjectName() != null) {
+		if (field.getObjectName() != null) {
 			 return JavaCodeGenerationUtil.getClassPackage(enclosingClassName) 
 					 		+ "." 
-					 		+ JavaCodeGenerationUtil.firstLetterToUpperCase(endpointParameter.getObjectName());
+					 		+ JavaCodeGenerationUtil.firstLetterToUpperCase(field.getObjectName());
 		 } else {
-			 return enclosingClassName + JavaCodeGenerationUtil.firstLetterToUpperCase(endpointParameter.getName());
+			 return enclosingClassName + JavaCodeGenerationUtil.firstLetterToUpperCase(field.getName());
 		 }
 	}
 
@@ -359,19 +359,19 @@ public class ExchangeApiGeneratorUtil {
 	 * <li>Otherwise, the class name is the concatenation of the package of the
 	 * enclosing class name and the class name generated
 	 * by
-	 * {@link ExchangeJavaWrapperGeneratorUtil#getClassNameForParameterType(Type, Set, String)}
+	 * {@link ExchangeJavaWrapperGeneratorUtil#getClassNameForType(Type, Set, String)}
 	 * for the
-	 * leaf subType of the endpoint parameter.</li>
+	 * leaf subType of the field type.</li>
 	 * {@link Type#getLeafSubType(Type)}.
 	 * 
-	 * @param endpointParameterName See {@link Field#getName()} name
+	 * @param fieldName 			See {@link Field#getName()}
 	 * @param type                  See {@link Field#getType()}
 	 * @param objectName            See {@link Field#getObjectName()}
 	 * @param enclosingClassName    The POJO class containing the endpoint to
 	 *                              generate class name for type of.
-	 * @return the full class name of leaf subType of endpoint parameter.
+	 * @return the full class name of leaf subType of field type.
 	 */
-	public static String getFieldLeafSubTypeClassName(String endpointParameterName, 
+	public static String getFieldLeafSubTypeClassName(String fieldName, 
 													  Type type, 
 													  String objectName,  
 													  String enclosingClassName) {
@@ -384,11 +384,11 @@ public class ExchangeApiGeneratorUtil {
 			return pkg + objectName;
 		}
 		
-		return pkg + ExchangeJavaWrapperGeneratorUtil.getClassNameForParameterType(
+		return pkg + ExchangeJavaWrapperGeneratorUtil.getClassNameForType(
 				  leafSubType,
-				  new HashSet<>(),
+				  new Imports(),
 				  enclosingClassName) 
-				+ JavaCodeGenerationUtil.firstLetterToUpperCase(endpointParameterName);
+				+ JavaCodeGenerationUtil.firstLetterToUpperCase(fieldName);
 	}
 
 	/**
@@ -414,7 +414,7 @@ public class ExchangeApiGeneratorUtil {
 	 */
 	public static String getNewMessageDeserializerInstruction(Type messageType, 
 															  String messageFullClassName, 
-															  Set<String> imports) {
+															  Imports imports) {
 		if (messageType == null) {
 			messageType  = Type.STRING;
 		}
@@ -463,12 +463,12 @@ public class ExchangeApiGeneratorUtil {
 	/**
 	 * 
 	 * @param field The field to get the type of, see {@link Field#getType()}
-	 * @return <code>null</code> if parameter is <code>null</code>, otherwise the
+	 * @return <code>null</code> if field is <code>null</code>, otherwise the
 	 *         type of the field or default {@link Type.OBJECT} if this type is
 	 *         null.
 	 */
-	public static Type getFieldType(Field parameter) {
-		return parameter == null? null: Optional.ofNullable(parameter.getType()).orElse(Type.OBJECT);
+	public static Type getFieldType(Field field) {
+		return field == null? null: Optional.ofNullable(field.getType()).orElse(Type.OBJECT);
 	}
 
 	/**
@@ -607,7 +607,7 @@ public class ExchangeApiGeneratorUtil {
 			&& field.getProperties() == null) {
 			field = field.clone();
 			field.setType(type);
-			field.setParameters(findPropertiesForObjectNameInApi(field.getObjectName(), exchangeApiDescriptor));
+			field.setProperties(findPropertiesForObjectNameInApi(field.getObjectName(), exchangeApiDescriptor));
 		}
 		return field;
 	}

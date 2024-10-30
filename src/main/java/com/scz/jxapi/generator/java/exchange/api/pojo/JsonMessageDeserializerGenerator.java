@@ -11,6 +11,7 @@ import com.fasterxml.jackson.core.JsonToken;
 import com.scz.jxapi.exchange.descriptor.CanonicalType;
 import com.scz.jxapi.exchange.descriptor.Field;
 import com.scz.jxapi.exchange.descriptor.Type;
+import com.scz.jxapi.generator.java.Imports;
 import com.scz.jxapi.generator.java.JavaCodeGenerationUtil;
 import com.scz.jxapi.generator.java.JavaTypeGenerator;
 import com.scz.jxapi.generator.java.exchange.ExchangeJavaWrapperGeneratorUtil;
@@ -123,7 +124,7 @@ public class JsonMessageDeserializerGenerator extends JavaTypeGenerator {
 	private String getParseFieldInstruction(Field field) {
 		CanonicalType canonicalType = field.getType().getCanonicalType();
 		if (!canonicalType.isPrimitive) {
-			return generateNonPrimitiveTypeParameterDeserializerDeclaration(field) +".deserialize(parser)";
+			return generateNonPrimitiveTypeFieldDeserializerDeclaration(field) +".deserialize(parser)";
 		}
 		
 		switch (canonicalType) {
@@ -146,31 +147,31 @@ public class JsonMessageDeserializerGenerator extends JavaTypeGenerator {
 		return methodName + "(parser)";
 	}
 	
-	private String generateNonPrimitiveTypeParameterDeserializerDeclaration(Field field) {
+	private String generateNonPrimitiveTypeFieldDeserializerDeclaration(Field field) {
 		Type type = field.getType();
-		String objectParameterClassName = ExchangeApiGeneratorUtil.getFieldLeafSubTypeClassName(
+		String objectFieldClassName = ExchangeApiGeneratorUtil.getFieldLeafSubTypeClassName(
 													field.getName(), 
 													field.getType(), 
 													field.getObjectName(),
 													deserializedTypeClassName);
-		String simpleDeserializerTypeName = generateNonPrimitiveParameterDeserializerClassName(
+		String simpleDeserializerTypeName = generateNonPrimitiveFieldDeserializerClassName(
 												field.getType(), 
-												objectParameterClassName, 
+												objectFieldClassName, 
 												getImports());
 		
 		String deserializerVariableName = JavaCodeGenerationUtil.firstLetterToLowerCase(field.getName() + "Deserializer");
 		String variableDeclaration = "private final " + simpleDeserializerTypeName + " " + deserializerVariableName + " = " 
 										+ ExchangeJavaWrapperGeneratorUtil.getNewJsonFieldDeserializerInstruction(
 											type, 
-											objectParameterClassName, 
+											objectFieldClassName, 
 											getImports()) 
 										+ ";\n";
 		nonPrimitiveTypeFieldsDeserializerDeclarations.add(variableDeclaration);
 		return deserializerVariableName;
 	}
 	
-	public static String generateNonPrimitiveParameterDeserializerClassName(Type type, String objectClassName, Set<String> imports) {	
-		String parameterClass = null;
+	public static String generateNonPrimitiveFieldDeserializerClassName(Type type, String objectClassName, Imports imports) {	
+		String fieldClass = null;
 		switch (type.getCanonicalType()) {
 		case OBJECT:
 			String deserializerTypeName = ExchangeJavaWrapperGeneratorUtil.getJsonMessageDeserializerClassName(objectClassName);
@@ -178,19 +179,19 @@ public class JsonMessageDeserializerGenerator extends JavaTypeGenerator {
 			return JavaCodeGenerationUtil.getClassNameWithoutPackage(deserializerTypeName);
 		case LIST:
 			imports.add(ListJsonFieldDeserializer.class.getName());
-			parameterClass = ExchangeJavaWrapperGeneratorUtil.getClassNameForParameterType(type.getSubType(), imports, objectClassName);
-			imports.add(parameterClass);
+			fieldClass = ExchangeJavaWrapperGeneratorUtil.getClassNameForType(type.getSubType(), imports, objectClassName);
+			imports.add(fieldClass);
 			return ListJsonFieldDeserializer.class.getSimpleName() 
 						+ "<" 
-						+ JavaCodeGenerationUtil.getClassNameWithoutPackage(parameterClass)
+						+ JavaCodeGenerationUtil.getClassNameWithoutPackage(fieldClass)
 						+ ">";
 		default: // MAP
 			imports.add(MapJsonFieldDeserializer.class.getName());
-			parameterClass = ExchangeJavaWrapperGeneratorUtil.getClassNameForParameterType(type.getSubType(), imports, objectClassName);
-			imports.add(parameterClass);
+			fieldClass = ExchangeJavaWrapperGeneratorUtil.getClassNameForType(type.getSubType(), imports, objectClassName);
+			imports.add(fieldClass);
 			return MapJsonFieldDeserializer.class.getSimpleName() 
 						+ "<" 
-						+ JavaCodeGenerationUtil.getClassNameWithoutPackage(parameterClass)
+						+ JavaCodeGenerationUtil.getClassNameWithoutPackage(fieldClass)
 						+ ">";
 		}
 	}

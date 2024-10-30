@@ -82,7 +82,7 @@ public class WebsocketEndpointDemoGenerator extends JavaTypeGenerator {
 			}
 			
 			addImport(requestClassName);
-			requestSimpleClassName = ExchangeJavaWrapperGeneratorUtil.getClassNameForParameterType(
+			requestSimpleClassName = ExchangeJavaWrapperGeneratorUtil.getClassNameForType(
 					requestDataType, 
 					getImports(), 
 					requestClassName);
@@ -134,7 +134,7 @@ public class WebsocketEndpointDemoGenerator extends JavaTypeGenerator {
 		body.append(EndpointDemoGeneratorUtil.getNewTestApiInstruction(exchangeName, exchangeImplClassName, simpleApiClassName));
 			
 		if (hasArguments) {
-			this.appendToBody(EndpointDemoGeneratorUtil.generateEndpointParameterCreationMethod(
+			this.appendToBody(EndpointDemoGeneratorUtil.generateFieldCreationMethod(
 								request,  
 								requestClassName, 
 								getImports()))
@@ -142,7 +142,7 @@ public class WebsocketEndpointDemoGenerator extends JavaTypeGenerator {
 			
 			body.append(requestSimpleClassName)
 				.append(" request = ")
-				.append(EndpointDemoGeneratorUtil.generateEndpointParameterCreationMethodName(request))
+				.append(EndpointDemoGeneratorUtil.generateFieldCreationMethodName(request))
 				.append("();\n");
 		}
 		

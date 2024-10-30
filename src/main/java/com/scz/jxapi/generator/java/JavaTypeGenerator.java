@@ -4,8 +4,6 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
-import java.util.Set;
-import java.util.TreeSet;
 
 /**
  * A simple generator for .java files of any type. Generator should be supplied
@@ -16,7 +14,7 @@ import java.util.TreeSet;
  */
 public class JavaTypeGenerator {
 
-	private final Set<String> imports = new TreeSet<String>();
+	private final Imports imports = new Imports();
 	private final String name;
 	private String parentClassName;
 	private List<String> implementedInterfaces;
@@ -40,7 +38,7 @@ public class JavaTypeGenerator {
 	 * @see #addImport(String)
 	 */
 	public void addImport(Class<?> cls) {
-		addImport(cls.getName());
+		imports.add(cls);
 	}
 	
 	/**
@@ -50,12 +48,10 @@ public class JavaTypeGenerator {
 	 * Also, if import name has generic parameters e.g. <code>com.x.Foo&lt;T&gt;</code>,
 	 * this parameter is also omitted in generation.
 	 * 
-	 * @param im
+	 * @param im The import to add
+	 * @see Imports#add(String)
 	 */
 	public void addImport(String im) {
-		if (im.contains("<")) {
-			im = im.substring(0, im.indexOf('<'));
-		}
 		imports.add(im);
 	}
 
@@ -63,7 +59,7 @@ public class JavaTypeGenerator {
 	 * @return Unfiltered lit of all imports added using {@link #addImport(Class)}
 	 * @see #addImport(String)
 	 */
-	public Set<String> getImports() {
+	public Imports getImports() {
 		return imports;
 	}
 
@@ -198,14 +194,7 @@ public class JavaTypeGenerator {
 		}
 		
 		sb.append("package ").append(getPackage()).append(";\n\n");
-		for (String im: imports) {
-			String imPkg = JavaCodeGenerationUtil.getClassPackage(im);
-			if (!imPkg.equals(getPackage())
-				&& !imPkg.startsWith("java.lang")
-				&& imPkg.contains(".")) {
-				sb.append("import ").append(im).append(";\n");
-			}
-		}
+		sb.append(imports.generate(getPackage()));
 		sb.append("\n")
 		  .append(JavaCodeGenerationUtil.generateJavaDoc(description))
 		  .append("\n")

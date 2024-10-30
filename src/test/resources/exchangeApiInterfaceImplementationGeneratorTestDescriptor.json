@@ -19,9 +19,9 @@
 						]
 					},
 					"response":{ 
-						"parameters":[
+						"properties":[
 							{"name":"responseCode", "type": "INT", "description":"Request response code", "sampleValue":"0"},
-							{"name":"payload", "type": "OBJECT_LIST", "description":"List of market information for each requested symbol", "parameters":[
+							{"name":"payload", "type": "OBJECT_LIST", "description":"List of market information for each requested symbol", "properties":[
 								{"name":"symbol", "type": "STRING", "description":"Market symbol", "sampleValue":"BTC_USDT"},
 								{"name":"minOrderSize", "type": "BIGDECIMAL", "description":"Minimum order amount", "sampleValue":"0.0001"}
 							]}
@@ -80,7 +80,7 @@
 					"response":{
 						"properties": [
 							{"name":"responseCode", "type": "INT", "description":"Request response code", "sampleValue":"0"},
-							{"name":"payload", "type": "OBJECT_LIST", "description":"List of market information for each requested symbol", "parameters":[
+							{"name":"payload", "type": "OBJECT_LIST", "description":"List of market information for each requested symbol", "properties":[
 									{"name":"symbol", "type": "STRING", "description":"Market symbol", "sampleValue":"BTC_USDT"},
 									{"name":"minOrderSize", "type": "BIGDECIMAL", "description":"Minimum order amount", "sampleValue":"0.0001"}
 								]
@@ -109,7 +109,7 @@
 					"response":{ 
 						"properties": [
 							{"name":"responseCode", "type": "INT", "description":"Request response code", "sampleValue":"0"},
-							{"name":"payload", "type": "OBJECT_LIST", "description":"List of market information for each requested symbol", "parameters":[
+							{"name":"payload", "type": "OBJECT_LIST", "description":"List of market information for each requested symbol", "properties":[
 									{"name":"symbol", "type": "STRING", "description":"Market symbol", "sampleValue":"BTC_USDT"},
 									{"name":"minOrderSize", "type": "BIGDECIMAL", "description":"Minimum order amount", "sampleValue":"0.0001"}
 								]
@@ -131,7 +131,7 @@
 					"response":{ 
 						"properties": [
 							{"name":"responseCode", "type": "INT", "description":"Request response code", "sampleValue":"0"},
-							{"name":"payload", "type": "OBJECT_LIST", "description":"List of market information for each requested symbol", "parameters":[
+							{"name":"payload", "type": "OBJECT_LIST", "description":"List of market information for each requested symbol", "properties":[
 									{"name":"symbol", "type": "STRING", "description":"Market symbol", "sampleValue":"BTC_USDT"},
 									{"name":"minOrderSize", "type": "BIGDECIMAL", "description":"Minimum order amount", "sampleValue":"0.0001"}
 								]
@@ -168,7 +168,7 @@
 					"response": {
 						"properties": [
 							{"name":"responseCode", "type": "INT", "description":"Request response code", "sampleValue":"0"},
-							{"name":"payload", "type": "OBJECT_LIST", "description":"List of market information for each requested symbol", "parameters":[
+							{"name":"payload", "type": "OBJECT_LIST", "description":"List of market information for each requested symbol", "properties":[
 									{"name":"symbol", "type": "STRING", "description":"Market symbol", "sampleValue":"BTC_USDT"},
 									{"name":"minOrderSize", "type": "BIGDECIMAL", "description":"Minimum order amount", "sampleValue":"0.0001"}
 								]

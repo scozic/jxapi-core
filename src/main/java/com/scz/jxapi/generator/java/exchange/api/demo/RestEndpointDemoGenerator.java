@@ -68,7 +68,7 @@ public class RestEndpointDemoGenerator extends JavaTypeGenerator {
 			}
 			
 			addImport(requestClassName);
-			requestSimpleClassName = ExchangeJavaWrapperGeneratorUtil.getClassNameForParameterType(
+			requestSimpleClassName = ExchangeJavaWrapperGeneratorUtil.getClassNameForType(
 					requestDataType, 
 					getImports(), 
 					requestClassName);
@@ -107,13 +107,13 @@ public class RestEndpointDemoGenerator extends JavaTypeGenerator {
 		addImport(DemoUtil.class);
 		body.append(EndpointDemoGeneratorUtil.getNewTestApiInstruction(exchangeName, exchangeImplClassName, simpleApiClassName));
 		if (hasArguments) {
-			this.appendToBody(EndpointDemoGeneratorUtil.generateEndpointParameterCreationMethod(
+			this.appendToBody(EndpointDemoGeneratorUtil.generateFieldCreationMethod(
 								request,  
 								requestClassName, 
 								getImports()));
 			body.append(requestSimpleClassName)
 				.append(" request = ")
-				.append(EndpointDemoGeneratorUtil.generateEndpointParameterCreationMethodName(request))
+				.append(EndpointDemoGeneratorUtil.generateFieldCreationMethodName(request))
 				.append("();\n");
 		}
 			

@@ -34,7 +34,7 @@
 					"response":{ 
 						"properties": [
 							{"name":"responseCode", "type": "INT", "description":"Request response code", "sampleValue":"0"},
-							{"name":"payload", "type": "OBJECT_LIST", "description":"List of market information for each requested symbol", "parameters":[
+							{"name":"payload", "type": "OBJECT_LIST", "description":"List of market information for each requested symbol", "properties":[
 									{"name":"symbol", "type": "STRING", "description":"Market symbol", "sampleValue":"BTC_USDT"},
 									{"name":"minOrderSize", "type": "BIGDECIMAL", "description":"Minimum order amount", "sampleValue":"0.0001"},
 									{"name":"levels", "type": "INT_LIST", "description":"Amount precision levels", "sampleValue":[1,10,500]}
@@ -54,7 +54,7 @@
 					"response": { 
 						"properties": [
 							{"name":"responseCode", "type": "INT", "description":"Request response code", "sampleValue":"0"},
-							{"name":"payload", "type": "OBJECT_MAP", "description":"Tickers for each symbol", "parameters":[
+							{"name":"payload", "type": "OBJECT_MAP", "description":"Tickers for each symbol", "properties":[
 									{"name":"last", "type": "BIGDECIMAL", "description":"Last traded price", "sampleValue":10.0}
 								]
 							}

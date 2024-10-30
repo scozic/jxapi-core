@@ -175,6 +175,22 @@
 			<mainClass>com.scz.jxapi.generator.exchange.ExchangeGeneratorMain</mainClass>
 		</configuration>
 		</plugin>
+		
+		<plugin>
+			<groupId>org.apache.maven.plugins</groupId>
+			<artifactId>maven-javadoc-plugin</artifactId>
+			<configuration>
+				<reportOutputDirectory>javadoc/</reportOutputDirectory>
+			</configuration>
+			<executions>
+				<execution>
+					<id>attach-javadocs</id>
+					<goals>
+						<goal>jar</goal>
+					</goals>
+				</execution>
+			</executions>
+		</plugin>
 
       </plugins>
     </pluginManagement>

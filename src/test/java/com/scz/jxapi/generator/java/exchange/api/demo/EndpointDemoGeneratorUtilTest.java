@@ -4,8 +4,6 @@ import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
-import java.util.TreeSet;
 import java.util.function.BinaryOperator;
 import java.util.stream.Collectors;
 
@@ -18,6 +16,7 @@ import com.scz.jxapi.exchange.descriptor.Field;
 import com.scz.jxapi.exchange.descriptor.RestEndpointDescriptor;
 import com.scz.jxapi.exchange.descriptor.Type;
 import com.scz.jxapi.exchange.descriptor.WebsocketEndpointDescriptor;
+import com.scz.jxapi.generator.java.Imports;
 import com.scz.jxapi.netutils.deserialization.json.field.BigDecimalJsonFieldDeserializer;
 import com.scz.jxapi.netutils.deserialization.json.field.BooleanJsonFieldDeserializer;
 import com.scz.jxapi.netutils.deserialization.json.field.IntegerJsonFieldDeserializer;
@@ -34,8 +33,8 @@ public class EndpointDemoGeneratorUtilTest {
 	@Test
 	public void testGenerateEndpointParameterCreationMethodPrimitiveStringParameter() {
 		Field param = Field.builder().type(Type.STRING).name("myStringParam").sampleValue("Hello World").build();
-		Set<String> imports = new TreeSet<>();
-		String method = EndpointDemoGeneratorUtil.generateEndpointParameterCreationMethod(param, null, imports);
+		Imports imports = new Imports();
+		String method = EndpointDemoGeneratorUtil.generateFieldCreationMethod(param, null, imports);
 		Assert.assertEquals(
 				"public static String createMyStringParam() {\n"
 				+ "  return \"Hello World\";\n"
@@ -46,8 +45,8 @@ public class EndpointDemoGeneratorUtilTest {
 	@Test
 	public void testGenerateEndpointParameterCreationMethodPrimitiveStringParameterNullSampleValue() {
 		Field param = Field.builder().type(Type.STRING).name("myStringParam").build();
-		Set<String> imports = new TreeSet<>();
-		String method = EndpointDemoGeneratorUtil.generateEndpointParameterCreationMethod(param, null, imports);
+		Imports imports = new Imports();
+		String method = EndpointDemoGeneratorUtil.generateFieldCreationMethod(param, null, imports);
 		Assert.assertEquals(
 				"public static String createMyStringParam() {\n"
 				+ "  return null;\n"
@@ -58,8 +57,8 @@ public class EndpointDemoGeneratorUtilTest {
 	@Test
 	public void testGenerateEndpointParameterCreationMethodPrimitiveIntegerParameter() {
 		Field param = Field.builder().type(Type.INT).name("myIntParam").sampleValue(123).build();
-		Set<String> imports = new TreeSet<>();
-		String method = EndpointDemoGeneratorUtil.generateEndpointParameterCreationMethod(param, null, imports);
+		Imports imports = new Imports();
+		String method = EndpointDemoGeneratorUtil.generateFieldCreationMethod(param, null, imports);
 		Assert.assertEquals(
 				"public static Integer createMyIntParam() {\n"
 			  + "  return Integer.valueOf(123);\n"
@@ -69,8 +68,8 @@ public class EndpointDemoGeneratorUtilTest {
 	@Test
 	public void  testGenerateEndpointParameterCreationMethodPrimitiveLongParameter() {
 		Field param = Field.builder().type(Type.LONG).name("myLongParam").sampleValue(123L).build();
-		Set<String> imports = new TreeSet<>();
-		String method = EndpointDemoGeneratorUtil.generateEndpointParameterCreationMethod(param, null, imports);
+		Imports imports = new Imports();
+		String method = EndpointDemoGeneratorUtil.generateFieldCreationMethod(param, null, imports);
 		Assert.assertEquals(
 				"public static Long createMyLongParam() {\n"
 			  + "  return Long.valueOf(\"123\");\n"
@@ -81,8 +80,8 @@ public class EndpointDemoGeneratorUtilTest {
 	@Test
 	public void  testGenerateEndpointParameterCreationMethodPrimitiveTimestampParameterSpecialValueNow() {
 		Field param = Field.builder().type(Type.TIMESTAMP).name("myLongParam").sampleValue("now()").build();
-		Set<String> imports = new TreeSet<>();
-		String method = EndpointDemoGeneratorUtil.generateEndpointParameterCreationMethod(param, null, imports);
+		Imports imports = new Imports();
+		String method = EndpointDemoGeneratorUtil.generateFieldCreationMethod(param, null, imports);
 		Assert.assertEquals(
 				"public static Long createMyLongParam() {\n"
 			  + "  return Long.valueOf(System.currentTimeMillis());\n"
@@ -93,8 +92,8 @@ public class EndpointDemoGeneratorUtilTest {
 	@Test
 	public void  testGenerateEndpointParameterCreationMethodPrimitiveBigDecimalParameter() {
 		Field param = Field.builder().type(Type.BIGDECIMAL).name("myBigDecimalParam").sampleValue("123.45").build();
-		Set<String> imports = new TreeSet<>();
-		String method = EndpointDemoGeneratorUtil.generateEndpointParameterCreationMethod(param, null, imports);
+		Imports imports = new Imports();
+		String method = EndpointDemoGeneratorUtil.generateFieldCreationMethod(param, null, imports);
 		Assert.assertEquals(
 				"public static BigDecimal createMyBigDecimalParam() {\n"
 			  + "  return new BigDecimal(\"123.45\");\n"
@@ -105,8 +104,8 @@ public class EndpointDemoGeneratorUtilTest {
 	@Test
 	public void  testGenerateEndpointParameterCreationMethodPrimitiveBooleanParameter() {
 		Field param = Field.builder().type(Type.BOOLEAN).name("myBooleanParam").sampleValue(true).build();
-		Set<String> imports = new TreeSet<>();
-		String method = EndpointDemoGeneratorUtil.generateEndpointParameterCreationMethod(param, null, imports);
+		Imports imports = new Imports();
+		String method = EndpointDemoGeneratorUtil.generateFieldCreationMethod(param, null, imports);
 		Assert.assertEquals(
 				"public static Boolean createMyBooleanParam() {\n"
 				+ "  return Boolean.valueOf(true);\n"
@@ -129,8 +128,8 @@ public class EndpointDemoGeneratorUtilTest {
 						   .build();
 						   
 		param.setSampleValue(123);
-		Set<String> imports = new TreeSet<>();
-		String method = EndpointDemoGeneratorUtil.generateEndpointParameterCreationMethod(param, "MyRequest", imports);
+		Imports imports = new Imports();
+		String method = EndpointDemoGeneratorUtil.generateFieldCreationMethod(param, "MyRequest", imports);
 		Assert.assertEquals(
 				"public static MyRequest createMyObjParam() {\n"
 				+ "  MyRequest request = new MyRequest();\n"
@@ -161,8 +160,8 @@ public class EndpointDemoGeneratorUtilTest {
 				   		   .build();
 		
 		param.setSampleValue(123);
-		Set<String> imports = new TreeSet<>();
-		String method = EndpointDemoGeneratorUtil.generateEndpointParameterCreationMethod(param, "MyRequest", imports);
+		Imports imports = new Imports();
+		String method = EndpointDemoGeneratorUtil.generateFieldCreationMethod(param, "MyRequest", imports);
 		Assert.assertEquals(
 				"public static MyRequest createMyObjParam() {\n"
 				+ "  MyRequest request = new MyRequest();\n"
@@ -178,9 +177,9 @@ public class EndpointDemoGeneratorUtilTest {
 		
 		checkImports(imports, 
 				 List.class,
-				 ListJsonFieldDeserializer.class, 
-				 MapJsonFieldDeserializer.class,
-				 BigDecimalJsonFieldDeserializer.class);
+				 BigDecimalJsonFieldDeserializer.class,
+				 ListJsonFieldDeserializer.class,
+				 MapJsonFieldDeserializer.class );
 	}
 	
 	@Test
@@ -190,16 +189,16 @@ public class EndpointDemoGeneratorUtilTest {
 						   .name("myIntListParam")
 						   .sampleValue(List.of(1,3,5,7))
 						   .build();
-		Set<String> imports = new TreeSet<>();
-		String method = EndpointDemoGeneratorUtil.generateEndpointParameterCreationMethod(param, null, imports);
+		Imports imports = new Imports();
+		String method = EndpointDemoGeneratorUtil.generateFieldCreationMethod(param, null, imports);
 		Assert.assertEquals(
 				"public static List<Integer> createMyIntListParam() {\n"
 				+ "  return new ListJsonFieldDeserializer<>(IntegerJsonFieldDeserializer.getInstance()).deserialize(\"[1, 3, 5, 7]\");\n"
 				+ "}\n", method);
-		checkImports(imports, 
-					 List.class, 
-					 ListJsonFieldDeserializer.class, 
-					 IntegerJsonFieldDeserializer.class);
+		checkImports(imports,
+					 List.class,
+					 IntegerJsonFieldDeserializer.class, 
+					 ListJsonFieldDeserializer.class);
 	}
 	
 	@Test
@@ -209,8 +208,8 @@ public class EndpointDemoGeneratorUtilTest {
 						   .name("myStringListParam")
 						   .sampleValue("[\"BTC\",\"ETH\"]")
 						   .build();
-		Set<String> imports = new TreeSet<>();
-		String method = EndpointDemoGeneratorUtil.generateEndpointParameterCreationMethod(param, null, imports);
+		Imports imports = new Imports();
+		String method = EndpointDemoGeneratorUtil.generateFieldCreationMethod(param, null, imports);
 		Assert.assertEquals(
 				"public static List<String> createMyStringListParam() {\n"
 				+ "  return new ListJsonFieldDeserializer<>(StringJsonFieldDeserializer.getInstance()).deserialize(\"[\\\"BTC\\\",\\\"ETH\\\"]\");\n"
@@ -228,8 +227,8 @@ public class EndpointDemoGeneratorUtilTest {
 						   .name("myLongListParam")
 						   .sampleValue("[1234567890,9876543210]")
 						   .build();
-		Set<String> imports = new TreeSet<>();
-		String method = EndpointDemoGeneratorUtil.generateEndpointParameterCreationMethod(param, null, imports);
+		Imports imports = new Imports();
+		String method = EndpointDemoGeneratorUtil.generateFieldCreationMethod(param, null, imports);
 		Assert.assertEquals(
 				"public static List<Long> createMyLongListParam() {\n"
 				+ "  return new ListJsonFieldDeserializer<>(LongJsonFieldDeserializer.getInstance()).deserialize(\"[1234567890,9876543210]\");\n"
@@ -247,17 +246,17 @@ public class EndpointDemoGeneratorUtilTest {
 						   .name("myBigDecimalListParam")
 						   .sampleValue("[1234.56789,9876.54321]")
 						   .build();
-		Set<String> imports = new TreeSet<>();
-		String method = EndpointDemoGeneratorUtil.generateEndpointParameterCreationMethod(param, null, imports);
+		Imports imports = new Imports();
+		String method = EndpointDemoGeneratorUtil.generateFieldCreationMethod(param, null, imports);
 		Assert.assertEquals(
 				"public static List<BigDecimal> createMyBigDecimalListParam() {\n"
 				+ "  return new ListJsonFieldDeserializer<>(BigDecimalJsonFieldDeserializer.getInstance()).deserialize(\"[1234.56789,9876.54321]\");\n"
 				+ "}\n", method);
-		checkImports(imports, 
-					 List.class,
+		checkImports(imports,
 					 BigDecimal.class,
-					 ListJsonFieldDeserializer.class, 
-					 BigDecimalJsonFieldDeserializer.class);
+					 List.class,
+					 BigDecimalJsonFieldDeserializer.class,
+					 ListJsonFieldDeserializer.class);
 	}
 	
 	@Test
@@ -267,8 +266,8 @@ public class EndpointDemoGeneratorUtilTest {
 				   .name("myBooleanListParam")
 				   .sampleValue("[true, false]")
 				   .build();
-		Set<String> imports = new TreeSet<>();
-		String method = EndpointDemoGeneratorUtil.generateEndpointParameterCreationMethod(param, null, imports);
+		Imports imports = new Imports();
+		String method = EndpointDemoGeneratorUtil.generateFieldCreationMethod(param, null, imports);
 		Assert.assertEquals(
 				"public static List<Boolean> createMyBooleanListParam() {\n"
 				+ "  return new ListJsonFieldDeserializer<>(BooleanJsonFieldDeserializer.getInstance()).deserialize(\"[true, false]\");\n"
@@ -295,8 +294,8 @@ public class EndpointDemoGeneratorUtilTest {
 							   		      .sampleValue("Hello World")
 							   		      .build())
 						   .build();
-		Set<String> imports = new TreeSet<>();
-		String method = EndpointDemoGeneratorUtil.generateEndpointParameterCreationMethod(param, "MyRequest", imports);
+		Imports imports = new Imports();
+		String method = EndpointDemoGeneratorUtil.generateFieldCreationMethod(param, "MyRequest", imports);
 		Assert.assertEquals(
 				"public static List<MyRequest> createMyObjListParam() {\n"
 				+ "  MyRequest requestItem = new MyRequest();\n"
@@ -325,8 +324,8 @@ public class EndpointDemoGeneratorUtilTest {
 						   .sampleMapKeyValues(List.of("myKey0"))
 						   .build();
 		
-		Set<String> imports = new TreeSet<>();
-		String method = EndpointDemoGeneratorUtil.generateEndpointParameterCreationMethod(param, "MyRequest", imports);
+		Imports imports = new Imports();
+		String method = EndpointDemoGeneratorUtil.generateFieldCreationMethod(param, "MyRequest", imports);
 		Assert.assertEquals(
 				"public static Map<String, MyRequest> createMyObjMapParam() {\n"
 				+ "  MyRequest requestItem = new MyRequest();\n"
@@ -355,8 +354,8 @@ public class EndpointDemoGeneratorUtilTest {
 						   .sampleMapKeyValues(null)
 						   .build();
 		param.setSampleMapKeyValue(null);
-		Set<String> imports = new TreeSet<>();
-		String method = EndpointDemoGeneratorUtil.generateEndpointParameterCreationMethod(param, "MyRequest", imports);
+		Imports imports = new Imports();
+		String method = EndpointDemoGeneratorUtil.generateFieldCreationMethod(param, "MyRequest", imports);
 		Assert.assertEquals(
 				"public static Map<String, MyRequest> createMyObjMapParam() {\n"
 				+ "  return null;\n"
@@ -381,8 +380,8 @@ public class EndpointDemoGeneratorUtilTest {
 							   		      .build())
 						   .sampleMapKeyValues(List.of())
 						   .build();
-		Set<String> imports = new TreeSet<>();
-		String method = EndpointDemoGeneratorUtil.generateEndpointParameterCreationMethod(param, "MyRequest", imports);
+		Imports imports = new Imports();
+		String method = EndpointDemoGeneratorUtil.generateFieldCreationMethod(param, "MyRequest", imports);
 		Assert.assertEquals(
 				"public static Map<String, MyRequest> createMyObjMapParam() {\n"
 				+ "  return null;\n"
@@ -408,8 +407,8 @@ public class EndpointDemoGeneratorUtilTest {
 						   .sampleMapKeyValues(List.of("m1Key", "m2Key"))
 						   .build();
 		
-		Set<String> imports = new TreeSet<>();
-		String method = EndpointDemoGeneratorUtil.generateEndpointParameterCreationMethod(param, "MyRequest", imports);
+		Imports imports = new Imports();
+		String method = EndpointDemoGeneratorUtil.generateFieldCreationMethod(param, "MyRequest", imports);
 		Assert.assertEquals(
 				"public static Map<String, List<Map<String, MyRequest>>> createMyObjMapListMapParam() {\n"
 				+ "  MyRequest requestItem = new MyRequest();\n"
@@ -423,8 +422,8 @@ public class EndpointDemoGeneratorUtilTest {
 	@Test
 	public void testGenerateEndpointParameterCreationMethodStringValuesMap() {
 		Field param = Field.builder().type("STRING_MAP").name("adresses").sampleValue("{\"Jamie\": \"London\", \"Amina\": \"Djibouti\"}").build();
-		Set<String> imports = new TreeSet<>();
-		String method = EndpointDemoGeneratorUtil.generateEndpointParameterCreationMethod(param, "MyRequest", imports);
+		Imports imports = new Imports();
+		String method = EndpointDemoGeneratorUtil.generateFieldCreationMethod(param, "MyRequest", imports);
 		Assert.assertEquals(
 				"public static Map<String, String> createAdresses() {\n"
 				+ "  return new MapJsonFieldDeserializer<>(StringJsonFieldDeserializer.getInstance()).deserialize(\"{\\\"Jamie\\\": \\\"London\\\", \\\"Amina\\\": \\\"Djibouti\\\"}\");\n"
@@ -435,13 +434,12 @@ public class EndpointDemoGeneratorUtilTest {
 					 StringJsonFieldDeserializer.class);
 	}
 	
-	private void checkImports(Set<String> actualImports, Class<?>...expectedImports) {
+	private void checkImports(Imports actualImports, Class<?>...expectedImports) {
 		String[] expected = Arrays.stream(expectedImports)
 								  .map(i -> i.getName())
 								  .collect(Collectors.toList())
 								  .toArray(new String[expectedImports.length]);
-		Arrays.sort(expected);
-		List<String> actual = actualImports.stream().filter(s -> !s.startsWith("java.lang") && s.contains(".")).collect(Collectors.toList());
+		List<String> actual = actualImports.getAllImports().stream().filter(s -> !s.startsWith("java.lang") && s.contains(".")).collect(Collectors.toList());
 		BinaryOperator<String> concat = (s1, s2) -> s1 + "\n" + s2;
 		String errMsg = "Unexpected imports, expected:\n" 
 						+ Arrays.stream(expected)

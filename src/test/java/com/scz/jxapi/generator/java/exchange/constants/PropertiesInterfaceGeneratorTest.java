@@ -30,9 +30,10 @@ public class PropertiesInterfaceGeneratorTest {
         				bigDecimalProp));
         String expected =  "package com.x.y;\n"
         		+ "\n"
-        		+ "import com.scz.jxapi.util.PropertiesUtil;\n"
         		+ "import java.math.BigDecimal;\n"
         		+ "import java.util.Properties;\n"
+        		+ "\n"
+        		+ "import com.scz.jxapi.util.PropertiesUtil;\n"
         		+ "\n"
         		+ "/**\n"
         		+ " * Configurable properties for <strong>myExchange</strong> exchange:<br/>\n"

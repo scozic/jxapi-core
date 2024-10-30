@@ -40,6 +40,11 @@ public class JsonMessageDeserializerGeneratorTest {
 		JsonMessageDeserializerGenerator generator = new JsonMessageDeserializerGenerator(deserialiazedTypeName, endpointParameters);
 		Assert.assertEquals("package com.x.deserializers;\n"
 				+ "\n"
+				+ "import java.io.IOException;\n"
+				+ "import java.util.List;\n"
+				+ "\n"
+				+ "import List;\n"
+				+ "import MyPojoFoo;\n"
 				+ "import com.fasterxml.jackson.core.JsonParser;\n"
 				+ "import com.fasterxml.jackson.core.JsonToken;\n"
 				+ "import com.scz.jxapi.netutils.deserialization.json.AbstractJsonMessageDeserializer;\n"
@@ -48,8 +53,6 @@ public class JsonMessageDeserializerGeneratorTest {
 				+ "import com.x.MyPojo;\n"
 				+ "import com.x.MyPojoFoo;\n"
 				+ "import com.x.MyPojoToto;\n"
-				+ "import java.io.IOException;\n"
-				+ "import java.util.List;\n"
 				+ "import static com.scz.jxapi.util.JsonUtil.readNextBigDecimal;\n"
 				+ "import static com.scz.jxapi.util.JsonUtil.readNextBoolean;\n"
 				+ "import static com.scz.jxapi.util.JsonUtil.readNextInteger;\n"
@@ -105,7 +108,7 @@ public class JsonMessageDeserializerGeneratorTest {
 				+ "    \n"
 				+ "     return msg;\n"
 				+ "  }\n"
-				+ "}\n"
-				, generator.generate());
+				+ "}\n", 
+				generator.generate());
 	}
 }

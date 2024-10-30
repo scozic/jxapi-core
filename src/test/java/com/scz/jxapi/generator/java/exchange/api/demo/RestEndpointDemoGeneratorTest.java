@@ -190,13 +190,14 @@ public class RestEndpointDemoGeneratorTest {
 		RestEndpointDemoGenerator generator = new RestEndpointDemoGenerator(exchange, api, restEndpoint);
 		Assert.assertEquals("package com.foo.bar.gen.marketdata.demo;\n"
 				+ "\n"
+				+ "import java.util.List;\n"
+				+ "import java.util.Map;\n"
+				+ "\n"
 				+ "import com.foo.bar.gen.MyTestExchangeExchangeImpl;\n"
 				+ "import com.foo.bar.gen.marketdata.MyTestExchangeMarketDataApi;\n"
 				+ "import com.foo.bar.gen.marketdata.pojo.SingleSymbol;\n"
 				+ "import com.scz.jxapi.util.DemoUtil;\n"
 				+ "import com.scz.jxapi.util.TestJXApiProperties;\n"
-				+ "import java.util.List;\n"
-				+ "import java.util.Map;\n"
 				+ "import org.slf4j.Logger;\n"
 				+ "import org.slf4j.LoggerFactory;\n"
 				+ "\n"
@@ -224,8 +225,7 @@ public class RestEndpointDemoGeneratorTest {
 				+ "      System.exit(-1);\n"
 				+ "    }\n"
 				+ "  }\n"
-				+ "}\n"
-				+ "", 
+				+ "}\n", 
 				generator.generate());
 	}
 }

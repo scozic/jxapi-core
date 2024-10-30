@@ -7,44 +7,62 @@ import com.scz.jxapi.netutils.rest.ratelimits.RateLimitRule;
 import com.scz.jxapi.util.EncodingUtil;
 
 /**
- * Element of exchange descriptor JSON document describing a given field of a request to an endpoint or its response.<br/>
+ * Element of exchange descriptor JSON document describing a given field of a
+ * REST request or response or websocket subscribe request or message.<br/>
  * A field is defined by:<br/>
  * <ul>
- * <li>Its <code>name</code> property, which has to be unique among fields of same object structure</li>
- * <li>Its <code>type</code> property, see {@link Type} which qualifies the type of data found as value. 
- *  This type can be either primitive (<code>STRING</code>, <code>INT</code>... see {@link CanonicalType#isPrimitive}) 
- *  or defining an object structure (JSON map) as a list of nested {@link Field} of any type. 
- *  Therefore a field can describe most tree data structure.</li>
- * <li>Its <code>description</code>, a human readable description of the field</li>
- * <li>Its <code>sample Value</code>, a sample value of the field, used for documentation purpose and sample value creation in demo classes</li>
- * <li>Its <code>msgField</code>, the name of the field in the message sent or received to the endpoint. 
- *  This means the actual key in JSON structure. This can differ from actual name when APIs are designed to minify 
- *  JSON data transferred by using single letter as field names. In this case it is recommended to 
- *  define <code>name</code> property in descriptor with understandable name, and set <code>msgField</code> value/li>
- * <li>Its <code>objectName</code>, the simple (without package) name of java class to represent corresponding 
- *  to object defined by this parameter. Relevant only when type is an object see {@link CanonicalType#isObject}.<br/> 
- * 	<strong>Remarks:</strong>
- * 	<ul>
- * 	<li>In a descriptor file, the first field defining a given object name should define that object sub-fields, 
- *   other parameters using same object name need not define sub-fields. This allow not to repeat identical structures in different APIs.</li>
- * 	<li>Defining <code>objectName</code> property is not mandatory for. 
- *   For an 'object' field, the object name will be generated as concatenation of exchange, api, and field names</li>
- *  <li>Defining <code>objectName</code> property is important for an 'object' field, when the object is used in multiple APIs. 
- *   This will allow to generate a single class for the object, and reuse it in multiple APIs.</li>
- *  <li>The destination package of the generated class is sub package 'pojo' of enclosing API group package, 
- *   which is sub package 'apiName' of <code>basePackage</code> property in the descriptor file.<br/> 
- * 	 Example: for a field with objectName <i>Foo</i> in an endpoint of API group named <i>myapi</i> group of exchange 
- *   with base package <i>com.x.y</i>, the class Foo will be generated in package <i>com.x.y.myapi.pojo</i></i> </li>
- *  </ul>
+ * <li>Its <code>name</code> property, which has to be unique among fields of
+ * same object structure</li>
+ * <li>Its <code>type</code> property, see {@link Type} which qualifies the type
+ * of data found as value. This type can be either primitive
+ * (<code>STRING</code>, <code>INT</code>... see
+ * {@link CanonicalType#isPrimitive}) or defining an object structure (JSON map)
+ * as a list of nested {@link Field} of any type. Therefore a field can describe
+ * most tree data structure.</li>
+ * <li>Its <code>description</code>, a human readable description of the
+ * field</li>
+ * <li>Its <code>sample Value</code>, a sample value of the field, used for
+ * documentation purpose and sample value creation in demo classes</li>
+ * <li>Its <code>msgField</code>, the name of the field in the message sent or
+ * received to the endpoint. This means the actual key in JSON structure. This
+ * can differ from actual name when APIs are designed to minify JSON data
+ * transferred by using single letter as field names. In this case it is
+ * recommended to define <code>name</code> property in descriptor with
+ * understandable name, and set <code>msgField</code> value/li>
+ * <li>Its <code>objectName</code>, the simple (without package) name of java
+ * class to represent corresponding to object defined by this parameter.
+ * Relevant only when type is an object see {@link CanonicalType#isObject}.<br/>
+ * <strong>Remarks:</strong>
+ * <ul>
+ * <li>In a descriptor file, the first field defining a given object name should
+ * define that object sub-fields, other properties using same object name need
+ * not define sub-fields. This allow not to repeat identical structures in
+ * different APIs.</li>
+ * <li>Defining <code>objectName</code> property is not mandatory for. For an
+ * 'object' field, the object name will be generated as concatenation of
+ * exchange, api, and field names</li>
+ * <li>Defining <code>objectName</code> property is important for an 'object'
+ * field, when the object is used in multiple APIs. This will allow to generate
+ * a single class for the object, and reuse it in multiple APIs.</li>
+ * <li>The destination package of the generated class is sub package 'pojo' of
+ * enclosing API group package, which is sub package 'apiName' of
+ * <code>basePackage</code> property in the descriptor file.<br/>
+ * Example: for a field with objectName <i>Foo</i> in an endpoint of API group
+ * named <i>myapi</i> group of exchange with base package <i>com.x.y</i>, the
+ * class Foo will be generated in package <i>com.x.y.myapi.pojo</i></i></li>
+ * </ul>
  * </li>
- * <li>Its <code>parameters</code>, for an <code>object</code> type field, see {@link CanonicalType#isObject}, 
- *  the fields in nested structure, <code>null</code> otherwise.</li>
- * <li>Its <code>implementedInterfaces</code>, the list of interfaces implemented by the object defined by this field. 
- *  Relevant only when type is an object see {@link CanonicalType#isObject}.</li>
+ * <li>Its <code>properties</code>, for an <code>object</code> type field, see
+ * {@link CanonicalType#isObject}, the fields in nested structure,
+ * <code>null</code> otherwise.</li>
+ * <li>Its <code>implementedInterfaces</code>, the list of interfaces
+ * implemented by the object defined by this field. Relevant only when type is
+ * an object see {@link CanonicalType#isObject}.</li>
  * </ul>
  * 
  * JSON examples:<br/>
  * <i>Field of simple type STRING:</i><br/>
+ * 
  * <pre>
  * {
  *     "name": "myField",
@@ -53,9 +71,18 @@ import com.scz.jxapi.util.EncodingUtil;
  *     "sampleValue": "Hello",
  *     "msgField": "f"
  * }
- * </pre> 
- * Expected sample json value of data represented by such field: <pre>["f":"Hello"]</pre><br/>
- * <br/><i>Field of object type OBJECT_MAP:</i><br/>
+ * </pre>
+ * 
+ * Expected sample json value of data represented by such field:
+ * 
+ * <pre>
+ * ["f":"Hello"]
+ * </pre>
+ * 
+ * <br/>
+ * <br/>
+ * <i>Field of object type OBJECT_MAP:</i><br/>
+ * 
  * <pre>
  * {
  *     "name": "myField",
@@ -64,7 +91,7 @@ import com.scz.jxapi.util.EncodingUtil;
  *     "msgField": "f",
  *     "objectName": "MyObject",
  *     "sampleMapKeyValue": ["foo", "bar"],
- *     "parameters": [
+ *     "properties": [
  *         {
  *             "name": "myField1",
  *             "type": "STRING",
@@ -82,7 +109,9 @@ import com.scz.jxapi.util.EncodingUtil;
  *     ]
  * }
  * </pre>
+ * 
  * Expected sample json value of data represented by such field: <br/>
+ * 
  * <pre>
  * [
  *     "f": {
@@ -97,9 +126,12 @@ import com.scz.jxapi.util.EncodingUtil;
  *     }
  * ]
  * </pre>
- * <br/>Notice in example above f1 and f2 are expected fields in json structure, 
- * but "foo" and "bar" are arbitrary keys of MAP field type.<br/> 
+ * 
  * <br/>
+ * Notice in example above f1 and f2 are expected fields in json structure, but
+ * "foo" and "bar" are arbitrary keys of MAP field type.<br/>
+ * <br/>
+ * 
  * @see RestEndpointDescriptor
  * @see Type
  * @see RateLimitRule
@@ -236,7 +268,7 @@ public class Field {
 	
 	/**
 	 * @return For an 'object' type field, see {@link CanonicalType#isObject}, the
-	 *         parameters in nested structure, <code>null</code> otherwise. An
+	 *         properties in nested structure, <code>null</code> otherwise. An
 	 *         object type property may have <code>null</code> properties if it is
 	 *         defined an object name (see {@link #getObjectName()}). That means
 	 *         properties of that object are defined in another {@link Field}.
@@ -247,10 +279,10 @@ public class Field {
 
 	/**
 	 * @param fields For an 'object' type parameter, see
-	 *               {@link CanonicalType#isObject}, the parameters in nested
+	 *               {@link CanonicalType#isObject}, the properties in nested
 	 *               structure, <code>null</code> otherwise.
 	 */
-	public void setParameters(List<Field> fields) {
+	public void setProperties(List<Field> fields) {
 		this.properties = fields;
 	}
 	
@@ -259,8 +291,8 @@ public class Field {
 	 *         corresponding to object defined by this field. Relevant only when
 	 *         type is an object see {@link CanonicalType#isObject}.<br/> Remark: in a descriptor
 	 *         file, the first field defining a given object name should define that object properties
-	 *         see {@link Field#getProperties()} , other parameters using same object name need not
-	 *         define sub-parameters. This allow not to repeat identical structures
+	 *         see {@link Field#getProperties()} , other properties using same object name need not
+	 *         define sub-properties. This allow not to repeat identical structures
 	 *         in different APIs.
 	 */
 	public String getObjectName() {

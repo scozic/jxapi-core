@@ -33,12 +33,13 @@ public class ExchangeInterfaceImplementationGeneratorTest {
 		ExchangeInterfaceImplementationGenerator exchangeGenerator = new ExchangeInterfaceImplementationGenerator(exchangeDescriptor);
 		Assert.assertEquals("package com.xyz.foo.gen;\n"
 				+ "\n"
+				+ "import java.util.Properties;\n"
+				+ "\n"
 				+ "import com.scz.jxapi.exchange.AbstractExchange;\n"
 				+ "import com.xyz.foo.gen.api1.FooApi1Api;\n"
 				+ "import com.xyz.foo.gen.api1.FooApi1ApiImpl;\n"
 				+ "import com.xyz.foo.gen.api2.FooApi2Api;\n"
 				+ "import com.xyz.foo.gen.api2.FooApi2ApiImpl;\n"
-				+ "import java.util.Properties;\n"
 				+ "\n"
 				+ "/**\n"
 				+ " * Actual implementation of {@link FooExchange}<br/>\n"
@@ -65,8 +66,8 @@ public class ExchangeInterfaceImplementationGeneratorTest {
 				+ "    return this.fooApi2Api;\n"
 				+ "  }\n"
 				+ "  \n"
-				+ "}\n"
-				+ "", exchangeGenerator.generate());
+				+ "}\n", 
+				exchangeGenerator.generate());
 	}
 	
 	@Test
@@ -93,6 +94,8 @@ public class ExchangeInterfaceImplementationGeneratorTest {
 		ExchangeInterfaceImplementationGenerator exchangeGenerator = new ExchangeInterfaceImplementationGenerator(exchangeDescriptor);
 		Assert.assertEquals("package com.xyz.foo.gen;\n"
 				+ "\n"
+				+ "import java.util.Properties;\n"
+				+ "\n"
 				+ "import com.scz.jxapi.exchange.AbstractExchange;\n"
 				+ "import com.scz.jxapi.netutils.rest.ratelimits.RateLimitRule;\n"
 				+ "import com.scz.jxapi.netutils.rest.ratelimits.RequestThrottler;\n"
@@ -102,7 +105,6 @@ public class ExchangeInterfaceImplementationGeneratorTest {
 				+ "import com.xyz.foo.gen.api2.FooApi2ApiImpl;\n"
 				+ "import com.xyz.foo.gen.api3.FooApi3Api;\n"
 				+ "import com.xyz.foo.gen.api3.FooApi3ApiImpl;\n"
-				+ "import java.util.Properties;\n"
 				+ "\n"
 				+ "/**\n"
 				+ " * Actual implementation of {@link FooExchange}<br/>\n"
@@ -159,10 +161,11 @@ public class ExchangeInterfaceImplementationGeneratorTest {
 		ExchangeInterfaceImplementationGenerator exchangeGenerator = new ExchangeInterfaceImplementationGenerator(exchangeDescriptor);
 		Assert.assertEquals("package com.xyz.foo.gen;\n"
 				+ "\n"
+				+ "import java.util.Properties;\n"
+				+ "\n"
 				+ "import com.scz.jxapi.exchange.AbstractExchange;\n"
 				+ "import com.xyz.foo.gen.api1.FooApi1Api;\n"
 				+ "import com.xyz.foo.gen.api1.FooApi1ApiImpl;\n"
-				+ "import java.util.Properties;\n"
 				+ "\n"
 				+ "/**\n"
 				+ " * Actual implementation of {@link FooExchange}<br/>\n"
@@ -182,8 +185,7 @@ public class ExchangeInterfaceImplementationGeneratorTest {
 				+ "    return this.fooApi1Api;\n"
 				+ "  }\n"
 				+ "  \n"
-				+ "}\n"
-				+ "", 
+				+ "}\n", 
 				exchangeGenerator.generate());
 	}
 	
@@ -197,9 +199,10 @@ public class ExchangeInterfaceImplementationGeneratorTest {
 		ExchangeInterfaceImplementationGenerator exchangeGenerator = new ExchangeInterfaceImplementationGenerator(exchangeDescriptor);
 		Assert.assertEquals("package com.xyz.foo.gen;\n"
 				+ "\n"
+				+ "import java.util.Properties;\n"
+				+ "\n"
 				+ "import com.scz.jxapi.exchange.AbstractExchange;\n"
 				+ "import com.scz.jxapi.netutils.rest.ratelimits.RateLimitRule;\n"
-				+ "import java.util.Properties;\n"
 				+ "\n"
 				+ "/**\n"
 				+ " * Actual implementation of {@link FooExchange}<br/>\n"
@@ -237,13 +240,14 @@ public class ExchangeInterfaceImplementationGeneratorTest {
 		ExchangeInterfaceImplementationGenerator exchangeGenerator = new ExchangeInterfaceImplementationGenerator(exchangeDescriptor);
 		Assert.assertEquals("package com.xyz.foo.gen;\n"
 				+ "\n"
+				+ "import java.util.Properties;\n"
+				+ "\n"
 				+ "import com.scz.jxapi.exchange.AbstractExchange;\n"
 				+ "import com.scz.jxapi.netutils.rest.ratelimits.RateLimitRule;\n"
 				+ "import com.xyz.foo.gen.api1.FooApi1Api;\n"
 				+ "import com.xyz.foo.gen.api1.FooApi1ApiImpl;\n"
 				+ "import com.xyz.foo.gen.api2.FooApi2Api;\n"
 				+ "import com.xyz.foo.gen.api2.FooApi2ApiImpl;\n"
-				+ "import java.util.Properties;\n"
 				+ "\n"
 				+ "/**\n"
 				+ " * Actual implementation of {@link FooExchange}<br/>\n"
@@ -308,9 +312,10 @@ public class ExchangeInterfaceImplementationGeneratorTest {
 		ExchangeInterfaceImplementationGenerator exchangeGenerator = new ExchangeInterfaceImplementationGenerator(exchangeDescriptor);
 		Assert.assertEquals("package com.xyz.foo.gen;\n"
 				+ "\n"
+				+ "import java.util.Properties;\n"
+				+ "\n"
 				+ "import com.scz.jxapi.exchange.AbstractExchange;\n"
 				+ "import com.scz.jxapi.netutils.rest.ratelimits.RateLimitRule;\n"
-				+ "import java.util.Properties;\n"
 				+ "\n"
 				+ "/**\n"
 				+ " * Actual implementation of {@link FooExchange}<br/>\n"

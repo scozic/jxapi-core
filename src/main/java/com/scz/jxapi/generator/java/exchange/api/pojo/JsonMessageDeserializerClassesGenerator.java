@@ -2,12 +2,11 @@ package com.scz.jxapi.generator.java.exchange.api.pojo;
 
 import java.io.IOException;
 import java.nio.file.Path;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import com.scz.jxapi.exchange.descriptor.Field;
 import com.scz.jxapi.exchange.descriptor.Type;
+import com.scz.jxapi.generator.java.Imports;
 import com.scz.jxapi.generator.java.JavaCodeGenerationUtil;
 import com.scz.jxapi.generator.java.exchange.ClassesGenerator;
 import com.scz.jxapi.generator.java.exchange.api.ExchangeApiGeneratorUtil;
@@ -42,7 +41,7 @@ public class JsonMessageDeserializerClassesGenerator implements ClassesGenerator
 
 	@Override
 	public void generateClasses(Path outputFolder) throws IOException {
-		Set<String> imports = new HashSet<>();
+		Imports imports = new Imports();
 		for (Field field: fields) {
 			if ((field.getType().isObject())
 				&& field.getProperties() != null) {

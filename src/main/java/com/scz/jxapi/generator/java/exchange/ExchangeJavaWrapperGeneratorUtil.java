@@ -9,6 +9,7 @@ import com.scz.jxapi.exchange.descriptor.CanonicalType;
 import com.scz.jxapi.exchange.descriptor.ExchangeApiDescriptor;
 import com.scz.jxapi.exchange.descriptor.ExchangeDescriptor;
 import com.scz.jxapi.exchange.descriptor.Type;
+import com.scz.jxapi.generator.java.Imports;
 import com.scz.jxapi.generator.java.JavaCodeGenerationUtil;
 import com.scz.jxapi.netutils.deserialization.json.field.BigDecimalJsonFieldDeserializer;
 import com.scz.jxapi.netutils.deserialization.json.field.BooleanJsonFieldDeserializer;
@@ -146,12 +147,12 @@ public class ExchangeJavaWrapperGeneratorUtil {
 	 * 				 see {@link #getClassNameWithoutPackage(String)}.
 	 * 		     </li>
 	 * 		   </ul>
-	 * @see #getClassNameForParameterType(Type, Set, String)
+	 * @see #getClassNameForType(Type, Set, String)
 	 * @throws IllegalArgumentException if the type is not recognized.
 	 */
-	public static String getClassNameForParameterType(Type type, 
-													  Set<String> imports, 
-													  String objectClassName) {
+	public static String getClassNameForType(Type type, 
+										     Imports imports, 
+											 String objectClassName) {
 		if (type == null) {
 			return null;
 		}
@@ -170,7 +171,7 @@ public class ExchangeJavaWrapperGeneratorUtil {
 		case STRING:
 			return canonicalTypeClass.getSimpleName();
 		case LIST:
-			subTypeClassName = getClassNameForParameterType(type.getSubType(), imports, objectClassName);
+			subTypeClassName = getClassNameForType(type.getSubType(), imports, objectClassName);
 			if (imports != null) {
 				imports.add(canonicalTypeClass.getName());
 			}
@@ -179,7 +180,7 @@ public class ExchangeJavaWrapperGeneratorUtil {
 					+ JavaCodeGenerationUtil.getClassNameWithoutPackage(subTypeClassName) 
 					+ ">";
 		case MAP:
-			subTypeClassName = getClassNameForParameterType(type.getSubType(), imports, objectClassName);
+			subTypeClassName = getClassNameForType(type.getSubType(), imports, objectClassName);
 			if (imports != null) {
 				imports.add(canonicalTypeClass.getName());
 			}
@@ -228,7 +229,7 @@ public class ExchangeJavaWrapperGeneratorUtil {
 	 * @see Type
 	 * @throws IllegalArgumentException if the type is not recognized.
 	 */
-	public static String getNewJsonFieldDeserializerInstruction(Type type, String objectClassName, Set<String> imports) {
+	public static String getNewJsonFieldDeserializerInstruction(Type type, String objectClassName, Imports imports) {
 		if (type == null) {
 			type  = Type.fromTypeName(CanonicalType.STRING.name());
 		}
@@ -280,9 +281,9 @@ public class ExchangeJavaWrapperGeneratorUtil {
 	 *                    the generation instruction to
 	 * @return An instruction to create value represented by sample value
 	 */
-	public static String getPrimitiveTypeParameterSampleValueDeclaration(Type type, 
+	public static String getPrimitiveTypeFieldSampleValueDeclaration(Type type, 
 																		 Object sampleValue,	
-																		 Set<String> imports) {
+																		 Imports imports) {
 		if (sampleValue == null) {
 			return null;
 		}

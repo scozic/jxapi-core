@@ -8,7 +8,6 @@ import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Date;
-import java.util.Iterator;
 import java.util.List;
 
 import org.junit.After;
@@ -29,7 +28,6 @@ public class JavaTypeGeneratorTest {
 		gen.addImport("java.text.SimpleDateFormat");
 		// Import that should be ignored in generated code because same package as generated type.
 		gen.addImport("x.y.z.Foo");
-		gen.addImport("Bar");
 		// Import that should be ignored in generated code because starts with 'java.lang'
 		gen.addImport("java.lang.Boolean");
 		// Import where type is provided as generic, the <..> part should be removed.
@@ -40,14 +38,6 @@ public class JavaTypeGeneratorTest {
 		gen.appendToBody("void sayHello();\n\n");
 		gen.appendToBody("List<String> getHellos();");
 		
-		Iterator<String> importsIterator = gen.getImports().iterator();
-		Assert.assertEquals("Bar", importsIterator.next());
-		Assert.assertEquals("java.lang.Boolean", importsIterator.next());
-		Assert.assertEquals("java.text.SimpleDateFormat", importsIterator.next());
-		Assert.assertEquals("java.util.Date", importsIterator.next());
-		Assert.assertEquals("java.util.List", importsIterator.next());
-		Assert.assertEquals("x.y.z.Foo", importsIterator.next());
-		Assert.assertFalse(importsIterator.hasNext());
 		Assert.assertEquals("x.y.z.HelloInterface", gen.getName());
 		Assert.assertEquals("public interface", gen.getTypeDeclaration());
 		

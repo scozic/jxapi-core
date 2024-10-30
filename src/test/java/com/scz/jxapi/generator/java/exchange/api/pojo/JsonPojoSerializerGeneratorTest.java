@@ -39,12 +39,13 @@ public class JsonPojoSerializerGeneratorTest {
 		JsonPojoSerializerGenerator generator = new JsonPojoSerializerGenerator(serializedTypeName, endpointParameters);
 		Assert.assertEquals("package com.x.serializers;\n"
 				+ "\n"
+				+ "import java.io.IOException;\n"
+				+ "\n"
 				+ "import com.fasterxml.jackson.core.JsonGenerator;\n"
 				+ "import com.fasterxml.jackson.databind.SerializerProvider;\n"
 				+ "import com.fasterxml.jackson.databind.ser.std.StdSerializer;\n"
 				+ "import com.scz.jxapi.util.EncodingUtil;\n"
 				+ "import com.x.MyPojo;\n"
-				+ "import java.io.IOException;\n"
 				+ "\n"
 				+ "/**\n"
 				+ " * Jackson JSON Serializer for com.x.MyPojo\n"
@@ -85,7 +86,8 @@ public class JsonPojoSerializerGeneratorTest {
 				+ "    }\n"
 				+ "    gen.writeEndObject();\n"
 				+ "  }\n"
-				+ "}\n", generator.generate());
+				+ "}\n", 
+				generator.generate());
 	}
 
 }

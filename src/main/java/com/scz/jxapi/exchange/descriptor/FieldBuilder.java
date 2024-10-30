@@ -126,7 +126,7 @@ public class FieldBuilder {
 	 * @return this builder
 	 */
 	public FieldBuilder properties(List<Field> properties) {
-		field.setParameters(properties);
+		field.setProperties(properties);
 		return this;
 	}
 
@@ -142,7 +142,7 @@ public class FieldBuilder {
 		List<Field> res = new ArrayList<>(properties.size() + 1);
 		res.addAll(properties);
 		res.add(property);
-		field.setParameters(List.copyOf(res));
+		field.setProperties(List.copyOf(res));
 		return this;
 	}
 

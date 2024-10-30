@@ -22,6 +22,8 @@ public class ExchangeApiInterfaceImplementationGeneratorTest {
 		ExchangeApiInterfaceImplementationGenerator apiInterfaceGenerator = new ExchangeApiInterfaceImplementationGenerator(exchangeDescriptor, exchangeApiDescriptor);
 		Assert.assertEquals("package com.foo.bar.gen.marketdata;\n"
 				+ "\n"
+				+ "import java.util.Properties;\n"
+				+ "\n"
 				+ "import com.foo.bar.gen.MyTestExchangeExchange;\n"
 				+ "import com.foo.bar.gen.marketdata.deserializers.MyTestExchangeMarketDataExchangeInfoResponseDeserializer;\n"
 				+ "import com.foo.bar.gen.marketdata.deserializers.MyTestExchangeMarketDataTickerStreamMessageDeserializer;\n"
@@ -39,7 +41,6 @@ public class ExchangeApiInterfaceImplementationGeneratorTest {
 				+ "import com.scz.jxapi.netutils.websocket.WebsocketSubscribeRequest;\n"
 				+ "import com.scz.jxapi.util.EncodingUtil;\n"
 				+ "import com.scz.jxapi.util.JsonUtil;\n"
-				+ "import java.util.Properties;\n"
 				+ "import org.slf4j.Logger;\n"
 				+ "import org.slf4j.LoggerFactory;\n"
 				+ "\n"
@@ -97,6 +98,9 @@ public class ExchangeApiInterfaceImplementationGeneratorTest {
 		ExchangeApiInterfaceImplementationGenerator apiInterfaceGenerator = new ExchangeApiInterfaceImplementationGenerator(exchangeDescriptor, exchangeApiDescriptor);
 		Assert.assertEquals("package com.foo.bar.gen.trading;\n"
 				+ "\n"
+				+ "import java.util.List;\n"
+				+ "import java.util.Properties;\n"
+				+ "\n"
 				+ "import com.foo.bar.gen.MyTestExchangeExchange;\n"
 				+ "import com.foo.bar.gen.trading.deserializers.MyTestExchangeTradingExchangeInfoResponseDeserializer;\n"
 				+ "import com.foo.bar.gen.trading.pojo.MyTestExchangeTradingExchangeInfoRequest;\n"
@@ -110,8 +114,6 @@ public class ExchangeApiInterfaceImplementationGeneratorTest {
 				+ "import com.scz.jxapi.netutils.rest.ratelimits.RequestThrottler;\n"
 				+ "import com.scz.jxapi.util.EncodingUtil;\n"
 				+ "import com.scz.jxapi.util.JsonUtil;\n"
-				+ "import java.util.List;\n"
-				+ "import java.util.Properties;\n"
 				+ "import org.slf4j.Logger;\n"
 				+ "import org.slf4j.LoggerFactory;\n"
 				+ "\n"
@@ -141,8 +143,7 @@ public class ExchangeApiInterfaceImplementationGeneratorTest {
 				+ "    return submit(HttpRequest.create(EXCHANGE_INFO_REST_API, \"https://com.sample.mycex/exchangeInfo\" + urlParameters, HttpMethod.GET, request, RATE_LIMITS_EXCHANGE_INFO, 60), exchangeInfoResponseDeserializer);\n"
 				+ "  }\n"
 				+ "  \n"
-				+ "}\n"
-				+ "",	
+				+ "}\n",	
 				apiInterfaceGenerator.generate());
 	}
 	
@@ -152,6 +153,9 @@ public class ExchangeApiInterfaceImplementationGeneratorTest {
 		ExchangeApiDescriptor exchangeApiDescriptor = exchangeDescriptor.getApis().get(2);
 		ExchangeApiInterfaceImplementationGenerator apiInterfaceGenerator = new ExchangeApiInterfaceImplementationGenerator(exchangeDescriptor, exchangeApiDescriptor);
 		Assert.assertEquals("package com.foo.bar.gen.futuresmarketdata;\n"
+				+ "\n"
+				+ "import java.util.List;\n"
+				+ "import java.util.Properties;\n"
 				+ "\n"
 				+ "import com.foo.bar.gen.MyTestExchangeExchange;\n"
 				+ "import com.foo.bar.gen.futuresmarketdata.deserializers.MyTestExchangeFuturesMarketDataExchangeInfo2ResponseDeserializer;\n"
@@ -169,8 +173,6 @@ public class ExchangeApiInterfaceImplementationGeneratorTest {
 				+ "import com.scz.jxapi.netutils.rest.ratelimits.RequestThrottler;\n"
 				+ "import com.scz.jxapi.util.EncodingUtil;\n"
 				+ "import com.scz.jxapi.util.JsonUtil;\n"
-				+ "import java.util.List;\n"
-				+ "import java.util.Properties;\n"
 				+ "import org.slf4j.Logger;\n"
 				+ "import org.slf4j.LoggerFactory;\n"
 				+ "\n"
@@ -209,8 +211,7 @@ public class ExchangeApiInterfaceImplementationGeneratorTest {
 				+ "    return submit(HttpRequest.create(EXCHANGE_INFO2_REST_API, \"https://com.sample.mycex/exchangeInfo2\" + urlParameters, HttpMethod.GET, request, RATE_LIMITS_EXCHANGE_INFO2, 0), exchangeInfo2ResponseDeserializer);\n"
 				+ "  }\n"
 				+ "  \n"
-				+ "}\n"
-				+ "",	
+				+ "}\n",	
 				apiInterfaceGenerator.generate());
 	}
 	
@@ -220,6 +221,9 @@ public class ExchangeApiInterfaceImplementationGeneratorTest {
 		ExchangeApiDescriptor exchangeApiDescriptor = exchangeDescriptor.getApis().get(3);
 		ExchangeApiInterfaceImplementationGenerator apiInterfaceGenerator = new ExchangeApiInterfaceImplementationGenerator(exchangeDescriptor, exchangeApiDescriptor);
 		Assert.assertEquals("package com.foo.bar.gen.futurestrading;\n"
+				+ "\n"
+				+ "import java.util.List;\n"
+				+ "import java.util.Properties;\n"
 				+ "\n"
 				+ "import com.foo.bar.gen.MyTestExchangeExchange;\n"
 				+ "import com.foo.bar.gen.futurestrading.deserializers.MyTestExchangeFuturesTradingExchangeInfoResponseDeserializer;\n"
@@ -234,8 +238,6 @@ public class ExchangeApiInterfaceImplementationGeneratorTest {
 				+ "import com.scz.jxapi.netutils.rest.ratelimits.RequestThrottler;\n"
 				+ "import com.scz.jxapi.util.EncodingUtil;\n"
 				+ "import com.scz.jxapi.util.JsonUtil;\n"
-				+ "import java.util.List;\n"
-				+ "import java.util.Properties;\n"
 				+ "import org.slf4j.Logger;\n"
 				+ "import org.slf4j.LoggerFactory;\n"
 				+ "\n"
@@ -267,8 +269,7 @@ public class ExchangeApiInterfaceImplementationGeneratorTest {
 				+ "    return submit(HttpRequest.create(EXCHANGE_INFO_REST_API, \"https://com.sample.mycex/exchangeInfo\" + urlParameters, HttpMethod.GET, request, RATE_LIMITS_EXCHANGE_INFO, 60), exchangeInfoResponseDeserializer);\n"
 				+ "  }\n"
 				+ "  \n"
-				+ "}\n"
-				+ "",	
+				+ "}\n",	
 				apiInterfaceGenerator.generate());
 	}
 	
@@ -278,6 +279,9 @@ public class ExchangeApiInterfaceImplementationGeneratorTest {
 		ExchangeApiDescriptor exchangeApiDescriptor = exchangeDescriptor.getApis().get(0);
 		ExchangeApiInterfaceImplementationGenerator apiInterfaceGenerator = new ExchangeApiInterfaceImplementationGenerator(exchangeDescriptor, exchangeApiDescriptor);
 		Assert.assertEquals("package com.foo.bar.gen.futurestrading;\n"
+				+ "\n"
+				+ "import java.util.List;\n"
+				+ "import java.util.Properties;\n"
 				+ "\n"
 				+ "import com.foo.bar.gen.MyTestExchangeExchange;\n"
 				+ "import com.foo.bar.gen.MyTestExchangeExchangeImpl;\n"
@@ -293,8 +297,6 @@ public class ExchangeApiInterfaceImplementationGeneratorTest {
 				+ "import com.scz.jxapi.netutils.rest.ratelimits.RequestThrottler;\n"
 				+ "import com.scz.jxapi.util.EncodingUtil;\n"
 				+ "import com.scz.jxapi.util.JsonUtil;\n"
-				+ "import java.util.List;\n"
-				+ "import java.util.Properties;\n"
 				+ "import org.slf4j.Logger;\n"
 				+ "import org.slf4j.LoggerFactory;\n"
 				+ "\n"
@@ -326,8 +328,7 @@ public class ExchangeApiInterfaceImplementationGeneratorTest {
 				+ "    return submit(HttpRequest.create(EXCHANGE_INFO_REST_API, \"https://com.sample.mycex/exchangeInfo\" + urlParameters, HttpMethod.GET, request, RATE_LIMITS_EXCHANGE_INFO, 60), exchangeInfoResponseDeserializer);\n"
 				+ "  }\n"
 				+ "  \n"
-				+ "}\n"
-				+ "",	
+				+ "}\n",	
 				apiInterfaceGenerator.generate());
 	}
 	
@@ -337,6 +338,9 @@ public class ExchangeApiInterfaceImplementationGeneratorTest {
 		ExchangeApiDescriptor exchangeApiDescriptor = exchangeDescriptor.getApis().get(0);
 		ExchangeApiInterfaceImplementationGenerator apiInterfaceGenerator = new ExchangeApiInterfaceImplementationGenerator(exchangeDescriptor, exchangeApiDescriptor);
 		Assert.assertEquals("package com.foo.bar.gen.futurestrading;\n"
+				+ "\n"
+				+ "import java.util.List;\n"
+				+ "import java.util.Properties;\n"
 				+ "\n"
 				+ "import com.foo.bar.gen.MyTestExchangeExchange;\n"
 				+ "import com.foo.bar.gen.MyTestExchangeExchangeImpl;\n"
@@ -352,8 +356,6 @@ public class ExchangeApiInterfaceImplementationGeneratorTest {
 				+ "import com.scz.jxapi.netutils.rest.ratelimits.RequestThrottler;\n"
 				+ "import com.scz.jxapi.util.EncodingUtil;\n"
 				+ "import com.scz.jxapi.util.JsonUtil;\n"
-				+ "import java.util.List;\n"
-				+ "import java.util.Properties;\n"
 				+ "import org.slf4j.Logger;\n"
 				+ "import org.slf4j.LoggerFactory;\n"
 				+ "\n"
@@ -381,8 +383,7 @@ public class ExchangeApiInterfaceImplementationGeneratorTest {
 				+ "    return submit(HttpRequest.create(EXCHANGE_INFO_REST_API, \"https://com.sample.mycex/exchangeInfo\" + urlParameters, HttpMethod.GET, request, RATE_LIMITS_EXCHANGE_INFO, 60), exchangeInfoResponseDeserializer);\n"
 				+ "  }\n"
 				+ "  \n"
-				+ "}\n"
-				+ "",
+				+ "}\n",
 				apiInterfaceGenerator.generate());
 	}
 	
@@ -394,9 +395,10 @@ public class ExchangeApiInterfaceImplementationGeneratorTest {
 		ExchangeApiInterfaceImplementationGenerator apiInterfaceGenerator = new ExchangeApiInterfaceImplementationGenerator(exchangeDescriptor, exchangeApiDescriptor);
 		Assert.assertEquals("package com.foo.bar.gen.futurestrading;\n"
 				+ "\n"
+				+ "import java.util.Properties;\n"
+				+ "\n"
 				+ "import com.foo.bar.gen.MyTestExchangeExchange;\n"
 				+ "import com.scz.jxapi.exchange.AbstractExchangeApi;\n"
-				+ "import java.util.Properties;\n"
 				+ "import org.slf4j.Logger;\n"
 				+ "import org.slf4j.LoggerFactory;\n"
 				+ "\n"
@@ -412,8 +414,7 @@ public class ExchangeApiInterfaceImplementationGeneratorTest {
 				+ "  public MyTestExchangeFuturesTradingApiImpl(String exchangeName, Properties properties) {\n"
 				+ "    super(ID, exchangeName, MyTestExchangeExchange.ID, properties);\n"
 				+ "  }\n"
-				+ "}\n"
-				+ "",
+				+ "}\n",
 				apiInterfaceGenerator.generate());
 	}
 	
@@ -423,6 +424,8 @@ public class ExchangeApiInterfaceImplementationGeneratorTest {
 		ExchangeApiDescriptor exchangeApiDescriptor = exchangeDescriptor.getApis().get(0);
 		ExchangeApiInterfaceImplementationGenerator apiInterfaceGenerator = new ExchangeApiInterfaceImplementationGenerator(exchangeDescriptor, exchangeApiDescriptor);
 		Assert.assertEquals("package com.foo.bar.gen.marketdata;\n"
+				+ "\n"
+				+ "import java.util.Properties;\n"
 				+ "\n"
 				+ "import com.foo.bar.gen.MyTestExchangeExchange;\n"
 				+ "import com.foo.bar.gen.marketdata.deserializers.MyTestExchangeMarketDataExchangeInfoResponseDeserializer;\n"
@@ -435,7 +438,6 @@ public class ExchangeApiInterfaceImplementationGeneratorTest {
 				+ "import com.scz.jxapi.netutils.rest.HttpRequest;\n"
 				+ "import com.scz.jxapi.util.EncodingUtil;\n"
 				+ "import com.scz.jxapi.util.JsonUtil;\n"
-				+ "import java.util.Properties;\n"
 				+ "import org.slf4j.Logger;\n"
 				+ "import org.slf4j.LoggerFactory;\n"
 				+ "\n"
@@ -472,6 +474,8 @@ public class ExchangeApiInterfaceImplementationGeneratorTest {
 		ExchangeApiInterfaceImplementationGenerator apiInterfaceGenerator = new ExchangeApiInterfaceImplementationGenerator(exchangeDescriptor, exchangeApiDescriptor);
 		Assert.assertEquals("package com.foo.bar.gen.marketdata;\n"
 				+ "\n"
+				+ "import java.util.Properties;\n"
+				+ "\n"
 				+ "import com.foo.bar.gen.MyTestExchangeExchange;\n"
 				+ "import com.foo.bar.gen.marketdata.deserializers.TickerMessageDeserializer;\n"
 				+ "import com.foo.bar.gen.marketdata.pojo.MyTestExchangeMarketDataTickerStreamStringObjectTypeRequest;\n"
@@ -481,7 +485,6 @@ public class ExchangeApiInterfaceImplementationGeneratorTest {
 				+ "import com.scz.jxapi.netutils.websocket.WebsocketListener;\n"
 				+ "import com.scz.jxapi.netutils.websocket.WebsocketSubscribeRequest;\n"
 				+ "import com.scz.jxapi.util.EncodingUtil;\n"
-				+ "import java.util.Properties;\n"
 				+ "import org.slf4j.Logger;\n"
 				+ "import org.slf4j.LoggerFactory;\n"
 				+ "\n"
@@ -547,6 +550,11 @@ public class ExchangeApiInterfaceImplementationGeneratorTest {
 		ExchangeApiInterfaceImplementationGenerator apiInterfaceGenerator = new ExchangeApiInterfaceImplementationGenerator(exchangeDescriptor, exchangeApiDescriptor);
 		Assert.assertEquals("package com.foo.bar.gen.marketdata;\n"
 				+ "\n"
+				+ "import java.math.BigDecimal;\n"
+				+ "import java.util.List;\n"
+				+ "import java.util.Map;\n"
+				+ "import java.util.Properties;\n"
+				+ "\n"
 				+ "import com.foo.bar.gen.MyTestExchangeExchange;\n"
 				+ "import com.foo.bar.gen.marketdata.deserializers.MyTestExchangeMarketDataGetRestResponseDataTypeObjectListMapResponseDeserializer;\n"
 				+ "import com.foo.bar.gen.marketdata.deserializers.MyTestExchangeMarketDataGetRestResponseDataTypeObjectResponseDeserializer;\n"
@@ -572,10 +580,6 @@ public class ExchangeApiInterfaceImplementationGeneratorTest {
 				+ "import com.scz.jxapi.netutils.websocket.WebsocketEndpoint;\n"
 				+ "import com.scz.jxapi.netutils.websocket.WebsocketListener;\n"
 				+ "import com.scz.jxapi.netutils.websocket.WebsocketSubscribeRequest;\n"
-				+ "import java.math.BigDecimal;\n"
-				+ "import java.util.List;\n"
-				+ "import java.util.Map;\n"
-				+ "import java.util.Properties;\n"
 				+ "import org.slf4j.Logger;\n"
 				+ "import org.slf4j.LoggerFactory;\n"
 				+ "\n"
@@ -713,6 +717,11 @@ public class ExchangeApiInterfaceImplementationGeneratorTest {
 		ExchangeApiInterfaceImplementationGenerator apiInterfaceGenerator = new ExchangeApiInterfaceImplementationGenerator(exchangeDescriptor, exchangeApiDescriptor);
 		Assert.assertEquals("package com.foo.bar.gen.marketdata;\n"
 				+ "\n"
+				+ "import java.math.BigDecimal;\n"
+				+ "import java.util.List;\n"
+				+ "import java.util.Map;\n"
+				+ "import java.util.Properties;\n"
+				+ "\n"
 				+ "import com.foo.bar.gen.MyTestExchangeExchange;\n"
 				+ "import com.foo.bar.gen.marketdata.deserializers.GenericResponseDeserializer;\n"
 				+ "import com.foo.bar.gen.marketdata.deserializers.TickerDeserializer;\n"
@@ -731,10 +740,6 @@ public class ExchangeApiInterfaceImplementationGeneratorTest {
 				+ "import com.scz.jxapi.netutils.websocket.WebsocketSubscribeRequest;\n"
 				+ "import com.scz.jxapi.util.EncodingUtil;\n"
 				+ "import com.scz.jxapi.util.JsonUtil;\n"
-				+ "import java.math.BigDecimal;\n"
-				+ "import java.util.List;\n"
-				+ "import java.util.Map;\n"
-				+ "import java.util.Properties;\n"
 				+ "import org.slf4j.Logger;\n"
 				+ "import org.slf4j.LoggerFactory;\n"
 				+ "\n"
@@ -1078,6 +1083,9 @@ public class ExchangeApiInterfaceImplementationGeneratorTest {
 		ExchangeApiInterfaceImplementationGenerator apiInterfaceGenerator = new ExchangeApiInterfaceImplementationGenerator(exchangeDescriptor, exchangeApiDescriptor);
 		Assert.assertEquals("package com.foo.bar.gen.restapi;\n"
 				+ "\n"
+				+ "import java.util.List;\n"
+				+ "import java.util.Properties;\n"
+				+ "\n"
 				+ "import com.foo.bar.gen.MyTestExchangeWithDifferentUrlQueryParamsExchange;\n"
 				+ "import com.foo.bar.gen.restapi.deserializers.GenericResponseDeserializer;\n"
 				+ "import com.foo.bar.gen.restapi.pojo.GenericResponse;\n"
@@ -1091,8 +1099,6 @@ public class ExchangeApiInterfaceImplementationGeneratorTest {
 				+ "import com.scz.jxapi.netutils.rest.HttpRequest;\n"
 				+ "import com.scz.jxapi.util.EncodingUtil;\n"
 				+ "import com.scz.jxapi.util.JsonUtil;\n"
-				+ "import java.util.List;\n"
-				+ "import java.util.Properties;\n"
 				+ "import org.slf4j.Logger;\n"
 				+ "import org.slf4j.LoggerFactory;\n"
 				+ "\n"
@@ -1207,8 +1213,7 @@ public class ExchangeApiInterfaceImplementationGeneratorTest {
 				+ "    return submit(HttpRequest.create(POST_REST_REQUEST_DATA_TYPE_INT_LIST_AS_QUERY_PARAM_REST_API, \"https://com.sample.myexchange/postRestRequestDataTypeIntListAsQueryParam\" + urlParameters, HttpMethod.POST, request, null, 0), postRestRequestDataTypeIntListAsQueryParamResponseDeserializer);\n"
 				+ "  }\n"
 				+ "  \n"
-				+ "}\n"
-				+ "",
+				+ "}\n",
 				apiInterfaceGenerator.generate());
 	}
 }

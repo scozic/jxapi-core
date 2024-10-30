@@ -17,8 +17,9 @@ public class PojoGeneratorTest {
 		generator.addField(PojoField.create("int", "A", null, "upper case 'A'"));
 		Assert.assertEquals("package x.y.z;\n"
 				+ "\n"
-				+ "import com.scz.jxapi.util.EncodingUtil;\n"
 				+ "import java.util.Objects;\n"
+				+ "\n"
+				+ "import com.scz.jxapi.util.EncodingUtil;\n"
 				+ "import x.y.t.Bar;\n"
 				+ "\n"
 				+ "\n"
@@ -106,8 +107,8 @@ public class PojoGeneratorTest {
 				+ "  public String toString() {\n"
 				+ "    return EncodingUtil.pojoToString(this);\n"
 				+ "  }\n"
-				+ "}\n"
-				, generator.generate());
+				+ "}\n", 
+				generator.generate());
 	}
 	
 	@Test
@@ -149,8 +150,9 @@ public class PojoGeneratorTest {
 		generator.addField(PojoField.create("String", "name", null, "the name"));
 		Assert.assertEquals("package x.y.z;\n"
 				+ "\n"
-				+ "import com.scz.jxapi.util.EncodingUtil;\n"
 				+ "import java.util.Objects;\n"
+				+ "\n"
+				+ "import com.scz.jxapi.util.EncodingUtil;\n"
 				+ "\n"
 				+ "\n"
 				+ "public class Foo {\n"
@@ -189,8 +191,8 @@ public class PojoGeneratorTest {
 				+ "  public String toString() {\n"
 				+ "    return EncodingUtil.pojoToString(this);\n"
 				+ "  }\n"
-				+ "}\n"
-				, generator.generate());
+				+ "}\n", 
+				generator.generate());
 	}
 
 	@Test

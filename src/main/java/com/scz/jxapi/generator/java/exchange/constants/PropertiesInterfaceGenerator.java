@@ -122,7 +122,7 @@ public class PropertiesInterfaceGenerator extends JavaTypeGenerator {
 				
 		sb.append(JavaCodeGenerationUtil.generateJavaDoc(desc.toString()))
 		  .append("\n");
-		String typeClass = ExchangeJavaWrapperGeneratorUtil.getClassNameForParameterType(type, getImports(), null);
+		String typeClass = ExchangeJavaWrapperGeneratorUtil.getClassNameForType(type, getImports(), null);
 		String methodName = JavaCodeGenerationUtil.getGetAccessorMethodName(
 			  					name, 
 			  					typeClass, 

@@ -24,7 +24,7 @@ public class FieldTest {
         field.setSampleValue("sampleValue");
         field.setMsgField("f");
         field.setObjectName("MyObject");
-        field.setParameters(List.of());
+        field.setProperties(List.of());
         field.setImplementedInterfaces(List.of("com.x.y.MyInterface"));
         field.setSampleMapKeyValue(List.of("key1", "value1"));
         Assert.assertEquals("name", field.getName());
@@ -47,7 +47,7 @@ public class FieldTest {
         field.setSampleValue("sampleValue");
         field.setMsgField("f");
         field.setObjectName("MyObject");
-        field.setParameters(List.of());
+        field.setProperties(List.of());
         field.setImplementedInterfaces(List.of("com.x.y.MyInterface"));
         field.setSampleMapKeyValue(List.of("key1", "value1"));
 
