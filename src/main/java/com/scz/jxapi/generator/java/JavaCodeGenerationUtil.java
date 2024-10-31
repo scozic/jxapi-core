@@ -80,8 +80,12 @@ public class JavaCodeGenerationUtil {
 	 * @param javadoc Javadoc text
 	 * @return Javadoc code chunk e.g.
 	 * 
-	 *         <pre>
+	 *         <pre>{@code
 	 *         "/**\n" + indented_javadoc + "\n*\/"
+	 * 	   	   }</pre>
+	 * 
+	 *         where <code>indented_javadoc</code> is the javadoc text indented with
+	 *         <code>' * '</code> prefix.}
 	 */
 	public static final String generateJavaDoc(String javadoc) {
 		if (javadoc == null)
@@ -186,18 +190,18 @@ public class JavaCodeGenerationUtil {
 	 * Generates getter or setter method declaration for given field
 	 * 
 	 * @param prefix        "get" "set" or "is" accessor method prefix.
-	 * @param fieldName     field name
+	 * @param name     		field name
 	 * @param allFieldNames list of all fields, or <code>null</code> belonging to
 	 *                      same destination class as field name, to check for
 	 *                      unicity
 	 * @return "set" + first letter to upper case field name if unique, field name
 	 *         as is if another field exist that is equal ignoring case to fieldName
 	 */
-	public static String getAccessorMethodName(String prefix, String name, List<String> allFields) {
+	public static String getAccessorMethodName(String prefix, String name, List<String> allFieldNames) {
 		String accessorSuffix = name;
 		// If there is another field with same name but different case, keep the part after accessor as is to make sure it is unique,
 		// otherwise use first letter upper case for more readable camel case accessor name.
-		if (allFields == null || !allFields.stream().anyMatch(n -> !name.equals(n) && name.equalsIgnoreCase(n))) {
+		if (allFieldNames == null || !allFieldNames.stream().anyMatch(n -> !name.equals(n) && name.equalsIgnoreCase(n))) {
 			accessorSuffix = firstLetterToUpperCase(name);
 		}
 		return prefix + accessorSuffix;
@@ -248,7 +252,8 @@ public class JavaCodeGenerationUtil {
 	
 	/**
 	 * @param className full or simple class name with eventual generic parameter
-	 * @return the className, without part after first '<'
+	 * @return the className, without part after first '&lt;' if any, or
+	 *         <code>null</code> if <code>className</code> is <code>null</code>
 	 */
 	public static String getClassNameWithoutGenericType(String className) {
 		if (className == null) {
@@ -264,11 +269,10 @@ public class JavaCodeGenerationUtil {
 	
 	/**
 	 * @param className full or simple class name with eventual generic parameter
-	 * @return the generic parameter, e.g. part of class name between first '<' and
-	 *         last '>', or <code>null</code> if there is no generic
-	 *         parameter.@param className full or simple class name with eventual
-	 *         generic parameter
-	 * @throws IllegalArgumentException if no closing '>' is found after first '<'.
+	 * @return the generic parameter, e.g. part of class name between first '&lt;' and
+	 *         last '&gt;', or <code>null</code> if there is no generic
+	 *         parameter.
+	 * @throws IllegalArgumentException if no closing '&gt;' is found after first '&lt;'.
 	 */
 	public static String getGenericType(String className) {
 		if (className == null) {
@@ -302,9 +306,9 @@ public class JavaCodeGenerationUtil {
 	
 	/**
 	 * Generates static variable name according to its camel case name, e.g.
-	 * <code>myStaticVariable</code> -> <code>MY_STATIC_VARIABLE</code>
+	 * <code>myStaticVariable</code> &rarr; <code>MY_STATIC_VARIABLE</code>
 	 * 
-	 * @param camelCaseVariableName
+	 * @param camelCaseVariableName variable name using camel case convention
 	 * @return static variable name using upper case convention
 	 */
 	public static String getStaticVariableName(String camelCaseVariableName) {
@@ -327,7 +331,7 @@ public class JavaCodeGenerationUtil {
 	/**
 	 * Deletes all files of a {@link Path} recursively
 	 * @param path path to delete all files of
-	 * @throws IOException eventually raised by {@link Files#walk(Path)}
+	 * @throws IOException eventually raised by {@link Files#walk(Path, java.nio.file.FileVisitOption...)}
 	 */
 	public static void deletePath(Path path) throws IOException {
 		if (!path.toFile().exists())
@@ -345,8 +349,7 @@ public class JavaCodeGenerationUtil {
 	 * <pre>
 	 * private static final Logger log = LoggerFactory.getLogger(" +
 	 * typeGenerator.getSimpleName() + ".class);\n\n
-	 * 
-	 * <pre>
+	 * </pre>
 	 * 
 	 * @param typeGenerator type generator to append logger declaration at beginning
 	 *                      of body of
@@ -358,9 +361,15 @@ public class JavaCodeGenerationUtil {
 	}
 
 	/**
-	 * Turns a string into a quoted string, escaping double quotes, suitable for JSON or Java code of string value.
-	 * @param sampleValue
-	 * @return
+	 * Turns a string into a quoted string, escaping double quotes, suitable for
+	 * JSON or Java code of string value.<br>
+	 * <strong>Example:</strong> <code>getQuotedString("Hello World")</code> &rarr;
+	 * <code>"Hello \"World\""</code>
+	 * 
+	 * @param sampleValue string to quote, as arbitrary object. Object
+	 *                    <code>toString()</code> method will be used.
+	 * @return <code>null</code> if <code>sampleValue</code> is <code>null</code>,
+	 *         quoted string of parameter <code>toStrin()</code> otherwise.
 	 */
 	public static String getQuotedString(Object sampleValue) {
 		if (sampleValue == null) {

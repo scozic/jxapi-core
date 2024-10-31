@@ -43,7 +43,6 @@ public class MockWebsocketHook extends GenericObserver<MockWebsocketHookEvent> i
 	/**
 	 * Called after the WebsocketManager successfully connects to the server.
 	 * 
-	 * @param websocketManager The WebsocketManager instance.
 	 * @throws WebsocketException If an error occurs after the connection is established.
 	 */
 	@Override
@@ -54,7 +53,6 @@ public class MockWebsocketHook extends GenericObserver<MockWebsocketHookEvent> i
 	/**
 	 * Called before the WebsocketManager disconnects from the server.
 	 * 
-	 * @param websocketManager The WebsocketManager instance.
 	 * @throws WebsocketException If an error occurs during the disconnection process.
 	 */
 	@Override
@@ -65,7 +63,6 @@ public class MockWebsocketHook extends GenericObserver<MockWebsocketHookEvent> i
 	/**
 	 * Called after the WebsocketManager is disconnected from the server.
 	 * 
-	 * @param websocketManager The WebsocketManager instance.
 	 * @throws WebsocketException If an error occurs after the disconnection is completed.
 	 */
 	@Override

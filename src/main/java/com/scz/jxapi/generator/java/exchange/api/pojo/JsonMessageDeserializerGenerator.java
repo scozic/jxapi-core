@@ -8,6 +8,7 @@ import java.util.stream.Collectors;
 
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonToken;
+import com.fasterxml.jackson.databind.JsonDeserializer;
 import com.scz.jxapi.exchange.descriptor.CanonicalType;
 import com.scz.jxapi.exchange.descriptor.Field;
 import com.scz.jxapi.exchange.descriptor.Type;
@@ -27,7 +28,7 @@ import com.scz.jxapi.util.JsonUtil;
  * Jackson.
  * The generated deserializer class extends
  * {@link AbstractJsonMessageDeserializer} and implements the
- * {@link JsonDeserializer#deserialize(JsonParser)} method.
+ * {@link AbstractJsonMessageDeserializer#deserialize(JsonParser)} method.
  * 
  * @see JsonParser
  * @see AbstractJsonMessageDeserializer

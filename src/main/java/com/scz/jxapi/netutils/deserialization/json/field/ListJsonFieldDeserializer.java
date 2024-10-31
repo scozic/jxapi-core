@@ -11,7 +11,7 @@ import com.scz.jxapi.netutils.deserialization.json.JsonDeserializer;
 import com.scz.jxapi.netutils.deserialization.MessageDeserializer;
 
 /**
- * {@link JsonMessageDeserializer} for {@link List} fields in JSON messages.
+ * {@link AbstractJsonMessageDeserializer} for {@link List} fields in JSON messages.
  * <p>
  * 
  * @param <T> the type of the list items

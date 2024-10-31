@@ -29,7 +29,7 @@ import com.scz.jxapi.util.EncodingUtil;
  * in <code>httpRequestExecutorFactory</code> and <code>httpRequestInterceptorFactory</code> properties </li>
  * <li><code>httpRequestExecutorFactory</code> property may be supplied to specify a factory class that creates HttpRequestExecutor instances, see {@link HttpRequestExecutorFactory}. When property is not set, default {@link JavaNetHttpRequestExecutor} is used</li>
  * <li><code>httpRequestInterceptorFactory</code> property may be supplied to specify a factory class that creates HttpRequestInterceptor instances, see {@link HttpRequestInterceptorFactory}. When property is not set, no request interceptor is used</li>
- * <li>API global Rate limits can be specified for the REST endpoints</li> in <code>rateLimits</code> property. Those limits are shared among all defined REST endpoints.
+ * <li>API global Rate limits can be specified for the REST endpoints in <code>rateLimits</code> property. Those limits are shared among all defined REST endpoints.</li>
  * <li>Rate limits from enclosing exchange descriptor are inherited by the API descriptor. Exchange global limit are shared among all REST endpoints of every API specified in exchange</li>
  * </ul>
  * <h3>Websocket endpoints</h3>
@@ -39,7 +39,7 @@ import com.scz.jxapi.util.EncodingUtil;
  * <li>Each Websocket endpoint share the same WebsocketFactory and WebsocketHook, that are created from factories classes provided in <code>websocketFactory</code> and <code>websocketHookFactory</code> properties</li>
  * <li><code>websocketFactory</code> property may be supplied to specify a factory class that creates Websocket instances, see {@link WebsocketFactory}. When property is not set, default {@link DefaultWebsocketFactory} is used</li>
  * <li><code>websocketHookFactory</code> property may be supplied to specify a factory class that creates WebsocketHook instances, see {@link WebsocketHookFactory}. When property is not set, no websocket hook is used. Such hook is needed though to implement specific handshake, heartbeat management and socket multiplexing (e.g. subscribing to multiple topics using same socket)</li>
- * <li><code>websocketUrl</code> property may be supplied to specify the URL of the websocket endpoint. When property is not set, the URL is expected to be set by WebsocketHook on WebsocketManager during {@link WebsocketHook#init(com.scz.jxapi.netutils.websocket.WebsocketManager)} or {@link WebsocketHook#beforeConnect(com.scz.jxapi.netutils.websocket.WebsocketManager)}</li>
+ * <li><code>websocketUrl</code> property may be supplied to specify the URL of the websocket endpoint. When property is not set, the URL is expected to be set by WebsocketHook on WebsocketManager during {@link WebsocketHook#init(com.scz.jxapi.netutils.websocket.WebsocketManager)} or {@link WebsocketHook#beforeConnect()}</li>
  * </ul>
  * 
  * <h3>Example of corresponding JSON, with sample REST endpoint and WebsocketEndpoint</h3>
@@ -350,7 +350,7 @@ public class ExchangeApiDescriptor {
 	 *         WebsocketHook on WebsocketManager during
 	 *         {@link WebsocketHook#init(com.scz.jxapi.netutils.websocket.WebsocketManager)}
 	 *         or
-	 *         {@link WebsocketHook#beforeConnect(com.scz.jxapi.netutils.websocket.WebsocketManager)}.
+	 *         {@link WebsocketHook#beforeConnect()}.
 	 */
 	public String getWebsocketUrl() {
 		return websocketUrl;
@@ -364,29 +364,29 @@ public class ExchangeApiDescriptor {
 	 *                     be set by WebsocketHook on WebsocketManager during
 	 *                     {@link WebsocketHook#init(com.scz.jxapi.netutils.websocket.WebsocketManager)}
 	 *                     or
-	 *                     {@link WebsocketHook#beforeConnect(com.scz.jxapi.netutils.websocket.WebsocketManager)}.
+	 *                     {@link WebsocketHook#beforeConnect()}.
 	 */
 	public void setWebsocketUrl(String websocketUrl) {
 		this.websocketUrl = websocketUrl;
 	}
 
-		/**
-	 * List of constants that are used in context of the exchange wrapper, for
-	 * instance specific values for some APIs request/response/message properties.
-	 * 
+	/**
 	 * @see Constant
-	 * @return
+	 * @return List of constants that are used in context of the exchange wrapper,
+	 *         for
+	 *         instance specific values for some APIs request/response/message
+	 *         properties.
 	 */
 	public List<Constant> getConstants() {
 		return constants;
 	}
 
 	/**
-	 * List of constants that are used in context of the exchange wrapper, for
-	 * instance specific values for some APIs request/response/message properties.
-	 * 
 	 * @see Constant
-	 * @param constants
+	 * @param constants List of constants that are used in context of the exchange
+	 *                  wrapper, for
+	 *                  instance specific values for some APIs
+	 *                  request/response/message properties.
 	 */
 	public void setConstants(List<Constant> constants) {
 		this.constants = constants;

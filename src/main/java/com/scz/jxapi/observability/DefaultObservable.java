@@ -9,7 +9,7 @@ import java.util.function.BiConsumer;
  * Allows to register or unregisters listeners (observers) to be notified of events dispatched.
  *  
  *
- * @param <L> The listener (observer) type
+ * @param <L> The observer (listener) type
  * @param <E> The event type
  */
 public class DefaultObservable<L, E> implements Observable<L, E> {

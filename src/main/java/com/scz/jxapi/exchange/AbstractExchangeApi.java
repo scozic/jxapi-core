@@ -154,16 +154,14 @@ public abstract class AbstractExchangeApi implements ExchangeApi {
 	}
 	
 	/**
-	 * Returns the request executor used by this exchange API group.
-	 * @return
+	 * @return the request executor used by this exchange API group.
 	 */
 	public HttpRequestExecutor getHttpRequestExecutor() {
 		return httpRequestExecutor;
 	}
 
 	/**
-	 * Sets the request executor used by this exchange API group.
-	 * @param httpRequestExecutor
+	 * @param httpRequestExecutor the request executor used by this exchange API group.
 	 */
 	public void setHttpRequestExecutor(HttpRequestExecutor httpRequestExecutor) {
 		this.httpRequestExecutor = httpRequestExecutor;

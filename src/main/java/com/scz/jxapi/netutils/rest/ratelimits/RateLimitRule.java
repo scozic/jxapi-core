@@ -64,7 +64,7 @@ public class RateLimitRule {
 	}
 
 	/**
-	 * @see #getId()
+	 * @param id Unique identifier of this rule.
 	 */
 	public void setId(String id) {
 		this.id = id;
@@ -79,10 +79,11 @@ public class RateLimitRule {
 	}
 
 	/**
-	 * @see #getTimeFrame()
+	 * @param timeFrame time frame in ms for which request count or cumulated weight should
+	 *         			not exceed limit.
 	 */
-	public void setTimeFrame(long timeframe) {
-		this.timeFrame = timeframe;
+	public void setTimeFrame(long timeFrame) {
+		this.timeFrame = timeFrame;
 	}
 
 	/**
@@ -97,7 +98,10 @@ public class RateLimitRule {
 	}
 
 	/**
-	 * @see #getMaxRequestCount()
+	 * @param maxRequestCount The maximum number of requests that can be attempted
+	 *                        within rolling time frame. A negative value means it
+	 *                        should not be taken into account and this rate limit
+	 *                        is expressed in cumulated weight.
 	 */
 	public void setMaxRequestCount(int maxRequestCount) {
 		this.maxRequestCount = maxRequestCount;
@@ -111,7 +115,7 @@ public class RateLimitRule {
 	}
 
 	/** 
-	 * @see #getMaxTotalWeight()
+	 * @param maxTotalWeight The maximum cumulated weight of calls within time frame limitation.
 	 */
 	public void setMaxTotalWeight(int maxTotalWeight) {
 		this.maxTotalWeight = maxTotalWeight;

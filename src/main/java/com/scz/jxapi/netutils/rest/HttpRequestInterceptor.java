@@ -13,7 +13,7 @@ public interface HttpRequestInterceptor {
 	 * modifiy request provided in argument to fill API specific requirements such
 	 * as adding specific headers or adding signature argument.
 	 * 
-	 * @param request
+	 * @param request HttpRequest to be executed.
 	 */
 	void intercept(HttpRequest request);
 

@@ -205,44 +205,38 @@ public class ExchangeDescriptor {
 	}
 	
 	/**
-	 * List of constants that are used in context of the exchange wrapper, for
-	 * instance specific values for some APIs request/response/message properties.
-	 * 
+	 * @return List of constants that are used in context of the exchange wrapper,
+	 *         for instance specific values for some APIs request/response/message
+	 *         properties.
 	 * @see Constant
-	 * @return
 	 */
 	public List<Constant> getConstants() {
 		return constants;
 	}
 
 	/**
-	 * List of constants that are used in context of the exchange wrapper, for
-	 * instance specific values for some APIs request/response/message properties.
-	 * 
+	 * @param constants List of constants that are used in context of the exchange
+	 *                  wrapper, for instance specific values for some APIs
+	 *                  request/response/message properties.
 	 * @see Constant
-	 * @param constants
 	 */
 	public void setConstants(List<Constant> constants) {
 		this.constants = constants;
 	}
 
 	/**
-	 * List of properties that can be configured for the exchange wrapper, for
-	 * instance API keys, secret keys, etc.
-	 * 
-	 * @see Properties
-	 * @return
+	 * @return List of properties that can be configured for the exchange wrapper,
+	 *         for instance API keys, secret keys, etc.
+	 * @see ConfigProperty
 	 */
 	public List<ConfigProperty> getProperties() {
 		return properties;
 	}
 
 	/**
-	 * List of properties that can be configured for the exchange wrapper, for
-	 * instance API keys, secret keys, etc.
-	 * 
-	 * @see Properties
-	 * @param properties
+	 * @param properties List of properties that can be configured for the exchange
+	 *                   wrapper, for instance API keys, secret keys, etc.
+	 * @see ConfigProperty
 	 */
 	public void setProperties(List<ConfigProperty> properties) {
 		this.properties = properties;

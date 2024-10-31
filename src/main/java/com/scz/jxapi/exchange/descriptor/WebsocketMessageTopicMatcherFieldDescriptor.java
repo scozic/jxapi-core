@@ -10,43 +10,41 @@ import com.scz.jxapi.util.EncodingUtil;
 public class WebsocketMessageTopicMatcherFieldDescriptor {
 
 	private String fieldName;
-	
+
 	private String value;
 
 	/**
-	 * Get the name of the field that must match the topic of the endpoint.
-	 * @return
+	 * @return the name of the field that must match the topic of the endpoint.
 	 */
 	public String getName() {
 		return fieldName;
 	}
 
 	/**
-	 * Set the name of the field that must match the topic of the endpoint.
-	 * @param fieldName
+	 * @param fieldName the name of the field that must match the topic of the
+	 *                  endpoint.
 	 */
 	public void setName(String fieldName) {
 		this.fieldName = fieldName;
 	}
 
 	/**
-	 * Get the value that the field must match.
-	 * @return
+	 * @return the value that the field must match.
 	 */
 	public String getValue() {
 		return value;
 	}
 
 	/**
-	 * Set the value that the field must match.
-	 * @param value
+	 * @param value the value that the field must match.
 	 */
 	public void setValue(String value) {
 		this.value = value;
 	}
-	
+
 	/**
-	 * @return a string representation of the object. see {@link EncodingUtil#pojoToString(Object)}
+	 * @return a string representation of the object. see
+	 *         {@link EncodingUtil#pojoToString(Object)}
 	 */
 	@Override
 	public String toString() {

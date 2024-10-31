@@ -1,16 +1,17 @@
 package com.scz.jxapi.generator.java.exchange;
 
 import java.math.BigDecimal;
-import java.util.Set;
 
 import org.apache.commons.lang3.StringUtils;
 
 import com.scz.jxapi.exchange.descriptor.CanonicalType;
 import com.scz.jxapi.exchange.descriptor.ExchangeApiDescriptor;
 import com.scz.jxapi.exchange.descriptor.ExchangeDescriptor;
+import com.scz.jxapi.exchange.descriptor.Field;
 import com.scz.jxapi.exchange.descriptor.Type;
 import com.scz.jxapi.generator.java.Imports;
 import com.scz.jxapi.generator.java.JavaCodeGenerationUtil;
+import com.scz.jxapi.netutils.deserialization.json.AbstractJsonMessageDeserializer;
 import com.scz.jxapi.netutils.deserialization.json.field.BigDecimalJsonFieldDeserializer;
 import com.scz.jxapi.netutils.deserialization.json.field.BooleanJsonFieldDeserializer;
 import com.scz.jxapi.netutils.deserialization.json.field.IntegerJsonFieldDeserializer;
@@ -40,6 +41,8 @@ public class ExchangeJavaWrapperGeneratorUtil {
 	public static final String SPECIAL_SAMPLE_VALUE_NOW = "now()";
 	
 	/**
+	 * @param exchangeDescriptor The exchange the API group belongs to
+	 * @param exchangeApiDescriptor The exchange API group to get the full class name for
 	 * @return The full name of the ExchangeApi interface class for the given
 	 *         exchange and API. The returned class name package is base package is
 	 *         <code>exchangeBasePackage.exchangeApiDescriptorName</code>. Its named
@@ -55,17 +58,20 @@ public class ExchangeJavaWrapperGeneratorUtil {
 	}
 	
 	/**
+	 * @param exchangeDescriptor The exchange the API group belongs to
+	 * @param exchangeApiDescriptor The exchange API group to get the full class name for
 	 * @return The full name of the ExchangeApi interface implmentation class for
 	 *         the given exchange and API, which is interface class name (see
 	 *         {@link #getApiInterfaceClassName(ExchangeDescriptor, ExchangeApiDescriptor)})
 	 *         suffixed with <code>Impl</code>.
 	 */
 	public static String getApiInterfaceImplementationClassName(ExchangeDescriptor exchangeDescriptor, 
-												  ExchangeApiDescriptor exchangeApiDescriptor) {
+												  				ExchangeApiDescriptor exchangeApiDescriptor) {
 		return getApiInterfaceClassName(exchangeDescriptor, exchangeApiDescriptor) + "Impl";
 	}
 	
 	/**
+	 * @param rateLimitName The name of the rate limit to generate the static variable name for
 	 * @return The name of static variable for the given rate limit name.
 	 */
 	public static String generateRateLimitVariableName(String rateLimitName) {
@@ -73,6 +79,7 @@ public class ExchangeJavaWrapperGeneratorUtil {
 	}
 
 	/**
+	 * @param exchangeDescriptor The exchange to generate the full class name for
 	 * @return The name of the Exchange interface class for the given exchange.
 	 */
 	public static String getExchangeInterfaceName(ExchangeDescriptor exchangeDescriptor) {
@@ -91,7 +98,7 @@ public class ExchangeJavaWrapperGeneratorUtil {
 	}
 	
 	/**
-	 * 
+	 * @param exchangeDescriptor The exchange where the API group belongs to
 	 * @param exchangeApiDescriptor The exchange API group for which constants interface stands for.
 	 * @return the full class name of constants interface defined at exchange API level.
 	 */
@@ -109,16 +116,23 @@ public class ExchangeJavaWrapperGeneratorUtil {
 	 * @see ExchangeDescriptor#getConstants()
 	 */
 	public static String getExchangePropertiesInterfaceName(ExchangeDescriptor exchangeDescriptor) {
-		return exchangeDescriptor.getBasePackage() + "." 
-				+ JavaCodeGenerationUtil.firstLetterToUpperCase(exchangeDescriptor.getName()) + "Properties";
+		return exchangeDescriptor.getBasePackage() 
+				+ "." 
+				+ JavaCodeGenerationUtil.firstLetterToUpperCase(exchangeDescriptor.getName()) 
+				+ "Properties";
 	}
 
 	/**
+	 * @param deserializedTypeClassName The full class name of the type to generate JSON message deserializer class name for.
 	 * @return The name of JSON message deserializer class for the given deserialized type.
 	 */
 	public static String getJsonMessageDeserializerClassName(String deserializedTypeClassName) {
-		String pkg = StringUtils.substringBefore(JavaCodeGenerationUtil.getClassPackage(deserializedTypeClassName), ".pojo") + ".deserializers";
-		return pkg + "." + JavaCodeGenerationUtil.getClassNameWithoutPackage(deserializedTypeClassName) + "Deserializer";
+		return new StringBuilder()
+					.append(StringUtils.substringBefore(JavaCodeGenerationUtil.getClassPackage(deserializedTypeClassName), ".pojo"))
+					.append(".deserializers.")
+					.append(JavaCodeGenerationUtil.getClassNameWithoutPackage(deserializedTypeClassName))
+					.append("Deserializer")
+					.toString();
 	}
 
 	/**
@@ -132,22 +146,22 @@ public class ExchangeJavaWrapperGeneratorUtil {
 	 * 		   <ul> 
 	 * 		     <li>if this type is a 'Primitive' type, returns the simple class name of the corresponding Java class:
 	 * 		       <ul>
-	 * 		         <li>BIGDECIMAL -> {@link BigDecimal}</li>
-	 * 		         <li>BOOLEAN -> {@link Boolean}</li>
-	 * 		         <li>INT -> {@link Integer}</li>
-	 * 		         <li>LONG -> {@link Long}</li>
-	 * 		         <li>TIMESTAMP -> {@link Long}</li>
-	 * 		         <li>STRING -> {@link String}</li>
+	 * 		         <li>BIGDECIMAL: {@link BigDecimal}</li>
+	 * 		         <li>BOOLEAN: {@link Boolean}</li>
+	 * 		         <li>INT: {@link Integer}</li>
+	 * 		         <li>LONG: {@link Long}</li>
+	 * 		         <li>TIMESTAMP: {@link Long}</li>
+	 * 		         <li>STRING: {@link String}</li>
 	 * 		       </ul>
-	 * 		     <li>If this type is a 'List' type, returns generic <code>List<SubTypeClassName></code>, 
+	 * 		     <li>If this type is a 'List' type, returns generic <code>List&lt;SubTypeClassName&gt;</code>, 
 	 * 				where <code>subTypeClassName</code> is the simple class name of the subType of the list, see {@link Type#getSubType()}.
-	 * 		     <li>If this type is a 'Map' type, returns generic <code>Map<String, SubTypeClassName></code>, 
+	 * 		     <li>If this type is a 'Map' type, returns generic <code>Map&lt;String, SubTypeClassName&gt;</code>, 
 	 * 				where <code>subTypeClassName</code> is the simple class name of the subType of the map, see {@link Type#getSubType()}.
 	 * 		     <li>If this type is an 'Object' type, returns the simple class name of the object class name, 
-	 * 				 see {@link #getClassNameWithoutPackage(String)}.
+	 * 				 see {@link JavaCodeGenerationUtil#getClassNameWithoutPackage(String)}.
 	 * 		     </li>
 	 * 		   </ul>
-	 * @see #getClassNameForType(Type, Set, String)
+	 * @see #getClassNameForType(Type, Imports, String)
 	 * @throws IllegalArgumentException if the type is not recognized.
 	 */
 	public static String getClassNameForType(Type type, 
@@ -199,23 +213,23 @@ public class ExchangeJavaWrapperGeneratorUtil {
 	}
 
 	/**
-	 * Returns the instruction to create a new instance of a {@link JsonFieldDeserializer} for the given type.
+	 * Returns the instruction to create a new instance of a {@link AbstractJsonMessageDeserializer} for the given type.
 	 * @param type The type of the field to deserialize
 	 * @param objectClassName The object class name of the field to generate JsonFieldDeserializer for. 
 	 * 						  This parameter is used only if the type is an 'object' type (see {@link Type#isObject()} ).
 	 * @param imports The imports of the generator context that will be populated with classes 
 	 * 				  used by returned type. That set must be not <code>null</code> and mutable.
-	 * @return The instruction to get or create a new instance of a {@link JsonFieldDeserializer} for the given type:
+	 * @return The instruction to get or create a new instance of a {@link AbstractJsonMessageDeserializer} for the given type:
 	 * 		    <ul>
 	 * 		      <li>if this type is a 'primitive' type, returns the instruction to get the 
 	 * 				  singleton instance of the corresponding JsonFieldDeserializer:
 	 * 		        <ul>
-	 * 		          <li>BIGDECIMAL -> {@link BigDecimalJsonFieldDeserializer#getInstance()}</li>
-	 * 		          <li>BOOLEAN -> {@link BooleanJsonFieldDeserializer#getInstance()}</li>
-	 * 		          <li>INT -> {@link IntegerJsonFieldDeserializer#getInstance()}</li>
-	 * 		          <li>LONG -> {@link LongJsonFieldDeserializer#getInstance()}</li>
-	 * 		          <li>TIMESTAMP -> {@link TimestampJsonFieldDeserializer#getInstance()}</li>
-	 * 		          <li>STRING -> {@link StringJsonFieldDeserializer#getInstance()}</li>
+	 * 		          <li>BIGDECIMAL: {@link BigDecimalJsonFieldDeserializer#getInstance()}</li>
+	 * 		          <li>BOOLEAN: {@link BooleanJsonFieldDeserializer#getInstance()}</li>
+	 * 		          <li>INT: {@link IntegerJsonFieldDeserializer#getInstance()}</li>
+	 * 		          <li>LONG: {@link LongJsonFieldDeserializer#getInstance()}</li>
+	 * 		          <li>TIMESTAMP: {@link TimestampJsonFieldDeserializer#getInstance()}</li>
+	 * 		          <li>STRING: {@link StringJsonFieldDeserializer#getInstance()}</li>
 	 * 		        </ul>
 	 * 		      </li>
 	 * 		      <li>if this type is a 'List' type, returns the instruction to create a new instance of 
@@ -223,7 +237,7 @@ public class ExchangeJavaWrapperGeneratorUtil {
 	 * 		      <li>if this type is a 'Map' type, returns the instruction to create a new instance of 
 	 * 				  a {@link MapJsonFieldDeserializer} with the subType of the map, see {@link Type#getSubType()}.
 	 * 		      <li>if this type is an 'Object' type, returns the 'new' instruction to create a new instance of 
-	 * 				  a {@link com.scz.jxapi.netutils.deserialization.json.field.JsonFieldDeserializer} for the object 
+	 * 				  a {@link AbstractJsonMessageDeserializer} for the object 
 	 * 				  class name, see {@link #getJsonMessageDeserializerClassName(String)}.
 	 * 		    </ul>
 	 * @see Type
@@ -270,9 +284,9 @@ public class ExchangeJavaWrapperGeneratorUtil {
 	}
 
 	/**
-	 * @param type        must be a primitive type: {@value Type#STRING},
-	 *                    {@value Type#INT}, {@value Type#LONG},
-	 *                    {@value Type#TIMESTAMP}, {@value Type#BIGDECIMAL}.
+	 * @param type        must be a primitive type: {@link Type#STRING},
+	 *                    {@link Type#INT}, {@link Type#LONG},
+	 *                    {@link Type#TIMESTAMP}, {@link Type#BIGDECIMAL}.
 	 *                    Otherwise,
 	 * @param sampleValue primitive type sample value which can be a string '\"12\"'
 	 *                    or object value '12'. Can be <code>null</code> in which
@@ -282,8 +296,8 @@ public class ExchangeJavaWrapperGeneratorUtil {
 	 * @return An instruction to create value represented by sample value
 	 */
 	public static String getPrimitiveTypeFieldSampleValueDeclaration(Type type, 
-																		 Object sampleValue,	
-																		 Imports imports) {
+																	 Object sampleValue,	
+																	 Imports imports) {
 		if (sampleValue == null) {
 			return null;
 		}

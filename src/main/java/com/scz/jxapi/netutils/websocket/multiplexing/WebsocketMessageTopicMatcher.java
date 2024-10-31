@@ -34,8 +34,12 @@ public interface WebsocketMessageTopicMatcher {
 	 * {@link WebsocketMessageTopicMatchStatus#MATCHED}. should be returned only
 	 * when all fields have been matched.
 	 * 
-	 * @param fieldName
-	 * @param value
+	 * @param fieldName Field name
+	 * @param value     Field value
+	 * @return {@link WebsocketMessageTopicMatchStatus#MATCHED} if field matches.
+	 *         {@link WebsocketMessageTopicMatchStatus#NO_MATCH} if field does not
+	 *         match. {@link WebsocketMessageTopicMatchStatus#CANT_MATCH} if field
+	 *         matches but not expected value.
 	 */
 	WebsocketMessageTopicMatchStatus matches(String fieldName, String value);
 	

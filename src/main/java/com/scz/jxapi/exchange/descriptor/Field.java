@@ -3,7 +3,6 @@ package com.scz.jxapi.exchange.descriptor;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.scz.jxapi.netutils.rest.ratelimits.RateLimitRule;
 import com.scz.jxapi.util.EncodingUtil;
 
 /**
@@ -31,7 +30,7 @@ import com.scz.jxapi.util.EncodingUtil;
  * understandable name, and set <code>msgField</code> value</li>
  * <li>Its <code>objectName</code>, the simple (without package) name of java
  * class to represent corresponding to object defined by this parameter.
- * Relevant only when type is an object see {@link CanonicalType#isObject}.<br>
+ * Relevant only when type is an object see {@link Type#isObject()}.<br>
  * <strong>Remarks:</strong>
  * <ul>
  * <li>In a descriptor file, the first field defining a given object name should
@@ -49,15 +48,14 @@ import com.scz.jxapi.util.EncodingUtil;
  * <code>basePackage</code> property in the descriptor file.<br>
  * Example: for a field with objectName <i>Foo</i> in an endpoint of API group
  * named <i>myapi</i> group of exchange with base package <i>com.x.y</i>, the
- * class Foo will be generated in package <i>com.x.y.myapi.pojo</i></i></li>
+ * class Foo will be generated in package <i>com.x.y.myapi.pojo</i></li>
  * </ul>
- * </li>
  * <li>Its <code>properties</code>, for an <code>object</code> type field, see
- * {@link CanonicalType#isObject}, the fields in nested structure,
+ * {@link Type#isObject()}, the fields in nested structure,
  * <code>null</code> otherwise.</li>
  * <li>Its <code>implementedInterfaces</code>, the list of interfaces
  * implemented by the object defined by this field. Relevant only when type is
- * an object see {@link CanonicalType#isObject}.</li>
+ * an object see {@link Type#isObject()}.</li>
  * </ul>
  * 
  * JSON examples:<br>
@@ -134,7 +132,6 @@ import com.scz.jxapi.util.EncodingUtil;
  * 
  * @see RestEndpointDescriptor
  * @see Type
- * @see RateLimitRule
  * @see Field
  * @see WebsocketEndpointDescriptor
  */
@@ -267,7 +264,7 @@ public class Field {
 	}
 	
 	/**
-	 * @return For an 'object' type field, see {@link CanonicalType#isObject}, the
+	 * @return For an 'object' type field, see {@link Type#isObject()}, the
 	 *         properties in nested structure, <code>null</code> otherwise. An
 	 *         object type property may have <code>null</code> properties if it is
 	 *         defined an object name (see {@link #getObjectName()}). That means
@@ -279,7 +276,7 @@ public class Field {
 
 	/**
 	 * @param fields For an 'object' type parameter, see
-	 *               {@link CanonicalType#isObject}, the properties in nested
+	 *               {@link Type#isObject()}, the properties in nested
 	 *               structure, <code>null</code> otherwise.
 	 */
 	public void setProperties(List<Field> fields) {
@@ -289,7 +286,7 @@ public class Field {
 	/**
 	 * @return The simple (without package) name of java class to represent
 	 *         corresponding to object defined by this field. Relevant only when
-	 *         type is an object see {@link CanonicalType#isObject}.<br> Remark: in a descriptor
+	 *         type is an object see {@link Type#isObject()}.<br> Remark: in a descriptor
 	 *         file, the first field defining a given object name should define that object properties
 	 *         see {@link Field#getProperties()} , other properties using same object name need not
 	 *         define sub-properties. This allow not to repeat identical structures
@@ -300,7 +297,7 @@ public class Field {
 	}
 
 	/**
-	 * @param objectName
+	 * @param objectName The simple (without package) name of java class corresponding to object defined by this field.
 	 * @see #getObjectName()
 	 */
 	public void setObjectName(String objectName) {
@@ -310,7 +307,7 @@ public class Field {
 	/**
 	 * @return The list of interfaces implemented by the object defined by this
 	 *         parameter. Relevant only when type is an object see
-	 *         {@link CanonicalType#isObject}.
+	 *         {@link Type#isObject()}.
 	 */
 	public List<String> getImplementedInterfaces() {
 		return implementedInterfaces;
@@ -320,7 +317,7 @@ public class Field {
 	 * @param implementedInterfaces The list of interfaces implemented by the object
 	 *                              defined by this parameter. Relevant only when
 	 *                              type is an object see
-	 *                              {@link CanonicalType#isObject}.
+	 *                              {@link Type#isObject()}.
 	 */
 	public void setImplementedInterfaces(List<String> implementedInterfaces) {
 		this.implementedInterfaces = implementedInterfaces;

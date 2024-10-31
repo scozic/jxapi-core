@@ -10,10 +10,10 @@ import com.scz.jxapi.util.HasProperties;
 
 /**
  * Interface for a set of REST and/or Websocket endpoints of an API belonging to
- * an {@link Exchange} wrapper.</br>
+ * an {@link Exchange} wrapper.<br>
  * Actual implmentations will expose methods for calling REST enpoints, and
  * subscribe / unsubscribe methods for Websocket endpoints.
- * </ul>
+ * 
  * <p>
  * Regarding REST endpoints call methods:
  * <ul>
@@ -27,9 +27,8 @@ import com.scz.jxapi.util.HasProperties;
  * <li>Is applied endpoint specific {@link RateLimitRule} throughput
  * limitations, shared limits from API and from {@link Exchange}
  * </ul>
- * </p>
- * Regarding Websocket endpoints
  * <p>
+ * Regarding Websocket endpoints
  * <ul>
  * <li>Has a subscribe[apiName] method to subscribe a message listener for a
  * specific topic , with one subscription parameters argument of any
@@ -42,7 +41,6 @@ import com.scz.jxapi.util.HasProperties;
  * <li>Shared {@link WebsocketManager} manages keeping alive connection and
  * automatic reconnection and resubscription to topics upon error.
  * </ul>
- * </p>
  * <p>
  * Observability API (see {@link #subscribeObserver(ExchangeApiObserver)}) can
  * be used to monitor REST endpoint calls, and Websocket subscriptions, received
@@ -72,7 +70,8 @@ public interface ExchangeApi extends HasProperties {
 	 * Subscribes an observer to be notified of all REST or Websocket events of this
 	 * API group endpoints.
 	 * 
-	 * @param exchangeApiObserver
+	 * @param exchangeApiObserver observer that will be notifed of incoming
+	 *                            {@link ExchangeApiEvent} events.
 	 */
 	void subscribeObserver(ExchangeApiObserver exchangeApiObserver);
 
@@ -80,7 +79,8 @@ public interface ExchangeApi extends HasProperties {
 	 * Unsubscribes an observer from being notified of all REST or Websocket events
 	 * of this API group endpoints.
 	 * 
-	 * @param exchangeApiObserver
+	 * @param exchangeApiObserver observer that will be notifed of incoming
+	 *                            {@link ExchangeApiEvent} events.
 	 * @return true if observer was subscribed, false otherwise.
 	 */
 	boolean unsubscribeObserver(ExchangeApiObserver exchangeApiObserver);

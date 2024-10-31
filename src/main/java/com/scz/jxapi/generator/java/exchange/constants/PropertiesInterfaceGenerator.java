@@ -46,8 +46,12 @@ public class PropertiesInterfaceGenerator extends JavaTypeGenerator {
 
 	/**
 	 * Constructor
-	 * @param fullClassName Full name of the interface to generate, example: com.example.MyProperties
-	 * @param properties List of properties to generate in the interface
+	 * 
+	 * @param fullClassName Full name of the interface to generate, example:
+	 *                      com.example.MyProperties
+	 * @param exchangeName  The name of exchange configuration properties are
+	 *                      generated for
+	 * @param properties    List of properties to generate in the interface
 	 */
 	public PropertiesInterfaceGenerator(String fullClassName, String exchangeName, List<ConfigProperty> properties) {
 		super(fullClassName);

@@ -8,6 +8,9 @@ import org.junit.Test;
 import com.scz.jxapi.exchange.descriptor.ExchangeDescriptor;
 import com.scz.jxapi.exchange.descriptor.parser.ExchangeDescriptorParser;
 
+/**
+ * Unit test for {@link ExchangeInterfaceGenerator}
+ */
 public class ExchangeInterfaceGeneratorTest {
 
 	@Test

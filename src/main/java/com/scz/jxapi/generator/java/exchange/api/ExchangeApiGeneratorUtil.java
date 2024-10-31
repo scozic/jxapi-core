@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 import com.scz.jxapi.exchange.ExchangeApi;
@@ -214,9 +213,10 @@ public class ExchangeApiGeneratorUtil {
 	 * type is a list or map, the generic parameter {@link List} or {@link Map} is
 	 * also added to imports.
 	 * <p>
-	 * A few examples of returned values and import added for some examples of a
+	 * A few examples of returned values and imports added for some examples of a
 	 * field named <code>Bar</code>:
 	 * <table border="1">
+	 * <caption>Examples of returned values and imports added</caption>
 	 * <thead>
 	 * <tr>
 	 * <th>Type</th>
@@ -242,7 +242,7 @@ public class ExchangeApiGeneratorUtil {
 	 * <td><i>any</i></td>
 	 * <td><i>any</i></td>
 	 * <td><code>BigDecimal</code></td>
-	 * <td><code><ul><li><code>java.lang.BigDecimal</code></li>
+	 * <td><ul><li><code>java.lang.BigDecimal</code></li>
 	 * </ul>
 	 * </td>
 	 * <td>Primitive field type, and {@link BigDecimal} is in
@@ -257,7 +257,7 @@ public class ExchangeApiGeneratorUtil {
 	 * <td><code>FooBar</code></td>
 	 * <td>
 	 * <ul>
-	 * <li></code>com.x.y.gen.pojo.FooBar</code></li>
+	 * <li><code>com.x.y.gen.pojo.FooBar</code></li>
 	 * </ul>
 	 * </td>
 	 * <td><code>OBJECT</code> field type and no object name specified, the returned
@@ -270,7 +270,7 @@ public class ExchangeApiGeneratorUtil {
 	 * <td><code>com.x.y.gen.pojo.Foo</code></td>
 	 * <td><code>MySpecialObjectName</code></td>
 	 * <td><code>MySpecialObjectName</code></td>
-	 * <td><ul><li></code>com.x.y.gen.pojo.MySpecialObjectName</code></li>
+	 * <td><ul><li><code>com.x.y.gen.pojo.MySpecialObjectName</code>
 	 * </ul>
 	 * </td>
 	 * <td><code>OBJECT</code> field with <code>objectName</code> specified, the
@@ -279,7 +279,7 @@ public class ExchangeApiGeneratorUtil {
 	 * </tr>
 	 * 
 	 * <tr>
-	 * <td><code>OBJECT_MAP_LIST</td>
+	 * <td><code>OBJECT_MAP_LIST</code></td>
 	 * <td><code>com.x.y.gen.pojo.Foo</code></td>
 	 * <td><code>null</code></td>
 	 * <td><code>List&lt;Map&lt;String, FooBar&gt;&gt;</code></td>
@@ -297,7 +297,6 @@ public class ExchangeApiGeneratorUtil {
 	 * </tr>
 	 * </tbody>
 	 * </table>
-	 * </p>
 	 * 
 	 * @param field  The field
 	 * @param imports            The imports of generator context that will be
@@ -359,9 +358,10 @@ public class ExchangeApiGeneratorUtil {
 	 * <li>Otherwise, the class name is the concatenation of the package of the
 	 * enclosing class name and the class name generated
 	 * by
-	 * {@link ExchangeJavaWrapperGeneratorUtil#getClassNameForType(Type, Set, String)}
+	 * {@link ExchangeJavaWrapperGeneratorUtil#getClassNameForType(Type, Imports, String)}
 	 * for the
 	 * leaf subType of the field type.</li>
+	 * </ul>
 	 * {@link Type#getLeafSubType(Type)}.
 	 * 
 	 * @param fieldName 			See {@link Field#getName()}
@@ -397,20 +397,20 @@ public class ExchangeApiGeneratorUtil {
 	 * <ul>
 	 * <li>For primitive types, the corresponding deserializer singleton instance is
 	 * returned,
-	 * for instance if type is {@link Type.STRING},
-	 * <code>RawStringMessageDeserializer.getInstance()</code> is returned.
+	 * for instance if type is {@link Type#STRING},
+	 * {@link RawStringMessageDeserializer#getInstance()} singleton is returned.
 	 * The deserializer class is added to imports</li>
 	 * <li>For other 'structured' types (object, list or map) types, the
 	 * corresponding new
 	 * Json field deserializer instruction is returned, see
-	 * {@link ExchangeJavaWrapperGeneratorUtil#getNewJsonFieldDeserializerInstruction(Type, String, Set)}.</li>
+	 * {@link ExchangeJavaWrapperGeneratorUtil#getNewJsonFieldDeserializerInstruction(Type, String, Imports)}.</li>
 	 * <li>
 	 * </ul>
 	 * 
-	 * @param messageType
-	 * @param messageFullClassName
-	 * @param imports
-	 * @return
+	 * @param messageType The message type
+	 * @param messageFullClassName The full class name of the message
+	 * @param imports The imports of generator context that will be populated with
+	 * @return Java code instruction to get a new instance of a message deserializer
 	 */
 	public static String getNewMessageDeserializerInstruction(Type messageType, 
 															  String messageFullClassName, 
@@ -444,10 +444,18 @@ public class ExchangeApiGeneratorUtil {
 	}
 
 	/**
-	 * @param restApi
-	 * @param exchangeApiDescriptor
-	 * @return <code>true</code> if the REST endpoint has a response defined, and that 
-	 * 			response is either a primitive type or an object type has at least one property defined.
+	 * Checks if given REST endpoint has a request defined, and that request has
+	 * arguments.
+	 * 
+	 * @param restApi               The REST endpoint descriptor
+	 * @param exchangeApiDescriptor The exchange API descriptor, used to get the
+	 *                              properties of the response field if it is an
+	 *                              object type with actual properties defined in
+	 *                              another API.
+	 * @return <code>true</code> if the REST endpoint has a response defined, and
+	 *         that
+	 *         response is either a primitive type or an object type has at least
+	 *         one property defined.
 	 */
 	public static boolean restEndpointHasResponse(RestEndpointDescriptor restApi, 
 												  ExchangeApiDescriptor exchangeApiDescriptor) {
@@ -464,7 +472,7 @@ public class ExchangeApiGeneratorUtil {
 	 * 
 	 * @param field The field to get the type of, see {@link Field#getType()}
 	 * @return <code>null</code> if field is <code>null</code>, otherwise the
-	 *         type of the field or default {@link Type.OBJECT} if this type is
+	 *         type of the field or default {@link Type#OBJECT} if this type is
 	 *         null.
 	 */
 	public static Type getFieldType(Field field) {
@@ -475,7 +483,7 @@ public class ExchangeApiGeneratorUtil {
 	 * Generates the name of expected static {@link String} variable holding a REST endpoint name.
 	 * <br>
 	 * Example: for <code>myRestEndpoint</code>, the returned value is <code>MY_REST_ENDPOINT_REST_API</code>
-	 * @param restEndpointName
+	 * @param restEndpointName The REST endpoint name
 	 * @return the static variable name for the REST endpoint name.
 	 */
 	public static String getRestEndpointNameStaticVariable(String restEndpointName) {
@@ -486,7 +494,7 @@ public class ExchangeApiGeneratorUtil {
 	 * @param restApi The REST endpoint descriptor
 	 * @param exchangeApiDescriptor The exchange API descriptor
 	 * @return <code>true</code> if the REST endpoint has a request defined 
-	 * 			{@link RequestEndpointDescriptor#getRequest()}, and that request field has arguments, 
+	 * 			{@link RestEndpointDescriptor#getRequest()}, and that request field has arguments, 
 	 * 			see {@link #endpointHasArguments(Field, ExchangeApiDescriptor)}
 	 */
 	public static boolean restEndpointHasArguments(RestEndpointDescriptor restApi, 
@@ -499,8 +507,8 @@ public class ExchangeApiGeneratorUtil {
 	}
 
 	/**
-	 * @param websocketApi
-	 * @param exchangeApiDescriptor
+	 * @param websocketApi The websocket endpoint descriptor
+	 * @param exchangeApiDescriptor The exchange API descriptor
 	 * @return <code>true</code> if the websocket endpoint has a request field defined 
 	 * 			see {@link WebsocketEndpointDescriptor#getRequest()}, and that message field has arguments,
 	 * 			see {@link #endpointHasArguments(Field, ExchangeApiDescriptor)}
@@ -554,8 +562,8 @@ public class ExchangeApiGeneratorUtil {
 
 	/**
 	 * Generates the name of expected static {@link String} variable holding a Websocket endpoint name.
-	 * @param websocketEndpointName
-	 * @return
+	 * @param websocketEndpointName The Websocket endpoint name
+	 * @return the static variable name for the Websocket endpoint name.
 	 */
 	public static String getWebsocketEndpointNameStaticVariable(String websocketEndpointName) {
 		return JavaCodeGenerationUtil.getStaticVariableName(websocketEndpointName) + "_WS_API";
@@ -572,7 +580,7 @@ public class ExchangeApiGeneratorUtil {
 	 * subscribe request and message.
 	 * <br>
 	 * If provided {@link Field} has a defined objectName, is of 'object' type (see
-	 * {@Link Type#isObject()}) and has <code>null</code> sub properties then its
+	 * {@link Type#isObject()}) and has <code>null</code> sub properties then its
 	 * sub properties are set with ones of first field found in any object field of
 	 * any
 	 * REST/Websocket API that has same object name as this field.

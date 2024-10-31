@@ -75,7 +75,7 @@ public class MockWebsocketServerSessionService extends SynchronizedObservable<Mo
  	
 	/**
 	 * Registers a new session.
-	 * @param websocketServerSession
+	 * @param websocketServerSession The session to register
 	 */
 	public static void registerNewSession(MockWebsocketServerSession websocketServerSession) {
 		get().register(websocketServerSession);
@@ -83,7 +83,7 @@ public class MockWebsocketServerSessionService extends SynchronizedObservable<Mo
 	
 	/**
 	 * Unregisters a closed session.
-	 * @param websocketServerSession
+	 * @param websocketServerSession The session to unregister
 	 * @return true if the session was unregistered, false otherwise
 	 */
 	public static boolean unregisterClosedSession(MockWebsocketServerSession websocketServerSession) {
@@ -92,7 +92,7 @@ public class MockWebsocketServerSessionService extends SynchronizedObservable<Mo
 	
 	/**
 	 * Subscribes a listener to receive events.
-	 * @param listener
+	 * @param listener The listener to subscribe
 	 */
 	public static void subscribeListener(MockWebsocketServerListener listener) {
 		get().subscribe(listener);
@@ -100,7 +100,7 @@ public class MockWebsocketServerSessionService extends SynchronizedObservable<Mo
 	
 	/**
 	 * Unsubscribes a listener.
-	 * @param listener
+	 * @param listener The listener to unsubscribe
 	 * @return true if the listener was unsubscribed, false otherwise
 	 */
 	public static boolean unsubscribeListener(MockWebsocketServerListener listener) {

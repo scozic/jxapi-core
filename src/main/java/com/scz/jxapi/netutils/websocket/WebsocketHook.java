@@ -1,11 +1,13 @@
 package com.scz.jxapi.netutils.websocket;
 
+import com.scz.jxapi.exchange.ExchangeApi;
+
 /**
  * Interface for hooking into the websocket lifecycle.
  * <p>
  * Exchange websocket API specifications usually have specific requirements for:
  * <ul>
- * <li><strong>Intialization</strong>: See {@link #init(WebsocketManager) method
+ * <li><strong>Intialization</strong>: See {@link #init(WebsocketManager)} method
  * called at end {@link WebsocketManager} constructor. The
  * {@link WebsocketManager} instance passed in parameter to
  * {@link #init(WebsocketManager)} method is bound to this hook instance and all
@@ -16,18 +18,18 @@ package com.scz.jxapi.netutils.websocket;
  * connected or connecting then. This is where configuration that remains
  * unchanged can be performed, for instance subscribing 'technical' message
  * listeners see
- * {@link WebsocketManager#addSystemMessageHandler(String, WebsocketMessageTopicMatcher, RawWebsocketMessageHandler)},
+ * {@link WebsocketManager#addSystemMessageHandler(String, com.scz.jxapi.netutils.websocket.multiplexing.WebsocketMessageTopicMatcherFactory, RawWebsocketMessageHandler)},
  * or customizing manager's configuration like heartbeat timeout, no message
  * timeout or delay before reconnection.</li>
- * <li><strong>Connection</strong>: See {@link #beforeConnect(WebsocketManager)
- * and {@link #afterConnect(WebsocketManager) methods called just before and
+ * <li><strong>Connection</strong>: See {@link #beforeConnect()}
+ * and {@link #afterConnect()} methods called just before and
  * after connecting socket. For instance API specific protocol may require to
  * append base url a token, {@link WebsocketManager#setUrl(String)} must be
  * called before connecting to specialize websocket URL. Or a specific message
  * for authentication should be sent right after connection</li>
  * <li><strong>Disconnection</strong>: See
- * {@link #beforeConnect(WebsocketManager) and See
- * {@link #afterConnect(WebsocketManager)} called just before and after
+ * {@link #beforeConnect()} and See
+ * {@link #afterConnect()} called just before and after
  * disconnecting websocket.</li>
  * <li><strong>Subscribe/unsubscribe request messages</strong> : When
  * multiplexing (e.g. subscribing / unsubscribing for different independant
@@ -49,7 +51,7 @@ public interface WebsocketHook {
 	 * <p>
 	 * This is where configuration that remains unchanged can be performed, for
 	 * instance subscribing 'technical' message listeners see
-	 * {@link WebsocketManager#addSystemMessageHandler(String, WebsocketMessageTopicMatcher, RawWebsocketMessageHandler)},
+	 * {@link WebsocketManager#addSystemMessageHandler(String, com.scz.jxapi.netutils.websocket.multiplexing.WebsocketMessageTopicMatcherFactory, RawWebsocketMessageHandler)},
 	 * or customizing manager's configuration like heartbeat timeout, no message
 	 * timeout or delay before reconnection.
 	 * 

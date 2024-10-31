@@ -2,6 +2,7 @@ package com.scz.jxapi.netutils.rest.mock;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 import com.scz.jxapi.netutils.rest.AbstractHttpRequestExecutor;
 import com.scz.jxapi.netutils.rest.FutureHttpResponse;
@@ -11,7 +12,7 @@ import com.scz.jxapi.netutils.rest.HttpRequest;
  * A mock implementation of the HttpRequestExecutor interface.
  * This class is used for testing purposes to simulate the execution of HTTP requests.
  * Whenever a request is submitted for execution, a {@link MockFutureHttpResponse} for this request is added to a queue.
- * Incoming queued requests awaiting response should be acknowledged by retrieving them from queue using {@link #popRequest()} and completing them using {@link MockFutureHttpResponse#complete(com.scz.jxapi.netutils.rest.HttpResponse)}  
+ * Incoming queued requests awaiting response should be acknowledged by retrieving them from queue using {@link #popRequest()} and completing them using {@link CompletableFuture#complete(Object)}  
  */
 public class MockHttpRequestExecutor extends AbstractHttpRequestExecutor {
 

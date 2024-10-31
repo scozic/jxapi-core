@@ -10,7 +10,7 @@ import com.scz.jxapi.netutils.deserialization.json.JsonDeserializer;
 import com.scz.jxapi.util.JsonUtil;
 
 /**
- * {@link JsonMessageDeserializer} for {@link BigDecimal} fields in JSON
+ * {@link AbstractJsonMessageDeserializer} for {@link BigDecimal} fields in JSON
  * messages.
  * <p>
  * This class is a singleton, use {@link #getInstance()} to get the instance.

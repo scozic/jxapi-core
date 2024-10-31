@@ -1,6 +1,5 @@
 package com.scz.jxapi.netutils.websocket;
 
-import java.io.IOException;
 import java.util.concurrent.CompletableFuture;
 
 import com.scz.jxapi.exchange.ExchangeApi;
@@ -112,7 +111,7 @@ public interface WebsocketManager {
 	/**
 	 * Adds a message handler to handle specific/non business messages. This is
 	 * similar to
-	 * {@link #subscribe(String, WebsocketMessageTopicMatcher, RawWebsocketMessageHandler)}
+	 * {@link #subscribe(String, WebsocketMessageTopicMatcherFactory, RawWebsocketMessageHandler)}
 	 * but for system messages.
 	 * 
 	 * @param topic          The topic for the system message to handle. Should be
@@ -147,10 +146,10 @@ public interface WebsocketManager {
 	void subscribe(String topic, WebsocketMessageTopicMatcherFactory matcher, RawWebsocketMessageHandler messageHandler);
 
 	/**
-	 * Unsubscribes a message handler from a topic.
+	 * Unsubscribes from a topic.
 	 * 
-	 * @param topic          The topic to unsubscribe from.
-	 * @param messageHandler The message handler to unsubscribe.
+	 * @param topic The topic to unsubscribe from.
+	 * @see WebsocketManager#subscribe(String, WebsocketMessageTopicMatcherFactory, RawWebsocketMessageHandler)
 	 */
 	void unsubscribe(String topic);
 
@@ -184,20 +183,21 @@ public interface WebsocketManager {
 	 * Sends a message to this manager underlying {@link Websocket}.
 	 * <br>
 	 * This method must be called from dedicated write executor thread, which is the
-	 * case in {@link WebsocketHook#beforeConnect(WebsocketManager)},
-	 * {@link WebsocketHook#beforeDisconnect(WebsocketManager)},
-	 * {@link WebsocketHook#afterConnect(WebsocketManager)},
-	 * {@link WebsocketHook#afterDisconnect(WebsocketManager)} methods.
+	 * case in {@link WebsocketHook#beforeConnect()},
+	 * {@link WebsocketHook#beforeDisconnect()},
+	 * {@link WebsocketHook#afterConnect()}, and
+	 * {@link WebsocketHook#afterDisconnect()} methods.
 	 * <br>
 	 * Sending messages from another thread should be done using
 	 * {@link #sendAsync(String)} which will write on websocket output
 	 * asynchronously from WebsocketManager dedicated write excutor.
 	 * <br>
 	 * A typical use case would be sending a message for authentication handshake
-	 * from {@link WebsocketHook#afterConnect(WebsocketManager)}.
+	 * from {@link WebsocketHook#afterConnect()}.
 	 * 
 	 * @param msg Message to send on underlying Websocket output.
-	 * @throws IOException
+	 * @throws WebsocketException If an error occurs while sending the data on the websocket output, 
+	 * 		   or if this manager is disposed.
 	 */
 	void send(String msg) throws WebsocketException;
 
@@ -278,8 +278,8 @@ public interface WebsocketManager {
 	 * interval.
 	 * 
 	 * @param heartBeatInterval The heartbeat interval in milliseconds.
-	 * @throws IllegalStateException if heartbeat interval is > 0 and no websocket
-	 *                               hook is provided. When heartbeat interval is >
+	 * @throws IllegalStateException if heartbeat interval is &gt; 0 and no websocket
+	 *                               hook is provided. When heartbeat interval is  &gt;
 	 *                               0, a websocket hook must be provided to provide
 	 *                               the heartbeat message to send to the server.
 	 */

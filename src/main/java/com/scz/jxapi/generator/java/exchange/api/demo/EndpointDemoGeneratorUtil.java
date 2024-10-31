@@ -40,9 +40,8 @@ public class EndpointDemoGeneratorUtil {
 	 *                        method. Will be populated with the necessary imports.
 	 * @return the method code with signature (method declaration) and body
 	 * 
-	 * @see #generateFieldCreationMethodDeclaration(Field, String, Set)
-	 * @see #generateFieldSampleValueDeclaration(Field, String, String,
-	 *      Set, String)
+	 * @see #generateFieldCreationMethodDeclaration(Field, String, Imports)
+	 * @see #generateFieldSampleValueDeclaration(Field, String, String, Imports, String)
 	 */
 	public static String generateFieldCreationMethod(Field property, 
 												     String objectClassName,

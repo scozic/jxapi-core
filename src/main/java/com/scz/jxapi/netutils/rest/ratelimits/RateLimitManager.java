@@ -10,8 +10,11 @@ import java.util.TreeMap;
 public class RateLimitManager {
 	
 	/**
-	 * @param stat
-	 * @param rateLimit
+	 * Checks if given rate limit is reached for given request count and weight.
+	 * 
+	 * @param rateLimit the rate limit rule to check against.
+	 * @param requestCount is rate limit reached for given request count?
+	 * @param weight is rate limit reached for given weight?
 	 * @return <code>true</code> If rateLimit is reached for current stat, that is
 	 *         if given rateLimit max request count is valid (positive value) and
 	 *         given stat request count is sup or equal to max request count, or if
@@ -62,18 +65,23 @@ public class RateLimitManager {
 	
 	/**
 	 * Same as {@link #requestCall()} but using weighted request
-	 * @param weight the weight of request to send.
-	 * @return
+	 * @param weight the weight of request to send. 0 if request is not a weighted rule.
+	 * @return 0 if request can be sent immediately, a delay in ms to wait before retrying otherwise.
 	 */
 	public long requestCall(int weight) {
 		return requestCall(System.currentTimeMillis(), weight);
 	}
 	
 	/**
-	 * Same as {@link #requestCall()} but using weighted request
-	 * @param now the current time in ms.
+	 * Same as {@link #requestCall()} but using weighted request and providing
+	 * current timestamp (this method is for testing purpose and client
+	 * implementation should call {@link #requestCall(int)} or
+	 * {@link #requestCall()} that will use current timestamp.
+	 * 
+	 * @param now    the current time in ms.
 	 * @param weight the weight of request to send.
-	 * @return
+	 * @return 0 if request can be sent immediately, a delay in ms to wait before
+	 *         retrying otherwise.
 	 */
 	public long requestCall(long now, int weight) {
 		long minDelayBeforeNextPossibleCall = getMinDelayBeforeNextPossibleCall(now, weight);

@@ -2,6 +2,8 @@ package com.scz.jxapi.generator.java.exchange.api.demo;
 
 import java.util.Optional;
 
+import org.slf4j.Logger;
+
 import com.scz.jxapi.exchange.descriptor.Field;
 import com.scz.jxapi.exchange.descriptor.Type;
 import com.scz.jxapi.exchange.descriptor.ExchangeApiDescriptor;

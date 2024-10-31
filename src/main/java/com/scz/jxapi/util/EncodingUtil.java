@@ -44,7 +44,7 @@ public class EncodingUtil {
 	 * 
 	 * @param template      the template String to perform that contains variables
 	 * @param keysAndValues flat list of key, value pair for variable substitutions
-	 * @return
+	 * @return Template with properties substituted
 	 */
 	public static String substituteArguments(String template, Object... keysAndValues) {
 		if (keysAndValues.length == 0) {
@@ -67,7 +67,7 @@ public class EncodingUtil {
 	 * @param keysAndValues List of keys and values, for
 	 *                      instance:<code>"id","myId","name","John Doe","age",28,"height":1.70</code>
 	 * @return Query parameters string to append as URL suffix, for instance:
-	 *         <code>"?id=myId&name=John%20Doe&age=28height=1.170"</code>
+	 *         <code>"?id=myId&amp;name=John%20Doe&amp;age=28&amp;height=1.170"</code>
 	 */
 	public static String createUrlQueryParameters(Object...keysAndValues) {
 		if (keysAndValues.length <= 0) {
@@ -126,7 +126,7 @@ public class EncodingUtil {
 	 * be converted to <code>"0"</code>. Other values will be converted as plain
 	 * String, see {@link BigDecimal#toPlainString()}
 	 * 
-	 * @param bd
+	 * @param bd {@link BigDecimal} value to encode as string.
 	 * @return "0" if <code>bd</code> arg is <code>null</code>,
 	 *         <code>bd.toPlainString()</code> otherwise
 	 */
@@ -166,7 +166,7 @@ public class EncodingUtil {
 	 * The eventual {@link UnsupportedEncodingException} thrown will be wrapped as
 	 * an {@link IllegalArgumentException}
 	 * 
-	 * @param value
+	 * @param value The string to encode using URL encoding
 	 * @return URL encoded conversion of <code>value</code> See
 	 *         {@link URLEncoder#encode(String, java.nio.charset.Charset)}
 	 * @throws IllegalArgumentException If (unlikely) {@link StandardCharsets#UTF_8} is not supported.
@@ -195,7 +195,7 @@ public class EncodingUtil {
 	 * {@link IllegalArgumentException} is thrown.
 	 * 
 	 * @param longString the string to shorten
-	 * @param maxLength  the maximum length of the returned string, should be > 4
+	 * @param maxLength  the maximum length of the returned string, should be &gt; 4
 	 * @return the shortened string, or the original string if it is already
 	 *         shorter, or <code>null</code> if the input string is
 	 *         <code>null</code>.

@@ -10,7 +10,7 @@ import com.scz.jxapi.netutils.deserialization.MessageDeserializer;
 import com.scz.jxapi.netutils.deserialization.json.JsonDeserializer;
 
 /**
- * {@link JsonMessageDeserializer} for {@link Long} fields in JSON messages.
+ * {@link AbstractJsonMessageDeserializer} for {@link Long} fields in JSON messages.
  * It is associated with Canonical JSON field type {@link CanonicalType#TIMESTAMP}.
  * <p>
  * This class is a singleton, use {@link #getInstance()} to get the instance.

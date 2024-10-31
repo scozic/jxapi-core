@@ -9,7 +9,7 @@ import com.scz.jxapi.netutils.deserialization.json.JsonDeserializer;
 import com.scz.jxapi.util.JsonUtil;
 
 /**
- * {@link JsonMessageDeserializer} for {@link Boolean} fields in JSON messages.
+ * {@link AbstractJsonMessageDeserializer} for {@link Boolean} fields in JSON messages.
  * <p>
  * This class is a singleton, use {@link #getInstance()} to get the instance.
  * 

@@ -10,7 +10,8 @@ public class CollectionUtil {
 	private CollectionUtil() {}
 	
 	/**
-	 * @param collection
+	 * Check if a collection is null or empty.
+	 * @param collection Collection to check.
 	 * @return <code>true</code> if collection is null or empty.
 	 */
 	public static boolean isEmpty(Collection<?> collection) {

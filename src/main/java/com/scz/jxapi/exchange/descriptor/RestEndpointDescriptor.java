@@ -29,7 +29,7 @@ import com.scz.jxapi.util.EncodingUtil;
  * Can be <code>null</code> if no URL parameters are expected or if request should be serialized 
  * as query parameters (see <code>queryParams</code>).
  * </li>
- * <li><code>urlParametersListSeparator<code> - When request is of LIST type, the separator used between 
+ * <li><code>urlParametersListSeparator</code> - When request is of LIST type, the separator used between 
  * items of that list in serialzed request. Remark: If request is of type MAP which is not likely 
  * for an API expected request data as URL parameters or query params, the corresponding serialized 
  * object will be URL encoded value of JSON.</li>
@@ -37,9 +37,9 @@ import com.scz.jxapi.util.EncodingUtil;
  * <strong>About query parameters</strong>:<br>
  * <ul>
  * <li>The default value used in generated code depends on HTTP method, it will be true for methods
- * where corresponding requests expect a body: <code>GET</code>, </code>DELETE</code>, <code>HEAD</code>, 
+ * where corresponding requests expect a body: <code>GET</code>, <code>DELETE</code>, <code>HEAD</code>, 
  * <code>OPTIONS</code>, <code>TRACE</code>.</li>
- * <li>Query parameters are serialized in form of <code>?name1=value1&name2=value2</code> 
+ * <li>Query parameters are serialized in form of <code>?name1=value1&amp;name2=value2</code> 
  * and appended to URL endpoint.</li>
  * <li>Field values will be URL encoded</li>
  * <li>If field is of object type, the object fields will be serialized as query parameters. 
@@ -48,7 +48,6 @@ import com.scz.jxapi.util.EncodingUtil;
  * <li>If field is of list type, the list items will be serialized as query parameters, 
  * using <code>urlParametersListSeparator</code> as separator</li>
  * </ul>
- * </li>
  * <li><code>requestWeight</code> - the weight of a request call if subject to weighted rate limit rules</li>
  * <li><code>rateLimits</code> - the rate limits this REST API subject to</li>
  * </ul>

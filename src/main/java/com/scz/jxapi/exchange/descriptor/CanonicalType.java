@@ -73,7 +73,7 @@ public enum CanonicalType {
 	 * The {@link Class} holding values of this type (see {@link #isPrimitive}, or
 	 * <code>null</code> for {@link #OBJECT} type (in which case the associated class is custom). To guess the class associated to a
 	 * non-primitive type, see
-	 * {@link ExchangeJavaWrapperGeneratorUtil#getClassNameForType(Type, java.util.Set, String)}
+	 * {@link ExchangeJavaWrapperGeneratorUtil#getClassNameForType(Type, com.scz.jxapi.generator.java.Imports, String)}
 	 */
 	public final Class<?> typeClass;
 	

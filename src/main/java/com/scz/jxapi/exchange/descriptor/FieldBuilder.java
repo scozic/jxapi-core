@@ -70,7 +70,7 @@ public class FieldBuilder {
 	 * 
 	 * @param sampleMapKeyValues the sample Map key values of the field to set, see
 	 *                           {@link Field#getSampleMapKeyValue()}
-	 * @return
+	 * @return this builder
 	 */
 	public FieldBuilder sampleMapKeyValues(List<String> sampleMapKeyValues) {
 		field.setSampleMapKeyValue(sampleMapKeyValues);

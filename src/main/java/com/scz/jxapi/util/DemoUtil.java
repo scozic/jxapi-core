@@ -23,7 +23,7 @@ public class DemoUtil {
 
 	/**
 	 * Logs successful response at INFO level or throws an exception.
-	 * @param futureResponse
+	 * @param futureResponse response to check
 	 * @throws NullPointerException if <code>futureResponse</code> is <code>null</code>
 	 * @throws IllegalStateException response is not OK 
 	 */

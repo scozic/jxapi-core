@@ -9,9 +9,12 @@ import java.util.TreeMap;
 import com.scz.jxapi.util.EncodingUtil;
 
 /**
- * Specialized {@link JavaTypeGenerator} to create a 'Plain Old Java Object' (POJO) 
- * that is a class containing only a default public constructor, private field with getter and setter methods.
- * In addition, such generated objects will have {@link #toString()} method overridden to return result 
+ * Specialized {@link JavaTypeGenerator} to create a 'Plain Old Java Object'
+ * (POJO)
+ * that is a class containing only a default public constructor, private field
+ * with getter and setter methods.
+ * In addition, such generated objects will have {@link #toString()} method
+ * overridden to return result
  * of {@link EncodingUtil#pojoToString(Object)}
  */
 public class PojoGenerator extends JavaTypeGenerator {
@@ -28,8 +31,10 @@ public class PojoGenerator extends JavaTypeGenerator {
 	private final Map<String, PojoField> fields = new TreeMap<String, PojoField>();
 	
 	/**
-	 * Adds a field to the POJO. If field type is not a primitive or java.lang.* type, it will be added to imports.
-	 * @param field
+	 * Adds a field to the POJO. If field type is not a primitive or java.lang.*
+	 * type, it will be added to imports.
+	 * 
+	 * @param field Field to add
 	 */
 	public void addField(PojoField field) {
 		if (field.getType().contains(".")) {

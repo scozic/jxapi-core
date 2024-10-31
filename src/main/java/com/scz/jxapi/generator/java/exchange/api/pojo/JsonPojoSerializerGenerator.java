@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.ser.std.StdSerializer;
 import com.scz.jxapi.exchange.descriptor.Field;
@@ -17,7 +18,7 @@ import com.scz.jxapi.util.EncodingUtil;
  * Jackson.
  * The generated serializer class extends
  * {@link StdSerializer} and implements the
- * {@link JsonSerializer#serialize(Object, com.fasterxml.jackson.core.JsonGenerator, com.fasterxml.jackson.databind.SerializerProvider)} method.
+ * {@link StdSerializer#serialize(Object, JsonGenerator, SerializerProvider)} method.
  * 
  * @see JsonGenerator
  * @see StdSerializer

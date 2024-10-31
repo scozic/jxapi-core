@@ -37,7 +37,6 @@ import com.scz.jxapi.netutils.rest.ratelimits.RequestThrottler;
 import com.scz.jxapi.netutils.websocket.WebsocketEndpoint;
 import com.scz.jxapi.netutils.websocket.WebsocketListener;
 import com.scz.jxapi.netutils.websocket.WebsocketSubscribeRequest;
-import com.scz.jxapi.netutils.websocket.multiplexing.DefaultWebsocketMessageTopicMatcher;
 import com.scz.jxapi.util.CollectionUtil;
 import com.scz.jxapi.util.EncodingUtil;
 import com.scz.jxapi.util.JsonUtil;
@@ -49,7 +48,6 @@ import com.scz.jxapi.util.JsonUtil;
  * This class generates the actual implementation of the API interface, with
  * methods for every REST endpoint call and subscribe/unsubscribe methods for
  * every websocket stream.
- * <p>
  * <ul>
  * <li>The generated class extends {@link AbstractExchangeApi} and implements
  * the API interface.
@@ -92,7 +90,7 @@ import com.scz.jxapi.util.JsonUtil;
  * <li>Generate a DEBUG log statement with the HTTP method, endpoint name and
  * eventual request content.
  * <li>Generate a {@link HttpRequest} using
- * {@link HttpRequest#create(String, String, HttpMethod, Object, RateLimitRule, int)}
+ * {@link HttpRequest#create(String, String, HttpMethod, Object, List, int)}
  * method.
  * <li>Generate a submit request instruction using
  * {@link AbstractExchangeApi#submit(HttpRequest, MessageDeserializer)} method.
@@ -126,7 +124,7 @@ import com.scz.jxapi.util.JsonUtil;
  * endpoint specific topic template and eventual request data.
  * <li>Generate a DEBUG log statement with the endpoint name and eventual request
  * <li>Generate a {@link WebsocketSubscribeRequest} using
- * {@link WebsocketSubscribeRequest#create(Object, String, DefaultWebsocketMessageTopicMatcher)}
+ * {@link WebsocketSubscribeRequest#create(String, Object, String, com.scz.jxapi.netutils.websocket.multiplexing.WebsocketMessageTopicMatcherFactory)}
  * method.
  * <li>Set the request object in the {@link WebsocketSubscribeRequest} if the
  * endpoint has arguments.

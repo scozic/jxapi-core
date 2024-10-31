@@ -39,7 +39,7 @@ public interface Exchange extends HasProperties {
 	 * 
 	 * @param exchangeApiObserver observer that will monitor every endpoint of every
 	 *                            {@link ExchangeApi} exposed.
-	 * @see ExchageApi
+	 * @see ExchangeApi
 	 */
 	void subscribeObserver(ExchangeApiObserver exchangeApiObserver);
 
@@ -47,7 +47,7 @@ public interface Exchange extends HasProperties {
 	 * Unsubscribes an observer from every {@link ExchangeApi} exposed.
 	 * 
 	 * @param exchangeApiObserver observer to remove
-	 * @see ExchageApi
+	 * @see ExchangeApi
 	 * @return <code>true</code> if observer was actually removed from at least one
 	 *         endpoint, <code>false</code> otherwise.
 	 */

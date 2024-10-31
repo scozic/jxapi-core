@@ -15,8 +15,8 @@ import java.util.function.BiConsumer;
  * Take care of potential deadlock of listener are likely to wait for another
  * thread that could subscribe/unsubscribe
  * 
- * @param <L>
- * @param <E>
+ * @param <L> The observer (listener) type
+ * @param <E> The event type
  * 
  * @see Observable
  * @see #dispatch(Object)

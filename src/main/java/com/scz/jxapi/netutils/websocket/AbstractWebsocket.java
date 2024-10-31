@@ -11,7 +11,6 @@ import com.scz.jxapi.observability.Observable;
 /**
  * Abstract class for Websocket implementations. All websocket implementations
  * should extend this class, implementing the abstract methods.
- * <p>
  * <ul>
  * <li>Implementing {@link #doConnect()} method to establish actual websocket
  * which will be called from {@link #connect()} method only if websocket is

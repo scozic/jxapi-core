@@ -3,15 +3,16 @@ package com.scz.jxapi.netutils.websocket.mock;
 import com.scz.jxapi.netutils.websocket.WebsocketManager;
 
 /**
- * Event that is sent to a {@link MockWebsocketHook} to notify it of a certain event.
+ * Event that is sent by a {@link MockWebsocketHook} when one of its methods is
+ * called.
  */
 public class MockWebsocketHookEvent {
 
 	/**
-	 * Create a new {@link MockWebsocketHookEventType#INIT} event for the given {@link MockWebsocketHook} and {@link WebsocketManager}.
-	 * @param source
-	 * @param websocketManager
-	 * @return
+	 * @param source           the source of the event
+	 * @param websocketManager manager associated to this event.
+	 * @return A new {@link MockWebsocketHookEventType#INIT} event for the given
+	 *         {@link MockWebsocketHook} and {@link WebsocketManager}.
 	 */
 	public static MockWebsocketHookEvent createInitEvent(MockWebsocketHook source, WebsocketManager websocketManager) {
 		MockWebsocketHookEvent res = new MockWebsocketHookEvent(MockWebsocketHookEventType.INIT, source);
@@ -20,73 +21,73 @@ public class MockWebsocketHookEvent {
 	}
 
 	/**
-	 * Create a new {@link MockWebsocketHookEventType#BEFORE_CONNECT} event for the given {@link MockWebsocketHook} and {@link WebsocketManager}.
-	 * @param source
-	 * @param websocketManager
-	 * @return
+	 * @param source the source of the event
+	 * @return A new {@link MockWebsocketHookEventType#BEFORE_CONNECT} event for the
+	 *         given {@link MockWebsocketHook}.
 	 */
 	public static MockWebsocketHookEvent createBeforeConnectEvent(MockWebsocketHook source) {
 		return new MockWebsocketHookEvent(MockWebsocketHookEventType.BEFORE_CONNECT, source);
 	}
 
 	/**
-	 * Create a new {@link MockWebsocketHookEventType#AFTER_CONNECT} event for the given {@link MockWebsocketHook} and {@link WebsocketManager}.
-	 * @param source
-	 * @param websocketManager
-	 * @return
+	 * @param source the source of the event
+	 * @return A new {@link MockWebsocketHookEventType#AFTER_CONNECT} event for the
+	 *         given {@link MockWebsocketHook}.
 	 */
 	public static MockWebsocketHookEvent createAfterConnectEvent(MockWebsocketHook source) {
 		return new MockWebsocketHookEvent(MockWebsocketHookEventType.AFTER_CONNECT, source);
 	}
 
 	/**
-	 * Create a new {@link MockWebsocketHookEventType#BEFORE_DISCONNECT} event for the given {@link MockWebsocketHook} and {@link WebsocketManager}.
-	 * @param source
-	 * @param websocketManager
-	 * @return
+	 * @param source the source of the event
+	 * @return A new {@link MockWebsocketHookEventType#BEFORE_DISCONNECT} event for
+	 *         the given {@link MockWebsocketHook}.
 	 */
 	public static MockWebsocketHookEvent createBeforeDisconnectEvent(MockWebsocketHook source) {
 		return new MockWebsocketHookEvent(MockWebsocketHookEventType.BEFORE_DISCONNECT, source);
 	}
 
 	/**
-	 * Create a new {@link MockWebsocketHookEventType#AFTER_DISCONNECT} event for the given {@link MockWebsocketHook} and {@link WebsocketManager}.
-	 * @param source
-	 * @param websocketManager
-	 * @return
+	 * @param source           the source of the event
+	 * @return A new {@link MockWebsocketHookEventType#AFTER_DISCONNECT} event for
+	 *         the given {@link MockWebsocketHook}.
 	 */
 	public static MockWebsocketHookEvent createAfterDisconnectEvent(MockWebsocketHook source) {
 		return new MockWebsocketHookEvent(MockWebsocketHookEventType.AFTER_DISCONNECT, source);
 	}
 
 	/**
-	 * Create a new {@link MockWebsocketHookEventType#GET_SUBSCRIBE_REQUEST_MESSAGE} event for the given {@link MockWebsocketHook} and topic.
-	 * @param source
-	 * @param topic
-	 * @return
+	 * @param source the source of the event
+	 * @param topic  the websocket subscription topic
+	 * @return A new {@link MockWebsocketHookEventType#GET_SUBSCRIBE_REQUEST_MESSAGE}
+	 *         event for the given {@link MockWebsocketHook} and topic.
 	 */
 	public static MockWebsocketHookEvent createGetSubscribeRequestMessageEvent(MockWebsocketHook source, String topic) {
-		MockWebsocketHookEvent e = new MockWebsocketHookEvent(MockWebsocketHookEventType.GET_SUBSCRIBE_REQUEST_MESSAGE, source);
+		MockWebsocketHookEvent e = new MockWebsocketHookEvent(MockWebsocketHookEventType.GET_SUBSCRIBE_REQUEST_MESSAGE,
+				source);
 		e.setTopic(topic);
 		return e;
 	}
 
 	/**
-	 * Create a new {@link MockWebsocketHookEventType#GET_UNSUBSCRIBE_REQUEST_MESSAGE} event for the given {@link MockWebsocketHook} and topic.
-	 * @param source
-	 * @param topic
-	 * @return
+	 * @param source the source of the event
+	 * @param topic  the websocket subscription topic
+	 * @return A new
+	 *         {@link MockWebsocketHookEventType#GET_UNSUBSCRIBE_REQUEST_MESSAGE}
+	 *         event for the given {@link MockWebsocketHook} and topic.
 	 */
-	public static MockWebsocketHookEvent createGetUnSubscribeRequestMessageEvent(MockWebsocketHook source, String topic) {
-		MockWebsocketHookEvent e = new MockWebsocketHookEvent(MockWebsocketHookEventType.GET_UNSUBSCRIBE_REQUEST_MESSAGE, source);
+	public static MockWebsocketHookEvent createGetUnSubscribeRequestMessageEvent(MockWebsocketHook source,
+			String topic) {
+		MockWebsocketHookEvent e = new MockWebsocketHookEvent(
+				MockWebsocketHookEventType.GET_UNSUBSCRIBE_REQUEST_MESSAGE, source);
 		e.setTopic(topic);
 		return e;
 	}
 
 	/**
-	 * Create a new {@link MockWebsocketHookEventType#GET_HEARTBEAT_MESSAGE} event for the given {@link MockWebsocketHook}.
-	 * @param source
-	 * @return
+	 * @param source the source of the event
+	 * @return A new {@link MockWebsocketHookEventType#GET_HEARTBEAT_MESSAGE} event
+	 *         for the given {@link MockWebsocketHook}.
 	 */
 	public static MockWebsocketHookEvent createGetHeartbeatEvent(MockWebsocketHook source) {
 		MockWebsocketHookEvent e = new MockWebsocketHookEvent(MockWebsocketHookEventType.GET_HEARTBEAT_MESSAGE, source);
@@ -94,25 +95,28 @@ public class MockWebsocketHookEvent {
 	}
 
 	private final MockWebsocketHookEventType type;
-	
+
 	private final MockWebsocketHook source;
-	
+
 	private WebsocketManager websocketManager;
-	
+
 	private String topic;
-	
+
 	/**
-	 * Create a new {@link MockWebsocketHookEvent} for the given {@link MockWebsocketHook} and {@link MockWebsocketHookEventType}.
-	 * @param type
-	 * @param source
+	 * Create a new {@link MockWebsocketHookEvent} for the given
+	 * {@link MockWebsocketHook} and {@link MockWebsocketHookEventType}.
+	 * 
+	 * @param type   The evnt type
+	 * @param source the source of the event
 	 */
 	public MockWebsocketHookEvent(MockWebsocketHookEventType type, MockWebsocketHook source) {
 		this.type = type;
 		this.source = source;
 	}
-	
+
 	/**
 	 * Retrieve the type of this event.
+	 * 
 	 * @return The type of this event.
 	 * @see MockWebsocketHookEventType
 	 */
@@ -122,6 +126,7 @@ public class MockWebsocketHookEvent {
 
 	/**
 	 * Retrieve the source of this event.
+	 * 
 	 * @return The source of this event.
 	 * @see MockWebsocketHook
 	 */
@@ -131,7 +136,8 @@ public class MockWebsocketHookEvent {
 
 	/**
 	 * Retrieve the {@link WebsocketManager} associated with this event.
-	 * This field is set when type is {@link MockWebsocketHookEventType#INIT}, {@link MockWebsocketHookEventType#BEFORE_CONNECT}, {@link MockWebsocketHookEventType#AFTER_CONNECT}, {@link MockWebsocketHookEventType#BEFORE_DISCONNECT} or {@link MockWebsocketHookEventType#AFTER_DISCONNECT}.
+	 * This field is set when type is {@link MockWebsocketHookEventType#INIT}.
+	 * 
 	 * @return The {@link WebsocketManager} associated with this event.
 	 */
 	public WebsocketManager getWebsocketManager() {
@@ -140,6 +146,7 @@ public class MockWebsocketHookEvent {
 
 	/**
 	 * Set the {@link WebsocketManager} associated with this event.
+	 * 
 	 * @param websocketManager The {@link WebsocketManager} to set.
 	 */
 	public void setWebsocketManager(WebsocketManager websocketManager) {
@@ -148,7 +155,10 @@ public class MockWebsocketHookEvent {
 
 	/**
 	 * Retrieve the topic associated with this event.
-	 * This field is set when type is {@link MockWebsocketHookEventType#GET_SUBSCRIBE_REQUEST_MESSAGE} or {@link MockWebsocketHookEventType#GET_UNSUBSCRIBE_REQUEST_MESSAGE}.
+	 * This field is set when type is
+	 * {@link MockWebsocketHookEventType#GET_SUBSCRIBE_REQUEST_MESSAGE} or
+	 * {@link MockWebsocketHookEventType#GET_UNSUBSCRIBE_REQUEST_MESSAGE}.
+	 * 
 	 * @return The topic associated with this event.
 	 */
 	public String getTopic() {
@@ -157,12 +167,13 @@ public class MockWebsocketHookEvent {
 
 	/**
 	 * Set the topic associated with this event.
+	 * 
 	 * @param topic The topic to set.
 	 */
 	public void setTopic(String topic) {
 		this.topic = topic;
 	}
-	
+
 	@Override
 	public String toString() {
 		return getClass().getSimpleName() + "[" + type + "]";

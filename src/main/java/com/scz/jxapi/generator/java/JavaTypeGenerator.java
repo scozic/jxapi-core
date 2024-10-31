@@ -82,7 +82,8 @@ public class JavaTypeGenerator {
 	 * Appends some content (fields, methods) to the generated type body. That
 	 * content will be indented once during generation.
 	 * 
-	 * @param bodyContent
+	 * @param bodyContent content to append to generated class body
+	 * @return the class body builder
 	 */
 	public StringBuilder appendToBody(String bodyContent) {
 		return body.append(bodyContent);
@@ -226,7 +227,7 @@ public class JavaTypeGenerator {
 	 * Performs generation and writes corresponding .java file.
 	 * Folders will be generated according to package hierarchy.
 	 * @param sourceFolder base directory (default package) for sources
-	 * @throws IOException 
+	 * @throws IOException If an error occurs writing the file
 	 */
 	public void writeJavaFile(Path sourceFolder) throws IOException {
 		String pkg = getPackage();

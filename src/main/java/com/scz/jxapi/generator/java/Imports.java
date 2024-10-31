@@ -11,14 +11,12 @@ import java.util.stream.Collectors;
  * Manages imports in Java code generation.
  * <p>
  * It keeps track of the imports that are needed in a Java class and generates the import statements for the class.
- * </p>
  * <p>
  * The imports are sorted in the following order:
  * <ol>
  * <li>java.* imports sorted lexicographically </li>
  * <li>Other imports sorted lexicographically </li>
  * </ol>
- * </p>
  * 
  */
 public class Imports implements Iterable<String> {
@@ -55,7 +53,7 @@ public class Imports implements Iterable<String> {
 	 * <li>If the class is a 'java' class, the import is added before other package classes.
 	 * <li>If the class is a generic class, it is added without the generic part, which is not imported (the generic type must be explicitely imported).
 	 * </ul>
-	 * @param cls the class to import
+	 * @param imp the full name of class to import
 	 */
 	public void add(String imp) {
 		if (imp == null) {
@@ -72,7 +70,7 @@ public class Imports implements Iterable<String> {
 	
 	/**
 	 * Adds all the imports from the given set.
-	 * @param imports the imports to add
+	 * @param other the imports to add
 	 */
 	public void addAll(Imports other) {
 		imports.addAll(other.imports);
@@ -115,17 +113,18 @@ public class Imports implements Iterable<String> {
 	 * <p>
 	 * The import statements are sorted in the following order:
 	 * <ol>
-	 * <li>java.* imports sorted lexicographically </li>
-	 * <li>Other imports sorted lexicographically </li>
+	 * <li>java.* imports sorted lexicographically</li>
+	 * <li>Other imports sorted lexicographically</li>
 	 * </ol>
-	 * </p>
 	 * <p>
-	 * If the package of the class for which the imports are generated is the same as the package of the imported class, the import is not generated.
-	 * </p>
+	 * If the package of the class for which the imports are generated is the same
+	 * as the package of the imported class, the import is not generated.
 	 * <p>
 	 * An empty line is added between java.* imports and other imports.
 	 * </p>
-	 * @param currentPackage the package of the class for which the imports are generated
+	 * 
+	 * @param currentPackage the package of the class for which the imports are
+	 *                       generated
 	 * @return the import statements
 	 */
 	public String generate(String currentPackage) {

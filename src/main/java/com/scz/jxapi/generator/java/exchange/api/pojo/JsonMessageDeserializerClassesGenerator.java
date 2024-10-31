@@ -17,7 +17,7 @@ import com.scz.jxapi.netutils.deserialization.json.AbstractJsonMessageDeserializ
  * <ul>
  * <li>A class extending {@link AbstractJsonMessageDeserializer} for serialization of POJO.
  * <li>For each of 'Object' type {@link Field} belonging to that pojo, the deserializer classes for corresponding nested POJO.
- * <ul>
+ * </ul>
  */
 public class JsonMessageDeserializerClassesGenerator implements ClassesGenerator {
 	

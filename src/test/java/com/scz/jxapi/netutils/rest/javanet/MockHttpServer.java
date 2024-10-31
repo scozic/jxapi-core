@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.TreeMap;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
@@ -28,7 +29,7 @@ import com.scz.jxapi.netutils.rest.HttpResponse;
  * Thin HTTP server based on GlassFish {@link HttpServer}. Will listen on a local port and wait for incoming requests.
  * Received requests are wrapped as {@link MockHttpRequest} objects and stored in a queue for client to retrieve and answer.
  * Client implementations are expected to serve incoming requests wrapped as {@link MockHttpRequest} objects retrieved using {@link #popRequest(long)}.
- * Every retrieved request must be answered with a {@link HttpResponse} object using {@link MockHttpRequest#complete(HttpResponse)} method.
+ * Every retrieved request must be answered with a {@link HttpResponse} object using {@link CompletableFuture#complete(Object)} method.
  */
 public class MockHttpServer {
 	

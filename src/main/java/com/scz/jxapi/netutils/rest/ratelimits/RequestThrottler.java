@@ -20,7 +20,7 @@ import com.scz.jxapi.util.ThreadUtil;
 /**
  * Enforces a list of applicable {@link RateLimitRule} to incoming requests.
  * Submitted requests may be throttled before being actually sent, see
- * {@link #submit(RestRequest, RestEndpoint)}. In case a request is throttled,
+ * {@link #submit(HttpRequest, Function)}. In case a request is throttled,
  * as {@link ScheduledExecutorService} for scheduling retry of submission of
  * request is instantated. It wiil be shutdown only upon call to
  * {@link #dispose()} which is duty of client to call when disposing resources.
@@ -61,7 +61,7 @@ public class RequestThrottler {
 	}
 	
 	/**
-	 * Submits a {@link RestRequest} for asynchronous execution, enforcing rate
+	 * Submits a {@link HttpRequest} for asynchronous execution, enforcing rate
 	 * limits applicable for given request which could mean scheduling execution at
 	 * later date if a rate limit is reached. A {@link RateLimitManager} for each
 	 * {@link RateLimitRule} of the request will be created when a rate limit
@@ -79,10 +79,9 @@ public class RequestThrottler {
 	 * waiting, will not be executed before a 'heavier' request that has been
 	 * submitted before but has to wait.
 	 * 
-	 * @param <R>          Type of REST request payload
 	 * @param <A>          Type of response payload
 	 * @param request      the request submitted for execution
-	 * @param restEndpoint the endpoint to execute this request
+	 * @param executor     the function to execute this request. Should wrap actual call to REST API.
 	 * @return Callback that will complete once response is received.
 	 * 
 	 * @throws IllegalStateException if in 'disposed' state when called(see {@link #isDisposed()})

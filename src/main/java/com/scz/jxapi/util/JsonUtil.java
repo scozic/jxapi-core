@@ -60,7 +60,7 @@ public class JsonUtil {
 	}
 
 	/**
-	 * @param pojo
+	 * @param pojo The pojo to serialize as a JSON string.
 	 * @return <code>null</code> if <code>pojo</code> is <code>null</code> or a JSON
 	 *         string representation of this pojo using
 	 *         {@link ObjectMapper#writeValueAsString(Object)}
@@ -82,7 +82,7 @@ public class JsonUtil {
 	}
 
 	/**
-	 * @param pojo
+	 * @param pojo The pojo to serialize as a pretty-printed JSON string.
 	 * @return <code>null</code> if <code>pojo</code> is <code>null</code> or a
 	 *         pretty-printed JSON string representation of this pojo using
 	 *         {@link ObjectMapper#writeValueAsString(Object)}. The pretty-printed
@@ -305,6 +305,7 @@ public class JsonUtil {
 	 * 
 	 * @param parser           The parser to read from
 	 * @param itemDeserializer The deserializer to use to read each item of the list
+	 * @param <T>              The type of items in the list
 	 * @return <code>null</code> if the next token is {@link JsonToken#VALUE_NULL},
 	 *         the List of items otherwise.
 	 * @throws IOException           Eventually thrown by the parser
@@ -336,6 +337,7 @@ public class JsonUtil {
 	 * 
 	 * @param parser           The parser to read from
 	 * @param itemDeserializer The deserializer to use to read each item of the map
+	 * @param <T>              The type of the values in the map
 	 * @return <code>null</code> if the next token is {@link JsonToken#VALUE_NULL},
 	 *         the Map of items otherwise.
 	 * @throws IOException           Eventually thrown by the parser
@@ -371,7 +373,8 @@ public class JsonUtil {
 	 * Parser will be moved to token next to value found after calling
 	 * {@link JsonParser#nextToken()} on provided instance.
 	 * 
-	 * @throws IOException
+	 * @param jsonParser The parser to read from
+	 * @throws IOException Eventually thrown by the parser
 	 * 
 	 */
 	public static void skipNextValue(JsonParser jsonParser) throws IOException {

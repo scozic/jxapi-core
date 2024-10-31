@@ -22,18 +22,14 @@ public class WebsocketMessageTopicMatcherDescriptor {
 	private List<WebsocketMessageTopicMatcherFieldDescriptor> fields;
 
 	/**
-	 * Get the list of fields that must match the topic of the endpoint.
-	 * 
-	 * @return
+	 * @return the list of fields that must match the topic of the endpoint.
 	 */
 	public List<WebsocketMessageTopicMatcherFieldDescriptor> getFields() {
 		return fields;
 	}
 
 	/**
-	 * Set the list of fields that must match the topic of the endpoint.
-	 * 
-	 * @param fields
+	 * @param fields the list of fields that must match the topic of the endpoint.
 	 */
 	public void setFields(List<WebsocketMessageTopicMatcherFieldDescriptor> fields) {
 		this.fields = fields;

@@ -37,9 +37,9 @@ public class WebsocketEndpointDescriptor {
 	}
 
 	/**
-	 * Set the name of the websocket api endpoint.
+	 * Set the name of this websocket api endpoint.
 	 * 
-	 * @param name
+	 * @param name Websocket api endpoint name.
 	 */
 	public void setName(String name) {
 		this.name = name;
@@ -64,7 +64,7 @@ public class WebsocketEndpointDescriptor {
 	 * <code>ticker.${request}</code> topic means actual topic is
 	 * <code>ticker.[value_of_subscription_request_as_string]</code>
 	 * 
-	 * @param topic
+	 * @param topic the subscription topic of this websocket endpoint.
 	 */
 	public void setTopic(String topic) {
 		this.topic = topic;
@@ -92,9 +92,7 @@ public class WebsocketEndpointDescriptor {
 	}
 
 	/**
-	 * Set the description (documentation) of the websocket endpoint.
-	 * 
-	 * @param description
+	 * @param description the description (documentation) of the websocket endpoint
 	 */
 	public void setDescription(String description) {
 		this.description = description;
@@ -105,7 +103,7 @@ public class WebsocketEndpointDescriptor {
 	 * 'list' type, the separator used to concatenate parameters when serializing to
 	 * string.
 	 * 
-	 * @return
+	 * @return the separator used to concatenate
 	 */
 	public String getTopicParametersListSeparator() {
 		return topicParametersListSeparator;
@@ -116,7 +114,7 @@ public class WebsocketEndpointDescriptor {
 	 * 'list' type, the separator used to concatenate parameters when serializing to
 	 * string.
 	 * 
-	 * @param topicParametersListSeparator
+	 * @param topicParametersListSeparator the separator used to concatenate
 	 */
 	public void setTopicParametersListSeparator(String topicParametersListSeparator) {
 		this.topicParametersListSeparator = topicParametersListSeparator;
@@ -138,7 +136,7 @@ public class WebsocketEndpointDescriptor {
 	 * received on the websocket. To match a topic, the message must match all
 	 * matchers.
 	 * 
-	 * @param messageTopicMatcherFields
+	 * @param messageTopicMatcherFields the list of field matchers that can be used to match the topic of a message
 	 */
 	public void setMessageTopicMatcherFields(
 			List<WebsocketMessageTopicMatcherFieldDescriptor> messageTopicMatcherFields) {
@@ -153,9 +151,7 @@ public class WebsocketEndpointDescriptor {
 	}
 
 	/**
-	 * Set the data structure of the websocket endpoint subscription request.
-	 * 
-	 * @param request
+	 * @param request the data structure of the websocket endpoint subscription request.
 	 */
 	public void setRequest(Field request) {
 		this.request = request;
@@ -169,9 +165,7 @@ public class WebsocketEndpointDescriptor {
 	}
 
 	/**
-	 * Set the data structure of the websocket endpoint message.
-	 * 
-	 * @param message
+	 * @param message the data structure of the websocket endpoint message.
 	 */
 	public void setMessage(Field message) {
 		this.message = message;

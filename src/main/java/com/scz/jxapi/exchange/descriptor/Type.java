@@ -13,7 +13,7 @@ import java.util.Optional;
  * {@link CanonicalType#OBJECT}), a list of data of same subtype (see
  * {@link CanonicalType#LIST}) , or a
  * map indexed with {@link String} keys and values of same subtype (see
- * {@link CanonicalType#MAP}) .<br>
+ * {@link CanonicalType#MAP}) .<p>
  * When a field canonical type is primitive or
  * {@link CanonicalType#OBJECT}, it subtype is
  * <code>null</code> as not relevant.<br>
@@ -21,28 +21,49 @@ import java.util.Optional;
  * same subtype which can be any type.<br>
  * Such data ypes are extensible: for instance
  * <code>BIGDECIMAL_LIST_MAP</code> means value of a field is a map of list of
- * {@link BigDecimal} values. <br>
+ * {@link BigDecimal} values. <p>
  * When leaf subtype is {@link CanonicalType#OBJECT} (see
  * {@link #isObject()}), the field definition must specify the list of
- * {@link Field} that defines the object.
+ * {@link Field} that defines the object
+ * 
  */
 public class Type {
 	
 	private static final Map<String, Type> CANONICAL_TYPES = new HashMap<>(6);
 
 	/**
-	 * Type with {@link CanaonicalType#OBJECT} as canonical type.
+	 * Type with {@link CanonicalType#OBJECT} as canonical type.
 	 */
 	public static final Type OBJECT = createCanonicalType(CanonicalType.OBJECT);
 
 	/**
-	 * Type with {@link CanaonicalType#STRING} as canonical type.
+	 * Type with {@link CanonicalType#STRING} as canonical type.
 	 */
 	public static final Type STRING = createCanonicalType(CanonicalType.STRING);
+	
+	/**
+	 * Type with {@link CanonicalType#INT} as canonical type.
+	 */
 	public static final Type INT = createCanonicalType(CanonicalType.INT);
+	
+	/**
+	 * Type with {@link CanonicalType#LONG} as canonical type.
+	 */
 	public static final Type LONG = createCanonicalType(CanonicalType.LONG);
+	
+	/**
+	 * Type with {@link CanonicalType#TIMESTAMP} as canonical type.
+	 */
 	public static final Type TIMESTAMP = createCanonicalType(CanonicalType.TIMESTAMP);
+	
+	/**
+	 * Type with {@link CanonicalType#BIGDECIMAL} as canonical type.
+	 */
 	public static final Type BIGDECIMAL = createCanonicalType(CanonicalType.BIGDECIMAL);
+	
+	/**
+	 * Type with {@link CanonicalType#BOOLEAN} as canonical type.
+	 */
 	public static final Type BOOLEAN = createCanonicalType(CanonicalType.BOOLEAN);
 	
 	/**
@@ -60,7 +81,7 @@ public class Type {
 	/**
 	 * Get the leaf subtype of a type
 	 * 
-	 * @param type
+	 * @param type The type to get leaf subtype of
 	 * @return if type is null, return null, otherwise if type has no subtype,
 	 *         return type canonical type, otherwise return the leaf subtype of
 	 *         subtype
@@ -84,7 +105,7 @@ public class Type {
 	 * <li> a list of values of same subtype: SUBTYPE_LIST where SUBTYPE is a type name
 	 * <li> a map of values of same subtype: SUBTYPE_MAP where SUBTYPE is a type name
 	 * </ul>
-	 * @param typeName
+	 * @param typeName type name
 	 * @return the type for given type name
 	 * @throws IllegalArgumentException if type name is invalid
 	 */
@@ -140,7 +161,8 @@ public class Type {
 
 	/**
 	 * Set the canonical type of the type
-	 * @param type
+	 * @param type the canonical type
+	 * @see CanonicalType
 	 */
 	public void setCanonicalType(CanonicalType type) {
 		this.canonicalType = type;
@@ -162,15 +184,14 @@ public class Type {
 	 * <li> INT_LIST_MAP: subtype is INT_LIST
 	 * </ul>
 	 * 
-	 * @return the subtype
+	 * @return the subtype of this type.
 	 */
 	public Type getSubType() {
 		return subType;
 	}
 
 	/**
-	 * Set the subtype of the type
-	 * @param subType
+	 * @param subType the subtype of this type, see {@link #getSubType()}
 	 */
 	public void setSubType(Type subType) {
 		this.subType = subType;

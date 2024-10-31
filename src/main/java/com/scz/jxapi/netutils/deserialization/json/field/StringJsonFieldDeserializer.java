@@ -8,7 +8,7 @@ import com.scz.jxapi.netutils.deserialization.MessageDeserializer;
 import com.scz.jxapi.netutils.deserialization.json.JsonDeserializer;
 
 /**
- * {@link JsonMessageDeserializer} for {@link String} fields in JSON messages.
+ * {@link AbstractJsonMessageDeserializer} for {@link String} fields in JSON messages.
  * <p>
  * This class is a singleton, use {@link #getInstance()} to get the instance.
  * 

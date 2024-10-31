@@ -74,3 +74,6 @@ bin/
 
 #Temporary files (created during tests)
 tmp*
+
+# Local generated javadoc
+docs/javadoc

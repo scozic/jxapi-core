@@ -8,7 +8,7 @@ import com.scz.jxapi.netutils.rest.HttpResponse;
 /**
  * Mock implementation of {@link HttpRequest} that is used to wrap incoming requests in {@link MockHttpServer}.
  * Every request is wrapped in this object and stored in a queue for client to retrieve and answer.
- * Every request must be answered with a {@link HttpResponse} object using {@link MockHttpRequest#complete(HttpResponse)} method.
+ * Every request must be answered with a {@link HttpResponse} object using {@link CompletableFuture#complete(Object)} method.
  */
 public class MockHttpRequest extends CompletableFuture<HttpResponse> {
 

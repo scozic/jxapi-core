@@ -11,6 +11,7 @@ public class FactoryUtil {
 	 * class.
 	 * 
 	 * @param cls Full name of class to instantiate. Should have a public constructor with no argument.
+	 * @param <T> Type of class to instantiate
 	 * @return New instance of that class
 	 * @throws IllegalArgumentException If provided class cannot be instantiated by
 	 *                                  reflection or does not provide a default

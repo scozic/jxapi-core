@@ -4,15 +4,16 @@ import com.scz.jxapi.netutils.websocket.RawWebsocketMessageHandler;
 import com.scz.jxapi.netutils.websocket.WebsocketErrorHandler;
 
 /**
- * The MockWebsocketEvent class represents an event that can occur in a mock websocket.
- * It provides static factory methods to create different types of events and access their properties.
+ * The MockWebsocketEvent class represents an event that can occur in a mock
+ * websocket.<br>
+ * It provides static factory methods to create different types of events and
+ * access their properties.
  */
 public class MockWebsocketEvent {
 	
 	/**
-	 * Creates a CONNECT event for the given mock websocket source.
+	 * Creates a {@link MockWebsocketEventType#CONNECT} event.
 	 * 
-	 * @param source The mock websocket source.
 	 * @return The created MockWebsocketEvent object.
 	 */
 	public static MockWebsocketEvent createConnectEvent() {
@@ -20,9 +21,7 @@ public class MockWebsocketEvent {
 	}
 	
 	/**
-	 * Creates a DISCONNECT event for the given mock websocket source.
-	 * 
-	 * @param source The mock websocket source.
+	 * Creates a {@link MockWebsocketEventType#DISCONNECT} event.
 	 * @return The created MockWebsocketEvent object.
 	 */
 	public static MockWebsocketEvent createDisconnectEvent() {
@@ -30,7 +29,8 @@ public class MockWebsocketEvent {
 	}
 	
 	/**
-	 * Creates a SEND event for the given mock websocket source with the specified message.
+	 * Creates a {@link MockWebsocketEventType#SEND} event for the with the
+	 * specified message.
 	 * 
 	 * @param message The message to be sent.
 	 * @return The created MockWebsocketEvent object.
@@ -42,7 +42,8 @@ public class MockWebsocketEvent {
 	}
 	
 	/**
-	 * Creates an ADD_MESSAGE_HANDLER event with the specified message handler.
+	 * Creates an {@link MockWebsocketEventType#ADD_MESSAGE_HANDLER} event with the
+	 * specified message handler.
 	 * 
 	 * @param messageHandler The message handler to be added.
 	 * @return The created MockWebsocketEvent object.
@@ -54,7 +55,8 @@ public class MockWebsocketEvent {
 	}
 	
 	/**
-	 * Creates a REMOVE_MESSAGE_HANDLER event with the specified message handler.
+	 * Creates a {@link MockWebsocketEventType#REMOVE_MESSAGE_HANDLER} event with
+	 * the specified message handler.
 	 * 
 	 * @param messageHandler The message handler to be removed.
 	 * @return The created MockWebsocketEvent object.
@@ -66,7 +68,8 @@ public class MockWebsocketEvent {
 	}
 	
 	/**
-	 * Creates an ADD_ERROR_HANDLER event with the specified error handler.
+	 * Creates an {@link MockWebsocketEventType#ADD_ERROR_HANDLER} event with the
+	 * specified error handler.
 	 * 
 	 * @param errorHandler The error handler to be added.
 	 * @return The created MockWebsocketEvent object.
@@ -78,9 +81,9 @@ public class MockWebsocketEvent {
 	}
 	
 	/**
-	 * Creates a REMOVE_ERROR_HANDLER event for the given mock websocket source with the specified error handler.
+	 * Creates a {@link MockWebsocketEventType#REMOVE_ERROR_HANDLER} event with the
+	 * specified error handler.
 	 * 
-	 * @param source The mock websocket source.
 	 * @param errorHandler The error handler to be removed.
 	 * @return The created MockWebsocketEvent object.
 	 */
@@ -96,10 +99,9 @@ public class MockWebsocketEvent {
 	private String message;
 
 	/**
-	 * Constructs a MockWebsocketEvent object with the specified type and source.
+	 * Constructs a MockWebsocketEvent object with the specified type.
 	 * 
 	 * @param type The type of the event.
-	 * @param source The source of the event.
 	 */
 	public MockWebsocketEvent(MockWebsocketEventType type) {
 		this.type = type;

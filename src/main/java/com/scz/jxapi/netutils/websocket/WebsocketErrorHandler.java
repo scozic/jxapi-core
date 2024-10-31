@@ -3,7 +3,7 @@ package com.scz.jxapi.netutils.websocket;
 /**
  * Interface for handling websocket errors. {@link Websocket} client
  * implementations should implement this interface and subscribe using
- * {@link Websocket#setErrorHandler(WebsocketErrorHandler)} to receive error
+ * {@link Websocket#addErrorHandler(WebsocketErrorHandler)} to receive error
  * notifications.
  * <p>
  * The error handling method should be non-blocking and should not throw
