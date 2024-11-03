@@ -26,6 +26,8 @@ public interface HttpRequestExecutor {
 	 * The timeout is the delay in milliseconds after which connection should be aborted if response to a request has not been received.
 	 * </p>
 	 * The default value is {@value #DEFAULT_REQUEST_TIMEOUT}.
+	 * <p>
+	 * A negative or 0 value means no timeout (wait forever for response).
 	 * @param requestTimeout the timeout in milliseconds
 	 */
 	void setRequestTimeout(long requestTimeout);

@@ -2,6 +2,7 @@ package com.scz.jxapi.exchange.descriptor;
 
 import java.util.List;
 
+import com.scz.jxapi.netutils.rest.HttpRequestExecutor;
 import com.scz.jxapi.netutils.rest.HttpRequestExecutorFactory;
 import com.scz.jxapi.netutils.rest.HttpRequestInterceptorFactory;
 import com.scz.jxapi.netutils.rest.javanet.JavaNetHttpRequestExecutor;
@@ -149,6 +150,8 @@ public class ExchangeApiDescriptor {
 	
 	private String httpRequestExecutorFactory;
 	
+	private long httpRequestTimeout = -1L;
+	
 	private String websocketFactory;
 	
 	private String websocketHookFactory;
@@ -272,7 +275,7 @@ public class ExchangeApiDescriptor {
 
 	/**
 	 * Retrieves the factory class that creates HttpRequestExecutor instances for
-	 * this API.
+	 * this API. 
 	 * 
 	 * @return The factory class that creates HttpRequestExecutor instances for this
 	 *         API, may be <code>null</code>, in which case default
@@ -340,6 +343,25 @@ public class ExchangeApiDescriptor {
 	 */
 	public void setWebsocketFactory(String websocketFactory) {
 		this.websocketFactory = websocketFactory;
+	}
+	
+	/**
+	 * @return Timeout for the requests submitted to the
+	 *         {@link HttpRequestExecutor}. A negative value means 'undefined', 0
+	 *         means no timeout (wait forever).
+	 * @see HttpRequestExecutor#getRequestTimeout()         
+	 */
+	public long getHttpRequestTimeout() {
+		return httpRequestTimeout;
+	}
+
+	/**
+	 * @param httpRequestTimeout Timeout for the requests submitted to the
+	 *                           {@link HttpRequestExecutor}
+	 * @see ExchangeApiDescriptor#getHttpRequestTimeout()
+	 */
+	public void setHttpRequestTimeout(long httpRequestTimeout) {
+		this.httpRequestTimeout = httpRequestTimeout;
 	}
 
 	/**

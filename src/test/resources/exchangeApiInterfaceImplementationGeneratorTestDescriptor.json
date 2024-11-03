@@ -6,7 +6,6 @@
 		{ 
 			"name": "MarketData",
 			"description": "An API with no rate limits",
-			"httpRequestInterceptorFactory": "com.foo.bar.MarketDataInterceptorFactory",
 			"restEndpoints": [
 				{
 					"name": "exchangeInfo",
@@ -64,7 +63,9 @@
 				{"id": "globalWeightRule", "timeFrame": 2000,  "maxTotalWeight": 500},
 				{"timeFrame": 10000,  "maxRequestCount": 250}
 			],
-			"httpRequestInterceptorFactory": "com.foo.bar.TradingInterceptorFactory",
+			"httpRequestInterceptorFactory": "com.foo.net.TradingInterceptorFactory",
+			"httpRequestExecutorFactory": "com.foo.net.TradingExecutorFactory",
+			"httpRequestTimeout": 2500,
 			"restEndpoints": [
 				{
 					"name": "exchangeInfo",
@@ -148,7 +149,8 @@
 				{"id": "globalWeightRule", "timeFrame": 2000,  "maxTotalWeight": 500},
 				{"timeFrame": 10000,  "maxRequestCount": 250}
 			],
-			"httpRequestInterceptorFactory": "com.foo.bar.FuturesTradingInterceptorFactory",
+			"httpRequestInterceptorFactory": "com.foo.net.FuturesTradingInterceptorFactory",
+			"httpRequestTimeout": 3500,
 			"restEndpoints": [
 				{
 					"name": "exchangeInfo",

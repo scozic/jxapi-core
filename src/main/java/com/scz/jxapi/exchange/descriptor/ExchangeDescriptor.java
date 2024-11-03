@@ -3,6 +3,9 @@ package com.scz.jxapi.exchange.descriptor;
 import java.util.List;
 
 import com.scz.jxapi.exchange.Exchange;
+import com.scz.jxapi.exchange.ExchangeApi;
+import com.scz.jxapi.netutils.rest.HttpRequestExecutorFactory;
+import com.scz.jxapi.netutils.rest.HttpRequestInterceptorFactory;
 import com.scz.jxapi.netutils.rest.ratelimits.RateLimitRule;
 import com.scz.jxapi.util.EncodingUtil;
 
@@ -75,8 +78,16 @@ import com.scz.jxapi.util.EncodingUtil;
  * <li>constants: list of constants that are used in context of the exchange
  * wrapper, for instance specific values for some APIs
  * request/response/message properties. See {@link Constant}</li>
- * <li>properties: list of properties that can be configured for the exchange
- * wrapper, for instance API keys, secret keys, etc. See {@link ConfigProperty}</li>
+ * <li>properties: list of configuration properties that can be configured for
+ * the exchange
+ * wrapper, for instance API keys, secret keys, etc. See
+ * {@link ConfigProperty}</li>
+ * <li><code>httpRequestInterceptorFactory</code>,
+ * <code>httpRequestExecutorFactory</code>, <code>httpRequestTimeout</code>,
+ * <code>websocketFactory</code>, <code>websocketHookFactory</code> properties
+ * can be set with default values for corresponding properties in
+ * {@link ExchangeApiDescriptor}: value defined in {@link ExchangeDescriptor} is
+ * used when undefined in {@link ExchangeApiDescriptor}.
  * </ul>
  * 
  * This class is used to map the JSON descriptor of an exchange. It is used to
@@ -99,6 +110,16 @@ public class ExchangeDescriptor {
 	private List<Constant> constants;
 	
 	private List<ConfigProperty> properties;
+	
+	private String httpRequestInterceptorFactory;
+	
+	private String httpRequestExecutorFactory;
+	
+	private long httpRequestTimeout = -1L;
+	
+	private String websocketFactory;
+	
+	private String websocketHookFactory;
 
 	/**
 	 * Returns the list of APIs of the exchange.
@@ -240,6 +261,94 @@ public class ExchangeDescriptor {
 	 */
 	public void setProperties(List<ConfigProperty> properties) {
 		this.properties = properties;
+	}
+	
+	/**
+	 * @return Default value for {@link ExchangeApi}
+	 *         {@link HttpRequestInterceptorFactory} class
+	 * @see ExchangeApiDescriptor#getHttpRequestInterceptorFactory()
+	 */
+	public String getHttpRequestInterceptorFactory() {
+		return httpRequestInterceptorFactory;
+	}
+
+	/**
+	 * @param httpRequestInterceptorFactory Default value for {@link ExchangeApi}
+	 *                                      {@link HttpRequestInterceptorFactory}
+	 *                                      class
+	 * @see ExchangeApiDescriptor#getHttpRequestInterceptorFactory()
+	 */
+	public void setHttpRequestInterceptorFactory(String httpRequestInterceptorFactory) {
+		this.httpRequestInterceptorFactory = httpRequestInterceptorFactory;
+	}
+
+	/**
+	 * @return Default value for {@link ExchangeApi}
+	 *         {@link HttpRequestExecutorFactory} class
+	 * @see ExchangeApiDescriptor#getHttpRequestExecutorFactory()
+	 */
+	public String getHttpRequestExecutorFactory() {
+		return httpRequestExecutorFactory;
+	}
+
+	/**
+	 * @param httpRequestExecutorFactory Default value for {@link ExchangeApi}
+	 *                                   {@link HttpRequestExecutorFactory} class
+	 * @see ExchangeApiDescriptor#getHttpRequestExecutorFactory()
+	 */
+	public void setHttpRequestExecutorFactory(String httpRequestExecutorFactory) {
+		this.httpRequestExecutorFactory = httpRequestExecutorFactory;
+	}
+
+	/**
+	 * @return Default value for {@link ExchangeApi} HTTP request timeout
+	 * @see ExchangeApiDescriptor#getHttpRequestTimeout()
+	 */
+	public long getHttpRequestTimeout() {
+		return httpRequestTimeout;
+	}
+
+	/**
+	 * @param httpRequestTimeout Default value for {@link ExchangeApi} HTTP request
+	 *                           timeout
+	 * @see ExchangeApiDescriptor#getHttpRequestTimeout()
+	 */
+	public void setHttpRequestTimeout(long httpRequestTimeout) {
+		this.httpRequestTimeout = httpRequestTimeout;
+	}
+
+	/**
+	 * @return Default value for {@link ExchangeApi} websocket factory class
+	 * @see ExchangeApiDescriptor#getWebsocketFactory()
+	 */
+	public String getWebsocketFactory() {
+		return websocketFactory;
+	}
+
+	/**
+	 * @param websocketFactory Default value for {@link ExchangeApi} websocket
+	 *                         factory class
+	 * @see ExchangeApiDescriptor#getWebsocketFactory()
+	 */
+	public void setWebsocketFactory(String websocketFactory) {
+		this.websocketFactory = websocketFactory;
+	}
+
+	/**
+	 * @return Default value for {@link ExchangeApi} websocket hook factory class
+	 * @see ExchangeApiDescriptor#getWebsocketHookFactory()
+	 */
+	public String getWebsocketHookFactory() {
+		return websocketHookFactory;
+	}
+
+	/**
+	 * @param websocketHookFactory Default value for {@link ExchangeApi} websocket
+	 *                             hook factory class
+	 * @see ExchangeApiDescriptor#getWebsocketHookFactory()
+	 */
+	public void setWebsocketHookFactory(String websocketHookFactory) {
+		this.websocketHookFactory = websocketHookFactory;
 	}
 	
 	/**

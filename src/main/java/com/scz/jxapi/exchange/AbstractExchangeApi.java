@@ -190,20 +190,28 @@ public abstract class AbstractExchangeApi implements ExchangeApi {
 	
 	/**
 	 * Instantiates HTTP request executor using the specified factory class name, or
-	 * the default executor factory which is usually sufficient.
-	 * Should be called by subclasses to create the HTTP request executor if there
-	 * is at least one REST API.
+	 * the default executor factory which is usually sufficient. Should be called by
+	 * subclasses to create the HTTP request executor if there is at least one REST
+	 * API.
 	 * 
 	 * @param factoryClassName The fully qualified class name of the factory class
 	 *                         that creates the HTTP request executor, or null if
 	 *                         the default executor factory
 	 *                         {@link JavaNetHttpRequestExecutor} should be used.
+	 * @param requestTimeout   the request timeout used on executor, see
+	 *                         {@link HttpRequestExecutor#setRequestTimeout(long)}.
+	 *                         If value is &lt; 0, the default
+	 *                         {@link HttpRequestExecutor#DEFAULT_REQUEST_TIMEOUT}
+	 *                         is used.
 	 */
-	protected void createHttpRequestExecutor(String factoryClassName) {
+	protected void createHttpRequestExecutor(String factoryClassName, long requestTimeout) {
 		if  (factoryClassName != null) {
 			httpRequestExecutor = ((HttpRequestExecutorFactory)  FactoryUtil.fromClassName(factoryClassName)).createExecutor(this);
 		} else {
 			httpRequestExecutor = new JavaNetHttpRequestExecutor(HttpClient.newHttpClient());
+		}
+		if (requestTimeout >= 0) {
+			httpRequestExecutor.setRequestTimeout(requestTimeout);
 		}
 	}
 	

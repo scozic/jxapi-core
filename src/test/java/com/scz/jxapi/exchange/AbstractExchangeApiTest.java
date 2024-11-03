@@ -393,7 +393,7 @@ public class AbstractExchangeApiTest {
 		}
 		
 		public void createHttpRequestExecutor(String factoryClassName) {
-			super.createHttpRequestExecutor(factoryClassName);
+			super.createHttpRequestExecutor(factoryClassName, -1L);
 		}
 		
 		protected void createWebsocketManager(String url, 

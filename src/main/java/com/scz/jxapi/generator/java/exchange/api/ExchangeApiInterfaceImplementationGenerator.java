@@ -244,15 +244,18 @@ public class ExchangeApiInterfaceImplementationGenerator extends JavaTypeGenerat
 		constructorBody.append(");\n");
 	
 		if (hasRestEnpoints) {
-			String httpRequestExecutorFactoryClassName  = exchangeApiDescriptor.getHttpRequestExecutorFactory();
+			String httpRequestExecutorFactoryClassName  = getHttpRequestExecutorFactory();
+			String httpRequestTimeout = getHttpRequestTimeout() + "L";
 			constructorBody
 			   .append("createHttpRequestExecutor(")
 			   .append(httpRequestExecutorFactoryClassName != null? 
 					   	"\"" + httpRequestExecutorFactoryClassName + "\""
 					   	: "null")
+			   .append(", ")
+			   .append(httpRequestTimeout)
 			   .append(");\n");
 			
-			String httpRequestInterceptorFactoryFullClassName = exchangeApiDescriptor.getHttpRequestInterceptorFactory();
+			String httpRequestInterceptorFactoryFullClassName = getHttpRequestInterceptorFactory();
 			if (httpRequestInterceptorFactoryFullClassName != null) {
 				constructorBody.append("createHttpRequestInterceptor(\"")
 							   .append(httpRequestInterceptorFactoryFullClassName)
@@ -270,9 +273,9 @@ public class ExchangeApiInterfaceImplementationGenerator extends JavaTypeGenerat
 			constructorBody.append("createWebsocketManager(")
 						   .append(JavaCodeGenerationUtil.getQuotedString(exchangeApiDescriptor.getWebsocketUrl()))
 						   .append(", ")
-						   .append(JavaCodeGenerationUtil.getQuotedString(exchangeApiDescriptor.getWebsocketFactory()))
+						   .append(JavaCodeGenerationUtil.getQuotedString(getWebsocketFactory()))
 						   .append(", ")
-						   .append(JavaCodeGenerationUtil.getQuotedString(exchangeApiDescriptor.getWebsocketHookFactory()))
+						   .append(JavaCodeGenerationUtil.getQuotedString(getWebsocketHookFactory()))
 						   .append(");\n");
 			for (WebsocketEndpointDescriptor websocketApi : exchangeApiDescriptor.getWebsocketEndpoints()) {
 				generateWebsocketApiMethodsDeclarations(websocketApi);
@@ -800,4 +803,39 @@ public class ExchangeApiInterfaceImplementationGenerator extends JavaTypeGenerat
 		sb.append(")");
 		return sb.toString();
 	}
+	
+	private String getHttpRequestInterceptorFactory() {
+		return Optional.ofNullable(exchangeApiDescriptor.getHttpRequestInterceptorFactory())
+					   .orElse(exchangeDescriptor.getHttpRequestInterceptorFactory());
+	}
+
+	private String getHttpRequestExecutorFactory() {
+		return Optional.ofNullable(exchangeApiDescriptor.getHttpRequestExecutorFactory())
+					   .orElse(exchangeDescriptor.getHttpRequestExecutorFactory());
+	}
+
+	private long getHttpRequestTimeout() {
+		long timeout = exchangeApiDescriptor.getHttpRequestTimeout();
+		if (timeout >= 0) {
+			return timeout;
+		}
+		timeout = exchangeDescriptor.getHttpRequestTimeout();
+		if (timeout >= 0) {
+			return timeout;
+		}
+		return -1L;
+	}
+
+
+	private String getWebsocketFactory() {
+		return Optional.ofNullable(exchangeApiDescriptor.getWebsocketFactory())
+					   .orElse(exchangeDescriptor.getWebsocketFactory());
+	}
+
+	private String getWebsocketHookFactory() {
+		return Optional.ofNullable(exchangeApiDescriptor.getWebsocketHookFactory())
+					   .orElse(exchangeDescriptor.getWebsocketHookFactory());
+	}
+	
+	
 }
