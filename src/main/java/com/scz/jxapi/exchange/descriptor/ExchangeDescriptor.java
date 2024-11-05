@@ -88,6 +88,14 @@ import com.scz.jxapi.util.EncodingUtil;
  * can be set with default values for corresponding properties in
  * {@link ExchangeApiDescriptor}: value defined in {@link ExchangeDescriptor} is
  * used when undefined in {@link ExchangeApiDescriptor}.
+ * <li>httpUrl: the base URL of the HTTP (REST) API of the exchange. This URL
+ * can be concateneted to websocket API group <code>httpUrl</code> property (see
+ * {@link ExchangeApiDescriptor#getHttpUrl()} ) and endpoint URL (see
+ * {@link RestEndpointDescriptor#getUrl()} when one of these properties are not
+ * absolute)</li>
+ * <li>websocketUrl: the base URL of the Websocket API of the exchange. This URL
+ * can be concateneted to websocket API group <code>websocketUrl</code> property
+ * if API group <code>websocketUrl</code> is not not absolute</li>
  * </ul>
  * 
  * This class is used to map the JSON descriptor of an exchange. It is used to
@@ -99,8 +107,11 @@ import com.scz.jxapi.util.EncodingUtil;
 public class ExchangeDescriptor {
 	
 	private String name;
+	
 	private String description;
+	
 	private String DocUrl;
+	
 	private String basePackage;
 	
 	private List<ExchangeApiDescriptor> apis;
@@ -120,6 +131,10 @@ public class ExchangeDescriptor {
 	private String websocketFactory;
 	
 	private String websocketHookFactory;
+	
+	private String httpUrl;
+	
+	private String websocketUrl;
 
 	/**
 	 * Returns the list of APIs of the exchange.
@@ -316,6 +331,14 @@ public class ExchangeDescriptor {
 	public void setHttpRequestTimeout(long httpRequestTimeout) {
 		this.httpRequestTimeout = httpRequestTimeout;
 	}
+	
+	public String getHttpUrl() {
+		return httpUrl;
+	}
+
+	public void setHttpUrl(String httpUrl) {
+		this.httpUrl = httpUrl;
+	}
 
 	/**
 	 * @return Default value for {@link ExchangeApi} websocket factory class
@@ -349,6 +372,14 @@ public class ExchangeDescriptor {
 	 */
 	public void setWebsocketHookFactory(String websocketHookFactory) {
 		this.websocketHookFactory = websocketHookFactory;
+	}
+	
+	public String getWebsocketUrl() {
+		return websocketUrl;
+	}
+
+	public void setWebsocketUrl(String websocketUrl) {
+		this.websocketUrl = websocketUrl;
 	}
 	
 	/**

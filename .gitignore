@@ -76,4 +76,4 @@ bin/
 tmp*
 
 # Local generated javadoc
-docs/javadoc
+doc/javadoc

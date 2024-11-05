@@ -3,7 +3,6 @@ package com.scz.jxapi.generator.java.exchange.api.demo;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 import com.scz.jxapi.exchange.descriptor.CanonicalType;

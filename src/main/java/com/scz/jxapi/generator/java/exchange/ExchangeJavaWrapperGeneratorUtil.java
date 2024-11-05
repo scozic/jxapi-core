@@ -41,6 +41,20 @@ public class ExchangeJavaWrapperGeneratorUtil {
 	public static final String SPECIAL_SAMPLE_VALUE_NOW = "now()";
 	
 	/**
+	 * Name of static variable storing the base HTTP (REST) URL of an exchange (see
+	 * {@link ExchangeDescriptor#getHttpUrl()} or an API group (see
+	 * {@link ExchangeApiDescriptor#getHttpUrl()}.
+	 */
+	public static final String HTTP_URL_STATIC_VARIABLE = "HTTP_URL";
+
+	/**
+	 * Name of static variable storing the base Websocket URL of an exchange (see
+	 * {@link ExchangeDescriptor#getWebsocketUrl()} or an API group (see
+	 * {@link ExchangeApiDescriptor#getWebsocketUrl()}.
+	 */
+	public static final String WEBSOCKET_URL_STATIC_VARIABLE = "WEBSOCKET_URL";
+	
+	/**
 	 * @param exchangeDescriptor The exchange the API group belongs to
 	 * @param exchangeApiDescriptor The exchange API group to get the full class name for
 	 * @return The full name of the ExchangeApi interface class for the given
@@ -319,6 +333,27 @@ public class ExchangeJavaWrapperGeneratorUtil {
 		default: // STRING
 			return JavaCodeGenerationUtil.getQuotedString(sampleValueStr);
 		}
+	}
+	
+	public static String getHttpUrlVariableDeclaration(ExchangeDescriptor exchangeDescriptor) {
+		String httpUrl = exchangeDescriptor.getHttpUrl();
+		if (httpUrl == null) {
+			return null;
+		}
+		return "public static " 
+				+ ExchangeJavaWrapperGeneratorUtil.HTTP_URL_STATIC_VARIABLE 
+				+ " = "
+				+ JavaCodeGenerationUtil.getQuotedString(httpUrl)
+				+ ";";
+	}
+
+	/**
+	 * Generates the name of the interface implementation class for the given exchange descriptor
+	 * @param exchangeDescriptor exchange descriptor
+	 * @return full name of the interface implementation class
+	 */
+	public static String getExchangeInterfaceImplementationName(ExchangeDescriptor exchangeDescriptor) {
+		return ExchangeInterfaceImplementationGenerator.getExchangeInterfaceName(exchangeDescriptor) + "Impl";
 	}
 
 }

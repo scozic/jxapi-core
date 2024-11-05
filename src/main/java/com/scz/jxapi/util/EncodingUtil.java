@@ -2,6 +2,7 @@ package com.scz.jxapi.util;
 
 import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
+import java.net.URI;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
@@ -214,5 +215,9 @@ public class EncodingUtil {
 		}
 		int l = (maxLength - sep.length()) / 2;
 		return longString.substring(0, l) + sep + longString.substring(longString.length() - l);
+	}
+	
+	public static boolean isAbsoluteUrl(String url) {
+		return URI.create(url).getScheme() != null;
 	}
 }

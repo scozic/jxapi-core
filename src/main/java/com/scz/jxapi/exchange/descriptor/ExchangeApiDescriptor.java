@@ -152,6 +152,8 @@ public class ExchangeApiDescriptor {
 	
 	private long httpRequestTimeout = -1L;
 	
+	private String httpUrl;
+	
 	private String websocketFactory;
 	
 	private String websocketHookFactory;
@@ -412,6 +414,14 @@ public class ExchangeApiDescriptor {
 	 */
 	public void setConstants(List<Constant> constants) {
 		this.constants = constants;
+	}
+	
+	public String getHttpUrl() {
+		return httpUrl;
+	}
+
+	public void setHttpUrl(String httpUrl) {
+		this.httpUrl = httpUrl;
 	}
 
 	@Override

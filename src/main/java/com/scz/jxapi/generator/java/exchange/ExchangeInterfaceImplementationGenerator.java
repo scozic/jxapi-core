@@ -56,15 +56,6 @@ public class ExchangeInterfaceImplementationGenerator extends JavaTypeGenerator 
 		return exchangeDescriptor.getBasePackage() + "." + JavaCodeGenerationUtil.firstLetterToUpperCase(exchangeDescriptor.getName()) + "Exchange";
 	}
 	
-	/**
-	 * Generates the name of the interface implementation class for the given exchange descriptor
-	 * @param exchangeDescriptor exchange descriptor
-	 * @return full name of the interface implementation class
-	 */
-	public static String getExchangeInterfaceImplementationName(ExchangeDescriptor exchangeDescriptor) {
-		return getExchangeInterfaceName(exchangeDescriptor) + "Impl";
-	}
-
 	private final ExchangeDescriptor exchangeDescriptor;
 	private final Set<String> rateLimitNames = new HashSet<>();
 	
@@ -74,7 +65,7 @@ public class ExchangeInterfaceImplementationGenerator extends JavaTypeGenerator 
 	 * @param exchangeDescriptor the exchange descriptor to generate classes for
 	 */
 	public ExchangeInterfaceImplementationGenerator(ExchangeDescriptor exchangeDescriptor) {
-		super(getExchangeInterfaceImplementationName(exchangeDescriptor));
+		super(ExchangeJavaWrapperGeneratorUtil.getExchangeInterfaceImplementationName(exchangeDescriptor));
 		this.exchangeDescriptor = exchangeDescriptor;
 	}
 	
@@ -90,6 +81,11 @@ public class ExchangeInterfaceImplementationGenerator extends JavaTypeGenerator 
 		setDescription("Actual implementation of {@link " + simpleInterfaceName + "}<br>\n"
 				   + JavaCodeGenerationUtil.GENERATED_CODE_WARNING);
 		appendToBody("\n");
+		
+		String httpUrlDeclaration = ExchangeJavaWrapperGeneratorUtil.getHttpUrlVariableDeclaration(exchangeDescriptor);
+		if (httpUrlDeclaration != null) {
+			appendToBody(httpUrlDeclaration).append("\n\n");
+		}
 		
 		List<RateLimitRule> rateLimits = exchangeDescriptor.getRateLimits();
 		List<ExchangeApiDescriptor> apis = exchangeDescriptor.getApis();

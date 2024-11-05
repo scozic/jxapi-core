@@ -235,14 +235,15 @@ public class AbstractExchangeApiTest {
 	
 	@Test(expected = IllegalArgumentException.class)
 	public void testCreateHttpRequestExecutorInvalidFactoryClass() {
-		exchangeApi.createHttpRequestExecutor("");
+		exchangeApi.createHttpRequestExecutor("", -1L);
 	}
 	
 	@Test
 	public void testCreateDefaultHttpRequestExecutor() {
-		exchangeApi.createHttpRequestExecutor(null);
+		exchangeApi.createHttpRequestExecutor(null, 500L);
 		HttpRequestExecutor executor = exchangeApi.getHttpRequestExecutor();
 		Assert.assertTrue(executor instanceof JavaNetHttpRequestExecutor);
+		Assert.assertEquals(500L, executor.getRequestTimeout());
 	}
 	
 	@Test
@@ -279,18 +280,14 @@ public class AbstractExchangeApiTest {
 	
 	@Test(expected = IllegalArgumentException.class)
 	public void testCreateWebsocketanagerWithHooInvalidWebsocketHookFactoryClass() {
-		DefaultWebsocketManager websocketManager = createWebsocketManager("wss://myexchange.com/ws", 
-																		  MockWebsocketFactory.class.getName(), 
-																		  "");
-		Assert.assertNotNull(websocketManager);
-		Assert.assertTrue(websocketManager.getWebsocket() instanceof MockWebsocket);
-		Assert.assertTrue(websocketManager.getWebsocketHook() instanceof MockWebsocketHook);
+		createWebsocketManager("wss://myexchange.com/ws", 
+		   					   MockWebsocketFactory.class.getName(), 
+							   "");
 	}
 	
 	@Test(expected = IllegalStateException.class)
 	public void testCreateWebsocketEndpointNullWebsocketManager() {
-		DefaultWebsocketEndpoint<String> wsEndpoint = (DefaultWebsocketEndpoint<String>) exchangeApi.createWebsocketEndpoint("myWsApi", RawStringMessageDeserializer.getInstance());
-		Assert.assertNotNull(wsEndpoint);
+		exchangeApi.createWebsocketEndpoint("myWsApi", RawStringMessageDeserializer.getInstance());
 	}
 	
 	@Test
@@ -359,7 +356,7 @@ public class AbstractExchangeApiTest {
 	}
 	
 	private MockHttpRequestExecutor createMockHttpRequestExecutor() {
-		exchangeApi.createHttpRequestExecutor(MockHttpRequestExecutorFactory.class.getName());
+		exchangeApi.createHttpRequestExecutor(MockHttpRequestExecutorFactory.class.getName(), -1L);
 		return (MockHttpRequestExecutor) exchangeApi.getHttpRequestExecutor();
 	}
 	
@@ -392,8 +389,8 @@ public class AbstractExchangeApiTest {
 			 super.createHttpRequestInterceptor(factoryClassName);
 		}
 		
-		public void createHttpRequestExecutor(String factoryClassName) {
-			super.createHttpRequestExecutor(factoryClassName, -1L);
+		public void createHttpRequestExecutor(String factoryClassName, long timeout) {
+			super.createHttpRequestExecutor(factoryClassName, timeout);
 		}
 		
 		protected void createWebsocketManager(String url, 
@@ -405,5 +402,10 @@ public class AbstractExchangeApiTest {
 		public WebsocketManager getWebsocketManager() {
 			return this.websocketManager;
 		}
+	}
+	
+	@Test
+	public void testTopicMatcher_EmptyFields() {
+		Assert.assertEquals(WebsocketMessageTopicMatcherFactory.ANY_MATCHER_FACTORY, AbstractExchangeApi.topicMatcher());
 	}
 }

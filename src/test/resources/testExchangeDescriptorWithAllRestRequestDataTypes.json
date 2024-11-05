@@ -1,6 +1,7 @@
 {
 	"name": "MyTestExchange",
 	"description": "A sample Exchange descriptor file",
+	"httpUrl": "https://mycex.com",
 	"basePackage": "com.foo.bar.gen",
 		"apis":[
 		{ 
@@ -13,7 +14,7 @@
 					"name": "postRestRequestDataTypeInt",
 					"httpMethod": "POST",
 					"description": "A sample REST endpoint using INT response data type",
-					"url": "https://com.sample.mycex/postInt",
+					"url": "/postInt",
 					"request": {
 						"type": "INT",
 						"sampleValue": 12345
@@ -29,7 +30,7 @@
 					"name": "postRestRequestDataTypeLong",
 					"httpMethod": "POST",
 					"description": "A sample REST endpoint using LONG response data type",
-					"url": "https://com.sample.mycex/postLong",
+					"url": "/postLong",
 					"request": {
 						"type": "LONG",
 						"sampleValue": 123456789012
@@ -42,7 +43,7 @@
 					"name": "postRestRequestDataTypeBigDecimal",
 					"httpMethod": "POST",
 					"description": "A sample REST endpoint using BIGDECIMAL response data type",
-					"url": "https://com.sample.mycex/postBigDecimal",
+					"url": "/postBigDecimal",
 					"request": {
 						"type": "BIGDECIMAL",
 						"sampleValue": 12345.678
@@ -55,7 +56,7 @@
 					"name": "postRestRequestDataTypeString",
 					"httpMethod": "POST",
 					"description": "A sample REST endpoint using STRING response data type",
-					"url": "https://com.sample.mycex/postString",
+					"url": "/postString",
 					"request": {
 						"name": "hello",
 						"description": "Say Hi!",
@@ -70,7 +71,7 @@
 					"name": "postRestRequestDataTypeBoolean",
 					"httpMethod": "POST",
 					"description": "A sample REST endpoint using BOOLEAN response data type",
-					"url": "https://com.sample.mycex/postBoolean",
+					"url": "/postBoolean",
 					"request": {
 						"type": "BOOLEAN",
 						"sampleValue": true
@@ -83,7 +84,7 @@
 					"name": "postRestRequestDataTypeObjectNoParameters",
 					"httpMethod": "POST",
 					"description": "A sample REST endpoint using OBJECT request data type (implicit), and no parameters",
-					"url": "https://com.sample.mycex/postNoParameter",
+					"url": "/postNoParameter",
 					"request": {
 						"type": "OBJECT",
 						"properties": []
@@ -96,7 +97,7 @@
 					"name": "postRestRequestDataTypeObjectOneParameter",
 					"httpMethod": "POST",
 					"description": "A sample REST endpoint using OBJECT request data type (default, explicit here), and one parameter",
-					"url": "https://com.sample.mycex/postBigDecimal",
+					"url": "/postBigDecimal",
 					"request": {
 						"type": "OBJECT",
 						"properties": [
@@ -111,7 +112,7 @@
 					"name": "postRestRequestDataTypeIntList",
 					"httpMethod": "POST",
 					"description": "A sample REST endpoint using INT_LIST request data type",
-					"url": "https://com.sample.mycex/postBigDecimal",
+					"url": "/postBigDecimal",
 					"request": {
 						"type": "INT_LIST"
 					},
@@ -123,7 +124,7 @@
 					"name": "postRestRequestDataTypeObjectListMap",
 					"httpMethod": "POST",
 					"description": "A sample REST endpoint using OBJECT_LIST_MAP request data type",
-					"url": "https://com.sample.mycex/postBigDecimal",
+					"url": "/postBigDecimal",
 					"request": {
 						"type": "OBJECT_LIST_MAP",
 						"objectName": "SingleSymbol",
@@ -137,7 +138,7 @@
 					"name": "getRestRequestDataTypeObjectListMap",
 					"httpMethod": "GET",
 					"description": "A sample REST endpoint using GET (hence url query params) and object list map request type. The object used as values contains ",
-					"url": "https://com.sample.mycex/postInt",
+					"url": "/postInt",
 					"request": {
 						"type": "OBJECT_LIST_MAP",
 						"objectName": "MultiSymbol",
@@ -159,7 +160,7 @@
 					"name": "getRestRequestDataTypeEmptyObject",
 					"httpMethod": "GET",
 					"description": "A sample REST endpoint using GET (hence url query params) and empty request object",
-					"url": "https://com.sample.mycex/postInt",
+					"url": "/postInt",
 					"request": {
 						"type": "OBJECT",
 						"properties": []
@@ -175,7 +176,7 @@
 					"name": "getRestRequestDataTypePrimitiveWithMsgField",
 					"httpMethod": "GET",
 					"description": "A sample REST endpoint using GET (hence url query params) primitive request type, with 'msgField' property defined. That msgField value should be used as query param argument name",
-					"url": "https://com.sample.mycex/postInt",
+					"url": "/postInt",
 					"request": {
 						"type": "INT",
 						"name": "age",
@@ -192,7 +193,7 @@
 					"name": "postRestRequestDataTypeNoParamsButUrlParameters",
 					"httpMethod": "POST",
 					"description": "A sample REST endpoint using POST method (hence no url parameters by default), no arguments, but url parameters through 'urlParameters' property",
-					"url": "https://com.sample.mycex/postInt",
+					"url": "/postInt",
 					"urlParameters":"/customUrSuffix",
 					"request": {
 						"type": "OBJECT",

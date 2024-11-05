@@ -22,6 +22,7 @@ public class ExchangeInterfaceImplementationGeneratorTest {
 		exchangeDescriptor.setName("Foo");
 		exchangeDescriptor.setBasePackage("com.xyz.foo.gen");
 		exchangeDescriptor.setDescription("Foo exchange description");
+		exchangeDescriptor.setHttpUrl("https://myexchange.com/api");
 		List<ExchangeApiDescriptor> apis = new ArrayList<>();
 		ExchangeApiDescriptor api1 = new ExchangeApiDescriptor();
 		api1.setName("api1");
@@ -46,6 +47,8 @@ public class ExchangeInterfaceImplementationGeneratorTest {
 				+ " * <br><strong>THIS CODE IS GENERATED. DO NOT EDIT MANUALLY!</strong>\n"
 				+ " */\n"
 				+ "public class FooExchangeImpl extends AbstractExchange implements FooExchange {\n"
+				+ "  \n"
+				+ "  public static HTTP_URL = \"https://myexchange.com/api\";\n"
 				+ "  \n"
 				+ "  private final FooApi1Api fooApi1Api;\n"
 				+ "  private final FooApi2Api fooApi2Api;\n"

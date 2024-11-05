@@ -23,6 +23,7 @@ import com.scz.jxapi.netutils.deserialization.RawBooleanMessageDeserializer;
 import com.scz.jxapi.netutils.deserialization.RawIntegerMessageDeserializer;
 import com.scz.jxapi.netutils.deserialization.RawLongMessageDeserializer;
 import com.scz.jxapi.netutils.deserialization.RawStringMessageDeserializer;
+import com.scz.jxapi.util.EncodingUtil;
 
 /**
  * Helper static methods around generation of {@link ExchangeApi} java classes implementation.
@@ -743,4 +744,156 @@ public class ExchangeApiGeneratorUtil {
 							  .collect(Collectors.toList());
 	}
 
+	/**
+	 * Generates expected public static variable name in a generated {@link ExchangeApi} for HTTP URL of a REST endpoint.
+	 * @param restEndpointDescriptor The REST endpoint descriptor
+	 * @return The expected static variable name for the REST endpoint URL, for instance <code>MY_REST_ENDPOINT_URL</code>
+	 */
+	public static String getRestEndpointUrlStaticVariableName(RestEndpointDescriptor restEndpointDescriptor) {
+		return JavaCodeGenerationUtil.getStaticVariableName(restEndpointDescriptor.getName()) + "_URL";
+	}
+	
+		/**
+	 * Generates expected public static variable name in a generated {@link ExchangeApi} for websocket HTTP URL.
+	 * @param exchangeApiDescriptor The ExchangeApi descriptor
+	 * @return The expected static variable name for the websocket URL, for instance <code>MY_API_WS_URL</code>
+	 */
+	public static String getWebsocketUrlStaticVariableName(ExchangeApiDescriptor exchangeApiDescriptor) {
+		return JavaCodeGenerationUtil.getStaticVariableName(exchangeApiDescriptor.getName()) + "_WS_URL";
+	}
+	
+	/**
+	 * Generates expected public static variable declaration in a generated {@link ExchangeApi} for REST base URL.
+	 * It will be a concatenation of the exchange base URL and the API base URL if the API base URL is not an absolute URL.
+	 * @param exchangeDescriptor The exchange descriptor
+	 * @param exchangeApiDescriptor The exchange API descriptor
+	 * @param imports The imports of the generated class
+	 * @return public static declaration for a variable named {@link ExchangeJavaWrapperGeneratorUtil#HTTP_URL_STATIC_VARIABLE} holding the base URL of the REST API.
+	 */
+	public static String getHttpUrlVariableDeclaration(ExchangeDescriptor exchangeDescriptor, 
+													   ExchangeApiDescriptor exchangeApiDescriptor,
+													   Imports imports) {
+		StringBuilder s = new StringBuilder()
+				.append("public static final String ")
+				.append(ExchangeJavaWrapperGeneratorUtil.HTTP_URL_STATIC_VARIABLE)
+				.append(" = ");
+		String url = "";
+		String apiUrl = exchangeApiDescriptor.getHttpUrl();
+		if (apiUrl != null) {
+			url = JavaCodeGenerationUtil.getQuotedString(apiUrl);
+			if (EncodingUtil.isAbsoluteUrl(apiUrl)) {
+				return s.append(url).append(";").toString();
+			}
+		}
+		
+		String exchangeUrl = exchangeDescriptor.getHttpUrl();
+		if (exchangeUrl != null) {
+			String exchangeInterfaceImplementationName = ExchangeJavaWrapperGeneratorUtil.getExchangeInterfaceImplementationName(exchangeDescriptor);
+			imports.add(exchangeInterfaceImplementationName);
+			String exchangeUrlVar = JavaCodeGenerationUtil.getClassNameWithoutPackage(exchangeInterfaceImplementationName) 
+								 + "."  
+								 + ExchangeJavaWrapperGeneratorUtil.HTTP_URL_STATIC_VARIABLE;
+			if (!url.isEmpty()) {
+				exchangeUrlVar += " + " + url;
+			}
+			url = exchangeUrlVar;
+		}
+		if (url.isEmpty()) {
+			return null;
+		}
+		
+		return s.append(url).append(";").toString();
+	}
+	
+	/**
+	 * Generates expected public static variable declaration in a generated
+	 * {@link ExchangeApi} for REST endpoint URL.
+	 * It will be a concatenation of the base URL and the endpoint URL if the
+	 * endpoint URL is not an absolute URL.
+	 * 
+	 * @param hasBaseUrl             <code>true</code> if the API has a base URL,
+	 *                               <code>false</code> otherwise
+	 * @param restEndpointDescriptor The REST endpoint descriptor
+	 * @return public static declaration for a variable named
+	 *         <code>MY_REST_ENDPOINT_URL</code> holding the URL of the REST
+	 *         endpoint.
+	 */
+	public static String getRestEndpointUrlVariableDeclaration(boolean hasBaseUrl, 
+															   RestEndpointDescriptor restEndpointDescriptor) {
+		StringBuilder s = new StringBuilder()
+							.append("public static final String ")
+							.append(getRestEndpointUrlStaticVariableName(restEndpointDescriptor))
+							.append(" = ");
+		String restUrl = restEndpointDescriptor.getUrl();
+		String url = "";
+		if (restUrl != null) {
+			url =  JavaCodeGenerationUtil.getQuotedString(restUrl);
+			if (EncodingUtil.isAbsoluteUrl(restUrl)) {
+				return s.append(url).append(";").toString();
+			}
+		}
+		
+		if (hasBaseUrl) {
+			s.append(ExchangeJavaWrapperGeneratorUtil.HTTP_URL_STATIC_VARIABLE);
+			if (!url.isEmpty()) {
+				s.append(" + ").append(url);
+			}
+			return s.append(";").toString();
+		}
+		
+		throw new IllegalArgumentException("Invalid URL '" 
+											+ url 
+											+ "' for enpoint:" 
+											+ restEndpointDescriptor);
+	}
+	
+	/**
+	 * Generates expected public static variable declaration in a generated
+	 * {@link ExchangeApi} for websocket URL.
+	 * It will be a concatenation of the exchange websocket URL and the API
+	 * websocket URL if the API websocket URL is not an absolute URL.
+	 * 
+	 * @param exchangeDescriptor    The exchange descriptor
+	 * @param exchangeApiDescriptor The exchange API descriptor
+	 * @param imports               The imports of the generated class
+	 * @return public static declaration for a variable named
+	 *         {@link ExchangeJavaWrapperGeneratorUtil#WEBSOCKET_URL_STATIC_VARIABLE}
+	 *         holding the base URL of the websocket API.
+	 */
+	public static String getWebsocketUrlVariableDeclaration(ExchangeDescriptor exchangeDescriptor, 
+															ExchangeApiDescriptor exchangeApiDescriptor,
+															Imports imports) {
+		StringBuilder s = new StringBuilder()
+							.append("public static final String ")
+							.append(ExchangeJavaWrapperGeneratorUtil.WEBSOCKET_URL_STATIC_VARIABLE)
+							.append(" = ");
+		String url = "";
+		String apiUrl = exchangeApiDescriptor.getWebsocketUrl();
+		if (apiUrl != null) {
+			String apiUrlQuoted = JavaCodeGenerationUtil.getQuotedString(apiUrl);
+			url = apiUrlQuoted;
+			if (EncodingUtil.isAbsoluteUrl(apiUrl)) {
+				return s.append(url).append(";").toString();
+			}
+		}
+		
+		String exchangeUrl = exchangeDescriptor.getWebsocketUrl();
+		if (exchangeUrl != null) {
+			String exchangeInterfaceName = ExchangeJavaWrapperGeneratorUtil.getExchangeInterfaceName(exchangeDescriptor);
+			imports.add(exchangeInterfaceName);
+			String exchangeUrlVar = JavaCodeGenerationUtil.getClassNameWithoutPackage(exchangeInterfaceName) 
+									 + "."  
+									 + ExchangeJavaWrapperGeneratorUtil.WEBSOCKET_URL_STATIC_VARIABLE;
+			if (!url.isEmpty()) {
+				exchangeUrlVar += " + " + url;
+			}
+			url = exchangeUrlVar;
+		}
+		if (url.isEmpty()) {
+ 			return null;
+		}
+		
+		return s.append(url).append(";").toString();
+	}
+	
 }

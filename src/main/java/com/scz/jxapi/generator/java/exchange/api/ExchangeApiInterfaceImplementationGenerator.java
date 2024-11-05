@@ -26,7 +26,6 @@ import com.scz.jxapi.exchange.descriptor.WebsocketMessageTopicMatcherFieldDescri
 import com.scz.jxapi.generator.java.JavaCodeGenerationUtil;
 import com.scz.jxapi.generator.java.JavaTypeGenerator;
 import com.scz.jxapi.generator.java.exchange.ExchangeInterfaceGenerator;
-import com.scz.jxapi.generator.java.exchange.ExchangeInterfaceImplementationGenerator;
 import com.scz.jxapi.generator.java.exchange.ExchangeJavaWrapperGeneratorUtil;
 import com.scz.jxapi.netutils.deserialization.MessageDeserializer;
 import com.scz.jxapi.netutils.rest.FutureRestResponse;
@@ -64,6 +63,7 @@ import com.scz.jxapi.util.JsonUtil;
  * exchange wide, exchange API wide, and REST endpoint specific rules e.g. all
  * rules that must be enforced by calling the corresponding API.
  * <li>A {@link Logger} declaration generated.
+ * <li>Base URL for REST endpoints and websocket URL are declared as static variables. If the base URL is not defined in the API descriptor, it is concatenated to URL.
  * </ul>
  * <p>
  * Regarding REST endpoint call methods generation:
@@ -81,6 +81,11 @@ import com.scz.jxapi.util.JsonUtil;
  * response type.
  * <li>For every REST endpoint, a final rate limit rule declaration is generated
  * if rate limits are defined for the endpoint.
+ * <li>For every REST endpoint, a public static final field is generated with
+ * URL of REST endpoint as value. This field is used in the {@link HttpRequest}
+ * creation. It has value of the endpoint URL (see
+ * RestEndpointDescriptor#getHttpUrl()) if that URL is absolute, or
+ * concatenation of API group base URL with it if it is a relative URI.
  * <li>A REST endpoint call method body contains the following steps:
  * <ul>
  * <li>If method has arguments and expects them to be serialized as URL
@@ -92,6 +97,7 @@ import com.scz.jxapi.util.JsonUtil;
  * <li>Generate a {@link HttpRequest} using
  * {@link HttpRequest#create(String, String, HttpMethod, Object, List, int)}
  * method.
+ * <li>Set the url of the request using the endpoint URL static variable.
  * <li>Generate a submit request instruction using
  * {@link AbstractExchangeApi#submit(HttpRequest, MessageDeserializer)} method.
  * </ul>
@@ -122,7 +128,8 @@ import com.scz.jxapi.util.JsonUtil;
  * <li>Generate a topic string using
  * {@link EncodingUtil#substituteArguments(String, Object...)} method with
  * endpoint specific topic template and eventual request data.
- * <li>Generate a DEBUG log statement with the endpoint name and eventual request
+ * <li>Generate a DEBUG log statement with the endpoint name and eventual
+ * request
  * <li>Generate a {@link WebsocketSubscribeRequest} using
  * {@link WebsocketSubscribeRequest#create(String, Object, String, com.scz.jxapi.netutils.websocket.multiplexing.WebsocketMessageTopicMatcherFactory)}
  * method.
@@ -135,7 +142,9 @@ import com.scz.jxapi.util.JsonUtil;
  * <li>For every websocket endpoint, a final deserializer is generated for the
  * message type.
  * <li>For every websocket endpoint, a final {@link WebsocketEndpoint} instance
- * is created and initialized in the constructor using {@link AbstractExchangeApi#createWebsocketEndpoint(String, MessageDeserializer)} method.
+ * is created and initialized in the constructor using
+ * {@link AbstractExchangeApi#createWebsocketEndpoint(String, MessageDeserializer)}
+ * method.
  * <li>For every websocket endpoint, a {@link WebsocketSubscribeRequest} is
  * created and submitted using
  * {@link WebsocketEndpoint#subscribe(WebsocketSubscribeRequest, WebsocketListener)}
@@ -165,6 +174,7 @@ public class ExchangeApiInterfaceImplementationGenerator extends JavaTypeGenerat
 	private List<String> apiGlobalRateLimitVariables;
 	private Set<String> endpointSpecificRateLimitIds;
 	private List<String> methodSignatures;
+	private boolean hasBaseHttpUrl = false;
 	
 	
 	/**
@@ -244,6 +254,14 @@ public class ExchangeApiInterfaceImplementationGenerator extends JavaTypeGenerat
 		constructorBody.append(");\n");
 	
 		if (hasRestEnpoints) {
+			String httpUrlVariableDeclaration = ExchangeApiGeneratorUtil.getHttpUrlVariableDeclaration(exchangeDescriptor, exchangeApiDescriptor, getImports());
+			this.hasBaseHttpUrl = httpUrlVariableDeclaration != null;
+			if (hasBaseHttpUrl) {
+				staticMembersDeclaration
+					.append("\n")
+					.append(httpUrlVariableDeclaration)
+					.append("\n");
+			}
 			String httpRequestExecutorFactoryClassName  = getHttpRequestExecutorFactory();
 			String httpRequestTimeout = getHttpRequestTimeout() + "L";
 			constructorBody
@@ -270,8 +288,17 @@ public class ExchangeApiInterfaceImplementationGenerator extends JavaTypeGenerat
 		}
 		
 		if (hasWsEnpoints) {
+			String websocketUrlVariableDeclaration = ExchangeApiGeneratorUtil.getWebsocketUrlVariableDeclaration(exchangeDescriptor, 
+				    															exchangeApiDescriptor,  
+				    															getImports());
+			if (websocketUrlVariableDeclaration == null) {
+				throw new IllegalArgumentException("No valid websocket URL for API with websocket endpoints:" 
+													+ exchangeApiDescriptor);
+			}
+			staticMembersDeclaration.append("\n")
+									.append(websocketUrlVariableDeclaration);
 			constructorBody.append("createWebsocketManager(")
-						   .append(JavaCodeGenerationUtil.getQuotedString(exchangeApiDescriptor.getWebsocketUrl()))
+						   .append(ExchangeJavaWrapperGeneratorUtil.WEBSOCKET_URL_STATIC_VARIABLE)
 						   .append(", ")
 						   .append(JavaCodeGenerationUtil.getQuotedString(getWebsocketFactory()))
 						   .append(", ")
@@ -572,7 +599,7 @@ public class ExchangeApiInterfaceImplementationGenerator extends JavaTypeGenerat
 		
 		List<String> rateLimitVariables = new ArrayList<>();
 		if  (!CollectionUtils.isEmpty(exchangeDescriptor.getRateLimits())) {
-			String exchangeClassName = ExchangeInterfaceImplementationGenerator.getExchangeInterfaceImplementationName(exchangeDescriptor);
+			String exchangeClassName = ExchangeJavaWrapperGeneratorUtil.getExchangeInterfaceImplementationName(exchangeDescriptor);
 			addImport(exchangeClassName);
 			String exchangeSimpleClassName = JavaCodeGenerationUtil.getClassNameWithoutPackage(exchangeClassName);
 			exchangeDescriptor.getRateLimits().forEach(
@@ -598,11 +625,15 @@ public class ExchangeApiInterfaceImplementationGenerator extends JavaTypeGenerat
 		}
 		
 		addImport(HttpRequest.class);
+		staticMembersDeclaration
+				.append("\n")
+				.append(ExchangeApiGeneratorUtil.getRestEndpointUrlVariableDeclaration(hasBaseHttpUrl, restApi));
+		String endpointUrlVar = ExchangeApiGeneratorUtil.getRestEndpointUrlStaticVariableName(restApi);
 		StringBuilder createHttpRequestInstruction = new StringBuilder()
 				.append("HttpRequest.create(")
 				.append(ExchangeApiGeneratorUtil.getRestEndpointNameStaticVariable(restApi.getName()))
 				.append(", ")
-				.append(JavaCodeGenerationUtil.getQuotedString(restApi.getUrl()));
+				.append(endpointUrlVar);
 		if (urlParametersSerializerDeclaration != null) {
 			createHttpRequestInstruction
 				.append(" + ")
