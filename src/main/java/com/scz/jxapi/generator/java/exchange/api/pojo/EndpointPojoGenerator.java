@@ -67,7 +67,7 @@ public class EndpointPojoGenerator extends PojoGenerator {
 		}
 	}
 	
-	private void generateObjectTypePojoField(Field field) throws IOException {
+	private void generateObjectTypePojoField(Field field) {
 		String className = getName();
 		String objectParamClassName = ExchangeApiGeneratorUtil.getFieldLeafSubTypeClassName(
 																				field.getName(), 

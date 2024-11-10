@@ -1,7 +1,6 @@
 package com.scz.jxapi.generator.java.exchange;
 
 import java.io.File;
-import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
@@ -25,7 +24,7 @@ public class ClassesGeneratorTestUtil {
 	
 	private static final Logger log = LoggerFactory.getLogger(ClassesGeneratorTestUtil.class);
 
-	public static void checkJavaFilesCount(Path folderPath, int count) throws IOException {
+	public static void checkJavaFilesCount(Path folderPath, int count) {
 		File folder = folderPath.toFile();
 		if (!folder.exists()) {
 			Assert.assertEquals("Expected " + count + " files but folder does nto exist:" + folderPath, count, 0);

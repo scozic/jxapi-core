@@ -69,7 +69,6 @@ public class JavaNetHttpRequestExecutorTest {
 		Assert.assertEquals(expected.getResponseCode(), actual.getResponseCode());
 		if (expected.getException() != null) {
 			Assert.assertNotNull(actual.getException());
-//			Assert.assertEquals(expected.getException().getMessage(), actual.getException().getMessage());
 		} else {
 			Assert.assertEquals("Unexpected body in " + actual, expected.getBody(), actual.getBody());
 			Map<String, List<String>> expectedHeaders = expected.getHeaders();

@@ -17,7 +17,7 @@ import com.scz.jxapi.netutils.rest.ratelimits.RateLimitRule;
 public class ExchangeInterfaceImplementationGeneratorTest {
 	
 	@Test
-	public void testGenerateExchangeApi() throws Exception {
+	public void testGenerateExchangeApi() {
 		ExchangeDescriptor exchangeDescriptor = new ExchangeDescriptor();
 		exchangeDescriptor.setName("Foo");
 		exchangeDescriptor.setBasePackage("com.xyz.foo.gen");

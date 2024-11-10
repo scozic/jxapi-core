@@ -9,7 +9,7 @@ import org.junit.Test;
 public class DefaultObservableTest {
 
     @Test
-    public void testSubscribeDispatchEventsThenUnsubscribe() {
+    public void testSubscribeDispatchEventsThenUnsubscribe() throws Exception {
         DefaultObservable<TestObserver, String> observable = new DefaultObservable<>((l, e) -> l.handleEvent(e));
         TestObserver observer1 = new TestObserver();
         TestObserver observer2 = new TestObserver();

@@ -104,7 +104,7 @@ public class RequestThrottler {
 								+ ", request:" + request + " will be submitted again after it completes");
 				}
 				FutureRestResponse<A> r = new FutureRestResponse<>();
-				queued.thenRun(() -> submit(request, executor).thenAccept(restResponse -> r.complete(restResponse)));
+				queued.thenRun(() -> submit(request, executor).thenAccept(r::complete));
 				return r;
 			}
 			
@@ -123,13 +123,7 @@ public class RequestThrottler {
 	}
 	
 	private RateLimitThrottling getOrCreateRateLimit(RateLimitRule rateLimit) {
-		String id = rateLimit.getId();
-		RateLimitThrottling r = rateLimitManagers.get(id);
-		if (r == null) {
-			r = new RateLimitThrottling(rateLimit);
-			rateLimitManagers.put(id, r);
-		}
-		return r;
+		return rateLimitManagers.computeIfAbsent(rateLimit.getId(), k -> new RateLimitThrottling(rateLimit));
 	}
 	
 	private <A> FutureRestResponse<A> queue(HttpRequest request, Function<HttpRequest, FutureRestResponse<A>> executor, long delay, RateLimitThrottling rateLimit) {
@@ -144,9 +138,7 @@ public class RequestThrottler {
 		}
 		throttlingExecutor.schedule(() -> {
 			queuedRequestCompleted(rateLimit);
-			submit(request, executor).thenAccept(httpResponse -> {
-				r.complete(httpResponse);
-			});
+			submit(request, executor).thenAccept(r::complete);
 		}, delay, TimeUnit.MILLISECONDS);
 		return r;
 	}

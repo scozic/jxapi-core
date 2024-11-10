@@ -192,6 +192,7 @@ public class ExchangeJavaWrapperGeneratorUtil {
 			if (imports != null) {
 				imports.add(BigDecimal.class.getName());
 			}
+			return canonicalTypeClass.getSimpleName();
 		case BOOLEAN:
 		case INT:
 		case LONG:

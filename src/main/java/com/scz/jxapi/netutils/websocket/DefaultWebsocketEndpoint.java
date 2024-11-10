@@ -48,11 +48,7 @@ public class DefaultWebsocketEndpoint<M> implements WebsocketEndpoint<M> {
 	public String subscribe(WebsocketSubscribeRequest request, WebsocketListener<M> listener) {
 		request.setEnpoint(endpointName);
 		String topic = request.getTopic();
-		Subscription sub = subscriptionsByTopic.get(topic);
-		if (sub == null ) {
-			sub = new Subscription(request);
-			subscriptionsByTopic.put(topic, sub);
-		}
+		Subscription sub = subscriptionsByTopic.computeIfAbsent(topic, t -> new Subscription(request));
 		String subId = generateSubscriptionId(request);
 		sub.addListener(subId, listener);
 		subscriptionsById.put(subId, sub);

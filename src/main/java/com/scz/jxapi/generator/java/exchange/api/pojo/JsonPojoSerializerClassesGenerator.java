@@ -48,7 +48,7 @@ public class JsonPojoSerializerClassesGenerator implements ClassesGenerator {
 										   	field.getType(), 
 										   	field.getObjectName(), 
 										   	deserializedClassName),
-								   field.getProperties()).generateClasses(outputFolder);;
+								   field.getProperties()).generateClasses(outputFolder);
 			}
 		}
 		

@@ -16,7 +16,7 @@ public abstract class AbstractExchange implements Exchange {
 	protected final Properties properties;
 	protected final Map<String, ExchangeApi> apis = new HashMap<>();
 	
-	public AbstractExchange(String id, String name, Properties properties) {
+	protected AbstractExchange(String id, String name, Properties properties) {
 		this.id = id;
 		this.name = name;
 		this.properties = properties;

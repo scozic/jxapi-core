@@ -36,7 +36,8 @@ public class DemoUtil {
 			if (!response.isOk()) {
 				throw new IllegalStateException("Error in response:" + response, response.getException());
 			}
-			log.info("Got OK response:" + prettyPrintResponse(response));
+			if (log.isInfoEnabled())
+				log.info("Got OK response:" + prettyPrintResponse(response));
 		} catch (InterruptedException | ExecutionException e) {
 			throw new IllegalStateException("Error fecthing response", e);
 		}
@@ -57,6 +58,7 @@ public class DemoUtil {
 	}
 	
 	public static void logWsMessage(Object message) {
-		log.info("received message:\n" + JsonUtil.pojoToPrettyPrintJson(message));
+		if (log.isInfoEnabled())
+			log.info("received message:\n" + JsonUtil.pojoToPrettyPrintJson(message));
 	}
 }

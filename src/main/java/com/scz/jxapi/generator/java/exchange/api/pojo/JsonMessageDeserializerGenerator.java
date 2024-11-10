@@ -101,7 +101,7 @@ public class JsonMessageDeserializerGenerator extends JavaTypeGenerator {
 				.append(
 					JavaCodeGenerationUtil.getSetAccessorMethodName(
 							field.getName(),  
-							fields.stream().map(f -> f.getName()).collect(Collectors.toList())))
+							fields.stream().map(Field::getName).collect(Collectors.toList())))
 				.append("(")
 				.append(getParseFieldInstruction(field))
 				.append(");\n")	

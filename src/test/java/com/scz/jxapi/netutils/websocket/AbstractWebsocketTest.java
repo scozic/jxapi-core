@@ -34,14 +34,17 @@ public class AbstractWebsocketTest {
             sentMessages.add(message);
         }
         
+        @Override
         protected void dispatchMessage(String message) {
     		super.dispatchMessage(message);
     	}
     	
+        @Override
     	protected void dispatchError(String msg, Throwable t) {
     		super.dispatchError(msg, t);
     	}
     	
+    	@Override
     	protected void dispatchError(WebsocketException error) {
     		super.dispatchError(error);
     	}

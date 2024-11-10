@@ -385,14 +385,17 @@ public class AbstractExchangeApiTest {
 			return (MockHttpRequestInterceptor) this.httpRequestInterceptor;
 		}
 		
+		@Override
 		public void createHttpRequestInterceptor(String factoryClassName) {
 			 super.createHttpRequestInterceptor(factoryClassName);
 		}
 		
+		@Override
 		public void createHttpRequestExecutor(String factoryClassName, long timeout) {
 			super.createHttpRequestExecutor(factoryClassName, timeout);
 		}
 		
+		@Override
 		protected void createWebsocketManager(String url, 
 				  String websocketFactoryClassName, 
 				  String websocketHookFactoryClassName) {

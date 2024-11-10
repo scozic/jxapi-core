@@ -7,7 +7,6 @@
   <groupId>com.scz.jxapi</groupId>
   <artifactId>jxapi-core</artifactId>
   <version>0.12.0-JAVAGENERATOR-REFACTOR-SNAPSHOT</version>
-  <!--<packaging>jar</packaging>-->
 
   <name>jxapi-core</name>
   <!-- FIXME change it to the project's website -->
@@ -112,15 +111,6 @@
 	    <version>1.9</version>
 	    <scope>test</scope>
 	</dependency>
-	
-	<!-- https://mvnrepository.com/artifact/org.mockito/mockito-core -->
-<!--	<dependency>-->
-<!--	    <groupId>org.mockito</groupId>-->
-<!--	    <artifactId>mockito-core</artifactId>-->
-<!--	    <version>5.13.0</version>-->
-<!--	    <scope>test</scope>-->
-<!--	</dependency>-->
-
 
   </dependencies>
 
@@ -170,7 +160,6 @@
         <plugin>
 		<groupId>org.codehaus.mojo</groupId>
 		<artifactId>exec-maven-plugin</artifactId>
-		<!--<version>1.6.0</version>-->
 		<configuration>
 			<mainClass>com.scz.jxapi.generator.exchange.ExchangeGeneratorMain</mainClass>
 		</configuration>

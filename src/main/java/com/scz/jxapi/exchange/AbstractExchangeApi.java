@@ -86,7 +86,7 @@ public abstract class AbstractExchangeApi implements ExchangeApi {
 	protected HttpRequestInterceptor httpRequestInterceptor = null;
 	protected WebsocketManager websocketManager = null;
 	protected final Observable<ExchangeApiObserver, ExchangeApiEvent> observable 
-						= new SynchronizedObservable<>((observer, event) -> observer.handleEvent(event));
+						= new SynchronizedObservable<>(ExchangeApiObserver::handleEvent);
 	
 	/**
 	 * Creates a new AbstractExchangeApi instance with the specified API name,
@@ -97,7 +97,7 @@ public abstract class AbstractExchangeApi implements ExchangeApi {
 	 * @param exchangeId   The ID of the exchange.
 	 * @param properties   The properties associated with the exchange instance.
 	 */
-	public AbstractExchangeApi(String apiName, 
+	protected AbstractExchangeApi(String apiName, 
 							   String exchangeName, 
 							   String exchangeId, 
 							   Properties properties) {
@@ -114,7 +114,7 @@ public abstract class AbstractExchangeApi implements ExchangeApi {
 	 * @param properties       The properties associated with the exchange instance.
 	 * @param requestThrottler The request throttler to use for rate limiting.
 	 */
-	public AbstractExchangeApi(String apiName, 
+	protected AbstractExchangeApi(String apiName, 
 							   String exchangeName, 
 							   String exchangeId, 
 							   Properties properties, 

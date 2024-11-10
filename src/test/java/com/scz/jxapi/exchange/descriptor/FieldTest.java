@@ -107,12 +107,14 @@ public class FieldTest {
     @Test
     public void testEquals_NotEqualsOtherNull() {
     	Field field = new Field();
+    	// Remark: Sonary issue about usage of equals is not relevant, since we are testing execution of equals method
     	Assert.assertFalse(field.equals(null));
     }
     
     @Test
     public void testEquals_NotEqualsOtherNotField() {
     	Field field = new Field();
+    	// Remark: Sonary issue about usage of equals is not relevant, since we are testing execution of equals method
     	Assert.assertFalse(field.equals(new Object()));
     }
     

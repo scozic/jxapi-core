@@ -451,10 +451,10 @@ public class ExchangeApiInterfaceImplementationGenerator extends JavaTypeGenerat
 										 		fieldClass, 
 										 		requestFields
 										 		       .stream()
-										 		       .map(f1 -> f1.getName())
+										 		       .map(Field::getName)
 										 		.collect(Collectors.toList())) 
 								 + "() + \"");
-		};
+		}
 		
 		if (!CollectionUtil.isEmpty(websocketApi.getMessageTopicMatcherFields())) {
 			for (int i = 0; i < websocketApi.getMessageTopicMatcherFields().size(); i++) {
@@ -469,7 +469,7 @@ public class ExchangeApiInterfaceImplementationGenerator extends JavaTypeGenerat
 				if (topicMatcherFieldDeclaration.endsWith(emtpyStrAppend)) {
 					topicMatcherFieldDeclaration = topicMatcherFieldDeclaration.substring(0, topicMatcherFieldDeclaration.length() - emtpyStrAppend.length());
 				}
-				subscribeMethodBody.append(topicMatcherFieldDeclaration.toString());	
+				subscribeMethodBody.append(topicMatcherFieldDeclaration);	
 				if (i < websocketApi.getMessageTopicMatcherFields().size() - 1) {
 					subscribeMethodBody.append(", ");
 				}
@@ -665,13 +665,13 @@ public class ExchangeApiInterfaceImplementationGenerator extends JavaTypeGenerat
 
 	private boolean checkHasRateLimits() {
 		List<RateLimitRule> rateLimits = exchangeApiDescriptor.getRateLimits();
-		if (rateLimits != null && rateLimits.size() > 0) {
+		if (rateLimits != null && !rateLimits.isEmpty()) {
 			return true;
 		}
 		if (exchangeApiDescriptor.getRestEndpoints() != null) {
 			for (RestEndpointDescriptor restEndpoint : exchangeApiDescriptor.getRestEndpoints()) {
 				rateLimits = restEndpoint.getRateLimits();
-				if (rateLimits != null && rateLimits.size() > 0) {
+				if (rateLimits != null && !rateLimits.isEmpty()) {
 					return true;
 				}
 			}
@@ -756,8 +756,8 @@ public class ExchangeApiInterfaceImplementationGenerator extends JavaTypeGenerat
 			if (i > 0) {
 				s.append(", ");
 			}
-			Field param = requestFields.get(i);
-			String name = Optional.ofNullable(param.getMsgField()).orElse(param.getName());
+			Field f = requestFields.get(i);
+			String name = Optional.ofNullable(f.getMsgField()).orElse(f.getName());
 			s.append("\"")
 			 .append(name)
 			 .append("\", ");
@@ -765,20 +765,20 @@ public class ExchangeApiInterfaceImplementationGenerator extends JavaTypeGenerat
 			if (!singleRequestParam) {
 				value += "." 
 						+ JavaCodeGenerationUtil.getGetAccessorMethodName(
-							param.getName(), 
-							ExchangeApiGeneratorUtil.getClassNameForField(param, null, param.getObjectName()), 
-							requestFields.stream().map(p -> p.getName()).collect(Collectors.toList()))
+							f.getName(), 
+							ExchangeApiGeneratorUtil.getClassNameForField(f, null, f.getObjectName()), 
+							requestFields.stream().map(Field::getName).collect(Collectors.toList()))
 						+ "()";
 			}
-			if (param.getType().getCanonicalType() == CanonicalType.LIST
-				|| param.getType().getCanonicalType() == CanonicalType.MAP
-				|| param.getType().isObject()) {
+			if (f.getType().getCanonicalType() == CanonicalType.LIST
+				|| f.getType().getCanonicalType() == CanonicalType.MAP
+				|| f.getType().isObject()) {
 				addImport(JsonUtil.class);
 				value = new StringBuilder()
 								.append("JsonUtil.pojoToJsonString(")
 								.append(value)
 								.append(")").toString(); 
-			} else if (param.getType().getCanonicalType() == CanonicalType.STRING) {
+			} else if (f.getType().getCanonicalType() == CanonicalType.STRING) {
 				value = new StringBuilder()
 						.append(value)
 						.toString(); 
@@ -813,7 +813,7 @@ public class ExchangeApiInterfaceImplementationGenerator extends JavaTypeGenerat
 						   + JavaCodeGenerationUtil.getGetAccessorMethodName(
 								name, 
 								ExchangeApiGeneratorUtil.getClassNameForField(param, null, param.getObjectName()), 
-								fields.stream().map(p -> p.getName()).collect(Collectors.toList()))
+								fields.stream().map(Field::getName).collect(Collectors.toList()))
 						   + "()";
 			if (param.getType().getCanonicalType() == CanonicalType.LIST) {
 				value = EncodingUtil.class.getSimpleName() + ".listToString(" + value + ", \"" + stringListSeparator + "\")"; 

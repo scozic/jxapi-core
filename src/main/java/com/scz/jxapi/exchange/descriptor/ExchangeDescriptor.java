@@ -110,7 +110,7 @@ public class ExchangeDescriptor {
 	
 	private String description;
 	
-	private String DocUrl;
+	private String docUrl;
 	
 	private String basePackage;
 	
@@ -192,14 +192,14 @@ public class ExchangeDescriptor {
 	 * @return Exchange's website API documentation home page
 	 */
 	public String getDocUrl() {
-		return DocUrl;
+		return docUrl;
 	}
 
 	/**
 	 * @param excgangeUrl Exchange's website API documentation home page
 	 */
 	public void setDocUrl(String excgangeUrl) {
-		this.DocUrl = excgangeUrl;
+		this.docUrl = excgangeUrl;
 	}
 	
 	/**

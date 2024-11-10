@@ -15,7 +15,6 @@ public class RestRequestPaginationTest {
 		TestRequest request = new TestRequest();
 		request.setIndex("" + index);
 		return request;
-		//return RestRequest.create("http://my/paginated/api", "GET", request);
 	}
 	
 	private static TestResponse createResponse(int index) {
@@ -44,15 +43,6 @@ public class RestRequestPaginationTest {
 			Assert.assertEquals("Unexpected item at index #" + i, items[i], response.getResponse().getItems().get(i));
 		}
 	}
-	
-//	public String throwException() {
-//		throw new RuntimeException("Error processing response");
-//	}
-	
-//	private static  int throwException(TestResponse r) {
-//		
-//		return 0;
-//	}
 	
 	@Test
 	public void testFetchAllPagesOnlyOneResponsePage() throws Exception {

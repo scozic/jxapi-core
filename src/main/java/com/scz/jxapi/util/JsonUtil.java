@@ -98,7 +98,7 @@ public class JsonUtil {
 		}
 		try {
 			ObjectMapper om = getDefaultJsonToStringObjectMapper();
-			return om.writerWithDefaultPrettyPrinter().writeValueAsString(pojo).replaceAll("\\r", "");
+			return om.writerWithDefaultPrettyPrinter().writeValueAsString(pojo).replace("\r", "");
 		} catch (JsonProcessingException e) {
 			throw new IllegalArgumentException(
 					"Error while trying to serialize " + pojo.getClass().getName() + " instance to JSON", e);

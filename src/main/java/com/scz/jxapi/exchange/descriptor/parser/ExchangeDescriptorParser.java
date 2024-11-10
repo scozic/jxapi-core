@@ -35,7 +35,7 @@ public class ExchangeDescriptorParser {
 	 * @throws JsonMappingException if there is an error mapping the JSON to the ExchangeDescriptor object
 	 * @throws JsonProcessingException if there is an error processing the JSON string
 	 */
-	public ExchangeDescriptor fromJson(String jsonString) throws JsonMappingException, JsonProcessingException {
+	public ExchangeDescriptor fromJson(String jsonString) throws JsonProcessingException {
 		ObjectMapper mapper = new ObjectMapper();
 		mapper.disable(SerializationFeature.FAIL_ON_EMPTY_BEANS);
 		return mapper.readValue(jsonString, ExchangeDescriptor.class);

@@ -237,7 +237,7 @@ public class DefaultWebsocketManager implements WebsocketManager {
 			
 			connected.set(true);
 			if(log.isInfoEnabled())
-				log.info("Connected WS:" + this);
+				log.info("Connected WS:{0}", this.toString());
 		} catch (Exception exception) {
 			String msg = "Error while connecting websocket";
 			if (log.isErrorEnabled())
@@ -410,8 +410,7 @@ public class DefaultWebsocketManager implements WebsocketManager {
 		allTopics.addAll(topics.values());
 		List<WebsocketMessageTopicMatcher> topicMatchers = new ArrayList<>(allTopics.size());
 		allTopics.forEach(t -> topicMatchers.add(t.matcher.createWebsocketMessageTopicMatcher()));
-		try {
-			JsonParser jsonParser = jsonFactory.createParser(message.getBytes());
+		try (JsonParser jsonParser = jsonFactory.createParser(message.getBytes())) {
 			for (JsonToken tok = jsonParser.nextToken(); tok != null && !allTopics.isEmpty(); tok = jsonParser.nextToken()) {
 				if (tok == JsonToken.FIELD_NAME) {
 					String fieldName = jsonParser.currentName();
@@ -463,7 +462,7 @@ public class DefaultWebsocketManager implements WebsocketManager {
 				try {
 					Thread.sleep(reconnectDelay);
 				} catch (InterruptedException e) {
-					log.warn("Interrupted while sleeping till reconnect delay has elapsed for websocket [" + toString() + "]");
+					log.warn("Interrupted while sleeping till reconnect delay has elapsed for websocket [" + toString() + "]", e);
 				}
 				try {
 					connect();
@@ -485,7 +484,7 @@ public class DefaultWebsocketManager implements WebsocketManager {
 		writeExecutor.execute(() -> onError(exception));
 	}
 	
-	private void resubscribeTopics() throws WebsocketException {
+	private void resubscribeTopics() {
 		if (log.isInfoEnabled())
 			log.info("Resubscribing " + topics.size() + " topics after successful reconnection");
 		for (String topic : topics.keySet()) {
@@ -513,6 +512,8 @@ public class DefaultWebsocketManager implements WebsocketManager {
 					// System message handler matched that message. No need to keep processing to find other handlers.
 					return true;
 				}
+				it.remove();
+				break;
 				// Fallback
 			case CANT_MATCH:
 				it.remove();

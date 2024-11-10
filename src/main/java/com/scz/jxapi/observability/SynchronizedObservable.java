@@ -38,6 +38,7 @@ public class SynchronizedObservable<L, E> extends DefaultObservable<L, E> {
 	 * 
 	 * @param event event to dispatch
 	 */
+	@Override
 	public void dispatch(E event) {
 		List<L> tmp = null;
 		synchronized (listeners) {

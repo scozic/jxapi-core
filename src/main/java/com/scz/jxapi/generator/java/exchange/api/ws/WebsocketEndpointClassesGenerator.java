@@ -80,7 +80,7 @@ public class WebsocketEndpointClassesGenerator implements ClassesGenerator {
 							apiDescriptor, 
 							websocketEndpointDescriptor),
 					websocketEndpointDescriptor.getMessage().getProperties())
-			  .generateClasses(outputFolder);;
+			  .generateClasses(outputFolder);
 		}
 	}
 

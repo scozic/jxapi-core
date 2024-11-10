@@ -23,7 +23,7 @@ public class TestCompleteFutureTask {
 						log.error("Interrupted", e);
 					}
 				}
-			}.start();;
+			}.start();
 			
 			Thread.sleep(1000);
 			myFuture.thenAccept(s -> {

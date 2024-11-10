@@ -36,7 +36,7 @@ public class RestEndpointDemoGenerator extends JavaTypeGenerator {
 	private final ExchangeDescriptor exchangeDescriptor;
 	private final ExchangeApiDescriptor exchangeApiDescriptor;
 	private final RestEndpointDescriptor restApi;
-	private StringBuilder body;
+	private StringBuilder bodyBuilder;
 	private final boolean hasArguments;
 	private final String requestClassName;
 	private final String requestSimpleClassName;
@@ -97,7 +97,7 @@ public class RestEndpointDemoGenerator extends JavaTypeGenerator {
 	}
 	
 	private void generateMainMethodBody() {
-		body = new StringBuilder();
+		bodyBuilder = new StringBuilder();
 		String exchangeInterfaceClassName = ExchangeJavaWrapperGeneratorUtil.getExchangeInterfaceName(exchangeDescriptor);
 		String exchangeName = JavaCodeGenerationUtil.firstLetterToLowerCase(exchangeDescriptor.getName());
 		Field request = ExchangeApiGeneratorUtil.resolveFieldProperties(exchangeApiDescriptor, restApi.getRequest());
@@ -105,42 +105,42 @@ public class RestEndpointDemoGenerator extends JavaTypeGenerator {
 		addImport(exchangeImplClassName);
 		addImport(TestJXApiProperties.class);
 		addImport(DemoUtil.class);
-		body.append(EndpointDemoGeneratorUtil.getNewTestApiInstruction(exchangeName, exchangeImplClassName, simpleApiClassName));
+		bodyBuilder.append(EndpointDemoGeneratorUtil.getNewTestApiInstruction(exchangeName, exchangeImplClassName, simpleApiClassName));
 		if (hasArguments) {
 			this.appendToBody(EndpointDemoGeneratorUtil.generateFieldCreationMethod(
 								request,  
 								requestClassName, 
 								getImports()));
-			body.append(requestSimpleClassName)
+			bodyBuilder.append(requestSimpleClassName)
 				.append(" request = ")
 				.append(EndpointDemoGeneratorUtil.generateFieldCreationMethodName(request))
 				.append("();\n");
 		}
 			
 		String apiMethodName = JavaCodeGenerationUtil.firstLetterToLowerCase(restApi.getName());
-		body.append("log.info(\"Calling ")
+		bodyBuilder.append("log.info(\"Calling ")
 			.append(apiInterfaceClassName)
 			.append(".")
 			.append(apiMethodName)
 			.append("() API");
 		if (hasArguments) {
-			body.append(" with request:\" + request");
+			bodyBuilder.append(" with request:\" + request");
 		} else {
-			body.append("\"");
+			bodyBuilder.append("\"");
 		}
-		body.append(");\n");
+		bodyBuilder.append(");\n");
 			
-		body.append("DemoUtil.checkResponse(api.")
+		bodyBuilder.append("DemoUtil.checkResponse(api.")
 			.append(apiMethodName)
 			.append("(");
 		if (hasArguments) {
-			body.append("request");
+			bodyBuilder.append("request");
 		}
-		body.append("));\nSystem.exit(0);");
+		bodyBuilder.append("));\nSystem.exit(0);");
 		
 		appendMethod("public static void main(String[] args)", 
 					"try {\n" 
-						+ JavaCodeGenerationUtil.indent(body.toString(), JavaCodeGenerationUtil.INDENTATION) 
+						+ JavaCodeGenerationUtil.indent(bodyBuilder.toString(), JavaCodeGenerationUtil.INDENTATION) 
 						+ "\n} catch (Throwable t) {\n"
 						+ JavaCodeGenerationUtil.indent("log.error(\"Exception raised from main()\", t);\nSystem.exit(-1);", JavaCodeGenerationUtil.INDENTATION)
 						+ "\n}");

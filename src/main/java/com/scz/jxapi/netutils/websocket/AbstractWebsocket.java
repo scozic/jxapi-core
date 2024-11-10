@@ -36,17 +36,15 @@ public abstract class AbstractWebsocket implements Websocket {
 
 	protected final AtomicBoolean connected = new AtomicBoolean(false);
 
-	private final Observable<RawWebsocketMessageHandler, String> messageObservable = new DefaultObservable<>(
-			(handler, message) -> handler.handleWebsocketMessage(message));
-	private final Observable<WebsocketErrorHandler, WebsocketException> errorObservable = new DefaultObservable<>(
-			(handler, error) -> handler.handleWebsocketError(error));
+	private final Observable<RawWebsocketMessageHandler, String> messageObservable = new DefaultObservable<>(RawWebsocketMessageHandler::handleWebsocketMessage);
+	private final Observable<WebsocketErrorHandler, WebsocketException> errorObservable = new DefaultObservable<>(WebsocketErrorHandler::handleWebsocketError);
 
 	protected String url;
 
 	@Override
 	public final void connect() throws WebsocketException {
 		if (log.isDebugEnabled()) {
-			log.debug("Connecting WS " + this);
+			log.debug("Connecting WS {}", this);
 		}
 		if (!connected.getAndSet(true)) {
 			try {
@@ -57,20 +55,20 @@ public abstract class AbstractWebsocket implements Websocket {
 			}
 		}
 		if (log.isDebugEnabled()) {
-			log.debug("Connected WS " + this);
+			log.debug("Connected WS {}", this);
 		}
 	}
 
 	@Override
 	public final void disconnect() {
 		if (log.isDebugEnabled()) {
-			log.debug("Disonnecting WS " + this);
+			log.debug("Disonnecting {}", this);
 		}
 		if (connected.getAndSet(false)) {
 			doDisconnect();
 		}
 		if (log.isDebugEnabled()) {
-			log.debug("Disonnected WS " + this);
+			log.debug("Disonnected WS {}", this);
 		}
 	}
 

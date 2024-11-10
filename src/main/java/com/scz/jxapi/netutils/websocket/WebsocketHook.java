@@ -136,7 +136,7 @@ public interface WebsocketHook {
 	 */
 	default String getSubscribeRequestMessage(String topic) {
 		return null;
-	};
+	}
 
 	/**
 	 * Get the message to send to unsubscribe from a topic.
@@ -151,7 +151,7 @@ public interface WebsocketHook {
 	 */
 	default String getUnSubscribeRequestMessage(String topic) {
 		return null;
-	};
+	}
 
 	/**
 	 * Get the message to send to keep the connection alive.
@@ -164,6 +164,6 @@ public interface WebsocketHook {
 	 */
 	default String getHeartBeatMessage() {
 		return null;
-	};
+	}
 
 }

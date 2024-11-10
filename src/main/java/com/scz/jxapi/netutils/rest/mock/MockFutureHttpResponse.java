@@ -44,6 +44,7 @@ public class MockFutureHttpResponse extends FutureHttpResponse {
 	 *
 	 * @return a string representation of this object
 	 */
+	@Override
 	public String toString() {
 		return EncodingUtil.pojoToString(this);
 	}

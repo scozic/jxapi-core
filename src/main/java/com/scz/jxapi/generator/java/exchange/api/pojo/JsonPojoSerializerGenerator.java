@@ -68,7 +68,7 @@ public class JsonPojoSerializerGenerator extends JavaTypeGenerator {
 			String getFieldValue = "value." + JavaCodeGenerationUtil.getGetAccessorMethodName(
 					field.getName(),
 					field.getType().getCanonicalType().name().toLowerCase(),
-					fields.stream().map(f -> f.getName()).collect(Collectors.toList())) + "()";
+					fields.stream().map(Field::getName).collect(Collectors.toList())) + "()";
 			body.append("if (").append(getFieldValue).append(" != null)");
 			body.append(JavaCodeGenerationUtil.generateCodeBlock(genWriteFieldInstruction(field, getFieldValue)));
 		});

@@ -51,7 +51,7 @@ public class WebsocketEndpointDemoGenerator extends JavaTypeGenerator {
 	private final ExchangeDescriptor exchangeDescriptor;
 	private final ExchangeApiDescriptor exchangeApiDescriptor;
 	private final WebsocketEndpointDescriptor websocketApi;
-	private StringBuilder body;
+	private StringBuilder bodyBuilder;
 	private final boolean hasArguments;
 	private final String requestClassName;
 	private final String requestSimpleClassName;
@@ -125,7 +125,7 @@ public class WebsocketEndpointDemoGenerator extends JavaTypeGenerator {
 	}
 	
 	private void generateMainMethodBody() {
-		body = new StringBuilder();
+		bodyBuilder = new StringBuilder();
 		String exchangeInterfaceClassName = ExchangeJavaWrapperGeneratorUtil.getExchangeInterfaceName(exchangeDescriptor);
 		String exchangeName = JavaCodeGenerationUtil.firstLetterToLowerCase(exchangeDescriptor.getName());
 		Field request = ExchangeApiGeneratorUtil.resolveFieldProperties(exchangeApiDescriptor, websocketApi.getRequest());
@@ -133,7 +133,7 @@ public class WebsocketEndpointDemoGenerator extends JavaTypeGenerator {
 		addImport(exchangeImplClassName);
 		addImport(TestJXApiProperties.class);
 		
-		body.append(EndpointDemoGeneratorUtil.getNewTestApiInstruction(exchangeName, exchangeImplClassName, simpleApiClassName));
+		bodyBuilder.append(EndpointDemoGeneratorUtil.getNewTestApiInstruction(exchangeName, exchangeImplClassName, simpleApiClassName));
 			
 		if (hasArguments) {
 			this.appendToBody(EndpointDemoGeneratorUtil.generateFieldCreationMethod(
@@ -142,7 +142,7 @@ public class WebsocketEndpointDemoGenerator extends JavaTypeGenerator {
 								getImports()))
 				.append("\n");
 			
-			body.append(requestSimpleClassName)
+			bodyBuilder.append(requestSimpleClassName)
 				.append(" request = ")
 				.append(EndpointDemoGeneratorUtil.generateFieldCreationMethodName(request))
 				.append("();\n");
@@ -150,25 +150,25 @@ public class WebsocketEndpointDemoGenerator extends JavaTypeGenerator {
 		
 		String subscribeMethodName = ExchangeApiGeneratorUtil.getWebsocketSubscribeMethodName(websocketApi);
 		String unsubscribeMethodName = ExchangeApiGeneratorUtil.getWebsocketUnsubscribeMethodName(websocketApi);
-		body.append("log.info(\"Subscribing to websocket API '")
+		bodyBuilder.append("log.info(\"Subscribing to websocket API '")
 			.append(fullStreamName)
 			.append("' for \" + ")
 			.append(SUBSCRIPTION_DURATION_STATIC_VAR_NAME)
 			.append(" + \"ms");
 		if (hasArguments) {
-			body.append(" with request:\" + request);\n");
+			bodyBuilder.append(" with request:\" + request);\n");
 		} else {
-			body.append("\");\n");
+			bodyBuilder.append("\");\n");
 		}
 		
-		body.append("String subId = api.")
+		bodyBuilder.append("String subId = api.")
 			.append(subscribeMethodName)
 			.append("(");
 		if (hasArguments) {
-			body.append("request, ");
+			bodyBuilder.append("request, ");
 		}
 		addImport(DemoUtil.class);
-		body.append("m -> ")
+		bodyBuilder.append("m -> ")
 			.append(DemoUtil.class.getSimpleName())
 			.append(".logWsMessage(m));\n")
 			.append("Thread.sleep(")
@@ -187,7 +187,7 @@ public class WebsocketEndpointDemoGenerator extends JavaTypeGenerator {
 		
 		appendMethod("public static void main(String[] args)", 
 				"try {\n" 
-					+ JavaCodeGenerationUtil.indent(body.toString(), JavaCodeGenerationUtil.INDENTATION) 
+					+ JavaCodeGenerationUtil.indent(bodyBuilder.toString(), JavaCodeGenerationUtil.INDENTATION) 
 					+ "\n} catch (Throwable t) {\n"
 					+ JavaCodeGenerationUtil.indent("log.error(\"Exception raised from main()\", t);\nSystem.exit(-1);", JavaCodeGenerationUtil.INDENTATION)
 					+ "\n}");

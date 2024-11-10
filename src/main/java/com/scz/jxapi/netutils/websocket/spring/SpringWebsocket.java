@@ -51,8 +51,6 @@ public class SpringWebsocket extends AbstractWebsocket {
 	private WebSocketSession webSocketSession;
 	
 	private int taskExecutorCounter = 0;
-	
-	public SpringWebsocket() {}
 
 	@Override
 	protected void doSend(String message) throws WebsocketException {

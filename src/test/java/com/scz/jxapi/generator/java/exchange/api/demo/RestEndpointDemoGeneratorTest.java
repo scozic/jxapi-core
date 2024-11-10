@@ -20,7 +20,7 @@ public class RestEndpointDemoGeneratorTest {
 	public void testGenerateRestEndpointDemo() throws Exception {
 		ExchangeDescriptor exchange = new ExchangeDescriptorParser().fromJson(Paths.get(".", "src", "test", "resources", "testExchangeDescriptor.json"));
 		ExchangeApiDescriptor api = exchange.getApis().get(0); 
-		RestEndpointDescriptor restEndpointDescriptor = ClassesGeneratorTestUtil.findRestEndpointByName("exchangeInfo", api);;
+		RestEndpointDescriptor restEndpointDescriptor = ClassesGeneratorTestUtil.findRestEndpointByName("exchangeInfo", api);
 		Assert.assertEquals("package com.foo.bar.gen.marketdata.demo;\n"
 				+ "\n"
 				+ "import com.foo.bar.gen.MyTestExchangeExchangeImpl;\n"

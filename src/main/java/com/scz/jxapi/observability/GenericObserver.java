@@ -90,16 +90,13 @@ public class GenericObserver<T> {
 	/**
 	 * Checks no events are raised for a given period
 	 * @param delay delay during which no events should be raied.
+	 * @throws InterruptedException 
 	 */
-	public void checkNoEvents(long delay) {
-		if (events.size() <= 0) {
-			try {
-				Thread.sleep(delay);
-			} catch (InterruptedException e) {
-				throw new RuntimeException("Interrupted", e);
-			}
+	public void checkNoEvents(long delay) throws InterruptedException {
+		if (events.isEmpty()) {
+			Thread.sleep(delay);
 		}
-		if (events.size() > 0) {
+		if (!events.isEmpty()) {
 			throw new IllegalStateException("Received " + events.size() + " events, first:" + events.get(0));
 		}
 	}

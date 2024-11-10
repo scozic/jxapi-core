@@ -230,7 +230,7 @@ public class DefaultWebsocketManagerTest {
 		String unsubscribeTopicMsg = "unsubscribe:topic1";
 		wsHook.setSubscribeRequestMessage(topic, subscribeTopicMsg);
 		wsHook.setUnSubscribeRequestMessage(topic, unsubscribeTopicMsg);
-		WebsocketMessageTopicMatcherFactory topicMatcher = WebsocketMessageTopicMatcherFactory.createFactory("myTopic", "topic1");;
+		WebsocketMessageTopicMatcherFactory topicMatcher = WebsocketMessageTopicMatcherFactory.createFactory("myTopic", "topic1");
 		wsManager.subscribe(topic, topicMatcher, wsMessageHandler1);
 		popWebsocketHookBeforeConnectEvent();
 		popWebsocketConnectEvent();
@@ -416,8 +416,6 @@ public class DefaultWebsocketManagerTest {
 		popWebsocketConnectEvent();
 		ws.dispatchMessage(heartBeatMsg);
 		
-//		// FIXME
-//		Thread.sleep(100000000000L);
 		popWebsocketSendMessageEvent(heartBeatResponseMsg);
 		Assert.assertEquals(1, hbHandler.pingCount());
 		
@@ -529,7 +527,6 @@ public class DefaultWebsocketManagerTest {
 		String unsubscribeTopicMsg = "unsubscribe:topic1";
 		wsHook.setSubscribeRequestMessage(topic, subscribeTopicMsg);
 		wsHook.setUnSubscribeRequestMessage(topic, unsubscribeTopicMsg);
-//		String heartBeatMsg = "{\"myTopic\":\"heartBeat\", \"payload\":\"PING\"}";
 		wsHook.setHeartBeatMessage(null);
 		WebsocketMessageTopicMatcherFactory topicMatcher = WebsocketMessageTopicMatcherFactory.createFactory("myTopic", "topic1");
 		checkNoEvents();
@@ -1226,7 +1223,7 @@ public class DefaultWebsocketManagerTest {
 		return ex;
 	}
 	
-	private void checkNoError() {
+	private void checkNoError() throws InterruptedException {
 		errorHandler.checkNoEvents(NO_EVENT_DELAY);
 	}
 	

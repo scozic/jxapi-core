@@ -13,7 +13,7 @@ import org.junit.Test;
 public class SynchronizedObservableTest {
 
     @Test
-    public void testSubscribeDispatchEventsThenUnsubscribe() {
+    public void testSubscribeDispatchEventsThenUnsubscribe() throws Exception {
         SynchronizedObservable<TestObserver, String> observable = new SynchronizedObservable<>((l, e) -> l.handleEvent(e));
         TestObserver observer1 = new TestObserver();
         TestObserver observer2 = new TestObserver();
@@ -80,7 +80,7 @@ public class SynchronizedObservableTest {
         	}
         }).start();
         
-        // While async dispatch of messages is running, subscribe/unsubscribe listners2 and 3;
+        // Async dispatch of messages is running, subscribe/unsubscribe listners2 and 3;
 		for (int i = 0; i < count; i++) {
     		observable.unsubscribe(observer2);
     		observable.unsubscribe(observer3);

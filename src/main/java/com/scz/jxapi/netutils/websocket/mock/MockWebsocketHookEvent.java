@@ -90,8 +90,7 @@ public class MockWebsocketHookEvent {
 	 *         for the given {@link MockWebsocketHook}.
 	 */
 	public static MockWebsocketHookEvent createGetHeartbeatEvent(MockWebsocketHook source) {
-		MockWebsocketHookEvent e = new MockWebsocketHookEvent(MockWebsocketHookEventType.GET_HEARTBEAT_MESSAGE, source);
-		return e;
+		return new MockWebsocketHookEvent(MockWebsocketHookEventType.GET_HEARTBEAT_MESSAGE, source);
 	}
 
 	private final MockWebsocketHookEventType type;

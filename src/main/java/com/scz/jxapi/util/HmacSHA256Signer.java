@@ -42,10 +42,10 @@ public class HmacSHA256Signer {
    */
   public static byte[] sign(String message, String secret) {
     try {
-      Mac sha256_HMAC = Mac.getInstance("HmacSHA256");
+      Mac sha256HMAC = Mac.getInstance("HmacSHA256");
       SecretKeySpec secretKeySpec = new SecretKeySpec(secret.getBytes(), "HmacSHA256");
-      sha256_HMAC.init(secretKeySpec);
-      return sha256_HMAC.doFinal(message.getBytes());
+      sha256HMAC.init(secretKeySpec);
+      return sha256HMAC.doFinal(message.getBytes());
     } catch (Exception e) {
       throw new IllegalArgumentException("Unable to sign message.", e);
     }

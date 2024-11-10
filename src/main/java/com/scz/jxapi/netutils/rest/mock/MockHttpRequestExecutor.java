@@ -58,7 +58,7 @@ public class MockHttpRequestExecutor extends AbstractHttpRequestExecutor {
 	 * @throws IllegalStateException if no request has been submitted.
 	 */
 	public MockFutureHttpResponse popRequest() {
-		if (submittedRequests.size() < 1) {
+		if (submittedRequests.isEmpty()) {
 			throw new IllegalStateException("No request submitted");
 		}
 		return submittedRequests.remove(0);

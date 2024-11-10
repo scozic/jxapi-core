@@ -234,9 +234,6 @@ public class JsonUtilTest {
 	@Test
 	public void testReadCurrentList_NullList() throws Exception {
 		JsonParser parser = new JsonFactory().createParser("null".getBytes());
-//		JsonParser parser = new JsonFactory().createParser("{\"value\": null}".getBytes());
-//		Assert.assertEquals(JsonToken.START_OBJECT, parser.nextToken());
-//		Assert.assertEquals(JsonToken.FIELD_NAME, parser.nextToken());
 		Assert.assertEquals(JsonToken.VALUE_NULL, parser.nextToken());
 		Assert.assertNull(JsonUtil.readCurrentList(parser, null));
 	}

@@ -144,7 +144,7 @@ public class EndpointDemoGeneratorUtil {
 				String setAccessorName = JavaCodeGenerationUtil.getSetAccessorMethodName(
 						childParam.getName(),  
 						field.getProperties().stream()
-										 .map(f -> f.getName()).collect(Collectors.toList()));
+										 .map(Field::getName).collect(Collectors.toList()));
 				String setChildParamInstruction = 
 							new StringBuilder()
 									.append(itemVariableName)
@@ -182,7 +182,7 @@ public class EndpointDemoGeneratorUtil {
 			fieldValue = JavaCodeGenerationUtil.getQuotedString(sampleValue);
 		}
 		
-		if (canonicalType != CanonicalType.OBJECT) {
+	if (canonicalType != CanonicalType.OBJECT) {
 			// Not primitive nor object type -> map or list type.
 			if (type.isObject()) {
 				fieldValue = getMapOrListSampleValueDeclaration(
@@ -201,7 +201,7 @@ public class EndpointDemoGeneratorUtil {
 		if (fieldValue == null) {
 			return returnOrResultAffectation + "null";
 		} else {
-			res.append(returnOrResultAffectation).append(fieldValue);//.append(";");
+			res.append(returnOrResultAffectation).append(fieldValue);
 			return res.toString();
 		}
 	}
@@ -213,11 +213,11 @@ public class EndpointDemoGeneratorUtil {
 		if (type.getSubType() == null) {
 			return itemValue;
 		}
-		switch (type.getCanonicalType()) {
-		case LIST:
+		
+		if (type.getCanonicalType() == CanonicalType.LIST) {
 			imports.add(List.class.getName());
 			return "List.of(" + getMapOrListSampleValueDeclaration(type.getSubType(), itemValue, sampleMapKeyValues, imports) + ")";
-		default: // MAP
+		} else { // MAP
 			if (sampleMapKeyValues == null || !sampleMapKeyValues.hasNext()) {
 				return null;
 			}

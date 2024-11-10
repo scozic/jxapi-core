@@ -224,12 +224,12 @@ public class Type {
 	
 	@Override
 	public boolean equals(Object other) {
-		if (other == null) {
-			return false;
-		}
-		if (!Objects.equals(getClass(), other.getClass())) {
-			return false;
-		}
+	    if (this == other) {
+	        return true;
+	      }
+	      if (other == null || this.getClass() != other.getClass()) {
+	        return false;
+	      }
 		Type t = (Type) other;
 		if (this.canonicalType != t.canonicalType) {
 			return false;

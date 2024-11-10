@@ -103,12 +103,12 @@ public class GenericObserverTest {
     }
     
     @Test
-    public void testCheckNoEvents_NoEventsRaised() {
+    public void testCheckNoEvents_NoEventsRaised() throws Exception {
     	observer.checkNoEvents(10L);
     }
     
     @Test(expected = IllegalStateException.class)
-    public void testCheckNoEvents_OneEventsRaised() {
+    public void testCheckNoEvents_OneEventsRaised() throws Exception {
     	observer.handleEvent("event1");
     	observer.checkNoEvents(10L);
     }

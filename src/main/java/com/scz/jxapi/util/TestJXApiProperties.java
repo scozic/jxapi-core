@@ -43,11 +43,11 @@ public class TestJXApiProperties {
 	 * The name of the property containing the duration of the subscription in
 	 * WebSocket endpoint demo classes.
 	 */
-	public static final String DEMO_WS_SUBSCRIPTION_DURATION_SYS_PROP = "jxapi.demo.ws.subscriptionDuration";
+	public static final String DEMO_WS_SUBSCRIPTION_DURATION_PROPERTY = "jxapi.demo.ws.subscriptionDuration";
 
 	/**
 	 * The default duration of the subscription in WebSocket endpoint demo classes
-	 * when the property {@value #DEMO_WS_SUBSCRIPTION_DURATION_SYS_PROP} is not
+	 * when the property {@value #DEMO_WS_SUBSCRIPTION_DURATION_PROPERTY} is not
 	 * set.
 	 */
 	public static final long DEMO_WS_DEFAULT_SUBSCRIPTION_DURATION = 60000L;
@@ -56,8 +56,8 @@ public class TestJXApiProperties {
 	 * The duration of the subscription in WebSocket endpoint demo classes, in
 	 * milliseconds.
 	 */
-	public static final long DEMO_WS_SUBSCRIPTION_DURATION = getLongProp(DEMO_WS_SUBSCRIPTION_DURATION_SYS_PROP,
-			DEMO_WS_DEFAULT_SUBSCRIPTION_DURATION);
+	public static final long DEMO_WS_SUBSCRIPTION_DURATION = getLongProp(DEMO_WS_SUBSCRIPTION_DURATION_PROPERTY,
+																		 DEMO_WS_DEFAULT_SUBSCRIPTION_DURATION);
 
 	/**
 	 * The name of the property containing the delay before exiting program after
@@ -149,4 +149,6 @@ public class TestJXApiProperties {
 	public static Properties filterProperties(String namespace, boolean removeNamespace) {
 		return PropertiesUtil.filterProperties(get(), namespace, removeNamespace);
 	}
+	
+	private TestJXApiProperties() {}
 }

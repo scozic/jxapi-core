@@ -28,7 +28,7 @@ public class PojoGenerator extends JavaTypeGenerator {
 		setTypeDeclaration("public class");
 	}
 
-	private final Map<String, PojoField> fields = new TreeMap<String, PojoField>();
+	private final Map<String, PojoField> fields = new TreeMap<>();
 	
 	/**
 	 * Adds a field to the POJO. If field type is not a primitive or java.lang.*
@@ -52,7 +52,7 @@ public class PojoGenerator extends JavaTypeGenerator {
 	
 	@Override
 	public String generate() {
-		List<PojoField> l = new ArrayList<PojoField>(fields.values());
+		List<PojoField> l = new ArrayList<>(fields.values());
 		body.insert(0, JavaCodeGenerationUtil.generateJavaPojoFieldsWithAccessors(l));
 		generateEqualsMethod();
 		body.append("\n");

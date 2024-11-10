@@ -115,12 +115,7 @@ public class RateLimitManager {
 	}
 	
 	private MilliSecondStat getMsStat(long now) {
-		MilliSecondStat mss = msStats.get(now);
-		if (mss == null) {
-			mss = new MilliSecondStat();
-			msStats.put(now, mss);
-		}
-		return mss;
+		return msStats.computeIfAbsent(now, t -> new MilliSecondStat());
 	}
 	
 	/**

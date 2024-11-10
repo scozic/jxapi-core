@@ -105,7 +105,7 @@ public class DefaultWebsocketEndpointTest {
 	}
 	
 	@Test
-	public void testUnSubscribeFromSingleTopic() {
+	public void testUnSubscribeFromSingleTopic() throws Exception {
 		String topic = "topic1";
 		WebsocketSubscribeRequest subscribeRequest = WebsocketSubscribeRequest.create(null, null, topic, WebsocketMessageTopicMatcherFactory.ANY_MATCHER_FACTORY);
 		TestMessageListener listener1 = new TestMessageListener();
@@ -199,7 +199,7 @@ public class DefaultWebsocketEndpointTest {
 	private void popWebsocketMessageEvent(TestMessage tm) {
 		ExchangeApiEvent e = apiObserver.pop();
 		Assert.assertEquals(ExchangeApiEventType.WEBSOCKET_MESSAGE, e.getType());
-		Assert.assertEquals(tm, e.getWebsocketMessage());
+		Assert.assertEquals(tm.toString(), e.getWebsocketMessage());
 		Assert.assertEquals(tm.getMyTopic(), e.getWebsocketSubscribeRequest().getTopic());
 	}
 	
@@ -209,7 +209,7 @@ public class DefaultWebsocketEndpointTest {
 		Assert.assertNotNull(e.getWebsocketError());
 	}
 	
-	private void checkNoExchangeApiEvents() {
+	private void checkNoExchangeApiEvents() throws InterruptedException {
 		apiObserver.checkNoEvents(0);
 	}
 	
@@ -218,13 +218,15 @@ public class DefaultWebsocketEndpointTest {
 		public TestWebsocketEndpoint(String endpointName, 
 									 WebsocketManager websocketManager, 
 									 ExchangeApiObserver observer) {
-			super("myWsEndpoint", websocketManager,  new TestMessageDeserializer(), observer);
+			super(endpointName, websocketManager,  new TestMessageDeserializer(), observer);
 		}
 		
+		@Override
 		public String generateSubscriptionId(WebsocketSubscribeRequest request) {
 			return super.generateSubscriptionId(request);
 		}
 		
+		@Override
 		public void dispatchApiEvent(ExchangeApiEvent event) {
 			super.dispatchApiEvent(event);
 		}

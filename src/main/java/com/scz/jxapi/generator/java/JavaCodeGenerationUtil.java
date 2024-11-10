@@ -7,6 +7,7 @@ import java.nio.file.Path;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -336,10 +337,11 @@ public class JavaCodeGenerationUtil {
 	public static void deletePath(Path path) throws IOException {
 		if (!path.toFile().exists())
 			return;
-		Files.walk(path)
-	      .sorted(Comparator.reverseOrder())
-	      .map(Path::toFile)
-	      .forEach(File::delete);
+		try (Stream<Path> p = Files.walk(path)) {
+			 p.sorted(Comparator.reverseOrder())
+		      .map(Path::toFile)
+		      .forEach(File::delete);
+		}
 	}
 	
 	/**

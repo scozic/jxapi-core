@@ -32,7 +32,7 @@ public class TestJXApiPropertiesTest {
 	@Test
 	public void testGetDefaultPropertiesValues() {
 		Assert.assertEquals(TestJXApiProperties.DEMO_WS_DEFAULT_SUBSCRIPTION_DURATION, TestJXApiProperties.DEMO_WS_SUBSCRIPTION_DURATION);
-		Assert.assertEquals(TestJXApiProperties.DEMO_WS_DEFAULT_DELAY_BEFORE_EXIT_AFTER_UNSUBSCRIPTION, TestJXApiProperties.DEMO_WS_DEFAULT_DELAY_BEFORE_EXIT_AFTER_UNSUBSCRIPTION);
+		Assert.assertEquals(TestJXApiProperties.DEMO_WS_DEFAULT_DELAY_BEFORE_EXIT_AFTER_UNSUBSCRIPTION, TestJXApiProperties.DEMO_WS_DELAY_BEFORE_EXIT_AFTER_UNSUBSCRIPTION);
 	}
 	
 	@Test

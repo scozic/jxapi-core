@@ -18,6 +18,8 @@ public class RestRequestPagination {
 	
 	private static final Logger log = LoggerFactory.getLogger(RestRequestPagination.class);
 	
+	private RestRequestPagination() {}
+	
 	/**
 	 * Fetches all pages of response to given request.
 	 * Example:

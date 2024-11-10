@@ -208,7 +208,7 @@ public class JavaTypeGenerator {
 			  .append(JavaCodeGenerationUtil.getClassNameWithoutPackage(parentClassName))
 			  .append(" ");
 		}
-		if (implementedInterfaces != null && implementedInterfaces.size() > 0) {
+		if (implementedInterfaces != null && !implementedInterfaces.isEmpty()) {
 			sb.append("implements ");
 			for (int i = 0; i < implementedInterfaces.size(); i++) {
 				sb.append(JavaCodeGenerationUtil.getClassNameWithoutPackage(implementedInterfaces.get(i)));

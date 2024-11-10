@@ -58,14 +58,6 @@ public class RestResponseTest {
         response = new RestResponse<>(httpResponse);
         Assert.assertEquals(httpResponse, response.getHttpResponse());
     }
-    
-    @Test
-    public void testGetHttpResponse_NullException() {
-        RestResponse<String> response = new RestResponse<>();
-        HttpResponse httpResponse = new HttpResponse();
-        response = new RestResponse<>(httpResponse);
-        Assert.assertEquals(httpResponse, response.getHttpResponse());
-    }
 
     @Test
     public void testSetHttpResponse() {

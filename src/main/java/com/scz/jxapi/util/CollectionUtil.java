@@ -18,9 +18,6 @@ public class CollectionUtil {
 		if (collection == null) {
 			return true;
 		}
-		if (collection.isEmpty()) {
-			return true;
-		}
-		return false;
+		return collection.isEmpty();
 	}
 }

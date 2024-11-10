@@ -28,13 +28,10 @@ public class Imports implements Iterable<String> {
 	private static final Comparator<String> IMPORTS_COMPARATOR = new ImportComparator();
 	
 	private static boolean isJavaImport(String imp) {
-		if (imp.startsWith(JAVA_PKG)) {
-			return true;
-		}
-		return false;
+		return imp.startsWith(JAVA_PKG);
 	}
 	
-	private final Set<String> imports = new TreeSet<>(IMPORTS_COMPARATOR);
+	private final Set<String> imps = new TreeSet<>(IMPORTS_COMPARATOR);
 	
 	/**
 	 * Adds the  given class to the imports.
@@ -65,7 +62,7 @@ public class Imports implements Iterable<String> {
 		if (imp.contains("<")) {
 			imp = imp.substring(0, imp.indexOf('<'));
 		}
-		imports.add(imp);
+		imps.add(imp);
 	}
 	
 	/**
@@ -73,14 +70,14 @@ public class Imports implements Iterable<String> {
 	 * @param other the imports to add
 	 */
 	public void addAll(Imports other) {
-		imports.addAll(other.imports);
+		imps.addAll(other.imps);
 	}
 	
 	/**
 	 * @return the number of imports
 	 */
 	public int size() {
-		return imports.size();
+		return imps.size();
 	}
 
 	/**
@@ -90,14 +87,14 @@ public class Imports implements Iterable<String> {
 	 */
 	@Override
 	public Iterator<String> iterator() {
-		return imports.iterator();
+		return imps.iterator();
 	}
 	
 	/**
 	 * @return A copy of the list of all imports
 	 */
 	public List<String> getAllImports() {
-		return imports.stream().collect(Collectors.toList());
+		return imps.stream().collect(Collectors.toList());
 	}
 	
 	public boolean contains(Class<?> cls) {
@@ -105,7 +102,7 @@ public class Imports implements Iterable<String> {
 	}
 	
 	public boolean contains(String im) {
-		return imports.contains(im);
+		return imps.contains(im);
 	}
 	
 	/**
@@ -131,7 +128,7 @@ public class Imports implements Iterable<String> {
 		StringBuilder s = new StringBuilder();
 		boolean javaImport = false;
 		boolean lineBreak = false;
-		for (String im : imports) {
+		for (String im : imps) {
 			if (isJavaImport(im)) {
 				javaImport = true;
 			} else if (javaImport) {

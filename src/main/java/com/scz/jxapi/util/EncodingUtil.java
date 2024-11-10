@@ -52,8 +52,8 @@ public class EncodingUtil {
 			return template;
 		}
 		Map<String, Object> m = new HashMap<>(keysAndValues.length / 2);
-		for (int i = 0; i < keysAndValues.length;) {
-			m.put(String.valueOf(keysAndValues[i++]), keysAndValues[i++]);
+		for (int i = 0; i < keysAndValues.length; i++) {
+			m.put(String.valueOf(keysAndValues[i++]), keysAndValues[i]);
 		}
 		StringSubstitutor sub = new StringSubstitutor(m);
 		return sub.replace(template);

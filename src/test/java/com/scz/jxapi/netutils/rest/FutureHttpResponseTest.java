@@ -1,5 +1,6 @@
 package com.scz.jxapi.netutils.rest;
 
+import org.junit.Assert;
 import org.junit.Test;
 
 /**
@@ -9,7 +10,7 @@ public class FutureHttpResponseTest {
 	
 	@Test
 	public void testNew() {
-		new FutureHttpResponse();
+		Assert.assertNotNull(new FutureHttpResponse());
 	}
 
 }

@@ -230,7 +230,7 @@ public class ExchangeApiInterfaceGenerator extends JavaTypeGenerator {
 		}
 		boolean hasResponse = ExchangeApiGeneratorUtil.restEndpointHasResponse(restApi, exchangeApiDescriptor);
 		String responseSimpleClassName = "String";
-		if (hasResponse) {
+	  if (hasResponse) {
 			String restResponseClassName = null;
 			if (responseDataType != null && responseDataType.isObject()) {
 				restResponseClassName = ExchangeApiGeneratorUtil.generateRestEnpointResponsePojoClassName(

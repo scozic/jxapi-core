@@ -15,7 +15,7 @@ public class ExchangeDescriptorTest {
     @Test
     public void testCreateExchangeDescriptor() {
         ExchangeDescriptor exchangeDescriptor = new ExchangeDescriptor();
-        assert exchangeDescriptor != null;
+        Assert.assertNotNull(exchangeDescriptor);
     }
 
     @Test
