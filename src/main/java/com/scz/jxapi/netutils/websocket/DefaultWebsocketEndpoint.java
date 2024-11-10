@@ -101,7 +101,7 @@ public class DefaultWebsocketEndpoint<M> implements WebsocketEndpoint<M> {
 				// First subscription
 				websocketManager.subscribe(request.getTopic(), 
 										   request.getMessageTopicMatcherFactory(), 
-										   message -> dispatch(message));
+										   this::dispatch);
 			}
 		}
 		
