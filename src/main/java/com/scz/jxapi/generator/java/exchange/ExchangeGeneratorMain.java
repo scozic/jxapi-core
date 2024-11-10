@@ -50,7 +50,7 @@ public class ExchangeGeneratorMain {
 				 .filter(p -> p.toFile().getName().endsWith("Descriptor.json"))
 				 .forEach(path -> {
 				try {
-					generateExchangeApi(path);
+					generateExchangeWrapperAndDemos(path);
 				} catch (Exception ex) {
 					log.error("Error while generating exchange descriptor for file:" + path.getFileName(), ex);
 					exitCode.set(-1);
@@ -64,25 +64,51 @@ public class ExchangeGeneratorMain {
 	}
 	
 	/**
-	 * Generate exchange API code for a given JSON descriptor file.
+	 * Generate exchange API wrapper and demo snippets code for a given JSON descriptor file.
 	 * @param jsonFile the JSON descriptor file
 	 * @throws IOException if an I/O error occurs
 	 */
-	public static void generateExchangeApi(Path jsonFile) throws IOException {
-		log.info("Generating exchangeApi code for descriptor:" + jsonFile.getFileName());
+	public static void generateExchangeWrapperAndDemos(Path jsonFile) throws IOException {
+		if (log.isInfoEnabled())
+			log.info("Generating exchange wrapper code for descriptor:{}", jsonFile.getFileName());
 		ExchangeDescriptor exchangeDescriptor = new ExchangeDescriptorParser().fromJson(jsonFile);
 		Path outputSrcMainFolder = Paths.get(".", "src", "main", "java");
-		Path packagePath = Paths.get(StringUtils.replace(exchangeDescriptor.getBasePackage(), ".", "/"));
-		Path genPackagesFolder = outputSrcMainFolder.resolve(packagePath);
-		JavaCodeGenerationUtil.deletePath(genPackagesFolder);
-		new ExchangeClassesGenerator(exchangeDescriptor).generateClasses(outputSrcMainFolder);
+		generateExchangeWrapper(exchangeDescriptor, outputSrcMainFolder);
 		
+		if (log.isInfoEnabled())
+			log.info("Generating exchange demos code for descriptor:{}", jsonFile.getFileName());
 		Path outputSrcTestFolder = Paths.get(".", "src", "test", "java");
-		Path genTestPackagesFolder = outputSrcTestFolder.resolve(packagePath);
-		JavaCodeGenerationUtil.deletePath(genTestPackagesFolder);
-		
-		new ExchangeDemoClassesGenerator(exchangeDescriptor).generateClasses(outputSrcTestFolder);
-		log.info("Done generating java code for " + jsonFile.getFileName() + " in:" + outputSrcMainFolder);
+		generateExchangeWrapperDemos(exchangeDescriptor, outputSrcTestFolder);
+		if (log.isInfoEnabled()) {
+			log.info("Done generating java code for {}", jsonFile.getFileName());
+		}
 	}
+	
+	/**
+	 * Generates exchange API wrapper (without demo snippets) for given exchange descriptor
+	 * @param exchangeDescriptor The exchange descriptor to generate Java wrapper for all APIs of
+	 * @param srcFolder The src%2Fmain%2Fpackage of wrapper project
+	 * @throws IOException If error occurs during generation
+	 */
+	public static void generateExchangeWrapper(ExchangeDescriptor exchangeDescriptor, Path srcFolder) throws IOException {
+		Path packagePath = Paths.get(StringUtils.replace(exchangeDescriptor.getBasePackage(), ".", "/"));
+		Path genPackagesFolder = srcFolder.resolve(packagePath);
+		JavaCodeGenerationUtil.deletePath(genPackagesFolder);
+		new ExchangeClassesGenerator(exchangeDescriptor).generateClasses(srcFolder);
+	}
+	
+	/**
+	 * Generates exchange API wrapper (without demo snippets) for given exchange descriptor
+	 * @param exchangeDescriptor The exchange descriptor to generate Java wrapper for all APIs of
+	 * @param srcFolder The src%2Fmain%2Fpackage of wrapper project
+	 * @throws IOException If error occurs during generation
+	 */
+	public static void generateExchangeWrapperDemos(ExchangeDescriptor exchangeDescriptor, Path srcFolder) throws IOException {
+		Path packagePath = Paths.get(StringUtils.replace(exchangeDescriptor.getBasePackage(), ".", "/"));
+		Path genTestPackagesFolder = srcFolder.resolve(packagePath);
+		JavaCodeGenerationUtil.deletePath(genTestPackagesFolder);
+		new ExchangeDemoClassesGenerator(exchangeDescriptor).generateClasses(srcFolder);
+	}
+	
 
 }

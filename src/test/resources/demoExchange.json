@@ -1,0 +1,109 @@
+{
+	"name": "DemoExchange",
+	"description": "Demo Exchange. This exchange uses connects to mock HTTP server and websocket server. It is used to test and validate a full Java wrapper generated using JXAPI.",
+	"docUrl": "https://docs.myexchange.com/api",
+	"basePackage": "com.scz.jxapi.exchanges.demo.gen",
+		"properties": [
+		{"name": "host", "description": "Mock HTTP server host", "defaultValue": "localhost"},
+		{"name": "httpPort", "type":"INT",  "description": "Mock HTTP/Websocket server port"},
+		{"name": "websocketPort", "type":"INT",  "description": "Mock websocket server port"},
+		{"name": "websocketHeartBeatInterval", "type":"INT",  "description": "Mock websocket server expected heartBeat interval", "defaultValue": -1},
+		{"name": "responseCodeOk", "type":"INT",  "description": "Possible value in <i>responseCode</i> field of rest request response: Successful response", "defaultValue": 200},
+		{"name": "responseCodeInternalServerError", "type":"INT",  "description": "Possible value in <i>responseCode</i> field of rest request response: Server internal error", "defaultValue": 500}
+		
+	],
+	"constants": [
+		{"name": "pingMessage", "type":"STRING", "description": "Ping message", "value": "Ping!"},
+		{"name": "pongMessage", "type":"STRING", "description": "Pong message", "value": "Pong!"},
+		{"name": "httpServerHostWildcard", "type":"STRING", "description": "Value to substitute with actual HTTP server host in httpUrl", "value": "HTTPSERVERHOST"},
+		{"name": "httpServerPortWildcard", "type":"STRING", "description": "Value to substitute with actual HTTP server host in httpUrl", "value": "8080"},
+		{"name": "websocketServerHostWildcard", "type":"STRING", "description": "Value to substitute with actual HTTP server host in httpUrl", "value": "MOCKWEBSOCKETSERVERHOST"},
+		{"name": "websocketServerPortWildcard", "type":"STRING", "description": "Value to substitute with actual HTTP server host in httpUrl", "value": "8090"}
+	],
+	"httpUrl": "http://HTTPSERVERHOST:8080",
+	"websocketUrl": "ws://MOCKWEBSOCKETSERVERHOST:8090/ws",
+	"httpRequestInterceptorFactory": "com.scz.jxapi.netutils.websocket.net.DemoExchangeHttpRequestInterceptorFactory",
+	"websocketHookFactory": "com.scz.jxapi.netutils.websocket.net.DemoExchangeWebsocketHookFactory",
+	"apis":[
+		{ 
+			"name": "MarketData",
+			"description": "Demo exchange market data API to retrieve",
+			"constants": [
+				{"name": "allTickers", "type":"STRING", "description": "Constant for subscribing to all tickers", "value": "ticker@all"}
+			],
+			"httpUrl": "/marketData",
+			"restEndpoints": [
+				{
+					"name": "exchangeInfo",
+					"httpMethod": "GET",
+					"description": "Fetch market information of symbols that can be traded",
+					"docUrl": "https://docs.myexchange.com/api/rest/marketData/exchangeInfo",
+					"url": "/exchangeInfo",
+					"request":{
+						"properties": [
+							{"name":"symbols", "type": "STRING_LIST", "description":"The list of symbol to fetch market information for. Leave empty to fetch all markets", "sampleValue":"[\"BTC\", \"ETH\"]"}
+						]
+					},
+					"response":{ 
+						"properties": [
+							{"name":"responseCode", "type": "INT", "description":"Request response code", "sampleValue":"0"},
+							{"name":"payload", "type": "OBJECT_LIST", "description":"List of market information for each requested symbol", "properties":[
+									{"name":"symbol", "type": "STRING", "description":"Market symbol", "sampleValue":"BTC_USDT"},
+									{"name":"minOrderSize", "type": "BIGDECIMAL", "description":"Minimum order amount", "sampleValue":"0.0001"},
+									{"name":"orderTickSize", "type": "BIGDECIMAL", "description":"Price precision. Prce of an order should be a multiple of this value", "sampleValue":0.05}
+								]
+							}
+						]
+					}
+				},
+				{
+					"name": "tickers",
+					"httpMethod": "GET",
+					"description": "Fetch current tickers for all markets",
+					"url": "tickers",
+					"response": { 
+						"properties": [
+							{"name":"responseCode", "type": "INT", "description":"Request response code", "sampleValue":"0"},
+							{"name":"payload", "type": "OBJECT_MAP", "description":"Tickers for each symbol", "properties":[
+									{"name":"last", "type": "BIGDECIMAL", "description":"Last traded price", "sampleValue":10.0},
+									{"name":"high", "type": "BIGDECIMAL", "description":"Last traded price", "sampleValue":10.0},
+									{"name":"low", "type": "BIGDECIMAL", "description":"Last traded price", "sampleValue":10.0},
+									{"name":"volume", "type": "BIGDECIMAL", "description":"Total traded amount in base asset during the last 24h from now", "sampleValue":10.0},
+									{"name":"time", "type": "TIMESTAMP", "description":"Current time", "sampleValue":"now()"}
+								]
+							}
+						]
+					}
+				}
+			],
+			"websocketEndpoints": [
+				{
+					"name": "tickerStream",
+					"docUrl": "https://docs.myexchange.com/api/ws/marketData/tickerStream",
+					"topic": "${symbol}@ticker",
+					"description": "Subscribe to ticker stream",
+					"request": {
+						"properties": [
+							{"name": "symbol", "type":"STRING", "description":"Symbol to subscribe to ticker stream of", "sampleValue":"BTC_USDT"}
+						]
+					},
+					"messageTopicMatcherFields": [
+						{"name": "topic",  "value": "ticker"},
+						{"name": "symbol",  "value": "${symbol}"}
+					],
+					"message": { 
+						"properties": [
+							{"name":"topic", "msgField":"t", "type": "STRING", "description":"Topic", "sampleValue":"ticker"},
+							{"name":"symbol", "msgField":"s", "type": "STRING", "description":"Symbol name", "sampleValue":"BTC_USDT"},
+							{"name":"last", "msgField":"p", "type": "BIGDECIMAL", "description":"Last traded price", "sampleValue":"16000.00"},
+							{"name":"high", "msgField":"h",  "type": "BIGDECIMAL", "description":"Last traded price", "sampleValue":10.0},
+							{"name":"low", "msgField":"l",  "type": "BIGDECIMAL", "description":"Last traded price", "sampleValue":10.0},
+							{"name":"volume", "msgField":"v",  "type": "BIGDECIMAL", "description":"Total traded amount in base asset during the last 24h from now", "sampleValue":10.0},
+							{"name":"time", "msgField":"d",  "type": "TIMESTAMP", "description":"Current time", "sampleValue":"now()"}
+						]
+					}
+				}
+			]
+		}
+	]
+}
