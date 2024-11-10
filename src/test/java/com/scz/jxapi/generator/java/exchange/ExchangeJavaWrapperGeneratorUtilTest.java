@@ -343,4 +343,20 @@ public class ExchangeJavaWrapperGeneratorUtilTest {
 		Assert.assertEquals("com.x.y.z.TestExchangeProperties", 
 							ExchangeJavaWrapperGeneratorUtil.getExchangePropertiesInterfaceName(exchangeDescriptor));
 	}
+	
+	@Test
+	public void testGetHttpUrlVariableDeclaration() {
+		ExchangeDescriptor exchangeDescriptor = new ExchangeDescriptor();
+		exchangeDescriptor.setHttpUrl("https//myexchange.com/api");
+		Assert.assertEquals("public static String HTTP_URL = \"https//myexchange.com/api\";", 
+				ExchangeJavaWrapperGeneratorUtil.getHttpUrlVariableDeclaration(exchangeDescriptor));
+	}
+	
+	@Test
+	public void testGetWebsocketUrlVariableDeclaration() {
+		ExchangeDescriptor exchangeDescriptor = new ExchangeDescriptor();
+		exchangeDescriptor.setWebsocketUrl("https//myexchange.com/ws");
+		Assert.assertEquals("public static String WEBSOCKET_URL = \"https//myexchange.com/ws\";", 
+				ExchangeJavaWrapperGeneratorUtil.getWebsocketUrlVariableDeclaration(exchangeDescriptor));
+	}
 }

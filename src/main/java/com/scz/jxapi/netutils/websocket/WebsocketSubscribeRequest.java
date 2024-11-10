@@ -25,12 +25,10 @@ public class WebsocketSubscribeRequest {
 	 * @param messageTopicMatcherFactory The message topic matcher
 	 * @return The subscription request
 	 */
-	public static WebsocketSubscribeRequest create(String endpoint, 
-												   Object request, 
+	public static WebsocketSubscribeRequest create(Object request, 
 												   String topic,
 												   WebsocketMessageTopicMatcherFactory messageTopicMatcherFactory) {
 		WebsocketSubscribeRequest subscribeRequest = new WebsocketSubscribeRequest();
-		subscribeRequest.setEnpoint(endpoint);
 		subscribeRequest.request = request;
 		subscribeRequest.topic = topic;
 		subscribeRequest.messageTopicMatcherFactory = messageTopicMatcherFactory;

@@ -60,7 +60,7 @@
 					"name": "tickers",
 					"httpMethod": "GET",
 					"description": "Fetch current tickers for all markets",
-					"url": "tickers",
+					"url": "/tickers",
 					"response": { 
 						"properties": [
 							{"name":"responseCode", "type": "INT", "description":"Request response code", "sampleValue":"0"},

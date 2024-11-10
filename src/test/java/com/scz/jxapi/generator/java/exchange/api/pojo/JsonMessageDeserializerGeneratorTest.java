@@ -43,8 +43,6 @@ public class JsonMessageDeserializerGeneratorTest {
 				+ "import java.io.IOException;\n"
 				+ "import java.util.List;\n"
 				+ "\n"
-				+ "import List;\n"
-				+ "import MyPojoFoo;\n"
 				+ "import com.fasterxml.jackson.core.JsonParser;\n"
 				+ "import com.fasterxml.jackson.core.JsonToken;\n"
 				+ "import com.scz.jxapi.netutils.deserialization.json.AbstractJsonMessageDeserializer;\n"

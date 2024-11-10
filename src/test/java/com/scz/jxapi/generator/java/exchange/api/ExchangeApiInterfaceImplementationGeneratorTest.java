@@ -57,7 +57,7 @@ public class ExchangeApiInterfaceImplementationGeneratorTest {
 				+ "  public static final String HTTP_URL = MyTestExchangeExchangeImpl.HTTP_URL;\n"
 				+ "  \n"
 				+ "  public static final String EXCHANGE_INFO_URL = \"https://mycex.com/trading/exchangeInfo\";\n"
-				+ "  public static final String WEBSOCKET_URL = MyTestExchangeExchange.WEBSOCKET_URL + \"/ws\";\n"
+				+ "  public static final String WEBSOCKET_URL = MyTestExchangeExchangeImpl.WEBSOCKET_URL + \"/ws\";\n"
 				+ "  private final MessageDeserializer<MyTestExchangeMarketDataExchangeInfoResponse> exchangeInfoResponseDeserializer = new MyTestExchangeMarketDataExchangeInfoResponseDeserializer();\n"
 				+ "  private final WebsocketEndpoint<MyTestExchangeMarketDataTickerStreamMessage> tickerStreamWs;\n"
 				+ "  \n"

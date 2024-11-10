@@ -69,28 +69,28 @@ public class ExchangeApiEventTest {
 
     @Test
     public void testCreateWebsocketMessageEvent() {
-        WebsocketSubscribeRequest request = WebsocketSubscribeRequest.create("myWsEndpoint", null, "wsTopic", null);
+        WebsocketSubscribeRequest request = WebsocketSubscribeRequest.create(null, "wsTopic", null);
         ExchangeApiEvent event = ExchangeApiEvent.createWebsocketMessageEvent(request, "myWsMessage");
         Assert.assertEquals(ExchangeApiEventType.WEBSOCKET_MESSAGE, event.getType());
-        Assert.assertEquals("myWsEndpoint", event.getEndpoint());
+        Assert.assertEquals("wsTopic", event.getWebsocketSubscribeRequest().getTopic());
         Assert.assertEquals("myWsMessage", event.getWebsocketMessage());
     }
     
     @Test
     public void testCreateWebsocketSubcribeEvent() {
-    	WebsocketSubscribeRequest request = WebsocketSubscribeRequest.create("myWsEndpoint", null, "wsTopic", null);
+    	WebsocketSubscribeRequest request = WebsocketSubscribeRequest.create(null, "wsTopic", null);
         ExchangeApiEvent event = ExchangeApiEvent.createWebsocketSubscribeEvent(request, "myWsSubscriptionId");
         Assert.assertEquals(ExchangeApiEventType.WEBSOCKET_SUBSCRIBE, event.getType());
-        Assert.assertEquals("myWsEndpoint", event.getEndpoint());
+        Assert.assertEquals("wsTopic", event.getWebsocketSubscribeRequest().getTopic());
         Assert.assertEquals("myWsSubscriptionId", event.getWebsocketSubscriptionId());
     }
 
     @Test
     public void testCreateWebsocketUnsubscribeEvent() {
-    	WebsocketSubscribeRequest request = WebsocketSubscribeRequest.create("myWsEndpoint", null, "wsTopic", null);
+    	WebsocketSubscribeRequest request = WebsocketSubscribeRequest.create(null, "wsTopic", null);
         ExchangeApiEvent event = ExchangeApiEvent.createWebsocketUnsubscribeEvent(request, "myWsSubscriptionId");
         Assert.assertEquals(ExchangeApiEventType.WEBSOCKET_UNSUBSCRIBE, event.getType());
-        Assert.assertEquals("myWsEndpoint", event.getEndpoint());
+        Assert.assertEquals("wsTopic", event.getWebsocketSubscribeRequest().getTopic());
         Assert.assertEquals("myWsSubscriptionId", event.getWebsocketSubscriptionId());
     }
 

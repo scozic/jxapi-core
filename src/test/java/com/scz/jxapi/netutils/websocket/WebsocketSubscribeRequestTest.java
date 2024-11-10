@@ -12,9 +12,8 @@ public class WebsocketSubscribeRequestTest {
 
     @Test
     public void testCreate() {
-        WebsocketSubscribeRequest request = WebsocketSubscribeRequest.create("endpoint", "request", "topic", WebsocketMessageTopicMatcherFactory.createFactory());
+        WebsocketSubscribeRequest request = WebsocketSubscribeRequest.create("request", "topic", WebsocketMessageTopicMatcherFactory.createFactory());
         Assert.assertNotNull(request);
-        Assert.assertEquals("endpoint", request.getEnpoint());
         Assert.assertEquals("request", request.getRequest());
         Assert.assertEquals("topic", request.getTopic());
         Assert.assertNotNull(request.getMessageTopicMatcherFactory());
@@ -35,8 +34,8 @@ public class WebsocketSubscribeRequestTest {
 
     @Test
     public void testToString() {
-        WebsocketSubscribeRequest request = WebsocketSubscribeRequest.create("endpoint", "request", "topic", WebsocketMessageTopicMatcherFactory.createFactory());
-        Assert.assertEquals("WebsocketSubscribeRequest{\"enpoint\":\"endpoint\",\"messageTopicMatcherFactory\":{},\"request\":\"request\",\"topic\":\"topic\"}", 
+        WebsocketSubscribeRequest request = WebsocketSubscribeRequest.create("request", "topic", WebsocketMessageTopicMatcherFactory.createFactory());
+        Assert.assertEquals("WebsocketSubscribeRequest{\"messageTopicMatcherFactory\":{},\"request\":\"request\",\"topic\":\"topic\"}", 
         					request.toString());
     }
 }

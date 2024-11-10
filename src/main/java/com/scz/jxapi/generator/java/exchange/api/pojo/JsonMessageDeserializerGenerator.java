@@ -181,15 +181,13 @@ public class JsonMessageDeserializerGenerator extends JavaTypeGenerator {
 		case LIST:
 			imports.add(ListJsonFieldDeserializer.class.getName());
 			fieldClass = ExchangeJavaWrapperGeneratorUtil.getClassNameForType(type.getSubType(), imports, objectClassName);
-			imports.add(fieldClass);
 			return ListJsonFieldDeserializer.class.getSimpleName() 
 						+ "<" 
-						+ JavaCodeGenerationUtil.getClassNameWithoutPackage(fieldClass)
+						+ fieldClass
 						+ ">";
 		default: // MAP
 			imports.add(MapJsonFieldDeserializer.class.getName());
 			fieldClass = ExchangeJavaWrapperGeneratorUtil.getClassNameForType(type.getSubType(), imports, objectClassName);
-			imports.add(fieldClass);
 			return MapJsonFieldDeserializer.class.getSimpleName() 
 						+ "<" 
 						+ JavaCodeGenerationUtil.getClassNameWithoutPackage(fieldClass)

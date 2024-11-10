@@ -879,7 +879,7 @@ public class ExchangeApiGeneratorUtil {
 		
 		String exchangeUrl = exchangeDescriptor.getWebsocketUrl();
 		if (exchangeUrl != null) {
-			String exchangeInterfaceName = ExchangeJavaWrapperGeneratorUtil.getExchangeInterfaceName(exchangeDescriptor);
+			String exchangeInterfaceName = ExchangeJavaWrapperGeneratorUtil.getExchangeInterfaceImplementationName(exchangeDescriptor);
 			imports.add(exchangeInterfaceName);
 			String exchangeUrlVar = JavaCodeGenerationUtil.getClassNameWithoutPackage(exchangeInterfaceName) 
 									 + "."  

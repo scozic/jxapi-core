@@ -73,7 +73,7 @@ public abstract class AbstractExchangeApi implements ExchangeApi {
 	 * 
 	 * @see WebsocketMessageTopicMatcherFactory#createFactory(String...)
 	 */
-	static WebsocketMessageTopicMatcherFactory topicMatcher(String... fieldNamesAndValues) {
+	public static WebsocketMessageTopicMatcherFactory topicMatcher(String... fieldNamesAndValues) {
 		return WebsocketMessageTopicMatcherFactory.createFactory(fieldNamesAndValues);
 	}
 

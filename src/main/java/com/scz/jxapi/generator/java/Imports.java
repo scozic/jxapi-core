@@ -53,6 +53,11 @@ public class Imports implements Iterable<String> {
 	 * @param imp the full name of class to import
 	 */
 	public void add(String imp) {
+		// FIXME
+		if ("DemoExchangeMarketDataTickersResponsePayload".equals(imp)) {
+			System.out.println("DemoExchangeMarketDataExchangeInfoResponsePayload deserializer");
+		}
+		
 		if (imp == null) {
 			throw new IllegalArgumentException("null import");
 		}

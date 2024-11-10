@@ -336,16 +336,39 @@ public class ExchangeJavaWrapperGeneratorUtil {
 		}
 	}
 	
+	/**
+	 * @param exchangeDescriptor Exchange descriptor to retrieve base HTTP url from
+	 *                           see {@link ExchangeDescriptor#getHttpUrl()}
+	 * @return Generated public static {@link #HTTP_URL_STATIC_VARIABLE} variable
+	 *         with value from {@link ExchangeDescriptor#getHttpUrl()}, or
+	 *         <code>null</code> if that value is <code>null</code>.
+	 */
 	public static String getHttpUrlVariableDeclaration(ExchangeDescriptor exchangeDescriptor) {
-		String httpUrl = exchangeDescriptor.getHttpUrl();
-		if (httpUrl == null) {
+		return getStaticUrlVariableDeclaration(ExchangeJavaWrapperGeneratorUtil.HTTP_URL_STATIC_VARIABLE, 
+											   exchangeDescriptor.getHttpUrl());
+	}
+	
+	/**
+	 * @param exchangeDescriptor Exchange descriptor to retrieve base Websocket url from
+	 *                           see {@link ExchangeDescriptor#getWebsocketUrl()}
+	 * @return Generated public static {@link #WEBSOCKET_URL_STATIC_VARIABLE} variable
+	 *         with value from {@link ExchangeDescriptor#getWebsocketUrl()}, or
+	 *         <code>null</code> if that value is <code>null</code>.
+	 */
+	public static String getWebsocketUrlVariableDeclaration(ExchangeDescriptor exchangeDescriptor) {
+		return getStaticUrlVariableDeclaration(ExchangeJavaWrapperGeneratorUtil.WEBSOCKET_URL_STATIC_VARIABLE, 
+											   exchangeDescriptor.getWebsocketUrl());
+	}
+	
+	private static String getStaticUrlVariableDeclaration(String variableName, String value) {
+		if (value == null) {
 			return null;
 		}
-		return "public static " 
-				+ ExchangeJavaWrapperGeneratorUtil.HTTP_URL_STATIC_VARIABLE 
-				+ " = "
-				+ JavaCodeGenerationUtil.getQuotedString(httpUrl)
-				+ ";";
+		return "public static String " 
+		+ variableName 
+		+ " = "
+		+ JavaCodeGenerationUtil.getQuotedString(value)
+		+ ";";
 	}
 
 	/**
