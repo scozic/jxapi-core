@@ -73,11 +73,16 @@ public class ExchangeGeneratorMain {
 			log.info("Generating exchange wrapper code for descriptor:{}", jsonFile.getFileName());
 		ExchangeDescriptor exchangeDescriptor = new ExchangeDescriptorParser().fromJson(jsonFile);
 		Path outputSrcMainFolder = Paths.get(".", "src", "main", "java");
+		Path mainPackagePath = Paths.get(StringUtils.replace(exchangeDescriptor.getBasePackage(), ".", "/"));
+		Path genMainPackagesFolder = outputSrcMainFolder.resolve(mainPackagePath);
+		JavaCodeGenerationUtil.deletePath(genMainPackagesFolder);
 		generateExchangeWrapper(exchangeDescriptor, outputSrcMainFolder);
 		
 		if (log.isInfoEnabled())
 			log.info("Generating exchange demos code for descriptor:{}", jsonFile.getFileName());
 		Path outputSrcTestFolder = Paths.get(".", "src", "test", "java");
+		Path genTestPackagesFolder = outputSrcTestFolder.resolve(mainPackagePath);
+		JavaCodeGenerationUtil.deletePath(genTestPackagesFolder);
 		generateExchangeWrapperDemos(exchangeDescriptor, outputSrcTestFolder);
 		if (log.isInfoEnabled()) {
 			log.info("Done generating java code for {}", jsonFile.getFileName());
@@ -91,9 +96,6 @@ public class ExchangeGeneratorMain {
 	 * @throws IOException If error occurs during generation
 	 */
 	public static void generateExchangeWrapper(ExchangeDescriptor exchangeDescriptor, Path srcFolder) throws IOException {
-		Path packagePath = Paths.get(StringUtils.replace(exchangeDescriptor.getBasePackage(), ".", "/"));
-		Path genPackagesFolder = srcFolder.resolve(packagePath);
-		JavaCodeGenerationUtil.deletePath(genPackagesFolder);
 		new ExchangeClassesGenerator(exchangeDescriptor).generateClasses(srcFolder);
 	}
 	
@@ -104,9 +106,6 @@ public class ExchangeGeneratorMain {
 	 * @throws IOException If error occurs during generation
 	 */
 	public static void generateExchangeWrapperDemos(ExchangeDescriptor exchangeDescriptor, Path srcFolder) throws IOException {
-		Path packagePath = Paths.get(StringUtils.replace(exchangeDescriptor.getBasePackage(), ".", "/"));
-		Path genTestPackagesFolder = srcFolder.resolve(packagePath);
-		JavaCodeGenerationUtil.deletePath(genTestPackagesFolder);
 		new ExchangeDemoClassesGenerator(exchangeDescriptor).generateClasses(srcFolder);
 	}
 	
