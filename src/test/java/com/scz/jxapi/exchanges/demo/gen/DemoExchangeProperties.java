@@ -37,18 +37,6 @@ import com.scz.jxapi.util.PropertiesUtil;
  *     <td>Mock websocket server expected heartBeat interval</td>
  *     <td>-1</td>
  *   </tr>
- *   <tr>
- *     <td>responseCodeOk</td>
- *     <td>INT</td>
- *     <td>Possible value in <i>responseCode</i> field of rest request response: Successful response</td>
- *     <td>200</td>
- *   </tr>
- *   <tr>
- *     <td>responseCodeInternalServerError</td>
- *     <td>INT</td>
- *     <td>Possible value in <i>responseCode</i> field of rest request response: Server internal error</td>
- *     <td>500</td>
- *   </tr>
  * </table><br>
  * Exposes helper methods are available to retrieve value of each of these properties with right type, returning default value if not present in properties
  */
@@ -93,62 +81,26 @@ public interface DemoExchangeProperties {
   Integer WEBSOCKET_HEART_BEAT_INTERVAL_DEFAULT_VALUE = Integer.valueOf(-1);
   
   /**
-   * 'responseCodeOk' property key.<br>
-   * Possible value in <i>responseCode</i> field of rest request response: Successful response<br>
-   * Property value type:INT
-   */
-  String RESPONSE_CODE_OK_PROPERTY = "responseCodeOk";
-  
-  /**
-   * {@link #RESPONSE_CODE_OK_PROPERTY} property default value
-   */
-  Integer RESPONSE_CODE_OK_DEFAULT_VALUE = Integer.valueOf(200);
-  
-  /**
-   * 'responseCodeInternalServerError' property key.<br>
-   * Possible value in <i>responseCode</i> field of rest request response: Server internal error<br>
-   * Property value type:INT
-   */
-  String RESPONSE_CODE_INTERNAL_SERVER_ERROR_PROPERTY = "responseCodeInternalServerError";
-  
-  /**
-   * {@link #RESPONSE_CODE_INTERNAL_SERVER_ERROR_PROPERTY} property default value
-   */
-  Integer RESPONSE_CODE_INTERNAL_SERVER_ERROR_DEFAULT_VALUE = Integer.valueOf(500);
-  
-  /**
    * Retrieves value of 'host' property.
    * @param properties Properties to look for value of 'host' property into.@return Value found in properties or default value 'localhost' if not found.
    */
-  default String getHost(Properties properties) {return PropertiesUtil.getStringProperty(properties, HOST_PROPERTY, HOST_DEFAULT_VALUE);}
+  static String getHost(Properties properties) {return PropertiesUtil.getStringProperty(properties, HOST_PROPERTY, HOST_DEFAULT_VALUE);}
   
   /**
    * Retrieves value of 'httpPort' property.
    * @param properties Properties to look for value of 'httpPort' property into.@return Value found in properties or <code>null</code> if not found.
    */
-  default Integer getHttpPort(Properties properties) {return PropertiesUtil.getIntProperty(properties, HTTP_PORT_PROPERTY, null);}
+  static Integer getHttpPort(Properties properties) {return PropertiesUtil.getIntProperty(properties, HTTP_PORT_PROPERTY, null);}
   
   /**
    * Retrieves value of 'websocketPort' property.
    * @param properties Properties to look for value of 'websocketPort' property into.@return Value found in properties or <code>null</code> if not found.
    */
-  default Integer getWebsocketPort(Properties properties) {return PropertiesUtil.getIntProperty(properties, WEBSOCKET_PORT_PROPERTY, null);}
+  static Integer getWebsocketPort(Properties properties) {return PropertiesUtil.getIntProperty(properties, WEBSOCKET_PORT_PROPERTY, null);}
   
   /**
    * Retrieves value of 'websocketHeartBeatInterval' property.
    * @param properties Properties to look for value of 'websocketHeartBeatInterval' property into.@return Value found in properties or default value '-1' if not found.
    */
-  default Integer getWebsocketHeartBeatInterval(Properties properties) {return PropertiesUtil.getIntProperty(properties, WEBSOCKET_HEART_BEAT_INTERVAL_PROPERTY, WEBSOCKET_HEART_BEAT_INTERVAL_DEFAULT_VALUE);}
-  
-  /**
-   * Retrieves value of 'responseCodeOk' property.
-   * @param properties Properties to look for value of 'responseCodeOk' property into.@return Value found in properties or default value '200' if not found.
-   */
-  default Integer getResponseCodeOk(Properties properties) {return PropertiesUtil.getIntProperty(properties, RESPONSE_CODE_OK_PROPERTY, RESPONSE_CODE_OK_DEFAULT_VALUE);}
-  
-  /**
-   * Retrieves value of 'responseCodeInternalServerError' property.
-   * @param properties Properties to look for value of 'responseCodeInternalServerError' property into.@return Value found in properties or default value '500' if not found.
-   */
-  default Integer getResponseCodeInternalServerError(Properties properties) {return PropertiesUtil.getIntProperty(properties, RESPONSE_CODE_INTERNAL_SERVER_ERROR_PROPERTY, RESPONSE_CODE_INTERNAL_SERVER_ERROR_DEFAULT_VALUE);}
+  static Integer getWebsocketHeartBeatInterval(Properties properties) {return PropertiesUtil.getIntProperty(properties, WEBSOCKET_HEART_BEAT_INTERVAL_PROPERTY, WEBSOCKET_HEART_BEAT_INTERVAL_DEFAULT_VALUE);}
 }

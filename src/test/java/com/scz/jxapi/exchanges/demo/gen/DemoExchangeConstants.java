@@ -35,4 +35,14 @@ public interface DemoExchangeConstants {
    * Value to substitute with actual HTTP server host in httpUrl
    */
   String WEBSOCKET_SERVER_PORT_WILDCARD = "8090";
+  
+  /**
+   * Possible value in <i>responseCode</i> field of rest request response: Successful response
+   */
+  Integer RESPONSE_CODE_OK = Integer.valueOf(200);
+  
+  /**
+   * Possible value in <i>responseCode</i> field of rest request response: Server internal error
+   */
+  Integer RESPONSE_CODE_INTERNAL_SERVER_ERROR = Integer.valueOf(500);
 }

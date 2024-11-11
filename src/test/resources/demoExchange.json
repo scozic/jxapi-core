@@ -7,9 +7,7 @@
 		{"name": "host", "description": "Mock HTTP server host", "defaultValue": "localhost"},
 		{"name": "httpPort", "type":"INT",  "description": "Mock HTTP/Websocket server port"},
 		{"name": "websocketPort", "type":"INT",  "description": "Mock websocket server port"},
-		{"name": "websocketHeartBeatInterval", "type":"INT",  "description": "Mock websocket server expected heartBeat interval", "defaultValue": -1},
-		{"name": "responseCodeOk", "type":"INT",  "description": "Possible value in <i>responseCode</i> field of rest request response: Successful response", "defaultValue": 200},
-		{"name": "responseCodeInternalServerError", "type":"INT",  "description": "Possible value in <i>responseCode</i> field of rest request response: Server internal error", "defaultValue": 500}
+		{"name": "websocketHeartBeatInterval", "type":"INT",  "description": "Mock websocket server expected heartBeat interval", "defaultValue": -1}
 		
 	],
 	"constants": [
@@ -18,12 +16,14 @@
 		{"name": "httpServerHostWildcard", "type":"STRING", "description": "Value to substitute with actual HTTP server host in httpUrl", "value": "HTTPSERVERHOST"},
 		{"name": "httpServerPortWildcard", "type":"STRING", "description": "Value to substitute with actual HTTP server host in httpUrl", "value": "8080"},
 		{"name": "websocketServerHostWildcard", "type":"STRING", "description": "Value to substitute with actual HTTP server host in httpUrl", "value": "MOCKWEBSOCKETSERVERHOST"},
-		{"name": "websocketServerPortWildcard", "type":"STRING", "description": "Value to substitute with actual HTTP server host in httpUrl", "value": "8090"}
+		{"name": "websocketServerPortWildcard", "type":"STRING", "description": "Value to substitute with actual HTTP server host in httpUrl", "value": "8090"},
+		{"name": "responseCodeOk", "type":"INT",  "description": "Possible value in <i>responseCode</i> field of rest request response: Successful response", "value": 200},
+		{"name": "responseCodeInternalServerError", "type":"INT",  "description": "Possible value in <i>responseCode</i> field of rest request response: Server internal error", "value": 500}
 	],
 	"httpUrl": "http://HTTPSERVERHOST:8080",
 	"websocketUrl": "ws://MOCKWEBSOCKETSERVERHOST:8090/ws",
-	"httpRequestInterceptorFactory": "com.scz.jxapi.netutils.websocket.net.DemoExchangeHttpRequestInterceptorFactory",
-	"websocketHookFactory": "com.scz.jxapi.netutils.websocket.net.DemoExchangeWebsocketHookFactory",
+	"httpRequestInterceptorFactory": "com.scz.jxapi.exchanges.demo.net.DemoExchangeHttpRequestInterceptorFactory",
+	"websocketHookFactory": "com.scz.jxapi.exchanges.demo.net.DemoExchangeWebsocketHookFactory",
 	"apis":[
 		{ 
 			"name": "MarketData",
@@ -73,6 +73,50 @@
 								]
 							}
 						]
+					}
+				},
+				{
+					"name": "postRestRequestDataTypeInt",
+					"httpMethod": "POST",
+					"description": "A sample REST endpoint using INT response data type",
+					"url": "/postInt",
+					"request": {
+						"type": "INT",
+						"sampleValue": 12345
+					},
+					"response": {
+						"objectName": "GenericResponse",
+						"properties": [
+							{"name":"responseCode", "type": "INT", "description":"Request response code", "sampleValue":"0"}
+						]
+					}
+				},
+				{
+					"name": "getRestRequestDataTypePrimitiveWithMsgField",
+					"httpMethod": "GET",
+					"description": "A sample REST endpoint using GET (hence url query params) primitive request type, with 'msgField' property defined. That msgField value should be used as query param argument name",
+					"url": "/getIntWithMsgField",
+					"request": {
+						"objectName": "AgeRequest",
+						"type": "INT",
+						"name": "age",
+						"msgField": "a"
+					},
+					"response": {
+						"objectName": "GenericResponse"
+					}
+				},
+				{
+					"name": "postRestRequestDataTypeIntList",
+					"httpMethod": "POST",
+					"description": "A sample REST endpoint using INT_LIST request data type",
+					"url": "/postIntList",
+					"request": {
+						"type": "INT_LIST",
+						"sampleValue": [1,3,5]
+					},
+					"response": {
+						"objectName": "GenericResponse"
 					}
 				}
 			],

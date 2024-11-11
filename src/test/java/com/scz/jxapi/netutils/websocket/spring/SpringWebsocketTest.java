@@ -7,6 +7,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.scz.jxapi.netutils.rest.javanet.MockHttpServer;
 import com.scz.jxapi.netutils.websocket.GenericRawWebsocketMessageHandler;
 import com.scz.jxapi.netutils.websocket.GenericWebsocketErrorHandler;
 import com.scz.jxapi.netutils.websocket.Websocket;
@@ -35,6 +36,7 @@ public class SpringWebsocketTest {
 	public void setUp() {
 		clientListener = new GenericRawWebsocketMessageHandler();
 		clientErrorHandler = new GenericWebsocketErrorHandler();
+		port = MockHttpServer.findAvailablePort();
 		server = new MockWebsocketServer(port, appName);
 		ws = new SpringWebsocket();
 		url = "ws://localhost:" + port +"/" + appName + "/ws";

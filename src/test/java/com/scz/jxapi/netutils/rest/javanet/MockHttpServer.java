@@ -20,6 +20,7 @@ import org.glassfish.grizzly.http.server.Request;
 import org.glassfish.grizzly.http.server.Response;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.util.StringUtils;
 
 import com.scz.jxapi.netutils.rest.HttpMethod;
 import com.scz.jxapi.netutils.rest.HttpRequest;
@@ -172,7 +173,7 @@ public class MockHttpServer {
 	private HttpRequest convertRequest(Request request) throws IOException {
 		HttpRequest res = new HttpRequest();
 		res.setHttpMethod(HttpMethod.valueOf(request.getMethod().getMethodString()));
-		res.setUrl(request.getRequestURL().toString());
+		res.setUrl(getRequestUrl(request));
 		Map<String, List<String>> headers = new TreeMap<>();
 		request.getHeaderNames().forEach(headerName -> {
 			headers.put(headerName, StreamSupport.stream(request.getHeaders(headerName).spliterator(), false)
@@ -191,16 +192,27 @@ public class MockHttpServer {
 		return res;
 	}
 	
+	private String getRequestUrl(Request request) {
+		StringBuilder url = new StringBuilder().append(request.getRequestURL().toString());
+		String query = request.getQueryString();
+		if (!StringUtils.isEmpty(query)) {
+			url.append("?").append(query);
+		}
+		return url.toString();
+	}
+	
 	private void fillResponse(HttpResponse httpResponse, Response response) throws IOException {
 		if (log.isDebugEnabled()) {
 			log.debug("Filling response:" + httpResponse);
 		}
 		response.setStatus(httpResponse.getResponseCode());
-		httpResponse.getHeaders().entrySet().forEach(e -> {
-			e.getValue().forEach(v -> {
-				response.addHeader(e.getKey(), v);
+		if (httpResponse.getHeaders() != null) {
+			httpResponse.getHeaders().entrySet().forEach(e -> {
+				e.getValue().forEach(v -> {
+					response.addHeader(e.getKey(), v);
+				});
 			});
-		});
+		}
 		String body = Optional.ofNullable(httpResponse.getBody()).orElse("");
 		try (Writer writer = response.getWriter()) {
 			writer.write(body);

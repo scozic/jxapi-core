@@ -1,5 +1,6 @@
 package com.scz.jxapi.exchanges.demo.gen.marketdata;
 
+import java.util.List;
 import java.util.Properties;
 
 import com.scz.jxapi.exchange.AbstractExchangeApi;
@@ -8,11 +9,13 @@ import com.scz.jxapi.exchanges.demo.gen.DemoExchangeExchangeImpl;
 import com.scz.jxapi.exchanges.demo.gen.marketdata.deserializers.DemoExchangeMarketDataExchangeInfoResponseDeserializer;
 import com.scz.jxapi.exchanges.demo.gen.marketdata.deserializers.DemoExchangeMarketDataTickerStreamMessageDeserializer;
 import com.scz.jxapi.exchanges.demo.gen.marketdata.deserializers.DemoExchangeMarketDataTickersResponseDeserializer;
+import com.scz.jxapi.exchanges.demo.gen.marketdata.deserializers.GenericResponseDeserializer;
 import com.scz.jxapi.exchanges.demo.gen.marketdata.pojo.DemoExchangeMarketDataExchangeInfoRequest;
 import com.scz.jxapi.exchanges.demo.gen.marketdata.pojo.DemoExchangeMarketDataExchangeInfoResponse;
 import com.scz.jxapi.exchanges.demo.gen.marketdata.pojo.DemoExchangeMarketDataTickerStreamMessage;
 import com.scz.jxapi.exchanges.demo.gen.marketdata.pojo.DemoExchangeMarketDataTickerStreamRequest;
 import com.scz.jxapi.exchanges.demo.gen.marketdata.pojo.DemoExchangeMarketDataTickersResponse;
+import com.scz.jxapi.exchanges.demo.gen.marketdata.pojo.GenericResponse;
 import com.scz.jxapi.netutils.deserialization.MessageDeserializer;
 import com.scz.jxapi.netutils.rest.FutureRestResponse;
 import com.scz.jxapi.netutils.rest.HttpMethod;
@@ -38,16 +41,22 @@ public class DemoExchangeMarketDataApiImpl extends AbstractExchangeApi implement
   
   public static final String EXCHANGE_INFO_URL = HTTP_URL + "/exchangeInfo";
   public static final String TICKERS_URL = HTTP_URL + "/tickers";
+  public static final String POST_REST_REQUEST_DATA_TYPE_INT_URL = HTTP_URL + "/postInt";
+  public static final String GET_REST_REQUEST_DATA_TYPE_PRIMITIVE_WITH_MSG_FIELD_URL = HTTP_URL + "/getIntWithMsgField";
+  public static final String POST_REST_REQUEST_DATA_TYPE_INT_LIST_URL = HTTP_URL + "/postIntList";
   public static final String WEBSOCKET_URL = DemoExchangeExchangeImpl.WEBSOCKET_URL;
   private final MessageDeserializer<DemoExchangeMarketDataExchangeInfoResponse> exchangeInfoResponseDeserializer = new DemoExchangeMarketDataExchangeInfoResponseDeserializer();
   private final MessageDeserializer<DemoExchangeMarketDataTickersResponse> tickersResponseDeserializer = new DemoExchangeMarketDataTickersResponseDeserializer();
+  private final MessageDeserializer<GenericResponse> postRestRequestDataTypeIntResponseDeserializer = new GenericResponseDeserializer();
+  private final MessageDeserializer<GenericResponse> getRestRequestDataTypePrimitiveWithMsgFieldResponseDeserializer = new GenericResponseDeserializer();
+  private final MessageDeserializer<GenericResponse> postRestRequestDataTypeIntListResponseDeserializer = new GenericResponseDeserializer();
   private final WebsocketEndpoint<DemoExchangeMarketDataTickerStreamMessage> tickerStreamWs;
   
   public DemoExchangeMarketDataApiImpl(String exchangeName, Properties properties) {
     super(ID, exchangeName, DemoExchangeExchange.ID, properties);
     createHttpRequestExecutor(null, -1L);
-    createHttpRequestInterceptor("com.scz.jxapi.netutils.websocket.net.DemoExchangeHttpRequestInterceptorFactory");
-    createWebsocketManager(WEBSOCKET_URL, null, "com.scz.jxapi.netutils.websocket.net.DemoExchangeWebsocketHookFactory");
+    createHttpRequestInterceptor("com.scz.jxapi.exchanges.demo.net.DemoExchangeHttpRequestInterceptorFactory");
+    createWebsocketManager(WEBSOCKET_URL, null, "com.scz.jxapi.exchanges.demo.net.DemoExchangeWebsocketHookFactory");
     this.tickerStreamWs = createWebsocketEndpoint(TICKER_STREAM_WS_API, new DemoExchangeMarketDataTickerStreamMessageDeserializer());
   }
   @Override
@@ -63,6 +72,28 @@ public class DemoExchangeMarketDataApiImpl extends AbstractExchangeApi implement
     if (log.isDebugEnabled())
       log.debug("GET tickers >");
     return submit(HttpRequest.create(TICKERS_REST_API, TICKERS_URL, HttpMethod.GET, null, null, 0), tickersResponseDeserializer);
+  }
+  
+  @Override
+  public FutureRestResponse<GenericResponse> postRestRequestDataTypeInt(Integer request) {
+    if (log.isDebugEnabled())
+      log.debug("POST postRestRequestDataTypeInt > " + request);
+    return submit(HttpRequest.create(POST_REST_REQUEST_DATA_TYPE_INT_REST_API, POST_REST_REQUEST_DATA_TYPE_INT_URL, HttpMethod.POST, request, null, 0), postRestRequestDataTypeIntResponseDeserializer);
+  }
+  
+  @Override
+  public FutureRestResponse<GenericResponse> getRestRequestDataTypePrimitiveWithMsgField(Integer request) {
+    String urlParameters = EncodingUtil.createUrlQueryParameters("a", request);
+    if (log.isDebugEnabled())
+      log.debug("GET getRestRequestDataTypePrimitiveWithMsgField > " + request);
+    return submit(HttpRequest.create(GET_REST_REQUEST_DATA_TYPE_PRIMITIVE_WITH_MSG_FIELD_REST_API, GET_REST_REQUEST_DATA_TYPE_PRIMITIVE_WITH_MSG_FIELD_URL + urlParameters, HttpMethod.GET, request, null, 0), getRestRequestDataTypePrimitiveWithMsgFieldResponseDeserializer);
+  }
+  
+  @Override
+  public FutureRestResponse<GenericResponse> postRestRequestDataTypeIntList(List<Integer> request) {
+    if (log.isDebugEnabled())
+      log.debug("POST postRestRequestDataTypeIntList > " + request);
+    return submit(HttpRequest.create(POST_REST_REQUEST_DATA_TYPE_INT_LIST_REST_API, POST_REST_REQUEST_DATA_TYPE_INT_LIST_URL, HttpMethod.POST, request, null, 0), postRestRequestDataTypeIntListResponseDeserializer);
   }
   
   @Override

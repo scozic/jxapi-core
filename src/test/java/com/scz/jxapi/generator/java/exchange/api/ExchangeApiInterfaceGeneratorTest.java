@@ -296,7 +296,7 @@ public class ExchangeApiInterfaceGeneratorTest {
 				+ "\n"
 				+ "/**\n"
 				+ " * MyTestExchange MarketData API</br>\n"
-				+ " * The market data API of MyTestExchange, , with different request data types for websocket and REST endpoints. Remark: Only OBJECT (default) and STRING are usually used, but any data type is supported\n"
+				+ " * The market data API of MyTestExchange, with different request data types for websocket and REST endpoints. Remark: Only OBJECT (default) and STRING are usually used, but any data type is supported\n"
 				+ " * <br><strong>THIS CODE IS GENERATED. DO NOT EDIT MANUALLY!</strong>\n"
 				+ " */\n"
 				+ "public interface MyTestExchangeMarketDataApi extends ExchangeApi {\n"

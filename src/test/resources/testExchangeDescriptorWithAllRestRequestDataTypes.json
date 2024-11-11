@@ -6,7 +6,7 @@
 		"apis":[
 		{ 
 			"name": "MarketData",
-			"description": "The market data API of MyTestExchange, , with different request data types for websocket and REST endpoints. Remark: Only OBJECT (default) and STRING are usually used, but any data type is supported",
+			"description": "The market data API of MyTestExchange, with different request data types for websocket and REST endpoints. Remark: Only OBJECT (default) and STRING are usually used, but any data type is supported",
 			"httpRequestInterceptorFactory": "com.foo.bar.BarRequestInterceptorFactory",
 			"httpRequestExecutorFactory": "com.foo.bar.BarRequestExecutorFactory",
 			"restEndpoints": [
@@ -97,7 +97,7 @@
 					"name": "postRestRequestDataTypeObjectOneParameter",
 					"httpMethod": "POST",
 					"description": "A sample REST endpoint using OBJECT request data type (default, explicit here), and one parameter",
-					"url": "/postBigDecimal",
+					"url": "/postObjectOneParameter",
 					"request": {
 						"type": "OBJECT",
 						"properties": [
@@ -112,9 +112,10 @@
 					"name": "postRestRequestDataTypeIntList",
 					"httpMethod": "POST",
 					"description": "A sample REST endpoint using INT_LIST request data type",
-					"url": "/postBigDecimal",
+					"url": "/postIntList",
 					"request": {
-						"type": "INT_LIST"
+						"type": "INT_LIST",
+						"sampleValue": [1,3,5]
 					},
 					"response": {
 						"objectName": "GenericResponse"
@@ -124,7 +125,7 @@
 					"name": "postRestRequestDataTypeObjectListMap",
 					"httpMethod": "POST",
 					"description": "A sample REST endpoint using OBJECT_LIST_MAP request data type",
-					"url": "/postBigDecimal",
+					"url": "/postObjectListMap",
 					"request": {
 						"type": "OBJECT_LIST_MAP",
 						"objectName": "SingleSymbol",
@@ -137,8 +138,8 @@
 				{
 					"name": "getRestRequestDataTypeObjectListMap",
 					"httpMethod": "GET",
-					"description": "A sample REST endpoint using GET (hence url query params) and object list map request type. The object used as values contains ",
-					"url": "/postInt",
+					"description": "A sample REST endpoint using GET (hence url query params) and object list map request type.",
+					"url": "/getObjectListMap",
 					"request": {
 						"type": "OBJECT_LIST_MAP",
 						"objectName": "MultiSymbol",
@@ -150,43 +151,34 @@
 						]
 					},
 					"response": {
-						"objectName": "GenericResponse",
-						"properties": [
-							{"name":"responseCode", "type": "INT", "description":"Request response code", "sampleValue":"0"}
-						]
+						"objectName": "GenericResponse"
 					}
 				},
 				{
 					"name": "getRestRequestDataTypeEmptyObject",
 					"httpMethod": "GET",
 					"description": "A sample REST endpoint using GET (hence url query params) and empty request object",
-					"url": "/postInt",
+					"url": "/getEmptyObject",
 					"request": {
 						"type": "OBJECT",
 						"properties": []
 					},
 					"response": {
-						"objectName": "GenericResponse",
-						"properties": [
-							{"name":"responseCode", "type": "INT", "description":"Request response code", "sampleValue":"0"}
-						]
+						"objectName": "GenericResponse"
 					}
 				},
 				{
 					"name": "getRestRequestDataTypePrimitiveWithMsgField",
 					"httpMethod": "GET",
 					"description": "A sample REST endpoint using GET (hence url query params) primitive request type, with 'msgField' property defined. That msgField value should be used as query param argument name",
-					"url": "/postInt",
+					"url": "/getIntWithMsgField",
 					"request": {
 						"type": "INT",
 						"name": "age",
 						"msgField": "a"
 					},
 					"response": {
-						"objectName": "GenericResponse",
-						"properties": [
-							{"name":"responseCode", "type": "INT", "description":"Request response code", "sampleValue":"0"}
-						]
+						"objectName": "GenericResponse"
 					}
 				},
 				{
@@ -200,10 +192,7 @@
 						"properties": []
 					},
 					"response": {
-						"objectName": "GenericResponse",
-						"properties": [
-							{"name":"responseCode", "type": "INT", "description":"Request response code", "sampleValue":"0"}
-						]
+						"objectName": "GenericResponse"
 					}
 				}
 			],

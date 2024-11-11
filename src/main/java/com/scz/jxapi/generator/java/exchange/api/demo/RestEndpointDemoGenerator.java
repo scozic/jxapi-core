@@ -63,8 +63,10 @@ public class RestEndpointDemoGenerator extends JavaTypeGenerator {
 			Type requestDataType =  Optional.ofNullable(restApi.getRequest().getType()).orElse(Type.OBJECT);
 			if (requestDataType.getCanonicalType().isPrimitive) {
 				requestClassName = requestDataType.getCanonicalType().typeClass.getName();
-			} else {
+			} else if (requestDataType.isObject() ){
 				requestClassName = ExchangeApiGeneratorUtil.generateRestEnpointRequestPojoClassName(exchangeDescriptor, exchangeApiDescriptor, restApi);
+			} else {
+				requestClassName = Type.getLeafSubType(requestDataType).getCanonicalType().typeClass.getName();
 			}
 			
 			addImport(requestClassName);

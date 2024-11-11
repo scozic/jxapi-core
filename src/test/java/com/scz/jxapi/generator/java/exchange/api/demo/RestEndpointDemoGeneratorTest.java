@@ -228,4 +228,49 @@ public class RestEndpointDemoGeneratorTest {
 				+ "}\n", 
 				generator.generate());
 	}
+	
+	@Test
+	public void testGenerateRestEndpointRequestTypeIntList() throws Exception {
+		ExchangeDescriptor exchange = new ExchangeDescriptorParser().fromJson(Paths.get(".", "src", "test", "resources", "testExchangeDescriptorWithAllRestRequestDataTypes.json"));
+		ExchangeApiDescriptor api = exchange.getApis().get(0);
+		RestEndpointDescriptor restEndpoint = ClassesGeneratorTestUtil.findRestEndpointByName("postRestRequestDataTypeIntList", api);
+		RestEndpointDemoGenerator generator = new RestEndpointDemoGenerator(exchange, api, restEndpoint);
+		Assert.assertEquals("package com.foo.bar.gen.marketdata.demo;\n"
+				+ "\n"
+				+ "import java.util.List;\n"
+				+ "\n"
+				+ "import com.foo.bar.gen.MyTestExchangeExchangeImpl;\n"
+				+ "import com.foo.bar.gen.marketdata.MyTestExchangeMarketDataApi;\n"
+				+ "import com.scz.jxapi.netutils.deserialization.json.field.IntegerJsonFieldDeserializer;\n"
+				+ "import com.scz.jxapi.netutils.deserialization.json.field.ListJsonFieldDeserializer;\n"
+				+ "import com.scz.jxapi.util.DemoUtil;\n"
+				+ "import com.scz.jxapi.util.TestJXApiProperties;\n"
+				+ "import org.slf4j.Logger;\n"
+				+ "import org.slf4j.LoggerFactory;\n"
+				+ "\n"
+				+ "/**\n"
+				+ " * Snippet to test call to {@link com.foo.bar.gen.marketdata.MyTestExchangeMarketDataApi#postRestRequestDataTypeIntList(List<Integer>)}<br>\n"
+				+ " * <br><strong>THIS CODE IS GENERATED. DO NOT EDIT MANUALLY!</strong>\n"
+				+ " */\n"
+				+ "public class MyTestExchangeMarketDataPostRestRequestDataTypeIntListDemo {\n"
+				+ "  private static final Logger log = LoggerFactory.getLogger(MyTestExchangeMarketDataPostRestRequestDataTypeIntListDemo.class);\n"
+				+ "  \n"
+				+ "  public static List<Integer> createRequest() {\n"
+				+ "    return new ListJsonFieldDeserializer<>(IntegerJsonFieldDeserializer.getInstance()).deserialize(\"[1, 3, 5]\");\n"
+				+ "  }\n"
+				+ "  public static void main(String[] args) {\n"
+				+ "    try {\n"
+				+ "      MyTestExchangeMarketDataApi api = new MyTestExchangeExchangeImpl(\"test-myTestExchange\", TestJXApiProperties.filterProperties(\"myTestExchange\", true)).getMyTestExchangeMarketDataApi();\n"
+				+ "      List<Integer> request = createRequest();\n"
+				+ "      log.info(\"Calling com.foo.bar.gen.marketdata.MyTestExchangeMarketDataApi.postRestRequestDataTypeIntList() API with request:\" + request);\n"
+				+ "      DemoUtil.checkResponse(api.postRestRequestDataTypeIntList(request));\n"
+				+ "      System.exit(0);\n"
+				+ "    } catch (Throwable t) {\n"
+				+ "      log.error(\"Exception raised from main()\", t);\n"
+				+ "      System.exit(-1);\n"
+				+ "    }\n"
+				+ "  }\n"
+				+ "}\n", 
+				generator.generate());
+	}
 }

@@ -140,7 +140,7 @@ public class PropertiesInterfaceGenerator extends JavaTypeGenerator {
 		}
 		addImport(Properties.class);
 		addImport(PropertiesUtil.class);
-		sb.append("default ")
+		sb.append("static ")
 		  .append(typeClass)
 		  .append(" ")
 		  .append(methodName)
