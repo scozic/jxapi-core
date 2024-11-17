@@ -3,6 +3,7 @@ package com.scz.jxapi.generator.java.exchange.api.demo;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
+import java.util.Properties;
 import java.util.stream.Collectors;
 
 import com.scz.jxapi.exchange.descriptor.CanonicalType;
@@ -306,22 +307,42 @@ public class EndpointDemoGeneratorUtil {
 	 * @param exchangeId            The exchange ID.
 	 * @param exchangeImplClassName The exchange implementation class name.
 	 * @param simpleApiClassName    The simple API class name.
+	 * @param propertiesVariableName The name of variable referencing configuration properties {@link Properties} object.
 	 * @return the new test API instantiation instruction.
 	 * 
 	 * @see TestJXApiProperties#filterProperties(String, boolean)
 	 */
-	public static String getNewTestApiInstruction(String exchangeId, String exchangeImplClassName, String simpleApiClassName) {
+	public static String getNewTestApiInstruction(String exchangeId, String exchangeClassName, String simpleApiClassName, String propertiesVariableName) {
+		String simpleExchangeClassName = JavaCodeGenerationUtil.getClassNameWithoutPackage(exchangeClassName);
+		String exchangeImplClassName = ExchangeJavaWrapperGeneratorUtil.getExchangeInterfaceImplementationName(exchangeClassName);
+		String simpleExchangeImplClassName = JavaCodeGenerationUtil.getClassNameWithoutPackage(exchangeImplClassName);
 		return new StringBuilder()
 				.append(simpleApiClassName)
 				.append(" api = new ")
-				.append(JavaCodeGenerationUtil.getClassNameWithoutPackage(exchangeImplClassName))
-				.append("(\"test-")
-				.append(exchangeId)
-				.append("\", TestJXApiProperties.filterProperties(\"")
-				.append(exchangeId)
-				.append("\", true)).get")
+				.append(simpleExchangeImplClassName)
+				.append("(\"test-\" + ")
+				.append(simpleExchangeClassName)
+				.append(".ID, ")
+				.append(propertiesVariableName)
+				.append(").get")
 				.append(simpleApiClassName)
-				.append("();\n")
+				.append("();")
+				.toString();
+	}
+	
+	/**
+	 * Generates {@link TestJXApiProperties} instantiation instruction, that is a call to {@link TestJXApiProperties#filterProperties(String, boolean)} using given exchangeId as argument.
+	 * The {@link TestJXApiProperties}
+	 * @param exchangeId Exchange ID to use as argument to {@link TestJXApiProperties#filterProperties(String, boolean)}. Should be plain value not a variable, generated instruction will quote it. 
+	 * @return Instruction call to {@link TestJXApiProperties}
+	 */
+	public static String getTestPropertiesInstruction(String simpleExchangeClassName, Imports imports) {
+		imports.add(TestJXApiProperties.class);
+		return new StringBuilder()
+				.append(TestJXApiProperties.class.getSimpleName())
+				.append(".filterProperties(")
+				.append(simpleExchangeClassName)
+				.append(".ID, true)")
 				.toString();
 	}
 

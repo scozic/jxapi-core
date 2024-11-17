@@ -1,6 +1,7 @@
 package com.scz.jxapi.generator.java.exchange.api.demo;
 
 import java.util.Optional;
+import java.util.concurrent.ExecutionException;
 
 import org.slf4j.Logger;
 
@@ -33,15 +34,22 @@ import com.scz.jxapi.util.TestJXApiProperties;
  */
 public class RestEndpointDemoGenerator extends JavaTypeGenerator {
 	
-	private final ExchangeDescriptor exchangeDescriptor;
-	private final ExchangeApiDescriptor exchangeApiDescriptor;
 	private final RestEndpointDescriptor restApi;
-	private StringBuilder bodyBuilder;
 	private final boolean hasArguments;
 	private final String requestClassName;
 	private final String requestSimpleClassName;
 	private String apiInterfaceClassName;
 	private final String simpleApiClassName;
+	private final String exchangeName;
+	private final String exchangeClassName;
+	private final String exchangeSimpleClassName;
+	private final Field request;
+	private final Type requestDataType;
+	private final String exchangeImplClassName;
+	private final String responseSimpleClassName;
+	private final boolean hasResponse;
+	private final Field response;
+	private final Type responseDataType;
 	
 	/**
 	 * Constructor.
@@ -54,33 +62,67 @@ public class RestEndpointDemoGenerator extends JavaTypeGenerator {
 									 ExchangeApiDescriptor exchangeApiDescriptor, 
 									 RestEndpointDescriptor restApi) {
 		super(EndpointDemoGeneratorUtil.getRestApiDemoClassName(exchangeDescriptor, exchangeApiDescriptor, restApi));
-		this.exchangeDescriptor = exchangeDescriptor;
-		this.exchangeApiDescriptor = exchangeApiDescriptor;
-		this.restApi = restApi;
 		setTypeDeclaration("public class");
+		this.restApi = restApi;
+		this.exchangeName = exchangeDescriptor.getName();
+		this.exchangeClassName = ExchangeJavaWrapperGeneratorUtil.getExchangeInterfaceName(exchangeDescriptor);
+		this.exchangeSimpleClassName = JavaCodeGenerationUtil.getClassNameWithoutPackage(exchangeClassName);
 		this.hasArguments = ExchangeApiGeneratorUtil.restEndpointHasArguments(restApi, exchangeApiDescriptor);
+		this.request = ExchangeApiGeneratorUtil.resolveFieldProperties(exchangeApiDescriptor, restApi.getRequest());
+		this.exchangeImplClassName = ExchangeJavaWrapperGeneratorUtil.getExchangeInterfaceImplementationName(exchangeDescriptor);
 		if (hasArguments) {
-			Type requestDataType =  Optional.ofNullable(restApi.getRequest().getType()).orElse(Type.OBJECT);
+			requestDataType =  Optional.ofNullable(request.getType()).orElse(Type.OBJECT);
 			if (requestDataType.getCanonicalType().isPrimitive) {
 				requestClassName = requestDataType.getCanonicalType().typeClass.getName();
 			} else if (requestDataType.isObject() ){
-				requestClassName = ExchangeApiGeneratorUtil.generateRestEnpointRequestPojoClassName(exchangeDescriptor, exchangeApiDescriptor, restApi);
+				requestClassName = ExchangeApiGeneratorUtil.generateRestEnpointRequestPojoClassName(
+										exchangeDescriptor, 
+										exchangeApiDescriptor, 
+										restApi);
 			} else {
 				requestClassName = Type.getLeafSubType(requestDataType).getCanonicalType().typeClass.getName();
 			}
 			
 			addImport(requestClassName);
 			requestSimpleClassName = ExchangeJavaWrapperGeneratorUtil.getClassNameForType(
-					requestDataType, 
-					getImports(), 
-					requestClassName);
+										requestDataType, 
+										getImports(), 
+										requestClassName);
 		} else {
 			requestClassName = null;
 			requestSimpleClassName = null;
+			requestDataType = null;
 		}
 		this.apiInterfaceClassName = ExchangeJavaWrapperGeneratorUtil.getApiInterfaceClassName(exchangeDescriptor, exchangeApiDescriptor);
 		this.simpleApiClassName = JavaCodeGenerationUtil.getClassNameWithoutPackage(apiInterfaceClassName);
+		response = restApi.getResponse();
+		responseDataType = ExchangeJavaWrapperGeneratorUtil.getFieldType(response);
+		hasResponse = ExchangeApiGeneratorUtil.restEndpointHasResponse(restApi, exchangeApiDescriptor);
+		if (hasResponse) {
+			String restResponseClassName = null;
+			if (responseDataType != null && responseDataType.isObject()) {
+				restResponseClassName = ExchangeApiGeneratorUtil.generateRestEnpointResponsePojoClassName(
+						exchangeDescriptor, 
+						exchangeApiDescriptor, 
+						restApi);
+				addImport(restResponseClassName);
+			}
+			responseSimpleClassName = ExchangeJavaWrapperGeneratorUtil.getClassNameForType(
+					responseDataType, 
+					getImports(), 
+					restResponseClassName);
+
+		} else {
+			responseSimpleClassName = null;
+		}
+		
 		addImport(apiInterfaceClassName);
+		addImport(exchangeClassName);
+		addImport(exchangeImplClassName);
+		addImport(TestJXApiProperties.class);
+		addImport(DemoUtil.class);
+		addImport(ExecutionException.class);
+		addImport(InterruptedException.class);
 		String apiMethodName = JavaCodeGenerationUtil.firstLetterToLowerCase(restApi.getName());
 		setDescription("Snippet to test call to {@link " 
 				+ ExchangeJavaWrapperGeneratorUtil.getApiInterfaceClassName(exchangeDescriptor, exchangeApiDescriptor) 
@@ -88,31 +130,34 @@ public class RestEndpointDemoGenerator extends JavaTypeGenerator {
 				+ apiMethodName 
 				+ "(" + (requestClassName == null? "": requestSimpleClassName) + ")}<br>\n"
 				+ JavaCodeGenerationUtil.GENERATED_CODE_WARNING);
-		
 	}
 	
 	@Override
 	public String generate() {
 		JavaCodeGenerationUtil.generateSlf4jLoggerDeclaration(this);
-		generateMainMethodBody();
-		return super.generate();
-	}
-	
-	private void generateMainMethodBody() {
-		bodyBuilder = new StringBuilder();
-		String exchangeInterfaceClassName = ExchangeJavaWrapperGeneratorUtil.getExchangeInterfaceName(exchangeDescriptor);
-		String exchangeName = JavaCodeGenerationUtil.firstLetterToLowerCase(exchangeDescriptor.getName());
-		Field request = ExchangeApiGeneratorUtil.resolveFieldProperties(exchangeApiDescriptor, restApi.getRequest());
-		String exchangeImplClassName = exchangeInterfaceClassName + "Impl";
-		addImport(exchangeImplClassName);
-		addImport(TestJXApiProperties.class);
-		addImport(DemoUtil.class);
-		bodyBuilder.append(EndpointDemoGeneratorUtil.getNewTestApiInstruction(exchangeName, exchangeImplClassName, simpleApiClassName));
 		if (hasArguments) {
 			this.appendToBody(EndpointDemoGeneratorUtil.generateFieldCreationMethod(
 								request,  
 								requestClassName, 
 								getImports()));
+			this.appendToBody("\n");
+		}
+		generateExecuteMethod();
+		this.appendToBody("\n");
+		generateMainMethod();
+		this.appendToBody("\n");
+		return super.generate();
+	}
+	
+	private void generateExecuteMethod() {
+		StringBuilder bodyBuilder = new StringBuilder();
+		bodyBuilder.append(EndpointDemoGeneratorUtil.getNewTestApiInstruction(
+														exchangeName, 
+														exchangeClassName, 
+														simpleApiClassName, 
+														"configProperties"));
+		bodyBuilder.append("\n");
+		if (hasArguments) {
 			bodyBuilder.append(requestSimpleClassName)
 				.append(" request = ")
 				.append(EndpointDemoGeneratorUtil.generateFieldCreationMethodName(request))
@@ -138,14 +183,37 @@ public class RestEndpointDemoGenerator extends JavaTypeGenerator {
 		if (hasArguments) {
 			bodyBuilder.append("request");
 		}
-		bodyBuilder.append("));\nSystem.exit(0);");
+		bodyBuilder.append("));");
 		
+		StringBuilder signature = new StringBuilder()
+				.append("public static FutureRestResponse<");
+	
+		signature.append(responseSimpleClassName).append("> execute(");
+		if (hasArguments) {
+			signature.append("request, ");
+		}
+		signature.append("Properties configProperties) throws InterruptedException, ExecutionException");
+		
+		appendMethod(signature.toString(), bodyBuilder.toString());
+	}
+	
+	private void generateMainMethod() {
+		StringBuilder bodyBuilder = new StringBuilder().append("execute(");
+		if (hasArguments) {
+			bodyBuilder.append(EndpointDemoGeneratorUtil.generateFieldCreationMethodName(restApi.getRequest()))
+					   .append("(), ");
+		}
+		bodyBuilder.append(EndpointDemoGeneratorUtil.getTestPropertiesInstruction(exchangeSimpleClassName, getImports()))
+				   .append(");\nSystem.exit(0);");
+											
 		appendMethod("public static void main(String[] args)", 
-					"try {\n" 
-						+ JavaCodeGenerationUtil.indent(bodyBuilder.toString(), JavaCodeGenerationUtil.INDENTATION) 
-						+ "\n} catch (Throwable t) {\n"
-						+ JavaCodeGenerationUtil.indent("log.error(\"Exception raised from main()\", t);\nSystem.exit(-1);", JavaCodeGenerationUtil.INDENTATION)
-						+ "\n}");
+				"try {\n" 
+					+ JavaCodeGenerationUtil.indent(bodyBuilder.toString(), 
+													JavaCodeGenerationUtil.INDENTATION) 
+					+ "\n} catch (Throwable t) {\n"
+					+ JavaCodeGenerationUtil.indent("log.error(\"Exception raised from main()\", t);\nSystem.exit(-1);", 
+													JavaCodeGenerationUtil.INDENTATION)
+					+ "\n}");
 	}
 
 }

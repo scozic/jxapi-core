@@ -118,6 +118,20 @@
 					"response": {
 						"objectName": "GenericResponse"
 					}
+				},
+				{
+					"name": "postRestRequestDataTypeObjectListMap",
+					"httpMethod": "POST",
+					"description": "A sample REST endpoint using OBJECT_LIST_MAP request data type",
+					"url": "/postObjectListMap",
+					"request": {
+						"type": "OBJECT_LIST_MAP",
+						"objectName": "SingleSymbol",
+						"sampleMapKeyValue": ["spot"]
+					},
+					"response": {
+						"objectName": "GenericResponse"
+					}
 				}
 			],
 			"websocketEndpoints": [

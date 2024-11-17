@@ -1,6 +1,7 @@
 package com.scz.jxapi.generator.java.exchange;
 
 import java.math.BigDecimal;
+import java.util.Optional;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -364,7 +365,7 @@ public class ExchangeJavaWrapperGeneratorUtil {
 		if (value == null) {
 			return null;
 		}
-		return "public static String " 
+		return "public static final String " 
 		+ variableName 
 		+ " = "
 		+ JavaCodeGenerationUtil.getQuotedString(value)
@@ -377,7 +378,30 @@ public class ExchangeJavaWrapperGeneratorUtil {
 	 * @return full name of the interface implementation class
 	 */
 	public static String getExchangeInterfaceImplementationName(ExchangeDescriptor exchangeDescriptor) {
-		return ExchangeInterfaceImplementationGenerator.getExchangeInterfaceName(exchangeDescriptor) + "Impl";
+		return getExchangeInterfaceImplementationName(ExchangeInterfaceImplementationGenerator.getExchangeInterfaceName(exchangeDescriptor));
+	}
+	
+	/**
+	 * Generates the name of the interface implementation class for the given exchange descriptor
+	 * @param exchangeDescriptor exchange descriptor
+	 * @return full name of the interface implementation class
+	 */
+	public static String getExchangeInterfaceImplementationName(String exchangeClassName) {
+		return exchangeClassName + "Impl";
+	}
+	
+	/**
+	 * Find the type of a field in context of REST/Websocket API code generation: If
+	 * field type is <code>null</code> the type is assumed to be {@link Type#OBJECT}
+	 * 
+	 * @param field The field to retrieve type of in context of REST/Websocket API
+	 *              code generation
+	 * @return <code>null</code> if field is <code>null</code>, {@link Type#OBJECT}
+	 *         if field type is <code>null</code>, the field type see
+	 *         {@link Field#getType()} otherwise.
+	 */
+	public static Type getFieldType(Field field) {
+		return field == null? null: Optional.ofNullable(field.getType()).orElse(Type.OBJECT);
 	}
 
 }

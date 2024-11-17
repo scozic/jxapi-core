@@ -100,6 +100,24 @@ public class JavaTypeGenerator {
 	 *                          generated class body after method declaration.
 	 */
 	public void appendMethod(String methodDeclaration, String methodBody) {
+		appendMethod(methodDeclaration, methodBody, null);
+	}
+	
+	/**
+	 * Appends a method to generated class body.
+	 * 
+	 * @param methodDeclaration method modifiers, name and parameters, e.g.
+	 *                          <code>public static void foo(int count)</code>
+	 * @param methodBody        body of method, will be encapsulated in an indented
+	 *                          block (see
+	 *                          JavaCodeGenerationUtil#generateCodeBlock(String)) in
+	 *                          generated class body after method declaration.
+	 * @param javadoc			JavaDoc for the method                          
+	 */
+	public void appendMethod(String methodDeclaration, String methodBody, String javadoc) {
+		if (javadoc != null) {
+			appendToBody(JavaCodeGenerationUtil.generateJavaDoc(javadoc)).append("\n");
+		}
 		appendToBody(methodDeclaration + " " + JavaCodeGenerationUtil.generateCodeBlock(methodBody));
 	}
 	

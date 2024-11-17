@@ -8,6 +8,7 @@ import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 
 import org.junit.After;
@@ -80,12 +81,17 @@ public class JavaTypeGeneratorTest {
 		gen.writeJavaFile(srcFolder);
 		String actualJavaFileContent = Files.readString(srcFolder.resolve(Paths.get("x", "y", "z", "Hello.java")));
 		Assert.assertEquals(gen.generate(), actualJavaFileContent);
+		Imports actualImports = gen.getImports();
+		Assert.assertEquals(2, actualImports.size());
+		Iterator<String> actualImportsIterator = actualImports.iterator();
+		Assert.assertEquals("java.text.SimpleDateFormat", actualImportsIterator.next());
+		Assert.assertEquals("java.util.Date", actualImportsIterator.next());
 	}
 	
 	@Test
 	public void testGeneratorWithEmptyImplementedInterfacesList() {
 		JavaTypeGenerator gen = new JavaTypeGenerator("x.y.z.MyClass");
-		gen.appendToBody("void sayHello();\n\n");
+		gen.appendMethod("void sayHello()", "System.out.println(\"Hello\");");
 		gen.setImplementedInterfaces(List.of());
 		gen.setTypeDeclaration("public class");
 		Assert.assertEquals(0, gen.getImplementedInterfaces().size());
@@ -94,9 +100,11 @@ public class JavaTypeGeneratorTest {
 				+ "\n"
 				+ "\n"
 				+ "public class MyClass {\n"
-				+ "  void sayHello();\n"
-				+ "  \n"
-				+ "}\n", gen.generate());
+				+ "  void sayHello() {\n"
+				+ "    System.out.println(\"Hello\");\n"
+				+ "  }\n"
+				+ "}\n", 
+				gen.generate());
 	}
 	
 	@Test
@@ -124,7 +132,9 @@ public class JavaTypeGeneratorTest {
 		String description = "Hello class";
 		gen.setDescription(description);
 		gen.setTypeDeclaration("public interface");
-		gen.appendMethod("@Override\npublic void sayHello()", "Sytem.out.println(\"Hello\");");
+		gen.appendMethod("@Override\npublic void sayHello()", 
+						 "Sytem.out.println(\"Hello\");", 
+						 "A method that prints \"Hello\" on standard output");
 		
 		Assert.assertEquals(implmentedInterfaces, gen.getImplementedInterfaces());
 		Assert.assertEquals(parentClassName, gen.getParentClassName());
@@ -139,11 +149,15 @@ public class JavaTypeGeneratorTest {
 				+ " * Hello class\n"
 				+ " */\n"
 				+ "public interface HelloInterface extends HelloParent implements HelloInterface, OtherInterface {\n"
+				+ "  /**\n"
+				+ "   * A method that prints \"Hello\" on standard output\n"
+				+ "   */\n"
 				+ "  @Override\n"
 				+ "  public void sayHello() {\n"
 				+ "    Sytem.out.println(\"Hello\");\n"
 				+ "  }\n"
-				+ "}\n", gen.generate());
+				+ "}\n", 
+				gen.generate());
 		
 	}
 }

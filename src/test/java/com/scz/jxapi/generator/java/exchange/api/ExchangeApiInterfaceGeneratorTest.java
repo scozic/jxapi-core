@@ -372,7 +372,7 @@ public class ExchangeApiInterfaceGeneratorTest {
 				+ "   */\n"
 				+ "  FutureRestResponse<GenericResponse> postRestRequestDataTypeObjectListMap(Map<String, List<SingleSymbol>> request);\n"
 				+ "  /**\n"
-				+ "   * A sample REST endpoint using GET (hence url query params) and object list map request type. The object used as values contains \n"
+				+ "   * A sample REST endpoint using GET (hence url query params) and object list map request type.\n"
 				+ "   * @return A {@link FutureRestResponse} that will complete when request submitted asynchronously has been processed\n"
 				+ "   */\n"
 				+ "  FutureRestResponse<GenericResponse> getRestRequestDataTypeObjectListMap(Map<String, List<MultiSymbol>> request);\n"
