@@ -47,7 +47,7 @@ public class JavaNetHttpRequestExecutor extends AbstractHttpRequestExecutor {
 		response.setTime(new Date());
 		try {
 			if (log.isDebugEnabled())
-				log.debug("Executing request:" + request);
+				log.debug("Executing request:{}", request);
 			Builder builder = java.net.http.HttpRequest.newBuilder().uri(new URI(request.getUrl())).timeout(Duration.ofMillis(getRequestTimeout()));
 			switch (request.getHttpMethod()) {
 			case GET:
@@ -84,7 +84,7 @@ public class JavaNetHttpRequestExecutor extends AbstractHttpRequestExecutor {
 		    		response.setBody(r.body());
 		    		response.setTime(new Date());
 		    		if (log.isDebugEnabled()) {
-		    			log.debug("Got response to request:[" + request + "], response[" + response + "]");
+		    			log.debug("Got response to request:[{}], response[{}]", request, response);
 		    		}
 	    		} catch (Exception ex) {
 	    			log.error("Error executing request:" + request, ex);

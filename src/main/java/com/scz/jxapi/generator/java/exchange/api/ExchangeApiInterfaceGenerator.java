@@ -1,7 +1,5 @@
 package com.scz.jxapi.generator.java.exchange.api;
 
-import java.util.Optional;
-
 import com.scz.jxapi.exchange.ExchangeApi;
 import com.scz.jxapi.exchange.descriptor.ExchangeApiDescriptor;
 import com.scz.jxapi.exchange.descriptor.ExchangeDescriptor;

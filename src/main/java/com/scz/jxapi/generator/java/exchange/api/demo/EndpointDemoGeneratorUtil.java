@@ -345,5 +345,13 @@ public class EndpointDemoGeneratorUtil {
 				.append(".ID, true)")
 				.toString();
 	}
+	
+	public static String getCreateRequestMethodJavadoc(String apiMethodJavadocLink) {
+		return new StringBuilder()
+				.append("@return Sample request for calling ")
+				.append(apiMethodJavadocLink)
+				.append(" endpoint.")
+				.toString();
+	}
 
 }

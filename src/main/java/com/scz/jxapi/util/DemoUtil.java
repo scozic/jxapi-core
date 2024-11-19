@@ -8,8 +8,6 @@ import org.slf4j.LoggerFactory;
 
 import com.scz.jxapi.exchange.ExchangeApiEvent;
 import com.scz.jxapi.netutils.rest.FutureRestResponse;
-import com.scz.jxapi.netutils.rest.HttpRequest;
-import com.scz.jxapi.netutils.rest.HttpResponse;
 import com.scz.jxapi.netutils.rest.RestResponse;
 
 /**
@@ -19,8 +17,6 @@ public class DemoUtil {
 	
 	private DemoUtil() {}
 	
-	private static final int MAX_PRETTY_PRINT_STRING_LENGTH = 512;
-	
 	private static final Logger log = LoggerFactory.getLogger(DemoUtil.class);
 
 	/**
@@ -29,30 +25,19 @@ public class DemoUtil {
 	 * @throws NullPointerException if <code>futureResponse</code> is <code>null</code>
 	 * @throws InterruptedException eventually thrown  by {@link CompletableFuture#get()}
 	 * @throws ExecutionException eventually thrown  by {@link CompletableFuture#get()} or if received response is not OK see {@link RestResponse#isOk()}
+	 * @return response to REST API call. This response is 'OK' otherwise an exception would be thrown.
 	 */
-	public static void checkResponse(FutureRestResponse<?> futureResponse) throws InterruptedException, ExecutionException {
+	public static <T> RestResponse<T> checkResponse(FutureRestResponse<T> futureResponse) throws InterruptedException, ExecutionException {
 		if (futureResponse == null) {
 			throw new NullPointerException("null response");
 		}
-		RestResponse<?> response = futureResponse.get();
+		RestResponse<T> response = futureResponse.get();
 		if (!response.isOk()) {
 			throw new ExecutionException("Error in response:" + response, response.getException());
 		}
 		if (log.isInfoEnabled())
-			log.info("Got OK response:\n{}", prettyPrintResponse(response));
-	}
-	
-	public static String prettyPrintResponse(RestResponse<?> response) {
-		HttpResponse httpResponse = response.getHttpResponse();
-		if (httpResponse != null) {
-			httpResponse.setBody(EncodingUtil.prettyPrintLongString(httpResponse.getBody(), MAX_PRETTY_PRINT_STRING_LENGTH));
-			HttpRequest httpRequest = httpResponse.getRequest();
-			if (httpRequest != null) {
-				httpRequest.setBody(EncodingUtil.prettyPrintLongString(httpRequest.getBody(), MAX_PRETTY_PRINT_STRING_LENGTH));
-			}
-		}
-		
-		return JsonUtil.pojoToPrettyPrintJson(response);
+			log.info("Got OK response:\n{}", JsonUtil.pojoToPrettyPrintJson(response.getResponse()));
+		return response;
 	}
 	
 	public static void logWsMessage(Object message) {
@@ -79,4 +64,18 @@ public class DemoUtil {
 			break;
 		}
 	}
+	
+	public static void logRestApiEvent(ExchangeApiEvent event) {
+		switch (event.getType()) {
+		case HTTP_REQUEST:
+		case HTTP_RESPONSE:
+			if (log.isDebugEnabled())
+				log.debug(event.toString());
+			break;
+		default:
+			break;
+		}
+	}
+	
+	
 }

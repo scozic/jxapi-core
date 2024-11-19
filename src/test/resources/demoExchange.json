@@ -100,7 +100,8 @@
 						"objectName": "AgeRequest",
 						"type": "INT",
 						"name": "age",
-						"msgField": "a"
+						"msgField": "a",
+						"sampleValue": 18
 					},
 					"response": {
 						"objectName": "GenericResponse"
@@ -127,7 +128,10 @@
 					"request": {
 						"type": "OBJECT_LIST_MAP",
 						"objectName": "SingleSymbol",
-						"sampleMapKeyValue": ["spot"]
+						"sampleMapKeyValue": ["spot"],
+						"properties": [
+							{"name":"symbol", "type": "STRING", "msgField":"s", "description":"Symbol name", "sampleValue":"BTC_USDT"}
+						]
 					},
 					"response": {
 						"objectName": "GenericResponse"

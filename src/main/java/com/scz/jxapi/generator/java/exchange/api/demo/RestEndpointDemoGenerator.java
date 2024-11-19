@@ -1,19 +1,22 @@
 package com.scz.jxapi.generator.java.exchange.api.demo;
 
 import java.util.Optional;
+import java.util.Properties;
 import java.util.concurrent.ExecutionException;
 
 import org.slf4j.Logger;
 
-import com.scz.jxapi.exchange.descriptor.Field;
-import com.scz.jxapi.exchange.descriptor.Type;
+import com.scz.jxapi.exchange.ExchangeApiObserver;
 import com.scz.jxapi.exchange.descriptor.ExchangeApiDescriptor;
 import com.scz.jxapi.exchange.descriptor.ExchangeDescriptor;
+import com.scz.jxapi.exchange.descriptor.Field;
 import com.scz.jxapi.exchange.descriptor.RestEndpointDescriptor;
-import com.scz.jxapi.generator.java.exchange.ExchangeJavaWrapperGeneratorUtil;
-import com.scz.jxapi.generator.java.exchange.api.ExchangeApiGeneratorUtil;
+import com.scz.jxapi.exchange.descriptor.Type;
 import com.scz.jxapi.generator.java.JavaCodeGenerationUtil;
 import com.scz.jxapi.generator.java.JavaTypeGenerator;
+import com.scz.jxapi.generator.java.exchange.ExchangeJavaWrapperGeneratorUtil;
+import com.scz.jxapi.generator.java.exchange.api.ExchangeApiGeneratorUtil;
+import com.scz.jxapi.netutils.rest.RestResponse;
 import com.scz.jxapi.util.DemoUtil;
 import com.scz.jxapi.util.TestJXApiProperties;
 
@@ -50,6 +53,8 @@ public class RestEndpointDemoGenerator extends JavaTypeGenerator {
 	private final boolean hasResponse;
 	private final Field response;
 	private final Type responseDataType;
+	private final String apiEndpointMethodJavadocLink;
+	private final String apiMethodName;
 	
 	/**
 	 * Constructor.
@@ -115,7 +120,8 @@ public class RestEndpointDemoGenerator extends JavaTypeGenerator {
 		} else {
 			responseSimpleClassName = null;
 		}
-		
+		this.apiMethodName = JavaCodeGenerationUtil.firstLetterToLowerCase(restApi.getName());
+		this.apiEndpointMethodJavadocLink = generateApiEndpointMethodJavadocLink();
 		addImport(apiInterfaceClassName);
 		addImport(exchangeClassName);
 		addImport(exchangeImplClassName);
@@ -123,13 +129,10 @@ public class RestEndpointDemoGenerator extends JavaTypeGenerator {
 		addImport(DemoUtil.class);
 		addImport(ExecutionException.class);
 		addImport(InterruptedException.class);
-		String apiMethodName = JavaCodeGenerationUtil.firstLetterToLowerCase(restApi.getName());
-		setDescription("Snippet to test call to {@link " 
-				+ ExchangeJavaWrapperGeneratorUtil.getApiInterfaceClassName(exchangeDescriptor, exchangeApiDescriptor) 
-				+ "#" 
-				+ apiMethodName 
-				+ "(" + (requestClassName == null? "": requestSimpleClassName) + ")}<br>\n"
-				+ JavaCodeGenerationUtil.GENERATED_CODE_WARNING);
+		addImport(RestResponse.class);
+		addImport(Properties.class);
+		addImport(ExchangeApiObserver.class);
+		setDescription(generateClassJavadoc());
 	}
 	
 	@Override
@@ -149,6 +152,28 @@ public class RestEndpointDemoGenerator extends JavaTypeGenerator {
 		return super.generate();
 	}
 	
+	private String generateApiEndpointMethodJavadocLink() {
+		StringBuilder javadoc = new StringBuilder()
+						.append("{@link ")
+						.append(JavaCodeGenerationUtil.getClassNameWithoutPackage(apiInterfaceClassName))
+						.append("#")
+						.append(apiMethodName)
+						.append("(");
+		if (hasArguments) {
+			javadoc.append(requestSimpleClassName);
+		}
+		return javadoc.append(")}").toString();
+	}
+	
+	private String generateClassJavadoc() {
+		return new StringBuilder()
+				.append("Snippet to test call to ")
+				.append(apiEndpointMethodJavadocLink)
+				.append(")}<br>\n")
+				.append(JavaCodeGenerationUtil.GENERATED_CODE_WARNING)
+				.toString();
+	}
+	
 	private void generateExecuteMethod() {
 		StringBuilder bodyBuilder = new StringBuilder();
 		bodyBuilder.append(EndpointDemoGeneratorUtil.getNewTestApiInstruction(
@@ -157,13 +182,6 @@ public class RestEndpointDemoGenerator extends JavaTypeGenerator {
 														simpleApiClassName, 
 														"configProperties"));
 		bodyBuilder.append("\n");
-		if (hasArguments) {
-			bodyBuilder.append(requestSimpleClassName)
-				.append(" request = ")
-				.append(EndpointDemoGeneratorUtil.generateFieldCreationMethodName(request))
-				.append("();\n");
-		}
-			
 		String apiMethodName = JavaCodeGenerationUtil.firstLetterToLowerCase(restApi.getName());
 		bodyBuilder.append("log.info(\"Calling ")
 			.append(apiInterfaceClassName)
@@ -171,30 +189,60 @@ public class RestEndpointDemoGenerator extends JavaTypeGenerator {
 			.append(apiMethodName)
 			.append("() API");
 		if (hasArguments) {
-			bodyBuilder.append(" with request:\" + request");
+			bodyBuilder.append(" with request:{}\", request");
 		} else {
 			bodyBuilder.append("\"");
 		}
-		bodyBuilder.append(");\n");
-			
-		bodyBuilder.append("DemoUtil.checkResponse(api.")
-			.append(apiMethodName)
-			.append("(");
+		bodyBuilder.append(");\n")
+				   .append("if (apiObserver != null) {\n")
+				   .append(JavaCodeGenerationUtil.INDENTATION)
+				   .append("api.subscribeObserver(apiObserver);\n}\n")
+				   .append("try {\n")
+				   .append(JavaCodeGenerationUtil.INDENTATION)
+				   .append("return DemoUtil.checkResponse(api.")
+				   .append(apiMethodName)
+				   .append("(");
 		if (hasArguments) {
 			bodyBuilder.append("request");
 		}
-		bodyBuilder.append("));");
+		bodyBuilder.append("));\n")
+				   .append("} finally {\n")
+				   .append(JavaCodeGenerationUtil.INDENTATION)
+				   .append("if (apiObserver != null) {\n")
+				   .append(JavaCodeGenerationUtil.INDENTATION)
+				   .append(JavaCodeGenerationUtil.INDENTATION)
+				   .append("api.unsubscribeObserver(apiObserver);\n")
+				   .append(JavaCodeGenerationUtil.INDENTATION)
+				   .append("}\n}");
 		
 		StringBuilder signature = new StringBuilder()
-				.append("public static FutureRestResponse<");
+				.append("public static RestResponse<");
 	
 		signature.append(responseSimpleClassName).append("> execute(");
 		if (hasArguments) {
-			signature.append("request, ");
+			signature.append(requestSimpleClassName)
+					 .append(" ")
+					 .append("request, ");
 		}
-		signature.append("Properties configProperties) throws InterruptedException, ExecutionException");
+		signature.append("Properties configProperties, ExchangeApiObserver apiObserver) throws InterruptedException, ExecutionException");
 		
-		appendMethod(signature.toString(), bodyBuilder.toString());
+		appendMethod(signature.toString(), bodyBuilder.toString(), generateExecuteMethodJavadoc());
+	}
+	
+	private String generateExecuteMethodJavadoc() {
+		StringBuilder javadoc = new StringBuilder()
+				.append("Submits a call to ")
+				.append(this.apiEndpointMethodJavadocLink)
+				.append("and waits for response.\n");
+		if (hasArguments) {
+			javadoc.append("@param request     The request to submit\n");
+		}
+		javadoc.append("@param properties  The configuration properties to instantiate exchange with\n")
+			   .append("@param apiObserver API observer that will notified of events. Is subscribed before REST API call and unsubscribed right after. Ignored if <code>null</code>\n")
+			   .append("@return Response data resulting from this API call\n")
+			   .append("@throws InterruptedException eventually thrown waiting for response")
+			   .append("@throws ExecutionException raised if response is not OK, see {@link RestResponse#isOk()}");
+		return javadoc.toString();
 	}
 	
 	private void generateMainMethod() {
@@ -204,16 +252,22 @@ public class RestEndpointDemoGenerator extends JavaTypeGenerator {
 					   .append("(), ");
 		}
 		bodyBuilder.append(EndpointDemoGeneratorUtil.getTestPropertiesInstruction(exchangeSimpleClassName, getImports()))
+				   .append(", ")
+				   .append(DemoUtil.class.getSimpleName())
+				   .append("::logRestApiEvent")
 				   .append(");\nSystem.exit(0);");
 											
 		appendMethod("public static void main(String[] args)", 
-				"try {\n" 
-					+ JavaCodeGenerationUtil.indent(bodyBuilder.toString(), 
-													JavaCodeGenerationUtil.INDENTATION) 
-					+ "\n} catch (Throwable t) {\n"
-					+ JavaCodeGenerationUtil.indent("log.error(\"Exception raised from main()\", t);\nSystem.exit(-1);", 
-													JavaCodeGenerationUtil.INDENTATION)
-					+ "\n}");
+						"try {\n" 
+							+ JavaCodeGenerationUtil.indent(bodyBuilder.toString(), 
+															JavaCodeGenerationUtil.INDENTATION) 
+							+ "\n} catch (Throwable t) {\n"
+							+ JavaCodeGenerationUtil.indent("log.error(\"Exception raised from main()\", t);\nSystem.exit(-1);", 
+															JavaCodeGenerationUtil.INDENTATION)
+							+ "\n}",
+						 "Runs REST endpoint demo snippet calling " 
+							+ apiEndpointMethodJavadocLink 
+							+ "\n@param args no argument expected");
 	}
 
 }

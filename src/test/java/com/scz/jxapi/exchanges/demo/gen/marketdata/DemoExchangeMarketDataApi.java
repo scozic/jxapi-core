@@ -1,6 +1,7 @@
 package com.scz.jxapi.exchanges.demo.gen.marketdata;
 
 import java.util.List;
+import java.util.Map;
 
 import com.scz.jxapi.exchange.ExchangeApi;
 import com.scz.jxapi.exchanges.demo.gen.marketdata.pojo.DemoExchangeMarketDataExchangeInfoRequest;
@@ -9,6 +10,7 @@ import com.scz.jxapi.exchanges.demo.gen.marketdata.pojo.DemoExchangeMarketDataTi
 import com.scz.jxapi.exchanges.demo.gen.marketdata.pojo.DemoExchangeMarketDataTickerStreamRequest;
 import com.scz.jxapi.exchanges.demo.gen.marketdata.pojo.DemoExchangeMarketDataTickersResponse;
 import com.scz.jxapi.exchanges.demo.gen.marketdata.pojo.GenericResponse;
+import com.scz.jxapi.exchanges.demo.gen.marketdata.pojo.SingleSymbol;
 import com.scz.jxapi.netutils.rest.FutureRestResponse;
 import com.scz.jxapi.netutils.websocket.WebsocketListener;
 
@@ -24,6 +26,7 @@ public interface DemoExchangeMarketDataApi extends ExchangeApi {
   String POST_REST_REQUEST_DATA_TYPE_INT_REST_API = "postRestRequestDataTypeInt";
   String GET_REST_REQUEST_DATA_TYPE_PRIMITIVE_WITH_MSG_FIELD_REST_API = "getRestRequestDataTypePrimitiveWithMsgField";
   String POST_REST_REQUEST_DATA_TYPE_INT_LIST_REST_API = "postRestRequestDataTypeIntList";
+  String POST_REST_REQUEST_DATA_TYPE_OBJECT_LIST_MAP_REST_API = "postRestRequestDataTypeObjectListMap";
   String TICKER_STREAM_WS_API = "tickerStream";
   /**
    * Fetch market information of symbols that can be traded
@@ -50,6 +53,11 @@ public interface DemoExchangeMarketDataApi extends ExchangeApi {
    * @return A {@link FutureRestResponse} that will complete when request submitted asynchronously has been processed
    */
   FutureRestResponse<GenericResponse> postRestRequestDataTypeIntList(List<Integer> request);
+  /**
+   * A sample REST endpoint using OBJECT_LIST_MAP request data type
+   * @return A {@link FutureRestResponse} that will complete when request submitted asynchronously has been processed
+   */
+  FutureRestResponse<GenericResponse> postRestRequestDataTypeObjectListMap(Map<String, List<SingleSymbol>> request);
   
   /**
    * Subscribe to tickerStream stream.<br>

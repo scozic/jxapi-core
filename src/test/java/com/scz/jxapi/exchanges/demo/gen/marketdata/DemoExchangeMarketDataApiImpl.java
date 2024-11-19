@@ -1,6 +1,7 @@
 package com.scz.jxapi.exchanges.demo.gen.marketdata;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 
 import com.scz.jxapi.exchange.AbstractExchangeApi;
@@ -16,6 +17,7 @@ import com.scz.jxapi.exchanges.demo.gen.marketdata.pojo.DemoExchangeMarketDataTi
 import com.scz.jxapi.exchanges.demo.gen.marketdata.pojo.DemoExchangeMarketDataTickerStreamRequest;
 import com.scz.jxapi.exchanges.demo.gen.marketdata.pojo.DemoExchangeMarketDataTickersResponse;
 import com.scz.jxapi.exchanges.demo.gen.marketdata.pojo.GenericResponse;
+import com.scz.jxapi.exchanges.demo.gen.marketdata.pojo.SingleSymbol;
 import com.scz.jxapi.netutils.deserialization.MessageDeserializer;
 import com.scz.jxapi.netutils.rest.FutureRestResponse;
 import com.scz.jxapi.netutils.rest.HttpMethod;
@@ -44,12 +46,14 @@ public class DemoExchangeMarketDataApiImpl extends AbstractExchangeApi implement
   public static final String POST_REST_REQUEST_DATA_TYPE_INT_URL = HTTP_URL + "/postInt";
   public static final String GET_REST_REQUEST_DATA_TYPE_PRIMITIVE_WITH_MSG_FIELD_URL = HTTP_URL + "/getIntWithMsgField";
   public static final String POST_REST_REQUEST_DATA_TYPE_INT_LIST_URL = HTTP_URL + "/postIntList";
+  public static final String POST_REST_REQUEST_DATA_TYPE_OBJECT_LIST_MAP_URL = HTTP_URL + "/postObjectListMap";
   public static final String WEBSOCKET_URL = DemoExchangeExchangeImpl.WEBSOCKET_URL;
   private final MessageDeserializer<DemoExchangeMarketDataExchangeInfoResponse> exchangeInfoResponseDeserializer = new DemoExchangeMarketDataExchangeInfoResponseDeserializer();
   private final MessageDeserializer<DemoExchangeMarketDataTickersResponse> tickersResponseDeserializer = new DemoExchangeMarketDataTickersResponseDeserializer();
   private final MessageDeserializer<GenericResponse> postRestRequestDataTypeIntResponseDeserializer = new GenericResponseDeserializer();
   private final MessageDeserializer<GenericResponse> getRestRequestDataTypePrimitiveWithMsgFieldResponseDeserializer = new GenericResponseDeserializer();
   private final MessageDeserializer<GenericResponse> postRestRequestDataTypeIntListResponseDeserializer = new GenericResponseDeserializer();
+  private final MessageDeserializer<GenericResponse> postRestRequestDataTypeObjectListMapResponseDeserializer = new GenericResponseDeserializer();
   private final WebsocketEndpoint<DemoExchangeMarketDataTickerStreamMessage> tickerStreamWs;
   
   public DemoExchangeMarketDataApiImpl(String exchangeName, Properties properties) {
@@ -94,6 +98,13 @@ public class DemoExchangeMarketDataApiImpl extends AbstractExchangeApi implement
     if (log.isDebugEnabled())
       log.debug("POST postRestRequestDataTypeIntList > " + request);
     return submit(HttpRequest.create(POST_REST_REQUEST_DATA_TYPE_INT_LIST_REST_API, POST_REST_REQUEST_DATA_TYPE_INT_LIST_URL, HttpMethod.POST, request, null, 0), postRestRequestDataTypeIntListResponseDeserializer);
+  }
+  
+  @Override
+  public FutureRestResponse<GenericResponse> postRestRequestDataTypeObjectListMap(Map<String, List<SingleSymbol>> request) {
+    if (log.isDebugEnabled())
+      log.debug("POST postRestRequestDataTypeObjectListMap > " + request);
+    return submit(HttpRequest.create(POST_REST_REQUEST_DATA_TYPE_OBJECT_LIST_MAP_REST_API, POST_REST_REQUEST_DATA_TYPE_OBJECT_LIST_MAP_URL, HttpMethod.POST, request, null, 0), postRestRequestDataTypeObjectListMapResponseDeserializer);
   }
   
   @Override

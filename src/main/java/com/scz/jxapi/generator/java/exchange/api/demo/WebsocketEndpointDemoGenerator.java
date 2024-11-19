@@ -50,6 +50,8 @@ public class WebsocketEndpointDemoGenerator extends JavaTypeGenerator {
 	
 	private static final String SUBSCRIPTION_DURATION_STATIC_VAR_NAME = "SUBSCRIPTION_DURATION";
 	private static final String DELAY_BEFORE_EXIT_AFTER_UNSUBSCRIPTION_VAR_NAME = "DELAY_BEFORE_EXIT_AFTER_UNSUBSCRIPTION";
+	private static final String SUBSCRIBE_METHOD_ARGUMENT_INDENT = "	                           ";
+	private static final String MAIN_METHOD_SUBSCRIBE_METHOD_CALL_ARGUMENT_INDENT = "          ";
 	
 	private final ExchangeDescriptor exchangeDescriptor;
 	private final boolean hasArguments;
@@ -105,13 +107,7 @@ public class WebsocketEndpointDemoGenerator extends JavaTypeGenerator {
 		this.apiInterfaceClassName = ExchangeJavaWrapperGeneratorUtil.getApiInterfaceClassName(exchangeDescriptor, exchangeApiDescriptor);
 		this.simpleApiClassName = JavaCodeGenerationUtil.getClassNameWithoutPackage(apiInterfaceClassName);
 		addImport(apiInterfaceClassName);
-		String apiMethodName = JavaCodeGenerationUtil.firstLetterToLowerCase(websocketApi.getName());
-		setDescription("Snippet to test call to {@link " 
-				+ ExchangeJavaWrapperGeneratorUtil.getApiInterfaceClassName(exchangeDescriptor, exchangeApiDescriptor) 
-				+ "#" 
-				+ apiMethodName 
-				+ "(" + (requestClassName == null? "": requestSimpleClassName) + ")}<br>\n"
-				+ JavaCodeGenerationUtil.GENERATED_CODE_WARNING);
+		setDescription(getClassJavadoc());
 		this.fullStreamName = exchangeDescriptor.getName() + " " 
 								+ exchangeApiDescriptor.getName() 
 								+ " " + websocketApi.getName();
@@ -129,6 +125,7 @@ public class WebsocketEndpointDemoGenerator extends JavaTypeGenerator {
 		addImport(Properties.class);
 		addImport(ExchangeApiObserver.class);
 		addImport(TestJXApiProperties.class);
+		addImport(this.exchangeClassName);
 	}
 	
 	@Override
@@ -173,19 +170,37 @@ public class WebsocketEndpointDemoGenerator extends JavaTypeGenerator {
 				.append("public static void subscribe(");
 		if (hasArguments) {
 			signature.append(requestSimpleClassName)
-					 .append(" request, ");
+					 .append(" request,\n")
+					 .append(SUBSCRIBE_METHOD_ARGUMENT_INDENT);
 		}
 		signature.append("WebsocketListener<")
 				 .append(messageClassSimpleName)
-				 .append("> messageListener, Properties configProperties, ExchangeApiObserver apiObserver, ")
-				 .append("long subscriptionDuration, long delayBeforeExitAfterUnsubscription) throws InterruptedException");
+				 .append("> messageListener,\n")
+				 .append(SUBSCRIBE_METHOD_ARGUMENT_INDENT)
+				 .append("Properties configProperties,\n")
+				 .append(SUBSCRIBE_METHOD_ARGUMENT_INDENT)
+				 .append("ExchangeApiObserver apiObserver,\n")
+				 .append(SUBSCRIBE_METHOD_ARGUMENT_INDENT)
+				 .append("long subscriptionDuration,\n")
+				 .append(SUBSCRIBE_METHOD_ARGUMENT_INDENT)
+				 .append ("long delayBeforeExitAfterUnsubscription) throws InterruptedException");
 		return signature.toString();
 	}
 	
-	private String generateSubscribeMethodJavadoc() {
+	private String getClassJavadoc() {
+		return new StringBuilder()
+					.append("Snippet to test call to ")
+					.append(getApiInterfaceSubscribeMethodJavadocLink())
+					.append(".\n")
+					.append(JavaCodeGenerationUtil.GENERATED_CODE_WARNING)
+					.toString();
+				
+	}
+	
+	private String getApiInterfaceSubscribeMethodJavadocLink() {
 		StringBuilder javadoc = new StringBuilder()
-				.append("Tests websocket stream subscription to {@link ")
-				.append(apiInterfaceClassName)
+				.append("{@link ")
+				.append(JavaCodeGenerationUtil.getClassNameWithoutPackage(apiInterfaceClassName))
 				.append("#")
 				.append(subscribeMethodName)
 				.append("(");
@@ -193,13 +208,18 @@ public class WebsocketEndpointDemoGenerator extends JavaTypeGenerator {
 			javadoc.append(requestSimpleClassName)
 				   .append(", ");
 		}
-		javadoc.append(websocketListenerSimpleClassName)
-			   .append(")}.\n<br>Websocket endpoint subscription will be performed using given websocket listener ")
+		return javadoc.append(websocketListenerSimpleClassName)
+				      .append(")}").toString();
+	}
+	
+	private String generateSubscribeMethodJavadoc() {
+		StringBuilder javadoc = new StringBuilder()
+			   .append(getApiInterfaceSubscribeMethodJavadocLink())
+			   .append(".\n<br>Websocket endpoint subscription will be performed using given websocket listener ")
 			   .append("then after waiting for <code>subscriptionDuration</code> delay, unsubscription is performed.\n")
 			   .append("Finally waits for <code>delayBeforeExitAfterUnsubscription</code> delay before returning to make sure no more messages are dispatched.\n");
 		if (hasArguments) {
-			javadoc
-			   .append("@param request                            The subscription request\n");
+			javadoc.append("@param request                            The subscription request\n");
 		}
 		javadoc.append("@param messageListener                    The listener that will receive messages dispatched while subscription is active\n")
 		   	   .append("@param configProperties                   Exchange configuration properties.\n")
@@ -221,16 +241,18 @@ public class WebsocketEndpointDemoGenerator extends JavaTypeGenerator {
 				simpleApiClassName, 
 				"configProperties"));
 		bodyBuilder.append("\nlog.info(\"Subscribing to websocket API '")
-		.append(fullStreamName)
-		.append("' for \" + ")
-		.append(SUBSCRIPTION_DURATION_STATIC_VAR_NAME)
-		.append(" + \"ms");
+				   .append(fullStreamName)
+				   .append("' for {} ms");
 		if (hasArguments) {
-			bodyBuilder.append(" with request:\" + request);\n");
+			bodyBuilder.append(" with request:{}\", ").append(SUBSCRIPTION_DURATION_STATIC_VAR_NAME).append(", request);\n");
 		} else {
-			bodyBuilder.append("\");\n");
+			bodyBuilder.append("\", ")
+					   .append(SUBSCRIPTION_DURATION_STATIC_VAR_NAME)
+					   .append(");\n");
 		}
-	
+		bodyBuilder.append("if (apiObserver != null) {\n")
+				   .append(JavaCodeGenerationUtil.INDENTATION)
+				   .append("api.subscribeObserver(apiObserver);\n}");
 		bodyBuilder.append("String subId = api.")
 			.append(subscribeMethodName)
 			.append("(");
@@ -246,7 +268,10 @@ public class WebsocketEndpointDemoGenerator extends JavaTypeGenerator {
 			.append("api.")
 			.append(unsubscribeMethodName)
 			.append("(subId);\n")
-			.append("Thread.sleep(delayBeforeExitAfterUnsubscription);\n");
+			.append("Thread.sleep(delayBeforeExitAfterUnsubscription);\n")
+			.append("if (apiObserver != null) {\n")
+			.append(JavaCodeGenerationUtil.INDENTATION)
+			.append("api.unsubscribeObserver(apiObserver);\n}");
 		return bodyBuilder.toString();
 	}
 	
@@ -260,14 +285,21 @@ public class WebsocketEndpointDemoGenerator extends JavaTypeGenerator {
 		bodyBuilder.append("subscribe(");
 		if (hasArguments) {
 			bodyBuilder.append(EndpointDemoGeneratorUtil.generateFieldCreationMethodName(request))
-					   .append("(), ");
+					   .append("(),\n")
+					   .append(MAIN_METHOD_SUBSCRIBE_METHOD_CALL_ARGUMENT_INDENT);
 		}
 		bodyBuilder.append(DemoUtil.class.getSimpleName())
-				   .append("::logWsMessage, ")
+				   .append("::logWsMessage,\n")
+				   .append(MAIN_METHOD_SUBSCRIBE_METHOD_CALL_ARGUMENT_INDENT)
 				   .append(EndpointDemoGeneratorUtil.getTestPropertiesInstruction(exchangeSimpleClassName, getImports()))
-				   .append(", DemoUtil::logWsApiEvent, ")
+				   .append(",\n")
+				   .append(MAIN_METHOD_SUBSCRIBE_METHOD_CALL_ARGUMENT_INDENT)
+				   .append(DemoUtil.class.getSimpleName())
+				   .append("::logWsApiEvent,\n")
+				   .append(MAIN_METHOD_SUBSCRIBE_METHOD_CALL_ARGUMENT_INDENT)
 				   .append(SUBSCRIPTION_DURATION_STATIC_VAR_NAME)
-				   .append(", ")
+				   .append(",\n")
+				   .append(MAIN_METHOD_SUBSCRIBE_METHOD_CALL_ARGUMENT_INDENT)
 				   .append(DELAY_BEFORE_EXIT_AFTER_UNSUBSCRIPTION_VAR_NAME)
 				   .append(");\nSystem.exit(0);");
 		appendMethod("public static void main(String[] args)", 
