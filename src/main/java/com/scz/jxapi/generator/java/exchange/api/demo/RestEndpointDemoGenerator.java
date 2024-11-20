@@ -148,7 +148,6 @@ public class RestEndpointDemoGenerator extends JavaTypeGenerator {
 		generateExecuteMethod();
 		this.appendToBody("\n");
 		generateMainMethod();
-		this.appendToBody("\n");
 		return super.generate();
 	}
 	
@@ -193,27 +192,29 @@ public class RestEndpointDemoGenerator extends JavaTypeGenerator {
 		} else {
 			bodyBuilder.append("\"");
 		}
+		
 		bodyBuilder.append(");\n")
-				   .append("if (apiObserver != null) {\n")
-				   .append(JavaCodeGenerationUtil.INDENTATION)
-				   .append("api.subscribeObserver(apiObserver);\n}\n")
-				   .append("try {\n")
-				   .append(JavaCodeGenerationUtil.INDENTATION)
-				   .append("return DemoUtil.checkResponse(api.")
-				   .append(apiMethodName)
-				   .append("(");
+		   .append("if (apiObserver != null) ")
+		   .append(JavaCodeGenerationUtil.generateCodeBlock("api.subscribeObserver(apiObserver);"));
+		
+		StringBuilder tryClause = new StringBuilder();
+		tryClause.append("return DemoUtil.checkResponse(api.")
+			     .append(apiMethodName)
+			     .append("(");
 		if (hasArguments) {
-			bodyBuilder.append("request");
+			tryClause.append("request");
 		}
-		bodyBuilder.append("));\n")
-				   .append("} finally {\n")
-				   .append(JavaCodeGenerationUtil.INDENTATION)
-				   .append("if (apiObserver != null) {\n")
-				   .append(JavaCodeGenerationUtil.INDENTATION)
-				   .append(JavaCodeGenerationUtil.INDENTATION)
-				   .append("api.unsubscribeObserver(apiObserver);\n")
-				   .append(JavaCodeGenerationUtil.INDENTATION)
-				   .append("}\n}");
+		tryClause.append("));\n");
+		
+		StringBuilder finallyClause = new StringBuilder()
+				.append("if (apiObserver != null) ")
+				.append(JavaCodeGenerationUtil.generateCodeBlock("api.unsubscribeObserver(apiObserver);"));
+		
+		bodyBuilder.append(JavaCodeGenerationUtil.generateTryBlock(tryClause.toString(), 
+						  null, 
+						  null,
+						  finallyClause.toString(), 
+						  null));;
 		
 		StringBuilder signature = new StringBuilder()
 				.append("public static RestResponse<");
@@ -256,18 +257,16 @@ public class RestEndpointDemoGenerator extends JavaTypeGenerator {
 				   .append(DemoUtil.class.getSimpleName())
 				   .append("::logRestApiEvent")
 				   .append(");\nSystem.exit(0);");
-											
+		
 		appendMethod("public static void main(String[] args)", 
-						"try {\n" 
-							+ JavaCodeGenerationUtil.indent(bodyBuilder.toString(), 
-															JavaCodeGenerationUtil.INDENTATION) 
-							+ "\n} catch (Throwable t) {\n"
-							+ JavaCodeGenerationUtil.indent("log.error(\"Exception raised from main()\", t);\nSystem.exit(-1);", 
-															JavaCodeGenerationUtil.INDENTATION)
-							+ "\n}",
-						 "Runs REST endpoint demo snippet calling " 
-							+ apiEndpointMethodJavadocLink 
-							+ "\n@param args no argument expected");
+				JavaCodeGenerationUtil.generateTryBlock(
+						bodyBuilder.toString(), 
+						"log.error(\"Exception raised from main()\", t);\nSystem.exit(-1);", 
+						"Throwable t", 
+						null, null),
+				 "Runs REST endpoint demo snippet calling " 
+					+ apiEndpointMethodJavadocLink 
+					+ "\n@param args no argument expected");
 	}
 
 }

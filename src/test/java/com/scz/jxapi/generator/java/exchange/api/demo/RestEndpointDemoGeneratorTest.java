@@ -69,7 +69,8 @@ public class RestEndpointDemoGeneratorTest {
 				+ "    }\n"
 				+ "    try {\n"
 				+ "      return DemoUtil.checkResponse(api.exchangeInfo(request));\n"
-				+ "    } finally {\n"
+				+ "    }\n"
+				+ "    finally {\n"
 				+ "      if (apiObserver != null) {\n"
 				+ "        api.unsubscribeObserver(apiObserver);\n"
 				+ "      }\n"
@@ -84,12 +85,12 @@ public class RestEndpointDemoGeneratorTest {
 				+ "    try {\n"
 				+ "      execute(createRequest(), TestJXApiProperties.filterProperties(MyTestExchangeExchange.ID, true), DemoUtil::logRestApiEvent);\n"
 				+ "      System.exit(0);\n"
-				+ "    } catch (Throwable t) {\n"
+				+ "    }\n"
+				+ "    catch (Throwable t) {\n"
 				+ "      log.error(\"Exception raised from main()\", t);\n"
 				+ "      System.exit(-1);\n"
 				+ "    }\n"
 				+ "  }\n"
-				+ "  \n"
 				+ "}\n", 
 				new RestEndpointDemoGenerator(exchange, api, restEndpointDescriptor).generate());
 	}
@@ -143,7 +144,8 @@ public class RestEndpointDemoGeneratorTest {
 				+ "    }\n"
 				+ "    try {\n"
 				+ "      return DemoUtil.checkResponse(api.postRestRequestDataTypeInt(request));\n"
-				+ "    } finally {\n"
+				+ "    }\n"
+				+ "    finally {\n"
 				+ "      if (apiObserver != null) {\n"
 				+ "        api.unsubscribeObserver(apiObserver);\n"
 				+ "      }\n"
@@ -158,12 +160,12 @@ public class RestEndpointDemoGeneratorTest {
 				+ "    try {\n"
 				+ "      execute(createRequest(), TestJXApiProperties.filterProperties(MyTestExchangeExchange.ID, true), DemoUtil::logRestApiEvent);\n"
 				+ "      System.exit(0);\n"
-				+ "    } catch (Throwable t) {\n"
+				+ "    }\n"
+				+ "    catch (Throwable t) {\n"
 				+ "      log.error(\"Exception raised from main()\", t);\n"
 				+ "      System.exit(-1);\n"
 				+ "    }\n"
 				+ "  }\n"
-				+ "  \n"
 				+ "}\n", 
 				generator.generate());
 	}
@@ -217,7 +219,8 @@ public class RestEndpointDemoGeneratorTest {
 				+ "    }\n"
 				+ "    try {\n"
 				+ "      return DemoUtil.checkResponse(api.postRestRequestDataTypeString(request));\n"
-				+ "    } finally {\n"
+				+ "    }\n"
+				+ "    finally {\n"
 				+ "      if (apiObserver != null) {\n"
 				+ "        api.unsubscribeObserver(apiObserver);\n"
 				+ "      }\n"
@@ -232,12 +235,12 @@ public class RestEndpointDemoGeneratorTest {
 				+ "    try {\n"
 				+ "      execute(createHello(), TestJXApiProperties.filterProperties(MyTestExchangeExchange.ID, true), DemoUtil::logRestApiEvent);\n"
 				+ "      System.exit(0);\n"
-				+ "    } catch (Throwable t) {\n"
+				+ "    }\n"
+				+ "    catch (Throwable t) {\n"
 				+ "      log.error(\"Exception raised from main()\", t);\n"
 				+ "      System.exit(-1);\n"
 				+ "    }\n"
 				+ "  }\n"
-				+ "  \n"
 				+ "}\n", 
 				generator.generate());
 	}
@@ -286,7 +289,8 @@ public class RestEndpointDemoGeneratorTest {
 				+ "    }\n"
 				+ "    try {\n"
 				+ "      return DemoUtil.checkResponse(api.postRestRequestDataTypeObjectNoParameters());\n"
-				+ "    } finally {\n"
+				+ "    }\n"
+				+ "    finally {\n"
 				+ "      if (apiObserver != null) {\n"
 				+ "        api.unsubscribeObserver(apiObserver);\n"
 				+ "      }\n"
@@ -301,12 +305,12 @@ public class RestEndpointDemoGeneratorTest {
 				+ "    try {\n"
 				+ "      execute(TestJXApiProperties.filterProperties(MyTestExchangeExchange.ID, true), DemoUtil::logRestApiEvent);\n"
 				+ "      System.exit(0);\n"
-				+ "    } catch (Throwable t) {\n"
+				+ "    }\n"
+				+ "    catch (Throwable t) {\n"
 				+ "      log.error(\"Exception raised from main()\", t);\n"
 				+ "      System.exit(-1);\n"
 				+ "    }\n"
 				+ "  }\n"
-				+ "  \n"
 				+ "}\n", 
 				generator.generate());
 	}
@@ -365,7 +369,8 @@ public class RestEndpointDemoGeneratorTest {
 				+ "    }\n"
 				+ "    try {\n"
 				+ "      return DemoUtil.checkResponse(api.postRestRequestDataTypeObjectListMap(request));\n"
-				+ "    } finally {\n"
+				+ "    }\n"
+				+ "    finally {\n"
 				+ "      if (apiObserver != null) {\n"
 				+ "        api.unsubscribeObserver(apiObserver);\n"
 				+ "      }\n"
@@ -380,12 +385,12 @@ public class RestEndpointDemoGeneratorTest {
 				+ "    try {\n"
 				+ "      execute(createRequest(), TestJXApiProperties.filterProperties(MyTestExchangeExchange.ID, true), DemoUtil::logRestApiEvent);\n"
 				+ "      System.exit(0);\n"
-				+ "    } catch (Throwable t) {\n"
+				+ "    }\n"
+				+ "    catch (Throwable t) {\n"
 				+ "      log.error(\"Exception raised from main()\", t);\n"
 				+ "      System.exit(-1);\n"
 				+ "    }\n"
 				+ "  }\n"
-				+ "  \n"
 				+ "}\n", 
 				generator.generate());
 	}
@@ -442,7 +447,8 @@ public class RestEndpointDemoGeneratorTest {
 				+ "    }\n"
 				+ "    try {\n"
 				+ "      return DemoUtil.checkResponse(api.postRestRequestDataTypeIntList(request));\n"
-				+ "    } finally {\n"
+				+ "    }\n"
+				+ "    finally {\n"
 				+ "      if (apiObserver != null) {\n"
 				+ "        api.unsubscribeObserver(apiObserver);\n"
 				+ "      }\n"
@@ -457,12 +463,12 @@ public class RestEndpointDemoGeneratorTest {
 				+ "    try {\n"
 				+ "      execute(createRequest(), TestJXApiProperties.filterProperties(MyTestExchangeExchange.ID, true), DemoUtil::logRestApiEvent);\n"
 				+ "      System.exit(0);\n"
-				+ "    } catch (Throwable t) {\n"
+				+ "    }\n"
+				+ "    catch (Throwable t) {\n"
 				+ "      log.error(\"Exception raised from main()\", t);\n"
 				+ "      System.exit(-1);\n"
 				+ "    }\n"
 				+ "  }\n"
-				+ "  \n"
 				+ "}\n", 
 				generator.generate());
 	}

@@ -323,4 +323,65 @@ public class JavaCodeGenerationUtilTest {
 		Assert.assertEquals("<a href=\"https://scam.org\">Click here</a>", 
 							JavaCodeGenerationUtil.getHtmlLink("https://scam.org", "Click here"));
 	}
+
+	@Test
+	public void testGenerateTryBlock_TryWithResourcesWithCatchAndFinally() {
+		Assert.assertEquals("try(InputStream in = new FileInputStream(file)) {\n"
+								+ "  throw new IOException();\n"
+								+ "}\n"
+								+ "catch (IOException ex) {\n"
+								+ "  log.error(ex);\n"
+								+ "}\n"
+								+ "finally {\n"
+								+ "  return null;\n"
+								+ "}\n", 
+							JavaCodeGenerationUtil.generateTryBlock(
+								"throw new IOException();", 
+								"log.error(ex);", 
+								"IOException ex", 
+								"return null;", 
+								"InputStream in = new FileInputStream(file)"));
+	}
+
+	@Test
+	public void testGenerateTryBlock_TryWithResourcesWithFinally() {
+		Assert.assertEquals("try(InputStream in = new FileInputStream(file)) {\n"
+								+ "  throw new IOException();\n"
+								+ "}\n"
+								+ "finally {\n"
+								+ "  return null;\n"
+								+ "}\n", 
+							JavaCodeGenerationUtil.generateTryBlock(
+								"throw new IOException();", 
+								null, 
+								null, 
+								"return null;", 
+								"InputStream in = new FileInputStream(file)"));
+	}
+
+	@Test
+	public void testGenerateTryBlock_TryCatch() {
+		Assert.assertEquals("try {\n"
+								+ "  throw new IOException();\n"
+								+ "}\n"
+								+ "catch (IOException ex) {\n"
+								+ "  log.error(ex);\n"
+								+ "}\n", 
+							JavaCodeGenerationUtil.generateTryBlock(
+								"throw new IOException();", 
+								"log.error(ex);", 
+								"IOException ex", 
+								null, 
+								null));
+	}
+
+	@Test(expected = IllegalArgumentException.class)
+	public void testGenerateTryBlock_TryCatchMissingCatchException() {
+		JavaCodeGenerationUtil.generateTryBlock(
+				"throw new IOException();",
+				"log.error(ex);",
+				null,
+				null,
+				null);
+	}
 }

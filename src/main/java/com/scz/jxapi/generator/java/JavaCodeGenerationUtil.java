@@ -400,5 +400,43 @@ public class JavaCodeGenerationUtil {
 		return "<a href=\"" + href + "\">" + text + "</a>";
 	}
 	
+	/**
+	 * Generates a Java try/catch/finally instructions set. 
+	 * @param tryClause <code>try</code> clause
+	 * @param catchClause <code>Catch clause</code> can be <code>null</code> if there is no catch
+	 * @param catchException Exception caught in <code>catch</code> clause, for instance <code>MyException ex</code>
+	 * @param finallyClause <code>finally<code> clause
+	 * @param resource In case of a 'try with resource' block, the resource clause <code>try (resource) { ... }</code>. 
+	 * @return Java try (resource) { tryBlock } catch ( catchException ) { catchClause } finally { finallyClause } code.
+	 */
+	public static String generateTryBlock(String tryClause, 
+										  String catchClause, 
+										  String catchException, 
+										  String finallyClause, 
+										  String resource) {
+		StringBuilder s = new StringBuilder().append("try");
+		if (resource != null) {
+			s.append("(")
+			 .append(resource)
+			 .append(")");
+		}
+ 		s.append(" ")
+		 .append(generateCodeBlock(tryClause));
+ 		if (catchClause != null) {
+ 			if (catchException == null) {
+ 				throw new IllegalArgumentException("Catch clause provided but caught exception is null");
+ 			}
+ 			s.append("catch (")
+ 			 .append(catchException)
+ 			 .append(") ")
+ 			 .append(generateCodeBlock(catchClause));
+ 		}
+ 		if (finallyClause != null) {
+ 			s.append("finally ")
+			 .append(generateCodeBlock(finallyClause));
+ 		}
+ 		return s.toString();
+	}
+	
 	
 }

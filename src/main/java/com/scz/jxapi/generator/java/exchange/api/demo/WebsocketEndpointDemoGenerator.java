@@ -250,9 +250,8 @@ public class WebsocketEndpointDemoGenerator extends JavaTypeGenerator {
 					   .append(SUBSCRIPTION_DURATION_STATIC_VAR_NAME)
 					   .append(");\n");
 		}
-		bodyBuilder.append("if (apiObserver != null) {\n")
-				   .append(JavaCodeGenerationUtil.INDENTATION)
-				   .append("api.subscribeObserver(apiObserver);\n}");
+		bodyBuilder.append("if (apiObserver != null) ")
+				   .append(JavaCodeGenerationUtil.generateCodeBlock("api.subscribeObserver(apiObserver);"));
 		bodyBuilder.append("String subId = api.")
 			.append(subscribeMethodName)
 			.append("(");
@@ -269,9 +268,8 @@ public class WebsocketEndpointDemoGenerator extends JavaTypeGenerator {
 			.append(unsubscribeMethodName)
 			.append("(subId);\n")
 			.append("Thread.sleep(delayBeforeExitAfterUnsubscription);\n")
-			.append("if (apiObserver != null) {\n")
-			.append(JavaCodeGenerationUtil.INDENTATION)
-			.append("api.unsubscribeObserver(apiObserver);\n}");
+			.append("if (apiObserver != null) ")
+			.append(JavaCodeGenerationUtil.generateCodeBlock("api.subscribeObserver(apiObserver);"));
 		return bodyBuilder.toString();
 	}
 	
@@ -302,13 +300,21 @@ public class WebsocketEndpointDemoGenerator extends JavaTypeGenerator {
 				   .append(MAIN_METHOD_SUBSCRIBE_METHOD_CALL_ARGUMENT_INDENT)
 				   .append(DELAY_BEFORE_EXIT_AFTER_UNSUBSCRIPTION_VAR_NAME)
 				   .append(");\nSystem.exit(0);");
-		appendMethod("public static void main(String[] args)", 
-				"try {\n" 
-					+ JavaCodeGenerationUtil.indent(bodyBuilder.toString(), JavaCodeGenerationUtil.INDENTATION) 
-					+ "\n} catch (Throwable t) {\n"
-					+ JavaCodeGenerationUtil.indent("log.error(\"Exception raised from main()\", t);\nSystem.exit(-1);", JavaCodeGenerationUtil.INDENTATION)
-					+ "\n}",
-					generateMainMethodJavadoc());
+//		appendMethod("public static void main(String[] args)", 
+//				"try {\n" 
+//					+ JavaCodeGenerationUtil.indent(bodyBuilder.toString(), JavaCodeGenerationUtil.INDENTATION) 
+//					+ "\n} catch (Throwable t) {\n"
+//					+ JavaCodeGenerationUtil.indent("log.error(\"Exception raised from main()\", t);\nSystem.exit(-1);", JavaCodeGenerationUtil.INDENTATION)
+//					+ "\n}",
+//					generateMainMethodJavadoc());
+		
+		appendMethod("public static void main(String[] args)",
+					 JavaCodeGenerationUtil.generateTryBlock(
+							 bodyBuilder.toString(),  
+							 "log.error(\"Exception raised from main()\", t);\nSystem.exit(-1);",
+							 "Throwable t",
+							 null, null),
+					 generateMainMethodJavadoc());
 		
 	}
 	
