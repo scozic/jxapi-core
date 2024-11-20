@@ -171,6 +171,15 @@ public class ExchangeApiGeneratorUtil {
 				+ JavaCodeGenerationUtil.firstLetterToUpperCase(endpointName)
 				+ suffix;
 	}
+	
+	/**
+	 * @param restEndpointDescriptor REST endpoint
+	 * @return Expected name for generated exchange API group interface method for
+	 *         calling given REST endpoint
+	 */
+	public static String getRestApiMethodName(RestEndpointDescriptor restEndpointDescriptor) {
+		return JavaCodeGenerationUtil.firstLetterToLowerCase(restEndpointDescriptor.getName());
+	}
 
 	/**
 	 * Generates expected name for a websocket endpoint subscription method

@@ -1183,4 +1183,11 @@ public class ExchangeApiGeneratorUtilTest {
         Imports imports = new Imports(); 
         Assert.assertNull(ExchangeApiGeneratorUtil.getWebsocketUrlVariableDeclaration(exchangeDescriptor, apiDescriptor, imports));
     }
+    
+    @Test 
+    public void testGetRestApiMethodName() throws Exception {
+    	RestEndpointDescriptor restEndpointDescriptor = new RestEndpointDescriptor();
+    	restEndpointDescriptor.setName("MyRestApi");
+    	Assert.assertEquals("myRestApi", ExchangeApiGeneratorUtil.getRestApiMethodName(restEndpointDescriptor));
+    }
 }

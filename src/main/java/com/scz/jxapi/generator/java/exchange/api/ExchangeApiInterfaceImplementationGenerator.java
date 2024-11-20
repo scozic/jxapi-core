@@ -386,8 +386,8 @@ public class ExchangeApiInterfaceImplementationGenerator extends JavaTypeGenerat
 											messageDataType, 
 											getImports(), 
 											messageClassObjectName);
-		String subscribeMethodName = "subscribe" + JavaCodeGenerationUtil.firstLetterToUpperCase(websocketApi.getName());
-		String unsubscribeMethodName = "unsubscribe" + JavaCodeGenerationUtil.firstLetterToUpperCase(websocketApi.getName());
+		String subscribeMethodName = ExchangeApiGeneratorUtil.getWebsocketSubscribeMethodName(websocketApi);
+		String unsubscribeMethodName = ExchangeApiGeneratorUtil.getWebsocketUnsubscribeMethodName(websocketApi);
 		String websocketEndpointVariableName = JavaCodeGenerationUtil.firstLetterToLowerCase(websocketApi.getName()) + "Ws";
 		
 		String getResponseDeserializerInstance = ExchangeApiGeneratorUtil.getNewMessageDeserializerInstruction(messageDataType, messageClassObjectName, getImports());
@@ -568,7 +568,7 @@ public class ExchangeApiInterfaceImplementationGenerator extends JavaTypeGenerat
 			.append(getResponseDeserializerInstance)
 			.append(";\n");
 		
-		String apiMethodName = JavaCodeGenerationUtil.firstLetterToLowerCase(restApi.getName());
+		String apiMethodName = ExchangeApiGeneratorUtil.getRestApiMethodName(restApi);
 		String apiMethodSignature =  new StringBuilder()
 											.append(FutureRestResponse.class.getSimpleName())
 											.append("<")

@@ -120,7 +120,7 @@ public class RestEndpointDemoGenerator extends JavaTypeGenerator {
 		} else {
 			responseSimpleClassName = null;
 		}
-		this.apiMethodName = JavaCodeGenerationUtil.firstLetterToLowerCase(restApi.getName());
+		this.apiMethodName = ExchangeApiGeneratorUtil.getRestApiMethodName(restApi);
 		this.apiEndpointMethodJavadocLink = generateApiEndpointMethodJavadocLink();
 		addImport(apiInterfaceClassName);
 		addImport(exchangeClassName);
@@ -181,7 +181,6 @@ public class RestEndpointDemoGenerator extends JavaTypeGenerator {
 														simpleApiClassName, 
 														"configProperties"));
 		bodyBuilder.append("\n");
-		String apiMethodName = JavaCodeGenerationUtil.firstLetterToLowerCase(restApi.getName());
 		bodyBuilder.append("log.info(\"Calling ")
 			.append(apiInterfaceClassName)
 			.append(".")

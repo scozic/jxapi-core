@@ -240,7 +240,7 @@ public class ExchangeApiInterfaceGenerator extends JavaTypeGenerator {
 					getImports(), 
 					restResponseClassName);
 		}
-		String apiMethodName = JavaCodeGenerationUtil.firstLetterToLowerCase(restApi.getName());
+		String apiMethodName = ExchangeApiGeneratorUtil.getRestApiMethodName(restApi);
 		String apiMethodSignature =  new StringBuilder()
 				.append(FutureRestResponse.class.getSimpleName())
 				.append("<")
