@@ -18,7 +18,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Snippet to test call to com.scz.jxapi.exchanges.demo.gen.marketdata.DemoExchangeMarketDataApi{@link DemoExchangeMarketDataApi#exchangeInfo(DemoExchangeMarketDataExchangeInfoRequest)})}<br>
+ * Snippet to test call to {@link DemoExchangeMarketDataApi#exchangeInfo(DemoExchangeMarketDataExchangeInfoRequest)})}<br>
  * <br><strong>THIS CODE IS GENERATED. DO NOT EDIT MANUALLY!</strong>
  */
 public class DemoExchangeMarketDataExchangeInfoDemo {
@@ -46,7 +46,8 @@ public class DemoExchangeMarketDataExchangeInfoDemo {
     }
     try {
       return DemoUtil.checkResponse(api.exchangeInfo(request));
-    } finally {
+    }
+    finally {
       if (apiObserver != null) {
         api.unsubscribeObserver(apiObserver);
       }
@@ -55,15 +56,16 @@ public class DemoExchangeMarketDataExchangeInfoDemo {
   
   /**
    * Runs REST endpoint demo snippet calling {@link DemoExchangeMarketDataApi#exchangeInfo(DemoExchangeMarketDataExchangeInfoRequest)}
+   * @param args no argument expected
    */
   public static void main(String[] args) {
     try {
       execute(createRequest(), TestJXApiProperties.filterProperties(DemoExchangeExchange.ID, true), DemoUtil::logRestApiEvent);
       System.exit(0);
-    } catch (Throwable t) {
+    }
+    catch (Throwable t) {
       log.error("Exception raised from main()", t);
       System.exit(-1);
     }
   }
-  
 }

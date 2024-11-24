@@ -1047,8 +1047,12 @@ public class ExchangeApiGeneratorUtilTest {
         ExchangeApiDescriptor apiDescriptor = new ExchangeApiDescriptor();
         apiDescriptor.setHttpUrl("https://api.exchange.com/v1");
         Imports imports = new Imports();
-        Assert.assertEquals("public static final String HTTP_URL = \"https://api.exchange.com/v1\";", 
-                            ExchangeApiGeneratorUtil.getHttpUrlVariableDeclaration(exchangeDescriptor, apiDescriptor, imports));
+        Assert.assertEquals("\n"
+        		+ "/**\n"
+        		+ " * Base URL for <i>null</i> exchange <i>null</i> API REST endpoints\n"
+        		+ " */\n"
+        		+ "public static final String HTTP_URL = \"https://api.exchange.com/v1\";", 
+                ExchangeApiGeneratorUtil.getHttpUrlVariableDeclaration(exchangeDescriptor, apiDescriptor, imports));
         Assert.assertEquals(0, imports.size());
     }
     
@@ -1057,12 +1061,20 @@ public class ExchangeApiGeneratorUtilTest {
         ExchangeDescriptor exchangeDescriptor = new ExchangeDescriptor();
         exchangeDescriptor.setName("MyExchange");
         exchangeDescriptor.setBasePackage("com.x.gen");
-        exchangeDescriptor.setHttpUrl("https://api.exchange.com");
+        exchangeDescriptor.setHttpUrl("\n"
+        		+ "/**\n"
+        		+ " * Base URL for <i>MyExchange</i> exchange <i>null</i> API REST endpoints\n"
+        		+ " */\n"
+        		+ "public static final String HTTP_URL = MyExchangeExchangeImpl.HTTP_URL + \"/v1\";");
         ExchangeApiDescriptor apiDescriptor = new ExchangeApiDescriptor();
         apiDescriptor.setHttpUrl("/v1");
         Imports imports = new Imports();
-        Assert.assertEquals("public static final String HTTP_URL = MyExchangeExchangeImpl.HTTP_URL + \"/v1\";", 
-                            ExchangeApiGeneratorUtil.getHttpUrlVariableDeclaration(exchangeDescriptor, apiDescriptor, imports));
+        Assert.assertEquals("\n"
+        		+ "/**\n"
+        		+ " * Base URL for <i>MyExchange</i> exchange <i>null</i> API REST endpoints\n"
+        		+ " */\n"
+        		+ "public static final String HTTP_URL = MyExchangeExchangeImpl.HTTP_URL + \"/v1\";", 
+                ExchangeApiGeneratorUtil.getHttpUrlVariableDeclaration(exchangeDescriptor, apiDescriptor, imports));
         Assert.assertEquals(1, imports.size());
         Assert.assertEquals("com.x.gen.MyExchangeExchangeImpl", imports.iterator().next());
     }
@@ -1075,8 +1087,12 @@ public class ExchangeApiGeneratorUtilTest {
         exchangeDescriptor.setHttpUrl("https://api.exchange.com");
         ExchangeApiDescriptor apiDescriptor = new ExchangeApiDescriptor();
         Imports imports = new Imports();
-        Assert.assertEquals("public static final String HTTP_URL = MyExchangeExchangeImpl.HTTP_URL;", 
-                            ExchangeApiGeneratorUtil.getHttpUrlVariableDeclaration(exchangeDescriptor, apiDescriptor, imports));
+        Assert.assertEquals("\n"
+        		+ "/**\n"
+        		+ " * Base URL for <i>MyExchange</i> exchange <i>null</i> API REST endpoints\n"
+        		+ " */\n"
+        		+ "public static final String HTTP_URL = MyExchangeExchangeImpl.HTTP_URL;", 
+                ExchangeApiGeneratorUtil.getHttpUrlVariableDeclaration(exchangeDescriptor, apiDescriptor, imports));
         Assert.assertEquals(1, imports.size());
         Assert.assertEquals("com.x.gen.MyExchangeExchangeImpl", imports.iterator().next());
     }
@@ -1138,8 +1154,11 @@ public class ExchangeApiGeneratorUtilTest {
         ExchangeApiDescriptor apiDescriptor = new ExchangeApiDescriptor();
         apiDescriptor.setWebsocketUrl("https://api.exchange.com/ws/account");
         Imports imports = new Imports();
-        Assert.assertEquals("public static final String WEBSOCKET_URL = \"https://api.exchange.com/ws/account\";", 
-                            ExchangeApiGeneratorUtil.getWebsocketUrlVariableDeclaration(exchangeDescriptor, apiDescriptor, imports));
+        Assert.assertEquals("/**\n"
+        		+ " * Base URL for <i>null</i> exchange <i>null</i> API Websocket endpoints\n"
+        		+ " */\n"
+        		+ "public static final String WEBSOCKET_URL = \"https://api.exchange.com/ws/account\";", 
+                ExchangeApiGeneratorUtil.getWebsocketUrlVariableDeclaration(exchangeDescriptor, apiDescriptor, imports));
         Assert.assertEquals(0, imports.size());
     }
     
@@ -1152,8 +1171,11 @@ public class ExchangeApiGeneratorUtilTest {
         ExchangeApiDescriptor apiDescriptor = new ExchangeApiDescriptor();
         apiDescriptor.setWebsocketUrl("/ws/account");
         Imports imports = new Imports();
-        Assert.assertEquals("public static final String WEBSOCKET_URL = MyExchangeExchangeImpl.WEBSOCKET_URL + \"/ws/account\";", 
-                            ExchangeApiGeneratorUtil.getWebsocketUrlVariableDeclaration(exchangeDescriptor, apiDescriptor, imports));
+        Assert.assertEquals("/**\n"
+        		+ " * Base URL for <i>MyExchange</i> exchange <i>null</i> API Websocket endpoints\n"
+        		+ " */\n"
+        		+ "public static final String WEBSOCKET_URL = MyExchangeExchangeImpl.WEBSOCKET_URL + \"/ws/account\";", 
+                ExchangeApiGeneratorUtil.getWebsocketUrlVariableDeclaration(exchangeDescriptor, apiDescriptor, imports));
         Assert.assertEquals(1, imports.size());
         Iterator<String> it = imports.iterator();
         Assert.assertEquals("com.x.gen.MyExchangeExchangeImpl", it.next());
@@ -1167,8 +1189,11 @@ public class ExchangeApiGeneratorUtilTest {
         exchangeDescriptor.setWebsocketUrl("https://api.exchange.com/ws");
         ExchangeApiDescriptor apiDescriptor = new ExchangeApiDescriptor();
         Imports imports = new Imports();
-        Assert.assertEquals("public static final String WEBSOCKET_URL = MyExchangeExchangeImpl.WEBSOCKET_URL;", 
-                            ExchangeApiGeneratorUtil.getWebsocketUrlVariableDeclaration(exchangeDescriptor, apiDescriptor, imports));
+        Assert.assertEquals("/**\n"
+        		+ " * Base URL for <i>MyExchange</i> exchange <i>null</i> API Websocket endpoints\n"
+        		+ " */\n"
+        		+ "public static final String WEBSOCKET_URL = MyExchangeExchangeImpl.WEBSOCKET_URL;", 
+                ExchangeApiGeneratorUtil.getWebsocketUrlVariableDeclaration(exchangeDescriptor, apiDescriptor, imports));
         Assert.assertEquals(1, imports.size());
         Iterator<String> it = imports.iterator();
         Assert.assertEquals("com.x.gen.MyExchangeExchangeImpl", it.next());

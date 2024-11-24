@@ -12,8 +12,14 @@ import com.scz.jxapi.exchanges.demo.gen.marketdata.DemoExchangeMarketDataApiImpl
  */
 public class DemoExchangeExchangeImpl extends AbstractExchange implements DemoExchangeExchange {
   
+  /**
+   * Base REST API URL
+   */
   public static final String HTTP_URL = "http://HTTPSERVERHOST:8080";
   
+  /**
+   * Base websocket endpoint URL
+   */
   public static final String WEBSOCKET_URL = "ws://MOCKWEBSOCKETSERVERHOST:8090/ws";
   
   private final DemoExchangeMarketDataApi demoExchangeMarketDataApi;

@@ -80,7 +80,18 @@ public class JavaTypeGeneratorTest {
 		srcFolder = Paths.get("tmp" + Math.random());
 		gen.writeJavaFile(srcFolder);
 		String actualJavaFileContent = Files.readString(srcFolder.resolve(Paths.get("x", "y", "z", "Hello.java")));
-		Assert.assertEquals(gen.generate(), actualJavaFileContent);
+		Assert.assertEquals("package x.y.z;\n"
+				+ "\n"
+				+ "import java.text.SimpleDateFormat;\n"
+				+ "import java.util.Date;\n"
+				+ "\n"
+				+ "/**\n"
+				+ " * Hello interface\n"
+				+ " */\n"
+				+ "public class Hello {\n"
+				+ "  void sayHello();\n"
+				+ "}\n", 
+				actualJavaFileContent);
 		Imports actualImports = gen.getImports();
 		Assert.assertEquals(2, actualImports.size());
 		Iterator<String> actualImportsIterator = actualImports.iterator();
@@ -119,7 +130,16 @@ public class JavaTypeGeneratorTest {
 		Files.createDirectories(srcFolder);
 		gen.writeJavaFile(srcFolder);
 		String actualJavaFileContent = Files.readString(srcFolder.resolve(Paths.get("HelloInterface.java")));
-		Assert.assertEquals(gen.generate(), actualJavaFileContent);
+		Assert.assertEquals("import java.text.SimpleDateFormat;\n"
+				+ "import java.util.Date;\n"
+				+ "\n"
+				+ "/**\n"
+				+ " * Hello interface\n"
+				+ " */\n"
+				+ "public interface HelloInterface {\n"
+				+ "  void sayHello();\n"
+				+ "}\n", 
+				actualJavaFileContent);
 	}
 	
 	@Test

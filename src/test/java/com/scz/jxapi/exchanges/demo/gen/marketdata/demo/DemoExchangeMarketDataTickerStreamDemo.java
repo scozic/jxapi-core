@@ -52,13 +52,14 @@ public class DemoExchangeMarketDataTickerStreamDemo {
     log.info("Subscribing to websocket API 'DemoExchange MarketData tickerStream' for {} ms with request:{}", SUBSCRIPTION_DURATION, request);
     if (apiObserver != null) {
       api.subscribeObserver(apiObserver);
-    }String subId = api.subscribeTickerStream(request, messageListener);
+    }
+    String subId = api.subscribeTickerStream(request, messageListener);
     Thread.sleep(subscriptionDuration);
     log.info("Unubscribing from 'DemoExchange MarketData tickerStream' stream");
     api.unsubscribeTickerStream(subId);
     Thread.sleep(delayBeforeExitAfterUnsubscription);
     if (apiObserver != null) {
-      api.unsubscribeObserver(apiObserver);
+      api.subscribeObserver(apiObserver);
     }
   }
   
@@ -74,7 +75,8 @@ public class DemoExchangeMarketDataTickerStreamDemo {
                 SUBSCRIPTION_DURATION,
                 DELAY_BEFORE_EXIT_AFTER_UNSUBSCRIPTION);
       System.exit(0);
-    } catch (Throwable t) {
+    }
+    catch (Throwable t) {
       log.error("Exception raised from main()", t);
       System.exit(-1);
     }

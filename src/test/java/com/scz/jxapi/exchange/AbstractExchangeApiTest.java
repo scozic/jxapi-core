@@ -406,9 +406,4 @@ public class AbstractExchangeApiTest {
 			return this.websocketManager;
 		}
 	}
-	
-	@Test
-	public void testTopicMatcher_EmptyFields() {
-		Assert.assertEquals(WebsocketMessageTopicMatcherFactory.ANY_MATCHER_FACTORY, AbstractExchangeApi.topicMatcher());
-	}
 }

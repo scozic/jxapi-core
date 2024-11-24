@@ -17,12 +17,12 @@ public class WebsocketMessageTopicMatcherFactoryTest {
 	@Test
 	public void testCreateMessageTopicMatcherFactory_EmptyFieldListReturnsAnyMatcherFactory() {
 		Assert.assertEquals(WebsocketMessageTopicMatcherFactory.ANY_MATCHER_FACTORY, 
-							WebsocketMessageTopicMatcherFactory.createFactory());
+							WebsocketMessageTopicMatcherFactory.create());
 	}
 	
 	@Test
 	public void testCreateMessageTopicMatcherFactory_NotEmptyFieldList() {
-		WebsocketMessageTopicMatcherFactory fac = WebsocketMessageTopicMatcherFactory.createFactory("f1", "value1", "f2", "value2");
+		WebsocketMessageTopicMatcherFactory fac = WebsocketMessageTopicMatcherFactory.create("f1", "value1", "f2", "value2");
 		Assert.assertNotNull(fac);
 		WebsocketMessageTopicMatcher matcher = fac.createWebsocketMessageTopicMatcher();
         Assert.assertEquals(WebsocketMessageTopicMatchStatus.NO_MATCH, matcher.getStatus());

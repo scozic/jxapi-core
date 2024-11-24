@@ -15,7 +15,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Snippet to test call to com.scz.jxapi.exchanges.demo.gen.marketdata.DemoExchangeMarketDataApi{@link DemoExchangeMarketDataApi#getRestRequestDataTypePrimitiveWithMsgField(Integer)})}<br>
+ * Snippet to test call to {@link DemoExchangeMarketDataApi#getRestRequestDataTypePrimitiveWithMsgField(Integer)})}<br>
  * <br><strong>THIS CODE IS GENERATED. DO NOT EDIT MANUALLY!</strong>
  */
 public class DemoExchangeMarketDataGetRestRequestDataTypePrimitiveWithMsgFieldDemo {
@@ -41,7 +41,8 @@ public class DemoExchangeMarketDataGetRestRequestDataTypePrimitiveWithMsgFieldDe
     }
     try {
       return DemoUtil.checkResponse(api.getRestRequestDataTypePrimitiveWithMsgField(request));
-    } finally {
+    }
+    finally {
       if (apiObserver != null) {
         api.unsubscribeObserver(apiObserver);
       }
@@ -50,15 +51,16 @@ public class DemoExchangeMarketDataGetRestRequestDataTypePrimitiveWithMsgFieldDe
   
   /**
    * Runs REST endpoint demo snippet calling {@link DemoExchangeMarketDataApi#getRestRequestDataTypePrimitiveWithMsgField(Integer)}
+   * @param args no argument expected
    */
   public static void main(String[] args) {
     try {
       execute(createAge(), TestJXApiProperties.filterProperties(DemoExchangeExchange.ID, true), DemoUtil::logRestApiEvent);
       System.exit(0);
-    } catch (Throwable t) {
+    }
+    catch (Throwable t) {
       log.error("Exception raised from main()", t);
       System.exit(-1);
     }
   }
-  
 }

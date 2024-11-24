@@ -49,8 +49,14 @@ public class ExchangeInterfaceImplementationGeneratorTest {
 				+ " */\n"
 				+ "public class FooExchangeImpl extends AbstractExchange implements FooExchange {\n"
 				+ "  \n"
+				+ "  /**\n"
+				+ "   * Base REST API URL\n"
+				+ "   */\n"
 				+ "  public static final String HTTP_URL = \"https://myexchange.com/api\";\n"
 				+ "  \n"
+				+ "  /**\n"
+				+ "   * Base websocket endpoint URL\n"
+				+ "   */\n"
 				+ "  public static final String WEBSOCKET_URL = \"https://myexchange.com/ws\";\n"
 				+ "  \n"
 				+ "  private final FooApi1Api fooApi1Api;\n"
@@ -72,7 +78,8 @@ public class ExchangeInterfaceImplementationGeneratorTest {
 				+ "    return this.fooApi2Api;\n"
 				+ "  }\n"
 				+ "  \n"
-				+ "}\n", 
+				+ "}\n"
+				+ "", 
 				exchangeGenerator.generate());
 	}
 	

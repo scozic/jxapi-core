@@ -58,24 +58,6 @@ import com.scz.jxapi.util.FactoryUtil;
  * @see Observable
  */
 public abstract class AbstractExchangeApi implements ExchangeApi {
-	
-	/**
-	 * Creates a {@link WebsocketMessageTopicMatcherFactory} for matching the given
-	 * list of property names and expected values
-	 * 
-	 * @param fieldNamesAndValues list of key value pairs like
-	 *                            <code>key1, value1, key2, value2...</code>
-	 * @return WebsocketMessageTopicMatcherFactory instance which will be a
-	 *         {@link DefaultWebsocketMessageTopicMatcher} instance for the list of
-	 *         property key/value list or
-	 *         {@link WebsocketMessageTopicMatcherFactory#ANY_MATCHER_FACTORY} if
-	 *         the list is empty meaning anything will be matched
-	 * 
-	 * @see WebsocketMessageTopicMatcherFactory#createFactory(String...)
-	 */
-	public static WebsocketMessageTopicMatcherFactory topicMatcher(String... fieldNamesAndValues) {
-		return WebsocketMessageTopicMatcherFactory.createFactory(fieldNamesAndValues);
-	}
 
 	protected final String name;
 	protected final String exchangeName;

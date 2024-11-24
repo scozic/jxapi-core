@@ -346,7 +346,7 @@ public class ExchangeJavaWrapperGeneratorUtil {
 	 */
 	public static String getHttpUrlVariableDeclaration(ExchangeDescriptor exchangeDescriptor) {
 		return getStaticUrlVariableDeclaration(ExchangeJavaWrapperGeneratorUtil.HTTP_URL_STATIC_VARIABLE, 
-											   exchangeDescriptor.getHttpUrl());
+											   exchangeDescriptor.getHttpUrl(), "Base REST API URL");
 	}
 	
 	/**
@@ -358,18 +358,19 @@ public class ExchangeJavaWrapperGeneratorUtil {
 	 */
 	public static String getWebsocketUrlVariableDeclaration(ExchangeDescriptor exchangeDescriptor) {
 		return getStaticUrlVariableDeclaration(ExchangeJavaWrapperGeneratorUtil.WEBSOCKET_URL_STATIC_VARIABLE, 
-											   exchangeDescriptor.getWebsocketUrl());
+											   exchangeDescriptor.getWebsocketUrl(), "Base websocket endpoint URL");
 	}
 	
-	private static String getStaticUrlVariableDeclaration(String variableName, String value) {
+	private static String getStaticUrlVariableDeclaration(String variableName, String value, String description) {
 		if (value == null) {
 			return null;
 		}
-		return "public static final String " 
-		+ variableName 
-		+ " = "
-		+ JavaCodeGenerationUtil.getQuotedString(value)
-		+ ";";
+		return JavaCodeGenerationUtil.generateJavaDoc(description)
+			+ "\npublic static final String " 
+			+ variableName 
+			+ " = "
+			+ JavaCodeGenerationUtil.getQuotedString(value)
+			+ ";";
 	}
 
 	/**

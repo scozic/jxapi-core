@@ -782,8 +782,17 @@ public class ExchangeApiGeneratorUtil {
 	public static String getHttpUrlVariableDeclaration(ExchangeDescriptor exchangeDescriptor, 
 													   ExchangeApiDescriptor exchangeApiDescriptor,
 													   Imports imports) {
+		StringBuilder javadoc = new StringBuilder()
+				.append("Base URL for <i>")
+				.append(exchangeDescriptor.getName())
+				.append("</i> exchange <i>")
+				.append(exchangeApiDescriptor.getName())
+				.append("</i> API REST endpoints");
+		
 		StringBuilder s = new StringBuilder()
-				.append("public static final String ")
+				.append("\n")
+				.append(JavaCodeGenerationUtil.generateJavaDoc(javadoc.toString()))
+				.append("\npublic static final String ")
 				.append(ExchangeJavaWrapperGeneratorUtil.HTTP_URL_STATIC_VARIABLE)
 				.append(" = ");
 		String url = "";
@@ -872,10 +881,17 @@ public class ExchangeApiGeneratorUtil {
 	public static String getWebsocketUrlVariableDeclaration(ExchangeDescriptor exchangeDescriptor, 
 															ExchangeApiDescriptor exchangeApiDescriptor,
 															Imports imports) {
+		StringBuilder javadoc = new StringBuilder()
+				.append("Base URL for <i>")
+				.append(exchangeDescriptor.getName())
+				.append("</i> exchange <i>")
+				.append(exchangeApiDescriptor.getName())
+				.append("</i> API Websocket endpoints");
 		StringBuilder s = new StringBuilder()
-							.append("public static final String ")
-							.append(ExchangeJavaWrapperGeneratorUtil.WEBSOCKET_URL_STATIC_VARIABLE)
-							.append(" = ");
+				.append(JavaCodeGenerationUtil.generateJavaDoc(javadoc.toString()))
+				.append("\npublic static final String ")
+				.append(ExchangeJavaWrapperGeneratorUtil.WEBSOCKET_URL_STATIC_VARIABLE)
+				.append(" = ");
 		String url = "";
 		String apiUrl = exchangeApiDescriptor.getWebsocketUrl();
 		if (apiUrl != null) {

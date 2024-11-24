@@ -212,8 +212,12 @@ public class JavaTypeGenerator {
 			implementedInterfaces.forEach(this::addImport);
 		}
 		
-		sb.append("package ").append(getPackage()).append(";\n\n");
-		sb.append(imports.generate(getPackage()));
+		String pkg = getPackage();
+		if (!pkg.isEmpty()) {
+			sb.append("package ").append(pkg).append(";\n\n");
+		}
+		
+		sb.append(imports.generate(pkg));
 		sb.append("\n")
 		  .append(JavaCodeGenerationUtil.generateJavaDoc(description))
 		  .append("\n")
@@ -238,6 +242,7 @@ public class JavaTypeGenerator {
 		}
 		
 	    sb.append(JavaCodeGenerationUtil.generateCodeBlock(body.toString()));
+	    body.delete(0, body.length());
 		return sb.toString();
 	}
 

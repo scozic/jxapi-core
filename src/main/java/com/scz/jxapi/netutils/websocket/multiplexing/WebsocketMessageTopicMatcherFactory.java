@@ -30,7 +30,7 @@ public interface WebsocketMessageTopicMatcherFactory {
 	 * 
 	 * @see DefaultWebsocketMessageTopicMatcher
 	 */
-	static WebsocketMessageTopicMatcherFactory createFactory(String... fieldNamesAndValues) {
+	static WebsocketMessageTopicMatcherFactory create(String... fieldNamesAndValues) {
 		if (fieldNamesAndValues.length <= 0) {
 			return ANY_MATCHER_FACTORY;
 		}

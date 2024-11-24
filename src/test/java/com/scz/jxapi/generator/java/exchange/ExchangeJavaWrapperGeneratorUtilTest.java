@@ -348,7 +348,10 @@ public class ExchangeJavaWrapperGeneratorUtilTest {
 	public void testGetHttpUrlVariableDeclaration() {
 		ExchangeDescriptor exchangeDescriptor = new ExchangeDescriptor();
 		exchangeDescriptor.setHttpUrl("https//myexchange.com/api");
-		Assert.assertEquals("public static final String HTTP_URL = \"https//myexchange.com/api\";", 
+		Assert.assertEquals("/**\n"
+				+ " * Base REST API URL\n"
+				+ " */\n"
+				+ "public static final String HTTP_URL = \"https//myexchange.com/api\";", 
 				ExchangeJavaWrapperGeneratorUtil.getHttpUrlVariableDeclaration(exchangeDescriptor));
 	}
 	
@@ -356,7 +359,10 @@ public class ExchangeJavaWrapperGeneratorUtilTest {
 	public void testGetWebsocketUrlVariableDeclaration() {
 		ExchangeDescriptor exchangeDescriptor = new ExchangeDescriptor();
 		exchangeDescriptor.setWebsocketUrl("https//myexchange.com/ws");
-		Assert.assertEquals("public static final String WEBSOCKET_URL = \"https//myexchange.com/ws\";", 
+		Assert.assertEquals("/**\n"
+				+ " * Base websocket endpoint URL\n"
+				+ " */\n"
+				+ "public static final String WEBSOCKET_URL = \"https//myexchange.com/ws\";", 
 				ExchangeJavaWrapperGeneratorUtil.getWebsocketUrlVariableDeclaration(exchangeDescriptor));
 	}
 }
