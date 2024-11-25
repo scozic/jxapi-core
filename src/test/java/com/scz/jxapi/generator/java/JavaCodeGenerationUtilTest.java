@@ -384,4 +384,19 @@ public class JavaCodeGenerationUtilTest {
 				null,
 				null);
 	}
+	
+	@Test
+	public void testGetMethodJavadocArgumentDeclaration_NullArgClass() {
+		Assert.assertEquals("", JavaCodeGenerationUtil.getMethodJavadocArgumentDeclaration(null));
+	}
+	
+	@Test
+	public void testGetMethodJavadocArgumentDeclaration_SimpleArgClass() {
+		Assert.assertEquals(Integer.class.getName(), JavaCodeGenerationUtil.getMethodJavadocArgumentDeclaration(Integer.class.getName()));
+	}
+	
+	@Test
+	public void testGetMethodJavadocArgumentDeclaration_GenericArgClass() {
+		Assert.assertEquals("List", JavaCodeGenerationUtil.getMethodJavadocArgumentDeclaration("List<Map<String, Integer>>"));
+	}
 }

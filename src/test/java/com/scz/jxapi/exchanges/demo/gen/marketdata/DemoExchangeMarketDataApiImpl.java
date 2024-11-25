@@ -55,37 +55,37 @@ public class DemoExchangeMarketDataApiImpl extends AbstractExchangeApi implement
   
   /**
    * URL for <i>exchangeInfo</i> REST endpoint.
-   * @see DemoExchangeMarketDataApi#exchangeInfo(Object)
+   * @see DemoExchangeMarketDataApi#exchangeInfo(DemoExchangeMarketDataExchangeInfoRequest)
    */
   public static final String EXCHANGE_INFO_URL = HTTP_URL + "/exchangeInfo";
   
   /**
    * URL for <i>tickers</i> REST endpoint.
-   * @see DemoExchangeMarketDataApi#tickers(Object)
+   * @see DemoExchangeMarketDataApi#tickers()
    */
   public static final String TICKERS_URL = HTTP_URL + "/tickers";
   
   /**
    * URL for <i>postRestRequestDataTypeInt</i> REST endpoint.
-   * @see DemoExchangeMarketDataApi#postRestRequestDataTypeInt(Object)
+   * @see DemoExchangeMarketDataApi#postRestRequestDataTypeInt(Integer)
    */
   public static final String POST_REST_REQUEST_DATA_TYPE_INT_URL = HTTP_URL + "/postInt";
   
   /**
    * URL for <i>getRestRequestDataTypePrimitiveWithMsgField</i> REST endpoint.
-   * @see DemoExchangeMarketDataApi#getRestRequestDataTypePrimitiveWithMsgField(Object)
+   * @see DemoExchangeMarketDataApi#getRestRequestDataTypePrimitiveWithMsgField(Integer)
    */
   public static final String GET_REST_REQUEST_DATA_TYPE_PRIMITIVE_WITH_MSG_FIELD_URL = HTTP_URL + "/getIntWithMsgField";
   
   /**
    * URL for <i>postRestRequestDataTypeIntList</i> REST endpoint.
-   * @see DemoExchangeMarketDataApi#postRestRequestDataTypeIntList(Object)
+   * @see DemoExchangeMarketDataApi#postRestRequestDataTypeIntList(List)
    */
   public static final String POST_REST_REQUEST_DATA_TYPE_INT_LIST_URL = HTTP_URL + "/postIntList";
   
   /**
    * URL for <i>postRestRequestDataTypeObjectListMap</i> REST endpoint.
-   * @see DemoExchangeMarketDataApi#postRestRequestDataTypeObjectListMap(Object)
+   * @see DemoExchangeMarketDataApi#postRestRequestDataTypeObjectListMap(Map)
    */
   public static final String POST_REST_REQUEST_DATA_TYPE_OBJECT_LIST_MAP_URL = HTTP_URL + "/postObjectListMap";
   

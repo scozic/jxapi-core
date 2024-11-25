@@ -438,5 +438,24 @@ public class JavaCodeGenerationUtil {
  		return s.toString();
 	}
 	
-	
+	/**
+	 * Class of an argument as it should be declared in a method javadoc. This means
+	 * the class name without generic parameters.
+	 * 
+	 * @param argumentClassName Simple or full (with package) method argument class
+	 *                          name, can be <code>null</code>
+	 * @return Empty string if <code>argumentClassName</code> is <code>null</code>,
+	 *         <code>argumentClassName</code> without generic argument, for
+	 *         instance: <code>List&lt;Integer&gt;</code> &rarr; <code>List</code>
+	 */
+	public static String getMethodJavadocArgumentDeclaration(String argumentClassName) {
+		if (argumentClassName == null) {
+			return "";
+		}
+		int off = argumentClassName.indexOf('<');
+		if (off >= 0) {
+			argumentClassName = argumentClassName.substring(0, off);
+		}
+		return argumentClassName;
+	}
 }

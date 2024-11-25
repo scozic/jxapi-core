@@ -365,12 +365,13 @@ public class ExchangeJavaWrapperGeneratorUtil {
 		if (value == null) {
 			return null;
 		}
-		return JavaCodeGenerationUtil.generateJavaDoc(description)
-			+ "\npublic static final String " 
-			+ variableName 
-			+ " = "
-			+ JavaCodeGenerationUtil.getQuotedString(value)
-			+ ";";
+		return new StringBuilder()
+				.append(JavaCodeGenerationUtil.generateJavaDoc(description))
+				.append("\npublic static final String ")
+				.append(variableName)
+				.append(" = ")
+				.append(JavaCodeGenerationUtil.getQuotedString(value))
+				.append(";").toString();
 	}
 
 	/**
