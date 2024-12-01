@@ -45,7 +45,7 @@ public class DefaultWebsocketEndpoint<M> implements WebsocketEndpoint<M> {
 	}
 
 	@Override
-	public String subscribe(WebsocketSubscribeRequest request, WebsocketListener<M> listener) {
+	public synchronized String subscribe(WebsocketSubscribeRequest request, WebsocketListener<M> listener) {
 		request.setEnpoint(endpointName);
 		String topic = request.getTopic();
 		Subscription sub = subscriptionsByTopic.computeIfAbsent(topic, t -> new Subscription(request));
@@ -59,7 +59,7 @@ public class DefaultWebsocketEndpoint<M> implements WebsocketEndpoint<M> {
 	}
 
 	@Override
-	public boolean unsubscribe(String unsubscriptionId) {
+	public synchronized boolean unsubscribe(String unsubscriptionId) {
 		Subscription sub = subscriptionsById.remove(unsubscriptionId);
 		if (sub == null) {
 			return false;

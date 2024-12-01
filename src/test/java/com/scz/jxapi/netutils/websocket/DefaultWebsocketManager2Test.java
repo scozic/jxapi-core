@@ -22,12 +22,10 @@ import com.scz.jxapi.netutils.websocket.mock.MockWebsocketHookEvent;
 import com.scz.jxapi.netutils.websocket.mock.MockWebsocketHookEventType;
 import com.scz.jxapi.netutils.websocket.multiplexing.WebsocketMessageTopicMatcherFactory;
 
-/**
- * Unit test for {@link DefaultWebsocketManager}
- */
-public class DefaultWebsocketManagerTest {
+public class DefaultWebsocketManager2Test {
+
 	
-	private static final Logger log = LoggerFactory.getLogger(DefaultWebsocketManagerTest.class);
+	private static final Logger log = LoggerFactory.getLogger(DefaultWebsocketManagerOldTest.class);
 	
 	private static final long NO_EVENT_DELAY = 50;
 	private static final long HEARTBEAT_INTERVAL = 200;
@@ -326,6 +324,7 @@ public class DefaultWebsocketManagerTest {
 		String msg1 = "{\"myTopic\":\"topic1\", \"payload\":\"Hello!\"}";
 		ws.dispatchMessage(msg1);
 		Assert.assertEquals(msg1, wsMessageHandler1.waitUntilCount(1).pop());
+		wsMessageHandler1.checkNoEvents(NO_EVENT_DELAY);
 		
 		// 2nd message that will not be dispatched because topic not matching
 		String msg2 = "{\"myTopic\":\"otherTopic\", \"payload\":\"foo\"}";
@@ -621,6 +620,72 @@ public class DefaultWebsocketManagerTest {
 		ws.dispatchMessage(msg5Topic2);
 		wsMessageHandler1.checkNoEvents(NO_EVENT_DELAY);
 		wsMessageHandler2.checkNoEvents(NO_EVENT_DELAY);
+		
+		// Dispose WS manager
+		wsManager.dispose();
+		popWebsocketHookBeforeDisconnectEvent();
+		popWebsocketRemoveMessageHandlerEvent();
+		popWebsocketDisconnectEvent();
+		popWebsocketRemoveErrorHandlerEvent();
+		popWebsocketHookAfterDisconnectEvent();
+		checkNoError();
+	}
+	
+	@Test
+	public void testSubscribeToTwoTopicWithOneCommonTopicFieldReceiveOneMessageOnBothThenUnsubscribe() throws Exception{
+		// Init WS manager
+		wsManager = new DefaultWebsocketManager(EXCHANGE_API, ws, wsHook);
+		wsManager.subscribeErrorHandler(errorHandler);
+		popWebsocketAddErrorHandlerEvent();
+		popWebsocketAddMessageHandlerEvent();
+		popWebsocketHookInitEvent();
+		
+		// Subscribe to first topic
+		String topic1 = "topic1";
+		String subscribeTopic1Msg = "subscribe:topic1";
+		String unsubscribeTopic1Msg = "unsubscribe:topic1";
+		wsHook.setSubscribeRequestMessage(topic1, subscribeTopic1Msg);
+		wsHook.setUnSubscribeRequestMessage(topic1, unsubscribeTopic1Msg);
+		WebsocketMessageTopicMatcherFactory topicMatcher = WebsocketMessageTopicMatcherFactory.create("myTopic", topic1);
+		wsManager.subscribe(topic1, topicMatcher, wsMessageHandler1);
+		popWebsocketHookBeforeConnectEvent();
+		popWebsocketConnectEvent();
+		popWebsocketHookAfterConnectEvent();
+		popWebsocketHookGetSubscribeRequestMessageEvent();
+		popWebsocketSendMessageEvent(subscribeTopic1Msg);
+		
+		// Dispatch a message for topic1 that should be dispatched to listener for topic1
+		String msg1Topic1 = "{\"myTopic\":\"topic1\", \"payload\":\"Hello#1!\"}";
+		ws.dispatchMessage(msg1Topic1);
+		Assert.assertEquals(msg1Topic1, wsMessageHandler1.waitUntilCount(1).pop());
+		
+		// Subscribe to topic2
+		String topic2 = "topic2";
+		String subscribeTopic2Msg = "subscribe:topic2";
+		String unsubscribeTopic2Msg = "unsubscribe:topic2";
+		wsHook.setSubscribeRequestMessage(topic2, subscribeTopic2Msg);
+		wsHook.setUnSubscribeRequestMessage(topic2, unsubscribeTopic2Msg);
+		WebsocketMessageTopicMatcherFactory topic2Matcher = WebsocketMessageTopicMatcherFactory.create("myTopic", topic1, "myOtherTopic", "foo");
+		wsManager.subscribe(topic2, topic2Matcher, wsMessageHandler2);
+		popWebsocketHookGetSubscribeRequestMessageEvent();
+		popWebsocketSendMessageEvent(subscribeTopic2Msg);
+		
+		// Dispatch a message for topic 2 that should be received by both topic1 and topic2 listeners
+		String msg2Topic2 = "{\"myTopic\":\"topic1\", \"payload\":\"Hello#2!\", \"myOtherTopic\":\"foo\"}";
+		ws.dispatchMessage(msg2Topic2);
+		Assert.assertEquals(msg2Topic2, wsMessageHandler1.waitUntilCount(1).pop());
+		Assert.assertEquals(msg2Topic2, wsMessageHandler2.waitUntilCount(1).pop());
+		wsMessageHandler1.checkNoEvents(NO_EVENT_DELAY);
+		wsMessageHandler2.checkNoEvents(NO_EVENT_DELAY);
+		
+		wsManager.unsubscribe(topic1);
+		popWebsocketHookGetUnsubscribeRequestMessageEvent();
+		popWebsocketSendMessageEvent(unsubscribeTopic1Msg);
+		
+		// Unsubscribe from topic2 
+		wsManager.unsubscribe(topic2);
+		popWebsocketHookGetUnsubscribeRequestMessageEvent();
+		popWebsocketSendMessageEvent(unsubscribeTopic2Msg);
 		
 		// Dispose WS manager
 		wsManager.dispose();
@@ -939,7 +1004,7 @@ public class DefaultWebsocketManagerTest {
 		String unsubscribeMsg = "unsubscribe";
 		wsHook.setSubscribeRequestMessage(null, subscribeMsg);
 		wsHook.setUnSubscribeRequestMessage(null, unsubscribeMsg);
-		wsManager.subscribe(null, null, wsMessageHandler1);
+		wsManager.subscribe(null, WebsocketMessageTopicMatcherFactory.ANY_MATCHER_FACTORY, wsMessageHandler1);
 		popWebsocketHookBeforeConnectEvent();
 		popWebsocketConnectEvent();
 		popWebsocketHookAfterConnectEvent();
@@ -978,14 +1043,14 @@ public class DefaultWebsocketManagerTest {
 		String unsubscribeMsg = "unsubscribe";
 		wsHook.setSubscribeRequestMessage(null, subscribeMsg);
 		wsHook.setUnSubscribeRequestMessage(null, unsubscribeMsg);
-		wsManager.subscribe(null, null, wsMessageHandler1);
+		wsManager.subscribe(null, WebsocketMessageTopicMatcherFactory.ANY_MATCHER_FACTORY, wsMessageHandler1);
 		popWebsocketHookBeforeConnectEvent();
 		popWebsocketConnectEvent();
 		popWebsocketHookAfterConnectEvent();
 		popWebsocketHookGetSubscribeRequestMessageEvent();
 		popWebsocketSendMessageEvent(subscribeMsg);
 		checkNoEvents();
-		log.info("Disposing " + wsManager);
+		log.info("Disposing {}", wsManager);
 		wsManager.dispose();
 		popWebsocketRemoveMessageHandlerEvent();
 		popWebsocketDisconnectEvent();
@@ -1272,5 +1337,5 @@ public class DefaultWebsocketManagerTest {
 		}
 	}
 
-}
 
+}

@@ -2,13 +2,12 @@ package com.scz.jxapi.netutils.websocket;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collections;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -27,15 +26,14 @@ import com.scz.jxapi.netutils.websocket.multiplexing.WebsocketMessageTopicMatche
 import com.scz.jxapi.netutils.websocket.multiplexing.WebsocketMessageTopicMatcherFactory;
 
 /**
- * Default and sufficient implementation of {@link WebsocketManager} that wraps
- * a {@link Websocket} to manage subscriptions to topics (multiplexing), system
- * message handlers, error handlers, heartbeat and no message timeout features.
- * It can be provided a {@link WebsocketHook} that will take care of API
- * specific handshake, heartbeat and subscription messages.
+ * Default implementation of {@link WebsocketManager}.
  * 
- * @see WebsocketManager
- * @see Websocket
- * @see WebsocketHook
+ * @implNote Uses object pooling to reduce creation of objects in incoming
+ *           message matching against topics.
+ * @implNote Some synchronization is performed over instance monitor, to protect
+ *           agains thread race between 'writer' threads modifying topics
+ *           subscription list and socket dispatcher threads iterating over that
+ *           list.
  */
 public class DefaultWebsocketManager implements WebsocketManager {
 	
@@ -47,9 +45,9 @@ public class DefaultWebsocketManager implements WebsocketManager {
 	
 	private final JsonFactory jsonFactory = new JsonFactory();
 	
-	protected final Map<String, TopicManager> topics = new ConcurrentHashMap<>();
+	protected final Map<String, TopicManager> topics = new HashMap<>();
 	
-	protected final List<TopicManager> systemMessageHandlers = Collections.synchronizedList(new ArrayList<>());
+	protected final List<TopicManager> systemMessageHandlers = new ArrayList<>();
 	
 	protected final AtomicBoolean connected = new AtomicBoolean(false);
 	protected final AtomicBoolean disposed = new AtomicBoolean(false);
@@ -73,6 +71,8 @@ public class DefaultWebsocketManager implements WebsocketManager {
 	private AtomicBoolean heartBeatTimeoutTaskCancelled = null;
 	private final RawWebsocketMessageHandler rawMessageHandler = this::dispatchMessage;
 	private final WebsocketErrorHandler websocketErrorHandler = this::notifyError;
+	
+	private final List<List<TopicMatcher>> topicMatcherListPool = new ArrayList<>();
 	
 	protected final ExchangeApi exchangeApi;
 	
@@ -128,22 +128,17 @@ public class DefaultWebsocketManager implements WebsocketManager {
 				String top = Optional.ofNullable(topic).orElse("");
 				if (log.isDebugEnabled())
 					log.debug("Executing subscribe request for topic:[" + topic + "]");
-				TopicManager t = topics.get(top);
-				if (t == null) {
-					t = new TopicManager(top, matcherFactory, messageHandler, false);
-					topics.put(top, t);
-					// Remark: registered TopicManager before checking connection status and connecting if not already connected.
-					// This is because the url provided for handshake may stand for a global stream endpoint (no topic/subscription)
-					// and message would be disseminated right after handshake. Message handler must be registered before.
-					if (!isConnected()) {
-						if (log.isDebugEnabled())
-							log.debug("Executing subscribe request for topic:[" + top + "]: not connected, connecting");
-						connect();	
-					}
-					sendToTopicSubscription(topic);
-				} else {
-					throw new IllegalArgumentException("Already have a subscription for this topic");
+				getOrCreateTopicManager(topic, matcherFactory, messageHandler);
+
+				// Remark: registered TopicManager before checking connection status and connecting if not already connected.
+				// This is because the url provided for handshake may stand for a global stream endpoint (no topic/subscription)
+				// and message would be disseminated right after handshake. Message handler must be registered before.
+				if (!isConnected()) {
+					if (log.isDebugEnabled())
+						log.debug("Executing subscribe request for topic:[{}]: not connected, connecting", top);
+					connect();	
 				}
+				sendToTopicSubscription(topic);
 				if (log.isDebugEnabled())
 					log.debug("DONE Executing subscribe request for topic:[" + top + "]");
 			} catch (Exception ex) {
@@ -152,13 +147,26 @@ public class DefaultWebsocketManager implements WebsocketManager {
 		});
 	}
 	
+	private synchronized TopicManager getOrCreateTopicManager(String topic, 
+			  WebsocketMessageTopicMatcherFactory matcherFactory,
+			  RawWebsocketMessageHandler messageHandler) {
+		String top = Optional.ofNullable(topic).orElse("");
+		TopicManager t = topics.get(top);
+		if (t == null) {
+			t = new TopicManager(top, matcherFactory, messageHandler, false);
+			topics.put(top, t);
+		} else {
+			throw new IllegalArgumentException("Already have a subscription for this topic");
+		}
+		return t;
+	}
+	
 	private void sendToTopicSubscription(String topic) {
 		try {
 			String subscribeRequestMessage = websocketHook == null? null: 
 												websocketHook.getSubscribeRequestMessage(topic);
 			if (subscribeRequestMessage != null) {
-				if (log.isDebugEnabled())
-					log.debug("Sending topic subscribe request:" + topic);
+				log.debug("Sending topic subscribe request:{}", topic);
 				websocket.send(subscribeRequestMessage);
 			}
 		} catch (WebsocketException e) {
@@ -192,7 +200,7 @@ public class DefaultWebsocketManager implements WebsocketManager {
 	public void unsubscribe(String topic) {
 		writeExecutor.execute(() -> {
 			try {
-				TopicManager t = topics.remove(topic);
+				TopicManager t = removeTopic(topic);
 				if (t != null) {
 					unbscribeFromTopic(topic);
 				}
@@ -200,6 +208,10 @@ public class DefaultWebsocketManager implements WebsocketManager {
 				dispatchWebsocketError(new WebsocketException("Error while unsubscribing from websocket topic [" + topic + "]", ex));
 			}
 		});
+	}
+	
+	private synchronized TopicManager removeTopic(String topic) {
+		return topics.remove(topic);
 	}
 	
 	protected final void connect() throws WebsocketException {
@@ -321,8 +333,8 @@ public class DefaultWebsocketManager implements WebsocketManager {
 	}
 	
 	@Override
-	public void addSystemMessageHandler(String topic, WebsocketMessageTopicMatcherFactory matcher, RawWebsocketMessageHandler messageHandler) {
-		this.systemMessageHandlers.add(new TopicManager(topic, matcher, messageHandler, true));
+	public synchronized void addSystemMessageHandler(String topic, WebsocketMessageTopicMatcherFactory matcher, RawWebsocketMessageHandler messageHandler) {
+		this.systemMessageHandlers.add(new TopicManager(Optional.ofNullable(topic).orElse(""), matcher, messageHandler, true));
 	}
 	
 	public long getReconnectDelay() {
@@ -405,11 +417,7 @@ public class DefaultWebsocketManager implements WebsocketManager {
 	
 	private void dispatchSingleMessage(String message) {
 		messageReceivedCount.incrementAndGet();
-		List<TopicManager> allTopics = new ArrayList<>(topics.size() + systemMessageHandlers.size());
-		allTopics.addAll(systemMessageHandlers);
-		allTopics.addAll(topics.values());
-		List<WebsocketMessageTopicMatcher> topicMatchers = new ArrayList<>(allTopics.size());
-		allTopics.forEach(t -> topicMatchers.add(t.matcher.createWebsocketMessageTopicMatcher()));
+		List<TopicMatcher> allTopics = getTopicMatcherList();
 		try (JsonParser jsonParser = jsonFactory.createParser(message.getBytes())) {
 			for (JsonToken tok = jsonParser.nextToken(); tok != null && !allTopics.isEmpty(); tok = jsonParser.nextToken()) {
 				if (tok == JsonToken.FIELD_NAME) {
@@ -430,7 +438,7 @@ public class DefaultWebsocketManager implements WebsocketManager {
 						break;
 					}
 					
-					if (dispatchToMessageTopicMatchers(fieldName, value, allTopics, topicMatchers, message)) {
+					if (dispatchToMessageTopicMatchers(fieldName, value, allTopics, message)) {
 						break;
 					}
 				}
@@ -438,7 +446,63 @@ public class DefaultWebsocketManager implements WebsocketManager {
  			
 		} catch (IOException e) {
 			log.error("Error parsing websocket message [" + message + "]", e);
-		} 
+		} finally {
+			releaseTopicMatcherList(allTopics);
+		}
+	}
+	
+	private boolean dispatchToMessageTopicMatchers(
+						String name, 
+						String value, 
+						List<TopicMatcher> topics,
+						String rawMessage) {
+		for (Iterator<TopicMatcher> it = topics.iterator(); it.hasNext();) {
+			TopicMatcher topic = it.next();
+			WebsocketMessageTopicMatchStatus matchResult = topic.matcher.matches(name, value);
+			switch (matchResult) {
+			case MATCHED:
+				log.debug("Dispatching message to handler for topic:[{}]  :[{}]", topic.manager.topic, rawMessage);
+				topic.manager.messageHandler.handleWebsocketMessage(rawMessage);
+				it.remove();
+				if (topic.manager.systemMessage) {
+// System message handler matched that message. No need to keep processing to find other handlers.
+					return true;
+				}
+				break;
+			case CANT_MATCH:
+				// Remark: Could do it.remove() here, but benchmark shows removing item in
+				// middle of array list could underperform having to keep item that is in final
+				// state for nothing in list
+				break;
+			default: // no match
+				break;
+			}
+		}
+		return false;
+	}
+	
+	private synchronized List<TopicMatcher> getTopicMatcherList() {
+		List<TopicMatcher> topicMatchers = null;
+		if (topicMatcherListPool.isEmpty()) {
+			topicMatchers = new ArrayList<>();
+		} else {
+			topicMatchers = topicMatcherListPool.remove(topicMatcherListPool.size() - 1);
+		}
+		for (TopicManager m : systemMessageHandlers) {
+			topicMatchers.add(m.getTopicMatcher());
+		}
+		for (TopicManager m : topics.values()) {
+			topicMatchers.add(m.getTopicMatcher());
+		}
+		return topicMatchers;
+	}
+	
+	private synchronized void releaseTopicMatcherList(List<TopicMatcher> topicMatchers) {
+		topicMatchers.forEach(m -> {
+			m.manager.releaseTopicMatcher(m);
+		});
+		topicMatchers.clear();
+		topicMatcherListPool.add(topicMatchers);
 	}
 	
 	protected void onError(String msg, Throwable t) {
@@ -451,18 +515,17 @@ public class DefaultWebsocketManager implements WebsocketManager {
 	 * @param exception
 	 */
 	protected void onError(WebsocketException exception) {
-		log.error("Error raised on Websocket [" + toString() + "]", exception);
+		if (log.isErrorEnabled())
+			log.error("Error raised on Websocket [" + this + "]", exception);
 		this.dispatchWebsocketError(exception);
 		if (!isDisposed()) {
 			if (reconnectDelay > 0) {
 				disconnect();
-				if (log.isInfoEnabled()) {
-					log.info("Will try to reconnect websocket [" + toString() + "] in " + reconnectDelay + "ms");
-				}
+				log.info("Will try to reconnect websocket [{}] in {}ms", this, reconnectDelay);
 				try {
 					Thread.sleep(reconnectDelay);
 				} catch (InterruptedException e) {
-					log.warn("Interrupted while sleeping till reconnect delay has elapsed for websocket [" + toString() + "]", e);
+					log.warn("Interrupted while sleeping till reconnect delay has elapsed for websocket [" + this + "]", e);
 				}
 				try {
 					connect();
@@ -472,9 +535,8 @@ public class DefaultWebsocketManager implements WebsocketManager {
 					notifyError(e);
 				}
 			} else {
-				if (log.isWarnEnabled()) {
-					log.warn("No reconnect delay set for websocket [" + toString() + "], now disconnected");
-				}	
+				if (log.isWarnEnabled())
+					log.warn("No reconnect delay set for websocket [{}], now disconnected", this);
 			}
 		}
 	}
@@ -485,60 +547,42 @@ public class DefaultWebsocketManager implements WebsocketManager {
 	}
 	
 	private void resubscribeTopics() {
-		if (log.isInfoEnabled())
-			log.info("Resubscribing " + topics.size() + " topics after successful reconnection");
+		log.info("Resubscribing {} topics after successful reconnection", topics.size());
 		for (String topic : topics.keySet()) {
 			sendToTopicSubscription(topic);
 		}
 		if (log.isInfoEnabled())
-			log.info("Successfully resubscribed to " + topics.size() + " topics after successful reconnection");
-	}
-
-	private boolean dispatchToMessageTopicMatchers(String name, 
-												String value,  
-												List<TopicManager> messageHandlers, 
-												List<WebsocketMessageTopicMatcher> topicMatchers, 
-												String rawMessage) {
-		int i = 0;
-		for (Iterator<TopicManager> it = messageHandlers.iterator(); it.hasNext(); i++) {
-			TopicManager topic = it.next();
-			WebsocketMessageTopicMatchStatus matchResult = topicMatchers.get(i).matches(name, value);
-			switch (matchResult) {
-			case MATCHED:
-				if (log.isDebugEnabled())
-					log.debug("Dispatching message to handler for topic:["+ topic.topic + "  :[" + rawMessage + "]");
-				topic.messageHandler.handleWebsocketMessage(rawMessage);
-				if (topic.systemMessage) {
-					// System message handler matched that message. No need to keep processing to find other handlers.
-					return true;
-				}
-				it.remove();
-				break;
-				// Fallback
-			case CANT_MATCH:
-				it.remove();
-				break;
-			default: // no match
-				break;
-			}
-		}
-		return false;
+			log.info("Successfully resubscribed to {} topics after successful reconnection", topics.size());
 	}
 
 	protected class TopicManager {
-		final WebsocketMessageTopicMatcherFactory matcher;
+		final WebsocketMessageTopicMatcherFactory matcherFactory;
 		final RawWebsocketMessageHandler messageHandler;
 		final String topic;
 		final boolean systemMessage;
+		private final List<TopicMatcher> matcherPool = new ArrayList<>();
 		
 		public TopicManager(String topic, 
 							WebsocketMessageTopicMatcherFactory matcherFactory,
 							RawWebsocketMessageHandler messageHandler, 
 							boolean systemMessage) {
 			this.topic = topic;
-			this.matcher = matcherFactory;
+			this.matcherFactory = matcherFactory;
 			this.messageHandler = messageHandler;
 			this.systemMessage = systemMessage;
+		}
+		
+		public TopicMatcher getTopicMatcher() {
+			if (matcherPool.isEmpty()) {
+				return new TopicMatcher(this, matcherFactory.createWebsocketMessageTopicMatcher());
+			} else {
+				return matcherPool.remove(matcherPool.size() - 1);
+			}
+		}
+		
+		public void releaseTopicMatcher(TopicMatcher matcher) {
+			matcher.matcher.reset();
+			matcherPool.add(matcher);
 		}
 	}
 	
@@ -548,9 +592,7 @@ public class DefaultWebsocketManager implements WebsocketManager {
 				this.noMessageTimeoutTask.cancelled.set(true);
 			}
 			this.noMessageTimeoutTask = new NoMessageTimeoutTask(lastReceivedMessageCount);
-			if (log.isDebugEnabled()) {
-				log.debug("Will check in " + this.noMessageTimeout + "ms if received message count has increased, current:" + lastReceivedMessageCount);
-			}
+			log.debug("Will check in {}ms if received message count has increased, current:{}", this.noMessageTimeout, lastReceivedMessageCount);
 			writeExecutor.schedule(noMessageTimeoutTask, this.noMessageTimeout, TimeUnit.MILLISECONDS);
 		}
 	}
@@ -567,18 +609,18 @@ public class DefaultWebsocketManager implements WebsocketManager {
 		@Override
 		public void run() {
 			if (isDisposed() || cancelled.get() || !isConnected()) {
-				if (log.isDebugEnabled()) {
-					log.debug("No executing " + this);
-				}
+				log.debug("Not executing {}", this);
 				return;
 			}
 			long newLastReceivedMessageCount = messageReceivedCount.get();
 			try {
-				if (log.isDebugEnabled()) {
-					log.debug("Checking message count has increased, lastReceivedMessageCount:" + lastReceivedMessageCount + ", current:" + newLastReceivedMessageCount);
-				}
+				log.debug("Checking message count has increased, lastReceivedMessageCount:{}, current:{}", lastReceivedMessageCount, newLastReceivedMessageCount);
 				if (newLastReceivedMessageCount <= this.lastReceivedMessageCount) {
-					onError(new WebsocketException("No message received last " + noMessageTimeout + "ms, on websocket" + DefaultWebsocketManager.this + " reconnecting websocket"));
+					onError(new WebsocketException("No message received last " 
+													+ noMessageTimeout 
+													+ "ms, on websocket" 
+													+ DefaultWebsocketManager.this 
+													+ " reconnecting websocket"));
 				}
 			} catch (Exception ex) {
 				// Normally no reachable, but better log exception here or it will missed.
@@ -634,7 +676,7 @@ public class DefaultWebsocketManager implements WebsocketManager {
 		HeartBeakTimeoutTask(AtomicBoolean cancelled) {
 			this.cancelled = cancelled;
 		}
-
+ 
 		@Override
 		public void run() {
 			try {
@@ -658,5 +700,15 @@ public class DefaultWebsocketManager implements WebsocketManager {
 			}
 			
 		}		
+	}
+	
+	private class TopicMatcher {
+		final TopicManager manager;
+		final WebsocketMessageTopicMatcher matcher;
+		
+		TopicMatcher(TopicManager topicManager, WebsocketMessageTopicMatcher topicMatcher) {
+			this.manager = topicManager;
+			this.matcher = topicMatcher;
+		}
 	}
 }

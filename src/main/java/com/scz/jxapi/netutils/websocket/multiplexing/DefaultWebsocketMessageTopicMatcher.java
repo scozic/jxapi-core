@@ -8,41 +8,27 @@ import com.scz.jxapi.util.CollectionUtil;
 
 /**
  * Default {@link WebsocketMessageTopicMatcher} implementation. Is configured a list of fields and values incoming messages must match to be considered as matched.
- * Upon each call to  {@link #matches(String, String)}, checks if its status is still {@link WebsocketMessageTopicMatchStatus#NO_MATCH}:
- * <ul>
- *  <li>If the list of matching fields configured is emtpty or <code>null</code>, the matcher will match any message field, and will be therefore always in {@link WebsocketMessageTopicMatchStatus#MATCHED} state.  
- *  <li>If it is not, parser is already in a terminal status which is returned.
- *  <li>If it is, checks if field corresponds to an expected one:
- *  <ul>
- *   <li>If not, parser remains in {@link WebsocketMessageTopicMatchStatus#NO_MATCH} status
- *   <li>If it does, expected value is checked against input:
- *   <ul>
- *    <li>If matches expected input, the field has expected value. That field is removed from expected fields, if there are no more expected fields, parser switches to {@link WebsocketMessageTopicMatchStatus#MATCHED} if
- *    <li>If does not, message carries a field with a matching field but not matching expected value, this message cannot be matched and parser switches to {@link WebsocketMessageTopicMatchStatus#CANT_MATCH}.   
- *   </ul>
- *  </ul>
- * </ul>
  * 
  * @see WebsocketMessageTopicMatcher
  * @see WebsocketMessageTopicMatchStatus
  */
 public class DefaultWebsocketMessageTopicMatcher implements WebsocketMessageTopicMatcher {
 	
-	private final List<WebsocketMessageTopicMatcherField> fields;
+	private final Map<String, ValueToMatch> valuesToMatch;
 	
-	private final Map<String, String> valuesToMatch;
+	private int valuesToMatchCount = 0;
+	
 	
 	private WebsocketMessageTopicMatchStatus status = WebsocketMessageTopicMatchStatus.NO_MATCH;
 	
 	public DefaultWebsocketMessageTopicMatcher(List<WebsocketMessageTopicMatcherField> fields) {
-		this.fields = fields;
 		this.valuesToMatch = new HashMap<>(fields.size());
+		this.valuesToMatchCount = fields.size();
 		if (CollectionUtil.isEmpty(fields)) {
 			this.status = WebsocketMessageTopicMatchStatus.MATCHED;
 		} else {
 			this.status = WebsocketMessageTopicMatchStatus.NO_MATCH;
-			valuesToMatch.clear();
-			getFields().forEach(f -> valuesToMatch.put(f.getName(), f.getValue()));
+			fields.forEach(f -> valuesToMatch.put(f.getName(), new ValueToMatch(f.getValue())));
 		}
 	}
 
@@ -52,15 +38,16 @@ public class DefaultWebsocketMessageTopicMatcher implements WebsocketMessageTopi
 			// Other statuses are terminal statuses
 			return this.status;
 		}
-		String v = valuesToMatch.get(fieldName);
+		ValueToMatch v = valuesToMatch.get(fieldName);
 		if (v == null) {
 			return this.status;
 		}
-		if (!v.equals(value)) {
+		if (!v.value.equals(value)) {
 			this.status = WebsocketMessageTopicMatchStatus.CANT_MATCH;
-		} else {
-			valuesToMatch.remove(fieldName);
-			if (valuesToMatch.isEmpty()) {
+		} else if (!v.matched) {
+			v.matched = true;
+			valuesToMatchCount--;
+			if (valuesToMatchCount <= 0) {
 				this.status = WebsocketMessageTopicMatchStatus.MATCHED;
 			}
 		}
@@ -73,8 +60,34 @@ public class DefaultWebsocketMessageTopicMatcher implements WebsocketMessageTopi
 		return this.status;
 	}
 
-	public List<WebsocketMessageTopicMatcherField> getFields() {
-		return fields;
+	@Override
+	public void reset() {
+		if (!valuesToMatch.isEmpty()) {
+			this.valuesToMatchCount = valuesToMatch.size();
+			this.status = WebsocketMessageTopicMatchStatus.NO_MATCH;
+			this.valuesToMatch.values().forEach(v -> v.matched = false);
+		}
+	}
+	
+	private static class ValueToMatch {
+		final String value;
+		boolean matched = false;
+		
+		public ValueToMatch(String value) {
+			this.value = value;
+		}
+		
+		@Override
+		public String toString() {
+			return value;
+		}
+	}
+	
+	@Override
+	public String toString() {
+		return new StringBuilder()
+					.append(getClass().getSimpleName())
+					.append(valuesToMatch).toString();
 	}
 
 }

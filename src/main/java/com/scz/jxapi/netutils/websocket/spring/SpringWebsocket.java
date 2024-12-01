@@ -54,8 +54,7 @@ public class SpringWebsocket extends AbstractWebsocket {
 
 	@Override
 	protected void doSend(String message) throws WebsocketException {
-		if (log.isDebugEnabled())
-			log.debug("Sending >" + message);
+		log.debug("Sending >{}", message);
 		try {
 			webSocketSession.sendMessage(new TextMessage(message));
 		} catch (IOException e) {
@@ -77,8 +76,7 @@ public class SpringWebsocket extends AbstractWebsocket {
 		StandardWebSocketClient client = new StandardWebSocketClient(clientManager);
 		client.setTaskExecutor(taskExecutor);
 		URI uri = getHandShakeURI();
-		if (log.isInfoEnabled())
-			log.info("Connecting websocket, URI:" + uri);
+		log.info("Connecting websocket, URI:{}", uri);
 		CountDownLatch websocketSessionAvailable = new CountDownLatch(1);
 		ListenableFuture<WebSocketSession> futureSession = client.doHandshake(new SpringWebsocketHandler(this.taskExecutor), new WebSocketHttpHeaders(), uri);
 		futureSession.addCallback(new WebsocketSessionCallback(websocketSessionAvailable));
@@ -90,12 +88,12 @@ public class SpringWebsocket extends AbstractWebsocket {
 		}
 		if (!sessionAvailable || webSocketSession == null) {
 			String handShakeError = "Handshake failed: websocketSession not initialized";
-			log.error(handShakeError + ". Disposing resources before reconnection attempt");
+			log.error("{}. Disposing resources before reconnection attempt", handShakeError);
 			doDisconnect();
 			throw new WebsocketException(handShakeError);
 		}
 		if (log.isDebugEnabled()) {
-			log.debug(toString() + ":Done handshake");
+			log.debug("{}:Done handshake", this);
 		}
 	}
 	
@@ -117,8 +115,7 @@ public class SpringWebsocket extends AbstractWebsocket {
 
 	@Override
 	protected void doDisconnect() {
-		if (log.isDebugEnabled())
-			log.debug("Closing websocket");
+		log.debug("Closing websocket");
 		try {
 			if (webSocketSession != null && webSocketSession.isOpen()) {
 				webSocketSession.close(CloseStatus.NORMAL);
@@ -130,8 +127,7 @@ public class SpringWebsocket extends AbstractWebsocket {
 		}
 		clientManager.shutdown();
 		taskExecutor.shutdown();
-		if (log.isDebugEnabled())
-			log.debug("Websocket is closed");
+		log.debug("Websocket is closed");
 	}
 
 	private class SpringWebsocketHandler implements WebSocketHandler {
@@ -144,20 +140,17 @@ public class SpringWebsocket extends AbstractWebsocket {
 
 		@Override
 		public void afterConnectionEstablished(WebSocketSession session) throws Exception {
-			if (log.isDebugEnabled())
-				log.debug("afterConnectionEstablished:session:" + session);
+			log.debug("afterConnectionEstablished:session:{}", session);
 		}
 
 		@Override
 		public void handleMessage(WebSocketSession session, WebSocketMessage<?> message) throws Exception {
-			if (log.isDebugEnabled())
-				log.debug("handleMessage:session:" + session + ", message:" + message);
+			log.debug("handleMessage:session:{}, message:{}", session, message);
 			if (message instanceof TextMessage) {
 				TextMessage m  = (TextMessage) message;
 				dispatchMessageExecutor.execute(new DispatchTextMessageTask(m));
 			} else {
-				if (log.isDebugEnabled())
-					log.debug("handleMessage:message is not a TextMessage:" + message);
+				log.debug("handleMessage:message is not a TextMessage:{}", message);
 			}
 		}
 
@@ -168,8 +161,7 @@ public class SpringWebsocket extends AbstractWebsocket {
 
 		@Override
 		public void afterConnectionClosed(WebSocketSession session, CloseStatus closeStatus) throws Exception {
-			if (log.isDebugEnabled())
-				log.debug(SpringWebsocket.this.toString() + "afterConnectionClosed:session:" + session + ", closeStatus:" + closeStatus);
+			log.debug("{}: afterConnectionClosed:session:{}, closeStatus:{}", SpringWebsocket.this, session, closeStatus);
 			if (closeStatus.getCode() != CloseStatus.NORMAL.getCode()) {
 				dispatchError(new WebsocketException("Connection " + session + " closed abormally:" + closeStatus));
 			}
@@ -192,7 +184,7 @@ public class SpringWebsocket extends AbstractWebsocket {
 
 		@Override
 		public void onSuccess(WebSocketSession result) {
-			log.info("WebsocketSessionCallback:onSuccess:" + result);
+			log.info("WebsocketSessionCallback:onSuccess:{}", result);
 			webSocketSession = result;
 			websocketSessionAvailable.countDown();
 		}
@@ -218,8 +210,7 @@ public class SpringWebsocket extends AbstractWebsocket {
 		public void run() {
 			try {
 				String msg = new String(textMessage.asBytes());
-				if (log.isDebugEnabled())
-					log.debug("Dispatching message:" + msg);
+				log.debug("Dispatching message:{}", msg);
 				dispatchMessage(msg);
 			} catch (Exception ex) {
 				log.error("Error while dispatching message [" + new String(textMessage.asBytes()) + "]", ex);

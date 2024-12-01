@@ -8,18 +8,18 @@ package com.scz.jxapi.netutils.websocket.multiplexing;
  * Upon each call to  {@link #matches(String, String)}, checks if its status is still {@link WebsocketMessageTopicMatchStatus#NO_MATCH}:
  * <ul>
  *  <li>If the list of matching fields configured is emtpty or <code>null</code>, the matcher will match any message field, and will be therefore always in {@link WebsocketMessageTopicMatchStatus#MATCHED} state.  
- *  <li>If it is not, parser is already in a terminal status which is returned.
- *  <li>If it is, checks if field corresponds to an expected one:
+ *  <li>If it is not, checks if next field corresponds to an expected one:
  *  <ul>
- *   <li>If not, parser remains in {@link WebsocketMessageTopicMatchStatus#NO_MATCH} status
  *   <li>If it does, expected value is checked against input:
  *   <ul>
  *    <li>If matches expected input, the field has expected value. That field is removed from expected fields, if there are no more expected fields, parser switches to {@link WebsocketMessageTopicMatchStatus#MATCHED} if
  *    <li>If does not, message carries a field with a matching field but not matching expected value, this message cannot be matched and parser switches to {@link WebsocketMessageTopicMatchStatus#CANT_MATCH}.   
  *   </ul>
+ *   <li>If not, parser remains in {@link WebsocketMessageTopicMatchStatus#NO_MATCH} status
  *  </ul>
  * </ul>
- * 
+ * <p>
+ * Implementation instances of this interface must be reusable and can be reset to initial state (all fields expected) using {@link #reset()} method. 
  */
 public interface WebsocketMessageTopicMatcher {
 	
@@ -62,6 +62,16 @@ public interface WebsocketMessageTopicMatcher {
 		public WebsocketMessageTopicMatchStatus getStatus() {
 			return WebsocketMessageTopicMatchStatus.MATCHED;
 		}
+
+		@Override
+		public void reset() {
+			// Nothing, always in terminal state
+		}
 	};
+	
+	/**
+	 * Resets this matcher to its initial state so it can be reused.
+	 */
+	void reset();
 
 }

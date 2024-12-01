@@ -77,3 +77,4 @@ tmp*
 
 # Local generated javadoc
 doc/javadoc
+*.jfr
