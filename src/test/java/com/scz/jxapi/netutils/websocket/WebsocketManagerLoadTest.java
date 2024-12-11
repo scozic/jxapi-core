@@ -101,9 +101,9 @@ public class WebsocketManagerLoadTest {
 	
 	/**
 	 * Runs load test
-	 * @throws Exception
+	 * @throws InterruptedException eventually thrown while waiting
 	 */
-	public void runTest() throws Exception {
+	public void runTest() throws InterruptedException {
 		log.info("Preparing messages...");
 		List<String> allMessages = prepareMessages(NB_MESSAGES_PER_TOPIC);
 		log.info("Preparing threads...");

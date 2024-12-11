@@ -19,7 +19,6 @@ public class WebsocketSubscribeRequest {
 	/**
 	 * Factory method
 	 * 
-	 * @param endpoint					 The name of websocket endpoint this request is subscribing to. 
 	 * @param request                    The request data, not serialized
 	 * @param topic                      The topic to subscribe to.
 	 * @param messageTopicMatcherFactory The message topic matcher

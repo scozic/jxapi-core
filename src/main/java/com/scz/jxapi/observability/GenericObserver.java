@@ -90,7 +90,7 @@ public class GenericObserver<T> {
 	/**
 	 * Checks no events are raised for a given period
 	 * @param delay delay during which no events should be raied.
-	 * @throws InterruptedException 
+	 * @throws InterruptedException eventually thrown during <code>Thread.sleep(delay)</code> 
 	 */
 	public void checkNoEvents(long delay) throws InterruptedException {
 		if (events.isEmpty()) {

@@ -15,7 +15,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Snippet to test call to {@link DemoExchangeMarketDataApi#subscribeTickerStream(DemoExchangeMarketDataTickerStreamRequest, null)}.
+ * Snippet to test call to {@link DemoExchangeMarketDataApi#subscribeTickerStream(com.scz.jxapi.exchanges.demo.gen.marketdata.pojo.DemoExchangeMarketDataTickerStreamRequest, com.scz.jxapi.netutils.websocket.WebsocketListener)}.
  * <br><strong>THIS CODE IS GENERATED. DO NOT EDIT MANUALLY!</strong>
  */
 public class DemoExchangeMarketDataTickerStreamDemo {
@@ -31,13 +31,13 @@ public class DemoExchangeMarketDataTickerStreamDemo {
   }
   
   /**
-   * {@link DemoExchangeMarketDataApi#subscribeTickerStream(DemoExchangeMarketDataTickerStreamRequest, WebsocketListener<DemoExchangeMarketDataTickerStreamMessage>)}.
+   * {@link DemoExchangeMarketDataApi#subscribeTickerStream(com.scz.jxapi.exchanges.demo.gen.marketdata.pojo.DemoExchangeMarketDataTickerStreamRequest, com.scz.jxapi.netutils.websocket.WebsocketListener)}.
    * <br>Websocket endpoint subscription will be performed using given websocket listener then after waiting for <code>subscriptionDuration</code> delay, unsubscription is performed.
    * Finally waits for <code>delayBeforeExitAfterUnsubscription</code> delay before returning to make sure no more messages are dispatched.
    * @param request                            The subscription request
    * @param messageListener                    The listener that will receive messages dispatched while subscription is active
    * @param configProperties                   Exchange configuration properties.
-   * @param apiObservver                       {@link ExchangeApiObserver} (optional, ignored if <code>null</code>) observer will be subscribed to Exchange API exposing websocket endpoint that will be notifed of received websocket events.Useful in particular to get notified of websocket errors.
+   * @param apiObserver                       {@link ExchangeApiObserver} (optional, ignored if <code>null</code>) observer will be subscribed to Exchange API exposing websocket endpoint that will be notifed of received websocket events.Useful in particular to get notified of websocket errors.
    * @param subscriptionDuration               Delay to wait for after subscription before unsubscribing.
    * @param delayBeforeExitAfterUnsubscription Delay to wait before returning after unsubscribing.
    * @throws InterruptedException eventually thrown while sleeping for <code>subscriptionDuration</code> or <code>delayBeforeExitAfterUnsubscription</code> delays
@@ -65,6 +65,7 @@ public class DemoExchangeMarketDataTickerStreamDemo {
   
   /**
    * Runs websocket endpoint 'DemoExchange MarketData tickerStream' subscription demo.
+   * @param args no arguments expected
    */
   public static void main(String[] args) {
     try {

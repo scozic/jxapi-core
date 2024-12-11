@@ -1,5 +1,6 @@
 package com.scz.jxapi.generator.java.exchange.constants;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Properties;
@@ -7,6 +8,7 @@ import java.util.stream.Collectors;
 
 import com.scz.jxapi.exchange.descriptor.ConfigProperty;
 import com.scz.jxapi.exchange.descriptor.Type;
+import com.scz.jxapi.generator.html.HtmlGenerationUtil;
 import com.scz.jxapi.generator.java.JavaCodeGenerationUtil;
 import com.scz.jxapi.generator.java.JavaTypeGenerator;
 import com.scz.jxapi.generator.java.exchange.ExchangeJavaWrapperGeneratorUtil;
@@ -65,26 +67,38 @@ public class PropertiesInterfaceGenerator extends JavaTypeGenerator {
 		StringBuilder sb = new StringBuilder();
 		sb.append("Configurable properties for <strong>")
 		  .append(exchangeName)
-		  .append("</strong> exchange:<br>\n")
-		  .append("<table>\n")
-		  .append("  <tr>\n")
-		  .append("    <th>Name</th>\n")
-		  .append("    <th>Type</th>\n")
-		  .append("    <th>Description</th>\n")
-		  .append("    <th>Default value</th>\n")
-		  .append("  </tr>\n");
+		  .append("</strong> exchange:<br>\n");
+		  
+		List<String> columns = List.of("Name", "Type", "Description", "Default value");
+		List<List<String>> rows = new ArrayList<>();
 		for (ConfigProperty p : properties) {
+			String pName = String.valueOf(p.getName());
+			String pType = String.valueOf(p.getType());
 			String pDesc = Optional.ofNullable(p.getDescription()).orElse("");
 			String pDef = Optional.ofNullable(p.getDefaultValue()).orElse("").toString();
-			sb.append("  <tr>\n")
-			  .append("    <td>").append(p.getName()).append("</td>\n")
-			  .append("    <td>").append(p.getType()).append("</td>\n")
-			  .append("    <td>").append(pDesc).append("</td>\n")
-			  .append("    <td>").append(pDef).append("</td>\n")
-			  .append("  </tr>\n");
+			rows.add(List.of(pName, pType, pDesc, pDef));
 		}
-		sb.append("</table><br>\n");
-		sb.append("Exposes helper methods are available to retrieve value of each of these properties "
+		sb.append(HtmlGenerationUtil.generateTable(exchangeName + " properties", columns, rows));
+		
+//		  sb.append("<table>\n")
+//		  .append("  <tr>\n")
+//		  .append("    <th>Name</th>\n")
+//		  .append("    <th>Type</th>\n")
+//		  .append("    <th>Description</th>\n")
+//		  .append("    <th>Default value</th>\n")
+//		  .append("  </tr>\n");
+//		for (ConfigProperty p : properties) {
+//			String pDesc = Optional.ofNullable(p.getDescription()).orElse("");
+//			String pDef = Optional.ofNullable(p.getDefaultValue()).orElse("").toString();
+//			sb.append("  <tr>\n")
+//			  .append("    <td>").append(p.getName()).append("</td>\n")
+//			  .append("    <td>").append(p.getType()).append("</td>\n")
+//			  .append("    <td>").append(pDesc).append("</td>\n")
+//			  .append("    <td>").append(pDef).append("</td>\n")
+//			  .append("  </tr>\n");
+//		}
+//		sb.append("</table><br>\n");
+		sb.append("<br>\nExposes helper methods are available to retrieve value of each of these properties "
 					+ "with right type, returning default value if not present in properties");
 		return sb.toString();
 	}
@@ -110,7 +124,7 @@ public class PropertiesInterfaceGenerator extends JavaTypeGenerator {
 				.append("' property.\n")
 				.append("@param properties Properties to look for value of '")
 				.append(name)
-				.append("' property into.")
+				.append("' property into.\n")
 				.append("@return Value found in properties or ");
 		if (def != null) {
 			desc.append("default value '")

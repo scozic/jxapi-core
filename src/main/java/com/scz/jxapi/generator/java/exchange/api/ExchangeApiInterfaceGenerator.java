@@ -1,5 +1,7 @@
 package com.scz.jxapi.generator.java.exchange.api;
 
+import java.util.Optional;
+
 import com.scz.jxapi.exchange.ExchangeApi;
 import com.scz.jxapi.exchange.descriptor.ExchangeApiDescriptor;
 import com.scz.jxapi.exchange.descriptor.ExchangeDescriptor;
@@ -47,7 +49,7 @@ public class ExchangeApiInterfaceGenerator extends JavaTypeGenerator {
 		super(ExchangeJavaWrapperGeneratorUtil.getApiInterfaceClassName(exchangeDescriptor, exchangeApiDescriptor));
 		this.exchangeDescriptor = exchangeDescriptor;
 		this.exchangeApiDescriptor = exchangeApiDescriptor;
-		setDescription(exchangeDescriptor.getName() + " " + exchangeApiDescriptor.getName() + " API</br>\n" 
+		setDescription(exchangeDescriptor.getName() + " " + exchangeApiDescriptor.getName() + " API<br>\n" 
 				+ exchangeApiDescriptor.getDescription() + "\n" 
 				+ JavaCodeGenerationUtil.GENERATED_CODE_WARNING);
 		setTypeDeclaration("public interface");
@@ -129,7 +131,7 @@ public class ExchangeApiInterfaceGenerator extends JavaTypeGenerator {
 													requestDataType, 
 													getImports(), 
 													requestClassName);
-			requestDescription = websocketApi.getRequest().getDescription();
+			requestDescription = Optional.ofNullable(websocketApi.getRequest().getDescription()).orElse("request");
 			requestArgName = ExchangeApiGeneratorUtil.getRequestArgName(websocketApi.getRequest().getName());
 		}
 		
@@ -160,24 +162,31 @@ public class ExchangeApiInterfaceGenerator extends JavaTypeGenerator {
 				.append("Subscribe to ")
 				.append(websocketApi.getName())
 				.append(" stream.<br>\n");
-		if (websocketApi.getDocUrl() != null) {
-			subscribeMethodDoc.append(JavaCodeGenerationUtil.getHtmlLink(websocketApi.getDocUrl(), "Reference documentation"))
-			 	   .append(subscribeMethodName)
-				   .append("()\n");
-		}
+
 		if (websocketApi.getDescription() != null) {
 			subscribeMethodDoc.append(websocketApi.getDescription())
 								  .append("\n");	
 		}
 		subscribeMethodDoc.append("\n");
 		if (requestDescription != null) {
-			subscribeMethodDoc.append("@param ")
-							  .append(requestArgName)
-							  .append(" ")
-							  .append(requestDescription)
-							  .append("\n");
+			subscribeMethodDoc
+				.append("@param ")
+				.append(requestArgName)
+				.append(" ")
+				.append(requestDescription)
+				.append("\n");
 		}
-		subscribeMethodDoc.append("@return client subscriptionId to use for unsubscription");
+
+		subscribeMethodDoc
+			.append("@param listener listener that will receive incoming messages\n")
+			.append("@return client subscriptionId to use for unsubscription using {@link #")
+			.append(unsubscribeMethodName)
+			.append("(String)}");
+		if (websocketApi.getDocUrl() != null) {
+			subscribeMethodDoc
+				.append("\n@see ")
+				.append(JavaCodeGenerationUtil.getHtmlLink(websocketApi.getDocUrl(), "Reference documentation"));
+		}
 		
 		appendToBody("\n");
 		appendToBody(JavaCodeGenerationUtil.generateJavaDoc(subscribeMethodDoc.toString()));
@@ -188,15 +197,30 @@ public class ExchangeApiInterfaceGenerator extends JavaTypeGenerator {
 		StringBuilder unsubscribeMethodDoc = new StringBuilder()
 				.append("Unsubscribe from ")
 				.append(websocketApi.getName())
-				.append(" stream.\n");
-		if (websocketApi.getDocUrl() != null) {
-			unsubscribeMethodDoc.append(JavaCodeGenerationUtil.getHtmlLink(websocketApi.getDocUrl(), "Reference documentation"))
-			 	   .append(subscribeMethodName)
-				   .append("()\n");
+				.append(" stream.\n")
+				.append("\n@param subscriptionId client subscription ID")
+				.append("\n@return <code>true</code> if given <code>subscriptionId</code> was found.")
+			    .append("\n@see #")
+			 	.append(subscribeMethodName)
+			 	.append("(");
+		if (hasArguments) {
+			unsubscribeMethodDoc
+				.append(requestSimpleClassName)
+				.append(", ");
 		}
-		unsubscribeMethodDoc.append("\n@param subscriptionId ID of subscription returned by #")
-			   				.append(subscribeMethodName)
-			   				.append("()");
+		unsubscribeMethodDoc.append("WebsocketListener)");
+		
+//		unsubscribeMethodDoc
+//			.append("\n@param subscriptionId client subscription ID")
+//			.append("\n@see {@link #")
+//	 	    .append(subscribeMethodName)
+//	 	    .append("(")
+//			.append(hasArguments? requestSimpleClassName 
+//									+ " " + requestArgName 
+//									+ ", "
+//								: "")
+//			.append("WebsocketListener)}");
+			   				
 		appendToBody(JavaCodeGenerationUtil.generateJavaDoc(unsubscribeMethodDoc.toString()))
 			.append("\n")
 			.append(unsubscribeMethodSignature)
@@ -258,11 +282,12 @@ public class ExchangeApiInterfaceGenerator extends JavaTypeGenerator {
 			javaDoc.append(restApi.getDescription())
 				   .append("\n");
 		}
-		if (hasArguments && request.getDescription() != null) {
+		if (hasArguments) {
+			String paramDescription = Optional.ofNullable(request.getDescription()).orElse("request");
 			javaDoc.append("@param ")
 				   .append(requestArgName)
 				   .append(" ")
-				   .append(request.getDescription())
+				   .append(paramDescription)
 				   .append("\n");
 		}
 		
@@ -274,7 +299,7 @@ public class ExchangeApiInterfaceGenerator extends JavaTypeGenerator {
 		}
 		
 		if (restApi.getDocUrl() != null) {
-			javaDoc.append("@see ")
+			javaDoc.append("\n@see ")
 				   .append(JavaCodeGenerationUtil.getHtmlLink(restApi.getDocUrl(), "Reference documentation"))
 			 	   .append("\n");
 		}

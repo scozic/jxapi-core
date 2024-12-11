@@ -159,7 +159,7 @@ public class RestEndpointDemoGenerator extends JavaTypeGenerator {
 						.append(apiMethodName)
 						.append("(");
 		if (hasArguments) {
-			javadoc.append(requestSimpleClassName);
+			javadoc.append(JavaCodeGenerationUtil.getMethodArgumentJavadoc(requestDataType, requestClassName));
 		}
 		return javadoc.append(")}").toString();
 	}
@@ -237,10 +237,10 @@ public class RestEndpointDemoGenerator extends JavaTypeGenerator {
 		if (hasArguments) {
 			javadoc.append("@param request     The request to submit\n");
 		}
-		javadoc.append("@param properties  The configuration properties to instantiate exchange with\n")
+		javadoc.append("@param configProperties  The configuration properties to instantiate exchange with\n")
 			   .append("@param apiObserver API observer that will notified of events. Is subscribed before REST API call and unsubscribed right after. Ignored if <code>null</code>\n")
 			   .append("@return Response data resulting from this API call\n")
-			   .append("@throws InterruptedException eventually thrown waiting for response")
+			   .append("@throws InterruptedException eventually thrown waiting for response\n")
 			   .append("@throws ExecutionException raised if response is not OK, see {@link RestResponse#isOk()}");
 		return javadoc.toString();
 	}

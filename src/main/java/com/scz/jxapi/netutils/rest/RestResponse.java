@@ -50,7 +50,7 @@ public class RestResponse<A> {
 	}
 
 	/**
-	 * Returns the HTTP status code.
+	 * @return the HTTP status code.
 	 */
 	public int getHttpStatus() {
 		return httpStatus;
@@ -87,7 +87,7 @@ public class RestResponse<A> {
 	}
 
 	/**
-	 * Returns the response object deserialized from the HTTP response body.
+	 * @return the response object deserialized from the HTTP response body.
 	 */
 	public A getResponse() {
 		return response;
@@ -103,7 +103,7 @@ public class RestResponse<A> {
 	}
 
 	/**
-	 * Returns <code>true</code> if the response is OK, i.e. the HTTP status code is
+	 * @return <code>true</code> if the response is OK, i.e. the HTTP status code is
 	 * 200, and there is no exception.
 	 */
 	public boolean isOk() {
@@ -111,7 +111,7 @@ public class RestResponse<A> {
 	}
 
 	/**
-	 * Returns the raw HTTP response.
+	 * @return the raw HTTP response.
 	 */
 	public HttpResponse getHttpResponse() {
 		return httpResponse;

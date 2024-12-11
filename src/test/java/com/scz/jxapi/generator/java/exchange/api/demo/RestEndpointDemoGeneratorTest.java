@@ -41,7 +41,7 @@ public class RestEndpointDemoGeneratorTest {
 				+ "import org.slf4j.LoggerFactory;\n"
 				+ "\n"
 				+ "/**\n"
-				+ " * Snippet to test call to {@link MyTestExchangeMarketDataApi#exchangeInfo(MyTestExchangeMarketDataExchangeInfoRequest)})}<br>\n"
+				+ " * Snippet to test call to {@link MyTestExchangeMarketDataApi#exchangeInfo(com.foo.bar.gen.marketdata.pojo.MyTestExchangeMarketDataExchangeInfoRequest)})}<br>\n"
 				+ " * <br><strong>THIS CODE IS GENERATED. DO NOT EDIT MANUALLY!</strong>\n"
 				+ " */\n"
 				+ "public class MyTestExchangeMarketDataExchangeInfoDemo {\n"
@@ -54,12 +54,13 @@ public class RestEndpointDemoGeneratorTest {
 				+ "  }\n"
 				+ "  \n"
 				+ "  /**\n"
-				+ "   * Submits a call to {@link MyTestExchangeMarketDataApi#exchangeInfo(MyTestExchangeMarketDataExchangeInfoRequest)}and waits for response.\n"
+				+ "   * Submits a call to {@link MyTestExchangeMarketDataApi#exchangeInfo(com.foo.bar.gen.marketdata.pojo.MyTestExchangeMarketDataExchangeInfoRequest)}and waits for response.\n"
 				+ "   * @param request     The request to submit\n"
-				+ "   * @param properties  The configuration properties to instantiate exchange with\n"
+				+ "   * @param configProperties  The configuration properties to instantiate exchange with\n"
 				+ "   * @param apiObserver API observer that will notified of events. Is subscribed before REST API call and unsubscribed right after. Ignored if <code>null</code>\n"
 				+ "   * @return Response data resulting from this API call\n"
-				+ "   * @throws InterruptedException eventually thrown waiting for response@throws ExecutionException raised if response is not OK, see {@link RestResponse#isOk()}\n"
+				+ "   * @throws InterruptedException eventually thrown waiting for response\n"
+				+ "   * @throws ExecutionException raised if response is not OK, see {@link RestResponse#isOk()}\n"
 				+ "   */\n"
 				+ "  public static RestResponse<MyTestExchangeMarketDataExchangeInfoResponse> execute(MyTestExchangeMarketDataExchangeInfoRequest request, Properties configProperties, ExchangeApiObserver apiObserver) throws InterruptedException, ExecutionException {\n"
 				+ "    MyTestExchangeMarketDataApi api = new MyTestExchangeExchangeImpl(\"test-\" + MyTestExchangeExchange.ID, configProperties).getMyTestExchangeMarketDataApi();\n"
@@ -78,7 +79,7 @@ public class RestEndpointDemoGeneratorTest {
 				+ "  }\n"
 				+ "  \n"
 				+ "  /**\n"
-				+ "   * Runs REST endpoint demo snippet calling {@link MyTestExchangeMarketDataApi#exchangeInfo(MyTestExchangeMarketDataExchangeInfoRequest)}\n"
+				+ "   * Runs REST endpoint demo snippet calling {@link MyTestExchangeMarketDataApi#exchangeInfo(com.foo.bar.gen.marketdata.pojo.MyTestExchangeMarketDataExchangeInfoRequest)}\n"
 				+ "   * @param args no argument expected\n"
 				+ "   */\n"
 				+ "  public static void main(String[] args) {\n"
@@ -91,7 +92,8 @@ public class RestEndpointDemoGeneratorTest {
 				+ "      System.exit(-1);\n"
 				+ "    }\n"
 				+ "  }\n"
-				+ "}\n", 
+				+ "}\n"
+				+ "", 
 				new RestEndpointDemoGenerator(exchange, api, restEndpointDescriptor).generate());
 	}
 	
@@ -118,7 +120,7 @@ public class RestEndpointDemoGeneratorTest {
 				+ "import org.slf4j.LoggerFactory;\n"
 				+ "\n"
 				+ "/**\n"
-				+ " * Snippet to test call to {@link MyTestExchangeMarketDataApi#postRestRequestDataTypeInt(Integer)})}<br>\n"
+				+ " * Snippet to test call to {@link MyTestExchangeMarketDataApi#postRestRequestDataTypeInt(java.lang.Integer)})}<br>\n"
 				+ " * <br><strong>THIS CODE IS GENERATED. DO NOT EDIT MANUALLY!</strong>\n"
 				+ " */\n"
 				+ "public class MyTestExchangeMarketDataPostRestRequestDataTypeIntDemo {\n"
@@ -129,12 +131,13 @@ public class RestEndpointDemoGeneratorTest {
 				+ "  }\n"
 				+ "  \n"
 				+ "  /**\n"
-				+ "   * Submits a call to {@link MyTestExchangeMarketDataApi#postRestRequestDataTypeInt(Integer)}and waits for response.\n"
+				+ "   * Submits a call to {@link MyTestExchangeMarketDataApi#postRestRequestDataTypeInt(java.lang.Integer)}and waits for response.\n"
 				+ "   * @param request     The request to submit\n"
-				+ "   * @param properties  The configuration properties to instantiate exchange with\n"
+				+ "   * @param configProperties  The configuration properties to instantiate exchange with\n"
 				+ "   * @param apiObserver API observer that will notified of events. Is subscribed before REST API call and unsubscribed right after. Ignored if <code>null</code>\n"
 				+ "   * @return Response data resulting from this API call\n"
-				+ "   * @throws InterruptedException eventually thrown waiting for response@throws ExecutionException raised if response is not OK, see {@link RestResponse#isOk()}\n"
+				+ "   * @throws InterruptedException eventually thrown waiting for response\n"
+				+ "   * @throws ExecutionException raised if response is not OK, see {@link RestResponse#isOk()}\n"
 				+ "   */\n"
 				+ "  public static RestResponse<GenericResponse> execute(Integer request, Properties configProperties, ExchangeApiObserver apiObserver) throws InterruptedException, ExecutionException {\n"
 				+ "    MyTestExchangeMarketDataApi api = new MyTestExchangeExchangeImpl(\"test-\" + MyTestExchangeExchange.ID, configProperties).getMyTestExchangeMarketDataApi();\n"
@@ -153,7 +156,7 @@ public class RestEndpointDemoGeneratorTest {
 				+ "  }\n"
 				+ "  \n"
 				+ "  /**\n"
-				+ "   * Runs REST endpoint demo snippet calling {@link MyTestExchangeMarketDataApi#postRestRequestDataTypeInt(Integer)}\n"
+				+ "   * Runs REST endpoint demo snippet calling {@link MyTestExchangeMarketDataApi#postRestRequestDataTypeInt(java.lang.Integer)}\n"
 				+ "   * @param args no argument expected\n"
 				+ "   */\n"
 				+ "  public static void main(String[] args) {\n"
@@ -166,7 +169,8 @@ public class RestEndpointDemoGeneratorTest {
 				+ "      System.exit(-1);\n"
 				+ "    }\n"
 				+ "  }\n"
-				+ "}\n", 
+				+ "}\n"
+				+ "", 
 				generator.generate());
 	}
 	
@@ -193,7 +197,7 @@ public class RestEndpointDemoGeneratorTest {
 				+ "import org.slf4j.LoggerFactory;\n"
 				+ "\n"
 				+ "/**\n"
-				+ " * Snippet to test call to {@link MyTestExchangeMarketDataApi#postRestRequestDataTypeString(String)})}<br>\n"
+				+ " * Snippet to test call to {@link MyTestExchangeMarketDataApi#postRestRequestDataTypeString(java.lang.String)})}<br>\n"
 				+ " * <br><strong>THIS CODE IS GENERATED. DO NOT EDIT MANUALLY!</strong>\n"
 				+ " */\n"
 				+ "public class MyTestExchangeMarketDataPostRestRequestDataTypeStringDemo {\n"
@@ -204,12 +208,13 @@ public class RestEndpointDemoGeneratorTest {
 				+ "  }\n"
 				+ "  \n"
 				+ "  /**\n"
-				+ "   * Submits a call to {@link MyTestExchangeMarketDataApi#postRestRequestDataTypeString(String)}and waits for response.\n"
+				+ "   * Submits a call to {@link MyTestExchangeMarketDataApi#postRestRequestDataTypeString(java.lang.String)}and waits for response.\n"
 				+ "   * @param request     The request to submit\n"
-				+ "   * @param properties  The configuration properties to instantiate exchange with\n"
+				+ "   * @param configProperties  The configuration properties to instantiate exchange with\n"
 				+ "   * @param apiObserver API observer that will notified of events. Is subscribed before REST API call and unsubscribed right after. Ignored if <code>null</code>\n"
 				+ "   * @return Response data resulting from this API call\n"
-				+ "   * @throws InterruptedException eventually thrown waiting for response@throws ExecutionException raised if response is not OK, see {@link RestResponse#isOk()}\n"
+				+ "   * @throws InterruptedException eventually thrown waiting for response\n"
+				+ "   * @throws ExecutionException raised if response is not OK, see {@link RestResponse#isOk()}\n"
 				+ "   */\n"
 				+ "  public static RestResponse<GenericResponse> execute(String request, Properties configProperties, ExchangeApiObserver apiObserver) throws InterruptedException, ExecutionException {\n"
 				+ "    MyTestExchangeMarketDataApi api = new MyTestExchangeExchangeImpl(\"test-\" + MyTestExchangeExchange.ID, configProperties).getMyTestExchangeMarketDataApi();\n"
@@ -228,7 +233,7 @@ public class RestEndpointDemoGeneratorTest {
 				+ "  }\n"
 				+ "  \n"
 				+ "  /**\n"
-				+ "   * Runs REST endpoint demo snippet calling {@link MyTestExchangeMarketDataApi#postRestRequestDataTypeString(String)}\n"
+				+ "   * Runs REST endpoint demo snippet calling {@link MyTestExchangeMarketDataApi#postRestRequestDataTypeString(java.lang.String)}\n"
 				+ "   * @param args no argument expected\n"
 				+ "   */\n"
 				+ "  public static void main(String[] args) {\n"
@@ -241,7 +246,8 @@ public class RestEndpointDemoGeneratorTest {
 				+ "      System.exit(-1);\n"
 				+ "    }\n"
 				+ "  }\n"
-				+ "}\n", 
+				+ "}\n"
+				+ "", 
 				generator.generate());
 	}
 	
@@ -276,10 +282,11 @@ public class RestEndpointDemoGeneratorTest {
 				+ "  \n"
 				+ "  /**\n"
 				+ "   * Submits a call to {@link MyTestExchangeMarketDataApi#postRestRequestDataTypeObjectNoParameters()}and waits for response.\n"
-				+ "   * @param properties  The configuration properties to instantiate exchange with\n"
+				+ "   * @param configProperties  The configuration properties to instantiate exchange with\n"
 				+ "   * @param apiObserver API observer that will notified of events. Is subscribed before REST API call and unsubscribed right after. Ignored if <code>null</code>\n"
 				+ "   * @return Response data resulting from this API call\n"
-				+ "   * @throws InterruptedException eventually thrown waiting for response@throws ExecutionException raised if response is not OK, see {@link RestResponse#isOk()}\n"
+				+ "   * @throws InterruptedException eventually thrown waiting for response\n"
+				+ "   * @throws ExecutionException raised if response is not OK, see {@link RestResponse#isOk()}\n"
 				+ "   */\n"
 				+ "  public static RestResponse<GenericResponse> execute(Properties configProperties, ExchangeApiObserver apiObserver) throws InterruptedException, ExecutionException {\n"
 				+ "    MyTestExchangeMarketDataApi api = new MyTestExchangeExchangeImpl(\"test-\" + MyTestExchangeExchange.ID, configProperties).getMyTestExchangeMarketDataApi();\n"
@@ -311,7 +318,8 @@ public class RestEndpointDemoGeneratorTest {
 				+ "      System.exit(-1);\n"
 				+ "    }\n"
 				+ "  }\n"
-				+ "}\n", 
+				+ "}\n"
+				+ "", 
 				generator.generate());
 	}
 	
@@ -341,7 +349,7 @@ public class RestEndpointDemoGeneratorTest {
 				+ "import org.slf4j.LoggerFactory;\n"
 				+ "\n"
 				+ "/**\n"
-				+ " * Snippet to test call to {@link MyTestExchangeMarketDataApi#postRestRequestDataTypeObjectListMap(Map<String, List<SingleSymbol>>)})}<br>\n"
+				+ " * Snippet to test call to {@link MyTestExchangeMarketDataApi#postRestRequestDataTypeObjectListMap(java.util.Map)})}<br>\n"
 				+ " * <br><strong>THIS CODE IS GENERATED. DO NOT EDIT MANUALLY!</strong>\n"
 				+ " */\n"
 				+ "public class MyTestExchangeMarketDataPostRestRequestDataTypeObjectListMapDemo {\n"
@@ -354,12 +362,13 @@ public class RestEndpointDemoGeneratorTest {
 				+ "  }\n"
 				+ "  \n"
 				+ "  /**\n"
-				+ "   * Submits a call to {@link MyTestExchangeMarketDataApi#postRestRequestDataTypeObjectListMap(Map<String, List<SingleSymbol>>)}and waits for response.\n"
+				+ "   * Submits a call to {@link MyTestExchangeMarketDataApi#postRestRequestDataTypeObjectListMap(java.util.Map)}and waits for response.\n"
 				+ "   * @param request     The request to submit\n"
-				+ "   * @param properties  The configuration properties to instantiate exchange with\n"
+				+ "   * @param configProperties  The configuration properties to instantiate exchange with\n"
 				+ "   * @param apiObserver API observer that will notified of events. Is subscribed before REST API call and unsubscribed right after. Ignored if <code>null</code>\n"
 				+ "   * @return Response data resulting from this API call\n"
-				+ "   * @throws InterruptedException eventually thrown waiting for response@throws ExecutionException raised if response is not OK, see {@link RestResponse#isOk()}\n"
+				+ "   * @throws InterruptedException eventually thrown waiting for response\n"
+				+ "   * @throws ExecutionException raised if response is not OK, see {@link RestResponse#isOk()}\n"
 				+ "   */\n"
 				+ "  public static RestResponse<GenericResponse> execute(Map<String, List<SingleSymbol>> request, Properties configProperties, ExchangeApiObserver apiObserver) throws InterruptedException, ExecutionException {\n"
 				+ "    MyTestExchangeMarketDataApi api = new MyTestExchangeExchangeImpl(\"test-\" + MyTestExchangeExchange.ID, configProperties).getMyTestExchangeMarketDataApi();\n"
@@ -378,7 +387,7 @@ public class RestEndpointDemoGeneratorTest {
 				+ "  }\n"
 				+ "  \n"
 				+ "  /**\n"
-				+ "   * Runs REST endpoint demo snippet calling {@link MyTestExchangeMarketDataApi#postRestRequestDataTypeObjectListMap(Map<String, List<SingleSymbol>>)}\n"
+				+ "   * Runs REST endpoint demo snippet calling {@link MyTestExchangeMarketDataApi#postRestRequestDataTypeObjectListMap(java.util.Map)}\n"
 				+ "   * @param args no argument expected\n"
 				+ "   */\n"
 				+ "  public static void main(String[] args) {\n"
@@ -391,7 +400,8 @@ public class RestEndpointDemoGeneratorTest {
 				+ "      System.exit(-1);\n"
 				+ "    }\n"
 				+ "  }\n"
-				+ "}\n", 
+				+ "}\n"
+				+ "", 
 				generator.generate());
 	}
 	
@@ -421,7 +431,7 @@ public class RestEndpointDemoGeneratorTest {
 				+ "import org.slf4j.LoggerFactory;\n"
 				+ "\n"
 				+ "/**\n"
-				+ " * Snippet to test call to {@link MyTestExchangeMarketDataApi#postRestRequestDataTypeIntList(List<Integer>)})}<br>\n"
+				+ " * Snippet to test call to {@link MyTestExchangeMarketDataApi#postRestRequestDataTypeIntList(java.util.List)})}<br>\n"
 				+ " * <br><strong>THIS CODE IS GENERATED. DO NOT EDIT MANUALLY!</strong>\n"
 				+ " */\n"
 				+ "public class MyTestExchangeMarketDataPostRestRequestDataTypeIntListDemo {\n"
@@ -432,12 +442,13 @@ public class RestEndpointDemoGeneratorTest {
 				+ "  }\n"
 				+ "  \n"
 				+ "  /**\n"
-				+ "   * Submits a call to {@link MyTestExchangeMarketDataApi#postRestRequestDataTypeIntList(List<Integer>)}and waits for response.\n"
+				+ "   * Submits a call to {@link MyTestExchangeMarketDataApi#postRestRequestDataTypeIntList(java.util.List)}and waits for response.\n"
 				+ "   * @param request     The request to submit\n"
-				+ "   * @param properties  The configuration properties to instantiate exchange with\n"
+				+ "   * @param configProperties  The configuration properties to instantiate exchange with\n"
 				+ "   * @param apiObserver API observer that will notified of events. Is subscribed before REST API call and unsubscribed right after. Ignored if <code>null</code>\n"
 				+ "   * @return Response data resulting from this API call\n"
-				+ "   * @throws InterruptedException eventually thrown waiting for response@throws ExecutionException raised if response is not OK, see {@link RestResponse#isOk()}\n"
+				+ "   * @throws InterruptedException eventually thrown waiting for response\n"
+				+ "   * @throws ExecutionException raised if response is not OK, see {@link RestResponse#isOk()}\n"
 				+ "   */\n"
 				+ "  public static RestResponse<GenericResponse> execute(List<Integer> request, Properties configProperties, ExchangeApiObserver apiObserver) throws InterruptedException, ExecutionException {\n"
 				+ "    MyTestExchangeMarketDataApi api = new MyTestExchangeExchangeImpl(\"test-\" + MyTestExchangeExchange.ID, configProperties).getMyTestExchangeMarketDataApi();\n"
@@ -456,7 +467,7 @@ public class RestEndpointDemoGeneratorTest {
 				+ "  }\n"
 				+ "  \n"
 				+ "  /**\n"
-				+ "   * Runs REST endpoint demo snippet calling {@link MyTestExchangeMarketDataApi#postRestRequestDataTypeIntList(List<Integer>)}\n"
+				+ "   * Runs REST endpoint demo snippet calling {@link MyTestExchangeMarketDataApi#postRestRequestDataTypeIntList(java.util.List)}\n"
 				+ "   * @param args no argument expected\n"
 				+ "   */\n"
 				+ "  public static void main(String[] args) {\n"
@@ -469,7 +480,8 @@ public class RestEndpointDemoGeneratorTest {
 				+ "      System.exit(-1);\n"
 				+ "    }\n"
 				+ "  }\n"
-				+ "}\n", 
+				+ "}\n"
+				+ "", 
 				generator.generate());
 	}
 }

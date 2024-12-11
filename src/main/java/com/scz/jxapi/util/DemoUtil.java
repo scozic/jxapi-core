@@ -22,6 +22,7 @@ public class DemoUtil {
 	/**
 	 * Awaits response to a REST API call and ogs successful response at INFO level or throws an exception.
 	 * @param futureResponse response to check
+	 * @param <T> REST call response data type
 	 * @throws NullPointerException if <code>futureResponse</code> is <code>null</code>
 	 * @throws InterruptedException eventually thrown  by {@link CompletableFuture#get()}
 	 * @throws ExecutionException eventually thrown  by {@link CompletableFuture#get()} or if received response is not OK see {@link RestResponse#isOk()}

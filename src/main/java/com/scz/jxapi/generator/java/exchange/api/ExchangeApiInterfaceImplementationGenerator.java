@@ -134,7 +134,7 @@ import com.scz.jxapi.util.JsonUtil;
  * <li>Generate a DEBUG log statement with the endpoint name and eventual
  * request
  * <li>Generate a {@link WebsocketSubscribeRequest} using
- * {@link WebsocketSubscribeRequest#create(String, Object, String, com.scz.jxapi.netutils.websocket.multiplexing.WebsocketMessageTopicMatcherFactory)}
+ * {@link WebsocketSubscribeRequest#create(Object, String, com.scz.jxapi.netutils.websocket.multiplexing.WebsocketMessageTopicMatcherFactory)}
  * method.
  * <li>Set the request object in the {@link WebsocketSubscribeRequest} if the
  * endpoint has arguments.

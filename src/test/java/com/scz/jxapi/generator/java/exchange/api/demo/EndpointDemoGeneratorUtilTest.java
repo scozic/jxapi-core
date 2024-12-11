@@ -485,10 +485,4 @@ public class EndpointDemoGeneratorUtilTest {
 		Assert.assertEquals("MyApi api = new MyExchangeImplImpl(\"test-\" + MyExchangeImpl.ID, props).getMyApi();", 
 				EndpointDemoGeneratorUtil.getNewTestApiInstruction(exchangeId, exchangeImplClassName, simpleApiClassName, "props"));
 	}
-	
-	@Test
-	public void testGetRequestMethodJavaDoc() {
-		Assert.assertEquals("@return Sample request for calling {@link com.x.y.MyApi#foo()} endpoint.", 
-							EndpointDemoGeneratorUtil.getCreateRequestMethodJavadoc("{@link com.x.y.MyApi#foo()}"));
-	}
 }

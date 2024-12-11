@@ -15,7 +15,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Snippet to test call to {@link DemoExchangeMarketDataApi#postRestRequestDataTypeInt(Integer)})}<br>
+ * Snippet to test call to {@link DemoExchangeMarketDataApi#postRestRequestDataTypeInt(java.lang.Integer)})}<br>
  * <br><strong>THIS CODE IS GENERATED. DO NOT EDIT MANUALLY!</strong>
  */
 public class DemoExchangeMarketDataPostRestRequestDataTypeIntDemo {
@@ -26,12 +26,13 @@ public class DemoExchangeMarketDataPostRestRequestDataTypeIntDemo {
   }
   
   /**
-   * Submits a call to {@link DemoExchangeMarketDataApi#postRestRequestDataTypeInt(Integer)}and waits for response.
+   * Submits a call to {@link DemoExchangeMarketDataApi#postRestRequestDataTypeInt(java.lang.Integer)}and waits for response.
    * @param request     The request to submit
-   * @param properties  The configuration properties to instantiate exchange with
+   * @param configProperties  The configuration properties to instantiate exchange with
    * @param apiObserver API observer that will notified of events. Is subscribed before REST API call and unsubscribed right after. Ignored if <code>null</code>
    * @return Response data resulting from this API call
-   * @throws InterruptedException eventually thrown waiting for response@throws ExecutionException raised if response is not OK, see {@link RestResponse#isOk()}
+   * @throws InterruptedException eventually thrown waiting for response
+   * @throws ExecutionException raised if response is not OK, see {@link RestResponse#isOk()}
    */
   public static RestResponse<GenericResponse> execute(Integer request, Properties configProperties, ExchangeApiObserver apiObserver) throws InterruptedException, ExecutionException {
     DemoExchangeMarketDataApi api = new DemoExchangeExchangeImpl("test-" + DemoExchangeExchange.ID, configProperties).getDemoExchangeMarketDataApi();
@@ -50,7 +51,7 @@ public class DemoExchangeMarketDataPostRestRequestDataTypeIntDemo {
   }
   
   /**
-   * Runs REST endpoint demo snippet calling {@link DemoExchangeMarketDataApi#postRestRequestDataTypeInt(Integer)}
+   * Runs REST endpoint demo snippet calling {@link DemoExchangeMarketDataApi#postRestRequestDataTypeInt(java.lang.Integer)}
    * @param args no argument expected
    */
   public static void main(String[] args) {

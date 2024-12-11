@@ -28,12 +28,13 @@ import com.scz.jxapi.netutils.websocket.multiplexing.WebsocketMessageTopicMatche
 /**
  * Default implementation of {@link WebsocketManager}.
  * 
- * @implNote Uses object pooling to reduce creation of objects in incoming
- *           message matching against topics.
- * @implNote Some synchronization is performed over instance monitor, to protect
- *           agains thread race between 'writer' threads modifying topics
- *           subscription list and socket dispatcher threads iterating over that
- *           list.
+ * <p>
+ * Uses object pooling to reduce creation of objects in incoming message
+ * matching against topics.
+ * <p>
+ * Some synchronization is performed over instance monitor, to protect agains
+ * thread race between 'writer' threads modifying topics subscription list and
+ * socket dispatcher threads iterating over that list.
  */
 public class DefaultWebsocketManager implements WebsocketManager {
 	

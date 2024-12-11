@@ -23,10 +23,11 @@ public class DemoExchangeMarketDataTickersDemo {
   
   /**
    * Submits a call to {@link DemoExchangeMarketDataApi#tickers()}and waits for response.
-   * @param properties  The configuration properties to instantiate exchange with
+   * @param configProperties  The configuration properties to instantiate exchange with
    * @param apiObserver API observer that will notified of events. Is subscribed before REST API call and unsubscribed right after. Ignored if <code>null</code>
    * @return Response data resulting from this API call
-   * @throws InterruptedException eventually thrown waiting for response@throws ExecutionException raised if response is not OK, see {@link RestResponse#isOk()}
+   * @throws InterruptedException eventually thrown waiting for response
+   * @throws ExecutionException raised if response is not OK, see {@link RestResponse#isOk()}
    */
   public static RestResponse<DemoExchangeMarketDataTickersResponse> execute(Properties configProperties, ExchangeApiObserver apiObserver) throws InterruptedException, ExecutionException {
     DemoExchangeMarketDataApi api = new DemoExchangeExchangeImpl("test-" + DemoExchangeExchange.ID, configProperties).getDemoExchangeMarketDataApi();

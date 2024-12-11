@@ -64,9 +64,9 @@ public class WebsocketEndpointDemoGenerator extends JavaTypeGenerator {
 	private final String subscribeMethodName;
 	private final String unsubscribeMethodName;
 	private final String messageClassSimpleName;
-	private final String websocketListenerSimpleClassName;
 	private final String exchangeClassName;
 	private final String exchangeSimpleClassName;
+	private final Type requestDataType;
 	
 	/**
 	 * Constructor.
@@ -88,21 +88,22 @@ public class WebsocketEndpointDemoGenerator extends JavaTypeGenerator {
 		setTypeDeclaration("public class");
 		this.hasArguments = ExchangeApiGeneratorUtil.websocketEndpointHasArguments(websocketApi, exchangeApiDescriptor);
 		if (hasArguments) {
-			Type requestDataType =  Optional.ofNullable(request.getType()).orElse(Type.OBJECT);
-			if (requestDataType.getCanonicalType().isPrimitive) {
-				requestClassName = requestDataType.getCanonicalType().typeClass.getName();
+			this.requestDataType =  Optional.ofNullable(request.getType()).orElse(Type.OBJECT);
+			if (this.requestDataType.getCanonicalType().isPrimitive) {
+				this.requestClassName = requestDataType.getCanonicalType().typeClass.getName();
 			} else {
-				requestClassName = ExchangeApiGeneratorUtil.generateWebsocketEndpointRequestPojoClassName(exchangeDescriptor, exchangeApiDescriptor, websocketApi);
+				this.requestClassName = ExchangeApiGeneratorUtil.generateWebsocketEndpointRequestPojoClassName(exchangeDescriptor, exchangeApiDescriptor, websocketApi);
 			}
 			
 			addImport(requestClassName);
-			requestSimpleClassName = ExchangeJavaWrapperGeneratorUtil.getClassNameForType(
+			this.requestSimpleClassName = ExchangeJavaWrapperGeneratorUtil.getClassNameForType(
 					requestDataType, 
 					getImports(), 
 					requestClassName);
 		} else {
-			requestClassName = null;
-			requestSimpleClassName = null;
+			this.requestClassName = null;
+			this.requestSimpleClassName = null;
+			this.requestDataType = null;
 		}
 		this.apiInterfaceClassName = ExchangeJavaWrapperGeneratorUtil.getApiInterfaceClassName(exchangeDescriptor, exchangeApiDescriptor);
 		this.simpleApiClassName = JavaCodeGenerationUtil.getClassNameWithoutPackage(apiInterfaceClassName);
@@ -119,7 +120,6 @@ public class WebsocketEndpointDemoGenerator extends JavaTypeGenerator {
 						exchangeDescriptor, 
 						exchangeApiDescriptor, 
 						websocketApi));
-		websocketListenerSimpleClassName = WebsocketListener.class.getSimpleName() + "<" + messageClassSimpleName + ">";
 		addImport(WebsocketListener.class);
 		addImport(DemoUtil.class);
 		addImport(Properties.class);
@@ -205,10 +205,10 @@ public class WebsocketEndpointDemoGenerator extends JavaTypeGenerator {
 				.append(subscribeMethodName)
 				.append("(");
 		if (hasArguments) {
-			javadoc.append(requestSimpleClassName)
+			javadoc.append(JavaCodeGenerationUtil.getMethodArgumentJavadoc(requestDataType, requestClassName))
 				   .append(", ");
 		}
-		return javadoc.append(websocketListenerSimpleClassName)
+		return javadoc.append(WebsocketListener.class.getName())
 				      .append(")}").toString();
 	}
 	
@@ -223,7 +223,7 @@ public class WebsocketEndpointDemoGenerator extends JavaTypeGenerator {
 		}
 		javadoc.append("@param messageListener                    The listener that will receive messages dispatched while subscription is active\n")
 		   	   .append("@param configProperties                   Exchange configuration properties.\n")
-		   	   .append("@param apiObservver                       {@link ExchangeApiObserver} (optional, ignored if <code>null</code>) observer will")
+		   	   .append("@param apiObserver                       {@link ExchangeApiObserver} (optional, ignored if <code>null</code>) observer will")
 		   	   .append (" be subscribed to Exchange API exposing websocket endpoint that will be notifed of received websocket events.")
 		   	   .append("Useful in particular to get notified of websocket errors.\n")
 		   	   .append("@param subscriptionDuration               Delay to wait for after subscription before unsubscribing.\n")
@@ -322,7 +322,9 @@ public class WebsocketEndpointDemoGenerator extends JavaTypeGenerator {
 		return  new StringBuilder()
 						.append("Runs websocket endpoint '")
 						.append(fullStreamName)
-						.append("' subscription demo.").toString();
+						.append("' subscription demo.\n")
+						.append("@param args no arguments expected")
+						.toString();
 	}
 
 }

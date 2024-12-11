@@ -54,7 +54,7 @@ public class ExchangeInterfaceGenerator extends JavaTypeGenerator {
 	private String generateDescription() {
 		StringBuilder s = new StringBuilder()
 				.append(exchangeDescriptor.getName())
-				.append(" API</br>\n")
+				.append(" API<br>\n")
 				.append(exchangeDescriptor.getDescription())
 				.append("\n");
 		String docUrl = exchangeDescriptor.getDocUrl();

@@ -6,12 +6,16 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.scz.jxapi.exchange.descriptor.CanonicalType;
+import com.scz.jxapi.exchange.descriptor.Type;
 
 /**
  * Helper methods around java code generation
@@ -405,7 +409,7 @@ public class JavaCodeGenerationUtil {
 	 * @param tryClause <code>try</code> clause
 	 * @param catchClause <code>Catch clause</code> can be <code>null</code> if there is no catch
 	 * @param catchException Exception caught in <code>catch</code> clause, for instance <code>MyException ex</code>
-	 * @param finallyClause <code>finally<code> clause
+	 * @param finallyClause <code>finally</code> clause
 	 * @param resource In case of a 'try with resource' block, the resource clause <code>try (resource) { ... }</code>. 
 	 * @return Java try (resource) { tryBlock } catch ( catchException ) { catchClause } finally { finallyClause } code.
 	 */
@@ -457,5 +461,45 @@ public class JavaCodeGenerationUtil {
 			argumentClassName = argumentClassName.substring(0, off);
 		}
 		return argumentClassName;
+	}
+	
+	public static String getClassJavadocUrl(String baseUrl, String javaClassName) {
+		return new StringBuilder()
+				.append(baseUrl)
+				.append(javaClassName.replace('.', '/'))
+				.append(".html")
+				.toString();
+	}
+
+	/**
+	 * Gets class name as it should be written in a javadoc method link as argument
+	 * of this methdi.<br>
+	 * e.g. comma separated full class names of function argument. If one argument
+	 * is generic, the full class name of class holding generic (for instance
+	 * <code>java.util.List</code> if argument is of
+	 * <code>List&lt;Integer&gt;</code> type).
+	 * 
+	 * @param type            the type of argument
+	 * @param objectClassName if argument is of object type (see
+	 *                        {@link Type#isObject()}). Will be the value returned
+	 *                        if type is {@link Type#OBJECT}.
+	 * @return full class name of argument of given type
+	 */
+	public static String getMethodArgumentJavadoc(Type type, String objectClassName) {
+		if (type == null) {
+			return "";
+		}
+		CanonicalType canonicalType = type.getCanonicalType();
+		Class<?> canonicalTypeClass = canonicalType.typeClass;
+		switch (canonicalType) {
+		case LIST:
+			return List.class.getName();
+		case MAP:
+			return Map.class.getName();
+		case OBJECT:
+			return objectClassName;
+		default:
+			return canonicalTypeClass.getName();
+		}
 	}
 }

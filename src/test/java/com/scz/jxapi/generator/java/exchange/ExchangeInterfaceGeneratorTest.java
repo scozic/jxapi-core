@@ -23,7 +23,7 @@ public class ExchangeInterfaceGeneratorTest {
 				+ "import com.scz.jxapi.exchange.Exchange;\n"
 				+ "\n"
 				+ "/**\n"
-				+ " * MyTestExchange API</br>\n"
+				+ " * MyTestExchange API<br>\n"
 				+ " * A sample Exchange descriptor file\n"
 				+ " * @see <a href=\"https://docs.myexchange.com/api\">Reference documentation</a>\n"
 				+ " * <br><strong>THIS CODE IS GENERATED. DO NOT EDIT MANUALLY!</strong>\n"

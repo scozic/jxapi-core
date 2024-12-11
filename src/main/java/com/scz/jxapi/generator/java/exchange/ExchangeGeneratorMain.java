@@ -16,6 +16,7 @@ import com.scz.jxapi.exchange.descriptor.parser.ExchangeDescriptorParser;
 import com.scz.jxapi.generator.java.JavaCodeGenerationUtil;
 import com.scz.jxapi.generator.java.exchange.api.ExchangeApiClassesGenerator;
 import com.scz.jxapi.generator.java.exchange.api.demo.ExchangeDemoClassesGenerator;
+import com.scz.jxapi.generator.md.exchange.ExchangeReadmeMdGenerator;
 import com.scz.jxapi.netutils.rest.ratelimits.RateLimitManager;
 
 /**
@@ -40,17 +41,34 @@ public class ExchangeGeneratorMain {
 	private static final Logger log = LoggerFactory.getLogger(ExchangeGeneratorMain.class);
 	
 	/**
+	 * Key for system property that can be passed to JVM running
+	 * {@link #main(String[])} to specify the base URL for Java wrapper project
+	 * documentation
+	 */
+	public static final String BASE_JAVADOC_URL_SYS_PROP = "baseJavaDocUrl";
+	
+	/**
+	 * Key for system property that can be passed to JVM running
+	 * {@link #main(String[])} to specify the base URL for Java wrapper project
+	 * sources
+	 */
+	public static final String BASE_SRC_URL_SYS_PROP = "baseSrcUrl";
+	
+	/**
 	 * @param args 1 argument expected : Name of exchange JSON descriptor file located in src/main/resources.
 	 */
 	public static void main(String[] args) {
 		try {
 			final AtomicInteger exitCode = new AtomicInteger(0);
+			Path projectFolder = Paths.get(".");
+			String baseJavadocUrl = System.getProperty(BASE_JAVADOC_URL_SYS_PROP);
+			String baseSrcUrl = System.getProperty(BASE_SRC_URL_SYS_PROP);
 			Path resources = Paths.get(".", "src", "main", "resources");
 			Files.walk(resources)
 				 .filter(p -> p.toFile().getName().endsWith("Descriptor.json"))
 				 .forEach(path -> {
 				try {
-					generateExchangeWrapperAndDemos(path);
+					generateExchangeWrapperAndDemos(path, projectFolder, baseJavadocUrl, baseSrcUrl);
 				} catch (Exception ex) {
 					log.error("Error while generating exchange descriptor for file:" + path.getFileName(), ex);
 					exitCode.set(-1);
@@ -64,15 +82,25 @@ public class ExchangeGeneratorMain {
 	}
 	
 	/**
-	 * Generate exchange API wrapper and demo snippets code for a given JSON descriptor file.
-	 * @param jsonFile the JSON descriptor file
+	 * Generate exchange API wrapper and demo snippets code for a given JSON
+	 * descriptor file.
+	 * 
+	 * @param jsonFile       The JSON descriptor file
+	 * @param projectFolder  Project folder, the <code>src/main/java/</code>,
+	 *                       <code>src/test/java/</code> source folders and README.md
+	 *                       sample will be generated here.
+	 * @param baseJavaDocUrl The base url for project classes javadoc, used for links generation
+	 * @param baseSrcUrl     The base url for sources on public repo, used for links generation.
 	 * @throws IOException if an I/O error occurs
 	 */
-	public static void generateExchangeWrapperAndDemos(Path jsonFile) throws IOException {
+	public static void generateExchangeWrapperAndDemos(Path jsonFile,
+													   Path projectFolder, 
+													   String baseJavaDocUrl, 
+													   String baseSrcUrl) throws IOException {
 		if (log.isInfoEnabled())
 			log.info("Generating exchange wrapper code for descriptor:{}", jsonFile.getFileName());
 		ExchangeDescriptor exchangeDescriptor = new ExchangeDescriptorParser().fromJson(jsonFile);
-		Path outputSrcMainFolder = Paths.get(".", "src", "main", "java");
+		Path outputSrcMainFolder = projectFolder.resolve(Paths.get("src", "main", "java"));
 		Path mainPackagePath = Paths.get(StringUtils.replace(exchangeDescriptor.getBasePackage(), ".", "/"));
 		Path genMainPackagesFolder = outputSrcMainFolder.resolve(mainPackagePath);
 		JavaCodeGenerationUtil.deletePath(genMainPackagesFolder);
@@ -84,11 +112,31 @@ public class ExchangeGeneratorMain {
 		Path genTestPackagesFolder = outputSrcTestFolder.resolve(mainPackagePath);
 		JavaCodeGenerationUtil.deletePath(genTestPackagesFolder);
 		generateExchangeWrapperDemos(exchangeDescriptor, outputSrcTestFolder);
+		
+		if (log.isInfoEnabled())
+			log.info("Generating exchange README for:{}", jsonFile.getFileName());
+		generateExchangeWrapperReadme(exchangeDescriptor, projectFolder, baseJavaDocUrl, baseSrcUrl);
+		
 		if (log.isInfoEnabled()) {
 			log.info("Done generating java code for {}", jsonFile.getFileName());
 		}
 	}
-	
+
+	/**
+	 * Generates sample README.md file for exchange Java wrapper.
+	 * @param exchangeDescriptor Java wrapper exchange descriptor
+	 * @param projectFolder Java wrapper module project folder
+	 * @param baseJavaDocUrl Base URL for javadoc links in generated README. For instance a link to javadoc.io 
+	 * @param baseSrcUrl Base URL for source files for instance Github project url suffixed with corresponding branch.
+	 * @throws IOException If error occurs while trying to generate exchangeName_README.md file at root of project folder
+	 */
+	public static void generateExchangeWrapperReadme(ExchangeDescriptor exchangeDescriptor, 
+												     Path projectFolder, 
+												     String baseJavaDocUrl, 
+												     String baseSrcUrl) throws IOException {
+		new ExchangeReadmeMdGenerator(exchangeDescriptor, baseJavaDocUrl, baseSrcUrl).writeJavaFile(projectFolder);
+	}
+
 	/**
 	 * Generates exchange API wrapper (without demo snippets) for given exchange descriptor
 	 * @param exchangeDescriptor The exchange descriptor to generate Java wrapper for all APIs of

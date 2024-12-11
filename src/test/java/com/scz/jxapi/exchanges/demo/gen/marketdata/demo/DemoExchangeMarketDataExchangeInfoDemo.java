@@ -18,7 +18,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Snippet to test call to {@link DemoExchangeMarketDataApi#exchangeInfo(DemoExchangeMarketDataExchangeInfoRequest)})}<br>
+ * Snippet to test call to {@link DemoExchangeMarketDataApi#exchangeInfo(com.scz.jxapi.exchanges.demo.gen.marketdata.pojo.DemoExchangeMarketDataExchangeInfoRequest)})}<br>
  * <br><strong>THIS CODE IS GENERATED. DO NOT EDIT MANUALLY!</strong>
  */
 public class DemoExchangeMarketDataExchangeInfoDemo {
@@ -31,12 +31,13 @@ public class DemoExchangeMarketDataExchangeInfoDemo {
   }
   
   /**
-   * Submits a call to {@link DemoExchangeMarketDataApi#exchangeInfo(DemoExchangeMarketDataExchangeInfoRequest)}and waits for response.
+   * Submits a call to {@link DemoExchangeMarketDataApi#exchangeInfo(com.scz.jxapi.exchanges.demo.gen.marketdata.pojo.DemoExchangeMarketDataExchangeInfoRequest)}and waits for response.
    * @param request     The request to submit
-   * @param properties  The configuration properties to instantiate exchange with
+   * @param configProperties  The configuration properties to instantiate exchange with
    * @param apiObserver API observer that will notified of events. Is subscribed before REST API call and unsubscribed right after. Ignored if <code>null</code>
    * @return Response data resulting from this API call
-   * @throws InterruptedException eventually thrown waiting for response@throws ExecutionException raised if response is not OK, see {@link RestResponse#isOk()}
+   * @throws InterruptedException eventually thrown waiting for response
+   * @throws ExecutionException raised if response is not OK, see {@link RestResponse#isOk()}
    */
   public static RestResponse<DemoExchangeMarketDataExchangeInfoResponse> execute(DemoExchangeMarketDataExchangeInfoRequest request, Properties configProperties, ExchangeApiObserver apiObserver) throws InterruptedException, ExecutionException {
     DemoExchangeMarketDataApi api = new DemoExchangeExchangeImpl("test-" + DemoExchangeExchange.ID, configProperties).getDemoExchangeMarketDataApi();
@@ -55,7 +56,7 @@ public class DemoExchangeMarketDataExchangeInfoDemo {
   }
   
   /**
-   * Runs REST endpoint demo snippet calling {@link DemoExchangeMarketDataApi#exchangeInfo(DemoExchangeMarketDataExchangeInfoRequest)}
+   * Runs REST endpoint demo snippet calling {@link DemoExchangeMarketDataApi#exchangeInfo(com.scz.jxapi.exchanges.demo.gen.marketdata.pojo.DemoExchangeMarketDataExchangeInfoRequest)}
    * @param args no argument expected
    */
   public static void main(String[] args) {

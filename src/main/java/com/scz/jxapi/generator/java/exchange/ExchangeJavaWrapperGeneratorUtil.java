@@ -384,8 +384,8 @@ public class ExchangeJavaWrapperGeneratorUtil {
 	}
 	
 	/**
-	 * Generates the name of the interface implementation class for the given exchange descriptor
-	 * @param exchangeDescriptor exchange descriptor
+	 * Generates the name of the interface implementation class for the given exchange class name
+	 * @param exchangeClassName exchange class bale
 	 * @return full name of the interface implementation class
 	 */
 	public static String getExchangeInterfaceImplementationName(String exchangeClassName) {

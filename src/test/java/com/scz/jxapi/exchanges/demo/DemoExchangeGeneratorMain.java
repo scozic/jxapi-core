@@ -25,6 +25,7 @@ public class DemoExchangeGeneratorMain {
 	}
 
 	public static void generateDemoExchange(Path srcTestFolder) throws IOException {
+		log.info("Generating demo wrapper in current project");
 		Path exchangeDescriptorFile = srcTestFolder.resolve(Paths.get("resources", "demoExchange.json"));
 		ExchangeDescriptor exchangeDescriptor = new ExchangeDescriptorParser().fromJson(exchangeDescriptorFile);
 		Path srcTestJavaFolder = srcTestFolder.resolve(Paths.get("java"));
@@ -33,6 +34,8 @@ public class DemoExchangeGeneratorMain {
 		JavaCodeGenerationUtil.deletePath(genMainPackagesFolder);
 		ExchangeGeneratorMain.generateExchangeWrapper(exchangeDescriptor, srcTestJavaFolder);
 		ExchangeGeneratorMain.generateExchangeWrapperDemos(exchangeDescriptor, srcTestJavaFolder);
+		ExchangeGeneratorMain.generateExchangeWrapperReadme(exchangeDescriptor, Paths.get("."), "file:///X:/workspace/jxapi-core/doc/javadoc/", "file:///X:/workspace/jxapi-core/src/main/java/");
+		log.info("Generating demo wrapper in current project:DONE");
 	}
 
 	public static void main(String[] args) {

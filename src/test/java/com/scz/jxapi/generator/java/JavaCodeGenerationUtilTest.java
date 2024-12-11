@@ -399,4 +399,10 @@ public class JavaCodeGenerationUtilTest {
 	public void testGetMethodJavadocArgumentDeclaration_GenericArgClass() {
 		Assert.assertEquals("List", JavaCodeGenerationUtil.getMethodJavadocArgumentDeclaration("List<Map<String, Integer>>"));
 	}
+	
+	@Test
+	public void testGetClassJavadocUrl() {
+		Assert.assertEquals("https://docs.oracle.com/javase/8/docs/api/java/util/List.html", 
+							JavaCodeGenerationUtil.getClassJavadocUrl("https://docs.oracle.com/javase/8/docs/api/", List.class.getName()));
+	}
 }

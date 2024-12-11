@@ -7,6 +7,7 @@ import com.scz.jxapi.util.PropertiesUtil;
 /**
  * Configurable properties for <strong>DemoExchange</strong> exchange:<br>
  * <table>
+ *   <caption>DemoExchange properties</caption>
  *   <tr>
  *     <th>Name</th>
  *     <th>Type</th>
@@ -37,7 +38,8 @@ import com.scz.jxapi.util.PropertiesUtil;
  *     <td>Mock websocket server expected heartBeat interval</td>
  *     <td>-1</td>
  *   </tr>
- * </table><br>
+ * </table>
+ * <br>
  * Exposes helper methods are available to retrieve value of each of these properties with right type, returning default value if not present in properties
  */
 public interface DemoExchangeProperties {
@@ -82,25 +84,29 @@ public interface DemoExchangeProperties {
   
   /**
    * Retrieves value of 'host' property.
-   * @param properties Properties to look for value of 'host' property into.@return Value found in properties or default value 'localhost' if not found.
+   * @param properties Properties to look for value of 'host' property into.
+   * @return Value found in properties or default value 'localhost' if not found.
    */
   static String getHost(Properties properties) {return PropertiesUtil.getStringProperty(properties, HOST_PROPERTY, HOST_DEFAULT_VALUE);}
   
   /**
    * Retrieves value of 'httpPort' property.
-   * @param properties Properties to look for value of 'httpPort' property into.@return Value found in properties or <code>null</code> if not found.
+   * @param properties Properties to look for value of 'httpPort' property into.
+   * @return Value found in properties or <code>null</code> if not found.
    */
   static Integer getHttpPort(Properties properties) {return PropertiesUtil.getIntProperty(properties, HTTP_PORT_PROPERTY, null);}
   
   /**
    * Retrieves value of 'websocketPort' property.
-   * @param properties Properties to look for value of 'websocketPort' property into.@return Value found in properties or <code>null</code> if not found.
+   * @param properties Properties to look for value of 'websocketPort' property into.
+   * @return Value found in properties or <code>null</code> if not found.
    */
   static Integer getWebsocketPort(Properties properties) {return PropertiesUtil.getIntProperty(properties, WEBSOCKET_PORT_PROPERTY, null);}
   
   /**
    * Retrieves value of 'websocketHeartBeatInterval' property.
-   * @param properties Properties to look for value of 'websocketHeartBeatInterval' property into.@return Value found in properties or default value '-1' if not found.
+   * @param properties Properties to look for value of 'websocketHeartBeatInterval' property into.
+   * @return Value found in properties or default value '-1' if not found.
    */
   static Integer getWebsocketHeartBeatInterval(Properties properties) {return PropertiesUtil.getIntProperty(properties, WEBSOCKET_HEART_BEAT_INTERVAL_PROPERTY, WEBSOCKET_HEART_BEAT_INTERVAL_DEFAULT_VALUE);}
 }
