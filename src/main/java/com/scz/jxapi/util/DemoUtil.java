@@ -41,9 +41,16 @@ public class DemoUtil {
 		return response;
 	}
 	
-	public static void logWsMessage(Object message) {
-		if (log.isInfoEnabled())
-			log.info("received message:\n{}", JsonUtil.pojoToPrettyPrintJson(message));
+	/**
+	 * Logs content of message data with INFO level.
+	 * @param message Message to format as string
+	 * @return the <code>message</code>
+	 */
+	public static Object logWsMessage(Object message) {
+		if (log.isInfoEnabled()) {
+			log.info("Received message:\n{}", JsonUtil.pojoToPrettyPrintJson(message));
+		}
+		return message;
 	}
 	
 	public static void logWsApiEvent(ExchangeApiEvent event) {

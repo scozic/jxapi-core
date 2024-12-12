@@ -17,7 +17,7 @@ public class FieldBuilder {
 	 * @return the field
 	 */
 	public Field build() {
-		return field.clone();
+		return field.deepClone();
 	}
 
 	/**

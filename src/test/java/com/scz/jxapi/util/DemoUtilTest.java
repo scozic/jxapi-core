@@ -48,6 +48,6 @@ public class DemoUtilTest {
     
     @Test
     public void testLogWsMessage() {
-    	DemoUtil.logWsMessage("Hello World!");
+    	Assert.assertNotNull(DemoUtil.logWsMessage("Hello World!"));
     }
 }

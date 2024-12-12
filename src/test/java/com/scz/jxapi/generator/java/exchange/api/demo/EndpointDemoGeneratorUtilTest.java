@@ -479,10 +479,9 @@ public class EndpointDemoGeneratorUtilTest {
 	
 	@Test
 	public void testGetNewTestApiInstruction() {
-		String exchangeId = "MyExchange";
 		String exchangeImplClassName = "com.x.y.z.gen.MyExchangeImpl";
 		String simpleApiClassName  = "MyApi";
 		Assert.assertEquals("MyApi api = new MyExchangeImplImpl(\"test-\" + MyExchangeImpl.ID, props).getMyApi();", 
-				EndpointDemoGeneratorUtil.getNewTestApiInstruction(exchangeId, exchangeImplClassName, simpleApiClassName, "props"));
+				EndpointDemoGeneratorUtil.getNewTestApiInstruction(exchangeImplClassName, simpleApiClassName, "props"));
 	}
 }

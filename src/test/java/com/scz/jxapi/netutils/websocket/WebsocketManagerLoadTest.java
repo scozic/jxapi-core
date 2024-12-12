@@ -8,6 +8,9 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.apache.commons.lang3.time.DurationFormatUtils;
+import org.junit.After;
+import org.junit.Assert;
+import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -84,7 +87,6 @@ public class WebsocketManagerLoadTest {
 	
 	private final MockWebsocket ws = new MockWebsocket();
 	private final MockWebsocketHook wsHook = new MockWebsocketHook();
-//	private final WebsocketManager wsManager = new DefaultWebsocketManager(EXCHANGE_API, ws, wsHook);
 	private final WebsocketManager wsManager = new DefaultWebsocketManager(EXCHANGE_API, ws, wsHook);
 	private final MsgHandler wsMessageHandler1 = new MsgHandler(NB_MESSAGES_PER_TOPIC);
 	private final MsgHandler wsMessageHandler2 = new MsgHandler(NB_MESSAGES_PER_TOPIC);
@@ -94,6 +96,7 @@ public class WebsocketManagerLoadTest {
 	
 	/**
 	 * Constructor
+	 * @param topicCount 
 	 */
 	public WebsocketManagerLoadTest() {
 		wsManager.subscribeErrorHandler(errorHandler);
@@ -103,11 +106,16 @@ public class WebsocketManagerLoadTest {
 	 * Runs load test
 	 * @throws InterruptedException eventually thrown while waiting
 	 */
-	public void runTest() throws InterruptedException {
+	public void runTest(int topicCount, 
+			int nbMessagesPerTopic, 
+			int iterations, 
+			int nbThreads) throws InterruptedException {
+		int totalMessageCount = (topicCount + 1) * nbMessagesPerTopic * iterations;
+		int totalTopicRelatedMessageCount = topicCount * nbMessagesPerTopic * iterations;
 		log.info("Preparing messages...");
-		List<String> allMessages = prepareMessages(NB_MESSAGES_PER_TOPIC);
+		List<String> allMessages = prepareMessages(nbMessagesPerTopic, totalMessageCount);
 		log.info("Preparing threads...");
-		List<Thread> threads = prepareThreads(allMessages);
+		List<Thread> threads = prepareThreads(allMessages, nbThreads, iterations);
 		log.info("Subscribing topics...");
 		wsManager.subscribe("topic1", 
 							WebsocketMessageTopicMatcherFactory.create("f1", "val1"), 
@@ -120,9 +128,9 @@ public class WebsocketManagerLoadTest {
 				wsMessageHandler3);
 		Thread.sleep(500L);
 		log.info("Starting dispatch of {} messages, with {} messages related to one of {} subsribed topics", 
-				 TOTAL_MESSAGE_COUNT, 
-				 TOTAL_TOPIC_RELEATED_MESSAGE_COUNT, 
-				 TOPIC_COUNT);
+				 totalMessageCount, 
+				 totalTopicRelatedMessageCount, 
+				 topicCount);
 		long startTime = System.currentTimeMillis();
 		for (int i = 0; i < threads.size(); i++) {
 			threads.get(i).start();
@@ -135,15 +143,15 @@ public class WebsocketManagerLoadTest {
 		}
 		for (int i = 0; i < wsMessageHandlers.size(); i++) {
 			//wsMessageHandlers.get(i).waitUntilCount(NB_MESSAGES_PER_TOPIC);
-			wsMessageHandlers.get(i).latch.await(60000,TimeUnit.MILLISECONDS);
+			Assert.assertTrue(wsMessageHandlers.get(i).latch.await(60000,TimeUnit.MILLISECONDS));
 		}
 		log.info("All messages received in {}", 
 				 DurationFormatUtils.formatDuration((System.currentTimeMillis() - startTime), 
 						 							 "**H:mm:ss,SSS**", true));
 	}
 	
-	private List<String> prepareMessages(int nbMessagesPerTopic) {
-		List<String> allMessages = new ArrayList<>(TOTAL_MESSAGE_COUNT);
+	private List<String> prepareMessages(int nbMessagesPerTopic, int totalMessageCount) {
+		List<String> allMessages = new ArrayList<>(totalMessageCount);
 		for (int i = 0; i < nbMessagesPerTopic; i++) {
 			allMessages.add(createTopic1Message().toString());
 			allMessages.add(createTopic2Message().toString());
@@ -154,10 +162,10 @@ public class WebsocketManagerLoadTest {
 		
 	}
 	
-	private List<Thread> prepareThreads(List<String> allMessages) {
-		List<Thread> threads = new ArrayList<>(NB_THREADS);
+	private List<Thread> prepareThreads(List<String> allMessages, int nbThreads, int iterations) {
+		List<Thread> threads = new ArrayList<>(nbThreads);
 		List<List<String>> messagesForThreads = new ArrayList<>(threads.size());
-		for (int i = 0; i < NB_THREADS; i++) {
+		for (int i = 0; i < nbThreads; i++) {
 			messagesForThreads.add(new ArrayList<>());
 		}
 		for (int i = 0; i < allMessages.size(); i++) {
@@ -165,23 +173,33 @@ public class WebsocketManagerLoadTest {
 		}
 		for (int i = 0; i < messagesForThreads.size(); i++) {
 			List<String> l = messagesForThreads.get(i);
-			threads.add(new Thread(() -> dispatchMessageList(l), "runner#" + i));
+			threads.add(new Thread(() -> dispatchMessageList(l, iterations), "runner#" + i));
 		}
 		return threads;
 	}
 	
-	private void dispatchMessageList(List<String> l) {
-		for (int k = 0; k < ITERATIONS; k++) {
+	private void dispatchMessageList(List<String> l, int iterations) {
+		for (int k = 0; k < iterations; k++) {
 			for (int j = 0; j < l.size(); j++) {
 				log.debug("dispatching:[{}]", l.get(j));
 				ws.dispatchMessage(l.get(j));
 			}
 		}
 	}
+	
+	@After
+	public void tearDown() {
+		wsManager.dispose();
+	}
+	
+	@Test
+	public void testLoadTest() throws InterruptedException {
+		runTest(2, 1000, 10, 2);
+	}
 
 	public static void main(String[] args) {
 		try {
-			new WebsocketManagerLoadTest().runTest();
+			new WebsocketManagerLoadTest().runTest(TOPIC_COUNT, NB_MESSAGES_PER_TOPIC, ITERATIONS, NB_THREADS);
 			log.info("DONE");
 		} catch (Throwable t) {
 			log.error("Error raised", t);

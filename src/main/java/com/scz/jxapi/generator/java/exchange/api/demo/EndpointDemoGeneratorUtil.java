@@ -124,7 +124,43 @@ public class EndpointDemoGeneratorUtil {
 
 		String fieldValue = null;
 		StringBuilder res = new StringBuilder();
+		if (type.isObject()) {
+			fieldValue = generateSampleFieldValueDeclarationObjectField(res, field, sampleValueVariableName, objectClassName, imports);
+		} else {
+			fieldValue = JavaCodeGenerationUtil.getQuotedString(sampleValue);
+		}
+		
+	if (canonicalType != CanonicalType.OBJECT) {
+			// Not primitive nor object type -> map or list type.
+			if (type.isObject()) {
+				fieldValue = getMapOrListSampleValueDeclaration(
+									type, 
+									fieldValue, 
+									field.getSampleMapKeyValue() == null? null: 
+									field.getSampleMapKeyValue().iterator(), 
+									imports);
+			} 
+			else {
+				fieldValue = ExchangeApiGeneratorUtil.getNewMessageDeserializerInstruction(type, objectClassName, imports) 
+									+ ".deserialize(" + fieldValue + ")";
+			}
+		}
+		
+		if (fieldValue == null) {
+			return returnOrResultAffectation + "null";
+		} else {
+			res.append(returnOrResultAffectation).append(fieldValue);
+			return res.toString();
+		}
+	}
+	
+	private static String generateSampleFieldValueDeclarationObjectField(StringBuilder res, Field field, String sampleValueVariableName, String objectClassName, 
+			  Imports imports) {
+		Type type = ExchangeApiGeneratorUtil.getFieldType(field);
+		CanonicalType canonicalType = type.getCanonicalType();
+		Object sampleValue = field.getSampleValue();
 		String itemVariableName = sampleValueVariableName;
+		String fieldValue = null;
 		if (type.isObject()) {
 			if (canonicalType != CanonicalType.OBJECT) {
 				itemVariableName = itemVariableName + "Item";
@@ -141,70 +177,52 @@ public class EndpointDemoGeneratorUtil {
 			   .append("();\n");
 			
 			for (Field childParam: field.getProperties()) {
-				Type childParamType = childParam.getType();
-				String setArg = JavaCodeGenerationUtil.getQuotedString(childParam.getSampleValue());
-				String setAccessorName = JavaCodeGenerationUtil.getSetAccessorMethodName(
-						childParam.getName(),  
-						field.getProperties().stream()
-										 .map(Field::getName).collect(Collectors.toList()));
-				String setChildParamInstruction = 
-							new StringBuilder()
-									.append(itemVariableName)
-									.append(".")
-									.append(setAccessorName)
-									.append("(")
-									.toString();
-				if (childParamType.isObject()) {
-					setArg = itemVariableName + "_" + childParam.getName();
-					res.append(generateFieldSampleValueDeclaration(childParam, 
-									setArg, 
-									ExchangeApiGeneratorUtil.getFieldObjectClassName(childParam, objectClassName), 
-									imports,
-									setChildParamInstruction));
-				} else if(childParamType.getCanonicalType().isPrimitive) {
-					setArg = getPrimitiveTypeFieldSampleValueDeclaration(childParam, imports);
-					if (setArg != null) {
-						res.append(setChildParamInstruction).append(setArg);
-					}
-				} else {
-					// List or map
-					if (setArg != null) {
-						setArg = ExchangeApiGeneratorUtil.getNewMessageDeserializerInstruction(childParamType, objectClassName, imports) 
-									+ ".deserialize(" + setArg + ")";
-						res.append(setChildParamInstruction).append(setArg);
-					}
-				}
-				if (setArg != null) {
-					res.append(");\n");
-				}
-				
+				generateSampleFieldValueDeclarationObjectFieldChild(res, field, childParam, itemVariableName, objectClassName, imports);
 			}
+			
 			fieldValue = itemVariableName;
 		} else {
 			fieldValue = JavaCodeGenerationUtil.getQuotedString(sampleValue);
 		}
-		
-	if (canonicalType != CanonicalType.OBJECT) {
-			// Not primitive nor object type -> map or list type.
-			if (type.isObject()) {
-				fieldValue = getMapOrListSampleValueDeclaration(
-									type, 
-									fieldValue, 
-									field.getSampleMapKeyValue() == null? null: 
-										field.getSampleMapKeyValue().iterator(), 
-									imports);
-			} 
-			else {
-				fieldValue = ExchangeApiGeneratorUtil.getNewMessageDeserializerInstruction(type, objectClassName, imports) 
-									+ ".deserialize(" + fieldValue + ")";
+		return fieldValue;
+	}
+	
+	private static void generateSampleFieldValueDeclarationObjectFieldChild(StringBuilder res, Field field, Field childParam, String itemVariableName, String objectClassName, Imports imports) {
+		Type childParamType = childParam.getType();
+		String setArg = JavaCodeGenerationUtil.getQuotedString(childParam.getSampleValue());
+		String setAccessorName = JavaCodeGenerationUtil.getSetAccessorMethodName(
+				childParam.getName(),  
+				field.getProperties().stream()
+								 .map(Field::getName).collect(Collectors.toList()));
+		String setChildParamInstruction = 
+					new StringBuilder()
+							.append(itemVariableName)
+							.append(".")
+							.append(setAccessorName)
+							.append("(")
+							.toString();
+		if (childParamType.isObject()) {
+			setArg = itemVariableName + "_" + childParam.getName();
+			res.append(generateFieldSampleValueDeclaration(childParam, 
+							setArg, 
+							ExchangeApiGeneratorUtil.getFieldObjectClassName(childParam, objectClassName), 
+							imports,
+							setChildParamInstruction));
+		} else if(childParamType.getCanonicalType().isPrimitive) {
+			setArg = getPrimitiveTypeFieldSampleValueDeclaration(childParam, imports);
+			if (setArg != null) {
+				res.append(setChildParamInstruction).append(setArg);
+			}
+		} else {
+			// List or map
+			if (setArg != null) {
+				setArg = ExchangeApiGeneratorUtil.getNewMessageDeserializerInstruction(childParamType, objectClassName, imports) 
+							+ ".deserialize(" + setArg + ")";
+				res.append(setChildParamInstruction).append(setArg);
 			}
 		}
-		
-		if (fieldValue == null) {
-			return returnOrResultAffectation + "null";
-		} else {
-			res.append(returnOrResultAffectation).append(fieldValue);
-			return res.toString();
+		if (setArg != null) {
+			res.append(");\n");
 		}
 	}
 	
@@ -305,7 +323,6 @@ public class EndpointDemoGeneratorUtil {
 	 * Example:
 	 * <code>MyApi api = new MyExchangeImpl("test-my-exchange", TestJXApiProperties.filterProperties("my-exchange", true)).getMyApi();</code>
 	 * 
-	 * @param exchangeId            The exchange ID.
 	 * @param exchangeClassName The exchange implementation class name.
 	 * @param simpleApiClassName    The simple API class name.
 	 * @param propertiesVariableName The name of variable referencing configuration properties {@link Properties} object.
@@ -313,8 +330,7 @@ public class EndpointDemoGeneratorUtil {
 	 * 
 	 * @see TestJXApiProperties#filterProperties(String, boolean)
 	 */
-	public static String getNewTestApiInstruction(String exchangeId, 
-												  String exchangeClassName, 
+	public static String getNewTestApiInstruction(String exchangeClassName, 
 												  String simpleApiClassName, 
 												  String propertiesVariableName) {
 		String simpleExchangeClassName = JavaCodeGenerationUtil.getClassNameWithoutPackage(exchangeClassName);

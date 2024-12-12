@@ -170,8 +170,7 @@ public class Field {
 	/**
 	 * Clone this field
 	 */
-	@Override
-	public Field clone() {
+	public Field deepClone() {
 		Field clone = new Field();
 		clone.name = this.name;
 		clone.description = this.description;

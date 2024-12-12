@@ -623,7 +623,7 @@ public class ExchangeApiGeneratorUtil {
 		if (type.isObject() 
 			&& field.getObjectName() != null 
 			&& field.getProperties() == null) {
-			field = field.clone();
+			field = field.deepClone();
 			field.setType(type);
 			field.setProperties(findPropertiesForObjectNameInApi(field.getObjectName(), exchangeApiDescriptor));
 		}

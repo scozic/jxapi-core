@@ -39,7 +39,7 @@ public class FieldTest {
     }
 
     @Test
-    public void testCloneObjectField() {
+    public void testDeepCloneObjectField() {
         Field field = new Field();
         field.setName("name");
         field.setType(Type.fromTypeName("OBJECT_MAP"));
@@ -51,7 +51,7 @@ public class FieldTest {
         field.setImplementedInterfaces(List.of("com.x.y.MyInterface"));
         field.setSampleMapKeyValue(List.of("key1", "value1"));
 
-        field = field.clone();
+        field = field.deepClone();
 
         Assert.assertEquals("name", field.getName());
         Assert.assertEquals(Type.fromTypeName("OBJECT_MAP") , field.getType());
@@ -65,7 +65,7 @@ public class FieldTest {
     }
 
     @Test
-    public void cloneSimpleField() {
+    public void testDeepCloneSimpleField() {
         Field field = new Field();
         field.setName("name");
         field.setType("STRING");
@@ -73,7 +73,7 @@ public class FieldTest {
         field.setSampleValue("sampleValue");
         field.setMsgField("f");
 
-        field = field.clone();
+        field = field.deepClone();
 
         Assert.assertEquals("name", field.getName());
         Assert.assertEquals(Type.STRING , field.getType());

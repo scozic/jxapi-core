@@ -233,10 +233,8 @@ public class WebsocketEndpointDemoGenerator extends JavaTypeGenerator {
 	}
 	
 	private String generateSubscribeMethodBody() {
-		String exchangeName = JavaCodeGenerationUtil.firstLetterToLowerCase(exchangeDescriptor.getName());
 		StringBuilder bodyBuilder = new StringBuilder();
 		bodyBuilder.append(EndpointDemoGeneratorUtil.getNewTestApiInstruction(
-				exchangeName, 
 				exchangeClassName, 
 				simpleApiClassName, 
 				"configProperties"));

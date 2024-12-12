@@ -43,7 +43,6 @@ public class RestEndpointDemoGenerator extends JavaTypeGenerator {
 	private final String requestSimpleClassName;
 	private String apiInterfaceClassName;
 	private final String simpleApiClassName;
-	private final String exchangeName;
 	private final String exchangeClassName;
 	private final String exchangeSimpleClassName;
 	private final Field request;
@@ -69,7 +68,6 @@ public class RestEndpointDemoGenerator extends JavaTypeGenerator {
 		super(EndpointDemoGeneratorUtil.getRestApiDemoClassName(exchangeDescriptor, exchangeApiDescriptor, restApi));
 		setTypeDeclaration("public class");
 		this.restApi = restApi;
-		this.exchangeName = exchangeDescriptor.getName();
 		this.exchangeClassName = ExchangeJavaWrapperGeneratorUtil.getExchangeInterfaceName(exchangeDescriptor);
 		this.exchangeSimpleClassName = JavaCodeGenerationUtil.getClassNameWithoutPackage(exchangeClassName);
 		this.hasArguments = ExchangeApiGeneratorUtil.restEndpointHasArguments(restApi, exchangeApiDescriptor);
@@ -176,7 +174,6 @@ public class RestEndpointDemoGenerator extends JavaTypeGenerator {
 	private void generateExecuteMethod() {
 		StringBuilder bodyBuilder = new StringBuilder();
 		bodyBuilder.append(EndpointDemoGeneratorUtil.getNewTestApiInstruction(
-														exchangeName, 
 														exchangeClassName, 
 														simpleApiClassName, 
 														"configProperties"));
