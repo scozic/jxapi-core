@@ -52,31 +52,31 @@ public class WebsocketManagerLoadTest {
 	 * Number of messages sent for each topic, can be tuned using system property
 	 * <code>jxapi.wsmanager.loadTest.messagesPerTopicCount</code>
 	 */
-	public static final int NB_MESSAGES_PER_TOPIC = PropertiesUtil.getIntProperty(System.getProperties(), "jxapi.wsmanager.loadTest.messagesPerTopicCount", 10000);
+	public static final int NB_MESSAGES_PER_TOPIC = PropertiesUtil.getIntProperty(System.getProperties(), "jxapi.wsmanager.loadTest.messagesPerTopicCount", 200000);
 	
 	/**
 	 * Number of messages sent for each topic, can be tuned using system property
 	 * <code>jxapi.wsmanager.loadTest.iterations</code>
 	 */
-	public static final int ITERATIONS = PropertiesUtil.getIntProperty(System.getProperties(), "jxapi.wsmanager.loadTest.iterations", 2000);
+	public static final int ITERATIONS = PropertiesUtil.getIntProperty(System.getProperties(), "jxapi.wsmanager.loadTest.iterations", 50);
 	
-	/**
-	 * Total message sent count, e.g.
-	 * <code>TOPIC_COUNT * NB_MESSAGES_PER_TOPIC</code>
-	 */
-	public static final int TOTAL_MESSAGE_COUNT = (TOPIC_COUNT + 1) * NB_MESSAGES_PER_TOPIC * ITERATIONS;
-	
-	/**
-	 * Total message sent count, e.g.
-	 * <code>TOPIC_COUNT * NB_MESSAGES_PER_TOPIC</code>
-	 */
-	public static final int TOTAL_TOPIC_RELEATED_MESSAGE_COUNT = TOPIC_COUNT * NB_MESSAGES_PER_TOPIC * ITERATIONS;
+//	/**
+//	 * Total message sent count, e.g.
+//	 * <code>TOPIC_COUNT * NB_MESSAGES_PER_TOPIC</code>
+//	 */
+//	public static final int TOTAL_MESSAGE_COUNT = (TOPIC_COUNT + 1) * NB_MESSAGES_PER_TOPIC * ITERATIONS;
+//	
+//	/**
+//	 * Total message sent count, e.g.
+//	 * <code>TOPIC_COUNT * NB_MESSAGES_PER_TOPIC</code>
+//	 */
+//	public static final int TOTAL_TOPIC_RELEATED_MESSAGE_COUNT = TOPIC_COUNT * NB_MESSAGES_PER_TOPIC * ITERATIONS;
 	
 	/**
 	 * Number of threads spawned to dispatch messages, can be tuned using system
 	 * property <code>jxapi.wsmanager.loadTest.threadCount</code>
 	 */
-	public static final int NB_THREADS = PropertiesUtil.getIntProperty(System.getProperties(), "jxapi.wsmanager.loadTest.threadCount", 1);
+	public static final int NB_THREADS = PropertiesUtil.getIntProperty(System.getProperties(), "jxapi.wsmanager.loadTest.threadCount", 8);
 	
 	private static final AtomicInteger MESSAGE_COUNTER = new AtomicInteger();
 	private static final AtomicInteger RAND_VALUE_COUNTER = new AtomicInteger();
@@ -88,10 +88,6 @@ public class WebsocketManagerLoadTest {
 	private final MockWebsocket ws = new MockWebsocket();
 	private final MockWebsocketHook wsHook = new MockWebsocketHook();
 	private final WebsocketManager wsManager = new DefaultWebsocketManager(EXCHANGE_API, ws, wsHook);
-	private final MsgHandler wsMessageHandler1 = new MsgHandler(NB_MESSAGES_PER_TOPIC);
-	private final MsgHandler wsMessageHandler2 = new MsgHandler(NB_MESSAGES_PER_TOPIC);
-	private final MsgHandler wsMessageHandler3 = new MsgHandler(NB_MESSAGES_PER_TOPIC);
-	private final List<MsgHandler> wsMessageHandlers = List.of(wsMessageHandler1, wsMessageHandler2, wsMessageHandler3);
 	private final GenericWebsocketErrorHandler errorHandler = new GenericWebsocketErrorHandler();
 	
 	/**
@@ -112,6 +108,10 @@ public class WebsocketManagerLoadTest {
 			int nbThreads) throws InterruptedException {
 		int totalMessageCount = (topicCount + 1) * nbMessagesPerTopic * iterations;
 		int totalTopicRelatedMessageCount = topicCount * nbMessagesPerTopic * iterations;
+		MsgHandler wsMessageHandler1 = new MsgHandler(nbMessagesPerTopic);
+		MsgHandler wsMessageHandler2 = new MsgHandler(nbMessagesPerTopic);
+		MsgHandler wsMessageHandler3 = new MsgHandler(nbMessagesPerTopic);
+		List<MsgHandler> wsMessageHandlers = List.of(wsMessageHandler1, wsMessageHandler2, wsMessageHandler3);
 		log.info("Preparing messages...");
 		List<String> allMessages = prepareMessages(nbMessagesPerTopic, totalMessageCount);
 		log.info("Preparing threads...");

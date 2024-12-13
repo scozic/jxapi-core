@@ -22,10 +22,10 @@ import com.scz.jxapi.netutils.websocket.mock.MockWebsocketHookEvent;
 import com.scz.jxapi.netutils.websocket.mock.MockWebsocketHookEventType;
 import com.scz.jxapi.netutils.websocket.multiplexing.WebsocketMessageTopicMatcherFactory;
 
-public class DefaultWebsocketManager2Test {
+public class DefaultWebsocketManagerTest {
 
 	
-	private static final Logger log = LoggerFactory.getLogger(DefaultWebsocketManagerOldTest.class);
+	private static final Logger log = LoggerFactory.getLogger(DefaultWebsocketManagerTest.class);
 	
 	private static final long NO_EVENT_DELAY = 50;
 	private static final long HEARTBEAT_INTERVAL = 200;

@@ -449,6 +449,7 @@ public class DefaultWebsocketManager implements WebsocketManager {
 		} catch (IOException e) {
 			log.error("Error parsing websocket message [" + message + "]", e);
 		} finally {
+			allTopics.forEach(m -> m.matcher.reset());
 			releaseTopicMatcherList(allTopics);
 		}
 	}
@@ -515,8 +516,7 @@ public class DefaultWebsocketManager implements WebsocketManager {
 	 * @param exception
 	 */
 	protected void onError(WebsocketException exception) {
-		if (log.isErrorEnabled())
-			log.error("Error raised on Websocket [{}]", this, exception);
+		log.error("Error raised on Websocket [{}]", this, exception);
 		this.dispatchWebsocketError(exception);
 		if (!isDisposed()) {
 			if (reconnectDelay > 0) {
@@ -534,8 +534,7 @@ public class DefaultWebsocketManager implements WebsocketManager {
 					log.info("Websocket {} has been disposed or interrupted while waiting delay before reconnect", this);
 				}
 			} else {
-				if (log.isWarnEnabled())
-					log.warn("No reconnect delay set for websocket [{}], now disconnected", this);
+				log.warn("No reconnect delay set for websocket [{}], now disconnected", this);
 			}
 		}
 	}
@@ -605,8 +604,11 @@ public class DefaultWebsocketManager implements WebsocketManager {
 			}
 		}
 		
+		/**
+		 * Releases a matcher to the pool. to be called from inside a monitor. 
+		 * @param matcher matcher to release, its message matcher must have been reset before.
+		 */
 		public void releaseTopicMatcher(TopicMatcher matcher) {
-			matcher.matcher.reset();
 			matcherPool.add(matcher);
 		}
 	}
