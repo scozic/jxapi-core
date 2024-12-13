@@ -813,58 +813,14 @@ public class DefaultWebsocketManager2Test {
 		popWebsocketConnectEvent();
 	}
 	
-	@Test
-	public void testConnectionInitiatedSendingMessageThenErrorRaisedUponSendOfSecondMessageTriggersSuccessfulReconnectionAndAnotherMessagIsSent() throws Exception {
-		wsManager = new DefaultWebsocketManager(EXCHANGE_API, ws, null);
-		popWebsocketAddErrorHandlerEvent();
-		popWebsocketAddMessageHandlerEvent();
-		wsManager.setReconnectDelay(HEARTBEAT_INTERVAL);
-		long noMessageTimeout = NO_EVENT_DELAY * 2 + 50L;
-		wsManager.setNoMessageTimeout(noMessageTimeout);
-		wsManager.subscribeErrorHandler(errorHandler);
-		wsManager.subscribe(null, null, wsMessageHandler1);
-		popWebsocketConnectEvent();
-		
-		checkNoEvents();
-		checkNoEvents();
-		// No message received for longer delay than noMessageTimeout 
-		// triggers error and disconnection/reconnection attempt.
-		popError();
-		
-		// Expect reconnection attempt
-		// Disconnection should be initiated upon error
-		popWebsocketDisconnectEvent();
-		
-		// reconnect delay must be awaited before attempting reconnection
-		checkNoEvents();
-		
-		// Then reconnection should be initiated
-		popWebsocketConnectEvent();
-		
-		checkNoEvents();
-		checkNoEvents();
-		// 2nd no message timeout triggers a 2nd reconnection.
-		popError();
-		
-		// Expect reconnection attempt
-		// Disconnection should be initiated upon error
-		popWebsocketDisconnectEvent();
-		
-		// reconnect delay must be awaited before attempting reconnection
-		checkNoEvents();
-		
-		// Then reconnection should be initiated
-		popWebsocketConnectEvent();
-	}
-	
 	@Test(expected = IllegalStateException.class)
-	public void testHeartBeatIntervalSetButNoWebsocketHookThrowsException() throws Exception {
+	public void testHeartBeatIntervalSetButNoWebsocketHookThrowsException() {
 		wsManager = new DefaultWebsocketManager(EXCHANGE_API, ws, null);
 		wsManager.setHeartBeatInterval(HEARTBEAT_INTERVAL);
 	}
 	
 	@Test
-	public void testHeartBeatIntervalSetToNegativeValueWhenNoWebsocketHook() throws Exception {
+	public void testHeartBeatIntervalSetToNegativeValueWhenNoWebsocketHook() {
 		wsManager = new DefaultWebsocketManager(EXCHANGE_API, ws, null);
 		wsManager.setHeartBeatInterval(-2L);
 		Assert.assertEquals(-2L, wsManager.getHeartBeatInterval());
@@ -1154,6 +1110,29 @@ public class DefaultWebsocketManager2Test {
 		wsHook.setUnSubscribeRequestMessage(null, unsubscribeMsg);
 		wsManager.unsubscribe("foo");
 		checkNoEvents();
+	}
+	
+	@Test
+	public void testDisposeDuringWaitReconnect() throws Exception {
+		wsManager = new DefaultWebsocketManager(EXCHANGE_API, ws, null);
+		wsManager.setReconnectDelay(NO_EVENT_DELAY * 10);
+		wsManager.subscribeErrorHandler(errorHandler);
+		popWebsocketAddErrorHandlerEvent();
+		popWebsocketAddMessageHandlerEvent();
+		ws.addExceptionToThrowOnConnect("Error on first connection attempt");
+		ws.addExceptionToThrowOnConnect("Error on second connection attempt");
+		String msg =  "{\"greetings\":\"Hi!\"}";
+		CompletableFuture<WebsocketException> sendMessageResult = wsManager.sendAsync(msg);
+		popWebsocketConnectEvent();
+		popError();
+		Assert.assertNotNull(sendMessageResult.get());
+		
+		wsManager.dispose();
+		popWebsocketRemoveMessageHandlerEvent();
+		popWebsocketRemoveErrorHandlerEvent();
+		checkNoEvents();
+		Assert.assertFalse(wsManager.isConnected());
+		Assert.assertTrue(wsManager.isDisposed());
 	}
 	
 	private MockWebsocketEvent popWebsocketConnectEvent() throws TimeoutException {

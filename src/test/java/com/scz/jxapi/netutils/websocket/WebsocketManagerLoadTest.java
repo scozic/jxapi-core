@@ -142,7 +142,6 @@ public class WebsocketManagerLoadTest {
 			threads.get(i).join();
 		}
 		for (int i = 0; i < wsMessageHandlers.size(); i++) {
-			//wsMessageHandlers.get(i).waitUntilCount(NB_MESSAGES_PER_TOPIC);
 			Assert.assertTrue(wsMessageHandlers.get(i).latch.await(60000,TimeUnit.MILLISECONDS));
 		}
 		log.info("All messages received in {}", 

@@ -115,7 +115,8 @@ public class GenericObserver<T> {
 			try {
 				Thread.sleep(1);
 			} catch (InterruptedException e) {
-				throw new IllegalArgumentException("Interrupted waiting for " + count + " events");
+				Thread.currentThread().interrupt();
+				throw new IllegalArgumentException("Interrupted waiting for " + count + " events", e);
 			}
 		}
 

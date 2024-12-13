@@ -27,6 +27,8 @@ import com.scz.jxapi.netutils.deserialization.json.field.TimestampJsonFieldDeser
  */
 public class ExchangeJavaWrapperGeneratorUtil {
 	
+	private static final String GET_INSTANCE = ".getInstance()";
+
 	private ExchangeJavaWrapperGeneratorUtil() {}
 	
 	/**
@@ -266,22 +268,22 @@ public class ExchangeJavaWrapperGeneratorUtil {
 		switch (type.getCanonicalType()) {
 		case BIGDECIMAL:
 			imports.add(BigDecimalJsonFieldDeserializer.class.getName());
-			return BigDecimalJsonFieldDeserializer.class.getSimpleName() +".getInstance()";
+			return BigDecimalJsonFieldDeserializer.class.getSimpleName() +GET_INSTANCE;
 		case BOOLEAN:
 			imports.add(BooleanJsonFieldDeserializer.class.getName());
-			return  BooleanJsonFieldDeserializer.class.getSimpleName() + ".getInstance()";
+			return  BooleanJsonFieldDeserializer.class.getSimpleName() + GET_INSTANCE;
 		case INT:
 			imports.add(IntegerJsonFieldDeserializer.class.getName());
-			return  IntegerJsonFieldDeserializer.class.getSimpleName() + ".getInstance()";
+			return  IntegerJsonFieldDeserializer.class.getSimpleName() + GET_INSTANCE;
 		case LONG:
 			imports.add(LongJsonFieldDeserializer.class.getName());
-			return  LongJsonFieldDeserializer.class.getSimpleName() + ".getInstance()";
+			return  LongJsonFieldDeserializer.class.getSimpleName() + GET_INSTANCE;
 		case STRING:
 			imports.add(StringJsonFieldDeserializer.class.getName());
-			return  StringJsonFieldDeserializer.class.getSimpleName() + ".getInstance()";
+			return  StringJsonFieldDeserializer.class.getSimpleName() + GET_INSTANCE;
 		case TIMESTAMP:
 			imports.add(TimestampJsonFieldDeserializer.class.getName());
-			return  TimestampJsonFieldDeserializer.class.getSimpleName() + ".getInstance()";
+			return  TimestampJsonFieldDeserializer.class.getSimpleName() + GET_INSTANCE;
 		case LIST:
 			imports.add(ListJsonFieldDeserializer.class.getName());
 			return "new " + ListJsonFieldDeserializer.class.getSimpleName() + "<>(" 

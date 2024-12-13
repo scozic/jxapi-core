@@ -209,7 +209,7 @@ public class ExchangeReadmeMdGenerator {
 				.append(" ")
 				.append(api.getName())
 				.append(" websocket endpoints").toString();
-		return HtmlGenerationUtil.generateTable(caption.toString(), columns, cells);
+		return HtmlGenerationUtil.generateTable(caption, columns, cells);
 	}
 
 	private String generateRestEndpointsTable(ExchangeApiDescriptor api) {
@@ -247,7 +247,7 @@ public class ExchangeReadmeMdGenerator {
 				.append(" ")
 				.append(api.getName())
 				.append(" websocket endpoints").toString();
-		return HtmlGenerationUtil.generateTable(caption.toString(), columns, cells);
+		return HtmlGenerationUtil.generateTable(caption, columns, cells);
 	}
 	
 	private String getInterfaceJavadocLink(String interfaceClass) {

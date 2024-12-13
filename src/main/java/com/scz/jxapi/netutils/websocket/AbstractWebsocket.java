@@ -77,9 +77,7 @@ public abstract class AbstractWebsocket implements Websocket {
 		if (!isConnected()) {
 			throw new WebsocketException("Not connected:" + this);
 		}
-		if (log.isDebugEnabled()) {
-			log.debug(toString() + " > " + message);
-		}
+		log.debug("{} > {}", this, message);
 		doSend(message);
 	}
 

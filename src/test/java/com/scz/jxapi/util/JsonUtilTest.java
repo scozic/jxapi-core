@@ -107,7 +107,7 @@ public class JsonUtilTest {
 	@Test(expected = JsonParseException.class)
 	public void testReadCurrentBigDecimal_InvalidValue() throws Exception {
 		JsonParser parser = new JsonFactory().createParser("[]".getBytes());
-		Assert.assertEquals(JsonToken.START_ARRAY, parser.nextToken());
+		parser.nextToken();
 		JsonUtil.readCurrentBigDecimal(parser);
 	}
 	
@@ -144,7 +144,7 @@ public class JsonUtilTest {
 	@Test(expected = JsonParseException.class)
 	public void testReadCurrentInteger_InvalidValue() throws Exception {
 		JsonParser parser = new JsonFactory().createParser("[]".getBytes());
-		Assert.assertEquals(JsonToken.START_ARRAY, parser.nextToken());
+		parser.nextToken();
 		JsonUtil.readCurrentInteger(parser);
 	}
 	
@@ -181,7 +181,7 @@ public class JsonUtilTest {
 	@Test(expected = JsonParseException.class)
 	public void testReadCurrentLong_InvalidValue() throws Exception {
 		JsonParser parser = new JsonFactory().createParser("[]".getBytes());
-		Assert.assertEquals(JsonToken.START_ARRAY, parser.nextToken());
+		parser.nextToken();
 		JsonUtil.readCurrentLong(parser);
 	}
 	
@@ -224,7 +224,7 @@ public class JsonUtilTest {
 	@Test(expected = JsonParseException.class)
 	public void testReadCurrentBoolean_InvalidValue() throws Exception {
 		JsonParser parser = new JsonFactory().createParser("[]".getBytes());
-		Assert.assertEquals(JsonToken.START_ARRAY, parser.nextToken());
+		parser.nextToken();
 		JsonUtil.readCurrentBoolean(parser);
 	}
 	
@@ -241,7 +241,7 @@ public class JsonUtilTest {
 	@Test(expected = IllegalStateException.class)
 	public void testReadCurrentList_InvalidList() throws Exception {
 		JsonParser parser = new JsonFactory().createParser("false".getBytes());
-		Assert.assertEquals(JsonToken.VALUE_FALSE, parser.nextToken());
+		parser.nextToken();
 		JsonUtil.readCurrentList(parser, null);
 	}
 	
@@ -267,7 +267,7 @@ public class JsonUtilTest {
 	@Test(expected = IllegalStateException.class)
 	public void testReadMap_NotAnObject() throws Exception {
 		JsonParser parser = new JsonFactory().createParser("[]".getBytes());
-		Assert.assertEquals(JsonToken.START_ARRAY, parser.nextToken());
+		parser.nextToken();
 		JsonUtil.readMap(parser, null);
 	}
 	

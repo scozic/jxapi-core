@@ -91,18 +91,15 @@ public class RequestThrottler {
 			throw new IllegalStateException("Disposed");
 		List<RateLimitRule> rateLimits = request.getRateLimits();
 		if (CollectionUtils.isEmpty(rateLimits)) {
-			if (log.isDebugEnabled())
-				log.debug("No rate limit set, submitting now:" + request);
+			log.debug("No rate limit set, submitting now:,{}", request);
 			return executor.apply(request);
 		}
 		for (RateLimitRule rateLimit: rateLimits) {
 			final RateLimitThrottling rlManager = getOrCreateRateLimit(rateLimit);
 			FutureRestResponse<?> queued = rlManager.queued;
 			if (queued != null) {
-				if (log.isDebugEnabled()) {
-					log.debug("Already has a queued request for " + rlManager.rateLimitManager.getRateLimit()
-								+ ", request:" + request + " will be submitted again after it completes");
-				}
+				log.debug("Already has a queued request for {}, request:{} will be submitted again after it completes", 
+						  rlManager.rateLimitManager.getRateLimit(), request);
 				FutureRestResponse<A> r = new FutureRestResponse<>();
 				queued.thenRun(() -> submit(request, executor).thenAccept(r::complete));
 				return r;
@@ -110,15 +107,12 @@ public class RequestThrottler {
 			
 			long delay = rlManager.rateLimitManager.requestCall(request.getWeight());
 			if (delay > 0) {
-				if (log.isDebugEnabled()) {
-					log.debug("Rate limit " + rlManager.rateLimitManager.getRateLimit()
-								+ " reached, scheduling request:" + request + " for later execution in " + delay + "ms");
-				}
+				log.debug("Rate limit {} reached, scheduling request:{} for later execution in {}ms", 
+						  rlManager.rateLimitManager.getRateLimit(), request, delay);
 				return queue(request, executor, delay, rlManager);
 			}
 		}
-		if (log.isDebugEnabled())
-			log.debug("All request rules checked, submitting now:" + request);
+		log.debug("All request rules checked, submitting now:{}", request);
 		return executor.apply(request);
 	}
 	

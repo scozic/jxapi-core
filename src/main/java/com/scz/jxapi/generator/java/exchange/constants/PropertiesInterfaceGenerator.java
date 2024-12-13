@@ -79,25 +79,6 @@ public class PropertiesInterfaceGenerator extends JavaTypeGenerator {
 			rows.add(List.of(pName, pType, pDesc, pDef));
 		}
 		sb.append(HtmlGenerationUtil.generateTable(exchangeName + " properties", columns, rows));
-		
-//		  sb.append("<table>\n")
-//		  .append("  <tr>\n")
-//		  .append("    <th>Name</th>\n")
-//		  .append("    <th>Type</th>\n")
-//		  .append("    <th>Description</th>\n")
-//		  .append("    <th>Default value</th>\n")
-//		  .append("  </tr>\n");
-//		for (ConfigProperty p : properties) {
-//			String pDesc = Optional.ofNullable(p.getDescription()).orElse("");
-//			String pDef = Optional.ofNullable(p.getDefaultValue()).orElse("").toString();
-//			sb.append("  <tr>\n")
-//			  .append("    <td>").append(p.getName()).append("</td>\n")
-//			  .append("    <td>").append(p.getType()).append("</td>\n")
-//			  .append("    <td>").append(pDesc).append("</td>\n")
-//			  .append("    <td>").append(pDef).append("</td>\n")
-//			  .append("  </tr>\n");
-//		}
-//		sb.append("</table><br>\n");
 		sb.append("<br>\nExposes helper methods are available to retrieve value of each of these properties "
 					+ "with right type, returning default value if not present in properties");
 		return sb.toString();

@@ -42,6 +42,7 @@ public class MockHttpRequestInterceptorTest {
 	@Test
 	public void testIntercept_NoPreparedInterceptor() {
 		interceptor.intercept(request);
+		Assert.assertNull(request.getHeaders());
 	}
 
 	@Test

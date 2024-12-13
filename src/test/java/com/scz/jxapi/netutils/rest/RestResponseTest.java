@@ -53,9 +53,8 @@ public class RestResponseTest {
 
     @Test
     public void testGetHttpResponse() {
-        RestResponse<String> response = new RestResponse<>();
         HttpResponse httpResponse = new HttpResponse();
-        response = new RestResponse<>(httpResponse);
+        RestResponse<String> response = new RestResponse<>(httpResponse);
         Assert.assertEquals(httpResponse, response.getHttpResponse());
     }
 

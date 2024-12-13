@@ -50,7 +50,7 @@ public class SpringWebsocketClientDemo {
 			throw new IllegalStateException("Failed to initialize websocketSession");
 		}
 		String topic = "!ticker@arr";
-		log.info("Subscribing to:" + topic);
+		log.info("Subscribing to:{}", topic);
 		String request = "{"
 				+ "\"method\": \"SUBSCRIBE\","
 				+ "\"params\":"
@@ -79,22 +79,22 @@ public class SpringWebsocketClientDemo {
 
 		@Override
 		public void afterConnectionEstablished(WebSocketSession session) throws Exception {
-			log.info("afterConnectionEstablished:session:" + session);
+			log.info("afterConnectionEstablished:session:{}", session);
 		}
 
 		@Override
 		public void handleMessage(WebSocketSession session, WebSocketMessage<?> message) throws Exception {
-			log.info("handleMessage:session:" + session + ", message:" + message);
+			log.info("handleMessage:session:{}, message:{}", session, message);
 		}
 
 		@Override
 		public void handleTransportError(WebSocketSession session, Throwable exception) throws Exception {
-			log.info("handleTransportError:session:" + session + ", throwable:" + exception, exception);
+			log.error("handleTransportError:session:{}", session, exception);
 		}
 
 		@Override
 		public void afterConnectionClosed(WebSocketSession session, CloseStatus closeStatus) throws Exception {
-			log.info("afterConnectionClosed:session:" + session + ", closeStatus:" + closeStatus);
+			log.info("afterConnectionClosed:session:{}, closeStatus:{}", session,closeStatus);
 		}
 
 		@Override
@@ -108,7 +108,7 @@ public class SpringWebsocketClientDemo {
 
 		@Override
 		public void onSuccess(WebSocketSession result) {
-			log.info("WebsocketSessionCallback:onSuccess:" + result);
+			log.info("WebsocketSessionCallback:onSuccess:{}", result);
 			webSocketSession = result;
 			websocketSessionAvailable.countDown();
 		}

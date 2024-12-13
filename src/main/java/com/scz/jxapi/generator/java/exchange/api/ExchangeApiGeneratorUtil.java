@@ -30,6 +30,8 @@ import com.scz.jxapi.util.EncodingUtil;
  */
 public class ExchangeApiGeneratorUtil {
 	
+	private static final String GET_INSTANCE = ".getInstance()";
+
 	private ExchangeApiGeneratorUtil() {}
 	
 	/**
@@ -431,20 +433,20 @@ public class ExchangeApiGeneratorUtil {
 		switch (messageType.getCanonicalType()) {
 		case BIGDECIMAL:
 			imports.add(RawBigDecimalMessageDeserializer.class.getName());
-			return RawBigDecimalMessageDeserializer.class.getSimpleName() + ".getInstance()";
+			return RawBigDecimalMessageDeserializer.class.getSimpleName() + GET_INSTANCE;
 		case BOOLEAN:
 			imports.add(RawBooleanMessageDeserializer.class.getName());
-			return RawBooleanMessageDeserializer.class.getSimpleName() + ".getInstance()";
+			return RawBooleanMessageDeserializer.class.getSimpleName() + GET_INSTANCE;
 		case INT:
 			imports.add(RawIntegerMessageDeserializer.class.getName());
-			return RawIntegerMessageDeserializer.class.getSimpleName() + ".getInstance()";
+			return RawIntegerMessageDeserializer.class.getSimpleName() + GET_INSTANCE;
 		case TIMESTAMP:
 		case LONG:
 			imports.add(RawLongMessageDeserializer.class.getName());
-			return RawLongMessageDeserializer.class.getSimpleName() + ".getInstance()";
+			return RawLongMessageDeserializer.class.getSimpleName() + GET_INSTANCE;
 		case STRING:
 			imports.add(RawStringMessageDeserializer.class.getName());
-			return RawStringMessageDeserializer.class.getSimpleName() + ".getInstance()";
+			return RawStringMessageDeserializer.class.getSimpleName() + GET_INSTANCE;
 		case OBJECT:
 		case LIST:
 		case MAP:
@@ -674,11 +676,8 @@ public class ExchangeApiGeneratorUtil {
 		List<Field> res = null;
 		for (RestEndpointDescriptor restEndpointDescriptor: 
 				Optional.ofNullable(exchangeApiDescriptor.getRestEndpoints()).orElse(List.of())) {
-			res = findPropertiesForObjectNameInField(requestObjectName, restEndpointDescriptor.getRequest());
-			if (res != null) {
-				break;
-			}
-			res = findPropertiesForObjectNameInField(requestObjectName, restEndpointDescriptor.getResponse());
+			res = Optional.ofNullable(findPropertiesForObjectNameInField(requestObjectName, restEndpointDescriptor.getRequest()))
+					.orElse(findPropertiesForObjectNameInField(requestObjectName, restEndpointDescriptor.getResponse()));
 			if (res != null) {
 				break;
 			}
@@ -687,11 +686,8 @@ public class ExchangeApiGeneratorUtil {
 		if (res == null) {
 			for (WebsocketEndpointDescriptor websocketEndpointDescriptor: 
 					Optional.ofNullable(exchangeApiDescriptor.getWebsocketEndpoints()).orElse(List.of())) {
-				res = findPropertiesForObjectNameInField(requestObjectName, websocketEndpointDescriptor.getRequest());
-				if (res != null) {
-					break;
-				}
-				res = findPropertiesForObjectNameInField(requestObjectName, websocketEndpointDescriptor.getMessage());
+				res = Optional.ofNullable(findPropertiesForObjectNameInField(requestObjectName, websocketEndpointDescriptor.getRequest()))
+						.orElse(findPropertiesForObjectNameInField(requestObjectName, websocketEndpointDescriptor.getMessage()));
 				if (res != null) {
 					break;
 				}
@@ -713,7 +709,7 @@ public class ExchangeApiGeneratorUtil {
 	 * 
 	 * @param objectName The object name to find properties for.
 	 * @param param      The field to search for properties of the object name.
-	 * @return The list of properties of the object name in the field.
+	 * @return The list of properties of the object name in the field or <code>null</code> if properties could not be resolved.
 	 */
 	public static List<Field> findPropertiesForObjectNameInField(String objectName, Field param) {
 		if (objectName == null) {

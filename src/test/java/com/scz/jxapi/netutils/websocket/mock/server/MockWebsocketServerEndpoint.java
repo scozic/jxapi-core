@@ -28,9 +28,7 @@ public class MockWebsocketServerEndpoint {
 	@OnOpen
 	public void onOpen(Session session) {
 		MockWebsocketServerSession mockSession = new MockWebsocketServerSessionImpl(session);
-		if (log.isDebugEnabled()) {
-			log.debug("New session opened:" + mockSession);
-		}
+		log.debug("New session opened:{}", mockSession);
 		MockWebsocketServerSessionService.registerNewSession(mockSession);
 	}
 
@@ -38,8 +36,7 @@ public class MockWebsocketServerEndpoint {
 	public String onMessage(String message, Session session) {
 		String uri = session.getRequestURI().toString();
 		String sessionId = session.getId();
-		if (log.isDebugEnabled())
-			log.debug("Received message on WS:" + uri + ", sessionId:" + sessionId + ":[" + message + "]");
+		log.debug("Received message on WS:{}, sessionId:{}:[{}]", uri, sessionId, message);
 		MockWebsocketServerSessionService.dispatchWebsocketClientMessageEvent(uri, session.getId(), message);
 
 		return null;
@@ -48,9 +45,7 @@ public class MockWebsocketServerEndpoint {
 	@OnClose
 	public void onClose(Session session, CloseReason closeReason) {
 		MockWebsocketServerSession mockSession = new MockWebsocketServerSessionImpl(session);
-		if (log.isDebugEnabled()) {
-			log.debug("Session closed:" + mockSession);
-		}
+		log.debug("Session closed:{}", mockSession);
 		MockWebsocketServerSessionService.unregisterClosedSession(mockSession);
 	}
 

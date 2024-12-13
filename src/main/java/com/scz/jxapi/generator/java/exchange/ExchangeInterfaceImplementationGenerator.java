@@ -96,7 +96,7 @@ public class ExchangeInterfaceImplementationGenerator extends JavaTypeGenerator 
 		List<ExchangeApiDescriptor> apis = exchangeDescriptor.getApis();
 		boolean hasRateLimits = !CollectionUtils.isEmpty(rateLimits);
 		if (hasRateLimits) {
-			rateLimits.forEach(rateLimit -> generateRateLimitVariable(rateLimit));
+			rateLimits.forEach(this::generateRateLimitVariable);
 			if (apis != null && apis.stream().anyMatch(api -> !CollectionUtils.isEmpty(api.getRestEndpoints()))) {
 				addImport(RequestThrottler.class);
 				appendToBody("\nprivate final ");
@@ -121,6 +121,7 @@ public class ExchangeInterfaceImplementationGenerator extends JavaTypeGenerator 
 			.append(PROPERTIES_PARAMETER)
 			.append(");\n");
 		
+		StringBuilder apiMethodsDeclarations = new StringBuilder(); 
 		if (exchangeDescriptor.getApis() != null) {
 			for (ExchangeApiDescriptor api: exchangeDescriptor.getApis()) {
 				String apiClassName = ExchangeJavaWrapperGeneratorUtil.getApiInterfaceClassName(exchangeDescriptor, api);
@@ -130,6 +131,7 @@ public class ExchangeInterfaceImplementationGenerator extends JavaTypeGenerator 
 				addImport(apiClassName);
 				addImport(apiImplClassName);
 				String apiVariableName = JavaCodeGenerationUtil.firstLetterToLowerCase(apiSimpleClassName);
+				String getApiMethodSignature = apiSimpleClassName + " get" + apiSimpleClassName + "()";
 				appendToBody("private final " + apiSimpleClassName + " " + apiVariableName + ";\n");
 				implementationConstructorBody
 						.append("this.")
@@ -141,8 +143,12 @@ public class ExchangeInterfaceImplementationGenerator extends JavaTypeGenerator 
 				if (hasRateLimits && !CollectionUtils.isEmpty(api.getRestEndpoints())) {
 					implementationConstructorBody.append(", ").append(REQUEST_THROTTLER_VARIABLE_NAME);
 				}
-				
 				implementationConstructorBody.append("));\n");
+				apiMethodsDeclarations.append("@Override\npublic ")
+									  .append(getApiMethodSignature)
+									  .append(" ")
+									  .append(JavaCodeGenerationUtil.generateCodeBlock("return this." + apiVariableName + ";\n"))
+									  .append("\n");
 			}
 		}
 		addImport(Properties.class);
@@ -159,16 +165,7 @@ public class ExchangeInterfaceImplementationGenerator extends JavaTypeGenerator 
 					
 		appendMethod(implementationConstructorSignature, implementationConstructorBody.toString());
 		appendToBody("\n");
-		if (exchangeDescriptor.getApis() != null) {
-			for (ExchangeApiDescriptor api: exchangeDescriptor.getApis()) {
-				String apiClassName = ExchangeJavaWrapperGeneratorUtil.getApiInterfaceClassName(exchangeDescriptor, api);
-				String apiSimpleClassName = JavaCodeGenerationUtil.getClassNameWithoutPackage(apiClassName);
-				String getApiMethodSignature = apiSimpleClassName + " get" + apiSimpleClassName + "()";
-				String apiVariableName = JavaCodeGenerationUtil.firstLetterToLowerCase(apiSimpleClassName);
-				appendMethod("@Override\npublic " + getApiMethodSignature, "return this." + apiVariableName + ";\n");
-				appendToBody("\n");
-			}
-		}
+		appendToBody(apiMethodsDeclarations.toString());
 		
 		return super.generate();
 	}

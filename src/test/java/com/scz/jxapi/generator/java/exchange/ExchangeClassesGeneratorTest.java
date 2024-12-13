@@ -87,7 +87,7 @@ public class ExchangeClassesGeneratorTest {
 		checkSourceFileExists(Paths.get("MyTestExchangeExchangeImpl.java"));
 	}
 	
-	private void checkJavaFilesCount(Path relativePkg, int count) throws IOException {
+	private void checkJavaFilesCount(Path relativePkg, int count) {
 		ClassesGeneratorTestUtil.checkJavaFilesCount(srcFolder.resolve(Paths.get("com", "foo", "bar", "gen").resolve(relativePkg)), count);
 	}
 	

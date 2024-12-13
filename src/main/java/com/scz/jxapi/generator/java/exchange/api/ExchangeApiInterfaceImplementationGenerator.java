@@ -432,14 +432,13 @@ public class ExchangeApiInterfaceImplementationGenerator extends JavaTypeGenerat
 	}
 	
 	private void addWebsocketMethod(String wsStreamName, String methodDeclaration, String methodBody) {
+		wsStreamName = Optional.ofNullable(wsStreamName).orElse("");
 		Map<String, String> wsStreamMethods = wsMethods.get(wsStreamName);
 		if (wsStreamMethods == null) {
 			wsStreamMethods = new TreeMap<>();
 			wsMethods.put(wsStreamName, wsStreamMethods);
 		}
 		wsStreamMethods.put(methodDeclaration, methodBody);
-//		Map<String, String> wsStreamMethods = wsMethods.computeIfAbsent(wsStreamName, k -> new TreeMap<>());
-//		wsStreamMethods.put(methodDeclaration, methodBody);
 	}
 	
 	private String getWebsocketEndpointVariableName(WebsocketEndpointDescriptor websocketApi) {

@@ -174,7 +174,7 @@ public class AbstractExchangeApiTest {
 	}
 	
 	@Test
-	public void testSubmitAndExecuteHttpRequestWithDummyInterceptor() throws Exception {
+	public void testSubmitAndExecuteHttpRequestWithDummyInterceptor() {
 		MockExchangeApiObserver observer = new MockExchangeApiObserver();
 		exchangeApi.subscribeObserver(observer);
 		createMockHttpRequestExecutor();
@@ -188,7 +188,7 @@ public class AbstractExchangeApiTest {
 	}
 	
 	@Test(expected = IllegalArgumentException.class)
-	public void testCreateHttpRequestInterceptorUnresolvedInterceptorFactory() throws Exception {
+	public void testCreateHttpRequestInterceptorUnresolvedInterceptorFactory() {
 		MockExchangeApiObserver observer = new MockExchangeApiObserver();
 		exchangeApi.subscribeObserver(observer);
 		MockHttpRequestExecutor executor = new MockHttpRequestExecutor();

@@ -84,7 +84,8 @@ public class SpringWebsocket extends AbstractWebsocket {
 		try {
 			sessionAvailable = websocketSessionAvailable.await(CONNECT_TIMEOUT, TimeUnit.MILLISECONDS );
 		} catch (InterruptedException e) {
-			log.warn("Interrupted while waiting for websocket handshake");
+			Thread.currentThread().interrupt();
+			throw new WebsocketException("Interrupted while waiting for websocket handshake", e);
 		}
 		if (!sessionAvailable || webSocketSession == null) {
 			String handShakeError = "Handshake failed: websocketSession not initialized";

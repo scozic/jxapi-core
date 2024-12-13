@@ -50,8 +50,16 @@ public class WebsocketEndpointDemoGenerator extends JavaTypeGenerator {
 	
 	private static final String SUBSCRIPTION_DURATION_STATIC_VAR_NAME = "SUBSCRIPTION_DURATION";
 	private static final String DELAY_BEFORE_EXIT_AFTER_UNSUBSCRIPTION_VAR_NAME = "DELAY_BEFORE_EXIT_AFTER_UNSUBSCRIPTION";
-	private static final String SUBSCRIBE_METHOD_ARGUMENT_INDENT = "	                           ";
-	private static final String MAIN_METHOD_SUBSCRIBE_METHOD_CALL_ARGUMENT_INDENT = "          ";
+	private static final String SUBSCRIBE_METHOD_ARGUMENT_INDENT = spaces("public static void subscribe(".length());
+	private static final String MAIN_METHOD_SUBSCRIBE_METHOD_CALL_ARGUMENT_INDENT = spaces("subscribe(".length());
+	
+	private static String spaces(int count) {
+		StringBuilder sb = new StringBuilder();
+		for (int i = 0; i < count; i++) {
+			sb.append(' ');
+		}
+		return sb.toString();
+	}
 	
 	private final ExchangeDescriptor exchangeDescriptor;
 	private final boolean hasArguments;
@@ -298,13 +306,6 @@ public class WebsocketEndpointDemoGenerator extends JavaTypeGenerator {
 				   .append(MAIN_METHOD_SUBSCRIBE_METHOD_CALL_ARGUMENT_INDENT)
 				   .append(DELAY_BEFORE_EXIT_AFTER_UNSUBSCRIPTION_VAR_NAME)
 				   .append(");\nSystem.exit(0);");
-//		appendMethod("public static void main(String[] args)", 
-//				"try {\n" 
-//					+ JavaCodeGenerationUtil.indent(bodyBuilder.toString(), JavaCodeGenerationUtil.INDENTATION) 
-//					+ "\n} catch (Throwable t) {\n"
-//					+ JavaCodeGenerationUtil.indent("log.error(\"Exception raised from main()\", t);\nSystem.exit(-1);", JavaCodeGenerationUtil.INDENTATION)
-//					+ "\n}",
-//					generateMainMethodJavadoc());
 		
 		appendMethod("public static void main(String[] args)",
 					 JavaCodeGenerationUtil.generateTryBlock(

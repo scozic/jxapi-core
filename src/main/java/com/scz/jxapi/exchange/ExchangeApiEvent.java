@@ -224,8 +224,9 @@ public class ExchangeApiEvent {
 	 * @return The REST response object, if this event is of type
 	 *         {@link ExchangeApiEventType#HTTP_RESPONSE}.
 	 */
-	public RestResponse<?> getHttpResponse() {
-		return httpResponse;
+	@SuppressWarnings("unchecked")
+	public RestResponse<Object> getHttpResponse() {
+		return (RestResponse<Object>) httpResponse;
 	}
 
 	/**

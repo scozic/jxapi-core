@@ -134,7 +134,7 @@ public class ExchangeApiClassesGeneratorTest {
 		checkSourceFileExists(Paths.get("serializers", "MyTestExchangeMarketDataTickersResponseSerializer.java"));
 	}
 	
-	private void checkJavaFilesCount(Path relativePkg, int count) throws IOException {
+	private void checkJavaFilesCount(Path relativePkg, int count) {
 		ClassesGeneratorTestUtil.checkJavaFilesCount(srcFolder.resolve(BASE_PKG).resolve(relativePkg), count);
 	}
 	

@@ -61,9 +61,7 @@ public class MockWebsocketServer extends GenericObserver<MockWebsocketServerEven
 		if (!isStarted() || !e.getSession().getUri().equals(uri)) {
 			return;
 		}
-		if (log.isDebugEnabled()) {
-			log.debug("handle:" + e);
-		}
+		log.debug("handle:{}", e);
 		if (e.getType() == MockWebsocketServerEventType.CLIENT_CONNECT) {
 			addSession(e.getSession());
 		}
@@ -95,9 +93,7 @@ public class MockWebsocketServer extends GenericObserver<MockWebsocketServerEven
 	    MockWebsocketServerSessionService.subscribeListener(mockWebsocketServerListener);
 	    started = true;
 	    server.start();
-	    if (log.isInfoEnabled()) {
-	    	log.info("Started WS server on port " + port);
-	    }
+	    log.info("Started WS server on port {}", port);
 	}
 	
 	/**
@@ -110,9 +106,7 @@ public class MockWebsocketServer extends GenericObserver<MockWebsocketServerEven
 			server.stop();
 			server = null;
 			MockWebsocketServerSessionService.unsubscribeListener(mockWebsocketServerListener);
-			if (log.isInfoEnabled()) {
-		    	log.info("Stopped WS server on port " + port);
-		    }
+		    log.info("Stopped WS server on port {}", port);
 		}
 	}
 

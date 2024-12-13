@@ -70,7 +70,7 @@ public class EndpointPojoClassesGeneratorTest {
 		checkSourceFileExists(Path.of("MyPojo.java"));
 	}
 	
-	private void checkJavaFilesCount(int count) throws IOException {
+	private void checkJavaFilesCount(int count) {
 		ClassesGeneratorTestUtil.checkJavaFilesCount(srcFolder.resolve(Paths.get("com", "x")), count);
 	}
 	

@@ -50,9 +50,8 @@ public class ClassesGeneratorTestUtil {
 							+ (RandomUtils.nextInt() % 1000));
 		if (p.toFile().exists()) {
 			long delay = 1;
-			log.warn("Path " + p.toFile().getAbsolutePath() 
-						+ " already exists, waiting " + delay 
-						+ "ms before retrying generation of tmp dir");
+			log.warn("Path {} already exists, waiting {}ms before retrying generation of tmp dir", 
+					 p.toFile().getAbsolutePath(), delay);
 			try {
 				Thread.sleep(delay);
 			} catch (InterruptedException e) {

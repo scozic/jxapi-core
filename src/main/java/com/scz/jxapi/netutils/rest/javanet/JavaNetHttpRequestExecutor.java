@@ -10,6 +10,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map.Entry;
 import java.util.Optional;
+import java.util.concurrent.ExecutionException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -77,7 +78,7 @@ public class JavaNetHttpRequestExecutor extends AbstractHttpRequestExecutor {
 			httpClient.sendAsync(builder.build(), BodyHandlers.ofString()).whenComplete((r, error) -> {
 	    		try {
 	    			if (error != null) {
-	    				throw new Exception(error);
+	    				throw new ExecutionException(error);
 	    			}
 	    			response.setResponseCode(r.statusCode());
 		    		response.setHeaders(r.headers().map());

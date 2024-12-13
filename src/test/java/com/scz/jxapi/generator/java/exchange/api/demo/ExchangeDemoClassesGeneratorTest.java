@@ -76,7 +76,7 @@ public class ExchangeDemoClassesGeneratorTest {
 		checkSourceFileExists(Paths.get("MyTestExchangeMarketDataTickersDemo.java"));
 	}
 	
-	private void checkJavaFilesCount(Path relativePkg, int count) throws IOException {
+	private void checkJavaFilesCount(Path relativePkg, int count) {
 		ClassesGeneratorTestUtil.checkJavaFilesCount(srcFolder.resolve(BASE_PKG).resolve(relativePkg), count);
 	}
 	

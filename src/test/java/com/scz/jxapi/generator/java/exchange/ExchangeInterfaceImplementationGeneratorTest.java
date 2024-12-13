@@ -228,7 +228,7 @@ public class ExchangeInterfaceImplementationGeneratorTest {
 				+ "  public FooExchangeImpl(String exchangeName, Properties properties) {\n"
 				+ "    super(ID, exchangeName, properties);\n"
 				+ "  }\n"
-				+ "  \n"
+				+ "  \n"	
 				+ "}\n", 
 				exchangeGenerator.generate());
 	}

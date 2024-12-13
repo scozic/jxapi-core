@@ -210,7 +210,7 @@ public class RestEndpointDemoGenerator extends JavaTypeGenerator {
 						  null, 
 						  null,
 						  finallyClause.toString(), 
-						  null));;
+						  null));
 		
 		StringBuilder signature = new StringBuilder()
 				.append("public static RestResponse<");

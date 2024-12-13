@@ -294,7 +294,7 @@ public class JsonUtil {
 			case VALUE_STRING:
 				return Boolean.valueOf(parser.getText());
 			default:
-				throw new JsonParseException(parser, "Expected long value, but got " + parser.currentToken());
+				throw new JsonParseException(parser, "Expected boolean value, but got " + parser.currentToken());
 		}
 	}
 
@@ -381,7 +381,7 @@ public class JsonUtil {
 		switch (jsonParser.nextToken()) {
 			case START_ARRAY:
 			case START_OBJECT:
-				jsonParser = jsonParser.skipChildren();
+				jsonParser.skipChildren();
 				break;
 			default:
 				break;

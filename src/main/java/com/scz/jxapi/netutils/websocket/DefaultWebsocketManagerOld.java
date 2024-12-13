@@ -239,7 +239,7 @@ public class DefaultWebsocketManagerOld implements WebsocketManager {
 			
 			connected.set(true);
 			if(log.isInfoEnabled())
-				log.info("Connected WS:{0}", this.toString());
+				log.info("Connected WS:{}", this.toString());
 		} catch (Exception exception) {
 			String msg = "Error while connecting websocket";
 			if (log.isErrorEnabled())
@@ -453,7 +453,7 @@ public class DefaultWebsocketManagerOld implements WebsocketManager {
 	 * @param exception
 	 */
 	protected void onError(WebsocketException exception) {
-		log.error("Error raised on Websocket [" + toString() + "]", exception);
+		log.error("Error raised on Websocket [{}]", toString(), exception);
 		this.dispatchWebsocketError(exception);
 		if (!isDisposed()) {
 			if (reconnectDelay > 0) {

@@ -51,7 +51,7 @@ public class MockHttpServer {
 			try (ServerSocket s = new ServerSocket(port)) {
 				return port;	
 			} catch (IOException ex) {
-				log.debug("Port " + port + " not available");
+				log.debug("Port {} not available", port);
 			}
 		}
 		throw new IllegalStateException("Unable to find available HTTP port");
@@ -96,7 +96,7 @@ public class MockHttpServer {
 		server = HttpServer.createSimpleServer(null, getPort());
 		server.getServerConfiguration().addHttpHandler(httpHandler);
 		if (log.isDebugEnabled()) {
-			log.debug("Starting server on port:" + getPort());
+			log.debug("Starting server on port:{}", getPort());
 		}
 		server.start();
 		started = true;
@@ -110,7 +110,7 @@ public class MockHttpServer {
 			return;
 		}
 		if (log.isDebugEnabled()) {
-			log.debug("Stopping server on port:" + getPort());
+			log.debug("Stopping server on port:{}", getPort());
 		}
 		server.shutdown();
 	}
@@ -158,15 +158,13 @@ public class MockHttpServer {
 	private void serveRequest(Request request, Response response) {
 		try {
 			HttpRequest httpRequest = convertRequest(request);
-			if (log.isDebugEnabled()) {
-				log.debug("Serving request:" + httpRequest);
-			}
+			log.debug("Serving request:{}", httpRequest);
 			MockHttpRequest mockHttpRequest = new MockHttpRequest(httpRequest);
 			requests.add(mockHttpRequest);
 			HttpResponse httpResponse = mockHttpRequest.get();
 			fillResponse(httpResponse, response);
 		} catch (Exception ex) {
-			log.error("Error serving request:" + request, ex);
+			log.error("Error serving request:{}", request, ex);
 		}
 	}
 	
@@ -202,9 +200,7 @@ public class MockHttpServer {
 	}
 	
 	private void fillResponse(HttpResponse httpResponse, Response response) throws IOException {
-		if (log.isDebugEnabled()) {
-			log.debug("Filling response:" + httpResponse);
-		}
+		log.debug("Filling response:{}", httpResponse);
 		response.setStatus(httpResponse.getResponseCode());
 		if (httpResponse.getHeaders() != null) {
 			httpResponse.getHeaders().entrySet().forEach(e -> {
@@ -217,8 +213,6 @@ public class MockHttpServer {
 		try (Writer writer = response.getWriter()) {
 			writer.write(body);
 		}
-		if (log.isDebugEnabled()) {
-			log.debug("DONE filling response:" + httpResponse);
-		}
+		log.debug("DONE filling response:{}", httpResponse);
 	}
 }

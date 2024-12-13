@@ -76,13 +76,10 @@ public class RestRequestPagination {
 			 												  BinaryOperator<A> responseAccumulator,
 			 												  A cumulativeResult) {
 		FutureRestResponse<A> response = new FutureRestResponse<>();
-		if (log.isDebugEnabled() ) {
-			log.debug("Fetching page for request:" + request);
-		}
+		log.debug("Fetching page for request:{}", request);
 		endpoint.apply(request).thenAccept(responsePage -> {
 			try {
-				if (log.isDebugEnabled())
-					 log.debug("Got response to request" + request + ":" + responsePage);
+				 log.debug("Got response to request:{}:{}", request, responsePage);
 				if (!responsePage.isOk()) {
 					response.complete(responsePage);
 				} else {
@@ -91,8 +88,7 @@ public class RestRequestPagination {
 						 responsePage.setResponse(responseAccumulator.apply(cumulativeResult, page));
 					 }
 					 String nextPageIndex = getResponseIndex.apply(page);
-					 if (log.isDebugEnabled())
-						 log.debug("Next page index:" + nextPageIndex + " in response to request:" + request);
+					 log.debug("Next page index:{} in response to request:{}", nextPageIndex, request);
 					 if (nextPageIndex != null) {
 						 // Fetch next page
 						 setRequestIndex.accept(nextPageIndex, request);
@@ -110,5 +106,4 @@ public class RestRequestPagination {
 		});
 		return response;
 	}
-
 }

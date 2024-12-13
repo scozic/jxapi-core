@@ -32,6 +32,8 @@ import com.scz.jxapi.netutils.websocket.WebsocketListener;
  */
 public class ExchangeApiInterfaceGenerator extends JavaTypeGenerator {
 	
+	private static final String STRING = "String ";
+
 	public static final String EXCHANGE_API_NAME_VARIABLE = "ID";
 	
 	private final ExchangeDescriptor exchangeDescriptor;
@@ -69,7 +71,7 @@ public class ExchangeApiInterfaceGenerator extends JavaTypeGenerator {
 	 */
 	@Override
 	public String generate() {
-		appendToBody("String ")
+		appendToBody(STRING)
 			.append(EXCHANGE_API_NAME_VARIABLE)
 			.append(" = ")
 			.append(JavaCodeGenerationUtil.getQuotedString(exchangeApiDescriptor.getName()))
@@ -106,7 +108,7 @@ public class ExchangeApiInterfaceGenerator extends JavaTypeGenerator {
 	}
 	
 	private void generateApiNameVariableDeclaration(String apiName, String apiNameVariable) {
-		appendToBody("String ")
+		appendToBody(STRING)
 			.append(apiNameVariable)
 			.append(" = ")
 			.append(JavaCodeGenerationUtil.getQuotedString(apiName))
@@ -147,7 +149,7 @@ public class ExchangeApiInterfaceGenerator extends JavaTypeGenerator {
 		String unsubscribeMethodName = ExchangeApiGeneratorUtil.getWebsocketUnsubscribeMethodName(websocketApi);
 		addImport(WebsocketListener.class);
 		String subscribeMethodSignature = new StringBuilder()
-				.append("String ")
+				.append(STRING)
 				.append(subscribeMethodName)
 				.append("(")
 				.append(hasArguments? requestSimpleClassName 
@@ -209,18 +211,6 @@ public class ExchangeApiInterfaceGenerator extends JavaTypeGenerator {
 				.append(", ");
 		}
 		unsubscribeMethodDoc.append("WebsocketListener)");
-		
-//		unsubscribeMethodDoc
-//			.append("\n@param subscriptionId client subscription ID")
-//			.append("\n@see {@link #")
-//	 	    .append(subscribeMethodName)
-//	 	    .append("(")
-//			.append(hasArguments? requestSimpleClassName 
-//									+ " " + requestArgName 
-//									+ ", "
-//								: "")
-//			.append("WebsocketListener)}");
-			   				
 		appendToBody(JavaCodeGenerationUtil.generateJavaDoc(unsubscribeMethodDoc.toString()))
 			.append("\n")
 			.append(unsubscribeMethodSignature)

@@ -107,15 +107,15 @@ public class FieldTest {
     @Test
     public void testEquals_NotEqualsOtherNull() {
     	Field field = new Field();
-    	// Remark: Sonary issue about usage of equals is not relevant, since we are testing execution of equals method
+		// Remark: Sonar issue about usage of equals is not relevant, assertNotEquals
+		// would skip call to Field.equals() using null as expected value
     	Assert.assertFalse(field.equals(null));
     }
     
     @Test
     public void testEquals_NotEqualsOtherNotField() {
     	Field field = new Field();
-    	// Remark: Sonary issue about usage of equals is not relevant, since we are testing execution of equals method
-    	Assert.assertFalse(field.equals(new Object()));
+    	Assert.assertNotEquals(new Object(), field);
     }
     
     @Test
@@ -133,7 +133,7 @@ public class FieldTest {
         f2.setDescription("description");
         f2.setSampleValue("sampleValue");
         f2.setMsgField("f");
-    	Assert.assertFalse(f1.equals(f2));
+    	Assert.assertNotEquals(f1, f2);
     }
     
     @Test
@@ -151,6 +151,12 @@ public class FieldTest {
         f2.setDescription("description");
         f2.setSampleValue("sampleValue");
         f2.setMsgField("f");
-    	Assert.assertTrue(f1.equals(f2));
+    	Assert.assertEquals(f1, f2);
+    }
+    
+    @Test
+    public void testBuilder() {
+    	FieldBuilder fb = Field.builder();
+    	Assert.assertNotNull(fb);
     }
 }

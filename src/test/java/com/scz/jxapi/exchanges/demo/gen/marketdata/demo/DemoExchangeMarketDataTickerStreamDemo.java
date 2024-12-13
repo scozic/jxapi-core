@@ -43,11 +43,11 @@ public class DemoExchangeMarketDataTickerStreamDemo {
    * @throws InterruptedException eventually thrown while sleeping for <code>subscriptionDuration</code> or <code>delayBeforeExitAfterUnsubscription</code> delays
    */
   public static void subscribe(DemoExchangeMarketDataTickerStreamRequest request,
-  	                           WebsocketListener<DemoExchangeMarketDataTickerStreamMessage> messageListener,
-  	                           Properties configProperties,
-  	                           ExchangeApiObserver apiObserver,
-  	                           long subscriptionDuration,
-  	                           long delayBeforeExitAfterUnsubscription) throws InterruptedException {
+                               WebsocketListener<DemoExchangeMarketDataTickerStreamMessage> messageListener,
+                               Properties configProperties,
+                               ExchangeApiObserver apiObserver,
+                               long subscriptionDuration,
+                               long delayBeforeExitAfterUnsubscription) throws InterruptedException {
     DemoExchangeMarketDataApi api = new DemoExchangeExchangeImpl("test-" + DemoExchangeExchange.ID, configProperties).getDemoExchangeMarketDataApi();
     log.info("Subscribing to websocket API 'DemoExchange MarketData tickerStream' for {} ms with request:{}", SUBSCRIPTION_DURATION, request);
     if (apiObserver != null) {

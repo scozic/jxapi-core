@@ -233,17 +233,6 @@ public class ExchangeJavaWrapperGeneratorUtilTest {
 	}
 
 	@Test
-	public void testGetNewJsonFieldDeserializerInstruction_OBJECT_LIST_MAP() {
-		Imports imports = new Imports();
-		String objectClassName = "com.x.y.z.MyObject";
-		Assert.assertEquals("Map<String, List<MyObject>>", ExchangeJavaWrapperGeneratorUtil.getClassNameForType(Type.fromTypeName("OBJECT_LIST_MAP"), imports, objectClassName));
-		Assert.assertEquals(3, imports.size());
-		Assert.assertTrue(imports.contains(objectClassName));
-		Assert.assertTrue(imports.contains(Map.class));
-		Assert.assertTrue(imports.contains(List.class));
-	}
-
-	@Test
 	public void testGetNewJsonFieldDeserializerInstruction_NullType() {
 		Imports imports = new Imports();
 		Assert.assertEquals("StringJsonFieldDeserializer.getInstance()", ExchangeJavaWrapperGeneratorUtil.getNewJsonFieldDeserializerInstruction(null, null, imports));

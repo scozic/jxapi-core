@@ -18,7 +18,7 @@ public class WebsocketDemoApiObserver implements ExchangeApiObserver {
 	public void handleEvent(ExchangeApiEvent event) {
 		switch (event.getType()) {
 		case WEBSOCKET_ERROR:
-			log.error("Error raised from websocket:" + event, event.getWebsocketError());
+			log.error("Error raised from websocket{}", event, event.getWebsocketError());
 			break;
 		case WEBSOCKET_MESSAGE:
 			log.debug("Websocket message received:{}", event);
