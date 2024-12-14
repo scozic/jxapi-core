@@ -84,7 +84,7 @@ public class ExchangeInterfaceImplementationGeneratorTest {
 	}
 	
 	@Test
-	public void testGenerateExchangeApiWithExchangeRateLimits() throws Exception {
+	public void testGenerateExchangeApiWithExchangeRateLimits() {
 		ExchangeDescriptor exchangeDescriptor = new ExchangeDescriptor();
 		exchangeDescriptor.setName("Foo");
 		exchangeDescriptor.setBasePackage("com.xyz.foo.gen");
@@ -159,7 +159,7 @@ public class ExchangeInterfaceImplementationGeneratorTest {
 	}
 	
 	@Test
-	public void testGenerateExchangeApiWithEmptyExchangeRateLimits() throws Exception {
+	public void testGenerateExchangeApiWithEmptyExchangeRateLimits() {
 		ExchangeDescriptor exchangeDescriptor = new ExchangeDescriptor();
 		exchangeDescriptor.setName("Foo");
 		exchangeDescriptor.setBasePackage("com.xyz.foo.gen");
@@ -203,7 +203,7 @@ public class ExchangeInterfaceImplementationGeneratorTest {
 	}
 	
 	@Test
-	public void testGenerateExchangeApiWithExchangeRateLimitsButNoApis() throws Exception {
+	public void testGenerateExchangeApiWithExchangeRateLimitsButNoApis() {
 		ExchangeDescriptor exchangeDescriptor = new ExchangeDescriptor();
 		exchangeDescriptor.setName("Foo");
 		exchangeDescriptor.setBasePackage("com.xyz.foo.gen");
@@ -234,7 +234,7 @@ public class ExchangeInterfaceImplementationGeneratorTest {
 	}
 	
 	@Test
-	public void testGenerateExchangeApiWithExchangeRateLimitsButApisHaveNoRestEndpoint() throws Exception {
+	public void testGenerateExchangeApiWithExchangeRateLimitsButApisHaveNoRestEndpoint() {
 		ExchangeDescriptor exchangeDescriptor = new ExchangeDescriptor();
 		exchangeDescriptor.setName("Foo");
 		exchangeDescriptor.setBasePackage("com.xyz.foo.gen");
@@ -293,7 +293,7 @@ public class ExchangeInterfaceImplementationGeneratorTest {
 	}
 	
 	@Test(expected = IllegalArgumentException.class)
-	public void testGenerateExchangeApiWithExchangeRateLimitNullRateLimitName() throws Exception {
+	public void testGenerateExchangeApiWithExchangeRateLimitNullRateLimitName() {
 		ExchangeDescriptor exchangeDescriptor = new ExchangeDescriptor();
 		exchangeDescriptor.setName("Foo");
 		exchangeDescriptor.setBasePackage("com.xyz.foo.gen");
@@ -304,7 +304,7 @@ public class ExchangeInterfaceImplementationGeneratorTest {
 	}
 	
 	@Test(expected = IllegalArgumentException.class)
-	public void testGenerateExchangeApiWithDuplicateExchangeRateLimitName() throws Exception {
+	public void testGenerateExchangeApiWithDuplicateExchangeRateLimitName() {
 		ExchangeDescriptor exchangeDescriptor = new ExchangeDescriptor();
 		exchangeDescriptor.setName("Foo");
 		exchangeDescriptor.setBasePackage("com.xyz.foo.gen");
@@ -316,7 +316,7 @@ public class ExchangeInterfaceImplementationGeneratorTest {
 	}
 	
 	@Test
-	public void testGenerateExchangeApiWithWeightedExchangeRateLimitRule() throws Exception {
+	public void testGenerateExchangeApiWithWeightedExchangeRateLimitRule() {
 		ExchangeDescriptor exchangeDescriptor = new ExchangeDescriptor();
 		exchangeDescriptor.setName("Foo");
 		exchangeDescriptor.setBasePackage("com.xyz.foo.gen");

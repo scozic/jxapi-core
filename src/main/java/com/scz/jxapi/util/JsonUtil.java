@@ -31,6 +31,8 @@ public class JsonUtil {
 	
 	private static final SimpleModule EXCEPTION_SERIALIZATION_MODULE = createExceptionSerializationModule();
 	
+	private static final ObjectMapper DEFAULT_OBJECT_MAPPER = getDefaultJsonToStringObjectMapper();
+	
 	private static SimpleModule createExceptionSerializationModule() {
 		SimpleModule m = new SimpleModule();
 		m.addSerializer(new ExceptionSerializer());
@@ -73,8 +75,7 @@ public class JsonUtil {
 			return null;
 		}
 		try {
-			ObjectMapper om = getDefaultJsonToStringObjectMapper();
-			return om.writeValueAsString(pojo);
+			return DEFAULT_OBJECT_MAPPER.writeValueAsString(pojo);
 		} catch (JsonProcessingException e) {
 			throw new IllegalArgumentException(
 					"Error while trying to serialize " + pojo.getClass().getName() + " instance to JSON", e);
@@ -97,8 +98,7 @@ public class JsonUtil {
 			return null;
 		}
 		try {
-			ObjectMapper om = getDefaultJsonToStringObjectMapper();
-			return om.writerWithDefaultPrettyPrinter().writeValueAsString(pojo).replace("\r", "");
+			return DEFAULT_OBJECT_MAPPER.writerWithDefaultPrettyPrinter().writeValueAsString(pojo).replace("\r", "");
 		} catch (JsonProcessingException e) {
 			throw new IllegalArgumentException(
 					"Error while trying to serialize " + pojo.getClass().getName() + " instance to JSON", e);

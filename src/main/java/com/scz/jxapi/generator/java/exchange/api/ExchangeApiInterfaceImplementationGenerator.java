@@ -98,7 +98,7 @@ import com.scz.jxapi.util.JsonUtil;
  * <li>Generate a DEBUG log statement with the HTTP method, endpoint name and
  * eventual request content.
  * <li>Generate a {@link HttpRequest} using
- * {@link HttpRequest#create(String, String, HttpMethod, Object, List, int)}
+ * {@link HttpRequest#create(String, String, HttpMethod, Object, List, int, String)}
  * method.
  * <li>Set the url of the request using the endpoint URL static variable.
  * <li>Generate a submit request instruction using
@@ -723,13 +723,21 @@ public class ExchangeApiInterfaceImplementationGenerator extends JavaTypeGenerat
 				.append(rateLimitsVariable)
 				.append(", ")
 				.append(requestWeight)
-				.append(")")
-				.toString();
+				.append(", ");
+		if (restApi.getHttpMethod().requestHasBody && hasArguments) {
+			createHttpRequestInstruction
+					.append("serializeRequestBody(")
+					.append(requestArgName)
+					.append(")");
+		} else {
+			createHttpRequestInstruction.append(JavaCodeGenerationUtil.NULL);
+		}
+		createHttpRequestInstruction.append(")");
 				
 		StringBuilder sumbitRequestInstruction = new StringBuilder();
 		sumbitRequestInstruction
 		.append("submit(")
-		.append(createHttpRequestInstruction)
+		.append(createHttpRequestInstruction.toString())
 		.append(", ")
 		.append(deserializerVariableName)
 		.append(");\n");

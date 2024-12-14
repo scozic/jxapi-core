@@ -30,8 +30,7 @@ public class DemoExchangeHttpRequestInterceptor implements HttpRequestIntercepto
 		url = StringUtils.replace(url, DemoExchangeConstants.HTTP_SERVER_HOST_WILDCARD, host);
 		url = StringUtils.replace(url, DemoExchangeConstants.HTTP_SERVER_PORT_WILDCARD, port);
 		request.setUrl(url);
-		if (log.isDebugEnabled())
-			log.debug("Intercepted request:" + request);
+		log.debug("Intercepted request:{}", request);
 	}
 
 }

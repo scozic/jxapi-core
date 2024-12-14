@@ -77,7 +77,7 @@ public class JsonMessageDeserializerClassesGeneratorTest {
 		checkSourceFileExists(Path.of("MyPojoDeserializer.java"));
 	}
 	
-	private void checkJavaFilesCount(int count) throws IOException {
+	private void checkJavaFilesCount(int count) {
 		ClassesGeneratorTestUtil.checkJavaFilesCount(srcFolder.resolve(BASE_PKG), count);
 	}
 	

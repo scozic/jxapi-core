@@ -32,7 +32,8 @@ public class HttpRequest {
 			HttpMethod httpMethod,
 			Object request,
 			List<RateLimitRule> rateLimits,
-			int weight) {
+			int weight,
+			String body) {
 		HttpRequest r = new HttpRequest();
 		r.setEndpoint(endpoint);
 		r.setUrl(url);
@@ -41,6 +42,7 @@ public class HttpRequest {
 		r.setRateLimits(rateLimits);
 		r.setWeight(weight);
 		r.setTime(new Date());
+		r.setBody(body);
 		return r;
 	}
 

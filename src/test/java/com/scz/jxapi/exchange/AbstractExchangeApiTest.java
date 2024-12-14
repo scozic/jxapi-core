@@ -100,6 +100,7 @@ public class AbstractExchangeApiTest {
 	@Test(expected = IllegalStateException.class)
 	public void testSubmitWithoutHttpRequestExecutor() {
 		HttpRequest request = new HttpRequest();
+		request.setHttpMethod(HttpMethod.GET);
 		MessageDeserializer<String> deserializer = RawStringMessageDeserializer.getInstance();
 		exchangeApi.submit(request, deserializer);
 	}

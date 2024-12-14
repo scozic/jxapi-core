@@ -6,6 +6,7 @@ import java.util.Properties;
 
 import com.scz.jxapi.netutils.deserialization.MessageDeserializer;
 import com.scz.jxapi.netutils.rest.FutureRestResponse;
+import com.scz.jxapi.netutils.rest.HttpMethod;
 import com.scz.jxapi.netutils.rest.HttpRequest;
 import com.scz.jxapi.netutils.rest.HttpRequestExecutor;
 import com.scz.jxapi.netutils.rest.HttpRequestExecutorFactory;
@@ -26,6 +27,7 @@ import com.scz.jxapi.netutils.websocket.WebsocketManager;
 import com.scz.jxapi.observability.Observable;
 import com.scz.jxapi.observability.SynchronizedObservable;
 import com.scz.jxapi.util.FactoryUtil;
+import com.scz.jxapi.util.JsonUtil;
 
 /**
  * The AbstractExchangeApi class is an abstract base class that provides common
@@ -203,6 +205,9 @@ public abstract class AbstractExchangeApi implements ExchangeApi {
 	 * @return
 	 */
 	protected <A> FutureRestResponse<A> submit(HttpRequest request, MessageDeserializer<A> deserializer) {
+		if (request.getHttpMethod().requestHasBody && request.getRequest() != null) {
+			request.setBody(JsonUtil.pojoToJsonString(request.getRequest()));
+		}
 		if (requestThrottler != null) {
 			return requestThrottler.submit(request, r -> { 
 				try {
@@ -304,5 +309,16 @@ public abstract class AbstractExchangeApi implements ExchangeApi {
 		event.setExchangeApiName(name);
 		event.setExchangeId(exchangeId);
 		observable.dispatch(event);
+	}
+	
+	/**
+	 * When submitting a REST request call, outgoing HTT request may carry a body, this is usually the case for {@link HttpMethod#POST} method, see {@link HttpMethod#requestHasBody}.
+	 * This method will serialize POJO or plain value type to body, by default as JSON 
+	 * @param request Request data to serialize as HTTP request body
+	 * @return The serialized request data to use as HTTP request body.
+	 * @see JsonUtil#pojoToJsonString(Object)
+	 */
+	protected String serializeRequestBody(Object request) {
+		return JsonUtil.pojoToJsonString(request);
 	}
 }
