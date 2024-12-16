@@ -82,7 +82,7 @@ public class JsonPojoSerializerClassesGeneratorTest {
 		checkSourceFileExists(Path.of("MyPojoSerializer.java"));
 	}
 	
-	private void checkJavaFilesCount(int count) throws IOException {
+	private void checkJavaFilesCount(int count) {
 		ClassesGeneratorTestUtil.checkJavaFilesCount(srcFolder.resolve(BASE_PKG), count);
 	}
 	

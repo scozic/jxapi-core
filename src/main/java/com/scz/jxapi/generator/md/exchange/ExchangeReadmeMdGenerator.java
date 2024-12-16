@@ -59,7 +59,7 @@ public class ExchangeReadmeMdGenerator {
 		this.constantsInterfaceName = ExchangeJavaWrapperGeneratorUtil.getExchangeConstantsInterfaceName(exchangeDescriptor);
 	}
 	
-	public String generate() throws IOException {
+	public String generate() {
 		StringBuilder s = new StringBuilder().append("# ")
 			.append(exchangeDescriptor.getName())
 			.append(" API Java wrapper\n\n")

@@ -1210,7 +1210,7 @@ public class ExchangeApiGeneratorUtilTest {
     }
     
     @Test 
-    public void testGetRestApiMethodName() throws Exception {
+    public void testGetRestApiMethodName() {
     	RestEndpointDescriptor restEndpointDescriptor = new RestEndpointDescriptor();
     	restEndpointDescriptor.setName("MyRestApi");
     	Assert.assertEquals("myRestApi", ExchangeApiGeneratorUtil.getRestApiMethodName(restEndpointDescriptor));

@@ -60,18 +60,6 @@ public class WebsocketManagerLoadTest {
 	 */
 	public static final int ITERATIONS = PropertiesUtil.getIntProperty(System.getProperties(), "jxapi.wsmanager.loadTest.iterations", 50);
 	
-//	/**
-//	 * Total message sent count, e.g.
-//	 * <code>TOPIC_COUNT * NB_MESSAGES_PER_TOPIC</code>
-//	 */
-//	public static final int TOTAL_MESSAGE_COUNT = (TOPIC_COUNT + 1) * NB_MESSAGES_PER_TOPIC * ITERATIONS;
-//	
-//	/**
-//	 * Total message sent count, e.g.
-//	 * <code>TOPIC_COUNT * NB_MESSAGES_PER_TOPIC</code>
-//	 */
-//	public static final int TOTAL_TOPIC_RELEATED_MESSAGE_COUNT = TOPIC_COUNT * NB_MESSAGES_PER_TOPIC * ITERATIONS;
-	
 	/**
 	 * Number of threads spawned to dispatch messages, can be tuned using system
 	 * property <code>jxapi.wsmanager.loadTest.threadCount</code>
