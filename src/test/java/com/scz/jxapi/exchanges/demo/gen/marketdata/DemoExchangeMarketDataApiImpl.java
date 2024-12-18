@@ -153,7 +153,7 @@ public class DemoExchangeMarketDataApiImpl extends AbstractExchangeApi implement
   @Override
   public String subscribeTickerStream(DemoExchangeMarketDataTickerStreamRequest request, WebsocketListener<DemoExchangeMarketDataTickerStreamMessage> listener) {
     String topic = EncodingUtil.substituteArguments("${symbol}@ticker", "symbol", request.getSymbol());
-    WebsocketSubscribeRequest subscribeRequest = WebsocketSubscribeRequest.create(request, topic, WebsocketMessageTopicMatcherFactory.create("topic", "ticker", "symbol", "" + request.getSymbol()));
+    WebsocketSubscribeRequest subscribeRequest = WebsocketSubscribeRequest.create(request, topic, WebsocketMessageTopicMatcherFactory.create("t", "ticker", "s", "" + request.getSymbol()));
     String subId = tickerStreamWs.subscribe(subscribeRequest, listener);
     log.debug("subscribeTickerStream > {} returned subscriptionId:{}", subscribeRequest, subId);
     return subId;

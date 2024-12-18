@@ -24,6 +24,7 @@ import com.scz.jxapi.exchange.ExchangeApi;
 import com.scz.jxapi.netutils.websocket.multiplexing.WebsocketMessageTopicMatchStatus;
 import com.scz.jxapi.netutils.websocket.multiplexing.WebsocketMessageTopicMatcher;
 import com.scz.jxapi.netutils.websocket.multiplexing.WebsocketMessageTopicMatcherFactory;
+import com.scz.jxapi.util.DefaultDisposable;
 
 /**
  * Default implementation of {@link WebsocketManager}.
@@ -36,7 +37,7 @@ import com.scz.jxapi.netutils.websocket.multiplexing.WebsocketMessageTopicMatche
  * thread race between 'writer' threads modifying topics subscription list and
  * socket dispatcher threads iterating over that list.
  */
-public class DefaultWebsocketManager implements WebsocketManager {
+public class DefaultWebsocketManager extends DefaultDisposable implements WebsocketManager {
 	
 	public static final long WRITE_EXECUTOR_KEEP_ALIVE = 30000L;
 	
@@ -51,7 +52,6 @@ public class DefaultWebsocketManager implements WebsocketManager {
 	protected final List<TopicManager> systemMessageHandlers = new ArrayList<>();
 	
 	protected final AtomicBoolean connected = new AtomicBoolean(false);
-	protected final AtomicBoolean disposed = new AtomicBoolean(false);
 	private final AtomicLong messageReceivedCount = new AtomicLong(0);
 	
 	protected ScheduledExecutorService writeExecutor = null;
@@ -124,6 +124,7 @@ public class DefaultWebsocketManager implements WebsocketManager {
 	public void subscribe(String topic, 
 						  WebsocketMessageTopicMatcherFactory matcherFactory,
 						  RawWebsocketMessageHandler messageHandler) {
+		checkNotDisposed();
 		log.debug("Scheduling subscribe request for topic:{}", topic);
 		writeExecutor.execute(() -> {
 			try {
@@ -213,10 +214,11 @@ public class DefaultWebsocketManager implements WebsocketManager {
 	}
 	
 	protected final void connect() throws WebsocketException {
-		if (isConnected() || isDisposed()) {
+		checkNotDisposed();
+		if (isConnected()) {
 			return;
 		}
-		
+		connected.set(true);
 		log.info("Connecting WS:{}", this);
 		try {
 			if (websocketHook != null) {
@@ -231,11 +233,11 @@ public class DefaultWebsocketManager implements WebsocketManager {
 				initHearBeats();
 			}
 			
-			connected.set(true);
 			log.info("Connected WS:{}", this);
 		} catch (Exception exception) {
 			String msg = "Error while connecting websocket";
 			log.error(msg, exception);
+			connected.set(false);
 			throw new WebsocketException(msg, exception);
 		}
 	}
@@ -256,10 +258,6 @@ public class DefaultWebsocketManager implements WebsocketManager {
 			this.heartBeatTaskCancelled = new AtomicBoolean(false);
 			scheduleHeartBeatTask(new HeartBeakTask(this.heartBeatTaskCancelled));
 		}
-	}
-	
-	public boolean isDisposed() {
-		return disposed.get();
 	}
 
 	protected final void disconnect() {
@@ -305,20 +303,18 @@ public class DefaultWebsocketManager implements WebsocketManager {
 	}
  	
 	@Override
-	public void dispose() {
-		if (!disposed.getAndSet(true)) {
-			this.websocket.removeMessageHandler(rawMessageHandler);
-			synchronized(waitReconnectDelayMonitor) {
-				waitReconnectDelayMonitor.notifyAll();
-			}
-			writeExecutor.execute(() -> {
-				disconnect();
-				this.websocket.removeErrorHandler(websocketErrorHandler);
-			});
-			
-			writeExecutor.shutdown();
-			writeExecutor = null;
+	protected void doDispose() {
+		this.websocket.removeMessageHandler(rawMessageHandler);
+		synchronized(waitReconnectDelayMonitor) {
+			waitReconnectDelayMonitor.notifyAll();
 		}
+		writeExecutor.execute(() -> {
+			disconnect();
+			this.websocket.removeErrorHandler(websocketErrorHandler);
+		});
+		
+		writeExecutor.shutdown();
+		writeExecutor = null;
 	}
 	
 	public boolean isConnected() {
@@ -362,9 +358,6 @@ public class DefaultWebsocketManager implements WebsocketManager {
 	
 	@Override
 	public void send(String msg) throws WebsocketException {
-		if (isDisposed()) {
-			throw new WebsocketException("Disposed");
-		}
 		if (!isConnected()) {
 			connect();
 		}

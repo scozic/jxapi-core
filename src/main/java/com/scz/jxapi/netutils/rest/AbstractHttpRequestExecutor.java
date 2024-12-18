@@ -1,12 +1,14 @@
 package com.scz.jxapi.netutils.rest;
 
+import com.scz.jxapi.util.DefaultDisposable;
+
 /**
  * Abstract implementation of the {@link HttpRequestExecutor} interface.
  * <p>
  * This class provides a default implementation for the
  * {@link #setRequestTimeout(long)} and {@link #getRequestTimeout()} methods.
  */
-public abstract class AbstractHttpRequestExecutor implements HttpRequestExecutor {
+public abstract class AbstractHttpRequestExecutor extends DefaultDisposable implements HttpRequestExecutor {
 
 	private long requestTimeout = DEFAULT_REQUEST_TIMEOUT;
 

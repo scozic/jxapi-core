@@ -42,13 +42,13 @@ public class JavaNetHttpRequestExecutor extends AbstractHttpRequestExecutor {
 
 	@Override
 	public FutureHttpResponse execute(HttpRequest request) {
+		checkNotDisposed();
 		FutureHttpResponse callback = new FutureHttpResponse();
 		final HttpResponse response = new HttpResponse();
 		response.setRequest(request);
 		response.setTime(new Date());
 		try {
-			if (log.isDebugEnabled())
-				log.debug("Executing request:{}", request);
+			log.debug("Executing request:{}", request);
 			Builder builder = java.net.http.HttpRequest.newBuilder().uri(new URI(request.getUrl())).timeout(Duration.ofMillis(getRequestTimeout()));
 			switch (request.getHttpMethod()) {
 			case GET:
@@ -84,9 +84,7 @@ public class JavaNetHttpRequestExecutor extends AbstractHttpRequestExecutor {
 		    		response.setHeaders(r.headers().map());
 		    		response.setBody(r.body());
 		    		response.setTime(new Date());
-		    		if (log.isDebugEnabled()) {
-		    			log.debug("Got response to request:[{}], response[{}]", request, response);
-		    		}
+		    		log.debug("Got response to request:[{}], response[{}]", request, response);
 	    		} catch (Exception ex) {
 	    			log.error("Error executing request:" + request, ex);
 	    			response.setException(ex);

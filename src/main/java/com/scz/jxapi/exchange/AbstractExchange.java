@@ -5,11 +5,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
+import com.scz.jxapi.util.DefaultDisposable;
+
 /**
  * Abstract {@link Exchange} implementation to be used as super class of actual
  * implementations.
  */
-public abstract class AbstractExchange implements Exchange {
+public abstract class AbstractExchange extends DefaultDisposable implements Exchange {
 
 	protected final String name;
 	protected final String id;
@@ -65,6 +67,11 @@ public abstract class AbstractExchange implements Exchange {
 	protected <T extends ExchangeApi> T addApi(T api) {
 		apis.put(api.getName(), api);
 		return api;
+	}
+	
+	@Override
+	protected void doDispose() {
+		apis.values().forEach(ExchangeApi::dispose);
 	}
 
 }

@@ -84,4 +84,9 @@ public interface ExchangeApi extends HasProperties {
 	 * @return true if observer was subscribed, false otherwise.
 	 */
 	boolean unsubscribeObserver(ExchangeApiObserver exchangeApiObserver);
+	
+	/**
+	 * Frees any resources used, for instance open websocket connection.
+	 */
+	void dispose();
 }

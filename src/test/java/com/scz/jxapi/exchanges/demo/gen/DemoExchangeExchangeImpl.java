@@ -20,7 +20,7 @@ public class DemoExchangeExchangeImpl extends AbstractExchange implements DemoEx
   /**
    * Base websocket endpoint URL
    */
-  public static final String WEBSOCKET_URL = "ws://MOCKWEBSOCKETSERVERHOST:8090/ws";
+  public static final String WEBSOCKET_URL = "ws://MOCKWEBSOCKETSERVERHOST:8090/demo/ws";
   
   private final DemoExchangeMarketDataApi demoExchangeMarketDataApi;
   

@@ -6,7 +6,6 @@ import java.util.Map;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Function;
 
 import org.slf4j.Logger;
@@ -15,6 +14,7 @@ import org.springframework.util.CollectionUtils;
 
 import com.scz.jxapi.netutils.rest.FutureRestResponse;
 import com.scz.jxapi.netutils.rest.HttpRequest;
+import com.scz.jxapi.util.DefaultDisposable;
 import com.scz.jxapi.util.ThreadUtil;
 
 /**
@@ -25,7 +25,7 @@ import com.scz.jxapi.util.ThreadUtil;
  * request is instantated. It wiil be shutdown only upon call to
  * {@link #dispose()} which is duty of client to call when disposing resources.
  */
-public class RequestThrottler {
+public class RequestThrottler extends DefaultDisposable {
 	
 	private static final Logger log = LoggerFactory.getLogger(RequestThrottler.class);
 
@@ -34,8 +34,6 @@ public class RequestThrottler {
 	private ScheduledExecutorService throttlingExecutor = null;
 
 	private final String apiName;
-	
-	private final AtomicBoolean disposed = new AtomicBoolean(false);
 	
 	/**
 	 * Creates a new instance of {@link RequestThrottler} with no API name.
@@ -87,8 +85,7 @@ public class RequestThrottler {
 	 * @throws IllegalStateException if in 'disposed' state when called(see {@link #isDisposed()})
 	 */
 	public synchronized <A> FutureRestResponse<A> submit(HttpRequest request, Function<HttpRequest, FutureRestResponse<A>> executor) {
-		if (isDisposed())
-			throw new IllegalStateException("Disposed");
+		checkNotDisposed();
 		List<RateLimitRule> rateLimits = request.getRateLimits();
 		if (CollectionUtils.isEmpty(rateLimits)) {
 			log.debug("No rate limit set, submitting now:,{}", request);
@@ -150,26 +147,12 @@ public class RequestThrottler {
 		}
 	}
 	
-	/**
-	 * Frees all resources is used and marks this instance as 'disposed' so it should not be used any more.
-	 * Has no effect if called more than once.
-	 */
-	public void dispose() {
-		if (disposed.getAndSet(true)) {
-			return;
-		}
+	@Override
+	protected void doDispose() {
 		rateLimitManagers.clear();
 		if (throttlingExecutor != null) {
 			throttlingExecutor.shutdown();
 		}
-	}
-
-	/**
-	 * @return <code>true</code> if this instance has been disposed e.g.
-	 *         {@link #dispose()} has been called and should not be used any more.
-	 */
-	public boolean isDisposed() {
-		return disposed.get();
 	}
 
 }

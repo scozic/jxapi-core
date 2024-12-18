@@ -65,6 +65,7 @@ public class DemoExchangeRestRequestTest {
 		Properties config = new Properties();
 		config.setProperty(DemoExchangeProperties.HTTP_PORT_PROPERTY, String.valueOf(this.serverPort));
 		config.setProperty(DemoExchangeProperties.HOST_PROPERTY, DemoExchangeProperties.HOST_DEFAULT_VALUE);
+		config.setProperty(DemoExchangeProperties.WEBSOCKET_PORT_PROPERTY, "80");
 		exchange = new DemoExchangeExchangeImpl(TEST_EXCHANGE_NAME, config);
 	}
 	

@@ -3,6 +3,7 @@ package com.scz.jxapi.exchange;
 import java.util.List;
 import java.util.Properties;
 
+import com.scz.jxapi.util.Disposable;
 import com.scz.jxapi.util.HasProperties;
 
 /**
@@ -21,7 +22,7 @@ import com.scz.jxapi.util.HasProperties;
  * 
  * @see ExchangeApi
  */
-public interface Exchange extends HasProperties {
+public interface Exchange extends Disposable, HasProperties {
 
 	/**
 	 * @return A name identifying an instance of wrapper.

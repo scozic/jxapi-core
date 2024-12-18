@@ -201,4 +201,15 @@ public class JavaNetHttpRequestExecutorTest {
 		testSubmitRequest(request, response);
 	}
 	
+	@Test(expected = IllegalStateException.class)
+	public void testSumbitWhenDisposedThrows() {
+		HttpRequest request = new HttpRequest();
+		request.setHttpMethod(HttpMethod.GET);
+		request.setUrl(getServerUrl() + "/hello");
+		HttpResponse response = new HttpResponse();
+		response.setResponseCode(HttpStatus.OK_200.getStatusCode());
+		response.setRequest(request);
+		executor.dispose();
+		executor.execute(request);
+	}
 }

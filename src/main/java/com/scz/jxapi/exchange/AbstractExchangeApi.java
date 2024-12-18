@@ -26,6 +26,7 @@ import com.scz.jxapi.netutils.websocket.WebsocketHookFactory;
 import com.scz.jxapi.netutils.websocket.WebsocketManager;
 import com.scz.jxapi.observability.Observable;
 import com.scz.jxapi.observability.SynchronizedObservable;
+import com.scz.jxapi.util.DefaultDisposable;
 import com.scz.jxapi.util.FactoryUtil;
 import com.scz.jxapi.util.JsonUtil;
 
@@ -57,7 +58,7 @@ import com.scz.jxapi.util.JsonUtil;
  * @see ExchangeApiEvent
  * @see Observable
  */
-public abstract class AbstractExchangeApi implements ExchangeApi {
+public abstract class AbstractExchangeApi extends DefaultDisposable implements ExchangeApi {
 
 	protected final String name;
 	protected final String exchangeName;
@@ -320,5 +321,18 @@ public abstract class AbstractExchangeApi implements ExchangeApi {
 	 */
 	protected String serializeRequestBody(Object request) {
 		return JsonUtil.pojoToJsonString(request);
+	}
+	
+	@Override
+	protected void doDispose() {
+		if (requestThrottler != null) {
+			requestThrottler.dispose();
+		}
+		if (httpRequestExecutor != null) {
+			httpRequestExecutor.dispose();
+		}
+		if (websocketManager != null) {
+			websocketManager.dispose();
+		}
 	}
 }

@@ -1025,7 +1025,7 @@ public class DefaultWebsocketManagerTest {
 		wsManager.subscribeErrorHandler(errorHandler);
 		popWebsocketAddErrorHandlerEvent();
 		popWebsocketAddMessageHandlerEvent();
-		String msg =  "{\"greetings\":\"Hi!\"";
+		String msg =  "{\"greetings\":\"Hi!\"}";
 		Assert.assertNull(wsManager.sendAsync(msg).get());
 		popWebsocketConnectEvent();
 		popWebsocketSendMessageEvent(msg);
@@ -1039,8 +1039,8 @@ public class DefaultWebsocketManagerTest {
 		Assert.assertNotNull(wsManager.sendAsync(msg).get());
 		try {
 			wsManager.send(msg);
-			Assert.fail("Should have raised WebsocketException");
-		} catch (WebsocketException ex) {
+			Assert.fail("Should have raised IllegalStateException");
+		} catch (IllegalStateException ex) {
 			checkNoEvents();
 		}
 	}
@@ -1079,7 +1079,7 @@ public class DefaultWebsocketManagerTest {
 		wsManager.subscribeErrorHandler(errorHandler);
 		popWebsocketAddErrorHandlerEvent();
 		popWebsocketAddMessageHandlerEvent();
-		String msg =  "{\"greetings\":\"Hi!\"";
+		String msg =  "{\"greetings\":\"Hi!\"}";
 		Assert.assertNull(wsManager.sendAsync(msg).get());
 		popWebsocketConnectEvent();
 		popWebsocketSendMessageEvent(msg);
@@ -1133,6 +1133,16 @@ public class DefaultWebsocketManagerTest {
 		checkNoEvents();
 		Assert.assertFalse(wsManager.isConnected());
 		Assert.assertTrue(wsManager.isDisposed());
+	}
+	
+	@Test(expected = IllegalStateException.class)
+	public void testSubscribeWhenDisposeThrows() {
+		wsManager = new DefaultWebsocketManager(EXCHANGE_API, ws, null);
+		wsManager.dispose();
+		String topic = "topic1";
+		String subscribeTopicMsg = "subscribe:topic1";
+		WebsocketMessageTopicMatcherFactory topicMatcher = WebsocketMessageTopicMatcherFactory.create("myTopic", topic);
+		wsManager.subscribe(subscribeTopicMsg, topicMatcher, wsMessageHandler1);
 	}
 	
 	private MockWebsocketEvent popWebsocketConnectEvent() throws TimeoutException {

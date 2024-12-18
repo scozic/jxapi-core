@@ -2,10 +2,12 @@ package com.scz.jxapi.netutils.rest;
 
 import java.util.concurrent.Future;
 
+import com.scz.jxapi.util.Disposable;
+
 /**
  * Interface for HTTP transport layer responsible of executing an HTTP request asynchronously.
  */
-public interface HttpRequestExecutor {
+public interface HttpRequestExecutor extends Disposable {
 	
 	/**
 	 * Default delay in milliseconds after which connection should be aborted if

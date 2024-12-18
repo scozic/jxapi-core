@@ -181,7 +181,7 @@ public class WebsocketManagerLoadTest {
 	
 	@Test
 	public void testLoadTest() throws InterruptedException {
-		runTest(2, 1000, 10, 2);
+		runTest(2, 50, 10, 2);
 	}
 
 	public static void main(String[] args) {

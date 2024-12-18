@@ -37,6 +37,16 @@ public interface DemoExchangeConstants {
   String WEBSOCKET_SERVER_PORT_WILDCARD = "8090";
   
   /**
+   * Message to send to websocket server after connecting to complete handshake
+   */
+  String WEBSOCKET_LOGIN_MESSAGE = "Hello!";
+  
+  /**
+   * Message to send to websocket server before disconnecting
+   */
+  String WEBSOCKET_LOGOUT_MESSAGE = "Bye!";
+  
+  /**
    * Possible value in <i>responseCode</i> field of rest request response: Successful response
    */
   Integer RESPONSE_CODE_OK = Integer.valueOf(200);

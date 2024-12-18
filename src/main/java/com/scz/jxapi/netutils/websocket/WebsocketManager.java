@@ -5,6 +5,7 @@ import java.util.concurrent.CompletableFuture;
 import com.scz.jxapi.exchange.ExchangeApi;
 import com.scz.jxapi.netutils.websocket.multiplexing.WebsocketMessageTopicMatcher;
 import com.scz.jxapi.netutils.websocket.multiplexing.WebsocketMessageTopicMatcherFactory;
+import com.scz.jxapi.util.Disposable;
 
 /**
  * A WebsocketManager is a wrapper around a {@link Websocket} that manages most
@@ -106,7 +107,7 @@ import com.scz.jxapi.netutils.websocket.multiplexing.WebsocketMessageTopicMatche
  * WebsocketManager and underlying Websocket definitely.
  * 
  */
-public interface WebsocketManager {
+public interface WebsocketManager extends Disposable {
 
 	/**
 	 * Adds a message handler to handle specific/non business messages. This is
@@ -172,12 +173,6 @@ public interface WebsocketManager {
 	 *         <code>false</code> if the error handler was not found.
 	 */
 	boolean unsubscribeErrorHandler(WebsocketErrorHandler websocketErrorHandler);
-
-	/**
-	 * Disconnects the underlying Websocket and disposes all resources associated to
-	 * it. WebsocketManager should not be used after calling this method.
-	 */
-	void dispose();
 
 	/**
 	 * Sends a message to this manager underlying {@link Websocket}.

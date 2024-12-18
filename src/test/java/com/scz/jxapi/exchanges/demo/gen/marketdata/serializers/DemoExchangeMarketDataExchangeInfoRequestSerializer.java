@@ -20,7 +20,7 @@ public class DemoExchangeMarketDataExchangeInfoRequestSerializer extends StdSeri
   @Override
   public void serialize(DemoExchangeMarketDataExchangeInfoRequest value, JsonGenerator gen, SerializerProvider provider) throws IOException {
     gen.writeStartObject();
-    if (value.getSymbols() != null) {
+    if (value.getSymbols() != null){
       gen.writeObjectField("symbols", value.getSymbols());
     }
     gen.writeEndObject();
