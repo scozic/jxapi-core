@@ -80,7 +80,6 @@ public class SynchronizedObservableTest {
         	}
         }).start();
         
-        // Async dispatch of messages is running, subscribe/unsubscribe listners2 and 3;
 		for (int i = 0; i < count; i++) {
     		observable.unsubscribe(observer2);
     		observable.unsubscribe(observer3);

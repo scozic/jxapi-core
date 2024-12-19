@@ -207,7 +207,6 @@ public class JavaCodeGenerationUtil {
 		// If there is another field with same name but different case, keep the part after accessor as is to make sure it is unique,
 		// otherwise use first letter upper case for more readable camel case accessor name.
 		if (allFieldNames == null || allFieldNames.stream().noneMatch(n -> !name.equals(n) && name.equalsIgnoreCase(n))) {
-//		if (allFieldNames == null || !allFieldNames.stream().anyMatch(n -> !name.equals(n) && name.equalsIgnoreCase(n))) {
 			accessorSuffix = firstLetterToUpperCase(name);
 		}
 		return prefix + accessorSuffix;

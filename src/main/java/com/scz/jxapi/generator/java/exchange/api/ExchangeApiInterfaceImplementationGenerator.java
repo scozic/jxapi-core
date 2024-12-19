@@ -723,16 +723,9 @@ public class ExchangeApiInterfaceImplementationGenerator extends JavaTypeGenerat
 				.append(rateLimitsVariable)
 				.append(", ")
 				.append(requestWeight)
-				.append(", ");
-		if (restApi.getHttpMethod().requestHasBody && hasArguments) {
-			createHttpRequestInstruction
-					.append("serializeRequestBody(")
-					.append(requestArgName)
-					.append(")");
-		} else {
-			createHttpRequestInstruction.append(JavaCodeGenerationUtil.NULL);
-		}
-		createHttpRequestInstruction.append(")");
+				.append(", ")
+				.append(getSerializeRequestBodyInstruction(restApi))
+				.append(")");
 				
 		StringBuilder sumbitRequestInstruction = new StringBuilder();
 		sumbitRequestInstruction
@@ -744,6 +737,20 @@ public class ExchangeApiInterfaceImplementationGenerator extends JavaTypeGenerat
 		apiMethodBody.append(sumbitRequestInstruction.toString());
 		
 		addRestMethod(OVERRIDE_PUBLIC + apiMethodSignature, apiMethodBody.toString());
+	}
+	
+	private String getSerializeRequestBodyInstruction(RestEndpointDescriptor restApi) {
+		boolean hasArguments = ExchangeApiGeneratorUtil.restEndpointHasArguments(restApi, exchangeApiDescriptor);
+		String requestArgName = ExchangeApiGeneratorUtil.DEFAULT_REQUEST_ARG_NAME;
+		StringBuilder s = new StringBuilder();
+		if (restApi.getHttpMethod().requestHasBody && hasArguments) {
+			 s.append("serializeRequestBody(")
+			  .append(requestArgName)
+			  .append(")");
+		} else {
+			s.append(JavaCodeGenerationUtil.NULL);
+		}
+		return s.toString();
 	}
 	
 	private List<String> getRateLimitsVariables(RestEndpointDescriptor restApi) {
