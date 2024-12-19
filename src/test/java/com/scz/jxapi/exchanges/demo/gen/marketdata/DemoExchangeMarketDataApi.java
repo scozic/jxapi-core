@@ -16,7 +16,7 @@ import com.scz.jxapi.netutils.websocket.WebsocketListener;
 
 /**
  * DemoExchange MarketData API<br>
- * Demo exchange market data API to retrieve
+ * Demo exchange market data API
  * <br><strong>THIS CODE IS GENERATED. DO NOT EDIT MANUALLY!</strong>
  */
 public interface DemoExchangeMarketDataApi extends ExchangeApi {

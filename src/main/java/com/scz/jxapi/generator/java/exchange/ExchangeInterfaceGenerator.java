@@ -46,9 +46,19 @@ public class ExchangeInterfaceGenerator extends JavaTypeGenerator {
 			String apiSimpleClassName = JavaCodeGenerationUtil.getClassNameWithoutPackage(apiClassName);
 			String getApiMethodSignature = apiSimpleClassName + " get" + apiSimpleClassName + "()";
 			addImport(apiClassName);
-			appendToBody("\n" + getApiMethodSignature + ";\n");
+			appendToBody("\n")
+				.append(getGetApiMethodJavadoc(api))
+				.append("\n")
+				.append( getApiMethodSignature)
+				.append(";\n");
 		}
 		return super.generate();
+	}
+	
+	private String getGetApiMethodJavadoc(ExchangeApiDescriptor api) {
+		StringBuilder s = new StringBuilder();
+		s.append("@return " ).append(api.getDescription());
+		return JavaCodeGenerationUtil.generateJavaDoc(s.toString());
 	}
 	
 	private String generateDescription() {

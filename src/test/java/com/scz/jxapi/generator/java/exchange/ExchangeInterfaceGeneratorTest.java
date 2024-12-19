@@ -32,6 +32,9 @@ public class ExchangeInterfaceGeneratorTest {
 				+ "  \n"
 				+ "  String ID = \"MyTestExchange\";\n"
 				+ "  \n"
+				+ "  /**\n"
+				+ "   * @return The market data API of MyTestExchange\n"
+				+ "   */\n"
 				+ "  MyTestExchangeMarketDataApi getMyTestExchangeMarketDataApi();\n"
 				+ "}\n", 
 				exchangeGenerator.generate());

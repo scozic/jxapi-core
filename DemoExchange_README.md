@@ -64,7 +64,7 @@ APIs are available using the following interfaces accessible from <a href="file:
 ### MarketData
 Methods exposed in <a href="file:///X:/workspace/jxapi-core/doc/javadoc/com/scz/jxapi/exchanges/demo/gen/marketdata/DemoExchangeMarketDataApi.html">DemoExchangeMarketDataApi</a> accessible from <a href="file:///X:/workspace/jxapi-core/doc/javadoc/com/scz/jxapi/exchanges/demo/gen/DemoExchangeExchange#getDemoExchangeMarketDataApi().html">DemoExchangeExchange#getDemoExchangeMarketDataApi()</a>
 
-Demo exchange market data API to retrieve
+Demo exchange market data API
 
 #### REST endpoints
 <table>

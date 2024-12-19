@@ -28,7 +28,7 @@
 	"apis":[
 		{ 
 			"name": "MarketData",
-			"description": "Demo exchange market data API to retrieve",
+			"description": "Demo exchange market data API",
 			"constants": [
 				{"name": "allTickers", "type":"STRING", "description": "Constant for subscribing to all tickers", "value": "ticker@all"}
 			],
