@@ -25,11 +25,11 @@ import com.scz.jxapi.netutils.deserialization.json.field.TimestampJsonFieldDeser
 /**
  * Helper static methods for generation of Java classes of a given exchange wrapper
  */
-public class ExchangeJavaWrapperGeneratorUtil {
+public class ExchangeJavaGenUtil {
 	
 	private static final String GET_INSTANCE = ".getInstance()";
 
-	private ExchangeJavaWrapperGeneratorUtil() {}
+	private ExchangeJavaGenUtil() {}
 	
 	/**
 	 * Default separator for string lists
@@ -347,7 +347,7 @@ public class ExchangeJavaWrapperGeneratorUtil {
 	 *         <code>null</code> if that value is <code>null</code>.
 	 */
 	public static String getHttpUrlVariableDeclaration(ExchangeDescriptor exchangeDescriptor) {
-		return getStaticUrlVariableDeclaration(ExchangeJavaWrapperGeneratorUtil.HTTP_URL_STATIC_VARIABLE, 
+		return getStaticUrlVariableDeclaration(ExchangeJavaGenUtil.HTTP_URL_STATIC_VARIABLE, 
 											   exchangeDescriptor.getHttpUrl(), "Base REST API URL");
 	}
 	
@@ -359,7 +359,7 @@ public class ExchangeJavaWrapperGeneratorUtil {
 	 *         <code>null</code> if that value is <code>null</code>.
 	 */
 	public static String getWebsocketUrlVariableDeclaration(ExchangeDescriptor exchangeDescriptor) {
-		return getStaticUrlVariableDeclaration(ExchangeJavaWrapperGeneratorUtil.WEBSOCKET_URL_STATIC_VARIABLE, 
+		return getStaticUrlVariableDeclaration(ExchangeJavaGenUtil.WEBSOCKET_URL_STATIC_VARIABLE, 
 											   exchangeDescriptor.getWebsocketUrl(), "Base websocket endpoint URL");
 	}
 	

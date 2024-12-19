@@ -17,7 +17,7 @@ import com.scz.jxapi.exchange.descriptor.Type;
 import com.scz.jxapi.exchange.descriptor.WebsocketEndpointDescriptor;
 import com.scz.jxapi.generator.java.Imports;
 import com.scz.jxapi.generator.java.JavaCodeGenerationUtil;
-import com.scz.jxapi.generator.java.exchange.ExchangeJavaWrapperGeneratorUtil;
+import com.scz.jxapi.generator.java.exchange.ExchangeJavaGenUtil;
 import com.scz.jxapi.netutils.deserialization.RawBigDecimalMessageDeserializer;
 import com.scz.jxapi.netutils.deserialization.RawBooleanMessageDeserializer;
 import com.scz.jxapi.netutils.deserialization.RawIntegerMessageDeserializer;
@@ -327,7 +327,7 @@ public class ExchangeApiGeneratorUtil {
 			 objectClassName = getFieldObjectClassName(field, enclosingClassName);
 			 
 		}
-		return ExchangeJavaWrapperGeneratorUtil.getClassNameForType(
+		return ExchangeJavaGenUtil.getClassNameForType(
 					field.getType(), 
 					imports, 
 					objectClassName);
@@ -370,7 +370,7 @@ public class ExchangeApiGeneratorUtil {
 	 * <li>Otherwise, the class name is the concatenation of the package of the
 	 * enclosing class name and the class name generated
 	 * by
-	 * {@link ExchangeJavaWrapperGeneratorUtil#getClassNameForType(Type, Imports, String)}
+	 * {@link ExchangeJavaGenUtil#getClassNameForType(Type, Imports, String)}
 	 * for the
 	 * leaf subType of the field type.</li>
 	 * </ul>
@@ -396,7 +396,7 @@ public class ExchangeApiGeneratorUtil {
 			return pkg + objectName;
 		}
 		
-		return pkg + ExchangeJavaWrapperGeneratorUtil.getClassNameForType(
+		return pkg + ExchangeJavaGenUtil.getClassNameForType(
 				  leafSubType,
 				  new Imports(),
 				  enclosingClassName) 
@@ -415,7 +415,7 @@ public class ExchangeApiGeneratorUtil {
 	 * <li>For other 'structured' types (object, list or map) types, the
 	 * corresponding new
 	 * Json field deserializer instruction is returned, see
-	 * {@link ExchangeJavaWrapperGeneratorUtil#getNewJsonFieldDeserializerInstruction(Type, String, Imports)}.</li>
+	 * {@link ExchangeJavaGenUtil#getNewJsonFieldDeserializerInstruction(Type, String, Imports)}.</li>
 	 * <li>
 	 * </ul>
 	 * 
@@ -451,7 +451,7 @@ public class ExchangeApiGeneratorUtil {
 		case LIST:
 		case MAP:
 		default:
-			return ExchangeJavaWrapperGeneratorUtil.getNewJsonFieldDeserializerInstruction(messageType, messageFullClassName, imports);
+			return ExchangeJavaGenUtil.getNewJsonFieldDeserializerInstruction(messageType, messageFullClassName, imports);
 		}
 	}
 
@@ -773,7 +773,7 @@ public class ExchangeApiGeneratorUtil {
 	 * @param exchangeDescriptor The exchange descriptor
 	 * @param exchangeApiDescriptor The exchange API descriptor
 	 * @param imports The imports of the generated class
-	 * @return public static declaration for a variable named {@link ExchangeJavaWrapperGeneratorUtil#HTTP_URL_STATIC_VARIABLE} holding the base URL of the REST API.
+	 * @return public static declaration for a variable named {@link ExchangeJavaGenUtil#HTTP_URL_STATIC_VARIABLE} holding the base URL of the REST API.
 	 */
 	public static String getHttpUrlVariableDeclaration(ExchangeDescriptor exchangeDescriptor, 
 													   ExchangeApiDescriptor exchangeApiDescriptor,
@@ -789,7 +789,7 @@ public class ExchangeApiGeneratorUtil {
 				.append("\n")
 				.append(JavaCodeGenerationUtil.generateJavaDoc(javadoc.toString()))
 				.append("\npublic static final String ")
-				.append(ExchangeJavaWrapperGeneratorUtil.HTTP_URL_STATIC_VARIABLE)
+				.append(ExchangeJavaGenUtil.HTTP_URL_STATIC_VARIABLE)
 				.append(" = ");
 		String url = "";
 		String apiUrl = exchangeApiDescriptor.getHttpUrl();
@@ -802,11 +802,11 @@ public class ExchangeApiGeneratorUtil {
 		
 		String exchangeUrl = exchangeDescriptor.getHttpUrl();
 		if (exchangeUrl != null) {
-			String exchangeInterfaceImplementationName = ExchangeJavaWrapperGeneratorUtil.getExchangeInterfaceImplementationName(exchangeDescriptor);
+			String exchangeInterfaceImplementationName = ExchangeJavaGenUtil.getExchangeInterfaceImplementationName(exchangeDescriptor);
 			imports.add(exchangeInterfaceImplementationName);
 			String exchangeUrlVar = JavaCodeGenerationUtil.getClassNameWithoutPackage(exchangeInterfaceImplementationName) 
 								 + "."  
-								 + ExchangeJavaWrapperGeneratorUtil.HTTP_URL_STATIC_VARIABLE;
+								 + ExchangeJavaGenUtil.HTTP_URL_STATIC_VARIABLE;
 			if (!url.isEmpty()) {
 				exchangeUrlVar += " + " + url;
 			}
@@ -848,7 +848,7 @@ public class ExchangeApiGeneratorUtil {
 		}
 		
 		if (hasBaseUrl) {
-			s.append(ExchangeJavaWrapperGeneratorUtil.HTTP_URL_STATIC_VARIABLE);
+			s.append(ExchangeJavaGenUtil.HTTP_URL_STATIC_VARIABLE);
 			if (!url.isEmpty()) {
 				s.append(" + ").append(url);
 			}
@@ -871,7 +871,7 @@ public class ExchangeApiGeneratorUtil {
 	 * @param exchangeApiDescriptor The exchange API descriptor
 	 * @param imports               The imports of the generated class
 	 * @return public static declaration for a variable named
-	 *         {@link ExchangeJavaWrapperGeneratorUtil#WEBSOCKET_URL_STATIC_VARIABLE}
+	 *         {@link ExchangeJavaGenUtil#WEBSOCKET_URL_STATIC_VARIABLE}
 	 *         holding the base URL of the websocket API.
 	 */
 	public static String getWebsocketUrlVariableDeclaration(ExchangeDescriptor exchangeDescriptor, 
@@ -886,7 +886,7 @@ public class ExchangeApiGeneratorUtil {
 		StringBuilder s = new StringBuilder()
 				.append(JavaCodeGenerationUtil.generateJavaDoc(javadoc.toString()))
 				.append("\npublic static final String ")
-				.append(ExchangeJavaWrapperGeneratorUtil.WEBSOCKET_URL_STATIC_VARIABLE)
+				.append(ExchangeJavaGenUtil.WEBSOCKET_URL_STATIC_VARIABLE)
 				.append(" = ");
 		String url = "";
 		String apiUrl = exchangeApiDescriptor.getWebsocketUrl();
@@ -900,11 +900,11 @@ public class ExchangeApiGeneratorUtil {
 		
 		String exchangeUrl = exchangeDescriptor.getWebsocketUrl();
 		if (exchangeUrl != null) {
-			String exchangeInterfaceName = ExchangeJavaWrapperGeneratorUtil.getExchangeInterfaceImplementationName(exchangeDescriptor);
+			String exchangeInterfaceName = ExchangeJavaGenUtil.getExchangeInterfaceImplementationName(exchangeDescriptor);
 			imports.add(exchangeInterfaceName);
 			String exchangeUrlVar = JavaCodeGenerationUtil.getClassNameWithoutPackage(exchangeInterfaceName) 
 									 + "."  
-									 + ExchangeJavaWrapperGeneratorUtil.WEBSOCKET_URL_STATIC_VARIABLE;
+									 + ExchangeJavaGenUtil.WEBSOCKET_URL_STATIC_VARIABLE;
 			if (!url.isEmpty()) {
 				exchangeUrlVar += " + " + url;
 			}

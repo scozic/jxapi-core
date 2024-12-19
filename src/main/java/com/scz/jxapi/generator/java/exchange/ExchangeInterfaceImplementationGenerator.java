@@ -65,7 +65,7 @@ public class ExchangeInterfaceImplementationGenerator extends JavaTypeGenerator 
 	 * @param exchangeDescriptor the exchange descriptor to generate classes for
 	 */
 	public ExchangeInterfaceImplementationGenerator(ExchangeDescriptor exchangeDescriptor) {
-		super(ExchangeJavaWrapperGeneratorUtil.getExchangeInterfaceImplementationName(exchangeDescriptor));
+		super(ExchangeJavaGenUtil.getExchangeInterfaceImplementationName(exchangeDescriptor));
 		this.exchangeDescriptor = exchangeDescriptor;
 	}
 	
@@ -82,12 +82,12 @@ public class ExchangeInterfaceImplementationGenerator extends JavaTypeGenerator 
 				   + JavaCodeGenerationUtil.GENERATED_CODE_WARNING);
 		appendToBody("\n");
 		
-		String httpUrlDeclaration = ExchangeJavaWrapperGeneratorUtil.getHttpUrlVariableDeclaration(exchangeDescriptor);
+		String httpUrlDeclaration = ExchangeJavaGenUtil.getHttpUrlVariableDeclaration(exchangeDescriptor);
 		if (httpUrlDeclaration != null) {
 			appendToBody(httpUrlDeclaration).append("\n\n");
 		}
 		
-		String websocketUrlDeclaration = ExchangeJavaWrapperGeneratorUtil.getWebsocketUrlVariableDeclaration(exchangeDescriptor);
+		String websocketUrlDeclaration = ExchangeJavaGenUtil.getWebsocketUrlVariableDeclaration(exchangeDescriptor);
 		if (websocketUrlDeclaration != null) {
 			appendToBody(websocketUrlDeclaration).append("\n\n");
 		}
@@ -124,7 +124,7 @@ public class ExchangeInterfaceImplementationGenerator extends JavaTypeGenerator 
 		StringBuilder apiMethodsDeclarations = new StringBuilder(); 
 		if (exchangeDescriptor.getApis() != null) {
 			for (ExchangeApiDescriptor api: exchangeDescriptor.getApis()) {
-				String apiClassName = ExchangeJavaWrapperGeneratorUtil.getApiInterfaceClassName(exchangeDescriptor, api);
+				String apiClassName = ExchangeJavaGenUtil.getApiInterfaceClassName(exchangeDescriptor, api);
 				String apiSimpleClassName = JavaCodeGenerationUtil.getClassNameWithoutPackage(apiClassName);
 				String apiImplClassName = apiClassName + "Impl";
 				String simpleApiImplClassName = JavaCodeGenerationUtil.getClassNameWithoutPackage(apiImplClassName);
@@ -175,7 +175,7 @@ public class ExchangeInterfaceImplementationGenerator extends JavaTypeGenerator 
 		if (name == null) {
 			throw new IllegalArgumentException("rateLimitRule:" + rateLimitRule + " should have an id");
 		}
-		String variableName = ExchangeJavaWrapperGeneratorUtil.generateRateLimitVariableName(name);
+		String variableName = ExchangeJavaGenUtil.generateRateLimitVariableName(name);
 		if (rateLimitNames.contains(name)) {
 			throw new IllegalArgumentException("Duplicate rate limit rule name:[" + name + "] in " + exchangeDescriptor);
 		}

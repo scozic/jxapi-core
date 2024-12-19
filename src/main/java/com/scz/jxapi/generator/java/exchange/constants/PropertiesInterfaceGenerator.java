@@ -11,7 +11,7 @@ import com.scz.jxapi.exchange.descriptor.Type;
 import com.scz.jxapi.generator.html.HtmlGenerationUtil;
 import com.scz.jxapi.generator.java.JavaCodeGenerationUtil;
 import com.scz.jxapi.generator.java.JavaTypeGenerator;
-import com.scz.jxapi.generator.java.exchange.ExchangeJavaWrapperGeneratorUtil;
+import com.scz.jxapi.generator.java.exchange.ExchangeJavaGenUtil;
 import com.scz.jxapi.util.PropertiesUtil;
 
 /**
@@ -121,7 +121,7 @@ public class PropertiesInterfaceGenerator extends JavaTypeGenerator {
 				
 		sb.append(JavaCodeGenerationUtil.generateJavaDoc(desc.toString()))
 		  .append("\n");
-		String typeClass = ExchangeJavaWrapperGeneratorUtil.getClassNameForType(type, getImports(), null);
+		String typeClass = ExchangeJavaGenUtil.getClassNameForType(type, getImports(), null);
 		String methodName = JavaCodeGenerationUtil.getGetAccessorMethodName(
 			  					name, 
 			  					typeClass, 

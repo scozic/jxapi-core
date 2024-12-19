@@ -14,7 +14,7 @@ import com.scz.jxapi.exchange.descriptor.RestEndpointDescriptor;
 import com.scz.jxapi.exchange.descriptor.Type;
 import com.scz.jxapi.generator.java.JavaCodeGenerationUtil;
 import com.scz.jxapi.generator.java.JavaTypeGenerator;
-import com.scz.jxapi.generator.java.exchange.ExchangeJavaWrapperGeneratorUtil;
+import com.scz.jxapi.generator.java.exchange.ExchangeJavaGenUtil;
 import com.scz.jxapi.generator.java.exchange.api.ExchangeApiGeneratorUtil;
 import com.scz.jxapi.netutils.rest.RestResponse;
 import com.scz.jxapi.util.DemoUtil;
@@ -68,11 +68,11 @@ public class RestEndpointDemoGenerator extends JavaTypeGenerator {
 		super(EndpointDemoGeneratorUtil.getRestApiDemoClassName(exchangeDescriptor, exchangeApiDescriptor, restApi));
 		setTypeDeclaration("public class");
 		this.restApi = restApi;
-		this.exchangeClassName = ExchangeJavaWrapperGeneratorUtil.getExchangeInterfaceName(exchangeDescriptor);
+		this.exchangeClassName = ExchangeJavaGenUtil.getExchangeInterfaceName(exchangeDescriptor);
 		this.exchangeSimpleClassName = JavaCodeGenerationUtil.getClassNameWithoutPackage(exchangeClassName);
 		this.hasArguments = ExchangeApiGeneratorUtil.restEndpointHasArguments(restApi, exchangeApiDescriptor);
 		this.request = ExchangeApiGeneratorUtil.resolveFieldProperties(exchangeApiDescriptor, restApi.getRequest());
-		this.exchangeImplClassName = ExchangeJavaWrapperGeneratorUtil.getExchangeInterfaceImplementationName(exchangeDescriptor);
+		this.exchangeImplClassName = ExchangeJavaGenUtil.getExchangeInterfaceImplementationName(exchangeDescriptor);
 		if (hasArguments) {
 			requestDataType =  Optional.ofNullable(request.getType()).orElse(Type.OBJECT);
 			if (requestDataType.getCanonicalType().isPrimitive) {
@@ -87,7 +87,7 @@ public class RestEndpointDemoGenerator extends JavaTypeGenerator {
 			}
 			
 			addImport(requestClassName);
-			requestSimpleClassName = ExchangeJavaWrapperGeneratorUtil.getClassNameForType(
+			requestSimpleClassName = ExchangeJavaGenUtil.getClassNameForType(
 										requestDataType, 
 										getImports(), 
 										requestClassName);
@@ -96,10 +96,10 @@ public class RestEndpointDemoGenerator extends JavaTypeGenerator {
 			requestSimpleClassName = null;
 			requestDataType = null;
 		}
-		this.apiInterfaceClassName = ExchangeJavaWrapperGeneratorUtil.getApiInterfaceClassName(exchangeDescriptor, exchangeApiDescriptor);
+		this.apiInterfaceClassName = ExchangeJavaGenUtil.getApiInterfaceClassName(exchangeDescriptor, exchangeApiDescriptor);
 		this.simpleApiClassName = JavaCodeGenerationUtil.getClassNameWithoutPackage(apiInterfaceClassName);
 		response = restApi.getResponse();
-		responseDataType = ExchangeJavaWrapperGeneratorUtil.getFieldType(response);
+		responseDataType = ExchangeJavaGenUtil.getFieldType(response);
 		hasResponse = ExchangeApiGeneratorUtil.restEndpointHasResponse(restApi, exchangeApiDescriptor);
 		if (hasResponse) {
 			String restResponseClassName = null;
@@ -110,7 +110,7 @@ public class RestEndpointDemoGenerator extends JavaTypeGenerator {
 						restApi);
 				addImport(restResponseClassName);
 			}
-			responseSimpleClassName = ExchangeJavaWrapperGeneratorUtil.getClassNameForType(
+			responseSimpleClassName = ExchangeJavaGenUtil.getClassNameForType(
 					responseDataType, 
 					getImports(), 
 					restResponseClassName);

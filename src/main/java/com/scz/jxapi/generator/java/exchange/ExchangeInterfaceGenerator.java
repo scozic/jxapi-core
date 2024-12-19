@@ -25,7 +25,7 @@ public class ExchangeInterfaceGenerator extends JavaTypeGenerator {
 	 * @param exchangeDescriptor the exchange descriptor to generate classes for
 	 */
 	public ExchangeInterfaceGenerator(ExchangeDescriptor exchangeDescriptor) {
-		super(ExchangeJavaWrapperGeneratorUtil.getExchangeInterfaceName(exchangeDescriptor));
+		super(ExchangeJavaGenUtil.getExchangeInterfaceName(exchangeDescriptor));
 		this.exchangeDescriptor = exchangeDescriptor;
 		this.setParentClassName(Exchange.class.getName());
 	}
@@ -42,7 +42,7 @@ public class ExchangeInterfaceGenerator extends JavaTypeGenerator {
 			.append(";\n");
 		
 		for (ExchangeApiDescriptor api: exchangeDescriptor.getApis()) {
-			String apiClassName = ExchangeJavaWrapperGeneratorUtil.getApiInterfaceClassName(exchangeDescriptor, api);
+			String apiClassName = ExchangeJavaGenUtil.getApiInterfaceClassName(exchangeDescriptor, api);
 			String apiSimpleClassName = JavaCodeGenerationUtil.getClassNameWithoutPackage(apiClassName);
 			String getApiMethodSignature = apiSimpleClassName + " get" + apiSimpleClassName + "()";
 			addImport(apiClassName);

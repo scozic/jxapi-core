@@ -16,7 +16,7 @@ import com.scz.jxapi.exchange.descriptor.Type;
 import com.scz.jxapi.exchange.descriptor.WebsocketEndpointDescriptor;
 import com.scz.jxapi.generator.java.Imports;
 import com.scz.jxapi.generator.java.JavaCodeGenerationUtil;
-import com.scz.jxapi.generator.java.exchange.ExchangeJavaWrapperGeneratorUtil;
+import com.scz.jxapi.generator.java.exchange.ExchangeJavaGenUtil;
 import com.scz.jxapi.generator.java.exchange.api.ExchangeApiGeneratorUtil;
 import com.scz.jxapi.util.TestJXApiProperties;
 
@@ -82,7 +82,7 @@ public class EndpointDemoGeneratorUtil {
 																String defaultObjectClassName,
 																Imports imports) {
 		Type type = ExchangeApiGeneratorUtil.getFieldType(field);
-		String fieldClassName =	ExchangeJavaWrapperGeneratorUtil.getClassNameForType(
+		String fieldClassName =	ExchangeJavaGenUtil.getClassNameForType(
 												type, 
 												imports, 
 												defaultObjectClassName);
@@ -165,7 +165,7 @@ public class EndpointDemoGeneratorUtil {
 			if (canonicalType != CanonicalType.OBJECT) {
 				itemVariableName = itemVariableName + "Item";
 			}
-			String itemClassName = ExchangeJavaWrapperGeneratorUtil.getClassNameForType(
+			String itemClassName = ExchangeJavaGenUtil.getClassNameForType(
 										Type.getLeafSubType(type), 
 										imports, 
 										objectClassName);
@@ -247,7 +247,7 @@ public class EndpointDemoGeneratorUtil {
 	}
 	
 	private static String getPrimitiveTypeFieldSampleValueDeclaration(Field field, Imports imports) {
-		return ExchangeJavaWrapperGeneratorUtil.getPrimitiveTypeFieldSampleValueDeclaration(
+		return ExchangeJavaGenUtil.getPrimitiveTypeFieldSampleValueDeclaration(
 					field.getType(), 
 					field.getSampleValue(), 
 					imports);
@@ -334,7 +334,7 @@ public class EndpointDemoGeneratorUtil {
 												  String simpleApiClassName, 
 												  String propertiesVariableName) {
 		String simpleExchangeClassName = JavaCodeGenerationUtil.getClassNameWithoutPackage(exchangeClassName);
-		String exchangeImplClassName = ExchangeJavaWrapperGeneratorUtil.getExchangeInterfaceImplementationName(exchangeClassName);
+		String exchangeImplClassName = ExchangeJavaGenUtil.getExchangeInterfaceImplementationName(exchangeClassName);
 		String simpleExchangeImplClassName = JavaCodeGenerationUtil.getClassNameWithoutPackage(exchangeImplClassName);
 		return new StringBuilder()
 				.append(simpleApiClassName)

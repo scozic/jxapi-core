@@ -7,7 +7,7 @@ import com.scz.jxapi.exchange.descriptor.Field;
 import com.scz.jxapi.generator.java.JavaCodeGenerationUtil;
 import com.scz.jxapi.generator.java.PojoField;
 import com.scz.jxapi.generator.java.PojoGenerator;
-import com.scz.jxapi.generator.java.exchange.ExchangeJavaWrapperGeneratorUtil;
+import com.scz.jxapi.generator.java.exchange.ExchangeJavaGenUtil;
 import com.scz.jxapi.generator.java.exchange.api.ExchangeApiGeneratorUtil;
 import com.scz.jxapi.util.CollectionUtil;
 
@@ -80,7 +80,7 @@ public class EndpointPojoGenerator extends PojoGenerator {
 	}
 	
 	private void generateSimpleTypePojoField(Field field) {
-		String fieldClass = ExchangeJavaWrapperGeneratorUtil.getClassNameForType(field.getType(), getImports(), null);
+		String fieldClass = ExchangeJavaGenUtil.getClassNameForType(field.getType(), getImports(), null);
 		fieldClass = JavaCodeGenerationUtil.getClassNameWithoutPackage(fieldClass);
 		addField(PojoField.create(fieldClass, field.getName(), field.getMsgField(), field.getDescription()));
 	}

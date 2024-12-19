@@ -11,7 +11,7 @@ import com.scz.jxapi.exchange.descriptor.Type;
 import com.scz.jxapi.exchange.descriptor.WebsocketEndpointDescriptor;
 import com.scz.jxapi.generator.java.JavaCodeGenerationUtil;
 import com.scz.jxapi.generator.java.JavaTypeGenerator;
-import com.scz.jxapi.generator.java.exchange.ExchangeJavaWrapperGeneratorUtil;
+import com.scz.jxapi.generator.java.exchange.ExchangeJavaGenUtil;
 import com.scz.jxapi.netutils.rest.FutureRestResponse;
 import com.scz.jxapi.netutils.websocket.WebsocketListener;
 
@@ -48,7 +48,7 @@ public class ExchangeApiInterfaceGenerator extends JavaTypeGenerator {
 	 */
 	public ExchangeApiInterfaceGenerator(ExchangeDescriptor exchangeDescriptor, 
 										 ExchangeApiDescriptor exchangeApiDescriptor) {
-		super(ExchangeJavaWrapperGeneratorUtil.getApiInterfaceClassName(exchangeDescriptor, exchangeApiDescriptor));
+		super(ExchangeJavaGenUtil.getApiInterfaceClassName(exchangeDescriptor, exchangeApiDescriptor));
 		this.exchangeDescriptor = exchangeDescriptor;
 		this.exchangeApiDescriptor = exchangeApiDescriptor;
 		setDescription(exchangeDescriptor.getName() + " " + exchangeApiDescriptor.getName() + " API<br>\n" 
@@ -116,7 +116,7 @@ public class ExchangeApiInterfaceGenerator extends JavaTypeGenerator {
 	}
 
 	private void generateWebsocketApiMethodsDeclarations(WebsocketEndpointDescriptor websocketApi) {
-		Type requestDataType = ExchangeJavaWrapperGeneratorUtil.getFieldType(websocketApi.getRequest());
+		Type requestDataType = ExchangeJavaGenUtil.getFieldType(websocketApi.getRequest());
 		boolean hasArguments = ExchangeApiGeneratorUtil.websocketEndpointHasArguments(websocketApi, exchangeApiDescriptor);
 		String requestSimpleClassName = Object.class.getSimpleName();
 		String requestDescription = null;
@@ -129,7 +129,7 @@ public class ExchangeApiInterfaceGenerator extends JavaTypeGenerator {
 						exchangeApiDescriptor, 
 						websocketApi);
 			}
-			requestSimpleClassName = ExchangeJavaWrapperGeneratorUtil.getClassNameForType(
+			requestSimpleClassName = ExchangeJavaGenUtil.getClassNameForType(
 													requestDataType, 
 													getImports(), 
 													requestClassName);
@@ -137,8 +137,8 @@ public class ExchangeApiInterfaceGenerator extends JavaTypeGenerator {
 			requestArgName = ExchangeApiGeneratorUtil.getRequestArgName(websocketApi.getRequest().getName());
 		}
 		
-		Type messageDataType = ExchangeJavaWrapperGeneratorUtil.getFieldType(websocketApi.getMessage());
-		String messageClassSimpleName = ExchangeJavaWrapperGeneratorUtil.getClassNameForType(
+		Type messageDataType = ExchangeJavaGenUtil.getFieldType(websocketApi.getMessage());
+		String messageClassSimpleName = ExchangeJavaGenUtil.getClassNameForType(
 				messageDataType, 
 				getImports(), 
 				ExchangeApiGeneratorUtil.generateWebsocketEndpointMessagePojoClassName(
@@ -220,9 +220,9 @@ public class ExchangeApiInterfaceGenerator extends JavaTypeGenerator {
 	private void generateRestEndpointMethodDeclaration(RestEndpointDescriptor restApi) {
 		boolean hasArguments = ExchangeApiGeneratorUtil.restEndpointHasArguments(restApi, exchangeApiDescriptor);
 		Field request = restApi.getRequest();
-		Type requestDataType = ExchangeJavaWrapperGeneratorUtil.getFieldType(request);
+		Type requestDataType = ExchangeJavaGenUtil.getFieldType(request);
 		Field response = restApi.getResponse();
-		Type responseDataType = ExchangeJavaWrapperGeneratorUtil.getFieldType(response);
+		Type responseDataType = ExchangeJavaGenUtil.getFieldType(response);
 		String requestSimpleClassName = "Object";
 		String requestArgName = null;
 		if (hasArguments) {
@@ -233,7 +233,7 @@ public class ExchangeApiInterfaceGenerator extends JavaTypeGenerator {
 										exchangeApiDescriptor, 
 										restApi);
 			}
-			requestSimpleClassName = ExchangeJavaWrapperGeneratorUtil.getClassNameForType(
+			requestSimpleClassName = ExchangeJavaGenUtil.getClassNameForType(
 										requestDataType, 
 										getImports(), 
 										requestClassName);
@@ -249,7 +249,7 @@ public class ExchangeApiInterfaceGenerator extends JavaTypeGenerator {
 											exchangeApiDescriptor, 
 											restApi);
 			}
-			responseSimpleClassName = ExchangeJavaWrapperGeneratorUtil.getClassNameForType(
+			responseSimpleClassName = ExchangeJavaGenUtil.getClassNameForType(
 					responseDataType, 
 					getImports(), 
 					restResponseClassName);

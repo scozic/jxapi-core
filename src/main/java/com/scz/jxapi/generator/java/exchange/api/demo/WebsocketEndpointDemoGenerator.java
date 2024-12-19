@@ -11,7 +11,7 @@ import com.scz.jxapi.exchange.ExchangeApiObserver;
 import com.scz.jxapi.exchange.descriptor.ExchangeApiDescriptor;
 import com.scz.jxapi.exchange.descriptor.ExchangeDescriptor;
 import com.scz.jxapi.exchange.descriptor.WebsocketEndpointDescriptor;
-import com.scz.jxapi.generator.java.exchange.ExchangeJavaWrapperGeneratorUtil;
+import com.scz.jxapi.generator.java.exchange.ExchangeJavaGenUtil;
 import com.scz.jxapi.generator.java.exchange.api.ExchangeApiGeneratorUtil;
 import com.scz.jxapi.netutils.websocket.WebsocketListener;
 import com.scz.jxapi.generator.java.JavaCodeGenerationUtil;
@@ -89,7 +89,7 @@ public class WebsocketEndpointDemoGenerator extends JavaTypeGenerator {
 		super(EndpointDemoGeneratorUtil.getWebsocketApiDemoClassName(exchangeDescriptor, exchangeApiDescriptor, websocketApi));
 		this.exchangeDescriptor = exchangeDescriptor;
 		this.request = ExchangeApiGeneratorUtil.resolveFieldProperties(exchangeApiDescriptor, websocketApi.getRequest());
-		this.exchangeClassName = ExchangeJavaWrapperGeneratorUtil.getExchangeInterfaceName(exchangeDescriptor);
+		this.exchangeClassName = ExchangeJavaGenUtil.getExchangeInterfaceName(exchangeDescriptor);
 		this.exchangeSimpleClassName = JavaCodeGenerationUtil.getClassNameWithoutPackage(exchangeClassName);
 		subscribeMethodName = ExchangeApiGeneratorUtil.getWebsocketSubscribeMethodName(websocketApi);
 		unsubscribeMethodName = ExchangeApiGeneratorUtil.getWebsocketUnsubscribeMethodName(websocketApi);
@@ -104,7 +104,7 @@ public class WebsocketEndpointDemoGenerator extends JavaTypeGenerator {
 			}
 			
 			addImport(requestClassName);
-			this.requestSimpleClassName = ExchangeJavaWrapperGeneratorUtil.getClassNameForType(
+			this.requestSimpleClassName = ExchangeJavaGenUtil.getClassNameForType(
 					requestDataType, 
 					getImports(), 
 					requestClassName);
@@ -113,15 +113,15 @@ public class WebsocketEndpointDemoGenerator extends JavaTypeGenerator {
 			this.requestSimpleClassName = null;
 			this.requestDataType = null;
 		}
-		this.apiInterfaceClassName = ExchangeJavaWrapperGeneratorUtil.getApiInterfaceClassName(exchangeDescriptor, exchangeApiDescriptor);
+		this.apiInterfaceClassName = ExchangeJavaGenUtil.getApiInterfaceClassName(exchangeDescriptor, exchangeApiDescriptor);
 		this.simpleApiClassName = JavaCodeGenerationUtil.getClassNameWithoutPackage(apiInterfaceClassName);
 		addImport(apiInterfaceClassName);
 		setDescription(getClassJavadoc());
 		this.fullStreamName = exchangeDescriptor.getName() + " " 
 								+ exchangeApiDescriptor.getName() 
 								+ " " + websocketApi.getName();
-		Type messageDataType = ExchangeJavaWrapperGeneratorUtil.getFieldType(websocketApi.getMessage());
-		messageClassSimpleName = ExchangeJavaWrapperGeneratorUtil.getClassNameForType(
+		Type messageDataType = ExchangeJavaGenUtil.getFieldType(websocketApi.getMessage());
+		messageClassSimpleName = ExchangeJavaGenUtil.getClassNameForType(
 				messageDataType, 
 				getImports(), 
 				ExchangeApiGeneratorUtil.generateWebsocketEndpointMessagePojoClassName(
@@ -281,8 +281,8 @@ public class WebsocketEndpointDemoGenerator extends JavaTypeGenerator {
 	
 	private void generateMainMethod() {
 		StringBuilder bodyBuilder = new StringBuilder();
-		String exchangeInterfaceClassName = ExchangeJavaWrapperGeneratorUtil.getExchangeInterfaceName(exchangeDescriptor);
-		String exchangeImplClassName = ExchangeJavaWrapperGeneratorUtil.getExchangeInterfaceImplementationName(exchangeInterfaceClassName);
+		String exchangeInterfaceClassName = ExchangeJavaGenUtil.getExchangeInterfaceName(exchangeDescriptor);
+		String exchangeImplClassName = ExchangeJavaGenUtil.getExchangeInterfaceImplementationName(exchangeInterfaceClassName);
 		addImport(exchangeImplClassName);
 
 		

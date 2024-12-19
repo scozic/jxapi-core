@@ -8,7 +8,7 @@ import com.scz.jxapi.exchange.descriptor.Constant;
 import com.scz.jxapi.exchange.descriptor.Type;
 import com.scz.jxapi.generator.java.Imports;
 import com.scz.jxapi.generator.java.JavaCodeGenerationUtil;
-import com.scz.jxapi.generator.java.exchange.ExchangeJavaWrapperGeneratorUtil;
+import com.scz.jxapi.generator.java.exchange.ExchangeJavaGenUtil;
 
 /**
  * Helper methods for generating constants and property interfaces.
@@ -37,9 +37,9 @@ public class ConstantsGenerationUtil {
 		if (!type.getCanonicalType().isPrimitive) {
 			throw new IllegalArgumentException("Constant " + constant + " has not a primitive type");
 		}
-		String className = ExchangeJavaWrapperGeneratorUtil.getClassNameForType(type, imports, null);
+		String className = ExchangeJavaGenUtil.getClassNameForType(type, imports, null);
 		String varName = JavaCodeGenerationUtil.getStaticVariableName(constant.getName());
-		String value = ExchangeJavaWrapperGeneratorUtil.getPrimitiveTypeFieldSampleValueDeclaration(type, constant.getValue(), imports);
+		String value = ExchangeJavaGenUtil.getPrimitiveTypeFieldSampleValueDeclaration(type, constant.getValue(), imports);
 		String description = constant.getDescription();
 		if (description != null) {
 			code.append(JavaCodeGenerationUtil.generateJavaDoc(description))

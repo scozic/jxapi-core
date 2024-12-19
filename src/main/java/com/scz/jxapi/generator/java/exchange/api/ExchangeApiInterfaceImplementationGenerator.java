@@ -28,7 +28,7 @@ import com.scz.jxapi.exchange.descriptor.WebsocketMessageTopicMatcherFieldDescri
 import com.scz.jxapi.generator.java.JavaCodeGenerationUtil;
 import com.scz.jxapi.generator.java.JavaTypeGenerator;
 import com.scz.jxapi.generator.java.exchange.ExchangeInterfaceGenerator;
-import com.scz.jxapi.generator.java.exchange.ExchangeJavaWrapperGeneratorUtil;
+import com.scz.jxapi.generator.java.exchange.ExchangeJavaGenUtil;
 import com.scz.jxapi.netutils.deserialization.MessageDeserializer;
 import com.scz.jxapi.netutils.rest.FutureRestResponse;
 import com.scz.jxapi.netutils.rest.HttpMethod;
@@ -198,11 +198,11 @@ public class ExchangeApiInterfaceImplementationGenerator extends JavaTypeGenerat
 	 */
 	public ExchangeApiInterfaceImplementationGenerator(ExchangeDescriptor exchangeDescriptor, 
 													   ExchangeApiDescriptor exchangeApiDescriptor) {
-		super(ExchangeJavaWrapperGeneratorUtil.getApiInterfaceImplementationClassName(exchangeDescriptor, exchangeApiDescriptor));
+		super(ExchangeJavaGenUtil.getApiInterfaceImplementationClassName(exchangeDescriptor, exchangeApiDescriptor));
 		this.exchangeDescriptor = exchangeDescriptor;
 		this.exchangeApiDescriptor = exchangeApiDescriptor;
 		setTypeDeclaration("public class");
-		String fullInterfaceName = ExchangeJavaWrapperGeneratorUtil.getApiInterfaceClassName(exchangeDescriptor, exchangeApiDescriptor);
+		String fullInterfaceName = ExchangeJavaGenUtil.getApiInterfaceClassName(exchangeDescriptor, exchangeApiDescriptor);
 		addImport(fullInterfaceName);
 		this.simpleInterfaceName = JavaCodeGenerationUtil.getClassNameWithoutPackage(fullInterfaceName);
 		setImplementedInterfaces(Arrays.asList(fullInterfaceName));
@@ -215,7 +215,7 @@ public class ExchangeApiInterfaceImplementationGenerator extends JavaTypeGenerat
 		hasExchangeLimits = !CollectionUtils.isEmpty(exchangeRateLimits);
 		hasRestEnpoints = !CollectionUtils.isEmpty(exchangeApiDescriptor.getRestEndpoints());
 		hasWsEnpoints = !CollectionUtils.isEmpty(exchangeApiDescriptor.getWebsocketEndpoints());
-		exchangeClassName = ExchangeJavaWrapperGeneratorUtil.getExchangeInterfaceName(exchangeDescriptor);
+		exchangeClassName = ExchangeJavaGenUtil.getExchangeInterfaceName(exchangeDescriptor);
 	}
 
 	@Override
@@ -398,7 +398,7 @@ public class ExchangeApiInterfaceImplementationGenerator extends JavaTypeGenerat
 		}
 		if (hasWsEnpoints) {
 			constructorBody.append("createWebsocketManager(")
-						   .append(ExchangeJavaWrapperGeneratorUtil.WEBSOCKET_URL_STATIC_VARIABLE)
+						   .append(ExchangeJavaGenUtil.WEBSOCKET_URL_STATIC_VARIABLE)
 						   .append(", ")
 						   .append(JavaCodeGenerationUtil.getQuotedString(getWebsocketFactory()))
 						   .append(", ")
@@ -462,7 +462,7 @@ public class ExchangeApiInterfaceImplementationGenerator extends JavaTypeGenerat
 										exchangeApiDescriptor, 
 										websocketApi);
 			}
-			requestSimpleClassName = ExchangeJavaWrapperGeneratorUtil.getClassNameForType(
+			requestSimpleClassName = ExchangeJavaGenUtil.getClassNameForType(
 													requestDataType, 
 													getImports(), 
 													requestClassName);
@@ -472,7 +472,7 @@ public class ExchangeApiInterfaceImplementationGenerator extends JavaTypeGenerat
 											exchangeDescriptor, 
 											exchangeApiDescriptor, 
 											websocketApi);
-		String messageClassSimpleName = ExchangeJavaWrapperGeneratorUtil.getClassNameForType(
+		String messageClassSimpleName = ExchangeJavaGenUtil.getClassNameForType(
 											messageDataType, 
 											getImports(), 
 											messageClassObjectName);
@@ -552,7 +552,7 @@ public class ExchangeApiInterfaceImplementationGenerator extends JavaTypeGenerat
 		List<Field> requestFields = Optional.ofNullable(request == null? null: request.getProperties()).orElse(List.of());
 		for (Field param: requestFields) {
 			replacements.add(param.getMsgField() != null? param.getMsgField(): param.getName());
-			String fieldClass = ExchangeJavaWrapperGeneratorUtil.getClassNameForType(param.getType(), getImports(), requestClassName);
+			String fieldClass = ExchangeJavaGenUtil.getClassNameForType(param.getType(), getImports(), requestClassName);
 			replacements.add("\" + request." 
 								 + JavaCodeGenerationUtil.getGetAccessorMethodName(
 										 		param.getName(), 
@@ -620,7 +620,7 @@ public class ExchangeApiInterfaceImplementationGenerator extends JavaTypeGenerat
 			if (requestDataType.isObject()) {
 				requestClassName = ExchangeApiGeneratorUtil.generateRestEnpointRequestPojoClassName(exchangeDescriptor, exchangeApiDescriptor, restApi);
 			}
-			requestSimpleClassName = ExchangeJavaWrapperGeneratorUtil.getClassNameForType(
+			requestSimpleClassName = ExchangeJavaGenUtil.getClassNameForType(
 					requestDataType, 
 					getImports(), 
 					requestClassName);
@@ -637,7 +637,7 @@ public class ExchangeApiInterfaceImplementationGenerator extends JavaTypeGenerat
 						restApi);
 			}
 			
-			responseSimpleClassName = ExchangeJavaWrapperGeneratorUtil.getClassNameForType(
+			responseSimpleClassName = ExchangeJavaGenUtil.getClassNameForType(
 					responseDataType, 
 					getImports(), 
 					restResponseClassName);
@@ -749,11 +749,11 @@ public class ExchangeApiInterfaceImplementationGenerator extends JavaTypeGenerat
 	private List<String> getRateLimitsVariables(RestEndpointDescriptor restApi) {
 		List<String> rateLimitVariables = new ArrayList<>();
 		if  (!CollectionUtils.isEmpty(exchangeDescriptor.getRateLimits())) {
-			String exchangeImplClassName = ExchangeJavaWrapperGeneratorUtil.getExchangeInterfaceImplementationName(exchangeDescriptor);
+			String exchangeImplClassName = ExchangeJavaGenUtil.getExchangeInterfaceImplementationName(exchangeDescriptor);
 			addImport(exchangeImplClassName);
 			String exchangeImplSimpleClassName = JavaCodeGenerationUtil.getClassNameWithoutPackage(exchangeImplClassName);
 			exchangeDescriptor.getRateLimits().forEach(
-					rateLimit -> rateLimitVariables.add(exchangeImplSimpleClassName + "." + ExchangeJavaWrapperGeneratorUtil.generateRateLimitVariableName(rateLimit.getId()))); 
+					rateLimit -> rateLimitVariables.add(exchangeImplSimpleClassName + "." + ExchangeJavaGenUtil.generateRateLimitVariableName(rateLimit.getId()))); 
 		}
 		rateLimitVariables.addAll(apiGlobalRateLimitVariables);
 		if (!CollectionUtils.isEmpty(restApi.getRateLimits())) {
@@ -814,7 +814,7 @@ public class ExchangeApiInterfaceImplementationGenerator extends JavaTypeGenerat
 		if (name == null) {
 			name = defaultName;
 		}
-		String variableName = ExchangeJavaWrapperGeneratorUtil.generateRateLimitVariableName(name);
+		String variableName = ExchangeJavaGenUtil.generateRateLimitVariableName(name);
 		// Add new rule definition if no one exists with same name. Otherwise, rule is expected to be a reference to existing one.
 		if (!endpointSpecificRateLimitIds.contains(name)) {
 			endpointSpecificRateLimitIds.add(name);
@@ -958,7 +958,7 @@ public class ExchangeApiInterfaceImplementationGenerator extends JavaTypeGenerat
 																  		  String requestArgName) {
 		fields = Optional.ofNullable(fields).orElse(List.of());
 		if (stringListSeparator == null) {
-			stringListSeparator = ExchangeJavaWrapperGeneratorUtil.DEFAULT_STRING_LIST_SEPARATOR;
+			stringListSeparator = ExchangeJavaGenUtil.DEFAULT_STRING_LIST_SEPARATOR;
 		}
 		StringBuilder sb = new StringBuilder();
 		sb.append(EncodingUtil.class.getSimpleName())
