@@ -7,6 +7,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Properties;
 import java.util.Set;
@@ -512,7 +513,7 @@ public class ExchangeApiInterfaceImplementationGenerator extends JavaTypeGenerat
 			.append(", topic, ");
 		
 		subscribeMethodBody
-			.append(generateWebsocketTopicMatcherDeclaration(websocketApi, request, requestArgName, requestClassName))
+			.append(generateWebsocketTopicMatcherDeclaration(websocketApi, request, message, requestArgName, requestClassName))
 			.append(");\n")
 			.append("String subId = ")
 			.append(websocketEndpointVariableName)
@@ -536,6 +537,7 @@ public class ExchangeApiInterfaceImplementationGenerator extends JavaTypeGenerat
 	
 	private String generateWebsocketTopicMatcherDeclaration(WebsocketEndpointDescriptor websocketApi, 
 															Field request, 
+															Field msg,
 															String requestArgName, 
 															String requestClassName) {
 		StringBuilder topicMatcherDeclaration = new StringBuilder()
@@ -569,7 +571,7 @@ public class ExchangeApiInterfaceImplementationGenerator extends JavaTypeGenerat
 				WebsocketMessageTopicMatcherFieldDescriptor topicMatcherField = websocketApi.getMessageTopicMatcherFields().get(i);
 				String topicMatcherFieldDeclaration = new StringBuilder()
 						.append("\"")
-						.append(topicMatcherField.getName())
+						.append(getMsgFieldName(topicMatcherField.getName(), msg))
 						.append("\", ")
 						.append(EncodingUtil.substituteArguments("\"" + topicMatcherField.getValue() + "\"", (Object[]) replacements.toArray(new String[replacements.size()])))
 						.toString();
@@ -584,6 +586,31 @@ public class ExchangeApiInterfaceImplementationGenerator extends JavaTypeGenerat
 			}
 		}
 		return topicMatcherDeclaration.append(")").toString();
+	}
+	
+	/**
+	 * Finds actual field name provided in JSON stream for a field with given name
+	 * 
+	 * @param name The field name provided in
+	 *             {@link WebsocketMessageTopicMatcherFieldDescriptor}
+	 * @param msg  The websocket stream data type
+	 * @return The msgFieldName (see {@link Field#getMsgField()}) of provided field
+	 *         or first of its child fields (see {@link Field#getProperties()} with
+	 *         name see {@link Field#getName()} matching that field.
+	 */
+	private String getMsgFieldName(String name, Field msg) {
+		Type messageDataType = ExchangeApiGeneratorUtil.getFieldType(msg);
+		if (Objects.equals(msg.getName(), name)) {
+			return Optional.ofNullable(msg.getMsgField()).orElse(name);
+		} else if (messageDataType.isObject()) {
+			for (Field c: msg.getProperties()) {
+				String res = getMsgFieldName(name, c);
+				if (res != null) {
+					return res;
+				}
+			}
+		}
+		return null;
 	}
 	
 	private String generateWebsocketTopicSerializerDeclaration(WebsocketEndpointDescriptor websocketApi) {

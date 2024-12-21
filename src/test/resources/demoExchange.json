@@ -151,8 +151,8 @@
 						]
 					},
 					"messageTopicMatcherFields": [
-						{"name": "t",  "value": "ticker"},
-						{"name": "s",  "value": "${symbol}"}
+						{"name": "topic",  "value": "ticker"},
+						{"name": "symbol",  "value": "${symbol}"}
 					],
 					"message": { 
 						"properties": [
