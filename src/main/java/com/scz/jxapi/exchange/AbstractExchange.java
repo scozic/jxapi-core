@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
+import com.scz.jxapi.netutils.rest.ratelimits.RequestThrottlingMode;
 import com.scz.jxapi.util.DefaultDisposable;
 
 /**
@@ -72,6 +73,17 @@ public abstract class AbstractExchange extends DefaultDisposable implements Exch
 	@Override
 	protected void doDispose() {
 		apis.values().forEach(ExchangeApi::dispose);
+	}
+	
+	@Override
+	public void setRequestThrottlingMode(RequestThrottlingMode requestThrottlingMode) {
+		apis.values().forEach(api -> api.setRequestThrottlingMode(requestThrottlingMode));
+		
+	}
+
+	@Override
+	public void setMaxRequestThrottleDelay(long maxRequestThrottleDelay) {
+		apis.values().forEach(api -> api.setMaxRequestThrottleDelay(maxRequestThrottleDelay));
 	}
 
 }
