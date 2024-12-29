@@ -8,6 +8,8 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.scz.jxapi.netutils.rest.ratelimits.RequestThrottler;
+import com.scz.jxapi.netutils.rest.ratelimits.RequestThrottlingMode;
 import com.scz.jxapi.netutils.websocket.WebsocketSubscribeRequest;
 
 /**
@@ -96,6 +98,33 @@ public class AbstractExchangeTest {
         Assert.assertEquals(api, exchange.getApis().get(0));
         
     }
+    
+    @Test
+    public void testSetRequestThrottlingMode() {
+        ExchangeApi api1 = exchange.addApi(new TestExchangeApi("myExchangeApi1"));
+        ExchangeApi api2 = exchange.addApi(new TestExchangeApi("myExchangeApi2"));
+        exchange.setRequestThrottlingMode(RequestThrottlingMode.BLOCK);
+        Assert.assertEquals(RequestThrottlingMode.BLOCK, api1.getRequestThrottlingMode());
+        Assert.assertEquals(RequestThrottlingMode.BLOCK, api2.getRequestThrottlingMode());
+    }
+    
+    @Test
+    public void testSetRequestMaxThrottlingDelay() {
+        ExchangeApi api1 = exchange.addApi(new TestExchangeApi("myExchangeApi1"));
+        ExchangeApi api2 = exchange.addApi(new TestExchangeApi("myExchangeApi2"));
+        exchange.setMaxRequestThrottleDelay(500L);
+        Assert.assertEquals(500L, api1.getMaxRequestThrottleDelay());
+        Assert.assertEquals(500L, api2.getMaxRequestThrottleDelay());
+    }
+    
+    @Test 
+    public void testDispose() {
+        ExchangeApi api1 = exchange.addApi(new TestExchangeApi("myExchangeApi1"));
+        ExchangeApi api2 = exchange.addApi(new TestExchangeApi("myExchangeApi2"));
+        exchange.dispose();
+        Assert.assertTrue(api1.isDisposed());
+        Assert.assertTrue(api2.isDisposed());
+    }
 
     // Helper class for testing ExchangeApiObserver
     private static class TestExchangeApiObserver implements ExchangeApiObserver {
@@ -112,7 +141,7 @@ public class AbstractExchangeTest {
     private class TestExchangeApi extends AbstractExchangeApi {
 
 		public TestExchangeApi(String apiName) {
-			super(apiName, exchange.getName(), exchange.getId(), exchange.getProperties());
+			super(apiName, exchange.getName(), exchange.getId(), exchange.getProperties(), new RequestThrottler("TestApi"));
 		}
 		
 		@Override

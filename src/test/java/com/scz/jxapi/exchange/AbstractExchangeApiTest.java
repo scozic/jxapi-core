@@ -27,6 +27,7 @@ import com.scz.jxapi.netutils.rest.mock.MockHttpRequestExecutorFactory;
 import com.scz.jxapi.netutils.rest.mock.MockHttpRequestInterceptor;
 import com.scz.jxapi.netutils.rest.mock.MockHttpRequestInterceptorFactory;
 import com.scz.jxapi.netutils.rest.ratelimits.RequestThrottler;
+import com.scz.jxapi.netutils.rest.ratelimits.RequestThrottlingMode;
 import com.scz.jxapi.netutils.websocket.DefaultWebsocketEndpoint;
 import com.scz.jxapi.netutils.websocket.DefaultWebsocketManager;
 import com.scz.jxapi.netutils.websocket.WebsocketException;
@@ -41,6 +42,7 @@ import com.scz.jxapi.netutils.websocket.multiplexing.WebsocketMessageTopicMatche
 import com.scz.jxapi.netutils.websocket.spring.SpringWebsocket;
 import com.scz.jxapi.observability.MockExchangeApiObserver;
 import com.scz.jxapi.observability.Observable;
+import com.scz.jxapi.util.JsonUtil;
 
 /**
  * Unit test for {@link AbstractExchangeApi}
@@ -199,7 +201,7 @@ public class AbstractExchangeApiTest {
 	
 	@Test
 	public void testSubmitAndExecuteHttpRequestOkUsingRequestThrottler() throws Exception {
-		exchangeApi = new TestExchangeApi("TestApi", "test-MyExchange", "MyExchange", new Properties(), new RequestThrottler("TeetApi"));
+		exchangeApi = new TestExchangeApi("TestApi", "test-MyExchange", "MyExchange", new Properties(), new RequestThrottler("TestApi"));
 		MockExchangeApiObserver observer = new MockExchangeApiObserver();
 		exchangeApi.subscribeObserver(observer);
 		MockHttpRequestExecutor executor = createMockHttpRequestExecutor();
@@ -223,7 +225,7 @@ public class AbstractExchangeApiTest {
 	
 	@Test
 	public void testSubmitAndExecuteHttpRequestMissingRequestExecutorUsingRequestThrottler() throws Exception {
-		exchangeApi = new TestExchangeApi("TestApi", "test-MyExchange", "MyExchange", new Properties(), new RequestThrottler("TeetApi"));
+		exchangeApi = new TestExchangeApi("TestApi", "test-MyExchange", "MyExchange", new Properties(), new RequestThrottler("TestApi"));
 		MockExchangeApiObserver observer = new MockExchangeApiObserver();
 		exchangeApi.subscribeObserver(observer);
 		HttpRequest request = createDummyRequest();
@@ -326,6 +328,48 @@ public class AbstractExchangeApiTest {
 		Assert.assertEquals("Error while sending message:foo", ex.getMessage());
 	}
 	
+	@Test
+	public void setThrottlingModeAndMaxThrottleDelayNoRequestThrottler() {
+		exchangeApi = new TestExchangeApi("TestApi", "test-MyExchange", "MyExchange", new Properties());
+		exchangeApi.setRequestThrottlingMode(RequestThrottlingMode.BLOCK);
+		exchangeApi.setMaxRequestThrottleDelay(1000L);
+		Assert.assertEquals(RequestThrottlingMode.NONE, exchangeApi.getRequestThrottlingMode());
+		Assert.assertEquals(-1L, exchangeApi.getMaxRequestThrottleDelay());
+	}
+	
+	@Test
+	public void setThrottlingModeAndMaxThrottleDelayWithRequestThrottler() {
+		exchangeApi = new TestExchangeApi("TestApi", "test-MyExchange", "MyExchange", new Properties(), new RequestThrottler("TestApi"));
+		exchangeApi.setRequestThrottlingMode(RequestThrottlingMode.BLOCK);
+		exchangeApi.setMaxRequestThrottleDelay(1000L);
+		Assert.assertEquals(RequestThrottlingMode.BLOCK, exchangeApi.getRequestThrottlingMode());
+		Assert.assertEquals(1000L, exchangeApi.getMaxRequestThrottleDelay());
+	}
+	
+	@Test
+	public void testDispose_BothRequestThrottlerHttpRequestExecutorWebsocketManagerNull() {
+		exchangeApi = new TestExchangeApi("TestApi", "test-MyExchange", "MyExchange", new Properties());
+		exchangeApi.dispose();
+		Assert.assertTrue(exchangeApi.isDisposed());
+	}
+	
+	@Test
+	public void testDispose_BothRequestThrottlerHttpRequestExecutorWebsocketManagerNotNull() {
+		exchangeApi = new TestExchangeApi("TestApi", "test-MyExchange", "MyExchange", new Properties(), new RequestThrottler("TestApi"));
+		exchangeApi.createHttpRequestExecutor(null, 500L);
+		createWebsocketManager("wss://myexchange.com/ws", 
+				  MockWebsocketFactory.class.getName(), 
+				  MockWebsocketHookFactory.class.getName());
+		exchangeApi.dispose();
+		Assert.assertTrue(exchangeApi.isDisposed());
+	}
+	
+	@Test
+	public void testSerializeRequestBody() {
+		exchangeApi = new TestExchangeApi("TestApi", "test-MyExchange", "MyExchange", new Properties());
+		Assert.assertEquals("\"ping\"", exchangeApi.serializeRequestBody("ping"));
+	}
+	
 	private HttpRequest createDummyRequest() {
 		HttpRequest request = new HttpRequest();
 		String reqData = "ping";
@@ -405,6 +449,10 @@ public class AbstractExchangeApiTest {
 		
 		public WebsocketManager getWebsocketManager() {
 			return this.websocketManager;
+		}
+		
+		public String serializeRequestBody(Object request) {
+			return JsonUtil.pojoToJsonString(request);
 		}
 	}
 }

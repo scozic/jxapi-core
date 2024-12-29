@@ -15,6 +15,7 @@ import com.scz.jxapi.netutils.rest.HttpRequestInterceptorFactory;
 import com.scz.jxapi.netutils.rest.RestResponse;
 import com.scz.jxapi.netutils.rest.javanet.JavaNetHttpRequestExecutor;
 import com.scz.jxapi.netutils.rest.ratelimits.RequestThrottler;
+import com.scz.jxapi.netutils.rest.ratelimits.RequestThrottlingMode;
 import com.scz.jxapi.netutils.websocket.DefaultWebsocketEndpoint;
 import com.scz.jxapi.netutils.websocket.DefaultWebsocketFactory;
 import com.scz.jxapi.netutils.websocket.DefaultWebsocketManager;
@@ -334,5 +335,35 @@ public abstract class AbstractExchangeApi extends DefaultDisposable implements E
 		if (websocketManager != null) {
 			websocketManager.dispose();
 		}
+	}
+	
+	@Override
+	public void setRequestThrottlingMode(RequestThrottlingMode requestThrottlingMode) {
+		if (requestThrottler != null) {
+			requestThrottler.setThrottlingMode(requestThrottlingMode);
+		}
+	}
+
+	@Override
+	public RequestThrottlingMode getRequestThrottlingMode() {
+		if (requestThrottler != null) {
+			return requestThrottler.getThrottlingMode();
+		}
+		return RequestThrottlingMode.NONE;
+	}
+
+	@Override
+	public void setMaxRequestThrottleDelay(long maxRequestThrottleDelay) {
+		if (requestThrottler != null) {
+			requestThrottler.setMaxThrottleDelay(maxRequestThrottleDelay);
+		}
+	}
+
+	@Override
+	public long getMaxRequestThrottleDelay() {
+		if (requestThrottler != null) {
+			return requestThrottler.getMaxThrottleDelay();
+		}
+		return -1L;
 	}
 }

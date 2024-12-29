@@ -5,7 +5,10 @@ import com.scz.jxapi.netutils.rest.FutureRestResponse;
 import com.scz.jxapi.netutils.rest.HttpRequestExecutor;
 import com.scz.jxapi.netutils.rest.HttpRequestInterceptor;
 import com.scz.jxapi.netutils.rest.ratelimits.RateLimitRule;
+import com.scz.jxapi.netutils.rest.ratelimits.RequestThrottler;
+import com.scz.jxapi.netutils.rest.ratelimits.RequestThrottlingMode;
 import com.scz.jxapi.netutils.websocket.WebsocketManager;
+import com.scz.jxapi.util.Disposable;
 import com.scz.jxapi.util.HasProperties;
 
 /**
@@ -48,7 +51,7 @@ import com.scz.jxapi.util.HasProperties;
  * Recurring disconnection errors on websocket may indicate network or remote
  * end service outage or bad configuration.
  */
-public interface ExchangeApi extends HasProperties {
+public interface ExchangeApi extends Disposable, HasProperties {
 	
 	/**
 	 * @return Unique API Group name (common to all instances).
@@ -86,7 +89,47 @@ public interface ExchangeApi extends HasProperties {
 	boolean unsubscribeObserver(ExchangeApiObserver exchangeApiObserver);
 	
 	/**
-	 * Frees any resources used, for instance open websocket connection.
+	 * Sets the request throttling policy for calls to exposed REST endpoints.
+	 * Relevant when some of REST endpoints must enfore rate limit rules
+	 * <p>
+	 * Warning: If some rate limits are defined at 'exchange' level, the
+	 * {@link RequestThrottler} instance is shared between all API groups, changing
+	 * this parameter also changes it for other API groups. Instead of using this
+	 * method, it is recommended to set this property for whole exchange using
+	 * {@link Exchange#setRequestThrottlingMode(RequestThrottlingMode)}
+	 * 
+	 * @see RateLimitRule
+	 * @see RequestThrottler
+	 * @param requestThrottlingMode the request throttling policy
 	 */
-	void dispose();
+	void setRequestThrottlingMode(RequestThrottlingMode requestThrottlingMode);
+	
+	/**
+	 * 
+	 * @return
+	 */
+	RequestThrottlingMode getRequestThrottlingMode();
+
+	/**
+	 * The maximum request throttle delay applied for REST endpoints when rate
+	 * limits are breached and some time has to be awaited for before resubmitting a
+	 * request. Relevant when some {@link RateLimitRule} are defined. A negative
+	 * value means no request throttle delay limit. {@link ExchangeApi}.
+	 * <p>
+	 * Warning: If some rate limits are defined at 'exchange' level, the
+	 * {@link RequestThrottler} instance is shared between all API groups, changing
+	 * this parameter also changes it for other API groups. Instead of using this
+	 * method, it is recommended to set this property for whole exchange using
+	 * {@link Exchange#setMaxRequestThrottleDelay(long)}
+	 * 
+	 * @param maxRequestThrottleDelay The maximum request throttle delay
+	 */
+	void setMaxRequestThrottleDelay(long maxRequestThrottleDelay);
+	
+	/**
+	 * @return The maximum request throttle delay applied for REST endpoint APIs
+	 *         requests, or a negative value if there are no rate limits set or no max request
+	 *         throttle delay limit.
+	 */
+	long getMaxRequestThrottleDelay();
 }

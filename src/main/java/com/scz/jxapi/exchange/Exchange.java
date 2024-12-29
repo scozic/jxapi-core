@@ -3,6 +3,8 @@ package com.scz.jxapi.exchange;
 import java.util.List;
 import java.util.Properties;
 
+import com.scz.jxapi.netutils.rest.ratelimits.RateLimitRule;
+import com.scz.jxapi.netutils.rest.ratelimits.RequestThrottlingMode;
 import com.scz.jxapi.util.Disposable;
 import com.scz.jxapi.util.HasProperties;
 
@@ -62,5 +64,21 @@ public interface Exchange extends Disposable, HasProperties {
 	 * @return List of {@link ExchangeApi} instances exposed by this exchange.
 	 */
 	List<ExchangeApi> getApis();
+	
+	/**
+	 * Sets the request throttling policy for all REST requests of every exposed
+	 * {@link ExchangeApi}. Relevant when some of REST endpoints must enfore rate
+	 * limit rules
+	 * 
+	 * @see RateLimitRule
+	 * @param requestThrottlingMode the request throttling policy
+	 */
+	void setRequestThrottlingMode(RequestThrottlingMode requestThrottlingMode);
+
+	/**
+	 * Set the max request throttle delay for all REST requests of every exposed
+	 * {@link ExchangeApi}.
+	 */
+	void setMaxRequestThrottleDelay(long maxRequestThrottleDelay);
 
 }
