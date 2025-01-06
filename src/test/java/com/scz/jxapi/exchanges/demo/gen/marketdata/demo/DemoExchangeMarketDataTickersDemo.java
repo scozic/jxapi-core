@@ -10,7 +10,6 @@ import com.scz.jxapi.exchanges.demo.gen.marketdata.DemoExchangeMarketDataApi;
 import com.scz.jxapi.exchanges.demo.gen.marketdata.pojo.DemoExchangeMarketDataTickersResponse;
 import com.scz.jxapi.netutils.rest.RestResponse;
 import com.scz.jxapi.util.DemoUtil;
-import com.scz.jxapi.util.TestJXApiProperties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -51,7 +50,8 @@ public class DemoExchangeMarketDataTickersDemo {
    */
   public static void main(String[] args) {
     try {
-      execute(TestJXApiProperties.filterProperties(DemoExchangeExchange.ID, true), DemoUtil::logRestApiEvent);
+      execute(DemoUtil.loadDemoExchangeProperties(DemoExchangeExchange.ID),
+              DemoUtil::logRestApiEvent);
       System.exit(0);
     }
     catch (Throwable t) {

@@ -81,7 +81,7 @@ import com.scz.jxapi.util.EncodingUtil;
  * <li>properties: list of configuration properties that can be configured for
  * the exchange
  * wrapper, for instance API keys, secret keys, etc. See
- * {@link ConfigProperty}</li>
+ * {@link DefaultConfigProperty}</li>
  * <li><code>httpRequestInterceptorFactory</code>,
  * <code>httpRequestExecutorFactory</code>, <code>httpRequestTimeout</code>,
  * <code>websocketFactory</code>, <code>websocketHookFactory</code> properties
@@ -120,7 +120,7 @@ public class ExchangeDescriptor {
 	
 	private List<Constant> constants;
 	
-	private List<ConfigProperty> properties;
+	private List<DefaultConfigProperty> properties;
 	
 	private String httpRequestInterceptorFactory;
 	
@@ -263,18 +263,18 @@ public class ExchangeDescriptor {
 	/**
 	 * @return List of properties that can be configured for the exchange wrapper,
 	 *         for instance API keys, secret keys, etc.
-	 * @see ConfigProperty
+	 * @see DefaultConfigProperty
 	 */
-	public List<ConfigProperty> getProperties() {
+	public List<DefaultConfigProperty> getProperties() {
 		return properties;
 	}
 
 	/**
 	 * @param properties List of properties that can be configured for the exchange
 	 *                   wrapper, for instance API keys, secret keys, etc.
-	 * @see ConfigProperty
+	 * @see DefaultConfigProperty
 	 */
-	public void setProperties(List<ConfigProperty> properties) {
+	public void setProperties(List<DefaultConfigProperty> properties) {
 		this.properties = properties;
 	}
 	

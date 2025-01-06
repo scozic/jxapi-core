@@ -1,5 +1,12 @@
 package com.scz.jxapi.util;
 
+import java.io.BufferedInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStream;
+import java.net.URL;
+import java.nio.file.Path;
+import java.util.Properties;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 
@@ -85,5 +92,32 @@ public class DemoUtil {
 		}
 	}
 	
+	public static String getDefaultDemoExchangePropertiesFileName(String exchangeId) {
+		return new StringBuilder()
+				.append("demo-")
+				.append(exchangeId)
+				.append(".properties")
+				.toString();
+	}
+	
+	public static Properties loadDemoExchangeProperties(String exchangeId) {
+		Properties props = new Properties();
+		String propsFilePath = System.getProperty(DemoProperties.DEMO_API_PROPERTIES_FILE_SYSTEM_PROPERTY, 
+				Path.of("src", "test", "resources", getDefaultDemoExchangePropertiesFileName(exchangeId)).toUri().toString());
+		try {
+			URL url = DemoUtil.class.getClassLoader().getResource(propsFilePath);
+			if (url != null) {
+				File propsFile = new File(url.getFile());
+				if (propsFile.exists()) {
+					try (InputStream in = new BufferedInputStream(new FileInputStream(propsFile))) {
+						props.load(in);
+					}
+				}
+			}
+		} catch (Exception ex) {
+			throw new IllegalArgumentException(String.format("Failed to load %s properties file", propsFilePath), ex);
+		}
+		return props;
+	}
 	
 }

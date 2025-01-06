@@ -72,13 +72,23 @@ public interface Exchange extends Disposable, HasProperties {
 	 * 
 	 * @see RateLimitRule
 	 * @param requestThrottlingMode the request throttling policy
+	 * @see ExchangeApi#setRequestThrottlingMode(RequestThrottlingMode)
 	 */
 	void setRequestThrottlingMode(RequestThrottlingMode requestThrottlingMode);
 
 	/**
 	 * Set the max request throttle delay for all REST requests of every exposed
 	 * {@link ExchangeApi}.
+	 * @param maxRequestThrottleDelay the max request throttle delay for all REST requests
+	 * @see ExchangeApi#setMaxRequestThrottleDelay(long)
 	 */
 	void setMaxRequestThrottleDelay(long maxRequestThrottleDelay);
+	
+	/**
+	 * Sets the request timeout for calls to REST endpoints of every API
+	 * @param httpRequestTimeout The HTTP request timeout in ms
+	 * @see ExchangeApi#setHttpRequestTimeout(long)
+	 */
+	void setHttpRequesTimeout(long httpRequestTimeout);
 
 }

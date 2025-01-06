@@ -24,6 +24,7 @@ public class HttpRequest {
 	 * @param rateLimits List of {@link RateLimitRule} to apply to this request.
 	 * @param weight     Weight of this request if some weight-based rate limiting
 	 *                   is applied.
+	 * @param body 	     The HTTP request body                    
 	 * @return a new {@link HttpRequest} object with the given parameters, and the
 	 *         current time.
 	 */

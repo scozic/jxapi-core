@@ -3,6 +3,7 @@ package com.scz.jxapi.generator.java.exchange.constants;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.scz.jxapi.exchange.descriptor.DefaultConfigProperty;
 import com.scz.jxapi.exchange.descriptor.ConfigProperty;
 import com.scz.jxapi.exchange.descriptor.Constant;
 import com.scz.jxapi.exchange.descriptor.Type;
@@ -81,7 +82,7 @@ public class ConstantsGenerationUtil {
 	 * @param properties the properties to generate the constants for
 	 * @return the list of constants for the given properties
 	 */
-	public static List<Constant> getConstantsForProperties(List<ConfigProperty> properties) {
+	public static List<Constant> getConstantsForProperties(List<DefaultConfigProperty> properties) {
 		List<Constant> constants = new ArrayList<>();
 		properties.forEach(p -> {
 			String propKeyName = getPropertyKeyPropertyName(p);

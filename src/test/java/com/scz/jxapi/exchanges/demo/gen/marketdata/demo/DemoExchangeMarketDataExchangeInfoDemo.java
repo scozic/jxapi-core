@@ -13,7 +13,6 @@ import com.scz.jxapi.netutils.deserialization.json.field.ListJsonFieldDeserializ
 import com.scz.jxapi.netutils.deserialization.json.field.StringJsonFieldDeserializer;
 import com.scz.jxapi.netutils.rest.RestResponse;
 import com.scz.jxapi.util.DemoUtil;
-import com.scz.jxapi.util.TestJXApiProperties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -61,7 +60,9 @@ public class DemoExchangeMarketDataExchangeInfoDemo {
    */
   public static void main(String[] args) {
     try {
-      execute(createRequest(), TestJXApiProperties.filterProperties(DemoExchangeExchange.ID, true), DemoUtil::logRestApiEvent);
+      execute(createRequest(),
+              DemoUtil.loadDemoExchangeProperties(DemoExchangeExchange.ID),
+              DemoUtil::logRestApiEvent);
       System.exit(0);
     }
     catch (Throwable t) {

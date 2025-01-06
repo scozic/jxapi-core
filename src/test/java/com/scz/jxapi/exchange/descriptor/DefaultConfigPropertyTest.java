@@ -4,13 +4,13 @@ import org.junit.Assert;
 import org.junit.Test;
 
 /**
- * Unit test for {@link ConfigProperty}
+ * Unit test for {@link DefaultConfigProperty}
  */
-public class ConfigPropertyTest {
+public class DefaultConfigPropertyTest {
 
     @Test
     public void testCreate() {
-        ConfigProperty property = ConfigProperty.create("myProperty", Type.STRING, "My property", "myValue");
+        ConfigProperty property = DefaultConfigProperty.create("myProperty", Type.STRING, "My property", "myValue");
         Assert.assertEquals("myProperty", property.getName());
         Assert.assertEquals("My property", property.getDescription());
         Assert.assertEquals(Type.STRING, property.getType());
@@ -19,7 +19,7 @@ public class ConfigPropertyTest {
 
     @Test
     public void testSettersAndGetters() {
-        ConfigProperty property = new ConfigProperty();
+        DefaultConfigProperty property = new DefaultConfigProperty();
         property.setName("myProperty");
         property.setDescription("My property");
         property.setType(Type.STRING.toString());
@@ -33,8 +33,8 @@ public class ConfigPropertyTest {
 
     @Test
     public void testToString() {
-        ConfigProperty property = ConfigProperty.create("myProperty", Type.STRING, "My property", "myValue");
-        Assert.assertEquals("ConfigProperty{\"defaultValue\":\"myValue\",\"description\":\"My property\",\"name\":\"myProperty\",\"type\":{\"canonicalType\":\"STRING\",\"object\":false}}", property.toString());
+        ConfigProperty property = DefaultConfigProperty.create("myProperty", Type.STRING, "My property", "myValue");
+        Assert.assertEquals("DefaultConfigProperty{\"defaultValue\":\"myValue\",\"description\":\"My property\",\"name\":\"myProperty\",\"type\":{\"canonicalType\":\"STRING\",\"object\":false}}", property.toString());
     }
 
 

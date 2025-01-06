@@ -25,7 +25,7 @@ import com.scz.jxapi.util.PropertiesUtil;
 /**
  * Tests performances of {@link WebsocketManager} implementation.
  * Will instantiate one, using Mock WS implementation.
- * The {@link #runTest()} method starts a load test where X messages are
+ * The {@link #runTest(int, int, int, int)} method starts a load test where X messages are
  * dispatched for 3 topics and some messages unrelated to any topic.<br>
  * Messages are dispatched from a distinct thread, or a configurable number of
  * threads.<br>
@@ -80,7 +80,6 @@ public class WebsocketManagerLoadTest {
 	
 	/**
 	 * Constructor
-	 * @param topicCount 
 	 */
 	public WebsocketManagerLoadTest() {
 		wsManager.subscribeErrorHandler(errorHandler);
@@ -88,6 +87,10 @@ public class WebsocketManagerLoadTest {
 	
 	/**
 	 * Runs load test
+	 * @param topicCount number of topics to subscribe
+	 * @param nbMessagesPerTopic number of messages per topic to send during test
+	 * @param iterations number of iterations to run
+	 * @param nbThreads number of threads to spawn to dispatch messages
 	 * @throws InterruptedException eventually thrown while waiting
 	 */
 	public void runTest(int topicCount, 

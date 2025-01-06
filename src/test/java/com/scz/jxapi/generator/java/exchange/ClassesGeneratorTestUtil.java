@@ -1,6 +1,8 @@
 package com.scz.jxapi.generator.java.exchange;
 
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
@@ -44,7 +46,7 @@ public class ClassesGeneratorTestUtil {
 		return fullPath;
 	}
 	
-	public static synchronized Path generateTmpDir() {
+	public static synchronized Path generateTmpDir() throws IOException {
 		Path p = Paths.get("tmp" 
 							+ new SimpleDateFormat("yyyyMMdd-HHmmss-SSS").format(new Date())
 							+ (RandomUtils.nextInt() % 1000));
@@ -59,6 +61,7 @@ public class ClassesGeneratorTestUtil {
 			}
 			return generateTmpDir();
 		}
+		Files.createDirectories(p);
 		return p;
 	}
 	

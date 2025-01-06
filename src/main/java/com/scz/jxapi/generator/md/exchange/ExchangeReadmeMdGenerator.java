@@ -9,7 +9,7 @@ import java.util.Optional;
 
 import org.apache.commons.lang3.StringUtils;
 
-import com.scz.jxapi.exchange.descriptor.ConfigProperty;
+import com.scz.jxapi.exchange.descriptor.DefaultConfigProperty;
 import com.scz.jxapi.exchange.descriptor.Constant;
 import com.scz.jxapi.exchange.descriptor.ExchangeApiDescriptor;
 import com.scz.jxapi.exchange.descriptor.ExchangeDescriptor;
@@ -106,7 +106,7 @@ public class ExchangeReadmeMdGenerator {
 			 .append(demoClassName.replace('.', '/'))
 			 .append(".java for full usage example\n");
 		}
-		List<ConfigProperty> properties = exchangeDescriptor.getProperties();
+		List<DefaultConfigProperty> properties = exchangeDescriptor.getProperties();
 		if (!CollectionUtil.isEmpty(properties)) {
 			s.append("\n### Properties\n\n")
 			 .append(generatePropertiesTable(properties));
@@ -262,7 +262,7 @@ public class ExchangeReadmeMdGenerator {
 				JavaCodeGenerationUtil.getClassNameWithoutPackage(StringUtils.substringBefore(methodJavadocLink, "(")));
 	}
 	
-	private String generatePropertiesTable(List<ConfigProperty> properties) {
+	private String generatePropertiesTable(List<DefaultConfigProperty> properties) {
 		List<String> columns = List.of("Name", "Type", "description", "Default value");
 		List<List<String>> cells = new ArrayList<>();
 		properties.forEach(p -> {

@@ -7,6 +7,7 @@ import java.util.Properties;
 import java.util.stream.Collectors;
 
 import com.scz.jxapi.exchange.descriptor.ConfigProperty;
+import com.scz.jxapi.exchange.descriptor.DefaultConfigProperty;
 import com.scz.jxapi.exchange.descriptor.Type;
 import com.scz.jxapi.generator.html.HtmlGenerationUtil;
 import com.scz.jxapi.generator.java.JavaCodeGenerationUtil;
@@ -44,7 +45,7 @@ import com.scz.jxapi.util.PropertiesUtil;
 public class PropertiesInterfaceGenerator extends JavaTypeGenerator {
 	
 	private final String exchangeName;
-	private final List<ConfigProperty> properties;
+	private final List<DefaultConfigProperty> properties;
 
 	/**
 	 * Constructor
@@ -55,7 +56,7 @@ public class PropertiesInterfaceGenerator extends JavaTypeGenerator {
 	 *                      generated for
 	 * @param properties    List of properties to generate in the interface
 	 */
-	public PropertiesInterfaceGenerator(String fullClassName, String exchangeName, List<ConfigProperty> properties) {
+	public PropertiesInterfaceGenerator(String fullClassName, String exchangeName, List<DefaultConfigProperty> properties) {
 		super(fullClassName);
 		this.exchangeName = exchangeName;
 		this.properties = properties;

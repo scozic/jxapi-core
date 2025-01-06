@@ -28,7 +28,7 @@ public class ExchangeDescriptorTest {
         exchangeDescriptor.setRateLimits(List.of(new RateLimitRule()));
         exchangeDescriptor.setDocUrl("https://doc.myexchange.com");
         exchangeDescriptor.setConstants(List.of(new Constant()));
-        exchangeDescriptor.setProperties(List.of(new ConfigProperty()));
+        exchangeDescriptor.setProperties(List.of(new DefaultConfigProperty()));
         exchangeDescriptor.setHttpRequestInterceptorFactory("com.x.y.net.MyHttpRequestInterceptorFactory");
         exchangeDescriptor.setHttpRequestExecutorFactory("com.x.y.net.MyHttpRequestExecutorFactory");
         exchangeDescriptor.setHttpRequestTimeout(2000L);

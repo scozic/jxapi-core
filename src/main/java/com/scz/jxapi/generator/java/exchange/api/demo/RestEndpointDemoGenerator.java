@@ -18,7 +18,6 @@ import com.scz.jxapi.generator.java.exchange.ExchangeJavaGenUtil;
 import com.scz.jxapi.generator.java.exchange.api.ExchangeApiGeneratorUtil;
 import com.scz.jxapi.netutils.rest.RestResponse;
 import com.scz.jxapi.util.DemoUtil;
-import com.scz.jxapi.util.TestJXApiProperties;
 
 /**
  * Generates a demo snippet class for a REST endpoint.
@@ -36,6 +35,8 @@ import com.scz.jxapi.util.TestJXApiProperties;
  * </ul>
  */
 public class RestEndpointDemoGenerator extends JavaTypeGenerator {
+	
+	private static final String EXECUTE_METHOD_ARG_INDENT = "        ";
 	
 	private final RestEndpointDescriptor restApi;
 	private final boolean hasArguments;
@@ -123,7 +124,6 @@ public class RestEndpointDemoGenerator extends JavaTypeGenerator {
 		addImport(apiInterfaceClassName);
 		addImport(exchangeClassName);
 		addImport(exchangeImplClassName);
-		addImport(TestJXApiProperties.class);
 		addImport(DemoUtil.class);
 		addImport(ExecutionException.class);
 		addImport(InterruptedException.class);
@@ -136,6 +136,7 @@ public class RestEndpointDemoGenerator extends JavaTypeGenerator {
 	@Override
 	public String generate() {
 		JavaCodeGenerationUtil.generateSlf4jLoggerDeclaration(this);
+//		appendToBody(generateStaticRequestTimeoutVariable());
 		if (hasArguments) {
 			this.appendToBody(EndpointDemoGeneratorUtil.generateFieldCreationMethod(
 								request,  
@@ -148,6 +149,17 @@ public class RestEndpointDemoGenerator extends JavaTypeGenerator {
 		generateMainMethod();
 		return super.generate();
 	}
+	
+//	private String generateStaticRequestTimeoutVariable() {
+//		return new StringBuilder()
+//			.append("private static final long ")
+//			.append(REQUEST_TIMEOUT_VARIABLE_NAME)
+//			.append(" = ")
+//			.append(TestJXApiProperties.class.getSimpleName())
+//			.append(".DEMO_REST_DEFAULT_RESPONSE_TIMEOUT")
+//			.append(";\n\n")
+//			.toString();
+//	}
 	
 	private String generateApiEndpointMethodJavadocLink() {
 		StringBuilder javadoc = new StringBuilder()
@@ -246,10 +258,12 @@ public class RestEndpointDemoGenerator extends JavaTypeGenerator {
 		StringBuilder bodyBuilder = new StringBuilder().append("execute(");
 		if (hasArguments) {
 			bodyBuilder.append(EndpointDemoGeneratorUtil.generateFieldCreationMethodName(restApi.getRequest()))
-					   .append("(), ");
+					   .append("(),\n")
+					   .append(EXECUTE_METHOD_ARG_INDENT);
 		}
 		bodyBuilder.append(EndpointDemoGeneratorUtil.getTestPropertiesInstruction(exchangeSimpleClassName, getImports()))
-				   .append(", ")
+				   .append(",\n")
+				   .append(EXECUTE_METHOD_ARG_INDENT)
 				   .append(DemoUtil.class.getSimpleName())
 				   .append("::logRestApiEvent")
 				   .append(");\nSystem.exit(0);");

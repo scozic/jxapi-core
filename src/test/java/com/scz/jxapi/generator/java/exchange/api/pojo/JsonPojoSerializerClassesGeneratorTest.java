@@ -59,7 +59,7 @@ public class JsonPojoSerializerClassesGeneratorTest {
 	}
 	
 	@Test(expected = IllegalArgumentException.class)
-	public void testGenerateJsonSerializerClasses_NullObjectFieldProperties() {
+	public void testGenerateJsonSerializerClasses_NullObjectFieldProperties() throws IOException {
 		srcFolder = ClassesGeneratorTestUtil.generateTmpDir();
 		String typeName = "com.x.MyPojo";
 		new JsonPojoSerializerClassesGenerator(typeName, null);

@@ -4,9 +4,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.scz.jxapi.exchange.AbstractExchangeApi;
 import com.scz.jxapi.exchanges.demo.gen.DemoExchangeExchange;
 import com.scz.jxapi.exchanges.demo.gen.DemoExchangeExchangeImpl;
@@ -31,6 +28,8 @@ import com.scz.jxapi.netutils.websocket.WebsocketSubscribeRequest;
 import com.scz.jxapi.netutils.websocket.multiplexing.WebsocketMessageTopicMatcherFactory;
 import com.scz.jxapi.util.EncodingUtil;
 import com.scz.jxapi.util.JsonUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Actual implementation of {@link DemoExchangeMarketDataApi}<br>

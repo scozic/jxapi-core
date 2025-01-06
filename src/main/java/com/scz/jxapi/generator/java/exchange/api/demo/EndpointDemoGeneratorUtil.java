@@ -18,7 +18,7 @@ import com.scz.jxapi.generator.java.Imports;
 import com.scz.jxapi.generator.java.JavaCodeGenerationUtil;
 import com.scz.jxapi.generator.java.exchange.ExchangeJavaGenUtil;
 import com.scz.jxapi.generator.java.exchange.api.ExchangeApiGeneratorUtil;
-import com.scz.jxapi.util.TestJXApiProperties;
+import com.scz.jxapi.util.DemoUtil;
 
 /**
  * Helper methods around REST or Websocket endpoint demo snippets code generation.
@@ -316,8 +316,8 @@ public class EndpointDemoGeneratorUtil {
 	 * <li>The returned instruction is declaration of a variable named
 	 * <code>api</code> of the given simple API class name, initialized with a new
 	 * instance of the given exchange implementation class name.</li>
-	 * <li>The exchange Id is used as expected prefix to filter properties returned
-	 * by {@link TestJXApiProperties#filterProperties(String, boolean)} .</li>
+	 * <li>The exchange Id is used to retrieve default test properties file in 
+	 * src/test/resources, see {@link DemoUtil#loadDemoExchangeProperties(String)}.</li>
 	 * </ul>
 	 * 
 	 * Example:
@@ -328,7 +328,7 @@ public class EndpointDemoGeneratorUtil {
 	 * @param propertiesVariableName The name of variable referencing configuration properties {@link Properties} object.
 	 * @return the new test API instantiation instruction.
 	 * 
-	 * @see TestJXApiProperties#filterProperties(String, boolean)
+	 * @see DemoUtil#loadDemoExchangeProperties(String)
 	 */
 	public static String getNewTestApiInstruction(String exchangeClassName, 
 												  String simpleApiClassName, 
@@ -351,19 +351,19 @@ public class EndpointDemoGeneratorUtil {
 	}
 	
 	/**
-	 * Generates {@link TestJXApiProperties} instantiation instruction, that is a call to {@link TestJXApiProperties#filterProperties(String, boolean)} using given exchangeId as argument.
-	 * The {@link TestJXApiProperties}
+	 * Generates {@link DemoUtil#loadDemoExchangeProperties(String)} instruction, using <code>ID</code> constant 
+	 * generated in exchange interface name as value of expected <code>exchangeId</code> argument
 	 * @param simpleExchangeClassName Simple (without package) class name of generated {@link Exchange} 
 	 * @param imports The imports that can be populated in generation context
-	 * @return Instruction call to {@link TestJXApiProperties}
+	 * @return Instruction call to {@link DemoUtil#loadDemoExchangeProperties(String)}
 	 */
 	public static String getTestPropertiesInstruction(String simpleExchangeClassName, Imports imports) {
-		imports.add(TestJXApiProperties.class);
+		imports.add(DemoUtil.class);
 		return new StringBuilder()
-				.append(TestJXApiProperties.class.getSimpleName())
-				.append(".filterProperties(")
+				.append(DemoUtil.class.getSimpleName())
+				.append(".loadDemoExchangeProperties(")
 				.append(simpleExchangeClassName)
-				.append(".ID, true)")
+				.append(".ID)")
 				.toString();
 	}
 

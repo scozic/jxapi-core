@@ -4,12 +4,15 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.scz.jxapi.exchange.descriptor.ConfigProperty;
 import com.scz.jxapi.exchange.descriptor.ExchangeApiDescriptor;
 import com.scz.jxapi.exchange.descriptor.ExchangeDescriptor;
 import com.scz.jxapi.exchange.descriptor.parser.ExchangeDescriptorParser;
@@ -17,7 +20,9 @@ import com.scz.jxapi.generator.java.JavaCodeGenerationUtil;
 import com.scz.jxapi.generator.java.exchange.api.ExchangeApiClassesGenerator;
 import com.scz.jxapi.generator.java.exchange.api.demo.ExchangeDemoClassesGenerator;
 import com.scz.jxapi.generator.md.exchange.ExchangeReadmeMdGenerator;
+import com.scz.jxapi.generator.properties.ExchangeDemoPropertiesFileGenerator;
 import com.scz.jxapi.netutils.rest.ratelimits.RateLimitManager;
+import com.scz.jxapi.util.DemoUtil;
 
 /**
  * Java main class that performs generation of exchange APIs for every file found with name ending with 'Descriptor.json' in 'src/main/resources/' folder. 
@@ -97,8 +102,7 @@ public class ExchangeGeneratorMain {
 													   Path projectFolder, 
 													   String baseJavaDocUrl, 
 													   String baseSrcUrl) throws IOException {
-		if (log.isInfoEnabled())
-			log.info("Generating exchange wrapper code for descriptor:{}", jsonFile.getFileName());
+		log.info("Generating exchange wrapper code for descriptor:{}", jsonFile.getFileName());
 		ExchangeDescriptor exchangeDescriptor = new ExchangeDescriptorParser().fromJson(jsonFile);
 		Path outputSrcMainFolder = projectFolder.resolve(Paths.get("src", "main", "java"));
 		Path mainPackagePath = Paths.get(StringUtils.replace(exchangeDescriptor.getBasePackage(), ".", "/"));
@@ -106,15 +110,17 @@ public class ExchangeGeneratorMain {
 		JavaCodeGenerationUtil.deletePath(genMainPackagesFolder);
 		generateExchangeWrapper(exchangeDescriptor, outputSrcMainFolder);
 		
-		if (log.isInfoEnabled())
-			log.info("Generating exchange demos code for descriptor:{}", jsonFile.getFileName());
+		log.info("Generating exchange demos code for descriptor:{}", jsonFile.getFileName());
 		Path outputSrcTestFolder = Paths.get(".", "src", "test", "java");
 		Path genTestPackagesFolder = outputSrcTestFolder.resolve(mainPackagePath);
 		JavaCodeGenerationUtil.deletePath(genTestPackagesFolder);
 		generateExchangeWrapperDemos(exchangeDescriptor, outputSrcTestFolder);
 		
-		if (log.isInfoEnabled())
-			log.info("Generating exchange README for:{}", jsonFile.getFileName());
+		Path srcTestResourcesFolder = Paths.get(".", "src", "test", "resources");
+		log.info("Generating demo exchange configuration properties file template in {}", srcTestResourcesFolder);
+		generateDemoPropertiesFileTemplate(exchangeDescriptor, srcTestResourcesFolder);
+		
+		log.info("Generating exchange README for:{}", jsonFile.getFileName());
 		generateExchangeWrapperReadme(exchangeDescriptor, projectFolder, baseJavaDocUrl, baseSrcUrl);
 		
 		if (log.isInfoEnabled()) {
@@ -155,6 +161,17 @@ public class ExchangeGeneratorMain {
 	 */
 	public static void generateExchangeWrapperDemos(ExchangeDescriptor exchangeDescriptor, Path srcFolder) throws IOException {
 		new ExchangeDemoClassesGenerator(exchangeDescriptor).generateClasses(srcFolder);
+	}
+	
+	public static void generateDemoPropertiesFileTemplate(ExchangeDescriptor exchangeDescriptor, Path resourcesFolder) throws IOException {
+		String fileName = DemoUtil.getDefaultDemoExchangePropertiesFileName(exchangeDescriptor.getName()) + ".dist";
+		Path filePath = resourcesFolder.resolve(Paths.get(fileName));
+		log.info("Generating demo exchange properties template file:{}", filePath);
+		List<ConfigProperty> configProperties = new ArrayList<>();
+		configProperties.addAll(exchangeDescriptor.getProperties());
+		new ExchangeDemoPropertiesFileGenerator(exchangeDescriptor.getName(), 
+												configProperties)
+			.writeJavaFile(filePath);
 	}
 	
 

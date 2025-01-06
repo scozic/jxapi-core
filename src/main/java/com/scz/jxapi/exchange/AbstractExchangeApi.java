@@ -30,6 +30,7 @@ import com.scz.jxapi.observability.SynchronizedObservable;
 import com.scz.jxapi.util.DefaultDisposable;
 import com.scz.jxapi.util.FactoryUtil;
 import com.scz.jxapi.util.JsonUtil;
+import com.scz.jxapi.util.PropertiesUtil;
 
 /**
  * The AbstractExchangeApi class is an abstract base class that provides common
@@ -108,6 +109,20 @@ public abstract class AbstractExchangeApi extends DefaultDisposable implements E
 		this.exchangeId = exchangeId;
 		this.properties = properties;
 		this.requestThrottler = requestThrottler;
+		if (requestThrottler != null) {
+			applyRequestThrottlerProperties();
+		}
+	}
+	
+	private void applyRequestThrottlerProperties() {
+		String requestThrottlingModeValue = properties.getProperty(CommonConfigProperties.REQUEST_THROTTLING_MODE_PROPERTY.getName());
+		if (requestThrottlingModeValue != null) {
+			requestThrottler.setThrottlingMode(RequestThrottlingMode.valueOf(requestThrottlingModeValue));
+		}
+		Long maxThrottleDelay = PropertiesUtil.getLongProperty(properties, CommonConfigProperties.MAX_REQUEST_THROTTLE_DELAY_PROPERTY.getName(), null);
+		if (maxThrottleDelay != null) {
+			requestThrottler.setMaxThrottleDelay(maxThrottleDelay);
+		}
 	}
 
 	/**
@@ -160,7 +175,9 @@ public abstract class AbstractExchangeApi extends DefaultDisposable implements E
 	
 	/**
 	 * Instantiates HTTP request interceptor using the specified factory class name.
-	 * Should be called by subclasses to create the HTTP request interceptor if there is at least one REST API and a {@link HttpRequestInterceptorFactory} class name is specified.
+	 * Should be called by subclasses to create the HTTP request interceptor if
+	 * there is at least one REST API and a {@link HttpRequestInterceptorFactory}
+	 * class name is specified.
 	 * 
 	 * @param factoryClassName The fully qualified class name of the factory class
 	 *                         that creates the HTTP request interceptor.
@@ -179,18 +196,22 @@ public abstract class AbstractExchangeApi extends DefaultDisposable implements E
 	 *                         that creates the HTTP request executor, or null if
 	 *                         the default executor factory
 	 *                         {@link JavaNetHttpRequestExecutor} should be used.
-	 * @param requestTimeout   the request timeout used on executor, see
+	 * @param defaultRequestTimeout   the request timeout used on executor, see
 	 *                         {@link HttpRequestExecutor#setRequestTimeout(long)}.
 	 *                         If value is &lt; 0, the default
 	 *                         {@link HttpRequestExecutor#DEFAULT_REQUEST_TIMEOUT}
 	 *                         is used.
 	 */
-	protected void createHttpRequestExecutor(String factoryClassName, long requestTimeout) {
+	protected void createHttpRequestExecutor(String factoryClassName, long defaultRequestTimeout) {
 		if  (factoryClassName != null) {
 			httpRequestExecutor = ((HttpRequestExecutorFactory)  FactoryUtil.fromClassName(factoryClassName)).createExecutor(this);
 		} else {
 			httpRequestExecutor = new JavaNetHttpRequestExecutor(HttpClient.newHttpClient());
 		}
+		long requestTimeout = PropertiesUtil.getLongProperty(
+				getProperties(), 
+				CommonConfigProperties.HTTP_REQUEST_TIMEOUT_PROPERTY.getName(), 
+				defaultRequestTimeout);
 		if (requestTimeout >= 0) {
 			httpRequestExecutor.setRequestTimeout(requestTimeout);
 		}
@@ -363,6 +384,22 @@ public abstract class AbstractExchangeApi extends DefaultDisposable implements E
 	public long getMaxRequestThrottleDelay() {
 		if (requestThrottler != null) {
 			return requestThrottler.getMaxThrottleDelay();
+		}
+		return -1L;
+	}
+	
+	@Override
+	public void setHttpRequestTimeout(long httpRequesTimeout) {
+		if (httpRequestExecutor != null) {
+			httpRequestExecutor.setRequestTimeout(httpRequesTimeout);
+		}
+		
+	}
+
+	@Override
+	public long getHttpRequestTimeout() {
+		if (httpRequestExecutor != null) {
+			return httpRequestExecutor.getRequestTimeout();
 		}
 		return -1L;
 	}

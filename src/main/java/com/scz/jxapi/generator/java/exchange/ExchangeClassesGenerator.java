@@ -7,7 +7,7 @@ import java.util.List;
 import com.scz.jxapi.exchange.descriptor.Constant;
 import com.scz.jxapi.exchange.descriptor.ExchangeApiDescriptor;
 import com.scz.jxapi.exchange.descriptor.ExchangeDescriptor;
-import com.scz.jxapi.exchange.descriptor.ConfigProperty;
+import com.scz.jxapi.exchange.descriptor.DefaultConfigProperty;
 import com.scz.jxapi.generator.java.exchange.api.ExchangeApiClassesGenerator;
 import com.scz.jxapi.generator.java.exchange.constants.ConstantsInterfaceGenerator;
 import com.scz.jxapi.generator.java.exchange.constants.PropertiesInterfaceGenerator;
@@ -68,7 +68,7 @@ public class ExchangeClassesGenerator implements ClassesGenerator {
 		}
 		
 		// Generate properties interface
-		List<ConfigProperty> properties = exchangeDescriptor.getProperties();
+		List<DefaultConfigProperty> properties = exchangeDescriptor.getProperties();
 		if (properties != null) {
 			PropertiesInterfaceGenerator pgen = new PropertiesInterfaceGenerator(
 					ExchangeJavaGenUtil.getExchangePropertiesInterfaceName(exchangeDescriptor), 

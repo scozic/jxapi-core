@@ -85,5 +85,10 @@ public abstract class AbstractExchange extends DefaultDisposable implements Exch
 	public void setMaxRequestThrottleDelay(long maxRequestThrottleDelay) {
 		apis.values().forEach(api -> api.setMaxRequestThrottleDelay(maxRequestThrottleDelay));
 	}
+	
+	@Override
+	public void setHttpRequesTimeout(long httpRequestTimeout) {
+		apis.values().forEach(api -> api.setHttpRequestTimeout(httpRequestTimeout));
+	}
 
 }

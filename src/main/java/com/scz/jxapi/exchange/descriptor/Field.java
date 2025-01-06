@@ -169,6 +169,7 @@ public class Field {
 	
 	/**
 	 * Clone this field
+	 * @return Deep cloned instance of this field.
 	 */
 	public Field deepClone() {
 		Field clone = new Field();

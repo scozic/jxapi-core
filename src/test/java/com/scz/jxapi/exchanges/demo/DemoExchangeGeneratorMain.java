@@ -31,9 +31,11 @@ public class DemoExchangeGeneratorMain {
 		Path srcTestJavaFolder = srcTestFolder.resolve(Paths.get("java"));
 		Path mainPackagePath = Paths.get(StringUtils.replace(exchangeDescriptor.getBasePackage(), ".", "/"));
 		Path genMainPackagesFolder = srcTestJavaFolder.resolve(mainPackagePath);
+		Path srcTestResourcesFolder = Paths.get(".", "src", "test", "resources");
 		JavaCodeGenerationUtil.deletePath(genMainPackagesFolder);
 		ExchangeGeneratorMain.generateExchangeWrapper(exchangeDescriptor, srcTestJavaFolder);
 		ExchangeGeneratorMain.generateExchangeWrapperDemos(exchangeDescriptor, srcTestJavaFolder);
+		ExchangeGeneratorMain.generateDemoPropertiesFileTemplate(exchangeDescriptor, srcTestResourcesFolder);
 		ExchangeGeneratorMain.generateExchangeWrapperReadme(exchangeDescriptor, Paths.get("."), "file:///X:/workspace/jxapi-core/doc/javadoc/", "file:///X:/workspace/jxapi-core/src/main/java/");
 		log.info("Generating demo wrapper in current project:DONE");
 	}

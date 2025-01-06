@@ -1,6 +1,7 @@
 package com.scz.jxapi.util;
 
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeoutException;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -15,12 +16,12 @@ import com.scz.jxapi.netutils.rest.RestResponse;
 public class DemoUtilTest {
 
     @Test(expected = NullPointerException.class)
-    public void testCheckResponseNullResponse() throws InterruptedException, ExecutionException {
+    public void testCheckResponseNullResponse() throws InterruptedException, ExecutionException, TimeoutException {
         DemoUtil.checkResponse(null);
     }
 
     @Test(expected = ExecutionException.class)
-    public void testCheckResponseNotOk() throws InterruptedException, ExecutionException {
+    public void testCheckResponseNotOk() throws InterruptedException, ExecutionException, TimeoutException {
         FutureRestResponse<?> futureResponse = new FutureRestResponse<>();
         HttpResponse httpResponse = new HttpResponse();
         httpResponse.setResponseCode(404);
@@ -29,21 +30,21 @@ public class DemoUtilTest {
     }
 
     @Test(expected = ExecutionException.class)
-    public void testCheckResponseException() throws InterruptedException, ExecutionException {
+    public void testCheckResponseException() throws InterruptedException, ExecutionException, TimeoutException {
         FutureRestResponse<?> futureResponse = new FutureRestResponse<>();
         futureResponse.completeExceptionally(new Exception("Test execution error"));
         DemoUtil.checkResponse(futureResponse);
     }
 
     @Test
-    public void testCheckResponseOk() throws InterruptedException, ExecutionException {
+    public void testCheckResponseOk() throws InterruptedException, ExecutionException, TimeoutException {
         FutureRestResponse<String> futureResponse = new FutureRestResponse<>();
         HttpResponse httpResponse = new HttpResponse();
         httpResponse.setResponseCode(200);
         RestResponse<String> restResponse = new RestResponse<>(httpResponse);
         restResponse.setResponse("hello");
         futureResponse.complete(restResponse);
-        Assert.assertEquals(restResponse,DemoUtil.checkResponse(futureResponse));
+        Assert.assertEquals(restResponse, DemoUtil.checkResponse(futureResponse));
     }
     
     @Test

@@ -1,5 +1,7 @@
 package com.scz.jxapi.netutils.rest;
 
+import java.util.concurrent.atomic.AtomicLong;
+
 import com.scz.jxapi.util.DefaultDisposable;
 
 /**
@@ -10,17 +12,17 @@ import com.scz.jxapi.util.DefaultDisposable;
  */
 public abstract class AbstractHttpRequestExecutor extends DefaultDisposable implements HttpRequestExecutor {
 
-	private long requestTimeout = DEFAULT_REQUEST_TIMEOUT;
+	private AtomicLong requestTimeout = new AtomicLong(DEFAULT_REQUEST_TIMEOUT);
 
 	@Override
 	public void setRequestTimeout(long requestTimeout) {
-		this.requestTimeout = requestTimeout;
+		this.requestTimeout.set(requestTimeout);
 		
 	}
 
 	@Override
 	public long getRequestTimeout() {
-		return this.requestTimeout;
+		return this.requestTimeout.get();
 	}
 
 }

@@ -49,7 +49,11 @@ public class JavaNetHttpRequestExecutor extends AbstractHttpRequestExecutor {
 		response.setTime(new Date());
 		try {
 			log.debug("Executing request:{}", request);
-			Builder builder = java.net.http.HttpRequest.newBuilder().uri(new URI(request.getUrl())).timeout(Duration.ofMillis(getRequestTimeout()));
+			Builder builder = java.net.http.HttpRequest.newBuilder().uri(new URI(request.getUrl()));
+			long requestTimeout = getRequestTimeout();
+			if (requestTimeout >= 0) {
+				builder.timeout(Duration.ofMillis(requestTimeout));
+			}
 			switch (request.getHttpMethod()) {
 			case GET:
 				builder.GET();

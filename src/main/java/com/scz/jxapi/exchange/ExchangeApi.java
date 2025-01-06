@@ -105,8 +105,8 @@ public interface ExchangeApi extends Disposable, HasProperties {
 	void setRequestThrottlingMode(RequestThrottlingMode requestThrottlingMode);
 	
 	/**
-	 * 
-	 * @return
+	 * @return The request throttling policy applied
+	 * @see #setRequestThrottlingMode(RequestThrottlingMode)
 	 */
 	RequestThrottlingMode getRequestThrottlingMode();
 
@@ -132,4 +132,16 @@ public interface ExchangeApi extends Disposable, HasProperties {
 	 *         throttle delay limit.
 	 */
 	long getMaxRequestThrottleDelay();
+	
+	/**
+	 * Sets the request timeout for calls to REST endpoints used by {@link HttpRequestExecutor}
+	 * @param httpRequestTimeout The HTTP request timeout in ms
+	 * @see HttpRequestExecutor#getRequestTimeout()
+	 */
+	void setHttpRequestTimeout(long httpRequestTimeout);
+	
+	/**
+	 * @return the request timeout for calls to REST endpoints used by {@link HttpRequestExecutor} in ms
+	 */
+	long getHttpRequestTimeout();
 }

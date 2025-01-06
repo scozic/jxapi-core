@@ -9,8 +9,8 @@ import com.scz.jxapi.exchanges.demo.gen.marketdata.DemoExchangeMarketDataApi;
 import com.scz.jxapi.exchanges.demo.gen.marketdata.pojo.DemoExchangeMarketDataTickerStreamMessage;
 import com.scz.jxapi.exchanges.demo.gen.marketdata.pojo.DemoExchangeMarketDataTickerStreamRequest;
 import com.scz.jxapi.netutils.websocket.WebsocketListener;
+import com.scz.jxapi.util.DemoProperties;
 import com.scz.jxapi.util.DemoUtil;
-import com.scz.jxapi.util.TestJXApiProperties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -20,9 +20,6 @@ import org.slf4j.LoggerFactory;
  */
 public class DemoExchangeMarketDataTickerStreamDemo {
   private static final Logger log = LoggerFactory.getLogger(DemoExchangeMarketDataTickerStreamDemo.class);
-  
-  private static final long SUBSCRIPTION_DURATION = TestJXApiProperties.DEMO_WS_SUBSCRIPTION_DURATION;
-  private static final long DELAY_BEFORE_EXIT_AFTER_UNSUBSCRIPTION = TestJXApiProperties.DEMO_WS_DELAY_BEFORE_EXIT_AFTER_UNSUBSCRIPTION;
   
   public static DemoExchangeMarketDataTickerStreamRequest createRequest() {
     DemoExchangeMarketDataTickerStreamRequest request = new DemoExchangeMarketDataTickerStreamRequest();
@@ -38,18 +35,16 @@ public class DemoExchangeMarketDataTickerStreamDemo {
    * @param messageListener                    The listener that will receive messages dispatched while subscription is active
    * @param configProperties                   Exchange configuration properties.
    * @param apiObserver                       {@link ExchangeApiObserver} (optional, ignored if <code>null</code>) observer will be subscribed to Exchange API exposing websocket endpoint that will be notifed of received websocket events.Useful in particular to get notified of websocket errors.
-   * @param subscriptionDuration               Delay to wait for after subscription before unsubscribing.
-   * @param delayBeforeExitAfterUnsubscription Delay to wait before returning after unsubscribing.
    * @throws InterruptedException eventually thrown while sleeping for <code>subscriptionDuration</code> or <code>delayBeforeExitAfterUnsubscription</code> delays
    */
   public static void subscribe(DemoExchangeMarketDataTickerStreamRequest request,
                                WebsocketListener<DemoExchangeMarketDataTickerStreamMessage> messageListener,
                                Properties configProperties,
-                               ExchangeApiObserver apiObserver,
-                               long subscriptionDuration,
-                               long delayBeforeExitAfterUnsubscription) throws InterruptedException {
-    DemoExchangeMarketDataApi api = new DemoExchangeExchangeImpl("test-" + DemoExchangeExchange.ID, configProperties).getDemoExchangeMarketDataApi();
-    log.info("Subscribing to websocket API 'DemoExchange MarketData tickerStream' for {} ms with request:{}", SUBSCRIPTION_DURATION, request);
+                               ExchangeApiObserver apiObserver) throws InterruptedException {
+    DemoExchangeMarketDataApi api = new DemoExchangeExchangeImpl("test-" + DemoExchangeExchange.ID, configProperties).getDemoExchangeMarketDataApi();long subscriptionDuration = DemoProperties.getWebsocketSubscriptionDuration(configProperties);
+    long delayBeforeExit = DemoProperties.getWebsocketDelayBeforeExit(configProperties);
+    
+    log.info("Subscribing to websocket API 'DemoExchange MarketData tickerStream' for {} ms with request:{}", subscriptionDuration, request);
     if (apiObserver != null) {
       api.subscribeObserver(apiObserver);
     }
@@ -57,7 +52,7 @@ public class DemoExchangeMarketDataTickerStreamDemo {
     Thread.sleep(subscriptionDuration);
     log.info("Unubscribing from 'DemoExchange MarketData tickerStream' stream");
     api.unsubscribeTickerStream(subId);
-    Thread.sleep(delayBeforeExitAfterUnsubscription);
+    Thread.sleep(delayBeforeExit);
     if (apiObserver != null) {
       api.subscribeObserver(apiObserver);
     }
@@ -71,10 +66,8 @@ public class DemoExchangeMarketDataTickerStreamDemo {
     try {
       subscribe(createRequest(),
                 DemoUtil::logWsMessage,
-                TestJXApiProperties.filterProperties(DemoExchangeExchange.ID, true),
-                DemoUtil::logWsApiEvent,
-                SUBSCRIPTION_DURATION,
-                DELAY_BEFORE_EXIT_AFTER_UNSUBSCRIPTION);
+                DemoUtil.loadDemoExchangeProperties(DemoExchangeExchange.ID),
+                DemoUtil::logWsApiEvent);
       System.exit(0);
     }
     catch (Throwable t) {

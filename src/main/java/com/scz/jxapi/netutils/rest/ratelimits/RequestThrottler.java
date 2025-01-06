@@ -78,7 +78,7 @@ public class RequestThrottler extends DefaultDisposable {
 	 * 'throttling mode' (see {@link #getThrottlingMode()}):
 	 * <ul>
 	 * <li><strong>If it is {@link RequestThrottlingMode#THROTTLE} (default) and
-	 * delay before resubmit is &lt to configured max throttle delay (see
+	 * delay before resubmit is &lt; to configured max throttle delay (see
 	 * {@link #getMaxThrottleDelay()})</strong> : the request is scheduled for retry
 	 * after delay where it could be submitted to enforce this rate limit.<br>
 	 * If there is already a request queued to wait for some delay to enforce a rate
@@ -88,7 +88,7 @@ public class RequestThrottler extends DefaultDisposable {
 	 * waiting, will not be executed before a 'heavier' request that has been
 	 * submitted before but has to wait.
 	 * <li><strong>If it is {@link RequestThrottlingMode#BLOCK} or
-	 * {@link RequestThrottlingMode#THROTTLE} and delay before resubmit is &gt to
+	 * {@link RequestThrottlingMode#THROTTLE} and delay before resubmit is &gt; to
 	 * configured max throttle delay (see {@link #getMaxThrottleDelay()})</strong> :
 	 * The request is completed with HTTP status 409 (TOO MANY REQUESTS) and a
 	 * {@link RateLimitReachedException} that contains the minimum time to wait
@@ -96,6 +96,7 @@ public class RequestThrottler extends DefaultDisposable {
 	 * <li><strong>If it is {@link RequestThrottlingMode#NONE}</strong> : No
 	 * throttling is applied and request is submitted regardless of rate limits
 	 * breached.
+	 * </ul>
 	 * 
 	 * @param <A>      Type of response payload
 	 * @param request  the request submitted for execution

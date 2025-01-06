@@ -5,6 +5,7 @@ import java.util.List;
 import org.junit.Assert;
 import org.junit.Test;
 
+import com.scz.jxapi.exchange.descriptor.DefaultConfigProperty;
 import com.scz.jxapi.exchange.descriptor.ConfigProperty;
 import com.scz.jxapi.exchange.descriptor.Constant;
 import com.scz.jxapi.exchange.descriptor.Type;
@@ -63,7 +64,7 @@ public class ConstantsGenerationUtilTest {
 
 	@Test
 	public void testGetConstantsForProperties_PropertyWithDefaultValueAndDescription() {
-		ConfigProperty p = ConfigProperty.create("myProp", Type.BIGDECIMAL, "My property description", "1.2345");
+		DefaultConfigProperty p = DefaultConfigProperty.create("myProp", Type.BIGDECIMAL, "My property description", "1.2345");
 		Constant c1 = Constant.create("myPropProperty", Type.STRING, "'myProp' property key.<br>\nMy property description<br>\nProperty value type:BIGDECIMAL", "myProp");
 		Constant c2 = Constant.create("myPropDefaultValue", Type.BIGDECIMAL, "{@link #MY_PROP_PROPERTY} property default value", "1.2345");
 		List<Constant> expected = List.of(c1, c2);
@@ -81,7 +82,7 @@ public class ConstantsGenerationUtilTest {
 	
 	@Test
 	public void testGetConstantsForProperties_PropertyWithNullDefaultValueAndNullDescription() {
-		ConfigProperty p = ConfigProperty.create("myProp", Type.BIGDECIMAL, null, null);
+		DefaultConfigProperty p = DefaultConfigProperty.create("myProp", Type.BIGDECIMAL, null, null);
 		Constant expectedC = Constant.create("myPropProperty", Type.STRING, "'myProp' property key.<br>\nProperty value type:BIGDECIMAL", "myProp");
 		List<Constant> actual = ConstantsGenerationUtil.getConstantsForProperties(List.of(p));
 		Assert.assertEquals(1, actual.size());
@@ -94,13 +95,13 @@ public class ConstantsGenerationUtilTest {
 	
 	@Test
 	public void testGetPropertyKeyPropertyName() {
-		ConfigProperty p = ConfigProperty.create("myProp", Type.STRING, null, null);
+		ConfigProperty p = DefaultConfigProperty.create("myProp", Type.STRING, null, null);
 		Assert.assertEquals("myPropProperty", ConstantsGenerationUtil.getPropertyKeyPropertyName(p));
 	}
 	
 	@Test
 	public void testGetPropertyDefaultValueName() {
-		ConfigProperty p = ConfigProperty.create("myProp", Type.STRING, null, null);
+		ConfigProperty p = DefaultConfigProperty.create("myProp", Type.STRING, null, null);
 		Assert.assertEquals("myPropDefaultValue", ConstantsGenerationUtil.getPropertyDefaultValuePropertyName(p));
 	}
 
