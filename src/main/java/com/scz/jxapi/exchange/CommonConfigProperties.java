@@ -13,30 +13,32 @@ import com.scz.jxapi.netutils.rest.ratelimits.RequestThrottlingMode;
  * when REST APIs are exposed (for instance
  * {@link #HTTP_REQUEST_TIMEOUT_PROPERTY}).
  */
-public interface CommonConfigProperties {
+public class CommonConfigProperties {
+	
+	private CommonConfigProperties() {}
 	
 	/**
-	 * The request timeout for calls to REST endpoints of every API. A negative value means no timeout (discouraged)
+	 * Request timeout for calls to REST endpoints of every API. A negative value means no timeout (discouraged)
 	 */
-	ConfigProperty  HTTP_REQUEST_TIMEOUT_PROPERTY = DefaultConfigProperty.create(
+	public static final ConfigProperty  HTTP_REQUEST_TIMEOUT_PROPERTY = DefaultConfigProperty.create(
 			"jxapi.httpRequestTimeout", 
 			Type.LONG, 
 			"The request timeout for calls to REST endpoints of every API. A negative value means no timeout (discouraged)",
 			null);
 	
 	/**
-	 * Sets the HTTP request throttling policy in case a rate limit rule is breached, for every exposed ExchangeApi, see enum {@link RequestThrottlingMode}.
+	 * The HTTP request throttling policy in case a rate limit rule is breached, for every exposed ExchangeApi, see enum {@link RequestThrottlingMode}.
 	 */
-	ConfigProperty  REQUEST_THROTTLING_MODE_PROPERTY = DefaultConfigProperty.create(
+	public static final ConfigProperty  REQUEST_THROTTLING_MODE_PROPERTY = DefaultConfigProperty.create(
 			"jxapi.requestThrottlingMode", 
 			Type.STRING, 
 			"Sets the HTTP request throttling policy in case a rate limit rule is breached, for every exposed ExchangeApi, see enum " + RequestThrottlingMode.class.getName(),
 			null);
 	
 	/**
-	 * Set the max HTTP request throttle delay for rate limit rule enforcement, for every exposed ExchangeApi.
+	 * The max HTTP request throttle delay for rate limit rule enforcement, for every exposed ExchangeApi.
 	 */
-	ConfigProperty  MAX_REQUEST_THROTTLE_DELAY_PROPERTY = DefaultConfigProperty.create(
+	public static final ConfigProperty  MAX_REQUEST_THROTTLE_DELAY_PROPERTY = DefaultConfigProperty.create(
 			"jxapi.maxRequestThrottleDelay", 
 			Type.LONG, 
 			"Set the max HTTP request throttle delay for rate limit rule enforcement, for every exposed ExchangeApi.",
@@ -45,7 +47,7 @@ public interface CommonConfigProperties {
 	/**
 	 * List containing all the {@link DefaultConfigProperty} properties of this interface.
 	 */
-	List<ConfigProperty> ALL = List.of(
+	public static final List<ConfigProperty> ALL = List.of(
 			HTTP_REQUEST_TIMEOUT_PROPERTY, 
 			REQUEST_THROTTLING_MODE_PROPERTY, 
 			MAX_REQUEST_THROTTLE_DELAY_PROPERTY);

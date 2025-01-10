@@ -1,7 +1,11 @@
 package com.scz.jxapi.exchanges.demo.gen;
 
+import java.util.List;
 import java.util.Properties;
 
+import com.scz.jxapi.exchange.descriptor.ConfigProperty;
+import com.scz.jxapi.exchange.descriptor.DefaultConfigProperty;
+import com.scz.jxapi.exchange.descriptor.Type;
 import com.scz.jxapi.util.PropertiesUtil;
 
 /**
@@ -41,72 +45,83 @@ import com.scz.jxapi.util.PropertiesUtil;
  * </table>
  * <br>
  * Exposes helper methods are available to retrieve value of each of these properties with right type, returning default value if not present in properties
+ * <br><strong>THIS CODE IS GENERATED. DO NOT EDIT MANUALLY!</strong>
+ * @see ConfigProperty
  */
-public interface DemoExchangeProperties {
+public class DemoExchangeProperties {
+  
+  private DemoExchangeProperties(){}
   
   /**
-   * 'host' property key.<br>
-   * Mock HTTP server host<br>
-   * Property value type:STRING
+   * Mock HTTP server host
    */
-  String HOST_PROPERTY = "host";
+  public static final ConfigProperty HOST = DefaultConfigProperty.create(
+    "host",
+    Type.STRING,
+    "Mock HTTP server host",
+    "localhost");
   
   /**
-   * {@link #HOST_PROPERTY} property default value
+   * Mock HTTP/Websocket server port
    */
-  String HOST_DEFAULT_VALUE = "localhost";
+  public static final ConfigProperty HTTP_PORT = DefaultConfigProperty.create(
+    "httpPort",
+    Type.INT,
+    "Mock HTTP/Websocket server port",
+    null);
   
   /**
-   * 'httpPort' property key.<br>
-   * Mock HTTP/Websocket server port<br>
-   * Property value type:INT
+   * Mock websocket server port
    */
-  String HTTP_PORT_PROPERTY = "httpPort";
+  public static final ConfigProperty WEBSOCKET_PORT = DefaultConfigProperty.create(
+    "websocketPort",
+    Type.INT,
+    "Mock websocket server port",
+    null);
   
   /**
-   * 'websocketPort' property key.<br>
-   * Mock websocket server port<br>
-   * Property value type:INT
+   * Mock websocket server expected heartBeat interval
    */
-  String WEBSOCKET_PORT_PROPERTY = "websocketPort";
-  
-  /**
-   * 'websocketHeartBeatInterval' property key.<br>
-   * Mock websocket server expected heartBeat interval<br>
-   * Property value type:INT
-   */
-  String WEBSOCKET_HEART_BEAT_INTERVAL_PROPERTY = "websocketHeartBeatInterval";
-  
-  /**
-   * {@link #WEBSOCKET_HEART_BEAT_INTERVAL_PROPERTY} property default value
-   */
-  Integer WEBSOCKET_HEART_BEAT_INTERVAL_DEFAULT_VALUE = Integer.valueOf(-1);
+  public static final ConfigProperty WEBSOCKET_HEART_BEAT_INTERVAL = DefaultConfigProperty.create(
+    "websocketHeartBeatInterval",
+    Type.INT,
+    "Mock websocket server expected heartBeat interval",
+    "-1");
   
   /**
    * Retrieves value of 'host' property.
    * @param properties Properties to look for value of 'host' property into.
    * @return Value found in properties or default value 'localhost' if not found.
    */
-  static String getHost(Properties properties) {return PropertiesUtil.getStringProperty(properties, HOST_PROPERTY, HOST_DEFAULT_VALUE);}
+  public static String getHost(Properties properties) {return PropertiesUtil.getStringProperty(properties, HOST.getName(), HOST.getDefaultValue());}
   
   /**
    * Retrieves value of 'httpPort' property.
    * @param properties Properties to look for value of 'httpPort' property into.
    * @return Value found in properties or <code>null</code> if not found.
    */
-  static Integer getHttpPort(Properties properties) {return PropertiesUtil.getIntProperty(properties, HTTP_PORT_PROPERTY, null);}
+  public static Integer getHttpPort(Properties properties) {return PropertiesUtil.getIntProperty(properties, HTTP_PORT.getName(), HTTP_PORT.getDefaultValue());}
   
   /**
    * Retrieves value of 'websocketPort' property.
    * @param properties Properties to look for value of 'websocketPort' property into.
    * @return Value found in properties or <code>null</code> if not found.
    */
-  static Integer getWebsocketPort(Properties properties) {return PropertiesUtil.getIntProperty(properties, WEBSOCKET_PORT_PROPERTY, null);}
+  public static Integer getWebsocketPort(Properties properties) {return PropertiesUtil.getIntProperty(properties, WEBSOCKET_PORT.getName(), WEBSOCKET_PORT.getDefaultValue());}
   
   /**
    * Retrieves value of 'websocketHeartBeatInterval' property.
    * @param properties Properties to look for value of 'websocketHeartBeatInterval' property into.
    * @return Value found in properties or default value '-1' if not found.
    */
-  static Integer getWebsocketHeartBeatInterval(Properties properties) {return PropertiesUtil.getIntProperty(properties, WEBSOCKET_HEART_BEAT_INTERVAL_PROPERTY, WEBSOCKET_HEART_BEAT_INTERVAL_DEFAULT_VALUE);}
+  public static Integer getWebsocketHeartBeatInterval(Properties properties) {return PropertiesUtil.getIntProperty(properties, WEBSOCKET_HEART_BEAT_INTERVAL.getName(), WEBSOCKET_HEART_BEAT_INTERVAL.getDefaultValue());}
+  
+  /**
+   * List of all configuration properties defined in this class
+   */
+  public static final List<ConfigProperty> ALL = List.of(
+    HOST, 
+    HTTP_PORT, 
+    WEBSOCKET_PORT, 
+    WEBSOCKET_HEART_BEAT_INTERVAL);
 }

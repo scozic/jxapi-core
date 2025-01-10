@@ -19,7 +19,7 @@ public class ConstantsGenerationUtil {
 	private ConstantsGenerationUtil() {}
 
 	/**
-	 * Generates the Java code for a declared constant in a Java interface.
+	 * Generates the Java code for a declared <code>public static final</code> constant in a Java class.
 	 * <p>
 	 * Example:
 	 * <pre>
@@ -46,7 +46,8 @@ public class ConstantsGenerationUtil {
 			code.append(JavaCodeGenerationUtil.generateJavaDoc(description))
 				.append("\n");
 		}
-		code.append(className)
+		code.append("public static final ")
+			.append(className)
 			.append(" ")
 			.append(varName)
 			.append(" = ")
@@ -60,7 +61,7 @@ public class ConstantsGenerationUtil {
 	 * @return the property key property name, for instance 'myPropertyProperty'
 	 */
 	public static String getPropertyKeyPropertyName(ConfigProperty property) {
-		return  property.getName() + "Property";
+		return  property.getName();
 	}
 	
 	/*
@@ -109,6 +110,33 @@ public class ConstantsGenerationUtil {
 			
 		});
 		return constants;
+	}
+	
+	public static String getPropertyValueDeclation(ConfigProperty property, Imports imports) {
+		imports.add(DefaultConfigProperty.class);
+		imports.add(Type.class);
+		imports.add(ConfigProperty.class);
+		String name = property.getName();
+		return new StringBuilder()
+				.append(JavaCodeGenerationUtil.generateJavaDoc(property.getDescription()))
+				.append("\npublic static final ConfigProperty ")
+				.append(JavaCodeGenerationUtil.getStaticVariableName(getPropertyKeyPropertyName(property)))
+				.append(" = DefaultConfigProperty.create(\n")
+				.append(JavaCodeGenerationUtil.INDENTATION)
+				.append(JavaCodeGenerationUtil.getQuotedString(name))
+				.append(",\n")
+				.append(JavaCodeGenerationUtil.INDENTATION)
+				.append(Type.class.getSimpleName())
+				.append(".")
+				.append(property.getType().toString())
+				.append(",\n")
+				.append(JavaCodeGenerationUtil.INDENTATION)
+				.append(JavaCodeGenerationUtil.getQuotedString(property.getDescription()))
+				.append(",\n")
+				.append(JavaCodeGenerationUtil.INDENTATION)
+				.append(JavaCodeGenerationUtil.getQuotedString(property.getDefaultValue()))
+				.append(");")
+				.toString();
 	}
 
 }

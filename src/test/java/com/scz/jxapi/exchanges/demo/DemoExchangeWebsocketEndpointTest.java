@@ -51,7 +51,7 @@ public class DemoExchangeWebsocketEndpointTest {
 		server = new MockWebsocketServer(port, appName);
 		server.start();
 		Properties config = new Properties();
-		config.setProperty(DemoExchangeProperties.WEBSOCKET_PORT_PROPERTY, String.valueOf(this.port));
+		config.setProperty(DemoExchangeProperties.WEBSOCKET_PORT.getName(), String.valueOf(this.port));
 		exchange = new DemoExchangeExchangeImpl(TEST_EXCHANGE_NAME, config);
 		msgListener = new MockWebsocketListener<>();
 	}

@@ -16,24 +16,36 @@ import com.scz.jxapi.generator.java.exchange.ExchangeJavaGenUtil;
 import com.scz.jxapi.util.PropertiesUtil;
 
 /**
- * Generates a Java interface with properties.
+ * Generates a Java class exposing {@link ConfigProperty} instances and
+ * <code>static</code> methods for retrieving value of configuration properties
+ * of a given exchange.
  * <p>
  * Example:
  * 
  * <pre>
  * {@code
- * public interface MyProperties {
+ *  public class MyProperties {
+ *  
+ *    private MyProperties(){}
+ *  
+ *    public static final ConfigProperty HOST = DefaultConfigProperty.create(
+ *      "host",
+ *      Type.STRING,
+ *      "Mock HTTP server host",
+ *      "localhost");
+ *      
+ *    public static final ConfigProperty HTTP_PORT = DefaultConfigProperty.create(
+ *      "httpPort",
+ *      Type.INT,
+ *      "Mock HTTP/Websocket server port",
+ *      80);
  * 
- * 	String MY_STRING_PROPERTY = "myString";
- * 	Integer MY_INT_PROPERTY = "myInt";
- 	Integer MY_INT_DEFAULT_VALUE = Integer.valueOf(42);
- * 	Long MY_TIMESTAMP = Long.valueOf(System.currentTimeMillis());
- * 
- * 	default String getMyString(Properties properties) {return PropertiesUtil.getStringProperty(properties, MY_STRING_PROPERTY, null);}
- * 	default Integer getMyInt(Properties properties) {return PropertiesUtil.getIntProperty(properties, MY_INT, MY_INT_DEFAULT_VALUE);}
- * 	default Long getMyTimestamp(Properties properties) {return PropertiesUtil.getLongProperty(properties, MY_TIMESTAMP, null);}
- * }
- * }
+ *    public static String getHost(Properties properties) {return PropertiesUtil.getStringProperty(properties, HOST.getName(), HOST.getDefaultValue());}
+ *
+ *    public static Integer getHttpPort(Properties properties) {return PropertiesUtil.getIntProperty(properties, HTTP_PORT.getName(), HTTP_PORT.getDefaultValue());}
+ *    
+ *   }
+ * }  
  * </pre>
  * 
  * Where {@code MyProperties} is the interface name, {@code MY_STRING},
@@ -42,7 +54,7 @@ import com.scz.jxapi.util.PropertiesUtil;
  * properties and {@code "myString"}, {@code 42} and
  * {@code System.currentTimeMillis()} are the default values of the properties.
  */
-public class PropertiesInterfaceGenerator extends JavaTypeGenerator {
+public class PropertiesClassGenerator extends JavaTypeGenerator {
 	
 	private final String exchangeName;
 	private final List<DefaultConfigProperty> properties;
@@ -56,11 +68,11 @@ public class PropertiesInterfaceGenerator extends JavaTypeGenerator {
 	 *                      generated for
 	 * @param properties    List of properties to generate in the interface
 	 */
-	public PropertiesInterfaceGenerator(String fullClassName, String exchangeName, List<DefaultConfigProperty> properties) {
+	public PropertiesClassGenerator(String fullClassName, String exchangeName, List<DefaultConfigProperty> properties) {
 		super(fullClassName);
 		this.exchangeName = exchangeName;
 		this.properties = properties;
-		setTypeDeclaration("public interface");
+		setTypeDeclaration("public class");
 		setDescription(generateDescription());
 	}
 	
@@ -79,19 +91,39 @@ public class PropertiesInterfaceGenerator extends JavaTypeGenerator {
 			String pDef = Optional.ofNullable(p.getDefaultValue()).orElse("").toString();
 			rows.add(List.of(pName, pType, pDesc, pDef));
 		}
-		sb.append(HtmlGenerationUtil.generateTable(exchangeName + " properties", columns, rows));
-		sb.append("<br>\nExposes helper methods are available to retrieve value of each of these properties "
-					+ "with right type, returning default value if not present in properties");
+		sb.append(HtmlGenerationUtil.generateTable(exchangeName + " properties", columns, rows))
+		  .append("<br>\nExposes helper methods are available to retrieve value of each of these properties ")
+		  .append("with right type, returning default value if not present in properties\n")
+		  .append(JavaCodeGenerationUtil.GENERATED_CODE_WARNING)
+		  .append("\n@see ConfigProperty");
 		return sb.toString();
 	}
 
 	@Override
 	public String generate() {
-		ConstantsGenerationUtil.getConstantsForProperties(properties)
+		appendToBody("\nprivate ")
+		.append(getSimpleName())
+		.append("(){}\n");
+		properties
 			.forEach(c -> appendToBody("\n")
-						  .append(ConstantsGenerationUtil.generateConstantDeclaration(c, getImports())));
+					      .append(ConstantsGenerationUtil.getPropertyValueDeclation(c, getImports()))
+					      .append("\n"));
 		this.properties.forEach(this::generatePropertyGetterMethod);
+		generatePropertiesListMethod();
 		return super.generate();
+	}
+
+	private void generatePropertiesListMethod() {
+		addImport(List.class);
+		appendToBody("\n")
+			.append(JavaCodeGenerationUtil.generateJavaDoc("List of all configuration properties defined in this class"))
+			.append("\npublic static final List<ConfigProperty> ALL = List.of(\n")
+			.append(JavaCodeGenerationUtil.INDENTATION)
+			.append(properties.stream()
+				.map(p -> JavaCodeGenerationUtil.getStaticVariableName(ConstantsGenerationUtil.getPropertyKeyPropertyName(p)))
+				.collect(Collectors.joining(", \n" + JavaCodeGenerationUtil.INDENTATION)))
+			.append(");");
+		
 	}
 
 	private void generatePropertyGetterMethod(ConfigProperty property) {
@@ -130,13 +162,9 @@ public class PropertiesInterfaceGenerator extends JavaTypeGenerator {
 							);
 		String getPropertiesUtilMethodName = getPropertiesUtilGetPropertyMethodName(property);
 		String keyVariableName = JavaCodeGenerationUtil.getStaticVariableName(ConstantsGenerationUtil.getPropertyKeyPropertyName(property));
-		String defaultValueVariableName = null;
-		if (def != null) {
-			defaultValueVariableName = JavaCodeGenerationUtil.getStaticVariableName(ConstantsGenerationUtil.getPropertyDefaultValuePropertyName(property));
-		}
 		addImport(Properties.class);
 		addImport(PropertiesUtil.class);
-		sb.append("static ")
+		sb.append("public static ")
 		  .append(typeClass)
 		  .append(" ")
 		  .append(methodName)
@@ -144,9 +172,9 @@ public class PropertiesInterfaceGenerator extends JavaTypeGenerator {
 		  .append(getPropertiesUtilMethodName)
 		  .append("(properties, ")
 		  .append(keyVariableName)
-		  .append(", ")
-		  .append(defaultValueVariableName)
-		  .append(");}\n");
+		  .append(".getName(), ")
+		  .append(keyVariableName)
+		  .append(".getDefaultValue());}\n");
 		appendToBody(sb.toString());
 	}
 	

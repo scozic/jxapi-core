@@ -13,7 +13,7 @@ import com.scz.jxapi.generator.java.exchange.ClassesGenerator;
 import com.scz.jxapi.generator.java.exchange.ExchangeJavaGenUtil;
 import com.scz.jxapi.generator.java.exchange.api.rest.RestEndpointClassesGenerator;
 import com.scz.jxapi.generator.java.exchange.api.ws.WebsocketEndpointClassesGenerator;
-import com.scz.jxapi.generator.java.exchange.constants.ConstantsInterfaceGenerator;
+import com.scz.jxapi.generator.java.exchange.constants.ConstantsClassGenerator;
 import com.scz.jxapi.netutils.rest.ratelimits.RateLimitManager;
 
 /**
@@ -69,7 +69,7 @@ public class ExchangeApiClassesGenerator implements ClassesGenerator {
 		// Generate constants interface
 		List<Constant> constants = exchangeApiDescriptor.getConstants();
 		if (constants != null) {
-			ConstantsInterfaceGenerator cgen = new ConstantsInterfaceGenerator(
+			ConstantsClassGenerator cgen = new ConstantsClassGenerator(
 					ExchangeJavaGenUtil.getExchangeApiConstantsInterfaceName(exchangeDescriptor, exchangeApiDescriptor), 
 					constants); 
 			cgen.setDescription("Constants used in "

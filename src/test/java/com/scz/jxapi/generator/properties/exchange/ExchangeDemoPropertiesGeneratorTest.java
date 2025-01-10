@@ -1,19 +1,21 @@
-package com.scz.jxapi.generator.properties;
+package com.scz.jxapi.generator.properties.exchange;
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Test;
 
+import com.scz.jxapi.exchange.descriptor.ConfigProperty;
 import com.scz.jxapi.exchange.descriptor.ExchangeDescriptor;
 import com.scz.jxapi.exchange.descriptor.parser.ExchangeDescriptorParser;
 import com.scz.jxapi.generator.java.JavaCodeGenerationUtil;
 import com.scz.jxapi.generator.java.exchange.ClassesGeneratorTestUtil;
-import com.scz.jxapi.generator.java.exchange.ExchangeGeneratorMain;
 
 /**
  * Unit test for {@link ExchangeDemoPropertiesFileGenerator}
@@ -36,10 +38,15 @@ public class ExchangeDemoPropertiesGeneratorTest {
 		Path srcTestResourcesFolder = Paths.get(".", "src", "test", "resources");
 		Path exchangeDescriptorFile = srcTestResourcesFolder.resolve("demoExchange.json");
 		ExchangeDescriptor exchangeDescriptor = new ExchangeDescriptorParser().fromJson(exchangeDescriptorFile);
-		ExchangeGeneratorMain.generateDemoPropertiesFileTemplate(exchangeDescriptor, tmpFolder);
-		String expectedFileName = "demo-DemoExchange.properties.dist";
-		String expected = Files.readString(srcTestResourcesFolder.resolve(expectedFileName));
-		String actual = Files.readString(tmpFolder.resolve("demo-DemoExchange.properties.dist"));
+		String fileName = "demo-DemoExchange.properties.dist";
+		Path actualFilePath = tmpFolder.resolve(fileName);
+		List<ConfigProperty> configProperties = new ArrayList<>();
+		configProperties.addAll(exchangeDescriptor.getProperties());
+		new ExchangeDemoPropertiesFileGenerator(exchangeDescriptor.getName(), 
+												configProperties)
+			.writeJavaFile(actualFilePath);
+		String expected = Files.readString(srcTestResourcesFolder.resolve(fileName));
+		String actual = Files.readString(actualFilePath);
 		Assert.assertEquals(expected, actual);
 	}
 

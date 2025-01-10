@@ -63,9 +63,9 @@ public class DemoExchangeRestRequestTest {
 		this.serverPort = mockHttpServer.getPort();
 		baseHttpUrl = "http://localhost:" + serverPort + "/";
 		Properties config = new Properties();
-		config.setProperty(DemoExchangeProperties.HTTP_PORT_PROPERTY, String.valueOf(this.serverPort));
-		config.setProperty(DemoExchangeProperties.HOST_PROPERTY, DemoExchangeProperties.HOST_DEFAULT_VALUE);
-		config.setProperty(DemoExchangeProperties.WEBSOCKET_PORT_PROPERTY, "80");
+		config.setProperty(DemoExchangeProperties.HTTP_PORT.getName(), String.valueOf(this.serverPort));
+		config.setProperty(DemoExchangeProperties.HOST.getName(), DemoExchangeProperties.HOST.getDefaultValue().toString());
+		config.setProperty(DemoExchangeProperties.WEBSOCKET_PORT.getName(), "80");
 		exchange = new DemoExchangeExchangeImpl(TEST_EXCHANGE_NAME, config);
 	}
 	

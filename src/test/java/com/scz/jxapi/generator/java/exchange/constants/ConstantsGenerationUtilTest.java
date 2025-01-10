@@ -20,7 +20,7 @@ public class ConstantsGenerationUtilTest {
 	public void testCreateStringConstant() {
 		Imports imports = new Imports();
 		Constant c = Constant.create("myString", Type.STRING, null, "foo");
-		Assert.assertEquals( "String MY_STRING = \"foo\";\n", ConstantsGenerationUtil.generateConstantDeclaration(c, imports));
+		Assert.assertEquals( "public static final String MY_STRING = \"foo\";\n", ConstantsGenerationUtil.generateConstantDeclaration(c, imports));
 		Assert.assertEquals(0, imports.size());
 	}
 
@@ -29,10 +29,10 @@ public class ConstantsGenerationUtilTest {
 		Imports imports = new Imports();
 		Constant c = Constant.create("myInt", Type.INT, "My int constant with string value", "42");
 		Assert.assertEquals( "/**\n"
-						   + " * My int constant with string value\n"
-						   + " */\n"
-						   + "Integer MY_INT = Integer.valueOf(42);\n", 
-							 ConstantsGenerationUtil.generateConstantDeclaration(c, imports));
+				+ " * My int constant with string value\n"
+				+ " */\n"
+				+ "public static final Integer MY_INT = Integer.valueOf(42);\n", 
+				ConstantsGenerationUtil.generateConstantDeclaration(c, imports));
 		Assert.assertEquals(0, imports.size());
 	}
 
@@ -41,10 +41,11 @@ public class ConstantsGenerationUtilTest {
 		Imports imports = new Imports();
 		Constant c = Constant.create("myInt", Type.INT, "My int constant with int value", 42);
 		Assert.assertEquals( "/**\n"
-						   + " * My int constant with int value\n"
-						   + " */\n"
-						   + "Integer MY_INT = Integer.valueOf(42);\n", 
-							 ConstantsGenerationUtil.generateConstantDeclaration(c, imports));
+				+ " * My int constant with int value\n"
+				+ " */\n"
+				+ "public static final Integer MY_INT = Integer.valueOf(42);\n"
+				+ "", 
+				 ConstantsGenerationUtil.generateConstantDeclaration(c, imports));
 		Assert.assertEquals(0, imports.size());
 	}
 
@@ -52,7 +53,7 @@ public class ConstantsGenerationUtilTest {
 	public void testCreateLongConstantWithNow() {
 		Imports imports = new Imports();
 		Constant c = Constant.create("myTimestamp", Type.TIMESTAMP, null, "now()");
-		Assert.assertEquals( "Long MY_TIMESTAMP = Long.valueOf(System.currentTimeMillis());\n", ConstantsGenerationUtil.generateConstantDeclaration(c, imports));
+		Assert.assertEquals( "public static final Long MY_TIMESTAMP = Long.valueOf(System.currentTimeMillis());\n", ConstantsGenerationUtil.generateConstantDeclaration(c, imports));
 		Assert.assertEquals(0, imports.size());
 	}
 	
@@ -65,8 +66,8 @@ public class ConstantsGenerationUtilTest {
 	@Test
 	public void testGetConstantsForProperties_PropertyWithDefaultValueAndDescription() {
 		DefaultConfigProperty p = DefaultConfigProperty.create("myProp", Type.BIGDECIMAL, "My property description", "1.2345");
-		Constant c1 = Constant.create("myPropProperty", Type.STRING, "'myProp' property key.<br>\nMy property description<br>\nProperty value type:BIGDECIMAL", "myProp");
-		Constant c2 = Constant.create("myPropDefaultValue", Type.BIGDECIMAL, "{@link #MY_PROP_PROPERTY} property default value", "1.2345");
+		Constant c1 = Constant.create("myProp", Type.STRING, "'myProp' property key.<br>\nMy property description<br>\nProperty value type:BIGDECIMAL", "myProp");
+		Constant c2 = Constant.create("myPropDefaultValue", Type.BIGDECIMAL, "{@link #MY_PROP} property default value", "1.2345");
 		List<Constant> expected = List.of(c1, c2);
 		List<Constant> actual = ConstantsGenerationUtil.getConstantsForProperties(List.of(p));
 		Assert.assertEquals(expected.size(), actual.size());
@@ -83,7 +84,7 @@ public class ConstantsGenerationUtilTest {
 	@Test
 	public void testGetConstantsForProperties_PropertyWithNullDefaultValueAndNullDescription() {
 		DefaultConfigProperty p = DefaultConfigProperty.create("myProp", Type.BIGDECIMAL, null, null);
-		Constant expectedC = Constant.create("myPropProperty", Type.STRING, "'myProp' property key.<br>\nProperty value type:BIGDECIMAL", "myProp");
+		Constant expectedC = Constant.create("myProp", Type.STRING, "'myProp' property key.<br>\nProperty value type:BIGDECIMAL", "myProp");
 		List<Constant> actual = ConstantsGenerationUtil.getConstantsForProperties(List.of(p));
 		Assert.assertEquals(1, actual.size());
 		Constant actualC = actual.get(0);
@@ -96,7 +97,7 @@ public class ConstantsGenerationUtilTest {
 	@Test
 	public void testGetPropertyKeyPropertyName() {
 		ConfigProperty p = DefaultConfigProperty.create("myProp", Type.STRING, null, null);
-		Assert.assertEquals("myPropProperty", ConstantsGenerationUtil.getPropertyKeyPropertyName(p));
+		Assert.assertEquals("myProp", ConstantsGenerationUtil.getPropertyKeyPropertyName(p));
 	}
 	
 	@Test

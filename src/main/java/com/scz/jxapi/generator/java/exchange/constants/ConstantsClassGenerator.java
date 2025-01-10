@@ -12,11 +12,13 @@ import com.scz.jxapi.generator.java.JavaTypeGenerator;
  * 
  * <pre>
  * {@code
- * public interface MyConstants {
+ * public class MyConstants {
  * 
- * 	String MY_STRING = "foo";
- * 	Integer MY_INT = Integer.valueOf(42);
- * 	Long MY_TIMESTAMP = Long.valueOf(System.currentTimeMillis());
+ *  private MyConstants(){}
+ * 
+ * 	public static final String MY_STRING = "foo";
+ * 	public static final Integer MY_INT = Integer.valueOf(42);
+ * 	public static Long MY_TIMESTAMP = Long.valueOf(System.currentTimeMillis());
  * }
  * }
  * </pre>
@@ -27,7 +29,7 @@ import com.scz.jxapi.generator.java.JavaTypeGenerator;
  * constants and {@code "foo"}, {@code 42} and
  * {@code System.currentTimeMillis()} are the values of the constants.
  */
-public class ConstantsInterfaceGenerator extends JavaTypeGenerator {
+public class ConstantsClassGenerator extends JavaTypeGenerator {
 
 	private final  List<Constant> constants;
 	
@@ -38,14 +40,17 @@ public class ConstantsInterfaceGenerator extends JavaTypeGenerator {
 	 *                     com.example.MyConstants
 	 * @param constants    the list of constants to generate in the interface
 	 */
-	public ConstantsInterfaceGenerator(String fullTypeName, List<Constant> constants) {
+	public ConstantsClassGenerator(String fullTypeName, List<Constant> constants) {
 		super(fullTypeName);
-		setTypeDeclaration("public interface");
+		setTypeDeclaration("public class");
 		this.constants = constants;
 	}
 	
 	@Override
 	public String generate() {
+		appendToBody("\nprivate ")
+			.append(getSimpleName())
+			.append("(){}\n");
 		constants.forEach(c -> appendToBody("\n").append(ConstantsGenerationUtil.generateConstantDeclaration(c, getImports())));
 		return super.generate();
 	}

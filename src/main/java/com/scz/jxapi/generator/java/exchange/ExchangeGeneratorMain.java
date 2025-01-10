@@ -20,7 +20,7 @@ import com.scz.jxapi.generator.java.JavaCodeGenerationUtil;
 import com.scz.jxapi.generator.java.exchange.api.ExchangeApiClassesGenerator;
 import com.scz.jxapi.generator.java.exchange.api.demo.ExchangeDemoClassesGenerator;
 import com.scz.jxapi.generator.md.exchange.ExchangeReadmeMdGenerator;
-import com.scz.jxapi.generator.properties.ExchangeDemoPropertiesFileGenerator;
+import com.scz.jxapi.generator.properties.exchange.ExchangeDemoPropertiesFileGenerator;
 import com.scz.jxapi.netutils.rest.ratelimits.RateLimitManager;
 import com.scz.jxapi.util.DemoUtil;
 

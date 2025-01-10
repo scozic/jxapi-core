@@ -16,8 +16,8 @@ import com.scz.jxapi.netutils.rest.HttpRequestInterceptor;
 /**
  * {@link HttpRequestInterceptor} implementation for {@link DemoExchangeExchange}.<br>
  * Intercepted requests will have their url modified with host and port defined in configuration properties
- * @see DemoExchangeProperties#HOST_PROPERTY
- * @see DemoExchangeProperties#HTTP_PORT_PROPERTY
+ * @see DemoExchangeProperties#HOST
+ * @see DemoExchangeProperties#HTTP_PORT
  */
 public class DemoExchangeHttpRequestInterceptor implements HttpRequestInterceptor {
 	

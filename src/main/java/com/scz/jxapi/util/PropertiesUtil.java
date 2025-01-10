@@ -1,6 +1,7 @@
 package com.scz.jxapi.util;
 
 import java.math.BigDecimal;
+import java.util.Optional;
 import java.util.Properties;
 
 import org.apache.commons.lang3.StringUtils;
@@ -45,47 +46,92 @@ public class PropertiesUtil {
 		
 	}
 	
-	public static String getStringProperty(Properties properties, String key, String defaultValue) {
-		Object v = properties.get(key);
+	/**
+	 * Retrieves a property as a string from a properties instance.
+	 * 
+	 * @param properties   The properties instance
+	 * @param key          The property key
+	 * @param defaultValue The default value (can be <code>null</code>)
+	 * @return The property value as a string or the default value if the property
+	 *         is not found
+	 */
+	public static String getStringProperty(Properties properties, String key, Object defaultValue) {
+		Object v = Optional.ofNullable(properties.get(key)).orElse(defaultValue);
 		if (v != null) {
 			return v.toString();
 		}
-		return defaultValue;
+		return null;
 	}
 	
-	public static Integer getIntProperty(Properties properties, String key, Integer defaultValue) {
-		Object v = properties.get(key);
+	/**
+	 * Retrieves a property as an integer from a properties instance.
+	 * 
+	 * @param properties   The properties instance
+	 * @param key          The property key
+	 * @param defaultValue The default value (can be <code>null</code>)
+	 * @return The property value as an integer or the default value if the property
+	 *         is not found
+	 */
+	public static Integer getIntProperty(Properties properties, String key, Object defaultValue) {
+		Object v = Optional.ofNullable(properties.get(key)).orElse(defaultValue);
 		if (v != null) {
 			return Integer.valueOf(v.toString());
 		}
-		return defaultValue;
+		return null;
 	}
 	
-	public static Long getLongProperty(Properties properties, String key, Long defaultValue) {
-		Object v = properties.get(key);
+	/**
+	 * Retrieves a property as a long from a properties instance.
+	 * 
+	 * @param properties   The properties instance
+	 * @param key          The property key
+	 * @param defaultValue The default value (can be <code>null</code>)
+	 * @return The property value as a long or the default value if the property is
+	 *         not found
+	 */
+	public static Long getLongProperty(Properties properties, String key, Object defaultValue) {
+		Object v = Optional.ofNullable(properties.get(key)).orElse(defaultValue);
 		if (v != null) {
 			if("now()".equals(v)) {
 				return Long.valueOf(System.currentTimeMillis());
 			}
 			return Long.valueOf(v.toString());
 		}
-		return defaultValue;
+		return null;
 	}
 	
-	public static BigDecimal getBigDecimalProperty(Properties properties, String key, BigDecimal defaultValue) {
-		Object v = properties.get(key);
+	/**
+	 * Retrieves a property as a big decimal from a properties instance.
+	 * 
+	 * @param properties   The properties instance
+	 * @param key          The property key
+	 * @param defaultValue The default value (can be <code>null</code>)
+	 * @return The property value as a big decimal or the default value if the
+	 *         property is not found
+	 */
+	public static BigDecimal getBigDecimalProperty(Properties properties, String key, Object defaultValue) {
+		Object v = Optional.ofNullable(properties.get(key)).orElse(defaultValue);
 		if (v != null) {
 			return new BigDecimal(v.toString());
 		}
-		return defaultValue;
+		return null;
 	}
 	
-	public static Boolean getBooleanProperty(Properties properties, String key, Boolean defaultValue) {
-		Object v = properties.get(key);
+	/**
+	 * Retrieves a property as a boolean from a properties instance.
+	 * 
+	 * @param properties   The properties instance
+	 * @param key          The property key
+	 * @param defaultValue The default value (can be <code>null</code>)
+	 * @return The property value as a boolean or the default value if the property
+	 *         is not found
+	 */
+	public static Boolean getBooleanProperty(Properties properties, String key, Object defaultValue) {
+		Object v = Optional.ofNullable(properties.get(key)).orElse(defaultValue);
 		if (v != null) {
 			return Boolean.valueOf(v.toString());
 		}
-		return defaultValue;
+		return null;
 	}
 
 }

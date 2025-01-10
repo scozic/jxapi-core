@@ -9,8 +9,8 @@ import com.scz.jxapi.exchange.descriptor.ExchangeApiDescriptor;
 import com.scz.jxapi.exchange.descriptor.ExchangeDescriptor;
 import com.scz.jxapi.exchange.descriptor.DefaultConfigProperty;
 import com.scz.jxapi.generator.java.exchange.api.ExchangeApiClassesGenerator;
-import com.scz.jxapi.generator.java.exchange.constants.ConstantsInterfaceGenerator;
-import com.scz.jxapi.generator.java.exchange.constants.PropertiesInterfaceGenerator;
+import com.scz.jxapi.generator.java.exchange.constants.ConstantsClassGenerator;
+import com.scz.jxapi.generator.java.exchange.constants.PropertiesClassGenerator;
 import com.scz.jxapi.netutils.rest.ratelimits.RateLimitManager;
 
 /**
@@ -60,7 +60,7 @@ public class ExchangeClassesGenerator implements ClassesGenerator {
 		// Generate constants interface
 		List<Constant> constants = exchangeDescriptor.getConstants();
 		if (constants != null) {
-			ConstantsInterfaceGenerator cgen = new ConstantsInterfaceGenerator(
+			ConstantsClassGenerator cgen = new ConstantsClassGenerator(
 					ExchangeJavaGenUtil.getExchangeConstantsInterfaceName(exchangeDescriptor), 
 					constants); 
 			cgen.setDescription("Constants used in {@link " + exchangeInterfaceGenerator.getName() + "} API wrapper");
@@ -70,7 +70,7 @@ public class ExchangeClassesGenerator implements ClassesGenerator {
 		// Generate properties interface
 		List<DefaultConfigProperty> properties = exchangeDescriptor.getProperties();
 		if (properties != null) {
-			PropertiesInterfaceGenerator pgen = new PropertiesInterfaceGenerator(
+			PropertiesClassGenerator pgen = new PropertiesClassGenerator(
 					ExchangeJavaGenUtil.getExchangePropertiesInterfaceName(exchangeDescriptor), 
 					exchangeDescriptor.getName(), 
 					properties);

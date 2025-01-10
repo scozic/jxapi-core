@@ -1,4 +1,4 @@
-package com.scz.jxapi.generator.properties;
+package com.scz.jxapi.generator.properties.exchange;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -88,9 +88,8 @@ public class ExchangeDemoPropertiesFileGenerator {
 	}
 	
 	/**
-	 * Performs generation and writes corresponding .java file.
-	 * Folders will be generated according to package hierarchy.
-	 * @param sourceFolder base directory (default package) for sources
+	 * Performs generation and writes file containing result of {@link #generate()}.
+	 * @param propertiesFile file to write to
 	 * @throws IOException If an error occurs writing the file
 	 */
 	public void writeJavaFile(Path propertiesFile) throws IOException {
