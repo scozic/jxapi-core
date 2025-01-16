@@ -43,9 +43,7 @@ public abstract class AbstractWebsocket implements Websocket {
 
 	@Override
 	public final void connect() throws WebsocketException {
-		if (log.isDebugEnabled()) {
-			log.debug("Connecting WS {}", this);
-		}
+		log.debug("Connecting WS {}", this);
 		if (!connected.getAndSet(true)) {
 			try {
 				doConnect();
@@ -54,22 +52,16 @@ public abstract class AbstractWebsocket implements Websocket {
 				throw ex;
 			}
 		}
-		if (log.isDebugEnabled()) {
-			log.debug("Connected WS {}", this);
-		}
+		log.debug("Connected WS {}", this);
 	}
 
 	@Override
 	public final void disconnect() {
-		if (log.isDebugEnabled()) {
-			log.debug("Disonnecting {}", this);
-		}
+		log.debug("Disonnecting {}", this);
 		if (connected.getAndSet(false)) {
 			doDisconnect();
 		}
-		if (log.isDebugEnabled()) {
-			log.debug("Disonnected WS {}", this);
-		}
+		log.debug("Disonnected WS {}", this);
 	}
 
 	@Override
