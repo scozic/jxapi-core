@@ -17,7 +17,7 @@ public void call() {
   // Access API groups and their endpoints through 'exchange' methods.
 }
 ```
-You may have a look at ./src/main/java//src/test/java/com/scz/jxapi/exchanges/demo/gen/marketdata/demo/DemoExchangeMarketDataExchangeInfoDemo.java for full usage example
+You may have a look at <a href="./src/test/java/com/scz/jxapi/exchanges/demo/gen/marketdata/demo/DemoExchangeMarketDataExchangeInfoDemo.java">DemoExchangeMarketDataExchangeInfoDemo</a> class for full usage example
 
 ### Properties
 

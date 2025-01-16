@@ -34,7 +34,7 @@ public class ExchangeReameMdGeneratorTest {
 	public void testGenerateExchangeReadmeFile() throws IOException {
 		srcFolder = ClassesGeneratorTestUtil.generateTmpDir();
 		ExchangeDescriptor exchange = new ExchangeDescriptorParser().fromJson(Paths.get(".", "src", "test", "resources", "testExchangeDescriptor.json"));
-		new ExchangeReadmeMdGenerator(exchange, "https://javadoc.io/myproject/", "https://myrepo.com/myproject/main/src/main/java").writeJavaFile(srcFolder);
+		new ExchangeReadmeMdGenerator(exchange, "https://javadoc.io/myproject/", "https://myrepo.com/myproject/master/src/main/java").writeJavaFile(srcFolder);
 		File expected = srcFolder.resolve("MyTestExchange_README.md").toFile();
 		Assert.assertTrue("File " + expected.getAbsolutePath() + " does not exists", expected.exists());
 	}
@@ -42,7 +42,7 @@ public class ExchangeReameMdGeneratorTest {
 	@Test
 	public void testGenerateExchangeReadme() throws IOException {
 		ExchangeDescriptor exchange = new ExchangeDescriptorParser().fromJson(Paths.get(".", "src", "test", "resources", "testExchangeDescriptor.json"));
-		String actual = new ExchangeReadmeMdGenerator(exchange, "https://javadoc.io/myproject/", "https://myrepo.com/myproject/main/src/main/java").generate();
+		String actual = new ExchangeReadmeMdGenerator(exchange, "https://javadoc.io/myproject/", "https://myrepo.com/myproject/master/src/main/java").generate();
 		Assert.assertEquals("# MyTestExchange API Java wrapper\n"
 				+ "\n"
 				+ "A sample Exchange descriptor file\n"
@@ -62,7 +62,7 @@ public class ExchangeReameMdGeneratorTest {
 				+ "  // Access API groups and their endpoints through 'exchange' methods.\n"
 				+ "}\n"
 				+ "```\n"
-				+ "You may have a look at https://myrepo.com/myproject/main/src/main/java/src/test/java/com/foo/bar/gen/marketdata/demo/MyTestExchangeMarketDataExchangeInfoDemo.java for full usage example\n"
+				+ "You may have a look at <a href=\"https://myrepo.com/myproject/master/src/main/java/src/test/java/com/foo/bar/gen/marketdata/demo/MyTestExchangeMarketDataExchangeInfoDemo.java\">MyTestExchangeMarketDataExchangeInfoDemo</a> class for full usage example\n"
 				+ "\n"
 				+ "### Properties\n"
 				+ "\n"
@@ -142,7 +142,7 @@ public class ExchangeReameMdGeneratorTest {
 	@Test
 	public void testGenerateExchangeReadme_AllRequestDataTypes() throws IOException {
 		ExchangeDescriptor exchange = new ExchangeDescriptorParser().fromJson(Paths.get(".", "src", "test", "resources", "testExchangeDescriptorWithAllRestRequestDataTypes.json"));
-		String actual = new ExchangeReadmeMdGenerator(exchange, "https://javadoc.io/myproject/", "https://myrepo.com/myproject/main/src/main/java").generate();
+		String actual = new ExchangeReadmeMdGenerator(exchange, "https://javadoc.io/myproject/", "https://myrepo.com/myproject/master/src/main/java").generate();
 		Assert.assertEquals("# MyTestExchange API Java wrapper\n"
 				+ "\n"
 				+ "A sample Exchange descriptor file\n"
@@ -161,7 +161,7 @@ public class ExchangeReameMdGeneratorTest {
 				+ "  // Access API groups and their endpoints through 'exchange' methods.\n"
 				+ "}\n"
 				+ "```\n"
-				+ "You may have a look at https://myrepo.com/myproject/main/src/main/java/src/test/java/com/foo/bar/gen/marketdata/demo/MyTestExchangeMarketDataPostRestRequestDataTypeIntDemo.java for full usage example\n"
+				+ "You may have a look at <a href=\"https://myrepo.com/myproject/master/src/main/java/src/test/java/com/foo/bar/gen/marketdata/demo/MyTestExchangeMarketDataPostRestRequestDataTypeIntDemo.java\">MyTestExchangeMarketDataPostRestRequestDataTypeIntDemo</a> class for full usage example\n"
 				+ "\n"
 				+ "## API Groups\n"
 				+ "APIs are available using the following interfaces accessible from <a href=\"https://javadoc.io/myproject/com/foo/bar/gen/MyTestExchangeExchange.html\">MyTestExchangeExchange</a> interface\n"
@@ -318,7 +318,7 @@ public class ExchangeReameMdGeneratorTest {
 		ExchangeDescriptor exchange = new ExchangeDescriptorParser().fromJson(Paths.get(".", "src", "test", "resources", "testExchangeDescriptor.json"));
 		exchange.setConstants(null);
 		exchange.getApis().get(0).setWebsocketEndpoints(null);
-		String actual = new ExchangeReadmeMdGenerator(exchange, "https://javadoc.io/myproject/", "https://myrepo.com/myproject/main/src/main/java").generate();
+		String actual = new ExchangeReadmeMdGenerator(exchange, "https://javadoc.io/myproject/", "https://myrepo.com/myproject/master").generate();
 		Assert.assertEquals("# MyTestExchange API Java wrapper\n"
 				+ "\n"
 				+ "A sample Exchange descriptor file\n"
@@ -338,7 +338,7 @@ public class ExchangeReameMdGeneratorTest {
 				+ "  // Access API groups and their endpoints through 'exchange' methods.\n"
 				+ "}\n"
 				+ "```\n"
-				+ "You may have a look at https://myrepo.com/myproject/main/src/main/java/src/test/java/com/foo/bar/gen/marketdata/demo/MyTestExchangeMarketDataExchangeInfoDemo.java for full usage example\n"
+				+ "You may have a look at <a href=\"https://myrepo.com/myproject/master/src/test/java/com/foo/bar/gen/marketdata/demo/MyTestExchangeMarketDataExchangeInfoDemo.java\">MyTestExchangeMarketDataExchangeInfoDemo</a> class for full usage example\n"
 				+ "\n"
 				+ "### Properties\n"
 				+ "\n"
@@ -401,7 +401,7 @@ public class ExchangeReameMdGeneratorTest {
 		ExchangeApiDescriptor api = exchange.getApis().get(0);
 		api.setConstants(null);
 		api.setRestEndpoints(null);
-		String actual = new ExchangeReadmeMdGenerator(exchange, "https://javadoc.io/myproject/", "https://myrepo.com/myproject/main/src/main/java").generate();
+		String actual = new ExchangeReadmeMdGenerator(exchange, "https://javadoc.io/myproject/", "https://myrepo.com/myproject/master/src/main/java").generate();
 		Assert.assertEquals("# MyTestExchange API Java wrapper\n"
 				+ "\n"
 				+ "A sample Exchange descriptor file\n"
@@ -421,7 +421,7 @@ public class ExchangeReameMdGeneratorTest {
 				+ "  // Access API groups and their endpoints through 'exchange' methods.\n"
 				+ "}\n"
 				+ "```\n"
-				+ "You may have a look at https://myrepo.com/myproject/main/src/main/java/src/test/java/com/foo/bar/gen/marketdata/demo/MyTestExchangeMarketDataTickerStreamDemo.java for full usage example\n"
+				+ "You may have a look at <a href=\"https://myrepo.com/myproject/master/src/main/java/src/test/java/com/foo/bar/gen/marketdata/demo/MyTestExchangeMarketDataTickerStreamDemo.java\">MyTestExchangeMarketDataTickerStreamDemo</a> class for full usage example\n"
 				+ "\n"
 				+ "### Properties\n"
 				+ "\n"
@@ -480,7 +480,7 @@ public class ExchangeReameMdGeneratorTest {
 	public void testGenerateExchangeReadme_NoApiGroup() throws IOException {
 		ExchangeDescriptor exchange = new ExchangeDescriptorParser().fromJson(Paths.get(".", "src", "test", "resources", "testExchangeDescriptor.json"));
 		exchange.setApis(null);
-		String actual = new ExchangeReadmeMdGenerator(exchange, "https://javadoc.io/myproject/", "https://myrepo.com/myproject/main/src/main/java").generate();
+		String actual = new ExchangeReadmeMdGenerator(exchange, "https://javadoc.io/myproject/", "https://myrepo.com/myproject/master/src/main/java").generate();
 		Assert.assertEquals("# MyTestExchange API Java wrapper\n"
 				+ "\n"
 				+ "A sample Exchange descriptor file\n"
@@ -539,7 +539,7 @@ public class ExchangeReameMdGeneratorTest {
 		api.setRestEndpoints(null);
 		api.setWebsocketEndpoints(null);
 		api.setDescription(null);
-		String actual = new ExchangeReadmeMdGenerator(exchange, "https://javadoc.io/myproject/", "https://myrepo.com/myproject/main/src/main/java").generate();
+		String actual = new ExchangeReadmeMdGenerator(exchange, "https://javadoc.io/myproject/", "https://myrepo.com/myproject/master/src/main/java").generate();
 		Assert.assertEquals("# MyTestExchange API Java wrapper\n"
 				+ "\n"
 				+ "A sample Exchange descriptor file\n"

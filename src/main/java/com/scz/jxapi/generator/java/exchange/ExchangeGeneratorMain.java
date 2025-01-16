@@ -111,12 +111,12 @@ public class ExchangeGeneratorMain {
 		generateExchangeWrapper(exchangeDescriptor, outputSrcMainFolder);
 		
 		log.info("Generating exchange demos code for descriptor:{}", jsonFile.getFileName());
-		Path outputSrcTestFolder = Paths.get(".", "src", "test", "java");
+		Path outputSrcTestFolder = projectFolder.resolve(Paths.get("src", "test", "java"));
 		Path genTestPackagesFolder = outputSrcTestFolder.resolve(mainPackagePath);
 		JavaCodeGenerationUtil.deletePath(genTestPackagesFolder);
 		generateExchangeWrapperDemos(exchangeDescriptor, outputSrcTestFolder);
 		
-		Path srcTestResourcesFolder = Paths.get(".", "src", "test", "resources");
+		Path srcTestResourcesFolder = projectFolder.resolve(Paths.get("src", "test", "resources"));
 		log.info("Generating demo exchange configuration properties file template in {}", srcTestResourcesFolder);
 		generateDemoPropertiesFileTemplate(exchangeDescriptor, srcTestResourcesFolder);
 		
@@ -165,6 +165,7 @@ public class ExchangeGeneratorMain {
 	
 	public static void generateDemoPropertiesFileTemplate(ExchangeDescriptor exchangeDescriptor, Path resourcesFolder) throws IOException {
 		String fileName = DemoUtil.getDefaultDemoExchangePropertiesFileName(exchangeDescriptor.getName()) + ".dist";
+		Files.createDirectories(resourcesFolder);
 		Path filePath = resourcesFolder.resolve(Paths.get(fileName));
 		log.info("Generating demo exchange properties template file:{}", filePath);
 		List<ConfigProperty> configProperties = new ArrayList<>();

@@ -101,10 +101,8 @@ public class ExchangeReadmeMdGenerator {
 				.append("```\n");
 		if (demoClassName != null) {
 			s.append("You may have a look at ")
-			 .append(baseSourceUrl)
-			 .append("/src/test/java/")
-			 .append(demoClassName.replace('.', '/'))
-			 .append(".java for full usage example\n");
+			 .append(getSourceFileLink(demoClassName, "test"))
+			 .append(" class for full usage example\n");
 		}
 		List<DefaultConfigProperty> properties = exchangeDescriptor.getProperties();
 		if (!CollectionUtil.isEmpty(properties)) {
@@ -260,6 +258,19 @@ public class ExchangeReadmeMdGenerator {
 		return JavaCodeGenerationUtil.getHtmlLink(
 				JavaCodeGenerationUtil.getClassJavadocUrl(baseJavadocUrl, interfaceClass) + "#" + methodJavadocLink, 
 				JavaCodeGenerationUtil.getClassNameWithoutPackage(StringUtils.substringBefore(methodJavadocLink, "(")));
+	}
+	
+	/**
+	 * Returns a link to the source file for the given class name.
+	 * @param className Fully qualified class name
+	 * @param srcFolderName Source folder name, either "main" or "test"
+	 * @return HTML link to the source file
+	 */
+	private String getSourceFileLink(String className, String srcFolderName) {
+		String baseUrl = String.format("%s/src/%s/java/", baseSourceUrl, srcFolderName);
+        return JavaCodeGenerationUtil.getHtmlLink(
+                JavaCodeGenerationUtil.getClassUrl(baseUrl, className, ".java"), 
+                JavaCodeGenerationUtil.getClassNameWithoutPackage(className));
 	}
 	
 	private String generatePropertiesTable(List<DefaultConfigProperty> properties) {

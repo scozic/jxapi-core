@@ -21,12 +21,12 @@ public class DemoExchangeGeneratorMain {
 	private static Logger log = LoggerFactory.getLogger(DemoExchangeGeneratorMain.class);
 	
 	public static void generateDemoExchange() throws IOException {
-		generateDemoExchange(Paths.get(".", "src", "test"));
+		generateDemoExchange(Paths.get("."));
 	}
 
 	public static void generateDemoExchange(Path srcTestFolder) throws IOException {
 		log.info("Generating demo wrapper in current project");
-		Path srcTestResourcesFolder = srcTestFolder.resolve(Paths.get("resources"));
+		Path srcTestResourcesFolder = srcTestFolder.resolve(Paths.get("src", "test", "resources"));
 		Path exchangeDescriptorFile = srcTestResourcesFolder.resolve(Paths.get("demoExchange.json"));
 		ExchangeDescriptor exchangeDescriptor = new ExchangeDescriptorParser().fromJson(exchangeDescriptorFile);
 		Path srcTestJavaFolder = srcTestFolder.resolve(Paths.get("java"));
@@ -36,7 +36,7 @@ public class DemoExchangeGeneratorMain {
 		ExchangeGeneratorMain.generateExchangeWrapper(exchangeDescriptor, srcTestJavaFolder);
 		ExchangeGeneratorMain.generateExchangeWrapperDemos(exchangeDescriptor, srcTestJavaFolder);
 		ExchangeGeneratorMain.generateDemoPropertiesFileTemplate(exchangeDescriptor, srcTestResourcesFolder);
-		ExchangeGeneratorMain.generateExchangeWrapperReadme(exchangeDescriptor, Paths.get("."), "./doc/javadoc/", "./src/main/java/");
+		ExchangeGeneratorMain.generateExchangeWrapperReadme(exchangeDescriptor, Paths.get("."), "./doc/javadoc/", ".");
 		log.info("Generating demo wrapper in current project:DONE");
 	}
 

@@ -464,10 +464,14 @@ public class JavaCodeGenerationUtil {
 	}
 	
 	public static String getClassJavadocUrl(String baseUrl, String javaClassName) {
+		return getClassUrl(baseUrl, javaClassName, ".html");
+	}
+	
+	public static String getClassUrl(String baseUrl, String javaClassName, String suffix) {
 		return new StringBuilder()
 				.append(baseUrl)
 				.append(javaClassName.replace('.', '/'))
-				.append(".html")
+				.append(suffix)
 				.toString();
 	}
 
