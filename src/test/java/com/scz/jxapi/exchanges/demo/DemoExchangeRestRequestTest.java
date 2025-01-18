@@ -11,6 +11,7 @@ import java.util.Properties;
 import java.util.TreeMap;
 import java.util.concurrent.TimeUnit;
 
+import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -67,6 +68,11 @@ public class DemoExchangeRestRequestTest {
 		config.setProperty(DemoExchangeProperties.HOST.getName(), DemoExchangeProperties.HOST.getDefaultValue().toString());
 		config.setProperty(DemoExchangeProperties.WEBSOCKET_PORT.getName(), "80");
 		exchange = new DemoExchangeExchangeImpl(TEST_EXCHANGE_NAME, config);
+	}
+	
+	@After
+	public void tearDown() {
+        mockHttpServer.stop();
 	}
 	
 	@Test

@@ -25,7 +25,7 @@ public class DemoExchangeMarketDataExchangeInfoDemo {
   
   public static DemoExchangeMarketDataExchangeInfoRequest createRequest() {
     DemoExchangeMarketDataExchangeInfoRequest request = new DemoExchangeMarketDataExchangeInfoRequest();
-    request.setSymbols(new ListJsonFieldDeserializer<>(StringJsonFieldDeserializer.getInstance()).deserialize("[\"BTC\", \"ETH\"]"));
+    request.setSymbols(new ListJsonFieldDeserializer<>(StringJsonFieldDeserializer.getInstance()).deserialize("[\"BTC_USDT\", \"ETH_USDT\"]"));
     return request;
   }
   

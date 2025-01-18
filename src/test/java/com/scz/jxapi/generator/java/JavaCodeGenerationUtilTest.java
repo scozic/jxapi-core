@@ -405,4 +405,11 @@ public class JavaCodeGenerationUtilTest {
 		Assert.assertEquals("https://docs.oracle.com/javase/8/docs/api/java/util/List.html", 
 							JavaCodeGenerationUtil.getClassJavadocUrl("https://docs.oracle.com/javase/8/docs/api/", List.class.getName()));
 	}
+	
+	@Test
+	public void testGetClassUrl() {
+		Assert.assertEquals("https://docs.oracle.com/javase/8/docs/api/java/util/List.html", 
+				JavaCodeGenerationUtil.getClassUrl("https://docs.oracle.com/javase/8/docs/api/", List.class.getName(), ".html"));
+	}
 }
+
