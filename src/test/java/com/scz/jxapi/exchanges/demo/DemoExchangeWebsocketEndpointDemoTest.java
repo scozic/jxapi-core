@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Properties;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeoutException;
 
 import org.junit.After;
@@ -12,9 +13,8 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.scz.jxapi.exchanges.demo.gen.DemoExchangeConstants;
-import com.scz.jxapi.exchanges.demo.gen.DemoExchangeExchange;
-import com.scz.jxapi.exchanges.demo.gen.DemoExchangeExchangeImpl;
 import com.scz.jxapi.exchanges.demo.gen.DemoExchangeProperties;
+import com.scz.jxapi.exchanges.demo.gen.marketdata.demo.DemoExchangeMarketDataTickerStreamDemo;
 import com.scz.jxapi.exchanges.demo.gen.marketdata.pojo.DemoExchangeMarketDataTickerStreamMessage;
 import com.scz.jxapi.exchanges.demo.gen.marketdata.pojo.DemoExchangeMarketDataTickerStreamRequest;
 import com.scz.jxapi.netutils.rest.javanet.MockHttpServer;
@@ -23,12 +23,14 @@ import com.scz.jxapi.netutils.websocket.mock.server.MockWebsocketServer;
 import com.scz.jxapi.netutils.websocket.mock.server.MockWebsocketServerEvent;
 import com.scz.jxapi.netutils.websocket.mock.server.MockWebsocketServerEventType;
 import com.scz.jxapi.netutils.websocket.mock.server.MockWebsocketServerSession;
+import com.scz.jxapi.util.DemoProperties;
+import com.scz.jxapi.util.DemoUtil;
 import com.scz.jxapi.util.JsonUtil;
 
-public class DemoExchangeWebsocketEndpointTest {
-	
-	private static final String TEST_EXCHANGE_NAME = "myExchange";
-	private static final long NO_EVENTS_DELAY = 200L;
+/**
+ * Integration test for demo exchange websocket endpoint demo snippet.
+ */
+public class DemoExchangeWebsocketEndpointDemoTest {
 	
 	private static Long getTime(String date) {
 		try {
@@ -41,8 +43,8 @@ public class DemoExchangeWebsocketEndpointTest {
 	private int port = 8088;
 	private MockWebsocketServer server;
 	private String appName = "demo";
-	private DemoExchangeExchange exchange;
 	private MockWebsocketListener<DemoExchangeMarketDataTickerStreamMessage> msgListener;
+	Properties config = null;
 	
 	
 	@Before
@@ -50,9 +52,9 @@ public class DemoExchangeWebsocketEndpointTest {
 		port = MockHttpServer.findAvailablePort();
 		server = new MockWebsocketServer(port, appName);
 		server.start();
-		Properties config = new Properties();
+		config = new Properties();
 		config.setProperty(DemoExchangeProperties.WEBSOCKET_PORT.getName(), String.valueOf(this.port));
-		exchange = new DemoExchangeExchangeImpl(TEST_EXCHANGE_NAME, config);
+		config.setProperty(DemoProperties.DEMO_WS_SUBSCRIPTION_DURATION_PROPERTY.getName(), String.valueOf(300L));
 		msgListener = new MockWebsocketListener<>();
 	}
 	
@@ -60,12 +62,12 @@ public class DemoExchangeWebsocketEndpointTest {
 	public void tearDown() {
 		server.stop();
 	}
-
+	
 	@Test
-	public void testSubscribeDemoExchangeMarketDataTickerStreamReceiveMessagesThenDispose() throws Exception {
+	public void testDemoExchangeMarketDataTickerStreamDemo() throws Exception {
 		DemoExchangeMarketDataTickerStreamRequest request = new DemoExchangeMarketDataTickerStreamRequest();
 		request.setSymbol("BTC_USDT");
-		String clientSubscription = exchange.getDemoExchangeMarketDataApi().subscribeTickerStream(request, msgListener);
+		CompletableFuture<Exception> execution = runSubsribeDemoAsync();
 		popClientConnectEvent();
 		popMessageReceivedFromClient(DemoExchangeConstants.WEBSOCKET_LOGIN_MESSAGE);
 		
@@ -80,37 +82,20 @@ public class DemoExchangeWebsocketEndpointTest {
 		server.sendMessageToClients(JsonUtil.pojoToJsonString(msg1));
 		DemoExchangeMarketDataTickerStreamMessage actualMsg1 = popReceivedMessage();
 		Assert.assertEquals(msg1, actualMsg1);
-		
 		DemoExchangeMarketDataTickerStreamMessage msg2 = new DemoExchangeMarketDataTickerStreamMessage();
 		msg2.setTopic("ticker");
-		msg2.setSymbol("ETH_USDT");
-		msg2.setHigh(new BigDecimal("3919.71"));
-		msg2.setLast(new BigDecimal("3915.17"));
-		msg2.setLow(new BigDecimal("3832.01"));
-		msg2.setVolume(new BigDecimal("120920000.00"));
-		msg2.setTime(getTime("2024-12-16T00:06:14.333"));
+		msg2.setSymbol("BTC_USDT");
+		msg2.setHigh(new BigDecimal("103686.00"));
+		msg2.setLast(new BigDecimal("103171.20"));
+		msg2.setLow(new BigDecimal("101048.10"));
+		msg2.setVolume(new BigDecimal("153380000.00"));
+		msg2.setTime(getTime("2024-12-16T00:07:14.222"));
 		server.sendMessageToClients(JsonUtil.pojoToJsonString(msg2));
-		
-		checkNoMessageReceived();
-		
-		DemoExchangeMarketDataTickerStreamMessage msg3 = new DemoExchangeMarketDataTickerStreamMessage();
-		msg3.setTopic("ticker");
-		msg3.setSymbol("BTC_USDT");
-		msg3.setHigh(new BigDecimal("103686.00"));
-		msg3.setLast(new BigDecimal("103171.20"));
-		msg3.setLow(new BigDecimal("101048.10"));
-		msg3.setVolume(new BigDecimal("153380000.00"));
-		msg3.setTime(getTime("2024-12-16T00:07:14.222"));
-		server.sendMessageToClients(JsonUtil.pojoToJsonString(msg3));
 		DemoExchangeMarketDataTickerStreamMessage actualMsg3 = popReceivedMessage();
-		Assert.assertEquals(msg3, actualMsg3);
-		
-		exchange.getDemoExchangeMarketDataApi().unsubscribeTickerStream(clientSubscription);
-		checkNoMessageReceived();
-		
-		exchange.dispose();
+		Assert.assertEquals(msg2, actualMsg3);
 		popMessageReceivedFromClient(DemoExchangeConstants.WEBSOCKET_LOGOUT_MESSAGE);
 		popClientDisconnectEvent();
+		Assert.assertNull(execution.get());
 	}
 	
 	private MockWebsocketServerSession popClientConnectEvent() throws TimeoutException {
@@ -137,12 +122,26 @@ public class DemoExchangeWebsocketEndpointTest {
 		Assert.assertNotNull(session);
 		return session;
 	}
-
+	
 	private DemoExchangeMarketDataTickerStreamMessage popReceivedMessage() throws TimeoutException {
-		return msgListener.waitUntilCount(1, 1000).pop();
+		return msgListener.waitUntilCount(1).pop();
 	}
 	
-	private void checkNoMessageReceived() throws InterruptedException {
-		msgListener.checkNoEvents(NO_EVENTS_DELAY);
+	private CompletableFuture<Exception> runSubsribeDemoAsync() {
+		CompletableFuture<Exception> future = new CompletableFuture<>();
+		new Thread(() -> {
+			try {
+				DemoExchangeMarketDataTickerStreamDemo.subscribe(
+						DemoExchangeMarketDataTickerStreamDemo.createRequest(), 
+						msgListener, 
+						config, 
+						DemoUtil::logWsApiEvent);
+				future.complete(null);
+			} catch (Exception e) {
+				future.complete(e);
+			}
+		}).start();
+
+		return future;
 	}
 }

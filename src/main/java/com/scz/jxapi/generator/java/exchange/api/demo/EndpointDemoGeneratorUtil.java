@@ -330,23 +330,37 @@ public class EndpointDemoGeneratorUtil {
 	 * 
 	 * @see DemoUtil#loadDemoExchangeProperties(String)
 	 */
-	public static String getNewTestApiInstruction(String exchangeClassName, 
-												  String simpleApiClassName, 
-												  String propertiesVariableName) {
+	public static String getNewTestApiInstruction(String exchangeVariableName,
+												  String apiVariableName,
+												  String simpleApiClassName) {
+		return new StringBuilder()
+				.append(simpleApiClassName)
+				.append(" ")
+				.append(apiVariableName)
+				.append(" = ")
+				.append(exchangeVariableName)
+				.append(".get")
+				.append(simpleApiClassName)
+				.append("();")
+				.toString();
+	}
+	
+	public static String getNewTestExchangeInstruction(String exchangeClassName, 
+													   String exchangeVariableName, 
+													   String propertiesVariableName) {
 		String simpleExchangeClassName = JavaCodeGenerationUtil.getClassNameWithoutPackage(exchangeClassName);
 		String exchangeImplClassName = ExchangeJavaGenUtil.getExchangeInterfaceImplementationName(exchangeClassName);
 		String simpleExchangeImplClassName = JavaCodeGenerationUtil.getClassNameWithoutPackage(exchangeImplClassName);
 		return new StringBuilder()
-				.append(simpleApiClassName)
-				.append(" api = new ")
-				.append(simpleExchangeImplClassName)
-				.append("(\"test-\" + ")
 				.append(simpleExchangeClassName)
+				.append(" ")
+				.append(exchangeVariableName)
+				.append(" = new ")
+				.append(simpleExchangeImplClassName)
+				.append("(\"test-\" + ").append(simpleExchangeClassName)
 				.append(".ID, ")
 				.append(propertiesVariableName)
-				.append(").get")
-				.append(simpleApiClassName)
-				.append("();")
+				.append(");")
 				.toString();
 	}
 	

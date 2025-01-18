@@ -39,7 +39,8 @@ public class DemoExchangeMarketDataExchangeInfoDemo {
    * @throws ExecutionException raised if response is not OK, see {@link RestResponse#isOk()}
    */
   public static RestResponse<DemoExchangeMarketDataExchangeInfoResponse> execute(DemoExchangeMarketDataExchangeInfoRequest request, Properties configProperties, ExchangeApiObserver apiObserver) throws InterruptedException, ExecutionException {
-    DemoExchangeMarketDataApi api = new DemoExchangeExchangeImpl("test-" + DemoExchangeExchange.ID, configProperties).getDemoExchangeMarketDataApi();
+    DemoExchangeExchange exchange = new DemoExchangeExchangeImpl("test-" + DemoExchangeExchange.ID, configProperties);
+    DemoExchangeMarketDataApi api = exchange.getDemoExchangeMarketDataApi();
     log.info("Calling com.scz.jxapi.exchanges.demo.gen.marketdata.DemoExchangeMarketDataApi.exchangeInfo() API with request:{}", request);
     if (apiObserver != null) {
       api.subscribeObserver(apiObserver);
@@ -51,6 +52,7 @@ public class DemoExchangeMarketDataExchangeInfoDemo {
       if (apiObserver != null) {
         api.unsubscribeObserver(apiObserver);
       }
+      exchange.dispose();
     }
   }
   
