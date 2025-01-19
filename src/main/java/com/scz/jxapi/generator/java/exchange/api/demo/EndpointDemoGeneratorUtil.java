@@ -3,10 +3,10 @@ package com.scz.jxapi.generator.java.exchange.api.demo;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
-import java.util.Properties;
 import java.util.stream.Collectors;
 
 import com.scz.jxapi.exchange.Exchange;
+import com.scz.jxapi.exchange.ExchangeApi;
 import com.scz.jxapi.exchange.descriptor.CanonicalType;
 import com.scz.jxapi.exchange.descriptor.ExchangeApiDescriptor;
 import com.scz.jxapi.exchange.descriptor.ExchangeDescriptor;
@@ -310,25 +310,20 @@ public class EndpointDemoGeneratorUtil {
 	}
 	
 	/**
-	 * Generates a new test API instantiation instruction for the given exchange ID,
-	 * exchange implementation class name and simple API class name.
-	 * <ul>
-	 * <li>The returned instruction is declaration of a variable named
-	 * <code>api</code> of the given simple API class name, initialized with a new
-	 * instance of the given exchange implementation class name.</li>
-	 * <li>The exchange Id is used to retrieve default test properties file in 
-	 * src/test/resources, see {@link DemoUtil#loadDemoExchangeProperties(String)}.</li>
-	 * </ul>
+	 * Generates a variable declaration instruction referencing a test API group ( {@link ExchangeApi}), 
+	 * assuming there is a variable referencing an {@link Exchange} instance, that exposes a getter 
+	 * method to retrieve tha {@link ExchangeApi} instance. 
 	 * 
 	 * Example:
-	 * <code>MyApi api = new MyExchangeImpl("test-my-exchange", TestJXApiProperties.filterProperties("my-exchange", true)).getMyApi();</code>
+	 * <code>MyApi api = exchange.getMyApi();</code>
 	 * 
-	 * @param exchangeClassName The exchange implementation class name.
-	 * @param simpleApiClassName    The simple API class name.
-	 * @param propertiesVariableName The name of variable referencing configuration properties {@link Properties} object.
+	 * @param exchangeVariableName The name of variable referencing an {@link Exchange} instance.
+	 * @param apiVariableName      The name of the variable to declare for the test API instance.
+	 * @param simpleApiClassName    The simple {@link ExchangeApi} interface class name.
 	 * @return the new test API instantiation instruction.
 	 * 
-	 * @see DemoUtil#loadDemoExchangeProperties(String)
+	 * @see Exchange
+	 * @see ExchangeApi
 	 */
 	public static String getNewTestApiInstruction(String exchangeVariableName,
 												  String apiVariableName,
@@ -345,6 +340,18 @@ public class EndpointDemoGeneratorUtil {
 				.toString();
 	}
 	
+	/**
+	 * Generates a variable declaration instruction referencing a new {@link Exchange} instance, using the 
+	 * provided exchange class name, exchange variable name and properties variable name.
+	 * The exchange instance is created with a unique ID containing exchange ID (see {@link Exchange#getId()}), 
+	 * assuming this ID is available as Exchange interface static variable named <code>ID</code>
+	 *  and the configuration properties passed from a variable referencing them.
+	 * @param exchangeClassName The {@link Exchange} interface class name.
+	 * @param exchangeVariableName The name of the variable to declare for the new exchange instance.
+	 * @param propertiesVariableName The name of the variable referencing the configuration properties to use for the new exchange.
+	 * @return the new test exchange instantiation instruction, for instance:<br>
+	 * 		   <code>MyExchange exchange = new MyExchangeImpl("test-MyExchange.ID", properties);</code>
+	 */
 	public static String getNewTestExchangeInstruction(String exchangeClassName, 
 													   String exchangeVariableName, 
 													   String propertiesVariableName) {

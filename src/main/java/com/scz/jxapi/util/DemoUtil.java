@@ -42,7 +42,9 @@ public class DemoUtil {
 		if (!response.isOk()) {
 			throw new ExecutionException("Error in response:" + response, response.getException());
 		}
-		log.info("Got OK response:\n{}", JsonUtil.pojoToPrettyPrintJson(response.getResponse()));
+		if (log.isInfoEnabled()) {
+			log.info("Got OK response:\n{}", JsonUtil.pojoToPrettyPrintJson(response.getResponse()));
+		}
 		return response;
 	}
 	
@@ -52,7 +54,9 @@ public class DemoUtil {
 	 * @return the <code>message</code>
 	 */
 	public static Object logWsMessage(Object message) {
-		log.info("Received message:\n{}", JsonUtil.pojoToPrettyPrintJson(message));
+		if (log.isInfoEnabled()) {
+			log.info("Received message:\n{}", JsonUtil.pojoToPrettyPrintJson(message));
+		}
 		return message;
 	}
 	
@@ -80,7 +84,7 @@ public class DemoUtil {
 		switch (event.getType()) {
 		case HTTP_REQUEST:
 		case HTTP_RESPONSE:
-			log.debug(event.toString());
+			log.debug("{}", event);
 			break;
 		default:
 			break;

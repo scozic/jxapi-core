@@ -5,7 +5,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Properties;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeoutException;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -23,12 +22,12 @@ import com.scz.jxapi.netutils.rest.RestResponse;
 public class DemoUtilTest {
 
     @Test(expected = NullPointerException.class)
-    public void testCheckResponseNullResponse() throws InterruptedException, ExecutionException, TimeoutException {
+    public void testCheckResponseNullResponse() throws InterruptedException, ExecutionException {
         DemoUtil.checkResponse(null);
     }
 
     @Test(expected = ExecutionException.class)
-    public void testCheckResponseNotOk() throws InterruptedException, ExecutionException, TimeoutException {
+    public void testCheckResponseNotOk() throws InterruptedException, ExecutionException {
         FutureRestResponse<?> futureResponse = new FutureRestResponse<>();
         HttpResponse httpResponse = new HttpResponse();
         httpResponse.setResponseCode(404);
@@ -37,14 +36,14 @@ public class DemoUtilTest {
     }
 
     @Test(expected = ExecutionException.class)
-    public void testCheckResponseException() throws InterruptedException, ExecutionException, TimeoutException {
+    public void testCheckResponseException() throws InterruptedException, ExecutionException {
         FutureRestResponse<?> futureResponse = new FutureRestResponse<>();
         futureResponse.completeExceptionally(new Exception("Test execution error"));
         DemoUtil.checkResponse(futureResponse);
     }
 
     @Test
-    public void testCheckResponseOk() throws InterruptedException, ExecutionException, TimeoutException {
+    public void testCheckResponseOk() throws InterruptedException, ExecutionException {
         FutureRestResponse<String> futureResponse = new FutureRestResponse<>();
         HttpResponse httpResponse = new HttpResponse();
         httpResponse.setResponseCode(200);
@@ -103,7 +102,7 @@ public class DemoUtilTest {
 	}
     
     @Test
-	public void testLoadDemoExchangeProperties_FromSystemProperty_MissingFile() throws IOException {
+	public void testLoadDemoExchangeProperties_FromSystemProperty_MissingFile() {
     	String previousSysPropValue = System.getProperty(DemoProperties.DEMO_API_PROPERTIES_FILE_SYSTEM_PROPERTY);
     	System.setProperty(DemoProperties.DEMO_API_PROPERTIES_FILE_SYSTEM_PROPERTY, "bar.properties");
     	try {
