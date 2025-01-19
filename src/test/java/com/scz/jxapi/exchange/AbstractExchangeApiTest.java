@@ -42,7 +42,6 @@ import com.scz.jxapi.netutils.websocket.multiplexing.WebsocketMessageTopicMatche
 import com.scz.jxapi.netutils.websocket.spring.SpringWebsocket;
 import com.scz.jxapi.observability.MockExchangeApiObserver;
 import com.scz.jxapi.observability.Observable;
-import com.scz.jxapi.util.JsonUtil;
 
 /**
  * Unit test for {@link AbstractExchangeApi}
@@ -339,7 +338,12 @@ public class AbstractExchangeApiTest {
 	
 	@Test
 	public void setThrottlingModeAndMaxThrottleDelayWithRequestThrottler() {
-		exchangeApi = new TestExchangeApi("TestApi", "test-MyExchange", "MyExchange", new Properties(), new RequestThrottler("TestApi"));
+		Properties props = new Properties();
+		props.setProperty(CommonConfigProperties.REQUEST_THROTTLING_MODE_PROPERTY.getName(), RequestThrottlingMode.NONE.name());
+		props.setProperty(CommonConfigProperties.MAX_REQUEST_THROTTLE_DELAY_PROPERTY.getName(), "30000");
+		exchangeApi = new TestExchangeApi("TestApi", "test-MyExchange", "MyExchange", props, new RequestThrottler("TestApi"));
+		Assert.assertEquals(RequestThrottlingMode.NONE, exchangeApi.getRequestThrottlingMode());
+		Assert.assertEquals(30000L, exchangeApi.getMaxRequestThrottleDelay());
 		exchangeApi.setRequestThrottlingMode(RequestThrottlingMode.BLOCK);
 		exchangeApi.setMaxRequestThrottleDelay(1000L);
 		Assert.assertEquals(RequestThrottlingMode.BLOCK, exchangeApi.getRequestThrottlingMode());
@@ -351,6 +355,22 @@ public class AbstractExchangeApiTest {
 		exchangeApi = new TestExchangeApi("TestApi", "test-MyExchange", "MyExchange", new Properties());
 		exchangeApi.dispose();
 		Assert.assertTrue(exchangeApi.isDisposed());
+	}
+	
+	@Test
+	public void testSetHttpRequesTimeout_NoHttpRequestExecutor() {
+		exchangeApi = new TestExchangeApi("TestApi", "test-MyExchange", "MyExchange", new Properties());
+		exchangeApi.setHttpRequestTimeout(500L);
+		Assert.assertEquals(-1L, exchangeApi.getHttpRequestTimeout());
+	}
+	
+	@Test
+	public void testSetHttpRequesTimeout_WithHttpRequestExecutor() {
+		exchangeApi = new TestExchangeApi("TestApi", "test-MyExchange", "MyExchange", new Properties());
+		exchangeApi.createHttpRequestExecutor(null, 200L);
+		Assert.assertEquals(200L, exchangeApi.getHttpRequestTimeout());
+		exchangeApi.setHttpRequestTimeout(500L);
+		Assert.assertEquals(500L, exchangeApi.getHttpRequestTimeout());
 	}
 	
 	@Test
@@ -451,8 +471,5 @@ public class AbstractExchangeApiTest {
 			return this.websocketManager;
 		}
 		
-		public String serializeRequestBody(Object request) {
-			return JsonUtil.pojoToJsonString(request);
-		}
 	}
 }

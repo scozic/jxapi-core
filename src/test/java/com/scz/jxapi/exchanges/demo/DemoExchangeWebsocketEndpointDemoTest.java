@@ -13,6 +13,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.scz.jxapi.exchanges.demo.gen.DemoExchangeConstants;
+import com.scz.jxapi.exchanges.demo.gen.DemoExchangeExchange;
 import com.scz.jxapi.exchanges.demo.gen.DemoExchangeProperties;
 import com.scz.jxapi.exchanges.demo.gen.marketdata.demo.DemoExchangeMarketDataTickerStreamDemo;
 import com.scz.jxapi.exchanges.demo.gen.marketdata.pojo.DemoExchangeMarketDataTickerStreamMessage;
@@ -23,7 +24,6 @@ import com.scz.jxapi.netutils.websocket.mock.server.MockWebsocketServer;
 import com.scz.jxapi.netutils.websocket.mock.server.MockWebsocketServerEvent;
 import com.scz.jxapi.netutils.websocket.mock.server.MockWebsocketServerEventType;
 import com.scz.jxapi.netutils.websocket.mock.server.MockWebsocketServerSession;
-import com.scz.jxapi.util.DemoProperties;
 import com.scz.jxapi.util.DemoUtil;
 import com.scz.jxapi.util.JsonUtil;
 
@@ -52,9 +52,8 @@ public class DemoExchangeWebsocketEndpointDemoTest {
 		port = MockHttpServer.findAvailablePort();
 		server = new MockWebsocketServer(port, appName);
 		server.start();
-		config = new Properties();
+		config = DemoUtil.loadDemoExchangeProperties(DemoExchangeExchange.ID);
 		config.setProperty(DemoExchangeProperties.WEBSOCKET_PORT.getName(), String.valueOf(this.port));
-		config.setProperty(DemoProperties.DEMO_WS_SUBSCRIPTION_DURATION_PROPERTY.getName(), String.valueOf(300L));
 		msgListener = new MockWebsocketListener<>();
 	}
 	

@@ -15,8 +15,7 @@ public class GenericWebsocketErrorHandler extends GenericObserver<WebsocketExcep
     
     @Override
     public void handleWebsocketError(WebsocketException error) {
-    	if (log.isDebugEnabled())
-    		log.debug("Received websocket error", error);
+    	log.debug("Received websocket error", error);
         super.handleEvent(error);
     }
 

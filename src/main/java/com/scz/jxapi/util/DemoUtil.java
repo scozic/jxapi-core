@@ -5,7 +5,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
 import java.net.URL;
-import java.nio.file.Path;
 import java.util.Properties;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
@@ -43,8 +42,7 @@ public class DemoUtil {
 		if (!response.isOk()) {
 			throw new ExecutionException("Error in response:" + response, response.getException());
 		}
-		if (log.isInfoEnabled())
-			log.info("Got OK response:\n{}", JsonUtil.pojoToPrettyPrintJson(response.getResponse()));
+		log.info("Got OK response:\n{}", JsonUtil.pojoToPrettyPrintJson(response.getResponse()));
 		return response;
 	}
 	
@@ -54,9 +52,7 @@ public class DemoUtil {
 	 * @return the <code>message</code>
 	 */
 	public static Object logWsMessage(Object message) {
-		if (log.isInfoEnabled()) {
-			log.info("Received message:\n{}", JsonUtil.pojoToPrettyPrintJson(message));
-		}
+		log.info("Received message:\n{}", JsonUtil.pojoToPrettyPrintJson(message));
 		return message;
 	}
 	
@@ -84,8 +80,7 @@ public class DemoUtil {
 		switch (event.getType()) {
 		case HTTP_REQUEST:
 		case HTTP_RESPONSE:
-			if (log.isDebugEnabled())
-				log.debug(event.toString());
+			log.debug(event.toString());
 			break;
 		default:
 			break;
@@ -102,20 +97,24 @@ public class DemoUtil {
 	
 	public static Properties loadDemoExchangeProperties(String exchangeId) {
 		Properties props = new Properties();
-		String propsFilePath = System.getProperty(DemoProperties.DEMO_API_PROPERTIES_FILE_SYSTEM_PROPERTY, 
-				Path.of("src", "test", "resources", getDefaultDemoExchangePropertiesFileName(exchangeId)).toUri().toString());
-		try {
-			URL url = DemoUtil.class.getClassLoader().getResource(propsFilePath);
+		File propsFile = null;
+		String propsFileName = System.getProperty(DemoProperties.DEMO_API_PROPERTIES_FILE_SYSTEM_PROPERTY);
+		if (propsFileName != null) {
+			propsFile = new File(propsFileName);
+		} else {
+			URL url = DemoUtil.class.getClassLoader().getResource(getDefaultDemoExchangePropertiesFileName(exchangeId));
 			if (url != null) {
-				File propsFile = new File(url.getFile());
-				if (propsFile.exists()) {
-					try (InputStream in = new BufferedInputStream(new FileInputStream(propsFile))) {
-						props.load(in);
-					}
+				propsFile = new File(url.getFile());
+			}
+		}
+		try {
+			if (propsFile != null && propsFile.exists()) { 
+				try (InputStream in = new BufferedInputStream(new FileInputStream(propsFile))) {
+					props.load(in);
 				}
 			}
 		} catch (Exception ex) {
-			throw new IllegalArgumentException(String.format("Failed to load %s properties file", propsFilePath), ex);
+			throw new IllegalArgumentException(String.format("Failed to load %s properties file", propsFileName), ex);
 		}
 		return props;
 	}

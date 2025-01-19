@@ -43,45 +43,29 @@ public class DefaultWebsocketManager extends DefaultDisposable implements Websoc
 	
 	private static final Logger log = LoggerFactory.getLogger(DefaultWebsocketManager.class);
 	
-	private final List<WebsocketErrorHandler> errorHandlers = new ArrayList<>();
-	
-	private final JsonFactory jsonFactory = new JsonFactory();
-	
 	protected final Map<String, TopicManager> topics = new HashMap<>();
-	
 	protected final List<TopicManager> systemMessageHandlers = new ArrayList<>();
-	
 	protected final AtomicBoolean connected = new AtomicBoolean(false);
+	protected final ExchangeApi exchangeApi;
+	protected final Websocket websocket;
+	protected final WebsocketHook websocketHook;
+	private final List<WebsocketErrorHandler> errorHandlers = new ArrayList<>();
+	private final JsonFactory jsonFactory = new JsonFactory();
 	private final AtomicLong messageReceivedCount = new AtomicLong(0);
-	
-	protected ScheduledExecutorService writeExecutor = null;
-	
-	private long reconnectDelay = -1L;
-	
-	private long noMessageTimeout = -1L;
-	
-	private NoMessageTimeoutTask noMessageTimeoutTask = null;
-	
-	private long heartBeatInterval = -1L;
-	
-	private long  noHeartBeatResponseTimeout = -1L;
-	
-	protected AtomicLong lastHeartBeatTime = new AtomicLong(0L);
-	
-	private AtomicBoolean heartBeatTaskCancelled = null;
-	private AtomicBoolean heartBeatTimeoutTaskCancelled = null;
 	private final RawWebsocketMessageHandler rawMessageHandler = this::dispatchMessage;
 	private final WebsocketErrorHandler websocketErrorHandler = this::notifyError;
-	
+	private final Object waitReconnectDelayMonitor = new Object();
 	private final List<List<TopicMatcher>> topicMatcherListPool = new ArrayList<>();
 	
-	protected final ExchangeApi exchangeApi;
-	
-	protected final Websocket websocket;
-
-	protected final WebsocketHook websocketHook;
-	
-	private final Object waitReconnectDelayMonitor = new Object();
+	protected ScheduledExecutorService writeExecutor = null;
+	protected AtomicLong lastHeartBeatTime = new AtomicLong(0L);
+	private long reconnectDelay = -1L;
+	private long noMessageTimeout = -1L;
+	private NoMessageTimeoutTask noMessageTimeoutTask = null;
+	private long heartBeatInterval = -1L;
+	private long  noHeartBeatResponseTimeout = -1L;
+	private AtomicBoolean heartBeatTaskCancelled = null;
+	private AtomicBoolean heartBeatTimeoutTaskCancelled = null;
 	
 	public DefaultWebsocketManager(ExchangeApi exchangeApi, 
 								   Websocket websocket, 

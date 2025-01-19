@@ -48,7 +48,12 @@ public class DemoProperties {
 	 * @return The value of the property controlling the duration of the
 	 *         subscription in WebSocket endpoint demo classes.
 	 */
-	public static final long getWebsocketSubscriptionDuration(Properties properties) {return PropertiesUtil.getLongProperty(properties, DEMO_WS_SUBSCRIPTION_DURATION_PROPERTY.getName(), (Long) DEMO_WS_SUBSCRIPTION_DURATION_PROPERTY.getDefaultValue());}
+	public static final long getWebsocketSubscriptionDuration(Properties properties) {
+		return PropertiesUtil.getLongProperty(
+					properties, 
+					DEMO_WS_SUBSCRIPTION_DURATION_PROPERTY.getName(), 
+					DEMO_WS_SUBSCRIPTION_DURATION_PROPERTY.getDefaultValue());
+	}
 	
 	/**
 	 * Returns the value of the property controlling the delay before exiting
@@ -58,5 +63,10 @@ public class DemoProperties {
 	 * @return The value of the property controlling the delay before exiting
 	 *         program after unsubscribing in WebSocket endpoint demo classes.
 	 */
-	public static final long getWebsocketDelayBeforeExit(Properties properties) {return PropertiesUtil.getLongProperty(properties, DEMO_WS_SUBSCRIPTION_DURATION_PROPERTY.getName(), (Long) DEMO_WS_SUBSCRIPTION_DURATION_PROPERTY.getDefaultValue());}
+	public static final long getWebsocketDelayBeforeExit(Properties properties) {
+		return PropertiesUtil.getLongProperty(
+					properties, 
+					DEMO_WS_DELAY_BEFORE_EXIT_AFTER_UNSUBSCRIPTION_PROPERTY.getName(), 
+					DEMO_WS_DELAY_BEFORE_EXIT_AFTER_UNSUBSCRIPTION_PROPERTY.getDefaultValue());
+	}
 }
