@@ -56,6 +56,10 @@ public interface WebsocketHook {
 	 * {@link WebsocketManager#addSystemMessageHandler(String, com.scz.jxapi.netutils.websocket.multiplexing.WebsocketMessageTopicMatcherFactory, RawWebsocketMessageHandler)},
 	 * or customizing manager's configuration like heartbeat timeout, no message
 	 * timeout or delay before reconnection.
+	 * <p>
+	 * Notice the {@link ExchangeApi} implementation exposing REST APIs like 'token'
+	 * and configuration properties can be retrieved from
+	 * {@link WebsocketManager#getExchangeApi()}.
 	 * 
 	 * @param websocketManager the websocket manager this hook is bound to. All
 	 *                         calls to further websocket lifecycle methods will be

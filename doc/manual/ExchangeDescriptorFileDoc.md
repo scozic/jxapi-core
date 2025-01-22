@@ -105,11 +105,13 @@ The JSON descriptor data is a JSON object referred to as 'exchange'. An exchange
  * `constants`: A list of constant values used in the exchange. A constant object is mapped to [Constant](../../src/main/java/com/scz/jxapi/exchange/descriptor/Constant.java)
  * `httpUrl`: The base URL for HTTP API endpoints.
  * `websocketUrl`: The base URL for WebSocket API endpoints.
- * `httpRequestInterceptorFactory`: The factory class for creating HTTP request interceptors.
- * `websocketHookFactory`: The factory class for creating WebSocket hooks.
+ * `httpRequestInterceptorFactory`: The factory class for creating HTTP request interceptors, see [HttpRequestInterceptorFactory](../../src/main/java/com/scz/jxapi/netutils/rest/HttpRequestInterceptorFactory.java). If for exchange requires specific headers to be  set for instance for authentication, a specific interceptor has to be provided through this property, see [HTTP request interceptor dev guide](./HttpRequestInterceptorDevGuide.md).
+ * `httpRequestExecutorFactory`:  The factory for HTTP request executor, see [HttpRequestExecutorFactory](../../src/main/java/com/scz/jxapi/netutils/rest/HttpRequestExecutorFactory.java). Default implementation is usually sufficient.
+ * `websocketHookFactory`: The factory class for creating WebSocket hooks, see [WebsocketFactory](../../src/main/java/com/scz/jxapi/netutils/websocket/WebsocketHookFactory.java). Using a custom factory for hooks that implements exchange protocol specific handshake, heartbeats is generally required, see [Websocket hook dev guide](./WebsocketHookDevGuide.md)..
+ * `websocketFactory`: The factory class for creating base websocket, see [WebsocketFactory](../../src/main/java/com/scz/jxapi/netutils/websocket/WebsocketFactory.java). The default implementation is usually sufficient.
  * `apis`: A list of API groups, each containing HTTP and WebSocket endpoints, see [below](#api-groups).
 
- ## API groups
+## API groups
 
  The exchange REST/Websocket endpoints are sorted in groups, this is useful to regroup API endpoints by functional affinity and not list every endpoint in a single interface. The API group object is mapped to [ExchangeApiDescriptor](../../src/main/java/com/scz/jxapi/exchange/descriptor/ExchangeApiDescriptor.java). It is composed of the following properties:
  * `name`: API group name
@@ -153,14 +155,23 @@ Each REST API endpoint is described by the following properties:
 
 ## WebSocket API endpoints
 A WebSocket endpoint in the exchange descriptor file defines how to subscribe to a specific topic and how to match incoming messages against this topic. The topic can include placeholders that are replaced with actual values from the request. Additionally, a list of field names and expected values can be defined to match a message against the topic.
+For each API group that exposes websocket endpoints, a physical websocket is opened upon first subscription to a topic.
+If more than one websocket endpoint is exposed in the API group, they are expected to share the same physical connection, which is known as 'multiplexing'.
+Multiplexing means exchange protocol allows subscribing to distinct message streams by sending subscription or unsuscription messages on socket output stream, which causes server to disseminate or stop disseminating messages for the associated topic.
+
+Notice exchange protocol may define no such multiplexing feature: In this case, upon opening connection and eventually issue a 'login' message the server will start disseminate message for the single websocket endpoint of the API group.  
+
 Each WebSocket API endpoint is described by the following properties:
  * `name`: The name of the endpoint.
  * `docUrl`: Link to the endpoint's documentation.
- * `topic`: The topic to subscribe to.
+ * `topic`: The topic to subscribe to. Should uniquely identify a websocket stream among every endpoints of this API group.
  * `description`: A description of the endpoint.
- * `request`: The request object, containing properties for the request parameters.
+ * `request`: The request object, containing properties for the request parameters, which will be used to build the subscription message to a topic.
  * `messageTopicMatcherFields`: Fields used to match the message topic.
  * `message`: The message object, containing properties for the message data.
+ 
+Serializing a request to a subscription message, building the unsubscription message to cancel an existing subscription, sending or listening to 'heartbeat' messages is customized using a [WebsocketHook](../../src/main/java/com/scz/jxapi/netutils/websocket/WebsocketHook.java).
+See [Websocket Hook dev guide](./WebsocketHookDevGuide.md)
 
 ### Topic Placeholders
 
@@ -193,11 +204,11 @@ Example:
 	]
 }
 ```
-In this example, the `topic` field must have the value `ticker`, and the `symbol` field must match the value of the `symbol` property from the request.
+In this example, the incoming message `topic` field must have the value `ticker`, and the `symbol` field must match the value of the `symbol` property from the request.
 
 ### Message Matching
 
-The `message` property defines the structure of the message and the fields that are expected in the message see [Flexible data structure](#flexible-data-structure). Each field specifies a name, a type, and a description.
+The `message` property defines the structure of the message and the fields that are expected in the message see [Flexible data structure](#flexible-data-structure-definition). Each field specifies a name, a type, and a description.
 
 Example:
 ```json
@@ -215,7 +226,7 @@ In this example, the message is expected to contain fields `t` (topic), `s` (sym
 
 By defining the topic with placeholders and specifying the message topic matcher fields, the WebSocket endpoint can accurately subscribe to the desired topic and match incoming messages based on the specified criteria.
 
-## Flexible data structure
+## Flexible data structure definition
 Both REST endpoints request and response, Websocket endpoints subscription request and response message are defined in exchange descriptor file using the same object structure, mapped to [Field](../../src/main/java/com/scz/jxapi/exchange/descriptor/Field.java) class. This class is used to define the structure of request and response data for both REST and WebSocket endpoints. It allows for a flexible type definition that can represent primitive types, lists, maps, or composite objects.
 
 ### Primitive Types
@@ -310,15 +321,25 @@ In addition to provide simpler POJO names, this allows reusing the same object w
 ## API request rate limit
 
 REST/HTTP APIs usually come whith request rate limits to prevent abusive use of APIs. Such limitations are expressed in number of requests over a given timeframe. Alternatively, a request could have a determined 'weight' that could vary between APIs: For example, a 'light' request would cost 1 and a 'heavy' request 100 from a quota of 1000 per minute.
-The generated wrappers simplifies such request limit rate enforcement by defining rules either at 'exchange' level (example: limitation of 100 requests per minute across all APIs of all groups), or at 'api group' level (example: limitation of 50 requests per second across all APIs of this group), or at REST endpoint level for rules specific for that endpoint. See [RequestThrottler](../../src/main/java/com/scz/jxapi/netutils/rest/ratelimits/RequestThrottler.java).
+The generated wrappers simplifies such request limit rate enforcement by defining rules either at 'exchange' level (example: limitation of 100 requests per minute across all APIs of all groups), or at 'api group' level (example: limitation of 50 requests per second across all APIs of this group), or at REST endpoint level for rules specific for that endpoint.
 
-When a request is submitted to an endpoint, each rate limit rule is checked, taking into account the request if it does not exceed any rule, or providing the remaining delay before it can be executed if it should not be submitted immediately.
+Rate limits are defined either at exchange, api group or REST endpoint level as a `rateLimits` property that carries as value a list of [RateLimitRule](../../src/main/java/com/scz/jxapi/netutils/rest/ratelimits/RateLimitRule.java) objects defined by following properties:
+ * `id`: Unique identifier
+ * `timeframe`: Time frame in ms for which request count or cumulated weight should not exceed limit.
+ * `maxRequestCount`: The maximum number of requests that can be attempted within rolling time frame. A negative value means it should not be taken into account and this rate limit is expressed in cumulated weight.
+ * `maxTotalWeight`: The maximum cumulated weight of calls within time frame limitation.
+
+
+When a request is submitted to an endpoint, each rate limit rule is checked, taking into account the request (incrementing current request count) if it does not exceed any rule, or providing the remaining delay before it can be executed if it should not be submitted immediately.
 Accordingly the request is either submitted immediately or delayed for the minimum time to wait for and then submitted again. See 
 This when `THROTTLE` policy is applied, which is the default. Beware that client applications breaking rate limits may experience increasing delay in request execution and accumulation of requests in queue may cause a memory leak. For this reason it is advised to set a maximum wait delay on request throttling using `Exchange#setMaxRequestThrottleDelay(long)`method.
+See [RequestThrottler](../../src/main/java/com/scz/jxapi/netutils/rest/ratelimits/RequestThrottler.java).
 
 Different policies may be specified using `Exchange#setRequestThrottlingMode(RequestThrottlingMode requestThrottlingMode)`, see [RequestThrottlingMode](../../src/main/java/com/scz/jxapi/netutils/rest/ratelimits//RequestThrottlingMode.java):
  * `BLOCK`: Instead of throttling request, immediately anwser that request with a response carrying a [RateLimitReachedException](../../src/main/java/com/scz/jxapi/netutils/rest/ratelimits/RateLimitReachedException.java) exception stating how much time should be awaited for before retrying this request, and HTTP response code 429 (_TOO_MANY_REQUESTS_). This is similar to `THROTTLE` mode with `maxRequestThrottleDelay` set to 0.
- * `NONE`: Ignores rate limits check and always submit requests immediately.
+ * `NONE`: Ignores rate limits check and always submit requests immediately. 
+ 
+
 
 
 

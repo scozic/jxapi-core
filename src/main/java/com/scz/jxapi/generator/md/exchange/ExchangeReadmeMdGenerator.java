@@ -23,6 +23,10 @@ import com.scz.jxapi.generator.java.exchange.api.ExchangeApiGeneratorUtil;
 import com.scz.jxapi.generator.java.exchange.api.demo.EndpointDemoGeneratorUtil;
 import com.scz.jxapi.util.CollectionUtil;
 
+/**
+ * Generates a README.md file for an exchange API wrapper.
+ * This file contains a description of the API, properties, constants, and endpoints.
+ */
 public class ExchangeReadmeMdGenerator {
 	
 	private static String findDemoClassName(ExchangeDescriptor exchangeDescriptor) {

@@ -8,7 +8,7 @@ import com.scz.jxapi.exchange.descriptor.DefaultConfigProperty;
 import com.scz.jxapi.exchange.descriptor.Type;
 
 /**
- * Lists configuuration properties uused in demo snippets
+ * Lists configuration properties uused in demo snippets
  */
 public class DemoProperties {
 	
