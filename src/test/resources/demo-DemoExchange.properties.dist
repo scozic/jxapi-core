@@ -1,4 +1,4 @@
-# Demo configuration properties file for %s exchange.
+# Demo configuration properties file for DemoExchange exchange.
 # You should create a copy of this file without the '.dist' extension and add that .properties file
 # to your .gitignore because properties may carry sensitive data you do not want to commit.
 # The resulting file will be read as default configuration file for demo snippets.

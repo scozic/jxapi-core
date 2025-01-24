@@ -55,7 +55,7 @@ public class ExchangeDemoPropertiesFileGenerator {
 
 	public String generate() {
 		StringBuilder s = new StringBuilder();
-		s.append(generatePropertiesFileComment(DESCRIPTION))
+		s.append(generatePropertiesFileComment(String.format(DESCRIPTION, exchangeId)))
 		 .append(generateCommentedOutproperties(String.format("%s specific configuration properties", exchangeId), exchangeProperties))
 		 .append(generateCommentedOutproperties("Common configuration properties", CommonConfigProperties.ALL))
 		 .append(generateCommentedOutproperties("Demo REST/WEBSOCKET snippets configuration properties", DemoProperties.ALL));
@@ -63,7 +63,7 @@ public class ExchangeDemoPropertiesFileGenerator {
 	}
 	
 	private String generateCommentedOutproperties(String description, List<ConfigProperty> properties) {
-		if (CollectionUtil.isEmpty(exchangeProperties)) {
+		if (CollectionUtil.isEmpty(properties)) {
 			return "";
 		}
 		StringBuilder s = new StringBuilder()

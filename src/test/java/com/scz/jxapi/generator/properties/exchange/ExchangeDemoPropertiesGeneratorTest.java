@@ -50,4 +50,35 @@ public class ExchangeDemoPropertiesGeneratorTest {
 		Assert.assertEquals(expected, actual);
 	}
 
+	@Test
+	public void testGenerateDemoPropertiesTemplateFile_EmptyConfigProperties() throws Exception {
+		List<ConfigProperty> configProperties = List.of();
+		String content = new ExchangeDemoPropertiesFileGenerator("DemoExchange", configProperties).generate();
+		Assert.assertEquals("# Demo configuration properties file for DemoExchange exchange.\n"
+				+ "# You should create a copy of this file without the '.dist' extension and add that .properties file\n"
+				+ "# to your .gitignore because properties may carry sensitive data you do not want to commit.\n"
+				+ "# The resulting file will be read as default configuration file for demo snippets.\n"
+				+ "# Uncomment and set following properties and adjust their values per your needs.\n"
+				+ "\n"
+				+ "\n"
+				+ "# Common configuration properties\n"
+				+ "\n"
+				+ "# The request timeout for calls to REST endpoints of every API. A negative value means no timeout (discouraged)\n"
+				+ "# jxapi.httpRequestTimeout=\n"
+				+ "\n"
+				+ "# Sets the HTTP request throttling policy in case a rate limit rule is breached, for every exposed ExchangeApi, see enum com.scz.jxapi.netutils.rest.ratelimits.RequestThrottlingMode\n"
+				+ "# jxapi.requestThrottlingMode=\n"
+				+ "\n"
+				+ "# Set the max HTTP request throttle delay for rate limit rule enforcement, for every exposed ExchangeApi.\n"
+				+ "# jxapi.maxRequestThrottleDelay=\n"
+				+ "\n"
+				+ "\n"
+				+ "# Demo REST/WEBSOCKET snippets configuration properties\n"
+				+ "\n"
+				+ "# The duration in ms of the subscription in websocket endpoint demo classes\n"
+				+ "# jxapi.demo.ws.subscriptionDuration=30000\n"
+				+ "\n"
+				+ "# Delay in ms before exiting program after unsubscribing in websocked endpoint demo classes.\n"
+				+ "# jxapi.demo.ws.delayBeforeExitAfterUnsubscription=1000\n", content);
+	}
 }

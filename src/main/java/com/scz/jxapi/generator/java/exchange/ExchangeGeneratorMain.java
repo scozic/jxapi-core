@@ -6,6 +6,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.apache.commons.lang3.StringUtils;
@@ -169,7 +170,7 @@ public class ExchangeGeneratorMain {
 		Path filePath = resourcesFolder.resolve(Paths.get(fileName));
 		log.info("Generating demo exchange properties template file:{}", filePath);
 		List<ConfigProperty> configProperties = new ArrayList<>();
-		configProperties.addAll(exchangeDescriptor.getProperties());
+		configProperties.addAll(Optional.ofNullable(exchangeDescriptor.getProperties()).orElse(List.of()));
 		new ExchangeDemoPropertiesFileGenerator(exchangeDescriptor.getName(), 
 												configProperties)
 			.writeJavaFile(filePath);

@@ -398,7 +398,7 @@ public class DefaultWebsocketManager extends DefaultDisposable implements Websoc
 		messageReceivedCount.incrementAndGet();
 		List<TopicMatcher> allTopics = getTopicMatcherList();
 		try (JsonParser jsonParser = jsonFactory.createParser(message.getBytes())) {
-			for(JsonToken tok = jsonParser.nextToken(); tok != null && !allTopics.isEmpty(); tok = jsonParser.nextToken()) {
+			for (JsonToken tok = jsonParser.nextToken(); tok != null && !allTopics.isEmpty(); tok = jsonParser.nextToken()) {
 				if (tok == JsonToken.FIELD_NAME) {
 					String fieldName = jsonParser.currentName();
 					String value = null;
