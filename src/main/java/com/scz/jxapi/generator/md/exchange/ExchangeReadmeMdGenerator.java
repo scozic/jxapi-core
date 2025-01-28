@@ -62,7 +62,7 @@ public class ExchangeReadmeMdGenerator {
 		this.demoClassName = findDemoClassName(exchangeDescriptor);
 		this.constantsInterfaceName = ExchangeJavaGenUtil.getExchangeConstantsInterfaceName(exchangeDescriptor);
 	}
-	
+
 	public String generate() {
 		StringBuilder s = new StringBuilder().append("# ")
 			.append(exchangeDescriptor.getName())
@@ -137,7 +137,7 @@ public class ExchangeReadmeMdGenerator {
 		StringBuilder s = new StringBuilder();
 		String apiInterfaceClassName = ExchangeJavaGenUtil.getApiInterfaceClassName(exchangeDescriptor, api);
 		String apiInterfaceSimpleClassName = JavaCodeGenerationUtil.getClassNameWithoutPackage(apiInterfaceClassName);
-		s.append("### ")
+		s.append("\n### ")
 		 .append(api.getName())
 		 .append("\n")
 		 .append("Methods exposed in ")
