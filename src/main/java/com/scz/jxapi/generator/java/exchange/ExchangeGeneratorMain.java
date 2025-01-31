@@ -7,7 +7,8 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicReference;
+import java.util.stream.Stream;
 
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -49,6 +50,14 @@ public class ExchangeGeneratorMain {
 	/**
 	 * Key for system property that can be passed to JVM running
 	 * {@link #main(String[])} to specify the base URL for Java wrapper project
+	 *  to use by generator. This should be the cuurrent project folder path. Can be retrieved using maven property ${project.basedir}.
+	 *  If not set, the current JVM folder is used.
+	 */
+	public static final String BASE_PROJECT_DIR_PROP = "baseProjectDir";
+	
+	/**
+	 * Key for system property that can be passed to JVM running
+	 * {@link #main(String[])} to specify the base URL for Java wrapper project
 	 * documentation
 	 */
 	public static final String BASE_JAVADOC_URL_SYS_PROP = "baseJavaDocUrl";
@@ -56,34 +65,64 @@ public class ExchangeGeneratorMain {
 	/**
 	 * Key for system property that can be passed to JVM running
 	 * {@link #main(String[])} to specify the base URL for Java wrapper project
-	 * sources
+	 * sources to use in README.md generation documentation links.
 	 */
 	public static final String BASE_SRC_URL_SYS_PROP = "baseSrcUrl";
 	
+
+	
 	/**
-	 * @param args 1 argument expected : Name of exchange JSON descriptor file located in src/main/resources.
+	 * Main entry point to generate exchange API wrappers for all exchange
+	 * descriptor files in the current project "src/main/resources/" folder.
+	 * 
+	 * @param args Not used
+	 * @throws Exception If error occurs during
+	 * @see #generateExchangeWrappersInCurrentProject()
 	 */
 	public static void main(String[] args) {
 		try {
-			final AtomicInteger exitCode = new AtomicInteger(0);
-			Path projectFolder = Paths.get(".");
-			String baseJavadocUrl = System.getProperty(BASE_JAVADOC_URL_SYS_PROP);
+			String baseProjectDir = System.getProperty(BASE_PROJECT_DIR_PROP);
+			String baseJavaDocUrl = System.getProperty(BASE_JAVADOC_URL_SYS_PROP);
 			String baseSrcUrl = System.getProperty(BASE_SRC_URL_SYS_PROP);
-			Path resources = Paths.get(".", "src", "main", "resources");
-			Files.walk(resources)
-				 .filter(p -> p.toFile().getName().endsWith("Descriptor.json"))
-				 .forEach(path -> {
-				try {
-					generateExchangeWrapperAndDemos(path, projectFolder, baseJavadocUrl, baseSrcUrl);
-				} catch (Exception ex) {
-					log.error("Error while generating exchange descriptor for file:" + path.getFileName(), ex);
-					exitCode.set(-1);
-				}
-			});
-			System.exit(exitCode.get());
+			generateExchangeWrappersInCurrentProject(baseProjectDir, baseJavaDocUrl, baseSrcUrl);
 		} catch (Throwable t) {
 			log.error("Error from " + ExchangeGeneratorMain.class.getName() + ".main", t);
 			System.exit(-1);
+		}
+	}
+	
+	/**
+	 * Generate exchange API wrappers for all exchange descriptor files in the
+	 * current project "src/main/resources/" folder. Will walk through all files in
+	 * the folder and generate Java code for each file ending with 'Descriptor.json'
+	 * using {@link #generateExchangeWrapperAndDemos(Path, Path, String @throws
+	 * Exception
+	 * 
+	 * @see #generateExchangeWrapperAndDemos(Path, Path, String, String)
+	 */
+	public static final void generateExchangeWrappersInCurrentProject(String baseProjectDir, String baseJavaDocUrl, String baseSrcUrl) throws Exception {
+		baseProjectDir = Optional.ofNullable(baseProjectDir).orElse(".");
+		Path projectFolder = Paths.get(baseProjectDir);
+		Path resources = projectFolder.resolve(Paths.get("src", "main", "resources"));
+		log.info("Generating exchange API wrapper and demos for all exchange descriptor files in {}", resources.toAbsolutePath());
+		AtomicReference<Exception> error = new AtomicReference<>();
+		try (Stream<Path> stream = Files.walk(resources)
+			 .filter(p -> p.toFile().getName().endsWith("Descriptor.json"))) {
+			stream.forEach(path -> {
+				try {
+					generateExchangeWrapperAndDemos(path, projectFolder, baseJavaDocUrl, baseSrcUrl);
+				} catch (Exception ex) {
+					log.error("Error while generating exchange descriptor for file:" + path.getFileName(), ex);
+					error.set(ex);
+				}
+			});
+		} catch (IOException e) {
+            log.error("Error while visiting exchange descriptor files in current project {}", resources.toAbsolutePath() , e);
+            error.set(e);
+		}
+		Exception ex = error.get();
+		if (ex != null) {
+			throw ex;
 		}
 	}
 	
@@ -175,6 +214,5 @@ public class ExchangeGeneratorMain {
 												configProperties)
 			.writeJavaFile(filePath);
 	}
-	
 
 }
