@@ -11,6 +11,18 @@ import com.scz.jxapi.generator.java.JavaCodeGenerationUtil;
 import com.scz.jxapi.util.CollectionUtil;
 import com.scz.jxapi.util.DemoProperties;
 
+/**
+ * Generates a demo configuration properties file for an exchange.
+ * 
+ * <p>
+ * The resulting file will be read as default configuration file for demo
+ * snippets.
+ * 
+ * <p>
+ * In order to run demo snippets for APIs generated in <code>src/test/java</code> should create a copy of this file without the '.dist' extension and add
+ * that .properties file to your .gitignore because properties may carry
+ * sensitive data you do not want to commit. Then uncomment and set properties you need.
+ */
 public class ExchangeDemoPropertiesFileGenerator {
 	
 	private static final String DESCRIPTION = "Demo configuration properties file for %s exchange.\n"
@@ -19,6 +31,12 @@ public class ExchangeDemoPropertiesFileGenerator {
 			+ "The resulting file will be read as default configuration file for demo snippets.\n"
 			+ "Uncomment and set following properties and adjust their values per your needs.";
 	
+	/**
+	 * Generates a comment for a properties file.
+	 * This means that each line of the comment will be prefixed with a '# '.
+	 * @param comment the lines of the comment
+	 * @return the generated comment, followed by a newline
+	 */
 	public static String generatePropertiesFileComment(String comment) {
 		if (comment == null)
 			return "";
@@ -28,31 +46,57 @@ public class ExchangeDemoPropertiesFileGenerator {
 	private String exchangeId;
 	private List<ConfigProperty> exchangeProperties;
 	
+	/**
+	 * Constructor
+     */
 	public ExchangeDemoPropertiesFileGenerator() {
 		this(null, List.of());
 	}
 
+	/**
+	 * Constructor
+	 * 
+	 * @param exchangeId         the exchange id
+	 * @param exchangeProperties the exchange configuration properties
+	 */
 	public ExchangeDemoPropertiesFileGenerator(String exchangeId, List<ConfigProperty> exchangeProperties) {
 		this.exchangeId = exchangeId;
 		this.exchangeProperties = exchangeProperties;
 	}
 
+	/**
+	 * @return the exchange id
+	 */
 	public String getExchangeId() {
 		return exchangeId;
 	}
 
+	/**
+	 * @param exchangeId the exchange id
+	 */
 	public void setExchangeId(String exchangeId) {
 		this.exchangeId = exchangeId;
 	}
 
+	/**
+	 * @return the exchange configuration properties
+	 */
 	public List<ConfigProperty> getExchangeProperties() {
 		return exchangeProperties;
 	}
 
+	/**
+	 * @param exchangeProperties the exchange configuration properties
+	 */
 	public void setExchangeProperties(List<ConfigProperty> exchangeProperties) {
 		this.exchangeProperties = exchangeProperties;
 	}
 
+	/**
+	 * Generates the properties file content.
+	 * 
+	 * @return the properties file content
+	 */
 	public String generate() {
 		StringBuilder s = new StringBuilder();
 		s.append(generatePropertiesFileComment(String.format(DESCRIPTION, exchangeId)))

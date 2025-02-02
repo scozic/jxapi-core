@@ -18,9 +18,14 @@ public class DefaultWebsocketMessageTopicMatcher implements WebsocketMessageTopi
 	
 	private int valuesToMatchCount = 0;
 	
-	
 	private WebsocketMessageTopicMatchStatus status = WebsocketMessageTopicMatchStatus.NO_MATCH;
 	
+	/**
+	 * Constructor
+	 * 
+	 * @param fields list of fields and values incoming messages must match to be
+	 *               considered as matched
+	 */
 	public DefaultWebsocketMessageTopicMatcher(List<WebsocketMessageTopicMatcherField> fields) {
 		this.valuesToMatch = new HashMap<>(fields.size());
 		this.valuesToMatchCount = fields.size();

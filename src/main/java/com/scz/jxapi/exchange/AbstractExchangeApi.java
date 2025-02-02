@@ -62,14 +62,49 @@ import com.scz.jxapi.util.PropertiesUtil;
  */
 public abstract class AbstractExchangeApi extends DefaultDisposable implements ExchangeApi {
 
+	/**
+	 * The name of this exchange API group.
+	 */
 	protected final String name;
+	
+	/**
+	 * The name of the exchange instance associated with this API group.
+	 */
 	protected final String exchangeName;
+	
+	/**
+	 * The ID of the exchange instance associated with this API group.
+	 */
 	protected final String exchangeId;
+	
+	/**
+	 * The properties associated with the exchange instance.
+	 */
 	protected final Properties properties;
+	
+	/**
+	 * The request throttler used for REST request rate limiting.
+	 */
 	protected final RequestThrottler requestThrottler;
+	
+	/**
+	 * The HTTP request executor used to submit REST APIrequests.
+	 */
 	protected HttpRequestExecutor httpRequestExecutor = null;
+	
+	/**
+	 * The HTTP request interceptor used to intercept REST API requests.
+	 */
 	protected HttpRequestInterceptor httpRequestInterceptor = null;
+	
+	/**
+	 * The websocket manager used to manage websocket connections
+	 */
 	protected WebsocketManager websocketManager = null;
+	
+	/**
+	 * The observable used to handle exchange API events.
+	 */
 	protected final Observable<ExchangeApiObserver, ExchangeApiEvent> observable 
 						= new SynchronizedObservable<>(ExchangeApiObserver::handleEvent);
 	
@@ -222,10 +257,10 @@ public abstract class AbstractExchangeApi extends DefaultDisposable implements E
 	 * If a request throttler is set, the request is submitted through the throttler.
 	 * <br>
 	 * This method should used by subclasses to submit REST requests.
-	 * @param <A>
-	 * @param request
-	 * @param deserializer
-	 * @return
+	 * @param <A> The type of the response to the request
+	 * @param request The request to submit
+	 * @param deserializer The deserializer to use to deserialize the response
+	 * @return The response to the request, as a {@link FutureRestResponse}
 	 */
 	protected <A> FutureRestResponse<A> submit(HttpRequest request, MessageDeserializer<A> deserializer) {
 		if (request.getHttpMethod().requestHasBody && request.getRequest() != null) {

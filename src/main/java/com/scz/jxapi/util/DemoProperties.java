@@ -14,6 +14,9 @@ public class DemoProperties {
 	
 	private DemoProperties() {}
 	
+	/**
+	 * System property to specify the properties file to use for running the demo snippets.
+	 */
 	public static final String DEMO_API_PROPERTIES_FILE_SYSTEM_PROPERTY = "jxapi.testProperties";
 
 	/**
@@ -36,6 +39,9 @@ public class DemoProperties {
 			"Delay in ms before exiting program after unsubscribing in websocked endpoint demo classes.", 
 			1000L);
 	
+	/**
+	 * List of all configuration properties used in demo snippets
+	 */
 	public static final List<ConfigProperty> ALL = List.of(
 			DEMO_WS_SUBSCRIPTION_DURATION_PROPERTY, 
 			DEMO_WS_DELAY_BEFORE_EXIT_AFTER_UNSUBSCRIPTION_PROPERTY);

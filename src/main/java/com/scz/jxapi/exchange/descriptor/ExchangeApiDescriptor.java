@@ -17,12 +17,12 @@ import com.scz.jxapi.util.EncodingUtil;
  * Part of a JSON document descriptor that describes a group of REST and or
  * Websocket endpoints. Child element of ExchangeDescriptor. <br>
  * 
- * <h3>Constants</h3>
+ * <h2>Constants</h2>
  * <ul>
  * <li>Can be specified a List of constants that are used in context of this API group of the exchange wrapper, for instance specific values for some APIs request/response/message properties.</li>
  * <li>Each constant is described as a {@link Constant}</li>
  * </ul>
- * <h3>REST endpoints</h3>
+ * <h2>REST endpoints</h2>
  * <ul>
  * <li>There can be multiple REST endpoints, or no such endpoint, in which case <code>restEndpoints</code> property can be <code>null</code></li>
  * <li>Each REST endpoint is described as a {@link RestEndpointDescriptor}</li>
@@ -33,7 +33,7 @@ import com.scz.jxapi.util.EncodingUtil;
  * <li>API global Rate limits can be specified for the REST endpoints in <code>rateLimits</code> property. Those limits are shared among all defined REST endpoints.</li>
  * <li>Rate limits from enclosing exchange descriptor are inherited by the API descriptor. Exchange global limit are shared among all REST endpoints of every API specified in exchange</li>
  * </ul>
- * <h3>Websocket endpoints</h3>
+ * <h2>Websocket endpoints</h2>
  * <ul>
  * <li>There can be multiple Websocket endpoints, or no such endpoint, in which case <code>websocketEndpoints</code> property can be <code>null</code></li>
  * <li>Each Websocket endpoint is described as a {@link WebsocketEndpointDescriptor}</li>
@@ -43,7 +43,7 @@ import com.scz.jxapi.util.EncodingUtil;
  * <li><code>websocketUrl</code> property may be supplied to specify the URL of the websocket endpoint. When property is not set, the URL is expected to be set by WebsocketHook on WebsocketManager during {@link WebsocketHook#init(com.scz.jxapi.netutils.websocket.WebsocketManager)} or {@link WebsocketHook#beforeConnect()}</li>
  * </ul>
  * 
- * <h3>Example of corresponding JSON, with sample REST endpoint and WebsocketEndpoint</h3>
+ * <h2>Example of corresponding JSON, with sample REST endpoint and WebsocketEndpoint</h2>
  * <pre>
  * { 
  * 	"name": "MarketData",
@@ -416,10 +416,16 @@ public class ExchangeApiDescriptor {
 		this.constants = constants;
 	}
 	
+	/**
+	 * @return The base URL of the REST endpoints for this API group.
+	 */
 	public String getHttpUrl() {
 		return httpUrl;
 	}
 
+	/**
+     * @param httpUrl The base URL of the REST endpoints for this API group.
+     */
 	public void setHttpUrl(String httpUrl) {
 		this.httpUrl = httpUrl;
 	}

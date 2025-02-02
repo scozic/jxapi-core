@@ -90,7 +90,13 @@ public class DemoUtil {
 			break;
 		}
 	}
-	
+
+	/**
+	 * Returns expected demo exchange properties file name, for instance 'demo-&lt;exchangeId&gt;.properties'
+	 * This file is expected to be with same name as generated template file but without '.dist' suffix.
+	 * @param exchangeId exchange ID
+	 * @return default demo exchange properties file name
+	 */
 	public static String getDefaultDemoExchangePropertiesFileName(String exchangeId) {
 		return new StringBuilder()
 				.append("demo-")
@@ -99,6 +105,14 @@ public class DemoUtil {
 				.toString();
 	}
 	
+	/**
+	 * Loads demo exchange properties from file with name
+	 * 'demo-&lt;exchangeId&gt;.properties' or from file specified by system property
+	 * 'demo.api.properties'.
+	 * 
+	 * @param exchangeId exchange ID
+	 * @return loaded properties
+	 */
 	public static Properties loadDemoExchangeProperties(String exchangeId) {
 		Properties props = new Properties();
 		File propsFile = null;

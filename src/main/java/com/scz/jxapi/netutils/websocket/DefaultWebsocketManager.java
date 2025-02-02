@@ -39,16 +39,53 @@ import com.scz.jxapi.util.DefaultDisposable;
  */
 public class DefaultWebsocketManager extends DefaultDisposable implements WebsocketManager {
 	
+	/**
+	 * Default keep alive time for write executor.
+	 */
 	public static final long WRITE_EXECUTOR_KEEP_ALIVE = 30000L;
 	
 	private static final Logger log = LoggerFactory.getLogger(DefaultWebsocketManager.class);
 	
+	/**
+	 * A topic manager for a topic, with its message handler and message matcher.
+	 */
 	protected final Map<String, TopicManager> topics = new HashMap<>();
+	
+	/**
+	 * A list of system message handlers, that are not topic based.
+	 */
 	protected final List<TopicManager> systemMessageHandlers = new ArrayList<>();
+	
+	/**
+	 * Flag to track connection status.
+     */
 	protected final AtomicBoolean connected = new AtomicBoolean(false);
+	
+	/**
+	 * The exchange API associated with this websocket manager.
+	 */
 	protected final ExchangeApi exchangeApi;
+	
+	/**
+	 * The websocket implementation used by this manager.
+	 */
 	protected final Websocket websocket;
+	
+	/**
+	 * The hook to provide additional websocket handling.
+	 */
 	protected final WebsocketHook websocketHook;
+	
+	/**
+	 * The executor to schedule write operations.
+	 */
+	protected ScheduledExecutorService writeExecutor = null;
+	
+	/**
+	 * The last time a message was received.
+	 */
+	protected AtomicLong lastHeartBeatTime = new AtomicLong(0L);
+	
 	private final List<WebsocketErrorHandler> errorHandlers = new ArrayList<>();
 	private final JsonFactory jsonFactory = new JsonFactory();
 	private final AtomicLong messageReceivedCount = new AtomicLong(0);
@@ -57,8 +94,6 @@ public class DefaultWebsocketManager extends DefaultDisposable implements Websoc
 	private final Object waitReconnectDelayMonitor = new Object();
 	private final List<List<TopicMatcher>> topicMatcherListPool = new ArrayList<>();
 	
-	protected ScheduledExecutorService writeExecutor = null;
-	protected AtomicLong lastHeartBeatTime = new AtomicLong(0L);
 	private long reconnectDelay = -1L;
 	private long noMessageTimeout = -1L;
 	private NoMessageTimeoutTask noMessageTimeoutTask = null;
@@ -67,6 +102,13 @@ public class DefaultWebsocketManager extends DefaultDisposable implements Websoc
 	private AtomicBoolean heartBeatTaskCancelled = null;
 	private AtomicBoolean heartBeatTimeoutTaskCancelled = null;
 	
+	/**
+	 * Constructor
+	 * 
+	 * @param exchangeApi   the exchange API associated with this websocket manager
+	 * @param websocket     the websocket implementation used by this manager
+	 * @param websocketHook the hook to provide additional websocket handling
+	 */
 	public DefaultWebsocketManager(ExchangeApi exchangeApi, 
 								   Websocket websocket, 
 								   WebsocketHook websocketHook) {
@@ -81,10 +123,12 @@ public class DefaultWebsocketManager extends DefaultDisposable implements Websoc
 		}
 	}
 	
+	@Override
 	public long getHeartBeatInterval() {
 		return heartBeatInterval;
 	}
 
+	@Override
 	public void setHeartBeatInterval(long heartBeatInterval) {
 		if (heartBeatInterval > 0 && websocketHook == null) {
 			throw new IllegalStateException("Cannot set heartbeat interval to " + heartBeatInterval + " > 0, because no websocket hook is set to provide heartbeat message to send");
@@ -92,14 +136,19 @@ public class DefaultWebsocketManager extends DefaultDisposable implements Websoc
 		this.heartBeatInterval = heartBeatInterval;
 	}
 
+	@Override
 	public long getNoHeartBeatResponseTimeout() {
 		return noHeartBeatResponseTimeout;
 	}
 
+	@Override
 	public void setNoHeartBeatResponseTimeout(long noHeartBeatResponseTimeout) {
 		this.noHeartBeatResponseTimeout = noHeartBeatResponseTimeout;
 	}
 	
+	/**
+	 * @return the websocket hook
+	 */
 	public WebsocketHook getWebsocketHook() {
 		return websocketHook;
 	}
@@ -197,6 +246,10 @@ public class DefaultWebsocketManager extends DefaultDisposable implements Websoc
 		return topics.remove(topic);
 	}
 	
+	/**
+	 * Connects to the websocket.
+	 * @throws WebsocketException if an error occurs while connecting
+	 */
 	protected final void connect() throws WebsocketException {
 		checkNotDisposed();
 		if (isConnected()) {
@@ -483,6 +536,14 @@ public class DefaultWebsocketManager extends DefaultDisposable implements Websoc
 		topicMatcherListPool.add(topicMatchers);
 	}
 	
+	/**
+	 * To be called from {@link #writeExecutor} thread when an error occurred. Will
+	 * disconnect websocket, and try reconnect it after reconnect delay.
+	 * 
+	 * @param msg error message to log
+	 * @param t  the exception that caused the error
+	 * @see #onError(WebsocketException)
+	 */
 	protected void onError(String msg, Throwable t) {
 		onError(new WebsocketException(msg, t));
 	}
@@ -556,6 +617,10 @@ public class DefaultWebsocketManager extends DefaultDisposable implements Websoc
 			log.info("Successfully resubscribed to {} topics after successful reconnection", topics.size());
 	}
 
+	/**
+	 * A topic manager for a topic, with its message handler and message matcher.
+	 * Uses object pooling of {@link TopicMatcher} to reduce creation of objects in incoming message.
+	 */
 	protected class TopicManager {
 		final WebsocketMessageTopicMatcherFactory matcherFactory;
 		final RawWebsocketMessageHandler messageHandler;

@@ -34,6 +34,9 @@ public class ExchangeApiInterfaceGenerator extends JavaTypeGenerator {
 	
 	private static final String STRING = "String ";
 
+	/**
+	 * Name of generated static final property for the API name.
+	 */
 	public static final String EXCHANGE_API_NAME_VARIABLE = "ID";
 	
 	private final ExchangeDescriptor exchangeDescriptor;

@@ -11,7 +11,7 @@ import com.scz.jxapi.util.Disposable;
  * A WebsocketManager is a wrapper around a {@link Websocket} that manages most
  * common operations specified in a Websocket API.
  * <br>
- * <h1>Multiplexing</h1>
+ * <h2>Multiplexing</h2>
  * Given that a Websocket can be used to subscribe to multiple topics, a
  * WebsocketManager allows to subscribe a single message handler to a topic.
  * The actual message that must be sent to the server to subscribe to a topic is
@@ -30,7 +30,7 @@ import com.scz.jxapi.util.Disposable;
  * message handler can be subscribed to the WebsocketManager using
  * <code>null</code> as topic.
  * 
- * <h1>Wrapping {@link Websocket} methods</h1>
+ * <h2>Wrapping {@link Websocket} methods</h2>
  * The WebsocketManager is responsible to ensure that the underlying Websocket
  * is connected before sending a message or subscribing to a topic.
  * Calls to {@link Websocket#connect()}, {@link Websocket#disconnect()},
@@ -43,7 +43,7 @@ import com.scz.jxapi.util.Disposable;
  * Before such error is dispatched, the WebsocketManager will disconnect the
  * underlying Websocket and try to reconnect it if reconnection is configured.
  * 
- * <h1>Injection of API specific logic using {@link WebsocketHook}</h1>
+ * <h2>Injection of API specific logic using {@link WebsocketHook}</h2>
  * When provided a {@link WebsocketHook}, the WebsocketManager will call the
  * hook methods at specific points in the Websocket lifecycle, allowing to
  * inject API specific logic.
@@ -56,7 +56,7 @@ import com.scz.jxapi.util.Disposable;
  * When heartbeat is required, the hook will be used to provide the message to
  * send to the server to keep the connection alive.
  * 
- * <h1>Heartbeat</h1>
+ * <h2>Heartbeat</h2>
  * The WebsocketManager is responsible to manage the heartbeat mechanism. It
  * will send a heartbeat message to the server at regular interval if configured
  * for it.
@@ -85,19 +85,19 @@ import com.scz.jxapi.util.Disposable;
  * client.
  * Using <code>no heartbeat response timeout</code> means client expects
  * heartbeats from server.
- * <h1>Reconnection</h1>
+ * <h2>Reconnection</h2>
  * The WebsocketManager is responsible to manage the reconnection mechanism. It
  * will try to reconnect the underlying Websocket upon error if reconnection is
  * configured, see {@link #setReconnectDelay(long)}. Upon successful connection,
  * the WebsocketManager will resubscribe all message handlers to the topics that
  * were subscribed to before the disconnection.
  * 
- * <h1>Idle timeout</h1>
+ * <h2>Idle timeout</h2>
  * The WebsocketManager is responsible to manage the idle timeout mechanism. It
  * will disconnect the underlying Websocket if no message is received within a
  * timeout, see {@link #setNoMessageTimeout(long)}
  * 
- * <h1>Additional notes</h1>
+ * <h2>Additional notes</h2>
  * The WebsocketManager is responsible to manage the connection state of the
  * underlying Websocket. This means client implementation should not call
  * {@link Websocket#connect()}, {@link Websocket#disconnect()},

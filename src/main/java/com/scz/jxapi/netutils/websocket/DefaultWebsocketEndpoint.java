@@ -2,6 +2,7 @@ package com.scz.jxapi.netutils.websocket;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,16 +25,49 @@ public class DefaultWebsocketEndpoint<M> implements WebsocketEndpoint<M> {
 	
 	private final Logger log = LoggerFactory.getLogger(DefaultWebsocketEndpoint.class);
 	
+	/**
+	 * The {@link WebsocketManager} that will be used to subscribe/unsubscribe to topics
+	 */
 	protected final WebsocketManager websocketManager;
 	
+	/**
+	 * The {@link MessageDeserializer} that will be used to deserialize incoming messages
+	 */
 	protected final MessageDeserializer<M> messageDeserializer;
+	
+	/**
+	 * Map of subscriptions by topic name (key is the topic name)
+	 */
 	protected final Map<String, Subscription> subscriptionsByTopic  = new HashMap<>();
+	
+	/**
+	 * Map of subscriptions by subscription id (key is the subscription id)
+	 */
 	protected final Map<String, Subscription> subscriptionsById  = new HashMap<>();
+	
+	/**
+	 * The endpoint name
+	 */
 	protected final String endpointName;
+	
+	/**
+	 * The {@link ExchangeApiObserver} that will be used to dispatch events
+	 */
 	protected final ExchangeApiObserver observer;
 	
-	private int subscriptionCounter = 0;
+	private AtomicInteger subscriptionCounter = new AtomicInteger(0);
 
+	/**
+	 * Constructor
+	 * 
+	 * @param endpointName        the endpoint name
+	 * @param websocketManager    the {@link WebsocketManager} that will be used to
+	 *                            subscribe/unsubscribe to topics
+	 * @param messageDeserializer the {@link MessageDeserializer} that will be used
+	 *                            to deserialize incoming messages
+	 * @param observer            the {@link ExchangeApiObserver} that will be used
+	 *                            to dispatch events
+	 */
 	public DefaultWebsocketEndpoint(String endpointName,  
 									WebsocketManager websocketManager, 
 									MessageDeserializer<M> messageDeserializer,
@@ -79,8 +113,15 @@ public class DefaultWebsocketEndpoint<M> implements WebsocketEndpoint<M> {
 		return endpointName;
 	}
 	
+	/**
+	 * Generates a subscription id for a given {@link WebsocketSubscribeRequest}.
+	 * 
+	 * @param request the {@link WebsocketSubscribeRequest} for which to generate a
+	 *                subscription id
+	 * @return the generated subscription id
+	 */
 	protected String generateSubscriptionId(WebsocketSubscribeRequest request) {
-		return String.valueOf(request.getTopic() + "-" + subscriptionCounter++);
+		return String.valueOf(request.getTopic() + "-" + subscriptionCounter.getAndIncrement());
 	}
 	
 	protected void dispatchApiEvent(ExchangeApiEvent event) {

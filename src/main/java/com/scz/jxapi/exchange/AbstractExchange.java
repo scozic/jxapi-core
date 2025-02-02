@@ -14,11 +14,32 @@ import com.scz.jxapi.util.DefaultDisposable;
  */
 public abstract class AbstractExchange extends DefaultDisposable implements Exchange {
 
+	/**
+	 * The exchange name
+	 */
 	protected final String name;
+	
+	/**
+	 * The exchange id
+	 */
 	protected final String id;
+	
+	/**
+	 * The exchange configuration properties
+	 */
 	protected final Properties properties;
+	
+	/**
+	 * The {@link ExchangeApi}s exposed by this exchange
+	 */
 	protected final Map<String, ExchangeApi> apis = new HashMap<>();
 	
+	/**
+	 * Constructor
+	 * @param id the exchange id
+	 * @param name the exchange name
+	 * @param properties the exchange configuration properties
+	 */
 	protected AbstractExchange(String id, String name, Properties properties) {
 		this.id = id;
 		this.name = name;
@@ -61,9 +82,9 @@ public abstract class AbstractExchange extends DefaultDisposable implements Exch
 	
 	/**
 	 * Subclasses should call this method to register every exposed {@link ExchangeApi}. 
-	 * @param <T>
-	 * @param api
-	 * @return
+	 * @param <T> the type of the {@link ExchangeApi}
+	 * @param api the {@link ExchangeApi} to add
+	 * @return <code>api</code>
 	 */
 	protected <T extends ExchangeApi> T addApi(T api) {
 		apis.put(api.getName(), api);

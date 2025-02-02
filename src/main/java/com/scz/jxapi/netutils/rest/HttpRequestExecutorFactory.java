@@ -3,6 +3,11 @@ package com.scz.jxapi.netutils.rest;
 import com.scz.jxapi.exchange.ExchangeApi;
 import com.scz.jxapi.util.FactoryUtil;
 
+/**
+ * Factory interface for creating {@link HttpRequestExecutor} instances.
+ * 
+ * @see HttpRequestExecutor
+ */
 public interface HttpRequestExecutorFactory {
 
 	HttpRequestExecutor createExecutor(ExchangeApi exchangeApi);

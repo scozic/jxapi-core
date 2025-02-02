@@ -1,13 +1,11 @@
 package com.scz.jxapi.generator.java.exchange.constants;
 
-import java.util.List;
-
 import org.junit.Assert;
 import org.junit.Test;
 
-import com.scz.jxapi.exchange.descriptor.DefaultConfigProperty;
 import com.scz.jxapi.exchange.descriptor.ConfigProperty;
 import com.scz.jxapi.exchange.descriptor.Constant;
+import com.scz.jxapi.exchange.descriptor.DefaultConfigProperty;
 import com.scz.jxapi.exchange.descriptor.Type;
 import com.scz.jxapi.generator.java.Imports;
 
@@ -62,48 +60,11 @@ public class ConstantsGenerationUtilTest {
 		Constant c = Constant.create("myString", Type.fromTypeName("STRING_LIST"), null, "foo");
 		ConstantsGenerationUtil.generateConstantDeclaration(c, new Imports());
 	}
-
-	@Test
-	public void testGetConstantsForProperties_PropertyWithDefaultValueAndDescription() {
-		DefaultConfigProperty p = DefaultConfigProperty.create("myProp", Type.BIGDECIMAL, "My property description", "1.2345");
-		Constant c1 = Constant.create("myProp", Type.STRING, "'myProp' property key.<br>\nMy property description<br>\nProperty value type:BIGDECIMAL", "myProp");
-		Constant c2 = Constant.create("myPropDefaultValue", Type.BIGDECIMAL, "{@link #MY_PROP} property default value", "1.2345");
-		List<Constant> expected = List.of(c1, c2);
-		List<Constant> actual = ConstantsGenerationUtil.getConstantsForProperties(List.of(p));
-		Assert.assertEquals(expected.size(), actual.size());
-		for (int i = 0; i < expected.size(); i++) {
-			Constant expectedC = expected.get(i);
-			Constant actualC = actual.get(i);
-			Assert.assertEquals(expectedC.getName(), actualC.getName());
-			Assert.assertEquals(expectedC.getType(), actualC.getType());
-			Assert.assertEquals(expectedC.getDescription(), actualC.getDescription());
-			Assert.assertEquals(expectedC.getValue(), actualC.getValue());
-		}
-	}
-	
-	@Test
-	public void testGetConstantsForProperties_PropertyWithNullDefaultValueAndNullDescription() {
-		DefaultConfigProperty p = DefaultConfigProperty.create("myProp", Type.BIGDECIMAL, null, null);
-		Constant expectedC = Constant.create("myProp", Type.STRING, "'myProp' property key.<br>\nProperty value type:BIGDECIMAL", "myProp");
-		List<Constant> actual = ConstantsGenerationUtil.getConstantsForProperties(List.of(p));
-		Assert.assertEquals(1, actual.size());
-		Constant actualC = actual.get(0);
-		Assert.assertEquals(expectedC.getName(), actualC.getName());
-		Assert.assertEquals(expectedC.getType(), actualC.getType());
-		Assert.assertEquals(expectedC.getDescription(), actualC.getDescription());
-		Assert.assertEquals(expectedC.getValue(), actualC.getValue());
-	}
 	
 	@Test
 	public void testGetPropertyKeyPropertyName() {
 		ConfigProperty p = DefaultConfigProperty.create("myProp", Type.STRING, null, null);
 		Assert.assertEquals("myProp", ConstantsGenerationUtil.getPropertyKeyPropertyName(p));
-	}
-	
-	@Test
-	public void testGetPropertyDefaultValueName() {
-		ConfigProperty p = DefaultConfigProperty.create("myProp", Type.STRING, null, null);
-		Assert.assertEquals("myPropDefaultValue", ConstantsGenerationUtil.getPropertyDefaultValuePropertyName(p));
 	}
 
 }

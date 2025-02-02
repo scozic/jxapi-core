@@ -11,6 +11,9 @@ import com.scz.jxapi.util.CollectionUtil;
  */
 public class HtmlGenerationUtil {
 	
+	/**
+	 * Indentation string used in HTML generation
+	 */
 	public static final String INDENTATION = "  ";
 
 	private HtmlGenerationUtil() {}

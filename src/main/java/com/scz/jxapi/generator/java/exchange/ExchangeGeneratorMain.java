@@ -98,6 +98,11 @@ public class ExchangeGeneratorMain {
 	 * using {@link #generateExchangeWrapperAndDemos(Path, Path, String @throws
 	 * Exception
 	 * 
+	 * @param baseProjectDir Base project directory where the generated code will be written
+	 * @param baseJavaDocUrl The base url for project classes javadoc, used for links generation
+	 * @param baseSrcUrl The base url for sources on public repo, used for links generation.
+	 * 
+	 * @throws Exception If error occurs during generation
 	 * @see #generateExchangeWrapperAndDemos(Path, Path, String, String)
 	 */
 	public static final void generateExchangeWrappersInCurrentProject(String baseProjectDir, String baseJavaDocUrl, String baseSrcUrl) throws Exception {
@@ -112,7 +117,7 @@ public class ExchangeGeneratorMain {
 				try {
 					generateExchangeWrapperAndDemos(path, projectFolder, baseJavaDocUrl, baseSrcUrl);
 				} catch (Exception ex) {
-					log.error("Error while generating exchange descriptor for file:" + path.getFileName(), ex);
+					log.error("Error while generating exchange descriptor for file:" + path.getFileName() + ":" + ex.getMessage(), ex);
 					error.set(ex);
 				}
 			});
@@ -203,6 +208,15 @@ public class ExchangeGeneratorMain {
 		new ExchangeDemoClassesGenerator(exchangeDescriptor).generateClasses(srcFolder);
 	}
 	
+	/**
+	 * Generates a demo exchange properties file template for the given exchange descriptor in the resources folder.
+	 * 
+	 * @param exchangeDescriptor The exchange descriptor to generate the properties
+	 *                           file template for
+	 * @param resourcesFolder    The resources folder where to write the properties
+	 *                           file
+	 * @throws IOException If error occurs while writing the file
+	 */
 	public static void generateDemoPropertiesFileTemplate(ExchangeDescriptor exchangeDescriptor, Path resourcesFolder) throws IOException {
 		String fileName = DemoUtil.getDefaultDemoExchangePropertiesFileName(exchangeDescriptor.getName()) + ".dist";
 		Files.createDirectories(resourcesFolder);

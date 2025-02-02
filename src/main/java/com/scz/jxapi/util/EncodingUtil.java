@@ -216,7 +216,14 @@ public class EncodingUtil {
 		int l = (maxLength - sep.length()) / 2;
 		return longString.substring(0, l) + sep + longString.substring(longString.length() - l);
 	}
-	
+
+	/**
+	 * Checks if a given URL is absolute or relative, e.g. if it starts with a scheme like "http://".
+	 * 
+	 * @param url the URL to check
+	 * @return <code>true</code> if the URL is absolute, <code>false</code> if it is
+	 *         relative
+	 */
 	public static boolean isAbsoluteUrl(String url) {
 		return URI.create(url).getScheme() != null;
 	}

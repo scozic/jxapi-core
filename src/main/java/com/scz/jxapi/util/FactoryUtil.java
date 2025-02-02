@@ -2,6 +2,9 @@ package com.scz.jxapi.util;
 
 import java.lang.reflect.InvocationTargetException;
 
+/**
+ * Helper methods for factory classes.
+ */
 public class FactoryUtil {
 	
 	private FactoryUtil() {}

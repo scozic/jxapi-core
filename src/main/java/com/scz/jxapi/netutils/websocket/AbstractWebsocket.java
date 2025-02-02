@@ -34,11 +34,17 @@ public abstract class AbstractWebsocket implements Websocket {
 
 	private static final Logger log = LoggerFactory.getLogger(AbstractWebsocket.class);
 
+	/**
+	 * Flag to track connection status.
+	 */
 	protected final AtomicBoolean connected = new AtomicBoolean(false);
 
 	private final Observable<RawWebsocketMessageHandler, String> messageObservable = new DefaultObservable<>(RawWebsocketMessageHandler::handleWebsocketMessage);
 	private final Observable<WebsocketErrorHandler, WebsocketException> errorObservable = new DefaultObservable<>(WebsocketErrorHandler::handleWebsocketError);
 
+	/**
+	 * The URL of the websocket server
+	 */
 	protected String url;
 
 	@Override
@@ -111,7 +117,7 @@ public abstract class AbstractWebsocket implements Websocket {
 	/**
 	 * Dispatch a message to all message handlers.
 	 * 
-	 * @param message
+	 * @param message the message to dispatch
 	 */
 	protected void dispatchMessage(String message) {
 		messageObservable.dispatch(message);
