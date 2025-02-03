@@ -76,8 +76,7 @@ public class ExchangeGeneratorMain {
 	 * descriptor files in the current project "src/main/resources/" folder.
 	 * 
 	 * @param args Not used
-	 * @throws Exception If error occurs during
-	 * @see #generateExchangeWrappersInCurrentProject()
+	 * @see #generateExchangeWrappersInCurrentProject(String, String, String)
 	 */
 	public static void main(String[] args) {
 		try {
@@ -95,8 +94,7 @@ public class ExchangeGeneratorMain {
 	 * Generate exchange API wrappers for all exchange descriptor files in the
 	 * current project "src/main/resources/" folder. Will walk through all files in
 	 * the folder and generate Java code for each file ending with 'Descriptor.json'
-	 * using {@link #generateExchangeWrapperAndDemos(Path, Path, String @throws
-	 * Exception
+	 * using {@link #generateExchangeWrapperAndDemos(Path, Path, String, String)}.
 	 * 
 	 * @param baseProjectDir Base project directory where the generated code will be written
 	 * @param baseJavaDocUrl The base url for project classes javadoc, used for links generation

@@ -97,10 +97,24 @@ public class Imports implements Iterable<String> {
 		return imps.stream().collect(Collectors.toList());
 	}
 	
+	/**
+	 * Checks if the given class is already imported.
+	 * 
+	 * @param cls the class to check
+	 * @return <code>true</code> if the class is already imported,
+	 *         <code>false</code> otherwise
+	 */
 	public boolean contains(Class<?> cls) {
 		return contains(cls.getName());
 	}
 	
+	/**
+	 * Checks if the given class is already imported.
+	 * 
+	 * @param im the full name of the class to check
+	 * @return <code>true</code> if the class is already imported,
+	 *         <code>false</code> otherwise
+	 */
 	public boolean contains(String im) {
 		return imps.contains(im);
 	}

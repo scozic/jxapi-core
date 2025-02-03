@@ -11,6 +11,9 @@ public class JavaMethodGenerator {
 
 	private String medthodDeclaration;
 	
+	/**
+	 * Method body
+	 */
 	protected final StringBuilder body = new StringBuilder();
 	
 	private String javadoc;
@@ -27,6 +30,10 @@ public class JavaMethodGenerator {
 		return body.append(code);
 	}
 	
+	/**
+	 * Generates the full method source code (signature + body).
+	 * @return method source code
+	 */
 	public String generate() {
 		return new StringBuilder()
 					.append(javadoc == null? "": 

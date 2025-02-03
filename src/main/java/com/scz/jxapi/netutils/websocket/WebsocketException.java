@@ -4,10 +4,9 @@ package com.scz.jxapi.netutils.websocket;
  * Exception for an error raised on websocket
  */
 public class WebsocketException extends Exception {
-
-	public WebsocketException() {}
 	
 	/**
+	 * Constructor
 	 * @param t The cause of the exception
 	 */
 	public WebsocketException(Throwable t) {
@@ -15,6 +14,7 @@ public class WebsocketException extends Exception {
 	}
 	
 	/**
+	 * Constructor
 	 * @param message The error message
 	 */
 	public WebsocketException(String message) {
@@ -22,6 +22,7 @@ public class WebsocketException extends Exception {
 	}
 	
 	/**
+	 * Constructor
 	 * @param message The error message
 	 * @param t The cause of the exception
 	 */

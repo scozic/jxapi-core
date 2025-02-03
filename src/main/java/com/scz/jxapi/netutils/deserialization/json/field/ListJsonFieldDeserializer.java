@@ -20,6 +20,9 @@ import com.scz.jxapi.netutils.deserialization.MessageDeserializer;
  */
 public class ListJsonFieldDeserializer<T> extends AbstractJsonMessageDeserializer<List<T>> {
 	
+	/**
+	 * The deserializer for the list items
+	 */
 	protected final JsonDeserializer<T> itemDeserializer;
 	
 	/**

@@ -9,6 +9,7 @@ import com.scz.jxapi.netutils.rest.HttpRequestInterceptor;
 /**
  * A mock implementation of the HttpRequestInterceptor interface.
  * This class is used for testing purposes to simulate the interception of HTTP requests.
+ * Provides a list of prepared interceptors that can be applied to the request.
  */
 public class MockHttpRequestInterceptor implements HttpRequestInterceptor {
 
@@ -53,7 +54,9 @@ public class MockHttpRequestInterceptor implements HttpRequestInterceptor {
 		preparedInterceptors.clear();
 	}
 	
-
+	/**
+	 * @return The list of prepared interceptors.
+	 */
 	public List<HttpRequestInterceptor> getPreparedInterceptors() {
 		return this.preparedInterceptors;
 	}

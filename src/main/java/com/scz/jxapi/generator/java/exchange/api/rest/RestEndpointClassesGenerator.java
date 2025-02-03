@@ -27,8 +27,19 @@ import com.scz.jxapi.generator.java.exchange.api.pojo.JsonPojoSerializerClassesG
  */
 public class RestEndpointClassesGenerator implements ClassesGenerator {
 
+	/**
+	 * Exchange descriptor where API with REST endpoint are defined
+	 */
 	protected final ExchangeDescriptor exchangeDescriptor;
+	
+	/**
+	 * API of exchange descriptor defining the REST endpoint
+	 */
 	protected final ExchangeApiDescriptor apiDescriptor;
+	
+	/**
+	 * REST endpoint descriptor to generate related Java classes for.
+	 */
 	protected final RestEndpointDescriptor restEndpointDescriptor;
 
 	/**

@@ -9,6 +9,9 @@ public class RawIntegerMessageDeserializer implements MessageDeserializer<Intege
 	
 	private static final RawIntegerMessageDeserializer INSTANCE = new RawIntegerMessageDeserializer();
 	
+	/**
+	 * @return The singleton instance of this class
+	 */
 	public static RawIntegerMessageDeserializer getInstance() {
 		return INSTANCE;
 	}

@@ -332,10 +332,24 @@ public class ExchangeDescriptor {
 		this.httpRequestTimeout = httpRequestTimeout;
 	}
 	
+	/**
+	 * @return Base URL of the HTTP (REST) API of the exchange. This URL can be
+	 *         concateneted to websocket API group <code>httpUrl</code> property
+	 *         (see {@link ExchangeApiDescriptor#getHttpUrl()} ) and endpoint URL
+	 *         (see {@link RestEndpointDescriptor#getUrl()} when one of these
+	 *         properties are not absolute)
+	 */
 	public String getHttpUrl() {
 		return httpUrl;
 	}
 
+	/**
+	 * @param httpUrl Base URL of the HTTP (REST) API of the exchange. This URL can
+	 *                be concateneted to websocket API group <code>httpUrl</code>
+	 *                property (see {@link ExchangeApiDescriptor#getHttpUrl()} ) and
+	 *                endpoint URL (see {@link RestEndpointDescriptor#getUrl()} when
+	 *                one of these properties are not absolute)
+	 */
 	public void setHttpUrl(String httpUrl) {
 		this.httpUrl = httpUrl;
 	}
@@ -373,11 +387,17 @@ public class ExchangeDescriptor {
 	public void setWebsocketHookFactory(String websocketHookFactory) {
 		this.websocketHookFactory = websocketHookFactory;
 	}
-	
+
+	/**
+	 * @return Base URL of the Websocket endpoints of this API group. 
+	 */
 	public String getWebsocketUrl() {
 		return websocketUrl;
 	}
 
+	/**
+	 * @param websocketUrl Base URL of the Websocket endpoints of this API group.
+	 */
 	public void setWebsocketUrl(String websocketUrl) {
 		this.websocketUrl = websocketUrl;
 	}

@@ -53,6 +53,13 @@ public class ExchangeReadmeMdGenerator {
 
 	private final String constantsInterfaceName;
 
+	/**
+	 * Constructor.
+	 * 
+	 * @param exchangeDescriptor the exchange descriptor to generate the README for
+	 * @param baseJavadocUrl     base URL for Javadoc links
+	 * @param baseSourceUrl      base URL for source links
+	 */
 	public ExchangeReadmeMdGenerator(ExchangeDescriptor exchangeDescriptor, String baseJavadocUrl, String baseSourceUrl) {
 		this.exchangeDescriptor = exchangeDescriptor;
 		this.baseJavadocUrl = baseJavadocUrl;
@@ -63,6 +70,11 @@ public class ExchangeReadmeMdGenerator {
 		this.constantsInterfaceName = ExchangeJavaGenUtil.getExchangeConstantsInterfaceName(exchangeDescriptor);
 	}
 
+	/**
+	 * Generates the README.md file content.
+	 * 
+	 * @return the README.md file content
+	 */
 	public String generate() {
 		StringBuilder s = new StringBuilder().append("# ")
 			.append(exchangeDescriptor.getName())

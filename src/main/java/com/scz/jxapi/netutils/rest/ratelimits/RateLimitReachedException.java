@@ -12,6 +12,9 @@ import com.scz.jxapi.netutils.rest.HttpRequest;
  */
 public class RateLimitReachedException extends Exception {
 	
+	/**
+	 * Delay to wait for before trying to resubmit request
+	 */
 	private final long delayBeforeResubmit;
 
 	/**

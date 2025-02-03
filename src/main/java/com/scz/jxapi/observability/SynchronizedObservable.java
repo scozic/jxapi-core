@@ -23,6 +23,11 @@ import java.util.function.BiConsumer;
  */
 public class SynchronizedObservable<L, E> extends DefaultObservable<L, E> {
 
+	/**
+	 * Constructor for {@link SynchronizedObservable} with event dispatch method
+	 * 
+	 * @param eventDispatchMethod method to dispatch event to listener
+	 */
 	public SynchronizedObservable(BiConsumer<L, E> eventDispatchMethod) {
 		super(Collections.synchronizedList(new ArrayList<>()), eventDispatchMethod);
 	}

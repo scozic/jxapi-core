@@ -7,12 +7,6 @@ import org.junit.Test;
  * Unit test for {@link WebsocketException}
  */
 public class WebsocketExceptionTest {
-
-    @Test
-    public void testCreateWebsocketException() {
-        WebsocketException websocketException = new WebsocketException();
-        Assert.assertNotNull(websocketException);
-    }
     
     @Test
     public void testCreateWebsocketExceptionWithMessage() {

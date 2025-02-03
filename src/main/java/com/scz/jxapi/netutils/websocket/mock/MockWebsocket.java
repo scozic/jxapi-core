@@ -182,18 +182,42 @@ public class MockWebsocket extends GenericObserver<MockWebsocketEvent> implement
 		this.delegate.dispatchError(error);
 	}
 	
+	/**
+	 * Adds an exception to throw when the websocket is connected.
+	 * 
+	 * @param errorMessage the error message of the exception to throw
+	 * @see #addExceptionToThrowOnConnect(WebsocketException)
+	 */
 	public void addExceptionToThrowOnConnect(String errorMessage) {
 		addExceptionToThrowOnConnect(new WebsocketException(errorMessage));
 	}
 	
+	/**
+	 * Adds an exception to throw when the websocket is connected.
+	 * 
+	 * @param ex the exception to throw
+	 */
 	public void addExceptionToThrowOnConnect(WebsocketException ex) {
 		exceptionsToThrowOnConnect.add(ex);
 	}
 	
+	/**
+	 * Adds an exception to throw when a message is sent through the websocket, see
+	 * {@link #send(String)}.
+	 * 
+	 * @param errorMessage the error message of the exception to throw
+	 * @see #addExceptionToThrowOnSend(WebsocketException)
+	 */
 	public void addExceptionToThrowOnSend(String errorMessage) {
 		addExceptionToThrowOnSend(new WebsocketException(errorMessage));
 	}
 	
+	/**
+	 * Adds an exception to throw when the websocket is sending a message, see
+	 * {@link #send(String)}.
+	 * 
+	 * @param ex the exception to throw
+	 */
 	public void addExceptionToThrowOnSend(WebsocketException ex) {
 		exceptionsToThrowOnSend.add(ex);
 	}

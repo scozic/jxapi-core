@@ -23,6 +23,9 @@ public class JavaTypeGenerator {
 	
 	private String description;
 	
+	/**
+	 * Inner class body
+     */
 	protected final StringBuilder body = new StringBuilder();
 	
 	/**

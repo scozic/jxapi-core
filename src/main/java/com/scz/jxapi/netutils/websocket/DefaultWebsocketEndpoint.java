@@ -123,7 +123,11 @@ public class DefaultWebsocketEndpoint<M> implements WebsocketEndpoint<M> {
 	protected String generateSubscriptionId(WebsocketSubscribeRequest request) {
 		return String.valueOf(request.getTopic() + "-" + subscriptionCounter.getAndIncrement());
 	}
-	
+
+	/**
+	 * Dispatches an {@link ExchangeApiEvent} to the {@link ExchangeApiObserver}.
+	 * @param event the {@link ExchangeApiEvent} to dispatch
+	 */
 	protected void dispatchApiEvent(ExchangeApiEvent event) {
 		this.observer.handleEvent(event);
 	}

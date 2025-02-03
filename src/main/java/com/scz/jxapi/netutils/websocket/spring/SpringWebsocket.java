@@ -97,7 +97,12 @@ public class SpringWebsocket extends AbstractWebsocket {
 			log.debug("{}:Done handshake", this);
 		}
 	}
-	
+
+	/**
+	 * Returns the URI for the websocket handshake. This URI is created from the base URL.
+	 * @return the URI for the websocket handshake
+	 * @throws WebsocketException if an error occurs while creating the URI, e.g. invalid URL.
+	 */
 	protected URI getHandShakeURI() throws WebsocketException {
 		URI uri = null;
 		try {

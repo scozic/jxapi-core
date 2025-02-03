@@ -25,7 +25,7 @@ public class ExchangeApiEventTest {
         event.setWebsocketMessage("websocketMessage");
         event.setWebsocketSubscribeRequest(new WebsocketSubscribeRequest());
         event.setWebsocketSubscriptionId("websocketSubscriptionId");
-        event.setWebsocketError(new WebsocketException());
+        event.setWebsocketError(new WebsocketException("error"));
         
         Assert.assertEquals("exchangeName", event.getExchangeName());
         Assert.assertEquals("exchangeId", event.getExchangeId());
@@ -96,7 +96,7 @@ public class ExchangeApiEventTest {
 
     @Test
     public void testCreateWebsocketErrorEvent() {
-        WebsocketException error = new WebsocketException();
+        WebsocketException error = new WebsocketException("error");
         ExchangeApiEvent event = ExchangeApiEvent.createWebsocketErrorEvent(error);
         Assert.assertEquals(ExchangeApiEventType.WEBSOCKET_ERROR, event.getType());
         Assert.assertEquals(null, event.getEndpoint());

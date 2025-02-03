@@ -53,8 +53,7 @@ public class ConstantsGenerationUtil {
 		return code.toString();
 	}
 	
-	/*
-	 * Returns the property key property name for the given property.
+	/**
 	 * @param property the property to generate the property key property name for, for instance 'myProperty'.
 	 * @return the property key property name, for instance 'myPropertyProperty'
 	 */
@@ -62,6 +61,27 @@ public class ConstantsGenerationUtil {
 		return  property.getName();
 	}
 	
+	/**
+	 * Generates the Java code for a declared <code>public static final</code>
+	 * property in a Java class.
+	 * <p>
+	 * Example:
+	 * 
+	 * <pre>
+	 * {@code
+	 * public static final ConfigProperty MY_PROPERTY_PROPERTY = DefaultConfigProperty.create("myProperty", Type.STRING,
+	 * 		"This is a description of my property", "myDefaultValue");
+	 * }
+	 * </pre>
+	 * 
+	 * Where {@code myProperty} is the property key, {@code Type.STRING} is the type of the property,
+	 * {@code This is a description of my property} is the description of the
+	 * property and {@code myDefaultValue} is the default value of the property.
+	 * 
+	 * @param property the property to generate the declaration for
+	 * @param imports  the set of imports to add to the generated code
+	 * @return the Java code for the property declaration
+	 */
 	public static String getPropertyValueDeclation(ConfigProperty property, Imports imports) {
 		imports.add(DefaultConfigProperty.class);
 		imports.add(Type.class);

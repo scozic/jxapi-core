@@ -29,6 +29,13 @@ public class JsonPojoSerializerGenerator extends JavaTypeGenerator {
 	private final String serializedTypeClassName;
 	private final List<Field> fields;
 	
+	/**
+	 * Constructor.
+	 * 
+	 * @param serializedTypeClassName the fully qualified name of the POJO class to
+	 *                                serialize
+	 * @param fields                  the properties of the POJO class
+	 */
 	public JsonPojoSerializerGenerator(String serializedTypeClassName, List<Field> fields) {
 		super(EndpointPojoGeneratorUtil.getSerializerClassName(serializedTypeClassName));
 		this.serializedTypeClassName = serializedTypeClassName;

@@ -34,10 +34,11 @@ public interface ConfigProperty {
 	 */
 	String getDescription();
 
-	/*
+	/**
 	 * Property value type, see {@link Type}, should be a primitive type e.g.
 	 * {@link Type#STRING}, {@link Type#INT}, {@link Type#BOOLEAN},
 	 * {@link Type#BIGDECIMAL}, {@link Type#LONG}.
+	 * 
 	 * @return Property value type
 	 */
 	Type getType();

@@ -15,6 +15,9 @@ import com.scz.jxapi.generator.java.JavaTypeGenerator;
  */
 public class ExchangeInterfaceGenerator extends JavaTypeGenerator {
 	
+	/**
+	 * Name of the exchange ID field.
+	 */
 	public static final String EXCHANGE_ID_VARIABLE = "ID";
 	
 	private final ExchangeDescriptor exchangeDescriptor;

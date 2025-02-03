@@ -297,6 +297,9 @@ public class DefaultWebsocketManager extends DefaultDisposable implements Websoc
 		}
 	}
 
+	/**
+	 * Disconnects from the websocket.
+	 */
 	protected final void disconnect() {
 		if (!isConnected()) {
 			return;
@@ -354,6 +357,9 @@ public class DefaultWebsocketManager extends DefaultDisposable implements Websoc
 		writeExecutor = null;
 	}
 	
+	/**
+	 * @return <code>true</code> if the websocket is currently connected, <code>false</code> otherwise.
+	 */
 	public boolean isConnected() {
 		return this.connected.get();
 	}
@@ -388,7 +394,10 @@ public class DefaultWebsocketManager extends DefaultDisposable implements Websoc
 	public void setNoMessageTimeout(long noMessageTimeout) {
 		this.noMessageTimeout = noMessageTimeout;
 	}
-	
+
+	/**
+	 * @return the {@link Websocket} used by this manager
+	 */
 	public Websocket getWebsocket() {
 		return websocket;
 	}
@@ -438,11 +447,20 @@ public class DefaultWebsocketManager extends DefaultDisposable implements Websoc
 		}
 		return res;
 	}
-	
+
+	/**
+	 * Dispatches an error to the error handlers.
+	 * @param error the error to dispatch
+	 */
 	protected void dispatchWebsocketError(WebsocketException error) {
 		errorHandlers.forEach(h -> h.handleWebsocketError(error));
 	}
 	
+	/**
+	 * Dispatches a message to the message handlers.
+	 * 
+	 * @param message the message to dispatch
+	 */
 	protected void dispatchMessage(String message) {
 		this.dispatchSingleMessage(message);
 	}
@@ -551,7 +569,7 @@ public class DefaultWebsocketManager extends DefaultDisposable implements Websoc
 	/**
 	 * To be called from {@link #writeExecutor} thread when an error occurred.
 	 * Will disconnect websocket, and try reconnect it after reconnect delay.
-	 * @param exception
+	 * @param exception the exception that caused the error
 	 */
 	protected void onError(WebsocketException exception) {
 		log.error("Error raised on Websocket [{}]", this, exception);
@@ -627,7 +645,14 @@ public class DefaultWebsocketManager extends DefaultDisposable implements Websoc
 		final String topic;
 		final boolean systemMessage;
 		private final List<TopicMatcher> matcherPool = new ArrayList<>();
-		
+
+		/**
+		 * Constructor
+		 * @param topic the topic to manage
+		 * @param matcherFactory the factory to create message matchers
+		 * @param messageHandler the message
+		 * @param systemMessage whether this is a system message topic
+		 */
 		public TopicManager(String topic, 
 							WebsocketMessageTopicMatcherFactory matcherFactory,
 							RawWebsocketMessageHandler messageHandler, 
@@ -638,6 +663,11 @@ public class DefaultWebsocketManager extends DefaultDisposable implements Websoc
 			this.systemMessage = systemMessage;
 		}
 		
+		/**
+		 * Gets a matcher from the pool, or creates a new one if the pool is empty.
+		 * 
+		 * @return a matcher to use for matching a message to this topic
+		 */
 		public TopicMatcher getTopicMatcher() {
 			if (matcherPool.isEmpty()) {
 				return new TopicMatcher(this, matcherFactory.createWebsocketMessageTopicMatcher());

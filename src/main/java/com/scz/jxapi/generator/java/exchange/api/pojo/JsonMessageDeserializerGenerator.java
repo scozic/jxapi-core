@@ -171,6 +171,13 @@ public class JsonMessageDeserializerGenerator extends JavaTypeGenerator {
 		return deserializerVariableName;
 	}
 	
+	/**
+	 * Generates the class name of the deserializer for a non-primitive field (see {@link CanonicalType#isPrimitive}).
+	 * @param type the type of the field 
+	 * @param objectClassName When the field is an object, the simple class name of the object class.
+	 * @param imports The set of imports in context of the generated class. Necessary imports will be added to this set.
+	 * @return The class name of the deserializer for the non primitive field.
+	 */
 	public static String generateNonPrimitiveFieldDeserializerClassName(Type type, String objectClassName, Imports imports) {	
 		String fieldClass = null;
 		switch (type.getCanonicalType()) {

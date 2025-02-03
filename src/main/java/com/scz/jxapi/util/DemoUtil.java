@@ -13,6 +13,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.scz.jxapi.exchange.ExchangeApiEvent;
+import com.scz.jxapi.exchange.ExchangeApiEventType;
 import com.scz.jxapi.netutils.rest.FutureRestResponse;
 import com.scz.jxapi.netutils.rest.RestResponse;
 
@@ -60,6 +61,17 @@ public class DemoUtil {
 		return message;
 	}
 	
+	/**
+	 * Logs incoming websocket related event with level:
+	 * <ul> 
+	 * <li>DEBUG if event type is {@link ExchangeApiEventType#WEBSOCKET_MESSAGE},
+	 * <li>INFO if event type is {@link ExchangeApiEventType#WEBSOCKET_SUBSCRIBE}, or {@link ExchangeApiEventType#WEBSOCKET_UNSUBSCRIBE},
+	 * <li>ERROR if event type is {@link ExchangeApiEventType#WEBSOCKET_ERROR}.
+	 * </ul>
+	 * Nothing is logged for other event types.
+	 * 
+	 * @param event Event to log
+	 */
 	public static void logWsApiEvent(ExchangeApiEvent event) {
 		switch (event.getType()) {
 		case WEBSOCKET_ERROR:
@@ -80,6 +92,13 @@ public class DemoUtil {
 		}
 	}
 	
+	/**
+	 * Logs incoming REST API relate event with DEBUG level. Nothing is logged for
+	 * other event types other than {@link ExchangeApiEventType#HTTP_REQUEST} and
+	 * {@link ExchangeApiEventType#HTTP_RESPONSE}.
+	 * 
+	 * @param event Event to log
+	 */
 	public static void logRestApiEvent(ExchangeApiEvent event) {
 		switch (event.getType()) {
 		case HTTP_REQUEST:
