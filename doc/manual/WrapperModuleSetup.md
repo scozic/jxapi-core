@@ -28,39 +28,102 @@ mvn archetype:generate -DgroupId=com.yourdomain.jxapi.exchanges.myapi -Dartifact
 ```
 #### Initial changes to Maven pom.xml
 Maven pom.xml file needs to be customized. You may first adjust compiler or JUnit version you want to use.
-Next,
+Next, define dependency to `jxapi-core` module, and `jxapi-maven-plugin` Maven plugin to integrate code generation to your wrapper module build cycle.
+
+1. Add properties to pom.xml:
+```xml
+<project>
+...
+<properties>
+    <!-- Use latest jxapi-core artefact version -->
+    <jxapi.version>1.0.0</jxapi.version>
+
+    <!-- This is the base URL that will be used for links to Javadoc in generated jxapi-myapi_README.md -->
+    <baseJavaDocUrl>https://www.javadoc.io/static/com.yourdomain.jxapi.exchanges.myapi/jxapi-myapi/${project.version}/index.html?</baseJavaDocUrl>
+
+    <!-- This is the base URL that will be used for links to source files in generated jxapi-myapi_README.md -->
+    <baseSrcUrl>http://github.com/jxapi-myapi/blob/master/src/</baseSrcUrl>
+</properties>
+...
+</project>
+
+```
 
 1. Add dependency to jxapi-core project:
 
-```
+```xml
   <dependencies>
 ... 
     <dependency>
       <groupId>com.scz.jxapi</groupId>
       <artifactId>jxapi-core</artifactId>
-      <version>0.7.5</version>
+      <version>${jxapi.version}</version>
     </dependency>
   </dependencies>
 ```
 
-2. Add `exec-maven-plugin` which will allow performing code generation using Maven command `mvn exec:java`
+2. Add `exec-maven-plugin` which will allow running code generation using Maven command `mvn exec:java`
 
-```
+```xml
+<project>
   <build>
-    <pluginManagement><!-- lock down plugins versions to avoid using Maven defaults (may be moved to parent pom) -->
-      <plugins>
-...
-        <plugin>
-		  <groupId>org.codehaus.mojo</groupId>
-		  <artifactId>exec-maven-plugin</artifactId>
-		  <configuration>
-			  <mainClass>com.scz.jxapi.generator.exchange.ExchangeGeneratorMain</mainClass>
-		  </configuration>
-		</plugin>
-      </plugins>
-    </pluginManagement>
+		<pluginManagement>
+    ...
+			<plugins>
+				<plugin>
+					<groupId>org.codehaus.mojo</groupId>
+					<artifactId>exec-maven-plugin</artifactId>
+					<configuration>
+						<mainClass>
+							com.scz.jxapi.generator.java.exchange.ExchangeGeneratorMain</mainClass>
+						<systemProperties>
+							<systemProperty>
+								<key>baseJavaDocUrl</key>
+								<value>${baseJavaDocUrl}</value>
+							</systemProperty>
+							<systemProperty>
+								<key>baseJavaSrcUrl</key>
+								<value>${baseSrcUrl}</value>
+							</systemProperty>
+						</systemProperties>
+					</configuration>
+				</plugin>
+			</plugins>
+		</pluginManagement>
   </build>
+</project>
 ```
 
+3. Add `jxapi-maven-plugin` to have code generation included in default Maven build cycle:
+
+```xml
+<project>
+...
+  <build>
+    <plugins>
+        <plugin>
+            <groupId>org.jxapi</groupId>
+            <artifactId>jxapi-maven-plugin</artifactId>
+            <version>${jxapi.version}</version>
+            <configuration>
+              <baseProjectDir>${project.basedir}</baseProjectDir>
+              <baseJavaDocUrl>${baseJavaDocUrl}/</baseJavaDocUrl>
+              <baseSrcUrl>${baseSrcUrl}/</baseSrcUrl>
+            </configuration>
+            <executions>
+                <execution>
+                    <id>jxapi-exchange-generator</id>
+                    <phase>generate-sources</phase>
+                    <goals>
+                        <goal>jxapi-exchange-generator</goal>
+                    </goals>
+                </execution>
+            </executions>
+        </plugin>
+    </plugins>
+  </build>
+</project>  
+```    
+_Remark_: Either 2. or 3. above is mandatory: You may choose to have either code generation triggered manually using `mvn exec:java` command using 2. or integrated to the build cycle using dedicated plugin using 3., or both. The plugin way is recommended. 
 
 You can now run `mvn clean install` to install initial maven project. Do not forget to update `.gitignore` file to ignore java classes and files in `/target`

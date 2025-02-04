@@ -51,7 +51,7 @@ public class ExchangeDemoPropertiesGeneratorTest {
 	}
 
 	@Test
-	public void testGenerateDemoPropertiesTemplateFile_EmptyConfigProperties() throws Exception {
+	public void testGenerateDemoPropertiesTemplateFile_EmptyConfigProperties() {
 		List<ConfigProperty> configProperties = List.of();
 		String content = new ExchangeDemoPropertiesFileGenerator("DemoExchange", configProperties).generate();
 		Assert.assertEquals("# Demo configuration properties file for DemoExchange exchange.\n"
