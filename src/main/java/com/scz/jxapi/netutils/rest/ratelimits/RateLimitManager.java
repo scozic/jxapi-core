@@ -10,8 +10,11 @@ import java.util.TreeMap;
 public class RateLimitManager {
 	
 	/**
-	 * @param stat
-	 * @param rateLimit
+	 * Checks if given rate limit is reached for given request count and weight.
+	 * 
+	 * @param rateLimit the rate limit rule to check against.
+	 * @param requestCount is rate limit reached for given request count?
+	 * @param weight is rate limit reached for given weight?
 	 * @return <code>true</code> If rateLimit is reached for current stat, that is
 	 *         if given rateLimit max request count is valid (positive value) and
 	 *         given stat request count is sup or equal to max request count, or if
@@ -31,10 +34,18 @@ public class RateLimitManager {
 	
 	private final TreeMap<Long, MilliSecondStat> msStats = new TreeMap<>();
 	
+	/**
+	 * Creates a new rate limit manager for given rate limit rule.
+	 * 
+	 * @param limit the rate limit rule to enforce.
+	 */
 	public RateLimitManager(RateLimitRule limit) {
 		this.rateLimit = limit;
 	}
 	
+	/**
+	 * @return the rate limit rule this manager enforces.
+	 */
 	public RateLimitRule getRateLimit() {
 		return rateLimit;
 	}
@@ -54,13 +65,24 @@ public class RateLimitManager {
 	
 	/**
 	 * Same as {@link #requestCall()} but using weighted request
-	 * @param weight the weight of request to send.
-	 * @return
+	 * @param weight the weight of request to send. 0 if request is not a weighted rule.
+	 * @return 0 if request can be sent immediately, a delay in ms to wait before retrying otherwise.
 	 */
 	public long requestCall(int weight) {
 		return requestCall(System.currentTimeMillis(), weight);
 	}
 	
+	/**
+	 * Same as {@link #requestCall()} but using weighted request and providing
+	 * current timestamp (this method is for testing purpose and client
+	 * implementation should call {@link #requestCall(int)} or
+	 * {@link #requestCall()} that will use current timestamp.
+	 * 
+	 * @param now    the current time in ms.
+	 * @param weight the weight of request to send.
+	 * @return 0 if request can be sent immediately, a delay in ms to wait before
+	 *         retrying otherwise.
+	 */
 	public long requestCall(long now, int weight) {
 		long minDelayBeforeNextPossibleCall = getMinDelayBeforeNextPossibleCall(now, weight);
 		if (minDelayBeforeNextPossibleCall <= 0) {
@@ -71,6 +93,11 @@ public class RateLimitManager {
 		return minDelayBeforeNextPossibleCall;
 	}
 	
+	/**
+	 * @param now the current time in ms.
+	 * @param weight the weight of request to send.
+	 * @return the minimum delay in ms before next possible call with given weight.
+	 */
 	public long getMinDelayBeforeNextPossibleCall(long now, int weight) {
 		if (rateLimit.getMaxRequestCount() == 0 || rateLimit.getMaxTotalWeight() >= 0 && weight > rateLimit.getMaxTotalWeight()) {
 			throw new IllegalArgumentException("Cannot submit call with given weight:" + weight + " that is above threshold of:" + rateLimit);
@@ -88,15 +115,12 @@ public class RateLimitManager {
 	}
 	
 	private MilliSecondStat getMsStat(long now) {
-		MilliSecondStat mss = msStats.get(now);
-		if (mss == null) {
-			mss = new MilliSecondStat();
-			mss.time = now;
-			msStats.put(now, mss);
-		}
-		return mss;
+		return msStats.computeIfAbsent(now, t -> new MilliSecondStat());
 	}
 	
+	/**
+	 * @return the current state of this manager.
+	 */
 	public RateLimitManagerStat getCurrentStat() {
 		return getCurrentStat(System.currentTimeMillis());
 	}
@@ -124,23 +148,9 @@ public class RateLimitManager {
 		}
 	}
 
-	private class MilliSecondStat implements Comparable<MilliSecondStat> {
-		long time;
+	private class MilliSecondStat {
 		int requestCount;
 		int totalWeight;
-		
-		@Override
-		public int compareTo(MilliSecondStat o) {
-			if (o == null) {
-				return 1;
-			}
-			if (time > o.time) {
-				return 1;
-			} else if (time < o.time) {
-				return -1;
-			}
-			return 0;
-		}
 	}
 	
 }

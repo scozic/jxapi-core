@@ -1,11 +1,12 @@
+
 package com.scz.jxapi.exchange;
 
-import java.lang.reflect.InvocationTargetException;
 import java.net.http.HttpClient;
 import java.util.Properties;
 
 import com.scz.jxapi.netutils.deserialization.MessageDeserializer;
 import com.scz.jxapi.netutils.rest.FutureRestResponse;
+import com.scz.jxapi.netutils.rest.HttpMethod;
 import com.scz.jxapi.netutils.rest.HttpRequest;
 import com.scz.jxapi.netutils.rest.HttpRequestExecutor;
 import com.scz.jxapi.netutils.rest.HttpRequestExecutorFactory;
@@ -14,6 +15,7 @@ import com.scz.jxapi.netutils.rest.HttpRequestInterceptorFactory;
 import com.scz.jxapi.netutils.rest.RestResponse;
 import com.scz.jxapi.netutils.rest.javanet.JavaNetHttpRequestExecutor;
 import com.scz.jxapi.netutils.rest.ratelimits.RequestThrottler;
+import com.scz.jxapi.netutils.rest.ratelimits.RequestThrottlingMode;
 import com.scz.jxapi.netutils.websocket.DefaultWebsocketEndpoint;
 import com.scz.jxapi.netutils.websocket.DefaultWebsocketFactory;
 import com.scz.jxapi.netutils.websocket.DefaultWebsocketManager;
@@ -23,32 +25,116 @@ import com.scz.jxapi.netutils.websocket.WebsocketFactory;
 import com.scz.jxapi.netutils.websocket.WebsocketHook;
 import com.scz.jxapi.netutils.websocket.WebsocketHookFactory;
 import com.scz.jxapi.netutils.websocket.WebsocketManager;
-import com.scz.jxapi.observability.ExchangeApiEvent;
-import com.scz.jxapi.observability.ExchangeApiObserver;
 import com.scz.jxapi.observability.Observable;
 import com.scz.jxapi.observability.SynchronizedObservable;
+import com.scz.jxapi.util.DefaultDisposable;
+import com.scz.jxapi.util.FactoryUtil;
+import com.scz.jxapi.util.JsonUtil;
+import com.scz.jxapi.util.PropertiesUtil;
 
-public abstract class AbstractExchangeApi implements ExchangeApi {
+/**
+ * The AbstractExchangeApi class is an abstract base class that provides common
+ * functionality and structure for exchange APIs.
+ * It implements the ExchangeApi interface and provides default implementations
+ * for some of its methods.
+ * It is designed to be used as a base class by ExchangeApiGenerator to generate
+ * concrete exchange API classes.
+ * <br>
+ * This class contains properties and methods that are shared by all exchange
+ * APIs, such as the exchange name, exchange ID,
+ * properties, request throttler, HTTP request executor, and observable for
+ * handling exchange API events.
+ * <br>
+ * Subclasses of AbstractExchangeApi are expected to provide concrete
+ * implementations for the remaining methods defined in the
+ * ExchangeApi interface.
+ * <br>
+ * This class also provides helper methods for creating HTTP request
+ * interceptors, HTTP request executors, and websocket managers.
+ * 
+ * @see ExchangeApi
+ * @see HttpRequestInterceptor
+ * @see HttpRequestExecutor
+ * @see WebsocketManager
+ * @see ExchangeApiObserver
+ * @see ExchangeApiEvent
+ * @see Observable
+ */
+public abstract class AbstractExchangeApi extends DefaultDisposable implements ExchangeApi {
 
+	/**
+	 * The name of this exchange API group.
+	 */
 	protected final String name;
+	
+	/**
+	 * The name of the exchange instance associated with this API group.
+	 */
 	protected final String exchangeName;
+	
+	/**
+	 * The ID of the exchange instance associated with this API group.
+	 */
 	protected final String exchangeId;
+	
+	/**
+	 * The properties associated with the exchange instance.
+	 */
 	protected final Properties properties;
+	
+	/**
+	 * The request throttler used for REST request rate limiting.
+	 */
 	protected final RequestThrottler requestThrottler;
+	
+	/**
+	 * The HTTP request executor used to submit REST APIrequests.
+	 */
 	protected HttpRequestExecutor httpRequestExecutor = null;
+	
+	/**
+	 * The HTTP request interceptor used to intercept REST API requests.
+	 */
 	protected HttpRequestInterceptor httpRequestInterceptor = null;
+	
+	/**
+	 * The websocket manager used to manage websocket connections
+	 */
 	protected WebsocketManager websocketManager = null;
+	
+	/**
+	 * The observable used to handle exchange API events.
+	 */
 	protected final Observable<ExchangeApiObserver, ExchangeApiEvent> observable 
-						= new SynchronizedObservable<>((observer, event) -> observer.handleEvent(event));
-	  
-	public AbstractExchangeApi(String apiName, 
+						= new SynchronizedObservable<>(ExchangeApiObserver::handleEvent);
+	
+	/**
+	 * Creates a new AbstractExchangeApi instance with the specified API name,
+	 * exchange name, exchange ID, and properties.
+	 * 
+	 * @param apiName      The name of the API.
+	 * @param exchangeName The name of the exchange instance.
+	 * @param exchangeId   The ID of the exchange.
+	 * @param properties   The properties associated with the exchange instance.
+	 */
+	protected AbstractExchangeApi(String apiName, 
 							   String exchangeName, 
 							   String exchangeId, 
 							   Properties properties) {
 		this(apiName, exchangeName, exchangeId, properties, null);
 	}  
 
-	public AbstractExchangeApi(String apiName, 
+	/**
+	 * Creates a new AbstractExchangeApi instance with the specified API name,
+	 * exchange name, exchange ID, properties, and request throttler.
+	 * 
+	 * @param apiName          The name of the API.
+	 * @param exchangeName     The name of the exchange instance.
+	 * @param exchangeId       The ID of the exchange.
+	 * @param properties       The properties associated with the exchange instance.
+	 * @param requestThrottler The request throttler to use for rate limiting.
+	 */
+	protected AbstractExchangeApi(String apiName, 
 							   String exchangeName, 
 							   String exchangeId, 
 							   Properties properties, 
@@ -58,8 +144,26 @@ public abstract class AbstractExchangeApi implements ExchangeApi {
 		this.exchangeId = exchangeId;
 		this.properties = properties;
 		this.requestThrottler = requestThrottler;
+		if (requestThrottler != null) {
+			applyRequestThrottlerProperties();
+		}
+	}
+	
+	private void applyRequestThrottlerProperties() {
+		String requestThrottlingModeValue = properties.getProperty(CommonConfigProperties.REQUEST_THROTTLING_MODE_PROPERTY.getName());
+		if (requestThrottlingModeValue != null) {
+			requestThrottler.setThrottlingMode(RequestThrottlingMode.valueOf(requestThrottlingModeValue));
+		}
+		Long maxThrottleDelay = PropertiesUtil.getLongProperty(properties, CommonConfigProperties.MAX_REQUEST_THROTTLE_DELAY_PROPERTY.getName(), null);
+		if (maxThrottleDelay != null) {
+			requestThrottler.setMaxThrottleDelay(maxThrottleDelay);
+		}
 	}
 
+	/**
+	 * Returns the name of the exchange instance associated with this API.
+	 * @return The name of the exchange instance.
+	 */
 	@Override
 	public String getExchangeName() {
 		return exchangeName;
@@ -71,14 +175,25 @@ public abstract class AbstractExchangeApi implements ExchangeApi {
 	}
 	
 	@Override
+	public String getExchangeId() {
+		return exchangeId;
+	}
+	
+	@Override
 	public Properties getProperties() {
 		return properties;
 	}
 	
+	/**
+	 * @return the request executor used by this exchange API group.
+	 */
 	public HttpRequestExecutor getHttpRequestExecutor() {
 		return httpRequestExecutor;
 	}
 
+	/**
+	 * @param httpRequestExecutor the request executor used by this exchange API group.
+	 */
 	public void setHttpRequestExecutor(HttpRequestExecutor httpRequestExecutor) {
 		this.httpRequestExecutor = httpRequestExecutor;
 	}
@@ -93,34 +208,64 @@ public abstract class AbstractExchangeApi implements ExchangeApi {
 		return this.observable.unsubscribe(exchangeApiObserver);
 	}
 	
-	protected HttpRequestInterceptor createHttpRequestInterceptor(String factoryClassName) {
-		try {
-			return ((HttpRequestInterceptorFactory) Class.forName(factoryClassName).getConstructor().newInstance()).createInterceptor(this);
-		} catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
-				| NoSuchMethodException | SecurityException | ClassNotFoundException e) {
-			throw new IllegalArgumentException("Failed to instantiate " 
-												+ HttpRequestInterceptorFactory.class.getName() + 
-												" implementation '" + factoryClassName + "'.",
-												e);
-		}
+	/**
+	 * Instantiates HTTP request interceptor using the specified factory class name.
+	 * Should be called by subclasses to create the HTTP request interceptor if
+	 * there is at least one REST API and a {@link HttpRequestInterceptorFactory}
+	 * class name is specified.
+	 * 
+	 * @param factoryClassName The fully qualified class name of the factory class
+	 *                         that creates the HTTP request interceptor.
+	 */
+	protected void createHttpRequestInterceptor(String factoryClassName) {
+		httpRequestInterceptor = ((HttpRequestInterceptorFactory) FactoryUtil.fromClassName(factoryClassName)).createInterceptor(this);
 	}
 	
-	protected HttpRequestExecutor createHttpRequestExecutor(String factoryClassName) {
+	/**
+	 * Instantiates HTTP request executor using the specified factory class name, or
+	 * the default executor factory which is usually sufficient. Should be called by
+	 * subclasses to create the HTTP request executor if there is at least one REST
+	 * API.
+	 * 
+	 * @param factoryClassName The fully qualified class name of the factory class
+	 *                         that creates the HTTP request executor, or null if
+	 *                         the default executor factory
+	 *                         {@link JavaNetHttpRequestExecutor} should be used.
+	 * @param defaultRequestTimeout   the request timeout used on executor, see
+	 *                         {@link HttpRequestExecutor#setRequestTimeout(long)}.
+	 *                         If value is &lt; 0, the default
+	 *                         {@link HttpRequestExecutor#DEFAULT_REQUEST_TIMEOUT}
+	 *                         is used.
+	 */
+	protected void createHttpRequestExecutor(String factoryClassName, long defaultRequestTimeout) {
 		if  (factoryClassName != null) {
-			try {
-				return ((HttpRequestExecutorFactory) Class.forName(factoryClassName).getConstructor().newInstance()).createExecutor(this);
-			} catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
-					| NoSuchMethodException | SecurityException | ClassNotFoundException e) {
-				throw new IllegalArgumentException("Failed to instantiate " 
-													+ HttpRequestInterceptorFactory.class.getName() + 
-													" implementation '" + factoryClassName + "'.",
-													e);
-			}
+			httpRequestExecutor = ((HttpRequestExecutorFactory)  FactoryUtil.fromClassName(factoryClassName)).createExecutor(this);
+		} else {
+			httpRequestExecutor = new JavaNetHttpRequestExecutor(HttpClient.newHttpClient());
 		}
-		return new JavaNetHttpRequestExecutor(HttpClient.newHttpClient());
+		long requestTimeout = PropertiesUtil.getLongProperty(
+				getProperties(), 
+				CommonConfigProperties.HTTP_REQUEST_TIMEOUT_PROPERTY.getName(), 
+				defaultRequestTimeout);
+		if (requestTimeout >= 0) {
+			httpRequestExecutor.setRequestTimeout(requestTimeout);
+		}
 	}
 	
+	/**
+	 * Submits a REST request asynchronously using the specified request and message deserializer to deserialize response.
+	 * If a request throttler is set, the request is submitted through the throttler.
+	 * <br>
+	 * This method should used by subclasses to submit REST requests.
+	 * @param <A> The type of the response to the request
+	 * @param request The request to submit
+	 * @param deserializer The deserializer to use to deserialize the response
+	 * @return The response to the request, as a {@link FutureRestResponse}
+	 */
 	protected <A> FutureRestResponse<A> submit(HttpRequest request, MessageDeserializer<A> deserializer) {
+		if (request.getHttpMethod().requestHasBody && request.getRequest() != null) {
+			request.setBody(JsonUtil.pojoToJsonString(request.getRequest()));
+		}
 		if (requestThrottler != null) {
 			return requestThrottler.submit(request, r -> { 
 				try {
@@ -145,7 +290,7 @@ public abstract class AbstractExchangeApi implements ExchangeApi {
 		if (httpRequestInterceptor != null) {
 			httpRequestInterceptor.intercept(request);
 		}
-		dispatchApiEvent(ExchangeApiEvent.createRestRequestEvent(request));
+		dispatchApiEvent(ExchangeApiEvent.createHttpRequestEvent(request));
 		FutureRestResponse<A> callback = new FutureRestResponse<>();
 		httpRequestExecutor.execute(request).thenAccept(httpResponse -> {
 			RestResponse<A> response = new RestResponse<>(httpResponse);
@@ -163,9 +308,17 @@ public abstract class AbstractExchangeApi implements ExchangeApi {
 		return callback;
 	}
 	
-	protected WebsocketManager createWebsocketManager(String url, 
-													  String websocketFactoryClassName, 
-													  String websocketHookFactoryClassName) {
+	/**
+	 * Creates a websocket manager using the specified URL, websocket factory class name, and websocket hook factory class name.
+	 * Should be called by subclasses to create the websocket manager if there is at least one websocket endpoint.
+	 * 
+	 * @param url The URL of the websocket server.
+	 * @param websocketFactoryClassName The fully qualified class name of the websocket factory class that creates the websocket.
+	 * @param websocketHookFactoryClassName The fully qualified class name of the websocket hook factory class that creates the websocket hook.
+	 */
+	protected void createWebsocketManager(String url, 
+										  String websocketFactoryClassName, 
+										  String websocketHookFactoryClassName) {
 		WebsocketFactory websocketFactory = websocketFactoryClassName == null? 
 												new DefaultWebsocketFactory(): 
 												WebsocketFactory.fromClassName(websocketFactoryClassName);
@@ -176,21 +329,113 @@ public abstract class AbstractExchangeApi implements ExchangeApi {
 		WebsocketHook websocketHook = websocketHookFactoryClassName == null? 
 										null: 
 										WebsocketHookFactory.fromClassName(websocketHookFactoryClassName).createWebsocketHook(this);
-		return new DefaultWebsocketManager(websocket, websocketHook);
+		websocketManager = new DefaultWebsocketManager(this, websocket, websocketHook);
+		websocketManager.subscribeErrorHandler(error -> dispatchApiEvent(ExchangeApiEvent.createWebsocketErrorEvent(error)));
 	}
 	
+	/**
+	 * Creates a websocket endpoint with the specified name and message deserializer.
+	 * Should be called by subclasses to create websocket endpoints.
+	 * 
+	 * @param <M> The type of the message deserialized for this endpoint.
+	 * @param endpointName The name of the websocket endpoint.
+	 * @param messageDeserializer The message deserializer to use for deserializing messages received by the endpoint.
+	 * @return The created websocket endpoint.
+	 */
 	protected <M> WebsocketEndpoint<M> createWebsocketEndpoint(String endpointName, 
 															   MessageDeserializer<M> messageDeserializer) {
+		if (websocketManager == null) {
+			throw new IllegalStateException("Cannot create websocket endpoint as no websocket manager is set");
+		}
 		return new DefaultWebsocketEndpoint<>(endpointName, 
 				   							  websocketManager, 
 											  messageDeserializer,
 											  this::dispatchApiEvent);
 	}
 	
+	/**
+	 * Dispatches the specified exchange API event to all observers.
+	 * <br>
+	 * Needs usually not be called by subclasses, as it is called for every call to
+	 * {@link #submit(HttpRequest, MessageDeserializer)} and
+	 * {@link #createWebsocketEndpoint(String, MessageDeserializer)}.
+	 * 
+	 * @param event The exchange API event to dispatch.
+	 */
 	protected void dispatchApiEvent(ExchangeApiEvent event) {
 		event.setExchangeName(exchangeName);
 		event.setExchangeApiName(name);
 		event.setExchangeId(exchangeId);
 		observable.dispatch(event);
+	}
+	
+	/**
+	 * When submitting a REST request call, outgoing HTT request may carry a body, this is usually the case for {@link HttpMethod#POST} method, see {@link HttpMethod#requestHasBody}.
+	 * This method will serialize POJO or plain value type to body, by default as JSON 
+	 * @param request Request data to serialize as HTTP request body
+	 * @return The serialized request data to use as HTTP request body.
+	 * @see JsonUtil#pojoToJsonString(Object)
+	 */
+	protected String serializeRequestBody(Object request) {
+		return JsonUtil.pojoToJsonString(request);
+	}
+	
+	@Override
+	protected void doDispose() {
+		if (requestThrottler != null) {
+			requestThrottler.dispose();
+		}
+		if (httpRequestExecutor != null) {
+			httpRequestExecutor.dispose();
+		}
+		if (websocketManager != null) {
+			websocketManager.dispose();
+		}
+	}
+	
+	@Override
+	public void setRequestThrottlingMode(RequestThrottlingMode requestThrottlingMode) {
+		if (requestThrottler != null) {
+			requestThrottler.setThrottlingMode(requestThrottlingMode);
+		}
+	}
+
+	@Override
+	public RequestThrottlingMode getRequestThrottlingMode() {
+		if (requestThrottler != null) {
+			return requestThrottler.getThrottlingMode();
+		}
+		return RequestThrottlingMode.NONE;
+	}
+
+	@Override
+	public void setMaxRequestThrottleDelay(long maxRequestThrottleDelay) {
+		if (requestThrottler != null) {
+			requestThrottler.setMaxThrottleDelay(maxRequestThrottleDelay);
+		}
+	}
+
+	@Override
+	public long getMaxRequestThrottleDelay() {
+		if (requestThrottler != null) {
+			return requestThrottler.getMaxThrottleDelay();
+		}
+		return -1L;
+	}
+	
+	@Override
+	public void setHttpRequestTimeout(long httpRequesTimeout) {
+		if (httpRequestExecutor != null) {
+			httpRequestExecutor.setRequestTimeout(httpRequesTimeout);
+		}
+		
+	}
+
+	@Override
+	public long getHttpRequestTimeout() {
+		if (httpRequestExecutor != null) {
+			return httpRequestExecutor.getRequestTimeout();
+		}
+		return -1L;
 	}
 }

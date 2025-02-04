@@ -10,6 +10,7 @@
 			"name": "FuturesTrading",
 			"description": "An API with both API global and endpoint specific rate limits",
 			"httpRequestInterceptorFactory": "com.foo.bar.BarRequestInterceptorFactory",
+			"rateLimits":[],
 			"restEndpoints": [
 				{
 					"name": "exchangeInfo",
@@ -18,14 +19,14 @@
 					"url": "https://com.sample.mycex/exchangeInfo",
 					"requestWeight": 60,
 					"request": {
-						"parameters": [
+						"properties": [
 							{"name":"symbols", "type": "STRING_LIST", "description":"The list of symbol to fetch market information for. Leave empty to fetch all markets", "sampleValue":""}
 						]
 					},
 					"response":{
-						"parameters": [
+						"properties": [
 							{"name":"responseCode", "type": "INT", "description":"Request response code", "sampleValue":"0"},
-							{"name":"payload", "type": "OBJECT_LIST", "description":"List of market information for each requested symbol", "parameters":[
+							{"name":"payload", "type": "OBJECT_LIST", "description":"List of market information for each requested symbol", "properties":[
 									{"name":"symbol", "type": "STRING", "description":"Market symbol", "sampleValue":"BTC_USDT"},
 									{"name":"minOrderSize", "type": "BIGDECIMAL", "description":"Minimum order amount", "sampleValue":"0.0001"}
 								]
@@ -33,8 +34,8 @@
 						]
 					}
 				}
-			]
+			],
+			"websocketEndpoints": []
 		}
-		
 	]
 }

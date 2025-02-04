@@ -11,22 +11,21 @@ import org.slf4j.LoggerFactory;
  * 
  * Helper methods around REST request where response may come in multiple
  * "pages". It is common that API used to fetch large number of items provides
- * request parameter "index" to indicate page index, and response parameter
- * "index" indicating the next page index, or none if last page is found.
- *
- * @param <R> Type of request
- * @param <A> Type of response data in {@link FutureRestResponse} 
+ * request property "index" to indicate page index, and response property
+ * "index" indicating the next page index, or none if last page is found. 
  */
 public class RestRequestPagination {
 	
 	private static final Logger log = LoggerFactory.getLogger(RestRequestPagination.class);
+	
+	private RestRequestPagination() {}
 	
 	/**
 	 * Fetches all pages of response to given request.
 	 * Example:
 	 * <pre>{@code
 	 * // api: Interface exposing method FutureRestResponse<BybitV5GetPositionInfoResponse> getPositionInfo(BybitV5GetPositionInfoRequest request)
-	 * // request: Request object prepared with parameters
+	 * // request: Request object prepared
 	 * FutureRestResponse<BybitV5GetPositionInfoResponse> response = RestRequestPagination.fetchAllPages(         
      *    request, // Initial request to send
      *    api::getPositionInfo, // API method: 
@@ -58,6 +57,9 @@ public class RestRequestPagination {
 	 * @return response that will complete when all pages are fetched, with
 	 *         accumulated results. If an error occurs when fetching one page, the
 	 *         response returned is the error one.
+	 * @param <R> Type of request
+	 * @param <A> Type of response data in {@link FutureRestResponse}        
+	 *         
 	 */
 	public static <R, A> FutureRestResponse<A> fetchAllPages(R request, 
 										 					 Function<R, FutureRestResponse<A>> endpoint, 
@@ -74,11 +76,10 @@ public class RestRequestPagination {
 			 												  BinaryOperator<A> responseAccumulator,
 			 												  A cumulativeResult) {
 		FutureRestResponse<A> response = new FutureRestResponse<>();
-		if (log.isDebugEnabled() ) {
-			log.debug("Fetching page for request:" + request);
-		}
+		log.debug("Fetching page for request:{}", request);
 		endpoint.apply(request).thenAccept(responsePage -> {
 			try {
+				 log.debug("Got response to request:{}:{}", request, responsePage);
 				if (!responsePage.isOk()) {
 					response.complete(responsePage);
 				} else {
@@ -87,8 +88,7 @@ public class RestRequestPagination {
 						 responsePage.setResponse(responseAccumulator.apply(cumulativeResult, page));
 					 }
 					 String nextPageIndex = getResponseIndex.apply(page);
-					 if (log.isDebugEnabled())
-						 log.debug("Next page index:" + nextPageIndex + " in response to request:" + request);
+					 log.debug("Next page index:{} in response to request:{}", nextPageIndex, request);
 					 if (nextPageIndex != null) {
 						 // Fetch next page
 						 setRequestIndex.accept(nextPageIndex, request);
@@ -106,5 +106,4 @@ public class RestRequestPagination {
 		});
 		return response;
 	}
-
 }

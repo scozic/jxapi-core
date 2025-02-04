@@ -1,25 +1,27 @@
 {
 	"name": "MyTestExchange",
 	"description": "A sample Exchange descriptor file",
+	"httpUrl": "https://mycex.com",
 	"basePackage": "com.foo.bar.gen",
 		"apis":[
 		{ 
 			"name": "MarketData",
-			"description": "The market data API of MyTestExchange, , with different request data types for websocket and REST endpoints. Remark: Only OBJECT (default) and STRING are usually used, but any data type is supported",
+			"description": "The market data API of MyTestExchange, with different request data types for websocket and REST endpoints. Remark: Only OBJECT (default) and STRING are usually used, but any data type is supported",
 			"httpRequestInterceptorFactory": "com.foo.bar.BarRequestInterceptorFactory",
+			"httpRequestExecutorFactory": "com.foo.bar.BarRequestExecutorFactory",
 			"restEndpoints": [
 				{
 					"name": "postRestRequestDataTypeInt",
 					"httpMethod": "POST",
 					"description": "A sample REST endpoint using INT response data type",
-					"url": "https://com.sample.mycex/postInt",
+					"url": "/postInt",
 					"request": {
 						"type": "INT",
 						"sampleValue": 12345
 					},
 					"response": {
 						"objectName": "GenericResponse",
-						"parameters": [
+						"properties": [
 							{"name":"responseCode", "type": "INT", "description":"Request response code", "sampleValue":"0"}
 						]
 					}
@@ -28,7 +30,7 @@
 					"name": "postRestRequestDataTypeLong",
 					"httpMethod": "POST",
 					"description": "A sample REST endpoint using LONG response data type",
-					"url": "https://com.sample.mycex/postLong",
+					"url": "/postLong",
 					"request": {
 						"type": "LONG",
 						"sampleValue": 123456789012
@@ -41,7 +43,7 @@
 					"name": "postRestRequestDataTypeBigDecimal",
 					"httpMethod": "POST",
 					"description": "A sample REST endpoint using BIGDECIMAL response data type",
-					"url": "https://com.sample.mycex/postBigDecimal",
+					"url": "/postBigDecimal",
 					"request": {
 						"type": "BIGDECIMAL",
 						"sampleValue": 12345.678
@@ -54,7 +56,7 @@
 					"name": "postRestRequestDataTypeString",
 					"httpMethod": "POST",
 					"description": "A sample REST endpoint using STRING response data type",
-					"url": "https://com.sample.mycex/postString",
+					"url": "/postString",
 					"request": {
 						"name": "hello",
 						"description": "Say Hi!",
@@ -69,7 +71,7 @@
 					"name": "postRestRequestDataTypeBoolean",
 					"httpMethod": "POST",
 					"description": "A sample REST endpoint using BOOLEAN response data type",
-					"url": "https://com.sample.mycex/postBoolean",
+					"url": "/postBoolean",
 					"request": {
 						"type": "BOOLEAN",
 						"sampleValue": true
@@ -82,10 +84,10 @@
 					"name": "postRestRequestDataTypeObjectNoParameters",
 					"httpMethod": "POST",
 					"description": "A sample REST endpoint using OBJECT request data type (implicit), and no parameters",
-					"url": "https://com.sample.mycex/postNoParameter",
+					"url": "/postNoParameter",
 					"request": {
 						"type": "OBJECT",
-						"parameters": []
+						"properties": []
 					},
 					"response": {
 						"objectName": "GenericResponse"
@@ -95,10 +97,10 @@
 					"name": "postRestRequestDataTypeObjectOneParameter",
 					"httpMethod": "POST",
 					"description": "A sample REST endpoint using OBJECT request data type (default, explicit here), and one parameter",
-					"url": "https://com.sample.mycex/postBigDecimal",
+					"url": "/postObjectOneParameter",
 					"request": {
 						"type": "OBJECT",
-						"parameters": [
+						"properties": [
 							{"name":"singleArg", "type": "INT", "description":"Request single argument", "sampleValue":"0"}
 						]
 					},
@@ -110,9 +112,10 @@
 					"name": "postRestRequestDataTypeIntList",
 					"httpMethod": "POST",
 					"description": "A sample REST endpoint using INT_LIST request data type",
-					"url": "https://com.sample.mycex/postBigDecimal",
+					"url": "/postIntList",
 					"request": {
-						"type": "INT_LIST"
+						"type": "INT_LIST",
+						"sampleValue": [1,3,5]
 					},
 					"response": {
 						"objectName": "GenericResponse"
@@ -122,11 +125,71 @@
 					"name": "postRestRequestDataTypeObjectListMap",
 					"httpMethod": "POST",
 					"description": "A sample REST endpoint using OBJECT_LIST_MAP request data type",
-					"url": "https://com.sample.mycex/postBigDecimal",
+					"url": "/postObjectListMap",
 					"request": {
 						"type": "OBJECT_LIST_MAP",
 						"objectName": "SingleSymbol",
 						"sampleMapKeyValue": ["spot"]
+					},
+					"response": {
+						"objectName": "GenericResponse"
+					}
+				},
+				{
+					"name": "getRestRequestDataTypeObjectListMap",
+					"httpMethod": "GET",
+					"description": "A sample REST endpoint using GET (hence url query params) and object list map request type.",
+					"url": "/getObjectListMap",
+					"request": {
+						"type": "OBJECT_LIST_MAP",
+						"objectName": "MultiSymbol",
+						"sampleMapKeyValue": ["spot"],
+						"properties": [
+							{"name":"symbolList", "type": "STRING_LIST", "description":"List of full symbol names", "sampleValue":["BTC_USDT", "ETH_USDT"]},
+							{"name":"symbolMap", "type": "STRING_LIST_MAP", "description":"Symbols as a map of quote asset keys map with base asset as values", "sampleValue":{"USDT":["BTC_USDT", "ETH"]}},
+							{"name":"symbolObject", "type": "OBJECT", "msgField":"so", "objectName":"SingleSymbol"}
+						]
+					},
+					"response": {
+						"objectName": "GenericResponse"
+					}
+				},
+				{
+					"name": "getRestRequestDataTypeEmptyObject",
+					"httpMethod": "GET",
+					"description": "A sample REST endpoint using GET (hence url query params) and empty request object",
+					"url": "/getEmptyObject",
+					"request": {
+						"type": "OBJECT",
+						"properties": []
+					},
+					"response": {
+						"objectName": "GenericResponse"
+					}
+				},
+				{
+					"name": "getRestRequestDataTypePrimitiveWithMsgField",
+					"httpMethod": "GET",
+					"description": "A sample REST endpoint using GET (hence url query params) primitive request type, with 'msgField' property defined. That msgField value should be used as query param argument name",
+					"url": "/getIntWithMsgField",
+					"request": {
+						"type": "INT",
+						"name": "age",
+						"msgField": "a"
+					},
+					"response": {
+						"objectName": "GenericResponse"
+					}
+				},
+				{
+					"name": "postRestRequestDataTypeNoParamsButUrlParameters",
+					"httpMethod": "POST",
+					"description": "A sample REST endpoint using POST method (hence no url parameters by default), no arguments, but url parameters through 'urlParameters' property",
+					"url": "/postInt",
+					"urlParameters":"/customUrSuffix",
+					"request": {
+						"type": "OBJECT",
+						"properties": []
 					},
 					"response": {
 						"objectName": "GenericResponse"
@@ -142,14 +205,14 @@
 					"topic": "ticker",
 					"description": "Subscribe to stream with OBJECT request type (implicit) and no parameters",
 					"request": {
-						"parameters": []
+						"properties": []
 					},
 					"messageTopicMatcherFields": [
 						{"name": "topic",  "value": "streamWithObjectRequestDataTypeZeroParametersTopic"}
 					],
 					"message": {
 						"objectName":"Ticker",
-						"parameters": [
+						"properties": [
 							{"name":"topic", "msgField":"t", "type": "STRING", "description":"Topic", "sampleValue":"ticker"},
 							{"name":"symbol", "msgField":"s", "type": "STRING", "description":"Symbol name", "sampleValue":"BTC_USDT"},
 							{"name":"last", "msgField":"p", "type": "BIGDECIMAL", "description":"Last traded price", "sampleValue":"16000.00"}
@@ -163,8 +226,8 @@
 					"request": {
 						"name": "symbolObj",
 						"objectName": "SingleSymbol",
-						"parameters": [
-							{"name":"symbol", "type": "STRING", "description":"Symbol name", "sampleValue":"BTC_USDT"}
+						"properties": [
+							{"name":"symbol", "type": "STRING", "msgField":"s", "description":"Symbol name", "sampleValue":"BTC_USDT"}
 						]
 					},
 					"messageTopicMatcherFields": [
@@ -263,15 +326,38 @@
 				},
 				{
 					"name": "streamWithObjectListMapRequestDataType",
-					"topic": "ticker",
+					"topic": "ticker:${symbolList}",
+					"topicParametersListSeparator": "|",
 					"description": "Subscribe to stream with OBJECT_LIST_MAP request type. The objectName field is set to a name already defined in other API definition.",
 					"request": {
-						"objectName": "SingleSymbol",
+						"objectName": "MultiSymbol",
 						"type": "OBJECT_LIST_MAP",
 						"sampleMapKeyValue": ["spot"]
 					},
 					"messageTopicMatcherFields": [
 						{"name": "topic",  "value": "streamWithObjectListMapRequestDataTypeTopic"}
+					],
+					"message": {
+						"objectName":"Ticker"
+					}
+				},
+				{
+					"name": "streamWithNullTopicAndNullRequest",
+					"description": "Subscribe to stream with null topic, request and message topic matcher. Remark: No topic matcher situation is realistic only when there is no websocket stream multiplexing, e.g. no 'topic' but a single endpoint handling all messages coming on websocket.",
+					"message": {
+						"objectName":"Ticker"
+					}
+				},
+				{
+					"name": "streamWithNullTopicAndPrimitiveTypeRequest",
+					"description": "Subscribe to stream with null topic, and primitive type request, without message topic matcher. The request is used in message topic matcher field template, so generated method implementation will perform subsitution with method request argument",
+					"request": {
+						"name": "myTopic",
+						"type": "STRING",
+						"sampleValue": "BTC_USDT"
+					},
+					"messageTopicMatcherFields": [
+						{"name": "topic",  "value": "ticker:${myTopic}"}
 					],
 					"message": {
 						"objectName":"Ticker"

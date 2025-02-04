@@ -8,11 +8,26 @@ import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonToken;
 import com.scz.jxapi.netutils.deserialization.json.AbstractJsonMessageDeserializer;
 import com.scz.jxapi.netutils.deserialization.json.JsonDeserializer;
+import com.scz.jxapi.netutils.deserialization.MessageDeserializer;
 
+/**
+ * {@link AbstractJsonMessageDeserializer} for {@link List} fields in JSON messages.
+ * 
+ * @param <T> the type of the list items
+ * 
+ * @see MessageDeserializer
+ * @see JsonDeserializer
+ */
 public class ListJsonFieldDeserializer<T> extends AbstractJsonMessageDeserializer<List<T>> {
 	
+	/**
+	 * The deserializer for the list items
+	 */
 	protected final JsonDeserializer<T> itemDeserializer;
 	
+	/**
+	 * @param itemDeserializer the deserializer for the list items
+	 */
 	public ListJsonFieldDeserializer(JsonDeserializer<T> itemDeserializer) {
 		this.itemDeserializer = itemDeserializer;
 	}

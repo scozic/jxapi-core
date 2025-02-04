@@ -11,9 +11,11 @@ public interface HttpRequestInterceptor {
 	/**
 	 * Called just before execution of a HttptRequest. Implementations are free to
 	 * modifiy request provided in argument to fill API specific requirements such
-	 * as adding specific headers or adding signature argument.
+	 * as adding specific headers or adding signature argument. Remark: Calls to
+	 * {@link ExchangeApi} REST endpoints are thread safe (can be called from any
+	 * thread) so implementations thread safe too.
 	 * 
-	 * @param request
+	 * @param request HttpRequest to be executed.
 	 */
 	void intercept(HttpRequest request);
 
