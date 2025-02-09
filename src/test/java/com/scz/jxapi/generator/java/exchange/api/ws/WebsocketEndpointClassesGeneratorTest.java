@@ -44,7 +44,7 @@ public class WebsocketEndpointClassesGeneratorTest {
 	@Test
 	public void testGenerateWebsocketEndpointClasses() throws IOException {
 		srcFolder = ClassesGeneratorTestUtil.generateTmpDir();
-		ExchangeDescriptor exchange = new ExchangeDescriptorParser().fromJson(Paths.get(".", "src", "test", "resources", "testExchangeDescriptor.json"));
+		ExchangeDescriptor exchange = ExchangeDescriptorParser.fromJson(Paths.get(".", "src", "test", "resources", "testExchangeDescriptor.json"));
 		ExchangeApiDescriptor api = exchange.getApis().get(0);
 		WebsocketEndpointDescriptor wsEndpoint = api.getWebsocketEndpoints().get(0);
 		WebsocketEndpointClassesGenerator generator = new WebsocketEndpointClassesGenerator(exchange, api, wsEndpoint);
@@ -202,7 +202,7 @@ public class WebsocketEndpointClassesGeneratorTest {
 	@Test
 	public void testGenerateWebsocketEndpointWithRequestAndMessageImplementingCustomInterfaces() throws Exception {
 		srcFolder = ClassesGeneratorTestUtil.generateTmpDir();
-		ExchangeDescriptor exchange = new ExchangeDescriptorParser().fromJson(Paths.get(".", "src", "test", "resources", "testExchangeDescriptorWithRequestAndResponseImplementingCustomInterfaces.json"));
+		ExchangeDescriptor exchange = ExchangeDescriptorParser.fromJson(Paths.get(".", "src", "test", "resources", "testExchangeDescriptorWithRequestAndResponseImplementingCustomInterfaces.json"));
 		ExchangeApiDescriptor api = exchange.getApis().get(0);
 		WebsocketEndpointDescriptor wsEndpoint = api.getWebsocketEndpoints().get(0);
 		WebsocketEndpointClassesGenerator generator = new WebsocketEndpointClassesGenerator(exchange, api, wsEndpoint);
@@ -364,7 +364,7 @@ public class WebsocketEndpointClassesGeneratorTest {
 	@Test
 	public void testGenerateClassesSpecificApiRequestTypesPrimitiveType() throws Exception {
 		srcFolder = ClassesGeneratorTestUtil.generateTmpDir();
-		ExchangeDescriptor exchange = new ExchangeDescriptorParser().fromJson(Paths.get(".", "src", "test", "resources", "testExchangeDescriptorWithAllRestRequestDataTypes.json"));
+		ExchangeDescriptor exchange = ExchangeDescriptorParser.fromJson(Paths.get(".", "src", "test", "resources", "testExchangeDescriptorWithAllRestRequestDataTypes.json"));
 		ExchangeApiDescriptor api = exchange.getApis().get(0);
 		WebsocketEndpointDescriptor websocketEndpoint = ClassesGeneratorTestUtil.findWebsocketEndpointByName("streamWithIntRequestDataType", api);
 		WebsocketEndpointClassesGenerator generator = new WebsocketEndpointClassesGenerator(exchange, api, websocketEndpoint);
@@ -375,7 +375,7 @@ public class WebsocketEndpointClassesGeneratorTest {
 	@Test
 	public void testGenerateClassesSpecificApiRequestTypesEmptyRequestAndDefinedResponse() throws Exception {
 		srcFolder = ClassesGeneratorTestUtil.generateTmpDir();
-		ExchangeDescriptor exchange = new ExchangeDescriptorParser().fromJson(Paths.get(".", "src", "test", "resources", "testExchangeDescriptorWithAllRestRequestDataTypes.json"));
+		ExchangeDescriptor exchange = ExchangeDescriptorParser.fromJson(Paths.get(".", "src", "test", "resources", "testExchangeDescriptorWithAllRestRequestDataTypes.json"));
 		ExchangeApiDescriptor api = exchange.getApis().get(0);
 		WebsocketEndpointDescriptor websocketEndpoint = ClassesGeneratorTestUtil.findWebsocketEndpointByName("streamWithObjectRequestDataTypeZeroParameters", api);
 		WebsocketEndpointClassesGenerator generator = new WebsocketEndpointClassesGenerator(exchange, api, websocketEndpoint);
@@ -392,7 +392,7 @@ public class WebsocketEndpointClassesGeneratorTest {
 	@Test
 	public void testGenerateClassesSpecificApiRequestTypesObjectListMapRequestReferencedObject() throws Exception {
 		srcFolder = ClassesGeneratorTestUtil.generateTmpDir();
-		ExchangeDescriptor exchange = new ExchangeDescriptorParser().fromJson(Paths.get(".", "src", "test", "resources", "testExchangeDescriptorWithAllRestRequestDataTypes.json"));
+		ExchangeDescriptor exchange = ExchangeDescriptorParser.fromJson(Paths.get(".", "src", "test", "resources", "testExchangeDescriptorWithAllRestRequestDataTypes.json"));
 		ExchangeApiDescriptor api = exchange.getApis().get(0);
 		WebsocketEndpointDescriptor websocketEndpoint = ClassesGeneratorTestUtil.findWebsocketEndpointByName("streamWithObjectListMapRequestDataType", api);
 		WebsocketEndpointClassesGenerator generator = new WebsocketEndpointClassesGenerator(exchange, api, websocketEndpoint);
@@ -403,7 +403,7 @@ public class WebsocketEndpointClassesGeneratorTest {
 	@Test
 	public void testGenerateClassesSpecificApiRequestTypeNullRequest() throws Exception {
 		srcFolder = ClassesGeneratorTestUtil.generateTmpDir();
-		ExchangeDescriptor exchange = new ExchangeDescriptorParser().fromJson(Paths.get(".", "src", "test", "resources", "testExchangeDescriptorWithAllRestRequestDataTypes.json"));
+		ExchangeDescriptor exchange = ExchangeDescriptorParser.fromJson(Paths.get(".", "src", "test", "resources", "testExchangeDescriptorWithAllRestRequestDataTypes.json"));
 		ExchangeApiDescriptor api = exchange.getApis().get(0);
 		WebsocketEndpointDescriptor websocketEndpoint = ClassesGeneratorTestUtil.findWebsocketEndpointByName("streamWithIntRequestDataType", api);
 		websocketEndpoint.setRequest(null);

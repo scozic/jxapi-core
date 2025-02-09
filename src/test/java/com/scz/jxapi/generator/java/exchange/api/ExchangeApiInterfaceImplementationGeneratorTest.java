@@ -17,7 +17,7 @@ public class ExchangeApiInterfaceImplementationGeneratorTest {
 
 	@Test
 	public void testGenerateExchangeApi() throws Exception {
-		ExchangeDescriptor exchangeDescriptor = new ExchangeDescriptorParser().fromJson(Paths.get(".", "src", "test", "resources", "exchangeApiInterfaceImplementationGeneratorTestDescriptor.json"));
+		ExchangeDescriptor exchangeDescriptor = ExchangeDescriptorParser.fromJson(Paths.get(".", "src", "test", "resources", "exchangeApiInterfaceImplementationGeneratorTestDescriptor.json"));
 		ExchangeApiDescriptor exchangeApiDescriptor = exchangeDescriptor.getApis().get(0);
 		ExchangeApiInterfaceImplementationGenerator apiInterfaceGenerator = new ExchangeApiInterfaceImplementationGenerator(exchangeDescriptor, exchangeApiDescriptor);
 		Assert.assertEquals("package com.foo.bar.gen.marketdata;\n"
@@ -120,7 +120,7 @@ public class ExchangeApiInterfaceImplementationGeneratorTest {
 	
 	@Test(expected = IllegalArgumentException.class)
 	public void testGenerateExchangeApi_NullWebsocketUrlNotAllowWithExistingWsEndpoints() throws Exception {
-		ExchangeDescriptor exchangeDescriptor = new ExchangeDescriptorParser().fromJson(Paths.get(".", "src", "test", "resources", "exchangeApiInterfaceImplementationGeneratorTestDescriptor.json"));
+		ExchangeDescriptor exchangeDescriptor = ExchangeDescriptorParser.fromJson(Paths.get(".", "src", "test", "resources", "exchangeApiInterfaceImplementationGeneratorTestDescriptor.json"));
 		ExchangeApiDescriptor exchangeApiDescriptor = exchangeDescriptor.getApis().get(0);
 		exchangeDescriptor.setWebsocketUrl(null);
 		exchangeApiDescriptor.setWebsocketUrl(null);
@@ -130,7 +130,7 @@ public class ExchangeApiInterfaceImplementationGeneratorTest {
 	
 	@Test
 	public void testGenerateExchangeApiWithGlobalRateLimits() throws Exception {
-		ExchangeDescriptor exchangeDescriptor = new ExchangeDescriptorParser().fromJson(Paths.get(".", "src", "test", "resources", "exchangeApiInterfaceImplementationGeneratorTestDescriptor.json"));
+		ExchangeDescriptor exchangeDescriptor = ExchangeDescriptorParser.fromJson(Paths.get(".", "src", "test", "resources", "exchangeApiInterfaceImplementationGeneratorTestDescriptor.json"));
 		ExchangeApiDescriptor exchangeApiDescriptor = exchangeDescriptor.getApis().get(1);
 		ExchangeApiInterfaceImplementationGenerator apiInterfaceGenerator = new ExchangeApiInterfaceImplementationGenerator(exchangeDescriptor, exchangeApiDescriptor);
 		Assert.assertEquals("package com.foo.bar.gen.trading;\n"
@@ -213,7 +213,7 @@ public class ExchangeApiInterfaceImplementationGeneratorTest {
 	
 	@Test
 	public void testGenerateExchangeApiWithEndpointSpecificRateLimits() throws Exception {
-		ExchangeDescriptor exchangeDescriptor = new ExchangeDescriptorParser().fromJson(Paths.get(".", "src", "test", "resources", "exchangeApiInterfaceImplementationGeneratorTestDescriptor.json"));
+		ExchangeDescriptor exchangeDescriptor = ExchangeDescriptorParser.fromJson(Paths.get(".", "src", "test", "resources", "exchangeApiInterfaceImplementationGeneratorTestDescriptor.json"));
 		ExchangeApiDescriptor exchangeApiDescriptor = exchangeDescriptor.getApis().get(2);
 		ExchangeApiInterfaceImplementationGenerator apiInterfaceGenerator = new ExchangeApiInterfaceImplementationGenerator(exchangeDescriptor, exchangeApiDescriptor);
 		Assert.assertEquals("package com.foo.bar.gen.futuresmarketdata;\n"
@@ -318,7 +318,7 @@ public class ExchangeApiInterfaceImplementationGeneratorTest {
 	
 	@Test
 	public void testGenerateExchangeApiWithBothApiGlobalAndEndpointSpecificRateLimits() throws Exception {
-		ExchangeDescriptor exchangeDescriptor = new ExchangeDescriptorParser().fromJson(Paths.get(".", "src", "test", "resources", "exchangeApiInterfaceImplementationGeneratorTestDescriptor.json"));
+		ExchangeDescriptor exchangeDescriptor = ExchangeDescriptorParser.fromJson(Paths.get(".", "src", "test", "resources", "exchangeApiInterfaceImplementationGeneratorTestDescriptor.json"));
 		ExchangeApiDescriptor exchangeApiDescriptor = exchangeDescriptor.getApis().get(3);
 		ExchangeApiInterfaceImplementationGenerator apiInterfaceGenerator = new ExchangeApiInterfaceImplementationGenerator(exchangeDescriptor, exchangeApiDescriptor);
 		Assert.assertEquals("package com.foo.bar.gen.futurestrading;\n"
@@ -403,7 +403,7 @@ public class ExchangeApiInterfaceImplementationGeneratorTest {
 	
 	@Test
 	public void testGenerateExchangeApiWithBothExchangeGlobalAndApiGlobalAndEndpointSpecificRateLimits() throws Exception {
-		ExchangeDescriptor exchangeDescriptor = new ExchangeDescriptorParser().fromJson(Paths.get(".", "src", "test", "resources", "exchangeApiInterfaceImplementationGeneratorTestWithRateLimitRulesAtExchangeLevelDescriptor.json"));
+		ExchangeDescriptor exchangeDescriptor = ExchangeDescriptorParser.fromJson(Paths.get(".", "src", "test", "resources", "exchangeApiInterfaceImplementationGeneratorTestWithRateLimitRulesAtExchangeLevelDescriptor.json"));
 		ExchangeApiDescriptor exchangeApiDescriptor = exchangeDescriptor.getApis().get(0);
 		ExchangeApiInterfaceImplementationGenerator apiInterfaceGenerator = new ExchangeApiInterfaceImplementationGenerator(exchangeDescriptor, exchangeApiDescriptor);
 		Assert.assertEquals("package com.foo.bar.gen.futurestrading;\n"
@@ -482,7 +482,7 @@ public class ExchangeApiInterfaceImplementationGeneratorTest {
 	
 	@Test
 	public void testExchangeApiInterfaceImplementationGeneratorTestOnlyExchangeLevelWeightedLimitRateRuleExchangeDescriptor() throws Exception {
-		ExchangeDescriptor exchangeDescriptor = new ExchangeDescriptorParser().fromJson(Paths.get(".", "src", "test", "resources", "exchangeApiInterfaceImplementationGeneratorTestOnlyExchangeLevelWeightedLimitRateRuleExchangeDescriptor.json"));
+		ExchangeDescriptor exchangeDescriptor = ExchangeDescriptorParser.fromJson(Paths.get(".", "src", "test", "resources", "exchangeApiInterfaceImplementationGeneratorTestOnlyExchangeLevelWeightedLimitRateRuleExchangeDescriptor.json"));
 		ExchangeApiDescriptor exchangeApiDescriptor = exchangeDescriptor.getApis().get(0);
 		ExchangeApiInterfaceImplementationGenerator apiInterfaceGenerator = new ExchangeApiInterfaceImplementationGenerator(exchangeDescriptor, exchangeApiDescriptor);
 		Assert.assertEquals("package com.foo.bar.gen.futurestrading;\n"
@@ -557,7 +557,7 @@ public class ExchangeApiInterfaceImplementationGeneratorTest {
 	
 	@Test
 	public void testExchangeApiInterfaceImplementationGeneratorTestExchangeLevelLimitRateRuleButEmptyRestEndpoints() throws Exception {
-		ExchangeDescriptor exchangeDescriptor = new ExchangeDescriptorParser().fromJson(Paths.get(".", "src", "test", "resources", "exchangeApiInterfaceImplementationGeneratorTestOnlyExchangeLevelWeightedLimitRateRuleExchangeDescriptor.json"));
+		ExchangeDescriptor exchangeDescriptor = ExchangeDescriptorParser.fromJson(Paths.get(".", "src", "test", "resources", "exchangeApiInterfaceImplementationGeneratorTestOnlyExchangeLevelWeightedLimitRateRuleExchangeDescriptor.json"));
 		ExchangeApiDescriptor exchangeApiDescriptor = exchangeDescriptor.getApis().get(0);
 		exchangeApiDescriptor.setRestEndpoints(List.of());
 		ExchangeApiInterfaceImplementationGenerator apiInterfaceGenerator = new ExchangeApiInterfaceImplementationGenerator(exchangeDescriptor, exchangeApiDescriptor);
@@ -589,7 +589,7 @@ public class ExchangeApiInterfaceImplementationGeneratorTest {
 	
 	@Test
 	public void testGenerateExchangeApiNoWsEndpoint() throws Exception {
-		ExchangeDescriptor exchangeDescriptor = new ExchangeDescriptorParser().fromJson(Paths.get(".", "src", "test", "resources", "testExchangeDescriptorNoWebsocketEndpoint.json"));
+		ExchangeDescriptor exchangeDescriptor = ExchangeDescriptorParser.fromJson(Paths.get(".", "src", "test", "resources", "testExchangeDescriptorNoWebsocketEndpoint.json"));
 		ExchangeApiDescriptor exchangeApiDescriptor = exchangeDescriptor.getApis().get(0);
 		ExchangeApiInterfaceImplementationGenerator apiInterfaceGenerator = new ExchangeApiInterfaceImplementationGenerator(exchangeDescriptor, exchangeApiDescriptor);
 		Assert.assertEquals("package com.foo.bar.gen.marketdata;\n"
@@ -651,7 +651,7 @@ public class ExchangeApiInterfaceImplementationGeneratorTest {
 	
 	@Test
 	public void testGenerateExchangeApiNoRestEndpoint() throws Exception {
-		ExchangeDescriptor exchangeDescriptor = new ExchangeDescriptorParser().fromJson(Paths.get(".", "src", "test", "resources", "testExchangeDescriptorNoRestEndpoint.json"));
+		ExchangeDescriptor exchangeDescriptor = ExchangeDescriptorParser.fromJson(Paths.get(".", "src", "test", "resources", "testExchangeDescriptorNoRestEndpoint.json"));
 		ExchangeApiDescriptor exchangeApiDescriptor = exchangeDescriptor.getApis().get(0);
 		ExchangeApiInterfaceImplementationGenerator apiInterfaceGenerator = new ExchangeApiInterfaceImplementationGenerator(exchangeDescriptor, exchangeApiDescriptor);
 		Assert.assertEquals("package com.foo.bar.gen.marketdata;\n"
@@ -735,7 +735,7 @@ public class ExchangeApiInterfaceImplementationGeneratorTest {
 	
 	@Test
 	public void testGenerateExchangeApiSpecificResponseDataTypes() throws Exception {
-		ExchangeDescriptor exchangeDescriptor = new ExchangeDescriptorParser().fromJson(Paths.get(".", "src", "test", "resources", "testExchangeDescriptorWithAllRestResponseDataTypes.json"));
+		ExchangeDescriptor exchangeDescriptor = ExchangeDescriptorParser.fromJson(Paths.get(".", "src", "test", "resources", "testExchangeDescriptorWithAllRestResponseDataTypes.json"));
 		ExchangeApiDescriptor exchangeApiDescriptor = exchangeDescriptor.getApis().get(0);
 		ExchangeApiInterfaceImplementationGenerator apiInterfaceGenerator = new ExchangeApiInterfaceImplementationGenerator(exchangeDescriptor, exchangeApiDescriptor);
 		Assert.assertEquals("package com.foo.bar.gen.marketdata;\n"
@@ -963,7 +963,7 @@ public class ExchangeApiInterfaceImplementationGeneratorTest {
 	
 	@Test
 	public void testGenerateExchangeApiSpecificRequestDataTypes() throws Exception {
-		ExchangeDescriptor exchangeDescriptor = new ExchangeDescriptorParser().fromJson(Paths.get(".", "src", "test", "resources", "testExchangeDescriptorWithAllRestRequestDataTypes.json"));
+		ExchangeDescriptor exchangeDescriptor = ExchangeDescriptorParser.fromJson(Paths.get(".", "src", "test", "resources", "testExchangeDescriptorWithAllRestRequestDataTypes.json"));
 		ExchangeApiDescriptor exchangeApiDescriptor = exchangeDescriptor.getApis().get(0);
 		ExchangeApiInterfaceImplementationGenerator apiInterfaceGenerator = new ExchangeApiInterfaceImplementationGenerator(exchangeDescriptor, exchangeApiDescriptor);
 		Assert.assertEquals("package com.foo.bar.gen.marketdata;\n"
@@ -1399,7 +1399,7 @@ public class ExchangeApiInterfaceImplementationGeneratorTest {
 	
 	@Test
 	public void testGenerateExchangeApiDifferentRestEndpointQueryParamsDefinitions() throws Exception {
-		ExchangeDescriptor exchangeDescriptor = new ExchangeDescriptorParser().fromJson(Paths.get(".", "src", "test", "resources", "testExchangeDescriptorAllUrlQueryParamsDefinitions.json"));
+		ExchangeDescriptor exchangeDescriptor = ExchangeDescriptorParser.fromJson(Paths.get(".", "src", "test", "resources", "testExchangeDescriptorAllUrlQueryParamsDefinitions.json"));
 		ExchangeApiDescriptor exchangeApiDescriptor = exchangeDescriptor.getApis().get(0);
 		ExchangeApiInterfaceImplementationGenerator apiInterfaceGenerator = new ExchangeApiInterfaceImplementationGenerator(exchangeDescriptor, exchangeApiDescriptor);
 		Assert.assertEquals("package com.foo.bar.gen.restapi;\n"
@@ -1604,7 +1604,7 @@ public class ExchangeApiInterfaceImplementationGeneratorTest {
 	
 	@Test
 	public void testGenerateExchangeApiPropertiesInheritedFromExchange() throws Exception {
-		ExchangeDescriptor exchangeDescriptor = new ExchangeDescriptorParser().fromJson(Paths.get(".", "src", "test", "resources", "exchangeApiInterfaceImplementationGeneratorTestDescriptorPropertiesInheritedFromExchange.json"));
+		ExchangeDescriptor exchangeDescriptor = ExchangeDescriptorParser.fromJson(Paths.get(".", "src", "test", "resources", "exchangeApiInterfaceImplementationGeneratorTestDescriptorPropertiesInheritedFromExchange.json"));
 		ExchangeApiDescriptor exchangeApiDescriptor = exchangeDescriptor.getApis().get(0);
 		ExchangeApiInterfaceImplementationGenerator apiInterfaceGenerator = new ExchangeApiInterfaceImplementationGenerator(exchangeDescriptor, exchangeApiDescriptor);
 		Assert.assertEquals("package com.foo.bar.gen.futurestrading;\n"

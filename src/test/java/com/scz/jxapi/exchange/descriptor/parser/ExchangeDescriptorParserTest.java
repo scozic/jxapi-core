@@ -22,7 +22,7 @@ public class ExchangeDescriptorParserTest {
 	
 	@Test
 	public void testParseExchangeDescriptor() throws Exception {
-		ExchangeDescriptor ex = new ExchangeDescriptorParser().fromJson(Paths.get(".", "src", "test", "resources", "testExchangeDescriptor.json"));
+		ExchangeDescriptor ex = ExchangeDescriptorParser.fromJson(Paths.get(".", "src", "test", "resources", "testExchangeDescriptor.json"));
 		Assert.assertEquals("MyTestExchange", ex.getName());
 		Assert.assertEquals("A sample Exchange descriptor file", ex.getDescription());
 		Assert.assertEquals("com.foo.bar.gen", ex.getBasePackage());

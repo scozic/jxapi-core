@@ -146,6 +146,18 @@ public class Type {
 		et.subType = subType;
 		return et;
 	}
+	
+	public Type() {
+		this(null);
+	}
+	
+	public Type(String typeName) {
+		if (typeName != null) {
+			Type t = fromTypeName(typeName);
+			this.canonicalType = t.canonicalType;
+			this.subType = t.subType;
+		}
+	}
 
 	private CanonicalType canonicalType;
 	

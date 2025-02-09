@@ -1,0 +1,5 @@
+name: "Employee"
+constants:
+ - name: "baseUrlPattern"
+   description: "Value to replace in HTTP requests url with base URL with value of baseUrl"
+   value: "BASEURL"

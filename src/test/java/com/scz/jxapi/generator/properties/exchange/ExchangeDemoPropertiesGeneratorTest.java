@@ -37,7 +37,7 @@ public class ExchangeDemoPropertiesGeneratorTest {
 		tmpFolder = ClassesGeneratorTestUtil.generateTmpDir();
 		Path srcTestResourcesFolder = Paths.get(".", "src", "test", "resources");
 		Path exchangeDescriptorFile = srcTestResourcesFolder.resolve("demoExchange.json");
-		ExchangeDescriptor exchangeDescriptor = new ExchangeDescriptorParser().fromJson(exchangeDescriptorFile);
+		ExchangeDescriptor exchangeDescriptor = ExchangeDescriptorParser.fromJson(exchangeDescriptorFile);
 		String fileName = "demo-DemoExchange.properties.dist";
 		Path actualFilePath = tmpFolder.resolve(fileName);
 		List<ConfigProperty> configProperties = new ArrayList<>();

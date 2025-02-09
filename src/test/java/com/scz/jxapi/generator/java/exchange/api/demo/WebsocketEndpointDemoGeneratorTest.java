@@ -18,7 +18,7 @@ public class WebsocketEndpointDemoGeneratorTest {
 	
 	@Test
 	public void testGenerateWebsocketEndpointDemoObjectRequest() throws Exception {
-		ExchangeDescriptor exchangeDescriptor = new ExchangeDescriptorParser().fromJson(Paths.get(".", "src", "test", "resources", "testExchangeDescriptor.json"));
+		ExchangeDescriptor exchangeDescriptor = ExchangeDescriptorParser.fromJson(Paths.get(".", "src", "test", "resources", "testExchangeDescriptor.json"));
 		ExchangeApiDescriptor exchangeApiDescriptor = exchangeDescriptor.getApis().get(0);
 		WebsocketEndpointDescriptor websocketEndpointDescriptor = exchangeApiDescriptor.getWebsocketEndpoints().get(0);
 		Assert.assertEquals("package com.foo.bar.gen.marketdata.demo;\n"
@@ -107,7 +107,7 @@ public class WebsocketEndpointDemoGeneratorTest {
 	
 	@Test
 	public void testGenerateWebsocketEndpointDemoSpecificRequesTypePrimitiveStringWithNamedArg() throws Exception {
-		ExchangeDescriptor exchange = new ExchangeDescriptorParser().fromJson(Paths.get(".", "src", "test", "resources", "testExchangeDescriptorWithAllRestRequestDataTypes.json"));
+		ExchangeDescriptor exchange = ExchangeDescriptorParser.fromJson(Paths.get(".", "src", "test", "resources", "testExchangeDescriptorWithAllRestRequestDataTypes.json"));
 		ExchangeApiDescriptor exchangeApiDescriptor = exchange.getApis().get(0);
 		WebsocketEndpointDescriptor websocketEndpointDescriptor = ClassesGeneratorTestUtil.findWebsocketEndpointByName("streamWithStringRequestDataType", exchangeApiDescriptor);
 		Assert.assertEquals("package com.foo.bar.gen.marketdata.demo;\n"
@@ -193,7 +193,7 @@ public class WebsocketEndpointDemoGeneratorTest {
 	
 	@Test
 	public void testGenerateWebsocketEndpointDemoZeroArgs() throws Exception {
-		ExchangeDescriptor exchange = new ExchangeDescriptorParser().fromJson(Paths.get(".", "src", "test", "resources", "testExchangeDescriptorWithAllRestRequestDataTypes.json"));
+		ExchangeDescriptor exchange = ExchangeDescriptorParser.fromJson(Paths.get(".", "src", "test", "resources", "testExchangeDescriptorWithAllRestRequestDataTypes.json"));
 		ExchangeApiDescriptor exchangeApiDescriptor = exchange.getApis().get(0);
 		WebsocketEndpointDescriptor websocketEndpointDescriptor = ClassesGeneratorTestUtil.findWebsocketEndpointByName("streamWithObjectRequestDataTypeZeroParameters", exchangeApiDescriptor);
 		Assert.assertEquals("package com.foo.bar.gen.marketdata.demo;\n"
@@ -272,7 +272,7 @@ public class WebsocketEndpointDemoGeneratorTest {
 	
 	@Test
 	public void testGenerateWebsocketEndpointSpecificRequestTypeObjectListMapWithObjectDefinedInDifferentAPI() throws Exception {
-		ExchangeDescriptor exchange = new ExchangeDescriptorParser().fromJson(Paths.get(".", "src", "test", "resources", "testExchangeDescriptorWithAllRestRequestDataTypes.json"));
+		ExchangeDescriptor exchange = ExchangeDescriptorParser.fromJson(Paths.get(".", "src", "test", "resources", "testExchangeDescriptorWithAllRestRequestDataTypes.json"));
 		ExchangeApiDescriptor exchangeApiDescriptor = exchange.getApis().get(0);
 		WebsocketEndpointDescriptor websocketEndpointDescriptor = ClassesGeneratorTestUtil.findWebsocketEndpointByName("streamWithObjectListMapRequestDataType", exchangeApiDescriptor);
 		Assert.assertEquals("package com.foo.bar.gen.marketdata.demo;\n"

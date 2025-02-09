@@ -15,7 +15,7 @@ public class ExchangeInterfaceGeneratorTest {
 
 	@Test
 	public void testGenerateExchangeInterface() throws Exception {
-		ExchangeDescriptor exchangeDescriptor = new ExchangeDescriptorParser().fromJson(Paths.get(".", "src", "test", "resources", "testExchangeDescriptor.json"));
+		ExchangeDescriptor exchangeDescriptor = ExchangeDescriptorParser.fromJson(Paths.get(".", "src", "test", "resources", "testExchangeDescriptor.json"));
 		ExchangeInterfaceGenerator exchangeGenerator = new ExchangeInterfaceGenerator(exchangeDescriptor);
 		Assert.assertEquals("package com.foo.bar.gen;\n"
 				+ "\n"

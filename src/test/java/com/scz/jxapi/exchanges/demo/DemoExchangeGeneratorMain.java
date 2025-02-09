@@ -28,7 +28,7 @@ public class DemoExchangeGeneratorMain {
 		log.info("Generating demo wrapper in current project");
 		Path srcTestResourcesFolder = srcTestFolder.resolve(Paths.get("resources"));
 		Path exchangeDescriptorFile = srcTestResourcesFolder.resolve(Paths.get("demoExchange.json"));
-		ExchangeDescriptor exchangeDescriptor = new ExchangeDescriptorParser().fromJson(exchangeDescriptorFile);
+		ExchangeDescriptor exchangeDescriptor = ExchangeDescriptorParser.fromJson(exchangeDescriptorFile);
 		Path srcTestJavaFolder = srcTestFolder.resolve(Paths.get("java"));
 		Path mainPackagePath = Paths.get(StringUtils.replace(exchangeDescriptor.getBasePackage(), ".", "/"));
 		Path genMainPackagesFolder = srcTestJavaFolder.resolve(mainPackagePath);

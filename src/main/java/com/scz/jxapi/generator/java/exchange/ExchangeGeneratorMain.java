@@ -146,7 +146,7 @@ public class ExchangeGeneratorMain {
 													   String baseJavaDocUrl, 
 													   String baseSrcUrl) throws IOException {
 		log.info("Generating exchange wrapper code for descriptor:{}", jsonFile.getFileName());
-		ExchangeDescriptor exchangeDescriptor = new ExchangeDescriptorParser().fromJson(jsonFile);
+		ExchangeDescriptor exchangeDescriptor = ExchangeDescriptorParser.fromJson(jsonFile);
 		Path outputSrcMainFolder = projectFolder.resolve(Paths.get("src", "main", "java"));
 		Path mainPackagePath = Paths.get(StringUtils.replace(exchangeDescriptor.getBasePackage(), ".", "/"));
 		Path genMainPackagesFolder = outputSrcMainFolder.resolve(mainPackagePath);

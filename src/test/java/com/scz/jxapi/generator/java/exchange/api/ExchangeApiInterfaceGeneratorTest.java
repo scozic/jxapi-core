@@ -17,7 +17,7 @@ public class ExchangeApiInterfaceGeneratorTest {
 
 	@Test
 	public void testGenerateExchangeApi() throws Exception {
-		ExchangeDescriptor exchangeDescriptor = new ExchangeDescriptorParser().fromJson(Paths.get(".", "src", "test", "resources", "testExchangeDescriptor.json"));
+		ExchangeDescriptor exchangeDescriptor = ExchangeDescriptorParser.fromJson(Paths.get(".", "src", "test", "resources", "testExchangeDescriptor.json"));
 		ExchangeApiDescriptor exchangeApiDescriptor = exchangeDescriptor.getApis().get(0);
 		ExchangeApiInterfaceGenerator apiInterfaceGenerator = new ExchangeApiInterfaceGenerator(exchangeDescriptor, exchangeApiDescriptor);
 		Assert.assertEquals("package com.foo.bar.gen.marketdata;\n"
@@ -80,7 +80,7 @@ public class ExchangeApiInterfaceGeneratorTest {
 	
 	@Test
 	public void testGenerateExchangeApiNoWsEndpoint() throws Exception {
-		ExchangeDescriptor exchangeDescriptor = new ExchangeDescriptorParser().fromJson(Paths.get(".", "src", "test", "resources", "testExchangeDescriptorNoWebsocketEndpoint.json"));
+		ExchangeDescriptor exchangeDescriptor = ExchangeDescriptorParser.fromJson(Paths.get(".", "src", "test", "resources", "testExchangeDescriptorNoWebsocketEndpoint.json"));
 		ExchangeApiDescriptor exchangeApiDescriptor = exchangeDescriptor.getApis().get(0);
 		ExchangeApiInterfaceGenerator apiInterfaceGenerator = new ExchangeApiInterfaceGenerator(exchangeDescriptor, exchangeApiDescriptor);
 		Assert.assertEquals("package com.foo.bar.gen.marketdata;\n"
@@ -111,7 +111,7 @@ public class ExchangeApiInterfaceGeneratorTest {
 	
 	@Test
 	public void testGenerateExchangeApiNoRestEndpoint() throws Exception {
-		ExchangeDescriptor exchangeDescriptor = new ExchangeDescriptorParser().fromJson(Paths.get(".", "src", "test", "resources", "testExchangeDescriptorNoRestEndpoint.json"));
+		ExchangeDescriptor exchangeDescriptor = ExchangeDescriptorParser.fromJson(Paths.get(".", "src", "test", "resources", "testExchangeDescriptorNoRestEndpoint.json"));
 		ExchangeApiDescriptor exchangeApiDescriptor = exchangeDescriptor.getApis().get(0);
 		ExchangeApiInterfaceGenerator apiInterfaceGenerator = new ExchangeApiInterfaceGenerator(exchangeDescriptor, exchangeApiDescriptor);
 		Assert.assertEquals("package com.foo.bar.gen.marketdata;\n"
@@ -175,7 +175,7 @@ public class ExchangeApiInterfaceGeneratorTest {
 	
 	@Test
 	public void testGenerateExchangeApiSpecificResponseDataTypes() throws Exception {
-		ExchangeDescriptor exchangeDescriptor = new ExchangeDescriptorParser().fromJson(Paths.get(".", "src", "test", "resources", "testExchangeDescriptorWithAllRestResponseDataTypes.json"));
+		ExchangeDescriptor exchangeDescriptor = ExchangeDescriptorParser.fromJson(Paths.get(".", "src", "test", "resources", "testExchangeDescriptorWithAllRestResponseDataTypes.json"));
 		ExchangeApiDescriptor exchangeApiDescriptor = exchangeDescriptor.getApis().get(0);
 		ExchangeApiInterfaceGenerator apiInterfaceGenerator = new ExchangeApiInterfaceGenerator(exchangeDescriptor, exchangeApiDescriptor);
 		Assert.assertEquals("package com.foo.bar.gen.marketdata;\n"
@@ -298,7 +298,7 @@ public class ExchangeApiInterfaceGeneratorTest {
 	
 	@Test
 	public void testGenerateExchangeApiSpecificRequestDataTypes() throws Exception {
-		ExchangeDescriptor exchangeDescriptor = new ExchangeDescriptorParser().fromJson(Paths.get(".", "src", "test", "resources", "testExchangeDescriptorWithAllRestRequestDataTypes.json"));
+		ExchangeDescriptor exchangeDescriptor = ExchangeDescriptorParser.fromJson(Paths.get(".", "src", "test", "resources", "testExchangeDescriptorWithAllRestRequestDataTypes.json"));
 		ExchangeApiDescriptor exchangeApiDescriptor = exchangeDescriptor.getApis().get(0);
 		ExchangeApiInterfaceGenerator apiInterfaceGenerator = new ExchangeApiInterfaceGenerator(exchangeDescriptor, exchangeApiDescriptor);
 		Assert.assertEquals("package com.foo.bar.gen.marketdata;\n"
