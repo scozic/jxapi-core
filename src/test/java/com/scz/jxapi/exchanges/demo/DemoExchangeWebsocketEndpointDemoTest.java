@@ -51,9 +51,10 @@ public class DemoExchangeWebsocketEndpointDemoTest {
 	public void setUp() throws Exception {
 		port = MockHttpServer.findAvailablePort();
 		server = new MockWebsocketServer(port, appName);
+		String url = "ws://localhost:" + port + "/" + appName + "/ws";
 		server.start();
 		config = DemoUtil.loadDemoExchangeProperties(DemoExchangeExchange.ID);
-		config.setProperty(DemoExchangeProperties.WEBSOCKET_PORT.getName(), String.valueOf(this.port));
+		config.setProperty(DemoExchangeProperties.BASE_WEBSOCKET_URL.getName(), url);
 		msgListener = new MockWebsocketListener<>();
 	}
 	

@@ -19,24 +19,9 @@ public class DemoExchangeConstants {
   public static final String PONG_MESSAGE = "Pong!";
   
   /**
-   * Value to substitute with actual HTTP server host in httpUrl
+   * Value to replace in HTTP or Websocket base URL with value of <i>baseHttpUrl</i> or <i>baseWebsocketUrl</i> properties
    */
-  public static final String HTTP_SERVER_HOST_WILDCARD = "HTTPSERVERHOST";
-  
-  /**
-   * Value to substitute with actual HTTP server host in httpUrl
-   */
-  public static final String HTTP_SERVER_PORT_WILDCARD = "8080";
-  
-  /**
-   * Value to substitute with actual HTTP server host in httpUrl
-   */
-  public static final String WEBSOCKET_SERVER_HOST_WILDCARD = "MOCKWEBSOCKETSERVERHOST";
-  
-  /**
-   * Value to substitute with actual HTTP server host in httpUrl
-   */
-  public static final String WEBSOCKET_SERVER_PORT_WILDCARD = "8090";
+  public static final String BASE_URL_PATTERN = "BASEURL";
   
   /**
    * Message to send to websocket server after connecting to complete handshake

@@ -62,11 +62,9 @@ public class DemoExchangeRestRequestTest {
 		mockHttpServer = new MockHttpServer();
 		mockHttpServer.start();
 		this.serverPort = mockHttpServer.getPort();
-		baseHttpUrl = "http://localhost:" + serverPort + "/";
+		baseHttpUrl = "http://localhost:" + serverPort;
 		Properties config = new Properties();
-		config.setProperty(DemoExchangeProperties.HTTP_PORT.getName(), String.valueOf(this.serverPort));
-		config.setProperty(DemoExchangeProperties.HOST.getName(), DemoExchangeProperties.HOST.getDefaultValue().toString());
-		config.setProperty(DemoExchangeProperties.WEBSOCKET_PORT.getName(), "80");
+		config.setProperty(DemoExchangeProperties.BASE_HTTP_URL.getName(), String.valueOf(this.baseHttpUrl));
 		exchange = new DemoExchangeExchangeImpl(TEST_EXCHANGE_NAME, config);
 	}
 	
@@ -101,7 +99,7 @@ public class DemoExchangeRestRequestTest {
 		MockHttpRequest mockRequest = mockHttpServer.popRequest(DEFAULT_WAIT_RESPONSE_TIMEOUT);
 		
 		HttpRequest actualRequest = mockRequest.getHttpRequest();
-		Assert.assertEquals(baseHttpUrl + "marketData/tickers", actualRequest.getUrl());
+		Assert.assertEquals(baseHttpUrl + "/marketData/tickers", actualRequest.getUrl());
 		Assert.assertEquals(HttpMethod.GET, actualRequest.getHttpMethod());
 		Assert.assertNull(actualRequest.getBody());
 		
@@ -139,7 +137,7 @@ public class DemoExchangeRestRequestTest {
 		MockHttpRequest mockRequest = mockHttpServer.popRequest(DEFAULT_WAIT_RESPONSE_TIMEOUT);
 		
 		HttpRequest actualRequest = mockRequest.getHttpRequest();
-		Assert.assertEquals(baseHttpUrl + "marketData/exchangeInfo?symbols=%5B%22BTC_USDT%22%2C%22ETH_USDT%22%5D", actualRequest.getUrl());
+		Assert.assertEquals(baseHttpUrl + "/marketData/exchangeInfo?symbols=%5B%22BTC_USDT%22%2C%22ETH_USDT%22%5D", actualRequest.getUrl());
 		Assert.assertEquals(HttpMethod.GET, actualRequest.getHttpMethod());
 		
 		HttpResponse httpResponse = new HttpResponse();
@@ -162,7 +160,7 @@ public class DemoExchangeRestRequestTest {
 		MockHttpRequest mockRequest = mockHttpServer.popRequest(DEFAULT_WAIT_RESPONSE_TIMEOUT);
 		
 		HttpRequest actualRequest = mockRequest.getHttpRequest();
-		Assert.assertEquals(baseHttpUrl + "marketData/postInt", actualRequest.getUrl());
+		Assert.assertEquals(baseHttpUrl + "/marketData/postInt", actualRequest.getUrl());
 		Assert.assertEquals(HttpMethod.POST, actualRequest.getHttpMethod());
 		Assert.assertEquals("123", actualRequest.getBody());
 		
@@ -186,7 +184,7 @@ public class DemoExchangeRestRequestTest {
 		MockHttpRequest mockRequest = mockHttpServer.popRequest(DEFAULT_WAIT_RESPONSE_TIMEOUT);
 		
 		HttpRequest actualRequest = mockRequest.getHttpRequest();
-		Assert.assertEquals(baseHttpUrl + "marketData/getIntWithMsgField?a=123", actualRequest.getUrl());
+		Assert.assertEquals(baseHttpUrl + "/marketData/getIntWithMsgField?a=123", actualRequest.getUrl());
 		Assert.assertEquals(HttpMethod.GET, actualRequest.getHttpMethod());
 		Assert.assertNull(actualRequest.getBody());
 		
@@ -210,7 +208,7 @@ public class DemoExchangeRestRequestTest {
 		MockHttpRequest mockRequest = mockHttpServer.popRequest(DEFAULT_WAIT_RESPONSE_TIMEOUT);
 		
 		HttpRequest actualRequest = mockRequest.getHttpRequest();
-		Assert.assertEquals(baseHttpUrl + "marketData/getIntWithMsgField?a=123", actualRequest.getUrl());
+		Assert.assertEquals(baseHttpUrl + "/marketData/getIntWithMsgField?a=123", actualRequest.getUrl());
 		Assert.assertEquals(HttpMethod.GET, actualRequest.getHttpMethod());
 		Assert.assertNull(actualRequest.getBody());
 		
@@ -245,7 +243,7 @@ public class DemoExchangeRestRequestTest {
 		MockHttpRequest mockRequest = mockHttpServer.popRequest(DEFAULT_WAIT_RESPONSE_TIMEOUT);
 		
 		HttpRequest actualRequest = mockRequest.getHttpRequest();
-		Assert.assertEquals(baseHttpUrl + "marketData/postIntList", actualRequest.getUrl());
+		Assert.assertEquals(baseHttpUrl + "/marketData/postIntList", actualRequest.getUrl());
 		Assert.assertEquals(HttpMethod.POST, actualRequest.getHttpMethod());
 		Assert.assertEquals("[123,456,789]", 
 				actualRequest.getBody());
@@ -278,7 +276,7 @@ public class DemoExchangeRestRequestTest {
 		MockHttpRequest mockRequest = mockHttpServer.popRequest(DEFAULT_WAIT_RESPONSE_TIMEOUT);
 		
 		HttpRequest actualRequest = mockRequest.getHttpRequest();
-		Assert.assertEquals(baseHttpUrl + "marketData/postObjectListMap", actualRequest.getUrl());
+		Assert.assertEquals(baseHttpUrl + "/marketData/postObjectListMap", actualRequest.getUrl());
 		Assert.assertEquals(HttpMethod.POST, actualRequest.getHttpMethod());
 		Assert.assertEquals("{\"futures\":[{\"s\":\"SOL_USDT\"}],\"spot\":[{\"s\":\"BTC_USDT\"},{\"s\":\"ETH_USDT\"}]}", 
 							actualRequest.getBody());

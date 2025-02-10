@@ -1,6 +1,5 @@
 package com.scz.jxapi.exchanges.demo.net;
 
-import java.util.Optional;
 import java.util.Properties;
 
 import org.apache.commons.lang3.StringUtils;
@@ -23,23 +22,20 @@ public class DemoExchangeHttpRequestInterceptor implements HttpRequestIntercepto
 	
 	private static final Logger log = LoggerFactory.getLogger(DemoExchangeHttpRequestInterceptor.class);
 	
-	private final String host;
-	private final String port;
+	private final String baseHttpUrl;
 
 	/**
 	 * Constructor
 	 * @param properties Exchange configuration properties
 	 */
 	public DemoExchangeHttpRequestInterceptor(Properties properties) {
-		this.host = DemoExchangeProperties.getHost(properties);
-		this.port = Optional.ofNullable(DemoExchangeProperties.getHttpPort(properties)).orElse(Integer.valueOf(8080)).toString();
+		this.baseHttpUrl = DemoExchangeProperties.getBaseHttpUrl(properties);
 	}
 
 	@Override
 	public void intercept(HttpRequest request) {
 		String url = request.getUrl();
-		url = StringUtils.replace(url, DemoExchangeConstants.HTTP_SERVER_HOST_WILDCARD, host);
-		url = StringUtils.replace(url, DemoExchangeConstants.HTTP_SERVER_PORT_WILDCARD, port);
+		url = StringUtils.replace(url, DemoExchangeConstants.BASE_URL_PATTERN, baseHttpUrl);
 		request.setUrl(url);
 		log.debug("Intercepted request:{}", request);
 	}

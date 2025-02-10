@@ -13,7 +13,7 @@ properties:
    description: "Base URL for websocket endpoints of the Employee Exchange API"   
 constants:
  - name: "baseUrlPattern"
-   description: "Value to replace in HTTP requests url with base URL with value of baseUrl"
+   description: "Value to replace in HTTP or Websocket base URL with value of <i>baseHttpUrl</i> or <i>baseWebsocketUrl</i> properties"
    value: "BASEURL"
 basePackage: "com.scz.jxapi.exchanges.employee.gen"
 httpUrl: "BASEURL"

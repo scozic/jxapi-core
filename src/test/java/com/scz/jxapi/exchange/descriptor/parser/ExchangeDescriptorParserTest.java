@@ -257,7 +257,8 @@ public class ExchangeDescriptorParserTest {
 		Assert.assertEquals(1, constants.size());
 		Constant constant = constants.get(0);
 		Assert.assertEquals("baseUrlPattern", constant.getName());
-		Assert.assertEquals("Value to replace in HTTP requests url with base URL with value of baseUrl", constant.getDescription());
+		Assert.assertEquals("Value to replace in HTTP or Websocket base URL with value of <i>baseHttpUrl</i> or <i>baseWebsocketUrl</i> properties", 
+							constant.getDescription());
 		Assert.assertEquals("BASEURL", constant.getValue());
 		
 		Assert.assertEquals("BASEURL", exchangeDescriptor.getHttpUrl());

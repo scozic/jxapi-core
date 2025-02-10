@@ -15,12 +15,12 @@ public class DemoExchangeExchangeImpl extends AbstractExchange implements DemoEx
   /**
    * Base REST API URL
    */
-  public static final String HTTP_URL = "http://HTTPSERVERHOST:8080";
+  public static final String HTTP_URL = "BASEURL";
   
   /**
    * Base websocket endpoint URL
    */
-  public static final String WEBSOCKET_URL = "ws://MOCKWEBSOCKETSERVERHOST:8090/demo/ws";
+  public static final String WEBSOCKET_URL = "BASEURL";
   
   private final DemoExchangeMarketDataApi demoExchangeMarketDataApi;
   

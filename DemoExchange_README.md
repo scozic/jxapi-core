@@ -30,22 +30,16 @@ You may have a look at <a href="./src/test/java/com/scz/jxapi/exchanges/demo/gen
     <th>Default value</th>
   </tr>
   <tr>
-    <td>host</td>
+    <td>baseHttpUrl</td>
     <td>STRING</td>
-    <td>Mock HTTP server host</td>
-    <td>localhost</td>
+    <td>Mock HTTP server base API URL</td>
+    <td>http://localhost:8080</td>
   </tr>
   <tr>
-    <td>httpPort</td>
-    <td>INT</td>
-    <td>Mock HTTP/Websocket server port</td>
-    <td></td>
-  </tr>
-  <tr>
-    <td>websocketPort</td>
-    <td>INT</td>
-    <td>Mock websocket server port</td>
-    <td></td>
+    <td>baseWebsocketUrl</td>
+    <td>STRING</td>
+    <td>Mock websocket server base API URL</td>
+    <td>ws://localhost:8090</td>
   </tr>
   <tr>
     <td>websocketHeartBeatInterval</td>
