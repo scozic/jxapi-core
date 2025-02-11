@@ -57,6 +57,7 @@ Methods exposed in <a href="./doc/javadoc/com/scz/jxapi/exchanges/employee/gen/v
 Version 1 of the Employee API
 
 #### REST endpoints
+
 <table>
   <caption>Employee V1 websocket endpoints</caption>
   <tr>
@@ -92,6 +93,7 @@ Version 1 of the Employee API
 </table>
 
 #### Websocket endpoints
+
 <table>
   <caption>Employee V1 websocket endpoints</caption>
   <tr>

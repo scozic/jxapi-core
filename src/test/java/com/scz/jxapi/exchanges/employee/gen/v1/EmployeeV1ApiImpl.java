@@ -90,8 +90,8 @@ public class EmployeeV1ApiImpl extends AbstractExchangeApi implements EmployeeV1
   public EmployeeV1ApiImpl(String exchangeName, Properties properties) {
     super(ID, exchangeName, EmployeeExchange.ID, properties);
     createHttpRequestExecutor(null, -1L);
-    createHttpRequestInterceptor("com.scz.jxapi.exchanges.employee.net.EmployeeHttpRequestInterceptorFactory");
-    createWebsocketManager(WEBSOCKET_URL, null, "com.scz.jxapi.exchanges.employee.net.EmployeeWebsocketHookFactory");
+    createHttpRequestInterceptor("com.scz.jxapi.exchanges.demo.net.DemoExchangeHttpRequestInterceptorFactory");
+    createWebsocketManager(WEBSOCKET_URL, null, "com.scz.jxapi.exchanges.demo.net.DemoExchangeWebsocketHookFactory");
     this.employeeUpdatesWs = createWebsocketEndpoint(EMPLOYEE_UPDATES_WS_API, new EmployeeV1EmployeeUpdatesMessageDeserializer());
   }
   
