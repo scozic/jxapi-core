@@ -7,6 +7,7 @@ import java.util.List;
 import com.scz.jxapi.exchange.descriptor.Field;
 import com.scz.jxapi.exchange.descriptor.Type;
 import com.scz.jxapi.generator.java.exchange.ClassesGenerator;
+import com.scz.jxapi.generator.java.exchange.ExchangeJavaGenUtil;
 import com.scz.jxapi.generator.java.exchange.api.ExchangeApiGeneratorUtil;
 
 /**
@@ -53,17 +54,16 @@ public class EndpointPojoClassesGenerator implements ClassesGenerator {
 	public void generateClasses(Path outputFolder) throws IOException {
 		rootPojoGenerator.writeJavaFile(outputFolder);
 		for (Field field: fields) {
-			if (field.getType().isObject()) {
+			if (ExchangeJavaGenUtil.isObjectField(field)) {
 				generateObjectParameterTypePojoField(outputFolder, rootPojoGenerator.getName(), field);
 			}
 		}
 	}
 
-
 	private void generateObjectParameterTypePojoField(Path outputFolder, String className, Field field) throws IOException {
 		String objectParamClassName = ExchangeApiGeneratorUtil.getFieldLeafSubTypeClassName(
 												field.getName(), 
-												field.getType(), 
+												ExchangeJavaGenUtil.getFieldType(field), 
 												field.getObjectName(), 
 												className);
 		

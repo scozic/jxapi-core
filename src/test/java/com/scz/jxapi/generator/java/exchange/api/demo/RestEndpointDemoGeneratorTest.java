@@ -501,4 +501,76 @@ public class RestEndpointDemoGeneratorTest {
 				+ "", 
 				generator.generate());
 	}
+	
+	@Test
+	public void testGenerateRestEndpointEmptyResponseDataType() throws Exception {
+		ExchangeDescriptor exchange = ExchangeDescriptorParser.fromJson(Paths.get(".", "src", "test", "resources", "testExchangeDescriptorWithAllRestResponseDataTypes.json"));
+		ExchangeApiDescriptor api = exchange.getApis().get(0);
+		RestEndpointDescriptor restEndpoint = ClassesGeneratorTestUtil.findRestEndpointByName("getRestEmptyResponseDataType", api);
+		RestEndpointDemoGenerator generator = new RestEndpointDemoGenerator(exchange, api, restEndpoint);
+		Assert.assertEquals("package com.foo.bar.gen.marketdata.demo;\n"
+				+ "\n"
+				+ "import java.util.Properties;\n"
+				+ "import java.util.concurrent.ExecutionException;\n"
+				+ "\n"
+				+ "import com.foo.bar.gen.MyTestExchangeExchange;\n"
+				+ "import com.foo.bar.gen.MyTestExchangeExchangeImpl;\n"
+				+ "import com.foo.bar.gen.marketdata.MyTestExchangeMarketDataApi;\n"
+				+ "import com.scz.jxapi.exchange.ExchangeApiObserver;\n"
+				+ "import com.scz.jxapi.netutils.rest.RestResponse;\n"
+				+ "import com.scz.jxapi.util.DemoUtil;\n"
+				+ "import org.slf4j.Logger;\n"
+				+ "import org.slf4j.LoggerFactory;\n"
+				+ "\n"
+				+ "/**\n"
+				+ " * Snippet to test call to {@link MyTestExchangeMarketDataApi#getRestEmptyResponseDataType()})}<br>\n"
+				+ " * <br><strong>THIS CODE IS GENERATED. DO NOT EDIT MANUALLY!</strong>\n"
+				+ " */\n"
+				+ "public class MyTestExchangeMarketDataGetRestEmptyResponseDataTypeDemo {\n"
+				+ "  private static final Logger log = LoggerFactory.getLogger(MyTestExchangeMarketDataGetRestEmptyResponseDataTypeDemo.class);\n"
+				+ "  \n"
+				+ "  /**\n"
+				+ "   * Submits a call to {@link MyTestExchangeMarketDataApi#getRestEmptyResponseDataType()}and waits for response.\n"
+				+ "   * @param configProperties  The configuration properties to instantiate exchange with\n"
+				+ "   * @param apiObserver API observer that will notified of events. Is subscribed before REST API call and unsubscribed right after. Ignored if <code>null</code>\n"
+				+ "   * @return Response data resulting from this API call\n"
+				+ "   * @throws InterruptedException eventually thrown waiting for response\n"
+				+ "   * @throws ExecutionException raised if response is not OK, see {@link RestResponse#isOk()}\n"
+				+ "   */\n"
+				+ "  public static RestResponse<String> execute(Properties configProperties, ExchangeApiObserver apiObserver) throws InterruptedException, ExecutionException {\n"
+				+ "    MyTestExchangeExchange exchange = new MyTestExchangeExchangeImpl(\"test-\" + MyTestExchangeExchange.ID, configProperties);\n"
+				+ "    MyTestExchangeMarketDataApi api = exchange.getMyTestExchangeMarketDataApi();\n"
+				+ "    log.info(\"Calling com.foo.bar.gen.marketdata.MyTestExchangeMarketDataApi.getRestEmptyResponseDataType() API\");\n"
+				+ "    if (apiObserver != null) {\n"
+				+ "      api.subscribeObserver(apiObserver);\n"
+				+ "    }\n"
+				+ "    try {\n"
+				+ "      return DemoUtil.checkResponse(api.getRestEmptyResponseDataType());\n"
+				+ "    }\n"
+				+ "    finally {\n"
+				+ "      if (apiObserver != null) {\n"
+				+ "        api.unsubscribeObserver(apiObserver);\n"
+				+ "      }\n"
+				+ "      exchange.dispose();\n"
+				+ "    }\n"
+				+ "  }\n"
+				+ "  \n"
+				+ "  /**\n"
+				+ "   * Runs REST endpoint demo snippet calling {@link MyTestExchangeMarketDataApi#getRestEmptyResponseDataType()}\n"
+				+ "   * @param args no argument expected\n"
+				+ "   */\n"
+				+ "  public static void main(String[] args) {\n"
+				+ "    try {\n"
+				+ "      execute(DemoUtil.loadDemoExchangeProperties(MyTestExchangeExchange.ID),\n"
+				+ "              DemoUtil::logRestApiEvent);\n"
+				+ "      System.exit(0);\n"
+				+ "    }\n"
+				+ "    catch (Throwable t) {\n"
+				+ "      log.error(\"Exception raised from main()\", t);\n"
+				+ "      System.exit(-1);\n"
+				+ "    }\n"
+				+ "  }\n"
+				+ "}\n", 
+				generator.generate());
+	}
 }

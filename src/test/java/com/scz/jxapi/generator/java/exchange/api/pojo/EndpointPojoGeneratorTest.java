@@ -22,7 +22,7 @@ public class EndpointPojoGeneratorTest {
 		  Field.builder().type(Type.INT).name("score").description("Current score").build(),
 		  Field.builder().type("OBJECT_LIST").name("foo").msgField("f").description("The foo")
 						 .property(Field.builder().type(Type.TIMESTAMP).name("time").description("Creation time").build())
-						 .property(Field.builder().type(Type.OBJECT).name("bar").description("The bar")
+						 .property(Field.builder().name("bar").description("The bar")
 								 				  .property(Field.builder().type(Type.STRING).name("name").build())
 								 				  .build())
 						 .build(),
@@ -187,6 +187,71 @@ public class EndpointPojoGeneratorTest {
 				+ "  @Override\n"
 				+ "  public int hashCode() {\n"
 				+ "    return Objects.hash(id);\n"
+				+ "  }\n"
+				+ "  \n"
+				+ "  @Override\n"
+				+ "  public String toString() {\n"
+				+ "    return EncodingUtil.pojoToString(this);\n"
+				+ "  }\n"
+				+ "}\n", 
+				generator.generate());
+	}
+	
+	@Test
+	public void testGenerate_ImplicitObjectType() throws Exception {
+		String typeName = "com.x.MyPojoWithNullAdditionnalBody";
+		String typeDescription = "Used in EndpointPojoGeneratorTest";
+		List<Field> endpointParameters = List.of(
+			Field.builder()
+			.name("myObj")
+			.description("identifier")
+			  .properties(List.of(
+					  Field.builder().type(Type.LONG).name("id").description("identifier").build()))
+			.build()
+		);
+		EndpointPojoGenerator generator = new EndpointPojoGenerator(typeName, typeDescription, endpointParameters, null, null);
+		Assert.assertEquals("package com.x;\n"
+				+ "\n"
+				+ "import java.util.Objects;\n"
+				+ "\n"
+				+ "import com.fasterxml.jackson.databind.annotation.JsonSerialize;\n"
+				+ "import com.scz.jxapi.util.EncodingUtil;\n"
+				+ "import com.x.serializers.MyPojoWithNullAdditionnalBodySerializer;\n"
+				+ "\n"
+				+ "/**\n"
+				+ " * Used in EndpointPojoGeneratorTest\n"
+				+ " */\n"
+				+ "@JsonSerialize(using = MyPojoWithNullAdditionnalBodySerializer.class)\n"
+				+ "public class MyPojoWithNullAdditionnalBody {\n"
+				+ "  private MyPojoWithNullAdditionnalBodyMyObj myObj;\n"
+				+ "  \n"
+				+ "  /**\n"
+				+ "   * @return identifier\n"
+				+ "   */\n"
+				+ "  public MyPojoWithNullAdditionnalBodyMyObj getMyObj() {\n"
+				+ "    return myObj;\n"
+				+ "  }\n"
+				+ "  \n"
+				+ "  /**\n"
+				+ "   * @param myObj identifier\n"
+				+ "   */\n"
+				+ "  public void setMyObj(MyPojoWithNullAdditionnalBodyMyObj myObj) {\n"
+				+ "    this.myObj = myObj;\n"
+				+ "  }\n"
+				+ "  \n"
+				+ "  @Override\n"
+				+ "  public boolean equals(Object other) {\n"
+				+ "    if (other == null)\n"
+				+ "      return false;\n"
+				+ "    if (!getClass().equals(other.getClass()))\n"
+				+ "      return false;\n"
+				+ "    MyPojoWithNullAdditionnalBody o = (MyPojoWithNullAdditionnalBody) other;\n"
+				+ "    return Objects.equals(myObj, o.myObj);\n"
+				+ "  }\n"
+				+ "  \n"
+				+ "  @Override\n"
+				+ "  public int hashCode() {\n"
+				+ "    return Objects.hash(myObj);\n"
 				+ "  }\n"
 				+ "  \n"
 				+ "  @Override\n"

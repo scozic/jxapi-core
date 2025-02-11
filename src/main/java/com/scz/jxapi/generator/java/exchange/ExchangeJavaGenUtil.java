@@ -407,5 +407,19 @@ public class ExchangeJavaGenUtil {
 	public static Type getFieldType(Field field) {
 		return field == null? null: Optional.ofNullable(field.getType()).orElse(Type.OBJECT);
 	}
+	
+	/**
+	 * @param field The field to check if its type is an object type
+	 * @return <code>true</code> if the field is not <code>null</code> and its type is an object type,
+	 *         <code>false</code> otherwise
+	 * @see #getFieldType(Field)  
+	 * @see Type#isObject()      
+	 */
+	public static boolean isObjectField(Field field) {
+		if (field == null) {
+			return false;
+		}
+		return getFieldType(field).isObject();
+	}
 
 }

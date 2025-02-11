@@ -9,6 +9,7 @@ import org.junit.Test;
 
 import com.scz.jxapi.exchange.descriptor.ExchangeApiDescriptor;
 import com.scz.jxapi.exchange.descriptor.ExchangeDescriptor;
+import com.scz.jxapi.exchange.descriptor.Field;
 import com.scz.jxapi.exchange.descriptor.Type;
 import com.scz.jxapi.generator.java.Imports;
 import com.scz.jxapi.netutils.deserialization.json.field.BigDecimalJsonFieldDeserializer;
@@ -353,5 +354,25 @@ public class ExchangeJavaGenUtilTest {
 				+ " */\n"
 				+ "public static final String WEBSOCKET_URL = \"https//myexchange.com/ws\";", 
 				ExchangeJavaGenUtil.getWebsocketUrlVariableDeclaration(exchangeDescriptor));
+	}
+	
+	@Test
+	public void testIsObjectField_NullField() {
+		Assert.assertFalse(ExchangeJavaGenUtil.isObjectField(null));
+	}
+	
+	@Test
+	public void testIsObjectField_NullFieldType() {
+		Assert.assertTrue(ExchangeJavaGenUtil.isObjectField(Field.builder().name("test").build()));
+	}
+	
+	@Test
+	public void testIsObjectField_ObjectType() {
+		Assert.assertTrue(ExchangeJavaGenUtil.isObjectField(Field.builder().name("test").type(Type.OBJECT).build()));
+	}
+	
+	@Test
+	public void testIsObjectField_StringType() {
+		Assert.assertFalse(ExchangeJavaGenUtil.isObjectField(Field.builder().name("test").type(Type.STRING).build()));
 	}
 }

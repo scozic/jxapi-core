@@ -262,7 +262,8 @@ public class ExchangeDescriptorParserTest {
 		Assert.assertEquals("BASEURL", constant.getValue());
 		
 		Assert.assertEquals("BASEURL", exchangeDescriptor.getHttpUrl());
-		Assert.assertEquals("com.scz.jxapi.exchanges.employee.net.EmployeeHttpRequestInterceptorFactory", exchangeDescriptor.getHttpRequestInterceptorFactory());
+		Assert.assertEquals("com.scz.jxapi.exchanges.demo.net.DemoExchangeHttpRequestInterceptorFactory", 
+							exchangeDescriptor.getHttpRequestInterceptorFactory());
 		Assert.assertEquals(1, exchangeDescriptor.getApis().size());
 		checkEmployeeExchangeV1ApiGroup(exchangeDescriptor.getApis().get(0));
 	}
@@ -279,6 +280,36 @@ public class ExchangeDescriptorParserTest {
 		checkEmployeeExchangeV1ApiGroupAddEmployeesRestEndpoint(restEndpoints.get(2));
 		checkEmployeeExchangeV1ApiGroupUpdateEmployeesRestEndpoint(restEndpoints.get(3));
 		checkEmployeeExchangeV1ApiGroupDeleteEmployeesRestEndpoint(restEndpoints.get(4));
+		Assert.assertEquals("BASEURL/v1", api.getWebsocketUrl());
+		Assert.assertEquals("com.scz.jxapi.exchanges.demo.net.DemoExchangeWebsocketHookFactory", 
+							api.getWebsocketHookFactory());
+		List<WebsocketEndpointDescriptor> websocketEndpoints = api.getWebsocketEndpoints();
+		Assert.assertEquals(1, websocketEndpoints.size());
+		checkEmployeeUpdatesWebsocketEndpoint(websocketEndpoints.get(0));
+	}
+
+	private void checkEmployeeUpdatesWebsocketEndpoint(WebsocketEndpointDescriptor websocketEndpointDescriptor) {
+		Assert.assertEquals("employeeUpdates", websocketEndpointDescriptor.getName());
+		Assert.assertEquals("Employee updates websocket", websocketEndpointDescriptor.getDescription());
+		Assert.assertEquals("https://www.example.com/docs/employee/updates", websocketEndpointDescriptor.getDocUrl());
+		Assert.assertNull(websocketEndpointDescriptor.getTopic());
+		Assert.assertNull(websocketEndpointDescriptor.getTopicParametersListSeparator());
+		Assert.assertNull(websocketEndpointDescriptor.getRequest());
+		Assert.assertNull(websocketEndpointDescriptor.getMessageTopicMatcherFields());
+		Field message = websocketEndpointDescriptor.getMessage();
+		Assert.assertEquals("Employee update message", message.getDescription());
+		List<Field> messageProperties = message.getProperties();
+		Assert.assertEquals(2, messageProperties.size());
+		Field eventType = messageProperties.get(0);
+		Assert.assertEquals("eventType", eventType.getName());
+		Assert.assertEquals("Type of event. Can be 'ADD', 'UPDATE' or 'DELETE'", eventType.getDescription());
+		Assert.assertEquals(Type.STRING, eventType.getType());
+		Assert.assertEquals(1, eventType.getSampleValue());
+		Field employee = messageProperties.get(1);
+		Assert.assertEquals("employee", employee.getName());
+		Assert.assertEquals("Employee that was updated", employee.getDescription());
+		Assert.assertEquals("John", employee.getSampleValue());
+		Assert.assertEquals("Employee", employee.getObjectName());
 	}
 
 	private void checkEmployeeExchangeV1ApiGroupConstants(List<Constant> constants) {

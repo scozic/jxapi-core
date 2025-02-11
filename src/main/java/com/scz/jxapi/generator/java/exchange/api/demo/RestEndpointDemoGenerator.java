@@ -119,7 +119,7 @@ public class RestEndpointDemoGenerator extends JavaTypeGenerator {
 					restResponseClassName);
 
 		} else {
-			responseSimpleClassName = null;
+			responseSimpleClassName = String.class.getSimpleName();
 		}
 		this.apiMethodName = ExchangeApiGeneratorUtil.getRestApiMethodName(restApi);
 		this.apiEndpointMethodJavadocLink = generateApiEndpointMethodJavadocLink();

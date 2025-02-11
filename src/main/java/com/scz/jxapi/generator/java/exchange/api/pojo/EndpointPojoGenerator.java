@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.List;
 
 import com.scz.jxapi.exchange.descriptor.Field;
+import com.scz.jxapi.exchange.descriptor.Type;
 import com.scz.jxapi.generator.java.JavaCodeGenerationUtil;
 import com.scz.jxapi.generator.java.PojoField;
 import com.scz.jxapi.generator.java.PojoGenerator;
@@ -54,7 +55,7 @@ public class EndpointPojoGenerator extends PojoGenerator {
 		setImplementedInterfaces(implementedInterfaces);
 		if (!CollectionUtil.isEmpty(fields)) {
 			for (Field field: fields) {
-				if (field.getType().isObject()) {
+				if (ExchangeJavaGenUtil.isObjectField(field)) {
 					generateObjectTypePojoField(field);
 				} else {
 					generateSimpleTypePojoField(field);
@@ -69,9 +70,10 @@ public class EndpointPojoGenerator extends PojoGenerator {
 	
 	private void generateObjectTypePojoField(Field field) {
 		String className = getName();
+		Type fieldType = ExchangeJavaGenUtil.getFieldType(field);
 		String objectParamClassName = ExchangeApiGeneratorUtil.getFieldLeafSubTypeClassName(
 																				field.getName(), 
-																				field.getType(), 
+																				fieldType, 
 																				field.getObjectName(), 
 																				className);
 		addImport(objectParamClassName);

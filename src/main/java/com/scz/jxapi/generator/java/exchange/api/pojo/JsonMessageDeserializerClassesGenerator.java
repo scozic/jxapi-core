@@ -9,6 +9,7 @@ import com.scz.jxapi.exchange.descriptor.Type;
 import com.scz.jxapi.generator.java.Imports;
 import com.scz.jxapi.generator.java.JavaCodeGenerationUtil;
 import com.scz.jxapi.generator.java.exchange.ClassesGenerator;
+import com.scz.jxapi.generator.java.exchange.ExchangeJavaGenUtil;
 import com.scz.jxapi.generator.java.exchange.api.ExchangeApiGeneratorUtil;
 import com.scz.jxapi.netutils.deserialization.json.AbstractJsonMessageDeserializer;
 
@@ -43,7 +44,7 @@ public class JsonMessageDeserializerClassesGenerator implements ClassesGenerator
 	public void generateClasses(Path outputFolder) throws IOException {
 		Imports imports = new Imports();
 		for (Field field: fields) {
-			if ((field.getType().isObject())
+			if ((ExchangeJavaGenUtil.isObjectField(field))
 				&& field.getProperties() != null) {
 				Field objectParam = Field.builder()
 										 .name(field.getName())

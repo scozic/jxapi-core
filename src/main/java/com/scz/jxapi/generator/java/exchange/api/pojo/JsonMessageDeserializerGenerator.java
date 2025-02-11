@@ -88,11 +88,12 @@ public class JsonMessageDeserializerGenerator extends JavaTypeGenerator {
 		    .append("switch(parser.getCurrentName()) {\n");
 		String dblIndent = indent + indent;
 		fields.forEach(field -> {
+			Type type = ExchangeJavaGenUtil.getFieldType(field);
 			body.append(indent)
 				.append("case \"")
 				.append(field.getMsgField() != null? field.getMsgField() : field.getName())
 				.append("\":\n");
-			if (!field.getType().getCanonicalType().isPrimitive) {
+			if (!type.getCanonicalType().isPrimitive) {
 				body.append(dblIndent)
 					.append("parser.nextToken();\n");
 			}
@@ -123,7 +124,7 @@ public class JsonMessageDeserializerGenerator extends JavaTypeGenerator {
 	}
 
 	private String getParseFieldInstruction(Field field) {
-		CanonicalType canonicalType = field.getType().getCanonicalType();
+		CanonicalType canonicalType = ExchangeJavaGenUtil.getFieldType(field).getCanonicalType();
 		if (!canonicalType.isPrimitive) {
 			return generateNonPrimitiveTypeFieldDeserializerDeclaration(field) +".deserialize(parser)";
 		}
@@ -149,14 +150,14 @@ public class JsonMessageDeserializerGenerator extends JavaTypeGenerator {
 	}
 	
 	private String generateNonPrimitiveTypeFieldDeserializerDeclaration(Field field) {
-		Type type = field.getType();
+		Type type = ExchangeJavaGenUtil.getFieldType(field);
 		String objectFieldClassName = ExchangeApiGeneratorUtil.getFieldLeafSubTypeClassName(
 													field.getName(), 
-													field.getType(), 
+													type, 
 													field.getObjectName(),
 													deserializedTypeClassName);
 		String simpleDeserializerTypeName = generateNonPrimitiveFieldDeserializerClassName(
-												field.getType(), 
+												type, 
 												objectFieldClassName, 
 												getImports());
 		

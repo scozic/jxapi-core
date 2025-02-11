@@ -8,4 +8,4 @@ description: >
 docUrl: "https://www.example.com/docs/employee"
 basePackage: "com.scz.jxapi.exchanges.employee.gen"
 httpUrl: "BASEURL"
-httpRequestInterceptorFactory: "com.scz.jxapi.exchanges.employee.net.EmployeeHttpRequestInterceptorFactory"
+httpRequestInterceptorFactory: "com.scz.jxapi.exchanges.demo.net.DemoExchangeHttpRequestInterceptorFactory"

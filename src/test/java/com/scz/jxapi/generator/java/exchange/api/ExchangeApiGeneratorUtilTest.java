@@ -283,11 +283,10 @@ public class ExchangeApiGeneratorUtilTest {
     }
 
     @Test
-    public void testGetClassNameForField_OBJECT_WithObjectName() {
+    public void testGetClassNameForField_Implicit_OBJECT_WithObjectName() {
         Imports imports = new Imports();
         Field f = new Field();
         f.setName("bar");
-        f.setType(Type.OBJECT);
         f.setObjectName("MyCustomObjectName");
         Assert.assertEquals("MyCustomObjectName", 
         					ExchangeApiGeneratorUtil.getClassNameForField(f, imports, "com.x.y.gen.pojo.Foo"));

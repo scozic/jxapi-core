@@ -322,13 +322,14 @@ public class ExchangeApiGeneratorUtil {
 	public static String getClassNameForField(Field field, 
 											  Imports imports, 
 											  String enclosingClassName) {
+		Type fieldType = ExchangeJavaGenUtil.getFieldType(field);
 		String objectClassName = null;
-		if (field.getType().isObject()) {
+		if (fieldType.isObject()) {
 			 objectClassName = getFieldObjectClassName(field, enclosingClassName);
 			 
 		}
 		return ExchangeJavaGenUtil.getClassNameForType(
-					field.getType(), 
+					fieldType,
 					imports, 
 					objectClassName);
 	}

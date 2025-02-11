@@ -9,8 +9,10 @@ import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.ser.std.StdSerializer;
 import com.scz.jxapi.exchange.descriptor.Field;
+import com.scz.jxapi.exchange.descriptor.Type;
 import com.scz.jxapi.generator.java.JavaCodeGenerationUtil;
 import com.scz.jxapi.generator.java.JavaTypeGenerator;
+import com.scz.jxapi.generator.java.exchange.ExchangeJavaGenUtil;
 import com.scz.jxapi.util.EncodingUtil;
 
 /**
@@ -72,9 +74,10 @@ public class JsonPojoSerializerGenerator extends JavaTypeGenerator {
 		String simpleDeserializedClassName = JavaCodeGenerationUtil.getClassNameWithoutPackage(serializedTypeClassName);
 		body.append("gen.writeStartObject();\n");
 		fields.forEach(field -> {
+			Type type = ExchangeJavaGenUtil.getFieldType(field);
 			String getFieldValue = "value." + JavaCodeGenerationUtil.getGetAccessorMethodName(
 					field.getName(),
-					field.getType().getCanonicalType().name().toLowerCase(),
+					type.getCanonicalType().name().toLowerCase(),
 					fields.stream().map(Field::getName).collect(Collectors.toList())) + "()";
 			body.append("if (").append(getFieldValue).append(" != null)");
 			body.append(JavaCodeGenerationUtil.generateCodeBlock(genWriteFieldInstruction(field, getFieldValue)));
@@ -87,11 +90,12 @@ public class JsonPojoSerializerGenerator extends JavaTypeGenerator {
 	}
 	
 	private String genWriteFieldInstruction(Field field, String getFieldValue) {
-		if (!field.getType().getCanonicalType().isPrimitive) {
+		Type type = ExchangeJavaGenUtil.getFieldType(field);
+		if (!type.getCanonicalType().isPrimitive) {
 			return "gen.writeObjectField(\"" + msgFieldName(field) + "\", " + getFieldValue + ");\n";
 		}
 		
-		switch (field.getType().getCanonicalType()) {
+		switch (type.getCanonicalType()) {
 		case STRING:
 			return "gen.writeStringField(\"" + msgFieldName(field) + "\", String.valueOf(" + getFieldValue + "));\n";
 		case BIGDECIMAL:
