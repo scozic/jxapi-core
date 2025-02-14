@@ -168,12 +168,12 @@ public class ExchangeReadmeMdGenerator {
 			 s.append(api.getDescription()).append("\n");
 		 }
 		 if (!CollectionUtil.isEmpty(api.getRestEndpoints())) {
-			 s.append("\n#### REST endpoints\n")
+			 s.append("\n#### REST endpoints\n\n")
 			  .append(generateRestEndpointsTable(api));
 		 }
 		
 		 if (!CollectionUtil.isEmpty(api.getWebsocketEndpoints())) {
-			 s.append("\n#### Websocket endpoints\n")
+			 s.append("\n#### Websocket endpoints\n\n")
 			  .append(generateWebsocketEndpointsTable(api));
 			 
 		 }
@@ -260,7 +260,7 @@ public class ExchangeReadmeMdGenerator {
 				.append(exchangeDescriptor.getName())
 				.append(" ")
 				.append(api.getName())
-				.append(" websocket endpoints").toString();
+				.append(" REST endpoints").toString();
 		return HtmlGenerationUtil.generateTable(caption, columns, cells);
 	}
 	

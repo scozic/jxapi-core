@@ -42,7 +42,7 @@ public class EmployeeV1ApiImpl extends AbstractExchangeApi implements EmployeeV1
   /**
    * Base URL for <i>Employee</i> exchange <i>V1</i> API Websocket endpoints
    */
-  public static final String WEBSOCKET_URL = "BASEURL/v1";
+  public static final String WEBSOCKET_URL = "BASEURL";
   
   // REST endpoint URLs
   

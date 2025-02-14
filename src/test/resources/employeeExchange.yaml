@@ -105,7 +105,7 @@ apis:
        type: INT
        description: "Employee ID"
        sampleValue: 1
-   websocketUrl: "BASEURL/v1"
+   websocketUrl: "BASEURL"
    websocketHookFactory: com.scz.jxapi.exchanges.demo.net.DemoExchangeWebsocketHookFactory  
    websocketEndpoints:
     - name: "employeeUpdates"

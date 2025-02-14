@@ -62,8 +62,9 @@ Methods exposed in <a href="./doc/javadoc/com/scz/jxapi/exchanges/demo/gen/marke
 Demo exchange market data API
 
 #### REST endpoints
+
 <table>
-  <caption>DemoExchange MarketData websocket endpoints</caption>
+  <caption>DemoExchange MarketData REST endpoints</caption>
   <tr>
     <th>Endpoint</th>
     <th>Description</th>
@@ -102,6 +103,7 @@ Demo exchange market data API
 </table>
 
 #### Websocket endpoints
+
 <table>
   <caption>DemoExchange MarketData websocket endpoints</caption>
   <tr>

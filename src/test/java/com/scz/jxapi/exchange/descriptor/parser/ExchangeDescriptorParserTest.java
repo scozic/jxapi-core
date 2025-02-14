@@ -280,7 +280,7 @@ public class ExchangeDescriptorParserTest {
 		checkEmployeeExchangeV1ApiGroupAddEmployeesRestEndpoint(restEndpoints.get(2));
 		checkEmployeeExchangeV1ApiGroupUpdateEmployeesRestEndpoint(restEndpoints.get(3));
 		checkEmployeeExchangeV1ApiGroupDeleteEmployeesRestEndpoint(restEndpoints.get(4));
-		Assert.assertEquals("BASEURL/v1", api.getWebsocketUrl());
+		Assert.assertEquals("BASEURL", api.getWebsocketUrl());
 		Assert.assertEquals("com.scz.jxapi.exchanges.demo.net.DemoExchangeWebsocketHookFactory", 
 							api.getWebsocketHookFactory());
 		List<WebsocketEndpointDescriptor> websocketEndpoints = api.getWebsocketEndpoints();

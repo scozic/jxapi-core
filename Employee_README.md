@@ -59,7 +59,7 @@ Version 1 of the Employee API
 #### REST endpoints
 
 <table>
-  <caption>Employee V1 websocket endpoints</caption>
+  <caption>Employee V1 REST endpoints</caption>
   <tr>
     <th>Endpoint</th>
     <th>Description</th>

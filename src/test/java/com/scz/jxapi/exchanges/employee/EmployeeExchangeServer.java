@@ -1,0 +1,233 @@
+package com.scz.jxapi.exchanges.employee;
+
+import java.io.IOException;
+import java.util.Date;
+import java.util.concurrent.TimeoutException;
+import java.util.concurrent.atomic.AtomicBoolean;
+
+import org.apache.commons.lang3.StringUtils;
+import org.glassfish.grizzly.http.server.HttpHandler;
+import org.glassfish.grizzly.http.server.HttpServer;
+import org.glassfish.grizzly.http.server.Request;
+import org.glassfish.grizzly.http.server.Response;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.scz.jxapi.exchanges.employee.gen.v1.deserializers.EmployeeDeserializer;
+import com.scz.jxapi.exchanges.employee.gen.v1.pojo.Employee;
+import com.scz.jxapi.exchanges.employee.gen.v1.pojo.EmployeeV1EmployeeUpdatesMessage;
+import com.scz.jxapi.netutils.rest.HttpMethod;
+import com.scz.jxapi.netutils.rest.HttpRequest;
+import com.scz.jxapi.netutils.rest.HttpResponse;
+import com.scz.jxapi.netutils.rest.javanet.HttpServerUtil;
+import com.scz.jxapi.netutils.websocket.mock.server.MockWebsocketServer;
+import com.scz.jxapi.netutils.websocket.mock.server.MockWebsocketServerEvent;
+import com.scz.jxapi.util.JsonUtil;
+
+/**
+ * Employee exchange server. It can be used to test employee exchange clients.
+ */
+public class EmployeeExchangeServer {
+	
+	private static final Logger log = LoggerFactory.getLogger(EmployeeExchangeServer.class);
+	
+	private final HttpHandler httpHandler;
+	
+	private final int httpPort;
+	private final int webSocketPort;
+	private HttpServer httpServer;
+	private AtomicBoolean started = new AtomicBoolean(false);
+	private MockWebsocketServer wsServer;
+	private final EmployeesDatabase employeesDatabase = new DefaultEmployeeDatabase();
+	private final String baseHttpUrl;
+	private final String baseWsUrl;
+
+	public EmployeeExchangeServer(int httpPort, int webSocketPort) {
+		httpHandler = new HttpHandler() {
+			@Override
+			public void service(Request request, Response response) throws Exception {
+				serveRequest(request, response);
+			}
+		};
+		this.httpPort = httpPort;
+		this.webSocketPort = webSocketPort;
+		this.baseHttpUrl = "http://localhost:" + httpPort + "/";
+		this.baseWsUrl = "ws://localhost:" + webSocketPort + "/employee/v1/ws";
+	}
+	
+	/**
+	 * Starts server.
+	 * @throws IOException if server could not be started
+	 */
+	public void start() throws IOException {
+		if (started.getAndSet(true)) {
+			return;
+		}
+		httpServer = HttpServer.createSimpleServer(null, httpPort);
+		httpServer.getServerConfiguration().addHttpHandler(httpHandler);
+		log.debug("Starting server on port:{}", httpPort);
+		httpServer.start();
+		
+		wsServer = new MockWebsocketServer(webSocketPort, "employee/v1");
+		wsServer.start();
+	}
+	
+	/**
+	 * Stops server.
+	 */
+	public void stop() {
+		if (!started.getAndSet(false)) {
+			return;
+		}
+        log.debug("Stopping server on port:{}", httpPort);
+        httpServer.shutdownNow();
+        wsServer.stop();
+	}
+	
+	/**
+	 * @return <code>true</code> if server is started
+	 */
+	public boolean isStarted() {
+		return started.get();
+	}
+	
+	/**
+	 * @return HTTP base URL of local server, e.g.
+	 *         <code>http://localhost:&lt;port&gt;</code>
+	 */
+	public String getHttpBaseUrl() {
+		return this.baseHttpUrl;
+	}
+	
+	/**
+	 * @return Websocket base URL of local server, e.g.
+	 *         <code>ws://localhost:&lt;port&gt;/employee/ws</code>
+	 */
+	public String getWebSocketBaseUrl() {
+        return this.baseWsUrl;
+	}
+	
+	public MockWebsocketServerEvent popWsEvent() throws TimeoutException {
+		return wsServer.waitUntilCount(1).pop();
+	}
+	
+	private void serveRequest(Request request, Response response) {
+		try {
+			HttpRequest httpRequest = HttpServerUtil.convertRequest(request);
+			log.debug("Serving request:{}", httpRequest);
+			HttpResponse httpResponse = process(httpRequest);
+			HttpServerUtil.fillResponse(httpResponse, response);
+		} catch (Exception ex) {
+			log.error("Error serving request:{}", request, ex);
+		}
+	}
+
+	private HttpResponse process(HttpRequest httpRequest) {
+		try {
+			if (httpRequest.getUrl().contains("employees")) {
+				if (HttpMethod.GET.equals(httpRequest.getHttpMethod())) {
+	                return getAllEmployees();
+				}
+			} else if (httpRequest.getUrl().contains("employee")) {
+				if (HttpMethod.GET.equals(httpRequest.getHttpMethod())) {
+					Integer id = Integer.valueOf(StringUtils.substringAfterLast(httpRequest.getUrl(), "/"));
+	                return getEmployee(id);
+				} else if (HttpMethod.POST.equals(httpRequest.getHttpMethod())) {
+					return addEmployee(httpRequest.getBody());
+				} else if (HttpMethod.PUT.equals(httpRequest.getHttpMethod())) {
+					return updateEmployee(httpRequest.getBody());
+				} else if (HttpMethod.DELETE.equals(httpRequest.getHttpMethod())) {
+					return deleteEmployee(Integer.valueOf(StringUtils.substringAfterLast(httpRequest.getUrl(), "/")));
+				}
+			}
+		} catch (Exception e) {
+            log.error("Error processing request:" + httpRequest, e);
+            return createHttpResponse(500);
+        }
+		
+		log.info("Unknown request:{}", httpRequest);
+		return createHttpResponse(404);
+	}
+		
+	private HttpResponse getEmployee(Integer id) {
+		log.info("Getting employee with id:{}", id);
+		HttpResponse response = createHttpResponse(200);
+		response.setBody(JsonUtil.pojoToJsonString(employeesDatabase.getEmployee(id)));
+		return response;
+	}
+
+	private HttpResponse getAllEmployees() {
+		log.info("Getting all employees");
+		HttpResponse response = createHttpResponse(200);
+		response.setBody(JsonUtil.pojoToJsonString(employeesDatabase.getAllEmployees()));
+		return response;
+	}
+	
+	private HttpResponse createHttpResponse(int status) {
+		HttpResponse response = new HttpResponse();
+        response.setResponseCode(status);
+        response.setTime(new Date());
+        return response;
+	}
+	
+	private HttpResponse addEmployee(String requestBody) throws IOException {
+		log.info("Adding employee:{}", requestBody);
+		Employee employee = null;
+		try {
+			employee = new EmployeeDeserializer().deserialize(requestBody);
+		} catch (Exception e) {
+			log.error("Error deserializing employee:" + requestBody, e);
+			return createHttpResponse(400);
+		}
+		
+		try {
+			employeesDatabase.addEmployee(employee);
+		} catch (NullEmployeeIdException e) {
+            log.error("Error adding employee:" + employee, e);
+            return createHttpResponse(400);
+		} catch (EmployeeIdConflictException e) {
+            log.error("Error adding employee:" + employee, e);
+            return createHttpResponse(409);
+        }
+		dispatchWsEvent(EmployeeWsEventType.EMPLOYEE_ADDED, employee);
+		return createHttpResponse(200);
+	}
+	
+	private HttpResponse updateEmployee(String requestBody) throws IOException {
+		log.info("Updating employee:{}", requestBody);
+		Employee employee = null;
+		try {
+			employee = new EmployeeDeserializer().deserialize(requestBody);
+		} catch (Exception e) {
+			log.error("Error deserializing employee:" + requestBody, e);
+			return createHttpResponse(400);
+		}
+		
+		try {
+			employeesDatabase.updateEmployee(employee);
+		} catch (NullEmployeeIdException e) {
+            log.error("Error adding employee:" + employee, e);
+            return createHttpResponse(400);
+		}
+		dispatchWsEvent(EmployeeWsEventType.EMPLOYEE_UPDATED, employee);
+		return createHttpResponse(200);
+	}
+	
+	private HttpResponse deleteEmployee(Integer id) throws IOException {
+		log.info("Deleting employee with id:{}", id);
+		Employee e = employeesDatabase.deleteEmployee(id);
+		if (e == null) {
+            return createHttpResponse(404);
+		}
+		dispatchWsEvent(EmployeeWsEventType.EMPLOYEE_DELETED, e);
+		return createHttpResponse(200);
+	}
+	
+	private void dispatchWsEvent(EmployeeWsEventType eventType, Employee employee) throws IOException {
+		EmployeeV1EmployeeUpdatesMessage message = new EmployeeV1EmployeeUpdatesMessage();
+		message.setEventType(eventType.code);
+		message.setEmployee(employee);
+		wsServer.sendMessageToClients(JsonUtil.pojoToJsonString(message));
+	}
+
+}

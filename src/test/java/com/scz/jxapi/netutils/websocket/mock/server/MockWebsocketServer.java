@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.websocket.DeploymentException;
+
 import org.glassfish.tyrus.server.Server;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -41,6 +43,7 @@ public class MockWebsocketServer extends GenericObserver<MockWebsocketServerEven
 	private Server server;
 	private final MockWebsocketServerListener mockWebsocketServerListener = this::handle;
 	private final String uri;
+	private final String url;
 	private final List<MockWebsocketServerSession> sessions = new ArrayList<>();
 	private boolean started = false;
 	
@@ -54,6 +57,7 @@ public class MockWebsocketServer extends GenericObserver<MockWebsocketServerEven
 		this.port = port;
 		this.appName = appName;
 		uri = "/" + appName + "/ws";
+		url = "ws://localhost:" + port + uri;
 		
 	}
 	
@@ -85,15 +89,26 @@ public class MockWebsocketServer extends GenericObserver<MockWebsocketServerEven
 	 * 
 	 * @throws Exception If the server cannot be started
 	 */
-	public synchronized void start() throws Exception {
+	public synchronized void start() throws IOException {
 		if (isStarted()) {
 			return;
 		}
 	    server = new Server("localhost", port, "/" + appName, null, MockWebsocketServerEndpoint.class);
 	    MockWebsocketServerSessionService.subscribeListener(mockWebsocketServerListener);
 	    started = true;
-	    server.start();
+	    try {
+			server.start();
+		} catch (DeploymentException e) {
+			throw new IOException("Failed to start websocket server " + uri, e);
+		}
 	    log.info("Started WS server on port {}", port);
+	}
+	
+	/**
+	 * @return The local URL of the server
+	 */
+	public String getUrl() {
+		return url;
 	}
 	
 	/**
@@ -135,6 +150,6 @@ public class MockWebsocketServer extends GenericObserver<MockWebsocketServerEven
 	 * @return String representation carrying the server's URI.
 	 */
 	public String toString() {
-		return getClass().getSimpleName() + "ws://localhost:" + port+ "/" + appName;
+		return getClass().getSimpleName() + ":" + getUrl();
 	}
 }

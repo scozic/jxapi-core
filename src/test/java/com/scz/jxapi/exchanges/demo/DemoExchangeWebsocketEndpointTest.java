@@ -17,7 +17,7 @@ import com.scz.jxapi.exchanges.demo.gen.DemoExchangeExchangeImpl;
 import com.scz.jxapi.exchanges.demo.gen.DemoExchangeProperties;
 import com.scz.jxapi.exchanges.demo.gen.marketdata.pojo.DemoExchangeMarketDataTickerStreamMessage;
 import com.scz.jxapi.exchanges.demo.gen.marketdata.pojo.DemoExchangeMarketDataTickerStreamRequest;
-import com.scz.jxapi.netutils.rest.javanet.MockHttpServer;
+import com.scz.jxapi.netutils.rest.javanet.HttpServerUtil;
 import com.scz.jxapi.netutils.websocket.mock.MockWebsocketListener;
 import com.scz.jxapi.netutils.websocket.mock.server.MockWebsocketServer;
 import com.scz.jxapi.netutils.websocket.mock.server.MockWebsocketServerEvent;
@@ -47,12 +47,11 @@ public class DemoExchangeWebsocketEndpointTest {
 	
 	@Before
 	public void setUp() throws Exception {
-		port = MockHttpServer.findAvailablePort();
+		port = HttpServerUtil.findAvailablePort();
 		server = new MockWebsocketServer(port, appName);
-		String url = "ws://localhost:" + port + "/" + appName + "/ws";
 		server.start();
 		Properties config = new Properties();
-		config.setProperty(DemoExchangeProperties.BASE_WEBSOCKET_URL.getName(), url);
+		config.setProperty(DemoExchangeProperties.BASE_WEBSOCKET_URL.getName(), server.getUrl());
 		exchange = new DemoExchangeExchangeImpl(TEST_EXCHANGE_NAME, config);
 		msgListener = new MockWebsocketListener<>();
 	}
