@@ -31,6 +31,26 @@ public class EmployeeExchangeServer {
 	
 	private static final Logger log = LoggerFactory.getLogger(EmployeeExchangeServer.class);
 	
+	/**
+	 * System property to set HTTP server port.
+	 */
+	public static final String HTTP_SERVER_PORT_SYSPROP = "http.port";
+	
+	/**
+	 * System property to set Websocket server port.
+	 */
+	public static final String WS_SERVER_PORT_SYSPROP = "ws.port";
+	
+	/**
+	 * Default port for HTTP (REST Endpoints) server.
+     */
+	public static final int DEFAULT_HTTP_PORT = 8080;
+	
+	/**
+	 * Default port for Websocket server.
+	 */
+	public static final int DEFAULT_WS_PORT = 8081;
+	
 	private final HttpHandler httpHandler;
 	
 	private final int httpPort;
@@ -65,10 +85,11 @@ public class EmployeeExchangeServer {
 		}
 		httpServer = HttpServer.createSimpleServer(null, httpPort);
 		httpServer.getServerConfiguration().addHttpHandler(httpHandler);
-		log.debug("Starting server on port:{}", httpPort);
+		log.info("Starting server on port:{}", httpPort);
 		httpServer.start();
 		
 		wsServer = new MockWebsocketServer(webSocketPort, "employee/v1");
+		log.info("Starting websocket server on port:{}", webSocketPort);
 		wsServer.start();
 	}
 	
@@ -228,6 +249,34 @@ public class EmployeeExchangeServer {
 		message.setEventType(eventType.code);
 		message.setEmployee(employee);
 		wsServer.sendMessageToClients(JsonUtil.pojoToJsonString(message));
+	}
+	
+	/**
+	 * Main method to start server.
+	 * 
+	 * @param args command line arguments
+	 * @throws IOException      if server could not be started
+	 */
+	public static void main(String[] args) throws IOException {
+		try {
+			int httpPort = Integer.getInteger(HTTP_SERVER_PORT_SYSPROP, DEFAULT_HTTP_PORT);
+			int wsPort = Integer.getInteger(WS_SERVER_PORT_SYSPROP, DEFAULT_WS_PORT);
+			EmployeeExchangeServer server = new EmployeeExchangeServer(httpPort, wsPort);
+			server.start();
+			Runtime.getRuntime().addShutdownHook(new Thread() {
+	            @Override
+	            public void run() {
+	            	try {
+	            		server.stop();
+	            	} catch (Exception ex) {
+	            		log.error("Error stopping server", ex);
+	            	}
+	            }
+			});
+		} catch (Throwable t) {
+			log.error("Error raised from main()", t);
+			System.exit(-1);
+		}
 	}
 
 }
