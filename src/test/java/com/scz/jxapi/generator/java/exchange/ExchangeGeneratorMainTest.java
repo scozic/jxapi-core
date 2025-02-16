@@ -8,6 +8,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.scz.jxapi.exchange.descriptor.parser.ExchangeDescriptorParser;
 import com.scz.jxapi.generator.java.JavaCodeGenerationUtil;
 import com.scz.jxapi.util.FileComparator;
 
@@ -44,7 +45,7 @@ public class ExchangeGeneratorMainTest {
 		Path projectSrcTestResources = Paths.get(".", "src", "test", "resources");
 		Path descriptorFile = projectSrcTestResources.resolve("demoExchange.json");
 		
-		ExchangeGeneratorMain.generateExchangeWrapperAndDemos(descriptorFile, tmpDir, baseJavaDocUrl, baseSrcUrl);
+		ExchangeGeneratorMain.generateExchangeWrapperAndDemos(ExchangeDescriptorParser.fromJson(descriptorFile), tmpDir, baseJavaDocUrl, baseSrcUrl);
 		
 		// Check the generated files
 		Path actualSrcMainJava = tmpDir.resolve(Paths.get("src", "main", "java"));
