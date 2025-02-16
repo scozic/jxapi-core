@@ -46,9 +46,9 @@ public class EmployeeExchangeTest {
 	private MockWebsocketListener<EmployeeV1EmployeeUpdatesMessage> wsListener;
 	
 	@Before
-	public void setUp() throws IOException, InterruptedException, TimeoutException {
+	public void setUp() throws IOException, TimeoutException {
 		this.httpPort = HttpServerUtil.findAvailablePort();
-		this.webSocketPort = this.httpPort + 1;
+		this.webSocketPort = HttpServerUtil.findAvailablePort(this.httpPort + 1);
 		this.server = new EmployeeExchangeServer(httpPort, webSocketPort);
 		this.server.start();
 		Properties config = new Properties();
@@ -62,10 +62,9 @@ public class EmployeeExchangeTest {
 	}
 	
 	@After
-	public void tearDown() throws InterruptedException {
+	public void tearDown() {
 		exchange.dispose();
 		this.server.stop();
-		Thread.sleep(200);
 	}
 	
 	@Test
@@ -98,7 +97,7 @@ public class EmployeeExchangeTest {
 	}
 	
 	@Test
-	public void testAddEmployee_NullEmployeeID() throws InterruptedException, ExecutionException, TimeoutException {
+	public void testAddEmployee_NullEmployeeID() throws InterruptedException, ExecutionException {
 		Employee emp1 = createEmployee1();
 		emp1.setId(null);
 		RestResponse<String> addResponse = api.addEmployee(emp1).get();
@@ -161,7 +160,7 @@ public class EmployeeExchangeTest {
 	}
 	
 	@Test
-	public void testUpdateEmployee_NullEmployeeID() throws InterruptedException, ExecutionException, TimeoutException {
+	public void testUpdateEmployee_NullEmployeeID() throws InterruptedException, ExecutionException {
 		Employee emp1 = createEmployee1();
 		emp1.setId(null);
 		RestResponse<String> updateResponse = api.updateEmployee(emp1).get();
@@ -186,7 +185,7 @@ public class EmployeeExchangeTest {
 	}
 	
 	@Test
-	public void testDeleteEmployee_NotFound() throws InterruptedException, ExecutionException, TimeoutException {
+	public void testDeleteEmployee_NotFound() throws InterruptedException, ExecutionException {
 		RestResponse<String> deleteResponse = api.deleteEmployee(1).get();
         Assert.assertFalse(deleteResponse.isOk());
         Assert.assertEquals(404, deleteResponse.getHttpResponse().getResponseCode());

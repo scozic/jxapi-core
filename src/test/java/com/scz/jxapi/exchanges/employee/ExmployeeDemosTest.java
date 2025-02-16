@@ -2,6 +2,7 @@ package com.scz.jxapi.exchanges.employee;
 
 import java.io.IOException;
 import java.util.Properties;
+import java.util.concurrent.TimeoutException;
 
 import org.junit.After;
 import org.junit.Assert;
@@ -21,6 +22,8 @@ import com.scz.jxapi.exchanges.employee.gen.v1.pojo.Employee;
 import com.scz.jxapi.exchanges.employee.gen.v1.pojo.EmployeeV1EmployeeUpdatesMessage;
 import com.scz.jxapi.netutils.rest.javanet.HttpServerUtil;
 import com.scz.jxapi.netutils.websocket.mock.MockWebsocketListener;
+import com.scz.jxapi.netutils.websocket.mock.server.MockWebsocketServerEvent;
+import com.scz.jxapi.netutils.websocket.mock.server.MockWebsocketServerEventType;
 import com.scz.jxapi.util.DemoProperties;
 import com.scz.jxapi.util.DemoUtil;
 
@@ -66,6 +69,7 @@ public class ExmployeeDemosTest {
 		EmployeeWSDemoRunner wsDemoRunner = new EmployeeWSDemoRunner(config);
 		Thread wsThread = new Thread(wsDemoRunner, "WS-Demo-Thread");
 		wsThread.start();
+		checkWsClientConnect();
 		Employee e1 = createEmployee1();
 		Assert.assertTrue(EmployeeV1AddEmployeeDemo.execute(e1, config, DemoUtil::logRestApiEvent).isOk());
 		Employee e1Updated = createEmployee1();
@@ -89,6 +93,13 @@ public class ExmployeeDemosTest {
 		e.setLastName("Doe");
 		e.setProfile(EmployeeV1Constants.PROFILE_ADMIN);
 		return e;
+	}
+	
+	private void checkWsClientConnect() throws TimeoutException {
+		Assert.assertEquals(MockWebsocketServerEventType.CLIENT_CONNECT, server.popWsEvent().getType());
+		MockWebsocketServerEvent event = server.popWsEvent();
+		Assert.assertEquals(MockWebsocketServerEventType.MESSAGE_RECEIVED, event.getType());
+		Assert.assertEquals("Hello!", event.getMessage());
 	}
 	
 	private class EmployeeWSDemoRunner implements Runnable {
