@@ -46,6 +46,9 @@ public class ExchangeGeneratorMain {
 	
 	private static final Logger log = LoggerFactory.getLogger(ExchangeGeneratorMain.class);
 	
+	/**
+	 * Folder where exchange descriptor files are located in the wrapper project.
+     */
 	public static final Path DESCRIPTOR_FOLDER = Paths.get("src", "main", "resources", "jxapi");
 	
 	/**
@@ -95,14 +98,14 @@ public class ExchangeGeneratorMain {
 	 * Generate exchange API wrappers for all exchange descriptor files in the
 	 * current project "src/main/resources/" folder. Will walk through all files in
 	 * the folder and generate Java code for each file ending with 'Descriptor.json'
-	 * using {@link #generateExchangeWrapperAndDemos(Path, Path, String, String)}.
+	 * using {@link #generateExchangeWrapperAndDemos(ExchangeDescriptor, Path, String, String)}.
 	 * 
 	 * @param baseProjectDir Base project directory where the generated code will be written
 	 * @param baseJavaDocUrl The base url for project classes javadoc, used for links generation
 	 * @param baseSrcUrl The base url for sources on public repo, used for links generation.
 	 * 
 	 * @throws Exception If error occurs during generation
-	 * @see #generateExchangeWrapperAndDemos(Path, Path, String, String)
+	 * @see #generateExchangeWrapperAndDemos(ExchangeDescriptor, Path, String, String)
 	 */
 	public static final void generateExchangeWrappersInCurrentProject(String baseProjectDir, String baseJavaDocUrl, String baseSrcUrl) throws Exception {
 		baseProjectDir = Optional.ofNullable(baseProjectDir).orElse(".");
@@ -130,12 +133,15 @@ public class ExchangeGeneratorMain {
 	 * Generate exchange API wrapper and demo snippets code for a given JSON
 	 * descriptor file.
 	 * 
-	 * @param jsonFile       The JSON descriptor file
-	 * @param projectFolder  Project folder, the <code>src/main/java/</code>,
-	 *                       <code>src/test/java/</code> source folders and README.md
-	 *                       sample will be generated here.
-	 * @param baseJavaDocUrl The base url for project classes javadoc, used for links generation
-	 * @param baseSrcUrl     The base url for sources on public repo, used for links generation.
+	 * @param exchangeDescriptor The exchange descriptor to generate the Java
+	 *                           wrapper
+	 * @param projectFolder      Project folder, the <code>src/main/java/</code>,
+	 *                           <code>src/test/java/</code> source folders and
+	 *                           README.md sample will be generated here.
+	 * @param baseJavaDocUrl     The base url for project classes javadoc, used for
+	 *                           links generation
+	 * @param baseSrcUrl         The base url for sources on public repo, used for
+	 *                           links generation.
 	 * @throws IOException if an I/O error occurs
 	 */
 	public static void generateExchangeWrapperAndDemos(ExchangeDescriptor exchangeDescriptor,

@@ -65,7 +65,7 @@ public class ExchangeDescriptorParser {
 	 * 
 	 * <p>
 	 * Relies on SnakeYAML library for YAML parsing.
-	 * @param yamlString the YAML string to parse
+	 * @param yaml String the YAML string to parse
 	 * @return the ExchangeDescriptor object parsed from the YAML string
 	 */
 	public static ExchangeDescriptor fromYaml(String yaml) {

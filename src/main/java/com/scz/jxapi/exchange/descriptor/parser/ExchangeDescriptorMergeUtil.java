@@ -94,7 +94,7 @@ public class ExchangeDescriptorMergeUtil {
 	 * in both lists, an exception is thrown: You cannot define two constants or
 	 * REST endpoints... with same name</li>
 	 * <li>Endpoints cannot be split between files: One REST or Websocket endpoint
-	 * must be defined fully in the same file.</
+	 * must be defined fully in the same file.</li>
 	 * </ul>
 	 * 
 	 * @param e1 An exchange descriptor
