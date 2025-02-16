@@ -30,14 +30,26 @@ public class HttpServerUtil {
 	private HttpServerUtil() {}
 
 	/**
-	 * Tries to open socket on port 8081 and if that fails, tries next port 8082 and
+	 * Tries to open socket on port on port 8081 and if that fails, tries next port
+	 * 8082 and so on until socket opening succeeds or max port number 65000 is
+	 * reached.
+	 * 
+	 * @see #findAvailablePort(int)
+	 */
+	public static final int findAvailablePort() {
+		return findAvailablePort(START_AVAILABLE_PORT_RANGE);
+	}
+	
+	/**
+	 * Tries to open socket on port <code>startPort</code> and if that fails, tries next port <code>startPort + 1</code> and
 	 * so one until socket opening succeeds or max port number 65000 is reached.
 	 * Will close socket immediately and return available port.
 	 * 
+	 * @param startPort Port to start searching from.
 	 * @return Available port to open server socket on.
 	 */
-	public static final int findAvailablePort() {
-		for (int port = HttpServerUtil.START_AVAILABLE_PORT_RANGE; port < HttpServerUtil.MAX_AVAILABLE_PORT_RANGE; port++) {
+	public static final int findAvailablePort(int startPort) {
+		for (int port = startPort; port < HttpServerUtil.MAX_AVAILABLE_PORT_RANGE; port++) {
 			try (ServerSocket s = new ServerSocket(port)) {
 				return port;	
 			} catch (IOException ex) {
