@@ -23,11 +23,11 @@ apis:
           sampleValue: 1
         - name: "firstName"
           type: STRING
-          description: "Employee First Name"
+          description: "Employee first name"
           sampleValue: "John"
         - name: "lastName"
           type: STRING
-          description: "Employee last lame"
+          description: "Employee last name"
           sampleValue: "Doe"
         - name: "profile"
           type: STRING

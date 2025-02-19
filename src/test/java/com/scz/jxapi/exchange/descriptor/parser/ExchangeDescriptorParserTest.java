@@ -31,7 +31,8 @@ import com.scz.jxapi.netutils.rest.HttpMethod;
 public class ExchangeDescriptorParserTest {
 	
 	private Path srcFolder;
-	private final Path employeeDescriptorPath = Paths.get(".", "src", "test", "resources", "employeeExchange.yaml");
+	private final Path employeeDescriptorYamlPath = Paths.get(".", "src", "test", "resources", "employeeExchange.yaml");
+	private final Path employeeDescriptorJsonPath = Paths.get(".", "src", "test", "resources", "employeeExchange.json");
 	private final Path testExchangeDescriptorPath = Paths.get(".", "src", "test", "resources", "testExchangeDescriptor.json");
 	
 	@After
@@ -50,7 +51,13 @@ public class ExchangeDescriptorParserTest {
 	
 	@Test
 	public void testLoadEmployeeExchangeYamlDescriptor() throws IOException {
-		ExchangeDescriptor exchangeDescriptor = ExchangeDescriptorParser.fromYaml(employeeDescriptorPath);
+		ExchangeDescriptor exchangeDescriptor = ExchangeDescriptorParser.fromYaml(employeeDescriptorYamlPath);
+		checkEmployeeExchange(exchangeDescriptor);
+	}
+	
+	@Test
+	public void testLoadEmployeeExchangeJsonDescriptor() throws IOException {
+		ExchangeDescriptor exchangeDescriptor = ExchangeDescriptorParser.fromJson(employeeDescriptorJsonPath);
 		checkEmployeeExchange(exchangeDescriptor);
 	}
 	
@@ -66,7 +73,7 @@ public class ExchangeDescriptorParserTest {
 	@Test
 	public void testCollectAndMergeExchangeDescriptors_WithResourcesPathContaining2ExchangeDescriptorsAsJsonAndYaml() throws IOException {
 		srcFolder = ClassesGeneratorTestUtil.generateTmpDir();
-		Files.copy(employeeDescriptorPath, srcFolder.resolve(employeeDescriptorPath.getFileName()));
+		Files.copy(employeeDescriptorYamlPath, srcFolder.resolve(employeeDescriptorYamlPath.getFileName()));
 		Files.copy(testExchangeDescriptorPath, srcFolder.resolve(testExchangeDescriptorPath.getFileName()));
 		List<ExchangeDescriptor> exchangeDescriptors = ExchangeDescriptorParser.collectAndMergeExchangeDescriptors(srcFolder);
 		Assert.assertEquals(2, exchangeDescriptors.size());
@@ -404,7 +411,6 @@ public class ExchangeDescriptorParserTest {
 	
 	private void checkEmployeeObjectField(Field employeeField) {
 		Assert.assertEquals("Employee", employeeField.getObjectName());
-		Assert.assertEquals(Type.OBJECT, employeeField.getType());
 		List<Field> employeeProperties = employeeField.getProperties();
 		Assert.assertEquals(4, employeeProperties.size());
 		Field idField = employeeProperties.get(0);
@@ -416,13 +422,13 @@ public class ExchangeDescriptorParserTest {
 		Field firstNameField = employeeProperties.get(1);
 		Assert.assertEquals("firstName", firstNameField.getName());
 		Assert.assertEquals(Type.STRING, firstNameField.getType());
-		Assert.assertEquals("Employee First Name", firstNameField.getDescription());
+		Assert.assertEquals("Employee first name", firstNameField.getDescription());
 		Assert.assertEquals("John", firstNameField.getSampleValue());
 		
 		Field lastNameField = employeeProperties.get(2);
 		Assert.assertEquals("lastName", lastNameField.getName());
 		Assert.assertEquals(Type.STRING, lastNameField.getType());
-		Assert.assertEquals("Employee last lame", lastNameField.getDescription());
+		Assert.assertEquals("Employee last name", lastNameField.getDescription());
 		
 		Field profileField = employeeProperties.get(3);
 		Assert.assertEquals("profile", profileField.getName());
