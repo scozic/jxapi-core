@@ -16,6 +16,8 @@ import com.scz.jxapi.util.EncodingUtil;
  */
 public class RateLimitRule {
 	
+	public static final int DEFAULT_GRANULARITY = 10;
+	
 	/**
 	 * Creates a new rate limit rule with given id, time frame and maximum request count.
 	 * 
@@ -55,6 +57,8 @@ public class RateLimitRule {
 	private int maxRequestCount = -1;
 	
 	private int maxTotalWeight = -1;
+	
+	private int granularity = DEFAULT_GRANULARITY;
 	
 	/**
 	 * @return Unique identifier of this rule.
@@ -119,6 +123,39 @@ public class RateLimitRule {
 	 */
 	public void setMaxTotalWeight(int maxTotalWeight) {
 		this.maxTotalWeight = maxTotalWeight;
+	}
+	
+	/**
+	 * The suggested granularity in ms to use when enforcing. This is the time unit used to keep
+	 * track of rate limit state. <br>
+	 * Every time a request is made, a request count is incremented for current time in ms, and 
+	 * a total weight is incremented for current time in ms. These values are stored with granularity 
+	 * that is if granularity is X ms, the counters are updated at time T are stored for
+	 *  grain N*X where N*X &t;= T and (N+1)*X &gtn; <br>
+	 * The grains for time older than rule's timeframe are purged before counting or updating.<br>
+	 * The number/total weight of calls that occurred on rolling time frame is then the sum of 
+	 * request count or weight for all grain.<br>
+	 * Default is {@link #DEFAULT_GRANULARITY}. The finer the granularity, the more precise
+	 * the rate limit enforcement will be. However, the more memory will be used to
+	 * keep track of state, and the more CPU will be used to update or evaluate it.<br>
+	 * 
+	 * @return the granularity in ms of this manager.
+	 */
+	public int getGranularity() {
+		return granularity;
+	}
+
+	/**
+	 * Sets the granularity in ms of this manager.
+	 * 
+	 * @param granularity the granularity in ms of this manager.
+	 * @see #getGranularity()
+     */
+	public void setGranularity(int granularity) {
+		if (granularity < 1) {
+            throw new IllegalArgumentException("Granularity must be strictly positive");
+		}
+		this.granularity = granularity;
 	}
 	
 	/**

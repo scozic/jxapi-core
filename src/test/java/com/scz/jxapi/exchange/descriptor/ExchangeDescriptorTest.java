@@ -57,6 +57,6 @@ public class ExchangeDescriptorTest {
         exchangeDescriptor.setBasePackage("basePackage");
         exchangeDescriptor.setApis(List.of(new ExchangeApiDescriptor()));
         exchangeDescriptor.setRateLimits(List.of(new RateLimitRule()));
-        Assert.assertEquals("ExchangeDescriptor{\"apis\":[{\"httpRequestTimeout\":-1}],\"basePackage\":\"basePackage\",\"description\":\"description\",\"httpRequestTimeout\":-1,\"name\":\"name\",\"rateLimits\":[{\"maxRequestCount\":-1,\"maxTotalWeight\":-1,\"timeFrame\":0}]}", exchangeDescriptor.toString());
+        Assert.assertEquals("ExchangeDescriptor{\"apis\":[{\"httpRequestTimeout\":-1}],\"basePackage\":\"basePackage\",\"description\":\"description\",\"httpRequestTimeout\":-1,\"name\":\"name\",\"rateLimits\":[{\"granularity\":10,\"maxRequestCount\":-1,\"maxTotalWeight\":-1,\"timeFrame\":0}]}", exchangeDescriptor.toString());
     }
 }

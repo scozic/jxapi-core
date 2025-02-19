@@ -119,7 +119,7 @@ public class RequestThrottler extends DefaultDisposable {
 			FutureRestResponse<?> queued = rlManager.queued;
 			if (queued != null) {
 				log.debug("Already has a queued request for {}, request:{} will be submitted again after it completes", 
-						  rlManager.rateLimitManager.getRateLimit(), request);
+						  rlManager.rateLimitManager.getRule(), request);
 				FutureRestResponse<A> r = new FutureRestResponse<>();
 				queued.thenRun(() -> submit(request, executor).thenAccept(r::complete));
 				return r;
@@ -131,7 +131,7 @@ public class RequestThrottler extends DefaultDisposable {
 					return completeWithRateLimitReachedException(request, rateLimit, delay);
 				}
  				log.debug("Rate limit {} reached, scheduling request:{} for later execution in {}ms", 
-						  rlManager.rateLimitManager.getRateLimit(), request, delay);
+						  rlManager.rateLimitManager.getRule(), request, delay);
 				return queue(request, executor, delay, rlManager);
 			}
 		}
