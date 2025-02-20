@@ -225,17 +225,17 @@ See [Websocket Hook dev guide](./WebsocketHookDevGuide.md)
 The `topic` property in a WebSocket endpoint can contain placeholders in the format `${placeholderName}`. These placeholders are replaced with the corresponding values from the request properties when subscribing to the topic.
 
 Example:
-```json
-{
-	"name": "tickerStream",
-	"topic": "${symbol}@ticker",
-	"request": {
-		"properties": [
-			{"name": "symbol", "type": "STRING", "description": "Symbol to subscribe to ticker stream of", "sampleValue": "BTC_USDT"}
-		]
-	}
-}
+```yaml
+name: "tickerStream"
+topic: "${symbol}@ticker"
+request:
+  properties:
+    - name: "symbol"
+      type: "STRING"
+      description: "Symbol to subscribe to ticker stream of"
+      sampleValue: "BTC_USDT"
 ```
+
 In this example, the placeholder `${symbol}` in the topic will be replaced with the value of the `symbol` property from the request.
 
 ### Message Topic Matcher Fields
@@ -243,13 +243,12 @@ In this example, the placeholder `${symbol}` in the topic will be replaced with 
 The `messageTopicMatcherFields` property is a list of fields used to match the message topic. Each field specifies a name and a value. The value can also contain placeholders that are replaced with actual values from the request.
 
 Example:
-```json
-{
-	"messageTopicMatcherFields": [
-		{"name": "topic", "value": "ticker"},
-		{"name": "symbol", "value": "${symbol}"}
-	]
-}
+```yaml
+messageTopicMatcherFields:
+  - name: "topic"
+    value: "ticker"
+  - name: "symbol"
+    value: "${symbol}"
 ```
 In this example, the incoming message `topic` field must have the value `ticker`, and the `symbol` field must match the value of the `symbol` property from the request.
 
@@ -258,16 +257,24 @@ In this example, the incoming message `topic` field must have the value `ticker`
 The `message` property defines the structure of the message and the fields that are expected in the message see [Flexible data structure](#flexible-data-structure-definition). Each field specifies a name, a type, and a description.
 
 Example:
-```json
-{
-	"message": {
-		"properties": [
-			{"name": "topic", "msgField": "t", "type": "STRING", "description": "Topic", "sampleValue": "ticker"},
-			{"name": "symbol", "msgField": "s", "type": "STRING", "description": "Symbol name", "sampleValue": "BTC_USDT"},
-			{"name": "last", "msgField": "p", "type": "BIGDECIMAL", "description": "Last traded price", "sampleValue": "16000.00"}
-		]
-	}
-}
+```yaml
+message:
+  properties:
+    - name: "topic"
+      msgField: "t"
+      type: "STRING"
+      description: "Topic"
+      sampleValue: "ticker"
+    - name: "symbol"
+      msgField: "s"
+      type: "STRING"
+      description: "Symbol name"
+      sampleValue: "BTC_USDT"
+    - name: "last"
+      msgField: "p"
+      type: "BIGDECIMAL"
+      description: "Last traded price"
+      sampleValue: "16000.00"
 ```
 In this example, the message is expected to contain fields `t` (topic), `s` (symbol), and `p` (last traded price). The values of these fields are used to match the message against the topic and request properties.
 
@@ -278,6 +285,7 @@ Both REST endpoints request and response, Websocket endpoints subscription reque
 
 ### Primitive Types
 A field can be a primitive type such as `STRING`, `INT`, `BIGDECIMAL`, or `TIMESTAMP`. These types are directly mapped to their respective Java types.
+Remark: When neither of 'object' type specific `properties` or `objectName` is specified, the default field type is `STRING` unless `type` property is specified.
 
 ### Lists
 A field can be defined as a list by specifying the type as `LIST` and providing the `elementType`. This allows for the representation of arrays or collections of a specific type.
@@ -287,18 +295,25 @@ A field can be defined as a String key map by specifying the type as `MAP` and p
 
 ### Objects
 A field can be a object by specifying the type as `OBJECT` and providing a list of `properties`. Each property is itself a `Field` object, allowing for nested structures and complex data representations.
-Remark: `OBJECT` is the default type for a `Field`.
+Remark: `OBJECT` is the default type for a `Field` when either `objectName` or `properties` property is defined.
 Example:
 ```json
-{
-	"name": "exampleField",
-	"type": "OBJECT",
-	"properties": [
-		{"name": "id", "type": "STRING", "description": "Unique identifier"},
-		{"name": "values", "type": "LIST", "elementType": "INT", "description": "List of integer values"},
-		{"name": "attributes", "type": "MAP", "keyType": "STRING", "valueType": "STRING", "description": "Map of attributes"}
-	]
-}
+name: "exampleField"
+# Remark 'type' needs not be specified because 'properties' is
+# which implies type is 'OBJECT'
+properties:
+  - name: "id"
+    type: "STRING"
+    description: "Unique identifier"
+  - name: "values"
+    type: "LIST"
+    elementType: "INT"
+    description: "List of integer values"
+  - name: "attributes"
+    type: "MAP"
+    keyType: "STRING"
+    valueType: "STRING"
+    description: "Map of attributes"
 ```
 
 ### Composite Types
@@ -309,16 +324,18 @@ for instance:
 A field of type `OBJECT_LIST_MAP` represents a map where the keys are strings and the values are lists of objects. Each object in the list can have its own properties.
 
 Field declaration example:
-```json
-{
-	"name": "exampleObjectListMap",
-	"type": "OBJECT_LIST_MAP",
-	"description": "Map with string keys and lists of objects as values",
-	"properties": [
-		{"name": "name", "type":"STRING", "description": "Person name"},
-		{"name": "age", "type":"INT", "description": "Person age"}
-	]
-}
+
+```yaml
+name: "exampleObjectListMap"
+type: "OBJECT_LIST_MAP"
+description: "Map with string keys and lists of objects as values"
+properties:
+  - name: "name"
+    type: "STRING"
+    description: "Person name"
+  - name: "age"
+    type: "INT"
+    description: "Person age"
 ```
 
 Example of associated JSON data structure:
@@ -339,12 +356,10 @@ Example of associated JSON data structure:
 A field of type `LONG_LIST_LIST` represents a list of lists, where each inner list contains long integer values.
 
 Field declaration example:
-```json
-{
-	"name": "exampleLongListList",
-	"type": "LONG_LIST_LIST",
-	"description": "List of lists containing long values"
-}
+```yaml
+name: "exampleLongListList"
+type: "LONG_LIST_LIST"
+description: "List of lists containing long values"
 ```
 
 Example of associated JSON data structure:
@@ -367,8 +382,48 @@ In addition to provide simpler POJO names, this allows reusing the same object w
 
 ## API request rate limit
 
-REST/HTTP APIs usually come whith request rate limits to prevent abusive use of APIs. Such limitations are expressed in number of requests over a given timeframe. Alternatively, a request could have a determined 'weight' that could vary between APIs: For example, a 'light' request would cost 1 and a 'heavy' request 100 from a quota of 1000 per minute.
-The generated wrappers simplifies such request limit rate enforcement by defining rules either at 'exchange' level (example: limitation of 100 requests per minute across all APIs of all groups), or at 'api group' level (example: limitation of 50 requests per second across all APIs of this group), or at REST endpoint level for rules specific for that endpoint.
+REST/HTTP APIs often have request rate limits to prevent abuse. These limits can be defined in two ways:
+1. **Number of Requests**: The maximum number of requests allowed within a specific timeframe.
+2. **Request Weight**: Each request has a weight, and the total weight of requests must not exceed a certain limit within a timeframe.
+
+For example:
+- A 'light' request might have a weight of 1.
+- A 'heavy' request might have a weight of 100.
+- The total quota might be 1000 per minute.
+
+### Rate Limit Levels
+Rate limits can be enforced at different levels:
+- **Exchange Level**: Applies to all APIs of the exchange (e.g., 100 requests per minute).
+- **API Group Level**: Applies to all APIs within a specific group (e.g., 50 requests per second).
+- **REST Endpoint Level**: Specific to an endpoint (e.g., 10 requests per second).
+
+### Example
+
+```yaml
+name: "myExchange"
+rateLimits:
+  - id: "globalLimit"
+    timeframe: 60000
+    maxRequestCount: 100
+apis:
+  - name: "V1"
+    rateLimits:
+      - id: "apiGroupLimit"
+        timeframe: 10000
+        maxRequestCount: 50
+    restEndpoints:
+      - name: "myRestApi"
+        rateLimits:
+          - id: "myRestApiRule"
+            timeframe: 1000
+            maxRequestCount: 10
+
+```
+
+In example above, request submitted to `myRestApi` REST API of `V1` API group of `myExchange` exchange must enforce 3 rules:
+ * `globalLimit` defined at exchange level: No more that 100 requests can be submitted per minute among all REST APIs of all API groups.
+ * `apiGroupLimit` defined at API group level: No more than 50 request must be output among all requests sent to any REST API of `V1` group.
+ * `myRestApiRule` defined at REST endpoint level: No more that 10 requests per second should be sumitted to `myRestApi` REST API.
 
 Rate limits are defined either at exchange, api group or REST endpoint level as a `rateLimits` property that carries as value a list of [RateLimitRule](../../src/main/java/com/scz/jxapi/netutils/rest/ratelimits/RateLimitRule.java) objects defined by following properties:
  * `id`: Unique identifier
