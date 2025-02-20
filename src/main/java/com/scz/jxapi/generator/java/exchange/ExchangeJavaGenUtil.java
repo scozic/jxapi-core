@@ -1,7 +1,6 @@
 package com.scz.jxapi.generator.java.exchange;
 
 import java.math.BigDecimal;
-import java.util.Optional;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -396,16 +395,25 @@ public class ExchangeJavaGenUtil {
 	
 	/**
 	 * Find the type of a field in context of REST/Websocket API code generation: If
-	 * field type is <code>null</code> the type is assumed to be {@link Type#OBJECT}
+	 * field type is specified, returns it, otherwise, if field properties or objectName are specified,
+	 * returns {@link Type#OBJECT}, otherwise returns {@link Type#STRING}.
 	 * 
 	 * @param field The field to retrieve type of in context of REST/Websocket API
 	 *              code generation
-	 * @return <code>null</code> if field is <code>null</code>, {@link Type#OBJECT}
-	 *         if field type is <code>null</code>, the field type see
-	 *         {@link Field#getType()} otherwise.
+	 * @return <code>null</code> if field is <code>null</code>, the field type if it is specified, or 
 	 */
 	public static Type getFieldType(Field field) {
-		return field == null? null: Optional.ofNullable(field.getType()).orElse(Type.OBJECT);
+		if (field == null) {
+			return null;
+		}
+		Type  type = field.getType();
+		if (type != null) {
+			return type;
+		}
+		if (field.getProperties() != null || field.getObjectName() != null) {
+			return Type.OBJECT;
+		}
+		return Type.STRING;
 	}
 	
 	/**

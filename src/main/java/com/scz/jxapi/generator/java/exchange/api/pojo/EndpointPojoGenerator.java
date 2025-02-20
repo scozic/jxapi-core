@@ -82,7 +82,7 @@ public class EndpointPojoGenerator extends PojoGenerator {
 	}
 	
 	private void generateSimpleTypePojoField(Field field) {
-		String fieldClass = ExchangeJavaGenUtil.getClassNameForType(field.getType(), getImports(), null);
+		String fieldClass = ExchangeJavaGenUtil.getClassNameForType(ExchangeJavaGenUtil.getFieldType(field), getImports(), null);
 		fieldClass = JavaCodeGenerationUtil.getClassNameWithoutPackage(fieldClass);
 		addField(PojoField.create(fieldClass, field.getName(), field.getMsgField(), field.getDescription()));
 	}

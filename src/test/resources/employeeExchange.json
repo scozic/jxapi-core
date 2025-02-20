@@ -42,9 +42,9 @@
                         "objectName": "Employee",
                         "properties": [
                             {"name": "id", "type": "INT", "description": "Employee ID", "sampleValue": 1},
-                            {"name": "firstName", "type": "STRING", "description": "Employee first name", "sampleValue": "John"},
-                            {"name": "lastName", "type": "STRING", "description": "Employee last name", "sampleValue": "Doe"},
-                            {"name": "profile", "type": "STRING", "description": "Employee profile. Can be 'regular' or 'admin'", "sampleValue": "REGULAR"}
+                            {"name": "firstName", "description": "Employee first name", "sampleValue": "John"},
+                            {"name": "lastName", "description": "Employee last name", "sampleValue": "Doe"},
+                            {"name": "profile", "description": "Employee profile. Can be 'regular' or 'admin'", "sampleValue": "REGULAR"}
                         ]
                     }
                 },
@@ -109,7 +109,7 @@
                     "message": {
                         "description": "Employee update message",
                         "properties": [
-                            {"name": "eventType", "description": "Type of event. Can be 'ADD', 'UPDATE' or 'DELETE'", "sampleValue": 1, "type": "STRING"},
+                            {"name": "eventType", "description": "Type of event. Can be 'ADD', 'UPDATE' or 'DELETE'", "sampleValue": 1},
                             {"name": "employee", "description": "Employee that was updated", "objectName": "Employee", "sampleValue": "John"}
                         ]
                     },

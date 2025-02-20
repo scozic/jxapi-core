@@ -178,8 +178,8 @@ public class ExchangeDescriptorParserTest {
 		
 		Field symbol = payloadParameters.get(0);
 		Assert.assertEquals("symbol", symbol.getName());
-		Assert.assertEquals("Market symbol", symbol.getDescription());
-		Assert.assertEquals(CanonicalType.STRING, symbol.getType().getCanonicalType());
+		Assert.assertEquals("Market symbol (STRING type implicit)", symbol.getDescription());
+		Assert.assertNull(symbol.getType());
 		Assert.assertEquals("BTC_USDT", symbol.getSampleValue());
 		
 		Field minOrderSize = payloadParameters.get(1);
@@ -311,7 +311,7 @@ public class ExchangeDescriptorParserTest {
 		Field eventType = messageProperties.get(0);
 		Assert.assertEquals("eventType", eventType.getName());
 		Assert.assertEquals("Type of event. Can be 'ADD', 'UPDATE' or 'DELETE'", eventType.getDescription());
-		Assert.assertEquals(Type.STRING, eventType.getType());
+		Assert.assertNull(eventType.getType());
 		Assert.assertEquals(1, eventType.getSampleValue());
 		Field employee = messageProperties.get(1);
 		Assert.assertEquals("employee", employee.getName());
@@ -421,18 +421,18 @@ public class ExchangeDescriptorParserTest {
 		
 		Field firstNameField = employeeProperties.get(1);
 		Assert.assertEquals("firstName", firstNameField.getName());
-		Assert.assertEquals(Type.STRING, firstNameField.getType());
+		Assert.assertNull(firstNameField.getType());
 		Assert.assertEquals("Employee first name", firstNameField.getDescription());
 		Assert.assertEquals("John", firstNameField.getSampleValue());
 		
 		Field lastNameField = employeeProperties.get(2);
 		Assert.assertEquals("lastName", lastNameField.getName());
-		Assert.assertEquals(Type.STRING, lastNameField.getType());
+		Assert.assertNull(lastNameField.getType());
 		Assert.assertEquals("Employee last name", lastNameField.getDescription());
 		
 		Field profileField = employeeProperties.get(3);
 		Assert.assertEquals("profile", profileField.getName());
-		Assert.assertEquals(Type.STRING, profileField.getType());
+		Assert.assertNull(profileField.getType());
 		Assert.assertEquals("Employee profile. Can be 'regular' or 'admin'", profileField.getDescription());
 		Assert.assertEquals("REGULAR", profileField.getSampleValue());
 	}

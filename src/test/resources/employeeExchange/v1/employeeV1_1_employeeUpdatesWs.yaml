@@ -9,7 +9,6 @@ apis:
        description: "Employee update message"
        properties:
         - name: "eventType"
-          type: STRING
           description: "Type of event. Can be 'ADD', 'UPDATE' or 'DELETE'"
           sampleValue: 1
         - name: "employee"
