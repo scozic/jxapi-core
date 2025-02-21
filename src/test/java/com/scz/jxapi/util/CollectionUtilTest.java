@@ -80,6 +80,16 @@ public class CollectionUtilTest {
 		}
 	}
 	
+	@Test
+	public void testMergeLists() {
+		Assert.assertTrue(CollectionUtil.mergeLists(null, null).isEmpty());
+		List<String> list1 = List.of("a", "b");
+		Assert.assertEquals(list1, CollectionUtil.mergeLists(list1, null));
+		Assert.assertEquals(list1, CollectionUtil.mergeLists(null, list1));
+		List<String> list2 = List.of("c", "d");
+		Assert.assertEquals(List.of("a", "b", "c", "d"), CollectionUtil.mergeLists(list1, list2));
+	}
+	
 	
 	private static class Item {
 		String value;

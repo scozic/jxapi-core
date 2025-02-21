@@ -4,6 +4,7 @@ import java.util.Objects;
 
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.scz.jxapi.exchanges.demo.gen.marketdata.serializers.GenericResponseSerializer;
+import com.scz.jxapi.util.DeepCloneable;
 import com.scz.jxapi.util.EncodingUtil;
 
 /**
@@ -13,7 +14,7 @@ import com.scz.jxapi.util.EncodingUtil;
  * <br><strong>THIS CODE IS GENERATED. DO NOT EDIT MANUALLY!</strong>
  */
 @JsonSerialize(using = GenericResponseSerializer.class)
-public class GenericResponse {
+public class GenericResponse implements DeepCloneable<GenericResponse> {
   private Integer responseCode;
   
   /**
@@ -48,5 +49,12 @@ public class GenericResponse {
   @Override
   public String toString() {
     return EncodingUtil.pojoToString(this);
+  }
+  
+  @Override
+  public GenericResponse deepClone() {
+    GenericResponse clone = new GenericResponse();
+    clone.responseCode = this.responseCode;
+    return clone;
   }
 }

@@ -41,10 +41,9 @@ public class EndpointPojoClassesGenerator implements ClassesGenerator {
 	public EndpointPojoClassesGenerator(String className, 
 			 String description, 
 			 List<Field> fields, 
-			 List<String> implementedInterfaces, 
-			 String additionnalClassBody) throws IOException {
+			 List<String> implementedInterfaces) throws IOException {
 		this.fields = fields;
-		this.rootPojoGenerator = new EndpointPojoGenerator(className, description, fields, implementedInterfaces, additionnalClassBody);
+		this.rootPojoGenerator = new EndpointPojoGenerator(className, description, fields, implementedInterfaces);
 	}
 
 	/**
@@ -71,8 +70,7 @@ public class EndpointPojoClassesGenerator implements ClassesGenerator {
 			new EndpointPojoClassesGenerator(objectParamClassName, 
 									  field.getDescription(), 
 									  field.getProperties(),
-									  field.getImplementedInterfaces(), 
-									  null).generateClasses(outputFolder);
+									  field.getImplementedInterfaces()).generateClasses(outputFolder);
 		}
 	}
 }

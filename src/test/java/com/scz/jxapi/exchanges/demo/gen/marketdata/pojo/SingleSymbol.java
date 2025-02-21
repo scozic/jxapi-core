@@ -4,6 +4,7 @@ import java.util.Objects;
 
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.scz.jxapi.exchanges.demo.gen.marketdata.serializers.SingleSymbolSerializer;
+import com.scz.jxapi.util.DeepCloneable;
 import com.scz.jxapi.util.EncodingUtil;
 
 /**
@@ -12,7 +13,7 @@ import com.scz.jxapi.util.EncodingUtil;
  * <br><strong>THIS CODE IS GENERATED. DO NOT EDIT MANUALLY!</strong>
  */
 @JsonSerialize(using = SingleSymbolSerializer.class)
-public class SingleSymbol {
+public class SingleSymbol implements DeepCloneable<SingleSymbol> {
   private String symbol;
   
   /**
@@ -47,5 +48,12 @@ public class SingleSymbol {
   @Override
   public String toString() {
     return EncodingUtil.pojoToString(this);
+  }
+  
+  @Override
+  public SingleSymbol deepClone() {
+    SingleSymbol clone = new SingleSymbol();
+    clone.symbol = this.symbol;
+    return clone;
   }
 }

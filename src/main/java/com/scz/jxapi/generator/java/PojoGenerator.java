@@ -59,7 +59,12 @@ public class PojoGenerator extends JavaTypeGenerator {
 		generateHashCodeMethod();
 		body.append("\n");
 		generateToStringMethod();
+		generateAdditionalBody();
 		return super.generate();
+	}
+	
+	protected void generateAdditionalBody() {
+		// no additional body by default
 	}
 	
 	private void generateToStringMethod() {

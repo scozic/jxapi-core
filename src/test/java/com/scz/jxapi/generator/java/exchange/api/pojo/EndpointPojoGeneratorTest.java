@@ -31,7 +31,7 @@ public class EndpointPojoGeneratorTest {
 						 .build()
 		);
 		
-		EndpointPojoGenerator generator = new EndpointPojoGenerator(typeName, typeDescription, endpointParameters, List.of("com.x.common.MyInterface"), "// Additionnal body here\n\n");
+		EndpointPojoGenerator generator = new EndpointPojoGenerator(typeName, typeDescription, endpointParameters, List.of("com.x.common.MyInterface"));
 		Assert.assertEquals("package com.x;\n"
 				+ "\n"
 				+ "import java.util.List;\n"
@@ -39,6 +39,8 @@ public class EndpointPojoGeneratorTest {
 				+ "import java.util.Objects;\n"
 				+ "\n"
 				+ "import com.fasterxml.jackson.databind.annotation.JsonSerialize;\n"
+				+ "import com.scz.jxapi.util.CollectionUtil;\n"
+				+ "import com.scz.jxapi.util.DeepCloneable;\n"
 				+ "import com.scz.jxapi.util.EncodingUtil;\n"
 				+ "import com.x.common.MyInterface;\n"
 				+ "import com.x.serializers.MyPojoSerializer;\n"
@@ -47,7 +49,7 @@ public class EndpointPojoGeneratorTest {
 				+ " * Used in EndpointPojoGeneratorTest\n"
 				+ " */\n"
 				+ "@JsonSerialize(using = MyPojoSerializer.class)\n"
-				+ "public class MyPojo implements MyInterface {\n"
+				+ "public class MyPojo implements DeepCloneable<MyPojo>, MyInterface {\n"
 				+ "  private List<MyPojoFoo> foo;\n"
 				+ "  private Long id;\n"
 				+ "  private Integer score;\n"
@@ -109,8 +111,6 @@ public class EndpointPojoGeneratorTest {
 				+ "    this.toto = toto;\n"
 				+ "  }\n"
 				+ "  \n"
-				+ "  // Additionnal body here\n"
-				+ "  \n"
 				+ "  @Override\n"
 				+ "  public boolean equals(Object other) {\n"
 				+ "    if (other == null)\n"
@@ -133,67 +133,18 @@ public class EndpointPojoGeneratorTest {
 				+ "  public String toString() {\n"
 				+ "    return EncodingUtil.pojoToString(this);\n"
 				+ "  }\n"
-				+ "}\n", 
-				generator.generate());
-	}
-	
-	@Test
-	public void testGenerate_NullAdditionnalBody() throws Exception {
-		String typeName = "com.x.MyPojoWithNullAdditionnalBody";
-		String typeDescription = "Used in EndpointPojoGeneratorTest";
-		List<Field> endpointParameters = List.of(
-			Field.builder().type(Type.LONG).name("id").description("identifier").build()
-		);
-		EndpointPojoGenerator generator = new EndpointPojoGenerator(typeName, typeDescription, endpointParameters, null, null);
-		Assert.assertEquals("package com.x;\n"
-				+ "\n"
-				+ "import java.util.Objects;\n"
-				+ "\n"
-				+ "import com.fasterxml.jackson.databind.annotation.JsonSerialize;\n"
-				+ "import com.scz.jxapi.util.EncodingUtil;\n"
-				+ "import com.x.serializers.MyPojoWithNullAdditionnalBodySerializer;\n"
-				+ "\n"
-				+ "/**\n"
-				+ " * Used in EndpointPojoGeneratorTest\n"
-				+ " */\n"
-				+ "@JsonSerialize(using = MyPojoWithNullAdditionnalBodySerializer.class)\n"
-				+ "public class MyPojoWithNullAdditionnalBody {\n"
-				+ "  private Long id;\n"
-				+ "  \n"
-				+ "  /**\n"
-				+ "   * @return identifier\n"
-				+ "   */\n"
-				+ "  public Long getId() {\n"
-				+ "    return id;\n"
-				+ "  }\n"
-				+ "  \n"
-				+ "  /**\n"
-				+ "   * @param id identifier\n"
-				+ "   */\n"
-				+ "  public void setId(Long id) {\n"
-				+ "    this.id = id;\n"
-				+ "  }\n"
 				+ "  \n"
 				+ "  @Override\n"
-				+ "  public boolean equals(Object other) {\n"
-				+ "    if (other == null)\n"
-				+ "      return false;\n"
-				+ "    if (!getClass().equals(other.getClass()))\n"
-				+ "      return false;\n"
-				+ "    MyPojoWithNullAdditionnalBody o = (MyPojoWithNullAdditionnalBody) other;\n"
-				+ "    return Objects.equals(id, o.id);\n"
+				+ "  public MyPojo deepClone() {\n"
+				+ "    MyPojo clone = new MyPojo();\n"
+				+ "    clone.id = this.id;\n"
+				+ "    clone.score = this.score;\n"
+				+ "    clone.foo = CollectionUtil.deepCloneList(this.foo, DeepCloneable::deepClone);\n"
+				+ "    clone.toto = CollectionUtil.deepCloneMap(this.toto, l0 -> CollectionUtil.deeplCloneList(l0, DeepCloneable::deepClone));\n"
+				+ "    return clone;\n"
 				+ "  }\n"
-				+ "  \n"
-				+ "  @Override\n"
-				+ "  public int hashCode() {\n"
-				+ "    return Objects.hash(id);\n"
-				+ "  }\n"
-				+ "  \n"
-				+ "  @Override\n"
-				+ "  public String toString() {\n"
-				+ "    return EncodingUtil.pojoToString(this);\n"
-				+ "  }\n"
-				+ "}\n", 
+				+ "}\n"
+				+ "", 
 				generator.generate());
 	}
 	
@@ -209,12 +160,13 @@ public class EndpointPojoGeneratorTest {
 					  Field.builder().type(Type.LONG).name("id").description("identifier").build()))
 			.build()
 		);
-		EndpointPojoGenerator generator = new EndpointPojoGenerator(typeName, typeDescription, endpointParameters, null, null);
+		EndpointPojoGenerator generator = new EndpointPojoGenerator(typeName, typeDescription, endpointParameters, null);
 		Assert.assertEquals("package com.x;\n"
 				+ "\n"
 				+ "import java.util.Objects;\n"
 				+ "\n"
 				+ "import com.fasterxml.jackson.databind.annotation.JsonSerialize;\n"
+				+ "import com.scz.jxapi.util.DeepCloneable;\n"
 				+ "import com.scz.jxapi.util.EncodingUtil;\n"
 				+ "import com.x.serializers.MyPojoWithNullAdditionnalBodySerializer;\n"
 				+ "\n"
@@ -222,7 +174,7 @@ public class EndpointPojoGeneratorTest {
 				+ " * Used in EndpointPojoGeneratorTest\n"
 				+ " */\n"
 				+ "@JsonSerialize(using = MyPojoWithNullAdditionnalBodySerializer.class)\n"
-				+ "public class MyPojoWithNullAdditionnalBody {\n"
+				+ "public class MyPojoWithNullAdditionnalBody implements DeepCloneable<MyPojoWithNullAdditionnalBody> {\n"
 				+ "  private MyPojoWithNullAdditionnalBodyMyObj myObj;\n"
 				+ "  \n"
 				+ "  /**\n"
@@ -258,6 +210,13 @@ public class EndpointPojoGeneratorTest {
 				+ "  public String toString() {\n"
 				+ "    return EncodingUtil.pojoToString(this);\n"
 				+ "  }\n"
+				+ "  \n"
+				+ "  @Override\n"
+				+ "  public MyPojoWithNullAdditionnalBody deepClone() {\n"
+				+ "    MyPojoWithNullAdditionnalBody clone = new MyPojoWithNullAdditionnalBody();\n"
+				+ "    clone.myObj = this.myObj != null ? this.myObj.deepClone() : null;\n"
+				+ "    return clone;\n"
+				+ "  }\n"
 				+ "}\n", 
 				generator.generate());
 	}
@@ -266,10 +225,11 @@ public class EndpointPojoGeneratorTest {
 	public void testGenerate_NullProperties() throws Exception {
 		String typeName = "com.x.MyPojoWithNullProperties";
 		String typeDescription = "Used in EndpointPojoGeneratorTest";
-		EndpointPojoGenerator generator = new EndpointPojoGenerator(typeName, typeDescription, null, null, null);
+		EndpointPojoGenerator generator = new EndpointPojoGenerator(typeName, typeDescription, null, null);
 		Assert.assertEquals("package com.x;\n"
 				+ "\n"
 				+ "import com.fasterxml.jackson.databind.annotation.JsonSerialize;\n"
+				+ "import com.scz.jxapi.util.DeepCloneable;\n"
 				+ "import com.scz.jxapi.util.EncodingUtil;\n"
 				+ "import com.x.serializers.MyPojoWithNullPropertiesSerializer;\n"
 				+ "\n"
@@ -277,7 +237,7 @@ public class EndpointPojoGeneratorTest {
 				+ " * Used in EndpointPojoGeneratorTest\n"
 				+ " */\n"
 				+ "@JsonSerialize(using = MyPojoWithNullPropertiesSerializer.class)\n"
-				+ "public class MyPojoWithNullProperties {\n"
+				+ "public class MyPojoWithNullProperties implements DeepCloneable<MyPojoWithNullProperties> {\n"
 				+ "  \n"
 				+ "  @Override\n"
 				+ "  public boolean equals(Object other) {\n"
@@ -296,6 +256,11 @@ public class EndpointPojoGeneratorTest {
 				+ "  @Override\n"
 				+ "  public String toString() {\n"
 				+ "    return EncodingUtil.pojoToString(this);\n"
+				+ "  }\n"
+				+ "  \n"
+				+ "  @Override\n"
+				+ "  public MyPojoWithNullProperties deepClone() {\n"
+				+ "    return new MyPojoWithNullProperties();\n"
 				+ "  }\n"
 				+ "}\n", 
 				generator.generate());

@@ -482,17 +482,6 @@ public class ExchangeApiGeneratorUtil {
 	}
 
 	/**
-	 * 
-	 * @param field The field to get the type of, see {@link Field#getType()}
-	 * @return <code>null</code> if field is <code>null</code>, otherwise the
-	 *         type of the field or default {@link Type#OBJECT} if this type is
-	 *         null.
-	 */
-	public static Type getFieldType(Field field) {
-		return field == null? null: Optional.ofNullable(field.getType()).orElse(Type.OBJECT);
-	}
-
-	/**
 	 * Generates the name of expected static {@link String} variable holding a REST endpoint name.
 	 * <br>
 	 * Example: for <code>myRestEndpoint</code>, the returned value is <code>MY_REST_ENDPOINT_REST_API</code>

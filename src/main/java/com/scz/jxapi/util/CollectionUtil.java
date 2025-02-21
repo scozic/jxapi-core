@@ -90,4 +90,15 @@ public class CollectionUtil {
 		}
 		return clonedMap;
 	}
+	
+	public static <T> List<T> mergeLists(List<T> list1, List<T> list2) {
+		List<T> merged = new ArrayList<>();
+		if (list1 != null) {
+			merged.addAll(list1);
+		}
+		if (list2 != null) {
+			merged.addAll(list2);
+		}
+		return merged;
+	}
 }

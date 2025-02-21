@@ -82,8 +82,8 @@ public class RestEndpointClassesGenerator implements ClassesGenerator {
 						+ "\n"
 						+ JavaCodeGenerationUtil.GENERATED_CODE_WARNING,
 						request.getProperties(),
-						request.getImplementedInterfaces(),
-						null).generateClasses(outputFolder);
+						request.getImplementedInterfaces()
+						).generateClasses(outputFolder);
 		}
 		
 		Field response = restEndpointDescriptor.getResponse();
@@ -101,8 +101,8 @@ public class RestEndpointClassesGenerator implements ClassesGenerator {
 						+ "\n"
 						+ JavaCodeGenerationUtil.GENERATED_CODE_WARNING,
 						response.getProperties(),
-						response.getImplementedInterfaces(),
-					null).generateClasses(outputFolder);
+						response.getImplementedInterfaces()
+					).generateClasses(outputFolder);
 		}
 	}
 	

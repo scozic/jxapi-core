@@ -11,6 +11,7 @@ import com.scz.jxapi.generator.java.PojoGenerator;
 import com.scz.jxapi.generator.java.exchange.ExchangeJavaGenUtil;
 import com.scz.jxapi.generator.java.exchange.api.ExchangeApiGeneratorUtil;
 import com.scz.jxapi.util.CollectionUtil;
+import com.scz.jxapi.util.DeepCloneable;
 
 /**
  * Specific {@link PojoGenerator} for REST/Websocket endpoints
@@ -27,6 +28,8 @@ import com.scz.jxapi.util.CollectionUtil;
  * </ul>
  */
 public class EndpointPojoGenerator extends PojoGenerator {
+	
+	private final List<Field> fields;
 
 	/**
 	 * Constructor.
@@ -41,9 +44,9 @@ public class EndpointPojoGenerator extends PojoGenerator {
 	public EndpointPojoGenerator(String className, 
 								 String description, 
 								 List<Field> fields, 
-								 List<String> implementedInterfaces, 
-								 String additionnalClassBody) throws IOException {
+								 List<String> implementedInterfaces) throws IOException {
 		super(className);
+		this.fields = fields;
 		String serializerClassName = EndpointPojoGeneratorUtil.getSerializerClassName(className);
 		addImport(serializerClassName);
 		addImport(com.fasterxml.jackson.databind.annotation.JsonSerialize.class.getName());
@@ -52,7 +55,9 @@ public class EndpointPojoGenerator extends PojoGenerator {
 										+ ".class)\n" 
 										+ getTypeDeclaration());
 		setDescription(description);
-		setImplementedInterfaces(implementedInterfaces);
+		addImport(DeepCloneable.class.getName());
+		String deepClonable = DeepCloneable.class.getName() + "<" + getSimpleName() + ">";
+		setImplementedInterfaces(CollectionUtil.mergeLists(List.of(deepClonable), implementedInterfaces));
 		if (!CollectionUtil.isEmpty(fields)) {
 			for (Field field: fields) {
 				if (ExchangeJavaGenUtil.isObjectField(field)) {
@@ -63,9 +68,12 @@ public class EndpointPojoGenerator extends PojoGenerator {
 			}
 		}
 	
-		if (additionnalClassBody != null) {
-			appendToBody(additionnalClassBody);
-		}
+	}
+	
+	@Override
+	protected void generateAdditionalBody() {
+		body.append("\n");
+		generateDeepCloneMethod();
 	}
 	
 	private void generateObjectTypePojoField(Field field) {
@@ -86,5 +94,30 @@ public class EndpointPojoGenerator extends PojoGenerator {
 		fieldClass = JavaCodeGenerationUtil.getClassNameWithoutPackage(fieldClass);
 		addField(PojoField.create(fieldClass, field.getName(), field.getMsgField(), field.getDescription()));
 	}
+	
+	private void generateDeepCloneMethod() {
+		String signature = "@Override\npublic " + getSimpleName() + " deepClone()";
+		String newDeclaration = "new " + getSimpleName() + "();\n";
+		StringBuilder body = new StringBuilder();
+		if (CollectionUtil.isEmpty(fields)) {
+			body.append("return ").append(newDeclaration);
+			
+		} else {
+			body.append(getSimpleName())
+			.append(" clone = ")
+			.append(newDeclaration);
+		
+			fields.forEach(f -> 
+				body.append("clone.")
+			    	.append(f.getName())
+			    	.append(" = ")
+			    	.append(EndpointPojoGeneratorUtil.generateDeepCloneFieldInstruction(f, getImports()))
+			    	.append(";\n")
+			);
+			body.append("return clone;\n");
+		}
+		appendMethod(signature, body.toString());
+	}
+
 
 }

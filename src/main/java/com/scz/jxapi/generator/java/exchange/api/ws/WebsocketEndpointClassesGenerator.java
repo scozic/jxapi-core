@@ -107,8 +107,8 @@ public class WebsocketEndpointClassesGenerator implements ClassesGenerator {
 						+ "\n"
 						+ JavaCodeGenerationUtil.GENERATED_CODE_WARNING,
 					request.getProperties(), 
-					request.getImplementedInterfaces(), 
-					null).generateClasses(outputFolder);
+					request.getImplementedInterfaces() 
+				).generateClasses(outputFolder);
 		}
 		
 		if (shouldGenerateMessagePojo()) {
@@ -125,8 +125,8 @@ public class WebsocketEndpointClassesGenerator implements ClassesGenerator {
 						+ "\n"
 						+ JavaCodeGenerationUtil.GENERATED_CODE_WARNING,
 					websocketEndpointDescriptor.getMessage().getProperties(), 
-					websocketEndpointDescriptor.getMessage().getImplementedInterfaces(), 
-					null).generateClasses(outputFolder);
+					websocketEndpointDescriptor.getMessage().getImplementedInterfaces() 
+				).generateClasses(outputFolder);
 		}
 	}
 	

@@ -519,23 +519,6 @@ public class ExchangeApiGeneratorUtilTest {
         endpointDescriptor.setResponse(response);
         Assert.assertTrue(ExchangeApiGeneratorUtil.restEndpointHasResponse(endpointDescriptor, apiDescriptor));
     }
-   
-    @Test
-    public void testGetFieldType_NullField() {
-    	Assert.assertNull(ExchangeApiGeneratorUtil.getFieldType(null));
-    }
-    
-    @Test
-    public void testGetFieldType_FieldWithNullType() {
-    	Assert.assertEquals(Type.OBJECT, ExchangeApiGeneratorUtil.getFieldType(new Field()));
-    }
-    
-    @Test
-    public void testGetFieldType_FieldWithPrimitiveType() {
-    	Field field = new Field();
-    	field.setType(Type.BIGDECIMAL);
-    	Assert.assertEquals(Type.BIGDECIMAL, ExchangeApiGeneratorUtil.getFieldType(field));
-    }
     
     @Test
     public void testGetRestEndpointNameStaticVariable() {

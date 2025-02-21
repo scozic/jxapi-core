@@ -4,6 +4,7 @@ import java.util.Objects;
 
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.scz.jxapi.exchanges.demo.gen.marketdata.serializers.DemoExchangeMarketDataTickerStreamRequestSerializer;
+import com.scz.jxapi.util.DeepCloneable;
 import com.scz.jxapi.util.EncodingUtil;
 
 /**
@@ -12,7 +13,7 @@ import com.scz.jxapi.util.EncodingUtil;
  * <br><strong>THIS CODE IS GENERATED. DO NOT EDIT MANUALLY!</strong>
  */
 @JsonSerialize(using = DemoExchangeMarketDataTickerStreamRequestSerializer.class)
-public class DemoExchangeMarketDataTickerStreamRequest {
+public class DemoExchangeMarketDataTickerStreamRequest implements DeepCloneable<DemoExchangeMarketDataTickerStreamRequest> {
   private String symbol;
   
   /**
@@ -47,5 +48,12 @@ public class DemoExchangeMarketDataTickerStreamRequest {
   @Override
   public String toString() {
     return EncodingUtil.pojoToString(this);
+  }
+  
+  @Override
+  public DemoExchangeMarketDataTickerStreamRequest deepClone() {
+    DemoExchangeMarketDataTickerStreamRequest clone = new DemoExchangeMarketDataTickerStreamRequest();
+    clone.symbol = this.symbol;
+    return clone;
   }
 }

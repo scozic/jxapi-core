@@ -81,7 +81,7 @@ public class EndpointDemoGeneratorUtil {
 	public static String generateFieldCreationMethodDeclaration(Field field, 
 																String defaultObjectClassName,
 																Imports imports) {
-		Type type = ExchangeApiGeneratorUtil.getFieldType(field);
+		Type type = ExchangeJavaGenUtil.getFieldType(field);
 		String fieldClassName =	ExchangeJavaGenUtil.getClassNameForType(
 												type, 
 												imports, 
@@ -111,7 +111,7 @@ public class EndpointDemoGeneratorUtil {
 															  String objectClassName, 
 															  Imports imports,
 															  String returnOrResultAffectation) {
-		Type type = ExchangeApiGeneratorUtil.getFieldType(field);
+		Type type = ExchangeJavaGenUtil.getFieldType(field);
 		Object sampleValue = field.getSampleValue();
 		if (sampleValue == null && !type.isObject()) {
 			return returnOrResultAffectation + "null";
@@ -156,7 +156,7 @@ public class EndpointDemoGeneratorUtil {
 	
 	private static String generateSampleFieldValueDeclarationObjectField(StringBuilder res, Field field, String sampleValueVariableName, String objectClassName, 
 			  Imports imports) {
-		Type type = ExchangeApiGeneratorUtil.getFieldType(field);
+		Type type = ExchangeJavaGenUtil.getFieldType(field);
 		CanonicalType canonicalType = type.getCanonicalType();
 		Object sampleValue = field.getSampleValue();
 		String itemVariableName = sampleValueVariableName;
@@ -188,7 +188,7 @@ public class EndpointDemoGeneratorUtil {
 	}
 	
 	private static void generateSampleFieldValueDeclarationObjectFieldChild(StringBuilder res, Field field, Field childParam, String itemVariableName, String objectClassName, Imports imports) {
-		Type childParamType = childParam.getType();
+		Type childParamType = ExchangeJavaGenUtil.getFieldType(childParam);
 		String setArg = JavaCodeGenerationUtil.getQuotedString(childParam.getSampleValue());
 		String setAccessorName = JavaCodeGenerationUtil.getSetAccessorMethodName(
 				childParam.getName(),  
@@ -248,7 +248,7 @@ public class EndpointDemoGeneratorUtil {
 	
 	private static String getPrimitiveTypeFieldSampleValueDeclaration(Field field, Imports imports) {
 		return ExchangeJavaGenUtil.getPrimitiveTypeFieldSampleValueDeclaration(
-					field.getType(), 
+					ExchangeJavaGenUtil.getFieldType(field), 
 					field.getSampleValue(), 
 					imports);
 	}

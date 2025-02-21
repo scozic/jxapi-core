@@ -5,6 +5,8 @@ import java.util.Objects;
 
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.scz.jxapi.exchanges.demo.gen.marketdata.serializers.DemoExchangeMarketDataExchangeInfoResponseSerializer;
+import com.scz.jxapi.util.CollectionUtil;
+import com.scz.jxapi.util.DeepCloneable;
 import com.scz.jxapi.util.EncodingUtil;
 
 /**
@@ -14,7 +16,7 @@ import com.scz.jxapi.util.EncodingUtil;
  * <br><strong>THIS CODE IS GENERATED. DO NOT EDIT MANUALLY!</strong>
  */
 @JsonSerialize(using = DemoExchangeMarketDataExchangeInfoResponseSerializer.class)
-public class DemoExchangeMarketDataExchangeInfoResponse {
+public class DemoExchangeMarketDataExchangeInfoResponse implements DeepCloneable<DemoExchangeMarketDataExchangeInfoResponse> {
   private List<DemoExchangeMarketDataExchangeInfoResponsePayload> payload;
   private Integer responseCode;
   
@@ -65,5 +67,13 @@ public class DemoExchangeMarketDataExchangeInfoResponse {
   @Override
   public String toString() {
     return EncodingUtil.pojoToString(this);
+  }
+  
+  @Override
+  public DemoExchangeMarketDataExchangeInfoResponse deepClone() {
+    DemoExchangeMarketDataExchangeInfoResponse clone = new DemoExchangeMarketDataExchangeInfoResponse();
+    clone.responseCode = this.responseCode;
+    clone.payload = CollectionUtil.deepCloneList(this.payload, DeepCloneable::deepClone);
+    return clone;
   }
 }

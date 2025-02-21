@@ -5,13 +5,14 @@ import java.util.Objects;
 
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.scz.jxapi.exchanges.demo.gen.marketdata.serializers.DemoExchangeMarketDataExchangeInfoResponsePayloadSerializer;
+import com.scz.jxapi.util.DeepCloneable;
 import com.scz.jxapi.util.EncodingUtil;
 
 /**
  * List of market information for each requested symbol
  */
 @JsonSerialize(using = DemoExchangeMarketDataExchangeInfoResponsePayloadSerializer.class)
-public class DemoExchangeMarketDataExchangeInfoResponsePayload {
+public class DemoExchangeMarketDataExchangeInfoResponsePayload implements DeepCloneable<DemoExchangeMarketDataExchangeInfoResponsePayload> {
   private BigDecimal minOrderSize;
   private BigDecimal orderTickSize;
   private String symbol;
@@ -78,5 +79,14 @@ public class DemoExchangeMarketDataExchangeInfoResponsePayload {
   @Override
   public String toString() {
     return EncodingUtil.pojoToString(this);
+  }
+  
+  @Override
+  public DemoExchangeMarketDataExchangeInfoResponsePayload deepClone() {
+    DemoExchangeMarketDataExchangeInfoResponsePayload clone = new DemoExchangeMarketDataExchangeInfoResponsePayload();
+    clone.symbol = this.symbol;
+    clone.minOrderSize = this.minOrderSize;
+    clone.orderTickSize = this.orderTickSize;
+    return clone;
   }
 }

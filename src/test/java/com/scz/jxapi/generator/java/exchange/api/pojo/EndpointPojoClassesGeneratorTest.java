@@ -46,7 +46,7 @@ public class EndpointPojoClassesGeneratorTest {
 		endpointParameters.add(Field.builder().type("OBJECT_LIST_MAP").name("toto")
 									.property(Field.builder().type(Type.STRING).name("id").build())
 									.build());
-		EndpointPojoClassesGenerator generator = new EndpointPojoClassesGenerator(typeName, typeDescription, endpointParameters, null, null);
+		EndpointPojoClassesGenerator generator = new EndpointPojoClassesGenerator(typeName, typeDescription, endpointParameters, null);
 		generator.generateClasses(srcFolder);
 		checkJavaFilesCount(4);
 		checkSourceFileExists(Path.of("MyPojo.java"));
@@ -64,7 +64,7 @@ public class EndpointPojoClassesGeneratorTest {
 		endpointParameters.add(Field.builder().type(Type.LONG).name("id").description("identifier").build());
 		endpointParameters.add(Field.builder().type(Type.INT).name("score").description("Current score").build());
 		endpointParameters.add(Field.builder().type("OBJECT_LIST").name("foo").build());
-		EndpointPojoClassesGenerator generator = new EndpointPojoClassesGenerator(typeName, typeDescription, endpointParameters, null, null);
+		EndpointPojoClassesGenerator generator = new EndpointPojoClassesGenerator(typeName, typeDescription, endpointParameters, null);
 		generator.generateClasses(srcFolder);
 		checkJavaFilesCount(1);
 		checkSourceFileExists(Path.of("MyPojo.java"));

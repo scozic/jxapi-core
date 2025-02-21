@@ -4,6 +4,7 @@ import java.util.Objects;
 
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.scz.jxapi.exchanges.employee.gen.v1.serializers.EmployeeSerializer;
+import com.scz.jxapi.util.DeepCloneable;
 import com.scz.jxapi.util.EncodingUtil;
 
 /**
@@ -13,21 +14,21 @@ import com.scz.jxapi.util.EncodingUtil;
  * <br><strong>THIS CODE IS GENERATED. DO NOT EDIT MANUALLY!</strong>
  */
 @JsonSerialize(using = EmployeeSerializer.class)
-public class Employee {
+public class Employee implements DeepCloneable<Employee> {
   private String firstName;
   private Integer id;
   private String lastName;
   private String profile;
   
   /**
-   * @return Employee First Name
+   * @return Employee first name
    */
   public String getFirstName() {
     return firstName;
   }
   
   /**
-   * @param firstName Employee First Name
+   * @param firstName Employee first name
    */
   public void setFirstName(String firstName) {
     this.firstName = firstName;
@@ -48,14 +49,14 @@ public class Employee {
   }
   
   /**
-   * @return Employee last lame
+   * @return Employee last name
    */
   public String getLastName() {
     return lastName;
   }
   
   /**
-   * @param lastName Employee last lame
+   * @param lastName Employee last name
    */
   public void setLastName(String lastName) {
     this.lastName = lastName;
@@ -96,5 +97,15 @@ public class Employee {
   @Override
   public String toString() {
     return EncodingUtil.pojoToString(this);
+  }
+  
+  @Override
+  public Employee deepClone() {
+    Employee clone = new Employee();
+    clone.id = this.id;
+    clone.firstName = this.firstName;
+    clone.lastName = this.lastName;
+    clone.profile = this.profile;
+    return clone;
   }
 }

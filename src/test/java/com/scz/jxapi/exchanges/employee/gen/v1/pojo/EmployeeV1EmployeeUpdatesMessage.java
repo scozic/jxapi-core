@@ -4,6 +4,7 @@ import java.util.Objects;
 
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.scz.jxapi.exchanges.employee.gen.v1.serializers.EmployeeV1EmployeeUpdatesMessageSerializer;
+import com.scz.jxapi.util.DeepCloneable;
 import com.scz.jxapi.util.EncodingUtil;
 
 /**
@@ -12,7 +13,7 @@ import com.scz.jxapi.util.EncodingUtil;
  * <br><strong>THIS CODE IS GENERATED. DO NOT EDIT MANUALLY!</strong>
  */
 @JsonSerialize(using = EmployeeV1EmployeeUpdatesMessageSerializer.class)
-public class EmployeeV1EmployeeUpdatesMessage {
+public class EmployeeV1EmployeeUpdatesMessage implements DeepCloneable<EmployeeV1EmployeeUpdatesMessage> {
   private Employee employee;
   private String eventType;
   
@@ -63,5 +64,13 @@ public class EmployeeV1EmployeeUpdatesMessage {
   @Override
   public String toString() {
     return EncodingUtil.pojoToString(this);
+  }
+  
+  @Override
+  public EmployeeV1EmployeeUpdatesMessage deepClone() {
+    EmployeeV1EmployeeUpdatesMessage clone = new EmployeeV1EmployeeUpdatesMessage();
+    clone.eventType = this.eventType;
+    clone.employee = this.employee != null ? this.employee.deepClone() : null;
+    return clone;
   }
 }
