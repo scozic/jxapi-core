@@ -107,6 +107,7 @@ public class JavaCodeGenerationUtil {
 	 * @return Java source code chunk with private member declarations, and getter
 	 *         and setter method declaration with javadoc.
 	 */
+	@Deprecated
 	public static String generateJavaPojoFieldsWithAccessors(List<PojoField> fields) {
 		StringBuilder fieldDeclarations = new StringBuilder();
 		StringBuilder accessorsDeclarations = new StringBuilder();

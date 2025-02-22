@@ -17,6 +17,7 @@ import com.scz.jxapi.util.EncodingUtil;
  * overridden to return result
  * of {@link EncodingUtil#pojoToString(Object)}
  */
+@Deprecated
 public class PojoGenerator extends JavaTypeGenerator {
 	
 	/**

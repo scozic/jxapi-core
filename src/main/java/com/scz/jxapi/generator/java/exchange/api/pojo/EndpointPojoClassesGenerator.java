@@ -25,7 +25,7 @@ import com.scz.jxapi.generator.java.exchange.api.ExchangeApiGeneratorUtil;
  */
 public class EndpointPojoClassesGenerator implements ClassesGenerator {
 	
-	private final EndpointPojoGenerator rootPojoGenerator;
+	private final PojoGenerator2 rootPojoGenerator;
 	private final List<Field> fields;
 	
 	/**
@@ -43,7 +43,7 @@ public class EndpointPojoClassesGenerator implements ClassesGenerator {
 			 List<Field> fields, 
 			 List<String> implementedInterfaces) throws IOException {
 		this.fields = fields;
-		this.rootPojoGenerator = new EndpointPojoGenerator(className, description, fields, implementedInterfaces);
+		this.rootPojoGenerator = new PojoGenerator2(className, description, fields, implementedInterfaces);
 	}
 
 	/**

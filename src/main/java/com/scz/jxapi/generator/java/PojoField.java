@@ -6,6 +6,7 @@ import com.scz.jxapi.util.EncodingUtil;
 /**
  * Describes one property of a POJO to be generated using {@link PojoGenerator}
  */
+@Deprecated
 public class PojoField {
 	
 	/**

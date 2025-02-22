@@ -27,6 +27,7 @@ import com.scz.jxapi.util.DeepCloneable;
  * interfaces.</li>
  * </ul>
  */
+@Deprecated
 public class EndpointPojoGenerator extends PojoGenerator {
 	
 	private final List<Field> fields;
@@ -85,8 +86,8 @@ public class EndpointPojoGenerator extends PojoGenerator {
 																				field.getObjectName(), 
 																				className);
 		addImport(objectParamClassName);
-		String objectClass = ExchangeApiGeneratorUtil.getClassNameForField(field, getImports(), className);
-		addField(PojoField.create(objectClass, field.getName(), field.getMsgField(), field.getDescription()));
+		String fieldClass = ExchangeApiGeneratorUtil.getClassNameForField(field, getImports(), className);
+		addField(PojoField.create(fieldClass, field.getName(), field.getMsgField(), field.getDescription()));
 	}
 	
 	private void generateSimpleTypePojoField(Field field) {

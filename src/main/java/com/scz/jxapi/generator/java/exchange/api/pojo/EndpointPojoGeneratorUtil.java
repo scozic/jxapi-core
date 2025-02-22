@@ -64,9 +64,8 @@ public class EndpointPojoGeneratorUtil {
 	}
 	
 	private static String getItemClonerDeclaration(Type itemType, int depth) {
-		if (itemType.getCanonicalType().isPrimitive) {
-			return "UnaryOperator.identity()";
-		} else if (itemType.getCanonicalType() == CanonicalType.LIST) {
+		// Remark: itemType is not a primitive
+		if (itemType.getCanonicalType() == CanonicalType.LIST) {
 			Type subType = itemType.getSubType();
 			if (subType.getCanonicalType().isPrimitive) {
 				return "CollectionUtil::cloneList";
