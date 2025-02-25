@@ -4,8 +4,9 @@ import java.util.Objects;
 
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.scz.jxapi.exchanges.demo.gen.marketdata.serializers.SingleSymbolSerializer;
-import com.scz.jxapi.util.DeepCloneable;
+import com.scz.jxapi.util.CompareUtil;
 import com.scz.jxapi.util.EncodingUtil;
+import com.scz.jxapi.util.Pojo;
 
 /**
  * Request for DemoExchange MarketData API postRestRequestDataTypeObjectListMap REST endpoint<br>
@@ -13,7 +14,17 @@ import com.scz.jxapi.util.EncodingUtil;
  * <br><strong>THIS CODE IS GENERATED. DO NOT EDIT MANUALLY!</strong>
  */
 @JsonSerialize(using = SingleSymbolSerializer.class)
-public class SingleSymbol implements DeepCloneable<SingleSymbol> {
+public class SingleSymbol implements Pojo<SingleSymbol> {
+  
+  private static final long serialVersionUID = 2431653957392503908L;
+  
+  /**
+   * @return A new builder to build {@link SingleSymbol} objects
+   */
+  public static Builder builder() {
+    return new Builder();
+  }
+  
   private String symbol;
   
   /**
@@ -41,13 +52,18 @@ public class SingleSymbol implements DeepCloneable<SingleSymbol> {
   }
   
   @Override
-  public int hashCode() {
-    return Objects.hash(symbol);
+  public int compareTo(SingleSymbol other) {
+    if (other == null) {
+      return 1;
+    }
+    int res = 0;
+    res = CompareUtil.compare(this.symbol, other.symbol);
+    return res;
   }
   
   @Override
-  public String toString() {
-    return EncodingUtil.pojoToString(this);
+  public int hashCode() {
+    return Objects.hash(symbol);
   }
   
   @Override
@@ -55,5 +71,38 @@ public class SingleSymbol implements DeepCloneable<SingleSymbol> {
     SingleSymbol clone = new SingleSymbol();
     clone.symbol = this.symbol;
     return clone;
+  }
+  
+  @Override
+  public String toString() {
+    return EncodingUtil.pojoToString(this);
+  }
+  
+  /**
+   * Builder for {@link SingleSymbol}
+   */
+  public static class Builder {
+    
+    private String symbol;
+    
+    /**
+     * Will set the value of <code>symbol</code> field in the builder
+     * @param symbol Symbol name Message field <strong>s</strong>
+     * @return Builder instance
+     * @see #setSymbol(String)
+     */
+    public Builder symbol(String symbol)  {
+      this.symbol = symbol;
+      return this;
+    }
+    
+    /**
+     * @return a new instance of SingleSymbol using the values set in this builder
+     */
+    public SingleSymbol build() {
+      SingleSymbol res = new SingleSymbol();
+      res.symbol = this.symbol;
+      return res;
+    }
   }
 }

@@ -5,33 +5,30 @@ import java.util.Objects;
 
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.scz.jxapi.exchanges.demo.gen.marketdata.serializers.DemoExchangeMarketDataTickersResponsePayloadSerializer;
-import com.scz.jxapi.util.DeepCloneable;
+import com.scz.jxapi.util.CompareUtil;
 import com.scz.jxapi.util.EncodingUtil;
+import com.scz.jxapi.util.Pojo;
 
 /**
  * Tickers for each symbol
  */
 @JsonSerialize(using = DemoExchangeMarketDataTickersResponsePayloadSerializer.class)
-public class DemoExchangeMarketDataTickersResponsePayload implements DeepCloneable<DemoExchangeMarketDataTickersResponsePayload> {
-  private BigDecimal high;
+public class DemoExchangeMarketDataTickersResponsePayload implements Pojo<DemoExchangeMarketDataTickersResponsePayload> {
+  
+  private static final long serialVersionUID = 6891236300538286832L;
+  
+  /**
+   * @return A new builder to build {@link DemoExchangeMarketDataTickersResponsePayload} objects
+   */
+  public static Builder builder() {
+    return new Builder();
+  }
+  
   private BigDecimal last;
+  private BigDecimal high;
   private BigDecimal low;
-  private Long time;
   private BigDecimal volume;
-  
-  /**
-   * @return Last traded price
-   */
-  public BigDecimal getHigh() {
-    return high;
-  }
-  
-  /**
-   * @param high Last traded price
-   */
-  public void setHigh(BigDecimal high) {
-    this.high = high;
-  }
+  private Long time;
   
   /**
    * @return Last traded price
@@ -50,6 +47,20 @@ public class DemoExchangeMarketDataTickersResponsePayload implements DeepCloneab
   /**
    * @return Last traded price
    */
+  public BigDecimal getHigh() {
+    return high;
+  }
+  
+  /**
+   * @param high Last traded price
+   */
+  public void setHigh(BigDecimal high) {
+    this.high = high;
+  }
+  
+  /**
+   * @return Last traded price
+   */
   public BigDecimal getLow() {
     return low;
   }
@@ -59,20 +70,6 @@ public class DemoExchangeMarketDataTickersResponsePayload implements DeepCloneab
    */
   public void setLow(BigDecimal low) {
     this.low = low;
-  }
-  
-  /**
-   * @return Current time
-   */
-  public Long getTime() {
-    return time;
-  }
-  
-  /**
-   * @param time Current time
-   */
-  public void setTime(Long time) {
-    this.time = time;
   }
   
   /**
@@ -89,6 +86,20 @@ public class DemoExchangeMarketDataTickersResponsePayload implements DeepCloneab
     this.volume = volume;
   }
   
+  /**
+   * @return Current time
+   */
+  public Long getTime() {
+    return time;
+  }
+  
+  /**
+   * @param time Current time
+   */
+  public void setTime(Long time) {
+    this.time = time;
+  }
+  
   @Override
   public boolean equals(Object other) {
     if (other == null)
@@ -96,21 +107,42 @@ public class DemoExchangeMarketDataTickersResponsePayload implements DeepCloneab
     if (!getClass().equals(other.getClass()))
       return false;
     DemoExchangeMarketDataTickersResponsePayload o = (DemoExchangeMarketDataTickersResponsePayload) other;
-    return Objects.equals(high, o.high)
-            && Objects.equals(last, o.last)
+    return Objects.equals(last, o.last)
+            && Objects.equals(high, o.high)
             && Objects.equals(low, o.low)
-            && Objects.equals(time, o.time)
-            && Objects.equals(volume, o.volume);
+            && Objects.equals(volume, o.volume)
+            && Objects.equals(time, o.time);
+  }
+  
+  @Override
+  public int compareTo(DemoExchangeMarketDataTickersResponsePayload other) {
+    if (other == null) {
+      return 1;
+    }
+    int res = 0;
+    res = CompareUtil.compare(this.last, other.last);
+    if (res != 0) {
+      return res;
+    }
+    res = CompareUtil.compare(this.high, other.high);
+    if (res != 0) {
+      return res;
+    }
+    res = CompareUtil.compare(this.low, other.low);
+    if (res != 0) {
+      return res;
+    }
+    res = CompareUtil.compare(this.volume, other.volume);
+    if (res != 0) {
+      return res;
+    }
+    res = CompareUtil.compare(this.time, other.time);
+    return res;
   }
   
   @Override
   public int hashCode() {
-    return Objects.hash(high, last, low, time, volume);
-  }
-  
-  @Override
-  public String toString() {
-    return EncodingUtil.pojoToString(this);
+    return Objects.hash(last, high, low, volume, time);
   }
   
   @Override
@@ -122,5 +154,90 @@ public class DemoExchangeMarketDataTickersResponsePayload implements DeepCloneab
     clone.volume = this.volume;
     clone.time = this.time;
     return clone;
+  }
+  
+  @Override
+  public String toString() {
+    return EncodingUtil.pojoToString(this);
+  }
+  
+  /**
+   * Builder for {@link DemoExchangeMarketDataTickersResponsePayload}
+   */
+  public static class Builder {
+    
+    private BigDecimal last;
+    private BigDecimal high;
+    private BigDecimal low;
+    private BigDecimal volume;
+    private Long time;
+    
+    /**
+     * Will set the value of <code>last</code> field in the builder
+     * @param last Last traded price
+     * @return Builder instance
+     * @see #setLast(BigDecimal)
+     */
+    public Builder last(BigDecimal last)  {
+      this.last = last;
+      return this;
+    }
+    
+    /**
+     * Will set the value of <code>high</code> field in the builder
+     * @param high Last traded price
+     * @return Builder instance
+     * @see #setHigh(BigDecimal)
+     */
+    public Builder high(BigDecimal high)  {
+      this.high = high;
+      return this;
+    }
+    
+    /**
+     * Will set the value of <code>low</code> field in the builder
+     * @param low Last traded price
+     * @return Builder instance
+     * @see #setLow(BigDecimal)
+     */
+    public Builder low(BigDecimal low)  {
+      this.low = low;
+      return this;
+    }
+    
+    /**
+     * Will set the value of <code>volume</code> field in the builder
+     * @param volume Total traded amount in base asset during the last 24h from now
+     * @return Builder instance
+     * @see #setVolume(BigDecimal)
+     */
+    public Builder volume(BigDecimal volume)  {
+      this.volume = volume;
+      return this;
+    }
+    
+    /**
+     * Will set the value of <code>time</code> field in the builder
+     * @param time Current time
+     * @return Builder instance
+     * @see #setTime(Long)
+     */
+    public Builder time(Long time)  {
+      this.time = time;
+      return this;
+    }
+    
+    /**
+     * @return a new instance of DemoExchangeMarketDataTickersResponsePayload using the values set in this builder
+     */
+    public DemoExchangeMarketDataTickersResponsePayload build() {
+      DemoExchangeMarketDataTickersResponsePayload res = new DemoExchangeMarketDataTickersResponsePayload();
+      res.last = this.last;
+      res.high = this.high;
+      res.low = this.low;
+      res.volume = this.volume;
+      res.time = this.time;
+      return res;
+    }
   }
 }

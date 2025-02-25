@@ -6,8 +6,10 @@ import java.util.Objects;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.scz.jxapi.exchanges.demo.gen.marketdata.serializers.DemoExchangeMarketDataTickersResponseSerializer;
 import com.scz.jxapi.util.CollectionUtil;
+import com.scz.jxapi.util.CompareUtil;
 import com.scz.jxapi.util.DeepCloneable;
 import com.scz.jxapi.util.EncodingUtil;
+import com.scz.jxapi.util.Pojo;
 
 /**
  * Response to DemoExchange MarketData API <br>
@@ -16,23 +18,19 @@ import com.scz.jxapi.util.EncodingUtil;
  * <br><strong>THIS CODE IS GENERATED. DO NOT EDIT MANUALLY!</strong>
  */
 @JsonSerialize(using = DemoExchangeMarketDataTickersResponseSerializer.class)
-public class DemoExchangeMarketDataTickersResponse implements DeepCloneable<DemoExchangeMarketDataTickersResponse> {
-  private Map<String, DemoExchangeMarketDataTickersResponsePayload> payload;
+public class DemoExchangeMarketDataTickersResponse implements Pojo<DemoExchangeMarketDataTickersResponse> {
+  
+  private static final long serialVersionUID = 4878345029381012719L;
+  
+  /**
+   * @return A new builder to build {@link DemoExchangeMarketDataTickersResponse} objects
+   */
+  public static Builder builder() {
+    return new Builder();
+  }
+  
   private Integer responseCode;
-  
-  /**
-   * @return Tickers for each symbol
-   */
-  public Map<String, DemoExchangeMarketDataTickersResponsePayload> getPayload() {
-    return payload;
-  }
-  
-  /**
-   * @param payload Tickers for each symbol
-   */
-  public void setPayload(Map<String, DemoExchangeMarketDataTickersResponsePayload> payload) {
-    this.payload = payload;
-  }
+  private Map<String, DemoExchangeMarketDataTickersResponsePayload> payload;
   
   /**
    * @return Request response code
@@ -48,6 +46,20 @@ public class DemoExchangeMarketDataTickersResponse implements DeepCloneable<Demo
     this.responseCode = responseCode;
   }
   
+  /**
+   * @return Tickers for each symbol
+   */
+  public Map<String, DemoExchangeMarketDataTickersResponsePayload> getPayload() {
+    return payload;
+  }
+  
+  /**
+   * @param payload Tickers for each symbol
+   */
+  public void setPayload(Map<String, DemoExchangeMarketDataTickersResponsePayload> payload) {
+    this.payload = payload;
+  }
+  
   @Override
   public boolean equals(Object other) {
     if (other == null)
@@ -55,18 +67,27 @@ public class DemoExchangeMarketDataTickersResponse implements DeepCloneable<Demo
     if (!getClass().equals(other.getClass()))
       return false;
     DemoExchangeMarketDataTickersResponse o = (DemoExchangeMarketDataTickersResponse) other;
-    return Objects.equals(payload, o.payload)
-            && Objects.equals(responseCode, o.responseCode);
+    return Objects.equals(responseCode, o.responseCode)
+            && Objects.equals(payload, o.payload);
+  }
+  
+  @Override
+  public int compareTo(DemoExchangeMarketDataTickersResponse other) {
+    if (other == null) {
+      return 1;
+    }
+    int res = 0;
+    res = CompareUtil.compare(this.responseCode, other.responseCode);
+    if (res != 0) {
+      return res;
+    }
+    res = CompareUtil.compareMaps(this.payload, other.payload, CompareUtil::compare);
+    return res;
   }
   
   @Override
   public int hashCode() {
-    return Objects.hash(payload, responseCode);
-  }
-  
-  @Override
-  public String toString() {
-    return EncodingUtil.pojoToString(this);
+    return Objects.hash(responseCode, payload);
   }
   
   @Override
@@ -75,5 +96,66 @@ public class DemoExchangeMarketDataTickersResponse implements DeepCloneable<Demo
     clone.responseCode = this.responseCode;
     clone.payload = CollectionUtil.deepCloneMap(this.payload, DeepCloneable::deepClone);
     return clone;
+  }
+  
+  @Override
+  public String toString() {
+    return EncodingUtil.pojoToString(this);
+  }
+  
+  /**
+   * Builder for {@link DemoExchangeMarketDataTickersResponse}
+   */
+  public static class Builder {
+    
+    private Integer responseCode;
+    private Map<String, DemoExchangeMarketDataTickersResponsePayload> payload;
+    
+    /**
+     * Will set the value of <code>responseCode</code> field in the builder
+     * @param responseCode Request response code
+     * @return Builder instance
+     * @see #setResponseCode(Integer)
+     */
+    public Builder responseCode(Integer responseCode)  {
+      this.responseCode = responseCode;
+      return this;
+    }
+    
+    /**
+     * Will set the value of <code>payload</code> field in the builder
+     * @param payload Tickers for each symbol
+     * @return Builder instance
+     * @see #setPayload(Map<String, DemoExchangeMarketDataTickersResponsePayload>)
+     */
+    public Builder payload(Map<String, DemoExchangeMarketDataTickersResponsePayload> payload)  {
+      this.payload = payload;
+      return this;
+    }
+    
+    
+    /**
+     * Will add or update a key/value pair to the <code>payload</code> map.
+     * @param item Item to add to current <code>payload</code> list
+     * @return Builder instance
+     * @see DemoExchangeMarketDataTickersResponse#setPayload(DemoExchangeMarketDataTickersResponsePayload)
+     */
+    public Builder addToPayload(String key, DemoExchangeMarketDataTickersResponsePayload item) {
+      if (this.payload == null) {
+        this.payload = CollectionUtil.createMap();
+      }
+      this.payload.put(key, item);
+      return this;
+    }
+    
+    /**
+     * @return a new instance of DemoExchangeMarketDataTickersResponse using the values set in this builder
+     */
+    public DemoExchangeMarketDataTickersResponse build() {
+      DemoExchangeMarketDataTickersResponse res = new DemoExchangeMarketDataTickersResponse();
+      res.responseCode = this.responseCode;
+      res.payload = this.payload;
+      return res;
+    }
   }
 }

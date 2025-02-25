@@ -1,14 +1,14 @@
 package com.scz.jxapi.netutils.deserialization.json.field;
 
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.Map;
 
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonToken;
+import com.scz.jxapi.netutils.deserialization.MessageDeserializer;
 import com.scz.jxapi.netutils.deserialization.json.AbstractJsonMessageDeserializer;
 import com.scz.jxapi.netutils.deserialization.json.JsonDeserializer;
-import com.scz.jxapi.netutils.deserialization.MessageDeserializer;
+import com.scz.jxapi.util.CollectionUtil;
 
 /**
  * {@link AbstractJsonMessageDeserializer} for {@link Map} fields in JSON messages.
@@ -39,7 +39,7 @@ public class MapJsonFieldDeserializer<T> extends AbstractJsonMessageDeserializer
 											+ parser.currentToken());
 		}
 		
-		Map<String, T> res = new HashMap<>();
+		Map<String, T> res = CollectionUtil.createMap();
         while (parser.nextToken() != JsonToken.END_OBJECT) {
         	if (parser.currentToken() != JsonToken.FIELD_NAME) {
         		throw new IllegalStateException("Expecting field name in map of objects to be deserialized using " 

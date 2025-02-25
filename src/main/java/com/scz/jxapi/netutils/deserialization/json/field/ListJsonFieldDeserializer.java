@@ -1,14 +1,14 @@
 package com.scz.jxapi.netutils.deserialization.json.field;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonToken;
+import com.scz.jxapi.netutils.deserialization.MessageDeserializer;
 import com.scz.jxapi.netutils.deserialization.json.AbstractJsonMessageDeserializer;
 import com.scz.jxapi.netutils.deserialization.json.JsonDeserializer;
-import com.scz.jxapi.netutils.deserialization.MessageDeserializer;
+import com.scz.jxapi.util.CollectionUtil;
 
 /**
  * {@link AbstractJsonMessageDeserializer} for {@link List} fields in JSON messages.
@@ -41,7 +41,7 @@ public class ListJsonFieldDeserializer<T> extends AbstractJsonMessageDeserialize
 			throw new IllegalStateException("Expecting start array of String, got:" + parser.currentToken() + " with name:" + parser.currentName());
 		}
 		
-		List<T> res = new ArrayList<>();
+		List<T> res = CollectionUtil.createList();
         for (parser.nextToken(); parser.currentToken() != JsonToken.END_ARRAY; parser.nextToken()) {
             res.add(itemDeserializer.deserialize(parser));
         }

@@ -2,7 +2,7 @@ package com.scz.jxapi.util;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -28,6 +28,46 @@ public class CollectionUtil {
 	}
 	
 	/**
+	 * Creates a new modifiable list with default capacity.
+	 * 
+	 * @param <T> The type of the items in the list
+	 * @return A new modifiable list.
+	 */
+	public static <T> List<T> createList() {
+		return new ArrayList<>();
+	}
+	
+	/**
+	 * Creates a new modifiable list with the given capacity.
+	 * @param <T> The type of the items in the list
+	 * @param capacity the initial capacity of the list 
+	 * @return A new modifiable list with the given capacity.
+	 */
+	public static <T> List<T> createList(int initialCapacity) {
+		return new ArrayList<>(initialCapacity);
+	}
+	
+	/**
+	 * Creates a new String key modifiable map with default initial capacity.
+	 * @param <T> The type of the values in the map
+	 * @return A new modifiable map with the default initial capacity.
+	 */
+	public static <T> Map<String, T> createMap() {
+		return new LinkedHashMap<>();
+	}
+	
+	
+	/**
+	 * Creates a new modifiable map with given initial capacity.
+	 * @param <T> The type of the values in the map
+	 * @param initialCapacity the initial capacity of the map
+	 * @return A new modifiable map with the given initial capacity.
+	 */
+	public static <T> Map<String, T> createMap(int initialCapacity) {
+		return new LinkedHashMap<>(initialCapacity);
+	}
+	
+	/**
 	 * Return a copy of the list with the same items.
 	 * @param <T>
 	 * @param list the list to clone
@@ -50,7 +90,7 @@ public class CollectionUtil {
 	public static <T> List<T> deepCloneList(List<T> list, UnaryOperator<T> itemDeepCloneFunction) {
 		List<T> clonedList = null;
 		if (list != null) {
-			clonedList = new ArrayList<>(list.size());
+			clonedList = createList(list.size());
 			for (T item : list) {
 				clonedList.add(itemDeepCloneFunction.apply(item));
 			}
@@ -68,7 +108,7 @@ public class CollectionUtil {
 		if (map == null) {
 			return null;
 		}
-		Map<String, T> m = new HashMap<>();
+		Map<String, T> m = createMap(map.size());
 		m.putAll(map);
 		return m;
 	}
@@ -83,7 +123,7 @@ public class CollectionUtil {
 	public static <T> Map<String, T> deepCloneMap(Map<String, T> map, UnaryOperator<T> itemDeepCloneFunction) {
 		Map<String, T> clonedMap = null;
 		if (map != null) {
-			clonedMap = new HashMap<>(map.size());
+			clonedMap = createMap(map.size());
 			for (Entry<String, T> entry : map.entrySet()) {
 				clonedMap.put(entry.getKey(), itemDeepCloneFunction.apply(entry.getValue()));
 			}

@@ -6,8 +6,10 @@ import java.util.Objects;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.scz.jxapi.exchanges.demo.gen.marketdata.serializers.DemoExchangeMarketDataExchangeInfoResponseSerializer;
 import com.scz.jxapi.util.CollectionUtil;
+import com.scz.jxapi.util.CompareUtil;
 import com.scz.jxapi.util.DeepCloneable;
 import com.scz.jxapi.util.EncodingUtil;
+import com.scz.jxapi.util.Pojo;
 
 /**
  * Response to DemoExchange MarketData API <br>
@@ -16,23 +18,19 @@ import com.scz.jxapi.util.EncodingUtil;
  * <br><strong>THIS CODE IS GENERATED. DO NOT EDIT MANUALLY!</strong>
  */
 @JsonSerialize(using = DemoExchangeMarketDataExchangeInfoResponseSerializer.class)
-public class DemoExchangeMarketDataExchangeInfoResponse implements DeepCloneable<DemoExchangeMarketDataExchangeInfoResponse> {
-  private List<DemoExchangeMarketDataExchangeInfoResponsePayload> payload;
+public class DemoExchangeMarketDataExchangeInfoResponse implements Pojo<DemoExchangeMarketDataExchangeInfoResponse> {
+  
+  private static final long serialVersionUID = 6615082760078637195L;
+  
+  /**
+   * @return A new builder to build {@link DemoExchangeMarketDataExchangeInfoResponse} objects
+   */
+  public static Builder builder() {
+    return new Builder();
+  }
+  
   private Integer responseCode;
-  
-  /**
-   * @return List of market information for each requested symbol
-   */
-  public List<DemoExchangeMarketDataExchangeInfoResponsePayload> getPayload() {
-    return payload;
-  }
-  
-  /**
-   * @param payload List of market information for each requested symbol
-   */
-  public void setPayload(List<DemoExchangeMarketDataExchangeInfoResponsePayload> payload) {
-    this.payload = payload;
-  }
+  private List<DemoExchangeMarketDataExchangeInfoResponsePayload> payload;
   
   /**
    * @return Request response code
@@ -48,6 +46,20 @@ public class DemoExchangeMarketDataExchangeInfoResponse implements DeepCloneable
     this.responseCode = responseCode;
   }
   
+  /**
+   * @return List of market information for each requested symbol
+   */
+  public List<DemoExchangeMarketDataExchangeInfoResponsePayload> getPayload() {
+    return payload;
+  }
+  
+  /**
+   * @param payload List of market information for each requested symbol
+   */
+  public void setPayload(List<DemoExchangeMarketDataExchangeInfoResponsePayload> payload) {
+    this.payload = payload;
+  }
+  
   @Override
   public boolean equals(Object other) {
     if (other == null)
@@ -55,18 +67,27 @@ public class DemoExchangeMarketDataExchangeInfoResponse implements DeepCloneable
     if (!getClass().equals(other.getClass()))
       return false;
     DemoExchangeMarketDataExchangeInfoResponse o = (DemoExchangeMarketDataExchangeInfoResponse) other;
-    return Objects.equals(payload, o.payload)
-            && Objects.equals(responseCode, o.responseCode);
+    return Objects.equals(responseCode, o.responseCode)
+            && Objects.equals(payload, o.payload);
+  }
+  
+  @Override
+  public int compareTo(DemoExchangeMarketDataExchangeInfoResponse other) {
+    if (other == null) {
+      return 1;
+    }
+    int res = 0;
+    res = CompareUtil.compare(this.responseCode, other.responseCode);
+    if (res != 0) {
+      return res;
+    }
+    res = CompareUtil.compareLists(this.payload, other.payload, CompareUtil::compare);
+    return res;
   }
   
   @Override
   public int hashCode() {
-    return Objects.hash(payload, responseCode);
-  }
-  
-  @Override
-  public String toString() {
-    return EncodingUtil.pojoToString(this);
+    return Objects.hash(responseCode, payload);
   }
   
   @Override
@@ -75,5 +96,66 @@ public class DemoExchangeMarketDataExchangeInfoResponse implements DeepCloneable
     clone.responseCode = this.responseCode;
     clone.payload = CollectionUtil.deepCloneList(this.payload, DeepCloneable::deepClone);
     return clone;
+  }
+  
+  @Override
+  public String toString() {
+    return EncodingUtil.pojoToString(this);
+  }
+  
+  /**
+   * Builder for {@link DemoExchangeMarketDataExchangeInfoResponse}
+   */
+  public static class Builder {
+    
+    private Integer responseCode;
+    private List<DemoExchangeMarketDataExchangeInfoResponsePayload> payload;
+    
+    /**
+     * Will set the value of <code>responseCode</code> field in the builder
+     * @param responseCode Request response code
+     * @return Builder instance
+     * @see #setResponseCode(Integer)
+     */
+    public Builder responseCode(Integer responseCode)  {
+      this.responseCode = responseCode;
+      return this;
+    }
+    
+    /**
+     * Will set the value of <code>payload</code> field in the builder
+     * @param payload List of market information for each requested symbol
+     * @return Builder instance
+     * @see #setPayload(List<DemoExchangeMarketDataExchangeInfoResponsePayload>)
+     */
+    public Builder payload(List<DemoExchangeMarketDataExchangeInfoResponsePayload> payload)  {
+      this.payload = payload;
+      return this;
+    }
+    
+    
+    /**
+     * Will add an item to the <code>payload</code> list.
+     * @param item Item to add to current <code>payload</code> list
+     * @return Builder instance
+     * @see DemoExchangeMarketDataExchangeInfoResponse#setPayload(DemoExchangeMarketDataExchangeInfoResponsePayload)
+     */
+    public Builder addToPayload(DemoExchangeMarketDataExchangeInfoResponsePayload item) {
+      if (this.payload == null) {
+        this.payload = CollectionUtil.createList();
+      }
+      this.payload.add(item);
+      return this;
+    }
+    
+    /**
+     * @return a new instance of DemoExchangeMarketDataExchangeInfoResponse using the values set in this builder
+     */
+    public DemoExchangeMarketDataExchangeInfoResponse build() {
+      DemoExchangeMarketDataExchangeInfoResponse res = new DemoExchangeMarketDataExchangeInfoResponse();
+      res.responseCode = this.responseCode;
+      res.payload = this.payload;
+      return res;
+    }
   }
 }
