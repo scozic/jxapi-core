@@ -67,6 +67,12 @@ import com.scz.jxapi.util.Pojo;
  */
 public class PojoGenerator extends JavaTypeGenerator {
 
+	private static final String PUBLIC_BUILDER_TOKEN = "public Builder ";
+	private static final String END_BLOCK_TOKEN = "\n}\n";
+	private static final String RETURN_THIS_TOKEN = "return this;\n";
+	private static final String THIS_TOKEN = "this.";
+	private static final String END_NO_PARAM_METHOD_INST_TOKEN = "();\n";
+	
 	private final List<Field> fields = new ArrayList<>();
 	
 	/**
@@ -162,7 +168,7 @@ public class PojoGenerator extends JavaTypeGenerator {
 		StringBuilder compareBody = new StringBuilder()
 				.append("if (other == null) {\n")
 				.append(JavaCodeGenerationUtil.indent("return 1;"))
-				.append("\n}\n");
+				.append(END_BLOCK_TOKEN);
 		if (CollectionUtil.isEmpty(this.fields)) {
 			compareBody.append("return 0;\n");
 		} else {
@@ -176,7 +182,7 @@ public class PojoGenerator extends JavaTypeGenerator {
 				if (i < fields.size() - 1) {
 					compareBody.append("if (res != 0) {\n")
 						.append(JavaCodeGenerationUtil.indent(ret))
-						.append("\n}\n");
+						.append(END_BLOCK_TOKEN);
 				} else {
 					compareBody.append(ret)
 						.append("\n");
@@ -204,7 +210,7 @@ public class PojoGenerator extends JavaTypeGenerator {
 			buildMethodBody.append(name)
 				.append(" res = new ")
 				.append(name)
-				.append("();\n");
+				.append(END_NO_PARAM_METHOD_INST_TOKEN);
 		    fields.forEach(f -> buildMethodBody
 				.append("res.")
 				.append(f.getName())
@@ -213,7 +219,9 @@ public class PojoGenerator extends JavaTypeGenerator {
 				.append(";\n"));
 			buildMethodBody.append("return res;\n");
 		} else {
-			buildMethodBody.append("return new ").append(name).append("();\n");
+			buildMethodBody
+				.append("return new ")
+				.append(name).append(END_NO_PARAM_METHOD_INST_TOKEN);
 		}
 		
 		builder.appendMethod(
@@ -273,7 +281,7 @@ public class PojoGenerator extends JavaTypeGenerator {
 		appendToBody("\n");
 		
 		String setMethodBody = new StringBuilder()
-				.append("this.")
+				.append(THIS_TOKEN)
 				.append(name)
 				.append(" = ")
 				.append(name)
@@ -312,12 +320,12 @@ public class PojoGenerator extends JavaTypeGenerator {
 		}
 
 		String setMethodBody = new StringBuilder()
-				.append("this.")
+				.append(THIS_TOKEN)
 				.append(name)
 				.append(" = ")
 				.append(name)
 				.append(";\n")
-				.append("return this;\n")
+				.append(RETURN_THIS_TOKEN)
 				.toString();
 		
 		String argDeclaration = new StringBuilder()
@@ -343,7 +351,7 @@ public class PojoGenerator extends JavaTypeGenerator {
 				.toString();
 		
 		String signature = new StringBuilder()
-                .append("public Builder ")
+                .append(PUBLIC_BUILDER_TOKEN)
                 .append(name)
                 .append(argDeclaration)
                 .toString();
@@ -372,7 +380,7 @@ public class PojoGenerator extends JavaTypeGenerator {
 		itemTypeClass = JavaCodeGenerationUtil.getClassNameWithoutPackage(itemTypeClass);
 		
 		String signature = new StringBuilder()
-				.append("public Builder ")
+				.append(PUBLIC_BUILDER_TOKEN)
 				.append(JavaCodeGenerationUtil.getAccessorMethodName("addTo", name, getAllFieldNames()))
 				.append("(").append(itemTypeClass)
 				.append(" item)").toString();
@@ -395,12 +403,12 @@ public class PojoGenerator extends JavaTypeGenerator {
 				.append("if (this.")
 				.append(name)
 				.append(" == null) {\n")
-				.append(JavaCodeGenerationUtil.indent("this." + name + " = CollectionUtil.createList();"))
-				.append("\n}\n")
-				.append("this.")
+				.append(JavaCodeGenerationUtil.indent(THIS_TOKEN + name + " = CollectionUtil.createList();"))
+				.append(END_BLOCK_TOKEN)
+				.append(THIS_TOKEN)
 				.append(name)
 				.append(".add(item);\n")
-				.append("return this;\n")
+				.append(RETURN_THIS_TOKEN)
 				.toString();
 		
 		builder.appendToBody("\n");
@@ -421,7 +429,7 @@ public class PojoGenerator extends JavaTypeGenerator {
 		itemTypeClass = JavaCodeGenerationUtil.getClassNameWithoutPackage(itemTypeClass);
 		
 		String signature = new StringBuilder()
-				.append("public Builder ")
+				.append(PUBLIC_BUILDER_TOKEN)
 				.append(JavaCodeGenerationUtil.getAccessorMethodName("addTo", name, getAllFieldNames()))
 				.append("(")
 				.append("String key, ")
@@ -447,12 +455,12 @@ public class PojoGenerator extends JavaTypeGenerator {
 				.append("if (this.")
 				.append(name)
 				.append(" == null) {\n")
-				.append(JavaCodeGenerationUtil.indent("this." + name + " = CollectionUtil.createMap();"))
-				.append("\n}\n")
-				.append("this.")
+				.append(JavaCodeGenerationUtil.indent(THIS_TOKEN + name + " = CollectionUtil.createMap();"))
+				.append(END_BLOCK_TOKEN)
+				.append(THIS_TOKEN)
 				.append(name)
 				.append(".put(key, item);\n")
-				.append("return this;\n")
+				.append(RETURN_THIS_TOKEN)
 				.toString();
 		
 		builder.appendToBody("\n");
@@ -545,7 +553,7 @@ public class PojoGenerator extends JavaTypeGenerator {
 	
 	private void generateDeepCloneMethod() {
 		String signature = "@Override\npublic " + getSimpleName() + " deepClone()";
-		String newDeclaration = "new " + getSimpleName() + "();\n";
+		String newDeclaration = "new " + getSimpleName() + END_NO_PARAM_METHOD_INST_TOKEN;
 		StringBuilder body = new StringBuilder();
 		if (CollectionUtil.isEmpty(fields)) {
 			body.append("return ").append(newDeclaration);

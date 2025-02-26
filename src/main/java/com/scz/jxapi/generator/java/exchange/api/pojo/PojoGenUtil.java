@@ -21,6 +21,7 @@ import com.scz.jxapi.util.DeepCloneable;
  */
 public class PojoGenUtil {
 	
+	private static final String OTHER_TOEN = ", other.";
 	/**
 	 * The hash algorithm used to generate the serial version UID hash.
      */
@@ -105,12 +106,12 @@ public class PojoGenUtil {
 		String name = f.getName();
 		Type type = ExchangeJavaGenUtil.getFieldType(f);
 		if (type.getCanonicalType().isPrimitive) {
-			return "CompareUtil.compare(this." + name + ", other." + name + ")";
+			return "CompareUtil.compare(this." + name + OTHER_TOEN + name + ")";
 		} else if (type.getCanonicalType() == CanonicalType.LIST) {
 			return new StringBuilder()
 					.append("CompareUtil.compareLists(this.")
 					.append(name)
-					.append(", other.")
+					.append(OTHER_TOEN)
 					.append(name)
 					.append(", ")
 					.append(generateItemComparatorDeclaration(type.getSubType(), 0))
@@ -120,7 +121,7 @@ public class PojoGenUtil {
 			return new StringBuilder()
 					.append("CompareUtil.compareMaps(this.")
 					.append(name)
-					.append(", other.")
+					.append(OTHER_TOEN)
 					.append(name)
 					.append(", ")
 					.append(generateItemComparatorDeclaration(type.getSubType(), 0))
@@ -128,7 +129,7 @@ public class PojoGenUtil {
 					.toString();
 		}
 		// Object type
-		return "CompareUtil.compare(this." + f.getName() + ", other." + f.getName() + ")";
+		return "CompareUtil.compare(this." + f.getName() + OTHER_TOEN + f.getName() + ")";
 	}
 	
 	private static String generateItemComparatorDeclaration(Type itemType, int depth) {

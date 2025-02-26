@@ -168,9 +168,7 @@ public class ExchangeGeneratorMain {
 		log.info("Generating exchange README for:{}", exchangeDescriptor.getName());
 		generateExchangeWrapperReadme(exchangeDescriptor, projectFolder, baseJavaDocUrl, baseSrcUrl);
 		
-		if (log.isInfoEnabled()) {
-			log.info("Done generating java code for {}", exchangeDescriptor.getName());
-		}
+		log.info("Done generating java code for {}", exchangeDescriptor.getName());
 	}
 
 	/**

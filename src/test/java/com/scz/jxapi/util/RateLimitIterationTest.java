@@ -23,9 +23,7 @@ public class RateLimitIterationTest {
 		TreeMap<Long, TimeStat> timeStats = prepareSamples(nbSamples);
 		long start = System.nanoTime();
 		getCurrentStat(timeStats);
-		long elapsed = System.nanoTime() - start;
-		//log.info("Elapsed time nanos:{}, ms:{}", elapsed, toMs(elapsed));
-		return elapsed;
+		return System.nanoTime() - start;
 	}
 	
 	private TreeMap<Long, TimeStat> prepareSamples(int nbSamples) {

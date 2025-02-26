@@ -14,7 +14,7 @@ import com.scz.jxapi.exchange.descriptor.Type;
 public class PojoGeneratorTest {
 
 	@Test
-	public void testGenerate() throws Exception {
+	public void testGenerate() {
 		String typeName = "com.x.MyPojo";
 		String typeDescription = "Used in PojoGenerator2Test";
 		List<Field> properties = List.of(
@@ -274,7 +274,7 @@ public class PojoGeneratorTest {
 	}
 	
 	@Test
-	public void testGenerate_ImplicitObjectType() throws Exception {
+	public void testGenerate_ImplicitObjectType() {
 		String typeName = "com.x.pojo.MyPojoWithNullAdditionnalBody";
 		String typeDescription = "Used in PojoGenerator2Test";
 		List<Field> properties = List.of(
@@ -397,7 +397,7 @@ public class PojoGeneratorTest {
 	}
 	
 	@Test
-	public void testGenerate_NullProperties() throws Exception {
+	public void testGenerate_NullProperties() {
 		String typeName = "com.x.pojo.MyPojoWithNullProperties";
 		String typeDescription = "Used in PojoGenerator2Test";
 		PojoGenerator generator = new PojoGenerator(typeName, typeDescription, null, null);
