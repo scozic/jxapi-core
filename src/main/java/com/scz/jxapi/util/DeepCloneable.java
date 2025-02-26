@@ -5,7 +5,7 @@ package com.scz.jxapi.util;
  * <p>
  * This is interface is implemented in particular by generated POJOs.
  *
- * @param <T>
+ * @param <T> The type of the object to deep clone
  */
 public interface DeepCloneable<T> {
 	

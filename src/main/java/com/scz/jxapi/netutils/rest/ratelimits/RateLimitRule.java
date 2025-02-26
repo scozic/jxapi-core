@@ -16,6 +16,10 @@ import com.scz.jxapi.util.EncodingUtil;
  */
 public class RateLimitRule {
 	
+	/**
+	 * Default granularity in ms to use when enforcing rate limit. 
+	 * @see #getGranularity()
+	 */
 	public static final int DEFAULT_GRANULARITY = 10;
 	
 	/**
@@ -131,7 +135,7 @@ public class RateLimitRule {
 	 * Every time a request is made, a request count is incremented for current time in ms, and 
 	 * a total weight is incremented for current time in ms. These values are stored with granularity 
 	 * that is if granularity is X ms, the counters are updated at time T are stored for
-	 *  grain N*X where N*X &t;= T and (N+1)*X &gtn; <br>
+	 *  grain N*X where N*X &lt;= T and (N+1)*X &gt; n <br>
 	 * The grains for time older than rule's timeframe are purged before counting or updating.<br>
 	 * The number/total weight of calls that occurred on rolling time frame is then the sum of 
 	 * request count or weight for all grain.<br>

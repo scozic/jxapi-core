@@ -1,6 +1,5 @@
 package com.scz.jxapi.generator.java.exchange.api.pojo;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -16,9 +15,56 @@ import com.scz.jxapi.generator.java.exchange.ExchangeJavaGenUtil;
 import com.scz.jxapi.generator.java.exchange.api.ExchangeApiGeneratorUtil;
 import com.scz.jxapi.util.CollectionUtil;
 import com.scz.jxapi.util.CompareUtil;
+import com.scz.jxapi.util.DeepCloneable;
 import com.scz.jxapi.util.EncodingUtil;
 import com.scz.jxapi.util.Pojo;
 
+/**
+ * Generates a POJO class with a builder for the given fields.
+ * <p>
+ * The generated class will implement {@link Pojo} interface with expected
+ * methods from the interface:
+ * <ul>
+ * <li>{@link DeepCloneable#deepClone()} - deep clone of the object
+ * <li>{@link Comparable#compareTo(Object)} - comparison of two objects
+ * </ul>
+ * Private static final long serialVersionUID field will be generated for
+ * serialization, using a hash that is generated from the class name,
+ * implemented interfaces and properties.
+ * This is enough to enforce Serializable interface, default object
+ * serialization and deserialization will work since all properties are
+ * serializable.
+ * <p>
+ * The generated class will also override the following methods:
+ * <ul>
+ * <li>{@link Object#hashCode()} - hash code of the object based on its
+ * properties
+ * <li>{@link Object#equals(Object)} - equality of two objects based on their
+ * properties
+ * <li>{@link Object#toString()} - To provide JSON representation of the object
+ * instead of the default toString
+ * </ul>
+ * This way, equals, hashCode and compareTo methods are consistent.
+ * Remark: There is no need to override default clone method, as all properties
+ * are immutable or serializable (collections, other POJOs).
+ * <p>
+ * Other interfaces can be added to the class declaration, see
+ * {@link #setImplementedInterfaces(List)}
+ * <p>
+ * Every property will be generated as a private field with public accessors
+ * (getters and setters).
+ * <p>
+ * Generated class will carry @JsonSerialize annotation pointing to a custom serializer
+ * class that will serialize the object to JSON. That serializer class is
+ * expected to be generated too, in child package 'serializer' of parent package
+ * of the generated class.
+ * <p>
+ * The generated class also exposes a static inner class 'Builder' that can be
+ * used to build instances of the POJO. Static method 'builder()' is generated
+ * to return a new instance of the builder.
+ * 
+ * @see Pojo
+ */
 public class PojoGenerator2 extends JavaTypeGenerator {
 
 	private final List<Field> fields = new ArrayList<>();
@@ -26,13 +72,19 @@ public class PojoGenerator2 extends JavaTypeGenerator {
 	/**
 	 * Creates a new POJO generator for the given type name
 	 * @param fullTypeName Full class name e.g. <i>com.x.y.z.Foo</i>
-	 * @throws IOException 
 	 */
 	public PojoGenerator2(String fullTypeName) {
 		this(fullTypeName, null, null, null);
 		
 	}
 	
+	/**
+	 * Constructor.
+	 * @param className The full name of the class to generate source code for
+	 * @param description The description to display in javadoc of the class
+	 * @param fields The properties of the class
+	 * @param implementedInterfaces The interfaces implemented by the class (in addition to {@link Pojo})
+	 */
 	public PojoGenerator2(String className, 
 			 String description, 
 			 List<Field> fields, 
@@ -40,7 +92,7 @@ public class PojoGenerator2 extends JavaTypeGenerator {
 		super(className);
 		setTypeDeclaration("public class");
 		this.fields.addAll(Optional.ofNullable(fields).orElse(List.of()));
-		String serializerClassName = EndpointPojoGeneratorUtil.getSerializerClassName(className);
+		String serializerClassName = PojoGenUtil.getSerializerClassName(className);
 		addImport(serializerClassName);
 		addImport(com.fasterxml.jackson.databind.annotation.JsonSerialize.class.getName());
 		setTypeDeclaration("@JsonSerialize(using = " 
@@ -102,7 +154,7 @@ public class PojoGenerator2 extends JavaTypeGenerator {
 	
 	private String generateSerialVersionUidDeclaration() {
 		return "private static final long serialVersionUID = " 
-				+ EndpointPojoGeneratorUtil.generateSerialVersionUid(getName(), fields, getImplementedInterfaces()) 
+				+ PojoGenUtil.generateSerialVersionUid(getName(), fields, getImplementedInterfaces()) 
 				+ "L;\n";
 	}
 	
@@ -119,7 +171,7 @@ public class PojoGenerator2 extends JavaTypeGenerator {
 				addImport(CompareUtil.class);
 				String ret = "return res;";
 				compareBody.append("res = ")
-					.append(EndpointPojoGeneratorUtil.generateCompareFieldsInstruction(fields.get(i)))
+					.append(PojoGenUtil.generateCompareFieldsInstruction(fields.get(i)))
 					.append(";\n");
 				if (i < fields.size() - 1) {
 					compareBody.append("if (res != 0) {\n")
@@ -171,7 +223,7 @@ public class PojoGenerator2 extends JavaTypeGenerator {
 		appendToBody(builder.generate());
 	}
 	
-	public String generateAllFieldsDeclaration() {
+	private String generateAllFieldsDeclaration() {
 		return fields.stream().map(this::generateFieldDeclaration).collect(Collectors.joining("\n"));
 	}
 	
@@ -507,7 +559,7 @@ public class PojoGenerator2 extends JavaTypeGenerator {
 				body.append("clone.")
 			    	.append(f.getName())
 			    	.append(" = ")
-			    	.append(EndpointPojoGeneratorUtil.generateDeepCloneFieldInstruction(f, getImports()))
+			    	.append(PojoGenUtil.generateDeepCloneFieldInstruction(f, getImports()))
 			    	.append(";\n")
 			);
 			body.append("return clone;\n");

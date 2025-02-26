@@ -40,7 +40,7 @@ public class CollectionUtil {
 	/**
 	 * Creates a new modifiable list with the given capacity.
 	 * @param <T> The type of the items in the list
-	 * @param capacity the initial capacity of the list 
+	 * @param initialCapacity the initial capacity of the list 
 	 * @return A new modifiable list with the given capacity.
 	 */
 	public static <T> List<T> createList(int initialCapacity) {
@@ -69,7 +69,7 @@ public class CollectionUtil {
 	
 	/**
 	 * Return a copy of the list with the same items.
-	 * @param <T>
+	 * @param <T> The type of the items in the list
 	 * @param list the list to clone
 	 * @return a copy of the list with the same items
 	 */
@@ -114,11 +114,11 @@ public class CollectionUtil {
 	}
 	
 	/**
-	 * Return a deep copy of the map with items from input map deep cloned using the provided function.
+	 * Return a deep copy of the map with values from input map deep cloned using the provided function.
 	 * @param <T> The type of values in the map
 	 * @param map the map to deep clone
 	 * @param itemDeepCloneFunction the function to deep clone the values
-	 * @return
+	 * @return A deep copy of the map.
 	 */
 	public static <T> Map<String, T> deepCloneMap(Map<String, T> map, UnaryOperator<T> itemDeepCloneFunction) {
 		Map<String, T> clonedMap = null;
@@ -131,6 +131,14 @@ public class CollectionUtil {
 		return clonedMap;
 	}
 	
+	/**
+	 * Merge two lists into one.
+	 * 
+	 * @param <T>  The type of the items in the lists
+	 * @param list1 First list
+	 * @param list2 Second list
+	 * @return A new list containing all items from both input lists. First list items are before second list items.
+	 */
 	public static <T> List<T> mergeLists(List<T> list1, List<T> list2) {
 		List<T> merged = new ArrayList<>();
 		if (list1 != null) {

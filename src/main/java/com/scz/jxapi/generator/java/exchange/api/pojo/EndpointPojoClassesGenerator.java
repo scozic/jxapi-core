@@ -35,7 +35,6 @@ public class EndpointPojoClassesGenerator implements ClassesGenerator {
 	 * @param description the description to display in javadoc of the class
 	 * @param fields the fields of the class
 	 * @param implementedInterfaces the interfaces implemented by the class
-	 * @param additionnalClassBody the additionnal body of the class
 	 * @throws IOException if an I/O error occurs
 	 */
 	public EndpointPojoClassesGenerator(String className, 

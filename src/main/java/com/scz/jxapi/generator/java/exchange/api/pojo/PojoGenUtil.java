@@ -19,15 +19,14 @@ import com.scz.jxapi.util.DeepCloneable;
  * Helper methods used in generation of exchange API REST/WEBSOCKET endpoints
  * POJOs and associated JSON serializer/deserializers.
  */
-// TODO: Rename to PojoGenUtil
-public class EndpointPojoGeneratorUtil {
+public class PojoGenUtil {
 	
 	/**
 	 * The hash algorithm used to generate the serial version UID hash.
      */
 	public static final String SERIAL_VERSION_UID_HASH_ALGORITHM = "SHA-256";
 	
-	private EndpointPojoGeneratorUtil() {}
+	private PojoGenUtil() {}
 
 	/**
 	 * Generates the expected full class name of JSON serializer class for a given
@@ -44,6 +43,12 @@ public class EndpointPojoGeneratorUtil {
 		return pkg + ".serializers." + JavaCodeGenerationUtil.getClassNameWithoutPackage(pojoClassName) + "Serializer";
 	}
 	
+	/**
+	 * Generates the expected instruction to deep clone a field of a POJO.
+	 * @param f The field for which to generate the deep clone instruction
+	 * @param imports The imports to add the necessary imports to
+	 * @return The generated deep clone instruction
+	 */
 	public static String generateDeepCloneFieldInstruction(Field f, Imports imports) {
 		Type type = ExchangeJavaGenUtil.getFieldType(f);
 		String name = f.getName();
@@ -91,6 +96,11 @@ public class EndpointPojoGeneratorUtil {
 		
 	}
 	
+	/**
+	 * Generates the expected instruction to compare a field of a POJO with the same field of another POJO.
+	 * @param f The field for which to generate the compare instruction
+	 * @return The generated compare instruction
+	 */
 	public static String generateCompareFieldsInstruction(Field f) {
 		String name = f.getName();
 		Type type = ExchangeJavaGenUtil.getFieldType(f);

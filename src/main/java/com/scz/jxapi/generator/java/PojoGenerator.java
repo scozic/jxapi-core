@@ -64,6 +64,9 @@ public class PojoGenerator extends JavaTypeGenerator {
 		return super.generate();
 	}
 	
+	/**
+	 * Override this method to add additional body to the generated class
+	 */
 	protected void generateAdditionalBody() {
 		// no additional body by default
 	}

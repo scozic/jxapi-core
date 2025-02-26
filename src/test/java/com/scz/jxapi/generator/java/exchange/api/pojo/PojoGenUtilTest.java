@@ -12,14 +12,14 @@ import com.scz.jxapi.util.CollectionUtil;
 import com.scz.jxapi.util.DeepCloneable;
 
 /**
- * Unit test for {@link EndpointPojoGeneratorUtil}
+ * Unit test for {@link PojoGenUtil}
  */
-public class EndpointPojoGeneratorUtilTest {
+public class PojoGenUtilTest {
 
 	@Test
 	public void testGetSerializerClassName() {
         Assert.assertEquals("com.x.y.serializers.MyPojoSerializer", 
-                            EndpointPojoGeneratorUtil.getSerializerClassName("com.x.y.pojo.MyPojo"));
+                            PojoGenUtil.getSerializerClassName("com.x.y.pojo.MyPojo"));
 	}
 	
 	@Test
@@ -60,7 +60,7 @@ public class EndpointPojoGeneratorUtilTest {
 	private void doTestGenerateDeepCloneFieldInstruction(Type type, String expectedInstruction, String... expectedImports) {
 		Imports imports = new Imports();
 		Field f = Field.builder().name("myField").type(type).build();
-		Assert.assertEquals(expectedInstruction, EndpointPojoGeneratorUtil.generateDeepCloneFieldInstruction(f, imports));
+		Assert.assertEquals(expectedInstruction, PojoGenUtil.generateDeepCloneFieldInstruction(f, imports));
 		Assert.assertEquals(expectedImports.length, imports.size());
 		for (String expectedImport : expectedImports) {
 			Assert.assertTrue(imports.contains(expectedImport));
@@ -91,7 +91,7 @@ public class EndpointPojoGeneratorUtilTest {
 	
 	private void doTestGenerateCompareFieldsInstruction(Type type, String expectedInstruction) {
 		Field f = Field.builder().name("myField").type(type).build();
-		Assert.assertEquals(expectedInstruction, EndpointPojoGeneratorUtil.generateCompareFieldsInstruction(f));
+		Assert.assertEquals(expectedInstruction, PojoGenUtil.generateCompareFieldsInstruction(f));
 	}
 	
 	@Test
@@ -102,6 +102,6 @@ public class EndpointPojoGeneratorUtilTest {
 				Field.builder().name("field2").type(Type.fromTypeName("OBJECT_LIST_MAP")).build()
 			);
 		List<String> implementedInterfaces = List.of("com.x.y.MyInterface", "com.x.z.MyOtherInterface");
-		Assert.assertEquals(-1752733059768616242L, EndpointPojoGeneratorUtil.generateSerialVersionUid(className, fields, implementedInterfaces));
+		Assert.assertEquals(-1752733059768616242L, PojoGenUtil.generateSerialVersionUid(className, fields, implementedInterfaces));
 	}
 }

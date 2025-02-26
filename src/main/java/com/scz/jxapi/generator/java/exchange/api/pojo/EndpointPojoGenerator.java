@@ -39,7 +39,6 @@ public class EndpointPojoGenerator extends PojoGenerator {
 	 * @param description the description to display in javadoc of the class
 	 * @param fields the fields of the class
 	 * @param implementedInterfaces the interfaces implemented by the class
-	 * @param additionnalClassBody the additionnal body of the class
 	 * @throws IOException if an I/O error occurs
 	 */
 	public EndpointPojoGenerator(String className, 
@@ -48,7 +47,7 @@ public class EndpointPojoGenerator extends PojoGenerator {
 								 List<String> implementedInterfaces) throws IOException {
 		super(className);
 		this.fields = fields;
-		String serializerClassName = EndpointPojoGeneratorUtil.getSerializerClassName(className);
+		String serializerClassName = PojoGenUtil.getSerializerClassName(className);
 		addImport(serializerClassName);
 		addImport(com.fasterxml.jackson.databind.annotation.JsonSerialize.class.getName());
 		setTypeDeclaration("@JsonSerialize(using = " 
@@ -112,7 +111,7 @@ public class EndpointPojoGenerator extends PojoGenerator {
 				body.append("clone.")
 			    	.append(f.getName())
 			    	.append(" = ")
-			    	.append(EndpointPojoGeneratorUtil.generateDeepCloneFieldInstruction(f, getImports()))
+			    	.append(PojoGenUtil.generateDeepCloneFieldInstruction(f, getImports()))
 			    	.append(";\n")
 			);
 			body.append("return clone;\n");
