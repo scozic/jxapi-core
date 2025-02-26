@@ -7,7 +7,6 @@ import java.nio.file.Path;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.apache.commons.lang3.StringUtils;
@@ -96,66 +95,6 @@ public class JavaCodeGenerationUtil {
 		if (javadoc == null)
 			return "";
 		return "/**\n" + indent(javadoc, " * ") + "\n */"; 
-	}
-	
-	/**
-	 * Generates Java source code chunk with private member declarations, and getter
-	 * and setter method declaration with javadoc. The result corresponds to body of
-	 * a POJO class (without class declaration and imports)
-	 * 
-	 * @param fields list of fields
-	 * @return Java source code chunk with private member declarations, and getter
-	 *         and setter method declaration with javadoc.
-	 */
-	@Deprecated
-	public static String generateJavaPojoFieldsWithAccessors(List<PojoField> fields) {
-		StringBuilder fieldDeclarations = new StringBuilder();
-		StringBuilder accessorsDeclarations = new StringBuilder();
-		for (PojoField field : fields) {
-			String type = field.getType();
-			type = getClassNameWithoutPackage(type);
-			String name = field.getName();
-			String description = field.getDescription();
-			String msgFieldDescription = "";
-			if (field.getMsgField() != null) {
-				msgFieldDescription = " Message field <strong>" + field.getMsgField() + "</strong>";
-				if (description == null) {
-					description = msgFieldDescription;
-				} else {
-					description += msgFieldDescription;
-				}
-			}
-			
-			if (description != null) {
-				accessorsDeclarations.append(generateJavaDoc("@return " + description)).append("\n");
-			}
-			List<String> allFieldNames = fields.stream().map(f -> f.getName()).collect(Collectors.toList());
-			accessorsDeclarations
-				.append("public ")
-				.append(type)
-				.append(" ")
-				.append(getGetAccessorMethodName(field.getName(), field.getType(), allFieldNames))
-				.append("() ")
-				.append(generateCodeBlock("return " + name + ";"))
-				.append("\n");
-			
-			fieldDeclarations.append("private ").append(type).append(" ").append(name).append(";\n");
-			if (description != null) {
-				accessorsDeclarations.append(generateJavaDoc("@param " + name + " " + description)).append("\n");
-			}
-			accessorsDeclarations
-				.append("public void ")
-				.append(getSetAccessorMethodName(field.getName(), allFieldNames))
-				.append("(")
-				.append(type)
-				.append(" ")
-				.append(name)
-				.append(") ")
-				.append(generateCodeBlock("this." + name + " = " + name + ";"))
-				.append("\n");
-		}
-		
-		return fieldDeclarations.toString() + "\n" + accessorsDeclarations.toString();
 	}
 	
 	/**
