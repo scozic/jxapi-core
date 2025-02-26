@@ -8,7 +8,10 @@ import org.junit.Test;
 import com.scz.jxapi.exchange.descriptor.Field;
 import com.scz.jxapi.exchange.descriptor.Type;
 
-public class PojoGenerator2Test {
+/**
+ * Unit test for {@link PojoGenerator}
+ */
+public class PojoGeneratorTest {
 
 	@Test
 	public void testGenerate() throws Exception {
@@ -28,7 +31,7 @@ public class PojoGenerator2Test {
 						 .build()
 		);
 		
-		PojoGenerator2 generator = new PojoGenerator2(typeName, typeDescription, properties, List.of("com.x.common.MyInterface"));
+		PojoGenerator generator = new PojoGenerator(typeName, typeDescription, properties, List.of("com.x.common.MyInterface"));
 		Assert.assertEquals("package com.x;\n"
 				+ "\n"
 				+ "import java.util.List;\n"
@@ -282,7 +285,7 @@ public class PojoGenerator2Test {
 					  Field.builder().type(Type.LONG).name("id").description("identifier").build()))
 			.build()
 		);
-		PojoGenerator2 generator = new PojoGenerator2(typeName, typeDescription, properties, null);
+		PojoGenerator generator = new PojoGenerator(typeName, typeDescription, properties, null);
 		Assert.assertEquals("package com.x.pojo;\n"
 				+ "\n"
 				+ "import java.util.Objects;\n"
@@ -397,7 +400,7 @@ public class PojoGenerator2Test {
 	public void testGenerate_NullProperties() throws Exception {
 		String typeName = "com.x.pojo.MyPojoWithNullProperties";
 		String typeDescription = "Used in PojoGenerator2Test";
-		PojoGenerator2 generator = new PojoGenerator2(typeName, typeDescription, null, null);
+		PojoGenerator generator = new PojoGenerator(typeName, typeDescription, null, null);
 		Assert.assertEquals("package com.x.pojo;\n"
 				+ "\n"
 				+ "import com.fasterxml.jackson.databind.annotation.JsonSerialize;\n"
@@ -475,7 +478,7 @@ public class PojoGenerator2Test {
 	
 	@Test
 	public void testGeneratePojoCodeMultipleFields() {
-		PojoGenerator2 generator = new PojoGenerator2("x.y.z.pojo.Foo");
+		PojoGenerator generator = new PojoGenerator("x.y.z.pojo.Foo");
 		generator.addField(Field.builder().type(Type.STRING).name("name").description("the name").build());
 		generator.addField(Field.builder().objectName("Bar").name("bar").msgField("b").build());
 		generator.addField(Field.builder().type(Type.INT).name("a").description("lower case 'a'").build());

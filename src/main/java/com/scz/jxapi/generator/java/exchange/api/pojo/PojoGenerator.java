@@ -65,7 +65,7 @@ import com.scz.jxapi.util.Pojo;
  * 
  * @see Pojo
  */
-public class PojoGenerator2 extends JavaTypeGenerator {
+public class PojoGenerator extends JavaTypeGenerator {
 
 	private final List<Field> fields = new ArrayList<>();
 	
@@ -73,7 +73,7 @@ public class PojoGenerator2 extends JavaTypeGenerator {
 	 * Creates a new POJO generator for the given type name
 	 * @param fullTypeName Full class name e.g. <i>com.x.y.z.Foo</i>
 	 */
-	public PojoGenerator2(String fullTypeName) {
+	public PojoGenerator(String fullTypeName) {
 		this(fullTypeName, null, null, null);
 		
 	}
@@ -85,7 +85,7 @@ public class PojoGenerator2 extends JavaTypeGenerator {
 	 * @param fields The properties of the class
 	 * @param implementedInterfaces The interfaces implemented by the class (in addition to {@link Pojo})
 	 */
-	public PojoGenerator2(String className, 
+	public PojoGenerator(String className, 
 			 String description, 
 			 List<Field> fields, 
 			 List<String> implementedInterfaces) {
