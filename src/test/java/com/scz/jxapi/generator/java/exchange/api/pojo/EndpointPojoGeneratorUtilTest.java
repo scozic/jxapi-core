@@ -1,5 +1,7 @@
 package com.scz.jxapi.generator.java.exchange.api.pojo;
 
+import java.util.List;
+
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -92,4 +94,14 @@ public class EndpointPojoGeneratorUtilTest {
 		Assert.assertEquals(expectedInstruction, EndpointPojoGeneratorUtil.generateCompareFieldsInstruction(f));
 	}
 	
+	@Test
+	public void testGenerateSerialVersionUid() {
+		String className = "com.x.y.MyClass";
+		List<Field> fields = List.of(
+				Field.builder().name("field1").type(Type.INT).build(),
+				Field.builder().name("field2").type(Type.fromTypeName("OBJECT_LIST_MAP")).build()
+			);
+		List<String> implementedInterfaces = List.of("com.x.y.MyInterface", "com.x.z.MyOtherInterface");
+		Assert.assertEquals(-1752733059768616242L, EndpointPojoGeneratorUtil.generateSerialVersionUid(className, fields, implementedInterfaces));
+	}
 }
