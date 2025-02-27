@@ -118,7 +118,7 @@ public class DemoExchangeMarketDataExchangeInfoRequest implements Pojo<DemoExcha
      */
     public DemoExchangeMarketDataExchangeInfoRequest build() {
       DemoExchangeMarketDataExchangeInfoRequest res = new DemoExchangeMarketDataExchangeInfoRequest();
-      res.symbols = this.symbols;
+      res.symbols = CollectionUtil.cloneList(this.symbols);
       return res;
     }
   }

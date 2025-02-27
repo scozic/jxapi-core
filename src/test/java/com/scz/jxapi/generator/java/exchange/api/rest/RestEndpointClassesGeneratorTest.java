@@ -176,7 +176,7 @@ public class RestEndpointClassesGeneratorTest {
 				+ "     */\n"
 				+ "    public MyTestExchangeMarketDataExchangeInfoRequest build() {\n"
 				+ "      MyTestExchangeMarketDataExchangeInfoRequest res = new MyTestExchangeMarketDataExchangeInfoRequest();\n"
-				+ "      res.symbols = this.symbols;\n"
+				+ "      res.symbols = CollectionUtil.cloneList(this.symbols);\n"
 				+ "      return res;\n"
 				+ "    }\n"
 				+ "  }\n"
@@ -339,12 +339,11 @@ public class RestEndpointClassesGeneratorTest {
 				+ "    public MyTestExchangeMarketDataExchangeInfoResponse build() {\n"
 				+ "      MyTestExchangeMarketDataExchangeInfoResponse res = new MyTestExchangeMarketDataExchangeInfoResponse();\n"
 				+ "      res.responseCode = this.responseCode;\n"
-				+ "      res.payload = this.payload;\n"
+				+ "      res.payload = CollectionUtil.deepCloneList(this.payload, DeepCloneable::deepClone);\n"
 				+ "      return res;\n"
 				+ "    }\n"
 				+ "  }\n"
-				+ "}\n"
-				+ "", 
+				+ "}\n", 
 				Files.readString(checkSourceFileExists(Paths.get("pojo", "MyTestExchangeMarketDataExchangeInfoResponse.java"))));
 		
 		checkSourceFileExists(Paths.get("pojo", "MyTestExchangeMarketDataExchangeInfoResponsePayload.java"));
@@ -492,7 +491,7 @@ public class RestEndpointClassesGeneratorTest {
 				+ "     */\n"
 				+ "    public MyTestExchangeMarketDataExchangeInfoRequest build() {\n"
 				+ "      MyTestExchangeMarketDataExchangeInfoRequest res = new MyTestExchangeMarketDataExchangeInfoRequest();\n"
-				+ "      res.symbols = this.symbols;\n"
+				+ "      res.symbols = CollectionUtil.cloneList(this.symbols);\n"
 				+ "      return res;\n"
 				+ "    }\n"
 				+ "  }\n"
@@ -657,7 +656,7 @@ public class RestEndpointClassesGeneratorTest {
 				+ "    public MyTestExchangeMarketDataExchangeInfoResponse build() {\n"
 				+ "      MyTestExchangeMarketDataExchangeInfoResponse res = new MyTestExchangeMarketDataExchangeInfoResponse();\n"
 				+ "      res.responseCode = this.responseCode;\n"
-				+ "      res.payload = this.payload;\n"
+				+ "      res.payload = CollectionUtil.deepCloneList(this.payload, DeepCloneable::deepClone);\n"
 				+ "      return res;\n"
 				+ "    }\n"
 				+ "  }\n"

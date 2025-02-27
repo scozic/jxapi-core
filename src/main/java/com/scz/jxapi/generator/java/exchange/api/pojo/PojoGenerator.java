@@ -214,8 +214,8 @@ public class PojoGenerator extends JavaTypeGenerator {
 		    fields.forEach(f -> buildMethodBody
 				.append("res.")
 				.append(f.getName())
-				.append(" = this.")
-				.append(f.getName())
+				.append(" = ")
+				.append(PojoGenUtil.generateDeepCloneFieldInstruction(f, getImports()))
 				.append(";\n"));
 			buildMethodBody.append("return res;\n");
 		} else {

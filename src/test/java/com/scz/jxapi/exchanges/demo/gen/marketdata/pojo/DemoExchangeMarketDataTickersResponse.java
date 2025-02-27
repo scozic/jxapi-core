@@ -154,7 +154,7 @@ public class DemoExchangeMarketDataTickersResponse implements Pojo<DemoExchangeM
     public DemoExchangeMarketDataTickersResponse build() {
       DemoExchangeMarketDataTickersResponse res = new DemoExchangeMarketDataTickersResponse();
       res.responseCode = this.responseCode;
-      res.payload = this.payload;
+      res.payload = CollectionUtil.deepCloneMap(this.payload, DeepCloneable::deepClone);
       return res;
     }
   }

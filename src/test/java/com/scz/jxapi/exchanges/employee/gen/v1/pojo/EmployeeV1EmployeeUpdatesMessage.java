@@ -135,7 +135,7 @@ public class EmployeeV1EmployeeUpdatesMessage implements Pojo<EmployeeV1Employee
     public EmployeeV1EmployeeUpdatesMessage build() {
       EmployeeV1EmployeeUpdatesMessage res = new EmployeeV1EmployeeUpdatesMessage();
       res.eventType = this.eventType;
-      res.employee = this.employee;
+      res.employee = this.employee != null ? this.employee.deepClone() : null;
       return res;
     }
   }
