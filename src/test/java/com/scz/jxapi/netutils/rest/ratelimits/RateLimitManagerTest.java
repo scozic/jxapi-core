@@ -29,12 +29,11 @@ public class RateLimitManagerTest {
 	}
 	
 	@Test
-	public void testRequestCallCanExecuteAgainAfterDelayElapsed() throws InterruptedException {
+	public void testRequestCallCanExecuteAgainAfterDelayElapsed() {
 		RateLimitManager manager = new RateLimitManager(RateLimitRule.createRule("MYRULE", 100L, 2));
 		manager.getRule().setGranularity(1);
 		Assert.assertEquals(0L, manager.requestCall(0L, 0));
 		Assert.assertEquals(0L, manager.requestCall(0L, 0));
-		Thread.sleep(50L);
 		// To check additional request call in while delay has not elapsed is not counted
 		Assert.assertEquals(50L, manager.requestCall(51L, 0));
 		Assert.assertEquals(0L, manager.requestCall(101L, 0));

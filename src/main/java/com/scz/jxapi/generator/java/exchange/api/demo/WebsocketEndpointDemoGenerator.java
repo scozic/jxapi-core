@@ -262,7 +262,7 @@ public class WebsocketEndpointDemoGenerator extends JavaTypeGenerator {
 		}
 
 		bodyBuilder.append("messageListener);\n")
-			.append("Thread.sleep(")
+			.append("DemoUtil.sleep(")
 			.append(SUBSCRIPTION_DURATION_VAR_NAME)
 			.append(");\n")
 			.append("log.info(\"Unubscribing from '")
@@ -272,7 +272,7 @@ public class WebsocketEndpointDemoGenerator extends JavaTypeGenerator {
 			.append(".")
 			.append(unsubscribeMethodName)
 			.append("(subId);\n")
-			.append("Thread.sleep(")
+			.append("DemoUtil.sleep(")
 			.append(DELAY_BEFORE_EXIT_VAR_NAME)
 			.append(");\n")
 			.append("if (apiObserver != null) ")

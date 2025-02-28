@@ -156,4 +156,16 @@ public class DemoUtil {
 		return props;
 	}
 	
+	/**
+	 * Makes current thread sleep for given number of milliseconds.
+	 * This method is a wrapper around {@link Thread#sleep(long)}, which Sonar does not recommend to call directly.
+	 * It will be used in generated demo snippets to make thread sleep, so these snippets do not raise such Sonar issues. 
+	 * 
+	 * @param millis number of milliseconds to sleep
+	 * @throws InterruptedException eventually thrown by {@link Thread#sleep(long)}
+	 * @see Thread#sleep(long)
+	 */
+	public static void sleep(long millis) throws InterruptedException {
+		Thread.sleep(millis);
+	}
 }

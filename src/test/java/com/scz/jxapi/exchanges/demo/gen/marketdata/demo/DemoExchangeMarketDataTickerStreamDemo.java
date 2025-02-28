@@ -50,10 +50,10 @@ public class DemoExchangeMarketDataTickerStreamDemo {
       api.subscribeObserver(apiObserver);
     }
     String subId = api.subscribeTickerStream(request, messageListener);
-    Thread.sleep(subscriptionDuration);
+    DemoUtil.sleep(subscriptionDuration);
     log.info("Unubscribing from 'DemoExchange MarketData tickerStream' stream");
     api.unsubscribeTickerStream(subId);
-    Thread.sleep(delayBeforeExit);
+    DemoUtil.sleep(delayBeforeExit);
     if (apiObserver != null) {
       api.subscribeObserver(apiObserver);
     }

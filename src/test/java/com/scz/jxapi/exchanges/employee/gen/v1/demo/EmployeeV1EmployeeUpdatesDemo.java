@@ -41,10 +41,10 @@ public class EmployeeV1EmployeeUpdatesDemo {
       api.subscribeObserver(apiObserver);
     }
     String subId = api.subscribeEmployeeUpdates(messageListener);
-    Thread.sleep(subscriptionDuration);
+    DemoUtil.sleep(subscriptionDuration);
     log.info("Unubscribing from 'Employee V1 employeeUpdates' stream");
     api.unsubscribeEmployeeUpdates(subId);
-    Thread.sleep(delayBeforeExit);
+    DemoUtil.sleep(delayBeforeExit);
     if (apiObserver != null) {
       api.subscribeObserver(apiObserver);
     }
