@@ -97,23 +97,10 @@ public class EmployeeV1ApiImpl extends AbstractExchangeApi implements EmployeeV1
   
   // REST endpoint method call implementations
   @Override
-  public FutureRestResponse<String> addEmployee(Employee request) {
-    log.debug("POST addEmployee > {}", request);
-    return submit(HttpRequest.create(ADD_EMPLOYEE_REST_API, ADD_EMPLOYEE_URL, HttpMethod.POST, request, null, 0, serializeRequestBody(request)), addEmployeeResponseDeserializer);
-  }
-  
-  @Override
   public FutureRestResponse<Employee> getEmployee(Integer request) {
     String urlParameters = EncodingUtil.substituteArguments("/${id}", "id", request);
     log.debug("GET getEmployee > {}", request);
     return submit(HttpRequest.create(GET_EMPLOYEE_REST_API, GET_EMPLOYEE_URL + urlParameters, HttpMethod.GET, request, null, 0, null), getEmployeeResponseDeserializer);
-  }
-  
-  @Override
-  public FutureRestResponse<String> deleteEmployee(Integer request) {
-    String urlParameters = EncodingUtil.substituteArguments("/${id}", "id", request);
-    log.debug("DELETE deleteEmployee > {}", request);
-    return submit(HttpRequest.create(DELETE_EMPLOYEE_REST_API, DELETE_EMPLOYEE_URL + urlParameters, HttpMethod.DELETE, request, null, 0, null), deleteEmployeeResponseDeserializer);
   }
   
   @Override
@@ -123,9 +110,22 @@ public class EmployeeV1ApiImpl extends AbstractExchangeApi implements EmployeeV1
   }
   
   @Override
+  public FutureRestResponse<String> addEmployee(Employee request) {
+    log.debug("POST addEmployee > {}", request);
+    return submit(HttpRequest.create(ADD_EMPLOYEE_REST_API, ADD_EMPLOYEE_URL, HttpMethod.POST, request, null, 0, serializeRequestBody(request)), addEmployeeResponseDeserializer);
+  }
+  
+  @Override
   public FutureRestResponse<String> updateEmployee(Employee request) {
     log.debug("PUT updateEmployee > {}", request);
     return submit(HttpRequest.create(UPDATE_EMPLOYEE_REST_API, UPDATE_EMPLOYEE_URL, HttpMethod.PUT, request, null, 0, serializeRequestBody(request)), updateEmployeeResponseDeserializer);
+  }
+  
+  @Override
+  public FutureRestResponse<String> deleteEmployee(Integer request) {
+    String urlParameters = EncodingUtil.substituteArguments("/${id}", "id", request);
+    log.debug("DELETE deleteEmployee > {}", request);
+    return submit(HttpRequest.create(DELETE_EMPLOYEE_REST_API, DELETE_EMPLOYEE_URL + urlParameters, HttpMethod.DELETE, request, null, 0, null), deleteEmployeeResponseDeserializer);
   }
   
   

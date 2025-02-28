@@ -2,8 +2,8 @@ package com.scz.jxapi.generator.java.exchange.api;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
-import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -227,10 +227,10 @@ public class ExchangeApiInterfaceImplementationGenerator extends JavaTypeGenerat
 		rateLimitVariablesDeclarations = new ArrayList<>();
 		websocketEndpointDeclarations = new ArrayList<>();
 		messageDeserializerVariablesDeclarations = new ArrayList<>();
-		restMethods = new HashMap<>();
-		wsMethods = new HashMap<>();
+		restMethods = new LinkedHashMap<>();
+		wsMethods = new LinkedHashMap<>();
 		apiGlobalRateLimitVariables = new ArrayList<>();
-		endpointSpecificRateLimitIds = new HashSet<>();
+		endpointSpecificRateLimitIds = new LinkedHashSet<>();
 		addImport(exchangeClassName);
 		generateApiGlobalRateLimits();
 		if (hasRestEnpoints) {
@@ -433,13 +433,8 @@ public class ExchangeApiInterfaceImplementationGenerator extends JavaTypeGenerat
 	}
 	
 	private void addWebsocketMethod(String wsStreamName, String methodDeclaration, String methodBody) {
-		wsStreamName = Optional.ofNullable(wsStreamName).orElse("");
-		Map<String, String> wsStreamMethods = wsMethods.get(wsStreamName);
-		if (wsStreamMethods == null) {
-			wsStreamMethods = new TreeMap<>();
-			wsMethods.put(wsStreamName, wsStreamMethods);
-		}
-		wsStreamMethods.put(methodDeclaration, methodBody);
+		wsMethods.computeIfAbsent(Optional.ofNullable(wsStreamName).orElse(""), k -> new TreeMap<>())
+				 .put(methodDeclaration, methodBody);
 	}
 	
 	private String getWebsocketEndpointVariableName(WebsocketEndpointDescriptor websocketApi) {
