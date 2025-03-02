@@ -19,8 +19,8 @@ import com.scz.jxapi.exchange.descriptor.WebsocketEndpointDescriptor;
 import com.scz.jxapi.generator.html.HtmlGenerationUtil;
 import com.scz.jxapi.generator.java.JavaCodeGenerationUtil;
 import com.scz.jxapi.generator.java.exchange.ExchangeJavaGenUtil;
-import com.scz.jxapi.generator.java.exchange.api.ExchangeApiGeneratorUtil;
-import com.scz.jxapi.generator.java.exchange.api.demo.EndpointDemoGeneratorUtil;
+import com.scz.jxapi.generator.java.exchange.api.ExchangeApiGenUtil;
+import com.scz.jxapi.generator.java.exchange.api.demo.EndpointDemoGenUtil;
 import com.scz.jxapi.util.CollectionUtil;
 
 /**
@@ -32,11 +32,11 @@ public class ExchangeReadmeMdGenerator {
 	private static String findDemoClassName(ExchangeDescriptor exchangeDescriptor) {
 		for (ExchangeApiDescriptor apiDescriptor : Optional.ofNullable(exchangeDescriptor.getApis()).orElse(List.of())) {
 			if (!CollectionUtil.isEmpty(apiDescriptor.getRestEndpoints())) {
-				return EndpointDemoGeneratorUtil.getRestApiDemoClassName(exchangeDescriptor, apiDescriptor, apiDescriptor.getRestEndpoints().get(0));
+				return EndpointDemoGenUtil.getRestApiDemoClassName(exchangeDescriptor, apiDescriptor, apiDescriptor.getRestEndpoints().get(0));
 			}
 			
 			if (!CollectionUtil.isEmpty(apiDescriptor.getWebsocketEndpoints())) {
-				return EndpointDemoGeneratorUtil.getWebsocketApiDemoClassName(exchangeDescriptor, apiDescriptor, apiDescriptor.getWebsocketEndpoints().get(0));
+				return EndpointDemoGenUtil.getWebsocketApiDemoClassName(exchangeDescriptor, apiDescriptor, apiDescriptor.getWebsocketEndpoints().get(0));
 			}
 		}
 		return null;
@@ -197,14 +197,14 @@ public class ExchangeReadmeMdGenerator {
 			Type requestDataType = ExchangeJavaGenUtil.getFieldType(w.getRequest());
 			String requestClassName = null;
 			if (requestDataType != null && requestDataType.isObject()) {
-				requestClassName = ExchangeApiGeneratorUtil.generateWebsocketEndpointRequestPojoClassName(
+				requestClassName = ExchangeApiGenUtil.generateWebsocketEndpointRequestPojoClassName(
 										exchangeDescriptor, 
 										api, 
 										w);
 			}
 			List<String> row = new ArrayList<>();
 			String method = new StringBuilder()
-					.append(ExchangeApiGeneratorUtil.getWebsocketSubscribeMethodName(w))
+					.append(ExchangeApiGenUtil.getWebsocketSubscribeMethodName(w))
 					.append("(")
 					.append(JavaCodeGenerationUtil.getMethodArgumentJavadoc(requestDataType, requestClassName))
 					.append(")")
@@ -235,14 +235,14 @@ public class ExchangeReadmeMdGenerator {
 			Type requestDataType = ExchangeJavaGenUtil.getFieldType(r.getRequest());
 			String requestClassName = null;
 			if (requestDataType != null && requestDataType.isObject()) {
-				requestClassName = ExchangeApiGeneratorUtil.generateRestEnpointRequestPojoClassName(
+				requestClassName = ExchangeApiGenUtil.generateRestEnpointRequestPojoClassName(
 										exchangeDescriptor, 
 										api, 
 										r);
 			}
 			List<String> row = new ArrayList<>();
 			String method = new StringBuilder()
-					.append(ExchangeApiGeneratorUtil.getRestApiMethodName(r))
+					.append(ExchangeApiGenUtil.getRestApiMethodName(r))
 					.append("(")
 					.append(JavaCodeGenerationUtil.getMethodArgumentJavadoc(requestDataType, requestClassName))
 					.append(")")

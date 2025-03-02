@@ -8,7 +8,7 @@ import com.scz.jxapi.exchange.descriptor.Field;
 import com.scz.jxapi.exchange.descriptor.Type;
 import com.scz.jxapi.generator.java.exchange.ClassesGenerator;
 import com.scz.jxapi.generator.java.exchange.ExchangeJavaGenUtil;
-import com.scz.jxapi.generator.java.exchange.api.ExchangeApiGeneratorUtil;
+import com.scz.jxapi.generator.java.exchange.api.ExchangeApiGenUtil;
 
 /**
  * Generates all java classes for a specific POJO for a REST or Websocket
@@ -23,26 +23,26 @@ import com.scz.jxapi.generator.java.exchange.api.ExchangeApiGeneratorUtil;
  * @see EndpointPojoGenerator
  *
  */
-public class EndpointPojoClassesGenerator implements ClassesGenerator {
+public class PojoClassesGenerator implements ClassesGenerator {
 	
 	private final PojoGenerator rootPojoGenerator;
-	private final List<Field> fields;
+	private final List<Field> properties;
 	
 	/**
 	 * Constructor.
 	 * 
 	 * @param className the name of the class
 	 * @param description the description to display in javadoc of the class
-	 * @param fields the fields of the class
+	 * @param properties the fields of the class
 	 * @param implementedInterfaces the interfaces implemented by the class
 	 * @throws IOException if an I/O error occurs
 	 */
-	public EndpointPojoClassesGenerator(String className, 
+	public PojoClassesGenerator(String className, 
 			 String description, 
-			 List<Field> fields, 
+			 List<Field> properties, 
 			 List<String> implementedInterfaces) throws IOException {
-		this.fields = fields;
-		this.rootPojoGenerator = new PojoGenerator(className, description, fields, implementedInterfaces);
+		this.properties = properties;
+		this.rootPojoGenerator = new PojoGenerator(className, description, properties, implementedInterfaces);
 	}
 
 	/**
@@ -51,22 +51,22 @@ public class EndpointPojoClassesGenerator implements ClassesGenerator {
 	@Override
 	public void generateClasses(Path outputFolder) throws IOException {
 		rootPojoGenerator.writeJavaFile(outputFolder);
-		for (Field field: fields) {
+		for (Field field: properties) {
 			if (ExchangeJavaGenUtil.isObjectField(field)) {
-				generateObjectParameterTypePojoField(outputFolder, rootPojoGenerator.getName(), field);
+				generateObjectFieldTypePojos(outputFolder, rootPojoGenerator.getName(), field);
 			}
 		}
 	}
 
-	private void generateObjectParameterTypePojoField(Path outputFolder, String className, Field field) throws IOException {
-		String objectParamClassName = ExchangeApiGeneratorUtil.getFieldLeafSubTypeClassName(
+	private void generateObjectFieldTypePojos(Path outputFolder, String className, Field field) throws IOException {
+		String objectParamClassName = ExchangeApiGenUtil.getFieldLeafSubTypeClassName(
 												field.getName(), 
 												ExchangeJavaGenUtil.getFieldType(field), 
 												field.getObjectName(), 
 												className);
 		
 		if (field.getProperties() != null) {
-			new EndpointPojoClassesGenerator(objectParamClassName, 
+			new PojoClassesGenerator(objectParamClassName, 
 									  field.getDescription(), 
 									  field.getProperties(),
 									  field.getImplementedInterfaces()).generateClasses(outputFolder);

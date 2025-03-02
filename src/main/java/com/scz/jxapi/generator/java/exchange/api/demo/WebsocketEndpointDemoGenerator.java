@@ -14,7 +14,7 @@ import com.scz.jxapi.exchange.descriptor.WebsocketEndpointDescriptor;
 import com.scz.jxapi.generator.java.JavaCodeGenerationUtil;
 import com.scz.jxapi.generator.java.JavaTypeGenerator;
 import com.scz.jxapi.generator.java.exchange.ExchangeJavaGenUtil;
-import com.scz.jxapi.generator.java.exchange.api.ExchangeApiGeneratorUtil;
+import com.scz.jxapi.generator.java.exchange.api.ExchangeApiGenUtil;
 import com.scz.jxapi.netutils.websocket.WebsocketListener;
 import com.scz.jxapi.util.DemoProperties;
 import com.scz.jxapi.util.DemoUtil;
@@ -83,21 +83,21 @@ public class WebsocketEndpointDemoGenerator extends JavaTypeGenerator {
 	public WebsocketEndpointDemoGenerator(ExchangeDescriptor exchangeDescriptor, 
 										  ExchangeApiDescriptor exchangeApiDescriptor, 
 										  WebsocketEndpointDescriptor websocketApi) {
-		super(EndpointDemoGeneratorUtil.getWebsocketApiDemoClassName(exchangeDescriptor, exchangeApiDescriptor, websocketApi));
+		super(EndpointDemoGenUtil.getWebsocketApiDemoClassName(exchangeDescriptor, exchangeApiDescriptor, websocketApi));
 		this.exchangeDescriptor = exchangeDescriptor;
-		this.request = ExchangeApiGeneratorUtil.resolveFieldProperties(exchangeApiDescriptor, websocketApi.getRequest());
+		this.request = ExchangeApiGenUtil.resolveFieldProperties(exchangeApiDescriptor, websocketApi.getRequest());
 		this.exchangeClassName = ExchangeJavaGenUtil.getExchangeInterfaceName(exchangeDescriptor);
 		this.exchangeSimpleClassName = JavaCodeGenerationUtil.getClassNameWithoutPackage(exchangeClassName);
-		subscribeMethodName = ExchangeApiGeneratorUtil.getWebsocketSubscribeMethodName(websocketApi);
-		unsubscribeMethodName = ExchangeApiGeneratorUtil.getWebsocketUnsubscribeMethodName(websocketApi);
+		subscribeMethodName = ExchangeApiGenUtil.getWebsocketSubscribeMethodName(websocketApi);
+		unsubscribeMethodName = ExchangeApiGenUtil.getWebsocketUnsubscribeMethodName(websocketApi);
 		setTypeDeclaration("public class");
-		this.hasArguments = ExchangeApiGeneratorUtil.websocketEndpointHasArguments(websocketApi, exchangeApiDescriptor);
+		this.hasArguments = ExchangeApiGenUtil.websocketEndpointHasArguments(websocketApi, exchangeApiDescriptor);
 		if (hasArguments) {
 			this.requestDataType =  Optional.ofNullable(request.getType()).orElse(Type.OBJECT);
 			if (this.requestDataType.getCanonicalType().isPrimitive) {
 				this.requestClassName = requestDataType.getCanonicalType().typeClass.getName();
 			} else {
-				this.requestClassName = ExchangeApiGeneratorUtil.generateWebsocketEndpointRequestPojoClassName(exchangeDescriptor, exchangeApiDescriptor, websocketApi);
+				this.requestClassName = ExchangeApiGenUtil.generateWebsocketEndpointRequestPojoClassName(exchangeDescriptor, exchangeApiDescriptor, websocketApi);
 			}
 			
 			addImport(requestClassName);
@@ -121,7 +121,7 @@ public class WebsocketEndpointDemoGenerator extends JavaTypeGenerator {
 		messageClassSimpleName = ExchangeJavaGenUtil.getClassNameForType(
 				messageDataType, 
 				getImports(), 
-				ExchangeApiGeneratorUtil.generateWebsocketEndpointMessagePojoClassName(
+				ExchangeApiGenUtil.generateWebsocketEndpointMessagePojoClassName(
 						exchangeDescriptor, 
 						exchangeApiDescriptor, 
 						websocketApi));
@@ -138,7 +138,7 @@ public class WebsocketEndpointDemoGenerator extends JavaTypeGenerator {
 	public String generate() {
 		JavaCodeGenerationUtil.generateSlf4jLoggerDeclaration(this);
 		if (hasArguments) {
-			this.appendToBody(EndpointDemoGeneratorUtil.generateFieldCreationMethod(
+			this.appendToBody(EndpointDemoGenUtil.generateFieldCreationMethod(
 								request,  
 								requestClassName, 
 								getImports()))
@@ -220,12 +220,12 @@ public class WebsocketEndpointDemoGenerator extends JavaTypeGenerator {
 	
 	private String generateSubscribeMethodBody() {
 		StringBuilder bodyBuilder = new StringBuilder();
-		bodyBuilder.append(EndpointDemoGeneratorUtil.getNewTestExchangeInstruction(
+		bodyBuilder.append(EndpointDemoGenUtil.getNewTestExchangeInstruction(
 					exchangeClassName, 
 					EXCHANGE_VAR, 
 					"configProperties"))
 				.append("\n")
-				.append(EndpointDemoGeneratorUtil.getNewTestApiInstruction(
+				.append(EndpointDemoGenUtil.getNewTestApiInstruction(
 					EXCHANGE_VAR, 
 					API_VAR,
 					simpleApiClassName))
@@ -292,14 +292,14 @@ public class WebsocketEndpointDemoGenerator extends JavaTypeGenerator {
 		
 		bodyBuilder.append("subscribe(");
 		if (hasArguments) {
-			bodyBuilder.append(EndpointDemoGeneratorUtil.generateFieldCreationMethodName(request))
+			bodyBuilder.append(EndpointDemoGenUtil.generateFieldCreationMethodName(request))
 					   .append("(),\n")
 					   .append(MAIN_METHOD_SUBSCRIBE_METHOD_CALL_ARGUMENT_INDENT);
 		}
 		bodyBuilder.append(DemoUtil.class.getSimpleName())
 				   .append("::logWsMessage,\n")
 				   .append(MAIN_METHOD_SUBSCRIBE_METHOD_CALL_ARGUMENT_INDENT)
-				   .append(EndpointDemoGeneratorUtil.getTestPropertiesInstruction(exchangeSimpleClassName, getImports()))
+				   .append(EndpointDemoGenUtil.getTestPropertiesInstruction(exchangeSimpleClassName, getImports()))
 				   .append(",\n")
 				   .append(MAIN_METHOD_SUBSCRIBE_METHOD_CALL_ARGUMENT_INDENT)
 				   .append(DemoUtil.class.getSimpleName())

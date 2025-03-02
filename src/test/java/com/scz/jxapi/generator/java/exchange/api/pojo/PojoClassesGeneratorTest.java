@@ -15,9 +15,9 @@ import com.scz.jxapi.generator.java.JavaCodeGenerationUtil;
 import com.scz.jxapi.generator.java.exchange.ClassesGeneratorTestUtil;
 
 /**
- * Unit test for {@link EndpointPojoClassesGenerator}
+ * Unit test for {@link PojoClassesGenerator}
  */
-public class EndpointPojoClassesGeneratorTest {
+public class PojoClassesGeneratorTest {
 
 	private Path srcFolder;
 	
@@ -34,19 +34,19 @@ public class EndpointPojoClassesGeneratorTest {
 		srcFolder = ClassesGeneratorTestUtil.generateTmpDir();
 		String typeName = "com.x.MyPojo";
 		String typeDescription = "Used in EndpointPojoGeneratorTest";
-		List<Field> endpointParameters = new ArrayList<>();
-		endpointParameters.add(Field.builder().type(Type.LONG).name("id").description("identifier").build());
-		endpointParameters.add(Field.builder().type(Type.INT).name("score").description("Current score").build());
-		endpointParameters.add(Field.builder().type("OBJECT_LIST").name("foo")
+		List<Field> properties = new ArrayList<>();
+		properties.add(Field.builder().type(Type.LONG).name("id").description("identifier").build());
+		properties.add(Field.builder().type(Type.INT).name("score").description("Current score").build());
+		properties.add(Field.builder().type("OBJECT_LIST").name("foo")
 									.property(Field.builder().type(Type.TIMESTAMP).name("time").build())
 									.property(Field.builder().name("bar")
 												   .property(Field.builder().type(Type.STRING).name("name").build())
 												   .build())
 									.build());
-		endpointParameters.add(Field.builder().type("OBJECT_LIST_MAP").name("toto")
+		properties.add(Field.builder().type("OBJECT_LIST_MAP").name("toto")
 									.property(Field.builder().type(Type.STRING).name("id").build())
 									.build());
-		EndpointPojoClassesGenerator generator = new EndpointPojoClassesGenerator(typeName, typeDescription, endpointParameters, null);
+		PojoClassesGenerator generator = new PojoClassesGenerator(typeName, typeDescription, properties, null);
 		generator.generateClasses(srcFolder);
 		checkJavaFilesCount(4);
 		checkSourceFileExists(Path.of("MyPojo.java"));
@@ -60,11 +60,11 @@ public class EndpointPojoClassesGeneratorTest {
 		srcFolder = ClassesGeneratorTestUtil.generateTmpDir();
 		String typeName = "com.x.MyPojo";
 		String typeDescription = "Used in EndpointPojoGeneratorTest";
-		List<Field> endpointParameters = new ArrayList<>();
-		endpointParameters.add(Field.builder().type(Type.LONG).name("id").description("identifier").build());
-		endpointParameters.add(Field.builder().type(Type.INT).name("score").description("Current score").build());
-		endpointParameters.add(Field.builder().type("OBJECT_LIST").name("foo").build());
-		EndpointPojoClassesGenerator generator = new EndpointPojoClassesGenerator(typeName, typeDescription, endpointParameters, null);
+		List<Field> properties = new ArrayList<>();
+		properties.add(Field.builder().type(Type.LONG).name("id").description("identifier").build());
+		properties.add(Field.builder().type(Type.INT).name("score").description("Current score").build());
+		properties.add(Field.builder().type("OBJECT_LIST").name("foo").build());
+		PojoClassesGenerator generator = new PojoClassesGenerator(typeName, typeDescription, properties, null);
 		generator.generateClasses(srcFolder);
 		checkJavaFilesCount(1);
 		checkSourceFileExists(Path.of("MyPojo.java"));

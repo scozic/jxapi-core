@@ -10,7 +10,7 @@ import com.scz.jxapi.generator.java.Imports;
 import com.scz.jxapi.generator.java.JavaCodeGenerationUtil;
 import com.scz.jxapi.generator.java.exchange.ClassesGenerator;
 import com.scz.jxapi.generator.java.exchange.ExchangeJavaGenUtil;
-import com.scz.jxapi.generator.java.exchange.api.ExchangeApiGeneratorUtil;
+import com.scz.jxapi.generator.java.exchange.api.ExchangeApiGenUtil;
 import com.scz.jxapi.netutils.deserialization.json.AbstractJsonMessageDeserializer;
 
 /**
@@ -55,7 +55,7 @@ public class JsonMessageDeserializerClassesGenerator implements ClassesGenerator
 										 .objectName(field.getObjectName())
 										 .build();
 				new JsonMessageDeserializerClassesGenerator(JavaCodeGenerationUtil.getClassPackage(deserializedClassName) + "."
-																+ ExchangeApiGeneratorUtil.getClassNameForField(
+																+ ExchangeApiGenUtil.getClassNameForField(
 																		objectParam, 
 																		imports, 
 																		deserializedClassName), 

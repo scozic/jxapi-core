@@ -28,11 +28,11 @@ import com.scz.jxapi.util.EncodingUtil;
 /**
  * Helper static methods around generation of {@link ExchangeApi} java classes implementation.
  */
-public class ExchangeApiGeneratorUtil {
+public class ExchangeApiGenUtil {
 	
 	private static final String GET_INSTANCE = ".getInstance()";
 
-	private ExchangeApiGeneratorUtil() {}
+	private ExchangeApiGenUtil() {}
 	
 	/**
 	 * Default name for request argument

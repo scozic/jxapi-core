@@ -12,7 +12,7 @@ import com.scz.jxapi.exchange.descriptor.Type;
 import com.scz.jxapi.generator.java.JavaCodeGenerationUtil;
 import com.scz.jxapi.generator.java.JavaTypeGenerator;
 import com.scz.jxapi.generator.java.exchange.ExchangeJavaGenUtil;
-import com.scz.jxapi.generator.java.exchange.api.ExchangeApiGeneratorUtil;
+import com.scz.jxapi.generator.java.exchange.api.ExchangeApiGenUtil;
 import com.scz.jxapi.util.CollectionUtil;
 import com.scz.jxapi.util.CompareUtil;
 import com.scz.jxapi.util.DeepCloneable;
@@ -476,7 +476,7 @@ public class PojoGenerator extends JavaTypeGenerator {
 		Type fieldType = ExchangeJavaGenUtil.getFieldType(field);
 		if (ExchangeJavaGenUtil.isObjectField(field)) {
 			String className = getName();
-			fieldClass = ExchangeApiGeneratorUtil.getClassNameForField(field, getImports(), className);
+			fieldClass = ExchangeApiGenUtil.getClassNameForField(field, getImports(), className);
 		} else {
 			fieldClass = ExchangeJavaGenUtil.getClassNameForType(fieldType, getImports(), null);
 		}

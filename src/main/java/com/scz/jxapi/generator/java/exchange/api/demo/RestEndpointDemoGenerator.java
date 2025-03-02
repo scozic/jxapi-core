@@ -15,7 +15,7 @@ import com.scz.jxapi.exchange.descriptor.Type;
 import com.scz.jxapi.generator.java.JavaCodeGenerationUtil;
 import com.scz.jxapi.generator.java.JavaTypeGenerator;
 import com.scz.jxapi.generator.java.exchange.ExchangeJavaGenUtil;
-import com.scz.jxapi.generator.java.exchange.api.ExchangeApiGeneratorUtil;
+import com.scz.jxapi.generator.java.exchange.api.ExchangeApiGenUtil;
 import com.scz.jxapi.netutils.rest.RestResponse;
 import com.scz.jxapi.util.DemoUtil;
 
@@ -68,20 +68,20 @@ public class RestEndpointDemoGenerator extends JavaTypeGenerator {
 	public RestEndpointDemoGenerator(ExchangeDescriptor exchangeDescriptor, 
 									 ExchangeApiDescriptor exchangeApiDescriptor, 
 									 RestEndpointDescriptor restApi) {
-		super(EndpointDemoGeneratorUtil.getRestApiDemoClassName(exchangeDescriptor, exchangeApiDescriptor, restApi));
+		super(EndpointDemoGenUtil.getRestApiDemoClassName(exchangeDescriptor, exchangeApiDescriptor, restApi));
 		setTypeDeclaration("public class");
 		this.restApi = restApi;
 		this.exchangeClassName = ExchangeJavaGenUtil.getExchangeInterfaceName(exchangeDescriptor);
 		this.exchangeSimpleClassName = JavaCodeGenerationUtil.getClassNameWithoutPackage(exchangeClassName);
-		this.hasArguments = ExchangeApiGeneratorUtil.restEndpointHasArguments(restApi, exchangeApiDescriptor);
-		this.request = ExchangeApiGeneratorUtil.resolveFieldProperties(exchangeApiDescriptor, restApi.getRequest());
+		this.hasArguments = ExchangeApiGenUtil.restEndpointHasArguments(restApi, exchangeApiDescriptor);
+		this.request = ExchangeApiGenUtil.resolveFieldProperties(exchangeApiDescriptor, restApi.getRequest());
 		this.exchangeImplClassName = ExchangeJavaGenUtil.getExchangeInterfaceImplementationName(exchangeDescriptor);
 		if (hasArguments) {
 			requestDataType =  Optional.ofNullable(request.getType()).orElse(Type.OBJECT);
 			if (requestDataType.getCanonicalType().isPrimitive) {
 				requestClassName = requestDataType.getCanonicalType().typeClass.getName();
 			} else if (requestDataType.isObject() ){
-				requestClassName = ExchangeApiGeneratorUtil.generateRestEnpointRequestPojoClassName(
+				requestClassName = ExchangeApiGenUtil.generateRestEnpointRequestPojoClassName(
 										exchangeDescriptor, 
 										exchangeApiDescriptor, 
 										restApi);
@@ -103,11 +103,11 @@ public class RestEndpointDemoGenerator extends JavaTypeGenerator {
 		this.simpleApiClassName = JavaCodeGenerationUtil.getClassNameWithoutPackage(apiInterfaceClassName);
 		response = restApi.getResponse();
 		responseDataType = ExchangeJavaGenUtil.getFieldType(response);
-		hasResponse = ExchangeApiGeneratorUtil.restEndpointHasResponse(restApi, exchangeApiDescriptor);
+		hasResponse = ExchangeApiGenUtil.restEndpointHasResponse(restApi, exchangeApiDescriptor);
 		if (hasResponse) {
 			String restResponseClassName = null;
 			if (responseDataType != null && responseDataType.isObject()) {
-				restResponseClassName = ExchangeApiGeneratorUtil.generateRestEnpointResponsePojoClassName(
+				restResponseClassName = ExchangeApiGenUtil.generateRestEnpointResponsePojoClassName(
 						exchangeDescriptor, 
 						exchangeApiDescriptor, 
 						restApi);
@@ -121,7 +121,7 @@ public class RestEndpointDemoGenerator extends JavaTypeGenerator {
 		} else {
 			responseSimpleClassName = String.class.getSimpleName();
 		}
-		this.apiMethodName = ExchangeApiGeneratorUtil.getRestApiMethodName(restApi);
+		this.apiMethodName = ExchangeApiGenUtil.getRestApiMethodName(restApi);
 		this.apiEndpointMethodJavadocLink = generateApiEndpointMethodJavadocLink();
 		addImport(apiInterfaceClassName);
 		addImport(exchangeClassName);
@@ -139,7 +139,7 @@ public class RestEndpointDemoGenerator extends JavaTypeGenerator {
 	public String generate() {
 		JavaCodeGenerationUtil.generateSlf4jLoggerDeclaration(this);
 		if (hasArguments) {
-			this.appendToBody(EndpointDemoGeneratorUtil.generateFieldCreationMethod(
+			this.appendToBody(EndpointDemoGenUtil.generateFieldCreationMethod(
 								request,  
 								requestClassName, 
 								getImports()));
@@ -175,12 +175,12 @@ public class RestEndpointDemoGenerator extends JavaTypeGenerator {
 	
 	private void generateExecuteMethod() {
 		StringBuilder bodyBuilder = new StringBuilder();
-				bodyBuilder.append(EndpointDemoGeneratorUtil.getNewTestExchangeInstruction(
+				bodyBuilder.append(EndpointDemoGenUtil.getNewTestExchangeInstruction(
 				exchangeClassName, 
 				EXCHANGE_VAR, 
 				"configProperties"))
 			.append("\n")
-			.append(EndpointDemoGeneratorUtil.getNewTestApiInstruction(
+			.append(EndpointDemoGenUtil.getNewTestApiInstruction(
 				EXCHANGE_VAR, 
 				API_VAR,
 				simpleApiClassName))
@@ -257,11 +257,11 @@ public class RestEndpointDemoGenerator extends JavaTypeGenerator {
 	private void generateMainMethod() {
 		StringBuilder bodyBuilder = new StringBuilder().append("execute(");
 		if (hasArguments) {
-			bodyBuilder.append(EndpointDemoGeneratorUtil.generateFieldCreationMethodName(restApi.getRequest()))
+			bodyBuilder.append(EndpointDemoGenUtil.generateFieldCreationMethodName(restApi.getRequest()))
 					   .append("(),\n")
 					   .append(EXECUTE_METHOD_ARG_INDENT);
 		}
-		bodyBuilder.append(EndpointDemoGeneratorUtil.getTestPropertiesInstruction(exchangeSimpleClassName, getImports()))
+		bodyBuilder.append(EndpointDemoGenUtil.getTestPropertiesInstruction(exchangeSimpleClassName, getImports()))
 				   .append(",\n")
 				   .append(EXECUTE_METHOD_ARG_INDENT)
 				   .append(DemoUtil.class.getSimpleName())

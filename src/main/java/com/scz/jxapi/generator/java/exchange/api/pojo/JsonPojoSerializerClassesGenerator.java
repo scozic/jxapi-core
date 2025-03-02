@@ -8,7 +8,7 @@ import com.scz.jxapi.exchange.descriptor.Field;
 import com.scz.jxapi.exchange.descriptor.Type;
 import com.scz.jxapi.generator.java.exchange.ClassesGenerator;
 import com.scz.jxapi.generator.java.exchange.ExchangeJavaGenUtil;
-import com.scz.jxapi.generator.java.exchange.api.ExchangeApiGeneratorUtil;
+import com.scz.jxapi.generator.java.exchange.api.ExchangeApiGenUtil;
 import com.scz.jxapi.netutils.deserialization.json.AbstractJsonMessageDeserializer;
 
 /**
@@ -46,7 +46,7 @@ public class JsonPojoSerializerClassesGenerator implements ClassesGenerator {
 			if ((type.isObject())
 				&& field.getProperties() != null) {
 				new JsonPojoSerializerClassesGenerator( 
-								   ExchangeApiGeneratorUtil.getFieldLeafSubTypeClassName(
+								   ExchangeApiGenUtil.getFieldLeafSubTypeClassName(
 										   	field.getName(), 
 										   	type, 
 										   	field.getObjectName(), 

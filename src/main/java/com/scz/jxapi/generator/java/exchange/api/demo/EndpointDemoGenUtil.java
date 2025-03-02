@@ -17,15 +17,15 @@ import com.scz.jxapi.exchange.descriptor.WebsocketEndpointDescriptor;
 import com.scz.jxapi.generator.java.Imports;
 import com.scz.jxapi.generator.java.JavaCodeGenerationUtil;
 import com.scz.jxapi.generator.java.exchange.ExchangeJavaGenUtil;
-import com.scz.jxapi.generator.java.exchange.api.ExchangeApiGeneratorUtil;
+import com.scz.jxapi.generator.java.exchange.api.ExchangeApiGenUtil;
 import com.scz.jxapi.util.DemoUtil;
 
 /**
  * Helper methods around REST or Websocket endpoint demo snippets code generation.
  */
-public class EndpointDemoGeneratorUtil {
+public class EndpointDemoGenUtil {
 	
-	private EndpointDemoGeneratorUtil() {}
+	private EndpointDemoGenUtil() {}
 	
 	/**
 	 * Generates a method (with full signature and method body) that creates a
@@ -141,7 +141,7 @@ public class EndpointDemoGeneratorUtil {
 									imports);
 			} 
 			else {
-				fieldValue = ExchangeApiGeneratorUtil.getNewMessageDeserializerInstruction(type, objectClassName, imports) 
+				fieldValue = ExchangeApiGenUtil.getNewMessageDeserializerInstruction(type, objectClassName, imports) 
 									+ ".deserialize(" + fieldValue + ")";
 			}
 		}
@@ -205,7 +205,7 @@ public class EndpointDemoGeneratorUtil {
 			setArg = itemVariableName + "_" + childParam.getName();
 			res.append(generateFieldSampleValueDeclaration(childParam, 
 							setArg, 
-							ExchangeApiGeneratorUtil.getFieldObjectClassName(childParam, objectClassName), 
+							ExchangeApiGenUtil.getFieldObjectClassName(childParam, objectClassName), 
 							imports,
 							setChildParamInstruction));
 		} else if(childParamType.getCanonicalType().isPrimitive) {
@@ -216,7 +216,7 @@ public class EndpointDemoGeneratorUtil {
 		} else {
 			// List or map
 			if (setArg != null) {
-				setArg = ExchangeApiGeneratorUtil.getNewMessageDeserializerInstruction(childParamType, objectClassName, imports) 
+				setArg = ExchangeApiGenUtil.getNewMessageDeserializerInstruction(childParamType, objectClassName, imports) 
 							+ ".deserialize(" + setArg + ")";
 				res.append(setChildParamInstruction).append(setArg);
 			}
