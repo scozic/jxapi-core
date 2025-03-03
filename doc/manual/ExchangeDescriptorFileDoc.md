@@ -288,10 +288,10 @@ A field can be a primitive type such as `STRING`, `INT`, `BIGDECIMAL`, or `TIMES
 Remark: When neither of 'object' type specific `properties` or `objectName` is specified, the default field type is `STRING` unless `type` property is specified.
 
 ### Lists
-A field can be defined as a list by specifying the type as `LIST` and providing the `elementType`. This allows for the representation of arrays or collections of a specific type.
+A field can be defined as a list by specifying the type as `<SUBTYPE>_LIST` and providing the list element type as type prefix, for instance `BIGDECIMAL_MAP`. This allows for the representation of arrays or collections of a specific type.
 
 ### Maps
-A field can be defined as a String key map by specifying the type as `MAP` and providing type of value as type prefix, for instance `INT_MAP` is a map with string keys and `INT` values. This allows for the representation of key-value pairs where both keys and values can be of specified types.
+A field can be defined as a String key map by specifying the type as `<SUBTYPE>_MAP` and providing type of value as type prefix, for instance `INT_MAP` is a map with string keys and `INT` values. This allows for the representation of key-value pairs where both keys and values can be of specified types.
 
 ### Objects
 A field can be a object by specifying the type as `OBJECT` and providing a list of `properties`. Each property is itself a `Field` object, allowing for nested structures and complex data representations.
