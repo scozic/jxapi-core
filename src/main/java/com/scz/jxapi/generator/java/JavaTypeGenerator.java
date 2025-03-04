@@ -204,10 +204,18 @@ public class JavaTypeGenerator {
 		this.implementedInterfaces = implementedInterfaces;
 	}
 	
+	/**
+	 * @return If <code>true</code> (default), package and imports will be generated
+	 *         in output.
+	 */
 	public boolean isGeneratePackageAndImports() {
 		return generatePackageAndImports;
 	}
 
+	/**
+	 * @param generatePackageAndImports If <code>true</code> (default), package and
+	 *                                  imports will be generated in output.
+	 */
 	public void setGeneratePackageAndImports(boolean generatePackageAndImports) {
 		this.generatePackageAndImports = generatePackageAndImports;
 	}

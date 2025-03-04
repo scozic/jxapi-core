@@ -20,7 +20,7 @@ import com.scz.jxapi.generator.java.exchange.api.ExchangeApiGenUtil;
  * {@link Field#getObjectName()} that has fields defined in another
  * endpoint.
  * 
- * @see EndpointPojoGenerator
+ * @see PojoGenerator
  *
  */
 public class PojoClassesGenerator implements ClassesGenerator {
