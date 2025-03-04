@@ -9,7 +9,7 @@ import org.junit.Test;
 
 import com.scz.jxapi.exchange.descriptor.ExchangeDescriptor;
 import com.scz.jxapi.exchange.descriptor.parser.ExchangeDescriptorParser;
-import com.scz.jxapi.generator.java.JavaCodeGenerationUtil;
+import com.scz.jxapi.generator.java.JavaCodeGenUtil;
 
 /**
  * Unit test for {@link ExchangeClassesGenerator}
@@ -21,7 +21,7 @@ public class ExchangeClassesGeneratorTest {
 	@After
 	public void tearDown() throws IOException {
 		if (srcFolder != null) {
-			JavaCodeGenerationUtil.deletePath(srcFolder);
+			JavaCodeGenUtil.deletePath(srcFolder);
 			srcFolder = null;
 		}
 	}

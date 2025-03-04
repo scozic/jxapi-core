@@ -37,10 +37,10 @@ public class JavaMethodGenerator {
 	public String generate() {
 		return new StringBuilder()
 					.append(javadoc == null? "": 
-							JavaCodeGenerationUtil.generateJavaDoc(javadoc) + "\n")
+							JavaCodeGenUtil.generateJavaDoc(javadoc) + "\n")
 					.append(this.getMedthodDeclaration())
 					.append(" ")
-					.append(JavaCodeGenerationUtil.generateCodeBlock(body.toString()))
+					.append(JavaCodeGenUtil.generateCodeBlock(body.toString()))
 					.toString();
 	}
 

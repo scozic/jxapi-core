@@ -12,7 +12,7 @@ import com.scz.jxapi.exchange.descriptor.ExchangeDescriptor;
 import com.scz.jxapi.exchange.descriptor.Field;
 import com.scz.jxapi.exchange.descriptor.RestEndpointDescriptor;
 import com.scz.jxapi.exchange.descriptor.Type;
-import com.scz.jxapi.generator.java.JavaCodeGenerationUtil;
+import com.scz.jxapi.generator.java.JavaCodeGenUtil;
 import com.scz.jxapi.generator.java.JavaTypeGenerator;
 import com.scz.jxapi.generator.java.exchange.ExchangeJavaGenUtil;
 import com.scz.jxapi.generator.java.exchange.api.ExchangeApiGenUtil;
@@ -72,7 +72,7 @@ public class RestEndpointDemoGenerator extends JavaTypeGenerator {
 		setTypeDeclaration("public class");
 		this.restApi = restApi;
 		this.exchangeClassName = ExchangeJavaGenUtil.getExchangeInterfaceName(exchangeDescriptor);
-		this.exchangeSimpleClassName = JavaCodeGenerationUtil.getClassNameWithoutPackage(exchangeClassName);
+		this.exchangeSimpleClassName = JavaCodeGenUtil.getClassNameWithoutPackage(exchangeClassName);
 		this.hasArguments = ExchangeApiGenUtil.restEndpointHasArguments(restApi, exchangeApiDescriptor);
 		this.request = ExchangeApiGenUtil.resolveFieldProperties(exchangeApiDescriptor, restApi.getRequest());
 		this.exchangeImplClassName = ExchangeJavaGenUtil.getExchangeInterfaceImplementationName(exchangeDescriptor);
@@ -100,7 +100,7 @@ public class RestEndpointDemoGenerator extends JavaTypeGenerator {
 			requestDataType = null;
 		}
 		this.apiInterfaceClassName = ExchangeJavaGenUtil.getApiInterfaceClassName(exchangeDescriptor, exchangeApiDescriptor);
-		this.simpleApiClassName = JavaCodeGenerationUtil.getClassNameWithoutPackage(apiInterfaceClassName);
+		this.simpleApiClassName = JavaCodeGenUtil.getClassNameWithoutPackage(apiInterfaceClassName);
 		response = restApi.getResponse();
 		responseDataType = ExchangeJavaGenUtil.getFieldType(response);
 		hasResponse = ExchangeApiGenUtil.restEndpointHasResponse(restApi, exchangeApiDescriptor);
@@ -137,7 +137,7 @@ public class RestEndpointDemoGenerator extends JavaTypeGenerator {
 	
 	@Override
 	public String generate() {
-		JavaCodeGenerationUtil.generateSlf4jLoggerDeclaration(this);
+		JavaCodeGenUtil.generateSlf4jLoggerDeclaration(this);
 		if (hasArguments) {
 			this.appendToBody(EndpointDemoGenUtil.generateFieldCreationMethod(
 								request,  
@@ -154,12 +154,12 @@ public class RestEndpointDemoGenerator extends JavaTypeGenerator {
 	private String generateApiEndpointMethodJavadocLink() {
 		StringBuilder javadoc = new StringBuilder()
 						.append("{@link ")
-						.append(JavaCodeGenerationUtil.getClassNameWithoutPackage(apiInterfaceClassName))
+						.append(JavaCodeGenUtil.getClassNameWithoutPackage(apiInterfaceClassName))
 						.append("#")
 						.append(apiMethodName)
 						.append("(");
 		if (hasArguments) {
-			javadoc.append(JavaCodeGenerationUtil.getMethodArgumentJavadoc(requestDataType, requestClassName));
+			javadoc.append(JavaCodeGenUtil.getMethodArgumentJavadoc(requestDataType, requestClassName));
 		}
 		return javadoc.append(")}").toString();
 	}
@@ -197,7 +197,7 @@ public class RestEndpointDemoGenerator extends JavaTypeGenerator {
 		
 		bodyBuilder.append(");\n")
 		   .append("if (apiObserver != null) ")
-		   .append(JavaCodeGenerationUtil.generateCodeBlock(API_VAR + ".subscribeObserver(apiObserver);"));
+		   .append(JavaCodeGenUtil.generateCodeBlock(API_VAR + ".subscribeObserver(apiObserver);"));
 		
 		StringBuilder tryClause = new StringBuilder();
 		tryClause.append("return DemoUtil.checkResponse(")
@@ -212,12 +212,12 @@ public class RestEndpointDemoGenerator extends JavaTypeGenerator {
 				 
 		StringBuilder finallyClause = new StringBuilder()
 				.append("if (apiObserver != null) ")
-				.append(JavaCodeGenerationUtil.generateCodeBlock(API_VAR + ".unsubscribeObserver(apiObserver);"))
+				.append(JavaCodeGenUtil.generateCodeBlock(API_VAR + ".unsubscribeObserver(apiObserver);"))
 				.append(EXCHANGE_VAR)
 		        .append(".dispose();\n");
 		
 		
-		bodyBuilder.append(JavaCodeGenerationUtil.generateTryBlock(tryClause.toString(), 
+		bodyBuilder.append(JavaCodeGenUtil.generateTryBlock(tryClause.toString(), 
 						  null, 
 						  null,
 						  finallyClause.toString(), 
@@ -268,7 +268,7 @@ public class RestEndpointDemoGenerator extends JavaTypeGenerator {
 				   .append(");\nSystem.exit(0);");
 		
 		appendMethod("public static void main(String[] args)", 
-				JavaCodeGenerationUtil.generateTryBlock(
+				JavaCodeGenUtil.generateTryBlock(
 						bodyBuilder.toString(), 
 						"log.error(\"Exception raised from main()\", t);\nSystem.exit(-1);", 
 						"Throwable t", 

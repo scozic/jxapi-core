@@ -9,7 +9,7 @@ import java.util.stream.Collectors;
 import com.scz.jxapi.exchange.descriptor.CanonicalType;
 import com.scz.jxapi.exchange.descriptor.Field;
 import com.scz.jxapi.exchange.descriptor.Type;
-import com.scz.jxapi.generator.java.JavaCodeGenerationUtil;
+import com.scz.jxapi.generator.java.JavaCodeGenUtil;
 import com.scz.jxapi.generator.java.JavaTypeGenerator;
 import com.scz.jxapi.generator.java.exchange.ExchangeJavaGenUtil;
 import com.scz.jxapi.generator.java.exchange.api.ExchangeApiGenUtil;
@@ -102,7 +102,7 @@ public class PojoGenerator extends JavaTypeGenerator {
 		addImport(serializerClassName);
 		addImport(com.fasterxml.jackson.databind.annotation.JsonSerialize.class.getName());
 		setTypeDeclaration("@JsonSerialize(using = " 
-										+ JavaCodeGenerationUtil.getClassNameWithoutPackage(serializerClassName) 
+										+ JavaCodeGenUtil.getClassNameWithoutPackage(serializerClassName) 
 										+ ".class)\n" 
 										+ getTypeDeclaration());
 		setDescription(description);
@@ -168,7 +168,7 @@ public class PojoGenerator extends JavaTypeGenerator {
 	private void generateCompareToMethod() {
 		StringBuilder compareBody = new StringBuilder()
 				.append("if (other == null) {\n")
-				.append(JavaCodeGenerationUtil.indent("return 1;"))
+				.append(JavaCodeGenUtil.indent("return 1;"))
 				.append(END_BLOCK_TOKEN);
 		if (CollectionUtil.isEmpty(this.fields)) {
 			compareBody.append("return 0;\n");
@@ -182,7 +182,7 @@ public class PojoGenerator extends JavaTypeGenerator {
 					.append(";\n");
 				if (i < fields.size() - 1) {
 					compareBody.append("if (res != 0) {\n")
-						.append(JavaCodeGenerationUtil.indent(ret))
+						.append(JavaCodeGenUtil.indent(ret))
 						.append(END_BLOCK_TOKEN);
 				} else {
 					compareBody.append(ret)
@@ -239,7 +239,7 @@ public class PojoGenerator extends JavaTypeGenerator {
 	
 	private String generateFieldDeclaration(Field field) {
 		String typeClass = getFieldClass(field);
-		typeClass = JavaCodeGenerationUtil.getClassNameWithoutPackage(typeClass);
+		typeClass = JavaCodeGenUtil.getClassNameWithoutPackage(typeClass);
 		return new StringBuilder()
 				.append("private ")
 				.append(typeClass)
@@ -251,7 +251,7 @@ public class PojoGenerator extends JavaTypeGenerator {
 	private void generateAccessorsDeclaration(Field field) {
 		
 		String typeClass = getFieldClass(field);
-		typeClass = JavaCodeGenerationUtil.getClassNameWithoutPackage(typeClass);
+		typeClass = JavaCodeGenUtil.getClassNameWithoutPackage(typeClass);
 		String name = field.getName();
 		String description = field.getDescription();
 		String msgFieldDescription = "";
@@ -275,7 +275,7 @@ public class PojoGenerator extends JavaTypeGenerator {
 			.append("public ")
 			.append(typeClass)
 			.append(" ")
-			.append(JavaCodeGenerationUtil.getGetAccessorMethodName(field.getName(), typeClass, getAllFieldNames()))
+			.append(JavaCodeGenUtil.getGetAccessorMethodName(field.getName(), typeClass, getAllFieldNames()))
 			.append("()")
 			.toString();
 		
@@ -298,7 +298,7 @@ public class PojoGenerator extends JavaTypeGenerator {
 		
 		String setSignature = new StringBuilder()
 			.append("public void ")
-			.append(JavaCodeGenerationUtil.getSetAccessorMethodName(field.getName(), getAllFieldNames()))
+			.append(JavaCodeGenUtil.getSetAccessorMethodName(field.getName(), getAllFieldNames()))
 			.append(argDeclaration)
 			.toString();
 		
@@ -308,7 +308,7 @@ public class PojoGenerator extends JavaTypeGenerator {
 	private void generateBuilderMethodsDeclaration(Field field, JavaTypeGenerator builder) {
 		Type fieldType = ExchangeJavaGenUtil.getFieldType(field);
 		String typeClass = getFieldClass(field);
-		typeClass = JavaCodeGenerationUtil.getClassNameWithoutPackage(typeClass);
+		typeClass = JavaCodeGenUtil.getClassNameWithoutPackage(typeClass);
 		String name = field.getName();
 		String description = field.getDescription();
 		String msgFieldDescription = "";
@@ -346,7 +346,7 @@ public class PojoGenerator extends JavaTypeGenerator {
 				.append(description)
 				.append("\n@return Builder instance")
 				.append("\n@see #")
-				.append(JavaCodeGenerationUtil.getSetAccessorMethodName(field.getName(), getAllFieldNames()))
+				.append(JavaCodeGenUtil.getSetAccessorMethodName(field.getName(), getAllFieldNames()))
 				.append("(")
 				.append(typeClass)
 				.append(")")
@@ -379,11 +379,11 @@ public class PojoGenerator extends JavaTypeGenerator {
 						 	   .properties(field.getProperties())
 						 	   .build();
 		String itemTypeClass = getFieldClass(itemField);
-		itemTypeClass = JavaCodeGenerationUtil.getClassNameWithoutPackage(itemTypeClass);
+		itemTypeClass = JavaCodeGenUtil.getClassNameWithoutPackage(itemTypeClass);
 		
 		String signature = new StringBuilder()
 				.append(PUBLIC_BUILDER_TOKEN)
-				.append(JavaCodeGenerationUtil.getAccessorMethodName("addTo", name, getAllFieldNames()))
+				.append(JavaCodeGenUtil.getAccessorMethodName("addTo", name, getAllFieldNames()))
 				.append("(").append(itemTypeClass)
 				.append(" item)").toString();
 		
@@ -397,7 +397,7 @@ public class PojoGenerator extends JavaTypeGenerator {
 				.append("@see ")
 				.append(getSimpleName())
 				.append("#")
-				.append(JavaCodeGenerationUtil.getSetAccessorMethodName(name, getAllFieldNames()))
+				.append(JavaCodeGenUtil.getSetAccessorMethodName(name, getAllFieldNames()))
 				.append("(").append(itemTypeClass)
 				.append(")").toString();
 		addImport(CollectionUtil.class);
@@ -405,7 +405,7 @@ public class PojoGenerator extends JavaTypeGenerator {
 				.append("if (this.")
 				.append(name)
 				.append(" == null) {\n")
-				.append(JavaCodeGenerationUtil.indent(THIS_TOKEN + name + " = CollectionUtil.createList();"))
+				.append(JavaCodeGenUtil.indent(THIS_TOKEN + name + " = CollectionUtil.createList();"))
 				.append(END_BLOCK_TOKEN)
 				.append(THIS_TOKEN)
 				.append(name)
@@ -428,11 +428,11 @@ public class PojoGenerator extends JavaTypeGenerator {
 						 	   .properties(field.getProperties())
 						 	   .build();
 		String itemTypeClass = getFieldClass(itemField);
-		itemTypeClass = JavaCodeGenerationUtil.getClassNameWithoutPackage(itemTypeClass);
+		itemTypeClass = JavaCodeGenUtil.getClassNameWithoutPackage(itemTypeClass);
 		
 		String signature = new StringBuilder()
 				.append(PUBLIC_BUILDER_TOKEN)
-				.append(JavaCodeGenerationUtil.getAccessorMethodName("addTo", name, getAllFieldNames()))
+				.append(JavaCodeGenUtil.getAccessorMethodName("addTo", name, getAllFieldNames()))
 				.append("(")
 				.append("String key, ")
 				.append(itemTypeClass)
@@ -448,7 +448,7 @@ public class PojoGenerator extends JavaTypeGenerator {
 				.append("@see ")
 				.append(getSimpleName())
 				.append("#")
-				.append(JavaCodeGenerationUtil.getSetAccessorMethodName(name, getAllFieldNames()))
+				.append(JavaCodeGenUtil.getSetAccessorMethodName(name, getAllFieldNames()))
 				.append("(").append(itemTypeClass)
 				.append(")").toString();
 		
@@ -457,7 +457,7 @@ public class PojoGenerator extends JavaTypeGenerator {
 				.append("if (this.")
 				.append(name)
 				.append(" == null) {\n")
-				.append(JavaCodeGenerationUtil.indent(THIS_TOKEN + name + " = CollectionUtil.createMap();"))
+				.append(JavaCodeGenUtil.indent(THIS_TOKEN + name + " = CollectionUtil.createMap();"))
 				.append(END_BLOCK_TOKEN)
 				.append(THIS_TOKEN)
 				.append(name)
@@ -482,7 +482,7 @@ public class PojoGenerator extends JavaTypeGenerator {
 		} else {
 			fieldClass = ExchangeJavaGenUtil.getClassNameForType(fieldType, getImports(), null);
 		}
-		return JavaCodeGenerationUtil.getClassNameWithoutPackage(fieldClass);
+		return JavaCodeGenUtil.getClassNameWithoutPackage(fieldClass);
 	}
 	
 	private void generateToStringMethod() {
@@ -495,9 +495,9 @@ public class PojoGenerator extends JavaTypeGenerator {
 	private void generateEqualsMethod() {
 		StringBuilder body = new StringBuilder()
 			.append("if (other == null)\n")
-			.append(JavaCodeGenerationUtil.indent("return false;"))
+			.append(JavaCodeGenUtil.indent("return false;"))
 			.append("\nif (!getClass().equals(other.getClass()))\n")
-			.append(JavaCodeGenerationUtil.indent("return false;"))
+			.append(JavaCodeGenUtil.indent("return false;"))
 			.append("\n");
 			
 		if (fields.isEmpty()) {
@@ -515,10 +515,10 @@ public class PojoGenerator extends JavaTypeGenerator {
 					first = false;
 				} else {
 					body.append("\n")
-						.append(JavaCodeGenerationUtil.INDENTATION)
-						.append(JavaCodeGenerationUtil.INDENTATION)
-						.append(JavaCodeGenerationUtil.INDENTATION)
-						.append(JavaCodeGenerationUtil.INDENTATION)
+						.append(JavaCodeGenUtil.INDENTATION)
+						.append(JavaCodeGenUtil.INDENTATION)
+						.append(JavaCodeGenUtil.INDENTATION)
+						.append(JavaCodeGenUtil.INDENTATION)
 						.append("&& ");
 				}
 				body.append("Objects.equals(")

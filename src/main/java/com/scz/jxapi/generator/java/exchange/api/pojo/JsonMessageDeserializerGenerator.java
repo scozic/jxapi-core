@@ -13,7 +13,7 @@ import com.scz.jxapi.exchange.descriptor.CanonicalType;
 import com.scz.jxapi.exchange.descriptor.Field;
 import com.scz.jxapi.exchange.descriptor.Type;
 import com.scz.jxapi.generator.java.Imports;
-import com.scz.jxapi.generator.java.JavaCodeGenerationUtil;
+import com.scz.jxapi.generator.java.JavaCodeGenUtil;
 import com.scz.jxapi.generator.java.JavaTypeGenerator;
 import com.scz.jxapi.generator.java.exchange.ExchangeJavaGenUtil;
 import com.scz.jxapi.generator.java.exchange.api.ExchangeApiGenUtil;
@@ -52,7 +52,7 @@ public class JsonMessageDeserializerGenerator extends JavaTypeGenerator {
 		this.deserializedTypeClassName = deserializedTypeClassName;
 		this.fields = fields;
 		setTypeDeclaration("public class");
-		String simpleDeserializedClassName = JavaCodeGenerationUtil.getClassNameWithoutPackage(deserializedTypeClassName);
+		String simpleDeserializedClassName = JavaCodeGenUtil.getClassNameWithoutPackage(deserializedTypeClassName);
 		setParentClassName(AbstractJsonMessageDeserializer.class.getName() + "<" + simpleDeserializedClassName + ">");
 		setDescription("Parses incoming JSON messages into " 
 						+ deserializedTypeClassName 
@@ -76,9 +76,9 @@ public class JsonMessageDeserializerGenerator extends JavaTypeGenerator {
 	}
 
 	private void generateDeserializeMethod() {
-		String indent = JavaCodeGenerationUtil.INDENTATION;
+		String indent = JavaCodeGenUtil.INDENTATION;
 		StringBuilder body = new StringBuilder();
-		String simpleDeserializedClassName = JavaCodeGenerationUtil.getClassNameWithoutPackage(deserializedTypeClassName);
+		String simpleDeserializedClassName = JavaCodeGenUtil.getClassNameWithoutPackage(deserializedTypeClassName);
 		body.append(simpleDeserializedClassName)
 		    .append(" msg = new ")
 		    .append(simpleDeserializedClassName)
@@ -99,7 +99,7 @@ public class JsonMessageDeserializerGenerator extends JavaTypeGenerator {
 			body.append(dblIndent)
 				.append("msg.")
 				.append(
-					JavaCodeGenerationUtil.getSetAccessorMethodName(
+					JavaCodeGenUtil.getSetAccessorMethodName(
 							field.getName(),  
 							fields.stream().map(Field::getName).collect(Collectors.toList())))
 				.append("(")
@@ -160,7 +160,7 @@ public class JsonMessageDeserializerGenerator extends JavaTypeGenerator {
 												objectFieldClassName, 
 												getImports());
 		
-		String deserializerVariableName = JavaCodeGenerationUtil.firstLetterToLowerCase(field.getName() + "Deserializer");
+		String deserializerVariableName = JavaCodeGenUtil.firstLetterToLowerCase(field.getName() + "Deserializer");
 		String variableDeclaration = "private final " + simpleDeserializerTypeName + " " + deserializerVariableName + " = " 
 										+ ExchangeJavaGenUtil.getNewJsonFieldDeserializerInstruction(
 											type, 
@@ -184,7 +184,7 @@ public class JsonMessageDeserializerGenerator extends JavaTypeGenerator {
 		case OBJECT:
 			String deserializerTypeName = ExchangeJavaGenUtil.getJsonMessageDeserializerClassName(objectClassName);
 			imports.add(deserializerTypeName);
-			return JavaCodeGenerationUtil.getClassNameWithoutPackage(deserializerTypeName);
+			return JavaCodeGenUtil.getClassNameWithoutPackage(deserializerTypeName);
 		case LIST:
 			imports.add(ListJsonFieldDeserializer.class.getName());
 			fieldClass = ExchangeJavaGenUtil.getClassNameForType(type.getSubType(), imports, objectClassName);
@@ -197,7 +197,7 @@ public class JsonMessageDeserializerGenerator extends JavaTypeGenerator {
 			fieldClass = ExchangeJavaGenUtil.getClassNameForType(type.getSubType(), imports, objectClassName);
 			return MapJsonFieldDeserializer.class.getSimpleName() 
 						+ "<" 
-						+ JavaCodeGenerationUtil.getClassNameWithoutPackage(fieldClass)
+						+ JavaCodeGenUtil.getClassNameWithoutPackage(fieldClass)
 						+ ">";
 		}
 	}

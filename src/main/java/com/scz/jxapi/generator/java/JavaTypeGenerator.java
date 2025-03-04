@@ -123,9 +123,9 @@ public class JavaTypeGenerator {
 	 */
 	public void appendMethod(String methodDeclaration, String methodBody, String javadoc) {
 		if (javadoc != null) {
-			appendToBody(JavaCodeGenerationUtil.generateJavaDoc(javadoc)).append("\n");
+			appendToBody(JavaCodeGenUtil.generateJavaDoc(javadoc)).append("\n");
 		}
-		appendToBody(methodDeclaration + " " + JavaCodeGenerationUtil.generateCodeBlock(methodBody));
+		appendToBody(methodDeclaration + " " + JavaCodeGenUtil.generateCodeBlock(methodBody));
 	}
 	
 	/**
@@ -139,14 +139,14 @@ public class JavaTypeGenerator {
 	 * @return Generated class simple name without package e.g. <code>Foo</code>
 	 */
 	public String getSimpleName() {
-		return JavaCodeGenerationUtil.getClassNameWithoutPackage(name);
+		return JavaCodeGenUtil.getClassNameWithoutPackage(name);
 	}
 	
 	/**
 	 * @return package name of generated class e.g. <code>com.x.y.z</code>
 	 */
 	public String getPackage() {
-		return JavaCodeGenerationUtil.getClassPackage(name);
+		return JavaCodeGenUtil.getClassPackage(name);
 	}
 	
 	/**
@@ -238,7 +238,7 @@ public class JavaTypeGenerator {
 			  .append("\n");
 		}
 		
-		sb.append(JavaCodeGenerationUtil.generateJavaDoc(description))
+		sb.append(JavaCodeGenUtil.generateJavaDoc(description))
 		  .append("\n")
 		  .append("@Generated(\"").append(getClass().getName()).append("\")\n")
 		  .append(typeDeclaration)
@@ -247,13 +247,13 @@ public class JavaTypeGenerator {
 		  .append(" ");
 		if (parentClassName != null) {
 			sb.append("extends ")
-			  .append(JavaCodeGenerationUtil.getClassNameWithoutPackage(parentClassName))
+			  .append(JavaCodeGenUtil.getClassNameWithoutPackage(parentClassName))
 			  .append(" ");
 		}
 		if (implementedInterfaces != null && !implementedInterfaces.isEmpty()) {
 			sb.append("implements ");
 			for (int i = 0; i < implementedInterfaces.size(); i++) {
-				sb.append(JavaCodeGenerationUtil.getClassNameWithoutPackage(implementedInterfaces.get(i)));
+				sb.append(JavaCodeGenUtil.getClassNameWithoutPackage(implementedInterfaces.get(i)));
 				if (i < implementedInterfaces.size() - 1) {
 					sb.append(", ");
 				}
@@ -261,7 +261,7 @@ public class JavaTypeGenerator {
 			sb.append(" ");
 		}
 		
-	    sb.append(JavaCodeGenerationUtil.generateCodeBlock(body.toString()));
+	    sb.append(JavaCodeGenUtil.generateCodeBlock(body.toString()));
 	    body.delete(0, body.length());
 		return sb.toString();
 	}

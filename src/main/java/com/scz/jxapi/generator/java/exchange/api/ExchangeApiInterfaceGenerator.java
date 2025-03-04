@@ -9,7 +9,7 @@ import com.scz.jxapi.exchange.descriptor.Field;
 import com.scz.jxapi.exchange.descriptor.RestEndpointDescriptor;
 import com.scz.jxapi.exchange.descriptor.Type;
 import com.scz.jxapi.exchange.descriptor.WebsocketEndpointDescriptor;
-import com.scz.jxapi.generator.java.JavaCodeGenerationUtil;
+import com.scz.jxapi.generator.java.JavaCodeGenUtil;
 import com.scz.jxapi.generator.java.JavaTypeGenerator;
 import com.scz.jxapi.generator.java.exchange.ExchangeJavaGenUtil;
 import com.scz.jxapi.netutils.rest.FutureRestResponse;
@@ -76,7 +76,7 @@ public class ExchangeApiInterfaceGenerator extends JavaTypeGenerator {
 		appendToBody(STRING)
 			.append(EXCHANGE_API_NAME_VARIABLE)
 			.append(" = ")
-			.append(JavaCodeGenerationUtil.getQuotedString(exchangeApiDescriptor.getName()))
+			.append(JavaCodeGenUtil.getQuotedString(exchangeApiDescriptor.getName()))
 			.append(";\n");
 		if (exchangeApiDescriptor.getRestEndpoints() != null) {
 			for (RestEndpointDescriptor restApi: exchangeApiDescriptor.getRestEndpoints()) {
@@ -113,7 +113,7 @@ public class ExchangeApiInterfaceGenerator extends JavaTypeGenerator {
 		appendToBody(STRING)
 			.append(apiNameVariable)
 			.append(" = ")
-			.append(JavaCodeGenerationUtil.getQuotedString(apiName))
+			.append(JavaCodeGenUtil.getQuotedString(apiName))
 			.append(";\n");
 	}
 
@@ -189,11 +189,11 @@ public class ExchangeApiInterfaceGenerator extends JavaTypeGenerator {
 		if (websocketApi.getDocUrl() != null) {
 			subscribeMethodDoc
 				.append("\n@see ")
-				.append(JavaCodeGenerationUtil.getHtmlLink(websocketApi.getDocUrl(), "Reference documentation"));
+				.append(JavaCodeGenUtil.getHtmlLink(websocketApi.getDocUrl(), "Reference documentation"));
 		}
 		
 		appendToBody("\n");
-		appendToBody(JavaCodeGenerationUtil.generateJavaDoc(subscribeMethodDoc.toString()));
+		appendToBody(JavaCodeGenUtil.generateJavaDoc(subscribeMethodDoc.toString()));
 		appendToBody("\n");
 		appendToBody(subscribeMethodSignature + ";\n\n");
 		
@@ -213,7 +213,7 @@ public class ExchangeApiInterfaceGenerator extends JavaTypeGenerator {
 				.append(", ");
 		}
 		unsubscribeMethodDoc.append("WebsocketListener)");
-		appendToBody(JavaCodeGenerationUtil.generateJavaDoc(unsubscribeMethodDoc.toString()))
+		appendToBody(JavaCodeGenUtil.generateJavaDoc(unsubscribeMethodDoc.toString()))
 			.append("\n")
 			.append(unsubscribeMethodSignature)
 			.append(";\n");
@@ -292,13 +292,13 @@ public class ExchangeApiInterfaceGenerator extends JavaTypeGenerator {
 		
 		if (restApi.getDocUrl() != null) {
 			javaDoc.append("\n@see ")
-				   .append(JavaCodeGenerationUtil.getHtmlLink(restApi.getDocUrl(), "Reference documentation"))
+				   .append(JavaCodeGenUtil.getHtmlLink(restApi.getDocUrl(), "Reference documentation"))
 			 	   .append("\n");
 		}
 		if (javaDoc.length() > 0) {
 			// Remove trailing '\n'
 			javaDoc.delete(javaDoc.length() - 1, javaDoc.length());
-			appendToBody(JavaCodeGenerationUtil.generateJavaDoc(javaDoc.toString())).append("\n");
+			appendToBody(JavaCodeGenUtil.generateJavaDoc(javaDoc.toString())).append("\n");
 		}
 		appendToBody(apiMethodSignature + ";\n");
 		addImport(FutureRestResponse.class);

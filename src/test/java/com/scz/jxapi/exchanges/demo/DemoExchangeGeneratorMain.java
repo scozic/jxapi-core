@@ -10,7 +10,7 @@ import org.slf4j.LoggerFactory;
 
 import com.scz.jxapi.exchange.descriptor.ExchangeDescriptor;
 import com.scz.jxapi.exchange.descriptor.parser.ExchangeDescriptorParser;
-import com.scz.jxapi.generator.java.JavaCodeGenerationUtil;
+import com.scz.jxapi.generator.java.JavaCodeGenUtil;
 import com.scz.jxapi.generator.java.exchange.ExchangeGeneratorMain;
 
 /**
@@ -32,7 +32,7 @@ public class DemoExchangeGeneratorMain {
 		Path srcTestJavaFolder = srcTestFolder.resolve(Paths.get("java"));
 		Path mainPackagePath = Paths.get(StringUtils.replace(exchangeDescriptor.getBasePackage(), ".", "/"));
 		Path genMainPackagesFolder = srcTestJavaFolder.resolve(mainPackagePath);
-		JavaCodeGenerationUtil.deletePath(genMainPackagesFolder);
+		JavaCodeGenUtil.deletePath(genMainPackagesFolder);
 		ExchangeGeneratorMain.generateExchangeWrapper(exchangeDescriptor, srcTestJavaFolder);
 		ExchangeGeneratorMain.generateExchangeWrapperDemos(exchangeDescriptor, srcTestJavaFolder);
 		ExchangeGeneratorMain.generateDemoPropertiesFileTemplate(exchangeDescriptor, srcTestResourcesFolder);

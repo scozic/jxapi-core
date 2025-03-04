@@ -10,7 +10,7 @@ import com.scz.jxapi.exchange.descriptor.CanonicalType;
 import com.scz.jxapi.exchange.descriptor.Field;
 import com.scz.jxapi.exchange.descriptor.Type;
 import com.scz.jxapi.generator.java.Imports;
-import com.scz.jxapi.generator.java.JavaCodeGenerationUtil;
+import com.scz.jxapi.generator.java.JavaCodeGenUtil;
 import com.scz.jxapi.generator.java.exchange.ExchangeJavaGenUtil;
 import com.scz.jxapi.util.CollectionUtil;
 import com.scz.jxapi.util.DeepCloneable;
@@ -40,8 +40,8 @@ public class PojoGenUtil {
 	 *         <code>&lt;POJO simple class name&gt; + 'Serializer'</code>.
 	 */
 	public static String getSerializerClassName(String pojoClassName) {
-		String pkg = StringUtils.substringBefore(JavaCodeGenerationUtil.getClassPackage(pojoClassName), ".pojo");
-		return pkg + ".serializers." + JavaCodeGenerationUtil.getClassNameWithoutPackage(pojoClassName) + "Serializer";
+		String pkg = StringUtils.substringBefore(JavaCodeGenUtil.getClassPackage(pojoClassName), ".pojo");
+		return pkg + ".serializers." + JavaCodeGenUtil.getClassNameWithoutPackage(pojoClassName) + "Serializer";
 	}
 	
 	/**

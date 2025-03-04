@@ -10,7 +10,7 @@ import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.ser.std.StdSerializer;
 import com.scz.jxapi.exchange.descriptor.Field;
 import com.scz.jxapi.exchange.descriptor.Type;
-import com.scz.jxapi.generator.java.JavaCodeGenerationUtil;
+import com.scz.jxapi.generator.java.JavaCodeGenUtil;
 import com.scz.jxapi.generator.java.JavaTypeGenerator;
 import com.scz.jxapi.generator.java.exchange.ExchangeJavaGenUtil;
 import com.scz.jxapi.util.EncodingUtil;
@@ -43,7 +43,7 @@ public class JsonPojoSerializerGenerator extends JavaTypeGenerator {
 		this.serializedTypeClassName = serializedTypeClassName;
 		this.fields = fields;
 		setTypeDeclaration("public class");
-		String simpleDeserializedClassName = JavaCodeGenerationUtil.getClassNameWithoutPackage(serializedTypeClassName);
+		String simpleDeserializedClassName = JavaCodeGenUtil.getClassNameWithoutPackage(serializedTypeClassName);
 		setParentClassName(StdSerializer.class.getName() + "<" + simpleDeserializedClassName + ">");
 		setDescription("Jackson JSON Serializer for " 
 						+ serializedTypeClassName 
@@ -63,22 +63,22 @@ public class JsonPojoSerializerGenerator extends JavaTypeGenerator {
 	}
 
 	private void generateConstructor() {
-		appendMethod("public " + getSimpleName() + "()", "super(" + JavaCodeGenerationUtil.getClassNameWithoutPackage(serializedTypeClassName) + ".class);");
+		appendMethod("public " + getSimpleName() + "()", "super(" + JavaCodeGenUtil.getClassNameWithoutPackage(serializedTypeClassName) + ".class);");
 		appendToBody("\n");	
 	}
 
 	private void generateDeserializeMethod() {
 		StringBuilder body = new StringBuilder();
-		String simpleDeserializedClassName = JavaCodeGenerationUtil.getClassNameWithoutPackage(serializedTypeClassName);
+		String simpleDeserializedClassName = JavaCodeGenUtil.getClassNameWithoutPackage(serializedTypeClassName);
 		body.append("gen.writeStartObject();\n");
 		fields.forEach(field -> {
 			Type type = ExchangeJavaGenUtil.getFieldType(field);
-			String getFieldValue = "value." + JavaCodeGenerationUtil.getGetAccessorMethodName(
+			String getFieldValue = "value." + JavaCodeGenUtil.getGetAccessorMethodName(
 					field.getName(),
 					type.getCanonicalType().name().toLowerCase(),
 					fields.stream().map(Field::getName).collect(Collectors.toList())) + "()";
 			body.append("if (").append(getFieldValue).append(" != null)");
-			body.append(JavaCodeGenerationUtil.generateCodeBlock(genWriteFieldInstruction(field, getFieldValue)));
+			body.append(JavaCodeGenUtil.generateCodeBlock(genWriteFieldInstruction(field, getFieldValue)));
 		});
 		body.append("gen.writeEndObject();");
 		appendMethod("@Override\npublic void serialize(" 

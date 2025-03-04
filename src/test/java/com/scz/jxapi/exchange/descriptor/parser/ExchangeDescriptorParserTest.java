@@ -21,7 +21,7 @@ import com.scz.jxapi.exchange.descriptor.RestEndpointDescriptor;
 import com.scz.jxapi.exchange.descriptor.Type;
 import com.scz.jxapi.exchange.descriptor.WebsocketEndpointDescriptor;
 import com.scz.jxapi.exchange.descriptor.WebsocketMessageTopicMatcherFieldDescriptor;
-import com.scz.jxapi.generator.java.JavaCodeGenerationUtil;
+import com.scz.jxapi.generator.java.JavaCodeGenUtil;
 import com.scz.jxapi.generator.java.exchange.ClassesGeneratorTestUtil;
 import com.scz.jxapi.netutils.rest.HttpMethod;
 
@@ -38,7 +38,7 @@ public class ExchangeDescriptorParserTest {
 	@After
 	public void tearDown() throws IOException {
 		if (srcFolder != null) {
-			JavaCodeGenerationUtil.deletePath(srcFolder);
+			JavaCodeGenUtil.deletePath(srcFolder);
 			srcFolder = null;
 		}
 	}

@@ -153,7 +153,7 @@ public class Imports implements Iterable<String> {
 				javaImport = false;
 				lineBreak = true;
 			}
-			if (currentPackage == null || !JavaCodeGenerationUtil.getClassPackage(im).equals(currentPackage)) {
+			if (currentPackage == null || !JavaCodeGenUtil.getClassPackage(im).equals(currentPackage)) {
 				if (lineBreak) {
 					s.append("\n");
 					lineBreak = false;

@@ -8,13 +8,13 @@ import org.junit.Assert;
 import org.junit.Test;
 
 /**
- * Unit test for {@link JavaCodeGenerationUtil}
+ * Unit test for {@link JavaCodeGenUtil}
  */
-public class JavaCodeGenerationUtilTest {
+public class JavaCodeGenUtilTest {
 	
 	@Test
 	public void testIndent() {
-		Assert.assertEquals("  Hello,\n  World\n  !", JavaCodeGenerationUtil.indent("Hello,\nWorld\n!"));
+		Assert.assertEquals("  Hello,\n  World\n  !", JavaCodeGenUtil.indent("Hello,\nWorld\n!"));
 	}
 	
 	@Test
@@ -30,7 +30,7 @@ public class JavaCodeGenerationUtilTest {
 				+ "    System.out.println(\"Hello #\" + i);\n"
 				+ "  }\n"
 				+ "}\n";
-		Assert.assertEquals(expected, JavaCodeGenerationUtil.generateCodeBlock(content));
+		Assert.assertEquals(expected, JavaCodeGenUtil.generateCodeBlock(content));
 	}
 
 	@Test
@@ -40,137 +40,137 @@ public class JavaCodeGenerationUtilTest {
 						+ " * Some piece of\n"
 						+ " *  Javadoc\n"
 						+ " */";
-		Assert.assertEquals(expected, JavaCodeGenerationUtil.generateJavaDoc(content));
+		Assert.assertEquals(expected, JavaCodeGenUtil.generateJavaDoc(content));
 	}
 	
 	@Test
 	public void testGenerateJavaDocNullContent() {
-		Assert.assertEquals("", JavaCodeGenerationUtil.generateJavaDoc(null));
+		Assert.assertEquals("", JavaCodeGenUtil.generateJavaDoc(null));
 	}
 	
 	@Test
 	public void testFirstLetterToUpperCase() {
-		Assert.assertEquals("Hello", JavaCodeGenerationUtil.firstLetterToUpperCase("hello"));
+		Assert.assertEquals("Hello", JavaCodeGenUtil.firstLetterToUpperCase("hello"));
 	}
 	
 	@Test
 	public void testFirstLetterToUpperCaseNullString() {
-		Assert.assertEquals(null, JavaCodeGenerationUtil.firstLetterToUpperCase(null));
+		Assert.assertEquals(null, JavaCodeGenUtil.firstLetterToUpperCase(null));
 	}
 	
 	@Test
 	public void testFirstLetterToUpperCaseEmptyString() {
-		Assert.assertEquals("", JavaCodeGenerationUtil.firstLetterToUpperCase(""));
+		Assert.assertEquals("", JavaCodeGenUtil.firstLetterToUpperCase(""));
 	}
 	
 	@Test
 	public void testFirstLetterToLowerCase() {
-		Assert.assertEquals("hellO", JavaCodeGenerationUtil.firstLetterToLowerCase("HellO"));
+		Assert.assertEquals("hellO", JavaCodeGenUtil.firstLetterToLowerCase("HellO"));
 	}
 	
 	@Test
 	public void testFirstLetterToLowerCaseNullString() {
-		Assert.assertEquals(null, JavaCodeGenerationUtil.firstLetterToLowerCase(null));
+		Assert.assertEquals(null, JavaCodeGenUtil.firstLetterToLowerCase(null));
 	}
 	
 	@Test
 	public void testFirstLetterToLowerCaseEmptyString() {
-		Assert.assertEquals("", JavaCodeGenerationUtil.firstLetterToLowerCase(""));
+		Assert.assertEquals("", JavaCodeGenUtil.firstLetterToLowerCase(""));
 	}
 	
 	@Test
 	public void testGetStaticVariableName() {
-		Assert.assertNull(JavaCodeGenerationUtil.getStaticVariableName(null));
-		Assert.assertEquals("", JavaCodeGenerationUtil.getStaticVariableName(""));
-		Assert.assertEquals("X", JavaCodeGenerationUtil.getStaticVariableName("x"));
-		Assert.assertEquals("MY_VARIABLE_NAME0", JavaCodeGenerationUtil.getStaticVariableName("myVariableName0"));
+		Assert.assertNull(JavaCodeGenUtil.getStaticVariableName(null));
+		Assert.assertEquals("", JavaCodeGenUtil.getStaticVariableName(""));
+		Assert.assertEquals("X", JavaCodeGenUtil.getStaticVariableName("x"));
+		Assert.assertEquals("MY_VARIABLE_NAME0", JavaCodeGenUtil.getStaticVariableName("myVariableName0"));
 	}
 	
 	@Test
 	public void testClassPackage() {
-		Assert.assertEquals("com.x.y.z", JavaCodeGenerationUtil.getClassPackage("com.x.y.z.Foo"));
+		Assert.assertEquals("com.x.y.z", JavaCodeGenUtil.getClassPackage("com.x.y.z.Foo"));
 	}
 	
 	@Test
 	public void testClassPackageDefaultPackage() {
-		Assert.assertEquals("", JavaCodeGenerationUtil.getClassPackage("Foo"));
+		Assert.assertEquals("", JavaCodeGenUtil.getClassPackage("Foo"));
 	}
 	
 	@Test
 	public void testClassPackageNullClassPackage() {
-		Assert.assertEquals("", JavaCodeGenerationUtil.getClassPackage(null));
+		Assert.assertEquals("", JavaCodeGenUtil.getClassPackage(null));
 	}
 	
 	@Test
 	public void testGetAccessorMethodName() {
-		Assert.assertEquals("setBar", JavaCodeGenerationUtil.getAccessorMethodName("set", "bar", List.of()));
+		Assert.assertEquals("setBar", JavaCodeGenUtil.getAccessorMethodName("set", "bar", List.of()));
 	}
 	
 	@Test
 	public void testGetAccessorMethodNameNullFieldList() {
-		Assert.assertEquals("setBar", JavaCodeGenerationUtil.getAccessorMethodName("set", "bar", null));
+		Assert.assertEquals("setBar", JavaCodeGenUtil.getAccessorMethodName("set", "bar", null));
 	}
 	
 	@Test
 	public void testGetAccessorMethodNameSameFieldDifferentCaseInFieldList() {
-		Assert.assertEquals("setbAr", JavaCodeGenerationUtil.getAccessorMethodName("set", "bAr", List.of("BAR")));
+		Assert.assertEquals("setbAr", JavaCodeGenUtil.getAccessorMethodName("set", "bAr", List.of("BAR")));
 	}
 	
 	@Test
 	public void testGetAccessorMethodNameSameFieldInFieldList() {
-		Assert.assertEquals("setBar", JavaCodeGenerationUtil.getAccessorMethodName("set", "bar", List.of("bar")));
+		Assert.assertEquals("setBar", JavaCodeGenUtil.getAccessorMethodName("set", "bar", List.of("bar")));
 	}
 	
 	@Test
 	public void testGetGetAccessorMethodName_StringFieldType() {
-		Assert.assertEquals("getBar", JavaCodeGenerationUtil.getGetAccessorMethodName("bar", "String", List.of()));
+		Assert.assertEquals("getBar", JavaCodeGenUtil.getGetAccessorMethodName("bar", "String", List.of()));
 	}
 	
 	@Test
 	public void testGetGetAccessorMethodName_booleanFieldType() {
-		Assert.assertEquals("isBar", JavaCodeGenerationUtil.getGetAccessorMethodName("bar", "boolean", List.of()));
+		Assert.assertEquals("isBar", JavaCodeGenUtil.getGetAccessorMethodName("bar", "boolean", List.of()));
 	}
 	
 	@Test
 	public void testGetGetAccessorMethodName_JavaLangBooleanFieldType() {
-		Assert.assertEquals("isBar", JavaCodeGenerationUtil.getGetAccessorMethodName("bar", Boolean.class.getName(), List.of()));
+		Assert.assertEquals("isBar", JavaCodeGenUtil.getGetAccessorMethodName("bar", Boolean.class.getName(), List.of()));
 	}
 	
 	@Test
 	public void testGetGetAccessorMethodName_BooleanFieldType() {
-		Assert.assertEquals("isBar", JavaCodeGenerationUtil.getGetAccessorMethodName("bar", Boolean.class.getSimpleName(), List.of()));
+		Assert.assertEquals("isBar", JavaCodeGenUtil.getGetAccessorMethodName("bar", Boolean.class.getSimpleName(), List.of()));
 	}
 	
 	@Test
 	public void testGetClassNameWithoutPackage_FullClassName() {
-		Assert.assertEquals("Bar", JavaCodeGenerationUtil.getClassNameWithoutPackage("com.x.y.z.Bar"));
+		Assert.assertEquals("Bar", JavaCodeGenUtil.getClassNameWithoutPackage("com.x.y.z.Bar"));
 	}
 	
 	@Test
 	public void testGetClassNameWithoutPackage_NullClassName() {
-		Assert.assertEquals(null, JavaCodeGenerationUtil.getClassNameWithoutPackage(null));
+		Assert.assertEquals(null, JavaCodeGenUtil.getClassNameWithoutPackage(null));
 	}
 	
 	@Test
 	public void testGetClassNameWithoutPackage_SimpleClassName() {
-		Assert.assertEquals("Bar", JavaCodeGenerationUtil.getClassNameWithoutPackage("Bar"));
+		Assert.assertEquals("Bar", JavaCodeGenUtil.getClassNameWithoutPackage("Bar"));
 	}
 	
 	@Test
 	public void testGetClassNameWithoutPackage_SimpleGenericClassNameWithFullClassNameVariableType() {
-		Assert.assertEquals("Bar<com.x.y.z.Foo>", JavaCodeGenerationUtil.getClassNameWithoutPackage("Bar<com.x.y.z.Foo>"));
+		Assert.assertEquals("Bar<com.x.y.z.Foo>", JavaCodeGenUtil.getClassNameWithoutPackage("Bar<com.x.y.z.Foo>"));
 	}
 	
 	@Test
 	public void testGetClassNameWithoutPackage_FullGenericClassNameWithFullClassNameVariableType() {
-		Assert.assertEquals("Bar<com.x.y.z.Foo>", JavaCodeGenerationUtil.getClassNameWithoutPackage("com.x.y.z.Bar<com.x.y.z.Foo>"));
+		Assert.assertEquals("Bar<com.x.y.z.Foo>", JavaCodeGenUtil.getClassNameWithoutPackage("com.x.y.z.Bar<com.x.y.z.Foo>"));
 	}
 	
 	@Test
 	public void testDeletePathPathDoesNotExist() throws IOException {
 		File dir = new File("tmpDir" + Math.random());
 		Assert.assertFalse(dir.exists());
-		JavaCodeGenerationUtil.deletePath(dir.toPath());
+		JavaCodeGenUtil.deletePath(dir.toPath());
 		Assert.assertFalse(new File(dir.getName()).exists());
 	}
 	
@@ -187,7 +187,7 @@ public class JavaCodeGenerationUtilTest {
 		f2.createNewFile();
 		File f3 = new File(subDir, "file3");
 		f3.createNewFile();
-		JavaCodeGenerationUtil.deletePath(dir.toPath());
+		JavaCodeGenUtil.deletePath(dir.toPath());
 		Assert.assertFalse(new File(dir.getName()).exists());
 	}
 	
@@ -195,7 +195,7 @@ public class JavaCodeGenerationUtilTest {
 	public void testGenerateSlf4jLoggerDeclaration() {
 		JavaTypeGenerator gen = new JavaTypeGenerator("com.foo.Bar");
 		gen.setTypeDeclaration("class");
-		JavaCodeGenerationUtil.generateSlf4jLoggerDeclaration(gen);
+		JavaCodeGenUtil.generateSlf4jLoggerDeclaration(gen);
 		Assert.assertEquals("package com.foo;\n"
 				+ "\n"
 				+ "import javax.annotation.processing.Generated;\n"
@@ -212,34 +212,34 @@ public class JavaCodeGenerationUtilTest {
 	
 	@Test
 	public void testGetClassWithoutGenericType_NoGenericType() {
-		Assert.assertEquals("com.x.y.z.Bar", JavaCodeGenerationUtil.getClassNameWithoutGenericType("com.x.y.z.Bar"));
+		Assert.assertEquals("com.x.y.z.Bar", JavaCodeGenUtil.getClassNameWithoutGenericType("com.x.y.z.Bar"));
 	}
 	
 	@Test
 	public void testGetClassWithoutGenericType_GenericType() {
-		Assert.assertEquals("com.x.y.z.Bar", JavaCodeGenerationUtil.getClassNameWithoutGenericType("com.x.y.z.Bar<java.util.List<com.x.y.z.Foo>>"));
+		Assert.assertEquals("com.x.y.z.Bar", JavaCodeGenUtil.getClassNameWithoutGenericType("com.x.y.z.Bar<java.util.List<com.x.y.z.Foo>>"));
 	}
 
 	@Test
 	public void testGetClassNameWithoutGenericType_NullGenericType() {
-		Assert.assertNull(JavaCodeGenerationUtil.getClassNameWithoutGenericType(null));
+		Assert.assertNull(JavaCodeGenUtil.getClassNameWithoutGenericType(null));
 	}
 	
 	@Test
 	public void testGetGenericType_NoGenericType() {
-		Assert.assertNull(JavaCodeGenerationUtil.getGenericType("com.x.y.z.Bar"));
+		Assert.assertNull(JavaCodeGenUtil.getGenericType("com.x.y.z.Bar"));
 	}
 	
 	@Test
 	public void testGetGenericType_GenericType() {
 		Assert.assertEquals("java.util.List<com.x.y.z.Foo>", 
-							JavaCodeGenerationUtil.getGenericType("com.x.y.z.Bar<java.util.List<com.x.y.z.Foo>>"));
+							JavaCodeGenUtil.getGenericType("com.x.y.z.Bar<java.util.List<com.x.y.z.Foo>>"));
 	}
 	
 	@Test
 	public void testGetGenericType_InvalidGenericType() {
 		try {
-			JavaCodeGenerationUtil.getGenericType("com.x.y.z.Bar<");
+			JavaCodeGenUtil.getGenericType("com.x.y.z.Bar<");
 		} catch(IllegalArgumentException ex) {
 			return;
 		}
@@ -248,29 +248,29 @@ public class JavaCodeGenerationUtilTest {
 
 	@Test
 	public void testGetGenericType_NullGenericType() {
-		Assert.assertNull(JavaCodeGenerationUtil.getGenericType(null));
+		Assert.assertNull(JavaCodeGenUtil.getGenericType(null));
 	}
 	
 	@Test
 	public void testGetQuotedString_NullString() {
-		Assert.assertEquals(null, JavaCodeGenerationUtil.getQuotedString(null));
+		Assert.assertEquals(null, JavaCodeGenUtil.getQuotedString(null));
 	}
 	
 	@Test
 	public void testGetQuotedString_EmptyString() {
-		Assert.assertEquals("\"\"", JavaCodeGenerationUtil.getQuotedString(""));
+		Assert.assertEquals("\"\"", JavaCodeGenUtil.getQuotedString(""));
 	}
 	
 	@Test
 	public void testGetQuotedString_StringWithQuotes() {
 		Assert.assertEquals("\"Hello \\\"World\\\"\"", 
-							JavaCodeGenerationUtil.getQuotedString("Hello \"World\""));
+							JavaCodeGenUtil.getQuotedString("Hello \"World\""));
 	}
 	
 	@Test
 	public void testGetHtmlLink() {
 		Assert.assertEquals("<a href=\"https://scam.org\">Click here</a>", 
-							JavaCodeGenerationUtil.getHtmlLink("https://scam.org", "Click here"));
+							JavaCodeGenUtil.getHtmlLink("https://scam.org", "Click here"));
 	}
 
 	@Test
@@ -284,7 +284,7 @@ public class JavaCodeGenerationUtilTest {
 								+ "finally {\n"
 								+ "  return null;\n"
 								+ "}\n", 
-							JavaCodeGenerationUtil.generateTryBlock(
+							JavaCodeGenUtil.generateTryBlock(
 								"throw new IOException();", 
 								"log.error(ex);", 
 								"IOException ex", 
@@ -300,7 +300,7 @@ public class JavaCodeGenerationUtilTest {
 								+ "finally {\n"
 								+ "  return null;\n"
 								+ "}\n", 
-							JavaCodeGenerationUtil.generateTryBlock(
+							JavaCodeGenUtil.generateTryBlock(
 								"throw new IOException();", 
 								null, 
 								null, 
@@ -316,7 +316,7 @@ public class JavaCodeGenerationUtilTest {
 								+ "catch (IOException ex) {\n"
 								+ "  log.error(ex);\n"
 								+ "}\n", 
-							JavaCodeGenerationUtil.generateTryBlock(
+							JavaCodeGenUtil.generateTryBlock(
 								"throw new IOException();", 
 								"log.error(ex);", 
 								"IOException ex", 
@@ -326,7 +326,7 @@ public class JavaCodeGenerationUtilTest {
 
 	@Test(expected = IllegalArgumentException.class)
 	public void testGenerateTryBlock_TryCatchMissingCatchException() {
-		JavaCodeGenerationUtil.generateTryBlock(
+		JavaCodeGenUtil.generateTryBlock(
 				"throw new IOException();",
 				"log.error(ex);",
 				null,
@@ -336,29 +336,29 @@ public class JavaCodeGenerationUtilTest {
 	
 	@Test
 	public void testGetMethodJavadocArgumentDeclaration_NullArgClass() {
-		Assert.assertEquals("", JavaCodeGenerationUtil.getMethodJavadocArgumentDeclaration(null));
+		Assert.assertEquals("", JavaCodeGenUtil.getMethodJavadocArgumentDeclaration(null));
 	}
 	
 	@Test
 	public void testGetMethodJavadocArgumentDeclaration_SimpleArgClass() {
-		Assert.assertEquals(Integer.class.getName(), JavaCodeGenerationUtil.getMethodJavadocArgumentDeclaration(Integer.class.getName()));
+		Assert.assertEquals(Integer.class.getName(), JavaCodeGenUtil.getMethodJavadocArgumentDeclaration(Integer.class.getName()));
 	}
 	
 	@Test
 	public void testGetMethodJavadocArgumentDeclaration_GenericArgClass() {
-		Assert.assertEquals("List", JavaCodeGenerationUtil.getMethodJavadocArgumentDeclaration("List<Map<String, Integer>>"));
+		Assert.assertEquals("List", JavaCodeGenUtil.getMethodJavadocArgumentDeclaration("List<Map<String, Integer>>"));
 	}
 	
 	@Test
 	public void testGetClassJavadocUrl() {
 		Assert.assertEquals("https://docs.oracle.com/javase/8/docs/api/java/util/List.html", 
-							JavaCodeGenerationUtil.getClassJavadocUrl("https://docs.oracle.com/javase/8/docs/api/", List.class.getName()));
+							JavaCodeGenUtil.getClassJavadocUrl("https://docs.oracle.com/javase/8/docs/api/", List.class.getName()));
 	}
 	
 	@Test
 	public void testGetClassUrl() {
 		Assert.assertEquals("https://docs.oracle.com/javase/8/docs/api/java/util/List.html", 
-				JavaCodeGenerationUtil.getClassUrl("https://docs.oracle.com/javase/8/docs/api/", List.class.getName(), ".html"));
+				JavaCodeGenUtil.getClassUrl("https://docs.oracle.com/javase/8/docs/api/", List.class.getName(), ".html"));
 	}
 }
 

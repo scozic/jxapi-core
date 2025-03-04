@@ -12,7 +12,7 @@ import org.junit.Test;
 import com.scz.jxapi.exchange.descriptor.ExchangeApiDescriptor;
 import com.scz.jxapi.exchange.descriptor.ExchangeDescriptor;
 import com.scz.jxapi.exchange.descriptor.parser.ExchangeDescriptorParser;
-import com.scz.jxapi.generator.java.JavaCodeGenerationUtil;
+import com.scz.jxapi.generator.java.JavaCodeGenUtil;
 import com.scz.jxapi.generator.java.exchange.ClassesGeneratorTestUtil;
 
 /**
@@ -25,7 +25,7 @@ public class ExchangeReameMdGeneratorTest {
 	@After
 	public void tearDown() throws IOException {
 		if (srcFolder != null) {
-			JavaCodeGenerationUtil.deletePath(srcFolder);
+			JavaCodeGenUtil.deletePath(srcFolder);
 			srcFolder = null;
 		}
 	}

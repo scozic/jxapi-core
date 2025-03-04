@@ -16,7 +16,7 @@ import com.scz.jxapi.exchange.descriptor.RestEndpointDescriptor;
 import com.scz.jxapi.exchange.descriptor.Type;
 import com.scz.jxapi.exchange.descriptor.WebsocketEndpointDescriptor;
 import com.scz.jxapi.generator.java.Imports;
-import com.scz.jxapi.generator.java.JavaCodeGenerationUtil;
+import com.scz.jxapi.generator.java.JavaCodeGenUtil;
 import com.scz.jxapi.generator.java.exchange.ExchangeJavaGenUtil;
 import com.scz.jxapi.netutils.deserialization.RawBigDecimalMessageDeserializer;
 import com.scz.jxapi.netutils.deserialization.RawBooleanMessageDeserializer;
@@ -165,12 +165,12 @@ public class ExchangeApiGenUtil {
 		if (objectName != null) {
 			return exchangeDescriptor.getBasePackage() + "." 
 					+ exchangeApiDescriptor.getName().toLowerCase() + ".pojo." 
-					+ JavaCodeGenerationUtil.firstLetterToUpperCase(objectName);
+					+ JavaCodeGenUtil.firstLetterToUpperCase(objectName);
 		}
 		return exchangeDescriptor.getBasePackage() + "." + exchangeApiDescriptor.getName().toLowerCase() + ".pojo."
-				+ JavaCodeGenerationUtil.firstLetterToUpperCase(exchangeDescriptor.getName()) 
-				+ JavaCodeGenerationUtil.firstLetterToUpperCase(exchangeApiDescriptor.getName())
-				+ JavaCodeGenerationUtil.firstLetterToUpperCase(endpointName)
+				+ JavaCodeGenUtil.firstLetterToUpperCase(exchangeDescriptor.getName()) 
+				+ JavaCodeGenUtil.firstLetterToUpperCase(exchangeApiDescriptor.getName())
+				+ JavaCodeGenUtil.firstLetterToUpperCase(endpointName)
 				+ suffix;
 	}
 	
@@ -180,7 +180,7 @@ public class ExchangeApiGenUtil {
 	 *         calling given REST endpoint
 	 */
 	public static String getRestApiMethodName(RestEndpointDescriptor restEndpointDescriptor) {
-		return JavaCodeGenerationUtil.firstLetterToLowerCase(restEndpointDescriptor.getName());
+		return JavaCodeGenUtil.firstLetterToLowerCase(restEndpointDescriptor.getName());
 	}
 
 	/**
@@ -189,7 +189,7 @@ public class ExchangeApiGenUtil {
 	 * @return expected name for a websocket endpoint subscription method, like <code>subscribeMyEndpoint</code>
 	 */
 	public static String getWebsocketSubscribeMethodName(WebsocketEndpointDescriptor websocketEndpointDescriptor) {
-		return "subscribe" + JavaCodeGenerationUtil.firstLetterToUpperCase(websocketEndpointDescriptor.getName());
+		return "subscribe" + JavaCodeGenUtil.firstLetterToUpperCase(websocketEndpointDescriptor.getName());
 	}
 
 	/**
@@ -198,7 +198,7 @@ public class ExchangeApiGenUtil {
 	 * @return expected name for a websocket endpoint unsubscription method, like <code>unsubscribeMyEndpoint</code>
 	 */
 	public static String getWebsocketUnsubscribeMethodName(WebsocketEndpointDescriptor websocketEndpointDescriptor) {
-		return "unsubscribe" + JavaCodeGenerationUtil.firstLetterToUpperCase(websocketEndpointDescriptor.getName());
+		return "unsubscribe" + JavaCodeGenUtil.firstLetterToUpperCase(websocketEndpointDescriptor.getName());
 	}
 
 	/**
@@ -351,11 +351,11 @@ public class ExchangeApiGenUtil {
 	public static String getFieldObjectClassName(Field field, 
 												 String enclosingClassName) {
 		if (field.getObjectName() != null) {
-			 return JavaCodeGenerationUtil.getClassPackage(enclosingClassName) 
+			 return JavaCodeGenUtil.getClassPackage(enclosingClassName) 
 					 		+ "." 
-					 		+ JavaCodeGenerationUtil.firstLetterToUpperCase(field.getObjectName());
+					 		+ JavaCodeGenUtil.firstLetterToUpperCase(field.getObjectName());
 		 } else {
-			 return enclosingClassName + JavaCodeGenerationUtil.firstLetterToUpperCase(field.getName());
+			 return enclosingClassName + JavaCodeGenUtil.firstLetterToUpperCase(field.getName());
 		 }
 	}
 
@@ -392,7 +392,7 @@ public class ExchangeApiGenUtil {
 		if (leafSubType.getCanonicalType().isPrimitive) {
 			return leafSubType.getCanonicalType().typeClass.getName();
 		}
-		String pkg = JavaCodeGenerationUtil.getClassPackage(enclosingClassName) + ".";
+		String pkg = JavaCodeGenUtil.getClassPackage(enclosingClassName) + ".";
 		if (objectName != null) {
 			return pkg + objectName;
 		}
@@ -401,7 +401,7 @@ public class ExchangeApiGenUtil {
 				  leafSubType,
 				  new Imports(),
 				  enclosingClassName) 
-				+ JavaCodeGenerationUtil.firstLetterToUpperCase(fieldName);
+				+ JavaCodeGenUtil.firstLetterToUpperCase(fieldName);
 	}
 
 	/**
@@ -489,7 +489,7 @@ public class ExchangeApiGenUtil {
 	 * @return the static variable name for the REST endpoint name.
 	 */
 	public static String getRestEndpointNameStaticVariable(String restEndpointName) {
-		return JavaCodeGenerationUtil.getStaticVariableName(restEndpointName) + "_REST_API";
+		return JavaCodeGenUtil.getStaticVariableName(restEndpointName) + "_REST_API";
 	}
 
 	/**
@@ -568,7 +568,7 @@ public class ExchangeApiGenUtil {
 	 * @return the static variable name for the Websocket endpoint name.
 	 */
 	public static String getWebsocketEndpointNameStaticVariable(String websocketEndpointName) {
-		return JavaCodeGenerationUtil.getStaticVariableName(websocketEndpointName) + "_WS_API";
+		return JavaCodeGenUtil.getStaticVariableName(websocketEndpointName) + "_WS_API";
 	}
 
 	/**
@@ -745,7 +745,7 @@ public class ExchangeApiGenUtil {
 	 * @return The expected static variable name for the REST endpoint URL, for instance <code>MY_REST_ENDPOINT_URL</code>
 	 */
 	public static String getRestEndpointUrlStaticVariableName(RestEndpointDescriptor restEndpointDescriptor) {
-		return JavaCodeGenerationUtil.getStaticVariableName(restEndpointDescriptor.getName()) + "_URL";
+		return JavaCodeGenUtil.getStaticVariableName(restEndpointDescriptor.getName()) + "_URL";
 	}
 	
 		/**
@@ -754,7 +754,7 @@ public class ExchangeApiGenUtil {
 	 * @return The expected static variable name for the websocket URL, for instance <code>MY_API_WS_URL</code>
 	 */
 	public static String getWebsocketUrlStaticVariableName(ExchangeApiDescriptor exchangeApiDescriptor) {
-		return JavaCodeGenerationUtil.getStaticVariableName(exchangeApiDescriptor.getName()) + "_WS_URL";
+		return JavaCodeGenUtil.getStaticVariableName(exchangeApiDescriptor.getName()) + "_WS_URL";
 	}
 	
 	/**
@@ -777,14 +777,14 @@ public class ExchangeApiGenUtil {
 		
 		StringBuilder s = new StringBuilder()
 				.append("\n")
-				.append(JavaCodeGenerationUtil.generateJavaDoc(javadoc.toString()))
+				.append(JavaCodeGenUtil.generateJavaDoc(javadoc.toString()))
 				.append("\npublic static final String ")
 				.append(ExchangeJavaGenUtil.HTTP_URL_STATIC_VARIABLE)
 				.append(" = ");
 		String url = "";
 		String apiUrl = exchangeApiDescriptor.getHttpUrl();
 		if (apiUrl != null) {
-			url = JavaCodeGenerationUtil.getQuotedString(apiUrl);
+			url = JavaCodeGenUtil.getQuotedString(apiUrl);
 			if (EncodingUtil.isAbsoluteUrl(apiUrl)) {
 				return s.append(url).append(";").toString();
 			}
@@ -794,7 +794,7 @@ public class ExchangeApiGenUtil {
 		if (exchangeUrl != null) {
 			String exchangeInterfaceImplementationName = ExchangeJavaGenUtil.getExchangeInterfaceImplementationName(exchangeDescriptor);
 			imports.add(exchangeInterfaceImplementationName);
-			String exchangeUrlVar = JavaCodeGenerationUtil.getClassNameWithoutPackage(exchangeInterfaceImplementationName) 
+			String exchangeUrlVar = JavaCodeGenUtil.getClassNameWithoutPackage(exchangeInterfaceImplementationName) 
 								 + "."  
 								 + ExchangeJavaGenUtil.HTTP_URL_STATIC_VARIABLE;
 			if (!url.isEmpty()) {
@@ -831,7 +831,7 @@ public class ExchangeApiGenUtil {
 		String restUrl = restEndpointDescriptor.getUrl();
 		String url = "";
 		if (restUrl != null) {
-			url =  JavaCodeGenerationUtil.getQuotedString(restUrl);
+			url =  JavaCodeGenUtil.getQuotedString(restUrl);
 			if (EncodingUtil.isAbsoluteUrl(restUrl)) {
 				return s.append(url).append(";").toString();
 			}
@@ -874,14 +874,14 @@ public class ExchangeApiGenUtil {
 				.append(exchangeApiDescriptor.getName())
 				.append("</i> API Websocket endpoints");
 		StringBuilder s = new StringBuilder()
-				.append(JavaCodeGenerationUtil.generateJavaDoc(javadoc.toString()))
+				.append(JavaCodeGenUtil.generateJavaDoc(javadoc.toString()))
 				.append("\npublic static final String ")
 				.append(ExchangeJavaGenUtil.WEBSOCKET_URL_STATIC_VARIABLE)
 				.append(" = ");
 		String url = "";
 		String apiUrl = exchangeApiDescriptor.getWebsocketUrl();
 		if (apiUrl != null) {
-			String apiUrlQuoted = JavaCodeGenerationUtil.getQuotedString(apiUrl);
+			String apiUrlQuoted = JavaCodeGenUtil.getQuotedString(apiUrl);
 			url = apiUrlQuoted;
 			if (EncodingUtil.isAbsoluteUrl(apiUrl)) {
 				return s.append(url).append(";").toString();
@@ -892,7 +892,7 @@ public class ExchangeApiGenUtil {
 		if (exchangeUrl != null) {
 			String exchangeInterfaceName = ExchangeJavaGenUtil.getExchangeInterfaceImplementationName(exchangeDescriptor);
 			imports.add(exchangeInterfaceName);
-			String exchangeUrlVar = JavaCodeGenerationUtil.getClassNameWithoutPackage(exchangeInterfaceName) 
+			String exchangeUrlVar = JavaCodeGenUtil.getClassNameWithoutPackage(exchangeInterfaceName) 
 									 + "."  
 									 + ExchangeJavaGenUtil.WEBSOCKET_URL_STATIC_VARIABLE;
 			if (!url.isEmpty()) {

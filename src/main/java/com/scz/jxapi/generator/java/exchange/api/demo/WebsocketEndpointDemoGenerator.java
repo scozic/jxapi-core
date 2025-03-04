@@ -11,7 +11,7 @@ import com.scz.jxapi.exchange.descriptor.ExchangeDescriptor;
 import com.scz.jxapi.exchange.descriptor.Field;
 import com.scz.jxapi.exchange.descriptor.Type;
 import com.scz.jxapi.exchange.descriptor.WebsocketEndpointDescriptor;
-import com.scz.jxapi.generator.java.JavaCodeGenerationUtil;
+import com.scz.jxapi.generator.java.JavaCodeGenUtil;
 import com.scz.jxapi.generator.java.JavaTypeGenerator;
 import com.scz.jxapi.generator.java.exchange.ExchangeJavaGenUtil;
 import com.scz.jxapi.generator.java.exchange.api.ExchangeApiGenUtil;
@@ -87,7 +87,7 @@ public class WebsocketEndpointDemoGenerator extends JavaTypeGenerator {
 		this.exchangeDescriptor = exchangeDescriptor;
 		this.request = ExchangeApiGenUtil.resolveFieldProperties(exchangeApiDescriptor, websocketApi.getRequest());
 		this.exchangeClassName = ExchangeJavaGenUtil.getExchangeInterfaceName(exchangeDescriptor);
-		this.exchangeSimpleClassName = JavaCodeGenerationUtil.getClassNameWithoutPackage(exchangeClassName);
+		this.exchangeSimpleClassName = JavaCodeGenUtil.getClassNameWithoutPackage(exchangeClassName);
 		subscribeMethodName = ExchangeApiGenUtil.getWebsocketSubscribeMethodName(websocketApi);
 		unsubscribeMethodName = ExchangeApiGenUtil.getWebsocketUnsubscribeMethodName(websocketApi);
 		setTypeDeclaration("public class");
@@ -111,7 +111,7 @@ public class WebsocketEndpointDemoGenerator extends JavaTypeGenerator {
 			this.requestDataType = null;
 		}
 		this.apiInterfaceClassName = ExchangeJavaGenUtil.getApiInterfaceClassName(exchangeDescriptor, exchangeApiDescriptor);
-		this.simpleApiClassName = JavaCodeGenerationUtil.getClassNameWithoutPackage(apiInterfaceClassName);
+		this.simpleApiClassName = JavaCodeGenUtil.getClassNameWithoutPackage(apiInterfaceClassName);
 		addImport(apiInterfaceClassName);
 		setDescription(getClassJavadoc());
 		this.fullStreamName = exchangeDescriptor.getName() + " " 
@@ -136,7 +136,7 @@ public class WebsocketEndpointDemoGenerator extends JavaTypeGenerator {
 	
 	@Override
 	public String generate() {
-		JavaCodeGenerationUtil.generateSlf4jLoggerDeclaration(this);
+		JavaCodeGenUtil.generateSlf4jLoggerDeclaration(this);
 		if (hasArguments) {
 			this.appendToBody(EndpointDemoGenUtil.generateFieldCreationMethod(
 								request,  
@@ -187,12 +187,12 @@ public class WebsocketEndpointDemoGenerator extends JavaTypeGenerator {
 	private String getApiInterfaceSubscribeMethodJavadocLink() {
 		StringBuilder javadoc = new StringBuilder()
 				.append("{@link ")
-				.append(JavaCodeGenerationUtil.getClassNameWithoutPackage(apiInterfaceClassName))
+				.append(JavaCodeGenUtil.getClassNameWithoutPackage(apiInterfaceClassName))
 				.append("#")
 				.append(subscribeMethodName)
 				.append("(");
 		if (hasArguments) {
-			javadoc.append(JavaCodeGenerationUtil.getMethodArgumentJavadoc(requestDataType, requestClassName))
+			javadoc.append(JavaCodeGenUtil.getMethodArgumentJavadoc(requestDataType, requestClassName))
 				   .append(", ");
 		}
 		return javadoc.append(WebsocketListener.class.getName())
@@ -252,7 +252,7 @@ public class WebsocketEndpointDemoGenerator extends JavaTypeGenerator {
 					   .append(");\n");
 		}
 		bodyBuilder.append("if (apiObserver != null) ")
-				   .append(JavaCodeGenerationUtil.generateCodeBlock(API_VAR + ".subscribeObserver(apiObserver);"));
+				   .append(JavaCodeGenUtil.generateCodeBlock(API_VAR + ".subscribeObserver(apiObserver);"));
 		bodyBuilder.append("String subId = api.")
 			.append(subscribeMethodName)
 			.append("(");
@@ -275,7 +275,7 @@ public class WebsocketEndpointDemoGenerator extends JavaTypeGenerator {
 			.append(DELAY_BEFORE_EXIT_VAR_NAME)
 			.append(");\n")
 			.append("if (apiObserver != null) ")
-			.append(JavaCodeGenerationUtil.generateCodeBlock(API_VAR + ".subscribeObserver(apiObserver);\n"))
+			.append(JavaCodeGenUtil.generateCodeBlock(API_VAR + ".subscribeObserver(apiObserver);\n"))
 			.append(EXCHANGE_VAR)
 			.append(".dispose();");
 		
@@ -306,7 +306,7 @@ public class WebsocketEndpointDemoGenerator extends JavaTypeGenerator {
 				   .append("System.exit(0);");
 		
 		appendMethod("public static void main(String[] args)",
-					 JavaCodeGenerationUtil.generateTryBlock(
+					 JavaCodeGenUtil.generateTryBlock(
 							 bodyBuilder.toString(),  
 							 "log.error(\"Exception raised from main()\", t);\nSystem.exit(-1);",
 							 "Throwable t",

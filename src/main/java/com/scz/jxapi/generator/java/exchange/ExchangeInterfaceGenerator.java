@@ -3,7 +3,7 @@ package com.scz.jxapi.generator.java.exchange;
 import com.scz.jxapi.exchange.Exchange;
 import com.scz.jxapi.exchange.descriptor.ExchangeApiDescriptor;
 import com.scz.jxapi.exchange.descriptor.ExchangeDescriptor;
-import com.scz.jxapi.generator.java.JavaCodeGenerationUtil;
+import com.scz.jxapi.generator.java.JavaCodeGenUtil;
 import com.scz.jxapi.generator.java.JavaTypeGenerator;
 
 /**
@@ -41,12 +41,12 @@ public class ExchangeInterfaceGenerator extends JavaTypeGenerator {
 		appendToBody("\nString ")
 			.append(EXCHANGE_ID_VARIABLE)
 			.append(" = ")
-			.append(JavaCodeGenerationUtil.getQuotedString(exchangeDescriptor.getName()))
+			.append(JavaCodeGenUtil.getQuotedString(exchangeDescriptor.getName()))
 			.append(";\n");
 		
 		for (ExchangeApiDescriptor api: exchangeDescriptor.getApis()) {
 			String apiClassName = ExchangeJavaGenUtil.getApiInterfaceClassName(exchangeDescriptor, api);
-			String apiSimpleClassName = JavaCodeGenerationUtil.getClassNameWithoutPackage(apiClassName);
+			String apiSimpleClassName = JavaCodeGenUtil.getClassNameWithoutPackage(apiClassName);
 			String getApiMethodSignature = apiSimpleClassName + " get" + apiSimpleClassName + "()";
 			addImport(apiClassName);
 			appendToBody("\n")
@@ -61,7 +61,7 @@ public class ExchangeInterfaceGenerator extends JavaTypeGenerator {
 	private String getGetApiMethodJavadoc(ExchangeApiDescriptor api) {
 		StringBuilder s = new StringBuilder();
 		s.append("@return " ).append(api.getDescription());
-		return JavaCodeGenerationUtil.generateJavaDoc(s.toString());
+		return JavaCodeGenUtil.generateJavaDoc(s.toString());
 	}
 	
 	private String generateDescription() {
@@ -73,7 +73,7 @@ public class ExchangeInterfaceGenerator extends JavaTypeGenerator {
 		String docUrl = exchangeDescriptor.getDocUrl();
 		if (docUrl != null) {
 			s.append("@see ")
-			 .append(JavaCodeGenerationUtil.getHtmlLink(docUrl, "Reference documentation"));
+			 .append(JavaCodeGenUtil.getHtmlLink(docUrl, "Reference documentation"));
 		}
 		return s.toString();
 	}

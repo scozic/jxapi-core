@@ -10,7 +10,7 @@ import com.scz.jxapi.exchange.descriptor.ExchangeDescriptor;
 import com.scz.jxapi.exchange.descriptor.Field;
 import com.scz.jxapi.exchange.descriptor.Type;
 import com.scz.jxapi.generator.java.Imports;
-import com.scz.jxapi.generator.java.JavaCodeGenerationUtil;
+import com.scz.jxapi.generator.java.JavaCodeGenUtil;
 import com.scz.jxapi.netutils.deserialization.json.AbstractJsonMessageDeserializer;
 import com.scz.jxapi.netutils.deserialization.json.field.BigDecimalJsonFieldDeserializer;
 import com.scz.jxapi.netutils.deserialization.json.field.BooleanJsonFieldDeserializer;
@@ -68,8 +68,8 @@ public class ExchangeJavaGenUtil {
 	public static String getApiInterfaceClassName(ExchangeDescriptor exchangeDescriptor, 
 												  ExchangeApiDescriptor exchangeApiDescriptor) {
 		String pkgPrefix =  exchangeDescriptor.getBasePackage() + "." + exchangeApiDescriptor.getName().toLowerCase() + ".";
-		String simpleInterfaceName = JavaCodeGenerationUtil.firstLetterToUpperCase(exchangeDescriptor.getName()) 
-										+ JavaCodeGenerationUtil.firstLetterToUpperCase(exchangeApiDescriptor.getName()) + "Api";
+		String simpleInterfaceName = JavaCodeGenUtil.firstLetterToUpperCase(exchangeDescriptor.getName()) 
+										+ JavaCodeGenUtil.firstLetterToUpperCase(exchangeApiDescriptor.getName()) + "Api";
 		return pkgPrefix + simpleInterfaceName;
 	}
 	
@@ -91,7 +91,7 @@ public class ExchangeJavaGenUtil {
 	 * @return The name of static variable for the given rate limit name.
 	 */
 	public static String generateRateLimitVariableName(String rateLimitName) {
-		return "RATE_LIMIT_" + JavaCodeGenerationUtil.getStaticVariableName(rateLimitName);
+		return "RATE_LIMIT_" + JavaCodeGenUtil.getStaticVariableName(rateLimitName);
 	}
 
 	/**
@@ -100,7 +100,7 @@ public class ExchangeJavaGenUtil {
 	 */
 	public static String getExchangeInterfaceName(ExchangeDescriptor exchangeDescriptor) {
 		return exchangeDescriptor.getBasePackage() + "." 
-				+ JavaCodeGenerationUtil.firstLetterToUpperCase(exchangeDescriptor.getName()) + "Exchange";
+				+ JavaCodeGenUtil.firstLetterToUpperCase(exchangeDescriptor.getName()) + "Exchange";
 	}
 
 	/**
@@ -110,7 +110,7 @@ public class ExchangeJavaGenUtil {
 	 */
 	public static String getExchangeConstantsInterfaceName(ExchangeDescriptor exchangeDescriptor) {
 		return exchangeDescriptor.getBasePackage() + "." 
-				+ JavaCodeGenerationUtil.firstLetterToUpperCase(exchangeDescriptor.getName()) + "Constants";
+				+ JavaCodeGenUtil.firstLetterToUpperCase(exchangeDescriptor.getName()) + "Constants";
 	}
 	
 	/**
@@ -121,8 +121,8 @@ public class ExchangeJavaGenUtil {
 	public static String getExchangeApiConstantsInterfaceName(ExchangeDescriptor exchangeDescriptor, 
 															  ExchangeApiDescriptor exchangeApiDescriptor) {
 		String pkgPrefix =  exchangeDescriptor.getBasePackage() + "." + exchangeApiDescriptor.getName().toLowerCase() + ".";
-		String simpleInterfaceName = JavaCodeGenerationUtil.firstLetterToUpperCase(exchangeDescriptor.getName()) 
-										+ JavaCodeGenerationUtil.firstLetterToUpperCase(exchangeApiDescriptor.getName()) + "Constants";
+		String simpleInterfaceName = JavaCodeGenUtil.firstLetterToUpperCase(exchangeDescriptor.getName()) 
+										+ JavaCodeGenUtil.firstLetterToUpperCase(exchangeApiDescriptor.getName()) + "Constants";
 		return pkgPrefix + simpleInterfaceName;
 	}
 	
@@ -134,7 +134,7 @@ public class ExchangeJavaGenUtil {
 	public static String getExchangePropertiesInterfaceName(ExchangeDescriptor exchangeDescriptor) {
 		return exchangeDescriptor.getBasePackage() 
 				+ "." 
-				+ JavaCodeGenerationUtil.firstLetterToUpperCase(exchangeDescriptor.getName()) 
+				+ JavaCodeGenUtil.firstLetterToUpperCase(exchangeDescriptor.getName()) 
 				+ "Properties";
 	}
 
@@ -144,9 +144,9 @@ public class ExchangeJavaGenUtil {
 	 */
 	public static String getJsonMessageDeserializerClassName(String deserializedTypeClassName) {
 		return new StringBuilder()
-					.append(StringUtils.substringBefore(JavaCodeGenerationUtil.getClassPackage(deserializedTypeClassName), ".pojo"))
+					.append(StringUtils.substringBefore(JavaCodeGenUtil.getClassPackage(deserializedTypeClassName), ".pojo"))
 					.append(".deserializers.")
-					.append(JavaCodeGenerationUtil.getClassNameWithoutPackage(deserializedTypeClassName))
+					.append(JavaCodeGenUtil.getClassNameWithoutPackage(deserializedTypeClassName))
 					.append("Deserializer")
 					.toString();
 	}
@@ -174,7 +174,7 @@ public class ExchangeJavaGenUtil {
 	 * 		     <li>If this type is a 'Map' type, returns generic <code>Map&lt;String, SubTypeClassName&gt;</code>, 
 	 * 				where <code>subTypeClassName</code> is the simple class name of the subType of the map, see {@link Type#getSubType()}.
 	 * 		     <li>If this type is an 'Object' type, returns the simple class name of the object class name, 
-	 * 				 see {@link JavaCodeGenerationUtil#getClassNameWithoutPackage(String)}.
+	 * 				 see {@link JavaCodeGenUtil#getClassNameWithoutPackage(String)}.
 	 * 		     </li>
 	 * 		   </ul>
 	 * @see #getClassNameForType(Type, Imports, String)
@@ -208,7 +208,7 @@ public class ExchangeJavaGenUtil {
 			}
 			return canonicalTypeClass.getSimpleName() 
 					+ "<" 
-					+ JavaCodeGenerationUtil.getClassNameWithoutPackage(subTypeClassName) 
+					+ JavaCodeGenUtil.getClassNameWithoutPackage(subTypeClassName) 
 					+ ">";
 		case MAP:
 			subTypeClassName = getClassNameForType(type.getSubType(), imports, objectClassName);
@@ -217,13 +217,13 @@ public class ExchangeJavaGenUtil {
 			}
 			return canonicalTypeClass.getSimpleName() 
 					+ "<String, " 
-					+ JavaCodeGenerationUtil.getClassNameWithoutPackage(subTypeClassName) 
+					+ JavaCodeGenUtil.getClassNameWithoutPackage(subTypeClassName) 
 					+ ">";
 		case OBJECT:
 			if (imports != null) {
 				imports.add(objectClassName);
 			}
-			return JavaCodeGenerationUtil.getClassNameWithoutPackage(objectClassName);
+			return JavaCodeGenUtil.getClassNameWithoutPackage(objectClassName);
 		default:
 			throw new IllegalArgumentException("Unexpected type for:" + type);
 		}
@@ -294,7 +294,7 @@ public class ExchangeJavaGenUtil {
 		case OBJECT:
 			String objectDeserializerClass = getJsonMessageDeserializerClassName(objectClassName);
 			imports.add(objectDeserializerClass);
-			return "new " +  JavaCodeGenerationUtil.getClassNameWithoutPackage(objectDeserializerClass) + "()";
+			return "new " +  JavaCodeGenUtil.getClassNameWithoutPackage(objectDeserializerClass) + "()";
 		default:
 			throw new IllegalArgumentException("Unexpected field type:" + type);
 		}
@@ -322,7 +322,7 @@ public class ExchangeJavaGenUtil {
 		switch (type.getCanonicalType()) {
 		case BIGDECIMAL:
 			imports.add(BigDecimal.class.getName());
-			return "new BigDecimal(" + JavaCodeGenerationUtil.getQuotedString(sampleValueStr) + ")";
+			return "new BigDecimal(" + JavaCodeGenUtil.getQuotedString(sampleValueStr) + ")";
 		case BOOLEAN:
 			return "Boolean.valueOf(" + sampleValueStr + ")";
 		case INT:
@@ -332,9 +332,9 @@ public class ExchangeJavaGenUtil {
 			if (SPECIAL_SAMPLE_VALUE_NOW.equals(sampleValueStr)) {
 				return "Long.valueOf(System.currentTimeMillis())";
 			}
-			return "Long.valueOf(" + JavaCodeGenerationUtil.getQuotedString(sampleValueStr) + ")";
+			return "Long.valueOf(" + JavaCodeGenUtil.getQuotedString(sampleValueStr) + ")";
 		default: // STRING
-			return JavaCodeGenerationUtil.getQuotedString(sampleValueStr);
+			return JavaCodeGenUtil.getQuotedString(sampleValueStr);
 		}
 	}
 	
@@ -367,11 +367,11 @@ public class ExchangeJavaGenUtil {
 			return null;
 		}
 		return new StringBuilder()
-				.append(JavaCodeGenerationUtil.generateJavaDoc(description))
+				.append(JavaCodeGenUtil.generateJavaDoc(description))
 				.append("\npublic static final String ")
 				.append(variableName)
 				.append(" = ")
-				.append(JavaCodeGenerationUtil.getQuotedString(value))
+				.append(JavaCodeGenUtil.getQuotedString(value))
 				.append(";").toString();
 	}
 

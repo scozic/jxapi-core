@@ -19,14 +19,14 @@ import com.scz.jxapi.exchange.descriptor.Type;
 /**
  * Helper methods around java code generation
  */
-public class JavaCodeGenerationUtil {
+public class JavaCodeGenUtil {
 	
 	/**
 	 * String value of <code>null</code>
 	 */
 	public static final String NULL = "null";
 
-	private JavaCodeGenerationUtil() {}
+	private JavaCodeGenUtil() {}
 	
 	/**
 	 * Default indentation used in generated source code

@@ -7,7 +7,7 @@ import java.util.List;
 
 import com.scz.jxapi.exchange.CommonConfigProperties;
 import com.scz.jxapi.exchange.descriptor.ConfigProperty;
-import com.scz.jxapi.generator.java.JavaCodeGenerationUtil;
+import com.scz.jxapi.generator.java.JavaCodeGenUtil;
 import com.scz.jxapi.util.CollectionUtil;
 import com.scz.jxapi.util.DemoProperties;
 
@@ -40,7 +40,7 @@ public class ExchangeDemoPropertiesFileGenerator {
 	public static String generatePropertiesFileComment(String comment) {
 		if (comment == null)
 			return "";
-		return JavaCodeGenerationUtil.indent(comment, "# ") + "\n";
+		return JavaCodeGenUtil.indent(comment, "# ") + "\n";
 	}
 
 	private String exchangeId;

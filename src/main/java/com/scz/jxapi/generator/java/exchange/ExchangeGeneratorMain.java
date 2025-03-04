@@ -17,7 +17,7 @@ import com.scz.jxapi.exchange.descriptor.ConfigProperty;
 import com.scz.jxapi.exchange.descriptor.ExchangeApiDescriptor;
 import com.scz.jxapi.exchange.descriptor.ExchangeDescriptor;
 import com.scz.jxapi.exchange.descriptor.parser.ExchangeDescriptorParser;
-import com.scz.jxapi.generator.java.JavaCodeGenerationUtil;
+import com.scz.jxapi.generator.java.JavaCodeGenUtil;
 import com.scz.jxapi.generator.java.exchange.api.ExchangeApiClassesGenerator;
 import com.scz.jxapi.generator.java.exchange.api.demo.ExchangeDemoClassesGenerator;
 import com.scz.jxapi.generator.md.exchange.ExchangeReadmeMdGenerator;
@@ -152,13 +152,13 @@ public class ExchangeGeneratorMain {
 		Path outputSrcMainFolder = projectFolder.resolve(Paths.get("src", "main", "java"));
 		Path mainPackagePath = Paths.get(StringUtils.replace(exchangeDescriptor.getBasePackage(), ".", "/"));
 		Path genMainPackagesFolder = outputSrcMainFolder.resolve(mainPackagePath);
-		JavaCodeGenerationUtil.deletePath(genMainPackagesFolder);
+		JavaCodeGenUtil.deletePath(genMainPackagesFolder);
 		generateExchangeWrapper(exchangeDescriptor, outputSrcMainFolder);
 		
 		log.info("Generating exchange demos code for descriptor:{}", exchangeDescriptor.getName());
 		Path outputSrcTestFolder = projectFolder.resolve(Paths.get("src", "test", "java"));
 		Path genTestPackagesFolder = outputSrcTestFolder.resolve(mainPackagePath);
-		JavaCodeGenerationUtil.deletePath(genTestPackagesFolder);
+		JavaCodeGenUtil.deletePath(genTestPackagesFolder);
 		generateExchangeWrapperDemos(exchangeDescriptor, outputSrcTestFolder);
 		
 		Path srcTestResourcesFolder = projectFolder.resolve(Paths.get("src", "test", "resources"));

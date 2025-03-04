@@ -9,7 +9,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.scz.jxapi.generator.java.JavaCodeGenerationUtil;
+import com.scz.jxapi.generator.java.JavaCodeGenUtil;
 import com.scz.jxapi.generator.java.exchange.ClassesGeneratorTestUtil;
 
 /**
@@ -31,11 +31,11 @@ public class FileComparatorTest {
 	@After
 	public void tearDown() throws IOException {
 		if (expectedBase != null) {
-			JavaCodeGenerationUtil.deletePath(expectedBase);
+			JavaCodeGenUtil.deletePath(expectedBase);
 			expectedBase = null;
 		}
 		if (actualBase != null) {
-			JavaCodeGenerationUtil.deletePath(actualBase);
+			JavaCodeGenUtil.deletePath(actualBase);
 			actualBase = null;
 		}
 	}
@@ -150,7 +150,7 @@ public class FileComparatorTest {
 	
 	@Test
 	public void testCompare_ActualDoesNotExist() throws IOException {
-		JavaCodeGenerationUtil.deletePath(actualBase);
+		JavaCodeGenUtil.deletePath(actualBase);
 		testCompareError();
 	}
 	

@@ -15,7 +15,7 @@ import com.scz.jxapi.exchange.descriptor.RestEndpointDescriptor;
 import com.scz.jxapi.exchange.descriptor.Type;
 import com.scz.jxapi.exchange.descriptor.WebsocketEndpointDescriptor;
 import com.scz.jxapi.generator.java.Imports;
-import com.scz.jxapi.generator.java.JavaCodeGenerationUtil;
+import com.scz.jxapi.generator.java.JavaCodeGenUtil;
 import com.scz.jxapi.generator.java.exchange.ExchangeJavaGenUtil;
 import com.scz.jxapi.generator.java.exchange.api.ExchangeApiGenUtil;
 import com.scz.jxapi.util.DemoUtil;
@@ -53,7 +53,7 @@ public class EndpointDemoGenUtil {
 							 objectClassName, 
 							 imports))
 					 .append(" ")
-					 .append(JavaCodeGenerationUtil.generateCodeBlock(
+					 .append(JavaCodeGenUtil.generateCodeBlock(
 							 	generateFieldSampleValueDeclaration(
 									 property,  
 									 "request",
@@ -103,7 +103,7 @@ public class EndpointDemoGenUtil {
 	 * @return the method name
 	 */
 	public static String generateFieldCreationMethodName(Field field) {
-		return "create" + JavaCodeGenerationUtil.firstLetterToUpperCase(Optional.ofNullable(field.getName()).orElse("request"));
+		return "create" + JavaCodeGenUtil.firstLetterToUpperCase(Optional.ofNullable(field.getName()).orElse("request"));
 	}
 
 	private static String generateFieldSampleValueDeclaration(Field field, 
@@ -127,7 +127,7 @@ public class EndpointDemoGenUtil {
 		if (type.isObject()) {
 			fieldValue = generateSampleFieldValueDeclarationObjectField(res, field, sampleValueVariableName, objectClassName, imports);
 		} else {
-			fieldValue = JavaCodeGenerationUtil.getQuotedString(sampleValue);
+			fieldValue = JavaCodeGenUtil.getQuotedString(sampleValue);
 		}
 		
 	if (canonicalType != CanonicalType.OBJECT) {
@@ -182,15 +182,15 @@ public class EndpointDemoGenUtil {
 			
 			fieldValue = itemVariableName;
 		} else {
-			fieldValue = JavaCodeGenerationUtil.getQuotedString(sampleValue);
+			fieldValue = JavaCodeGenUtil.getQuotedString(sampleValue);
 		}
 		return fieldValue;
 	}
 	
 	private static void generateSampleFieldValueDeclarationObjectFieldChild(StringBuilder res, Field field, Field childParam, String itemVariableName, String objectClassName, Imports imports) {
 		Type childParamType = ExchangeJavaGenUtil.getFieldType(childParam);
-		String setArg = JavaCodeGenerationUtil.getQuotedString(childParam.getSampleValue());
-		String setAccessorName = JavaCodeGenerationUtil.getSetAccessorMethodName(
+		String setArg = JavaCodeGenUtil.getQuotedString(childParam.getSampleValue());
+		String setAccessorName = JavaCodeGenUtil.getSetAccessorMethodName(
 				childParam.getName(),  
 				field.getProperties().stream()
 								 .map(Field::getName).collect(Collectors.toList()));
@@ -241,7 +241,7 @@ public class EndpointDemoGenUtil {
 			if (sampleMapKeyValues == null || !sampleMapKeyValues.hasNext()) {
 				return null;
 			}
-			String sampleKeyValue = JavaCodeGenerationUtil.getQuotedString(sampleMapKeyValues.next());
+			String sampleKeyValue = JavaCodeGenUtil.getQuotedString(sampleMapKeyValues.next());
 			return "Map.of(" + sampleKeyValue + ", " + getMapOrListSampleValueDeclaration(type.getSubType(), itemValue, sampleMapKeyValues, imports) + ")";
 		}
 	}
@@ -275,9 +275,9 @@ public class EndpointDemoGenUtil {
 												 ExchangeApiDescriptor exchangeApiDescriptor, 
 												 RestEndpointDescriptor restApi) {
 		String pkgPrefix =  exchangeDescriptor.getBasePackage() + "." + exchangeApiDescriptor.getName().toLowerCase() + ".demo.";
-		return pkgPrefix + JavaCodeGenerationUtil.firstLetterToUpperCase(exchangeDescriptor.getName()) 
-									 + JavaCodeGenerationUtil.firstLetterToUpperCase(exchangeApiDescriptor.getName())
-									 + JavaCodeGenerationUtil.firstLetterToUpperCase(restApi.getName())
+		return pkgPrefix + JavaCodeGenUtil.firstLetterToUpperCase(exchangeDescriptor.getName()) 
+									 + JavaCodeGenUtil.firstLetterToUpperCase(exchangeApiDescriptor.getName())
+									 + JavaCodeGenUtil.firstLetterToUpperCase(restApi.getName())
 									 + "Demo";
 	}
 
@@ -303,9 +303,9 @@ public class EndpointDemoGenUtil {
 													  ExchangeApiDescriptor exchangeApiDescriptor, 
 													  WebsocketEndpointDescriptor websocketApi) {
 		String pkgPrefix =  exchangeDescriptor.getBasePackage() + "." + exchangeApiDescriptor.getName().toLowerCase() + ".demo.";
-		return pkgPrefix + JavaCodeGenerationUtil.firstLetterToUpperCase(exchangeDescriptor.getName()) 
-									 + JavaCodeGenerationUtil.firstLetterToUpperCase(exchangeApiDescriptor.getName())
-									 + JavaCodeGenerationUtil.firstLetterToUpperCase(websocketApi.getName())
+		return pkgPrefix + JavaCodeGenUtil.firstLetterToUpperCase(exchangeDescriptor.getName()) 
+									 + JavaCodeGenUtil.firstLetterToUpperCase(exchangeApiDescriptor.getName())
+									 + JavaCodeGenUtil.firstLetterToUpperCase(websocketApi.getName())
 									 + "Demo";
 	}
 	
@@ -355,9 +355,9 @@ public class EndpointDemoGenUtil {
 	public static String getNewTestExchangeInstruction(String exchangeClassName, 
 													   String exchangeVariableName, 
 													   String propertiesVariableName) {
-		String simpleExchangeClassName = JavaCodeGenerationUtil.getClassNameWithoutPackage(exchangeClassName);
+		String simpleExchangeClassName = JavaCodeGenUtil.getClassNameWithoutPackage(exchangeClassName);
 		String exchangeImplClassName = ExchangeJavaGenUtil.getExchangeInterfaceImplementationName(exchangeClassName);
-		String simpleExchangeImplClassName = JavaCodeGenerationUtil.getClassNameWithoutPackage(exchangeImplClassName);
+		String simpleExchangeImplClassName = JavaCodeGenUtil.getClassNameWithoutPackage(exchangeImplClassName);
 		return new StringBuilder()
 				.append(simpleExchangeClassName)
 				.append(" ")

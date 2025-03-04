@@ -10,7 +10,7 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import com.scz.jxapi.exchanges.demo.gen.DemoExchangeExchange;
-import com.scz.jxapi.generator.java.JavaCodeGenerationUtil;
+import com.scz.jxapi.generator.java.JavaCodeGenUtil;
 import com.scz.jxapi.generator.java.exchange.ClassesGeneratorTestUtil;
 import com.scz.jxapi.netutils.rest.FutureRestResponse;
 import com.scz.jxapi.netutils.rest.HttpResponse;
@@ -97,7 +97,7 @@ public class DemoUtilTest {
     		} else {
     			System.setProperty(DemoProperties.DEMO_API_PROPERTIES_FILE_SYSTEM_PROPERTY, previousSysPropValue);
     		}
-    		JavaCodeGenerationUtil.deletePath(tmpFolder);
+    		JavaCodeGenUtil.deletePath(tmpFolder);
     	}
 	}
     

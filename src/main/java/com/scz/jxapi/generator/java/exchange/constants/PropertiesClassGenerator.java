@@ -10,7 +10,7 @@ import com.scz.jxapi.exchange.descriptor.ConfigProperty;
 import com.scz.jxapi.exchange.descriptor.DefaultConfigProperty;
 import com.scz.jxapi.exchange.descriptor.Type;
 import com.scz.jxapi.generator.html.HtmlGenerationUtil;
-import com.scz.jxapi.generator.java.JavaCodeGenerationUtil;
+import com.scz.jxapi.generator.java.JavaCodeGenUtil;
 import com.scz.jxapi.generator.java.JavaTypeGenerator;
 import com.scz.jxapi.generator.java.exchange.ExchangeJavaGenUtil;
 import com.scz.jxapi.util.PropertiesUtil;
@@ -115,12 +115,12 @@ public class PropertiesClassGenerator extends JavaTypeGenerator {
 	private void generatePropertiesListMethod() {
 		addImport(List.class);
 		appendToBody("\n")
-			.append(JavaCodeGenerationUtil.generateJavaDoc("List of all configuration properties defined in this class"))
+			.append(JavaCodeGenUtil.generateJavaDoc("List of all configuration properties defined in this class"))
 			.append("\npublic static final List<ConfigProperty> ALL = List.of(\n")
-			.append(JavaCodeGenerationUtil.INDENTATION)
+			.append(JavaCodeGenUtil.INDENTATION)
 			.append(properties.stream()
-				.map(p -> JavaCodeGenerationUtil.getStaticVariableName(ConstantsGenerationUtil.getPropertyKeyPropertyName(p)))
-				.collect(Collectors.joining(", \n" + JavaCodeGenerationUtil.INDENTATION)))
+				.map(p -> JavaCodeGenUtil.getStaticVariableName(ConstantsGenerationUtil.getPropertyKeyPropertyName(p)))
+				.collect(Collectors.joining(", \n" + JavaCodeGenUtil.INDENTATION)))
 			.append(");");
 		
 	}
@@ -146,21 +146,21 @@ public class PropertiesClassGenerator extends JavaTypeGenerator {
 				
 		} else {
 			desc.append("<code>")
-				.append(JavaCodeGenerationUtil.NULL)
+				.append(JavaCodeGenUtil.NULL)
 				.append("</code>");
 		}
 		desc.append(" if not found.");
 				
-		sb.append(JavaCodeGenerationUtil.generateJavaDoc(desc.toString()))
+		sb.append(JavaCodeGenUtil.generateJavaDoc(desc.toString()))
 		  .append("\n");
 		String typeClass = ExchangeJavaGenUtil.getClassNameForType(type, getImports(), null);
-		String methodName = JavaCodeGenerationUtil.getGetAccessorMethodName(
+		String methodName = JavaCodeGenUtil.getGetAccessorMethodName(
 			  					name, 
 			  					typeClass, 
 			  					properties.stream().map(p -> p.getName()).collect(Collectors.toList())
 							);
 		String getPropertiesUtilMethodName = getPropertiesUtilGetPropertyMethodName(property);
-		String keyVariableName = JavaCodeGenerationUtil.getStaticVariableName(ConstantsGenerationUtil.getPropertyKeyPropertyName(property));
+		String keyVariableName = JavaCodeGenUtil.getStaticVariableName(ConstantsGenerationUtil.getPropertyKeyPropertyName(property));
 		addImport(Properties.class);
 		addImport(PropertiesUtil.class);
 		sb.append("public static ")

@@ -14,7 +14,7 @@ import org.junit.Test;
 import com.scz.jxapi.exchange.descriptor.ConfigProperty;
 import com.scz.jxapi.exchange.descriptor.ExchangeDescriptor;
 import com.scz.jxapi.exchange.descriptor.parser.ExchangeDescriptorParser;
-import com.scz.jxapi.generator.java.JavaCodeGenerationUtil;
+import com.scz.jxapi.generator.java.JavaCodeGenUtil;
 import com.scz.jxapi.generator.java.exchange.ClassesGeneratorTestUtil;
 
 /**
@@ -27,7 +27,7 @@ public class ExchangeDemoPropertiesGeneratorTest {
 	@After
 	public void tearDown() throws IOException {
 		if (tmpFolder != null) {
-			JavaCodeGenerationUtil.deletePath(tmpFolder);
+			JavaCodeGenUtil.deletePath(tmpFolder);
 			tmpFolder = null;
 		}
 	}

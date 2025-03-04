@@ -17,7 +17,7 @@ import com.scz.jxapi.exchange.descriptor.RestEndpointDescriptor;
 import com.scz.jxapi.exchange.descriptor.Type;
 import com.scz.jxapi.exchange.descriptor.WebsocketEndpointDescriptor;
 import com.scz.jxapi.generator.html.HtmlGenerationUtil;
-import com.scz.jxapi.generator.java.JavaCodeGenerationUtil;
+import com.scz.jxapi.generator.java.JavaCodeGenUtil;
 import com.scz.jxapi.generator.java.exchange.ExchangeJavaGenUtil;
 import com.scz.jxapi.generator.java.exchange.api.ExchangeApiGenUtil;
 import com.scz.jxapi.generator.java.exchange.api.demo.EndpointDemoGenUtil;
@@ -84,7 +84,7 @@ public class ExchangeReadmeMdGenerator {
 		String docUrl = exchangeDescriptor.getDocUrl();
 		if (docUrl != null) {
 			s.append("See ")
-			 .append(JavaCodeGenerationUtil.getHtmlLink(docUrl, "reference documentation"))
+			 .append(JavaCodeGenUtil.getHtmlLink(docUrl, "reference documentation"))
 			 .append("\n");
 			
 		}
@@ -108,9 +108,9 @@ public class ExchangeReadmeMdGenerator {
 		 .append("public void call() {\n")
 		 .append("  Properties properties = new Properties();\n")
 		 .append("  // Set relevant configuration properties (see documentation) in 'props'\n  ")
-		 .append(JavaCodeGenerationUtil.getClassNameWithoutPackage(exchangeInterfaceName))
+		 .append(JavaCodeGenUtil.getClassNameWithoutPackage(exchangeInterfaceName))
 		 .append("   exchange = new ")
-		 .append(JavaCodeGenerationUtil.getClassNameWithoutPackage(exchangeInterfaceImplementationName))
+		 .append(JavaCodeGenUtil.getClassNameWithoutPackage(exchangeInterfaceImplementationName))
 		 .append("(properties);\n")
 		 .append("  // Access API groups and their endpoints through 'exchange' methods.\n")
 		 .append("}\n")
@@ -148,7 +148,7 @@ public class ExchangeReadmeMdGenerator {
 	private String generateApiDescriptorDoc(ExchangeApiDescriptor api) {
 		StringBuilder s = new StringBuilder();
 		String apiInterfaceClassName = ExchangeJavaGenUtil.getApiInterfaceClassName(exchangeDescriptor, api);
-		String apiInterfaceSimpleClassName = JavaCodeGenerationUtil.getClassNameWithoutPackage(apiInterfaceClassName);
+		String apiInterfaceSimpleClassName = JavaCodeGenUtil.getClassNameWithoutPackage(apiInterfaceClassName);
 		s.append("\n### ")
 		 .append(api.getName())
 		 .append("\n")
@@ -206,14 +206,14 @@ public class ExchangeReadmeMdGenerator {
 			String method = new StringBuilder()
 					.append(ExchangeApiGenUtil.getWebsocketSubscribeMethodName(w))
 					.append("(")
-					.append(JavaCodeGenerationUtil.getMethodArgumentJavadoc(requestDataType, requestClassName))
+					.append(JavaCodeGenUtil.getMethodArgumentJavadoc(requestDataType, requestClassName))
 					.append(")")
 					.toString();
 			row.add(getInterfaceMethodJavadocLink(apiInterfaceClassName, method));
 			row.add(Optional.ofNullable(w.getDescription()).orElse(""));
 			String refDocLink = null;
 			if (w.getDocUrl() != null) {
-				refDocLink = JavaCodeGenerationUtil.getHtmlLink(w.getDocUrl(), "link");
+				refDocLink = JavaCodeGenUtil.getHtmlLink(w.getDocUrl(), "link");
 			}
 			row.add(Optional.ofNullable(refDocLink).orElse(""));
 			cells.add(row);
@@ -244,14 +244,14 @@ public class ExchangeReadmeMdGenerator {
 			String method = new StringBuilder()
 					.append(ExchangeApiGenUtil.getRestApiMethodName(r))
 					.append("(")
-					.append(JavaCodeGenerationUtil.getMethodArgumentJavadoc(requestDataType, requestClassName))
+					.append(JavaCodeGenUtil.getMethodArgumentJavadoc(requestDataType, requestClassName))
 					.append(")")
 					.toString();
 			row.add(getInterfaceMethodJavadocLink(apiInterfaceClassName, method));
 			row.add(Optional.ofNullable(r.getDescription()).orElse(""));
 			String refDocLink = null;
 			if (r.getDocUrl() != null) {
-				refDocLink = JavaCodeGenerationUtil.getHtmlLink(r.getDocUrl(), "link");
+				refDocLink = JavaCodeGenUtil.getHtmlLink(r.getDocUrl(), "link");
 			}
 			row.add(Optional.ofNullable(refDocLink).orElse(""));
 			cells.add(row);
@@ -265,15 +265,15 @@ public class ExchangeReadmeMdGenerator {
 	}
 	
 	private String getInterfaceJavadocLink(String interfaceClass) {
-		return JavaCodeGenerationUtil.getHtmlLink(
-				JavaCodeGenerationUtil.getClassJavadocUrl(baseJavadocUrl, interfaceClass), 
-				JavaCodeGenerationUtil.getClassNameWithoutPackage(interfaceClass));
+		return JavaCodeGenUtil.getHtmlLink(
+				JavaCodeGenUtil.getClassJavadocUrl(baseJavadocUrl, interfaceClass), 
+				JavaCodeGenUtil.getClassNameWithoutPackage(interfaceClass));
 	}
 	
 	private String getInterfaceMethodJavadocLink(String interfaceClass, String methodJavadocLink) {
-		return JavaCodeGenerationUtil.getHtmlLink(
-				JavaCodeGenerationUtil.getClassJavadocUrl(baseJavadocUrl, interfaceClass) + "#" + methodJavadocLink, 
-				JavaCodeGenerationUtil.getClassNameWithoutPackage(StringUtils.substringBefore(methodJavadocLink, "(")));
+		return JavaCodeGenUtil.getHtmlLink(
+				JavaCodeGenUtil.getClassJavadocUrl(baseJavadocUrl, interfaceClass) + "#" + methodJavadocLink, 
+				JavaCodeGenUtil.getClassNameWithoutPackage(StringUtils.substringBefore(methodJavadocLink, "(")));
 	}
 	
 	/**
@@ -284,9 +284,9 @@ public class ExchangeReadmeMdGenerator {
 	 */
 	private String getSourceFileLink(String className, String srcFolderName) {
 		String baseUrl = String.format("%s/src/%s/java/", baseSourceUrl, srcFolderName);
-        return JavaCodeGenerationUtil.getHtmlLink(
-                JavaCodeGenerationUtil.getClassUrl(baseUrl, className, ".java"), 
-                JavaCodeGenerationUtil.getClassNameWithoutPackage(className));
+        return JavaCodeGenUtil.getHtmlLink(
+                JavaCodeGenUtil.getClassUrl(baseUrl, className, ".java"), 
+                JavaCodeGenUtil.getClassNameWithoutPackage(className));
 	}
 	
 	private String generatePropertiesTable(List<DefaultConfigProperty> properties) {

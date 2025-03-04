@@ -9,7 +9,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.scz.jxapi.exchange.descriptor.parser.ExchangeDescriptorParser;
-import com.scz.jxapi.generator.java.JavaCodeGenerationUtil;
+import com.scz.jxapi.generator.java.JavaCodeGenUtil;
 import com.scz.jxapi.util.FileComparator;
 
 /**
@@ -29,7 +29,7 @@ public class ExchangeGeneratorMainTest {
 	@After
 	public void tearDown() throws IOException {
         if (tmpDir != null) {
-            JavaCodeGenerationUtil.deletePath(tmpDir);
+            JavaCodeGenUtil.deletePath(tmpDir);
             tmpDir = null;
        }
 	}
