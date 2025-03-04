@@ -43,13 +43,14 @@ public class ExchangeApiInterfaceImplementationGeneratorTest {
 				+ "import com.scz.jxapi.netutils.websocket.multiplexing.WebsocketMessageTopicMatcherFactory;\n"
 				+ "import com.scz.jxapi.util.EncodingUtil;\n"
 				+ "import com.scz.jxapi.util.JsonUtil;\n"
+				+ "import javax.annotation.processing.Generated;\n"
 				+ "import org.slf4j.Logger;\n"
 				+ "import org.slf4j.LoggerFactory;\n"
 				+ "\n"
 				+ "/**\n"
 				+ " * Actual implementation of {@link MyTestExchangeMarketDataApi}<br>\n"
-				+ " * <br><strong>THIS CODE IS GENERATED. DO NOT EDIT MANUALLY!</strong>\n"
 				+ " */\n"
+				+ "@Generated(\"com.scz.jxapi.generator.java.exchange.api.ExchangeApiInterfaceImplementationGenerator\")\n"
 				+ "public class MyTestExchangeMarketDataApiImpl extends AbstractExchangeApi implements MyTestExchangeMarketDataApi {\n"
 				+ "  \n"
 				+ "  private static final Logger log = LoggerFactory.getLogger(MyTestExchangeMarketDataApiImpl.class);\n"
@@ -113,8 +114,7 @@ public class ExchangeApiInterfaceImplementationGeneratorTest {
 				+ "    return tickerStreamWs.unsubscribe(subscriptionId);\n"
 				+ "  }\n"
 				+ "  \n"
-				+ "}\n"
-				+ "",	
+				+ "}\n",	
 				apiInterfaceGenerator.generate());
 	}
 	
@@ -152,13 +152,14 @@ public class ExchangeApiInterfaceImplementationGeneratorTest {
 				+ "import com.scz.jxapi.netutils.rest.ratelimits.RequestThrottler;\n"
 				+ "import com.scz.jxapi.util.EncodingUtil;\n"
 				+ "import com.scz.jxapi.util.JsonUtil;\n"
+				+ "import javax.annotation.processing.Generated;\n"
 				+ "import org.slf4j.Logger;\n"
 				+ "import org.slf4j.LoggerFactory;\n"
 				+ "\n"
 				+ "/**\n"
 				+ " * Actual implementation of {@link MyTestExchangeTradingApi}<br>\n"
-				+ " * <br><strong>THIS CODE IS GENERATED. DO NOT EDIT MANUALLY!</strong>\n"
 				+ " */\n"
+				+ "@Generated(\"com.scz.jxapi.generator.java.exchange.api.ExchangeApiInterfaceImplementationGenerator\")\n"
 				+ "public class MyTestExchangeTradingApiImpl extends AbstractExchangeApi implements MyTestExchangeTradingApi {\n"
 				+ "  \n"
 				+ "  private static final Logger log = LoggerFactory.getLogger(MyTestExchangeTradingApiImpl.class);\n"
@@ -206,8 +207,7 @@ public class ExchangeApiInterfaceImplementationGeneratorTest {
 				+ "    return submit(HttpRequest.create(EXCHANGE_INFO_REST_API, EXCHANGE_INFO_URL + urlParameters, HttpMethod.GET, request, RATE_LIMITS_EXCHANGE_INFO, 60, null), exchangeInfoResponseDeserializer);\n"
 				+ "  }\n"
 				+ "  \n"
-				+ "}\n"
-				+ "",	
+				+ "}\n",	
 				apiInterfaceGenerator.generate());
 	}
 	
@@ -238,13 +238,14 @@ public class ExchangeApiInterfaceImplementationGeneratorTest {
 				+ "import com.scz.jxapi.netutils.rest.ratelimits.RequestThrottler;\n"
 				+ "import com.scz.jxapi.util.EncodingUtil;\n"
 				+ "import com.scz.jxapi.util.JsonUtil;\n"
+				+ "import javax.annotation.processing.Generated;\n"
 				+ "import org.slf4j.Logger;\n"
 				+ "import org.slf4j.LoggerFactory;\n"
 				+ "\n"
 				+ "/**\n"
 				+ " * Actual implementation of {@link MyTestExchangeFuturesMarketDataApi}<br>\n"
-				+ " * <br><strong>THIS CODE IS GENERATED. DO NOT EDIT MANUALLY!</strong>\n"
 				+ " */\n"
+				+ "@Generated(\"com.scz.jxapi.generator.java.exchange.api.ExchangeApiInterfaceImplementationGenerator\")\n"
 				+ "public class MyTestExchangeFuturesMarketDataApiImpl extends AbstractExchangeApi implements MyTestExchangeFuturesMarketDataApi {\n"
 				+ "  \n"
 				+ "  private static final Logger log = LoggerFactory.getLogger(MyTestExchangeFuturesMarketDataApiImpl.class);\n"
@@ -311,8 +312,7 @@ public class ExchangeApiInterfaceImplementationGeneratorTest {
 				+ "    return submit(HttpRequest.create(EXCHANGE_INFO2_REST_API, EXCHANGE_INFO2_URL + urlParameters, HttpMethod.GET, request, RATE_LIMITS_EXCHANGE_INFO2, 0, null), exchangeInfo2ResponseDeserializer);\n"
 				+ "  }\n"
 				+ "  \n"
-				+ "}\n"
-				+ "",	
+				+ "}\n",	
 				apiInterfaceGenerator.generate());
 	}
 	
@@ -340,13 +340,14 @@ public class ExchangeApiInterfaceImplementationGeneratorTest {
 				+ "import com.scz.jxapi.netutils.rest.ratelimits.RequestThrottler;\n"
 				+ "import com.scz.jxapi.util.EncodingUtil;\n"
 				+ "import com.scz.jxapi.util.JsonUtil;\n"
+				+ "import javax.annotation.processing.Generated;\n"
 				+ "import org.slf4j.Logger;\n"
 				+ "import org.slf4j.LoggerFactory;\n"
 				+ "\n"
 				+ "/**\n"
 				+ " * Actual implementation of {@link MyTestExchangeFuturesTradingApi}<br>\n"
-				+ " * <br><strong>THIS CODE IS GENERATED. DO NOT EDIT MANUALLY!</strong>\n"
 				+ " */\n"
+				+ "@Generated(\"com.scz.jxapi.generator.java.exchange.api.ExchangeApiInterfaceImplementationGenerator\")\n"
 				+ "public class MyTestExchangeFuturesTradingApiImpl extends AbstractExchangeApi implements MyTestExchangeFuturesTradingApi {\n"
 				+ "  \n"
 				+ "  private static final Logger log = LoggerFactory.getLogger(MyTestExchangeFuturesTradingApiImpl.class);\n"
@@ -396,8 +397,7 @@ public class ExchangeApiInterfaceImplementationGeneratorTest {
 				+ "    return submit(HttpRequest.create(EXCHANGE_INFO_REST_API, EXCHANGE_INFO_URL + urlParameters, HttpMethod.GET, request, RATE_LIMITS_EXCHANGE_INFO, 60, null), exchangeInfoResponseDeserializer);\n"
 				+ "  }\n"
 				+ "  \n"
-				+ "}\n"
-				+ "",	
+				+ "}\n",	
 				apiInterfaceGenerator.generate());
 	}
 	
@@ -425,13 +425,14 @@ public class ExchangeApiInterfaceImplementationGeneratorTest {
 				+ "import com.scz.jxapi.netutils.rest.ratelimits.RequestThrottler;\n"
 				+ "import com.scz.jxapi.util.EncodingUtil;\n"
 				+ "import com.scz.jxapi.util.JsonUtil;\n"
+				+ "import javax.annotation.processing.Generated;\n"
 				+ "import org.slf4j.Logger;\n"
 				+ "import org.slf4j.LoggerFactory;\n"
 				+ "\n"
 				+ "/**\n"
 				+ " * Actual implementation of {@link MyTestExchangeFuturesTradingApi}<br>\n"
-				+ " * <br><strong>THIS CODE IS GENERATED. DO NOT EDIT MANUALLY!</strong>\n"
 				+ " */\n"
+				+ "@Generated(\"com.scz.jxapi.generator.java.exchange.api.ExchangeApiInterfaceImplementationGenerator\")\n"
 				+ "public class MyTestExchangeFuturesTradingApiImpl extends AbstractExchangeApi implements MyTestExchangeFuturesTradingApi {\n"
 				+ "  \n"
 				+ "  private static final Logger log = LoggerFactory.getLogger(MyTestExchangeFuturesTradingApiImpl.class);\n"
@@ -475,8 +476,7 @@ public class ExchangeApiInterfaceImplementationGeneratorTest {
 				+ "    return submit(HttpRequest.create(EXCHANGE_INFO_REST_API, EXCHANGE_INFO_URL + urlParameters, HttpMethod.GET, request, RATE_LIMITS_EXCHANGE_INFO, 60, null), exchangeInfoResponseDeserializer);\n"
 				+ "  }\n"
 				+ "  \n"
-				+ "}\n"
-				+ "",	
+				+ "}\n",	
 				apiInterfaceGenerator.generate());
 	}
 	
@@ -504,13 +504,14 @@ public class ExchangeApiInterfaceImplementationGeneratorTest {
 				+ "import com.scz.jxapi.netutils.rest.ratelimits.RequestThrottler;\n"
 				+ "import com.scz.jxapi.util.EncodingUtil;\n"
 				+ "import com.scz.jxapi.util.JsonUtil;\n"
+				+ "import javax.annotation.processing.Generated;\n"
 				+ "import org.slf4j.Logger;\n"
 				+ "import org.slf4j.LoggerFactory;\n"
 				+ "\n"
 				+ "/**\n"
 				+ " * Actual implementation of {@link MyTestExchangeFuturesTradingApi}<br>\n"
-				+ " * <br><strong>THIS CODE IS GENERATED. DO NOT EDIT MANUALLY!</strong>\n"
 				+ " */\n"
+				+ "@Generated(\"com.scz.jxapi.generator.java.exchange.api.ExchangeApiInterfaceImplementationGenerator\")\n"
 				+ "public class MyTestExchangeFuturesTradingApiImpl extends AbstractExchangeApi implements MyTestExchangeFuturesTradingApi {\n"
 				+ "  \n"
 				+ "  private static final Logger log = LoggerFactory.getLogger(MyTestExchangeFuturesTradingApiImpl.class);\n"
@@ -550,8 +551,7 @@ public class ExchangeApiInterfaceImplementationGeneratorTest {
 				+ "    return submit(HttpRequest.create(EXCHANGE_INFO_REST_API, EXCHANGE_INFO_URL + urlParameters, HttpMethod.GET, request, RATE_LIMITS_EXCHANGE_INFO, 60, null), exchangeInfoResponseDeserializer);\n"
 				+ "  }\n"
 				+ "  \n"
-				+ "}\n"
-				+ "",
+				+ "}\n",
 				apiInterfaceGenerator.generate());
 	}
 	
@@ -567,13 +567,14 @@ public class ExchangeApiInterfaceImplementationGeneratorTest {
 				+ "\n"
 				+ "import com.foo.bar.gen.MyTestExchangeExchange;\n"
 				+ "import com.scz.jxapi.exchange.AbstractExchangeApi;\n"
+				+ "import javax.annotation.processing.Generated;\n"
 				+ "import org.slf4j.Logger;\n"
 				+ "import org.slf4j.LoggerFactory;\n"
 				+ "\n"
 				+ "/**\n"
 				+ " * Actual implementation of {@link MyTestExchangeFuturesTradingApi}<br>\n"
-				+ " * <br><strong>THIS CODE IS GENERATED. DO NOT EDIT MANUALLY!</strong>\n"
 				+ " */\n"
+				+ "@Generated(\"com.scz.jxapi.generator.java.exchange.api.ExchangeApiInterfaceImplementationGenerator\")\n"
 				+ "public class MyTestExchangeFuturesTradingApiImpl extends AbstractExchangeApi implements MyTestExchangeFuturesTradingApi {\n"
 				+ "  \n"
 				+ "  private static final Logger log = LoggerFactory.getLogger(MyTestExchangeFuturesTradingApiImpl.class);\n"
@@ -607,13 +608,14 @@ public class ExchangeApiInterfaceImplementationGeneratorTest {
 				+ "import com.scz.jxapi.netutils.rest.HttpRequest;\n"
 				+ "import com.scz.jxapi.util.EncodingUtil;\n"
 				+ "import com.scz.jxapi.util.JsonUtil;\n"
+				+ "import javax.annotation.processing.Generated;\n"
 				+ "import org.slf4j.Logger;\n"
 				+ "import org.slf4j.LoggerFactory;\n"
 				+ "\n"
 				+ "/**\n"
 				+ " * Actual implementation of {@link MyTestExchangeMarketDataApi}<br>\n"
-				+ " * <br><strong>THIS CODE IS GENERATED. DO NOT EDIT MANUALLY!</strong>\n"
 				+ " */\n"
+				+ "@Generated(\"com.scz.jxapi.generator.java.exchange.api.ExchangeApiInterfaceImplementationGenerator\")\n"
 				+ "public class MyTestExchangeMarketDataApiImpl extends AbstractExchangeApi implements MyTestExchangeMarketDataApi {\n"
 				+ "  \n"
 				+ "  private static final Logger log = LoggerFactory.getLogger(MyTestExchangeMarketDataApiImpl.class);\n"
@@ -644,8 +646,7 @@ public class ExchangeApiInterfaceImplementationGeneratorTest {
 				+ "    return submit(HttpRequest.create(EXCHANGE_INFO_REST_API, EXCHANGE_INFO_URL + urlParameters, HttpMethod.GET, request, null, 0, null), exchangeInfoResponseDeserializer);\n"
 				+ "  }\n"
 				+ "  \n"
-				+ "}\n"
-				+ "",
+				+ "}\n",
 				apiInterfaceGenerator.generate());
 	}
 	
@@ -668,13 +669,14 @@ public class ExchangeApiInterfaceImplementationGeneratorTest {
 				+ "import com.scz.jxapi.netutils.websocket.WebsocketSubscribeRequest;\n"
 				+ "import com.scz.jxapi.netutils.websocket.multiplexing.WebsocketMessageTopicMatcherFactory;\n"
 				+ "import com.scz.jxapi.util.EncodingUtil;\n"
+				+ "import javax.annotation.processing.Generated;\n"
 				+ "import org.slf4j.Logger;\n"
 				+ "import org.slf4j.LoggerFactory;\n"
 				+ "\n"
 				+ "/**\n"
 				+ " * Actual implementation of {@link MyTestExchangeMarketDataApi}<br>\n"
-				+ " * <br><strong>THIS CODE IS GENERATED. DO NOT EDIT MANUALLY!</strong>\n"
 				+ " */\n"
+				+ "@Generated(\"com.scz.jxapi.generator.java.exchange.api.ExchangeApiInterfaceImplementationGenerator\")\n"
 				+ "public class MyTestExchangeMarketDataApiImpl extends AbstractExchangeApi implements MyTestExchangeMarketDataApi {\n"
 				+ "  \n"
 				+ "  private static final Logger log = LoggerFactory.getLogger(MyTestExchangeMarketDataApiImpl.class);\n"
@@ -770,13 +772,14 @@ public class ExchangeApiInterfaceImplementationGeneratorTest {
 				+ "import com.scz.jxapi.netutils.websocket.WebsocketListener;\n"
 				+ "import com.scz.jxapi.netutils.websocket.WebsocketSubscribeRequest;\n"
 				+ "import com.scz.jxapi.netutils.websocket.multiplexing.WebsocketMessageTopicMatcherFactory;\n"
+				+ "import javax.annotation.processing.Generated;\n"
 				+ "import org.slf4j.Logger;\n"
 				+ "import org.slf4j.LoggerFactory;\n"
 				+ "\n"
 				+ "/**\n"
 				+ " * Actual implementation of {@link MyTestExchangeMarketDataApi}<br>\n"
-				+ " * <br><strong>THIS CODE IS GENERATED. DO NOT EDIT MANUALLY!</strong>\n"
 				+ " */\n"
+				+ "@Generated(\"com.scz.jxapi.generator.java.exchange.api.ExchangeApiInterfaceImplementationGenerator\")\n"
 				+ "public class MyTestExchangeMarketDataApiImpl extends AbstractExchangeApi implements MyTestExchangeMarketDataApi {\n"
 				+ "  \n"
 				+ "  private static final Logger log = LoggerFactory.getLogger(MyTestExchangeMarketDataApiImpl.class);\n"
@@ -991,13 +994,14 @@ public class ExchangeApiInterfaceImplementationGeneratorTest {
 				+ "import com.scz.jxapi.netutils.websocket.multiplexing.WebsocketMessageTopicMatcherFactory;\n"
 				+ "import com.scz.jxapi.util.EncodingUtil;\n"
 				+ "import com.scz.jxapi.util.JsonUtil;\n"
+				+ "import javax.annotation.processing.Generated;\n"
 				+ "import org.slf4j.Logger;\n"
 				+ "import org.slf4j.LoggerFactory;\n"
 				+ "\n"
 				+ "/**\n"
 				+ " * Actual implementation of {@link MyTestExchangeMarketDataApi}<br>\n"
-				+ " * <br><strong>THIS CODE IS GENERATED. DO NOT EDIT MANUALLY!</strong>\n"
 				+ " */\n"
+				+ "@Generated(\"com.scz.jxapi.generator.java.exchange.api.ExchangeApiInterfaceImplementationGenerator\")\n"
 				+ "public class MyTestExchangeMarketDataApiImpl extends AbstractExchangeApi implements MyTestExchangeMarketDataApi {\n"
 				+ "  \n"
 				+ "  private static final Logger log = LoggerFactory.getLogger(MyTestExchangeMarketDataApiImpl.class);\n"
@@ -1418,13 +1422,14 @@ public class ExchangeApiInterfaceImplementationGeneratorTest {
 				+ "import com.scz.jxapi.netutils.rest.HttpRequest;\n"
 				+ "import com.scz.jxapi.util.EncodingUtil;\n"
 				+ "import com.scz.jxapi.util.JsonUtil;\n"
+				+ "import javax.annotation.processing.Generated;\n"
 				+ "import org.slf4j.Logger;\n"
 				+ "import org.slf4j.LoggerFactory;\n"
 				+ "\n"
 				+ "/**\n"
 				+ " * Actual implementation of {@link MyTestExchangeWithDifferentUrlQueryParamsRestApiApi}<br>\n"
-				+ " * <br><strong>THIS CODE IS GENERATED. DO NOT EDIT MANUALLY!</strong>\n"
 				+ " */\n"
+				+ "@Generated(\"com.scz.jxapi.generator.java.exchange.api.ExchangeApiInterfaceImplementationGenerator\")\n"
 				+ "public class MyTestExchangeWithDifferentUrlQueryParamsRestApiApiImpl extends AbstractExchangeApi implements MyTestExchangeWithDifferentUrlQueryParamsRestApiApi {\n"
 				+ "  \n"
 				+ "  private static final Logger log = LoggerFactory.getLogger(MyTestExchangeWithDifferentUrlQueryParamsRestApiApiImpl.class);\n"
@@ -1628,13 +1633,14 @@ public class ExchangeApiInterfaceImplementationGeneratorTest {
 				+ "import com.scz.jxapi.netutils.websocket.multiplexing.WebsocketMessageTopicMatcherFactory;\n"
 				+ "import com.scz.jxapi.util.EncodingUtil;\n"
 				+ "import com.scz.jxapi.util.JsonUtil;\n"
+				+ "import javax.annotation.processing.Generated;\n"
 				+ "import org.slf4j.Logger;\n"
 				+ "import org.slf4j.LoggerFactory;\n"
 				+ "\n"
 				+ "/**\n"
 				+ " * Actual implementation of {@link MyTestExchangeFuturesTradingApi}<br>\n"
-				+ " * <br><strong>THIS CODE IS GENERATED. DO NOT EDIT MANUALLY!</strong>\n"
 				+ " */\n"
+				+ "@Generated(\"com.scz.jxapi.generator.java.exchange.api.ExchangeApiInterfaceImplementationGenerator\")\n"
 				+ "public class MyTestExchangeFuturesTradingApiImpl extends AbstractExchangeApi implements MyTestExchangeFuturesTradingApi {\n"
 				+ "  \n"
 				+ "  private static final Logger log = LoggerFactory.getLogger(MyTestExchangeFuturesTradingApiImpl.class);\n"
@@ -1705,8 +1711,7 @@ public class ExchangeApiInterfaceImplementationGeneratorTest {
 				+ "    return tickerStreamWs.unsubscribe(subscriptionId);\n"
 				+ "  }\n"
 				+ "  \n"
-				+ "}\n"
-				+ "",
+				+ "}\n",
 				apiInterfaceGenerator.generate());
 	}
 }

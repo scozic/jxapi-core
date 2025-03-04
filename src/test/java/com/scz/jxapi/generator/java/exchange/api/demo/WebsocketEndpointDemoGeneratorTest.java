@@ -34,13 +34,14 @@ public class WebsocketEndpointDemoGeneratorTest {
 				+ "import com.scz.jxapi.netutils.websocket.WebsocketListener;\n"
 				+ "import com.scz.jxapi.util.DemoProperties;\n"
 				+ "import com.scz.jxapi.util.DemoUtil;\n"
+				+ "import javax.annotation.processing.Generated;\n"
 				+ "import org.slf4j.Logger;\n"
 				+ "import org.slf4j.LoggerFactory;\n"
 				+ "\n"
 				+ "/**\n"
 				+ " * Snippet to test call to {@link MyTestExchangeMarketDataApi#subscribeTickerStream(com.foo.bar.gen.marketdata.pojo.MyTestExchangeMarketDataTickerStreamRequest, com.scz.jxapi.netutils.websocket.WebsocketListener)}.\n"
-				+ " * <br><strong>THIS CODE IS GENERATED. DO NOT EDIT MANUALLY!</strong>\n"
 				+ " */\n"
+				+ "@Generated(\"com.scz.jxapi.generator.java.exchange.api.demo.WebsocketEndpointDemoGenerator\")\n"
 				+ "public class MyTestExchangeMarketDataTickerStreamDemo {\n"
 				+ "  private static final Logger log = LoggerFactory.getLogger(MyTestExchangeMarketDataTickerStreamDemo.class);\n"
 				+ "  \n"
@@ -100,8 +101,7 @@ public class WebsocketEndpointDemoGeneratorTest {
 				+ "      System.exit(-1);\n"
 				+ "    }\n"
 				+ "  }\n"
-				+ "}\n"
-				+ "", 
+				+ "}\n", 
 				new WebsocketEndpointDemoGenerator(exchangeDescriptor, exchangeApiDescriptor, websocketEndpointDescriptor).generate());
 	}
 	
@@ -122,13 +122,14 @@ public class WebsocketEndpointDemoGeneratorTest {
 				+ "import com.scz.jxapi.netutils.websocket.WebsocketListener;\n"
 				+ "import com.scz.jxapi.util.DemoProperties;\n"
 				+ "import com.scz.jxapi.util.DemoUtil;\n"
+				+ "import javax.annotation.processing.Generated;\n"
 				+ "import org.slf4j.Logger;\n"
 				+ "import org.slf4j.LoggerFactory;\n"
 				+ "\n"
 				+ "/**\n"
 				+ " * Snippet to test call to {@link MyTestExchangeMarketDataApi#subscribeStreamWithStringRequestDataType(java.lang.String, com.scz.jxapi.netutils.websocket.WebsocketListener)}.\n"
-				+ " * <br><strong>THIS CODE IS GENERATED. DO NOT EDIT MANUALLY!</strong>\n"
 				+ " */\n"
+				+ "@Generated(\"com.scz.jxapi.generator.java.exchange.api.demo.WebsocketEndpointDemoGenerator\")\n"
 				+ "public class MyTestExchangeMarketDataStreamWithStringRequestDataTypeDemo {\n"
 				+ "  private static final Logger log = LoggerFactory.getLogger(MyTestExchangeMarketDataStreamWithStringRequestDataTypeDemo.class);\n"
 				+ "  \n"
@@ -186,8 +187,7 @@ public class WebsocketEndpointDemoGeneratorTest {
 				+ "      System.exit(-1);\n"
 				+ "    }\n"
 				+ "  }\n"
-				+ "}\n"
-				+ "", 
+				+ "}\n", 
 				new WebsocketEndpointDemoGenerator(exchange, exchangeApiDescriptor, websocketEndpointDescriptor).generate());
 	}
 	
@@ -208,13 +208,14 @@ public class WebsocketEndpointDemoGeneratorTest {
 				+ "import com.scz.jxapi.netutils.websocket.WebsocketListener;\n"
 				+ "import com.scz.jxapi.util.DemoProperties;\n"
 				+ "import com.scz.jxapi.util.DemoUtil;\n"
+				+ "import javax.annotation.processing.Generated;\n"
 				+ "import org.slf4j.Logger;\n"
 				+ "import org.slf4j.LoggerFactory;\n"
 				+ "\n"
 				+ "/**\n"
 				+ " * Snippet to test call to {@link MyTestExchangeMarketDataApi#subscribeStreamWithObjectRequestDataTypeZeroParameters(com.scz.jxapi.netutils.websocket.WebsocketListener)}.\n"
-				+ " * <br><strong>THIS CODE IS GENERATED. DO NOT EDIT MANUALLY!</strong>\n"
 				+ " */\n"
+				+ "@Generated(\"com.scz.jxapi.generator.java.exchange.api.demo.WebsocketEndpointDemoGenerator\")\n"
 				+ "public class MyTestExchangeMarketDataStreamWithObjectRequestDataTypeZeroParametersDemo {\n"
 				+ "  private static final Logger log = LoggerFactory.getLogger(MyTestExchangeMarketDataStreamWithObjectRequestDataTypeZeroParametersDemo.class);\n"
 				+ "  \n"
@@ -265,8 +266,7 @@ public class WebsocketEndpointDemoGeneratorTest {
 				+ "      System.exit(-1);\n"
 				+ "    }\n"
 				+ "  }\n"
-				+ "}\n"
-				+ "", 
+				+ "}\n", 
 				new WebsocketEndpointDemoGenerator(exchange, exchangeApiDescriptor, websocketEndpointDescriptor).generate());
 	}
 	
@@ -294,13 +294,14 @@ public class WebsocketEndpointDemoGeneratorTest {
 				+ "import com.scz.jxapi.netutils.websocket.WebsocketListener;\n"
 				+ "import com.scz.jxapi.util.DemoProperties;\n"
 				+ "import com.scz.jxapi.util.DemoUtil;\n"
+				+ "import javax.annotation.processing.Generated;\n"
 				+ "import org.slf4j.Logger;\n"
 				+ "import org.slf4j.LoggerFactory;\n"
 				+ "\n"
 				+ "/**\n"
 				+ " * Snippet to test call to {@link MyTestExchangeMarketDataApi#subscribeStreamWithObjectListMapRequestDataType(java.util.Map, com.scz.jxapi.netutils.websocket.WebsocketListener)}.\n"
-				+ " * <br><strong>THIS CODE IS GENERATED. DO NOT EDIT MANUALLY!</strong>\n"
 				+ " */\n"
+				+ "@Generated(\"com.scz.jxapi.generator.java.exchange.api.demo.WebsocketEndpointDemoGenerator\")\n"
 				+ "public class MyTestExchangeMarketDataStreamWithObjectListMapRequestDataTypeDemo {\n"
 				+ "  private static final Logger log = LoggerFactory.getLogger(MyTestExchangeMarketDataStreamWithObjectListMapRequestDataTypeDemo.class);\n"
 				+ "  \n"
@@ -364,8 +365,7 @@ public class WebsocketEndpointDemoGeneratorTest {
 				+ "      System.exit(-1);\n"
 				+ "    }\n"
 				+ "  }\n"
-				+ "}\n"
-				+ "", 
+				+ "}\n", 
 				new WebsocketEndpointDemoGenerator(exchange, exchangeApiDescriptor, websocketEndpointDescriptor).generate());
 	}
 

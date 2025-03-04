@@ -73,10 +73,8 @@ public class ExchangeInterfaceGenerator extends JavaTypeGenerator {
 		String docUrl = exchangeDescriptor.getDocUrl();
 		if (docUrl != null) {
 			s.append("@see ")
-			 .append(JavaCodeGenerationUtil.getHtmlLink(docUrl, "Reference documentation"))
-			 .append("\n");
+			 .append(JavaCodeGenerationUtil.getHtmlLink(docUrl, "Reference documentation"));
 		}
-		s.append(JavaCodeGenerationUtil.GENERATED_CODE_WARNING);
 		return s.toString();
 	}
 

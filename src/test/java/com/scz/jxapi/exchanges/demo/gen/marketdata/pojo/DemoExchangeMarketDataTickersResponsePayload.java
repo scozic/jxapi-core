@@ -8,10 +8,12 @@ import com.scz.jxapi.exchanges.demo.gen.marketdata.serializers.DemoExchangeMarke
 import com.scz.jxapi.util.CompareUtil;
 import com.scz.jxapi.util.EncodingUtil;
 import com.scz.jxapi.util.Pojo;
+import javax.annotation.processing.Generated;
 
 /**
  * Tickers for each symbol
  */
+@Generated("com.scz.jxapi.generator.java.exchange.api.pojo.PojoGenerator")
 @JsonSerialize(using = DemoExchangeMarketDataTickersResponsePayloadSerializer.class)
 public class DemoExchangeMarketDataTickersResponsePayload implements Pojo<DemoExchangeMarketDataTickersResponsePayload> {
   
@@ -164,6 +166,7 @@ public class DemoExchangeMarketDataTickersResponsePayload implements Pojo<DemoEx
   /**
    * Builder for {@link DemoExchangeMarketDataTickersResponsePayload}
    */
+  @Generated("com.scz.jxapi.generator.java.JavaTypeGenerator")
   public static class Builder {
     
     private BigDecimal last;

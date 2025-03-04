@@ -10,13 +10,14 @@ import com.scz.jxapi.exchanges.employee.gen.v1.pojo.EmployeeV1EmployeeUpdatesMes
 import com.scz.jxapi.netutils.websocket.WebsocketListener;
 import com.scz.jxapi.util.DemoProperties;
 import com.scz.jxapi.util.DemoUtil;
+import javax.annotation.processing.Generated;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
  * Snippet to test call to {@link EmployeeV1Api#subscribeEmployeeUpdates(com.scz.jxapi.netutils.websocket.WebsocketListener)}.
- * <br><strong>THIS CODE IS GENERATED. DO NOT EDIT MANUALLY!</strong>
  */
+@Generated("com.scz.jxapi.generator.java.exchange.api.demo.WebsocketEndpointDemoGenerator")
 public class EmployeeV1EmployeeUpdatesDemo {
   private static final Logger log = LoggerFactory.getLogger(EmployeeV1EmployeeUpdatesDemo.class);
   

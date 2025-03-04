@@ -154,6 +154,7 @@ public class PojoGenerator extends JavaTypeGenerator {
 		generateDeepCloneMethod();
 		appendToBody("\n");
 		generateToStringMethod();
+		appendToBody("\n");
 		generateBuilderClass();
 		return super.generate();
 	}
@@ -196,6 +197,7 @@ public class PojoGenerator extends JavaTypeGenerator {
 
 	private void generateBuilderClass() {
 		JavaTypeGenerator builder = new JavaTypeGenerator("Builder");
+		builder.setGeneratePackageAndImports(false);
 		String name = getSimpleName();
 		builder.setDescription("Builder for {@link " + name + "}");
 		builder.setTypeDeclaration("public static class");

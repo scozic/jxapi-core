@@ -11,13 +11,14 @@ import com.scz.jxapi.exchanges.demo.gen.marketdata.pojo.DemoExchangeMarketDataTi
 import com.scz.jxapi.netutils.websocket.WebsocketListener;
 import com.scz.jxapi.util.DemoProperties;
 import com.scz.jxapi.util.DemoUtil;
+import javax.annotation.processing.Generated;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
  * Snippet to test call to {@link DemoExchangeMarketDataApi#subscribeTickerStream(com.scz.jxapi.exchanges.demo.gen.marketdata.pojo.DemoExchangeMarketDataTickerStreamRequest, com.scz.jxapi.netutils.websocket.WebsocketListener)}.
- * <br><strong>THIS CODE IS GENERATED. DO NOT EDIT MANUALLY!</strong>
  */
+@Generated("com.scz.jxapi.generator.java.exchange.api.demo.WebsocketEndpointDemoGenerator")
 public class DemoExchangeMarketDataTickerStreamDemo {
   private static final Logger log = LoggerFactory.getLogger(DemoExchangeMarketDataTickerStreamDemo.class);
   

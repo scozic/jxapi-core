@@ -5,11 +5,12 @@ import java.util.Properties;
 import com.scz.jxapi.exchange.AbstractExchange;
 import com.scz.jxapi.exchanges.employee.gen.v1.EmployeeV1Api;
 import com.scz.jxapi.exchanges.employee.gen.v1.EmployeeV1ApiImpl;
+import javax.annotation.processing.Generated;
 
 /**
  * Actual implementation of {@link EmployeeExchange}<br>
- * <br><strong>THIS CODE IS GENERATED. DO NOT EDIT MANUALLY!</strong>
  */
+@Generated("com.scz.jxapi.generator.java.exchange.ExchangeInterfaceImplementationGenerator")
 public class EmployeeExchangeImpl extends AbstractExchange implements EmployeeExchange {
   
   /**

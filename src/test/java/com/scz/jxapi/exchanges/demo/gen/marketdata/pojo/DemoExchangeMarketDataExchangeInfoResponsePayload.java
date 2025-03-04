@@ -8,10 +8,12 @@ import com.scz.jxapi.exchanges.demo.gen.marketdata.serializers.DemoExchangeMarke
 import com.scz.jxapi.util.CompareUtil;
 import com.scz.jxapi.util.EncodingUtil;
 import com.scz.jxapi.util.Pojo;
+import javax.annotation.processing.Generated;
 
 /**
  * List of market information for each requested symbol
  */
+@Generated("com.scz.jxapi.generator.java.exchange.api.pojo.PojoGenerator")
 @JsonSerialize(using = DemoExchangeMarketDataExchangeInfoResponsePayloadSerializer.class)
 public class DemoExchangeMarketDataExchangeInfoResponsePayload implements Pojo<DemoExchangeMarketDataExchangeInfoResponsePayload> {
   
@@ -122,6 +124,7 @@ public class DemoExchangeMarketDataExchangeInfoResponsePayload implements Pojo<D
   /**
    * Builder for {@link DemoExchangeMarketDataExchangeInfoResponsePayload}
    */
+  @Generated("com.scz.jxapi.generator.java.JavaTypeGenerator")
   public static class Builder {
     
     private String symbol;

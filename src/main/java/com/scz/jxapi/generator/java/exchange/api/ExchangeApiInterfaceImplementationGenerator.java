@@ -208,8 +208,7 @@ public class ExchangeApiInterfaceImplementationGenerator extends JavaTypeGenerat
 		this.simpleInterfaceName = JavaCodeGenerationUtil.getClassNameWithoutPackage(fullInterfaceName);
 		setImplementedInterfaces(Arrays.asList(fullInterfaceName));
 		setParentClassName(AbstractExchangeApi.class.getName());
-		setDescription("Actual implementation of {@link " + simpleInterfaceName + "}<br>\n"
-						+ JavaCodeGenerationUtil.GENERATED_CODE_WARNING);
+		setDescription("Actual implementation of {@link " + simpleInterfaceName + "}<br>");
 		hasRateLimits = checkHasRateLimits();
 		simpleImplementationName =  JavaCodeGenerationUtil.getClassNameWithoutPackage(getName());
 		exchangeRateLimits = exchangeDescriptor.getRateLimits();

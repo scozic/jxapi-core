@@ -7,12 +7,13 @@ import com.scz.jxapi.exchanges.employee.gen.v1.pojo.Employee;
 import com.scz.jxapi.exchanges.employee.gen.v1.pojo.EmployeeV1EmployeeUpdatesMessage;
 import com.scz.jxapi.netutils.rest.FutureRestResponse;
 import com.scz.jxapi.netutils.websocket.WebsocketListener;
+import javax.annotation.processing.Generated;
 
 /**
  * Employee V1 API<br>
  * Version 1 of the Employee API
- * <br><strong>THIS CODE IS GENERATED. DO NOT EDIT MANUALLY!</strong>
  */
+@Generated("com.scz.jxapi.generator.java.exchange.api.ExchangeApiInterfaceGenerator")
 public interface EmployeeV1Api extends ExchangeApi {
   String ID = "V1";
   String GET_EMPLOYEE_REST_API = "getEmployee";

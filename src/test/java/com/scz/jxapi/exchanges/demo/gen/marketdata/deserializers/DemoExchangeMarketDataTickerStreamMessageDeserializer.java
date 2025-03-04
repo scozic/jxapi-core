@@ -6,15 +6,16 @@ import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonToken;
 import com.scz.jxapi.exchanges.demo.gen.marketdata.pojo.DemoExchangeMarketDataTickerStreamMessage;
 import com.scz.jxapi.netutils.deserialization.json.AbstractJsonMessageDeserializer;
+import javax.annotation.processing.Generated;
 import static com.scz.jxapi.util.JsonUtil.readNextBigDecimal;
 import static com.scz.jxapi.util.JsonUtil.readNextLong;
 import static com.scz.jxapi.util.JsonUtil.skipNextValue;
 
 /**
  * Parses incoming JSON messages into com.scz.jxapi.exchanges.demo.gen.marketdata.pojo.DemoExchangeMarketDataTickerStreamMessage instances
- * <br><strong>THIS CODE IS GENERATED. DO NOT EDIT MANUALLY!</strong>
  * @see com.scz.jxapi.exchanges.demo.gen.marketdata.pojo.DemoExchangeMarketDataTickerStreamMessage
  */
+@Generated("com.scz.jxapi.generator.java.exchange.api.pojo.JsonMessageDeserializerGenerator")
 public class DemoExchangeMarketDataTickerStreamMessageDeserializer extends AbstractJsonMessageDeserializer<DemoExchangeMarketDataTickerStreamMessage> {
   
   @Override

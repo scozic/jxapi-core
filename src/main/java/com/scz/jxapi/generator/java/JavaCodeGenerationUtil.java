@@ -34,11 +34,6 @@ public class JavaCodeGenerationUtil {
 	public static final String INDENTATION = "  ";
 	
 	/**
-	 * Text to write in generated sources javadoc to warn code is generated and not to be edited.
-	 */
-	public static final String GENERATED_CODE_WARNING = "<br><strong>THIS CODE IS GENERATED. DO NOT EDIT MANUALLY!</strong>";
-	
-	/**
 	 * Indent all lines in source code chunk, appending {@link #INDENTATION} after
 	 * every line return.
 	 * 

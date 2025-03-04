@@ -7,12 +7,13 @@ import com.scz.jxapi.exchanges.employee.gen.v1.serializers.EmployeeV1EmployeeUpd
 import com.scz.jxapi.util.CompareUtil;
 import com.scz.jxapi.util.EncodingUtil;
 import com.scz.jxapi.util.Pojo;
+import javax.annotation.processing.Generated;
 
 /**
  * Message disseminated upon subscription to Employee V1 API employeeUpdates websocket endpoint request<br>
  * Employee updates websocket
- * <br><strong>THIS CODE IS GENERATED. DO NOT EDIT MANUALLY!</strong>
  */
+@Generated("com.scz.jxapi.generator.java.exchange.api.pojo.PojoGenerator")
 @JsonSerialize(using = EmployeeV1EmployeeUpdatesMessageSerializer.class)
 public class EmployeeV1EmployeeUpdatesMessage implements Pojo<EmployeeV1EmployeeUpdatesMessage> {
   
@@ -102,6 +103,7 @@ public class EmployeeV1EmployeeUpdatesMessage implements Pojo<EmployeeV1Employee
   /**
    * Builder for {@link EmployeeV1EmployeeUpdatesMessage}
    */
+  @Generated("com.scz.jxapi.generator.java.JavaTypeGenerator")
   public static class Builder {
     
     private String eventType;

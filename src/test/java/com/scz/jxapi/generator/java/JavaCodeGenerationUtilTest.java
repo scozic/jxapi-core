@@ -198,10 +198,12 @@ public class JavaCodeGenerationUtilTest {
 		JavaCodeGenerationUtil.generateSlf4jLoggerDeclaration(gen);
 		Assert.assertEquals("package com.foo;\n"
 				+ "\n"
+				+ "import javax.annotation.processing.Generated;\n"
 				+ "import org.slf4j.Logger;\n"
 				+ "import org.slf4j.LoggerFactory;\n"
 				+ "\n"
 				+ "\n"
+				+ "@Generated(\"com.scz.jxapi.generator.java.JavaTypeGenerator\")\n"
 				+ "class Bar {\n"
 				+ "  private static final Logger log = LoggerFactory.getLogger(Bar.class);\n"
 				+ "  \n"

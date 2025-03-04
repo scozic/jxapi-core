@@ -7,13 +7,14 @@ import com.scz.jxapi.exchanges.demo.gen.marketdata.serializers.GenericResponseSe
 import com.scz.jxapi.util.CompareUtil;
 import com.scz.jxapi.util.EncodingUtil;
 import com.scz.jxapi.util.Pojo;
+import javax.annotation.processing.Generated;
 
 /**
  * Response to DemoExchange MarketData API <br>
  * postRestRequestDataTypeInt REST endpoint request<br>
  * A sample REST endpoint using INT response data type
- * <br><strong>THIS CODE IS GENERATED. DO NOT EDIT MANUALLY!</strong>
  */
+@Generated("com.scz.jxapi.generator.java.exchange.api.pojo.PojoGenerator")
 @JsonSerialize(using = GenericResponseSerializer.class)
 public class GenericResponse implements Pojo<GenericResponse> {
   
@@ -82,6 +83,7 @@ public class GenericResponse implements Pojo<GenericResponse> {
   /**
    * Builder for {@link GenericResponse}
    */
+  @Generated("com.scz.jxapi.generator.java.JavaTypeGenerator")
   public static class Builder {
     
     private Integer responseCode;

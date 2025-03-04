@@ -5,11 +5,12 @@ import java.util.Properties;
 import com.scz.jxapi.exchange.AbstractExchange;
 import com.scz.jxapi.exchanges.demo.gen.marketdata.DemoExchangeMarketDataApi;
 import com.scz.jxapi.exchanges.demo.gen.marketdata.DemoExchangeMarketDataApiImpl;
+import javax.annotation.processing.Generated;
 
 /**
  * Actual implementation of {@link DemoExchangeExchange}<br>
- * <br><strong>THIS CODE IS GENERATED. DO NOT EDIT MANUALLY!</strong>
  */
+@Generated("com.scz.jxapi.generator.java.exchange.ExchangeInterfaceImplementationGenerator")
 public class DemoExchangeExchangeImpl extends AbstractExchange implements DemoExchangeExchange {
   
   /**

@@ -28,13 +28,14 @@ import com.scz.jxapi.netutils.websocket.WebsocketSubscribeRequest;
 import com.scz.jxapi.netutils.websocket.multiplexing.WebsocketMessageTopicMatcherFactory;
 import com.scz.jxapi.util.EncodingUtil;
 import com.scz.jxapi.util.JsonUtil;
+import javax.annotation.processing.Generated;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
  * Actual implementation of {@link DemoExchangeMarketDataApi}<br>
- * <br><strong>THIS CODE IS GENERATED. DO NOT EDIT MANUALLY!</strong>
  */
+@Generated("com.scz.jxapi.generator.java.exchange.api.ExchangeApiInterfaceImplementationGenerator")
 public class DemoExchangeMarketDataApiImpl extends AbstractExchangeApi implements DemoExchangeMarketDataApi {
   
   private static final Logger log = LoggerFactory.getLogger(DemoExchangeMarketDataApiImpl.class);

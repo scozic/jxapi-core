@@ -9,13 +9,14 @@ import com.scz.jxapi.exchanges.employee.gen.EmployeeExchangeImpl;
 import com.scz.jxapi.exchanges.employee.gen.v1.EmployeeV1Api;
 import com.scz.jxapi.netutils.rest.RestResponse;
 import com.scz.jxapi.util.DemoUtil;
+import javax.annotation.processing.Generated;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
  * Snippet to test call to {@link EmployeeV1Api#deleteEmployee(java.lang.Integer)})}<br>
- * <br><strong>THIS CODE IS GENERATED. DO NOT EDIT MANUALLY!</strong>
  */
+@Generated("com.scz.jxapi.generator.java.exchange.api.demo.RestEndpointDemoGenerator")
 public class EmployeeV1DeleteEmployeeDemo {
   private static final Logger log = LoggerFactory.getLogger(EmployeeV1DeleteEmployeeDemo.class);
   

@@ -18,13 +18,14 @@ public class ConstantsInterfaceGeneratorTest {
 		ConstantsClassGenerator gen = new ConstantsClassGenerator("com.x.y.MyConstants", List.of());
 		Assert.assertEquals("package com.x.y;\n"
 				+ "\n"
+				+ "import javax.annotation.processing.Generated;\n"
 				+ "\n"
 				+ "\n"
+				+ "@Generated(\"com.scz.jxapi.generator.java.exchange.constants.ConstantsClassGenerator\")\n"
 				+ "public class MyConstants {\n"
 				+ "  \n"
 				+ "  private MyConstants(){}\n"
-				+ "}\n"
-				+ "", gen.generate());
+				+ "}\n", gen.generate());
 	}
 	
 	@Test
@@ -45,7 +46,10 @@ public class ConstantsInterfaceGeneratorTest {
 				+ "\n"
 				+ "import java.math.BigDecimal;\n"
 				+ "\n"
+				+ "import javax.annotation.processing.Generated;\n"
 				+ "\n"
+				+ "\n"
+				+ "@Generated(\"com.scz.jxapi.generator.java.exchange.constants.ConstantsClassGenerator\")\n"
 				+ "public class MyConstants {\n"
 				+ "  \n"
 				+ "  private MyConstants(){}\n"
@@ -96,8 +100,7 @@ public class ConstantsInterfaceGeneratorTest {
 				+ "   * A test BigDecimal constant with value specified as String\n"
 				+ "   */\n"
 				+ "  public static final BigDecimal MY_BIG_DECIMAL_WITH_VALUE_AS_STRING = new BigDecimal(\"5.4321\");\n"
-				+ "}\n"
-				+ "", gen.generate());
+				+ "}\n", gen.generate());
 	}
 	
 	@Test(expected = IllegalArgumentException.class)

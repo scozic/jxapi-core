@@ -21,13 +21,14 @@ import com.scz.jxapi.netutils.websocket.WebsocketListener;
 import com.scz.jxapi.netutils.websocket.WebsocketSubscribeRequest;
 import com.scz.jxapi.netutils.websocket.multiplexing.WebsocketMessageTopicMatcherFactory;
 import com.scz.jxapi.util.EncodingUtil;
+import javax.annotation.processing.Generated;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
  * Actual implementation of {@link EmployeeV1Api}<br>
- * <br><strong>THIS CODE IS GENERATED. DO NOT EDIT MANUALLY!</strong>
  */
+@Generated("com.scz.jxapi.generator.java.exchange.api.ExchangeApiInterfaceImplementationGenerator")
 public class EmployeeV1ApiImpl extends AbstractExchangeApi implements EmployeeV1Api {
   
   private static final Logger log = LoggerFactory.getLogger(EmployeeV1ApiImpl.class);

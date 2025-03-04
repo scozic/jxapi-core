@@ -57,8 +57,7 @@ public class JsonMessageDeserializerGenerator extends JavaTypeGenerator {
 		setDescription("Parses incoming JSON messages into " 
 						+ deserializedTypeClassName 
 						+ " instances\n"
-						+ JavaCodeGenerationUtil.GENERATED_CODE_WARNING 
-						+ "\n@see " + deserializedTypeClassName);
+						+ "@see " + deserializedTypeClassName);
 	}
 	
 	@Override

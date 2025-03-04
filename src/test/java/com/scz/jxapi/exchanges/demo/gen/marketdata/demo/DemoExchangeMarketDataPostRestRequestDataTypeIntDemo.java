@@ -10,13 +10,14 @@ import com.scz.jxapi.exchanges.demo.gen.marketdata.DemoExchangeMarketDataApi;
 import com.scz.jxapi.exchanges.demo.gen.marketdata.pojo.GenericResponse;
 import com.scz.jxapi.netutils.rest.RestResponse;
 import com.scz.jxapi.util.DemoUtil;
+import javax.annotation.processing.Generated;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
  * Snippet to test call to {@link DemoExchangeMarketDataApi#postRestRequestDataTypeInt(java.lang.Integer)})}<br>
- * <br><strong>THIS CODE IS GENERATED. DO NOT EDIT MANUALLY!</strong>
  */
+@Generated("com.scz.jxapi.generator.java.exchange.api.demo.RestEndpointDemoGenerator")
 public class DemoExchangeMarketDataPostRestRequestDataTypeIntDemo {
   private static final Logger log = LoggerFactory.getLogger(DemoExchangeMarketDataPostRestRequestDataTypeIntDemo.class);
   

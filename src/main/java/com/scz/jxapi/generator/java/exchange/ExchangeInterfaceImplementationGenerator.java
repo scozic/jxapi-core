@@ -78,8 +78,7 @@ public class ExchangeInterfaceImplementationGenerator extends JavaTypeGenerator 
 		setTypeDeclaration("public class");
 		setImplementedInterfaces(Arrays.asList(fullInterfaceName));
 		setParentClassName(AbstractExchange.class.getName());
-		setDescription("Actual implementation of {@link " + simpleInterfaceName + "}<br>\n"
-				   + JavaCodeGenerationUtil.GENERATED_CODE_WARNING);
+		setDescription("Actual implementation of {@link " + simpleInterfaceName + "}<br>");
 		appendToBody("\n");
 		
 		String httpUrlDeclaration = ExchangeJavaGenUtil.getHttpUrlVariableDeclaration(exchangeDescriptor);

@@ -7,6 +7,7 @@ import com.scz.jxapi.exchange.descriptor.ConfigProperty;
 import com.scz.jxapi.exchange.descriptor.DefaultConfigProperty;
 import com.scz.jxapi.exchange.descriptor.Type;
 import com.scz.jxapi.util.PropertiesUtil;
+import javax.annotation.processing.Generated;
 
 /**
  * Configurable properties for <strong>DemoExchange</strong> exchange:<br>
@@ -38,10 +39,10 @@ import com.scz.jxapi.util.PropertiesUtil;
  *   </tr>
  * </table>
  * <br>
- * Exposes helper methods are available to retrieve value of each of these properties with right type, returning default value if not present in properties
- * <br><strong>THIS CODE IS GENERATED. DO NOT EDIT MANUALLY!</strong>
+ * Exposes helper methods are available to retrieve value of each of these properties with right type, returning default value if not present in properties.
  * @see ConfigProperty
  */
+@Generated("com.scz.jxapi.generator.java.exchange.constants.PropertiesClassGenerator")
 public class DemoExchangeProperties {
   
   private DemoExchangeProperties(){}

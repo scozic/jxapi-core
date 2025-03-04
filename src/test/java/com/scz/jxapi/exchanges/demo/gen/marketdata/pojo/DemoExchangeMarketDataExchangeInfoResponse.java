@@ -10,13 +10,14 @@ import com.scz.jxapi.util.CompareUtil;
 import com.scz.jxapi.util.DeepCloneable;
 import com.scz.jxapi.util.EncodingUtil;
 import com.scz.jxapi.util.Pojo;
+import javax.annotation.processing.Generated;
 
 /**
  * Response to DemoExchange MarketData API <br>
  * exchangeInfo REST endpoint request<br>
  * Fetch market information of symbols that can be traded
- * <br><strong>THIS CODE IS GENERATED. DO NOT EDIT MANUALLY!</strong>
  */
+@Generated("com.scz.jxapi.generator.java.exchange.api.pojo.PojoGenerator")
 @JsonSerialize(using = DemoExchangeMarketDataExchangeInfoResponseSerializer.class)
 public class DemoExchangeMarketDataExchangeInfoResponse implements Pojo<DemoExchangeMarketDataExchangeInfoResponse> {
   
@@ -106,6 +107,7 @@ public class DemoExchangeMarketDataExchangeInfoResponse implements Pojo<DemoExch
   /**
    * Builder for {@link DemoExchangeMarketDataExchangeInfoResponse}
    */
+  @Generated("com.scz.jxapi.generator.java.JavaTypeGenerator")
   public static class Builder {
     
     private Integer responseCode;

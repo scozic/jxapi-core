@@ -9,12 +9,13 @@ import com.scz.jxapi.util.CollectionUtil;
 import com.scz.jxapi.util.CompareUtil;
 import com.scz.jxapi.util.EncodingUtil;
 import com.scz.jxapi.util.Pojo;
+import javax.annotation.processing.Generated;
 
 /**
  * Request for DemoExchange MarketData API exchangeInfo REST endpoint<br>
  * Fetch market information of symbols that can be traded
- * <br><strong>THIS CODE IS GENERATED. DO NOT EDIT MANUALLY!</strong>
  */
+@Generated("com.scz.jxapi.generator.java.exchange.api.pojo.PojoGenerator")
 @JsonSerialize(using = DemoExchangeMarketDataExchangeInfoRequestSerializer.class)
 public class DemoExchangeMarketDataExchangeInfoRequest implements Pojo<DemoExchangeMarketDataExchangeInfoRequest> {
   
@@ -83,6 +84,7 @@ public class DemoExchangeMarketDataExchangeInfoRequest implements Pojo<DemoExcha
   /**
    * Builder for {@link DemoExchangeMarketDataExchangeInfoRequest}
    */
+  @Generated("com.scz.jxapi.generator.java.JavaTypeGenerator")
   public static class Builder {
     
     private List<String> symbols;

@@ -7,12 +7,13 @@ import com.scz.jxapi.exchanges.demo.gen.marketdata.serializers.SingleSymbolSeria
 import com.scz.jxapi.util.CompareUtil;
 import com.scz.jxapi.util.EncodingUtil;
 import com.scz.jxapi.util.Pojo;
+import javax.annotation.processing.Generated;
 
 /**
  * Request for DemoExchange MarketData API postRestRequestDataTypeObjectListMap REST endpoint<br>
  * A sample REST endpoint using OBJECT_LIST_MAP request data type
- * <br><strong>THIS CODE IS GENERATED. DO NOT EDIT MANUALLY!</strong>
  */
+@Generated("com.scz.jxapi.generator.java.exchange.api.pojo.PojoGenerator")
 @JsonSerialize(using = SingleSymbolSerializer.class)
 public class SingleSymbol implements Pojo<SingleSymbol> {
   
@@ -81,6 +82,7 @@ public class SingleSymbol implements Pojo<SingleSymbol> {
   /**
    * Builder for {@link SingleSymbol}
    */
+  @Generated("com.scz.jxapi.generator.java.JavaTypeGenerator")
   public static class Builder {
     
     private String symbol;

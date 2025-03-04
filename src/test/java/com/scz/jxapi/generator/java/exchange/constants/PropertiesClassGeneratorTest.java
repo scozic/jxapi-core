@@ -38,6 +38,7 @@ public class PropertiesClassGeneratorTest {
         		+ "import com.scz.jxapi.exchange.descriptor.DefaultConfigProperty;\n"
         		+ "import com.scz.jxapi.exchange.descriptor.Type;\n"
         		+ "import com.scz.jxapi.util.PropertiesUtil;\n"
+        		+ "import javax.annotation.processing.Generated;\n"
         		+ "\n"
         		+ "/**\n"
         		+ " * Configurable properties for <strong>myExchange</strong> exchange:<br>\n"
@@ -87,10 +88,10 @@ public class PropertiesClassGeneratorTest {
         		+ " *   </tr>\n"
         		+ " * </table>\n"
         		+ " * <br>\n"
-        		+ " * Exposes helper methods are available to retrieve value of each of these properties with right type, returning default value if not present in properties\n"
-        		+ " * <br><strong>THIS CODE IS GENERATED. DO NOT EDIT MANUALLY!</strong>\n"
+        		+ " * Exposes helper methods are available to retrieve value of each of these properties with right type, returning default value if not present in properties.\n"
         		+ " * @see ConfigProperty\n"
         		+ " */\n"
+        		+ "@Generated(\"com.scz.jxapi.generator.java.exchange.constants.PropertiesClassGenerator\")\n"
         		+ "public class MyProperties {\n"
         		+ "  \n"
         		+ "  private MyProperties(){}\n"
@@ -199,8 +200,7 @@ public class PropertiesClassGeneratorTest {
         		+ "    MY_LONG, \n"
         		+ "    MY_BOOL, \n"
         		+ "    MY_BIG_DECIMAL);\n"
-        		+ "}\n"
-        		+ "";
+        		+ "}\n";
         Assert.assertEquals(expected, gen.generate());
     }
 }

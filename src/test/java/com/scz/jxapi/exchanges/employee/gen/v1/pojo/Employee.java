@@ -7,13 +7,14 @@ import com.scz.jxapi.exchanges.employee.gen.v1.serializers.EmployeeSerializer;
 import com.scz.jxapi.util.CompareUtil;
 import com.scz.jxapi.util.EncodingUtil;
 import com.scz.jxapi.util.Pojo;
+import javax.annotation.processing.Generated;
 
 /**
  * Response to Employee V1 API <br>
  * getEmployee REST endpoint request<br>
  * Get employee details by ID
- * <br><strong>THIS CODE IS GENERATED. DO NOT EDIT MANUALLY!</strong>
  */
+@Generated("com.scz.jxapi.generator.java.exchange.api.pojo.PojoGenerator")
 @JsonSerialize(using = EmployeeSerializer.class)
 public class Employee implements Pojo<Employee> {
   
@@ -145,6 +146,7 @@ public class Employee implements Pojo<Employee> {
   /**
    * Builder for {@link Employee}
    */
+  @Generated("com.scz.jxapi.generator.java.JavaTypeGenerator")
   public static class Builder {
     
     private Integer id;

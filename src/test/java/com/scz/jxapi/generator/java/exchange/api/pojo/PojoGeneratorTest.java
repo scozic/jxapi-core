@@ -16,7 +16,7 @@ public class PojoGeneratorTest {
 	@Test
 	public void testGenerate() {
 		String typeName = "com.x.MyPojo";
-		String typeDescription = "Used in PojoGenerator2Test";
+		String typeDescription = "Used in PojoGeneratorTest";
 		List<Field> properties = List.of(
 		  Field.builder().type(Type.LONG).name("id").build(),
 		  Field.builder().type(Type.INT).name("score").description("Current score").build(),
@@ -46,10 +46,12 @@ public class PojoGeneratorTest {
 				+ "import com.scz.jxapi.util.Pojo;\n"
 				+ "import com.x.common.MyInterface;\n"
 				+ "import com.x.serializers.MyPojoSerializer;\n"
+				+ "import javax.annotation.processing.Generated;\n"
 				+ "\n"
 				+ "/**\n"
-				+ " * Used in PojoGenerator2Test\n"
+				+ " * Used in PojoGeneratorTest\n"
 				+ " */\n"
+				+ "@Generated(\"com.scz.jxapi.generator.java.exchange.api.pojo.PojoGenerator\")\n"
 				+ "@JsonSerialize(using = MyPojoSerializer.class)\n"
 				+ "public class MyPojo implements Pojo<MyPojo>, MyInterface {\n"
 				+ "  \n"
@@ -175,6 +177,7 @@ public class PojoGeneratorTest {
 				+ "  /**\n"
 				+ "   * Builder for {@link MyPojo}\n"
 				+ "   */\n"
+				+ "  @Generated(\"com.scz.jxapi.generator.java.JavaTypeGenerator\")\n"
 				+ "  public static class Builder {\n"
 				+ "    \n"
 				+ "    private Long id;\n"
@@ -276,7 +279,7 @@ public class PojoGeneratorTest {
 	@Test
 	public void testGenerate_ImplicitObjectType() {
 		String typeName = "com.x.pojo.MyPojoWithNullAdditionnalBody";
-		String typeDescription = "Used in PojoGenerator2Test";
+		String typeDescription = "Used in PojoGeneratorTest";
 		List<Field> properties = List.of(
 			Field.builder()
 			.name("myObj")
@@ -295,10 +298,12 @@ public class PojoGeneratorTest {
 				+ "import com.scz.jxapi.util.EncodingUtil;\n"
 				+ "import com.scz.jxapi.util.Pojo;\n"
 				+ "import com.x.serializers.MyPojoWithNullAdditionnalBodySerializer;\n"
+				+ "import javax.annotation.processing.Generated;\n"
 				+ "\n"
 				+ "/**\n"
-				+ " * Used in PojoGenerator2Test\n"
+				+ " * Used in PojoGeneratorTest\n"
 				+ " */\n"
+				+ "@Generated(\"com.scz.jxapi.generator.java.exchange.api.pojo.PojoGenerator\")\n"
 				+ "@JsonSerialize(using = MyPojoWithNullAdditionnalBodySerializer.class)\n"
 				+ "public class MyPojoWithNullAdditionnalBody implements Pojo<MyPojoWithNullAdditionnalBody> {\n"
 				+ "  \n"
@@ -367,6 +372,7 @@ public class PojoGeneratorTest {
 				+ "  /**\n"
 				+ "   * Builder for {@link MyPojoWithNullAdditionnalBody}\n"
 				+ "   */\n"
+				+ "  @Generated(\"com.scz.jxapi.generator.java.JavaTypeGenerator\")\n"
 				+ "  public static class Builder {\n"
 				+ "    \n"
 				+ "    private MyPojoWithNullAdditionnalBodyMyObj myObj;\n"
@@ -399,7 +405,7 @@ public class PojoGeneratorTest {
 	@Test
 	public void testGenerate_NullProperties() {
 		String typeName = "com.x.pojo.MyPojoWithNullProperties";
-		String typeDescription = "Used in PojoGenerator2Test";
+		String typeDescription = "Used in PojoGeneratorTest";
 		PojoGenerator generator = new PojoGenerator(typeName, typeDescription, null, null);
 		Assert.assertEquals("package com.x.pojo;\n"
 				+ "\n"
@@ -407,10 +413,12 @@ public class PojoGeneratorTest {
 				+ "import com.scz.jxapi.util.EncodingUtil;\n"
 				+ "import com.scz.jxapi.util.Pojo;\n"
 				+ "import com.x.serializers.MyPojoWithNullPropertiesSerializer;\n"
+				+ "import javax.annotation.processing.Generated;\n"
 				+ "\n"
 				+ "/**\n"
-				+ " * Used in PojoGenerator2Test\n"
+				+ " * Used in PojoGeneratorTest\n"
 				+ " */\n"
+				+ "@Generated(\"com.scz.jxapi.generator.java.exchange.api.pojo.PojoGenerator\")\n"
 				+ "@JsonSerialize(using = MyPojoWithNullPropertiesSerializer.class)\n"
 				+ "public class MyPojoWithNullProperties implements Pojo<MyPojoWithNullProperties> {\n"
 				+ "  \n"
@@ -460,6 +468,7 @@ public class PojoGeneratorTest {
 				+ "  /**\n"
 				+ "   * Builder for {@link MyPojoWithNullProperties}\n"
 				+ "   */\n"
+				+ "  @Generated(\"com.scz.jxapi.generator.java.JavaTypeGenerator\")\n"
 				+ "  public static class Builder {\n"
 				+ "    \n"
 				+ "    \n"
@@ -492,9 +501,11 @@ public class PojoGeneratorTest {
 				+ "import com.scz.jxapi.util.CompareUtil;\n"
 				+ "import com.scz.jxapi.util.EncodingUtil;\n"
 				+ "import com.scz.jxapi.util.Pojo;\n"
+				+ "import javax.annotation.processing.Generated;\n"
 				+ "import x.y.z.serializers.FooSerializer;\n"
 				+ "\n"
 				+ "\n"
+				+ "@Generated(\"com.scz.jxapi.generator.java.exchange.api.pojo.PojoGenerator\")\n"
 				+ "@JsonSerialize(using = FooSerializer.class)\n"
 				+ "public class Foo implements Pojo<Foo> {\n"
 				+ "  \n"
@@ -626,6 +637,7 @@ public class PojoGeneratorTest {
 				+ "  /**\n"
 				+ "   * Builder for {@link Foo}\n"
 				+ "   */\n"
+				+ "  @Generated(\"com.scz.jxapi.generator.java.JavaTypeGenerator\")\n"
 				+ "  public static class Builder {\n"
 				+ "    \n"
 				+ "    private String name;\n"

@@ -1,9 +1,11 @@
 package com.scz.jxapi.exchanges.employee.gen;
 
+import javax.annotation.processing.Generated;
 
 /**
  * Constants used in {@link com.scz.jxapi.exchanges.employee.gen.EmployeeExchange} API wrapper
  */
+@Generated("com.scz.jxapi.generator.java.exchange.constants.ConstantsClassGenerator")
 public class EmployeeConstants {
   
   private EmployeeConstants(){}

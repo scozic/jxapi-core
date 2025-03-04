@@ -168,8 +168,7 @@ public class RestEndpointDemoGenerator extends JavaTypeGenerator {
 		return new StringBuilder()
 				.append("Snippet to test call to ")
 				.append(apiEndpointMethodJavadocLink)
-				.append(")}<br>\n")
-				.append(JavaCodeGenerationUtil.GENERATED_CODE_WARNING)
+				.append(")}<br>")
 				.toString();
 	}
 	

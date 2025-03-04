@@ -179,8 +179,7 @@ public class WebsocketEndpointDemoGenerator extends JavaTypeGenerator {
 		return new StringBuilder()
 					.append("Snippet to test call to ")
 					.append(getApiInterfaceSubscribeMethodJavadocLink())
-					.append(".\n")
-					.append(JavaCodeGenerationUtil.GENERATED_CODE_WARNING)
+					.append(".")
 					.toString();
 				
 	}

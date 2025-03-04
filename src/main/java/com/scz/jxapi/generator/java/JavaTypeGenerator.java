@@ -5,6 +5,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
 
+import javax.annotation.processing.Generated;
+
 /**
  * A simple generator for .java files of any type. Generator should be supplied
  * full type name, imports, super type name (can be multiple in case type is an
@@ -22,6 +24,8 @@ public class JavaTypeGenerator {
 	private String typeDeclaration;
 	
 	private String description;
+	
+	private boolean generatePackageAndImports = true;
 	
 	/**
 	 * Inner class body
@@ -200,6 +204,14 @@ public class JavaTypeGenerator {
 		this.implementedInterfaces = implementedInterfaces;
 	}
 	
+	public boolean isGeneratePackageAndImports() {
+		return generatePackageAndImports;
+	}
+
+	public void setGeneratePackageAndImports(boolean generatePackageAndImports) {
+		this.generatePackageAndImports = generatePackageAndImports;
+	}
+	
 	/**
 	 * Performs generation. Parent class and implemented interfaces will be added to
 	 * import unless of same package as generated class
@@ -208,6 +220,7 @@ public class JavaTypeGenerator {
 	 */
 	public String generate() {
 		StringBuilder sb = new StringBuilder();
+		addImport(Generated.class);
 		if (parentClassName != null) {
 			addImport(parentClassName);
 		}
@@ -215,15 +228,19 @@ public class JavaTypeGenerator {
 			implementedInterfaces.forEach(this::addImport);
 		}
 		
-		String pkg = getPackage();
-		if (!pkg.isEmpty()) {
-			sb.append("package ").append(pkg).append(";\n\n");
+		if (generatePackageAndImports) {
+			String pkg = getPackage();
+			if (!pkg.isEmpty()) {
+				sb.append("package ").append(pkg).append(";\n\n");
+			}
+			
+			sb.append(imports.generate(pkg))
+			  .append("\n");
 		}
 		
-		sb.append(imports.generate(pkg));
-		sb.append("\n")
-		  .append(JavaCodeGenerationUtil.generateJavaDoc(description))
+		sb.append(JavaCodeGenerationUtil.generateJavaDoc(description))
 		  .append("\n")
+		  .append("@Generated(\"").append(getClass().getName()).append("\")\n")
 		  .append(typeDeclaration)
 		  .append(" ")
 		  .append(getSimpleName())
@@ -267,5 +284,7 @@ public class JavaTypeGenerator {
 		}
 		Files.writeString(sourceFolder.resolve(getSimpleName() + ".java"), generate());
 	}
+
+
 	
 }

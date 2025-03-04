@@ -8,12 +8,13 @@ import com.scz.jxapi.exchanges.demo.gen.marketdata.serializers.DemoExchangeMarke
 import com.scz.jxapi.util.CompareUtil;
 import com.scz.jxapi.util.EncodingUtil;
 import com.scz.jxapi.util.Pojo;
+import javax.annotation.processing.Generated;
 
 /**
  * Message disseminated upon subscription to DemoExchange MarketData API tickerStream websocket endpoint request<br>
  * Subscribe to ticker stream
- * <br><strong>THIS CODE IS GENERATED. DO NOT EDIT MANUALLY!</strong>
  */
+@Generated("com.scz.jxapi.generator.java.exchange.api.pojo.PojoGenerator")
 @JsonSerialize(using = DemoExchangeMarketDataTickerStreamMessageSerializer.class)
 public class DemoExchangeMarketDataTickerStreamMessage implements Pojo<DemoExchangeMarketDataTickerStreamMessage> {
   
@@ -208,6 +209,7 @@ public class DemoExchangeMarketDataTickerStreamMessage implements Pojo<DemoExcha
   /**
    * Builder for {@link DemoExchangeMarketDataTickerStreamMessage}
    */
+  @Generated("com.scz.jxapi.generator.java.JavaTypeGenerator")
   public static class Builder {
     
     private String topic;

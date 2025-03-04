@@ -47,8 +47,6 @@ public class JsonPojoSerializerGenerator extends JavaTypeGenerator {
 		setParentClassName(StdSerializer.class.getName() + "<" + simpleDeserializedClassName + ">");
 		setDescription("Jackson JSON Serializer for " 
 						+ serializedTypeClassName 
-						+ "\n"
-						+ JavaCodeGenerationUtil.GENERATED_CODE_WARNING 
 						+ "\n@see " + simpleDeserializedClassName);
 	}
 	

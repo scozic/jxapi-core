@@ -12,12 +12,11 @@ import com.scz.jxapi.exchange.descriptor.Field;
 import com.scz.jxapi.exchange.descriptor.RestEndpointDescriptor;
 import com.scz.jxapi.exchange.descriptor.Type;
 import com.scz.jxapi.exchange.descriptor.WebsocketEndpointDescriptor;
-import com.scz.jxapi.generator.java.JavaCodeGenerationUtil;
 import com.scz.jxapi.generator.java.exchange.ClassesGenerator;
 import com.scz.jxapi.generator.java.exchange.api.ExchangeApiGenUtil;
-import com.scz.jxapi.generator.java.exchange.api.pojo.PojoClassesGenerator;
 import com.scz.jxapi.generator.java.exchange.api.pojo.JsonMessageDeserializerClassesGenerator;
 import com.scz.jxapi.generator.java.exchange.api.pojo.JsonPojoSerializerClassesGenerator;
+import com.scz.jxapi.generator.java.exchange.api.pojo.PojoClassesGenerator;
 
 /**
  * Generates all classes used by a particular Websocket endpoint defined in an  
@@ -103,9 +102,7 @@ public class WebsocketEndpointClassesGenerator implements ClassesGenerator {
 						+ " " + apiDescriptor.getName() + " API " 
 						+ websocketEndpointDescriptor.getName() 
 						+ " websocket endpoint<br>\n" 
-						+ websocketEndpointDescriptor.getDescription()
-						+ "\n"
-						+ JavaCodeGenerationUtil.GENERATED_CODE_WARNING,
+						+ websocketEndpointDescriptor.getDescription(),
 					request.getProperties(), 
 					request.getImplementedInterfaces() 
 				).generateClasses(outputFolder);
@@ -121,9 +118,7 @@ public class WebsocketEndpointClassesGenerator implements ClassesGenerator {
 						+ exchangeDescriptor.getName() + " " 
 						+ apiDescriptor.getName() + " API " 
 						+ websocketEndpointDescriptor.getName() + " websocket endpoint request<br>\n"
-						+ websocketEndpointDescriptor.getDescription()
-						+ "\n"
-						+ JavaCodeGenerationUtil.GENERATED_CODE_WARNING,
+						+ websocketEndpointDescriptor.getDescription(),
 					websocketEndpointDescriptor.getMessage().getProperties(), 
 					websocketEndpointDescriptor.getMessage().getImplementedInterfaces() 
 				).generateClasses(outputFolder);

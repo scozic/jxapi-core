@@ -93,8 +93,7 @@ public class PropertiesClassGenerator extends JavaTypeGenerator {
 		}
 		sb.append(HtmlGenerationUtil.generateTable(exchangeName + " properties", columns, rows))
 		  .append("<br>\nExposes helper methods are available to retrieve value of each of these properties ")
-		  .append("with right type, returning default value if not present in properties\n")
-		  .append(JavaCodeGenerationUtil.GENERATED_CODE_WARNING)
+		  .append("with right type, returning default value if not present in properties.")
 		  .append("\n@see ConfigProperty");
 		return sb.toString();
 	}

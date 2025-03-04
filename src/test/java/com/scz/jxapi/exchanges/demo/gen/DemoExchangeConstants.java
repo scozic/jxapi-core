@@ -1,9 +1,11 @@
 package com.scz.jxapi.exchanges.demo.gen;
 
+import javax.annotation.processing.Generated;
 
 /**
  * Constants used in {@link com.scz.jxapi.exchanges.demo.gen.DemoExchangeExchange} API wrapper
  */
+@Generated("com.scz.jxapi.generator.java.exchange.constants.ConstantsClassGenerator")
 public class DemoExchangeConstants {
   
   private DemoExchangeConstants(){}
