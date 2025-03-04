@@ -26,19 +26,28 @@ import com.scz.jxapi.netutils.rest.ratelimits.RateLimitManager;
 import com.scz.jxapi.util.DemoUtil;
 
 /**
- * Java main class that performs generation of exchange APIs for every file found with name ending with 'Descriptor.json' in 'src/main/resources/' folder. 
- * This is the main entry point to generate all exchange API classes, and target of the maven exec plugin in wrapper module pom.xml.
+ * Java main class that performs generation of exchange APIs for every file
+ * found with name ending with 'Descriptor.json' in 'src/main/resources/'
+ * folder. This is the main entry point to generate all exchange API classes,
+ * and target of the maven exec plugin in wrapper module pom.xml.
  * <p>
  * The generated code is written in 'src/main/java/' folder.
  * <p>
- * The generated code is based on the JSON descriptor file format defined in {@link ExchangeDescriptor}.
+ * The generated code is based on the JSON descriptor file format defined in
+ * {@link ExchangeDescriptor}.
  * <p>
  * The generated code includes:
  * <ul>
- * <li>Java interface for the exchange with a getter method to retrieve each exchange API interface.
- * <li>Implementation of that exchange interface with eventual {@link RateLimitManager} to enforce rate limit rules if any.
- * <li>Java interface for each API listed in {@link ExchangeDescriptor} (see {@link ExchangeApiDescriptor} and generator for its classes {@link ExchangeApiClassesGenerator}), with all classes for every REST/Websocket endpoint.
- * <li>All demo classes for each API listed in {@link ExchangeDescriptor} (see {@link ExchangeApiDescriptor} see {@link ExchangeDemoClassesGenerator}).
+ * <li>Java interface for the exchange with a getter method to retrieve each
+ * exchange API interface.
+ * <li>Implementation of that exchange interface with eventual
+ * {@link RateLimitManager} to enforce rate limit rules if any.
+ * <li>Java interface for each API listed in {@link ExchangeDescriptor} (see
+ * {@link ExchangeApiDescriptor} and generator for its classes
+ * {@link ExchangeApiClassesGenerator}), with all classes for every
+ * REST/Websocket endpoint.
+ * <li>All demo classes for each API listed in {@link ExchangeDescriptor} (see
+ * {@link ExchangeApiDescriptor} see {@link ExchangeDemoClassesGenerator}).
  * </ul>
  * 
  */
@@ -49,7 +58,7 @@ public class ExchangeGeneratorMain {
 	/**
 	 * Folder where exchange descriptor files are located in the wrapper project.
      */
-	public static final Path DESCRIPTOR_FOLDER = Paths.get("src", "main", "resources", "jxapi");
+	public static final Path DESCRIPTOR_FOLDER = Paths.get("src", "main", "resources", "jxapi", "exchange");
 	
 	/**
 	 * Key for system property that can be passed to JVM running
@@ -118,6 +127,7 @@ public class ExchangeGeneratorMain {
 					try {
 						generateExchangeWrapperAndDemos(exchangeDescriptor, projectFolder, baseJavaDocUrl, baseSrcUrl);
 					} catch (Exception ex) {
+						// Remark: intentionally catching all exceptions to continue generation for other exchanges
 						log.error("Error while generating exchange descriptor for exchange:"
 								+ exchangeDescriptor.getName() + ":" + ex.getMessage(), ex);
 						error.set(ex);
