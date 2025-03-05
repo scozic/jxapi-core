@@ -2,14 +2,16 @@
 	"name": "MyTestExchange",
 	"description": "A sample Exchange descriptor file",
 	"basePackage": "com.foo.bar.gen",
-		"apis":[
+	"rateLimits":[],
+	"apis":[
 		{ 
 			"name": "MarketData",
-			"description": "The market data API of MyTestExchange, , with different response data types for websocket and REST endpoints. Remark: Only OBJECT (default) and STRING are usually used, but any data type is supported",
+			"description": "The market data API of MyTestExchange, with different response data types for websocket and REST endpoints. Remark: Only OBJECT (default) and STRING are usually used, but any data type is supported",
 			"httpRequestInterceptorFactory": "com.foo.bar.BarRequestInterceptorFactory",
 			"restEndpoints": [
 				{
 					"name": "getRestResponseDataTypeInt",
+					"rateLimits": [],
 					"httpMethod": "GET",
 					"description": "A sample REST endpoint using INT response data type",
 					"url": "https://com.sample.mycex/getInt",
@@ -60,7 +62,7 @@
 					"description": "A sample REST endpoint using OBJECT response data type (default type, explicit here)",
 					"url": "https://com.sample.mycex/getBigDecimal",
 					"response": {
-						"parameters": [
+						"properties": [
 							{"name":"responseCode", "type": "INT", "description":"Request response code", "sampleValue":"0"}
 						]
 					}
@@ -81,7 +83,7 @@
 					"url": "https://com.sample.mycex/getObjectlistMap",
 					"response": {
 						"type": "OBJECT_LIST_MAP",
-						"parameters": [
+						"properties": [
 							{"name":"responseCode", "type": "INT", "description":"Request response code", "sampleValue":"0"}
 						]
 					}
@@ -106,7 +108,7 @@
 					],
 					"message": { 
 						"type":"OBJECT",
-						"parameters": [
+						"properties": [
 							{"name":"topic", "msgField":"t", "type": "STRING", "description":"Topic", "sampleValue":"ticker"},
 							{"name":"symbol", "msgField":"s", "type": "STRING", "description":"Symbol name", "sampleValue":"BTC_USDT"},
 							{"name":"last", "msgField":"p", "type": "BIGDECIMAL", "description":"Last traded price", "sampleValue":"16000.00"}
@@ -122,7 +124,7 @@
 					],
 					"message": {
 						"type": "OBJECT_MAP_LIST",
-						"parameters": [
+						"properties": [
 							{"name":"topic", "msgField":"t", "type": "STRING", "description":"Topic", "sampleValue":"tickerMapList"},
 							{"name":"last", "msgField":"p", "type": "BIGDECIMAL", "description":"Last traded price", "sampleValue":"16000.00"}
 						]

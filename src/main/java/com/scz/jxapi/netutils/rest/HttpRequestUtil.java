@@ -11,11 +11,11 @@ public class HttpRequestUtil {
 	 * Extract query parameters from full URL, that is the substring after first occurrence of '?' character in URL.
 	 * For instance:
 	 * <ul>
-	 * <li><code>http://example.com</code> -> <code>null</code></li>
-	 * <li><code>http://example.com?</code> -> <code>""</code></li>
-	 * <li><code>http://example.com?name=foo&age=12</code> -> <code>"name=foo&age=12"</code></li>
+	 * <li><code>http://example.com</code> &rarr; <code>null</code></li>
+	 * <li><code>http://example.com?</code> &rarr; <code>""</code></li>
+	 * <li><code>http://example.com?name=foo&amp;age=12</code> &rarr; <code>"name=foo&amp;age=12"</code></li>
 	 * </ul>
-	 * @param url
+	 * @param url URL to extract query parameters from
 	 * @return Query parameters of <code>url</code>, or <code>null</code> if '?' is not found in <code>url</code>
 	 */
 	public static String getUrlQueryParams(String url) {

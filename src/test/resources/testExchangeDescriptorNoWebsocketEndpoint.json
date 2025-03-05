@@ -2,11 +2,11 @@
 	"name": "MyTestExchange",
 	"description": "A sample Exchange descriptor file",
 	"basePackage": "com.foo.bar.gen",
+	"rateLimits":[],
 	"apis":[
 		{ 
 			"name": "MarketData",
 			"description": "The market data API of MyTestExchange, , with only 1 REST endpoint and no websocket endpoint",
-			"httpRequestInterceptorFactory": "com.foo.bar.BarRequestInterceptorFactory",
 			"restEndpoints": [
 				{
 					"name": "exchangeInfo",
@@ -14,14 +14,14 @@
 					"description": "Fetch market information of symbols that can be traded",
 					"url": "https://com.sample.mycex/exchangeInfo",
 					"request": {
-						"parameters": [
+						"properties": [
 							{"name":"symbols", "type": "STRING_LIST", "description":"The list of symbol to fetch market information for. Leave empty to fetch all markets", "sampleValue":null}
 						]
 					},
 					"response": { 
-						"parameters": [
+						"properties": [
 							{"name":"responseCode", "type": "INT", "description":"Request response code", "sampleValue":"0"},
-							{"name":"payload", "type": "OBJECT_LIST", "description":"List of market information for each requested symbol", "parameters":[
+							{"name":"payload", "type": "OBJECT_LIST", "description":"List of market information for each requested symbol", "properties":[
 									{"name":"symbol", "type": "STRING", "description":"Market symbol", "sampleValue":"BTC_USDT"},
 									{"name":"minOrderSize", "type": "BIGDECIMAL", "description":"Minimum order amount", "sampleValue":"0.0001"}
 								]

@@ -1,18 +1,33 @@
 package com.scz.jxapi.netutils.deserialization.json.field;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonToken;
+import com.scz.jxapi.netutils.deserialization.MessageDeserializer;
 import com.scz.jxapi.netutils.deserialization.json.AbstractJsonMessageDeserializer;
 import com.scz.jxapi.netutils.deserialization.json.JsonDeserializer;
+import com.scz.jxapi.util.CollectionUtil;
 
+/**
+ * {@link AbstractJsonMessageDeserializer} for {@link List} fields in JSON messages.
+ * 
+ * @param <T> the type of the list items
+ * 
+ * @see MessageDeserializer
+ * @see JsonDeserializer
+ */
 public class ListJsonFieldDeserializer<T> extends AbstractJsonMessageDeserializer<List<T>> {
 	
+	/**
+	 * The deserializer for the list items
+	 */
 	protected final JsonDeserializer<T> itemDeserializer;
 	
+	/**
+	 * @param itemDeserializer the deserializer for the list items
+	 */
 	public ListJsonFieldDeserializer(JsonDeserializer<T> itemDeserializer) {
 		this.itemDeserializer = itemDeserializer;
 	}
@@ -26,7 +41,7 @@ public class ListJsonFieldDeserializer<T> extends AbstractJsonMessageDeserialize
 			throw new IllegalStateException("Expecting start array of String, got:" + parser.currentToken() + " with name:" + parser.currentName());
 		}
 		
-		List<T> res = new ArrayList<>();
+		List<T> res = CollectionUtil.createList();
         for (parser.nextToken(); parser.currentToken() != JsonToken.END_ARRAY; parser.nextToken()) {
             res.add(itemDeserializer.deserialize(parser));
         }

@@ -1,0 +1,12 @@
+name: "Employee"
+apis:
+ - name: V1    
+   restEndpoints:
+    - name: "getAllEmployees"
+      description: "Get all employees"
+      httpMethod: "GET"
+      docUrl: "https://www.example.com/docs/employee/getAll"
+      url: "/employees"
+      response:
+       objectName: "Employee"
+       type: OBJECT_LIST    
