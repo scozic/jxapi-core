@@ -9,8 +9,10 @@ import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.ser.std.StdSerializer;
 import com.scz.jxapi.exchange.descriptor.Field;
-import com.scz.jxapi.generator.java.JavaCodeGenerationUtil;
+import com.scz.jxapi.exchange.descriptor.Type;
+import com.scz.jxapi.generator.java.JavaCodeGenUtil;
 import com.scz.jxapi.generator.java.JavaTypeGenerator;
+import com.scz.jxapi.generator.java.exchange.ExchangeJavaGenUtil;
 import com.scz.jxapi.util.EncodingUtil;
 
 /**
@@ -37,16 +39,14 @@ public class JsonPojoSerializerGenerator extends JavaTypeGenerator {
 	 * @param fields                  the properties of the POJO class
 	 */
 	public JsonPojoSerializerGenerator(String serializedTypeClassName, List<Field> fields) {
-		super(EndpointPojoGeneratorUtil.getSerializerClassName(serializedTypeClassName));
+		super(PojoGenUtil.getSerializerClassName(serializedTypeClassName));
 		this.serializedTypeClassName = serializedTypeClassName;
 		this.fields = fields;
 		setTypeDeclaration("public class");
-		String simpleDeserializedClassName = JavaCodeGenerationUtil.getClassNameWithoutPackage(serializedTypeClassName);
+		String simpleDeserializedClassName = JavaCodeGenUtil.getClassNameWithoutPackage(serializedTypeClassName);
 		setParentClassName(StdSerializer.class.getName() + "<" + simpleDeserializedClassName + ">");
 		setDescription("Jackson JSON Serializer for " 
 						+ serializedTypeClassName 
-						+ "\n"
-						+ JavaCodeGenerationUtil.GENERATED_CODE_WARNING 
 						+ "\n@see " + simpleDeserializedClassName);
 	}
 	
@@ -63,21 +63,22 @@ public class JsonPojoSerializerGenerator extends JavaTypeGenerator {
 	}
 
 	private void generateConstructor() {
-		appendMethod("public " + getSimpleName() + "()", "super(" + JavaCodeGenerationUtil.getClassNameWithoutPackage(serializedTypeClassName) + ".class);");
+		appendMethod("public " + getSimpleName() + "()", "super(" + JavaCodeGenUtil.getClassNameWithoutPackage(serializedTypeClassName) + ".class);");
 		appendToBody("\n");	
 	}
 
 	private void generateDeserializeMethod() {
 		StringBuilder body = new StringBuilder();
-		String simpleDeserializedClassName = JavaCodeGenerationUtil.getClassNameWithoutPackage(serializedTypeClassName);
+		String simpleDeserializedClassName = JavaCodeGenUtil.getClassNameWithoutPackage(serializedTypeClassName);
 		body.append("gen.writeStartObject();\n");
 		fields.forEach(field -> {
-			String getFieldValue = "value." + JavaCodeGenerationUtil.getGetAccessorMethodName(
+			Type type = ExchangeJavaGenUtil.getFieldType(field);
+			String getFieldValue = "value." + JavaCodeGenUtil.getGetAccessorMethodName(
 					field.getName(),
-					field.getType().getCanonicalType().name().toLowerCase(),
+					type.getCanonicalType().name().toLowerCase(),
 					fields.stream().map(Field::getName).collect(Collectors.toList())) + "()";
 			body.append("if (").append(getFieldValue).append(" != null)");
-			body.append(JavaCodeGenerationUtil.generateCodeBlock(genWriteFieldInstruction(field, getFieldValue)));
+			body.append(JavaCodeGenUtil.generateCodeBlock(genWriteFieldInstruction(field, getFieldValue)));
 		});
 		body.append("gen.writeEndObject();");
 		appendMethod("@Override\npublic void serialize(" 
@@ -87,11 +88,12 @@ public class JsonPojoSerializerGenerator extends JavaTypeGenerator {
 	}
 	
 	private String genWriteFieldInstruction(Field field, String getFieldValue) {
-		if (!field.getType().getCanonicalType().isPrimitive) {
+		Type type = ExchangeJavaGenUtil.getFieldType(field);
+		if (!type.getCanonicalType().isPrimitive) {
 			return "gen.writeObjectField(\"" + msgFieldName(field) + "\", " + getFieldValue + ");\n";
 		}
 		
-		switch (field.getType().getCanonicalType()) {
+		switch (type.getCanonicalType()) {
 		case STRING:
 			return "gen.writeStringField(\"" + msgFieldName(field) + "\", String.valueOf(" + getFieldValue + "));\n";
 		case BIGDECIMAL:

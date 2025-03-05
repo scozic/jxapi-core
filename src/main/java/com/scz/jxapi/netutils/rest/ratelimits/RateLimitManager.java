@@ -32,7 +32,7 @@ public class RateLimitManager {
 
 	private final RateLimitRule rateLimit;
 	
-	private final TreeMap<Long, MilliSecondStat> msStats = new TreeMap<>();
+	private final TreeMap<Long, TimeStat> timeStats = new TreeMap<>();
 	
 	/**
 	 * Creates a new rate limit manager for given rate limit rule.
@@ -46,7 +46,7 @@ public class RateLimitManager {
 	/**
 	 * @return the rate limit rule this manager enforces.
 	 */
-	public RateLimitRule getRateLimit() {
+	public RateLimitRule getRule() {
 		return rateLimit;
 	}
 	
@@ -84,9 +84,10 @@ public class RateLimitManager {
 	 *         retrying otherwise.
 	 */
 	public long requestCall(long now, int weight) {
+		now = now - now % rateLimit.getGranularity();
 		long minDelayBeforeNextPossibleCall = getMinDelayBeforeNextPossibleCall(now, weight);
 		if (minDelayBeforeNextPossibleCall <= 0) {
-			MilliSecondStat mss = getMsStat(now);
+			TimeStat mss = getTimeStat(now);
 			mss.requestCount++;
 			mss.totalWeight += weight;
 		}
@@ -106,16 +107,18 @@ public class RateLimitManager {
 		// But would it if we submit one more request with given weight?
 		RateLimitManagerStat curStat = getCurrentStat(now);
 		if (isLimitReached(rateLimit, curStat.getRequestCount() + 1, curStat.getTotalWeight() + weight)) {
+			int granularity = rateLimit.getGranularity();
 			// Limit is reached. Next call will not be possible at least before time of oldest call within rolling time frame becomes out of rolling time frame
-			long oldestCallWithinTimeFrame = msStats.firstEntry().getKey().longValue();
+			// Remark: We add granularity because actual time of oldest call within rolling time frame is not known more precisely than granularity.
+			long oldestCallWithinTimeFrame = timeStats.firstEntry().getKey().longValue() + granularity;
 			long timeElapsedSinceOldestCallWithinTimeFrame = now - oldestCallWithinTimeFrame;
-			return rateLimit.getTimeFrame() - timeElapsedSinceOldestCallWithinTimeFrame;
+			return Math.max(granularity, rateLimit.getTimeFrame()) - timeElapsedSinceOldestCallWithinTimeFrame;
 		}
 		return 0L;
 	}
 	
-	private MilliSecondStat getMsStat(long now) {
-		return msStats.computeIfAbsent(now, t -> new MilliSecondStat());
+	private TimeStat getTimeStat(long now) {
+		return timeStats.computeIfAbsent(now, t -> new TimeStat());
 	}
 	
 	/**
@@ -129,7 +132,7 @@ public class RateLimitManager {
 		purge(now);
 		RateLimitManagerStat stat = new RateLimitManagerStat();
 		stat.setTime(now);
-		msStats.forEach((time, mss) -> {
+		timeStats.forEach((time, mss) -> {
 			stat.setRequestCount(stat.getRequestCount() + mss.requestCount);
 			stat.setTotalWeight(stat.getTotalWeight() + mss.totalWeight);
 		});
@@ -138,8 +141,8 @@ public class RateLimitManager {
 
 	private void purge(long now) {
 		long oldestTime = now - rateLimit.getTimeFrame();
-		for (Iterator<Entry<Long, MilliSecondStat>> it = msStats.entrySet().iterator(); it.hasNext();) {
-			Entry<Long, MilliSecondStat> entry = it.next();
+		for (Iterator<Entry<Long, TimeStat>> it = timeStats.entrySet().iterator(); it.hasNext();) {
+			Entry<Long, TimeStat> entry = it.next();
 			if (entry.getKey() < oldestTime) {
 				it.remove();
 			} else {
@@ -148,7 +151,7 @@ public class RateLimitManager {
 		}
 	}
 
-	private class MilliSecondStat {
+	private static class TimeStat {
 		int requestCount;
 		int totalWeight;
 	}

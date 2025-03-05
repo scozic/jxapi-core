@@ -5,16 +5,44 @@ import java.util.Objects;
 
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.scz.jxapi.exchanges.demo.gen.marketdata.serializers.DemoExchangeMarketDataExchangeInfoResponsePayloadSerializer;
+import com.scz.jxapi.util.CompareUtil;
 import com.scz.jxapi.util.EncodingUtil;
+import com.scz.jxapi.util.Pojo;
+import javax.annotation.processing.Generated;
 
 /**
  * List of market information for each requested symbol
  */
+@Generated("com.scz.jxapi.generator.java.exchange.api.pojo.PojoGenerator")
 @JsonSerialize(using = DemoExchangeMarketDataExchangeInfoResponsePayloadSerializer.class)
-public class DemoExchangeMarketDataExchangeInfoResponsePayload {
+public class DemoExchangeMarketDataExchangeInfoResponsePayload implements Pojo<DemoExchangeMarketDataExchangeInfoResponsePayload> {
+  
+  private static final long serialVersionUID = 148580230139424007L;
+  
+  /**
+   * @return A new builder to build {@link DemoExchangeMarketDataExchangeInfoResponsePayload} objects
+   */
+  public static Builder builder() {
+    return new Builder();
+  }
+  
+  private String symbol;
   private BigDecimal minOrderSize;
   private BigDecimal orderTickSize;
-  private String symbol;
+  
+  /**
+   * @return Market symbol
+   */
+  public String getSymbol() {
+    return symbol;
+  }
+  
+  /**
+   * @param symbol Market symbol
+   */
+  public void setSymbol(String symbol) {
+    this.symbol = symbol;
+  }
   
   /**
    * @return Minimum order amount
@@ -44,20 +72,6 @@ public class DemoExchangeMarketDataExchangeInfoResponsePayload {
     this.orderTickSize = orderTickSize;
   }
   
-  /**
-   * @return Market symbol
-   */
-  public String getSymbol() {
-    return symbol;
-  }
-  
-  /**
-   * @param symbol Market symbol
-   */
-  public void setSymbol(String symbol) {
-    this.symbol = symbol;
-  }
-  
   @Override
   public boolean equals(Object other) {
     if (other == null)
@@ -65,18 +79,100 @@ public class DemoExchangeMarketDataExchangeInfoResponsePayload {
     if (!getClass().equals(other.getClass()))
       return false;
     DemoExchangeMarketDataExchangeInfoResponsePayload o = (DemoExchangeMarketDataExchangeInfoResponsePayload) other;
-    return Objects.equals(minOrderSize, o.minOrderSize)
-            && Objects.equals(orderTickSize, o.orderTickSize)
-            && Objects.equals(symbol, o.symbol);
+    return Objects.equals(symbol, o.symbol)
+            && Objects.equals(minOrderSize, o.minOrderSize)
+            && Objects.equals(orderTickSize, o.orderTickSize);
+  }
+  
+  @Override
+  public int compareTo(DemoExchangeMarketDataExchangeInfoResponsePayload other) {
+    if (other == null) {
+      return 1;
+    }
+    int res = 0;
+    res = CompareUtil.compare(this.symbol, other.symbol);
+    if (res != 0) {
+      return res;
+    }
+    res = CompareUtil.compare(this.minOrderSize, other.minOrderSize);
+    if (res != 0) {
+      return res;
+    }
+    res = CompareUtil.compare(this.orderTickSize, other.orderTickSize);
+    return res;
   }
   
   @Override
   public int hashCode() {
-    return Objects.hash(minOrderSize, orderTickSize, symbol);
+    return Objects.hash(symbol, minOrderSize, orderTickSize);
+  }
+  
+  @Override
+  public DemoExchangeMarketDataExchangeInfoResponsePayload deepClone() {
+    DemoExchangeMarketDataExchangeInfoResponsePayload clone = new DemoExchangeMarketDataExchangeInfoResponsePayload();
+    clone.symbol = this.symbol;
+    clone.minOrderSize = this.minOrderSize;
+    clone.orderTickSize = this.orderTickSize;
+    return clone;
   }
   
   @Override
   public String toString() {
     return EncodingUtil.pojoToString(this);
+  }
+  
+  /**
+   * Builder for {@link DemoExchangeMarketDataExchangeInfoResponsePayload}
+   */
+  @Generated("com.scz.jxapi.generator.java.JavaTypeGenerator")
+  public static class Builder {
+    
+    private String symbol;
+    private BigDecimal minOrderSize;
+    private BigDecimal orderTickSize;
+    
+    /**
+     * Will set the value of <code>symbol</code> field in the builder
+     * @param symbol Market symbol
+     * @return Builder instance
+     * @see #setSymbol(String)
+     */
+    public Builder symbol(String symbol)  {
+      this.symbol = symbol;
+      return this;
+    }
+    
+    /**
+     * Will set the value of <code>minOrderSize</code> field in the builder
+     * @param minOrderSize Minimum order amount
+     * @return Builder instance
+     * @see #setMinOrderSize(BigDecimal)
+     */
+    public Builder minOrderSize(BigDecimal minOrderSize)  {
+      this.minOrderSize = minOrderSize;
+      return this;
+    }
+    
+    /**
+     * Will set the value of <code>orderTickSize</code> field in the builder
+     * @param orderTickSize Price precision. Prce of an order should be a multiple of this value
+     * @return Builder instance
+     * @see #setOrderTickSize(BigDecimal)
+     */
+    public Builder orderTickSize(BigDecimal orderTickSize)  {
+      this.orderTickSize = orderTickSize;
+      return this;
+    }
+    
+    /**
+     * @return a new instance of DemoExchangeMarketDataExchangeInfoResponsePayload using the values set in this builder
+     */
+    public DemoExchangeMarketDataExchangeInfoResponsePayload build() {
+      DemoExchangeMarketDataExchangeInfoResponsePayload res = new DemoExchangeMarketDataExchangeInfoResponsePayload();
+      res.symbol = this.symbol;
+      res.minOrderSize = this.minOrderSize;
+      res.orderTickSize = this.orderTickSize;
+      return res;
+    }
   }
 }

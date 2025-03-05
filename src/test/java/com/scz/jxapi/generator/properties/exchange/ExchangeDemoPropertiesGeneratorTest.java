@@ -14,7 +14,7 @@ import org.junit.Test;
 import com.scz.jxapi.exchange.descriptor.ConfigProperty;
 import com.scz.jxapi.exchange.descriptor.ExchangeDescriptor;
 import com.scz.jxapi.exchange.descriptor.parser.ExchangeDescriptorParser;
-import com.scz.jxapi.generator.java.JavaCodeGenerationUtil;
+import com.scz.jxapi.generator.java.JavaCodeGenUtil;
 import com.scz.jxapi.generator.java.exchange.ClassesGeneratorTestUtil;
 
 /**
@@ -27,7 +27,7 @@ public class ExchangeDemoPropertiesGeneratorTest {
 	@After
 	public void tearDown() throws IOException {
 		if (tmpFolder != null) {
-			JavaCodeGenerationUtil.deletePath(tmpFolder);
+			JavaCodeGenUtil.deletePath(tmpFolder);
 			tmpFolder = null;
 		}
 	}
@@ -37,7 +37,7 @@ public class ExchangeDemoPropertiesGeneratorTest {
 		tmpFolder = ClassesGeneratorTestUtil.generateTmpDir();
 		Path srcTestResourcesFolder = Paths.get(".", "src", "test", "resources");
 		Path exchangeDescriptorFile = srcTestResourcesFolder.resolve("demoExchange.json");
-		ExchangeDescriptor exchangeDescriptor = new ExchangeDescriptorParser().fromJson(exchangeDescriptorFile);
+		ExchangeDescriptor exchangeDescriptor = ExchangeDescriptorParser.fromJson(exchangeDescriptorFile);
 		String fileName = "demo-DemoExchange.properties.dist";
 		Path actualFilePath = tmpFolder.resolve(fileName);
 		List<ConfigProperty> configProperties = new ArrayList<>();

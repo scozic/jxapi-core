@@ -12,56 +12,72 @@ public class RateLimitManagerTest {
 	@Test
 	public void testRequestCallCanExecuteNowWhenThresholdNotReachedThenDelayedOnceThresholdReached() {
 		RateLimitManager manager = new RateLimitManager(RateLimitRule.createRule("MYRULE", 100L, 2));
+		manager.getRule().setGranularity(1);
 		Assert.assertEquals(0L, manager.requestCall(0L, 0));
 		Assert.assertEquals(0L, manager.requestCall(0L, 0));
-		Assert.assertEquals(100L, manager.requestCall(0L, 0));
+		// Threshold reached. Remaining delay is 100ms + 1ms (granularity)
+		Assert.assertEquals(101L, manager.requestCall(0L, 0));
 	}
 	
 	@Test
 	public void testRequestCallLimitReachedAndRuleDelayHalfElapsed() {
 		RateLimitManager manager = new RateLimitManager(RateLimitRule.createRule("MYRULE", 100L, 2));
+		manager.getRule().setGranularity(1);
 		Assert.assertEquals(0L, manager.requestCall(0L, 0));
 		Assert.assertEquals(0L, manager.requestCall(50L, 0));
-		Assert.assertEquals(50L, manager.requestCall(50L, 0));
+		Assert.assertEquals(50L, manager.requestCall(51L, 0));
 	}
 	
 	@Test
-	public void testRequestCallCanExecuteAgainAfterDelayElapsed() throws InterruptedException {
+	public void testRequestCallCanExecuteAgainAfterDelayElapsed() {
 		RateLimitManager manager = new RateLimitManager(RateLimitRule.createRule("MYRULE", 100L, 2));
+		manager.getRule().setGranularity(1);
 		Assert.assertEquals(0L, manager.requestCall(0L, 0));
 		Assert.assertEquals(0L, manager.requestCall(0L, 0));
-		Thread.sleep(50L);
 		// To check additional request call in while delay has not elapsed is not counted
-		Assert.assertEquals(50L, manager.requestCall(50L, 0));
+		Assert.assertEquals(50L, manager.requestCall(51L, 0));
 		Assert.assertEquals(0L, manager.requestCall(101L, 0));
+	}
+	
+	@Test
+	public void testRequestCallRollingTimeframeGranularityGreaterThanRuleTimeFrame() {
+		RateLimitManager manager = new RateLimitManager(RateLimitRule.createRule("MYRULE", 100L, 2));
+		manager.getRule().setGranularity(1000);
+		Assert.assertEquals(0L, manager.requestCall(0L, 0));
+		Assert.assertEquals(0L, manager.requestCall(50L, 0));
+		Assert.assertEquals(2000L, manager.requestCall(50L, 0));
+		Assert.assertEquals(2000L, manager.requestCall(101L, 0));
 	}
 	
 	@Test
 	public void testRequestCallRollingTimeframe() {
 		RateLimitManager manager = new RateLimitManager(RateLimitRule.createRule("MYRULE", 100L, 2));
+		manager.getRule().setGranularity(1);
 		Assert.assertEquals(0L, manager.requestCall(0L, 0));
 		Assert.assertEquals(0L, manager.requestCall(50L, 0));
-		Assert.assertEquals(50L, manager.requestCall(50L, 0));
+		Assert.assertEquals(50L, manager.requestCall(51L, 0));
 		Assert.assertEquals(0L, manager.requestCall(101L, 0));
-		Assert.assertEquals(49L, manager.requestCall(101L, 0));
+		Assert.assertEquals(50L, manager.requestCall(101L, 0));
 	}
 	
 	@Test
 	public void testWeightedRequestCallLimitReachedAndRuleDelayHalfElapsed() {
 		RateLimitManager manager = new RateLimitManager(RateLimitRule.createWeightedRule("MYRULE", 100L, 100));
+		manager.getRule().setGranularity(1);
 		Assert.assertEquals(0L, manager.requestCall(0L, 20));
 		Assert.assertEquals(0L, manager.requestCall(0L, 80));
-		Assert.assertEquals(50L, manager.requestCall(50L, 1));
+		Assert.assertEquals(50L, manager.requestCall(51L, 1));
 		Assert.assertEquals(0L, manager.requestCall(101L, 100));
 	}
 	
 	@Test
 	public void testWeightedRequestCallRollingTimeframe() {
 		RateLimitManager manager = new RateLimitManager(RateLimitRule.createWeightedRule("MYRULE", 100L, 100));
+		manager.getRule().setGranularity(1);
 		Assert.assertEquals(0L, manager.requestCall(0L, 30));
 		Assert.assertEquals(0L, manager.requestCall(50L, 70));
-		Assert.assertEquals(50L, manager.requestCall(50L, 1));
-		Assert.assertEquals(49L, manager.requestCall(101L, 31));
+		Assert.assertEquals(50L, manager.requestCall(51L, 1));
+		Assert.assertEquals(50L, manager.requestCall(101L, 31));
 		Assert.assertEquals(0L, manager.requestCall(101L, 30));
 	}
 	
@@ -99,7 +115,7 @@ public class RateLimitManagerTest {
 	public void testGetRateLimit() {
 		RateLimitRule rule = RateLimitRule.createRule("MYRULE", 100L, 2);
 		RateLimitManager manager = new RateLimitManager(rule);
-		Assert.assertEquals(rule, manager.getRateLimit());
+		Assert.assertEquals(rule, manager.getRule());
 	}
 	
 	@Test

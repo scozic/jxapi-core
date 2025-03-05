@@ -12,7 +12,7 @@ import org.junit.Test;
 import com.scz.jxapi.exchange.descriptor.ExchangeApiDescriptor;
 import com.scz.jxapi.exchange.descriptor.ExchangeDescriptor;
 import com.scz.jxapi.exchange.descriptor.parser.ExchangeDescriptorParser;
-import com.scz.jxapi.generator.java.JavaCodeGenerationUtil;
+import com.scz.jxapi.generator.java.JavaCodeGenUtil;
 import com.scz.jxapi.generator.java.exchange.ClassesGeneratorTestUtil;
 
 /**
@@ -25,7 +25,7 @@ public class ExchangeReameMdGeneratorTest {
 	@After
 	public void tearDown() throws IOException {
 		if (srcFolder != null) {
-			JavaCodeGenerationUtil.deletePath(srcFolder);
+			JavaCodeGenUtil.deletePath(srcFolder);
 			srcFolder = null;
 		}
 	}
@@ -33,7 +33,7 @@ public class ExchangeReameMdGeneratorTest {
 	@Test
 	public void testGenerateExchangeReadmeFile() throws IOException {
 		srcFolder = ClassesGeneratorTestUtil.generateTmpDir();
-		ExchangeDescriptor exchange = new ExchangeDescriptorParser().fromJson(Paths.get(".", "src", "test", "resources", "testExchangeDescriptor.json"));
+		ExchangeDescriptor exchange = ExchangeDescriptorParser.fromJson(Paths.get(".", "src", "test", "resources", "testExchangeDescriptor.json"));
 		new ExchangeReadmeMdGenerator(exchange, "https://javadoc.io/myproject/", "https://myrepo.com/myproject/master/src/main/java").writeJavaFile(srcFolder);
 		File expected = srcFolder.resolve("MyTestExchange_README.md").toFile();
 		Assert.assertTrue("File " + expected.getAbsolutePath() + " does not exists", expected.exists());
@@ -41,7 +41,7 @@ public class ExchangeReameMdGeneratorTest {
 	
 	@Test
 	public void testGenerateExchangeReadme() throws IOException {
-		ExchangeDescriptor exchange = new ExchangeDescriptorParser().fromJson(Paths.get(".", "src", "test", "resources", "testExchangeDescriptor.json"));
+		ExchangeDescriptor exchange = ExchangeDescriptorParser.fromJson(Paths.get(".", "src", "test", "resources", "testExchangeDescriptor.json"));
 		String actual = new ExchangeReadmeMdGenerator(exchange, "https://javadoc.io/myproject/", "https://myrepo.com/myproject/master/src/main/java").generate();
 		Assert.assertEquals("# MyTestExchange API Java wrapper\n"
 				+ "\n"
@@ -100,9 +100,9 @@ public class ExchangeReameMdGeneratorTest {
 				+ "\n"
 				+ "The market data API of MyTestExchange\n"
 				+ "\n"
-				+ "#### REST endpoints\n"
+				+ "#### REST endpoints\n\n"
 				+ "<table>\n"
-				+ "  <caption>MyTestExchange MarketData websocket endpoints</caption>\n"
+				+ "  <caption>MyTestExchange MarketData REST endpoints</caption>\n"
 				+ "  <tr>\n"
 				+ "    <th>Endpoint</th>\n"
 				+ "    <th>Description</th>\n"
@@ -120,7 +120,7 @@ public class ExchangeReameMdGeneratorTest {
 				+ "  </tr>\n"
 				+ "</table>\n"
 				+ "\n"
-				+ "#### Websocket endpoints\n"
+				+ "#### Websocket endpoints\n\n"
 				+ "<table>\n"
 				+ "  <caption>MyTestExchange MarketData websocket endpoints</caption>\n"
 				+ "  <tr>\n"
@@ -142,7 +142,7 @@ public class ExchangeReameMdGeneratorTest {
 
 	@Test
 	public void testGenerateExchangeReadme_AllRequestDataTypes() throws IOException {
-		ExchangeDescriptor exchange = new ExchangeDescriptorParser().fromJson(Paths.get(".", "src", "test", "resources", "testExchangeDescriptorWithAllRestRequestDataTypes.json"));
+		ExchangeDescriptor exchange = ExchangeDescriptorParser.fromJson(Paths.get(".", "src", "test", "resources", "testExchangeDescriptorWithAllRestRequestDataTypes.json"));
 		String actual = new ExchangeReadmeMdGenerator(exchange, "https://javadoc.io/myproject/", "https://myrepo.com/myproject/master/src/main/java").generate();
 		Assert.assertEquals("# MyTestExchange API Java wrapper\n"
 				+ "\n"
@@ -172,9 +172,9 @@ public class ExchangeReameMdGeneratorTest {
 				+ "\n"
 				+ "The market data API of MyTestExchange, with different request data types for websocket and REST endpoints. Remark: Only OBJECT (default) and STRING are usually used, but any data type is supported\n"
 				+ "\n"
-				+ "#### REST endpoints\n"
+				+ "#### REST endpoints\n\n"
 				+ "<table>\n"
-				+ "  <caption>MyTestExchange MarketData websocket endpoints</caption>\n"
+				+ "  <caption>MyTestExchange MarketData REST endpoints</caption>\n"
 				+ "  <tr>\n"
 				+ "    <th>Endpoint</th>\n"
 				+ "    <th>Description</th>\n"
@@ -247,7 +247,7 @@ public class ExchangeReameMdGeneratorTest {
 				+ "  </tr>\n"
 				+ "</table>\n"
 				+ "\n"
-				+ "#### Websocket endpoints\n"
+				+ "#### Websocket endpoints\n\n"
 				+ "<table>\n"
 				+ "  <caption>MyTestExchange MarketData websocket endpoints</caption>\n"
 				+ "  <tr>\n"
@@ -317,7 +317,7 @@ public class ExchangeReameMdGeneratorTest {
 	
 	@Test
 	public void testGenerateExchangeReadme_NoExchangeConstants_ApiGroupWithNoWebsocketEndpoints() throws IOException {
-		ExchangeDescriptor exchange = new ExchangeDescriptorParser().fromJson(Paths.get(".", "src", "test", "resources", "testExchangeDescriptor.json"));
+		ExchangeDescriptor exchange = ExchangeDescriptorParser.fromJson(Paths.get(".", "src", "test", "resources", "testExchangeDescriptor.json"));
 		exchange.setConstants(null);
 		exchange.getApis().get(0).setWebsocketEndpoints(null);
 		String actual = new ExchangeReadmeMdGenerator(exchange, "https://javadoc.io/myproject/", "https://myrepo.com/myproject/master").generate();
@@ -374,9 +374,9 @@ public class ExchangeReameMdGeneratorTest {
 				+ "\n"
 				+ "The market data API of MyTestExchange\n"
 				+ "\n"
-				+ "#### REST endpoints\n"
+				+ "#### REST endpoints\n\n"
 				+ "<table>\n"
-				+ "  <caption>MyTestExchange MarketData websocket endpoints</caption>\n"
+				+ "  <caption>MyTestExchange MarketData REST endpoints</caption>\n"
 				+ "  <tr>\n"
 				+ "    <th>Endpoint</th>\n"
 				+ "    <th>Description</th>\n"
@@ -400,7 +400,7 @@ public class ExchangeReameMdGeneratorTest {
 	
 	@Test
 	public void testGenerateExchangeReadme_ApiGroupWithNoRestEndpointsAndNoConstants() throws IOException {
-		ExchangeDescriptor exchange = new ExchangeDescriptorParser().fromJson(Paths.get(".", "src", "test", "resources", "testExchangeDescriptor.json"));
+		ExchangeDescriptor exchange = ExchangeDescriptorParser.fromJson(Paths.get(".", "src", "test", "resources", "testExchangeDescriptor.json"));
 		ExchangeApiDescriptor api = exchange.getApis().get(0);
 		api.setConstants(null);
 		api.setRestEndpoints(null);
@@ -462,7 +462,7 @@ public class ExchangeReameMdGeneratorTest {
 				+ "\n"
 				+ "The market data API of MyTestExchange\n"
 				+ "\n"
-				+ "#### Websocket endpoints\n"
+				+ "#### Websocket endpoints\n\n"
 				+ "<table>\n"
 				+ "  <caption>MyTestExchange MarketData websocket endpoints</caption>\n"
 				+ "  <tr>\n"
@@ -482,7 +482,7 @@ public class ExchangeReameMdGeneratorTest {
 	
 	@Test
 	public void testGenerateExchangeReadme_NoApiGroup() throws IOException {
-		ExchangeDescriptor exchange = new ExchangeDescriptorParser().fromJson(Paths.get(".", "src", "test", "resources", "testExchangeDescriptor.json"));
+		ExchangeDescriptor exchange = ExchangeDescriptorParser.fromJson(Paths.get(".", "src", "test", "resources", "testExchangeDescriptor.json"));
 		exchange.setApis(null);
 		String actual = new ExchangeReadmeMdGenerator(exchange, "https://javadoc.io/myproject/", "https://myrepo.com/myproject/master/src/main/java").generate();
 		Assert.assertEquals("# MyTestExchange API Java wrapper\n"
@@ -538,7 +538,7 @@ public class ExchangeReameMdGeneratorTest {
 	
 	@Test
 	public void testGenerateExchangeReadme_ApiGroupWithNoDescriptionNoRestNoWsEndpoint() throws IOException {
-		ExchangeDescriptor exchange = new ExchangeDescriptorParser().fromJson(Paths.get(".", "src", "test", "resources", "testExchangeDescriptor.json"));
+		ExchangeDescriptor exchange = ExchangeDescriptorParser.fromJson(Paths.get(".", "src", "test", "resources", "testExchangeDescriptor.json"));
 		ExchangeApiDescriptor api = exchange.getApis().get(0);
 		api.setRestEndpoints(null);
 		api.setWebsocketEndpoints(null);

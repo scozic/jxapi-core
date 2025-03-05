@@ -6,12 +6,13 @@ import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.ser.std.StdSerializer;
 import com.scz.jxapi.exchanges.demo.gen.marketdata.pojo.GenericResponse;
+import javax.annotation.processing.Generated;
 
 /**
  * Jackson JSON Serializer for com.scz.jxapi.exchanges.demo.gen.marketdata.pojo.GenericResponse
- * <br><strong>THIS CODE IS GENERATED. DO NOT EDIT MANUALLY!</strong>
  * @see GenericResponse
  */
+@Generated("com.scz.jxapi.generator.java.exchange.api.pojo.JsonPojoSerializerGenerator")
 public class GenericResponseSerializer extends StdSerializer<GenericResponse> {
   public GenericResponseSerializer() {
     super(GenericResponse.class);

@@ -12,7 +12,7 @@ public class DemoExchangeWebsocketHookFactory implements WebsocketHookFactory {
 
 	@Override
 	public WebsocketHook createWebsocketHook(ExchangeApi exchangeApi) {
-		return new DemoExchangeWebsocketHook(exchangeApi.getProperties());
+		return new DemoExchangeWebsocketHook();
 	}
 
 }

@@ -146,6 +146,27 @@ public class Type {
 		et.subType = subType;
 		return et;
 	}
+	
+	/**
+	 * Creates a type with no canonical type and no subtype (setters should be used to set these values)
+	 */
+	public Type() {
+		this(null);
+	}
+	
+	/**
+	 * Creates a type from a type name
+	 * 
+	 * @param typeName the type name
+	 * @see #fromTypeName(String)
+	 */
+	public Type(String typeName) {
+		if (typeName != null) {
+			Type t = fromTypeName(typeName);
+			this.canonicalType = t.canonicalType;
+			this.subType = t.subType;
+		}
+	}
 
 	private CanonicalType canonicalType;
 	

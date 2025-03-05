@@ -3,110 +3,157 @@
 JXAPI generates API wrapper using interface specifications described in _Exchange descriptor_ file.
 This file declares REST and Websocket API endpoints, with associated request and response or message data, in 'groups' belonging to a root 'exchange'.
 
-This section describes this descriptor file.
+This section describes such descriptor file.
 
 # 'Demo' exchange descriptor example
 
-```json
-{
-	"name": "DemoExchange",
-	"description": "Demo Exchange. This exchange uses connects to mock HTTP server and websocket server. It is used to test and validate a full Java wrapper generated using JXAPI.",
-	"docUrl": "https://docs.myexchange.com/api",
-	"basePackage": "com.scz.jxapi.exchanges.demo.gen",
-		"properties": [
-		{"name": "host", "description": "Mock HTTP server host", "defaultValue": "localhost"},
-		{"name": "httpPort", "type":"INT",  "description": "Mock HTTP/Websocket server port"},
-		{"name": "websocketPort", "type":"INT",  "description": "Mock websocket server port"},
-		{"name": "websocketHeartBeatInterval", "type":"INT",  "description": "Mock websocket server expected heartBeat interval", "defaultValue": -1}
-	],
-	"constants": [
-		{"name": "pingMessage", "type":"STRING", "description": "Ping message", "value": "Ping!"},
-		{"name": "pongMessage", "type":"STRING", "description": "Pong message", "value": "Pong!"},
-		{"name": "responseCodeOk", "type":"INT",  "description": "Possible value in <i>responseCode</i> field of rest request response: Successful response", "value": 200}
-	],
-	"httpUrl": "https://api.myexchange.com",
-	"websocketUrl": "wss://api.myexchange.com/ws",
-	"httpRequestInterceptorFactory": "com.scz.jxapi.exchanges.demo.net.DemoExchangeHttpRequestInterceptorFactory",
-	"websocketHookFactory": "com.scz.jxapi.exchanges.demo.net.DemoExchangeWebsocketHookFactory",
-	"apis":[
-		{ 
-			"name": "MarketData",
-			"description": "Demo exchange market data API",
-			"constants": [
-				{"name": "allTickers", "type":"STRING", "description": "Constant for subscribing to all tickers", "value": "ticker@all"}
-			],
-			"httpUrl": "/marketData",
-			"restEndpoints": [
-				{
-					"name": "exchangeInfo",
-					"httpMethod": "GET",
-					"description": "Fetch market information of symbols that can be traded",
-					"docUrl": "https://docs.myexchange.com/api/rest/marketData/exchangeInfo",
-					"url": "/exchangeInfo",
-					"request":{
-						"properties": [
-							{"name":"symbols", "type": "STRING_LIST", "description":"The list of symbol to fetch market information for. Leave empty to fetch all markets", "sampleValue":"[\"BTC\", \"ETH\"]"}
-						]
-					},
-					"response":{ 
-						"properties": [
-							{"name":"responseCode", "type": "INT", "description":"Request response code", "sampleValue":"0"},
-							{"name":"payload", "type": "OBJECT_LIST", "description":"List of market information for each requested symbol", "properties":[
-									{"name":"symbol", "type": "STRING", "description":"Market symbol", "sampleValue":"BTC_USDT"},
-									{"name":"minOrderSize", "type": "BIGDECIMAL", "description":"Minimum order amount", "sampleValue":"0.0001"},
-									{"name":"orderTickSize", "type": "BIGDECIMAL", "description":"Price precision. Prce of an order should be a multiple of this value", "sampleValue":0.05}
-								]
-							}
-						]
-					}
-				}
-			],
-			"websocketEndpoints": [
-				{
-					"name": "tickerStream",
-					"docUrl": "https://docs.myexchange.com/api/ws/marketData/tickerStream",
-					"topic": "${symbol}@ticker",
-					"description": "Subscribe to ticker stream",
-					"request": {
-						"properties": [
-							{"name": "symbol", "type":"STRING", "description":"Symbol to subscribe to ticker stream of", "sampleValue":"BTC_USDT"}
-						]
-					},
-					"messageTopicMatcherFields": [
-						{"name": "topic",  "value": "ticker"},
-						{"name": "symbol",  "value": "${symbol}"}
-					],
-					"message": { 
-						"properties": [
-							{"name":"topic", "msgField":"t", "type": "STRING", "description":"Topic", "sampleValue":"ticker"},
-							{"name":"symbol", "msgField":"s", "type": "STRING", "description":"Symbol name", "sampleValue":"BTC_USDT"},
-							{"name":"last", "msgField":"p", "type": "BIGDECIMAL", "description":"Last traded price", "sampleValue":"16000.00"},
-							{"name":"high", "msgField":"h",  "type": "BIGDECIMAL", "description":"Last traded price", "sampleValue":10.0},
-							{"name":"low", "msgField":"l",  "type": "BIGDECIMAL", "description":"Last traded price", "sampleValue":10.0},
-							{"name":"volume", "msgField":"v",  "type": "BIGDECIMAL", "description":"Total traded amount in base asset during the last 24h from now", "sampleValue":10.0},
-							{"name":"time", "msgField":"d",  "type": "TIMESTAMP", "description":"Current time", "sampleValue":"now()"}
-						]
-					}
-				}
-			]
-		}
-	]
-}
+The following is content of a complete descriptor file [employeeExchange.yaml](../../src/test/resources/employeeExchange.yaml).
+Descriptor file can also be specified in JSON format, see [employeeExchange.json](../../src/test/resources/employeeExchange.json).
+
+```yaml
+name: "Employee"
+description: > 
+ Employee exchange is a demo exchange REST APIs to get, add, delete and 
+ update employees and a websocket endpoint to get notified of updates from an employee database.<br>
+ A server can be started using <code>com.scz.jxapi.exchanges.employee.EmployeeExchangeServer</code> class to serve these APIs.<br>
+ The URL of the server must be set using the baseUrl property.<br>
+ Notice how the 'employee' object present in APIs request and responses is used in multiple endpoints and its properties defined only once.
+docUrl: "https://www.example.com/docs/employee"
+properties:
+ - name: "baseHttpUrl"
+   description: "Base URL for REST endpoints the Employee Exchange API"
+ - name: "baseWebsocketUrl"
+   description: "Base URL for websocket endpoints of the Employee Exchange API"   
+constants:
+ - name: "baseUrlPattern"
+   description: "Value to replace in HTTP or Websocket base URL with value of <i>baseHttpUrl</i> or <i>baseWebsocketUrl</i> properties"
+   value: "BASEURL"
+basePackage: "com.scz.jxapi.exchanges.employee.gen"
+httpUrl: "BASEURL"
+httpRequestInterceptorFactory: com.scz.jxapi.exchanges.demo.net.DemoExchangeHttpRequestInterceptorFactory
+apis:
+ - name: V1
+   description: "Version 1 of the Employee API"
+   httpUrl: "v1"
+   constants:
+    - name: "profileRegular"
+      description: "Regular employee profile"
+      value: "REGULAR"
+    - name: "profileAdmin"
+      description: "Admin employee profile"
+      value: "ADMIN"
+    - name: "updateEmployeeTypeAdd"
+      description: "Value of eventType field in WS message for new employee added event"
+      value: "ADD"
+    - name: "updateEmployeeTypeUpate"
+      description: "Value of eventType field in WS message for update of an existing employee event"
+      value: "UPDATE"
+    - name: "updateEmployeeTypeDelete"
+      description: "Value of eventType field in WS message for update of an existing employee event"
+      value: "DELETE"      
+   restEndpoints:
+    - name: "getEmployee"
+      description: "Get employee details by ID"
+      httpMethod: "GET"
+      docUrl: "https://www.example.com/docs/employee/get"
+      url: "/employee"
+      urlParameters: "/${id}"
+      request:
+       name: "id"
+       type: INT
+       description: "Employee ID"
+       sampleValue: 1
+      response:
+       objectName: "Employee"
+       type: OBJECT
+       properties:
+        - name: "id"
+          type: INT
+          description: "Employee ID"
+          sampleValue: 1
+        - name: "firstName"
+          type: STRING
+          description: "Employee First Name"
+          sampleValue: "John"
+        - name: "lastName"
+          type: STRING
+          description: "Employee last lame"
+          sampleValue: "Doe"
+        - name: "profile"
+          type: STRING
+          description: "Employee profile. Can be 'regular' or 'admin'"
+          sampleValue: "REGULAR"
+    - name: "getAllEmployees"
+      description: "Get all employees"
+      httpMethod: "GET"
+      docUrl: "https://www.example.com/docs/employee/getAll"
+      url: "/employees"
+      response:
+       objectName: "Employee"
+       type: OBJECT_LIST          
+    - name: "addEmployee"
+      description: "Add a new employee"
+      httpMethod: "POST"
+      docUrl: "https://www.example.com/docs/employee/add"
+      url: "/employee"
+      request:
+       description: "Employee to add"
+       objectName: "Employee"
+    - name: "updateEmployee"
+      description: "Update an existing employee"
+      httpMethod: "PUT"
+      docUrl: "https://www.example.com/docs/employee/add"
+      url: "/employee"
+      request:
+       description: "Employee to update"
+       objectName: "Employee"       
+    - name: "deleteEmployee"
+      description: "Delete an employee"
+      httpMethod: "DELETE"
+      docUrl: "https://www.example.com/docs/employee/delete"
+      url: "/employee"
+      urlParameters: "/${id}"
+      request:
+       name: "id"
+       type: INT
+       description: "Employee ID"
+       sampleValue: 1
+   websocketUrl: "BASEURL"
+   websocketHookFactory: com.scz.jxapi.exchanges.demo.net.DemoExchangeWebsocketHookFactory  
+   websocketEndpoints:
+    - name: "employeeUpdates"
+      description: "Employee updates websocket"
+      docUrl: "https://www.example.com/docs/employee/updates"
+      message:
+       description: "Employee update message"
+       properties:
+        - name: "eventType"
+          type: STRING
+          description: "Type of event. Can be 'ADD', 'UPDATE' or 'DELETE'"
+          sampleValue: 1
+        - name: "employee"
+          objectName: "Employee"
+          description: "Employee that was updated"
+          sampleValue: "John"
 
 ```
 
+Such exchange descriptor can also be written across multiple files with same exchange name: When running generator plugin in wrapper project module, it will scan `src/main/resources/jxapi` folder and aggregate all exchanges (multiple exchange can be specified) found in every .yaml and .json file.
+
+For complex API specifications with many endpoints it is preferable to do so. Have a look at [employeeExchange](../../src/test/resources/employeeExchange/) folder to see the same exchange as above defined in multiple files.
+
 ## Exchange
-The JSON descriptor data is a JSON object referred to as 'exchange'. An exchange is the root of API wrapper, mapped to [ExchangeDescriptor](../../src/main/java/com/scz/jxapi/exchange/descriptor/ExchangeDescriptor.java). It is composed of the following properties.
- * `name`: The name of this wrapper or API.
+The root of JSON descriptor data is a JSON object referred to as 'exchange'. An exchange is the root of API wrapper, mapped to [ExchangeDescriptor](../../src/main/java/com/scz/jxapi/exchange/descriptor/ExchangeDescriptor.java). It is composed of the following properties:
+ * `name`: The name of this wrapper or API ( here `Employee`)
  * `description`: A description of this exchange.
  * `docUrl`: Link to exchange website API documentation home page
  * `basePackage`: The base Java package name for the generated code. It is recommended this package name contains `.gen.` as a convention for packages containing generated code that should not be edited manually.
  * `properties`: A list of properties required to configure the exchange. A property object is mapped to [ConfigProperty](../../src/main/java/com/scz/jxapi/exchange/descriptor/ConfigProperty.java)
  * `constants`: A list of constant values used in the exchange. A constant object is mapped to [Constant](../../src/main/java/com/scz/jxapi/exchange/descriptor/Constant.java)
- * `httpUrl`: The base URL for HTTP API endpoints.
- * `websocketUrl`: The base URL for WebSocket API endpoints.
+ * `httpUrl`: The base URL for HTTP API endpoints. In sample above, it is set to a placeholder `BASEURL` that is meant to be replaced by base server URL set in `baseHttpUrl` config property. Optional property, when not set, either the REST endpoints `url` property define a full URL value, or the API group `httpUrl` is set.
+ * `websocketUrl`: The base URL for WebSocket API endpoints. Optional when 
  * `httpRequestInterceptorFactory`: The factory class for creating HTTP request interceptors, see [HttpRequestInterceptorFactory](../../src/main/java/com/scz/jxapi/netutils/rest/HttpRequestInterceptorFactory.java). If for exchange requires specific headers to be  set for instance for authentication, a specific interceptor has to be provided through this property, see [HTTP request interceptor dev guide](./HttpRequestInterceptorDevGuide.md).
- * `httpRequestExecutorFactory`:  The factory for HTTP request executor, see [HttpRequestExecutorFactory](../../src/main/java/com/scz/jxapi/netutils/rest/HttpRequestExecutorFactory.java). Default implementation is usually sufficient.
+ * `httpRequestExecutorFactory`:  The factory for HTTP request executor, see [HttpRequestExecutorFactory](../../src/main/java/com/scz/jxapi/netutils/rest/HttpRequestExecutorFactory.java). Default implementation used when this property is not set is usually sufficient.
  * `websocketHookFactory`: The factory class for creating WebSocket hooks, see [WebsocketFactory](../../src/main/java/com/scz/jxapi/netutils/websocket/WebsocketHookFactory.java). Using a custom factory for hooks that implements exchange protocol specific handshake, heartbeats is generally required, see [Websocket hook dev guide](./WebsocketHookDevGuide.md)..
  * `websocketFactory`: The factory class for creating base websocket, see [WebsocketFactory](../../src/main/java/com/scz/jxapi/netutils/websocket/WebsocketFactory.java). The default implementation is usually sufficient.
  * `apis`: A list of API groups, each containing HTTP and WebSocket endpoints, see [below](#api-groups).
@@ -178,17 +225,17 @@ See [Websocket Hook dev guide](./WebsocketHookDevGuide.md)
 The `topic` property in a WebSocket endpoint can contain placeholders in the format `${placeholderName}`. These placeholders are replaced with the corresponding values from the request properties when subscribing to the topic.
 
 Example:
-```json
-{
-	"name": "tickerStream",
-	"topic": "${symbol}@ticker",
-	"request": {
-		"properties": [
-			{"name": "symbol", "type": "STRING", "description": "Symbol to subscribe to ticker stream of", "sampleValue": "BTC_USDT"}
-		]
-	}
-}
+```yaml
+name: "tickerStream"
+topic: "${symbol}@ticker"
+request:
+  properties:
+    - name: "symbol"
+      type: "STRING"
+      description: "Symbol to subscribe to ticker stream of"
+      sampleValue: "BTC_USDT"
 ```
+
 In this example, the placeholder `${symbol}` in the topic will be replaced with the value of the `symbol` property from the request.
 
 ### Message Topic Matcher Fields
@@ -196,13 +243,12 @@ In this example, the placeholder `${symbol}` in the topic will be replaced with 
 The `messageTopicMatcherFields` property is a list of fields used to match the message topic. Each field specifies a name and a value. The value can also contain placeholders that are replaced with actual values from the request.
 
 Example:
-```json
-{
-	"messageTopicMatcherFields": [
-		{"name": "topic", "value": "ticker"},
-		{"name": "symbol", "value": "${symbol}"}
-	]
-}
+```yaml
+messageTopicMatcherFields:
+  - name: "topic"
+    value: "ticker"
+  - name: "symbol"
+    value: "${symbol}"
 ```
 In this example, the incoming message `topic` field must have the value `ticker`, and the `symbol` field must match the value of the `symbol` property from the request.
 
@@ -211,16 +257,24 @@ In this example, the incoming message `topic` field must have the value `ticker`
 The `message` property defines the structure of the message and the fields that are expected in the message see [Flexible data structure](#flexible-data-structure-definition). Each field specifies a name, a type, and a description.
 
 Example:
-```json
-{
-	"message": {
-		"properties": [
-			{"name": "topic", "msgField": "t", "type": "STRING", "description": "Topic", "sampleValue": "ticker"},
-			{"name": "symbol", "msgField": "s", "type": "STRING", "description": "Symbol name", "sampleValue": "BTC_USDT"},
-			{"name": "last", "msgField": "p", "type": "BIGDECIMAL", "description": "Last traded price", "sampleValue": "16000.00"}
-		]
-	}
-}
+```yaml
+message:
+  properties:
+    - name: "topic"
+      msgField: "t"
+      type: "STRING"
+      description: "Topic"
+      sampleValue: "ticker"
+    - name: "symbol"
+      msgField: "s"
+      type: "STRING"
+      description: "Symbol name"
+      sampleValue: "BTC_USDT"
+    - name: "last"
+      msgField: "p"
+      type: "BIGDECIMAL"
+      description: "Last traded price"
+      sampleValue: "16000.00"
 ```
 In this example, the message is expected to contain fields `t` (topic), `s` (symbol), and `p` (last traded price). The values of these fields are used to match the message against the topic and request properties.
 
@@ -231,27 +285,35 @@ Both REST endpoints request and response, Websocket endpoints subscription reque
 
 ### Primitive Types
 A field can be a primitive type such as `STRING`, `INT`, `BIGDECIMAL`, or `TIMESTAMP`. These types are directly mapped to their respective Java types.
+Remark: When neither of 'object' type specific `properties` or `objectName` is specified, the default field type is `STRING` unless `type` property is specified.
 
 ### Lists
-A field can be defined as a list by specifying the type as `LIST` and providing the `elementType`. This allows for the representation of arrays or collections of a specific type.
+A field can be defined as a list by specifying the type as `<SUBTYPE>_LIST` and providing the list element type as type prefix, for instance `BIGDECIMAL_MAP`. This allows for the representation of arrays or collections of a specific type.
 
 ### Maps
-A field can be defined as a String key map by specifying the type as `MAP` and providing type of value as type prefix, for instance `INT_MAP` is a map with string keys and `INT` values. This allows for the representation of key-value pairs where both keys and values can be of specified types.
+A field can be defined as a String key map by specifying the type as `<SUBTYPE>_MAP` and providing type of value as type prefix, for instance `INT_MAP` is a map with string keys and `INT` values. This allows for the representation of key-value pairs where both keys and values can be of specified types.
 
 ### Objects
 A field can be a object by specifying the type as `OBJECT` and providing a list of `properties`. Each property is itself a `Field` object, allowing for nested structures and complex data representations.
-Remark: `OBJECT` is the default type for a `Field`.
+Remark: `OBJECT` is the default type for a `Field` when either `objectName` or `properties` property is defined.
 Example:
 ```json
-{
-	"name": "exampleField",
-	"type": "OBJECT",
-	"properties": [
-		{"name": "id", "type": "STRING", "description": "Unique identifier"},
-		{"name": "values", "type": "LIST", "elementType": "INT", "description": "List of integer values"},
-		{"name": "attributes", "type": "MAP", "keyType": "STRING", "valueType": "STRING", "description": "Map of attributes"}
-	]
-}
+name: "exampleField"
+# Remark 'type' needs not be specified because 'properties' is
+# which implies type is 'OBJECT'
+properties:
+  - name: "id"
+    type: "STRING"
+    description: "Unique identifier"
+  - name: "values"
+    type: "LIST"
+    elementType: "INT"
+    description: "List of integer values"
+  - name: "attributes"
+    type: "MAP"
+    keyType: "STRING"
+    valueType: "STRING"
+    description: "Map of attributes"
 ```
 
 ### Composite Types
@@ -262,16 +324,18 @@ for instance:
 A field of type `OBJECT_LIST_MAP` represents a map where the keys are strings and the values are lists of objects. Each object in the list can have its own properties.
 
 Field declaration example:
-```json
-{
-	"name": "exampleObjectListMap",
-	"type": "OBJECT_LIST_MAP",
-	"description": "Map with string keys and lists of objects as values",
-	"properties": [
-		{"name": "name", "type":"STRING", "description": "Person name"},
-		{"name": "age", "type":"INT", "description": "Person age"}
-	]
-}
+
+```yaml
+name: "exampleObjectListMap"
+type: "OBJECT_LIST_MAP"
+description: "Map with string keys and lists of objects as values"
+properties:
+  - name: "name"
+    type: "STRING"
+    description: "Person name"
+  - name: "age"
+    type: "INT"
+    description: "Person age"
 ```
 
 Example of associated JSON data structure:
@@ -292,12 +356,10 @@ Example of associated JSON data structure:
 A field of type `LONG_LIST_LIST` represents a list of lists, where each inner list contains long integer values.
 
 Field declaration example:
-```json
-{
-	"name": "exampleLongListList",
-	"type": "LONG_LIST_LIST",
-	"description": "List of lists containing long values"
-}
+```yaml
+name: "exampleLongListList"
+type: "LONG_LIST_LIST"
+description: "List of lists containing long values"
 ```
 
 Example of associated JSON data structure:
@@ -320,8 +382,48 @@ In addition to provide simpler POJO names, this allows reusing the same object w
 
 ## API request rate limit
 
-REST/HTTP APIs usually come whith request rate limits to prevent abusive use of APIs. Such limitations are expressed in number of requests over a given timeframe. Alternatively, a request could have a determined 'weight' that could vary between APIs: For example, a 'light' request would cost 1 and a 'heavy' request 100 from a quota of 1000 per minute.
-The generated wrappers simplifies such request limit rate enforcement by defining rules either at 'exchange' level (example: limitation of 100 requests per minute across all APIs of all groups), or at 'api group' level (example: limitation of 50 requests per second across all APIs of this group), or at REST endpoint level for rules specific for that endpoint.
+REST/HTTP APIs often have request rate limits to prevent abuse. These limits can be defined in two ways:
+1. **Number of Requests**: The maximum number of requests allowed within a specific timeframe.
+2. **Request Weight**: Each request has a weight, and the total weight of requests must not exceed a certain limit within a timeframe.
+
+For example:
+- A 'light' request might have a weight of 1.
+- A 'heavy' request might have a weight of 100.
+- The total quota might be 1000 per minute.
+
+### Rate Limit Levels
+Rate limits can be enforced at different levels:
+- **Exchange Level**: Applies to all APIs of the exchange (e.g., 100 requests per minute).
+- **API Group Level**: Applies to all APIs within a specific group (e.g., 50 requests per second).
+- **REST Endpoint Level**: Specific to an endpoint (e.g., 10 requests per second).
+
+### Example
+
+```yaml
+name: "myExchange"
+rateLimits:
+  - id: "globalLimit"
+    timeframe: 60000
+    maxRequestCount: 100
+apis:
+  - name: "V1"
+    rateLimits:
+      - id: "apiGroupLimit"
+        timeframe: 10000
+        maxRequestCount: 50
+    restEndpoints:
+      - name: "myRestApi"
+        rateLimits:
+          - id: "myRestApiRule"
+            timeframe: 1000
+            maxRequestCount: 10
+
+```
+
+In example above, request submitted to `myRestApi` REST API of `V1` API group of `myExchange` exchange must enforce 3 rules:
+ * `globalLimit` defined at exchange level: No more that 100 requests can be submitted per minute among all REST APIs of all API groups.
+ * `apiGroupLimit` defined at API group level: No more than 50 request must be output among all requests sent to any REST API of `V1` group.
+ * `myRestApiRule` defined at REST endpoint level: No more that 10 requests per second should be sumitted to `myRestApi` REST API.
 
 Rate limits are defined either at exchange, api group or REST endpoint level as a `rateLimits` property that carries as value a list of [RateLimitRule](../../src/main/java/com/scz/jxapi/netutils/rest/ratelimits/RateLimitRule.java) objects defined by following properties:
  * `id`: Unique identifier
@@ -330,7 +432,7 @@ Rate limits are defined either at exchange, api group or REST endpoint level as 
  * `maxTotalWeight`: The maximum cumulated weight of calls within time frame limitation.
 
 
-When a request is submitted to an endpoint, each rate limit rule is checked, taking into account the request (incrementing current request count) if it does not exceed any rule, or providing the remaining delay before it can be executed if it should not be submitted immediately.
+When a request is submitted to an endpoint, each rate limit rule is checked, taking into account the request (incrementing current request count if it does not exceed any rule), or providing the remaining delay before it can be executed if it should not be submitted immediately.
 Accordingly the request is either submitted immediately or delayed for the minimum time to wait for and then submitted again. See 
 This when `THROTTLE` policy is applied, which is the default. Beware that client applications breaking rate limits may experience increasing delay in request execution and accumulation of requests in queue may cause a memory leak. For this reason it is advised to set a maximum wait delay on request throttling using `Exchange#setMaxRequestThrottleDelay(long)`method.
 See [RequestThrottler](../../src/main/java/com/scz/jxapi/netutils/rest/ratelimits/RequestThrottler.java).

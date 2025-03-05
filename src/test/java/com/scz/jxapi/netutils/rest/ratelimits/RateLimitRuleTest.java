@@ -11,14 +11,17 @@ public class RateLimitRuleTest {
     @Test
     public void testGettersAndSetters() {
         RateLimitRule rule = new RateLimitRule();
+        Assert.assertEquals(RateLimitRule.DEFAULT_GRANULARITY, rule.getGranularity());
         rule.setId("id");
         rule.setTimeFrame(1000);
         rule.setMaxRequestCount(100);
         rule.setMaxTotalWeight(1000);
+        rule.setGranularity(50);
         Assert.assertEquals("id", rule.getId());
         Assert.assertEquals(1000, rule.getTimeFrame());
         Assert.assertEquals(100, rule.getMaxRequestCount());
         Assert.assertEquals(1000, rule.getMaxTotalWeight());
+        Assert.assertEquals(50, rule.getGranularity());
     }
 
     @Test
@@ -44,7 +47,7 @@ public class RateLimitRuleTest {
         rule.setTimeFrame(1000);
         rule.setMaxRequestCount(100);
         rule.setMaxTotalWeight(1000);
-        Assert.assertEquals("RateLimitRule{\"id\":\"id\",\"maxRequestCount\":100,\"maxTotalWeight\":1000,\"timeFrame\":1000}", rule.toString());
+        Assert.assertEquals("RateLimitRule{\"granularity\":10,\"id\":\"id\",\"maxRequestCount\":100,\"maxTotalWeight\":1000,\"timeFrame\":1000}", rule.toString());
     }
 
 }

@@ -46,9 +46,7 @@ public class DemoExchangeRestEndpointDemoTest {
 		this.serverPort = mockHttpServer.getPort();
 		baseHttpUrl = "http://localhost:" + serverPort + "/";
 		config = new Properties();
-		config.setProperty(DemoExchangeProperties.HTTP_PORT.getName(), String.valueOf(this.serverPort));
-		config.setProperty(DemoExchangeProperties.HOST.getName(), DemoExchangeProperties.HOST.getDefaultValue().toString());
-		config.setProperty(DemoExchangeProperties.WEBSOCKET_PORT.getName(), "80");
+		config.setProperty(DemoExchangeProperties.BASE_HTTP_URL.getName(), baseHttpUrl);
 	}
 	
 	@After
@@ -76,7 +74,7 @@ public class DemoExchangeRestEndpointDemoTest {
 		MockHttpRequest mockRequest = mockHttpServer.popRequest(DEFAULT_WAIT_RESPONSE_TIMEOUT);
 		
 		HttpRequest actualRequest = mockRequest.getHttpRequest();
-		Assert.assertEquals(baseHttpUrl + "marketData/exchangeInfo?symbols=%5B%22BTC_USDT%22%2C%22ETH_USDT%22%5D", actualRequest.getUrl());
+		Assert.assertEquals(baseHttpUrl + "/marketData/exchangeInfo?symbols=%5B%22BTC_USDT%22%2C%22ETH_USDT%22%5D", actualRequest.getUrl());
 		Assert.assertEquals(HttpMethod.GET, actualRequest.getHttpMethod());
 		
 		HttpResponse httpResponse = new HttpResponse();

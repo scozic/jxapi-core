@@ -17,7 +17,7 @@ public class ExchangeApiInterfaceImplementationGeneratorTest {
 
 	@Test
 	public void testGenerateExchangeApi() throws Exception {
-		ExchangeDescriptor exchangeDescriptor = new ExchangeDescriptorParser().fromJson(Paths.get(".", "src", "test", "resources", "exchangeApiInterfaceImplementationGeneratorTestDescriptor.json"));
+		ExchangeDescriptor exchangeDescriptor = ExchangeDescriptorParser.fromJson(Paths.get(".", "src", "test", "resources", "exchangeApiInterfaceImplementationGeneratorTestDescriptor.json"));
 		ExchangeApiDescriptor exchangeApiDescriptor = exchangeDescriptor.getApis().get(0);
 		ExchangeApiInterfaceImplementationGenerator apiInterfaceGenerator = new ExchangeApiInterfaceImplementationGenerator(exchangeDescriptor, exchangeApiDescriptor);
 		Assert.assertEquals("package com.foo.bar.gen.marketdata;\n"
@@ -43,13 +43,14 @@ public class ExchangeApiInterfaceImplementationGeneratorTest {
 				+ "import com.scz.jxapi.netutils.websocket.multiplexing.WebsocketMessageTopicMatcherFactory;\n"
 				+ "import com.scz.jxapi.util.EncodingUtil;\n"
 				+ "import com.scz.jxapi.util.JsonUtil;\n"
+				+ "import javax.annotation.processing.Generated;\n"
 				+ "import org.slf4j.Logger;\n"
 				+ "import org.slf4j.LoggerFactory;\n"
 				+ "\n"
 				+ "/**\n"
 				+ " * Actual implementation of {@link MyTestExchangeMarketDataApi}<br>\n"
-				+ " * <br><strong>THIS CODE IS GENERATED. DO NOT EDIT MANUALLY!</strong>\n"
 				+ " */\n"
+				+ "@Generated(\"com.scz.jxapi.generator.java.exchange.api.ExchangeApiInterfaceImplementationGenerator\")\n"
 				+ "public class MyTestExchangeMarketDataApiImpl extends AbstractExchangeApi implements MyTestExchangeMarketDataApi {\n"
 				+ "  \n"
 				+ "  private static final Logger log = LoggerFactory.getLogger(MyTestExchangeMarketDataApiImpl.class);\n"
@@ -113,14 +114,13 @@ public class ExchangeApiInterfaceImplementationGeneratorTest {
 				+ "    return tickerStreamWs.unsubscribe(subscriptionId);\n"
 				+ "  }\n"
 				+ "  \n"
-				+ "}\n"
-				+ "",	
+				+ "}\n",	
 				apiInterfaceGenerator.generate());
 	}
 	
 	@Test(expected = IllegalArgumentException.class)
 	public void testGenerateExchangeApi_NullWebsocketUrlNotAllowWithExistingWsEndpoints() throws Exception {
-		ExchangeDescriptor exchangeDescriptor = new ExchangeDescriptorParser().fromJson(Paths.get(".", "src", "test", "resources", "exchangeApiInterfaceImplementationGeneratorTestDescriptor.json"));
+		ExchangeDescriptor exchangeDescriptor = ExchangeDescriptorParser.fromJson(Paths.get(".", "src", "test", "resources", "exchangeApiInterfaceImplementationGeneratorTestDescriptor.json"));
 		ExchangeApiDescriptor exchangeApiDescriptor = exchangeDescriptor.getApis().get(0);
 		exchangeDescriptor.setWebsocketUrl(null);
 		exchangeApiDescriptor.setWebsocketUrl(null);
@@ -130,7 +130,7 @@ public class ExchangeApiInterfaceImplementationGeneratorTest {
 	
 	@Test
 	public void testGenerateExchangeApiWithGlobalRateLimits() throws Exception {
-		ExchangeDescriptor exchangeDescriptor = new ExchangeDescriptorParser().fromJson(Paths.get(".", "src", "test", "resources", "exchangeApiInterfaceImplementationGeneratorTestDescriptor.json"));
+		ExchangeDescriptor exchangeDescriptor = ExchangeDescriptorParser.fromJson(Paths.get(".", "src", "test", "resources", "exchangeApiInterfaceImplementationGeneratorTestDescriptor.json"));
 		ExchangeApiDescriptor exchangeApiDescriptor = exchangeDescriptor.getApis().get(1);
 		ExchangeApiInterfaceImplementationGenerator apiInterfaceGenerator = new ExchangeApiInterfaceImplementationGenerator(exchangeDescriptor, exchangeApiDescriptor);
 		Assert.assertEquals("package com.foo.bar.gen.trading;\n"
@@ -152,13 +152,14 @@ public class ExchangeApiInterfaceImplementationGeneratorTest {
 				+ "import com.scz.jxapi.netutils.rest.ratelimits.RequestThrottler;\n"
 				+ "import com.scz.jxapi.util.EncodingUtil;\n"
 				+ "import com.scz.jxapi.util.JsonUtil;\n"
+				+ "import javax.annotation.processing.Generated;\n"
 				+ "import org.slf4j.Logger;\n"
 				+ "import org.slf4j.LoggerFactory;\n"
 				+ "\n"
 				+ "/**\n"
 				+ " * Actual implementation of {@link MyTestExchangeTradingApi}<br>\n"
-				+ " * <br><strong>THIS CODE IS GENERATED. DO NOT EDIT MANUALLY!</strong>\n"
 				+ " */\n"
+				+ "@Generated(\"com.scz.jxapi.generator.java.exchange.api.ExchangeApiInterfaceImplementationGenerator\")\n"
 				+ "public class MyTestExchangeTradingApiImpl extends AbstractExchangeApi implements MyTestExchangeTradingApi {\n"
 				+ "  \n"
 				+ "  private static final Logger log = LoggerFactory.getLogger(MyTestExchangeTradingApiImpl.class);\n"
@@ -206,14 +207,13 @@ public class ExchangeApiInterfaceImplementationGeneratorTest {
 				+ "    return submit(HttpRequest.create(EXCHANGE_INFO_REST_API, EXCHANGE_INFO_URL + urlParameters, HttpMethod.GET, request, RATE_LIMITS_EXCHANGE_INFO, 60, null), exchangeInfoResponseDeserializer);\n"
 				+ "  }\n"
 				+ "  \n"
-				+ "}\n"
-				+ "",	
+				+ "}\n",	
 				apiInterfaceGenerator.generate());
 	}
 	
 	@Test
 	public void testGenerateExchangeApiWithEndpointSpecificRateLimits() throws Exception {
-		ExchangeDescriptor exchangeDescriptor = new ExchangeDescriptorParser().fromJson(Paths.get(".", "src", "test", "resources", "exchangeApiInterfaceImplementationGeneratorTestDescriptor.json"));
+		ExchangeDescriptor exchangeDescriptor = ExchangeDescriptorParser.fromJson(Paths.get(".", "src", "test", "resources", "exchangeApiInterfaceImplementationGeneratorTestDescriptor.json"));
 		ExchangeApiDescriptor exchangeApiDescriptor = exchangeDescriptor.getApis().get(2);
 		ExchangeApiInterfaceImplementationGenerator apiInterfaceGenerator = new ExchangeApiInterfaceImplementationGenerator(exchangeDescriptor, exchangeApiDescriptor);
 		Assert.assertEquals("package com.foo.bar.gen.futuresmarketdata;\n"
@@ -238,13 +238,14 @@ public class ExchangeApiInterfaceImplementationGeneratorTest {
 				+ "import com.scz.jxapi.netutils.rest.ratelimits.RequestThrottler;\n"
 				+ "import com.scz.jxapi.util.EncodingUtil;\n"
 				+ "import com.scz.jxapi.util.JsonUtil;\n"
+				+ "import javax.annotation.processing.Generated;\n"
 				+ "import org.slf4j.Logger;\n"
 				+ "import org.slf4j.LoggerFactory;\n"
 				+ "\n"
 				+ "/**\n"
 				+ " * Actual implementation of {@link MyTestExchangeFuturesMarketDataApi}<br>\n"
-				+ " * <br><strong>THIS CODE IS GENERATED. DO NOT EDIT MANUALLY!</strong>\n"
 				+ " */\n"
+				+ "@Generated(\"com.scz.jxapi.generator.java.exchange.api.ExchangeApiInterfaceImplementationGenerator\")\n"
 				+ "public class MyTestExchangeFuturesMarketDataApiImpl extends AbstractExchangeApi implements MyTestExchangeFuturesMarketDataApi {\n"
 				+ "  \n"
 				+ "  private static final Logger log = LoggerFactory.getLogger(MyTestExchangeFuturesMarketDataApiImpl.class);\n"
@@ -298,27 +299,26 @@ public class ExchangeApiInterfaceImplementationGeneratorTest {
 				+ "  \n"
 				+ "  // REST endpoint method call implementations\n"
 				+ "  @Override\n"
-				+ "  public FutureRestResponse<MyTestExchangeFuturesMarketDataExchangeInfo2Response> exchangeInfo2(MyTestExchangeFuturesMarketDataExchangeInfo2Request request) {\n"
-				+ "    String urlParameters = EncodingUtil.createUrlQueryParameters(\"symbols\", JsonUtil.pojoToJsonString(request.getSymbols()));\n"
-				+ "    log.debug(\"GET exchangeInfo2 > {}\", request);\n"
-				+ "    return submit(HttpRequest.create(EXCHANGE_INFO2_REST_API, EXCHANGE_INFO2_URL + urlParameters, HttpMethod.GET, request, RATE_LIMITS_EXCHANGE_INFO2, 0, null), exchangeInfo2ResponseDeserializer);\n"
-				+ "  }\n"
-				+ "  \n"
-				+ "  @Override\n"
 				+ "  public FutureRestResponse<MyTestExchangeFuturesMarketDataExchangeInfoResponse> exchangeInfo(MyTestExchangeFuturesMarketDataExchangeInfoRequest request) {\n"
 				+ "    String urlParameters = EncodingUtil.createUrlQueryParameters(\"symbols\", JsonUtil.pojoToJsonString(request.getSymbols()));\n"
 				+ "    log.debug(\"GET exchangeInfo > {}\", request);\n"
 				+ "    return submit(HttpRequest.create(EXCHANGE_INFO_REST_API, EXCHANGE_INFO_URL + urlParameters, HttpMethod.GET, request, RATE_LIMITS_EXCHANGE_INFO, 0, null), exchangeInfoResponseDeserializer);\n"
 				+ "  }\n"
 				+ "  \n"
-				+ "}\n"
-				+ "",	
+				+ "  @Override\n"
+				+ "  public FutureRestResponse<MyTestExchangeFuturesMarketDataExchangeInfo2Response> exchangeInfo2(MyTestExchangeFuturesMarketDataExchangeInfo2Request request) {\n"
+				+ "    String urlParameters = EncodingUtil.createUrlQueryParameters(\"symbols\", JsonUtil.pojoToJsonString(request.getSymbols()));\n"
+				+ "    log.debug(\"GET exchangeInfo2 > {}\", request);\n"
+				+ "    return submit(HttpRequest.create(EXCHANGE_INFO2_REST_API, EXCHANGE_INFO2_URL + urlParameters, HttpMethod.GET, request, RATE_LIMITS_EXCHANGE_INFO2, 0, null), exchangeInfo2ResponseDeserializer);\n"
+				+ "  }\n"
+				+ "  \n"
+				+ "}\n",	
 				apiInterfaceGenerator.generate());
 	}
 	
 	@Test
 	public void testGenerateExchangeApiWithBothApiGlobalAndEndpointSpecificRateLimits() throws Exception {
-		ExchangeDescriptor exchangeDescriptor = new ExchangeDescriptorParser().fromJson(Paths.get(".", "src", "test", "resources", "exchangeApiInterfaceImplementationGeneratorTestDescriptor.json"));
+		ExchangeDescriptor exchangeDescriptor = ExchangeDescriptorParser.fromJson(Paths.get(".", "src", "test", "resources", "exchangeApiInterfaceImplementationGeneratorTestDescriptor.json"));
 		ExchangeApiDescriptor exchangeApiDescriptor = exchangeDescriptor.getApis().get(3);
 		ExchangeApiInterfaceImplementationGenerator apiInterfaceGenerator = new ExchangeApiInterfaceImplementationGenerator(exchangeDescriptor, exchangeApiDescriptor);
 		Assert.assertEquals("package com.foo.bar.gen.futurestrading;\n"
@@ -340,13 +340,14 @@ public class ExchangeApiInterfaceImplementationGeneratorTest {
 				+ "import com.scz.jxapi.netutils.rest.ratelimits.RequestThrottler;\n"
 				+ "import com.scz.jxapi.util.EncodingUtil;\n"
 				+ "import com.scz.jxapi.util.JsonUtil;\n"
+				+ "import javax.annotation.processing.Generated;\n"
 				+ "import org.slf4j.Logger;\n"
 				+ "import org.slf4j.LoggerFactory;\n"
 				+ "\n"
 				+ "/**\n"
 				+ " * Actual implementation of {@link MyTestExchangeFuturesTradingApi}<br>\n"
-				+ " * <br><strong>THIS CODE IS GENERATED. DO NOT EDIT MANUALLY!</strong>\n"
 				+ " */\n"
+				+ "@Generated(\"com.scz.jxapi.generator.java.exchange.api.ExchangeApiInterfaceImplementationGenerator\")\n"
 				+ "public class MyTestExchangeFuturesTradingApiImpl extends AbstractExchangeApi implements MyTestExchangeFuturesTradingApi {\n"
 				+ "  \n"
 				+ "  private static final Logger log = LoggerFactory.getLogger(MyTestExchangeFuturesTradingApiImpl.class);\n"
@@ -396,14 +397,13 @@ public class ExchangeApiInterfaceImplementationGeneratorTest {
 				+ "    return submit(HttpRequest.create(EXCHANGE_INFO_REST_API, EXCHANGE_INFO_URL + urlParameters, HttpMethod.GET, request, RATE_LIMITS_EXCHANGE_INFO, 60, null), exchangeInfoResponseDeserializer);\n"
 				+ "  }\n"
 				+ "  \n"
-				+ "}\n"
-				+ "",	
+				+ "}\n",	
 				apiInterfaceGenerator.generate());
 	}
 	
 	@Test
 	public void testGenerateExchangeApiWithBothExchangeGlobalAndApiGlobalAndEndpointSpecificRateLimits() throws Exception {
-		ExchangeDescriptor exchangeDescriptor = new ExchangeDescriptorParser().fromJson(Paths.get(".", "src", "test", "resources", "exchangeApiInterfaceImplementationGeneratorTestWithRateLimitRulesAtExchangeLevelDescriptor.json"));
+		ExchangeDescriptor exchangeDescriptor = ExchangeDescriptorParser.fromJson(Paths.get(".", "src", "test", "resources", "exchangeApiInterfaceImplementationGeneratorTestWithRateLimitRulesAtExchangeLevelDescriptor.json"));
 		ExchangeApiDescriptor exchangeApiDescriptor = exchangeDescriptor.getApis().get(0);
 		ExchangeApiInterfaceImplementationGenerator apiInterfaceGenerator = new ExchangeApiInterfaceImplementationGenerator(exchangeDescriptor, exchangeApiDescriptor);
 		Assert.assertEquals("package com.foo.bar.gen.futurestrading;\n"
@@ -425,13 +425,14 @@ public class ExchangeApiInterfaceImplementationGeneratorTest {
 				+ "import com.scz.jxapi.netutils.rest.ratelimits.RequestThrottler;\n"
 				+ "import com.scz.jxapi.util.EncodingUtil;\n"
 				+ "import com.scz.jxapi.util.JsonUtil;\n"
+				+ "import javax.annotation.processing.Generated;\n"
 				+ "import org.slf4j.Logger;\n"
 				+ "import org.slf4j.LoggerFactory;\n"
 				+ "\n"
 				+ "/**\n"
 				+ " * Actual implementation of {@link MyTestExchangeFuturesTradingApi}<br>\n"
-				+ " * <br><strong>THIS CODE IS GENERATED. DO NOT EDIT MANUALLY!</strong>\n"
 				+ " */\n"
+				+ "@Generated(\"com.scz.jxapi.generator.java.exchange.api.ExchangeApiInterfaceImplementationGenerator\")\n"
 				+ "public class MyTestExchangeFuturesTradingApiImpl extends AbstractExchangeApi implements MyTestExchangeFuturesTradingApi {\n"
 				+ "  \n"
 				+ "  private static final Logger log = LoggerFactory.getLogger(MyTestExchangeFuturesTradingApiImpl.class);\n"
@@ -475,14 +476,13 @@ public class ExchangeApiInterfaceImplementationGeneratorTest {
 				+ "    return submit(HttpRequest.create(EXCHANGE_INFO_REST_API, EXCHANGE_INFO_URL + urlParameters, HttpMethod.GET, request, RATE_LIMITS_EXCHANGE_INFO, 60, null), exchangeInfoResponseDeserializer);\n"
 				+ "  }\n"
 				+ "  \n"
-				+ "}\n"
-				+ "",	
+				+ "}\n",	
 				apiInterfaceGenerator.generate());
 	}
 	
 	@Test
 	public void testExchangeApiInterfaceImplementationGeneratorTestOnlyExchangeLevelWeightedLimitRateRuleExchangeDescriptor() throws Exception {
-		ExchangeDescriptor exchangeDescriptor = new ExchangeDescriptorParser().fromJson(Paths.get(".", "src", "test", "resources", "exchangeApiInterfaceImplementationGeneratorTestOnlyExchangeLevelWeightedLimitRateRuleExchangeDescriptor.json"));
+		ExchangeDescriptor exchangeDescriptor = ExchangeDescriptorParser.fromJson(Paths.get(".", "src", "test", "resources", "exchangeApiInterfaceImplementationGeneratorTestOnlyExchangeLevelWeightedLimitRateRuleExchangeDescriptor.json"));
 		ExchangeApiDescriptor exchangeApiDescriptor = exchangeDescriptor.getApis().get(0);
 		ExchangeApiInterfaceImplementationGenerator apiInterfaceGenerator = new ExchangeApiInterfaceImplementationGenerator(exchangeDescriptor, exchangeApiDescriptor);
 		Assert.assertEquals("package com.foo.bar.gen.futurestrading;\n"
@@ -504,13 +504,14 @@ public class ExchangeApiInterfaceImplementationGeneratorTest {
 				+ "import com.scz.jxapi.netutils.rest.ratelimits.RequestThrottler;\n"
 				+ "import com.scz.jxapi.util.EncodingUtil;\n"
 				+ "import com.scz.jxapi.util.JsonUtil;\n"
+				+ "import javax.annotation.processing.Generated;\n"
 				+ "import org.slf4j.Logger;\n"
 				+ "import org.slf4j.LoggerFactory;\n"
 				+ "\n"
 				+ "/**\n"
 				+ " * Actual implementation of {@link MyTestExchangeFuturesTradingApi}<br>\n"
-				+ " * <br><strong>THIS CODE IS GENERATED. DO NOT EDIT MANUALLY!</strong>\n"
 				+ " */\n"
+				+ "@Generated(\"com.scz.jxapi.generator.java.exchange.api.ExchangeApiInterfaceImplementationGenerator\")\n"
 				+ "public class MyTestExchangeFuturesTradingApiImpl extends AbstractExchangeApi implements MyTestExchangeFuturesTradingApi {\n"
 				+ "  \n"
 				+ "  private static final Logger log = LoggerFactory.getLogger(MyTestExchangeFuturesTradingApiImpl.class);\n"
@@ -550,14 +551,13 @@ public class ExchangeApiInterfaceImplementationGeneratorTest {
 				+ "    return submit(HttpRequest.create(EXCHANGE_INFO_REST_API, EXCHANGE_INFO_URL + urlParameters, HttpMethod.GET, request, RATE_LIMITS_EXCHANGE_INFO, 60, null), exchangeInfoResponseDeserializer);\n"
 				+ "  }\n"
 				+ "  \n"
-				+ "}\n"
-				+ "",
+				+ "}\n",
 				apiInterfaceGenerator.generate());
 	}
 	
 	@Test
 	public void testExchangeApiInterfaceImplementationGeneratorTestExchangeLevelLimitRateRuleButEmptyRestEndpoints() throws Exception {
-		ExchangeDescriptor exchangeDescriptor = new ExchangeDescriptorParser().fromJson(Paths.get(".", "src", "test", "resources", "exchangeApiInterfaceImplementationGeneratorTestOnlyExchangeLevelWeightedLimitRateRuleExchangeDescriptor.json"));
+		ExchangeDescriptor exchangeDescriptor = ExchangeDescriptorParser.fromJson(Paths.get(".", "src", "test", "resources", "exchangeApiInterfaceImplementationGeneratorTestOnlyExchangeLevelWeightedLimitRateRuleExchangeDescriptor.json"));
 		ExchangeApiDescriptor exchangeApiDescriptor = exchangeDescriptor.getApis().get(0);
 		exchangeApiDescriptor.setRestEndpoints(List.of());
 		ExchangeApiInterfaceImplementationGenerator apiInterfaceGenerator = new ExchangeApiInterfaceImplementationGenerator(exchangeDescriptor, exchangeApiDescriptor);
@@ -567,13 +567,14 @@ public class ExchangeApiInterfaceImplementationGeneratorTest {
 				+ "\n"
 				+ "import com.foo.bar.gen.MyTestExchangeExchange;\n"
 				+ "import com.scz.jxapi.exchange.AbstractExchangeApi;\n"
+				+ "import javax.annotation.processing.Generated;\n"
 				+ "import org.slf4j.Logger;\n"
 				+ "import org.slf4j.LoggerFactory;\n"
 				+ "\n"
 				+ "/**\n"
 				+ " * Actual implementation of {@link MyTestExchangeFuturesTradingApi}<br>\n"
-				+ " * <br><strong>THIS CODE IS GENERATED. DO NOT EDIT MANUALLY!</strong>\n"
 				+ " */\n"
+				+ "@Generated(\"com.scz.jxapi.generator.java.exchange.api.ExchangeApiInterfaceImplementationGenerator\")\n"
 				+ "public class MyTestExchangeFuturesTradingApiImpl extends AbstractExchangeApi implements MyTestExchangeFuturesTradingApi {\n"
 				+ "  \n"
 				+ "  private static final Logger log = LoggerFactory.getLogger(MyTestExchangeFuturesTradingApiImpl.class);\n"
@@ -589,7 +590,7 @@ public class ExchangeApiInterfaceImplementationGeneratorTest {
 	
 	@Test
 	public void testGenerateExchangeApiNoWsEndpoint() throws Exception {
-		ExchangeDescriptor exchangeDescriptor = new ExchangeDescriptorParser().fromJson(Paths.get(".", "src", "test", "resources", "testExchangeDescriptorNoWebsocketEndpoint.json"));
+		ExchangeDescriptor exchangeDescriptor = ExchangeDescriptorParser.fromJson(Paths.get(".", "src", "test", "resources", "testExchangeDescriptorNoWebsocketEndpoint.json"));
 		ExchangeApiDescriptor exchangeApiDescriptor = exchangeDescriptor.getApis().get(0);
 		ExchangeApiInterfaceImplementationGenerator apiInterfaceGenerator = new ExchangeApiInterfaceImplementationGenerator(exchangeDescriptor, exchangeApiDescriptor);
 		Assert.assertEquals("package com.foo.bar.gen.marketdata;\n"
@@ -607,13 +608,14 @@ public class ExchangeApiInterfaceImplementationGeneratorTest {
 				+ "import com.scz.jxapi.netutils.rest.HttpRequest;\n"
 				+ "import com.scz.jxapi.util.EncodingUtil;\n"
 				+ "import com.scz.jxapi.util.JsonUtil;\n"
+				+ "import javax.annotation.processing.Generated;\n"
 				+ "import org.slf4j.Logger;\n"
 				+ "import org.slf4j.LoggerFactory;\n"
 				+ "\n"
 				+ "/**\n"
 				+ " * Actual implementation of {@link MyTestExchangeMarketDataApi}<br>\n"
-				+ " * <br><strong>THIS CODE IS GENERATED. DO NOT EDIT MANUALLY!</strong>\n"
 				+ " */\n"
+				+ "@Generated(\"com.scz.jxapi.generator.java.exchange.api.ExchangeApiInterfaceImplementationGenerator\")\n"
 				+ "public class MyTestExchangeMarketDataApiImpl extends AbstractExchangeApi implements MyTestExchangeMarketDataApi {\n"
 				+ "  \n"
 				+ "  private static final Logger log = LoggerFactory.getLogger(MyTestExchangeMarketDataApiImpl.class);\n"
@@ -644,14 +646,13 @@ public class ExchangeApiInterfaceImplementationGeneratorTest {
 				+ "    return submit(HttpRequest.create(EXCHANGE_INFO_REST_API, EXCHANGE_INFO_URL + urlParameters, HttpMethod.GET, request, null, 0, null), exchangeInfoResponseDeserializer);\n"
 				+ "  }\n"
 				+ "  \n"
-				+ "}\n"
-				+ "",
+				+ "}\n",
 				apiInterfaceGenerator.generate());
 	}
 	
 	@Test
 	public void testGenerateExchangeApiNoRestEndpoint() throws Exception {
-		ExchangeDescriptor exchangeDescriptor = new ExchangeDescriptorParser().fromJson(Paths.get(".", "src", "test", "resources", "testExchangeDescriptorNoRestEndpoint.json"));
+		ExchangeDescriptor exchangeDescriptor = ExchangeDescriptorParser.fromJson(Paths.get(".", "src", "test", "resources", "testExchangeDescriptorNoRestEndpoint.json"));
 		ExchangeApiDescriptor exchangeApiDescriptor = exchangeDescriptor.getApis().get(0);
 		ExchangeApiInterfaceImplementationGenerator apiInterfaceGenerator = new ExchangeApiInterfaceImplementationGenerator(exchangeDescriptor, exchangeApiDescriptor);
 		Assert.assertEquals("package com.foo.bar.gen.marketdata;\n"
@@ -668,13 +669,14 @@ public class ExchangeApiInterfaceImplementationGeneratorTest {
 				+ "import com.scz.jxapi.netutils.websocket.WebsocketSubscribeRequest;\n"
 				+ "import com.scz.jxapi.netutils.websocket.multiplexing.WebsocketMessageTopicMatcherFactory;\n"
 				+ "import com.scz.jxapi.util.EncodingUtil;\n"
+				+ "import javax.annotation.processing.Generated;\n"
 				+ "import org.slf4j.Logger;\n"
 				+ "import org.slf4j.LoggerFactory;\n"
 				+ "\n"
 				+ "/**\n"
 				+ " * Actual implementation of {@link MyTestExchangeMarketDataApi}<br>\n"
-				+ " * <br><strong>THIS CODE IS GENERATED. DO NOT EDIT MANUALLY!</strong>\n"
 				+ " */\n"
+				+ "@Generated(\"com.scz.jxapi.generator.java.exchange.api.ExchangeApiInterfaceImplementationGenerator\")\n"
 				+ "public class MyTestExchangeMarketDataApiImpl extends AbstractExchangeApi implements MyTestExchangeMarketDataApi {\n"
 				+ "  \n"
 				+ "  private static final Logger log = LoggerFactory.getLogger(MyTestExchangeMarketDataApiImpl.class);\n"
@@ -699,21 +701,6 @@ public class ExchangeApiInterfaceImplementationGeneratorTest {
 				+ "  \n"
 				+ "  // Websocket endpoint subscribe/unsubscribe methods implementations\n"
 				+ "  @Override\n"
-				+ "  public String subscribeTickerStreamStringRequestType(String request, WebsocketListener<TickerMessage> listener) {\n"
-				+ "    String topic = EncodingUtil.substituteArguments(\"${symbol}@ticker\", \"symbol\", request);\n"
-				+ "    WebsocketSubscribeRequest subscribeRequest = WebsocketSubscribeRequest.create(request, topic, WebsocketMessageTopicMatcherFactory.create(\"t\", \"\" + topic, \"symbol\", \"\" + request));\n"
-				+ "    String subId = tickerStreamStringRequestTypeWs.subscribe(subscribeRequest, listener);\n"
-				+ "    log.debug(\"subscribeTickerStreamStringRequestType > {} returned subscriptionId:{}\", subscribeRequest, subId);\n"
-				+ "    return subId;\n"
-				+ "  }\n"
-				+ "  \n"
-				+ "  @Override\n"
-				+ "  public boolean unsubscribeTickerStreamStringRequestType(String subscriptionId) {\n"
-				+ "    log.debug(\"unsubscribeTickerStreamStringRequestType: subscriptionId:{}\", subscriptionId);\n"
-				+ "    return tickerStreamStringRequestTypeWs.unsubscribe(subscriptionId);\n"
-				+ "  }\n"
-				+ "  \n"
-				+ "  @Override\n"
 				+ "  public String subscribeTickerStreamStringObjectType(MyTestExchangeMarketDataTickerStreamStringObjectTypeRequest request, WebsocketListener<TickerMessage> listener) {\n"
 				+ "    String topic = EncodingUtil.substituteArguments(\"${symbol}@ticker\", \"symbol\", request.getSymbol());\n"
 				+ "    WebsocketSubscribeRequest subscribeRequest = WebsocketSubscribeRequest.create(request, topic, WebsocketMessageTopicMatcherFactory.create(\"t\", \"ticker\", \"symbol\", \"\" + request.getSymbol()));\n"
@@ -728,14 +715,28 @@ public class ExchangeApiInterfaceImplementationGeneratorTest {
 				+ "    return tickerStreamStringObjectTypeWs.unsubscribe(subscriptionId);\n"
 				+ "  }\n"
 				+ "  \n"
-				+ "}\n"
-				+ "",
+				+ "  @Override\n"
+				+ "  public String subscribeTickerStreamStringRequestType(String request, WebsocketListener<TickerMessage> listener) {\n"
+				+ "    String topic = EncodingUtil.substituteArguments(\"${symbol}@ticker\", \"symbol\", request);\n"
+				+ "    WebsocketSubscribeRequest subscribeRequest = WebsocketSubscribeRequest.create(request, topic, WebsocketMessageTopicMatcherFactory.create(\"t\", \"\" + topic, \"symbol\", \"\" + request));\n"
+				+ "    String subId = tickerStreamStringRequestTypeWs.subscribe(subscribeRequest, listener);\n"
+				+ "    log.debug(\"subscribeTickerStreamStringRequestType > {} returned subscriptionId:{}\", subscribeRequest, subId);\n"
+				+ "    return subId;\n"
+				+ "  }\n"
+				+ "  \n"
+				+ "  @Override\n"
+				+ "  public boolean unsubscribeTickerStreamStringRequestType(String subscriptionId) {\n"
+				+ "    log.debug(\"unsubscribeTickerStreamStringRequestType: subscriptionId:{}\", subscriptionId);\n"
+				+ "    return tickerStreamStringRequestTypeWs.unsubscribe(subscriptionId);\n"
+				+ "  }\n"
+				+ "  \n"
+				+ "}\n",
 				apiInterfaceGenerator.generate());
 	}
 	
 	@Test
 	public void testGenerateExchangeApiSpecificResponseDataTypes() throws Exception {
-		ExchangeDescriptor exchangeDescriptor = new ExchangeDescriptorParser().fromJson(Paths.get(".", "src", "test", "resources", "testExchangeDescriptorWithAllRestResponseDataTypes.json"));
+		ExchangeDescriptor exchangeDescriptor = ExchangeDescriptorParser.fromJson(Paths.get(".", "src", "test", "resources", "testExchangeDescriptorWithAllRestResponseDataTypes.json"));
 		ExchangeApiDescriptor exchangeApiDescriptor = exchangeDescriptor.getApis().get(0);
 		ExchangeApiInterfaceImplementationGenerator apiInterfaceGenerator = new ExchangeApiInterfaceImplementationGenerator(exchangeDescriptor, exchangeApiDescriptor);
 		Assert.assertEquals("package com.foo.bar.gen.marketdata;\n"
@@ -771,13 +772,14 @@ public class ExchangeApiInterfaceImplementationGeneratorTest {
 				+ "import com.scz.jxapi.netutils.websocket.WebsocketListener;\n"
 				+ "import com.scz.jxapi.netutils.websocket.WebsocketSubscribeRequest;\n"
 				+ "import com.scz.jxapi.netutils.websocket.multiplexing.WebsocketMessageTopicMatcherFactory;\n"
+				+ "import javax.annotation.processing.Generated;\n"
 				+ "import org.slf4j.Logger;\n"
 				+ "import org.slf4j.LoggerFactory;\n"
 				+ "\n"
 				+ "/**\n"
 				+ " * Actual implementation of {@link MyTestExchangeMarketDataApi}<br>\n"
-				+ " * <br><strong>THIS CODE IS GENERATED. DO NOT EDIT MANUALLY!</strong>\n"
 				+ " */\n"
+				+ "@Generated(\"com.scz.jxapi.generator.java.exchange.api.ExchangeApiInterfaceImplementationGenerator\")\n"
 				+ "public class MyTestExchangeMarketDataApiImpl extends AbstractExchangeApi implements MyTestExchangeMarketDataApi {\n"
 				+ "  \n"
 				+ "  private static final Logger log = LoggerFactory.getLogger(MyTestExchangeMarketDataApiImpl.class);\n"
@@ -871,15 +873,21 @@ public class ExchangeApiInterfaceImplementationGeneratorTest {
 				+ "  \n"
 				+ "  // REST endpoint method call implementations\n"
 				+ "  @Override\n"
-				+ "  public FutureRestResponse<Boolean> getRestResponseDataTypeBoolean() {\n"
-				+ "    log.debug(\"GET getRestResponseDataTypeBoolean >\");\n"
-				+ "    return submit(HttpRequest.create(GET_REST_RESPONSE_DATA_TYPE_BOOLEAN_REST_API, GET_REST_RESPONSE_DATA_TYPE_BOOLEAN_URL, HttpMethod.GET, null, null, 0, null), getRestResponseDataTypeBooleanResponseDeserializer);\n"
+				+ "  public FutureRestResponse<Integer> getRestResponseDataTypeInt() {\n"
+				+ "    log.debug(\"GET getRestResponseDataTypeInt >\");\n"
+				+ "    return submit(HttpRequest.create(GET_REST_RESPONSE_DATA_TYPE_INT_REST_API, GET_REST_RESPONSE_DATA_TYPE_INT_URL, HttpMethod.GET, null, null, 0, null), getRestResponseDataTypeIntResponseDeserializer);\n"
 				+ "  }\n"
 				+ "  \n"
 				+ "  @Override\n"
-				+ "  public FutureRestResponse<MyTestExchangeMarketDataGetRestResponseDataTypeObjectResponse> getRestResponseDataTypeObject() {\n"
-				+ "    log.debug(\"GET getRestResponseDataTypeObject >\");\n"
-				+ "    return submit(HttpRequest.create(GET_REST_RESPONSE_DATA_TYPE_OBJECT_REST_API, GET_REST_RESPONSE_DATA_TYPE_OBJECT_URL, HttpMethod.GET, null, null, 0, null), getRestResponseDataTypeObjectResponseDeserializer);\n"
+				+ "  public FutureRestResponse<Long> getRestResponseDataTypeLong() {\n"
+				+ "    log.debug(\"GET getRestResponseDataTypeLong >\");\n"
+				+ "    return submit(HttpRequest.create(GET_REST_RESPONSE_DATA_TYPE_LONG_REST_API, GET_REST_RESPONSE_DATA_TYPE_LONG_URL, HttpMethod.GET, null, null, 0, null), getRestResponseDataTypeLongResponseDeserializer);\n"
+				+ "  }\n"
+				+ "  \n"
+				+ "  @Override\n"
+				+ "  public FutureRestResponse<BigDecimal> getRestResponseDataTypeBigDecimal() {\n"
+				+ "    log.debug(\"GET getRestResponseDataTypeBigDecimal >\");\n"
+				+ "    return submit(HttpRequest.create(GET_REST_RESPONSE_DATA_TYPE_BIG_DECIMAL_REST_API, GET_REST_RESPONSE_DATA_TYPE_BIG_DECIMAL_URL, HttpMethod.GET, null, null, 0, null), getRestResponseDataTypeBigDecimalResponseDeserializer);\n"
 				+ "  }\n"
 				+ "  \n"
 				+ "  @Override\n"
@@ -889,9 +897,15 @@ public class ExchangeApiInterfaceImplementationGeneratorTest {
 				+ "  }\n"
 				+ "  \n"
 				+ "  @Override\n"
-				+ "  public FutureRestResponse<Integer> getRestResponseDataTypeInt() {\n"
-				+ "    log.debug(\"GET getRestResponseDataTypeInt >\");\n"
-				+ "    return submit(HttpRequest.create(GET_REST_RESPONSE_DATA_TYPE_INT_REST_API, GET_REST_RESPONSE_DATA_TYPE_INT_URL, HttpMethod.GET, null, null, 0, null), getRestResponseDataTypeIntResponseDeserializer);\n"
+				+ "  public FutureRestResponse<Boolean> getRestResponseDataTypeBoolean() {\n"
+				+ "    log.debug(\"GET getRestResponseDataTypeBoolean >\");\n"
+				+ "    return submit(HttpRequest.create(GET_REST_RESPONSE_DATA_TYPE_BOOLEAN_REST_API, GET_REST_RESPONSE_DATA_TYPE_BOOLEAN_URL, HttpMethod.GET, null, null, 0, null), getRestResponseDataTypeBooleanResponseDeserializer);\n"
+				+ "  }\n"
+				+ "  \n"
+				+ "  @Override\n"
+				+ "  public FutureRestResponse<MyTestExchangeMarketDataGetRestResponseDataTypeObjectResponse> getRestResponseDataTypeObject() {\n"
+				+ "    log.debug(\"GET getRestResponseDataTypeObject >\");\n"
+				+ "    return submit(HttpRequest.create(GET_REST_RESPONSE_DATA_TYPE_OBJECT_REST_API, GET_REST_RESPONSE_DATA_TYPE_OBJECT_URL, HttpMethod.GET, null, null, 0, null), getRestResponseDataTypeObjectResponseDeserializer);\n"
 				+ "  }\n"
 				+ "  \n"
 				+ "  @Override\n"
@@ -912,35 +926,8 @@ public class ExchangeApiInterfaceImplementationGeneratorTest {
 				+ "    return submit(HttpRequest.create(GET_REST_EMPTY_RESPONSE_DATA_TYPE_REST_API, GET_REST_EMPTY_RESPONSE_DATA_TYPE_URL, HttpMethod.GET, null, null, 0, null), getRestEmptyResponseDataTypeResponseDeserializer);\n"
 				+ "  }\n"
 				+ "  \n"
-				+ "  @Override\n"
-				+ "  public FutureRestResponse<BigDecimal> getRestResponseDataTypeBigDecimal() {\n"
-				+ "    log.debug(\"GET getRestResponseDataTypeBigDecimal >\");\n"
-				+ "    return submit(HttpRequest.create(GET_REST_RESPONSE_DATA_TYPE_BIG_DECIMAL_REST_API, GET_REST_RESPONSE_DATA_TYPE_BIG_DECIMAL_URL, HttpMethod.GET, null, null, 0, null), getRestResponseDataTypeBigDecimalResponseDeserializer);\n"
-				+ "  }\n"
-				+ "  \n"
-				+ "  @Override\n"
-				+ "  public FutureRestResponse<Long> getRestResponseDataTypeLong() {\n"
-				+ "    log.debug(\"GET getRestResponseDataTypeLong >\");\n"
-				+ "    return submit(HttpRequest.create(GET_REST_RESPONSE_DATA_TYPE_LONG_REST_API, GET_REST_RESPONSE_DATA_TYPE_LONG_URL, HttpMethod.GET, null, null, 0, null), getRestResponseDataTypeLongResponseDeserializer);\n"
-				+ "  }\n"
-				+ "  \n"
 				+ "  \n"
 				+ "  // Websocket endpoint subscribe/unsubscribe methods implementations\n"
-				+ "  @Override\n"
-				+ "  public String subscribeSubscribeTickertMapListStream(WebsocketListener<List<Map<String, MyTestExchangeMarketDataSubscribeTickertMapListStreamMessage>>> listener) {\n"
-				+ "    String topic = \"subscribeTickerMapListTopic\";\n"
-				+ "    WebsocketSubscribeRequest subscribeRequest = WebsocketSubscribeRequest.create(null, topic, WebsocketMessageTopicMatcherFactory.create(\"t\", \"tickerMapList\"));\n"
-				+ "    String subId = subscribeTickertMapListStreamWs.subscribe(subscribeRequest, listener);\n"
-				+ "    log.debug(\"subscribeSubscribeTickertMapListStream > {} returned subscriptionId:{}\", subscribeRequest, subId);\n"
-				+ "    return subId;\n"
-				+ "  }\n"
-				+ "  \n"
-				+ "  @Override\n"
-				+ "  public boolean unsubscribeSubscribeTickertMapListStream(String subscriptionId) {\n"
-				+ "    log.debug(\"unsubscribeSubscribeTickertMapListStream: subscriptionId:{}\", subscriptionId);\n"
-				+ "    return subscribeTickertMapListStreamWs.unsubscribe(subscriptionId);\n"
-				+ "  }\n"
-				+ "  \n"
 				+ "  @Override\n"
 				+ "  public String subscribeSubscribeTicker(WebsocketListener<MyTestExchangeMarketDataSubscribeTickerMessage> listener) {\n"
 				+ "    String topic = \"subscribeTickerTopic\";\n"
@@ -956,14 +943,28 @@ public class ExchangeApiInterfaceImplementationGeneratorTest {
 				+ "    return subscribeTickerWs.unsubscribe(subscriptionId);\n"
 				+ "  }\n"
 				+ "  \n"
-				+ "}\n"
-				+ "",
+				+ "  @Override\n"
+				+ "  public String subscribeSubscribeTickertMapListStream(WebsocketListener<List<Map<String, MyTestExchangeMarketDataSubscribeTickertMapListStreamMessage>>> listener) {\n"
+				+ "    String topic = \"subscribeTickerMapListTopic\";\n"
+				+ "    WebsocketSubscribeRequest subscribeRequest = WebsocketSubscribeRequest.create(null, topic, WebsocketMessageTopicMatcherFactory.create(\"t\", \"tickerMapList\"));\n"
+				+ "    String subId = subscribeTickertMapListStreamWs.subscribe(subscribeRequest, listener);\n"
+				+ "    log.debug(\"subscribeSubscribeTickertMapListStream > {} returned subscriptionId:{}\", subscribeRequest, subId);\n"
+				+ "    return subId;\n"
+				+ "  }\n"
+				+ "  \n"
+				+ "  @Override\n"
+				+ "  public boolean unsubscribeSubscribeTickertMapListStream(String subscriptionId) {\n"
+				+ "    log.debug(\"unsubscribeSubscribeTickertMapListStream: subscriptionId:{}\", subscriptionId);\n"
+				+ "    return subscribeTickertMapListStreamWs.unsubscribe(subscriptionId);\n"
+				+ "  }\n"
+				+ "  \n"
+				+ "}\n",
 				apiInterfaceGenerator.generate());
 	}
 	
 	@Test
 	public void testGenerateExchangeApiSpecificRequestDataTypes() throws Exception {
-		ExchangeDescriptor exchangeDescriptor = new ExchangeDescriptorParser().fromJson(Paths.get(".", "src", "test", "resources", "testExchangeDescriptorWithAllRestRequestDataTypes.json"));
+		ExchangeDescriptor exchangeDescriptor = ExchangeDescriptorParser.fromJson(Paths.get(".", "src", "test", "resources", "testExchangeDescriptorWithAllRestRequestDataTypes.json"));
 		ExchangeApiDescriptor exchangeApiDescriptor = exchangeDescriptor.getApis().get(0);
 		ExchangeApiInterfaceImplementationGenerator apiInterfaceGenerator = new ExchangeApiInterfaceImplementationGenerator(exchangeDescriptor, exchangeApiDescriptor);
 		Assert.assertEquals("package com.foo.bar.gen.marketdata;\n"
@@ -993,13 +994,14 @@ public class ExchangeApiInterfaceImplementationGeneratorTest {
 				+ "import com.scz.jxapi.netutils.websocket.multiplexing.WebsocketMessageTopicMatcherFactory;\n"
 				+ "import com.scz.jxapi.util.EncodingUtil;\n"
 				+ "import com.scz.jxapi.util.JsonUtil;\n"
+				+ "import javax.annotation.processing.Generated;\n"
 				+ "import org.slf4j.Logger;\n"
 				+ "import org.slf4j.LoggerFactory;\n"
 				+ "\n"
 				+ "/**\n"
 				+ " * Actual implementation of {@link MyTestExchangeMarketDataApi}<br>\n"
-				+ " * <br><strong>THIS CODE IS GENERATED. DO NOT EDIT MANUALLY!</strong>\n"
 				+ " */\n"
+				+ "@Generated(\"com.scz.jxapi.generator.java.exchange.api.ExchangeApiInterfaceImplementationGenerator\")\n"
 				+ "public class MyTestExchangeMarketDataApiImpl extends AbstractExchangeApi implements MyTestExchangeMarketDataApi {\n"
 				+ "  \n"
 				+ "  private static final Logger log = LoggerFactory.getLogger(MyTestExchangeMarketDataApiImpl.class);\n"
@@ -1151,15 +1153,15 @@ public class ExchangeApiInterfaceImplementationGeneratorTest {
 				+ "  }\n"
 				+ "  \n"
 				+ "  @Override\n"
-				+ "  public FutureRestResponse<GenericResponse> postRestRequestDataTypeObjectNoParameters() {\n"
-				+ "    log.debug(\"POST postRestRequestDataTypeObjectNoParameters >\");\n"
-				+ "    return submit(HttpRequest.create(POST_REST_REQUEST_DATA_TYPE_OBJECT_NO_PARAMETERS_REST_API, POST_REST_REQUEST_DATA_TYPE_OBJECT_NO_PARAMETERS_URL, HttpMethod.POST, null, null, 0, null), postRestRequestDataTypeObjectNoParametersResponseDeserializer);\n"
+				+ "  public FutureRestResponse<GenericResponse> postRestRequestDataTypeLong(Long request) {\n"
+				+ "    log.debug(\"POST postRestRequestDataTypeLong > {}\", request);\n"
+				+ "    return submit(HttpRequest.create(POST_REST_REQUEST_DATA_TYPE_LONG_REST_API, POST_REST_REQUEST_DATA_TYPE_LONG_URL, HttpMethod.POST, request, null, 0, serializeRequestBody(request)), postRestRequestDataTypeLongResponseDeserializer);\n"
 				+ "  }\n"
 				+ "  \n"
 				+ "  @Override\n"
-				+ "  public FutureRestResponse<GenericResponse> postRestRequestDataTypeIntList(List<Integer> request) {\n"
-				+ "    log.debug(\"POST postRestRequestDataTypeIntList > {}\", request);\n"
-				+ "    return submit(HttpRequest.create(POST_REST_REQUEST_DATA_TYPE_INT_LIST_REST_API, POST_REST_REQUEST_DATA_TYPE_INT_LIST_URL, HttpMethod.POST, request, null, 0, serializeRequestBody(request)), postRestRequestDataTypeIntListResponseDeserializer);\n"
+				+ "  public FutureRestResponse<GenericResponse> postRestRequestDataTypeBigDecimal(BigDecimal request) {\n"
+				+ "    log.debug(\"POST postRestRequestDataTypeBigDecimal > {}\", request);\n"
+				+ "    return submit(HttpRequest.create(POST_REST_REQUEST_DATA_TYPE_BIG_DECIMAL_REST_API, POST_REST_REQUEST_DATA_TYPE_BIG_DECIMAL_URL, HttpMethod.POST, request, null, 0, serializeRequestBody(request)), postRestRequestDataTypeBigDecimalResponseDeserializer);\n"
 				+ "  }\n"
 				+ "  \n"
 				+ "  @Override\n"
@@ -1169,9 +1171,33 @@ public class ExchangeApiInterfaceImplementationGeneratorTest {
 				+ "  }\n"
 				+ "  \n"
 				+ "  @Override\n"
+				+ "  public FutureRestResponse<GenericResponse> postRestRequestDataTypeBoolean(Boolean request) {\n"
+				+ "    log.debug(\"POST postRestRequestDataTypeBoolean > {}\", request);\n"
+				+ "    return submit(HttpRequest.create(POST_REST_REQUEST_DATA_TYPE_BOOLEAN_REST_API, POST_REST_REQUEST_DATA_TYPE_BOOLEAN_URL, HttpMethod.POST, request, null, 0, serializeRequestBody(request)), postRestRequestDataTypeBooleanResponseDeserializer);\n"
+				+ "  }\n"
+				+ "  \n"
+				+ "  @Override\n"
+				+ "  public FutureRestResponse<GenericResponse> postRestRequestDataTypeObjectNoParameters() {\n"
+				+ "    log.debug(\"POST postRestRequestDataTypeObjectNoParameters >\");\n"
+				+ "    return submit(HttpRequest.create(POST_REST_REQUEST_DATA_TYPE_OBJECT_NO_PARAMETERS_REST_API, POST_REST_REQUEST_DATA_TYPE_OBJECT_NO_PARAMETERS_URL, HttpMethod.POST, null, null, 0, null), postRestRequestDataTypeObjectNoParametersResponseDeserializer);\n"
+				+ "  }\n"
+				+ "  \n"
+				+ "  @Override\n"
 				+ "  public FutureRestResponse<GenericResponse> postRestRequestDataTypeObjectOneParameter(MyTestExchangeMarketDataPostRestRequestDataTypeObjectOneParameterRequest request) {\n"
 				+ "    log.debug(\"POST postRestRequestDataTypeObjectOneParameter > {}\", request);\n"
 				+ "    return submit(HttpRequest.create(POST_REST_REQUEST_DATA_TYPE_OBJECT_ONE_PARAMETER_REST_API, POST_REST_REQUEST_DATA_TYPE_OBJECT_ONE_PARAMETER_URL, HttpMethod.POST, request, null, 0, serializeRequestBody(request)), postRestRequestDataTypeObjectOneParameterResponseDeserializer);\n"
+				+ "  }\n"
+				+ "  \n"
+				+ "  @Override\n"
+				+ "  public FutureRestResponse<GenericResponse> postRestRequestDataTypeIntList(List<Integer> request) {\n"
+				+ "    log.debug(\"POST postRestRequestDataTypeIntList > {}\", request);\n"
+				+ "    return submit(HttpRequest.create(POST_REST_REQUEST_DATA_TYPE_INT_LIST_REST_API, POST_REST_REQUEST_DATA_TYPE_INT_LIST_URL, HttpMethod.POST, request, null, 0, serializeRequestBody(request)), postRestRequestDataTypeIntListResponseDeserializer);\n"
+				+ "  }\n"
+				+ "  \n"
+				+ "  @Override\n"
+				+ "  public FutureRestResponse<GenericResponse> postRestRequestDataTypeObjectListMap(Map<String, List<SingleSymbol>> request) {\n"
+				+ "    log.debug(\"POST postRestRequestDataTypeObjectListMap > {}\", request);\n"
+				+ "    return submit(HttpRequest.create(POST_REST_REQUEST_DATA_TYPE_OBJECT_LIST_MAP_REST_API, POST_REST_REQUEST_DATA_TYPE_OBJECT_LIST_MAP_URL, HttpMethod.POST, request, null, 0, serializeRequestBody(request)), postRestRequestDataTypeObjectListMapResponseDeserializer);\n"
 				+ "  }\n"
 				+ "  \n"
 				+ "  @Override\n"
@@ -1182,21 +1208,9 @@ public class ExchangeApiInterfaceImplementationGeneratorTest {
 				+ "  }\n"
 				+ "  \n"
 				+ "  @Override\n"
-				+ "  public FutureRestResponse<GenericResponse> postRestRequestDataTypeBoolean(Boolean request) {\n"
-				+ "    log.debug(\"POST postRestRequestDataTypeBoolean > {}\", request);\n"
-				+ "    return submit(HttpRequest.create(POST_REST_REQUEST_DATA_TYPE_BOOLEAN_REST_API, POST_REST_REQUEST_DATA_TYPE_BOOLEAN_URL, HttpMethod.POST, request, null, 0, serializeRequestBody(request)), postRestRequestDataTypeBooleanResponseDeserializer);\n"
-				+ "  }\n"
-				+ "  \n"
-				+ "  @Override\n"
 				+ "  public FutureRestResponse<GenericResponse> getRestRequestDataTypeEmptyObject() {\n"
 				+ "    log.debug(\"GET getRestRequestDataTypeEmptyObject >\");\n"
 				+ "    return submit(HttpRequest.create(GET_REST_REQUEST_DATA_TYPE_EMPTY_OBJECT_REST_API, GET_REST_REQUEST_DATA_TYPE_EMPTY_OBJECT_URL, HttpMethod.GET, null, null, 0, null), getRestRequestDataTypeEmptyObjectResponseDeserializer);\n"
-				+ "  }\n"
-				+ "  \n"
-				+ "  @Override\n"
-				+ "  public FutureRestResponse<GenericResponse> postRestRequestDataTypeBigDecimal(BigDecimal request) {\n"
-				+ "    log.debug(\"POST postRestRequestDataTypeBigDecimal > {}\", request);\n"
-				+ "    return submit(HttpRequest.create(POST_REST_REQUEST_DATA_TYPE_BIG_DECIMAL_REST_API, POST_REST_REQUEST_DATA_TYPE_BIG_DECIMAL_URL, HttpMethod.POST, request, null, 0, serializeRequestBody(request)), postRestRequestDataTypeBigDecimalResponseDeserializer);\n"
 				+ "  }\n"
 				+ "  \n"
 				+ "  @Override\n"
@@ -1213,20 +1227,68 @@ public class ExchangeApiInterfaceImplementationGeneratorTest {
 				+ "    return submit(HttpRequest.create(POST_REST_REQUEST_DATA_TYPE_NO_PARAMS_BUT_URL_PARAMETERS_REST_API, POST_REST_REQUEST_DATA_TYPE_NO_PARAMS_BUT_URL_PARAMETERS_URL + urlParameters, HttpMethod.POST, null, null, 0, null), postRestRequestDataTypeNoParamsButUrlParametersResponseDeserializer);\n"
 				+ "  }\n"
 				+ "  \n"
-				+ "  @Override\n"
-				+ "  public FutureRestResponse<GenericResponse> postRestRequestDataTypeLong(Long request) {\n"
-				+ "    log.debug(\"POST postRestRequestDataTypeLong > {}\", request);\n"
-				+ "    return submit(HttpRequest.create(POST_REST_REQUEST_DATA_TYPE_LONG_REST_API, POST_REST_REQUEST_DATA_TYPE_LONG_URL, HttpMethod.POST, request, null, 0, serializeRequestBody(request)), postRestRequestDataTypeLongResponseDeserializer);\n"
-				+ "  }\n"
-				+ "  \n"
-				+ "  @Override\n"
-				+ "  public FutureRestResponse<GenericResponse> postRestRequestDataTypeObjectListMap(Map<String, List<SingleSymbol>> request) {\n"
-				+ "    log.debug(\"POST postRestRequestDataTypeObjectListMap > {}\", request);\n"
-				+ "    return submit(HttpRequest.create(POST_REST_REQUEST_DATA_TYPE_OBJECT_LIST_MAP_REST_API, POST_REST_REQUEST_DATA_TYPE_OBJECT_LIST_MAP_URL, HttpMethod.POST, request, null, 0, serializeRequestBody(request)), postRestRequestDataTypeObjectListMapResponseDeserializer);\n"
-				+ "  }\n"
-				+ "  \n"
 				+ "  \n"
 				+ "  // Websocket endpoint subscribe/unsubscribe methods implementations\n"
+				+ "  @Override\n"
+				+ "  public String subscribeStreamWithObjectRequestDataTypeZeroParameters(WebsocketListener<Ticker> listener) {\n"
+				+ "    String topic = \"ticker\";\n"
+				+ "    WebsocketSubscribeRequest subscribeRequest = WebsocketSubscribeRequest.create(null, topic, WebsocketMessageTopicMatcherFactory.create(\"t\", \"streamWithObjectRequestDataTypeZeroParametersTopic\"));\n"
+				+ "    String subId = streamWithObjectRequestDataTypeZeroParametersWs.subscribe(subscribeRequest, listener);\n"
+				+ "    log.debug(\"subscribeStreamWithObjectRequestDataTypeZeroParameters > {} returned subscriptionId:{}\", subscribeRequest, subId);\n"
+				+ "    return subId;\n"
+				+ "  }\n"
+				+ "  \n"
+				+ "  @Override\n"
+				+ "  public boolean unsubscribeStreamWithObjectRequestDataTypeZeroParameters(String subscriptionId) {\n"
+				+ "    log.debug(\"unsubscribeStreamWithObjectRequestDataTypeZeroParameters: subscriptionId:{}\", subscriptionId);\n"
+				+ "    return streamWithObjectRequestDataTypeZeroParametersWs.unsubscribe(subscriptionId);\n"
+				+ "  }\n"
+				+ "  \n"
+				+ "  @Override\n"
+				+ "  public String subscribeStreamWithObjectRequestDataTypeOneParameter(SingleSymbol request, WebsocketListener<Ticker> listener) {\n"
+				+ "    String topic = EncodingUtil.substituteArguments(\"ticker\");\n"
+				+ "    WebsocketSubscribeRequest subscribeRequest = WebsocketSubscribeRequest.create(request, topic, WebsocketMessageTopicMatcherFactory.create(\"t\", \"\" + topic));\n"
+				+ "    String subId = streamWithObjectRequestDataTypeOneParameterWs.subscribe(subscribeRequest, listener);\n"
+				+ "    log.debug(\"subscribeStreamWithObjectRequestDataTypeOneParameter > {} returned subscriptionId:{}\", subscribeRequest, subId);\n"
+				+ "    return subId;\n"
+				+ "  }\n"
+				+ "  \n"
+				+ "  @Override\n"
+				+ "  public boolean unsubscribeStreamWithObjectRequestDataTypeOneParameter(String subscriptionId) {\n"
+				+ "    log.debug(\"unsubscribeStreamWithObjectRequestDataTypeOneParameter: subscriptionId:{}\", subscriptionId);\n"
+				+ "    return streamWithObjectRequestDataTypeOneParameterWs.unsubscribe(subscriptionId);\n"
+				+ "  }\n"
+				+ "  \n"
+				+ "  @Override\n"
+				+ "  public String subscribeStreamWithIntRequestDataType(Integer request, WebsocketListener<Ticker> listener) {\n"
+				+ "    String topic = \"ticker\";\n"
+				+ "    WebsocketSubscribeRequest subscribeRequest = WebsocketSubscribeRequest.create(request, topic, WebsocketMessageTopicMatcherFactory.create(\"t\", \"streamWithIntRequestDataTypeTopic\"));\n"
+				+ "    String subId = streamWithIntRequestDataTypeWs.subscribe(subscribeRequest, listener);\n"
+				+ "    log.debug(\"subscribeStreamWithIntRequestDataType > {} returned subscriptionId:{}\", subscribeRequest, subId);\n"
+				+ "    return subId;\n"
+				+ "  }\n"
+				+ "  \n"
+				+ "  @Override\n"
+				+ "  public boolean unsubscribeStreamWithIntRequestDataType(String subscriptionId) {\n"
+				+ "    log.debug(\"unsubscribeStreamWithIntRequestDataType: subscriptionId:{}\", subscriptionId);\n"
+				+ "    return streamWithIntRequestDataTypeWs.unsubscribe(subscriptionId);\n"
+				+ "  }\n"
+				+ "  \n"
+				+ "  @Override\n"
+				+ "  public String subscribeStreamWithLongRequestDataType(Long request, WebsocketListener<Ticker> listener) {\n"
+				+ "    String topic = \"ticker\";\n"
+				+ "    WebsocketSubscribeRequest subscribeRequest = WebsocketSubscribeRequest.create(request, topic, WebsocketMessageTopicMatcherFactory.create(\"t\", \"streamWithLongRequestDataTypeTopic\"));\n"
+				+ "    String subId = streamWithLongRequestDataTypeWs.subscribe(subscribeRequest, listener);\n"
+				+ "    log.debug(\"subscribeStreamWithLongRequestDataType > {} returned subscriptionId:{}\", subscribeRequest, subId);\n"
+				+ "    return subId;\n"
+				+ "  }\n"
+				+ "  \n"
+				+ "  @Override\n"
+				+ "  public boolean unsubscribeStreamWithLongRequestDataType(String subscriptionId) {\n"
+				+ "    log.debug(\"unsubscribeStreamWithLongRequestDataType: subscriptionId:{}\", subscriptionId);\n"
+				+ "    return streamWithLongRequestDataTypeWs.unsubscribe(subscriptionId);\n"
+				+ "  }\n"
+				+ "  \n"
 				+ "  @Override\n"
 				+ "  public String subscribeStreamWithBigDecimalRequestDataType(BigDecimal request, WebsocketListener<Ticker> listener) {\n"
 				+ "    String topic = \"ticker\";\n"
@@ -1258,18 +1320,18 @@ public class ExchangeApiInterfaceImplementationGeneratorTest {
 				+ "  }\n"
 				+ "  \n"
 				+ "  @Override\n"
-				+ "  public String subscribeStreamWithObjectRequestDataTypeOneParameter(SingleSymbol request, WebsocketListener<Ticker> listener) {\n"
-				+ "    String topic = EncodingUtil.substituteArguments(\"ticker\");\n"
-				+ "    WebsocketSubscribeRequest subscribeRequest = WebsocketSubscribeRequest.create(request, topic, WebsocketMessageTopicMatcherFactory.create(\"t\", \"\" + topic));\n"
-				+ "    String subId = streamWithObjectRequestDataTypeOneParameterWs.subscribe(subscribeRequest, listener);\n"
-				+ "    log.debug(\"subscribeStreamWithObjectRequestDataTypeOneParameter > {} returned subscriptionId:{}\", subscribeRequest, subId);\n"
+				+ "  public String subscribeStreamWithBooleanRequestDataType(Boolean request, WebsocketListener<Ticker> listener) {\n"
+				+ "    String topic = \"ticker\";\n"
+				+ "    WebsocketSubscribeRequest subscribeRequest = WebsocketSubscribeRequest.create(request, topic, WebsocketMessageTopicMatcherFactory.create(\"t\", \"streamWithBooleanRequestDataTypeTopic\"));\n"
+				+ "    String subId = streamWithBooleanRequestDataTypeWs.subscribe(subscribeRequest, listener);\n"
+				+ "    log.debug(\"subscribeStreamWithBooleanRequestDataType > {} returned subscriptionId:{}\", subscribeRequest, subId);\n"
 				+ "    return subId;\n"
 				+ "  }\n"
 				+ "  \n"
 				+ "  @Override\n"
-				+ "  public boolean unsubscribeStreamWithObjectRequestDataTypeOneParameter(String subscriptionId) {\n"
-				+ "    log.debug(\"unsubscribeStreamWithObjectRequestDataTypeOneParameter: subscriptionId:{}\", subscriptionId);\n"
-				+ "    return streamWithObjectRequestDataTypeOneParameterWs.unsubscribe(subscriptionId);\n"
+				+ "  public boolean unsubscribeStreamWithBooleanRequestDataType(String subscriptionId) {\n"
+				+ "    log.debug(\"unsubscribeStreamWithBooleanRequestDataType: subscriptionId:{}\", subscriptionId);\n"
+				+ "    return streamWithBooleanRequestDataTypeWs.unsubscribe(subscriptionId);\n"
 				+ "  }\n"
 				+ "  \n"
 				+ "  @Override\n"
@@ -1288,36 +1350,6 @@ public class ExchangeApiInterfaceImplementationGeneratorTest {
 				+ "  }\n"
 				+ "  \n"
 				+ "  @Override\n"
-				+ "  public String subscribeStreamWithNullTopicAndNullRequest(WebsocketListener<Ticker> listener) {\n"
-				+ "    String topic = \"\";\n"
-				+ "    WebsocketSubscribeRequest subscribeRequest = WebsocketSubscribeRequest.create(null, topic, WebsocketMessageTopicMatcherFactory.create());\n"
-				+ "    String subId = streamWithNullTopicAndNullRequestWs.subscribe(subscribeRequest, listener);\n"
-				+ "    log.debug(\"subscribeStreamWithNullTopicAndNullRequest > {} returned subscriptionId:{}\", subscribeRequest, subId);\n"
-				+ "    return subId;\n"
-				+ "  }\n"
-				+ "  \n"
-				+ "  @Override\n"
-				+ "  public boolean unsubscribeStreamWithNullTopicAndNullRequest(String subscriptionId) {\n"
-				+ "    log.debug(\"unsubscribeStreamWithNullTopicAndNullRequest: subscriptionId:{}\", subscriptionId);\n"
-				+ "    return streamWithNullTopicAndNullRequestWs.unsubscribe(subscriptionId);\n"
-				+ "  }\n"
-				+ "  \n"
-				+ "  @Override\n"
-				+ "  public String subscribeStreamWithIntRequestDataType(Integer request, WebsocketListener<Ticker> listener) {\n"
-				+ "    String topic = \"ticker\";\n"
-				+ "    WebsocketSubscribeRequest subscribeRequest = WebsocketSubscribeRequest.create(request, topic, WebsocketMessageTopicMatcherFactory.create(\"t\", \"streamWithIntRequestDataTypeTopic\"));\n"
-				+ "    String subId = streamWithIntRequestDataTypeWs.subscribe(subscribeRequest, listener);\n"
-				+ "    log.debug(\"subscribeStreamWithIntRequestDataType > {} returned subscriptionId:{}\", subscribeRequest, subId);\n"
-				+ "    return subId;\n"
-				+ "  }\n"
-				+ "  \n"
-				+ "  @Override\n"
-				+ "  public boolean unsubscribeStreamWithIntRequestDataType(String subscriptionId) {\n"
-				+ "    log.debug(\"unsubscribeStreamWithIntRequestDataType: subscriptionId:{}\", subscriptionId);\n"
-				+ "    return streamWithIntRequestDataTypeWs.unsubscribe(subscriptionId);\n"
-				+ "  }\n"
-				+ "  \n"
-				+ "  @Override\n"
 				+ "  public String subscribeStreamWithObjectListMapRequestDataType(Map<String, List<MultiSymbol>> request, WebsocketListener<Ticker> listener) {\n"
 				+ "    String topic = EncodingUtil.substituteArguments(\"ticker:${symbolList}\", \"symbolList\", EncodingUtil.listToString(request.getSymbolList(), \"|\"));\n"
 				+ "    WebsocketSubscribeRequest subscribeRequest = WebsocketSubscribeRequest.create(request, topic, WebsocketMessageTopicMatcherFactory.create(\"t\", \"streamWithObjectListMapRequestDataTypeTopic\"));\n"
@@ -1333,18 +1365,18 @@ public class ExchangeApiInterfaceImplementationGeneratorTest {
 				+ "  }\n"
 				+ "  \n"
 				+ "  @Override\n"
-				+ "  public String subscribeStreamWithLongRequestDataType(Long request, WebsocketListener<Ticker> listener) {\n"
-				+ "    String topic = \"ticker\";\n"
-				+ "    WebsocketSubscribeRequest subscribeRequest = WebsocketSubscribeRequest.create(request, topic, WebsocketMessageTopicMatcherFactory.create(\"t\", \"streamWithLongRequestDataTypeTopic\"));\n"
-				+ "    String subId = streamWithLongRequestDataTypeWs.subscribe(subscribeRequest, listener);\n"
-				+ "    log.debug(\"subscribeStreamWithLongRequestDataType > {} returned subscriptionId:{}\", subscribeRequest, subId);\n"
+				+ "  public String subscribeStreamWithNullTopicAndNullRequest(WebsocketListener<Ticker> listener) {\n"
+				+ "    String topic = \"\";\n"
+				+ "    WebsocketSubscribeRequest subscribeRequest = WebsocketSubscribeRequest.create(null, topic, WebsocketMessageTopicMatcherFactory.create());\n"
+				+ "    String subId = streamWithNullTopicAndNullRequestWs.subscribe(subscribeRequest, listener);\n"
+				+ "    log.debug(\"subscribeStreamWithNullTopicAndNullRequest > {} returned subscriptionId:{}\", subscribeRequest, subId);\n"
 				+ "    return subId;\n"
 				+ "  }\n"
 				+ "  \n"
 				+ "  @Override\n"
-				+ "  public boolean unsubscribeStreamWithLongRequestDataType(String subscriptionId) {\n"
-				+ "    log.debug(\"unsubscribeStreamWithLongRequestDataType: subscriptionId:{}\", subscriptionId);\n"
-				+ "    return streamWithLongRequestDataTypeWs.unsubscribe(subscriptionId);\n"
+				+ "  public boolean unsubscribeStreamWithNullTopicAndNullRequest(String subscriptionId) {\n"
+				+ "    log.debug(\"unsubscribeStreamWithNullTopicAndNullRequest: subscriptionId:{}\", subscriptionId);\n"
+				+ "    return streamWithNullTopicAndNullRequestWs.unsubscribe(subscriptionId);\n"
 				+ "  }\n"
 				+ "  \n"
 				+ "  @Override\n"
@@ -1362,44 +1394,13 @@ public class ExchangeApiInterfaceImplementationGeneratorTest {
 				+ "    return streamWithNullTopicAndPrimitiveTypeRequestWs.unsubscribe(subscriptionId);\n"
 				+ "  }\n"
 				+ "  \n"
-				+ "  @Override\n"
-				+ "  public String subscribeStreamWithBooleanRequestDataType(Boolean request, WebsocketListener<Ticker> listener) {\n"
-				+ "    String topic = \"ticker\";\n"
-				+ "    WebsocketSubscribeRequest subscribeRequest = WebsocketSubscribeRequest.create(request, topic, WebsocketMessageTopicMatcherFactory.create(\"t\", \"streamWithBooleanRequestDataTypeTopic\"));\n"
-				+ "    String subId = streamWithBooleanRequestDataTypeWs.subscribe(subscribeRequest, listener);\n"
-				+ "    log.debug(\"subscribeStreamWithBooleanRequestDataType > {} returned subscriptionId:{}\", subscribeRequest, subId);\n"
-				+ "    return subId;\n"
-				+ "  }\n"
-				+ "  \n"
-				+ "  @Override\n"
-				+ "  public boolean unsubscribeStreamWithBooleanRequestDataType(String subscriptionId) {\n"
-				+ "    log.debug(\"unsubscribeStreamWithBooleanRequestDataType: subscriptionId:{}\", subscriptionId);\n"
-				+ "    return streamWithBooleanRequestDataTypeWs.unsubscribe(subscriptionId);\n"
-				+ "  }\n"
-				+ "  \n"
-				+ "  @Override\n"
-				+ "  public String subscribeStreamWithObjectRequestDataTypeZeroParameters(WebsocketListener<Ticker> listener) {\n"
-				+ "    String topic = \"ticker\";\n"
-				+ "    WebsocketSubscribeRequest subscribeRequest = WebsocketSubscribeRequest.create(null, topic, WebsocketMessageTopicMatcherFactory.create(\"t\", \"streamWithObjectRequestDataTypeZeroParametersTopic\"));\n"
-				+ "    String subId = streamWithObjectRequestDataTypeZeroParametersWs.subscribe(subscribeRequest, listener);\n"
-				+ "    log.debug(\"subscribeStreamWithObjectRequestDataTypeZeroParameters > {} returned subscriptionId:{}\", subscribeRequest, subId);\n"
-				+ "    return subId;\n"
-				+ "  }\n"
-				+ "  \n"
-				+ "  @Override\n"
-				+ "  public boolean unsubscribeStreamWithObjectRequestDataTypeZeroParameters(String subscriptionId) {\n"
-				+ "    log.debug(\"unsubscribeStreamWithObjectRequestDataTypeZeroParameters: subscriptionId:{}\", subscriptionId);\n"
-				+ "    return streamWithObjectRequestDataTypeZeroParametersWs.unsubscribe(subscriptionId);\n"
-				+ "  }\n"
-				+ "  \n"
-				+ "}\n"
-				+ "",
+				+ "}\n",
 				apiInterfaceGenerator.generate());
 	}
 	
 	@Test
 	public void testGenerateExchangeApiDifferentRestEndpointQueryParamsDefinitions() throws Exception {
-		ExchangeDescriptor exchangeDescriptor = new ExchangeDescriptorParser().fromJson(Paths.get(".", "src", "test", "resources", "testExchangeDescriptorAllUrlQueryParamsDefinitions.json"));
+		ExchangeDescriptor exchangeDescriptor = ExchangeDescriptorParser.fromJson(Paths.get(".", "src", "test", "resources", "testExchangeDescriptorAllUrlQueryParamsDefinitions.json"));
 		ExchangeApiDescriptor exchangeApiDescriptor = exchangeDescriptor.getApis().get(0);
 		ExchangeApiInterfaceImplementationGenerator apiInterfaceGenerator = new ExchangeApiInterfaceImplementationGenerator(exchangeDescriptor, exchangeApiDescriptor);
 		Assert.assertEquals("package com.foo.bar.gen.restapi;\n"
@@ -1421,13 +1422,14 @@ public class ExchangeApiInterfaceImplementationGeneratorTest {
 				+ "import com.scz.jxapi.netutils.rest.HttpRequest;\n"
 				+ "import com.scz.jxapi.util.EncodingUtil;\n"
 				+ "import com.scz.jxapi.util.JsonUtil;\n"
+				+ "import javax.annotation.processing.Generated;\n"
 				+ "import org.slf4j.Logger;\n"
 				+ "import org.slf4j.LoggerFactory;\n"
 				+ "\n"
 				+ "/**\n"
 				+ " * Actual implementation of {@link MyTestExchangeWithDifferentUrlQueryParamsRestApiApi}<br>\n"
-				+ " * <br><strong>THIS CODE IS GENERATED. DO NOT EDIT MANUALLY!</strong>\n"
 				+ " */\n"
+				+ "@Generated(\"com.scz.jxapi.generator.java.exchange.api.ExchangeApiInterfaceImplementationGenerator\")\n"
 				+ "public class MyTestExchangeWithDifferentUrlQueryParamsRestApiApiImpl extends AbstractExchangeApi implements MyTestExchangeWithDifferentUrlQueryParamsRestApiApi {\n"
 				+ "  \n"
 				+ "  private static final Logger log = LoggerFactory.getLogger(MyTestExchangeWithDifferentUrlQueryParamsRestApiApiImpl.class);\n"
@@ -1550,9 +1552,10 @@ public class ExchangeApiInterfaceImplementationGeneratorTest {
 				+ "  }\n"
 				+ "  \n"
 				+ "  @Override\n"
-				+ "  public FutureRestResponse<GenericResponse> putRestRequestDataTypeObject(Person request) {\n"
-				+ "    log.debug(\"PUT putRestRequestDataTypeObject > {}\", request);\n"
-				+ "    return submit(HttpRequest.create(PUT_REST_REQUEST_DATA_TYPE_OBJECT_REST_API, PUT_REST_REQUEST_DATA_TYPE_OBJECT_URL, HttpMethod.PUT, request, null, 0, serializeRequestBody(request)), putRestRequestDataTypeObjectResponseDeserializer);\n"
+				+ "  public FutureRestResponse<GenericResponse> deleteRestRequestDataTypeInt(Integer request) {\n"
+				+ "    String urlParameters = EncodingUtil.createUrlQueryParameters(\"id\", request);\n"
+				+ "    log.debug(\"DELETE deleteRestRequestDataTypeInt > {}\", request);\n"
+				+ "    return submit(HttpRequest.create(DELETE_REST_REQUEST_DATA_TYPE_INT_REST_API, DELETE_REST_REQUEST_DATA_TYPE_INT_URL + urlParameters, HttpMethod.DELETE, request, null, 0, null), deleteRestRequestDataTypeIntResponseDeserializer);\n"
 				+ "  }\n"
 				+ "  \n"
 				+ "  @Override\n"
@@ -1563,17 +1566,23 @@ public class ExchangeApiInterfaceImplementationGeneratorTest {
 				+ "  }\n"
 				+ "  \n"
 				+ "  @Override\n"
-				+ "  public FutureRestResponse<GenericResponse> postRestRequestDataTypeIntListAsQueryParam(List<Integer> request) {\n"
-				+ "    String urlParameters = EncodingUtil.createUrlQueryParameters(\"intListArg\", JsonUtil.pojoToJsonString(request));\n"
-				+ "    log.debug(\"POST postRestRequestDataTypeIntListAsQueryParam > {}\", request);\n"
-				+ "    return submit(HttpRequest.create(POST_REST_REQUEST_DATA_TYPE_INT_LIST_AS_QUERY_PARAM_REST_API, POST_REST_REQUEST_DATA_TYPE_INT_LIST_AS_QUERY_PARAM_URL + urlParameters, HttpMethod.POST, request, null, 0, serializeRequestBody(request)), postRestRequestDataTypeIntListAsQueryParamResponseDeserializer);\n"
-				+ "  }\n"
-				+ "  \n"
-				+ "  @Override\n"
 				+ "  public FutureRestResponse<GenericResponse> deleteRestRequestDataTypeObject(PersonFilter request) {\n"
 				+ "    String urlParameters = EncodingUtil.createUrlQueryParameters(\"age\", request.getAge(), \"city\", request.getCity());\n"
 				+ "    log.debug(\"DELETE deleteRestRequestDataTypeObject > {}\", request);\n"
 				+ "    return submit(HttpRequest.create(DELETE_REST_REQUEST_DATA_TYPE_OBJECT_REST_API, DELETE_REST_REQUEST_DATA_TYPE_OBJECT_URL + urlParameters, HttpMethod.DELETE, request, null, 0, null), deleteRestRequestDataTypeObjectResponseDeserializer);\n"
+				+ "  }\n"
+				+ "  \n"
+				+ "  @Override\n"
+				+ "  public FutureRestResponse<GenericResponse> putRestRequestDataTypeObject(Person request) {\n"
+				+ "    log.debug(\"PUT putRestRequestDataTypeObject > {}\", request);\n"
+				+ "    return submit(HttpRequest.create(PUT_REST_REQUEST_DATA_TYPE_OBJECT_REST_API, PUT_REST_REQUEST_DATA_TYPE_OBJECT_URL, HttpMethod.PUT, request, null, 0, serializeRequestBody(request)), putRestRequestDataTypeObjectResponseDeserializer);\n"
+				+ "  }\n"
+				+ "  \n"
+				+ "  @Override\n"
+				+ "  public FutureRestResponse<GenericResponse> putRestRequestDataTypeObjectUsingCustomQueryParams(Person request) {\n"
+				+ "    String urlParameters = EncodingUtil.substituteArguments(\"?id=${id}&name=${name}&age=${age}&city=${city}\", \"id\", request.getId(), \"name\", request.getName(), \"age\", request.getAge(), \"city\", request.getCity());\n"
+				+ "    log.debug(\"PUT putRestRequestDataTypeObjectUsingCustomQueryParams > {}\", request);\n"
+				+ "    return submit(HttpRequest.create(PUT_REST_REQUEST_DATA_TYPE_OBJECT_USING_CUSTOM_QUERY_PARAMS_REST_API, PUT_REST_REQUEST_DATA_TYPE_OBJECT_USING_CUSTOM_QUERY_PARAMS_URL + urlParameters, HttpMethod.PUT, request, null, 0, serializeRequestBody(request)), putRestRequestDataTypeObjectUsingCustomQueryParamsResponseDeserializer);\n"
 				+ "  }\n"
 				+ "  \n"
 				+ "  @Override\n"
@@ -1584,27 +1593,19 @@ public class ExchangeApiInterfaceImplementationGeneratorTest {
 				+ "  }\n"
 				+ "  \n"
 				+ "  @Override\n"
-				+ "  public FutureRestResponse<GenericResponse> deleteRestRequestDataTypeInt(Integer request) {\n"
-				+ "    String urlParameters = EncodingUtil.createUrlQueryParameters(\"id\", request);\n"
-				+ "    log.debug(\"DELETE deleteRestRequestDataTypeInt > {}\", request);\n"
-				+ "    return submit(HttpRequest.create(DELETE_REST_REQUEST_DATA_TYPE_INT_REST_API, DELETE_REST_REQUEST_DATA_TYPE_INT_URL + urlParameters, HttpMethod.DELETE, request, null, 0, null), deleteRestRequestDataTypeIntResponseDeserializer);\n"
+				+ "  public FutureRestResponse<GenericResponse> postRestRequestDataTypeIntListAsQueryParam(List<Integer> request) {\n"
+				+ "    String urlParameters = EncodingUtil.createUrlQueryParameters(\"intListArg\", JsonUtil.pojoToJsonString(request));\n"
+				+ "    log.debug(\"POST postRestRequestDataTypeIntListAsQueryParam > {}\", request);\n"
+				+ "    return submit(HttpRequest.create(POST_REST_REQUEST_DATA_TYPE_INT_LIST_AS_QUERY_PARAM_REST_API, POST_REST_REQUEST_DATA_TYPE_INT_LIST_AS_QUERY_PARAM_URL + urlParameters, HttpMethod.POST, request, null, 0, serializeRequestBody(request)), postRestRequestDataTypeIntListAsQueryParamResponseDeserializer);\n"
 				+ "  }\n"
 				+ "  \n"
-				+ "  @Override\n"
-				+ "  public FutureRestResponse<GenericResponse> putRestRequestDataTypeObjectUsingCustomQueryParams(Person request) {\n"
-				+ "    String urlParameters = EncodingUtil.substituteArguments(\"?id=${id}&name=${name}&age=${age}&city=${city}\", \"id\", request.getId(), \"name\", request.getName(), \"age\", request.getAge(), \"city\", request.getCity());\n"
-				+ "    log.debug(\"PUT putRestRequestDataTypeObjectUsingCustomQueryParams > {}\", request);\n"
-				+ "    return submit(HttpRequest.create(PUT_REST_REQUEST_DATA_TYPE_OBJECT_USING_CUSTOM_QUERY_PARAMS_REST_API, PUT_REST_REQUEST_DATA_TYPE_OBJECT_USING_CUSTOM_QUERY_PARAMS_URL + urlParameters, HttpMethod.PUT, request, null, 0, serializeRequestBody(request)), putRestRequestDataTypeObjectUsingCustomQueryParamsResponseDeserializer);\n"
-				+ "  }\n"
-				+ "  \n"
-				+ "}\n"
-				+ "",
+				+ "}\n",
 				apiInterfaceGenerator.generate());
 	}
 	
 	@Test
 	public void testGenerateExchangeApiPropertiesInheritedFromExchange() throws Exception {
-		ExchangeDescriptor exchangeDescriptor = new ExchangeDescriptorParser().fromJson(Paths.get(".", "src", "test", "resources", "exchangeApiInterfaceImplementationGeneratorTestDescriptorPropertiesInheritedFromExchange.json"));
+		ExchangeDescriptor exchangeDescriptor = ExchangeDescriptorParser.fromJson(Paths.get(".", "src", "test", "resources", "exchangeApiInterfaceImplementationGeneratorTestDescriptorPropertiesInheritedFromExchange.json"));
 		ExchangeApiDescriptor exchangeApiDescriptor = exchangeDescriptor.getApis().get(0);
 		ExchangeApiInterfaceImplementationGenerator apiInterfaceGenerator = new ExchangeApiInterfaceImplementationGenerator(exchangeDescriptor, exchangeApiDescriptor);
 		Assert.assertEquals("package com.foo.bar.gen.futurestrading;\n"
@@ -1632,13 +1633,14 @@ public class ExchangeApiInterfaceImplementationGeneratorTest {
 				+ "import com.scz.jxapi.netutils.websocket.multiplexing.WebsocketMessageTopicMatcherFactory;\n"
 				+ "import com.scz.jxapi.util.EncodingUtil;\n"
 				+ "import com.scz.jxapi.util.JsonUtil;\n"
+				+ "import javax.annotation.processing.Generated;\n"
 				+ "import org.slf4j.Logger;\n"
 				+ "import org.slf4j.LoggerFactory;\n"
 				+ "\n"
 				+ "/**\n"
 				+ " * Actual implementation of {@link MyTestExchangeFuturesTradingApi}<br>\n"
-				+ " * <br><strong>THIS CODE IS GENERATED. DO NOT EDIT MANUALLY!</strong>\n"
 				+ " */\n"
+				+ "@Generated(\"com.scz.jxapi.generator.java.exchange.api.ExchangeApiInterfaceImplementationGenerator\")\n"
 				+ "public class MyTestExchangeFuturesTradingApiImpl extends AbstractExchangeApi implements MyTestExchangeFuturesTradingApi {\n"
 				+ "  \n"
 				+ "  private static final Logger log = LoggerFactory.getLogger(MyTestExchangeFuturesTradingApiImpl.class);\n"
@@ -1709,8 +1711,7 @@ public class ExchangeApiInterfaceImplementationGeneratorTest {
 				+ "    return tickerStreamWs.unsubscribe(subscriptionId);\n"
 				+ "  }\n"
 				+ "  \n"
-				+ "}\n"
-				+ "",
+				+ "}\n",
 				apiInterfaceGenerator.generate());
 	}
 }

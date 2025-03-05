@@ -1,0 +1,35 @@
+# Demo configuration properties file for Employee exchange.
+# You should create a copy of this file without the '.dist' extension and add that .properties file
+# to your .gitignore because properties may carry sensitive data you do not want to commit.
+# The resulting file will be read as default configuration file for demo snippets.
+# Uncomment and set following properties and adjust their values per your needs.
+
+
+# Employee specific configuration properties
+
+# Base URL for REST endpoints the Employee Exchange API
+# baseHttpUrl=
+
+# Base URL for websocket endpoints of the Employee Exchange API
+# baseWebsocketUrl=
+
+
+# Common configuration properties
+
+# The request timeout for calls to REST endpoints of every API. A negative value means no timeout (discouraged)
+# jxapi.httpRequestTimeout=
+
+# Sets the HTTP request throttling policy in case a rate limit rule is breached, for every exposed ExchangeApi, see enum com.scz.jxapi.netutils.rest.ratelimits.RequestThrottlingMode
+# jxapi.requestThrottlingMode=
+
+# Set the max HTTP request throttle delay for rate limit rule enforcement, for every exposed ExchangeApi.
+# jxapi.maxRequestThrottleDelay=
+
+
+# Demo REST/WEBSOCKET snippets configuration properties
+
+# The duration in ms of the subscription in websocket endpoint demo classes
+# jxapi.demo.ws.subscriptionDuration=30000
+
+# Delay in ms before exiting program after unsubscribing in websocked endpoint demo classes.
+# jxapi.demo.ws.delayBeforeExitAfterUnsubscription=1000

@@ -5,7 +5,7 @@ import com.scz.jxapi.exchange.descriptor.Constant;
 import com.scz.jxapi.exchange.descriptor.DefaultConfigProperty;
 import com.scz.jxapi.exchange.descriptor.Type;
 import com.scz.jxapi.generator.java.Imports;
-import com.scz.jxapi.generator.java.JavaCodeGenerationUtil;
+import com.scz.jxapi.generator.java.JavaCodeGenUtil;
 import com.scz.jxapi.generator.java.exchange.ExchangeJavaGenUtil;
 
 /**
@@ -36,11 +36,11 @@ public class ConstantsGenerationUtil {
 			throw new IllegalArgumentException("Constant " + constant + " has not a primitive type");
 		}
 		String className = ExchangeJavaGenUtil.getClassNameForType(type, imports, null);
-		String varName = JavaCodeGenerationUtil.getStaticVariableName(constant.getName());
+		String varName = JavaCodeGenUtil.getStaticVariableName(constant.getName());
 		String value = ExchangeJavaGenUtil.getPrimitiveTypeFieldSampleValueDeclaration(type, constant.getValue(), imports);
 		String description = constant.getDescription();
 		if (description != null) {
-			code.append(JavaCodeGenerationUtil.generateJavaDoc(description))
+			code.append(JavaCodeGenUtil.generateJavaDoc(description))
 				.append("\n");
 		}
 		code.append("public static final ")
@@ -88,23 +88,23 @@ public class ConstantsGenerationUtil {
 		imports.add(ConfigProperty.class);
 		String name = property.getName();
 		return new StringBuilder()
-				.append(JavaCodeGenerationUtil.generateJavaDoc(property.getDescription()))
+				.append(JavaCodeGenUtil.generateJavaDoc(property.getDescription()))
 				.append("\npublic static final ConfigProperty ")
-				.append(JavaCodeGenerationUtil.getStaticVariableName(getPropertyKeyPropertyName(property)))
+				.append(JavaCodeGenUtil.getStaticVariableName(getPropertyKeyPropertyName(property)))
 				.append(" = DefaultConfigProperty.create(\n")
-				.append(JavaCodeGenerationUtil.INDENTATION)
-				.append(JavaCodeGenerationUtil.getQuotedString(name))
+				.append(JavaCodeGenUtil.INDENTATION)
+				.append(JavaCodeGenUtil.getQuotedString(name))
 				.append(",\n")
-				.append(JavaCodeGenerationUtil.INDENTATION)
+				.append(JavaCodeGenUtil.INDENTATION)
 				.append(Type.class.getSimpleName())
 				.append(".")
 				.append(property.getType().toString())
 				.append(",\n")
-				.append(JavaCodeGenerationUtil.INDENTATION)
-				.append(JavaCodeGenerationUtil.getQuotedString(property.getDescription()))
+				.append(JavaCodeGenUtil.INDENTATION)
+				.append(JavaCodeGenUtil.getQuotedString(property.getDescription()))
 				.append(",\n")
-				.append(JavaCodeGenerationUtil.INDENTATION)
-				.append(JavaCodeGenerationUtil.getQuotedString(property.getDefaultValue()))
+				.append(JavaCodeGenUtil.INDENTATION)
+				.append(JavaCodeGenUtil.getQuotedString(property.getDefaultValue()))
 				.append(");")
 				.toString();
 	}

@@ -9,7 +9,7 @@ import org.junit.Test;
 
 import com.scz.jxapi.exchange.descriptor.ExchangeDescriptor;
 import com.scz.jxapi.exchange.descriptor.parser.ExchangeDescriptorParser;
-import com.scz.jxapi.generator.java.JavaCodeGenerationUtil;
+import com.scz.jxapi.generator.java.JavaCodeGenUtil;
 import com.scz.jxapi.generator.java.exchange.ClassesGeneratorTestUtil;
 
 /**
@@ -24,7 +24,7 @@ public class ExchangeDemoClassesGeneratorTest {
 	@After
 	public void tearDown() throws IOException {
 		if (srcFolder != null) {
-			JavaCodeGenerationUtil.deletePath(srcFolder);
+			JavaCodeGenUtil.deletePath(srcFolder);
 			srcFolder = null;
 		}
 	}
@@ -32,7 +32,7 @@ public class ExchangeDemoClassesGeneratorTest {
 	@Test
 	public void testGenerateExchangeDemoClasses() throws IOException {
 		srcFolder = ClassesGeneratorTestUtil.generateTmpDir();
-		ExchangeDescriptor exchange = new ExchangeDescriptorParser().fromJson(Paths.get(".", "src", "test", "resources", "testExchangeDescriptor.json"));
+		ExchangeDescriptor exchange = ExchangeDescriptorParser.fromJson(Paths.get(".", "src", "test", "resources", "testExchangeDescriptor.json"));
 		new ExchangeDemoClassesGenerator(exchange).generateClasses(srcFolder);
 		Path pkgPath = Paths.get(".");
 		checkJavaFilesCount(pkgPath, 1);
@@ -48,7 +48,7 @@ public class ExchangeDemoClassesGeneratorTest {
 	@Test
 	public void testGenerateExchangeDemoClasses_NullRestEndpoints() throws IOException {
 		srcFolder = ClassesGeneratorTestUtil.generateTmpDir();
-		ExchangeDescriptor exchange = new ExchangeDescriptorParser().fromJson(Paths.get(".", "src", "test", "resources", "testExchangeDescriptor.json"));
+		ExchangeDescriptor exchange = ExchangeDescriptorParser.fromJson(Paths.get(".", "src", "test", "resources", "testExchangeDescriptor.json"));
 		exchange.getApis().get(0).setRestEndpoints(null);
 		new ExchangeDemoClassesGenerator(exchange).generateClasses(srcFolder);
 		Path pkgPath = Paths.get(".");
@@ -63,7 +63,7 @@ public class ExchangeDemoClassesGeneratorTest {
 	@Test
 	public void testGenerateExchangeDemoClasses_NullWsEndpoints() throws IOException {
 		srcFolder = ClassesGeneratorTestUtil.generateTmpDir();
-		ExchangeDescriptor exchange = new ExchangeDescriptorParser().fromJson(Paths.get(".", "src", "test", "resources", "testExchangeDescriptor.json"));
+		ExchangeDescriptor exchange = ExchangeDescriptorParser.fromJson(Paths.get(".", "src", "test", "resources", "testExchangeDescriptor.json"));
 		exchange.getApis().get(0).setWebsocketEndpoints(null);
 		new ExchangeDemoClassesGenerator(exchange).generateClasses(srcFolder);
 		Path pkgPath = Paths.get(".");

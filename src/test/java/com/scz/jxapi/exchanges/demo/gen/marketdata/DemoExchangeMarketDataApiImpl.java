@@ -28,13 +28,14 @@ import com.scz.jxapi.netutils.websocket.WebsocketSubscribeRequest;
 import com.scz.jxapi.netutils.websocket.multiplexing.WebsocketMessageTopicMatcherFactory;
 import com.scz.jxapi.util.EncodingUtil;
 import com.scz.jxapi.util.JsonUtil;
+import javax.annotation.processing.Generated;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
  * Actual implementation of {@link DemoExchangeMarketDataApi}<br>
- * <br><strong>THIS CODE IS GENERATED. DO NOT EDIT MANUALLY!</strong>
  */
+@Generated("com.scz.jxapi.generator.java.exchange.api.ExchangeApiInterfaceImplementationGenerator")
 public class DemoExchangeMarketDataApiImpl extends AbstractExchangeApi implements DemoExchangeMarketDataApi {
   
   private static final Logger log = LoggerFactory.getLogger(DemoExchangeMarketDataApiImpl.class);
@@ -111,6 +112,13 @@ public class DemoExchangeMarketDataApiImpl extends AbstractExchangeApi implement
   
   // REST endpoint method call implementations
   @Override
+  public FutureRestResponse<DemoExchangeMarketDataExchangeInfoResponse> exchangeInfo(DemoExchangeMarketDataExchangeInfoRequest request) {
+    String urlParameters = EncodingUtil.createUrlQueryParameters("symbols", JsonUtil.pojoToJsonString(request.getSymbols()));
+    log.debug("GET exchangeInfo > {}", request);
+    return submit(HttpRequest.create(EXCHANGE_INFO_REST_API, EXCHANGE_INFO_URL + urlParameters, HttpMethod.GET, request, null, 0, null), exchangeInfoResponseDeserializer);
+  }
+  
+  @Override
   public FutureRestResponse<DemoExchangeMarketDataTickersResponse> tickers() {
     log.debug("GET tickers >");
     return submit(HttpRequest.create(TICKERS_REST_API, TICKERS_URL, HttpMethod.GET, null, null, 0, null), tickersResponseDeserializer);
@@ -127,13 +135,6 @@ public class DemoExchangeMarketDataApiImpl extends AbstractExchangeApi implement
     String urlParameters = EncodingUtil.createUrlQueryParameters("a", request);
     log.debug("GET getRestRequestDataTypePrimitiveWithMsgField > {}", request);
     return submit(HttpRequest.create(GET_REST_REQUEST_DATA_TYPE_PRIMITIVE_WITH_MSG_FIELD_REST_API, GET_REST_REQUEST_DATA_TYPE_PRIMITIVE_WITH_MSG_FIELD_URL + urlParameters, HttpMethod.GET, request, null, 0, null), getRestRequestDataTypePrimitiveWithMsgFieldResponseDeserializer);
-  }
-  
-  @Override
-  public FutureRestResponse<DemoExchangeMarketDataExchangeInfoResponse> exchangeInfo(DemoExchangeMarketDataExchangeInfoRequest request) {
-    String urlParameters = EncodingUtil.createUrlQueryParameters("symbols", JsonUtil.pojoToJsonString(request.getSymbols()));
-    log.debug("GET exchangeInfo > {}", request);
-    return submit(HttpRequest.create(EXCHANGE_INFO_REST_API, EXCHANGE_INFO_URL + urlParameters, HttpMethod.GET, request, null, 0, null), exchangeInfoResponseDeserializer);
   }
   
   @Override

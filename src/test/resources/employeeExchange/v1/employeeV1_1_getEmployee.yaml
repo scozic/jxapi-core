@@ -1,0 +1,32 @@
+name: "Employee"
+apis:
+ - name: V1    
+   restEndpoints:
+    - name: "getEmployee"
+      description: "Get employee details by ID"
+      httpMethod: "GET"
+      docUrl: "https://www.example.com/docs/employee/get"
+      url: "/employee"
+      urlParameters: "/${id}"
+      request:
+       name: "id"
+       type: INT
+       description: "Employee ID"
+       sampleValue: 1
+      response:
+       objectName: "Employee"
+       type: OBJECT
+       properties:
+        - name: "id"
+          type: INT
+          description: "Employee ID"
+          sampleValue: 1
+        - name: "firstName"
+          description: "Employee first name"
+          sampleValue: "John"
+        - name: "lastName"
+          description: "Employee last name"
+          sampleValue: "Doe"
+        - name: "profile"
+          description: "Employee profile. Can be 'regular' or 'admin'"
+          sampleValue: "REGULAR"

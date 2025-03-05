@@ -21,29 +21,14 @@ import com.scz.jxapi.netutils.websocket.WebsocketManager;
  * </ul>
  */
 public class DemoExchangeWebsocketHook extends AbstractWebsocketHook {
-
-	private String host;
-	private int port;
-	private String url;
-	
-	/**
-	 * Constructor
-	 * @param props Exchange configuration properties.
-	 */
-	public DemoExchangeWebsocketHook(Properties props) {
-		this.port = DemoExchangeProperties.getWebsocketPort(props);
-		this.host = DemoExchangeProperties.getHost(props);
-	}
 	
 	@Override
 	public void init(WebsocketManager websocketManager) {
 		super.init(websocketManager);
 		Properties props = websocketManager.getExchangeApi().getProperties();
-		this.port = DemoExchangeProperties.getWebsocketPort(props);
-		this.host = DemoExchangeProperties.getHost(props);
-		url = websocketManager.getUrl();
-		url = StringUtils.replace(url, DemoExchangeConstants.WEBSOCKET_SERVER_HOST_WILDCARD, host);
-		url = StringUtils.replace(url, DemoExchangeConstants.WEBSOCKET_SERVER_PORT_WILDCARD, String.valueOf(port));
+		String baseUrl = DemoExchangeProperties.getBaseWebsocketUrl(props);
+        String url = websocketManager.getUrl(); 
+		url = StringUtils.replace(url, DemoExchangeConstants.BASE_URL_PATTERN, baseUrl);
 		websocketManager.setUrl(url);
 	}
 	

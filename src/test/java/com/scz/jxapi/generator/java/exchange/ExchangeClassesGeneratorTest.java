@@ -9,7 +9,7 @@ import org.junit.Test;
 
 import com.scz.jxapi.exchange.descriptor.ExchangeDescriptor;
 import com.scz.jxapi.exchange.descriptor.parser.ExchangeDescriptorParser;
-import com.scz.jxapi.generator.java.JavaCodeGenerationUtil;
+import com.scz.jxapi.generator.java.JavaCodeGenUtil;
 
 /**
  * Unit test for {@link ExchangeClassesGenerator}
@@ -21,7 +21,7 @@ public class ExchangeClassesGeneratorTest {
 	@After
 	public void tearDown() throws IOException {
 		if (srcFolder != null) {
-			JavaCodeGenerationUtil.deletePath(srcFolder);
+			JavaCodeGenUtil.deletePath(srcFolder);
 			srcFolder = null;
 		}
 	}
@@ -29,7 +29,7 @@ public class ExchangeClassesGeneratorTest {
 	@Test
 	public void testGenerateExchangeClasses() throws IOException {
 		srcFolder = ClassesGeneratorTestUtil.generateTmpDir();
-		ExchangeDescriptor exchange = new ExchangeDescriptorParser().fromJson(Paths.get(".", "src", "test", "resources", "testExchangeDescriptor.json"));
+		ExchangeDescriptor exchange = ExchangeDescriptorParser.fromJson(Paths.get(".", "src", "test", "resources", "testExchangeDescriptor.json"));
 		ExchangeClassesGenerator generator = new ExchangeClassesGenerator(exchange);
 		generator.generateClasses(srcFolder);
 		
@@ -76,7 +76,7 @@ public class ExchangeClassesGeneratorTest {
 	@Test
 	public void testGenerateExchangeClassesNoConstantsNoProperties() throws IOException {
 		srcFolder = ClassesGeneratorTestUtil.generateTmpDir();
-		ExchangeDescriptor exchange = new ExchangeDescriptorParser().fromJson(Paths.get(".", "src", "test", "resources", "testExchangeDescriptor.json"));
+		ExchangeDescriptor exchange = ExchangeDescriptorParser.fromJson(Paths.get(".", "src", "test", "resources", "testExchangeDescriptor.json"));
 		exchange.setProperties(null);
 		exchange.setConstants(null);
 		ExchangeClassesGenerator generator = new ExchangeClassesGenerator(exchange);

@@ -15,19 +15,20 @@ public class ExchangeInterfaceGeneratorTest {
 
 	@Test
 	public void testGenerateExchangeInterface() throws Exception {
-		ExchangeDescriptor exchangeDescriptor = new ExchangeDescriptorParser().fromJson(Paths.get(".", "src", "test", "resources", "testExchangeDescriptor.json"));
+		ExchangeDescriptor exchangeDescriptor = ExchangeDescriptorParser.fromJson(Paths.get(".", "src", "test", "resources", "testExchangeDescriptor.json"));
 		ExchangeInterfaceGenerator exchangeGenerator = new ExchangeInterfaceGenerator(exchangeDescriptor);
 		Assert.assertEquals("package com.foo.bar.gen;\n"
 				+ "\n"
 				+ "import com.foo.bar.gen.marketdata.MyTestExchangeMarketDataApi;\n"
 				+ "import com.scz.jxapi.exchange.Exchange;\n"
+				+ "import javax.annotation.processing.Generated;\n"
 				+ "\n"
 				+ "/**\n"
 				+ " * MyTestExchange API<br>\n"
 				+ " * A sample Exchange descriptor file\n"
 				+ " * @see <a href=\"https://docs.myexchange.com/api\">Reference documentation</a>\n"
-				+ " * <br><strong>THIS CODE IS GENERATED. DO NOT EDIT MANUALLY!</strong>\n"
 				+ " */\n"
+				+ "@Generated(\"com.scz.jxapi.generator.java.exchange.ExchangeInterfaceGenerator\")\n"
 				+ "public interface MyTestExchangeExchange extends Exchange {\n"
 				+ "  \n"
 				+ "  String ID = \"MyTestExchange\";\n"

@@ -1,0 +1,7 @@
+name: "Employee"
+apis:
+ - name: V1
+   description: "Version 1 of the Employee API"
+   httpUrl: "v1"
+   websocketUrl: "BASEURL"
+   websocketHookFactory: "com.scz.jxapi.exchanges.demo.net.DemoExchangeWebsocketHookFactory"

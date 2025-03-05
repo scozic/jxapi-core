@@ -10,7 +10,7 @@ import org.junit.Test;
 
 import com.scz.jxapi.exchange.descriptor.Field;
 import com.scz.jxapi.exchange.descriptor.Type;
-import com.scz.jxapi.generator.java.JavaCodeGenerationUtil;
+import com.scz.jxapi.generator.java.JavaCodeGenUtil;
 import com.scz.jxapi.generator.java.exchange.ClassesGeneratorTestUtil;
 
 /**
@@ -25,7 +25,7 @@ public class JsonPojoSerializerClassesGeneratorTest {
 	@After
 	public void tearDown() throws IOException {
 		if (srcFolder != null) {
-			JavaCodeGenerationUtil.deletePath(srcFolder);
+			JavaCodeGenUtil.deletePath(srcFolder);
 			srcFolder = null;
 		}
 	}
@@ -40,7 +40,7 @@ public class JsonPojoSerializerClassesGeneratorTest {
 			Field.builder().type(Type.INT).name("score").description("Current score").build(),
 			Field.builder().type("OBJECT_LIST").name("foo")
 						   .property(Field.builder().type(Type.TIMESTAMP).name("time").build())
-						   .property(Field.builder().type(Type.OBJECT).name("bar")
+						   .property(Field.builder().name("bar")
 							    		  .property(Field.builder().type(Type.STRING).name("name").build())
 										  .build())
 						   .build(),

@@ -13,12 +13,13 @@ import com.scz.jxapi.exchanges.demo.gen.marketdata.pojo.GenericResponse;
 import com.scz.jxapi.exchanges.demo.gen.marketdata.pojo.SingleSymbol;
 import com.scz.jxapi.netutils.rest.FutureRestResponse;
 import com.scz.jxapi.netutils.websocket.WebsocketListener;
+import javax.annotation.processing.Generated;
 
 /**
  * DemoExchange MarketData API<br>
  * Demo exchange market data API
- * <br><strong>THIS CODE IS GENERATED. DO NOT EDIT MANUALLY!</strong>
  */
+@Generated("com.scz.jxapi.generator.java.exchange.api.ExchangeApiInterfaceGenerator")
 public interface DemoExchangeMarketDataApi extends ExchangeApi {
   String ID = "MarketData";
   String EXCHANGE_INFO_REST_API = "exchangeInfo";

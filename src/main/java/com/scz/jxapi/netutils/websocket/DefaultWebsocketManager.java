@@ -272,6 +272,7 @@ public class DefaultWebsocketManager extends DefaultDisposable implements Websoc
 			
 			log.info("Connected WS:{}", this);
 		} catch (Exception exception) {
+			// Remark: Intentionally catch all exceptions to avoid any RuntimeException to escape and break the connection.
 			String msg = "Error while connecting websocket";
 			log.error(msg, exception);
 			connected.set(false);

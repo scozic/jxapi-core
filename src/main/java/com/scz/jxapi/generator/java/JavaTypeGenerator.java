@@ -5,6 +5,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
 
+import javax.annotation.processing.Generated;
+
 /**
  * A simple generator for .java files of any type. Generator should be supplied
  * full type name, imports, super type name (can be multiple in case type is an
@@ -22,6 +24,8 @@ public class JavaTypeGenerator {
 	private String typeDeclaration;
 	
 	private String description;
+	
+	private boolean generatePackageAndImports = true;
 	
 	/**
 	 * Inner class body
@@ -119,9 +123,9 @@ public class JavaTypeGenerator {
 	 */
 	public void appendMethod(String methodDeclaration, String methodBody, String javadoc) {
 		if (javadoc != null) {
-			appendToBody(JavaCodeGenerationUtil.generateJavaDoc(javadoc)).append("\n");
+			appendToBody(JavaCodeGenUtil.generateJavaDoc(javadoc)).append("\n");
 		}
-		appendToBody(methodDeclaration + " " + JavaCodeGenerationUtil.generateCodeBlock(methodBody));
+		appendToBody(methodDeclaration + " " + JavaCodeGenUtil.generateCodeBlock(methodBody));
 	}
 	
 	/**
@@ -135,14 +139,14 @@ public class JavaTypeGenerator {
 	 * @return Generated class simple name without package e.g. <code>Foo</code>
 	 */
 	public String getSimpleName() {
-		return JavaCodeGenerationUtil.getClassNameWithoutPackage(name);
+		return JavaCodeGenUtil.getClassNameWithoutPackage(name);
 	}
 	
 	/**
 	 * @return package name of generated class e.g. <code>com.x.y.z</code>
 	 */
 	public String getPackage() {
-		return JavaCodeGenerationUtil.getClassPackage(name);
+		return JavaCodeGenUtil.getClassPackage(name);
 	}
 	
 	/**
@@ -201,6 +205,22 @@ public class JavaTypeGenerator {
 	}
 	
 	/**
+	 * @return If <code>true</code> (default), package and imports will be generated
+	 *         in output.
+	 */
+	public boolean isGeneratePackageAndImports() {
+		return generatePackageAndImports;
+	}
+
+	/**
+	 * @param generatePackageAndImports If <code>true</code> (default), package and
+	 *                                  imports will be generated in output.
+	 */
+	public void setGeneratePackageAndImports(boolean generatePackageAndImports) {
+		this.generatePackageAndImports = generatePackageAndImports;
+	}
+	
+	/**
 	 * Performs generation. Parent class and implemented interfaces will be added to
 	 * import unless of same package as generated class
 	 * 
@@ -208,6 +228,7 @@ public class JavaTypeGenerator {
 	 */
 	public String generate() {
 		StringBuilder sb = new StringBuilder();
+		addImport(Generated.class);
 		if (parentClassName != null) {
 			addImport(parentClassName);
 		}
@@ -215,28 +236,32 @@ public class JavaTypeGenerator {
 			implementedInterfaces.forEach(this::addImport);
 		}
 		
-		String pkg = getPackage();
-		if (!pkg.isEmpty()) {
-			sb.append("package ").append(pkg).append(";\n\n");
+		if (generatePackageAndImports) {
+			String pkg = getPackage();
+			if (!pkg.isEmpty()) {
+				sb.append("package ").append(pkg).append(";\n\n");
+			}
+			
+			sb.append(imports.generate(pkg))
+			  .append("\n");
 		}
 		
-		sb.append(imports.generate(pkg));
-		sb.append("\n")
-		  .append(JavaCodeGenerationUtil.generateJavaDoc(description))
+		sb.append(JavaCodeGenUtil.generateJavaDoc(description))
 		  .append("\n")
+		  .append("@Generated(\"").append(getClass().getName()).append("\")\n")
 		  .append(typeDeclaration)
 		  .append(" ")
 		  .append(getSimpleName())
 		  .append(" ");
 		if (parentClassName != null) {
 			sb.append("extends ")
-			  .append(JavaCodeGenerationUtil.getClassNameWithoutPackage(parentClassName))
+			  .append(JavaCodeGenUtil.getClassNameWithoutPackage(parentClassName))
 			  .append(" ");
 		}
 		if (implementedInterfaces != null && !implementedInterfaces.isEmpty()) {
 			sb.append("implements ");
 			for (int i = 0; i < implementedInterfaces.size(); i++) {
-				sb.append(JavaCodeGenerationUtil.getClassNameWithoutPackage(implementedInterfaces.get(i)));
+				sb.append(JavaCodeGenUtil.getClassNameWithoutPackage(implementedInterfaces.get(i)));
 				if (i < implementedInterfaces.size() - 1) {
 					sb.append(", ");
 				}
@@ -244,7 +269,7 @@ public class JavaTypeGenerator {
 			sb.append(" ");
 		}
 		
-	    sb.append(JavaCodeGenerationUtil.generateCodeBlock(body.toString()));
+	    sb.append(JavaCodeGenUtil.generateCodeBlock(body.toString()));
 	    body.delete(0, body.length());
 		return sb.toString();
 	}
@@ -267,5 +292,7 @@ public class JavaTypeGenerator {
 		}
 		Files.writeString(sourceFolder.resolve(getSimpleName() + ".java"), generate());
 	}
+
+
 	
 }

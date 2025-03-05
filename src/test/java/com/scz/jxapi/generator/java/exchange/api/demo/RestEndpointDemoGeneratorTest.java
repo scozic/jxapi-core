@@ -18,7 +18,7 @@ public class RestEndpointDemoGeneratorTest {
 
 	@Test
 	public void testGenerateRestEndpointDemo() throws Exception {
-		ExchangeDescriptor exchange = new ExchangeDescriptorParser().fromJson(Paths.get(".", "src", "test", "resources", "testExchangeDescriptor.json"));
+		ExchangeDescriptor exchange = ExchangeDescriptorParser.fromJson(Paths.get(".", "src", "test", "resources", "testExchangeDescriptor.json"));
 		ExchangeApiDescriptor api = exchange.getApis().get(0); 
 		RestEndpointDescriptor restEndpointDescriptor = ClassesGeneratorTestUtil.findRestEndpointByName("exchangeInfo", api);
 		Assert.assertEquals("package com.foo.bar.gen.marketdata.demo;\n"
@@ -36,13 +36,14 @@ public class RestEndpointDemoGeneratorTest {
 				+ "import com.scz.jxapi.netutils.deserialization.json.field.StringJsonFieldDeserializer;\n"
 				+ "import com.scz.jxapi.netutils.rest.RestResponse;\n"
 				+ "import com.scz.jxapi.util.DemoUtil;\n"
+				+ "import javax.annotation.processing.Generated;\n"
 				+ "import org.slf4j.Logger;\n"
 				+ "import org.slf4j.LoggerFactory;\n"
 				+ "\n"
 				+ "/**\n"
 				+ " * Snippet to test call to {@link MyTestExchangeMarketDataApi#exchangeInfo(com.foo.bar.gen.marketdata.pojo.MyTestExchangeMarketDataExchangeInfoRequest)})}<br>\n"
-				+ " * <br><strong>THIS CODE IS GENERATED. DO NOT EDIT MANUALLY!</strong>\n"
 				+ " */\n"
+				+ "@Generated(\"com.scz.jxapi.generator.java.exchange.api.demo.RestEndpointDemoGenerator\")\n"
 				+ "public class MyTestExchangeMarketDataExchangeInfoDemo {\n"
 				+ "  private static final Logger log = LoggerFactory.getLogger(MyTestExchangeMarketDataExchangeInfoDemo.class);\n"
 				+ "  \n"
@@ -95,14 +96,13 @@ public class RestEndpointDemoGeneratorTest {
 				+ "      System.exit(-1);\n"
 				+ "    }\n"
 				+ "  }\n"
-				+ "}\n"
-				+ "", 
+				+ "}\n", 
 				new RestEndpointDemoGenerator(exchange, api, restEndpointDescriptor).generate());
 	}
 	
 	@Test
 	public void testGenerateRestEndpointDemoSpecificRequesTypePrimitiveInt() throws Exception {
-		ExchangeDescriptor exchange = new ExchangeDescriptorParser().fromJson(Paths.get(".", "src", "test", "resources", "testExchangeDescriptorWithAllRestRequestDataTypes.json"));
+		ExchangeDescriptor exchange = ExchangeDescriptorParser.fromJson(Paths.get(".", "src", "test", "resources", "testExchangeDescriptorWithAllRestRequestDataTypes.json"));
 		ExchangeApiDescriptor api = exchange.getApis().get(0);
 		RestEndpointDescriptor restEndpoint = ClassesGeneratorTestUtil.findRestEndpointByName("postRestRequestDataTypeInt", api);
 		RestEndpointDemoGenerator generator = new RestEndpointDemoGenerator(exchange, api, restEndpoint);
@@ -118,13 +118,14 @@ public class RestEndpointDemoGeneratorTest {
 				+ "import com.scz.jxapi.exchange.ExchangeApiObserver;\n"
 				+ "import com.scz.jxapi.netutils.rest.RestResponse;\n"
 				+ "import com.scz.jxapi.util.DemoUtil;\n"
+				+ "import javax.annotation.processing.Generated;\n"
 				+ "import org.slf4j.Logger;\n"
 				+ "import org.slf4j.LoggerFactory;\n"
 				+ "\n"
 				+ "/**\n"
 				+ " * Snippet to test call to {@link MyTestExchangeMarketDataApi#postRestRequestDataTypeInt(java.lang.Integer)})}<br>\n"
-				+ " * <br><strong>THIS CODE IS GENERATED. DO NOT EDIT MANUALLY!</strong>\n"
 				+ " */\n"
+				+ "@Generated(\"com.scz.jxapi.generator.java.exchange.api.demo.RestEndpointDemoGenerator\")\n"
 				+ "public class MyTestExchangeMarketDataPostRestRequestDataTypeIntDemo {\n"
 				+ "  private static final Logger log = LoggerFactory.getLogger(MyTestExchangeMarketDataPostRestRequestDataTypeIntDemo.class);\n"
 				+ "  \n"
@@ -175,14 +176,13 @@ public class RestEndpointDemoGeneratorTest {
 				+ "      System.exit(-1);\n"
 				+ "    }\n"
 				+ "  }\n"
-				+ "}\n"
-				+ "", 
+				+ "}\n", 
 				generator.generate());
 	}
 	
 	@Test
 	public void testGenerateRestEndpointDemoSpecificRequesTypePrimitiveStringWithNamedArg() throws Exception {
-		ExchangeDescriptor exchange = new ExchangeDescriptorParser().fromJson(Paths.get(".", "src", "test", "resources", "testExchangeDescriptorWithAllRestRequestDataTypes.json"));
+		ExchangeDescriptor exchange = ExchangeDescriptorParser.fromJson(Paths.get(".", "src", "test", "resources", "testExchangeDescriptorWithAllRestRequestDataTypes.json"));
 		ExchangeApiDescriptor api = exchange.getApis().get(0);
 		RestEndpointDescriptor restEndpoint = ClassesGeneratorTestUtil.findRestEndpointByName("postRestRequestDataTypeString", api);
 		RestEndpointDemoGenerator generator = new RestEndpointDemoGenerator(exchange, api, restEndpoint);
@@ -198,13 +198,14 @@ public class RestEndpointDemoGeneratorTest {
 				+ "import com.scz.jxapi.exchange.ExchangeApiObserver;\n"
 				+ "import com.scz.jxapi.netutils.rest.RestResponse;\n"
 				+ "import com.scz.jxapi.util.DemoUtil;\n"
+				+ "import javax.annotation.processing.Generated;\n"
 				+ "import org.slf4j.Logger;\n"
 				+ "import org.slf4j.LoggerFactory;\n"
 				+ "\n"
 				+ "/**\n"
 				+ " * Snippet to test call to {@link MyTestExchangeMarketDataApi#postRestRequestDataTypeString(java.lang.String)})}<br>\n"
-				+ " * <br><strong>THIS CODE IS GENERATED. DO NOT EDIT MANUALLY!</strong>\n"
 				+ " */\n"
+				+ "@Generated(\"com.scz.jxapi.generator.java.exchange.api.demo.RestEndpointDemoGenerator\")\n"
 				+ "public class MyTestExchangeMarketDataPostRestRequestDataTypeStringDemo {\n"
 				+ "  private static final Logger log = LoggerFactory.getLogger(MyTestExchangeMarketDataPostRestRequestDataTypeStringDemo.class);\n"
 				+ "  \n"
@@ -255,14 +256,13 @@ public class RestEndpointDemoGeneratorTest {
 				+ "      System.exit(-1);\n"
 				+ "    }\n"
 				+ "  }\n"
-				+ "}\n"
-				+ "", 
+				+ "}\n", 
 				generator.generate());
 	}
 	
 	@Test
 	public void testGenerateRestEndpointDemoNoArgEndpoint() throws Exception {
-		ExchangeDescriptor exchange = new ExchangeDescriptorParser().fromJson(Paths.get(".", "src", "test", "resources", "testExchangeDescriptorWithAllRestRequestDataTypes.json"));
+		ExchangeDescriptor exchange = ExchangeDescriptorParser.fromJson(Paths.get(".", "src", "test", "resources", "testExchangeDescriptorWithAllRestRequestDataTypes.json"));
 		ExchangeApiDescriptor api = exchange.getApis().get(0);
 		RestEndpointDescriptor restEndpoint = ClassesGeneratorTestUtil.findRestEndpointByName("postRestRequestDataTypeObjectNoParameters", api);
 		RestEndpointDemoGenerator generator = new RestEndpointDemoGenerator(exchange, api, restEndpoint);
@@ -278,13 +278,14 @@ public class RestEndpointDemoGeneratorTest {
 				+ "import com.scz.jxapi.exchange.ExchangeApiObserver;\n"
 				+ "import com.scz.jxapi.netutils.rest.RestResponse;\n"
 				+ "import com.scz.jxapi.util.DemoUtil;\n"
+				+ "import javax.annotation.processing.Generated;\n"
 				+ "import org.slf4j.Logger;\n"
 				+ "import org.slf4j.LoggerFactory;\n"
 				+ "\n"
 				+ "/**\n"
 				+ " * Snippet to test call to {@link MyTestExchangeMarketDataApi#postRestRequestDataTypeObjectNoParameters()})}<br>\n"
-				+ " * <br><strong>THIS CODE IS GENERATED. DO NOT EDIT MANUALLY!</strong>\n"
 				+ " */\n"
+				+ "@Generated(\"com.scz.jxapi.generator.java.exchange.api.demo.RestEndpointDemoGenerator\")\n"
 				+ "public class MyTestExchangeMarketDataPostRestRequestDataTypeObjectNoParametersDemo {\n"
 				+ "  private static final Logger log = LoggerFactory.getLogger(MyTestExchangeMarketDataPostRestRequestDataTypeObjectNoParametersDemo.class);\n"
 				+ "  \n"
@@ -329,14 +330,13 @@ public class RestEndpointDemoGeneratorTest {
 				+ "      System.exit(-1);\n"
 				+ "    }\n"
 				+ "  }\n"
-				+ "}\n"
-				+ "", 
+				+ "}\n", 
 				generator.generate());
 	}
 	
 	@Test
 	public void testGenerateRestEndpointSpecificRequestTypeObjectListMapWithReferencedObject() throws Exception {
-		ExchangeDescriptor exchange = new ExchangeDescriptorParser().fromJson(Paths.get(".", "src", "test", "resources", "testExchangeDescriptorWithAllRestRequestDataTypes.json"));
+		ExchangeDescriptor exchange = ExchangeDescriptorParser.fromJson(Paths.get(".", "src", "test", "resources", "testExchangeDescriptorWithAllRestRequestDataTypes.json"));
 		ExchangeApiDescriptor api = exchange.getApis().get(0);
 		RestEndpointDescriptor restEndpoint = ClassesGeneratorTestUtil.findRestEndpointByName("postRestRequestDataTypeObjectListMap", api);
 		RestEndpointDemoGenerator generator = new RestEndpointDemoGenerator(exchange, api, restEndpoint);
@@ -355,13 +355,14 @@ public class RestEndpointDemoGeneratorTest {
 				+ "import com.scz.jxapi.exchange.ExchangeApiObserver;\n"
 				+ "import com.scz.jxapi.netutils.rest.RestResponse;\n"
 				+ "import com.scz.jxapi.util.DemoUtil;\n"
+				+ "import javax.annotation.processing.Generated;\n"
 				+ "import org.slf4j.Logger;\n"
 				+ "import org.slf4j.LoggerFactory;\n"
 				+ "\n"
 				+ "/**\n"
 				+ " * Snippet to test call to {@link MyTestExchangeMarketDataApi#postRestRequestDataTypeObjectListMap(java.util.Map)})}<br>\n"
-				+ " * <br><strong>THIS CODE IS GENERATED. DO NOT EDIT MANUALLY!</strong>\n"
 				+ " */\n"
+				+ "@Generated(\"com.scz.jxapi.generator.java.exchange.api.demo.RestEndpointDemoGenerator\")\n"
 				+ "public class MyTestExchangeMarketDataPostRestRequestDataTypeObjectListMapDemo {\n"
 				+ "  private static final Logger log = LoggerFactory.getLogger(MyTestExchangeMarketDataPostRestRequestDataTypeObjectListMapDemo.class);\n"
 				+ "  \n"
@@ -414,14 +415,13 @@ public class RestEndpointDemoGeneratorTest {
 				+ "      System.exit(-1);\n"
 				+ "    }\n"
 				+ "  }\n"
-				+ "}\n"
-				+ "", 
+				+ "}\n", 
 				generator.generate());
 	}
 	
 	@Test
 	public void testGenerateRestEndpointRequestTypeIntList() throws Exception {
-		ExchangeDescriptor exchange = new ExchangeDescriptorParser().fromJson(Paths.get(".", "src", "test", "resources", "testExchangeDescriptorWithAllRestRequestDataTypes.json"));
+		ExchangeDescriptor exchange = ExchangeDescriptorParser.fromJson(Paths.get(".", "src", "test", "resources", "testExchangeDescriptorWithAllRestRequestDataTypes.json"));
 		ExchangeApiDescriptor api = exchange.getApis().get(0);
 		RestEndpointDescriptor restEndpoint = ClassesGeneratorTestUtil.findRestEndpointByName("postRestRequestDataTypeIntList", api);
 		RestEndpointDemoGenerator generator = new RestEndpointDemoGenerator(exchange, api, restEndpoint);
@@ -440,13 +440,14 @@ public class RestEndpointDemoGeneratorTest {
 				+ "import com.scz.jxapi.netutils.deserialization.json.field.ListJsonFieldDeserializer;\n"
 				+ "import com.scz.jxapi.netutils.rest.RestResponse;\n"
 				+ "import com.scz.jxapi.util.DemoUtil;\n"
+				+ "import javax.annotation.processing.Generated;\n"
 				+ "import org.slf4j.Logger;\n"
 				+ "import org.slf4j.LoggerFactory;\n"
 				+ "\n"
 				+ "/**\n"
 				+ " * Snippet to test call to {@link MyTestExchangeMarketDataApi#postRestRequestDataTypeIntList(java.util.List)})}<br>\n"
-				+ " * <br><strong>THIS CODE IS GENERATED. DO NOT EDIT MANUALLY!</strong>\n"
 				+ " */\n"
+				+ "@Generated(\"com.scz.jxapi.generator.java.exchange.api.demo.RestEndpointDemoGenerator\")\n"
 				+ "public class MyTestExchangeMarketDataPostRestRequestDataTypeIntListDemo {\n"
 				+ "  private static final Logger log = LoggerFactory.getLogger(MyTestExchangeMarketDataPostRestRequestDataTypeIntListDemo.class);\n"
 				+ "  \n"
@@ -497,8 +498,80 @@ public class RestEndpointDemoGeneratorTest {
 				+ "      System.exit(-1);\n"
 				+ "    }\n"
 				+ "  }\n"
-				+ "}\n"
-				+ "", 
+				+ "}\n", 
+				generator.generate());
+	}
+	
+	@Test
+	public void testGenerateRestEndpointEmptyResponseDataType() throws Exception {
+		ExchangeDescriptor exchange = ExchangeDescriptorParser.fromJson(Paths.get(".", "src", "test", "resources", "testExchangeDescriptorWithAllRestResponseDataTypes.json"));
+		ExchangeApiDescriptor api = exchange.getApis().get(0);
+		RestEndpointDescriptor restEndpoint = ClassesGeneratorTestUtil.findRestEndpointByName("getRestEmptyResponseDataType", api);
+		RestEndpointDemoGenerator generator = new RestEndpointDemoGenerator(exchange, api, restEndpoint);
+		Assert.assertEquals("package com.foo.bar.gen.marketdata.demo;\n"
+				+ "\n"
+				+ "import java.util.Properties;\n"
+				+ "import java.util.concurrent.ExecutionException;\n"
+				+ "\n"
+				+ "import com.foo.bar.gen.MyTestExchangeExchange;\n"
+				+ "import com.foo.bar.gen.MyTestExchangeExchangeImpl;\n"
+				+ "import com.foo.bar.gen.marketdata.MyTestExchangeMarketDataApi;\n"
+				+ "import com.scz.jxapi.exchange.ExchangeApiObserver;\n"
+				+ "import com.scz.jxapi.netutils.rest.RestResponse;\n"
+				+ "import com.scz.jxapi.util.DemoUtil;\n"
+				+ "import javax.annotation.processing.Generated;\n"
+				+ "import org.slf4j.Logger;\n"
+				+ "import org.slf4j.LoggerFactory;\n"
+				+ "\n"
+				+ "/**\n"
+				+ " * Snippet to test call to {@link MyTestExchangeMarketDataApi#getRestEmptyResponseDataType()})}<br>\n"
+				+ " */\n"
+				+ "@Generated(\"com.scz.jxapi.generator.java.exchange.api.demo.RestEndpointDemoGenerator\")\n"
+				+ "public class MyTestExchangeMarketDataGetRestEmptyResponseDataTypeDemo {\n"
+				+ "  private static final Logger log = LoggerFactory.getLogger(MyTestExchangeMarketDataGetRestEmptyResponseDataTypeDemo.class);\n"
+				+ "  \n"
+				+ "  /**\n"
+				+ "   * Submits a call to {@link MyTestExchangeMarketDataApi#getRestEmptyResponseDataType()}and waits for response.\n"
+				+ "   * @param configProperties  The configuration properties to instantiate exchange with\n"
+				+ "   * @param apiObserver API observer that will notified of events. Is subscribed before REST API call and unsubscribed right after. Ignored if <code>null</code>\n"
+				+ "   * @return Response data resulting from this API call\n"
+				+ "   * @throws InterruptedException eventually thrown waiting for response\n"
+				+ "   * @throws ExecutionException raised if response is not OK, see {@link RestResponse#isOk()}\n"
+				+ "   */\n"
+				+ "  public static RestResponse<String> execute(Properties configProperties, ExchangeApiObserver apiObserver) throws InterruptedException, ExecutionException {\n"
+				+ "    MyTestExchangeExchange exchange = new MyTestExchangeExchangeImpl(\"test-\" + MyTestExchangeExchange.ID, configProperties);\n"
+				+ "    MyTestExchangeMarketDataApi api = exchange.getMyTestExchangeMarketDataApi();\n"
+				+ "    log.info(\"Calling com.foo.bar.gen.marketdata.MyTestExchangeMarketDataApi.getRestEmptyResponseDataType() API\");\n"
+				+ "    if (apiObserver != null) {\n"
+				+ "      api.subscribeObserver(apiObserver);\n"
+				+ "    }\n"
+				+ "    try {\n"
+				+ "      return DemoUtil.checkResponse(api.getRestEmptyResponseDataType());\n"
+				+ "    }\n"
+				+ "    finally {\n"
+				+ "      if (apiObserver != null) {\n"
+				+ "        api.unsubscribeObserver(apiObserver);\n"
+				+ "      }\n"
+				+ "      exchange.dispose();\n"
+				+ "    }\n"
+				+ "  }\n"
+				+ "  \n"
+				+ "  /**\n"
+				+ "   * Runs REST endpoint demo snippet calling {@link MyTestExchangeMarketDataApi#getRestEmptyResponseDataType()}\n"
+				+ "   * @param args no argument expected\n"
+				+ "   */\n"
+				+ "  public static void main(String[] args) {\n"
+				+ "    try {\n"
+				+ "      execute(DemoUtil.loadDemoExchangeProperties(MyTestExchangeExchange.ID),\n"
+				+ "              DemoUtil::logRestApiEvent);\n"
+				+ "      System.exit(0);\n"
+				+ "    }\n"
+				+ "    catch (Throwable t) {\n"
+				+ "      log.error(\"Exception raised from main()\", t);\n"
+				+ "      System.exit(-1);\n"
+				+ "    }\n"
+				+ "  }\n"
+				+ "}\n", 
 				generator.generate());
 	}
 }

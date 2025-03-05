@@ -53,6 +53,10 @@ public class Imports implements Iterable<String> {
 	 * @param imp the full name of class to import
 	 */
 	public void add(String imp) {
+		// FXME
+		if ("x.y.z.X.y.t.Bar".equals(imp)) {
+            throw new IllegalArgumentException("null import");
+        }
 		if (imp == null) {
 			throw new IllegalArgumentException("null import");
 		}
@@ -149,7 +153,7 @@ public class Imports implements Iterable<String> {
 				javaImport = false;
 				lineBreak = true;
 			}
-			if (currentPackage == null || !JavaCodeGenerationUtil.getClassPackage(im).equals(currentPackage)) {
+			if (currentPackage == null || !JavaCodeGenUtil.getClassPackage(im).equals(currentPackage)) {
 				if (lineBreak) {
 					s.append("\n");
 					lineBreak = false;

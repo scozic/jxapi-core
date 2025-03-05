@@ -17,7 +17,7 @@ public class ExchangeApiInterfaceGeneratorTest {
 
 	@Test
 	public void testGenerateExchangeApi() throws Exception {
-		ExchangeDescriptor exchangeDescriptor = new ExchangeDescriptorParser().fromJson(Paths.get(".", "src", "test", "resources", "testExchangeDescriptor.json"));
+		ExchangeDescriptor exchangeDescriptor = ExchangeDescriptorParser.fromJson(Paths.get(".", "src", "test", "resources", "testExchangeDescriptor.json"));
 		ExchangeApiDescriptor exchangeApiDescriptor = exchangeDescriptor.getApis().get(0);
 		ExchangeApiInterfaceGenerator apiInterfaceGenerator = new ExchangeApiInterfaceGenerator(exchangeDescriptor, exchangeApiDescriptor);
 		Assert.assertEquals("package com.foo.bar.gen.marketdata;\n"
@@ -30,12 +30,13 @@ public class ExchangeApiInterfaceGeneratorTest {
 				+ "import com.scz.jxapi.exchange.ExchangeApi;\n"
 				+ "import com.scz.jxapi.netutils.rest.FutureRestResponse;\n"
 				+ "import com.scz.jxapi.netutils.websocket.WebsocketListener;\n"
+				+ "import javax.annotation.processing.Generated;\n"
 				+ "\n"
 				+ "/**\n"
 				+ " * MyTestExchange MarketData API<br>\n"
 				+ " * The market data API of MyTestExchange\n"
-				+ " * <br><strong>THIS CODE IS GENERATED. DO NOT EDIT MANUALLY!</strong>\n"
 				+ " */\n"
+				+ "@Generated(\"com.scz.jxapi.generator.java.exchange.api.ExchangeApiInterfaceGenerator\")\n"
 				+ "public interface MyTestExchangeMarketDataApi extends ExchangeApi {\n"
 				+ "  String ID = \"MarketData\";\n"
 				+ "  String EXCHANGE_INFO_REST_API = \"exchangeInfo\";\n"
@@ -73,14 +74,13 @@ public class ExchangeApiInterfaceGeneratorTest {
 				+ "   * @see #subscribeTickerStream(MyTestExchangeMarketDataTickerStreamRequest, WebsocketListener)\n"
 				+ "   */\n"
 				+ "  boolean unsubscribeTickerStream(String subscriptionId);\n"
-				+ "}\n"
-				+ "", 
+				+ "}\n", 
 				apiInterfaceGenerator.generate());
 	}
 	
 	@Test
 	public void testGenerateExchangeApiNoWsEndpoint() throws Exception {
-		ExchangeDescriptor exchangeDescriptor = new ExchangeDescriptorParser().fromJson(Paths.get(".", "src", "test", "resources", "testExchangeDescriptorNoWebsocketEndpoint.json"));
+		ExchangeDescriptor exchangeDescriptor = ExchangeDescriptorParser.fromJson(Paths.get(".", "src", "test", "resources", "testExchangeDescriptorNoWebsocketEndpoint.json"));
 		ExchangeApiDescriptor exchangeApiDescriptor = exchangeDescriptor.getApis().get(0);
 		ExchangeApiInterfaceGenerator apiInterfaceGenerator = new ExchangeApiInterfaceGenerator(exchangeDescriptor, exchangeApiDescriptor);
 		Assert.assertEquals("package com.foo.bar.gen.marketdata;\n"
@@ -89,12 +89,13 @@ public class ExchangeApiInterfaceGeneratorTest {
 				+ "import com.foo.bar.gen.marketdata.pojo.MyTestExchangeMarketDataExchangeInfoResponse;\n"
 				+ "import com.scz.jxapi.exchange.ExchangeApi;\n"
 				+ "import com.scz.jxapi.netutils.rest.FutureRestResponse;\n"
+				+ "import javax.annotation.processing.Generated;\n"
 				+ "\n"
 				+ "/**\n"
 				+ " * MyTestExchange MarketData API<br>\n"
 				+ " * The market data API of MyTestExchange, , with only 1 REST endpoint and no websocket endpoint\n"
-				+ " * <br><strong>THIS CODE IS GENERATED. DO NOT EDIT MANUALLY!</strong>\n"
 				+ " */\n"
+				+ "@Generated(\"com.scz.jxapi.generator.java.exchange.api.ExchangeApiInterfaceGenerator\")\n"
 				+ "public interface MyTestExchangeMarketDataApi extends ExchangeApi {\n"
 				+ "  String ID = \"MarketData\";\n"
 				+ "  String EXCHANGE_INFO_REST_API = \"exchangeInfo\";\n"
@@ -104,14 +105,13 @@ public class ExchangeApiInterfaceGeneratorTest {
 				+ "   * @return A {@link FutureRestResponse} that will complete when request submitted asynchronously has been processed\n"
 				+ "   */\n"
 				+ "  FutureRestResponse<MyTestExchangeMarketDataExchangeInfoResponse> exchangeInfo(MyTestExchangeMarketDataExchangeInfoRequest request);\n"
-				+ "}\n"
-				+ "", 
+				+ "}\n", 
 				apiInterfaceGenerator.generate());
 	}
 	
 	@Test
 	public void testGenerateExchangeApiNoRestEndpoint() throws Exception {
-		ExchangeDescriptor exchangeDescriptor = new ExchangeDescriptorParser().fromJson(Paths.get(".", "src", "test", "resources", "testExchangeDescriptorNoRestEndpoint.json"));
+		ExchangeDescriptor exchangeDescriptor = ExchangeDescriptorParser.fromJson(Paths.get(".", "src", "test", "resources", "testExchangeDescriptorNoRestEndpoint.json"));
 		ExchangeApiDescriptor exchangeApiDescriptor = exchangeDescriptor.getApis().get(0);
 		ExchangeApiInterfaceGenerator apiInterfaceGenerator = new ExchangeApiInterfaceGenerator(exchangeDescriptor, exchangeApiDescriptor);
 		Assert.assertEquals("package com.foo.bar.gen.marketdata;\n"
@@ -120,12 +120,13 @@ public class ExchangeApiInterfaceGeneratorTest {
 				+ "import com.foo.bar.gen.marketdata.pojo.TickerMessage;\n"
 				+ "import com.scz.jxapi.exchange.ExchangeApi;\n"
 				+ "import com.scz.jxapi.netutils.websocket.WebsocketListener;\n"
+				+ "import javax.annotation.processing.Generated;\n"
 				+ "\n"
 				+ "/**\n"
 				+ " * MyTestExchange MarketData API<br>\n"
 				+ " * The market data API of MyTestExchange\n"
-				+ " * <br><strong>THIS CODE IS GENERATED. DO NOT EDIT MANUALLY!</strong>\n"
 				+ " */\n"
+				+ "@Generated(\"com.scz.jxapi.generator.java.exchange.api.ExchangeApiInterfaceGenerator\")\n"
 				+ "public interface MyTestExchangeMarketDataApi extends ExchangeApi {\n"
 				+ "  String ID = \"MarketData\";\n"
 				+ "  String TICKER_STREAM_STRING_OBJECT_TYPE_WS_API = \"tickerStreamStringObjectType\";\n"
@@ -168,14 +169,13 @@ public class ExchangeApiInterfaceGeneratorTest {
 				+ "   * @see #subscribeTickerStreamStringRequestType(String, WebsocketListener)\n"
 				+ "   */\n"
 				+ "  boolean unsubscribeTickerStreamStringRequestType(String subscriptionId);\n"
-				+ "}\n"
-				+ "", 
+				+ "}\n", 
 				apiInterfaceGenerator.generate());
 	}
 	
 	@Test
 	public void testGenerateExchangeApiSpecificResponseDataTypes() throws Exception {
-		ExchangeDescriptor exchangeDescriptor = new ExchangeDescriptorParser().fromJson(Paths.get(".", "src", "test", "resources", "testExchangeDescriptorWithAllRestResponseDataTypes.json"));
+		ExchangeDescriptor exchangeDescriptor = ExchangeDescriptorParser.fromJson(Paths.get(".", "src", "test", "resources", "testExchangeDescriptorWithAllRestResponseDataTypes.json"));
 		ExchangeApiDescriptor exchangeApiDescriptor = exchangeDescriptor.getApis().get(0);
 		ExchangeApiInterfaceGenerator apiInterfaceGenerator = new ExchangeApiInterfaceGenerator(exchangeDescriptor, exchangeApiDescriptor);
 		Assert.assertEquals("package com.foo.bar.gen.marketdata;\n"
@@ -191,12 +191,13 @@ public class ExchangeApiInterfaceGeneratorTest {
 				+ "import com.scz.jxapi.exchange.ExchangeApi;\n"
 				+ "import com.scz.jxapi.netutils.rest.FutureRestResponse;\n"
 				+ "import com.scz.jxapi.netutils.websocket.WebsocketListener;\n"
+				+ "import javax.annotation.processing.Generated;\n"
 				+ "\n"
 				+ "/**\n"
 				+ " * MyTestExchange MarketData API<br>\n"
-				+ " * The market data API of MyTestExchange, , with different response data types for websocket and REST endpoints. Remark: Only OBJECT (default) and STRING are usually used, but any data type is supported\n"
-				+ " * <br><strong>THIS CODE IS GENERATED. DO NOT EDIT MANUALLY!</strong>\n"
+				+ " * The market data API of MyTestExchange, with different response data types for websocket and REST endpoints. Remark: Only OBJECT (default) and STRING are usually used, but any data type is supported\n"
 				+ " */\n"
+				+ "@Generated(\"com.scz.jxapi.generator.java.exchange.api.ExchangeApiInterfaceGenerator\")\n"
 				+ "public interface MyTestExchangeMarketDataApi extends ExchangeApi {\n"
 				+ "  String ID = \"MarketData\";\n"
 				+ "  String GET_REST_RESPONSE_DATA_TYPE_INT_REST_API = \"getRestResponseDataTypeInt\";\n"
@@ -291,14 +292,13 @@ public class ExchangeApiInterfaceGeneratorTest {
 				+ "   * @see #subscribeSubscribeTickertMapListStream(WebsocketListener)\n"
 				+ "   */\n"
 				+ "  boolean unsubscribeSubscribeTickertMapListStream(String subscriptionId);\n"
-				+ "}\n"
-				+ "", 
+				+ "}\n", 
 				apiInterfaceGenerator.generate());
 	}
 	
 	@Test
 	public void testGenerateExchangeApiSpecificRequestDataTypes() throws Exception {
-		ExchangeDescriptor exchangeDescriptor = new ExchangeDescriptorParser().fromJson(Paths.get(".", "src", "test", "resources", "testExchangeDescriptorWithAllRestRequestDataTypes.json"));
+		ExchangeDescriptor exchangeDescriptor = ExchangeDescriptorParser.fromJson(Paths.get(".", "src", "test", "resources", "testExchangeDescriptorWithAllRestRequestDataTypes.json"));
 		ExchangeApiDescriptor exchangeApiDescriptor = exchangeDescriptor.getApis().get(0);
 		ExchangeApiInterfaceGenerator apiInterfaceGenerator = new ExchangeApiInterfaceGenerator(exchangeDescriptor, exchangeApiDescriptor);
 		Assert.assertEquals("package com.foo.bar.gen.marketdata;\n"
@@ -315,12 +315,13 @@ public class ExchangeApiInterfaceGeneratorTest {
 				+ "import com.scz.jxapi.exchange.ExchangeApi;\n"
 				+ "import com.scz.jxapi.netutils.rest.FutureRestResponse;\n"
 				+ "import com.scz.jxapi.netutils.websocket.WebsocketListener;\n"
+				+ "import javax.annotation.processing.Generated;\n"
 				+ "\n"
 				+ "/**\n"
 				+ " * MyTestExchange MarketData API<br>\n"
 				+ " * The market data API of MyTestExchange, with different request data types for websocket and REST endpoints. Remark: Only OBJECT (default) and STRING are usually used, but any data type is supported\n"
-				+ " * <br><strong>THIS CODE IS GENERATED. DO NOT EDIT MANUALLY!</strong>\n"
 				+ " */\n"
+				+ "@Generated(\"com.scz.jxapi.generator.java.exchange.api.ExchangeApiInterfaceGenerator\")\n"
 				+ "public interface MyTestExchangeMarketDataApi extends ExchangeApi {\n"
 				+ "  String ID = \"MarketData\";\n"
 				+ "  String POST_REST_REQUEST_DATA_TYPE_INT_REST_API = \"postRestRequestDataTypeInt\";\n"
@@ -629,8 +630,7 @@ public class ExchangeApiInterfaceGeneratorTest {
 				+ "   * @see #subscribeStreamWithNullTopicAndPrimitiveTypeRequest(String, WebsocketListener)\n"
 				+ "   */\n"
 				+ "  boolean unsubscribeStreamWithNullTopicAndPrimitiveTypeRequest(String subscriptionId);\n"
-				+ "}\n"
-				+ "", 
+				+ "}\n", 
 				apiInterfaceGenerator.generate());
 	}
 }

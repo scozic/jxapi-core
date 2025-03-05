@@ -391,7 +391,7 @@ public class DefaultWebsocketManagerTest {
 		popWebsocketSendMessageEvent(heartBeatMsg);
 		
 		// After no heartbeat timeout elapsed, error should be raised
-		Thread.sleep(noHeartBeatResponseTimeout);
+		sleep(noHeartBeatResponseTimeout);
 		popError();
 	}
 	
@@ -422,7 +422,7 @@ public class DefaultWebsocketManagerTest {
 		checkNoError();
 		
 		// Error raised after heart beat response timeout has elapsed
-		Thread.sleep(noHeartBeatResponseTimeout);
+		sleep(noHeartBeatResponseTimeout);
 		popError();
 		
 		// Disconnection should be initiated upon error
@@ -482,7 +482,7 @@ public class DefaultWebsocketManagerTest {
 		checkNoError();
 		
 		// Error raised after heart beat response timeout has elapsed
-		Thread.sleep(noHeartBeatResponseTimeout);
+		sleep(noHeartBeatResponseTimeout);
 		popWebsocketHookGetHeartbeatMessageEvent();
 		popWebsocketSendMessageEvent(heartBeatMsg);
 		popError();
@@ -545,7 +545,7 @@ public class DefaultWebsocketManagerTest {
 		checkNoEvents();
 		
 		// After no heartbeat timeout elapsed, error should be raised
-		Thread.sleep(noHeartBeatResponseTimeout);
+		sleep(noHeartBeatResponseTimeout);
 		popError();
 	}
 	
@@ -765,7 +765,7 @@ public class DefaultWebsocketManagerTest {
 		popWebsocketSendMessageEvent(heartBeatMsg);
 		
 		// After no heartbeat timeout elapsed, error should be raised
-		Thread.sleep(noHeartBeatResponseTimeout);
+		sleep(noHeartBeatResponseTimeout);
 		popError();
 	}
 	
@@ -1253,7 +1253,7 @@ public class DefaultWebsocketManagerTest {
 		if (log.isDebugEnabled()) {
 			log.debug("Check no events during " + NO_EVENT_DELAY + "ms");
 		}
-		Thread.sleep(NO_EVENT_DELAY);
+		sleep(NO_EVENT_DELAY);
 		if (ws.size() > 0) {
 			Assert.fail("Received unexpected WebsocketEvent" + ws.pop());
 		}
@@ -1269,6 +1269,10 @@ public class DefaultWebsocketManagerTest {
 		if (wsMessageHandler2.size() > 0) {
 			Assert.fail("Received unexpected message event on handler2:" + wsMessageHandler2.pop());
 		}
+	}
+	
+	private void sleep(long delay) throws InterruptedException {
+		Thread.sleep(delay);
 	}
 	
 	private WebsocketException popError() throws TimeoutException {

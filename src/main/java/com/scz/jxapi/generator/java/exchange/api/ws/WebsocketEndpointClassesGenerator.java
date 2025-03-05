@@ -12,12 +12,11 @@ import com.scz.jxapi.exchange.descriptor.Field;
 import com.scz.jxapi.exchange.descriptor.RestEndpointDescriptor;
 import com.scz.jxapi.exchange.descriptor.Type;
 import com.scz.jxapi.exchange.descriptor.WebsocketEndpointDescriptor;
-import com.scz.jxapi.generator.java.JavaCodeGenerationUtil;
 import com.scz.jxapi.generator.java.exchange.ClassesGenerator;
-import com.scz.jxapi.generator.java.exchange.api.ExchangeApiGeneratorUtil;
-import com.scz.jxapi.generator.java.exchange.api.pojo.EndpointPojoClassesGenerator;
+import com.scz.jxapi.generator.java.exchange.api.ExchangeApiGenUtil;
 import com.scz.jxapi.generator.java.exchange.api.pojo.JsonMessageDeserializerClassesGenerator;
 import com.scz.jxapi.generator.java.exchange.api.pojo.JsonPojoSerializerClassesGenerator;
+import com.scz.jxapi.generator.java.exchange.api.pojo.PojoClassesGenerator;
 
 /**
  * Generates all classes used by a particular Websocket endpoint defined in an  
@@ -47,7 +46,7 @@ public class WebsocketEndpointClassesGenerator implements ClassesGenerator {
 		this.exchangeDescriptor = exchangeDescriptor;
 		this.apiDescriptor = apiDescriptor;
 		this.websocketEndpointDescriptor = websocketEndpointDescriptor;
-		this.request = ExchangeApiGeneratorUtil.resolveFieldProperties(apiDescriptor, websocketEndpointDescriptor.getRequest());
+		this.request = ExchangeApiGenUtil.resolveFieldProperties(apiDescriptor, websocketEndpointDescriptor.getRequest());
 	}
 	
 	@Override
@@ -65,7 +64,7 @@ public class WebsocketEndpointClassesGenerator implements ClassesGenerator {
 	private void generateSerializers(Path outputFolder) throws IOException {
 		if (shouldGenerateRequestPojo()) {
 			new JsonPojoSerializerClassesGenerator( 
-					ExchangeApiGeneratorUtil.generateWebsocketEndpointRequestPojoClassName(
+					ExchangeApiGenUtil.generateWebsocketEndpointRequestPojoClassName(
 							exchangeDescriptor, 
 							apiDescriptor, 
 							websocketEndpointDescriptor),
@@ -75,7 +74,7 @@ public class WebsocketEndpointClassesGenerator implements ClassesGenerator {
 	
 		if (shouldGenerateMessagePojo()) {
 			new JsonPojoSerializerClassesGenerator( 
-					ExchangeApiGeneratorUtil.generateWebsocketEndpointMessagePojoClassName(
+					ExchangeApiGenUtil.generateWebsocketEndpointMessagePojoClassName(
 							exchangeDescriptor, 
 							apiDescriptor, 
 							websocketEndpointDescriptor),
@@ -87,7 +86,7 @@ public class WebsocketEndpointClassesGenerator implements ClassesGenerator {
 	private void generateDeserializers(Path outputFolder) throws IOException {
 		if (shouldGenerateMessagePojo()) {
 			new JsonMessageDeserializerClassesGenerator(
-					ExchangeApiGeneratorUtil.generateWebsocketEndpointMessagePojoClassName(
+					ExchangeApiGenUtil.generateWebsocketEndpointMessagePojoClassName(
 							exchangeDescriptor, 
 							apiDescriptor, 
 							websocketEndpointDescriptor),
@@ -97,23 +96,21 @@ public class WebsocketEndpointClassesGenerator implements ClassesGenerator {
 
 	private void generatePojos(Path outputFolder) throws IOException {
 		if (shouldGenerateRequestPojo()) {
-			new EndpointPojoClassesGenerator( 
-					ExchangeApiGeneratorUtil.generateWebsocketEndpointRequestPojoClassName(exchangeDescriptor, apiDescriptor, websocketEndpointDescriptor), 
+			new PojoClassesGenerator( 
+					ExchangeApiGenUtil.generateWebsocketEndpointRequestPojoClassName(exchangeDescriptor, apiDescriptor, websocketEndpointDescriptor), 
 					"Subscription request to" + exchangeDescriptor.getName() 
 						+ " " + apiDescriptor.getName() + " API " 
 						+ websocketEndpointDescriptor.getName() 
 						+ " websocket endpoint<br>\n" 
-						+ websocketEndpointDescriptor.getDescription()
-						+ "\n"
-						+ JavaCodeGenerationUtil.GENERATED_CODE_WARNING,
+						+ websocketEndpointDescriptor.getDescription(),
 					request.getProperties(), 
-					request.getImplementedInterfaces(), 
-					null).generateClasses(outputFolder);
+					request.getImplementedInterfaces() 
+				).generateClasses(outputFolder);
 		}
 		
 		if (shouldGenerateMessagePojo()) {
-			new EndpointPojoClassesGenerator( 
-					ExchangeApiGeneratorUtil.generateWebsocketEndpointMessagePojoClassName(
+			new PojoClassesGenerator( 
+					ExchangeApiGenUtil.generateWebsocketEndpointMessagePojoClassName(
 							exchangeDescriptor, 
 							apiDescriptor, 
 							websocketEndpointDescriptor), 
@@ -121,12 +118,10 @@ public class WebsocketEndpointClassesGenerator implements ClassesGenerator {
 						+ exchangeDescriptor.getName() + " " 
 						+ apiDescriptor.getName() + " API " 
 						+ websocketEndpointDescriptor.getName() + " websocket endpoint request<br>\n"
-						+ websocketEndpointDescriptor.getDescription()
-						+ "\n"
-						+ JavaCodeGenerationUtil.GENERATED_CODE_WARNING,
+						+ websocketEndpointDescriptor.getDescription(),
 					websocketEndpointDescriptor.getMessage().getProperties(), 
-					websocketEndpointDescriptor.getMessage().getImplementedInterfaces(), 
-					null).generateClasses(outputFolder);
+					websocketEndpointDescriptor.getMessage().getImplementedInterfaces() 
+				).generateClasses(outputFolder);
 		}
 	}
 	

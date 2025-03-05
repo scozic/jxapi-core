@@ -48,11 +48,15 @@ public class JavaTypeGeneratorTest {
 				+ "import java.util.Date;\n"
 				+ "import java.util.List;\n"
 				+ "\n"
+				+ "import javax.annotation.processing.Generated;\n"
+				+ "\n"
 				+ "/**\n"
 				+ " * Hello interface\n"
 				+ " */\n"
+				+ "@Generated(\"com.scz.jxapi.generator.java.JavaTypeGenerator\")\n"
 				+ "public interface HelloInterface {\n"
-				+ "  void sayHello();\n  \n"
+				+ "  void sayHello();\n"
+				+ "  \n"
 				+ "  List<String> getHellos();\n"
 				+ "}\n", gen.generate());
 		
@@ -85,18 +89,50 @@ public class JavaTypeGeneratorTest {
 				+ "import java.text.SimpleDateFormat;\n"
 				+ "import java.util.Date;\n"
 				+ "\n"
+				+ "import javax.annotation.processing.Generated;\n"
+				+ "\n"
 				+ "/**\n"
 				+ " * Hello interface\n"
 				+ " */\n"
+				+ "@Generated(\"com.scz.jxapi.generator.java.JavaTypeGenerator\")\n"
 				+ "public class Hello {\n"
 				+ "  void sayHello();\n"
 				+ "}\n", 
 				actualJavaFileContent);
 		Imports actualImports = gen.getImports();
-		Assert.assertEquals(2, actualImports.size());
+		Assert.assertEquals(3, actualImports.size());
 		Iterator<String> actualImportsIterator = actualImports.iterator();
 		Assert.assertEquals("java.text.SimpleDateFormat", actualImportsIterator.next());
 		Assert.assertEquals("java.util.Date", actualImportsIterator.next());
+		Assert.assertEquals("javax.annotation.processing.Generated", actualImportsIterator.next());
+	}
+	
+	@Test
+	public void testGenerateJavaFileWithoutPackageAndImports() throws IOException {
+		JavaTypeGenerator gen = new JavaTypeGenerator("x.y.z.Hello");
+		gen.addImport("java.util.Date");
+		gen.addImport("java.text.SimpleDateFormat");
+		gen.setDescription("Hello interface");
+		gen.setTypeDeclaration("public class");
+		gen.appendToBody("void sayHello();");
+		gen.setGeneratePackageAndImports(false);
+		srcFolder = Paths.get("tmp" + Math.random());
+		gen.writeJavaFile(srcFolder);
+		String actualJavaFileContent = Files.readString(srcFolder.resolve(Paths.get("x", "y", "z", "Hello.java")));
+		Assert.assertEquals( "/**\n"
+				  + " * Hello interface\n"
+				  + " */\n"
+				  + "@Generated(\"com.scz.jxapi.generator.java.JavaTypeGenerator\")\n"
+				  + "public class Hello {\n"
+				  + "  void sayHello();\n"
+				  + "}\n", 
+				actualJavaFileContent);
+		Imports actualImports = gen.getImports();
+		Assert.assertEquals(3, actualImports.size());
+		Iterator<String> actualImportsIterator = actualImports.iterator();
+		Assert.assertEquals("java.text.SimpleDateFormat", actualImportsIterator.next());
+		Assert.assertEquals("java.util.Date", actualImportsIterator.next());
+		Assert.assertEquals("javax.annotation.processing.Generated", actualImportsIterator.next());
 	}
 	
 	@Test
@@ -108,8 +144,10 @@ public class JavaTypeGeneratorTest {
 		Assert.assertEquals(0, gen.getImplementedInterfaces().size());
 		Assert.assertEquals("package x.y.z;\n"
 				+ "\n"
+				+ "import javax.annotation.processing.Generated;\n"
 				+ "\n"
 				+ "\n"
+				+ "@Generated(\"com.scz.jxapi.generator.java.JavaTypeGenerator\")\n"
 				+ "public class MyClass {\n"
 				+ "  void sayHello() {\n"
 				+ "    System.out.println(\"Hello\");\n"
@@ -133,9 +171,12 @@ public class JavaTypeGeneratorTest {
 		Assert.assertEquals("import java.text.SimpleDateFormat;\n"
 				+ "import java.util.Date;\n"
 				+ "\n"
+				+ "import javax.annotation.processing.Generated;\n"
+				+ "\n"
 				+ "/**\n"
 				+ " * Hello interface\n"
 				+ " */\n"
+				+ "@Generated(\"com.scz.jxapi.generator.java.JavaTypeGenerator\")\n"
 				+ "public interface HelloInterface {\n"
 				+ "  void sayHello();\n"
 				+ "}\n", 
@@ -164,10 +205,12 @@ public class JavaTypeGeneratorTest {
 				+ "import a.b.c.HelloParent;\n"
 				+ "import d.e.f.HelloInterface;\n"
 				+ "import f.g.h.OtherInterface;\n"
+				+ "import javax.annotation.processing.Generated;\n"
 				+ "\n"
 				+ "/**\n"
 				+ " * Hello class\n"
 				+ " */\n"
+				+ "@Generated(\"com.scz.jxapi.generator.java.JavaTypeGenerator\")\n"
 				+ "public interface HelloInterface extends HelloParent implements HelloInterface, OtherInterface {\n"
 				+ "  /**\n"
 				+ "   * A method that prints \"Hello\" on standard output\n"

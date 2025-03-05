@@ -7,6 +7,7 @@ import com.scz.jxapi.exchange.descriptor.ConfigProperty;
 import com.scz.jxapi.exchange.descriptor.DefaultConfigProperty;
 import com.scz.jxapi.exchange.descriptor.Type;
 import com.scz.jxapi.util.PropertiesUtil;
+import javax.annotation.processing.Generated;
 
 /**
  * Configurable properties for <strong>DemoExchange</strong> exchange:<br>
@@ -19,22 +20,16 @@ import com.scz.jxapi.util.PropertiesUtil;
  *     <th>Default value</th>
  *   </tr>
  *   <tr>
- *     <td>host</td>
+ *     <td>baseHttpUrl</td>
  *     <td>STRING</td>
- *     <td>Mock HTTP server host</td>
- *     <td>localhost</td>
+ *     <td>Mock HTTP server base API URL</td>
+ *     <td>http://localhost:8080</td>
  *   </tr>
  *   <tr>
- *     <td>httpPort</td>
- *     <td>INT</td>
- *     <td>Mock HTTP/Websocket server port</td>
- *     <td></td>
- *   </tr>
- *   <tr>
- *     <td>websocketPort</td>
- *     <td>INT</td>
- *     <td>Mock websocket server port</td>
- *     <td></td>
+ *     <td>baseWebsocketUrl</td>
+ *     <td>STRING</td>
+ *     <td>Mock websocket server base API URL</td>
+ *     <td>ws://localhost:8090</td>
  *   </tr>
  *   <tr>
  *     <td>websocketHeartBeatInterval</td>
@@ -44,40 +39,31 @@ import com.scz.jxapi.util.PropertiesUtil;
  *   </tr>
  * </table>
  * <br>
- * Exposes helper methods are available to retrieve value of each of these properties with right type, returning default value if not present in properties
- * <br><strong>THIS CODE IS GENERATED. DO NOT EDIT MANUALLY!</strong>
+ * Exposes helper methods are available to retrieve value of each of these properties with right type, returning default value if not present in properties.
  * @see ConfigProperty
  */
+@Generated("com.scz.jxapi.generator.java.exchange.constants.PropertiesClassGenerator")
 public class DemoExchangeProperties {
   
   private DemoExchangeProperties(){}
   
   /**
-   * Mock HTTP server host
+   * Mock HTTP server base API URL
    */
-  public static final ConfigProperty HOST = DefaultConfigProperty.create(
-    "host",
+  public static final ConfigProperty BASE_HTTP_URL = DefaultConfigProperty.create(
+    "baseHttpUrl",
     Type.STRING,
-    "Mock HTTP server host",
-    "localhost");
+    "Mock HTTP server base API URL",
+    "http://localhost:8080");
   
   /**
-   * Mock HTTP/Websocket server port
+   * Mock websocket server base API URL
    */
-  public static final ConfigProperty HTTP_PORT = DefaultConfigProperty.create(
-    "httpPort",
-    Type.INT,
-    "Mock HTTP/Websocket server port",
-    null);
-  
-  /**
-   * Mock websocket server port
-   */
-  public static final ConfigProperty WEBSOCKET_PORT = DefaultConfigProperty.create(
-    "websocketPort",
-    Type.INT,
-    "Mock websocket server port",
-    null);
+  public static final ConfigProperty BASE_WEBSOCKET_URL = DefaultConfigProperty.create(
+    "baseWebsocketUrl",
+    Type.STRING,
+    "Mock websocket server base API URL",
+    "ws://localhost:8090");
   
   /**
    * Mock websocket server expected heartBeat interval
@@ -89,25 +75,18 @@ public class DemoExchangeProperties {
     "-1");
   
   /**
-   * Retrieves value of 'host' property.
-   * @param properties Properties to look for value of 'host' property into.
-   * @return Value found in properties or default value 'localhost' if not found.
+   * Retrieves value of 'baseHttpUrl' property.
+   * @param properties Properties to look for value of 'baseHttpUrl' property into.
+   * @return Value found in properties or default value 'http://localhost:8080' if not found.
    */
-  public static String getHost(Properties properties) {return PropertiesUtil.getStringProperty(properties, HOST.getName(), HOST.getDefaultValue());}
+  public static String getBaseHttpUrl(Properties properties) {return PropertiesUtil.getStringProperty(properties, BASE_HTTP_URL.getName(), BASE_HTTP_URL.getDefaultValue());}
   
   /**
-   * Retrieves value of 'httpPort' property.
-   * @param properties Properties to look for value of 'httpPort' property into.
-   * @return Value found in properties or <code>null</code> if not found.
+   * Retrieves value of 'baseWebsocketUrl' property.
+   * @param properties Properties to look for value of 'baseWebsocketUrl' property into.
+   * @return Value found in properties or default value 'ws://localhost:8090' if not found.
    */
-  public static Integer getHttpPort(Properties properties) {return PropertiesUtil.getIntProperty(properties, HTTP_PORT.getName(), HTTP_PORT.getDefaultValue());}
-  
-  /**
-   * Retrieves value of 'websocketPort' property.
-   * @param properties Properties to look for value of 'websocketPort' property into.
-   * @return Value found in properties or <code>null</code> if not found.
-   */
-  public static Integer getWebsocketPort(Properties properties) {return PropertiesUtil.getIntProperty(properties, WEBSOCKET_PORT.getName(), WEBSOCKET_PORT.getDefaultValue());}
+  public static String getBaseWebsocketUrl(Properties properties) {return PropertiesUtil.getStringProperty(properties, BASE_WEBSOCKET_URL.getName(), BASE_WEBSOCKET_URL.getDefaultValue());}
   
   /**
    * Retrieves value of 'websocketHeartBeatInterval' property.
@@ -120,8 +99,7 @@ public class DemoExchangeProperties {
    * List of all configuration properties defined in this class
    */
   public static final List<ConfigProperty> ALL = List.of(
-    HOST, 
-    HTTP_PORT, 
-    WEBSOCKET_PORT, 
+    BASE_HTTP_URL, 
+    BASE_WEBSOCKET_URL, 
     WEBSOCKET_HEART_BEAT_INTERVAL);
 }

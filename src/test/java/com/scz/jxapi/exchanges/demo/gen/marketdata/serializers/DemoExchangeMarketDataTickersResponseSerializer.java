@@ -6,12 +6,13 @@ import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.ser.std.StdSerializer;
 import com.scz.jxapi.exchanges.demo.gen.marketdata.pojo.DemoExchangeMarketDataTickersResponse;
+import javax.annotation.processing.Generated;
 
 /**
  * Jackson JSON Serializer for com.scz.jxapi.exchanges.demo.gen.marketdata.pojo.DemoExchangeMarketDataTickersResponse
- * <br><strong>THIS CODE IS GENERATED. DO NOT EDIT MANUALLY!</strong>
  * @see DemoExchangeMarketDataTickersResponse
  */
+@Generated("com.scz.jxapi.generator.java.exchange.api.pojo.JsonPojoSerializerGenerator")
 public class DemoExchangeMarketDataTickersResponseSerializer extends StdSerializer<DemoExchangeMarketDataTickersResponse> {
   public DemoExchangeMarketDataTickersResponseSerializer() {
     super(DemoExchangeMarketDataTickersResponse.class);

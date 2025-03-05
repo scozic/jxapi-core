@@ -9,6 +9,7 @@ import org.junit.Test;
 
 import com.scz.jxapi.exchange.descriptor.ExchangeApiDescriptor;
 import com.scz.jxapi.exchange.descriptor.ExchangeDescriptor;
+import com.scz.jxapi.exchange.descriptor.Field;
 import com.scz.jxapi.exchange.descriptor.Type;
 import com.scz.jxapi.generator.java.Imports;
 import com.scz.jxapi.netutils.deserialization.json.field.BigDecimalJsonFieldDeserializer;
@@ -69,22 +70,22 @@ public class ExchangeJavaGenUtilTest {
 	}
 
 	@Test
-	public void testGetClassNameForParameterType_INT() {
+	public void testGetClassNameForFieldType_INT() {
 		Assert.assertEquals("Integer", ExchangeJavaGenUtil.getClassNameForType(Type.INT, new Imports(), null));
 	}
 
 	@Test
-	public void testGetClassNameForParameterType_STRING() {
+	public void testGetClassNameForFieldType_STRING() {
 		Assert.assertEquals("String", ExchangeJavaGenUtil.getClassNameForType(Type.STRING, new Imports(), null));
 	}
 
 	@Test
-	public void testGetClassNameForParameterType_BOOLEAN() {
+	public void testGetClassNameForFieldType_BOOLEAN() {
 		Assert.assertEquals("Boolean", ExchangeJavaGenUtil.getClassNameForType(Type.BOOLEAN, new Imports(), null));
 	}
 
 	@Test
-	public void testGetClassNameForParameterType_BIGDECIMAL() {
+	public void testGetClassNameForFieldType_BIGDECIMAL() {
 		Imports imports = new Imports();
 		Assert.assertEquals("BigDecimal", ExchangeJavaGenUtil.getClassNameForType(Type.BIGDECIMAL, imports, null));
 		Assert.assertEquals(1, imports.size());
@@ -92,22 +93,22 @@ public class ExchangeJavaGenUtilTest {
 	}
 
 	@Test
-	public void testGetClassNameForParameterType_BIGDECIMAL_NullImports() {
+	public void testGetClassNameForFieldType_BIGDECIMAL_NullImports() {
 		Assert.assertEquals("BigDecimal", ExchangeJavaGenUtil.getClassNameForType(Type.BIGDECIMAL, null, null));
 	}
 
 	@Test
-	public void testGetClassNameForParameterType_LONG() {
+	public void testGetClassNameForFieldType_LONG() {
 		Assert.assertEquals("Long", ExchangeJavaGenUtil.getClassNameForType(Type.LONG, new Imports(), null));	
 	}
 
 	@Test
-	public void testGetClassNameForParameterType_TIMESTAMP() {
+	public void testGetClassNameForFieldType_TIMESTAMP() {
 		Assert.assertEquals("Long", ExchangeJavaGenUtil.getClassNameForType(Type.TIMESTAMP, new Imports(), null));
 	}
 
 	@Test
-	public void testGetClassNameForParameterType_STRING_LIST() {
+	public void testGetClassNameForFieldType_STRING_LIST() {
 		Imports imports = new Imports();
 		Assert.assertEquals("List<String>", ExchangeJavaGenUtil.getClassNameForType(Type.fromTypeName("STRING_LIST"), imports, null));
 		Assert.assertEquals(1, imports.size());
@@ -115,12 +116,12 @@ public class ExchangeJavaGenUtilTest {
 	}
 
 	@Test
-	public void testGetClassNameForParameterType_STRING_LIST_NullImports() {
+	public void testGetClassNameForFieldType_STRING_LIST_NullImports() {
 		Assert.assertEquals("List<String>", ExchangeJavaGenUtil.getClassNameForType(Type.fromTypeName("STRING_LIST"), null, null));
 	}
 
 	@Test
-	public void testGetClassNameForParameterType_INT_MAP() {
+	public void testGetClassNameForFieldType_INT_MAP() {
 		Imports imports = new Imports();
 		Assert.assertEquals("Map<String, Integer>", ExchangeJavaGenUtil.getClassNameForType(Type.fromTypeName("INT_MAP"), imports, null));
 		Assert.assertEquals(1, imports.size());
@@ -128,12 +129,12 @@ public class ExchangeJavaGenUtilTest {
 	}
 
 	@Test
-	public void testGetClassNameForParameterType_INT_MAP_NullImports() {
+	public void testGetClassNameForFieldType_INT_MAP_NullImports() {
 		Assert.assertEquals("Map<String, Integer>", ExchangeJavaGenUtil.getClassNameForType(Type.fromTypeName("INT_MAP"), null, null));
 	}
 
 	@Test
-	public void testGetClassNameForParameterType_OBJECT() {
+	public void testGetClassNameForFieldType_OBJECT() {
 		Imports imports = new Imports();
 		String objectClassName = "com.x.y.z.MyObject";
 		Assert.assertEquals("MyObject", ExchangeJavaGenUtil.getClassNameForType(Type.OBJECT, imports, objectClassName));
@@ -142,7 +143,7 @@ public class ExchangeJavaGenUtilTest {
 	}
 
 	@Test
-	public void testGetClassNameForParameterType_OBJECT_LIST_MAP() {
+	public void testGetClassNameForFieldType_OBJECT_LIST_MAP() {
 		Imports imports = new Imports();
 		String objectClassName = "com.x.y.z.MyObject";
 		Assert.assertEquals("Map<String, List<MyObject>>", ExchangeJavaGenUtil.getClassNameForType(Type.fromTypeName("OBJECT_LIST_MAP"), imports, objectClassName));
@@ -153,7 +154,7 @@ public class ExchangeJavaGenUtilTest {
 	}
 
 	@Test
-	public void testGetClassNameForParameterType_NullType() {
+	public void testGetClassNameForFieldType_NullType() {
 		Assert.assertNull(ExchangeJavaGenUtil.getClassNameForType(null, null, null));
 	}
 
@@ -241,14 +242,14 @@ public class ExchangeJavaGenUtilTest {
 	}
 	
 	@Test 
-	public void testGetPrimitiveTypeParameterSampleValueDeclaration_NullSampleValue() {
+	public void testGetPrimitiveTypeFieldSampleValueDeclaration_NullSampleValue() {
 		Imports imports = new Imports();
 		Assert.assertEquals(null, ExchangeJavaGenUtil.getPrimitiveTypeFieldSampleValueDeclaration(Type.INT, null, imports));
 		Assert.assertEquals(0, imports.size());
 	}
 
 	@Test 
-	public void testGetPrimitiveTypeParameterSampleValueDeclaration_BigDecimalSampleValue() {
+	public void testGetPrimitiveTypeFieldSampleValueDeclaration_BigDecimalSampleValue() {
 		Imports imports = new Imports();
 		Assert.assertEquals("new BigDecimal(\"1.23\")", ExchangeJavaGenUtil.getPrimitiveTypeFieldSampleValueDeclaration(Type.BIGDECIMAL, "1.23", imports));
 		Assert.assertEquals(1, imports.size());
@@ -256,49 +257,49 @@ public class ExchangeJavaGenUtilTest {
 	}
 
 	@Test
-	public void testGetPrimitiveTypeParameterSampleValueDeclaration_LongSampleValue() {
+	public void testGetPrimitiveTypeFieldSampleValueDeclaration_LongSampleValue() {
 		Imports imports = new Imports();
 		Assert.assertEquals("Long.valueOf(\"123\")", ExchangeJavaGenUtil.getPrimitiveTypeFieldSampleValueDeclaration(Type.LONG, "123", imports));
 		Assert.assertEquals(0, imports.size());
 	}
 
 	@Test
-	public void testGetPrimitiveTypeParameterSampleValueDeclaration_TimestampSampleValue() {
+	public void testGetPrimitiveTypeFieldSampleValueDeclaration_TimestampSampleValue() {
 		Imports imports = new Imports();
 		Assert.assertEquals("Long.valueOf(\"123\")", ExchangeJavaGenUtil.getPrimitiveTypeFieldSampleValueDeclaration(Type.TIMESTAMP, "123", imports));
 		Assert.assertEquals(0, imports.size());
 	}
 
 	@Test
-	public void testGetPrimitiveTypeParameterSampleValueDeclaration_TimestampNowSampleValue() {
+	public void testGetPrimitiveTypeFieldSampleValueDeclaration_TimestampNowSampleValue() {
 		Imports imports = new Imports();
 		Assert.assertEquals("Long.valueOf(System.currentTimeMillis())", ExchangeJavaGenUtil.getPrimitiveTypeFieldSampleValueDeclaration(Type.TIMESTAMP, "now()", imports));
 		Assert.assertEquals(0, imports.size());
 	}
 
 	@Test
-	public void testGetPrimitiveTypeParameterSampleValueDeclaration_StringSampleValue() {
+	public void testGetPrimitiveTypeFieldSampleValueDeclaration_StringSampleValue() {
 		Imports imports = new Imports();
 		Assert.assertEquals("\"test\"", ExchangeJavaGenUtil.getPrimitiveTypeFieldSampleValueDeclaration(Type.STRING, "test", imports));
 		Assert.assertEquals(0, imports.size());
 	}
 
 	@Test
-	public void testGetPrimitiveTypeParameterSampleValueDeclaration_IntegersSampleValue() {
+	public void testGetPrimitiveTypeFieldSampleValueDeclaration_IntegersSampleValue() {
 		Imports imports = new Imports();
 		Assert.assertEquals("Integer.valueOf(1)", ExchangeJavaGenUtil.getPrimitiveTypeFieldSampleValueDeclaration(Type.INT, "1", imports));
 		Assert.assertEquals(0, imports.size());
 	}
 
 	@Test
-	public void testGetPrimitiveTypeParameterSampleValueDeclaration_BooleanSampleValue() {
+	public void testGetPrimitiveTypeFieldSampleValueDeclaration_BooleanSampleValue() {
 		Imports imports = new Imports();
 		Assert.assertEquals("Boolean.valueOf(true)", ExchangeJavaGenUtil.getPrimitiveTypeFieldSampleValueDeclaration(Type.BOOLEAN, "true", imports));
 		Assert.assertEquals(0, imports.size());
 	}
 
 	@Test
-	public void testGetPrimitiveTypeParameterSampleValueDeclaration_NonPrimitiveType() {
+	public void testGetPrimitiveTypeFieldSampleValueDeclaration_NonPrimitiveType() {
 		Imports imports = new Imports();
 		Assert.assertEquals("\"[1, 3, 5]\"", ExchangeJavaGenUtil.getPrimitiveTypeFieldSampleValueDeclaration(Type.fromTypeName("INT_LIST"), "[1, 3, 5]", imports));
 		Assert.assertEquals(0, imports.size());
@@ -354,4 +355,77 @@ public class ExchangeJavaGenUtilTest {
 				+ "public static final String WEBSOCKET_URL = \"https//myexchange.com/ws\";", 
 				ExchangeJavaGenUtil.getWebsocketUrlVariableDeclaration(exchangeDescriptor));
 	}
+	
+	@Test
+	public void testIsObjectField_NullField() {
+		Assert.assertFalse(ExchangeJavaGenUtil.isObjectField(null));
+	}
+	
+	@Test
+	public void testIsObjectField_NullFieldType_ObjectTypeImplictFromProperties() {
+		Assert.assertTrue(ExchangeJavaGenUtil.isObjectField(Field.builder().name("test").properties(List.of()).build()));
+	}
+	
+	@Test
+	public void testIsObjectField_ObjectType() {
+		Assert.assertTrue(ExchangeJavaGenUtil.isObjectField(Field.builder().name("test").type(Type.OBJECT).build()));
+	}
+	
+	@Test
+	public void testIsObjectField_StringType() {
+		Assert.assertFalse(ExchangeJavaGenUtil.isObjectField(Field.builder().name("test").type(Type.STRING).build()));
+	}
+	
+	@Test
+	public void testGetFieldType_NullField() {
+		Assert.assertNull(ExchangeJavaGenUtil.getFieldType(null));
+	}
+	
+	@Test
+	public void testGetFieldType_ObjecListMapType() {
+		Type objectListMapType = Type.fromTypeName("OBJECT_LIST_MAP");
+		Assert.assertEquals(objectListMapType, 
+				ExchangeJavaGenUtil.getFieldType((Field.builder().name("test").type(objectListMapType).build())));
+	}
+	
+	@Test
+	public void testGetFieldType_ObjectType_Explicit() {
+		Assert.assertEquals(Type.OBJECT, 
+				ExchangeJavaGenUtil.getFieldType(Field.builder().name("test").type(Type.OBJECT).build()));
+	}
+	
+	@Test
+	public void testGetFieldType_ObjectType_ImplicitFromObjectName() {
+		Assert.assertEquals(Type.OBJECT, 
+				ExchangeJavaGenUtil.getFieldType(Field.builder().name("test").objectName("MyObjectName").build()));
+	}
+	
+	@Test
+	public void testGetFieldType_ObjectType_ImplicitFromProperties() {
+		Assert.assertEquals(Type.OBJECT, 
+				ExchangeJavaGenUtil.getFieldType(Field.builder().name("test").properties(List.of()).build()));
+	}
+	
+	@Test
+	public void testGetFieldType_String_Implicit() {
+		Assert.assertEquals(Type.STRING, 
+				ExchangeJavaGenUtil.getFieldType(Field.builder().name("test").build()));
+	}
+	
+	@Test
+	public void testGetExchangeInterfaceImplementationNameFromExchangeClassName() {
+		Assert.assertEquals("com.x.y.z.TestExchangeImpl",
+				ExchangeJavaGenUtil.getExchangeInterfaceImplementationName("com.x.y.z.TestExchange"));
+	}
+	
+	@Test
+	public void testGetExchangeInterfaceImplementationNameFromExchangeDescriptor() {
+		ExchangeDescriptor exchangeDescriptor = new ExchangeDescriptor();
+		exchangeDescriptor.setName("Test");
+		exchangeDescriptor.setBasePackage("com.x.y.z");
+		Assert.assertEquals("com.x.y.z.TestExchangeImpl",
+				ExchangeJavaGenUtil.getExchangeInterfaceImplementationName(exchangeDescriptor));
+	}
+	
+	
 }

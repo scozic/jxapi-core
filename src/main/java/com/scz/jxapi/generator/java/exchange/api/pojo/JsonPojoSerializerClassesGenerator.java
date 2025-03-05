@@ -5,8 +5,10 @@ import java.nio.file.Path;
 import java.util.List;
 
 import com.scz.jxapi.exchange.descriptor.Field;
+import com.scz.jxapi.exchange.descriptor.Type;
 import com.scz.jxapi.generator.java.exchange.ClassesGenerator;
-import com.scz.jxapi.generator.java.exchange.api.ExchangeApiGeneratorUtil;
+import com.scz.jxapi.generator.java.exchange.ExchangeJavaGenUtil;
+import com.scz.jxapi.generator.java.exchange.api.ExchangeApiGenUtil;
 import com.scz.jxapi.netutils.deserialization.json.AbstractJsonMessageDeserializer;
 
 /**
@@ -40,12 +42,13 @@ public class JsonPojoSerializerClassesGenerator implements ClassesGenerator {
 	public void generateClasses(Path outputFolder) throws IOException {
 		JsonPojoSerializerGenerator generator = new JsonPojoSerializerGenerator(deserializedClassName, fields);
 		for (Field field: fields) {
-			if ((field.getType().isObject())
+			Type type = ExchangeJavaGenUtil.getFieldType(field);
+			if ((type.isObject())
 				&& field.getProperties() != null) {
 				new JsonPojoSerializerClassesGenerator( 
-								   ExchangeApiGeneratorUtil.getFieldLeafSubTypeClassName(
+								   ExchangeApiGenUtil.getFieldLeafSubTypeClassName(
 										   	field.getName(), 
-										   	field.getType(), 
+										   	type, 
 										   	field.getObjectName(), 
 										   	deserializedClassName),
 								   field.getProperties()).generateClasses(outputFolder);

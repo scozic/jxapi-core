@@ -13,7 +13,7 @@ import com.scz.jxapi.exchange.Exchange;
 import com.scz.jxapi.exchange.ExchangeApi;
 import com.scz.jxapi.exchange.descriptor.ExchangeApiDescriptor;
 import com.scz.jxapi.exchange.descriptor.ExchangeDescriptor;
-import com.scz.jxapi.generator.java.JavaCodeGenerationUtil;
+import com.scz.jxapi.generator.java.JavaCodeGenUtil;
 import com.scz.jxapi.generator.java.JavaTypeGenerator;
 import com.scz.jxapi.netutils.rest.ratelimits.RateLimitRule;
 import com.scz.jxapi.netutils.rest.ratelimits.RequestThrottler;
@@ -53,7 +53,7 @@ public class ExchangeInterfaceImplementationGenerator extends JavaTypeGenerator 
 	 * @return full name of the interface implementation class
 	 */
 	public static String getExchangeInterfaceName(ExchangeDescriptor exchangeDescriptor) {
-		return exchangeDescriptor.getBasePackage() + "." + JavaCodeGenerationUtil.firstLetterToUpperCase(exchangeDescriptor.getName()) + "Exchange";
+		return exchangeDescriptor.getBasePackage() + "." + JavaCodeGenUtil.firstLetterToUpperCase(exchangeDescriptor.getName()) + "Exchange";
 	}
 	
 	private final ExchangeDescriptor exchangeDescriptor;
@@ -72,14 +72,13 @@ public class ExchangeInterfaceImplementationGenerator extends JavaTypeGenerator 
 	@Override
 	public String generate() {		
 		String pkgPrefix =  exchangeDescriptor.getBasePackage() + ".";
-		String simpleInterfaceName = JavaCodeGenerationUtil.firstLetterToUpperCase(exchangeDescriptor.getName()) + "Exchange";
+		String simpleInterfaceName = JavaCodeGenUtil.firstLetterToUpperCase(exchangeDescriptor.getName()) + "Exchange";
 		String fullInterfaceName = pkgPrefix + simpleInterfaceName;
 		String simpleImplementationName = simpleInterfaceName + "Impl";
 		setTypeDeclaration("public class");
 		setImplementedInterfaces(Arrays.asList(fullInterfaceName));
 		setParentClassName(AbstractExchange.class.getName());
-		setDescription("Actual implementation of {@link " + simpleInterfaceName + "}<br>\n"
-				   + JavaCodeGenerationUtil.GENERATED_CODE_WARNING);
+		setDescription("Actual implementation of {@link " + simpleInterfaceName + "}<br>");
 		appendToBody("\n");
 		
 		String httpUrlDeclaration = ExchangeJavaGenUtil.getHttpUrlVariableDeclaration(exchangeDescriptor);
@@ -125,12 +124,12 @@ public class ExchangeInterfaceImplementationGenerator extends JavaTypeGenerator 
 		if (exchangeDescriptor.getApis() != null) {
 			for (ExchangeApiDescriptor api: exchangeDescriptor.getApis()) {
 				String apiClassName = ExchangeJavaGenUtil.getApiInterfaceClassName(exchangeDescriptor, api);
-				String apiSimpleClassName = JavaCodeGenerationUtil.getClassNameWithoutPackage(apiClassName);
+				String apiSimpleClassName = JavaCodeGenUtil.getClassNameWithoutPackage(apiClassName);
 				String apiImplClassName = apiClassName + "Impl";
-				String simpleApiImplClassName = JavaCodeGenerationUtil.getClassNameWithoutPackage(apiImplClassName);
+				String simpleApiImplClassName = JavaCodeGenUtil.getClassNameWithoutPackage(apiImplClassName);
 				addImport(apiClassName);
 				addImport(apiImplClassName);
-				String apiVariableName = JavaCodeGenerationUtil.firstLetterToLowerCase(apiSimpleClassName);
+				String apiVariableName = JavaCodeGenUtil.firstLetterToLowerCase(apiSimpleClassName);
 				String getApiMethodSignature = apiSimpleClassName + " get" + apiSimpleClassName + "()";
 				appendToBody("private final " + apiSimpleClassName + " " + apiVariableName + ";\n");
 				implementationConstructorBody
@@ -147,7 +146,7 @@ public class ExchangeInterfaceImplementationGenerator extends JavaTypeGenerator 
 				apiMethodsDeclarations.append("@Override\npublic ")
 									  .append(getApiMethodSignature)
 									  .append(" ")
-									  .append(JavaCodeGenerationUtil.generateCodeBlock("return this." + apiVariableName + ";\n"))
+									  .append(JavaCodeGenUtil.generateCodeBlock("return this." + apiVariableName + ";\n"))
 									  .append("\n");
 			}
 		}
