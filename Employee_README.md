@@ -1,6 +1,6 @@
 # Employee API Java wrapper
 
-Employee exchange is a demo exchange REST APIs to get, add, delete and  update employees and a websocket endpoint to get notified of updates from an employee database.<br> A server can be started using <code>com.scz.jxapi.exchanges.employee.EmployeeExchangeServer</code> class to serve these APIs.<br> The URL of the server must be set using the baseUrl property.<br> Notice how the 'employee' object present in APIs request and responses is used in multiple endpoints and its properties defined only once.
+Employee exchange is a demo exchange REST APIs to get, add, delete and  update employees and a websocket endpoint to get notified of updates from an employee database.<br> A server can be started using <code>org.jxapi.exchanges.employee.EmployeeExchangeServer</code> class to serve these APIs.<br> The URL of the server must be set using the baseUrl property.<br> Notice how the 'employee' object present in APIs request and responses is used in multiple endpoints and its properties defined only once.
 
 See <a href="https://www.example.com/docs/employee">reference documentation</a>
 ### Quick start
@@ -8,8 +8,8 @@ See <a href="https://www.example.com/docs/employee">reference documentation</a>
 This wrapper offers Java interfaces for using Employee API
 Add maven dependency to your project, then you can use the wrapper by instantiating <a href="./doc/javadoc/com/scz/jxapi/exchanges/employee/gen/EmployeeExchange.html">EmployeeExchange</a> in your code:
 ``` java
-import com.scz.jxapi.exchanges.employee.gen.EmployeeExchange;
-import com.scz.jxapi.exchanges.employee.gen.EmployeeExchangeImpl;
+import org.jxapi.exchanges.employee.gen.EmployeeExchange;
+import org.jxapi.exchanges.employee.gen.EmployeeExchangeImpl;
 
 public void call() {
   Properties properties = new Properties();
@@ -76,12 +76,12 @@ Version 1 of the Employee API
     <td><a href="https://www.example.com/docs/employee/getAll">link</a></td>
   </tr>
   <tr>
-    <td><a href="./doc/javadoc/com/scz/jxapi/exchanges/employee/gen/v1/EmployeeV1Api.html#addEmployee(com.scz.jxapi.exchanges.employee.gen.v1.pojo.Employee)">addEmployee</a></td>
+    <td><a href="./doc/javadoc/com/scz/jxapi/exchanges/employee/gen/v1/EmployeeV1Api.html#addEmployee(org.jxapi.exchanges.employee.gen.v1.pojo.Employee)">addEmployee</a></td>
     <td>Add a new employee</td>
     <td><a href="https://www.example.com/docs/employee/add">link</a></td>
   </tr>
   <tr>
-    <td><a href="./doc/javadoc/com/scz/jxapi/exchanges/employee/gen/v1/EmployeeV1Api.html#updateEmployee(com.scz.jxapi.exchanges.employee.gen.v1.pojo.Employee)">updateEmployee</a></td>
+    <td><a href="./doc/javadoc/com/scz/jxapi/exchanges/employee/gen/v1/EmployeeV1Api.html#updateEmployee(org.jxapi.exchanges.employee.gen.v1.pojo.Employee)">updateEmployee</a></td>
     <td>Update an existing employee</td>
     <td><a href="https://www.example.com/docs/employee/add">link</a></td>
   </tr>
