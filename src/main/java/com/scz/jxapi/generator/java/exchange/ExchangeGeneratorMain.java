@@ -120,6 +120,12 @@ public class ExchangeGeneratorMain {
 		baseProjectDir = Optional.ofNullable(baseProjectDir).orElse(".");
 		Path projectFolder = Paths.get(baseProjectDir);
 		Path resources = projectFolder.resolve(DESCRIPTOR_FOLDER);
+		if (!Files.exists(resources)) {
+			resources.toFile().mkdirs();
+			Files.writeString(resources.resolve("README.txt"), 
+					"JXAPI Exchange descriptor files (.json or .yaml) should be written in this folder.\nYou may delete this README.txt file");
+			return;
+		}
 		log.info("Generating exchange API wrapper and demos for all exchange descriptor files in {}", resources.toAbsolutePath());
 		AtomicReference<Exception> error = new AtomicReference<>();
 		ExchangeDescriptorParser.collectAndMergeExchangeDescriptors(resources)
