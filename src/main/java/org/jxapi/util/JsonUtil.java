@@ -31,7 +31,7 @@ public class JsonUtil {
 	
 	private static final SimpleModule EXCEPTION_SERIALIZATION_MODULE = createExceptionSerializationModule();
 	
-	private static final ObjectMapper DEFAULT_OBJECT_MAPPER = getDefaultJsonToStringObjectMapper();
+	private static final ObjectMapper DEFAULT_OBJECT_MAPPER = createDefaultJsonToStringObjectMapper();
 	
 	private static SimpleModule createExceptionSerializationModule() {
 		SimpleModule m = new SimpleModule();
@@ -51,7 +51,18 @@ public class JsonUtil {
 		}
 	}
 	
-	private static ObjectMapper getDefaultJsonToStringObjectMapper() {
+	/**
+	 * @return A new {@link ObjectMapper} instance with default configuration for
+	 *         JSON serialization. The returned instance is configured with:
+	 *         <ul>
+	 *         <li>{@link SerializationFeature#FAIL_ON_EMPTY_BEANS} disabled</li>
+	 *         <li>{@link SerializationFeature#ORDER_MAP_ENTRIES_BY_KEYS} enabled</li>
+	 *         <li>{@link Include#NON_NULL} serialization inclusion</li>
+	 *         <li>Registration of module to serialize exceptions as readable strings</li>
+	 *         <li>{@link MapperFeature#SORT_PROPERTIES_ALPHABETICALLY} enabled</li>
+	 *         </ul>
+	 */
+	public static ObjectMapper createDefaultJsonToStringObjectMapper() {
 		ObjectMapper om = new ObjectMapper();
 		om.disable(SerializationFeature.FAIL_ON_EMPTY_BEANS);
 		om.enable(SerializationFeature.ORDER_MAP_ENTRIES_BY_KEYS);

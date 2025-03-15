@@ -300,6 +300,11 @@ public class JsonUtilTest {
 		doTestSkipNextPrimitiveValue("{\"x\": 1, \"y\": 0}");
 	}
 	
+	@Test()
+	public void testCreateDefaultJsonToStringObjectMapper() {
+		Assert.assertNotNull(JsonUtil.createDefaultJsonToStringObjectMapper());
+	}
+	
 	private void doTestSkipNextPrimitiveValue(String primitiveValue) throws Exception{
 		String s = "{\"a\": " + primitiveValue + ", \"b\": true}";
 		JsonParser parser = new JsonFactory().createParser(s.getBytes());
