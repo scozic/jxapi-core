@@ -55,7 +55,7 @@ Next, define dependency to `jxapi-core` module, and `jxapi-maven-plugin` Maven p
   <dependencies>
 ... 
     <dependency>
-      <groupId>com.scz.jxapi</groupId>
+      <groupId>org.jxapi</groupId>
       <artifactId>jxapi-core</artifactId>
       <version>${jxapi.version}</version>
     </dependency>
@@ -75,7 +75,7 @@ Next, define dependency to `jxapi-core` module, and `jxapi-maven-plugin` Maven p
 					<artifactId>exec-maven-plugin</artifactId>
 					<configuration>
 						<mainClass>
-							com.scz.jxapi.generator.java.exchange.ExchangeGeneratorMain</mainClass>
+							org.jxapi.generator.java.exchange.ExchangeGeneratorMain</mainClass>
 						<systemProperties>
 							<systemProperty>
 								<key>baseJavaDocUrl</key>

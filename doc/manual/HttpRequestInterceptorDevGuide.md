@@ -36,7 +36,7 @@ In your exchange descriptor JSON file, you would then specify the `httpRequestIn
 
 ```json
 {
-    "httpRequestInterceptorFactory": "com.scz.jxapi.netutils.rest.CustomHeaderInterceptorFactory"
+    "httpRequestInterceptorFactory": "org.jxapi.netutils.rest.CustomHeaderInterceptorFactory"
 }
 ```
 

@@ -2,7 +2,7 @@
 	"name": "DemoExchange",
 	"description": "Demo Exchange. This exchange uses connects to mock HTTP server and websocket server. It is used to test and validate a full Java wrapper generated using JXAPI.",
 	"docUrl": "https://docs.myexchange.com/api",
-	"basePackage": "com.scz.jxapi.exchanges.demo.gen",
+	"basePackage": "org.jxapi.exchanges.demo.gen",
 	"properties": [
 		{"name": "baseHttpUrl", "description": "Mock HTTP server base API URL", "defaultValue": "http://localhost:8080"},
 		{"name": "baseWebsocketUrl", "description": "Mock websocket server base API URL", "defaultValue": "ws://localhost:8090"},
@@ -19,8 +19,8 @@
 	],
 	"httpUrl": "BASEURL",
 	"websocketUrl": "BASEURL",
-	"httpRequestInterceptorFactory": "com.scz.jxapi.exchanges.demo.net.DemoExchangeHttpRequestInterceptorFactory",
-	"websocketHookFactory": "com.scz.jxapi.exchanges.demo.net.DemoExchangeWebsocketHookFactory",
+	"httpRequestInterceptorFactory": "org.jxapi.exchanges.demo.net.DemoExchangeHttpRequestInterceptorFactory",
+	"websocketHookFactory": "org.jxapi.exchanges.demo.net.DemoExchangeWebsocketHookFactory",
 	"apis":[
 		{ 
 			"name": "MarketData",

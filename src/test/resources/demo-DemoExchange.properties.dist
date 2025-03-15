@@ -22,7 +22,7 @@
 # The request timeout for calls to REST endpoints of every API. A negative value means no timeout (discouraged)
 # jxapi.httpRequestTimeout=
 
-# Sets the HTTP request throttling policy in case a rate limit rule is breached, for every exposed ExchangeApi, see enum com.scz.jxapi.netutils.rest.ratelimits.RequestThrottlingMode
+# Sets the HTTP request throttling policy in case a rate limit rule is breached, for every exposed ExchangeApi, see enum org.jxapi.netutils.rest.ratelimits.RequestThrottlingMode
 # jxapi.requestThrottlingMode=
 
 # Set the max HTTP request throttle delay for rate limit rule enforcement, for every exposed ExchangeApi.

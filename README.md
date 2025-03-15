@@ -7,10 +7,11 @@ Generate a Java REST and/or Websocket API wrapper efficiently using code generat
 Many web services are consumed as HTTP REST/Websocket APIs. Those APIs disseminate data as structured JSON objects.
 JXAPI is for generating Java code to call those REST and Websocket APIs using a simple function with a Java POJO as request and response/message data.
 
-The generator will take as input a JSON file describing APIs, and generate request/response POJOs, Java interfaces to REST APIs and Websockets and their implementation, and also demo snippets and a documentation skeleton.
+The generator will take as input a JSON or YAML file describing APIs, and generate request/response POJOs, Java interfaces to REST APIs and Websockets and their implementation, and also demo snippets and a documentation skeleton.
 You will also need to write a few lines of code for API-specific implementation aspects like:
  * Authentication challenge (like computing authorization header added requests using API key/secret and request parameters)
  * Request parameter formatting (use as query parameters or request body parameters)
+ * Websocket API protocol specific handshake.
 
 That can be achieved easily by specifying implementation REST+Websocket endpoint factories using hooks, check the wrapper development guide below.
 
@@ -23,8 +24,8 @@ Follow the guide below to write such an API wrapper.
 
 See [Wrapper module Setup](doc/manual/WrapperModuleSetup.md): Basically, you just initialize a Java/Maven project, and add to the Maven `pom.xml` file a dependency to this project plus a plugin to run the generation of Java source files within the Maven build cycle.
 
-## Manage Specific REST/Websocket API Authentication
-A few lines of Java code have to be written manually to manage API-specific authentication challenges.
+## Manage REST/Websocket API protocol specificites using custom hooks
+A few lines of Java code have to be written manually to manage API protocol specificities like authentication challenges.
 See dedicated guides:
  * If your wrapper exposes REST endpoints: You may need to write a specific `HttpRequestInterceptor` to customize incoming request headers, as explained in [HttpRequestInterceptorDevGuide](./doc/manual/HttpRequestInterceptorDevGuide.md). The full class name of `HttpRequestInterceptorFactory` that creates instances of your `HttpRequestInterceptor` must be set in the exchange descriptor file `httpRequestInterceptorFactory` at the exchange or API group level.
  * If your wrapper exposes websocket endpoints, you should set in `websocketHookFactory` property of the exchange descriptor file at the exchange or API group level with the full name of the class implementing `WebsocketHookFactory` that creates specific hooks for the websocket protocol of your API, see [WebsocketHookDevGuide](./doc/manual/WebsocketHookDevGuide.md).
@@ -36,9 +37,8 @@ Follow [Exchange descriptor file documentation](./doc/manual/ExchangeDescriptorF
 
 AI assistants can be efficient to write such files &#128521;.
 
-Running the `mvn exec:java` command triggers the generation of wrapper code in the `src/main/java` folder, demos in `src/test/java`, and a sample `_MyExchangeREADME.md_` file at the root of the module project.
-
-I recommend writing the API descriptor file incrementally and running the generator after adding an endpoint to run the demo snippet (see [Demos](#demo-snippets)) to ensure it works as expected.
+RRunning the `mvn exec:java` command triggers the generation of wrapper code in the `src/main/java` folder, demos in `src/test/java`, and a sample `_MyExchangeREADME.md_` file at the root of the module project.
+II recommend writing the API descriptor file incrementally and running the generator after adding an endpoint to run the demo snippet (see [Demos](#demo-snippets)) to ensure it works as expected.
 
 ## Resulting Generated Code
 The resulting generated code includes:
