@@ -13,6 +13,8 @@ You will also need to write a few lines of code for API-specific implementation 
  * Request parameter formatting (use as query parameters or request body parameters)
  * Websocket API protocol specific handshake.
 
+The descriptor files are quite similar to [OpenAPI](https://www.openapis.org/) specifications. Read [here](./doc/manual/ComparisonWithOpenAPI.md) for a comparison with that project.
+
 That can be achieved easily by specifying implementation REST+Websocket endpoint factories using hooks, check the wrapper development guide below.
 
 The JSON API descriptor file structure is simple and can be AI-generated from online API documentation.
@@ -76,7 +78,7 @@ This file can be used as the _README.md_ file of the project, or referenced from
 
 ## Using the Wrapper
 
-When demo snippets successfully run, your wrapper module is ready to be used. Add it as a dependency of your main project that needs to communicate with the API, and instantiate it just like in demo snippets.
+When demo snippets successfully run, your wrapper module is ready to be used. Add it as a dependency of your main project that needs to communicate with the API, and instantiate it just like in demo snippets. See [Using the wrapper](./doc/manual/UsingTheWrapper.md) guide.
 
 ## Supported Exchanges
 TODO! Currently under development :)
