@@ -961,15 +961,17 @@ public class ExchangeApiInterfaceImplementationGenerator extends JavaTypeGenerat
 							requestFields.stream().map(Field::getName).collect(Collectors.toList()))
 						+ "()";
 			}
-			if (f.getType().getCanonicalType() == CanonicalType.LIST
-				|| f.getType().getCanonicalType() == CanonicalType.MAP
-				|| f.getType().isObject()) {
+			// FIXME get field type using getClassNameForField
+			Type type = ExchangeJavaGenUtil.getFieldType(f);
+			if (type.getCanonicalType() == CanonicalType.LIST
+				|| type.getCanonicalType() == CanonicalType.MAP
+				|| type.isObject()) {
 				addImport(JsonUtil.class);
 				value = new StringBuilder()
 								.append("JsonUtil.pojoToJsonString(")
 								.append(value)
 								.append(")").toString(); 
-			} else if (f.getType().getCanonicalType() == CanonicalType.STRING) {
+			} else if (type.getCanonicalType() == CanonicalType.STRING) {
 				value = new StringBuilder()
 						.append(value)
 						.toString(); 
@@ -995,18 +997,19 @@ public class ExchangeApiInterfaceImplementationGenerator extends JavaTypeGenerat
 		  .append("\"");
 		int n = fields.size();
 		for (int i = 0; i < n; i++) {
-			Field param = fields.get(i);
-			String name = param.getName();
+			Field f = fields.get(i);
+			Type type = ExchangeJavaGenUtil.getFieldType(f);
+			String name = f.getName();
 			if (!urlParametersTemplate.contains("${" + name + "}")) {
 				continue;
 			}
 			String value = "request." 
 						   + JavaCodeGenUtil.getGetAccessorMethodName(
 								name, 
-								ExchangeApiGenUtil.getClassNameForField(param, null, param.getObjectName()), 
+								ExchangeApiGenUtil.getClassNameForField(f, null, f.getObjectName()), 
 								fields.stream().map(Field::getName).collect(Collectors.toList()))
 						   + "()";
-			if (param.getType().getCanonicalType() == CanonicalType.LIST) {
+			if (type.getCanonicalType() == CanonicalType.LIST) {
 				value = EncodingUtil.class.getSimpleName() + ".listToString(" + value + ", \"" + stringListSeparator + "\")"; 
 			}
 			sb.append(", \"").append(name).append("\", ").append(value);

@@ -93,7 +93,7 @@ public class WebsocketEndpointDemoGenerator extends JavaTypeGenerator {
 		setTypeDeclaration("public class");
 		this.hasArguments = ExchangeApiGenUtil.websocketEndpointHasArguments(websocketApi, exchangeApiDescriptor);
 		if (hasArguments) {
-			this.requestDataType =  Optional.ofNullable(request.getType()).orElse(Type.OBJECT);
+			this.requestDataType =  ExchangeJavaGenUtil.getFieldType(request);
 			if (this.requestDataType.getCanonicalType().isPrimitive) {
 				this.requestClassName = requestDataType.getCanonicalType().typeClass.getName();
 			} else {

@@ -581,7 +581,7 @@ public class ExchangeApiGenUtilTest {
     
     @Test
     public void testEnpointHasArguments_NullType() {
-        Assert.assertFalse(ExchangeApiGenUtil.endpointHasArguments(new Field(), null));
+        Assert.assertTrue(ExchangeApiGenUtil.endpointHasArguments(new Field(), null));
     }
     
     @Test

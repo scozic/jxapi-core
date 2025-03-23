@@ -3,6 +3,7 @@ package org.jxapi.exchange.descriptor;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.jxapi.generator.java.exchange.ExchangeJavaGenUtil;
 import org.jxapi.util.EncodingUtil;
 
 /**
@@ -200,6 +201,7 @@ public class Field {
 	}
 
 	/**
+	 * Remark: when processing a field accoring to its type, use {@link ExchangeJavaGenUtil#getFieldType(Field)} instead of this method to retrieve the actual type.
 	 * @return The type of the field, see {@link Type}
 	 */
 	public Type getType() {

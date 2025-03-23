@@ -535,8 +535,8 @@ public class ExchangeApiGenUtil {
 		if (endpointRequest == null) {
 			return false;
 		}
-		Type dataType = endpointRequest.getType();
-		return (dataType != null && dataType.getCanonicalType() != CanonicalType.OBJECT) 
+		Type dataType = ExchangeJavaGenUtil.getFieldType(endpointRequest);
+		return dataType.getCanonicalType() != CanonicalType.OBJECT 
 				|| getFieldPropertiesCount(endpointRequest, exchangeApiDescriptor) > 0;
 	}
 

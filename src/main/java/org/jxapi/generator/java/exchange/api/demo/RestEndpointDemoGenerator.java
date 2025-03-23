@@ -77,7 +77,7 @@ public class RestEndpointDemoGenerator extends JavaTypeGenerator {
 		this.request = ExchangeApiGenUtil.resolveFieldProperties(exchangeApiDescriptor, restApi.getRequest());
 		this.exchangeImplClassName = ExchangeJavaGenUtil.getExchangeInterfaceImplementationName(exchangeDescriptor);
 		if (hasArguments) {
-			requestDataType =  Optional.ofNullable(request.getType()).orElse(Type.OBJECT);
+			requestDataType =  ExchangeJavaGenUtil.getFieldType(request);
 			if (requestDataType.getCanonicalType().isPrimitive) {
 				requestClassName = requestDataType.getCanonicalType().typeClass.getName();
 			} else if (requestDataType.isObject() ){
