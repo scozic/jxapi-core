@@ -337,20 +337,23 @@ public class PojoGenerator extends JavaTypeGenerator {
 				.append(name)
 				.append(") ").toString();
 		
-		String javadoc = new StringBuilder()
+		StringBuilder javadoc = new StringBuilder()
 				.append("Will set the value of <code>")
 				.append(name)
-				.append("</code> field in the builder\n")
-				.append("@param ")
-				.append(name).append(" ")
-				.append(description)
-				.append("\n@return Builder instance")
-				.append("\n@see #")
-				.append(JavaCodeGenUtil.getSetAccessorMethodName(field.getName(), getAllFieldNames()))
-				.append("(")
-				.append(typeClass)
-				.append(")")
-				.toString();
+				.append("</code> field in the builder");
+		if (description != null) {
+		  javadoc.append("\n@param ")
+                .append(name).append(" ")
+                .append(description);
+        }
+		
+				
+		javadoc.append("\n@return Builder instance")
+		       .append("\n@see #")
+			   .append(JavaCodeGenUtil.getSetAccessorMethodName(field.getName(), getAllFieldNames()))
+			   .append("(")
+			   .append(typeClass)
+			   .append(")");
 		
 		String signature = new StringBuilder()
                 .append(PUBLIC_BUILDER_TOKEN)
@@ -359,7 +362,7 @@ public class PojoGenerator extends JavaTypeGenerator {
                 .toString();
 		
 		builder.appendToBody("\n");
-		builder.appendMethod(signature, setMethodBody, javadoc);
+		builder.appendMethod(signature, setMethodBody, javadoc.toString());
 		if (fieldType.getCanonicalType() == CanonicalType.LIST) {
 			builder.appendToBody("\n");
 			generateAddToListBuilderMethod(field, builder);

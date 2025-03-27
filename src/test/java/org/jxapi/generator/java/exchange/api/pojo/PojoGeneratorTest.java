@@ -187,7 +187,6 @@ public class PojoGeneratorTest {
 				+ "    \n"
 				+ "    /**\n"
 				+ "     * Will set the value of <code>id</code> field in the builder\n"
-				+ "     * @param id null\n"
 				+ "     * @return Builder instance\n"
 				+ "     * @see #setId(Long)\n"
 				+ "     */\n"
