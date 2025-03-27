@@ -5,8 +5,8 @@ import java.io.IOException;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.ser.std.StdSerializer;
-import org.jxapi.exchanges.employee.gen.v1.pojo.Employee;
 import javax.annotation.processing.Generated;
+import org.jxapi.exchanges.employee.gen.v1.pojo.Employee;
 
 /**
  * Jackson JSON Serializer for org.jxapi.exchanges.employee.gen.v1.pojo.Employee

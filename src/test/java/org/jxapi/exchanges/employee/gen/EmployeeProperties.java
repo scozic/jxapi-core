@@ -3,11 +3,11 @@ package org.jxapi.exchanges.employee.gen;
 import java.util.List;
 import java.util.Properties;
 
+import javax.annotation.processing.Generated;
 import org.jxapi.exchange.descriptor.ConfigProperty;
 import org.jxapi.exchange.descriptor.DefaultConfigProperty;
 import org.jxapi.exchange.descriptor.Type;
 import org.jxapi.util.PropertiesUtil;
-import javax.annotation.processing.Generated;
 
 /**
  * Configurable properties for <strong>Employee</strong> exchange:<br>

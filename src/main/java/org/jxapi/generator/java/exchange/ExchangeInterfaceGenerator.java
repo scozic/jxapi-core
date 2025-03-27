@@ -38,7 +38,9 @@ public class ExchangeInterfaceGenerator extends JavaTypeGenerator {
 		setDescription(generateDescription());
 		setTypeDeclaration("public interface");
 		
-		appendToBody("\nString ")
+		appendToBody("\n")
+		    .append(JavaCodeGenUtil.generateJavaDoc("ID of the '" + exchangeDescriptor.getName() + "' exchange"))
+		    .append("\nString ")
 			.append(EXCHANGE_ID_VARIABLE)
 			.append(" = ")
 			.append(JavaCodeGenUtil.getQuotedString(exchangeDescriptor.getName()))

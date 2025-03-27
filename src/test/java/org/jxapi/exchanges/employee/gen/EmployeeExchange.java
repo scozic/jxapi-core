@@ -1,8 +1,8 @@
 package org.jxapi.exchanges.employee.gen;
 
+import javax.annotation.processing.Generated;
 import org.jxapi.exchange.Exchange;
 import org.jxapi.exchanges.employee.gen.v1.EmployeeV1Api;
-import javax.annotation.processing.Generated;
 
 /**
  * Employee API<br>
@@ -13,6 +13,9 @@ import javax.annotation.processing.Generated;
 @Generated("org.jxapi.generator.java.exchange.ExchangeInterfaceGenerator")
 public interface EmployeeExchange extends Exchange {
   
+  /**
+   * ID of the 'Employee' exchange
+   */
   String ID = "Employee";
   
   /**

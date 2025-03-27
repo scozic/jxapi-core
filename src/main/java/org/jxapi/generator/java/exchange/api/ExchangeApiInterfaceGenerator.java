@@ -73,7 +73,9 @@ public class ExchangeApiInterfaceGenerator extends JavaTypeGenerator {
 	 */
 	@Override
 	public String generate() {
-		appendToBody(STRING)
+		appendToBody("\n")
+		    .append(JavaCodeGenUtil.generateJavaDoc("Name of '" + exchangeApiDescriptor.getName() + "' API group."))
+		    .append("\nString ")
 			.append(EXCHANGE_API_NAME_VARIABLE)
 			.append(" = ")
 			.append(JavaCodeGenUtil.getQuotedString(exchangeApiDescriptor.getName()))
@@ -96,6 +98,7 @@ public class ExchangeApiInterfaceGenerator extends JavaTypeGenerator {
 		
 		if (exchangeApiDescriptor.getRestEndpoints() != null) {
 			for (RestEndpointDescriptor restApi: exchangeApiDescriptor.getRestEndpoints()) {
+			    appendToBody("\n");
 				generateRestEndpointMethodDeclaration(restApi);
 			}
 		}
@@ -110,7 +113,9 @@ public class ExchangeApiInterfaceGenerator extends JavaTypeGenerator {
 	}
 	
 	private void generateApiNameVariableDeclaration(String apiName, String apiNameVariable) {
-		appendToBody(STRING)
+		appendToBody("\n")
+		    .append(JavaCodeGenUtil.generateJavaDoc("Name of the '" + apiName + "' API endpoint."))
+		    .append("\nString ")
 			.append(apiNameVariable)
 			.append(" = ")
 			.append(JavaCodeGenUtil.getQuotedString(apiName))

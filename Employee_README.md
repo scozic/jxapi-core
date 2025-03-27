@@ -6,7 +6,7 @@ See <a href="https://www.example.com/docs/employee">reference documentation</a>
 ### Quick start
 
 This wrapper offers Java interfaces for using Employee API
-Add maven dependency to your project, then you can use the wrapper by instantiating <a href="./doc/javadoc/com/scz/jxapi/exchanges/employee/gen/EmployeeExchange.html">EmployeeExchange</a> in your code:
+Add maven dependency to your project, then you can use the wrapper by instantiating <a href="./doc/javadoc/org/jxapi/exchanges/employee/gen/EmployeeExchange.html">EmployeeExchange</a> in your code:
 ``` java
 import org.jxapi.exchanges.employee.gen.EmployeeExchange;
 import org.jxapi.exchanges.employee.gen.EmployeeExchangeImpl;
@@ -18,7 +18,7 @@ public void call() {
   // Access API groups and their endpoints through 'exchange' methods.
 }
 ```
-You may have a look at <a href="./src/test/java/com/scz/jxapi/exchanges/employee/gen/v1/demo/EmployeeV1GetEmployeeDemo.java">EmployeeV1GetEmployeeDemo</a> class for full usage example
+You may have a look at <a href="./src/test/java/org/jxapi/exchanges/employee/gen/v1/demo/EmployeeV1GetEmployeeDemo.java">EmployeeV1GetEmployeeDemo</a> class for full usage example
 
 ### Properties
 
@@ -46,13 +46,13 @@ You may have a look at <a href="./src/test/java/com/scz/jxapi/exchanges/employee
 
 ### Constants
 
-Some useful constants are defined in <a href="./doc/javadoc/com/scz/jxapi/exchanges/employee/gen/EmployeeConstants.html">EmployeeConstants</a>
+Some useful constants are defined in <a href="./doc/javadoc/org/jxapi/exchanges/employee/gen/EmployeeConstants.html">EmployeeConstants</a>
 
 ## API Groups
-APIs are available using the following interfaces accessible from <a href="./doc/javadoc/com/scz/jxapi/exchanges/employee/gen/EmployeeExchange.html">EmployeeExchange</a> interface
+APIs are available using the following interfaces accessible from <a href="./doc/javadoc/org/jxapi/exchanges/employee/gen/EmployeeExchange.html">EmployeeExchange</a> interface
 
 ### V1
-Methods exposed in <a href="./doc/javadoc/com/scz/jxapi/exchanges/employee/gen/v1/EmployeeV1Api.html">EmployeeV1Api</a> accessible from <a href="./doc/javadoc/com/scz/jxapi/exchanges/employee/gen/EmployeeExchange#getEmployeeV1Api().html">EmployeeExchange#getEmployeeV1Api()</a>
+Methods exposed in <a href="./doc/javadoc/org/jxapi/exchanges/employee/gen/v1/EmployeeV1Api.html">EmployeeV1Api</a> accessible from <a href="./doc/javadoc/org/jxapi/exchanges/employee/gen/EmployeeExchange#getEmployeeV1Api().html">EmployeeExchange#getEmployeeV1Api()</a>
 
 Version 1 of the Employee API
 
@@ -66,27 +66,27 @@ Version 1 of the Employee API
     <th>API Reference</th>
   </tr>
   <tr>
-    <td><a href="./doc/javadoc/com/scz/jxapi/exchanges/employee/gen/v1/EmployeeV1Api.html#getEmployee(java.lang.Integer)">getEmployee</a></td>
+    <td><a href="./doc/javadoc/org/jxapi/exchanges/employee/gen/v1/EmployeeV1Api.html#getEmployee(java.lang.Integer)">getEmployee</a></td>
     <td>Get employee details by ID</td>
     <td><a href="https://www.example.com/docs/employee/get">link</a></td>
   </tr>
   <tr>
-    <td><a href="./doc/javadoc/com/scz/jxapi/exchanges/employee/gen/v1/EmployeeV1Api.html#getAllEmployees()">getAllEmployees</a></td>
+    <td><a href="./doc/javadoc/org/jxapi/exchanges/employee/gen/v1/EmployeeV1Api.html#getAllEmployees()">getAllEmployees</a></td>
     <td>Get all employees</td>
     <td><a href="https://www.example.com/docs/employee/getAll">link</a></td>
   </tr>
   <tr>
-    <td><a href="./doc/javadoc/com/scz/jxapi/exchanges/employee/gen/v1/EmployeeV1Api.html#addEmployee(org.jxapi.exchanges.employee.gen.v1.pojo.Employee)">addEmployee</a></td>
+    <td><a href="./doc/javadoc/org/jxapi/exchanges/employee/gen/v1/EmployeeV1Api.html#addEmployee(org.jxapi.exchanges.employee.gen.v1.pojo.Employee)">addEmployee</a></td>
     <td>Add a new employee</td>
     <td><a href="https://www.example.com/docs/employee/add">link</a></td>
   </tr>
   <tr>
-    <td><a href="./doc/javadoc/com/scz/jxapi/exchanges/employee/gen/v1/EmployeeV1Api.html#updateEmployee(org.jxapi.exchanges.employee.gen.v1.pojo.Employee)">updateEmployee</a></td>
+    <td><a href="./doc/javadoc/org/jxapi/exchanges/employee/gen/v1/EmployeeV1Api.html#updateEmployee(org.jxapi.exchanges.employee.gen.v1.pojo.Employee)">updateEmployee</a></td>
     <td>Update an existing employee</td>
     <td><a href="https://www.example.com/docs/employee/add">link</a></td>
   </tr>
   <tr>
-    <td><a href="./doc/javadoc/com/scz/jxapi/exchanges/employee/gen/v1/EmployeeV1Api.html#deleteEmployee(java.lang.Integer)">deleteEmployee</a></td>
+    <td><a href="./doc/javadoc/org/jxapi/exchanges/employee/gen/v1/EmployeeV1Api.html#deleteEmployee(java.lang.Integer)">deleteEmployee</a></td>
     <td>Delete an employee</td>
     <td><a href="https://www.example.com/docs/employee/delete">link</a></td>
   </tr>
@@ -102,9 +102,9 @@ Version 1 of the Employee API
     <th>API Reference</th>
   </tr>
   <tr>
-    <td><a href="./doc/javadoc/com/scz/jxapi/exchanges/employee/gen/v1/EmployeeV1Api.html#subscribeEmployeeUpdates()">subscribeEmployeeUpdates</a></td>
+    <td><a href="./doc/javadoc/org/jxapi/exchanges/employee/gen/v1/EmployeeV1Api.html#subscribeEmployeeUpdates()">subscribeEmployeeUpdates</a></td>
     <td>Employee updates websocket</td>
     <td><a href="https://www.example.com/docs/employee/updates">link</a></td>
   </tr>
 </table>
-Some useful constants are defined in <a href="./doc/javadoc/com/scz/jxapi/exchanges/employee/gen/v1/EmployeeV1Constants.html">EmployeeV1Constants</a>
+Some useful constants are defined in <a href="./doc/javadoc/org/jxapi/exchanges/employee/gen/v1/EmployeeV1Constants.html">EmployeeV1Constants</a>

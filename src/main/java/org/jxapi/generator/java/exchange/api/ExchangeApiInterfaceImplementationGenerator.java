@@ -162,7 +162,7 @@ public class ExchangeApiInterfaceImplementationGenerator extends JavaTypeGenerat
 	
 	private static final String EXCHANGE_NAME_ARGUMENT_NAME = "exchangeName";
 	private static final String REQUEST_THROTTLER_VARIABLE_NAME = "requestThrottler";
-	private static final String PRIVATE_STATIC_FINAL = "public static final ";
+	private static final String PUBLIC_STATIC_FINAL = "public static final ";
 	private static final String PRIVATE_FINAL = "private final ";
 	private static final String LOG_DEBUG = "log.debug(\"";
 	private static final String OVERRIDE_PUBLIC = "@Override\npublic ";
@@ -285,7 +285,12 @@ public class ExchangeApiInterfaceImplementationGenerator extends JavaTypeGenerat
 			if (!CollectionUtil.isEmpty(apiGlobalLimits)) {
 				int rateLimitCounter = 0;
 				for (RateLimitRule apiGlobalLimit: apiGlobalLimits) {
-					apiGlobalRateLimitVariables.add(generateRateLimitVariable(apiGlobalLimit, exchangeApiDescriptor.getName() + rateLimitCounter++));
+					apiGlobalRateLimitVariables.add(generateRateLimitVariable(
+					    apiGlobalLimit, 
+					    exchangeApiDescriptor.getName() + rateLimitCounter++,
+					    "Rate limit shared between all REST API endpoints of this '" 
+					        + exchangeApiDescriptor.getName() 
+					        + "' API group"));
 				}
 			}
 		}
@@ -787,7 +792,10 @@ public class ExchangeApiInterfaceImplementationGenerator extends JavaTypeGenerat
 		if (!CollectionUtils.isEmpty(restApi.getRateLimits())) {
 			int rateLimitCounter = 1;
 			for (RateLimitRule rateLimit: restApi.getRateLimits()) {
-				rateLimitVariables.add(generateRateLimitVariable(rateLimit, restApi.getName() + rateLimitCounter++));
+				rateLimitVariables.add(generateRateLimitVariable(
+				    rateLimit, 
+				    restApi.getName() + rateLimitCounter++, 
+				    "Rate limit rule applicable to '" + restApi.getName() + "' REST API"));
 			}
 		}
 		return rateLimitVariables;
@@ -837,7 +845,7 @@ public class ExchangeApiInterfaceImplementationGenerator extends JavaTypeGenerat
 		return false;
 	}
 	
-	private String generateRateLimitVariable(RateLimitRule rateLimitRule, String defaultName) {
+	private String generateRateLimitVariable(RateLimitRule rateLimitRule, String defaultName, String description) {
 		String name = rateLimitRule.getId();
 		if (name == null) {
 			name = defaultName;
@@ -847,7 +855,10 @@ public class ExchangeApiInterfaceImplementationGenerator extends JavaTypeGenerat
 		if (!endpointSpecificRateLimitIds.contains(name)) {
 			endpointSpecificRateLimitIds.add(name);
 			StringBuilder declaration =  new StringBuilder()
-					.append(PRIVATE_STATIC_FINAL)
+			        .append("\n")
+			        .append(JavaCodeGenUtil.generateJavaDoc(description))
+			        .append("\n")
+					.append(PUBLIC_STATIC_FINAL)
 					.append(RateLimitRule.class.getSimpleName())
 					.append(" ")
 					.append(variableName)
@@ -961,7 +972,7 @@ public class ExchangeApiInterfaceImplementationGenerator extends JavaTypeGenerat
 							requestFields.stream().map(Field::getName).collect(Collectors.toList()))
 						+ "()";
 			}
-			// FIXME get field type using getClassNameForField
+
 			Type type = ExchangeJavaGenUtil.getFieldType(f);
 			if (type.getCanonicalType() == CanonicalType.LIST
 				|| type.getCanonicalType() == CanonicalType.MAP

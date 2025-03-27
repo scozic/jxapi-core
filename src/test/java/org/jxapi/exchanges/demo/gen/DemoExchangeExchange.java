@@ -12,6 +12,9 @@ import org.jxapi.exchanges.demo.gen.marketdata.DemoExchangeMarketDataApi;
 @Generated("org.jxapi.generator.java.exchange.ExchangeInterfaceGenerator")
 public interface DemoExchangeExchange extends Exchange {
   
+  /**
+   * ID of the 'DemoExchange' exchange
+   */
   String ID = "DemoExchange";
   
   /**

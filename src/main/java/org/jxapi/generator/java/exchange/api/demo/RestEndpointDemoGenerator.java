@@ -1,10 +1,7 @@
 package org.jxapi.generator.java.exchange.api.demo;
 
-import java.util.Optional;
 import java.util.Properties;
 import java.util.concurrent.ExecutionException;
-
-import org.slf4j.Logger;
 
 import org.jxapi.exchange.ExchangeApiObserver;
 import org.jxapi.exchange.descriptor.ExchangeApiDescriptor;
@@ -18,6 +15,7 @@ import org.jxapi.generator.java.exchange.ExchangeJavaGenUtil;
 import org.jxapi.generator.java.exchange.api.ExchangeApiGenUtil;
 import org.jxapi.netutils.rest.RestResponse;
 import org.jxapi.util.DemoUtil;
+import org.slf4j.Logger;
 
 /**
  * Generates a demo snippet class for a REST endpoint.
