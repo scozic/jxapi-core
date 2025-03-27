@@ -1,4 +1,4 @@
-name: "Employee"
+id: "Employee"
 properties:
  - name: "baseHttpUrl"
    description: "Base URL for REST endpoints the Employee Exchange API"

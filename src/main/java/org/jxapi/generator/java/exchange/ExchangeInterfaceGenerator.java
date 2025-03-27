@@ -39,11 +39,11 @@ public class ExchangeInterfaceGenerator extends JavaTypeGenerator {
 		setTypeDeclaration("public interface");
 		
 		appendToBody("\n")
-		    .append(JavaCodeGenUtil.generateJavaDoc("ID of the '" + exchangeDescriptor.getName() + "' exchange"))
+		    .append(JavaCodeGenUtil.generateJavaDoc("ID of the '" + exchangeDescriptor.getId() + "' exchange"))
 		    .append("\nString ")
 			.append(EXCHANGE_ID_VARIABLE)
 			.append(" = ")
-			.append(JavaCodeGenUtil.getQuotedString(exchangeDescriptor.getName()))
+			.append(JavaCodeGenUtil.getQuotedString(exchangeDescriptor.getId()))
 			.append(";\n");
 		
 		for (ExchangeApiDescriptor api: exchangeDescriptor.getApis()) {
@@ -68,7 +68,7 @@ public class ExchangeInterfaceGenerator extends JavaTypeGenerator {
 	
 	private String generateDescription() {
 		StringBuilder s = new StringBuilder()
-				.append(exchangeDescriptor.getName())
+				.append(exchangeDescriptor.getId())
 				.append(" API<br>\n")
 				.append(exchangeDescriptor.getDescription())
 				.append("\n");

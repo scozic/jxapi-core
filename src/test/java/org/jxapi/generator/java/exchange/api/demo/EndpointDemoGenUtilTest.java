@@ -454,7 +454,7 @@ public class EndpointDemoGenUtilTest {
 	@Test
 	public void testGetRestApiDemoClassName() {
 			ExchangeDescriptor exchangeDescriptor = new ExchangeDescriptor();
-			exchangeDescriptor.setName("MyExchange");
+			exchangeDescriptor.setId("MyExchange");
 			exchangeDescriptor.setBasePackage("com.x.y.z.gen");
 			ExchangeApiDescriptor exchangeApiDescriptor = new ExchangeApiDescriptor();
 			exchangeApiDescriptor.setName("MyApi");
@@ -467,7 +467,7 @@ public class EndpointDemoGenUtilTest {
 	@Test
 	public void testGetWebsocketApiDemoClassName() {
 		ExchangeDescriptor exchangeDescriptor = new ExchangeDescriptor();
-		exchangeDescriptor.setName("MyExchange");
+		exchangeDescriptor.setId("MyExchange");
 		exchangeDescriptor.setBasePackage("com.x.y.z.gen");
 		ExchangeApiDescriptor exchangeApiDescriptor = new ExchangeApiDescriptor();
 		exchangeApiDescriptor.setName("MyApi");

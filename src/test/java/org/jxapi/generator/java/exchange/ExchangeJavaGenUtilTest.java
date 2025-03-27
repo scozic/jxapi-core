@@ -27,7 +27,7 @@ public class ExchangeJavaGenUtilTest {
 	@Test
 	public void testGetApiInterfaceClassName() {
 		ExchangeDescriptor exchangeDescriptor = new ExchangeDescriptor();
-		exchangeDescriptor.setName("TestExchange");
+		exchangeDescriptor.setId("TestExchange");
 		exchangeDescriptor.setBasePackage("com.x.y.z");
 		ExchangeApiDescriptor apiDescriptor = new ExchangeApiDescriptor();
 		apiDescriptor.setName("Spot");
@@ -38,7 +38,7 @@ public class ExchangeJavaGenUtilTest {
 	@Test
 	public void testGetApiInterfaceImplementationClassName() {
 		ExchangeDescriptor exchangeDescriptor = new ExchangeDescriptor();
-		exchangeDescriptor.setName("TestExchange");
+		exchangeDescriptor.setId("TestExchange");
 		exchangeDescriptor.setBasePackage("com.x.y.z");
 		ExchangeApiDescriptor apiDescriptor = new ExchangeApiDescriptor();
 		apiDescriptor.setName("Spot");
@@ -49,7 +49,7 @@ public class ExchangeJavaGenUtilTest {
 	@Test
 	public void testGetExchangeInterfaceName() {
 		ExchangeDescriptor exchangeDescriptor = new ExchangeDescriptor();
-		exchangeDescriptor.setName("TestExchange");
+		exchangeDescriptor.setId("TestExchange");
 		exchangeDescriptor.setBasePackage("com.x.y.z");
 		Assert.assertEquals("com.x.y.z.TestExchangeExchange", 
 							ExchangeJavaGenUtil.getExchangeInterfaceName(exchangeDescriptor));
@@ -286,7 +286,7 @@ public class ExchangeJavaGenUtilTest {
 	@Test
 	public void testGetExchangeConstantsInterfaceName() {
 		ExchangeDescriptor exchangeDescriptor = new ExchangeDescriptor();
-		exchangeDescriptor.setName("TestExchange");
+		exchangeDescriptor.setId("TestExchange");
 		exchangeDescriptor.setBasePackage("com.x.y.z");
 		Assert.assertEquals("com.x.y.z.TestExchangeConstants", 
 							ExchangeJavaGenUtil.getExchangeConstantsInterfaceName(exchangeDescriptor));
@@ -295,7 +295,7 @@ public class ExchangeJavaGenUtilTest {
 	@Test
 	public void testGetExchangeApiConstantsInterfaceName() {
 		ExchangeDescriptor exchangeDescriptor = new ExchangeDescriptor();
-		exchangeDescriptor.setName("TestExchange");
+		exchangeDescriptor.setId("TestExchange");
 		exchangeDescriptor.setBasePackage("com.x.y.z");
 		ExchangeApiDescriptor apiDescriptor = new ExchangeApiDescriptor();
 		apiDescriptor.setName("Spot");
@@ -306,7 +306,7 @@ public class ExchangeJavaGenUtilTest {
 	@Test
 	public void testGetExchangePropertiesInterfaceName() {
 		ExchangeDescriptor exchangeDescriptor = new ExchangeDescriptor();
-		exchangeDescriptor.setName("TestExchange");
+		exchangeDescriptor.setId("TestExchange");
 		exchangeDescriptor.setBasePackage("com.x.y.z");
 		Assert.assertEquals("com.x.y.z.TestExchangeProperties", 
 							ExchangeJavaGenUtil.getExchangePropertiesInterfaceName(exchangeDescriptor));
@@ -399,7 +399,7 @@ public class ExchangeJavaGenUtilTest {
 	@Test
 	public void testGetExchangeInterfaceImplementationNameFromExchangeDescriptor() {
 		ExchangeDescriptor exchangeDescriptor = new ExchangeDescriptor();
-		exchangeDescriptor.setName("Test");
+		exchangeDescriptor.setId("Test");
 		exchangeDescriptor.setBasePackage("com.x.y.z");
 		Assert.assertEquals("com.x.y.z.TestExchangeImpl",
 				ExchangeJavaGenUtil.getExchangeInterfaceImplementationName(exchangeDescriptor));

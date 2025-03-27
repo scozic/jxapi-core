@@ -374,7 +374,7 @@ public class ExchangeApiInterfaceImplementationGenerator extends JavaTypeGenerat
 					.append(", new ")
 					.append(RequestThrottler.class.getSimpleName())
 					.append("(\"")
-					.append(exchangeDescriptor.getName())
+					.append(exchangeDescriptor.getId())
 					.append(exchangeApiDescriptor.getName())
 					.append("\")")
 					.toString();

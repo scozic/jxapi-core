@@ -32,7 +32,7 @@ public class ExchangeApiGenUtilTest {
     @Test
     public void testGenerateEndpointRequestPojoClassName() {
         ExchangeDescriptor exchangeDescriptor = new ExchangeDescriptor();
-        exchangeDescriptor.setName("TestExchange");
+        exchangeDescriptor.setId("TestExchange");
         exchangeDescriptor.setBasePackage("com.test.exchange");
         ExchangeApiDescriptor apiDescriptor = new ExchangeApiDescriptor();
         apiDescriptor.setName("MyApi");
@@ -52,7 +52,7 @@ public class ExchangeApiGenUtilTest {
     @Test
     public void testGenerateEndpointRequesPojotClassName_RequestWithObjectName() {
         ExchangeDescriptor exchangeDescriptor = new ExchangeDescriptor();
-        exchangeDescriptor.setName("TestExchange");
+        exchangeDescriptor.setId("TestExchange");
         exchangeDescriptor.setBasePackage("com.test.exchange");
         ExchangeApiDescriptor apiDescriptor = new ExchangeApiDescriptor();
         apiDescriptor.setName("MyApi");
@@ -73,7 +73,7 @@ public class ExchangeApiGenUtilTest {
     @Test
     public void testGenerateRestEndpointRequestPojoClassName_NullRequestType() {
         ExchangeDescriptor exchangeDescriptor = new ExchangeDescriptor();
-        exchangeDescriptor.setName("TestExchange");
+        exchangeDescriptor.setId("TestExchange");
         exchangeDescriptor.setBasePackage("com.test.exchange");
         ExchangeApiDescriptor apiDescriptor = new ExchangeApiDescriptor();
         apiDescriptor.setName("MyApi");
@@ -92,7 +92,7 @@ public class ExchangeApiGenUtilTest {
     @Test(expected = IllegalArgumentException.class)
     public void testGenerateRestEndpointRequestPojoClassName_RequestNotObjectType() {
         ExchangeDescriptor exchangeDescriptor = new ExchangeDescriptor();
-        exchangeDescriptor.setName("TestExchange");
+        exchangeDescriptor.setId("TestExchange");
         exchangeDescriptor.setBasePackage("com.test.exchange");
         ExchangeApiDescriptor apiDescriptor = new ExchangeApiDescriptor();
         apiDescriptor.setName("MyApi");
@@ -112,7 +112,7 @@ public class ExchangeApiGenUtilTest {
     @Test(expected = IllegalArgumentException.class)
     public void testGenerateRestEndpointRequestPojoClassName_NullRequest() {
         ExchangeDescriptor exchangeDescriptor = new ExchangeDescriptor();
-        exchangeDescriptor.setName("TestExchange");
+        exchangeDescriptor.setId("TestExchange");
         exchangeDescriptor.setBasePackage("com.test.exchange");
         ExchangeApiDescriptor apiDescriptor = new ExchangeApiDescriptor();
         apiDescriptor.setName("MyApi");
@@ -128,7 +128,7 @@ public class ExchangeApiGenUtilTest {
     @Test
     public void testGenerateRestEndpointResponsePojoClassName() {
         ExchangeDescriptor exchangeDescriptor = new ExchangeDescriptor();
-        exchangeDescriptor.setName("TestExchange");
+        exchangeDescriptor.setId("TestExchange");
         exchangeDescriptor.setBasePackage("com.test.exchange");
         ExchangeApiDescriptor apiDescriptor = new ExchangeApiDescriptor();
         apiDescriptor.setName("MyApi");
@@ -148,7 +148,7 @@ public class ExchangeApiGenUtilTest {
     @Test(expected = IllegalArgumentException.class)
     public void testGenerateRestEndpointResponsePojoClassName_NullResponse() {
         ExchangeDescriptor exchangeDescriptor = new ExchangeDescriptor();
-        exchangeDescriptor.setName("TestExchange");
+        exchangeDescriptor.setId("TestExchange");
         exchangeDescriptor.setBasePackage("com.test.exchange");
         ExchangeApiDescriptor apiDescriptor = new ExchangeApiDescriptor();
         apiDescriptor.setName("MyApi");
@@ -164,7 +164,7 @@ public class ExchangeApiGenUtilTest {
     @Test
     public void testGenerateWebsocketEndpointRequestPojoClassName() {
         ExchangeDescriptor exchangeDescriptor = new ExchangeDescriptor();
-        exchangeDescriptor.setName("TestExchange");
+        exchangeDescriptor.setId("TestExchange");
         exchangeDescriptor.setBasePackage("com.test.exchange");
         ExchangeApiDescriptor apiDescriptor = new ExchangeApiDescriptor();
         apiDescriptor.setName("MyApi");
@@ -184,7 +184,7 @@ public class ExchangeApiGenUtilTest {
     @Test(expected = IllegalArgumentException.class)
     public void testGenerateWebsocketEndpointRequestPojoClassName_NullRequest() {
         ExchangeDescriptor exchangeDescriptor = new ExchangeDescriptor();
-        exchangeDescriptor.setName("TestExchange");
+        exchangeDescriptor.setId("TestExchange");
         exchangeDescriptor.setBasePackage("com.test.exchange");
         ExchangeApiDescriptor apiDescriptor = new ExchangeApiDescriptor();
         apiDescriptor.setName("MyApi");
@@ -200,7 +200,7 @@ public class ExchangeApiGenUtilTest {
     @Test
     public void testGenerateWebsocketEndpointMessageClassName() {
         ExchangeDescriptor exchangeDescriptor = new ExchangeDescriptor();
-        exchangeDescriptor.setName("TestExchange");
+        exchangeDescriptor.setId("TestExchange");
         exchangeDescriptor.setBasePackage("com.test.exchange");
         ExchangeApiDescriptor apiDescriptor = new ExchangeApiDescriptor();
         apiDescriptor.setName("MyApi");
@@ -220,7 +220,7 @@ public class ExchangeApiGenUtilTest {
     @Test(expected = IllegalArgumentException.class)
     public void testGenerateWebsocketEndpointMessageClassName_NullResponse() {
         ExchangeDescriptor exchangeDescriptor = new ExchangeDescriptor();
-        exchangeDescriptor.setName("TestExchange");
+        exchangeDescriptor.setId("TestExchange");
         exchangeDescriptor.setBasePackage("com.test.exchange");
         ExchangeApiDescriptor apiDescriptor = new ExchangeApiDescriptor();
         apiDescriptor.setName("MyApi");
@@ -519,7 +519,7 @@ public class ExchangeApiGenUtilTest {
     @Test
     public void testRestEnpointHasArguments_NullRequest() {
         ExchangeDescriptor exchangeDescriptor = new ExchangeDescriptor();
-        exchangeDescriptor.setName("TestExchange");
+        exchangeDescriptor.setId("TestExchange");
         exchangeDescriptor.setBasePackage("com.test.exchange");
         ExchangeApiDescriptor apiDescriptor = new ExchangeApiDescriptor();
         apiDescriptor.setName("MyApi");
@@ -532,7 +532,7 @@ public class ExchangeApiGenUtilTest {
     @Test
     public void testRestEnpointHasArguments_HasRequestWithArguments() {
         ExchangeDescriptor exchangeDescriptor = new ExchangeDescriptor();
-        exchangeDescriptor.setName("TestExchange");
+        exchangeDescriptor.setId("TestExchange");
         exchangeDescriptor.setBasePackage("com.test.exchange");
         ExchangeApiDescriptor apiDescriptor = new ExchangeApiDescriptor();
         apiDescriptor.setName("MyApi");
@@ -548,7 +548,7 @@ public class ExchangeApiGenUtilTest {
     @Test
     public void testWebsocketEnpointHasArguments_NullRequest() {
         ExchangeDescriptor exchangeDescriptor = new ExchangeDescriptor();
-        exchangeDescriptor.setName("TestExchange");
+        exchangeDescriptor.setId("TestExchange");
         exchangeDescriptor.setBasePackage("com.test.exchange");
         ExchangeApiDescriptor apiDescriptor = new ExchangeApiDescriptor();
         apiDescriptor.setName("MyApi");
@@ -1032,7 +1032,7 @@ public class ExchangeApiGenUtilTest {
     @Test
     public void testGetHttpUrlVariableDeclaration_RelateApiUrl_AbsoluteExchangeUrl() {
         ExchangeDescriptor exchangeDescriptor = new ExchangeDescriptor();
-        exchangeDescriptor.setName("MyExchange");
+        exchangeDescriptor.setId("MyExchange");
         exchangeDescriptor.setBasePackage("com.x.gen");
         exchangeDescriptor.setHttpUrl("\n"
         		+ "/**\n"
@@ -1055,7 +1055,7 @@ public class ExchangeApiGenUtilTest {
     @Test
     public void testGetHttpUrlVariableDeclaration_NullApiUrl_AbsoluteExchangeUrl() {
         ExchangeDescriptor exchangeDescriptor = new ExchangeDescriptor();
-        exchangeDescriptor.setName("MyExchange");
+        exchangeDescriptor.setId("MyExchange");
         exchangeDescriptor.setBasePackage("com.x.gen");
         exchangeDescriptor.setHttpUrl("https://api.exchange.com");
         ExchangeApiDescriptor apiDescriptor = new ExchangeApiDescriptor();
@@ -1138,7 +1138,7 @@ public class ExchangeApiGenUtilTest {
     @Test
     public void testGetWebsocketUrlVariableDeclaration_RelateApiWsUrl_AbsoluteExchangeWsUrl() {
         ExchangeDescriptor exchangeDescriptor = new ExchangeDescriptor();
-        exchangeDescriptor.setName("MyExchange");
+        exchangeDescriptor.setId("MyExchange");
         exchangeDescriptor.setBasePackage("com.x.gen");
         exchangeDescriptor.setWebsocketUrl("https://api.exchange.com");
         ExchangeApiDescriptor apiDescriptor = new ExchangeApiDescriptor();
@@ -1157,7 +1157,7 @@ public class ExchangeApiGenUtilTest {
     @Test
     public void testGetWebsocketUrlVariableDeclaration_NullApiWsUrl_AbsoluteExchangeWsUrl() {
         ExchangeDescriptor exchangeDescriptor = new ExchangeDescriptor();
-        exchangeDescriptor.setName("MyExchange");
+        exchangeDescriptor.setId("MyExchange");
         exchangeDescriptor.setBasePackage("com.x.gen");
         exchangeDescriptor.setWebsocketUrl("https://api.exchange.com/ws");
         ExchangeApiDescriptor apiDescriptor = new ExchangeApiDescriptor();
@@ -1175,7 +1175,7 @@ public class ExchangeApiGenUtilTest {
     @Test
     public void testGetWebsocketUrlVariableDeclaration_NullApiWsUrl_NullExchangeWsUrl() {
         ExchangeDescriptor exchangeDescriptor = new ExchangeDescriptor();
-        exchangeDescriptor.setName("MyExchange");
+        exchangeDescriptor.setId("MyExchange");
         exchangeDescriptor.setBasePackage("com.x.gen");
         ExchangeApiDescriptor apiDescriptor = new ExchangeApiDescriptor();
         Imports imports = new Imports(); 

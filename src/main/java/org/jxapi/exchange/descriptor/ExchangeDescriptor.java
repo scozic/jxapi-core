@@ -106,7 +106,7 @@ import org.jxapi.util.EncodingUtil;
  */
 public class ExchangeDescriptor {
 	
-	private String name;
+	private String id;
 	
 	private String description;
 	
@@ -155,21 +155,20 @@ public class ExchangeDescriptor {
 	}
 
 	/**
-	 * Returns the name of the exchange. Remark that this is map to the ID of the exchange.
-	 * @return the name of the exchange
+	 * @return the ID of the exchange
 	 * @see Exchange#getId()
 	 */
-	public String getName() {
-		return name;
+	public String getId() {
+		return id;
 	}
 
 	/**
 	 * Sets the name of the exchange. Remark that this is map to the ID of the exchange.
-	 * @param name the name of the exchange
+	 * @param id the ID of the exchange
 	 * @see Exchange#getId()
 	 */
-	public void setName(String name) {
-		this.name = name;
+	public void setId(String id) {
+		this.id = id;
 	}
 
 	/**

@@ -54,7 +54,7 @@ public class ExchangeApiInterfaceGenerator extends JavaTypeGenerator {
 		super(ExchangeJavaGenUtil.getApiInterfaceClassName(exchangeDescriptor, exchangeApiDescriptor));
 		this.exchangeDescriptor = exchangeDescriptor;
 		this.exchangeApiDescriptor = exchangeApiDescriptor;
-		setDescription(exchangeDescriptor.getName() + " " + exchangeApiDescriptor.getName() + " API<br>\n" 
+		setDescription(exchangeDescriptor.getId() + " " + exchangeApiDescriptor.getName() + " API<br>\n" 
 				+ exchangeApiDescriptor.getDescription());
 		setTypeDeclaration("public interface");
 		this.setParentClassName(ExchangeApi.class.getName());

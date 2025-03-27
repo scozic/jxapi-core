@@ -1,5 +1,5 @@
 {
-	"name": "MyTestExchangeWithDifferentUrlQueryParams",
+	"id": "MyTestExchangeWithDifferentUrlQueryParams",
 	"description": "A sample exchange descriptor file with REST enbdpoints using query params",
 	"basePackage": "com.foo.bar.gen",
 	"httpUrl": "https://api.myexchange.com",

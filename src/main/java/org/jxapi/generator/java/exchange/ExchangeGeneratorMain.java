@@ -135,7 +135,7 @@ public class ExchangeGeneratorMain {
 					} catch (Exception ex) {
 						// Remark: intentionally catching all exceptions to continue generation for other exchanges
 						log.error("Error while generating exchange descriptor for exchange:"
-								+ exchangeDescriptor.getName() + ":" + ex.getMessage(), ex);
+								+ exchangeDescriptor.getId() + ":" + ex.getMessage(), ex);
 						error.set(ex);
 					}
 				});
@@ -164,14 +164,14 @@ public class ExchangeGeneratorMain {
 													   Path projectFolder, 
 													   String baseJavaDocUrl, 
 													   String baseSrcUrl) throws IOException {
-		log.info("Generating exchange wrapper code for descriptor:{}", exchangeDescriptor.getName());
+		log.info("Generating exchange wrapper code for descriptor:{}", exchangeDescriptor.getId());
 		Path outputSrcMainFolder = projectFolder.resolve(Paths.get("src", "main", "java"));
 		Path mainPackagePath = Paths.get(StringUtils.replace(exchangeDescriptor.getBasePackage(), ".", "/"));
 		Path genMainPackagesFolder = outputSrcMainFolder.resolve(mainPackagePath);
 		JavaCodeGenUtil.deletePath(genMainPackagesFolder);
 		generateExchangeWrapper(exchangeDescriptor, outputSrcMainFolder);
 		
-		log.info("Generating exchange demos code for descriptor:{}", exchangeDescriptor.getName());
+		log.info("Generating exchange demos code for descriptor:{}", exchangeDescriptor.getId());
 		Path outputSrcTestFolder = projectFolder.resolve(Paths.get("src", "test", "java"));
 		Path genTestPackagesFolder = outputSrcTestFolder.resolve(mainPackagePath);
 		JavaCodeGenUtil.deletePath(genTestPackagesFolder);
@@ -181,10 +181,10 @@ public class ExchangeGeneratorMain {
 		log.info("Generating demo exchange configuration properties file template in {}", srcTestResourcesFolder);
 		generateDemoPropertiesFileTemplate(exchangeDescriptor, srcTestResourcesFolder);
 		
-		log.info("Generating exchange README for:{}", exchangeDescriptor.getName());
+		log.info("Generating exchange README for:{}", exchangeDescriptor.getId());
 		generateExchangeWrapperReadme(exchangeDescriptor, projectFolder, baseJavaDocUrl, baseSrcUrl);
 		
-		log.info("Done generating java code for {}", exchangeDescriptor.getName());
+		log.info("Done generating java code for {}", exchangeDescriptor.getId());
 	}
 
 	/**
@@ -232,13 +232,13 @@ public class ExchangeGeneratorMain {
 	 * @throws IOException If error occurs while writing the file
 	 */
 	public static void generateDemoPropertiesFileTemplate(ExchangeDescriptor exchangeDescriptor, Path resourcesFolder) throws IOException {
-		String fileName = DemoUtil.getDefaultDemoExchangePropertiesFileName(exchangeDescriptor.getName()) + ".dist";
+		String fileName = DemoUtil.getDefaultDemoExchangePropertiesFileName(exchangeDescriptor.getId()) + ".dist";
 		Files.createDirectories(resourcesFolder);
 		Path filePath = resourcesFolder.resolve(Paths.get(fileName));
 		log.info("Generating demo exchange properties template file:{}", filePath);
 		List<ConfigProperty> configProperties = new ArrayList<>();
 		configProperties.addAll(Optional.ofNullable(exchangeDescriptor.getProperties()).orElse(List.of()));
-		new ExchangeDemoPropertiesFileGenerator(exchangeDescriptor.getName(), 
+		new ExchangeDemoPropertiesFileGenerator(exchangeDescriptor.getId(), 
 												configProperties)
 			.writeJavaFile(filePath);
 	}

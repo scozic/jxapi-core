@@ -77,7 +77,7 @@ public class ExchangeReadmeMdGenerator {
 	 */
 	public String generate() {
 		StringBuilder s = new StringBuilder().append("# ")
-			.append(exchangeDescriptor.getName())
+			.append(exchangeDescriptor.getId())
 			.append(" API Java wrapper\n\n")
 			.append(exchangeDescriptor.getDescription())
 			.append("\n");
@@ -91,7 +91,7 @@ public class ExchangeReadmeMdGenerator {
 		s.append("### Quick start\n")
 		 .append("\n")
 		 .append("This wrapper offers Java interfaces for using ")
-		 .append(exchangeDescriptor.getName())
+		 .append(exchangeDescriptor.getId())
 		 .append(" API")
 		 .append("\n")
 		 .append("Add maven dependency to your project, then you can use the wrapper by instantiating ")
@@ -219,7 +219,7 @@ public class ExchangeReadmeMdGenerator {
 			cells.add(row);
 		});
 		String caption = new StringBuilder()
-				.append(exchangeDescriptor.getName())
+				.append(exchangeDescriptor.getId())
 				.append(" ")
 				.append(api.getName())
 				.append(" websocket endpoints").toString();
@@ -257,7 +257,7 @@ public class ExchangeReadmeMdGenerator {
 			cells.add(row);
 		});
 		String caption = new StringBuilder()
-				.append(exchangeDescriptor.getName())
+				.append(exchangeDescriptor.getId())
 				.append(" ")
 				.append(api.getName())
 				.append(" REST endpoints").toString();
@@ -310,6 +310,6 @@ public class ExchangeReadmeMdGenerator {
 	 */
 	public void writeJavaFile(Path sourceFolder) throws IOException {
 		sourceFolder.toFile().mkdirs();
-		Files.writeString(sourceFolder.resolve(exchangeDescriptor.getName() + "_README.md"), generate());
+		Files.writeString(sourceFolder.resolve(exchangeDescriptor.getId() + "_README.md"), generate());
 	}
 }

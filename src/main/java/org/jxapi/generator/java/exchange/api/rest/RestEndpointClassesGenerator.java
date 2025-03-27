@@ -75,7 +75,7 @@ public class RestEndpointClassesGenerator implements ClassesGenerator {
 		if (request != null && request.getProperties() != null) {
 			new PojoClassesGenerator(
 					ExchangeApiGenUtil.generateRestEnpointRequestPojoClassName(exchangeDescriptor, apiDescriptor, restEndpointDescriptor), 
-					"Request for " + exchangeDescriptor.getName() + " " + apiDescriptor.getName() + " API " 
+					"Request for " + exchangeDescriptor.getId() + " " + apiDescriptor.getName() + " API " 
 						+ restEndpointDescriptor.getName() + " REST endpoint<br>\n"
 						+ restEndpointDescriptor.getDescription(),
 						request.getProperties(),
@@ -90,7 +90,7 @@ public class RestEndpointClassesGenerator implements ClassesGenerator {
 							exchangeDescriptor, 
 							apiDescriptor, 
 							restEndpointDescriptor), 
-					"Response to " + exchangeDescriptor.getName() 
+					"Response to " + exchangeDescriptor.getId() 
 						+ " " + apiDescriptor.getName() + " API <br>\n" 
 						+ restEndpointDescriptor.getName() 
 						+ " REST endpoint request<br>\n"

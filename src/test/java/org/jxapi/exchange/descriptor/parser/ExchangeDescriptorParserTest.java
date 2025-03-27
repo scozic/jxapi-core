@@ -82,7 +82,7 @@ public class ExchangeDescriptorParserTest {
 	}
 	
 	private void checkTestExchange(ExchangeDescriptor exchangeDescriptor) {
-		Assert.assertEquals("MyTestExchange", exchangeDescriptor.getName());
+		Assert.assertEquals("MyTestExchange", exchangeDescriptor.getId());
 		Assert.assertEquals("A sample Exchange descriptor file", exchangeDescriptor.getDescription());
 		Assert.assertEquals("com.foo.bar.gen", exchangeDescriptor.getBasePackage());
 		List<ExchangeApiDescriptor> apis = exchangeDescriptor.getApis();
@@ -240,7 +240,7 @@ public class ExchangeDescriptorParserTest {
 	}
 	
 	private void checkEmployeeExchange(ExchangeDescriptor exchangeDescriptor) {
-		Assert.assertEquals("Employee", exchangeDescriptor.getName());
+		Assert.assertEquals("Employee", exchangeDescriptor.getId());
 		Assert.assertEquals(
 				"Employee exchange is a demo exchange REST APIs to get, add, delete and  update employees and "
 				+ "a websocket endpoint to get notified of updates from an employee database.<br> A server can be started "

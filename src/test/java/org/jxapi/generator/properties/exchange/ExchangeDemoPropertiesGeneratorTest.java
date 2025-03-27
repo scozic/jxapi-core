@@ -42,7 +42,7 @@ public class ExchangeDemoPropertiesGeneratorTest {
 		Path actualFilePath = tmpFolder.resolve(fileName);
 		List<ConfigProperty> configProperties = new ArrayList<>();
 		configProperties.addAll(exchangeDescriptor.getProperties());
-		new ExchangeDemoPropertiesFileGenerator(exchangeDescriptor.getName(), 
+		new ExchangeDemoPropertiesFileGenerator(exchangeDescriptor.getId(), 
 												configProperties)
 			.writeJavaFile(actualFilePath);
 		String expected = Files.readString(srcTestResourcesFolder.resolve(fileName));

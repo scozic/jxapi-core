@@ -112,7 +112,7 @@ public class WebsocketEndpointDemoGenerator extends JavaTypeGenerator {
 		this.simpleApiClassName = JavaCodeGenUtil.getClassNameWithoutPackage(apiInterfaceClassName);
 		addImport(apiInterfaceClassName);
 		setDescription(getClassJavadoc());
-		this.fullStreamName = exchangeDescriptor.getName() + " " 
+		this.fullStreamName = exchangeDescriptor.getId() + " " 
 								+ exchangeApiDescriptor.getName() 
 								+ " " + websocketApi.getName();
 		Type messageDataType = ExchangeJavaGenUtil.getFieldType(websocketApi.getMessage());

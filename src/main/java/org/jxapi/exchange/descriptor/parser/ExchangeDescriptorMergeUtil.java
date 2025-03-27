@@ -117,11 +117,11 @@ public class ExchangeDescriptorMergeUtil {
 	 */
 	public static ExchangeDescriptor mergeExchangeDescriptors(ExchangeDescriptor e1, ExchangeDescriptor e2) {
 		ExchangeDescriptor res = new ExchangeDescriptor();
-		String exchangeName = e1.getName();
-		if (!e1.getName().equals(e2.getName())) {
-			throw new IllegalArgumentException(String.format("Cannot merge exchanges with different IDs:'%s' and '%s'", e1.getName(), e2.getName()));
+		String exchangeName = e1.getId();
+		if (!e1.getId().equals(e2.getId())) {
+			throw new IllegalArgumentException(String.format("Cannot merge exchanges with different IDs:'%s' and '%s'", e1.getId(), e2.getId()));
 		}
-		res.setName(e1.getName());
+		res.setId(e1.getId());
 		res.setDescription(merge("description of exchange " + exchangeName, e1.getDescription(), e2.getDescription()));
 		res.setDocUrl(merge("docUrl of exchange " + exchangeName, e1.getDocUrl(), e2.getDocUrl()));
 		res.setBasePackage(merge("basePackage of exchange " + exchangeName, e1.getBasePackage(), e2.getBasePackage()));

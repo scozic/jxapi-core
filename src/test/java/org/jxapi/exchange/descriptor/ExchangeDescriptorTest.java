@@ -21,7 +21,7 @@ public class ExchangeDescriptorTest {
     @Test
     public void testSettersAndGetters() {
         ExchangeDescriptor exchangeDescriptor = new ExchangeDescriptor();
-        exchangeDescriptor.setName("name");
+        exchangeDescriptor.setId("name");
         exchangeDescriptor.setDescription("description");
         exchangeDescriptor.setBasePackage("com.x.y");
         exchangeDescriptor.setApis(List.of(new ExchangeApiDescriptor()));
@@ -34,7 +34,7 @@ public class ExchangeDescriptorTest {
         exchangeDescriptor.setHttpRequestTimeout(2000L);
         exchangeDescriptor.setWebsocketFactory("com.x.y.net.MyWebsocketFactory");
         exchangeDescriptor.setWebsocketHookFactory("com.x.y.net.MyWebsocketHookFactory");
-        Assert.assertEquals("name", exchangeDescriptor.getName());
+        Assert.assertEquals("name", exchangeDescriptor.getId());
         Assert.assertEquals("description", exchangeDescriptor.getDescription());
         Assert.assertEquals("com.x.y", exchangeDescriptor.getBasePackage());
         Assert.assertEquals("https://doc.myexchange.com", exchangeDescriptor.getDocUrl());
@@ -52,11 +52,11 @@ public class ExchangeDescriptorTest {
     @Test
     public void testToString() {
         ExchangeDescriptor exchangeDescriptor = new ExchangeDescriptor();
-        exchangeDescriptor.setName("name");
+        exchangeDescriptor.setId("name");
         exchangeDescriptor.setDescription("description");
         exchangeDescriptor.setBasePackage("basePackage");
         exchangeDescriptor.setApis(List.of(new ExchangeApiDescriptor()));
         exchangeDescriptor.setRateLimits(List.of(new RateLimitRule()));
-        Assert.assertEquals("ExchangeDescriptor{\"apis\":[{\"httpRequestTimeout\":-1}],\"basePackage\":\"basePackage\",\"description\":\"description\",\"httpRequestTimeout\":-1,\"name\":\"name\",\"rateLimits\":[{\"granularity\":10,\"maxRequestCount\":-1,\"maxTotalWeight\":-1,\"timeFrame\":0}]}", exchangeDescriptor.toString());
+        Assert.assertEquals("ExchangeDescriptor{\"apis\":[{\"httpRequestTimeout\":-1}],\"basePackage\":\"basePackage\",\"description\":\"description\",\"httpRequestTimeout\":-1,\"id\":\"name\",\"rateLimits\":[{\"granularity\":10,\"maxRequestCount\":-1,\"maxTotalWeight\":-1,\"timeFrame\":0}]}", exchangeDescriptor.toString());
     }
 }

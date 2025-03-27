@@ -1,5 +1,5 @@
 {
-	"name": "MyTestExchange",
+	"id": "MyTestExchange",
 	"description": "A sample exchange descriptor file used in ExchangeApiInterfaceImplementationGeneratorTest unit test, to test case where there is only rateLimits defined at exchange level, and no additionnal rules at API or  REST endpoint level but requestWeight.",
 	"basePackage": "com.foo.bar.gen",
 	"rateLimits": [

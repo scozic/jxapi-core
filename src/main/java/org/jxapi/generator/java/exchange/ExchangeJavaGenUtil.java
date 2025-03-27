@@ -66,7 +66,7 @@ public class ExchangeJavaGenUtil {
 	public static String getApiInterfaceClassName(ExchangeDescriptor exchangeDescriptor, 
 												  ExchangeApiDescriptor exchangeApiDescriptor) {
 		String pkgPrefix =  exchangeDescriptor.getBasePackage() + "." + exchangeApiDescriptor.getName().toLowerCase() + ".";
-		String simpleInterfaceName = JavaCodeGenUtil.firstLetterToUpperCase(exchangeDescriptor.getName()) 
+		String simpleInterfaceName = JavaCodeGenUtil.firstLetterToUpperCase(exchangeDescriptor.getId()) 
 										+ JavaCodeGenUtil.firstLetterToUpperCase(exchangeApiDescriptor.getName()) + "Api";
 		return pkgPrefix + simpleInterfaceName;
 	}
@@ -98,7 +98,7 @@ public class ExchangeJavaGenUtil {
 	 */
 	public static String getExchangeInterfaceName(ExchangeDescriptor exchangeDescriptor) {
 		return exchangeDescriptor.getBasePackage() + "." 
-				+ JavaCodeGenUtil.firstLetterToUpperCase(exchangeDescriptor.getName()) + "Exchange";
+				+ JavaCodeGenUtil.firstLetterToUpperCase(exchangeDescriptor.getId()) + "Exchange";
 	}
 
 	/**
@@ -108,7 +108,7 @@ public class ExchangeJavaGenUtil {
 	 */
 	public static String getExchangeConstantsInterfaceName(ExchangeDescriptor exchangeDescriptor) {
 		return exchangeDescriptor.getBasePackage() + "." 
-				+ JavaCodeGenUtil.firstLetterToUpperCase(exchangeDescriptor.getName()) + "Constants";
+				+ JavaCodeGenUtil.firstLetterToUpperCase(exchangeDescriptor.getId()) + "Constants";
 	}
 	
 	/**
@@ -119,7 +119,7 @@ public class ExchangeJavaGenUtil {
 	public static String getExchangeApiConstantsInterfaceName(ExchangeDescriptor exchangeDescriptor, 
 															  ExchangeApiDescriptor exchangeApiDescriptor) {
 		String pkgPrefix =  exchangeDescriptor.getBasePackage() + "." + exchangeApiDescriptor.getName().toLowerCase() + ".";
-		String simpleInterfaceName = JavaCodeGenUtil.firstLetterToUpperCase(exchangeDescriptor.getName()) 
+		String simpleInterfaceName = JavaCodeGenUtil.firstLetterToUpperCase(exchangeDescriptor.getId()) 
 										+ JavaCodeGenUtil.firstLetterToUpperCase(exchangeApiDescriptor.getName()) + "Constants";
 		return pkgPrefix + simpleInterfaceName;
 	}
@@ -132,7 +132,7 @@ public class ExchangeJavaGenUtil {
 	public static String getExchangePropertiesInterfaceName(ExchangeDescriptor exchangeDescriptor) {
 		return exchangeDescriptor.getBasePackage() 
 				+ "." 
-				+ JavaCodeGenUtil.firstLetterToUpperCase(exchangeDescriptor.getName()) 
+				+ JavaCodeGenUtil.firstLetterToUpperCase(exchangeDescriptor.getId()) 
 				+ "Properties";
 	}
 

@@ -234,9 +234,9 @@ public class ExchangeDescriptorMergeUtilTest {
 	@Test
 	public void testMergeExchangeDescriptors_DifferentExchangeNames() {
 		ExchangeDescriptor ex1 = new ExchangeDescriptor();
-		ex1.setName("ex1");
+		ex1.setId("ex1");
 		ExchangeDescriptor ex2 = new ExchangeDescriptor();
-		ex2.setName("ex2");
+		ex2.setId("ex2");
 		try {
 			ExchangeDescriptorMergeUtil.mergeExchangeDescriptors(ex1, ex2);
 			Assert.fail("Expected IllegalArgumentException");
@@ -249,7 +249,7 @@ public class ExchangeDescriptorMergeUtilTest {
 	@Test
 	public void testMergeExchangeDescriptors() {
 		ExchangeDescriptor ex1 = new ExchangeDescriptor();
-		ex1.setName("ex1");
+		ex1.setId("ex1");
 		ex1.setDescription("Exchange 1 description");
 		ex1.setBasePackage("com.x.y.gen");
 		ex1.setDocUrl("https://ex1.com/docs");
@@ -269,7 +269,7 @@ public class ExchangeDescriptorMergeUtilTest {
 		ex1.setProperties(List.of(prop1));
 		
 		ExchangeDescriptor ex2 = new ExchangeDescriptor();
-		ex2.setName("ex1");
+		ex2.setId("ex1");
 		ex2.setHttpUrl("http://ex1.com");
 		ex2.setHttpRequestExecutorFactory("com.x.y.MyHttpRequestExecutorFactory");
 		ex2.setHttpRequestInterceptorFactory("com.x.y.MyHttpRequestInterceptorFactory");
@@ -291,7 +291,7 @@ public class ExchangeDescriptorMergeUtilTest {
 		ex2.setProperties(List.of(prop2));
 		
 		ExchangeDescriptor merged = ExchangeDescriptorMergeUtil.mergeExchangeDescriptors(ex1, ex2);
-		Assert.assertEquals("ex1", merged.getName());
+		Assert.assertEquals("ex1", merged.getId());
 		Assert.assertEquals("Exchange 1 description", merged.getDescription());
 		Assert.assertEquals("com.x.y.gen", merged.getBasePackage());
 		Assert.assertEquals("https://ex1.com/docs", merged.getDocUrl());

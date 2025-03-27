@@ -275,7 +275,7 @@ public class EndpointDemoGenUtil {
 												 ExchangeApiDescriptor exchangeApiDescriptor, 
 												 RestEndpointDescriptor restApi) {
 		String pkgPrefix =  exchangeDescriptor.getBasePackage() + "." + exchangeApiDescriptor.getName().toLowerCase() + ".demo.";
-		return pkgPrefix + JavaCodeGenUtil.firstLetterToUpperCase(exchangeDescriptor.getName()) 
+		return pkgPrefix + JavaCodeGenUtil.firstLetterToUpperCase(exchangeDescriptor.getId()) 
 									 + JavaCodeGenUtil.firstLetterToUpperCase(exchangeApiDescriptor.getName())
 									 + JavaCodeGenUtil.firstLetterToUpperCase(restApi.getName())
 									 + "Demo";
@@ -303,7 +303,7 @@ public class EndpointDemoGenUtil {
 													  ExchangeApiDescriptor exchangeApiDescriptor, 
 													  WebsocketEndpointDescriptor websocketApi) {
 		String pkgPrefix =  exchangeDescriptor.getBasePackage() + "." + exchangeApiDescriptor.getName().toLowerCase() + ".demo.";
-		return pkgPrefix + JavaCodeGenUtil.firstLetterToUpperCase(exchangeDescriptor.getName()) 
+		return pkgPrefix + JavaCodeGenUtil.firstLetterToUpperCase(exchangeDescriptor.getId()) 
 									 + JavaCodeGenUtil.firstLetterToUpperCase(exchangeApiDescriptor.getName())
 									 + JavaCodeGenUtil.firstLetterToUpperCase(websocketApi.getName())
 									 + "Demo";

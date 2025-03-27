@@ -19,7 +19,7 @@ public class ExchangeInterfaceImplementationGeneratorTest {
 	@Test
 	public void testGenerateExchangeApi() {
 		ExchangeDescriptor exchangeDescriptor = new ExchangeDescriptor();
-		exchangeDescriptor.setName("Foo");
+		exchangeDescriptor.setId("Foo");
 		exchangeDescriptor.setBasePackage("com.xyz.foo.gen");
 		exchangeDescriptor.setDescription("Foo exchange description");
 		exchangeDescriptor.setHttpUrl("https://myexchange.com/api");
@@ -86,7 +86,7 @@ public class ExchangeInterfaceImplementationGeneratorTest {
 	@Test
 	public void testGenerateExchangeApiWithExchangeRateLimits() {
 		ExchangeDescriptor exchangeDescriptor = new ExchangeDescriptor();
-		exchangeDescriptor.setName("Foo");
+		exchangeDescriptor.setId("Foo");
 		exchangeDescriptor.setBasePackage("com.xyz.foo.gen");
 		exchangeDescriptor.setDescription("Foo exchange description");
 		List<ExchangeApiDescriptor> apis = new ArrayList<>();
@@ -163,7 +163,7 @@ public class ExchangeInterfaceImplementationGeneratorTest {
 	@Test
 	public void testGenerateExchangeApiWithEmptyExchangeRateLimits() {
 		ExchangeDescriptor exchangeDescriptor = new ExchangeDescriptor();
-		exchangeDescriptor.setName("Foo");
+		exchangeDescriptor.setId("Foo");
 		exchangeDescriptor.setBasePackage("com.xyz.foo.gen");
 		exchangeDescriptor.setDescription("Foo exchange description");
 		List<ExchangeApiDescriptor> apis = new ArrayList<>();
@@ -208,7 +208,7 @@ public class ExchangeInterfaceImplementationGeneratorTest {
 	@Test
 	public void testGenerateExchangeApiWithExchangeRateLimitsButNoApis() {
 		ExchangeDescriptor exchangeDescriptor = new ExchangeDescriptor();
-		exchangeDescriptor.setName("Foo");
+		exchangeDescriptor.setId("Foo");
 		exchangeDescriptor.setBasePackage("com.xyz.foo.gen");
 		exchangeDescriptor.setDescription("Foo exchange description");
 		exchangeDescriptor.setRateLimits(List.of(RateLimitRule.createRule("exchangeGlobalRateLimit", 60000, 1000)));
@@ -240,7 +240,7 @@ public class ExchangeInterfaceImplementationGeneratorTest {
 	@Test
 	public void testGenerateExchangeApiWithExchangeRateLimitsButApisHaveNoRestEndpoint() {
 		ExchangeDescriptor exchangeDescriptor = new ExchangeDescriptor();
-		exchangeDescriptor.setName("Foo");
+		exchangeDescriptor.setId("Foo");
 		exchangeDescriptor.setBasePackage("com.xyz.foo.gen");
 		exchangeDescriptor.setDescription("Foo exchange description");
 		List<ExchangeApiDescriptor> apis = new ArrayList<>();
@@ -301,7 +301,7 @@ public class ExchangeInterfaceImplementationGeneratorTest {
 	@Test(expected = IllegalArgumentException.class)
 	public void testGenerateExchangeApiWithExchangeRateLimitNullRateLimitName() {
 		ExchangeDescriptor exchangeDescriptor = new ExchangeDescriptor();
-		exchangeDescriptor.setName("Foo");
+		exchangeDescriptor.setId("Foo");
 		exchangeDescriptor.setBasePackage("com.xyz.foo.gen");
 		exchangeDescriptor.setDescription("Foo exchange description");
 		exchangeDescriptor.setRateLimits(List.of(RateLimitRule.createRule(null, 60000, 1000)));
@@ -312,7 +312,7 @@ public class ExchangeInterfaceImplementationGeneratorTest {
 	@Test(expected = IllegalArgumentException.class)
 	public void testGenerateExchangeApiWithDuplicateExchangeRateLimitName() {
 		ExchangeDescriptor exchangeDescriptor = new ExchangeDescriptor();
-		exchangeDescriptor.setName("Foo");
+		exchangeDescriptor.setId("Foo");
 		exchangeDescriptor.setBasePackage("com.xyz.foo.gen");
 		exchangeDescriptor.setDescription("Foo exchange description");
 		exchangeDescriptor.setRateLimits(List.of(RateLimitRule.createRule("myReule", 60000, 1000), 
@@ -324,7 +324,7 @@ public class ExchangeInterfaceImplementationGeneratorTest {
 	@Test
 	public void testGenerateExchangeApiWithWeightedExchangeRateLimitRule() {
 		ExchangeDescriptor exchangeDescriptor = new ExchangeDescriptor();
-		exchangeDescriptor.setName("Foo");
+		exchangeDescriptor.setId("Foo");
 		exchangeDescriptor.setBasePackage("com.xyz.foo.gen");
 		exchangeDescriptor.setDescription("Foo exchange description");
 		exchangeDescriptor.setRateLimits(List.of(RateLimitRule.createWeightedRule("exchangeGlobalRateLimit", 60000, 1000)));

@@ -1,4 +1,4 @@
-name: "Employee"
+id: "Employee"
 apis:
  - name: V1    
    restEndpoints:

@@ -53,7 +53,7 @@ public class ExchangeInterfaceImplementationGenerator extends JavaTypeGenerator 
 	 * @return full name of the interface implementation class
 	 */
 	public static String getExchangeInterfaceName(ExchangeDescriptor exchangeDescriptor) {
-		return exchangeDescriptor.getBasePackage() + "." + JavaCodeGenUtil.firstLetterToUpperCase(exchangeDescriptor.getName()) + "Exchange";
+		return exchangeDescriptor.getBasePackage() + "." + JavaCodeGenUtil.firstLetterToUpperCase(exchangeDescriptor.getId()) + "Exchange";
 	}
 	
 	private final ExchangeDescriptor exchangeDescriptor;
@@ -72,7 +72,7 @@ public class ExchangeInterfaceImplementationGenerator extends JavaTypeGenerator 
 	@Override
 	public String generate() {		
 		String pkgPrefix =  exchangeDescriptor.getBasePackage() + ".";
-		String simpleInterfaceName = JavaCodeGenUtil.firstLetterToUpperCase(exchangeDescriptor.getName()) + "Exchange";
+		String simpleInterfaceName = JavaCodeGenUtil.firstLetterToUpperCase(exchangeDescriptor.getId()) + "Exchange";
 		String fullInterfaceName = pkgPrefix + simpleInterfaceName;
 		String simpleImplementationName = simpleInterfaceName + "Impl";
 		setTypeDeclaration("public class");
@@ -105,7 +105,7 @@ public class ExchangeInterfaceImplementationGenerator extends JavaTypeGenerator 
 				appendToBody(" = new ");
 				appendToBody(RequestThrottler.class.getSimpleName());
 				appendToBody("(\"");
-				appendToBody(exchangeDescriptor.getName());
+				appendToBody(exchangeDescriptor.getId());
 				appendToBody("\");\n");
 			}
 		}

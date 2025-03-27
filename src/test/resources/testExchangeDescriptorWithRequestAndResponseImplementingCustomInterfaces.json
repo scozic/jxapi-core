@@ -1,5 +1,5 @@
 {
-	"name": "MyTestExchange",
+	"id": "MyTestExchange",
 	"description": "A sample Exchange descriptor file",
 	"basePackage": "com.foo.bar.gen",
 	"apis":[

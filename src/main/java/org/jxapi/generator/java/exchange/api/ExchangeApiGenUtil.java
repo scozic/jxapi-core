@@ -168,7 +168,7 @@ public class ExchangeApiGenUtil {
 					+ JavaCodeGenUtil.firstLetterToUpperCase(objectName);
 		}
 		return exchangeDescriptor.getBasePackage() + "." + exchangeApiDescriptor.getName().toLowerCase() + ".pojo."
-				+ JavaCodeGenUtil.firstLetterToUpperCase(exchangeDescriptor.getName()) 
+				+ JavaCodeGenUtil.firstLetterToUpperCase(exchangeDescriptor.getId()) 
 				+ JavaCodeGenUtil.firstLetterToUpperCase(exchangeApiDescriptor.getName())
 				+ JavaCodeGenUtil.firstLetterToUpperCase(endpointName)
 				+ suffix;
@@ -769,7 +769,7 @@ public class ExchangeApiGenUtil {
 													   Imports imports) {
 		StringBuilder javadoc = new StringBuilder()
 				.append("Base URL for <i>")
-				.append(exchangeDescriptor.getName())
+				.append(exchangeDescriptor.getId())
 				.append("</i> exchange <i>")
 				.append(exchangeApiDescriptor.getName())
 				.append("</i> API REST endpoints");
@@ -868,7 +868,7 @@ public class ExchangeApiGenUtil {
 															Imports imports) {
 		StringBuilder javadoc = new StringBuilder()
 				.append("Base URL for <i>")
-				.append(exchangeDescriptor.getName())
+				.append(exchangeDescriptor.getId())
 				.append("</i> exchange <i>")
 				.append(exchangeApiDescriptor.getName())
 				.append("</i> API Websocket endpoints");

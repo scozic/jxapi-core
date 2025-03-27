@@ -98,7 +98,7 @@ public class WebsocketEndpointClassesGenerator implements ClassesGenerator {
 		if (shouldGenerateRequestPojo()) {
 			new PojoClassesGenerator( 
 					ExchangeApiGenUtil.generateWebsocketEndpointRequestPojoClassName(exchangeDescriptor, apiDescriptor, websocketEndpointDescriptor), 
-					"Subscription request to" + exchangeDescriptor.getName() 
+					"Subscription request to" + exchangeDescriptor.getId() 
 						+ " " + apiDescriptor.getName() + " API " 
 						+ websocketEndpointDescriptor.getName() 
 						+ " websocket endpoint<br>\n" 
@@ -115,7 +115,7 @@ public class WebsocketEndpointClassesGenerator implements ClassesGenerator {
 							apiDescriptor, 
 							websocketEndpointDescriptor), 
 					"Message disseminated upon subscription to " 
-						+ exchangeDescriptor.getName() + " " 
+						+ exchangeDescriptor.getId() + " " 
 						+ apiDescriptor.getName() + " API " 
 						+ websocketEndpointDescriptor.getName() + " websocket endpoint request<br>\n"
 						+ websocketEndpointDescriptor.getDescription(),

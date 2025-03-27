@@ -90,7 +90,7 @@ public class ExchangeDescriptorParser {
 			  .forEach(f -> {
 				 try {
                     ExchangeDescriptor exchange = f.toString().endsWith(".json") ? fromJson(f) : fromYaml(f);
-					exchangeDescriptors.merge(exchange.getName(), exchange, ExchangeDescriptorMergeUtil::mergeExchangeDescriptors);
+					exchangeDescriptors.merge(exchange.getId(), exchange, ExchangeDescriptorMergeUtil::mergeExchangeDescriptors);
                 } catch (IOException e) {
                     throw new IllegalArgumentException("Error parsing file:" + f.toAbsolutePath().toString(), e);
                 }
