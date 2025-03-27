@@ -49,11 +49,11 @@ Pojos generated in wrapper module have multiple features, see [Generated Java Po
 
 ## Observability
 
-You may subscribe observers to monitor wrapper instance using `Exchange.subscribeObserver(ExchangeApiObserver)`. Events are fired for HTTP requests completion, or websocket disconnect/reconnect events. 
+You may subscribe observers to monitor wrapper instance using `Exchange.subscribeObserver(ExchangeApiObserver)`. Events are fired for HTTP requests submission/completion, or websocket disconnect/reconnect, stream subscription, message reception events.
 
 This can be used for instance to update real time application metrics for higher level monitoring.
 
-When API exposes websocket endpoints, such monitoring should be used to handle websocket errors.
+When API exposes websocket endpoints, websocket service handles error and retries lost connections, but should be monitored for unusual failure rate.
 
 ## Disposability
 
