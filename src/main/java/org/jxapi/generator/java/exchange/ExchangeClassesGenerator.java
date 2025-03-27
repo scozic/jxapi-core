@@ -12,6 +12,7 @@ import org.jxapi.generator.java.exchange.api.ExchangeApiClassesGenerator;
 import org.jxapi.generator.java.exchange.constants.ConstantsClassGenerator;
 import org.jxapi.generator.java.exchange.constants.PropertiesClassGenerator;
 import org.jxapi.netutils.rest.ratelimits.RateLimitManager;
+import org.springframework.util.CollectionUtils;
 
 /**
  * Generates all classes for an {@link ExchangeDescriptor} defined in an
@@ -59,7 +60,7 @@ public class ExchangeClassesGenerator implements ClassesGenerator {
 		
 		// Generate constants interface
 		List<Constant> constants = exchangeDescriptor.getConstants();
-		if (constants != null) {
+		if (!CollectionUtils.isEmpty(constants)) {
 			ConstantsClassGenerator cgen = new ConstantsClassGenerator(
 					ExchangeJavaGenUtil.getExchangeConstantsInterfaceName(exchangeDescriptor), 
 					constants); 

@@ -15,6 +15,7 @@ import org.jxapi.generator.java.exchange.api.rest.RestEndpointClassesGenerator;
 import org.jxapi.generator.java.exchange.api.ws.WebsocketEndpointClassesGenerator;
 import org.jxapi.generator.java.exchange.constants.ConstantsClassGenerator;
 import org.jxapi.netutils.rest.ratelimits.RateLimitManager;
+import org.jxapi.util.CollectionUtil;
 
 /**
  * Generates all Java classes of an API Wrapper for an {@link ExchangeApiDescriptor} defined in an
@@ -68,7 +69,7 @@ public class ExchangeApiClassesGenerator implements ClassesGenerator {
 		
 		// Generate constants interface
 		List<Constant> constants = exchangeApiDescriptor.getConstants();
-		if (constants != null) {
+		if (!CollectionUtil.isEmpty(constants)) {
 			ConstantsClassGenerator cgen = new ConstantsClassGenerator(
 					ExchangeJavaGenUtil.getExchangeApiConstantsInterfaceName(exchangeDescriptor, exchangeApiDescriptor), 
 					constants); 
