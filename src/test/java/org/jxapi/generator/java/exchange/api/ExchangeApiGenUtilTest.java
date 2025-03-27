@@ -425,15 +425,6 @@ public class ExchangeApiGenUtilTest {
     }
 
     @Test
-    public void testGetNewMessageDeserializerInstruction_TIMESTAMP() {
-        Imports imports = new Imports();
-        Assert.assertEquals("RawLongMessageDeserializer.getInstance()", 
-            ExchangeApiGenUtil.getNewMessageDeserializerInstruction(Type.TIMESTAMP, null, imports));
-            Assert.assertEquals(1, imports.size());
-            Assert.assertTrue(imports.contains(RawLongMessageDeserializer.class.getName()));
-    }
-
-    @Test
     public void testGetNewMessageDeserializerInstruction_OBJECT() {
         Imports imports = new Imports();
         Assert.assertEquals("new MyMessageDeserializer()", 

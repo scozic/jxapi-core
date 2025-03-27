@@ -3,7 +3,6 @@ package org.jxapi.generator.java.exchange;
 import java.math.BigDecimal;
 
 import org.apache.commons.lang3.StringUtils;
-
 import org.jxapi.exchange.descriptor.CanonicalType;
 import org.jxapi.exchange.descriptor.ExchangeApiDescriptor;
 import org.jxapi.exchange.descriptor.ExchangeDescriptor;
@@ -19,7 +18,6 @@ import org.jxapi.netutils.deserialization.json.field.ListJsonFieldDeserializer;
 import org.jxapi.netutils.deserialization.json.field.LongJsonFieldDeserializer;
 import org.jxapi.netutils.deserialization.json.field.MapJsonFieldDeserializer;
 import org.jxapi.netutils.deserialization.json.field.StringJsonFieldDeserializer;
-import org.jxapi.netutils.deserialization.json.field.TimestampJsonFieldDeserializer;
 
 /**
  * Helper static methods for generation of Java classes of a given exchange wrapper
@@ -37,7 +35,7 @@ public class ExchangeJavaGenUtil {
 	
 	/**
 	 * Special value that can be used in sample value of
-	 * {@link CanonicalType#LONG},{@link CanonicalType#TIMESTAMP} types, which means
+	 * {@link CanonicalType#LONG} type, which means
 	 * current time {@link System#currentTimeMillis()} should be used.
 	 */
 	public static final String SPECIAL_SAMPLE_VALUE_NOW = "now()";
@@ -166,7 +164,6 @@ public class ExchangeJavaGenUtil {
 	 * 		         <li>BOOLEAN: {@link Boolean}</li>
 	 * 		         <li>INT: {@link Integer}</li>
 	 * 		         <li>LONG: {@link Long}</li>
-	 * 		         <li>TIMESTAMP: {@link Long}</li>
 	 * 		         <li>STRING: {@link String}</li>
 	 * 		       </ul>
 	 * 		     <li>If this type is a 'List' type, returns generic <code>List&lt;SubTypeClassName&gt;</code>, 
@@ -198,7 +195,6 @@ public class ExchangeJavaGenUtil {
 		case BOOLEAN:
 		case INT:
 		case LONG:
-		case TIMESTAMP:
 		case STRING:
 			return canonicalTypeClass.getSimpleName();
 		case LIST:
@@ -245,7 +241,6 @@ public class ExchangeJavaGenUtil {
 	 * 		          <li>BOOLEAN: {@link BooleanJsonFieldDeserializer#getInstance()}</li>
 	 * 		          <li>INT: {@link IntegerJsonFieldDeserializer#getInstance()}</li>
 	 * 		          <li>LONG: {@link LongJsonFieldDeserializer#getInstance()}</li>
-	 * 		          <li>TIMESTAMP: {@link TimestampJsonFieldDeserializer#getInstance()}</li>
 	 * 		          <li>STRING: {@link StringJsonFieldDeserializer#getInstance()}</li>
 	 * 		        </ul>
 	 * 		      </li>
@@ -280,9 +275,6 @@ public class ExchangeJavaGenUtil {
 		case STRING:
 			imports.add(StringJsonFieldDeserializer.class.getName());
 			return  StringJsonFieldDeserializer.class.getSimpleName() + GET_INSTANCE;
-		case TIMESTAMP:
-			imports.add(TimestampJsonFieldDeserializer.class.getName());
-			return  TimestampJsonFieldDeserializer.class.getSimpleName() + GET_INSTANCE;
 		case LIST:
 			imports.add(ListJsonFieldDeserializer.class.getName());
 			return "new " + ListJsonFieldDeserializer.class.getSimpleName() + "<>(" 
@@ -303,7 +295,7 @@ public class ExchangeJavaGenUtil {
 	/**
 	 * @param type        must be a primitive type: {@link Type#STRING},
 	 *                    {@link Type#INT}, {@link Type#LONG},
-	 *                    {@link Type#TIMESTAMP}, {@link Type#BIGDECIMAL}.
+	 *                     {@link Type#BIGDECIMAL}.
 	 *                    Otherwise,
 	 * @param sampleValue primitive type sample value which can be a string '\"12\"'
 	 *                    or object value '12'. Can be <code>null</code> in which
@@ -328,7 +320,6 @@ public class ExchangeJavaGenUtil {
 		case INT:
 			return "Integer.valueOf(" + sampleValueStr + ")";
 		case LONG:
-		case TIMESTAMP:
 			if (SPECIAL_SAMPLE_VALUE_NOW.equals(sampleValueStr)) {
 				return "Long.valueOf(System.currentTimeMillis())";
 			}

@@ -24,7 +24,7 @@ public class JsonMessageDeserializerGeneratorTest {
 		  Field.builder().type(Type.BIGDECIMAL).name("score").build(),
 		  Field.builder().type(Type.BOOLEAN).name("over").build(),
 		  Field.builder().type("OBJECT_LIST").name("foo").msgField("f")
-						 .property(Field.builder().type(Type.TIMESTAMP).name("time").build())
+						 .property(Field.builder().type(Type.LONG).name("time").build())
 						 .property(Field.builder().type(Type.OBJECT).name("bar").msgField("b")
 						  			    .property(Field.builder().type(Type.STRING).name("name").build())
 										.build())

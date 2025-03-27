@@ -6,7 +6,6 @@ import java.util.Map;
 
 import org.junit.Assert;
 import org.junit.Test;
-
 import org.jxapi.exchange.descriptor.ExchangeApiDescriptor;
 import org.jxapi.exchange.descriptor.ExchangeDescriptor;
 import org.jxapi.exchange.descriptor.Field;
@@ -19,7 +18,6 @@ import org.jxapi.netutils.deserialization.json.field.ListJsonFieldDeserializer;
 import org.jxapi.netutils.deserialization.json.field.LongJsonFieldDeserializer;
 import org.jxapi.netutils.deserialization.json.field.MapJsonFieldDeserializer;
 import org.jxapi.netutils.deserialization.json.field.StringJsonFieldDeserializer;
-import org.jxapi.netutils.deserialization.json.field.TimestampJsonFieldDeserializer;
 
 /**
  * Unit test for {@link ExchangeJavaGenUtil}
@@ -100,11 +98,6 @@ public class ExchangeJavaGenUtilTest {
 	@Test
 	public void testGetClassNameForFieldType_LONG() {
 		Assert.assertEquals("Long", ExchangeJavaGenUtil.getClassNameForType(Type.LONG, new Imports(), null));	
-	}
-
-	@Test
-	public void testGetClassNameForFieldType_TIMESTAMP() {
-		Assert.assertEquals("Long", ExchangeJavaGenUtil.getClassNameForType(Type.TIMESTAMP, new Imports(), null));
 	}
 
 	@Test
@@ -191,14 +184,6 @@ public class ExchangeJavaGenUtilTest {
 	}
 
 	@Test
-	public void testGetNewJsonFieldDeserializerInstruction_TIMESTAMP() {
-		Imports imports = new Imports();
-		Assert.assertEquals("TimestampJsonFieldDeserializer.getInstance()", ExchangeJavaGenUtil.getNewJsonFieldDeserializerInstruction(Type.TIMESTAMP, null, imports));
-		Assert.assertEquals(1, imports.size());
-		Assert.assertTrue(imports.contains(TimestampJsonFieldDeserializer.class));
-	}
-
-	@Test
 	public void testGetNewJsonFieldDeserializerInstruction_STRING() {
 		Imports imports = new Imports();
 		Assert.assertEquals("StringJsonFieldDeserializer.getInstance()", ExchangeJavaGenUtil.getNewJsonFieldDeserializerInstruction(Type.STRING, null, imports));
@@ -264,16 +249,9 @@ public class ExchangeJavaGenUtilTest {
 	}
 
 	@Test
-	public void testGetPrimitiveTypeFieldSampleValueDeclaration_TimestampSampleValue() {
+	public void testGetPrimitiveTypeFieldSampleValueDeclaration_LongpNowSampleValue() {
 		Imports imports = new Imports();
-		Assert.assertEquals("Long.valueOf(\"123\")", ExchangeJavaGenUtil.getPrimitiveTypeFieldSampleValueDeclaration(Type.TIMESTAMP, "123", imports));
-		Assert.assertEquals(0, imports.size());
-	}
-
-	@Test
-	public void testGetPrimitiveTypeFieldSampleValueDeclaration_TimestampNowSampleValue() {
-		Imports imports = new Imports();
-		Assert.assertEquals("Long.valueOf(System.currentTimeMillis())", ExchangeJavaGenUtil.getPrimitiveTypeFieldSampleValueDeclaration(Type.TIMESTAMP, "now()", imports));
+		Assert.assertEquals("Long.valueOf(System.currentTimeMillis())", ExchangeJavaGenUtil.getPrimitiveTypeFieldSampleValueDeclaration(Type.LONG, "now()", imports));
 		Assert.assertEquals(0, imports.size());
 	}
 

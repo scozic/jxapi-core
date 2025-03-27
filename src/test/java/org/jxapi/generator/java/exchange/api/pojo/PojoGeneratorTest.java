@@ -21,7 +21,7 @@ public class PojoGeneratorTest {
 		  Field.builder().type(Type.LONG).name("id").build(),
 		  Field.builder().type(Type.INT).name("score").description("Current score").build(),
 		  Field.builder().type("OBJECT_LIST").name("foo").msgField("f").description("The foo")
-						 .property(Field.builder().type(Type.TIMESTAMP).name("time").description("Creation time").build())
+						 .property(Field.builder().type(Type.LONG).name("time").description("Creation time").build())
 						 .property(Field.builder().name("bar").description("The bar")
 								 				  .property(Field.builder().type(Type.STRING).name("name").build())
 								 				  .build())

@@ -79,7 +79,7 @@ public class EndpointDemoGenUtilTest {
 	
 	@Test
 	public void  testGenerateEndpointParameterCreationMethodPrimitiveTimestampParameterSpecialValueNow() {
-		Field param = Field.builder().type(Type.TIMESTAMP).name("myLongParam").sampleValue("now()").build();
+		Field param = Field.builder().type(Type.LONG).name("myLongParam").sampleValue("now()").build();
 		Imports imports = new Imports();
 		String method = EndpointDemoGenUtil.generateFieldCreationMethod(param, null, imports);
 		Assert.assertEquals(
@@ -152,7 +152,7 @@ public class EndpointDemoGenUtilTest {
 				   		   .property(Field.builder().type("OBJECT_LIST").name("bar")
 				   				   		  .property(Field.builder().type(Type.STRING).name("id").sampleValue("id#0").build())
 				   				   		  .property(Field.builder().type(Type.BOOLEAN).name("enabled").sampleValue(true).build())
-				   				   		  .property(Field.builder().type(Type.TIMESTAMP).name("time").build())
+				   				   		  .property(Field.builder().type(Type.LONG).name("time").build())
 				   				   		  .property(Field.builder().type("BIGDECIMAL_LIST_MAP").name("bestBids")
 				   				   				  		 .sampleValue("{\"BTC_USDT\": [\"69268.61\", \"69268.62\"], \"ETH_USDT\":[\"3427.98\", \"3427.90\"]}")
 				   				   				  		 .build())

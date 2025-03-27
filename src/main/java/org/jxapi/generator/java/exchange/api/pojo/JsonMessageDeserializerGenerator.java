@@ -136,7 +136,6 @@ public class JsonMessageDeserializerGenerator extends JavaTypeGenerator {
 		case INT:
 			return getPrimitiveNonStringParseFieldInstruction("readNextInteger");
 		case LONG:
-		case TIMESTAMP:
 			return getPrimitiveNonStringParseFieldInstruction("readNextLong");
 		default: // STRING
 			return "parser.nextTextValue()";

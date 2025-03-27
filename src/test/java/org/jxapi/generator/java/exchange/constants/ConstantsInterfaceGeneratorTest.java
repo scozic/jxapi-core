@@ -37,7 +37,7 @@ public class ConstantsInterfaceGeneratorTest {
 		Constant c05 = Constant.create("myBoolWithValueAsString", Type.INT, "A test Boolean constant with value specified as String", "true");
 		Constant c06 = Constant.create("myLong", Type.LONG, "A test Long constant", 1234567890123456L);
 		Constant c07 = Constant.create("myLongWithValueAsString", Type.LONG, "A test Long constant with value specified as String", "12345678901234567");
-		Constant c08 = Constant.create("myTimestamp", Type.TIMESTAMP, "A test Timestamp constant using 'now()' placeholder", "now()");
+		Constant c08 = Constant.create("myTimestamp", Type.LONG, "A test Timestamp constant using 'now()' placeholder", "now()");
 		Constant c09 = Constant.create("myLong", Type.BIGDECIMAL, "A test BigDecimal constant", 1.2345);
 		Constant c10 = Constant.create("myBigDecimalWithValueAsString", Type.BIGDECIMAL, "A test BigDecimal constant with value specified as String", "5.4321");		
 		

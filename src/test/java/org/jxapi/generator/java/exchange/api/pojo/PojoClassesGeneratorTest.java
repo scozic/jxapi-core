@@ -38,7 +38,7 @@ public class PojoClassesGeneratorTest {
 		properties.add(Field.builder().type(Type.LONG).name("id").description("identifier").build());
 		properties.add(Field.builder().type(Type.INT).name("score").description("Current score").build());
 		properties.add(Field.builder().type("OBJECT_LIST").name("foo")
-									.property(Field.builder().type(Type.TIMESTAMP).name("time").build())
+									.property(Field.builder().type(Type.LONG).name("time").build())
 									.property(Field.builder().name("bar")
 												   .property(Field.builder().type(Type.STRING).name("name").build())
 												   .build())

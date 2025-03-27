@@ -17,7 +17,7 @@ import org.jxapi.util.Pojo;
 @JsonSerialize(using = DemoExchangeMarketDataTickersResponsePayloadSerializer.class)
 public class DemoExchangeMarketDataTickersResponsePayload implements Pojo<DemoExchangeMarketDataTickersResponsePayload> {
   
-  private static final long serialVersionUID = 8830769741571866778L;
+  private static final long serialVersionUID = -6095854297432180978L;
   
   /**
    * @return A new builder to build {@link DemoExchangeMarketDataTickersResponsePayload} objects

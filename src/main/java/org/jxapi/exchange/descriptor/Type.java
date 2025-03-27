@@ -52,11 +52,6 @@ public class Type {
 	public static final Type LONG = createCanonicalType(CanonicalType.LONG);
 	
 	/**
-	 * Type with {@link CanonicalType#TIMESTAMP} as canonical type.
-	 */
-	public static final Type TIMESTAMP = createCanonicalType(CanonicalType.TIMESTAMP);
-	
-	/**
 	 * Type with {@link CanonicalType#BIGDECIMAL} as canonical type.
 	 */
 	public static final Type BIGDECIMAL = createCanonicalType(CanonicalType.BIGDECIMAL);
@@ -101,7 +96,7 @@ public class Type {
 	 * Create a type from a type name
 	 * A type name can be:
 	 * <ul>
-	 * <li> a canonical type name (OBJECT, STRING, INT, LONG, TIMESTAMP, BIGDECIMAL, BOOLEAN)
+	 * <li> a canonical type name (OBJECT, STRING, INT, LONG, BIGDECIMAL, BOOLEAN)
 	 * <li> a list of values of same subtype: SUBTYPE_LIST where SUBTYPE is a type name
 	 * <li> a map of values of same subtype: SUBTYPE_MAP where SUBTYPE is a type name
 	 * </ul>

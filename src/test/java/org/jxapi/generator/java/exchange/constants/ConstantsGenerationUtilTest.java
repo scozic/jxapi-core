@@ -50,7 +50,7 @@ public class ConstantsGenerationUtilTest {
 	@Test
 	public void testCreateLongConstantWithNow() {
 		Imports imports = new Imports();
-		Constant c = Constant.create("myTimestamp", Type.TIMESTAMP, null, "now()");
+		Constant c = Constant.create("myTimestamp", Type.LONG, null, "now()");
 		Assert.assertEquals( "public static final Long MY_TIMESTAMP = Long.valueOf(System.currentTimeMillis());\n", ConstantsGenerationUtil.generateConstantDeclaration(c, imports));
 		Assert.assertEquals(0, imports.size());
 	}

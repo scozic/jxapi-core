@@ -27,9 +27,6 @@ public enum CanonicalType {
 	/** Long value. TypeClass:<br>{@link Long} */
 	LONG(Long.class),
 	
-	/** Timestamp (or datetime) value. TypeClass:<br>{@link Long} */
-	TIMESTAMP(Long.class),
-	
 	/** 
 	 * Nested structure (JSON block) like:<br>
 	 * <code>{"a":"val", "b":1}</code>
@@ -61,7 +58,6 @@ public enum CanonicalType {
 	 * <ul>
 	 * <li>{@link #INT}</li>
 	 * <li>{@link #LONG}</li>
-	 * <li>{@link #TIMESTAMP}</li>
 	 * <li>{@link #BIGDECIMAL}</li>
 	 * <li>{@link #STRING}</li>
 	 * <li>{@link #BOOLEAN}</li>

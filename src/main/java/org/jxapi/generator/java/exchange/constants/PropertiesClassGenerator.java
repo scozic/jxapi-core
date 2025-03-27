@@ -186,7 +186,6 @@ public class PropertiesClassGenerator extends JavaTypeGenerator {
 		case INT:
 			return "getIntProperty";
 		case LONG:
-		case TIMESTAMP:
 			return "getLongProperty";
 		default:
 			return "getStringProperty";

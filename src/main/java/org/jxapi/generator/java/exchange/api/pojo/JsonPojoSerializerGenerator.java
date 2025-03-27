@@ -101,7 +101,7 @@ public class JsonPojoSerializerGenerator extends JavaTypeGenerator {
 			return "gen.writeStringField(\"" + msgFieldName(field) + "\", EncodingUtil.bigDecimalToString(" + getFieldValue + "));\n";
 		case BOOLEAN:
 			return "gen.writeBooleanField(\"" + msgFieldName(field) + "\", " + getFieldValue + ");\n";
-		default: // INT LONG TIMESTAMP
+		default: // INT LONG
 			return "gen.writeNumberField(\"" + msgFieldName(field) + "\", " + getFieldValue + ");\n";
 		}
 	}

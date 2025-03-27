@@ -441,7 +441,6 @@ public class ExchangeApiGenUtil {
 		case INT:
 			imports.add(RawIntegerMessageDeserializer.class.getName());
 			return RawIntegerMessageDeserializer.class.getSimpleName() + GET_INSTANCE;
-		case TIMESTAMP:
 		case LONG:
 			imports.add(RawLongMessageDeserializer.class.getName());
 			return RawLongMessageDeserializer.class.getSimpleName() + GET_INSTANCE;
