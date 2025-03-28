@@ -10,8 +10,8 @@ import org.junit.Test;
  */
 public class BigDecimalJsonFieldDeserializerTest {
 
-	@Test
-	public void testDeserialize() {
-		Assert.assertEquals(new BigDecimal("3.14"), BigDecimalJsonFieldDeserializer.getInstance().deserialize("3.14"));
-	}
+  @Test
+  public void testDeserialize() {
+    Assert.assertEquals(new BigDecimal("3.14"), BigDecimalJsonFieldDeserializer.getInstance().deserialize("3.14"));
+  }
 }

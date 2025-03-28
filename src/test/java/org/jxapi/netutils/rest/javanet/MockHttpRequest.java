@@ -12,37 +12,37 @@ import org.jxapi.netutils.rest.HttpResponse;
  */
 public class MockHttpRequest extends CompletableFuture<HttpResponse> {
 
-	private HttpRequest httpRequest;
-	
-	/**
-	 * Creates a new instance of {@link MockHttpRequest} with no underlying {@link HttpRequest}.
-	 */
-	public MockHttpRequest() {
-		this(null);
-	}
-	
-	/**
-	 * Creates a new instance of {@link MockHttpRequest} with the given underlying {@link HttpRequest}.
-	 * 
-	 * @param httpRequest Underlying {@link HttpRequest} to wrap.
-	 */
-	public MockHttpRequest(HttpRequest httpRequest) {
-		this.setHttpRequest(httpRequest);
-	}
+  private HttpRequest httpRequest;
+  
+  /**
+   * Creates a new instance of {@link MockHttpRequest} with no underlying {@link HttpRequest}.
+   */
+  public MockHttpRequest() {
+    this(null);
+  }
+  
+  /**
+   * Creates a new instance of {@link MockHttpRequest} with the given underlying {@link HttpRequest}.
+   * 
+   * @param httpRequest Underlying {@link HttpRequest} to wrap.
+   */
+  public MockHttpRequest(HttpRequest httpRequest) {
+    this.setHttpRequest(httpRequest);
+  }
 
-	/**
-	 * @return Underlying {@link HttpRequest} wrapped in this object.
-	 */
-	public HttpRequest getHttpRequest() {
-		return httpRequest;
-	}
+  /**
+   * @return Underlying {@link HttpRequest} wrapped in this object.
+   */
+  public HttpRequest getHttpRequest() {
+    return httpRequest;
+  }
 
-	/**
-	 * Sets the underlying {@link HttpRequest} wrapped in this object.
-	 * 
-	 * @param httpRequest {@link HttpRequest} to wrap.
-	 */
-	public void setHttpRequest(HttpRequest httpRequest) {
-		this.httpRequest = httpRequest;
-	}
+  /**
+   * Sets the underlying {@link HttpRequest} wrapped in this object.
+   * 
+   * @param httpRequest {@link HttpRequest} to wrap.
+   */
+  public void setHttpRequest(HttpRequest httpRequest) {
+    this.httpRequest = httpRequest;
+  }
 }

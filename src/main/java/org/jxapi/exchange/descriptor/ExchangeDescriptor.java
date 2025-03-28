@@ -21,46 +21,46 @@ import org.jxapi.util.EncodingUtil;
  * 
  * <pre>
  * {
- * 		"name": "Binance",
- * 		"ID": "BINANCE",
- * 		"description": "Binance exchange",
- * 		"docUrl": "https://binance-docs.github.io/apidocs",
- * 		"basePackage": "org.jxapi.exchange.binance",
- * 		"properties": [
- * 			{
- * 				"name": "apiKey",
- * 				"type": "STRING",
- * 				"description": "API key for authentication",
- * 			}
- * 		],
- * 		"constants": [
- * 			{
- * 				"name": "API_BASE_URL",
- * 				"description": "Base URL of the API",
- * 				"type": "STRING",
- * 				"value": "https://api.myexchange.com"
- * 			}
- * 		"apis": [
- * 			{
- * 				"name": "Spot",
- * 				"description": "Spot trading API",
- * 				"httpRequestExecutorFactory": "org.jxapi.netutils.rest.mock.MockHttpRequestExecutorFactory",
- * 				"httpRequestInterceptorFactory": "org.jxapi.netutils.rest.mock.MockHttpRequestInterceptorFactory",
- * 				"restEndpoints": [
- * 					// RESTendpoints here
- * 				],
- * 				"websocketEndpoints": [
- * 					// Websocket endpoints here
- * 				],
- * 			}
- * 		],
- * 		"rateLimits": [
- * 			{
- * 				"timeFrame": 60000,
- * 		        "maxRequestCount": 1200,
- * 		        "maxTotalWeight": 1200
- * 			}
- * 		]
+ *     "name": "Binance",
+ *     "ID": "BINANCE",
+ *     "description": "Binance exchange",
+ *     "docUrl": "https://binance-docs.github.io/apidocs",
+ *     "basePackage": "org.jxapi.exchange.binance",
+ *     "properties": [
+ *       {
+ *         "name": "apiKey",
+ *         "type": "STRING",
+ *         "description": "API key for authentication",
+ *       }
+ *     ],
+ *     "constants": [
+ *       {
+ *         "name": "API_BASE_URL",
+ *         "description": "Base URL of the API",
+ *         "type": "STRING",
+ *         "value": "https://api.myexchange.com"
+ *       }
+ *     "apis": [
+ *       {
+ *         "name": "Spot",
+ *         "description": "Spot trading API",
+ *         "httpRequestExecutorFactory": "org.jxapi.netutils.rest.mock.MockHttpRequestExecutorFactory",
+ *         "httpRequestInterceptorFactory": "org.jxapi.netutils.rest.mock.MockHttpRequestInterceptorFactory",
+ *         "restEndpoints": [
+ *           // RESTendpoints here
+ *         ],
+ *         "websocketEndpoints": [
+ *           // Websocket endpoints here
+ *         ],
+ *       }
+ *     ],
+ *     "rateLimits": [
+ *       {
+ *         "timeFrame": 60000,
+ *             "maxRequestCount": 1200,
+ *             "maxTotalWeight": 1200
+ *       }
+ *     ]
  * }
  * </pre>
  * 

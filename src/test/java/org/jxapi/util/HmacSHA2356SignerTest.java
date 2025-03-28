@@ -28,7 +28,7 @@ public class HmacSHA2356SignerTest {
     
     @Test(expected = IllegalArgumentException.class)
     public void testSignNullMessage() {
-    	HmacSHA256Signer.sign(null, null);
+      HmacSHA256Signer.sign(null, null);
     }
 
     @Test

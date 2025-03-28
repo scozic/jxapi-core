@@ -11,9 +11,9 @@ import org.jxapi.netutils.rest.HttpRequestInterceptorFactory;
  */
 public class MockHttpRequestInterceptorFactory implements HttpRequestInterceptorFactory {
 
-	@Override
-	public HttpRequestInterceptor createInterceptor(ExchangeApi exchangeApi) {
-		return new MockHttpRequestInterceptor();
-	}
+  @Override
+  public HttpRequestInterceptor createInterceptor(ExchangeApi exchangeApi) {
+    return new MockHttpRequestInterceptor();
+  }
 
 }

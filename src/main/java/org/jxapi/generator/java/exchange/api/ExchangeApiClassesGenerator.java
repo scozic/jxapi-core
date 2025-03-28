@@ -34,51 +34,51 @@ import org.jxapi.util.CollectionUtil;
  */
 public class ExchangeApiClassesGenerator implements ClassesGenerator {
 
-	private final ExchangeDescriptor exchangeDescriptor;
-	private final ExchangeApiDescriptor exchangeApiDescriptor;
-	
-	/**
-	 * Constructor.
-	 * 
-	 * @param exchangeDescriptor    the exchange descriptor where the API is defined
-	 * @param exchangeApiDescriptor the API descriptor to generate classes for
-	 */
-	public ExchangeApiClassesGenerator(ExchangeDescriptor exchangeDescriptor,
-									   ExchangeApiDescriptor exchangeApiDescriptor) {
-		this.exchangeDescriptor = exchangeDescriptor;
-		this.exchangeApiDescriptor = exchangeApiDescriptor;
-	}
-	
-	@Override
-	public void generateClasses(Path outputFolder) throws IOException {
-		ExchangeApiInterfaceGenerator exchangeApiInterfaceGenerator = new ExchangeApiInterfaceGenerator(exchangeDescriptor, exchangeApiDescriptor);
-		exchangeApiInterfaceGenerator.writeJavaFile(outputFolder); 
-		
-		new ExchangeApiInterfaceImplementationGenerator(exchangeDescriptor, exchangeApiDescriptor).writeJavaFile(outputFolder);
-		if (exchangeApiDescriptor.getRestEndpoints() != null) {
-			for (RestEndpointDescriptor restEndpointDescriptor: exchangeApiDescriptor.getRestEndpoints()) {
-				new RestEndpointClassesGenerator(exchangeDescriptor, exchangeApiDescriptor, restEndpointDescriptor).generateClasses(outputFolder);
-			}
-		}
-		
-		if (exchangeApiDescriptor.getWebsocketEndpoints() != null) {
-			for (WebsocketEndpointDescriptor websocketEndpointDescriptor: exchangeApiDescriptor.getWebsocketEndpoints()) {
-				new WebsocketEndpointClassesGenerator(exchangeDescriptor, exchangeApiDescriptor, websocketEndpointDescriptor).generateClasses(outputFolder);
-			}
-		}
-		
-		// Generate constants interface
-		List<Constant> constants = exchangeApiDescriptor.getConstants();
-		if (!CollectionUtil.isEmpty(constants)) {
-			ConstantsClassGenerator cgen = new ConstantsClassGenerator(
-					ExchangeJavaGenUtil.getExchangeApiConstantsInterfaceName(exchangeDescriptor, exchangeApiDescriptor), 
-					constants); 
-			cgen.setDescription("Constants used in "
-								+ exchangeDescriptor.getId() 
-								+ " exchange API wrapper {@link " 
-								+ exchangeApiInterfaceGenerator.getName() 
-								+ "} API group");
-			cgen.writeJavaFile(outputFolder);
-		}
-	}
+  private final ExchangeDescriptor exchangeDescriptor;
+  private final ExchangeApiDescriptor exchangeApiDescriptor;
+  
+  /**
+   * Constructor.
+   * 
+   * @param exchangeDescriptor    the exchange descriptor where the API is defined
+   * @param exchangeApiDescriptor the API descriptor to generate classes for
+   */
+  public ExchangeApiClassesGenerator(ExchangeDescriptor exchangeDescriptor,
+                     ExchangeApiDescriptor exchangeApiDescriptor) {
+    this.exchangeDescriptor = exchangeDescriptor;
+    this.exchangeApiDescriptor = exchangeApiDescriptor;
+  }
+  
+  @Override
+  public void generateClasses(Path outputFolder) throws IOException {
+    ExchangeApiInterfaceGenerator exchangeApiInterfaceGenerator = new ExchangeApiInterfaceGenerator(exchangeDescriptor, exchangeApiDescriptor);
+    exchangeApiInterfaceGenerator.writeJavaFile(outputFolder); 
+    
+    new ExchangeApiInterfaceImplementationGenerator(exchangeDescriptor, exchangeApiDescriptor).writeJavaFile(outputFolder);
+    if (exchangeApiDescriptor.getRestEndpoints() != null) {
+      for (RestEndpointDescriptor restEndpointDescriptor: exchangeApiDescriptor.getRestEndpoints()) {
+        new RestEndpointClassesGenerator(exchangeDescriptor, exchangeApiDescriptor, restEndpointDescriptor).generateClasses(outputFolder);
+      }
+    }
+    
+    if (exchangeApiDescriptor.getWebsocketEndpoints() != null) {
+      for (WebsocketEndpointDescriptor websocketEndpointDescriptor: exchangeApiDescriptor.getWebsocketEndpoints()) {
+        new WebsocketEndpointClassesGenerator(exchangeDescriptor, exchangeApiDescriptor, websocketEndpointDescriptor).generateClasses(outputFolder);
+      }
+    }
+    
+    // Generate constants interface
+    List<Constant> constants = exchangeApiDescriptor.getConstants();
+    if (!CollectionUtil.isEmpty(constants)) {
+      ConstantsClassGenerator cgen = new ConstantsClassGenerator(
+          ExchangeJavaGenUtil.getExchangeApiConstantsInterfaceName(exchangeDescriptor, exchangeApiDescriptor), 
+          constants); 
+      cgen.setDescription("Constants used in "
+                + exchangeDescriptor.getId() 
+                + " exchange API wrapper {@link " 
+                + exchangeApiInterfaceGenerator.getName() 
+                + "} API group");
+      cgen.writeJavaFile(outputFolder);
+    }
+  }
 }

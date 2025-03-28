@@ -8,8 +8,8 @@ import org.junit.Test;
  */
 public class BooleanJsonFieldDeserializerTest {
 
-	@Test
-	public void testDeserialize() {
-		Assert.assertTrue(BooleanJsonFieldDeserializer.getInstance().deserialize("true"));
-	}
+  @Test
+  public void testDeserialize() {
+    Assert.assertTrue(BooleanJsonFieldDeserializer.getInstance().deserialize("true"));
+  }
 }

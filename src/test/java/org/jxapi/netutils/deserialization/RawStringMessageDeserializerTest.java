@@ -8,13 +8,13 @@ import org.junit.Test;
  */
 public class RawStringMessageDeserializerTest {
 
-	@Test
-	public void testDeserialize() {
-		Assert.assertEquals("foo", RawStringMessageDeserializer.getInstance().deserialize("foo"));
-	}
-	
-	@Test
-	public void testDeserializeNull() {
-		Assert.assertNull(RawStringMessageDeserializer.getInstance().deserialize(null));
-	}
+  @Test
+  public void testDeserialize() {
+    Assert.assertEquals("foo", RawStringMessageDeserializer.getInstance().deserialize("foo"));
+  }
+  
+  @Test
+  public void testDeserializeNull() {
+    Assert.assertNull(RawStringMessageDeserializer.getInstance().deserialize(null));
+  }
 }

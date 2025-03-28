@@ -10,19 +10,19 @@ import org.jxapi.exchange.ExchangeApi;
  */
 public class HttpRequestExceutorFactoryTest {
 
-	@Test
-	public void testFromClassName() {
-		HttpRequestExecutorFactory fac = HttpRequestExecutorFactory.fromClassName(TestHttpRequestExceutorFactory.class.getName());
-		Assert.assertNotNull(fac);
-		Assert.assertTrue(fac instanceof TestHttpRequestExceutorFactory);
-	}
-	
-	public static class TestHttpRequestExceutorFactory implements HttpRequestExecutorFactory {
+  @Test
+  public void testFromClassName() {
+    HttpRequestExecutorFactory fac = HttpRequestExecutorFactory.fromClassName(TestHttpRequestExceutorFactory.class.getName());
+    Assert.assertNotNull(fac);
+    Assert.assertTrue(fac instanceof TestHttpRequestExceutorFactory);
+  }
+  
+  public static class TestHttpRequestExceutorFactory implements HttpRequestExecutorFactory {
 
-		@Override
-		public HttpRequestExecutor createExecutor(ExchangeApi exchangeApi) {
-			return null;
-		}
-		
-	}
+    @Override
+    public HttpRequestExecutor createExecutor(ExchangeApi exchangeApi) {
+      return null;
+    }
+    
+  }
  }

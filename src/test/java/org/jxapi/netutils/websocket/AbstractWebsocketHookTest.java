@@ -10,18 +10,18 @@ import org.jxapi.netutils.websocket.mock.MockWebsocket;
  */
 public class AbstractWebsocketHookTest {
 
-	
-	@Test
-	public void testInit() {
-		TestWebsocketHook hook = new TestWebsocketHook();
-		WebsocketManager mgr = new DefaultWebsocketManager(null, new MockWebsocket(), hook);
-		Assert.assertEquals(mgr, hook.getWebsocketManager());
-	}
-	
-	private static class TestWebsocketHook extends AbstractWebsocketHook {
-		public WebsocketManager getWebsocketManager() {
-			return this.websocketManager;
-		}
-	}
+  
+  @Test
+  public void testInit() {
+    TestWebsocketHook hook = new TestWebsocketHook();
+    WebsocketManager mgr = new DefaultWebsocketManager(null, new MockWebsocket(), hook);
+    Assert.assertEquals(mgr, hook.getWebsocketManager());
+  }
+  
+  private static class TestWebsocketHook extends AbstractWebsocketHook {
+    public WebsocketManager getWebsocketManager() {
+      return this.websocketManager;
+    }
+  }
 
 }

@@ -20,20 +20,20 @@ import org.jxapi.util.JsonUtil;
  */
 public class BigDecimalJsonFieldDeserializer extends AbstractJsonMessageDeserializer<BigDecimal> {
 
-	private static final BigDecimalJsonFieldDeserializer INSTANCE = new BigDecimalJsonFieldDeserializer();
+  private static final BigDecimalJsonFieldDeserializer INSTANCE = new BigDecimalJsonFieldDeserializer();
 
-	/**
-	 * @return the singleton instance of this class
-	 */
-	public static BigDecimalJsonFieldDeserializer getInstance() {
-		return INSTANCE;
-	}
+  /**
+   * @return the singleton instance of this class
+   */
+  public static BigDecimalJsonFieldDeserializer getInstance() {
+    return INSTANCE;
+  }
 
-	private BigDecimalJsonFieldDeserializer() {
-	}
+  private BigDecimalJsonFieldDeserializer() {
+  }
 
-	@Override
-	public BigDecimal deserialize(JsonParser parser) throws IOException {
-		return JsonUtil.readCurrentBigDecimal(parser);
-	}
+  @Override
+  public BigDecimal deserialize(JsonParser parser) throws IOException {
+    return JsonUtil.readCurrentBigDecimal(parser);
+  }
 }

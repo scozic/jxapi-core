@@ -10,12 +10,12 @@ import org.junit.Test;
  */
 public class ThreadUtilTest {
 
-	@Test
-	public void testCreateNamePrefixThreadFactory() {
-		ThreadFactory fac = ThreadUtil.createNamePrefixThreadFactory("MYPOOL");
-		Assert.assertNotNull(fac);
-		Thread t = fac.newThread(() -> {});
-		Assert.assertNotNull(t);
-		Assert.assertTrue(t.getName().startsWith("MYPOOL"));
-	}
+  @Test
+  public void testCreateNamePrefixThreadFactory() {
+    ThreadFactory fac = ThreadUtil.createNamePrefixThreadFactory("MYPOOL");
+    Assert.assertNotNull(fac);
+    Thread t = fac.newThread(() -> {});
+    Assert.assertNotNull(t);
+    Assert.assertTrue(t.getName().startsWith("MYPOOL"));
+  }
 }

@@ -14,7 +14,7 @@ import org.jxapi.netutils.websocket.WebsocketSubscribeRequest;
  */
 public class ExchangeApiEventTest {
 
-	@Test
+  @Test
     public void testGettersAndSetters() {
         ExchangeApiEvent event = new ExchangeApiEvent(ExchangeApiEventType.HTTP_RESPONSE);
         event.setExchangeName("exchangeName");
@@ -78,7 +78,7 @@ public class ExchangeApiEventTest {
     
     @Test
     public void testCreateWebsocketSubcribeEvent() {
-    	WebsocketSubscribeRequest request = WebsocketSubscribeRequest.create(null, "wsTopic", null);
+      WebsocketSubscribeRequest request = WebsocketSubscribeRequest.create(null, "wsTopic", null);
         ExchangeApiEvent event = ExchangeApiEvent.createWebsocketSubscribeEvent(request, "myWsSubscriptionId");
         Assert.assertEquals(ExchangeApiEventType.WEBSOCKET_SUBSCRIBE, event.getType());
         Assert.assertEquals("wsTopic", event.getWebsocketSubscribeRequest().getTopic());
@@ -87,7 +87,7 @@ public class ExchangeApiEventTest {
 
     @Test
     public void testCreateWebsocketUnsubscribeEvent() {
-    	WebsocketSubscribeRequest request = WebsocketSubscribeRequest.create(null, "wsTopic", null);
+      WebsocketSubscribeRequest request = WebsocketSubscribeRequest.create(null, "wsTopic", null);
         ExchangeApiEvent event = ExchangeApiEvent.createWebsocketUnsubscribeEvent(request, "myWsSubscriptionId");
         Assert.assertEquals(ExchangeApiEventType.WEBSOCKET_UNSUBSCRIBE, event.getType());
         Assert.assertEquals("wsTopic", event.getWebsocketSubscribeRequest().getTopic());

@@ -17,21 +17,21 @@ import org.jxapi.netutils.deserialization.json.JsonDeserializer;
  * @see JsonDeserializer
  */
 public class LongJsonFieldDeserializer extends AbstractJsonMessageDeserializer<Long> {
-	
-	private static final LongJsonFieldDeserializer INSTANCE = new LongJsonFieldDeserializer();
-	
-	/**
-	 * @return the singleton instance of this class
-	 */
-	public static LongJsonFieldDeserializer getInstance() {
-		return INSTANCE;
-	}
-	
-	private LongJsonFieldDeserializer() {}
+  
+  private static final LongJsonFieldDeserializer INSTANCE = new LongJsonFieldDeserializer();
+  
+  /**
+   * @return the singleton instance of this class
+   */
+  public static LongJsonFieldDeserializer getInstance() {
+    return INSTANCE;
+  }
+  
+  private LongJsonFieldDeserializer() {}
 
-	@Override
-	public Long deserialize(JsonParser parser) throws IOException {
-		return JsonUtil.readCurrentLong(parser);
-	}
+  @Override
+  public Long deserialize(JsonParser parser) throws IOException {
+    return JsonUtil.readCurrentLong(parser);
+  }
 
 }

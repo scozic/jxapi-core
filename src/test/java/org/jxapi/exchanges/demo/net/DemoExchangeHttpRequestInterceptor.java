@@ -19,25 +19,25 @@ import org.jxapi.netutils.rest.HttpRequestInterceptor;
  * @see DemoExchangeProperties#HTTP_PORT
  */
 public class DemoExchangeHttpRequestInterceptor implements HttpRequestInterceptor {
-	
-	private static final Logger log = LoggerFactory.getLogger(DemoExchangeHttpRequestInterceptor.class);
-	
-	private final String baseHttpUrl;
+  
+  private static final Logger log = LoggerFactory.getLogger(DemoExchangeHttpRequestInterceptor.class);
+  
+  private final String baseHttpUrl;
 
-	/**
-	 * Constructor
-	 * @param properties Exchange configuration properties
-	 */
-	public DemoExchangeHttpRequestInterceptor(Properties properties) {
-		this.baseHttpUrl = DemoExchangeProperties.getBaseHttpUrl(properties);
-	}
+  /**
+   * Constructor
+   * @param properties Exchange configuration properties
+   */
+  public DemoExchangeHttpRequestInterceptor(Properties properties) {
+    this.baseHttpUrl = DemoExchangeProperties.getBaseHttpUrl(properties);
+  }
 
-	@Override
-	public void intercept(HttpRequest request) {
-		String url = request.getUrl();
-		url = StringUtils.replace(url, DemoExchangeConstants.BASE_URL_PATTERN, baseHttpUrl);
-		request.setUrl(url);
-		log.debug("Intercepted request:{}", request);
-	}
+  @Override
+  public void intercept(HttpRequest request) {
+    String url = request.getUrl();
+    url = StringUtils.replace(url, DemoExchangeConstants.BASE_URL_PATTERN, baseHttpUrl);
+    request.setUrl(url);
+    log.debug("Intercepted request:{}", request);
+  }
 
 }

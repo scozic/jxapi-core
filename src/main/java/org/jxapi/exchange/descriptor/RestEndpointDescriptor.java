@@ -76,204 +76,204 @@ import org.jxapi.util.EncodingUtil;
  * @see ExchangeApiInterfaceImplementationGenerator
  */
 public class RestEndpointDescriptor {
-	private String name;
-	
-	private String description;
-	
-	private String url;
-	
-	private String docUrl;
-	
-	private HttpMethod httpMethod;
-	
-	private Field request;
-	
-	private Field response;
+  private String name;
+  
+  private String description;
+  
+  private String url;
+  
+  private String docUrl;
+  
+  private HttpMethod httpMethod;
+  
+  private Field request;
+  
+  private Field response;
 
-	private String urlParameters;
-	
-	private String urlParametersListSeparator;
-	
-	private boolean queryParams;
-	
-	private Integer requestWeight;
-	
-	private List<RateLimitRule> rateLimits;
- 	
-	/**
-	 * @return the name of the REST API endpoint
-	 */
-	public String getName() {
-		return name;
-	}
+  private String urlParameters;
+  
+  private String urlParametersListSeparator;
+  
+  private boolean queryParams;
+  
+  private Integer requestWeight;
+  
+  private List<RateLimitRule> rateLimits;
+   
+  /**
+   * @return the name of the REST API endpoint
+   */
+  public String getName() {
+    return name;
+  }
 
-	/**
-	 * @param name the name of the REST API endpoint
-	 */
-	public void setName(String name) {
-		this.name = name;
-	}
+  /**
+   * @param name the name of the REST API endpoint
+   */
+  public void setName(String name) {
+    this.name = name;
+  }
 
-	/**
-	 * @return the description of the REST API endpoint
-	 */
-	public String getDescription() {
-		return description;
-	}
+  /**
+   * @return the description of the REST API endpoint
+   */
+  public String getDescription() {
+    return description;
+  }
 
-	/**
-	 * @param description the description of the REST API endpoint
-	 */
-	public void setDescription(String description) {
-		this.description = description;
-	}
+  /**
+   * @param description the description of the REST API endpoint
+   */
+  public void setDescription(String description) {
+    this.description = description;
+  }
 
-	/**
-	 * @return the URL of the REST API endpoint
-	 */
-	public String getUrl() {
-		return url;
-	}
+  /**
+   * @return the URL of the REST API endpoint
+   */
+  public String getUrl() {
+    return url;
+  }
 
-	/**
-	 * @param url the URL of the REST API endpoint
-	 */
-	public void setUrl(String url) {
-		this.url = url;
-	}
+  /**
+   * @param url the URL of the REST API endpoint
+   */
+  public void setUrl(String url) {
+    this.url = url;
+  }
 
-	/**
-	 * @return the HTTP method to be used for the request
-	 */
-	public HttpMethod getHttpMethod() {
-		return httpMethod;
-	}
+  /**
+   * @return the HTTP method to be used for the request
+   */
+  public HttpMethod getHttpMethod() {
+    return httpMethod;
+  }
 
-	/**
-	 * @param httpMethod the HTTP method to be used for the request
-	 */
-	public void setHttpMethod(HttpMethod httpMethod) {
-		this.httpMethod = httpMethod;
-	}
-	
-	/**
-	 * @return The request url parameters template. Can contain place holders like <code>${myArg}</code>
-	 */
-	public String getUrlParameters() {
-		return urlParameters;
-	}
+  /**
+   * @param httpMethod the HTTP method to be used for the request
+   */
+  public void setHttpMethod(HttpMethod httpMethod) {
+    this.httpMethod = httpMethod;
+  }
+  
+  /**
+   * @return The request url parameters template. Can contain place holders like <code>${myArg}</code>
+   */
+  public String getUrlParameters() {
+    return urlParameters;
+  }
 
-	/**
-	 * @param urlParameters The request url parameters template. Can contain place holders like <code>${myArg}</code>
-	 */
-	public void setUrlParameters(String urlParameters) {
-		this.urlParameters = urlParameters;
-	}
+  /**
+   * @param urlParameters The request url parameters template. Can contain place holders like <code>${myArg}</code>
+   */
+  public void setUrlParameters(String urlParameters) {
+    this.urlParameters = urlParameters;
+  }
 
-	/**
-	 * @return The separator used between items of a list in serialized request url parameters
-	 */
-	public String getUrlParametersListSeparator() {
-		return urlParametersListSeparator;
-	}
+  /**
+   * @return The separator used between items of a list in serialized request url parameters
+   */
+  public String getUrlParametersListSeparator() {
+    return urlParametersListSeparator;
+  }
 
-	/**
-	 * @param urlParametersListSeparator The separator used between items of a list in serialized request url parameters
-	 */
-	public void setUrlParametersListSeparator(String urlParametersListSeparator) {
-		this.urlParametersListSeparator = urlParametersListSeparator;
-	}
-	
-	/**
-	 * @return whether the request data should be serialized as URL are query parameters
-	 */
-	public boolean isQueryParams() {
-		return queryParams;
-	}
+  /**
+   * @param urlParametersListSeparator The separator used between items of a list in serialized request url parameters
+   */
+  public void setUrlParametersListSeparator(String urlParametersListSeparator) {
+    this.urlParametersListSeparator = urlParametersListSeparator;
+  }
+  
+  /**
+   * @return whether the request data should be serialized as URL are query parameters
+   */
+  public boolean isQueryParams() {
+    return queryParams;
+  }
 
-	/**
-	 * @param queryParams whether the request data should be serialized as URL are query parameters
-	 */
-	public void setQueryParams(boolean queryParams) {
-		this.queryParams = queryParams;
-	}
-	
-	/**
-	 * @return the rate limits this REST API subject to
-	 */
-	public List<RateLimitRule> getRateLimits() {
-		return rateLimits;
-	}
+  /**
+   * @param queryParams whether the request data should be serialized as URL are query parameters
+   */
+  public void setQueryParams(boolean queryParams) {
+    this.queryParams = queryParams;
+  }
+  
+  /**
+   * @return the rate limits this REST API subject to
+   */
+  public List<RateLimitRule> getRateLimits() {
+    return rateLimits;
+  }
 
-	/**
-	 * @param rateLimits the rate limits this REST API subject to
-	 */
-	public void setRateLimits(List<RateLimitRule> rateLimits) {
-		this.rateLimits = rateLimits;
-	}
-	
-	/**
-	 * @return the weight of a request call if subject to weighted rate limit rules
-	 */
-	public Integer getRequestWeight() {
-		return requestWeight;
-	}
+  /**
+   * @param rateLimits the rate limits this REST API subject to
+   */
+  public void setRateLimits(List<RateLimitRule> rateLimits) {
+    this.rateLimits = rateLimits;
+  }
+  
+  /**
+   * @return the weight of a request call if subject to weighted rate limit rules
+   */
+  public Integer getRequestWeight() {
+    return requestWeight;
+  }
 
-	/**
-	 * @param requestWeight the weight of a request call if subject to weighted rate limit rules
-	 */
-	public void setRequestWeight(Integer requestWeight) {
-		this.requestWeight = requestWeight;
-	}
-	
-	/**
-	 * @return the request data
-	 */
-	public Field getRequest() {
-		return request;
-	}
+  /**
+   * @param requestWeight the weight of a request call if subject to weighted rate limit rules
+   */
+  public void setRequestWeight(Integer requestWeight) {
+    this.requestWeight = requestWeight;
+  }
+  
+  /**
+   * @return the request data
+   */
+  public Field getRequest() {
+    return request;
+  }
 
-	/**
-	 * @param request the request data
-	 */
-	public void setRequest(Field request) {
-		this.request = request;
-	}
+  /**
+   * @param request the request data
+   */
+  public void setRequest(Field request) {
+    this.request = request;
+  }
 
-	/**
-	 * @return the response data
-	 */
-	public Field getResponse() {
-		return response;
-	}
+  /**
+   * @return the response data
+   */
+  public Field getResponse() {
+    return response;
+  }
 
-	/**
-	 * @param response the response data
-	 */
-	public void setResponse(Field response) {
-		this.response = response;
-	}
-	
-	/**
-	 * @return Exchange website's documentation URL for this API.
-	 */
-	public String getDocUrl() {
-		return docUrl;
-	}
+  /**
+   * @param response the response data
+   */
+  public void setResponse(Field response) {
+    this.response = response;
+  }
+  
+  /**
+   * @return Exchange website's documentation URL for this API.
+   */
+  public String getDocUrl() {
+    return docUrl;
+  }
 
-	/**
-	 * @param docUrl Exchange website's documentation URL for this API.
-	 */
-	public void setDocUrl(String docUrl) {
-		this.docUrl = docUrl;
-	}
-	
-	/**
-	 * @return a string representation of the object. See {@link EncodingUtil#pojoToString(Object)}
-	 */
-	@Override
-	public String toString() {
-		return EncodingUtil.pojoToString(this);
-	}
+  /**
+   * @param docUrl Exchange website's documentation URL for this API.
+   */
+  public void setDocUrl(String docUrl) {
+    this.docUrl = docUrl;
+  }
+  
+  /**
+   * @return a string representation of the object. See {@link EncodingUtil#pojoToString(Object)}
+   */
+  @Override
+  public String toString() {
+    return EncodingUtil.pojoToString(this);
+  }
 
 }

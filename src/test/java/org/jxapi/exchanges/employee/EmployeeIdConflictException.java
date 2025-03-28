@@ -2,15 +2,15 @@ package org.jxapi.exchanges.employee;
 
 public class EmployeeIdConflictException extends Exception {
 
-	private final Integer id;
-	
-	public EmployeeIdConflictException(Integer id) {
-		super("Employee with ID " + id + " already exists");
-		this.id = id;
-	}
+  private final Integer id;
+  
+  public EmployeeIdConflictException(Integer id) {
+    super("Employee with ID " + id + " already exists");
+    this.id = id;
+  }
 
-	public Integer getId() {
-		return id;
-	}
+  public Integer getId() {
+    return id;
+  }
 
 }

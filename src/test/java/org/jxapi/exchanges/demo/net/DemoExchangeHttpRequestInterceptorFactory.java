@@ -12,9 +12,9 @@ import org.jxapi.netutils.rest.HttpRequestInterceptorFactory;
  */
 public class DemoExchangeHttpRequestInterceptorFactory implements HttpRequestInterceptorFactory {
 
-	@Override
-	public HttpRequestInterceptor createInterceptor(ExchangeApi exchangeApi) {
-		return new DemoExchangeHttpRequestInterceptor(exchangeApi.getProperties());
-	}
+  @Override
+  public HttpRequestInterceptor createInterceptor(ExchangeApi exchangeApi) {
+    return new DemoExchangeHttpRequestInterceptor(exchangeApi.getProperties());
+  }
 
 }

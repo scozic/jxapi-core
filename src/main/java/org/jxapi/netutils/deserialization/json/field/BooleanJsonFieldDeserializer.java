@@ -17,21 +17,21 @@ import org.jxapi.util.JsonUtil;
  * @see JsonDeserializer
  */
 public class BooleanJsonFieldDeserializer extends AbstractJsonMessageDeserializer<Boolean> {
-	
-	private static final BooleanJsonFieldDeserializer INSTANCE = new BooleanJsonFieldDeserializer();
-	
-	/**
-	 * @return the singleton instance of this class
-	 */
-	public static BooleanJsonFieldDeserializer getInstance() {
-		return INSTANCE;
-	}
-	
-	private BooleanJsonFieldDeserializer() {}
+  
+  private static final BooleanJsonFieldDeserializer INSTANCE = new BooleanJsonFieldDeserializer();
+  
+  /**
+   * @return the singleton instance of this class
+   */
+  public static BooleanJsonFieldDeserializer getInstance() {
+    return INSTANCE;
+  }
+  
+  private BooleanJsonFieldDeserializer() {}
 
-	@Override
-	public Boolean deserialize(JsonParser parser) throws IOException {
-		return JsonUtil.readCurrentBoolean(parser);
-	}
+  @Override
+  public Boolean deserialize(JsonParser parser) throws IOException {
+    return JsonUtil.readCurrentBoolean(parser);
+  }
 
 }

@@ -10,12 +10,12 @@ import org.jxapi.observability.GenericObserver;
  * @see GenericObserver
  */
 public class GenericWebsocketErrorHandler extends GenericObserver<WebsocketException> implements WebsocketErrorHandler {
-	
-	private static final Logger log = LoggerFactory.getLogger(GenericWebsocketErrorHandler.class);
+  
+  private static final Logger log = LoggerFactory.getLogger(GenericWebsocketErrorHandler.class);
     
     @Override
     public void handleWebsocketError(WebsocketException error) {
-    	log.debug("Received websocket error", error);
+      log.debug("Received websocket error", error);
         super.handleEvent(error);
     }
 

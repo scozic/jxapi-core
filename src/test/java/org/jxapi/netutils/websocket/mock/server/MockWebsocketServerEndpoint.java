@@ -23,30 +23,30 @@ import org.slf4j.LoggerFactory;
 @ServerEndpoint("/ws")
 public class MockWebsocketServerEndpoint {
 
-	private static final Logger log = LoggerFactory.getLogger(MockWebsocketServerEndpoint.class);
+  private static final Logger log = LoggerFactory.getLogger(MockWebsocketServerEndpoint.class);
 
-	@OnOpen
-	public void onOpen(Session session) {
-		MockWebsocketServerSession mockSession = new MockWebsocketServerSessionImpl(session);
-		log.debug("New session opened:{}", mockSession);
-		MockWebsocketServerSessionService.registerNewSession(mockSession);
-	}
+  @OnOpen
+  public void onOpen(Session session) {
+    MockWebsocketServerSession mockSession = new MockWebsocketServerSessionImpl(session);
+    log.debug("New session opened:{}", mockSession);
+    MockWebsocketServerSessionService.registerNewSession(mockSession);
+  }
 
-	@OnMessage
-	public String onMessage(String message, Session session) {
-		String uri = session.getRequestURI().toString();
-		String sessionId = session.getId();
-		log.debug("Received message on WS:{}, sessionId:{}:[{}]", uri, sessionId, message);
-		MockWebsocketServerSessionService.dispatchWebsocketClientMessageEvent(uri, session.getId(), message);
+  @OnMessage
+  public String onMessage(String message, Session session) {
+    String uri = session.getRequestURI().toString();
+    String sessionId = session.getId();
+    log.debug("Received message on WS:{}, sessionId:{}:[{}]", uri, sessionId, message);
+    MockWebsocketServerSessionService.dispatchWebsocketClientMessageEvent(uri, session.getId(), message);
 
-		return null;
-	}
+    return null;
+  }
 
-	@OnClose
-	public void onClose(Session session, CloseReason closeReason) {
-		MockWebsocketServerSession mockSession = new MockWebsocketServerSessionImpl(session);
-		log.debug("Session closed:{}", mockSession);
-		MockWebsocketServerSessionService.unregisterClosedSession(mockSession);
-	}
+  @OnClose
+  public void onClose(Session session, CloseReason closeReason) {
+    MockWebsocketServerSession mockSession = new MockWebsocketServerSessionImpl(session);
+    log.debug("Session closed:{}", mockSession);
+    MockWebsocketServerSessionService.unregisterClosedSession(mockSession);
+  }
 
 }

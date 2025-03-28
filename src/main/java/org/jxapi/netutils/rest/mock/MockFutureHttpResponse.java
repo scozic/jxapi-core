@@ -12,40 +12,40 @@ import org.jxapi.util.EncodingUtil;
  */
 public class MockFutureHttpResponse extends FutureHttpResponse {
 
-	private final HttpRequest request;
+  private final HttpRequest request;
 
-	/**
-	 * Constructs a new MockFutureHttpResponse object with no associated HttpRequest.
-	 */
-	public MockFutureHttpResponse() {
-		this(null);
-	}
+  /**
+   * Constructs a new MockFutureHttpResponse object with no associated HttpRequest.
+   */
+  public MockFutureHttpResponse() {
+    this(null);
+  }
 
-	/**
-	 * Constructs a new MockFutureHttpResponse object with the specified HttpRequest.
-	 *
-	 * @param request the HttpRequest associated with this response
-	 */
-	public MockFutureHttpResponse(HttpRequest request) {
-		this.request = request;
-	}
+  /**
+   * Constructs a new MockFutureHttpResponse object with the specified HttpRequest.
+   *
+   * @param request the HttpRequest associated with this response
+   */
+  public MockFutureHttpResponse(HttpRequest request) {
+    this.request = request;
+  }
 
-	/**
-	 * Returns the HttpRequest associated with this response.
-	 *
-	 * @return the HttpRequest associated with this response
-	 */
-	public HttpRequest getRequest() {
-		return request;
-	}
+  /**
+   * Returns the HttpRequest associated with this response.
+   *
+   * @return the HttpRequest associated with this response
+   */
+  public HttpRequest getRequest() {
+    return request;
+  }
 
-	/**
-	 * Returns a string representation of this object.
-	 *
-	 * @return a string representation of this object
-	 */
-	@Override
-	public String toString() {
-		return EncodingUtil.pojoToString(this);
-	}
+  /**
+   * Returns a string representation of this object.
+   *
+   * @return a string representation of this object
+   */
+  @Override
+  public String toString() {
+    return EncodingUtil.pojoToString(this);
+  }
 }

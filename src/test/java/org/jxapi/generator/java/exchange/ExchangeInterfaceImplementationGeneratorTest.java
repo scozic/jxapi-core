@@ -15,340 +15,340 @@ import org.jxapi.netutils.rest.ratelimits.RateLimitRule;
  * Unit test for {@link ExchangeInterfaceImplementationGenerator}
  */
 public class ExchangeInterfaceImplementationGeneratorTest {
-	
-	@Test
-	public void testGenerateExchangeApi() {
-		ExchangeDescriptor exchangeDescriptor = new ExchangeDescriptor();
-		exchangeDescriptor.setId("Foo");
-		exchangeDescriptor.setBasePackage("com.xyz.foo.gen");
-		exchangeDescriptor.setDescription("Foo exchange description");
-		exchangeDescriptor.setHttpUrl("https://myexchange.com/api");
-		exchangeDescriptor.setWebsocketUrl("https://myexchange.com/ws");
-		List<ExchangeApiDescriptor> apis = new ArrayList<>();
-		ExchangeApiDescriptor api1 = new ExchangeApiDescriptor();
-		api1.setName("api1");
-		apis.add(api1);
-		ExchangeApiDescriptor api2 = new ExchangeApiDescriptor();
-		api2.setName("api2");
-		apis.add(api2);
-		exchangeDescriptor.setApis(apis);
-		ExchangeInterfaceImplementationGenerator exchangeGenerator = new ExchangeInterfaceImplementationGenerator(exchangeDescriptor);
-		Assert.assertEquals("package com.xyz.foo.gen;\n"
-		    + "\n"
-		    + "import java.util.Properties;\n"
-		    + "\n"
-		    + "import com.xyz.foo.gen.api1.FooApi1Api;\n"
-		    + "import com.xyz.foo.gen.api1.FooApi1ApiImpl;\n"
-		    + "import com.xyz.foo.gen.api2.FooApi2Api;\n"
-		    + "import com.xyz.foo.gen.api2.FooApi2ApiImpl;\n"
-		    + "import javax.annotation.processing.Generated;\n"
-		    + "import org.jxapi.exchange.AbstractExchange;\n"
-		    + "\n"
-		    + "/**\n"
-		    + " * Actual implementation of {@link FooExchange}<br>\n"
-		    + " */\n"
-		    + "@Generated(\"org.jxapi.generator.java.exchange.ExchangeInterfaceImplementationGenerator\")\n"
-		    + "public class FooExchangeImpl extends AbstractExchange implements FooExchange {\n"
-		    + "  \n"
-		    + "  /**\n"
-		    + "   * Base REST API URL\n"
-		    + "   */\n"
-		    + "  public static final String HTTP_URL = \"https://myexchange.com/api\";\n"
-		    + "  \n"
-		    + "  /**\n"
-		    + "   * Base websocket endpoint URL\n"
-		    + "   */\n"
-		    + "  public static final String WEBSOCKET_URL = \"https://myexchange.com/ws\";\n"
-		    + "  \n"
-		    + "  private final FooApi1Api fooApi1Api;\n"
-		    + "  private final FooApi2Api fooApi2Api;\n"
-		    + "  \n"
-		    + "  public FooExchangeImpl(String exchangeName, Properties properties) {\n"
-		    + "    super(ID, VERSION, exchangeName, properties);\n"
-		    + "    this.fooApi1Api = addApi(new FooApi1ApiImpl(getName(), properties));\n"
-		    + "    this.fooApi2Api = addApi(new FooApi2ApiImpl(getName(), properties));\n"
-		    + "  }\n"
-		    + "  \n"
-		    + "  @Override\n"
-		    + "  public FooApi1Api getFooApi1Api() {\n"
-		    + "    return this.fooApi1Api;\n"
-		    + "  }\n"
-		    + "  \n"
-		    + "  @Override\n"
-		    + "  public FooApi2Api getFooApi2Api() {\n"
-		    + "    return this.fooApi2Api;\n"
-		    + "  }\n"
-		    + "  \n"
-		    + "}\n", 
-				exchangeGenerator.generate());
-	}
-	
-	@Test
-	public void testGenerateExchangeApiWithExchangeRateLimits() {
-		ExchangeDescriptor exchangeDescriptor = new ExchangeDescriptor();
-		exchangeDescriptor.setId("Foo");
-		exchangeDescriptor.setBasePackage("com.xyz.foo.gen");
-		exchangeDescriptor.setDescription("Foo exchange description");
-		List<ExchangeApiDescriptor> apis = new ArrayList<>();
-		ExchangeApiDescriptor api1 = new ExchangeApiDescriptor();
-		api1.setName("api1");
-		api1.setRestEndpoints(List.of(new RestEndpointDescriptor()));
-		apis.add(api1);
-		// api2 has 0 REST endpoints and should not be provided request throttler in constructor.
-		ExchangeApiDescriptor api2 = new ExchangeApiDescriptor();
-		api2.setName("api2");
-		api2.setRestEndpoints(List.of());
-		apis.add(api2);
-		ExchangeApiDescriptor api3 = new ExchangeApiDescriptor();
-		api3.setName("api3");
-		apis.add(api3);
-		exchangeDescriptor.setApis(apis);
-		exchangeDescriptor.setRateLimits(List.of(RateLimitRule.createRule("exchangeGlobalRateLimit", 60000, 1000)));
-		ExchangeInterfaceImplementationGenerator exchangeGenerator = new ExchangeInterfaceImplementationGenerator(exchangeDescriptor);
-		Assert.assertEquals("package com.xyz.foo.gen;\n"
-		    + "\n"
-		    + "import java.util.Properties;\n"
-		    + "\n"
-		    + "import com.xyz.foo.gen.api1.FooApi1Api;\n"
-		    + "import com.xyz.foo.gen.api1.FooApi1ApiImpl;\n"
-		    + "import com.xyz.foo.gen.api2.FooApi2Api;\n"
-		    + "import com.xyz.foo.gen.api2.FooApi2ApiImpl;\n"
-		    + "import com.xyz.foo.gen.api3.FooApi3Api;\n"
-		    + "import com.xyz.foo.gen.api3.FooApi3ApiImpl;\n"
-		    + "import javax.annotation.processing.Generated;\n"
-		    + "import org.jxapi.exchange.AbstractExchange;\n"
-		    + "import org.jxapi.netutils.rest.ratelimits.RateLimitRule;\n"
-		    + "import org.jxapi.netutils.rest.ratelimits.RequestThrottler;\n"
-		    + "\n"
-		    + "/**\n"
-		    + " * Actual implementation of {@link FooExchange}<br>\n"
-		    + " */\n"
-		    + "@Generated(\"org.jxapi.generator.java.exchange.ExchangeInterfaceImplementationGenerator\")\n"
-		    + "public class FooExchangeImpl extends AbstractExchange implements FooExchange {\n"
-		    + "  \n"
-		    + "  public static final RateLimitRule RATE_LIMIT_EXCHANGE_GLOBAL_RATE_LIMIT = RateLimitRule.createRule(\"exchangeGlobalRateLimit\", 60000, 1000);\n"
-		    + "  \n"
-		    + "  private final RequestThrottler requestThrottler = new RequestThrottler(\"Foo\");\n"
-		    + "  private final FooApi1Api fooApi1Api;\n"
-		    + "  private final FooApi2Api fooApi2Api;\n"
-		    + "  private final FooApi3Api fooApi3Api;\n"
-		    + "  \n"
-		    + "  public FooExchangeImpl(String exchangeName, Properties properties) {\n"
-		    + "    super(ID, VERSION, exchangeName, properties);\n"
-		    + "    this.fooApi1Api = addApi(new FooApi1ApiImpl(getName(), properties, requestThrottler));\n"
-		    + "    this.fooApi2Api = addApi(new FooApi2ApiImpl(getName(), properties));\n"
-		    + "    this.fooApi3Api = addApi(new FooApi3ApiImpl(getName(), properties));\n"
-		    + "  }\n"
-		    + "  \n"
-		    + "  @Override\n"
-		    + "  public FooApi1Api getFooApi1Api() {\n"
-		    + "    return this.fooApi1Api;\n"
-		    + "  }\n"
-		    + "  \n"
-		    + "  @Override\n"
-		    + "  public FooApi2Api getFooApi2Api() {\n"
-		    + "    return this.fooApi2Api;\n"
-		    + "  }\n"
-		    + "  \n"
-		    + "  @Override\n"
-		    + "  public FooApi3Api getFooApi3Api() {\n"
-		    + "    return this.fooApi3Api;\n"
-		    + "  }\n"
-		    + "  \n"
-		    + "}\n", 
-				exchangeGenerator.generate());
-	}
-	
-	@Test
-	public void testGenerateExchangeApiWithEmptyExchangeRateLimits() {
-		ExchangeDescriptor exchangeDescriptor = new ExchangeDescriptor();
-		exchangeDescriptor.setId("Foo");
-		exchangeDescriptor.setBasePackage("com.xyz.foo.gen");
-		exchangeDescriptor.setDescription("Foo exchange description");
-		List<ExchangeApiDescriptor> apis = new ArrayList<>();
-		ExchangeApiDescriptor api1 = new ExchangeApiDescriptor();
-		api1.setName("api1");
-		api1.setRestEndpoints(List.of(new RestEndpointDescriptor()));
-		apis.add(api1);
-		exchangeDescriptor.setApis(apis);
-		exchangeDescriptor.setRateLimits(List.of());
-		ExchangeInterfaceImplementationGenerator exchangeGenerator = new ExchangeInterfaceImplementationGenerator(exchangeDescriptor);
-		Assert.assertEquals("package com.xyz.foo.gen;\n"
-		    + "\n"
-		    + "import java.util.Properties;\n"
-		    + "\n"
-		    + "import com.xyz.foo.gen.api1.FooApi1Api;\n"
-		    + "import com.xyz.foo.gen.api1.FooApi1ApiImpl;\n"
-		    + "import javax.annotation.processing.Generated;\n"
-		    + "import org.jxapi.exchange.AbstractExchange;\n"
-		    + "\n"
-		    + "/**\n"
-		    + " * Actual implementation of {@link FooExchange}<br>\n"
-		    + " */\n"
-		    + "@Generated(\"org.jxapi.generator.java.exchange.ExchangeInterfaceImplementationGenerator\")\n"
-		    + "public class FooExchangeImpl extends AbstractExchange implements FooExchange {\n"
-		    + "  \n"
-		    + "  private final FooApi1Api fooApi1Api;\n"
-		    + "  \n"
-		    + "  public FooExchangeImpl(String exchangeName, Properties properties) {\n"
-		    + "    super(ID, VERSION, exchangeName, properties);\n"
-		    + "    this.fooApi1Api = addApi(new FooApi1ApiImpl(getName(), properties));\n"
-		    + "  }\n"
-		    + "  \n"
-		    + "  @Override\n"
-		    + "  public FooApi1Api getFooApi1Api() {\n"
-		    + "    return this.fooApi1Api;\n"
-		    + "  }\n"
-		    + "  \n"
-		    + "}\n", 
-				exchangeGenerator.generate());
-	}
-	
-	@Test
-	public void testGenerateExchangeApiWithExchangeRateLimitsButNoApis() {
-		ExchangeDescriptor exchangeDescriptor = new ExchangeDescriptor();
-		exchangeDescriptor.setId("Foo");
-		exchangeDescriptor.setBasePackage("com.xyz.foo.gen");
-		exchangeDescriptor.setDescription("Foo exchange description");
-		exchangeDescriptor.setRateLimits(List.of(RateLimitRule.createRule("exchangeGlobalRateLimit", 60000, 1000)));
-		ExchangeInterfaceImplementationGenerator exchangeGenerator = new ExchangeInterfaceImplementationGenerator(exchangeDescriptor);
-		Assert.assertEquals("package com.xyz.foo.gen;\n"
-		    + "\n"
-		    + "import java.util.Properties;\n"
-		    + "\n"
-		    + "import javax.annotation.processing.Generated;\n"
-		    + "import org.jxapi.exchange.AbstractExchange;\n"
-		    + "import org.jxapi.netutils.rest.ratelimits.RateLimitRule;\n"
-		    + "\n"
-		    + "/**\n"
-		    + " * Actual implementation of {@link FooExchange}<br>\n"
-		    + " */\n"
-		    + "@Generated(\"org.jxapi.generator.java.exchange.ExchangeInterfaceImplementationGenerator\")\n"
-		    + "public class FooExchangeImpl extends AbstractExchange implements FooExchange {\n"
-		    + "  \n"
-		    + "  public static final RateLimitRule RATE_LIMIT_EXCHANGE_GLOBAL_RATE_LIMIT = RateLimitRule.createRule(\"exchangeGlobalRateLimit\", 60000, 1000);\n"
-		    + "  \n"
-		    + "  public FooExchangeImpl(String exchangeName, Properties properties) {\n"
-		    + "    super(ID, VERSION, exchangeName, properties);\n"
-		    + "  }\n"
-		    + "  \n"
-		    + "}\n", 
-				exchangeGenerator.generate());
-	}
-	
-	@Test
-	public void testGenerateExchangeApiWithExchangeRateLimitsButApisHaveNoRestEndpoint() {
-		ExchangeDescriptor exchangeDescriptor = new ExchangeDescriptor();
-		exchangeDescriptor.setId("Foo");
-		exchangeDescriptor.setBasePackage("com.xyz.foo.gen");
-		exchangeDescriptor.setDescription("Foo exchange description");
-		List<ExchangeApiDescriptor> apis = new ArrayList<>();
-		// api2 has 0 REST endpoints and should not be provided request throttler in constructor.
-		ExchangeApiDescriptor api1 = new ExchangeApiDescriptor();
-		api1.setName("api1");
-		api1.setRestEndpoints(List.of());
-		apis.add(api1);
-		ExchangeApiDescriptor api2 = new ExchangeApiDescriptor();
-		api2.setName("api2");
-		apis.add(api2);
-		exchangeDescriptor.setApis(apis);
-		exchangeDescriptor.setRateLimits(List.of(RateLimitRule.createRule("exchangeGlobalRateLimit", 60000, 1000)));
-		ExchangeInterfaceImplementationGenerator exchangeGenerator = new ExchangeInterfaceImplementationGenerator(exchangeDescriptor);
-		Assert.assertEquals("package com.xyz.foo.gen;\n"
-		    + "\n"
-		    + "import java.util.Properties;\n"
-		    + "\n"
-		    + "import com.xyz.foo.gen.api1.FooApi1Api;\n"
-		    + "import com.xyz.foo.gen.api1.FooApi1ApiImpl;\n"
-		    + "import com.xyz.foo.gen.api2.FooApi2Api;\n"
-		    + "import com.xyz.foo.gen.api2.FooApi2ApiImpl;\n"
-		    + "import javax.annotation.processing.Generated;\n"
-		    + "import org.jxapi.exchange.AbstractExchange;\n"
-		    + "import org.jxapi.netutils.rest.ratelimits.RateLimitRule;\n"
-		    + "\n"
-		    + "/**\n"
-		    + " * Actual implementation of {@link FooExchange}<br>\n"
-		    + " */\n"
-		    + "@Generated(\"org.jxapi.generator.java.exchange.ExchangeInterfaceImplementationGenerator\")\n"
-		    + "public class FooExchangeImpl extends AbstractExchange implements FooExchange {\n"
-		    + "  \n"
-		    + "  public static final RateLimitRule RATE_LIMIT_EXCHANGE_GLOBAL_RATE_LIMIT = RateLimitRule.createRule(\"exchangeGlobalRateLimit\", 60000, 1000);\n"
-		    + "  private final FooApi1Api fooApi1Api;\n"
-		    + "  private final FooApi2Api fooApi2Api;\n"
-		    + "  \n"
-		    + "  public FooExchangeImpl(String exchangeName, Properties properties) {\n"
-		    + "    super(ID, VERSION, exchangeName, properties);\n"
-		    + "    this.fooApi1Api = addApi(new FooApi1ApiImpl(getName(), properties));\n"
-		    + "    this.fooApi2Api = addApi(new FooApi2ApiImpl(getName(), properties));\n"
-		    + "  }\n"
-		    + "  \n"
-		    + "  @Override\n"
-		    + "  public FooApi1Api getFooApi1Api() {\n"
-		    + "    return this.fooApi1Api;\n"
-		    + "  }\n"
-		    + "  \n"
-		    + "  @Override\n"
-		    + "  public FooApi2Api getFooApi2Api() {\n"
-		    + "    return this.fooApi2Api;\n"
-		    + "  }\n"
-		    + "  \n"
-		    + "}\n", 
-				exchangeGenerator.generate());
-	}
-	
-	@Test(expected = IllegalArgumentException.class)
-	public void testGenerateExchangeApiWithExchangeRateLimitNullRateLimitName() {
-		ExchangeDescriptor exchangeDescriptor = new ExchangeDescriptor();
-		exchangeDescriptor.setId("Foo");
-		exchangeDescriptor.setBasePackage("com.xyz.foo.gen");
-		exchangeDescriptor.setDescription("Foo exchange description");
-		exchangeDescriptor.setRateLimits(List.of(RateLimitRule.createRule(null, 60000, 1000)));
-		ExchangeInterfaceImplementationGenerator exchangeGenerator = new ExchangeInterfaceImplementationGenerator(exchangeDescriptor);
-		exchangeGenerator.generate();
-	}
-	
-	@Test(expected = IllegalArgumentException.class)
-	public void testGenerateExchangeApiWithDuplicateExchangeRateLimitName() {
-		ExchangeDescriptor exchangeDescriptor = new ExchangeDescriptor();
-		exchangeDescriptor.setId("Foo");
-		exchangeDescriptor.setBasePackage("com.xyz.foo.gen");
-		exchangeDescriptor.setDescription("Foo exchange description");
-		exchangeDescriptor.setRateLimits(List.of(RateLimitRule.createRule("myReule", 60000, 1000), 
-												 RateLimitRule.createRule("myReule", 60000, 1000)));
-		ExchangeInterfaceImplementationGenerator exchangeGenerator = new ExchangeInterfaceImplementationGenerator(exchangeDescriptor);
-		exchangeGenerator.generate();
-	}
-	
-	@Test
-	public void testGenerateExchangeApiWithWeightedExchangeRateLimitRule() {
-		ExchangeDescriptor exchangeDescriptor = new ExchangeDescriptor();
-		exchangeDescriptor.setId("Foo");
-		exchangeDescriptor.setBasePackage("com.xyz.foo.gen");
-		exchangeDescriptor.setDescription("Foo exchange description");
-		exchangeDescriptor.setRateLimits(List.of(RateLimitRule.createWeightedRule("exchangeGlobalRateLimit", 60000, 1000)));
-		ExchangeInterfaceImplementationGenerator exchangeGenerator = new ExchangeInterfaceImplementationGenerator(exchangeDescriptor);
-		Assert.assertEquals("package com.xyz.foo.gen;\n"
-		    + "\n"
-		    + "import java.util.Properties;\n"
-		    + "\n"
-		    + "import javax.annotation.processing.Generated;\n"
-		    + "import org.jxapi.exchange.AbstractExchange;\n"
-		    + "import org.jxapi.netutils.rest.ratelimits.RateLimitRule;\n"
-		    + "\n"
-		    + "/**\n"
-		    + " * Actual implementation of {@link FooExchange}<br>\n"
-		    + " */\n"
-		    + "@Generated(\"org.jxapi.generator.java.exchange.ExchangeInterfaceImplementationGenerator\")\n"
-		    + "public class FooExchangeImpl extends AbstractExchange implements FooExchange {\n"
-		    + "  \n"
-		    + "  public static final RateLimitRule RATE_LIMIT_EXCHANGE_GLOBAL_RATE_LIMIT = RateLimitRule.createWeightedRule(\"exchangeGlobalRateLimit\", 60000, 1000);\n"
-		    + "  \n"
-		    + "  public FooExchangeImpl(String exchangeName, Properties properties) {\n"
-		    + "    super(ID, VERSION, exchangeName, properties);\n"
-		    + "  }\n"
-		    + "  \n"
-		    + "}\n", 
-				exchangeGenerator.generate());
-	}
+  
+  @Test
+  public void testGenerateExchangeApi() {
+    ExchangeDescriptor exchangeDescriptor = new ExchangeDescriptor();
+    exchangeDescriptor.setId("Foo");
+    exchangeDescriptor.setBasePackage("com.xyz.foo.gen");
+    exchangeDescriptor.setDescription("Foo exchange description");
+    exchangeDescriptor.setHttpUrl("https://myexchange.com/api");
+    exchangeDescriptor.setWebsocketUrl("https://myexchange.com/ws");
+    List<ExchangeApiDescriptor> apis = new ArrayList<>();
+    ExchangeApiDescriptor api1 = new ExchangeApiDescriptor();
+    api1.setName("api1");
+    apis.add(api1);
+    ExchangeApiDescriptor api2 = new ExchangeApiDescriptor();
+    api2.setName("api2");
+    apis.add(api2);
+    exchangeDescriptor.setApis(apis);
+    ExchangeInterfaceImplementationGenerator exchangeGenerator = new ExchangeInterfaceImplementationGenerator(exchangeDescriptor);
+    Assert.assertEquals("package com.xyz.foo.gen;\n"
+        + "\n"
+        + "import java.util.Properties;\n"
+        + "\n"
+        + "import com.xyz.foo.gen.api1.FooApi1Api;\n"
+        + "import com.xyz.foo.gen.api1.FooApi1ApiImpl;\n"
+        + "import com.xyz.foo.gen.api2.FooApi2Api;\n"
+        + "import com.xyz.foo.gen.api2.FooApi2ApiImpl;\n"
+        + "import javax.annotation.processing.Generated;\n"
+        + "import org.jxapi.exchange.AbstractExchange;\n"
+        + "\n"
+        + "/**\n"
+        + " * Actual implementation of {@link FooExchange}<br>\n"
+        + " */\n"
+        + "@Generated(\"org.jxapi.generator.java.exchange.ExchangeInterfaceImplementationGenerator\")\n"
+        + "public class FooExchangeImpl extends AbstractExchange implements FooExchange {\n"
+        + "  \n"
+        + "  /**\n"
+        + "   * Base REST API URL\n"
+        + "   */\n"
+        + "  public static final String HTTP_URL = \"https://myexchange.com/api\";\n"
+        + "  \n"
+        + "  /**\n"
+        + "   * Base websocket endpoint URL\n"
+        + "   */\n"
+        + "  public static final String WEBSOCKET_URL = \"https://myexchange.com/ws\";\n"
+        + "  \n"
+        + "  private final FooApi1Api fooApi1Api;\n"
+        + "  private final FooApi2Api fooApi2Api;\n"
+        + "  \n"
+        + "  public FooExchangeImpl(String exchangeName, Properties properties) {\n"
+        + "    super(ID, VERSION, exchangeName, properties);\n"
+        + "    this.fooApi1Api = addApi(new FooApi1ApiImpl(getName(), properties));\n"
+        + "    this.fooApi2Api = addApi(new FooApi2ApiImpl(getName(), properties));\n"
+        + "  }\n"
+        + "  \n"
+        + "  @Override\n"
+        + "  public FooApi1Api getFooApi1Api() {\n"
+        + "    return this.fooApi1Api;\n"
+        + "  }\n"
+        + "  \n"
+        + "  @Override\n"
+        + "  public FooApi2Api getFooApi2Api() {\n"
+        + "    return this.fooApi2Api;\n"
+        + "  }\n"
+        + "  \n"
+        + "}\n", 
+        exchangeGenerator.generate());
+  }
+  
+  @Test
+  public void testGenerateExchangeApiWithExchangeRateLimits() {
+    ExchangeDescriptor exchangeDescriptor = new ExchangeDescriptor();
+    exchangeDescriptor.setId("Foo");
+    exchangeDescriptor.setBasePackage("com.xyz.foo.gen");
+    exchangeDescriptor.setDescription("Foo exchange description");
+    List<ExchangeApiDescriptor> apis = new ArrayList<>();
+    ExchangeApiDescriptor api1 = new ExchangeApiDescriptor();
+    api1.setName("api1");
+    api1.setRestEndpoints(List.of(new RestEndpointDescriptor()));
+    apis.add(api1);
+    // api2 has 0 REST endpoints and should not be provided request throttler in constructor.
+    ExchangeApiDescriptor api2 = new ExchangeApiDescriptor();
+    api2.setName("api2");
+    api2.setRestEndpoints(List.of());
+    apis.add(api2);
+    ExchangeApiDescriptor api3 = new ExchangeApiDescriptor();
+    api3.setName("api3");
+    apis.add(api3);
+    exchangeDescriptor.setApis(apis);
+    exchangeDescriptor.setRateLimits(List.of(RateLimitRule.createRule("exchangeGlobalRateLimit", 60000, 1000)));
+    ExchangeInterfaceImplementationGenerator exchangeGenerator = new ExchangeInterfaceImplementationGenerator(exchangeDescriptor);
+    Assert.assertEquals("package com.xyz.foo.gen;\n"
+        + "\n"
+        + "import java.util.Properties;\n"
+        + "\n"
+        + "import com.xyz.foo.gen.api1.FooApi1Api;\n"
+        + "import com.xyz.foo.gen.api1.FooApi1ApiImpl;\n"
+        + "import com.xyz.foo.gen.api2.FooApi2Api;\n"
+        + "import com.xyz.foo.gen.api2.FooApi2ApiImpl;\n"
+        + "import com.xyz.foo.gen.api3.FooApi3Api;\n"
+        + "import com.xyz.foo.gen.api3.FooApi3ApiImpl;\n"
+        + "import javax.annotation.processing.Generated;\n"
+        + "import org.jxapi.exchange.AbstractExchange;\n"
+        + "import org.jxapi.netutils.rest.ratelimits.RateLimitRule;\n"
+        + "import org.jxapi.netutils.rest.ratelimits.RequestThrottler;\n"
+        + "\n"
+        + "/**\n"
+        + " * Actual implementation of {@link FooExchange}<br>\n"
+        + " */\n"
+        + "@Generated(\"org.jxapi.generator.java.exchange.ExchangeInterfaceImplementationGenerator\")\n"
+        + "public class FooExchangeImpl extends AbstractExchange implements FooExchange {\n"
+        + "  \n"
+        + "  public static final RateLimitRule RATE_LIMIT_EXCHANGE_GLOBAL_RATE_LIMIT = RateLimitRule.createRule(\"exchangeGlobalRateLimit\", 60000, 1000);\n"
+        + "  \n"
+        + "  private final RequestThrottler requestThrottler = new RequestThrottler(\"Foo\");\n"
+        + "  private final FooApi1Api fooApi1Api;\n"
+        + "  private final FooApi2Api fooApi2Api;\n"
+        + "  private final FooApi3Api fooApi3Api;\n"
+        + "  \n"
+        + "  public FooExchangeImpl(String exchangeName, Properties properties) {\n"
+        + "    super(ID, VERSION, exchangeName, properties);\n"
+        + "    this.fooApi1Api = addApi(new FooApi1ApiImpl(getName(), properties, requestThrottler));\n"
+        + "    this.fooApi2Api = addApi(new FooApi2ApiImpl(getName(), properties));\n"
+        + "    this.fooApi3Api = addApi(new FooApi3ApiImpl(getName(), properties));\n"
+        + "  }\n"
+        + "  \n"
+        + "  @Override\n"
+        + "  public FooApi1Api getFooApi1Api() {\n"
+        + "    return this.fooApi1Api;\n"
+        + "  }\n"
+        + "  \n"
+        + "  @Override\n"
+        + "  public FooApi2Api getFooApi2Api() {\n"
+        + "    return this.fooApi2Api;\n"
+        + "  }\n"
+        + "  \n"
+        + "  @Override\n"
+        + "  public FooApi3Api getFooApi3Api() {\n"
+        + "    return this.fooApi3Api;\n"
+        + "  }\n"
+        + "  \n"
+        + "}\n", 
+        exchangeGenerator.generate());
+  }
+  
+  @Test
+  public void testGenerateExchangeApiWithEmptyExchangeRateLimits() {
+    ExchangeDescriptor exchangeDescriptor = new ExchangeDescriptor();
+    exchangeDescriptor.setId("Foo");
+    exchangeDescriptor.setBasePackage("com.xyz.foo.gen");
+    exchangeDescriptor.setDescription("Foo exchange description");
+    List<ExchangeApiDescriptor> apis = new ArrayList<>();
+    ExchangeApiDescriptor api1 = new ExchangeApiDescriptor();
+    api1.setName("api1");
+    api1.setRestEndpoints(List.of(new RestEndpointDescriptor()));
+    apis.add(api1);
+    exchangeDescriptor.setApis(apis);
+    exchangeDescriptor.setRateLimits(List.of());
+    ExchangeInterfaceImplementationGenerator exchangeGenerator = new ExchangeInterfaceImplementationGenerator(exchangeDescriptor);
+    Assert.assertEquals("package com.xyz.foo.gen;\n"
+        + "\n"
+        + "import java.util.Properties;\n"
+        + "\n"
+        + "import com.xyz.foo.gen.api1.FooApi1Api;\n"
+        + "import com.xyz.foo.gen.api1.FooApi1ApiImpl;\n"
+        + "import javax.annotation.processing.Generated;\n"
+        + "import org.jxapi.exchange.AbstractExchange;\n"
+        + "\n"
+        + "/**\n"
+        + " * Actual implementation of {@link FooExchange}<br>\n"
+        + " */\n"
+        + "@Generated(\"org.jxapi.generator.java.exchange.ExchangeInterfaceImplementationGenerator\")\n"
+        + "public class FooExchangeImpl extends AbstractExchange implements FooExchange {\n"
+        + "  \n"
+        + "  private final FooApi1Api fooApi1Api;\n"
+        + "  \n"
+        + "  public FooExchangeImpl(String exchangeName, Properties properties) {\n"
+        + "    super(ID, VERSION, exchangeName, properties);\n"
+        + "    this.fooApi1Api = addApi(new FooApi1ApiImpl(getName(), properties));\n"
+        + "  }\n"
+        + "  \n"
+        + "  @Override\n"
+        + "  public FooApi1Api getFooApi1Api() {\n"
+        + "    return this.fooApi1Api;\n"
+        + "  }\n"
+        + "  \n"
+        + "}\n", 
+        exchangeGenerator.generate());
+  }
+  
+  @Test
+  public void testGenerateExchangeApiWithExchangeRateLimitsButNoApis() {
+    ExchangeDescriptor exchangeDescriptor = new ExchangeDescriptor();
+    exchangeDescriptor.setId("Foo");
+    exchangeDescriptor.setBasePackage("com.xyz.foo.gen");
+    exchangeDescriptor.setDescription("Foo exchange description");
+    exchangeDescriptor.setRateLimits(List.of(RateLimitRule.createRule("exchangeGlobalRateLimit", 60000, 1000)));
+    ExchangeInterfaceImplementationGenerator exchangeGenerator = new ExchangeInterfaceImplementationGenerator(exchangeDescriptor);
+    Assert.assertEquals("package com.xyz.foo.gen;\n"
+        + "\n"
+        + "import java.util.Properties;\n"
+        + "\n"
+        + "import javax.annotation.processing.Generated;\n"
+        + "import org.jxapi.exchange.AbstractExchange;\n"
+        + "import org.jxapi.netutils.rest.ratelimits.RateLimitRule;\n"
+        + "\n"
+        + "/**\n"
+        + " * Actual implementation of {@link FooExchange}<br>\n"
+        + " */\n"
+        + "@Generated(\"org.jxapi.generator.java.exchange.ExchangeInterfaceImplementationGenerator\")\n"
+        + "public class FooExchangeImpl extends AbstractExchange implements FooExchange {\n"
+        + "  \n"
+        + "  public static final RateLimitRule RATE_LIMIT_EXCHANGE_GLOBAL_RATE_LIMIT = RateLimitRule.createRule(\"exchangeGlobalRateLimit\", 60000, 1000);\n"
+        + "  \n"
+        + "  public FooExchangeImpl(String exchangeName, Properties properties) {\n"
+        + "    super(ID, VERSION, exchangeName, properties);\n"
+        + "  }\n"
+        + "  \n"
+        + "}\n", 
+        exchangeGenerator.generate());
+  }
+  
+  @Test
+  public void testGenerateExchangeApiWithExchangeRateLimitsButApisHaveNoRestEndpoint() {
+    ExchangeDescriptor exchangeDescriptor = new ExchangeDescriptor();
+    exchangeDescriptor.setId("Foo");
+    exchangeDescriptor.setBasePackage("com.xyz.foo.gen");
+    exchangeDescriptor.setDescription("Foo exchange description");
+    List<ExchangeApiDescriptor> apis = new ArrayList<>();
+    // api2 has 0 REST endpoints and should not be provided request throttler in constructor.
+    ExchangeApiDescriptor api1 = new ExchangeApiDescriptor();
+    api1.setName("api1");
+    api1.setRestEndpoints(List.of());
+    apis.add(api1);
+    ExchangeApiDescriptor api2 = new ExchangeApiDescriptor();
+    api2.setName("api2");
+    apis.add(api2);
+    exchangeDescriptor.setApis(apis);
+    exchangeDescriptor.setRateLimits(List.of(RateLimitRule.createRule("exchangeGlobalRateLimit", 60000, 1000)));
+    ExchangeInterfaceImplementationGenerator exchangeGenerator = new ExchangeInterfaceImplementationGenerator(exchangeDescriptor);
+    Assert.assertEquals("package com.xyz.foo.gen;\n"
+        + "\n"
+        + "import java.util.Properties;\n"
+        + "\n"
+        + "import com.xyz.foo.gen.api1.FooApi1Api;\n"
+        + "import com.xyz.foo.gen.api1.FooApi1ApiImpl;\n"
+        + "import com.xyz.foo.gen.api2.FooApi2Api;\n"
+        + "import com.xyz.foo.gen.api2.FooApi2ApiImpl;\n"
+        + "import javax.annotation.processing.Generated;\n"
+        + "import org.jxapi.exchange.AbstractExchange;\n"
+        + "import org.jxapi.netutils.rest.ratelimits.RateLimitRule;\n"
+        + "\n"
+        + "/**\n"
+        + " * Actual implementation of {@link FooExchange}<br>\n"
+        + " */\n"
+        + "@Generated(\"org.jxapi.generator.java.exchange.ExchangeInterfaceImplementationGenerator\")\n"
+        + "public class FooExchangeImpl extends AbstractExchange implements FooExchange {\n"
+        + "  \n"
+        + "  public static final RateLimitRule RATE_LIMIT_EXCHANGE_GLOBAL_RATE_LIMIT = RateLimitRule.createRule(\"exchangeGlobalRateLimit\", 60000, 1000);\n"
+        + "  private final FooApi1Api fooApi1Api;\n"
+        + "  private final FooApi2Api fooApi2Api;\n"
+        + "  \n"
+        + "  public FooExchangeImpl(String exchangeName, Properties properties) {\n"
+        + "    super(ID, VERSION, exchangeName, properties);\n"
+        + "    this.fooApi1Api = addApi(new FooApi1ApiImpl(getName(), properties));\n"
+        + "    this.fooApi2Api = addApi(new FooApi2ApiImpl(getName(), properties));\n"
+        + "  }\n"
+        + "  \n"
+        + "  @Override\n"
+        + "  public FooApi1Api getFooApi1Api() {\n"
+        + "    return this.fooApi1Api;\n"
+        + "  }\n"
+        + "  \n"
+        + "  @Override\n"
+        + "  public FooApi2Api getFooApi2Api() {\n"
+        + "    return this.fooApi2Api;\n"
+        + "  }\n"
+        + "  \n"
+        + "}\n", 
+        exchangeGenerator.generate());
+  }
+  
+  @Test(expected = IllegalArgumentException.class)
+  public void testGenerateExchangeApiWithExchangeRateLimitNullRateLimitName() {
+    ExchangeDescriptor exchangeDescriptor = new ExchangeDescriptor();
+    exchangeDescriptor.setId("Foo");
+    exchangeDescriptor.setBasePackage("com.xyz.foo.gen");
+    exchangeDescriptor.setDescription("Foo exchange description");
+    exchangeDescriptor.setRateLimits(List.of(RateLimitRule.createRule(null, 60000, 1000)));
+    ExchangeInterfaceImplementationGenerator exchangeGenerator = new ExchangeInterfaceImplementationGenerator(exchangeDescriptor);
+    exchangeGenerator.generate();
+  }
+  
+  @Test(expected = IllegalArgumentException.class)
+  public void testGenerateExchangeApiWithDuplicateExchangeRateLimitName() {
+    ExchangeDescriptor exchangeDescriptor = new ExchangeDescriptor();
+    exchangeDescriptor.setId("Foo");
+    exchangeDescriptor.setBasePackage("com.xyz.foo.gen");
+    exchangeDescriptor.setDescription("Foo exchange description");
+    exchangeDescriptor.setRateLimits(List.of(RateLimitRule.createRule("myReule", 60000, 1000), 
+                         RateLimitRule.createRule("myReule", 60000, 1000)));
+    ExchangeInterfaceImplementationGenerator exchangeGenerator = new ExchangeInterfaceImplementationGenerator(exchangeDescriptor);
+    exchangeGenerator.generate();
+  }
+  
+  @Test
+  public void testGenerateExchangeApiWithWeightedExchangeRateLimitRule() {
+    ExchangeDescriptor exchangeDescriptor = new ExchangeDescriptor();
+    exchangeDescriptor.setId("Foo");
+    exchangeDescriptor.setBasePackage("com.xyz.foo.gen");
+    exchangeDescriptor.setDescription("Foo exchange description");
+    exchangeDescriptor.setRateLimits(List.of(RateLimitRule.createWeightedRule("exchangeGlobalRateLimit", 60000, 1000)));
+    ExchangeInterfaceImplementationGenerator exchangeGenerator = new ExchangeInterfaceImplementationGenerator(exchangeDescriptor);
+    Assert.assertEquals("package com.xyz.foo.gen;\n"
+        + "\n"
+        + "import java.util.Properties;\n"
+        + "\n"
+        + "import javax.annotation.processing.Generated;\n"
+        + "import org.jxapi.exchange.AbstractExchange;\n"
+        + "import org.jxapi.netutils.rest.ratelimits.RateLimitRule;\n"
+        + "\n"
+        + "/**\n"
+        + " * Actual implementation of {@link FooExchange}<br>\n"
+        + " */\n"
+        + "@Generated(\"org.jxapi.generator.java.exchange.ExchangeInterfaceImplementationGenerator\")\n"
+        + "public class FooExchangeImpl extends AbstractExchange implements FooExchange {\n"
+        + "  \n"
+        + "  public static final RateLimitRule RATE_LIMIT_EXCHANGE_GLOBAL_RATE_LIMIT = RateLimitRule.createWeightedRule(\"exchangeGlobalRateLimit\", 60000, 1000);\n"
+        + "  \n"
+        + "  public FooExchangeImpl(String exchangeName, Properties properties) {\n"
+        + "    super(ID, VERSION, exchangeName, properties);\n"
+        + "  }\n"
+        + "  \n"
+        + "}\n", 
+        exchangeGenerator.generate());
+  }
 
 }

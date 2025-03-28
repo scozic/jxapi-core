@@ -7,10 +7,10 @@ import org.junit.Test;
  * Unit test for {@link FutureHttpResponse}
  */
 public class FutureHttpResponseTest {
-	
-	@Test
-	public void testNew() {
-		Assert.assertNotNull(new FutureHttpResponse());
-	}
+  
+  @Test
+  public void testNew() {
+    Assert.assertNotNull(new FutureHttpResponse());
+  }
 
 }

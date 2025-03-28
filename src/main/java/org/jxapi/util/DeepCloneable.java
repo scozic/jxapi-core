@@ -8,13 +8,13 @@ package org.jxapi.util;
  * @param <T> The type of the object to deep clone
  */
 public interface DeepCloneable<T> {
-	
-	/**
-	 * Create a deep clone of this object.
-	 * This means that a distinct instance with all fields of this object deep cloned.
-	 * 
-	 * @return A deep clone of this object.
-	 */
-	T deepClone();
+  
+  /**
+   * Create a deep clone of this object.
+   * This means that a distinct instance with all fields of this object deep cloned.
+   * 
+   * @return A deep clone of this object.
+   */
+  T deepClone();
 
 }

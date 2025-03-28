@@ -54,7 +54,7 @@ public class DefaultObservableTest {
 
     @Test
     public void testUnsubscribeNotSubscribedListenerReturnsFalse() {
-    	DefaultObservable<TestObserver, String> observable = new DefaultObservable<>((l, e) -> l.handleEvent(e));
+      DefaultObservable<TestObserver, String> observable = new DefaultObservable<>((l, e) -> l.handleEvent(e));
         TestObserver observer1 = new TestObserver();
         TestObserver observer2 = new TestObserver();
         observable.subscribe(observer1);

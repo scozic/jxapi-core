@@ -15,9 +15,9 @@ public class DefaultWebsocketMessageTopicMatcherTest {
         DefaultWebsocketMessageTopicMatcher matcher = new DefaultWebsocketMessageTopicMatcher(List.of());
         Assert.assertNotNull(matcher);
         Assert.assertEquals(WebsocketMessageTopicMatchStatus.MATCHED, matcher.getStatus());
-		Assert.assertEquals(WebsocketMessageTopicMatchStatus.MATCHED, matcher.matches("foo", "bar"));
-		matcher.reset();
-		Assert.assertEquals(WebsocketMessageTopicMatchStatus.MATCHED, matcher.getStatus());
+    Assert.assertEquals(WebsocketMessageTopicMatchStatus.MATCHED, matcher.matches("foo", "bar"));
+    matcher.reset();
+    Assert.assertEquals(WebsocketMessageTopicMatchStatus.MATCHED, matcher.getStatus());
     }
 
     @Test
@@ -85,7 +85,7 @@ public class DefaultWebsocketMessageTopicMatcherTest {
     
     @Test
     public void testToString() {
-    	Assert.assertEquals("DefaultWebsocketMessageTopicMatcher{f2=value2, f1=value1}", 
-    						new DefaultWebsocketMessageTopicMatcher(WebsocketMessageTopicMatcherField.createList("f1","value1", "f2","value2")).toString());
+      Assert.assertEquals("DefaultWebsocketMessageTopicMatcher{f2=value2, f1=value1}", 
+                new DefaultWebsocketMessageTopicMatcher(WebsocketMessageTopicMatcherField.createList("f1","value1", "f2","value2")).toString());
     }
 }

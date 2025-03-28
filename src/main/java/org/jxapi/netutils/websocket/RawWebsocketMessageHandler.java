@@ -5,9 +5,9 @@ package org.jxapi.netutils.websocket;
  */
 public interface RawWebsocketMessageHandler {
 
-	/**
-	 * Handle a websocket message.
-	 * @param message The message.
-	 */
-	void handleWebsocketMessage(String message);
+  /**
+   * Handle a websocket message.
+   * @param message The message.
+   */
+  void handleWebsocketMessage(String message);
 }

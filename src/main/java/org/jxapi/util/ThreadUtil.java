@@ -9,14 +9,14 @@ import org.apache.commons.lang3.concurrent.BasicThreadFactory;
  */
 public class ThreadUtil {
 
-	private ThreadUtil() {}
-	
-	/**
-	 * Creates a {@link ThreadFactory} which creates Threads with given prefix as name.
-	 * @param prefix The thread name prefix
-	 * @return a new {@link ThreadFactory} instance
-	 */
-	public static ThreadFactory createNamePrefixThreadFactory(String prefix) {
-		return new BasicThreadFactory.Builder().namingPattern(prefix + "%d").build();
-	}
+  private ThreadUtil() {}
+  
+  /**
+   * Creates a {@link ThreadFactory} which creates Threads with given prefix as name.
+   * @param prefix The thread name prefix
+   * @return a new {@link ThreadFactory} instance
+   */
+  public static ThreadFactory createNamePrefixThreadFactory(String prefix) {
+    return new BasicThreadFactory.Builder().namingPattern(prefix + "%d").build();
+  }
 }

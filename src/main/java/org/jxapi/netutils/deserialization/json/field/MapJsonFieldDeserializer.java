@@ -17,42 +17,42 @@ import org.jxapi.util.CollectionUtil;
  * @see JsonDeserializer
  */
 public class MapJsonFieldDeserializer<T> extends AbstractJsonMessageDeserializer<Map<String, T>> {
-	
-	private final JsonDeserializer<T> itemDeserializer;
-	
-	/**
-	 * @param structDeserializer the deserializer for the values of the map
-	 */
-	public MapJsonFieldDeserializer(JsonDeserializer<T> structDeserializer) {
-		this.itemDeserializer = structDeserializer;
-	}
+  
+  private final JsonDeserializer<T> itemDeserializer;
+  
+  /**
+   * @param structDeserializer the deserializer for the values of the map
+   */
+  public MapJsonFieldDeserializer(JsonDeserializer<T> structDeserializer) {
+    this.itemDeserializer = structDeserializer;
+  }
 
-	@Override
-	public Map<String, T> deserialize(JsonParser parser) throws IOException {
-		if (parser.currentToken() == JsonToken.VALUE_NULL) {
-			return null;
-		}
-		if (parser.currentToken() != JsonToken.START_OBJECT) {
-			throw new IllegalStateException("Expecting start object of map of string keys, and values objects to be deserialized using " 
-											+ this.itemDeserializer 
-											+ " but found:" 
-											+ parser.currentToken());
-		}
-		
-		Map<String, T> res = CollectionUtil.createMap();
+  @Override
+  public Map<String, T> deserialize(JsonParser parser) throws IOException {
+    if (parser.currentToken() == JsonToken.VALUE_NULL) {
+      return null;
+    }
+    if (parser.currentToken() != JsonToken.START_OBJECT) {
+      throw new IllegalStateException("Expecting start object of map of string keys, and values objects to be deserialized using " 
+                      + this.itemDeserializer 
+                      + " but found:" 
+                      + parser.currentToken());
+    }
+    
+    Map<String, T> res = CollectionUtil.createMap();
         while (parser.nextToken() != JsonToken.END_OBJECT) {
-        	if (parser.currentToken() != JsonToken.FIELD_NAME) {
-        		throw new IllegalStateException("Expecting field name in map of objects to be deserialized using " 
-						+ this.itemDeserializer 
-						+ " but found:" 
-						+ parser.currentToken());
-        	}
+          if (parser.currentToken() != JsonToken.FIELD_NAME) {
+            throw new IllegalStateException("Expecting field name in map of objects to be deserialized using " 
+            + this.itemDeserializer 
+            + " but found:" 
+            + parser.currentToken());
+          }
             String key = parser.getCurrentName();
             parser.nextToken();
             res.put(key, itemDeserializer.deserialize(parser));
         }
         
-		return res;
-	}
+    return res;
+  }
 
 }

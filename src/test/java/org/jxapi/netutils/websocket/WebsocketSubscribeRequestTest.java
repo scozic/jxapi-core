@@ -36,6 +36,6 @@ public class WebsocketSubscribeRequestTest {
     public void testToString() {
         WebsocketSubscribeRequest request = WebsocketSubscribeRequest.create("request", "topic", WebsocketMessageTopicMatcherFactory.create());
         Assert.assertEquals("WebsocketSubscribeRequest{\"messageTopicMatcherFactory\":{},\"request\":\"request\",\"topic\":\"topic\"}", 
-        					request.toString());
+                  request.toString());
     }
 }

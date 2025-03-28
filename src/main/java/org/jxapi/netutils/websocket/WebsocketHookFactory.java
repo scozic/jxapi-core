@@ -12,27 +12,27 @@ import org.jxapi.util.FactoryUtil;
  */
 public interface WebsocketHookFactory {
 
-	/**
-	 * Create a new instance of a {@link WebsocketHook} implementation.
-	 * 
-	 * @param exchangeApi the {@link ExchangeApi} instance that can be used to
-	 *                    retrieve configuration properties.
-	 * @return a new instance of a {@link WebsocketHook} implementation.
-	 */
-	WebsocketHook createWebsocketHook(ExchangeApi exchangeApi);
-	
-	/**
-	 * Factory method to instantiate {@link WebsocketHookFactory} from its
-	 * class name.
-	 * 
-	 * @param cls Name of {@link WebsocketHookFactory} implementation
-	 *            class. Should have a default constructor.
-	 * @return factory of <code>cls</code> class.
-	 * @throws IllegalArgumentException If provided class cannot be instantiated by
-	 *                                  reflection or does not provide a default
-	 *                                  constructor.
-	 */
-	public static WebsocketHookFactory fromClassName(String cls) {
-		return FactoryUtil.fromClassName(cls);
-	}
+  /**
+   * Create a new instance of a {@link WebsocketHook} implementation.
+   * 
+   * @param exchangeApi the {@link ExchangeApi} instance that can be used to
+   *                    retrieve configuration properties.
+   * @return a new instance of a {@link WebsocketHook} implementation.
+   */
+  WebsocketHook createWebsocketHook(ExchangeApi exchangeApi);
+  
+  /**
+   * Factory method to instantiate {@link WebsocketHookFactory} from its
+   * class name.
+   * 
+   * @param cls Name of {@link WebsocketHookFactory} implementation
+   *            class. Should have a default constructor.
+   * @return factory of <code>cls</code> class.
+   * @throws IllegalArgumentException If provided class cannot be instantiated by
+   *                                  reflection or does not provide a default
+   *                                  constructor.
+   */
+  public static WebsocketHookFactory fromClassName(String cls) {
+    return FactoryUtil.fromClassName(cls);
+  }
 }

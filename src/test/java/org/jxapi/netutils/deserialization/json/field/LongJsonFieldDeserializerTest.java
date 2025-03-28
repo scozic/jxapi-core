@@ -8,8 +8,8 @@ import org.junit.Test;
  */
 public class LongJsonFieldDeserializerTest {
 
-	@Test
-	public void testDeserialize() {
-		Assert.assertEquals(Long.valueOf(3L), LongJsonFieldDeserializer.getInstance().deserialize("3"));
-	}
+  @Test
+  public void testDeserialize() {
+    Assert.assertEquals(Long.valueOf(3L), LongJsonFieldDeserializer.getInstance().deserialize("3"));
+  }
 }

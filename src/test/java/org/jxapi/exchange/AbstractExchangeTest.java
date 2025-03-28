@@ -54,7 +54,7 @@ public class AbstractExchangeTest {
 
     @Test
     public void testSubscribeObserver() {
-    	TestExchangeApi api = new TestExchangeApi("myExchangeApi");
+      TestExchangeApi api = new TestExchangeApi("myExchangeApi");
         exchange.addApi(api);
         TestExchangeApiObserver observer = new TestExchangeApiObserver();
         exchange.subscribeObserver(observer);
@@ -134,26 +134,26 @@ public class AbstractExchangeTest {
 
     // Helper class for testing ExchangeApiObserver
     private static class TestExchangeApiObserver implements ExchangeApiObserver {
-    	
-    	List<ExchangeApiEvent> events = new ArrayList<>();
+      
+      List<ExchangeApiEvent> events = new ArrayList<>();
 
-		@Override
-		public void handleEvent(ExchangeApiEvent event) {
-			events.add(event);
-		}
+    @Override
+    public void handleEvent(ExchangeApiEvent event) {
+      events.add(event);
+    }
     }
 
     // Helper class for testing ExchangeApi
     private class TestExchangeApi extends AbstractExchangeApi {
 
-		public TestExchangeApi(String apiName) {
-			super(apiName, exchange.getName(), exchange.getId(), exchange.getProperties(), new RequestThrottler("TestApi"));
-		}
-		
-		@Override
-		public void dispatchApiEvent(ExchangeApiEvent event) {
-			super.dispatchApiEvent(event);
-		}
+    public TestExchangeApi(String apiName) {
+      super(apiName, exchange.getName(), exchange.getId(), exchange.getProperties(), new RequestThrottler("TestApi"));
+    }
+    
+    @Override
+    public void dispatchApiEvent(ExchangeApiEvent event) {
+      super.dispatchApiEvent(event);
+    }
     }
 
     // Helper class for testing AbstractExchange
@@ -164,7 +164,7 @@ public class AbstractExchangeTest {
         
         @Override
         public <T extends ExchangeApi> T addApi(T api) {
-        	return super.addApi(api);
+          return super.addApi(api);
         }
     }
 }

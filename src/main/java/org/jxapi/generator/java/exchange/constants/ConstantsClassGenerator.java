@@ -16,9 +16,9 @@ import org.jxapi.generator.java.JavaTypeGenerator;
  * 
  *  private MyConstants(){}
  * 
- * 	public static final String MY_STRING = "foo";
- * 	public static final Integer MY_INT = Integer.valueOf(42);
- * 	public static Long MY_TIMESTAMP = Long.valueOf(System.currentTimeMillis());
+ *   public static final String MY_STRING = "foo";
+ *   public static final Integer MY_INT = Integer.valueOf(42);
+ *   public static Long MY_TIMESTAMP = Long.valueOf(System.currentTimeMillis());
  * }
  * }
  * </pre>
@@ -31,28 +31,28 @@ import org.jxapi.generator.java.JavaTypeGenerator;
  */
 public class ConstantsClassGenerator extends JavaTypeGenerator {
 
-	private final  List<Constant> constants;
-	
-	/**
-	 * Creates a new instance of the generator.
-	 * 
-	 * @param fullTypeName the full name of the interface to generate, example:
-	 *                     com.example.MyConstants
-	 * @param constants    the list of constants to generate in the interface
-	 */
-	public ConstantsClassGenerator(String fullTypeName, List<Constant> constants) {
-		super(fullTypeName);
-		setTypeDeclaration("public class");
-		this.constants = constants;
-	}
-	
-	@Override
-	public String generate() {
-		appendToBody("\nprivate ")
-			.append(getSimpleName())
-			.append("(){}\n");
-		constants.forEach(c -> appendToBody("\n").append(ConstantsGenerationUtil.generateConstantDeclaration(c, getImports())));
-		return super.generate();
-	}
+  private final  List<Constant> constants;
+  
+  /**
+   * Creates a new instance of the generator.
+   * 
+   * @param fullTypeName the full name of the interface to generate, example:
+   *                     com.example.MyConstants
+   * @param constants    the list of constants to generate in the interface
+   */
+  public ConstantsClassGenerator(String fullTypeName, List<Constant> constants) {
+    super(fullTypeName);
+    setTypeDeclaration("public class");
+    this.constants = constants;
+  }
+  
+  @Override
+  public String generate() {
+    appendToBody("\nprivate ")
+      .append(getSimpleName())
+      .append("(){}\n");
+    constants.forEach(c -> appendToBody("\n").append(ConstantsGenerationUtil.generateConstantDeclaration(c, getImports())));
+    return super.generate();
+  }
 
 }

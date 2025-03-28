@@ -8,8 +8,8 @@ import org.junit.Test;
  */
 public class FutureRestResponseTest {
 
-	@Test
-	public void testNew() {
-		Assert.assertNotNull(new FutureRestResponse<>());
-	}
+  @Test
+  public void testNew() {
+    Assert.assertNotNull(new FutureRestResponse<>());
+  }
 }
