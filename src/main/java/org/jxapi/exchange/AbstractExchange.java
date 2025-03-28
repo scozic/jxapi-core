@@ -24,6 +24,8 @@ public abstract class AbstractExchange extends DefaultDisposable implements Exch
 	 */
 	protected final String id;
 	
+	protected final String version;
+	
 	/**
 	 * The exchange configuration properties
 	 */
@@ -40,8 +42,9 @@ public abstract class AbstractExchange extends DefaultDisposable implements Exch
 	 * @param name the exchange name
 	 * @param properties the exchange configuration properties
 	 */
-	protected AbstractExchange(String id, String name, Properties properties) {
+	protected AbstractExchange(String id, String version, String name, Properties properties) {
 		this.id = id;
+		this.version = version;
 		this.name = name;
 		this.properties = properties;
 	}
@@ -111,5 +114,9 @@ public abstract class AbstractExchange extends DefaultDisposable implements Exch
 	public void setHttpRequesTimeout(long httpRequestTimeout) {
 		apis.values().forEach(api -> api.setHttpRequestTimeout(httpRequestTimeout));
 	}
+	
+    public String getVersion() {
+      return version;
+    }
 
 }

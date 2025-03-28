@@ -24,8 +24,9 @@ public class AbstractExchangeTest {
         // Initialize the AbstractExchange instance with test data
         String id = "testId";
         String name = "testName";
+        String version = "1.0.0";
         Properties properties = new Properties();
-        exchange = new TestExchange(id, name, properties);
+        exchange = new TestExchange(id, version, name, properties);
     }
 
     @Test
@@ -44,6 +45,11 @@ public class AbstractExchangeTest {
     @Test
     public void testGetId() {
         Assert.assertEquals("testId", exchange.getId());
+    }
+    
+    @Test
+    public void testGetVersion() {
+      Assert.assertEquals("1.0.0", exchange.getVersion());
     }
 
     @Test
@@ -152,8 +158,8 @@ public class AbstractExchangeTest {
 
     // Helper class for testing AbstractExchange
     private static class TestExchange extends AbstractExchange {
-        public TestExchange(String id, String name, Properties properties) {
-            super(id, name, properties);
+        public TestExchange(String id, String version, String name, Properties properties) {
+            super(id, version, name, properties);
         }
         
         @Override

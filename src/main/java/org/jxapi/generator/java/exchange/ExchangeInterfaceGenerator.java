@@ -16,9 +16,14 @@ import org.jxapi.generator.java.JavaTypeGenerator;
 public class ExchangeInterfaceGenerator extends JavaTypeGenerator {
 	
 	/**
-	 * Name of the exchange ID field.
+	 * Name of the exchange 'id' field.
 	 */
 	public static final String EXCHANGE_ID_VARIABLE = "ID";
+	
+	   /**
+     * Name of the exchange 'version' field.
+     */
+    public static final String EXCHANGE_VERSION_VARIABLE = "VERSION";
 	
 	private final ExchangeDescriptor exchangeDescriptor;
 	
@@ -44,7 +49,13 @@ public class ExchangeInterfaceGenerator extends JavaTypeGenerator {
 			.append(EXCHANGE_ID_VARIABLE)
 			.append(" = ")
 			.append(JavaCodeGenUtil.getQuotedString(exchangeDescriptor.getId()))
-			.append(";\n");
+			.append(";\n")
+			.append(JavaCodeGenUtil.generateJavaDoc("Version of the '" + exchangeDescriptor.getId() + "' exchange"))
+	        .append("\nString ")
+	        .append(EXCHANGE_VERSION_VARIABLE)
+	        .append(" = ")
+	        .append(JavaCodeGenUtil.getQuotedString(exchangeDescriptor.getVersion()))
+	        .append(";\n");
 		
 		for (ExchangeApiDescriptor api: exchangeDescriptor.getApis()) {
 			String apiClassName = ExchangeJavaGenUtil.getApiInterfaceClassName(exchangeDescriptor, api);

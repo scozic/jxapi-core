@@ -1,5 +1,6 @@
 {
 	"id": "MyTestExchange",
+	"version": "1.0.0",
 	"description": "A sample Exchange descriptor file",
 	"docUrl": "https://docs.myexchange.com/api",
 	"basePackage": "com.foo.bar.gen",

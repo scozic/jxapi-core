@@ -115,6 +115,8 @@ public class ExchangeInterfaceImplementationGenerator extends JavaTypeGenerator 
 			.append("super(")
 			.append(ExchangeInterfaceGenerator.EXCHANGE_ID_VARIABLE)
 			.append(", ")
+            .append(ExchangeInterfaceGenerator.EXCHANGE_VERSION_VARIABLE)
+			.append(", ")
 			.append(EXCHANGE_NAME_PARAMETER)
 			.append(", ")
 			.append(PROPERTIES_PARAMETER)

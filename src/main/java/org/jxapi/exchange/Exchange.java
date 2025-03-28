@@ -36,6 +36,11 @@ public interface Exchange extends Disposable, HasProperties {
 	 *         class.
 	 */
 	String getId();
+	
+	/**
+	 * @return The version of the exchange
+	 */
+	String getVersion();
 
 	/**
 	 * Subscribes an observer to every {@link ExchangeApi} exposed.

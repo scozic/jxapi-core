@@ -16,6 +16,10 @@ public interface DemoExchangeExchange extends Exchange {
    * ID of the 'DemoExchange' exchange
    */
   String ID = "DemoExchange";
+  /**
+   * Version of the 'DemoExchange' exchange
+   */
+  String VERSION = "1.0.0";
   
   /**
    * @return Demo exchange market data API

@@ -34,6 +34,8 @@ public class ExchangeDescriptorTest {
         exchangeDescriptor.setHttpRequestTimeout(2000L);
         exchangeDescriptor.setWebsocketFactory("com.x.y.net.MyWebsocketFactory");
         exchangeDescriptor.setWebsocketHookFactory("com.x.y.net.MyWebsocketHookFactory");
+        exchangeDescriptor.setVersion("1.0.0");
+        exchangeDescriptor.setJxapi("0.15.0");
         Assert.assertEquals("name", exchangeDescriptor.getId());
         Assert.assertEquals("description", exchangeDescriptor.getDescription());
         Assert.assertEquals("com.x.y", exchangeDescriptor.getBasePackage());
@@ -47,6 +49,8 @@ public class ExchangeDescriptorTest {
         Assert.assertEquals(2000L, exchangeDescriptor.getHttpRequestTimeout());
         Assert.assertEquals("com.x.y.net.MyWebsocketFactory", exchangeDescriptor.getWebsocketFactory());
         Assert.assertEquals("com.x.y.net.MyWebsocketHookFactory", exchangeDescriptor.getWebsocketHookFactory());
+        Assert.assertEquals("1.0.0", exchangeDescriptor.getVersion());
+        Assert.assertEquals("0.15.0", exchangeDescriptor.getJxapi());
     }
 
     @Test
@@ -57,6 +61,8 @@ public class ExchangeDescriptorTest {
         exchangeDescriptor.setBasePackage("basePackage");
         exchangeDescriptor.setApis(List.of(new ExchangeApiDescriptor()));
         exchangeDescriptor.setRateLimits(List.of(new RateLimitRule()));
-        Assert.assertEquals("ExchangeDescriptor{\"apis\":[{\"httpRequestTimeout\":-1}],\"basePackage\":\"basePackage\",\"description\":\"description\",\"httpRequestTimeout\":-1,\"id\":\"name\",\"rateLimits\":[{\"granularity\":10,\"maxRequestCount\":-1,\"maxTotalWeight\":-1,\"timeFrame\":0}]}", exchangeDescriptor.toString());
+        exchangeDescriptor.setVersion("1.0.0");
+        exchangeDescriptor.setJxapi("0.15.0");
+        Assert.assertEquals("ExchangeDescriptor{\"apis\":[{\"httpRequestTimeout\":-1}],\"basePackage\":\"basePackage\",\"description\":\"description\",\"httpRequestTimeout\":-1,\"id\":\"name\",\"jxapi\":\"0.15.0\",\"rateLimits\":[{\"granularity\":10,\"maxRequestCount\":-1,\"maxTotalWeight\":-1,\"timeFrame\":0}],\"version\":\"1.0.0\"}", exchangeDescriptor.toString());
     }
 }

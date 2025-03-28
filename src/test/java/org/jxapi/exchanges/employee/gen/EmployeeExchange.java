@@ -17,6 +17,10 @@ public interface EmployeeExchange extends Exchange {
    * ID of the 'Employee' exchange
    */
   String ID = "Employee";
+  /**
+   * Version of the 'Employee' exchange
+   */
+  String VERSION = "1.0.0";
   
   /**
    * @return Version 1 of the Employee API
