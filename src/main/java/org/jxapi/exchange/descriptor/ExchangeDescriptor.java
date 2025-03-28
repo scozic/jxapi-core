@@ -21,46 +21,46 @@ import org.jxapi.util.EncodingUtil;
  * 
  * <pre>
  * {
- * 		"name": "Binance",
- * 		"ID": "BINANCE",
- * 		"description": "Binance exchange",
- * 		"docUrl": "https://binance-docs.github.io/apidocs",
- * 		"basePackage": "org.jxapi.exchange.binance",
- * 		"properties": [
- * 			{
- * 				"name": "apiKey",
- * 				"type": "STRING",
- * 				"description": "API key for authentication",
- * 			}
- * 		],
- * 		"constants": [
- * 			{
- * 				"name": "API_BASE_URL",
- * 				"description": "Base URL of the API",
- * 				"type": "STRING",
- * 				"value": "https://api.myexchange.com"
- * 			}
- * 		"apis": [
- * 			{
- * 				"name": "Spot",
- * 				"description": "Spot trading API",
- * 				"httpRequestExecutorFactory": "org.jxapi.netutils.rest.mock.MockHttpRequestExecutorFactory",
- * 				"httpRequestInterceptorFactory": "org.jxapi.netutils.rest.mock.MockHttpRequestInterceptorFactory",
- * 				"restEndpoints": [
- * 					// RESTendpoints here
- * 				],
- * 				"websocketEndpoints": [
- * 					// Websocket endpoints here
- * 				],
- * 			}
- * 		],
- * 		"rateLimits": [
- * 			{
- * 				"timeFrame": 60000,
- * 		        "maxRequestCount": 1200,
- * 		        "maxTotalWeight": 1200
- * 			}
- * 		]
+ *     "name": "Binance",
+ *     "ID": "BINANCE",
+ *     "description": "Binance exchange",
+ *     "docUrl": "https://binance-docs.github.io/apidocs",
+ *     "basePackage": "org.jxapi.exchange.binance",
+ *     "properties": [
+ *       {
+ *         "name": "apiKey",
+ *         "type": "STRING",
+ *         "description": "API key for authentication",
+ *       }
+ *     ],
+ *     "constants": [
+ *       {
+ *         "name": "API_BASE_URL",
+ *         "description": "Base URL of the API",
+ *         "type": "STRING",
+ *         "value": "https://api.myexchange.com"
+ *       }
+ *     "apis": [
+ *       {
+ *         "name": "Spot",
+ *         "description": "Spot trading API",
+ *         "httpRequestExecutorFactory": "org.jxapi.netutils.rest.mock.MockHttpRequestExecutorFactory",
+ *         "httpRequestInterceptorFactory": "org.jxapi.netutils.rest.mock.MockHttpRequestInterceptorFactory",
+ *         "restEndpoints": [
+ *           // RESTendpoints here
+ *         ],
+ *         "websocketEndpoints": [
+ *           // Websocket endpoints here
+ *         ],
+ *       }
+ *     ],
+ *     "rateLimits": [
+ *       {
+ *         "timeFrame": 60000,
+ *             "maxRequestCount": 1200,
+ *             "maxTotalWeight": 1200
+ *       }
+ *     ]
  * }
  * </pre>
  * 
@@ -76,11 +76,10 @@ import org.jxapi.util.EncodingUtil;
  * applied to all endpoints of each API group of the exchange. See
  * {@link RateLimitRule}</li>
  * <li>constants: list of constants that are used in context of the exchange
- * wrapper, for instance specific values for some APIs
- * request/response/message properties. See {@link Constant}</li>
+ * wrapper, for instance specific values for some APIs request/response/message
+ * properties. See {@link Constant}</li>
  * <li>properties: list of configuration properties that can be configured for
- * the exchange
- * wrapper, for instance API keys, secret keys, etc. See
+ * the exchange wrapper, for instance API keys, secret keys, etc. See
  * {@link DefaultConfigProperty}</li>
  * <li><code>httpRequestInterceptorFactory</code>,
  * <code>httpRequestExecutorFactory</code>, <code>httpRequestTimeout</code>,
@@ -105,309 +104,348 @@ import org.jxapi.util.EncodingUtil;
  * @see ExchangeApiDescriptor
  */
 public class ExchangeDescriptor {
-	
-	private String name;
-	
-	private String description;
-	
-	private String docUrl;
-	
-	private String basePackage;
-	
-	private List<ExchangeApiDescriptor> apis;
-	
-	private List<RateLimitRule> rateLimits;
-	
-	private List<Constant> constants;
-	
-	private List<DefaultConfigProperty> properties;
-	
-	private String httpRequestInterceptorFactory;
-	
-	private String httpRequestExecutorFactory;
-	
-	private long httpRequestTimeout = -1L;
-	
-	private String websocketFactory;
-	
-	private String websocketHookFactory;
-	
-	private String httpUrl;
-	
-	private String websocketUrl;
 
-	/**
-	 * Returns the list of APIs of the exchange.
-	 * @return the list of APIs of the exchange
-	 * @see ExchangeApiDescriptor
-	 */
-	public List<ExchangeApiDescriptor> getApis() {
-		return apis;
-	}
+  private String id;
 
-	/**
-	 * Sets the list of APIs of the exchange.
-	 * @param apis the list of APIs of the exchange
-	 * @see ExchangeApiDescriptor
-	 */
-	public void setApis(List<ExchangeApiDescriptor> apis) {
-		this.apis = apis;
-	}
+  private String jxapi;
 
-	/**
-	 * Returns the name of the exchange. Remark that this is map to the ID of the exchange.
-	 * @return the name of the exchange
-	 * @see Exchange#getId()
-	 */
-	public String getName() {
-		return name;
-	}
+  private String version;
 
-	/**
-	 * Sets the name of the exchange. Remark that this is map to the ID of the exchange.
-	 * @param name the name of the exchange
-	 * @see Exchange#getId()
-	 */
-	public void setName(String name) {
-		this.name = name;
-	}
+  private String description;
 
-	/**
-	 * Returns the description of the exchange.
-	 * @return the description of the exchange
-	 */
-	public String getDescription() {
-		return description;
-	}
+  private String docUrl;
 
-	/**
-	 * Sets the description of the exchange.
-	 * @param description the description of the exchange
-	 */
-	public void setDescription(String description) {
-		this.description = description;
-	}
-	
-	/**
-	 * @return Exchange's website API documentation home page
-	 */
-	public String getDocUrl() {
-		return docUrl;
-	}
+  private String basePackage;
 
-	/**
-	 * @param excgangeUrl Exchange's website API documentation home page
-	 */
-	public void setDocUrl(String excgangeUrl) {
-		this.docUrl = excgangeUrl;
-	}
-	
-	/**
-	 * Returns the base package of the exchange implementation classes.
-	 * @return the base package of the exchange
-	 */
-	public String getBasePackage() {
-		return basePackage;
-	}
+  private List<ExchangeApiDescriptor> apis;
 
-	/**
-	 * Sets the base package of the exchange implementation classes.
-	 * @param basePackage the base package of the exchange
-	 */
-	public void setBasePackage(String basePackage) {
-		this.basePackage = basePackage;
-	}
-	
-	/**
-	 * Returns the list of rate limits of the exchange. These limits will be applied
-	 * to all endpoints of each API group of the exchange.
-	 * 
-	 * @return the list of rate limits of the exchange
-	 * @see RateLimitRule
-	 */
-	public List<RateLimitRule> getRateLimits() {
-		return rateLimits;
-	}
+  private List<RateLimitRule> rateLimits;
 
-	/**
-	 * Sets the list of rate limits of the exchange. These limits will be applied
-	 * to all endpoints of each API group of the exchange.
-	 * 
-	 * @param rateLimits the list of rate limits of the exchange
-	 * @see RateLimitRule
-	 */
-	public void setRateLimits(List<RateLimitRule> rateLimits) {
-		this.rateLimits = rateLimits;
-	}
-	
-	/**
-	 * @return List of constants that are used in context of the exchange wrapper,
-	 *         for instance specific values for some APIs request/response/message
-	 *         properties.
-	 * @see Constant
-	 */
-	public List<Constant> getConstants() {
-		return constants;
-	}
+  private List<Constant> constants;
 
-	/**
-	 * @param constants List of constants that are used in context of the exchange
-	 *                  wrapper, for instance specific values for some APIs
-	 *                  request/response/message properties.
-	 * @see Constant
-	 */
-	public void setConstants(List<Constant> constants) {
-		this.constants = constants;
-	}
+  private List<DefaultConfigProperty> properties;
 
-	/**
-	 * @return List of properties that can be configured for the exchange wrapper,
-	 *         for instance API keys, secret keys, etc.
-	 * @see DefaultConfigProperty
-	 */
-	public List<DefaultConfigProperty> getProperties() {
-		return properties;
-	}
+  private String httpRequestInterceptorFactory;
 
-	/**
-	 * @param properties List of properties that can be configured for the exchange
-	 *                   wrapper, for instance API keys, secret keys, etc.
-	 * @see DefaultConfigProperty
-	 */
-	public void setProperties(List<DefaultConfigProperty> properties) {
-		this.properties = properties;
-	}
-	
-	/**
-	 * @return Default value for {@link ExchangeApi}
-	 *         {@link HttpRequestInterceptorFactory} class
-	 * @see ExchangeApiDescriptor#getHttpRequestInterceptorFactory()
-	 */
-	public String getHttpRequestInterceptorFactory() {
-		return httpRequestInterceptorFactory;
-	}
+  private String httpRequestExecutorFactory;
 
-	/**
-	 * @param httpRequestInterceptorFactory Default value for {@link ExchangeApi}
-	 *                                      {@link HttpRequestInterceptorFactory}
-	 *                                      class
-	 * @see ExchangeApiDescriptor#getHttpRequestInterceptorFactory()
-	 */
-	public void setHttpRequestInterceptorFactory(String httpRequestInterceptorFactory) {
-		this.httpRequestInterceptorFactory = httpRequestInterceptorFactory;
-	}
+  private long httpRequestTimeout = -1L;
 
-	/**
-	 * @return Default value for {@link ExchangeApi}
-	 *         {@link HttpRequestExecutorFactory} class
-	 * @see ExchangeApiDescriptor#getHttpRequestExecutorFactory()
-	 */
-	public String getHttpRequestExecutorFactory() {
-		return httpRequestExecutorFactory;
-	}
+  private String websocketFactory;
 
-	/**
-	 * @param httpRequestExecutorFactory Default value for {@link ExchangeApi}
-	 *                                   {@link HttpRequestExecutorFactory} class
-	 * @see ExchangeApiDescriptor#getHttpRequestExecutorFactory()
-	 */
-	public void setHttpRequestExecutorFactory(String httpRequestExecutorFactory) {
-		this.httpRequestExecutorFactory = httpRequestExecutorFactory;
-	}
+  private String websocketHookFactory;
 
-	/**
-	 * @return Default value for {@link ExchangeApi} HTTP request timeout
-	 * @see ExchangeApiDescriptor#getHttpRequestTimeout()
-	 */
-	public long getHttpRequestTimeout() {
-		return httpRequestTimeout;
-	}
+  private String httpUrl;
 
-	/**
-	 * @param httpRequestTimeout Default value for {@link ExchangeApi} HTTP request
-	 *                           timeout
-	 * @see ExchangeApiDescriptor#getHttpRequestTimeout()
-	 */
-	public void setHttpRequestTimeout(long httpRequestTimeout) {
-		this.httpRequestTimeout = httpRequestTimeout;
-	}
-	
-	/**
-	 * @return Base URL of the HTTP (REST) API of the exchange. This URL can be
-	 *         concateneted to websocket API group <code>httpUrl</code> property
-	 *         (see {@link ExchangeApiDescriptor#getHttpUrl()} ) and endpoint URL
-	 *         (see {@link RestEndpointDescriptor#getUrl()} when one of these
-	 *         properties are not absolute)
-	 */
-	public String getHttpUrl() {
-		return httpUrl;
-	}
+  private String websocketUrl;
 
-	/**
-	 * @param httpUrl Base URL of the HTTP (REST) API of the exchange. This URL can
-	 *                be concateneted to websocket API group <code>httpUrl</code>
-	 *                property (see {@link ExchangeApiDescriptor#getHttpUrl()} ) and
-	 *                endpoint URL (see {@link RestEndpointDescriptor#getUrl()} when
-	 *                one of these properties are not absolute)
-	 */
-	public void setHttpUrl(String httpUrl) {
-		this.httpUrl = httpUrl;
-	}
+  /**
+   * Returns the list of APIs of the exchange.
+   * 
+   * @return the list of APIs of the exchange
+   * @see ExchangeApiDescriptor
+   */
+  public List<ExchangeApiDescriptor> getApis() {
+    return apis;
+  }
 
-	/**
-	 * @return Default value for {@link ExchangeApi} websocket factory class
-	 * @see ExchangeApiDescriptor#getWebsocketFactory()
-	 */
-	public String getWebsocketFactory() {
-		return websocketFactory;
-	}
+  /**
+   * Sets the list of APIs of the exchange.
+   * 
+   * @param apis the list of APIs of the exchange
+   * @see ExchangeApiDescriptor
+   */
+  public void setApis(List<ExchangeApiDescriptor> apis) {
+    this.apis = apis;
+  }
 
-	/**
-	 * @param websocketFactory Default value for {@link ExchangeApi} websocket
-	 *                         factory class
-	 * @see ExchangeApiDescriptor#getWebsocketFactory()
-	 */
-	public void setWebsocketFactory(String websocketFactory) {
-		this.websocketFactory = websocketFactory;
-	}
+  /**
+   * @return the ID of the exchange
+   * @see Exchange#getId()
+   */
+  public String getId() {
+    return id;
+  }
 
-	/**
-	 * @return Default value for {@link ExchangeApi} websocket hook factory class
-	 * @see ExchangeApiDescriptor#getWebsocketHookFactory()
-	 */
-	public String getWebsocketHookFactory() {
-		return websocketHookFactory;
-	}
+  /**
+   * Sets the name of the exchange. Remark that this is map to the ID of the
+   * exchange.
+   * 
+   * @param id the ID of the exchange
+   * @see Exchange#getId()
+   */
+  public void setId(String id) {
+    this.id = id;
+  }
 
-	/**
-	 * @param websocketHookFactory Default value for {@link ExchangeApi} websocket
-	 *                             hook factory class
-	 * @see ExchangeApiDescriptor#getWebsocketHookFactory()
-	 */
-	public void setWebsocketHookFactory(String websocketHookFactory) {
-		this.websocketHookFactory = websocketHookFactory;
-	}
+  /**
+   * Returns the description of the exchange.
+   * 
+   * @return the description of the exchange
+   */
+  public String getDescription() {
+    return description;
+  }
 
-	/**
-	 * @return Base URL of the Websocket endpoints of this API group. 
-	 */
-	public String getWebsocketUrl() {
-		return websocketUrl;
-	}
+  /**
+   * Sets the description of the exchange.
+   * 
+   * @param description the description of the exchange
+   */
+  public void setDescription(String description) {
+    this.description = description;
+  }
 
-	/**
-	 * @param websocketUrl Base URL of the Websocket endpoints of this API group.
-	 */
-	public void setWebsocketUrl(String websocketUrl) {
-		this.websocketUrl = websocketUrl;
-	}
-	
-	/**
-	 * @return a string representation of the exchange descriptor
-	 * @see EncodingUtil#pojoToString(Object)
-	 */
-	@Override
-	public String toString() {
-		return EncodingUtil.pojoToString(this);
-	}
+  /**
+   * @return Exchange's website API documentation home page
+   */
+  public String getDocUrl() {
+    return docUrl;
+  }
+
+  /**
+   * @param excgangeUrl Exchange's website API documentation home page
+   */
+  public void setDocUrl(String excgangeUrl) {
+    this.docUrl = excgangeUrl;
+  }
+
+  /**
+   * Returns the base package of the exchange implementation classes.
+   * 
+   * @return the base package of the exchange
+   */
+  public String getBasePackage() {
+    return basePackage;
+  }
+
+  /**
+   * Sets the base package of the exchange implementation classes.
+   * 
+   * @param basePackage the base package of the exchange
+   */
+  public void setBasePackage(String basePackage) {
+    this.basePackage = basePackage;
+  }
+
+  /**
+   * Returns the list of rate limits of the exchange. These limits will be applied
+   * to all endpoints of each API group of the exchange.
+   * 
+   * @return the list of rate limits of the exchange
+   * @see RateLimitRule
+   */
+  public List<RateLimitRule> getRateLimits() {
+    return rateLimits;
+  }
+
+  /**
+   * Sets the list of rate limits of the exchange. These limits will be applied to
+   * all endpoints of each API group of the exchange.
+   * 
+   * @param rateLimits the list of rate limits of the exchange
+   * @see RateLimitRule
+   */
+  public void setRateLimits(List<RateLimitRule> rateLimits) {
+    this.rateLimits = rateLimits;
+  }
+
+  /**
+   * @return List of constants that are used in context of the exchange wrapper,
+   *         for instance specific values for some APIs request/response/message
+   *         properties.
+   * @see Constant
+   */
+  public List<Constant> getConstants() {
+    return constants;
+  }
+
+  /**
+   * @param constants List of constants that are used in context of the exchange
+   *                  wrapper, for instance specific values for some APIs
+   *                  request/response/message properties.
+   * @see Constant
+   */
+  public void setConstants(List<Constant> constants) {
+    this.constants = constants;
+  }
+
+  /**
+   * @return List of properties that can be configured for the exchange wrapper,
+   *         for instance API keys, secret keys, etc.
+   * @see DefaultConfigProperty
+   */
+  public List<DefaultConfigProperty> getProperties() {
+    return properties;
+  }
+
+  /**
+   * @param properties List of properties that can be configured for the exchange
+   *                   wrapper, for instance API keys, secret keys, etc.
+   * @see DefaultConfigProperty
+   */
+  public void setProperties(List<DefaultConfigProperty> properties) {
+    this.properties = properties;
+  }
+
+  /**
+   * @return Default value for {@link ExchangeApi}
+   *         {@link HttpRequestInterceptorFactory} class
+   * @see ExchangeApiDescriptor#getHttpRequestInterceptorFactory()
+   */
+  public String getHttpRequestInterceptorFactory() {
+    return httpRequestInterceptorFactory;
+  }
+
+  /**
+   * @param httpRequestInterceptorFactory Default value for {@link ExchangeApi}
+   *                                      {@link HttpRequestInterceptorFactory}
+   *                                      class
+   * @see ExchangeApiDescriptor#getHttpRequestInterceptorFactory()
+   */
+  public void setHttpRequestInterceptorFactory(String httpRequestInterceptorFactory) {
+    this.httpRequestInterceptorFactory = httpRequestInterceptorFactory;
+  }
+
+  /**
+   * @return Default value for {@link ExchangeApi}
+   *         {@link HttpRequestExecutorFactory} class
+   * @see ExchangeApiDescriptor#getHttpRequestExecutorFactory()
+   */
+  public String getHttpRequestExecutorFactory() {
+    return httpRequestExecutorFactory;
+  }
+
+  /**
+   * @param httpRequestExecutorFactory Default value for {@link ExchangeApi}
+   *                                   {@link HttpRequestExecutorFactory} class
+   * @see ExchangeApiDescriptor#getHttpRequestExecutorFactory()
+   */
+  public void setHttpRequestExecutorFactory(String httpRequestExecutorFactory) {
+    this.httpRequestExecutorFactory = httpRequestExecutorFactory;
+  }
+
+  /**
+   * @return Default value for {@link ExchangeApi} HTTP request timeout
+   * @see ExchangeApiDescriptor#getHttpRequestTimeout()
+   */
+  public long getHttpRequestTimeout() {
+    return httpRequestTimeout;
+  }
+
+  /**
+   * @param httpRequestTimeout Default value for {@link ExchangeApi} HTTP request
+   *                           timeout
+   * @see ExchangeApiDescriptor#getHttpRequestTimeout()
+   */
+  public void setHttpRequestTimeout(long httpRequestTimeout) {
+    this.httpRequestTimeout = httpRequestTimeout;
+  }
+
+  /**
+   * @return Base URL of the HTTP (REST) API of the exchange. This URL can be
+   *         concateneted to websocket API group <code>httpUrl</code> property
+   *         (see {@link ExchangeApiDescriptor#getHttpUrl()} ) and endpoint URL
+   *         (see {@link RestEndpointDescriptor#getUrl()} when one of these
+   *         properties are not absolute)
+   */
+  public String getHttpUrl() {
+    return httpUrl;
+  }
+
+  /**
+   * @param httpUrl Base URL of the HTTP (REST) API of the exchange. This URL can
+   *                be concateneted to websocket API group <code>httpUrl</code>
+   *                property (see {@link ExchangeApiDescriptor#getHttpUrl()} ) and
+   *                endpoint URL (see {@link RestEndpointDescriptor#getUrl()} when
+   *                one of these properties are not absolute)
+   */
+  public void setHttpUrl(String httpUrl) {
+    this.httpUrl = httpUrl;
+  }
+
+  /**
+   * @return Default value for {@link ExchangeApi} websocket factory class
+   * @see ExchangeApiDescriptor#getWebsocketFactory()
+   */
+  public String getWebsocketFactory() {
+    return websocketFactory;
+  }
+
+  /**
+   * @param websocketFactory Default value for {@link ExchangeApi} websocket
+   *                         factory class
+   * @see ExchangeApiDescriptor#getWebsocketFactory()
+   */
+  public void setWebsocketFactory(String websocketFactory) {
+    this.websocketFactory = websocketFactory;
+  }
+
+  /**
+   * @return Default value for {@link ExchangeApi} websocket hook factory class
+   * @see ExchangeApiDescriptor#getWebsocketHookFactory()
+   */
+  public String getWebsocketHookFactory() {
+    return websocketHookFactory;
+  }
+
+  /**
+   * @param websocketHookFactory Default value for {@link ExchangeApi} websocket
+   *                             hook factory class
+   * @see ExchangeApiDescriptor#getWebsocketHookFactory()
+   */
+  public void setWebsocketHookFactory(String websocketHookFactory) {
+    this.websocketHookFactory = websocketHookFactory;
+  }
+
+  /**
+   * @return Base URL of the Websocket endpoints of this API group.
+   */
+  public String getWebsocketUrl() {
+    return websocketUrl;
+  }
+
+  /**
+   * @param websocketUrl Base URL of the Websocket endpoints of this API group.
+   */
+  public void setWebsocketUrl(String websocketUrl) {
+    this.websocketUrl = websocketUrl;
+  }
+
+  /**
+   * @return The version of JXAPI this exchange is compatible with.
+   */
+  public String getJxapi() {
+    return jxapi;
+  }
+
+  /**
+   * @param jxapi The version of JXAPI this exchange is compatible with.
+   */
+  public void setJxapi(String jxapi) {
+    this.jxapi = jxapi;
+  }
+
+  /**
+   * @return The version of the exchange.
+   */
+  public String getVersion() {
+    return version;
+  }
+
+  /**
+   * @param version The version of the exchange.
+   */
+  public void setVersion(String version) {
+    this.version = version;
+  }
+
+  /**
+   * @return a string representation of the exchange descriptor
+   * @see EncodingUtil#pojoToString(Object)
+   */
+  @Override
+  public String toString() {
+    return EncodingUtil.pojoToString(this);
+  }
 }

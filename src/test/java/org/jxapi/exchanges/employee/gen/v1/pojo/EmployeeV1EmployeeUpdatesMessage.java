@@ -3,11 +3,11 @@ package org.jxapi.exchanges.employee.gen.v1.pojo;
 import java.util.Objects;
 
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import javax.annotation.processing.Generated;
 import org.jxapi.exchanges.employee.gen.v1.serializers.EmployeeV1EmployeeUpdatesMessageSerializer;
 import org.jxapi.util.CompareUtil;
 import org.jxapi.util.EncodingUtil;
 import org.jxapi.util.Pojo;
-import javax.annotation.processing.Generated;
 
 /**
  * Message disseminated upon subscription to Employee V1 API employeeUpdates websocket endpoint request<br>
@@ -17,7 +17,7 @@ import javax.annotation.processing.Generated;
 @JsonSerialize(using = EmployeeV1EmployeeUpdatesMessageSerializer.class)
 public class EmployeeV1EmployeeUpdatesMessage implements Pojo<EmployeeV1EmployeeUpdatesMessage> {
   
-  private static final long serialVersionUID = 7538624937684340674L;
+  private static final long serialVersionUID = -1771730097053933571L;
   
   /**
    * @return A new builder to build {@link EmployeeV1EmployeeUpdatesMessage} objects

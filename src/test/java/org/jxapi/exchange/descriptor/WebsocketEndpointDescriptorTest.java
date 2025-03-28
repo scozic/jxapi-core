@@ -17,25 +17,25 @@ public class WebsocketEndpointDescriptorTest {
     }
     
     private void setTestValues(WebsocketEndpointDescriptor descriptor) {
-    	descriptor.setName("name");
+      descriptor.setName("name");
         descriptor.setDescription("description");
         descriptor.setDocUrl("https://doc.myexchange.com/websocket/name");
         descriptor.setTopicParametersListSeparator("|");
         descriptor.setTopic("atopic");
         descriptor.setRequest(Field.builder()
-        		   .type(Type.STRING)
-        		   .name("myRequestField")
-        		   .msgField("mf")
-        		   .description("Test request")
-        		   .sampleValue("foo")
-        		   .build());
+               .type(Type.STRING)
+               .name("myRequestField")
+               .msgField("mf")
+               .description("Test request")
+               .sampleValue("foo")
+               .build());
         descriptor.setMessage(Field.builder()
-			       .type(Type.STRING)
-			       .name("myMessageField")
-			       .msgField("mm")
-			       .description("Test message")
-			       .sampleValue("bar")
-			       .build());
+             .type(Type.STRING)
+             .name("myMessageField")
+             .msgField("mm")
+             .description("Test message")
+             .sampleValue("bar")
+             .build());
         WebsocketMessageTopicMatcherFieldDescriptor websocketMessageTopicMatcherDescriptor = new WebsocketMessageTopicMatcherFieldDescriptor();
         websocketMessageTopicMatcherDescriptor.setName("field1");
         websocketMessageTopicMatcherDescriptor.setValue("value1");
@@ -71,11 +71,11 @@ public class WebsocketEndpointDescriptorTest {
         WebsocketEndpointDescriptor descriptor = new WebsocketEndpointDescriptor();
         setTestValues(descriptor);
         Assert.assertEquals("WebsocketEndpointDescriptor{\"description\":\"description\",\"docUrl\":\"https://doc.myexchange.com/websocket/name\","
-        					+ "\"message\":{\"description\":\"Test message\",\"msgField\":\"mm\",\"name\":\"myMessageField\",\"sampleValue\":\"bar\","
-        					+ "\"type\":{\"canonicalType\":\"STRING\",\"object\":false}},\"messageTopicMatcherFields\":[{\"name\":\"field1\","
-        					+ "\"value\":\"value1\"}],\"name\":\"name\",\"request\":{\"description\":\"Test request\",\"msgField\":\"mf\","
-        					+ "\"name\":\"myRequestField\",\"sampleValue\":\"foo\",\"type\":{\"canonicalType\":\"STRING\",\"object\":false}},"
-        					+ "\"topic\":\"atopic\",\"topicParametersListSeparator\":\"|\"}", 
-				        	descriptor.toString());
+                  + "\"message\":{\"description\":\"Test message\",\"msgField\":\"mm\",\"name\":\"myMessageField\",\"sampleValue\":\"bar\","
+                  + "\"type\":{\"canonicalType\":\"STRING\",\"object\":false}},\"messageTopicMatcherFields\":[{\"name\":\"field1\","
+                  + "\"value\":\"value1\"}],\"name\":\"name\",\"request\":{\"description\":\"Test request\",\"msgField\":\"mf\","
+                  + "\"name\":\"myRequestField\",\"sampleValue\":\"foo\",\"type\":{\"canonicalType\":\"STRING\",\"object\":false}},"
+                  + "\"topic\":\"atopic\",\"topicParametersListSeparator\":\"|\"}", 
+                  descriptor.toString());
     }
 }

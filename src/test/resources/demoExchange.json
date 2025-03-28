@@ -1,5 +1,6 @@
 {
-	"name": "DemoExchange",
+	"id": "DemoExchange",
+	"version": "1.0.0",
 	"description": "Demo Exchange. This exchange uses connects to mock HTTP server and websocket server. It is used to test and validate a full Java wrapper generated using JXAPI.",
 	"docUrl": "https://docs.myexchange.com/api",
 	"basePackage": "org.jxapi.exchanges.demo.gen",
@@ -66,7 +67,7 @@
 									{"name":"high", "type": "BIGDECIMAL", "description":"Last traded price", "sampleValue":10.0},
 									{"name":"low", "type": "BIGDECIMAL", "description":"Last traded price", "sampleValue":10.0},
 									{"name":"volume", "type": "BIGDECIMAL", "description":"Total traded amount in base asset during the last 24h from now", "sampleValue":10.0},
-									{"name":"time", "type": "TIMESTAMP", "description":"Current time", "sampleValue":"now()"}
+									{"name":"time", "type": "LONG", "description":"Current time", "sampleValue":"now()"}
 								]
 							}
 						]
@@ -158,7 +159,7 @@
 							{"name":"high", "msgField":"h",  "type": "BIGDECIMAL", "description":"Last traded price", "sampleValue":10.0},
 							{"name":"low", "msgField":"l",  "type": "BIGDECIMAL", "description":"Last traded price", "sampleValue":10.0},
 							{"name":"volume", "msgField":"v",  "type": "BIGDECIMAL", "description":"Total traded amount in base asset during the last 24h from now", "sampleValue":10.0},
-							{"name":"time", "msgField":"d",  "type": "TIMESTAMP", "description":"Current time", "sampleValue":"now()"}
+							{"name":"time", "msgField":"d",  "type": "LONG", "description":"Current time", "sampleValue":"now()"}
 						]
 					}
 				}

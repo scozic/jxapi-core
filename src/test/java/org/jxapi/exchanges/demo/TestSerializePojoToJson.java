@@ -30,84 +30,84 @@ import com.fasterxml.jackson.databind.module.SimpleModule;
  * 
  */
 public class TestSerializePojoToJson {
-	
-	private static final Logger log = LoggerFactory.getLogger(TestSerializePojoToJson.class);
-	
-	private static final int ITERATION_COUNT = 20;
-	private static final int POJO_COUNT = 1000000;
-	
-	public void run() {
-		try {
-			List<DemoExchangeMarketDataExchangeInfoResponse> pojos = new ArrayList<>();
-			for (int i = 0; i < POJO_COUNT; i++) {
-				pojos.add(createRandomPojo());
-			}
-			long totalTimewithSerializer = 0;
-			long totalTimewithoutSerializer = 0;
-			
-			// Warm up
-			for (int i = 0; i < ITERATION_COUNT; i++) {
-				toTestSerializePojos(pojos, true);
-		        toTestSerializePojos(pojos, false);
-			}
-			
-			for (int i = 0; i < ITERATION_COUNT; i++) {
-				totalTimewithSerializer += toTestSerializePojos(pojos, true);
-		        totalTimewithoutSerializer += toTestSerializePojos(pojos, false);
-			}
-			log.info("Serialization of {} POJOs to JSON with serializer registration took: {} ms",
-					POJO_COUNT,  
-					(totalTimewithSerializer / ITERATION_COUNT) / 1_000_000);
-			log.info("Serialization of {} POJOs to JSON without serializer registration took: {} ms",
-					POJO_COUNT,  
-					(totalTimewithoutSerializer / ITERATION_COUNT) / 1_000_000);
-		} catch (JsonProcessingException e) {
-			log.error("Error during serialization load test", e);
-		}
+  
+  private static final Logger log = LoggerFactory.getLogger(TestSerializePojoToJson.class);
+  
+  private static final int ITERATION_COUNT = 20;
+  private static final int POJO_COUNT = 1000000;
+  
+  public void run() {
+    try {
+      List<DemoExchangeMarketDataExchangeInfoResponse> pojos = new ArrayList<>();
+      for (int i = 0; i < POJO_COUNT; i++) {
+        pojos.add(createRandomPojo());
       }
-	
-	private long toTestSerializePojos(List<DemoExchangeMarketDataExchangeInfoResponse> pojos, boolean registerSerializer) throws JsonProcessingException {
-		List<String> serialized = new ArrayList<>();
-		ObjectMapper objectMapper = createObjectMapper(registerSerializer);
-		long start = System.nanoTime();
-		for (DemoExchangeMarketDataExchangeInfoResponse pojo : pojos) {
-			serialized.add(objectMapper.writeValueAsString(pojo));
-		}
-		long end = System.nanoTime();
-		return end - start;
-	}
+      long totalTimewithSerializer = 0;
+      long totalTimewithoutSerializer = 0;
+      
+      // Warm up
+      for (int i = 0; i < ITERATION_COUNT; i++) {
+        toTestSerializePojos(pojos, true);
+            toTestSerializePojos(pojos, false);
+      }
+      
+      for (int i = 0; i < ITERATION_COUNT; i++) {
+        totalTimewithSerializer += toTestSerializePojos(pojos, true);
+            totalTimewithoutSerializer += toTestSerializePojos(pojos, false);
+      }
+      log.info("Serialization of {} POJOs to JSON with serializer registration took: {} ms",
+          POJO_COUNT,  
+          (totalTimewithSerializer / ITERATION_COUNT) / 1_000_000);
+      log.info("Serialization of {} POJOs to JSON without serializer registration took: {} ms",
+          POJO_COUNT,  
+          (totalTimewithoutSerializer / ITERATION_COUNT) / 1_000_000);
+    } catch (JsonProcessingException e) {
+      log.error("Error during serialization load test", e);
+    }
+      }
+  
+  private long toTestSerializePojos(List<DemoExchangeMarketDataExchangeInfoResponse> pojos, boolean registerSerializer) throws JsonProcessingException {
+    List<String> serialized = new ArrayList<>();
+    ObjectMapper objectMapper = createObjectMapper(registerSerializer);
+    long start = System.nanoTime();
+    for (DemoExchangeMarketDataExchangeInfoResponse pojo : pojos) {
+      serialized.add(objectMapper.writeValueAsString(pojo));
+    }
+    long end = System.nanoTime();
+    return end - start;
+  }
 
-	
-	private static DemoExchangeMarketDataExchangeInfoResponse createRandomPojo() {
-		DemoExchangeMarketDataExchangeInfoResponse expectedResponse = new DemoExchangeMarketDataExchangeInfoResponse();
-		expectedResponse.setResponseCode(DemoExchangeConstants.RESPONSE_CODE_OK);
-		
-		DemoExchangeMarketDataExchangeInfoResponsePayload market1 = new DemoExchangeMarketDataExchangeInfoResponsePayload();
-		market1.setSymbol("BTC_USDT");
-		market1.setOrderTickSize(new BigDecimal("0.1"));
-		market1.setMinOrderSize(new BigDecimal("0.0001"));
-		
-		DemoExchangeMarketDataExchangeInfoResponsePayload market2 = new DemoExchangeMarketDataExchangeInfoResponsePayload();
-		market2.setSymbol("ETH_USDT");
-		market2.setOrderTickSize(new BigDecimal("0.01"));
-		market2.setMinOrderSize(new BigDecimal("0.005"));
-		
-		expectedResponse.setPayload(List.of(market1, market2));
-		return expectedResponse;
-	}
-	
-	private static ObjectMapper createObjectMapper(boolean registerSerializer) {
-		ObjectMapper om = JsonUtil.createDefaultJsonToStringObjectMapper();
-		if (registerSerializer) {
-			om.registerModule(new SimpleModule().addSerializer(
-					DemoExchangeMarketDataExchangeInfoResponse.class, 
-					new DemoExchangeMarketDataExchangeInfoResponseSerializer()));
-		}
-		return om;
-	}
-	
-	public static void main(String[] args) {
-		new TestSerializePojoToJson().run();
-		System.exit(0);
-	}
+  
+  private static DemoExchangeMarketDataExchangeInfoResponse createRandomPojo() {
+    DemoExchangeMarketDataExchangeInfoResponse expectedResponse = new DemoExchangeMarketDataExchangeInfoResponse();
+    expectedResponse.setResponseCode(DemoExchangeConstants.RESPONSE_CODE_OK);
+    
+    DemoExchangeMarketDataExchangeInfoResponsePayload market1 = new DemoExchangeMarketDataExchangeInfoResponsePayload();
+    market1.setSymbol("BTC_USDT");
+    market1.setOrderTickSize(new BigDecimal("0.1"));
+    market1.setMinOrderSize(new BigDecimal("0.0001"));
+    
+    DemoExchangeMarketDataExchangeInfoResponsePayload market2 = new DemoExchangeMarketDataExchangeInfoResponsePayload();
+    market2.setSymbol("ETH_USDT");
+    market2.setOrderTickSize(new BigDecimal("0.01"));
+    market2.setMinOrderSize(new BigDecimal("0.005"));
+    
+    expectedResponse.setPayload(List.of(market1, market2));
+    return expectedResponse;
+  }
+  
+  private static ObjectMapper createObjectMapper(boolean registerSerializer) {
+    ObjectMapper om = JsonUtil.createDefaultJsonToStringObjectMapper();
+    if (registerSerializer) {
+      om.registerModule(new SimpleModule().addSerializer(
+          DemoExchangeMarketDataExchangeInfoResponse.class, 
+          new DemoExchangeMarketDataExchangeInfoResponseSerializer()));
+    }
+    return om;
+  }
+  
+  public static void main(String[] args) {
+    new TestSerializePojoToJson().run();
+    System.exit(0);
+  }
 }

@@ -8,11 +8,11 @@ package org.jxapi.netutils.deserialization;
  */
 public interface MessageDeserializer<T> {
 
-	/**
-	 * Deserializes a message.
-	 * 
-	 * @param msg the message to deserialize
-	 * @return the deserialized object, or <code>null</code> if the message is <code>null</code>.
-	 */
-	T deserialize(String msg);
+  /**
+   * Deserializes a message.
+   * 
+   * @param msg the message to deserialize
+   * @return the deserialized object, or <code>null</code> if the message is <code>null</code>.
+   */
+  T deserialize(String msg);
 }

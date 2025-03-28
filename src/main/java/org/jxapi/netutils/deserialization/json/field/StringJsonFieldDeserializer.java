@@ -16,21 +16,21 @@ import org.jxapi.netutils.deserialization.json.JsonDeserializer;
  * @see JsonDeserializer
  */
 public class StringJsonFieldDeserializer extends AbstractJsonMessageDeserializer<String> {
-	
-	private static final StringJsonFieldDeserializer INSTANCE = new StringJsonFieldDeserializer();
-	
-	/**
-	 * @return the singleton instance of this class
-	 */
-	public static StringJsonFieldDeserializer getInstance() {
-		return INSTANCE;
-	}
-	
-	private StringJsonFieldDeserializer() {}
+  
+  private static final StringJsonFieldDeserializer INSTANCE = new StringJsonFieldDeserializer();
+  
+  /**
+   * @return the singleton instance of this class
+   */
+  public static StringJsonFieldDeserializer getInstance() {
+    return INSTANCE;
+  }
+  
+  private StringJsonFieldDeserializer() {}
 
-	@Override
-	public String deserialize(JsonParser parser) throws IOException {
-		return parser.getText();
-	}
+  @Override
+  public String deserialize(JsonParser parser) throws IOException {
+    return parser.getText();
+  }
 
 }

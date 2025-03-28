@@ -3,6 +3,7 @@ package org.jxapi.exchange.descriptor;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.jxapi.generator.java.exchange.ExchangeJavaGenUtil;
 import org.jxapi.util.EncodingUtil;
 
 /**
@@ -137,225 +138,226 @@ import org.jxapi.util.EncodingUtil;
  */
 public class Field {
 
-	/**
-	 * @return New Builder for incrementally building a {@link Field} instance
-	 * @see FieldBuilder
-	 */
-	public static FieldBuilder builder() {
-		return new FieldBuilder();
-	}
-	
-	private static <T> List<T> cloneList(List<T> l) {
-		return l == null? null: new ArrayList<>(l);
-	}
-	
-	private String name;
-	
-	private String description;
-	
-	private Type type;
-	
-	private List<String> sampleMapKeyValue;
-	
-	private Object sampleValue;
-	
-	private String msgField;
-	
-	private String objectName;
-	
-	private List<Field> properties;
-	
-	private List<String> implementedInterfaces;
-	
-	/**
-	 * Clone this field
-	 * @return Deep cloned instance of this field.
-	 */
-	public Field deepClone() {
-		Field clone = new Field();
-		clone.name = this.name;
-		clone.description = this.description;
-		clone.type = this.type;
-		clone.sampleMapKeyValue = cloneList(this.sampleMapKeyValue);
-		clone.sampleValue = this.sampleValue;
-		clone.msgField = this.msgField;
-		clone.objectName = this.objectName;
-		clone.properties = cloneList(this.properties);
-		clone.implementedInterfaces = cloneList(this.implementedInterfaces);
-		return clone;
-	}
+  /**
+   * @return New Builder for incrementally building a {@link Field} instance
+   * @see FieldBuilder
+   */
+  public static FieldBuilder builder() {
+    return new FieldBuilder();
+  }
+  
+  private static <T> List<T> cloneList(List<T> l) {
+    return l == null? null: new ArrayList<>(l);
+  }
+  
+  private String name;
+  
+  private String description;
+  
+  private Type type;
+  
+  private List<String> sampleMapKeyValue;
+  
+  private Object sampleValue;
+  
+  private String msgField;
+  
+  private String objectName;
+  
+  private List<Field> properties;
+  
+  private List<String> implementedInterfaces;
+  
+  /**
+   * Clone this field
+   * @return Deep cloned instance of this field.
+   */
+  public Field deepClone() {
+    Field clone = new Field();
+    clone.name = this.name;
+    clone.description = this.description;
+    clone.type = this.type;
+    clone.sampleMapKeyValue = cloneList(this.sampleMapKeyValue);
+    clone.sampleValue = this.sampleValue;
+    clone.msgField = this.msgField;
+    clone.objectName = this.objectName;
+    clone.properties = cloneList(this.properties);
+    clone.implementedInterfaces = cloneList(this.implementedInterfaces);
+    return clone;
+  }
 
-	/**
-	 * @return The name of the field
-	 */
-	public String getName() {
-		return name;
-	}
+  /**
+   * @return The name of the field
+   */
+  public String getName() {
+    return name;
+  }
 
-	/**
-	 * @param name The name of the field
-	 */
-	public void setName(String name) {
-		this.name = name;
-	}
+  /**
+   * @param name The name of the field
+   */
+  public void setName(String name) {
+    this.name = name;
+  }
 
-	/**
-	 * @return The type of the field, see {@link Type}
-	 */
-	public Type getType() {
-		return type;
-	}
+  /**
+   * Remark: when processing a field accoring to its type, use {@link ExchangeJavaGenUtil#getFieldType(Field)} instead of this method to retrieve the actual type.
+   * @return The type of the field, see {@link Type}
+   */
+  public Type getType() {
+    return type;
+  }
 
-	/**
-	 * @param type The type of the field, see {@link Type}
-	 */
-	public void setType(Type type) {
-		this.type = type;
-	}
+  /**
+   * @param type The type of the field, see {@link Type}
+   */
+  public void setType(Type type) {
+    this.type = type;
+  }
 
-	/**
-	 * Shortcut for <code>setType(Type.fromTypeName(type))</code>
-	 * @param type The type name see {@link Type#toString()}
-	 */
-	public void setType(String type) {
-		this.type = Type.fromTypeName(type);
-	}
+  /**
+   * Shortcut for <code>setType(Type.fromTypeName(type))</code>
+   * @param type The type name see {@link Type#toString()}
+   */
+  public void setType(String type) {
+    this.type = Type.fromTypeName(type);
+  }
 
-	/**
-	 * @return The description of the field
-	 */
-	public String getDescription() {
-		return description;
-	}
+  /**
+   * @return The description of the field
+   */
+  public String getDescription() {
+    return description;
+  }
 
-	/**
-	 * @param description The description of the field
-	 */
-	public void setDescription(String description) {
-		this.description = description;
-	}
+  /**
+   * @param description The description of the field
+   */
+  public void setDescription(String description) {
+    this.description = description;
+  }
 
-	/**
-	 * @return The sample value of the field, used for documentation purpose and sample value creation in demo classes
-	 */
-	public Object getSampleValue() {
-		return sampleValue;
-	}
+  /**
+   * @return The sample value of the field, used for documentation purpose and sample value creation in demo classes
+   */
+  public Object getSampleValue() {
+    return sampleValue;
+  }
 
-	/**
-	 * @param sampleValue The sample value of the field, used for documentation purpose and sample value creation in demo classes
-	 */
-	public void setSampleValue(Object sampleValue) {
-		this.sampleValue = sampleValue;
-	}
-	
-	/**
-	 * @return The name of the field in the message sent or received to the endpoint. Usually the actual name of field.
-	 */
-	public String getMsgField() {
-		return msgField;
-	}
+  /**
+   * @param sampleValue The sample value of the field, used for documentation purpose and sample value creation in demo classes
+   */
+  public void setSampleValue(Object sampleValue) {
+    this.sampleValue = sampleValue;
+  }
+  
+  /**
+   * @return The name of the field in the message sent or received to the endpoint. Usually the actual name of field.
+   */
+  public String getMsgField() {
+    return msgField;
+  }
 
-	/**
-	 * @param msgField The name of the field in the message sent or received to the endpoint. Usually the actual key in JSON structure.
-	 */
-	public void setMsgField(String msgField) {
-		this.msgField = msgField;
-	}
-	
-	/**
-	 * @return For an 'object' type field, see {@link Type#isObject()}, the
-	 *         properties in nested structure, <code>null</code> otherwise. An
-	 *         object type property may have <code>null</code> properties if it is
-	 *         defined an object name (see {@link #getObjectName()}). That means
-	 *         properties of that object are defined in another {@link Field}.
-	 */
-	public List<Field> getProperties() {
-		return properties;
-	}
+  /**
+   * @param msgField The name of the field in the message sent or received to the endpoint. Usually the actual key in JSON structure.
+   */
+  public void setMsgField(String msgField) {
+    this.msgField = msgField;
+  }
+  
+  /**
+   * @return For an 'object' type field, see {@link Type#isObject()}, the
+   *         properties in nested structure, <code>null</code> otherwise. An
+   *         object type property may have <code>null</code> properties if it is
+   *         defined an object name (see {@link #getObjectName()}). That means
+   *         properties of that object are defined in another {@link Field}.
+   */
+  public List<Field> getProperties() {
+    return properties;
+  }
 
-	/**
-	 * @param fields For an 'object' type parameter, see
-	 *               {@link Type#isObject()}, the properties in nested
-	 *               structure, <code>null</code> otherwise.
-	 */
-	public void setProperties(List<Field> fields) {
-		this.properties = fields;
-	}
-	
-	/**
-	 * @return The simple (without package) name of java class to represent
-	 *         corresponding to object defined by this field. Relevant only when
-	 *         type is an object see {@link Type#isObject()}.<br> Remark: in a descriptor
-	 *         file, the first field defining a given object name should define that object properties
-	 *         see {@link Field#getProperties()} , other properties using same object name need not
-	 *         define sub-properties. This allow not to repeat identical structures
-	 *         in different APIs.
-	 */
-	public String getObjectName() {
-		return objectName;
-	}
+  /**
+   * @param fields For an 'object' type parameter, see
+   *               {@link Type#isObject()}, the properties in nested
+   *               structure, <code>null</code> otherwise.
+   */
+  public void setProperties(List<Field> fields) {
+    this.properties = fields;
+  }
+  
+  /**
+   * @return The simple (without package) name of java class to represent
+   *         corresponding to object defined by this field. Relevant only when
+   *         type is an object see {@link Type#isObject()}.<br> Remark: in a descriptor
+   *         file, the first field defining a given object name should define that object properties
+   *         see {@link Field#getProperties()} , other properties using same object name need not
+   *         define sub-properties. This allow not to repeat identical structures
+   *         in different APIs.
+   */
+  public String getObjectName() {
+    return objectName;
+  }
 
-	/**
-	 * @param objectName The simple (without package) name of java class corresponding to object defined by this field.
-	 * @see #getObjectName()
-	 */
-	public void setObjectName(String objectName) {
-		this.objectName = objectName;
-	}
+  /**
+   * @param objectName The simple (without package) name of java class corresponding to object defined by this field.
+   * @see #getObjectName()
+   */
+  public void setObjectName(String objectName) {
+    this.objectName = objectName;
+  }
 
-	/**
-	 * @return The list of interfaces implemented by the object defined by this
-	 *         parameter. Relevant only when type is an object see
-	 *         {@link Type#isObject()}.
-	 */
-	public List<String> getImplementedInterfaces() {
-		return implementedInterfaces;
-	}
+  /**
+   * @return The list of interfaces implemented by the object defined by this
+   *         parameter. Relevant only when type is an object see
+   *         {@link Type#isObject()}.
+   */
+  public List<String> getImplementedInterfaces() {
+    return implementedInterfaces;
+  }
 
-	/**
-	 * @param implementedInterfaces The list of interfaces implemented by the object
-	 *                              defined by this parameter. Relevant only when
-	 *                              type is an object see
-	 *                              {@link Type#isObject()}.
-	 */
-	public void setImplementedInterfaces(List<String> implementedInterfaces) {
-		this.implementedInterfaces = implementedInterfaces;
-	}
+  /**
+   * @param implementedInterfaces The list of interfaces implemented by the object
+   *                              defined by this parameter. Relevant only when
+   *                              type is an object see
+   *                              {@link Type#isObject()}.
+   */
+  public void setImplementedInterfaces(List<String> implementedInterfaces) {
+    this.implementedInterfaces = implementedInterfaces;
+  }
 
-	/**
-	 * @return The list of key-value pairs for a sample map
-	 */
-	public List<String> getSampleMapKeyValue() {
-		return sampleMapKeyValue;
-	}
+  /**
+   * @return The list of key-value pairs for a sample map
+   */
+  public List<String> getSampleMapKeyValue() {
+    return sampleMapKeyValue;
+  }
 
-	/**
-	 * @param sampleMapKeyValue The list of key-value pairs for a sample map
-	 */
-	public void setSampleMapKeyValue(List<String> sampleMapKeyValue) {
-		this.sampleMapKeyValue = sampleMapKeyValue;
-	}
+  /**
+   * @param sampleMapKeyValue The list of key-value pairs for a sample map
+   */
+  public void setSampleMapKeyValue(List<String> sampleMapKeyValue) {
+    this.sampleMapKeyValue = sampleMapKeyValue;
+  }
 
-	/**
-	 * @return The string representation of this field, see
-	 *         {@link EncodingUtil#pojoToString(Object)}
-	 */
-	@Override
-	public String toString() {
-		return EncodingUtil.pojoToString(this);
-	}
-	
-	@Override
-	public boolean equals(Object other) {
-		if (other == null) {
-			return false;
-		}
-		return toString().equals(other.toString());
-	}
-	
-	@Override
-	public int hashCode() {
-		return toString().hashCode();
-	}
+  /**
+   * @return The string representation of this field, see
+   *         {@link EncodingUtil#pojoToString(Object)}
+   */
+  @Override
+  public String toString() {
+    return EncodingUtil.pojoToString(this);
+  }
+  
+  @Override
+  public boolean equals(Object other) {
+    if (other == null) {
+      return false;
+    }
+    return toString().equals(other.toString());
+  }
+  
+  @Override
+  public int hashCode() {
+    return toString().hashCode();
+  }
 }

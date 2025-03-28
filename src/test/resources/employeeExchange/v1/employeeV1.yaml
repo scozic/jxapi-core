@@ -1,4 +1,4 @@
-name: "Employee"
+id: "Employee"
 apis:
  - name: V1
    description: "Version 1 of the Employee API"

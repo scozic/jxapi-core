@@ -3,13 +3,13 @@ package org.jxapi.exchanges.employee.gen.v1.demo;
 import java.util.Properties;
 import java.util.concurrent.ExecutionException;
 
+import javax.annotation.processing.Generated;
 import org.jxapi.exchange.ExchangeApiObserver;
 import org.jxapi.exchanges.employee.gen.EmployeeExchange;
 import org.jxapi.exchanges.employee.gen.EmployeeExchangeImpl;
 import org.jxapi.exchanges.employee.gen.v1.EmployeeV1Api;
 import org.jxapi.netutils.rest.RestResponse;
 import org.jxapi.util.DemoUtil;
-import javax.annotation.processing.Generated;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

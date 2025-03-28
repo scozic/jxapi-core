@@ -2,10 +2,10 @@ package org.jxapi.exchanges.employee.gen;
 
 import java.util.Properties;
 
+import javax.annotation.processing.Generated;
 import org.jxapi.exchange.AbstractExchange;
 import org.jxapi.exchanges.employee.gen.v1.EmployeeV1Api;
 import org.jxapi.exchanges.employee.gen.v1.EmployeeV1ApiImpl;
-import javax.annotation.processing.Generated;
 
 /**
  * Actual implementation of {@link EmployeeExchange}<br>
@@ -21,7 +21,7 @@ public class EmployeeExchangeImpl extends AbstractExchange implements EmployeeEx
   private final EmployeeV1Api employeeV1Api;
   
   public EmployeeExchangeImpl(String exchangeName, Properties properties) {
-    super(ID, exchangeName, properties);
+    super(ID, VERSION, exchangeName, properties);
     this.employeeV1Api = addApi(new EmployeeV1ApiImpl(getName(), properties));
   }
   

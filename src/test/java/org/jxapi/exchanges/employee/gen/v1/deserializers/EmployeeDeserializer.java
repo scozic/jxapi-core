@@ -4,9 +4,9 @@ import java.io.IOException;
 
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonToken;
+import javax.annotation.processing.Generated;
 import org.jxapi.exchanges.employee.gen.v1.pojo.Employee;
 import org.jxapi.netutils.deserialization.json.AbstractJsonMessageDeserializer;
-import javax.annotation.processing.Generated;
 import static org.jxapi.util.JsonUtil.readNextInteger;
 import static org.jxapi.util.JsonUtil.skipNextValue;
 

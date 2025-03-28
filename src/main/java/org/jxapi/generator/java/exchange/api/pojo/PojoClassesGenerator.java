@@ -24,52 +24,52 @@ import org.jxapi.generator.java.exchange.api.ExchangeApiGenUtil;
  *
  */
 public class PojoClassesGenerator implements ClassesGenerator {
-	
-	private final PojoGenerator rootPojoGenerator;
-	private final List<Field> properties;
-	
-	/**
-	 * Constructor.
-	 * 
-	 * @param className the name of the class
-	 * @param description the description to display in javadoc of the class
-	 * @param properties the fields of the class
-	 * @param implementedInterfaces the interfaces implemented by the class
-	 * @throws IOException if an I/O error occurs
-	 */
-	public PojoClassesGenerator(String className, 
-			 String description, 
-			 List<Field> properties, 
-			 List<String> implementedInterfaces) throws IOException {
-		this.properties = properties;
-		this.rootPojoGenerator = new PojoGenerator(className, description, properties, implementedInterfaces);
-	}
+  
+  private final PojoGenerator rootPojoGenerator;
+  private final List<Field> properties;
+  
+  /**
+   * Constructor.
+   * 
+   * @param className the name of the class
+   * @param description the description to display in javadoc of the class
+   * @param properties the fields of the class
+   * @param implementedInterfaces the interfaces implemented by the class
+   * @throws IOException if an I/O error occurs
+   */
+  public PojoClassesGenerator(String className, 
+       String description, 
+       List<Field> properties, 
+       List<String> implementedInterfaces) throws IOException {
+    this.properties = properties;
+    this.rootPojoGenerator = new PojoGenerator(className, description, properties, implementedInterfaces);
+  }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public void generateClasses(Path outputFolder) throws IOException {
-		rootPojoGenerator.writeJavaFile(outputFolder);
-		for (Field field: properties) {
-			if (ExchangeJavaGenUtil.isObjectField(field)) {
-				generateObjectFieldTypePojos(outputFolder, rootPojoGenerator.getName(), field);
-			}
-		}
-	}
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public void generateClasses(Path outputFolder) throws IOException {
+    rootPojoGenerator.writeJavaFile(outputFolder);
+    for (Field field: properties) {
+      if (ExchangeJavaGenUtil.isObjectField(field)) {
+        generateObjectFieldTypePojos(outputFolder, rootPojoGenerator.getName(), field);
+      }
+    }
+  }
 
-	private void generateObjectFieldTypePojos(Path outputFolder, String className, Field field) throws IOException {
-		String objectParamClassName = ExchangeApiGenUtil.getFieldLeafSubTypeClassName(
-												field.getName(), 
-												ExchangeJavaGenUtil.getFieldType(field), 
-												field.getObjectName(), 
-												className);
-		
-		if (field.getProperties() != null) {
-			new PojoClassesGenerator(objectParamClassName, 
-									  field.getDescription(), 
-									  field.getProperties(),
-									  field.getImplementedInterfaces()).generateClasses(outputFolder);
-		}
-	}
+  private void generateObjectFieldTypePojos(Path outputFolder, String className, Field field) throws IOException {
+    String objectParamClassName = ExchangeApiGenUtil.getFieldLeafSubTypeClassName(
+                        field.getName(), 
+                        ExchangeJavaGenUtil.getFieldType(field), 
+                        field.getObjectName(), 
+                        className);
+    
+    if (field.getProperties() != null) {
+      new PojoClassesGenerator(objectParamClassName, 
+                    field.getDescription(), 
+                    field.getProperties(),
+                    field.getImplementedInterfaces()).generateClasses(outputFolder);
+    }
+  }
 }

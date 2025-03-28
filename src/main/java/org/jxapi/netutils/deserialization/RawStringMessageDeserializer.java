@@ -6,21 +6,21 @@ package org.jxapi.netutils.deserialization;
  * This class is a singleton, use {@link #getInstance()} to get the instance.
  */
 public class RawStringMessageDeserializer implements MessageDeserializer<String> {
-	
-	private static final RawStringMessageDeserializer INSTANCE = new RawStringMessageDeserializer();
-	
-	private RawStringMessageDeserializer() {}
+  
+  private static final RawStringMessageDeserializer INSTANCE = new RawStringMessageDeserializer();
+  
+  private RawStringMessageDeserializer() {}
 
-	/**
-	 * @return the singleton instance of this class
-	 */
-	public static final RawStringMessageDeserializer getInstance() {
-		return INSTANCE;
-	}
+  /**
+   * @return the singleton instance of this class
+   */
+  public static final RawStringMessageDeserializer getInstance() {
+    return INSTANCE;
+  }
 
-	@Override
-	public String deserialize(String msg) {
-		return msg;
-	}
+  @Override
+  public String deserialize(String msg) {
+    return msg;
+  }
 
 }

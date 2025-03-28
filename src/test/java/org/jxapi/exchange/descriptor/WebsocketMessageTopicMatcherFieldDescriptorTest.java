@@ -29,6 +29,6 @@ public class WebsocketMessageTopicMatcherFieldDescriptorTest {
         descriptor.setName("name");
         descriptor.setValue("value");
         Assert.assertEquals("WebsocketMessageTopicMatcherFieldDescriptor{\"name\":\"name\",\"value\":\"value\"}", 
-        					descriptor.toString());
+                  descriptor.toString());
     }
 }

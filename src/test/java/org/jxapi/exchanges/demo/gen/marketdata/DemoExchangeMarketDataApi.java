@@ -21,14 +21,47 @@ import org.jxapi.netutils.websocket.WebsocketListener;
  */
 @Generated("org.jxapi.generator.java.exchange.api.ExchangeApiInterfaceGenerator")
 public interface DemoExchangeMarketDataApi extends ExchangeApi {
+  
+  /**
+   * Name of 'MarketData' API group.
+   */
   String ID = "MarketData";
+  
+  /**
+   * Name of the 'exchangeInfo' API endpoint.
+   */
   String EXCHANGE_INFO_REST_API = "exchangeInfo";
+  
+  /**
+   * Name of the 'tickers' API endpoint.
+   */
   String TICKERS_REST_API = "tickers";
+  
+  /**
+   * Name of the 'postRestRequestDataTypeInt' API endpoint.
+   */
   String POST_REST_REQUEST_DATA_TYPE_INT_REST_API = "postRestRequestDataTypeInt";
+  
+  /**
+   * Name of the 'getRestRequestDataTypePrimitiveWithMsgField' API endpoint.
+   */
   String GET_REST_REQUEST_DATA_TYPE_PRIMITIVE_WITH_MSG_FIELD_REST_API = "getRestRequestDataTypePrimitiveWithMsgField";
+  
+  /**
+   * Name of the 'postRestRequestDataTypeIntList' API endpoint.
+   */
   String POST_REST_REQUEST_DATA_TYPE_INT_LIST_REST_API = "postRestRequestDataTypeIntList";
+  
+  /**
+   * Name of the 'postRestRequestDataTypeObjectListMap' API endpoint.
+   */
   String POST_REST_REQUEST_DATA_TYPE_OBJECT_LIST_MAP_REST_API = "postRestRequestDataTypeObjectListMap";
+  
+  /**
+   * Name of the 'tickerStream' API endpoint.
+   */
   String TICKER_STREAM_WS_API = "tickerStream";
+  
   /**
    * Fetch market information of symbols that can be traded
    * @param request request
@@ -36,29 +69,34 @@ public interface DemoExchangeMarketDataApi extends ExchangeApi {
    * @see <a href="https://docs.myexchange.com/api/rest/marketData/exchangeInfo">Reference documentation</a>
    */
   FutureRestResponse<DemoExchangeMarketDataExchangeInfoResponse> exchangeInfo(DemoExchangeMarketDataExchangeInfoRequest request);
+  
   /**
    * Fetch current tickers for all markets
    * @return A {@link FutureRestResponse} that will complete when request submitted asynchronously has been processed
    */
   FutureRestResponse<DemoExchangeMarketDataTickersResponse> tickers();
+  
   /**
    * A sample REST endpoint using INT response data type
    * @param request request
    * @return A {@link FutureRestResponse} that will complete when request submitted asynchronously has been processed
    */
   FutureRestResponse<GenericResponse> postRestRequestDataTypeInt(Integer request);
+  
   /**
    * A sample REST endpoint using GET (hence url query params) primitive request type, with 'msgField' property defined. That msgField value should be used as query param argument name
    * @param age request
    * @return A {@link FutureRestResponse} that will complete when request submitted asynchronously has been processed
    */
   FutureRestResponse<GenericResponse> getRestRequestDataTypePrimitiveWithMsgField(Integer age);
+  
   /**
    * A sample REST endpoint using INT_LIST request data type
    * @param request request
    * @return A {@link FutureRestResponse} that will complete when request submitted asynchronously has been processed
    */
   FutureRestResponse<GenericResponse> postRestRequestDataTypeIntList(List<Integer> request);
+  
   /**
    * A sample REST endpoint using OBJECT_LIST_MAP request data type
    * @param request request

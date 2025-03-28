@@ -1,5 +1,5 @@
 {
-	"name": "MyTestExchange",
+	"id": "MyTestExchange",
 	"description": "A sample Exchange descriptor file",
 	"httpUrl": "https://mycex.com",
 	"basePackage": "com.foo.bar.gen",
@@ -53,14 +53,13 @@
 					}
 				},
 				{
-					"name": "postRestRequestDataTypeString",
+					"name": "postRestRequestDataTypeStringImplicit",
 					"httpMethod": "POST",
 					"description": "A sample REST endpoint using STRING response data type",
 					"url": "/postString",
 					"request": {
 						"name": "hello",
 						"description": "Say Hi!",
-						"type": "STRING",
 						"sampleValue": "Hello world!"
 					},
 					"response": {
@@ -286,7 +285,6 @@
 					"request": {
 						"name": "symbol",
 						"description": "Market symbol",
-						"type": "STRING",
 						"sampleValue": "BTC_USDT"
 					},
 					"messageTopicMatcherFields": [

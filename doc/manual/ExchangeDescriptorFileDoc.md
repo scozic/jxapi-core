@@ -284,8 +284,8 @@ By defining the topic with placeholders and specifying the message topic matcher
 Both REST endpoints request and response, Websocket endpoints subscription request and response message are defined in exchange descriptor file using the same object structure, mapped to [Field](../../src/main/java/com/scz/jxapi/exchange/descriptor/Field.java) class. This class is used to define the structure of request and response data for both REST and WebSocket endpoints. It allows for a flexible type definition that can represent primitive types, lists, maps, or composite objects.
 
 ### Primitive Types
-A field can be a primitive type such as `STRING`, `INT`, `BIGDECIMAL`, or `TIMESTAMP`. These types are directly mapped to their respective Java types.
-Remark: When neither of 'object' type specific `properties` or `objectName` is specified, the default field type is `STRING` unless `type` property is specified.
+A field can be a primitive type such as `STRING`, `INT`, `BIGDECIMAL`, or `LONG`. These types are directly mapped to their respective Java types.
+Remark: When neither of 'object' type specific `properties` or `objectName` is specified, the default field type is `STRING` unless `type` property is specified. If either `properties` or `objectName` property are present, the default type is `OBJECT`.
 
 ### Lists
 A field can be defined as a list by specifying the type as `<SUBTYPE>_LIST` and providing the list element type as type prefix, for instance `BIGDECIMAL_MAP`. This allows for the representation of arrays or collections of a specific type.
@@ -342,7 +342,7 @@ Example of associated JSON data structure:
 ```json
 {
 	"A": [
-		{"name": "Alex", "age": 25},
+25},
 		{"name": "Aline", "age": 19}
 	]
 	"B": [

@@ -22,22 +22,22 @@ import org.jxapi.observability.Observable;
  */
 public interface MockWebsocketServerSession {
 
-	/**
-	 * @return Unique identifier of the session
-	 */
-	String getId();
-	
-	/**
-	 * @return URI of the session e.g. /myapp/ws when server has appName 'myapp'.
-	 */
-	String getUri();
+  /**
+   * @return Unique identifier of the session
+   */
+  String getId();
+  
+  /**
+   * @return URI of the session e.g. /myapp/ws when server has appName 'myapp'.
+   */
+  String getUri();
 
-	/**
-	 * Sends a message to the client.
-	 * 
-	 * @param message The message to send
-	 * @throws IOException If an error occurs while sending the message
-	 */
-	void sendSync(String message) throws IOException;
+  /**
+   * Sends a message to the client.
+   * 
+   * @param message The message to send
+   * @throws IOException If an error occurs while sending the message
+   */
+  void sendSync(String message) throws IOException;
 
 }

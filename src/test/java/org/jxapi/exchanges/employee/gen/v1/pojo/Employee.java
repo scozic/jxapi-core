@@ -3,11 +3,11 @@ package org.jxapi.exchanges.employee.gen.v1.pojo;
 import java.util.Objects;
 
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import javax.annotation.processing.Generated;
 import org.jxapi.exchanges.employee.gen.v1.serializers.EmployeeSerializer;
 import org.jxapi.util.CompareUtil;
 import org.jxapi.util.EncodingUtil;
 import org.jxapi.util.Pojo;
-import javax.annotation.processing.Generated;
 
 /**
  * Response to Employee V1 API <br>
@@ -18,7 +18,7 @@ import javax.annotation.processing.Generated;
 @JsonSerialize(using = EmployeeSerializer.class)
 public class Employee implements Pojo<Employee> {
   
-  private static final long serialVersionUID = 6687193910867252769L;
+  private static final long serialVersionUID = 607196601431828222L;
   
   /**
    * @return A new builder to build {@link Employee} objects

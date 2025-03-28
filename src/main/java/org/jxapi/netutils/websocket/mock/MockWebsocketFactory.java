@@ -9,9 +9,9 @@ import org.jxapi.netutils.websocket.WebsocketFactory;
  */
 public class MockWebsocketFactory implements WebsocketFactory {
 
-	@Override
-	public Websocket createWebsocket(ExchangeApi exchangeApi) {
-		return new MockWebsocket();
-	}
+  @Override
+  public Websocket createWebsocket(ExchangeApi exchangeApi) {
+    return new MockWebsocket();
+  }
 
 }

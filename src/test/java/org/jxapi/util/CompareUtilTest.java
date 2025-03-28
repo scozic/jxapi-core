@@ -12,32 +12,32 @@ import org.junit.Test;
  */
 public class CompareUtilTest {
 
-	@Test
-	public void testCompare() {
-		Assert.assertEquals(0, CompareUtil.compare(null, null));
-		Assert.assertEquals(-1, CompareUtil.compare(null, "a"));
-		Assert.assertEquals(1, CompareUtil.compare("a", null));
-		Assert.assertEquals(0, CompareUtil.compare("a", "a"));
-		Assert.assertEquals(-1, CompareUtil.compare("a", "b"));
-		Assert.assertEquals(1, CompareUtil.compare("b", "a"));
-	}
+  @Test
+  public void testCompare() {
+    Assert.assertEquals(0, CompareUtil.compare(null, null));
+    Assert.assertEquals(-1, CompareUtil.compare(null, "a"));
+    Assert.assertEquals(1, CompareUtil.compare("a", null));
+    Assert.assertEquals(0, CompareUtil.compare("a", "a"));
+    Assert.assertEquals(-1, CompareUtil.compare("a", "b"));
+    Assert.assertEquals(1, CompareUtil.compare("b", "a"));
+  }
 
-	@Test
-	public void testCompareLists() {
-		Assert.assertEquals(0, CompareUtil.compareLists(null, null, null));
-		Assert.assertEquals(-1, CompareUtil.compareLists(null, List.of("a"), CompareUtil::compare));
-		Assert.assertEquals(1, CompareUtil.compareLists(List.of("a"), null, CompareUtil::compare));
-		Assert.assertEquals(0, CompareUtil.compareLists(List.of("a"), List.of("a"), CompareUtil::compare));
-		Assert.assertEquals(-1, CompareUtil.compareLists(List.of("a"), List.of("b"), CompareUtil::compare));
-		Assert.assertEquals(1, CompareUtil.compareLists(List.of("b"), List.of("a"), CompareUtil::compare));
-		Assert.assertEquals(1, CompareUtil.compareLists(List.of("a", "b"), List.of("a"), CompareUtil::compare));
-		Assert.assertEquals(-1,	CompareUtil.compareLists(List.of("a"), List.of("a", "b"), CompareUtil::compare));
-		Assert.assertEquals(0, CompareUtil.compareLists(List.of("a", "b"), List.of("a", "b"), CompareUtil::compare));
-		Assert.assertEquals(-1,	CompareUtil.compareLists(List.of("a", "a"), List.of("a", "b"), CompareUtil::compare));
-		Assert.assertEquals(1, CompareUtil.compareLists(List.of("a", "b"), List.of("a", "a"), CompareUtil::compare));
-	}
+  @Test
+  public void testCompareLists() {
+    Assert.assertEquals(0, CompareUtil.compareLists(null, null, null));
+    Assert.assertEquals(-1, CompareUtil.compareLists(null, List.of("a"), CompareUtil::compare));
+    Assert.assertEquals(1, CompareUtil.compareLists(List.of("a"), null, CompareUtil::compare));
+    Assert.assertEquals(0, CompareUtil.compareLists(List.of("a"), List.of("a"), CompareUtil::compare));
+    Assert.assertEquals(-1, CompareUtil.compareLists(List.of("a"), List.of("b"), CompareUtil::compare));
+    Assert.assertEquals(1, CompareUtil.compareLists(List.of("b"), List.of("a"), CompareUtil::compare));
+    Assert.assertEquals(1, CompareUtil.compareLists(List.of("a", "b"), List.of("a"), CompareUtil::compare));
+    Assert.assertEquals(-1,  CompareUtil.compareLists(List.of("a"), List.of("a", "b"), CompareUtil::compare));
+    Assert.assertEquals(0, CompareUtil.compareLists(List.of("a", "b"), List.of("a", "b"), CompareUtil::compare));
+    Assert.assertEquals(-1,  CompareUtil.compareLists(List.of("a", "a"), List.of("a", "b"), CompareUtil::compare));
+    Assert.assertEquals(1, CompareUtil.compareLists(List.of("a", "b"), List.of("a", "a"), CompareUtil::compare));
+  }
 
-	@Test
+  @Test
     public void testCompareMaps() {
         Map<String, String> map1 = new LinkedHashMap<>();
         Map<String, String> map2 = new LinkedHashMap<>();
@@ -56,6 +56,6 @@ public class CompareUtilTest {
         map1.put("c", "3");
         map2.put("d", "4");
         Assert.assertEquals(1, CompareUtil.compareMaps(map1, map2, CompareUtil::compare));
-	}
+  }
 
 }

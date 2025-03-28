@@ -41,7 +41,7 @@ public class HttpRequestTest {
     
     @Test
     public void testSetHeader() {
-    	HttpRequest request = new HttpRequest();
+      HttpRequest request = new HttpRequest();
         Map<String, List<String>> headers = new HashMap<>();
         headers.put("Content-Type", List.of("application/json"));
         headers.put("User-Agent", List.of("Mozilla/5.0"));
@@ -114,12 +114,12 @@ public class HttpRequestTest {
         List<RateLimitRule> rateLimits = List.of(RateLimitRule.createRule("rule1", 60000, 50));
         request.setRateLimits(rateLimits);
         Assert.assertEquals("HttpRequest{\"body\":\"body\",\"endpoint\":\"endpoint\",\"httpMethod\":\"GET\",\"rateLimits\":[{\"granularity\":10,\"id\":\"rule1\",\"maxRequestCount\":50,\"maxTotalWeight\":-1,\"timeFrame\":60000}],\"request\":\"request\",\"throttledTime\":1000,\"time\":1000,\"url\":\"http://example.com\",\"weight\":0}", 
-        					request.toString());
+                  request.toString());
     }
 
     @Test
     public void testCreate() {
-    	List<RateLimitRule> rateLimits = List.of(RateLimitRule.createRule("rule1", 60000, 50));
+      List<RateLimitRule> rateLimits = List.of(RateLimitRule.createRule("rule1", 60000, 50));
         HttpRequest request = HttpRequest.create("endpoint", "http://example.com", HttpMethod.GET, "request", rateLimits, 10, "myBody");
         Assert.assertEquals("endpoint", request.getEndpoint());
         Assert.assertEquals("http://example.com", request.getUrl());

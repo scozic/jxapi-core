@@ -17,21 +17,21 @@ import org.jxapi.netutils.deserialization.json.JsonDeserializer;
  * @see JsonDeserializer
  */
 public class IntegerJsonFieldDeserializer extends AbstractJsonMessageDeserializer<Integer> {
-	
-	private static final IntegerJsonFieldDeserializer INSTANCE = new IntegerJsonFieldDeserializer();
-	
-	/**
-	 * @return the singleton instance of this class
-	 */
-	public static IntegerJsonFieldDeserializer getInstance() {
-		return INSTANCE;
-	}
-	
-	private IntegerJsonFieldDeserializer() {}
+  
+  private static final IntegerJsonFieldDeserializer INSTANCE = new IntegerJsonFieldDeserializer();
+  
+  /**
+   * @return the singleton instance of this class
+   */
+  public static IntegerJsonFieldDeserializer getInstance() {
+    return INSTANCE;
+  }
+  
+  private IntegerJsonFieldDeserializer() {}
 
-	@Override
-	public Integer deserialize(JsonParser parser) throws IOException {
-		return JsonUtil.readCurrentInteger(parser);
-	} 
+  @Override
+  public Integer deserialize(JsonParser parser) throws IOException {
+    return JsonUtil.readCurrentInteger(parser);
+  } 
 
 }

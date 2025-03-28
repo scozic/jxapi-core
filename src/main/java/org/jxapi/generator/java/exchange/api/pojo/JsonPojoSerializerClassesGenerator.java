@@ -19,44 +19,44 @@ import org.jxapi.netutils.deserialization.json.AbstractJsonMessageDeserializer;
  * </ul>
  */
 public class JsonPojoSerializerClassesGenerator implements ClassesGenerator {
-	
-	private String deserializedClassName;
-	private List<Field> fields;
-	
-	/**
-	 * Constructor.
-	 * 
-	 * @param deserializedClassName the fully qualified name of the POJO class to deserialize
-	 * @param fields the properties of the POJO class
-	 * @throws IllegalArgumentException if fields is <code>null</code>
-	 */
-	public JsonPojoSerializerClassesGenerator(String deserializedClassName, List<Field> fields) {
-		this.deserializedClassName = deserializedClassName;
-		if (fields == null) {
-			throw new IllegalArgumentException("null fields for " + deserializedClassName);
-		}
-		this.fields = fields;
-	}
+  
+  private String deserializedClassName;
+  private List<Field> fields;
+  
+  /**
+   * Constructor.
+   * 
+   * @param deserializedClassName the fully qualified name of the POJO class to deserialize
+   * @param fields the properties of the POJO class
+   * @throws IllegalArgumentException if fields is <code>null</code>
+   */
+  public JsonPojoSerializerClassesGenerator(String deserializedClassName, List<Field> fields) {
+    this.deserializedClassName = deserializedClassName;
+    if (fields == null) {
+      throw new IllegalArgumentException("null fields for " + deserializedClassName);
+    }
+    this.fields = fields;
+  }
 
-	@Override
-	public void generateClasses(Path outputFolder) throws IOException {
-		JsonPojoSerializerGenerator generator = new JsonPojoSerializerGenerator(deserializedClassName, fields);
-		for (Field field: fields) {
-			Type type = ExchangeJavaGenUtil.getFieldType(field);
-			if ((type.isObject())
-				&& field.getProperties() != null) {
-				new JsonPojoSerializerClassesGenerator( 
-								   ExchangeApiGenUtil.getFieldLeafSubTypeClassName(
-										   	field.getName(), 
-										   	type, 
-										   	field.getObjectName(), 
-										   	deserializedClassName),
-								   field.getProperties()).generateClasses(outputFolder);
-			}
-		}
-		
-		generator.writeJavaFile(outputFolder);
-		
-	}
+  @Override
+  public void generateClasses(Path outputFolder) throws IOException {
+    JsonPojoSerializerGenerator generator = new JsonPojoSerializerGenerator(deserializedClassName, fields);
+    for (Field field: fields) {
+      Type type = ExchangeJavaGenUtil.getFieldType(field);
+      if ((type.isObject())
+        && field.getProperties() != null) {
+        new JsonPojoSerializerClassesGenerator( 
+                   ExchangeApiGenUtil.getFieldLeafSubTypeClassName(
+                         field.getName(), 
+                         type, 
+                         field.getObjectName(), 
+                         deserializedClassName),
+                   field.getProperties()).generateClasses(outputFolder);
+      }
+    }
+    
+    generator.writeJavaFile(outputFolder);
+    
+  }
 
 }

@@ -32,7 +32,7 @@ public class ExchangeApiGenUtilTest {
     @Test
     public void testGenerateEndpointRequestPojoClassName() {
         ExchangeDescriptor exchangeDescriptor = new ExchangeDescriptor();
-        exchangeDescriptor.setName("TestExchange");
+        exchangeDescriptor.setId("TestExchange");
         exchangeDescriptor.setBasePackage("com.test.exchange");
         ExchangeApiDescriptor apiDescriptor = new ExchangeApiDescriptor();
         apiDescriptor.setName("MyApi");
@@ -43,16 +43,16 @@ public class ExchangeApiGenUtilTest {
         request.setType(Type.OBJECT);
         endpointDescriptor.setRequest(request);
         Assert.assertEquals("com.test.exchange.myapi.pojo.TestExchangeMyApiGetAccountRequest", 
-        					ExchangeApiGenUtil.generateRestEnpointRequestPojoClassName(
-        							exchangeDescriptor, 
-        							apiDescriptor, 
-        							endpointDescriptor));
+                  ExchangeApiGenUtil.generateRestEnpointRequestPojoClassName(
+                      exchangeDescriptor, 
+                      apiDescriptor, 
+                      endpointDescriptor));
     }
 
     @Test
     public void testGenerateEndpointRequesPojotClassName_RequestWithObjectName() {
         ExchangeDescriptor exchangeDescriptor = new ExchangeDescriptor();
-        exchangeDescriptor.setName("TestExchange");
+        exchangeDescriptor.setId("TestExchange");
         exchangeDescriptor.setBasePackage("com.test.exchange");
         ExchangeApiDescriptor apiDescriptor = new ExchangeApiDescriptor();
         apiDescriptor.setName("MyApi");
@@ -64,16 +64,16 @@ public class ExchangeApiGenUtilTest {
         request.setType(Type.OBJECT);
         endpointDescriptor.setRequest(request);
         Assert.assertEquals("com.test.exchange.myapi.pojo.MyRequest", 
-        					ExchangeApiGenUtil.generateRestEnpointRequestPojoClassName(
-        							exchangeDescriptor, 
-        							apiDescriptor, 
-        							endpointDescriptor));
+                  ExchangeApiGenUtil.generateRestEnpointRequestPojoClassName(
+                      exchangeDescriptor, 
+                      apiDescriptor, 
+                      endpointDescriptor));
     }
 
     @Test
     public void testGenerateRestEndpointRequestPojoClassName_NullRequestType() {
         ExchangeDescriptor exchangeDescriptor = new ExchangeDescriptor();
-        exchangeDescriptor.setName("TestExchange");
+        exchangeDescriptor.setId("TestExchange");
         exchangeDescriptor.setBasePackage("com.test.exchange");
         ExchangeApiDescriptor apiDescriptor = new ExchangeApiDescriptor();
         apiDescriptor.setName("MyApi");
@@ -83,16 +83,16 @@ public class ExchangeApiGenUtilTest {
         Field request = new Field();
         endpointDescriptor.setRequest(request);
         Assert.assertEquals("com.test.exchange.myapi.pojo.TestExchangeMyApiGetAccountRequest", 
-        					ExchangeApiGenUtil.generateRestEnpointRequestPojoClassName(
-        							exchangeDescriptor, 
-        							apiDescriptor, 
-        							endpointDescriptor));
+                  ExchangeApiGenUtil.generateRestEnpointRequestPojoClassName(
+                      exchangeDescriptor, 
+                      apiDescriptor, 
+                      endpointDescriptor));
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void testGenerateRestEndpointRequestPojoClassName_RequestNotObjectType() {
         ExchangeDescriptor exchangeDescriptor = new ExchangeDescriptor();
-        exchangeDescriptor.setName("TestExchange");
+        exchangeDescriptor.setId("TestExchange");
         exchangeDescriptor.setBasePackage("com.test.exchange");
         ExchangeApiDescriptor apiDescriptor = new ExchangeApiDescriptor();
         apiDescriptor.setName("MyApi");
@@ -104,15 +104,15 @@ public class ExchangeApiGenUtilTest {
         request.setType(Type.STRING);
         endpointDescriptor.setRequest(request);
         ExchangeApiGenUtil.generateRestEnpointRequestPojoClassName(
-        		exchangeDescriptor, 
-        		apiDescriptor, 
-        		endpointDescriptor);
+            exchangeDescriptor, 
+            apiDescriptor, 
+            endpointDescriptor);
     }
     
     @Test(expected = IllegalArgumentException.class)
     public void testGenerateRestEndpointRequestPojoClassName_NullRequest() {
         ExchangeDescriptor exchangeDescriptor = new ExchangeDescriptor();
-        exchangeDescriptor.setName("TestExchange");
+        exchangeDescriptor.setId("TestExchange");
         exchangeDescriptor.setBasePackage("com.test.exchange");
         ExchangeApiDescriptor apiDescriptor = new ExchangeApiDescriptor();
         apiDescriptor.setName("MyApi");
@@ -120,15 +120,15 @@ public class ExchangeApiGenUtilTest {
         RestEndpointDescriptor endpointDescriptor = new RestEndpointDescriptor();
         endpointDescriptor.setName("GetAccount");
         ExchangeApiGenUtil.generateRestEnpointRequestPojoClassName(
-        		exchangeDescriptor, 
-        		apiDescriptor, 
-        		endpointDescriptor);
+            exchangeDescriptor, 
+            apiDescriptor, 
+            endpointDescriptor);
     }
 
     @Test
     public void testGenerateRestEndpointResponsePojoClassName() {
         ExchangeDescriptor exchangeDescriptor = new ExchangeDescriptor();
-        exchangeDescriptor.setName("TestExchange");
+        exchangeDescriptor.setId("TestExchange");
         exchangeDescriptor.setBasePackage("com.test.exchange");
         ExchangeApiDescriptor apiDescriptor = new ExchangeApiDescriptor();
         apiDescriptor.setName("MyApi");
@@ -139,16 +139,16 @@ public class ExchangeApiGenUtilTest {
         response.setType(Type.OBJECT);
         endpointDescriptor.setResponse(response);
         Assert.assertEquals("com.test.exchange.myapi.pojo.TestExchangeMyApiGetAccountResponse", 
-        					ExchangeApiGenUtil.generateRestEnpointResponsePojoClassName(
-        							exchangeDescriptor, 
-        							apiDescriptor, 
-        							endpointDescriptor));
+                  ExchangeApiGenUtil.generateRestEnpointResponsePojoClassName(
+                      exchangeDescriptor, 
+                      apiDescriptor, 
+                      endpointDescriptor));
     }
     
     @Test(expected = IllegalArgumentException.class)
     public void testGenerateRestEndpointResponsePojoClassName_NullResponse() {
         ExchangeDescriptor exchangeDescriptor = new ExchangeDescriptor();
-        exchangeDescriptor.setName("TestExchange");
+        exchangeDescriptor.setId("TestExchange");
         exchangeDescriptor.setBasePackage("com.test.exchange");
         ExchangeApiDescriptor apiDescriptor = new ExchangeApiDescriptor();
         apiDescriptor.setName("MyApi");
@@ -156,15 +156,15 @@ public class ExchangeApiGenUtilTest {
         RestEndpointDescriptor endpointDescriptor = new RestEndpointDescriptor();
         endpointDescriptor.setName("GetAccount");
         ExchangeApiGenUtil.generateRestEnpointResponsePojoClassName(
-									exchangeDescriptor, 
-									apiDescriptor, 
-									endpointDescriptor);
+                  exchangeDescriptor, 
+                  apiDescriptor, 
+                  endpointDescriptor);
     }
 
     @Test
     public void testGenerateWebsocketEndpointRequestPojoClassName() {
         ExchangeDescriptor exchangeDescriptor = new ExchangeDescriptor();
-        exchangeDescriptor.setName("TestExchange");
+        exchangeDescriptor.setId("TestExchange");
         exchangeDescriptor.setBasePackage("com.test.exchange");
         ExchangeApiDescriptor apiDescriptor = new ExchangeApiDescriptor();
         apiDescriptor.setName("MyApi");
@@ -175,16 +175,16 @@ public class ExchangeApiGenUtilTest {
         request.setType(Type.OBJECT);
         endpointDescriptor.setRequest(request);
         Assert.assertEquals("com.test.exchange.myapi.pojo.TestExchangeMyApiAccountWsRequest", 
-        					ExchangeApiGenUtil.generateWebsocketEndpointRequestPojoClassName(
-        							exchangeDescriptor, 
-        							apiDescriptor, 
-        							endpointDescriptor));
+                  ExchangeApiGenUtil.generateWebsocketEndpointRequestPojoClassName(
+                      exchangeDescriptor, 
+                      apiDescriptor, 
+                      endpointDescriptor));
     }
     
     @Test(expected = IllegalArgumentException.class)
     public void testGenerateWebsocketEndpointRequestPojoClassName_NullRequest() {
         ExchangeDescriptor exchangeDescriptor = new ExchangeDescriptor();
-        exchangeDescriptor.setName("TestExchange");
+        exchangeDescriptor.setId("TestExchange");
         exchangeDescriptor.setBasePackage("com.test.exchange");
         ExchangeApiDescriptor apiDescriptor = new ExchangeApiDescriptor();
         apiDescriptor.setName("MyApi");
@@ -192,15 +192,15 @@ public class ExchangeApiGenUtilTest {
         WebsocketEndpointDescriptor endpointDescriptor = new WebsocketEndpointDescriptor();
         endpointDescriptor.setName("accountWs");
         ExchangeApiGenUtil.generateWebsocketEndpointRequestPojoClassName(
-				exchangeDescriptor, 
-				apiDescriptor, 
-				endpointDescriptor);
+        exchangeDescriptor, 
+        apiDescriptor, 
+        endpointDescriptor);
     }
 
     @Test
     public void testGenerateWebsocketEndpointMessageClassName() {
         ExchangeDescriptor exchangeDescriptor = new ExchangeDescriptor();
-        exchangeDescriptor.setName("TestExchange");
+        exchangeDescriptor.setId("TestExchange");
         exchangeDescriptor.setBasePackage("com.test.exchange");
         ExchangeApiDescriptor apiDescriptor = new ExchangeApiDescriptor();
         apiDescriptor.setName("MyApi");
@@ -211,16 +211,16 @@ public class ExchangeApiGenUtilTest {
         message.setType(Type.OBJECT);
         endpointDescriptor.setMessage(message);
         Assert.assertEquals("com.test.exchange.myapi.pojo.TestExchangeMyApiAccountWsMessage", 
-        					ExchangeApiGenUtil.generateWebsocketEndpointMessagePojoClassName(
-        							exchangeDescriptor, 
-        							apiDescriptor, 
-        							endpointDescriptor));
+                  ExchangeApiGenUtil.generateWebsocketEndpointMessagePojoClassName(
+                      exchangeDescriptor, 
+                      apiDescriptor, 
+                      endpointDescriptor));
     }
     
     @Test(expected = IllegalArgumentException.class)
     public void testGenerateWebsocketEndpointMessageClassName_NullResponse() {
         ExchangeDescriptor exchangeDescriptor = new ExchangeDescriptor();
-        exchangeDescriptor.setName("TestExchange");
+        exchangeDescriptor.setId("TestExchange");
         exchangeDescriptor.setBasePackage("com.test.exchange");
         ExchangeApiDescriptor apiDescriptor = new ExchangeApiDescriptor();
         apiDescriptor.setName("MyApi");
@@ -228,9 +228,9 @@ public class ExchangeApiGenUtilTest {
         WebsocketEndpointDescriptor endpointDescriptor = new WebsocketEndpointDescriptor();
         endpointDescriptor.setName("accountWs");
         ExchangeApiGenUtil.generateWebsocketEndpointMessagePojoClassName(
-				exchangeDescriptor, 
-				apiDescriptor, 
-				endpointDescriptor);
+        exchangeDescriptor, 
+        apiDescriptor, 
+        endpointDescriptor);
     }
 
     @Test
@@ -238,7 +238,7 @@ public class ExchangeApiGenUtilTest {
         WebsocketEndpointDescriptor endpointDescriptor = new WebsocketEndpointDescriptor();
         endpointDescriptor.setName("accountWs");
         Assert.assertEquals("subscribeAccountWs", 
-        					ExchangeApiGenUtil.getWebsocketSubscribeMethodName(endpointDescriptor));
+                  ExchangeApiGenUtil.getWebsocketSubscribeMethodName(endpointDescriptor));
     }
 
     @Test
@@ -246,26 +246,26 @@ public class ExchangeApiGenUtilTest {
         WebsocketEndpointDescriptor endpointDescriptor = new WebsocketEndpointDescriptor();
         endpointDescriptor.setName("accountWs");
         Assert.assertEquals("unsubscribeAccountWs", 
-        					ExchangeApiGenUtil.getWebsocketUnsubscribeMethodName(endpointDescriptor));
+                  ExchangeApiGenUtil.getWebsocketUnsubscribeMethodName(endpointDescriptor));
     }
     
     @Test
-	public void testGetClassNameForField_STRING_Type() {
+  public void testGetClassNameForField_STRING_Type() {
         Imports imports = new Imports();
         Field f = new Field();
         f.setType(Type.STRING);
         Assert.assertEquals(String.class.getSimpleName(), 
-        					ExchangeApiGenUtil.getClassNameForField(f, imports, null));
+                  ExchangeApiGenUtil.getClassNameForField(f, imports, null));
         Assert.assertEquals(0, imports.size());
     }
 
     @Test
-	public void testGetClassNameForField_BIGDECIMAL_Type() {
+  public void testGetClassNameForField_BIGDECIMAL_Type() {
         Imports imports = new Imports();
         Field f = new Field();
         f.setType(Type.BIGDECIMAL);
         Assert.assertEquals(BigDecimal.class.getSimpleName(), 
-        					ExchangeApiGenUtil.getClassNameForField(f, imports, null));
+                  ExchangeApiGenUtil.getClassNameForField(f, imports, null));
         Assert.assertEquals(1, imports.size());
         Assert.assertTrue(imports.contains(BigDecimal.class.getName()));
     }
@@ -277,7 +277,7 @@ public class ExchangeApiGenUtilTest {
         f.setName("bar");
         f.setType(Type.OBJECT);
         Assert.assertEquals("FooBar", 
-        					ExchangeApiGenUtil.getClassNameForField(f, imports, "com.x.y.gen.pojo.Foo"));
+                  ExchangeApiGenUtil.getClassNameForField(f, imports, "com.x.y.gen.pojo.Foo"));
         Assert.assertEquals(1, imports.size());
         Assert.assertTrue(imports.contains("com.x.y.gen.pojo.FooBar"));
     }
@@ -289,7 +289,7 @@ public class ExchangeApiGenUtilTest {
         f.setName("bar");
         f.setObjectName("MyCustomObjectName");
         Assert.assertEquals("MyCustomObjectName", 
-        					ExchangeApiGenUtil.getClassNameForField(f, imports, "com.x.y.gen.pojo.Foo"));
+                  ExchangeApiGenUtil.getClassNameForField(f, imports, "com.x.y.gen.pojo.Foo"));
         Assert.assertEquals(1, imports.size());
         Assert.assertTrue(imports.contains("com.x.y.gen.pojo.MyCustomObjectName"));
     }
@@ -301,7 +301,7 @@ public class ExchangeApiGenUtilTest {
         f.setName("bar");
         f.setType(Type.fromTypeName("OBJECT_MAP_LIST"));
         Assert.assertEquals("List<Map<String, FooBar>>", 
-        					ExchangeApiGenUtil.getClassNameForField(f, imports, "com.x.y.gen.pojo.Foo"));
+                  ExchangeApiGenUtil.getClassNameForField(f, imports, "com.x.y.gen.pojo.Foo"));
         Assert.assertEquals(3, imports.size());
         Assert.assertTrue(imports.contains("com.x.y.gen.pojo.FooBar"));
         Assert.assertTrue(imports.contains(Map.class.getName()));
@@ -315,7 +315,7 @@ public class ExchangeApiGenUtilTest {
         f.setType(Type.OBJECT);
         f.setObjectName("MyCustomObjectName");
         Assert.assertEquals("com.x.y.gen.pojo.MyCustomObjectName", 
-        					ExchangeApiGenUtil.getFieldObjectClassName(f, "com.x.y.gen.pojo.Foo"));
+                  ExchangeApiGenUtil.getFieldObjectClassName(f, "com.x.y.gen.pojo.Foo"));
     }
 
     @Test
@@ -324,50 +324,50 @@ public class ExchangeApiGenUtilTest {
         f.setName("bar");
         f.setType(Type.OBJECT);
         Assert.assertEquals("com.x.y.gen.pojo.FooBar", 
-        					ExchangeApiGenUtil.getFieldObjectClassName(f, "com.x.y.gen.pojo.Foo"));
+                  ExchangeApiGenUtil.getFieldObjectClassName(f, "com.x.y.gen.pojo.Foo"));
     }
 
     @Test
     public void testGetFieldLeafSubTypeClassName_OBJECT() {
         String endpointParameterName = "bar";
         Assert.assertEquals("com.x.y.gen.pojo.FooBar", 
-        					ExchangeApiGenUtil.getFieldLeafSubTypeClassName(
-        							endpointParameterName, 
-        							Type.OBJECT, 
-        							null, 
-        							"com.x.y.gen.pojo.Foo"));
+                  ExchangeApiGenUtil.getFieldLeafSubTypeClassName(
+                      endpointParameterName, 
+                      Type.OBJECT, 
+                      null, 
+                      "com.x.y.gen.pojo.Foo"));
     }
 
     @Test
     public void testGetFieldLeafSubTypeClassName_OBJECT_LIST_MAP() {
         String endpointParameterName = "bar";
         Assert.assertEquals("com.x.y.gen.pojo.FooBar", 
-        					ExchangeApiGenUtil.getFieldLeafSubTypeClassName(
-        							endpointParameterName, 
-        							Type.fromTypeName("OBJECT_LIST_MAP"), 
-        							null, 
-        							"com.x.y.gen.pojo.Foo"));
+                  ExchangeApiGenUtil.getFieldLeafSubTypeClassName(
+                      endpointParameterName, 
+                      Type.fromTypeName("OBJECT_LIST_MAP"), 
+                      null, 
+                      "com.x.y.gen.pojo.Foo"));
     }
     
     @Test
     public void testGetFieldLeafSubTypeClassName_OBJECTWithObjectName() {
         String endpointParameterName = "bar";
         Assert.assertEquals("com.x.y.gen.pojo.MyPojo", 
-        					ExchangeApiGenUtil.getFieldLeafSubTypeClassName(
-        							endpointParameterName, 
-        							Type.OBJECT, 
-        							"MyPojo", 
-        							"com.x.y.gen.pojo.Foo"));
+                  ExchangeApiGenUtil.getFieldLeafSubTypeClassName(
+                      endpointParameterName, 
+                      Type.OBJECT, 
+                      "MyPojo", 
+                      "com.x.y.gen.pojo.Foo"));
     }
     
     @Test
     public void testGetFieldLeafSubTypeClassName_INT() {
         Assert.assertEquals("java.lang.Integer", 
-				ExchangeApiGenUtil.getFieldLeafSubTypeClassName(
-						"bar", 
-						Type.INT, 
-						null, 
-						"com.x.y.gen.pojo.Foo"));
+        ExchangeApiGenUtil.getFieldLeafSubTypeClassName(
+            "bar", 
+            Type.INT, 
+            null, 
+            "com.x.y.gen.pojo.Foo"));
     }
 
     @Test
@@ -425,19 +425,10 @@ public class ExchangeApiGenUtilTest {
     }
 
     @Test
-    public void testGetNewMessageDeserializerInstruction_TIMESTAMP() {
-        Imports imports = new Imports();
-        Assert.assertEquals("RawLongMessageDeserializer.getInstance()", 
-            ExchangeApiGenUtil.getNewMessageDeserializerInstruction(Type.TIMESTAMP, null, imports));
-            Assert.assertEquals(1, imports.size());
-            Assert.assertTrue(imports.contains(RawLongMessageDeserializer.class.getName()));
-    }
-
-    @Test
     public void testGetNewMessageDeserializerInstruction_OBJECT() {
         Imports imports = new Imports();
         Assert.assertEquals("new MyMessageDeserializer()", 
-        				    ExchangeApiGenUtil.getNewMessageDeserializerInstruction(Type.OBJECT, "com.x.y.z.MyMessage", imports));
+                    ExchangeApiGenUtil.getNewMessageDeserializerInstruction(Type.OBJECT, "com.x.y.z.MyMessage", imports));
         Assert.assertEquals(1, imports.size());
         Assert.assertTrue(imports.contains("com.x.y.z.deserializers.MyMessageDeserializer")); 
     }
@@ -446,7 +437,7 @@ public class ExchangeApiGenUtilTest {
     public void testGetNewMessageDeserializerInstruction_OBJECT_MAP() {
         Imports imports = new Imports();
         Assert.assertEquals("new MapJsonFieldDeserializer<>(new MyMessageDeserializer())", 
-        				    ExchangeApiGenUtil.getNewMessageDeserializerInstruction(Type.fromTypeName("OBJECT_MAP"), "com.x.y.z.MyMessage", imports));
+                    ExchangeApiGenUtil.getNewMessageDeserializerInstruction(Type.fromTypeName("OBJECT_MAP"), "com.x.y.z.MyMessage", imports));
         Assert.assertEquals(2, imports.size());
         Assert.assertTrue(imports.contains(MapJsonFieldDeserializer.class.getName())); 
         Assert.assertTrue(imports.contains("com.x.y.z.deserializers.MyMessageDeserializer")); 
@@ -456,7 +447,7 @@ public class ExchangeApiGenUtilTest {
     public void testGetNewMessageDeserializerInstruction_BIGDECIMAL_LIST() {
         Imports imports = new Imports();
         Assert.assertEquals("new ListJsonFieldDeserializer<>(BigDecimalJsonFieldDeserializer.getInstance())", 
-        				    ExchangeApiGenUtil.getNewMessageDeserializerInstruction(Type.fromTypeName("BIGDECIMAL_LIST"), "com.x.y.z.MyMessage", imports));
+                    ExchangeApiGenUtil.getNewMessageDeserializerInstruction(Type.fromTypeName("BIGDECIMAL_LIST"), "com.x.y.z.MyMessage", imports));
         Assert.assertEquals(2, imports.size());
         Assert.assertTrue(imports.contains(BigDecimalJsonFieldDeserializer.class.getName())); 
         Assert.assertTrue(imports.contains(ListJsonFieldDeserializer.class.getName())); 
@@ -528,7 +519,7 @@ public class ExchangeApiGenUtilTest {
     @Test
     public void testRestEnpointHasArguments_NullRequest() {
         ExchangeDescriptor exchangeDescriptor = new ExchangeDescriptor();
-        exchangeDescriptor.setName("TestExchange");
+        exchangeDescriptor.setId("TestExchange");
         exchangeDescriptor.setBasePackage("com.test.exchange");
         ExchangeApiDescriptor apiDescriptor = new ExchangeApiDescriptor();
         apiDescriptor.setName("MyApi");
@@ -541,7 +532,7 @@ public class ExchangeApiGenUtilTest {
     @Test
     public void testRestEnpointHasArguments_HasRequestWithArguments() {
         ExchangeDescriptor exchangeDescriptor = new ExchangeDescriptor();
-        exchangeDescriptor.setName("TestExchange");
+        exchangeDescriptor.setId("TestExchange");
         exchangeDescriptor.setBasePackage("com.test.exchange");
         ExchangeApiDescriptor apiDescriptor = new ExchangeApiDescriptor();
         apiDescriptor.setName("MyApi");
@@ -557,7 +548,7 @@ public class ExchangeApiGenUtilTest {
     @Test
     public void testWebsocketEnpointHasArguments_NullRequest() {
         ExchangeDescriptor exchangeDescriptor = new ExchangeDescriptor();
-        exchangeDescriptor.setName("TestExchange");
+        exchangeDescriptor.setId("TestExchange");
         exchangeDescriptor.setBasePackage("com.test.exchange");
         ExchangeApiDescriptor apiDescriptor = new ExchangeApiDescriptor();
         apiDescriptor.setName("MyApi");
@@ -567,21 +558,21 @@ public class ExchangeApiGenUtilTest {
         Assert.assertFalse(ExchangeApiGenUtil.websocketEndpointHasArguments(endpointDescriptor, apiDescriptor));
     }
     
-	@Test
-	public void testWebsocketEnpointHasArguments_HasRequestWithArgument() {
-		ExchangeApiDescriptor apiDescriptor = new ExchangeApiDescriptor();
-		apiDescriptor.setName("MyApi");
-		WebsocketEndpointDescriptor endpointDescriptor = new WebsocketEndpointDescriptor();
-		endpointDescriptor.setName("GetAccount");
-		Field request = new Field();
-		request.setType(Type.STRING);
-		endpointDescriptor.setRequest(request);
-		Assert.assertTrue(ExchangeApiGenUtil.websocketEndpointHasArguments(endpointDescriptor, apiDescriptor));
-	}
+  @Test
+  public void testWebsocketEnpointHasArguments_HasRequestWithArgument() {
+    ExchangeApiDescriptor apiDescriptor = new ExchangeApiDescriptor();
+    apiDescriptor.setName("MyApi");
+    WebsocketEndpointDescriptor endpointDescriptor = new WebsocketEndpointDescriptor();
+    endpointDescriptor.setName("GetAccount");
+    Field request = new Field();
+    request.setType(Type.STRING);
+    endpointDescriptor.setRequest(request);
+    Assert.assertTrue(ExchangeApiGenUtil.websocketEndpointHasArguments(endpointDescriptor, apiDescriptor));
+  }
     
     @Test
     public void testEnpointHasArguments_NullType() {
-        Assert.assertFalse(ExchangeApiGenUtil.endpointHasArguments(new Field(), null));
+        Assert.assertTrue(ExchangeApiGenUtil.endpointHasArguments(new Field(), null));
     }
     
     @Test
@@ -591,8 +582,8 @@ public class ExchangeApiGenUtilTest {
     
     @Test
     public void testEnpointHasArguments_PrimitiveType() {
-    	Field f = new Field();
-    	f.setType(Type.INT);
+      Field f = new Field();
+      f.setType(Type.INT);
         Assert.assertTrue(ExchangeApiGenUtil.endpointHasArguments(f, null));
     }
     
@@ -601,10 +592,10 @@ public class ExchangeApiGenUtilTest {
         ExchangeApiDescriptor apiDescriptor = new ExchangeApiDescriptor();
         apiDescriptor.setName("MyApi");
         Field f = Field.builder()
-        			   .type(Type.OBJECT)
-        			   .name("foo")
-        			   .properties(List.of(new Field()))
-        			   .build();
+                 .type(Type.OBJECT)
+                 .name("foo")
+                 .properties(List.of(new Field()))
+                 .build();
         Assert.assertTrue(ExchangeApiGenUtil.endpointHasArguments(f, apiDescriptor));
     }
     
@@ -613,61 +604,61 @@ public class ExchangeApiGenUtilTest {
         ExchangeApiDescriptor apiDescriptor = new ExchangeApiDescriptor();
         apiDescriptor.setName("MyApi");
         Field f = Field.builder()
- 			   		   .type(Type.OBJECT)
- 			   		   .name("foo")
- 			   		   .properties(List.of())
- 			   		   .build();
+                 .type(Type.OBJECT)
+                 .name("foo")
+                 .properties(List.of())
+                 .build();
         Assert.assertFalse(ExchangeApiGenUtil.endpointHasArguments(f, apiDescriptor));
     }
     
     @Test
     public void testGetRequestArgName_Null() {
-    	Assert.assertEquals(ExchangeApiGenUtil.DEFAULT_REQUEST_ARG_NAME,  ExchangeApiGenUtil.getRequestArgName(null));
+      Assert.assertEquals(ExchangeApiGenUtil.DEFAULT_REQUEST_ARG_NAME,  ExchangeApiGenUtil.getRequestArgName(null));
     }
     
     @Test
     public void testGetRequestArgName_NotNull() {
-    	String argName = "myRequestArg";
-    	Assert.assertEquals(argName,  ExchangeApiGenUtil.getRequestArgName(argName));
+      String argName = "myRequestArg";
+      Assert.assertEquals(argName,  ExchangeApiGenUtil.getRequestArgName(argName));
     }
     
     @Test
     public void testGetWebsocketEndpointNameStaticVariable() {
-    	Assert.assertEquals("SUBSCRIBE_ACCOUNT_WS_API",  ExchangeApiGenUtil.getWebsocketEndpointNameStaticVariable("subscribeAccount"));
+      Assert.assertEquals("SUBSCRIBE_ACCOUNT_WS_API",  ExchangeApiGenUtil.getWebsocketEndpointNameStaticVariable("subscribeAccount"));
     }
     
     @Test
     public void testResolveFieldProperties_NullField() {
-    	Assert.assertNull(ExchangeApiGenUtil.resolveFieldProperties(null, null));
+      Assert.assertNull(ExchangeApiGenUtil.resolveFieldProperties(null, null));
     }
     
     @Test
     public void testResolveFieldProperties_NullFieldType() {
-    	Field f = new Field();
-    	f.setName("foo");
-    	Assert.assertEquals(f, ExchangeApiGenUtil.resolveFieldProperties(null, f));
+      Field f = new Field();
+      f.setName("foo");
+      Assert.assertEquals(f, ExchangeApiGenUtil.resolveFieldProperties(null, f));
     }
     
     @Test
     public void testResolveFieldProperties_PrimitiveFieldType() {
-    	Field f = new Field();
-    	f.setName("foo");
-    	f.setType(Type.INT);
-    	Assert.assertEquals(f, ExchangeApiGenUtil.resolveFieldProperties(null, f));
+      Field f = new Field();
+      f.setName("foo");
+      f.setType(Type.INT);
+      Assert.assertEquals(f, ExchangeApiGenUtil.resolveFieldProperties(null, f));
     }
     
     @Test
     public void testResolveFieldProperties_NullFieldTypeAndNullParametersButObjectNameResolvedInAnotherApi() {
-		ExchangeApiDescriptor apiDescriptor = new ExchangeApiDescriptor();
-		apiDescriptor.setName("MyApi");
-		String objectName = "MyPojo";
-    	Field f = new Field();
-    	f.setName("foo");
-    	f.setObjectName(objectName);
+    ExchangeApiDescriptor apiDescriptor = new ExchangeApiDescriptor();
+    apiDescriptor.setName("MyApi");
+    String objectName = "MyPojo";
+      Field f = new Field();
+      f.setName("foo");
+      f.setObjectName(objectName);
         RestEndpointDescriptor endpointDescriptor = new RestEndpointDescriptor();
         endpointDescriptor.setName("GetAccount");
         endpointDescriptor.setRequest(f);
-    	
+      
         RestEndpointDescriptor otherEndpointDescriptor = new RestEndpointDescriptor();
         otherEndpointDescriptor.setName("GetAccountV2");
         Field otherRequest = new Field();
@@ -689,75 +680,75 @@ public class ExchangeApiGenUtilTest {
     
     @Test
     public void testResolveFieldProperties_ObjectFieldTypeWithNullObjectNameAndNullParameters() {
-		ExchangeApiDescriptor apiDescriptor = new ExchangeApiDescriptor();
-		apiDescriptor.setName("MyApi");
-    	Field f = new Field();
-    	f.setName("foo");
-    	f.setType(Type.OBJECT);
-    	Assert.assertEquals(f, ExchangeApiGenUtil.resolveFieldProperties(apiDescriptor, f));
+    ExchangeApiDescriptor apiDescriptor = new ExchangeApiDescriptor();
+    apiDescriptor.setName("MyApi");
+      Field f = new Field();
+      f.setName("foo");
+      f.setType(Type.OBJECT);
+      Assert.assertEquals(f, ExchangeApiGenUtil.resolveFieldProperties(apiDescriptor, f));
     }
     
     @Test
     public void testResolveFieldProperties_ObjectFieldTypeObjectNameAndDefinedProperties() {
-		ExchangeApiDescriptor apiDescriptor = new ExchangeApiDescriptor();
-		apiDescriptor.setName("MyApi");
-    	Field f = new Field();
-    	f.setName("foo");
-    	f.setType(Type.OBJECT);
-    	Field prop = new Field();
-    	prop.setName("bar");
-    	prop.setType(Type.STRING);
-    	f.setObjectName("MyPojo");
-    	f.setProperties(List.of(prop));
-    	Assert.assertEquals(f, ExchangeApiGenUtil.resolveFieldProperties(apiDescriptor, f));
+    ExchangeApiDescriptor apiDescriptor = new ExchangeApiDescriptor();
+    apiDescriptor.setName("MyApi");
+      Field f = new Field();
+      f.setName("foo");
+      f.setType(Type.OBJECT);
+      Field prop = new Field();
+      prop.setName("bar");
+      prop.setType(Type.STRING);
+      f.setObjectName("MyPojo");
+      f.setProperties(List.of(prop));
+      Assert.assertEquals(f, ExchangeApiGenUtil.resolveFieldProperties(apiDescriptor, f));
     }
     
     @Test
     public void testGetFieldPropertiesCount_NullField() {
-    	Assert.assertEquals(0, ExchangeApiGenUtil.getFieldPropertiesCount(null, null));
+      Assert.assertEquals(0, ExchangeApiGenUtil.getFieldPropertiesCount(null, null));
     }
     
     @Test
     public void testGetFieldPropertiesCount_PrimitiveField() {
-    	Field f = new Field();
-    	f.setType(Type.INT);
-    	Assert.assertEquals(0, ExchangeApiGenUtil.getFieldPropertiesCount(f, null));
+      Field f = new Field();
+      f.setType(Type.INT);
+      Assert.assertEquals(0, ExchangeApiGenUtil.getFieldPropertiesCount(f, null));
     }
     
     @Test
     public void testGetFieldPropertiesCountNullParametersObjectField() {
-    	Field f = new Field();
-    	f.setType(Type.OBJECT);
-    	Assert.assertEquals(0, ExchangeApiGenUtil.getFieldPropertiesCount(f, null));
+      Field f = new Field();
+      f.setType(Type.OBJECT);
+      Assert.assertEquals(0, ExchangeApiGenUtil.getFieldPropertiesCount(f, null));
     }
     
     @Test
     public void testGetFieldPropertiesCount_2ParametersObjectField() {
-    	Field f = new Field();
-    	f.setName("foo");
-    	f.setType(Type.OBJECT);
-    	Field prop1 = new Field();
-    	prop1.setName("bar");
-    	prop1.setType(Type.STRING);
-    	Field prop2 = new Field();
-    	prop2.setName("hello");
-    	prop2.setType(Type.STRING);
-    	f.setProperties(List.of(prop1, prop2));
-    	Assert.assertEquals(2, ExchangeApiGenUtil.getFieldPropertiesCount(f, null));
+      Field f = new Field();
+      f.setName("foo");
+      f.setType(Type.OBJECT);
+      Field prop1 = new Field();
+      prop1.setName("bar");
+      prop1.setType(Type.STRING);
+      Field prop2 = new Field();
+      prop2.setName("hello");
+      prop2.setType(Type.STRING);
+      f.setProperties(List.of(prop1, prop2));
+      Assert.assertEquals(2, ExchangeApiGenUtil.getFieldPropertiesCount(f, null));
     }
     
     @Test
     public void testGetFieldPropertiesCount_NullFieldTypeAndNullParametersButObjectNameResolvedInAnotherApi() {
-		ExchangeApiDescriptor apiDescriptor = new ExchangeApiDescriptor();
-		apiDescriptor.setName("MyApi");
-		String objectName = "MyPojo";
-    	Field f = new Field();
-    	f.setName("foo");
-    	f.setObjectName(objectName);
+    ExchangeApiDescriptor apiDescriptor = new ExchangeApiDescriptor();
+    apiDescriptor.setName("MyApi");
+    String objectName = "MyPojo";
+      Field f = new Field();
+      f.setName("foo");
+      f.setObjectName(objectName);
         RestEndpointDescriptor endpointDescriptor = new RestEndpointDescriptor();
         endpointDescriptor.setName("GetAccount");
         endpointDescriptor.setRequest(f);
-    	
+      
         RestEndpointDescriptor otherEndpointDescriptor = new RestEndpointDescriptor();
         otherEndpointDescriptor.setName("GetAccountV2");
         Field otherRequest = new Field();
@@ -770,33 +761,33 @@ public class ExchangeApiGenUtilTest {
         otherEndpointDescriptor.setRequest(otherRequest);
         otherRequest.setProperties(List.of(otherRequestProperty));
         apiDescriptor.setRestEndpoints(List.of(endpointDescriptor, otherEndpointDescriptor));
-    	Assert.assertEquals(1, ExchangeApiGenUtil.getFieldPropertiesCount(f, apiDescriptor));
+      Assert.assertEquals(1, ExchangeApiGenUtil.getFieldPropertiesCount(f, apiDescriptor));
     }
     
     @Test(expected = IllegalArgumentException.class)
     public void testFindPropertiesForObjectNameInApi_NullObjectName() {
-		ExchangeApiDescriptor apiDescriptor = new ExchangeApiDescriptor();
-		apiDescriptor.setName("MyApi");
-    	ExchangeApiGenUtil.findPropertiesForObjectNameInApi(null, apiDescriptor);
+    ExchangeApiDescriptor apiDescriptor = new ExchangeApiDescriptor();
+    apiDescriptor.setName("MyApi");
+      ExchangeApiGenUtil.findPropertiesForObjectNameInApi(null, apiDescriptor);
     }
     
     @Test(expected = IllegalArgumentException.class)
     public void testFindPropertiesForObjectNameInApi_NullApiDescriptor() {
-    	ExchangeApiGenUtil.findPropertiesForObjectNameInApi("MyPojo", null);
+      ExchangeApiGenUtil.findPropertiesForObjectNameInApi("MyPojo", null);
     }
     
     @Test
     public void testFindPropertiesForObjectNameInApi_ObjectNameFoundInRestEndpointRequest() {
-		ExchangeApiDescriptor apiDescriptor = new ExchangeApiDescriptor();
-		apiDescriptor.setName("MyApi");
-		String objectName = "MyPojo";
-    	Field f = new Field();
-    	f.setName("foo");
-    	f.setObjectName(objectName);
+    ExchangeApiDescriptor apiDescriptor = new ExchangeApiDescriptor();
+    apiDescriptor.setName("MyApi");
+    String objectName = "MyPojo";
+      Field f = new Field();
+      f.setName("foo");
+      f.setObjectName(objectName);
         RestEndpointDescriptor endpointDescriptor = new RestEndpointDescriptor();
         endpointDescriptor.setName("GetAccount");
         endpointDescriptor.setRequest(f);
-    	
+      
         RestEndpointDescriptor otherEndpointDescriptor = new RestEndpointDescriptor();
         otherEndpointDescriptor.setName("GetAccountV2");
         Field otherRequest = new Field();
@@ -809,24 +800,24 @@ public class ExchangeApiGenUtilTest {
         otherEndpointDescriptor.setRequest(otherRequest);
         otherRequest.setProperties(List.of(otherRequestProperty));
         apiDescriptor.setRestEndpoints(List.of(endpointDescriptor, otherEndpointDescriptor));
-    	
-    	List<Field> actual = ExchangeApiGenUtil.findPropertiesForObjectNameInApi(objectName, apiDescriptor);
-    	Assert.assertEquals(1, actual.size());
-    	Assert.assertEquals(otherRequestProperty, actual.get(0));
+      
+      List<Field> actual = ExchangeApiGenUtil.findPropertiesForObjectNameInApi(objectName, apiDescriptor);
+      Assert.assertEquals(1, actual.size());
+      Assert.assertEquals(otherRequestProperty, actual.get(0));
     }
     
     @Test
     public void testFindPropertiesForObjectNameInApi_ObjectNameFoundInRestEndpointResponse() {
-		ExchangeApiDescriptor apiDescriptor = new ExchangeApiDescriptor();
-		apiDescriptor.setName("MyApi");
-		String objectName = "MyPojo";
-    	Field f = new Field();
-    	f.setName("foo");
-    	f.setObjectName(objectName);
+    ExchangeApiDescriptor apiDescriptor = new ExchangeApiDescriptor();
+    apiDescriptor.setName("MyApi");
+    String objectName = "MyPojo";
+      Field f = new Field();
+      f.setName("foo");
+      f.setObjectName(objectName);
         RestEndpointDescriptor endpointDescriptor = new RestEndpointDescriptor();
         endpointDescriptor.setName("GetAccount");
         endpointDescriptor.setRequest(f);
-    	
+      
         RestEndpointDescriptor otherEndpointDescriptor = new RestEndpointDescriptor();
         otherEndpointDescriptor.setName("GetAccountV2");
         Field otherResponse = new Field();
@@ -839,18 +830,18 @@ public class ExchangeApiGenUtilTest {
         otherEndpointDescriptor.setResponse(otherResponse);
         otherResponse.setProperties(List.of(otherResponseProperty));
         apiDescriptor.setRestEndpoints(List.of(endpointDescriptor, otherEndpointDescriptor));
-    	
-    	List<Field> actual = ExchangeApiGenUtil.findPropertiesForObjectNameInApi(objectName, apiDescriptor);
-    	Assert.assertEquals(1, actual.size());
-    	Assert.assertEquals(otherResponseProperty, actual.get(0));
+      
+      List<Field> actual = ExchangeApiGenUtil.findPropertiesForObjectNameInApi(objectName, apiDescriptor);
+      Assert.assertEquals(1, actual.size());
+      Assert.assertEquals(otherResponseProperty, actual.get(0));
     }
     
     @Test
     public void testFindPropertiesForObjectNameInApi_ObjectNameFoundInWebsocketEndpointRequest() {
-		ExchangeApiDescriptor apiDescriptor = new ExchangeApiDescriptor();
-		apiDescriptor.setName("MyApi");
-		String objectName = "MyPojo";
-    	
+    ExchangeApiDescriptor apiDescriptor = new ExchangeApiDescriptor();
+    apiDescriptor.setName("MyApi");
+    String objectName = "MyPojo";
+      
         WebsocketEndpointDescriptor endpointDescriptor = new WebsocketEndpointDescriptor();
         endpointDescriptor.setName("GetAccountV2");
         Field request = new Field();
@@ -863,18 +854,18 @@ public class ExchangeApiGenUtilTest {
         endpointDescriptor.setRequest(request);
         request.setProperties(List.of(otherRequestProperty));
         apiDescriptor.setWebsocketEndpoints(List.of(endpointDescriptor));
-    	
-    	List<Field> actual = ExchangeApiGenUtil.findPropertiesForObjectNameInApi(objectName, apiDescriptor);
-    	Assert.assertEquals(1, actual.size());
-    	Assert.assertEquals(otherRequestProperty, actual.get(0));
+      
+      List<Field> actual = ExchangeApiGenUtil.findPropertiesForObjectNameInApi(objectName, apiDescriptor);
+      Assert.assertEquals(1, actual.size());
+      Assert.assertEquals(otherRequestProperty, actual.get(0));
     }
     
     @Test
     public void testFindPropertiesForObjectNameInApi_ObjectNameFoundInWebsocketEndpointMessage() {
-		ExchangeApiDescriptor apiDescriptor = new ExchangeApiDescriptor();
-		apiDescriptor.setName("MyApi");
-		String objectName = "MyPojo";
-    	
+    ExchangeApiDescriptor apiDescriptor = new ExchangeApiDescriptor();
+    apiDescriptor.setName("MyApi");
+    String objectName = "MyPojo";
+      
         WebsocketEndpointDescriptor endpointDescriptor = new WebsocketEndpointDescriptor();
         endpointDescriptor.setName("GetAccountV2");
         Field message = new Field();
@@ -887,39 +878,39 @@ public class ExchangeApiGenUtilTest {
         endpointDescriptor.setMessage(message);
         message.setProperties(List.of(messageProperty));
         apiDescriptor.setWebsocketEndpoints(List.of(endpointDescriptor));
-    	
-    	List<Field> actual = ExchangeApiGenUtil.findPropertiesForObjectNameInApi(objectName, apiDescriptor);
-    	Assert.assertEquals(1, actual.size());
-    	Assert.assertEquals(messageProperty, actual.get(0));
+      
+      List<Field> actual = ExchangeApiGenUtil.findPropertiesForObjectNameInApi(objectName, apiDescriptor);
+      Assert.assertEquals(1, actual.size());
+      Assert.assertEquals(messageProperty, actual.get(0));
     }
     
     @Test(expected = IllegalArgumentException.class)
     public void testFindPropertiesForObjectNameInApi_ObjectNameNotFound_NullApiRestAndWebsocketEndpoints() {
-    	ExchangeApiDescriptor apiDescriptor = new ExchangeApiDescriptor();
-    	ExchangeApiGenUtil.findPropertiesForObjectNameInApi("MyPojo", apiDescriptor);
+      ExchangeApiDescriptor apiDescriptor = new ExchangeApiDescriptor();
+      ExchangeApiGenUtil.findPropertiesForObjectNameInApi("MyPojo", apiDescriptor);
     }
     
     @Test(expected = IllegalArgumentException.class)
     public void testFindPropertiesForObjectNameInApi_ObjectNameNotFound_EmptyApiRestAndWebsocketEndpoints() {
-    	ExchangeApiDescriptor apiDescriptor = new ExchangeApiDescriptor();
-    	apiDescriptor.setRestEndpoints(List.of());
-    	apiDescriptor.setWebsocketEndpoints(List.of());
-    	ExchangeApiGenUtil.findPropertiesForObjectNameInApi("MyPojo", apiDescriptor);
+      ExchangeApiDescriptor apiDescriptor = new ExchangeApiDescriptor();
+      apiDescriptor.setRestEndpoints(List.of());
+      apiDescriptor.setWebsocketEndpoints(List.of());
+      ExchangeApiGenUtil.findPropertiesForObjectNameInApi("MyPojo", apiDescriptor);
     }
     
     @Test(expected = IllegalArgumentException.class)
     public void testFindPropertiesForObjectNameInApi_ObjectNameNotFoundInAnyRestOrWebsocketEndpoint() {
-    	ExchangeApiDescriptor apiDescriptor = new ExchangeApiDescriptor();
-    	RestEndpointDescriptor restEndpointDescriptor = new RestEndpointDescriptor();
-    	apiDescriptor.setRestEndpoints(List.of(restEndpointDescriptor));
-    	WebsocketEndpointDescriptor websocketEndpointDescriptor = new WebsocketEndpointDescriptor();
-    	apiDescriptor.setWebsocketEndpoints(List.of(websocketEndpointDescriptor));
-    	ExchangeApiGenUtil.findPropertiesForObjectNameInApi("MyPojo", apiDescriptor);
+      ExchangeApiDescriptor apiDescriptor = new ExchangeApiDescriptor();
+      RestEndpointDescriptor restEndpointDescriptor = new RestEndpointDescriptor();
+      apiDescriptor.setRestEndpoints(List.of(restEndpointDescriptor));
+      WebsocketEndpointDescriptor websocketEndpointDescriptor = new WebsocketEndpointDescriptor();
+      apiDescriptor.setWebsocketEndpoints(List.of(websocketEndpointDescriptor));
+      ExchangeApiGenUtil.findPropertiesForObjectNameInApi("MyPojo", apiDescriptor);
     }
     
     @Test
     public void testFindPropertiesForObjectNameInField_NullField() {
-    	Assert.assertNull(ExchangeApiGenUtil.findPropertiesForObjectNameInField("MyPojo", null));
+      Assert.assertNull(ExchangeApiGenUtil.findPropertiesForObjectNameInField("MyPojo", null));
     }
     
     @Test
@@ -934,62 +925,62 @@ public class ExchangeApiGenUtilTest {
     
     @Test
     public void testFindPropertiesForObjectNameInField_FieldCarriesExpectedObjectName() {
-    	String objectName = "MyPojo";
-    	Field f = new Field();
-    	f.setObjectName(objectName);
-    	
-    	Field prop = new Field();
-    	prop.setName("foo");
-    	prop.setType(Type.STRING);
-    	List<Field> expectedProperties = List.of(prop);
-    	f.setProperties(expectedProperties);
+      String objectName = "MyPojo";
+      Field f = new Field();
+      f.setObjectName(objectName);
+      
+      Field prop = new Field();
+      prop.setName("foo");
+      prop.setType(Type.STRING);
+      List<Field> expectedProperties = List.of(prop);
+      f.setProperties(expectedProperties);
         Assert.assertEquals(expectedProperties, ExchangeApiGenUtil.findPropertiesForObjectNameInField(objectName, f));
     }
     
     @Test
     public void testFindPropertiesForObjectNameInField_FieldSubPropertyCarriesExpectedObjectName() {
-    	String objectName = "MyPojo";
-    	Field f = new Field();
-    	Field prop = new Field();
-    	prop.setName("foo");
-    	prop.setType(Type.OBJECT);
-    	prop.setObjectName(objectName);
-    	Field subProp = new Field();
-    	subProp.setName("bar");
-    	subProp.setType(Type.STRING);
-    	List<Field> expectedProperties = List.of(subProp);
-    	prop.setProperties(List.of(subProp));
-    	f.setProperties(List.of(prop));
+      String objectName = "MyPojo";
+      Field f = new Field();
+      Field prop = new Field();
+      prop.setName("foo");
+      prop.setType(Type.OBJECT);
+      prop.setObjectName(objectName);
+      Field subProp = new Field();
+      subProp.setName("bar");
+      subProp.setType(Type.STRING);
+      List<Field> expectedProperties = List.of(subProp);
+      prop.setProperties(List.of(subProp));
+      f.setProperties(List.of(prop));
         Assert.assertEquals(expectedProperties, ExchangeApiGenUtil.findPropertiesForObjectNameInField(objectName, f));
     }
     @Test
     public void testFindPropertiesForObjectNameInField_ObjectNameNotFound() {
-    	String objectName = "MyPojo";
-    	Field f = new Field();
-    	Field prop = new Field();
-    	prop.setName("foo");
-    	prop.setType(Type.OBJECT);
-    	Field subProp = new Field();
-    	subProp.setName("bar");
-    	subProp.setType(Type.STRING);
-    	prop.setProperties(List.of(subProp));
-    	f.setProperties(List.of(prop));
+      String objectName = "MyPojo";
+      Field f = new Field();
+      Field prop = new Field();
+      prop.setName("foo");
+      prop.setType(Type.OBJECT);
+      Field subProp = new Field();
+      subProp.setName("bar");
+      subProp.setType(Type.STRING);
+      prop.setProperties(List.of(subProp));
+      f.setProperties(List.of(prop));
         Assert.assertNull(ExchangeApiGenUtil.findPropertiesForObjectNameInField(objectName, f));
     }
     
 
     @Test
     public void testResolveAllFieldProperties_NullFieldTypeAndNullParametersButObjectNameResolvedInAnotherApi() {
-		ExchangeApiDescriptor apiDescriptor = new ExchangeApiDescriptor();
-		apiDescriptor.setName("MyApi");
-		String objectName = "MyPojo";
-    	Field f = new Field();
-    	f.setName("foo");
-    	f.setObjectName(objectName);
+    ExchangeApiDescriptor apiDescriptor = new ExchangeApiDescriptor();
+    apiDescriptor.setName("MyApi");
+    String objectName = "MyPojo";
+      Field f = new Field();
+      f.setName("foo");
+      f.setObjectName(objectName);
         RestEndpointDescriptor endpointDescriptor = new RestEndpointDescriptor();
         endpointDescriptor.setName("GetAccount");
         endpointDescriptor.setRequest(f);
-    	
+      
         RestEndpointDescriptor otherEndpointDescriptor = new RestEndpointDescriptor();
         otherEndpointDescriptor.setName("GetAccountV2");
         Field otherRequest = new Field();
@@ -1030,10 +1021,10 @@ public class ExchangeApiGenUtilTest {
         apiDescriptor.setHttpUrl("https://api.exchange.com/v1");
         Imports imports = new Imports();
         Assert.assertEquals("\n"
-        		+ "/**\n"
-        		+ " * Base URL for <i>null</i> exchange <i>null</i> API REST endpoints\n"
-        		+ " */\n"
-        		+ "public static final String HTTP_URL = \"https://api.exchange.com/v1\";", 
+            + "/**\n"
+            + " * Base URL for <i>null</i> exchange <i>null</i> API REST endpoints\n"
+            + " */\n"
+            + "public static final String HTTP_URL = \"https://api.exchange.com/v1\";", 
                 ExchangeApiGenUtil.getHttpUrlVariableDeclaration(exchangeDescriptor, apiDescriptor, imports));
         Assert.assertEquals(0, imports.size());
     }
@@ -1041,21 +1032,21 @@ public class ExchangeApiGenUtilTest {
     @Test
     public void testGetHttpUrlVariableDeclaration_RelateApiUrl_AbsoluteExchangeUrl() {
         ExchangeDescriptor exchangeDescriptor = new ExchangeDescriptor();
-        exchangeDescriptor.setName("MyExchange");
+        exchangeDescriptor.setId("MyExchange");
         exchangeDescriptor.setBasePackage("com.x.gen");
         exchangeDescriptor.setHttpUrl("\n"
-        		+ "/**\n"
-        		+ " * Base URL for <i>MyExchange</i> exchange <i>null</i> API REST endpoints\n"
-        		+ " */\n"
-        		+ "public static final String HTTP_URL = MyExchangeExchangeImpl.HTTP_URL + \"/v1\";");
+            + "/**\n"
+            + " * Base URL for <i>MyExchange</i> exchange <i>null</i> API REST endpoints\n"
+            + " */\n"
+            + "public static final String HTTP_URL = MyExchangeExchangeImpl.HTTP_URL + \"/v1\";");
         ExchangeApiDescriptor apiDescriptor = new ExchangeApiDescriptor();
         apiDescriptor.setHttpUrl("/v1");
         Imports imports = new Imports();
         Assert.assertEquals("\n"
-        		+ "/**\n"
-        		+ " * Base URL for <i>MyExchange</i> exchange <i>null</i> API REST endpoints\n"
-        		+ " */\n"
-        		+ "public static final String HTTP_URL = MyExchangeExchangeImpl.HTTP_URL + \"/v1\";", 
+            + "/**\n"
+            + " * Base URL for <i>MyExchange</i> exchange <i>null</i> API REST endpoints\n"
+            + " */\n"
+            + "public static final String HTTP_URL = MyExchangeExchangeImpl.HTTP_URL + \"/v1\";", 
                 ExchangeApiGenUtil.getHttpUrlVariableDeclaration(exchangeDescriptor, apiDescriptor, imports));
         Assert.assertEquals(1, imports.size());
         Assert.assertEquals("com.x.gen.MyExchangeExchangeImpl", imports.iterator().next());
@@ -1064,16 +1055,16 @@ public class ExchangeApiGenUtilTest {
     @Test
     public void testGetHttpUrlVariableDeclaration_NullApiUrl_AbsoluteExchangeUrl() {
         ExchangeDescriptor exchangeDescriptor = new ExchangeDescriptor();
-        exchangeDescriptor.setName("MyExchange");
+        exchangeDescriptor.setId("MyExchange");
         exchangeDescriptor.setBasePackage("com.x.gen");
         exchangeDescriptor.setHttpUrl("https://api.exchange.com");
         ExchangeApiDescriptor apiDescriptor = new ExchangeApiDescriptor();
         Imports imports = new Imports();
         Assert.assertEquals("\n"
-        		+ "/**\n"
-        		+ " * Base URL for <i>MyExchange</i> exchange <i>null</i> API REST endpoints\n"
-        		+ " */\n"
-        		+ "public static final String HTTP_URL = MyExchangeExchangeImpl.HTTP_URL;", 
+            + "/**\n"
+            + " * Base URL for <i>MyExchange</i> exchange <i>null</i> API REST endpoints\n"
+            + " */\n"
+            + "public static final String HTTP_URL = MyExchangeExchangeImpl.HTTP_URL;", 
                 ExchangeApiGenUtil.getHttpUrlVariableDeclaration(exchangeDescriptor, apiDescriptor, imports));
         Assert.assertEquals(1, imports.size());
         Assert.assertEquals("com.x.gen.MyExchangeExchangeImpl", imports.iterator().next());
@@ -1137,9 +1128,9 @@ public class ExchangeApiGenUtilTest {
         apiDescriptor.setWebsocketUrl("https://api.exchange.com/ws/account");
         Imports imports = new Imports();
         Assert.assertEquals("/**\n"
-        		+ " * Base URL for <i>null</i> exchange <i>null</i> API Websocket endpoints\n"
-        		+ " */\n"
-        		+ "public static final String WEBSOCKET_URL = \"https://api.exchange.com/ws/account\";", 
+            + " * Base URL for <i>null</i> exchange <i>null</i> API Websocket endpoints\n"
+            + " */\n"
+            + "public static final String WEBSOCKET_URL = \"https://api.exchange.com/ws/account\";", 
                 ExchangeApiGenUtil.getWebsocketUrlVariableDeclaration(exchangeDescriptor, apiDescriptor, imports));
         Assert.assertEquals(0, imports.size());
     }
@@ -1147,16 +1138,16 @@ public class ExchangeApiGenUtilTest {
     @Test
     public void testGetWebsocketUrlVariableDeclaration_RelateApiWsUrl_AbsoluteExchangeWsUrl() {
         ExchangeDescriptor exchangeDescriptor = new ExchangeDescriptor();
-        exchangeDescriptor.setName("MyExchange");
+        exchangeDescriptor.setId("MyExchange");
         exchangeDescriptor.setBasePackage("com.x.gen");
         exchangeDescriptor.setWebsocketUrl("https://api.exchange.com");
         ExchangeApiDescriptor apiDescriptor = new ExchangeApiDescriptor();
         apiDescriptor.setWebsocketUrl("/ws/account");
         Imports imports = new Imports();
         Assert.assertEquals("/**\n"
-        		+ " * Base URL for <i>MyExchange</i> exchange <i>null</i> API Websocket endpoints\n"
-        		+ " */\n"
-        		+ "public static final String WEBSOCKET_URL = MyExchangeExchangeImpl.WEBSOCKET_URL + \"/ws/account\";", 
+            + " * Base URL for <i>MyExchange</i> exchange <i>null</i> API Websocket endpoints\n"
+            + " */\n"
+            + "public static final String WEBSOCKET_URL = MyExchangeExchangeImpl.WEBSOCKET_URL + \"/ws/account\";", 
                 ExchangeApiGenUtil.getWebsocketUrlVariableDeclaration(exchangeDescriptor, apiDescriptor, imports));
         Assert.assertEquals(1, imports.size());
         Iterator<String> it = imports.iterator();
@@ -1166,15 +1157,15 @@ public class ExchangeApiGenUtilTest {
     @Test
     public void testGetWebsocketUrlVariableDeclaration_NullApiWsUrl_AbsoluteExchangeWsUrl() {
         ExchangeDescriptor exchangeDescriptor = new ExchangeDescriptor();
-        exchangeDescriptor.setName("MyExchange");
+        exchangeDescriptor.setId("MyExchange");
         exchangeDescriptor.setBasePackage("com.x.gen");
         exchangeDescriptor.setWebsocketUrl("https://api.exchange.com/ws");
         ExchangeApiDescriptor apiDescriptor = new ExchangeApiDescriptor();
         Imports imports = new Imports();
         Assert.assertEquals("/**\n"
-        		+ " * Base URL for <i>MyExchange</i> exchange <i>null</i> API Websocket endpoints\n"
-        		+ " */\n"
-        		+ "public static final String WEBSOCKET_URL = MyExchangeExchangeImpl.WEBSOCKET_URL;", 
+            + " * Base URL for <i>MyExchange</i> exchange <i>null</i> API Websocket endpoints\n"
+            + " */\n"
+            + "public static final String WEBSOCKET_URL = MyExchangeExchangeImpl.WEBSOCKET_URL;", 
                 ExchangeApiGenUtil.getWebsocketUrlVariableDeclaration(exchangeDescriptor, apiDescriptor, imports));
         Assert.assertEquals(1, imports.size());
         Iterator<String> it = imports.iterator();
@@ -1184,7 +1175,7 @@ public class ExchangeApiGenUtilTest {
     @Test
     public void testGetWebsocketUrlVariableDeclaration_NullApiWsUrl_NullExchangeWsUrl() {
         ExchangeDescriptor exchangeDescriptor = new ExchangeDescriptor();
-        exchangeDescriptor.setName("MyExchange");
+        exchangeDescriptor.setId("MyExchange");
         exchangeDescriptor.setBasePackage("com.x.gen");
         ExchangeApiDescriptor apiDescriptor = new ExchangeApiDescriptor();
         Imports imports = new Imports(); 
@@ -1193,8 +1184,8 @@ public class ExchangeApiGenUtilTest {
     
     @Test 
     public void testGetRestApiMethodName() {
-    	RestEndpointDescriptor restEndpointDescriptor = new RestEndpointDescriptor();
-    	restEndpointDescriptor.setName("MyRestApi");
-    	Assert.assertEquals("myRestApi", ExchangeApiGenUtil.getRestApiMethodName(restEndpointDescriptor));
+      RestEndpointDescriptor restEndpointDescriptor = new RestEndpointDescriptor();
+      restEndpointDescriptor.setName("MyRestApi");
+      Assert.assertEquals("myRestApi", ExchangeApiGenUtil.getRestApiMethodName(restEndpointDescriptor));
     }
 }

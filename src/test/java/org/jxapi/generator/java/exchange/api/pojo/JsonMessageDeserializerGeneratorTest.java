@@ -14,100 +14,100 @@ import org.jxapi.exchange.descriptor.Type;
  */
 public class JsonMessageDeserializerGeneratorTest {
 
-	@Test
-	public void testGenerateDeserializer() {
-		String deserialiazedTypeName = "com.x.MyPojo";
-		List<Field> endpointParameters = List.of(
-		  Field.builder().type(Type.LONG).name("id").build(),
-		  Field.builder().type(Type.STRING).name("name").build(),
-		  Field.builder().type(Type.INT).name("level").build(),
-		  Field.builder().type(Type.BIGDECIMAL).name("score").build(),
-		  Field.builder().type(Type.BOOLEAN).name("over").build(),
-		  Field.builder().type("OBJECT_LIST").name("foo").msgField("f")
-						 .property(Field.builder().type(Type.TIMESTAMP).name("time").build())
-						 .property(Field.builder().type(Type.OBJECT).name("bar").msgField("b")
-						  			    .property(Field.builder().type(Type.STRING).name("name").build())
-										.build())
-						 .build(),
-		  Field.builder().type("OBJECT_LIST_MAP").name("toto")
-						 .property(Field.builder().type(Type.STRING).name("id").build())
-						 .build(),
-		  Field.builder().type(Type.OBJECT).name("titi").msgField("ti")
-						 .property(Field.builder().type(Type.STRING).name("name").build())
-						 .build()
-		);
-		
-		JsonMessageDeserializerGenerator generator = new JsonMessageDeserializerGenerator(deserialiazedTypeName, endpointParameters);
-		Assert.assertEquals("package com.x.deserializers;\n"
-				+ "\n"
-				+ "import java.io.IOException;\n"
-				+ "import java.util.List;\n"
-				+ "\n"
-				+ "import com.fasterxml.jackson.core.JsonParser;\n"
-				+ "import com.fasterxml.jackson.core.JsonToken;\n"
-				+ "import com.x.MyPojo;\n"
-				+ "import com.x.MyPojoFoo;\n"
-				+ "import com.x.MyPojoToto;\n"
-				+ "import javax.annotation.processing.Generated;\n"
-				+ "import org.jxapi.netutils.deserialization.json.AbstractJsonMessageDeserializer;\n"
-				+ "import org.jxapi.netutils.deserialization.json.field.ListJsonFieldDeserializer;\n"
-				+ "import org.jxapi.netutils.deserialization.json.field.MapJsonFieldDeserializer;\n"
-				+ "import static org.jxapi.util.JsonUtil.readNextBigDecimal;\n"
-				+ "import static org.jxapi.util.JsonUtil.readNextBoolean;\n"
-				+ "import static org.jxapi.util.JsonUtil.readNextInteger;\n"
-				+ "import static org.jxapi.util.JsonUtil.readNextLong;\n"
-				+ "import static org.jxapi.util.JsonUtil.skipNextValue;\n"
-				+ "\n"
-				+ "/**\n"
-				+ " * Parses incoming JSON messages into com.x.MyPojo instances\n"
-				+ " * @see com.x.MyPojo\n"
-				+ " */\n"
-				+ "@Generated(\"org.jxapi.generator.java.exchange.api.pojo.JsonMessageDeserializerGenerator\")\n"
-				+ "public class MyPojoDeserializer extends AbstractJsonMessageDeserializer<MyPojo> {\n"
-				+ "  private final ListJsonFieldDeserializer<MyPojoFoo> fooDeserializer = new ListJsonFieldDeserializer<>(new MyPojoFooDeserializer());\n"
-				+ "  private final MapJsonFieldDeserializer<List<MyPojoToto>> totoDeserializer = new MapJsonFieldDeserializer<>(new ListJsonFieldDeserializer<>(new MyPojoTotoDeserializer()));\n"
-				+ "  private final MyPojoTitiDeserializer titiDeserializer = new MyPojoTitiDeserializer();\n"
-				+ "  \n"
-				+ "  @Override\n"
-				+ "  public MyPojo deserialize(JsonParser parser) throws IOException {\n"
-				+ "    MyPojo msg = new MyPojo();\n"
-				+ "    while(parser.nextToken() != JsonToken.END_OBJECT) {\n"
-				+ "      switch(parser.getCurrentName()) {\n"
-				+ "      case \"id\":\n"
-				+ "        msg.setId(readNextLong(parser));\n"
-				+ "      break;\n"
-				+ "      case \"name\":\n"
-				+ "        msg.setName(parser.nextTextValue());\n"
-				+ "      break;\n"
-				+ "      case \"level\":\n"
-				+ "        msg.setLevel(readNextInteger(parser));\n"
-				+ "      break;\n"
-				+ "      case \"score\":\n"
-				+ "        msg.setScore(readNextBigDecimal(parser));\n"
-				+ "      break;\n"
-				+ "      case \"over\":\n"
-				+ "        msg.setOver(readNextBoolean(parser));\n"
-				+ "      break;\n"
-				+ "      case \"f\":\n"
-				+ "        parser.nextToken();\n"
-				+ "        msg.setFoo(fooDeserializer.deserialize(parser));\n"
-				+ "      break;\n"
-				+ "      case \"toto\":\n"
-				+ "        parser.nextToken();\n"
-				+ "        msg.setToto(totoDeserializer.deserialize(parser));\n"
-				+ "      break;\n"
-				+ "      case \"ti\":\n"
-				+ "        parser.nextToken();\n"
-				+ "        msg.setTiti(titiDeserializer.deserialize(parser));\n"
-				+ "      break;\n"
-				+ "      default:\n"
-				+ "        skipNextValue(parser);\n"
-				+ "      }\n"
-				+ "    }\n"
-				+ "    \n"
-				+ "     return msg;\n"
-				+ "  }\n"
-				+ "}\n", 
-				generator.generate());
-	}
+  @Test
+  public void testGenerateDeserializer() {
+    String deserialiazedTypeName = "com.x.MyPojo";
+    List<Field> endpointParameters = List.of(
+      Field.builder().type(Type.LONG).name("id").build(),
+      Field.builder().type(Type.STRING).name("name").build(),
+      Field.builder().type(Type.INT).name("level").build(),
+      Field.builder().type(Type.BIGDECIMAL).name("score").build(),
+      Field.builder().type(Type.BOOLEAN).name("over").build(),
+      Field.builder().type("OBJECT_LIST").name("foo").msgField("f")
+             .property(Field.builder().type(Type.LONG).name("time").build())
+             .property(Field.builder().type(Type.OBJECT).name("bar").msgField("b")
+                        .property(Field.builder().type(Type.STRING).name("name").build())
+                    .build())
+             .build(),
+      Field.builder().type("OBJECT_LIST_MAP").name("toto")
+             .property(Field.builder().type(Type.STRING).name("id").build())
+             .build(),
+      Field.builder().type(Type.OBJECT).name("titi").msgField("ti")
+             .property(Field.builder().type(Type.STRING).name("name").build())
+             .build()
+    );
+    
+    JsonMessageDeserializerGenerator generator = new JsonMessageDeserializerGenerator(deserialiazedTypeName, endpointParameters);
+    Assert.assertEquals("package com.x.deserializers;\n"
+        + "\n"
+        + "import java.io.IOException;\n"
+        + "import java.util.List;\n"
+        + "\n"
+        + "import com.fasterxml.jackson.core.JsonParser;\n"
+        + "import com.fasterxml.jackson.core.JsonToken;\n"
+        + "import com.x.MyPojo;\n"
+        + "import com.x.MyPojoFoo;\n"
+        + "import com.x.MyPojoToto;\n"
+        + "import javax.annotation.processing.Generated;\n"
+        + "import org.jxapi.netutils.deserialization.json.AbstractJsonMessageDeserializer;\n"
+        + "import org.jxapi.netutils.deserialization.json.field.ListJsonFieldDeserializer;\n"
+        + "import org.jxapi.netutils.deserialization.json.field.MapJsonFieldDeserializer;\n"
+        + "import static org.jxapi.util.JsonUtil.readNextBigDecimal;\n"
+        + "import static org.jxapi.util.JsonUtil.readNextBoolean;\n"
+        + "import static org.jxapi.util.JsonUtil.readNextInteger;\n"
+        + "import static org.jxapi.util.JsonUtil.readNextLong;\n"
+        + "import static org.jxapi.util.JsonUtil.skipNextValue;\n"
+        + "\n"
+        + "/**\n"
+        + " * Parses incoming JSON messages into com.x.MyPojo instances\n"
+        + " * @see com.x.MyPojo\n"
+        + " */\n"
+        + "@Generated(\"org.jxapi.generator.java.exchange.api.pojo.JsonMessageDeserializerGenerator\")\n"
+        + "public class MyPojoDeserializer extends AbstractJsonMessageDeserializer<MyPojo> {\n"
+        + "  private final ListJsonFieldDeserializer<MyPojoFoo> fooDeserializer = new ListJsonFieldDeserializer<>(new MyPojoFooDeserializer());\n"
+        + "  private final MapJsonFieldDeserializer<List<MyPojoToto>> totoDeserializer = new MapJsonFieldDeserializer<>(new ListJsonFieldDeserializer<>(new MyPojoTotoDeserializer()));\n"
+        + "  private final MyPojoTitiDeserializer titiDeserializer = new MyPojoTitiDeserializer();\n"
+        + "  \n"
+        + "  @Override\n"
+        + "  public MyPojo deserialize(JsonParser parser) throws IOException {\n"
+        + "    MyPojo msg = new MyPojo();\n"
+        + "    while(parser.nextToken() != JsonToken.END_OBJECT) {\n"
+        + "      switch(parser.getCurrentName()) {\n"
+        + "      case \"id\":\n"
+        + "        msg.setId(readNextLong(parser));\n"
+        + "      break;\n"
+        + "      case \"name\":\n"
+        + "        msg.setName(parser.nextTextValue());\n"
+        + "      break;\n"
+        + "      case \"level\":\n"
+        + "        msg.setLevel(readNextInteger(parser));\n"
+        + "      break;\n"
+        + "      case \"score\":\n"
+        + "        msg.setScore(readNextBigDecimal(parser));\n"
+        + "      break;\n"
+        + "      case \"over\":\n"
+        + "        msg.setOver(readNextBoolean(parser));\n"
+        + "      break;\n"
+        + "      case \"f\":\n"
+        + "        parser.nextToken();\n"
+        + "        msg.setFoo(fooDeserializer.deserialize(parser));\n"
+        + "      break;\n"
+        + "      case \"toto\":\n"
+        + "        parser.nextToken();\n"
+        + "        msg.setToto(totoDeserializer.deserialize(parser));\n"
+        + "      break;\n"
+        + "      case \"ti\":\n"
+        + "        parser.nextToken();\n"
+        + "        msg.setTiti(titiDeserializer.deserialize(parser));\n"
+        + "      break;\n"
+        + "      default:\n"
+        + "        skipNextValue(parser);\n"
+        + "      }\n"
+        + "    }\n"
+        + "    \n"
+        + "     return msg;\n"
+        + "  }\n"
+        + "}\n", 
+        generator.generate());
+  }
 }

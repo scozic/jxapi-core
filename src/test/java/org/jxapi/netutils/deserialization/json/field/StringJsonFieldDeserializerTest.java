@@ -8,8 +8,8 @@ import org.junit.Test;
  */
 public class StringJsonFieldDeserializerTest {
 
-	@Test
-	public void testDeserialize() {
-		Assert.assertEquals("foo", StringJsonFieldDeserializer.getInstance().deserialize("\"foo\""));
-	}
+  @Test
+  public void testDeserialize() {
+    Assert.assertEquals("foo", StringJsonFieldDeserializer.getInstance().deserialize("\"foo\""));
+  }
 }

@@ -55,69 +55,69 @@ public class DemoUtilTest {
     
     @Test
     public void testLogWsMessage() {
-    	Assert.assertNotNull(DemoUtil.logWsMessage("Hello World!"));
+      Assert.assertNotNull(DemoUtil.logWsMessage("Hello World!"));
     }
     
     @Test
-	public void testLoadDemoExchangeProperties_DemoExchange() {
-		Properties p = DemoUtil.loadDemoExchangeProperties(DemoExchangeExchange.ID);
-		Assert.assertNotNull(p);
-		Assert.assertEquals(100L, DemoProperties.getWebsocketDelayBeforeExit(p));
-		Assert.assertEquals(300L, DemoProperties.getWebsocketSubscriptionDuration(p));
-	}
+  public void testLoadDemoExchangeProperties_DemoExchange() {
+    Properties p = DemoUtil.loadDemoExchangeProperties(DemoExchangeExchange.ID);
+    Assert.assertNotNull(p);
+    Assert.assertEquals(100L, DemoProperties.getWebsocketDelayBeforeExit(p));
+    Assert.assertEquals(300L, DemoProperties.getWebsocketSubscriptionDuration(p));
+  }
     
     @Test
-	public void testLoadDemoExchangeProperties_MissingDefaultExchangePropertiesFile() {
-		Properties p = DemoUtil.loadDemoExchangeProperties("foo");
-		Assert.assertNotNull(p);
-		Assert.assertEquals(DemoProperties.DEMO_WS_DELAY_BEFORE_EXIT_AFTER_UNSUBSCRIPTION_PROPERTY.getDefaultValue(), 
-							DemoProperties.getWebsocketDelayBeforeExit(p));
-		Assert.assertEquals(DemoProperties.DEMO_WS_SUBSCRIPTION_DURATION_PROPERTY.getDefaultValue(), 
-							DemoProperties.getWebsocketSubscriptionDuration(p));
-	}
+  public void testLoadDemoExchangeProperties_MissingDefaultExchangePropertiesFile() {
+    Properties p = DemoUtil.loadDemoExchangeProperties("foo");
+    Assert.assertNotNull(p);
+    Assert.assertEquals(DemoProperties.DEMO_WS_DELAY_BEFORE_EXIT_AFTER_UNSUBSCRIPTION_PROPERTY.getDefaultValue(), 
+              DemoProperties.getWebsocketDelayBeforeExit(p));
+    Assert.assertEquals(DemoProperties.DEMO_WS_SUBSCRIPTION_DURATION_PROPERTY.getDefaultValue(), 
+              DemoProperties.getWebsocketSubscriptionDuration(p));
+  }
     
     @Test
-	public void testLoadDemoExchangeProperties_FromSystemProperty() throws IOException {
-    	Path tmpFolder = ClassesGeneratorTestUtil.generateTmpDir();
-    	Path propFile = tmpFolder.resolve("demo.properties");
-    	Properties p = new Properties();
-    	p.setProperty(DemoProperties.DEMO_WS_DELAY_BEFORE_EXIT_AFTER_UNSUBSCRIPTION_PROPERTY.getName(), "200");
-    	p.setProperty(DemoProperties.DEMO_WS_SUBSCRIPTION_DURATION_PROPERTY.getName(), "400");
-    	p.store(Files.newBufferedWriter(propFile), null);
-    	String previousSysPropValue = System.getProperty(DemoProperties.DEMO_API_PROPERTIES_FILE_SYSTEM_PROPERTY);
-    	System.setProperty(DemoProperties.DEMO_API_PROPERTIES_FILE_SYSTEM_PROPERTY, propFile.toString());
-    	try {
-    		p = DemoUtil.loadDemoExchangeProperties("foo");
-    		Assert.assertNotNull(p);
-    		Assert.assertEquals(200L, DemoProperties.getWebsocketDelayBeforeExit(p));
-    		Assert.assertEquals(400L, DemoProperties.getWebsocketSubscriptionDuration(p));
-    	} finally {
-    		if (previousSysPropValue == null) {
-    			System.clearProperty(DemoProperties.DEMO_API_PROPERTIES_FILE_SYSTEM_PROPERTY);
-    		} else {
-    			System.setProperty(DemoProperties.DEMO_API_PROPERTIES_FILE_SYSTEM_PROPERTY, previousSysPropValue);
-    		}
-    		JavaCodeGenUtil.deletePath(tmpFolder);
-    	}
-	}
+  public void testLoadDemoExchangeProperties_FromSystemProperty() throws IOException {
+      Path tmpFolder = ClassesGeneratorTestUtil.generateTmpDir();
+      Path propFile = tmpFolder.resolve("demo.properties");
+      Properties p = new Properties();
+      p.setProperty(DemoProperties.DEMO_WS_DELAY_BEFORE_EXIT_AFTER_UNSUBSCRIPTION_PROPERTY.getName(), "200");
+      p.setProperty(DemoProperties.DEMO_WS_SUBSCRIPTION_DURATION_PROPERTY.getName(), "400");
+      p.store(Files.newBufferedWriter(propFile), null);
+      String previousSysPropValue = System.getProperty(DemoProperties.DEMO_API_PROPERTIES_FILE_SYSTEM_PROPERTY);
+      System.setProperty(DemoProperties.DEMO_API_PROPERTIES_FILE_SYSTEM_PROPERTY, propFile.toString());
+      try {
+        p = DemoUtil.loadDemoExchangeProperties("foo");
+        Assert.assertNotNull(p);
+        Assert.assertEquals(200L, DemoProperties.getWebsocketDelayBeforeExit(p));
+        Assert.assertEquals(400L, DemoProperties.getWebsocketSubscriptionDuration(p));
+      } finally {
+        if (previousSysPropValue == null) {
+          System.clearProperty(DemoProperties.DEMO_API_PROPERTIES_FILE_SYSTEM_PROPERTY);
+        } else {
+          System.setProperty(DemoProperties.DEMO_API_PROPERTIES_FILE_SYSTEM_PROPERTY, previousSysPropValue);
+        }
+        JavaCodeGenUtil.deletePath(tmpFolder);
+      }
+  }
     
     @Test
-	public void testLoadDemoExchangeProperties_FromSystemProperty_MissingFile() {
-    	String previousSysPropValue = System.getProperty(DemoProperties.DEMO_API_PROPERTIES_FILE_SYSTEM_PROPERTY);
-    	System.setProperty(DemoProperties.DEMO_API_PROPERTIES_FILE_SYSTEM_PROPERTY, "bar.properties");
-    	try {
-    		Properties p = DemoUtil.loadDemoExchangeProperties("foo");
-    		Assert.assertNotNull(p);
-    		Assert.assertEquals(DemoProperties.DEMO_WS_DELAY_BEFORE_EXIT_AFTER_UNSUBSCRIPTION_PROPERTY.getDefaultValue(), 
-    							DemoProperties.getWebsocketDelayBeforeExit(p));
-    		Assert.assertEquals(DemoProperties.DEMO_WS_SUBSCRIPTION_DURATION_PROPERTY.getDefaultValue(), 
-    							DemoProperties.getWebsocketSubscriptionDuration(p));
-    	} finally {
-    		if (previousSysPropValue == null) {
-    			System.clearProperty(DemoProperties.DEMO_API_PROPERTIES_FILE_SYSTEM_PROPERTY);
-    		} else {
-    			System.setProperty(DemoProperties.DEMO_API_PROPERTIES_FILE_SYSTEM_PROPERTY, previousSysPropValue);
-    		}
-    	}
+  public void testLoadDemoExchangeProperties_FromSystemProperty_MissingFile() {
+      String previousSysPropValue = System.getProperty(DemoProperties.DEMO_API_PROPERTIES_FILE_SYSTEM_PROPERTY);
+      System.setProperty(DemoProperties.DEMO_API_PROPERTIES_FILE_SYSTEM_PROPERTY, "bar.properties");
+      try {
+        Properties p = DemoUtil.loadDemoExchangeProperties("foo");
+        Assert.assertNotNull(p);
+        Assert.assertEquals(DemoProperties.DEMO_WS_DELAY_BEFORE_EXIT_AFTER_UNSUBSCRIPTION_PROPERTY.getDefaultValue(), 
+                  DemoProperties.getWebsocketDelayBeforeExit(p));
+        Assert.assertEquals(DemoProperties.DEMO_WS_SUBSCRIPTION_DURATION_PROPERTY.getDefaultValue(), 
+                  DemoProperties.getWebsocketSubscriptionDuration(p));
+      } finally {
+        if (previousSysPropValue == null) {
+          System.clearProperty(DemoProperties.DEMO_API_PROPERTIES_FILE_SYSTEM_PROPERTY);
+        } else {
+          System.setProperty(DemoProperties.DEMO_API_PROPERTIES_FILE_SYSTEM_PROPERTY, previousSysPropValue);
+        }
+      }
     }
 }

@@ -12,14 +12,14 @@ import org.junit.Test;
  * Unit test for {@link AbstractWebsocket}
  */
 public class AbstractWebsocketTest {
-	
+  
     private static class WebsocketStub extends AbstractWebsocket {
-    	
-    	int doConnectCallCount = 0;
-    	int doDisconnectCallCount = 0;
-    	List<String> sentMessages = new ArrayList<>();
-    	
-    	@Override
+      
+      int doConnectCallCount = 0;
+      int doDisconnectCallCount = 0;
+      List<String> sentMessages = new ArrayList<>();
+      
+      @Override
         protected void doConnect() throws WebsocketException {
             doConnectCallCount++;
         }
@@ -36,18 +36,18 @@ public class AbstractWebsocketTest {
         
         @Override
         protected void dispatchMessage(String message) {
-    		super.dispatchMessage(message);
-    	}
-    	
+        super.dispatchMessage(message);
+      }
+      
         @Override
-    	protected void dispatchError(String msg, Throwable t) {
-    		super.dispatchError(msg, t);
-    	}
-    	
-    	@Override
-    	protected void dispatchError(WebsocketException error) {
-    		super.dispatchError(error);
-    	}
+      protected void dispatchError(String msg, Throwable t) {
+        super.dispatchError(msg, t);
+      }
+      
+      @Override
+      protected void dispatchError(WebsocketException error) {
+        super.dispatchError(error);
+      }
     }
 
         private WebsocketStub websocket;

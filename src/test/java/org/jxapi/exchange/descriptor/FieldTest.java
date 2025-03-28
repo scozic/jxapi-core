@@ -95,7 +95,7 @@ public class FieldTest {
     
     @Test
     public void testHashCodeIsToStringHashCode() {
-    	Field field = new Field();
+      Field field = new Field();
         field.setName("name");
         field.setType("STRING");
         field.setDescription("description");
@@ -106,16 +106,16 @@ public class FieldTest {
     
     @Test
     public void testEquals_NotEqualsOtherNull() {
-    	Field field = new Field();
-		// Remark: Sonar issue about usage of equals is not relevant, assertNotEquals
-		// would skip call to Field.equals() using null as expected value
-    	Assert.assertFalse(field.equals(null));
+      Field field = new Field();
+    // Remark: Sonar issue about usage of equals is not relevant, assertNotEquals
+    // would skip call to Field.equals() using null as expected value
+      Assert.assertFalse(field.equals(null));
     }
     
     @Test
     public void testEquals_NotEqualsOtherNotField() {
-    	Field field = new Field();
-    	Assert.assertNotEquals(new Object(), field);
+      Field field = new Field();
+      Assert.assertNotEquals(new Object(), field);
     }
     
     @Test
@@ -133,7 +133,7 @@ public class FieldTest {
         f2.setDescription("description");
         f2.setSampleValue("sampleValue");
         f2.setMsgField("f");
-    	Assert.assertNotEquals(f1, f2);
+      Assert.assertNotEquals(f1, f2);
     }
     
     @Test
@@ -151,12 +151,12 @@ public class FieldTest {
         f2.setDescription("description");
         f2.setSampleValue("sampleValue");
         f2.setMsgField("f");
-    	Assert.assertEquals(f1, f2);
+      Assert.assertEquals(f1, f2);
     }
     
     @Test
     public void testBuilder() {
-    	FieldBuilder fb = Field.builder();
-    	Assert.assertNotNull(fb);
+      FieldBuilder fb = Field.builder();
+      Assert.assertNotNull(fb);
     }
 }

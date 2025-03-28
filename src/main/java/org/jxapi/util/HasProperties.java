@@ -7,10 +7,10 @@ import java.util.Properties;
  */
 public interface HasProperties {
 
-	/**
-	 * Returns the properties of the object.
-	 * 
-	 * @return the properties
-	 */
-	Properties getProperties();
+  /**
+   * Returns the properties of the object.
+   * 
+   * @return the properties
+   */
+  Properties getProperties();
 }

@@ -21,25 +21,25 @@ import org.jxapi.netutils.websocket.WebsocketManager;
  * </ul>
  */
 public class DemoExchangeWebsocketHook extends AbstractWebsocketHook {
-	
-	@Override
-	public void init(WebsocketManager websocketManager) {
-		super.init(websocketManager);
-		Properties props = websocketManager.getExchangeApi().getProperties();
-		String baseUrl = DemoExchangeProperties.getBaseWebsocketUrl(props);
+  
+  @Override
+  public void init(WebsocketManager websocketManager) {
+    super.init(websocketManager);
+    Properties props = websocketManager.getExchangeApi().getProperties();
+    String baseUrl = DemoExchangeProperties.getBaseWebsocketUrl(props);
         String url = websocketManager.getUrl(); 
-		url = StringUtils.replace(url, DemoExchangeConstants.BASE_URL_PATTERN, baseUrl);
-		websocketManager.setUrl(url);
-	}
-	
-	@Override
-	public void afterConnect() throws WebsocketException {
-		websocketManager.send(DemoExchangeConstants.WEBSOCKET_LOGIN_MESSAGE);
-	}
-	
-	@Override
-	public void beforeDisconnect() throws WebsocketException {
-		websocketManager.send(DemoExchangeConstants.WEBSOCKET_LOGOUT_MESSAGE);
-	}
+    url = StringUtils.replace(url, DemoExchangeConstants.BASE_URL_PATTERN, baseUrl);
+    websocketManager.setUrl(url);
+  }
+  
+  @Override
+  public void afterConnect() throws WebsocketException {
+    websocketManager.send(DemoExchangeConstants.WEBSOCKET_LOGIN_MESSAGE);
+  }
+  
+  @Override
+  public void beforeDisconnect() throws WebsocketException {
+    websocketManager.send(DemoExchangeConstants.WEBSOCKET_LOGOUT_MESSAGE);
+  }
 
 }

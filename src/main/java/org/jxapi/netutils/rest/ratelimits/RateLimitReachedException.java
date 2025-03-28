@@ -11,27 +11,27 @@ import org.jxapi.netutils.rest.HttpRequest;
  * exceeded.
  */
 public class RateLimitReachedException extends Exception {
-	
-	/**
-	 * Delay to wait for before trying to resubmit request
-	 */
-	private final long delayBeforeResubmit;
+  
+  /**
+   * Delay to wait for before trying to resubmit request
+   */
+  private final long delayBeforeResubmit;
 
-	/**
-	 * Constructor
-	 * @param rateLimit The rate limit rule that has been breached
-	 * @param delayBeforeResubmit The minimum time to wait for before retrying failed request that breached request rate limit.
-	 */
-	public RateLimitReachedException(RateLimitRule rateLimit, long delayBeforeResubmit) {
-		super(String.format("%s has been breached, request cannot be sent before %dms", rateLimit,  delayBeforeResubmit));
-		this.delayBeforeResubmit = delayBeforeResubmit;
-	}
+  /**
+   * Constructor
+   * @param rateLimit The rate limit rule that has been breached
+   * @param delayBeforeResubmit The minimum time to wait for before retrying failed request that breached request rate limit.
+   */
+  public RateLimitReachedException(RateLimitRule rateLimit, long delayBeforeResubmit) {
+    super(String.format("%s has been breached, request cannot be sent before %dms", rateLimit,  delayBeforeResubmit));
+    this.delayBeforeResubmit = delayBeforeResubmit;
+  }
 
-	/**
-	 * @return delay to wait for before trying to resubmit request.
-	 */
-	public long getDelayBeforeResubmit() {
-		return delayBeforeResubmit;
-	}
+  /**
+   * @return delay to wait for before trying to resubmit request.
+   */
+  public long getDelayBeforeResubmit() {
+    return delayBeforeResubmit;
+  }
 
 }

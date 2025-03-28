@@ -3,6 +3,7 @@ package org.jxapi.exchanges.employee.gen.v1;
 import java.util.List;
 import java.util.Properties;
 
+import javax.annotation.processing.Generated;
 import org.jxapi.exchange.AbstractExchangeApi;
 import org.jxapi.exchanges.employee.gen.EmployeeExchange;
 import org.jxapi.exchanges.employee.gen.EmployeeExchangeImpl;
@@ -21,7 +22,6 @@ import org.jxapi.netutils.websocket.WebsocketListener;
 import org.jxapi.netutils.websocket.WebsocketSubscribeRequest;
 import org.jxapi.netutils.websocket.multiplexing.WebsocketMessageTopicMatcherFactory;
 import org.jxapi.util.EncodingUtil;
-import javax.annotation.processing.Generated;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

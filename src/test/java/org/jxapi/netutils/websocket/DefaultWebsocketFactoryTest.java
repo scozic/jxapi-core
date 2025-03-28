@@ -9,12 +9,12 @@ import org.jxapi.netutils.websocket.spring.SpringWebsocket;
  * Unit test for {@link DefaultWebsocketFactory}
  */
 public class DefaultWebsocketFactoryTest {
-	
-	@Test
-	public void testCreateDefaultWebsocket() {
-		Websocket sock = new DefaultWebsocketFactory().createWebsocket(null);
-		Assert.assertNotNull(sock);
-		Assert.assertTrue(sock instanceof SpringWebsocket);
-	}
+  
+  @Test
+  public void testCreateDefaultWebsocket() {
+    Websocket sock = new DefaultWebsocketFactory().createWebsocket(null);
+    Assert.assertNotNull(sock);
+    Assert.assertTrue(sock instanceof SpringWebsocket);
+  }
 
 }

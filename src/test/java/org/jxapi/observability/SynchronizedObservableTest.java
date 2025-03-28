@@ -58,7 +58,7 @@ public class SynchronizedObservableTest {
     
     @Test
     public void testSubscribeUnsubscribeWhileDispatchAsyncDoesNotTriggerConcurrentModificationException() throws Exception {
-    	final int count = 2000000;
+      final int count = 2000000;
         SynchronizedObservable<TestObserver, String> observable = new SynchronizedObservable<>((l, e) -> l.handleEvent(e));
         TestObserver observer1 = new TestObserver();
         TestObserver observer2 = new TestObserver();
@@ -70,29 +70,29 @@ public class SynchronizedObservableTest {
         AtomicReference<Exception> ex = new AtomicReference<>();
         CountDownLatch latch = new CountDownLatch(1);
         new Thread(() -> {
-        	try {
-        		for (int i = 0; i < count; i++) {
-            		observable.dispatch("message" + i);
-            	}
-        		latch.countDown();
-        	} catch (Exception e) {
-        		ex.set(e);
-        	}
+          try {
+            for (int i = 0; i < count; i++) {
+                observable.dispatch("message" + i);
+              }
+            latch.countDown();
+          } catch (Exception e) {
+            ex.set(e);
+          }
         }).start();
         
-		for (int i = 0; i < count; i++) {
-    		observable.unsubscribe(observer2);
-    		observable.unsubscribe(observer3);
+    for (int i = 0; i < count; i++) {
+        observable.unsubscribe(observer2);
+        observable.unsubscribe(observer3);
             observable.subscribe(observer2);
             observable.subscribe(observer3);
-    	}
-		
-		latch.await(10000, TimeUnit.MILLISECONDS);
-		Exception e = ex.get();
-		if (e != null) {
-			throw new Exception("Error during message dispatch", e);
-		}
-		Assert.assertEquals(count, observer1.size());
+      }
+    
+    latch.await(10000, TimeUnit.MILLISECONDS);
+    Exception e = ex.get();
+    if (e != null) {
+      throw new Exception("Error during message dispatch", e);
+    }
+    Assert.assertEquals(count, observer1.size());
     }
 
     private static class TestObserver extends GenericObserver<String> {

@@ -7,33 +7,33 @@ package org.jxapi.exchange;
  */
 public enum ExchangeApiEventType {
 
-	/**
-	 * A new HTTP request has been submitted.
-	 */
-	HTTP_REQUEST,
+  /**
+   * A new HTTP request has been submitted.
+   */
+  HTTP_REQUEST,
 
-	/**
-	 * A HTTP response to a submitted request has been received.
-	 */
-	HTTP_RESPONSE,
+  /**
+   * A HTTP response to a submitted request has been received.
+   */
+  HTTP_RESPONSE,
 
-	/**
-	 * A new websocket subscription has been requested.
-	 */
-	WEBSOCKET_SUBSCRIBE,
+  /**
+   * A new websocket subscription has been requested.
+   */
+  WEBSOCKET_SUBSCRIBE,
 
-	/**
-	 * A websocket subscription has been cancelled.
-	 */
-	WEBSOCKET_UNSUBSCRIBE,
+  /**
+   * A websocket subscription has been cancelled.
+   */
+  WEBSOCKET_UNSUBSCRIBE,
 
-	/**
-	 * A message has been received on a websocket subscription.
-	 */
-	WEBSOCKET_MESSAGE,
+  /**
+   * A message has been received on a websocket subscription.
+   */
+  WEBSOCKET_MESSAGE,
 
-	/**
-	 * An error has been detected on a websocket subscription.
-	 */
-	WEBSOCKET_ERROR
+  /**
+   * An error has been detected on a websocket subscription.
+   */
+  WEBSOCKET_ERROR
 }

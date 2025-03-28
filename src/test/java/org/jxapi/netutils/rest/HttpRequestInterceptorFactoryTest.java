@@ -10,19 +10,19 @@ import org.jxapi.exchange.ExchangeApi;
  */
 public class HttpRequestInterceptorFactoryTest {
 
-	@Test
-	public void testFromClassName() {
-		HttpRequestInterceptorFactory fac = HttpRequestInterceptorFactory.fromClassName(TestHttpRequestInterceptorFactory.class.getName());
-		Assert.assertNotNull(fac);
-		Assert.assertTrue(fac instanceof TestHttpRequestInterceptorFactory);
-	}
-	
-	public static class TestHttpRequestInterceptorFactory implements HttpRequestInterceptorFactory {
+  @Test
+  public void testFromClassName() {
+    HttpRequestInterceptorFactory fac = HttpRequestInterceptorFactory.fromClassName(TestHttpRequestInterceptorFactory.class.getName());
+    Assert.assertNotNull(fac);
+    Assert.assertTrue(fac instanceof TestHttpRequestInterceptorFactory);
+  }
+  
+  public static class TestHttpRequestInterceptorFactory implements HttpRequestInterceptorFactory {
 
-		@Override
-		public HttpRequestInterceptor createInterceptor(ExchangeApi exchangeApi) {
-			return null;
-		}
-		
-	}
+    @Override
+    public HttpRequestInterceptor createInterceptor(ExchangeApi exchangeApi) {
+      return null;
+    }
+    
+  }
 }

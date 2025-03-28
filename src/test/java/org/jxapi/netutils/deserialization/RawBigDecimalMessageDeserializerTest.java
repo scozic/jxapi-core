@@ -10,13 +10,13 @@ import org.junit.Test;
  */
 public class RawBigDecimalMessageDeserializerTest {
 
-	@Test
-	public void testDeserialize() {
-		Assert.assertEquals(new BigDecimal("3.14"),  RawBigDecimalMessageDeserializer.getInstance().deserialize("3.14"));
-	}
-	
-	@Test
-	public void testDeserializeNull() {
-		Assert.assertNull(RawBigDecimalMessageDeserializer.getInstance().deserialize(null));
-	}
+  @Test
+  public void testDeserialize() {
+    Assert.assertEquals(new BigDecimal("3.14"),  RawBigDecimalMessageDeserializer.getInstance().deserialize("3.14"));
+  }
+  
+  @Test
+  public void testDeserializeNull() {
+    Assert.assertNull(RawBigDecimalMessageDeserializer.getInstance().deserialize(null));
+  }
 }

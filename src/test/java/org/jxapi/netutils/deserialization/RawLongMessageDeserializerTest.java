@@ -8,13 +8,13 @@ import org.junit.Test;
  */
 public class RawLongMessageDeserializerTest {
 
-	@Test
-	public void testDeserialize() {
-		Assert.assertEquals(Long.valueOf(3L),  RawLongMessageDeserializer.getInstance().deserialize("3"));
-	}
-	
-	@Test
-	public void testDeserializeNull() {
-		Assert.assertNull(RawLongMessageDeserializer.getInstance().deserialize(null));
-	}
+  @Test
+  public void testDeserialize() {
+    Assert.assertEquals(Long.valueOf(3L),  RawLongMessageDeserializer.getInstance().deserialize("3"));
+  }
+  
+  @Test
+  public void testDeserializeNull() {
+    Assert.assertNull(RawLongMessageDeserializer.getInstance().deserialize(null));
+  }
 }

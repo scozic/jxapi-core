@@ -14,9 +14,9 @@ package org.jxapi.netutils.websocket;
  */
 public interface WebsocketErrorHandler {
 
-	/**
-	 * Method to handle websocket errors. This method should be non-blocking and should not throw exceptions.
-	 * @param error the error that occurred
-	 */
-	void handleWebsocketError(WebsocketException error);
+  /**
+   * Method to handle websocket errors. This method should be non-blocking and should not throw exceptions.
+   * @param error the error that occurred
+   */
+  void handleWebsocketError(WebsocketException error);
 }

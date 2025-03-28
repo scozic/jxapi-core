@@ -14,7 +14,7 @@ package org.jxapi.netutils.websocket.mock.server;
  * @see MockWebsocketServerSessionService
  */
 public interface MockWebsocketServerListener {
-	
-	void handleEvent(MockWebsocketServerEvent event);
+  
+  void handleEvent(MockWebsocketServerEvent event);
 
 }

@@ -10,9 +10,9 @@ import org.jxapi.observability.GenericObserver;
  */
 public class MockWebsocketListener<M> extends GenericObserver<M> implements WebsocketListener<M> {
 
-	@Override
-	public void handleMessage(M message) {
-		handleEvent(message);
-	}
+  @Override
+  public void handleMessage(M message) {
+    handleEvent(message);
+  }
 
 }

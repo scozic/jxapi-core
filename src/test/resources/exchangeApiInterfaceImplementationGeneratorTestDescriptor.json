@@ -1,5 +1,5 @@
 {
-	"name": "MyTestExchange",
+	"id": "MyTestExchange",
 	"description": "A sample exchange descriptor file used in ExchangeApiInterfaceImplementationGeneratorTest unit test",
 	"basePackage": "com.foo.bar.gen",
 	"httpUrl": "https://mycex.com",

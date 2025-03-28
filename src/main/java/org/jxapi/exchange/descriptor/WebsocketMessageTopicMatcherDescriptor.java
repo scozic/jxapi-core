@@ -19,28 +19,28 @@ import org.jxapi.util.EncodingUtil;
  */
 public class WebsocketMessageTopicMatcherDescriptor {
 
-	private List<WebsocketMessageTopicMatcherFieldDescriptor> fields;
+  private List<WebsocketMessageTopicMatcherFieldDescriptor> fields;
 
-	/**
-	 * @return the list of fields that must match the topic of the endpoint.
-	 */
-	public List<WebsocketMessageTopicMatcherFieldDescriptor> getFields() {
-		return fields;
-	}
+  /**
+   * @return the list of fields that must match the topic of the endpoint.
+   */
+  public List<WebsocketMessageTopicMatcherFieldDescriptor> getFields() {
+    return fields;
+  }
 
-	/**
-	 * @param fields the list of fields that must match the topic of the endpoint.
-	 */
-	public void setFields(List<WebsocketMessageTopicMatcherFieldDescriptor> fields) {
-		this.fields = fields;
-	}
+  /**
+   * @param fields the list of fields that must match the topic of the endpoint.
+   */
+  public void setFields(List<WebsocketMessageTopicMatcherFieldDescriptor> fields) {
+    this.fields = fields;
+  }
 
-	/**
-	 * @return a string representation of the object. see
-	 *         {@link EncodingUtil#pojoToString(Object)}
-	 */
-	@Override
-	public String toString() {
-		return EncodingUtil.pojoToString(this);
-	}
+  /**
+   * @return a string representation of the object. see
+   *         {@link EncodingUtil#pojoToString(Object)}
+   */
+  @Override
+  public String toString() {
+    return EncodingUtil.pojoToString(this);
+  }
 }

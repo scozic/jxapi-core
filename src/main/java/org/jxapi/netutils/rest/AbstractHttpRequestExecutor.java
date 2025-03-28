@@ -12,17 +12,17 @@ import org.jxapi.util.DefaultDisposable;
  */
 public abstract class AbstractHttpRequestExecutor extends DefaultDisposable implements HttpRequestExecutor {
 
-	private AtomicLong requestTimeout = new AtomicLong(DEFAULT_REQUEST_TIMEOUT);
+  private AtomicLong requestTimeout = new AtomicLong(DEFAULT_REQUEST_TIMEOUT);
 
-	@Override
-	public void setRequestTimeout(long requestTimeout) {
-		this.requestTimeout.set(requestTimeout);
-		
-	}
+  @Override
+  public void setRequestTimeout(long requestTimeout) {
+    this.requestTimeout.set(requestTimeout);
+    
+  }
 
-	@Override
-	public long getRequestTimeout() {
-		return this.requestTimeout.get();
-	}
+  @Override
+  public long getRequestTimeout() {
+    return this.requestTimeout.get();
+  }
 
 }

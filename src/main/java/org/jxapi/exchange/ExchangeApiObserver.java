@@ -22,10 +22,10 @@ import org.jxapi.netutils.websocket.WebsocketManager;
  */
 public interface ExchangeApiObserver {
 
-	/**
-	 * Method called when an event is triggered by an {@link ExchangeApi} instance.
-	 * 
-	 * @param event The event dispatched
-	 */
-	void handleEvent(ExchangeApiEvent event);
+  /**
+   * Method called when an event is triggered by an {@link ExchangeApi} instance.
+   * 
+   * @param event The event dispatched
+   */
+  void handleEvent(ExchangeApiEvent event);
 }

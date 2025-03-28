@@ -7,15 +7,15 @@ package org.jxapi.netutils.websocket;
  */
 public abstract class AbstractWebsocketHook implements WebsocketHook {
 
-	/**
-	 * The {@link WebsocketManager} instance that is passed to the hook in the
-	 * {@link #init(WebsocketManager)} method.
-	 */
-	protected WebsocketManager websocketManager;
-	
-	@Override
-	public void init(WebsocketManager websocketManager) {
-		this.websocketManager = websocketManager;
-	}
+  /**
+   * The {@link WebsocketManager} instance that is passed to the hook in the
+   * {@link #init(WebsocketManager)} method.
+   */
+  protected WebsocketManager websocketManager;
+  
+  @Override
+  public void init(WebsocketManager websocketManager) {
+    this.websocketManager = websocketManager;
+  }
 
 }

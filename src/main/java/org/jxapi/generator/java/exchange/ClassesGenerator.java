@@ -16,10 +16,10 @@ import org.jxapi.exchange.descriptor.WebsocketEndpointDescriptor;
  */
 public interface ClassesGenerator {
 
-	/**
-	 * Calling this method will trigger generation of all .java files managed by this generator.
-	 * @param outputFolder The root source folder for java classes e.g. <code>src/main/java</code>
-	 * @throws IOException If I/O error occurs during generation
-	 */
-	void generateClasses(Path outputFolder) throws IOException;
+  /**
+   * Calling this method will trigger generation of all .java files managed by this generator.
+   * @param outputFolder The root source folder for java classes e.g. <code>src/main/java</code>
+   * @throws IOException If I/O error occurs during generation
+   */
+  void generateClasses(Path outputFolder) throws IOException;
 }

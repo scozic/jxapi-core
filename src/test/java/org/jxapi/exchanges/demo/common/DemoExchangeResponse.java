@@ -5,8 +5,8 @@ package org.jxapi.exchanges.demo.common;
  */
 public interface DemoExchangeResponse {
 
-	/**
-	 * @return A response code indicating the status of response
-	 */
-	int getResponseCode();
+  /**
+   * @return A response code indicating the status of response
+   */
+  int getResponseCode();
 }

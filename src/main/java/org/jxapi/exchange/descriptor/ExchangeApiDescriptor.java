@@ -46,85 +46,85 @@ import org.jxapi.util.EncodingUtil;
  * <h2>Example of corresponding JSON, with sample REST endpoint and WebsocketEndpoint</h2>
  * <pre>
  * { 
- * 	"name": "MarketData",
- * 	"description": "The market data API of MyTestExchange",
- * 	"httpRequestInterceptorFactory": "com.foo.bar.BarHttpRequestInterceptorFactory",
- * 	"rateLimits": [
- *		{"id": "customRule", "timeFrame": 1500,  "maxTotalWeight": 300}
- *	],
+ *   "name": "MarketData",
+ *   "description": "The market data API of MyTestExchange",
+ *   "httpRequestInterceptorFactory": "com.foo.bar.BarHttpRequestInterceptorFactory",
+ *   "rateLimits": [
+ *    {"id": "customRule", "timeFrame": 1500,  "maxTotalWeight": 300}
+ *  ],
  *  "constants": 
- * 		{"name":"responseCodeOk", "type": "INT", "description":"Value for REST response <i>responseCode</i> field. Success", "value":0},
- * 		{"name":"responseCodeError", "type": "INT", "description":"Value for REST response <i>responseCode</i> field. Error", "value":-1}
- * 	],
- * 	"restEndpoints": [
- * 		{
- * 			"name": "exchangeInfo",
- * 			"httpMethod": "GET",
- * 			"description": "Fetch market information of symbols that can be traded",
- * 			"url": "https://com.sample.mycex/exchangeInfo",
- * 			"request":{
- * 				"properties": [
- * 					{"name":"symbols", "type": "STRING_LIST", "description":"The list of symbol to fetch market information for. Leave empty to fetch all markets", "sampleValue":"[\"BTC\", \"ETH\"]"}
- * 				]
- * 			},
- * 			"response":{ 
- * 				"properties": [
- * 					{"name":"responseCode", "type": "INT", "description":"Request response code", "sampleValue":"0"},
- * 					{"name":"payload", "type": "OBJECT_LIST", "description":"List of market information for each requested symbol", "properties":[
- * 							{"name":"symbol", "type": "STRING", "description":"Market symbol", "sampleValue":"BTC_USDT"},
- * 							{"name":"minOrderSize", "type": "BIGDECIMAL", "description":"Minimum order amount", "sampleValue":"0.0001"},
- * 							{"name":"levels", "type": "INT_LIST", "description":"Amount precision levels", "sampleValue":[1,10,500]}
- * 						]
- * 					}
- * 				]
- * 			}
- * 		},
- * 		{
- * 			"name": "tickers",
- * 			"httpMethod": "GET",
- * 			"description": "Fetch current tickers",
- * 			"url": "https://com.sample.mycex/tickers",
- * 			"request":{
- * 				"properties": []
- * 			},
- * 			"response": { 
- * 				"properties": [
- * 					{"name":"responseCode", "type": "INT", "description":"Request response code", "sampleValue":"0"},
- * 					{"name":"payload", "type": "OBJECT_MAP", "description":"Tickers for each symbol", "properties":[
- * 							{"name":"last", "type": "BIGDECIMAL", "description":"Last traded price", "sampleValue":10.0}
- * 						]
- * 					}
- * 				]
- * 			}
- * 		}
- * 	],
- * 	"websocketUrl": "wss://com.foo.exchange/ws",
- * 	"websocketFactory": "com.foo.bar.BarWebsocketFactory",
- * 	"websocketHookFactory": "com.foo.bar.BarWebsocketHookFactory",
- * 	"websocketEndpoints": [
- * 		{
- * 			"name": "tickerStream",
- * 			"topic": "${symbol}@ticker",
- * 			"description": "Subscribe to ticker stream",
- * 			"request": {
- * 				"properties": [
- * 					{"name": "symbol", "type":"STRING", "description":"Symbol to subscribe to ticker stream of", "sampleValue":"BTC_USDT"}
- * 				]
- * 			},
- * 			"topicParametersListSeparator": "|",
- * 			"messageTopicMatcherFields": [
- * 				{"name": "topic",  "value": "ticker"},
- * 				{"name": "symbol",  "value": "${symbol}"}
- * 			],
- * 			"message": { 
- * 				"properties": [
- * 					{"name":"topic", "msgField":"t", "type": "STRING", "description":"Topic", "sampleValue":"ticker"},
- * 					{"name":"symbol", "msgField":"s", "type": "STRING", "description":"Symbol name", "sampleValue":"BTC_USDT"},
- * 					{"name":"last", "msgField":"p", "type": "BIGDECIMAL", "description":"Last traded price", "sampleValue":"16000.00"}
- * 				]
- * 			}
- * 		}
- * 	]
+ *     {"name":"responseCodeOk", "type": "INT", "description":"Value for REST response <i>responseCode</i> field. Success", "value":0},
+ *     {"name":"responseCodeError", "type": "INT", "description":"Value for REST response <i>responseCode</i> field. Error", "value":-1}
+ *   ],
+ *   "restEndpoints": [
+ *     {
+ *       "name": "exchangeInfo",
+ *       "httpMethod": "GET",
+ *       "description": "Fetch market information of symbols that can be traded",
+ *       "url": "https://com.sample.mycex/exchangeInfo",
+ *       "request":{
+ *         "properties": [
+ *           {"name":"symbols", "type": "STRING_LIST", "description":"The list of symbol to fetch market information for. Leave empty to fetch all markets", "sampleValue":"[\"BTC\", \"ETH\"]"}
+ *         ]
+ *       },
+ *       "response":{ 
+ *         "properties": [
+ *           {"name":"responseCode", "type": "INT", "description":"Request response code", "sampleValue":"0"},
+ *           {"name":"payload", "type": "OBJECT_LIST", "description":"List of market information for each requested symbol", "properties":[
+ *               {"name":"symbol", "type": "STRING", "description":"Market symbol", "sampleValue":"BTC_USDT"},
+ *               {"name":"minOrderSize", "type": "BIGDECIMAL", "description":"Minimum order amount", "sampleValue":"0.0001"},
+ *               {"name":"levels", "type": "INT_LIST", "description":"Amount precision levels", "sampleValue":[1,10,500]}
+ *             ]
+ *           }
+ *         ]
+ *       }
+ *     },
+ *     {
+ *       "name": "tickers",
+ *       "httpMethod": "GET",
+ *       "description": "Fetch current tickers",
+ *       "url": "https://com.sample.mycex/tickers",
+ *       "request":{
+ *         "properties": []
+ *       },
+ *       "response": { 
+ *         "properties": [
+ *           {"name":"responseCode", "type": "INT", "description":"Request response code", "sampleValue":"0"},
+ *           {"name":"payload", "type": "OBJECT_MAP", "description":"Tickers for each symbol", "properties":[
+ *               {"name":"last", "type": "BIGDECIMAL", "description":"Last traded price", "sampleValue":10.0}
+ *             ]
+ *           }
+ *         ]
+ *       }
+ *     }
+ *   ],
+ *   "websocketUrl": "wss://com.foo.exchange/ws",
+ *   "websocketFactory": "com.foo.bar.BarWebsocketFactory",
+ *   "websocketHookFactory": "com.foo.bar.BarWebsocketHookFactory",
+ *   "websocketEndpoints": [
+ *     {
+ *       "name": "tickerStream",
+ *       "topic": "${symbol}@ticker",
+ *       "description": "Subscribe to ticker stream",
+ *       "request": {
+ *         "properties": [
+ *           {"name": "symbol", "type":"STRING", "description":"Symbol to subscribe to ticker stream of", "sampleValue":"BTC_USDT"}
+ *         ]
+ *       },
+ *       "topicParametersListSeparator": "|",
+ *       "messageTopicMatcherFields": [
+ *         {"name": "topic",  "value": "ticker"},
+ *         {"name": "symbol",  "value": "${symbol}"}
+ *       ],
+ *       "message": { 
+ *         "properties": [
+ *           {"name":"topic", "msgField":"t", "type": "STRING", "description":"Topic", "sampleValue":"ticker"},
+ *           {"name":"symbol", "msgField":"s", "type": "STRING", "description":"Symbol name", "sampleValue":"BTC_USDT"},
+ *           {"name":"last", "msgField":"p", "type": "BIGDECIMAL", "description":"Last traded price", "sampleValue":"16000.00"}
+ *         ]
+ *       }
+ *     }
+ *   ]
  * }
  * </pre>
  * 
@@ -139,300 +139,300 @@ import org.jxapi.util.EncodingUtil;
  * @see Constant
  */
 public class ExchangeApiDescriptor {
-	
-	private String name;
-	
-	private String description;
-	
-	private List<RestEndpointDescriptor> restEndpoints;
-	
-	private String httpRequestInterceptorFactory;
-	
-	private String httpRequestExecutorFactory;
-	
-	private long httpRequestTimeout = -1L;
-	
-	private String httpUrl;
-	
-	private String websocketFactory;
-	
-	private String websocketHookFactory;
-	
-	private String websocketUrl;
-	
-	private List<WebsocketEndpointDescriptor> websocketEndpoints;
-	
-	private List<RateLimitRule> rateLimits;
+  
+  private String name;
+  
+  private String description;
+  
+  private List<RestEndpointDescriptor> restEndpoints;
+  
+  private String httpRequestInterceptorFactory;
+  
+  private String httpRequestExecutorFactory;
+  
+  private long httpRequestTimeout = -1L;
+  
+  private String httpUrl;
+  
+  private String websocketFactory;
+  
+  private String websocketHookFactory;
+  
+  private String websocketUrl;
+  
+  private List<WebsocketEndpointDescriptor> websocketEndpoints;
+  
+  private List<RateLimitRule> rateLimits;
 
-	private List<Constant> constants;
+  private List<Constant> constants;
 
-	/**
-	 * Retrieves the list of REST endpoints for this API.
-	 * @return The list of REST endpoints for this API, may be <code>null</code>.
-	 */
-	public List<RestEndpointDescriptor> getRestEndpoints() {
-		return restEndpoints;
-	}
+  /**
+   * Retrieves the list of REST endpoints for this API.
+   * @return The list of REST endpoints for this API, may be <code>null</code>.
+   */
+  public List<RestEndpointDescriptor> getRestEndpoints() {
+    return restEndpoints;
+  }
 
-	/**
-	 * Sets the list of REST endpoints for this API.
-	 * @param restEndpoints The list of REST endpoints for this API.
-	 */
-	public void setRestEndpoints(List<RestEndpointDescriptor> restEndpoints) {
-		this.restEndpoints = restEndpoints;
-	}
+  /**
+   * Sets the list of REST endpoints for this API.
+   * @param restEndpoints The list of REST endpoints for this API.
+   */
+  public void setRestEndpoints(List<RestEndpointDescriptor> restEndpoints) {
+    this.restEndpoints = restEndpoints;
+  }
 
-	/**
-	 * @return Unique name of the API among APIs of parent ExchangeDescriptor.
-	 */
-	public String getName() {
-		return name;
-	}
+  /**
+   * @return Unique name of the API among APIs of parent ExchangeDescriptor.
+   */
+  public String getName() {
+    return name;
+  }
 
-	/**
-	 * @param name Unique name of the API among APIs of parent ExchangeDescriptor.
-	 */
-	public void setName(String name) {
-		this.name = name;
-	}
+  /**
+   * @param name Unique name of the API among APIs of parent ExchangeDescriptor.
+   */
+  public void setName(String name) {
+    this.name = name;
+  }
 
-	/**
-	 * @return Description of the API.
-	 */
-	public String getDescription() {
-		return description;
-	}
+  /**
+   * @return Description of the API.
+   */
+  public String getDescription() {
+    return description;
+  }
 
-	/**
-	 * @param description Description of the API.
-	 */
-	public void setDescription(String description) {
-		this.description = description;
-	}
+  /**
+   * @param description Description of the API.
+   */
+  public void setDescription(String description) {
+    this.description = description;
+  }
 
-	/**
-	 * Retrieves the list of Websocket endpoints for this API.
-	 * 
-	 * @return The list of Websocket endpoints for this API, may be
-	 *         <code>null</code>.
-	 */
-	public List<WebsocketEndpointDescriptor> getWebsocketEndpoints() {
-		return websocketEndpoints;
-	}
+  /**
+   * Retrieves the list of Websocket endpoints for this API.
+   * 
+   * @return The list of Websocket endpoints for this API, may be
+   *         <code>null</code>.
+   */
+  public List<WebsocketEndpointDescriptor> getWebsocketEndpoints() {
+    return websocketEndpoints;
+  }
 
-	/**
-	 * Sets the list of Websocket endpoints for this API.
-	 * 
-	 * @param websocketEndpoints The list of Websocket endpoints for this API.
-	 */
-	public void setWebsocketEndpoints(List<WebsocketEndpointDescriptor> websocketEndpoints) {
-		this.websocketEndpoints = websocketEndpoints;
-	}
+  /**
+   * Sets the list of Websocket endpoints for this API.
+   * 
+   * @param websocketEndpoints The list of Websocket endpoints for this API.
+   */
+  public void setWebsocketEndpoints(List<WebsocketEndpointDescriptor> websocketEndpoints) {
+    this.websocketEndpoints = websocketEndpoints;
+  }
 
-	/**
-	 * Retrieves the list of rate limits for this API. These limits are shared among
-	 * all REST endpoints of this API.
-	 * 
-	 * @return The list of rate limits for this API, may be <code>null</code>.
-	 */
-	public List<RateLimitRule> getRateLimits() {
-		return rateLimits;
-	}
+  /**
+   * Retrieves the list of rate limits for this API. These limits are shared among
+   * all REST endpoints of this API.
+   * 
+   * @return The list of rate limits for this API, may be <code>null</code>.
+   */
+  public List<RateLimitRule> getRateLimits() {
+    return rateLimits;
+  }
 
-	/**
-	 * Sets the list of rate limits for this API. These limits are shared among all
-	 * REST endpoints of this API.
-	 * 
-	 * @param rateLimits The list of rate limits for this API.
-	 */
-	public void setRateLimits(List<RateLimitRule> rateLimits) {
-		this.rateLimits = rateLimits;
-	}
+  /**
+   * Sets the list of rate limits for this API. These limits are shared among all
+   * REST endpoints of this API.
+   * 
+   * @param rateLimits The list of rate limits for this API.
+   */
+  public void setRateLimits(List<RateLimitRule> rateLimits) {
+    this.rateLimits = rateLimits;
+  }
 
-	/**
-	 * Retrieves the factory class that creates HttpRequestInterceptor instances for
-	 * this API.
-	 * 
-	 * @return The factory class that creates HttpRequestInterceptor instances for
-	 *         this API, may be <code>null</code>, in which case no request
-	 *         interceptor is used.
-	 */
-	public String getHttpRequestInterceptorFactory() {
-		return httpRequestInterceptorFactory;
-	}
+  /**
+   * Retrieves the factory class that creates HttpRequestInterceptor instances for
+   * this API.
+   * 
+   * @return The factory class that creates HttpRequestInterceptor instances for
+   *         this API, may be <code>null</code>, in which case no request
+   *         interceptor is used.
+   */
+  public String getHttpRequestInterceptorFactory() {
+    return httpRequestInterceptorFactory;
+  }
 
-	/**
-	 * Sets the factory class that creates HttpRequestInterceptor instances for this
-	 * API.
-	 * 
-	 * @param httpRequestInterceptorFactory The factory class that creates
-	 *                                      HttpRequestInterceptor instances for
-	 *                                      this API, may be <code>null</code>, in
-	 *                                      which case no request interceptor is
-	 *                                      used.
-	 */
-	public void setHttpRequestInterceptorFactory(String httpRequestInterceptorFactory) {
-		this.httpRequestInterceptorFactory = httpRequestInterceptorFactory;
-	}
+  /**
+   * Sets the factory class that creates HttpRequestInterceptor instances for this
+   * API.
+   * 
+   * @param httpRequestInterceptorFactory The factory class that creates
+   *                                      HttpRequestInterceptor instances for
+   *                                      this API, may be <code>null</code>, in
+   *                                      which case no request interceptor is
+   *                                      used.
+   */
+  public void setHttpRequestInterceptorFactory(String httpRequestInterceptorFactory) {
+    this.httpRequestInterceptorFactory = httpRequestInterceptorFactory;
+  }
 
-	/**
-	 * Retrieves the factory class that creates HttpRequestExecutor instances for
-	 * this API. 
-	 * 
-	 * @return The factory class that creates HttpRequestExecutor instances for this
-	 *         API, may be <code>null</code>, in which case default
-	 *         {@link JavaNetHttpRequestExecutor} is used.
-	 */
-	public String getHttpRequestExecutorFactory() {
-		return httpRequestExecutorFactory;
-	}
+  /**
+   * Retrieves the factory class that creates HttpRequestExecutor instances for
+   * this API. 
+   * 
+   * @return The factory class that creates HttpRequestExecutor instances for this
+   *         API, may be <code>null</code>, in which case default
+   *         {@link JavaNetHttpRequestExecutor} is used.
+   */
+  public String getHttpRequestExecutorFactory() {
+    return httpRequestExecutorFactory;
+  }
 
-	/**
-	 * Sets the factory class that creates HttpRequestExecutor instances for this
-	 * API.
-	 * 
-	 * @param httpRequestExecutorFactory The factory class that creates
-	 *                                   HttpRequestExecutor instances for this API,
-	 *                                   may be <code>null</code>, in which case
-	 *                                   default {@link JavaNetHttpRequestExecutor}
-	 *                                   is used.
-	 */
-	public void setHttpRequestExecutorFactory(String httpRequestExecutorFactory) {
-		this.httpRequestExecutorFactory = httpRequestExecutorFactory;
-	}
+  /**
+   * Sets the factory class that creates HttpRequestExecutor instances for this
+   * API.
+   * 
+   * @param httpRequestExecutorFactory The factory class that creates
+   *                                   HttpRequestExecutor instances for this API,
+   *                                   may be <code>null</code>, in which case
+   *                                   default {@link JavaNetHttpRequestExecutor}
+   *                                   is used.
+   */
+  public void setHttpRequestExecutorFactory(String httpRequestExecutorFactory) {
+    this.httpRequestExecutorFactory = httpRequestExecutorFactory;
+  }
 
-	/**
-	 * Retrieves the factory class that creates WebsocketFactory instances for this
-	 * API.
-	 * 
-	 * @return The factory class that creates WebsocketFactory instances for this
-	 *         API, may be <code>null</code>, in which case default
-	 *         {@link DefaultWebsocketFactory} is used.
-	 */
-	public String getWebsocketHookFactory() {
-		return websocketHookFactory;
-	}
+  /**
+   * Retrieves the factory class that creates WebsocketFactory instances for this
+   * API.
+   * 
+   * @return The factory class that creates WebsocketFactory instances for this
+   *         API, may be <code>null</code>, in which case default
+   *         {@link DefaultWebsocketFactory} is used.
+   */
+  public String getWebsocketHookFactory() {
+    return websocketHookFactory;
+  }
 
-	/**
-	 * Sets the factory class that creates WebsocketFactory instances for this API.
-	 * 
-	 * @param websocketHookFactory The factory class that creates WebsocketFactory
-	 *                             instances for this API, may be <code>null</code>,
-	 *                             in which case default
-	 *                             {@link DefaultWebsocketFactory} is used.
-	 */
-	public void setWebsocketHookFactory(String websocketHookFactory) {
-		this.websocketHookFactory = websocketHookFactory;
-	}
+  /**
+   * Sets the factory class that creates WebsocketFactory instances for this API.
+   * 
+   * @param websocketHookFactory The factory class that creates WebsocketFactory
+   *                             instances for this API, may be <code>null</code>,
+   *                             in which case default
+   *                             {@link DefaultWebsocketFactory} is used.
+   */
+  public void setWebsocketHookFactory(String websocketHookFactory) {
+    this.websocketHookFactory = websocketHookFactory;
+  }
 
-	/**
-	 * Retrieves the factory class that creates WebsocketHook instances for this
-	 * API.
-	 * 
-	 * @return The factory class that creates WebsocketHook instances for this API,
-	 *         may be <code>null</code>, in which case no websocket hook is used.
-	 */
-	public String getWebsocketFactory() {
-		return websocketFactory;
-	}
+  /**
+   * Retrieves the factory class that creates WebsocketHook instances for this
+   * API.
+   * 
+   * @return The factory class that creates WebsocketHook instances for this API,
+   *         may be <code>null</code>, in which case no websocket hook is used.
+   */
+  public String getWebsocketFactory() {
+    return websocketFactory;
+  }
 
-	/**
-	 * Sets the factory class that creates WebsocketHook instances for this API.
-	 * 
-	 * @param websocketFactory The factory class that creates WebsocketHook
-	 *                         instances for this API, may be <code>null</code>, in
-	 *                         which case no websocket hook is used.
-	 */
-	public void setWebsocketFactory(String websocketFactory) {
-		this.websocketFactory = websocketFactory;
-	}
-	
-	/**
-	 * @return Timeout for the requests submitted to the
-	 *         {@link HttpRequestExecutor}. A negative value means 'undefined', 0
-	 *         means no timeout (wait forever).
-	 * @see HttpRequestExecutor#getRequestTimeout()         
-	 */
-	public long getHttpRequestTimeout() {
-		return httpRequestTimeout;
-	}
+  /**
+   * Sets the factory class that creates WebsocketHook instances for this API.
+   * 
+   * @param websocketFactory The factory class that creates WebsocketHook
+   *                         instances for this API, may be <code>null</code>, in
+   *                         which case no websocket hook is used.
+   */
+  public void setWebsocketFactory(String websocketFactory) {
+    this.websocketFactory = websocketFactory;
+  }
+  
+  /**
+   * @return Timeout for the requests submitted to the
+   *         {@link HttpRequestExecutor}. A negative value means 'undefined', 0
+   *         means no timeout (wait forever).
+   * @see HttpRequestExecutor#getRequestTimeout()         
+   */
+  public long getHttpRequestTimeout() {
+    return httpRequestTimeout;
+  }
 
-	/**
-	 * @param httpRequestTimeout Timeout for the requests submitted to the
-	 *                           {@link HttpRequestExecutor}
-	 * @see ExchangeApiDescriptor#getHttpRequestTimeout()
-	 */
-	public void setHttpRequestTimeout(long httpRequestTimeout) {
-		this.httpRequestTimeout = httpRequestTimeout;
-	}
+  /**
+   * @param httpRequestTimeout Timeout for the requests submitted to the
+   *                           {@link HttpRequestExecutor}
+   * @see ExchangeApiDescriptor#getHttpRequestTimeout()
+   */
+  public void setHttpRequestTimeout(long httpRequestTimeout) {
+    this.httpRequestTimeout = httpRequestTimeout;
+  }
 
-	/**
-	 * Retrieves the URL of the websocket endpoint for this API.
-	 * 
-	 * @return The URL of the websocket endpoint for this API, may be
-	 *         <code>null</code>, in which case the URL is expected to be set by
-	 *         WebsocketHook on WebsocketManager during
-	 *         {@link WebsocketHook#init(org.jxapi.netutils.websocket.WebsocketManager)}
-	 *         or
-	 *         {@link WebsocketHook#beforeConnect()}.
-	 */
-	public String getWebsocketUrl() {
-		return websocketUrl;
-	}
+  /**
+   * Retrieves the URL of the websocket endpoint for this API.
+   * 
+   * @return The URL of the websocket endpoint for this API, may be
+   *         <code>null</code>, in which case the URL is expected to be set by
+   *         WebsocketHook on WebsocketManager during
+   *         {@link WebsocketHook#init(org.jxapi.netutils.websocket.WebsocketManager)}
+   *         or
+   *         {@link WebsocketHook#beforeConnect()}.
+   */
+  public String getWebsocketUrl() {
+    return websocketUrl;
+  }
 
-	/**
-	 * Sets the URL of the websocket endpoint for this API.
-	 * 
-	 * @param websocketUrl The URL of the websocket endpoint for this API, may be
-	 *                     <code>null</code>, in which case the URL is expected to
-	 *                     be set by WebsocketHook on WebsocketManager during
-	 *                     {@link WebsocketHook#init(org.jxapi.netutils.websocket.WebsocketManager)}
-	 *                     or
-	 *                     {@link WebsocketHook#beforeConnect()}.
-	 */
-	public void setWebsocketUrl(String websocketUrl) {
-		this.websocketUrl = websocketUrl;
-	}
+  /**
+   * Sets the URL of the websocket endpoint for this API.
+   * 
+   * @param websocketUrl The URL of the websocket endpoint for this API, may be
+   *                     <code>null</code>, in which case the URL is expected to
+   *                     be set by WebsocketHook on WebsocketManager during
+   *                     {@link WebsocketHook#init(org.jxapi.netutils.websocket.WebsocketManager)}
+   *                     or
+   *                     {@link WebsocketHook#beforeConnect()}.
+   */
+  public void setWebsocketUrl(String websocketUrl) {
+    this.websocketUrl = websocketUrl;
+  }
 
-	/**
-	 * @see Constant
-	 * @return List of constants that are used in context of the exchange wrapper,
-	 *         for
-	 *         instance specific values for some APIs request/response/message
-	 *         properties.
-	 */
-	public List<Constant> getConstants() {
-		return constants;
-	}
+  /**
+   * @see Constant
+   * @return List of constants that are used in context of the exchange wrapper,
+   *         for
+   *         instance specific values for some APIs request/response/message
+   *         properties.
+   */
+  public List<Constant> getConstants() {
+    return constants;
+  }
 
-	/**
-	 * @see Constant
-	 * @param constants List of constants that are used in context of the exchange
-	 *                  wrapper, for
-	 *                  instance specific values for some APIs
-	 *                  request/response/message properties.
-	 */
-	public void setConstants(List<Constant> constants) {
-		this.constants = constants;
-	}
-	
-	/**
-	 * @return The base URL of the REST endpoints for this API group.
-	 */
-	public String getHttpUrl() {
-		return httpUrl;
-	}
+  /**
+   * @see Constant
+   * @param constants List of constants that are used in context of the exchange
+   *                  wrapper, for
+   *                  instance specific values for some APIs
+   *                  request/response/message properties.
+   */
+  public void setConstants(List<Constant> constants) {
+    this.constants = constants;
+  }
+  
+  /**
+   * @return The base URL of the REST endpoints for this API group.
+   */
+  public String getHttpUrl() {
+    return httpUrl;
+  }
 
-	/**
+  /**
      * @param httpUrl The base URL of the REST endpoints for this API group.
      */
-	public void setHttpUrl(String httpUrl) {
-		this.httpUrl = httpUrl;
-	}
+  public void setHttpUrl(String httpUrl) {
+    this.httpUrl = httpUrl;
+  }
 
-	@Override
-	public String toString() {
-		return EncodingUtil.pojoToString(this);
-	}
+  @Override
+  public String toString() {
+    return EncodingUtil.pojoToString(this);
+  }
 
 }

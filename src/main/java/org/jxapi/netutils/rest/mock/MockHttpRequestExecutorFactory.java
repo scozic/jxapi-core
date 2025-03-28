@@ -8,9 +8,9 @@ import org.jxapi.netutils.rest.HttpRequestExecutorFactory;
  */
 public class MockHttpRequestExecutorFactory implements HttpRequestExecutorFactory {
 
-	@Override
-	public MockHttpRequestExecutor createExecutor(ExchangeApi exchangeApi) {
-		return new MockHttpRequestExecutor();
-	}
+  @Override
+  public MockHttpRequestExecutor createExecutor(ExchangeApi exchangeApi) {
+    return new MockHttpRequestExecutor();
+  }
 
 }

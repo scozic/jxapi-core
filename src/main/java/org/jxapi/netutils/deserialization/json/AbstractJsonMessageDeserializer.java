@@ -20,21 +20,21 @@ import org.jxapi.netutils.deserialization.MessageDeserializer;
  * @see JsonDeserializer
  */
 public abstract class AbstractJsonMessageDeserializer<T> implements MessageDeserializer<T>, JsonDeserializer<T> {
-	
-	private final JsonFactory jsonFactory = new JsonFactory();
-	
-	@Override
-	public T deserialize(String msg) {
-		try {
-			if (msg == null) {
-				return null;
-			}
-			JsonParser parser = jsonFactory.createParser(msg.getBytes());
-			parser.nextToken();
-			return deserialize(parser);
-		} catch (IOException e) {
-			throw new IllegalArgumentException("Error parsing JSON:[" + msg + "]", e);
-		} 
-	}
-	
+  
+  private final JsonFactory jsonFactory = new JsonFactory();
+  
+  @Override
+  public T deserialize(String msg) {
+    try {
+      if (msg == null) {
+        return null;
+      }
+      JsonParser parser = jsonFactory.createParser(msg.getBytes());
+      parser.nextToken();
+      return deserialize(parser);
+    } catch (IOException e) {
+      throw new IllegalArgumentException("Error parsing JSON:[" + msg + "]", e);
+    } 
+  }
+  
 }
