@@ -92,7 +92,12 @@ public class RestRequestPagination {
            if (nextPageIndex != null) {
              // Fetch next page
              setRequestIndex.accept(nextPageIndex, request);
-             fetchAllPages(request, endpoint, setRequestIndex, getResponseIndex, responseAccumulator, responsePage.getResponse()).thenAccept(response::complete);
+             fetchAllPages(request, 
+                           endpoint, 
+                           setRequestIndex, 
+                           getResponseIndex, 
+                           responseAccumulator, 
+                           responsePage.getResponse()).thenAccept(response::complete);
            } else {
              // last page found
              response.complete(responsePage);
