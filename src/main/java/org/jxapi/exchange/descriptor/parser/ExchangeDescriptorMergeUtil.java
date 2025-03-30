@@ -122,6 +122,8 @@ public class ExchangeDescriptorMergeUtil {
       throw new IllegalArgumentException(String.format("Cannot merge exchanges with different IDs:'%s' and '%s'", e1.getId(), e2.getId()));
     }
     res.setId(e1.getId());
+    res.setVersion(merge("version of exchange " + exchangeName, e1.getVersion(), e2.getVersion()));
+    res.setJxapi(merge("JXAPI version of exchange " + exchangeName, e1.getJxapi(), e2.getJxapi()));
     res.setDescription(merge("description of exchange " + exchangeName, e1.getDescription(), e2.getDescription()));
     res.setDocUrl(merge("docUrl of exchange " + exchangeName, e1.getDocUrl(), e2.getDocUrl()));
     res.setBasePackage(merge("basePackage of exchange " + exchangeName, e1.getBasePackage(), e2.getBasePackage()));
