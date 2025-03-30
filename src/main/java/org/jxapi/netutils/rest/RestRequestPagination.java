@@ -100,6 +100,7 @@ public class RestRequestPagination {
                            responsePage.getResponse()).thenAccept(response::complete);
            } else {
              // last page found
+             log.debug("Last page found in response to request:{}", request);
              response.complete(responsePage);
            }
         }
