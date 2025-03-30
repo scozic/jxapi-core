@@ -30,6 +30,11 @@ FutureRestResponse<Employee> response = exchange.getEmployeeV1Api().getEmployee(
 The `FutureRestResponse` object returned is a `CompletableFuture` that wraps asynchronous execution of request. Calling thread can wait for result of using `get()` or using a callback with `thenApply()`. 
 The resolved `RestResponse` object wraps the result of REST API call, and `isOk()` should be checked before reading the response.
 
+### REST request pagination
+
+A common design in REST APIs is to provide 'pagination' interface to load large data in chunks. Such APIs use a page index in request to specify which 'page' of data to load, and response provide next page (or last page) information.
+The `RestRequestPagination` class has been designed to load all pages from a specified index from a generic such API. See [RestRequestPagination](./RestRequestPagination.md) to learn more.
+
 ## Websocket endpoints
 
 Subscribe to a websocket endpoint using subscription method in endpoint API group dedicated interface accessible from `Exchange` instance. For instance:

@@ -270,6 +270,8 @@ public class ExchangeDescriptorMergeUtilTest {
     
     ExchangeDescriptor ex2 = new ExchangeDescriptor();
     ex2.setId("ex1");
+    ex2.setVersion("1.0.1");
+    ex2.setJxapi("1.0.0");
     ex2.setHttpUrl("http://ex1.com");
     ex2.setHttpRequestExecutorFactory("com.x.y.MyHttpRequestExecutorFactory");
     ex2.setHttpRequestInterceptorFactory("com.x.y.MyHttpRequestInterceptorFactory");
@@ -292,6 +294,8 @@ public class ExchangeDescriptorMergeUtilTest {
     
     ExchangeDescriptor merged = ExchangeDescriptorMergeUtil.mergeExchangeDescriptors(ex1, ex2);
     Assert.assertEquals("ex1", merged.getId());
+    Assert.assertEquals("1.0.1", merged.getVersion());
+    Assert.assertEquals("1.0.0", merged.getJxapi());
     Assert.assertEquals("Exchange 1 description", merged.getDescription());
     Assert.assertEquals("com.x.y.gen", merged.getBasePackage());
     Assert.assertEquals("https://ex1.com/docs", merged.getDocUrl());
