@@ -24,6 +24,9 @@ public abstract class AbstractExchange extends DefaultDisposable implements Exch
    */
   protected final String id;
   
+  /**
+   * The exchange version
+   */
   protected final String version;
   
   /**
@@ -39,6 +42,7 @@ public abstract class AbstractExchange extends DefaultDisposable implements Exch
   /**
    * Constructor
    * @param id the exchange id
+   * @param version the exchange version
    * @param name the exchange name
    * @param properties the exchange configuration properties
    */

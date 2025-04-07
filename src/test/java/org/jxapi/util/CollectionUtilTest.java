@@ -13,11 +13,18 @@ import org.junit.Test;
 public class CollectionUtilTest {
 
   @Test
-    public void testIsEmpty() {
-        Assert.assertTrue(CollectionUtil.isEmpty(null));
-        Assert.assertTrue(CollectionUtil.isEmpty(Collections.emptyList()));
-        Assert.assertFalse(CollectionUtil.isEmpty(Collections.singletonList("a")));
-    }
+  public void testIsEmpty() {
+      Assert.assertTrue(CollectionUtil.isEmpty(null));
+      Assert.assertTrue(CollectionUtil.isEmpty(Collections.emptyList()));
+      Assert.assertFalse(CollectionUtil.isEmpty(Collections.singletonList("a")));
+  }
+  
+  @Test
+  public void testEmptyIfNull() {
+    Assert.assertTrue(CollectionUtil.emptyIfNull(null).isEmpty());
+    List<String> l = List.of("a");
+    Assert.assertSame(l, CollectionUtil.emptyIfNull(l));
+  }
   
   @Test
   public void testCloneList_NullList() {

@@ -22,7 +22,7 @@ public class EmployeeExchangeImpl extends AbstractExchange implements EmployeeEx
   
   public EmployeeExchangeImpl(String exchangeName, Properties properties) {
     super(ID, VERSION, exchangeName, properties);
-    this.employeeV1Api = addApi(new EmployeeV1ApiImpl(getName(), properties));
+    this.employeeV1Api = addApi(new EmployeeV1ApiImpl(this));
   }
   
   @Override

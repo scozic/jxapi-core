@@ -1,11 +1,10 @@
 package org.jxapi.exchanges.employee.gen.v1;
 
 import java.util.List;
-import java.util.Properties;
 
 import javax.annotation.processing.Generated;
 import org.jxapi.exchange.AbstractExchangeApi;
-import org.jxapi.exchanges.employee.gen.EmployeeExchange;
+import org.jxapi.exchange.Exchange;
 import org.jxapi.exchanges.employee.gen.EmployeeExchangeImpl;
 import org.jxapi.exchanges.employee.gen.v1.deserializers.EmployeeDeserializer;
 import org.jxapi.exchanges.employee.gen.v1.deserializers.EmployeeV1EmployeeUpdatesMessageDeserializer;
@@ -88,8 +87,8 @@ public class EmployeeV1ApiImpl extends AbstractExchangeApi implements EmployeeV1
   private final MessageDeserializer<String> deleteEmployeeResponseDeserializer = RawStringMessageDeserializer.getInstance();
   
   // Constructor
-  public EmployeeV1ApiImpl(String exchangeName, Properties properties) {
-    super(ID, exchangeName, EmployeeExchange.ID, properties);
+  public EmployeeV1ApiImpl(Exchange exchange) {
+    super(ID, exchange);
     createHttpRequestExecutor(null, -1L);
     createHttpRequestInterceptor("org.jxapi.exchanges.demo.net.DemoExchangeHttpRequestInterceptorFactory");
     createWebsocketManager(WEBSOCKET_URL, null, "org.jxapi.exchanges.demo.net.DemoExchangeWebsocketHookFactory");

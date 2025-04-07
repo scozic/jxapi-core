@@ -57,7 +57,7 @@ public class ExchangeJavaGenUtilTest {
 
   @Test
   public void testGenerateRateLimitVariableName() {
-    Assert.assertEquals("RATE_LIMIT_TEST_RATE_LIMIT", 
+    Assert.assertEquals("rateLimitTestRateLimit", 
               ExchangeJavaGenUtil.generateRateLimitVariableName("testRateLimit"));
   }
 

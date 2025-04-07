@@ -53,12 +53,7 @@ public class AbstractExchangeApiTest {
   @Before
   public void setUp() {
     // Initialize the exchangeApi object with test data
-    exchangeApi = new TestExchangeApi("TestApi", "test-MyExchange", "MyExchange", new Properties());
-  }
-
-  @Test
-  public void testGetExchangeName() {
-    assertEquals("test-MyExchange", exchangeApi.getExchangeName());
+    exchangeApi = new TestExchangeApi("TestApi");
   }
 
   @Test
@@ -67,13 +62,13 @@ public class AbstractExchangeApiTest {
   }
 
   @Test
-  public void testGetExchangeId() {
-    assertEquals("MyExchange", exchangeApi.getExchangeId());
+  public void testGetExchange() {
+    Assert.assertSame(ExchangeStub.INSTANCE, exchangeApi.getExchange());
   }
-
+  
   @Test
   public void testGetProperties() {
-    assertEquals(new Properties(), exchangeApi.getProperties());
+    Assert.assertSame(ExchangeStub.INSTANCE.getProperties(), exchangeApi.getProperties());
   }
 
   @Test
@@ -329,7 +324,7 @@ public class AbstractExchangeApiTest {
   
   @Test
   public void setThrottlingModeAndMaxThrottleDelayNoRequestThrottler() {
-    exchangeApi = new TestExchangeApi("TestApi", "test-MyExchange", "MyExchange", new Properties());
+    exchangeApi = new TestExchangeApi("TestApi");
     exchangeApi.setRequestThrottlingMode(RequestThrottlingMode.BLOCK);
     exchangeApi.setMaxRequestThrottleDelay(1000L);
     Assert.assertEquals(RequestThrottlingMode.NONE, exchangeApi.getRequestThrottlingMode());
@@ -352,21 +347,21 @@ public class AbstractExchangeApiTest {
   
   @Test
   public void testDispose_BothRequestThrottlerHttpRequestExecutorWebsocketManagerNull() {
-    exchangeApi = new TestExchangeApi("TestApi", "test-MyExchange", "MyExchange", new Properties());
+    exchangeApi = new TestExchangeApi("TestApi");
     exchangeApi.dispose();
     Assert.assertTrue(exchangeApi.isDisposed());
   }
   
   @Test
   public void testSetHttpRequesTimeout_NoHttpRequestExecutor() {
-    exchangeApi = new TestExchangeApi("TestApi", "test-MyExchange", "MyExchange", new Properties());
+    exchangeApi = new TestExchangeApi("TestApi");
     exchangeApi.setHttpRequestTimeout(500L);
     Assert.assertEquals(-1L, exchangeApi.getHttpRequestTimeout());
   }
   
   @Test
   public void testSetHttpRequesTimeout_WithHttpRequestExecutor() {
-    exchangeApi = new TestExchangeApi("TestApi", "test-MyExchange", "MyExchange", new Properties());
+    exchangeApi = new TestExchangeApi("TestApi");
     exchangeApi.createHttpRequestExecutor(null, 200L);
     Assert.assertEquals(200L, exchangeApi.getHttpRequestTimeout());
     exchangeApi.setHttpRequestTimeout(500L);
@@ -386,7 +381,7 @@ public class AbstractExchangeApiTest {
   
   @Test
   public void testSerializeRequestBody() {
-    exchangeApi = new TestExchangeApi("TestApi", "test-MyExchange", "MyExchange", new Properties());
+    exchangeApi = new TestExchangeApi("TestApi");
     Assert.assertEquals("\"ping\"", exchangeApi.serializeRequestBody("ping"));
   }
   
@@ -434,12 +429,12 @@ public class AbstractExchangeApiTest {
 
   private class TestExchangeApi extends AbstractExchangeApi {
     
-    public TestExchangeApi(String apiName, String exchangeName, String exchangeId, Properties properties) {
-      super(apiName, exchangeName, exchangeId, properties);
+    public TestExchangeApi(String apiName) {
+      super(apiName, ExchangeStub.INSTANCE);
     }
     
     public TestExchangeApi(String apiName, String exchangeName, String exchangeId, Properties properties, RequestThrottler requestThrottler) {
-      super(apiName, exchangeName, exchangeId, properties, requestThrottler);
+      super(apiName, new AbstractExchange("myExchangeId", "1.0.0", "myExchange", properties) {}, requestThrottler);
     }
     
     public Observable<ExchangeApiObserver, ExchangeApiEvent> getObservable() {

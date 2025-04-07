@@ -18,6 +18,7 @@ import org.jxapi.netutils.deserialization.json.field.ListJsonFieldDeserializer;
 import org.jxapi.netutils.deserialization.json.field.LongJsonFieldDeserializer;
 import org.jxapi.netutils.deserialization.json.field.MapJsonFieldDeserializer;
 import org.jxapi.netutils.deserialization.json.field.StringJsonFieldDeserializer;
+import org.jxapi.netutils.rest.ratelimits.RateLimitRule;
 
 /**
  * Helper static methods for generation of Java classes of a given exchange wrapper
@@ -85,12 +86,56 @@ public class ExchangeJavaGenUtil {
   }
   
   /**
-   * @param rateLimitName The name of the rate limit to generate the static variable name for
+   * @param rateLimitName The name of the rate limit to generate the property name for the interface implementation holder.
    * @return The name of static variable for the given rate limit name.
    */
   public static String generateRateLimitVariableName(String rateLimitName) {
-    return "RATE_LIMIT_" + JavaCodeGenUtil.getStaticVariableName(rateLimitName);
+    return "rateLimit" + JavaCodeGenUtil.firstLetterToUpperCase(rateLimitName);
   }
+  
+  /**
+   * Generates the name of the getter method for the given rate limit name.
+   * @param rateLimitName The name of the rate limit to generate the getter method name for
+   * @return The name of the getter method for the given rate limit name.
+   * @see RateLimitRule#getName()
+   */
+  public static String generateRateLimitGetterMethodName(String rateLimitName) {
+    return "get" + JavaCodeGenUtil.firstLetterToUpperCase(rateLimitName) + "RateLimit";
+  }
+  
+  /**
+   * Generates the getter method declaration for the given rate limit name in the interface class holder.
+   * @param rateLimitName The name of the rate limit to generate the getter method declaration for
+   * @return The getter method declaration for the given rate limit name.
+   */
+  public static String generateRateLimitRuleInterfaceMethodDeclaration(String rateLimitName) {
+    return new StringBuilder()
+            .append(JavaCodeGenUtil.generateJavaDoc("@return '" + rateLimitName + "' rate limit rule."))
+            .append("\npublic ")
+            .append(RateLimitRule.class.getSimpleName())
+            .append(" ")
+            .append(ExchangeJavaGenUtil.generateRateLimitGetterMethodName(rateLimitName))
+            .append("()")
+            .append(";\n")
+            .toString();
+  }
+  
+  /**
+   * Generates the getter method implementation for the given rate limit name.
+   * @param rateLimitName The name of the rate limit to generate the getter method declaration for
+   * @return The getter method declaration for the given rate limit name.
+   */
+  public static String generateRateLimitGetterImplementationMethodDeclaration(String rateLimitName) {
+    return new StringBuilder()
+                .append("@Override\npublic ")
+                .append(RateLimitRule.class.getSimpleName())
+                .append(" ")
+                .append(generateRateLimitGetterMethodName(rateLimitName))
+                .append("() ")
+                .append(JavaCodeGenUtil.generateCodeBlock("return this." + generateRateLimitVariableName(rateLimitName) + ";"))
+                .toString();
+  }
+  
 
   /**
    * @param exchangeDescriptor The exchange to generate the full class name for

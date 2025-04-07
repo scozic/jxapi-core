@@ -2,11 +2,10 @@ package org.jxapi.exchanges.demo.gen.marketdata;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Properties;
 
 import javax.annotation.processing.Generated;
 import org.jxapi.exchange.AbstractExchangeApi;
-import org.jxapi.exchanges.demo.gen.DemoExchangeExchange;
+import org.jxapi.exchange.Exchange;
 import org.jxapi.exchanges.demo.gen.DemoExchangeExchangeImpl;
 import org.jxapi.exchanges.demo.gen.marketdata.deserializers.DemoExchangeMarketDataExchangeInfoResponseDeserializer;
 import org.jxapi.exchanges.demo.gen.marketdata.deserializers.DemoExchangeMarketDataTickerStreamMessageDeserializer;
@@ -102,8 +101,8 @@ public class DemoExchangeMarketDataApiImpl extends AbstractExchangeApi implement
   private final MessageDeserializer<GenericResponse> postRestRequestDataTypeObjectListMapResponseDeserializer = new GenericResponseDeserializer();
   
   // Constructor
-  public DemoExchangeMarketDataApiImpl(String exchangeName, Properties properties) {
-    super(ID, exchangeName, DemoExchangeExchange.ID, properties);
+  public DemoExchangeMarketDataApiImpl(Exchange exchange) {
+    super(ID, exchange);
     createHttpRequestExecutor(null, -1L);
     createHttpRequestInterceptor("org.jxapi.exchanges.demo.net.DemoExchangeHttpRequestInterceptorFactory");
     createWebsocketManager(WEBSOCKET_URL, null, "org.jxapi.exchanges.demo.net.DemoExchangeWebsocketHookFactory");

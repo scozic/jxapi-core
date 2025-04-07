@@ -1,10 +1,14 @@
 package org.jxapi.generator.java.exchange;
 
+import java.util.List;
+
 import org.jxapi.exchange.Exchange;
 import org.jxapi.exchange.descriptor.ExchangeApiDescriptor;
 import org.jxapi.exchange.descriptor.ExchangeDescriptor;
 import org.jxapi.generator.java.JavaCodeGenUtil;
 import org.jxapi.generator.java.JavaTypeGenerator;
+import org.jxapi.netutils.rest.ratelimits.RateLimitRule;
+import org.jxapi.util.CollectionUtil;
 
 /**
  * Generates Source code of Java interface described by a {@link ExchangeInterfaceGenerator}. 
@@ -20,10 +24,10 @@ public class ExchangeInterfaceGenerator extends JavaTypeGenerator {
    */
   public static final String EXCHANGE_ID_VARIABLE = "ID";
   
-     /**
-     * Name of the exchange 'version' field.
-     */
-    public static final String EXCHANGE_VERSION_VARIABLE = "VERSION";
+  /**
+   * Name of the exchange 'version' field.
+   */
+  public static final String EXCHANGE_VERSION_VARIABLE = "VERSION";
   
   private final ExchangeDescriptor exchangeDescriptor;
   
@@ -43,21 +47,35 @@ public class ExchangeInterfaceGenerator extends JavaTypeGenerator {
     setDescription(generateDescription());
     setTypeDeclaration("public interface");
     
+    // Static fields
     appendToBody("\n")
-        .append(JavaCodeGenUtil.generateJavaDoc("ID of the '" + exchangeDescriptor.getId() + "' exchange"))
-        .append("\nString ")
+      .append(JavaCodeGenUtil.generateJavaDoc("ID of the '" + exchangeDescriptor.getId() + "' exchange"))
+      .append("\nString ")
       .append(EXCHANGE_ID_VARIABLE)
       .append(" = ")
       .append(JavaCodeGenUtil.getQuotedString(exchangeDescriptor.getId()))
-      .append(";\n")
+      .append(";\n\n")
       .append(JavaCodeGenUtil.generateJavaDoc("Version of the '" + exchangeDescriptor.getId() + "' exchange"))
-          .append("\nString ")
-          .append(EXCHANGE_VERSION_VARIABLE)
-          .append(" = ")
-          .append(JavaCodeGenUtil.getQuotedString(exchangeDescriptor.getVersion()))
-          .append(";\n");
+      .append("\nString ")
+      .append(EXCHANGE_VERSION_VARIABLE)
+      .append(" = ")
+      .append(JavaCodeGenUtil.getQuotedString(exchangeDescriptor.getVersion()))
+      .append(";\n");
     
-    for (ExchangeApiDescriptor api: exchangeDescriptor.getApis()) {
+    generateApiMethodsDeclarations();
+    
+    generateRateLimitRuleMethodDeclarations();
+    
+    return super.generate();
+  }
+  
+  private void generateApiMethodsDeclarations() {
+    List<ExchangeApiDescriptor> apis = CollectionUtil.emptyIfNull(exchangeDescriptor.getApis());
+    if (apis.isEmpty()) {
+      return;
+    }
+    appendToBody("\n// API groups\n");
+    for (ExchangeApiDescriptor api: apis) {
       String apiClassName = ExchangeJavaGenUtil.getApiInterfaceClassName(exchangeDescriptor, api);
       String apiSimpleClassName = JavaCodeGenUtil.getClassNameWithoutPackage(apiClassName);
       String getApiMethodSignature = apiSimpleClassName + " get" + apiSimpleClassName + "()";
@@ -68,7 +86,6 @@ public class ExchangeInterfaceGenerator extends JavaTypeGenerator {
         .append( getApiMethodSignature)
         .append(";\n");
     }
-    return super.generate();
   }
   
   private String getGetApiMethodJavadoc(ExchangeApiDescriptor api) {
@@ -76,6 +93,28 @@ public class ExchangeInterfaceGenerator extends JavaTypeGenerator {
     s.append("@return " ).append(api.getDescription());
     return JavaCodeGenUtil.generateJavaDoc(s.toString());
   }
+  
+  private void generateRateLimitRuleMethodDeclarations() {
+    List<RateLimitRule> rateLimits = CollectionUtil.emptyIfNull(exchangeDescriptor.getRateLimits());
+    if (rateLimits.isEmpty()) {
+      return;
+    }
+    appendToBody("\n// Rate limits\n");
+    for (RateLimitRule rateLimit : rateLimits) {
+      String rateLimitName = rateLimit.getId();
+      if (!JavaCodeGenUtil.isValidCamelCaseIdentifier(rateLimitName)) {
+        throw new IllegalArgumentException(String.format(
+            "Rate limit name '%s' is not a valid camel case identifier in exchange '%s'", 
+            rateLimitName, 
+            exchangeDescriptor.getId()));
+      }
+      addImport(RateLimitRule.class);
+      appendToBody("\n")
+      .append(ExchangeJavaGenUtil.generateRateLimitRuleInterfaceMethodDeclaration(rateLimitName));
+    }
+  }
+  
+  
   
   private String generateDescription() {
     StringBuilder s = new StringBuilder()

@@ -35,10 +35,13 @@ public class ExchangeInterfaceGeneratorTest {
         + "   * ID of the 'MyTestExchange' exchange\n"
         + "   */\n"
         + "  String ID = \"MyTestExchange\";\n"
+        + "  \n"
         + "  /**\n"
         + "   * Version of the 'MyTestExchange' exchange\n"
         + "   */\n"
         + "  String VERSION = \"1.0.0\";\n"
+        + "  \n"
+        + "  // API groups\n"
         + "  \n"
         + "  /**\n"
         + "   * @return The market data API of MyTestExchange\n"
@@ -46,5 +49,90 @@ public class ExchangeInterfaceGeneratorTest {
         + "  MyTestExchangeMarketDataApi getMyTestExchangeMarketDataApi();\n"
         + "}\n", 
         exchangeGenerator.generate());
+  }
+  
+  @Test
+  public void testGenerateExchangeInterface_NoApiGroups() throws Exception {
+    ExchangeDescriptor exchangeDescriptor = ExchangeDescriptorParser.fromJson(Paths.get(".", "src", "test", "resources", "testExchangeDescriptor.json"));
+    exchangeDescriptor.setApis(null);
+    ExchangeInterfaceGenerator exchangeGenerator = new ExchangeInterfaceGenerator(exchangeDescriptor);
+    Assert.assertEquals("package com.foo.bar.gen;\n"
+        + "\n"
+        + "import javax.annotation.processing.Generated;\n"
+        + "import org.jxapi.exchange.Exchange;\n"
+        + "\n"
+        + "/**\n"
+        + " * MyTestExchange API<br>\n"
+        + " * A sample Exchange descriptor file\n"
+        + " * @see <a href=\"https://docs.myexchange.com/api\">Reference documentation</a>\n"
+        + " */\n"
+        + "@Generated(\"org.jxapi.generator.java.exchange.ExchangeInterfaceGenerator\")\n"
+        + "public interface MyTestExchangeExchange extends Exchange {\n"
+        + "  \n"
+        + "  /**\n"
+        + "   * ID of the 'MyTestExchange' exchange\n"
+        + "   */\n"
+        + "  String ID = \"MyTestExchange\";\n"
+        + "  \n"
+        + "  /**\n"
+        + "   * Version of the 'MyTestExchange' exchange\n"
+        + "   */\n"
+        + "  String VERSION = \"1.0.0\";\n"
+        + "}\n", 
+        exchangeGenerator.generate());
+  }
+  
+  @Test
+  public void testGenerateExchangeInterface_WithExchangeLevelRateLimitRule() throws Exception {
+    ExchangeDescriptor exchangeDescriptor = ExchangeDescriptorParser.fromJson(Paths.get(".", "src", "test", "resources", "exchangeApiInterfaceImplementationGeneratorTestWithRateLimitRulesAtExchangeLevelDescriptor.json"));
+    ExchangeInterfaceGenerator exchangeGenerator = new ExchangeInterfaceGenerator(exchangeDescriptor);
+    Assert.assertEquals("package com.foo.bar.gen;\n"
+        + "\n"
+        + "import com.foo.bar.gen.futurestrading.MyTestExchangeFuturesTradingApi;\n"
+        + "import javax.annotation.processing.Generated;\n"
+        + "import org.jxapi.exchange.Exchange;\n"
+        + "import org.jxapi.netutils.rest.ratelimits.RateLimitRule;\n"
+        + "\n"
+        + "/**\n"
+        + " * MyTestExchange API<br>\n"
+        + " * A sample exchange descriptor file used in ExchangeApiInterfaceImplementationGeneratorTest unit test, to test generation of API interface implementation with rateLimits rules defined at both exchange, API and REST endpoint levels\n"
+        + " * \n"
+        + " */\n"
+        + "@Generated(\"org.jxapi.generator.java.exchange.ExchangeInterfaceGenerator\")\n"
+        + "public interface MyTestExchangeExchange extends Exchange {\n"
+        + "  \n"
+        + "  /**\n"
+        + "   * ID of the 'MyTestExchange' exchange\n"
+        + "   */\n"
+        + "  String ID = \"MyTestExchange\";\n"
+        + "  \n"
+        + "  /**\n"
+        + "   * Version of the 'MyTestExchange' exchange\n"
+        + "   */\n"
+        + "  String VERSION = null;\n"
+        + "  \n"
+        + "  // API groups\n"
+        + "  \n"
+        + "  /**\n"
+        + "   * @return An API with both API global and endpoint specific rate limits\n"
+        + "   */\n"
+        + "  MyTestExchangeFuturesTradingApi getMyTestExchangeFuturesTradingApi();\n"
+        + "  \n"
+        + "  // Rate limits\n"
+        + "  \n"
+        + "  /**\n"
+        + "   * @return 'exchangeGlobalRule' rate limit rule.\n"
+        + "   */\n"
+        + "  public RateLimitRule getExchangeGlobalRuleRateLimit();\n"
+        + "}\n", 
+        exchangeGenerator.generate());
+  }
+  
+  @Test(expected = IllegalArgumentException.class)
+  public void testGenerateExchangeInterface_InvalidRateLimitId_Null() throws Exception {
+    ExchangeDescriptor exchangeDescriptor = ExchangeDescriptorParser.fromJson(Paths.get(".", "src", "test", "resources", "exchangeApiInterfaceImplementationGeneratorTestWithRateLimitRulesAtExchangeLevelDescriptor.json"));
+    exchangeDescriptor.getRateLimits().get(0).setId(null);
+    ExchangeInterfaceGenerator exchangeGenerator = new ExchangeInterfaceGenerator(exchangeDescriptor);
+    exchangeGenerator.generate();
   }
 }

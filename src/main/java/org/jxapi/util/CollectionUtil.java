@@ -28,6 +28,18 @@ public class CollectionUtil {
   }
   
   /**
+   * Returns a non-null list. If the input list is null, an empty non modifiable list is returned.
+   * @param collection Collection to check.
+   * @return A non-null list. If the input list is null, an empty non modifiable list is returned. Otherwise, the input list is returned.
+   */
+  public static <T> List<T> emptyIfNull(List<T> list) {
+    if (list == null) {
+      return List.of();
+    }
+    return list;
+  }
+  
+  /**
    * Creates a new modifiable list with default capacity.
    * 
    * @param <T> The type of the items in the list

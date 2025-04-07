@@ -1,5 +1,7 @@
 package org.jxapi.exchange;
 
+import java.util.Properties;
+
 import org.jxapi.exchange.descriptor.Type;
 import org.jxapi.netutils.rest.FutureRestResponse;
 import org.jxapi.netutils.rest.HttpRequestExecutor;
@@ -59,15 +61,9 @@ public interface ExchangeApi extends Disposable, HasProperties {
   String getName();
 
   /**
-   * @return Exchange instance name see {@link Exchange#getName()}
+   * @return Exchange instance this API group belongs to see {@link Exchange}
    */
-  String getExchangeName();
-
-  /**
-   * @return Unique exchange name (common to all instances) see
-   *         {@link Exchange#getId()}
-   */
-  String getExchangeId();
+  Exchange getExchange();
 
   /**
    * Subscribes an observer to be notified of all REST or Websocket events of this
@@ -144,4 +140,9 @@ public interface ExchangeApi extends Disposable, HasProperties {
    * @return the request timeout for calls to REST endpoints used by {@link HttpRequestExecutor} in ms
    */
   long getHttpRequestTimeout();
+  
+  @Override
+  default Properties getProperties() {
+    return getExchange() == null? null: getExchange().getProperties();
+  }
 }

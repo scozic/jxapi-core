@@ -68,19 +68,9 @@ public abstract class AbstractExchangeApi extends DefaultDisposable implements E
   protected final String name;
   
   /**
-   * The name of the exchange instance associated with this API group.
+   * The the exchange instance associated with this API.
    */
-  protected final String exchangeName;
-  
-  /**
-   * The ID of the exchange instance associated with this API group.
-   */
-  protected final String exchangeId;
-  
-  /**
-   * The properties associated with the exchange instance.
-   */
-  protected final Properties properties;
+  protected final Exchange exchange;
   
   /**
    * The request throttler used for REST request rate limiting.
@@ -117,11 +107,8 @@ public abstract class AbstractExchangeApi extends DefaultDisposable implements E
    * @param exchangeId   The ID of the exchange.
    * @param properties   The properties associated with the exchange instance.
    */
-  protected AbstractExchangeApi(String apiName, 
-                 String exchangeName, 
-                 String exchangeId, 
-                 Properties properties) {
-    this(apiName, exchangeName, exchangeId, properties, null);
+  protected AbstractExchangeApi(String apiName, Exchange exchange) {
+    this(apiName, exchange, null);
   }  
 
   /**
@@ -135,14 +122,10 @@ public abstract class AbstractExchangeApi extends DefaultDisposable implements E
    * @param requestThrottler The request throttler to use for rate limiting.
    */
   protected AbstractExchangeApi(String apiName, 
-                 String exchangeName, 
-                 String exchangeId, 
-                 Properties properties, 
-                 RequestThrottler requestThrottler) {
+                                Exchange exchange, 
+                                RequestThrottler requestThrottler) {
     this.name = apiName;
-    this.exchangeName = exchangeName;
-    this.exchangeId = exchangeId;
-    this.properties = properties;
+    this.exchange = exchange;
     this.requestThrottler = requestThrottler;
     if (requestThrottler != null) {
       applyRequestThrottlerProperties();
@@ -150,6 +133,7 @@ public abstract class AbstractExchangeApi extends DefaultDisposable implements E
   }
   
   private void applyRequestThrottlerProperties() {
+    Properties properties = exchange.getProperties();
     String requestThrottlingModeValue = properties.getProperty(CommonConfigProperties.REQUEST_THROTTLING_MODE_PROPERTY.getName());
     if (requestThrottlingModeValue != null) {
       requestThrottler.setThrottlingMode(RequestThrottlingMode.valueOf(requestThrottlingModeValue));
@@ -165,23 +149,13 @@ public abstract class AbstractExchangeApi extends DefaultDisposable implements E
    * @return The name of the exchange instance.
    */
   @Override
-  public String getExchangeName() {
-    return exchangeName;
+  public Exchange getExchange() {
+    return exchange;
   }
   
   @Override
   public String getName() {
     return name;
-  }
-  
-  @Override
-  public String getExchangeId() {
-    return exchangeId;
-  }
-  
-  @Override
-  public Properties getProperties() {
-    return properties;
   }
   
   /**
@@ -363,9 +337,9 @@ public abstract class AbstractExchangeApi extends DefaultDisposable implements E
    * @param event The exchange API event to dispatch.
    */
   protected void dispatchApiEvent(ExchangeApiEvent event) {
-    event.setExchangeName(exchangeName);
+    event.setExchangeName(exchange.getName());
     event.setExchangeApiName(name);
-    event.setExchangeId(exchangeId);
+    event.setExchangeId(exchange.getId());
     observable.dispatch(event);
   }
   

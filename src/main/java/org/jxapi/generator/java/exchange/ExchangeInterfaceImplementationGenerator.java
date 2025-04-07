@@ -6,8 +6,6 @@ import java.util.List;
 import java.util.Properties;
 import java.util.Set;
 
-import org.springframework.util.CollectionUtils;
-
 import org.jxapi.exchange.AbstractExchange;
 import org.jxapi.exchange.Exchange;
 import org.jxapi.exchange.ExchangeApi;
@@ -17,6 +15,8 @@ import org.jxapi.generator.java.JavaCodeGenUtil;
 import org.jxapi.generator.java.JavaTypeGenerator;
 import org.jxapi.netutils.rest.ratelimits.RateLimitRule;
 import org.jxapi.netutils.rest.ratelimits.RequestThrottler;
+import org.jxapi.util.CollectionUtil;
+import org.springframework.util.CollectionUtils;
 
 /**
  * Generates source code of implementation of an interface  {@link ExchangeDescriptor}
@@ -139,8 +139,7 @@ public class ExchangeInterfaceImplementationGenerator extends JavaTypeGenerator 
             .append(apiVariableName)
             .append(" = addApi(new ")
             .append(simpleApiImplClassName)
-            .append("(getName(), ")
-            .append(PROPERTIES_PARAMETER);
+            .append("(this");
         if (hasRateLimits && !CollectionUtils.isEmpty(api.getRestEndpoints())) {
           implementationConstructorBody.append(", ").append(REQUEST_THROTTLER_VARIABLE_NAME);
         }
@@ -156,19 +155,26 @@ public class ExchangeInterfaceImplementationGenerator extends JavaTypeGenerator 
     
     appendToBody("\n");
     String implementationConstructorSignature = new StringBuilder()
-          .append("public ")
-          .append(simpleImplementationName)
-          .append("(String ")
-          .append(EXCHANGE_NAME_PARAMETER)
-          .append(", Properties ")
-          .append(PROPERTIES_PARAMETER)
-          .append(")").toString();
+            .append("public ")
+            .append(simpleImplementationName)
+            .append("(String ")
+            .append(EXCHANGE_NAME_PARAMETER)
+            .append(", Properties ")
+            .append(PROPERTIES_PARAMETER)
+            .append(")").toString();
           
     appendMethod(implementationConstructorSignature, implementationConstructorBody.toString());
     appendToBody("\n");
     appendToBody(apiMethodsDeclarations.toString());
-    
+    generateRateLimitRuleGetters();
     return super.generate();
+  }
+  
+  private void generateRateLimitRuleGetters() {
+    for (RateLimitRule rateLimitRule : CollectionUtil.emptyIfNull(exchangeDescriptor.getRateLimits())) {
+      appendToBody(ExchangeJavaGenUtil.generateRateLimitGetterImplementationMethodDeclaration(rateLimitRule.getId()))
+          .append("\n");
+    }
   }
   
   private String generateRateLimitVariable(RateLimitRule rateLimitRule) {
@@ -188,7 +194,7 @@ public class ExchangeInterfaceImplementationGenerator extends JavaTypeGenerator 
     } else {
       declaration +=  "RateLimitRule.createRule(\"" + name + "\", " + rateLimitRule.getTimeFrame()+ ", " + rateLimitRule.getMaxRequestCount() + ");";
     }
-    appendToBody("public static final " + declaration + "\n");
+    appendToBody("private final " + declaration + "\n");
     return variableName;
   }
 

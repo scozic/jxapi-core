@@ -3,11 +3,9 @@ package org.jxapi.netutils.websocket.mock;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
-import java.util.Properties;
-
 import org.junit.Test;
-
 import org.jxapi.exchange.AbstractExchangeApi;
+import org.jxapi.exchange.ExchangeStub;
 import org.jxapi.netutils.websocket.WebsocketHook;
 
 /**
@@ -27,7 +25,7 @@ public class MockWebsocketHookFactoryTest {
     private static class MockExchangeApi extends AbstractExchangeApi {
 
         public MockExchangeApi() {
-            super("TestApi", "TestExchange", "TEST_EXCHANGE", new Properties());
+            super("TestApi", ExchangeStub.INSTANCE);
         }
     }
 }

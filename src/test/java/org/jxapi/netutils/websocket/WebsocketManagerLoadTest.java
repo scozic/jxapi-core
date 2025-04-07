@@ -2,7 +2,6 @@ package org.jxapi.netutils.websocket;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Properties;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -11,16 +10,16 @@ import org.apache.commons.lang3.time.DurationFormatUtils;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Test;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import org.jxapi.exchange.AbstractExchangeApi;
 import org.jxapi.exchange.ExchangeApi;
+import org.jxapi.exchange.ExchangeStub;
 import org.jxapi.netutils.websocket.mock.MockWebsocket;
 import org.jxapi.netutils.websocket.mock.MockWebsocketHook;
 import org.jxapi.netutils.websocket.multiplexing.WebsocketMessageTopicMatcherFactory;
 import org.jxapi.util.JsonUtil;
 import org.jxapi.util.PropertiesUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Tests performances of {@link WebsocketManager} implementation.
@@ -41,7 +40,7 @@ public class WebsocketManagerLoadTest {
   
   private static final Logger log = LoggerFactory.getLogger(WebsocketManagerLoadTest.class);
   
-  private static final ExchangeApi EXCHANGE_API = new AbstractExchangeApi("LTApi", "LTExchange", "LTExchangeID", new Properties()) {};
+  private static final ExchangeApi EXCHANGE_API = new AbstractExchangeApi("myApi", ExchangeStub.INSTANCE) {};
   
   /**
    * Number of different message topics

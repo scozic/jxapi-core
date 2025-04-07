@@ -13,7 +13,9 @@ import org.jxapi.generator.java.JavaCodeGenUtil;
 import org.jxapi.generator.java.JavaTypeGenerator;
 import org.jxapi.generator.java.exchange.ExchangeJavaGenUtil;
 import org.jxapi.netutils.rest.FutureRestResponse;
+import org.jxapi.netutils.rest.ratelimits.RateLimitRule;
 import org.jxapi.netutils.websocket.WebsocketListener;
+import org.jxapi.util.CollectionUtil;
 
 /**
  * Generates source code for a Java interface for an
@@ -109,7 +111,17 @@ public class ExchangeApiInterfaceGenerator extends JavaTypeGenerator {
       }
     }
     
+    generateRateLimitRuleMethodDeclarations();
+    
     return super.generate();
+  }
+  
+  private void generateRateLimitRuleMethodDeclarations() {
+    for (RateLimitRule rateLimit : CollectionUtil.emptyIfNull(exchangeApiDescriptor.getRateLimits())) {
+      String rateLimitName = rateLimit.getId();
+      addImport(RateLimitRule.class);
+      appendToBody(ExchangeJavaGenUtil.generateRateLimitRuleInterfaceMethodDeclaration(rateLimitName));
+    }
   }
   
   private void generateApiNameVariableDeclaration(String apiName, String apiNameVariable) {

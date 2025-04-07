@@ -147,7 +147,7 @@ public class AbstractExchangeTest {
     private class TestExchangeApi extends AbstractExchangeApi {
 
     public TestExchangeApi(String apiName) {
-      super(apiName, exchange.getName(), exchange.getId(), exchange.getProperties(), new RequestThrottler("TestApi"));
+      super(apiName, ExchangeStub.INSTANCE, new RequestThrottler("TestApi"));
     }
     
     @Override

@@ -27,7 +27,7 @@ public class DemoExchangeExchangeImpl extends AbstractExchange implements DemoEx
   
   public DemoExchangeExchangeImpl(String exchangeName, Properties properties) {
     super(ID, VERSION, exchangeName, properties);
-    this.demoExchangeMarketDataApi = addApi(new DemoExchangeMarketDataApiImpl(getName(), properties));
+    this.demoExchangeMarketDataApi = addApi(new DemoExchangeMarketDataApiImpl(this));
   }
   
   @Override

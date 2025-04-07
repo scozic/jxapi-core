@@ -98,7 +98,7 @@ public class RestEndpointDescriptor {
   
   private Integer requestWeight;
   
-  private List<RateLimitRule> rateLimits;
+  private List<String> rateLimits;
    
   /**
    * @return the name of the REST API endpoint
@@ -199,16 +199,20 @@ public class RestEndpointDescriptor {
   }
   
   /**
-   * @return the rate limits this REST API subject to
+   * @return The list of IDs of rate limits this REST API subject to. These must
+   *         be defined either in enclosing API group descriptor (see
+   *         {@link ExchangeApiDescriptor#getRateLimits()}) or in enclosing
+   *         exchange descriptor, see {@link ExchangeDescriptor#getRateLimits()}.
    */
-  public List<RateLimitRule> getRateLimits() {
+  public List<String> getRateLimits() {
     return rateLimits;
   }
 
   /**
-   * @param rateLimits the rate limits this REST API subject to
+   * @param rateLimits The list of IDs of rate limits this REST API subject to.
+   * @see {@link #getRateLimits()}
    */
-  public void setRateLimits(List<RateLimitRule> rateLimits) {
+  public void setRateLimits(List<String> rateLimits) {
     this.rateLimits = rateLimits;
   }
   

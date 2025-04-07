@@ -462,4 +462,30 @@ public class JavaCodeGenUtil {
       return canonicalTypeClass.getName();
     }
   }
+  
+  /**
+   * Checks if the given identifier is a valid camel case identifier. A valid
+   * camel case identifier starts with a lowercase letter, and contains only
+   * letters, digits, and underscores.
+   * 
+   * @param identifier the identifier to check
+   * @return <code>true</code> if the identifier is valid, <code>false</code>
+   *         otherwise
+   */
+  public static boolean isValidCamelCaseIdentifier(String identifier) {
+    if (identifier == null || identifier.isEmpty()) {
+      return false;
+    }
+    char start = identifier.charAt(0);
+    if (!Character.isLetter(start) || !Character.isLowerCase(start)) {
+      return false;
+    }
+    for (int i = 1; i < identifier.length(); i++) {
+      char c = identifier.charAt(i);
+      if (!Character.isJavaIdentifierPart(c)) {
+        return false;
+      }
+    }
+    return true;
+  }
 }

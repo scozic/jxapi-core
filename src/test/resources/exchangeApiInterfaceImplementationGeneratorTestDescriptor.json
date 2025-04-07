@@ -2,7 +2,7 @@
 	"id": "MyTestExchange",
 	"description": "A sample exchange descriptor file used in ExchangeApiInterfaceImplementationGeneratorTest unit test",
 	"basePackage": "com.foo.bar.gen",
-	"httpUrl": "https://mycex.com",
+	"httpUrl": "https://myexchange.com",
 	"websocketUrl": "wss://com.foo.exchange",
 	"apis":[
 		{ 
@@ -60,10 +60,9 @@
 		},
 		{ 
 			"name": "Trading",
-			"description": "An API with global rate limits",
+			"description": "An API group with one rule that is not used by any endpoint. The getter method should be still generated, but no RequestThrottler used.",
 			"rateLimits": [
-				{"id": "globalWeightRule", "timeFrame": 2000,  "maxTotalWeight": 500},
-				{"timeFrame": 10000,  "maxRequestCount": 250}
+				{"id": "unusedRule", "timeFrame": 2000,  "maxTotalWeight": 500}
 			],
 			"httpRequestInterceptorFactory": "com.foo.net.TradingInterceptorFactory",
 			"httpRequestExecutorFactory": "com.foo.net.TradingExecutorFactory",
@@ -96,16 +95,20 @@
 		},
 		{ 
 			"name": "FuturesMarketData",
-			"description": "An API with endpoint specific rate limits",
+			"description": "An API with endpoint specific rate limit",
 			"httpRequestInterceptorFactory": "com.foo.bar.FuturesMarketDataInterceptorFactory",
 			"httpUrl": "/futures",
+			"rateLimits": [
+				{"id": "exchangeInfoCountRule", "timeFrame": 1500,  "maxTotalWeight": 300},
+				{"id": "unusedRule", "timeFrame": 10000,  "maxRequestCount": 250}
+			],
 			"restEndpoints": [
 				{
 					"name": "exchangeInfo",
 					"httpMethod": "GET",
 					"description": "Fetch market information of symbols that can be traded",
 					"url": "/exchangeInfo",
-					"rateLimits": [{"id":"exchangeInfoRateLimit", "timeFrame": 3000,  "maxRequestCount": 30}],
+					"rateLimits": ["exchangeInfoCountRule"],
 					"request":{
 						"properties": [
 							{"name":"symbols", "type": "STRING_LIST", "description":"The list of symbol to fetch market information for. Leave empty to fetch all markets", "sampleValue":""}
@@ -126,8 +129,7 @@
 					"name": "exchangeInfo2",
 					"httpMethod": "GET",
 					"description": "Same as exchangeInfo, uses same rate limit rule defined below without timeframe and maxRequest count attributes, because using same id is enough to reference previous.",
-					"url": "https://com.sample.v2.mycex/exchangeInfo2",
-					"rateLimits": [{"id":"exchangeInfoRateLimit"}],
+					"url": "https://com.sample.v2.myexchange/exchangeInfo2",
 					"request": {
 						"properties": [
 							{"name":"symbols", "type": "STRING_LIST", "description":"The list of symbol to fetch market information for. Leave empty to fetch all markets", "sampleValue":""}
@@ -148,10 +150,11 @@
 		},
 		{ 
 			"name": "FuturesTrading",
-			"description": "An API with both API global and endpoint specific rate limits",
+			"description": "An API with API group specific rate limits",
 			"rateLimits": [
-				{"id": "globalWeightRule", "timeFrame": 2000,  "maxTotalWeight": 500},
-				{"timeFrame": 10000,  "maxRequestCount": 250}
+				{"id": "futuresTradeGlobalWeightRule", "timeFrame": 2000,  "maxTotalWeight": 500},
+				{"id": "futuresTradeGlobalCountRule", "timeFrame": 1500,  "maxTotalWeight": 300},
+				{"id": "unusedRule", "timeFrame": 10000,  "maxRequestCount": 250}
 			],
 			"httpRequestInterceptorFactory": "com.foo.net.FuturesTradingInterceptorFactory",
 			"httpRequestTimeout": 3500,
@@ -160,11 +163,11 @@
 					"name": "exchangeInfo",
 					"httpMethod": "GET",
 					"description": "Fetch market information of symbols that can be traded",
-					"url": "https://mycex.com/futuresTrading/exchangeInfo",
+					"url": "https://myexchage.com/futuresTrading/exchangeInfo",
 					"requestWeight": 60,
 					"rateLimits": [
-						{"timeFrame": 3000,  "maxRequestCount": 30},
-						{"id": "customRule", "timeFrame": 1500,  "maxTotalWeight": 300}
+						"futuresTradeGlobalWeightRule",
+						"futuresTradeGlobalCountRule"
 					],
 					"request": {
 						"properties": [
