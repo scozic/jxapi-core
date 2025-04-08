@@ -5,7 +5,7 @@ import java.util.Map;
 
 import javax.annotation.processing.Generated;
 import org.jxapi.exchange.AbstractExchangeApi;
-import org.jxapi.exchange.Exchange;
+import org.jxapi.exchanges.demo.gen.DemoExchangeExchange;
 import org.jxapi.exchanges.demo.gen.DemoExchangeExchangeImpl;
 import org.jxapi.exchanges.demo.gen.marketdata.deserializers.DemoExchangeMarketDataExchangeInfoResponseDeserializer;
 import org.jxapi.exchanges.demo.gen.marketdata.deserializers.DemoExchangeMarketDataTickerStreamMessageDeserializer;
@@ -101,7 +101,7 @@ public class DemoExchangeMarketDataApiImpl extends AbstractExchangeApi implement
   private final MessageDeserializer<GenericResponse> postRestRequestDataTypeObjectListMapResponseDeserializer = new GenericResponseDeserializer();
   
   // Constructor
-  public DemoExchangeMarketDataApiImpl(Exchange exchange) {
+  public DemoExchangeMarketDataApiImpl(DemoExchangeExchange exchange) {
     super(ID, exchange);
     createHttpRequestExecutor(null, -1L);
     createHttpRequestInterceptor("org.jxapi.exchanges.demo.net.DemoExchangeHttpRequestInterceptorFactory");

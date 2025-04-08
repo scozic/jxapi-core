@@ -318,11 +318,14 @@ public class ExchangeApiInterfaceImplementationGenerator extends JavaTypeGenerat
   }
   
   private String generateConstructorSignature() {
-    addImport(Exchange.class);
+    String exchangeClassName = ExchangeJavaGenUtil.getExchangeInterfaceName(exchangeDescriptor);
+    addImport(exchangeClassName);
     StringBuilder constructorSignature = new StringBuilder()
         .append("public ")
         .append(simpleImplementationName)
-        .append("(Exchange ")
+        .append("(")
+        .append(JavaCodeGenUtil.getClassNameWithoutPackage(exchangeClassName))
+        .append(" ")
         .append(EXCHANGE_ARGUMENT_NAME);
     if (hasExchangeLimits && hasRestEnpoints) {
       addImport(RequestThrottler.class);
