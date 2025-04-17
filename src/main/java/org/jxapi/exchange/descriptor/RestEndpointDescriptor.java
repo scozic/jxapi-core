@@ -210,7 +210,7 @@ public class RestEndpointDescriptor {
 
   /**
    * @param rateLimits The list of IDs of rate limits this REST API subject to.
-   * @see {@link #getRateLimits()}
+   * @see #getRateLimits()
    */
   public void setRateLimits(List<String> rateLimits) {
     this.rateLimits = rateLimits;

@@ -4,7 +4,7 @@ import java.util.List;
 
 import javax.annotation.processing.Generated;
 import org.jxapi.exchange.AbstractExchangeApi;
-import org.jxapi.exchange.Exchange;
+import org.jxapi.exchanges.employee.gen.EmployeeExchange;
 import org.jxapi.exchanges.employee.gen.EmployeeExchangeImpl;
 import org.jxapi.exchanges.employee.gen.v1.deserializers.EmployeeDeserializer;
 import org.jxapi.exchanges.employee.gen.v1.deserializers.EmployeeV1EmployeeUpdatesMessageDeserializer;
@@ -87,7 +87,7 @@ public class EmployeeV1ApiImpl extends AbstractExchangeApi implements EmployeeV1
   private final MessageDeserializer<String> deleteEmployeeResponseDeserializer = RawStringMessageDeserializer.getInstance();
   
   // Constructor
-  public EmployeeV1ApiImpl(Exchange exchange) {
+  public EmployeeV1ApiImpl(EmployeeExchange exchange) {
     super(ID, exchange);
     createHttpRequestExecutor(null, -1L);
     createHttpRequestInterceptor("org.jxapi.exchanges.demo.net.DemoExchangeHttpRequestInterceptorFactory");
@@ -99,33 +99,28 @@ public class EmployeeV1ApiImpl extends AbstractExchangeApi implements EmployeeV1
   @Override
   public FutureRestResponse<Employee> getEmployee(Integer request) {
     String urlParameters = EncodingUtil.substituteArguments("/${id}", "id", request);
-    log.debug("GET getEmployee > {}", request);
-    return submit(HttpRequest.create(GET_EMPLOYEE_REST_API, GET_EMPLOYEE_URL + urlParameters, HttpMethod.GET, request, null, 0, null), getEmployeeResponseDeserializer);
+    return submit(HttpRequest.create(GET_EMPLOYEE_REST_API, GET_EMPLOYEE_URL + urlParameters, HttpMethod.GET, request, null, 0), getEmployeeResponseDeserializer);
   }
   
   @Override
   public FutureRestResponse<List<Employee>> getAllEmployees() {
-    log.debug("GET getAllEmployees >");
-    return submit(HttpRequest.create(GET_ALL_EMPLOYEES_REST_API, GET_ALL_EMPLOYEES_URL, HttpMethod.GET, null, null, 0, null), getAllEmployeesResponseDeserializer);
+    return submit(HttpRequest.create(GET_ALL_EMPLOYEES_REST_API, GET_ALL_EMPLOYEES_URL, HttpMethod.GET, null, null, 0), getAllEmployeesResponseDeserializer);
   }
   
   @Override
   public FutureRestResponse<String> addEmployee(Employee request) {
-    log.debug("POST addEmployee > {}", request);
-    return submit(HttpRequest.create(ADD_EMPLOYEE_REST_API, ADD_EMPLOYEE_URL, HttpMethod.POST, request, null, 0, serializeRequestBody(request)), addEmployeeResponseDeserializer);
+    return submit(HttpRequest.create(ADD_EMPLOYEE_REST_API, ADD_EMPLOYEE_URL, HttpMethod.POST, request, null, 0), addEmployeeResponseDeserializer);
   }
   
   @Override
   public FutureRestResponse<String> updateEmployee(Employee request) {
-    log.debug("PUT updateEmployee > {}", request);
-    return submit(HttpRequest.create(UPDATE_EMPLOYEE_REST_API, UPDATE_EMPLOYEE_URL, HttpMethod.PUT, request, null, 0, serializeRequestBody(request)), updateEmployeeResponseDeserializer);
+    return submit(HttpRequest.create(UPDATE_EMPLOYEE_REST_API, UPDATE_EMPLOYEE_URL, HttpMethod.PUT, request, null, 0), updateEmployeeResponseDeserializer);
   }
   
   @Override
   public FutureRestResponse<String> deleteEmployee(Integer request) {
     String urlParameters = EncodingUtil.substituteArguments("/${id}", "id", request);
-    log.debug("DELETE deleteEmployee > {}", request);
-    return submit(HttpRequest.create(DELETE_EMPLOYEE_REST_API, DELETE_EMPLOYEE_URL + urlParameters, HttpMethod.DELETE, request, null, 0, null), deleteEmployeeResponseDeserializer);
+    return submit(HttpRequest.create(DELETE_EMPLOYEE_REST_API, DELETE_EMPLOYEE_URL + urlParameters, HttpMethod.DELETE, request, null, 0), deleteEmployeeResponseDeserializer);
   }
   
   

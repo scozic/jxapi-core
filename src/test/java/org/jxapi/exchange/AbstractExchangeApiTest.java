@@ -382,7 +382,9 @@ public class AbstractExchangeApiTest {
   @Test
   public void testSerializeRequestBody() {
     exchangeApi = new TestExchangeApi("TestApi");
-    Assert.assertEquals("\"ping\"", exchangeApi.serializeRequestBody("ping"));
+    HttpRequest request = createDummyRequest();
+    exchangeApi.serializeRequestBody(request);
+    Assert.assertEquals("\"ping\"", request.getBody());
   }
   
   private HttpRequest createDummyRequest() {

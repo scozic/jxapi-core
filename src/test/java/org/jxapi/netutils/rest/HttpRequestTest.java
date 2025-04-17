@@ -129,4 +129,17 @@ public class HttpRequestTest {
         Assert.assertEquals(10, request.getWeight());
         Assert.assertEquals("myBody", request.getBody());
     }
+    
+    @Test
+    public void testCreateWithNullBody() {
+      List<RateLimitRule> rateLimits = List.of(RateLimitRule.createRule("rule1", 60000, 50));
+        HttpRequest request = HttpRequest.create("endpoint", "http://example.com", HttpMethod.GET, "request", rateLimits, 10);
+        Assert.assertEquals("endpoint", request.getEndpoint());
+        Assert.assertEquals("http://example.com", request.getUrl());
+        Assert.assertEquals(HttpMethod.GET, request.getHttpMethod());
+        Assert.assertEquals("request", request.getRequest());
+        Assert.assertEquals(rateLimits, request.getRateLimits());
+        Assert.assertEquals(10, request.getWeight());
+        Assert.assertNull(request.getBody());
+    }
 }

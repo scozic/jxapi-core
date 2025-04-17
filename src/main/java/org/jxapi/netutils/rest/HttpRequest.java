@@ -13,9 +13,31 @@ import org.jxapi.util.EncodingUtil;
  * Generic HTTP request for a REST API call.
  */
 public class HttpRequest {
+  
+  /**
+   * Creates a new {@link HttpRequest} object with <code>null</code> body.
+   * 
+   * @param endpoint   Name of the endpoint on which the request is made.
+   * @param url        full request URL, including request parameters
+   * @param httpMethod {@link HttpMethod} used for this request.
+   * @param request    Unserialized request object.
+   * @param rateLimits List of {@link RateLimitRule} to apply to this request.
+   * @param weight     Weight of this request if some weight-based rate limiting
+   *                   is applied.              
+   * @return a new {@link HttpRequest} object with the given parameters, and the
+   *         current time.
+   */
+  public static HttpRequest create(String endpoint,
+      String url,
+      HttpMethod httpMethod,
+      Object request,
+      List<RateLimitRule> rateLimits,
+      int weight) {
+    return create(endpoint, url, httpMethod, request, rateLimits, weight, null);
+  }
 
   /**
-   * Creates a new {@link HttpRequest} object.
+   * Creates a new {@link HttpRequest} object with a body.
    * 
    * @param endpoint   Name of the endpoint on which the request is made.
    * @param url        full request URL, including request parameters

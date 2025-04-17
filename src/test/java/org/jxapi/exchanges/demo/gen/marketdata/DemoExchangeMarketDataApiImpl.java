@@ -113,39 +113,33 @@ public class DemoExchangeMarketDataApiImpl extends AbstractExchangeApi implement
   @Override
   public FutureRestResponse<DemoExchangeMarketDataExchangeInfoResponse> exchangeInfo(DemoExchangeMarketDataExchangeInfoRequest request) {
     String urlParameters = EncodingUtil.createUrlQueryParameters("symbols", JsonUtil.pojoToJsonString(request.getSymbols()));
-    log.debug("GET exchangeInfo > {}", request);
-    return submit(HttpRequest.create(EXCHANGE_INFO_REST_API, EXCHANGE_INFO_URL + urlParameters, HttpMethod.GET, request, null, 0, null), exchangeInfoResponseDeserializer);
+    return submit(HttpRequest.create(EXCHANGE_INFO_REST_API, EXCHANGE_INFO_URL + urlParameters, HttpMethod.GET, request, null, 0), exchangeInfoResponseDeserializer);
   }
   
   @Override
   public FutureRestResponse<DemoExchangeMarketDataTickersResponse> tickers() {
-    log.debug("GET tickers >");
-    return submit(HttpRequest.create(TICKERS_REST_API, TICKERS_URL, HttpMethod.GET, null, null, 0, null), tickersResponseDeserializer);
+    return submit(HttpRequest.create(TICKERS_REST_API, TICKERS_URL, HttpMethod.GET, null, null, 0), tickersResponseDeserializer);
   }
   
   @Override
   public FutureRestResponse<GenericResponse> postRestRequestDataTypeInt(Integer request) {
-    log.debug("POST postRestRequestDataTypeInt > {}", request);
-    return submit(HttpRequest.create(POST_REST_REQUEST_DATA_TYPE_INT_REST_API, POST_REST_REQUEST_DATA_TYPE_INT_URL, HttpMethod.POST, request, null, 0, serializeRequestBody(request)), postRestRequestDataTypeIntResponseDeserializer);
+    return submit(HttpRequest.create(POST_REST_REQUEST_DATA_TYPE_INT_REST_API, POST_REST_REQUEST_DATA_TYPE_INT_URL, HttpMethod.POST, request, null, 0), postRestRequestDataTypeIntResponseDeserializer);
   }
   
   @Override
   public FutureRestResponse<GenericResponse> getRestRequestDataTypePrimitiveWithMsgField(Integer request) {
     String urlParameters = EncodingUtil.createUrlQueryParameters("a", request);
-    log.debug("GET getRestRequestDataTypePrimitiveWithMsgField > {}", request);
-    return submit(HttpRequest.create(GET_REST_REQUEST_DATA_TYPE_PRIMITIVE_WITH_MSG_FIELD_REST_API, GET_REST_REQUEST_DATA_TYPE_PRIMITIVE_WITH_MSG_FIELD_URL + urlParameters, HttpMethod.GET, request, null, 0, null), getRestRequestDataTypePrimitiveWithMsgFieldResponseDeserializer);
+    return submit(HttpRequest.create(GET_REST_REQUEST_DATA_TYPE_PRIMITIVE_WITH_MSG_FIELD_REST_API, GET_REST_REQUEST_DATA_TYPE_PRIMITIVE_WITH_MSG_FIELD_URL + urlParameters, HttpMethod.GET, request, null, 0), getRestRequestDataTypePrimitiveWithMsgFieldResponseDeserializer);
   }
   
   @Override
   public FutureRestResponse<GenericResponse> postRestRequestDataTypeIntList(List<Integer> request) {
-    log.debug("POST postRestRequestDataTypeIntList > {}", request);
-    return submit(HttpRequest.create(POST_REST_REQUEST_DATA_TYPE_INT_LIST_REST_API, POST_REST_REQUEST_DATA_TYPE_INT_LIST_URL, HttpMethod.POST, request, null, 0, serializeRequestBody(request)), postRestRequestDataTypeIntListResponseDeserializer);
+    return submit(HttpRequest.create(POST_REST_REQUEST_DATA_TYPE_INT_LIST_REST_API, POST_REST_REQUEST_DATA_TYPE_INT_LIST_URL, HttpMethod.POST, request, null, 0), postRestRequestDataTypeIntListResponseDeserializer);
   }
   
   @Override
   public FutureRestResponse<GenericResponse> postRestRequestDataTypeObjectListMap(Map<String, List<SingleSymbol>> request) {
-    log.debug("POST postRestRequestDataTypeObjectListMap > {}", request);
-    return submit(HttpRequest.create(POST_REST_REQUEST_DATA_TYPE_OBJECT_LIST_MAP_REST_API, POST_REST_REQUEST_DATA_TYPE_OBJECT_LIST_MAP_URL, HttpMethod.POST, request, null, 0, serializeRequestBody(request)), postRestRequestDataTypeObjectListMapResponseDeserializer);
+    return submit(HttpRequest.create(POST_REST_REQUEST_DATA_TYPE_OBJECT_LIST_MAP_REST_API, POST_REST_REQUEST_DATA_TYPE_OBJECT_LIST_MAP_URL, HttpMethod.POST, request, null, 0), postRestRequestDataTypeObjectListMapResponseDeserializer);
   }
   
   

@@ -31,6 +31,8 @@ import org.jxapi.util.DefaultDisposable;
 import org.jxapi.util.FactoryUtil;
 import org.jxapi.util.JsonUtil;
 import org.jxapi.util.PropertiesUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * The AbstractExchangeApi class is an abstract base class that provides common
@@ -61,6 +63,8 @@ import org.jxapi.util.PropertiesUtil;
  * @see Observable
  */
 public abstract class AbstractExchangeApi extends DefaultDisposable implements ExchangeApi {
+  
+  private static final Logger log = LoggerFactory.getLogger(AbstractExchangeApi.class);
 
   /**
    * The name of this exchange API group.
@@ -103,9 +107,7 @@ public abstract class AbstractExchangeApi extends DefaultDisposable implements E
    * exchange name, exchange ID, and properties.
    * 
    * @param apiName      The name of the API.
-   * @param exchangeName The name of the exchange instance.
-   * @param exchangeId   The ID of the exchange.
-   * @param properties   The properties associated with the exchange instance.
+   * @param exchange     The exchange instance associated with this API.
    */
   protected AbstractExchangeApi(String apiName, Exchange exchange) {
     this(apiName, exchange, null);
@@ -116,9 +118,7 @@ public abstract class AbstractExchangeApi extends DefaultDisposable implements E
    * exchange name, exchange ID, properties, and request throttler.
    * 
    * @param apiName          The name of the API.
-   * @param exchangeName     The name of the exchange instance.
-   * @param exchangeId       The ID of the exchange.
-   * @param properties       The properties associated with the exchange instance.
+   * @param exchange         The exchange instance associated with this API.
    * @param requestThrottler The request throttler to use for rate limiting.
    */
   protected AbstractExchangeApi(String apiName, 
@@ -237,14 +237,17 @@ public abstract class AbstractExchangeApi extends DefaultDisposable implements E
    * @return The response to the request, as a {@link FutureRestResponse}
    */
   protected <A> FutureRestResponse<A> submit(HttpRequest request, MessageDeserializer<A> deserializer) {
+    log.debug("{} {} > {}", request.getHttpMethod(), request.getEndpoint(), request);
+    dispatchApiEvent(ExchangeApiEvent.createHttpRequestEvent(request));
     if (request.getHttpMethod().requestHasBody && request.getRequest() != null) {
-      request.setBody(JsonUtil.pojoToJsonString(request.getRequest()));
+      serializeRequestBody(request);
     }
     if (requestThrottler != null) {
       return requestThrottler.submit(request, r -> { 
         try {
           return submitNow(r, deserializer);
         } catch (Exception ex) {
+          log.error("Error submitting request " + request, ex);
           FutureRestResponse<A> callback = new FutureRestResponse<>();
           RestResponse<A> response = new RestResponse<>();
           response.setException(ex);
@@ -264,7 +267,7 @@ public abstract class AbstractExchangeApi extends DefaultDisposable implements E
     if (httpRequestInterceptor != null) {
       httpRequestInterceptor.intercept(request);
     }
-    dispatchApiEvent(ExchangeApiEvent.createHttpRequestEvent(request));
+    
     FutureRestResponse<A> callback = new FutureRestResponse<>();
     httpRequestExecutor.execute(request).thenAccept(httpResponse -> {
       RestResponse<A> response = new RestResponse<>(httpResponse);
@@ -276,8 +279,13 @@ public abstract class AbstractExchangeApi extends DefaultDisposable implements E
           response.setException(ex);
         }
       }
+      log.debug("{} {} < {}", request.getHttpMethod(), request.getEndpoint(), response);
       dispatchApiEvent(ExchangeApiEvent.createRestResponseEvent(response));
-      callback.complete(response);
+      try {
+        callback.complete(response);
+      } catch (Exception ex) {
+        log.error("Error completing request " + request, ex);
+      }
     });
     return callback;
   }
@@ -344,14 +352,21 @@ public abstract class AbstractExchangeApi extends DefaultDisposable implements E
   }
   
   /**
-   * When submitting a REST request call, outgoing HTT request may carry a body, this is usually the case for {@link HttpMethod#POST} method, see {@link HttpMethod#requestHasBody}.
-   * This method will serialize POJO or plain value type to body, by default as JSON 
-   * @param request Request data to serialize as HTTP request body
-   * @return The serialized request data to use as HTTP request body.
+   * When submitting a REST request call, outgoing HTTP request may carry a body,
+   * this is usually the case for {@link HttpMethod#POST} method, see
+   * {@link HttpMethod#requestHasBody}.<br>
+   * This method is called when submitting such request and is responsible for
+   * setting the body of incoming request serialized as String. Default
+   * implementation will serialize the nested request POJO (see
+   * {@link HttpRequest#getRequest()}) as JSON.
+   * 
+   * @param request HTTP Request to set the body for.
    * @see JsonUtil#pojoToJsonString(Object)
+   * @see HttpRequest#getRequest()
+   * @see HttpRequest#setBody(String)
    */
-  protected String serializeRequestBody(Object request) {
-    return JsonUtil.pojoToJsonString(request);
+  protected void serializeRequestBody(HttpRequest request) {
+    request.setBody(JsonUtil.pojoToJsonString(request.getRequest()));
   }
   
   @Override

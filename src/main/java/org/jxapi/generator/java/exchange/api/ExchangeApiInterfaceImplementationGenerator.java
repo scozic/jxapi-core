@@ -12,7 +12,6 @@ import java.util.TreeMap;
 import java.util.stream.Collectors;
 
 import org.jxapi.exchange.AbstractExchangeApi;
-import org.jxapi.exchange.Exchange;
 import org.jxapi.exchange.descriptor.CanonicalType;
 import org.jxapi.exchange.descriptor.ExchangeApiDescriptor;
 import org.jxapi.exchange.descriptor.ExchangeDescriptor;
@@ -65,7 +64,7 @@ import org.springframework.util.CollectionUtils;
  * of the API interface. The generated code for rest endpoint call methods will
  * use this throttler to submit the request, passing it all applicable rate
  * limit rules that should be referenced in REST endpoint descriptor, see
- * {@link RestEndpointDescriptor#getRateLimitRules()}. Remark: An
+ * {@link RestEndpointDescriptor#getRateLimits()}. Remark: An
  * IllegalArgumentException will be thrown if one if the rate limit rule IDs
  * defined in REST endpoint does not match one of an existing rate limit rule
  * defined in enclosing API group or exchange.
@@ -165,6 +164,7 @@ import org.springframework.util.CollectionUtils;
  */
 public class ExchangeApiInterfaceImplementationGenerator extends JavaTypeGenerator {
   
+  private static final String THIS = "this.";
   private static final String EXCHANGE_ARGUMENT_NAME = "exchange";
   private static final String REQUEST_THROTTLER_VARIABLE_NAME = "requestThrottler";
   private static final String PRIVATE_FINAL = "private final ";
@@ -262,8 +262,6 @@ public class ExchangeApiInterfaceImplementationGenerator extends JavaTypeGenerat
         generateWebsocketApiMethodsDeclarations(websocketApi);
       }
     }
-    
-    
     appendVariablesToBody(restEndpointUrlDeclarations, "REST endpoint URLs");
     appendVariablesToBody(rateLimitVariablesDeclarations, "REST endpoints rate limits");
     appendVariablesToBody(websocketEndpointDeclarations, "Websocket endpoints");
@@ -403,7 +401,7 @@ public class ExchangeApiInterfaceImplementationGenerator extends JavaTypeGenerat
         Field message = ExchangeApiGenUtil.resolveFieldProperties(exchangeApiDescriptor, wsApi.getMessage());
         Type messageDataType = ExchangeJavaGenUtil.getFieldType(message);
         String getResponseDeserializerInstance = ExchangeApiGenUtil.getNewMessageDeserializerInstruction(messageDataType, messageClassObjectName, getImports());
-        constructorBody.append("this.")
+        constructorBody.append(THIS)
           .append(websocketEndpointVariableName)
           .append(" = ")
           .append("createWebsocketEndpoint(")
@@ -690,14 +688,7 @@ public class ExchangeApiInterfaceImplementationGenerator extends JavaTypeGenerat
       urlParametersSerializerDeclaration = "String " + urlParametersSerializerVariableName + " = " + urlParametersSerializerDeclaration;
     }
     StringBuilder apiMethodBody = new StringBuilder()
-        .append(Optional.ofNullable(urlParametersSerializerDeclaration).orElse(""))
-        .append(LOG_DEBUG)
-        .append(restApi.getHttpMethod().name())
-        .append(" ")
-        .append(restApi.getName())
-        .append(" >")
-        .append(hasArguments? " {}\", " + requestArgName : "\"")
-        .append(");\n");
+        .append(Optional.ofNullable(urlParametersSerializerDeclaration).orElse(""));
     
     List<String> rateLimitVariables = getRateLimitsVariables(restApi);
     
@@ -734,8 +725,6 @@ public class ExchangeApiInterfaceImplementationGenerator extends JavaTypeGenerat
         .append(rateLimitsVariable)
         .append(", ")
         .append(requestWeight)
-        .append(", ")
-        .append(getSerializeRequestBodyInstruction(restApi))
         .append(")");
         
     StringBuilder sumbitRequestInstruction = new StringBuilder();
@@ -748,20 +737,6 @@ public class ExchangeApiInterfaceImplementationGenerator extends JavaTypeGenerat
     apiMethodBody.append(sumbitRequestInstruction.toString());
     
     addRestMethod(OVERRIDE_PUBLIC + apiMethodSignature, apiMethodBody.toString());
-  }
-  
-  private String getSerializeRequestBodyInstruction(RestEndpointDescriptor restApi) {
-    boolean hasArguments = ExchangeApiGenUtil.restEndpointHasArguments(restApi, exchangeApiDescriptor);
-    String requestArgName = ExchangeApiGenUtil.DEFAULT_REQUEST_ARG_NAME;
-    StringBuilder s = new StringBuilder();
-    if (restApi.getHttpMethod().requestHasBody && hasArguments) {
-       s.append("serializeRequestBody(")
-        .append(requestArgName)
-        .append(")");
-    } else {
-      s.append(JavaCodeGenUtil.NULL);
-    }
-    return s.toString();
   }
   
   private List<String> getRateLimitsVariables(RestEndpointDescriptor restApi) {
@@ -840,7 +815,7 @@ public class ExchangeApiInterfaceImplementationGenerator extends JavaTypeGenerat
       .append(";");
     rateLimitVariablesDeclarations.add(declaration.toString());
     StringBuilder instantiationDeclaration = new StringBuilder()
-        .append("this.")
+        .append(THIS)
         .append(variableName)
         .append(" = ");
     if (rateLimitRule.getMaxTotalWeight() >= 0) {
@@ -898,7 +873,7 @@ public class ExchangeApiInterfaceImplementationGenerator extends JavaTypeGenerat
     rateLimitVariablesDeclarations.add(declaration.toString());
     
     StringBuilder instantationDeclaration = new StringBuilder()
-        .append("this.")
+        .append(THIS)
         .append(variableName)
         .append(" = List.of(");
     for (int i = 0; i < rateLimitRuleVariableNames.size(); i++) {

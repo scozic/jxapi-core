@@ -29,7 +29,8 @@ public class CollectionUtil {
   
   /**
    * Returns a non-null list. If the input list is null, an empty non modifiable list is returned.
-   * @param collection Collection to check.
+   * @param list list to check.
+   * @param <T> The type of the items in the list
    * @return A non-null list. If the input list is null, an empty non modifiable list is returned. Otherwise, the input list is returned.
    */
   public static <T> List<T> emptyIfNull(List<T> list) {

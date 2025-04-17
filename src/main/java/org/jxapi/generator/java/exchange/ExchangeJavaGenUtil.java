@@ -97,7 +97,7 @@ public class ExchangeJavaGenUtil {
    * Generates the name of the getter method for the given rate limit name.
    * @param rateLimitName The name of the rate limit to generate the getter method name for
    * @return The name of the getter method for the given rate limit name.
-   * @see RateLimitRule#getName()
+   * @see RateLimitRule#getId()
    */
   public static String generateRateLimitGetterMethodName(String rateLimitName) {
     return "get" + JavaCodeGenUtil.firstLetterToUpperCase(rateLimitName) + "RateLimit";
