@@ -13,7 +13,7 @@
 			"rateLimits":[],
 			"restEndpoints": [
 				{
-					"name": "exchangeInfo",
+					"name": "ExchangeInfo",
 					"httpMethod": "GET",
 					"description": "Fetch market information of symbols that can be traded",
 					"url": "https://com.sample.mycex/exchangeInfo",

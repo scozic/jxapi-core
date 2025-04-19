@@ -164,11 +164,11 @@ import org.springframework.util.CollectionUtils;
  */
 public class ExchangeApiInterfaceImplementationGenerator extends JavaTypeGenerator {
   
+  private static final String RETURN = "return ";
   private static final String THIS = "this.";
   private static final String EXCHANGE_ARGUMENT_NAME = "exchange";
   private static final String REQUEST_THROTTLER_VARIABLE_NAME = "requestThrottler";
   private static final String PRIVATE_FINAL = "private final ";
-  private static final String LOG_DEBUG = "log.debug(\"";
   private static final String OVERRIDE_PUBLIC = "@Override\npublic ";
   
   private final ExchangeDescriptor exchangeDescriptor;
@@ -221,8 +221,6 @@ public class ExchangeApiInterfaceImplementationGenerator extends JavaTypeGenerat
 
   @Override
   public String generate() {
-    appendToBody("\n");
-    JavaCodeGenUtil.generateSlf4jLoggerDeclaration(this);
     restEndpointUrlDeclarations = new ArrayList<>();
     rateLimitVariablesDeclarations = new ArrayList<>();
     rateLimitVariablesInstantiationDeclarations = new ArrayList<>();
@@ -497,21 +495,14 @@ public class ExchangeApiInterfaceImplementationGenerator extends JavaTypeGenerat
     subscribeMethodBody
       .append(generateWebsocketTopicMatcherDeclaration(websocketApi, request, message, requestArgName, requestClassName))
       .append(");\n")
-      .append("String subId = ")
+      .append(RETURN)
       .append(websocketEndpointVariableName)
-      .append (".subscribe(subscribeRequest, listener);\n")
-      .append(LOG_DEBUG)
-      .append(subscribeMethodName)
-      .append(" > {} returned subscriptionId:{}\", subscribeRequest, subId);\n")
-      .append("return subId;");
+      .append (".subscribe(subscribeRequest, listener);\n");
     addWebsocketMethod(websocketApi.getName(), OVERRIDE_PUBLIC + subscribeMethodSignature, subscribeMethodBody.toString());
     
     
     StringBuilder unsubscribeMethodBody = new StringBuilder()
-        .append(LOG_DEBUG)
-        .append(unsubscribeMethodName)
-        .append(": subscriptionId:{}\", subscriptionId);\n")
-        .append("return ")
+        .append(RETURN)
         .append(websocketEndpointVariableName)
         .append(".unsubscribe(subscriptionId);\n");
     addWebsocketMethod(websocketApi.getName(), OVERRIDE_PUBLIC + unsubscribeMethodSignature, unsubscribeMethodBody.toString());
@@ -692,14 +683,14 @@ public class ExchangeApiInterfaceImplementationGenerator extends JavaTypeGenerat
     
     List<String> rateLimitVariables = getRateLimitsVariables(restApi);
     
-    apiMethodBody.append("return ");
+    apiMethodBody.append(RETURN);
     
     String rateLimitsVariable = "null";
     int requestWeight = Optional.ofNullable(restApi.getRequestWeight()).orElse(0);
     String restEndpointJavadocLink = getRestEndpointJavaDocLink(restApi, hasArguments? requestSimpleClassName: null);
     if (!rateLimitVariables.isEmpty()) {
       addImport(RateLimitRule.class);
-      rateLimitsVariable = restApi.getName() + "RateLimits";
+      rateLimitsVariable = JavaCodeGenUtil.firstLetterToLowerCase(restApi.getName()) + "RateLimits";
       generateRateLimitListVariable(rateLimitsVariable, restApi.getName(), restEndpointJavadocLink, rateLimitVariables);
     }
     

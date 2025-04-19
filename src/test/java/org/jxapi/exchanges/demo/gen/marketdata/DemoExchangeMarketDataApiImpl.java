@@ -28,17 +28,12 @@ import org.jxapi.netutils.websocket.WebsocketSubscribeRequest;
 import org.jxapi.netutils.websocket.multiplexing.WebsocketMessageTopicMatcherFactory;
 import org.jxapi.util.EncodingUtil;
 import org.jxapi.util.JsonUtil;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Actual implementation of {@link DemoExchangeMarketDataApi}<br>
  */
 @Generated("org.jxapi.generator.java.exchange.api.ExchangeApiInterfaceImplementationGenerator")
 public class DemoExchangeMarketDataApiImpl extends AbstractExchangeApi implements DemoExchangeMarketDataApi {
-  
-  private static final Logger log = LoggerFactory.getLogger(DemoExchangeMarketDataApiImpl.class);
-  
   
   
   /**
@@ -148,14 +143,11 @@ public class DemoExchangeMarketDataApiImpl extends AbstractExchangeApi implement
   public String subscribeTickerStream(DemoExchangeMarketDataTickerStreamRequest request, WebsocketListener<DemoExchangeMarketDataTickerStreamMessage> listener) {
     String topic = EncodingUtil.substituteArguments("${symbol}@ticker", "symbol", request.getSymbol());
     WebsocketSubscribeRequest subscribeRequest = WebsocketSubscribeRequest.create(request, topic, WebsocketMessageTopicMatcherFactory.create("t", "ticker", "s", "" + request.getSymbol()));
-    String subId = tickerStreamWs.subscribe(subscribeRequest, listener);
-    log.debug("subscribeTickerStream > {} returned subscriptionId:{}", subscribeRequest, subId);
-    return subId;
+    return tickerStreamWs.subscribe(subscribeRequest, listener);
   }
   
   @Override
   public boolean unsubscribeTickerStream(String subscriptionId) {
-    log.debug("unsubscribeTickerStream: subscriptionId:{}", subscriptionId);
     return tickerStreamWs.unsubscribe(subscriptionId);
   }
   
