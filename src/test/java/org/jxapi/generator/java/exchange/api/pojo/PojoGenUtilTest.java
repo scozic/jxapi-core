@@ -39,7 +39,7 @@ public class PojoGenUtilTest {
         "CollectionUtil.deepCloneList(this.myField, CollectionUtil::cloneList)", 
         CollectionUtil.class.getName());
     doTestGenerateDeepCloneFieldInstruction(Type.fromTypeName("INT_LIST_LIST_LIST"),
-        "CollectionUtil.deepCloneList(this.myField, l0 -> CollectionUtil.deeplCloneList(l0, CollectionUtil::cloneList))", 
+        "CollectionUtil.deepCloneList(this.myField, l0 -> CollectionUtil.deepCloneList(l0, CollectionUtil::cloneList))", 
         CollectionUtil.class.getName());
     doTestGenerateDeepCloneFieldInstruction(Type.fromTypeName("INT_MAP"),
         "CollectionUtil.cloneMap(this.myField)", 
@@ -51,7 +51,7 @@ public class PojoGenUtilTest {
         "CollectionUtil.deepCloneMap(this.myField, m0 -> CollectionUtil.deepCloneMap(m0, CollectionUtil::cloneMap))", 
         CollectionUtil.class.getName());
     doTestGenerateDeepCloneFieldInstruction(Type.fromTypeName("OBJECT_MAP_LIST_MAP_LIST"),
-        "CollectionUtil.deepCloneList(this.myField, m0 -> CollectionUtil.deepCloneMap(m0, l1 -> CollectionUtil.deeplCloneList(l1, m2 -> CollectionUtil.deepCloneMap(m2, DeepCloneable::deepClone))))", 
+        "CollectionUtil.deepCloneList(this.myField, m0 -> CollectionUtil.deepCloneMap(m0, l1 -> CollectionUtil.deepCloneList(l1, m2 -> CollectionUtil.deepCloneMap(m2, DeepCloneable::deepClone))))", 
         CollectionUtil.class.getName(),
         DeepCloneable.class.getName());
         
@@ -76,17 +76,17 @@ public class PojoGenUtilTest {
     doTestGenerateCompareFieldsInstruction(Type.fromTypeName("OBJECT_LIST"),
         "CompareUtil.compareLists(this.myField, other.myField, CompareUtil::compare)");
     doTestGenerateCompareFieldsInstruction(Type.fromTypeName("INT_LIST_LIST"),
-        "CompareUtil.compareLists(this.myField, other.myField, (l0a, l0b) -> CollectionUtil.compareLists(l0a,l0b, CompareUtil::compare))");
+        "CompareUtil.compareLists(this.myField, other.myField, (l0a, l0b) -> CompareUtil.compareLists(l0a,l0b, CompareUtil::compare))");
     doTestGenerateCompareFieldsInstruction(Type.fromTypeName("INT_LIST_LIST_LIST"),
-        "CompareUtil.compareLists(this.myField, other.myField, (l0a, l0b) -> CollectionUtil.compareLists(l0a,l0b, (l1a, l1b) -> CollectionUtil.compareLists(l1a,l1b, CompareUtil::compare)))");
+        "CompareUtil.compareLists(this.myField, other.myField, (l0a, l0b) -> CompareUtil.compareLists(l0a,l0b, (l1a, l1b) -> CompareUtil.compareLists(l1a,l1b, CompareUtil::compare)))");
     doTestGenerateCompareFieldsInstruction(Type.fromTypeName("INT_MAP"),
         "CompareUtil.compareMaps(this.myField, other.myField, CompareUtil::compare)");
     doTestGenerateCompareFieldsInstruction(Type.fromTypeName("INT_MAP_MAP"),
-        "CompareUtil.compareMaps(this.myField, other.myField, (m0a, m0b) -> CollectionUtil.compareMaps(m0a,m0b, CompareUtil::compare))");
+        "CompareUtil.compareMaps(this.myField, other.myField, (m0a, m0b) -> CompareUtil.compareMaps(m0a,m0b, CompareUtil::compare))");
     doTestGenerateCompareFieldsInstruction(Type.fromTypeName("INT_MAP_MAP_MAP"),
-        "CompareUtil.compareMaps(this.myField, other.myField, (m0a, m0b) -> CollectionUtil.compareMaps(m0a,m0b, (m1a, m1b) -> CollectionUtil.compareMaps(m1a,m1b, CompareUtil::compare)))");
+        "CompareUtil.compareMaps(this.myField, other.myField, (m0a, m0b) -> CompareUtil.compareMaps(m0a,m0b, (m1a, m1b) -> CompareUtil.compareMaps(m1a,m1b, CompareUtil::compare)))");
     doTestGenerateCompareFieldsInstruction(Type.fromTypeName("OBJECT_MAP_LIST_MAP_LIST"),
-        "CompareUtil.compareLists(this.myField, other.myField, (m0a, m0b) -> CollectionUtil.compareMaps(m0a,m0b, (l1a, l1b) -> CollectionUtil.compareLists(l1a,l1b, (m2a, m2b) -> CollectionUtil.compareMaps(m2a,m2b, CompareUtil::compare))))");
+        "CompareUtil.compareLists(this.myField, other.myField, (m0a, m0b) -> CompareUtil.compareMaps(m0a,m0b, (l1a, l1b) -> CompareUtil.compareLists(l1a,l1b, (m2a, m2b) -> CompareUtil.compareMaps(m2a,m2b, CompareUtil::compare))))");
   }
   
   private void doTestGenerateCompareFieldsInstruction(Type type, String expectedInstruction) {
