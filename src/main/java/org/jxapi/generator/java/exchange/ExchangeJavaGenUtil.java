@@ -1,9 +1,15 @@
 package org.jxapi.generator.java.exchange;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.apache.commons.lang3.StringUtils;
 import org.jxapi.exchange.descriptor.CanonicalType;
+import org.jxapi.exchange.descriptor.ConfigProperty;
+import org.jxapi.exchange.descriptor.Constant;
 import org.jxapi.exchange.descriptor.ExchangeApiDescriptor;
 import org.jxapi.exchange.descriptor.ExchangeDescriptor;
 import org.jxapi.exchange.descriptor.Field;
@@ -19,10 +25,14 @@ import org.jxapi.netutils.deserialization.json.field.LongJsonFieldDeserializer;
 import org.jxapi.netutils.deserialization.json.field.MapJsonFieldDeserializer;
 import org.jxapi.netutils.deserialization.json.field.StringJsonFieldDeserializer;
 import org.jxapi.netutils.rest.ratelimits.RateLimitRule;
+import org.jxapi.util.CollectionUtil;
+import org.jxapi.util.EncodingUtil;
+import org.jxapi.util.PropertiesUtil;
 
 /**
  * Helper static methods for generation of Java classes of a given exchange wrapper
  */
+// TODO: Rename without 'Java' in the name
 public class ExchangeJavaGenUtil {
   
   private static final String GET_INSTANCE = ".getInstance()";
@@ -54,6 +64,24 @@ public class ExchangeJavaGenUtil {
    * {@link ExchangeApiDescriptor#getWebsocketUrl()}.
    */
   public static final String WEBSOCKET_URL_STATIC_VARIABLE = "WEBSOCKET_URL";
+  
+  /**
+   * Prefix of constant placeholder name. This prefix is used to identify constant
+   * from exchange constants or exchange API constants.
+   * 
+   * @see Constant
+   */
+  public static final String CONSTANT_PLACEHOLDER_PREFIX = "constants.";
+  
+  /**
+   * Prefix of configuration property placeholder name. This prefix is used to identify configuration 
+   * property from exchange
+   * 
+   * @see ConfigProperty
+   */
+  public static final String CONFIG_PLACEHOLDER_PREFIX = "config.";
+  
+  private static final Pattern PLACEHOLDER_PATERN = Pattern.compile("\\$\\{([^}]+)}");
   
   /**
    * @param exchangeDescriptor The exchange the API group belongs to
@@ -381,6 +409,7 @@ public class ExchangeJavaGenUtil {
    *         with value from {@link ExchangeDescriptor#getHttpUrl()}, or
    *         <code>null</code> if that value is <code>null</code>.
    */
+  @Deprecated
   public static String getHttpUrlVariableDeclaration(ExchangeDescriptor exchangeDescriptor) {
     return getStaticUrlVariableDeclaration(ExchangeJavaGenUtil.HTTP_URL_STATIC_VARIABLE, 
                          exchangeDescriptor.getHttpUrl(), "Base REST API URL");
@@ -393,6 +422,7 @@ public class ExchangeJavaGenUtil {
    *         with value from {@link ExchangeDescriptor#getWebsocketUrl()}, or
    *         <code>null</code> if that value is <code>null</code>.
    */
+  @Deprecated
   public static String getWebsocketUrlVariableDeclaration(ExchangeDescriptor exchangeDescriptor) {
     return getStaticUrlVariableDeclaration(ExchangeJavaGenUtil.WEBSOCKET_URL_STATIC_VARIABLE, 
                          exchangeDescriptor.getWebsocketUrl(), "Base websocket endpoint URL");
@@ -465,5 +495,168 @@ public class ExchangeJavaGenUtil {
     }
     return getFieldType(field).isObject();
   }
+  
+  /**
+   * Finds all placeholders in the given string value. For instance with input
+   * string
+   * <code>"Hello ${name} you are using exchange ${exchange.name}"<code>, will return <code>["name", "exchange.name"]</code>
+   * 
+   * @param value The string value to find placeholders in
+   * @return A list of placeholders found in the given string value
+   */
+  public static List<String> findPlaceHolders(String value) {
+    List<String> res = new ArrayList<>();
+    if (StringUtils.isEmpty(value)) {
+      return res;
+    }
+
+    Matcher matcher = PLACEHOLDER_PATERN.matcher(value);
+    while (matcher.find()) {
+      res.add(matcher.group(1));
+    }
+    return res;
+  }
+  
+  /**
+   * Returns the constant placeholder name without the prefix
+   * <code>constants.</code>.
+   * 
+   * @param placeHolder The constant placeholder to get value without the prefix
+   *                    for
+   * @return The constant placeholder name without the prefix
+   *         <code>constants.</code>, or <code>null</code> if the placeholder does
+   *         not start with that prefix.
+   */
+  public static String getConstantPlaceHolder(String placeHolder) {
+    return EncodingUtil.removePrefix(placeHolder, CONSTANT_PLACEHOLDER_PREFIX);
+  }
+  
+  /**
+   * Returns the properties placeholder name without the prefix
+   */
+  public static String getConfigPropertyPlaceHolder(String placeHolder) {
+    return EncodingUtil.removePrefix(placeHolder, CONFIG_PLACEHOLDER_PREFIX);
+  }
+  
+  /**
+   * Returns the full class name of the generated constant interface where the
+   * given constant is defined. This can be either the exchange level or the API
+   * group level. The constant will be searched in the API group constants first,
+   * then in the exchange level constants.
+   * 
+   * @param constantName       The constant to get the class name for as provided
+   *                           by {@link Constant#getName()}
+   * @param exchangeDescriptor The exchange descriptor where to look for
+   *                           'exchange' level constants, cannot be
+   *                           <code>null</code>.
+   * @param apiDescriptor      The exchange API descriptor to get look for API
+   *                           group level constants, can be <code>null</code> in
+   *                           which case only exchange level constants are
+   *                           searched.
+   * @return The full class name of the generated constant interface where the
+   *         constant is defined, or <code>null</code> if the constant is not
+   *         found in the API group or exchange level constants.
+   */
+  public static String getClassNameForConstant(String constantName, 
+                                               ExchangeDescriptor exchangeDescriptor, 
+                                               ExchangeApiDescriptor apiDescriptor) {
+    if (exchangeDescriptor == null) {
+      throw new IllegalArgumentException("Exchange descriptor cannot be null");
+    }
+    if (apiDescriptor != null) {
+      for (Constant constant : CollectionUtil.emptyIfNull(apiDescriptor.getConstants())) {
+        if (constantName.equals(constant.getName())) {
+          return getExchangeApiConstantsInterfaceName(exchangeDescriptor, apiDescriptor);
+        }
+      }
+    }
+    
+    for (Constant constant : CollectionUtil.emptyIfNull(exchangeDescriptor.getConstants())) {
+      if (constantName.equals(constant.getName())) {
+        return getExchangeConstantsInterfaceName(exchangeDescriptor);
+      }
+    }
+    
+    return null;
+  }
+  
+  /**
+   * Returns the full class name of the generated properties interface where the
+   * given configuration property is defined.
+   * 
+   * @param configPropertyName The configuration property name to get the class
+   *                           name for
+   * @param descriptor         The exchange descriptor where the configuration
+   *                           property is defined
+   * @return The full class name of the generated properties interface where the
+   *         configuration property is defined, or <code>null</code> if the
+   *         configuration property is not found.
+   */
+  public static String getClassNameForConfigProperty(String configPropertyName, 
+                                                     ExchangeDescriptor descriptor) {
+    for (ConfigProperty prop : CollectionUtil.emptyIfNull(descriptor.getProperties())) {
+      if (configPropertyName.equals(prop.getName())) {
+        return getExchangePropertiesInterfaceName(descriptor);
+      }
+    }
+    return null;
+  }
+  
+  /**
+   * Returns the value declaration for the given constant name. The value
+   * declaration is the reference to the constant in the generated constants class
+   * (either at exchange or API group level).
+   * 
+   * @param constantName  The name of the constant to get the value declaration
+   *                      for
+   * @param exchangeDescriptor    The exchange descriptor where the constant may be
+   *                      defined
+   * @param apiDescriptor The exchange API descriptor where the constant may be
+   *                      defined
+   * @param imports       The imports of the generator context that will be
+   *                      populated with classes used by returned type. That set
+   *                      must be not <code>null</code> and mutable.
+   * @return The value declaration for the given constant name, or
+   *         <code>null</code> if the constant is not found in the API group or
+   *         exchange level constants.
+   */
+  public static String getValueDeclarationForConstant(String constantName, 
+                                                      ExchangeDescriptor exchangeDescriptor,
+                                                      ExchangeApiDescriptor apiDescriptor,
+                                                      Imports imports) {
+    String className = getClassNameForConstant(constantName, exchangeDescriptor, apiDescriptor);
+    if (className == null) {
+      return null;
+    }
+    imports.add(className);
+    return new StringBuilder()
+                .append(JavaCodeGenUtil.getClassNameWithoutPackage(className))
+                .append(".")
+                .append(JavaCodeGenUtil.getStaticVariableName(constantName))
+                .toString();
+  }
+  
+  public static String getValueDeclarationForConfigProperty(String configPropertyName, 
+                                                          ExchangeDescriptor exchangeDescriptor,
+                                                          String propertiesVariable,
+                                                          Imports imports) {
+    String className = getClassNameForConfigProperty(configPropertyName, exchangeDescriptor);
+    if (className == null) {
+      return null;
+    }
+    imports.add(className);
+    imports.add(PropertiesUtil.class);
+    return new StringBuilder()
+                .append(PropertiesUtil.class.getSimpleName())                
+                .append(".getString(") 
+                .append(propertiesVariable)
+                .append(", ")
+                .append(JavaCodeGenUtil.getClassNameWithoutPackage(className))
+                .append(".")
+                .append(JavaCodeGenUtil.getStaticVariableName(configPropertyName))
+                .append(")")
+                .toString();
+  }
+  
 
 }

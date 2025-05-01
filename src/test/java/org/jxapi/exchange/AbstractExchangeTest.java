@@ -147,7 +147,11 @@ public class AbstractExchangeTest {
     private class TestExchangeApi extends AbstractExchangeApi {
 
     public TestExchangeApi(String apiName) {
-      super(apiName, ExchangeStub.INSTANCE, new RequestThrottler("TestApi"));
+      super(apiName, 
+            ExchangeStub.INSTANCE, 
+            new RequestThrottler("TestApi"), 
+            "http://localhost:8080/api", 
+            "http://localhost:8080/ws");
     }
     
     @Override
@@ -159,7 +163,7 @@ public class AbstractExchangeTest {
     // Helper class for testing AbstractExchange
     private static class TestExchange extends AbstractExchange {
         public TestExchange(String id, String version, String name, Properties properties) {
-            super(id, version, name, properties);
+            super(id, version, name, properties, null, null);
         }
         
         @Override

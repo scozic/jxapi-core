@@ -6,6 +6,8 @@ import java.util.Map;
 
 import org.junit.Assert;
 import org.junit.Test;
+import org.jxapi.exchange.descriptor.Constant;
+import org.jxapi.exchange.descriptor.DefaultConfigProperty;
 import org.jxapi.exchange.descriptor.ExchangeApiDescriptor;
 import org.jxapi.exchange.descriptor.ExchangeDescriptor;
 import org.jxapi.exchange.descriptor.Field;
@@ -405,5 +407,133 @@ public class ExchangeJavaGenUtilTest {
         ExchangeJavaGenUtil.getExchangeInterfaceImplementationName(exchangeDescriptor));
   }
   
+  @Test
+  public void testFindPlaceHolders() {
+    Assert.assertEquals(0, ExchangeJavaGenUtil.findPlaceHolders(null).size());
+    String value = "Hello ${name} you are using exchange ${exchange.name}";
+    List<String> placeHolders = ExchangeJavaGenUtil.findPlaceHolders(value);
+    Assert.assertEquals(2, placeHolders.size());
+    Assert.assertEquals("name", placeHolders.get(0));
+    Assert.assertEquals("exchange.name", placeHolders.get(1));
+  }
   
+  @Test
+  public void testGetConstantPlaceHolder() {
+    Assert.assertNull(ExchangeJavaGenUtil.getConstantPlaceHolder(null));
+    Assert.assertNull(ExchangeJavaGenUtil.getConstantPlaceHolder(""));
+    Assert.assertNull(ExchangeJavaGenUtil.getConstantPlaceHolder("foo"));
+    Assert.assertEquals("foo", ExchangeJavaGenUtil.getConstantPlaceHolder(ExchangeJavaGenUtil.CONSTANT_PLACEHOLDER_PREFIX + "foo"));
+  }
+  
+  @Test
+  public void testGetConfigPropertyPlaceHolder() {
+    Assert.assertNull(ExchangeJavaGenUtil.getConfigPropertyPlaceHolder(null));
+    Assert.assertNull(ExchangeJavaGenUtil.getConfigPropertyPlaceHolder(""));
+    Assert.assertNull(ExchangeJavaGenUtil.getConfigPropertyPlaceHolder("foo"));
+    Assert.assertEquals("foo", ExchangeJavaGenUtil
+        .getConfigPropertyPlaceHolder(ExchangeJavaGenUtil.CONFIG_PLACEHOLDER_PREFIX + "foo"));
+  }
+  
+  @Test
+  public void testGetClassNameForConstant_NullConstants( ) {
+    ExchangeDescriptor exchangeDescriptor = new ExchangeDescriptor();
+    exchangeDescriptor.setId("Test");
+    exchangeDescriptor.setBasePackage("com.x.y.z");
+    ExchangeApiDescriptor apiDescriptor = new ExchangeApiDescriptor();
+    apiDescriptor.setName("Spot");
+    Assert.assertNull(ExchangeJavaGenUtil.getClassNameForConstant("foo", exchangeDescriptor, apiDescriptor));
+  }
+  
+  @Test
+  public void testGetClassNameForConstant_NotFound( ) {
+    ExchangeDescriptor exchangeDescriptor = new ExchangeDescriptor();
+    exchangeDescriptor.setId("Test");
+    exchangeDescriptor.setBasePackage("com.x.y.z");
+    Constant constant = new Constant();
+    constant.setName("bar");
+    exchangeDescriptor.setConstants(List.of(constant));
+    ExchangeApiDescriptor apiDescriptor = new ExchangeApiDescriptor();
+    apiDescriptor.setName("Spot");
+    apiDescriptor.setConstants(List.of(constant));
+    Assert.assertNull(ExchangeJavaGenUtil.getClassNameForConstant("foo", exchangeDescriptor, apiDescriptor));
+  }
+  
+  @Test(expected = IllegalArgumentException.class)
+  public void testGetClassNameForConstant_NotFound_NullExchange( ) {
+    ExchangeJavaGenUtil.getClassNameForConstant("foo", null, null);
+  }
+  
+  @Test
+  public void testGetClassNameForConstant_ConstantFoundInApiGroup( ) {
+    ExchangeDescriptor exchangeDescriptor = new ExchangeDescriptor();
+    exchangeDescriptor.setId("Test");
+    exchangeDescriptor.setBasePackage("com.x.y.z");
+    exchangeDescriptor.setConstants(List.of());
+    ExchangeApiDescriptor apiDescriptor = new ExchangeApiDescriptor();
+    apiDescriptor.setName("Spot");
+    Constant constant = new Constant();
+    constant.setName("foo");
+    apiDescriptor.setConstants(List.of(constant));
+    Assert.assertEquals("com.x.y.z.spot.TestSpotConstants", ExchangeJavaGenUtil.getClassNameForConstant("foo", exchangeDescriptor, apiDescriptor));
+  }
+  
+  @Test
+  public void testGetClassNameForConstant_ConstantFoundInExchange( ) {
+    ExchangeDescriptor exchangeDescriptor = new ExchangeDescriptor();
+    exchangeDescriptor.setId("Test");
+    exchangeDescriptor.setBasePackage("com.x.y.z");
+    Constant constant = new Constant();
+    constant.setName("foo");
+    exchangeDescriptor.setConstants(List.of(constant));
+    ExchangeApiDescriptor apiDescriptor = new ExchangeApiDescriptor();
+    apiDescriptor.setName("Spot");
+    apiDescriptor.setConstants(List.of());
+    Assert.assertEquals("com.x.y.z.TestConstants", ExchangeJavaGenUtil.getClassNameForConstant("foo", exchangeDescriptor, apiDescriptor));
+  }
+  
+  @Test
+  public void testGetClassNameForConstant_ConstantFoundInExchange_NullApiGroup( ) {
+    ExchangeDescriptor exchangeDescriptor = new ExchangeDescriptor();
+    exchangeDescriptor.setId("Test");
+    exchangeDescriptor.setBasePackage("com.x.y.z");
+    Constant constant = new Constant();
+    constant.setName("foo");
+    exchangeDescriptor.setConstants(List.of(constant));
+    Assert.assertEquals("com.x.y.z.TestConstants", ExchangeJavaGenUtil.getClassNameForConstant("foo", exchangeDescriptor, null));
+  }
+  
+  @Test
+  public void testGetClassNameForConstant_ConstantFoundInBothExchangeAndApiGroupThenApiGroupConstantClassNameIsReturned( ) {
+    ExchangeDescriptor exchangeDescriptor = new ExchangeDescriptor();
+    exchangeDescriptor.setId("Test");
+    exchangeDescriptor.setBasePackage("com.x.y.z");
+    Constant constant = new Constant();
+    constant.setName("foo");
+    exchangeDescriptor.setConstants(List.of(constant));
+    ExchangeApiDescriptor apiDescriptor = new ExchangeApiDescriptor();
+    apiDescriptor.setName("Spot");
+    apiDescriptor.setConstants(List.of(constant));
+    Assert.assertEquals("com.x.y.z.spot.TestSpotConstants", ExchangeJavaGenUtil.getClassNameForConstant("foo", exchangeDescriptor, apiDescriptor));
+  }
+  
+  @Test
+  public void testGetClassNameForConfigProperty_NotFound() {
+    ExchangeDescriptor exchangeDescriptor = new ExchangeDescriptor();
+    exchangeDescriptor.setId("Test");
+    exchangeDescriptor.setBasePackage("com.x.y.z");
+    exchangeDescriptor.setProperties(List.of());
+    Assert.assertNull(ExchangeJavaGenUtil.getClassNameForConfigProperty("foo", exchangeDescriptor));
+  }
+  
+  @Test
+  public void testGetClassNameForConfigProperty() {
+    ExchangeDescriptor exchangeDescriptor = new ExchangeDescriptor();
+    exchangeDescriptor.setId("Test");
+    exchangeDescriptor.setBasePackage("com.x.y.z");
+    DefaultConfigProperty configProperty = new DefaultConfigProperty();
+    configProperty.setName("myProp");
+    exchangeDescriptor.setProperties(List.of(configProperty));
+    Assert.assertNull(ExchangeJavaGenUtil.getClassNameForConfigProperty("foo", exchangeDescriptor));
+    Assert.assertEquals("com.x.y.z.TestProperties", ExchangeJavaGenUtil.getClassNameForConfigProperty("myProp", exchangeDescriptor));
+  }
 }

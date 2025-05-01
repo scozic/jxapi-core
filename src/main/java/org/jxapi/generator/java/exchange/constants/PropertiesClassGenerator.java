@@ -171,24 +171,22 @@ public class PropertiesClassGenerator extends JavaTypeGenerator {
       .append(getPropertiesUtilMethodName)
       .append("(properties, ")
       .append(keyVariableName)
-      .append(".getName(), ")
-      .append(keyVariableName)
-      .append(".getDefaultValue());}\n");
+      .append(");}\n");
     appendToBody(sb.toString());
   }
   
   private String getPropertiesUtilGetPropertyMethodName(ConfigProperty property) {
     switch (property.getType().getCanonicalType()) {
     case BIGDECIMAL:
-      return "getBigDecimalProperty";
+      return "getBigDecimal";
     case BOOLEAN:
-      return "getBooleanProperty";
+      return "getBoolean";
     case INT:
-      return "getIntProperty";
+      return "getInt";
     case LONG:
-      return "getLongProperty";
+      return "getLong";
     default:
-      return "getStringProperty";
+      return "getString";
     }
   }
 }

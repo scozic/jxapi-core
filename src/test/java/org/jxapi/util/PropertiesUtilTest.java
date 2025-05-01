@@ -1,9 +1,11 @@
 package org.jxapi.util;
 
+import java.math.BigDecimal;
 import java.util.Properties;
 
 import org.junit.Assert;
 import org.junit.Test;
+import org.jxapi.exchange.descriptor.DefaultConfigProperty;
 
 /**
  * Unit test for {@link PropertiesUtil}
@@ -49,59 +51,94 @@ public class PropertiesUtilTest {
   }
 
   @Test
-  public void testGetStringProperty() {
+  public void testGetString() {
     Properties props = new Properties();
     props.put("key1", "value1");
     props.put("key2", "value2");
     props.put("key3", "value3");
-    Assert.assertEquals("value1", PropertiesUtil.getStringProperty(props, "key1", "default"));
-    Assert.assertEquals("default", PropertiesUtil.getStringProperty(props, "key4", "default"));
+    Assert.assertEquals("value1", PropertiesUtil.getString(props, "key1", "default"));
+    Assert.assertEquals("default", PropertiesUtil.getString(props, "key4", "default"));
+    
+    DefaultConfigProperty prop = new DefaultConfigProperty();
+    prop.setName("key1");
+    Assert.assertEquals("value1", PropertiesUtil.getString(props, prop));
+    Assert.assertNull(PropertiesUtil.getString(new Properties(), prop));
+    prop.setDefaultValue("default");
+    Assert.assertEquals("default", PropertiesUtil.getString(new Properties(), prop));
   }
 
   @Test
-  public void testGetIntProperty() {
+  public void testGetInt() {
     Properties props = new Properties();
     props.put("key1", "1");
     props.put("key2", "2");
     props.put("key3", 3);
-    Assert.assertEquals(Integer.valueOf(1), PropertiesUtil.getIntProperty(props, "key1", 0));
-    Assert.assertEquals(Integer.valueOf(3), PropertiesUtil.getIntProperty(props, "key3", 0));
-    Assert.assertEquals(Integer.valueOf(0), PropertiesUtil.getIntProperty(props, "key4", 0));
+    Assert.assertEquals(Integer.valueOf(1), PropertiesUtil.getInt(props, "key1", 0));
+    Assert.assertEquals(Integer.valueOf(3), PropertiesUtil.getInt(props, "key3", 0));
+    Assert.assertEquals(Integer.valueOf(0), PropertiesUtil.getInt(props, "key4", 0));
+    
+    DefaultConfigProperty prop = new DefaultConfigProperty();
+    prop.setName("key1");
+    Assert.assertEquals(Integer.valueOf(1), PropertiesUtil.getInt(props, prop));
+    Assert.assertNull(PropertiesUtil.getInt(new Properties(), prop));
+    prop.setDefaultValue(0);
+    Assert.assertEquals(Integer.valueOf(0), PropertiesUtil.getInt(new Properties(), prop));
   }
 
   @Test
-  public void testGetLongProperty() {
+  public void testGetLong() {
     Properties props = new Properties();
     props.put("key1", "1");
     props.put("key2", "2");
     props.put("key3", 3);
     props.put("key4", "now()");
-    Assert.assertEquals(Long.valueOf(1), PropertiesUtil.getLongProperty(props, "key1", 0L));
-    Assert.assertEquals(Long.valueOf(3), PropertiesUtil.getLongProperty(props, "key3", 0L));
-    Assert.assertTrue(System.currentTimeMillis() - PropertiesUtil.getLongProperty(props, "key4", 0L) < 1000);
-    Assert.assertEquals(Long.valueOf(0), PropertiesUtil.getLongProperty(props, "key5", 0L));
+    Assert.assertEquals(Long.valueOf(1), PropertiesUtil.getLong(props, "key1", 0L));
+    Assert.assertEquals(Long.valueOf(3), PropertiesUtil.getLong(props, "key3", 0L));
+    Assert.assertTrue(System.currentTimeMillis() - PropertiesUtil.getLong(props, "key4", 0L) < 1000);
+    Assert.assertEquals(Long.valueOf(0), PropertiesUtil.getLong(props, "key5", 0L));
+    
+    DefaultConfigProperty prop = new DefaultConfigProperty();
+    prop.setName("key1");
+    Assert.assertEquals(Long.valueOf(1), PropertiesUtil.getLong(props, prop));
+    Assert.assertNull(PropertiesUtil.getLong(new Properties(), prop));
+    prop.setDefaultValue(0L);
+    Assert.assertEquals(Long.valueOf(0), PropertiesUtil.getLong(new Properties(), prop));
   }
 
   @Test
-  public void testGetBigDecimalProperty() {
+  public void testGetBigDecimal() {
     Properties props = new Properties();
     props.put("key1", "1");
     props.put("key2", "2");
     props.put("key3", 3.5);
-    Assert.assertEquals(new java.math.BigDecimal("1"), PropertiesUtil.getBigDecimalProperty(props, "key1", new java.math.BigDecimal("0")));
-    Assert.assertEquals(new java.math.BigDecimal("3.5"), PropertiesUtil.getBigDecimalProperty(props, "key3", null));
-    Assert.assertEquals(new java.math.BigDecimal("12.5"), PropertiesUtil.getBigDecimalProperty(props, "key4", new java.math.BigDecimal("12.5")));
+    Assert.assertEquals(new BigDecimal("1"), PropertiesUtil.getBigDecimal(props, "key1", new java.math.BigDecimal("0")));
+    Assert.assertEquals(new BigDecimal("3.5"), PropertiesUtil.getBigDecimal(props, "key3", null));
+    Assert.assertEquals(new BigDecimal("12.5"), PropertiesUtil.getBigDecimal(props, "key4", new java.math.BigDecimal("12.5")));
+    
+    DefaultConfigProperty prop = new DefaultConfigProperty();
+    prop.setName("key1");
+    Assert.assertEquals(new BigDecimal("1"), PropertiesUtil.getBigDecimal(props, prop));
+    Assert.assertNull(PropertiesUtil.getBigDecimal(new Properties(), prop));
+    prop.setDefaultValue(new java.math.BigDecimal("0"));
+    Assert.assertEquals(new BigDecimal("0"), PropertiesUtil.getBigDecimal(new Properties(), prop));
   }
 
   @Test
-  public void testGetBooleanProperty() {
+  public void testGetBoolean() {
     Properties props = new Properties();
     props.put("key1", "true");
     props.put("key2", "false");
     props.put("key3", true);
-    Assert.assertEquals(Boolean.valueOf(true), PropertiesUtil.getBooleanProperty(props, "key1", false));
-    Assert.assertEquals(Boolean.valueOf(false), PropertiesUtil.getBooleanProperty(props, "key2", null));
-    Assert.assertEquals(Boolean.valueOf(true), PropertiesUtil.getBooleanProperty(props, "key3", false));
-    Assert.assertEquals(Boolean.valueOf(true), PropertiesUtil.getBooleanProperty(props, "key4", true));
+    Assert.assertEquals(Boolean.valueOf(true), PropertiesUtil.getBoolean(props, "key1", false));
+    Assert.assertEquals(Boolean.valueOf(false), PropertiesUtil.getBoolean(props, "key2", null));
+    Assert.assertEquals(Boolean.valueOf(true), PropertiesUtil.getBoolean(props, "key3", false));
+    Assert.assertEquals(Boolean.valueOf(true), PropertiesUtil.getBoolean(props, "key4", true));
+    
+    DefaultConfigProperty prop = new DefaultConfigProperty();
+    prop.setName("key1");
+    Assert.assertEquals(Boolean.valueOf(true), PropertiesUtil.getBoolean(props, prop));
+    Assert.assertNull(PropertiesUtil.getBoolean(new Properties(), prop));
+    prop.setDefaultValue(false);
+    Assert.assertEquals(Boolean.valueOf(false), PropertiesUtil.getBoolean(new Properties(), prop));
   }
 }

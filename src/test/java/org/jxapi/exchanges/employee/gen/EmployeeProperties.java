@@ -64,14 +64,14 @@ public class EmployeeProperties {
    * @param properties Properties to look for value of 'baseHttpUrl' property into.
    * @return Value found in properties or <code>null</code> if not found.
    */
-  public static String getBaseHttpUrl(Properties properties) {return PropertiesUtil.getStringProperty(properties, BASE_HTTP_URL.getName(), BASE_HTTP_URL.getDefaultValue());}
+  public static String getBaseHttpUrl(Properties properties) {return PropertiesUtil.getString(properties, BASE_HTTP_URL);}
   
   /**
    * Retrieves value of 'baseWebsocketUrl' property.
    * @param properties Properties to look for value of 'baseWebsocketUrl' property into.
    * @return Value found in properties or <code>null</code> if not found.
    */
-  public static String getBaseWebsocketUrl(Properties properties) {return PropertiesUtil.getStringProperty(properties, BASE_WEBSOCKET_URL.getName(), BASE_WEBSOCKET_URL.getDefaultValue());}
+  public static String getBaseWebsocketUrl(Properties properties) {return PropertiesUtil.getString(properties, BASE_WEBSOCKET_URL);}
   
   /**
    * List of all configuration properties defined in this class

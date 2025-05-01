@@ -136,9 +136,38 @@ public class EncodingUtilTest {
     EncodingUtil.prettyPrintLongString("Hello World!", 3);
   }
   
+  @Test
+  public void testRemovePrefix() {
+    Assert.assertNull(EncodingUtil.removePrefix(null, "foo"));
+    Assert.assertNull(EncodingUtil.removePrefix("bar", "foo"));
+    Assert.assertEquals("bar", EncodingUtil.removePrefix("foobar", "foo"));
+  }
+  
+  @Test(expected = IllegalArgumentException.class)
+  public void testRemovePrefix_NullPrefix() {
+    EncodingUtil.removePrefix(null, null);
+  }
+  
+  @Test(expected = IllegalArgumentException.class)
+  public void testBuildUrl_EmptyParts() {
+    EncodingUtil.buildUrl();
+  }
+  
+  @Test(expected = IllegalArgumentException.class)
+  public void testBuildUrl_NotAbsoluteUrl() {
+    EncodingUtil.buildUrl("foo");
+  }
+  
+  @Test
+  public void testBuildUrl() {
+    Assert.assertEquals("http://foo/bar", EncodingUtil.buildUrl("http://foo", "/bar", null));
+    Assert.assertEquals("http://bar", EncodingUtil.buildUrl("http://foo/", null, "http://bar"));
+  }
+  
   private class Foo {
     private String hello;
     private Bar bar;
+    
     @SuppressWarnings("unused")
     public String getHello() {
       return hello;

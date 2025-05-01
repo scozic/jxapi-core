@@ -13,6 +13,7 @@ import org.jxapi.exchange.descriptor.ExchangeApiDescriptor;
 import org.jxapi.exchange.descriptor.ExchangeDescriptor;
 import org.jxapi.generator.java.JavaCodeGenUtil;
 import org.jxapi.generator.java.JavaTypeGenerator;
+import org.jxapi.generator.java.exchange.api.ExchangeApiGenUtil;
 import org.jxapi.netutils.rest.ratelimits.RateLimitRule;
 import org.jxapi.netutils.rest.ratelimits.RequestThrottler;
 import org.jxapi.util.CollectionUtil;
@@ -81,15 +82,15 @@ public class ExchangeInterfaceImplementationGenerator extends JavaTypeGenerator 
     setDescription("Actual implementation of {@link " + simpleInterfaceName + "}<br>");
     appendToBody("\n");
     
-    String httpUrlDeclaration = ExchangeJavaGenUtil.getHttpUrlVariableDeclaration(exchangeDescriptor);
-    if (httpUrlDeclaration != null) {
-      appendToBody(httpUrlDeclaration).append("\n\n");
-    }
-    
-    String websocketUrlDeclaration = ExchangeJavaGenUtil.getWebsocketUrlVariableDeclaration(exchangeDescriptor);
-    if (websocketUrlDeclaration != null) {
-      appendToBody(websocketUrlDeclaration).append("\n\n");
-    }
+//    String httpUrlDeclaration = ExchangeJavaGenUtil.getHttpUrlVariableDeclaration(exchangeDescriptor);
+//    if (httpUrlDeclaration != null) {
+//      appendToBody(httpUrlDeclaration).append("\n\n");
+//    }
+//    
+//    String websocketUrlDeclaration = ExchangeJavaGenUtil.getWebsocketUrlVariableDeclaration(exchangeDescriptor);
+//    if (websocketUrlDeclaration != null) {
+//      appendToBody(websocketUrlDeclaration).append("\n\n");
+//    }
     
     List<RateLimitRule> rateLimits = exchangeDescriptor.getRateLimits();
     List<ExchangeApiDescriptor> apis = exchangeDescriptor.getApis();
@@ -98,15 +99,15 @@ public class ExchangeInterfaceImplementationGenerator extends JavaTypeGenerator 
       rateLimits.forEach(this::generateRateLimitVariable);
       if (apis != null && apis.stream().anyMatch(api -> !CollectionUtils.isEmpty(api.getRestEndpoints()))) {
         addImport(RequestThrottler.class);
-        appendToBody("\nprivate final ");
-        appendToBody(RequestThrottler.class.getSimpleName());
-        appendToBody(" ");
-        appendToBody(REQUEST_THROTTLER_VARIABLE_NAME);
-        appendToBody(" = new ");
-        appendToBody(RequestThrottler.class.getSimpleName());
-        appendToBody("(\"");
-        appendToBody(exchangeDescriptor.getId());
-        appendToBody("\");\n");
+        appendToBody("\nprivate final ")
+          .append(RequestThrottler.class.getSimpleName())
+          .append(" ")
+          .append(REQUEST_THROTTLER_VARIABLE_NAME)
+          .append(" = new ")
+          .append(RequestThrottler.class.getSimpleName())
+          .append("(\"")
+          .append(exchangeDescriptor.getId())
+          .append("\");\n");
       }
     }
     
@@ -120,6 +121,20 @@ public class ExchangeInterfaceImplementationGenerator extends JavaTypeGenerator 
       .append(EXCHANGE_NAME_PARAMETER)
       .append(", ")
       .append(PROPERTIES_PARAMETER)
+      .append(", ")
+      .append(ExchangeApiGenUtil.generateSubstitutionInstructionDeclaration(
+          exchangeDescriptor.getHttpUrl(), 
+          exchangeDescriptor, 
+          null, 
+          PROPERTIES_PARAMETER,
+          getImports()))
+      .append(", ")
+      .append(ExchangeApiGenUtil.generateSubstitutionInstructionDeclaration(
+          exchangeDescriptor.getWebsocketUrl(), 
+          exchangeDescriptor, 
+          null, 
+          PROPERTIES_PARAMETER,
+          getImports()))
       .append(");\n");
     
     StringBuilder apiMethodsDeclarations = new StringBuilder(); 

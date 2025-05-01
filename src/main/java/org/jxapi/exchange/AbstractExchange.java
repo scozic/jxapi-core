@@ -40,17 +40,38 @@ public abstract class AbstractExchange extends DefaultDisposable implements Exch
   protected final Map<String, ExchangeApi> apis = new HashMap<>();
   
   /**
+   * The base HTTP URL of the exchange
+   * @see #getHttpUrl()
+   */
+  protected final String httpUrl;
+  
+  /**
+   * The base WebSocket URL of the exchange
+   * 
+   * @see #getWebSocketUrl()
+   */
+  protected final String wsUrl;
+  
+  /**
    * Constructor
    * @param id the exchange id
    * @param version the exchange version
    * @param name the exchange name
    * @param properties the exchange configuration properties
+   * @param httpUrl the base HTTP URL of the exchange
    */
-  protected AbstractExchange(String id, String version, String name, Properties properties) {
+  protected AbstractExchange(String id, 
+                             String version, 
+                             String name, 
+                             Properties properties, 
+                             String httpUrl, 
+                             String wsUrl) {
     this.id = id;
     this.version = version;
     this.name = name;
     this.properties = properties;
+    this.httpUrl = httpUrl;
+    this.wsUrl = wsUrl;
   }
 
   @Override
@@ -119,8 +140,19 @@ public abstract class AbstractExchange extends DefaultDisposable implements Exch
     apis.values().forEach(api -> api.setHttpRequestTimeout(httpRequestTimeout));
   }
   
-    public String getVersion() {
-      return version;
-    }
-
+  @Override
+  public String getVersion() {
+   return version;
+  }
+  
+  @Override
+  public String getHttpUrl() {
+    return httpUrl;
+  }
+  
+  @Override
+  public String getWsUrl() {
+    return wsUrl;
+  }
+ 
 }

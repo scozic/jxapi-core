@@ -51,19 +51,19 @@ public class WebsocketManagerLoadTest {
    * Number of messages sent for each topic, can be tuned using system property
    * <code>jxapi.wsmanager.loadTest.messagesPerTopicCount</code>
    */
-  public static final int NB_MESSAGES_PER_TOPIC = PropertiesUtil.getIntProperty(System.getProperties(), "jxapi.wsmanager.loadTest.messagesPerTopicCount", 200000);
+  public static final int NB_MESSAGES_PER_TOPIC = PropertiesUtil.getInt(System.getProperties(), "jxapi.wsmanager.loadTest.messagesPerTopicCount", 200000);
   
   /**
    * Number of messages sent for each topic, can be tuned using system property
    * <code>jxapi.wsmanager.loadTest.iterations</code>
    */
-  public static final int ITERATIONS = PropertiesUtil.getIntProperty(System.getProperties(), "jxapi.wsmanager.loadTest.iterations", 50);
+  public static final int ITERATIONS = PropertiesUtil.getInt(System.getProperties(), "jxapi.wsmanager.loadTest.iterations", 50);
   
   /**
    * Number of threads spawned to dispatch messages, can be tuned using system
    * property <code>jxapi.wsmanager.loadTest.threadCount</code>
    */
-  public static final int NB_THREADS = PropertiesUtil.getIntProperty(System.getProperties(), "jxapi.wsmanager.loadTest.threadCount", 8);
+  public static final int NB_THREADS = PropertiesUtil.getInt(System.getProperties(), "jxapi.wsmanager.loadTest.threadCount", 8);
   
   private static final AtomicInteger MESSAGE_COUNTER = new AtomicInteger();
   private static final AtomicInteger RAND_VALUE_COUNTER = new AtomicInteger();

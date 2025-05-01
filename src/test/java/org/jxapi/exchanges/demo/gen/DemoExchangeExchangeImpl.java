@@ -13,20 +13,10 @@ import org.jxapi.exchanges.demo.gen.marketdata.DemoExchangeMarketDataApiImpl;
 @Generated("org.jxapi.generator.java.exchange.ExchangeInterfaceImplementationGenerator")
 public class DemoExchangeExchangeImpl extends AbstractExchange implements DemoExchangeExchange {
   
-  /**
-   * Base REST API URL
-   */
-  public static final String HTTP_URL = "BASEURL";
-  
-  /**
-   * Base websocket endpoint URL
-   */
-  public static final String WEBSOCKET_URL = "BASEURL";
-  
   private final DemoExchangeMarketDataApi demoExchangeMarketDataApi;
   
   public DemoExchangeExchangeImpl(String exchangeName, Properties properties) {
-    super(ID, VERSION, exchangeName, properties);
+    super(ID, VERSION, exchangeName, properties, "BASEURL", "BASEURL");
     this.demoExchangeMarketDataApi = addApi(new DemoExchangeMarketDataApiImpl(this));
   }
   

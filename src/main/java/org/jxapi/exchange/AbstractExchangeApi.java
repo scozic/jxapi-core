@@ -28,6 +28,7 @@ import org.jxapi.netutils.websocket.WebsocketManager;
 import org.jxapi.observability.Observable;
 import org.jxapi.observability.SynchronizedObservable;
 import org.jxapi.util.DefaultDisposable;
+import org.jxapi.util.EncodingUtil;
 import org.jxapi.util.FactoryUtil;
 import org.jxapi.util.JsonUtil;
 import org.jxapi.util.PropertiesUtil;
@@ -82,6 +83,19 @@ public abstract class AbstractExchangeApi extends DefaultDisposable implements E
   protected final RequestThrottler requestThrottler;
   
   /**
+   * The base HTTP URL for all REST endpoints of this API group.
+   * @see #getHttpUrl()
+   */
+  protected final String httpUrl;
+  
+  /**
+   * The base WebSocket URL used for websocket connections.
+   * 
+   * @see #getWebSocketUrl()
+   */
+  protected final String wsUrl;
+  
+  /**
    * The HTTP request executor used to submit REST APIrequests.
    */
   protected HttpRequestExecutor httpRequestExecutor = null;
@@ -104,13 +118,14 @@ public abstract class AbstractExchangeApi extends DefaultDisposable implements E
   
   /**
    * Creates a new AbstractExchangeApi instance with the specified API name,
-   * exchange name, exchange ID, and properties.
+   * exchange name, exchange ID, and properties.<p>
+   * Request throttler, httop URL and websocket URL are set to <code>null</code>.<br>
    * 
    * @param apiName      The name of the API.
    * @param exchange     The exchange instance associated with this API.
    */
   protected AbstractExchangeApi(String apiName, Exchange exchange) {
-    this(apiName, exchange, null);
+    this(apiName, exchange, null, null, null);
   }  
 
   /**
@@ -123,9 +138,13 @@ public abstract class AbstractExchangeApi extends DefaultDisposable implements E
    */
   protected AbstractExchangeApi(String apiName, 
                                 Exchange exchange, 
-                                RequestThrottler requestThrottler) {
+                                RequestThrottler requestThrottler,
+                                String httpUrl,
+                                String wsUrl) {
     this.name = apiName;
     this.exchange = exchange;
+    this.httpUrl = EncodingUtil.buildUrl(exchange.getHttpUrl(), httpUrl);
+    this.wsUrl = EncodingUtil.buildUrl(exchange.getWsUrl(), wsUrl);
     this.requestThrottler = requestThrottler;
     if (requestThrottler != null) {
       applyRequestThrottlerProperties();
@@ -138,7 +157,7 @@ public abstract class AbstractExchangeApi extends DefaultDisposable implements E
     if (requestThrottlingModeValue != null) {
       requestThrottler.setThrottlingMode(RequestThrottlingMode.valueOf(requestThrottlingModeValue));
     }
-    Long maxThrottleDelay = PropertiesUtil.getLongProperty(properties, CommonConfigProperties.MAX_REQUEST_THROTTLE_DELAY_PROPERTY.getName(), null);
+    Long maxThrottleDelay = PropertiesUtil.getLong(properties, CommonConfigProperties.MAX_REQUEST_THROTTLE_DELAY_PROPERTY.getName(), null);
     if (maxThrottleDelay != null) {
       requestThrottler.setMaxThrottleDelay(maxThrottleDelay);
     }
@@ -217,7 +236,7 @@ public abstract class AbstractExchangeApi extends DefaultDisposable implements E
     } else {
       httpRequestExecutor = new JavaNetHttpRequestExecutor(HttpClient.newHttpClient());
     }
-    long requestTimeout = PropertiesUtil.getLongProperty(
+    long requestTimeout = PropertiesUtil.getLong(
         getProperties(), 
         CommonConfigProperties.HTTP_REQUEST_TIMEOUT_PROPERTY.getName(), 
         defaultRequestTimeout);
@@ -426,5 +445,15 @@ public abstract class AbstractExchangeApi extends DefaultDisposable implements E
       return httpRequestExecutor.getRequestTimeout();
     }
     return -1L;
+  }
+  
+  @Override
+  public String getHttpUrl() {
+    return httpUrl;
+  }
+  
+  @Override
+  public String getWsUrl() {
+    return wsUrl;
   }
 }

@@ -7,7 +7,8 @@ import java.util.Map;
 
 import org.junit.Assert;
 import org.junit.Test;
-
+import org.jxapi.exchange.descriptor.Constant;
+import org.jxapi.exchange.descriptor.DefaultConfigProperty;
 import org.jxapi.exchange.descriptor.ExchangeApiDescriptor;
 import org.jxapi.exchange.descriptor.ExchangeDescriptor;
 import org.jxapi.exchange.descriptor.Field;
@@ -15,6 +16,7 @@ import org.jxapi.exchange.descriptor.RestEndpointDescriptor;
 import org.jxapi.exchange.descriptor.Type;
 import org.jxapi.exchange.descriptor.WebsocketEndpointDescriptor;
 import org.jxapi.generator.java.Imports;
+import org.jxapi.generator.java.JavaCodeGenUtil;
 import org.jxapi.netutils.deserialization.RawBigDecimalMessageDeserializer;
 import org.jxapi.netutils.deserialization.RawBooleanMessageDeserializer;
 import org.jxapi.netutils.deserialization.RawIntegerMessageDeserializer;
@@ -1187,5 +1189,59 @@ public class ExchangeApiGenUtilTest {
       RestEndpointDescriptor restEndpointDescriptor = new RestEndpointDescriptor();
       restEndpointDescriptor.setName("MyRestApi");
       Assert.assertEquals("myRestApi", ExchangeApiGenUtil.getRestApiMethodName(restEndpointDescriptor));
+    }
+    
+    @Test
+    public void generateSubstitutionInstructionDeclaration_NoPlaceholder() {
+        Assert.assertEquals("\"foo\"", ExchangeApiGenUtil.generateSubstitutionInstructionDeclaration("foo", null, null, null, null));
+    }
+    
+    @Test
+    public void generateSubstitutionInstructionDeclaration_NullTemplate() {
+      Assert.assertEquals(JavaCodeGenUtil.NULL, ExchangeApiGenUtil.generateSubstitutionInstructionDeclaration(null, null, null, null, null));
+    }
+    
+    @Test(expected = IllegalArgumentException.class)
+    public void generateSubstitutionInstructionDeclaration_UnresolvedPlaceholder() {
+      ExchangeDescriptor exchangeDescriptor = new ExchangeDescriptor();
+      ExchangeApiDescriptor apiDescriptor = new ExchangeApiDescriptor();
+      ExchangeApiGenUtil.generateSubstitutionInstructionDeclaration("Hello ${foo}", exchangeDescriptor, apiDescriptor, null, null);
+    }
+    
+    @Test
+    public void generateSubstitutionInstructionDeclaration() {
+      ExchangeDescriptor exchangeDescriptor = new ExchangeDescriptor();
+      exchangeDescriptor.setProperties(List.of(DefaultConfigProperty.create("stranger", Type.STRING, "Your name", "Bob")));
+      exchangeDescriptor.setId("MyExchange");
+      exchangeDescriptor.setBasePackage("com.x.gen");
+      Constant ownName = new Constant();
+      ownName.setName("ownName");
+      ownName.setType(Type.STRING);
+      ownName.setDescription("Narratory name");
+      ownName.setValue("John Doe");
+      exchangeDescriptor.setConstants(List.of(ownName));
+      
+      ExchangeApiDescriptor apiDescriptor = new ExchangeApiDescriptor();
+      apiDescriptor.setName("MyApi");
+      Constant birthYear = new Constant();
+      birthYear.setName("birthYear");
+      birthYear.setType(Type.INT);
+      birthYear.setDescription("Narratory year of birth");
+      birthYear.setValue(1983);
+      apiDescriptor.setConstants(List.of(birthYear));
+      Imports imports = new Imports();
+      Assert.assertEquals(
+          "EncodingUtil.substituteArguments(\"Hello ${config.stranger}, I am ${constants.ownName}, born in ${constants.birthYear}\", \"config.stranger\", PropertiesUtil.getString(myProps, MyExchangeProperties.STRANGER), \"constants.ownName\", MyExchangeConstants.OWN_NAME, \"constants.birthYear\", MyExchangeMyApiConstants.BIRTH_YEAR)", 
+          ExchangeApiGenUtil.generateSubstitutionInstructionDeclaration(
+              "Hello ${config.stranger}, I am ${constants.ownName}, born in ${constants.birthYear}", 
+              exchangeDescriptor, 
+              apiDescriptor, 
+              "myProps", imports));
+       Assert.assertEquals(4, imports.size());
+       Iterator<String> it = imports.iterator();
+       Assert.assertEquals("com.x.gen.MyExchangeConstants", it.next());
+       Assert.assertEquals("com.x.gen.MyExchangeProperties", it.next());
+       Assert.assertEquals("com.x.gen.myapi.MyExchangeMyApiConstants", it.next());
+       Assert.assertEquals("org.jxapi.util.PropertiesUtil", it.next());
     }
 }

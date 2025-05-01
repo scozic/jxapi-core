@@ -227,4 +227,66 @@ public class EncodingUtil {
   public static boolean isAbsoluteUrl(String url) {
     return URI.create(url).getScheme() != null;
   }
+  
+  /**
+   * Removes a prefix from a string if it starts with that prefix.
+   * 
+   * @param s      the string to modify
+   * @param prefix the prefix to remove
+   * @return the modified string without the prefix, or <code>null</code> if the
+   *         string does not start with the prefix
+   */
+  public static String removePrefix(String s, String prefix) {
+    if (prefix == null) {
+      throw new IllegalArgumentException("prefix cannot be null");
+    }
+    s = Optional.ofNullable(s).orElse("");
+    if (s.startsWith(prefix)) {
+      return s.substring(prefix.length());
+    }
+    return null;
+  }
+  
+  /**
+   * Builds a URL from the given parts. This method contatenates the parts, unless
+   * a part is an absolute URL, in which case it is considered as a base URL, and
+   * the result will be the concatenation of that base URL and the remaining
+   * parts.
+   * <p>
+   * Examples:
+   * <ul>
+   * <li>buildUrl("http://example.com", "path", "to", "resource") returns
+   * "http://example.com/path/to/resource"</li>
+   * <li>buildUrl("http://example.com", "path", "to", "resource",
+   * "http://another.com") returns "http://another.com"</li>
+   * </ul>
+   * Rmark: Consistency of returned URL is not guaranteed, as the method does not
+   * check for duplicate slashes or other URL formatting issues. Returned URL may
+   * not be valid. If both parts are empty or <code>null</code>, an empty string
+   * is returned.
+   * 
+   * @param urlParts the parts of the URL to concatenate
+   * @return the concatenated URL
+   */
+  public static String buildUrl(String... urlParts) {
+    if (urlParts == null || urlParts.length == 0) {
+      return "";
+    }
+    if (urlParts.length == 1) {
+      return Optional.ofNullable(urlParts[0]).orElse("");
+    }
+    StringBuilder sb = new StringBuilder();
+    for (String part: urlParts) {
+      if (part == null) {
+        continue;
+      }
+      if (isAbsoluteUrl(part)) {
+        sb.setLength(0);
+        sb.append(part);
+      } else {
+        sb.append(part);
+      }
+    }
+    return sb.toString();
+  }
 }
