@@ -20,20 +20,33 @@ import org.jxapi.util.CollectionUtil;
 import org.springframework.util.CollectionUtils;
 
 /**
- * Generates source code of implementation of an interface  {@link ExchangeDescriptor}
+ * Generates source code of implementation of an interface
+ * {@link ExchangeDescriptor}
  * <ul>
- * <li>Generates a class that implements the interface {@link ExchangeDescriptor}</li>
- * <li>Generates a constructor that initializes the exchange name and properties, and {@link ExchangeApi} implementation instances</li>
- * <li>Generates a public static final field for each rate limit rule. Exchange API implementation should 
- * use reference to that field when in REST endpoint calls</li>
+ * <li>Generates a class that extends {@link AbstractExchange} and therefore
+ * implements the {@link ExchangeDescriptor} interface</li>
+ * <li>Generates a constructor that initializes the exchange name and
+ * properties, and {@link ExchangeApi} implementation instances</li>
+ * <li>Generates a public static final field for each rate limit rule. Exchange
+ * API implementation should use reference to that field when in REST endpoint
+ * calls</li>
  * <li>Generates a field for each API</li>
- * <li>Generates a getter for each API, implmenting corresponding Exchange interface</li>
- * <li>Generates a request throttler if there are rate limits, and at least one API that has REST endpoints. 
- * When some rate limits are defined in exchange, and exchange API has at least one API, its implementation 
- * constructor is expected to have a RequestThrottler argument</li>
- * <li>Generated class javadoc will display link to corresponding Exchange interface and a warning about generated code</li>
+ * <li>Generates a getter for each API, implmenting corresponding Exchange
+ * interface</li>
+ * <li>Generates a request throttler if there are rate limits, and at least one
+ * API that has REST endpoints. When some rate limits are defined in exchange,
+ * and exchange API has at least one API, its implementation constructor is
+ * expected to have a RequestThrottler argument</li>
+ * <li>Generates a getter for each rate limit rule</li>
+ * <li>The <code>httpUrl</code> and <code>websocket url</code> properties are
+ * set in constructor using corresponding properties in descriptor, with
+ * eventual placeholders resolved against constants and configuration properties
+ * </li>
+ * <li>Generated class javadoc will display link to corresponding Exchange
+ * interface and a warning about generated code</li>
  * <li>Will throw an exception if there are duplicate rate limit rule names</li>
- * <li>Will throw an exception if a rate limit rule has a <code>null</code> id</li>
+ * <li>Will throw an exception if a rate limit rule has a <code>null</code>
+ * id</li>
  * </ul>
  * 
  * @see ExchangeDescriptor
@@ -115,20 +128,20 @@ public class ExchangeInterfaceImplementationGenerator extends JavaTypeGenerator 
     implementationConstructorBody
       .append("super(")
       .append(ExchangeInterfaceGenerator.EXCHANGE_ID_VARIABLE)
-      .append(", ")
-            .append(ExchangeInterfaceGenerator.EXCHANGE_VERSION_VARIABLE)
-      .append(", ")
+      .append(JavaCodeGenUtil.SUPER_ARG_SEPARATOR)
+      .append(ExchangeInterfaceGenerator.EXCHANGE_VERSION_VARIABLE)
+      .append(JavaCodeGenUtil.SUPER_ARG_SEPARATOR)
       .append(EXCHANGE_NAME_PARAMETER)
-      .append(", ")
+      .append(JavaCodeGenUtil.SUPER_ARG_SEPARATOR)
       .append(PROPERTIES_PARAMETER)
-      .append(", ")
+      .append(JavaCodeGenUtil.SUPER_ARG_SEPARATOR)
       .append(ExchangeApiGenUtil.generateSubstitutionInstructionDeclaration(
           exchangeDescriptor.getHttpUrl(), 
           exchangeDescriptor, 
           null, 
           PROPERTIES_PARAMETER,
           getImports()))
-      .append(", ")
+      .append(JavaCodeGenUtil.SUPER_ARG_SEPARATOR)
       .append(ExchangeApiGenUtil.generateSubstitutionInstructionDeclaration(
           exchangeDescriptor.getWebsocketUrl(), 
           exchangeDescriptor, 

@@ -24,6 +24,7 @@ import org.jxapi.exchange.descriptor.WebsocketMessageTopicMatcherFieldDescriptor
 import org.jxapi.generator.java.JavaCodeGenUtil;
 import org.jxapi.generator.java.exchange.ClassesGeneratorTestUtil;
 import org.jxapi.netutils.rest.HttpMethod;
+import org.jxapi.util.CollectionUtil;
 
 /**
  * Unit test for {@link ExchangeDescriptorParser}
@@ -261,15 +262,9 @@ public class ExchangeDescriptorParserTest {
     Assert.assertEquals("baseWebsocketUrl", property.getName());
     Assert.assertEquals("Base URL for websocket endpoints of the Employee Exchange API", property.getDescription());
     
-    List<Constant> constants = exchangeDescriptor.getConstants();
-    Assert.assertEquals(1, constants.size());
-    Constant constant = constants.get(0);
-    Assert.assertEquals("baseUrlPattern", constant.getName());
-    Assert.assertEquals("Value to replace in HTTP or Websocket base URL with value of <i>baseHttpUrl</i> or <i>baseWebsocketUrl</i> properties", 
-              constant.getDescription());
-    Assert.assertEquals("BASEURL", constant.getValue());
+    Assert.assertEquals(0, CollectionUtil.emptyIfNull(exchangeDescriptor.getConstants()).size());
     
-    Assert.assertEquals("BASEURL", exchangeDescriptor.getHttpUrl());
+    Assert.assertEquals("${config.baseHttpUrl}", exchangeDescriptor.getHttpUrl());
     Assert.assertEquals("org.jxapi.exchanges.demo.net.DemoExchangeHttpRequestInterceptorFactory", 
               exchangeDescriptor.getHttpRequestInterceptorFactory());
     Assert.assertEquals(1, exchangeDescriptor.getApis().size());
@@ -288,7 +283,7 @@ public class ExchangeDescriptorParserTest {
     checkEmployeeExchangeV1ApiGroupAddEmployeesRestEndpoint(restEndpoints.get(2));
     checkEmployeeExchangeV1ApiGroupUpdateEmployeesRestEndpoint(restEndpoints.get(3));
     checkEmployeeExchangeV1ApiGroupDeleteEmployeesRestEndpoint(restEndpoints.get(4));
-    Assert.assertEquals("BASEURL", api.getWebsocketUrl());
+    Assert.assertEquals("${config.baseWebsocketUrl}", api.getWebsocketUrl());
     Assert.assertEquals("org.jxapi.exchanges.demo.net.DemoExchangeWebsocketHookFactory", 
               api.getWebsocketHookFactory());
     List<WebsocketEndpointDescriptor> websocketEndpoints = api.getWebsocketEndpoints();

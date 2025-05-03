@@ -69,9 +69,13 @@ import org.springframework.util.CollectionUtils;
  * defined in REST endpoint does not match one of an existing rate limit rule
  * defined in enclosing API group or exchange.
  * <li>A {@link Logger} declaration generated.
- * <li>Base URL for REST endpoints and websocket URL are declared as static
- * variables. If the base URL is not defined in the API descriptor, it is
- * concatenated to URL.
+ * <li>Base URL for REST endpoints and websocket URL are declared as final
+ * members and computed by from API group descriptor baseUrl (see
+ * {@link ExchangeApiDescriptor#getHttpUrl()} and
+ * {@link ExchangeApiDescriptor#getWebsocketUrl()}) properties, replacing
+ * eventual placeholders using API group constants, exchange level constants, or
+ * configuration properties, and concatenating to the exchange base URL (see
+ * {@link EncodingUtil#buildUrl(String...)}.
  * </ul>
  * <p>
  * Regarding REST endpoint call methods generation:
@@ -164,6 +168,7 @@ import org.springframework.util.CollectionUtils;
  */
 public class ExchangeApiInterfaceImplementationGenerator extends JavaTypeGenerator {
   
+  private static final String GET_PROPERTIES = ".getProperties()";
   private static final String RETURN = "return ";
   private static final String THIS = "this.";
   private static final String EXCHANGE_ARGUMENT_NAME = "exchange";
@@ -315,17 +320,20 @@ public class ExchangeApiInterfaceImplementationGenerator extends JavaTypeGenerat
     StringBuilder constructorBody = new StringBuilder();
     constructorBody.append("super(")
        .append(ExchangeApiInterfaceGenerator.EXCHANGE_API_NAME_VARIABLE)
-       .append(", ")
+       .append(JavaCodeGenUtil.SUPER_ARG_SEPARATOR)
        .append(EXCHANGE_ARGUMENT_NAME);
     if ((hasRateLimits || hasExchangeLimits) 
         && (hasRestEnpoints)) {
       addImport(RequestThrottler.class);
       
       if (hasExchangeLimits) {
-        constructorBody.append(", ").append(REQUEST_THROTTLER_VARIABLE_NAME);
+        constructorBody
+          .append(JavaCodeGenUtil.SUPER_ARG_SEPARATOR)
+          .append(REQUEST_THROTTLER_VARIABLE_NAME);
       } else {
         constructorBody
-          .append(", new ")
+          .append(JavaCodeGenUtil.SUPER_ARG_SEPARATOR)
+          .append("new ")
           .append(RequestThrottler.class.getSimpleName())
           .append("(\"")
           .append(exchangeDescriptor.getId())
@@ -334,22 +342,24 @@ public class ExchangeApiInterfaceImplementationGenerator extends JavaTypeGenerat
           .toString();
       }
     } else {
-      constructorBody.append(", null");
+      constructorBody
+          .append(JavaCodeGenUtil.SUPER_ARG_SEPARATOR)
+          .append("null");
     }
     constructorBody
-      .append(", ")
+      .append(JavaCodeGenUtil.SUPER_ARG_SEPARATOR)
       .append(ExchangeApiGenUtil.generateSubstitutionInstructionDeclaration(
         exchangeApiDescriptor.getHttpUrl(), 
         exchangeDescriptor, 
         exchangeApiDescriptor, 
-        EXCHANGE_ARGUMENT_NAME + ".getProperties()",
+        EXCHANGE_ARGUMENT_NAME + GET_PROPERTIES,
         getImports()))
-      .append(", ")
+      .append(JavaCodeGenUtil.SUPER_ARG_SEPARATOR)
       .append(ExchangeApiGenUtil.generateSubstitutionInstructionDeclaration(
         exchangeApiDescriptor.getWebsocketUrl(), 
         exchangeDescriptor, 
         exchangeApiDescriptor, 
-        EXCHANGE_ARGUMENT_NAME + ".getProperties()", 
+        EXCHANGE_ARGUMENT_NAME + GET_PROPERTIES, 
         getImports()));
     constructorBody.append(");\n");
   
@@ -891,7 +901,7 @@ public class ExchangeApiInterfaceImplementationGenerator extends JavaTypeGenerat
             restApi.getUrl(), 
             exchangeDescriptor, 
             exchangeApiDescriptor, 
-            EXCHANGE_ARGUMENT_NAME + ".getProperties()", 
+            EXCHANGE_ARGUMENT_NAME + GET_PROPERTIES, 
             getImports()))
         .append(");\n");
     

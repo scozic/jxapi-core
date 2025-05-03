@@ -5,14 +5,11 @@
     "docUrl": "https://www.example.com/docs/employee",
     "httpRequestInterceptorFactory": "org.jxapi.exchanges.demo.net.DemoExchangeHttpRequestInterceptorFactory",
     "httpRequestTimeout": -1,
-    "httpUrl": "BASEURL",
+    "httpUrl": "${config.baseHttpUrl}",
     "basePackage": "org.jxapi.exchanges.employee.gen",
     "properties": [
         {"name": "baseHttpUrl", "description": "Base URL for REST endpoints the Employee Exchange API"},
         {"name": "baseWebsocketUrl", "description": "Base URL for websocket endpoints of the Employee Exchange API"}
-    ],
-    "constants": [
-        {"name": "baseUrlPattern", "description": "Value to replace in HTTP or Websocket base URL with value of <i>baseHttpUrl</i> or <i>baseWebsocketUrl</i> properties", "value": "BASEURL"}
     ],
     "apis": [
         {
@@ -118,7 +115,7 @@
                 }
             ],
             "websocketHookFactory": "org.jxapi.exchanges.demo.net.DemoExchangeWebsocketHookFactory",
-            "websocketUrl": "BASEURL"
+            "websocketUrl": "${config.baseWebsocketUrl}"
         }
     ]
 }

@@ -401,45 +401,6 @@ public class ExchangeJavaGenUtil {
       return JavaCodeGenUtil.getQuotedString(sampleValueStr);
     }
   }
-  
-  /**
-   * @param exchangeDescriptor Exchange descriptor to retrieve base HTTP url from
-   *                           see {@link ExchangeDescriptor#getHttpUrl()}
-   * @return Generated public static {@link #HTTP_URL_STATIC_VARIABLE} variable
-   *         with value from {@link ExchangeDescriptor#getHttpUrl()}, or
-   *         <code>null</code> if that value is <code>null</code>.
-   */
-  @Deprecated
-  public static String getHttpUrlVariableDeclaration(ExchangeDescriptor exchangeDescriptor) {
-    return getStaticUrlVariableDeclaration(ExchangeJavaGenUtil.HTTP_URL_STATIC_VARIABLE, 
-                         exchangeDescriptor.getHttpUrl(), "Base REST API URL");
-  }
-  
-  /**
-   * @param exchangeDescriptor Exchange descriptor to retrieve base Websocket url from
-   *                           see {@link ExchangeDescriptor#getWebsocketUrl()}
-   * @return Generated public static {@link #WEBSOCKET_URL_STATIC_VARIABLE} variable
-   *         with value from {@link ExchangeDescriptor#getWebsocketUrl()}, or
-   *         <code>null</code> if that value is <code>null</code>.
-   */
-  @Deprecated
-  public static String getWebsocketUrlVariableDeclaration(ExchangeDescriptor exchangeDescriptor) {
-    return getStaticUrlVariableDeclaration(ExchangeJavaGenUtil.WEBSOCKET_URL_STATIC_VARIABLE, 
-                         exchangeDescriptor.getWebsocketUrl(), "Base websocket endpoint URL");
-  }
-  
-  private static String getStaticUrlVariableDeclaration(String variableName, String value, String description) {
-    if (value == null) {
-      return null;
-    }
-    return new StringBuilder()
-        .append(JavaCodeGenUtil.generateJavaDoc(description))
-        .append("\npublic static final String ")
-        .append(variableName)
-        .append(" = ")
-        .append(JavaCodeGenUtil.getQuotedString(value))
-        .append(";").toString();
-  }
 
   /**
    * Generates the name of the interface implementation class for the given exchange descriptor

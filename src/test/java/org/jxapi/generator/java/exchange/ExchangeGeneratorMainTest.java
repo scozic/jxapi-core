@@ -65,8 +65,9 @@ public class ExchangeGeneratorMainTest {
         "marketdata/deserializers",
         "marketdata/serializers",
         "marketdata/pojo",}) {
-      FileComparator.checkSameFiles(projectDemoWrapperPackage.resolve(fileName), 
-                      mainGenPackage.resolve(fileName));
+      FileComparator.checkSameFiles(
+          projectDemoWrapperPackage.resolve(fileName), 
+          mainGenPackage.resolve(fileName));
     }
     
     // Check test package containing demo snippets

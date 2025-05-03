@@ -21,11 +21,6 @@ public class DemoExchangeConstants {
   public static final String PONG_MESSAGE = "Pong!";
   
   /**
-   * Value to replace in HTTP or Websocket base URL with value of <i>baseHttpUrl</i> or <i>baseWebsocketUrl</i> properties
-   */
-  public static final String BASE_URL_PATTERN = "BASEURL";
-  
-  /**
    * Message to send to websocket server after connecting to complete handshake
    */
   public static final String WEBSOCKET_LOGIN_MESSAGE = "Hello!";

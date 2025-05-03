@@ -14,7 +14,7 @@ public class DemoExchangeHttpRequestInterceptorFactory implements HttpRequestInt
 
   @Override
   public HttpRequestInterceptor createInterceptor(ExchangeApi exchangeApi) {
-    return new DemoExchangeHttpRequestInterceptor(exchangeApi.getProperties());
+    return new DemoExchangeHttpRequestInterceptor();
   }
 
 }

@@ -25,6 +25,12 @@ public class JavaCodeGenUtil {
    * String value of <code>null</code>
    */
   public static final String NULL = "null";
+  
+  /**
+   * Arguments separator in super constructor call when such arguments should be
+   * displayed in multiple lines to make code more readable.
+   */
+  public static final String SUPER_ARG_SEPARATOR = ",\n      ";
 
   private JavaCodeGenUtil() {}
   

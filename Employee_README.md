@@ -44,10 +44,6 @@ You may have a look at <a href="./src/test/java/org/jxapi/exchanges/employee/gen
   </tr>
 </table>
 
-### Constants
-
-Some useful constants are defined in <a href="./doc/javadoc/org/jxapi/exchanges/employee/gen/EmployeeConstants.html">EmployeeConstants</a>
-
 ## API Groups
 APIs are available using the following interfaces accessible from <a href="./doc/javadoc/org/jxapi/exchanges/employee/gen/EmployeeExchange.html">EmployeeExchange</a> interface
 

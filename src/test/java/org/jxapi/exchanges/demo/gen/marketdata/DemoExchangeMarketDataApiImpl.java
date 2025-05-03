@@ -85,15 +85,19 @@ public class DemoExchangeMarketDataApiImpl extends AbstractExchangeApi implement
   
   // Constructor
   public DemoExchangeMarketDataApiImpl(DemoExchangeExchange exchange) {
-    super(ID, exchange, null, "/marketData", null);
+    super(ID,
+          exchange,
+          null,
+          "/marketData",
+          null);
     createHttpRequestExecutor(null, -1L);
     createHttpRequestInterceptor("org.jxapi.exchanges.demo.net.DemoExchangeHttpRequestInterceptorFactory");
-    this.exchangeInfoHttpUrl = EncodingUtil.buildUrl(this.getHttpUrl(),"/exchangeInfo");
-    this.tickersHttpUrl = EncodingUtil.buildUrl(this.getHttpUrl(),"/tickers");
-    this.postRestRequestDataTypeIntHttpUrl = EncodingUtil.buildUrl(this.getHttpUrl(),"/postInt");
-    this.getRestRequestDataTypePrimitiveWithMsgFieldHttpUrl = EncodingUtil.buildUrl(this.getHttpUrl(),"/getIntWithMsgField");
-    this.postRestRequestDataTypeIntListHttpUrl = EncodingUtil.buildUrl(this.getHttpUrl(),"/postIntList");
-    this.postRestRequestDataTypeObjectListMapHttpUrl = EncodingUtil.buildUrl(this.getHttpUrl(),"/postObjectListMap");
+    this.exchangeInfoHttpUrl = EncodingUtil.buildUrl(this.getHttpUrl(), "/exchangeInfo");
+    this.tickersHttpUrl = EncodingUtil.buildUrl(this.getHttpUrl(), "/tickers");
+    this.postRestRequestDataTypeIntHttpUrl = EncodingUtil.buildUrl(this.getHttpUrl(), "/postInt");
+    this.getRestRequestDataTypePrimitiveWithMsgFieldHttpUrl = EncodingUtil.buildUrl(this.getHttpUrl(), "/getIntWithMsgField");
+    this.postRestRequestDataTypeIntListHttpUrl = EncodingUtil.buildUrl(this.getHttpUrl(), "/postIntList");
+    this.postRestRequestDataTypeObjectListMapHttpUrl = EncodingUtil.buildUrl(this.getHttpUrl(), "/postObjectListMap");
     createWebsocketManager(this.wsUrl, null, "org.jxapi.exchanges.demo.net.DemoExchangeWebsocketHookFactory");
     this.tickerStreamWs = createWebsocketEndpoint(TICKER_STREAM_WS_API, new DemoExchangeMarketDataTickerStreamMessageDeserializer());
   }

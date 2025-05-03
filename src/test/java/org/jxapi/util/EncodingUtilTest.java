@@ -148,14 +148,14 @@ public class EncodingUtilTest {
     EncodingUtil.removePrefix(null, null);
   }
   
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void testBuildUrl_EmptyParts() {
-    EncodingUtil.buildUrl();
+    Assert.assertEquals("", EncodingUtil.buildUrl());
   }
   
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void testBuildUrl_NotAbsoluteUrl() {
-    EncodingUtil.buildUrl("foo");
+    Assert.assertEquals("foo", EncodingUtil.buildUrl("foo"));
   }
   
   @Test

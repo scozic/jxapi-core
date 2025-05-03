@@ -5,6 +5,7 @@ import java.util.List;
 import javax.annotation.processing.Generated;
 import org.jxapi.exchange.AbstractExchangeApi;
 import org.jxapi.exchanges.employee.gen.EmployeeExchange;
+import org.jxapi.exchanges.employee.gen.EmployeeProperties;
 import org.jxapi.exchanges.employee.gen.v1.deserializers.EmployeeDeserializer;
 import org.jxapi.exchanges.employee.gen.v1.deserializers.EmployeeV1EmployeeUpdatesMessageDeserializer;
 import org.jxapi.exchanges.employee.gen.v1.pojo.Employee;
@@ -20,6 +21,7 @@ import org.jxapi.netutils.websocket.WebsocketListener;
 import org.jxapi.netutils.websocket.WebsocketSubscribeRequest;
 import org.jxapi.netutils.websocket.multiplexing.WebsocketMessageTopicMatcherFactory;
 import org.jxapi.util.EncodingUtil;
+import org.jxapi.util.PropertiesUtil;
 
 /**
  * Actual implementation of {@link EmployeeV1Api}<br>
@@ -71,14 +73,18 @@ public class EmployeeV1ApiImpl extends AbstractExchangeApi implements EmployeeV1
   
   // Constructor
   public EmployeeV1ApiImpl(EmployeeExchange exchange) {
-    super(ID, exchange, null, "v1", "BASEURL");
+    super(ID,
+          exchange,
+          null,
+          "v1",
+          EncodingUtil.substituteArguments("${config.baseWebsocketUrl}", "config.baseWebsocketUrl", PropertiesUtil.getString(exchange.getProperties(), EmployeeProperties.BASE_WEBSOCKET_URL)));
     createHttpRequestExecutor(null, -1L);
     createHttpRequestInterceptor("org.jxapi.exchanges.demo.net.DemoExchangeHttpRequestInterceptorFactory");
-    this.getEmployeeHttpUrl = EncodingUtil.buildUrl(this.getHttpUrl(),"/employee");
-    this.getAllEmployeesHttpUrl = EncodingUtil.buildUrl(this.getHttpUrl(),"/employees");
-    this.addEmployeeHttpUrl = EncodingUtil.buildUrl(this.getHttpUrl(),"/employee");
-    this.updateEmployeeHttpUrl = EncodingUtil.buildUrl(this.getHttpUrl(),"/employee");
-    this.deleteEmployeeHttpUrl = EncodingUtil.buildUrl(this.getHttpUrl(),"/employee");
+    this.getEmployeeHttpUrl = EncodingUtil.buildUrl(this.getHttpUrl(), "/employee");
+    this.getAllEmployeesHttpUrl = EncodingUtil.buildUrl(this.getHttpUrl(), "/employees");
+    this.addEmployeeHttpUrl = EncodingUtil.buildUrl(this.getHttpUrl(), "/employee");
+    this.updateEmployeeHttpUrl = EncodingUtil.buildUrl(this.getHttpUrl(), "/employee");
+    this.deleteEmployeeHttpUrl = EncodingUtil.buildUrl(this.getHttpUrl(), "/employee");
     createWebsocketManager(this.wsUrl, null, "org.jxapi.exchanges.demo.net.DemoExchangeWebsocketHookFactory");
     this.employeeUpdatesWs = createWebsocketEndpoint(EMPLOYEE_UPDATES_WS_API, new EmployeeV1EmployeeUpdatesMessageDeserializer());
   }

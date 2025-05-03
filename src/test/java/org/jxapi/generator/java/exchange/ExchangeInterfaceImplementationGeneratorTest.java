@@ -5,7 +5,8 @@ import java.util.List;
 
 import org.junit.Assert;
 import org.junit.Test;
-
+import org.jxapi.exchange.descriptor.Constant;
+import org.jxapi.exchange.descriptor.DefaultConfigProperty;
 import org.jxapi.exchange.descriptor.ExchangeApiDescriptor;
 import org.jxapi.exchange.descriptor.ExchangeDescriptor;
 import org.jxapi.exchange.descriptor.RestEndpointDescriptor;
@@ -22,8 +23,22 @@ public class ExchangeInterfaceImplementationGeneratorTest {
     exchangeDescriptor.setId("Foo");
     exchangeDescriptor.setBasePackage("com.xyz.foo.gen");
     exchangeDescriptor.setDescription("Foo exchange description");
-    exchangeDescriptor.setHttpUrl("https://myexchange.com/api");
-    exchangeDescriptor.setWebsocketUrl("https://myexchange.com/ws");
+    exchangeDescriptor.setHttpUrl("${config.serverHttpUrl}/api/v${constants.apiVersion}");
+    exchangeDescriptor.setWebsocketUrl("${config.serverWsUrl}/ws");
+    
+    Constant apiVersion = new Constant();
+    apiVersion.setName("apiVersion");
+    apiVersion.setValue("1");
+    exchangeDescriptor.setConstants(List.of(apiVersion));
+    
+    DefaultConfigProperty serverHttpUrl = new DefaultConfigProperty();
+    serverHttpUrl.setName("serverHttpUrl");
+    
+    DefaultConfigProperty serverWsUrl = new DefaultConfigProperty();
+    serverWsUrl.setName("serverWsUrl");
+    
+    exchangeDescriptor.setProperties(List.of(serverHttpUrl, serverWsUrl));
+    
     List<ExchangeApiDescriptor> apis = new ArrayList<>();
     ExchangeApiDescriptor api1 = new ExchangeApiDescriptor();
     api1.setName("api1");
@@ -43,6 +58,8 @@ public class ExchangeInterfaceImplementationGeneratorTest {
         + "import com.xyz.foo.gen.api2.FooApi2ApiImpl;\n"
         + "import javax.annotation.processing.Generated;\n"
         + "import org.jxapi.exchange.AbstractExchange;\n"
+        + "import org.jxapi.util.EncodingUtil;\n"
+        + "import org.jxapi.util.PropertiesUtil;\n"
         + "\n"
         + "/**\n"
         + " * Actual implementation of {@link FooExchange}<br>\n"
@@ -50,21 +67,16 @@ public class ExchangeInterfaceImplementationGeneratorTest {
         + "@Generated(\"org.jxapi.generator.java.exchange.ExchangeInterfaceImplementationGenerator\")\n"
         + "public class FooExchangeImpl extends AbstractExchange implements FooExchange {\n"
         + "  \n"
-        + "  /**\n"
-        + "   * Base REST API URL\n"
-        + "   */\n"
-        + "  public static final String HTTP_URL = \"https://myexchange.com/api\";\n"
-        + "  \n"
-        + "  /**\n"
-        + "   * Base websocket endpoint URL\n"
-        + "   */\n"
-        + "  public static final String WEBSOCKET_URL = \"https://myexchange.com/ws\";\n"
-        + "  \n"
         + "  private final FooApi1Api fooApi1Api;\n"
         + "  private final FooApi2Api fooApi2Api;\n"
         + "  \n"
         + "  public FooExchangeImpl(String exchangeName, Properties properties) {\n"
-        + "    super(ID, VERSION, exchangeName, properties);\n"
+        + "    super(ID,\n"
+        + "          VERSION,\n"
+        + "          exchangeName,\n"
+        + "          properties,\n"
+        + "          EncodingUtil.substituteArguments(\"${config.serverHttpUrl}/api/v${constants.apiVersion}\", \"config.serverHttpUrl\", PropertiesUtil.getString(properties, FooProperties.SERVER_HTTP_URL), \"constants.apiVersion\", FooConstants.API_VERSION),\n"
+        + "          EncodingUtil.substituteArguments(\"${config.serverWsUrl}/ws\", \"config.serverWsUrl\", PropertiesUtil.getString(properties, FooProperties.SERVER_WS_URL)));\n"
         + "    this.fooApi1Api = addApi(new FooApi1ApiImpl(this));\n"
         + "    this.fooApi2Api = addApi(new FooApi2ApiImpl(this));\n"
         + "  }\n"
@@ -134,7 +146,12 @@ public class ExchangeInterfaceImplementationGeneratorTest {
         + "  private final FooApi3Api fooApi3Api;\n"
         + "  \n"
         + "  public FooExchangeImpl(String exchangeName, Properties properties) {\n"
-        + "    super(ID, VERSION, exchangeName, properties);\n"
+        + "    super(ID,\n"
+        + "          VERSION,\n"
+        + "          exchangeName,\n"
+        + "          properties,\n"
+        + "          null,\n"
+        + "          null);\n"
         + "    this.fooApi1Api = addApi(new FooApi1ApiImpl(this, requestThrottler));\n"
         + "    this.fooApi2Api = addApi(new FooApi2ApiImpl(this));\n"
         + "    this.fooApi3Api = addApi(new FooApi3ApiImpl(this));\n"
@@ -196,7 +213,12 @@ public class ExchangeInterfaceImplementationGeneratorTest {
         + "  private final FooApi1Api fooApi1Api;\n"
         + "  \n"
         + "  public FooExchangeImpl(String exchangeName, Properties properties) {\n"
-        + "    super(ID, VERSION, exchangeName, properties);\n"
+        + "    super(ID,\n"
+        + "          VERSION,\n"
+        + "          exchangeName,\n"
+        + "          properties,\n"
+        + "          null,\n"
+        + "          null);\n"
         + "    this.fooApi1Api = addApi(new FooApi1ApiImpl(this));\n"
         + "  }\n"
         + "  \n"
@@ -234,7 +256,12 @@ public class ExchangeInterfaceImplementationGeneratorTest {
         + "  private final RateLimitRule rateLimitExchangeGlobalRateLimit = RateLimitRule.createRule(\"exchangeGlobalRateLimit\", 60000, 1000);\n"
         + "  \n"
         + "  public FooExchangeImpl(String exchangeName, Properties properties) {\n"
-        + "    super(ID, VERSION, exchangeName, properties);\n"
+        + "    super(ID,\n"
+        + "          VERSION,\n"
+        + "          exchangeName,\n"
+        + "          properties,\n"
+        + "          null,\n"
+        + "          null);\n"
         + "  }\n"
         + "  \n"
         + "  @Override\n"
@@ -287,7 +314,12 @@ public class ExchangeInterfaceImplementationGeneratorTest {
         + "  private final FooApi2Api fooApi2Api;\n"
         + "  \n"
         + "  public FooExchangeImpl(String exchangeName, Properties properties) {\n"
-        + "    super(ID, VERSION, exchangeName, properties);\n"
+        + "    super(ID,\n"
+        + "          VERSION,\n"
+        + "          exchangeName,\n"
+        + "          properties,\n"
+        + "          null,\n"
+        + "          null);\n"
         + "    this.fooApi1Api = addApi(new FooApi1ApiImpl(this));\n"
         + "    this.fooApi2Api = addApi(new FooApi2ApiImpl(this));\n"
         + "  }\n"
@@ -359,7 +391,12 @@ public class ExchangeInterfaceImplementationGeneratorTest {
         + "  private final RateLimitRule rateLimitExchangeGlobalRateLimit = RateLimitRule.createWeightedRule(\"exchangeGlobalRateLimit\", 60000, 1000);\n"
         + "  \n"
         + "  public FooExchangeImpl(String exchangeName, Properties properties) {\n"
-        + "    super(ID, VERSION, exchangeName, properties);\n"
+        + "    super(ID,\n"
+        + "          VERSION,\n"
+        + "          exchangeName,\n"
+        + "          properties,\n"
+        + "          null,\n"
+        + "          null);\n"
         + "  }\n"
         + "  \n"
         + "  @Override\n"
