@@ -6,7 +6,6 @@ import java.net.URI;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -51,11 +50,29 @@ public class EncodingUtil {
     if (keysAndValues.length == 0) {
       return template;
     }
-    Map<String, Object> m = new HashMap<>(keysAndValues.length / 2);
-    for (int i = 0; i < keysAndValues.length; i++) {
-      m.put(String.valueOf(keysAndValues[i++]), keysAndValues[i]);
-    }
-    StringSubstitutor sub = new StringSubstitutor(m);
+    return substituteArguments(template, CollectionUtil.createMap(keysAndValues));
+  }
+  
+  /**
+   * Substitutes properties from a map using provided key values pairs.<br>
+   * Example:
+   * 
+   * <pre>
+   * substituteArguments("Hello ${stranger}, I am ${me}", Map.of("stranger", "Bob", "me", "Roger"))
+   * </pre>
+   * 
+   * returns:
+   * 
+   * <pre>
+   * "Hello Bob, I am Roger"
+   * </pre>
+   * 
+   * @param template     the template String to perform that contains variables
+   * @param replacements map of key, value pairs for variable substitutions
+   * @return Template with properties substituted
+   */
+  public static String substituteArguments(String template, Map<String, Object> replacements) {
+    StringSubstitutor sub = new StringSubstitutor(replacements);
     return sub.replace(template);
   }
 

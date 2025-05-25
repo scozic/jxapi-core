@@ -81,6 +81,26 @@ public class CollectionUtil {
   }
   
   /**
+   * Creates a new modifiable map with the given keys and values.
+   * @param keysAndValues alternating keys and values for the map.
+   * @return A new modifiable map with the given keys and values.
+   * @throws IllegalArgumentException if the keys and values are not in pairs ( <code>keysAndValues.length % 2 != 0</code>).
+   */
+  public static Map<String, Object> createMap(Object... keysAndValues) {
+    Map<String, Object> map = createMap();
+    if (keysAndValues.length == 0) {
+      return map;
+    }
+    if (keysAndValues.length % 2 != 0) {
+      throw new IllegalArgumentException("Keys and values must be in pairs.");
+    }
+    for (int i = 0; i < keysAndValues.length; i += 2) {
+      map.put(String.valueOf(keysAndValues[i]), keysAndValues[i + 1]);
+    }
+    return map;
+  }
+  
+  /**
    * Return a copy of the list with the same items.
    * @param <T> The type of the items in the list
    * @param list the list to clone

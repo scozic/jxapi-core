@@ -1,6 +1,8 @@
 package org.jxapi.util;
 
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -95,6 +97,56 @@ public class CollectionUtilTest {
     Assert.assertEquals(list1, CollectionUtil.mergeLists(null, list1));
     List<String> list2 = List.of("c", "d");
     Assert.assertEquals(List.of("a", "b", "c", "d"), CollectionUtil.mergeLists(list1, list2));
+  }
+  
+  @Test
+  public void testCreateList() {
+    List<String> list = CollectionUtil.createList();
+    Assert.assertTrue(list.isEmpty());
+    Assert.assertTrue(list.isEmpty());
+    Assert.assertTrue(list instanceof ArrayList);
+  }
+  
+  @Test
+  public void testCreateListWithInitialCapacity() {
+    List<String> list = CollectionUtil.createList(5);
+    Assert.assertTrue(list.isEmpty());
+    Assert.assertTrue(list instanceof ArrayList);
+  }
+  
+  @Test
+  public void testCreateMap() {
+    Assert.assertTrue(CollectionUtil.createMap(0).isEmpty());
+    Map<String, String> map = CollectionUtil.createMap(5);
+    Assert.assertTrue(map.isEmpty());
+    Assert.assertTrue(map instanceof LinkedHashMap);
+  }
+  
+  @Test
+  public void testCreateMapWithInitialCapacity() {
+    Map<String, String> map = CollectionUtil.createMap(5);
+    Assert.assertTrue(map.isEmpty());
+    Assert.assertTrue(map instanceof LinkedHashMap);
+  }
+  
+  @Test
+  public void testCreateMapWithKeysAndValues() {
+    Map<String, Object> map = CollectionUtil.createMap("a", 1, "b", 2);
+    Assert.assertEquals(2, map.size());
+    Assert.assertEquals(1, map.get("a"));
+    Assert.assertEquals(2, map.get("b"));
+  }
+  
+  @Test
+  public void testCreateMapWithKeysAndValues_EmptyArgs() {
+    Object[] args = {};
+    Map<String, Object> map = CollectionUtil.createMap(args);
+    Assert.assertTrue(map.isEmpty());
+  }
+  
+  @Test(expected = IllegalArgumentException.class)
+  public void testCreateMapWithKeysAndValues_OddArguments() {
+    CollectionUtil.createMap("a");
   }
   
   
