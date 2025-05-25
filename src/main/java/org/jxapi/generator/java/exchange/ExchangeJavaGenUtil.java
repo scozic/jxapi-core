@@ -3,6 +3,7 @@ package org.jxapi.generator.java.exchange;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -617,6 +618,71 @@ public class ExchangeJavaGenUtil {
                 .append(JavaCodeGenUtil.getStaticVariableName(configPropertyName))
                 .append(")")
                 .toString();
+  }
+  
+  /**
+   * Retrieves all possible placeholders keys for the given exchange, and their
+   * replacement as javadoc links. These placeholders are:
+   * <ul>
+   * <li>Exchange constants, see {@link ExchangeDescriptor#getConstants()}</li>
+   * <li>Exchange configuration properties, see
+   * {@link ExchangeDescriptor#getProperties()}</li>
+   * <li>Exchange API group constants, see
+   * {@link ExchangeApiDescriptor#getConstants()}. Placeholders keys are looked
+   * for in API group level constants when <code>apiGroupName</code> is
+   * provided.</li>
+   * <ul>
+   * 
+   * @param exchangeDescriptor The exchange descriptor to get the placeholders
+   *                           keys for
+   * @param apiGroupName       The name of the API group to get the placeholders
+   *                           keys for when in context of such group.
+   *                           If <code>null</code>, only exchange level
+   *                           constants and properties are considered. Otherwise,
+   *                           API group level constants are also considered.
+   *                           Otherwise, this group name should match one of
+   *                           provided exchangge descriptor nested API groups.
+   * @return A map of placeholders keys to their replacement values as javadoc links.
+   */
+  public static Map<String, String> getDescriptionReplacements(ExchangeDescriptor exchangeDescriptor, String apiGroupName) {
+    Map<String, String> replacements = CollectionUtil.createMap();
+    if (exchangeDescriptor == null) {
+      return replacements;
+    }
+    // Add exchange constants
+    for (Constant constant : CollectionUtil.emptyIfNull(exchangeDescriptor.getConstants())) {
+      String cname = constant.getName();
+      String cls = getExchangeConstantsInterfaceName(exchangeDescriptor);
+      String cvar = JavaCodeGenUtil.getStaticVariableName(cname);
+      replacements.put(CONSTANT_PLACEHOLDER_PREFIX + constant.getName(), JavaCodeGenUtil.getJavaDocLink(cls, cvar));
+    }
+    
+    // Add exchange configuration properties
+    for (ConfigProperty prop : CollectionUtil.emptyIfNull(exchangeDescriptor.getProperties())) {
+      String pname = prop.getName();
+      String cls = getExchangePropertiesInterfaceName(exchangeDescriptor);
+      String pvar = JavaCodeGenUtil.getStaticVariableName(pname);
+      replacements.put(CONFIG_PLACEHOLDER_PREFIX + prop.getName(), JavaCodeGenUtil.getJavaDocLink(cls, pvar));
+    }
+    
+    if (apiGroupName != null) {
+      ExchangeApiDescriptor apiDescriptor = CollectionUtil.emptyIfNull(exchangeDescriptor.getApis())
+          .stream()
+          .findAny()
+          .orElseThrow(() -> 
+            new IllegalArgumentException(
+              "No API group with name '" 
+                + apiGroupName 
+                + "' found in exchange " 
+                + exchangeDescriptor.getId()));
+      for (Constant constant : CollectionUtil.emptyIfNull(apiDescriptor.getConstants())) {
+        String cname = constant.getName();
+        String cls = getExchangeApiConstantsInterfaceName(exchangeDescriptor, apiDescriptor);
+        String cvar = JavaCodeGenUtil.getStaticVariableName(cname);
+        replacements.put(CONSTANT_PLACEHOLDER_PREFIX + constant.getName(), JavaCodeGenUtil.getJavaDocLink(cls, cvar));
+      }
+    }
+    return replacements;
   }
   
 

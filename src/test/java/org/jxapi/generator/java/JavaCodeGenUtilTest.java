@@ -388,5 +388,20 @@ public class JavaCodeGenUtilTest {
     Assert.assertEquals(Map.class.getName(), JavaCodeGenUtil.getMethodArgumentJavadoc(Type.fromTypeName("OBJECT_MAP"), "com.foo.Bar"));
     Assert.assertEquals("com.foo.Bar", JavaCodeGenUtil.getMethodArgumentJavadoc(Type.OBJECT, "com.foo.Bar")); 
   }
+  
+  @Test
+  public void testGetJavaDocLink_NullLink() {
+    Assert.assertNull(JavaCodeGenUtil.getJavaDocLink(null));
+  }
+  
+  @Test
+  public void testGetJavaDocLink() {
+    Assert.assertEquals("{@link com.x.y.Foo}", JavaCodeGenUtil.getJavaDocLink("com.x.y.Foo"));
+  }
+  
+  @Test
+  public void testGetJavaDocLinkForAttribute() {
+    Assert.assertEquals("{@link com.x.y.Foo#BAR}", JavaCodeGenUtil.getJavaDocLink("com.x.y.Foo", "BAR"));
+  }
 }
 

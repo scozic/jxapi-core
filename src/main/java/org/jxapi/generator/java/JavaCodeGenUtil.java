@@ -439,7 +439,7 @@ public class JavaCodeGenUtil {
 
   /**
    * Gets class name as it should be written in a javadoc method link as argument
-   * of this methdi.<br>
+   * of this method.<br>
    * e.g. comma separated full class names of function argument. If one argument
    * is generic, the full class name of class holding generic (for instance
    * <code>java.util.List</code> if argument is of
@@ -493,5 +493,37 @@ public class JavaCodeGenUtil {
       }
     }
     return true;
+  }
+  
+  /**
+   * Generates a Javadoc link to a class or property or method of a class, for instance
+   * <code>{@link com.x.y.z.Foo#bar()}</code> for method <code>bar()</code> of
+   * class <code>com.x.y.z.Foo</code>.
+   * 
+   * @param link the link to generate, can be a class name, or a class name with
+   *             method name, like <code>com.x.y.z.Foo#bar()</code>
+   * @return Javadoc link to given class or method
+   */
+  public static final String getJavaDocLink(String link) {
+    if (link == null) {
+      return null;
+    }
+    return new StringBuilder()
+        .append("{@link ")
+        .append(link)
+        .append("}").toString();
+  }
+  
+  /**
+   * Generates a Javadoc link to a class property or method, for instance
+   * <code>{@link com.x.y.z.Foo#bar}</code> for property <code>bar</code> of class
+   * <code>com.x.y.z.Foo</code>.
+   * 
+   * @param className full class name with package prefix, e.g. <code>com.x.y.z.Foo</code>
+   * @param attribute property name of the class, e.g. <code>bar</code>
+   * @return Javadoc link to given class property or method
+   */
+  public static final String getJavaDocLink(String className, String attribute) {
+    return getJavaDocLink(className + "#" + attribute);
   }
 }

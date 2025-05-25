@@ -625,4 +625,71 @@ public class ExchangeJavaGenUtilTest {
     Assert.assertTrue(imports.contains(PropertiesUtil.class.getName()));
     Assert.assertTrue(imports.contains("com.x.y.z.MyExchangeProperties"));
   }
+  
+  @Test
+  public void testGetDescriptionReplacements_NullExchangeDescriptor() {
+    Assert.assertTrue(ExchangeJavaGenUtil.getDescriptionReplacements(null, null).isEmpty());
+  }
+  
+  @Test
+  public void testGetDescriptionReplacements_ExchangeContext() {
+    ExchangeDescriptor exchangeDescriptor = new ExchangeDescriptor();
+    exchangeDescriptor.setId("TestExchange");
+    exchangeDescriptor.setBasePackage("com.x.y.z");
+    Constant exConstant1 = new Constant();
+    exConstant1.setName("exchangeConstant1");
+    Constant exConstant2 = new Constant();
+    exConstant2.setName("exchangeConstant2");
+    exchangeDescriptor.setConstants(List.of(exConstant1, exConstant2));
+    
+    DefaultConfigProperty exConfigProp1 = new DefaultConfigProperty();
+    exConfigProp1.setName("configProp1");
+    DefaultConfigProperty exConfigProp2 = new DefaultConfigProperty();
+    exConfigProp2.setName("configProp2");
+    
+    exchangeDescriptor.setProperties(List.of(exConfigProp1, exConfigProp2));
+    
+    Map<String, String> replacements = ExchangeJavaGenUtil.getDescriptionReplacements(exchangeDescriptor, null);
+    Assert.assertEquals(4, replacements.size());
+    Assert.assertEquals("{@link com.x.y.z.TestExchangeConstants#EXCHANGE_CONSTANT1}", replacements.get("constants.exchangeConstant1"));
+    Assert.assertEquals("{@link com.x.y.z.TestExchangeConstants#EXCHANGE_CONSTANT2}", replacements.get("constants.exchangeConstant2"));
+    Assert.assertEquals("{@link com.x.y.z.TestExchangeProperties#CONFIG_PROP1}", replacements.get("config.configProp1"));
+    Assert.assertEquals("{@link com.x.y.z.TestExchangeProperties#CONFIG_PROP2}", replacements.get("config.configProp2"));
+  }
+  
+  @Test
+  public void testGetDescriptionReplacements_ApiGroupContext() {
+    ExchangeDescriptor exchangeDescriptor = new ExchangeDescriptor();
+    exchangeDescriptor.setId("TestExchange");
+    exchangeDescriptor.setBasePackage("com.x.y.z");
+    Constant exConstant1 = new Constant();
+    exConstant1.setName("exchangeConstant1");
+    exchangeDescriptor.setConstants(List.of(exConstant1));
+    
+    DefaultConfigProperty exConfigProp1 = new DefaultConfigProperty();
+    exConfigProp1.setName("configProp1");
+    
+    exchangeDescriptor.setProperties(List.of(exConfigProp1));
+    
+    ExchangeApiDescriptor apiDescriptor = new ExchangeApiDescriptor();
+    apiDescriptor.setName("Spot");
+    Constant apiConstant1 = new Constant();
+    apiConstant1.setName("apiConstant1");
+    Constant apiConstant2 = new Constant();
+    apiConstant2.setName("apiConstant2");
+    apiDescriptor.setConstants(List.of(apiConstant1, apiConstant2));
+    exchangeDescriptor.setApis(List.of(apiDescriptor));
+    
+    Map<String, String> replacements = ExchangeJavaGenUtil.getDescriptionReplacements(exchangeDescriptor, "Spot");
+    Assert.assertEquals(4, replacements.size());
+    Assert.assertEquals("{@link com.x.y.z.TestExchangeConstants#EXCHANGE_CONSTANT1}", replacements.get("constants.exchangeConstant1"));
+    Assert.assertEquals("{@link com.x.y.z.TestExchangeProperties#CONFIG_PROP1}", replacements.get("config.configProp1"));
+    Assert.assertEquals("{@link com.x.y.z.spot.TestExchangeSpotConstants#API_CONSTANT1}", replacements.get("constants.apiConstant1"));
+    Assert.assertEquals("{@link com.x.y.z.spot.TestExchangeSpotConstants#API_CONSTANT2}", replacements.get("constants.apiConstant2"));
+  }
+  
+  @Test(expected = IllegalArgumentException.class)
+  public void testGetDescriptionReplacements_ApiGroupContext_InvalidApiGroupName() {
+    ExchangeJavaGenUtil.getDescriptionReplacements(new ExchangeDescriptor(), "Foo");
+  }
 }
