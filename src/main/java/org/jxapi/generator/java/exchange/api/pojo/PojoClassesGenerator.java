@@ -9,6 +9,7 @@ import org.jxapi.exchange.descriptor.Type;
 import org.jxapi.generator.java.exchange.ClassesGenerator;
 import org.jxapi.generator.java.exchange.ExchangeJavaGenUtil;
 import org.jxapi.generator.java.exchange.api.ExchangeApiGenUtil;
+import org.jxapi.util.PlaceHolderResolver;
 
 /**
  * Generates all java classes for a specific POJO for a REST or Websocket
@@ -27,6 +28,7 @@ public class PojoClassesGenerator implements ClassesGenerator {
   
   private final PojoGenerator rootPojoGenerator;
   private final List<Field> properties;
+  private final PlaceHolderResolver docPlaceHolderResolver;
   
   /**
    * Constructor.
@@ -40,9 +42,11 @@ public class PojoClassesGenerator implements ClassesGenerator {
   public PojoClassesGenerator(String className, 
        String description, 
        List<Field> properties, 
-       List<String> implementedInterfaces) throws IOException {
+       List<String> implementedInterfaces,
+       PlaceHolderResolver docPlaceHolderResolver) throws IOException {
     this.properties = properties;
-    this.rootPojoGenerator = new PojoGenerator(className, description, properties, implementedInterfaces);
+    this.docPlaceHolderResolver = docPlaceHolderResolver;
+    this.rootPojoGenerator = new PojoGenerator(className, description, properties, implementedInterfaces, docPlaceHolderResolver);
   }
 
   /**
@@ -69,7 +73,8 @@ public class PojoClassesGenerator implements ClassesGenerator {
       new PojoClassesGenerator(objectParamClassName, 
                     field.getDescription(), 
                     field.getProperties(),
-                    field.getImplementedInterfaces()).generateClasses(outputFolder);
+                    field.getImplementedInterfaces(),
+                    docPlaceHolderResolver).generateClasses(outputFolder);
     }
   }
 }

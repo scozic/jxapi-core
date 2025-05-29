@@ -30,14 +30,14 @@ public class EmployeeV1EmployeeUpdatesMessage implements Pojo<EmployeeV1Employee
   private Employee employee;
   
   /**
-   * @return Type of event. Can be 'ADD', 'UPDATE' or 'DELETE'
+   * @return Type of event, e.g. one of {@link org.jxapi.exchanges.employee.gen.v1.EmployeeV1Constants#UPDATE_EMPLOYEE_TYPE_ADD}, ${constants.updateEmployeeTypeUpdate} or {@link org.jxapi.exchanges.employee.gen.v1.EmployeeV1Constants#UPDATE_EMPLOYEE_TYPE_DELETE}
    */
   public String getEventType() {
     return eventType;
   }
   
   /**
-   * @param eventType Type of event. Can be 'ADD', 'UPDATE' or 'DELETE'
+   * @param eventType Type of event, e.g. one of {@link org.jxapi.exchanges.employee.gen.v1.EmployeeV1Constants#UPDATE_EMPLOYEE_TYPE_ADD}, ${constants.updateEmployeeTypeUpdate} or {@link org.jxapi.exchanges.employee.gen.v1.EmployeeV1Constants#UPDATE_EMPLOYEE_TYPE_DELETE}
    */
   public void setEventType(String eventType) {
     this.eventType = eventType;
@@ -111,7 +111,7 @@ public class EmployeeV1EmployeeUpdatesMessage implements Pojo<EmployeeV1Employee
     
     /**
      * Will set the value of <code>eventType</code> field in the builder
-     * @param eventType Type of event. Can be 'ADD', 'UPDATE' or 'DELETE'
+     * @param eventType Type of event, e.g. one of {@link org.jxapi.exchanges.employee.gen.v1.EmployeeV1Constants#UPDATE_EMPLOYEE_TYPE_ADD}, ${constants.updateEmployeeTypeUpdate} or {@link org.jxapi.exchanges.employee.gen.v1.EmployeeV1Constants#UPDATE_EMPLOYEE_TYPE_DELETE}
      * @return Builder instance
      * @see #setEventType(String)
      */

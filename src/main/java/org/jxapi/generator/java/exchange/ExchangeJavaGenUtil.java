@@ -622,7 +622,30 @@ public class ExchangeJavaGenUtil {
   
   /**
    * Retrieves all possible placeholders keys for the given exchange, and their
-   * replacement as javadoc links. These placeholders are:
+   * replacement as JavaDoc code links like
+   * {@link #getDescriptionReplacements(ExchangeDescriptor, String, String)} using
+   * <code>null</code> as value for javaDoc base URL.
+   * 
+   * @param exchangeDescriptor The exchange descriptor to get the placeholders
+   *                           keys for
+   * @param apiGroupName       The name of the API group to get the placeholders
+   *                           keys for when in context of such group. If
+   *                           <code>null</code>, only exchange level constants
+   *                           and properties are considered. Otherwise, API group
+   *                           level constants are also considered. Otherwise,
+   *                           this group name should match one of provided
+   *                           exchangge descriptor nested API groups.
+   * @return A map of placeholders keys to their replacement values as javadoc
+   *         links.
+   * @see #getDescriptionReplacements(ExchangeDescriptor, String, String)        
+   */
+  public static Map<String, Object> getDescriptionReplacements(ExchangeDescriptor exchangeDescriptor, String apiGroupName) {
+    return getDescriptionReplacements(exchangeDescriptor, apiGroupName, null);
+  }
+  
+  /**
+   * Retrieves all possible placeholders keys for the given exchange, and their
+   * replacement as JavaDoc code or HTML links. These placeholders are:
    * <ul>
    * <li>Exchange constants, see {@link ExchangeDescriptor#getConstants()}</li>
    * <li>Exchange configuration properties, see
@@ -642,10 +665,11 @@ public class ExchangeJavaGenUtil {
    *                           API group level constants are also considered.
    *                           Otherwise, this group name should match one of
    *                           provided exchangge descriptor nested API groups.
+   * @param baseHtmlDocUrl     The base HTML documentation URL to use for Javadoc links. If <code>null</code>, a code link will be generated instead.                       
    * @return A map of placeholders keys to their replacement values as javadoc links.
    */
-  public static Map<String, String> getDescriptionReplacements(ExchangeDescriptor exchangeDescriptor, String apiGroupName) {
-    Map<String, String> replacements = CollectionUtil.createMap();
+  public static Map<String, Object> getDescriptionReplacements(ExchangeDescriptor exchangeDescriptor, String apiGroupName, String baseHtmlDocUrl) {
+    Map<String, Object> replacements = CollectionUtil.createMap();
     if (exchangeDescriptor == null) {
       return replacements;
     }
@@ -653,16 +677,14 @@ public class ExchangeJavaGenUtil {
     for (Constant constant : CollectionUtil.emptyIfNull(exchangeDescriptor.getConstants())) {
       String cname = constant.getName();
       String cls = getExchangeConstantsInterfaceName(exchangeDescriptor);
-      String cvar = JavaCodeGenUtil.getStaticVariableName(cname);
-      replacements.put(CONSTANT_PLACEHOLDER_PREFIX + constant.getName(), JavaCodeGenUtil.getJavaDocLink(cls, cvar));
+      replacements.put(CONSTANT_PLACEHOLDER_PREFIX + constant.getName(), getDocLink(cls, cname, baseHtmlDocUrl));
     }
     
     // Add exchange configuration properties
     for (ConfigProperty prop : CollectionUtil.emptyIfNull(exchangeDescriptor.getProperties())) {
       String pname = prop.getName();
       String cls = getExchangePropertiesInterfaceName(exchangeDescriptor);
-      String pvar = JavaCodeGenUtil.getStaticVariableName(pname);
-      replacements.put(CONFIG_PLACEHOLDER_PREFIX + prop.getName(), JavaCodeGenUtil.getJavaDocLink(cls, pvar));
+      replacements.put(CONFIG_PLACEHOLDER_PREFIX + prop.getName(), getDocLink(cls, pname, baseHtmlDocUrl));
     }
     
     if (apiGroupName != null) {
@@ -678,12 +700,19 @@ public class ExchangeJavaGenUtil {
       for (Constant constant : CollectionUtil.emptyIfNull(apiDescriptor.getConstants())) {
         String cname = constant.getName();
         String cls = getExchangeApiConstantsInterfaceName(exchangeDescriptor, apiDescriptor);
-        String cvar = JavaCodeGenUtil.getStaticVariableName(cname);
-        replacements.put(CONSTANT_PLACEHOLDER_PREFIX + constant.getName(), JavaCodeGenUtil.getJavaDocLink(cls, cvar));
+        replacements.put(CONSTANT_PLACEHOLDER_PREFIX + constant.getName(), getDocLink(cls, cname, baseHtmlDocUrl));
       }
     }
     return replacements;
   }
   
-
+  private static String getDocLink(String className, String variableName, String baseHtmlDocUrl) {
+    String staticVariableName = JavaCodeGenUtil.getStaticVariableName(variableName);
+    if (baseHtmlDocUrl == null) {
+      return JavaCodeGenUtil.getJavaDocLink(className, staticVariableName);
+    }
+    String url = JavaCodeGenUtil.getClassJavadocUrl(baseHtmlDocUrl, className) + "#" + staticVariableName;
+    return JavaCodeGenUtil.getHtmlLink(url, variableName);
+  }
+ 
 }

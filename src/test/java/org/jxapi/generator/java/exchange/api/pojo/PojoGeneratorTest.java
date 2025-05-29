@@ -1,12 +1,14 @@
 package org.jxapi.generator.java.exchange.api.pojo;
 
 import java.util.List;
+import java.util.Map;
 
 import org.junit.Assert;
 import org.junit.Test;
 
 import org.jxapi.exchange.descriptor.Field;
 import org.jxapi.exchange.descriptor.Type;
+import org.jxapi.util.PlaceHolderResolver;
 
 /**
  * Unit test for {@link PojoGenerator}
@@ -19,10 +21,10 @@ public class PojoGeneratorTest {
     String typeDescription = "Used in PojoGeneratorTest";
     List<Field> properties = List.of(
       Field.builder().type(Type.LONG).name("id").build(),
-      Field.builder().type(Type.INT).name("score").description("Current score").build(),
+      Field.builder().type(Type.INT).name("score").description("Current score, max is ${constants.maxScore}").build(),
       Field.builder().type("OBJECT_LIST").name("foo").msgField("f").description("The foo")
              .property(Field.builder().type(Type.LONG).name("time").description("Creation time").build())
-             .property(Field.builder().name("bar").description("The bar")
+             .property(Field.builder().name("bar").description("The bar, which name can be ${constants.barName}")
                            .property(Field.builder().type(Type.STRING).name("name").build())
                            .build())
              .build(),
@@ -30,8 +32,13 @@ public class PojoGeneratorTest {
              .property(Field.builder().type(Type.STRING).name("id").description("Toto ID").build())
              .build()
     );
-    
-    PojoGenerator generator = new PojoGenerator(typeName, typeDescription, properties, List.of("com.x.common.MyInterface"));
+    PlaceHolderResolver docPlaceHolderResolver = PlaceHolderResolver.create(Map.of("constants.maxScore", "100",
+                                                                                   "constants.barName", "Happy hour"));
+    PojoGenerator generator = new PojoGenerator(typeName, 
+                                                typeDescription, 
+                                                properties, 
+                                                List.of("com.x.common.MyInterface"), 
+                                                docPlaceHolderResolver);
     Assert.assertEquals("package com.x;\n"
         + "\n"
         + "import java.util.List;\n"
@@ -78,28 +85,28 @@ public class PojoGeneratorTest {
         + "  }\n"
         + "  \n"
         + "  /**\n"
-        + "   * @return Current score\n"
+        + "   * @return Current score, max is 100\n"
         + "   */\n"
         + "  public Integer getScore() {\n"
         + "    return score;\n"
         + "  }\n"
         + "  \n"
         + "  /**\n"
-        + "   * @param score Current score\n"
+        + "   * @param score Current score, max is 100\n"
         + "   */\n"
         + "  public void setScore(Integer score) {\n"
         + "    this.score = score;\n"
         + "  }\n"
         + "  \n"
         + "  /**\n"
-        + "   * @return The foo Message field <strong>f</strong>\n"
+        + "   * @return The foo <br>Message field <strong>f</strong>\n"
         + "   */\n"
         + "  public List<MyPojoFoo> getFoo() {\n"
         + "    return foo;\n"
         + "  }\n"
         + "  \n"
         + "  /**\n"
-        + "   * @param foo The foo Message field <strong>f</strong>\n"
+        + "   * @param foo The foo <br>Message field <strong>f</strong>\n"
         + "   */\n"
         + "  public void setFoo(List<MyPojoFoo> foo) {\n"
         + "    this.foo = foo;\n"
@@ -197,7 +204,7 @@ public class PojoGeneratorTest {
         + "    \n"
         + "    /**\n"
         + "     * Will set the value of <code>score</code> field in the builder\n"
-        + "     * @param score Current score\n"
+        + "     * @param score Current score, max is 100\n"
         + "     * @return Builder instance\n"
         + "     * @see #setScore(Integer)\n"
         + "     */\n"
@@ -287,7 +294,7 @@ public class PojoGeneratorTest {
             Field.builder().type(Type.LONG).name("id").description("identifier").build()))
       .build()
     );
-    PojoGenerator generator = new PojoGenerator(typeName, typeDescription, properties, null);
+    PojoGenerator generator = new PojoGenerator(typeName, typeDescription, properties, null, null);
     Assert.assertEquals("package com.x.pojo;\n"
         + "\n"
         + "import java.util.Objects;\n"
@@ -405,7 +412,7 @@ public class PojoGeneratorTest {
   public void testGenerate_NullProperties() {
     String typeName = "com.x.pojo.MyPojoWithNullProperties";
     String typeDescription = "Used in PojoGeneratorTest";
-    PojoGenerator generator = new PojoGenerator(typeName, typeDescription, null, null);
+    PojoGenerator generator = new PojoGenerator(typeName, typeDescription, null, null, null);
     Assert.assertEquals("package com.x.pojo;\n"
         + "\n"
         + "import com.fasterxml.jackson.databind.annotation.JsonSerialize;\n"
@@ -486,7 +493,7 @@ public class PojoGeneratorTest {
   
   @Test
   public void testGeneratePojoCodeMultipleFields() {
-    PojoGenerator generator = new PojoGenerator("x.y.z.pojo.Foo");
+    PojoGenerator generator = new PojoGenerator("x.y.z.pojo.Foo", null, null, null, null);
     generator.addField(Field.builder().type(Type.STRING).name("name").description("the name").build());
     generator.addField(Field.builder().objectName("Bar").name("bar").msgField("b").build());
     generator.addField(Field.builder().type(Type.INT).name("a").description("lower case 'a'").build());
@@ -537,14 +544,14 @@ public class PojoGeneratorTest {
         + "  }\n"
         + "  \n"
         + "  /**\n"
-        + "   * @return Message field <strong>b</strong>\n"
+        + "   * @return <br>Message field <strong>b</strong>\n"
         + "   */\n"
         + "  public Bar getBar() {\n"
         + "    return bar;\n"
         + "  }\n"
         + "  \n"
         + "  /**\n"
-        + "   * @param bar Message field <strong>b</strong>\n"
+        + "   * @param bar <br>Message field <strong>b</strong>\n"
         + "   */\n"
         + "  public void setBar(Bar bar) {\n"
         + "    this.bar = bar;\n"
@@ -710,7 +717,7 @@ public class PojoGeneratorTest {
     String typeName = "com.x.MyPojo";
     String typeDescription = "Used in PojoGeneratorTest";
     List<Field> properties = List.of();
-    PojoGenerator generator = new PojoGenerator(typeName, typeDescription, properties, List.of("com.x.common.MyInterface"));
+    PojoGenerator generator = new PojoGenerator(typeName, typeDescription, properties, List.of("com.x.common.MyInterface"), null);
     Assert.assertEquals("package com.x;\n"
         + "\n"
         + "import com.fasterxml.jackson.databind.annotation.JsonSerialize;\n"

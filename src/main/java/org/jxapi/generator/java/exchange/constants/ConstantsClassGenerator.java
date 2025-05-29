@@ -1,9 +1,11 @@
 package org.jxapi.generator.java.exchange.constants;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.jxapi.exchange.descriptor.Constant;
 import org.jxapi.generator.java.JavaTypeGenerator;
+import org.jxapi.util.PlaceHolderResolver;
 
 /**
  * Generates a Java interface with constants.
@@ -33,6 +35,8 @@ public class ConstantsClassGenerator extends JavaTypeGenerator {
 
   private final  List<Constant> constants;
   
+  private final PlaceHolderResolver docPlaceHolderResolver;
+  
   /**
    * Creates a new instance of the generator.
    * 
@@ -40,10 +44,11 @@ public class ConstantsClassGenerator extends JavaTypeGenerator {
    *                     com.example.MyConstants
    * @param constants    the list of constants to generate in the interface
    */
-  public ConstantsClassGenerator(String fullTypeName, List<Constant> constants) {
+  public ConstantsClassGenerator(String fullTypeName, List<Constant> constants, PlaceHolderResolver docPlaceHolderResolver) {
     super(fullTypeName);
     setTypeDeclaration("public class");
     this.constants = constants;
+    this.docPlaceHolderResolver = Optional.ofNullable(docPlaceHolderResolver).orElse(PlaceHolderResolver.NO_OP);
   }
   
   @Override
@@ -51,7 +56,8 @@ public class ConstantsClassGenerator extends JavaTypeGenerator {
     appendToBody("\nprivate ")
       .append(getSimpleName())
       .append("(){}\n");
-    constants.forEach(c -> appendToBody("\n").append(ConstantsGenerationUtil.generateConstantDeclaration(c, getImports())));
+    constants.forEach(c -> appendToBody("\n")
+                             .append(ConstantsGenerationUtil.generateConstantDeclaration(c, getImports(), docPlaceHolderResolver)));
     return super.generate();
   }
 

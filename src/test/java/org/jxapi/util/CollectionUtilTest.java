@@ -22,6 +22,13 @@ public class CollectionUtilTest {
   }
   
   @Test
+  public void testIsEmptyMap() {
+    Assert.assertTrue(CollectionUtil.isEmptyMap(null));
+    Assert.assertTrue(CollectionUtil.isEmptyMap(Collections.emptyMap()));
+    Assert.assertFalse(CollectionUtil.isEmptyMap(Map.of("a", "b")));
+  }
+  
+  @Test
   public void testEmptyIfNull() {
     Assert.assertTrue(CollectionUtil.emptyIfNull(null).isEmpty());
     List<String> l = List.of("a");

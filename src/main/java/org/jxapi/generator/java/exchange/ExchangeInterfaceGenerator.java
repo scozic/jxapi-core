@@ -1,6 +1,7 @@
 package org.jxapi.generator.java.exchange;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.jxapi.exchange.Exchange;
 import org.jxapi.exchange.descriptor.ExchangeApiDescriptor;
@@ -9,6 +10,7 @@ import org.jxapi.generator.java.JavaCodeGenUtil;
 import org.jxapi.generator.java.JavaTypeGenerator;
 import org.jxapi.netutils.rest.ratelimits.RateLimitRule;
 import org.jxapi.util.CollectionUtil;
+import org.jxapi.util.PlaceHolderResolver;
 
 /**
  * Generates Source code of Java interface described by a {@link ExchangeInterfaceGenerator}. 
@@ -31,14 +33,17 @@ public class ExchangeInterfaceGenerator extends JavaTypeGenerator {
   
   private final ExchangeDescriptor exchangeDescriptor;
   
+  private final PlaceHolderResolver docPlaceHolderResolver;
+  
   /**
    * Constructor.
    * 
    * @param exchangeDescriptor the exchange descriptor to generate classes for
    */
-  public ExchangeInterfaceGenerator(ExchangeDescriptor exchangeDescriptor) {
+  public ExchangeInterfaceGenerator(ExchangeDescriptor exchangeDescriptor, PlaceHolderResolver docPlaceHolderResolver) {
     super(ExchangeJavaGenUtil.getExchangeInterfaceName(exchangeDescriptor));
     this.exchangeDescriptor = exchangeDescriptor;
+    this.docPlaceHolderResolver = Optional.ofNullable(docPlaceHolderResolver).orElse(PlaceHolderResolver.NO_OP);
     this.setParentClassName(Exchange.class.getName());
   }
   
@@ -90,7 +95,7 @@ public class ExchangeInterfaceGenerator extends JavaTypeGenerator {
   
   private String getGetApiMethodJavadoc(ExchangeApiDescriptor api) {
     StringBuilder s = new StringBuilder();
-    s.append("@return " ).append(api.getDescription());
+    s.append("@return " ).append(this.docPlaceHolderResolver.resolve(api.getDescription()));
     return JavaCodeGenUtil.generateJavaDoc(s.toString());
   }
   
@@ -120,7 +125,7 @@ public class ExchangeInterfaceGenerator extends JavaTypeGenerator {
     StringBuilder s = new StringBuilder()
         .append(exchangeDescriptor.getId())
         .append(" API<br>\n")
-        .append(exchangeDescriptor.getDescription())
+        .append(this.docPlaceHolderResolver.resolve(exchangeDescriptor.getDescription()))
         .append("\n");
     String docUrl = exchangeDescriptor.getDocUrl();
     if (docUrl != null) {

@@ -16,6 +16,7 @@ import org.jxapi.generator.java.exchange.api.ws.WebsocketEndpointClassesGenerato
 import org.jxapi.generator.java.exchange.constants.ConstantsClassGenerator;
 import org.jxapi.netutils.rest.ratelimits.RateLimitManager;
 import org.jxapi.util.CollectionUtil;
+import org.jxapi.util.PlaceHolderResolver;
 
 /**
  * Generates all Java classes of an API Wrapper for an {@link ExchangeApiDescriptor} defined in an
@@ -44,27 +45,32 @@ public class ExchangeApiClassesGenerator implements ClassesGenerator {
    * @param exchangeApiDescriptor the API descriptor to generate classes for
    */
   public ExchangeApiClassesGenerator(ExchangeDescriptor exchangeDescriptor,
-                     ExchangeApiDescriptor exchangeApiDescriptor) {
+                                     ExchangeApiDescriptor exchangeApiDescriptor) {
     this.exchangeDescriptor = exchangeDescriptor;
     this.exchangeApiDescriptor = exchangeApiDescriptor;
   }
   
   @Override
   public void generateClasses(Path outputFolder) throws IOException {
-    ExchangeApiInterfaceGenerator exchangeApiInterfaceGenerator = new ExchangeApiInterfaceGenerator(exchangeDescriptor, exchangeApiDescriptor);
+    PlaceHolderResolver docPlaceHolderResolver = 
+      PlaceHolderResolver.create(ExchangeJavaGenUtil.getDescriptionReplacements(exchangeDescriptor, exchangeApiDescriptor.getName()));
+    ExchangeApiInterfaceGenerator exchangeApiInterfaceGenerator = 
+      new ExchangeApiInterfaceGenerator(exchangeDescriptor, exchangeApiDescriptor, docPlaceHolderResolver);
     exchangeApiInterfaceGenerator.writeJavaFile(outputFolder); 
     
     new ExchangeApiInterfaceImplementationGenerator(exchangeDescriptor, exchangeApiDescriptor).writeJavaFile(outputFolder);
-    if (exchangeApiDescriptor.getRestEndpoints() != null) {
-      for (RestEndpointDescriptor restEndpointDescriptor: exchangeApiDescriptor.getRestEndpoints()) {
-        new RestEndpointClassesGenerator(exchangeDescriptor, exchangeApiDescriptor, restEndpointDescriptor).generateClasses(outputFolder);
-      }
+    for (RestEndpointDescriptor restEndpointDescriptor: CollectionUtil.emptyIfNull(exchangeApiDescriptor.getRestEndpoints())) {
+      new RestEndpointClassesGenerator(exchangeDescriptor, 
+                                         exchangeApiDescriptor, 
+                                         restEndpointDescriptor, 
+                                         docPlaceHolderResolver).generateClasses(outputFolder);
     }
     
-    if (exchangeApiDescriptor.getWebsocketEndpoints() != null) {
-      for (WebsocketEndpointDescriptor websocketEndpointDescriptor: exchangeApiDescriptor.getWebsocketEndpoints()) {
-        new WebsocketEndpointClassesGenerator(exchangeDescriptor, exchangeApiDescriptor, websocketEndpointDescriptor).generateClasses(outputFolder);
-      }
+    for (WebsocketEndpointDescriptor websocketEndpointDescriptor: CollectionUtil.emptyIfNull(exchangeApiDescriptor.getWebsocketEndpoints())) {
+      new WebsocketEndpointClassesGenerator(exchangeDescriptor, 
+                                            exchangeApiDescriptor, 
+                                            websocketEndpointDescriptor,
+                                            docPlaceHolderResolver).generateClasses(outputFolder);
     }
     
     // Generate constants interface
@@ -72,7 +78,8 @@ public class ExchangeApiClassesGenerator implements ClassesGenerator {
     if (!CollectionUtil.isEmpty(constants)) {
       ConstantsClassGenerator cgen = new ConstantsClassGenerator(
           ExchangeJavaGenUtil.getExchangeApiConstantsInterfaceName(exchangeDescriptor, exchangeApiDescriptor), 
-          constants); 
+          constants,
+          docPlaceHolderResolver); 
       cgen.setDescription("Constants used in "
                 + exchangeDescriptor.getId() 
                 + " exchange API wrapper {@link " 

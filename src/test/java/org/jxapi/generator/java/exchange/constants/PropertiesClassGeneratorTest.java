@@ -1,12 +1,14 @@
 package org.jxapi.generator.java.exchange.constants;
 
 import java.util.List;
+import java.util.Map;
 
 import org.junit.Assert;
 import org.junit.Test;
 
 import org.jxapi.exchange.descriptor.DefaultConfigProperty;
 import org.jxapi.exchange.descriptor.Type;
+import org.jxapi.util.PlaceHolderResolver;
 
 /**
  * Unit test for {@link PropertiesClassGenerator}
@@ -15,19 +17,21 @@ public class PropertiesClassGeneratorTest {
 
   @Test
     public void testGenerate() {
-        DefaultConfigProperty stringProp = DefaultConfigProperty.create("myString", Type.STRING, "My String property", "foo");
+        DefaultConfigProperty stringProp = DefaultConfigProperty.create("myString", Type.STRING, "My String property, for instance '${sampleMyStringValue}'", "foo");
         DefaultConfigProperty stringPropWithNoDescriptionNoDefaultValue = DefaultConfigProperty.create("myStringWithNoDescriptionNoDefaultValue", Type.STRING, null, null);
         DefaultConfigProperty intProp = DefaultConfigProperty.create("myInt", Type.INT, "My int property", 42);
         DefaultConfigProperty longProp = DefaultConfigProperty.create("myLong", Type.LONG, "My long property", 1234567890123456L);
         DefaultConfigProperty boolProp = DefaultConfigProperty.create("myBool", Type.BOOLEAN, "My boolean property", true);
         DefaultConfigProperty bigDecimalProp = DefaultConfigProperty.create("myBigDecimal", Type.BIGDECIMAL, "My BigDecimal property", 1.2345);
+        PlaceHolderResolver placeholderResolver = PlaceHolderResolver.create(Map.of("sampleMyStringValue", "bar"));
         PropertiesClassGenerator gen = new PropertiesClassGenerator("com.x.y.MyProperties", "myExchange", 
             List.of(stringProp, 
                 stringPropWithNoDescriptionNoDefaultValue, 
                 intProp, 
                 longProp, 
                 boolProp, 
-                bigDecimalProp));
+                bigDecimalProp),
+                placeholderResolver);
         String expected =  "package com.x.y;\n"
             + "\n"
             + "import java.math.BigDecimal;\n"
@@ -53,7 +57,7 @@ public class PropertiesClassGeneratorTest {
             + " *   <tr>\n"
             + " *     <td>myString</td>\n"
             + " *     <td>STRING</td>\n"
-            + " *     <td>My String property</td>\n"
+            + " *     <td>My String property, for instance 'bar'</td>\n"
             + " *     <td>foo</td>\n"
             + " *   </tr>\n"
             + " *   <tr>\n"
@@ -97,12 +101,12 @@ public class PropertiesClassGeneratorTest {
             + "  private MyProperties(){}\n"
             + "  \n"
             + "  /**\n"
-            + "   * My String property\n"
+            + "   * My String property, for instance 'bar'\n"
             + "   */\n"
             + "  public static final ConfigProperty MY_STRING = DefaultConfigProperty.create(\n"
             + "    \"myString\",\n"
             + "    Type.STRING,\n"
-            + "    \"My String property\",\n"
+            + "    \"My String property, for instance 'bar'\",\n"
             + "    \"foo\");\n"
             + "  \n"
             + "  \n"

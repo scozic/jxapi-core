@@ -13,6 +13,7 @@ import org.jxapi.generator.html.HtmlGenerationUtil;
 import org.jxapi.generator.java.JavaCodeGenUtil;
 import org.jxapi.generator.java.JavaTypeGenerator;
 import org.jxapi.generator.java.exchange.ExchangeJavaGenUtil;
+import org.jxapi.util.PlaceHolderResolver;
 import org.jxapi.util.PropertiesUtil;
 
 /**
@@ -58,20 +59,26 @@ public class PropertiesClassGenerator extends JavaTypeGenerator {
   
   private final String exchangeName;
   private final List<DefaultConfigProperty> properties;
+  private final PlaceHolderResolver docPlaceHolderResolver;
 
   /**
    * Constructor
    * 
-   * @param fullClassName Full name of the interface to generate, example:
-   *                      com.example.MyProperties
-   * @param exchangeName  The name of exchange configuration properties are
-   *                      generated for
-   * @param properties    List of properties to generate in the interface
+   * @param fullClassName       Full name of the interface to generate, example:
+   *                            com.example.MyProperties
+   * @param exchangeName        The name of exchange configuration properties are
+   *                            generated for
+   * @param properties          List of properties to generate in the interface
+   * @param placeHolderResolver PlaceHolderResolver to resolve placeholders in
    */
-  public PropertiesClassGenerator(String fullClassName, String exchangeName, List<DefaultConfigProperty> properties) {
+  public PropertiesClassGenerator(String fullClassName, 
+                                  String exchangeName, 
+                                  List<DefaultConfigProperty> properties, 
+                                  PlaceHolderResolver docPlaceHolderResolver) {
     super(fullClassName);
     this.exchangeName = exchangeName;
     this.properties = properties;
+    this.docPlaceHolderResolver = docPlaceHolderResolver;
     setTypeDeclaration("public class");
     setDescription(generateDescription());
   }
@@ -88,6 +95,7 @@ public class PropertiesClassGenerator extends JavaTypeGenerator {
       String pName = String.valueOf(p.getName());
       String pType = String.valueOf(p.getType());
       String pDesc = Optional.ofNullable(p.getDescription()).orElse("");
+      pDesc = docPlaceHolderResolver.resolve(pDesc);
       String pDef = Optional.ofNullable(p.getDefaultValue()).orElse("").toString();
       rows.add(List.of(pName, pType, pDesc, pDef));
     }
@@ -105,8 +113,7 @@ public class PropertiesClassGenerator extends JavaTypeGenerator {
     .append("(){}\n");
     properties
       .forEach(c -> appendToBody("\n")
-                .append(ConstantsGenerationUtil.getPropertyValueDeclation(c, getImports()))
-                .append("\n"));
+                      .append(ConstantsGenerationUtil.getPropertyValueDeclaration(c, getImports(), docPlaceHolderResolver)));
     this.properties.forEach(this::generatePropertyGetterMethod);
     generatePropertiesListMethod();
     return super.generate();
@@ -122,7 +129,6 @@ public class PropertiesClassGenerator extends JavaTypeGenerator {
         .map(p -> JavaCodeGenUtil.getStaticVariableName(ConstantsGenerationUtil.getPropertyKeyPropertyName(p)))
         .collect(Collectors.joining(", \n" + JavaCodeGenUtil.INDENTATION)))
       .append(");");
-    
   }
 
   private void generatePropertyGetterMethod(ConfigProperty property) {

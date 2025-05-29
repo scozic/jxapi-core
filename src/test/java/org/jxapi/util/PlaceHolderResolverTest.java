@@ -1,5 +1,7 @@
 package org.jxapi.util;
 
+import java.util.Map;
+
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -18,13 +20,14 @@ public class PlaceHolderResolverTest {
   
   @Test
   public void testCreateResolverWithNoArgumentsReturnsNoOp() {
-   Assert.assertSame(PlaceHolderResolver.NO_OP, PlaceHolderResolver.create());
+   Assert.assertSame(PlaceHolderResolver.NO_OP, PlaceHolderResolver.create(Map.of()));
   }
   
   @Test
-  public void testCreateResolver() {
-    Object[] keysAndValues = {"key1", "value1", "key2", "value2"};
-    PlaceHolderResolver resolver = PlaceHolderResolver.create(keysAndValues);
+  public void testCreateResolverWithMapKeysAndValues() {
+    Assert.assertSame(PlaceHolderResolver.NO_OP, PlaceHolderResolver.create(Map.of()));
+    Map<String, Object> map = Map.of("key1", "value1", "key2", "value2");
+    PlaceHolderResolver resolver = PlaceHolderResolver.create(map);
     String input = "This is a test string with ${key1} and ${key2}.";
     String expected = "This is a test string with value1 and value2.";
     String result = resolver.resolve(input);

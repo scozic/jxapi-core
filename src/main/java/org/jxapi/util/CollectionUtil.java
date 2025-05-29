@@ -28,6 +28,19 @@ public class CollectionUtil {
   }
   
   /**
+   * Check if a map is null or empty.
+   * 
+   * @param map Map to check.
+   * @return <code>true</code> if map is null or empty.
+   */
+  public static boolean isEmptyMap(Map<?, ?> map) {
+    if (map == null) {
+      return true;
+    }
+    return map.isEmpty();
+  }
+  
+  /**
    * Returns a non-null list. If the input list is null, an empty non modifiable list is returned.
    * @param list list to check.
    * @param <T> The type of the items in the list

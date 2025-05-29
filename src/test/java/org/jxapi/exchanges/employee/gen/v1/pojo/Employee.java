@@ -75,14 +75,14 @@ public class Employee implements Pojo<Employee> {
   }
   
   /**
-   * @return Employee profile. Can be 'regular' or 'admin'
+   * @return Employee profile. Can be {@link org.jxapi.exchanges.employee.gen.v1.EmployeeV1Constants#PROFILE_REGULAR} or {@link org.jxapi.exchanges.employee.gen.v1.EmployeeV1Constants#PROFILE_ADMIN}
    */
   public String getProfile() {
     return profile;
   }
   
   /**
-   * @param profile Employee profile. Can be 'regular' or 'admin'
+   * @param profile Employee profile. Can be {@link org.jxapi.exchanges.employee.gen.v1.EmployeeV1Constants#PROFILE_REGULAR} or {@link org.jxapi.exchanges.employee.gen.v1.EmployeeV1Constants#PROFILE_ADMIN}
    */
   public void setProfile(String profile) {
     this.profile = profile;
@@ -189,7 +189,7 @@ public class Employee implements Pojo<Employee> {
     
     /**
      * Will set the value of <code>profile</code> field in the builder
-     * @param profile Employee profile. Can be 'regular' or 'admin'
+     * @param profile Employee profile. Can be {@link org.jxapi.exchanges.employee.gen.v1.EmployeeV1Constants#PROFILE_REGULAR} or {@link org.jxapi.exchanges.employee.gen.v1.EmployeeV1Constants#PROFILE_ADMIN}
      * @return Builder instance
      * @see #setProfile(String)
      */

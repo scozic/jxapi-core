@@ -36,98 +36,98 @@ public class DemoExchangeMarketDataTickerStreamMessage implements Pojo<DemoExcha
   private Long time;
   
   /**
-   * @return Topic Message field <strong>t</strong>
+   * @return Topic <br>Message field <strong>t</strong>
    */
   public String getTopic() {
     return topic;
   }
   
   /**
-   * @param topic Topic Message field <strong>t</strong>
+   * @param topic Topic <br>Message field <strong>t</strong>
    */
   public void setTopic(String topic) {
     this.topic = topic;
   }
   
   /**
-   * @return Symbol name Message field <strong>s</strong>
+   * @return Symbol name <br>Message field <strong>s</strong>
    */
   public String getSymbol() {
     return symbol;
   }
   
   /**
-   * @param symbol Symbol name Message field <strong>s</strong>
+   * @param symbol Symbol name <br>Message field <strong>s</strong>
    */
   public void setSymbol(String symbol) {
     this.symbol = symbol;
   }
   
   /**
-   * @return Last traded price Message field <strong>p</strong>
+   * @return Last traded price <br>Message field <strong>p</strong>
    */
   public BigDecimal getLast() {
     return last;
   }
   
   /**
-   * @param last Last traded price Message field <strong>p</strong>
+   * @param last Last traded price <br>Message field <strong>p</strong>
    */
   public void setLast(BigDecimal last) {
     this.last = last;
   }
   
   /**
-   * @return Last traded price Message field <strong>h</strong>
+   * @return Last traded price <br>Message field <strong>h</strong>
    */
   public BigDecimal getHigh() {
     return high;
   }
   
   /**
-   * @param high Last traded price Message field <strong>h</strong>
+   * @param high Last traded price <br>Message field <strong>h</strong>
    */
   public void setHigh(BigDecimal high) {
     this.high = high;
   }
   
   /**
-   * @return Last traded price Message field <strong>l</strong>
+   * @return Last traded price <br>Message field <strong>l</strong>
    */
   public BigDecimal getLow() {
     return low;
   }
   
   /**
-   * @param low Last traded price Message field <strong>l</strong>
+   * @param low Last traded price <br>Message field <strong>l</strong>
    */
   public void setLow(BigDecimal low) {
     this.low = low;
   }
   
   /**
-   * @return Total traded amount in base asset during the last 24h from now Message field <strong>v</strong>
+   * @return Total traded amount in base asset during the last 24h from now <br>Message field <strong>v</strong>
    */
   public BigDecimal getVolume() {
     return volume;
   }
   
   /**
-   * @param volume Total traded amount in base asset during the last 24h from now Message field <strong>v</strong>
+   * @param volume Total traded amount in base asset during the last 24h from now <br>Message field <strong>v</strong>
    */
   public void setVolume(BigDecimal volume) {
     this.volume = volume;
   }
   
   /**
-   * @return Current time Message field <strong>d</strong>
+   * @return Current time <br>Message field <strong>d</strong>
    */
   public Long getTime() {
     return time;
   }
   
   /**
-   * @param time Current time Message field <strong>d</strong>
+   * @param time Current time <br>Message field <strong>d</strong>
    */
   public void setTime(Long time) {
     this.time = time;

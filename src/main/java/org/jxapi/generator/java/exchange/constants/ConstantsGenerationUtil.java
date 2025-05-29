@@ -1,5 +1,7 @@
 package org.jxapi.generator.java.exchange.constants;
 
+import java.util.Optional;
+
 import org.jxapi.exchange.descriptor.ConfigProperty;
 import org.jxapi.exchange.descriptor.Constant;
 import org.jxapi.exchange.descriptor.DefaultConfigProperty;
@@ -7,6 +9,7 @@ import org.jxapi.exchange.descriptor.Type;
 import org.jxapi.generator.java.Imports;
 import org.jxapi.generator.java.JavaCodeGenUtil;
 import org.jxapi.generator.java.exchange.ExchangeJavaGenUtil;
+import org.jxapi.util.PlaceHolderResolver;
 
 /**
  * Helper methods for generating constants and property interfaces.
@@ -27,9 +30,12 @@ public class ConstantsGenerationUtil {
    * Where {@code MY_INT} is the constant name, {@code Integer} is the type of the constant and {@code 42} is the value of the constant.
    * @param constant the constant to generate the declaration for
    * @param imports the set of imports to add to the generated code
+   * @param docPlaceHolderResolver the resolver for documentation placeholders
    * @return the Java code for the constant declaration
    */
-  public static String generateConstantDeclaration(Constant constant, Imports imports) {
+  public static String generateConstantDeclaration(Constant constant, 
+                                                   Imports imports, 
+                                                   PlaceHolderResolver docPlaceHolderResolver) {
     StringBuilder code = new StringBuilder();
     Type type = constant.getType();
     if (!type.getCanonicalType().isPrimitive) {
@@ -38,7 +44,8 @@ public class ConstantsGenerationUtil {
     String className = ExchangeJavaGenUtil.getClassNameForType(type, imports, null);
     String varName = JavaCodeGenUtil.getStaticVariableName(constant.getName());
     String value = ExchangeJavaGenUtil.getPrimitiveTypeFieldSampleValueDeclaration(type, constant.getValue(), imports);
-    String description = constant.getDescription();
+    String description = Optional.ofNullable(docPlaceHolderResolver).orElse(PlaceHolderResolver.NO_OP)
+                           .resolve(constant.getDescription());
     if (description != null) {
       code.append(JavaCodeGenUtil.generateJavaDoc(description))
         .append("\n");
@@ -82,13 +89,14 @@ public class ConstantsGenerationUtil {
    * @param imports  the set of imports to add to the generated code
    * @return the Java code for the property declaration
    */
-  public static String getPropertyValueDeclation(ConfigProperty property, Imports imports) {
+  public static String getPropertyValueDeclaration(ConfigProperty property, Imports imports, PlaceHolderResolver docPlaceHolderResolver) {
     imports.add(DefaultConfigProperty.class);
     imports.add(Type.class);
     imports.add(ConfigProperty.class);
     String name = property.getName();
+    String description = Optional.ofNullable(docPlaceHolderResolver).orElse(PlaceHolderResolver.NO_OP).resolve(property.getDescription());
     return new StringBuilder()
-        .append(JavaCodeGenUtil.generateJavaDoc(property.getDescription()))
+        .append(JavaCodeGenUtil.generateJavaDoc(description))
         .append("\npublic static final ConfigProperty ")
         .append(JavaCodeGenUtil.getStaticVariableName(getPropertyKeyPropertyName(property)))
         .append(" = DefaultConfigProperty.create(\n")
@@ -101,11 +109,11 @@ public class ConstantsGenerationUtil {
         .append(property.getType().toString())
         .append(",\n")
         .append(JavaCodeGenUtil.INDENTATION)
-        .append(JavaCodeGenUtil.getQuotedString(property.getDescription()))
+        .append(JavaCodeGenUtil.getQuotedString(description))
         .append(",\n")
         .append(JavaCodeGenUtil.INDENTATION)
         .append(JavaCodeGenUtil.getQuotedString(property.getDefaultValue()))
-        .append(");")
+        .append(");\n")
         .toString();
   }
 

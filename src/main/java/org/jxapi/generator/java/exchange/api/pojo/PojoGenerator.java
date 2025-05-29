@@ -17,6 +17,7 @@ import org.jxapi.util.CollectionUtil;
 import org.jxapi.util.CompareUtil;
 import org.jxapi.util.DeepCloneable;
 import org.jxapi.util.EncodingUtil;
+import org.jxapi.util.PlaceHolderResolver;
 import org.jxapi.util.Pojo;
 
 /**
@@ -74,15 +75,7 @@ public class PojoGenerator extends JavaTypeGenerator {
   private static final String END_NO_PARAM_METHOD_INST_TOKEN = "();\n";
   
   private final List<Field> fields = new ArrayList<>();
-  
-  /**
-   * Creates a new POJO generator for the given type name
-   * @param fullTypeName Full class name e.g. <i>com.x.y.z.Foo</i>
-   */
-  public PojoGenerator(String fullTypeName) {
-    this(fullTypeName, null, null, null);
-    
-  }
+  private final PlaceHolderResolver docPlaceHolderResolver;
   
   /**
    * Constructor.
@@ -94,9 +87,11 @@ public class PojoGenerator extends JavaTypeGenerator {
   public PojoGenerator(String className, 
        String description, 
        List<Field> fields, 
-       List<String> implementedInterfaces) {
+       List<String> implementedInterfaces,
+       PlaceHolderResolver docPlaceHolderResolver) {
     super(className);
     setTypeDeclaration("public class");
+    this.docPlaceHolderResolver = Optional.ofNullable(docPlaceHolderResolver).orElse(PlaceHolderResolver.NO_OP);
     this.fields.addAll(Optional.ofNullable(fields).orElse(List.of()));
     String serializerClassName = PojoGenUtil.getSerializerClassName(className);
     addImport(serializerClassName);
@@ -105,7 +100,7 @@ public class PojoGenerator extends JavaTypeGenerator {
                     + JavaCodeGenUtil.getClassNameWithoutPackage(serializerClassName) 
                     + ".class)\n" 
                     + getTypeDeclaration());
-    setDescription(description);
+    setDescription(this.docPlaceHolderResolver.resolve(description));
     addImport(Pojo.class.getName());
     String pojoInterface = Pojo.class.getName() + "<" + getSimpleName() + ">";
     setImplementedInterfaces(CollectionUtil.mergeLists(List.of(pojoInterface), implementedInterfaces));
@@ -253,10 +248,10 @@ public class PojoGenerator extends JavaTypeGenerator {
     String typeClass = getFieldClass(field);
     typeClass = JavaCodeGenUtil.getClassNameWithoutPackage(typeClass);
     String name = field.getName();
-    String description = field.getDescription();
+    String description = docPlaceHolderResolver.resolve(field.getDescription());
     String msgFieldDescription = "";
     if (field.getMsgField() != null) {
-      msgFieldDescription = "Message field <strong>" + field.getMsgField() + "</strong>";
+      msgFieldDescription = "<br>Message field <strong>" + field.getMsgField() + "</strong>";
       if (description == null) {
         description = msgFieldDescription;
       } else {
@@ -310,7 +305,7 @@ public class PojoGenerator extends JavaTypeGenerator {
     String typeClass = getFieldClass(field);
     typeClass = JavaCodeGenUtil.getClassNameWithoutPackage(typeClass);
     String name = field.getName();
-    String description = field.getDescription();
+    String description = docPlaceHolderResolver.resolve(field.getDescription());
     String msgFieldDescription = "";
     if (field.getMsgField() != null) {
       msgFieldDescription = "Message field <strong>" + field.getMsgField() + "</strong>";

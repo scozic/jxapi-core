@@ -15,6 +15,8 @@ import org.jxapi.exchange.descriptor.RestEndpointDescriptor;
 import org.jxapi.exchange.descriptor.parser.ExchangeDescriptorParser;
 import org.jxapi.generator.java.JavaCodeGenUtil;
 import org.jxapi.generator.java.exchange.ClassesGeneratorTestUtil;
+import org.jxapi.generator.java.exchange.ExchangeJavaGenUtil;
+import org.jxapi.util.PlaceHolderResolver;
 
 /**
  * Unit test for {@link RestEndpointClassesGenerator}
@@ -47,7 +49,9 @@ public class RestEndpointClassesGeneratorTest {
     ExchangeDescriptor exchange = ExchangeDescriptorParser.fromJson(Paths.get(".", "src", "test", "resources", "testExchangeDescriptor.json"));
     ExchangeApiDescriptor api = exchange.getApis().get(0);
     RestEndpointDescriptor restEndpoint = api.getRestEndpoints().get(0);
-    RestEndpointClassesGenerator generator = new RestEndpointClassesGenerator(exchange, api, restEndpoint);
+    PlaceHolderResolver docPlaceHolderResolver = 
+        PlaceHolderResolver.create(ExchangeJavaGenUtil.getDescriptionReplacements(exchange, api.getName()));
+    RestEndpointClassesGenerator generator = new RestEndpointClassesGenerator(exchange, api, restEndpoint, docPlaceHolderResolver);
     generator.generateClasses(srcFolder);
     
     checkJavaFilesCount(Paths.get("deserializers"), 2);
@@ -71,7 +75,7 @@ public class RestEndpointClassesGeneratorTest {
         + "\n"
         + "/**\n"
         + " * Request for MyTestExchange MarketData API exchangeInfo REST endpoint<br>\n"
-        + " * Fetch market information of symbols that can be traded\n"
+        + " * Fetch market information of symbols that can be traded. Author: {@link com.foo.bar.gen.marketdata.MyTestExchangeMarketDataConstants#AUTHOR}\n"
         + " */\n"
         + "@Generated(\"org.jxapi.generator.java.exchange.api.pojo.PojoGenerator\")\n"
         + "@JsonSerialize(using = MyTestExchangeMarketDataExchangeInfoRequestSerializer.class)\n"
@@ -89,14 +93,14 @@ public class RestEndpointClassesGeneratorTest {
         + "  private List<String> symbols;\n"
         + "  \n"
         + "  /**\n"
-        + "   * @return The list of symbol to fetch market information for. Leave empty to fetch all markets\n"
+        + "   * @return The list of symbol to fetch market information for. Leave empty to fetch all markets. Author: {@link com.foo.bar.gen.marketdata.MyTestExchangeMarketDataConstants#AUTHOR}\n"
         + "   */\n"
         + "  public List<String> getSymbols() {\n"
         + "    return symbols;\n"
         + "  }\n"
         + "  \n"
         + "  /**\n"
-        + "   * @param symbols The list of symbol to fetch market information for. Leave empty to fetch all markets\n"
+        + "   * @param symbols The list of symbol to fetch market information for. Leave empty to fetch all markets. Author: {@link com.foo.bar.gen.marketdata.MyTestExchangeMarketDataConstants#AUTHOR}\n"
         + "   */\n"
         + "  public void setSymbols(List<String> symbols) {\n"
         + "    this.symbols = symbols;\n"
@@ -149,7 +153,7 @@ public class RestEndpointClassesGeneratorTest {
         + "    \n"
         + "    /**\n"
         + "     * Will set the value of <code>symbols</code> field in the builder\n"
-        + "     * @param symbols The list of symbol to fetch market information for. Leave empty to fetch all markets\n"
+        + "     * @param symbols The list of symbol to fetch market information for. Leave empty to fetch all markets. Author: {@link com.foo.bar.gen.marketdata.MyTestExchangeMarketDataConstants#AUTHOR}\n"
         + "     * @return Builder instance\n"
         + "     * @see #setSymbols(List<String>)\n"
         + "     */\n"
@@ -202,7 +206,7 @@ public class RestEndpointClassesGeneratorTest {
         + "/**\n"
         + " * Response to MyTestExchange MarketData API <br>\n"
         + " * exchangeInfo REST endpoint request<br>\n"
-        + " * Fetch market information of symbols that can be traded\n"
+        + " * Fetch market information of symbols that can be traded. Author: {@link com.foo.bar.gen.marketdata.MyTestExchangeMarketDataConstants#AUTHOR}\n"
         + " */\n"
         + "@Generated(\"org.jxapi.generator.java.exchange.api.pojo.PojoGenerator\")\n"
         + "@JsonSerialize(using = MyTestExchangeMarketDataExchangeInfoResponseSerializer.class)\n"
@@ -235,14 +239,14 @@ public class RestEndpointClassesGeneratorTest {
         + "  }\n"
         + "  \n"
         + "  /**\n"
-        + "   * @return List of market information for each requested symbol\n"
+        + "   * @return List of market information for each requested symbol. Author: {@link com.foo.bar.gen.marketdata.MyTestExchangeMarketDataConstants#AUTHOR}\n"
         + "   */\n"
         + "  public List<MyTestExchangeMarketDataExchangeInfoResponsePayload> getPayload() {\n"
         + "    return payload;\n"
         + "  }\n"
         + "  \n"
         + "  /**\n"
-        + "   * @param payload List of market information for each requested symbol\n"
+        + "   * @param payload List of market information for each requested symbol. Author: {@link com.foo.bar.gen.marketdata.MyTestExchangeMarketDataConstants#AUTHOR}\n"
         + "   */\n"
         + "  public void setPayload(List<MyTestExchangeMarketDataExchangeInfoResponsePayload> payload) {\n"
         + "    this.payload = payload;\n"
@@ -313,7 +317,7 @@ public class RestEndpointClassesGeneratorTest {
         + "    \n"
         + "    /**\n"
         + "     * Will set the value of <code>payload</code> field in the builder\n"
-        + "     * @param payload List of market information for each requested symbol\n"
+        + "     * @param payload List of market information for each requested symbol. Author: {@link com.foo.bar.gen.marketdata.MyTestExchangeMarketDataConstants#AUTHOR}\n"
         + "     * @return Builder instance\n"
         + "     * @see #setPayload(List<MyTestExchangeMarketDataExchangeInfoResponsePayload>)\n"
         + "     */\n"
@@ -364,7 +368,7 @@ public class RestEndpointClassesGeneratorTest {
     ExchangeDescriptor exchange = ExchangeDescriptorParser.fromJson(Paths.get(".", "src", "test", "resources", "testExchangeDescriptorWithRequestAndResponseImplementingCustomInterfaces.json"));
     ExchangeApiDescriptor api = exchange.getApis().get(0);
     RestEndpointDescriptor restEndpoint = ClassesGeneratorTestUtil.findRestEndpointByName("exchangeInfo", api);
-    RestEndpointClassesGenerator generator = new RestEndpointClassesGenerator(exchange, api, restEndpoint);
+    RestEndpointClassesGenerator generator = new RestEndpointClassesGenerator(exchange, api, restEndpoint, null);
     generator.generateClasses(srcFolder);
     
     checkJavaFilesCount(Paths.get("deserializers"), 2);
@@ -685,7 +689,7 @@ public class RestEndpointClassesGeneratorTest {
     ExchangeDescriptor exchange = ExchangeDescriptorParser.fromJson(Paths.get(".", "src", "test", "resources", "testExchangeDescriptorWithAllRestRequestDataTypes.json"));
     ExchangeApiDescriptor api = exchange.getApis().get(0);
     RestEndpointDescriptor restEndpoint = ClassesGeneratorTestUtil.findRestEndpointByName("postRestRequestDataTypeInt", api);
-    RestEndpointClassesGenerator generator = new RestEndpointClassesGenerator(exchange, api, restEndpoint);
+    RestEndpointClassesGenerator generator = new RestEndpointClassesGenerator(exchange, api, restEndpoint, null);
     generator.generateClasses(srcFolder);
     
     checkJavaFilesCount(Paths.get("deserializers"), 1);
@@ -704,7 +708,7 @@ public class RestEndpointClassesGeneratorTest {
     ExchangeDescriptor exchange = ExchangeDescriptorParser.fromJson(Paths.get(".", "src", "test", "resources", "testExchangeDescriptorWithAllRestRequestDataTypes.json"));
     ExchangeApiDescriptor api = exchange.getApis().get(0);
     RestEndpointDescriptor restEndpoint = ClassesGeneratorTestUtil.findRestEndpointByName("postRestRequestDataTypeIntList", api);
-    RestEndpointClassesGenerator generator = new RestEndpointClassesGenerator(exchange, api, restEndpoint);
+    RestEndpointClassesGenerator generator = new RestEndpointClassesGenerator(exchange, api, restEndpoint, null);
     generator.generateClasses(srcFolder);
     checkJavaFilesCount(srcFolder, 0);        
   }
@@ -715,7 +719,7 @@ public class RestEndpointClassesGeneratorTest {
     ExchangeDescriptor exchange = ExchangeDescriptorParser.fromJson(Paths.get(".", "src", "test", "resources", "testExchangeDescriptorWithAllRestRequestDataTypes.json"));
     ExchangeApiDescriptor api = exchange.getApis().get(0);
     RestEndpointDescriptor restEndpoint = ClassesGeneratorTestUtil.findRestEndpointByName("postRestRequestDataTypeObjectNoParameters", api);
-    RestEndpointClassesGenerator generator = new RestEndpointClassesGenerator(exchange, api, restEndpoint);
+    RestEndpointClassesGenerator generator = new RestEndpointClassesGenerator(exchange, api, restEndpoint, null);
     generator.generateClasses(srcFolder);
     checkJavaFilesCount(srcFolder, 0);        
   }
@@ -726,7 +730,7 @@ public class RestEndpointClassesGeneratorTest {
     ExchangeDescriptor exchange = ExchangeDescriptorParser.fromJson(Paths.get(".", "src", "test", "resources", "testExchangeDescriptorWithAllRestResponseDataTypes.json"));
     ExchangeApiDescriptor api = exchange.getApis().get(0);
     RestEndpointDescriptor restEndpoint = ClassesGeneratorTestUtil.findRestEndpointByName("getRestResponseDataTypeInt", api);
-    RestEndpointClassesGenerator generator = new RestEndpointClassesGenerator(exchange, api, restEndpoint);
+    RestEndpointClassesGenerator generator = new RestEndpointClassesGenerator(exchange, api, restEndpoint, null);
     generator.generateClasses(srcFolder);
     checkJavaFilesCount(srcFolder, 0); 
   }
@@ -737,7 +741,7 @@ public class RestEndpointClassesGeneratorTest {
     ExchangeDescriptor exchange = ExchangeDescriptorParser.fromJson(Paths.get(".", "src", "test", "resources", "testExchangeDescriptorWithAllRestResponseDataTypes.json"));
     ExchangeApiDescriptor api = exchange.getApis().get(0);
     RestEndpointDescriptor restEndpoint = ClassesGeneratorTestUtil.findRestEndpointByName("getRestResponseDataTypeIntList", api);
-    RestEndpointClassesGenerator generator = new RestEndpointClassesGenerator(exchange, api, restEndpoint);
+    RestEndpointClassesGenerator generator = new RestEndpointClassesGenerator(exchange, api, restEndpoint, null);
     generator.generateClasses(srcFolder);
     checkJavaFilesCount(srcFolder, 0); 
   }
@@ -748,7 +752,7 @@ public class RestEndpointClassesGeneratorTest {
     ExchangeDescriptor exchange = ExchangeDescriptorParser.fromJson(Paths.get(".", "src", "test", "resources", "testExchangeDescriptorWithAllRestResponseDataTypes.json"));
     ExchangeApiDescriptor api = exchange.getApis().get(0);
     RestEndpointDescriptor restEndpoint = ClassesGeneratorTestUtil.findRestEndpointByName("getRestEmptyResponseDataType", api);
-    RestEndpointClassesGenerator generator = new RestEndpointClassesGenerator(exchange, api, restEndpoint);
+    RestEndpointClassesGenerator generator = new RestEndpointClassesGenerator(exchange, api, restEndpoint, null);
     generator.generateClasses(srcFolder);
     checkJavaFilesCount(srcFolder, 0); 
   }

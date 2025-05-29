@@ -16,6 +16,7 @@ import org.jxapi.netutils.rest.FutureRestResponse;
 import org.jxapi.netutils.rest.ratelimits.RateLimitRule;
 import org.jxapi.netutils.websocket.WebsocketListener;
 import org.jxapi.util.CollectionUtil;
+import org.jxapi.util.PlaceHolderResolver;
 
 /**
  * Generates source code for a Java interface for an
@@ -45,6 +46,8 @@ public class ExchangeApiInterfaceGenerator extends JavaTypeGenerator {
   
   private final ExchangeApiDescriptor exchangeApiDescriptor;
   
+  private final PlaceHolderResolver docPlaceHolderResolver;
+  
   /**
    * Constructor.
    * 
@@ -52,12 +55,18 @@ public class ExchangeApiInterfaceGenerator extends JavaTypeGenerator {
    * @param exchangeApiDescriptor the API descriptor to generate interface for
    */
   public ExchangeApiInterfaceGenerator(ExchangeDescriptor exchangeDescriptor, 
-                     ExchangeApiDescriptor exchangeApiDescriptor) {
+                                       ExchangeApiDescriptor exchangeApiDescriptor,
+                                       PlaceHolderResolver docPlaceHolderResolver) {
     super(ExchangeJavaGenUtil.getApiInterfaceClassName(exchangeDescriptor, exchangeApiDescriptor));
     this.exchangeDescriptor = exchangeDescriptor;
     this.exchangeApiDescriptor = exchangeApiDescriptor;
-    setDescription(exchangeDescriptor.getId() + " " + exchangeApiDescriptor.getName() + " API<br>\n" 
-        + exchangeApiDescriptor.getDescription());
+    this.docPlaceHolderResolver = Optional.ofNullable(docPlaceHolderResolver)
+                                          .orElse(PlaceHolderResolver.NO_OP);
+    setDescription(exchangeDescriptor.getId() 
+                    + " " 
+                    + exchangeApiDescriptor.getName() 
+                    + " API<br>\n" 
+                    + this.docPlaceHolderResolver.resolve(exchangeApiDescriptor.getDescription()));
     setTypeDeclaration("public interface");
     this.setParentClassName(ExchangeApi.class.getName());
   }
@@ -152,7 +161,7 @@ public class ExchangeApiInterfaceGenerator extends JavaTypeGenerator {
                           requestDataType, 
                           getImports(), 
                           requestClassName);
-      requestDescription = Optional.ofNullable(websocketApi.getRequest().getDescription()).orElse("request");
+      requestDescription = Optional.ofNullable(docPlaceHolderResolver.resolve(websocketApi.getRequest().getDescription())).orElse("request");
       requestArgName = ExchangeApiGenUtil.getRequestArgName(websocketApi.getRequest().getName());
     }
     
@@ -185,8 +194,9 @@ public class ExchangeApiInterfaceGenerator extends JavaTypeGenerator {
         .append(" stream.<br>\n");
 
     if (websocketApi.getDescription() != null) {
-      subscribeMethodDoc.append(websocketApi.getDescription())
-                  .append("\n");  
+      subscribeMethodDoc
+        .append(docPlaceHolderResolver.resolve(websocketApi.getDescription()))
+        .append("\n");  
     }
     subscribeMethodDoc.append("\n");
     if (requestDescription != null) {
@@ -288,11 +298,11 @@ public class ExchangeApiInterfaceGenerator extends JavaTypeGenerator {
         .append(")").toString(); 
     StringBuilder javaDoc = new StringBuilder();
     if (restApi.getDescription() != null) {
-      javaDoc.append(restApi.getDescription())
+      javaDoc.append(docPlaceHolderResolver.resolve(restApi.getDescription()))
            .append("\n");
     }
     if (hasArguments) {
-      String paramDescription = Optional.ofNullable(request.getDescription()).orElse("request");
+      String paramDescription = Optional.ofNullable(docPlaceHolderResolver.resolve(request.getDescription())).orElse("request");
       javaDoc.append("@param ")
            .append(requestArgName)
            .append(" ")
@@ -303,14 +313,14 @@ public class ExchangeApiInterfaceGenerator extends JavaTypeGenerator {
     javaDoc.append("@return A {@link FutureRestResponse} that will complete when request submitted asynchronously has been processed.");
     if (hasResponse && response.getDescription() != null) {
       javaDoc.append("If successful, will provide response:")
-           .append(response.getDescription())
+             .append(docPlaceHolderResolver.resolve(response.getDescription()))
              .append("\n");
     }
     
     if (restApi.getDocUrl() != null) {
       javaDoc.append("\n@see ")
-           .append(JavaCodeGenUtil.getHtmlLink(restApi.getDocUrl(), "Reference documentation"))
-            .append("\n");
+             .append(JavaCodeGenUtil.getHtmlLink(restApi.getDocUrl(), "Reference documentation"))
+             .append("\n");
     }
     if (javaDoc.length() > 0) {
       // Remove trailing '\n'

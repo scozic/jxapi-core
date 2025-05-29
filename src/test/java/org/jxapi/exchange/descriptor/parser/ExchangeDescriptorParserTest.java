@@ -84,7 +84,8 @@ public class ExchangeDescriptorParserTest {
   
   private void checkTestExchange(ExchangeDescriptor exchangeDescriptor) {
     Assert.assertEquals("MyTestExchange", exchangeDescriptor.getId());
-    Assert.assertEquals("A sample Exchange descriptor file", exchangeDescriptor.getDescription());
+    Assert.assertEquals("A sample Exchange descriptor file. Should be provided config properties: ${config.apiKey}, ${config.apiSecret}. Author: ${constants.author}", 
+                        exchangeDescriptor.getDescription());
     Assert.assertEquals("com.foo.bar.gen", exchangeDescriptor.getBasePackage());
     List<ExchangeApiDescriptor> apis = exchangeDescriptor.getApis();
     Assert.assertEquals(1, apis.size());
@@ -93,7 +94,7 @@ public class ExchangeDescriptorParserTest {
   
   private void checkMarketDataApi(ExchangeApiDescriptor marketDataApi) {
     Assert.assertEquals("MarketData", marketDataApi.getName());
-    Assert.assertEquals("The market data API of MyTestExchange", marketDataApi.getDescription());
+    Assert.assertEquals("The market data API of MyTestExchange. Author: ${constants.author}", marketDataApi.getDescription());
     Assert.assertEquals("com.foo.bar.BarHttpRequestInterceptorFactory", marketDataApi.getHttpRequestInterceptorFactory());
     List<RestEndpointDescriptor> restEndpoints = marketDataApi.getRestEndpoints();
     Assert.assertEquals(2, restEndpoints.size());
@@ -109,7 +110,7 @@ public class ExchangeDescriptorParserTest {
 
   private void checkTickersRestEndpooint(RestEndpointDescriptor tickersEndPoint) {
     Assert.assertEquals("tickers", tickersEndPoint.getName());
-    Assert.assertEquals("Fetch current tickers", tickersEndPoint.getDescription());
+    Assert.assertEquals("Fetch current tickers. Author: ${constants.author}", tickersEndPoint.getDescription());
     Assert.assertEquals(HttpMethod.GET, tickersEndPoint.getHttpMethod());
     Assert.assertEquals("https://com.sample.mycex/tickers", tickersEndPoint.getUrl());
     List<Field> exchangeInfoParameters = tickersEndPoint.getRequest().getProperties();
@@ -123,13 +124,13 @@ public class ExchangeDescriptorParserTest {
     Assert.assertEquals(2, tickersResponse.size());
     Field responseCode = tickersResponse.get(0);
     Assert.assertEquals("responseCode", responseCode.getName());
-    Assert.assertEquals("Request response code", responseCode.getDescription());
+    Assert.assertEquals("Request response code. Author: ${constants.author}", responseCode.getDescription());
     Assert.assertEquals(CanonicalType.INT, responseCode.getType().getCanonicalType());
     Assert.assertEquals("0", responseCode.getSampleValue());
     
     Field payload = tickersResponse.get(1);
     Assert.assertEquals("payload", payload.getName());
-    Assert.assertEquals("Tickers for each symbol", payload.getDescription());
+    Assert.assertEquals("Tickers for each symbol. Author: ${constants.author}", payload.getDescription());
     Assert.assertEquals(CanonicalType.MAP, payload.getType().getCanonicalType());
     Assert.assertEquals(CanonicalType.OBJECT, payload.getType().getSubType().getCanonicalType());
     List<Field> payloadParameters = payload.getProperties();
@@ -137,7 +138,7 @@ public class ExchangeDescriptorParserTest {
     
     Field last = payloadParameters.get(0);
     Assert.assertEquals("last", last.getName());
-    Assert.assertEquals("Last traded price", last.getDescription());
+    Assert.assertEquals("Last traded price. Author: ${constants.author}", last.getDescription());
     Assert.assertEquals(CanonicalType.BIGDECIMAL, last.getType().getCanonicalType());
     Assert.assertEquals(Double.valueOf("10.0"), last.getSampleValue());
     
@@ -145,7 +146,7 @@ public class ExchangeDescriptorParserTest {
 
   private void checkExchangeInfoRestEndpoint(RestEndpointDescriptor exchangeInfoEndPoint) {
     Assert.assertEquals("exchangeInfo", exchangeInfoEndPoint.getName());
-    Assert.assertEquals("Fetch market information of symbols that can be traded", exchangeInfoEndPoint.getDescription());
+    Assert.assertEquals("Fetch market information of symbols that can be traded. Author: ${constants.author}", exchangeInfoEndPoint.getDescription());
     Assert.assertEquals(HttpMethod.GET, exchangeInfoEndPoint.getHttpMethod());
     Assert.assertEquals("https://com.sample.mycex/exchangeInfo", exchangeInfoEndPoint.getUrl());
     List<Field> exchangeInfoParameters = exchangeInfoEndPoint.getRequest().getProperties();
@@ -153,7 +154,7 @@ public class ExchangeDescriptorParserTest {
     Assert.assertEquals(1, exchangeInfoParameters.size());
     Field symbolsParameter = exchangeInfoParameters.get(0);
     Assert.assertEquals("symbols", symbolsParameter.getName());
-    Assert.assertEquals("The list of symbol to fetch market information for. Leave empty to fetch all markets", symbolsParameter.getDescription());
+    Assert.assertEquals("The list of symbol to fetch market information for. Leave empty to fetch all markets. Author: ${constants.author}", symbolsParameter.getDescription());
     Assert.assertEquals(CanonicalType.LIST, symbolsParameter.getType().getCanonicalType());
     Assert.assertEquals(CanonicalType.STRING, symbolsParameter.getType().getSubType().getCanonicalType());
     Assert.assertEquals("[\"BTC\", \"ETH\"]", symbolsParameter.getSampleValue());
@@ -171,7 +172,7 @@ public class ExchangeDescriptorParserTest {
     
     Field payload = exchangeInfoResponse.get(1);
     Assert.assertEquals("payload", payload.getName());
-    Assert.assertEquals("List of market information for each requested symbol", payload.getDescription());
+    Assert.assertEquals("List of market information for each requested symbol. Author: ${constants.author}", payload.getDescription());
     Assert.assertEquals(CanonicalType.LIST, payload.getType().getCanonicalType());
     Assert.assertEquals(CanonicalType.OBJECT, payload.getType().getSubType().getCanonicalType());
     List<Field> payloadParameters = payload.getProperties();
@@ -179,19 +180,19 @@ public class ExchangeDescriptorParserTest {
     
     Field symbol = payloadParameters.get(0);
     Assert.assertEquals("symbol", symbol.getName());
-    Assert.assertEquals("Market symbol (STRING type implicit)", symbol.getDescription());
+    Assert.assertEquals("Market symbol (STRING type implicit). Author: ${constants.author}", symbol.getDescription());
     Assert.assertNull(symbol.getType());
     Assert.assertEquals("BTC_USDT", symbol.getSampleValue());
     
     Field minOrderSize = payloadParameters.get(1);
     Assert.assertEquals("minOrderSize", minOrderSize.getName());
-    Assert.assertEquals("Minimum order amount", minOrderSize.getDescription());
+    Assert.assertEquals("Minimum order amount. Author: ${constants.author}", minOrderSize.getDescription());
     Assert.assertEquals(CanonicalType.BIGDECIMAL, minOrderSize.getType().getCanonicalType());
     Assert.assertEquals("0.0001", minOrderSize.getSampleValue());
     
     Field levels = payloadParameters.get(2);
     Assert.assertEquals("levels", levels.getName());
-    Assert.assertEquals("Amount precision levels", levels.getDescription());
+    Assert.assertEquals("Amount precision levels. Author: ${constants.author}", levels.getDescription());
     Assert.assertEquals(CanonicalType.LIST, levels.getType().getCanonicalType());
     Assert.assertEquals(CanonicalType.INT, levels.getType().getSubType().getCanonicalType());
     Assert.assertEquals(List.of(1, 10, 500).toString(), levels.getSampleValue().toString());
@@ -200,14 +201,14 @@ public class ExchangeDescriptorParserTest {
 
   private void checkTickerStreamWebsocketEndpoint(WebsocketEndpointDescriptor tickerStreamEndpoint) {
     Assert.assertEquals("tickerStream", tickerStreamEndpoint.getName());
-    Assert.assertEquals("Subscribe to ticker stream", tickerStreamEndpoint.getDescription());
+    Assert.assertEquals("Subscribe to ticker stream. Author: ${constants.author}", tickerStreamEndpoint.getDescription());
     Assert.assertEquals("${symbol}@ticker", tickerStreamEndpoint.getTopic());
     Assert.assertEquals("|", tickerStreamEndpoint.getTopicParametersListSeparator());
     
     List<Field> parameters = tickerStreamEndpoint.getRequest().getProperties();
     Field symbols = parameters.get(0);
     Assert.assertEquals("symbol", symbols.getName());
-    Assert.assertEquals("Symbol to subscribe to ticker stream of", symbols.getDescription());
+    Assert.assertEquals("Symbol to subscribe to ticker stream of. Author: ${constants.author}", symbols.getDescription());
     Assert.assertEquals(CanonicalType.STRING, symbols.getType().getCanonicalType());
     Assert.assertEquals("BTC_USDT", symbols.getSampleValue());
     
@@ -223,19 +224,19 @@ public class ExchangeDescriptorParserTest {
     
     Field topic = response.get(0);
     Assert.assertEquals("topic", topic.getName());
-    Assert.assertEquals("Topic", topic.getDescription());
+    Assert.assertEquals("Topic. Author: ${constants.author}", topic.getDescription());
     Assert.assertEquals(CanonicalType.STRING, topic.getType().getCanonicalType());
     Assert.assertEquals("ticker", topic.getSampleValue());
     
     Field symbol = response.get(1);
     Assert.assertEquals("symbol", symbol.getName());
-    Assert.assertEquals("Symbol name", symbol.getDescription());
+    Assert.assertEquals("Symbol name. Author: ${constants.author}", symbol.getDescription());
     Assert.assertEquals(CanonicalType.STRING, symbol.getType().getCanonicalType());
     Assert.assertEquals("BTC_USDT", symbol.getSampleValue());
     
     Field last = response.get(2);
     Assert.assertEquals("last", last.getName());
-    Assert.assertEquals("Last traded price", last.getDescription());
+    Assert.assertEquals("Last traded price. Author: ${constants.author}", last.getDescription());
     Assert.assertEquals(CanonicalType.BIGDECIMAL, last.getType().getCanonicalType());
     Assert.assertEquals("16000.00", last.getSampleValue());
   }
@@ -243,12 +244,11 @@ public class ExchangeDescriptorParserTest {
   private void checkEmployeeExchange(ExchangeDescriptor exchangeDescriptor) {
     Assert.assertEquals("Employee", exchangeDescriptor.getId());
     Assert.assertEquals(
-        "Employee exchange is a demo exchange REST APIs to get, add, delete and  update employees and "
-        + "a websocket endpoint to get notified of updates from an employee database.<br> A server can be started "
-        + "using <code>org.jxapi.exchanges.employee.EmployeeExchangeServer</code> class to serve these APIs.<br> " 
-        + "The URL of the server must be set using the baseUrl property.<br>"
-        + " Notice how the 'employee' object present in APIs request and responses is used in multiple endpoints and "
-        + "its properties defined only once.\n",
+        "Employee exchange is a demo exchange REST APIs to get, add, delete and "
+        + "update employees and a websocket endpoint to get notified of updates from an employee database.<br>"
+        + " A server can be started using <code>org.jxapi.exchanges.employee.EmployeeExchangeServer</code> class to serve these APIs.<br>"
+        + " The URL of the HTTP server and Websocket server must be set using the ${config.baseHttpUrl} and ${config.baseWebsocketUrl} properties.<br>"
+        + " Notice how the 'employee' object present in APIs request and responses is used in multiple endpoints and its properties defined only once.\n",
         exchangeDescriptor.getDescription());
     
     Assert.assertEquals("https://www.example.com/docs/employee", exchangeDescriptor.getDocUrl());
@@ -305,9 +305,9 @@ public class ExchangeDescriptorParserTest {
     Assert.assertEquals(2, messageProperties.size());
     Field eventType = messageProperties.get(0);
     Assert.assertEquals("eventType", eventType.getName());
-    Assert.assertEquals("Type of event. Can be 'ADD', 'UPDATE' or 'DELETE'", eventType.getDescription());
+    Assert.assertEquals("Type of event, e.g. one of ${constants.updateEmployeeTypeAdd}, ${constants.updateEmployeeTypeUpdate} or ${constants.updateEmployeeTypeDelete}", eventType.getDescription());
     Assert.assertNull(eventType.getType());
-    Assert.assertEquals(1, eventType.getSampleValue());
+    Assert.assertEquals("ADD", eventType.getSampleValue());
     Field employee = messageProperties.get(1);
     Assert.assertEquals("employee", employee.getName());
     Assert.assertEquals("Employee that was updated", employee.getDescription());
@@ -428,7 +428,7 @@ public class ExchangeDescriptorParserTest {
     Field profileField = employeeProperties.get(3);
     Assert.assertEquals("profile", profileField.getName());
     Assert.assertNull(profileField.getType());
-    Assert.assertEquals("Employee profile. Can be 'regular' or 'admin'", profileField.getDescription());
+    Assert.assertEquals("Employee profile. Can be ${constants.profileRegular} or ${constants.profileAdmin}", profileField.getDescription());
     Assert.assertEquals("REGULAR", profileField.getSampleValue());
   }
   

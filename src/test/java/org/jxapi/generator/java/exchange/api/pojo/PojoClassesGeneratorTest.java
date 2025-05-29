@@ -5,6 +5,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import org.junit.After;
 import org.junit.Test;
@@ -13,6 +14,7 @@ import org.jxapi.exchange.descriptor.Field;
 import org.jxapi.exchange.descriptor.Type;
 import org.jxapi.generator.java.JavaCodeGenUtil;
 import org.jxapi.generator.java.exchange.ClassesGeneratorTestUtil;
+import org.jxapi.util.PlaceHolderResolver;
 
 /**
  * Unit test for {@link PojoClassesGenerator}
@@ -46,7 +48,7 @@ public class PojoClassesGeneratorTest {
     properties.add(Field.builder().type("OBJECT_LIST_MAP").name("toto")
                   .property(Field.builder().type(Type.STRING).name("id").build())
                   .build());
-    PojoClassesGenerator generator = new PojoClassesGenerator(typeName, typeDescription, properties, null);
+    PojoClassesGenerator generator = new PojoClassesGenerator(typeName, typeDescription, properties, null, null);
     generator.generateClasses(srcFolder);
     checkJavaFilesCount(4);
     checkSourceFileExists(Path.of("MyPojo.java"));
@@ -62,9 +64,10 @@ public class PojoClassesGeneratorTest {
     String typeDescription = "Used in EndpointPojoGeneratorTest";
     List<Field> properties = new ArrayList<>();
     properties.add(Field.builder().type(Type.LONG).name("id").description("identifier").build());
-    properties.add(Field.builder().type(Type.INT).name("score").description("Current score").build());
+    properties.add(Field.builder().type(Type.INT).name("score").description("Current score, max is ${constants.maxScore}").build());
     properties.add(Field.builder().type("OBJECT_LIST").name("foo").build());
-    PojoClassesGenerator generator = new PojoClassesGenerator(typeName, typeDescription, properties, null);
+    PlaceHolderResolver docPlaceHolderResolver = PlaceHolderResolver.create(Map.of("constants.maxScore", "100"));
+    PojoClassesGenerator generator = new PojoClassesGenerator(typeName, typeDescription, properties, null, docPlaceHolderResolver);
     generator.generateClasses(srcFolder);
     checkJavaFilesCount(1);
     checkSourceFileExists(Path.of("MyPojo.java"));

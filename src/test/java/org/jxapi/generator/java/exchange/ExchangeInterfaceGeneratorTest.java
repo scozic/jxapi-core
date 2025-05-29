@@ -4,9 +4,9 @@ import java.nio.file.Paths;
 
 import org.junit.Assert;
 import org.junit.Test;
-
 import org.jxapi.exchange.descriptor.ExchangeDescriptor;
 import org.jxapi.exchange.descriptor.parser.ExchangeDescriptorParser;
+import org.jxapi.util.PlaceHolderResolver;
 
 /**
  * Unit test for {@link ExchangeInterfaceGenerator}
@@ -16,7 +16,9 @@ public class ExchangeInterfaceGeneratorTest {
   @Test
   public void testGenerateExchangeInterface() throws Exception {
     ExchangeDescriptor exchangeDescriptor = ExchangeDescriptorParser.fromJson(Paths.get(".", "src", "test", "resources", "testExchangeDescriptor.json"));
-    ExchangeInterfaceGenerator exchangeGenerator = new ExchangeInterfaceGenerator(exchangeDescriptor);
+    PlaceHolderResolver docPlaceHolderResolver = 
+        PlaceHolderResolver.create(ExchangeJavaGenUtil.getDescriptionReplacements(exchangeDescriptor, null));
+    ExchangeInterfaceGenerator exchangeGenerator = new ExchangeInterfaceGenerator(exchangeDescriptor, docPlaceHolderResolver);
     Assert.assertEquals("package com.foo.bar.gen;\n"
         + "\n"
         + "import com.foo.bar.gen.marketdata.MyTestExchangeMarketDataApi;\n"
@@ -25,7 +27,7 @@ public class ExchangeInterfaceGeneratorTest {
         + "\n"
         + "/**\n"
         + " * MyTestExchange API<br>\n"
-        + " * A sample Exchange descriptor file\n"
+        + " * A sample Exchange descriptor file. Should be provided config properties: {@link com.foo.bar.gen.MyTestExchangeProperties#API_KEY}, {@link com.foo.bar.gen.MyTestExchangeProperties#API_SECRET}. Author: {@link com.foo.bar.gen.MyTestExchangeConstants#AUTHOR}\n"
         + " * @see <a href=\"https://docs.myexchange.com/api\">Reference documentation</a>\n"
         + " */\n"
         + "@Generated(\"org.jxapi.generator.java.exchange.ExchangeInterfaceGenerator\")\n"
@@ -44,7 +46,7 @@ public class ExchangeInterfaceGeneratorTest {
         + "  // API groups\n"
         + "  \n"
         + "  /**\n"
-        + "   * @return The market data API of MyTestExchange\n"
+        + "   * @return The market data API of MyTestExchange. Author: {@link com.foo.bar.gen.MyTestExchangeConstants#AUTHOR}\n"
         + "   */\n"
         + "  MyTestExchangeMarketDataApi getMyTestExchangeMarketDataApi();\n"
         + "}\n", 
@@ -54,8 +56,10 @@ public class ExchangeInterfaceGeneratorTest {
   @Test
   public void testGenerateExchangeInterface_NoApiGroups() throws Exception {
     ExchangeDescriptor exchangeDescriptor = ExchangeDescriptorParser.fromJson(Paths.get(".", "src", "test", "resources", "testExchangeDescriptor.json"));
+    PlaceHolderResolver docPlaceHolderResolver = 
+        PlaceHolderResolver.create(ExchangeJavaGenUtil.getDescriptionReplacements(exchangeDescriptor, null, null));
     exchangeDescriptor.setApis(null);
-    ExchangeInterfaceGenerator exchangeGenerator = new ExchangeInterfaceGenerator(exchangeDescriptor);
+    ExchangeInterfaceGenerator exchangeGenerator = new ExchangeInterfaceGenerator(exchangeDescriptor, docPlaceHolderResolver);
     Assert.assertEquals("package com.foo.bar.gen;\n"
         + "\n"
         + "import javax.annotation.processing.Generated;\n"
@@ -63,7 +67,7 @@ public class ExchangeInterfaceGeneratorTest {
         + "\n"
         + "/**\n"
         + " * MyTestExchange API<br>\n"
-        + " * A sample Exchange descriptor file\n"
+        + " * A sample Exchange descriptor file. Should be provided config properties: {@link com.foo.bar.gen.MyTestExchangeProperties#API_KEY}, {@link com.foo.bar.gen.MyTestExchangeProperties#API_SECRET}. Author: {@link com.foo.bar.gen.MyTestExchangeConstants#AUTHOR}\n"
         + " * @see <a href=\"https://docs.myexchange.com/api\">Reference documentation</a>\n"
         + " */\n"
         + "@Generated(\"org.jxapi.generator.java.exchange.ExchangeInterfaceGenerator\")\n"
@@ -85,7 +89,7 @@ public class ExchangeInterfaceGeneratorTest {
   @Test
   public void testGenerateExchangeInterface_WithExchangeLevelRateLimitRule() throws Exception {
     ExchangeDescriptor exchangeDescriptor = ExchangeDescriptorParser.fromJson(Paths.get(".", "src", "test", "resources", "exchangeApiInterfaceImplementationGeneratorTestWithRateLimitRulesAtExchangeLevelDescriptor.json"));
-    ExchangeInterfaceGenerator exchangeGenerator = new ExchangeInterfaceGenerator(exchangeDescriptor);
+    ExchangeInterfaceGenerator exchangeGenerator = new ExchangeInterfaceGenerator(exchangeDescriptor, null);
     Assert.assertEquals("package com.foo.bar.gen;\n"
         + "\n"
         + "import com.foo.bar.gen.futurestrading.MyTestExchangeFuturesTradingApi;\n"
@@ -132,7 +136,7 @@ public class ExchangeInterfaceGeneratorTest {
   public void testGenerateExchangeInterface_InvalidRateLimitId_Null() throws Exception {
     ExchangeDescriptor exchangeDescriptor = ExchangeDescriptorParser.fromJson(Paths.get(".", "src", "test", "resources", "exchangeApiInterfaceImplementationGeneratorTestWithRateLimitRulesAtExchangeLevelDescriptor.json"));
     exchangeDescriptor.getRateLimits().get(0).setId(null);
-    ExchangeInterfaceGenerator exchangeGenerator = new ExchangeInterfaceGenerator(exchangeDescriptor);
+    ExchangeInterfaceGenerator exchangeGenerator = new ExchangeInterfaceGenerator(exchangeDescriptor, null);
     exchangeGenerator.generate();
   }
 }

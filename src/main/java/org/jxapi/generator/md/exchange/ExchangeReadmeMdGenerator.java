@@ -22,6 +22,7 @@ import org.jxapi.generator.java.exchange.ExchangeJavaGenUtil;
 import org.jxapi.generator.java.exchange.api.ExchangeApiGenUtil;
 import org.jxapi.generator.java.exchange.api.demo.EndpointDemoGenUtil;
 import org.jxapi.util.CollectionUtil;
+import org.jxapi.util.PlaceHolderResolver;
 
 /**
  * Generates a README.md file for an exchange API wrapper.
@@ -76,10 +77,12 @@ public class ExchangeReadmeMdGenerator {
    * @return the README.md file content
    */
   public String generate() {
+    PlaceHolderResolver docPlaceHolderResolver = PlaceHolderResolver
+        .create(ExchangeJavaGenUtil.getDescriptionReplacements(exchangeDescriptor, null, baseJavadocUrl));
     StringBuilder s = new StringBuilder().append("# ")
       .append(exchangeDescriptor.getId())
       .append(" API Java wrapper\n\n")
-      .append(exchangeDescriptor.getDescription())
+      .append(docPlaceHolderResolver.resolve(exchangeDescriptor.getDescription()))
       .append("\n");
     String docUrl = exchangeDescriptor.getDocUrl();
     if (docUrl != null) {
@@ -123,7 +126,7 @@ public class ExchangeReadmeMdGenerator {
     List<DefaultConfigProperty> properties = exchangeDescriptor.getProperties();
     if (!CollectionUtil.isEmpty(properties)) {
       s.append("\n### Properties\n\n")
-       .append(generatePropertiesTable(properties));
+       .append(generatePropertiesTable(properties, docPlaceHolderResolver));
     }
     
     List<Constant> exchangeConstants = exchangeDescriptor.getConstants();
@@ -149,6 +152,8 @@ public class ExchangeReadmeMdGenerator {
     StringBuilder s = new StringBuilder();
     String apiInterfaceClassName = ExchangeJavaGenUtil.getApiInterfaceClassName(exchangeDescriptor, api);
     String apiInterfaceSimpleClassName = JavaCodeGenUtil.getClassNameWithoutPackage(apiInterfaceClassName);
+    PlaceHolderResolver docPlaceHolderResolver = PlaceHolderResolver
+        .create(ExchangeJavaGenUtil.getDescriptionReplacements(exchangeDescriptor, api.getName(), baseJavadocUrl));
     s.append("\n### ")
      .append(api.getName())
      .append("\n")
@@ -165,16 +170,16 @@ public class ExchangeReadmeMdGenerator {
      s.append(getInterfaceJavadocLink(method))
       .append("\n\n");
      if (api.getDescription() != null) {
-       s.append(api.getDescription()).append("\n");
+       s.append(docPlaceHolderResolver.resolve(api.getDescription())).append("\n");
      }
      if (!CollectionUtil.isEmpty(api.getRestEndpoints())) {
        s.append("\n#### REST endpoints\n\n")
-        .append(generateRestEndpointsTable(api));
+        .append(generateRestEndpointsTable(api, docPlaceHolderResolver));
      }
     
      if (!CollectionUtil.isEmpty(api.getWebsocketEndpoints())) {
        s.append("\n#### Websocket endpoints\n\n")
-        .append(generateWebsocketEndpointsTable(api));
+        .append(generateWebsocketEndpointsTable(api, docPlaceHolderResolver));
        
      }
     
@@ -188,7 +193,7 @@ public class ExchangeReadmeMdGenerator {
     return s.toString();
   }
   
-  private Object generateWebsocketEndpointsTable(ExchangeApiDescriptor api) {
+  private Object generateWebsocketEndpointsTable(ExchangeApiDescriptor api, PlaceHolderResolver docPlaceHolderResolver) {
     List<WebsocketEndpointDescriptor> websocketEndpoints = api.getWebsocketEndpoints();
     String apiInterfaceClassName = ExchangeJavaGenUtil.getApiInterfaceClassName(exchangeDescriptor, api);
     List<String> columns = List.of("Subscription method", "Description", "API Reference");
@@ -210,7 +215,7 @@ public class ExchangeReadmeMdGenerator {
           .append(")")
           .toString();
       row.add(getInterfaceMethodJavadocLink(apiInterfaceClassName, method));
-      row.add(Optional.ofNullable(w.getDescription()).orElse(""));
+      row.add(Optional.ofNullable(docPlaceHolderResolver.resolve(w.getDescription())).orElse(""));
       String refDocLink = null;
       if (w.getDocUrl() != null) {
         refDocLink = JavaCodeGenUtil.getHtmlLink(w.getDocUrl(), "link");
@@ -226,7 +231,7 @@ public class ExchangeReadmeMdGenerator {
     return HtmlGenerationUtil.generateTable(caption, columns, cells);
   }
 
-  private String generateRestEndpointsTable(ExchangeApiDescriptor api) {
+  private String generateRestEndpointsTable(ExchangeApiDescriptor api, PlaceHolderResolver docPlaceHolderResolver) {
     List<RestEndpointDescriptor> restEndpoints = api.getRestEndpoints();
     String apiInterfaceClassName = ExchangeJavaGenUtil.getApiInterfaceClassName(exchangeDescriptor, api);
     List<String> columns = List.of("Endpoint", "Description", "API Reference");
@@ -248,7 +253,7 @@ public class ExchangeReadmeMdGenerator {
           .append(")")
           .toString();
       row.add(getInterfaceMethodJavadocLink(apiInterfaceClassName, method));
-      row.add(Optional.ofNullable(r.getDescription()).orElse(""));
+      row.add(docPlaceHolderResolver.resolve(Optional.ofNullable(docPlaceHolderResolver.resolve(r.getDescription())).orElse("")));
       String refDocLink = null;
       if (r.getDocUrl() != null) {
         refDocLink = JavaCodeGenUtil.getHtmlLink(r.getDocUrl(), "link");
@@ -289,14 +294,14 @@ public class ExchangeReadmeMdGenerator {
                 JavaCodeGenUtil.getClassNameWithoutPackage(className));
   }
   
-  private String generatePropertiesTable(List<DefaultConfigProperty> properties) {
+  private String generatePropertiesTable(List<DefaultConfigProperty> properties, PlaceHolderResolver docPlaceHolderResolver) {
     List<String> columns = List.of("Name", "Type", "description", "Default value");
     List<List<String>> cells = new ArrayList<>();
     properties.forEach(p -> {
       List<String> row = new ArrayList<>();
       row.add(Optional.ofNullable(p.getName()).orElse(""));
       row.add(String.valueOf(Optional.ofNullable(p.getType()).orElse(Type.STRING)));
-      row.add(Optional.ofNullable(p.getDescription()).orElse(""));
+      row.add(docPlaceHolderResolver.resolve(Optional.ofNullable(p.getDescription()).orElse("")));
       row.add(String.valueOf(Optional.ofNullable(p.getDefaultValue()).orElse("")));
       cells.add(row);
     });

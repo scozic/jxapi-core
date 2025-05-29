@@ -15,6 +15,8 @@ import org.jxapi.exchange.descriptor.WebsocketEndpointDescriptor;
 import org.jxapi.exchange.descriptor.parser.ExchangeDescriptorParser;
 import org.jxapi.generator.java.JavaCodeGenUtil;
 import org.jxapi.generator.java.exchange.ClassesGeneratorTestUtil;
+import org.jxapi.generator.java.exchange.ExchangeJavaGenUtil;
+import org.jxapi.util.PlaceHolderResolver;
 
 /**
  * Unit test for {@link WebsocketEndpointClassesGenerator}
@@ -47,7 +49,9 @@ public class WebsocketEndpointClassesGeneratorTest {
     ExchangeDescriptor exchange = ExchangeDescriptorParser.fromJson(Paths.get(".", "src", "test", "resources", "testExchangeDescriptor.json"));
     ExchangeApiDescriptor api = exchange.getApis().get(0);
     WebsocketEndpointDescriptor wsEndpoint = api.getWebsocketEndpoints().get(0);
-    WebsocketEndpointClassesGenerator generator = new WebsocketEndpointClassesGenerator(exchange, api, wsEndpoint);
+    PlaceHolderResolver docPlaceHolderResolver = 
+        PlaceHolderResolver.create(ExchangeJavaGenUtil.getDescriptionReplacements(exchange, api.getName()));
+    WebsocketEndpointClassesGenerator generator = new WebsocketEndpointClassesGenerator(exchange, api, wsEndpoint, docPlaceHolderResolver);
     generator.generateClasses(srcFolder);
     
     checkJavaFilesCount(Paths.get("deserializers"), 1);
@@ -68,7 +72,7 @@ public class WebsocketEndpointClassesGeneratorTest {
         + "\n"
         + "/**\n"
         + " * Subscription request toMyTestExchange MarketData API tickerStream websocket endpoint<br>\n"
-        + " * Subscribe to ticker stream\n"
+        + " * Subscribe to ticker stream. Author: {@link com.foo.bar.gen.marketdata.MyTestExchangeMarketDataConstants#AUTHOR}\n"
         + " */\n"
         + "@Generated(\"org.jxapi.generator.java.exchange.api.pojo.PojoGenerator\")\n"
         + "@JsonSerialize(using = MyTestExchangeMarketDataTickerStreamRequestSerializer.class)\n"
@@ -86,14 +90,14 @@ public class WebsocketEndpointClassesGeneratorTest {
         + "  private String symbol;\n"
         + "  \n"
         + "  /**\n"
-        + "   * @return Symbol to subscribe to ticker stream of\n"
+        + "   * @return Symbol to subscribe to ticker stream of. Author: {@link com.foo.bar.gen.marketdata.MyTestExchangeMarketDataConstants#AUTHOR}\n"
         + "   */\n"
         + "  public String getSymbol() {\n"
         + "    return symbol;\n"
         + "  }\n"
         + "  \n"
         + "  /**\n"
-        + "   * @param symbol Symbol to subscribe to ticker stream of\n"
+        + "   * @param symbol Symbol to subscribe to ticker stream of. Author: {@link com.foo.bar.gen.marketdata.MyTestExchangeMarketDataConstants#AUTHOR}\n"
         + "   */\n"
         + "  public void setSymbol(String symbol) {\n"
         + "    this.symbol = symbol;\n"
@@ -146,7 +150,7 @@ public class WebsocketEndpointClassesGeneratorTest {
         + "    \n"
         + "    /**\n"
         + "     * Will set the value of <code>symbol</code> field in the builder\n"
-        + "     * @param symbol Symbol to subscribe to ticker stream of\n"
+        + "     * @param symbol Symbol to subscribe to ticker stream of. Author: {@link com.foo.bar.gen.marketdata.MyTestExchangeMarketDataConstants#AUTHOR}\n"
         + "     * @return Builder instance\n"
         + "     * @see #setSymbol(String)\n"
         + "     */\n"
@@ -181,7 +185,7 @@ public class WebsocketEndpointClassesGeneratorTest {
         + "\n"
         + "/**\n"
         + " * Message disseminated upon subscription to MyTestExchange MarketData API tickerStream websocket endpoint request<br>\n"
-        + " * Subscribe to ticker stream\n"
+        + " * Subscribe to ticker stream. Author: {@link com.foo.bar.gen.marketdata.MyTestExchangeMarketDataConstants#AUTHOR}\n"
         + " */\n"
         + "@Generated(\"org.jxapi.generator.java.exchange.api.pojo.PojoGenerator\")\n"
         + "@JsonSerialize(using = MyTestExchangeMarketDataTickerStreamMessageSerializer.class)\n"
@@ -201,42 +205,42 @@ public class WebsocketEndpointClassesGeneratorTest {
         + "  private BigDecimal last;\n"
         + "  \n"
         + "  /**\n"
-        + "   * @return Topic Message field <strong>t</strong>\n"
+        + "   * @return Topic. Author: {@link com.foo.bar.gen.marketdata.MyTestExchangeMarketDataConstants#AUTHOR} <br>Message field <strong>t</strong>\n"
         + "   */\n"
         + "  public String getTopic() {\n"
         + "    return topic;\n"
         + "  }\n"
         + "  \n"
         + "  /**\n"
-        + "   * @param topic Topic Message field <strong>t</strong>\n"
+        + "   * @param topic Topic. Author: {@link com.foo.bar.gen.marketdata.MyTestExchangeMarketDataConstants#AUTHOR} <br>Message field <strong>t</strong>\n"
         + "   */\n"
         + "  public void setTopic(String topic) {\n"
         + "    this.topic = topic;\n"
         + "  }\n"
         + "  \n"
         + "  /**\n"
-        + "   * @return Symbol name Message field <strong>s</strong>\n"
+        + "   * @return Symbol name. Author: {@link com.foo.bar.gen.marketdata.MyTestExchangeMarketDataConstants#AUTHOR} <br>Message field <strong>s</strong>\n"
         + "   */\n"
         + "  public String getSymbol() {\n"
         + "    return symbol;\n"
         + "  }\n"
         + "  \n"
         + "  /**\n"
-        + "   * @param symbol Symbol name Message field <strong>s</strong>\n"
+        + "   * @param symbol Symbol name. Author: {@link com.foo.bar.gen.marketdata.MyTestExchangeMarketDataConstants#AUTHOR} <br>Message field <strong>s</strong>\n"
         + "   */\n"
         + "  public void setSymbol(String symbol) {\n"
         + "    this.symbol = symbol;\n"
         + "  }\n"
         + "  \n"
         + "  /**\n"
-        + "   * @return Last traded price Message field <strong>p</strong>\n"
+        + "   * @return Last traded price. Author: {@link com.foo.bar.gen.marketdata.MyTestExchangeMarketDataConstants#AUTHOR} <br>Message field <strong>p</strong>\n"
         + "   */\n"
         + "  public BigDecimal getLast() {\n"
         + "    return last;\n"
         + "  }\n"
         + "  \n"
         + "  /**\n"
-        + "   * @param last Last traded price Message field <strong>p</strong>\n"
+        + "   * @param last Last traded price. Author: {@link com.foo.bar.gen.marketdata.MyTestExchangeMarketDataConstants#AUTHOR} <br>Message field <strong>p</strong>\n"
         + "   */\n"
         + "  public void setLast(BigDecimal last) {\n"
         + "    this.last = last;\n"
@@ -303,7 +307,7 @@ public class WebsocketEndpointClassesGeneratorTest {
         + "    \n"
         + "    /**\n"
         + "     * Will set the value of <code>topic</code> field in the builder\n"
-        + "     * @param topic Topic Message field <strong>t</strong>\n"
+        + "     * @param topic Topic. Author: {@link com.foo.bar.gen.marketdata.MyTestExchangeMarketDataConstants#AUTHOR} Message field <strong>t</strong>\n"
         + "     * @return Builder instance\n"
         + "     * @see #setTopic(String)\n"
         + "     */\n"
@@ -314,7 +318,7 @@ public class WebsocketEndpointClassesGeneratorTest {
         + "    \n"
         + "    /**\n"
         + "     * Will set the value of <code>symbol</code> field in the builder\n"
-        + "     * @param symbol Symbol name Message field <strong>s</strong>\n"
+        + "     * @param symbol Symbol name. Author: {@link com.foo.bar.gen.marketdata.MyTestExchangeMarketDataConstants#AUTHOR} Message field <strong>s</strong>\n"
         + "     * @return Builder instance\n"
         + "     * @see #setSymbol(String)\n"
         + "     */\n"
@@ -325,7 +329,7 @@ public class WebsocketEndpointClassesGeneratorTest {
         + "    \n"
         + "    /**\n"
         + "     * Will set the value of <code>last</code> field in the builder\n"
-        + "     * @param last Last traded price Message field <strong>p</strong>\n"
+        + "     * @param last Last traded price. Author: {@link com.foo.bar.gen.marketdata.MyTestExchangeMarketDataConstants#AUTHOR} Message field <strong>p</strong>\n"
         + "     * @return Builder instance\n"
         + "     * @see #setLast(BigDecimal)\n"
         + "     */\n"
@@ -359,7 +363,7 @@ public class WebsocketEndpointClassesGeneratorTest {
     ExchangeDescriptor exchange = ExchangeDescriptorParser.fromJson(Paths.get(".", "src", "test", "resources", "testExchangeDescriptorWithRequestAndResponseImplementingCustomInterfaces.json"));
     ExchangeApiDescriptor api = exchange.getApis().get(0);
     WebsocketEndpointDescriptor wsEndpoint = api.getWebsocketEndpoints().get(0);
-    WebsocketEndpointClassesGenerator generator = new WebsocketEndpointClassesGenerator(exchange, api, wsEndpoint);
+    WebsocketEndpointClassesGenerator generator = new WebsocketEndpointClassesGenerator(exchange, api, wsEndpoint, null);
     generator.generateClasses(srcFolder);
     checkJavaFilesCount(Paths.get("deserializers"), 1);
     checkSourceFileExists(Paths.get("deserializers", "MyTestExchangeMarketDataTickerStreamMessageDeserializer.java"));
@@ -516,42 +520,42 @@ public class WebsocketEndpointClassesGeneratorTest {
         + "  private BigDecimal last;\n"
         + "  \n"
         + "  /**\n"
-        + "   * @return Topic Message field <strong>t</strong>\n"
+        + "   * @return Topic <br>Message field <strong>t</strong>\n"
         + "   */\n"
         + "  public String getTopic() {\n"
         + "    return topic;\n"
         + "  }\n"
         + "  \n"
         + "  /**\n"
-        + "   * @param topic Topic Message field <strong>t</strong>\n"
+        + "   * @param topic Topic <br>Message field <strong>t</strong>\n"
         + "   */\n"
         + "  public void setTopic(String topic) {\n"
         + "    this.topic = topic;\n"
         + "  }\n"
         + "  \n"
         + "  /**\n"
-        + "   * @return Symbol name Message field <strong>s</strong>\n"
+        + "   * @return Symbol name <br>Message field <strong>s</strong>\n"
         + "   */\n"
         + "  public String getSymbol() {\n"
         + "    return symbol;\n"
         + "  }\n"
         + "  \n"
         + "  /**\n"
-        + "   * @param symbol Symbol name Message field <strong>s</strong>\n"
+        + "   * @param symbol Symbol name <br>Message field <strong>s</strong>\n"
         + "   */\n"
         + "  public void setSymbol(String symbol) {\n"
         + "    this.symbol = symbol;\n"
         + "  }\n"
         + "  \n"
         + "  /**\n"
-        + "   * @return Last traded price Message field <strong>p</strong>\n"
+        + "   * @return Last traded price <br>Message field <strong>p</strong>\n"
         + "   */\n"
         + "  public BigDecimal getLast() {\n"
         + "    return last;\n"
         + "  }\n"
         + "  \n"
         + "  /**\n"
-        + "   * @param last Last traded price Message field <strong>p</strong>\n"
+        + "   * @param last Last traded price <br>Message field <strong>p</strong>\n"
         + "   */\n"
         + "  public void setLast(BigDecimal last) {\n"
         + "    this.last = last;\n"
@@ -675,7 +679,7 @@ public class WebsocketEndpointClassesGeneratorTest {
     ExchangeDescriptor exchange = ExchangeDescriptorParser.fromJson(Paths.get(".", "src", "test", "resources", "testExchangeDescriptorWithAllRestRequestDataTypes.json"));
     ExchangeApiDescriptor api = exchange.getApis().get(0);
     WebsocketEndpointDescriptor websocketEndpoint = ClassesGeneratorTestUtil.findWebsocketEndpointByName("streamWithIntRequestDataType", api);
-    WebsocketEndpointClassesGenerator generator = new WebsocketEndpointClassesGenerator(exchange, api, websocketEndpoint);
+    WebsocketEndpointClassesGenerator generator = new WebsocketEndpointClassesGenerator(exchange, api, websocketEndpoint, null);
     generator.generateClasses(srcFolder);
     checkJavaFilesCount(Paths.get("."), 0);       
   }
@@ -686,7 +690,7 @@ public class WebsocketEndpointClassesGeneratorTest {
     ExchangeDescriptor exchange = ExchangeDescriptorParser.fromJson(Paths.get(".", "src", "test", "resources", "testExchangeDescriptorWithAllRestRequestDataTypes.json"));
     ExchangeApiDescriptor api = exchange.getApis().get(0);
     WebsocketEndpointDescriptor websocketEndpoint = ClassesGeneratorTestUtil.findWebsocketEndpointByName("streamWithObjectRequestDataTypeZeroParameters", api);
-    WebsocketEndpointClassesGenerator generator = new WebsocketEndpointClassesGenerator(exchange, api, websocketEndpoint);
+    WebsocketEndpointClassesGenerator generator = new WebsocketEndpointClassesGenerator(exchange, api, websocketEndpoint, null);
     generator.generateClasses(srcFolder);
     checkJavaFilesCount(Paths.get("."), 3);
     checkJavaFilesCount(Paths.get("serializers"), 1);
@@ -703,7 +707,7 @@ public class WebsocketEndpointClassesGeneratorTest {
     ExchangeDescriptor exchange = ExchangeDescriptorParser.fromJson(Paths.get(".", "src", "test", "resources", "testExchangeDescriptorWithAllRestRequestDataTypes.json"));
     ExchangeApiDescriptor api = exchange.getApis().get(0);
     WebsocketEndpointDescriptor websocketEndpoint = ClassesGeneratorTestUtil.findWebsocketEndpointByName("streamWithObjectListMapRequestDataType", api);
-    WebsocketEndpointClassesGenerator generator = new WebsocketEndpointClassesGenerator(exchange, api, websocketEndpoint);
+    WebsocketEndpointClassesGenerator generator = new WebsocketEndpointClassesGenerator(exchange, api, websocketEndpoint, null);
     generator.generateClasses(srcFolder);
     checkJavaFilesCount(Paths.get("."), 0);  
   }
@@ -715,7 +719,7 @@ public class WebsocketEndpointClassesGeneratorTest {
     ExchangeApiDescriptor api = exchange.getApis().get(0);
     WebsocketEndpointDescriptor websocketEndpoint = ClassesGeneratorTestUtil.findWebsocketEndpointByName("streamWithIntRequestDataType", api);
     websocketEndpoint.setRequest(null);
-    WebsocketEndpointClassesGenerator generator = new WebsocketEndpointClassesGenerator(exchange, api, websocketEndpoint);
+    WebsocketEndpointClassesGenerator generator = new WebsocketEndpointClassesGenerator(exchange, api, websocketEndpoint, null);
     generator.generateClasses(srcFolder);
     checkJavaFilesCount(Paths.get("."), 0);       
   }

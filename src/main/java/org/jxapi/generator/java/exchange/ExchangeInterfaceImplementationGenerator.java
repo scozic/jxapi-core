@@ -81,6 +81,7 @@ public class ExchangeInterfaceImplementationGenerator extends JavaTypeGenerator 
   public ExchangeInterfaceImplementationGenerator(ExchangeDescriptor exchangeDescriptor) {
     super(ExchangeJavaGenUtil.getExchangeInterfaceImplementationName(exchangeDescriptor));
     this.exchangeDescriptor = exchangeDescriptor;
+    this.setParentClassName(AbstractExchange.class.getName());
   }
   
   @Override
