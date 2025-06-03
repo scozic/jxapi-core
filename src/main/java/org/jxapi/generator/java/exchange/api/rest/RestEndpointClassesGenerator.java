@@ -52,6 +52,7 @@ public class RestEndpointClassesGenerator implements ClassesGenerator {
    * @param exchangeDescriptor Exchange descriptor where API with REST endpoint are defined
    * @param apiDescriptor API of exchange descriptor defining the REST endpoint
    * @param restEndpointDescriptor REST endpoint descriptor to generate related Java classes for.
+   * @param docPlaceHolderResolver Place holder resolver for resolution of placeholders in descriptions.
    */
   public RestEndpointClassesGenerator(ExchangeDescriptor exchangeDescriptor, 
                     ExchangeApiDescriptor apiDescriptor, 

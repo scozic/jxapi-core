@@ -48,7 +48,7 @@ public abstract class AbstractExchange extends DefaultDisposable implements Exch
   /**
    * The base WebSocket URL of the exchange
    * 
-   * @see #getWebSocketUrl()
+   * @see #getWsUrl()
    */
   protected final String wsUrl;
   
@@ -59,6 +59,7 @@ public abstract class AbstractExchange extends DefaultDisposable implements Exch
    * @param name the exchange name
    * @param properties the exchange configuration properties
    * @param httpUrl the base HTTP URL of the exchange
+   * @param wsUrl the base WebSocket URL of the exchange
    */
   protected AbstractExchange(String id, 
                              String version, 

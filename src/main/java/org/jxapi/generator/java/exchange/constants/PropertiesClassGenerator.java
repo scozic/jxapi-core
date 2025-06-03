@@ -64,12 +64,12 @@ public class PropertiesClassGenerator extends JavaTypeGenerator {
   /**
    * Constructor
    * 
-   * @param fullClassName       Full name of the interface to generate, example:
-   *                            com.example.MyProperties
-   * @param exchangeName        The name of exchange configuration properties are
-   *                            generated for
-   * @param properties          List of properties to generate in the interface
-   * @param placeHolderResolver PlaceHolderResolver to resolve placeholders in
+   * @param fullClassName          Full name of the interface to generate,
+   *                               example: com.example.MyProperties
+   * @param exchangeName           The name of exchange configuration properties
+   *                               are generated for
+   * @param properties             List of properties to generate in the interface
+   * @param docPlaceHolderResolver PlaceHolderResolver to resolve placeholders in
    */
   public PropertiesClassGenerator(String fullClassName, 
                                   String exchangeName, 

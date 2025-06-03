@@ -91,7 +91,7 @@ public abstract class AbstractExchangeApi extends DefaultDisposable implements E
   /**
    * The base WebSocket URL used for websocket connections.
    * 
-   * @see #getWebSocketUrl()
+   * @see #getWsUrl()
    */
   protected final String wsUrl;
   
@@ -135,6 +135,8 @@ public abstract class AbstractExchangeApi extends DefaultDisposable implements E
    * @param apiName          The name of the API.
    * @param exchange         The exchange instance associated with this API.
    * @param requestThrottler The request throttler to use for rate limiting.
+   * @param httpUrl          The base HTTP URL for all REST endpoints of this API group.
+   * @param wsUrl            The base WebSocket URL used for websocket connections.
    */
   protected AbstractExchangeApi(String apiName, 
                                 Exchange exchange, 

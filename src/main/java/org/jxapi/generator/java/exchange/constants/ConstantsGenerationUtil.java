@@ -30,7 +30,8 @@ public class ConstantsGenerationUtil {
    * Where {@code MY_INT} is the constant name, {@code Integer} is the type of the constant and {@code 42} is the value of the constant.
    * @param constant the constant to generate the declaration for
    * @param imports the set of imports to add to the generated code
-   * @param docPlaceHolderResolver the resolver for documentation placeholders
+   * @param docPlaceHolderResolver the resolver for placeholders in the constant's description
+   * @param sampleValuePlaceHolderResolver the resolver for placeholders in the constant's sample value
    * @return the Java code for the constant declaration
    */
   public static String generateConstantDeclaration(Constant constant, 
@@ -94,6 +95,7 @@ public class ConstantsGenerationUtil {
    * 
    * @param property the property to generate the declaration for
    * @param imports  the set of imports to add to the generated code
+   * @param docPlaceHolderResolver the resolver for placeholders in the property's description
    * @return the Java code for the property declaration
    */
   public static String getPropertyValueDeclaration(ConfigProperty property, Imports imports, PlaceHolderResolver docPlaceHolderResolver) {

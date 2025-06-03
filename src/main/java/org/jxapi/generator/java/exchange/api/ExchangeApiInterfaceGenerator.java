@@ -53,6 +53,7 @@ public class ExchangeApiInterfaceGenerator extends JavaTypeGenerator {
    * 
    * @param exchangeDescriptor    the exchange descriptor where the API is defined
    * @param exchangeApiDescriptor the API descriptor to generate interface for
+   * @param docPlaceHolderResolver the place holder resolver to use for resolving placeholders in descriptions.
    */
   public ExchangeApiInterfaceGenerator(ExchangeDescriptor exchangeDescriptor, 
                                        ExchangeApiDescriptor exchangeApiDescriptor,

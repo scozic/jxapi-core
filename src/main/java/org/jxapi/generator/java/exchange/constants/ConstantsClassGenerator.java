@@ -41,9 +41,12 @@ public class ConstantsClassGenerator extends JavaTypeGenerator {
   /**
    * Creates a new instance of the generator.
    * 
-   * @param fullTypeName the full name of the interface to generate, example:
-   *                     com.example.MyConstants
-   * @param constants    the list of constants to generate in the interface
+   * @param fullTypeName           the full name of the interface to generate,
+   *                               example: com.example.MyConstants
+   * @param constants              the list of constants to generate in the
+   *                               interface
+   * @param docPlaceHolderResolver the resolver to use to resolve placeholders in
+   *                               description of constants.
    */
   public ConstantsClassGenerator(String fullTypeName, 
                                  List<Constant> constants, 

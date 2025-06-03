@@ -41,11 +41,12 @@ public class WebsocketEndpointClassesGenerator implements ClassesGenerator {
    * @param exchangeDescriptor Exchange descriptor where API with REST endpoint are defined
    * @param apiDescriptor API group of exchange descriptor defining the REST endpoint
    * @param websocketEndpointDescriptor REST endpoint descriptor to generate related Java classes for.
+   * @param docPlaceHolderResolver Place holder resolver for resolution of placeholders in descriptions.
    */
   public WebsocketEndpointClassesGenerator(ExchangeDescriptor exchangeDescriptor, 
-      ExchangeApiDescriptor apiDescriptor, 
-      WebsocketEndpointDescriptor websocketEndpointDescriptor,
-      PlaceHolderResolver docPlaceHolderResolver) {
+                                           ExchangeApiDescriptor apiDescriptor, 
+                                           WebsocketEndpointDescriptor websocketEndpointDescriptor,
+                                           PlaceHolderResolver docPlaceHolderResolver) {
     this.exchangeDescriptor = exchangeDescriptor;
     this.apiDescriptor = apiDescriptor;
     this.websocketEndpointDescriptor = websocketEndpointDescriptor;

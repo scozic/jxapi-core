@@ -83,6 +83,7 @@ public class PojoGenerator extends JavaTypeGenerator {
    * @param description The description to display in javadoc of the class
    * @param fields The properties of the class
    * @param implementedInterfaces The interfaces implemented by the class (in addition to {@link Pojo})
+   * @param docPlaceHolderResolver PlaceHolderResolver to resolve placeholders in descriptions.
    */
   public PojoGenerator(String className, 
        String description, 

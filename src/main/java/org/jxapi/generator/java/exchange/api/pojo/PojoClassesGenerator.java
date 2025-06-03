@@ -37,6 +37,7 @@ public class PojoClassesGenerator implements ClassesGenerator {
    * @param description the description to display in javadoc of the class
    * @param properties the fields of the class
    * @param implementedInterfaces the interfaces implemented by the class
+   * @param docPlaceHolderResolver the resolver to use to resolve placeholders in descriptions.
    * @throws IOException if an I/O error occurs
    */
   public PojoClassesGenerator(String className, 

@@ -497,7 +497,7 @@ public class JavaCodeGenUtil {
   
   /**
    * Generates a Javadoc link to a class or property or method of a class, for instance
-   * <code>{@link com.x.y.z.Foo#bar()}</code> for method <code>bar()</code> of
+   * <code>{\@link com.x.y.z.Foo#bar()}</code> for method <code>bar()</code> of
    * class <code>com.x.y.z.Foo</code>.
    * 
    * @param link the link to generate, can be a class name, or a class name with
@@ -516,7 +516,7 @@ public class JavaCodeGenUtil {
   
   /**
    * Generates a Javadoc link to a class property or method, for instance
-   * <code>{@link com.x.y.z.Foo#bar}</code> for property <code>bar</code> of class
+   * <code>{\@link com.x.y.z.Foo#bar}</code> for property <code>bar</code> of class
    * <code>com.x.y.z.Foo</code>.
    * 
    * @param className full class name with package prefix, e.g. <code>com.x.y.z.Foo</code>

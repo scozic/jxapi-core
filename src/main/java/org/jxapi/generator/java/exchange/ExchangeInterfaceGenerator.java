@@ -39,6 +39,7 @@ public class ExchangeInterfaceGenerator extends JavaTypeGenerator {
    * Constructor.
    * 
    * @param exchangeDescriptor the exchange descriptor to generate classes for
+   * @param docPlaceHolderResolver the place holder resolver to use for resolving placeholders in descriptions.
    */
   public ExchangeInterfaceGenerator(ExchangeDescriptor exchangeDescriptor, PlaceHolderResolver docPlaceHolderResolver) {
     super(ExchangeJavaGenUtil.getExchangeInterfaceName(exchangeDescriptor));

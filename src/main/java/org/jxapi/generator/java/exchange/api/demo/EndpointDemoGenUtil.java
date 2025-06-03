@@ -27,6 +27,10 @@ import org.jxapi.util.PlaceHolderResolver;
  */
 public class EndpointDemoGenUtil {
   
+  /**
+   * Name of the properties argument for methods that create request or response
+   * sample values.
+   */
   public static final String CREATE_REQUEST_PROPERTIES_ARG_NAME = "properties";
   
   private EndpointDemoGenUtil() {}
@@ -37,23 +41,32 @@ public class EndpointDemoGenUtil {
    * definition of a REST/Websocket request, response/message, or of a nested
    * {@link Type#OBJECT} property.
    * 
-   * @param property        the property for which to generate the
-   *                        creation method.
-   * @param objectClassName Default class name for property value, relevant when
-   *                        property is an object type and has no object name.
-   * @param imports         the set of imports to add to the class containing the
-   *                        method. Will be populated with the necessary imports.
-   * @param placeholderResolver the placeholder resolver to use to resolve constants and configuration properties placeholders. This should be a reference to constant in its inteface, or property resolution from using {@link Properties} reference variable named <code>properties</code>.                      
+   * @param property            the property for which to generate the creation
+   *                            method.
+   * @param objectClassName     Default class name for property value, relevant
+   *                            when property is an object type and has no object
+   *                            name.
+   * @param defaultFieldName    The name to use for field, either 'request' or
+   *                            'response' when the field name is
+   *                            <code>null</code>.
+   * @param imports             the set of imports to add to the class containing
+   *                            the method. Will be populated with the necessary
+   *                            imports.
+   * @param placeholderResolver the placeholder resolver to use to resolve
+   *                            constants and configuration properties
+   *                            placeholders. This should be a reference to
+   *                            constant in its inteface, or property resolution
+   *                            from using {@link Properties} reference variable
+   *                            named <code>properties</code>.
    * @return the method code with signature (method declaration) and body
    * 
-   * @see #generateFieldCreationMethodDeclaration(Field, String, Imports)
-   * @see #generateFieldSampleValueDeclaration(Field, String, String, Imports, String)
+   * @see #generateFieldCreationMethodDeclaration(Field, String, String, Imports)
    */
   public static String generateFieldCreationMethod(Field property, 
-                             String objectClassName,
-                             String defaultFieldName,
-                             Imports imports,
-                             PlaceHolderResolver placeholderResolver) {
+                                                   String objectClassName,
+                                                   String defaultFieldName,
+                                                   Imports imports,
+                                                   PlaceHolderResolver placeholderResolver) {
     return new StringBuilder()
            .append(generateFieldCreationMethodDeclaration(
                property, 
@@ -77,20 +90,23 @@ public class EndpointDemoGenUtil {
    * Generates the method declaration for a method that creates a sample value for
    * the given endpoint property.
    * 
-   * @param field      the endpoint property for which to generate the
+   * @param field                  the endpoint property for which to generate the
    *                               creation method.
    * @param defaultObjectClassName Default class name for property value, relevant
    *                               when property is an object type and has no
    *                               object name.
+   * @param defaultFieldName       The name to use for field, either 'request' or
+   *                               'response' when the field name is
+   *                               <code>null</code>.
    * @param imports                the set of imports to add to the class
    *                               containing the method. Will be populated with
    *                               the necessary imports.
    * @return the method declaration
    */
   public static String generateFieldCreationMethodDeclaration(Field field, 
-                                String defaultObjectClassName,
-                                String defaultFieldName,
-                                Imports imports) {
+                                                              String defaultObjectClassName,
+                                                              String defaultFieldName,
+                                                              Imports imports) {
     Type type = ExchangeJavaGenUtil.getFieldType(field);
     String fieldClassName =  ExchangeJavaGenUtil.getClassNameForType(
                         type, 
@@ -132,11 +148,11 @@ public class EndpointDemoGenUtil {
   }
 
   private static String generateFieldSampleValueDeclaration(Field field, 
-                                String sampleValueVariableName, 
-                                String objectClassName, 
-                                Imports imports,
-                                String returnOrResultAffectation,
-                                PlaceHolderResolver placeholderResolver) {
+                                                            String sampleValueVariableName, 
+                                                            String objectClassName, 
+                                                            Imports imports,
+                                                            String returnOrResultAffectation,
+                                                            PlaceHolderResolver placeholderResolver) {
     Type type = ExchangeJavaGenUtil.getFieldType(field);
     Object sampleValue = field.getSampleValue();
     if (sampleValue == null && !type.isObject()) {
@@ -151,7 +167,13 @@ public class EndpointDemoGenUtil {
     String fieldValue = null;
     StringBuilder res = new StringBuilder();
     if (type.isObject()) {
-      fieldValue = generateSampleFieldValueDeclarationObjectField(res, field, sampleValueVariableName, objectClassName, imports, placeholderResolver);
+      fieldValue = generateSampleFieldValueDeclarationObjectField(
+                     res, 
+                     field, 
+                     sampleValueVariableName, 
+                     objectClassName, 
+                     imports, 
+                     placeholderResolver);
     } else {
       fieldValue = JavaCodeGenUtil.getQuotedString(sampleValue);
     }
@@ -186,7 +208,7 @@ public class EndpointDemoGenUtil {
         String sampleValueVariableName, 
         String objectClassName, 
         Imports imports,
-        PlaceHolderResolver placeholderResolver) {
+        PlaceHolderResolver sampleValuePlaceholderResolver) {
     Type type = ExchangeJavaGenUtil.getFieldType(field);
     CanonicalType canonicalType = type.getCanonicalType();
     Object sampleValue = field.getSampleValue();
@@ -208,7 +230,14 @@ public class EndpointDemoGenUtil {
          .append("();\n");
       
       for (Field childParam: field.getProperties()) {
-        generateSampleFieldValueDeclarationObjectFieldChild(res, field, childParam, itemVariableName, objectClassName, imports, placeholderResolver);
+        generateSampleFieldValueDeclarationObjectFieldChild(
+          res, 
+          field, 
+          childParam, 
+          itemVariableName, 
+          objectClassName, 
+          imports, 
+          sampleValuePlaceholderResolver);
       }
       
       fieldValue = itemVariableName;
@@ -225,7 +254,7 @@ public class EndpointDemoGenUtil {
       String itemVariableName, 
       String objectClassName, 
       Imports imports, 
-      PlaceHolderResolver placeholderResolver) {
+      PlaceHolderResolver sampleValuePlaceholderResolver) {
     Type childParamType = ExchangeJavaGenUtil.getFieldType(childParam);
     String setArg = JavaCodeGenUtil.getQuotedString(childParam.getSampleValue());
     String setAccessorName = JavaCodeGenUtil.getSetAccessorMethodName(
@@ -246,9 +275,9 @@ public class EndpointDemoGenUtil {
               ExchangeApiGenUtil.getFieldObjectClassName(childParam, objectClassName), 
               imports,
               setChildParamInstruction, 
-              placeholderResolver));
+              sampleValuePlaceholderResolver));
     } else if(childParamType.getCanonicalType().isPrimitive) {
-      setArg = getPrimitiveTypeFieldSampleValueDeclaration(childParam, imports, placeholderResolver);
+      setArg = getPrimitiveTypeFieldSampleValueDeclaration(childParam, imports, sampleValuePlaceholderResolver);
       if (setArg != null) {
         res.append(setChildParamInstruction).append(setArg);
       }
@@ -281,7 +310,11 @@ public class EndpointDemoGenUtil {
         return null;
       }
       String sampleKeyValue = JavaCodeGenUtil.getQuotedString(sampleMapKeyValues.next());
-      return "Map.of(" + sampleKeyValue + ", " + getMapOrListSampleValueDeclaration(type.getSubType(), itemValue, sampleMapKeyValues, imports) + ")";
+      return "Map.of(" 
+              + sampleKeyValue 
+              + ", " 
+              + getMapOrListSampleValueDeclaration(type.getSubType(), itemValue, sampleMapKeyValues, imports) 
+              + ")";
     }
   }
   
@@ -314,7 +347,10 @@ public class EndpointDemoGenUtil {
   public static String getRestApiDemoClassName(ExchangeDescriptor exchangeDescriptor, 
                          ExchangeApiDescriptor exchangeApiDescriptor, 
                          RestEndpointDescriptor restApi) {
-    String pkgPrefix =  exchangeDescriptor.getBasePackage() + "." + exchangeApiDescriptor.getName().toLowerCase() + ".demo.";
+    String pkgPrefix =  exchangeDescriptor.getBasePackage() 
+                          + "." 
+                          + exchangeApiDescriptor.getName().toLowerCase() 
+                          + ".demo.";
     return pkgPrefix + JavaCodeGenUtil.firstLetterToUpperCase(exchangeDescriptor.getId()) 
                    + JavaCodeGenUtil.firstLetterToUpperCase(exchangeApiDescriptor.getName())
                    + JavaCodeGenUtil.firstLetterToUpperCase(restApi.getName())
@@ -342,7 +378,9 @@ public class EndpointDemoGenUtil {
   public static String getWebsocketApiDemoClassName(ExchangeDescriptor exchangeDescriptor, 
                             ExchangeApiDescriptor exchangeApiDescriptor, 
                             WebsocketEndpointDescriptor websocketApi) {
-    String pkgPrefix =  exchangeDescriptor.getBasePackage() + "." + exchangeApiDescriptor.getName().toLowerCase() + ".demo.";
+    String pkgPrefix =  exchangeDescriptor.getBasePackage() 
+                          + "." + exchangeApiDescriptor.getName().toLowerCase() 
+                          + ".demo.";
     return pkgPrefix + JavaCodeGenUtil.firstLetterToUpperCase(exchangeDescriptor.getId()) 
                    + JavaCodeGenUtil.firstLetterToUpperCase(exchangeApiDescriptor.getName())
                    + JavaCodeGenUtil.firstLetterToUpperCase(websocketApi.getName())
@@ -366,8 +404,8 @@ public class EndpointDemoGenUtil {
    * @see ExchangeApi
    */
   public static String getNewTestApiInstruction(String exchangeVariableName,
-                          String apiVariableName,
-                          String simpleApiClassName) {
+                                                String apiVariableName,
+                                                String simpleApiClassName) {
     return new StringBuilder()
         .append(simpleApiClassName)
         .append(" ")
@@ -393,8 +431,8 @@ public class EndpointDemoGenUtil {
    *        <code>MyExchange exchange = new MyExchangeImpl("test-MyExchange.ID", properties);</code>
    */
   public static String getNewTestExchangeInstruction(String exchangeClassName, 
-                             String exchangeVariableName, 
-                             String propertiesVariableName) {
+                                                     String exchangeVariableName, 
+                                                     String propertiesVariableName) {
     String simpleExchangeClassName = JavaCodeGenUtil.getClassNameWithoutPackage(exchangeClassName);
     String exchangeImplClassName = ExchangeJavaGenUtil.getExchangeInterfaceImplementationName(exchangeClassName);
     String simpleExchangeImplClassName = JavaCodeGenUtil.getClassNameWithoutPackage(exchangeImplClassName);

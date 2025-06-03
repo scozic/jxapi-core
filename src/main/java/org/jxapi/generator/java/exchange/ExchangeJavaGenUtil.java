@@ -369,15 +369,22 @@ public class ExchangeJavaGenUtil {
   }
 
   /**
-   * @param type        must be a primitive type: {@link Type#STRING},
-   *                    {@link Type#INT}, {@link Type#LONG},
-   *                     {@link Type#BIGDECIMAL}.
-   *                    Otherwise,
-   * @param sampleValue primitive type sample value which can be a string '\"12\"'
-   *                    or object value '12'. Can be <code>null</code> in which
-   *                    case returned value is <code>null</code>
-   * @param imports     Imports set to add eventual additional classes required by
-   *                    the generation instruction to
+   * @param type                           must be a primitive type:
+   *                                       {@link Type#STRING}, {@link Type#INT},
+   *                                       {@link Type#LONG},
+   *                                       {@link Type#BIGDECIMAL}. Otherwise,
+   * @param sampleValue                    primitive type sample value which can
+   *                                       be a string '\"12\"' or object value
+   *                                       '12'. Can be <code>null</code> in which
+   *                                       case returned value is
+   *                                       <code>null</code>
+   * @param imports                        Imports set to add eventual additional
+   *                                       classes required by the generation
+   *                                       instruction to
+   * @param sampleValuePlaceHolderResolver a placeholder resolver to resolve
+   *                                       references to constants or
+   *                                       configuration properties in the sample
+   *                                       value.
    * @return An instruction to create value represented by sample value
    */
   public static String getPrimitiveTypeFieldSampleValueDeclaration(Type type, 
@@ -466,7 +473,7 @@ public class ExchangeJavaGenUtil {
   /**
    * Finds all placeholders in the given string value. For instance with input
    * string
-   * <code>"Hello ${name} you are using exchange ${exchange.name}"<code>, will return <code>["name", "exchange.name"]</code>
+   * <code>"Hello ${name} you are using exchange ${exchange.name}"</code>, will return <code>["name", "exchange.name"]</code>
    * 
    * @param value The string value to find placeholders in
    * @return A list of placeholders found in the given string value
@@ -500,6 +507,8 @@ public class ExchangeJavaGenUtil {
   
   /**
    * Returns the properties placeholder name without the prefix
+   * @param placeHolder The configuration property placeholder to get value without the prefix for
+   * @return The configuration property placeholder name without the prefix
    */
   public static String getConfigPropertyPlaceHolder(String placeHolder) {
     return EncodingUtil.removePrefix(placeHolder, CONFIG_PLACEHOLDER_PREFIX);
@@ -603,6 +612,23 @@ public class ExchangeJavaGenUtil {
                 .toString();
   }
   
+  /**
+   * Returns the value declaration for the given configuration property name. The
+   * value declaration is the reference to the configuration property in the
+   * generated properties class.
+   * 
+   * @param configPropertyName The name of the configuration property to get the
+   *                           value declaration for
+   * @param exchangeDescriptor The exchange descriptor where the configuration
+   *                           property is defined
+   * @param propertiesVariable The name of the variable holding the properties
+   *                           map, usually <code>properties</code>.
+   * @param imports            The imports of the generator context that will be
+   *                           populated with classes used by returned type. That
+   *                           set must be not <code>null</code> and mutable.
+   * @return The value declaration for the given configuration property name, or
+   *         <code>null</code> if the configuration property is not found.
+   */
   public static String getValueDeclarationForConfigProperty(String configPropertyName, 
                                                           ExchangeDescriptor exchangeDescriptor,
                                                           String propertiesVariable,
@@ -659,7 +685,7 @@ public class ExchangeJavaGenUtil {
    * {@link ExchangeApiDescriptor#getConstants()}. Placeholders keys are looked
    * for in API group level constants when <code>apiGroupName</code> is
    * provided.</li>
-   * <ul>
+   * </ul>
    * 
    * @param exchangeDescriptor The exchange descriptor to get the placeholders
    *                           keys for
