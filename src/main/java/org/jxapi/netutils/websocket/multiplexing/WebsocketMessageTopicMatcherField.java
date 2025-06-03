@@ -18,10 +18,10 @@ public class WebsocketMessageTopicMatcherField {
    */
   public static List<WebsocketMessageTopicMatcherField> createList(String... namesAndValues) {
     List<WebsocketMessageTopicMatcherField> l = new ArrayList<>(namesAndValues.length / 2);
-    for (int i = 0; i < namesAndValues.length;i++) {
+    for (int i = 0; i < namesAndValues.length;i += 2) {
       WebsocketMessageTopicMatcherField f = new WebsocketMessageTopicMatcherField();
-      f.setName(namesAndValues[i++]);
-      f.setValue(namesAndValues[i]);
+      f.setName(namesAndValues[i]);
+      f.setValue(namesAndValues[i + 1]);
       l.add(f);
     }
     return l;

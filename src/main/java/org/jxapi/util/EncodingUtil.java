@@ -98,12 +98,12 @@ public class EncodingUtil {
     }
     StringBuilder s = new StringBuilder();
     boolean first = true;
-    for (int i = 0; i < keysAndValues.length; i++) {
-      Object key = keysAndValues[i++];
+    for (int i = 0; i < keysAndValues.length; i += 2) {
+      Object key = keysAndValues[i];
       if (key == null) {
         throw new IllegalArgumentException("null key in for parameter #" + (i / 2) + " in:" + Arrays.toString(keysAndValues));
       }
-      Object value = keysAndValues[i];
+      Object value = keysAndValues[i + 1];
       if (value == null) {
         continue;
       }

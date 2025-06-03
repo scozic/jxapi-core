@@ -22,21 +22,6 @@ public interface PlaceHolderResolver {
    */
   static final PlaceHolderResolver NO_OP = s -> s;
   
-//  /**
-//   * Creates a PlaceHolderResolver that substitutes placeholders in the input
-//   * string with the provided keys and values.
-//   *
-//   * @param keysAndValues alternating keys and values for substitution
-//   * @return a PlaceHolderResolver that performs the substitution
-//   * @see EncodingUtil#substituteArguments(String, Object...)
-//   */
-//  static PlaceHolderResolver create(Object... keysAndValues) {
-//    if (keysAndValues.length == 0) {
-//      return NO_OP;
-//    }
-//    return create(CollectionUtil.createMap((Object[]) keysAndValues));
-//  }
-  
   /**
    * Creates a PlaceHolderResolver that substitutes placeholders in the input
    * string with the provided map of keys and values.

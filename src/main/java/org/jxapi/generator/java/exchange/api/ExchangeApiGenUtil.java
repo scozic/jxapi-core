@@ -736,16 +736,6 @@ public class ExchangeApiGenUtil {
     return fields.stream().map(f -> resolveFieldProperties(exchangeApiDescriptor, f))
                 .collect(Collectors.toList());
   }
-
-  /**
-   * Generates expected public static variable name in a generated {@link ExchangeApi} for HTTP URL of a REST endpoint.
-   * @param restEndpointDescriptor The REST endpoint descriptor
-   * @return The expected static variable name for the REST endpoint URL, for instance <code>MY_REST_ENDPOINT_URL</code>
-   */
-  @Deprecated
-  public static String getRestEndpointUrlStaticVariableName(RestEndpointDescriptor restEndpointDescriptor) {
-    return JavaCodeGenUtil.getStaticVariableName(restEndpointDescriptor.getName()) + "_URL";
-  }
   
   /**
    * Generates expected property name in a generated {@link ExchangeApi} for HTTP URL of a REST endpoint.

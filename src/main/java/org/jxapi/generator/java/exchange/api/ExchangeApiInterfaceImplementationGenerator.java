@@ -368,57 +368,10 @@ public class ExchangeApiInterfaceImplementationGenerator extends JavaTypeGenerat
     }
     
     if (hasRestEnpoints) {
-//      String httpRequestExecutorFactoryClassName  = getHttpRequestExecutorFactory();
-//      String httpRequestTimeout = getHttpRequestTimeout() + "L";
-//      constructorBody
-//         .append("createHttpRequestExecutor(")
-//         .append(httpRequestExecutorFactoryClassName != null? 
-//               "\"" + httpRequestExecutorFactoryClassName + "\""
-//               : "null")
-//         .append(", ")
-//         .append(httpRequestTimeout)
-//         .append(");\n");
-//      
-//      String httpRequestInterceptorFactoryFullClassName = getHttpRequestInterceptorFactory();
-//      if (httpRequestInterceptorFactoryFullClassName != null) {
-//        constructorBody.append("createHttpRequestInterceptor(\"")
-//                 .append(httpRequestInterceptorFactoryFullClassName)
-//                 .append("\");\n");
-//      }
-//      exchangeApiDescriptor.getRestEndpoints().forEach(restApi -> {
-//        constructorBody.append(generateRestEndpointUrlVariableInstantiationInstruction(restApi));
-//      });
       generateConstructorBodyRestEndpointDeclarations(constructorBody);
     }
     if (hasWsEnpoints) {
-//      addImport(EncodingUtil.class);
-//      constructorBody.append("createWebsocketManager(")
-//               .append(THIS)
-//               .append(WS_URL_PROPERTY_NAME)
-//               .append(", ")
-//               .append(JavaCodeGenUtil.getQuotedString(getWebsocketFactory()))
-//               .append(", ")
-//               .append(JavaCodeGenUtil.getQuotedString(getWebsocketHookFactory()))
-//               .append(");\n");
-//               
-//      for (WebsocketEndpointDescriptor wsApi: exchangeApiDescriptor.getWebsocketEndpoints()) {
-//        String websocketEndpointVariableName = getWebsocketEndpointVariableName(wsApi);
-//        String messageClassObjectName = ExchangeApiGenUtil.generateWebsocketEndpointMessagePojoClassName(
-//            exchangeDescriptor, 
-//            exchangeApiDescriptor, 
-//            wsApi);
-//        Field message = ExchangeApiGenUtil.resolveFieldProperties(exchangeApiDescriptor, wsApi.getMessage());
-//        Type messageDataType = ExchangeJavaGenUtil.getFieldType(message);
-//        String getResponseDeserializerInstance = ExchangeApiGenUtil.getNewMessageDeserializerInstruction(messageDataType, messageClassObjectName, getImports());
-//        constructorBody.append(THIS)
-//          .append(websocketEndpointVariableName)
-//          .append(" = ")
-//          .append("createWebsocketEndpoint(")
-//          .append(ExchangeApiGenUtil.getWebsocketEndpointNameStaticVariable(wsApi.getName()))
-//          .append(", ")
-//          .append(getResponseDeserializerInstance)
-//          .append(");\n");
-          generateConstructorBodyWebsocketEndpointDeclarations(constructorBody);
+      generateConstructorBodyWebsocketEndpointDeclarations(constructorBody);
     }
     return constructorBody.toString();
   }
@@ -441,9 +394,8 @@ public class ExchangeApiInterfaceImplementationGenerator extends JavaTypeGenerat
                .append(httpRequestInterceptorFactoryFullClassName)
                .append("\");\n");
     }
-    exchangeApiDescriptor.getRestEndpoints().forEach(restApi -> {
-      constructorBody.append(generateRestEndpointUrlVariableInstantiationInstruction(restApi));
-    });
+    exchangeApiDescriptor.getRestEndpoints().forEach(restApi -> 
+      constructorBody.append(generateRestEndpointUrlVariableInstantiationInstruction(restApi)));
   }
   
   private void generateConstructorBodyWebsocketEndpointDeclarations(StringBuilder constructorBody) {
@@ -806,9 +758,9 @@ public class ExchangeApiInterfaceImplementationGenerator extends JavaTypeGenerat
                                               .anyMatch(l -> l.getId().equals(rateLimitId));
       if (isExchangeLimit) {
         pfx = EXCHANGE_ARGUMENT_NAME + ".";
-      } else if (!CollectionUtil.emptyIfNull(exchangeApiDescriptor.getRateLimits())
+      } else if (CollectionUtil.emptyIfNull(exchangeApiDescriptor.getRateLimits())
                                               .stream()
-                                              .anyMatch(l -> l.getId().equals(rateLimitId))) {
+                                              .noneMatch(l -> l.getId().equals(rateLimitId))) {
           throw new IllegalArgumentException(
               String.format("Rate limit rule with id '%s' is not defined in '%s' exchange descriptor nor in '%s' API group descriptor.",
                             rateLimitId, 

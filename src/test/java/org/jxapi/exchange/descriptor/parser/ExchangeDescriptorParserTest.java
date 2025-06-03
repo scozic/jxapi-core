@@ -222,15 +222,6 @@ public class ExchangeDescriptorParserTest {
     List<Field> response = tickerStreamEndpoint.getMessage().getProperties();
     Assert.assertEquals(6, response.size());
     
-    /*
-     {"name":"topic", "msgField":"t", "type": "STRING", "description":"Topic. Author: ${constants.author}", "sampleValue":"ticker"},
-                            {"name":"symbol", "msgField":"s", "type": "STRING", "description":"Symbol name. Author: ${constants.author}", "sampleValue":"${constants.demoSymbol}"},
-                            {"name":"timestamp", "msgField":"T", "type": "LONG", "description":"Timestamp of the message. Author: ${constants.author}", "sampleValue":"1633036800000"},
-                            {"name":"priceChange", "msgField":"p", "type": "BIGDECIMAL", "description":"Price change in the last 24 hours. Author: ${constants.author}", "sampleValue":"100.00"},
-                            {"name":"priceChangePercent", "msgField":"P", "type": "BIGDECIMAL", "description":"Price change percent in the last 24 hours. Author: ${constants.author}", "sampleValue":"0.5"},
-                            {"name":"last", "msgField":"p", "type": "BIGDECIMAL", "description":"Last traded price. Author: ${constants.author}", "sampleValue":"16000.00"}
-     */
-    
     Field topic = response.get(0);
     Assert.assertEquals("topic", topic.getName());
     Assert.assertEquals("Topic. Author: ${constants.author}", topic.getDescription());

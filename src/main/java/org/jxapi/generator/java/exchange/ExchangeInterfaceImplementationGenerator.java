@@ -95,16 +95,6 @@ public class ExchangeInterfaceImplementationGenerator extends JavaTypeGenerator 
     setDescription("Actual implementation of {@link " + simpleInterfaceName + "}<br>");
     appendToBody("\n");
     
-//    String httpUrlDeclaration = ExchangeJavaGenUtil.getHttpUrlVariableDeclaration(exchangeDescriptor);
-//    if (httpUrlDeclaration != null) {
-//      appendToBody(httpUrlDeclaration).append("\n\n");
-//    }
-//    
-//    String websocketUrlDeclaration = ExchangeJavaGenUtil.getWebsocketUrlVariableDeclaration(exchangeDescriptor);
-//    if (websocketUrlDeclaration != null) {
-//      appendToBody(websocketUrlDeclaration).append("\n\n");
-//    }
-    
     List<RateLimitRule> rateLimits = exchangeDescriptor.getRateLimits();
     List<ExchangeApiDescriptor> apis = exchangeDescriptor.getApis();
     boolean hasRateLimits = !CollectionUtils.isEmpty(rateLimits);
