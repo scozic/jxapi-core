@@ -10,7 +10,7 @@ import org.jxapi.exchange.descriptor.ExchangeDescriptor;
 import org.jxapi.exchange.descriptor.RestEndpointDescriptor;
 import org.jxapi.exchange.descriptor.WebsocketEndpointDescriptor;
 import org.jxapi.generator.java.exchange.ClassesGenerator;
-import org.jxapi.generator.java.exchange.ExchangeJavaGenUtil;
+import org.jxapi.generator.java.exchange.ExchangeGenUtil;
 import org.jxapi.generator.java.exchange.api.rest.RestEndpointClassesGenerator;
 import org.jxapi.generator.java.exchange.api.ws.WebsocketEndpointClassesGenerator;
 import org.jxapi.generator.java.exchange.constants.ConstantsClassGenerator;
@@ -53,7 +53,7 @@ public class ExchangeApiClassesGenerator implements ClassesGenerator {
   @Override
   public void generateClasses(Path outputFolder) throws IOException {
     PlaceHolderResolver docPlaceHolderResolver = 
-      PlaceHolderResolver.create(ExchangeJavaGenUtil.getDescriptionReplacements(exchangeDescriptor, exchangeApiDescriptor.getName()));
+      PlaceHolderResolver.create(ExchangeGenUtil.getDescriptionReplacements(exchangeDescriptor, exchangeApiDescriptor.getName()));
     ExchangeApiInterfaceGenerator exchangeApiInterfaceGenerator = 
       new ExchangeApiInterfaceGenerator(exchangeDescriptor, exchangeApiDescriptor, docPlaceHolderResolver);
     exchangeApiInterfaceGenerator.writeJavaFile(outputFolder); 
@@ -77,10 +77,10 @@ public class ExchangeApiClassesGenerator implements ClassesGenerator {
     List<Constant> constants = exchangeApiDescriptor.getConstants();
     if (!CollectionUtil.isEmpty(constants)) {
       ConstantsClassGenerator cgen = new ConstantsClassGenerator(
-          ExchangeJavaGenUtil.getExchangeApiConstantsInterfaceName(exchangeDescriptor, exchangeApiDescriptor), 
+          ExchangeGenUtil.getExchangeApiConstantsInterfaceName(exchangeDescriptor, exchangeApiDescriptor), 
           constants,
           docPlaceHolderResolver); 
-      cgen.setConstantValuePlaceHolderResolver(s -> ExchangeJavaGenUtil.generateSubstitutionInstructionDeclaration(
+      cgen.setConstantValuePlaceHolderResolver(s -> ExchangeGenUtil.generateSubstitutionInstructionDeclaration(
                                                       s, 
                                                       exchangeDescriptor, 
                                                       exchangeApiDescriptor, 

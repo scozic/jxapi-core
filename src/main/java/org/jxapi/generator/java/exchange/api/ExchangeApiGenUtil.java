@@ -17,7 +17,7 @@ import org.jxapi.exchange.descriptor.Type;
 import org.jxapi.exchange.descriptor.WebsocketEndpointDescriptor;
 import org.jxapi.generator.java.Imports;
 import org.jxapi.generator.java.JavaCodeGenUtil;
-import org.jxapi.generator.java.exchange.ExchangeJavaGenUtil;
+import org.jxapi.generator.java.exchange.ExchangeGenUtil;
 import org.jxapi.netutils.deserialization.RawBigDecimalMessageDeserializer;
 import org.jxapi.netutils.deserialization.RawBooleanMessageDeserializer;
 import org.jxapi.netutils.deserialization.RawIntegerMessageDeserializer;
@@ -321,13 +321,13 @@ public class ExchangeApiGenUtil {
   public static String getClassNameForField(Field field, 
                         Imports imports, 
                         String enclosingClassName) {
-    Type fieldType = ExchangeJavaGenUtil.getFieldType(field);
+    Type fieldType = ExchangeGenUtil.getFieldType(field);
     String objectClassName = null;
     if (fieldType.isObject()) {
        objectClassName = getFieldObjectClassName(field, enclosingClassName);
        
     }
-    return ExchangeJavaGenUtil.getClassNameForType(
+    return ExchangeGenUtil.getClassNameForType(
           fieldType,
           imports, 
           objectClassName);
@@ -370,7 +370,7 @@ public class ExchangeApiGenUtil {
    * <li>Otherwise, the class name is the concatenation of the package of the
    * enclosing class name and the class name generated
    * by
-   * {@link ExchangeJavaGenUtil#getClassNameForType(Type, Imports, String)}
+   * {@link ExchangeGenUtil#getClassNameForType(Type, Imports, String)}
    * for the
    * leaf subType of the field type.</li>
    * </ul>
@@ -396,7 +396,7 @@ public class ExchangeApiGenUtil {
       return pkg + objectName;
     }
     
-    return pkg + ExchangeJavaGenUtil.getClassNameForType(
+    return pkg + ExchangeGenUtil.getClassNameForType(
           leafSubType,
           new Imports(),
           enclosingClassName) 
@@ -415,7 +415,7 @@ public class ExchangeApiGenUtil {
    * <li>For other 'structured' types (object, list or map) types, the
    * corresponding new
    * Json field deserializer instruction is returned, see
-   * {@link ExchangeJavaGenUtil#getNewJsonFieldDeserializerInstruction(Type, String, Imports)}.</li>
+   * {@link ExchangeGenUtil#getNewJsonFieldDeserializerInstruction(Type, String, Imports)}.</li>
    * <li>
    * </ul>
    * 
@@ -450,7 +450,7 @@ public class ExchangeApiGenUtil {
     case LIST:
     case MAP:
     default:
-      return ExchangeJavaGenUtil.getNewJsonFieldDeserializerInstruction(messageType, messageFullClassName, imports);
+      return ExchangeGenUtil.getNewJsonFieldDeserializerInstruction(messageType, messageFullClassName, imports);
     }
   }
 
@@ -533,7 +533,7 @@ public class ExchangeApiGenUtil {
     if (endpointRequest == null) {
       return false;
     }
-    Type dataType = ExchangeJavaGenUtil.getFieldType(endpointRequest);
+    Type dataType = ExchangeGenUtil.getFieldType(endpointRequest);
     return dataType.getCanonicalType() != CanonicalType.OBJECT 
         || getFieldPropertiesCount(endpointRequest, exchangeApiDescriptor) > 0;
   }

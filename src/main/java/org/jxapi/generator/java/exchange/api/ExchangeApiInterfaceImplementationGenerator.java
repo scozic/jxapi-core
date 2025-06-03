@@ -22,7 +22,7 @@ import org.jxapi.exchange.descriptor.WebsocketEndpointDescriptor;
 import org.jxapi.exchange.descriptor.WebsocketMessageTopicMatcherFieldDescriptor;
 import org.jxapi.generator.java.JavaCodeGenUtil;
 import org.jxapi.generator.java.JavaTypeGenerator;
-import org.jxapi.generator.java.exchange.ExchangeJavaGenUtil;
+import org.jxapi.generator.java.exchange.ExchangeGenUtil;
 import org.jxapi.netutils.deserialization.MessageDeserializer;
 import org.jxapi.netutils.rest.FutureRestResponse;
 import org.jxapi.netutils.rest.HttpMethod;
@@ -206,11 +206,11 @@ public class ExchangeApiInterfaceImplementationGenerator extends JavaTypeGenerat
    */
   public ExchangeApiInterfaceImplementationGenerator(ExchangeDescriptor exchangeDescriptor, 
                              ExchangeApiDescriptor exchangeApiDescriptor) {
-    super(ExchangeJavaGenUtil.getApiInterfaceImplementationClassName(exchangeDescriptor, exchangeApiDescriptor));
+    super(ExchangeGenUtil.getApiInterfaceImplementationClassName(exchangeDescriptor, exchangeApiDescriptor));
     this.exchangeDescriptor = exchangeDescriptor;
     this.exchangeApiDescriptor = exchangeApiDescriptor;
     setTypeDeclaration("public class");
-    String fullInterfaceName = ExchangeJavaGenUtil.getApiInterfaceClassName(exchangeDescriptor, exchangeApiDescriptor);
+    String fullInterfaceName = ExchangeGenUtil.getApiInterfaceClassName(exchangeDescriptor, exchangeApiDescriptor);
     addImport(fullInterfaceName);
     this.simpleInterfaceName = JavaCodeGenUtil.getClassNameWithoutPackage(fullInterfaceName);
     setImplementedInterfaces(Arrays.asList(fullInterfaceName));
@@ -296,7 +296,7 @@ public class ExchangeApiInterfaceImplementationGenerator extends JavaTypeGenerat
   }
   
   private String generateConstructorSignature() {
-    String exchangeClassName = ExchangeJavaGenUtil.getExchangeInterfaceName(exchangeDescriptor);
+    String exchangeClassName = ExchangeGenUtil.getExchangeInterfaceName(exchangeDescriptor);
     addImport(exchangeClassName);
     StringBuilder constructorSignature = new StringBuilder()
         .append("public ")
@@ -348,14 +348,14 @@ public class ExchangeApiInterfaceImplementationGenerator extends JavaTypeGenerat
     }
     constructorBody
       .append(JavaCodeGenUtil.SUPER_ARG_SEPARATOR)
-      .append(ExchangeJavaGenUtil.generateSubstitutionInstructionDeclaration(
+      .append(ExchangeGenUtil.generateSubstitutionInstructionDeclaration(
         exchangeApiDescriptor.getHttpUrl(), 
         exchangeDescriptor, 
         exchangeApiDescriptor, 
         EXCHANGE_ARGUMENT_NAME + GET_PROPERTIES,
         getImports()))
       .append(JavaCodeGenUtil.SUPER_ARG_SEPARATOR)
-      .append(ExchangeJavaGenUtil.generateSubstitutionInstructionDeclaration(
+      .append(ExchangeGenUtil.generateSubstitutionInstructionDeclaration(
         exchangeApiDescriptor.getWebsocketUrl(), 
         exchangeDescriptor, 
         exchangeApiDescriptor, 
@@ -464,7 +464,7 @@ public class ExchangeApiInterfaceImplementationGenerator extends JavaTypeGenerat
           exchangeApiDescriptor, 
           wsApi);
       Field message = ExchangeApiGenUtil.resolveFieldProperties(exchangeApiDescriptor, wsApi.getMessage());
-      Type messageDataType = ExchangeJavaGenUtil.getFieldType(message);
+      Type messageDataType = ExchangeGenUtil.getFieldType(message);
       String getResponseDeserializerInstance = ExchangeApiGenUtil.getNewMessageDeserializerInstruction(messageDataType, messageClassObjectName, getImports());
       constructorBody.append(THIS)
         .append(websocketEndpointVariableName)
@@ -492,9 +492,9 @@ public class ExchangeApiInterfaceImplementationGenerator extends JavaTypeGenerat
 
   private void generateWebsocketApiMethodsDeclarations(WebsocketEndpointDescriptor websocketApi) {
     Field request = ExchangeApiGenUtil.resolveFieldProperties(exchangeApiDescriptor, websocketApi.getRequest());
-    Type requestDataType = ExchangeJavaGenUtil.getFieldType(request);
+    Type requestDataType = ExchangeGenUtil.getFieldType(request);
     Field message = ExchangeApiGenUtil.resolveFieldProperties(exchangeApiDescriptor, websocketApi.getMessage());
-    Type messageDataType = ExchangeJavaGenUtil.getFieldType(message);
+    Type messageDataType = ExchangeGenUtil.getFieldType(message);
     addImport(WebsocketEndpoint.class);
     boolean hasArguments = ExchangeApiGenUtil.websocketEndpointHasArguments(websocketApi, exchangeApiDescriptor);
     String requestClassName = null;
@@ -507,7 +507,7 @@ public class ExchangeApiInterfaceImplementationGenerator extends JavaTypeGenerat
                     exchangeApiDescriptor, 
                     websocketApi);
       }
-      requestSimpleClassName = ExchangeJavaGenUtil.getClassNameForType(
+      requestSimpleClassName = ExchangeGenUtil.getClassNameForType(
                           requestDataType, 
                           getImports(), 
                           requestClassName);
@@ -517,7 +517,7 @@ public class ExchangeApiInterfaceImplementationGenerator extends JavaTypeGenerat
                       exchangeDescriptor, 
                       exchangeApiDescriptor, 
                       websocketApi);
-    String messageClassSimpleName = ExchangeJavaGenUtil.getClassNameForType(
+    String messageClassSimpleName = ExchangeGenUtil.getClassNameForType(
                       messageDataType, 
                       getImports(), 
                       messageClassObjectName);
@@ -591,7 +591,7 @@ public class ExchangeApiInterfaceImplementationGenerator extends JavaTypeGenerat
     List<Field> requestFields = CollectionUtil.emptyIfNull(request == null? null: request.getProperties());
     for (Field param: requestFields) {
       replacements.add(param.getMsgField() != null? param.getMsgField(): param.getName());
-      String fieldClass = ExchangeJavaGenUtil.getClassNameForType(param.getType(), getImports(), requestClassName);
+      String fieldClass = ExchangeGenUtil.getClassNameForType(param.getType(), getImports(), requestClassName);
       replacements.add("\" + request." 
                  + JavaCodeGenUtil.getGetAccessorMethodName(
                          param.getName(), 
@@ -636,7 +636,7 @@ public class ExchangeApiInterfaceImplementationGenerator extends JavaTypeGenerat
    *         name see {@link Field#getName()} matching that field.
    */
   private String getMsgFieldName(String name, Field msg) {
-    Type messageDataType = ExchangeJavaGenUtil.getFieldType(msg);
+    Type messageDataType = ExchangeGenUtil.getFieldType(msg);
     if (Objects.equals(msg.getName(), name)) {
       return Optional.ofNullable(msg.getMsgField()).orElse(name);
     } else if (messageDataType.isObject()) {
@@ -653,7 +653,7 @@ public class ExchangeApiInterfaceImplementationGenerator extends JavaTypeGenerat
   private String generateWebsocketTopicSerializerDeclaration(WebsocketEndpointDescriptor websocketApi) {
     String topicSerializerBody = "\"\"";
     Field request = ExchangeApiGenUtil.resolveFieldProperties(exchangeApiDescriptor, websocketApi.getRequest());
-    Type requestDataType = ExchangeJavaGenUtil.getFieldType(request);
+    Type requestDataType = ExchangeGenUtil.getFieldType(request);
     if (ExchangeApiGenUtil.websocketEndpointHasArguments(websocketApi, exchangeApiDescriptor)) {
       if (websocketApi.getTopic() != null) {
         topicSerializerBody =  generateUrlParametersOrTopicSerializerBodyFromTemplate(
@@ -674,9 +674,9 @@ public class ExchangeApiInterfaceImplementationGenerator extends JavaTypeGenerat
   
   private void generateRestEndpointMethodDeclaration(RestEndpointDescriptor restApi) {
     Field request = restApi.getRequest();
-    Type requestDataType = ExchangeJavaGenUtil.getFieldType(request);
+    Type requestDataType = ExchangeGenUtil.getFieldType(request);
     Field response = restApi.getResponse();
-    Type responseDataType =  ExchangeJavaGenUtil.getFieldType(response);
+    Type responseDataType =  ExchangeGenUtil.getFieldType(response);
     boolean hasArguments = ExchangeApiGenUtil.restEndpointHasArguments(restApi, exchangeApiDescriptor);
     String requestSimpleClassName = "Object";
     String requestArgName = ExchangeApiGenUtil.DEFAULT_REQUEST_ARG_NAME;
@@ -686,7 +686,7 @@ public class ExchangeApiInterfaceImplementationGenerator extends JavaTypeGenerat
       if (requestDataType.isObject()) {
         requestClassName = ExchangeApiGenUtil.generateRestEnpointRequestPojoClassName(exchangeDescriptor, exchangeApiDescriptor, restApi);
       }
-      requestSimpleClassName = ExchangeJavaGenUtil.getClassNameForType(
+      requestSimpleClassName = ExchangeGenUtil.getClassNameForType(
           requestDataType, 
           getImports(), 
           requestClassName);
@@ -703,7 +703,7 @@ public class ExchangeApiInterfaceImplementationGenerator extends JavaTypeGenerat
             restApi);
       }
       
-      responseSimpleClassName = ExchangeJavaGenUtil.getClassNameForType(
+      responseSimpleClassName = ExchangeGenUtil.getClassNameForType(
           responseDataType, 
           getImports(), 
           restResponseClassName);
@@ -815,7 +815,7 @@ public class ExchangeApiInterfaceImplementationGenerator extends JavaTypeGenerat
                             exchangeDescriptor.getId(), 
                             exchangeApiDescriptor.getName()));
       }
-      rateLimitVariables.add(pfx + ExchangeJavaGenUtil.generateRateLimitGetterMethodName(rateLimitId) + "()");
+      rateLimitVariables.add(pfx + ExchangeGenUtil.generateRateLimitGetterMethodName(rateLimitId) + "()");
     }
     
     return rateLimitVariables;
@@ -864,7 +864,7 @@ public class ExchangeApiInterfaceImplementationGenerator extends JavaTypeGenerat
             id,
             exchangeApiDescriptor.getName()));
     }
-    String variableName = ExchangeJavaGenUtil.generateRateLimitVariableName(id);
+    String variableName = ExchangeGenUtil.generateRateLimitVariableName(id);
     addImport(RateLimitRule.class);
     StringBuilder declaration =  new StringBuilder()
       .append(PRIVATE_FINAL)
@@ -901,7 +901,7 @@ public class ExchangeApiInterfaceImplementationGenerator extends JavaTypeGenerat
   
   private void generateRateLimitRuleGetters() {
     CollectionUtil.emptyIfNull(exchangeApiDescriptor.getRateLimits()).forEach(rateLimitRule -> 
-      appendToBody(ExchangeJavaGenUtil.generateRateLimitGetterImplementationMethodDeclaration(rateLimitRule.getId()))
+      appendToBody(ExchangeGenUtil.generateRateLimitGetterImplementationMethodDeclaration(rateLimitRule.getId()))
         .append("\n")
     );
   }
@@ -951,7 +951,7 @@ public class ExchangeApiInterfaceImplementationGenerator extends JavaTypeGenerat
         .append(ExchangeApiGenUtil.getRestEndpointUrlVariableName(restApi)).append(" = ")
         .append(EncodingUtil.class.getSimpleName())
         .append(".buildUrl(this.getHttpUrl(), ")
-        .append(ExchangeJavaGenUtil.generateSubstitutionInstructionDeclaration(
+        .append(ExchangeGenUtil.generateSubstitutionInstructionDeclaration(
             restApi.getUrl(), 
             exchangeDescriptor, 
             exchangeApiDescriptor, 
@@ -971,7 +971,7 @@ public class ExchangeApiInterfaceImplementationGenerator extends JavaTypeGenerat
                             exchangeApiDescriptor, request).getProperties();
     if (ExchangeApiGenUtil.restEndpointHasArguments(restApi, exchangeApiDescriptor)) {
       String requestName = request == null? null: request.getName();
-      Type requestDataType = ExchangeJavaGenUtil.getFieldType(request);
+      Type requestDataType = ExchangeGenUtil.getFieldType(request);
       boolean hasQueryParams = restApi.isQueryParams()  
           || !restApi.getHttpMethod().requestHasBody;
       if (restApi.getUrlParameters() != null) {
@@ -1017,7 +1017,7 @@ public class ExchangeApiInterfaceImplementationGenerator extends JavaTypeGenerat
             + "()";
       }
 
-      Type type = ExchangeJavaGenUtil.getFieldType(f);
+      Type type = ExchangeGenUtil.getFieldType(f);
       if (type.getCanonicalType() == CanonicalType.LIST
         || type.getCanonicalType() == CanonicalType.MAP
         || type.isObject()) {
@@ -1044,7 +1044,7 @@ public class ExchangeApiInterfaceImplementationGenerator extends JavaTypeGenerat
                                         Type requestType) {
     fields = Optional.ofNullable(fields).orElse(List.of());
     if (stringListSeparator == null) {
-      stringListSeparator = ExchangeJavaGenUtil.DEFAULT_STRING_LIST_SEPARATOR;
+      stringListSeparator = ExchangeGenUtil.DEFAULT_STRING_LIST_SEPARATOR;
     }
     StringBuilder sb = new StringBuilder();
     sb.append(EncodingUtil.class.getSimpleName())
@@ -1054,7 +1054,7 @@ public class ExchangeApiInterfaceImplementationGenerator extends JavaTypeGenerat
     int n = fields.size();
     for (int i = 0; i < n; i++) {
       Field f = fields.get(i);
-      Type type = ExchangeJavaGenUtil.getFieldType(f);
+      Type type = ExchangeGenUtil.getFieldType(f);
       String name = f.getName();
       if (!urlParametersTemplate.contains("${" + name + "}")) {
         continue;

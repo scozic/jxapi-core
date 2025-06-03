@@ -11,7 +11,7 @@ import org.jxapi.exchange.descriptor.Field;
 import org.jxapi.exchange.descriptor.Type;
 import org.jxapi.generator.java.JavaCodeGenUtil;
 import org.jxapi.generator.java.JavaTypeGenerator;
-import org.jxapi.generator.java.exchange.ExchangeJavaGenUtil;
+import org.jxapi.generator.java.exchange.ExchangeGenUtil;
 import org.jxapi.generator.java.exchange.api.ExchangeApiGenUtil;
 import org.jxapi.util.CollectionUtil;
 import org.jxapi.util.CompareUtil;
@@ -302,7 +302,7 @@ public class PojoGenerator extends JavaTypeGenerator {
   }
   
   private void generateBuilderMethodsDeclaration(Field field, JavaTypeGenerator builder) {
-    Type fieldType = ExchangeJavaGenUtil.getFieldType(field);
+    Type fieldType = ExchangeGenUtil.getFieldType(field);
     String typeClass = getFieldClass(field);
     typeClass = JavaCodeGenUtil.getClassNameWithoutPackage(typeClass);
     String name = field.getName();
@@ -370,7 +370,7 @@ public class PojoGenerator extends JavaTypeGenerator {
   
   private void generateAddToListBuilderMethod(Field field, JavaTypeGenerator builder) {
     String name = field.getName();
-    Type fieldType = ExchangeJavaGenUtil.getFieldType(field);
+    Type fieldType = ExchangeGenUtil.getFieldType(field);
     Field itemField = Field.builder()
                   .name(name)
                   .type(fieldType.getSubType())
@@ -419,7 +419,7 @@ public class PojoGenerator extends JavaTypeGenerator {
   
   private void generateAddToMapBuilderMethod(Field field, JavaTypeGenerator builder) {
     String name = field.getName();
-    Type fieldType = ExchangeJavaGenUtil.getFieldType(field);
+    Type fieldType = ExchangeGenUtil.getFieldType(field);
     Field itemField = Field.builder()
                   .name(name)
                   .type(fieldType.getSubType())
@@ -474,12 +474,12 @@ public class PojoGenerator extends JavaTypeGenerator {
   
   private String getFieldClass(Field field) {
     String fieldClass = null;
-    Type fieldType = ExchangeJavaGenUtil.getFieldType(field);
-    if (ExchangeJavaGenUtil.isObjectField(field)) {
+    Type fieldType = ExchangeGenUtil.getFieldType(field);
+    if (ExchangeGenUtil.isObjectField(field)) {
       String className = getName();
       fieldClass = ExchangeApiGenUtil.getClassNameForField(field, getImports(), className);
     } else {
-      fieldClass = ExchangeJavaGenUtil.getClassNameForType(fieldType, getImports(), null);
+      fieldClass = ExchangeGenUtil.getClassNameForType(fieldType, getImports(), null);
     }
     return JavaCodeGenUtil.getClassNameWithoutPackage(fieldClass);
   }

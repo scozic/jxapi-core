@@ -12,7 +12,7 @@ import org.jxapi.exchange.descriptor.Type;
 import org.jxapi.generator.html.HtmlGenerationUtil;
 import org.jxapi.generator.java.JavaCodeGenUtil;
 import org.jxapi.generator.java.JavaTypeGenerator;
-import org.jxapi.generator.java.exchange.ExchangeJavaGenUtil;
+import org.jxapi.generator.java.exchange.ExchangeGenUtil;
 import org.jxapi.util.PlaceHolderResolver;
 import org.jxapi.util.PropertiesUtil;
 
@@ -159,7 +159,7 @@ public class PropertiesClassGenerator extends JavaTypeGenerator {
         
     sb.append(JavaCodeGenUtil.generateJavaDoc(desc.toString()))
       .append("\n");
-    String typeClass = ExchangeJavaGenUtil.getClassNameForType(type, getImports(), null);
+    String typeClass = ExchangeGenUtil.getClassNameForType(type, getImports(), null);
     String methodName = JavaCodeGenUtil.getGetAccessorMethodName(
                   name, 
                   typeClass, 

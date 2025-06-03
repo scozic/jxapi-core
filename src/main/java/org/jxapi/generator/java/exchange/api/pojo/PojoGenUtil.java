@@ -11,7 +11,7 @@ import org.jxapi.exchange.descriptor.Field;
 import org.jxapi.exchange.descriptor.Type;
 import org.jxapi.generator.java.Imports;
 import org.jxapi.generator.java.JavaCodeGenUtil;
-import org.jxapi.generator.java.exchange.ExchangeJavaGenUtil;
+import org.jxapi.generator.java.exchange.ExchangeGenUtil;
 import org.jxapi.util.CollectionUtil;
 import org.jxapi.util.DeepCloneable;
 
@@ -51,7 +51,7 @@ public class PojoGenUtil {
    * @return The generated deep clone instruction
    */
   public static String generateDeepCloneFieldInstruction(Field f, Imports imports) {
-    Type type = ExchangeJavaGenUtil.getFieldType(f);
+    Type type = ExchangeGenUtil.getFieldType(f);
     String name = f.getName();
     if (type.getCanonicalType().isPrimitive) {
       return "this." + name;
@@ -104,7 +104,7 @@ public class PojoGenUtil {
    */
   public static String generateCompareFieldsInstruction(Field f) {
     String name = f.getName();
-    Type type = ExchangeJavaGenUtil.getFieldType(f);
+    Type type = ExchangeGenUtil.getFieldType(f);
     if (type.getCanonicalType().isPrimitive) {
       return "CompareUtil.compare(this." + name + OTHER_TOEN + name + ")";
     } else if (type.getCanonicalType() == CanonicalType.LIST) {
@@ -222,7 +222,7 @@ public class PojoGenUtil {
           MessageDigest md = MessageDigest.getInstance(SERIAL_VERSION_UID_HASH_ALGORITHM);
           StringBuilder sb = new StringBuilder().append(className);
           for (Field f : fields) {
-              sb.append(";").append(f.getName()).append(":").append(ExchangeJavaGenUtil.getFieldType(f).toString());
+              sb.append(";").append(f.getName()).append(":").append(ExchangeGenUtil.getFieldType(f).toString());
           }
           for (String i : implementedInterfaces) {
               sb.append(";").append(i);

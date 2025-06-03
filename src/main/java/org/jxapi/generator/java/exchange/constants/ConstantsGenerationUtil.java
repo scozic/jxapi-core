@@ -8,7 +8,7 @@ import org.jxapi.exchange.descriptor.DefaultConfigProperty;
 import org.jxapi.exchange.descriptor.Type;
 import org.jxapi.generator.java.Imports;
 import org.jxapi.generator.java.JavaCodeGenUtil;
-import org.jxapi.generator.java.exchange.ExchangeJavaGenUtil;
+import org.jxapi.generator.java.exchange.ExchangeGenUtil;
 import org.jxapi.util.PlaceHolderResolver;
 
 /**
@@ -43,9 +43,9 @@ public class ConstantsGenerationUtil {
     if (!type.getCanonicalType().isPrimitive) {
       throw new IllegalArgumentException("Constant " + constant + " has not a primitive type");
     }
-    String className = ExchangeJavaGenUtil.getClassNameForType(type, imports, null);
+    String className = ExchangeGenUtil.getClassNameForType(type, imports, null);
     String varName = JavaCodeGenUtil.getStaticVariableName(constant.getName());
-    String value = ExchangeJavaGenUtil.getPrimitiveTypeFieldSampleValueDeclaration(
+    String value = ExchangeGenUtil.getPrimitiveTypeFieldSampleValueDeclaration(
                     type, 
                     constant.
                     getValue(), 

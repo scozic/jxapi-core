@@ -35,12 +35,11 @@ import org.jxapi.util.PropertiesUtil;
 /**
  * Helper static methods for generation of Java classes of a given exchange wrapper
  */
-// TODO: Rename without 'Java' in the name
-public class ExchangeJavaGenUtil {
+public class ExchangeGenUtil {
   
   private static final String GET_INSTANCE = ".getInstance()";
 
-  private ExchangeJavaGenUtil() {}
+  private ExchangeGenUtil() {}
   
   /**
    * Default separator for string lists
@@ -145,7 +144,7 @@ public class ExchangeJavaGenUtil {
             .append("\npublic ")
             .append(RateLimitRule.class.getSimpleName())
             .append(" ")
-            .append(ExchangeJavaGenUtil.generateRateLimitGetterMethodName(rateLimitName))
+            .append(ExchangeGenUtil.generateRateLimitGetterMethodName(rateLimitName))
             .append("()")
             .append(";\n")
             .toString();

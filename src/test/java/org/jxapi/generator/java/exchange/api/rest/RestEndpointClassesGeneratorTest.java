@@ -15,7 +15,7 @@ import org.jxapi.exchange.descriptor.RestEndpointDescriptor;
 import org.jxapi.exchange.descriptor.parser.ExchangeDescriptorParser;
 import org.jxapi.generator.java.JavaCodeGenUtil;
 import org.jxapi.generator.java.exchange.ClassesGeneratorTestUtil;
-import org.jxapi.generator.java.exchange.ExchangeJavaGenUtil;
+import org.jxapi.generator.java.exchange.ExchangeGenUtil;
 import org.jxapi.util.PlaceHolderResolver;
 
 /**
@@ -50,7 +50,7 @@ public class RestEndpointClassesGeneratorTest {
     ExchangeApiDescriptor api = exchange.getApis().get(0);
     RestEndpointDescriptor restEndpoint = api.getRestEndpoints().get(0);
     PlaceHolderResolver docPlaceHolderResolver = 
-        PlaceHolderResolver.create(ExchangeJavaGenUtil.getDescriptionReplacements(exchange, api.getName()));
+        PlaceHolderResolver.create(ExchangeGenUtil.getDescriptionReplacements(exchange, api.getName()));
     RestEndpointClassesGenerator generator = new RestEndpointClassesGenerator(exchange, api, restEndpoint, docPlaceHolderResolver);
     generator.generateClasses(srcFolder);
     

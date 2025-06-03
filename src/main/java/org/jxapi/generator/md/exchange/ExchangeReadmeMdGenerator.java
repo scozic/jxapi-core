@@ -18,7 +18,7 @@ import org.jxapi.exchange.descriptor.Type;
 import org.jxapi.exchange.descriptor.WebsocketEndpointDescriptor;
 import org.jxapi.generator.html.HtmlGenerationUtil;
 import org.jxapi.generator.java.JavaCodeGenUtil;
-import org.jxapi.generator.java.exchange.ExchangeJavaGenUtil;
+import org.jxapi.generator.java.exchange.ExchangeGenUtil;
 import org.jxapi.generator.java.exchange.api.ExchangeApiGenUtil;
 import org.jxapi.generator.java.exchange.api.demo.EndpointDemoGenUtil;
 import org.jxapi.util.CollectionUtil;
@@ -65,10 +65,10 @@ public class ExchangeReadmeMdGenerator {
     this.exchangeDescriptor = exchangeDescriptor;
     this.baseJavadocUrl = baseJavadocUrl;
     this.baseSourceUrl = baseSourceUrl;
-    this.exchangeInterfaceName = ExchangeJavaGenUtil.getExchangeInterfaceName(exchangeDescriptor);
-    this.exchangeInterfaceImplementationName = ExchangeJavaGenUtil.getExchangeInterfaceImplementationName(exchangeInterfaceName);
+    this.exchangeInterfaceName = ExchangeGenUtil.getExchangeInterfaceName(exchangeDescriptor);
+    this.exchangeInterfaceImplementationName = ExchangeGenUtil.getExchangeInterfaceImplementationName(exchangeInterfaceName);
     this.demoClassName = findDemoClassName(exchangeDescriptor);
-    this.constantsInterfaceName = ExchangeJavaGenUtil.getExchangeConstantsInterfaceName(exchangeDescriptor);
+    this.constantsInterfaceName = ExchangeGenUtil.getExchangeConstantsInterfaceName(exchangeDescriptor);
   }
 
   /**
@@ -78,7 +78,7 @@ public class ExchangeReadmeMdGenerator {
    */
   public String generate() {
     PlaceHolderResolver docPlaceHolderResolver = PlaceHolderResolver
-        .create(ExchangeJavaGenUtil.getDescriptionReplacements(exchangeDescriptor, null, baseJavadocUrl));
+        .create(ExchangeGenUtil.getDescriptionReplacements(exchangeDescriptor, null, baseJavadocUrl));
     StringBuilder s = new StringBuilder().append("# ")
       .append(exchangeDescriptor.getId())
       .append(" API Java wrapper\n\n")
@@ -150,10 +150,10 @@ public class ExchangeReadmeMdGenerator {
   
   private String generateApiDescriptorDoc(ExchangeApiDescriptor api) {
     StringBuilder s = new StringBuilder();
-    String apiInterfaceClassName = ExchangeJavaGenUtil.getApiInterfaceClassName(exchangeDescriptor, api);
+    String apiInterfaceClassName = ExchangeGenUtil.getApiInterfaceClassName(exchangeDescriptor, api);
     String apiInterfaceSimpleClassName = JavaCodeGenUtil.getClassNameWithoutPackage(apiInterfaceClassName);
     PlaceHolderResolver docPlaceHolderResolver = PlaceHolderResolver
-        .create(ExchangeJavaGenUtil.getDescriptionReplacements(exchangeDescriptor, api.getName(), baseJavadocUrl));
+        .create(ExchangeGenUtil.getDescriptionReplacements(exchangeDescriptor, api.getName(), baseJavadocUrl));
     s.append("\n### ")
      .append(api.getName())
      .append("\n")
@@ -185,7 +185,7 @@ public class ExchangeReadmeMdGenerator {
     
     List<Constant> apiConstants = api.getConstants();
     if (!CollectionUtil.isEmpty(apiConstants)) {
-      String apiConstantsInterfaceName = ExchangeJavaGenUtil.getExchangeApiConstantsInterfaceName(exchangeDescriptor, api);
+      String apiConstantsInterfaceName = ExchangeGenUtil.getExchangeApiConstantsInterfaceName(exchangeDescriptor, api);
       s.append("Some useful constants are defined in ")
        .append(getInterfaceJavadocLink(apiConstantsInterfaceName))
        .append("\n");
@@ -195,11 +195,11 @@ public class ExchangeReadmeMdGenerator {
   
   private Object generateWebsocketEndpointsTable(ExchangeApiDescriptor api, PlaceHolderResolver docPlaceHolderResolver) {
     List<WebsocketEndpointDescriptor> websocketEndpoints = api.getWebsocketEndpoints();
-    String apiInterfaceClassName = ExchangeJavaGenUtil.getApiInterfaceClassName(exchangeDescriptor, api);
+    String apiInterfaceClassName = ExchangeGenUtil.getApiInterfaceClassName(exchangeDescriptor, api);
     List<String> columns = List.of("Subscription method", "Description", "API Reference");
     List<List<String>> cells = new ArrayList<>();
     websocketEndpoints.forEach(w -> {
-      Type requestDataType = ExchangeJavaGenUtil.getFieldType(w.getRequest());
+      Type requestDataType = ExchangeGenUtil.getFieldType(w.getRequest());
       String requestClassName = null;
       if (requestDataType != null && requestDataType.isObject()) {
         requestClassName = ExchangeApiGenUtil.generateWebsocketEndpointRequestPojoClassName(
@@ -233,11 +233,11 @@ public class ExchangeReadmeMdGenerator {
 
   private String generateRestEndpointsTable(ExchangeApiDescriptor api, PlaceHolderResolver docPlaceHolderResolver) {
     List<RestEndpointDescriptor> restEndpoints = api.getRestEndpoints();
-    String apiInterfaceClassName = ExchangeJavaGenUtil.getApiInterfaceClassName(exchangeDescriptor, api);
+    String apiInterfaceClassName = ExchangeGenUtil.getApiInterfaceClassName(exchangeDescriptor, api);
     List<String> columns = List.of("Endpoint", "Description", "API Reference");
     List<List<String>> cells = new ArrayList<>();
     restEndpoints.forEach(r -> {
-      Type requestDataType = ExchangeJavaGenUtil.getFieldType(r.getRequest());
+      Type requestDataType = ExchangeGenUtil.getFieldType(r.getRequest());
       String requestClassName = null;
       if (requestDataType != null && requestDataType.isObject()) {
         requestClassName = ExchangeApiGenUtil.generateRestEnpointRequestPojoClassName(

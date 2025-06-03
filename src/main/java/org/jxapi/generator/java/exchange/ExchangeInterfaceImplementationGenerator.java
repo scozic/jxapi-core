@@ -78,7 +78,7 @@ public class ExchangeInterfaceImplementationGenerator extends JavaTypeGenerator 
    * @param exchangeDescriptor the exchange descriptor to generate classes for
    */
   public ExchangeInterfaceImplementationGenerator(ExchangeDescriptor exchangeDescriptor) {
-    super(ExchangeJavaGenUtil.getExchangeInterfaceImplementationName(exchangeDescriptor));
+    super(ExchangeGenUtil.getExchangeInterfaceImplementationName(exchangeDescriptor));
     this.exchangeDescriptor = exchangeDescriptor;
     this.setParentClassName(AbstractExchange.class.getName());
   }
@@ -135,14 +135,14 @@ public class ExchangeInterfaceImplementationGenerator extends JavaTypeGenerator 
       .append(JavaCodeGenUtil.SUPER_ARG_SEPARATOR)
       .append(PROPERTIES_PARAMETER)
       .append(JavaCodeGenUtil.SUPER_ARG_SEPARATOR)
-      .append(ExchangeJavaGenUtil.generateSubstitutionInstructionDeclaration(
+      .append(ExchangeGenUtil.generateSubstitutionInstructionDeclaration(
           exchangeDescriptor.getHttpUrl(), 
           exchangeDescriptor, 
           null, 
           PROPERTIES_PARAMETER,
           getImports()))
       .append(JavaCodeGenUtil.SUPER_ARG_SEPARATOR)
-      .append(ExchangeJavaGenUtil.generateSubstitutionInstructionDeclaration(
+      .append(ExchangeGenUtil.generateSubstitutionInstructionDeclaration(
           exchangeDescriptor.getWebsocketUrl(), 
           exchangeDescriptor, 
           null, 
@@ -153,7 +153,7 @@ public class ExchangeInterfaceImplementationGenerator extends JavaTypeGenerator 
     StringBuilder apiMethodsDeclarations = new StringBuilder(); 
     if (exchangeDescriptor.getApis() != null) {
       for (ExchangeApiDescriptor api: exchangeDescriptor.getApis()) {
-        String apiClassName = ExchangeJavaGenUtil.getApiInterfaceClassName(exchangeDescriptor, api);
+        String apiClassName = ExchangeGenUtil.getApiInterfaceClassName(exchangeDescriptor, api);
         String apiSimpleClassName = JavaCodeGenUtil.getClassNameWithoutPackage(apiClassName);
         String apiImplClassName = apiClassName + "Impl";
         String simpleApiImplClassName = JavaCodeGenUtil.getClassNameWithoutPackage(apiImplClassName);
@@ -200,7 +200,7 @@ public class ExchangeInterfaceImplementationGenerator extends JavaTypeGenerator 
   
   private void generateRateLimitRuleGetters() {
     for (RateLimitRule rateLimitRule : CollectionUtil.emptyIfNull(exchangeDescriptor.getRateLimits())) {
-      appendToBody(ExchangeJavaGenUtil.generateRateLimitGetterImplementationMethodDeclaration(rateLimitRule.getId()))
+      appendToBody(ExchangeGenUtil.generateRateLimitGetterImplementationMethodDeclaration(rateLimitRule.getId()))
           .append("\n");
     }
   }
@@ -210,7 +210,7 @@ public class ExchangeInterfaceImplementationGenerator extends JavaTypeGenerator 
     if (name == null) {
       throw new IllegalArgumentException("rateLimitRule:" + rateLimitRule + " should have an id");
     }
-    String variableName = ExchangeJavaGenUtil.generateRateLimitVariableName(name);
+    String variableName = ExchangeGenUtil.generateRateLimitVariableName(name);
     if (rateLimitNames.contains(name)) {
       throw new IllegalArgumentException("Duplicate rate limit rule name:[" + name + "] in " + exchangeDescriptor);
     }

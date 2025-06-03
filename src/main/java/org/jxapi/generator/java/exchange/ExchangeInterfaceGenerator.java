@@ -42,7 +42,7 @@ public class ExchangeInterfaceGenerator extends JavaTypeGenerator {
    * @param docPlaceHolderResolver the place holder resolver to use for resolving placeholders in descriptions.
    */
   public ExchangeInterfaceGenerator(ExchangeDescriptor exchangeDescriptor, PlaceHolderResolver docPlaceHolderResolver) {
-    super(ExchangeJavaGenUtil.getExchangeInterfaceName(exchangeDescriptor));
+    super(ExchangeGenUtil.getExchangeInterfaceName(exchangeDescriptor));
     this.exchangeDescriptor = exchangeDescriptor;
     this.docPlaceHolderResolver = Optional.ofNullable(docPlaceHolderResolver).orElse(PlaceHolderResolver.NO_OP);
     this.setParentClassName(Exchange.class.getName());
@@ -82,7 +82,7 @@ public class ExchangeInterfaceGenerator extends JavaTypeGenerator {
     }
     appendToBody("\n// API groups\n");
     for (ExchangeApiDescriptor api: apis) {
-      String apiClassName = ExchangeJavaGenUtil.getApiInterfaceClassName(exchangeDescriptor, api);
+      String apiClassName = ExchangeGenUtil.getApiInterfaceClassName(exchangeDescriptor, api);
       String apiSimpleClassName = JavaCodeGenUtil.getClassNameWithoutPackage(apiClassName);
       String getApiMethodSignature = apiSimpleClassName + " get" + apiSimpleClassName + "()";
       addImport(apiClassName);
@@ -116,7 +116,7 @@ public class ExchangeInterfaceGenerator extends JavaTypeGenerator {
       }
       addImport(RateLimitRule.class);
       appendToBody("\n")
-      .append(ExchangeJavaGenUtil.generateRateLimitRuleInterfaceMethodDeclaration(rateLimitName));
+      .append(ExchangeGenUtil.generateRateLimitRuleInterfaceMethodDeclaration(rateLimitName));
     }
   }
   

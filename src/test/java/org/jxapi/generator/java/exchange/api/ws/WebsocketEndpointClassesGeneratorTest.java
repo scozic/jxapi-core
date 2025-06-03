@@ -15,7 +15,7 @@ import org.jxapi.exchange.descriptor.WebsocketEndpointDescriptor;
 import org.jxapi.exchange.descriptor.parser.ExchangeDescriptorParser;
 import org.jxapi.generator.java.JavaCodeGenUtil;
 import org.jxapi.generator.java.exchange.ClassesGeneratorTestUtil;
-import org.jxapi.generator.java.exchange.ExchangeJavaGenUtil;
+import org.jxapi.generator.java.exchange.ExchangeGenUtil;
 import org.jxapi.util.PlaceHolderResolver;
 
 /**
@@ -50,7 +50,7 @@ public class WebsocketEndpointClassesGeneratorTest {
     ExchangeApiDescriptor api = exchange.getApis().get(0);
     WebsocketEndpointDescriptor wsEndpoint = api.getWebsocketEndpoints().get(0);
     PlaceHolderResolver docPlaceHolderResolver = 
-        PlaceHolderResolver.create(ExchangeJavaGenUtil.getDescriptionReplacements(exchange, api.getName()));
+        PlaceHolderResolver.create(ExchangeGenUtil.getDescriptionReplacements(exchange, api.getName()));
     WebsocketEndpointClassesGenerator generator = new WebsocketEndpointClassesGenerator(exchange, api, wsEndpoint, docPlaceHolderResolver);
     generator.generateClasses(srcFolder);
     

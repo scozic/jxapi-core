@@ -17,7 +17,7 @@ public class ExchangeInterfaceGeneratorTest {
   public void testGenerateExchangeInterface() throws Exception {
     ExchangeDescriptor exchangeDescriptor = ExchangeDescriptorParser.fromJson(Paths.get(".", "src", "test", "resources", "testExchangeDescriptor.json"));
     PlaceHolderResolver docPlaceHolderResolver = 
-        PlaceHolderResolver.create(ExchangeJavaGenUtil.getDescriptionReplacements(exchangeDescriptor, null));
+        PlaceHolderResolver.create(ExchangeGenUtil.getDescriptionReplacements(exchangeDescriptor, null));
     ExchangeInterfaceGenerator exchangeGenerator = new ExchangeInterfaceGenerator(exchangeDescriptor, docPlaceHolderResolver);
     Assert.assertEquals("package com.foo.bar.gen;\n"
         + "\n"
@@ -57,7 +57,7 @@ public class ExchangeInterfaceGeneratorTest {
   public void testGenerateExchangeInterface_NoApiGroups() throws Exception {
     ExchangeDescriptor exchangeDescriptor = ExchangeDescriptorParser.fromJson(Paths.get(".", "src", "test", "resources", "testExchangeDescriptor.json"));
     PlaceHolderResolver docPlaceHolderResolver = 
-        PlaceHolderResolver.create(ExchangeJavaGenUtil.getDescriptionReplacements(exchangeDescriptor, null, null));
+        PlaceHolderResolver.create(ExchangeGenUtil.getDescriptionReplacements(exchangeDescriptor, null, null));
     exchangeDescriptor.setApis(null);
     ExchangeInterfaceGenerator exchangeGenerator = new ExchangeInterfaceGenerator(exchangeDescriptor, docPlaceHolderResolver);
     Assert.assertEquals("package com.foo.bar.gen;\n"

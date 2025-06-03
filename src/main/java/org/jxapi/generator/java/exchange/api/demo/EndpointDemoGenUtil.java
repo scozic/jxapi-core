@@ -17,7 +17,7 @@ import org.jxapi.exchange.descriptor.Type;
 import org.jxapi.exchange.descriptor.WebsocketEndpointDescriptor;
 import org.jxapi.generator.java.Imports;
 import org.jxapi.generator.java.JavaCodeGenUtil;
-import org.jxapi.generator.java.exchange.ExchangeJavaGenUtil;
+import org.jxapi.generator.java.exchange.ExchangeGenUtil;
 import org.jxapi.generator.java.exchange.api.ExchangeApiGenUtil;
 import org.jxapi.util.DemoUtil;
 import org.jxapi.util.PlaceHolderResolver;
@@ -107,8 +107,8 @@ public class EndpointDemoGenUtil {
                                                               String defaultObjectClassName,
                                                               String defaultFieldName,
                                                               Imports imports) {
-    Type type = ExchangeJavaGenUtil.getFieldType(field);
-    String fieldClassName =  ExchangeJavaGenUtil.getClassNameForType(
+    Type type = ExchangeGenUtil.getFieldType(field);
+    String fieldClassName =  ExchangeGenUtil.getClassNameForType(
                         type, 
                         imports, 
                         defaultObjectClassName);
@@ -153,7 +153,7 @@ public class EndpointDemoGenUtil {
                                                             Imports imports,
                                                             String returnOrResultAffectation,
                                                             PlaceHolderResolver placeholderResolver) {
-    Type type = ExchangeJavaGenUtil.getFieldType(field);
+    Type type = ExchangeGenUtil.getFieldType(field);
     Object sampleValue = field.getSampleValue();
     if (sampleValue == null && !type.isObject()) {
       return returnOrResultAffectation + "null";
@@ -209,7 +209,7 @@ public class EndpointDemoGenUtil {
         String objectClassName, 
         Imports imports,
         PlaceHolderResolver sampleValuePlaceholderResolver) {
-    Type type = ExchangeJavaGenUtil.getFieldType(field);
+    Type type = ExchangeGenUtil.getFieldType(field);
     CanonicalType canonicalType = type.getCanonicalType();
     Object sampleValue = field.getSampleValue();
     String itemVariableName = sampleValueVariableName;
@@ -218,7 +218,7 @@ public class EndpointDemoGenUtil {
       if (canonicalType != CanonicalType.OBJECT) {
         itemVariableName = itemVariableName + "Item";
       }
-      String itemClassName = ExchangeJavaGenUtil.getClassNameForType(
+      String itemClassName = ExchangeGenUtil.getClassNameForType(
                     Type.getLeafSubType(type), 
                     imports, 
                     objectClassName);
@@ -255,7 +255,7 @@ public class EndpointDemoGenUtil {
       String objectClassName, 
       Imports imports, 
       PlaceHolderResolver sampleValuePlaceholderResolver) {
-    Type childParamType = ExchangeJavaGenUtil.getFieldType(childParam);
+    Type childParamType = ExchangeGenUtil.getFieldType(childParam);
     String setArg = JavaCodeGenUtil.getQuotedString(childParam.getSampleValue());
     String setAccessorName = JavaCodeGenUtil.getSetAccessorMethodName(
         childParam.getName(),  
@@ -319,8 +319,8 @@ public class EndpointDemoGenUtil {
   }
   
   private static String getPrimitiveTypeFieldSampleValueDeclaration(Field field, Imports imports, PlaceHolderResolver placeholderResolver) {
-    return ExchangeJavaGenUtil.getPrimitiveTypeFieldSampleValueDeclaration(
-          ExchangeJavaGenUtil.getFieldType(field), 
+    return ExchangeGenUtil.getPrimitiveTypeFieldSampleValueDeclaration(
+          ExchangeGenUtil.getFieldType(field), 
           field.getSampleValue(), 
           imports,
           placeholderResolver);
@@ -434,7 +434,7 @@ public class EndpointDemoGenUtil {
                                                      String exchangeVariableName, 
                                                      String propertiesVariableName) {
     String simpleExchangeClassName = JavaCodeGenUtil.getClassNameWithoutPackage(exchangeClassName);
-    String exchangeImplClassName = ExchangeJavaGenUtil.getExchangeInterfaceImplementationName(exchangeClassName);
+    String exchangeImplClassName = ExchangeGenUtil.getExchangeInterfaceImplementationName(exchangeClassName);
     String simpleExchangeImplClassName = JavaCodeGenUtil.getClassNameWithoutPackage(exchangeImplClassName);
     return new StringBuilder()
         .append(simpleExchangeClassName)

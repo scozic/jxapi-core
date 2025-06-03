@@ -15,7 +15,7 @@ import org.jxapi.exchange.descriptor.Type;
 import org.jxapi.generator.java.Imports;
 import org.jxapi.generator.java.JavaCodeGenUtil;
 import org.jxapi.generator.java.JavaTypeGenerator;
-import org.jxapi.generator.java.exchange.ExchangeJavaGenUtil;
+import org.jxapi.generator.java.exchange.ExchangeGenUtil;
 import org.jxapi.generator.java.exchange.api.ExchangeApiGenUtil;
 import org.jxapi.netutils.deserialization.MessageDeserializer;
 import org.jxapi.netutils.deserialization.json.AbstractJsonMessageDeserializer;
@@ -48,7 +48,7 @@ public class JsonMessageDeserializerGenerator extends JavaTypeGenerator {
    * @param fields the properties of the POJO class
    */
   public JsonMessageDeserializerGenerator(String deserializedTypeClassName, List<Field> fields) {
-    super(ExchangeJavaGenUtil.getJsonMessageDeserializerClassName(deserializedTypeClassName));
+    super(ExchangeGenUtil.getJsonMessageDeserializerClassName(deserializedTypeClassName));
     this.deserializedTypeClassName = deserializedTypeClassName;
     this.fields = fields;
     setTypeDeclaration("public class");
@@ -87,7 +87,7 @@ public class JsonMessageDeserializerGenerator extends JavaTypeGenerator {
         .append("switch(parser.getCurrentName()) {\n");
     String dblIndent = indent + indent;
     fields.forEach(field -> {
-      Type type = ExchangeJavaGenUtil.getFieldType(field);
+      Type type = ExchangeGenUtil.getFieldType(field);
       body.append(indent)
         .append("case \"")
         .append(field.getMsgField() != null? field.getMsgField() : field.getName())
@@ -123,7 +123,7 @@ public class JsonMessageDeserializerGenerator extends JavaTypeGenerator {
   }
 
   private String getParseFieldInstruction(Field field) {
-    CanonicalType canonicalType = ExchangeJavaGenUtil.getFieldType(field).getCanonicalType();
+    CanonicalType canonicalType = ExchangeGenUtil.getFieldType(field).getCanonicalType();
     if (!canonicalType.isPrimitive) {
       return generateNonPrimitiveTypeFieldDeserializerDeclaration(field) +".deserialize(parser)";
     }
@@ -148,7 +148,7 @@ public class JsonMessageDeserializerGenerator extends JavaTypeGenerator {
   }
   
   private String generateNonPrimitiveTypeFieldDeserializerDeclaration(Field field) {
-    Type type = ExchangeJavaGenUtil.getFieldType(field);
+    Type type = ExchangeGenUtil.getFieldType(field);
     String objectFieldClassName = ExchangeApiGenUtil.getFieldLeafSubTypeClassName(
                           field.getName(), 
                           type, 
@@ -161,7 +161,7 @@ public class JsonMessageDeserializerGenerator extends JavaTypeGenerator {
     
     String deserializerVariableName = JavaCodeGenUtil.firstLetterToLowerCase(field.getName() + "Deserializer");
     String variableDeclaration = "private final " + simpleDeserializerTypeName + " " + deserializerVariableName + " = " 
-                    + ExchangeJavaGenUtil.getNewJsonFieldDeserializerInstruction(
+                    + ExchangeGenUtil.getNewJsonFieldDeserializerInstruction(
                       type, 
                       objectFieldClassName, 
                       getImports()) 
@@ -181,19 +181,19 @@ public class JsonMessageDeserializerGenerator extends JavaTypeGenerator {
     String fieldClass = null;
     switch (type.getCanonicalType()) {
     case OBJECT:
-      String deserializerTypeName = ExchangeJavaGenUtil.getJsonMessageDeserializerClassName(objectClassName);
+      String deserializerTypeName = ExchangeGenUtil.getJsonMessageDeserializerClassName(objectClassName);
       imports.add(deserializerTypeName);
       return JavaCodeGenUtil.getClassNameWithoutPackage(deserializerTypeName);
     case LIST:
       imports.add(ListJsonFieldDeserializer.class.getName());
-      fieldClass = ExchangeJavaGenUtil.getClassNameForType(type.getSubType(), imports, objectClassName);
+      fieldClass = ExchangeGenUtil.getClassNameForType(type.getSubType(), imports, objectClassName);
       return ListJsonFieldDeserializer.class.getSimpleName() 
             + "<" 
             + fieldClass
             + ">";
     default: // MAP
       imports.add(MapJsonFieldDeserializer.class.getName());
-      fieldClass = ExchangeJavaGenUtil.getClassNameForType(type.getSubType(), imports, objectClassName);
+      fieldClass = ExchangeGenUtil.getClassNameForType(type.getSubType(), imports, objectClassName);
       return MapJsonFieldDeserializer.class.getSimpleName() 
             + "<" 
             + JavaCodeGenUtil.getClassNameWithoutPackage(fieldClass)

@@ -10,7 +10,7 @@ import org.jxapi.exchange.descriptor.Type;
 import org.jxapi.exchange.descriptor.WebsocketEndpointDescriptor;
 import org.jxapi.generator.java.JavaCodeGenUtil;
 import org.jxapi.generator.java.JavaTypeGenerator;
-import org.jxapi.generator.java.exchange.ExchangeJavaGenUtil;
+import org.jxapi.generator.java.exchange.ExchangeGenUtil;
 import org.jxapi.generator.java.exchange.api.ExchangeApiGenUtil;
 import org.jxapi.netutils.websocket.WebsocketListener;
 import org.jxapi.util.DemoProperties;
@@ -86,14 +86,14 @@ public class WebsocketEndpointDemoGenerator extends JavaTypeGenerator {
     super(EndpointDemoGenUtil.getWebsocketApiDemoClassName(exchangeDescriptor, exchangeApiDescriptor, websocketApi));
     this.exchangeDescriptor = exchangeDescriptor;
     this.request = ExchangeApiGenUtil.resolveFieldProperties(exchangeApiDescriptor, websocketApi.getRequest());
-    this.exchangeClassName = ExchangeJavaGenUtil.getExchangeInterfaceName(exchangeDescriptor);
+    this.exchangeClassName = ExchangeGenUtil.getExchangeInterfaceName(exchangeDescriptor);
     this.exchangeSimpleClassName = JavaCodeGenUtil.getClassNameWithoutPackage(exchangeClassName);
     subscribeMethodName = ExchangeApiGenUtil.getWebsocketSubscribeMethodName(websocketApi);
     unsubscribeMethodName = ExchangeApiGenUtil.getWebsocketUnsubscribeMethodName(websocketApi);
     setTypeDeclaration("public class");
     this.hasArguments = ExchangeApiGenUtil.websocketEndpointHasArguments(websocketApi, exchangeApiDescriptor);
     if (hasArguments) {
-      this.requestDataType =  ExchangeJavaGenUtil.getFieldType(request);
+      this.requestDataType =  ExchangeGenUtil.getFieldType(request);
       if (this.requestDataType.getCanonicalType().isPrimitive) {
         this.requestClassName = requestDataType.getCanonicalType().typeClass.getName();
       } else {
@@ -101,7 +101,7 @@ public class WebsocketEndpointDemoGenerator extends JavaTypeGenerator {
       }
       
       addImport(requestClassName);
-      this.requestSimpleClassName = ExchangeJavaGenUtil.getClassNameForType(
+      this.requestSimpleClassName = ExchangeGenUtil.getClassNameForType(
           requestDataType, 
           getImports(), 
           requestClassName);
@@ -110,9 +110,9 @@ public class WebsocketEndpointDemoGenerator extends JavaTypeGenerator {
       this.requestSimpleClassName = null;
       this.requestDataType = null;
     }
-    this.apiInterfaceClassName = ExchangeJavaGenUtil.getApiInterfaceClassName(exchangeDescriptor, exchangeApiDescriptor);
+    this.apiInterfaceClassName = ExchangeGenUtil.getApiInterfaceClassName(exchangeDescriptor, exchangeApiDescriptor);
     this.simpleApiClassName = JavaCodeGenUtil.getClassNameWithoutPackage(apiInterfaceClassName);
-    this.sampleValuePlaceHolderResolver = s -> ExchangeJavaGenUtil.generateSubstitutionInstructionDeclaration(
+    this.sampleValuePlaceHolderResolver = s -> ExchangeGenUtil.generateSubstitutionInstructionDeclaration(
         s, 
         exchangeDescriptor, 
         exchangeApiDescriptor, 
@@ -123,8 +123,8 @@ public class WebsocketEndpointDemoGenerator extends JavaTypeGenerator {
     this.fullStreamName = exchangeDescriptor.getId() + " " 
                 + exchangeApiDescriptor.getName() 
                 + " " + websocketApi.getName();
-    Type messageDataType = ExchangeJavaGenUtil.getFieldType(websocketApi.getMessage());
-    messageClassSimpleName = ExchangeJavaGenUtil.getClassNameForType(
+    Type messageDataType = ExchangeGenUtil.getFieldType(websocketApi.getMessage());
+    messageClassSimpleName = ExchangeGenUtil.getClassNameForType(
         messageDataType, 
         getImports(), 
         ExchangeApiGenUtil.generateWebsocketEndpointMessagePojoClassName(
@@ -291,8 +291,8 @@ public class WebsocketEndpointDemoGenerator extends JavaTypeGenerator {
   }
   
   private void generateMainMethod() {
-    String exchangeInterfaceClassName = ExchangeJavaGenUtil.getExchangeInterfaceName(exchangeDescriptor);
-    String exchangeImplClassName = ExchangeJavaGenUtil.getExchangeInterfaceImplementationName(exchangeInterfaceClassName);
+    String exchangeInterfaceClassName = ExchangeGenUtil.getExchangeInterfaceName(exchangeDescriptor);
+    String exchangeImplClassName = ExchangeGenUtil.getExchangeInterfaceImplementationName(exchangeInterfaceClassName);
     addImport(exchangeImplClassName);
     String propsVar = EndpointDemoGenUtil.CREATE_REQUEST_PROPERTIES_ARG_NAME;
     StringBuilder bodyBuilder = new StringBuilder()

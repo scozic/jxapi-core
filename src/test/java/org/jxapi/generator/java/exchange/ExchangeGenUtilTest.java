@@ -27,9 +27,9 @@ import org.jxapi.util.PlaceHolderResolver;
 import org.jxapi.util.PropertiesUtil;
 
 /**
- * Unit test for {@link ExchangeJavaGenUtil}
+ * Unit test for {@link ExchangeGenUtil}
  */
-public class ExchangeJavaGenUtilTest {
+public class ExchangeGenUtilTest {
   
   @Test
   public void testGetApiInterfaceClassName() {
@@ -39,7 +39,7 @@ public class ExchangeJavaGenUtilTest {
     ExchangeApiDescriptor apiDescriptor = new ExchangeApiDescriptor();
     apiDescriptor.setName("Spot");
     Assert.assertEquals("com.x.y.z.spot.TestExchangeSpotApi", 
-              ExchangeJavaGenUtil.getApiInterfaceClassName(exchangeDescriptor, apiDescriptor));
+              ExchangeGenUtil.getApiInterfaceClassName(exchangeDescriptor, apiDescriptor));
   }
   
   @Test
@@ -50,7 +50,7 @@ public class ExchangeJavaGenUtilTest {
     ExchangeApiDescriptor apiDescriptor = new ExchangeApiDescriptor();
     apiDescriptor.setName("Spot");
     Assert.assertEquals("com.x.y.z.spot.TestExchangeSpotApiImpl", 
-              ExchangeJavaGenUtil.getApiInterfaceImplementationClassName(exchangeDescriptor, apiDescriptor));
+              ExchangeGenUtil.getApiInterfaceImplementationClassName(exchangeDescriptor, apiDescriptor));
   }  
     
   @Test
@@ -59,85 +59,85 @@ public class ExchangeJavaGenUtilTest {
     exchangeDescriptor.setId("TestExchange");
     exchangeDescriptor.setBasePackage("com.x.y.z");
     Assert.assertEquals("com.x.y.z.TestExchangeExchange", 
-              ExchangeJavaGenUtil.getExchangeInterfaceName(exchangeDescriptor));
+              ExchangeGenUtil.getExchangeInterfaceName(exchangeDescriptor));
   }
 
   @Test
   public void testGenerateRateLimitVariableName() {
     Assert.assertEquals("rateLimitTestRateLimit", 
-              ExchangeJavaGenUtil.generateRateLimitVariableName("testRateLimit"));
+              ExchangeGenUtil.generateRateLimitVariableName("testRateLimit"));
   }
 
   @Test
   public void testGetJsonMessageDeserializerClassName() {
     Assert.assertEquals("com.x.y.deserializers.MyObjectDeserializer", 
-              ExchangeJavaGenUtil.getJsonMessageDeserializerClassName("com.x.y.pojo.MyObject"));
+              ExchangeGenUtil.getJsonMessageDeserializerClassName("com.x.y.pojo.MyObject"));
   }
 
   @Test
   public void testGetClassNameForType_INT() {
-    Assert.assertEquals("Integer", ExchangeJavaGenUtil.getClassNameForType(Type.INT, new Imports(), null));
+    Assert.assertEquals("Integer", ExchangeGenUtil.getClassNameForType(Type.INT, new Imports(), null));
   }
 
   @Test
   public void testGetClassNameForType_STRING() {
-    Assert.assertEquals("String", ExchangeJavaGenUtil.getClassNameForType(Type.STRING, new Imports(), null));
+    Assert.assertEquals("String", ExchangeGenUtil.getClassNameForType(Type.STRING, new Imports(), null));
   }
 
   @Test
   public void testGetClassNameForType_BOOLEAN() {
-    Assert.assertEquals("Boolean", ExchangeJavaGenUtil.getClassNameForType(Type.BOOLEAN, new Imports(), null));
+    Assert.assertEquals("Boolean", ExchangeGenUtil.getClassNameForType(Type.BOOLEAN, new Imports(), null));
   }
 
   @Test
   public void testGetClassNameForType_BIGDECIMAL() {
     Imports imports = new Imports();
-    Assert.assertEquals("BigDecimal", ExchangeJavaGenUtil.getClassNameForType(Type.BIGDECIMAL, imports, null));
+    Assert.assertEquals("BigDecimal", ExchangeGenUtil.getClassNameForType(Type.BIGDECIMAL, imports, null));
     Assert.assertEquals(1, imports.size());
     Assert.assertTrue(imports.contains(BigDecimal.class));
   }
 
   @Test
   public void testGetClassNameForType_BIGDECIMAL_NullImports() {
-    Assert.assertEquals("BigDecimal", ExchangeJavaGenUtil.getClassNameForType(Type.BIGDECIMAL, null, null));
+    Assert.assertEquals("BigDecimal", ExchangeGenUtil.getClassNameForType(Type.BIGDECIMAL, null, null));
   }
 
   @Test
   public void testGetClassNameForType_LONG() {
-    Assert.assertEquals("Long", ExchangeJavaGenUtil.getClassNameForType(Type.LONG, new Imports(), null));  
+    Assert.assertEquals("Long", ExchangeGenUtil.getClassNameForType(Type.LONG, new Imports(), null));  
   }
 
   @Test
   public void testGetClassNameForType_STRING_LIST() {
     Imports imports = new Imports();
-    Assert.assertEquals("List<String>", ExchangeJavaGenUtil.getClassNameForType(Type.fromTypeName("STRING_LIST"), imports, null));
+    Assert.assertEquals("List<String>", ExchangeGenUtil.getClassNameForType(Type.fromTypeName("STRING_LIST"), imports, null));
     Assert.assertEquals(1, imports.size());
     Assert.assertTrue(imports.contains(List.class));
   }
 
   @Test
   public void testGetClassNameForType_STRING_LIST_NullImports() {
-    Assert.assertEquals("List<String>", ExchangeJavaGenUtil.getClassNameForType(Type.fromTypeName("STRING_LIST"), null, null));
+    Assert.assertEquals("List<String>", ExchangeGenUtil.getClassNameForType(Type.fromTypeName("STRING_LIST"), null, null));
   }
 
   @Test
   public void testGetClassNameForType_INT_MAP() {
     Imports imports = new Imports();
-    Assert.assertEquals("Map<String, Integer>", ExchangeJavaGenUtil.getClassNameForType(Type.fromTypeName("INT_MAP"), imports, null));
+    Assert.assertEquals("Map<String, Integer>", ExchangeGenUtil.getClassNameForType(Type.fromTypeName("INT_MAP"), imports, null));
     Assert.assertEquals(1, imports.size());
     Assert.assertTrue(imports.contains(Map.class));
   }
 
   @Test
   public void testGetClassNameForType_INT_MAP_NullImports() {
-    Assert.assertEquals("Map<String, Integer>", ExchangeJavaGenUtil.getClassNameForType(Type.fromTypeName("INT_MAP"), null, null));
+    Assert.assertEquals("Map<String, Integer>", ExchangeGenUtil.getClassNameForType(Type.fromTypeName("INT_MAP"), null, null));
   }
 
   @Test
   public void testGetClassNameForType_OBJECT() {
     Imports imports = new Imports();
     String objectClassName = "com.x.y.z.MyObject";
-    Assert.assertEquals("MyObject", ExchangeJavaGenUtil.getClassNameForType(Type.OBJECT, imports, objectClassName));
+    Assert.assertEquals("MyObject", ExchangeGenUtil.getClassNameForType(Type.OBJECT, imports, objectClassName));
     Assert.assertEquals(1, imports.size());
     Assert.assertTrue(imports.contains(objectClassName));
   }
@@ -145,14 +145,14 @@ public class ExchangeJavaGenUtilTest {
   @Test
   public void testGetClassNameForType_OBJECT_NullImports() {
     String objectClassName = "com.x.y.z.MyObject";
-    Assert.assertEquals("MyObject", ExchangeJavaGenUtil.getClassNameForType(Type.OBJECT, null, objectClassName));
+    Assert.assertEquals("MyObject", ExchangeGenUtil.getClassNameForType(Type.OBJECT, null, objectClassName));
   }
 
   @Test
   public void testGetClassNameForType_OBJECT_LIST_MAP() {
     Imports imports = new Imports();
     String objectClassName = "com.x.y.z.MyObject";
-    Assert.assertEquals("Map<String, List<MyObject>>", ExchangeJavaGenUtil.getClassNameForType(Type.fromTypeName("OBJECT_LIST_MAP"), imports, objectClassName));
+    Assert.assertEquals("Map<String, List<MyObject>>", ExchangeGenUtil.getClassNameForType(Type.fromTypeName("OBJECT_LIST_MAP"), imports, objectClassName));
     Assert.assertEquals(3, imports.size());
     Assert.assertTrue(imports.contains(objectClassName));
     Assert.assertTrue(imports.contains(Map.class));
@@ -161,13 +161,13 @@ public class ExchangeJavaGenUtilTest {
 
   @Test
   public void testGetClassNameForType_NullType() {
-    Assert.assertNull(ExchangeJavaGenUtil.getClassNameForType(null, null, null));
+    Assert.assertNull(ExchangeGenUtil.getClassNameForType(null, null, null));
   }
 
   @Test
   public void testGetNewJsonFieldDeserializerInstruction_INT() {
     Imports imports = new Imports();
-    Assert.assertEquals("IntegerJsonFieldDeserializer.getInstance()", ExchangeJavaGenUtil.getNewJsonFieldDeserializerInstruction(Type.INT, null, imports));
+    Assert.assertEquals("IntegerJsonFieldDeserializer.getInstance()", ExchangeGenUtil.getNewJsonFieldDeserializerInstruction(Type.INT, null, imports));
     Assert.assertEquals(1, imports.size());
     Assert.assertTrue(imports.contains(IntegerJsonFieldDeserializer.class));
   }
@@ -175,7 +175,7 @@ public class ExchangeJavaGenUtilTest {
   @Test
   public void testGetNewJsonFieldDeserializerInstruction_BOOLEAN() {
     Imports imports = new Imports();
-    Assert.assertEquals("BooleanJsonFieldDeserializer.getInstance()", ExchangeJavaGenUtil.getNewJsonFieldDeserializerInstruction(Type.BOOLEAN, null, imports));
+    Assert.assertEquals("BooleanJsonFieldDeserializer.getInstance()", ExchangeGenUtil.getNewJsonFieldDeserializerInstruction(Type.BOOLEAN, null, imports));
     Assert.assertEquals(1, imports.size());
     Assert.assertTrue(imports.contains(BooleanJsonFieldDeserializer.class));
   }
@@ -183,7 +183,7 @@ public class ExchangeJavaGenUtilTest {
   @Test
   public void testGetNewJsonFieldDeserializerInstruction_BIGDECIMAL() {
     Imports imports = new Imports();
-    Assert.assertEquals("BigDecimalJsonFieldDeserializer.getInstance()", ExchangeJavaGenUtil.getNewJsonFieldDeserializerInstruction(Type.BIGDECIMAL, null, imports));
+    Assert.assertEquals("BigDecimalJsonFieldDeserializer.getInstance()", ExchangeGenUtil.getNewJsonFieldDeserializerInstruction(Type.BIGDECIMAL, null, imports));
     Assert.assertEquals(1, imports.size());
     Assert.assertTrue(imports.contains(BigDecimalJsonFieldDeserializer.class));
   }
@@ -191,7 +191,7 @@ public class ExchangeJavaGenUtilTest {
   @Test
   public void testGetNewJsonFieldDeserializerInstruction_LONG() {
     Imports imports = new Imports();
-    Assert.assertEquals("LongJsonFieldDeserializer.getInstance()", ExchangeJavaGenUtil.getNewJsonFieldDeserializerInstruction(Type.LONG, null, imports));
+    Assert.assertEquals("LongJsonFieldDeserializer.getInstance()", ExchangeGenUtil.getNewJsonFieldDeserializerInstruction(Type.LONG, null, imports));
     Assert.assertEquals(1, imports.size());
     Assert.assertTrue(imports.contains(LongJsonFieldDeserializer.class));
   }
@@ -199,7 +199,7 @@ public class ExchangeJavaGenUtilTest {
   @Test
   public void testGetNewJsonFieldDeserializerInstruction_STRING() {
     Imports imports = new Imports();
-    Assert.assertEquals("StringJsonFieldDeserializer.getInstance()", ExchangeJavaGenUtil.getNewJsonFieldDeserializerInstruction(Type.STRING, null, imports));
+    Assert.assertEquals("StringJsonFieldDeserializer.getInstance()", ExchangeGenUtil.getNewJsonFieldDeserializerInstruction(Type.STRING, null, imports));
     Assert.assertEquals(1, imports.size());
     Assert.assertTrue(imports.contains(StringJsonFieldDeserializer.class));
   }
@@ -207,7 +207,7 @@ public class ExchangeJavaGenUtilTest {
   @Test
   public void testGetNewJsonFieldDeserializerInstruction_STRING_LIST() {
     Imports imports = new Imports();
-    Assert.assertEquals("new ListJsonFieldDeserializer<>(StringJsonFieldDeserializer.getInstance())", ExchangeJavaGenUtil.getNewJsonFieldDeserializerInstruction(Type.fromTypeName("STRING_LIST"), null, imports));
+    Assert.assertEquals("new ListJsonFieldDeserializer<>(StringJsonFieldDeserializer.getInstance())", ExchangeGenUtil.getNewJsonFieldDeserializerInstruction(Type.fromTypeName("STRING_LIST"), null, imports));
     Assert.assertEquals(2, imports.size());
     Assert.assertTrue(imports.contains(ListJsonFieldDeserializer.class));
     Assert.assertTrue(imports.contains(StringJsonFieldDeserializer.class));
@@ -216,7 +216,7 @@ public class ExchangeJavaGenUtilTest {
   @Test
   public void testGetNewJsonFieldDeserializerInstruction_INT_MAP() {
     Imports imports = new Imports();
-    Assert.assertEquals("new MapJsonFieldDeserializer<>(IntegerJsonFieldDeserializer.getInstance())", ExchangeJavaGenUtil.getNewJsonFieldDeserializerInstruction(Type.fromTypeName("INT_MAP"), null, imports));
+    Assert.assertEquals("new MapJsonFieldDeserializer<>(IntegerJsonFieldDeserializer.getInstance())", ExchangeGenUtil.getNewJsonFieldDeserializerInstruction(Type.fromTypeName("INT_MAP"), null, imports));
     Assert.assertEquals(2, imports.size());
     Assert.assertTrue(imports.contains(MapJsonFieldDeserializer.class));
     Assert.assertTrue(imports.contains(IntegerJsonFieldDeserializer.class));
@@ -226,7 +226,7 @@ public class ExchangeJavaGenUtilTest {
   public void testGetNewJsonFieldDeserializerInstruction_OBJECT() {
     Imports imports = new Imports();
     String objectClassName = "com.x.y.z.MyObject";
-    Assert.assertEquals("new MyObjectDeserializer()", ExchangeJavaGenUtil.getNewJsonFieldDeserializerInstruction(Type.fromTypeName("OBJECT"), objectClassName, imports));
+    Assert.assertEquals("new MyObjectDeserializer()", ExchangeGenUtil.getNewJsonFieldDeserializerInstruction(Type.fromTypeName("OBJECT"), objectClassName, imports));
     Assert.assertEquals(1, imports.size());
     Assert.assertTrue(imports.contains("com.x.y.z.deserializers.MyObjectDeserializer"));
   }
@@ -234,7 +234,7 @@ public class ExchangeJavaGenUtilTest {
   @Test
   public void testGetNewJsonFieldDeserializerInstruction_NullType() {
     Imports imports = new Imports();
-    Assert.assertEquals("StringJsonFieldDeserializer.getInstance()", ExchangeJavaGenUtil.getNewJsonFieldDeserializerInstruction(null, null, imports));
+    Assert.assertEquals("StringJsonFieldDeserializer.getInstance()", ExchangeGenUtil.getNewJsonFieldDeserializerInstruction(null, null, imports));
     Assert.assertEquals(1, imports.size());
     Assert.assertTrue(imports.contains(StringJsonFieldDeserializer.class));
   }
@@ -242,14 +242,14 @@ public class ExchangeJavaGenUtilTest {
   @Test 
   public void testGetPrimitiveTypeFieldSampleValueDeclaration_NullSampleValue() {
     Imports imports = new Imports();
-    Assert.assertEquals("null", ExchangeJavaGenUtil.getPrimitiveTypeFieldSampleValueDeclaration(Type.INT, null, imports, null));
+    Assert.assertEquals("null", ExchangeGenUtil.getPrimitiveTypeFieldSampleValueDeclaration(Type.INT, null, imports, null));
     Assert.assertEquals(0, imports.size());
   }
 
   @Test 
   public void testGetPrimitiveTypeFieldSampleValueDeclaration_BigDecimalSampleValue() {
     Imports imports = new Imports();
-    Assert.assertEquals("new BigDecimal(\"1.23\")", ExchangeJavaGenUtil.getPrimitiveTypeFieldSampleValueDeclaration(Type.BIGDECIMAL, "1.23", imports, null));
+    Assert.assertEquals("new BigDecimal(\"1.23\")", ExchangeGenUtil.getPrimitiveTypeFieldSampleValueDeclaration(Type.BIGDECIMAL, "1.23", imports, null));
     Assert.assertEquals(1, imports.size());
     Assert.assertTrue(imports.contains(BigDecimal.class));
   }
@@ -257,28 +257,28 @@ public class ExchangeJavaGenUtilTest {
   @Test
   public void testGetPrimitiveTypeFieldSampleValueDeclaration_LongSampleValue() {
     Imports imports = new Imports();
-    Assert.assertEquals("Long.valueOf(\"123\")", ExchangeJavaGenUtil.getPrimitiveTypeFieldSampleValueDeclaration(Type.LONG, "123", imports, null));
+    Assert.assertEquals("Long.valueOf(\"123\")", ExchangeGenUtil.getPrimitiveTypeFieldSampleValueDeclaration(Type.LONG, "123", imports, null));
     Assert.assertEquals(0, imports.size());
   }
 
   @Test
   public void testGetPrimitiveTypeFieldSampleValueDeclaration_LongpNowSampleValue() {
     Imports imports = new Imports();
-    Assert.assertEquals("Long.valueOf(System.currentTimeMillis())", ExchangeJavaGenUtil.getPrimitiveTypeFieldSampleValueDeclaration(Type.LONG, "now()", imports, null));
+    Assert.assertEquals("Long.valueOf(System.currentTimeMillis())", ExchangeGenUtil.getPrimitiveTypeFieldSampleValueDeclaration(Type.LONG, "now()", imports, null));
     Assert.assertEquals(0, imports.size());
   }
 
   @Test
   public void testGetPrimitiveTypeFieldSampleValueDeclaration_StringSampleValue() {
     Imports imports = new Imports();
-    Assert.assertEquals("\"test\"", ExchangeJavaGenUtil.getPrimitiveTypeFieldSampleValueDeclaration(Type.STRING, "test", imports, null));
+    Assert.assertEquals("\"test\"", ExchangeGenUtil.getPrimitiveTypeFieldSampleValueDeclaration(Type.STRING, "test", imports, null));
     Assert.assertEquals(0, imports.size());
   }
 
   @Test
   public void testGetPrimitiveTypeFieldSampleValueDeclaration_IntegersSampleValue() {
     Imports imports = new Imports();
-    Assert.assertEquals("Integer.valueOf(\"1\")", ExchangeJavaGenUtil.getPrimitiveTypeFieldSampleValueDeclaration(Type.INT, 1, imports, null));
+    Assert.assertEquals("Integer.valueOf(\"1\")", ExchangeGenUtil.getPrimitiveTypeFieldSampleValueDeclaration(Type.INT, 1, imports, null));
     Assert.assertEquals(0, imports.size());
   }
   
@@ -286,21 +286,21 @@ public class ExchangeJavaGenUtilTest {
   public void testGetPrimitiveTypeFieldSampleValueDeclaration_IntegersSampleValueWithPlaceHolder() {
     Imports imports = new Imports();
     PlaceHolderResolver placeholderResolver = PlaceHolderResolver.create(Map.of("config.myInt1", "1234", "config.myInt2", "5678"));
-    Assert.assertEquals("Integer.valueOf(12345678)", ExchangeJavaGenUtil.getPrimitiveTypeFieldSampleValueDeclaration(Type.INT, "${config.myInt1}${config.myInt2}", imports, placeholderResolver));
+    Assert.assertEquals("Integer.valueOf(12345678)", ExchangeGenUtil.getPrimitiveTypeFieldSampleValueDeclaration(Type.INT, "${config.myInt1}${config.myInt2}", imports, placeholderResolver));
     Assert.assertEquals(0, imports.size());
   }
 
   @Test
   public void testGetPrimitiveTypeFieldSampleValueDeclaration_BooleanSampleValue() {
     Imports imports = new Imports();
-    Assert.assertEquals("Boolean.valueOf(\"true\")", ExchangeJavaGenUtil.getPrimitiveTypeFieldSampleValueDeclaration(Type.BOOLEAN, "true", imports, null));
+    Assert.assertEquals("Boolean.valueOf(\"true\")", ExchangeGenUtil.getPrimitiveTypeFieldSampleValueDeclaration(Type.BOOLEAN, "true", imports, null));
     Assert.assertEquals(0, imports.size());
   }
 
   @Test
   public void testGetPrimitiveTypeFieldSampleValueDeclaration_NonPrimitiveType() {
     Imports imports = new Imports();
-    Assert.assertEquals("\"[1, 3, 5]\"", ExchangeJavaGenUtil.getPrimitiveTypeFieldSampleValueDeclaration(Type.fromTypeName("INT_LIST"), "[1, 3, 5]", imports, null));
+    Assert.assertEquals("\"[1, 3, 5]\"", ExchangeGenUtil.getPrimitiveTypeFieldSampleValueDeclaration(Type.fromTypeName("INT_LIST"), "[1, 3, 5]", imports, null));
     Assert.assertEquals(0, imports.size());
   }
 
@@ -310,7 +310,7 @@ public class ExchangeJavaGenUtilTest {
     exchangeDescriptor.setId("TestExchange");
     exchangeDescriptor.setBasePackage("com.x.y.z");
     Assert.assertEquals("com.x.y.z.TestExchangeConstants", 
-              ExchangeJavaGenUtil.getExchangeConstantsInterfaceName(exchangeDescriptor));
+              ExchangeGenUtil.getExchangeConstantsInterfaceName(exchangeDescriptor));
   }
 
   @Test
@@ -321,7 +321,7 @@ public class ExchangeJavaGenUtilTest {
     ExchangeApiDescriptor apiDescriptor = new ExchangeApiDescriptor();
     apiDescriptor.setName("Spot");
     Assert.assertEquals("com.x.y.z.spot.TestExchangeSpotConstants", 
-              ExchangeJavaGenUtil.getExchangeApiConstantsInterfaceName(exchangeDescriptor, apiDescriptor));
+              ExchangeGenUtil.getExchangeApiConstantsInterfaceName(exchangeDescriptor, apiDescriptor));
   }
 
   @Test
@@ -330,7 +330,7 @@ public class ExchangeJavaGenUtilTest {
     exchangeDescriptor.setId("TestExchange");
     exchangeDescriptor.setBasePackage("com.x.y.z");
     Assert.assertEquals("com.x.y.z.TestExchangeProperties", 
-              ExchangeJavaGenUtil.getExchangePropertiesInterfaceName(exchangeDescriptor));
+              ExchangeGenUtil.getExchangePropertiesInterfaceName(exchangeDescriptor));
   }
   
   @Test
@@ -339,13 +339,13 @@ public class ExchangeJavaGenUtilTest {
         + "public RateLimitRule getTestRateLimitRateLimit() {\n"
         + "  return this.rateLimitTestRateLimit;\n"
         + "}\n",
-        ExchangeJavaGenUtil.generateRateLimitGetterImplementationMethodDeclaration("testRateLimit"));
+        ExchangeGenUtil.generateRateLimitGetterImplementationMethodDeclaration("testRateLimit"));
   }
   
   @Test
   public void testGenerateRateLimitGetterMethodName() {
     Assert.assertEquals("getTestRateLimitRateLimit",
-        ExchangeJavaGenUtil.generateRateLimitGetterMethodName("testRateLimit"));
+        ExchangeGenUtil.generateRateLimitGetterMethodName("testRateLimit"));
   }
   
   @Test
@@ -354,7 +354,7 @@ public class ExchangeJavaGenUtilTest {
         + " * @return 'testRateLimit' rate limit rule.\n"
         + " */\n"
         + "public RateLimitRule getTestRateLimitRateLimit();\n",
-        ExchangeJavaGenUtil.generateRateLimitRuleInterfaceMethodDeclaration("testRateLimit"));
+        ExchangeGenUtil.generateRateLimitRuleInterfaceMethodDeclaration("testRateLimit"));
   }
   
   @Test
@@ -363,69 +363,69 @@ public class ExchangeJavaGenUtilTest {
         + "public RateLimitRule getTestRateLimitRateLimit() {\n"
         + "  return this.rateLimitTestRateLimit;\n"
         + "}\n",
-        ExchangeJavaGenUtil.generateRateLimitGetterImplementationMethodDeclaration("testRateLimit"));
+        ExchangeGenUtil.generateRateLimitGetterImplementationMethodDeclaration("testRateLimit"));
   }
   
   @Test
   public void testIsObjectField_NullField() {
-    Assert.assertFalse(ExchangeJavaGenUtil.isObjectField(null));
+    Assert.assertFalse(ExchangeGenUtil.isObjectField(null));
   }
   
   @Test
   public void testIsObjectField_NullFieldType_ObjectTypeImplictFromProperties() {
-    Assert.assertTrue(ExchangeJavaGenUtil.isObjectField(Field.builder().name("test").properties(List.of()).build()));
+    Assert.assertTrue(ExchangeGenUtil.isObjectField(Field.builder().name("test").properties(List.of()).build()));
   }
   
   @Test
   public void testIsObjectField_ObjectType() {
-    Assert.assertTrue(ExchangeJavaGenUtil.isObjectField(Field.builder().name("test").type(Type.OBJECT).build()));
+    Assert.assertTrue(ExchangeGenUtil.isObjectField(Field.builder().name("test").type(Type.OBJECT).build()));
   }
   
   @Test
   public void testIsObjectField_StringType() {
-    Assert.assertFalse(ExchangeJavaGenUtil.isObjectField(Field.builder().name("test").type(Type.STRING).build()));
+    Assert.assertFalse(ExchangeGenUtil.isObjectField(Field.builder().name("test").type(Type.STRING).build()));
   }
   
   @Test
   public void testGetFieldType_NullField() {
-    Assert.assertNull(ExchangeJavaGenUtil.getFieldType(null));
+    Assert.assertNull(ExchangeGenUtil.getFieldType(null));
   }
   
   @Test
   public void testGetFieldType_ObjecListMapType() {
     Type objectListMapType = Type.fromTypeName("OBJECT_LIST_MAP");
     Assert.assertEquals(objectListMapType, 
-        ExchangeJavaGenUtil.getFieldType((Field.builder().name("test").type(objectListMapType).build())));
+        ExchangeGenUtil.getFieldType((Field.builder().name("test").type(objectListMapType).build())));
   }
   
   @Test
   public void testGetFieldType_ObjectType_Explicit() {
     Assert.assertEquals(Type.OBJECT, 
-        ExchangeJavaGenUtil.getFieldType(Field.builder().name("test").type(Type.OBJECT).build()));
+        ExchangeGenUtil.getFieldType(Field.builder().name("test").type(Type.OBJECT).build()));
   }
   
   @Test
   public void testGetFieldType_ObjectType_ImplicitFromObjectName() {
     Assert.assertEquals(Type.OBJECT, 
-        ExchangeJavaGenUtil.getFieldType(Field.builder().name("test").objectName("MyObjectName").build()));
+        ExchangeGenUtil.getFieldType(Field.builder().name("test").objectName("MyObjectName").build()));
   }
   
   @Test
   public void testGetFieldType_ObjectType_ImplicitFromProperties() {
     Assert.assertEquals(Type.OBJECT, 
-        ExchangeJavaGenUtil.getFieldType(Field.builder().name("test").properties(List.of()).build()));
+        ExchangeGenUtil.getFieldType(Field.builder().name("test").properties(List.of()).build()));
   }
   
   @Test
   public void testGetFieldType_String_Implicit() {
     Assert.assertEquals(Type.STRING, 
-        ExchangeJavaGenUtil.getFieldType(Field.builder().name("test").build()));
+        ExchangeGenUtil.getFieldType(Field.builder().name("test").build()));
   }
   
   @Test
   public void testGetExchangeInterfaceImplementationNameFromExchangeClassName() {
     Assert.assertEquals("com.x.y.z.TestExchangeImpl",
-        ExchangeJavaGenUtil.getExchangeInterfaceImplementationName("com.x.y.z.TestExchange"));
+        ExchangeGenUtil.getExchangeInterfaceImplementationName("com.x.y.z.TestExchange"));
   }
   
   @Test
@@ -434,14 +434,14 @@ public class ExchangeJavaGenUtilTest {
     exchangeDescriptor.setId("Test");
     exchangeDescriptor.setBasePackage("com.x.y.z");
     Assert.assertEquals("com.x.y.z.TestExchangeImpl",
-        ExchangeJavaGenUtil.getExchangeInterfaceImplementationName(exchangeDescriptor));
+        ExchangeGenUtil.getExchangeInterfaceImplementationName(exchangeDescriptor));
   }
   
   @Test
   public void testFindPlaceHolders() {
-    Assert.assertEquals(0, ExchangeJavaGenUtil.findPlaceHolders(null).size());
+    Assert.assertEquals(0, ExchangeGenUtil.findPlaceHolders(null).size());
     String value = "Hello ${name} you are using exchange ${exchange.name}";
-    List<String> placeHolders = ExchangeJavaGenUtil.findPlaceHolders(value);
+    List<String> placeHolders = ExchangeGenUtil.findPlaceHolders(value);
     Assert.assertEquals(2, placeHolders.size());
     Assert.assertEquals("name", placeHolders.get(0));
     Assert.assertEquals("exchange.name", placeHolders.get(1));
@@ -449,19 +449,19 @@ public class ExchangeJavaGenUtilTest {
   
   @Test
   public void testGetConstantPlaceHolder() {
-    Assert.assertNull(ExchangeJavaGenUtil.getConstantPlaceHolder(null));
-    Assert.assertNull(ExchangeJavaGenUtil.getConstantPlaceHolder(""));
-    Assert.assertNull(ExchangeJavaGenUtil.getConstantPlaceHolder("foo"));
-    Assert.assertEquals("foo", ExchangeJavaGenUtil.getConstantPlaceHolder(ExchangeJavaGenUtil.CONSTANT_PLACEHOLDER_PREFIX + "foo"));
+    Assert.assertNull(ExchangeGenUtil.getConstantPlaceHolder(null));
+    Assert.assertNull(ExchangeGenUtil.getConstantPlaceHolder(""));
+    Assert.assertNull(ExchangeGenUtil.getConstantPlaceHolder("foo"));
+    Assert.assertEquals("foo", ExchangeGenUtil.getConstantPlaceHolder(ExchangeGenUtil.CONSTANT_PLACEHOLDER_PREFIX + "foo"));
   }
   
   @Test
   public void testGetConfigPropertyPlaceHolder() {
-    Assert.assertNull(ExchangeJavaGenUtil.getConfigPropertyPlaceHolder(null));
-    Assert.assertNull(ExchangeJavaGenUtil.getConfigPropertyPlaceHolder(""));
-    Assert.assertNull(ExchangeJavaGenUtil.getConfigPropertyPlaceHolder("foo"));
-    Assert.assertEquals("foo", ExchangeJavaGenUtil
-        .getConfigPropertyPlaceHolder(ExchangeJavaGenUtil.CONFIG_PLACEHOLDER_PREFIX + "foo"));
+    Assert.assertNull(ExchangeGenUtil.getConfigPropertyPlaceHolder(null));
+    Assert.assertNull(ExchangeGenUtil.getConfigPropertyPlaceHolder(""));
+    Assert.assertNull(ExchangeGenUtil.getConfigPropertyPlaceHolder("foo"));
+    Assert.assertEquals("foo", ExchangeGenUtil
+        .getConfigPropertyPlaceHolder(ExchangeGenUtil.CONFIG_PLACEHOLDER_PREFIX + "foo"));
   }
   
   @Test
@@ -471,7 +471,7 @@ public class ExchangeJavaGenUtilTest {
     exchangeDescriptor.setBasePackage("com.x.y.z");
     ExchangeApiDescriptor apiDescriptor = new ExchangeApiDescriptor();
     apiDescriptor.setName("Spot");
-    Assert.assertNull(ExchangeJavaGenUtil.getClassNameForConstant("foo", exchangeDescriptor, apiDescriptor));
+    Assert.assertNull(ExchangeGenUtil.getClassNameForConstant("foo", exchangeDescriptor, apiDescriptor));
   }
   
   @Test
@@ -485,12 +485,12 @@ public class ExchangeJavaGenUtilTest {
     ExchangeApiDescriptor apiDescriptor = new ExchangeApiDescriptor();
     apiDescriptor.setName("Spot");
     apiDescriptor.setConstants(List.of(constant));
-    Assert.assertNull(ExchangeJavaGenUtil.getClassNameForConstant("foo", exchangeDescriptor, apiDescriptor));
+    Assert.assertNull(ExchangeGenUtil.getClassNameForConstant("foo", exchangeDescriptor, apiDescriptor));
   }
   
   @Test(expected = IllegalArgumentException.class)
   public void testGetClassNameForConstant_NotFound_NullExchange( ) {
-    ExchangeJavaGenUtil.getClassNameForConstant("foo", null, null);
+    ExchangeGenUtil.getClassNameForConstant("foo", null, null);
   }
   
   @Test
@@ -504,7 +504,7 @@ public class ExchangeJavaGenUtilTest {
     Constant constant = new Constant();
     constant.setName("foo");
     apiDescriptor.setConstants(List.of(constant));
-    Assert.assertEquals("com.x.y.z.spot.TestSpotConstants", ExchangeJavaGenUtil.getClassNameForConstant("foo", exchangeDescriptor, apiDescriptor));
+    Assert.assertEquals("com.x.y.z.spot.TestSpotConstants", ExchangeGenUtil.getClassNameForConstant("foo", exchangeDescriptor, apiDescriptor));
   }
   
   @Test
@@ -518,7 +518,7 @@ public class ExchangeJavaGenUtilTest {
     ExchangeApiDescriptor apiDescriptor = new ExchangeApiDescriptor();
     apiDescriptor.setName("Spot");
     apiDescriptor.setConstants(List.of());
-    Assert.assertEquals("com.x.y.z.TestConstants", ExchangeJavaGenUtil.getClassNameForConstant("foo", exchangeDescriptor, apiDescriptor));
+    Assert.assertEquals("com.x.y.z.TestConstants", ExchangeGenUtil.getClassNameForConstant("foo", exchangeDescriptor, apiDescriptor));
   }
   
   @Test
@@ -529,7 +529,7 @@ public class ExchangeJavaGenUtilTest {
     Constant constant = new Constant();
     constant.setName("foo");
     exchangeDescriptor.setConstants(List.of(constant));
-    Assert.assertEquals("com.x.y.z.TestConstants", ExchangeJavaGenUtil.getClassNameForConstant("foo", exchangeDescriptor, null));
+    Assert.assertEquals("com.x.y.z.TestConstants", ExchangeGenUtil.getClassNameForConstant("foo", exchangeDescriptor, null));
   }
   
   @Test
@@ -543,7 +543,7 @@ public class ExchangeJavaGenUtilTest {
     ExchangeApiDescriptor apiDescriptor = new ExchangeApiDescriptor();
     apiDescriptor.setName("Spot");
     apiDescriptor.setConstants(List.of(constant));
-    Assert.assertEquals("com.x.y.z.spot.TestSpotConstants", ExchangeJavaGenUtil.getClassNameForConstant("foo", exchangeDescriptor, apiDescriptor));
+    Assert.assertEquals("com.x.y.z.spot.TestSpotConstants", ExchangeGenUtil.getClassNameForConstant("foo", exchangeDescriptor, apiDescriptor));
   }
   
   @Test
@@ -552,7 +552,7 @@ public class ExchangeJavaGenUtilTest {
     exchangeDescriptor.setId("Test");
     exchangeDescriptor.setBasePackage("com.x.y.z");
     exchangeDescriptor.setProperties(List.of());
-    Assert.assertNull(ExchangeJavaGenUtil.getClassNameForConfigProperty("foo", exchangeDescriptor));
+    Assert.assertNull(ExchangeGenUtil.getClassNameForConfigProperty("foo", exchangeDescriptor));
   }
   
   @Test
@@ -563,8 +563,8 @@ public class ExchangeJavaGenUtilTest {
     DefaultConfigProperty configProperty = new DefaultConfigProperty();
     configProperty.setName("myProp");
     exchangeDescriptor.setProperties(List.of(configProperty));
-    Assert.assertNull(ExchangeJavaGenUtil.getClassNameForConfigProperty("foo", exchangeDescriptor));
-    Assert.assertEquals("com.x.y.z.TestProperties", ExchangeJavaGenUtil.getClassNameForConfigProperty("myProp", exchangeDescriptor));
+    Assert.assertNull(ExchangeGenUtil.getClassNameForConfigProperty("foo", exchangeDescriptor));
+    Assert.assertEquals("com.x.y.z.TestProperties", ExchangeGenUtil.getClassNameForConfigProperty("myProp", exchangeDescriptor));
   }
   
   @Test
@@ -573,7 +573,7 @@ public class ExchangeJavaGenUtilTest {
     exchangeDescriptor.setId("Test");
     exchangeDescriptor.setBasePackage("com.x.y.z");
     exchangeDescriptor.setConstants(List.of());
-    Assert.assertNull(ExchangeJavaGenUtil.getValueDeclarationForConstant("foo", exchangeDescriptor, null, null));
+    Assert.assertNull(ExchangeGenUtil.getValueDeclarationForConstant("foo", exchangeDescriptor, null, null));
   }
   
   @Test
@@ -588,7 +588,7 @@ public class ExchangeJavaGenUtilTest {
     constant.setType(Type.STRING);
     exchangeDescriptor.setConstants(List.of(constant));
     Imports imports = new Imports();
-    Assert.assertEquals("MyExchangeConstants.FOO", ExchangeJavaGenUtil.getValueDeclarationForConstant("foo", exchangeDescriptor, null, imports));
+    Assert.assertEquals("MyExchangeConstants.FOO", ExchangeGenUtil.getValueDeclarationForConstant("foo", exchangeDescriptor, null, imports));
     Assert.assertEquals(1, imports.size());
     Assert.assertTrue(imports.contains("com.x.y.z.MyExchangeConstants"));
   }
@@ -610,7 +610,7 @@ public class ExchangeJavaGenUtilTest {
     apiDescriptor.setConstants(List.of(constant));
     
     Imports imports = new Imports();
-    Assert.assertEquals("MyExchangeMyApiGroupConstants.FOO", ExchangeJavaGenUtil.getValueDeclarationForConstant("foo", exchangeDescriptor, apiDescriptor, imports));
+    Assert.assertEquals("MyExchangeMyApiGroupConstants.FOO", ExchangeGenUtil.getValueDeclarationForConstant("foo", exchangeDescriptor, apiDescriptor, imports));
     Assert.assertEquals(1, imports.size());
     Assert.assertTrue(imports.contains("com.x.y.z.myapigroup.MyExchangeMyApiGroupConstants"));
   }
@@ -620,7 +620,7 @@ public class ExchangeJavaGenUtilTest {
     ExchangeDescriptor exchangeDescriptor = new ExchangeDescriptor();
     exchangeDescriptor.setId("MyExchange");
     exchangeDescriptor.setBasePackage("com.x.y.z");
-    Assert.assertNull(ExchangeJavaGenUtil.getValueDeclarationForConfigProperty("foo", exchangeDescriptor, null, null));
+    Assert.assertNull(ExchangeGenUtil.getValueDeclarationForConfigProperty("foo", exchangeDescriptor, null, null));
   }
   
   @Test
@@ -632,7 +632,7 @@ public class ExchangeJavaGenUtilTest {
     configProperty.setName("foo");
     exchangeDescriptor.setProperties(List.of(configProperty));
     Imports imports = new Imports();
-    Assert.assertEquals("PropertiesUtil.getString(myProps, MyExchangeProperties.FOO)", ExchangeJavaGenUtil.getValueDeclarationForConfigProperty("foo", exchangeDescriptor, "myProps", imports));
+    Assert.assertEquals("PropertiesUtil.getString(myProps, MyExchangeProperties.FOO)", ExchangeGenUtil.getValueDeclarationForConfigProperty("foo", exchangeDescriptor, "myProps", imports));
     Assert.assertEquals(2, imports.size());
     Assert.assertTrue(imports.contains(PropertiesUtil.class.getName()));
     Assert.assertTrue(imports.contains("com.x.y.z.MyExchangeProperties"));
@@ -640,7 +640,7 @@ public class ExchangeJavaGenUtilTest {
   
   @Test
   public void testGetDescriptionReplacements_NullExchangeDescriptor() {
-    Assert.assertTrue(ExchangeJavaGenUtil.getDescriptionReplacements(null, null).isEmpty());
+    Assert.assertTrue(ExchangeGenUtil.getDescriptionReplacements(null, null).isEmpty());
   }
   
   @Test
@@ -661,7 +661,7 @@ public class ExchangeJavaGenUtilTest {
     
     exchangeDescriptor.setProperties(List.of(exConfigProp1, exConfigProp2));
     
-    Map<String, Object> replacements = ExchangeJavaGenUtil.getDescriptionReplacements(exchangeDescriptor, null, null);
+    Map<String, Object> replacements = ExchangeGenUtil.getDescriptionReplacements(exchangeDescriptor, null, null);
     Assert.assertEquals(4, replacements.size());
     Assert.assertEquals("{@link com.x.y.z.TestExchangeConstants#EXCHANGE_CONSTANT1}", replacements.get("constants.exchangeConstant1"));
     Assert.assertEquals("{@link com.x.y.z.TestExchangeConstants#EXCHANGE_CONSTANT2}", replacements.get("constants.exchangeConstant2"));
@@ -692,7 +692,7 @@ public class ExchangeJavaGenUtilTest {
     apiDescriptor.setConstants(List.of(apiConstant1, apiConstant2));
     exchangeDescriptor.setApis(List.of(apiDescriptor));
     
-    Map<String, Object> replacements = ExchangeJavaGenUtil.getDescriptionReplacements(exchangeDescriptor, "Spot", null);
+    Map<String, Object> replacements = ExchangeGenUtil.getDescriptionReplacements(exchangeDescriptor, "Spot", null);
     Assert.assertEquals(4, replacements.size());
     Assert.assertEquals("{@link com.x.y.z.TestExchangeConstants#EXCHANGE_CONSTANT1}", replacements.get("constants.exchangeConstant1"));
     Assert.assertEquals("{@link com.x.y.z.TestExchangeProperties#CONFIG_PROP1}", replacements.get("config.configProp1"));
@@ -723,7 +723,7 @@ public class ExchangeJavaGenUtilTest {
     apiDescriptor.setConstants(List.of(apiConstant1, apiConstant2));
     exchangeDescriptor.setApis(List.of(apiDescriptor));
     
-    Map<String, Object> replacements = ExchangeJavaGenUtil.getDescriptionReplacements(exchangeDescriptor, "Spot", "http://example.com/javadoc/");
+    Map<String, Object> replacements = ExchangeGenUtil.getDescriptionReplacements(exchangeDescriptor, "Spot", "http://example.com/javadoc/");
     Assert.assertEquals(4, replacements.size());
     Assert.assertEquals("<a href=\"http://example.com/javadoc/com/x/y/z/TestExchangeConstants.html#EXCHANGE_CONSTANT1\">exchangeConstant1</a>", 
                         replacements.get("constants.exchangeConstant1"));
@@ -737,17 +737,17 @@ public class ExchangeJavaGenUtilTest {
   
   @Test(expected = IllegalArgumentException.class)
   public void testGetDescriptionReplacements_ApiGroupContext_InvalidApiGroupName() {
-    ExchangeJavaGenUtil.getDescriptionReplacements(new ExchangeDescriptor(), "Foo");
+    ExchangeGenUtil.getDescriptionReplacements(new ExchangeDescriptor(), "Foo");
   }
   
   @Test
   public void generateSubstitutionInstructionDeclaration_NoPlaceholder() {
-      Assert.assertEquals("\"foo\"", ExchangeJavaGenUtil.generateSubstitutionInstructionDeclaration("foo", null, null, null, null));
+      Assert.assertEquals("\"foo\"", ExchangeGenUtil.generateSubstitutionInstructionDeclaration("foo", null, null, null, null));
   }
   
   @Test
   public void generateSubstitutionInstructionDeclaration_NullTemplate() {
-    Assert.assertEquals(JavaCodeGenUtil.NULL, ExchangeJavaGenUtil.generateSubstitutionInstructionDeclaration(null, null, null, null, null));
+    Assert.assertEquals(JavaCodeGenUtil.NULL, ExchangeGenUtil.generateSubstitutionInstructionDeclaration(null, null, null, null, null));
   }
   
   @Test
@@ -774,7 +774,7 @@ public class ExchangeJavaGenUtilTest {
     Imports imports = new Imports();
     Assert.assertEquals(
         "EncodingUtil.substituteArguments(\"Hello ${config.stranger}, I am ${constants.ownName}, born in ${constants.birthYear}\", \"config.stranger\", PropertiesUtil.getString(myProps, MyExchangeProperties.STRANGER), \"constants.ownName\", MyExchangeConstants.OWN_NAME, \"constants.birthYear\", MyExchangeMyApiConstants.BIRTH_YEAR)", 
-        ExchangeJavaGenUtil.generateSubstitutionInstructionDeclaration(
+        ExchangeGenUtil.generateSubstitutionInstructionDeclaration(
             "Hello ${config.stranger}, I am ${constants.ownName}, born in ${constants.birthYear}", 
             exchangeDescriptor, 
             apiDescriptor, 

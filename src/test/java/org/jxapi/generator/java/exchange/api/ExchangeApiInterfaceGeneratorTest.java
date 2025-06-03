@@ -8,7 +8,7 @@ import org.junit.Test;
 import org.jxapi.exchange.descriptor.ExchangeApiDescriptor;
 import org.jxapi.exchange.descriptor.ExchangeDescriptor;
 import org.jxapi.exchange.descriptor.parser.ExchangeDescriptorParser;
-import org.jxapi.generator.java.exchange.ExchangeJavaGenUtil;
+import org.jxapi.generator.java.exchange.ExchangeGenUtil;
 import org.jxapi.util.PlaceHolderResolver;
 
 
@@ -22,7 +22,7 @@ public class ExchangeApiInterfaceGeneratorTest {
     ExchangeDescriptor exchangeDescriptor = ExchangeDescriptorParser.fromJson(Paths.get(".", "src", "test", "resources", "testExchangeDescriptor.json"));
     ExchangeApiDescriptor exchangeApiDescriptor = exchangeDescriptor.getApis().get(0);
     PlaceHolderResolver docPlaceHolderResolver = 
-        PlaceHolderResolver.create(ExchangeJavaGenUtil.getDescriptionReplacements(exchangeDescriptor, exchangeApiDescriptor.getName()));
+        PlaceHolderResolver.create(ExchangeGenUtil.getDescriptionReplacements(exchangeDescriptor, exchangeApiDescriptor.getName()));
     
     ExchangeApiInterfaceGenerator apiInterfaceGenerator = new ExchangeApiInterfaceGenerator(exchangeDescriptor, exchangeApiDescriptor, docPlaceHolderResolver);
     Assert.assertEquals("package com.foo.bar.gen.marketdata;\n"

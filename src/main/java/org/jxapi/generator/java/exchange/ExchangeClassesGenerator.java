@@ -48,7 +48,7 @@ public class ExchangeClassesGenerator implements ClassesGenerator {
   @Override
   public void generateClasses(Path outputFolder) throws IOException {
     PlaceHolderResolver docPlaceHolderResolver = 
-      PlaceHolderResolver.create(ExchangeJavaGenUtil.getDescriptionReplacements(exchangeDescriptor, null));
+      PlaceHolderResolver.create(ExchangeGenUtil.getDescriptionReplacements(exchangeDescriptor, null));
     // Generate exchange interface class
     ExchangeInterfaceGenerator exchangeInterfaceGenerator = new ExchangeInterfaceGenerator(exchangeDescriptor, docPlaceHolderResolver);
     exchangeInterfaceGenerator.writeJavaFile(outputFolder);
@@ -65,10 +65,10 @@ public class ExchangeClassesGenerator implements ClassesGenerator {
     List<Constant> constants = exchangeDescriptor.getConstants();
     if (!CollectionUtils.isEmpty(constants)) {
       ConstantsClassGenerator cgen = new ConstantsClassGenerator(
-          ExchangeJavaGenUtil.getExchangeConstantsInterfaceName(exchangeDescriptor), 
+          ExchangeGenUtil.getExchangeConstantsInterfaceName(exchangeDescriptor), 
           constants,
           docPlaceHolderResolver);
-      cgen.setConstantValuePlaceHolderResolver(s -> ExchangeJavaGenUtil.generateSubstitutionInstructionDeclaration(
+      cgen.setConstantValuePlaceHolderResolver(s -> ExchangeGenUtil.generateSubstitutionInstructionDeclaration(
                                                       s, 
                                                       exchangeDescriptor, 
                                                       null, 
@@ -82,7 +82,7 @@ public class ExchangeClassesGenerator implements ClassesGenerator {
     List<DefaultConfigProperty> properties = exchangeDescriptor.getProperties();
     if (properties != null) {
       PropertiesClassGenerator pgen = new PropertiesClassGenerator(
-          ExchangeJavaGenUtil.getExchangePropertiesInterfaceName(exchangeDescriptor), 
+          ExchangeGenUtil.getExchangePropertiesInterfaceName(exchangeDescriptor), 
           exchangeDescriptor.getId(), 
           properties,
           docPlaceHolderResolver);
