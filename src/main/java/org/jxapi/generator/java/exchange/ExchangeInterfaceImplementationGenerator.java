@@ -13,7 +13,6 @@ import org.jxapi.exchange.descriptor.ExchangeApiDescriptor;
 import org.jxapi.exchange.descriptor.ExchangeDescriptor;
 import org.jxapi.generator.java.JavaCodeGenUtil;
 import org.jxapi.generator.java.JavaTypeGenerator;
-import org.jxapi.generator.java.exchange.api.ExchangeApiGenUtil;
 import org.jxapi.netutils.rest.ratelimits.RateLimitRule;
 import org.jxapi.netutils.rest.ratelimits.RequestThrottler;
 import org.jxapi.util.CollectionUtil;
@@ -136,14 +135,14 @@ public class ExchangeInterfaceImplementationGenerator extends JavaTypeGenerator 
       .append(JavaCodeGenUtil.SUPER_ARG_SEPARATOR)
       .append(PROPERTIES_PARAMETER)
       .append(JavaCodeGenUtil.SUPER_ARG_SEPARATOR)
-      .append(ExchangeApiGenUtil.generateSubstitutionInstructionDeclaration(
+      .append(ExchangeJavaGenUtil.generateSubstitutionInstructionDeclaration(
           exchangeDescriptor.getHttpUrl(), 
           exchangeDescriptor, 
           null, 
           PROPERTIES_PARAMETER,
           getImports()))
       .append(JavaCodeGenUtil.SUPER_ARG_SEPARATOR)
-      .append(ExchangeApiGenUtil.generateSubstitutionInstructionDeclaration(
+      .append(ExchangeJavaGenUtil.generateSubstitutionInstructionDeclaration(
           exchangeDescriptor.getWebsocketUrl(), 
           exchangeDescriptor, 
           null, 

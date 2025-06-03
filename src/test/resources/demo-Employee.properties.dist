@@ -13,6 +13,9 @@
 # Base URL for websocket endpoints of the Employee Exchange API
 # baseWebsocketUrl=
 
+# Used in demo snippets to set as value of Employee 'id' property
+# demoEmployeeId=1
+
 
 # Common configuration properties
 

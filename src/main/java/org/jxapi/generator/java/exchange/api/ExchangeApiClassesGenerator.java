@@ -80,6 +80,12 @@ public class ExchangeApiClassesGenerator implements ClassesGenerator {
           ExchangeJavaGenUtil.getExchangeApiConstantsInterfaceName(exchangeDescriptor, exchangeApiDescriptor), 
           constants,
           docPlaceHolderResolver); 
+      cgen.setConstantValuePlaceHolderResolver(s -> ExchangeJavaGenUtil.generateSubstitutionInstructionDeclaration(
+                                                      s, 
+                                                      exchangeDescriptor, 
+                                                      exchangeApiDescriptor, 
+                                                      null,
+                                                      cgen.getImports()));
       cgen.setDescription("Constants used in "
                 + exchangeDescriptor.getId() 
                 + " exchange API wrapper {@link " 

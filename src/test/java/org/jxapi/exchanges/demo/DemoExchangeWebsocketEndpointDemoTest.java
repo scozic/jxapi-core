@@ -131,7 +131,7 @@ public class DemoExchangeWebsocketEndpointDemoTest {
     new Thread(() -> {
       try {
         DemoExchangeMarketDataTickerStreamDemo.subscribe(
-            DemoExchangeMarketDataTickerStreamDemo.createRequest(), 
+            DemoExchangeMarketDataTickerStreamDemo.createRequest(config), 
             msgListener, 
             config, 
             DemoUtil::logWsApiEvent);

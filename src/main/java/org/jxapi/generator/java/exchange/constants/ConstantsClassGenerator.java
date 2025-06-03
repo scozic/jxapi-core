@@ -36,6 +36,7 @@ public class ConstantsClassGenerator extends JavaTypeGenerator {
   private final  List<Constant> constants;
   
   private final PlaceHolderResolver docPlaceHolderResolver;
+  private PlaceHolderResolver constantValuePlaceHolderResolver;
   
   /**
    * Creates a new instance of the generator.
@@ -44,7 +45,9 @@ public class ConstantsClassGenerator extends JavaTypeGenerator {
    *                     com.example.MyConstants
    * @param constants    the list of constants to generate in the interface
    */
-  public ConstantsClassGenerator(String fullTypeName, List<Constant> constants, PlaceHolderResolver docPlaceHolderResolver) {
+  public ConstantsClassGenerator(String fullTypeName, 
+                                 List<Constant> constants, 
+                                 PlaceHolderResolver docPlaceHolderResolver) {
     super(fullTypeName);
     setTypeDeclaration("public class");
     this.constants = constants;
@@ -57,8 +60,34 @@ public class ConstantsClassGenerator extends JavaTypeGenerator {
       .append(getSimpleName())
       .append("(){}\n");
     constants.forEach(c -> appendToBody("\n")
-                             .append(ConstantsGenerationUtil.generateConstantDeclaration(c, getImports(), docPlaceHolderResolver)));
+                             .append(ConstantsGenerationUtil.generateConstantDeclaration(
+                                 c, getImports(), 
+                                 docPlaceHolderResolver, 
+                                 constantValuePlaceHolderResolver)));
     return super.generate();
+  }
+
+  /**
+   * Gets the list of constants to generate.
+   * 
+   * @return the resolver to use to resolve constant values. Can be null.
+   * @see #setConstantValuePlaceHolderResolver(PlaceHolderResolver)
+   */
+  public PlaceHolderResolver getConstantValuePlaceHolderResolver() {
+    return constantValuePlaceHolderResolver;
+  }
+
+  /**
+   * Sets the resolver for constant values.
+   * <p>
+   * This resolver is used to resolve placeholders in constant values, which can be among other constant values.<br>
+   * When not set, the default resolver is used, which does not resolve any placeholders. but encodes input as a quoted string.<br>
+   * This should also the behavior of provided resolver
+   * 
+   * @param constantValuePlaceHolderResolver the resolver for constant values. Must return quoted strings.
+   */
+  public void setConstantValuePlaceHolderResolver(PlaceHolderResolver constantValuePlaceHolderResolver) {
+    this.constantValuePlaceHolderResolver = constantValuePlaceHolderResolver;
   }
 
 }

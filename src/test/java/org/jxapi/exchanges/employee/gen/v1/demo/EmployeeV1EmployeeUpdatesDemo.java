@@ -58,8 +58,9 @@ public class EmployeeV1EmployeeUpdatesDemo {
    */
   public static void main(String[] args) {
     try {
+      Properties properties = DemoUtil.loadDemoExchangeProperties(EmployeeExchange.ID);
       subscribe(DemoUtil::logWsMessage,
-                DemoUtil.loadDemoExchangeProperties(EmployeeExchange.ID),
+                properties,
                 DemoUtil::logWsApiEvent);
       System.exit(0);
     }

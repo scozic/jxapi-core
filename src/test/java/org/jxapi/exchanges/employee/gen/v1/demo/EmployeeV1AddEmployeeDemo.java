@@ -7,10 +7,14 @@ import javax.annotation.processing.Generated;
 import org.jxapi.exchange.ExchangeApiObserver;
 import org.jxapi.exchanges.employee.gen.EmployeeExchange;
 import org.jxapi.exchanges.employee.gen.EmployeeExchangeImpl;
+import org.jxapi.exchanges.employee.gen.EmployeeProperties;
 import org.jxapi.exchanges.employee.gen.v1.EmployeeV1Api;
+import org.jxapi.exchanges.employee.gen.v1.EmployeeV1Constants;
 import org.jxapi.exchanges.employee.gen.v1.pojo.Employee;
 import org.jxapi.netutils.rest.RestResponse;
 import org.jxapi.util.DemoUtil;
+import org.jxapi.util.EncodingUtil;
+import org.jxapi.util.PropertiesUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -21,12 +25,17 @@ import org.slf4j.LoggerFactory;
 public class EmployeeV1AddEmployeeDemo {
   private static final Logger log = LoggerFactory.getLogger(EmployeeV1AddEmployeeDemo.class);
   
-  public static Employee createRequest() {
+  /**
+   * Creates a sample value for the request field of type Employee using sample value(s) defined in the field descriptor.
+   * 
+   * @param properties the configuration properties to use for the sample value generation.
+   */
+  public static Employee createRequest(Properties properties) {
     Employee request = new Employee();
-    request.setId(Integer.valueOf(1));
+    request.setId(Integer.valueOf(EncodingUtil.substituteArguments("${config.demoEmployeeId}", "config.demoEmployeeId", PropertiesUtil.getString(properties, EmployeeProperties.DEMO_EMPLOYEE_ID))));
     request.setFirstName("John");
     request.setLastName("Doe");
-    request.setProfile("REGULAR");
+    request.setProfile(EncodingUtil.substituteArguments("${constants.profileRegular}", "constants.profileRegular", EmployeeV1Constants.PROFILE_REGULAR));
     return request;
   }
   
@@ -63,8 +72,9 @@ public class EmployeeV1AddEmployeeDemo {
    */
   public static void main(String[] args) {
     try {
-      execute(createRequest(),
-              DemoUtil.loadDemoExchangeProperties(EmployeeExchange.ID),
+      Properties properties = DemoUtil.loadDemoExchangeProperties(EmployeeExchange.ID);
+      execute(createRequest(properties),
+              properties,
               DemoUtil::logRestApiEvent);
       System.exit(0);
     }

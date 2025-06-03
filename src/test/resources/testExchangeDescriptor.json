@@ -11,7 +11,9 @@
 	"constants": [
 		{"name": "pingMessage", "type":"STRING", "description": "Ping message", "value": "Ping!"},
 		{"name": "pongMessage", "type":"STRING", "description": "Pong message", "value": "Pong!"},
-		{"name": "author", "type":"STRING", "description": "Author name", "value": "Bob"}
+		{"name": "authorFirstName", "type":"STRING", "description": "Author first name", "value": "Bob"},
+		{"name": "authorLastName", "type":"STRING", "description": "Author last name", "value": "Smith"},
+		{"name": "author", "type":"STRING", "description": "Author name", "value": "${constants.authorFirstName} ${constants.authorLastName}"}
 	],
 	"apis":[
 		{ 
@@ -19,8 +21,9 @@
 			"description": "The market data API of MyTestExchange. Author: ${constants.author}",
 			"httpRequestInterceptorFactory": "com.foo.bar.BarHttpRequestInterceptorFactory",
 			"constants": [
-				{"name": "allTickers", "type":"STRING", "description": "Constant for subscribing to all tickers", "value": "ticker@all"},
-				{"name": "author", "type":"STRING", "description": "Author name", "value": "Mary"}
+				{"name": "allTickers", "type":"STRING", "description": "Constant for subscribing to all tickers", "value": "all"},
+				{"name": "author", "type":"STRING", "description": "Author name", "value": "Mary"},
+				{"name": "demoSymbol", "type":"STRING", "description": "Value to use for 'symbol' property of endpoint demo snippet requests.", "value": "BTC_USDT"}
 			],
 			"restEndpoints": [
 				{
@@ -32,7 +35,8 @@
 					"request":{
 					    "description": "Request parameters for fetching exchange info. Author: ${constants.author}",
 						"properties": [
-							{"name":"symbols", "type": "STRING_LIST", "description":"The list of symbol to fetch market information for. Leave empty to fetch all markets. Author: ${constants.author}", "sampleValue":"[\"BTC\", \"ETH\"]"}
+							{"name":"symbols", "type": "STRING_LIST", "description":"The list of symbol to fetch market information for. Leave empty to fetch all markets. Author: ${constants.author}", "sampleValue":"[\"${demoSymbol}\"]"},
+							{"name": "apiKey", "type":"STRING", "description":"API key, see ${config.apiKey}", "sampleValue": "${config.apiKey}"}
 						]
 					},
 					"response":{ 
@@ -77,9 +81,10 @@
 					"topic": "${symbol}@ticker",
 					"description": "Subscribe to ticker stream. Author: ${constants.author}",
 					"request": {
-					    "description": "Request parameters for subscribing to ticker stream. Author: ${constants.author}",
+					    "description": "Request parameters for subscribing to ticker stream. Use ${constants.allTickers} to subscribe to every ticker. Author: ${constants.author}",
 						"properties": [
-							{"name": "symbol", "type":"STRING", "description":"Symbol to subscribe to ticker stream of. Author: ${constants.author}", "sampleValue":"BTC_USDT"}
+							{"name": "symbol", "type":"STRING", "description":"Symbol to subscribe to ticker stream of. Use ${constants.allTickers} to subscribe to every ticker. Author: ${constants.author}", "sampleValue": "${constants.allTickers}"},
+							{"name": "apiKey", "type":"STRING", "description":"API key, see ${config.apiKey}", "sampleValue": "${config.apiKey}"}
 						]
 					},
 					"topicParametersListSeparator": "|",
@@ -91,7 +96,10 @@
 						"description": "Ticker message. Author: ${constants.author}",
 						"properties": [
 							{"name":"topic", "msgField":"t", "type": "STRING", "description":"Topic. Author: ${constants.author}", "sampleValue":"ticker"},
-							{"name":"symbol", "msgField":"s", "type": "STRING", "description":"Symbol name. Author: ${constants.author}", "sampleValue":"BTC_USDT"},
+							{"name":"symbol", "msgField":"s", "type": "STRING", "description":"Symbol name. Author: ${constants.author}", "sampleValue":"${constants.demoSymbol}"},
+                            {"name":"timestamp", "msgField":"T", "type": "LONG", "description":"Timestamp of the message. Author: ${constants.author}", "sampleValue":"1633036800000"},
+                            {"name":"priceChange", "msgField":"p", "type": "BIGDECIMAL", "description":"Price change in the last 24 hours. Author: ${constants.author}", "sampleValue":"100.00"},
+                            {"name":"priceChangePercent", "msgField":"P", "type": "BIGDECIMAL", "description":"Price change percent in the last 24 hours. Author: ${constants.author}", "sampleValue":"0.5"},
 							{"name":"last", "msgField":"p", "type": "BIGDECIMAL", "description":"Last traded price. Author: ${constants.author}", "sampleValue":"16000.00"}
 						]
 					}

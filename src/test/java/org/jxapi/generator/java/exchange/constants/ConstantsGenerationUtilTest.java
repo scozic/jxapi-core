@@ -21,7 +21,7 @@ public class ConstantsGenerationUtilTest {
   public void testCreateStringConstant() {
     Imports imports = new Imports();
     Constant c = Constant.create("myString", Type.STRING, null, "foo");
-    Assert.assertEquals( "public static final String MY_STRING = \"foo\";\n", ConstantsGenerationUtil.generateConstantDeclaration(c, imports, null));
+    Assert.assertEquals( "public static final String MY_STRING = \"foo\";\n", ConstantsGenerationUtil.generateConstantDeclaration(c, imports, null, null));
     Assert.assertEquals(0, imports.size());
   }
 
@@ -33,8 +33,8 @@ public class ConstantsGenerationUtilTest {
     Assert.assertEquals( "/**\n"
         + " * My int constant with string value, for instance '123'\n"
         + " */\n"
-        + "public static final Integer MY_INT = Integer.valueOf(42);\n", 
-        ConstantsGenerationUtil.generateConstantDeclaration(c, imports, placeholderResolver));
+        + "public static final Integer MY_INT = Integer.valueOf(\"42\");\n", 
+        ConstantsGenerationUtil.generateConstantDeclaration(c, imports, placeholderResolver, null));
     Assert.assertEquals(0, imports.size());
   }
 
@@ -45,9 +45,8 @@ public class ConstantsGenerationUtilTest {
     Assert.assertEquals( "/**\n"
         + " * My int constant with int value\n"
         + " */\n"
-        + "public static final Integer MY_INT = Integer.valueOf(42);\n"
-        + "", 
-         ConstantsGenerationUtil.generateConstantDeclaration(c, imports, null));
+        + "public static final Integer MY_INT = Integer.valueOf(\"42\");\n", 
+         ConstantsGenerationUtil.generateConstantDeclaration(c, imports, null, null));
     Assert.assertEquals(0, imports.size());
   }
 
@@ -55,14 +54,14 @@ public class ConstantsGenerationUtilTest {
   public void testCreateLongConstantWithNow() {
     Imports imports = new Imports();
     Constant c = Constant.create("myTimestamp", Type.LONG, null, "now()");
-    Assert.assertEquals( "public static final Long MY_TIMESTAMP = Long.valueOf(System.currentTimeMillis());\n", ConstantsGenerationUtil.generateConstantDeclaration(c, imports, null));
+    Assert.assertEquals( "public static final Long MY_TIMESTAMP = Long.valueOf(System.currentTimeMillis());\n", ConstantsGenerationUtil.generateConstantDeclaration(c, imports, null, null));
     Assert.assertEquals(0, imports.size());
   }
   
   @Test(expected = IllegalArgumentException.class)
   public void testCreateStringConstantInvalidType() {
     Constant c = Constant.create("myString", Type.fromTypeName("STRING_LIST"), null, "foo");
-    ConstantsGenerationUtil.generateConstantDeclaration(c, new Imports(), null);
+    ConstantsGenerationUtil.generateConstantDeclaration(c, new Imports(), null, null);
   }
   
   @Test

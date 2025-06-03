@@ -21,8 +21,13 @@ import org.slf4j.LoggerFactory;
 public class DemoExchangeMarketDataGetRestRequestDataTypePrimitiveWithMsgFieldDemo {
   private static final Logger log = LoggerFactory.getLogger(DemoExchangeMarketDataGetRestRequestDataTypePrimitiveWithMsgFieldDemo.class);
   
-  public static Integer createAge() {
-    return Integer.valueOf(18);
+  /**
+   * Creates a sample value for the age field of type Integer using sample value(s) defined in the field descriptor.
+   * 
+   * @param properties the configuration properties to use for the sample value generation.
+   */
+  public static Integer createAge(Properties properties) {
+    return Integer.valueOf("18");
   }
   
   /**
@@ -58,8 +63,9 @@ public class DemoExchangeMarketDataGetRestRequestDataTypePrimitiveWithMsgFieldDe
    */
   public static void main(String[] args) {
     try {
-      execute(createAge(),
-              DemoUtil.loadDemoExchangeProperties(DemoExchangeExchange.ID),
+      Properties properties = DemoUtil.loadDemoExchangeProperties(DemoExchangeExchange.ID);
+      execute(createAge(properties),
+              properties,
               DemoUtil::logRestApiEvent);
       System.exit(0);
     }

@@ -92,7 +92,7 @@ public class DemoExchangeRestEndpointDemoTest {
     new Thread(() -> {
       try {
         response.complete(DemoExchangeMarketDataExchangeInfoDemo.execute(
-            DemoExchangeMarketDataExchangeInfoDemo.createRequest(), config, DemoUtil::logRestApiEvent));
+            DemoExchangeMarketDataExchangeInfoDemo.createRequest(config), config, DemoUtil::logRestApiEvent));
       } catch (Exception e) {
         RestResponse<DemoExchangeMarketDataExchangeInfoResponse> r = new RestResponse<>();
         r.setException(e);

@@ -1,14 +1,12 @@
 package org.jxapi.generator.java.exchange.api;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import org.apache.commons.lang3.StringUtils;
 import org.jxapi.exchange.ExchangeApi;
 import org.jxapi.exchange.descriptor.CanonicalType;
 import org.jxapi.exchange.descriptor.ExchangeApiDescriptor;
@@ -25,7 +23,6 @@ import org.jxapi.netutils.deserialization.RawBooleanMessageDeserializer;
 import org.jxapi.netutils.deserialization.RawIntegerMessageDeserializer;
 import org.jxapi.netutils.deserialization.RawLongMessageDeserializer;
 import org.jxapi.netutils.deserialization.RawStringMessageDeserializer;
-import org.jxapi.util.EncodingUtil;
 
 /**
  * Helper static methods around generation of {@link ExchangeApi} java classes implementation.
@@ -757,87 +754,5 @@ public class ExchangeApiGenUtil {
    */
   public static String getRestEndpointUrlVariableName(RestEndpointDescriptor restEndpointDescriptor) {
     return JavaCodeGenUtil.firstLetterToLowerCase(restEndpointDescriptor.getName() + "HttpUrl");
-  }
-  
-  /**
-   * Generates the argument substitution declaration for a given template.
-   * <ul>
-   * <li>If the template does not contain any placeholder, the template is
-   * returned as a quoted string.</li>
-   * <li>If the template contains placeholders, the returned value is a call to
-   * {@link EncodingUtil#substituteArguments(String, Object...)}, with the
-   * template and key and value pairs for each placeholder. The placeholders are
-   * expected to refer to either be a reference to a constant
-   * (<code>constants.myConstant</code>) or a reference to a configuration
-   * property (<code>config.myConfigProperty</code>).
-   * <ul>
-   * <li>For a constant, the value is the constant value returned by
-   * {@link ExchangeJavaGenUtil#getValueDeclarationForConstant(String, ExchangeDescriptor, ExchangeApiDescriptor, Imports)}.</li>
-   * <li>For a configuration property, the value is the configuration property
-   * value returned by
-   * {@link ExchangeJavaGenUtil#getValueDeclarationForConfigProperty(String, ExchangeDescriptor, String, Imports)}.</li>
-   * </ul>
-   * </li>
-   * </ul>
-   * 
-   * @param template              The template to generate the argument
-   *                              substitution declaration for, may contain
-   *                              placeholders. If <code>null</code>, the returned 
-   *                              value is <code>null</code>.
-   * @param exchangeDescriptor    The exchange descriptor to use to resolve the
-   *                              constants and configuration properties used in
-   *                              the template.
-   * @param exchangeApiDescriptor The exchange API descriptor to use to resolve
-   *                              the constants. Remark: A constant with a name
-   *                              that is not defined in the exchange API
-   *                              descriptor will be searched in the exchange
-   *                              descriptor.
-   * @param propertiesVariable    The name of the variable or instruction
-   *                              referencing the configuration properties.
-   * @param imports               The imports of the generated class, that will be
-   *                              populated with classes used by the returned
-   *                              value.
-   * @return The argument substitution declaration instruction for the template.
-   */
-  public static String generateSubstitutionInstructionDeclaration(
-                        String template, 
-                        ExchangeDescriptor exchangeDescriptor, 
-                        ExchangeApiDescriptor exchangeApiDescriptor, 
-                        String propertiesVariable,
-                        Imports imports) {
-    if (template == null) {
-      return JavaCodeGenUtil.NULL;
-    }
-    List<String> placeHolderNames = ExchangeJavaGenUtil.findPlaceHolders(template);
-    if (placeHolderNames.isEmpty()) {
-      return JavaCodeGenUtil.getQuotedString(template);
-    }
-    List<String> placeHoldersDeclarations  = new ArrayList<>(placeHolderNames.size());
-    for (String placeHolder: placeHolderNames) {
-      String constantName = ExchangeJavaGenUtil.getConstantPlaceHolder(placeHolder);
-      String valueDeclaration = null;
-      if (constantName != null) {
-          valueDeclaration = ExchangeJavaGenUtil.getValueDeclarationForConstant(constantName, exchangeDescriptor, exchangeApiDescriptor, imports);
-      } else {
-        String propertyName = ExchangeJavaGenUtil.getConfigPropertyPlaceHolder(placeHolder);
-        if (propertyName != null) {
-          valueDeclaration = ExchangeJavaGenUtil.getValueDeclarationForConfigProperty(propertyName, exchangeDescriptor, propertiesVariable, imports);
-        }
-      }
-      if (valueDeclaration == null) {
-        throw new IllegalArgumentException("Could not find value for placeHolder:[" + placeHolder + "] in template:" + template);
-      }
-      placeHoldersDeclarations.add(JavaCodeGenUtil.getQuotedString(placeHolder));
-      placeHoldersDeclarations.add(valueDeclaration);
-    }
-    imports.add(EncodingUtil.class);
-    return new StringBuilder()
-                .append(EncodingUtil.class.getSimpleName())
-                .append(".substituteArguments(")
-                .append(JavaCodeGenUtil.getQuotedString(template))
-                .append(", ")
-                .append(StringUtils.join(placeHoldersDeclarations, ", "))
-                .append(")")
-                .toString();
   }
 }

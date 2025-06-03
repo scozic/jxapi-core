@@ -6,7 +6,7 @@ import org.jxapi.exchanges.employee.gen.v1.EmployeeV1Api;
 
 /**
  * Employee API<br>
- * Employee exchange is a demo exchange REST APIs to get, add, delete and  update employees and a websocket endpoint to get notified of updates from an employee database.<br> A server can be started using <code>org.jxapi.exchanges.employee.EmployeeExchangeServer</code> class to serve these APIs.<br> The URL of the HTTP server and Websocket server must be set using the {@link org.jxapi.exchanges.employee.gen.EmployeeProperties#BASE_HTTP_URL} and {@link org.jxapi.exchanges.employee.gen.EmployeeProperties#BASE_WEBSOCKET_URL} properties.<br> Notice how the 'employee' object present in APIs request and responses is used in multiple endpoints and its properties defined only once.
+ * Employee exchange is a demo exchange REST APIs to get, add, delete and update employees and a websocket endpoint to get notified of updates from an employee database.<br> A server can be started using <code>org.jxapi.exchanges.employee.EmployeeExchangeServer</code> class to serve these APIs.<br> The URL of the HTTP server and Websocket server must be set using the {@link org.jxapi.exchanges.employee.gen.EmployeeProperties#BASE_HTTP_URL} and {@link org.jxapi.exchanges.employee.gen.EmployeeProperties#BASE_WEBSOCKET_URL} properties.<br> Notice how the 'employee' object present in APIs request and responses is used in multiple endpoints and its properties defined only once.
  * 
  * @see <a href="https://www.example.com/docs/employee">Reference documentation</a>
  */

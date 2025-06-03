@@ -348,14 +348,14 @@ public class ExchangeApiInterfaceImplementationGenerator extends JavaTypeGenerat
     }
     constructorBody
       .append(JavaCodeGenUtil.SUPER_ARG_SEPARATOR)
-      .append(ExchangeApiGenUtil.generateSubstitutionInstructionDeclaration(
+      .append(ExchangeJavaGenUtil.generateSubstitutionInstructionDeclaration(
         exchangeApiDescriptor.getHttpUrl(), 
         exchangeDescriptor, 
         exchangeApiDescriptor, 
         EXCHANGE_ARGUMENT_NAME + GET_PROPERTIES,
         getImports()))
       .append(JavaCodeGenUtil.SUPER_ARG_SEPARATOR)
-      .append(ExchangeApiGenUtil.generateSubstitutionInstructionDeclaration(
+      .append(ExchangeJavaGenUtil.generateSubstitutionInstructionDeclaration(
         exchangeApiDescriptor.getWebsocketUrl(), 
         exchangeDescriptor, 
         exchangeApiDescriptor, 
@@ -368,59 +368,113 @@ public class ExchangeApiInterfaceImplementationGenerator extends JavaTypeGenerat
     }
     
     if (hasRestEnpoints) {
-      String httpRequestExecutorFactoryClassName  = getHttpRequestExecutorFactory();
-      String httpRequestTimeout = getHttpRequestTimeout() + "L";
-      constructorBody
-         .append("createHttpRequestExecutor(")
-         .append(httpRequestExecutorFactoryClassName != null? 
-               "\"" + httpRequestExecutorFactoryClassName + "\""
-               : "null")
-         .append(", ")
-         .append(httpRequestTimeout)
-         .append(");\n");
-      
-      String httpRequestInterceptorFactoryFullClassName = getHttpRequestInterceptorFactory();
-      if (httpRequestInterceptorFactoryFullClassName != null) {
-        constructorBody.append("createHttpRequestInterceptor(\"")
-                 .append(httpRequestInterceptorFactoryFullClassName)
-                 .append("\");\n");
-      }
-      exchangeApiDescriptor.getRestEndpoints().forEach(restApi -> {
-        constructorBody.append(generateRestEndpointUrlVariableInstantiationInstruction(restApi));
-      });
+//      String httpRequestExecutorFactoryClassName  = getHttpRequestExecutorFactory();
+//      String httpRequestTimeout = getHttpRequestTimeout() + "L";
+//      constructorBody
+//         .append("createHttpRequestExecutor(")
+//         .append(httpRequestExecutorFactoryClassName != null? 
+//               "\"" + httpRequestExecutorFactoryClassName + "\""
+//               : "null")
+//         .append(", ")
+//         .append(httpRequestTimeout)
+//         .append(");\n");
+//      
+//      String httpRequestInterceptorFactoryFullClassName = getHttpRequestInterceptorFactory();
+//      if (httpRequestInterceptorFactoryFullClassName != null) {
+//        constructorBody.append("createHttpRequestInterceptor(\"")
+//                 .append(httpRequestInterceptorFactoryFullClassName)
+//                 .append("\");\n");
+//      }
+//      exchangeApiDescriptor.getRestEndpoints().forEach(restApi -> {
+//        constructorBody.append(generateRestEndpointUrlVariableInstantiationInstruction(restApi));
+//      });
+      generateConstructorBodyRestEndpointDeclarations(constructorBody);
     }
     if (hasWsEnpoints) {
-      addImport(EncodingUtil.class);
-      constructorBody.append("createWebsocketManager(")
-               .append(THIS)
-               .append(WS_URL_PROPERTY_NAME)
-               .append(", ")
-               .append(JavaCodeGenUtil.getQuotedString(getWebsocketFactory()))
-               .append(", ")
-               .append(JavaCodeGenUtil.getQuotedString(getWebsocketHookFactory()))
-               .append(");\n");
-               
-      for (WebsocketEndpointDescriptor wsApi: exchangeApiDescriptor.getWebsocketEndpoints()) {
-        String websocketEndpointVariableName = getWebsocketEndpointVariableName(wsApi);
-        String messageClassObjectName = ExchangeApiGenUtil.generateWebsocketEndpointMessagePojoClassName(
-            exchangeDescriptor, 
-            exchangeApiDescriptor, 
-            wsApi);
-        Field message = ExchangeApiGenUtil.resolveFieldProperties(exchangeApiDescriptor, wsApi.getMessage());
-        Type messageDataType = ExchangeJavaGenUtil.getFieldType(message);
-        String getResponseDeserializerInstance = ExchangeApiGenUtil.getNewMessageDeserializerInstruction(messageDataType, messageClassObjectName, getImports());
-        constructorBody.append(THIS)
-          .append(websocketEndpointVariableName)
-          .append(" = ")
-          .append("createWebsocketEndpoint(")
-          .append(ExchangeApiGenUtil.getWebsocketEndpointNameStaticVariable(wsApi.getName()))
-          .append(", ")
-          .append(getResponseDeserializerInstance)
-          .append(");\n");
-      }
-      
+//      addImport(EncodingUtil.class);
+//      constructorBody.append("createWebsocketManager(")
+//               .append(THIS)
+//               .append(WS_URL_PROPERTY_NAME)
+//               .append(", ")
+//               .append(JavaCodeGenUtil.getQuotedString(getWebsocketFactory()))
+//               .append(", ")
+//               .append(JavaCodeGenUtil.getQuotedString(getWebsocketHookFactory()))
+//               .append(");\n");
+//               
+//      for (WebsocketEndpointDescriptor wsApi: exchangeApiDescriptor.getWebsocketEndpoints()) {
+//        String websocketEndpointVariableName = getWebsocketEndpointVariableName(wsApi);
+//        String messageClassObjectName = ExchangeApiGenUtil.generateWebsocketEndpointMessagePojoClassName(
+//            exchangeDescriptor, 
+//            exchangeApiDescriptor, 
+//            wsApi);
+//        Field message = ExchangeApiGenUtil.resolveFieldProperties(exchangeApiDescriptor, wsApi.getMessage());
+//        Type messageDataType = ExchangeJavaGenUtil.getFieldType(message);
+//        String getResponseDeserializerInstance = ExchangeApiGenUtil.getNewMessageDeserializerInstruction(messageDataType, messageClassObjectName, getImports());
+//        constructorBody.append(THIS)
+//          .append(websocketEndpointVariableName)
+//          .append(" = ")
+//          .append("createWebsocketEndpoint(")
+//          .append(ExchangeApiGenUtil.getWebsocketEndpointNameStaticVariable(wsApi.getName()))
+//          .append(", ")
+//          .append(getResponseDeserializerInstance)
+//          .append(");\n");
+          generateConstructorBodyWebsocketEndpointDeclarations(constructorBody);
     }
     return constructorBody.toString();
+  }
+  
+  private void generateConstructorBodyRestEndpointDeclarations(StringBuilder constructorBody) {
+    String httpRequestExecutorFactoryClassName  = getHttpRequestExecutorFactory();
+    String httpRequestTimeout = getHttpRequestTimeout() + "L";
+    constructorBody
+       .append("createHttpRequestExecutor(")
+       .append(httpRequestExecutorFactoryClassName != null? 
+             "\"" + httpRequestExecutorFactoryClassName + "\""
+             : "null")
+       .append(", ")
+       .append(httpRequestTimeout)
+       .append(");\n");
+    
+    String httpRequestInterceptorFactoryFullClassName = getHttpRequestInterceptorFactory();
+    if (httpRequestInterceptorFactoryFullClassName != null) {
+      constructorBody.append("createHttpRequestInterceptor(\"")
+               .append(httpRequestInterceptorFactoryFullClassName)
+               .append("\");\n");
+    }
+    exchangeApiDescriptor.getRestEndpoints().forEach(restApi -> {
+      constructorBody.append(generateRestEndpointUrlVariableInstantiationInstruction(restApi));
+    });
+  }
+  
+  private void generateConstructorBodyWebsocketEndpointDeclarations(StringBuilder constructorBody) {
+    addImport(EncodingUtil.class);
+    constructorBody.append("createWebsocketManager(")
+             .append(THIS)
+             .append(WS_URL_PROPERTY_NAME)
+             .append(", ")
+             .append(JavaCodeGenUtil.getQuotedString(getWebsocketFactory()))
+             .append(", ")
+             .append(JavaCodeGenUtil.getQuotedString(getWebsocketHookFactory()))
+             .append(");\n");
+             
+    for (WebsocketEndpointDescriptor wsApi: exchangeApiDescriptor.getWebsocketEndpoints()) {
+      String websocketEndpointVariableName = getWebsocketEndpointVariableName(wsApi);
+      String messageClassObjectName = ExchangeApiGenUtil.generateWebsocketEndpointMessagePojoClassName(
+          exchangeDescriptor, 
+          exchangeApiDescriptor, 
+          wsApi);
+      Field message = ExchangeApiGenUtil.resolveFieldProperties(exchangeApiDescriptor, wsApi.getMessage());
+      Type messageDataType = ExchangeJavaGenUtil.getFieldType(message);
+      String getResponseDeserializerInstance = ExchangeApiGenUtil.getNewMessageDeserializerInstruction(messageDataType, messageClassObjectName, getImports());
+      constructorBody.append(THIS)
+        .append(websocketEndpointVariableName)
+        .append(" = ")
+        .append("createWebsocketEndpoint(")
+        .append(ExchangeApiGenUtil.getWebsocketEndpointNameStaticVariable(wsApi.getName()))
+        .append(", ")
+        .append(getResponseDeserializerInstance)
+        .append(");\n");
+    }
   }
   
   private void addRestMethod(String methodDeclaration, String methodBody) {
@@ -897,7 +951,7 @@ public class ExchangeApiInterfaceImplementationGenerator extends JavaTypeGenerat
         .append(ExchangeApiGenUtil.getRestEndpointUrlVariableName(restApi)).append(" = ")
         .append(EncodingUtil.class.getSimpleName())
         .append(".buildUrl(this.getHttpUrl(), ")
-        .append(ExchangeApiGenUtil.generateSubstitutionInstructionDeclaration(
+        .append(ExchangeJavaGenUtil.generateSubstitutionInstructionDeclaration(
             restApi.getUrl(), 
             exchangeDescriptor, 
             exchangeApiDescriptor, 

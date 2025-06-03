@@ -10,7 +10,7 @@ apis:
        properties:
         - name: eventType
           description: Type of event, e.g. one of ${constants.updateEmployeeTypeAdd}, ${constants.updateEmployeeTypeUpdate} or ${constants.updateEmployeeTypeDelete}
-          sampleValue: ADD
+          sampleValue: ${constants.updateEmployeeTypeUpdate}
         - name: employee
           objectName: Employee
           description: Employee that was updated

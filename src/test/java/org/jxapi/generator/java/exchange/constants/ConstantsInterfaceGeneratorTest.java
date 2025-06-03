@@ -8,6 +8,8 @@ import org.junit.Test;
 
 import org.jxapi.exchange.descriptor.Constant;
 import org.jxapi.exchange.descriptor.Type;
+import org.jxapi.generator.java.JavaCodeGenUtil;
+import org.jxapi.util.EncodingUtil;
 import org.jxapi.util.PlaceHolderResolver;
 
 /**
@@ -33,7 +35,7 @@ public class ConstantsInterfaceGeneratorTest {
   @Test
   public void testGenerateInterfaceMultipleConstants() {
     Constant c01 = Constant.create("myString", Type.STRING, null, "foo");
-    Constant c02 = Constant.create("myInt", Type.INT, "A test Integer constant, for instance '${testMyIntValue}'", 12);
+    Constant c02 = Constant.create("myInt", Type.INT, "A test Integer constant, for instance '${testMyIntValue}'", "${testMyIntValue}");
     Constant c03 = Constant.create("myIntWithValueAsString", Type.INT, "A test Integer constant with value specified as String", "123");
     Constant c04 = Constant.create("myBool", Type.BOOLEAN, "A test Boolean constant", true);
     Constant c05 = Constant.create("myBoolWithValueAsString", Type.INT, "A test Boolean constant with value specified as String", "true");
@@ -41,11 +43,16 @@ public class ConstantsInterfaceGeneratorTest {
     Constant c07 = Constant.create("myLongWithValueAsString", Type.LONG, "A test Long constant with value specified as String", "12345678901234567");
     Constant c08 = Constant.create("myTimestamp", Type.LONG, "A test Timestamp constant using 'now()' placeholder", "now()");
     Constant c09 = Constant.create("myBigDecimal", Type.BIGDECIMAL, "A test BigDecimal constant", 1.2345);
-    Constant c10 = Constant.create("myBigDecimalWithValueAsString", Type.BIGDECIMAL, "A test BigDecimal constant with value specified as String", "5.4321"); 
+    Constant c10 = Constant.create("myBigDecimalWithValueAsString", Type.BIGDECIMAL, "A test BigDecimal constant with value specified as String", "5.4321");
     
-    PlaceHolderResolver placeholderResolver = PlaceHolderResolver.create(Map.of("testMyIntValue", "123"));
+    PlaceHolderResolver docPlaceholderResolver = PlaceHolderResolver.create(Map.of("testMyIntValue", "123"));
+    PlaceHolderResolver valuesPlaceHolderResolver = s -> {
+      s = EncodingUtil.substituteArguments(s, Map.of("testMyIntValue", "1234"));
+      return JavaCodeGenUtil.getQuotedString(s);
+    };
     
-    ConstantsClassGenerator gen = new ConstantsClassGenerator("com.x.y.MyConstants", List.of(c01, c02, c03, c04, c05, c06, c07, c08, c09, c10), placeholderResolver);
+    ConstantsClassGenerator gen = new ConstantsClassGenerator("com.x.y.MyConstants", List.of(c01, c02, c03, c04, c05, c06, c07, c08, c09, c10), docPlaceholderResolver);
+    gen.setConstantValuePlaceHolderResolver(valuesPlaceHolderResolver);
     Assert.assertEquals("package com.x.y;\n"
         + "\n"
         + "import java.math.BigDecimal;\n"
@@ -63,22 +70,22 @@ public class ConstantsInterfaceGeneratorTest {
         + "  /**\n"
         + "   * A test Integer constant, for instance '123'\n"
         + "   */\n"
-        + "  public static final Integer MY_INT = Integer.valueOf(12);\n"
+        + "  public static final Integer MY_INT = Integer.valueOf(\"1234\");\n"
         + "  \n"
         + "  /**\n"
         + "   * A test Integer constant with value specified as String\n"
         + "   */\n"
-        + "  public static final Integer MY_INT_WITH_VALUE_AS_STRING = Integer.valueOf(123);\n"
+        + "  public static final Integer MY_INT_WITH_VALUE_AS_STRING = Integer.valueOf(\"123\");\n"
         + "  \n"
         + "  /**\n"
         + "   * A test Boolean constant\n"
         + "   */\n"
-        + "  public static final Boolean MY_BOOL = Boolean.valueOf(true);\n"
+        + "  public static final Boolean MY_BOOL = Boolean.valueOf(\"true\");\n"
         + "  \n"
         + "  /**\n"
         + "   * A test Boolean constant with value specified as String\n"
         + "   */\n"
-        + "  public static final Integer MY_BOOL_WITH_VALUE_AS_STRING = Integer.valueOf(true);\n"
+        + "  public static final Integer MY_BOOL_WITH_VALUE_AS_STRING = Integer.valueOf(\"true\");\n"
         + "  \n"
         + "  /**\n"
         + "   * A test Long constant\n"

@@ -35,7 +35,8 @@ public class ConstantsGenerationUtil {
    */
   public static String generateConstantDeclaration(Constant constant, 
                                                    Imports imports, 
-                                                   PlaceHolderResolver docPlaceHolderResolver) {
+                                                   PlaceHolderResolver docPlaceHolderResolver,
+                                                   PlaceHolderResolver sampleValuePlaceHolderResolver) {
     StringBuilder code = new StringBuilder();
     Type type = constant.getType();
     if (!type.getCanonicalType().isPrimitive) {
@@ -43,9 +44,15 @@ public class ConstantsGenerationUtil {
     }
     String className = ExchangeJavaGenUtil.getClassNameForType(type, imports, null);
     String varName = JavaCodeGenUtil.getStaticVariableName(constant.getName());
-    String value = ExchangeJavaGenUtil.getPrimitiveTypeFieldSampleValueDeclaration(type, constant.getValue(), imports);
-    String description = Optional.ofNullable(docPlaceHolderResolver).orElse(PlaceHolderResolver.NO_OP)
-                           .resolve(constant.getDescription());
+    String value = ExchangeJavaGenUtil.getPrimitiveTypeFieldSampleValueDeclaration(
+                    type, 
+                    constant.
+                    getValue(), 
+                    imports, 
+                    sampleValuePlaceHolderResolver);
+    String description = Optional.ofNullable(docPlaceHolderResolver)
+                                 .orElse(PlaceHolderResolver.NO_OP)
+                                 .resolve(constant.getDescription());
     if (description != null) {
       code.append(JavaCodeGenUtil.generateJavaDoc(description))
         .append("\n");

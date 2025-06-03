@@ -53,7 +53,8 @@ public class DemoExchangeMarketDataTickersDemo {
    */
   public static void main(String[] args) {
     try {
-      execute(DemoUtil.loadDemoExchangeProperties(DemoExchangeExchange.ID),
+      Properties properties = DemoUtil.loadDemoExchangeProperties(DemoExchangeExchange.ID);
+      execute(properties,
               DemoUtil::logRestApiEvent);
       System.exit(0);
     }

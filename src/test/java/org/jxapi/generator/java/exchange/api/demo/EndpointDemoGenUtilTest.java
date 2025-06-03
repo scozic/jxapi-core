@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 import java.util.function.BinaryOperator;
 import java.util.stream.Collectors;
 
@@ -17,6 +18,8 @@ import org.jxapi.exchange.descriptor.RestEndpointDescriptor;
 import org.jxapi.exchange.descriptor.Type;
 import org.jxapi.exchange.descriptor.WebsocketEndpointDescriptor;
 import org.jxapi.generator.java.Imports;
+import org.jxapi.generator.java.JavaCodeGenUtil;
+import org.jxapi.generator.java.exchange.api.ExchangeApiGenUtil;
 import org.jxapi.netutils.deserialization.json.field.BigDecimalJsonFieldDeserializer;
 import org.jxapi.netutils.deserialization.json.field.BooleanJsonFieldDeserializer;
 import org.jxapi.netutils.deserialization.json.field.IntegerJsonFieldDeserializer;
@@ -24,6 +27,7 @@ import org.jxapi.netutils.deserialization.json.field.ListJsonFieldDeserializer;
 import org.jxapi.netutils.deserialization.json.field.LongJsonFieldDeserializer;
 import org.jxapi.netutils.deserialization.json.field.MapJsonFieldDeserializer;
 import org.jxapi.netutils.deserialization.json.field.StringJsonFieldDeserializer;
+import org.jxapi.util.PlaceHolderResolver;
 
 /**
  * Unit test for {@link EndpointDemoGenUtil}
@@ -34,83 +38,120 @@ public class EndpointDemoGenUtilTest {
   public void testGenerateEndpointParameterCreationMethodPrimitiveStringParameter() {
     Field param = Field.builder().type(Type.STRING).name("myStringParam").sampleValue("Hello World").build();
     Imports imports = new Imports();
-    String method = EndpointDemoGenUtil.generateFieldCreationMethod(param, null, imports);
+    String method = EndpointDemoGenUtil.generateFieldCreationMethod(param, null, ExchangeApiGenUtil.DEFAULT_REQUEST_ARG_NAME, imports, null);
     Assert.assertEquals(
-        "public static String createMyStringParam() {\n"
+        "/**\n"
+        + " * Creates a sample value for the myStringParam field of type String using sample value(s) defined in the field descriptor.\n"
+        + " * \n"
+        + " * @param properties the configuration properties to use for the sample value generation.\n"
+        + " */\n"
+        + "public static String createMyStringParam(Properties properties) {\n"
         + "  return \"Hello World\";\n"
         + "}\n", method);
-    checkImports(imports);
+    checkImports(imports, Properties.class);
   }
   
   @Test
   public void testGenerateEndpointParameterCreationMethodPrimitiveStringParameterNullSampleValue() {
     Field param = Field.builder().type(Type.STRING).name("myStringParam").build();
     Imports imports = new Imports();
-    String method = EndpointDemoGenUtil.generateFieldCreationMethod(param, null, imports);
+    String method = EndpointDemoGenUtil.generateFieldCreationMethod(param, null, ExchangeApiGenUtil.DEFAULT_REQUEST_ARG_NAME, imports, null);
     Assert.assertEquals(
-        "public static String createMyStringParam() {\n"
+        "/**\n"
+        + " * Creates a sample value for the myStringParam field of type String using sample value(s) defined in the field descriptor.\n"
+        + " * \n"
+        + " * @param properties the configuration properties to use for the sample value generation.\n"
+        + " */\n"
+        + "public static String createMyStringParam(Properties properties) {\n"
         + "  return null;\n"
         + "}\n", method);
-    checkImports(imports);
+    checkImports(imports, Properties.class);
   }
   
   @Test
   public void testGenerateEndpointParameterCreationMethodPrimitiveIntegerParameter() {
     Field param = Field.builder().type(Type.INT).name("myIntParam").sampleValue(123).build();
     Imports imports = new Imports();
-    String method = EndpointDemoGenUtil.generateFieldCreationMethod(param, null, imports);
+    String method = EndpointDemoGenUtil.generateFieldCreationMethod(param, null, ExchangeApiGenUtil.DEFAULT_REQUEST_ARG_NAME, imports, null);
     Assert.assertEquals(
-        "public static Integer createMyIntParam() {\n"
-        + "  return Integer.valueOf(123);\n"
-        + "}\n", method);
+        "/**\n"
+        + " * Creates a sample value for the myIntParam field of type Integer using sample value(s) defined in the field descriptor.\n"
+        + " * \n"
+        + " * @param properties the configuration properties to use for the sample value generation.\n"
+        + " */\n"
+        + "public static Integer createMyIntParam(Properties properties) {\n"
+        + "  return Integer.valueOf(\"123\");\n"
+        + "}\n"
+        + "", method);
   }
   
   @Test
   public void  testGenerateEndpointParameterCreationMethodPrimitiveLongParameter() {
     Field param = Field.builder().type(Type.LONG).name("myLongParam").sampleValue(123L).build();
     Imports imports = new Imports();
-    String method = EndpointDemoGenUtil.generateFieldCreationMethod(param, null, imports);
+    String method = EndpointDemoGenUtil.generateFieldCreationMethod(param, null, ExchangeApiGenUtil.DEFAULT_REQUEST_ARG_NAME, imports, null);
     Assert.assertEquals(
-        "public static Long createMyLongParam() {\n"
+        "/**\n"
+        + " * Creates a sample value for the myLongParam field of type Long using sample value(s) defined in the field descriptor.\n"
+        + " * \n"
+        + " * @param properties the configuration properties to use for the sample value generation.\n"
+        + " */\n"
+        + "public static Long createMyLongParam(Properties properties) {\n"
         + "  return Long.valueOf(\"123\");\n"
         + "}\n", method);
-    checkImports(imports);
+    checkImports(imports, Properties.class);
   }
   
   @Test
   public void  testGenerateEndpointParameterCreationMethodPrimitiveTimestampParameterSpecialValueNow() {
     Field param = Field.builder().type(Type.LONG).name("myLongParam").sampleValue("now()").build();
     Imports imports = new Imports();
-    String method = EndpointDemoGenUtil.generateFieldCreationMethod(param, null, imports);
+    String method = EndpointDemoGenUtil.generateFieldCreationMethod(param, null, ExchangeApiGenUtil.DEFAULT_REQUEST_ARG_NAME, imports, null);
     Assert.assertEquals(
-        "public static Long createMyLongParam() {\n"
+        "/**\n"
+        + " * Creates a sample value for the myLongParam field of type Long using sample value(s) defined in the field descriptor.\n"
+        + " * \n"
+        + " * @param properties the configuration properties to use for the sample value generation.\n"
+        + " */\n"
+        + "public static Long createMyLongParam(Properties properties) {\n"
         + "  return Long.valueOf(System.currentTimeMillis());\n"
-        + "}\n", method);
-    checkImports(imports);
+        + "}\n"
+        + "", method);
+    checkImports(imports, Properties.class);
   }
   
   @Test
   public void  testGenerateEndpointParameterCreationMethodPrimitiveBigDecimalParameter() {
     Field param = Field.builder().type(Type.BIGDECIMAL).name("myBigDecimalParam").sampleValue("123.45").build();
     Imports imports = new Imports();
-    String method = EndpointDemoGenUtil.generateFieldCreationMethod(param, null, imports);
+    String method = EndpointDemoGenUtil.generateFieldCreationMethod(param, null, ExchangeApiGenUtil.DEFAULT_REQUEST_ARG_NAME, imports, null);
     Assert.assertEquals(
-        "public static BigDecimal createMyBigDecimalParam() {\n"
+        "/**\n"
+        + " * Creates a sample value for the myBigDecimalParam field of type BigDecimal using sample value(s) defined in the field descriptor.\n"
+        + " * \n"
+        + " * @param properties the configuration properties to use for the sample value generation.\n"
+        + " */\n"
+        + "public static BigDecimal createMyBigDecimalParam(Properties properties) {\n"
         + "  return new BigDecimal(\"123.45\");\n"
         + "}\n", method);
-    checkImports(imports, BigDecimal.class);
+    checkImports(imports, BigDecimal.class, Properties.class);
   }
   
   @Test
   public void  testGenerateEndpointParameterCreationMethodPrimitiveBooleanParameter() {
     Field param = Field.builder().type(Type.BOOLEAN).name("myBooleanParam").sampleValue(true).build();
     Imports imports = new Imports();
-    String method = EndpointDemoGenUtil.generateFieldCreationMethod(param, null, imports);
+    String method = EndpointDemoGenUtil.generateFieldCreationMethod(param, null, ExchangeApiGenUtil.DEFAULT_REQUEST_ARG_NAME, imports, null);
     Assert.assertEquals(
-        "public static Boolean createMyBooleanParam() {\n"
-        + "  return Boolean.valueOf(true);\n"
+        "/**\n"
+        + " * Creates a sample value for the myBooleanParam field of type Boolean using sample value(s) defined in the field descriptor.\n"
+        + " * \n"
+        + " * @param properties the configuration properties to use for the sample value generation.\n"
+        + " */\n"
+        + "public static Boolean createMyBooleanParam(Properties properties) {\n"
+        + "  return Boolean.valueOf(\"true\");\n"
         + "}\n", method);
-    checkImports(imports);
+    checkImports(imports, Properties.class);
   }
 
   @Test
@@ -129,18 +170,24 @@ public class EndpointDemoGenUtilTest {
                
     param.setSampleValue(123);
     Imports imports = new Imports();
-    String method = EndpointDemoGenUtil.generateFieldCreationMethod(param, "MyRequest", imports);
+    String method = EndpointDemoGenUtil.generateFieldCreationMethod(param, "MyRequest", ExchangeApiGenUtil.DEFAULT_REQUEST_ARG_NAME, imports, null);
     Assert.assertEquals(
-        "public static MyRequest createMyObjParam() {\n"
+        "/**\n"
+        + " * Creates a sample value for the myObjParam field of type MyRequest using sample value(s) defined in the field descriptor.\n"
+        + " * \n"
+        + " * @param properties the configuration properties to use for the sample value generation.\n"
+        + " */\n"
+        + "public static MyRequest createMyObjParam(Properties properties) {\n"
         + "  MyRequest request = new MyRequest();\n"
-        + "  request.setFoo(Integer.valueOf(123));\n"
+        + "  request.setFoo(Integer.valueOf(\"123\"));\n"
         + "  request.setHello(\"Hello World\");\n"
         + "  request.setALong(Long.valueOf(\"9876543210\"));\n"
         + "  request.setBDecimal(new BigDecimal(\"123.45\"));\n"
-        + "  request.setCBool(Boolean.valueOf(true));\n"
+        + "  request.setCBool(Boolean.valueOf(\"true\"));\n"
+        + "  request.setTheVoidStr(null);\n"
         + "  return request;\n"
         + "}\n", method);
-    checkImports(imports, BigDecimal.class);
+    checkImports(imports, BigDecimal.class, Properties.class);
   }
   
   @Test
@@ -148,7 +195,7 @@ public class EndpointDemoGenUtilTest {
     Field param = Field.builder()
                   .name("myObjParam")
                   .property(Field.builder().type(Type.INT).name("foo").sampleValue(123).build())
-                  .property(Field.builder().type(Type.STRING).name("hello").sampleValue("Hello World").build())
+                  .property(Field.builder().type(Type.STRING).name("hello").sampleValue("${helloMessage}").build())
                   .property(Field.builder().type("OBJECT_LIST").name("bar")
                             .property(Field.builder().type(Type.STRING).name("id").sampleValue("id#0").build())
                             .property(Field.builder().type(Type.BOOLEAN).name("enabled").sampleValue(true).build())
@@ -161,15 +208,28 @@ public class EndpointDemoGenUtilTest {
     
     param.setSampleValue(123);
     Imports imports = new Imports();
-    String method = EndpointDemoGenUtil.generateFieldCreationMethod(param, "MyRequest", imports);
+    
+    PlaceHolderResolver resolver = s -> {
+      if ("${helloMessage}".equals(s)) {
+        s = "Hello World!";
+      }
+      return JavaCodeGenUtil.getQuotedString(s);
+    };
+    String method = EndpointDemoGenUtil.generateFieldCreationMethod(param, "MyRequest", ExchangeApiGenUtil.DEFAULT_REQUEST_ARG_NAME, imports, resolver);
     Assert.assertEquals(
-        "public static MyRequest createMyObjParam() {\n"
+        "/**\n"
+        + " * Creates a sample value for the myObjParam field of type MyRequest using sample value(s) defined in the field descriptor.\n"
+        + " * \n"
+        + " * @param properties the configuration properties to use for the sample value generation.\n"
+        + " */\n"
+        + "public static MyRequest createMyObjParam(Properties properties) {\n"
         + "  MyRequest request = new MyRequest();\n"
-        + "  request.setFoo(Integer.valueOf(123));\n"
-        + "  request.setHello(\"Hello World\");\n"
+        + "  request.setFoo(Integer.valueOf(\"123\"));\n"
+        + "  request.setHello(\"Hello World!\");\n"
         + "  MyRequestBar request_barItem = new MyRequestBar();\n"
         + "  request_barItem.setId(\"id#0\");\n"
-        + "  request_barItem.setEnabled(Boolean.valueOf(true));\n"
+        + "  request_barItem.setEnabled(Boolean.valueOf(\"true\"));\n"
+        + "  request_barItem.setTime(null);\n"
         + "  request_barItem.setBestBids(new MapJsonFieldDeserializer<>(new ListJsonFieldDeserializer<>(BigDecimalJsonFieldDeserializer.getInstance())).deserialize(\"{\\\"BTC_USDT\\\": [\\\"69268.61\\\", \\\"69268.62\\\"], \\\"ETH_USDT\\\":[\\\"3427.98\\\", \\\"3427.90\\\"]}\"));\n"
         + "  request.setBar(List.of(request_barItem));\n"
         + "  return request;\n"
@@ -177,6 +237,7 @@ public class EndpointDemoGenUtilTest {
     
     checkImports(imports, 
          List.class,
+         Properties.class,
          BigDecimalJsonFieldDeserializer.class,
          ListJsonFieldDeserializer.class,
          MapJsonFieldDeserializer.class );
@@ -190,13 +251,20 @@ public class EndpointDemoGenUtilTest {
                .sampleValue(List.of(1,3,5,7))
                .build();
     Imports imports = new Imports();
-    String method = EndpointDemoGenUtil.generateFieldCreationMethod(param, null, imports);
+    String method = EndpointDemoGenUtil.generateFieldCreationMethod(param, null, ExchangeApiGenUtil.DEFAULT_REQUEST_ARG_NAME, imports, null);
     Assert.assertEquals(
-        "public static List<Integer> createMyIntListParam() {\n"
+        "/**\n"
+        + " * Creates a sample value for the myIntListParam field of type List<Integer> using sample value(s) defined in the field descriptor.\n"
+        + " * \n"
+        + " * @param properties the configuration properties to use for the sample value generation.\n"
+        + " */\n"
+        + "public static List<Integer> createMyIntListParam(Properties properties) {\n"
         + "  return new ListJsonFieldDeserializer<>(IntegerJsonFieldDeserializer.getInstance()).deserialize(\"[1, 3, 5, 7]\");\n"
-        + "}\n", method);
+        + "}\n"
+        + "", method);
     checkImports(imports,
            List.class,
+           Properties.class,
            IntegerJsonFieldDeserializer.class, 
            ListJsonFieldDeserializer.class);
   }
@@ -209,13 +277,19 @@ public class EndpointDemoGenUtilTest {
                .sampleValue("[\"BTC\",\"ETH\"]")
                .build();
     Imports imports = new Imports();
-    String method = EndpointDemoGenUtil.generateFieldCreationMethod(param, null, imports);
+    String method = EndpointDemoGenUtil.generateFieldCreationMethod(param, null, ExchangeApiGenUtil.DEFAULT_REQUEST_ARG_NAME, imports, null);
     Assert.assertEquals(
-        "public static List<String> createMyStringListParam() {\n"
+        "/**\n"
+        + " * Creates a sample value for the myStringListParam field of type List<String> using sample value(s) defined in the field descriptor.\n"
+        + " * \n"
+        + " * @param properties the configuration properties to use for the sample value generation.\n"
+        + " */\n"
+        + "public static List<String> createMyStringListParam(Properties properties) {\n"
         + "  return new ListJsonFieldDeserializer<>(StringJsonFieldDeserializer.getInstance()).deserialize(\"[\\\"BTC\\\",\\\"ETH\\\"]\");\n"
         + "}\n", method);
     checkImports(imports, 
            List.class, 
+           Properties.class,
            ListJsonFieldDeserializer.class, 
            StringJsonFieldDeserializer.class);
   }
@@ -228,13 +302,19 @@ public class EndpointDemoGenUtilTest {
                .sampleValue("[1234567890,9876543210]")
                .build();
     Imports imports = new Imports();
-    String method = EndpointDemoGenUtil.generateFieldCreationMethod(param, null, imports);
+    String method = EndpointDemoGenUtil.generateFieldCreationMethod(param, null, ExchangeApiGenUtil.DEFAULT_REQUEST_ARG_NAME, imports, null);
     Assert.assertEquals(
-        "public static List<Long> createMyLongListParam() {\n"
+        "/**\n"
+        + " * Creates a sample value for the myLongListParam field of type List<Long> using sample value(s) defined in the field descriptor.\n"
+        + " * \n"
+        + " * @param properties the configuration properties to use for the sample value generation.\n"
+        + " */\n"
+        + "public static List<Long> createMyLongListParam(Properties properties) {\n"
         + "  return new ListJsonFieldDeserializer<>(LongJsonFieldDeserializer.getInstance()).deserialize(\"[1234567890,9876543210]\");\n"
         + "}\n", method);
     checkImports(imports, 
             List.class, 
+            Properties.class,
             ListJsonFieldDeserializer.class, 
             LongJsonFieldDeserializer.class);
   }
@@ -247,14 +327,20 @@ public class EndpointDemoGenUtilTest {
                .sampleValue("[1234.56789,9876.54321]")
                .build();
     Imports imports = new Imports();
-    String method = EndpointDemoGenUtil.generateFieldCreationMethod(param, null, imports);
+    String method = EndpointDemoGenUtil.generateFieldCreationMethod(param, null, ExchangeApiGenUtil.DEFAULT_REQUEST_ARG_NAME, imports, null);
     Assert.assertEquals(
-        "public static List<BigDecimal> createMyBigDecimalListParam() {\n"
+        "/**\n"
+        + " * Creates a sample value for the myBigDecimalListParam field of type List<BigDecimal> using sample value(s) defined in the field descriptor.\n"
+        + " * \n"
+        + " * @param properties the configuration properties to use for the sample value generation.\n"
+        + " */\n"
+        + "public static List<BigDecimal> createMyBigDecimalListParam(Properties properties) {\n"
         + "  return new ListJsonFieldDeserializer<>(BigDecimalJsonFieldDeserializer.getInstance()).deserialize(\"[1234.56789,9876.54321]\");\n"
         + "}\n", method);
     checkImports(imports,
            BigDecimal.class,
            List.class,
+           Properties.class,
            BigDecimalJsonFieldDeserializer.class,
            ListJsonFieldDeserializer.class);
   }
@@ -267,13 +353,19 @@ public class EndpointDemoGenUtilTest {
            .sampleValue("[true, false]")
            .build();
     Imports imports = new Imports();
-    String method = EndpointDemoGenUtil.generateFieldCreationMethod(param, null, imports);
+    String method = EndpointDemoGenUtil.generateFieldCreationMethod(param, null, ExchangeApiGenUtil.DEFAULT_REQUEST_ARG_NAME, imports, null);
     Assert.assertEquals(
-        "public static List<Boolean> createMyBooleanListParam() {\n"
+        "/**\n"
+        + " * Creates a sample value for the myBooleanListParam field of type List<Boolean> using sample value(s) defined in the field descriptor.\n"
+        + " * \n"
+        + " * @param properties the configuration properties to use for the sample value generation.\n"
+        + " */\n"
+        + "public static List<Boolean> createMyBooleanListParam(Properties properties) {\n"
         + "  return new ListJsonFieldDeserializer<>(BooleanJsonFieldDeserializer.getInstance()).deserialize(\"[true, false]\");\n"
         + "}\n", method);
     checkImports(imports, 
-           List.class, 
+           List.class,
+           Properties.class,
            BooleanJsonFieldDeserializer.class, 
            ListJsonFieldDeserializer.class);
   }
@@ -295,15 +387,20 @@ public class EndpointDemoGenUtilTest {
                            .build())
                .build();
     Imports imports = new Imports();
-    String method = EndpointDemoGenUtil.generateFieldCreationMethod(param, "MyRequest", imports);
+    String method = EndpointDemoGenUtil.generateFieldCreationMethod(param, "MyRequest", ExchangeApiGenUtil.DEFAULT_REQUEST_ARG_NAME, imports, null);
     Assert.assertEquals(
-        "public static List<MyRequest> createMyObjListParam() {\n"
+        "/**\n"
+        + " * Creates a sample value for the myObjListParam field of type List<MyRequest> using sample value(s) defined in the field descriptor.\n"
+        + " * \n"
+        + " * @param properties the configuration properties to use for the sample value generation.\n"
+        + " */\n"
+        + "public static List<MyRequest> createMyObjListParam(Properties properties) {\n"
         + "  MyRequest requestItem = new MyRequest();\n"
-        + "  requestItem.setFoo(Integer.valueOf(123));\n"
+        + "  requestItem.setFoo(Integer.valueOf(\"123\"));\n"
         + "  requestItem.setHello(\"Hello World\");\n"
         + "  return List.of(requestItem);\n"
         + "}\n", method);
-    checkImports(imports, List.class);
+    checkImports(imports, List.class, Properties.class);
   }
   
   @Test
@@ -325,15 +422,20 @@ public class EndpointDemoGenUtilTest {
                .build();
     
     Imports imports = new Imports();
-    String method = EndpointDemoGenUtil.generateFieldCreationMethod(param, "MyRequest", imports);
+    String method = EndpointDemoGenUtil.generateFieldCreationMethod(param, "MyRequest", ExchangeApiGenUtil.DEFAULT_REQUEST_ARG_NAME, imports, null);
     Assert.assertEquals(
-        "public static Map<String, MyRequest> createMyObjMapParam() {\n"
+        "/**\n"
+        + " * Creates a sample value for the myObjMapParam field of type Map<String, MyRequest> using sample value(s) defined in the field descriptor.\n"
+        + " * \n"
+        + " * @param properties the configuration properties to use for the sample value generation.\n"
+        + " */\n"
+        + "public static Map<String, MyRequest> createMyObjMapParam(Properties properties) {\n"
         + "  MyRequest requestItem = new MyRequest();\n"
-        + "  requestItem.setFoo(Integer.valueOf(123));\n"
+        + "  requestItem.setFoo(Integer.valueOf(\"123\"));\n"
         + "  requestItem.setHello(\"Hello World\");\n"
         + "  return Map.of(\"myKey0\", requestItem);\n"
         + "}\n", method);
-    checkImports(imports, Map.class);
+    checkImports(imports, Map.class, Properties.class);
   }
   
   @Test
@@ -355,12 +457,17 @@ public class EndpointDemoGenUtilTest {
                .build();
     param.setSampleMapKeyValue(null);
     Imports imports = new Imports();
-    String method = EndpointDemoGenUtil.generateFieldCreationMethod(param, "MyRequest", imports);
+    String method = EndpointDemoGenUtil.generateFieldCreationMethod(param, "MyRequest", ExchangeApiGenUtil.DEFAULT_REQUEST_ARG_NAME, imports, null);
     Assert.assertEquals(
-        "public static Map<String, MyRequest> createMyObjMapParam() {\n"
+        "/**\n"
+        + " * Creates a sample value for the myObjMapParam field of type Map<String, MyRequest> using sample value(s) defined in the field descriptor.\n"
+        + " * \n"
+        + " * @param properties the configuration properties to use for the sample value generation.\n"
+        + " */\n"
+        + "public static Map<String, MyRequest> createMyObjMapParam(Properties properties) {\n"
         + "  return null;\n"
         + "}\n", method);
-    checkImports(imports, Map.class);
+    checkImports(imports, Map.class, Properties.class);
   }
   
   @Test
@@ -381,12 +488,17 @@ public class EndpointDemoGenUtilTest {
                .sampleMapKeyValues(List.of())
                .build();
     Imports imports = new Imports();
-    String method = EndpointDemoGenUtil.generateFieldCreationMethod(param, "MyRequest", imports);
+    String method = EndpointDemoGenUtil.generateFieldCreationMethod(param, "MyRequest", ExchangeApiGenUtil.DEFAULT_REQUEST_ARG_NAME, imports, null);
     Assert.assertEquals(
-        "public static Map<String, MyRequest> createMyObjMapParam() {\n"
+        "/**\n"
+        + " * Creates a sample value for the myObjMapParam field of type Map<String, MyRequest> using sample value(s) defined in the field descriptor.\n"
+        + " * \n"
+        + " * @param properties the configuration properties to use for the sample value generation.\n"
+        + " */\n"
+        + "public static Map<String, MyRequest> createMyObjMapParam(Properties properties) {\n"
         + "  return null;\n"
         + "}\n", method);
-    checkImports(imports, Map.class);
+    checkImports(imports, Map.class, Properties.class);
   }
   
   @Test
@@ -408,28 +520,39 @@ public class EndpointDemoGenUtilTest {
                .build();
     
     Imports imports = new Imports();
-    String method = EndpointDemoGenUtil.generateFieldCreationMethod(param, "MyRequest", imports);
+    String method = EndpointDemoGenUtil.generateFieldCreationMethod(param, "MyRequest", ExchangeApiGenUtil.DEFAULT_REQUEST_ARG_NAME, imports, null);
     Assert.assertEquals(
-        "public static Map<String, List<Map<String, MyRequest>>> createMyObjMapListMapParam() {\n"
+        "/**\n"
+        + " * Creates a sample value for the myObjMapListMapParam field of type Map<String, List<Map<String, MyRequest>>> using sample value(s) defined in the field descriptor.\n"
+        + " * \n"
+        + " * @param properties the configuration properties to use for the sample value generation.\n"
+        + " */\n"
+        + "public static Map<String, List<Map<String, MyRequest>>> createMyObjMapListMapParam(Properties properties) {\n"
         + "  MyRequest requestItem = new MyRequest();\n"
-        + "  requestItem.setFoo(Integer.valueOf(123));\n"
+        + "  requestItem.setFoo(Integer.valueOf(\"123\"));\n"
         + "  requestItem.setHello(\"Hello World\");\n"
         + "  return Map.of(\"m1Key\", List.of(Map.of(\"m2Key\", requestItem)));\n"
         + "}\n", method);
-    checkImports(imports, List.class, Map.class);
+    checkImports(imports, List.class, Map.class, Properties.class);
   }
   
   @Test
   public void testGenerateEndpointParameterCreationMethodStringValuesMap() {
     Field param = Field.builder().type("STRING_MAP").name("adresses").sampleValue("{\"Jamie\": \"London\", \"Amina\": \"Djibouti\"}").build();
     Imports imports = new Imports();
-    String method = EndpointDemoGenUtil.generateFieldCreationMethod(param, "MyRequest", imports);
+    String method = EndpointDemoGenUtil.generateFieldCreationMethod(param, "MyRequest", ExchangeApiGenUtil.DEFAULT_REQUEST_ARG_NAME, imports, null);
     Assert.assertEquals(
-        "public static Map<String, String> createAdresses() {\n"
+        "/**\n"
+        + " * Creates a sample value for the adresses field of type Map<String, String> using sample value(s) defined in the field descriptor.\n"
+        + " * \n"
+        + " * @param properties the configuration properties to use for the sample value generation.\n"
+        + " */\n"
+        + "public static Map<String, String> createAdresses(Properties properties) {\n"
         + "  return new MapJsonFieldDeserializer<>(StringJsonFieldDeserializer.getInstance()).deserialize(\"{\\\"Jamie\\\": \\\"London\\\", \\\"Amina\\\": \\\"Djibouti\\\"}\");\n"
         + "}\n", method);
     checkImports(imports, 
            Map.class, 
+           Properties.class,
            MapJsonFieldDeserializer.class, 
            StringJsonFieldDeserializer.class);
   }

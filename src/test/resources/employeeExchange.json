@@ -9,7 +9,8 @@
     "basePackage": "org.jxapi.exchanges.employee.gen",
     "properties": [
         {"name": "baseHttpUrl", "description": "Base URL for REST endpoints the Employee Exchange API"},
-        {"name": "baseWebsocketUrl", "description": "Base URL for websocket endpoints of the Employee Exchange API"}
+        {"name": "baseWebsocketUrl", "description": "Base URL for websocket endpoints of the Employee Exchange API"},
+        {"name": "demoEmployeeId", "description": "Used in demo snippets to set as value of Employee 'id' property", "defaultValue": 1}
     ],
     "apis": [
         {
@@ -34,15 +35,15 @@
                     "urlParameters": "/${id}",
                     "queryParams": false,
                     "request": {
-                        "name": "id", "type":"INT", "description": "Employee ID", "sampleValue": 1
+                        "name": "id", "type":"INT", "description": "Employee ID", "sampleValue": "${config.demoEmployeeId}"
                     },
                     "response": {
                         "objectName": "Employee",
                         "properties": [
-                            {"name": "id", "type": "INT", "description": "Employee ID", "sampleValue": 1},
+                            {"name": "id", "type": "INT", "description": "Employee ID", "sampleValue": "${config.demoEmployeeId}"},
                             {"name": "firstName", "description": "Employee first name", "sampleValue": "John"},
                             {"name": "lastName", "description": "Employee last name", "sampleValue": "Doe"},
-                            {"name": "profile", "description": "Employee profile. Can be ${constants.profileRegular} or ${constants.profileAdmin}", "sampleValue": "REGULAR"}
+                            {"name": "profile", "description": "Employee profile. Can be ${constants.profileRegular} or ${constants.profileAdmin}", "sampleValue": "${constants.profileRegular}"}
                         ]
                     }
                 },
@@ -93,7 +94,7 @@
                     "request": {
                         "description": "Employee ID",
                         "name": "id",
-                        "sampleValue": 1,
+                        "sampleValue": "${config.demoEmployeeId}",
                         "type": "INT"
                     },
                     "url": "/employee",
@@ -107,7 +108,7 @@
                     "message": {
                         "description": "Employee update message",
                         "properties": [
-                            {"name": "eventType", "description": "Type of event, e.g. one of ${constants.updateEmployeeTypeAdd}, ${constants.updateEmployeeTypeUpdate} or ${constants.updateEmployeeTypeDelete}", "sampleValue": "ADD"},
+                            {"name": "eventType", "description": "Type of event, e.g. one of ${constants.updateEmployeeTypeAdd}, ${constants.updateEmployeeTypeUpdate} or ${constants.updateEmployeeTypeDelete}", "sampleValue": "${constants.updateEmployeeTypeUpdate}"},
                             {"name": "employee", "description": "Employee that was updated", "objectName": "Employee", "sampleValue": "John"}
                         ]
                     },

@@ -1,6 +1,7 @@
 package org.jxapi.generator.java.exchange;
 
 import java.math.BigDecimal;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -13,6 +14,7 @@ import org.jxapi.exchange.descriptor.ExchangeDescriptor;
 import org.jxapi.exchange.descriptor.Field;
 import org.jxapi.exchange.descriptor.Type;
 import org.jxapi.generator.java.Imports;
+import org.jxapi.generator.java.JavaCodeGenUtil;
 import org.jxapi.netutils.deserialization.json.field.BigDecimalJsonFieldDeserializer;
 import org.jxapi.netutils.deserialization.json.field.BooleanJsonFieldDeserializer;
 import org.jxapi.netutils.deserialization.json.field.IntegerJsonFieldDeserializer;
@@ -20,6 +22,8 @@ import org.jxapi.netutils.deserialization.json.field.ListJsonFieldDeserializer;
 import org.jxapi.netutils.deserialization.json.field.LongJsonFieldDeserializer;
 import org.jxapi.netutils.deserialization.json.field.MapJsonFieldDeserializer;
 import org.jxapi.netutils.deserialization.json.field.StringJsonFieldDeserializer;
+import org.jxapi.util.EncodingUtil;
+import org.jxapi.util.PlaceHolderResolver;
 import org.jxapi.util.PropertiesUtil;
 
 /**
@@ -238,14 +242,14 @@ public class ExchangeJavaGenUtilTest {
   @Test 
   public void testGetPrimitiveTypeFieldSampleValueDeclaration_NullSampleValue() {
     Imports imports = new Imports();
-    Assert.assertEquals(null, ExchangeJavaGenUtil.getPrimitiveTypeFieldSampleValueDeclaration(Type.INT, null, imports));
+    Assert.assertEquals("null", ExchangeJavaGenUtil.getPrimitiveTypeFieldSampleValueDeclaration(Type.INT, null, imports, null));
     Assert.assertEquals(0, imports.size());
   }
 
   @Test 
   public void testGetPrimitiveTypeFieldSampleValueDeclaration_BigDecimalSampleValue() {
     Imports imports = new Imports();
-    Assert.assertEquals("new BigDecimal(\"1.23\")", ExchangeJavaGenUtil.getPrimitiveTypeFieldSampleValueDeclaration(Type.BIGDECIMAL, "1.23", imports));
+    Assert.assertEquals("new BigDecimal(\"1.23\")", ExchangeJavaGenUtil.getPrimitiveTypeFieldSampleValueDeclaration(Type.BIGDECIMAL, "1.23", imports, null));
     Assert.assertEquals(1, imports.size());
     Assert.assertTrue(imports.contains(BigDecimal.class));
   }
@@ -253,42 +257,50 @@ public class ExchangeJavaGenUtilTest {
   @Test
   public void testGetPrimitiveTypeFieldSampleValueDeclaration_LongSampleValue() {
     Imports imports = new Imports();
-    Assert.assertEquals("Long.valueOf(\"123\")", ExchangeJavaGenUtil.getPrimitiveTypeFieldSampleValueDeclaration(Type.LONG, "123", imports));
+    Assert.assertEquals("Long.valueOf(\"123\")", ExchangeJavaGenUtil.getPrimitiveTypeFieldSampleValueDeclaration(Type.LONG, "123", imports, null));
     Assert.assertEquals(0, imports.size());
   }
 
   @Test
   public void testGetPrimitiveTypeFieldSampleValueDeclaration_LongpNowSampleValue() {
     Imports imports = new Imports();
-    Assert.assertEquals("Long.valueOf(System.currentTimeMillis())", ExchangeJavaGenUtil.getPrimitiveTypeFieldSampleValueDeclaration(Type.LONG, "now()", imports));
+    Assert.assertEquals("Long.valueOf(System.currentTimeMillis())", ExchangeJavaGenUtil.getPrimitiveTypeFieldSampleValueDeclaration(Type.LONG, "now()", imports, null));
     Assert.assertEquals(0, imports.size());
   }
 
   @Test
   public void testGetPrimitiveTypeFieldSampleValueDeclaration_StringSampleValue() {
     Imports imports = new Imports();
-    Assert.assertEquals("\"test\"", ExchangeJavaGenUtil.getPrimitiveTypeFieldSampleValueDeclaration(Type.STRING, "test", imports));
+    Assert.assertEquals("\"test\"", ExchangeJavaGenUtil.getPrimitiveTypeFieldSampleValueDeclaration(Type.STRING, "test", imports, null));
     Assert.assertEquals(0, imports.size());
   }
 
   @Test
   public void testGetPrimitiveTypeFieldSampleValueDeclaration_IntegersSampleValue() {
     Imports imports = new Imports();
-    Assert.assertEquals("Integer.valueOf(1)", ExchangeJavaGenUtil.getPrimitiveTypeFieldSampleValueDeclaration(Type.INT, "1", imports));
+    Assert.assertEquals("Integer.valueOf(\"1\")", ExchangeJavaGenUtil.getPrimitiveTypeFieldSampleValueDeclaration(Type.INT, 1, imports, null));
+    Assert.assertEquals(0, imports.size());
+  }
+  
+  @Test
+  public void testGetPrimitiveTypeFieldSampleValueDeclaration_IntegersSampleValueWithPlaceHolder() {
+    Imports imports = new Imports();
+    PlaceHolderResolver placeholderResolver = PlaceHolderResolver.create(Map.of("config.myInt1", "1234", "config.myInt2", "5678"));
+    Assert.assertEquals("Integer.valueOf(12345678)", ExchangeJavaGenUtil.getPrimitiveTypeFieldSampleValueDeclaration(Type.INT, "${config.myInt1}${config.myInt2}", imports, placeholderResolver));
     Assert.assertEquals(0, imports.size());
   }
 
   @Test
   public void testGetPrimitiveTypeFieldSampleValueDeclaration_BooleanSampleValue() {
     Imports imports = new Imports();
-    Assert.assertEquals("Boolean.valueOf(true)", ExchangeJavaGenUtil.getPrimitiveTypeFieldSampleValueDeclaration(Type.BOOLEAN, "true", imports));
+    Assert.assertEquals("Boolean.valueOf(\"true\")", ExchangeJavaGenUtil.getPrimitiveTypeFieldSampleValueDeclaration(Type.BOOLEAN, "true", imports, null));
     Assert.assertEquals(0, imports.size());
   }
 
   @Test
   public void testGetPrimitiveTypeFieldSampleValueDeclaration_NonPrimitiveType() {
     Imports imports = new Imports();
-    Assert.assertEquals("\"[1, 3, 5]\"", ExchangeJavaGenUtil.getPrimitiveTypeFieldSampleValueDeclaration(Type.fromTypeName("INT_LIST"), "[1, 3, 5]", imports));
+    Assert.assertEquals("\"[1, 3, 5]\"", ExchangeJavaGenUtil.getPrimitiveTypeFieldSampleValueDeclaration(Type.fromTypeName("INT_LIST"), "[1, 3, 5]", imports, null));
     Assert.assertEquals(0, imports.size());
   }
 
@@ -726,5 +738,53 @@ public class ExchangeJavaGenUtilTest {
   @Test(expected = IllegalArgumentException.class)
   public void testGetDescriptionReplacements_ApiGroupContext_InvalidApiGroupName() {
     ExchangeJavaGenUtil.getDescriptionReplacements(new ExchangeDescriptor(), "Foo");
+  }
+  
+  @Test
+  public void generateSubstitutionInstructionDeclaration_NoPlaceholder() {
+      Assert.assertEquals("\"foo\"", ExchangeJavaGenUtil.generateSubstitutionInstructionDeclaration("foo", null, null, null, null));
+  }
+  
+  @Test
+  public void generateSubstitutionInstructionDeclaration_NullTemplate() {
+    Assert.assertEquals(JavaCodeGenUtil.NULL, ExchangeJavaGenUtil.generateSubstitutionInstructionDeclaration(null, null, null, null, null));
+  }
+  
+  @Test
+  public void generateSubstitutionInstructionDeclaration() {
+    ExchangeDescriptor exchangeDescriptor = new ExchangeDescriptor();
+    exchangeDescriptor.setProperties(List.of(DefaultConfigProperty.create("stranger", Type.STRING, "Your name", "Bob")));
+    exchangeDescriptor.setId("MyExchange");
+    exchangeDescriptor.setBasePackage("com.x.gen");
+    Constant ownName = new Constant();
+    ownName.setName("ownName");
+    ownName.setType(Type.STRING);
+    ownName.setDescription("Narratory name");
+    ownName.setValue("John Doe");
+    exchangeDescriptor.setConstants(List.of(ownName));
+    
+    ExchangeApiDescriptor apiDescriptor = new ExchangeApiDescriptor();
+    apiDescriptor.setName("MyApi");
+    Constant birthYear = new Constant();
+    birthYear.setName("birthYear");
+    birthYear.setType(Type.INT);
+    birthYear.setDescription("Narratory year of birth");
+    birthYear.setValue(1983);
+    apiDescriptor.setConstants(List.of(birthYear));
+    Imports imports = new Imports();
+    Assert.assertEquals(
+        "EncodingUtil.substituteArguments(\"Hello ${config.stranger}, I am ${constants.ownName}, born in ${constants.birthYear}\", \"config.stranger\", PropertiesUtil.getString(myProps, MyExchangeProperties.STRANGER), \"constants.ownName\", MyExchangeConstants.OWN_NAME, \"constants.birthYear\", MyExchangeMyApiConstants.BIRTH_YEAR)", 
+        ExchangeJavaGenUtil.generateSubstitutionInstructionDeclaration(
+            "Hello ${config.stranger}, I am ${constants.ownName}, born in ${constants.birthYear}", 
+            exchangeDescriptor, 
+            apiDescriptor, 
+            "myProps", imports));
+     Assert.assertEquals(5, imports.size());
+     Iterator<String> it = imports.iterator();
+     Assert.assertEquals("com.x.gen.MyExchangeConstants", it.next());
+     Assert.assertEquals("com.x.gen.MyExchangeProperties", it.next());
+     Assert.assertEquals("com.x.gen.myapi.MyExchangeMyApiConstants", it.next());
+     Assert.assertEquals(EncodingUtil.class.getName(), it.next());
+     Assert.assertEquals(PropertiesUtil.class.getName(), it.next());
   }
 }

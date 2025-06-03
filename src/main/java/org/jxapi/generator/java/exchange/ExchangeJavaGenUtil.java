@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -28,6 +29,7 @@ import org.jxapi.netutils.deserialization.json.field.StringJsonFieldDeserializer
 import org.jxapi.netutils.rest.ratelimits.RateLimitRule;
 import org.jxapi.util.CollectionUtil;
 import org.jxapi.util.EncodingUtil;
+import org.jxapi.util.PlaceHolderResolver;
 import org.jxapi.util.PropertiesUtil;
 
 /**
@@ -380,26 +382,29 @@ public class ExchangeJavaGenUtil {
    */
   public static String getPrimitiveTypeFieldSampleValueDeclaration(Type type, 
                                    Object sampleValue,  
-                                   Imports imports) {
+                                   Imports imports,
+                                   PlaceHolderResolver sampleValuePlaceHolderResolver) {
     if (sampleValue == null) {
-      return null;
+      return JavaCodeGenUtil.NULL;
     }
-    String sampleValueStr = sampleValue.toString();
+    String sampleValueStr = Optional.ofNullable(sampleValuePlaceHolderResolver)
+                                    .orElse(JavaCodeGenUtil::getQuotedString)
+                                    .resolve(sampleValue.toString());
     switch (type.getCanonicalType()) {
     case BIGDECIMAL:
       imports.add(BigDecimal.class.getName());
-      return "new BigDecimal(" + JavaCodeGenUtil.getQuotedString(sampleValueStr) + ")";
+      return "new BigDecimal(" + sampleValueStr + ")";
     case BOOLEAN:
       return "Boolean.valueOf(" + sampleValueStr + ")";
     case INT:
       return "Integer.valueOf(" + sampleValueStr + ")";
     case LONG:
-      if (SPECIAL_SAMPLE_VALUE_NOW.equals(sampleValueStr)) {
+      if (SPECIAL_SAMPLE_VALUE_NOW.equals(sampleValue)) {
         return "Long.valueOf(System.currentTimeMillis())";
       }
-      return "Long.valueOf(" + JavaCodeGenUtil.getQuotedString(sampleValueStr) + ")";
+      return "Long.valueOf(" + sampleValueStr + ")";
     default: // STRING
-      return JavaCodeGenUtil.getQuotedString(sampleValueStr);
+      return sampleValueStr;
     }
   }
 
@@ -713,6 +718,91 @@ public class ExchangeJavaGenUtil {
     }
     String url = JavaCodeGenUtil.getClassJavadocUrl(baseHtmlDocUrl, className) + "#" + staticVariableName;
     return JavaCodeGenUtil.getHtmlLink(url, variableName);
+  }
+
+  /**
+   * Generates the argument substitution declaration for a given template.
+   * <ul>
+   * <li>If the template does not contain any placeholder, the template is
+   * returned as a quoted string.</li>
+   * <li>If the template contains placeholders, the returned value is a call to
+   * {@link EncodingUtil#substituteArguments(String, Object...)}, with the
+   * template and key and value pairs for each placeholder. The placeholders are
+   * expected to refer to either be a reference to a constant
+   * (<code>constants.myConstant</code>) or a reference to a configuration
+   * property (<code>config.myConfigProperty</code>) if <code>propertyName</code> 
+   * arg is not <code>null</code>.
+   * If the placeholder is not for a constant or configuration property, it is not replaced.
+   * <ul>
+   * <li>For a constant, the value is the constant value returned by
+   * {@link getValueDeclarationForConstant}.</li>
+   * <li>For a configuration property, the value is the configuration property
+   * value returned by
+   * {@link getValueDeclarationForConfigProperty}.</li>
+   * </ul>
+   * </li>
+   * </ul>
+   * 
+   * @param template              The template to generate the argument
+   *                              substitution declaration for, may contain
+   *                              placeholders. If <code>null</code>, the returned 
+   *                              value is <code>null</code>.
+   * @param exchangeDescriptor    The exchange descriptor to use to resolve the
+   *                              constants and configuration properties used in
+   *                              the template.
+   * @param exchangeApiDescriptor The exchange API descriptor to use to resolve
+   *                              the constants. Remark: A constant with a name
+   *                              that is not defined in the exchange API
+   *                              descriptor will be searched in the exchange
+   *                              descriptor.
+   * @param propertiesVariable    The name of the variable or instruction
+   *                              referencing the configuration properties.
+   *                              If <code>null</code>, the configuration properties 
+   *                              are not used for replacements.
+   * @param imports               The imports of the generated class, that will be
+   *                              populated with classes used by the returned
+   *                              value.
+   * @return The argument substitution declaration instruction for the template.
+   */
+  public static String generateSubstitutionInstructionDeclaration(
+                        String template, 
+                        ExchangeDescriptor exchangeDescriptor, 
+                        ExchangeApiDescriptor exchangeApiDescriptor, 
+                        String propertiesVariable,
+                        Imports imports) {
+    if (template == null) {
+      return JavaCodeGenUtil.NULL;
+    }
+    List<String> placeHolderNames = findPlaceHolders(template);
+    if (placeHolderNames.isEmpty()) {
+      return JavaCodeGenUtil.getQuotedString(template);
+    }
+    List<String> placeHoldersDeclarations  = new ArrayList<>(placeHolderNames.size());
+    for (String placeHolder: placeHolderNames) {
+      String constantName = getConstantPlaceHolder(placeHolder);
+      String valueDeclaration = null;
+      if (constantName != null) {
+          valueDeclaration = getValueDeclarationForConstant(constantName, exchangeDescriptor, exchangeApiDescriptor, imports);
+      } else if (propertiesVariable != null) {
+        String propertyName = getConfigPropertyPlaceHolder(placeHolder);
+        if (propertyName != null) {
+          valueDeclaration = getValueDeclarationForConfigProperty(propertyName, exchangeDescriptor, propertiesVariable, imports);
+        }
+      }
+      if (valueDeclaration != null) {
+        placeHoldersDeclarations.add(JavaCodeGenUtil.getQuotedString(placeHolder));
+        placeHoldersDeclarations.add(valueDeclaration);
+      }
+    }
+    imports.add(EncodingUtil.class);
+    return new StringBuilder()
+                .append(EncodingUtil.class.getSimpleName())
+                .append(".substituteArguments(")
+                .append(JavaCodeGenUtil.getQuotedString(template))
+                .append(", ")
+                .append(StringUtils.join(placeHoldersDeclarations, ", "))
+                .append(")")
+                .toString();
   }
  
 }

@@ -20,9 +20,10 @@ public class ExchangeApiInterfaceGeneratorTest {
   @Test
   public void testGenerateExchangeApi() throws Exception {
     ExchangeDescriptor exchangeDescriptor = ExchangeDescriptorParser.fromJson(Paths.get(".", "src", "test", "resources", "testExchangeDescriptor.json"));
-    PlaceHolderResolver docPlaceHolderResolver = 
-        PlaceHolderResolver.create(ExchangeJavaGenUtil.getDescriptionReplacements(exchangeDescriptor, null));
     ExchangeApiDescriptor exchangeApiDescriptor = exchangeDescriptor.getApis().get(0);
+    PlaceHolderResolver docPlaceHolderResolver = 
+        PlaceHolderResolver.create(ExchangeJavaGenUtil.getDescriptionReplacements(exchangeDescriptor, exchangeApiDescriptor.getName()));
+    
     ExchangeApiInterfaceGenerator apiInterfaceGenerator = new ExchangeApiInterfaceGenerator(exchangeDescriptor, exchangeApiDescriptor, docPlaceHolderResolver);
     Assert.assertEquals("package com.foo.bar.gen.marketdata;\n"
         + "\n"
@@ -38,7 +39,7 @@ public class ExchangeApiInterfaceGeneratorTest {
         + "\n"
         + "/**\n"
         + " * MyTestExchange MarketData API<br>\n"
-        + " * The market data API of MyTestExchange. Author: {@link com.foo.bar.gen.MyTestExchangeConstants#AUTHOR}\n"
+        + " * The market data API of MyTestExchange. Author: {@link com.foo.bar.gen.marketdata.MyTestExchangeMarketDataConstants#AUTHOR}\n"
         + " */\n"
         + "@Generated(\"org.jxapi.generator.java.exchange.api.ExchangeApiInterfaceGenerator\")\n"
         + "public interface MyTestExchangeMarketDataApi extends ExchangeApi {\n"
@@ -64,24 +65,24 @@ public class ExchangeApiInterfaceGeneratorTest {
         + "  String TICKER_STREAM_WS_API = \"tickerStream\";\n"
         + "  \n"
         + "  /**\n"
-        + "   * Fetch market information of symbols that can be traded. Author: {@link com.foo.bar.gen.MyTestExchangeConstants#AUTHOR}\n"
-        + "   * @param request Request parameters for fetching exchange info. Author: {@link com.foo.bar.gen.MyTestExchangeConstants#AUTHOR}\n"
+        + "   * Fetch market information of symbols that can be traded. Author: {@link com.foo.bar.gen.marketdata.MyTestExchangeMarketDataConstants#AUTHOR}\n"
+        + "   * @param request Request parameters for fetching exchange info. Author: {@link com.foo.bar.gen.marketdata.MyTestExchangeMarketDataConstants#AUTHOR}\n"
         + "   * @return A {@link FutureRestResponse} that will complete when request submitted asynchronously has been processed.\n"
         + "   * @see <a href=\"https://docs.myexchange.com/api/rest/marketData/exchangeInfo\">Reference documentation</a>\n"
         + "   */\n"
         + "  FutureRestResponse<MyTestExchangeMarketDataExchangeInfoResponse> exchangeInfo(MyTestExchangeMarketDataExchangeInfoRequest request);\n"
         + "  \n"
         + "  /**\n"
-        + "   * Fetch current tickers. Author: {@link com.foo.bar.gen.MyTestExchangeConstants#AUTHOR}\n"
+        + "   * Fetch current tickers. Author: {@link com.foo.bar.gen.marketdata.MyTestExchangeMarketDataConstants#AUTHOR}\n"
         + "   * @return A {@link FutureRestResponse} that will complete when request submitted asynchronously has been processed\n"
         + "   */\n"
         + "  FutureRestResponse<MyTestExchangeMarketDataTickersResponse> tickers();\n"
         + "  \n"
         + "  /**\n"
         + "   * Subscribe to tickerStream stream.<br>\n"
-        + "   * Subscribe to ticker stream. Author: {@link com.foo.bar.gen.MyTestExchangeConstants#AUTHOR}\n"
+        + "   * Subscribe to ticker stream. Author: {@link com.foo.bar.gen.marketdata.MyTestExchangeMarketDataConstants#AUTHOR}\n"
         + "   * \n"
-        + "   * @param request Request parameters for subscribing to ticker stream. Author: {@link com.foo.bar.gen.MyTestExchangeConstants#AUTHOR}\n"
+        + "   * @param request Request parameters for subscribing to ticker stream. Use {@link com.foo.bar.gen.marketdata.MyTestExchangeMarketDataConstants#ALL_TICKERS} to subscribe to every ticker. Author: {@link com.foo.bar.gen.marketdata.MyTestExchangeMarketDataConstants#AUTHOR}\n"
         + "   * @param listener listener that will receive incoming messages\n"
         + "   * @return client subscriptionId to use for unsubscription using {@link #unsubscribeTickerStream(String)}\n"
         + "   * @see <a href=\"https://docs.myexchange.com/api/ws/marketData/tickerStream\">Reference documentation</a>\n"

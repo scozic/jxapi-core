@@ -4,3 +4,6 @@ properties:
    description: "Base URL for REST endpoints the Employee Exchange API"
  - name: "baseWebsocketUrl"
    description: "Base URL for websocket endpoints of the Employee Exchange API"  
+ - name: demoEmployeeId
+   description: "Used in demo snippets to set as value of Employee 'id' property"
+   defaultValue: 1  

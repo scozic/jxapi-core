@@ -22,7 +22,12 @@ import org.slf4j.LoggerFactory;
 public class DemoExchangeMarketDataTickerStreamDemo {
   private static final Logger log = LoggerFactory.getLogger(DemoExchangeMarketDataTickerStreamDemo.class);
   
-  public static DemoExchangeMarketDataTickerStreamRequest createRequest() {
+  /**
+   * Creates a sample value for the request field of type DemoExchangeMarketDataTickerStreamRequest using sample value(s) defined in the field descriptor.
+   * 
+   * @param properties the configuration properties to use for the sample value generation.
+   */
+  public static DemoExchangeMarketDataTickerStreamRequest createRequest(Properties properties) {
     DemoExchangeMarketDataTickerStreamRequest request = new DemoExchangeMarketDataTickerStreamRequest();
     request.setSymbol("BTC_USDT");
     return request;
@@ -67,9 +72,10 @@ public class DemoExchangeMarketDataTickerStreamDemo {
    */
   public static void main(String[] args) {
     try {
-      subscribe(createRequest(),
+      Properties properties = DemoUtil.loadDemoExchangeProperties(DemoExchangeExchange.ID);
+      subscribe(createRequest(properties),
                 DemoUtil::logWsMessage,
-                DemoUtil.loadDemoExchangeProperties(DemoExchangeExchange.ID),
+                properties,
                 DemoUtil::logWsApiEvent);
       System.exit(0);
     }

@@ -24,7 +24,12 @@ import org.slf4j.LoggerFactory;
 public class DemoExchangeMarketDataPostRestRequestDataTypeObjectListMapDemo {
   private static final Logger log = LoggerFactory.getLogger(DemoExchangeMarketDataPostRestRequestDataTypeObjectListMapDemo.class);
   
-  public static Map<String, List<SingleSymbol>> createRequest() {
+  /**
+   * Creates a sample value for the request field of type Map<String, List<SingleSymbol>> using sample value(s) defined in the field descriptor.
+   * 
+   * @param properties the configuration properties to use for the sample value generation.
+   */
+  public static Map<String, List<SingleSymbol>> createRequest(Properties properties) {
     SingleSymbol requestItem = new SingleSymbol();
     requestItem.setSymbol("BTC_USDT");
     return Map.of("spot", List.of(requestItem));
@@ -63,8 +68,9 @@ public class DemoExchangeMarketDataPostRestRequestDataTypeObjectListMapDemo {
    */
   public static void main(String[] args) {
     try {
-      execute(createRequest(),
-              DemoUtil.loadDemoExchangeProperties(DemoExchangeExchange.ID),
+      Properties properties = DemoUtil.loadDemoExchangeProperties(DemoExchangeExchange.ID);
+      execute(createRequest(properties),
+              properties,
               DemoUtil::logRestApiEvent);
       System.exit(0);
     }

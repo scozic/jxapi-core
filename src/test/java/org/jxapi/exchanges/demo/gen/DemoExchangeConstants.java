@@ -33,10 +33,10 @@ public class DemoExchangeConstants {
   /**
    * Possible value in <i>responseCode</i> field of rest request response: Successful response
    */
-  public static final Integer RESPONSE_CODE_OK = Integer.valueOf(200);
+  public static final Integer RESPONSE_CODE_OK = Integer.valueOf("200");
   
   /**
    * Possible value in <i>responseCode</i> field of rest request response: Server internal error
    */
-  public static final Integer RESPONSE_CODE_INTERNAL_SERVER_ERROR = Integer.valueOf(500);
+  public static final Integer RESPONSE_CODE_INTERNAL_SERVER_ERROR = Integer.valueOf("500");
 }

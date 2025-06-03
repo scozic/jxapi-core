@@ -15,6 +15,7 @@ import org.jxapi.generator.java.exchange.ExchangeJavaGenUtil;
 import org.jxapi.generator.java.exchange.api.ExchangeApiGenUtil;
 import org.jxapi.netutils.rest.RestResponse;
 import org.jxapi.util.DemoUtil;
+import org.jxapi.util.PlaceHolderResolver;
 import org.slf4j.Logger;
 
 /**
@@ -55,6 +56,7 @@ public class RestEndpointDemoGenerator extends JavaTypeGenerator {
   private final Type responseDataType;
   private final String apiEndpointMethodJavadocLink;
   private final String apiMethodName;
+  private final PlaceHolderResolver sampleValuePlaceHolderResolver;
   
   /**
    * Constructor.
@@ -74,6 +76,12 @@ public class RestEndpointDemoGenerator extends JavaTypeGenerator {
     this.hasArguments = ExchangeApiGenUtil.restEndpointHasArguments(restApi, exchangeApiDescriptor);
     this.request = ExchangeApiGenUtil.resolveFieldProperties(exchangeApiDescriptor, restApi.getRequest());
     this.exchangeImplClassName = ExchangeJavaGenUtil.getExchangeInterfaceImplementationName(exchangeDescriptor);
+    this.sampleValuePlaceHolderResolver = s -> ExchangeJavaGenUtil.generateSubstitutionInstructionDeclaration(
+        s, 
+        exchangeDescriptor, 
+        exchangeApiDescriptor, 
+        "properties",
+        getImports());
     if (hasArguments) {
       requestDataType =  ExchangeJavaGenUtil.getFieldType(request);
       if (requestDataType.getCanonicalType().isPrimitive) {
@@ -140,7 +148,9 @@ public class RestEndpointDemoGenerator extends JavaTypeGenerator {
       this.appendToBody(EndpointDemoGenUtil.generateFieldCreationMethod(
                 request,  
                 requestClassName, 
-                getImports()));
+                ExchangeApiGenUtil.DEFAULT_REQUEST_ARG_NAME,
+                getImports(),
+                sampleValuePlaceHolderResolver));
       this.appendToBody("\n");
     }
     generateExecuteMethod();
@@ -252,18 +262,27 @@ public class RestEndpointDemoGenerator extends JavaTypeGenerator {
   }
   
   private void generateMainMethod() {
-    StringBuilder bodyBuilder = new StringBuilder().append("execute(");
+    String propsVar = EndpointDemoGenUtil.CREATE_REQUEST_PROPERTIES_ARG_NAME;
+    StringBuilder bodyBuilder = new StringBuilder()
+      .append("Properties ")
+      .append(propsVar)
+      .append(" = ")
+      .append(EndpointDemoGenUtil.getTestPropertiesInstruction(exchangeSimpleClassName, getImports()))
+      .append(";\n")
+      .append("execute(");
     if (hasArguments) {
       bodyBuilder.append(EndpointDemoGenUtil.generateFieldCreationMethodName(restApi.getRequest()))
-             .append("(),\n")
-             .append(EXECUTE_METHOD_ARG_INDENT);
+        .append("(")
+        .append(propsVar)
+        .append("),\n")
+        .append(EXECUTE_METHOD_ARG_INDENT);
     }
-    bodyBuilder.append(EndpointDemoGenUtil.getTestPropertiesInstruction(exchangeSimpleClassName, getImports()))
-           .append(",\n")
-           .append(EXECUTE_METHOD_ARG_INDENT)
-           .append(DemoUtil.class.getSimpleName())
-           .append("::logRestApiEvent")
-           .append(");\nSystem.exit(0);");
+    bodyBuilder.append(propsVar)
+               .append(",\n")
+               .append(EXECUTE_METHOD_ARG_INDENT)
+               .append(DemoUtil.class.getSimpleName())
+               .append("::logRestApiEvent")
+               .append(");\nSystem.exit(0);");
     
     appendMethod("public static void main(String[] args)", 
         JavaCodeGenUtil.generateTryBlock(

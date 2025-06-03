@@ -67,7 +67,13 @@ public class ExchangeClassesGenerator implements ClassesGenerator {
       ConstantsClassGenerator cgen = new ConstantsClassGenerator(
           ExchangeJavaGenUtil.getExchangeConstantsInterfaceName(exchangeDescriptor), 
           constants,
-          docPlaceHolderResolver); 
+          docPlaceHolderResolver);
+      cgen.setConstantValuePlaceHolderResolver(s -> ExchangeJavaGenUtil.generateSubstitutionInstructionDeclaration(
+                                                      s, 
+                                                      exchangeDescriptor, 
+                                                      null, 
+                                                      null,
+                                                      cgen.getImports()));
       cgen.setDescription("Constants used in {@link " + exchangeInterfaceGenerator.getName() + "} API wrapper");
       cgen.writeJavaFile(outputFolder);
     }

@@ -54,7 +54,8 @@ public class EmployeeV1GetAllEmployeesDemo {
    */
   public static void main(String[] args) {
     try {
-      execute(DemoUtil.loadDemoExchangeProperties(EmployeeExchange.ID),
+      Properties properties = DemoUtil.loadDemoExchangeProperties(EmployeeExchange.ID);
+      execute(properties,
               DemoUtil::logRestApiEvent);
       System.exit(0);
     }
