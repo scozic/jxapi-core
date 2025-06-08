@@ -62,7 +62,7 @@ public class JavaNetHttpRequestExecutor extends AbstractHttpRequestExecutor {
         builder.POST(BodyPublishers.ofString(Optional.ofNullable(request.getBody()).orElse("")));
         break;
       case DELETE:
-        builder.DELETE();
+        builder.method("DELETE", BodyPublishers.ofString(Optional.ofNullable(request.getBody()).orElse("")));
         break;
       case PUT:
         builder.PUT(BodyPublishers.ofString(Optional.ofNullable(request.getBody()).orElse("")));

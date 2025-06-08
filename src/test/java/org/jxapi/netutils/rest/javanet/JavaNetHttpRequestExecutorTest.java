@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.net.http.HttpClient;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
 import org.glassfish.grizzly.http.util.HttpStatus;
@@ -16,6 +17,7 @@ import org.jxapi.netutils.rest.FutureHttpResponse;
 import org.jxapi.netutils.rest.HttpMethod;
 import org.jxapi.netutils.rest.HttpRequest;
 import org.jxapi.netutils.rest.HttpResponse;
+import org.jxapi.util.EncodingUtil;
 
 
 /**
@@ -53,7 +55,9 @@ public class JavaNetHttpRequestExecutorTest {
   private void checkSameRequests(HttpRequest expected, HttpRequest actual) {
     Assert.assertEquals("Unexpected method in " + actual, expected.getHttpMethod(), actual.getHttpMethod());
     Assert.assertEquals("Unexpected URL in " + actual, expected.getUrl(), actual.getUrl());
-    Assert.assertEquals("Unexpected body in " + actual, expected.getBody(), actual.getBody());
+    Assert.assertEquals("Unexpected body in " + actual, 
+                        Optional.ofNullable(expected.getBody()).orElse(""), 
+                        Optional.ofNullable(actual.getBody()).orElse(""));
     Map<String, List<String>> expectedHeaders = expected.getHeaders();
     Map<String, List<String>> actualHeaders = actual.getHeaders();
     if (expectedHeaders != null) {
