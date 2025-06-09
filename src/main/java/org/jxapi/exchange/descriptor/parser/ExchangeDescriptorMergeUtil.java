@@ -134,6 +134,7 @@ public class ExchangeDescriptorMergeUtil {
     res.setWebsocketHookFactory(merge("websocketHookFactory of exchange " + exchangeName, e1.getWebsocketHookFactory(), e2.getWebsocketHookFactory()));
     res.setWebsocketUrl(merge("websocketUrl of exchange " + exchangeName, e1.getWebsocketUrl(), e2.getWebsocketUrl()));
     res.setHttpUrl(merge("httpUrl of exchange " + exchangeName, e1.getHttpUrl(), e2.getHttpUrl()));
+    res.setAfterInitHookFactory(merge("afterInitHookFactory of exchange " + exchangeName, e1.getAfterInitHookFactory(), e2.getAfterInitHookFactory()));
     res.setConstants(mergeLists("constants of exchange " + exchangeName, e1.getConstants(), e2.getConstants(), Constant::getName));
     res.setRateLimits(mergeLists("rateLimits of exchange " + exchangeName, e1.getRateLimits(), e2.getRateLimits(), RateLimitRule::getId));
     res.setProperties(mergeLists("properties of exchange " + exchangeName, e1.getProperties(), e2.getProperties(), DefaultConfigProperty::getName));

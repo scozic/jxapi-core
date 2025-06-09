@@ -21,6 +21,7 @@
 	"websocketUrl": "${config.baseWebsocketUrl}",
 	"httpRequestInterceptorFactory": "org.jxapi.exchanges.demo.net.DemoExchangeHttpRequestInterceptorFactory",
 	"websocketHookFactory": "org.jxapi.exchanges.demo.net.DemoExchangeWebsocketHookFactory",
+	"afterInitHookFactory": "org.jxapi.exchange.MockExchangeHookFactory",
 	"apis":[
 		{ 
 			"name": "MarketData",

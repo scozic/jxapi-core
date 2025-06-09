@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.jxapi.exchange.Exchange;
 import org.jxapi.exchange.ExchangeApi;
+import org.jxapi.exchange.ExchangeHookFactory;
 import org.jxapi.netutils.rest.HttpRequestExecutorFactory;
 import org.jxapi.netutils.rest.HttpRequestInterceptorFactory;
 import org.jxapi.netutils.rest.ratelimits.RateLimitRule;
@@ -138,6 +139,8 @@ public class ExchangeDescriptor {
   private String httpUrl;
 
   private String websocketUrl;
+  
+  private String afterInitHookFactory;
 
   /**
    * Returns the list of APIs of the exchange.
@@ -438,6 +441,24 @@ public class ExchangeDescriptor {
    */
   public void setVersion(String version) {
     this.version = version;
+  }
+  
+  /**
+   * @return The factory class for the after-init hook.
+   * @see ExchangeHookFactory
+   */
+  public String getAfterInitHookFactory() {
+    return afterInitHookFactory;
+  }
+  
+  /**
+   * Sets the factory class for the after-init hook.
+   * 
+   * @param afterInitHookFactory The factory class for the after-init hook.
+   * @see ExchangeHookFactory
+   */
+  public void setAfterInitHookFactory(String afterInitHookFactory) {
+    this.afterInitHookFactory = afterInitHookFactory;
   }
 
   /**

@@ -253,6 +253,7 @@ public class ExchangeDescriptorMergeUtilTest {
     ex1.setDescription("Exchange 1 description");
     ex1.setBasePackage("com.x.y.gen");
     ex1.setDocUrl("https://ex1.com/docs");
+    ex1.setAfterInitHookFactory("com.x.y.gen.MyAfterInitHookFactory");
     
     ExchangeApiDescriptor api1 = new ExchangeApiDescriptor();
     api1.setName("myApi1");
@@ -304,6 +305,7 @@ public class ExchangeDescriptorMergeUtilTest {
     Assert.assertEquals("com.x.y.MyHttpRequestInterceptorFactory", merged.getHttpRequestInterceptorFactory());
     Assert.assertEquals("com.x.y.MyWebsocketFactory", merged.getWebsocketFactory());
     Assert.assertEquals("ws://ex1.com", merged.getWebsocketUrl());
+    Assert.assertEquals("com.x.y.gen.MyAfterInitHookFactory", merged.getAfterInitHookFactory());
     Assert.assertEquals(1000L, merged.getHttpRequestTimeout());
     Assert.assertEquals(2, merged.getApis().size());
     Assert.assertEquals(api1, merged.getApis().get(0));

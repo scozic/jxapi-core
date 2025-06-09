@@ -15,7 +15,7 @@ import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-
+import org.jxapi.exchange.MockExchangeHook;
 import org.jxapi.exchanges.demo.gen.DemoExchangeConstants;
 import org.jxapi.exchanges.demo.gen.DemoExchangeExchange;
 import org.jxapi.exchanges.demo.gen.DemoExchangeExchangeImpl;
@@ -71,6 +71,14 @@ public class DemoExchangeRestRequestTest {
   @After
   public void tearDown() {
         mockHttpServer.stop();
+  }
+  
+  @Test
+  public void testAfterInitHookHasBeenCalled() throws Exception {
+    MockExchangeHook exchangeHook = (MockExchangeHook) exchange.getProperties().get(MockExchangeHook.MOCK_EXCHANGE_HOOK_PROPERTY);
+    Assert.assertNotNull(exchangeHook);
+    Assert.assertEquals(1, exchangeHook.size());
+    Assert.assertEquals(exchange, exchangeHook.pop());
   }
   
   @Test

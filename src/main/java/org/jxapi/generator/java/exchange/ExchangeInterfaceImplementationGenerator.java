@@ -16,6 +16,7 @@ import org.jxapi.generator.java.JavaTypeGenerator;
 import org.jxapi.netutils.rest.ratelimits.RateLimitRule;
 import org.jxapi.netutils.rest.ratelimits.RequestThrottler;
 import org.jxapi.util.CollectionUtil;
+import org.slf4j.LoggerFactory;
 import org.springframework.util.CollectionUtils;
 
 /**
@@ -168,6 +169,14 @@ public class ExchangeInterfaceImplementationGenerator extends JavaTypeGenerator 
                     .append(JavaCodeGenUtil.generateCodeBlock("return this." + apiVariableName + ";\n"))
                     .append("\n");
       }
+    }
+    
+    String afterInitHookFactory = exchangeDescriptor.getAfterInitHookFactory();
+    if (afterInitHookFactory != null) {
+      implementationConstructorBody
+          .append("afterInit(")
+          .append(JavaCodeGenUtil.getQuotedString(afterInitHookFactory))
+          .append(");\n");
     }
     addImport(Properties.class);
     

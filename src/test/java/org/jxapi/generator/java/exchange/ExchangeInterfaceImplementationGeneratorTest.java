@@ -25,6 +25,7 @@ public class ExchangeInterfaceImplementationGeneratorTest {
     exchangeDescriptor.setDescription("Foo exchange description");
     exchangeDescriptor.setHttpUrl("${config.serverHttpUrl}/api/v${constants.apiVersion}");
     exchangeDescriptor.setWebsocketUrl("${config.serverWsUrl}/ws");
+    exchangeDescriptor.setAfterInitHookFactory("com.xxz.foo.gen.FooAfterInitExchangeHookFactory");
     
     Constant apiVersion = new Constant();
     apiVersion.setName("apiVersion");
@@ -79,6 +80,7 @@ public class ExchangeInterfaceImplementationGeneratorTest {
         + "          EncodingUtil.substituteArguments(\"${config.serverWsUrl}/ws\", \"config.serverWsUrl\", PropertiesUtil.getString(properties, FooProperties.SERVER_WS_URL)));\n"
         + "    this.fooApi1Api = addApi(new FooApi1ApiImpl(this));\n"
         + "    this.fooApi2Api = addApi(new FooApi2ApiImpl(this));\n"
+        + "    afterInit(\"com.xxz.foo.gen.FooAfterInitExchangeHookFactory\");\n"
         + "  }\n"
         + "  \n"
         + "  @Override\n"

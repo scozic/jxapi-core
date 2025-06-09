@@ -36,6 +36,7 @@ public class ExchangeDescriptorTest {
         exchangeDescriptor.setWebsocketHookFactory("com.x.y.net.MyWebsocketHookFactory");
         exchangeDescriptor.setVersion("1.0.0");
         exchangeDescriptor.setJxapi("0.15.0");
+        exchangeDescriptor.setAfterInitHookFactory("com.x.y.MyExchangeHookFactory");
         Assert.assertEquals("name", exchangeDescriptor.getId());
         Assert.assertEquals("description", exchangeDescriptor.getDescription());
         Assert.assertEquals("com.x.y", exchangeDescriptor.getBasePackage());
@@ -51,6 +52,7 @@ public class ExchangeDescriptorTest {
         Assert.assertEquals("com.x.y.net.MyWebsocketHookFactory", exchangeDescriptor.getWebsocketHookFactory());
         Assert.assertEquals("1.0.0", exchangeDescriptor.getVersion());
         Assert.assertEquals("0.15.0", exchangeDescriptor.getJxapi());
+        Assert.assertEquals("com.x.y.MyExchangeHookFactory", exchangeDescriptor.getAfterInitHookFactory());
     }
 
     @Test

@@ -12,12 +12,10 @@ import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-
 import org.jxapi.netutils.rest.FutureHttpResponse;
 import org.jxapi.netutils.rest.HttpMethod;
 import org.jxapi.netutils.rest.HttpRequest;
 import org.jxapi.netutils.rest.HttpResponse;
-import org.jxapi.util.EncodingUtil;
 
 
 /**
