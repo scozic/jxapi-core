@@ -736,14 +736,23 @@ public class ExchangeApiInterfaceImplementationGenerator extends JavaTypeGenerat
         .append(requestWeight)
         .append(")");
         
-    StringBuilder sumbitRequestInstruction = new StringBuilder();
-    sumbitRequestInstruction
-    .append("submit(")
-    .append(createHttpRequestInstruction.toString())
-    .append(", ")
-    .append(deserializerVariableName)
-    .append(");\n");
-    apiMethodBody.append(sumbitRequestInstruction.toString());
+    StringBuilder submitRequestInstruction = new StringBuilder();
+    if (restApi.isPaginated()) {
+      submitRequestInstruction.append("submitPaginated(");
+    } else {
+      submitRequestInstruction.append("submit(");
+    }
+    submitRequestInstruction
+      .append(createHttpRequestInstruction.toString())
+      .append(", ")
+      .append(deserializerVariableName);
+    if (restApi.isPaginated()) {
+      submitRequestInstruction
+        .append(", this::")
+        .append(ExchangeApiGenUtil.getRestApiMethodName(restApi));
+    }
+    submitRequestInstruction.append(");\n");
+    apiMethodBody.append(submitRequestInstruction.toString());
     
     addRestMethod(OVERRIDE_PUBLIC + apiMethodSignature, apiMethodBody.toString());
   }

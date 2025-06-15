@@ -19,6 +19,8 @@
             "httpUrl": "v1",
             "name": "V1",
             "constants": [
+                {"name": "defaultPageSize", "description": "Default page size for paginated requests", "value": 10},
+                {"name": "maxPageSize", "description": "Maximum page size for paginated requests", "value": 100},
                 {"name": "profileRegular", "description": "Regular employee profile", "value": "REGULAR"},
                 {"name": "profileAdmin","description": "Admin employee profile", "value": "ADMIN"},
                 {"name": "updateEmployeeTypeAdd", "description": "Value of eventType field in WS message for new employee added event", "value": "ADD"},                  
@@ -53,12 +55,28 @@
                     "docUrl": "https://www.example.com/docs/employee/getAll",
                     "httpMethod": "GET",
                     "url": "/employees",
-                    "queryParams": false,
+                    "request": {
+                        "implementedInterfaces": [
+                            "org.jxapi.exchanges.employee.EmployeePaginatedRequest"
+                        ],
+                        "description": "Page request parameters for 'getAllEmployees' rest endpoint paginated requests.",
+                        "properties": [
+                            {"name": "page", "type": "INT", "description": "Page number to return, defaults to 1.", "sampleValue": 1},
+                            {"name": "size", "type": "INT", "description": "Number of employees to return per page.<br> Defaults to ${constants.defaultPageSize}.<br> Maximum is ${constants.maxPageSize}.\n", "sampleValue": 10}
+                        ]
+                    },
                     "response": {
+                        "implementedInterfaces": [
+                            "org.jxapi.exchanges.employee.EmployeePaginatedResponse"
+                        ],
+                        "properties": [
+                            {"name": "page", "type": "INT", "description": "Page index, starting from 1", "sampleValue": 1},
+                            {"name": "totalPages", "type": "INT", "description": "Total number of pages available", "sampleValue": 10},
+                            {"name": "employees", "type": "OBJECT_LIST", "objectName":"Employee"}                            
+                        ],
                         "objectName": "Employee",
                         "type": "OBJECT_LIST"
                     }
-                    
                 },
                 {
                     "name": "addEmployee",

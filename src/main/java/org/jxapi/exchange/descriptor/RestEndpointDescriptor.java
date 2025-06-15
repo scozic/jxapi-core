@@ -34,10 +34,10 @@ import org.jxapi.util.EncodingUtil;
  * for an API expected request data as URL parameters or query params, the corresponding serialized 
  * object will be URL encoded value of JSON.</li>
  * <li><code>queryParams</code> - whether the request data should be serialized as URL are query parameters.<br> 
- * <strong>About query parameters</strong>:<br>
+ * <strong>About query parameters <i>queryParams</i> property</strong>:<br>
  * <ul>
  * <li>The default value used in generated code depends on HTTP method, it will be true for methods
- * where corresponding requests expect a body: <code>GET</code>, <code>DELETE</code>, <code>HEAD</code>, 
+ * where corresponding requests do not expect a body: <code>GET</code>, <code>HEAD</code>, 
  * <code>OPTIONS</code>, <code>TRACE</code>.</li>
  * <li>Query parameters are serialized in form of <code>?name1=value1&amp;name2=value2</code> 
  * and appended to URL endpoint.</li>
@@ -99,6 +99,8 @@ public class RestEndpointDescriptor {
   private Integer requestWeight;
   
   private List<String> rateLimits;
+  
+  private boolean paginated = false;
    
   /**
    * @return the name of the REST API endpoint
@@ -270,6 +272,41 @@ public class RestEndpointDescriptor {
    */
   public void setDocUrl(String docUrl) {
     this.docUrl = docUrl;
+  }
+  
+  /**
+   * Returns <code>true</code> if this endpoint supports pagination.
+   * <p>
+   * For an enpoint to support pagination, it must comply with the following:
+   * <ul>
+   * <li>The request must be of type {@link Field.Type#OBJECT} type and implement
+   * {@link org.jxapi.netutils.rest.pagination.PaginatedRestRequest}
+   * interface.</li>
+   * <li>The response must be of type {@link Field.Type#OBJECT} type and implement
+   * {@link org.jxapi.netutils.rest.pagination.PaginatedRestResponse} interface.</li>
+   * <ul>
+   * Actual wrapper should provide custom sub-interface of
+   * {@link org.jxapi.netutils.rest.pagination.PaginatedRestResponse} and
+   * {@linkk org.jxapi.netutils.rest.pagination.PaginatedRestRequest} with default
+   * implementation of
+   * {@link org.jxapi.netutils.rest.pagination.PaginatedRestRequest#setNextPage(org.jxapi.netutils.rest.pagination.PaginatedRestResponse)}
+   * with default implementations for methods of these interfaces relying on API
+   * specific fields to find out if a response carries last page and set next
+   * request page index from last response otherwise.
+   * 
+   * @return <code>true</code> If this endpoint supports pagination, <code>false</code> otherwise.
+   */
+  public boolean isPaginated() {
+    return paginated;
+  }
+
+  /**
+   * Sets whether this endpoint supports pagination. T
+   * @param isPaginated <code>true</code> if this endpoint supports pagination, <code>false</code> otherwise.
+   * @see #isPaginated()
+   */
+  public void setPaginated(boolean isPaginated) {
+    this.paginated = isPaginated;
   }
   
   /**

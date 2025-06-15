@@ -73,7 +73,7 @@ Version 1 of the Employee API
     <td><a href="https://www.example.com/docs/employee/get">link</a></td>
   </tr>
   <tr>
-    <td><a href="./doc/javadoc/org/jxapi/exchanges/employee/gen/v1/EmployeeV1Api.html#getAllEmployees()">getAllEmployees</a></td>
+    <td><a href="./doc/javadoc/org/jxapi/exchanges/employee/gen/v1/EmployeeV1Api.html#getAllEmployees(org.jxapi.exchanges.employee.gen.v1.pojo.EmployeeV1GetAllEmployeesRequest)">getAllEmployees</a></td>
     <td>Get all employees</td>
     <td><a href="https://www.example.com/docs/employee/getAll">link</a></td>
   </tr>

@@ -4,6 +4,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 import org.jxapi.exchange.ExchangeApi;
+import org.jxapi.netutils.rest.pagination.NextPageResolver;
 import org.jxapi.util.EncodingUtil;
 import org.jxapi.util.JsonUtil;
 
@@ -28,6 +29,10 @@ public class RestResponse<A> {
   private A response;
 
   private HttpResponse httpResponse;
+  
+  private boolean isPaginated = false;
+  
+  private NextPageResolver<A> nextPageResolver;
 
   /**
    * Default constructor using <code>null</code> HTTP response.
@@ -141,6 +146,47 @@ public class RestResponse<A> {
       }
     }
     return null;
+  }
+  
+  /**
+   * @return <code>true</code> if the response is paginated, i.e. it contains
+   *         pagination information. This means the payload object is a
+   *          {@link PaginatedRestResponse} or a custom sub-interface of it.
+   */
+  public boolean isPaginated() {
+    return isPaginated;
+  }
+
+  /**
+   * Sets whether the response is paginated.
+   * 
+   * @param isPaginated <code>true</code> if the response is paginated,
+   *                    <code>false</code> otherwise
+   * 
+   * @see #isPaginated()                   
+   */
+  public void setPaginated(boolean isPaginated) {
+    this.isPaginated = isPaginated;
+  }
+
+  /**
+   * Returns the resolver for the next page of the response when the response is paginated.
+   * 
+   * @return the resolver for the next page of the response, or <code>null</code>
+   *         if there is no next page resolver set
+   */
+  public NextPageResolver<A> getNextPageResolver() {
+    return nextPageResolver;
+  }
+
+  /**
+   * Sets the resolver for the next page of the response when the response is
+   * paginated.
+   * 
+   * @param nextPageResolver the resolver for the next page of the response
+   */
+  public void setNextPageResolver(NextPageResolver<A> nextPageResolver) {
+    this.nextPageResolver = nextPageResolver;
   }
   
   /**

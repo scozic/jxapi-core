@@ -1,18 +1,18 @@
 package org.jxapi.exchanges.employee.gen.v1;
 
-import java.util.List;
-
 import javax.annotation.processing.Generated;
 import org.jxapi.exchange.AbstractExchangeApi;
 import org.jxapi.exchanges.employee.gen.EmployeeExchange;
 import org.jxapi.exchanges.employee.gen.EmployeeProperties;
 import org.jxapi.exchanges.employee.gen.v1.deserializers.EmployeeDeserializer;
 import org.jxapi.exchanges.employee.gen.v1.deserializers.EmployeeV1EmployeeUpdatesMessageDeserializer;
+import org.jxapi.exchanges.employee.gen.v1.deserializers.EmployeeV1GetAllEmployeesResponseDeserializer;
 import org.jxapi.exchanges.employee.gen.v1.pojo.Employee;
 import org.jxapi.exchanges.employee.gen.v1.pojo.EmployeeV1EmployeeUpdatesMessage;
+import org.jxapi.exchanges.employee.gen.v1.pojo.EmployeeV1GetAllEmployeesRequest;
+import org.jxapi.exchanges.employee.gen.v1.pojo.EmployeeV1GetAllEmployeesResponse;
 import org.jxapi.netutils.deserialization.MessageDeserializer;
 import org.jxapi.netutils.deserialization.RawStringMessageDeserializer;
-import org.jxapi.netutils.deserialization.json.field.ListJsonFieldDeserializer;
 import org.jxapi.netutils.rest.FutureRestResponse;
 import org.jxapi.netutils.rest.HttpMethod;
 import org.jxapi.netutils.rest.HttpRequest;
@@ -39,7 +39,7 @@ public class EmployeeV1ApiImpl extends AbstractExchangeApi implements EmployeeV1
   
   /**
    * URL for <i>getAllEmployees</i> REST endpoint.
-   * @see EmployeeV1Api#getAllEmployees()
+   * @see EmployeeV1Api#getAllEmployees(EmployeeV1GetAllEmployeesRequest)
    */
   protected final String getAllEmployeesHttpUrl;
   
@@ -66,7 +66,7 @@ public class EmployeeV1ApiImpl extends AbstractExchangeApi implements EmployeeV1
   
   // Message deserializers
   private final MessageDeserializer<Employee> getEmployeeResponseDeserializer = new EmployeeDeserializer();
-  private final MessageDeserializer<List<Employee>> getAllEmployeesResponseDeserializer = new ListJsonFieldDeserializer<>(new EmployeeDeserializer());
+  private final MessageDeserializer<EmployeeV1GetAllEmployeesResponse> getAllEmployeesResponseDeserializer = new EmployeeV1GetAllEmployeesResponseDeserializer();
   private final MessageDeserializer<String> addEmployeeResponseDeserializer = RawStringMessageDeserializer.getInstance();
   private final MessageDeserializer<String> updateEmployeeResponseDeserializer = RawStringMessageDeserializer.getInstance();
   private final MessageDeserializer<String> deleteEmployeeResponseDeserializer = RawStringMessageDeserializer.getInstance();
@@ -97,8 +97,9 @@ public class EmployeeV1ApiImpl extends AbstractExchangeApi implements EmployeeV1
   }
   
   @Override
-  public FutureRestResponse<List<Employee>> getAllEmployees() {
-    return submit(HttpRequest.create(GET_ALL_EMPLOYEES_REST_API, getAllEmployeesHttpUrl, HttpMethod.GET, null, null, 0), getAllEmployeesResponseDeserializer);
+  public FutureRestResponse<EmployeeV1GetAllEmployeesResponse> getAllEmployees(EmployeeV1GetAllEmployeesRequest request) {
+    String urlParameters = EncodingUtil.createUrlQueryParameters("page", request.getPage(), "size", request.getSize());
+    return submitPaginated(HttpRequest.create(GET_ALL_EMPLOYEES_REST_API, getAllEmployeesHttpUrl + urlParameters, HttpMethod.GET, request, null, 0), getAllEmployeesResponseDeserializer, this::getAllEmployees);
   }
   
   @Override

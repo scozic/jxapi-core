@@ -68,7 +68,7 @@ public class RestEndpointDescriptorTest {
         descriptor.setDescription("description");
         descriptor.setUrl("url");
         descriptor.setHttpMethod(HttpMethod.GET);
-        Assert.assertEquals("RestEndpointDescriptor{\"description\":\"description\",\"httpMethod\":\"GET\",\"name\":\"name\",\"queryParams\":false,\"url\":\"url\"}", 
+        Assert.assertEquals("RestEndpointDescriptor{\"description\":\"description\",\"httpMethod\":\"GET\",\"name\":\"name\",\"paginated\":false,\"queryParams\":false,\"url\":\"url\"}", 
                             descriptor.toString());
         
     }

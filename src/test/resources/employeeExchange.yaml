@@ -23,6 +23,14 @@ apis:
    description: "Version 1 of the Employee API"
    httpUrl: v1
    constants:
+    - name: defaultPageSize
+      type: INT
+      description: Default page size for paginated requests
+      value: 10
+    - name: maxPageSize
+      type: INT
+      description: Maximum page size for paginated requests
+      value: 10000
     - name: profileRegular
       description: Regular employee profile
       value: REGULAR
@@ -37,7 +45,7 @@ apis:
       value: UPDATE
     - name: updateEmployeeTypeDelete
       description: Value of eventType field in WS message for update of an existing employee event
-      value: DELETE      
+      value: DELETE
    restEndpoints:
     - name: getEmployee
       description: Get employee details by ID
@@ -72,9 +80,38 @@ apis:
       httpMethod: GET
       docUrl: https://www.example.com/docs/employee/getAll
       url: /employees
+      paginated: true
+      request:
+        implementedInterfaces: 
+        - org.jxapi.exchanges.employee.EmployeePaginatedRequest
+        description: Page request parameters for 'getAllEmployees' rest endpoint paginated requests.
+        properties:
+        - name: page
+          type: INT
+          description: Page number to return, defaults to 1.
+          sampleValue: 1
+        - name: size
+          type: INT
+          description: >
+            Number of employees to return per page.<br>
+            Defaults to ${constants.defaultPageSize}.<br>
+            Maximum is ${constants.maxPageSize}.
+          sampleValue: 10
       response:
-       objectName: Employee
-       type: OBJECT_LIST          
+        implementedInterfaces:
+        - org.jxapi.exchanges.employee.EmployeePaginatedResponse
+        properties:
+        - name: page
+          type: INT
+          description: Page index, starting from 1
+          sampleValue: 1
+        - name: totalPages
+          type: INT
+          description: Total number of pages available
+          sampleValue: 10
+        - name: employees
+          objectName: Employee			
+          type: OBJECT_LIST       
     - name: addEmployee
       description: Add a new employee
       httpMethod: POST

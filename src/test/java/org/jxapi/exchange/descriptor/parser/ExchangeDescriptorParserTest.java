@@ -338,29 +338,37 @@ public class ExchangeDescriptorParserTest {
   }
 
   private void checkEmployeeExchangeV1ApiGroupConstants(List<Constant> constants) {
-    Assert.assertEquals(5, constants.size());
+    Assert.assertEquals(7, constants.size());
     
     Constant constant = constants.get(0);
+    Assert.assertEquals("defaultPageSize", constant.getName());
+    Assert.assertEquals("Default page size for paginated requests", constant.getDescription());
+    
+    constant = constants.get(1);
+    Assert.assertEquals("maxPageSize", constant.getName());
+    Assert.assertEquals("Maximum page size for paginated requests", constant.getDescription());
+    
+    constant = constants.get(2);
     Assert.assertEquals("profileRegular", constant.getName());
     Assert.assertEquals("Regular employee profile", constant.getDescription());
     Assert.assertEquals("REGULAR", constant.getValue());
     
-    constant = constants.get(1);
+    constant = constants.get(3);
     Assert.assertEquals("profileAdmin", constant.getName());
     Assert.assertEquals("Admin employee profile", constant.getDescription());
     Assert.assertEquals("ADMIN", constant.getValue());
     
-    constant = constants.get(2);
+    constant = constants.get(4);
     Assert.assertEquals("updateEmployeeTypeAdd", constant.getName());
     Assert.assertEquals("Value of eventType field in WS message for new employee added event", constant.getDescription());
     Assert.assertEquals("ADD", constant.getValue());
     
-    constant = constants.get(3);
+    constant = constants.get(5);
     Assert.assertEquals("updateEmployeeTypeUpate", constant.getName());
     Assert.assertEquals("Value of eventType field in WS message for update of an existing employee event", constant.getDescription());
     Assert.assertEquals("UPDATE", constant.getValue());
     
-    constant = constants.get(4);
+    constant = constants.get(6);
     Assert.assertEquals("updateEmployeeTypeDelete", constant.getName());
     Assert.assertEquals("Value of eventType field in WS message for update of an existing employee event", constant.getDescription());
   }
@@ -387,9 +395,50 @@ public class ExchangeDescriptorParserTest {
     Assert.assertEquals(HttpMethod.GET, restEndpointGetEmployee.getHttpMethod());
     Assert.assertEquals("https://www.example.com/docs/employee/getAll", restEndpointGetEmployee.getDocUrl());
     Assert.assertEquals("/employees", restEndpointGetEmployee.getUrl());
-    Field employeeField = restEndpointGetEmployee.getResponse();
-    Assert.assertEquals("Employee", employeeField.getObjectName());
-    Assert.assertEquals(Type.fromTypeName("OBJECT_LIST"), employeeField.getType());
+    
+    checkEmployeeExchangeV1ApiGroupGetAllEmployeesRestEndpointRequest(restEndpointGetEmployee.getRequest());
+    checkEmployeeExchangeV1ApiGroupGetAllEmployeesRestEndpointResponse(restEndpointGetEmployee.getResponse());
+
+  }
+  
+  private void checkEmployeeExchangeV1ApiGroupGetAllEmployeesRestEndpointRequest(Field restEndpointGetAllEmployeesRequest) {
+    Assert.assertNotNull(restEndpointGetAllEmployeesRequest);
+    List<String> requestImplementedInterfaces = restEndpointGetAllEmployeesRequest.getImplementedInterfaces();
+    Assert.assertEquals(1, requestImplementedInterfaces.size());
+    Assert.assertEquals("org.jxapi.exchanges.employee.EmployeePaginatedRequest", requestImplementedInterfaces.get(0));
+    List<Field> requestProperties = restEndpointGetAllEmployeesRequest.getProperties();
+    Assert.assertEquals(2, requestProperties.size());
+    Field pageField = requestProperties.get(0);
+    Assert.assertEquals("page", pageField.getName());
+    Assert.assertEquals(Type.INT, pageField.getType());
+    Assert.assertEquals("Page number to return, defaults to 1.", pageField.getDescription());
+    Assert.assertEquals(1, pageField.getSampleValue());
+    Field sizeField = requestProperties.get(1);
+    Assert.assertEquals("size", sizeField.getName());
+    Assert.assertEquals(Type.INT, sizeField.getType());
+    Assert.assertEquals("Number of employees to return per page.<br> Defaults to ${constants.defaultPageSize}.<br> Maximum is ${constants.maxPageSize}.\n", 
+                        sizeField.getDescription());
+  }
+  
+  private void checkEmployeeExchangeV1ApiGroupGetAllEmployeesRestEndpointResponse(Field restEndpointGetAllEmployeesReesponse) {
+    List<String> responseImplementedInterfaces = restEndpointGetAllEmployeesReesponse.getImplementedInterfaces();
+    Assert.assertEquals(1, responseImplementedInterfaces.size());
+    Assert.assertEquals("org.jxapi.exchanges.employee.EmployeePaginatedResponse", responseImplementedInterfaces.get(0));
+    List<Field> employeeResponseProperties = restEndpointGetAllEmployeesReesponse.getProperties();
+    Assert.assertEquals(3, employeeResponseProperties.size());
+    Field pageField = employeeResponseProperties.get(0);
+    Assert.assertEquals("page", pageField.getName());
+    Assert.assertEquals(Type.INT, pageField.getType());
+    Assert.assertEquals("Page index, starting from 1", pageField.getDescription());
+    Assert.assertEquals(1, pageField.getSampleValue());
+    Field totalPagesField = employeeResponseProperties.get(1);
+    Assert.assertEquals("totalPages", totalPagesField.getName());
+    Assert.assertEquals(Type.INT, totalPagesField.getType());
+    Assert.assertEquals("Total number of pages available", totalPagesField.getDescription());
+    Assert.assertEquals(10, totalPagesField.getSampleValue());
+    Field employeesField = employeeResponseProperties.get(2);
+    Assert.assertEquals("employees", employeesField.getName());
+    Assert.assertEquals("Employee", employeesField.getObjectName());
   }
   
   private void checkEmployeeExchangeV1ApiGroupAddEmployeesRestEndpoint(RestEndpointDescriptor restEndpointGetEmployee) {

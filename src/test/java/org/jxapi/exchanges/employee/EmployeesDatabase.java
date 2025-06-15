@@ -8,6 +8,8 @@ public interface EmployeesDatabase {
 
   List<Employee> getAllEmployees();
   
+  List<Employee> getAllEmployees(int page, int pageSize);
+  
   Employee getEmployee(Integer id);
   
   void addEmployee(Employee employee) throws NullEmployeeIdException, EmployeeIdConflictException;

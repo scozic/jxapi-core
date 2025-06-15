@@ -1,6 +1,5 @@
 package org.jxapi.exchanges.employee.gen.v1.demo;
 
-import java.util.List;
 import java.util.Properties;
 import java.util.concurrent.ExecutionException;
 
@@ -9,36 +8,50 @@ import org.jxapi.exchange.ExchangeApiObserver;
 import org.jxapi.exchanges.employee.gen.EmployeeExchange;
 import org.jxapi.exchanges.employee.gen.EmployeeExchangeImpl;
 import org.jxapi.exchanges.employee.gen.v1.EmployeeV1Api;
-import org.jxapi.exchanges.employee.gen.v1.pojo.Employee;
+import org.jxapi.exchanges.employee.gen.v1.pojo.EmployeeV1GetAllEmployeesRequest;
+import org.jxapi.exchanges.employee.gen.v1.pojo.EmployeeV1GetAllEmployeesResponse;
 import org.jxapi.netutils.rest.RestResponse;
 import org.jxapi.util.DemoUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Snippet to test call to {@link EmployeeV1Api#getAllEmployees()})}<br>
+ * Snippet to test call to {@link EmployeeV1Api#getAllEmployees(org.jxapi.exchanges.employee.gen.v1.pojo.EmployeeV1GetAllEmployeesRequest)})}<br>
  */
 @Generated("org.jxapi.generator.java.exchange.api.demo.RestEndpointDemoGenerator")
 public class EmployeeV1GetAllEmployeesDemo {
   private static final Logger log = LoggerFactory.getLogger(EmployeeV1GetAllEmployeesDemo.class);
   
   /**
-   * Submits a call to {@link EmployeeV1Api#getAllEmployees()}and waits for response.
+   * Creates a sample value for the request field of type EmployeeV1GetAllEmployeesRequest using sample value(s) defined in the field descriptor.
+   * 
+   * @param properties the configuration properties to use for the sample value generation.
+   */
+  public static EmployeeV1GetAllEmployeesRequest createRequest(Properties properties) {
+    EmployeeV1GetAllEmployeesRequest request = new EmployeeV1GetAllEmployeesRequest();
+    request.setPage(Integer.valueOf("1"));
+    request.setSize(Integer.valueOf("10"));
+    return request;
+  }
+  
+  /**
+   * Submits a call to {@link EmployeeV1Api#getAllEmployees(org.jxapi.exchanges.employee.gen.v1.pojo.EmployeeV1GetAllEmployeesRequest)}and waits for response.
+   * @param request     The request to submit
    * @param configProperties  The configuration properties to instantiate exchange with
    * @param apiObserver API observer that will notified of events. Is subscribed before REST API call and unsubscribed right after. Ignored if <code>null</code>
    * @return Response data resulting from this API call
    * @throws InterruptedException eventually thrown waiting for response
    * @throws ExecutionException raised if response is not OK, see {@link RestResponse#isOk()}
    */
-  public static RestResponse<List<Employee>> execute(Properties configProperties, ExchangeApiObserver apiObserver) throws InterruptedException, ExecutionException {
+  public static RestResponse<EmployeeV1GetAllEmployeesResponse> execute(EmployeeV1GetAllEmployeesRequest request, Properties configProperties, ExchangeApiObserver apiObserver) throws InterruptedException, ExecutionException {
     EmployeeExchange exchange = new EmployeeExchangeImpl("test-" + EmployeeExchange.ID, configProperties);
     EmployeeV1Api api = exchange.getEmployeeV1Api();
-    log.info("Calling org.jxapi.exchanges.employee.gen.v1.EmployeeV1Api.getAllEmployees() API");
+    log.info("Calling org.jxapi.exchanges.employee.gen.v1.EmployeeV1Api.getAllEmployees() API with request:{}", request);
     if (apiObserver != null) {
       api.subscribeObserver(apiObserver);
     }
     try {
-      return DemoUtil.checkResponse(api.getAllEmployees());
+      return DemoUtil.checkResponse(api.getAllEmployees(request));
     }
     finally {
       if (apiObserver != null) {
@@ -49,13 +62,14 @@ public class EmployeeV1GetAllEmployeesDemo {
   }
   
   /**
-   * Runs REST endpoint demo snippet calling {@link EmployeeV1Api#getAllEmployees()}
+   * Runs REST endpoint demo snippet calling {@link EmployeeV1Api#getAllEmployees(org.jxapi.exchanges.employee.gen.v1.pojo.EmployeeV1GetAllEmployeesRequest)}
    * @param args no argument expected
    */
   public static void main(String[] args) {
     try {
       Properties properties = DemoUtil.loadDemoExchangeProperties(EmployeeExchange.ID);
-      execute(properties,
+      execute(createRequest(properties),
+              properties,
               DemoUtil::logRestApiEvent);
       System.exit(0);
     }

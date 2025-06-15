@@ -2,6 +2,8 @@ package org.jxapi.exchanges.employee;
 
 import java.io.IOException;
 import java.util.Date;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -12,12 +14,15 @@ import org.glassfish.grizzly.http.server.Request;
 import org.glassfish.grizzly.http.server.Response;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
+import org.jxapi.exchanges.employee.gen.v1.EmployeeV1Constants;
 import org.jxapi.exchanges.employee.gen.v1.deserializers.EmployeeDeserializer;
 import org.jxapi.exchanges.employee.gen.v1.pojo.Employee;
 import org.jxapi.exchanges.employee.gen.v1.pojo.EmployeeV1EmployeeUpdatesMessage;
+import org.jxapi.exchanges.employee.gen.v1.pojo.EmployeeV1GetAllEmployeesRequest;
+import org.jxapi.exchanges.employee.gen.v1.pojo.EmployeeV1GetAllEmployeesResponse;
 import org.jxapi.netutils.rest.HttpMethod;
 import org.jxapi.netutils.rest.HttpRequest;
+import org.jxapi.netutils.rest.HttpRequestUtil;
 import org.jxapi.netutils.rest.HttpResponse;
 import org.jxapi.netutils.rest.javanet.HttpServerUtil;
 import org.jxapi.netutils.websocket.mock.server.MockWebsocketServer;
@@ -30,6 +35,22 @@ import org.jxapi.util.JsonUtil;
 public class EmployeeExchangeServer {
   
   private static final Logger log = LoggerFactory.getLogger(EmployeeExchangeServer.class);
+  
+  /**
+   * Creates {@link EmployeeV1GetAllEmployeesRequest} from URL.
+   * 
+   * @param getAllEmployeesUrl URL to parse
+   * @return {@link EmployeeV1GetAllEmployeesRequest} object. If no query
+   *         parameters in provided URL, (which can be <code>null</code> or
+   *         empty), a default request with page=1 and size = default size (10)
+   */
+  public static EmployeeV1GetAllEmployeesRequest creatGetAllEmployeesRequestFromUrl(String getAllEmployeesUrl) {
+    Map<String, String> queryParams = HttpRequestUtil.parseUrlQueryParams(getAllEmployeesUrl);
+    return EmployeeV1GetAllEmployeesRequest.builder()
+        .page(queryParams.containsKey("page") ? Integer.valueOf(queryParams.get("page")) : 1) 
+        .size(queryParams.containsKey("size") ? Integer.valueOf(queryParams.get("size")) : EmployeeV1Constants.DEFAULT_PAGE_SIZE)
+        .build();
+  }
   
   /**
    * System property to set HTTP server port.
@@ -147,7 +168,7 @@ public class EmployeeExchangeServer {
     try {
       if (httpRequest.getUrl().contains("employees")) {
         if (HttpMethod.GET.equals(httpRequest.getHttpMethod())) {
-                  return getAllEmployees();
+                  return getAllEmployees(creatGetAllEmployeesRequestFromUrl(httpRequest.getUrl()));
         }
       } else if (httpRequest.getUrl().contains("employee")) {
         if (HttpMethod.GET.equals(httpRequest.getHttpMethod())) {
@@ -177,10 +198,23 @@ public class EmployeeExchangeServer {
     return response;
   }
 
-  private HttpResponse getAllEmployees() {
-    log.info("Getting all employees");
+  private HttpResponse getAllEmployees(EmployeeV1GetAllEmployeesRequest employeeV1GetAllEmployeesRequest) {
+    log.info("Getting all employees:{}", employeeV1GetAllEmployeesRequest);
+    List<Employee> employees = null;
+    try {
+      employees = employeesDatabase.getAllEmployees(employeeV1GetAllEmployeesRequest.getPage(),
+          employeeV1GetAllEmployeesRequest.getSize());
+    } catch (IllegalArgumentException e) {
+      log.error("Error getting all employees with request:" + employeeV1GetAllEmployeesRequest, e);
+      return createHttpResponse(400);
+    }
+    int totalPageCount = (int) Math.ceil((double) employeesDatabase.getAllEmployees().size() / employeeV1GetAllEmployeesRequest.getSize());
     HttpResponse response = createHttpResponse(200);
-    response.setBody(JsonUtil.pojoToJsonString(employeesDatabase.getAllEmployees()));
+    response.setBody(JsonUtil.pojoToJsonString(EmployeeV1GetAllEmployeesResponse.builder()
+        .page(employeeV1GetAllEmployeesRequest.getPage())
+        .totalPages(totalPageCount)
+        .employees(employees)
+        .build()));
     return response;
   }
   

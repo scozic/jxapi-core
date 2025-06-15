@@ -3,6 +3,7 @@ package org.jxapi.exchange;
 
 import java.net.http.HttpClient;
 import java.util.Properties;
+import java.util.function.Function;
 
 import org.jxapi.netutils.deserialization.MessageDeserializer;
 import org.jxapi.netutils.rest.FutureRestResponse;
@@ -14,6 +15,10 @@ import org.jxapi.netutils.rest.HttpRequestInterceptor;
 import org.jxapi.netutils.rest.HttpRequestInterceptorFactory;
 import org.jxapi.netutils.rest.RestResponse;
 import org.jxapi.netutils.rest.javanet.JavaNetHttpRequestExecutor;
+import org.jxapi.netutils.rest.pagination.NextPageResolver;
+import org.jxapi.netutils.rest.pagination.PaginatedRestRequest;
+import org.jxapi.netutils.rest.pagination.PaginatedRestResponse;
+import org.jxapi.netutils.rest.pagination.PaginationUtil;
 import org.jxapi.netutils.rest.ratelimits.RequestThrottler;
 import org.jxapi.netutils.rest.ratelimits.RequestThrottlingMode;
 import org.jxapi.netutils.websocket.DefaultWebsocketEndpoint;
@@ -257,7 +262,26 @@ public abstract class AbstractExchangeApi extends DefaultDisposable implements E
    * @param deserializer The deserializer to use to deserialize the response
    * @return The response to the request, as a {@link FutureRestResponse}
    */
+  @SuppressWarnings("unchecked")
+  protected <R extends PaginatedRestRequest, A extends PaginatedRestResponse> FutureRestResponse<A> submitPaginated(HttpRequest request, MessageDeserializer<A> deserializer, Function<R, FutureRestResponse<A>> paginatedRestEndpoint) {
+    return submit(request, deserializer, PaginationUtil.getNextPageResolver((R) request.getRequest(), paginatedRestEndpoint));
+  }
+  
+  /**
+   * Submits a REST request asynchronously using the specified request and message deserializer to deserialize response.
+   * If a request throttler is set, the request is submitted through the throttler.
+   * <br>
+   * This method should used by subclasses to submit REST requests.
+   * @param <A> The type of the response to the request
+   * @param request The request to submit
+   * @param deserializer The deserializer to use to deserialize the response
+   * @return The response to the request, as a {@link FutureRestResponse}
+   */
   protected <A> FutureRestResponse<A> submit(HttpRequest request, MessageDeserializer<A> deserializer) {
+    return submit(request, deserializer, null);
+  }
+  
+  private <A> FutureRestResponse<A> submit(HttpRequest request, MessageDeserializer<A> deserializer, NextPageResolver<A> nextPageResolver) {
     log.debug("{} {} > {}", request.getHttpMethod(), request.getEndpoint(), request);
     dispatchApiEvent(ExchangeApiEvent.createHttpRequestEvent(request));
     if (request.getHttpMethod().requestHasBody && request.getRequest() != null) {
@@ -266,7 +290,7 @@ public abstract class AbstractExchangeApi extends DefaultDisposable implements E
     if (requestThrottler != null) {
       return requestThrottler.submit(request, r -> { 
         try {
-          return submitNow(r, deserializer);
+          return submitNow(r, deserializer, nextPageResolver);
         } catch (Exception ex) {
           log.error("Error submitting request " + request, ex);
           FutureRestResponse<A> callback = new FutureRestResponse<>();
@@ -277,11 +301,11 @@ public abstract class AbstractExchangeApi extends DefaultDisposable implements E
         }
       });
     } else {
-      return submitNow(request, deserializer);
+      return submitNow(request, deserializer, nextPageResolver);
     }
   }
 
-  private <A> FutureRestResponse<A> submitNow(HttpRequest request, MessageDeserializer<A> deserializer) {
+  private <A> FutureRestResponse<A> submitNow(HttpRequest request, MessageDeserializer<A> deserializer, NextPageResolver<A> nextPageResolver) {
     if (httpRequestExecutor == null) {
       throw new IllegalStateException("No " + HttpRequestExecutor.class.getSimpleName() + " set");
     }
@@ -293,6 +317,10 @@ public abstract class AbstractExchangeApi extends DefaultDisposable implements E
     httpRequestExecutor.execute(request).thenAccept(httpResponse -> {
       RestResponse<A> response = new RestResponse<>(httpResponse);
       response.setHttpStatus(httpResponse.getResponseCode());
+      if (nextPageResolver != null) {
+        response.setNextPageResolver(nextPageResolver);
+        response.setPaginated(true);
+      }
       if(response.isOk()) {
         try {
           response.setResponse(deserializer.deserialize(httpResponse.getBody()));

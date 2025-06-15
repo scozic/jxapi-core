@@ -11,6 +11,16 @@ public class EmployeeV1Constants {
   private EmployeeV1Constants(){}
   
   /**
+   * Default page size for paginated requests
+   */
+  public static final Integer DEFAULT_PAGE_SIZE = Integer.valueOf("10");
+  
+  /**
+   * Maximum page size for paginated requests
+   */
+  public static final Integer MAX_PAGE_SIZE = Integer.valueOf("10000");
+  
+  /**
    * Regular employee profile
    */
   public static final String PROFILE_REGULAR = "REGULAR";
