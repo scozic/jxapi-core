@@ -263,7 +263,10 @@ public abstract class AbstractExchangeApi extends DefaultDisposable implements E
    * @return The response to the request, as a {@link FutureRestResponse}
    */
   @SuppressWarnings("unchecked")
-  protected <R extends PaginatedRestRequest, A extends PaginatedRestResponse> FutureRestResponse<A> submitPaginated(HttpRequest request, MessageDeserializer<A> deserializer, Function<R, FutureRestResponse<A>> paginatedRestEndpoint) {
+  protected <R extends PaginatedRestRequest, A extends PaginatedRestResponse> FutureRestResponse<A> submitPaginated(
+      HttpRequest request, 
+      MessageDeserializer<A> deserializer, 
+      Function<R, FutureRestResponse<A>> paginatedRestEndpoint) {
     return submit(request, deserializer, PaginationUtil.getNextPageResolver((R) request.getRequest(), paginatedRestEndpoint));
   }
   

@@ -151,7 +151,7 @@ public class ExchangeDescriptorParserTest {
     Assert.assertEquals("https://com.sample.mycex/exchangeInfo", exchangeInfoEndPoint.getUrl());
     List<Field> exchangeInfoParameters = exchangeInfoEndPoint.getRequest().getProperties();
     
-    Assert.assertEquals(2, exchangeInfoParameters.size());
+    Assert.assertEquals(3, exchangeInfoParameters.size());
     Field symbolsParameter = exchangeInfoParameters.get(0);
     Assert.assertEquals("symbols", symbolsParameter.getName());
     Assert.assertEquals("The list of symbol to fetch market information for. Leave empty to fetch all markets. Author: ${constants.author}", symbolsParameter.getDescription());
@@ -159,18 +159,40 @@ public class ExchangeDescriptorParserTest {
     Assert.assertEquals(CanonicalType.STRING, symbolsParameter.getType().getSubType().getCanonicalType());
     Assert.assertEquals("[\"${demoSymbol}\"]", symbolsParameter.getSampleValue());
     
+    Field apiKeyParameter = exchangeInfoParameters.get(1);
+    Assert.assertEquals("apiKey", apiKeyParameter.getName());
+    Assert.assertEquals("API key, see ${config.apiKey}", apiKeyParameter.getDescription());
+    Assert.assertEquals(CanonicalType.STRING, apiKeyParameter.getType().getCanonicalType());
+    Assert.assertEquals("${config.apiKey}", apiKeyParameter.getSampleValue());
+    
+    Field pageParameter = exchangeInfoParameters.get(2);
+    Assert.assertEquals("page", pageParameter.getName());
+    Assert.assertEquals("Page number to return, defaults to 1. Author: ${constants.author}", pageParameter.getDescription());
+    
     checkExchangeInfoResponse(exchangeInfoEndPoint.getResponse().getProperties());
   }
   
   private void checkExchangeInfoResponse(List<Field> exchangeInfoResponse) {
-    Assert.assertEquals(2, exchangeInfoResponse.size());
+    Assert.assertEquals(4, exchangeInfoResponse.size());
     Field responseCode = exchangeInfoResponse.get(0);
     Assert.assertEquals("responseCode", responseCode.getName());
     Assert.assertEquals("Request response code", responseCode.getDescription());
     Assert.assertEquals(CanonicalType.INT, responseCode.getType().getCanonicalType());
     Assert.assertEquals("0", responseCode.getSampleValue());
     
-    Field payload = exchangeInfoResponse.get(1);
+    Field currentPage = exchangeInfoResponse.get(1);
+    Assert.assertEquals("currentPage", currentPage.getName());
+    Assert.assertEquals("Current page index.", currentPage.getDescription());
+    Assert.assertEquals(CanonicalType.INT, currentPage.getType().getCanonicalType());
+    Assert.assertEquals(1, currentPage.getSampleValue());
+    
+    Field totalPages = exchangeInfoResponse.get(2);
+    Assert.assertEquals("totalPages", totalPages.getName());
+    Assert.assertEquals("Total number of pages.", totalPages.getDescription());
+    Assert.assertEquals(CanonicalType.INT, totalPages.getType().getCanonicalType());
+    Assert.assertEquals(10, totalPages.getSampleValue());
+    
+    Field payload = exchangeInfoResponse.get(3);
     Assert.assertEquals("payload", payload.getName());
     Assert.assertEquals("List of market information for each requested symbol. Author: ${constants.author}", payload.getDescription());
     Assert.assertEquals(CanonicalType.LIST, payload.getType().getCanonicalType());

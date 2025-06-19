@@ -59,6 +59,7 @@ public class RestEndpointDemoGeneratorTest {
         + "    MyTestExchangeMarketDataExchangeInfoRequest request = new MyTestExchangeMarketDataExchangeInfoRequest();\n"
         + "    request.setSymbols(new ListJsonFieldDeserializer<>(StringJsonFieldDeserializer.getInstance()).deserialize(\"[\\\"${demoSymbol}\\\"]\"));\n"
         + "    request.setApiKey(EncodingUtil.substituteArguments(\"${config.apiKey}\", \"config.apiKey\", PropertiesUtil.getString(properties, MyTestExchangeProperties.API_KEY)));\n"
+        + "    request.setPage(Integer.valueOf(\"1\"));\n"
         + "    return request;\n"
         + "  }\n"
         + "  \n"

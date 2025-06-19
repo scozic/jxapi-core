@@ -14,5 +14,9 @@ package org.jxapi.netutils.rest.pagination;
  */
 public interface PaginatedRestRequest {
 
+  /**
+   * Sets the next page for the paginated request based on the last page's response.
+   * @param lastPage the last page's response, which contains information about the next page.
+   */
   void setNextPage(PaginatedRestResponse lastPage);
 }

@@ -32,16 +32,26 @@
 					"description": "Fetch market information of symbols that can be traded. Author: ${constants.author}",
 					"docUrl": "https://docs.myexchange.com/api/rest/marketData/exchangeInfo",
 					"url": "https://com.sample.mycex/exchangeInfo",
+					"paginated": true,
 					"request":{
+						"implementedInterfaces": [
+							"com.foo.bar.MyTestExchangePaginatedRequest"
+						], 
 					    "description": "Request parameters for fetching exchange info. Author: ${constants.author}",
 						"properties": [
 							{"name":"symbols", "type": "STRING_LIST", "description":"The list of symbol to fetch market information for. Leave empty to fetch all markets. Author: ${constants.author}", "sampleValue":"[\"${demoSymbol}\"]"},
-							{"name": "apiKey", "type":"STRING", "description":"API key, see ${config.apiKey}", "sampleValue": "${config.apiKey}"}
+							{"name": "apiKey", "type":"STRING", "description":"API key, see ${config.apiKey}", "sampleValue": "${config.apiKey}"},
+							{"name": "page", "type": "INT", "description": "Page number to return, defaults to 1. Author: ${constants.author}", "sampleValue": 1}
 						]
 					},
-					"response":{ 
+					"response":{
+						"implementedInterfaces": [
+							"com.foo.bar.MyTestExchangePaginatedResponse"
+						], 
 						"properties": [
 							{"name":"responseCode", "type": "INT", "description":"Request response code", "sampleValue":"0"},
+							{"name":"currentPage", "type": "INT", "description": "Current page index.", "sampleValue": 1},
+							{"name":"totalPages", "type": "INT", "description": "Total number of pages.", "sampleValue": 10},
 							{"name":"payload", "type": "OBJECT_LIST", "description":"List of market information for each requested symbol. Author: ${constants.author}", "properties":[
 									{"name":"symbol", "description":"Market symbol (STRING type implicit). Author: ${constants.author}", "sampleValue":"BTC_USDT"},
 									{"name":"minOrderSize", "type": "BIGDECIMAL", "description":"Minimum order amount. Author: ${constants.author}", "sampleValue":"0.0001"},

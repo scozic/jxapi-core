@@ -6,12 +6,17 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.Properties;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.function.Function;
 
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-
+import org.jxapi.exchanges.employee.gen.v1.deserializers.EmployeeV1GetAllEmployeesResponseDeserializer;
+import org.jxapi.exchanges.employee.gen.v1.pojo.EmployeeV1GetAllEmployeesRequest;
+import org.jxapi.exchanges.employee.gen.v1.pojo.EmployeeV1GetAllEmployeesResponse;
+import org.jxapi.exchanges.employee.gen.v1.serializers.EmployeeV1GetAllEmployeesResponseSerializer;
 import org.jxapi.netutils.deserialization.MessageDeserializer;
 import org.jxapi.netutils.deserialization.RawStringMessageDeserializer;
 import org.jxapi.netutils.rest.FutureRestResponse;
@@ -42,6 +47,7 @@ import org.jxapi.netutils.websocket.multiplexing.WebsocketMessageTopicMatcherFac
 import org.jxapi.netutils.websocket.spring.SpringWebsocket;
 import org.jxapi.observability.MockExchangeApiObserver;
 import org.jxapi.observability.Observable;
+import org.jxapi.util.JsonUtil;
 
 /**
  * Unit test for {@link AbstractExchangeApi}
@@ -119,6 +125,49 @@ public class AbstractExchangeApiTest {
     Assert.assertTrue(actualResponse.isOk());
     Assert.assertEquals("pong", actualResponse.getResponse());
     Assert.assertEquals(200, actualResponse.getHttpStatus());
+    event = observer.pop();
+    Assert.assertEquals(ExchangeApiEventType.HTTP_RESPONSE, event.getType());
+    Assert.assertTrue(event.getHttpResponse().isOk());
+  }
+  
+  @Test
+  public void testSubmitAndExecutePaginatedRequest() throws Exception {
+    MockExchangeApiObserver observer = new MockExchangeApiObserver();
+    exchangeApi.subscribeObserver(observer);
+    MockHttpRequestExecutor executor = createMockHttpRequestExecutor();
+    
+    EmployeeV1GetAllEmployeesRequest pageRequest = new EmployeeV1GetAllEmployeesRequest();
+    pageRequest.setSize(10);
+    pageRequest.setPage(1);
+    EmployeeV1GetAllEmployeesResponse pageResponse = new EmployeeV1GetAllEmployeesResponse();
+    pageResponse.setTotalPages(25);
+    pageResponse.setPage(1);
+    
+    Function<EmployeeV1GetAllEmployeesRequest, FutureRestResponse<EmployeeV1GetAllEmployeesResponse>> paginatedRestEndpoint = r -> { 
+      // Not called in this test, just a dummy function
+      return new FutureRestResponse<>();
+    };
+    
+    HttpRequest request = createDummyRequest();
+    request.setRequest(pageRequest);
+    MessageDeserializer<EmployeeV1GetAllEmployeesResponse> deserializer = new EmployeeV1GetAllEmployeesResponseDeserializer();
+    FutureRestResponse<EmployeeV1GetAllEmployeesResponse> response = exchangeApi.submitPaginated(request, deserializer, paginatedRestEndpoint);
+    ExchangeApiEvent event = observer.pop();
+    Assert.assertEquals(ExchangeApiEventType.HTTP_REQUEST, event.getType());
+    Assert.assertEquals(request, event.getHttpRequest());
+    MockFutureHttpResponse mockResponse = executor.popRequest();
+    HttpResponse okResponse = createDummyOkResponse(request);
+    RestResponse<EmployeeV1GetAllEmployeesResponse> restResponse = new RestResponse<>(okResponse);
+    restResponse.setResponse(pageResponse);
+    okResponse.setBody(JsonUtil.pojoToJsonString(pageResponse));
+    mockResponse.complete(okResponse);
+    Assert.assertEquals(request, mockResponse.getRequest());
+    
+    RestResponse<EmployeeV1GetAllEmployeesResponse> actualResponse = response.get(1, TimeUnit.MILLISECONDS);
+    Assert.assertTrue(actualResponse.isOk());
+    Assert.assertEquals(pageResponse, actualResponse.getResponse());
+    Assert.assertEquals(200, actualResponse.getHttpStatus());
+    Assert.assertNotNull(actualResponse.getNextPageResolver());
     event = observer.pop();
     Assert.assertEquals(ExchangeApiEventType.HTTP_RESPONSE, event.getType());
     Assert.assertTrue(event.getHttpResponse().isOk());

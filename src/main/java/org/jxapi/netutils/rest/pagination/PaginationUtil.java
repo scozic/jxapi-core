@@ -50,17 +50,15 @@ public class PaginationUtil {
    * @param <R> the type of the paginated REST request
    * @param <A> the type of the paginated REST response
    * @param previousPageRequest the request used to fetch the previous page, which will be cloned to create the next page request
-   * @param paginatedRestEndpoint the function that takes a paginated REST request and returns a FutureRestResponse for the next page
+   * @param paginatedRestEndpoint the function that takes a paginated REST request and returns a FutureRestResponse for the next page.
    * @return a NextPageResolver that can be used to fetch the next page of a paginated REST response
    */
   public static <R extends PaginatedRestRequest, A extends PaginatedRestResponse> NextPageResolver<A> getNextPageResolver(
       R previousPageRequest, 
       Function<R, FutureRestResponse<A>> paginatedRestEndpoint ) {
     return a -> {
-      if (!hasNextPage(a)) {
-        FutureRestResponse<A> future = new FutureRestResponse<>();
-        future.complete(a);
-        return future;
+      if (a == null || !hasNextPage(a)) {
+        throw new IllegalArgumentException("Cannot fetch next page: no next page available in the response:" + a);
       }
       @SuppressWarnings("unchecked")
       R nextRequest = ((DeepCloneable<R>) previousPageRequest).deepClone();
@@ -79,16 +77,21 @@ public class PaginationUtil {
    *                                  have a next page
    */
   public static <A extends PaginatedRestResponse> FutureRestResponse<A> fetchNextPage(RestResponse<A> pageResponse) {
-    if (pageResponse == null) {
-      throw new IllegalArgumentException("Cannot fetch next page: page response is null");
-    }
-    if (!hasNextPage(pageResponse)) {
-      throw new IllegalArgumentException("Cannot fetch next page: no next page available in the response:" + pageResponse);
-    }
-    
     return pageResponse.getNextPageResolver().nextPage(pageResponse);
   }
   
+  /**
+   * Fetches all pages of a paginated REST response.
+   * <p>
+   * This method will recursively fetch all pages until there are no more pages
+   * available. It uses the provided FutureRestResponse to collect all pages and
+   * return them as a list.
+   * 
+   * @param pageResponse the initial paginated REST response from which to start
+   *                     fetching pages
+   * @return a FutureRestResponse containing a list of all fetched pages starting with the provided first page response.
+   * @throws IllegalArgumentException if the page response is null
+   */
   public static <A extends PaginatedRestResponse> FutureRestResponse<List<A>> fetchAllPages(FutureRestResponse<A> pageResponse) {
     if (pageResponse == null) {
       throw new IllegalArgumentException("Cannot fetch all pages: page response is null");
@@ -113,11 +116,14 @@ public class PaginationUtil {
           fetchAllPages(fetchNextPage(pageResponse), pages, finalResponse);
         } else {
           log.debug("fetchAllPages: Got final response with page #{}: {}", pages.size(), pageResponse);
-          completeFetchAllPages(pageResponse, pages, finalResponse, null);
+          completeFetchAllPages(pageResponse, pages, finalResponse);
         }    
       } catch (Exception ex) {
+        // Remark: Normally unreachable code, as processing the pageResponse should not throw an exception here.
+        // However, if it does, we log the error and complete the final response with the exception.
         log.error(String.format("Error while fetching all pages, got error at page #%d:%s", pages.size(), pageResponse), ex);
-        completeFetchAllPages(pageResponse, pages, finalResponse, ex);
+        pageResponse.setException(ex);
+        completeFetchAllPages(pageResponse, pages, finalResponse);
       }
     });
   }
@@ -125,14 +131,10 @@ public class PaginationUtil {
   private static <A extends PaginatedRestResponse> void completeFetchAllPages(
       RestResponse<A> currentPageResponse, 
       List<A> pages, 
-      FutureRestResponse<List<A>> finalResponse, Exception ex) {
+      FutureRestResponse<List<A>> finalResponse) {
     RestResponse<List<A>> pagesResponse = new RestResponse<>(currentPageResponse.getHttpResponse());
     pagesResponse.setResponse(pages);
-    if (ex != null) {
-      pagesResponse.setException(ex);
-    } else {
-      pagesResponse.setException(currentPageResponse.getException());
-    }
+    pagesResponse.setException(currentPageResponse.getException());
     finalResponse.complete(pagesResponse);
   }
 
