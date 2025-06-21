@@ -6,7 +6,6 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.Properties;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Function;
 
@@ -16,7 +15,6 @@ import org.junit.Test;
 import org.jxapi.exchanges.employee.gen.v1.deserializers.EmployeeV1GetAllEmployeesResponseDeserializer;
 import org.jxapi.exchanges.employee.gen.v1.pojo.EmployeeV1GetAllEmployeesRequest;
 import org.jxapi.exchanges.employee.gen.v1.pojo.EmployeeV1GetAllEmployeesResponse;
-import org.jxapi.exchanges.employee.gen.v1.serializers.EmployeeV1GetAllEmployeesResponseSerializer;
 import org.jxapi.netutils.deserialization.MessageDeserializer;
 import org.jxapi.netutils.deserialization.RawStringMessageDeserializer;
 import org.jxapi.netutils.rest.FutureRestResponse;
