@@ -7,6 +7,7 @@ apis:
       httpMethod: GET
       docUrl: https://www.example.com/docs/employee/getAll
       url: /employees
+      paginated: true
       request:
         implementedInterfaces: 
         - org.jxapi.exchanges.employee.EmployeePaginatedRequest

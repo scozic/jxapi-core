@@ -411,15 +411,16 @@ public class ExchangeDescriptorParserTest {
     checkEmployeeObjectField(employeeField);
   }
   
-  private void checkEmployeeExchangeV1ApiGroupGetAllEmployeesRestEndpoint(RestEndpointDescriptor restEndpointGetEmployee) {
-    Assert.assertEquals("getAllEmployees", restEndpointGetEmployee.getName());
-    Assert.assertEquals("Get all employees", restEndpointGetEmployee.getDescription());
-    Assert.assertEquals(HttpMethod.GET, restEndpointGetEmployee.getHttpMethod());
-    Assert.assertEquals("https://www.example.com/docs/employee/getAll", restEndpointGetEmployee.getDocUrl());
-    Assert.assertEquals("/employees", restEndpointGetEmployee.getUrl());
+  private void checkEmployeeExchangeV1ApiGroupGetAllEmployeesRestEndpoint(RestEndpointDescriptor restEndpointGetAllEmployees) {
+    Assert.assertEquals("getAllEmployees", restEndpointGetAllEmployees.getName());
+    Assert.assertEquals("Get all employees", restEndpointGetAllEmployees.getDescription());
+    Assert.assertEquals(HttpMethod.GET, restEndpointGetAllEmployees.getHttpMethod());
+    Assert.assertEquals("https://www.example.com/docs/employee/getAll", restEndpointGetAllEmployees.getDocUrl());
+    Assert.assertEquals("/employees", restEndpointGetAllEmployees.getUrl());
+    Assert.assertTrue(restEndpointGetAllEmployees.isPaginated());
     
-    checkEmployeeExchangeV1ApiGroupGetAllEmployeesRestEndpointRequest(restEndpointGetEmployee.getRequest());
-    checkEmployeeExchangeV1ApiGroupGetAllEmployeesRestEndpointResponse(restEndpointGetEmployee.getResponse());
+    checkEmployeeExchangeV1ApiGroupGetAllEmployeesRestEndpointRequest(restEndpointGetAllEmployees.getRequest());
+    checkEmployeeExchangeV1ApiGroupGetAllEmployeesRestEndpointResponse(restEndpointGetAllEmployees.getResponse());
 
   }
   
