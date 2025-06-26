@@ -11,131 +11,163 @@ The following is content of a complete descriptor file [employeeExchange.yaml](.
 Descriptor file can also be specified in JSON format, see [employeeExchange.json](../../src/test/resources/employeeExchange.json).
 
 ```yaml
-name: "Employee"
+id: Employee
+version: 1.0.0
 description: > 
- Employee exchange is a demo exchange REST APIs to get, add, delete and 
- update employees and a websocket endpoint to get notified of updates from an employee database.<br>
- A server can be started using <code>org.jxapi.exchanges.employee.EmployeeExchangeServer</code> class to serve these APIs.<br>
- The URL of the server must be set using the baseUrl property.<br>
- Notice how the 'employee' object present in APIs request and responses is used in multiple endpoints and its properties defined only once.
-docUrl: "https://www.example.com/docs/employee"
+  Employee exchange is a demo exchange REST APIs to get, add, delete and
+  update employees and a websocket endpoint to get notified of updates from an employee database.<br>
+  A server can be started using <code>org.jxapi.exchanges.employee.EmployeeExchangeServer</code> class to serve these APIs.<br>
+  The URL of the HTTP server and Websocket server must be set using the ${config.baseHttpUrl} and ${config.baseWebsocketUrl} properties.<br>
+  Notice how the 'employee' object present in APIs request and responses is used in multiple endpoints and its properties defined only once.
+docUrl: https://www.example.com/docs/employee
 properties:
- - name: "baseHttpUrl"
+ - name: baseHttpUrl
    description: "Base URL for REST endpoints the Employee Exchange API"
- - name: "baseWebsocketUrl"
-   description: "Base URL for websocket endpoints of the Employee Exchange API"   
-constants:
- - name: "baseUrlPattern"
-   description: "Value to replace in HTTP or Websocket base URL with value of <i>baseHttpUrl</i> or <i>baseWebsocketUrl</i> properties"
-   value: "BASEURL"
-basePackage: "org.jxapi.exchanges.employee.gen"
-httpUrl: "BASEURL"
+ - name: baseWebsocketUrl
+   description: Base URL for websocket endpoints of the Employee Exchange API
+ - name: demoEmployeeId
+   description: "Used in demo snippets to set as value of Employee 'id' property"
+   defaultValue: 1
+basePackage: org.jxapi.exchanges.employee.gen
+httpUrl: ${config.baseHttpUrl}
 httpRequestInterceptorFactory: org.jxapi.exchanges.demo.net.DemoExchangeHttpRequestInterceptorFactory
 apis:
  - name: V1
    description: "Version 1 of the Employee API"
-   httpUrl: "v1"
+   httpUrl: v1
    constants:
-    - name: "profileRegular"
-      description: "Regular employee profile"
-      value: "REGULAR"
-    - name: "profileAdmin"
-      description: "Admin employee profile"
-      value: "ADMIN"
-    - name: "updateEmployeeTypeAdd"
-      description: "Value of eventType field in WS message for new employee added event"
-      value: "ADD"
-    - name: "updateEmployeeTypeUpate"
-      description: "Value of eventType field in WS message for update of an existing employee event"
-      value: "UPDATE"
-    - name: "updateEmployeeTypeDelete"
-      description: "Value of eventType field in WS message for update of an existing employee event"
-      value: "DELETE"      
+    - name: defaultPageSize
+      type: INT
+      description: Default page size for paginated requests
+      value: 10
+    - name: maxPageSize
+      type: INT
+      description: Maximum page size for paginated requests
+      value: 10000
+    - name: profileRegular
+      description: Regular employee profile
+      value: REGULAR
+    - name: profileAdmin
+      description: Admin employee profile
+      value: ADMIN
+    - name: updateEmployeeTypeAdd
+      description: Value of eventType field in WS message for new employee added event
+      value: ADD
+    - name: updateEmployeeTypeUpate
+      description: Value of eventType field in WS message for update of an existing employee event
+      value: UPDATE
+    - name: updateEmployeeTypeDelete
+      description: Value of eventType field in WS message for update of an existing employee event
+      value: DELETE
    restEndpoints:
-    - name: "getEmployee"
-      description: "Get employee details by ID"
-      httpMethod: "GET"
-      docUrl: "https://www.example.com/docs/employee/get"
-      url: "/employee"
-      urlParameters: "/${id}"
+    - name: getEmployee
+      description: Get employee details by ID
+      httpMethod: GET
+      docUrl: https://www.example.com/docs/employee/get
+      url: /employee
+      urlParameters: /${id}
       request:
-       name: "id"
+       name: id
        type: INT
-       description: "Employee ID"
-       sampleValue: 1
+       description: Employee ID
+       sampleValue: ${config.demoEmployeeId}
       response:
-       objectName: "Employee"
+       objectName: Employee
        type: OBJECT
        properties:
-        - name: "id"
+        - name: id
           type: INT
-          description: "Employee ID"
+          description: Employee ID
+          sampleValue: ${config.demoEmployeeId}
+        - name: firstName
+          description: "Employee first name"
+          sampleValue: John
+        - name: lastName
+          description: Employee last name
+          sampleValue: Doe
+        - name: profile
+          description: Employee profile. Can be ${constants.profileRegular} or ${constants.profileAdmin}
+          sampleValue: ${constants.profileRegular}
+    - name: getAllEmployees
+      description: Get all employees
+      httpMethod: GET
+      docUrl: https://www.example.com/docs/employee/getAll
+      url: /employees
+      paginated: true
+      request:
+        implementedInterfaces: 
+        - org.jxapi.exchanges.employee.EmployeePaginatedRequest
+        description: Page request parameters for 'getAllEmployees' rest endpoint paginated requests.
+        properties:
+        - name: page
+          type: INT
+          description: Page number to return, defaults to 1.
           sampleValue: 1
-        - name: "firstName"
-          type: STRING
-          description: "Employee First Name"
-          sampleValue: "John"
-        - name: "lastName"
-          type: STRING
-          description: "Employee last lame"
-          sampleValue: "Doe"
-        - name: "profile"
-          type: STRING
-          description: "Employee profile. Can be 'regular' or 'admin'"
-          sampleValue: "REGULAR"
-    - name: "getAllEmployees"
-      description: "Get all employees"
-      httpMethod: "GET"
-      docUrl: "https://www.example.com/docs/employee/getAll"
-      url: "/employees"
+        - name: size
+          type: INT
+          description: >
+            Number of employees to return per page.<br>
+            Defaults to ${constants.defaultPageSize}.<br>
+            Maximum is ${constants.maxPageSize}.
+          sampleValue: 10
       response:
-       objectName: "Employee"
-       type: OBJECT_LIST          
-    - name: "addEmployee"
-      description: "Add a new employee"
-      httpMethod: "POST"
-      docUrl: "https://www.example.com/docs/employee/add"
-      url: "/employee"
+        implementedInterfaces:
+        - org.jxapi.exchanges.employee.EmployeePaginatedResponse
+        properties:
+        - name: page
+          type: INT
+          description: Page index, starting from 1
+          sampleValue: 1
+        - name: totalPages
+          type: INT
+          description: Total number of pages available
+          sampleValue: 10
+        - name: employees
+          objectName: Employee			
+          type: OBJECT_LIST       
+    - name: addEmployee
+      description: Add a new employee
+      httpMethod: POST
+      docUrl: https://www.example.com/docs/employee/add
+      url: /employee
       request:
-       description: "Employee to add"
-       objectName: "Employee"
-    - name: "updateEmployee"
-      description: "Update an existing employee"
-      httpMethod: "PUT"
-      docUrl: "https://www.example.com/docs/employee/add"
-      url: "/employee"
+       description: Employee to add
+       objectName: Employee
+    - name: updateEmployee
+      description: Update an existing employee
+      httpMethod: PUT
+      docUrl: https://www.example.com/docs/employee/add
+      url: /employee
       request:
-       description: "Employee to update"
-       objectName: "Employee"       
-    - name: "deleteEmployee"
-      description: "Delete an employee"
-      httpMethod: "DELETE"
-      docUrl: "https://www.example.com/docs/employee/delete"
-      url: "/employee"
-      urlParameters: "/${id}"
+       description: Employee to update
+       objectName: Employee
+    - name: deleteEmployee
+      description: Delete an employee
+      httpMethod: DELETE
+      docUrl: https://www.example.com/docs/employee/delete
+      url: /employee
+      urlParameters: /${id}
       request:
-       name: "id"
+       name: id
        type: INT
-       description: "Employee ID"
-       sampleValue: 1
-   websocketUrl: "BASEURL"
+       description: Employee ID
+       sampleValue: ${config.demoEmployeeId}
+   websocketUrl: ${config.baseWebsocketUrl}
    websocketHookFactory: org.jxapi.exchanges.demo.net.DemoExchangeWebsocketHookFactory  
    websocketEndpoints:
-    - name: "employeeUpdates"
-      description: "Employee updates websocket"
-      docUrl: "https://www.example.com/docs/employee/updates"
+    - name: employeeUpdates
+      description: Employee updates websocket
+      docUrl: https://www.example.com/docs/employee/updates
       message:
-       description: "Employee update message"
+       description: Employee update message
        properties:
-        - name: "eventType"
-          type: STRING
-          description: "Type of event. Can be 'ADD', 'UPDATE' or 'DELETE'"
-          sampleValue: 1
-        - name: "employee"
-          objectName: "Employee"
-          description: "Employee that was updated"
-          sampleValue: "John"
-
+        - name: eventType
+          description: Type of event, e.g. one of ${constants.updateEmployeeTypeAdd}, ${constants.updateEmployeeTypeUpdate} or ${constants.updateEmployeeTypeDelete}
+          sampleValue: ${constants.updateEmployeeTypeUpdate}
+        - name: employee
+          objectName: Employee
+          description: Employee that was updated
+          sampleValue: John
 ```
 
 Such exchange descriptor can also be written across multiple files with same exchange name: When running generator plugin in wrapper project module, it will scan `src/main/resources/jxapi` folder and aggregate all exchanges (multiple exchange can be specified) found in every .yaml and .json file.
@@ -441,6 +473,18 @@ Different policies may be specified using `Exchange#setRequestThrottlingMode(Req
  * `BLOCK`: Instead of throttling request, immediately anwser that request with a response carrying a [RateLimitReachedException](../../src/main/java/com/scz/jxapi/netutils/rest/ratelimits/RateLimitReachedException.java) exception stating how much time should be awaited for before retrying this request, and HTTP response code 429 (_TOO_MANY_REQUESTS_). This is similar to `THROTTLE` mode with `maxRequestThrottleDelay` set to 0.
  * `NONE`: Ignores rate limits check and always submit requests immediately. 
  
+ ## Placeholders
+
+ Placeholders referencing constants or configuration properties can be used in values of descriptor properties using `${constants.myConstant}` or `${config.myProperty}` syntax. The value in brackets will reference a constant (defined in API group or exchange) or a configuration property.
+ 
+  - When used in _description_ properties, they will be substituted with javadoc link to constant or property.
+  - When used in _httpUrl_ or _websocketUrl_ property, the generated URL value will substitute the given placeholder with constant or property value.
+  - When used in constants values, a placeholder may only reference another constant. The generated constant value will substitute the given placeholder with constant value.
+  - When used in _sampleValue_ properties, the generated value will substitute the given placeholder constant or config property value. Such value is generated for instance in demo snippets to build default request.
+
+  Defining constants and using placeholders to reference them improves clarity of generated wrapper and reduces duplication.
+
+
 
 
 
