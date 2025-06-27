@@ -6,6 +6,8 @@ import org.jxapi.generator.java.exchange.api.ExchangeApiClassesGenerator;
 import org.jxapi.generator.java.exchange.api.ExchangeApiInterfaceImplementationGenerator;
 import org.jxapi.generator.java.exchange.api.rest.RestEndpointClassesGenerator;
 import org.jxapi.netutils.rest.HttpMethod;
+import org.jxapi.netutils.rest.pagination.PaginatedRestRequest;
+import org.jxapi.netutils.rest.pagination.PaginatedRestResponse;
 import org.jxapi.netutils.rest.ratelimits.RateLimitRule;
 import org.jxapi.util.EncodingUtil;
 
@@ -279,17 +281,17 @@ public class RestEndpointDescriptor {
    * <p>
    * For an enpoint to support pagination, it must comply with the following:
    * <ul>
-   * <li>The request must be of type {@link Field.Type#OBJECT} type and implement
-   * {@link org.jxapi.netutils.rest.pagination.PaginatedRestRequest}
+   * <li>The request must be of type {@link Type#OBJECT} type and implement
+   * {@link PaginatedRestRequest}
    * interface.</li>
-   * <li>The response must be of type {@link Field.Type#OBJECT} type and implement
-   * {@link org.jxapi.netutils.rest.pagination.PaginatedRestResponse} interface.</li>
-   * <ul>
+   * <li>The response must be of type {@link Type#OBJECT} type and implement
+   * {@link PaginatedRestResponse} interface.</li>
+   * </ul>
    * Actual wrapper should provide custom sub-interface of
-   * {@link org.jxapi.netutils.rest.pagination.PaginatedRestResponse} and
-   * {@linkk org.jxapi.netutils.rest.pagination.PaginatedRestRequest} with default
+   * {@link PaginatedRestResponse} and
+   * {@link PaginatedRestRequest} with default
    * implementation of
-   * {@link org.jxapi.netutils.rest.pagination.PaginatedRestRequest#setNextPage(org.jxapi.netutils.rest.pagination.PaginatedRestResponse)}
+   * {@link PaginatedRestRequest#setNextPage(PaginatedRestResponse)}
    * with default implementations for methods of these interfaces relying on API
    * specific fields to find out if a response carries last page and set next
    * request page index from last response otherwise.

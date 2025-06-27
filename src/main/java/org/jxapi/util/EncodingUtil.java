@@ -18,6 +18,13 @@ import org.apache.commons.text.StringSubstitutor;
 public class EncodingUtil {
   
   /**
+   * Default maximum length for a long string to be pretty printed.
+   * <p>
+   * Used by {@link #prettyPrintLongString(String)}.
+   */
+  public static final int DEFAULT_PRETTY_PRINT_LONG_STRING_MAX_LENGTH = 200;
+  
+  /**
    * Separator used to reduce a long string to a maximum length by keeping the
    * first and last characters and replacing the middle by this separator.
    * 
@@ -175,7 +182,7 @@ public class EncodingUtil {
    *         string representation
    */
   public static String pojoToString(Object pojo) {
-    return pojo.getClass().getSimpleName() + JsonUtil.pojoToJsonString(pojo); 
+    return pojo.getClass().getSimpleName() +  JsonUtil.pojoToJsonString(pojo); 
   }
   
   /**
@@ -233,6 +240,21 @@ public class EncodingUtil {
     int l = (maxLength - sep.length()) / 2;
     return longString.substring(0, l) + sep + longString.substring(longString.length() - l);
   }
+  
+  /**
+   * Shortens a long string to a maximum length like using
+   * {@link #prettyPrintLongString(String, int)} with
+   * {@link #DEFAULT_PRETTY_PRINT_LONG_STRING_MAX_LENGTH} as maxLength.
+   * 
+   * @param longString the string to shorten
+   * @return the shortened string, or the original string if it is already shorter
+   *         than {@link #DEFAULT_PRETTY_PRINT_LONG_STRING_MAX_LENGTH}, or
+   *         <code>null</code> if the input string is <code>null</code>.
+   * @see #prettyPrintLongString(String, int)        
+   */
+  public static String prettyPrintLongString(String longString) {
+    return prettyPrintLongString(longString, DEFAULT_PRETTY_PRINT_LONG_STRING_MAX_LENGTH);
+  }
 
   /**
    * Checks if a given URL is absolute or relative, e.g. if it starts with a scheme like "http://".
@@ -286,7 +308,7 @@ public class EncodingUtil {
    * @return the concatenated URL
    */
   public static String buildUrl(String... urlParts) {
-    if (urlParts == null || urlParts.length == 0) {
+    if (urlParts.length == 0) {
       return "";
     }
     if (urlParts.length == 1) {

@@ -5,6 +5,7 @@ import java.util.Map;
 
 import org.jxapi.exchange.ExchangeApi;
 import org.jxapi.netutils.rest.pagination.NextPageResolver;
+import org.jxapi.netutils.rest.pagination.PaginatedRestResponse;
 import org.jxapi.util.EncodingUtil;
 import org.jxapi.util.JsonUtil;
 
@@ -150,7 +151,7 @@ public class RestResponse<A> {
   
   /**
    * @return <code>true</code> if the response is paginated, i.e. it contains
-   *         pagination information. This means the payload object is a
+   *         pagination information. This means the payload object implements
    *          {@link PaginatedRestResponse} or a custom sub-interface of it.
    */
   public boolean isPaginated() {
@@ -199,9 +200,9 @@ public class RestResponse<A> {
       fields.put("exception", exception.toString());
     }
     if (response != null) {
-      fields.put("response", EncodingUtil.prettyPrintLongString(JsonUtil.pojoToJsonString(response), 512));
+      fields.put("response", EncodingUtil.prettyPrintLongString(JsonUtil.pojoToJsonString(response)));
     } else if (httpResponse != null) {
-      fields.put("body", httpResponse.getBody());
+      fields.put("body", EncodingUtil.prettyPrintLongString(httpResponse.getBody()));
       fields.put("time", httpResponse.getTime());
       fields.put("roundtrip", httpResponse.getRoundTrip());
     }

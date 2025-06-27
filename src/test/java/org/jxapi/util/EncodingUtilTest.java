@@ -125,6 +125,13 @@ public class EncodingUtilTest {
   public void testPrettyPrintLongString_StringThatNeedsToBeShortened() {
     Assert.assertEquals("Hell....you?", EncodingUtil.prettyPrintLongString("Hello World! How are you?", 12));
   }
+  
+  @Test
+  public void testPrettyPrintLongString_StringThatNeedsToBeShortenedDefaultMaxLength() {
+    String longString = "12345678901234567890123456789012345678901234567890123456789012345678901234567890ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
+    Assert.assertEquals("12345678901234567890123456789012345678901234567890123456789012345678901234567890ABCDEFGHIJKLMNOPQR....KLMNOPQRSTUVWXYZ1234567890ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890", 
+                        EncodingUtil.prettyPrintLongString(longString));
+  }
 
   @Test
   public void testPrettyPrintLongString_NullString() {

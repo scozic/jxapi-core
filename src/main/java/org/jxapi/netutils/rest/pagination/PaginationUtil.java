@@ -27,6 +27,7 @@ public class PaginationUtil {
    * <li>Returns false if the page is not paginated (page payload does not implement {@link PaginatedRestResponse}).</li>
    * <li>Returns false if the page data is null.</li>
    * <li>Returns true if the page data has a next page.</li>
+   * </ul>
    * @param page Response to REST call to an endpoint that implements pagination
    * @return true if the page has a next page, false otherwise
    */
@@ -72,6 +73,7 @@ public class PaginationUtil {
    * 
    * @param pageResponse the paginated REST response from which to fetch the next
    *                     page
+   * @param <A> the type of the paginated REST response                    
    * @return a FutureRestResponse containing the next page of the response
    * @throws IllegalArgumentException if the page response is null or does not
    *                                  have a next page
@@ -89,6 +91,7 @@ public class PaginationUtil {
    * 
    * @param pageResponse the initial paginated REST response from which to start
    *                     fetching pages
+   * @param <A> the type of the paginated REST response                    
    * @return a FutureRestResponse containing a list of all fetched pages starting with the provided first page response.
    * @throws IllegalArgumentException if the page response is null
    */

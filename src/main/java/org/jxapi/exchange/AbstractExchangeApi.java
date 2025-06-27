@@ -253,13 +253,20 @@ public abstract class AbstractExchangeApi extends DefaultDisposable implements E
   }
   
   /**
-   * Submits a REST request asynchronously using the specified request and message deserializer to deserialize response.
-   * If a request throttler is set, the request is submitted through the throttler.
-   * <br>
+   * Submits a REST request asynchronously using the specified request and message
+   * deserializer to deserialize response. If a request throttler is set, the
+   * request is submitted through the throttler. <br>
    * This method should used by subclasses to submit REST requests.
-   * @param <A> The type of the response to the request
-   * @param request The request to submit
-   * @param deserializer The deserializer to use to deserialize the response
+   * 
+   * @param <R>                   The type of the request to submit, must extend
+   *                              {@link PaginatedRestRequest}
+   * @param <A>                   The type of the response to the request
+   * @param request               The request to submit
+   * @param deserializer          The deserializer to use to deserialize the
+   *                              response
+   * @param paginatedRestEndpoint The function for calling the paginated REST
+   *                              endpoint, from endpint enclosing API group
+   *                              interface.
    * @return The response to the request, as a {@link FutureRestResponse}
    */
   @SuppressWarnings("unchecked")
@@ -271,12 +278,13 @@ public abstract class AbstractExchangeApi extends DefaultDisposable implements E
   }
   
   /**
-   * Submits a REST request asynchronously using the specified request and message deserializer to deserialize response.
-   * If a request throttler is set, the request is submitted through the throttler.
-   * <br>
+   * Submits a REST request asynchronously using the specified request and message
+   * deserializer to deserialize response. If a request throttler is set, the
+   * request is submitted through the throttler. <br>
    * This method should used by subclasses to submit REST requests.
-   * @param <A> The type of the response to the request
-   * @param request The request to submit
+   * 
+   * @param <A>          The type of the response to the request
+   * @param request      The request to submit
    * @param deserializer The deserializer to use to deserialize the response
    * @return The response to the request, as a {@link FutureRestResponse}
    */
