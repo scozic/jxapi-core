@@ -1,6 +1,8 @@
 package org.jxapi.util;
 
 import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 import org.junit.Assert;
@@ -10,6 +12,15 @@ import org.junit.Test;
  * Unit test for {@link EncodingUtil}
  */
 public class EncodingUtilTest {
+  
+  @Test
+  public void testFormatTimestamp() {
+    long ts = 1696166400000L; // 2023-10-01T12:00:00Z
+    String expected = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ").format(new Date(ts));
+    Assert.assertEquals(expected, EncodingUtil.formatTimestamp(ts));
+    Assert.assertEquals(expected, EncodingUtil.formatTimestamp(new Date(1696166400000L)));
+    Assert.assertNull(EncodingUtil.formatTimestamp(null));
+  }
   
   @Test(expected = IllegalArgumentException.class)
   public void testCreateUrlQueryParametersNullKeyThrows() {
@@ -38,7 +49,7 @@ public class EncodingUtilTest {
     bar.setName("babar");
     bar.setActive(true);
     bar.setScore(new BigDecimal("1.23"));
-    Assert.assertEquals("Bar{\"active\":true,\"name\":\"babar\",\"score\":1.23}", EncodingUtil.pojoToString(bar));
+    Assert.assertEquals("Bar{\"name\":\"babar\",\"active\":true,\"score\":1.23}", EncodingUtil.pojoToString(bar));
   }
   
   @Test
@@ -52,7 +63,7 @@ public class EncodingUtilTest {
     foo.setHello("Hi");
     foo.setBar(bar);
     
-    Assert.assertEquals("Foo{\"bar\":{\"active\":true,\"name\":\"babar\",\"score\":1.23},\"hello\":\"Hi\"}", EncodingUtil.pojoToString(foo));
+    Assert.assertEquals("Foo{\"hello\":\"Hi\",\"bar\":{\"name\":\"babar\",\"active\":true,\"score\":1.23}}", EncodingUtil.pojoToString(foo));
   }
   
   @Test

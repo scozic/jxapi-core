@@ -7,6 +7,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.jxapi.netutils.deserialization.json.JsonDeserializer;
+
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonParseException;
@@ -19,7 +21,6 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.databind.ser.std.StdSerializer;
-import org.jxapi.netutils.deserialization.json.JsonDeserializer;
 
 /**
  * Helper methods around JSON serialization/deserialization.
@@ -39,8 +40,18 @@ public class JsonUtil {
     return m;
   }
 
-  private static class ExceptionSerializer extends StdSerializer<Exception> {
+  /**
+   * Custom serializer for {@link Exception} objects, that serializes them as a
+   * readable string.
+   * <p>
+   * This serializer is registered in the default {@link ObjectMapper} returned by
+   * {@link JsonUtil#createDefaultJsonToStringObjectMapper()}.
+   */
+  public static class ExceptionSerializer extends StdSerializer<Exception> {
 
+    /**
+     * Creates a new {@link ExceptionSerializer} instance.
+     */
     public ExceptionSerializer() {
       super(Exception.class);
     }
@@ -396,6 +407,41 @@ public class JsonUtil {
         break;
       default:
         break;
+    }
+  }
+  
+  /**
+   * Writes a string field to the JSON generator, only if the value is not null.
+   * 
+   * @param gen       The JSON generator to write to
+   * @param fieldName The name of the field to write
+   * @param value     The value of the field to write
+   * @throws IOException If an error occurs while writing to the generator
+   */
+  public static void writeStringField(JsonGenerator gen, String fieldName, String value) throws IOException {
+    if (value != null) {
+      gen.writeStringField(fieldName, value);
+    }
+  }
+  
+  /**
+   * Writes a string field to the JSON generator, only if the value is not null.
+   * 
+   * @param gen       The JSON generator to write to
+   * @param fieldName The name of the field to write
+   * @param value     The value of the field to write
+   * @throws IOException If an error occurs while writing to the generator
+   */
+  public static void writeObjectField(JsonGenerator gen, String fieldName, Object value) throws IOException {
+    if (value != null) {
+      gen.writeObjectField(fieldName, value);
+    }
+  }
+  
+  
+  public static void writeBooleanField(JsonGenerator gen, String fieldName, Boolean value) throws IOException {
+    if (value != null && value) {
+      gen.writeBooleanField(fieldName, value);
     }
   }
 

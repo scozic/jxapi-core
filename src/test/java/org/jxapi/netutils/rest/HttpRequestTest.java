@@ -106,15 +106,24 @@ public class HttpRequestTest {
         HttpRequest request = new HttpRequest();
         request.setHttpMethod(HttpMethod.GET);
         request.setUrl("http://example.com");
-        request.setBody("body");
+        request.setBody("my Body");
         request.setTime(new Date(1000));
         request.setEndpoint("endpoint");
         request.setRequest("request");
-        request.setThrottledTime(1000);
         List<RateLimitRule> rateLimits = List.of(RateLimitRule.createRule("rule1", 60000, 50));
+        request.setWeight(12);
         request.setRateLimits(rateLimits);
-        Assert.assertEquals("HttpRequest{\"body\":\"body\",\"endpoint\":\"endpoint\",\"httpMethod\":\"GET\",\"rateLimits\":[{\"granularity\":10,\"id\":\"rule1\",\"maxRequestCount\":50,\"maxTotalWeight\":-1,\"timeFrame\":60000}],\"request\":\"request\",\"throttledTime\":1000,\"time\":1000,\"url\":\"http://example.com\",\"weight\":0}", 
+        Assert.assertEquals("HttpRequest{\"endpoint\":\"endpoint\",\"httpMethod\":\"GET\",\"url\":\"http://example.com\",\"request\":\"\\\"request\\\"\",\"body\":\"my Body\",\"rateLimits\":[{\"id\":\"rule1\",\"timeFrame\":60000,\"maxRequestCount\":50,\"maxTotalWeight\":-1,\"granularity\":10}],\"weight\":12,\"time\":\"1970-01-01T01:00:01.000+0100\"}", 
                   request.toString());
+        request.setWeight(0);
+        request.setBody(null);
+        request.setRequest(null);
+        request.setTime(null);
+        request.setRateLimits(List.of());
+        request.setThrottledTime(1000);
+        Assert.assertEquals("HttpRequest{\"endpoint\":\"endpoint\",\"httpMethod\":\"GET\",\"url\":\"http://example.com\",\"throttledTime\":1000}", 
+            request.toString());
+        
     }
 
     @Test

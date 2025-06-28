@@ -23,7 +23,7 @@ public class MockFutureHttpResponseTest {
     @Test
     public void testToString() {
         MockFutureHttpResponse response = new MockFutureHttpResponse();
-        String expected = "MockFutureHttpResponse{\"cancelled\":false,\"completedExceptionally\":false,\"done\":false,\"numberOfDependents\":0}";
+        String expected = "MockFutureHttpResponse{\"done\":false,\"cancelled\":false,\"completedExceptionally\":false,\"numberOfDependents\":0}";
         assertEquals(expected, response.toString());
     }
     

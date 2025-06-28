@@ -34,7 +34,7 @@ public class DefaultConfigPropertyTest {
     @Test
     public void testToString() {
         ConfigProperty property = DefaultConfigProperty.create("myProperty", Type.STRING, "My property", "myValue");
-        Assert.assertEquals("DefaultConfigProperty{\"defaultValue\":\"myValue\",\"description\":\"My property\",\"name\":\"myProperty\",\"type\":{\"canonicalType\":\"STRING\",\"object\":false}}", property.toString());
+        Assert.assertEquals("DefaultConfigProperty{\"name\":\"myProperty\",\"description\":\"My property\",\"type\":{\"canonicalType\":\"STRING\",\"object\":false},\"defaultValue\":\"myValue\"}", property.toString());
     }
 
 

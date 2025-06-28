@@ -74,7 +74,7 @@ public class DemoExchangeRestRequestTest {
   }
   
   @Test
-  public void testAfterInitHookHasBeenCalled() throws Exception {
+  public void testAfterInitHookHasBeenCalled() {
     MockExchangeHook exchangeHook = (MockExchangeHook) exchange.getProperties().get(MockExchangeHook.MOCK_EXCHANGE_HOOK_PROPERTY);
     Assert.assertNotNull(exchangeHook);
     Assert.assertEquals(1, exchangeHook.size());

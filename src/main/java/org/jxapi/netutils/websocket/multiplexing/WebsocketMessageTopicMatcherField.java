@@ -27,7 +27,7 @@ public class WebsocketMessageTopicMatcherField {
     return l;
   }
 
-  private String fieldName;
+  private String name;
   
   private String value;
 
@@ -35,15 +35,15 @@ public class WebsocketMessageTopicMatcherField {
    * @return The field name
    */
   public String getName() {
-    return fieldName;
+    return name;
   }
 
   /**
    * Set the field name
    * @param fieldName The field name
    */
-  public void setName(String fieldName) {
-    this.fieldName = fieldName;
+  public void setName(String name) {
+    this.name = name;
   }
 
   /**

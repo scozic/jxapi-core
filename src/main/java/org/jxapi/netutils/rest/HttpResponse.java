@@ -154,7 +154,7 @@ public class HttpResponse {
   
   @Override
   public String toString() {
-    return EncodingUtil.prettyPrintLongString(EncodingUtil.pojoToString(this));
+    return EncodingUtil.pojoToString(this);
   }
 
 }

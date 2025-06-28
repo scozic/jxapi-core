@@ -47,7 +47,13 @@ public class RateLimitRuleTest {
         rule.setTimeFrame(1000);
         rule.setMaxRequestCount(100);
         rule.setMaxTotalWeight(1000);
-        Assert.assertEquals("RateLimitRule{\"granularity\":10,\"id\":\"id\",\"maxRequestCount\":100,\"maxTotalWeight\":1000,\"timeFrame\":1000}", rule.toString());
+        Assert.assertEquals("RateLimitRule{\"id\":\"id\",\"timeFrame\":1000,\"maxRequestCount\":100,\"maxTotalWeight\":1000,\"granularity\":10}", rule.toString());
+    }
+    
+    @Test(expected = IllegalArgumentException.class)
+    public void testSetGranularityNegativeThrows() {
+      RateLimitRule rule = new RateLimitRule();
+      rule.setGranularity(-10);
     }
 
 }

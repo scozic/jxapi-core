@@ -70,12 +70,8 @@ public class WebsocketEndpointDescriptorTest {
     public void testToString() {
         WebsocketEndpointDescriptor descriptor = new WebsocketEndpointDescriptor();
         setTestValues(descriptor);
-        Assert.assertEquals("WebsocketEndpointDescriptor{\"description\":\"description\",\"docUrl\":\"https://doc.myexchange.com/websocket/name\","
-                  + "\"message\":{\"description\":\"Test message\",\"msgField\":\"mm\",\"name\":\"myMessageField\",\"sampleValue\":\"bar\","
-                  + "\"type\":{\"canonicalType\":\"STRING\",\"object\":false}},\"messageTopicMatcherFields\":[{\"name\":\"field1\","
-                  + "\"value\":\"value1\"}],\"name\":\"name\",\"request\":{\"description\":\"Test request\",\"msgField\":\"mf\","
-                  + "\"name\":\"myRequestField\",\"sampleValue\":\"foo\",\"type\":{\"canonicalType\":\"STRING\",\"object\":false}},"
-                  + "\"topic\":\"atopic\",\"topicParametersListSeparator\":\"|\"}", 
+        Assert.assertEquals(
+            "WebsocketEndpointDescriptor{\"name\":\"name\",\"topic\":\"atopic\",\"description\":\"description\",\"docUrl\":\"https://doc.myexchange.com/websocket/name\",\"request\":{\"name\":\"myRequestField\",\"description\":\"Test request\",\"type\":{\"canonicalType\":\"STRING\",\"object\":false},\"sampleValue\":\"foo\",\"msgField\":\"mf\"},\"message\":{\"name\":\"myMessageField\",\"description\":\"Test message\",\"type\":{\"canonicalType\":\"STRING\",\"object\":false},\"sampleValue\":\"bar\",\"msgField\":\"mm\"},\"topicParametersListSeparator\":\"|\",\"messageTopicMatcherFields\":[{\"name\":\"field1\",\"value\":\"value1\"}]}", 
                   descriptor.toString());
     }
 }

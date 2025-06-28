@@ -641,7 +641,7 @@ public class ExchangeApiInterfaceImplementationGenerator extends JavaTypeGenerat
       requestSimpleClassName = ExchangeGenUtil.getClassNameForType(
           requestDataType, 
           getImports(), 
-          requestClassName);
+          requestClassName); 
     }
     boolean hasResponse = ExchangeApiGenUtil.restEndpointHasResponse(restApi, exchangeApiDescriptor);
     String responseSimpleClassName = "String";
@@ -737,21 +737,19 @@ public class ExchangeApiInterfaceImplementationGenerator extends JavaTypeGenerat
         .append(")");
         
     StringBuilder submitRequestInstruction = new StringBuilder();
+    String endpointCallArg = "";
     if (restApi.isPaginated()) {
       submitRequestInstruction.append("submitPaginated(");
+      endpointCallArg = ", this::" + ExchangeApiGenUtil.getRestApiMethodName(restApi);
     } else {
       submitRequestInstruction.append("submit(");
     }
     submitRequestInstruction
       .append(createHttpRequestInstruction.toString())
       .append(", ")
-      .append(deserializerVariableName);
-    if (restApi.isPaginated()) {
-      submitRequestInstruction
-        .append(", this::")
-        .append(ExchangeApiGenUtil.getRestApiMethodName(restApi));
-    }
-    submitRequestInstruction.append(");\n");
+      .append(deserializerVariableName)
+      .append(endpointCallArg)
+      .append(");\n");
     apiMethodBody.append(submitRequestInstruction.toString());
     
     addRestMethod(OVERRIDE_PUBLIC + apiMethodSignature, apiMethodBody.toString());

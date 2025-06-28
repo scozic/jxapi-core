@@ -1,21 +1,16 @@
 package org.jxapi.netutils.rest;
 
-import java.util.LinkedHashMap;
-import java.util.Map;
-
 import org.jxapi.exchange.ExchangeApi;
 import org.jxapi.netutils.rest.pagination.NextPageResolver;
 import org.jxapi.netutils.rest.pagination.PaginatedRestResponse;
 import org.jxapi.util.EncodingUtil;
-import org.jxapi.util.JsonUtil;
 
 /**
  * Represents the response from a call to a REST endpoint in an
  * {@link ExchangeApi} implementation.<br>
  * Raw response to an HTTP call is encapsulated in an {@link HttpResponse}
  * object.
- * The response to a REST wraps the HTTP response and the response object
- * deserialized from HTTP response.<br>
+ * The response to a REST wraps the HTTP response and the deserialized payload from HTTP response body.<br>
  * Client implementation should check if the response is OK using
  * {@link #isOk()} method, before accessing the response object.
  * 
@@ -194,19 +189,7 @@ public class RestResponse<A> {
    * @return String representation of the response.
    */
   public String toString() {
-    Map<String, Object> fields = new LinkedHashMap<>();
-    fields.put("httpStatus", httpStatus);
-    if (exception != null) {
-      fields.put("exception", exception.toString());
-    }
-    if (response != null) {
-      fields.put("response", EncodingUtil.prettyPrintLongString(JsonUtil.pojoToJsonString(response)));
-    } else if (httpResponse != null) {
-      fields.put("body", EncodingUtil.prettyPrintLongString(httpResponse.getBody()));
-      fields.put("time", httpResponse.getTime());
-      fields.put("roundtrip", httpResponse.getRoundTrip());
-    }
-    return getClass().getSimpleName() + JsonUtil.pojoToJsonString(fields);
+    return EncodingUtil.pojoToString(this);
   }
 
 }

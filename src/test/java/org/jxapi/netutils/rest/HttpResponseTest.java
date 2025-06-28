@@ -124,6 +124,14 @@ public class HttpResponseTest {
         HttpRequest request = new HttpRequest();
         request.setTime(new Date(response.getTime().getTime() - 1000L));
         response.setRequest(request);
-        Assert.assertEquals("HttpResponse{\"body\":\"body\",\"exception\":\"java.lang.RuntimeException: error!\",\"headers\":{\"headerName\":[\"headerValue\"]},\"request\":{\"throttledTime\":0,\"time\":1725663893119,\"weight\":0},\"responseCode\":200,\"roundTrip\":1000,\"time\":1725663894119}", response.toString());
+        Assert.assertEquals("HttpResponse{\"responseCode\":200,\"exception\":\"java.lang.RuntimeException: error!\",\"request\":{\"time\":\"2024-09-07T01:04:53.119+0200\"},\"body\":\"body\",\"headers\":{\"headerName\":[\"headerValue\"]},\"time\":\"2024-09-07T01:04:54.119+0200\",\"roundTrip\":1000}", 
+                            response.toString());
+        response.setBody(null);
+        response.setException(null);
+        response.setHeaders(null);
+        response.setTime(null);
+        response.setRequest(null);
+        Assert.assertEquals("HttpResponse{\"responseCode\":200,\"roundTrip\":0}", 
+            response.toString());
     }
 }

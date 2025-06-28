@@ -7,6 +7,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import org.jxapi.exchange.ExchangeApiEvent;
 import org.jxapi.exchange.ExchangeApiObserver;
 import org.jxapi.netutils.deserialization.MessageDeserializer;
+import org.jxapi.util.EncodingUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -172,7 +173,7 @@ public class DefaultWebsocketEndpoint<M> implements WebsocketEndpoint<M> {
           }
         }
       } catch (Exception ex) {
-        String errMsg = "Error while dispatching message [" + message + "]"; 
+        String errMsg = "Error while dispatching message [" + EncodingUtil.prettyPrintLongString(message) + "]"; 
         log.error(errMsg, ex);
         dispatchApiEvent(ExchangeApiEvent.createWebsocketErrorEvent(new WebsocketException(errMsg, ex)));
       }

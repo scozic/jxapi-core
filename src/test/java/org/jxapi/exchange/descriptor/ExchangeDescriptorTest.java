@@ -65,6 +65,6 @@ public class ExchangeDescriptorTest {
         exchangeDescriptor.setRateLimits(List.of(new RateLimitRule()));
         exchangeDescriptor.setVersion("1.0.0");
         exchangeDescriptor.setJxapi("0.15.0");
-        Assert.assertEquals("ExchangeDescriptor{\"apis\":[{\"httpRequestTimeout\":-1}],\"basePackage\":\"basePackage\",\"description\":\"description\",\"httpRequestTimeout\":-1,\"id\":\"name\",\"jxapi\":\"0.15.0\",\"rateLimits\":[{\"granularity\":10,\"maxRequestCount\":-1,\"maxTotalWeight\":-1,\"timeFrame\":0}],\"version\":\"1.0.0\"}", exchangeDescriptor.toString());
+        Assert.assertEquals("ExchangeDescriptor{\"id\":\"name\",\"jxapi\":\"0.15.0\",\"version\":\"1.0.0\",\"description\":\"description\",\"basePackage\":\"basePackage\",\"apis\":[{\"httpRequestTimeout\":-1}],\"rateLimits\":[{\"timeFrame\":0,\"maxRequestCount\":-1,\"maxTotalWeight\":-1,\"granularity\":10}],\"httpRequestTimeout\":-1}", exchangeDescriptor.toString());
     }
 }

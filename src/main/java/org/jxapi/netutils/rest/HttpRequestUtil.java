@@ -61,7 +61,7 @@ public class HttpRequestUtil {
   public static Map<String, String> parseUrlQueryParams(String url) {
     String queryParams = getUrlQueryParams(url);
     if (queryParams == null || queryParams.isEmpty()) {
-      return Map.of(); // Return empty map if no query parameters;
+      return Map.of();
     }
     
     Map<String, String> result = CollectionUtil.createMap();

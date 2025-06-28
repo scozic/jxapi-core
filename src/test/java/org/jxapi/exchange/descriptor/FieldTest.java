@@ -90,7 +90,8 @@ public class FieldTest {
         field.setDescription("description");
         field.setSampleValue("sampleValue");
         field.setMsgField("f");
-        Assert.assertEquals("Field{\"description\":\"description\",\"msgField\":\"f\",\"name\":\"name\",\"sampleValue\":\"sampleValue\",\"type\":{\"canonicalType\":\"STRING\",\"object\":false}}", field.toString());
+        Assert.assertEquals("Field{\"name\":\"name\",\"description\":\"description\",\"type\":{\"canonicalType\":\"STRING\",\"object\":false},\"sampleValue\":\"sampleValue\",\"msgField\":\"f\"}",
+                            field.toString());
     }
     
     @Test

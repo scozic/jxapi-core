@@ -34,6 +34,7 @@ public class ConstantTest {
     @Test
     public void testToString() {
         Constant c = Constant.create("name", Type.STRING, "description", "value");
-        Assert.assertEquals("Constant{\"description\":\"description\",\"name\":\"name\",\"type\":{\"canonicalType\":\"STRING\",\"object\":false},\"value\":\"value\"}", c.toString());
+        Assert.assertEquals("Constant{\"name\":\"name\",\"description\":\"description\",\"value\":\"value\",\"type\":{\"canonicalType\":\"STRING\",\"object\":false}}",
+                            c.toString());
     }
 }

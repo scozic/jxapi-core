@@ -483,7 +483,7 @@ public class AbstractExchangeApiTest {
     }
     
     public TestExchangeApi(String apiName, String exchangeName, String exchangeId, Properties properties, RequestThrottler requestThrottler) {
-      super(apiName, new AbstractExchange("myExchangeId", "1.0.0", "myExchange", properties, null, null) {}, requestThrottler, null, null);
+      super(apiName, new AbstractExchange(exchangeId, "1.0.0", exchangeName, properties, null, null) {}, requestThrottler, null, null);
     }
     
     public Observable<ExchangeApiObserver, ExchangeApiEvent> getObservable() {

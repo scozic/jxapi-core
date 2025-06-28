@@ -2,12 +2,15 @@ package org.jxapi.netutils.rest;
 
 import java.util.Date;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.jxapi.netutils.rest.ratelimits.RateLimitRule;
 import org.jxapi.netutils.rest.ratelimits.RequestThrottler;
+import org.jxapi.util.CollectionUtil;
 import org.jxapi.util.EncodingUtil;
+import org.jxapi.util.JsonUtil;
 
 /**
  * Generic HTTP request for a REST API call.
