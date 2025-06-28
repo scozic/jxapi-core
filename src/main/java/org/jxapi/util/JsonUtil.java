@@ -438,10 +438,55 @@ public class JsonUtil {
     }
   }
   
-  
+  /**
+   * Writes a boolean field to the JSON generator, only if the value is true.
+   * @param gen
+   * @param fieldName
+   * @param value
+   * @throws IOException
+   */
   public static void writeBooleanField(JsonGenerator gen, String fieldName, Boolean value) throws IOException {
     if (value != null && value) {
       gen.writeBooleanField(fieldName, value);
+    }
+  }
+  
+  /**
+   * Writes a Long field to the JSON generator, only if the value is not null.
+   * @param gen the JSON generator to write to
+   * @param fieldName the name of the field to write
+   * @param value the value of the field to write
+   * @throws IOException If an error occurs while writing to the generator
+   */
+  public static void writeLongField(JsonGenerator gen, String fieldName, Long value) throws IOException {
+    if (value != null) {
+      gen.writeNumberField(fieldName, value);
+    }
+  }
+  
+  /**
+   * Writes a BigDecimal field to the JSON generator, only if the value is not null.
+   * @param gen the JSON generator to write to
+   * @param fieldName the name of the field to write
+   * @param value the value of the field to write
+   * @throws IOException If an error occurs while writing to the generator
+   */
+  public static void writeBigDecimalField(JsonGenerator gen, String fieldName, BigDecimal value) throws IOException {
+    if (value != null) {
+      gen.writeNumberField(fieldName, value);
+    }
+  }
+  
+  /**
+   * Writes a BigDecimal field to the JSON generator, only if the value is not null.
+   * @param gen the JSON generator to write to
+   * @param fieldName the name of the field to write
+   * @param value the value of the field to write
+   * @throws IOException If an error occurs while writing to the generator
+   */
+  public static void writeIntField(JsonGenerator gen, String fieldName, Integer value) throws IOException {
+    if (value != null) {
+      gen.writeNumberField(fieldName, value);
     }
   }
 
