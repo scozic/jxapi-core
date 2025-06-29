@@ -334,6 +334,15 @@ public class ExchangeGenUtilTest {
   }
   
   @Test
+  public void testGetExchangeDemoPropertiesInterfaceName() {
+    ExchangeDescriptor exchangeDescriptor = new ExchangeDescriptor();
+    exchangeDescriptor.setId("TestExchange");
+    exchangeDescriptor.setBasePackage("com.x.y.z");
+    Assert.assertEquals("com.x.y.z.TestExchangeDemoProperties", 
+              ExchangeGenUtil.getExchangeDemoPropertiesInterfaceName(exchangeDescriptor));
+  }
+  
+  @Test
   public void testGenerateRateLimitGetterImplementationMethodDeclaration() {
     Assert.assertEquals("@Override\n"
         + "public RateLimitRule getTestRateLimitRateLimit() {\n"
@@ -754,6 +763,7 @@ public class ExchangeGenUtilTest {
   public void generateSubstitutionInstructionDeclaration() {
     ExchangeDescriptor exchangeDescriptor = new ExchangeDescriptor();
     exchangeDescriptor.setProperties(List.of(DefaultConfigProperty.create("stranger", Type.STRING, "Your name", "Bob")));
+    exchangeDescriptor.setDemoProperties(List.of(DefaultConfigProperty.create("demoCity", Type.STRING, "Your city", "London")));
     exchangeDescriptor.setId("MyExchange");
     exchangeDescriptor.setBasePackage("com.x.gen");
     Constant ownName = new Constant();
@@ -773,15 +783,17 @@ public class ExchangeGenUtilTest {
     apiDescriptor.setConstants(List.of(birthYear));
     Imports imports = new Imports();
     Assert.assertEquals(
-        "EncodingUtil.substituteArguments(\"Hello ${config.stranger}, I am ${constants.ownName}, born in ${constants.birthYear}\", \"config.stranger\", PropertiesUtil.getString(myProps, MyExchangeProperties.STRANGER), \"constants.ownName\", MyExchangeConstants.OWN_NAME, \"constants.birthYear\", MyExchangeMyApiConstants.BIRTH_YEAR)", 
+        "EncodingUtil.substituteArguments(\"Hello ${config.stranger}, I am ${constants.ownName}, born in ${constants.birthYear} in the city of ${config.demoCity}\""
+        + ", \"config.stranger\", PropertiesUtil.getString(myProps, MyExchangeProperties.STRANGER), \"constants.ownName\", MyExchangeConstants.OWN_NAME, \"constants.birthYear\", MyExchangeMyApiConstants.BIRTH_YEAR, \"config.demoCity\", PropertiesUtil.getString(myProps, MyExchangeDemoProperties.DEMO_CITY))", 
         ExchangeGenUtil.generateSubstitutionInstructionDeclaration(
-            "Hello ${config.stranger}, I am ${constants.ownName}, born in ${constants.birthYear}", 
+            "Hello ${config.stranger}, I am ${constants.ownName}, born in ${constants.birthYear} in the city of ${config.demoCity}", 
             exchangeDescriptor, 
             apiDescriptor, 
             "myProps", imports));
-     Assert.assertEquals(5, imports.size());
+     Assert.assertEquals(6, imports.size());
      Iterator<String> it = imports.iterator();
      Assert.assertEquals("com.x.gen.MyExchangeConstants", it.next());
+     Assert.assertEquals("com.x.gen.MyExchangeDemoProperties", it.next());
      Assert.assertEquals("com.x.gen.MyExchangeProperties", it.next());
      Assert.assertEquals("com.x.gen.myapi.MyExchangeMyApiConstants", it.next());
      Assert.assertEquals(EncodingUtil.class.getName(), it.next());

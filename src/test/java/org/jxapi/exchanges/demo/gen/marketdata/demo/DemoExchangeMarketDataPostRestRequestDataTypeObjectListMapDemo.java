@@ -7,6 +7,7 @@ import java.util.concurrent.ExecutionException;
 
 import javax.annotation.processing.Generated;
 import org.jxapi.exchange.ExchangeApiObserver;
+import org.jxapi.exchanges.demo.gen.DemoExchangeDemoProperties;
 import org.jxapi.exchanges.demo.gen.DemoExchangeExchange;
 import org.jxapi.exchanges.demo.gen.DemoExchangeExchangeImpl;
 import org.jxapi.exchanges.demo.gen.marketdata.DemoExchangeMarketDataApi;
@@ -14,6 +15,8 @@ import org.jxapi.exchanges.demo.gen.marketdata.pojo.GenericResponse;
 import org.jxapi.exchanges.demo.gen.marketdata.pojo.SingleSymbol;
 import org.jxapi.netutils.rest.RestResponse;
 import org.jxapi.util.DemoUtil;
+import org.jxapi.util.EncodingUtil;
+import org.jxapi.util.PropertiesUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -31,7 +34,7 @@ public class DemoExchangeMarketDataPostRestRequestDataTypeObjectListMapDemo {
    */
   public static Map<String, List<SingleSymbol>> createRequest(Properties properties) {
     SingleSymbol requestItem = new SingleSymbol();
-    requestItem.setSymbol("BTC_USDT");
+    requestItem.setSymbol(EncodingUtil.substituteArguments("${config.demoSymbol}", "config.demoSymbol", PropertiesUtil.getString(properties, DemoExchangeDemoProperties.DEMO_SYMBOL)));
     return Map.of("spot", List.of(requestItem));
   }
   

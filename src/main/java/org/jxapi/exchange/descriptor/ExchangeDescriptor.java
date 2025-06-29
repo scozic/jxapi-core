@@ -125,6 +125,8 @@ public class ExchangeDescriptor {
   private List<Constant> constants;
 
   private List<DefaultConfigProperty> properties;
+  
+  private List<DefaultConfigProperty> demoProperties;
 
   private String httpRequestInterceptorFactory;
 
@@ -459,6 +461,26 @@ public class ExchangeDescriptor {
    */
   public void setAfterInitHookFactory(String afterInitHookFactory) {
     this.afterInitHookFactory = afterInitHookFactory;
+  }
+  
+  /**
+   * @return List of configuration properties that are relevant for demo snippets.
+   * @see DefaultConfigProperty
+   */
+  public List<DefaultConfigProperty> getDemoProperties() {
+    return demoProperties;
+  }
+
+  /**
+   * Sets the list of configuration properties that are relevant for demo
+   * snippets.
+   * 
+   * @param demoProperties List of configuration properties that are relevant for
+   *                       demo snippets.
+   * @see DefaultConfigProperty
+   */
+  public void setDemoProperties(List<DefaultConfigProperty> demoProperties) {
+    this.demoProperties = demoProperties;
   }
 
   /**

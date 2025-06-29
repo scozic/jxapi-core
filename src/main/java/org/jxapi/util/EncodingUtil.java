@@ -38,6 +38,8 @@ public class EncodingUtil {
    */
   public static final int DEFAULT_PRETTY_PRINT_LONG_STRING_MAX_LENGTH = 200;
   
+  public static final String DATE_FORMAT_ISO_8601 = "yyyy-MM-dd'T'HH:mm:ss.SSSZ";
+  
   private static final List<JsonSerializer<?>> DEFAULT_JSON_SERIALIZERS = List.of(
         new JsonUtil.ExceptionSerializer(),
         new HttpRequestToStringJsonSerializer(),
@@ -68,7 +70,7 @@ public class EncodingUtil {
   public static final String PRETTY_PRINT_LONG_STRING_REDUCE_SEPARATOR = "....";
   
   private static final ThreadLocal<DateFormat> DEFAULT_TIMESTAMP_FORMAT = ThreadLocal.withInitial(() -> 
-    new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ"));
+    new SimpleDateFormat(DATE_FORMAT_ISO_8601));
 
   private EncodingUtil() {
   }

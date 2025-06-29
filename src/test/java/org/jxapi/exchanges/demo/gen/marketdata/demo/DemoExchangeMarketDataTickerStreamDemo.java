@@ -4,6 +4,7 @@ import java.util.Properties;
 
 import javax.annotation.processing.Generated;
 import org.jxapi.exchange.ExchangeApiObserver;
+import org.jxapi.exchanges.demo.gen.DemoExchangeDemoProperties;
 import org.jxapi.exchanges.demo.gen.DemoExchangeExchange;
 import org.jxapi.exchanges.demo.gen.DemoExchangeExchangeImpl;
 import org.jxapi.exchanges.demo.gen.marketdata.DemoExchangeMarketDataApi;
@@ -12,6 +13,8 @@ import org.jxapi.exchanges.demo.gen.marketdata.pojo.DemoExchangeMarketDataTicker
 import org.jxapi.netutils.websocket.WebsocketListener;
 import org.jxapi.util.DemoProperties;
 import org.jxapi.util.DemoUtil;
+import org.jxapi.util.EncodingUtil;
+import org.jxapi.util.PropertiesUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -29,7 +32,7 @@ public class DemoExchangeMarketDataTickerStreamDemo {
    */
   public static DemoExchangeMarketDataTickerStreamRequest createRequest(Properties properties) {
     DemoExchangeMarketDataTickerStreamRequest request = new DemoExchangeMarketDataTickerStreamRequest();
-    request.setSymbol("BTC_USDT");
+    request.setSymbol(EncodingUtil.substituteArguments("${config.demoSymbol}", "config.demoSymbol", PropertiesUtil.getString(properties, DemoExchangeDemoProperties.DEMO_SYMBOL)));
     return request;
   }
   

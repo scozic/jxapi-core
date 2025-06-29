@@ -157,7 +157,7 @@ public class ExchangeDescriptorParserTest {
     Assert.assertEquals("The list of symbol to fetch market information for. Leave empty to fetch all markets. Author: ${constants.author}", symbolsParameter.getDescription());
     Assert.assertEquals(CanonicalType.LIST, symbolsParameter.getType().getCanonicalType());
     Assert.assertEquals(CanonicalType.STRING, symbolsParameter.getType().getSubType().getCanonicalType());
-    Assert.assertEquals("[\"${demoSymbol}\"]", symbolsParameter.getSampleValue());
+    Assert.assertEquals("[\"${config.demoSymbol}\"]", symbolsParameter.getSampleValue());
     
     Field apiKeyParameter = exchangeInfoParameters.get(1);
     Assert.assertEquals("apiKey", apiKeyParameter.getName());

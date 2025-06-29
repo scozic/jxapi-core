@@ -268,6 +268,9 @@ public class ExchangeDescriptorMergeUtilTest {
     DefaultConfigProperty prop1 = new DefaultConfigProperty();
     prop1.setName("prop1");
     ex1.setProperties(List.of(prop1));
+    DefaultConfigProperty demoProp1 = new DefaultConfigProperty();
+    demoProp1.setName("demoProp1");
+    ex1.setDemoProperties(List.of(demoProp1));
     
     ExchangeDescriptor ex2 = new ExchangeDescriptor();
     ex2.setId("ex1");
@@ -292,6 +295,9 @@ public class ExchangeDescriptorMergeUtilTest {
     DefaultConfigProperty prop2 = new DefaultConfigProperty();
     prop2.setName("prop2");
     ex2.setProperties(List.of(prop2));
+    DefaultConfigProperty demoProp2 = new DefaultConfigProperty();
+    demoProp2.setName("demoProp2");
+    ex2.setDemoProperties(List.of(demoProp2));
     
     ExchangeDescriptor merged = ExchangeDescriptorMergeUtil.mergeExchangeDescriptors(ex1, ex2);
     Assert.assertEquals("ex1", merged.getId());
@@ -319,6 +325,9 @@ public class ExchangeDescriptorMergeUtilTest {
     Assert.assertEquals(2, merged.getProperties().size());
     Assert.assertEquals(prop1, merged.getProperties().get(0));
     Assert.assertEquals(prop2, merged.getProperties().get(1));
+    Assert.assertEquals(2, merged.getDemoProperties().size());
+    Assert.assertEquals(demoProp1, merged.getDemoProperties().get(0));
+    Assert.assertEquals(demoProp2, merged.getDemoProperties().get(1));
   }
   
   private class MyType {

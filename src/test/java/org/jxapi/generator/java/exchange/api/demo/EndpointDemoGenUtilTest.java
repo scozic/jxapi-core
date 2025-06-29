@@ -184,7 +184,6 @@ public class EndpointDemoGenUtilTest {
         + "  request.setALong(Long.valueOf(\"9876543210\"));\n"
         + "  request.setBDecimal(new BigDecimal(\"123.45\"));\n"
         + "  request.setCBool(Boolean.valueOf(\"true\"));\n"
-        + "  request.setTheVoidStr(null);\n"
         + "  return request;\n"
         + "}\n", method);
     checkImports(imports, BigDecimal.class, Properties.class);
@@ -229,7 +228,6 @@ public class EndpointDemoGenUtilTest {
         + "  MyRequestBar request_barItem = new MyRequestBar();\n"
         + "  request_barItem.setId(\"id#0\");\n"
         + "  request_barItem.setEnabled(Boolean.valueOf(\"true\"));\n"
-        + "  request_barItem.setTime(null);\n"
         + "  request_barItem.setBestBids(new MapJsonFieldDeserializer<>(new ListJsonFieldDeserializer<>(BigDecimalJsonFieldDeserializer.getInstance())).deserialize(\"{\\\"BTC_USDT\\\": [\\\"69268.61\\\", \\\"69268.62\\\"], \\\"ETH_USDT\\\":[\\\"3427.98\\\", \\\"3427.90\\\"]}\"));\n"
         + "  request.setBar(List.of(request_barItem));\n"
         + "  return request;\n"

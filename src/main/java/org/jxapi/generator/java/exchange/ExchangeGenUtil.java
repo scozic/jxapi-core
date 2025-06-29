@@ -200,15 +200,27 @@ public class ExchangeGenUtil {
   }
   
   /**
-   * @param exchangeDescriptor The exchange where constants are defined
-   * @return The full class name of constants interface defined at exchange level
-   * @see ExchangeDescriptor#getConstants()
+   * @param exchangeDescriptor The exchange where configuration properties are defined
+   * @return The full class name of configuration properties interface for the given exchange.
+   * @see ExchangeDescriptor#getProperties()
    */
   public static String getExchangePropertiesInterfaceName(ExchangeDescriptor exchangeDescriptor) {
     return exchangeDescriptor.getBasePackage() 
         + "." 
         + JavaCodeGenUtil.firstLetterToUpperCase(exchangeDescriptor.getId()) 
         + "Properties";
+  }
+  
+  /**
+   * @param exchangeDescriptor The exchange where demo configuration properties are defined
+   * @return The full class name of demo configuration properties interface for the given exchange.
+   * @see ExchangeDescriptor#getDemoProperties()
+   */
+  public static String getExchangeDemoPropertiesInterfaceName(ExchangeDescriptor exchangeDescriptor) {
+    return exchangeDescriptor.getBasePackage() 
+        + "." 
+        + JavaCodeGenUtil.firstLetterToUpperCase(exchangeDescriptor.getId())
+        + "DemoProperties";
   }
 
   /**
@@ -572,6 +584,11 @@ public class ExchangeGenUtil {
     for (ConfigProperty prop : CollectionUtil.emptyIfNull(descriptor.getProperties())) {
       if (configPropertyName.equals(prop.getName())) {
         return getExchangePropertiesInterfaceName(descriptor);
+      }
+    }
+    for (ConfigProperty prop : CollectionUtil.emptyIfNull(descriptor.getDemoProperties())) {
+      if (configPropertyName.equals(prop.getName())) {
+        return getExchangeDemoPropertiesInterfaceName(descriptor);
       }
     }
     return null;

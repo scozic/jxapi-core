@@ -88,5 +88,7 @@ public class ExchangeClassesGenerator implements ClassesGenerator {
           docPlaceHolderResolver);
       pgen.writeJavaFile(outputFolder);
     }
+    
+    // TODO: Demo properties
   }
 }

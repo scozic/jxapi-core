@@ -256,7 +256,13 @@ public class EndpointDemoGenUtil {
       Imports imports, 
       PlaceHolderResolver sampleValuePlaceholderResolver) {
     Type childParamType = ExchangeGenUtil.getFieldType(childParam);
-    String setArg = JavaCodeGenUtil.getQuotedString(childParam.getSampleValue());
+    Object childParamSampleValue = childParam.getSampleValue();
+    if (childParamSampleValue == null && !childParamType.isObject()) {
+      return; // No sample value to set
+    }
+    String setArg = Optional.ofNullable(sampleValuePlaceholderResolver)
+                      .orElse(JavaCodeGenUtil::getQuotedString)
+                      .resolve(String.valueOf(childParamSampleValue));
     String setAccessorName = JavaCodeGenUtil.getSetAccessorMethodName(
         childParam.getName(),  
         field.getProperties().stream()

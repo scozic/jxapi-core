@@ -213,9 +213,9 @@ public class ExchangeGeneratorMain {
   }
   
   /**
-   * Generates exchange API wrapper (without demo snippets) for given exchange descriptor
+   * Generates exchange API wrapper demo snippets for given exchange descriptor
    * @param exchangeDescriptor The exchange descriptor to generate Java wrapper for all APIs of
-   * @param srcFolder The src%2Fmain%2Fpackage of wrapper project
+   * @param srcFolder The <code>src/test/java/package of wrapper project
    * @throws IOException If error occurs during generation
    */
   public static void generateExchangeWrapperDemos(ExchangeDescriptor exchangeDescriptor, Path srcFolder) throws IOException {
