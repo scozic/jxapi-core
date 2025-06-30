@@ -23,7 +23,7 @@ You may have a look at <a href="./src/test/java/org/jxapi/exchanges/employee/gen
 ### Properties
 
 <table>
-  <caption>properties</caption>
+  <caption>Configuration properties</caption>
   <tr>
     <th>Name</th>
     <th>Type</th>
@@ -110,3 +110,23 @@ Version 1 of the Employee API
   </tr>
 </table>
 Some useful constants are defined in <a href="./doc/javadoc/org/jxapi/exchanges/employee/gen/v1/EmployeeV1Constants.html">EmployeeV1Constants</a>
+
+## Demo snippets
+
+This wrapper contains demo snippets for the most important endpoints. These snippets are generated in _src/test/java/_ source folder.
+
+
+### Demo endpoints
+
+
+#### V1 REST endpoints demo snippets:
+
+ - __getEmployee__: <a href="./src/test/java/org/jxapi/exchanges/employee/gen/v1/demo/EmployeeV1GetEmployeeDemo.java">EmployeeV1GetEmployeeDemo</a>
+ - __getAllEmployees__: <a href="./src/test/java/org/jxapi/exchanges/employee/gen/v1/demo/EmployeeV1GetAllEmployeesDemo.java">EmployeeV1GetAllEmployeesDemo</a>
+ - __addEmployee__: <a href="./src/test/java/org/jxapi/exchanges/employee/gen/v1/demo/EmployeeV1AddEmployeeDemo.java">EmployeeV1AddEmployeeDemo</a>
+ - __updateEmployee__: <a href="./src/test/java/org/jxapi/exchanges/employee/gen/v1/demo/EmployeeV1UpdateEmployeeDemo.java">EmployeeV1UpdateEmployeeDemo</a>
+ - __deleteEmployee__: <a href="./src/test/java/org/jxapi/exchanges/employee/gen/v1/demo/EmployeeV1DeleteEmployeeDemo.java">EmployeeV1DeleteEmployeeDemo</a>
+
+#### V1 Websocket endpoints demo snippets
+
+ - __employeeUpdates__: <a href="./src/test/java/org/jxapi/exchanges/employee/gen/v1/demo/EmployeeV1EmployeeUpdatesDemo.java">EmployeeV1EmployeeUpdatesDemo</a>

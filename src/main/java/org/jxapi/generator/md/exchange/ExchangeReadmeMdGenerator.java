@@ -126,7 +126,7 @@ public class ExchangeReadmeMdGenerator {
     List<DefaultConfigProperty> properties = exchangeDescriptor.getProperties();
     if (!CollectionUtil.isEmpty(properties)) {
       s.append("\n### Properties\n\n")
-       .append(generatePropertiesTable(properties, docPlaceHolderResolver));
+       .append(generatePropertiesTable("Configuration properties", properties, docPlaceHolderResolver));
     }
     
     List<Constant> exchangeConstants = exchangeDescriptor.getConstants();
@@ -145,6 +145,8 @@ public class ExchangeReadmeMdGenerator {
        .append(" interface\n");
       apiDescriptors.forEach(api -> s.append(generateApiDescriptorDoc(api)));
     }
+    
+    s.append(generateDemoSnippetsDocumentation(docPlaceHolderResolver));
     return s.toString();    
   }
   
@@ -294,7 +296,7 @@ public class ExchangeReadmeMdGenerator {
                 JavaCodeGenUtil.getClassNameWithoutPackage(className));
   }
   
-  private String generatePropertiesTable(List<DefaultConfigProperty> properties, PlaceHolderResolver docPlaceHolderResolver) {
+  private String generatePropertiesTable(String tableName, List<DefaultConfigProperty> properties, PlaceHolderResolver docPlaceHolderResolver) {
     List<String> columns = List.of("Name", "Type", "description", "Default value");
     List<List<String>> cells = new ArrayList<>();
     properties.forEach(p -> {
@@ -305,7 +307,86 @@ public class ExchangeReadmeMdGenerator {
       row.add(String.valueOf(Optional.ofNullable(p.getDefaultValue()).orElse("")));
       cells.add(row);
     });
-    return HtmlGenerationUtil.generateTable("properties", columns, cells);
+    return HtmlGenerationUtil.generateTable(tableName, columns, cells);
+  }
+  
+  private String generateDemoSnippetsDocumentation(PlaceHolderResolver docPlaceHolderResolver) {
+    if (!hasDemoSection()) {
+      return "";
+    }
+    StringBuilder s = new StringBuilder();
+    s.append("\n## Demo snippets\n\n")
+     .append("This wrapper contains demo snippets for the most important endpoints. These snippets are generated in _src/test/java/_ source folder.\n\n");
+    if (!CollectionUtil.isEmpty(exchangeDescriptor.getDemoProperties())) {
+      String exchangeDemoPropertiesInterfaceName = ExchangeGenUtil.getExchangeDemoPropertiesInterfaceName(exchangeDescriptor);
+      s.append("Some demo configuration properties are available to tune common request parameters used in snippets, as ")
+       .append(getSourceFileLink(exchangeDemoPropertiesInterfaceName, "test"))
+       .append(" class.\n These properties are used to configure default values for request parameters used in demo snippets.\n\n")
+       .append("In order to run demo snippets, you can set properties values in __demo-")
+       .append(exchangeDescriptor.getId())
+       .append(".properties__ properties file in src/test/resources folder.\n\n")
+       .append(generatePropertiesTable("Demo snippet properties", exchangeDescriptor.getDemoProperties(), docPlaceHolderResolver));
+    }
+    
+    if (hasEndpoints()) {
+      s.append("\n### Demo endpoints\n\n");
+      exchangeDescriptor.getApis().stream()
+        .map(this::generateApiDescriptorDemoSnippetsDocumentation)
+        .forEach(s::append);
+    }
+    
+    return s.toString();
+  }
+  
+  private String generateApiDescriptorDemoSnippetsDocumentation(ExchangeApiDescriptor apiDescriptor) {
+    StringBuilder s = new StringBuilder();
+    if (!CollectionUtil.isEmpty(apiDescriptor.getRestEndpoints())) {
+      s.append("\n#### ")
+       .append(apiDescriptor.getName())
+       .append(" REST endpoints demo snippets:\n\n");
+       for (RestEndpointDescriptor restEndpoint : apiDescriptor.getRestEndpoints()) {
+         String demoSnippetClassName = EndpointDemoGenUtil.getRestApiDemoClassName(exchangeDescriptor, apiDescriptor, restEndpoint);
+         s.append(" - __")
+          .append(restEndpoint.getName())
+          .append("__: ")
+          .append(getSourceFileLink(demoSnippetClassName, "test"))
+          .append("\n");
+       }
+    }
+    
+    if (!CollectionUtil.isEmpty(apiDescriptor.getWebsocketEndpoints())) {
+      s.append("\n#### ")
+      .append(apiDescriptor.getName())
+      .append(" Websocket endpoints demo snippets\n\n");
+      for (WebsocketEndpointDescriptor websocketEndpoint : apiDescriptor.getWebsocketEndpoints()) {
+        String demoSnippetClassName = EndpointDemoGenUtil.getWebsocketApiDemoClassName(exchangeDescriptor, apiDescriptor, websocketEndpoint);
+        s.append(" - __")
+         .append(websocketEndpoint.getName())
+         .append("__: ")
+         .append(getSourceFileLink(demoSnippetClassName, "test"))
+         .append("\n");
+      }
+    }
+    return s.toString();
+  }
+  
+  /**
+   * Checks if the exchange has a demo section, which is determined by the
+   * presence of demo properties or any REST or WS endpoints.
+   * 
+   * @return true if there is a demo section, false otherwise
+   */
+  private boolean hasDemoSection() {
+    if (!CollectionUtil.isEmpty(exchangeDescriptor.getDemoProperties())) {
+      return true;
+    }
+    return hasEndpoints();
+  }
+  
+  private boolean hasEndpoints() {
+    return CollectionUtil.emptyIfNull(exchangeDescriptor.getApis()).stream()
+        .anyMatch(api -> !CollectionUtil.isEmpty(api.getRestEndpoints())
+                          || !CollectionUtil.isEmpty(api.getWebsocketEndpoints()));
   }
 
   /**

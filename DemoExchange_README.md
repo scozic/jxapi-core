@@ -22,7 +22,7 @@ You may have a look at <a href="./src/test/java/org/jxapi/exchanges/demo/gen/mar
 ### Properties
 
 <table>
-  <caption>properties</caption>
+  <caption>Configuration properties</caption>
   <tr>
     <th>Name</th>
     <th>Type</th>
@@ -118,3 +118,44 @@ Demo exchange market data API
   </tr>
 </table>
 Some useful constants are defined in <a href="./doc/javadoc/org/jxapi/exchanges/demo/gen/marketdata/DemoExchangeMarketDataConstants.html">DemoExchangeMarketDataConstants</a>
+
+## Demo snippets
+
+This wrapper contains demo snippets for the most important endpoints. These snippets are generated in _src/test/java/_ source folder.
+
+Some demo configuration properties are available to tune common request parameters used in snippets, as <a href="./src/test/java/org/jxapi/exchanges/demo/gen/DemoExchangeDemoProperties.java">DemoExchangeDemoProperties</a> class.
+ These properties are used to configure default values for request parameters used in demo snippets.
+
+In order to run demo snippets, you can set properties values in __demo-DemoExchange.properties__ properties file in src/test/resources folder.
+
+<table>
+  <caption>Demo snippet properties</caption>
+  <tr>
+    <th>Name</th>
+    <th>Type</th>
+    <th>description</th>
+    <th>Default value</th>
+  </tr>
+  <tr>
+    <td>demoSymbol</td>
+    <td>STRING</td>
+    <td>Default value to use for market 'symbol' parameter in demo snippets</td>
+    <td>BTC_USDT</td>
+  </tr>
+</table>
+
+### Demo endpoints
+
+
+#### MarketData REST endpoints demo snippets:
+
+ - __exchangeInfo__: <a href="./src/test/java/org/jxapi/exchanges/demo/gen/marketdata/demo/DemoExchangeMarketDataExchangeInfoDemo.java">DemoExchangeMarketDataExchangeInfoDemo</a>
+ - __tickers__: <a href="./src/test/java/org/jxapi/exchanges/demo/gen/marketdata/demo/DemoExchangeMarketDataTickersDemo.java">DemoExchangeMarketDataTickersDemo</a>
+ - __postRestRequestDataTypeInt__: <a href="./src/test/java/org/jxapi/exchanges/demo/gen/marketdata/demo/DemoExchangeMarketDataPostRestRequestDataTypeIntDemo.java">DemoExchangeMarketDataPostRestRequestDataTypeIntDemo</a>
+ - __getRestRequestDataTypePrimitiveWithMsgField__: <a href="./src/test/java/org/jxapi/exchanges/demo/gen/marketdata/demo/DemoExchangeMarketDataGetRestRequestDataTypePrimitiveWithMsgFieldDemo.java">DemoExchangeMarketDataGetRestRequestDataTypePrimitiveWithMsgFieldDemo</a>
+ - __postRestRequestDataTypeIntList__: <a href="./src/test/java/org/jxapi/exchanges/demo/gen/marketdata/demo/DemoExchangeMarketDataPostRestRequestDataTypeIntListDemo.java">DemoExchangeMarketDataPostRestRequestDataTypeIntListDemo</a>
+ - __postRestRequestDataTypeObjectListMap__: <a href="./src/test/java/org/jxapi/exchanges/demo/gen/marketdata/demo/DemoExchangeMarketDataPostRestRequestDataTypeObjectListMapDemo.java">DemoExchangeMarketDataPostRestRequestDataTypeObjectListMapDemo</a>
+
+#### MarketData Websocket endpoints demo snippets
+
+ - __tickerStream__: <a href="./src/test/java/org/jxapi/exchanges/demo/gen/marketdata/demo/DemoExchangeMarketDataTickerStreamDemo.java">DemoExchangeMarketDataTickerStreamDemo</a>
