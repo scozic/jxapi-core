@@ -21,6 +21,9 @@ import com.fasterxml.jackson.databind.ser.std.StdSerializer;
  */
 public class HttpResponseToStringJsonSerializer extends StdSerializer<HttpResponse> {
 
+  /**
+   * Default constructor
+   */
   public HttpResponseToStringJsonSerializer() {
     super(HttpResponse.class);
   }

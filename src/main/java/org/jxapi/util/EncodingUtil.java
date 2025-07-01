@@ -38,6 +38,12 @@ public class EncodingUtil {
    */
   public static final int DEFAULT_PRETTY_PRINT_LONG_STRING_MAX_LENGTH = 200;
   
+  /**
+   * Default date format used for timestamp formatting, in ISO 8601 format:
+   * <code>yyyy-MM-dd'T'HH:mm:ss.SSSZ</code>.
+   * <p>
+   * Used by {@link #formatTimestamp(long)} and {@link #formatTimestamp(Date)}.
+   */
   public static final String DATE_FORMAT_ISO_8601 = "yyyy-MM-dd'T'HH:mm:ss.SSSZ";
   
   private static final List<JsonSerializer<?>> DEFAULT_JSON_SERIALIZERS = List.of(

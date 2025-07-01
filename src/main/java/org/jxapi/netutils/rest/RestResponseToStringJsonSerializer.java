@@ -17,6 +17,9 @@ import com.fasterxml.jackson.databind.ser.std.StdSerializer;
 @SuppressWarnings("rawtypes")
 public class RestResponseToStringJsonSerializer extends StdSerializer<RestResponse> {
 
+  /**
+   * Default constructor
+   */
   public RestResponseToStringJsonSerializer() {
     super(RestResponse.class);
   }

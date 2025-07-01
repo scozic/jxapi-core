@@ -40,7 +40,7 @@ public class WebsocketMessageTopicMatcherField {
 
   /**
    * Set the field name
-   * @param fieldName The field name
+   * @param name The field name
    */
   public void setName(String name) {
     this.name = name;

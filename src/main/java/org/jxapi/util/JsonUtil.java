@@ -440,10 +440,10 @@ public class JsonUtil {
   
   /**
    * Writes a boolean field to the JSON generator, only if the value is true.
-   * @param gen
-   * @param fieldName
-   * @param value
-   * @throws IOException
+   * @param gen the JSON generator to write to
+   * @param fieldName the name of the field to write
+   * @param value the value of the field to write
+   * @throws IOException If an error occurs while writing to the generator
    */
   public static void writeBooleanField(JsonGenerator gen, String fieldName, Boolean value) throws IOException {
     if (value != null && value) {

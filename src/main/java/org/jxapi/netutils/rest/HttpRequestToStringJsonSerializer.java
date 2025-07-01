@@ -13,8 +13,16 @@ import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.ser.std.StdSerializer;
 
+/**
+ * Json serializer for {@link HttpRequest} that serializes the request as a readable string with properties in JSON format ordered by importance.
+ * <p>
+ * The body and request properties are serialized as pretty-printed strings (limited length) to enhance readability.
+ */
 public class HttpRequestToStringJsonSerializer extends StdSerializer<HttpRequest> {
 
+  /**
+   * Default constructor
+   */
   public HttpRequestToStringJsonSerializer() {
     super(HttpRequest.class);
   }

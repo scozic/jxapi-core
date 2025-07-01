@@ -14,12 +14,12 @@ public class ExchangeReadmeMdGeneratorUtil {
    * Placeholder for the table of contents in Markdown files. This placeholder
    * will be replaced with the actual table of contents.
    */
-  public static String TABLE_OF_CONTENTS_PLACEHOLDER = "<!-- TABLE OF CONTENTS -->";
+  public static final String TABLE_OF_CONTENTS_PLACEHOLDER = "<!-- TABLE OF CONTENTS -->";
 
   /**
    * Generates the table of contents for a Markdown file based on its content.<br>
    * The table of contents will be inserted at the location of the 
-   * {@link TABLE_OF_CONTENTS_PLACEHOLDER].
+   * {@link #TABLE_OF_CONTENTS_PLACEHOLDER}.
    * It will contain a bullet list of links to each header in the file.
    *
    * @param mdFileContent The content of the Markdown file as a String.
