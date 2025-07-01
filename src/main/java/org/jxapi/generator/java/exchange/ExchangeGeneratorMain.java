@@ -238,8 +238,11 @@ public class ExchangeGeneratorMain {
     log.info("Generating demo exchange properties template file:{}", filePath);
     List<ConfigProperty> configProperties = new ArrayList<>();
     configProperties.addAll(Optional.ofNullable(exchangeDescriptor.getProperties()).orElse(List.of()));
+    List<ConfigProperty> demoProperties = new ArrayList<>();
+    configProperties.addAll(Optional.ofNullable(exchangeDescriptor.getDemoProperties()).orElse(List.of()));
     new ExchangeDemoPropertiesFileGenerator(exchangeDescriptor.getId(), 
-                        configProperties)
+                        configProperties, 
+                        demoProperties)
       .writeJavaFile(filePath);
   }
 

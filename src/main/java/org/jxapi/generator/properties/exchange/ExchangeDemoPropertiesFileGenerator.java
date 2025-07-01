@@ -45,12 +45,13 @@ public class ExchangeDemoPropertiesFileGenerator {
 
   private String exchangeId;
   private List<ConfigProperty> exchangeProperties;
+  private List<ConfigProperty> demoProperties;
   
   /**
    * Constructor
      */
   public ExchangeDemoPropertiesFileGenerator() {
-    this(null, List.of());
+    this(null, List.of(), List.of());
   }
 
   /**
@@ -59,9 +60,10 @@ public class ExchangeDemoPropertiesFileGenerator {
    * @param exchangeId         the exchange id
    * @param exchangeProperties the exchange configuration properties
    */
-  public ExchangeDemoPropertiesFileGenerator(String exchangeId, List<ConfigProperty> exchangeProperties) {
+  public ExchangeDemoPropertiesFileGenerator(String exchangeId, List<ConfigProperty> exchangeProperties, List<ConfigProperty> demoProperties) {
     this.exchangeId = exchangeId;
     this.exchangeProperties = exchangeProperties;
+    this.demoProperties = demoProperties;
   }
 
   /**
@@ -102,7 +104,8 @@ public class ExchangeDemoPropertiesFileGenerator {
     s.append(generatePropertiesFileComment(String.format(DESCRIPTION, exchangeId)))
      .append(generateCommentedOutproperties(String.format("%s specific configuration properties", exchangeId), exchangeProperties))
      .append(generateCommentedOutproperties("Common configuration properties", CommonConfigProperties.ALL))
-     .append(generateCommentedOutproperties("Demo REST/WEBSOCKET snippets configuration properties", DemoProperties.ALL));
+     .append(generateCommentedOutproperties("Demo REST/WEBSOCKET snippets common configuration properties", DemoProperties.ALL))
+     .append(generateCommentedOutproperties("Demo REST/WEBSOCKET specific configuration properties", demoProperties));
     return s.toString();
   }
   
@@ -138,6 +141,14 @@ public class ExchangeDemoPropertiesFileGenerator {
    */
   public void writeJavaFile(Path propertiesFile) throws IOException {
     Files.writeString(propertiesFile, generate());
+  }
+
+  public List<ConfigProperty> getDemoProperties() {
+    return demoProperties;
+  }
+
+  public void setDemoProperties(List<ConfigProperty> demoProperties) {
+    this.demoProperties = demoProperties;
   }
   
   

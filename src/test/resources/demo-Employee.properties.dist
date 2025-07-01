@@ -29,7 +29,7 @@
 # jxapi.maxRequestThrottleDelay=
 
 
-# Demo REST/WEBSOCKET snippets configuration properties
+# Demo REST/WEBSOCKET snippets common configuration properties
 
 # The duration in ms of the subscription in websocket endpoint demo classes
 # jxapi.demo.ws.subscriptionDuration=30000

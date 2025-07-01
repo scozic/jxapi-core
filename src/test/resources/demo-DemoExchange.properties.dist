@@ -29,10 +29,16 @@
 # jxapi.maxRequestThrottleDelay=
 
 
-# Demo REST/WEBSOCKET snippets configuration properties
+# Demo REST/WEBSOCKET snippets common configuration properties
 
 # The duration in ms of the subscription in websocket endpoint demo classes
 # jxapi.demo.ws.subscriptionDuration=30000
 
 # Delay in ms before exiting program after unsubscribing in websocked endpoint demo classes.
 # jxapi.demo.ws.delayBeforeExitAfterUnsubscription=1000
+
+
+# Demo REST/WEBSOCKET specific configuration properties
+
+# Default value to use for market 'symbol' parameter in demo snippets
+# demoSymbol=BTC_USDT

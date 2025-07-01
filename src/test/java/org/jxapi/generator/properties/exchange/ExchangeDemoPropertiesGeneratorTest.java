@@ -42,8 +42,11 @@ public class ExchangeDemoPropertiesGeneratorTest {
     Path actualFilePath = tmpFolder.resolve(fileName);
     List<ConfigProperty> configProperties = new ArrayList<>();
     configProperties.addAll(exchangeDescriptor.getProperties());
+    List<ConfigProperty> demoProperties = new ArrayList<>();
+    demoProperties.addAll(exchangeDescriptor.getDemoProperties());
     new ExchangeDemoPropertiesFileGenerator(exchangeDescriptor.getId(), 
-                        configProperties)
+                        configProperties,
+                        demoProperties)
       .writeJavaFile(actualFilePath);
     String expected = Files.readString(srcTestResourcesFolder.resolve(fileName));
     String actual = Files.readString(actualFilePath);
@@ -53,7 +56,8 @@ public class ExchangeDemoPropertiesGeneratorTest {
   @Test
   public void testGenerateDemoPropertiesTemplateFile_EmptyConfigProperties() {
     List<ConfigProperty> configProperties = List.of();
-    String content = new ExchangeDemoPropertiesFileGenerator("DemoExchange", configProperties).generate();
+    List<ConfigProperty> demoProperties = List.of();
+    String content = new ExchangeDemoPropertiesFileGenerator("DemoExchange", configProperties, demoProperties).generate();
     Assert.assertEquals("# Demo configuration properties file for DemoExchange exchange.\n"
         + "# You should create a copy of this file without the '.dist' extension and add that .properties file\n"
         + "# to your .gitignore because properties may carry sensitive data you do not want to commit.\n"
@@ -73,12 +77,13 @@ public class ExchangeDemoPropertiesGeneratorTest {
         + "# jxapi.maxRequestThrottleDelay=\n"
         + "\n"
         + "\n"
-        + "# Demo REST/WEBSOCKET snippets configuration properties\n"
+        + "# Demo REST/WEBSOCKET snippets common configuration properties\n"
         + "\n"
         + "# The duration in ms of the subscription in websocket endpoint demo classes\n"
         + "# jxapi.demo.ws.subscriptionDuration=30000\n"
         + "\n"
         + "# Delay in ms before exiting program after unsubscribing in websocked endpoint demo classes.\n"
-        + "# jxapi.demo.ws.delayBeforeExitAfterUnsubscription=1000\n", content);
+        + "# jxapi.demo.ws.delayBeforeExitAfterUnsubscription=1000\n"
+        + "", content);
   }
 }
