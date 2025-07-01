@@ -1,6 +1,19 @@
 # DemoExchange API Java wrapper
 
 Demo Exchange. This exchange uses connects to mock HTTP server and websocket server. It is used to test and validate a full Java wrapper generated using JXAPI.
+  - [DemoExchange API Java wrapper](#demoexchange-api-java-wrapper)
+      - [Quick start](#quick-start)
+      - [Properties](#properties)
+      - [Constants](#constants)
+    - [API Groups](#api-groups)
+      - [MarketData](#marketdata)
+        - [REST endpoints](#rest-endpoints)
+        - [Websocket endpoints](#websocket-endpoints)
+    - [Demo snippets](#demo-snippets)
+      - [Demo endpoints](#demo-endpoints)
+        - [MarketData REST endpoints demo snippets:](#marketdata-rest-endpoints-demo-snippets)
+        - [MarketData Websocket endpoints demo snippets](#marketdata-websocket-endpoints-demo-snippets)
+
 See <a href="https://docs.myexchange.com/api">reference documentation</a>
 ### Quick start
 
