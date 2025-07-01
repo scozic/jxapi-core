@@ -121,6 +121,7 @@ public class PropertiesClassGenerator extends JavaTypeGenerator {
 
   private void generatePropertiesListMethod() {
     addImport(List.class);
+    addImport(ConfigProperty.class);
     appendToBody("\n")
       .append(JavaCodeGenUtil.generateJavaDoc("List of all configuration properties defined in this class"))
       .append("\npublic static final List<ConfigProperty> ALL = List.of(\n")

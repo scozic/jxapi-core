@@ -15,7 +15,7 @@ import org.jxapi.util.PlaceHolderResolver;
  */
 public class PropertiesClassGeneratorTest {
 
-  @Test
+    @Test
     public void testGenerate() {
         DefaultConfigProperty stringProp = DefaultConfigProperty.create("myString", Type.STRING, "My String property, for instance '${sampleMyStringValue}'", "foo");
         DefaultConfigProperty stringPropWithNoDescriptionNoDefaultValue = DefaultConfigProperty.create("myStringWithNoDescriptionNoDefaultValue", Type.STRING, null, null);
@@ -206,5 +206,44 @@ public class PropertiesClassGeneratorTest {
             + "    MY_BIG_DECIMAL);\n"
             + "}\n";
         Assert.assertEquals(expected, gen.generate());
+    }
+    
+    @Test
+    public void testGenerate_EmptyProperties() {      
+      PropertiesClassGenerator gen = new PropertiesClassGenerator("com.x.y.MyProperties", "myExchange", List.of(), PlaceHolderResolver.NO_OP);
+      Assert.assertEquals("package com.x.y;\n"
+          + "\n"
+          + "import java.util.List;\n"
+          + "\n"
+          + "import javax.annotation.processing.Generated;\n"
+          + "import org.jxapi.exchange.descriptor.ConfigProperty;\n"
+          + "\n"
+          + "/**\n"
+          + " * Configurable properties for <strong>myExchange</strong> exchange:<br>\n"
+          + " * <table>\n"
+          + " *   <caption>myExchange properties</caption>\n"
+          + " *   <tr>\n"
+          + " *     <th>Name</th>\n"
+          + " *     <th>Type</th>\n"
+          + " *     <th>Description</th>\n"
+          + " *     <th>Default value</th>\n"
+          + " *   </tr>\n"
+          + " * </table>\n"
+          + " * <br>\n"
+          + " * Exposes helper methods are available to retrieve value of each of these properties with right type, returning default value if not present in properties.\n"
+          + " * @see ConfigProperty\n"
+          + " */\n"
+          + "@Generated(\"org.jxapi.generator.java.exchange.constants.PropertiesClassGenerator\")\n"
+          + "public class MyProperties {\n"
+          + "  \n"
+          + "  private MyProperties(){}\n"
+          + "  \n"
+          + "  /**\n"
+          + "   * List of all configuration properties defined in this class\n"
+          + "   */\n"
+          + "  public static final List<ConfigProperty> ALL = List.of(\n"
+          + "    );\n"
+          + "}\n"
+          + "", gen.generate());
     }
 }
