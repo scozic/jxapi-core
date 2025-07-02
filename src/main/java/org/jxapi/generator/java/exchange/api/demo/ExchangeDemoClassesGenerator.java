@@ -12,7 +12,6 @@ import org.jxapi.exchange.descriptor.WebsocketEndpointDescriptor;
 import org.jxapi.generator.java.exchange.ClassesGenerator;
 import org.jxapi.generator.java.exchange.ExchangeGenUtil;
 import org.jxapi.generator.java.exchange.constants.PropertiesClassGenerator;
-import org.jxapi.util.PlaceHolderResolver;
 
 /**
  * Generates demo classes for an exchange, e.g. one snippet class for each REST
@@ -50,16 +49,13 @@ public class ExchangeDemoClassesGenerator implements ClassesGenerator {
         }
       }
       
-      PlaceHolderResolver docPlaceHolderResolver = 
-          PlaceHolderResolver.create(ExchangeGenUtil.getDescriptionReplacements(exchangeDescriptor, null));
       // Generate properties interface
       List<DefaultConfigProperty> properties = exchangeDescriptor.getDemoProperties();
       if (properties != null) {
         PropertiesClassGenerator pgen = new PropertiesClassGenerator(
             ExchangeGenUtil.getExchangeDemoPropertiesInterfaceName(exchangeDescriptor), 
-            exchangeDescriptor.getId(), 
-            properties,
-            docPlaceHolderResolver);
+            exchangeDescriptor, 
+            properties);
         pgen.writeJavaFile(outputFolder);
       }
     }

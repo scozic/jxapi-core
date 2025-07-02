@@ -98,12 +98,17 @@ public class ConstantsGenerationUtil {
    * @param docPlaceHolderResolver the resolver for placeholders in the property's description
    * @return the Java code for the property declaration
    */
-  public static String getPropertyValueDeclaration(ConfigProperty property, Imports imports, PlaceHolderResolver docPlaceHolderResolver) {
+  public static String getPropertyValueDeclaration(ConfigProperty property, Imports imports, PlaceHolderResolver docPlaceHolderResolver, PlaceHolderResolver sampleValuePlaceHolderResolver) {
     imports.add(DefaultConfigProperty.class);
     imports.add(Type.class);
     imports.add(ConfigProperty.class);
     String name = property.getName();
     String description = Optional.ofNullable(docPlaceHolderResolver).orElse(PlaceHolderResolver.NO_OP).resolve(property.getDescription());
+    Object sampleValue = property.getDefaultValue();
+    String sampleValueStr = sampleValue == null? null: 
+      Optional.ofNullable(sampleValuePlaceHolderResolver)
+        .orElse(JavaCodeGenUtil::getQuotedString)
+        .resolve(sampleValue.toString());
     return new StringBuilder()
         .append(JavaCodeGenUtil.generateJavaDoc(description))
         .append("\npublic static final ConfigProperty ")
@@ -121,7 +126,7 @@ public class ConstantsGenerationUtil {
         .append(JavaCodeGenUtil.getQuotedString(description))
         .append(",\n")
         .append(JavaCodeGenUtil.INDENTATION)
-        .append(JavaCodeGenUtil.getQuotedString(property.getDefaultValue()))
+        .append(sampleValueStr)
         .append(");\n")
         .toString();
   }

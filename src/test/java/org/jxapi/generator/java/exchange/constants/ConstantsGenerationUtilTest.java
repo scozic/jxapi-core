@@ -83,7 +83,25 @@ public class ConstantsGenerationUtilTest {
         + "  Type.STRING,\n"
         + "  \"A test string value property, for instance 'bar'\",\n"
         + "  \"foo\");\n", 
-        ConstantsGenerationUtil.getPropertyValueDeclaration(p, imports, placeholderResolver));
+        ConstantsGenerationUtil.getPropertyValueDeclaration(p, imports, placeholderResolver, null));
+  }
+  
+  @Test
+  public void testGetPropertyValueDeclaration_ValueWithPlaceholder() {
+    ConfigProperty p = DefaultConfigProperty.create("myProp", Type.STRING, "A test string value property, for instance '${constants.bar}'", "${constants.foo}");
+    Imports imports = new Imports();
+    PlaceHolderResolver docPlaceholderResolver = PlaceHolderResolver.create(Map.of("constants.bar", "bar"));
+    PlaceHolderResolver defaultValuePlaceholderResolver = PlaceHolderResolver.create(Map.of("constants.foo", "\"myFooValue\""));
+    Assert.assertEquals("/**\n"
+        + " * A test string value property, for instance 'bar'\n"
+        + " */\n"
+        + "public static final ConfigProperty MY_PROP = DefaultConfigProperty.create(\n"
+        + "  \"myProp\",\n"
+        + "  Type.STRING,\n"
+        + "  \"A test string value property, for instance 'bar'\",\n"
+        + "  \"myFooValue\");\n"
+        + "", 
+        ConstantsGenerationUtil.getPropertyValueDeclaration(p, imports, docPlaceholderResolver, defaultValuePlaceholderResolver));
   }
 
 }

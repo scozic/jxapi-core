@@ -8,6 +8,7 @@ import java.util.stream.Collectors;
 
 import org.jxapi.exchange.descriptor.ConfigProperty;
 import org.jxapi.exchange.descriptor.DefaultConfigProperty;
+import org.jxapi.exchange.descriptor.ExchangeDescriptor;
 import org.jxapi.exchange.descriptor.Type;
 import org.jxapi.generator.html.HtmlGenerationUtil;
 import org.jxapi.generator.java.JavaCodeGenUtil;
@@ -60,6 +61,7 @@ public class PropertiesClassGenerator extends JavaTypeGenerator {
   private final String exchangeName;
   private final List<DefaultConfigProperty> properties;
   private final PlaceHolderResolver docPlaceHolderResolver;
+  private final PlaceHolderResolver sampleValuePlaceHolderResolver;
 
   /**
    * Constructor
@@ -72,13 +74,18 @@ public class PropertiesClassGenerator extends JavaTypeGenerator {
    * @param docPlaceHolderResolver PlaceHolderResolver to resolve placeholders in
    */
   public PropertiesClassGenerator(String fullClassName, 
-                                  String exchangeName, 
-                                  List<DefaultConfigProperty> properties, 
-                                  PlaceHolderResolver docPlaceHolderResolver) {
+                                  ExchangeDescriptor exchange, 
+                                  List<DefaultConfigProperty> properties) {
     super(fullClassName);
-    this.exchangeName = exchangeName;
+    this.exchangeName = exchange.getId();
     this.properties = properties;
-    this.docPlaceHolderResolver = docPlaceHolderResolver;
+    this.sampleValuePlaceHolderResolver = s -> ExchangeGenUtil.generateSubstitutionInstructionDeclaration(
+        s, 
+        exchange, 
+        null, 
+        null,
+        getImports());
+    this.docPlaceHolderResolver = PlaceHolderResolver.create(ExchangeGenUtil.getDescriptionReplacements(exchange, null));
     setTypeDeclaration("public class");
     setDescription(generateDescription());
   }
@@ -97,6 +104,7 @@ public class PropertiesClassGenerator extends JavaTypeGenerator {
       String pDesc = Optional.ofNullable(p.getDescription()).orElse("");
       pDesc = docPlaceHolderResolver.resolve(pDesc);
       String pDef = Optional.ofNullable(p.getDefaultValue()).orElse("").toString();
+      pDef = docPlaceHolderResolver.resolve(pDef);
       rows.add(List.of(pName, pType, pDesc, pDef));
     }
     sb.append(HtmlGenerationUtil.generateTable(exchangeName + " properties", columns, rows))
@@ -113,7 +121,11 @@ public class PropertiesClassGenerator extends JavaTypeGenerator {
     .append("(){}\n");
     properties
       .forEach(c -> appendToBody("\n")
-                      .append(ConstantsGenerationUtil.getPropertyValueDeclaration(c, getImports(), docPlaceHolderResolver)));
+                      .append(ConstantsGenerationUtil.getPropertyValueDeclaration(
+                          c, 
+                          getImports(), 
+                          docPlaceHolderResolver, 
+                          sampleValuePlaceHolderResolver)));
     this.properties.forEach(this::generatePropertyGetterMethod);
     generatePropertiesListMethod();
     return super.generate();

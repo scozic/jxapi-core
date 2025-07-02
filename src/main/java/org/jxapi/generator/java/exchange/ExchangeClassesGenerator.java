@@ -83,9 +83,8 @@ public class ExchangeClassesGenerator implements ClassesGenerator {
     if (properties != null) {
       PropertiesClassGenerator pgen = new PropertiesClassGenerator(
           ExchangeGenUtil.getExchangePropertiesInterfaceName(exchangeDescriptor), 
-          exchangeDescriptor.getId(), 
-          properties,
-          docPlaceHolderResolver);
+          exchangeDescriptor, 
+          properties);
       pgen.writeJavaFile(outputFolder);
     }
   }
