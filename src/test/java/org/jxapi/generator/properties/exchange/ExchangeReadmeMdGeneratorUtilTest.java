@@ -14,7 +14,69 @@ public class ExchangeReadmeMdGeneratorUtilTest {
     String mdFileContent = "# Main Title\n"
         + "Some blah\n"
         + "\nAnd the table of contents should be inserted here:\n"
-        + "<!-- TABLE OF CONTENTS -->\n"
+        + "<!-- BEGIN TABLE OF CONTENTS -->\n"
+        + " - Some existing table of contents\n"
+        + "<!-- END TABLE OF CONTENTS -->\n"
+        + "## Subtitle1@\n"
+        + "Some more blah! for subtitle1\n"
+        + "\n"
+        + "## Sub Title2\n"
+        + "Some more blah for subtitle3\n"
+        + "\n"
+        + "### Sub Sub Title1\n"
+        + "Some more blah for subtitle3_1"
+        + "";
+
+    String expected = "# Main Title\n"
+        + "Some blah\n"
+        + "\n"
+        + "And the table of contents should be inserted here:\n"
+        + "<!-- BEGIN TABLE OF CONTENTS -->\n"
+        + "  - [Main Title](#main-title)\n"
+        + "    - [Subtitle1@](#subtitle1%40)\n"
+        + "    - [Sub Title2](#sub-title2)\n"
+        + "      - [Sub Sub Title1](#sub-sub-title1)\n"
+        + "\n"
+        + "<!-- END TABLE OF CONTENTS -->\n"
+        + "## Subtitle1@\n"
+        + "Some more blah! for subtitle1\n"
+        + "\n"
+        + "## Sub Title2\n"
+        + "Some more blah for subtitle3\n"
+        + "\n"
+        + "### Sub Sub Title1\n"
+        + "Some more blah for subtitle3_1";
+    String generated = ExchangeReadmeMdGeneratorUtil.generateTableOfContent(mdFileContent);
+    Assert.assertEquals(expected, generated);
+    generated = ExchangeReadmeMdGeneratorUtil.generateTableOfContent(generated);
+    Assert.assertEquals(expected, generated);
+  }
+  
+  @Test
+  public void testGenerateTableOfContent_NoEndTag() {
+    String mdFileContent = "# Main Title\n"
+        + "Some blah\n"
+        + "\nAnd the table of contents should be inserted here:\n"
+        + "<!-- BEGIN TABLE OF CONTENTS -->\n"
+        + " - Some existing table of contents\n"
+        + "## Subtitle1\n"
+        + "Some more blah for subtitle1\n"
+        + "\n"
+        + "## Sub Title2\n"
+        + "Some more blah for subtitle3\n"
+        + "\n"
+        + "### Sub Sub Title1\n"
+        + "Some more blah for subtitle3_1";
+    Assert.assertEquals(mdFileContent, ExchangeReadmeMdGeneratorUtil.generateTableOfContent(mdFileContent));
+  }
+  
+  @Test
+  public void testGenerateTableOfContent_NoBeginTag() {
+    String mdFileContent = "# Main Title\n"
+        + "Some blah\n"
+        + "\nAnd the table of contents should be inserted here:\n"
+        + " - Some existing table of contents\n"
+        + "<!-- END TABLE OF CONTENTS -->\n"
         + "## Subtitle1\n"
         + "Some more blah for subtitle1\n"
         + "\n"
@@ -24,35 +86,17 @@ public class ExchangeReadmeMdGeneratorUtilTest {
         + "### Sub Sub Title1\n"
         + "Some more blah for subtitle3_1"
         + "";
-
-    Assert.assertEquals("# Main Title\n"
-        + "Some blah\n"
-        + "\n"
-        + "And the table of contents should be inserted here:\n"
-        + "  - [Main Title](#main-title)\n"
-        + "    - [Subtitle1](#subtitle1)\n"
-        + "    - [Sub Title2](#sub-title2)\n"
-        + "      - [Sub Sub Title1](#sub-sub-title1)\n"
-        + "\n"
-        + "## Subtitle1\n"
-        + "Some more blah for subtitle1\n"
-        + "\n"
-        + "## Sub Title2\n"
-        + "Some more blah for subtitle3\n"
-        + "\n"
-        + "### Sub Sub Title1\n"
-        + "Some more blah for subtitle3_1", 
-        ExchangeReadmeMdGeneratorUtil.generateTableOfContent(mdFileContent));
+    Assert.assertEquals(mdFileContent, ExchangeReadmeMdGeneratorUtil.generateTableOfContent(mdFileContent));
   }
   
   @Test(expected = IllegalArgumentException.class)
   public void testGenerateTableContent_InvalidHeaderLine() {
-    ExchangeReadmeMdGeneratorUtil.generateTableOfContent("#Invalid header line missing space");
+    ExchangeReadmeMdGeneratorUtil.generateTableOfContent("<!-- BEGIN TABLE OF CONTENTS --><!-- END TABLE OF CONTENTS -->\n#Invalid header line missing space");
   }
   
   @Test(expected = IllegalArgumentException.class)
   public void testGenerateTableContent_EmptyHeaderLine() {
-    ExchangeReadmeMdGeneratorUtil.generateTableOfContent("#");
+    ExchangeReadmeMdGeneratorUtil.generateTableOfContent("<!-- BEGIN TABLE OF CONTENTS --><!-- END TABLE OF CONTENTS -->\n#");
   }
   
   @Test

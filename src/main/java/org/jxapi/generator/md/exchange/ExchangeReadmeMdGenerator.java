@@ -84,7 +84,9 @@ public class ExchangeReadmeMdGenerator {
       .append(" API Java wrapper\n\n")
       .append(docPlaceHolderResolver.resolve(exchangeDescriptor.getDescription()))
       .append("\n")
-      .append(ExchangeReadmeMdGeneratorUtil.TABLE_OF_CONTENTS_PLACEHOLDER)
+      .append(ExchangeReadmeMdGeneratorUtil.BEGIN_TABLE_OF_CONTENTS_PLACEHOLDER)
+      .append("\n")
+      .append(ExchangeReadmeMdGeneratorUtil.END_TABLE_OF_CONTENTS_PLACEHOLDER)
       .append("\n");
     String docUrl = exchangeDescriptor.getDocUrl();
     if (docUrl != null) {

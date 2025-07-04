@@ -1,4 +1,6 @@
 ### Websocket hook development guide
+<!-- BEGIN TABLE OF CONTENTS -->
+<!-- END TABLE OF CONTENTS -->
 
 Using JXAPI, websocket endpoints are managed with a single websocket for an API group, all endpoints belonging to this API group will subscribe and receive messages using multiplexing on that socket. Websocket multiplexing means messages of different streams are disseminated on same physical websocket. Clients subscribes to a given stream or 'topic' by sending a subscription message. Incoming messages must be matched against existing subscriptions, see [websocket topic matching](./ExchangeDescriptorFileDoc.md#message-matching).
 Notice there may be no multiplexing in which case API group should expose a single endpoint receiving all websocket messages.

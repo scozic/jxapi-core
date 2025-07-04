@@ -1,4 +1,6 @@
 # Using the wrapper
+<!-- BEGIN TABLE OF CONTENTS -->
+<!-- END TABLE OF CONTENTS -->
 
 The generated wrapper Java module can be exported as Maven artifact so client application can use it by adding it as a dependency.
 

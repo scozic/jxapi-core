@@ -1,5 +1,8 @@
 # REST endpoint pagination
 
+<!-- BEGIN TABLE OF CONTENTS -->
+<!-- END TABLE OF CONTENTS -->
+
 A common feature in REST APIs is the 'pagination' of responses to an endpoint. When returned data to an endpoint call may be too big to be returned in a single response, the endpoint provides pagination logic, with parameters to select a page of data, and eventually the max number of items to return in a single 'page' response. Such enpoint response data exposes properties to guess wether it is last page of data, and next page index to fetch.
 
 JXAPI wrapper allows to define pagination for such endpoint, so that fetching next or remaining pages from a response can be handled easily regardless of pagination protocol.

@@ -1,7 +1,10 @@
 
 # JXAPI
 
-Generate a Java REST and/or Websocket API wrapper efficiently using code generation tools.
+Code generation tools to generate a Java REST and/or Websocket API wrapper (SDK) efficiently.
+
+<!-- BEGIN TABLE OF CONTENTS -->
+<!-- END TABLE OF CONTENTS -->
 
 ## Introduction
 Many web services are consumed as HTTP REST/Websocket APIs. Those APIs disseminate data as structured JSON objects.

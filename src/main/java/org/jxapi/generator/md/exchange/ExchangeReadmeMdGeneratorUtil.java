@@ -3,6 +3,8 @@ package org.jxapi.generator.md.exchange;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.jxapi.util.EncodingUtil;
+
 /**
  * Helper methods class for generating Markdown content for Exchange Readme files
  */
@@ -14,24 +16,40 @@ public class ExchangeReadmeMdGeneratorUtil {
    * Placeholder for the table of contents in Markdown files. This placeholder
    * will be replaced with the actual table of contents.
    */
-  public static final String TABLE_OF_CONTENTS_PLACEHOLDER = "<!-- TABLE OF CONTENTS -->";
+  public static final String BEGIN_TABLE_OF_CONTENTS_PLACEHOLDER = "<!-- BEGIN TABLE OF CONTENTS -->";
+  public static final String END_TABLE_OF_CONTENTS_PLACEHOLDER = "<!-- END TABLE OF CONTENTS -->";
 
   /**
    * Generates the table of contents for a Markdown file based on its content.<br>
-   * The table of contents will be inserted at the location of the 
-   * {@link #TABLE_OF_CONTENTS_PLACEHOLDER}.
-   * It will contain a bullet list of links to each header in the file.
+   * The table of contents will be inserted at the between the location of the
+   * {@link #BEGIN_TABLE_OF_CONTENTS_PLACEHOLDER} and
+   * {@link #END_TABLE_OF_CONTENTS_PLACEHOLDER} placeholders in the Markdown file
+   * content, erasing previous content between these tags. It will contain a
+   * bullet list of links to each header in the file.
    *
    * @param mdFileContent The content of the Markdown file as a String.
-   * @return The Markdown content with the table of contents inserted.
+   * @return The Markdown content with the table of contents inserted, or the
+   *         original content if the {@link #BEGIN_TABLE_OF_CONTENTS_PLACEHOLDER}
+   *         or {@link #END_TABLE_OF_CONTENTS_PLACEHOLDER}placeholders are not
+   *         found.
    */
   public static String generateTableOfContent(String mdFileContent) {
+    if (!mdFileContent.contains(BEGIN_TABLE_OF_CONTENTS_PLACEHOLDER)
+        || !mdFileContent.contains(END_TABLE_OF_CONTENTS_PLACEHOLDER)) {
+      return mdFileContent;
+    }
     StringBuilder tableOfContents = new StringBuilder();
     for (String titleLine : findTitleLines(mdFileContent)) {
       tableOfContents.append(toTableContentHeader(titleLine)).append("\n");
     }
-
-    return mdFileContent.replace(TABLE_OF_CONTENTS_PLACEHOLDER, tableOfContents.toString());
+    StringBuilder sb = new StringBuilder();
+    int beginIndex = mdFileContent.indexOf(BEGIN_TABLE_OF_CONTENTS_PLACEHOLDER) + BEGIN_TABLE_OF_CONTENTS_PLACEHOLDER.length();
+    int endIndex = mdFileContent.indexOf(END_TABLE_OF_CONTENTS_PLACEHOLDER);
+    return sb.append(mdFileContent.substring(0, beginIndex))
+             .append("\n")
+             .append(tableOfContents)
+             .append("\n")
+             .append(mdFileContent.substring(endIndex)).toString();
   }
   
   private static String toTableContentHeader(String headerLine) {
@@ -65,7 +83,8 @@ public class ExchangeReadmeMdGeneratorUtil {
   
   /**
    * Generates a Markdown anchor from a header line. The anchor will be in
-   * lowercase and spaces will be replaced with hyphens.
+   * lowercase and spaces will be replaced with hyphens. Characters that are not
+   * letter or digit or space will be removed.
    *
    * @param headerLine The header line to generate the anchor from.
    * @return A String representing the Markdown anchor.
@@ -77,6 +96,8 @@ public class ExchangeReadmeMdGeneratorUtil {
         anchor.append(Character.toLowerCase(c));
       } else if (c == ' ') {
         anchor.append('-');
+      } else {
+        anchor.append(EncodingUtil.urlEncode(String.valueOf(c)));
       }
     }
     return anchor.toString();
