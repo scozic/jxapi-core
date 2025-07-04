@@ -33,7 +33,7 @@ public class ExchangeReadmeMdGeneratorUtilTest {
         + "And the table of contents should be inserted here:\n"
         + "<!-- BEGIN TABLE OF CONTENTS -->\n"
         + "  - [Main Title](#main-title)\n"
-        + "    - [Subtitle1@](#subtitle1%40)\n"
+        + "    - [Subtitle1@](#subtitle1)\n"
         + "    - [Sub Title2](#sub-title2)\n"
         + "      - [Sub Sub Title1](#sub-sub-title1)\n"
         + "\n"

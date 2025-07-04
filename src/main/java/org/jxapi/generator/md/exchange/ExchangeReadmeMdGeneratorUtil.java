@@ -3,8 +3,6 @@ package org.jxapi.generator.md.exchange;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.jxapi.util.EncodingUtil;
-
 /**
  * Helper methods class for generating Markdown content for Exchange Readme files
  */
@@ -96,8 +94,6 @@ public class ExchangeReadmeMdGeneratorUtil {
         anchor.append(Character.toLowerCase(c));
       } else if (c == ' ') {
         anchor.append('-');
-      } else {
-        anchor.append(EncodingUtil.urlEncode(String.valueOf(c)));
       }
     }
     return anchor.toString();

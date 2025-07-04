@@ -1,5 +1,14 @@
 # Using the wrapper
 <!-- BEGIN TABLE OF CONTENTS -->
+  - [Using the wrapper](#using-the-wrapper)
+  - [Creating a wrapper instance](#creating-a-wrapper-instance)
+    - [Rest endpoints](#rest-endpoints)
+      - [REST request pagination](#rest-request-pagination)
+    - [Websocket endpoints](#websocket-endpoints)
+    - [POJOs](#pojos)
+    - [Observability](#observability)
+    - [Disposability](#disposability)
+
 <!-- END TABLE OF CONTENTS -->
 
 The generated wrapper Java module can be exported as Maven artifact so client application can use it by adding it as a dependency.

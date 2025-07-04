@@ -1,11 +1,21 @@
 # REST endpoint pagination
 
 <!-- BEGIN TABLE OF CONTENTS -->
+  - [REST endpoint pagination](#rest-endpoint-pagination)
+    - [Developping a wrapper: Have a REST endpoint implement pagination features.](#developping-a-wrapper-have-a-rest-endpoint-implement-pagination-features)
+    - [Using a wrapper: handle pagination with PaginationUtil class](#using-a-wrapper-handle-pagination-with-paginationutil-class)
+      - [Key Features](#key-features)
+      - [Example Usage of a paginated endpoint](#example-usage-of-a-paginated-endpoint)
+        - [Step 1: Define Your API and Request](#step-1-define-your-api-and-request)
+        - [Step 2: Prepare the Initial Request](#step-2-prepare-the-initial-request)
+        - [Step 3: Use `PaginationUtil.fetchAllPAges(FutureRestResponse)` to fetch response remaining pages.](#step-3-use-paginationutilfetchallpagesfuturerestresponse-to-fetch-response-remaining-pages)
+
 <!-- END TABLE OF CONTENTS -->
 
 A common feature in REST APIs is the 'pagination' of responses to an endpoint. When returned data to an endpoint call may be too big to be returned in a single response, the endpoint provides pagination logic, with parameters to select a page of data, and eventually the max number of items to return in a single 'page' response. Such enpoint response data exposes properties to guess wether it is last page of data, and next page index to fetch.
 
 JXAPI wrapper allows to define pagination for such endpoint, so that fetching next or remaining pages from a response can be handled easily regardless of pagination protocol.
+
 
 ## Developping a wrapper: Have a REST endpoint implement pagination features.
 
@@ -68,7 +78,7 @@ In this case:
    Such interface should provide a **default** implementation of `hasNextPage()` method that relies on specific properties of response (that can be cast to specific [PaginatedRestResponse](../../src/main/java/org/jxapi/netutils/rest/pagination/PaginatedRestResponse.java) implementation).
    You can have a look at [EmployeePaginatedResponse](../../src/test/java/org/jxapi/exchanges/employee/EmployeePaginatedResponse.java) as an example.
 
-## Using a wrapper: handle pagination with [PaginationUtil](../../src/main/java/org/jxapi/netutils/rest/pagination/PaginationUtil.java) class 
+## Using a wrapper: handle pagination with PaginationUtil class 
 
 The [PaginationUtil](../../src/main/java/org/jxapi/netutils/rest/pagination/PaginationUtil.java) class provides utility methods to handle REST API requests that return paginated responses. It simplifies fetching next page or all remaining pages of a paginated REST endpoint call response by automatically handling pagination logic.
 

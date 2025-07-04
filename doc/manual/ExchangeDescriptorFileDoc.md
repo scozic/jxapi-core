@@ -1,12 +1,36 @@
 # API descriptor file
 
-<!-- BEGIN TABLE OF CONTENTS -->
-<!-- END TABLE OF CONTENTS -->
-
 JXAPI generates API wrapper using interface specifications described in _Exchange descriptor_ file.
 This file declares REST and Websocket API endpoints, with associated request and response or message data, in 'groups' belonging to a root 'exchange'.
 
 This section describes such descriptor file.
+
+<!-- BEGIN TABLE OF CONTENTS -->
+  - [API descriptor file](#api-descriptor-file)
+  - ['Demo' exchange descriptor example](#demo-exchange-descriptor-example)
+    - [Exchange](#exchange)
+    - [API$ groups](#api-groups)
+    - [REST API endpoints](#rest-api-endpoints)
+    - [WebSocket API endpoints](#websocket-api-endpoints)
+      - [Topic Placeholders](#topic-placeholders)
+      - [Message topic matcher fields](#message-topic-matcher-fields)
+      - [Message Matching](#message-matching)
+    - [Flexible data structure definition](#flexible-data-structure-definition)
+      - [Primitive Types](#primitive-types)
+      - [Lists](#lists)
+      - [Maps](#maps)
+      - [Objects](#objects)
+      - [Composite Types](#composite-types)
+        - [OBJECT_LIST_MAP](#objectlistmap)
+        - [LONG_LIST_LIST](#longlistlist)
+      - [Object name](#object-name)
+      - [Sample value](#sample-value)
+    - [API request rate limit](#api-request-rate-limit)
+      - [Rate Limit Levels](#rate-limit-levels)
+      - [Example](#example)
+    - [Placeholders](#placeholders)
+
+<!-- END TABLE OF CONTENTS -->
 
 # 'Demo' exchange descriptor example
 
@@ -193,7 +217,7 @@ The root of JSON descriptor data is a JSON object referred to as 'exchange'. An 
  * `websocketFactory`: The factory class for creating base websocket, see [WebsocketFactory](../../src/main/java/com/scz/jxapi/netutils/websocket/WebsocketFactory.java). The default implementation is usually sufficient.
  * `apis`: A list of API groups, each containing HTTP and WebSocket endpoints, see [below](#api-groups).
 
-## API groups
+## API$ groups
 
  The exchange REST/Websocket endpoints are sorted in groups, this is useful to regroup API endpoints by functional affinity and not list every endpoint in a single interface. The API group object is mapped to [ExchangeApiDescriptor](../../src/main/java/com/scz/jxapi/exchange/descriptor/ExchangeApiDescriptor.java). It is composed of the following properties:
  * `name`: API group name
@@ -335,8 +359,7 @@ Remark: `OBJECT` is the default type for a `Field` when either `objectName` or `
 Example:
 ```json
 name: "exampleField"
-# Remark 'type' needs not be specified because 'properties' is
-# which implies type is 'OBJECT'
+ <!-- Remark 'type' needs not be specified because 'properties' is which implies type is 'OBJECT' --> 
 properties:
   - name: "id"
     type: "STRING"
