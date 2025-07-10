@@ -2,6 +2,7 @@ package org.jxapi.generator.java.exchange;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -181,6 +182,7 @@ public class ExchangeGenUtil {
    * @return The full class name of constants interface defined at exchange level
    * @see ExchangeDescriptor#getConstants()
    */
+  // FIXME remove 'Interface' suffix from the name since it is not an interface anymore
   public static String getExchangeConstantsInterfaceName(ExchangeDescriptor exchangeDescriptor) {
     return exchangeDescriptor.getBasePackage() + "." 
         + JavaCodeGenUtil.firstLetterToUpperCase(exchangeDescriptor.getId()) + "Constants";
@@ -526,10 +528,9 @@ public class ExchangeGenUtil {
   }
   
   /**
-   * Returns the full class name of the generated constant interface where the
-   * given constant is defined. This can be either the exchange level or the API
-   * group level. The constant will be searched in the API group constants first,
-   * then in the exchange level constants.
+   * Returns the full class name of the generated constant class where the
+   * given constant is defined. When the given constant is a group constant, the returned class name is this constant group class name, for instance 'com.jxapi.myexchange.MyExchangeConstants.GroupConstantName'.
+   * Otherwise, the returned class name is the full class name of the class containing given constant property.
    * 
    * @param constantName       The constant to get the class name for as provided
    *                           by {@link Constant#getName()}
@@ -545,26 +546,51 @@ public class ExchangeGenUtil {
    *         found in the API group or exchange level constants.
    */
   public static String getClassNameForConstant(String constantName, 
-                                               ExchangeDescriptor exchangeDescriptor, 
-                                               ExchangeApiDescriptor apiDescriptor) {
+                                               ExchangeDescriptor exchangeDescriptor) {
     if (exchangeDescriptor == null) {
       throw new IllegalArgumentException("Exchange descriptor cannot be null");
     }
-    if (apiDescriptor != null) {
-      for (Constant constant : CollectionUtil.emptyIfNull(apiDescriptor.getConstants())) {
-        if (constantName.equals(constant.getName())) {
-          return getExchangeApiConstantsInterfaceName(exchangeDescriptor, apiDescriptor);
-        }
-      }
+    if (StringUtils.isEmpty(constantName)) {
+      throw new IllegalArgumentException("Constant name cannot be null or empty");
     }
     
-    for (Constant constant : CollectionUtil.emptyIfNull(exchangeDescriptor.getConstants())) {
-      if (constantName.equals(constant.getName())) {
-        return getExchangeConstantsInterfaceName(exchangeDescriptor);
+    
+    StringBuilder sb = new StringBuilder()
+        .append(getExchangeConstantsInterfaceName(exchangeDescriptor));
+    List<Constant> constants = retrieveConstantHierarchy(constantName, exchangeDescriptor);
+    if (constants.isEmpty()) {
+      return null;
+    }
+    constants.forEach(constant -> {
+      if (constant.isGroup()) {
+        sb.append(".").append(JavaCodeGenUtil.firstLetterToUpperCase(constant.getName()));
+      }
+    });
+    return sb.toString();
+  }
+  
+  private static Constant findConstant(String constantName, List<Constant> constants) {
+    for (Constant c : CollectionUtil.emptyIfNull(constants)) {
+      if (constantName.equals(c.getName())) {
+        return c;
       }
     }
-    
     return null;
+  }
+  
+  private static List<Constant> retrieveConstantHierarchy(String constantName, ExchangeDescriptor exchangeDescriptor) {
+    String[] parts = StringUtils.split(constantName, '.');
+    List<Constant> l = new ArrayList<>();
+    List<Constant> constants = CollectionUtil.emptyIfNull(exchangeDescriptor.getConstants());
+    for (int i = 0; i < parts.length; i++) {
+      Constant c = findConstant(parts[i], constants);
+      if (c == null || (!c.isGroup() && i < parts.length - 1)) {
+        return Collections.emptyList(); // Constant not found
+      }
+      l.add(c);
+      constants = CollectionUtil.emptyIfNull(c.getConstants());
+    }
+    return Collections.unmodifiableList(l);
   }
   
   /**
@@ -597,10 +623,9 @@ public class ExchangeGenUtil {
   /**
    * Returns the value declaration for the given constant name. The value
    * declaration is the reference to the constant in the generated constants class
-   * (either at exchange or API group level).
    * 
    * @param constantName  The name of the constant to get the value declaration
-   *                      for
+   *                      for. If the constant is nested in a group, the name must provide full constant address like 'myGroup.myConstant'.
    * @param exchangeDescriptor    The exchange descriptor where the constant may be
    *                      defined
    * @param apiDescriptor The exchange API descriptor where the constant may be
@@ -609,23 +634,24 @@ public class ExchangeGenUtil {
    *                      populated with classes used by returned type. That set
    *                      must be not <code>null</code> and mutable.
    * @return The value declaration for the given constant name, or
-   *         <code>null</code> if the constant is not found in the API group or
+   *         <code>null</code> if the constant is not found in constants.
    *         exchange level constants.
    */
   public static String getValueDeclarationForConstant(String constantName, 
                                                       ExchangeDescriptor exchangeDescriptor,
-                                                      ExchangeApiDescriptor apiDescriptor,
                                                       Imports imports) {
-    String className = getClassNameForConstant(constantName, exchangeDescriptor, apiDescriptor);
-    if (className == null) {
-      return null;
+    List<Constant> constants = retrieveConstantHierarchy(constantName, exchangeDescriptor);
+    if(constants.isEmpty() || constants.get(constants.size() - 1).isGroup()) {
+      return null; // Constant not found
     }
+    String className = getExchangeConstantsInterfaceName(exchangeDescriptor);
     imports.add(className);
-    return new StringBuilder()
-                .append(JavaCodeGenUtil.getClassNameWithoutPackage(className))
-                .append(".")
-                .append(JavaCodeGenUtil.getStaticVariableName(constantName))
-                .toString();
+    StringBuilder s = new StringBuilder().append(JavaCodeGenUtil.getClassNameWithoutPackage(className)).append(".");
+    for (int i = 0; i < constants.size() - 1; i++) {
+      s.append(JavaCodeGenUtil.firstLetterToUpperCase(constants.get(i).getName())).append(".");
+    }
+    s.append(JavaCodeGenUtil.getStaticVariableName(constants.get(constants.size() - 1).getName()));
+    return s.toString();
   }
   
   /**
@@ -686,8 +712,8 @@ public class ExchangeGenUtil {
    *         links.
    * @see #getDescriptionReplacements(ExchangeDescriptor, String, String)        
    */
-  public static Map<String, Object> getDescriptionReplacements(ExchangeDescriptor exchangeDescriptor, String apiGroupName) {
-    return getDescriptionReplacements(exchangeDescriptor, apiGroupName, null);
+  public static Map<String, Object> getDescriptionReplacements(ExchangeDescriptor exchangeDescriptor) {
+    return getDescriptionReplacements(exchangeDescriptor, null);
   }
   
   /**
@@ -715,17 +741,18 @@ public class ExchangeGenUtil {
    * @param baseHtmlDocUrl     The base HTML documentation URL to use for Javadoc links. If <code>null</code>, a code link will be generated instead.                       
    * @return A map of placeholders keys to their replacement values as javadoc links.
    */
-  public static Map<String, Object> getDescriptionReplacements(ExchangeDescriptor exchangeDescriptor, String apiGroupName, String baseHtmlDocUrl) {
+  public static Map<String, Object> getDescriptionReplacements(ExchangeDescriptor exchangeDescriptor, String baseHtmlDocUrl) {
     Map<String, Object> replacements = CollectionUtil.createMap();
     if (exchangeDescriptor == null) {
       return replacements;
     }
     // Add exchange constants
-    for (Constant constant : CollectionUtil.emptyIfNull(exchangeDescriptor.getConstants())) {
-      String cname = constant.getName();
-      String cls = getExchangeConstantsInterfaceName(exchangeDescriptor);
-      replacements.put(CONSTANT_PLACEHOLDER_PREFIX + constant.getName(), getDocLink(cls, cname, baseHtmlDocUrl));
-    }
+    collectConstantDescriptionReplacements(
+        replacements, 
+        CONSTANT_PLACEHOLDER_PREFIX,
+        getExchangeConstantsInterfaceName(exchangeDescriptor), 
+        exchangeDescriptor.getConstants(), 
+        baseHtmlDocUrl);
     
     // Add exchange configuration properties
     for (ConfigProperty prop : CollectionUtil.emptyIfNull(exchangeDescriptor.getProperties())) {
@@ -734,23 +761,27 @@ public class ExchangeGenUtil {
       replacements.put(CONFIG_PLACEHOLDER_PREFIX + prop.getName(), getDocLink(cls, pname, baseHtmlDocUrl));
     }
     
-    if (apiGroupName != null) {
-      ExchangeApiDescriptor apiDescriptor = CollectionUtil.emptyIfNull(exchangeDescriptor.getApis())
-          .stream()
-          .findAny()
-          .orElseThrow(() -> 
-            new IllegalArgumentException(
-              "No API group with name '" 
-                + apiGroupName 
-                + "' found in exchange " 
-                + exchangeDescriptor.getId()));
-      for (Constant constant : CollectionUtil.emptyIfNull(apiDescriptor.getConstants())) {
-        String cname = constant.getName();
-        String cls = getExchangeApiConstantsInterfaceName(exchangeDescriptor, apiDescriptor);
-        replacements.put(CONSTANT_PLACEHOLDER_PREFIX + constant.getName(), getDocLink(cls, cname, baseHtmlDocUrl));
-      }
-    }
+
     return replacements;
+  }
+  
+  private static void collectConstantDescriptionReplacements(Map<String, Object> replacements, String prefix, String propertiesClassName, List<Constant> constants, String baseHtmlDocUrl) {
+    for (Constant constant : CollectionUtil.emptyIfNull(constants)) {      
+      String cname = constant.getName();
+      String cfullName = prefix + cname;
+      if (constant.isGroup()) {
+        propertiesClassName = new StringBuilder()
+            .append(propertiesClassName)
+            .append(".")
+            .append(JavaCodeGenUtil.firstLetterToUpperCase(cname))
+            .toString();
+        replacements.put(cfullName, getDocLink(propertiesClassName, null, baseHtmlDocUrl));
+        collectConstantDescriptionReplacements(replacements, cfullName + ".", propertiesClassName, constant.getConstants(), baseHtmlDocUrl);
+      } else {
+        replacements.put(cfullName, getDocLink(propertiesClassName, cname, baseHtmlDocUrl));
+      }
+      
+    }
   }
   
   private static String getDocLink(String className, String variableName, String baseHtmlDocUrl) {
@@ -792,11 +823,6 @@ public class ExchangeGenUtil {
    * @param exchangeDescriptor    The exchange descriptor to use to resolve the
    *                              constants and configuration properties used in
    *                              the template.
-   * @param exchangeApiDescriptor The exchange API descriptor to use to resolve
-   *                              the constants. Remark: A constant with a name
-   *                              that is not defined in the exchange API
-   *                              descriptor will be searched in the exchange
-   *                              descriptor.
    * @param propertiesVariable    The name of the variable or instruction
    *                              referencing the configuration properties.
    *                              If <code>null</code>, the configuration properties 
@@ -809,7 +835,6 @@ public class ExchangeGenUtil {
   public static String generateSubstitutionInstructionDeclaration(
                         String template, 
                         ExchangeDescriptor exchangeDescriptor, 
-                        ExchangeApiDescriptor exchangeApiDescriptor, 
                         String propertiesVariable,
                         Imports imports) {
     if (template == null) {
@@ -824,7 +849,7 @@ public class ExchangeGenUtil {
       String constantName = getConstantPlaceHolder(placeHolder);
       String valueDeclaration = null;
       if (constantName != null) {
-          valueDeclaration = getValueDeclarationForConstant(constantName, exchangeDescriptor, exchangeApiDescriptor, imports);
+          valueDeclaration = getValueDeclarationForConstant(constantName, exchangeDescriptor, imports);
       } else if (propertiesVariable != null) {
         String propertyName = getConfigPropertyPlaceHolder(placeHolder);
         if (propertyName != null) {

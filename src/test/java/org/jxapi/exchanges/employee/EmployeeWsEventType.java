@@ -1,12 +1,12 @@
 package org.jxapi.exchanges.employee;
 
-import org.jxapi.exchanges.employee.gen.v1.EmployeeV1Constants;
+import org.jxapi.exchanges.employee.gen.EmployeeConstants;
 
 public enum EmployeeWsEventType {
 
-  EMPLOYEE_ADDED(EmployeeV1Constants.UPDATE_EMPLOYEE_TYPE_ADD), 
-  EMPLOYEE_UPDATED(EmployeeV1Constants.UPDATE_EMPLOYEE_TYPE_UPATE), 
-  EMPLOYEE_DELETED(EmployeeV1Constants.UPDATE_EMPLOYEE_TYPE_DELETE);
+  EMPLOYEE_ADDED(EmployeeConstants.UPDATE_EMPLOYEE_TYPE_ADD), 
+  EMPLOYEE_UPDATED(EmployeeConstants.UPDATE_EMPLOYEE_TYPE_UPATE), 
+  EMPLOYEE_DELETED(EmployeeConstants.UPDATE_EMPLOYEE_TYPE_DELETE);
   
   public final String code;
   

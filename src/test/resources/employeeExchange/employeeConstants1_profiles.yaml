@@ -1,0 +1,8 @@
+id: "Employee"
+constants:
+ - name: "profileRegular"
+   description: "Regular employee profile"
+   value: "REGULAR"
+ - name: "profileAdmin"
+   description: "Admin employee profile"
+   value: "ADMIN"

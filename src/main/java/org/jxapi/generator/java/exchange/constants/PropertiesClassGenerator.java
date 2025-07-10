@@ -82,7 +82,6 @@ public class PropertiesClassGenerator extends JavaTypeGenerator {
     this.sampleValuePlaceHolderResolver = s -> ExchangeGenUtil.generateSubstitutionInstructionDeclaration(
         s, 
         exchange, 
-        null, 
         null,
         getImports());
     this.docPlaceHolderResolver = PlaceHolderResolver.create(ExchangeGenUtil.getDescriptionReplacements(exchange, null));

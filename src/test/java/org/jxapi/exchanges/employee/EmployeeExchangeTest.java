@@ -11,12 +11,11 @@ import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-
+import org.jxapi.exchanges.employee.gen.EmployeeConstants;
 import org.jxapi.exchanges.employee.gen.EmployeeExchange;
 import org.jxapi.exchanges.employee.gen.EmployeeExchangeImpl;
 import org.jxapi.exchanges.employee.gen.EmployeeProperties;
 import org.jxapi.exchanges.employee.gen.v1.EmployeeV1Api;
-import org.jxapi.exchanges.employee.gen.v1.EmployeeV1Constants;
 import org.jxapi.exchanges.employee.gen.v1.pojo.Employee;
 import org.jxapi.exchanges.employee.gen.v1.pojo.EmployeeV1EmployeeUpdatesMessage;
 import org.jxapi.exchanges.employee.gen.v1.pojo.EmployeeV1GetAllEmployeesRequest;
@@ -297,7 +296,7 @@ public class EmployeeExchangeTest {
         .id(1)
         .firstName("John")
         .lastName("Doe")
-        .profile(EmployeeV1Constants.PROFILE_ADMIN)
+        .profile(EmployeeConstants.PROFILE_ADMIN)
         .build();
   }
   
@@ -306,7 +305,7 @@ public class EmployeeExchangeTest {
       .id(2)
       .firstName("Lucy")
       .lastName("Smith")
-      .profile(EmployeeV1Constants.PROFILE_REGULAR)
+      .profile(EmployeeConstants.PROFILE_REGULAR)
       .build();
   }
   
@@ -315,7 +314,7 @@ public class EmployeeExchangeTest {
       .id(3)
       .firstName("Bob")
       .lastName("Johnson")
-      .profile(EmployeeV1Constants.PROFILE_REGULAR)
+      .profile(EmployeeConstants.PROFILE_REGULAR)
       .build();
   }
   

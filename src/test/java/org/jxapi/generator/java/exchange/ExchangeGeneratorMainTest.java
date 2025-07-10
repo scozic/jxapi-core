@@ -61,7 +61,6 @@ public class ExchangeGeneratorMainTest {
         "DemoExchangeProperties.java",
         "marketdata/DemoExchangeMarketDataApi.java",
         "marketdata/DemoExchangeMarketDataApiImpl.java",
-        "marketdata/DemoExchangeMarketDataConstants.java",
         "marketdata/deserializers",
         "marketdata/serializers",
         "marketdata/pojo",}) {

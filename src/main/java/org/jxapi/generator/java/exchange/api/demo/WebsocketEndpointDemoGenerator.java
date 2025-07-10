@@ -115,7 +115,6 @@ public class WebsocketEndpointDemoGenerator extends JavaTypeGenerator {
     this.sampleValuePlaceHolderResolver = s -> ExchangeGenUtil.generateSubstitutionInstructionDeclaration(
         s, 
         exchangeDescriptor, 
-        exchangeApiDescriptor, 
         "properties",
         getImports());
     addImport(apiInterfaceClassName);

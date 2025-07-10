@@ -50,7 +50,7 @@ public class RestEndpointClassesGeneratorTest {
     ExchangeApiDescriptor api = exchange.getApis().get(0);
     RestEndpointDescriptor restEndpoint = api.getRestEndpoints().get(0);
     PlaceHolderResolver docPlaceHolderResolver = 
-        PlaceHolderResolver.create(ExchangeGenUtil.getDescriptionReplacements(exchange, api.getName()));
+        PlaceHolderResolver.create(ExchangeGenUtil.getDescriptionReplacements(exchange));
     RestEndpointClassesGenerator generator = new RestEndpointClassesGenerator(exchange, api, restEndpoint, docPlaceHolderResolver);
     generator.generateClasses(srcFolder);
     
@@ -76,7 +76,7 @@ public class RestEndpointClassesGeneratorTest {
         + "\n"
         + "/**\n"
         + " * Request for MyTestExchange MarketData API exchangeInfo REST endpoint<br>\n"
-        + " * Fetch market information of symbols that can be traded. Author: {@link com.foo.bar.gen.marketdata.MyTestExchangeMarketDataConstants#AUTHOR}\n"
+        + " * Fetch market information of symbols that can be traded. Author: {@link com.foo.bar.gen.MyTestExchangeConstants#AUTHOR}\n"
         + " */\n"
         + "@Generated(\"org.jxapi.generator.java.exchange.api.pojo.PojoGenerator\")\n"
         + "@JsonSerialize(using = MyTestExchangeMarketDataExchangeInfoRequestSerializer.class)\n"
@@ -96,14 +96,14 @@ public class RestEndpointClassesGeneratorTest {
         + "  private Integer page;\n"
         + "  \n"
         + "  /**\n"
-        + "   * @return The list of symbol to fetch market information for. Leave empty to fetch all markets. Author: {@link com.foo.bar.gen.marketdata.MyTestExchangeMarketDataConstants#AUTHOR}\n"
+        + "   * @return The list of symbol to fetch market information for. Leave empty to fetch all markets. Author: {@link com.foo.bar.gen.MyTestExchangeConstants#AUTHOR}\n"
         + "   */\n"
         + "  public List<String> getSymbols() {\n"
         + "    return symbols;\n"
         + "  }\n"
         + "  \n"
         + "  /**\n"
-        + "   * @param symbols The list of symbol to fetch market information for. Leave empty to fetch all markets. Author: {@link com.foo.bar.gen.marketdata.MyTestExchangeMarketDataConstants#AUTHOR}\n"
+        + "   * @param symbols The list of symbol to fetch market information for. Leave empty to fetch all markets. Author: {@link com.foo.bar.gen.MyTestExchangeConstants#AUTHOR}\n"
         + "   */\n"
         + "  public void setSymbols(List<String> symbols) {\n"
         + "    this.symbols = symbols;\n"
@@ -124,14 +124,14 @@ public class RestEndpointClassesGeneratorTest {
         + "  }\n"
         + "  \n"
         + "  /**\n"
-        + "   * @return Page number to return, defaults to 1. Author: {@link com.foo.bar.gen.marketdata.MyTestExchangeMarketDataConstants#AUTHOR}\n"
+        + "   * @return Page number to return, defaults to 1. Author: {@link com.foo.bar.gen.MyTestExchangeConstants#AUTHOR}\n"
         + "   */\n"
         + "  public Integer getPage() {\n"
         + "    return page;\n"
         + "  }\n"
         + "  \n"
         + "  /**\n"
-        + "   * @param page Page number to return, defaults to 1. Author: {@link com.foo.bar.gen.marketdata.MyTestExchangeMarketDataConstants#AUTHOR}\n"
+        + "   * @param page Page number to return, defaults to 1. Author: {@link com.foo.bar.gen.MyTestExchangeConstants#AUTHOR}\n"
         + "   */\n"
         + "  public void setPage(Integer page) {\n"
         + "    this.page = page;\n"
@@ -198,7 +198,7 @@ public class RestEndpointClassesGeneratorTest {
         + "    \n"
         + "    /**\n"
         + "     * Will set the value of <code>symbols</code> field in the builder\n"
-        + "     * @param symbols The list of symbol to fetch market information for. Leave empty to fetch all markets. Author: {@link com.foo.bar.gen.marketdata.MyTestExchangeMarketDataConstants#AUTHOR}\n"
+        + "     * @param symbols The list of symbol to fetch market information for. Leave empty to fetch all markets. Author: {@link com.foo.bar.gen.MyTestExchangeConstants#AUTHOR}\n"
         + "     * @return Builder instance\n"
         + "     * @see #setSymbols(List<String>)\n"
         + "     */\n"
@@ -235,7 +235,7 @@ public class RestEndpointClassesGeneratorTest {
         + "    \n"
         + "    /**\n"
         + "     * Will set the value of <code>page</code> field in the builder\n"
-        + "     * @param page Page number to return, defaults to 1. Author: {@link com.foo.bar.gen.marketdata.MyTestExchangeMarketDataConstants#AUTHOR}\n"
+        + "     * @param page Page number to return, defaults to 1. Author: {@link com.foo.bar.gen.MyTestExchangeConstants#AUTHOR}\n"
         + "     * @return Builder instance\n"
         + "     * @see #setPage(Integer)\n"
         + "     */\n"
@@ -255,7 +255,8 @@ public class RestEndpointClassesGeneratorTest {
         + "      return res;\n"
         + "    }\n"
         + "  }\n"
-        + "}\n", 
+        + "}\n"
+        + "", 
         Files.readString(checkSourceFileExists(Paths.get("pojo", "MyTestExchangeMarketDataExchangeInfoRequest.java"))));
     
     Assert.assertEquals("package com.foo.bar.gen.marketdata.pojo;\n"
@@ -276,7 +277,7 @@ public class RestEndpointClassesGeneratorTest {
         + "/**\n"
         + " * Response to MyTestExchange MarketData API <br>\n"
         + " * exchangeInfo REST endpoint request<br>\n"
-        + " * Fetch market information of symbols that can be traded. Author: {@link com.foo.bar.gen.marketdata.MyTestExchangeMarketDataConstants#AUTHOR}\n"
+        + " * Fetch market information of symbols that can be traded. Author: {@link com.foo.bar.gen.MyTestExchangeConstants#AUTHOR}\n"
         + " */\n"
         + "@Generated(\"org.jxapi.generator.java.exchange.api.pojo.PojoGenerator\")\n"
         + "@JsonSerialize(using = MyTestExchangeMarketDataExchangeInfoResponseSerializer.class)\n"
@@ -339,14 +340,14 @@ public class RestEndpointClassesGeneratorTest {
         + "  }\n"
         + "  \n"
         + "  /**\n"
-        + "   * @return List of market information for each requested symbol. Author: {@link com.foo.bar.gen.marketdata.MyTestExchangeMarketDataConstants#AUTHOR}\n"
+        + "   * @return List of market information for each requested symbol. Author: {@link com.foo.bar.gen.MyTestExchangeConstants#AUTHOR}\n"
         + "   */\n"
         + "  public List<MyTestExchangeMarketDataExchangeInfoResponsePayload> getPayload() {\n"
         + "    return payload;\n"
         + "  }\n"
         + "  \n"
         + "  /**\n"
-        + "   * @param payload List of market information for each requested symbol. Author: {@link com.foo.bar.gen.marketdata.MyTestExchangeMarketDataConstants#AUTHOR}\n"
+        + "   * @param payload List of market information for each requested symbol. Author: {@link com.foo.bar.gen.MyTestExchangeConstants#AUTHOR}\n"
         + "   */\n"
         + "  public void setPayload(List<MyTestExchangeMarketDataExchangeInfoResponsePayload> payload) {\n"
         + "    this.payload = payload;\n"
@@ -453,7 +454,7 @@ public class RestEndpointClassesGeneratorTest {
         + "    \n"
         + "    /**\n"
         + "     * Will set the value of <code>payload</code> field in the builder\n"
-        + "     * @param payload List of market information for each requested symbol. Author: {@link com.foo.bar.gen.marketdata.MyTestExchangeMarketDataConstants#AUTHOR}\n"
+        + "     * @param payload List of market information for each requested symbol. Author: {@link com.foo.bar.gen.MyTestExchangeConstants#AUTHOR}\n"
         + "     * @return Builder instance\n"
         + "     * @see #setPayload(List<MyTestExchangeMarketDataExchangeInfoResponsePayload>)\n"
         + "     */\n"
@@ -489,7 +490,8 @@ public class RestEndpointClassesGeneratorTest {
         + "      return res;\n"
         + "    }\n"
         + "  }\n"
-        + "}\n", 
+        + "}\n"
+        + "", 
         Files.readString(checkSourceFileExists(Paths.get("pojo", "MyTestExchangeMarketDataExchangeInfoResponse.java"))));
     
     checkSourceFileExists(Paths.get("pojo", "MyTestExchangeMarketDataExchangeInfoResponsePayload.java"));

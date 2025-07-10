@@ -524,6 +524,9 @@ public class JavaCodeGenUtil {
    * @return Javadoc link to given class property or method
    */
   public static final String getJavaDocLink(String className, String attribute) {
+    if (attribute == null) {
+      return getJavaDocLink(className);
+    }
     return getJavaDocLink(className + "#" + attribute);
   }
 }

@@ -39,4 +39,9 @@ public class DemoExchangeConstants {
    * Possible value in <i>responseCode</i> field of rest request response: Server internal error
    */
   public static final Integer RESPONSE_CODE_INTERNAL_SERVER_ERROR = Integer.valueOf("500");
+  
+  /**
+   * Constant for subscribing to all tickers
+   */
+  public static final String ALL_TICKERS = "ticker@all";
 }

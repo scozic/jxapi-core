@@ -38,10 +38,9 @@ public class ExchangeApiClassesGeneratorTest {
     ExchangeApiClassesGenerator generator = new ExchangeApiClassesGenerator(exchange, api);
     generator.generateClasses(srcFolder);
     
-    checkJavaFilesCount(Paths.get("."), 6);
+    checkJavaFilesCount(Paths.get("."), 5);
     checkSourceFileExists(Paths.get("MyTestExchangeMarketDataApi.java"));
     checkSourceFileExists(Paths.get("MyTestExchangeMarketDataApiImpl.java"));
-    checkSourceFileExists(Paths.get("MyTestExchangeMarketDataConstants.java"));
     
     checkJavaFilesCount(Paths.get("deserializers"), 5);
     checkSourceFileExists(Paths.get("deserializers", "MyTestExchangeMarketDataExchangeInfoResponseDeserializer.java"));
@@ -80,10 +79,9 @@ public class ExchangeApiClassesGeneratorTest {
     ExchangeApiClassesGenerator generator = new ExchangeApiClassesGenerator(exchange, api);
     generator.generateClasses(srcFolder);
     
-    checkJavaFilesCount(Paths.get("."), 6);
+    checkJavaFilesCount(Paths.get("."), 5);
     checkSourceFileExists(Paths.get("MyTestExchangeMarketDataApi.java"));
     checkSourceFileExists(Paths.get("MyTestExchangeMarketDataApiImpl.java"));
-    checkSourceFileExists(Paths.get("MyTestExchangeMarketDataConstants.java"));
     
     checkJavaFilesCount(Paths.get("deserializers"), 1);
     checkSourceFileExists(Paths.get("deserializers", "MyTestExchangeMarketDataTickerStreamMessageDeserializer.java"));
@@ -98,11 +96,10 @@ public class ExchangeApiClassesGeneratorTest {
   }
   
   @Test
-  public void testGenerateExchangeApiClassesNoWebsocketEndpointNoConstants() throws IOException {
+  public void testGenerateExchangeApiClassesNoWebsocketEndpoint() throws IOException {
     srcFolder = ClassesGeneratorTestUtil.generateTmpDir();
     ExchangeDescriptor exchange = ExchangeDescriptorParser.fromJson(Paths.get(".", "src", "test", "resources", "testExchangeDescriptor.json"));
     ExchangeApiDescriptor api = exchange.getApis().get(0);
-    api.setConstants(null);
     api.setWebsocketEndpoints(null);
     ExchangeApiClassesGenerator generator = new ExchangeApiClassesGenerator(exchange, api);
     generator.generateClasses(srcFolder);

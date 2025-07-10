@@ -2,9 +2,7 @@ package org.jxapi.generator.java.exchange.api;
 
 import java.io.IOException;
 import java.nio.file.Path;
-import java.util.List;
 
-import org.jxapi.exchange.descriptor.Constant;
 import org.jxapi.exchange.descriptor.ExchangeApiDescriptor;
 import org.jxapi.exchange.descriptor.ExchangeDescriptor;
 import org.jxapi.exchange.descriptor.RestEndpointDescriptor;
@@ -13,7 +11,6 @@ import org.jxapi.generator.java.exchange.ClassesGenerator;
 import org.jxapi.generator.java.exchange.ExchangeGenUtil;
 import org.jxapi.generator.java.exchange.api.rest.RestEndpointClassesGenerator;
 import org.jxapi.generator.java.exchange.api.ws.WebsocketEndpointClassesGenerator;
-import org.jxapi.generator.java.exchange.constants.ConstantsClassGenerator;
 import org.jxapi.netutils.rest.ratelimits.RateLimitManager;
 import org.jxapi.util.CollectionUtil;
 import org.jxapi.util.PlaceHolderResolver;
@@ -71,27 +68,6 @@ public class ExchangeApiClassesGenerator implements ClassesGenerator {
                                             exchangeApiDescriptor, 
                                             websocketEndpointDescriptor,
                                             docPlaceHolderResolver).generateClasses(outputFolder);
-    }
-    
-    // Generate constants interface
-    List<Constant> constants = exchangeApiDescriptor.getConstants();
-    if (!CollectionUtil.isEmpty(constants)) {
-      ConstantsClassGenerator cgen = new ConstantsClassGenerator(
-          ExchangeGenUtil.getExchangeApiConstantsInterfaceName(exchangeDescriptor, exchangeApiDescriptor), 
-          constants,
-          docPlaceHolderResolver); 
-      cgen.setConstantValuePlaceHolderResolver(s -> ExchangeGenUtil.generateSubstitutionInstructionDeclaration(
-                                                      s, 
-                                                      exchangeDescriptor, 
-                                                      exchangeApiDescriptor, 
-                                                      null,
-                                                      cgen.getImports()));
-      cgen.setDescription("Constants used in "
-                + exchangeDescriptor.getId() 
-                + " exchange API wrapper {@link " 
-                + exchangeApiInterfaceGenerator.getName() 
-                + "} API group");
-      cgen.writeJavaFile(outputFolder);
     }
   }
 }

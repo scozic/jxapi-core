@@ -1,4 +1,3 @@
-
 # Generated Java POJOs
 
 JXAPI generator for Java API wrappers generates [POJOs](https://en.wikipedia.org/wiki/Plain_old_Java_object) for REST and websocket endpoints request, response, and messages. Such POJOs carry the properties defined in the exchange descriptor with expected 'getter' and 'setter' methods.

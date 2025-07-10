@@ -71,7 +71,6 @@ public class ExchangeClassesGenerator implements ClassesGenerator {
       cgen.setConstantValuePlaceHolderResolver(s -> ExchangeGenUtil.generateSubstitutionInstructionDeclaration(
                                                       s, 
                                                       exchangeDescriptor, 
-                                                      null, 
                                                       null,
                                                       cgen.getImports()));
       cgen.setDescription("Constants used in {@link " + exchangeInterfaceGenerator.getName() + "} API wrapper");

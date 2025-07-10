@@ -78,7 +78,7 @@ public class ExchangeReadmeMdGenerator {
    */
   public String generate() {
     PlaceHolderResolver docPlaceHolderResolver = PlaceHolderResolver
-        .create(ExchangeGenUtil.getDescriptionReplacements(exchangeDescriptor, null, baseJavadocUrl));
+        .create(ExchangeGenUtil.getDescriptionReplacements(exchangeDescriptor, baseJavadocUrl));
     StringBuilder s = new StringBuilder().append("# ")
       .append(exchangeDescriptor.getId())
       .append(" API Java wrapper\n\n")
@@ -147,19 +147,17 @@ public class ExchangeReadmeMdGenerator {
        .append("APIs are available using the following interfaces accessible from ")
        .append(getInterfaceJavadocLink(exchangeInterfaceName))
        .append(" interface\n");
-      apiDescriptors.forEach(api -> s.append(generateApiDescriptorDoc(api)));
+      apiDescriptors.forEach(api -> s.append(generateApiDescriptorDoc(api, docPlaceHolderResolver)));
     }
     
     s.append(generateDemoSnippetsDocumentation(docPlaceHolderResolver));
     return ExchangeReadmeMdGeneratorUtil.generateTableOfContent(s.toString());    
   }
   
-  private String generateApiDescriptorDoc(ExchangeApiDescriptor api) {
+  private String generateApiDescriptorDoc(ExchangeApiDescriptor api, PlaceHolderResolver docPlaceHolderResolver) {
     StringBuilder s = new StringBuilder();
     String apiInterfaceClassName = ExchangeGenUtil.getApiInterfaceClassName(exchangeDescriptor, api);
     String apiInterfaceSimpleClassName = JavaCodeGenUtil.getClassNameWithoutPackage(apiInterfaceClassName);
-    PlaceHolderResolver docPlaceHolderResolver = PlaceHolderResolver
-        .create(ExchangeGenUtil.getDescriptionReplacements(exchangeDescriptor, api.getName(), baseJavadocUrl));
     s.append("\n### ")
      .append(api.getName())
      .append("\n")
@@ -189,13 +187,6 @@ public class ExchangeReadmeMdGenerator {
        
      }
     
-    List<Constant> apiConstants = api.getConstants();
-    if (!CollectionUtil.isEmpty(apiConstants)) {
-      String apiConstantsInterfaceName = ExchangeGenUtil.getExchangeApiConstantsInterfaceName(exchangeDescriptor, api);
-      s.append("Some useful constants are defined in ")
-       .append(getInterfaceJavadocLink(apiConstantsInterfaceName))
-       .append("\n");
-    }
     return s.toString();
   }
   

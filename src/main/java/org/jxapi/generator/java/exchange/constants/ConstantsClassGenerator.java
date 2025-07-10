@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.jxapi.exchange.descriptor.Constant;
+import org.jxapi.generator.java.JavaCodeGenUtil;
 import org.jxapi.generator.java.JavaTypeGenerator;
 import org.jxapi.util.PlaceHolderResolver;
 
@@ -62,12 +63,30 @@ public class ConstantsClassGenerator extends JavaTypeGenerator {
     appendToBody("\nprivate ")
       .append(getSimpleName())
       .append("(){}\n");
-    constants.forEach(c -> appendToBody("\n")
-                             .append(ConstantsGenerationUtil.generateConstantDeclaration(
-                                 c, getImports(), 
-                                 docPlaceHolderResolver, 
-                                 constantValuePlaceHolderResolver)));
+    constants.forEach(this::generateConstantDeclaration);
+    setDescription(docPlaceHolderResolver.resolve(getDescription()));
     return super.generate();
+  }
+  
+  private void generateConstantDeclaration(Constant constant) {
+    if (constant.isGroup()) {
+      ConstantsClassGenerator groupGenerator = new ConstantsClassGenerator(
+        JavaCodeGenUtil.firstLetterToUpperCase(constant.getName()), 
+        constant.getConstants(), 
+        docPlaceHolderResolver);
+      groupGenerator.setDescription(constant.getDescription());
+      groupGenerator.setGeneratePackageAndImports(false);
+      groupGenerator.setConstantValuePlaceHolderResolver(constantValuePlaceHolderResolver);
+      appendToBody("\n").append(groupGenerator.generate());
+      groupGenerator.getImports().forEach(this::addImport);
+    } else {
+      appendToBody("\n")
+        .append(ConstantsGenerationUtil.generateConstantDeclaration(
+                constant, 
+                getImports(), 
+                docPlaceHolderResolver,
+                constantValuePlaceHolderResolver));
+    }
   }
 
   /**

@@ -5,11 +5,11 @@ import java.util.concurrent.ExecutionException;
 
 import javax.annotation.processing.Generated;
 import org.jxapi.exchange.ExchangeApiObserver;
+import org.jxapi.exchanges.employee.gen.EmployeeConstants;
 import org.jxapi.exchanges.employee.gen.EmployeeExchange;
 import org.jxapi.exchanges.employee.gen.EmployeeExchangeImpl;
 import org.jxapi.exchanges.employee.gen.EmployeeProperties;
 import org.jxapi.exchanges.employee.gen.v1.EmployeeV1Api;
-import org.jxapi.exchanges.employee.gen.v1.EmployeeV1Constants;
 import org.jxapi.exchanges.employee.gen.v1.pojo.Employee;
 import org.jxapi.netutils.rest.RestResponse;
 import org.jxapi.util.DemoUtil;
@@ -35,7 +35,7 @@ public class EmployeeV1AddEmployeeDemo {
     request.setId(Integer.valueOf(EncodingUtil.substituteArguments("${config.demoEmployeeId}", "config.demoEmployeeId", PropertiesUtil.getString(properties, EmployeeProperties.DEMO_EMPLOYEE_ID))));
     request.setFirstName("John");
     request.setLastName("Doe");
-    request.setProfile(EncodingUtil.substituteArguments("${constants.profileRegular}", "constants.profileRegular", EmployeeV1Constants.PROFILE_REGULAR));
+    request.setProfile(EncodingUtil.substituteArguments("${constants.profileRegular}", "constants.profileRegular", EmployeeConstants.PROFILE_REGULAR));
     return request;
   }
   

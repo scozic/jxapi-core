@@ -17,18 +17,16 @@
 		{"name": "authorFirstName", "type":"STRING", "description": "Author first name", "value": "Bob"},
 		{"name": "authorLastName", "type":"STRING", "description": "Author last name", "value": "Smith"},
 		{"name": "defaultDemoSymbol", "type":"STRING", "description": "Default value for market 'symbol' parameter in demo snippets", "value": "BTC_USDT"},
-		{"name": "author", "type":"STRING", "description": "Author name", "value": "${constants.authorFirstName} ${constants.authorLastName}"}
+		{"name": "author", "type":"STRING", "description": "Author name", "value": "${constants.authorFirstName} ${constants.authorLastName}"},
+		{"name": "allTickers", "type":"STRING", "description": "Constant for subscribing to all tickers", "value": "all"},
+		{"name": "author", "type":"STRING", "description": "Author name", "value": "Mary"},
+		{"name": "demoSymbol", "type":"STRING", "description": "Value to use for 'symbol' property of endpoint demo snippet requests.", "value": "BTC_USDT"}
 	],
 	"apis":[
 		{ 
 			"name": "MarketData",
 			"description": "The market data API of MyTestExchange. Author: ${constants.author}",
 			"httpRequestInterceptorFactory": "com.foo.bar.BarHttpRequestInterceptorFactory",
-			"constants": [
-				{"name": "allTickers", "type":"STRING", "description": "Constant for subscribing to all tickers", "value": "all"},
-				{"name": "author", "type":"STRING", "description": "Author name", "value": "Mary"},
-				{"name": "demoSymbol", "type":"STRING", "description": "Value to use for 'symbol' property of endpoint demo snippet requests.", "value": "BTC_USDT"}
-			],
 			"restEndpoints": [
 				{
 					"name": "exchangeInfo",

@@ -10,10 +10,9 @@ import org.junit.Before;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
+import org.jxapi.exchanges.employee.gen.EmployeeConstants;
 import org.jxapi.exchanges.employee.gen.EmployeeExchange;
 import org.jxapi.exchanges.employee.gen.EmployeeProperties;
-import org.jxapi.exchanges.employee.gen.v1.EmployeeV1Constants;
 import org.jxapi.exchanges.employee.gen.v1.demo.EmployeeV1AddEmployeeDemo;
 import org.jxapi.exchanges.employee.gen.v1.demo.EmployeeV1DeleteEmployeeDemo;
 import org.jxapi.exchanges.employee.gen.v1.demo.EmployeeV1EmployeeUpdatesDemo;
@@ -91,7 +90,7 @@ public class ExmployeeDemosTest {
     e.setId(1);
     e.setFirstName("John");
     e.setLastName("Doe");
-    e.setProfile(EmployeeV1Constants.PROFILE_ADMIN);
+    e.setProfile(EmployeeConstants.PROFILE_ADMIN);
     return e;
   }
   

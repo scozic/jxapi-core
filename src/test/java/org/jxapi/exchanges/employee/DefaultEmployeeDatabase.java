@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import org.jxapi.exchanges.employee.gen.v1.EmployeeV1Constants;
+import org.jxapi.exchanges.employee.gen.EmployeeConstants;
 import org.jxapi.exchanges.employee.gen.v1.pojo.Employee;
 
 public class DefaultEmployeeDatabase implements EmployeesDatabase {
@@ -58,8 +58,8 @@ public class DefaultEmployeeDatabase implements EmployeesDatabase {
     if (pageSize < 1) {
       throw new IllegalArgumentException("Page size must be greater than 0");
     }
-    if (pageSize > EmployeeV1Constants.MAX_PAGE_SIZE) {
-      throw new IllegalArgumentException("Page size must not exceed " + EmployeeV1Constants.MAX_PAGE_SIZE);
+    if (pageSize > EmployeeConstants.MAX_PAGE_SIZE) {
+      throw new IllegalArgumentException("Page size must not exceed " + EmployeeConstants.MAX_PAGE_SIZE);
     }
     return employees.values().stream().skip((page - 1) * pageSize).limit(pageSize).collect(Collectors.toList());
   }

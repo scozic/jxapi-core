@@ -45,7 +45,7 @@ public class EmployeeV1GetAllEmployeesRequest implements Pojo<EmployeeV1GetAllEm
   }
   
   /**
-   * @return Number of employees to return per page.<br> Defaults to {@link org.jxapi.exchanges.employee.gen.v1.EmployeeV1Constants#DEFAULT_PAGE_SIZE}.<br> Maximum is {@link org.jxapi.exchanges.employee.gen.v1.EmployeeV1Constants#MAX_PAGE_SIZE}.
+   * @return Number of employees to return per page.<br> Defaults to <a href="V1org/jxapi/exchanges/employee/gen/EmployeeConstants.html#DEFAULT_PAGE_SIZE">defaultPageSize</a>.<br> Maximum is <a href="V1org/jxapi/exchanges/employee/gen/EmployeeConstants.html#MAX_PAGE_SIZE">maxPageSize</a>.
    * 
    */
   public Integer getSize() {
@@ -53,7 +53,7 @@ public class EmployeeV1GetAllEmployeesRequest implements Pojo<EmployeeV1GetAllEm
   }
   
   /**
-   * @param size Number of employees to return per page.<br> Defaults to {@link org.jxapi.exchanges.employee.gen.v1.EmployeeV1Constants#DEFAULT_PAGE_SIZE}.<br> Maximum is {@link org.jxapi.exchanges.employee.gen.v1.EmployeeV1Constants#MAX_PAGE_SIZE}.
+   * @param size Number of employees to return per page.<br> Defaults to <a href="V1org/jxapi/exchanges/employee/gen/EmployeeConstants.html#DEFAULT_PAGE_SIZE">defaultPageSize</a>.<br> Maximum is <a href="V1org/jxapi/exchanges/employee/gen/EmployeeConstants.html#MAX_PAGE_SIZE">maxPageSize</a>.
    * 
    */
   public void setSize(Integer size) {
@@ -125,7 +125,7 @@ public class EmployeeV1GetAllEmployeesRequest implements Pojo<EmployeeV1GetAllEm
     
     /**
      * Will set the value of <code>size</code> field in the builder
-     * @param size Number of employees to return per page.<br> Defaults to {@link org.jxapi.exchanges.employee.gen.v1.EmployeeV1Constants#DEFAULT_PAGE_SIZE}.<br> Maximum is {@link org.jxapi.exchanges.employee.gen.v1.EmployeeV1Constants#MAX_PAGE_SIZE}.
+     * @param size Number of employees to return per page.<br> Defaults to <a href="V1org/jxapi/exchanges/employee/gen/EmployeeConstants.html#DEFAULT_PAGE_SIZE">defaultPageSize</a>.<br> Maximum is <a href="V1org/jxapi/exchanges/employee/gen/EmployeeConstants.html#MAX_PAGE_SIZE">maxPageSize</a>.
      * 
      * @return Builder instance
      * @see #setSize(Integer)

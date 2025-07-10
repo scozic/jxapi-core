@@ -35,7 +35,6 @@ public class ExchangeApiDescriptorTest {
         apiDescriptor.setWebsocketHookFactory(MockWebsocketHookFactory.class.getName());
         apiDescriptor.setRateLimits(List.of(new RateLimitRule()));
         apiDescriptor.setWebsocketUrl("ws://localhost:8080");
-        apiDescriptor.setConstants(List.of(new Constant()));
         Assert.assertEquals("name", apiDescriptor.getName());
         Assert.assertEquals("description", apiDescriptor.getDescription());
         Assert.assertEquals(MockHttpRequestExecutorFactory.class.getName() , apiDescriptor.getHttpRequestExecutorFactory());
@@ -46,7 +45,6 @@ public class ExchangeApiDescriptorTest {
         Assert.assertEquals(MockWebsocketFactory.class.getName(), apiDescriptor.getWebsocketFactory());
         Assert.assertEquals(MockWebsocketHookFactory.class.getName(), apiDescriptor.getWebsocketHookFactory());
         Assert.assertEquals("ws://localhost:8080", apiDescriptor.getWebsocketUrl());
-        Assert.assertEquals(1, apiDescriptor.getConstants().size());
     }
 
     @Test

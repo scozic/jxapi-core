@@ -1,6 +1,7 @@
 # DemoExchange API Java wrapper
 
 Demo Exchange. This exchange uses connects to mock HTTP server and websocket server. It is used to test and validate a full Java wrapper generated using JXAPI.
+<!-- BEGIN TABLE OF CONTENTS -->
   - [DemoExchange API Java wrapper](#demoexchange-api-java-wrapper)
       - [Quick start](#quick-start)
       - [Properties](#properties)
@@ -14,6 +15,7 @@ Demo Exchange. This exchange uses connects to mock HTTP server and websocket ser
         - [MarketData REST endpoints demo snippets:](#marketdata-rest-endpoints-demo-snippets)
         - [MarketData Websocket endpoints demo snippets](#marketdata-websocket-endpoints-demo-snippets)
 
+<!-- END TABLE OF CONTENTS -->
 See <a href="https://docs.myexchange.com/api">reference documentation</a>
 ### Quick start
 
@@ -130,7 +132,6 @@ Demo exchange market data API
     <td><a href="https://docs.myexchange.com/api/ws/marketData/tickerStream">link</a></td>
   </tr>
 </table>
-Some useful constants are defined in <a href="./doc/javadoc/org/jxapi/exchanges/demo/gen/marketdata/DemoExchangeMarketDataConstants.html">DemoExchangeMarketDataConstants</a>
 
 ## Demo snippets
 

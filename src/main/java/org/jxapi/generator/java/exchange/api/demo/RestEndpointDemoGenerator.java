@@ -79,7 +79,6 @@ public class RestEndpointDemoGenerator extends JavaTypeGenerator {
     this.sampleValuePlaceHolderResolver = s -> ExchangeGenUtil.generateSubstitutionInstructionDeclaration(
         s, 
         exchangeDescriptor, 
-        exchangeApiDescriptor, 
         "properties",
         getImports());
     if (hasArguments) {

@@ -4,13 +4,4 @@ apis:
    description: "Version 1 of the Employee API"
    httpUrl: "v1"
    websocketUrl: "${config.baseWebsocketUrl}"
-   websocketHookFactory: "org.jxapi.exchanges.demo.net.DemoExchangeWebsocketHookFactory"
-   constants:
-    - name: defaultPageSize
-      description: Default page size for paginated requests
-      type: INT
-      value: 10
-    - name: maxPageSize
-      description: Maximum page size for paginated requests
-      type: INT
-      value: 10000      
+   websocketHookFactory: "org.jxapi.exchanges.demo.net.DemoExchangeWebsocketHookFactory"     

@@ -12,21 +12,21 @@
         {"name": "baseWebsocketUrl", "description": "Base URL for websocket endpoints of the Employee Exchange API"},
         {"name": "demoEmployeeId", "description": "Used in demo snippets to set as value of Employee 'id' property", "defaultValue": 1}
     ],
+    "constants": [
+        {"name": "defaultPageSize", "description": "Default page size for paginated requests", "value": 10},
+        {"name": "maxPageSize", "description": "Maximum page size for paginated requests", "value": 100},
+        {"name": "profileRegular", "description": "Regular employee profile", "value": "REGULAR"},
+        {"name": "profileAdmin","description": "Admin employee profile", "value": "ADMIN"},
+        {"name": "updateEmployeeTypeAdd", "description": "Value of eventType field in WS message for new employee added event", "value": "ADD"},                  
+        {"name": "updateEmployeeTypeUpate", "description": "Value of eventType field in WS message for update of an existing employee event", "value": "UPDATE"},
+        {"name": "updateEmployeeTypeDelete", "description": "Value of eventType field in WS message for update of an existing employee event", "value": "DELETE"}
+    ],
     "apis": [
         {
             "description": "Version 1 of the Employee API",
             "httpRequestTimeout": -1,
             "httpUrl": "v1",
             "name": "V1",
-            "constants": [
-                {"name": "defaultPageSize", "description": "Default page size for paginated requests", "value": 10},
-                {"name": "maxPageSize", "description": "Maximum page size for paginated requests", "value": 100},
-                {"name": "profileRegular", "description": "Regular employee profile", "value": "REGULAR"},
-                {"name": "profileAdmin","description": "Admin employee profile", "value": "ADMIN"},
-                {"name": "updateEmployeeTypeAdd", "description": "Value of eventType field in WS message for new employee added event", "value": "ADD"},                  
-                {"name": "updateEmployeeTypeUpate", "description": "Value of eventType field in WS message for update of an existing employee event", "value": "UPDATE"},
-                {"name": "updateEmployeeTypeDelete", "description": "Value of eventType field in WS message for update of an existing employee event", "value": "DELETE"}
-            ],
             "restEndpoints": [
                 {
                     "name": "getEmployee",

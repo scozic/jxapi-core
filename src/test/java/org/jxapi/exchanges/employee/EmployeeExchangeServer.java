@@ -12,9 +12,7 @@ import org.glassfish.grizzly.http.server.HttpHandler;
 import org.glassfish.grizzly.http.server.HttpServer;
 import org.glassfish.grizzly.http.server.Request;
 import org.glassfish.grizzly.http.server.Response;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.jxapi.exchanges.employee.gen.v1.EmployeeV1Constants;
+import org.jxapi.exchanges.employee.gen.EmployeeConstants;
 import org.jxapi.exchanges.employee.gen.v1.deserializers.EmployeeDeserializer;
 import org.jxapi.exchanges.employee.gen.v1.pojo.Employee;
 import org.jxapi.exchanges.employee.gen.v1.pojo.EmployeeV1EmployeeUpdatesMessage;
@@ -28,6 +26,8 @@ import org.jxapi.netutils.rest.javanet.HttpServerUtil;
 import org.jxapi.netutils.websocket.mock.server.MockWebsocketServer;
 import org.jxapi.netutils.websocket.mock.server.MockWebsocketServerEvent;
 import org.jxapi.util.JsonUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Employee exchange server. It can be used to test employee exchange clients.
@@ -48,7 +48,7 @@ public class EmployeeExchangeServer {
     Map<String, String> queryParams = HttpRequestUtil.parseUrlQueryParams(getAllEmployeesUrl);
     return EmployeeV1GetAllEmployeesRequest.builder()
         .page(queryParams.containsKey("page") ? Integer.valueOf(queryParams.get("page")) : 1) 
-        .size(queryParams.containsKey("size") ? Integer.valueOf(queryParams.get("size")) : EmployeeV1Constants.DEFAULT_PAGE_SIZE)
+        .size(queryParams.containsKey("size") ? Integer.valueOf(queryParams.get("size")) : EmployeeConstants.DEFAULT_PAGE_SIZE)
         .build();
   }
   

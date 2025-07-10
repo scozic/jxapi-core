@@ -1,14 +1,14 @@
-package org.jxapi.exchanges.employee.gen.v1;
+package org.jxapi.exchanges.employee.gen;
 
 import javax.annotation.processing.Generated;
 
 /**
- * Constants used in Employee exchange API wrapper {@link org.jxapi.exchanges.employee.gen.v1.EmployeeV1Api} API group
+ * Constants used in {@link org.jxapi.exchanges.employee.gen.EmployeeExchange} API wrapper
  */
 @Generated("org.jxapi.generator.java.exchange.constants.ConstantsClassGenerator")
-public class EmployeeV1Constants {
+public class EmployeeConstants {
   
-  private EmployeeV1Constants(){}
+  private EmployeeConstants(){}
   
   /**
    * Default page size for paginated requests

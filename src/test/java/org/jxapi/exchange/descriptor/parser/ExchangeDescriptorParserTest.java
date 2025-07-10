@@ -9,14 +9,13 @@ import java.util.List;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Test;
-
 import org.jxapi.exchange.descriptor.CanonicalType;
 import org.jxapi.exchange.descriptor.ConfigProperty;
 import org.jxapi.exchange.descriptor.Constant;
 import org.jxapi.exchange.descriptor.DefaultConfigProperty;
-import org.jxapi.exchange.descriptor.Field;
 import org.jxapi.exchange.descriptor.ExchangeApiDescriptor;
 import org.jxapi.exchange.descriptor.ExchangeDescriptor;
+import org.jxapi.exchange.descriptor.Field;
 import org.jxapi.exchange.descriptor.RestEndpointDescriptor;
 import org.jxapi.exchange.descriptor.Type;
 import org.jxapi.exchange.descriptor.WebsocketEndpointDescriptor;
@@ -24,7 +23,6 @@ import org.jxapi.exchange.descriptor.WebsocketMessageTopicMatcherFieldDescriptor
 import org.jxapi.generator.java.JavaCodeGenUtil;
 import org.jxapi.generator.java.exchange.ClassesGeneratorTestUtil;
 import org.jxapi.netutils.rest.HttpMethod;
-import org.jxapi.util.CollectionUtil;
 
 /**
  * Unit test for {@link ExchangeDescriptorParser}
@@ -306,12 +304,11 @@ public class ExchangeDescriptorParserTest {
     Assert.assertEquals("Used in demo snippets to set as value of Employee 'id' property", property.getDescription());
     Assert.assertEquals(1, property.getDefaultValue());
     
-    Assert.assertEquals(0, CollectionUtil.emptyIfNull(exchangeDescriptor.getConstants()).size());
-    
     Assert.assertEquals("${config.baseHttpUrl}", exchangeDescriptor.getHttpUrl());
     Assert.assertEquals("org.jxapi.exchanges.demo.net.DemoExchangeHttpRequestInterceptorFactory", 
               exchangeDescriptor.getHttpRequestInterceptorFactory());
     Assert.assertEquals(1, exchangeDescriptor.getApis().size());
+    checkEmployeeExchangeConstants(exchangeDescriptor.getConstants());
     checkEmployeeExchangeV1ApiGroup(exchangeDescriptor.getApis().get(0));
   }
   
@@ -319,7 +316,6 @@ public class ExchangeDescriptorParserTest {
     Assert.assertEquals("V1", api.getName());
     Assert.assertEquals("Version 1 of the Employee API", api.getDescription());
     Assert.assertEquals("v1", api.getHttpUrl());
-    checkEmployeeExchangeV1ApiGroupConstants(api.getConstants());
     List<RestEndpointDescriptor> restEndpoints = api.getRestEndpoints();
     Assert.assertEquals(5, restEndpoints.size());
     checkEmployeeExchangeV1ApiGroupGetEmployeeRestEndpoint(restEndpoints.get(0));
@@ -359,7 +355,7 @@ public class ExchangeDescriptorParserTest {
     Assert.assertEquals("Employee", employee.getObjectName());
   }
 
-  private void checkEmployeeExchangeV1ApiGroupConstants(List<Constant> constants) {
+  private void checkEmployeeExchangeConstants(List<Constant> constants) {
     Assert.assertEquals(7, constants.size());
     
     Constant constant = constants.get(0);

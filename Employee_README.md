@@ -2,9 +2,11 @@
 
 Employee exchange is a demo exchange REST APIs to get, add, delete and update employees and a websocket endpoint to get notified of updates from an employee database.<br> A server can be started using <code>org.jxapi.exchanges.employee.EmployeeExchangeServer</code> class to serve these APIs.<br> The URL of the HTTP server and Websocket server must be set using the <a href="./doc/javadoc/org/jxapi/exchanges/employee/gen/EmployeeProperties.html#BASE_HTTP_URL">baseHttpUrl</a> and <a href="./doc/javadoc/org/jxapi/exchanges/employee/gen/EmployeeProperties.html#BASE_WEBSOCKET_URL">baseWebsocketUrl</a> properties.<br> Notice how the 'employee' object present in APIs request and responses is used in multiple endpoints and its properties defined only once.
 
+<!-- BEGIN TABLE OF CONTENTS -->
   - [Employee API Java wrapper](#employee-api-java-wrapper)
       - [Quick start](#quick-start)
       - [Properties](#properties)
+      - [Constants](#constants)
     - [API Groups](#api-groups)
       - [V1](#v1)
         - [REST endpoints](#rest-endpoints)
@@ -14,6 +16,7 @@ Employee exchange is a demo exchange REST APIs to get, add, delete and update em
         - [V1 REST endpoints demo snippets:](#v1-rest-endpoints-demo-snippets)
         - [V1 Websocket endpoints demo snippets](#v1-websocket-endpoints-demo-snippets)
 
+<!-- END TABLE OF CONTENTS -->
 See <a href="https://www.example.com/docs/employee">reference documentation</a>
 ### Quick start
 
@@ -61,6 +64,10 @@ You may have a look at <a href="./src/test/java/org/jxapi/exchanges/employee/gen
     <td>1</td>
   </tr>
 </table>
+
+### Constants
+
+Some useful constants are defined in <a href="./doc/javadoc/org/jxapi/exchanges/employee/gen/EmployeeConstants.html">EmployeeConstants</a>
 
 ## API Groups
 APIs are available using the following interfaces accessible from <a href="./doc/javadoc/org/jxapi/exchanges/employee/gen/EmployeeExchange.html">EmployeeExchange</a> interface
@@ -121,7 +128,6 @@ Version 1 of the Employee API
     <td><a href="https://www.example.com/docs/employee/updates">link</a></td>
   </tr>
 </table>
-Some useful constants are defined in <a href="./doc/javadoc/org/jxapi/exchanges/employee/gen/v1/EmployeeV1Constants.html">EmployeeV1Constants</a>
 
 ## Demo snippets
 
