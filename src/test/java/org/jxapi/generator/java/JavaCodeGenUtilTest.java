@@ -365,7 +365,13 @@ public class JavaCodeGenUtilTest {
   @Test
   public void testGetClassUrl() {
     Assert.assertEquals("https://docs.oracle.com/javase/8/docs/api/java/util/List.html", 
-        JavaCodeGenUtil.getClassUrl("https://docs.oracle.com/javase/8/docs/api/", List.class.getName(), ".html"));
+        JavaCodeGenUtil.getClassUrl("https://docs.oracle.com/javase/8/docs/api/", List.class.getName(), null, ".html"));
+  }
+  
+  @Test
+  public void testGetClassUrl_InnerClass() {
+    Assert.assertEquals("https://docs.oracle.com/javase/8/docs/api/java/util/List.MyInnerClass.MySubInnerClass.html", 
+        JavaCodeGenUtil.getClassUrl("https://docs.oracle.com/javase/8/docs/api/", List.class.getName(), "MyInnerClass.MySubInnerClass", ".html"));
   }
   
   @Test

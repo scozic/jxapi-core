@@ -26,6 +26,7 @@ public class RestEndpointDemoGeneratorTest {
         + "import java.util.Properties;\n"
         + "import java.util.concurrent.ExecutionException;\n"
         + "\n"
+        + "import com.foo.bar.gen.MyTestExchangeConstants;\n"
         + "import com.foo.bar.gen.MyTestExchangeDemoProperties;\n"
         + "import com.foo.bar.gen.MyTestExchangeExchange;\n"
         + "import com.foo.bar.gen.MyTestExchangeExchangeImpl;\n"
@@ -60,6 +61,7 @@ public class RestEndpointDemoGeneratorTest {
         + "    MyTestExchangeMarketDataExchangeInfoRequest request = new MyTestExchangeMarketDataExchangeInfoRequest();\n"
         + "    request.setSymbols(new ListJsonFieldDeserializer<>(StringJsonFieldDeserializer.getInstance()).deserialize(EncodingUtil.substituteArguments(\"[\\\"${config.demoSymbol}\\\"]\", \"config.demoSymbol\", PropertiesUtil.getString(properties, MyTestExchangeDemoProperties.DEMO_SYMBOL))));\n"
         + "    request.setApiKey(EncodingUtil.substituteArguments(\"${config.apiKey}\", \"config.apiKey\", PropertiesUtil.getString(properties, MyTestExchangeProperties.API_KEY)));\n"
+        + "    request.setAuthor(EncodingUtil.substituteArguments(\"${constants.author.firstName} ${constants.author.lastName}\", \"constants.author.firstName\", MyTestExchangeConstants.Author.FIRST_NAME, \"constants.author.lastName\", MyTestExchangeConstants.Author.LAST_NAME));\n"
         + "    request.setPage(Integer.valueOf(\"1\"));\n"
         + "    return request;\n"
         + "  }\n"
@@ -108,7 +110,8 @@ public class RestEndpointDemoGeneratorTest {
         + "      System.exit(-1);\n"
         + "    }\n"
         + "  }\n"
-        + "}\n", 
+        + "}\n"
+        + "", 
         new RestEndpointDemoGenerator(exchange, api, restEndpointDescriptor).generate());
   }
   

@@ -90,7 +90,7 @@ public class ExmployeeDemosTest {
     e.setId(1);
     e.setFirstName("John");
     e.setLastName("Doe");
-    e.setProfile(EmployeeConstants.PROFILE_ADMIN);
+    e.setProfile(EmployeeConstants.Profile.ADMIN);
     return e;
   }
   

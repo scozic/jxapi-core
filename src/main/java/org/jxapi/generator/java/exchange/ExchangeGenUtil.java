@@ -751,6 +751,7 @@ public class ExchangeGenUtil {
         replacements, 
         CONSTANT_PLACEHOLDER_PREFIX,
         getExchangeConstantsInterfaceName(exchangeDescriptor), 
+        "",
         exchangeDescriptor.getConstants(), 
         baseHtmlDocUrl);
     
@@ -758,39 +759,58 @@ public class ExchangeGenUtil {
     for (ConfigProperty prop : CollectionUtil.emptyIfNull(exchangeDescriptor.getProperties())) {
       String pname = prop.getName();
       String cls = getExchangePropertiesInterfaceName(exchangeDescriptor);
-      replacements.put(CONFIG_PLACEHOLDER_PREFIX + prop.getName(), getDocLink(cls, pname, baseHtmlDocUrl));
+      replacements.put(CONFIG_PLACEHOLDER_PREFIX + prop.getName(), getDocLink(cls, null, pname, baseHtmlDocUrl));
     }
     
 
     return replacements;
   }
   
-  private static void collectConstantDescriptionReplacements(Map<String, Object> replacements, String prefix, String propertiesClassName, List<Constant> constants, String baseHtmlDocUrl) {
+  private static void collectConstantDescriptionReplacements(
+      Map<String, Object> replacements, 
+      String prefix, 
+      String propertiesClassName, 
+      String innerPropertiesClassName, 
+      List<Constant> constants, 
+      String baseHtmlDocUrl) {
+    innerPropertiesClassName = StringUtils.defaultString(innerPropertiesClassName);
     for (Constant constant : CollectionUtil.emptyIfNull(constants)) {      
       String cname = constant.getName();
       String cfullName = prefix + cname;
       if (constant.isGroup()) {
-        propertiesClassName = new StringBuilder()
-            .append(propertiesClassName)
-            .append(".")
-            .append(JavaCodeGenUtil.firstLetterToUpperCase(cname))
-            .toString();
-        replacements.put(cfullName, getDocLink(propertiesClassName, null, baseHtmlDocUrl));
-        collectConstantDescriptionReplacements(replacements, cfullName + ".", propertiesClassName, constant.getConstants(), baseHtmlDocUrl);
+        String groupSimpleClassName = JavaCodeGenUtil.firstLetterToUpperCase(cname);
+        StringBuilder groupPropertiesClassName = new StringBuilder();
+        if (!innerPropertiesClassName.isEmpty()) {
+          groupPropertiesClassName.append(innerPropertiesClassName).append(".");
+        }
+        groupPropertiesClassName.append(groupSimpleClassName);
+        replacements.put(cfullName, getDocLink(propertiesClassName, groupPropertiesClassName.toString(), null, baseHtmlDocUrl));
+        collectConstantDescriptionReplacements(replacements, cfullName + ".", propertiesClassName, groupPropertiesClassName.toString(), constant.getConstants(), baseHtmlDocUrl);
       } else {
-        replacements.put(cfullName, getDocLink(propertiesClassName, cname, baseHtmlDocUrl));
+        
+        replacements.put(cfullName, getDocLink(propertiesClassName, innerPropertiesClassName, cname, baseHtmlDocUrl));
       }
       
     }
   }
   
-  private static String getDocLink(String className, String variableName, String baseHtmlDocUrl) {
+  private static String getDocLink(String className, String innerClassName, String variableName, String baseHtmlDocUrl) {
     String staticVariableName = JavaCodeGenUtil.getStaticVariableName(variableName);
+    innerClassName = StringUtils.defaultString(innerClassName);
+    String fullClassName = className + (StringUtils.isEmpty(innerClassName) ? "" : "." + innerClassName);
     if (baseHtmlDocUrl == null) {
-      return JavaCodeGenUtil.getJavaDocLink(className, staticVariableName);
+      return JavaCodeGenUtil.getJavaDocLink(fullClassName, staticVariableName);
     }
-    String url = JavaCodeGenUtil.getClassJavadocUrl(baseHtmlDocUrl, className) + "#" + staticVariableName;
-    return JavaCodeGenUtil.getHtmlLink(url, variableName);
+    StringBuilder url = new StringBuilder().append(JavaCodeGenUtil.getClassJavadocUrl(baseHtmlDocUrl, className, innerClassName));
+    
+    String text = variableName;
+    if (StringUtils.isAllEmpty(staticVariableName)) {
+      text = JavaCodeGenUtil.firstLetterToLowerCase(JavaCodeGenUtil.getClassNameWithoutPackage(fullClassName));
+    } else {
+      url.append("#").append(staticVariableName);
+    }
+    
+    return JavaCodeGenUtil.getHtmlLink(url.toString(), text);
   }
 
   /**
@@ -871,5 +891,7 @@ public class ExchangeGenUtil {
                 .append(")")
                 .toString();
   }
+  
+
  
 }

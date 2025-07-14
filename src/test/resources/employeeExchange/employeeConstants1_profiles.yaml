@@ -1,8 +1,11 @@
 id: "Employee"
 constants:
- - name: "profileRegular"
-   description: "Regular employee profile"
-   value: "REGULAR"
- - name: "profileAdmin"
-   description: "Admin employee profile"
-   value: "ADMIN"
+  - name: "profile"
+    description: "Employee profile types"
+    constants:
+      - name: regular
+        description: "Regular employee profile"
+        value: REGULAR
+      - name: admin
+        description: "Admin employee profile"
+        value: "ADMIN"

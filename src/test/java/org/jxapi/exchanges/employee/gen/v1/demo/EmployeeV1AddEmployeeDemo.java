@@ -35,7 +35,7 @@ public class EmployeeV1AddEmployeeDemo {
     request.setId(Integer.valueOf(EncodingUtil.substituteArguments("${config.demoEmployeeId}", "config.demoEmployeeId", PropertiesUtil.getString(properties, EmployeeProperties.DEMO_EMPLOYEE_ID))));
     request.setFirstName("John");
     request.setLastName("Doe");
-    request.setProfile(EncodingUtil.substituteArguments("${constants.profileRegular}", "constants.profileRegular", EmployeeConstants.PROFILE_REGULAR));
+    request.setProfile(EncodingUtil.substituteArguments("${constants.profile.regular}", "constants.profile.regular", EmployeeConstants.Profile.REGULAR));
     return request;
   }
   

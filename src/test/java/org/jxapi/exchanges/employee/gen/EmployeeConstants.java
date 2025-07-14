@@ -21,27 +21,45 @@ public class EmployeeConstants {
   public static final Integer MAX_PAGE_SIZE = Integer.valueOf("10000");
   
   /**
-   * Regular employee profile
+   * Employee profile types
    */
-  public static final String PROFILE_REGULAR = "REGULAR";
+  @Generated("org.jxapi.generator.java.exchange.constants.ConstantsClassGenerator")
+  public static class Profile {
+    
+    private Profile(){}
+    
+    /**
+     * Regular employee profile
+     */
+    public static final String REGULAR = "REGULAR";
+    
+    /**
+     * Admin employee profile
+     */
+    public static final String ADMIN = "ADMIN";
+  }
   
   /**
-   * Admin employee profile
+   * Value of eventType field in WS message
    */
-  public static final String PROFILE_ADMIN = "ADMIN";
-  
-  /**
-   * Value of eventType field in WS message for new employee added event
-   */
-  public static final String UPDATE_EMPLOYEE_TYPE_ADD = "ADD";
-  
-  /**
-   * Value of eventType field in WS message for update of an existing employee event
-   */
-  public static final String UPDATE_EMPLOYEE_TYPE_UPATE = "UPDATE";
-  
-  /**
-   * Value of eventType field in WS message for update of an existing employee event
-   */
-  public static final String UPDATE_EMPLOYEE_TYPE_DELETE = "DELETE";
+  @Generated("org.jxapi.generator.java.exchange.constants.ConstantsClassGenerator")
+  public static class UpdateEmployeeType {
+    
+    private UpdateEmployeeType(){}
+    
+    /**
+     * Value of eventType field in WS message for new employee added event
+     */
+    public static final String ADD = "ADD";
+    
+    /**
+     * Value of eventType field in WS message for update of an existing employee event
+     */
+    public static final String UPDATE = "UPDATE";
+    
+    /**
+     * Value of eventType field in WS message for update of an existing employee event
+     */
+    public static final String DELETE = "DELETE";
+  }
 }

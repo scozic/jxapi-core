@@ -9,8 +9,8 @@ apis:
        description: Employee update message
        properties:
         - name: eventType
-          description: Type of event, e.g. one of ${constants.updateEmployeeTypeAdd}, ${constants.updateEmployeeTypeUpdate} or ${constants.updateEmployeeTypeDelete}
-          sampleValue: ${constants.updateEmployeeTypeUpdate}
+          description: Type of event, e.g. one of ${constants.updateEmployeeType.add}, ${constants.updateEmployeeType.update} or ${constants.updateEmployeeType.delete}
+          sampleValue: ${constants.updateEmployeeType.update}
         - name: employee
           objectName: Employee
           description: Employee that was updated

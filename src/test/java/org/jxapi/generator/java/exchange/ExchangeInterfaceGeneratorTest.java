@@ -27,7 +27,7 @@ public class ExchangeInterfaceGeneratorTest {
         + "\n"
         + "/**\n"
         + " * MyTestExchange API<br>\n"
-        + " * A sample Exchange descriptor file. Should be provided config properties: {@link com.foo.bar.gen.MyTestExchangeProperties#API_KEY}, {@link com.foo.bar.gen.MyTestExchangeProperties#API_SECRET}. Author: {@link com.foo.bar.gen.MyTestExchangeConstants#AUTHOR}\n"
+        + " * A sample Exchange descriptor file. Should be provided config properties: {@link com.foo.bar.gen.MyTestExchangeProperties#API_KEY}, {@link com.foo.bar.gen.MyTestExchangeProperties#API_SECRET}. Author: {@link com.foo.bar.gen.MyTestExchangeConstants.Author#FIRST_NAME} {@link com.foo.bar.gen.MyTestExchangeConstants.Author#LAST_NAME}\n"
         + " * @see <a href=\"https://docs.myexchange.com/api\">Reference documentation</a>\n"
         + " */\n"
         + "@Generated(\"org.jxapi.generator.java.exchange.ExchangeInterfaceGenerator\")\n"
@@ -46,10 +46,11 @@ public class ExchangeInterfaceGeneratorTest {
         + "  // API groups\n"
         + "  \n"
         + "  /**\n"
-        + "   * @return The market data API of MyTestExchange. Author: {@link com.foo.bar.gen.MyTestExchangeConstants#AUTHOR}\n"
+        + "   * @return The market data API of MyTestExchange. Author: {@link com.foo.bar.gen.MyTestExchangeConstants#AUTHOR_FULL_NAME}\n"
         + "   */\n"
         + "  MyTestExchangeMarketDataApi getMyTestExchangeMarketDataApi();\n"
-        + "}\n", 
+        + "}\n"
+        + "", 
         exchangeGenerator.generate());
   }
   
@@ -67,7 +68,7 @@ public class ExchangeInterfaceGeneratorTest {
         + "\n"
         + "/**\n"
         + " * MyTestExchange API<br>\n"
-        + " * A sample Exchange descriptor file. Should be provided config properties: {@link com.foo.bar.gen.MyTestExchangeProperties#API_KEY}, {@link com.foo.bar.gen.MyTestExchangeProperties#API_SECRET}. Author: {@link com.foo.bar.gen.MyTestExchangeConstants#AUTHOR}\n"
+        + " * A sample Exchange descriptor file. Should be provided config properties: {@link com.foo.bar.gen.MyTestExchangeProperties#API_KEY}, {@link com.foo.bar.gen.MyTestExchangeProperties#API_SECRET}. Author: {@link com.foo.bar.gen.MyTestExchangeConstants.Author#FIRST_NAME} {@link com.foo.bar.gen.MyTestExchangeConstants.Author#LAST_NAME}\n"
         + " * @see <a href=\"https://docs.myexchange.com/api\">Reference documentation</a>\n"
         + " */\n"
         + "@Generated(\"org.jxapi.generator.java.exchange.ExchangeInterfaceGenerator\")\n"
@@ -82,7 +83,8 @@ public class ExchangeInterfaceGeneratorTest {
         + "   * Version of the 'MyTestExchange' exchange\n"
         + "   */\n"
         + "  String VERSION = \"1.0.0\";\n"
-        + "}\n", 
+        + "}\n"
+        + "", 
         exchangeGenerator.generate());
   }
   

@@ -411,7 +411,18 @@ public class JavaCodeGenUtil {
    * @return URL to HTML Javadoc file
    */
   public static String getClassJavadocUrl(String baseUrl, String javaClassName) {
-    return getClassUrl(baseUrl, javaClassName, ".html");
+    return getClassJavadocUrl(baseUrl, javaClassName, null);
+  }
+  
+  /**
+   * Generates URL to a class javadoc file from a base URL and full class name
+   * @param baseUrl The base URL used as prefix
+   * @param javaClassName Full class name with package prefix
+   * @param innerClassName Name of inner class, e.g. <code>Foo.Bar</code>. Optional, ignored if null or empty.
+   * @return URL to HTML Javadoc file
+   */
+  public static String getClassJavadocUrl(String baseUrl, String javaClassName, String innerClassName) {
+    return getClassUrl(baseUrl, javaClassName, innerClassName, ".html");
   }
   
   /**
@@ -424,17 +435,21 @@ public class JavaCodeGenUtil {
    * getClassUrl("https://docs.oracle.com/javase/8/docs/api/", "java.lang.String", ".html") &rarr; "https://docs.oracle.com/javase/8/docs/api/java/lang/String.html"
    * </pre>
    * 
-   * @param baseUrl       The base URL used as prefix
-   * @param javaClassName Full class name with package prefix
+   * @param baseUrl        The base URL used as prefix
+   * @param javaClassName  Full class name with package prefix
+   * @param innerClassName Name of inner class, e.g. <code>Foo.Bar</code>. Optional, ignored if null or empty.
    * @param suffix        Suffix to append to class name for instance ".html" 
    * @return URL to class file
    */
-  public static String getClassUrl(String baseUrl, String javaClassName, String suffix) {
-    return new StringBuilder()
+  public static String getClassUrl(String baseUrl, String javaClassName, String innerClassName, String suffix) {
+    StringBuilder s = new StringBuilder()
         .append(baseUrl)
-        .append(javaClassName.replace('.', '/'))
-        .append(suffix)
-        .toString();
+        .append(javaClassName.replace('.', '/'));
+    if (StringUtils.isNotBlank(innerClassName)) {
+       s.append('.')
+        .append(innerClassName);
+    }
+     return s.append(suffix).toString();
   }
 
   /**

@@ -287,7 +287,7 @@ public class ExchangeReadmeMdGenerator {
   private String getSourceFileLink(String className, String srcFolderName) {
     String baseUrl = String.format("%s/src/%s/java/", baseSourceUrl, srcFolderName);
         return JavaCodeGenUtil.getHtmlLink(
-                JavaCodeGenUtil.getClassUrl(baseUrl, className, ".java"), 
+                JavaCodeGenUtil.getClassUrl(baseUrl, className, null, ".java"), 
                 JavaCodeGenUtil.getClassNameWithoutPackage(className));
   }
   

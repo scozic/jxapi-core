@@ -28,5 +28,5 @@ apis:
           description: "Employee last name"
           sampleValue: "Doe"
         - name: "profile"
-          description: Employee profile. Can be ${constants.profileRegular} or ${constants.profileAdmin}
-          sampleValue: ${constants.profileRegular}
+          description: Employee profile. Can be ${constants.profile.regular} or ${constants.profile.admin}
+          sampleValue: ${constants.profile.regular}

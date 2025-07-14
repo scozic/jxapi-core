@@ -1729,7 +1729,7 @@ public class ExchangeApiInterfaceImplementationGeneratorTest {
         + "  // REST endpoint method call implementations\n"
         + "  @Override\n"
         + "  public FutureRestResponse<MyTestExchangeMarketDataExchangeInfoResponse> exchangeInfo(MyTestExchangeMarketDataExchangeInfoRequest request) {\n"
-        + "    String urlParameters = EncodingUtil.createUrlQueryParameters(\"symbols\", JsonUtil.pojoToJsonString(request.getSymbols()), \"apiKey\", request.getApiKey(), \"page\", request.getPage());\n"
+        + "    String urlParameters = EncodingUtil.createUrlQueryParameters(\"symbols\", JsonUtil.pojoToJsonString(request.getSymbols()), \"apiKey\", request.getApiKey(), \"author\", request.getAuthor(), \"page\", request.getPage());\n"
         + "    return submitPaginated(HttpRequest.create(EXCHANGE_INFO_REST_API, exchangeInfoHttpUrl + urlParameters, HttpMethod.GET, request, null, 0), exchangeInfoResponseDeserializer, this::exchangeInfo);\n"
         + "  }\n"
         + "  \n"
@@ -1752,7 +1752,8 @@ public class ExchangeApiInterfaceImplementationGeneratorTest {
         + "    return tickerStreamWs.unsubscribe(subscriptionId);\n"
         + "  }\n"
         + "  \n"
-        + "}\n",
+        + "}\n"
+        + "",
         apiInterfaceGenerator.generate());
   }
 }

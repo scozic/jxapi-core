@@ -30,14 +30,14 @@ public class EmployeeV1EmployeeUpdatesMessage implements Pojo<EmployeeV1Employee
   private Employee employee;
   
   /**
-   * @return Type of event, e.g. one of <a href="V1org/jxapi/exchanges/employee/gen/EmployeeConstants.html#UPDATE_EMPLOYEE_TYPE_ADD">updateEmployeeTypeAdd</a>, ${constants.updateEmployeeTypeUpdate} or <a href="V1org/jxapi/exchanges/employee/gen/EmployeeConstants.html#UPDATE_EMPLOYEE_TYPE_DELETE">updateEmployeeTypeDelete</a>
+   * @return Type of event, e.g. one of <a href="V1org/jxapi/exchanges/employee/gen/EmployeeConstants/Profile/UpdateEmployeeType.html#ADD">add</a>, <a href="V1org/jxapi/exchanges/employee/gen/EmployeeConstants/Profile/UpdateEmployeeType.html#UPDATE">update</a> or <a href="V1org/jxapi/exchanges/employee/gen/EmployeeConstants/Profile/UpdateEmployeeType.html#DELETE">delete</a>
    */
   public String getEventType() {
     return eventType;
   }
   
   /**
-   * @param eventType Type of event, e.g. one of <a href="V1org/jxapi/exchanges/employee/gen/EmployeeConstants.html#UPDATE_EMPLOYEE_TYPE_ADD">updateEmployeeTypeAdd</a>, ${constants.updateEmployeeTypeUpdate} or <a href="V1org/jxapi/exchanges/employee/gen/EmployeeConstants.html#UPDATE_EMPLOYEE_TYPE_DELETE">updateEmployeeTypeDelete</a>
+   * @param eventType Type of event, e.g. one of <a href="V1org/jxapi/exchanges/employee/gen/EmployeeConstants/Profile/UpdateEmployeeType.html#ADD">add</a>, <a href="V1org/jxapi/exchanges/employee/gen/EmployeeConstants/Profile/UpdateEmployeeType.html#UPDATE">update</a> or <a href="V1org/jxapi/exchanges/employee/gen/EmployeeConstants/Profile/UpdateEmployeeType.html#DELETE">delete</a>
    */
   public void setEventType(String eventType) {
     this.eventType = eventType;
@@ -111,7 +111,7 @@ public class EmployeeV1EmployeeUpdatesMessage implements Pojo<EmployeeV1Employee
     
     /**
      * Will set the value of <code>eventType</code> field in the builder
-     * @param eventType Type of event, e.g. one of <a href="V1org/jxapi/exchanges/employee/gen/EmployeeConstants.html#UPDATE_EMPLOYEE_TYPE_ADD">updateEmployeeTypeAdd</a>, ${constants.updateEmployeeTypeUpdate} or <a href="V1org/jxapi/exchanges/employee/gen/EmployeeConstants.html#UPDATE_EMPLOYEE_TYPE_DELETE">updateEmployeeTypeDelete</a>
+     * @param eventType Type of event, e.g. one of <a href="V1org/jxapi/exchanges/employee/gen/EmployeeConstants/Profile/UpdateEmployeeType.html#ADD">add</a>, <a href="V1org/jxapi/exchanges/employee/gen/EmployeeConstants/Profile/UpdateEmployeeType.html#UPDATE">update</a> or <a href="V1org/jxapi/exchanges/employee/gen/EmployeeConstants/Profile/UpdateEmployeeType.html#DELETE">delete</a>
      * @return Builder instance
      * @see #setEventType(String)
      */

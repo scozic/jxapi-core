@@ -671,7 +671,7 @@ public class ExchangeGenUtilTest {
     Constant nestedGroup = Constant.createGroup("nestedGroup2", "Nested nested group", List.of(nestedConstant1, nestedConstant2));
     Constant group = Constant.createGroup("myGroup", "A constant group", List.of(nestedGroup));
     
-    exchangeDescriptor.setConstants(List.of(exConstant1, exConstant2, group));
+    exchangeDescriptor.setConstants(List.of(exConstant1, group, exConstant2));
     
 
     
@@ -702,19 +702,36 @@ public class ExchangeGenUtilTest {
     exchangeDescriptor.setBasePackage("com.x.y.z");
     Constant exConstant1 = new Constant();
     exConstant1.setName("exchangeConstant1");
-    exchangeDescriptor.setConstants(List.of(exConstant1));
+    Constant exConstant2 = new Constant();
+    exConstant2.setName("exchangeConstant2");
+    
+    Constant nestedConstant1 = Constant.create("nc1", Type.STRING, "Nested constant 1", "nc1Value");
+    Constant nestedConstant2 = Constant.create("nc2", Type.STRING, "Nested constant 1", "nc1Value");
+    
+    Constant nestedGroup = Constant.createGroup("nestedGroup2", "Nested nested group", List.of(nestedConstant1, nestedConstant2));
+    Constant group = Constant.createGroup("myGroup", "A constant group", List.of(nestedGroup));
+    
+    exchangeDescriptor.setConstants(List.of(exConstant1, group, exConstant2));
+    
+
     
     DefaultConfigProperty exConfigProp1 = new DefaultConfigProperty();
     exConfigProp1.setName("configProp1");
+    DefaultConfigProperty exConfigProp2 = new DefaultConfigProperty();
+    exConfigProp2.setName("configProp2");
     
-    exchangeDescriptor.setProperties(List.of(exConfigProp1));
+    exchangeDescriptor.setProperties(List.of(exConfigProp1, exConfigProp2));
     
     Map<String, Object> replacements = ExchangeGenUtil.getDescriptionReplacements(exchangeDescriptor, "http://example.com/javadoc/");
-    Assert.assertEquals(2, replacements.size());
-    Assert.assertEquals("<a href=\"http://example.com/javadoc/com/x/y/z/TestExchangeConstants.html#EXCHANGE_CONSTANT1\">exchangeConstant1</a>", 
-                        replacements.get("constants.exchangeConstant1"));
-    Assert.assertEquals("<a href=\"http://example.com/javadoc/com/x/y/z/TestExchangeProperties.html#CONFIG_PROP1\">configProp1</a>", 
-                        replacements.get("config.configProp1"));
+    Assert.assertEquals(8, replacements.size());
+    Assert.assertEquals("<a href=\"http://example.com/javadoc/com/x/y/z/TestExchangeConstants.html#EXCHANGE_CONSTANT1\">exchangeConstant1</a>", replacements.get("constants.exchangeConstant1"));
+    Assert.assertEquals("<a href=\"http://example.com/javadoc/com/x/y/z/TestExchangeConstants.html#EXCHANGE_CONSTANT2\">exchangeConstant2</a>", replacements.get("constants.exchangeConstant2"));
+    Assert.assertEquals("<a href=\"http://example.com/javadoc/com/x/y/z/TestExchangeConstants.MyGroup.html\">myGroup</a>", replacements.get("constants.myGroup"));
+    Assert.assertEquals("<a href=\"http://example.com/javadoc/com/x/y/z/TestExchangeConstants.MyGroup.NestedGroup2.html\">nestedGroup2</a>", replacements.get("constants.myGroup.nestedGroup2"));
+    Assert.assertEquals("<a href=\"http://example.com/javadoc/com/x/y/z/TestExchangeConstants.MyGroup.NestedGroup2.html#NC1\">nc1</a>", replacements.get("constants.myGroup.nestedGroup2.nc1"));
+    Assert.assertEquals("<a href=\"http://example.com/javadoc/com/x/y/z/TestExchangeConstants.MyGroup.NestedGroup2.html#NC2\">nc2</a>", replacements.get("constants.myGroup.nestedGroup2.nc2"));
+    Assert.assertEquals("<a href=\"http://example.com/javadoc/com/x/y/z/TestExchangeProperties.html#CONFIG_PROP1\">configProp1</a>", replacements.get("config.configProp1"));
+    Assert.assertEquals("<a href=\"http://example.com/javadoc/com/x/y/z/TestExchangeProperties.html#CONFIG_PROP2\">configProp2</a>", replacements.get("config.configProp2"));
   }
   
   @Test

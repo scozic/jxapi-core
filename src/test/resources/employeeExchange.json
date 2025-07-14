@@ -15,11 +15,15 @@
     "constants": [
         {"name": "defaultPageSize", "description": "Default page size for paginated requests", "value": 10},
         {"name": "maxPageSize", "description": "Maximum page size for paginated requests", "value": 100},
-        {"name": "profileRegular", "description": "Regular employee profile", "value": "REGULAR"},
-        {"name": "profileAdmin","description": "Admin employee profile", "value": "ADMIN"},
-        {"name": "updateEmployeeTypeAdd", "description": "Value of eventType field in WS message for new employee added event", "value": "ADD"},                  
-        {"name": "updateEmployeeTypeUpate", "description": "Value of eventType field in WS message for update of an existing employee event", "value": "UPDATE"},
-        {"name": "updateEmployeeTypeDelete", "description": "Value of eventType field in WS message for update of an existing employee event", "value": "DELETE"}
+        {"name": "profile", "description": "Employee profile types", "constants": [
+            {"name": "regular", "description": "Regular employee profile", "value": "REGULAR"},
+            {"name": "admin", "description": "Admin employee profile", "value": "ADMIN"}
+        ]},
+        {"name": "updateEmployeeType", "description": "Value of eventType field in WS message", "constants": [
+            {"name": "add", "description": "Value of eventType field in WS message for new employee added event", "value": "ADD"},                  
+            {"name": "update", "description": "Value of eventType field in WS message for update of an existing employee event", "value": "UPDATE"},
+            {"name": "delete", "description": "Value of eventType field in WS message for update of an existing employee event", "value": "DELETE"}
+        ]}
     ],
     "apis": [
         {
@@ -45,7 +49,7 @@
                             {"name": "id", "type": "INT", "description": "Employee ID", "sampleValue": "${config.demoEmployeeId}"},
                             {"name": "firstName", "description": "Employee first name", "sampleValue": "John"},
                             {"name": "lastName", "description": "Employee last name", "sampleValue": "Doe"},
-                            {"name": "profile", "description": "Employee profile. Can be ${constants.profileRegular} or ${constants.profileAdmin}", "sampleValue": "${constants.profileRegular}"}
+                            {"name": "profile", "description": "Employee profile. Can be ${constants.profile.regular} or ${constants.profile.admin}", "sampleValue": "${constants.profile.regular}"}
                         ]
                     }
                 },
@@ -127,7 +131,7 @@
                     "message": {
                         "description": "Employee update message",
                         "properties": [
-                            {"name": "eventType", "description": "Type of event, e.g. one of ${constants.updateEmployeeTypeAdd}, ${constants.updateEmployeeTypeUpdate} or ${constants.updateEmployeeTypeDelete}", "sampleValue": "${constants.updateEmployeeTypeUpdate}"},
+                            {"name": "eventType", "description": "Type of event, e.g. one of ${constants.updateEmployeeType.add}, ${constants.updateEmployeeType.update} or ${constants.updateEmployeeType.delete}", "sampleValue": "${constants.updateEmployeeType.update}"},
                             {"name": "employee", "description": "Employee that was updated", "objectName": "Employee", "sampleValue": "John"}
                         ]
                     },

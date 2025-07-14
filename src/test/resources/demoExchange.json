@@ -15,6 +15,16 @@
 	"constants": [
 		{"name": "pingMessage", "type":"STRING", "description": "Ping message", "value": "Ping!"},
 		{"name": "pongMessage", "type":"STRING", "description": "Pong message", "value": "Pong!"},
+		{"name": "defaultAge", "type":"INT", "description": "Default age", "value": 18},
+		{
+			"name": "user",
+			"description": "User data",
+			"constants": [
+				{"name": "id", "type":"STRING", "description": "User ID", "value": "user1"},
+				{"name": "age", "type":"INT", "description": "User age", "value": "${constants.defaultAge}"}
+			]
+			
+		},
 		{"name": "websocketLoginMessage", "type":"STRING", "description": "Message to send to websocket server after connecting to complete handshake", "value": "Hello!"},
 		{"name": "websocketLogoutMessage", "type":"STRING", "description": "Message to send to websocket server before disconnecting", "value": "Bye!"},
 		{"name": "responseCodeOk", "type":"INT",  "description": "Possible value in <i>responseCode</i> field of rest request response: Successful response", "value": 200},
@@ -81,7 +91,7 @@
 					"url": "/postInt",
 					"request": {
 						"type": "INT",
-						"sampleValue": 12345
+						"sampleValue": "${constants.user.age}"
 					},
 					"response": {
 						"objectName": "GenericResponse",

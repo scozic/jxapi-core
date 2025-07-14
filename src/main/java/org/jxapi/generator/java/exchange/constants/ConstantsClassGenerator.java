@@ -74,6 +74,7 @@ public class ConstantsClassGenerator extends JavaTypeGenerator {
         JavaCodeGenUtil.firstLetterToUpperCase(constant.getName()), 
         constant.getConstants(), 
         docPlaceHolderResolver);
+      groupGenerator.setTypeDeclaration("public static class");
       groupGenerator.setDescription(constant.getDescription());
       groupGenerator.setGeneratePackageAndImports(false);
       groupGenerator.setConstantValuePlaceHolderResolver(constantValuePlaceHolderResolver);

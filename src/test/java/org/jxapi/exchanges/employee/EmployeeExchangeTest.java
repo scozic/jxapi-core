@@ -296,7 +296,7 @@ public class EmployeeExchangeTest {
         .id(1)
         .firstName("John")
         .lastName("Doe")
-        .profile(EmployeeConstants.PROFILE_ADMIN)
+        .profile(EmployeeConstants.Profile.ADMIN)
         .build();
   }
   
@@ -305,7 +305,7 @@ public class EmployeeExchangeTest {
       .id(2)
       .firstName("Lucy")
       .lastName("Smith")
-      .profile(EmployeeConstants.PROFILE_REGULAR)
+      .profile(EmployeeConstants.Profile.REGULAR)
       .build();
   }
   
@@ -314,7 +314,7 @@ public class EmployeeExchangeTest {
       .id(3)
       .firstName("Bob")
       .lastName("Johnson")
-      .profile(EmployeeConstants.PROFILE_REGULAR)
+      .profile(EmployeeConstants.Profile.REGULAR)
       .build();
   }
   
