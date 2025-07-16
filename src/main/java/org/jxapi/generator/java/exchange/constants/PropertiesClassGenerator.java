@@ -6,14 +6,15 @@ import java.util.Optional;
 import java.util.Properties;
 import java.util.stream.Collectors;
 
-import org.jxapi.exchange.descriptor.ConfigProperty;
-import org.jxapi.exchange.descriptor.DefaultConfigProperty;
+import org.jxapi.exchange.descriptor.ConfigPropertyDescriptor;
 import org.jxapi.exchange.descriptor.ExchangeDescriptor;
 import org.jxapi.exchange.descriptor.Type;
 import org.jxapi.generator.html.HtmlGenerationUtil;
 import org.jxapi.generator.java.JavaCodeGenUtil;
 import org.jxapi.generator.java.JavaTypeGenerator;
 import org.jxapi.generator.java.exchange.ExchangeGenUtil;
+import org.jxapi.util.CollectionUtil;
+import org.jxapi.util.ConfigProperty;
 import org.jxapi.util.PlaceHolderResolver;
 import org.jxapi.util.PropertiesUtil;
 
@@ -59,7 +60,7 @@ import org.jxapi.util.PropertiesUtil;
 public class PropertiesClassGenerator extends JavaTypeGenerator {
   
   private final String exchangeName;
-  private final List<DefaultConfigProperty> properties;
+  private final List<ConfigPropertyDescriptor> properties;
   private final PlaceHolderResolver docPlaceHolderResolver;
   private final PlaceHolderResolver sampleValuePlaceHolderResolver;
 
@@ -75,7 +76,7 @@ public class PropertiesClassGenerator extends JavaTypeGenerator {
    */
   public PropertiesClassGenerator(String fullClassName, 
                                   ExchangeDescriptor exchange, 
-                                  List<DefaultConfigProperty> properties) {
+                                  List<ConfigPropertyDescriptor> properties) {
     super(fullClassName);
     this.exchangeName = exchange.getId();
     this.properties = properties;
@@ -97,20 +98,28 @@ public class PropertiesClassGenerator extends JavaTypeGenerator {
       
     List<String> columns = List.of("Name", "Type", "Description", "Default value");
     List<List<String>> rows = new ArrayList<>();
-    for (ConfigProperty p : properties) {
-      String pName = String.valueOf(p.getName());
-      String pType = String.valueOf(p.getType());
-      String pDesc = Optional.ofNullable(p.getDescription()).orElse("");
-      pDesc = docPlaceHolderResolver.resolve(pDesc);
-      String pDef = Optional.ofNullable(p.getDefaultValue()).orElse("").toString();
-      pDef = docPlaceHolderResolver.resolve(pDef);
-      rows.add(List.of(pName, pType, pDesc, pDef));
-    }
+    addDescriptionRows(rows, "", properties);
     sb.append(HtmlGenerationUtil.generateTable(exchangeName + " properties", columns, rows))
       .append("<br>\nExposes helper methods are available to retrieve value of each of these properties ")
       .append("with right type, returning default value if not present in properties.")
       .append("\n@see ConfigProperty");
     return sb.toString();
+  }
+  
+  private void addDescriptionRows(List<List<String>> rows, String pfx, List<ConfigPropertyDescriptor> properties) {
+    for (ConfigPropertyDescriptor p : CollectionUtil.emptyIfNull(properties)) {
+      String pName = pfx + String.valueOf(p.getName());
+      if (p.isGroup()) {
+        addDescriptionRows(rows, pName + ".", p.getProperties());
+      } else {
+        String pType = String.valueOf(p.getType());
+        String pDesc = Optional.ofNullable(p.getDescription()).orElse("");
+        pDesc = docPlaceHolderResolver.resolve(pDesc);
+        String pDef = Optional.ofNullable(p.getDefaultValue()).orElse("").toString();
+        pDef = docPlaceHolderResolver.resolve(pDef);
+        rows.add(List.of(pName, pType, pDesc, pDef));
+      }
+    }
   }
 
   @Override
@@ -143,7 +152,7 @@ public class PropertiesClassGenerator extends JavaTypeGenerator {
       .append(");");
   }
 
-  private void generatePropertyGetterMethod(ConfigProperty property) {
+  private void generatePropertyGetterMethod(ConfigPropertyDescriptor property) {
     StringBuilder sb = new StringBuilder()
         .append("\n");
     String name = property.getName();
@@ -193,7 +202,7 @@ public class PropertiesClassGenerator extends JavaTypeGenerator {
     appendToBody(sb.toString());
   }
   
-  private String getPropertiesUtilGetPropertyMethodName(ConfigProperty property) {
+  private String getPropertiesUtilGetPropertyMethodName(ConfigPropertyDescriptor property) {
     switch (property.getType().getCanonicalType()) {
     case BIGDECIMAL:
       return "getBigDecimal";

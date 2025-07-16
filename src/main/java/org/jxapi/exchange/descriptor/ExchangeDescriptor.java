@@ -8,6 +8,7 @@ import org.jxapi.exchange.ExchangeHookFactory;
 import org.jxapi.netutils.rest.HttpRequestExecutorFactory;
 import org.jxapi.netutils.rest.HttpRequestInterceptorFactory;
 import org.jxapi.netutils.rest.ratelimits.RateLimitRule;
+import org.jxapi.util.DefaultConfigProperty;
 import org.jxapi.util.EncodingUtil;
 
 /**
@@ -124,9 +125,9 @@ public class ExchangeDescriptor {
 
   private List<Constant> constants;
 
-  private List<DefaultConfigProperty> properties;
+  private List<ConfigPropertyDescriptor> properties;
   
-  private List<DefaultConfigProperty> demoProperties;
+  private List<ConfigPropertyDescriptor> demoProperties;
 
   private String httpRequestInterceptorFactory;
 
@@ -280,7 +281,7 @@ public class ExchangeDescriptor {
    *         for instance API keys, secret keys, etc.
    * @see DefaultConfigProperty
    */
-  public List<DefaultConfigProperty> getProperties() {
+  public List<ConfigPropertyDescriptor> getProperties() {
     return properties;
   }
 
@@ -289,7 +290,7 @@ public class ExchangeDescriptor {
    *                   wrapper, for instance API keys, secret keys, etc.
    * @see DefaultConfigProperty
    */
-  public void setProperties(List<DefaultConfigProperty> properties) {
+  public void setProperties(List<ConfigPropertyDescriptor> properties) {
     this.properties = properties;
   }
 
@@ -467,7 +468,7 @@ public class ExchangeDescriptor {
    * @return List of configuration properties that are relevant for demo snippets.
    * @see DefaultConfigProperty
    */
-  public List<DefaultConfigProperty> getDemoProperties() {
+  public List<ConfigPropertyDescriptor> getDemoProperties() {
     return demoProperties;
   }
 
@@ -479,7 +480,7 @@ public class ExchangeDescriptor {
    *                       demo snippets.
    * @see DefaultConfigProperty
    */
-  public void setDemoProperties(List<DefaultConfigProperty> demoProperties) {
+  public void setDemoProperties(List<ConfigPropertyDescriptor> demoProperties) {
     this.demoProperties = demoProperties;
   }
 

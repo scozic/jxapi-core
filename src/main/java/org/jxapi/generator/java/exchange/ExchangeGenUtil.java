@@ -11,7 +11,7 @@ import java.util.regex.Pattern;
 
 import org.apache.commons.lang3.StringUtils;
 import org.jxapi.exchange.descriptor.CanonicalType;
-import org.jxapi.exchange.descriptor.ConfigProperty;
+import org.jxapi.exchange.descriptor.ConfigPropertyDescriptor;
 import org.jxapi.exchange.descriptor.Constant;
 import org.jxapi.exchange.descriptor.ExchangeApiDescriptor;
 import org.jxapi.exchange.descriptor.ExchangeDescriptor;
@@ -29,6 +29,7 @@ import org.jxapi.netutils.deserialization.json.field.MapJsonFieldDeserializer;
 import org.jxapi.netutils.deserialization.json.field.StringJsonFieldDeserializer;
 import org.jxapi.netutils.rest.ratelimits.RateLimitRule;
 import org.jxapi.util.CollectionUtil;
+import org.jxapi.util.ConfigProperty;
 import org.jxapi.util.EncodingUtil;
 import org.jxapi.util.PlaceHolderResolver;
 import org.jxapi.util.PropertiesUtil;
@@ -607,12 +608,12 @@ public class ExchangeGenUtil {
    */
   public static String getClassNameForConfigProperty(String configPropertyName, 
                                                      ExchangeDescriptor descriptor) {
-    for (ConfigProperty prop : CollectionUtil.emptyIfNull(descriptor.getProperties())) {
+    for (ConfigPropertyDescriptor prop : CollectionUtil.emptyIfNull(descriptor.getProperties())) {
       if (configPropertyName.equals(prop.getName())) {
         return getExchangePropertiesInterfaceName(descriptor);
       }
     }
-    for (ConfigProperty prop : CollectionUtil.emptyIfNull(descriptor.getDemoProperties())) {
+    for (ConfigPropertyDescriptor prop : CollectionUtil.emptyIfNull(descriptor.getDemoProperties())) {
       if (configPropertyName.equals(prop.getName())) {
         return getExchangeDemoPropertiesInterfaceName(descriptor);
       }
@@ -756,7 +757,7 @@ public class ExchangeGenUtil {
         baseHtmlDocUrl);
     
     // Add exchange configuration properties
-    for (ConfigProperty prop : CollectionUtil.emptyIfNull(exchangeDescriptor.getProperties())) {
+    for (ConfigPropertyDescriptor prop : CollectionUtil.emptyIfNull(exchangeDescriptor.getProperties())) {
       String pname = prop.getName();
       String cls = getExchangePropertiesInterfaceName(exchangeDescriptor);
       replacements.put(CONFIG_PLACEHOLDER_PREFIX + prop.getName(), getDocLink(cls, null, pname, baseHtmlDocUrl));

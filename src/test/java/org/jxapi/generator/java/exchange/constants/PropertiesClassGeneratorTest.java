@@ -4,8 +4,8 @@ import java.util.List;
 
 import org.junit.Assert;
 import org.junit.Test;
+import org.jxapi.exchange.descriptor.ConfigPropertyDescriptor;
 import org.jxapi.exchange.descriptor.Constant;
-import org.jxapi.exchange.descriptor.DefaultConfigProperty;
 import org.jxapi.exchange.descriptor.ExchangeDescriptor;
 import org.jxapi.exchange.descriptor.Type;
 
@@ -16,12 +16,12 @@ public class PropertiesClassGeneratorTest {
 
     @Test
     public void testGenerate() {
-        DefaultConfigProperty stringProp = DefaultConfigProperty.create("myString", Type.STRING, "My String property, for instance ${constants.stringPropDefaultValue}", "${constants.stringPropDefaultValue}");
-        DefaultConfigProperty stringPropWithNoDescriptionNoDefaultValue = DefaultConfigProperty.create("myStringWithNoDescriptionNoDefaultValue", Type.STRING, null, null);
-        DefaultConfigProperty intProp = DefaultConfigProperty.create("myInt", Type.INT, "My int property", "${constants.intPropDefaultValue}");
-        DefaultConfigProperty longProp = DefaultConfigProperty.create("myLong", Type.LONG, "My long property", 1234567890123456L);
-        DefaultConfigProperty boolProp = DefaultConfigProperty.create("myBool", Type.BOOLEAN, "My boolean property", true);
-        DefaultConfigProperty bigDecimalProp = DefaultConfigProperty.create("myBigDecimal", Type.BIGDECIMAL, "My BigDecimal property", 1.2345);
+        ConfigPropertyDescriptor stringProp = ConfigPropertyDescriptor.create("myString", Type.STRING, "My String property, for instance ${constants.stringPropDefaultValue}", "${constants.stringPropDefaultValue}");
+        ConfigPropertyDescriptor stringPropWithNoDescriptionNoDefaultValue = ConfigPropertyDescriptor.create("myStringWithNoDescriptionNoDefaultValue", Type.STRING, null, null);
+        ConfigPropertyDescriptor intProp = ConfigPropertyDescriptor.create("myInt", Type.INT, "My int property", "${constants.intPropDefaultValue}");
+        ConfigPropertyDescriptor longProp = ConfigPropertyDescriptor.create("myLong", Type.LONG, "My long property", 1234567890123456L);
+        ConfigPropertyDescriptor boolProp = ConfigPropertyDescriptor.create("myBool", Type.BOOLEAN, "My boolean property", true);
+        ConfigPropertyDescriptor bigDecimalProp = ConfigPropertyDescriptor.create("myBigDecimal", Type.BIGDECIMAL, "My BigDecimal property", 1.2345);
         ExchangeDescriptor exchangeDescriptor = new ExchangeDescriptor();
         exchangeDescriptor.setId("myExchange");
         exchangeDescriptor.setBasePackage("com.x.y.exchange");
@@ -44,9 +44,9 @@ public class PropertiesClassGeneratorTest {
             + "\n"
             + "import com.x.y.exchange.MyExchangeConstants;\n"
             + "import javax.annotation.processing.Generated;\n"
-            + "import org.jxapi.exchange.descriptor.ConfigProperty;\n"
-            + "import org.jxapi.exchange.descriptor.DefaultConfigProperty;\n"
             + "import org.jxapi.exchange.descriptor.Type;\n"
+            + "import org.jxapi.util.ConfigProperty;\n"
+            + "import org.jxapi.util.DefaultConfigProperty;\n"
             + "import org.jxapi.util.EncodingUtil;\n"
             + "import org.jxapi.util.PropertiesUtil;\n"
             + "\n"
@@ -226,7 +226,7 @@ public class PropertiesClassGeneratorTest {
           + "import java.util.List;\n"
           + "\n"
           + "import javax.annotation.processing.Generated;\n"
-          + "import org.jxapi.exchange.descriptor.ConfigProperty;\n"
+          + "import org.jxapi.util.ConfigProperty;\n"
           + "\n"
           + "/**\n"
           + " * Configurable properties for <strong>myExchange</strong> exchange:<br>\n"

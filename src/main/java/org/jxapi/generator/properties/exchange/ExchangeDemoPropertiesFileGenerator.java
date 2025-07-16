@@ -4,11 +4,14 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.jxapi.exchange.CommonConfigProperties;
-import org.jxapi.exchange.descriptor.ConfigProperty;
+import org.jxapi.exchange.descriptor.ConfigPropertyDescriptor;
 import org.jxapi.generator.java.JavaCodeGenUtil;
+import org.jxapi.generator.java.exchange.constants.PropertiesGenUtil;
 import org.jxapi.util.CollectionUtil;
+import org.jxapi.util.ConfigProperty;
 import org.jxapi.util.DemoProperties;
 
 /**
@@ -44,8 +47,8 @@ public class ExchangeDemoPropertiesFileGenerator {
   }
 
   private String exchangeId;
-  private List<ConfigProperty> exchangeProperties;
-  private List<ConfigProperty> demoProperties;
+  private List<ConfigPropertyDescriptor> exchangeProperties;
+  private List<ConfigPropertyDescriptor> demoProperties;
   
   /**
    * Constructor
@@ -60,7 +63,7 @@ public class ExchangeDemoPropertiesFileGenerator {
    * @param exchangeId         the exchange id
    * @param exchangeProperties the exchange configuration properties
    */
-  public ExchangeDemoPropertiesFileGenerator(String exchangeId, List<ConfigProperty> exchangeProperties, List<ConfigProperty> demoProperties) {
+  public ExchangeDemoPropertiesFileGenerator(String exchangeId, List<ConfigPropertyDescriptor> exchangeProperties, List<ConfigPropertyDescriptor> demoProperties) {
     this.exchangeId = exchangeId;
     this.exchangeProperties = exchangeProperties;
     this.demoProperties = demoProperties;
@@ -83,14 +86,14 @@ public class ExchangeDemoPropertiesFileGenerator {
   /**
    * @return the exchange configuration properties
    */
-  public List<ConfigProperty> getExchangeProperties() {
+  public List<ConfigPropertyDescriptor> getExchangeProperties() {
     return exchangeProperties;
   }
 
   /**
    * @param exchangeProperties the exchange configuration properties
    */
-  public void setExchangeProperties(List<ConfigProperty> exchangeProperties) {
+  public void setExchangeProperties(List<ConfigPropertyDescriptor> exchangeProperties) {
     this.exchangeProperties = exchangeProperties;
   }
 
@@ -103,20 +106,24 @@ public class ExchangeDemoPropertiesFileGenerator {
     StringBuilder s = new StringBuilder();
     s.append(generatePropertiesFileComment(String.format(DESCRIPTION, exchangeId)))
      .append(generateCommentedOutproperties(String.format("%s specific configuration properties", exchangeId), exchangeProperties))
-     .append(generateCommentedOutproperties("Common configuration properties", CommonConfigProperties.ALL))
-     .append(generateCommentedOutproperties("Demo REST/WEBSOCKET snippets common configuration properties", DemoProperties.ALL))
+     .append(generateCommentedOutproperties("Common configuration properties", convertToConfigPropertyDescriptors(CommonConfigProperties.ALL)))
+     .append(generateCommentedOutproperties("Demo REST/WEBSOCKET snippets common configuration properties", convertToConfigPropertyDescriptors(DemoProperties.ALL)))
      .append(generateCommentedOutproperties("Demo REST/WEBSOCKET specific configuration properties", demoProperties));
     return s.toString();
   }
   
-  private String generateCommentedOutproperties(String description, List<ConfigProperty> properties) {
+  private static List<ConfigPropertyDescriptor> convertToConfigPropertyDescriptors(List<ConfigProperty> properties) {
+    return properties.stream().map(PropertiesGenUtil::asConfigPropertyDescriptor).collect(Collectors.toList());
+  }
+  
+  private String generateCommentedOutproperties(String description, List<ConfigPropertyDescriptor> properties) {
     if (CollectionUtil.isEmpty(properties)) {
       return "";
     }
     StringBuilder s = new StringBuilder()
       .append("\n\n")
       .append(generatePropertiesFileComment(description));
-    for (ConfigProperty p: properties) {
+    for (ConfigPropertyDescriptor p: properties) {
       s.append("\n");
       String pdesc = p.getDescription();
       if (!"".equals(pdesc)) {
@@ -143,11 +150,11 @@ public class ExchangeDemoPropertiesFileGenerator {
     Files.writeString(propertiesFile, generate());
   }
 
-  public List<ConfigProperty> getDemoProperties() {
+  public List<ConfigPropertyDescriptor> getDemoProperties() {
     return demoProperties;
   }
 
-  public void setDemoProperties(List<ConfigProperty> demoProperties) {
+  public void setDemoProperties(List<ConfigPropertyDescriptor> demoProperties) {
     this.demoProperties = demoProperties;
   }
   

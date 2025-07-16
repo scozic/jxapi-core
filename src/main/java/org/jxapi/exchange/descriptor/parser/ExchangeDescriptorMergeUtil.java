@@ -8,13 +8,14 @@ import java.util.Optional;
 import java.util.function.Function;
 
 import org.jxapi.exchange.descriptor.Constant;
-import org.jxapi.exchange.descriptor.DefaultConfigProperty;
 import org.jxapi.exchange.descriptor.ExchangeApiDescriptor;
 import org.jxapi.exchange.descriptor.ExchangeDescriptor;
 import org.jxapi.exchange.descriptor.RestEndpointDescriptor;
 import org.jxapi.exchange.descriptor.WebsocketEndpointDescriptor;
 import org.jxapi.netutils.rest.ratelimits.RateLimitRule;
 import org.jxapi.util.CollectionUtil;
+import org.jxapi.util.DefaultConfigProperty;
+import org.jxapi.exchange.descriptor.ConfigPropertyDescriptor;
 
 /**
  * Helper methods around exchange descriptor merging.
@@ -139,8 +140,8 @@ public class ExchangeDescriptorMergeUtil {
     res.setAfterInitHookFactory(merge("afterInitHookFactory of exchange " + exchangeName, e1.getAfterInitHookFactory(), e2.getAfterInitHookFactory()));
     res.setConstants(mergeConstants(e1.getConstants(), e2.getConstants()));
     res.setRateLimits(mergeLists("rateLimits of exchange " + exchangeName, e1.getRateLimits(), e2.getRateLimits(), RateLimitRule::getId));
-    res.setProperties(mergeLists("properties of exchange " + exchangeName, e1.getProperties(), e2.getProperties(), DefaultConfigProperty::getName));
-    res.setDemoProperties(mergeLists("demoProperties of exchange " + exchangeName, e1.getDemoProperties(), e2.getDemoProperties(), DefaultConfigProperty::getName));
+    res.setProperties(mergeLists("properties of exchange " + exchangeName, e1.getProperties(), e2.getProperties(), ConfigPropertyDescriptor::getName));
+    res.setDemoProperties(mergeLists("demoProperties of exchange " + exchangeName, e1.getDemoProperties(), e2.getDemoProperties(), ConfigPropertyDescriptor::getName));
     res.setApis(mergeExchangeApiDescriptorLists(e1.getApis(), e2.getApis()));
     return res;
   }

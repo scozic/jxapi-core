@@ -6,9 +6,8 @@ import java.util.function.Function;
 
 import org.junit.Assert;
 import org.junit.Test;
-
+import org.jxapi.exchange.descriptor.ConfigPropertyDescriptor;
 import org.jxapi.exchange.descriptor.Constant;
-import org.jxapi.exchange.descriptor.DefaultConfigProperty;
 import org.jxapi.exchange.descriptor.ExchangeApiDescriptor;
 import org.jxapi.exchange.descriptor.ExchangeDescriptor;
 import org.jxapi.exchange.descriptor.RestEndpointDescriptor;
@@ -245,10 +244,10 @@ public class ExchangeDescriptorMergeUtilTest {
     RateLimitRule rule1 = new RateLimitRule();
     rule1.setId("rule1");
     ex1.setRateLimits(List.of(rule1));
-    DefaultConfigProperty prop1 = new DefaultConfigProperty();
+    ConfigPropertyDescriptor prop1 = new ConfigPropertyDescriptor();
     prop1.setName("prop1");
     ex1.setProperties(List.of(prop1));
-    DefaultConfigProperty demoProp1 = new DefaultConfigProperty();
+    ConfigPropertyDescriptor demoProp1 = new ConfigPropertyDescriptor();
     demoProp1.setName("demoProp1");
     ex1.setDemoProperties(List.of(demoProp1));
     
@@ -272,10 +271,10 @@ public class ExchangeDescriptorMergeUtilTest {
     RateLimitRule rule2 = new RateLimitRule();
     rule2.setId("rule2");
     ex2.setRateLimits(List.of(rule2));
-    DefaultConfigProperty prop2 = new DefaultConfigProperty();
+    ConfigPropertyDescriptor prop2 = new ConfigPropertyDescriptor();
     prop2.setName("prop2");
     ex2.setProperties(List.of(prop2));
-    DefaultConfigProperty demoProp2 = new DefaultConfigProperty();
+    ConfigPropertyDescriptor demoProp2 = new ConfigPropertyDescriptor();
     demoProp2.setName("demoProp2");
     ex2.setDemoProperties(List.of(demoProp2));
     

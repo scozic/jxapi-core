@@ -2,13 +2,14 @@ package org.jxapi.generator.java.exchange.constants;
 
 import java.util.Optional;
 
-import org.jxapi.exchange.descriptor.ConfigProperty;
+import org.jxapi.exchange.descriptor.ConfigPropertyDescriptor;
 import org.jxapi.exchange.descriptor.Constant;
-import org.jxapi.exchange.descriptor.DefaultConfigProperty;
 import org.jxapi.exchange.descriptor.Type;
 import org.jxapi.generator.java.Imports;
 import org.jxapi.generator.java.JavaCodeGenUtil;
 import org.jxapi.generator.java.exchange.ExchangeGenUtil;
+import org.jxapi.util.ConfigProperty;
+import org.jxapi.util.DefaultConfigProperty;
 import org.jxapi.util.PlaceHolderResolver;
 
 /**
@@ -72,7 +73,7 @@ public class ConstantsGenerationUtil {
    * @param property the property to generate the property key property name for, for instance 'myProperty'.
    * @return the property key property name, for instance 'myPropertyProperty'
    */
-  public static String getPropertyKeyPropertyName(ConfigProperty property) {
+  public static String getPropertyKeyPropertyName(ConfigPropertyDescriptor property) {
     return  property.getName();
   }
   
@@ -98,7 +99,11 @@ public class ConstantsGenerationUtil {
    * @param docPlaceHolderResolver the resolver for placeholders in the property's description
    * @return the Java code for the property declaration
    */
-  public static String getPropertyValueDeclaration(ConfigProperty property, Imports imports, PlaceHolderResolver docPlaceHolderResolver, PlaceHolderResolver sampleValuePlaceHolderResolver) {
+  public static String getPropertyValueDeclaration(
+      ConfigPropertyDescriptor property, 
+      Imports imports, 
+      PlaceHolderResolver docPlaceHolderResolver, 
+      PlaceHolderResolver sampleValuePlaceHolderResolver) {
     imports.add(DefaultConfigProperty.class);
     imports.add(Type.class);
     imports.add(ConfigProperty.class);

@@ -10,10 +10,7 @@ import java.util.Optional;
 import java.util.concurrent.atomic.AtomicReference;
 
 import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import org.jxapi.exchange.descriptor.ConfigProperty;
+import org.jxapi.exchange.descriptor.ConfigPropertyDescriptor;
 import org.jxapi.exchange.descriptor.ExchangeApiDescriptor;
 import org.jxapi.exchange.descriptor.ExchangeDescriptor;
 import org.jxapi.exchange.descriptor.parser.ExchangeDescriptorParser;
@@ -24,6 +21,8 @@ import org.jxapi.generator.md.exchange.ExchangeReadmeMdGenerator;
 import org.jxapi.generator.properties.exchange.ExchangeDemoPropertiesFileGenerator;
 import org.jxapi.netutils.rest.ratelimits.RateLimitManager;
 import org.jxapi.util.DemoUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Java main class that performs generation of exchange APIs for every file
@@ -236,9 +235,9 @@ public class ExchangeGeneratorMain {
     Files.createDirectories(resourcesFolder);
     Path filePath = resourcesFolder.resolve(Paths.get(fileName));
     log.info("Generating demo exchange properties template file:{}", filePath);
-    List<ConfigProperty> configProperties = new ArrayList<>();
+    List<ConfigPropertyDescriptor> configProperties = new ArrayList<>();
     configProperties.addAll(Optional.ofNullable(exchangeDescriptor.getProperties()).orElse(List.of()));
-    List<ConfigProperty> demoProperties = new ArrayList<>();
+    List<ConfigPropertyDescriptor> demoProperties = new ArrayList<>();
     demoProperties.addAll(Optional.ofNullable(exchangeDescriptor.getDemoProperties()).orElse(List.of()));
     new ExchangeDemoPropertiesFileGenerator(exchangeDescriptor.getId(), 
                         configProperties, 

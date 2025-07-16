@@ -7,8 +7,8 @@ import java.util.Map;
 
 import org.junit.Assert;
 import org.junit.Test;
+import org.jxapi.exchange.descriptor.ConfigPropertyDescriptor;
 import org.jxapi.exchange.descriptor.Constant;
-import org.jxapi.exchange.descriptor.DefaultConfigProperty;
 import org.jxapi.exchange.descriptor.ExchangeApiDescriptor;
 import org.jxapi.exchange.descriptor.ExchangeDescriptor;
 import org.jxapi.exchange.descriptor.Field;
@@ -546,7 +546,7 @@ public class ExchangeGenUtilTest {
     ExchangeDescriptor exchangeDescriptor = new ExchangeDescriptor();
     exchangeDescriptor.setId("Test");
     exchangeDescriptor.setBasePackage("com.x.y.z");
-    DefaultConfigProperty configProperty = new DefaultConfigProperty();
+    ConfigPropertyDescriptor configProperty = new ConfigPropertyDescriptor();
     configProperty.setName("myProp");
     exchangeDescriptor.setProperties(List.of(configProperty));
     Assert.assertNull(ExchangeGenUtil.getClassNameForConfigProperty("foo", exchangeDescriptor));
@@ -640,7 +640,7 @@ public class ExchangeGenUtilTest {
     ExchangeDescriptor exchangeDescriptor = new ExchangeDescriptor();
     exchangeDescriptor.setId("MyExchange");
     exchangeDescriptor.setBasePackage("com.x.y.z");
-    DefaultConfigProperty configProperty = new DefaultConfigProperty();
+    ConfigPropertyDescriptor configProperty = new ConfigPropertyDescriptor();
     configProperty.setName("foo");
     exchangeDescriptor.setProperties(List.of(configProperty));
     Imports imports = new Imports();
@@ -675,9 +675,9 @@ public class ExchangeGenUtilTest {
     
 
     
-    DefaultConfigProperty exConfigProp1 = new DefaultConfigProperty();
+    ConfigPropertyDescriptor exConfigProp1 = new ConfigPropertyDescriptor();
     exConfigProp1.setName("configProp1");
-    DefaultConfigProperty exConfigProp2 = new DefaultConfigProperty();
+    ConfigPropertyDescriptor exConfigProp2 = new ConfigPropertyDescriptor();
     exConfigProp2.setName("configProp2");
     
     exchangeDescriptor.setProperties(List.of(exConfigProp1, exConfigProp2));
@@ -715,9 +715,9 @@ public class ExchangeGenUtilTest {
     
 
     
-    DefaultConfigProperty exConfigProp1 = new DefaultConfigProperty();
+    ConfigPropertyDescriptor exConfigProp1 = new ConfigPropertyDescriptor();
     exConfigProp1.setName("configProp1");
-    DefaultConfigProperty exConfigProp2 = new DefaultConfigProperty();
+    ConfigPropertyDescriptor exConfigProp2 = new ConfigPropertyDescriptor();
     exConfigProp2.setName("configProp2");
     
     exchangeDescriptor.setProperties(List.of(exConfigProp1, exConfigProp2));
@@ -768,8 +768,8 @@ public class ExchangeGenUtilTest {
   @Test
   public void generateSubstitutionInstructionDeclaration() {
     ExchangeDescriptor exchangeDescriptor = new ExchangeDescriptor();
-    exchangeDescriptor.setProperties(List.of(DefaultConfigProperty.create("stranger", Type.STRING, "Your name", "Bob")));
-    exchangeDescriptor.setDemoProperties(List.of(DefaultConfigProperty.create("demoCity", Type.STRING, "Your city", "London")));
+    exchangeDescriptor.setProperties(List.of(ConfigPropertyDescriptor.create("stranger", Type.STRING, "Your name", "Bob")));
+    exchangeDescriptor.setDemoProperties(List.of(ConfigPropertyDescriptor.create("demoCity", Type.STRING, "Your city", "London")));
     exchangeDescriptor.setId("MyExchange");
     exchangeDescriptor.setBasePackage("com.x.gen");
     Constant ownName = new Constant();

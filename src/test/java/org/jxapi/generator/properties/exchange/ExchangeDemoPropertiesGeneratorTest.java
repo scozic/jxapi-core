@@ -10,8 +10,7 @@ import java.util.List;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Test;
-
-import org.jxapi.exchange.descriptor.ConfigProperty;
+import org.jxapi.exchange.descriptor.ConfigPropertyDescriptor;
 import org.jxapi.exchange.descriptor.ExchangeDescriptor;
 import org.jxapi.exchange.descriptor.parser.ExchangeDescriptorParser;
 import org.jxapi.generator.java.JavaCodeGenUtil;
@@ -40,9 +39,9 @@ public class ExchangeDemoPropertiesGeneratorTest {
     ExchangeDescriptor exchangeDescriptor = ExchangeDescriptorParser.fromJson(exchangeDescriptorFile);
     String fileName = "demo-DemoExchange.properties.dist";
     Path actualFilePath = tmpFolder.resolve(fileName);
-    List<ConfigProperty> configProperties = new ArrayList<>();
+    List<ConfigPropertyDescriptor> configProperties = new ArrayList<>();
     configProperties.addAll(exchangeDescriptor.getProperties());
-    List<ConfigProperty> demoProperties = new ArrayList<>();
+    List<ConfigPropertyDescriptor> demoProperties = new ArrayList<>();
     demoProperties.addAll(exchangeDescriptor.getDemoProperties());
     new ExchangeDemoPropertiesFileGenerator(exchangeDescriptor.getId(), 
                         configProperties,
@@ -55,8 +54,8 @@ public class ExchangeDemoPropertiesGeneratorTest {
 
   @Test
   public void testGenerateDemoPropertiesTemplateFile_EmptyConfigProperties() {
-    List<ConfigProperty> configProperties = List.of();
-    List<ConfigProperty> demoProperties = List.of();
+    List<ConfigPropertyDescriptor> configProperties = List.of();
+    List<ConfigPropertyDescriptor> demoProperties = List.of();
     String content = new ExchangeDemoPropertiesFileGenerator("DemoExchange", configProperties, demoProperties).generate();
     Assert.assertEquals("# Demo configuration properties file for DemoExchange exchange.\n"
         + "# You should create a copy of this file without the '.dist' extension and add that .properties file\n"

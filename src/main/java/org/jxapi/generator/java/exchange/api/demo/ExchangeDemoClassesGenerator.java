@@ -4,7 +4,7 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.util.List;
 
-import org.jxapi.exchange.descriptor.DefaultConfigProperty;
+import org.jxapi.exchange.descriptor.ConfigPropertyDescriptor;
 import org.jxapi.exchange.descriptor.ExchangeApiDescriptor;
 import org.jxapi.exchange.descriptor.ExchangeDescriptor;
 import org.jxapi.exchange.descriptor.RestEndpointDescriptor;
@@ -50,7 +50,7 @@ public class ExchangeDemoClassesGenerator implements ClassesGenerator {
       }
       
       // Generate properties interface
-      List<DefaultConfigProperty> properties = exchangeDescriptor.getDemoProperties();
+      List<ConfigPropertyDescriptor> properties = exchangeDescriptor.getDemoProperties();
       if (properties != null) {
         PropertiesClassGenerator pgen = new PropertiesClassGenerator(
             ExchangeGenUtil.getExchangeDemoPropertiesInterfaceName(exchangeDescriptor), 

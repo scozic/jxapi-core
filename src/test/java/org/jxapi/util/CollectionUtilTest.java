@@ -104,6 +104,13 @@ public class CollectionUtilTest {
     Assert.assertEquals(list1, CollectionUtil.mergeLists(null, list1));
     List<String> list2 = List.of("c", "d");
     Assert.assertEquals(List.of("a", "b", "c", "d"), CollectionUtil.mergeLists(list1, list2));
+    
+    Assert.assertTrue(CollectionUtil.mergeLists(List.of()).isEmpty());
+    List<List<String>> lists = new ArrayList<>();
+    lists.add(null);
+    lists.add(list1);
+    lists.add(list2);
+    Assert.assertEquals(List.of("a", "b", "c", "d"), CollectionUtil.mergeLists(lists));
   }
   
   @Test

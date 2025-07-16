@@ -10,9 +10,8 @@ import org.junit.After;
 import org.junit.Assert;
 import org.junit.Test;
 import org.jxapi.exchange.descriptor.CanonicalType;
-import org.jxapi.exchange.descriptor.ConfigProperty;
+import org.jxapi.exchange.descriptor.ConfigPropertyDescriptor;
 import org.jxapi.exchange.descriptor.Constant;
-import org.jxapi.exchange.descriptor.DefaultConfigProperty;
 import org.jxapi.exchange.descriptor.ExchangeApiDescriptor;
 import org.jxapi.exchange.descriptor.ExchangeDescriptor;
 import org.jxapi.exchange.descriptor.Field;
@@ -296,9 +295,9 @@ public class ExchangeDescriptorParserTest {
     
     Assert.assertEquals("https://www.example.com/docs/employee", exchangeDescriptor.getDocUrl());
     Assert.assertEquals("org.jxapi.exchanges.employee.gen", exchangeDescriptor.getBasePackage());
-    List<DefaultConfigProperty> properties = exchangeDescriptor.getProperties();
+    List<ConfigPropertyDescriptor> properties = exchangeDescriptor.getProperties();
     Assert.assertEquals(3, properties.size());
-    ConfigProperty property = properties.get(0);
+    ConfigPropertyDescriptor property = properties.get(0);
     Assert.assertEquals("baseHttpUrl", property.getName());
     Assert.assertEquals("Base URL for REST endpoints the Employee Exchange API", property.getDescription());
     property = properties.get(1);

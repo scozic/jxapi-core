@@ -5,8 +5,8 @@ import java.util.List;
 
 import org.junit.Assert;
 import org.junit.Test;
+import org.jxapi.exchange.descriptor.ConfigPropertyDescriptor;
 import org.jxapi.exchange.descriptor.Constant;
-import org.jxapi.exchange.descriptor.DefaultConfigProperty;
 import org.jxapi.exchange.descriptor.ExchangeApiDescriptor;
 import org.jxapi.exchange.descriptor.ExchangeDescriptor;
 import org.jxapi.exchange.descriptor.RestEndpointDescriptor;
@@ -32,10 +32,10 @@ public class ExchangeInterfaceImplementationGeneratorTest {
     apiVersion.setValue("1");
     exchangeDescriptor.setConstants(List.of(apiVersion));
     
-    DefaultConfigProperty serverHttpUrl = new DefaultConfigProperty();
+    ConfigPropertyDescriptor serverHttpUrl = new ConfigPropertyDescriptor();
     serverHttpUrl.setName("serverHttpUrl");
     
-    DefaultConfigProperty serverWsUrl = new DefaultConfigProperty();
+    ConfigPropertyDescriptor serverWsUrl = new ConfigPropertyDescriptor();
     serverWsUrl.setName("serverWsUrl");
     
     exchangeDescriptor.setProperties(List.of(serverHttpUrl, serverWsUrl));

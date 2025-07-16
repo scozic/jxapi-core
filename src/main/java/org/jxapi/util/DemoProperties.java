@@ -3,8 +3,6 @@ package org.jxapi.util;
 import java.util.List;
 import java.util.Properties;
 
-import org.jxapi.exchange.descriptor.ConfigProperty;
-import org.jxapi.exchange.descriptor.DefaultConfigProperty;
 import org.jxapi.exchange.descriptor.Type;
 
 /**

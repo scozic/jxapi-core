@@ -2,6 +2,8 @@ package org.jxapi.exchange.descriptor;
 
 import org.junit.Assert;
 import org.junit.Test;
+import org.jxapi.util.ConfigProperty;
+import org.jxapi.util.DefaultConfigProperty;
 
 /**
  * Unit test for {@link DefaultConfigProperty}

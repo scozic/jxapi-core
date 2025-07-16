@@ -4,10 +4,8 @@ import java.util.Map;
 
 import org.junit.Assert;
 import org.junit.Test;
-
-import org.jxapi.exchange.descriptor.ConfigProperty;
+import org.jxapi.exchange.descriptor.ConfigPropertyDescriptor;
 import org.jxapi.exchange.descriptor.Constant;
-import org.jxapi.exchange.descriptor.DefaultConfigProperty;
 import org.jxapi.exchange.descriptor.Type;
 import org.jxapi.generator.java.Imports;
 import org.jxapi.util.PlaceHolderResolver;
@@ -66,13 +64,13 @@ public class ConstantsGenerationUtilTest {
   
   @Test
   public void testGetPropertyKeyPropertyName() {
-    ConfigProperty p = DefaultConfigProperty.create("myProp", Type.STRING, null, null);
+    ConfigPropertyDescriptor p = ConfigPropertyDescriptor.create("myProp", Type.STRING, null, null);
     Assert.assertEquals("myProp", ConstantsGenerationUtil.getPropertyKeyPropertyName(p));
   }
   
   @Test
   public void testGetPropertyValueDeclaration() {
-    ConfigProperty p = DefaultConfigProperty.create("myProp", Type.STRING, "A test string value property, for instance '${constants.bar}'", "foo");
+    ConfigPropertyDescriptor p = ConfigPropertyDescriptor.create("myProp", Type.STRING, "A test string value property, for instance '${constants.bar}'", "foo");
     Imports imports = new Imports();
     PlaceHolderResolver placeholderResolver = PlaceHolderResolver.create(Map.of("constants.bar", "bar"));
     Assert.assertEquals("/**\n"
@@ -88,7 +86,7 @@ public class ConstantsGenerationUtilTest {
   
   @Test
   public void testGetPropertyValueDeclaration_ValueWithPlaceholder() {
-    ConfigProperty p = DefaultConfigProperty.create("myProp", Type.STRING, "A test string value property, for instance '${constants.bar}'", "${constants.foo}");
+    ConfigPropertyDescriptor p = ConfigPropertyDescriptor.create("myProp", Type.STRING, "A test string value property, for instance '${constants.bar}'", "${constants.foo}");
     Imports imports = new Imports();
     PlaceHolderResolver docPlaceholderResolver = PlaceHolderResolver.create(Map.of("constants.bar", "bar"));
     PlaceHolderResolver defaultValuePlaceholderResolver = PlaceHolderResolver.create(Map.of("constants.foo", "\"myFooValue\""));
