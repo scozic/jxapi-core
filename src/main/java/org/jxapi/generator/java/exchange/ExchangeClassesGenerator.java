@@ -10,7 +10,7 @@ import org.jxapi.exchange.descriptor.ExchangeApiDescriptor;
 import org.jxapi.exchange.descriptor.ExchangeDescriptor;
 import org.jxapi.generator.java.exchange.api.ExchangeApiClassesGenerator;
 import org.jxapi.generator.java.exchange.constants.ConstantsClassGenerator;
-import org.jxapi.generator.java.exchange.constants.PropertiesClassGenerator;
+import org.jxapi.generator.java.exchange.properties.PropertiesClassGenerator;
 import org.jxapi.netutils.rest.ratelimits.RateLimitManager;
 import org.jxapi.util.PlaceHolderResolver;
 import org.springframework.util.CollectionUtils;

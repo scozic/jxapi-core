@@ -1,17 +1,9 @@
 package org.jxapi.util;
 
-import org.jxapi.exchange.descriptor.ExchangeDescriptor;
 import org.jxapi.exchange.descriptor.Type;
 
 /**
  * Default {@link ConfigProperty} implementation as regular POJO with setters.
- * <p>
- * It is used to represent configuration properties exposed by {@link ExchangeDescriptor}. In addition to the properties defined in {@link ConfigProperty}, this class exposes 
- * sub-properties of this property as a list of {@link DefaultConfigProperty}, making the property a group of properties.
- * <p>
- * Groups of properties can be used to group together related properties, for example, authentication properties can be grouped into a 'group' property called 'auth' with sub-properties for API key, secret, etc listed.
- * Those properties can be referenced with key auth.apiKey, auth.apiSecret, etc. Groups may contain other groups, so the structure is hierarchical.
- * 
  * @see ConfigProperty
  */
 public class DefaultConfigProperty implements ConfigProperty {

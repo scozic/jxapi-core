@@ -5,6 +5,7 @@ import java.util.Properties;
 
 import javax.annotation.processing.Generated;
 import org.jxapi.exchange.descriptor.Type;
+import org.jxapi.util.CollectionUtil;
 import org.jxapi.util.ConfigProperty;
 import org.jxapi.util.DefaultConfigProperty;
 import org.jxapi.util.PropertiesUtil;
@@ -30,7 +31,7 @@ import org.jxapi.util.PropertiesUtil;
  * Exposes helper methods are available to retrieve value of each of these properties with right type, returning default value if not present in properties.
  * @see ConfigProperty
  */
-@Generated("org.jxapi.generator.java.exchange.constants.PropertiesClassGenerator")
+@Generated("org.jxapi.generator.java.exchange.properties.PropertiesClassGenerator")
 public class DemoExchangeDemoProperties {
   
   private DemoExchangeDemoProperties(){}
@@ -50,10 +51,10 @@ public class DemoExchangeDemoProperties {
    * @return Value found in properties or default value 'BTC_USDT' if not found.
    */
   public static String getDemoSymbol(Properties properties) {return PropertiesUtil.getString(properties, DEMO_SYMBOL);}
-  
   /**
    * List of all configuration properties defined in this class
    */
-  public static final List<ConfigProperty> ALL = List.of(
-    DEMO_SYMBOL);
+  public static final List<ConfigProperty> ALL = List.copyOf(CollectionUtil.mergeLists(List.of(
+    List.of(
+      DEMO_SYMBOL))));
 }

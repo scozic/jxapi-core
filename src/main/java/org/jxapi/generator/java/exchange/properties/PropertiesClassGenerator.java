@@ -1,4 +1,4 @@
-package org.jxapi.generator.java.exchange.constants;
+package org.jxapi.generator.java.exchange.properties;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,6 +13,7 @@ import org.jxapi.generator.html.HtmlGenerationUtil;
 import org.jxapi.generator.java.JavaCodeGenUtil;
 import org.jxapi.generator.java.JavaTypeGenerator;
 import org.jxapi.generator.java.exchange.ExchangeGenUtil;
+import org.jxapi.generator.java.exchange.constants.ConstantsGenUtil;
 import org.jxapi.util.CollectionUtil;
 import org.jxapi.util.ConfigProperty;
 import org.jxapi.util.PlaceHolderResolver;
@@ -129,28 +130,75 @@ public class PropertiesClassGenerator extends JavaTypeGenerator {
     .append("(){}\n");
     properties
       .forEach(c -> appendToBody("\n")
-                      .append(ConstantsGenerationUtil.getPropertyValueDeclaration(
+                      .append(ConstantsGenUtil.getPropertyValueDeclaration(
                           c, 
                           getImports(), 
                           docPlaceHolderResolver, 
                           sampleValuePlaceHolderResolver)));
     this.properties.forEach(this::generatePropertyGetterMethod);
-    generatePropertiesListMethod();
+    appendToBody(PropertiesGenUtil.generateAllPropertiesListMethod(properties, getImports()));
     return super.generate();
   }
 
-  private void generatePropertiesListMethod() {
-    addImport(List.class);
-    addImport(ConfigProperty.class);
-    appendToBody("\n")
-      .append(JavaCodeGenUtil.generateJavaDoc("List of all configuration properties defined in this class"))
-      .append("\npublic static final List<ConfigProperty> ALL = List.of(\n")
-      .append(JavaCodeGenUtil.INDENTATION)
-      .append(properties.stream()
-        .map(p -> JavaCodeGenUtil.getStaticVariableName(ConstantsGenerationUtil.getPropertyKeyPropertyName(p)))
-        .collect(Collectors.joining(", \n" + JavaCodeGenUtil.INDENTATION)))
-      .append(");");
-  }
+//  private void generateAllPropertiesListMethod() {
+//    addImport(List.class);
+//    addImport(ConfigProperty.class);
+//    addImport(CollectionUtil.class);
+//    appendToBody("\n")
+//      .append(JavaCodeGenUtil.generateJavaDoc("List of all configuration properties defined in this class"))
+//      .append("\npublic static final List<ConfigProperty> ")
+//      .append(ALL_PROPERTY)
+//      .append(" = ")
+//      .append("List.copyOf(")
+//      .append(CollectionUtil.class.getSimpleName())
+//      .append(".mergeLists(List.of(\n");
+//    
+//    boolean inList = false;
+//    String indent = JavaCodeGenUtil.INDENTATION;
+//    String dblIndent = indent + indent;
+//    boolean first = true;
+//    for (ConfigPropertyDescriptor property : properties) {
+//      if (!first) {
+//        appendToBody(",\n");
+//      } else {
+//        first = false;
+//      }
+//      if (inList) {
+//        if (property.isGroup()) {
+//          // End of group, close the list
+//          appendToBody(indent)
+//          .append("),\n")
+//          .append(indent);
+//          inList = false;
+//        }
+//      } else {
+//        if (!property.isGroup()) {
+//          // Not a group, not in list, start a new list
+//          inList = true;
+//          appendToBody("List.of(\n")
+//            .append(dblIndent);
+//        }
+//      }
+//      
+//      if (property.isGroup()) {
+//        appendToBody(JavaCodeGenUtil.firstLetterToUpperCase(property.getName()))
+//            .append(".").append(ALL_PROPERTY);
+//      }
+//      appendToBody(indent)
+//          .append(JavaCodeGenUtil.getStaticVariableName(ConstantsGenerationUtil.getPropertyKeyPropertyName(property)));
+//    }
+//    if (inList) {
+//      // Close the last list
+//      appendToBody(")");
+//    }
+//    appendToBody("));");
+////      "ALL = List.of(\n")
+////      .append(JavaCodeGenUtil.INDENTATION)
+////      .append(properties.stream()
+////        .map(p -> JavaCodeGenUtil.getStaticVariableName(ConstantsGenerationUtil.getPropertyKeyPropertyName(p)))
+////        .collect(Collectors.joining(", \n" + JavaCodeGenUtil.INDENTATION)))
+////      .append(");");
+//  }
 
   private void generatePropertyGetterMethod(ConfigPropertyDescriptor property) {
     StringBuilder sb = new StringBuilder()
@@ -187,7 +235,7 @@ public class PropertiesClassGenerator extends JavaTypeGenerator {
                   properties.stream().map(p -> p.getName()).collect(Collectors.toList())
               );
     String getPropertiesUtilMethodName = getPropertiesUtilGetPropertyMethodName(property);
-    String keyVariableName = JavaCodeGenUtil.getStaticVariableName(ConstantsGenerationUtil.getPropertyKeyPropertyName(property));
+    String keyVariableName = JavaCodeGenUtil.getStaticVariableName(ConstantsGenUtil.getPropertyKeyPropertyName(property));
     addImport(Properties.class);
     addImport(PropertiesUtil.class);
     sb.append("public static ")

@@ -5,6 +5,7 @@ import java.util.Properties;
 
 import javax.annotation.processing.Generated;
 import org.jxapi.exchange.descriptor.Type;
+import org.jxapi.util.CollectionUtil;
 import org.jxapi.util.ConfigProperty;
 import org.jxapi.util.DefaultConfigProperty;
 import org.jxapi.util.PropertiesUtil;
@@ -42,7 +43,7 @@ import org.jxapi.util.PropertiesUtil;
  * Exposes helper methods are available to retrieve value of each of these properties with right type, returning default value if not present in properties.
  * @see ConfigProperty
  */
-@Generated("org.jxapi.generator.java.exchange.constants.PropertiesClassGenerator")
+@Generated("org.jxapi.generator.java.exchange.properties.PropertiesClassGenerator")
 public class DemoExchangeProperties {
   
   private DemoExchangeProperties(){}
@@ -94,12 +95,12 @@ public class DemoExchangeProperties {
    * @return Value found in properties or default value '-1' if not found.
    */
   public static Integer getWebsocketHeartBeatInterval(Properties properties) {return PropertiesUtil.getInt(properties, WEBSOCKET_HEART_BEAT_INTERVAL);}
-  
   /**
    * List of all configuration properties defined in this class
    */
-  public static final List<ConfigProperty> ALL = List.of(
-    BASE_HTTP_URL, 
-    BASE_WEBSOCKET_URL, 
-    WEBSOCKET_HEART_BEAT_INTERVAL);
+  public static final List<ConfigProperty> ALL = List.copyOf(CollectionUtil.mergeLists(List.of(
+    List.of(
+      BASE_HTTP_URL,
+      BASE_WEBSOCKET_URL,
+      WEBSOCKET_HEART_BEAT_INTERVAL))));
 }

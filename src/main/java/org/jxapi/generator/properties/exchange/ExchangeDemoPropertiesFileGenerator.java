@@ -9,7 +9,7 @@ import java.util.stream.Collectors;
 import org.jxapi.exchange.CommonConfigProperties;
 import org.jxapi.exchange.descriptor.ConfigPropertyDescriptor;
 import org.jxapi.generator.java.JavaCodeGenUtil;
-import org.jxapi.generator.java.exchange.constants.PropertiesGenUtil;
+import org.jxapi.generator.java.exchange.properties.PropertiesGenUtil;
 import org.jxapi.util.CollectionUtil;
 import org.jxapi.util.ConfigProperty;
 import org.jxapi.util.DemoProperties;

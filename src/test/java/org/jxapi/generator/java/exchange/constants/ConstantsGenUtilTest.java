@@ -11,15 +11,15 @@ import org.jxapi.generator.java.Imports;
 import org.jxapi.util.PlaceHolderResolver;
 
 /**
- * Unit test for {@link ConstantsGenerationUtil}
+ * Unit test for {@link ConstantsGenUtil}
  */
-public class ConstantsGenerationUtilTest {
+public class ConstantsGenUtilTest {
 
   @Test
   public void testCreateStringConstant() {
     Imports imports = new Imports();
     Constant c = Constant.create("myString", Type.STRING, null, "foo");
-    Assert.assertEquals( "public static final String MY_STRING = \"foo\";\n", ConstantsGenerationUtil.generateConstantDeclaration(c, imports, null, null));
+    Assert.assertEquals( "public static final String MY_STRING = \"foo\";\n", ConstantsGenUtil.generateConstantDeclaration(c, imports, null, null));
     Assert.assertEquals(0, imports.size());
   }
 
@@ -32,7 +32,7 @@ public class ConstantsGenerationUtilTest {
         + " * My int constant with string value, for instance '123'\n"
         + " */\n"
         + "public static final Integer MY_INT = Integer.valueOf(\"42\");\n", 
-        ConstantsGenerationUtil.generateConstantDeclaration(c, imports, placeholderResolver, null));
+        ConstantsGenUtil.generateConstantDeclaration(c, imports, placeholderResolver, null));
     Assert.assertEquals(0, imports.size());
   }
 
@@ -44,7 +44,7 @@ public class ConstantsGenerationUtilTest {
         + " * My int constant with int value\n"
         + " */\n"
         + "public static final Integer MY_INT = Integer.valueOf(\"42\");\n", 
-         ConstantsGenerationUtil.generateConstantDeclaration(c, imports, null, null));
+         ConstantsGenUtil.generateConstantDeclaration(c, imports, null, null));
     Assert.assertEquals(0, imports.size());
   }
 
@@ -52,20 +52,20 @@ public class ConstantsGenerationUtilTest {
   public void testCreateLongConstantWithNow() {
     Imports imports = new Imports();
     Constant c = Constant.create("myTimestamp", Type.LONG, null, "now()");
-    Assert.assertEquals( "public static final Long MY_TIMESTAMP = Long.valueOf(System.currentTimeMillis());\n", ConstantsGenerationUtil.generateConstantDeclaration(c, imports, null, null));
+    Assert.assertEquals( "public static final Long MY_TIMESTAMP = Long.valueOf(System.currentTimeMillis());\n", ConstantsGenUtil.generateConstantDeclaration(c, imports, null, null));
     Assert.assertEquals(0, imports.size());
   }
   
   @Test(expected = IllegalArgumentException.class)
   public void testCreateStringConstantInvalidType() {
     Constant c = Constant.create("myString", Type.fromTypeName("STRING_LIST"), null, "foo");
-    ConstantsGenerationUtil.generateConstantDeclaration(c, new Imports(), null, null);
+    ConstantsGenUtil.generateConstantDeclaration(c, new Imports(), null, null);
   }
   
   @Test
   public void testGetPropertyKeyPropertyName() {
     ConfigPropertyDescriptor p = ConfigPropertyDescriptor.create("myProp", Type.STRING, null, null);
-    Assert.assertEquals("myProp", ConstantsGenerationUtil.getPropertyKeyPropertyName(p));
+    Assert.assertEquals("myProp", ConstantsGenUtil.getPropertyKeyPropertyName(p));
   }
   
   @Test
@@ -81,7 +81,7 @@ public class ConstantsGenerationUtilTest {
         + "  Type.STRING,\n"
         + "  \"A test string value property, for instance 'bar'\",\n"
         + "  \"foo\");\n", 
-        ConstantsGenerationUtil.getPropertyValueDeclaration(p, imports, placeholderResolver, null));
+        ConstantsGenUtil.getPropertyValueDeclaration(p, imports, placeholderResolver, null));
   }
   
   @Test
@@ -99,7 +99,7 @@ public class ConstantsGenerationUtilTest {
         + "  \"A test string value property, for instance 'bar'\",\n"
         + "  \"myFooValue\");\n"
         + "", 
-        ConstantsGenerationUtil.getPropertyValueDeclaration(p, imports, docPlaceholderResolver, defaultValuePlaceholderResolver));
+        ConstantsGenUtil.getPropertyValueDeclaration(p, imports, docPlaceholderResolver, defaultValuePlaceholderResolver));
   }
 
 }

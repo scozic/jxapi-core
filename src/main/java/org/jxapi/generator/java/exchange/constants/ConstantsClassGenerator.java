@@ -82,7 +82,7 @@ public class ConstantsClassGenerator extends JavaTypeGenerator {
       groupGenerator.getImports().forEach(this::addImport);
     } else {
       appendToBody("\n")
-        .append(ConstantsGenerationUtil.generateConstantDeclaration(
+        .append(ConstantsGenUtil.generateConstantDeclaration(
                 constant, 
                 getImports(), 
                 docPlaceHolderResolver,

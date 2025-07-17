@@ -11,7 +11,7 @@ import org.jxapi.exchange.descriptor.RestEndpointDescriptor;
 import org.jxapi.exchange.descriptor.WebsocketEndpointDescriptor;
 import org.jxapi.generator.java.exchange.ClassesGenerator;
 import org.jxapi.generator.java.exchange.ExchangeGenUtil;
-import org.jxapi.generator.java.exchange.constants.PropertiesClassGenerator;
+import org.jxapi.generator.java.exchange.properties.PropertiesClassGenerator;
 
 /**
  * Generates demo classes for an exchange, e.g. one snippet class for each REST

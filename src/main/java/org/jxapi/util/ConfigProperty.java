@@ -4,8 +4,10 @@ import org.jxapi.exchange.descriptor.ConfigPropertyDescriptor;
 import org.jxapi.exchange.descriptor.Type;
 
 /**
- * Represents a configuration property of an exchange, as described in a {@link ConfigPropertyDescriptor} of exchange descriptor.
- * Such objects will be created as static constants in the generated Java wrapper class exposing properties.
+ * Represents a configuration property of an exchange, as described in a
+ * {@link ConfigPropertyDescriptor} of exchange descriptor. Such objects will be
+ * created as static constants in the generated Java wrapper class exposing
+ * properties.
  * 
  */
 public interface ConfigProperty {

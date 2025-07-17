@@ -15,9 +15,9 @@ import org.jxapi.util.PlaceHolderResolver;
 /**
  * Helper methods for generating constants and property interfaces.
  */
-public class ConstantsGenerationUtil {
+public class ConstantsGenUtil {
 
-  private ConstantsGenerationUtil() {}
+  private ConstantsGenUtil() {}
 
   /**
    * Generates the Java code for a declared <code>public static final</code> constant in a Java class.
@@ -135,5 +135,7 @@ public class ConstantsGenerationUtil {
         .append(");\n")
         .toString();
   }
+  
+
 
 }

@@ -1,4 +1,4 @@
-package org.jxapi.generator.java.exchange.constants;
+package org.jxapi.generator.java.exchange.properties;
 
 import java.util.List;
 
@@ -45,6 +45,7 @@ public class PropertiesClassGeneratorTest {
             + "import com.x.y.exchange.MyExchangeConstants;\n"
             + "import javax.annotation.processing.Generated;\n"
             + "import org.jxapi.exchange.descriptor.Type;\n"
+            + "import org.jxapi.util.CollectionUtil;\n"
             + "import org.jxapi.util.ConfigProperty;\n"
             + "import org.jxapi.util.DefaultConfigProperty;\n"
             + "import org.jxapi.util.EncodingUtil;\n"
@@ -101,7 +102,7 @@ public class PropertiesClassGeneratorTest {
             + " * Exposes helper methods are available to retrieve value of each of these properties with right type, returning default value if not present in properties.\n"
             + " * @see ConfigProperty\n"
             + " */\n"
-            + "@Generated(\"org.jxapi.generator.java.exchange.constants.PropertiesClassGenerator\")\n"
+            + "@Generated(\"org.jxapi.generator.java.exchange.properties.PropertiesClassGenerator\")\n"
             + "public class MyProperties {\n"
             + "  \n"
             + "  private MyProperties(){}\n"
@@ -199,17 +200,17 @@ public class PropertiesClassGeneratorTest {
             + "   * @return Value found in properties or default value '1.2345' if not found.\n"
             + "   */\n"
             + "  public static BigDecimal getMyBigDecimal(Properties properties) {return PropertiesUtil.getBigDecimal(properties, MY_BIG_DECIMAL);}\n"
-            + "  \n"
             + "  /**\n"
             + "   * List of all configuration properties defined in this class\n"
             + "   */\n"
-            + "  public static final List<ConfigProperty> ALL = List.of(\n"
-            + "    MY_STRING, \n"
-            + "    MY_STRING_WITH_NO_DESCRIPTION_NO_DEFAULT_VALUE, \n"
-            + "    MY_INT, \n"
-            + "    MY_LONG, \n"
-            + "    MY_BOOL, \n"
-            + "    MY_BIG_DECIMAL);\n"
+            + "  public static final List<ConfigProperty> ALL = List.copyOf(CollectionUtil.mergeLists(List.of(\n"
+            + "    List.of(\n"
+            + "      MY_STRING,\n"
+            + "      MY_STRING_WITH_NO_DESCRIPTION_NO_DEFAULT_VALUE,\n"
+            + "      MY_INT,\n"
+            + "      MY_LONG,\n"
+            + "      MY_BOOL,\n"
+            + "      MY_BIG_DECIMAL))));\n"
             + "}\n"
             + "";
         Assert.assertEquals(expected, gen.generate());
@@ -243,16 +244,14 @@ public class PropertiesClassGeneratorTest {
           + " * Exposes helper methods are available to retrieve value of each of these properties with right type, returning default value if not present in properties.\n"
           + " * @see ConfigProperty\n"
           + " */\n"
-          + "@Generated(\"org.jxapi.generator.java.exchange.constants.PropertiesClassGenerator\")\n"
+          + "@Generated(\"org.jxapi.generator.java.exchange.properties.PropertiesClassGenerator\")\n"
           + "public class MyProperties {\n"
           + "  \n"
           + "  private MyProperties(){}\n"
-          + "  \n"
           + "  /**\n"
           + "   * List of all configuration properties defined in this class\n"
           + "   */\n"
-          + "  public static final List<ConfigProperty> ALL = List.of(\n"
-          + "    );\n"
+          + "  public static final List<ConfigProperty> ALL = List.of();\n"
           + "}\n"
           + "", gen.generate());
     }
