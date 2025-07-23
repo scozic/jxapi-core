@@ -4,8 +4,10 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
+import org.apache.commons.lang3.StringUtils;
 import org.jxapi.exchange.CommonConfigProperties;
 import org.jxapi.exchange.descriptor.ConfigPropertyDescriptor;
 import org.jxapi.generator.java.JavaCodeGenUtil;
@@ -121,23 +123,36 @@ public class ExchangeDemoPropertiesFileGenerator {
       return "";
     }
     StringBuilder s = new StringBuilder()
-      .append("\n\n")
-      .append(generatePropertiesFileComment(description));
-    for (ConfigPropertyDescriptor p: properties) {
-      s.append("\n");
-      String pdesc = p.getDescription();
-      if (!"".equals(pdesc)) {
-        s.append(generatePropertiesFileComment(p.getDescription()));
+      .append("\n")
+      .append(generatePropertiesFileComment(description))
+      .append("\n")
+      .append(generatePropertiesDeclarations(properties, 1));
+    return s.toString();
+  }
+  
+  private String generatePropertiesDeclarations(List<ConfigPropertyDescriptor> properties, int depth) {
+    StringBuilder s = new StringBuilder();
+    for (ConfigPropertyDescriptor property : properties) {
+      if (property.isGroup()) {
+        if (!StringUtils.isEmpty(property.getDescription())) {
+          StringBuilder descr = new StringBuilder();
+          descr.append(StringUtils.leftPad("", depth, '#'))
+               .append(" ")
+               .append(StringUtils.defaultString(property.getDescription()));
+          s.append(generatePropertiesFileComment(descr.toString()));
+        }
+        
+        s.append(generatePropertiesDeclarations(property.getProperties(), depth + 1));
+      } else {
+        if (!StringUtils.isEmpty(property.getDescription())) {
+          s.append(generatePropertiesFileComment(property.getDescription()));
+        }
+        String defValue = Optional.ofNullable(property.getDefaultValue()).orElse("").toString();
+        s.append(generatePropertiesFileComment(property.getName() + "=" + defValue))
+         .append("\n");
       }
-      StringBuilder propDeclaration = new StringBuilder()
-          .append(p.getName())
-          .append("=");
-      if (p.getDefaultValue() != null) {
-        propDeclaration.append(p.getDefaultValue());
-      }
-      s.append(generatePropertiesFileComment(propDeclaration.toString()));
-      
     }
+    
     return s.toString();
   }
   

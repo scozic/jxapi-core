@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Properties;
-import java.util.stream.Collectors;
 
 import org.jxapi.exchange.descriptor.ConfigPropertyDescriptor;
 import org.jxapi.exchange.descriptor.ExchangeDescriptor;
@@ -13,7 +12,6 @@ import org.jxapi.generator.html.HtmlGenerationUtil;
 import org.jxapi.generator.java.JavaCodeGenUtil;
 import org.jxapi.generator.java.JavaTypeGenerator;
 import org.jxapi.generator.java.exchange.ExchangeGenUtil;
-import org.jxapi.generator.java.exchange.constants.ConstantsGenUtil;
 import org.jxapi.util.CollectionUtil;
 import org.jxapi.util.ConfigProperty;
 import org.jxapi.util.PlaceHolderResolver;
@@ -60,7 +58,7 @@ import org.jxapi.util.PropertiesUtil;
  */
 public class PropertiesClassGenerator extends JavaTypeGenerator {
   
-  private final String exchangeName;
+  private final ExchangeDescriptor exchange;
   private final List<ConfigPropertyDescriptor> properties;
   private final PlaceHolderResolver docPlaceHolderResolver;
   private final PlaceHolderResolver sampleValuePlaceHolderResolver;
@@ -79,7 +77,7 @@ public class PropertiesClassGenerator extends JavaTypeGenerator {
                                   ExchangeDescriptor exchange, 
                                   List<ConfigPropertyDescriptor> properties) {
     super(fullClassName);
-    this.exchangeName = exchange.getId();
+    this.exchange = exchange;
     this.properties = properties;
     this.sampleValuePlaceHolderResolver = s -> ExchangeGenUtil.generateSubstitutionInstructionDeclaration(
         s, 
@@ -88,20 +86,20 @@ public class PropertiesClassGenerator extends JavaTypeGenerator {
         getImports());
     this.docPlaceHolderResolver = PlaceHolderResolver.create(ExchangeGenUtil.getDescriptionReplacements(exchange, null));
     setTypeDeclaration("public class");
-    setDescription(generateDescription());
+    setDescription(generateExchangePropertiesClassDescription());
   }
   
-  private String generateDescription() {
+  private String generateExchangePropertiesClassDescription() {
     StringBuilder sb = new StringBuilder();
     sb.append("Configurable properties for <strong>")
-      .append(exchangeName)
+      .append(exchange.getId())
       .append("</strong> exchange:<br>\n");
       
     List<String> columns = List.of("Name", "Type", "Description", "Default value");
     List<List<String>> rows = new ArrayList<>();
     addDescriptionRows(rows, "", properties);
-    sb.append(HtmlGenerationUtil.generateTable(exchangeName + " properties", columns, rows))
-      .append("<br>\nExposes helper methods are available to retrieve value of each of these properties ")
+    sb.append(HtmlGenerationUtil.generateTable(exchange.getId() + " properties", columns, rows))
+      .append("\n<br>\nExposes helper methods are available to retrieve value of each of these properties ")
       .append("with right type, returning default value if not present in properties.")
       .append("\n@see ConfigProperty");
     return sb.toString();
@@ -130,77 +128,38 @@ public class PropertiesClassGenerator extends JavaTypeGenerator {
     .append("(){}\n");
     properties
       .forEach(c -> appendToBody("\n")
-                      .append(ConstantsGenUtil.getPropertyValueDeclaration(
-                          c, 
-                          getImports(), 
-                          docPlaceHolderResolver, 
-                          sampleValuePlaceHolderResolver)));
+                      .append(generatePropertyDeclaration(c)));
     this.properties.forEach(this::generatePropertyGetterMethod);
     appendToBody(PropertiesGenUtil.generateAllPropertiesListMethod(properties, getImports()));
     return super.generate();
   }
 
-//  private void generateAllPropertiesListMethod() {
-//    addImport(List.class);
-//    addImport(ConfigProperty.class);
-//    addImport(CollectionUtil.class);
-//    appendToBody("\n")
-//      .append(JavaCodeGenUtil.generateJavaDoc("List of all configuration properties defined in this class"))
-//      .append("\npublic static final List<ConfigProperty> ")
-//      .append(ALL_PROPERTY)
-//      .append(" = ")
-//      .append("List.copyOf(")
-//      .append(CollectionUtil.class.getSimpleName())
-//      .append(".mergeLists(List.of(\n");
-//    
-//    boolean inList = false;
-//    String indent = JavaCodeGenUtil.INDENTATION;
-//    String dblIndent = indent + indent;
-//    boolean first = true;
-//    for (ConfigPropertyDescriptor property : properties) {
-//      if (!first) {
-//        appendToBody(",\n");
-//      } else {
-//        first = false;
-//      }
-//      if (inList) {
-//        if (property.isGroup()) {
-//          // End of group, close the list
-//          appendToBody(indent)
-//          .append("),\n")
-//          .append(indent);
-//          inList = false;
-//        }
-//      } else {
-//        if (!property.isGroup()) {
-//          // Not a group, not in list, start a new list
-//          inList = true;
-//          appendToBody("List.of(\n")
-//            .append(dblIndent);
-//        }
-//      }
-//      
-//      if (property.isGroup()) {
-//        appendToBody(JavaCodeGenUtil.firstLetterToUpperCase(property.getName()))
-//            .append(".").append(ALL_PROPERTY);
-//      }
-//      appendToBody(indent)
-//          .append(JavaCodeGenUtil.getStaticVariableName(ConstantsGenerationUtil.getPropertyKeyPropertyName(property)));
-//    }
-//    if (inList) {
-//      // Close the last list
-//      appendToBody(")");
-//    }
-//    appendToBody("));");
-////      "ALL = List.of(\n")
-////      .append(JavaCodeGenUtil.INDENTATION)
-////      .append(properties.stream()
-////        .map(p -> JavaCodeGenUtil.getStaticVariableName(ConstantsGenerationUtil.getPropertyKeyPropertyName(p)))
-////        .collect(Collectors.joining(", \n" + JavaCodeGenUtil.INDENTATION)))
-////      .append(");");
-//  }
-
+  private String generatePropertyDeclaration(ConfigPropertyDescriptor property) {
+    if (property.isGroup()) {
+      String groupClassName = JavaCodeGenUtil.firstLetterToUpperCase(property.getName());
+      PropertiesClassGenerator groupGen = new PropertiesClassGenerator(getName() + "." + groupClassName,
+          exchange, // No exchange descriptor for group properties
+          property.getProperties());
+      groupGen.setTypeDeclaration("public static class");
+      groupGen.setGeneratePackageAndImports(false);
+      groupGen.setDescription(property.getDescription());
+      String res = groupGen.generate();
+      this.getImports().addAll(groupGen.getImports());
+      return res;
+    } else {
+      return PropertiesGenUtil.generateSimplePropertyValueDeclaration(
+              property, 
+              getImports(), 
+              docPlaceHolderResolver, 
+              sampleValuePlaceHolderResolver);
+    }
+  }
+  
   private void generatePropertyGetterMethod(ConfigPropertyDescriptor property) {
+    if (property.isGroup()) {
+      // Skip group properties, they are handled by generatePropertyDeclaration
+      return;
+    }
     StringBuilder sb = new StringBuilder()
         .append("\n");
     String name = property.getName();
@@ -229,13 +188,9 @@ public class PropertiesClassGenerator extends JavaTypeGenerator {
     sb.append(JavaCodeGenUtil.generateJavaDoc(desc.toString()))
       .append("\n");
     String typeClass = ExchangeGenUtil.getClassNameForType(type, getImports(), null);
-    String methodName = JavaCodeGenUtil.getGetAccessorMethodName(
-                  name, 
-                  typeClass, 
-                  properties.stream().map(p -> p.getName()).collect(Collectors.toList())
-              );
+    String methodName = PropertiesGenUtil.getPropertyGetterMethodName(property, properties);
     String getPropertiesUtilMethodName = getPropertiesUtilGetPropertyMethodName(property);
-    String keyVariableName = JavaCodeGenUtil.getStaticVariableName(ConstantsGenUtil.getPropertyKeyPropertyName(property));
+    String keyVariableName = JavaCodeGenUtil.getStaticVariableName(PropertiesGenUtil.getPropertyKeyPropertyName(property));
     addImport(Properties.class);
     addImport(PropertiesUtil.class);
     sb.append("public static ")

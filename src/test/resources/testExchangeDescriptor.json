@@ -9,7 +9,15 @@
 		{"name": "apiSecret", "description": "API secret"}
 	],
 	"demoProperties": [
-		{"name": "demoSymbol", "description": "Market symbol to use in demo snippets", "defaultValue": "${constants.defaultDemoSymbol}"}
+		{"name": "demoSymbol", "description": "Market symbol to use in demo snippets", "defaultValue": "${constants.defaultDemoSymbol}"},
+		{"name": "wsTickerStreamDemo", "description": "Websocket ticker stream demo properties", "properties": [
+				{
+					"name": "symbol",
+					"description": "Market symbol to use in demo snippets, defaults to ${constants.allTickers}.",
+					"defaultValue": "${constants.allTickers}"
+				}
+			]
+		}
 	],
 	"constants": [
 		{"name": "pingMessage", "type":"STRING", "description": "Ping message", "value": "Ping!"},
@@ -101,7 +109,7 @@
 					"request": {
 					    "description": "Request parameters for subscribing to ticker stream. Use ${constants.allTickers} to subscribe to every ticker. Author: ${constants.authorFullName}",
 						"properties": [
-							{"name": "symbol", "type":"STRING", "description":"Symbol to subscribe to ticker stream of. Use ${constants.allTickers} to subscribe to every ticker. Author: ${constants.authorFullName}", "sampleValue": "${constants.allTickers}"},
+							{"name": "symbol", "type":"STRING", "description":"Symbol to subscribe to ticker stream of. Use ${constants.allTickers} to subscribe to every ticker. Author: ${constants.authorFullName}", "sampleValue": "${config.wsTickerStreamDemo.symbol}"},
 							{"name": "apiKey", "type":"STRING", "description":"API key, see ${config.apiKey}", "sampleValue": "${config.apiKey}"}
 						]
 					},

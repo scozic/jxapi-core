@@ -7,7 +7,10 @@
 	"properties": [
 		{"name": "baseHttpUrl", "description": "Mock HTTP server base API URL", "defaultValue": "http://localhost:8080"},
 		{"name": "baseWebsocketUrl", "description": "Mock websocket server base API URL", "defaultValue": "ws://localhost:8090"},
-		{"name": "websocketHeartBeatInterval", "type":"INT",  "description": "Mock websocket server expected heartBeat interval", "defaultValue": -1}
+		{"name": "ws", "description": "Mock websocket server related properties", "properties":[
+				{"name": "websocketHeartBeatInterval", "type":"INT",  "description": "Mock websocket server expected heartBeat interval", "defaultValue": -1}
+			]
+		}
 	],
 	"demoProperties": [
 		{"name": "demoSymbol", "description": "Default value to use for market 'symbol' parameter in demo snippets", "defaultValue": "BTC_USDT"}

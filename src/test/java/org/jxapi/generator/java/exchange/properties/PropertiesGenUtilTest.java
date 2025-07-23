@@ -2,6 +2,7 @@ package org.jxapi.generator.java.exchange.properties;
 
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -11,6 +12,7 @@ import org.jxapi.generator.java.Imports;
 import org.jxapi.util.CollectionUtil;
 import org.jxapi.util.ConfigProperty;
 import org.jxapi.util.DefaultConfigProperty;
+import org.jxapi.util.PlaceHolderResolver;
 
 /**
  * Unit test for {@link PropertiesGenUtil}
@@ -44,6 +46,86 @@ public class PropertiesGenUtilTest {
     Assert.assertEquals(Type.BOOLEAN, propertyDescriptor.getType());
     Assert.assertEquals("A boolean property", propertyDescriptor.getDescription());
     Assert.assertEquals(true, propertyDescriptor.getDefaultValue());
+  }
+  
+  @Test
+  public void testGenerateSimplePropertyValueDeclaration() {
+    Imports imports = new Imports();
+    ConfigPropertyDescriptor property = ConfigPropertyDescriptor.create("myProp", Type.STRING, "A test property",
+        "defaultValue");
+    String code = PropertiesGenUtil.generateSimplePropertyValueDeclaration(property, imports, null, null);
+    Assert.assertEquals(
+        "/**\n"
+        + " * A test property\n"
+        + " */\n"
+        + "public static final ConfigProperty MY_PROP = DefaultConfigProperty.create(\n"
+        + "  \"myProp\",\n"
+        + "  Type.STRING,\n"
+        + "  \"A test property\",\n"
+        + "  \"defaultValue\");\n"
+        + "",
+        code);
+    Assert.assertEquals(3, imports.size());
+    Iterator<String> it = imports.iterator();
+    Assert.assertEquals(Type.class.getName(), it.next());
+    Assert.assertEquals(ConfigProperty.class.getName(), it.next());
+    Assert.assertEquals(DefaultConfigProperty.class.getName(), it.next());
+  }
+  
+  @Test
+  public void ttestGenerateSimplePropertyValueDeclaration_WithDescriptionAndSampleVlauePlaceholders() {
+    Imports imports = new Imports();
+    ConfigPropertyDescriptor property = ConfigPropertyDescriptor.create(
+        "helloProp", 
+        Type.STRING, 
+        "A test ${hello} property",
+        "Hi ${foo}!");
+    PlaceHolderResolver docPlaceHolderResolver = PlaceHolderResolver.create(Map.of("hello", "Hello World"));
+    PlaceHolderResolver sampleValuePlaceHolderResolver = PlaceHolderResolver.create(Map.of("foo", "bar"));
+    String code = PropertiesGenUtil.generateSimplePropertyValueDeclaration(property, imports, docPlaceHolderResolver, sampleValuePlaceHolderResolver);
+    Assert.assertEquals(
+        "/**\n"
+        + " * A test Hello World property\n"
+        + " */\n"
+        + "public static final ConfigProperty HELLO_PROP = DefaultConfigProperty.create(\n"
+        + "  \"helloProp\",\n"
+        + "  Type.STRING,\n"
+        + "  \"A test Hello World property\",\n"
+        + "  Hi bar!);\n"
+        + "",
+        code);
+    Assert.assertEquals(3, imports.size());
+    Iterator<String> it = imports.iterator();
+    Assert.assertEquals(Type.class.getName(), it.next());
+    Assert.assertEquals(ConfigProperty.class.getName(), it.next());
+    Assert.assertEquals(DefaultConfigProperty.class.getName(), it.next());
+  }
+  
+  @Test
+  public void testGenerateSimplePropertyValueDeclaration_NullSampleValue() {
+    Imports imports = new Imports();
+    ConfigPropertyDescriptor property = ConfigPropertyDescriptor.create(
+      "myProp", 
+      Type.STRING, 
+      "A test property",
+      null);
+    String code = PropertiesGenUtil.generateSimplePropertyValueDeclaration(property, imports, null, null);
+    Assert.assertEquals(
+        "/**\n"
+        + " * A test property\n"
+        + " */\n"
+        + "public static final ConfigProperty MY_PROP = DefaultConfigProperty.create(\n"
+        + "  \"myProp\",\n"
+        + "  Type.STRING,\n"
+        + "  \"A test property\",\n"
+        + "  null);\n"
+        + "",
+        code);
+    Assert.assertEquals(3, imports.size());
+    Iterator<String> it = imports.iterator();
+    Assert.assertEquals(Type.class.getName(), it.next());
+    Assert.assertEquals(ConfigProperty.class.getName(), it.next());
+    Assert.assertEquals(DefaultConfigProperty.class.getName(), it.next());
   }
   
   @Test
@@ -182,6 +264,17 @@ public class PropertiesGenUtilTest {
     Assert.assertEquals(List.class.getName(), it.next());
     Assert.assertEquals(CollectionUtil.class.getName(), it.next());
     Assert.assertEquals(ConfigProperty.class.getName(), it.next());
+  }
+  
+  @Test
+  public void testGetPropertyGetterMethodName() {
+    ConfigPropertyDescriptor property = ConfigPropertyDescriptor.create("myProp", Type.STRING, "A test property", null);
+    Assert.assertEquals("getMyProp", PropertiesGenUtil.getPropertyGetterMethodName(property, List.of(property)));
+    ConfigPropertyDescriptor propertyWithSameNameButFirstLetterUppercase = ConfigPropertyDescriptor.create("MyProp", Type.STRING, "A test property with same name as 'myProp' but first letter as uppercase", "defaultValue");
+    Assert.assertEquals("getmyProp", PropertiesGenUtil.getPropertyGetterMethodName(property, List.of(property, propertyWithSameNameButFirstLetterUppercase)));
+    
+    ConfigPropertyDescriptor boolProperty = ConfigPropertyDescriptor.create("myBoolProp", Type.BOOLEAN, "A test property", null);
+    Assert.assertEquals("isMyBoolProp", PropertiesGenUtil.getPropertyGetterMethodName(boolProperty, null));
   }
 
 }

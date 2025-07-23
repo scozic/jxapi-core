@@ -11,7 +11,7 @@ Demo Exchange. This exchange uses connects to mock HTTP server and websocket ser
         - [REST endpoints](#rest-endpoints)
         - [Websocket endpoints](#websocket-endpoints)
     - [Demo snippets](#demo-snippets)
-      - [Demo endpoints](#demo-endpoints)
+      - [Endpoint demo snippets](#endpoint-demo-snippets)
         - [MarketData REST endpoints demo snippets:](#marketdata-rest-endpoints-demo-snippets)
         - [MarketData Websocket endpoints demo snippets](#marketdata-websocket-endpoints-demo-snippets)
 
@@ -55,6 +55,11 @@ You may have a look at <a href="./src/test/java/org/jxapi/exchanges/demo/gen/mar
     <td>STRING</td>
     <td>Mock websocket server base API URL</td>
     <td>ws://localhost:8090</td>
+  </tr>
+  <tr>
+    <td>ws</td>
+    <td>group</td>
+    <td colspan="2">Mock websocket server related properties</td>
   </tr>
   <tr>
     <td>websocketHeartBeatInterval</td>
@@ -158,7 +163,7 @@ In order to run demo snippets, you can set properties values in __demo-DemoExcha
   </tr>
 </table>
 
-### Demo endpoints
+### Endpoint demo snippets
 
 
 #### MarketData REST endpoints demo snippets:

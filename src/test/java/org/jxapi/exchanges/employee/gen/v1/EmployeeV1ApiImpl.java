@@ -21,7 +21,6 @@ import org.jxapi.netutils.websocket.WebsocketListener;
 import org.jxapi.netutils.websocket.WebsocketSubscribeRequest;
 import org.jxapi.netutils.websocket.multiplexing.WebsocketMessageTopicMatcherFactory;
 import org.jxapi.util.EncodingUtil;
-import org.jxapi.util.PropertiesUtil;
 
 /**
  * Actual implementation of {@link EmployeeV1Api}<br>
@@ -77,7 +76,7 @@ public class EmployeeV1ApiImpl extends AbstractExchangeApi implements EmployeeV1
           exchange,
           null,
           "v1",
-          EncodingUtil.substituteArguments("${config.baseWebsocketUrl}", "config.baseWebsocketUrl", PropertiesUtil.getString(exchange.getProperties(), EmployeeProperties.BASE_WEBSOCKET_URL)));
+          EncodingUtil.substituteArguments("${config.server.baseWebsocketUrl}", "config.server.baseWebsocketUrl", EmployeeProperties.Server.getBaseWebsocketUrl(exchange.getProperties())));
     createHttpRequestExecutor(null, -1L);
     createHttpRequestInterceptor("org.jxapi.exchanges.demo.net.DemoExchangeHttpRequestInterceptorFactory");
     this.getEmployeeHttpUrl = EncodingUtil.buildUrl(this.getHttpUrl(), "/employee");

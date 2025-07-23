@@ -14,7 +14,6 @@ import org.jxapi.netutils.websocket.WebsocketListener;
 import org.jxapi.util.DemoProperties;
 import org.jxapi.util.DemoUtil;
 import org.jxapi.util.EncodingUtil;
-import org.jxapi.util.PropertiesUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -32,7 +31,7 @@ public class DemoExchangeMarketDataTickerStreamDemo {
    */
   public static DemoExchangeMarketDataTickerStreamRequest createRequest(Properties properties) {
     DemoExchangeMarketDataTickerStreamRequest request = new DemoExchangeMarketDataTickerStreamRequest();
-    request.setSymbol(EncodingUtil.substituteArguments("${config.demoSymbol}", "config.demoSymbol", PropertiesUtil.getString(properties, DemoExchangeDemoProperties.DEMO_SYMBOL)));
+    request.setSymbol(EncodingUtil.substituteArguments("${config.demoSymbol}", "config.demoSymbol", DemoExchangeDemoProperties.getDemoSymbol(properties)));
     return request;
   }
   

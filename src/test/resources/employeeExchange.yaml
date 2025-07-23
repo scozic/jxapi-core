@@ -8,15 +8,19 @@ description: >
   Notice how the 'employee' object present in APIs request and responses is used in multiple endpoints and its properties defined only once.
 docUrl: https://www.example.com/docs/employee
 properties:
- - name: baseHttpUrl
-   description: "Base URL for REST endpoints the Employee Exchange API"
- - name: baseWebsocketUrl
-   description: Base URL for websocket endpoints of the Employee Exchange API
+ - name: server
+   description: Server related properties
+   properties:
+    - name: "baseHttpUrl"
+      description: "Base URL for REST endpoints the Employee Exchange API"
+    - name: "baseWebsocketUrl"
+      description: "Base URL for websocket endpoints of the Employee Exchange API"
+demoProperties:      
  - name: demoEmployeeId
    description: "Used in demo snippets to set as value of Employee 'id' property"
    defaultValue: 1
 basePackage: org.jxapi.exchanges.employee.gen
-httpUrl: ${config.baseHttpUrl}
+httpUrl: ${config.server.baseHttpUrl}
 httpRequestInterceptorFactory: org.jxapi.exchanges.demo.net.DemoExchangeHttpRequestInterceptorFactory
 constants:
   - name: defaultPageSize
@@ -145,7 +149,7 @@ apis:
        type: INT
        description: Employee ID
        sampleValue: ${config.demoEmployeeId}
-   websocketUrl: ${config.baseWebsocketUrl}
+   websocketUrl: ${config.server.baseWebsocketUrl}
    websocketHookFactory: org.jxapi.exchanges.demo.net.DemoExchangeWebsocketHookFactory  
    websocketEndpoints:
     - name: employeeUpdates
@@ -155,7 +159,7 @@ apis:
        description: Employee update message
        properties:
         - name: eventType
-          description: Type of event, e.g. one of ${constants.updateEmployeeType.add}, ${constants.updateEmployeeType.update} or ${constants.updateEmployeeType.delete}
+          description: Type of event, e.g. one of ${constants.updateEmployeeType.add}, ${constants.updateEmployeeType.update} or ${constants.updateEmployeeType.delete} (see ${constants.updateEmployeeType} constants).
           sampleValue: ${constants.updateEmployeeType.update}
         - name: employee
           objectName: Employee

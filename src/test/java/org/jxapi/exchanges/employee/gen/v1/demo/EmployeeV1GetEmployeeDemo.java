@@ -5,15 +5,14 @@ import java.util.concurrent.ExecutionException;
 
 import javax.annotation.processing.Generated;
 import org.jxapi.exchange.ExchangeApiObserver;
+import org.jxapi.exchanges.employee.gen.EmployeeDemoProperties;
 import org.jxapi.exchanges.employee.gen.EmployeeExchange;
 import org.jxapi.exchanges.employee.gen.EmployeeExchangeImpl;
-import org.jxapi.exchanges.employee.gen.EmployeeProperties;
 import org.jxapi.exchanges.employee.gen.v1.EmployeeV1Api;
 import org.jxapi.exchanges.employee.gen.v1.pojo.Employee;
 import org.jxapi.netutils.rest.RestResponse;
 import org.jxapi.util.DemoUtil;
 import org.jxapi.util.EncodingUtil;
-import org.jxapi.util.PropertiesUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -30,7 +29,7 @@ public class EmployeeV1GetEmployeeDemo {
    * @param properties the configuration properties to use for the sample value generation.
    */
   public static Integer createId(Properties properties) {
-    return Integer.valueOf(EncodingUtil.substituteArguments("${config.demoEmployeeId}", "config.demoEmployeeId", PropertiesUtil.getString(properties, EmployeeProperties.DEMO_EMPLOYEE_ID)));
+    return Integer.valueOf(EncodingUtil.substituteArguments("${config.demoEmployeeId}", "config.demoEmployeeId", EmployeeDemoProperties.getDemoEmployeeId(properties)));
   }
   
   /**

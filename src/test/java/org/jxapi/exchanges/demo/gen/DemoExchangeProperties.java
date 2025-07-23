@@ -33,7 +33,7 @@ import org.jxapi.util.PropertiesUtil;
  *     <td>ws://localhost:8090</td>
  *   </tr>
  *   <tr>
- *     <td>websocketHeartBeatInterval</td>
+ *     <td>ws.websocketHeartBeatInterval</td>
  *     <td>INT</td>
  *     <td>Mock websocket server expected heartBeat interval</td>
  *     <td>-1</td>
@@ -67,13 +67,35 @@ public class DemoExchangeProperties {
     "ws://localhost:8090");
   
   /**
-   * Mock websocket server expected heartBeat interval
+   * Mock websocket server related properties
    */
-  public static final ConfigProperty WEBSOCKET_HEART_BEAT_INTERVAL = DefaultConfigProperty.create(
-    "websocketHeartBeatInterval",
-    Type.INT,
-    "Mock websocket server expected heartBeat interval",
-    "-1");
+  @Generated("org.jxapi.generator.java.exchange.properties.PropertiesClassGenerator")
+  public static class Ws {
+    
+    private Ws(){}
+    
+    /**
+     * Mock websocket server expected heartBeat interval
+     */
+    public static final ConfigProperty WEBSOCKET_HEART_BEAT_INTERVAL = DefaultConfigProperty.create(
+      "websocketHeartBeatInterval",
+      Type.INT,
+      "Mock websocket server expected heartBeat interval",
+      "-1");
+    
+    /**
+     * Retrieves value of 'websocketHeartBeatInterval' property.
+     * @param properties Properties to look for value of 'websocketHeartBeatInterval' property into.
+     * @return Value found in properties or default value '-1' if not found.
+     */
+    public static Integer getWebsocketHeartBeatInterval(Properties properties) {return PropertiesUtil.getInt(properties, WEBSOCKET_HEART_BEAT_INTERVAL);}
+    /**
+     * List of all configuration properties defined in this class
+     */
+    public static final List<ConfigProperty> ALL = List.copyOf(CollectionUtil.mergeLists(List.of(
+      List.of(
+        WEBSOCKET_HEART_BEAT_INTERVAL))));
+  }
   
   /**
    * Retrieves value of 'baseHttpUrl' property.
@@ -88,19 +110,13 @@ public class DemoExchangeProperties {
    * @return Value found in properties or default value 'ws://localhost:8090' if not found.
    */
   public static String getBaseWebsocketUrl(Properties properties) {return PropertiesUtil.getString(properties, BASE_WEBSOCKET_URL);}
-  
-  /**
-   * Retrieves value of 'websocketHeartBeatInterval' property.
-   * @param properties Properties to look for value of 'websocketHeartBeatInterval' property into.
-   * @return Value found in properties or default value '-1' if not found.
-   */
-  public static Integer getWebsocketHeartBeatInterval(Properties properties) {return PropertiesUtil.getInt(properties, WEBSOCKET_HEART_BEAT_INTERVAL);}
   /**
    * List of all configuration properties defined in this class
    */
   public static final List<ConfigProperty> ALL = List.copyOf(CollectionUtil.mergeLists(List.of(
     List.of(
       BASE_HTTP_URL,
-      BASE_WEBSOCKET_URL,
-      WEBSOCKET_HEART_BEAT_INTERVAL))));
+      BASE_WEBSOCKET_URL
+    ),
+    Ws.ALL)));
 }

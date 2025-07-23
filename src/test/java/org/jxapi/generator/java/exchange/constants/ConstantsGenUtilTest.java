@@ -4,7 +4,6 @@ import java.util.Map;
 
 import org.junit.Assert;
 import org.junit.Test;
-import org.jxapi.exchange.descriptor.ConfigPropertyDescriptor;
 import org.jxapi.exchange.descriptor.Constant;
 import org.jxapi.exchange.descriptor.Type;
 import org.jxapi.generator.java.Imports;
@@ -60,46 +59,6 @@ public class ConstantsGenUtilTest {
   public void testCreateStringConstantInvalidType() {
     Constant c = Constant.create("myString", Type.fromTypeName("STRING_LIST"), null, "foo");
     ConstantsGenUtil.generateConstantDeclaration(c, new Imports(), null, null);
-  }
-  
-  @Test
-  public void testGetPropertyKeyPropertyName() {
-    ConfigPropertyDescriptor p = ConfigPropertyDescriptor.create("myProp", Type.STRING, null, null);
-    Assert.assertEquals("myProp", ConstantsGenUtil.getPropertyKeyPropertyName(p));
-  }
-  
-  @Test
-  public void testGetPropertyValueDeclaration() {
-    ConfigPropertyDescriptor p = ConfigPropertyDescriptor.create("myProp", Type.STRING, "A test string value property, for instance '${constants.bar}'", "foo");
-    Imports imports = new Imports();
-    PlaceHolderResolver placeholderResolver = PlaceHolderResolver.create(Map.of("constants.bar", "bar"));
-    Assert.assertEquals("/**\n"
-        + " * A test string value property, for instance 'bar'\n"
-        + " */\n"
-        + "public static final ConfigProperty MY_PROP = DefaultConfigProperty.create(\n"
-        + "  \"myProp\",\n"
-        + "  Type.STRING,\n"
-        + "  \"A test string value property, for instance 'bar'\",\n"
-        + "  \"foo\");\n", 
-        ConstantsGenUtil.getPropertyValueDeclaration(p, imports, placeholderResolver, null));
-  }
-  
-  @Test
-  public void testGetPropertyValueDeclaration_ValueWithPlaceholder() {
-    ConfigPropertyDescriptor p = ConfigPropertyDescriptor.create("myProp", Type.STRING, "A test string value property, for instance '${constants.bar}'", "${constants.foo}");
-    Imports imports = new Imports();
-    PlaceHolderResolver docPlaceholderResolver = PlaceHolderResolver.create(Map.of("constants.bar", "bar"));
-    PlaceHolderResolver defaultValuePlaceholderResolver = PlaceHolderResolver.create(Map.of("constants.foo", "\"myFooValue\""));
-    Assert.assertEquals("/**\n"
-        + " * A test string value property, for instance 'bar'\n"
-        + " */\n"
-        + "public static final ConfigProperty MY_PROP = DefaultConfigProperty.create(\n"
-        + "  \"myProp\",\n"
-        + "  Type.STRING,\n"
-        + "  \"A test string value property, for instance 'bar'\",\n"
-        + "  \"myFooValue\");\n"
-        + "", 
-        ConstantsGenUtil.getPropertyValueDeclaration(p, imports, docPlaceholderResolver, defaultValuePlaceholderResolver));
   }
 
 }

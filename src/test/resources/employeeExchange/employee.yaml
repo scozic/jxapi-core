@@ -8,7 +8,7 @@ description: >
   Notice how the 'employee' object present in APIs request and responses is used in multiple endpoints and its properties defined only once.
 docUrl: "https://www.example.com/docs/employee"
 basePackage: "org.jxapi.exchanges.employee.gen"
-httpUrl: "${config.baseHttpUrl}"
+httpUrl: "${config.server.baseHttpUrl}"
 httpRequestInterceptorFactory: "org.jxapi.exchanges.demo.net.DemoExchangeHttpRequestInterceptorFactory"
 constants:
   - name: defaultPageSize

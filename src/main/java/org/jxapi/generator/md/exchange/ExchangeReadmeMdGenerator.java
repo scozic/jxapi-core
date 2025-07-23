@@ -6,6 +6,7 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
 import org.jxapi.exchange.descriptor.ConfigPropertyDescriptor;
@@ -15,6 +16,7 @@ import org.jxapi.exchange.descriptor.ExchangeDescriptor;
 import org.jxapi.exchange.descriptor.RestEndpointDescriptor;
 import org.jxapi.exchange.descriptor.Type;
 import org.jxapi.exchange.descriptor.WebsocketEndpointDescriptor;
+import org.jxapi.generator.html.HtmlElement;
 import org.jxapi.generator.html.HtmlGenerationUtil;
 import org.jxapi.generator.java.JavaCodeGenUtil;
 import org.jxapi.generator.java.exchange.ExchangeGenUtil;
@@ -134,7 +136,7 @@ public class ExchangeReadmeMdGenerator {
     
     List<Constant> exchangeConstants = exchangeDescriptor.getConstants();
     if (!CollectionUtil.isEmpty(exchangeConstants)) {
-      s.append("\n### Constants\n\n")
+      s.append("\n\n### Constants\n\n")
        .append("Some useful constants are defined in ")
        .append(getInterfaceJavadocLink(constantsInterfaceName))
        .append("\n");
@@ -181,7 +183,7 @@ public class ExchangeReadmeMdGenerator {
      }
     
      if (!CollectionUtil.isEmpty(api.getWebsocketEndpoints())) {
-       s.append("\n#### Websocket endpoints\n\n")
+       s.append("\n\n#### Websocket endpoints\n\n")
         .append(generateWebsocketEndpointsTable(api, docPlaceHolderResolver));
        
      }
@@ -292,16 +294,48 @@ public class ExchangeReadmeMdGenerator {
   
   private String generatePropertiesTable(String tableName, List<ConfigPropertyDescriptor> properties, PlaceHolderResolver docPlaceHolderResolver) {
     List<String> columns = List.of("Name", "Type", "description", "Default value");
-    List<List<String>> cells = new ArrayList<>();
+    List<List<HtmlElement>> cells = new ArrayList<>();
+    collectPropertiesTableRows(properties, cells, docPlaceHolderResolver);
+    HtmlElement tableElement = HtmlElement.builder()
+        .tag("table")
+        .child(HtmlElement.builder().tag("caption").content(tableName).build())
+        .child(HtmlElement.builder().tag("tr").children(columns.stream()
+            .map(col -> HtmlElement.builder().tag("th").content(col).build())
+            .collect(Collectors.toList())
+          ).build())
+        .children(cells.stream()
+            .map(row -> HtmlElement.builder().tag("tr").children(row).build())
+            .collect(Collectors.toList()))
+        .build();
+    return HtmlGenerationUtil.generateHtmlForElement(tableElement);
+  }
+  
+  private void collectPropertiesTableRows(List<ConfigPropertyDescriptor> properties, List<List<HtmlElement>> cells, PlaceHolderResolver docPlaceHolderResolver) {
     properties.forEach(p -> {
-      List<String> row = new ArrayList<>();
-      row.add(Optional.ofNullable(p.getName()).orElse(""));
-      row.add(String.valueOf(Optional.ofNullable(p.getType()).orElse(Type.STRING)));
-      row.add(docPlaceHolderResolver.resolve(Optional.ofNullable(p.getDescription()).orElse("")));
-      row.add(String.valueOf(Optional.ofNullable(p.getDefaultValue()).orElse("")));
-      cells.add(row);
+      List<HtmlElement> row = new ArrayList<>();
+      row.add(createTd(StringUtils.defaultString(p.getName())));
+      if (p.isGroup()) {
+        row.add(createTd("group"));
+        String descr = StringUtils.defaultString(docPlaceHolderResolver.resolve(p.getDescription()));
+        HtmlElement descriptionTd = createTd(descr);
+        descriptionTd.addAttribute("colspan", "2");
+        row.add(descriptionTd);
+        cells.add(row);
+        collectPropertiesTableRows(p.getProperties(), cells, docPlaceHolderResolver);
+        return;
+      } else {
+        row.add(createTd(String.valueOf(Optional.ofNullable(p.getType()).orElse(Type.STRING))));
+        row.add(createTd(docPlaceHolderResolver.resolve(p.getDescription())));
+        String defValue = String.valueOf(Optional.ofNullable(p.getDefaultValue()).orElse(""));
+        defValue = docPlaceHolderResolver.resolve(defValue);
+        row.add(createTd(defValue));
+        cells.add(row);
+      }
     });
-    return HtmlGenerationUtil.generateTable(tableName, columns, cells);
+  }
+  
+  private HtmlElement createTd(String content) {
+    return HtmlElement.builder().tag("td").content(content).build();
   }
   
   private String generateDemoSnippetsDocumentation(PlaceHolderResolver docPlaceHolderResolver) {
@@ -309,7 +343,7 @@ public class ExchangeReadmeMdGenerator {
       return "";
     }
     StringBuilder s = new StringBuilder();
-    s.append("\n## Demo snippets\n\n")
+    s.append("\n\n## Demo snippets\n\n")
      .append("This wrapper contains demo snippets for the most important endpoints. These snippets are generated in _src/test/java/_ source folder.\n\n");
     if (!CollectionUtil.isEmpty(exchangeDescriptor.getDemoProperties())) {
       String exchangeDemoPropertiesInterfaceName = ExchangeGenUtil.getExchangeDemoPropertiesInterfaceName(exchangeDescriptor);
@@ -323,7 +357,7 @@ public class ExchangeReadmeMdGenerator {
     }
     
     if (hasEndpoints()) {
-      s.append("\n### Demo endpoints\n\n");
+      s.append("\n\n### Endpoint demo snippets\n\n");
       exchangeDescriptor.getApis().stream()
         .map(this::generateApiDescriptorDemoSnippetsDocumentation)
         .forEach(s::append);

@@ -234,7 +234,7 @@ public class ExchangeDescriptorParserTest {
     Assert.assertEquals("symbol", symbols.getName());
     Assert.assertEquals("Symbol to subscribe to ticker stream of. Use ${constants.allTickers} to subscribe to every ticker. Author: ${constants.authorFullName}", symbols.getDescription());
     Assert.assertEquals(CanonicalType.STRING, symbols.getType().getCanonicalType());
-    Assert.assertEquals("${constants.allTickers}", symbols.getSampleValue());
+    Assert.assertEquals("${config.wsTickerStreamDemo.symbol}", symbols.getSampleValue());
     
     List<WebsocketMessageTopicMatcherFieldDescriptor> messageTopicMatcherFields = tickerStreamEndpoint.getMessageTopicMatcherFields();
     Assert.assertEquals(2, messageTopicMatcherFields.size());
@@ -295,25 +295,39 @@ public class ExchangeDescriptorParserTest {
     
     Assert.assertEquals("https://www.example.com/docs/employee", exchangeDescriptor.getDocUrl());
     Assert.assertEquals("org.jxapi.exchanges.employee.gen", exchangeDescriptor.getBasePackage());
-    List<ConfigPropertyDescriptor> properties = exchangeDescriptor.getProperties();
-    Assert.assertEquals(3, properties.size());
-    ConfigPropertyDescriptor property = properties.get(0);
-    Assert.assertEquals("baseHttpUrl", property.getName());
-    Assert.assertEquals("Base URL for REST endpoints the Employee Exchange API", property.getDescription());
-    property = properties.get(1);
-    Assert.assertEquals("baseWebsocketUrl", property.getName());
-    Assert.assertEquals("Base URL for websocket endpoints of the Employee Exchange API", property.getDescription());
-    property = properties.get(2);
-    Assert.assertEquals("demoEmployeeId", property.getName());
-    Assert.assertEquals("Used in demo snippets to set as value of Employee 'id' property", property.getDescription());
-    Assert.assertEquals(1, property.getDefaultValue());
+
+    checkEmployeeExchangeProperties(exchangeDescriptor);
+    checkEmployeeExchangeDemoProperties(exchangeDescriptor);
     
-    Assert.assertEquals("${config.baseHttpUrl}", exchangeDescriptor.getHttpUrl());
+    Assert.assertEquals("${config.server.baseHttpUrl}", exchangeDescriptor.getHttpUrl());
     Assert.assertEquals("org.jxapi.exchanges.demo.net.DemoExchangeHttpRequestInterceptorFactory", 
               exchangeDescriptor.getHttpRequestInterceptorFactory());
     Assert.assertEquals(1, exchangeDescriptor.getApis().size());
     checkEmployeeExchangeConstants(exchangeDescriptor.getConstants());
     checkEmployeeExchangeV1ApiGroup(exchangeDescriptor.getApis().get(0));
+  }
+  
+  private void checkEmployeeExchangeProperties(ExchangeDescriptor exchangeDescriptor) {
+    List<ConfigPropertyDescriptor> properties = exchangeDescriptor.getProperties();
+    Assert.assertEquals(1, properties.size());
+    ConfigPropertyDescriptor serverGroupProp = properties.get(0);
+    Assert.assertEquals("server", serverGroupProp.getName());
+    Assert.assertEquals("Server related properties", serverGroupProp.getDescription());
+    ConfigPropertyDescriptor baseHttpUrlProp = serverGroupProp.getProperties().get(0);
+    Assert.assertEquals("baseHttpUrl", baseHttpUrlProp.getName());
+    Assert.assertEquals("Base URL for REST endpoints the Employee Exchange API", baseHttpUrlProp.getDescription());
+    ConfigPropertyDescriptor wsHttpUrlProp = serverGroupProp.getProperties().get(1);
+    Assert.assertEquals("baseWebsocketUrl", wsHttpUrlProp.getName());
+    Assert.assertEquals("Base URL for websocket endpoints of the Employee Exchange API", wsHttpUrlProp.getDescription());
+  }
+  
+  private void checkEmployeeExchangeDemoProperties(ExchangeDescriptor exchangeDescriptor) {
+    List<ConfigPropertyDescriptor> properties = exchangeDescriptor.getDemoProperties();
+    Assert.assertEquals(1, properties.size());
+    ConfigPropertyDescriptor demoEmployeeProperty = properties.get(0);
+    Assert.assertEquals("demoEmployeeId", demoEmployeeProperty.getName());
+    Assert.assertEquals("Used in demo snippets to set as value of Employee 'id' property", demoEmployeeProperty.getDescription());
+    Assert.assertEquals(1, demoEmployeeProperty.getDefaultValue());
   }
   
   private void checkEmployeeExchangeV1ApiGroup(ExchangeApiDescriptor api) {
@@ -327,7 +341,7 @@ public class ExchangeDescriptorParserTest {
     checkEmployeeExchangeV1ApiGroupAddEmployeesRestEndpoint(restEndpoints.get(2));
     checkEmployeeExchangeV1ApiGroupUpdateEmployeesRestEndpoint(restEndpoints.get(3));
     checkEmployeeExchangeV1ApiGroupDeleteEmployeesRestEndpoint(restEndpoints.get(4));
-    Assert.assertEquals("${config.baseWebsocketUrl}", api.getWebsocketUrl());
+    Assert.assertEquals("${config.server.baseWebsocketUrl}", api.getWebsocketUrl());
     Assert.assertEquals("org.jxapi.exchanges.demo.net.DemoExchangeWebsocketHookFactory", 
               api.getWebsocketHookFactory());
     List<WebsocketEndpointDescriptor> websocketEndpoints = api.getWebsocketEndpoints();
@@ -349,7 +363,7 @@ public class ExchangeDescriptorParserTest {
     Assert.assertEquals(2, messageProperties.size());
     Field eventType = messageProperties.get(0);
     Assert.assertEquals("eventType", eventType.getName());
-    Assert.assertEquals("Type of event, e.g. one of ${constants.updateEmployeeType.add}, ${constants.updateEmployeeType.update} or ${constants.updateEmployeeType.delete}", eventType.getDescription());
+    Assert.assertEquals("Type of event, e.g. one of ${constants.updateEmployeeType.add}, ${constants.updateEmployeeType.update} or ${constants.updateEmployeeType.delete} (see ${constants.updateEmployeeType} constants).", eventType.getDescription());
     Assert.assertNull(eventType.getType());
     Assert.assertEquals("${constants.updateEmployeeType.update}", eventType.getSampleValue());
     Field employee = messageProperties.get(1);

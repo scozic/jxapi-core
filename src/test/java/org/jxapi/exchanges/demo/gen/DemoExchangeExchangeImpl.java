@@ -7,7 +7,6 @@ import org.jxapi.exchange.AbstractExchange;
 import org.jxapi.exchanges.demo.gen.marketdata.DemoExchangeMarketDataApi;
 import org.jxapi.exchanges.demo.gen.marketdata.DemoExchangeMarketDataApiImpl;
 import org.jxapi.util.EncodingUtil;
-import org.jxapi.util.PropertiesUtil;
 
 /**
  * Actual implementation of {@link DemoExchangeExchange}<br>
@@ -22,8 +21,8 @@ public class DemoExchangeExchangeImpl extends AbstractExchange implements DemoEx
           VERSION,
           exchangeName,
           properties,
-          EncodingUtil.substituteArguments("${config.baseHttpUrl}", "config.baseHttpUrl", PropertiesUtil.getString(properties, DemoExchangeProperties.BASE_HTTP_URL)),
-          EncodingUtil.substituteArguments("${config.baseWebsocketUrl}", "config.baseWebsocketUrl", PropertiesUtil.getString(properties, DemoExchangeProperties.BASE_WEBSOCKET_URL)));
+          EncodingUtil.substituteArguments("${config.baseHttpUrl}", "config.baseHttpUrl", DemoExchangeProperties.getBaseHttpUrl(properties)),
+          EncodingUtil.substituteArguments("${config.baseWebsocketUrl}", "config.baseWebsocketUrl", DemoExchangeProperties.getBaseWebsocketUrl(properties)));
     this.demoExchangeMarketDataApi = addApi(new DemoExchangeMarketDataApiImpl(this));
     afterInit("org.jxapi.exchange.MockExchangeHookFactory");
   }

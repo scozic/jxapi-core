@@ -19,6 +19,7 @@ import org.jxapi.exchange.descriptor.Field;
 import org.jxapi.exchange.descriptor.Type;
 import org.jxapi.generator.java.Imports;
 import org.jxapi.generator.java.JavaCodeGenUtil;
+import org.jxapi.generator.java.exchange.properties.PropertiesGenUtil;
 import org.jxapi.netutils.deserialization.json.AbstractJsonMessageDeserializer;
 import org.jxapi.netutils.deserialization.json.field.BigDecimalJsonFieldDeserializer;
 import org.jxapi.netutils.deserialization.json.field.BooleanJsonFieldDeserializer;
@@ -32,7 +33,6 @@ import org.jxapi.util.CollectionUtil;
 import org.jxapi.util.ConfigProperty;
 import org.jxapi.util.EncodingUtil;
 import org.jxapi.util.PlaceHolderResolver;
-import org.jxapi.util.PropertiesUtil;
 
 /**
  * Helper static methods for generation of Java classes of a given exchange wrapper
@@ -571,12 +571,17 @@ public class ExchangeGenUtil {
   }
   
   private static Constant findConstant(String constantName, List<Constant> constants) {
-    for (Constant c : CollectionUtil.emptyIfNull(constants)) {
-      if (constantName.equals(c.getName())) {
-        return c;
-      }
-    }
-    return null;
+    return CollectionUtil.emptyIfNull(constants).stream()
+        .filter(c -> constantName.equals(c.getName()))
+        .findFirst()
+        .orElse(null);
+  }
+  
+  private static ConfigPropertyDescriptor findProperty(String propertyName, List<ConfigPropertyDescriptor> properties) {
+    return CollectionUtil.emptyIfNull(properties)
+            .stream().filter(p -> propertyName.equals(p.getName()))
+            .findFirst()
+            .orElse(null);
   }
   
   private static List<Constant> retrieveConstantHierarchy(String constantName, ExchangeDescriptor exchangeDescriptor) {
@@ -594,6 +599,21 @@ public class ExchangeGenUtil {
     return Collections.unmodifiableList(l);
   }
   
+  private static List<ConfigPropertyDescriptor> retrievePropertiesHierarchy(String propertyName, List<ConfigPropertyDescriptor> properties) {
+    String[] parts = StringUtils.split(propertyName, '.');
+    List<ConfigPropertyDescriptor > l = new ArrayList<>();
+    List<ConfigPropertyDescriptor> exchangeProps = CollectionUtil.emptyIfNull(properties);
+    for (int i = 0; i < parts.length; i++) {
+      ConfigPropertyDescriptor c = findProperty(parts[i], exchangeProps);
+      if (c == null || (!c.isGroup() && i < parts.length - 1)) {
+        return Collections.emptyList(); // Constant not found
+      }
+      l.add(c);
+      exchangeProps = CollectionUtil.emptyIfNull(c.getProperties());
+    }
+    return Collections.unmodifiableList(l);
+  }
+  
   /**
    * Returns the full class name of the generated properties interface where the
    * given configuration property is defined.
@@ -607,18 +627,35 @@ public class ExchangeGenUtil {
    *         configuration property is not found.
    */
   public static String getClassNameForConfigProperty(String configPropertyName, 
-                                                     ExchangeDescriptor descriptor) {
-    for (ConfigPropertyDescriptor prop : CollectionUtil.emptyIfNull(descriptor.getProperties())) {
-      if (configPropertyName.equals(prop.getName())) {
-        return getExchangePropertiesInterfaceName(descriptor);
-      }
+                                                     ExchangeDescriptor exchangeDescriptor) {
+    if (exchangeDescriptor == null) {
+      throw new IllegalArgumentException("Exchange descriptor cannot be null");
     }
-    for (ConfigPropertyDescriptor prop : CollectionUtil.emptyIfNull(descriptor.getDemoProperties())) {
-      if (configPropertyName.equals(prop.getName())) {
-        return getExchangeDemoPropertiesInterfaceName(descriptor);
-      }
+    if (StringUtils.isEmpty(configPropertyName)) {
+      throw new IllegalArgumentException("Constant name cannot be null or empty");
     }
-    return null;
+    
+    
+    StringBuilder sb = new StringBuilder();
+    List<ConfigPropertyDescriptor> constants = retrievePropertiesHierarchy(configPropertyName, exchangeDescriptor.getProperties());
+    if (constants.isEmpty()) {
+      // Property not found in exchange properties, try demo properties
+      constants = retrievePropertiesHierarchy(configPropertyName, exchangeDescriptor.getProperties());
+      sb.append(getExchangeDemoPropertiesInterfaceName(exchangeDescriptor));
+    } else {
+      // Property found in exchange properties
+      sb.append(getExchangePropertiesInterfaceName(exchangeDescriptor));
+    }
+    if (constants.isEmpty()) {
+      // Property not found in exchange properties or demo properties
+      return null;
+    }
+    constants.forEach(constant -> {
+      if (constant.isGroup()) {
+        sb.append(".").append(JavaCodeGenUtil.firstLetterToUpperCase(constant.getName()));
+      }
+    });
+    return sb.toString();
   }
   
   /**
@@ -670,28 +707,42 @@ public class ExchangeGenUtil {
    *                           populated with classes used by returned type. That
    *                           set must be not <code>null</code> and mutable.
    * @return The value declaration for the given configuration property name, or
-   *         <code>null</code> if the configuration property is not found.
+   *         <code>null</code> if the configuration property is not found or is a group.
    */
   public static String getValueDeclarationForConfigProperty(String configPropertyName, 
                                                           ExchangeDescriptor exchangeDescriptor,
                                                           String propertiesVariable,
                                                           Imports imports) {
-    String className = getClassNameForConfigProperty(configPropertyName, exchangeDescriptor);
-    if (className == null) {
+    String className = null;
+    List<ConfigPropertyDescriptor> sieblingProperties = null;
+    List<ConfigPropertyDescriptor> hierarchy = retrievePropertiesHierarchy(configPropertyName, exchangeDescriptor.getProperties());
+    if(hierarchy.isEmpty()) {
+      hierarchy = retrievePropertiesHierarchy(configPropertyName, exchangeDescriptor.getDemoProperties());
+      className = getExchangeDemoPropertiesInterfaceName(exchangeDescriptor);
+      sieblingProperties = exchangeDescriptor.getDemoProperties();
+    } else {
+      className = getExchangePropertiesInterfaceName(exchangeDescriptor);
+      sieblingProperties = exchangeDescriptor.getProperties();
+    }
+    
+    if(hierarchy.isEmpty() || hierarchy.get(hierarchy.size() - 1).isGroup()) {
+      // Property not found or is a group property
       return null;
     }
+    
     imports.add(className);
-    imports.add(PropertiesUtil.class);
-    return new StringBuilder()
-                .append(PropertiesUtil.class.getSimpleName())                
-                .append(".getString(") 
-                .append(propertiesVariable)
-                .append(", ")
-                .append(JavaCodeGenUtil.getClassNameWithoutPackage(className))
-                .append(".")
-                .append(JavaCodeGenUtil.getStaticVariableName(configPropertyName))
-                .append(")")
-                .toString();
+    StringBuilder s = new StringBuilder().append(JavaCodeGenUtil.getClassNameWithoutPackage(className)).append(".");
+    for (int i = 0; i < hierarchy.size() - 1; i++) {
+      ConfigPropertyDescriptor p = hierarchy.get(i);
+      s.append(JavaCodeGenUtil.firstLetterToUpperCase(hierarchy.get(i).getName())).append(".");
+      sieblingProperties = p.getProperties();
+    }
+    String methodName = PropertiesGenUtil.getPropertyGetterMethodName(hierarchy.get(hierarchy.size() - 1), sieblingProperties);
+    return s.append(methodName)                
+            .append("(") 
+            .append(propertiesVariable)
+            .append(")")
+            .toString();
   }
   
   /**

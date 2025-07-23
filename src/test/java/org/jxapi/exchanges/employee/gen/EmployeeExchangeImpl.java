@@ -7,7 +7,6 @@ import org.jxapi.exchange.AbstractExchange;
 import org.jxapi.exchanges.employee.gen.v1.EmployeeV1Api;
 import org.jxapi.exchanges.employee.gen.v1.EmployeeV1ApiImpl;
 import org.jxapi.util.EncodingUtil;
-import org.jxapi.util.PropertiesUtil;
 
 /**
  * Actual implementation of {@link EmployeeExchange}<br>
@@ -22,7 +21,7 @@ public class EmployeeExchangeImpl extends AbstractExchange implements EmployeeEx
           VERSION,
           exchangeName,
           properties,
-          EncodingUtil.substituteArguments("${config.baseHttpUrl}", "config.baseHttpUrl", PropertiesUtil.getString(properties, EmployeeProperties.BASE_HTTP_URL)),
+          EncodingUtil.substituteArguments("${config.server.baseHttpUrl}", "config.server.baseHttpUrl", EmployeeProperties.Server.getBaseHttpUrl(properties)),
           null);
     this.employeeV1Api = addApi(new EmployeeV1ApiImpl(this));
   }

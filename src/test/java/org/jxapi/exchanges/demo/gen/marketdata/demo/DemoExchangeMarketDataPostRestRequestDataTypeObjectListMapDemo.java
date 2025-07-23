@@ -16,7 +16,6 @@ import org.jxapi.exchanges.demo.gen.marketdata.pojo.SingleSymbol;
 import org.jxapi.netutils.rest.RestResponse;
 import org.jxapi.util.DemoUtil;
 import org.jxapi.util.EncodingUtil;
-import org.jxapi.util.PropertiesUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -34,7 +33,7 @@ public class DemoExchangeMarketDataPostRestRequestDataTypeObjectListMapDemo {
    */
   public static Map<String, List<SingleSymbol>> createRequest(Properties properties) {
     SingleSymbol requestItem = new SingleSymbol();
-    requestItem.setSymbol(EncodingUtil.substituteArguments("${config.demoSymbol}", "config.demoSymbol", PropertiesUtil.getString(properties, DemoExchangeDemoProperties.DEMO_SYMBOL)));
+    requestItem.setSymbol(EncodingUtil.substituteArguments("${config.demoSymbol}", "config.demoSymbol", DemoExchangeDemoProperties.getDemoSymbol(properties)));
     return Map.of("spot", List.of(requestItem));
   }
   

@@ -5,12 +5,17 @@
     "docUrl": "https://www.example.com/docs/employee",
     "httpRequestInterceptorFactory": "org.jxapi.exchanges.demo.net.DemoExchangeHttpRequestInterceptorFactory",
     "httpRequestTimeout": -1,
-    "httpUrl": "${config.baseHttpUrl}",
+    "httpUrl": "${config.server.baseHttpUrl}",
     "basePackage": "org.jxapi.exchanges.employee.gen",
     "properties": [
-        {"name": "baseHttpUrl", "description": "Base URL for REST endpoints the Employee Exchange API"},
-        {"name": "baseWebsocketUrl", "description": "Base URL for websocket endpoints of the Employee Exchange API"},
-        {"name": "demoEmployeeId", "description": "Used in demo snippets to set as value of Employee 'id' property", "defaultValue": 1}
+    	{"name": "server", "description": "Server related properties", "properties": [
+    			{"name": "baseHttpUrl", "description": "Base URL for REST endpoints the Employee Exchange API"},
+        		{"name": "baseWebsocketUrl", "description": "Base URL for websocket endpoints of the Employee Exchange API"}
+    		]
+        }        
+    ],
+    "demoProperties": [
+    	{"name": "demoEmployeeId", "description": "Used in demo snippets to set as value of Employee 'id' property", "defaultValue": 1}
     ],
     "constants": [
         {"name": "defaultPageSize", "description": "Default page size for paginated requests", "value": 10},
@@ -131,7 +136,7 @@
                     "message": {
                         "description": "Employee update message",
                         "properties": [
-                            {"name": "eventType", "description": "Type of event, e.g. one of ${constants.updateEmployeeType.add}, ${constants.updateEmployeeType.update} or ${constants.updateEmployeeType.delete}", "sampleValue": "${constants.updateEmployeeType.update}"},
+                            {"name": "eventType", "description": "Type of event, e.g. one of ${constants.updateEmployeeType.add}, ${constants.updateEmployeeType.update} or ${constants.updateEmployeeType.delete} (see ${constants.updateEmployeeType} constants).", "sampleValue": "${constants.updateEmployeeType.update}"},
                             {"name": "employee", "description": "Employee that was updated", "objectName": "Employee", "sampleValue": "John"}
                         ]
                     },
@@ -139,7 +144,7 @@
                 }
             ],
             "websocketHookFactory": "org.jxapi.exchanges.demo.net.DemoExchangeWebsocketHookFactory",
-            "websocketUrl": "${config.baseWebsocketUrl}"
+            "websocketUrl": "${config.server.baseWebsocketUrl}"
         }
     ]
 }

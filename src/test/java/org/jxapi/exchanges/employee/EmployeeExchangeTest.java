@@ -57,8 +57,8 @@ public class EmployeeExchangeTest {
     this.server = new EmployeeExchangeServer(httpPort, webSocketPort);
     this.server.start();
     Properties config = new Properties();
-    config.setProperty(EmployeeProperties.BASE_HTTP_URL.getName(), server.getHttpBaseUrl());
-    config.setProperty(EmployeeProperties.BASE_WEBSOCKET_URL.getName(), server.getWebSocketBaseUrl());
+    config.setProperty(EmployeeProperties.Server.BASE_HTTP_URL.getName(), server.getHttpBaseUrl());
+    config.setProperty(EmployeeProperties.Server.BASE_WEBSOCKET_URL.getName(), server.getWebSocketBaseUrl());
     this.exchange = new EmployeeExchangeImpl("testEmployeeClient", config);
     this.api = exchange.getEmployeeV1Api();
     this.wsListener = new MockWebsocketListener<>();

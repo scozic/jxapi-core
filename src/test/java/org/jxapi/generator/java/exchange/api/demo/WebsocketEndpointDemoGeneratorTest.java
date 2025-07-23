@@ -25,7 +25,7 @@ public class WebsocketEndpointDemoGeneratorTest {
         + "\n"
         + "import java.util.Properties;\n"
         + "\n"
-        + "import com.foo.bar.gen.MyTestExchangeConstants;\n"
+        + "import com.foo.bar.gen.MyTestExchangeDemoProperties;\n"
         + "import com.foo.bar.gen.MyTestExchangeExchange;\n"
         + "import com.foo.bar.gen.MyTestExchangeExchangeImpl;\n"
         + "import com.foo.bar.gen.MyTestExchangeProperties;\n"
@@ -38,7 +38,6 @@ public class WebsocketEndpointDemoGeneratorTest {
         + "import org.jxapi.util.DemoProperties;\n"
         + "import org.jxapi.util.DemoUtil;\n"
         + "import org.jxapi.util.EncodingUtil;\n"
-        + "import org.jxapi.util.PropertiesUtil;\n"
         + "import org.slf4j.Logger;\n"
         + "import org.slf4j.LoggerFactory;\n"
         + "\n"
@@ -56,8 +55,8 @@ public class WebsocketEndpointDemoGeneratorTest {
         + "   */\n"
         + "  public static MyTestExchangeMarketDataTickerStreamRequest createRequest(Properties properties) {\n"
         + "    MyTestExchangeMarketDataTickerStreamRequest request = new MyTestExchangeMarketDataTickerStreamRequest();\n"
-        + "    request.setSymbol(EncodingUtil.substituteArguments(\"${constants.allTickers}\", \"constants.allTickers\", MyTestExchangeConstants.ALL_TICKERS));\n"
-        + "    request.setApiKey(EncodingUtil.substituteArguments(\"${config.apiKey}\", \"config.apiKey\", PropertiesUtil.getString(properties, MyTestExchangeProperties.API_KEY)));\n"
+        + "    request.setSymbol(EncodingUtil.substituteArguments(\"${config.wsTickerStreamDemo.symbol}\", \"config.wsTickerStreamDemo.symbol\", MyTestExchangeDemoProperties.WsTickerStreamDemo.getSymbol(properties)));\n"
+        + "    request.setApiKey(EncodingUtil.substituteArguments(\"${config.apiKey}\", \"config.apiKey\", MyTestExchangeProperties.getApiKey(properties)));\n"
         + "    return request;\n"
         + "  }\n"
         + "  \n"
@@ -112,7 +111,8 @@ public class WebsocketEndpointDemoGeneratorTest {
         + "      System.exit(-1);\n"
         + "    }\n"
         + "  }\n"
-        + "}\n", 
+        + "}\n"
+        + "", 
         new WebsocketEndpointDemoGenerator(exchangeDescriptor, exchangeApiDescriptor, websocketEndpointDescriptor).generate());
   }
   

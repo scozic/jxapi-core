@@ -1,0 +1,5 @@
+id: "Employee"
+demoProperties:
+ - name: demoEmployeeId
+   description: "Used in demo snippets to set as value of Employee 'id' property"
+   defaultValue: 1  

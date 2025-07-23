@@ -43,8 +43,8 @@ public class ExmployeeDemosTest {
     server = new EmployeeExchangeServer(httpPort, wsPort);
     server.start();
     config = new Properties();
-    config.setProperty(EmployeeProperties.BASE_HTTP_URL.getName(), server.getHttpBaseUrl());
-    config.setProperty(EmployeeProperties.BASE_WEBSOCKET_URL.getName(), server.getWebSocketBaseUrl());
+    config.setProperty(EmployeeProperties.Server.BASE_HTTP_URL.getName(), server.getHttpBaseUrl());
+    config.setProperty(EmployeeProperties.Server.BASE_WEBSOCKET_URL.getName(), server.getWebSocketBaseUrl());
     config.setProperty(DemoProperties.DEMO_WS_SUBSCRIPTION_DURATION_PROPERTY.getName(), "500");
     config.setProperty(DemoProperties.DEMO_WS_DELAY_BEFORE_EXIT_AFTER_UNSUBSCRIPTION_PROPERTY.getName(), "50");
   }
