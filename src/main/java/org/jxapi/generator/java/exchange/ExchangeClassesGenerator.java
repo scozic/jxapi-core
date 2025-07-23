@@ -65,7 +65,7 @@ public class ExchangeClassesGenerator implements ClassesGenerator {
     List<Constant> constants = exchangeDescriptor.getConstants();
     if (!CollectionUtils.isEmpty(constants)) {
       ConstantsClassGenerator cgen = new ConstantsClassGenerator(
-          ExchangeGenUtil.getExchangeConstantsInterfaceName(exchangeDescriptor), 
+          ExchangeGenUtil.getExchangeConstantsClassName(exchangeDescriptor), 
           constants,
           docPlaceHolderResolver);
       cgen.setConstantValuePlaceHolderResolver(s -> ExchangeGenUtil.generateSubstitutionInstructionDeclaration(

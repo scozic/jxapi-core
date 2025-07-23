@@ -61,34 +61,6 @@ public class HtmlGenerationUtil {
     return generateHtmlForElement(tableBuilder.build());
   }
   
-//  /**
-//   * Generates a HTML table with given caption, header and rows
-//   * @param caption HTML table <code>&lt;caption&gt;</code> content
-//   * @param columns Column names nested in <code>&lt;th&gt;</code>
-//   * @param cells List of rows containing values for cells
-//   * @return HTML <code>&lt;table&gt;</code> code fragment.
-//   */
-//  public static String generateTable(String caption, List<HtmlElement> columns, List<List<HtmlElement>> cells) {
-//    HtmlElement.Builder tableBuilder = HtmlElement.builder()
-//        .tag("table")
-//        .attribute("caption", caption);
-//    if (!CollectionUtil.isEmpty(columns)) {
-//      tableBuilder.child(HtmlElement.builder().tag("tr").children(columns).build());
-//    }
-//    
-//    if (!CollectionUtils.isEmpty(cells)) {
-//      cells.forEach(row -> {
-//        HtmlElement.Builder rowBuilder = HtmlElement.builder().tag("tr");
-//        if (!CollectionUtil.isEmpty(row)) {
-//          rowBuilder.children(row);
-//        }
-//        tableBuilder.child(rowBuilder.build());
-//      });
-//    }
-//    return generateHtmlForElement(tableBuilder.build());
-//    
-//  }
-  
   /**
    * Generates HTML markers for given string and marker name
    * <p>Example:</p>
@@ -120,9 +92,13 @@ public class HtmlGenerationUtil {
     sb.append("<")
       .append(htmlElement.getTag());
     if (!CollectionUtil.isEmptyMap(htmlElement.getAttributes())) {
-      htmlElement.getAttributes().forEach((key, value) -> {
-        sb.append(" ").append(key).append("=\"").append(value).append("\"");
-      });
+      htmlElement.getAttributes().forEach((key, value) -> 
+        sb.append(" ")
+          .append(key)
+          .append("=\"")
+          .append(value)
+          .append("\"")
+      );
     }
     sb.append(">");
     sb.append(StringUtils.defaultString(htmlElement.getContent()));

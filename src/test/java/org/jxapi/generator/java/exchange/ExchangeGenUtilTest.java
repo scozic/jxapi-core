@@ -309,18 +309,7 @@ public class ExchangeGenUtilTest {
     exchangeDescriptor.setId("TestExchange");
     exchangeDescriptor.setBasePackage("com.x.y.z");
     Assert.assertEquals("com.x.y.z.TestExchangeConstants", 
-              ExchangeGenUtil.getExchangeConstantsInterfaceName(exchangeDescriptor));
-  }
-
-  @Test
-  public void testGetExchangeApiConstantsInterfaceName() {
-    ExchangeDescriptor exchangeDescriptor = new ExchangeDescriptor();
-    exchangeDescriptor.setId("TestExchange");
-    exchangeDescriptor.setBasePackage("com.x.y.z");
-    ExchangeApiDescriptor apiDescriptor = new ExchangeApiDescriptor();
-    apiDescriptor.setName("Spot");
-    Assert.assertEquals("com.x.y.z.spot.TestExchangeSpotConstants", 
-              ExchangeGenUtil.getExchangeApiConstantsInterfaceName(exchangeDescriptor, apiDescriptor));
+              ExchangeGenUtil.getExchangeConstantsClassName(exchangeDescriptor));
   }
 
   @Test

@@ -69,7 +69,7 @@ public class ExchangeReadmeMdGenerator {
     this.exchangeInterfaceName = ExchangeGenUtil.getExchangeInterfaceName(exchangeDescriptor);
     this.exchangeInterfaceImplementationName = ExchangeGenUtil.getExchangeInterfaceImplementationName(exchangeInterfaceName);
     this.demoClassName = findDemoClassName(exchangeDescriptor);
-    this.constantsInterfaceName = ExchangeGenUtil.getExchangeConstantsInterfaceName(exchangeDescriptor);
+    this.constantsInterfaceName = ExchangeGenUtil.getExchangeConstantsClassName(exchangeDescriptor);
   }
 
   /**

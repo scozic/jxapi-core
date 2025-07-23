@@ -127,9 +127,8 @@ public class HtmlElement implements DeepCloneable<HtmlElement> {
     clone.setContent(this.content);
     clone.addAttributes(this.attributes);
     clone.setTag(this.tag);
-    this.children.forEach(child -> {
-      clone.addChild(child.deepClone());
-    });
+    this.children.forEach(child -> clone.addChild(child.deepClone())
+    );
     return clone;
   }
   

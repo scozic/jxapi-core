@@ -183,23 +183,9 @@ public class ExchangeGenUtil {
    * @return The full class name of constants interface defined at exchange level
    * @see ExchangeDescriptor#getConstants()
    */
-  // FIXME remove 'Interface' suffix from the name since it is not an interface anymore
-  public static String getExchangeConstantsInterfaceName(ExchangeDescriptor exchangeDescriptor) {
+  public static String getExchangeConstantsClassName(ExchangeDescriptor exchangeDescriptor) {
     return exchangeDescriptor.getBasePackage() + "." 
         + JavaCodeGenUtil.firstLetterToUpperCase(exchangeDescriptor.getId()) + "Constants";
-  }
-  
-  /**
-   * @param exchangeDescriptor The exchange where the API group belongs to
-   * @param exchangeApiDescriptor The exchange API group for which constants interface stands for.
-   * @return the full class name of constants interface defined at exchange API level.
-   */
-  public static String getExchangeApiConstantsInterfaceName(ExchangeDescriptor exchangeDescriptor, 
-                                ExchangeApiDescriptor exchangeApiDescriptor) {
-    String pkgPrefix =  exchangeDescriptor.getBasePackage() + "." + exchangeApiDescriptor.getName().toLowerCase() + ".";
-    String simpleInterfaceName = JavaCodeGenUtil.firstLetterToUpperCase(exchangeDescriptor.getId()) 
-                    + JavaCodeGenUtil.firstLetterToUpperCase(exchangeApiDescriptor.getName()) + "Constants";
-    return pkgPrefix + simpleInterfaceName;
   }
   
   /**
@@ -557,7 +543,7 @@ public class ExchangeGenUtil {
     
     
     StringBuilder sb = new StringBuilder()
-        .append(getExchangeConstantsInterfaceName(exchangeDescriptor));
+        .append(getExchangeConstantsClassName(exchangeDescriptor));
     List<Constant> constants = retrieveConstantHierarchy(constantName, exchangeDescriptor);
     if (constants.isEmpty()) {
       return null;
@@ -682,7 +668,7 @@ public class ExchangeGenUtil {
     if(constants.isEmpty() || constants.get(constants.size() - 1).isGroup()) {
       return null; // Constant not found
     }
-    String className = getExchangeConstantsInterfaceName(exchangeDescriptor);
+    String className = getExchangeConstantsClassName(exchangeDescriptor);
     imports.add(className);
     StringBuilder s = new StringBuilder().append(JavaCodeGenUtil.getClassNameWithoutPackage(className)).append(".");
     for (int i = 0; i < constants.size() - 1; i++) {
@@ -802,7 +788,7 @@ public class ExchangeGenUtil {
     collectConstantDescriptionReplacements(
         replacements, 
         CONSTANT_PLACEHOLDER_PREFIX,
-        getExchangeConstantsInterfaceName(exchangeDescriptor), 
+        getExchangeConstantsClassName(exchangeDescriptor), 
         "",
         exchangeDescriptor.getConstants(), 
         baseHtmlDocUrl);
