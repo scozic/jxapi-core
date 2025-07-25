@@ -41,12 +41,6 @@ public class MapJsonFieldDeserializer<T> extends AbstractJsonMessageDeserializer
     
     Map<String, T> res = CollectionUtil.createMap();
         while (parser.nextToken() != JsonToken.END_OBJECT) {
-          if (parser.currentToken() != JsonToken.FIELD_NAME) {
-            throw new IllegalStateException("Expecting field name in map of objects to be deserialized using " 
-            + this.itemDeserializer 
-            + " but found:" 
-            + parser.currentToken());
-          }
             String key = parser.getCurrentName();
             parser.nextToken();
             res.put(key, itemDeserializer.deserialize(parser));

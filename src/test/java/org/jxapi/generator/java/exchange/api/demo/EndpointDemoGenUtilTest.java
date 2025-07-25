@@ -168,7 +168,6 @@ public class EndpointDemoGenUtilTest {
                .property(Field.builder().type("STRING_MAP").name("theVoidMap").build())
                .build();
                
-    param.setSampleValue(123);
     Imports imports = new Imports();
     String method = EndpointDemoGenUtil.generateFieldCreationMethod(param, "MyRequest", ExchangeApiGenUtil.DEFAULT_REQUEST_ARG_NAME, imports, null);
     Assert.assertEquals(
@@ -205,7 +204,6 @@ public class EndpointDemoGenUtilTest {
                               .build())
                   .build();
     
-    param.setSampleValue(123);
     Imports imports = new Imports();
     
     PlaceHolderResolver resolver = s -> {
@@ -402,6 +400,43 @@ public class EndpointDemoGenUtilTest {
   }
   
   @Test
+  public void testGenerateEndpointParameterCreationMethodObjectListWithFullListSampleValue() {  
+    Field param = Field.builder()
+               .type("OBJECT_LIST")
+               .name("myObjListParam")
+               .property(Field.builder()
+                         .type("INT")
+                         .name("foo")
+                         .sampleValue(123)
+                         .build())
+               .property(Field.builder()
+                           .type("STRING")
+                           .name("hello")
+                           .sampleValue("Hello World")
+                           .build())
+               .sampleValue("[{\"foo\": 1230, \"hello!\": \"Hello World!\"}, {\"foo\": 4560, \"Hello hello\": \"Goodbye World\"}]")
+               .build();
+    Imports imports = new Imports();
+    String method = EndpointDemoGenUtil.generateFieldCreationMethod(param, "com.x.gen.api.pojo.MyRequest", ExchangeApiGenUtil.DEFAULT_REQUEST_ARG_NAME, imports, null);
+    Assert.assertEquals(
+        "/**\n"
+        + " * Creates a sample value for the myObjListParam field of type List<MyRequest> using sample value(s) defined in the field descriptor.\n"
+        + " * \n"
+        + " * @param properties the configuration properties to use for the sample value generation.\n"
+        + " */\n"
+        + "public static List<MyRequest> createMyObjListParam(Properties properties) {\n"
+        + "  return new ListJsonFieldDeserializer<>(new MyRequestDeserializer()).deserialize(\"[{\\\"foo\\\": 1230, \\\"hello!\\\": \\\"Hello World!\\\"}, {\\\"foo\\\": 4560, \\\"Hello hello\\\": \\\"Goodbye World\\\"}]\");\n"
+        + "}\n"
+        + "", method);
+    checkImports(imports, 
+        List.class.getName(), 
+        Properties.class.getName(), 
+        "com.x.gen.api.deserializers.MyRequestDeserializer", 
+        "com.x.gen.api.pojo.MyRequest",
+        ListJsonFieldDeserializer.class.getName());
+  }
+  
+  @Test
   public void testGenerateEndpointParameterCreationMethodObjectMap() {
     Field param = Field.builder()
                .type("OBJECT_MAP")
@@ -556,22 +591,28 @@ public class EndpointDemoGenUtilTest {
   }
   
   private void checkImports(Imports actualImports, Class<?>...expectedImports) {
-    String[] expected = Arrays.stream(expectedImports)
+    checkImports(
+        actualImports, 
+        Arrays.stream(expectedImports)
                   .map(i -> i.getName())
                   .collect(Collectors.toList())
-                  .toArray(new String[expectedImports.length]);
+                  .toArray(new String[expectedImports.length]));
+  }
+  
+  private void checkImports(Imports actualImports, String...expectedImports) {
     List<String> actual = actualImports.getAllImports().stream().filter(s -> !s.startsWith("java.lang") && s.contains(".")).collect(Collectors.toList());
     BinaryOperator<String> concat = (s1, s2) -> s1 + "\n" + s2;
     String errMsg = "Unexpected imports, expected:\n" 
-            + Arrays.stream(expected)
+            + Arrays.stream(expectedImports)
                 .reduce(concat).orElse(null) 
             + "\n actual:\n" 
             + actual.stream().reduce(concat).orElse(null);
-    Assert.assertEquals(errMsg, expected.length, actual.size());
-    for (int i = 0; i < expected.length; i++) {
-      Assert.assertEquals(errMsg, expected[i], actual.get(i));
+    Assert.assertEquals(errMsg, expectedImports.length, actual.size());
+    for (int i = 0; i < expectedImports.length; i++) {
+      Assert.assertEquals(errMsg, expectedImports[i], actual.get(i));
     }
   }
+  
   @Test
   public void testGetRestApiDemoClassName() {
       ExchangeDescriptor exchangeDescriptor = new ExchangeDescriptor();

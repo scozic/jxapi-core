@@ -166,8 +166,8 @@ public class EndpointDemoGenUtil {
 
     String fieldValue = null;
     StringBuilder res = new StringBuilder();
-    if (type.isObject()) {
-      fieldValue = generateSampleFieldValueDeclarationObjectField(
+    if (type.isObject() && sampleValue == null) {
+      fieldValue = generateSampleFieldValueDeclarationObjectFieldWithNoSampleValue(
                      res, 
                      field, 
                      sampleValueVariableName, 
@@ -180,7 +180,7 @@ public class EndpointDemoGenUtil {
     
   if (canonicalType != CanonicalType.OBJECT) {
       // Not primitive nor object type -> map or list type.
-      if (type.isObject()) {
+      if (type.isObject() && sampleValue == null) {
         fieldValue = getMapOrListSampleValueDeclaration(
                       type, 
                       fieldValue, 
@@ -202,7 +202,7 @@ public class EndpointDemoGenUtil {
     }
   }
   
-  private static String generateSampleFieldValueDeclarationObjectField(
+  private static String generateSampleFieldValueDeclarationObjectFieldWithNoSampleValue(
         StringBuilder res, 
         Field field, 
         String sampleValueVariableName, 
@@ -211,39 +211,35 @@ public class EndpointDemoGenUtil {
         PlaceHolderResolver sampleValuePlaceholderResolver) {
     Type type = ExchangeGenUtil.getFieldType(field);
     CanonicalType canonicalType = type.getCanonicalType();
-    Object sampleValue = field.getSampleValue();
     String itemVariableName = sampleValueVariableName;
     String fieldValue = null;
-    if (type.isObject()) {
-      if (canonicalType != CanonicalType.OBJECT) {
-        itemVariableName = itemVariableName + "Item";
-      }
-      String itemClassName = ExchangeGenUtil.getClassNameForType(
-                    Type.getLeafSubType(type), 
-                    imports, 
-                    objectClassName);
-      res.append(itemClassName)
-         .append(" ")
-         .append(itemVariableName)
-         .append(" = new ")
-         .append(itemClassName)
-         .append("();\n");
-      
-      for (Field childParam: field.getProperties()) {
-        generateSampleFieldValueDeclarationObjectFieldChild(
-          res, 
-          field, 
-          childParam, 
-          itemVariableName, 
-          objectClassName, 
-          imports, 
-          sampleValuePlaceholderResolver);
-      }
-      
-      fieldValue = itemVariableName;
-    } else {
-      fieldValue = JavaCodeGenUtil.getQuotedString(sampleValue);
+    if (canonicalType != CanonicalType.OBJECT) {
+      itemVariableName = itemVariableName + "Item";
     }
+    String itemClassName = ExchangeGenUtil.getClassNameForType(
+                  Type.getLeafSubType(type), 
+                  imports, 
+                  objectClassName);
+    res.append(itemClassName)
+       .append(" ")
+       .append(itemVariableName)
+       .append(" = new ")
+       .append(itemClassName)
+       .append("();\n");
+      
+    for (Field childParam: field.getProperties()) {
+      generateSampleFieldValueDeclarationObjectFieldChild(
+        res, 
+        field, 
+        childParam, 
+        itemVariableName, 
+        objectClassName, 
+        imports, 
+        sampleValuePlaceholderResolver);
+    }
+      
+    fieldValue = itemVariableName;
+    
     return fieldValue;
   }
   

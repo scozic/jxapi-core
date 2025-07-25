@@ -12,11 +12,11 @@ import org.junit.Test;
  */
 public class MapJsonFieldDeserializerTest {
   
-  private MapJsonFieldDeserializer<String> testDeserializer;
+  private MapJsonFieldDeserializer<Integer> testDeserializer;
   
   @Before
   public void setUp() {
-    testDeserializer = new MapJsonFieldDeserializer<>(StringJsonFieldDeserializer.getInstance());
+    testDeserializer = new MapJsonFieldDeserializer<>(IntegerJsonFieldDeserializer.getInstance());
   }
   
   @After
@@ -44,17 +44,17 @@ public class MapJsonFieldDeserializerTest {
     testDeserializer.deserialize("\"foo\"");
   }
   
-  @Test(expected = IllegalStateException.class)
+  @Test(expected = IllegalArgumentException.class)
   public void testDeserializeInvalidJsonMapValue() {
-    testDeserializer.deserialize("{\"foo\":\"bar\", \"name\":[\"Bob\", \"Dylan\"]}");
+    testDeserializer.deserialize("{\"foo\":\"2\", \"name\":[\"Bob\", \"Dylan\"]}");
   }
 
   @Test
   public void testDeserialize() {
-    Map<String, String> actual = testDeserializer.deserialize("{\"foo\":\"bar\", \"name\":\"Bob\"}");
+    Map<String, Integer> actual = testDeserializer.deserialize("{\"foo\":\"1\", \"bar\":25}");
     Assert.assertEquals(2, actual.size());
-    Assert.assertEquals("bar", actual.get("foo"));
-    Assert.assertEquals("Bob", actual.get("name"));
+    Assert.assertEquals(Integer.valueOf(1), actual.get("foo"));
+    Assert.assertEquals(Integer.valueOf(25), actual.get("bar"));
   }
   
 }
