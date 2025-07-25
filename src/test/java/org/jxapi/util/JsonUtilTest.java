@@ -76,6 +76,81 @@ public class JsonUtilTest {
     JsonUtil.pojoToPrettyPrintJson(foo);
   }
   
+  // Read next / current String tests
+  @Test
+  public void testReadNextString_ValueTrueAsString() throws Exception {
+    JsonParser parser = new JsonFactory().createParser("true".getBytes());
+    Assert.assertEquals(Boolean.TRUE.toString(), JsonUtil.readNextString(parser));
+  }
+  
+  @Test
+  public void testReadNextString_ValueStringAsString() throws Exception {
+    JsonParser parser = new JsonFactory().createParser("\"bar\"".getBytes());
+    Assert.assertEquals("bar", JsonUtil.readNextString(parser));
+  }
+  
+  @Test
+  public void testReadNextString_ValueBigDecimalAsString() throws Exception {
+    JsonParser parser = new JsonFactory().createParser("123.45".getBytes());
+    Assert.assertEquals("123.45", JsonUtil.readNextString(parser));
+  }
+  
+  @Test
+  public void testReadNextString_ValueIntAsString() throws Exception {
+    JsonParser parser = new JsonFactory().createParser("123".getBytes());
+    Assert.assertEquals("123", JsonUtil.readNextString(parser));
+  }
+  
+  @Test
+  public void testReadNextString_ValueNullAsString() throws Exception {
+    JsonParser parser = new JsonFactory().createParser("null".getBytes());
+    Assert.assertNull(JsonUtil.readNextString(parser));
+  }
+  
+  @Test
+  public void testReadCurrentString_ValueTrueAsString() throws Exception {
+    JsonParser parser = new JsonFactory().createParser("true".getBytes());
+    Assert.assertEquals(JsonToken.VALUE_TRUE, parser.nextToken());
+    Assert.assertEquals(Boolean.TRUE.toString(), JsonUtil.readCurrentString(parser));
+  }
+  
+  @Test
+  public void testReadCurrentString_ValueStringAsString() throws Exception {
+    JsonParser parser = new JsonFactory().createParser("\"bar\"".getBytes());
+    Assert.assertEquals(JsonToken.VALUE_STRING, parser.nextToken());
+    Assert.assertEquals("bar", JsonUtil.readCurrentString(parser));
+  }
+  
+  @Test
+  public void testReadCurrentString_ValueBigDecimalAsString() throws Exception {
+    JsonParser parser = new JsonFactory().createParser("123.45".getBytes());
+    Assert.assertEquals(JsonToken.VALUE_NUMBER_FLOAT, parser.nextToken());
+    Assert.assertEquals("123.45", JsonUtil.readCurrentString(parser));
+  }
+  
+  @Test
+  public void testReadCurrentString_ValueIntAsString() throws Exception {
+    JsonParser parser = new JsonFactory().createParser("123".getBytes());
+    Assert.assertEquals(JsonToken.VALUE_NUMBER_INT, parser.nextToken());
+    Assert.assertEquals("123", JsonUtil.readCurrentString(parser));
+  }
+  
+  @Test
+  public void testReadCurrentString_ValueNullAsString() throws Exception {
+    JsonParser parser = new JsonFactory().createParser("null".getBytes());
+    Assert.assertEquals(JsonToken.VALUE_NULL, parser.nextToken());
+    Assert.assertNull(JsonUtil.readCurrentString(parser));
+  }
+  
+  @Test
+  public void testReadCurrentString_ValueObjectAsString() throws Exception {
+    JsonParser parser = new JsonFactory().createParser("{\"x\":{\"foo\":\"bar\"}, \"y\":123}".getBytes());
+    Assert.assertEquals(JsonToken.START_OBJECT, parser.nextToken());
+    Assert.assertEquals(JsonToken.FIELD_NAME, parser.nextToken());
+    Assert.assertEquals(JsonToken.START_OBJECT, parser.nextToken());
+    Assert.assertEquals("{\"foo\":\"bar\"}", JsonUtil.readCurrentString(parser));
+  }
+  
   // Read next / current BigDecimal tests
   
   @Test

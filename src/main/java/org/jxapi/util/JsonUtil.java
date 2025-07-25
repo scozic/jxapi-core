@@ -19,6 +19,7 @@ import com.fasterxml.jackson.databind.MapperFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.SerializerProvider;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.databind.ser.std.StdSerializer;
 
@@ -124,6 +125,56 @@ public class JsonUtil {
     } catch (JsonProcessingException e) {
       throw new IllegalArgumentException(
           "Error while trying to serialize " + pojo.getClass().getName() + " instance to JSON", e);
+    }
+  }
+  
+
+  /**
+   * Reads (and consumes) the next token from the parser and returns it as a
+   * String. The parser is expected to be positioned on the value to read. The
+   * current token is expected to be a {@link JsonToken#VALUE_STRING} or a
+   * {@link JsonToken#VALUE_NULL}.
+   * 
+   * @param parser The parser to read from
+   * @return <code>null</code> if the next token is {@link JsonToken#VALUE_NULL},
+   *         the String value otherwise.
+   * @throws IOException Eventually thrown by the parser
+   * 
+   * @see JsonParser#nextToken()
+   * @see #readCurrentString(JsonParser)
+   */
+  public static String readNextString(JsonParser parser) throws IOException {
+    parser.nextToken();
+    return readCurrentString(parser);
+  }
+
+  /**
+   * Reads (and consumes) the next token from the parser and returns it as a
+   * String. The parser is expected to be positioned on the value to read. The
+   * current token is expected to be a {@link JsonToken#VALUE_STRING} or a
+   * {@link JsonToken#VALUE_NULL}.
+   * 
+   * @param parser The parser to read from
+   * @return <code>null</code> if the next token is {@link JsonToken#VALUE_NULL},
+   *         the String value otherwise.
+   * @throws IOException Eventually thrown by the parser
+   * 
+   * @see JsonParser#nextToken()
+   */
+  public static String readCurrentString(JsonParser parser) throws IOException {
+    switch (parser.currentToken()) {
+    case VALUE_STRING:
+    case VALUE_NUMBER_FLOAT:
+    case VALUE_NUMBER_INT:
+    case VALUE_FALSE:
+    case VALUE_TRUE:
+      return parser.getText();
+    case VALUE_NULL:
+      return null;
+    default:
+      // Array or object, or other token
+      // Write a string containing the whole json of array or object
+      return DEFAULT_OBJECT_MAPPER.writeValueAsString(new JsonSerializableFromParser(parser));
     }
   }
 
@@ -488,6 +539,36 @@ public class JsonUtil {
     if (value != null) {
       gen.writeNumberField(fieldName, value);
     }
+  }
+  
+  @JsonSerialize(using = JsonSerializableFromParserSerializer.class)
+  public static class JsonSerializableFromParser {
+    
+    private final JsonParser parser;
+    
+    public JsonSerializableFromParser(JsonParser parser) {
+      this.parser = parser;
+    }
+    
+    public JsonParser getParser() {
+      return parser;
+    }
+  }
+  
+  public static class JsonSerializableFromParserSerializer extends StdSerializer<JsonSerializableFromParser> {
+
+    public JsonSerializableFromParserSerializer() {
+      super(JsonSerializableFromParser.class);
+    }
+
+    @Override
+    public void serialize(JsonSerializableFromParser value, JsonGenerator gen, SerializerProvider provider)
+        throws IOException {
+      if (value.getParser() != null) {
+        gen.copyCurrentStructure(value.getParser());
+      }
+    }
+    
   }
 
 }

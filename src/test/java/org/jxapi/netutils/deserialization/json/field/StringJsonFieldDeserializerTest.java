@@ -11,5 +11,10 @@ public class StringJsonFieldDeserializerTest {
   @Test
   public void testDeserialize() {
     Assert.assertEquals("foo", StringJsonFieldDeserializer.getInstance().deserialize("\"foo\""));
+    Assert.assertEquals("123", StringJsonFieldDeserializer.getInstance().deserialize("123"));
+    Assert.assertEquals("123.45", StringJsonFieldDeserializer.getInstance().deserialize("123.45"));
+    Assert.assertEquals("true", StringJsonFieldDeserializer.getInstance().deserialize("true"));
+    Assert.assertNull(StringJsonFieldDeserializer.getInstance().deserialize("null"));
   }
+
 }

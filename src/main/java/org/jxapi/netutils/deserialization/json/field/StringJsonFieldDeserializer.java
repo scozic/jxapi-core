@@ -6,6 +6,7 @@ import com.fasterxml.jackson.core.JsonParser;
 import org.jxapi.netutils.deserialization.json.AbstractJsonMessageDeserializer;
 import org.jxapi.netutils.deserialization.MessageDeserializer;
 import org.jxapi.netutils.deserialization.json.JsonDeserializer;
+import org.jxapi.util.JsonUtil;
 
 /**
  * {@link AbstractJsonMessageDeserializer} for {@link String} fields in JSON messages.
@@ -30,7 +31,7 @@ public class StringJsonFieldDeserializer extends AbstractJsonMessageDeserializer
 
   @Override
   public String deserialize(JsonParser parser) throws IOException {
-    return parser.getText();
+    return JsonUtil.readCurrentString(parser);
   }
 
 }
