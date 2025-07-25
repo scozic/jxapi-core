@@ -614,7 +614,7 @@ public class ExchangeApiInterfaceGeneratorTest {
         + "  FutureRestResponse<GenericResponse> postRestRequestDataTypeObjectListMap(Map<String, List<SingleSymbol>> request);\n"
         + "  \n"
         + "  /**\n"
-        + "   * A sample REST endpoint using GET (hence url query params) and object list map request type.\n"
+        + "   * A sample REST endpoint using GET (hence url query params) and object list map request type, and sample value with full structure.\n"
         + "   * @param request request\n"
         + "   * @return A {@link FutureRestResponse} that will complete when request submitted asynchronously has been processed\n"
         + "   */\n"
@@ -845,7 +845,8 @@ public class ExchangeApiInterfaceGeneratorTest {
         + "   * @see #subscribeStreamWithNullTopicAndPrimitiveTypeRequest(String, WebsocketListener)\n"
         + "   */\n"
         + "  boolean unsubscribeStreamWithNullTopicAndPrimitiveTypeRequest(String subscriptionId);\n"
-        + "}\n", 
+        + "}\n"
+        + "", 
         apiInterfaceGenerator.generate());
   }
 }

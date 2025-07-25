@@ -305,7 +305,7 @@ public class ExchangeReameMdGeneratorTest {
         + "  </tr>\n"
         + "  <tr>\n"
         + "    <td><a href=\"https://javadoc.io/myproject/com/foo/bar/gen/marketdata/MyTestExchangeMarketDataApi.html#getRestRequestDataTypeObjectListMap(java.util.Map)\">getRestRequestDataTypeObjectListMap</a></td>\n"
-        + "    <td>A sample REST endpoint using GET (hence url query params) and object list map request type.</td>\n"
+        + "    <td>A sample REST endpoint using GET (hence url query params) and object list map request type, and sample value with full structure.</td>\n"
         + "    <td></td>\n"
         + "  </tr>\n"
         + "  <tr>\n"

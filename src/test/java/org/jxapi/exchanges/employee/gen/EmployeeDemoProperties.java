@@ -26,7 +26,8 @@ import org.jxapi.util.PropertiesUtil;
  *     <td>Used in demo snippets to set as value of Employee 'id' property</td>
  *     <td>1</td>
  *   </tr>
- * </table><br>
+ * </table>
+ * <br>
  * Exposes helper methods are available to retrieve value of each of these properties with right type, returning default value if not present in properties.
  * @see ConfigProperty
  */

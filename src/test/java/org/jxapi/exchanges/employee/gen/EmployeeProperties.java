@@ -32,7 +32,8 @@ import org.jxapi.util.PropertiesUtil;
  *     <td>Base URL for websocket endpoints of the Employee Exchange API</td>
  *     <td></td>
  *   </tr>
- * </table><br>
+ * </table>
+ * <br>
  * Exposes helper methods are available to retrieve value of each of these properties with right type, returning default value if not present in properties.
  * @see ConfigProperty
  */
