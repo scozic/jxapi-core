@@ -33,7 +33,7 @@ public class DemoExchangeMarketDataPostRestRequestDataTypeObjectListMapDemo {
    */
   public static Map<String, List<SingleSymbol>> createRequest(Properties properties) {
     SingleSymbol requestItem = new SingleSymbol();
-    requestItem.setSymbol(EncodingUtil.substituteArguments("${config.demoSymbol}", "config.demoSymbol", DemoExchangeDemoProperties.getDemoSymbol(properties)));
+    requestItem.setSymbol(EncodingUtil.substituteArguments("${demo.config.demoSymbol}", "demo.config.demoSymbol", DemoExchangeDemoProperties.getDemoSymbol(properties)));
     return Map.of("spot", List.of(requestItem));
   }
   

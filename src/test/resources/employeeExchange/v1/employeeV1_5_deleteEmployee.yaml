@@ -12,4 +12,4 @@ apis:
        name: "id"
        type: INT
        description: "Employee ID"
-       sampleValue: ${config.demoEmployeeId}
+       sampleValue: ${demo.config.employeeId}

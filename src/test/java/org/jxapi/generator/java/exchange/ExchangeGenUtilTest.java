@@ -462,6 +462,15 @@ public class ExchangeGenUtilTest {
   }
   
   @Test
+  public void testGetDemoConfigPropertyPlaceHolder() {
+    Assert.assertNull(ExchangeGenUtil.getConfigPropertyPlaceHolder(null));
+    Assert.assertNull(ExchangeGenUtil.getConfigPropertyPlaceHolder(""));
+    Assert.assertNull(ExchangeGenUtil.getConfigPropertyPlaceHolder("foo"));
+    Assert.assertEquals("foo", ExchangeGenUtil
+        .getDemoConfigPropertyPlaceHolder(ExchangeGenUtil.DEMO_CONFIG_PLACEHOLDER_PREFIX + "foo"));
+  }
+  
+  @Test
   public void testGetClassNameForConstant_NullConstants( ) {
     ExchangeDescriptor exchangeDescriptor = new ExchangeDescriptor();
     exchangeDescriptor.setId("Test");
@@ -830,7 +839,7 @@ public class ExchangeGenUtilTest {
     ExchangeDescriptor exchangeDescriptor = new ExchangeDescriptor();
     exchangeDescriptor.setProperties(List.of(ConfigPropertyDescriptor.create("stranger", Type.STRING, "Your name", "Bob")));
     ConfigPropertyDescriptor demoCityProp = ConfigPropertyDescriptor.create("city", Type.STRING, "Your city", "London");
-    ConfigPropertyDescriptor demoGroupProp = ConfigPropertyDescriptor.createGroup("demo", "Demo properties group", List.of(demoCityProp));
+    ConfigPropertyDescriptor demoGroupProp = ConfigPropertyDescriptor.createGroup("address", "Demo properties group", List.of(demoCityProp));
     exchangeDescriptor.setDemoProperties(List.of(demoGroupProp));
     exchangeDescriptor.setId("MyExchange");
     exchangeDescriptor.setBasePackage("com.x.gen");
@@ -856,9 +865,20 @@ public class ExchangeGenUtilTest {
     
     Imports imports = new Imports();
     Assert.assertEquals(
-        "EncodingUtil.substituteArguments(\"Hello ${config.stranger}, I am ${constants.ownName}, born in ${constants.birthYear} in the city of ${config.demo.city}. The code of the main airport in London is ${constants.airports.london}. These placeholders are not resolved: ${constants.notFoundConstant}, ${confing.notFoundProp}.\", \"config.stranger\", MyExchangeProperties.getStranger(myProps), \"constants.ownName\", MyExchangeConstants.OWN_NAME, \"config.demo.city\", MyExchangeDemoProperties.Demo.getCity(myProps), \"constants.airports.london\", MyExchangeConstants.Airports.LONDON)", 
+        "EncodingUtil.substituteArguments("
+          + "\"Hello ${config.stranger}, I am ${constants.ownName}, " 
+          + "born in ${constants.birthYear} in the city of ${demo.config.address.city}. " 
+          + "The code of the main airport in London is ${constants.airports.london}." 
+          + " These placeholders are not resolved: ${constants.notFoundConstant}, ${confing.notFoundProp}.\", " 
+          + "\"config.stranger\", MyExchangeProperties.getStranger(myProps), " 
+          + "\"constants.ownName\", MyExchangeConstants.OWN_NAME, " 
+          + "\"demo.config.address.city\", MyExchangeDemoProperties.Address.getCity(myProps), " 
+          + "\"constants.airports.london\", MyExchangeConstants.Airports.LONDON)", 
         ExchangeGenUtil.generateSubstitutionInstructionDeclaration(
-            "Hello ${config.stranger}, I am ${constants.ownName}, born in ${constants.birthYear} in the city of ${config.demo.city}. The code of the main airport in London is ${constants.airports.london}. These placeholders are not resolved: ${constants.notFoundConstant}, ${confing.notFoundProp}.", 
+         "Hello ${config.stranger}, I am ${constants.ownName}, " 
+          + "born in ${constants.birthYear} in the city of ${demo.config.address.city}. " 
+          + "The code of the main airport in London is ${constants.airports.london}. " 
+          + "These placeholders are not resolved: ${constants.notFoundConstant}, ${confing.notFoundProp}.", 
             exchangeDescriptor, 
             "myProps", imports));
      Assert.assertEquals(4, imports.size());

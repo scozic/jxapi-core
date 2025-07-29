@@ -31,7 +31,7 @@ public class DemoExchangeMarketDataTickerStreamDemo {
    */
   public static DemoExchangeMarketDataTickerStreamRequest createRequest(Properties properties) {
     DemoExchangeMarketDataTickerStreamRequest request = new DemoExchangeMarketDataTickerStreamRequest();
-    request.setSymbol(EncodingUtil.substituteArguments("${config.demoSymbol}", "config.demoSymbol", DemoExchangeDemoProperties.getDemoSymbol(properties)));
+    request.setSymbol(EncodingUtil.substituteArguments("${demo.config.demoSymbol}", "demo.config.demoSymbol", DemoExchangeDemoProperties.getDemoSymbol(properties)));
     return request;
   }
   

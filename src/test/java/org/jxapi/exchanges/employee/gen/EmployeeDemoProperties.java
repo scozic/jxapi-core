@@ -21,7 +21,7 @@ import org.jxapi.util.PropertiesUtil;
  *     <th>Default value</th>
  *   </tr>
  *   <tr>
- *     <td>demoEmployeeId</td>
+ *     <td>employeeId</td>
  *     <td>STRING</td>
  *     <td>Used in demo snippets to set as value of Employee 'id' property</td>
  *     <td>1</td>
@@ -39,22 +39,22 @@ public class EmployeeDemoProperties {
   /**
    * Used in demo snippets to set as value of Employee 'id' property
    */
-  public static final ConfigProperty DEMO_EMPLOYEE_ID = DefaultConfigProperty.create(
-    "demoEmployeeId",
+  public static final ConfigProperty EMPLOYEE_ID = DefaultConfigProperty.create(
+    "employeeId",
     Type.STRING,
     "Used in demo snippets to set as value of Employee 'id' property",
     "1");
   
   /**
-   * Retrieves value of 'demoEmployeeId' property.
-   * @param properties Properties to look for value of 'demoEmployeeId' property into.
+   * Retrieves value of 'employeeId' property.
+   * @param properties Properties to look for value of 'employeeId' property into.
    * @return Value found in properties or default value '1' if not found.
    */
-  public static String getDemoEmployeeId(Properties properties) {return PropertiesUtil.getString(properties, DEMO_EMPLOYEE_ID);}
+  public static String getEmployeeId(Properties properties) {return PropertiesUtil.getString(properties, EMPLOYEE_ID);}
   /**
    * List of all configuration properties defined in this class
    */
   public static final List<ConfigProperty> ALL = List.copyOf(CollectionUtil.mergeLists(List.of(
     List.of(
-      DEMO_EMPLOYEE_ID))));
+      EMPLOYEE_ID))));
 }

@@ -38,5 +38,5 @@
 # Demo REST/WEBSOCKET specific configuration properties
 
 # Used in demo snippets to set as value of Employee 'id' property
-# demoEmployeeId=1
+# employeeId=1
 

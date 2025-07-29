@@ -142,7 +142,7 @@
 						"objectName": "SingleSymbol",
 						"sampleMapKeyValue": ["spot"],
 						"properties": [
-							{"name":"symbol", "type": "STRING", "msgField":"s", "description":"Symbol name", "sampleValue":"${config.demoSymbol}"}
+							{"name":"symbol", "type": "STRING", "msgField":"s", "description":"Symbol name", "sampleValue":"${demo.config.demoSymbol}"}
 						]
 					},
 					"response": {
@@ -158,7 +158,7 @@
 					"description": "Subscribe to ticker stream",
 					"request": {
 						"properties": [
-							{"name": "symbol", "type":"STRING", "description":"Symbol to subscribe to ticker stream of", "sampleValue":"${config.demoSymbol}"}
+							{"name": "symbol", "type":"STRING", "description":"Symbol to subscribe to ticker stream of", "sampleValue":"${demo.config.demoSymbol}"}
 						]
 					},
 					"messageTopicMatcherFields": [

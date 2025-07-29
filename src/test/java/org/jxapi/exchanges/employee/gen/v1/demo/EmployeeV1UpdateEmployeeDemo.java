@@ -31,7 +31,7 @@ public class EmployeeV1UpdateEmployeeDemo {
    */
   public static Employee createRequest(Properties properties) {
     Employee request = new Employee();
-    request.setId(Integer.valueOf(EncodingUtil.substituteArguments("${config.demoEmployeeId}", "config.demoEmployeeId", EmployeeDemoProperties.getDemoEmployeeId(properties))));
+    request.setId(Integer.valueOf(EncodingUtil.substituteArguments("${demo.config.employeeId}", "demo.config.employeeId", EmployeeDemoProperties.getEmployeeId(properties))));
     request.setFirstName("John");
     request.setLastName("Doe");
     request.setProfile(EncodingUtil.substituteArguments("${constants.profile.regular}", "constants.profile.regular", EmployeeConstants.Profile.REGULAR));

@@ -85,6 +85,16 @@ public class ExchangeGenUtil {
    */
   public static final String CONFIG_PLACEHOLDER_PREFIX = "config.";
   
+  /**
+   * Prefix of a demo configuration property placeholder name.
+   * <p>
+   * Placeholders starting with this prefix are used to identify demo
+   * configuration properties.
+   * 
+   * @see ConfigProperty
+   */
+  public static final String DEMO_CONFIG_PLACEHOLDER_PREFIX = "demo.config.";
+  
   private static final Pattern PLACEHOLDER_PATERN = Pattern.compile("\\$\\{([^}]+)}");
   
   /**
@@ -492,8 +502,8 @@ public class ExchangeGenUtil {
   }
   
   /**
-   * Returns the constant placeholder name without the prefix
-   * <code>constants.</code>.
+   * Removes the constants placeholder prefix
+   * {@link #CONFIG_PLACEHOLDER_PREFIX} from the given placeholder.
    * 
    * @param placeHolder The constant placeholder to get value without the prefix
    *                    for
@@ -506,12 +516,26 @@ public class ExchangeGenUtil {
   }
   
   /**
-   * Returns the properties placeholder name without the prefix
+   * Removes the configuration property placeholder prefix
+   * {@link #CONFIG_PLACEHOLDER_PREFIX} from the given placeholder.
+   * 
    * @param placeHolder The configuration property placeholder to get value without the prefix for
    * @return The configuration property placeholder name without the prefix
    */
   public static String getConfigPropertyPlaceHolder(String placeHolder) {
     return EncodingUtil.removePrefix(placeHolder, CONFIG_PLACEHOLDER_PREFIX);
+  }
+  
+  /**
+   * Removes the demo configuration property placeholder prefix
+   * {@link #DEMO_CONFIG_PLACEHOLDER_PREFIX} from the given placeholder.
+   * 
+   * @param placeHolder The demo configuration property placeholder to get value
+   *                    without the prefix for
+   * @return The configuration property placeholder name without the prefix
+   */
+  public static String getDemoConfigPropertyPlaceHolder(String placeHolder) {
+    return EncodingUtil.removePrefix(placeHolder, DEMO_CONFIG_PLACEHOLDER_PREFIX);
   }
   
   /**
@@ -909,7 +933,8 @@ public class ExchangeGenUtil {
       if (constantName != null) {
           valueDeclaration = getValueDeclarationForConstant(constantName, exchangeDescriptor, imports);
       } else if (propertiesVariable != null) {
-        String propertyName = getConfigPropertyPlaceHolder(placeHolder);
+        String propertyName = Optional.ofNullable(getConfigPropertyPlaceHolder(placeHolder))
+                                      .orElse(getDemoConfigPropertyPlaceHolder(placeHolder));
         if (propertyName != null) {
           valueDeclaration = getValueDeclarationForConfigProperty(propertyName, exchangeDescriptor, propertiesVariable, imports);
         }

@@ -146,7 +146,7 @@ In order to run demo snippets, you can set properties values in __demo-Employee.
     <th>Default value</th>
   </tr>
   <tr>
-    <td>demoEmployeeId</td>
+    <td>employeeId</td>
     <td>STRING</td>
     <td>Used in demo snippets to set as value of Employee 'id' property</td>
     <td>1</td>

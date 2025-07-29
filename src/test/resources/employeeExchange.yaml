@@ -16,7 +16,7 @@ properties:
     - name: "baseWebsocketUrl"
       description: "Base URL for websocket endpoints of the Employee Exchange API"
 demoProperties:      
- - name: demoEmployeeId
+ - name: employeeId
    description: "Used in demo snippets to set as value of Employee 'id' property"
    defaultValue: 1
 basePackage: org.jxapi.exchanges.employee.gen
@@ -67,7 +67,7 @@ apis:
        name: id
        type: INT
        description: Employee ID
-       sampleValue: ${config.demoEmployeeId}
+       sampleValue: ${demo.config.employeeId}
       response:
        objectName: Employee
        type: OBJECT
@@ -75,7 +75,7 @@ apis:
         - name: id
           type: INT
           description: Employee ID
-          sampleValue: ${config.demoEmployeeId}
+          sampleValue: ${demo.config.employeeId}
         - name: firstName
           description: "Employee first name"
           sampleValue: John
@@ -148,7 +148,7 @@ apis:
        name: id
        type: INT
        description: Employee ID
-       sampleValue: ${config.demoEmployeeId}
+       sampleValue: ${demo.config.employeeId}
    websocketUrl: ${config.server.baseWebsocketUrl}
    websocketHookFactory: org.jxapi.exchanges.demo.net.DemoExchangeWebsocketHookFactory  
    websocketEndpoints:

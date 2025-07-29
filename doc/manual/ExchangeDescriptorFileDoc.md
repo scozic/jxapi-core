@@ -217,12 +217,18 @@ The root of JSON descriptor data is a JSON object referred to as 'exchange'. An 
  * `websocketFactory`: The factory class for creating base websocket, see [WebsocketFactory](../../src/main/java/com/scz/jxapi/netutils/websocket/WebsocketFactory.java). The default implementation is usually sufficient.
  * `apis`: A list of API groups, each containing HTTP and WebSocket endpoints, see [below](#api-groups).
 
+## Configuration properties and constants.
+
+### Configuration properties
+In addition to endpoints, API specifications may use constant values, for instance as enumarated possible values for a field.
+These constants may be used across several endpoints.
+In order to simplify use of wrapper, such constants may be defined in 
+
 ## API groups
 
  The exchange REST/Websocket endpoints are sorted in groups, this is useful to regroup API endpoints by functional affinity and not list every endpoint in a single interface. The API group object is mapped to [ExchangeApiDescriptor](../../src/main/java/com/scz/jxapi/exchange/descriptor/ExchangeApiDescriptor.java). It is composed of the following properties:
  * `name`: API group name
  * `description`: A description of the API group. May contain [placeholders](#placeholders) referencing exchange or API group contants, or configuration properties. 
- * `constants`: A list of constant values specific to this API group. Constants values may contain  [placeholders](#placeholders) referencing other previously defined exchange or API group contants.
  * `httpUrl`: The base URL for HTTP API endpoints. It can be a relative path, in which case the actual base url is result of concantenation of base `httpUrl` in parent (exchange) property and value of this property if it is set. The value may contain  [placeholders](#placeholders) referencing exchange contants or configuration properties.
  * `websocketUrl`: The base URL for WebSocket API endpoints. It can be a relative path, in which case the actual base url is result of concantenation of base `websocketUrl` in parent (exchange) property and value of this property if it is set. The value may contain  [placeholders](#placeholders) referencing exchange contants or configuration properties.
  * `httpRequestInterceptorFactory`: The factory class for creating HTTP request interceptors. If not defined, the value of `httpRequestInterceptorFactory` in parent (exchange) property is used.

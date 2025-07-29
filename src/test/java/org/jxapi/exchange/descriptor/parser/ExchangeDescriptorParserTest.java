@@ -325,7 +325,7 @@ public class ExchangeDescriptorParserTest {
     List<ConfigPropertyDescriptor> properties = exchangeDescriptor.getDemoProperties();
     Assert.assertEquals(1, properties.size());
     ConfigPropertyDescriptor demoEmployeeProperty = properties.get(0);
-    Assert.assertEquals("demoEmployeeId", demoEmployeeProperty.getName());
+    Assert.assertEquals("employeeId", demoEmployeeProperty.getName());
     Assert.assertEquals("Used in demo snippets to set as value of Employee 'id' property", demoEmployeeProperty.getDescription());
     Assert.assertEquals(1, demoEmployeeProperty.getDefaultValue());
   }
@@ -439,7 +439,7 @@ public class ExchangeDescriptorParserTest {
     Assert.assertEquals("id", getEmployeeIdByIdRequest.getName());
     Assert.assertEquals(Type.INT, getEmployeeIdByIdRequest.getType());
     Assert.assertEquals("Employee ID", getEmployeeIdByIdRequest.getDescription());
-    Assert.assertEquals("${config.demoEmployeeId}", getEmployeeIdByIdRequest.getSampleValue());
+    Assert.assertEquals("${demo.config.employeeId}", getEmployeeIdByIdRequest.getSampleValue());
     Field employeeField = restEndpointGetEmployee.getResponse();
     checkEmployeeObjectField(employeeField);
   }
@@ -528,7 +528,7 @@ public class ExchangeDescriptorParserTest {
     Assert.assertEquals("id", deleteEmployeeIdRequest.getName());
     Assert.assertEquals(Type.INT, deleteEmployeeIdRequest.getType());
     Assert.assertEquals("Employee ID", deleteEmployeeIdRequest.getDescription());
-    Assert.assertEquals("${config.demoEmployeeId}", deleteEmployeeIdRequest.getSampleValue());
+    Assert.assertEquals("${demo.config.employeeId}", deleteEmployeeIdRequest.getSampleValue());
   }
   
   private void checkEmployeeObjectField(Field employeeField) {
@@ -539,7 +539,7 @@ public class ExchangeDescriptorParserTest {
     Assert.assertEquals("id", idField.getName());
     Assert.assertEquals(Type.INT, idField.getType());
     Assert.assertEquals("Employee ID", idField.getDescription());
-    Assert.assertEquals("${config.demoEmployeeId}", idField.getSampleValue());
+    Assert.assertEquals("${demo.config.employeeId}", idField.getSampleValue());
     
     Field firstNameField = employeeProperties.get(1);
     Assert.assertEquals("firstName", firstNameField.getName());

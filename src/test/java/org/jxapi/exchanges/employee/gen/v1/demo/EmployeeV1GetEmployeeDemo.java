@@ -29,7 +29,7 @@ public class EmployeeV1GetEmployeeDemo {
    * @param properties the configuration properties to use for the sample value generation.
    */
   public static Integer createId(Properties properties) {
-    return Integer.valueOf(EncodingUtil.substituteArguments("${config.demoEmployeeId}", "config.demoEmployeeId", EmployeeDemoProperties.getDemoEmployeeId(properties)));
+    return Integer.valueOf(EncodingUtil.substituteArguments("${demo.config.employeeId}", "demo.config.employeeId", EmployeeDemoProperties.getEmployeeId(properties)));
   }
   
   /**

@@ -15,7 +15,7 @@
         }        
     ],
     "demoProperties": [
-    	{"name": "demoEmployeeId", "description": "Used in demo snippets to set as value of Employee 'id' property", "defaultValue": 1}
+    	{"name": "employeeId", "description": "Used in demo snippets to set as value of Employee 'id' property", "defaultValue": 1}
     ],
     "constants": [
         {"name": "defaultPageSize", "description": "Default page size for paginated requests", "value": 10},
@@ -46,12 +46,12 @@
                     "urlParameters": "/${id}",
                     "queryParams": false,
                     "request": {
-                        "name": "id", "type":"INT", "description": "Employee ID", "sampleValue": "${config.demoEmployeeId}"
+                        "name": "id", "type":"INT", "description": "Employee ID", "sampleValue": "${demo.config.employeeId}"
                     },
                     "response": {
                         "objectName": "Employee",
                         "properties": [
-                            {"name": "id", "type": "INT", "description": "Employee ID", "sampleValue": "${config.demoEmployeeId}"},
+                            {"name": "id", "type": "INT", "description": "Employee ID", "sampleValue": "${demo.config.employeeId}"},
                             {"name": "firstName", "description": "Employee first name", "sampleValue": "John"},
                             {"name": "lastName", "description": "Employee last name", "sampleValue": "Doe"},
                             {"name": "profile", "description": "Employee profile. Can be ${constants.profile.regular} or ${constants.profile.admin}", "sampleValue": "${constants.profile.regular}"}
@@ -122,7 +122,7 @@
                     "request": {
                         "description": "Employee ID",
                         "name": "id",
-                        "sampleValue": "${config.demoEmployeeId}",
+                        "sampleValue": "${demo.config.employeeId}",
                         "type": "INT"
                     },
                     "url": "/employee",
