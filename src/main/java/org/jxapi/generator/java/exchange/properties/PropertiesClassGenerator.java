@@ -174,9 +174,9 @@ public class PropertiesClassGenerator extends JavaTypeGenerator {
         .append("' property into.\n")
         .append("@return Value found in properties or ");
     if (def != null) {
-      desc.append("default value '")
-        .append(property.getDefaultValue())
-        .append("'");
+      desc.append("default value <i>")
+        .append(docPlaceHolderResolver.resolve(def.toString()))
+        .append("</i>");
         
     } else {
       desc.append("<code>")

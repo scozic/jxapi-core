@@ -48,7 +48,7 @@ public class EmployeeDemoProperties {
   /**
    * Retrieves value of 'employeeId' property.
    * @param properties Properties to look for value of 'employeeId' property into.
-   * @return Value found in properties or default value '1' if not found.
+   * @return Value found in properties or default value <i>1</i> if not found.
    */
   public static String getEmployeeId(Properties properties) {return PropertiesUtil.getString(properties, EMPLOYEE_ID);}
   /**

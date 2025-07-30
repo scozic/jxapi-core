@@ -48,7 +48,7 @@ public class DemoExchangeDemoProperties {
   /**
    * Retrieves value of 'demoSymbol' property.
    * @param properties Properties to look for value of 'demoSymbol' property into.
-   * @return Value found in properties or default value 'BTC_USDT' if not found.
+   * @return Value found in properties or default value <i>BTC_USDT</i> if not found.
    */
   public static String getDemoSymbol(Properties properties) {return PropertiesUtil.getString(properties, DEMO_SYMBOL);}
   /**

@@ -8,4 +8,4 @@ constants:
         value: REGULAR
       - name: admin
         description: "Admin employee profile"
-        value: "ADMIN"
+        value: ADMIN

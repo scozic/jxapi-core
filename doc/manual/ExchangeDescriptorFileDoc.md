@@ -219,10 +219,25 @@ The root of JSON descriptor data is a JSON object referred to as 'exchange'. An 
 
 ## Configuration properties and constants.
 
-### Configuration properties
+### Constants
 In addition to endpoints, API specifications may use constant values, for instance as enumarated possible values for a field.
 These constants may be used across several endpoints.
-In order to simplify use of wrapper, such constants may be defined in 
+In order to simplify, improve clarity and avoid code duplication using the wrapper, such constants may be defined in `constants` property of `exchange` structure.
+
+A constant definition may contain nested constants in its `constants` properties. Such constants containing nested constants are 'groups' defining a hierarchy. Groups are used to group constants that come together like enumarations of field possible values. References to a nested constant should be like `constants.myGroup.mySubGroup.myNestedConstant`
+
+The resulting generated code will list constants as `public static final` members of a generated `<ExchangeID>Constants` class in main generated wrapper file.
+
+Constants can be referenced in description, sample values of fields, http/websocket base URL property definitions of the descriptor file.
+The generated code will substitute placeholders like `${constants.myGroup.myConstant}` with actual 
+
+### Configuration properties
+
+The descriptor root `exchange` structure exposes a `properties` property that can be defined a list of configuration properties, that wrapper client can use to configure the wrapper.
+
+The wrapper client will instantiate it by creating an `<ExchangeID>ExchangeImpl` instance that takes a `Properties` instance in constructor. This class will expose configuration properties as `public static final ConfigProperty` members and static getter methods making it easy to retrieve the value of a property from such properties instance.
+
+For instance API Key/Secret properties can be listed, to be used by wrapper `HttpRequestInterceptor` implementation to sign outgoing authenticated requests.
 
 ## API groups
 

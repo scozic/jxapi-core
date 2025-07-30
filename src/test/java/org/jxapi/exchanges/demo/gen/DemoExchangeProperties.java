@@ -86,7 +86,7 @@ public class DemoExchangeProperties {
     /**
      * Retrieves value of 'websocketHeartBeatInterval' property.
      * @param properties Properties to look for value of 'websocketHeartBeatInterval' property into.
-     * @return Value found in properties or default value '-1' if not found.
+     * @return Value found in properties or default value <i>-1</i> if not found.
      */
     public static Integer getWebsocketHeartBeatInterval(Properties properties) {return PropertiesUtil.getInt(properties, WEBSOCKET_HEART_BEAT_INTERVAL);}
     /**
@@ -100,14 +100,14 @@ public class DemoExchangeProperties {
   /**
    * Retrieves value of 'baseHttpUrl' property.
    * @param properties Properties to look for value of 'baseHttpUrl' property into.
-   * @return Value found in properties or default value 'http://localhost:8080' if not found.
+   * @return Value found in properties or default value <i>http://localhost:8080</i> if not found.
    */
   public static String getBaseHttpUrl(Properties properties) {return PropertiesUtil.getString(properties, BASE_HTTP_URL);}
   
   /**
    * Retrieves value of 'baseWebsocketUrl' property.
    * @param properties Properties to look for value of 'baseWebsocketUrl' property into.
-   * @return Value found in properties or default value 'ws://localhost:8090' if not found.
+   * @return Value found in properties or default value <i>ws://localhost:8090</i> if not found.
    */
   public static String getBaseWebsocketUrl(Properties properties) {return PropertiesUtil.getString(properties, BASE_WEBSOCKET_URL);}
   /**
