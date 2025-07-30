@@ -328,9 +328,12 @@ public class JavaCodeGenUtil {
     for (int i = 0; i < sampleValueStr.length(); i++) {
       char c = sampleValueStr.charAt(i);
       if (c == '"') {
-        sb.append('\\');
+        sb.append("\\\"");
+      } else if (c == '\n') {
+        sb.append("\\n");
+      } else {
+        sb.append(c);
       }
-      sb.append(c);
     }
     return sb.append('"').toString();
   }

@@ -275,6 +275,12 @@ public class JavaCodeGenUtilTest {
   }
   
   @Test
+  public void testGetQuotedString_StringWithQuotesAndLineFeed() {
+    Assert.assertEquals("\"Hello\\n\\\"World\\\"\"", 
+              JavaCodeGenUtil.getQuotedString("Hello\n\"World\""));
+  }
+  
+  @Test
   public void testGetHtmlLink() {
     Assert.assertEquals("<a href=\"https://scam.org\">Click here</a>", 
               JavaCodeGenUtil.getHtmlLink("https://scam.org", "Click here"));

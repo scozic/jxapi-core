@@ -41,17 +41,18 @@ public class PropertiesClassGeneratorTest {
     
     @Test
     public void testGetPropertyValueDeclaration_ValueWithPlaceholder() {
-      ConfigPropertyDescriptor p = ConfigPropertyDescriptor.create("myProp", Type.STRING, "A test string value property, for instance '${constants.bar}'", "${constants.foo}");
+      ConfigPropertyDescriptor p = ConfigPropertyDescriptor.create("myProp", Type.STRING, "A test string value property,\nfor instance '${constants.bar}'", "${constants.foo}");
       Imports imports = new Imports();
       PlaceHolderResolver docPlaceholderResolver = PlaceHolderResolver.create(Map.of("constants.bar", "bar"));
       PlaceHolderResolver defaultValuePlaceholderResolver = PlaceHolderResolver.create(Map.of("constants.foo", "\"myFooValue\""));
       Assert.assertEquals("/**\n"
-          + " * A test string value property, for instance 'bar'\n"
+          + " * A test string value property,\n"
+          + " * for instance 'bar'\n"
           + " */\n"
           + "public static final ConfigProperty MY_PROP = DefaultConfigProperty.create(\n"
           + "  \"myProp\",\n"
           + "  Type.STRING,\n"
-          + "  \"A test string value property, for instance 'bar'\",\n"
+          + "  \"A test string value property,\\nfor instance 'bar'\",\n"
           + "  \"myFooValue\");\n"
           + "", 
           PropertiesGenUtil.generateSimplePropertyValueDeclaration(p, imports, docPlaceholderResolver, defaultValuePlaceholderResolver));
