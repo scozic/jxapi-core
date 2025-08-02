@@ -62,7 +62,7 @@ You may have a look at <a href="./src/test/java/org/jxapi/exchanges/demo/gen/mar
     <td colspan="2">Mock websocket server related properties</td>
   </tr>
   <tr>
-    <td>websocketHeartBeatInterval</td>
+    <td>ws.websocketHeartBeatInterval</td>
     <td>INT</td>
     <td>Mock websocket server expected heartBeat interval</td>
     <td>-1</td>
@@ -156,7 +156,7 @@ In order to run demo snippets, you can set properties values in __demo-DemoExcha
     <th>Default value</th>
   </tr>
   <tr>
-    <td>demoSymbol</td>
+    <td>demo.demoSymbol</td>
     <td>STRING</td>
     <td>Default value to use for market 'symbol' parameter in demo snippets</td>
     <td>BTC_USDT</td>

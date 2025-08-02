@@ -36,7 +36,7 @@ public class PropertiesClassGeneratorTest {
           + "  Type.STRING,\n"
           + "  \"A test string value property, for instance 'bar'\",\n"
           + "  \"foo\");\n", 
-          PropertiesGenUtil.generateSimplePropertyValueDeclaration(p, imports, placeholderResolver, null));
+          PropertiesGenUtil.generateSimplePropertyValueDeclaration(p, null, imports, placeholderResolver, null));
     }
     
     @Test
@@ -55,7 +55,7 @@ public class PropertiesClassGeneratorTest {
           + "  \"A test string value property,\\nfor instance 'bar'\",\n"
           + "  \"myFooValue\");\n"
           + "", 
-          PropertiesGenUtil.generateSimplePropertyValueDeclaration(p, imports, docPlaceholderResolver, defaultValuePlaceholderResolver));
+          PropertiesGenUtil.generateSimplePropertyValueDeclaration(p, "", imports, docPlaceholderResolver, defaultValuePlaceholderResolver));
     }
 
     @Test
@@ -79,7 +79,8 @@ public class PropertiesClassGeneratorTest {
                 intProp, 
                 longProp, 
                 boolProp, 
-                bigDecimalProp));
+                bigDecimalProp),
+            "demo");
         String expected =  "package com.x.y;\n"
             + "\n"
             + "import java.math.BigDecimal;\n"
@@ -155,14 +156,14 @@ public class PropertiesClassGeneratorTest {
             + "   * My String property, for instance {@link com.x.y.exchange.MyExchangeConstants#STRING_PROP_DEFAULT_VALUE}\n"
             + "   */\n"
             + "  public static final ConfigProperty MY_STRING = DefaultConfigProperty.create(\n"
-            + "    \"myString\",\n"
+            + "    \"demo.myString\",\n"
             + "    Type.STRING,\n"
             + "    \"My String property, for instance {@link com.x.y.exchange.MyExchangeConstants#STRING_PROP_DEFAULT_VALUE}\",\n"
             + "    EncodingUtil.substituteArguments(\"${constants.stringPropDefaultValue}\", \"constants.stringPropDefaultValue\", MyExchangeConstants.STRING_PROP_DEFAULT_VALUE));\n"
             + "  \n"
             + "  \n"
             + "  public static final ConfigProperty MY_STRING_WITH_NO_DESCRIPTION_NO_DEFAULT_VALUE = DefaultConfigProperty.create(\n"
-            + "    \"myStringWithNoDescriptionNoDefaultValue\",\n"
+            + "    \"demo.myStringWithNoDescriptionNoDefaultValue\",\n"
             + "    Type.STRING,\n"
             + "    null,\n"
             + "    null);\n"
@@ -171,7 +172,7 @@ public class PropertiesClassGeneratorTest {
             + "   * My int property\n"
             + "   */\n"
             + "  public static final ConfigProperty MY_INT = DefaultConfigProperty.create(\n"
-            + "    \"myInt\",\n"
+            + "    \"demo.myInt\",\n"
             + "    Type.INT,\n"
             + "    \"My int property\",\n"
             + "    EncodingUtil.substituteArguments(\"${constants.intPropDefaultValue}\", \"constants.intPropDefaultValue\", MyExchangeConstants.INT_PROP_DEFAULT_VALUE));\n"
@@ -180,7 +181,7 @@ public class PropertiesClassGeneratorTest {
             + "   * My long property\n"
             + "   */\n"
             + "  public static final ConfigProperty MY_LONG = DefaultConfigProperty.create(\n"
-            + "    \"myLong\",\n"
+            + "    \"demo.myLong\",\n"
             + "    Type.LONG,\n"
             + "    \"My long property\",\n"
             + "    \"1234567890123456\");\n"
@@ -189,7 +190,7 @@ public class PropertiesClassGeneratorTest {
             + "   * My boolean property\n"
             + "   */\n"
             + "  public static final ConfigProperty MY_BOOL = DefaultConfigProperty.create(\n"
-            + "    \"myBool\",\n"
+            + "    \"demo.myBool\",\n"
             + "    Type.BOOLEAN,\n"
             + "    \"My boolean property\",\n"
             + "    \"true\");\n"
@@ -198,7 +199,7 @@ public class PropertiesClassGeneratorTest {
             + "   * My BigDecimal property\n"
             + "   */\n"
             + "  public static final ConfigProperty MY_BIG_DECIMAL = DefaultConfigProperty.create(\n"
-            + "    \"myBigDecimal\",\n"
+            + "    \"demo.myBigDecimal\",\n"
             + "    Type.BIGDECIMAL,\n"
             + "    \"My BigDecimal property\",\n"
             + "    \"1.2345\");\n"
@@ -282,7 +283,8 @@ public class PropertiesClassGeneratorTest {
             List.of(stringProp, 
                 groupProp1,
                 groupProp2,
-                bigDecimalProp));
+                bigDecimalProp),
+            "demo");
         String expected =  "package com.x.y;\n"
             + "\n"
             + "import java.math.BigDecimal;\n"
@@ -358,7 +360,7 @@ public class PropertiesClassGeneratorTest {
             + "   * My String property, for instance {@link com.x.y.exchange.MyExchangeConstants#STRING_PROP_DEFAULT_VALUE}\n"
             + "   */\n"
             + "  public static final ConfigProperty MY_STRING = DefaultConfigProperty.create(\n"
-            + "    \"myString\",\n"
+            + "    \"demo.myString\",\n"
             + "    Type.STRING,\n"
             + "    \"My String property, for instance {@link com.x.y.exchange.MyExchangeConstants#STRING_PROP_DEFAULT_VALUE}\",\n"
             + "    EncodingUtil.substituteArguments(\"${constants.stringPropDefaultValue}\", \"constants.stringPropDefaultValue\", MyExchangeConstants.STRING_PROP_DEFAULT_VALUE));\n"
@@ -373,7 +375,7 @@ public class PropertiesClassGeneratorTest {
             + "    \n"
             + "    \n"
             + "    public static final ConfigProperty MY_STRING_WITH_NO_DESCRIPTION_NO_DEFAULT_VALUE = DefaultConfigProperty.create(\n"
-            + "      \"myStringWithNoDescriptionNoDefaultValue\",\n"
+            + "      \"demo.myGroup1.myStringWithNoDescriptionNoDefaultValue\",\n"
             + "      Type.STRING,\n"
             + "      null,\n"
             + "      null);\n"
@@ -382,7 +384,7 @@ public class PropertiesClassGeneratorTest {
             + "     * My int property\n"
             + "     */\n"
             + "    public static final ConfigProperty MY_INT = DefaultConfigProperty.create(\n"
-            + "      \"myInt\",\n"
+            + "      \"demo.myGroup1.myInt\",\n"
             + "      Type.INT,\n"
             + "      \"My int property\",\n"
             + "      EncodingUtil.substituteArguments(\"${constants.intPropDefaultValue}\", \"constants.intPropDefaultValue\", MyExchangeConstants.INT_PROP_DEFAULT_VALUE));\n"
@@ -429,7 +431,7 @@ public class PropertiesClassGeneratorTest {
             + "       * My long property\n"
             + "       */\n"
             + "      public static final ConfigProperty MY_LONG = DefaultConfigProperty.create(\n"
-            + "        \"myLong\",\n"
+            + "        \"demo.myGroup2.myGroup21.myLong\",\n"
             + "        Type.LONG,\n"
             + "        \"My long property\",\n"
             + "        \"1234567890123456\");\n"
@@ -452,7 +454,7 @@ public class PropertiesClassGeneratorTest {
             + "     * My boolean property\n"
             + "     */\n"
             + "    public static final ConfigProperty MY_BOOL = DefaultConfigProperty.create(\n"
-            + "      \"myBool\",\n"
+            + "      \"demo.myGroup2.myBool\",\n"
             + "      Type.BOOLEAN,\n"
             + "      \"My boolean property\",\n"
             + "      \"true\");\n"
@@ -476,7 +478,7 @@ public class PropertiesClassGeneratorTest {
             + "   * My BigDecimal property\n"
             + "   */\n"
             + "  public static final ConfigProperty MY_BIG_DECIMAL = DefaultConfigProperty.create(\n"
-            + "    \"myBigDecimal\",\n"
+            + "    \"demo.myBigDecimal\",\n"
             + "    Type.BIGDECIMAL,\n"
             + "    \"My BigDecimal property\",\n"
             + "    \"1.2345\");\n"
@@ -515,7 +517,7 @@ public class PropertiesClassGeneratorTest {
       ExchangeDescriptor exchangeDescriptor = new ExchangeDescriptor();
       exchangeDescriptor.setId("myExchange");
       exchangeDescriptor.setBasePackage("com.x.y.exchange");
-      PropertiesClassGenerator gen = new PropertiesClassGenerator("com.x.y.MyProperties", exchangeDescriptor, List.of());
+      PropertiesClassGenerator gen = new PropertiesClassGenerator("com.x.y.MyProperties", exchangeDescriptor, List.of(), "");
       Assert.assertEquals("package com.x.y;\n"
           + "\n"
           + "import java.util.List;\n"

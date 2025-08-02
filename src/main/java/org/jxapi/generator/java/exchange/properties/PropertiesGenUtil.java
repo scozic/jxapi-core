@@ -5,6 +5,7 @@ import java.util.Optional;
 import java.util.Properties;
 import java.util.stream.Collectors;
 
+import org.apache.commons.lang3.StringUtils;
 import org.jxapi.exchange.descriptor.ConfigPropertyDescriptor;
 import org.jxapi.exchange.descriptor.Type;
 import org.jxapi.generator.java.Imports;
@@ -179,13 +180,14 @@ public class PropertiesGenUtil {
    */
   public static String generateSimplePropertyValueDeclaration(
       ConfigPropertyDescriptor property, 
+      String  prefix,
       Imports imports, 
       PlaceHolderResolver docPlaceHolderResolver, 
       PlaceHolderResolver sampleValuePlaceHolderResolver) {
     imports.add(DefaultConfigProperty.class);
     imports.add(Type.class);
     imports.add(ConfigProperty.class);
-    String name = property.getName();
+    String name = getPropertyFullName(property.getName(), prefix);
     String description = Optional.ofNullable(docPlaceHolderResolver).orElse(PlaceHolderResolver.NO_OP).resolve(property.getDescription());
     Object sampleValue = property.getDefaultValue();
     String sampleValueStr = sampleValue == null? null: 
@@ -240,6 +242,18 @@ public class PropertiesGenUtil {
         CollectionUtil.emptyIfNull(allProperties).stream().map(p -> p.getName()).collect(Collectors.toList())
     );
   }
-
+  
+  /**
+   * Generates the full property name for a given property, including the prefix.
+   * @param propertyName the property name, for instance 'myProperty'.
+   * @param prefix the prefix to prepend to the property name, for instance 'myExchange'.
+   * @return the full property name, for instance 'myExchange.myProperty'.
+   */
+  public static String getPropertyFullName(String propertyName, String prefix) {
+    if (StringUtils.isEmpty(prefix)) {
+      return propertyName;
+    }
+    return prefix + "." + propertyName;
+  }
 
 }

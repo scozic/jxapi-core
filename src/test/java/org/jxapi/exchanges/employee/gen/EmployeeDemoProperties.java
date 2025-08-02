@@ -40,7 +40,7 @@ public class EmployeeDemoProperties {
    * Used in demo snippets to set as value of Employee 'id' property
    */
   public static final ConfigProperty EMPLOYEE_ID = DefaultConfigProperty.create(
-    "employeeId",
+    "demo.employeeId",
     Type.STRING,
     "Used in demo snippets to set as value of Employee 'id' property",
     "1");

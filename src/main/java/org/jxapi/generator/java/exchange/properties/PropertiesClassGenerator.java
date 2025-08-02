@@ -60,6 +60,7 @@ public class PropertiesClassGenerator extends JavaTypeGenerator {
   
   private final ExchangeDescriptor exchange;
   private final List<ConfigPropertyDescriptor> properties;
+  private final String prefix;
   private final PlaceHolderResolver docPlaceHolderResolver;
   private final PlaceHolderResolver sampleValuePlaceHolderResolver;
 
@@ -75,10 +76,12 @@ public class PropertiesClassGenerator extends JavaTypeGenerator {
    */
   public PropertiesClassGenerator(String fullClassName, 
                                   ExchangeDescriptor exchange, 
-                                  List<ConfigPropertyDescriptor> properties) {
+                                  List<ConfigPropertyDescriptor> properties,
+                                  String prefix) {
     super(fullClassName);
     this.exchange = exchange;
     this.properties = properties;
+    this.prefix = prefix;
     this.sampleValuePlaceHolderResolver = s -> ExchangeGenUtil.generateSubstitutionInstructionDeclaration(
         s, 
         exchange, 
@@ -139,7 +142,8 @@ public class PropertiesClassGenerator extends JavaTypeGenerator {
       String groupClassName = JavaCodeGenUtil.firstLetterToUpperCase(property.getName());
       PropertiesClassGenerator groupGen = new PropertiesClassGenerator(getName() + "." + groupClassName,
           exchange, // No exchange descriptor for group properties
-          property.getProperties());
+          property.getProperties(),
+          PropertiesGenUtil.getPropertyFullName(property.getName(), prefix));
       groupGen.setTypeDeclaration("public static class");
       groupGen.setGeneratePackageAndImports(false);
       groupGen.setDescription(property.getDescription());
@@ -149,6 +153,7 @@ public class PropertiesClassGenerator extends JavaTypeGenerator {
     } else {
       return PropertiesGenUtil.generateSimplePropertyValueDeclaration(
               property, 
+              prefix,
               getImports(), 
               docPlaceHolderResolver, 
               sampleValuePlaceHolderResolver);

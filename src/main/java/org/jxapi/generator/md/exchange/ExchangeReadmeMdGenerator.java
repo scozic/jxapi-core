@@ -22,6 +22,7 @@ import org.jxapi.generator.java.JavaCodeGenUtil;
 import org.jxapi.generator.java.exchange.ExchangeGenUtil;
 import org.jxapi.generator.java.exchange.api.ExchangeApiGenUtil;
 import org.jxapi.generator.java.exchange.api.demo.EndpointDemoGenUtil;
+import org.jxapi.generator.java.exchange.properties.PropertiesGenUtil;
 import org.jxapi.util.CollectionUtil;
 import org.jxapi.util.PlaceHolderResolver;
 
@@ -131,7 +132,7 @@ public class ExchangeReadmeMdGenerator {
     List<ConfigPropertyDescriptor> properties = exchangeDescriptor.getProperties();
     if (!CollectionUtil.isEmpty(properties)) {
       s.append("\n### Properties\n\n")
-       .append(generatePropertiesTable("Configuration properties", properties, docPlaceHolderResolver));
+       .append(generatePropertiesTable("Configuration properties", properties, null, docPlaceHolderResolver));
     }
     
     List<Constant> exchangeConstants = exchangeDescriptor.getConstants();
@@ -292,10 +293,14 @@ public class ExchangeReadmeMdGenerator {
                 JavaCodeGenUtil.getClassNameWithoutPackage(className));
   }
   
-  private String generatePropertiesTable(String tableName, List<ConfigPropertyDescriptor> properties, PlaceHolderResolver docPlaceHolderResolver) {
+  private String generatePropertiesTable(String 
+                                         tableName, 
+                                         List<ConfigPropertyDescriptor> properties, 
+                                         String propertiesPrefix, 
+                                         PlaceHolderResolver docPlaceHolderResolver) {
     List<String> columns = List.of("Name", "Type", "description", "Default value");
     List<List<HtmlElement>> cells = new ArrayList<>();
-    collectPropertiesTableRows(properties, cells, docPlaceHolderResolver);
+    collectPropertiesTableRows(propertiesPrefix, properties, cells, docPlaceHolderResolver);
     HtmlElement tableElement = HtmlElement.builder()
         .tag("table")
         .child(HtmlElement.builder().tag("caption").content(tableName).build())
@@ -310,10 +315,15 @@ public class ExchangeReadmeMdGenerator {
     return HtmlGenerationUtil.generateHtmlForElement(tableElement);
   }
   
-  private void collectPropertiesTableRows(List<ConfigPropertyDescriptor> properties, List<List<HtmlElement>> cells, PlaceHolderResolver docPlaceHolderResolver) {
+  private void collectPropertiesTableRows(String prefix, 
+                                          List<ConfigPropertyDescriptor> properties, 
+                                          List<List<HtmlElement>> cells, 
+                                          PlaceHolderResolver docPlaceHolderResolver) {
     properties.forEach(p -> {
       List<HtmlElement> row = new ArrayList<>();
-      row.add(createTd(StringUtils.defaultString(p.getName())));
+      String name = StringUtils.defaultString(p.getName());
+      String fullName = PropertiesGenUtil.getPropertyFullName(name, prefix);
+      row.add(createTd(fullName));
       if (p.isGroup()) {
         row.add(createTd("group"));
         String descr = StringUtils.defaultString(docPlaceHolderResolver.resolve(p.getDescription()));
@@ -321,7 +331,7 @@ public class ExchangeReadmeMdGenerator {
         descriptionTd.addAttribute("colspan", "2");
         row.add(descriptionTd);
         cells.add(row);
-        collectPropertiesTableRows(p.getProperties(), cells, docPlaceHolderResolver);
+        collectPropertiesTableRows(fullName, p.getProperties(), cells, docPlaceHolderResolver);
         return;
       } else {
         row.add(createTd(String.valueOf(Optional.ofNullable(p.getType()).orElse(Type.STRING))));
@@ -353,7 +363,7 @@ public class ExchangeReadmeMdGenerator {
        .append("In order to run demo snippets, you can set properties values in __demo-")
        .append(exchangeDescriptor.getId())
        .append(".properties__ properties file in src/test/resources folder.\n\n")
-       .append(generatePropertiesTable("Demo snippet properties", exchangeDescriptor.getDemoProperties(), docPlaceHolderResolver));
+       .append(generatePropertiesTable("Demo snippet properties", exchangeDescriptor.getDemoProperties(), "demo", docPlaceHolderResolver));
     }
     
     if (hasEndpoints()) {

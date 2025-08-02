@@ -54,7 +54,7 @@ public class EmployeeProperties {
      * Base URL for REST endpoints the Employee Exchange API
      */
     public static final ConfigProperty BASE_HTTP_URL = DefaultConfigProperty.create(
-      "baseHttpUrl",
+      "server.baseHttpUrl",
       Type.STRING,
       "Base URL for REST endpoints the Employee Exchange API",
       null);
@@ -63,7 +63,7 @@ public class EmployeeProperties {
      * Base URL for websocket endpoints of the Employee Exchange API
      */
     public static final ConfigProperty BASE_WEBSOCKET_URL = DefaultConfigProperty.create(
-      "baseWebsocketUrl",
+      "server.baseWebsocketUrl",
       Type.STRING,
       "Base URL for websocket endpoints of the Employee Exchange API",
       null);

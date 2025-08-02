@@ -51,13 +51,13 @@ You may have a look at <a href="./src/test/java/org/jxapi/exchanges/employee/gen
     <td colspan="2">Server related properties</td>
   </tr>
   <tr>
-    <td>baseHttpUrl</td>
+    <td>server.baseHttpUrl</td>
     <td>STRING</td>
     <td>Base URL for REST endpoints the Employee Exchange API</td>
     <td></td>
   </tr>
   <tr>
-    <td>baseWebsocketUrl</td>
+    <td>server.baseWebsocketUrl</td>
     <td>STRING</td>
     <td>Base URL for websocket endpoints of the Employee Exchange API</td>
     <td></td>
@@ -146,7 +146,7 @@ In order to run demo snippets, you can set properties values in __demo-Employee.
     <th>Default value</th>
   </tr>
   <tr>
-    <td>employeeId</td>
+    <td>demo.employeeId</td>
     <td>STRING</td>
     <td>Used in demo snippets to set as value of Employee 'id' property</td>
     <td>1</td>

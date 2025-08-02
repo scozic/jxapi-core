@@ -78,7 +78,7 @@ public class DemoExchangeProperties {
      * Mock websocket server expected heartBeat interval
      */
     public static final ConfigProperty WEBSOCKET_HEART_BEAT_INTERVAL = DefaultConfigProperty.create(
-      "websocketHeartBeatInterval",
+      "ws.websocketHeartBeatInterval",
       Type.INT,
       "Mock websocket server expected heartBeat interval",
       "-1");

@@ -53,7 +53,7 @@ public class PropertiesGenUtilTest {
     Imports imports = new Imports();
     ConfigPropertyDescriptor property = ConfigPropertyDescriptor.create("myProp", Type.STRING, "A test property",
         "defaultValue");
-    String code = PropertiesGenUtil.generateSimplePropertyValueDeclaration(property, imports, null, null);
+    String code = PropertiesGenUtil.generateSimplePropertyValueDeclaration(property, null, imports, null, null);
     Assert.assertEquals(
         "/**\n"
         + " * A test property\n"
@@ -82,13 +82,13 @@ public class PropertiesGenUtilTest {
         "Hi ${foo}!");
     PlaceHolderResolver docPlaceHolderResolver = PlaceHolderResolver.create(Map.of("hello", "Hello World"));
     PlaceHolderResolver sampleValuePlaceHolderResolver = PlaceHolderResolver.create(Map.of("foo", "bar"));
-    String code = PropertiesGenUtil.generateSimplePropertyValueDeclaration(property, imports, docPlaceHolderResolver, sampleValuePlaceHolderResolver);
+    String code = PropertiesGenUtil.generateSimplePropertyValueDeclaration(property, "demo", imports, docPlaceHolderResolver, sampleValuePlaceHolderResolver);
     Assert.assertEquals(
         "/**\n"
         + " * A test Hello World property\n"
         + " */\n"
         + "public static final ConfigProperty HELLO_PROP = DefaultConfigProperty.create(\n"
-        + "  \"helloProp\",\n"
+        + "  \"demo.helloProp\",\n"
         + "  Type.STRING,\n"
         + "  \"A test Hello World property\",\n"
         + "  Hi bar!);\n"
@@ -109,7 +109,7 @@ public class PropertiesGenUtilTest {
       Type.STRING, 
       "A test property",
       null);
-    String code = PropertiesGenUtil.generateSimplePropertyValueDeclaration(property, imports, null, null);
+    String code = PropertiesGenUtil.generateSimplePropertyValueDeclaration(property, null, imports, null, null);
     Assert.assertEquals(
         "/**\n"
         + " * A test property\n"

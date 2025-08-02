@@ -40,7 +40,7 @@ public class DemoExchangeDemoProperties {
    * Default value to use for market 'symbol' parameter in demo snippets
    */
   public static final ConfigProperty DEMO_SYMBOL = DefaultConfigProperty.create(
-    "demoSymbol",
+    "demo.demoSymbol",
     Type.STRING,
     "Default value to use for market 'symbol' parameter in demo snippets",
     "BTC_USDT");
