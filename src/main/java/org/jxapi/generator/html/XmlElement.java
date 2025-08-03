@@ -144,6 +144,11 @@ public class XmlElement implements DeepCloneable<XmlElement> {
             && Objects.equals(this.attributes, other.attributes)
             && Objects.equals(this.children, other.children);
   }
+  
+  @Override
+  public int hashCode() {
+    return Objects.hash(tag, content, attributes, children);
+  }
 
   /**
    * @return the tag name of the HTML element, such as "td", "th", "div", etc.

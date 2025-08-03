@@ -12,7 +12,7 @@ import org.junit.Test;
 public class XmlElementTest {
 
   @Test
-  public void testGettersAndSetters() {
+  public void testGettersAndSettersAndHashCode() {
     XmlElement element = new XmlElement();
     element.setTag("div");
     element.setContent("Hello, World!");
@@ -43,6 +43,7 @@ public class XmlElementTest {
     Assert.assertEquals("Paragraph 1", element.getChildren().get(1).getContent());
     Assert.assertEquals("p", element.getChildren().get(2).getTag());
     Assert.assertEquals("Paragraph 2", element.getChildren().get(2).getContent());
+    Assert.assertEquals(1525206845, element.hashCode());
   }
   
   @Test
@@ -56,7 +57,7 @@ public class XmlElementTest {
             .content("Child Element")
             .build())
         .build();
-    Assert.assertEquals("HtmlElement{\"tag\":\"div\",\"content\":\"Hello, World!\",\"attributes\":{\"class\":\"my-class\"},\"children\":[{\"tag\":\"span\",\"content\":\"Child Element\",\"attributes\":{},\"children\":[]}]}", element.toString());
+    Assert.assertEquals("XmlElement{\"tag\":\"div\",\"content\":\"Hello, World!\",\"attributes\":{\"class\":\"my-class\"},\"children\":[{\"tag\":\"span\",\"content\":\"Child Element\",\"attributes\":{},\"children\":[]}]}", element.toString());
   }
   
   @Test
