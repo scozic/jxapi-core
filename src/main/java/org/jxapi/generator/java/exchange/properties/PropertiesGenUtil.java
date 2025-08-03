@@ -74,6 +74,13 @@ public class PropertiesGenUtil {
   }
   
 
+  /**
+   * Generates the Java code for a static member named {@link #ALL_PROPERTY} variable that refers to a list of all
+   * configuration properties defined in the class. 
+   * @param properties the list of configuration properties to include in the generated list.
+   * @param imports the set of imports which will be updated with the necessary imports for the generated code.
+   * @return the Java code for the static member variable that contains a list of all configuration properties.
+   */
   public static String generateAllPropertiesListMethod(List<ConfigPropertyDescriptor> properties, Imports imports) {
       imports.add(List.class);
       imports.add(ConfigProperty.class);
@@ -173,9 +180,11 @@ public class PropertiesGenUtil {
    * {@code This is a description of my property} is the description of the
    * property and {@code myDefaultValue} is the default value of the property.
    * 
-   * @param property the property to generate the declaration for
-   * @param imports  the set of imports to add to the generated code
-   * @param docPlaceHolderResolver the resolver for placeholders in the property's description
+   * @param property                       the property to generate the declaration for
+   * @param prefix                         the prefix to prepend to the property name, for instance 'myExchange'.
+   * @param imports                        the set of imports to add to the generated code
+   * @param docPlaceHolderResolver         the resolver for placeholders in the property's description
+   * @param sampleValuePlaceHolderResolver the resolver for placeholders in the property's sample value
    * @return the Java code for the property declaration
    */
   public static String generateSimplePropertyValueDeclaration(
@@ -187,7 +196,7 @@ public class PropertiesGenUtil {
     imports.add(DefaultConfigProperty.class);
     imports.add(Type.class);
     imports.add(ConfigProperty.class);
-    String name = getPropertyFullName(property.getName(), prefix);
+    String name = getPropertyFullName(prefix, property.getName());
     String description = Optional.ofNullable(docPlaceHolderResolver).orElse(PlaceHolderResolver.NO_OP).resolve(property.getDescription());
     Object sampleValue = property.getDefaultValue();
     String sampleValueStr = sampleValue == null? null: 
@@ -245,11 +254,12 @@ public class PropertiesGenUtil {
   
   /**
    * Generates the full property name for a given property, including the prefix.
-   * @param propertyName the property name, for instance 'myProperty'.
    * @param prefix the prefix to prepend to the property name, for instance 'myExchange'.
-   * @return the full property name, for instance 'myExchange.myProperty'.
+   * @param propertyName the property name, for instance 'myProperty'.
+   * @return the full property name, for instance 'myExchange.myProperty', 
+   *         or just 'myProperty' if the prefix is empty or <code>null</code>. 
    */
-  public static String getPropertyFullName(String propertyName, String prefix) {
+  public static String getPropertyFullName(String prefix, String propertyName) {
     if (StringUtils.isEmpty(prefix)) {
       return propertyName;
     }

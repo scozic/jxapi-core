@@ -15,13 +15,13 @@ import org.jxapi.util.EncodingUtil;
  * {@link Type#LONG}. It can't be a list, map, or object.<p>
  * The properties will be exposed as static properties of a generated Java class named [exchangeId]Constants. That class wlll list constants for
  * property names and default values, and default 'getter' methods for
- * retrieving there values from properties<p>
+ * retrieving there values from properties
  * <p>
  * The properties can be grouped together. For example, authentication
  * credentials can be grouped into a 'group' property called 'auth' with
  * sub-properties for API key, secret, etc listed. Those properties can be
  * referenced with key auth.apiKey, auth.apiSecret, etc. Groups may contain
- * other groups, so the structure is hierarchical.<p>
+ * other groups, so the structure is hierarchical.
  * 
  */
 public class ConfigPropertyDescriptor {
@@ -103,7 +103,7 @@ public class ConfigPropertyDescriptor {
     this.description = description;
   }
   
-  /*
+  /**
    * Property value type, see {@link Type}, should be a primitive type e.g. {@link
    * Type#STRING}, {@link Type#INT}, {@link Type#BOOLEAN}, {@link
    * Type#BIGDECIMAL}, {@link Type#LONG}. 
@@ -112,6 +112,7 @@ public class ConfigPropertyDescriptor {
    * <p>
    * Default value is {@link Type#STRING} (therefore type property can be ommitted
    * in descriptor when it values are of String type).
+   * @return Property value type, see {@link Type}, should be a primitive type
    */
   public Type getType() {
     return type;

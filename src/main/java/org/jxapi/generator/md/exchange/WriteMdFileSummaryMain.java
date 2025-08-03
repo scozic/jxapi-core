@@ -19,12 +19,16 @@ public class WriteMdFileSummaryMain {
    * Main method to run the Markdown file summary generation. Expects a single
    * command line argument which is the path to the Markdown file or a folder
    * containing markdown files to visit recursively. This markdown file should
-   * exist and contain the placeholder
-   * {@link ExchangeReadmeMdGeneratorUtil#TABLE_OF_CONTENTS_PLACEHOLDER} located
-   * where the table of contents should be generated..
+   * exist and contain the placeholders
+   * {@link ExchangeReadmeMdGeneratorUtil#BEGIN_TABLE_OF_CONTENTS_PLACEHOLDER}
+   * and {@link ExchangeReadmeMdGeneratorUtil#END_TABLE_OF_CONTENTS_PLACEHOLDER}. 
+   * The exissting content between these placeholders will be replaced with the
+   * table of contents generated from the Markdown file's headers. It can be used
+   * to update the table of contents in a Markdown file or files recursively in a
+   * directory.
    * 
    * @param args Command line arguments, expects one argument: path to the
-   *             Markdown file.
+   *             Markdown file or a directory containing Markdown files.
    */
   public static void main(String[] args) {
     try {

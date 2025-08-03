@@ -9,17 +9,15 @@ import org.jxapi.util.DeepCloneable;
 import org.jxapi.util.EncodingUtil;
 
 /**
- * Represents a <a href="https://developer.mozilla.org/fr/docs/Web/HTML/Reference/Elements/td">cell in an HTML table</a>. It can contain content and has a map of
- * attributes that can be added to the cell.<p>
- * The 
+ * Represents a generic XML element that can be used to build HTML content.
  */
-public class HtmlElement implements DeepCloneable<HtmlElement> {
+public class XmlElement implements DeepCloneable<XmlElement> {
   
   /**
-   * Creates a new builder for {@link HtmlElement}.
+   * Creates a new builder for {@link XmlElement}.
    * 
    * @return a new instance of {@link Builder} for constructing an
-   *         {@link HtmlElement}.
+   *         {@link XmlElement}.
    */
   public static Builder builder() {
     return new Builder();
@@ -31,7 +29,7 @@ public class HtmlElement implements DeepCloneable<HtmlElement> {
   
   private final Map<String, String> attributes = CollectionUtil.createMap();
   
-  private final List<HtmlElement> children = CollectionUtil.createList();
+  private final List<XmlElement> children = CollectionUtil.createList();
 
   /**
    * @return the content of the cell, which can be text or HTML.
@@ -87,9 +85,9 @@ public class HtmlElement implements DeepCloneable<HtmlElement> {
   /**
    * Returns the list of child elements contained within this HTML element.
    * 
-   * @param child the child element to add. The list is mutable, so you can add or remove children.
+   * @return a list of child elements. The list is mutable, so you can modify it
    */
-  public List<HtmlElement> getChildren() {
+  public List<XmlElement> getChildren() {
     return children;
   }
   
@@ -98,7 +96,7 @@ public class HtmlElement implements DeepCloneable<HtmlElement> {
    * 
    * @param child the child element to add. If null, no child is added.
    */
-  public void addChild(HtmlElement child) {
+  public void addChild(XmlElement child) {
     if (child != null) {
       children.add(child);
     }
@@ -110,7 +108,7 @@ public class HtmlElement implements DeepCloneable<HtmlElement> {
    * @param children a list of child elements to add. If null, no children are
    *                 added.
    */
-  public void addChildren(List<HtmlElement> children) {
+  public void addChildren(List<XmlElement> children) {
     if (children != null) {
      children.forEach(this::addChild);
     }
@@ -122,8 +120,8 @@ public class HtmlElement implements DeepCloneable<HtmlElement> {
   }
 
   @Override
-  public HtmlElement deepClone() {
-    HtmlElement clone = new HtmlElement();
+  public XmlElement deepClone() {
+    XmlElement clone = new XmlElement();
     clone.setContent(this.content);
     clone.addAttributes(this.attributes);
     clone.setTag(this.tag);
@@ -140,7 +138,7 @@ public class HtmlElement implements DeepCloneable<HtmlElement> {
     if (obj == null || getClass() != obj.getClass()) {
       return false;
     }
-    HtmlElement other = (HtmlElement) obj;
+    XmlElement other = (XmlElement) obj;
     return Objects.equals(this.tag, other.tag)
             && Objects.equals(this.content, other.content) 
             && Objects.equals(this.attributes, other.attributes)
@@ -164,42 +162,86 @@ public class HtmlElement implements DeepCloneable<HtmlElement> {
   }
 
   /**
-   * Builder class for creating instances of {@link HtmlElement}.
+   * Builder class for creating instances of {@link XmlElement}.
    */
   public static class Builder {
-    private final HtmlElement cell = new HtmlElement();
+    private final XmlElement cell = new XmlElement();
 
+    /**
+     * Sets the content of the XML element, e.g text between the opening and closing tags.
+     * @param content the content of the cell, which can be text or HTML.
+     * @return this builder instance for chaining.
+     */
     public Builder content(String content) {
       cell.setContent(content);
       return this;
     }
     
+    /**
+     * Sets the tag name of the XML element, e.g. "td", "th", "div", etc.
+     * 
+     * @param tag the tag name to set, such as "td", "th", "div", etc.
+     * @return this builder instance for chaining.
+     */
     public Builder tag(String tag) {
       cell.setTag(tag);
       return this;
     }
 
-    public Builder attribute(String name, String value) {
+    /**
+     * Adds an attribute to the XML element.
+     * 
+     * @param name  the name of the attribute (e.g., "rowspan", "colspan", "style").
+     * @param value the value of the attribute.
+     * @return this builder instance for chaining.
+     */
+    public Builder attr(String name, String value) {
       cell.addAttribute(name, value);
       return this;
     }
 
+    /**
+     * Adds multiple attributes to the XML element.
+     * 
+     * @param attributes a map of attributes where the key is the attribute name and
+     *                   the value is the attribute value. If null, no attributes
+     *                   are added.
+     * @return this builder instance for chaining.
+     */
     public Builder addAttributes(Map<String, String> attributes) {
       cell.addAttributes(attributes);
       return this;
     }
     
-    public Builder child(HtmlElement child) {
+    /**
+     * Adds a child element to the XML element.
+     * 
+     * @param child the child element to add. If null, no child is added.
+     * @return this builder instance for chaining.
+     */
+    public Builder child(XmlElement child) {
       cell.addChild(child);
       return this;
     }
     
-    public Builder children(List<HtmlElement> children) {
+    /**
+     * Adds multiple child elements to the XML element.
+     * 
+     * @param children a list of child elements to add. If null, no children are
+     *                 added.
+     * @return this builder instance for chaining.
+     */
+    public Builder children(List<XmlElement> children) {
       cell.addChildren(children);
       return this;
     }
 
-    public HtmlElement build() {
+    /**
+     * Builds and returns the {@link XmlElement} instance.
+     * 
+     * @return the constructed {@link XmlElement}.
+     */
+    public XmlElement build() {
       return cell;
     }
   }

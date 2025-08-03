@@ -7,13 +7,13 @@ import org.junit.Assert;
 import org.junit.Test;
 
 /**
- * Unit test for {@link HtmlElement}
+ * Unit test for {@link XmlElement}
  */
-public class HtmlElementUtilTest {
+public class XmlElementTest {
 
   @Test
   public void testGettersAndSetters() {
-    HtmlElement element = new HtmlElement();
+    XmlElement element = new XmlElement();
     element.setTag("div");
     element.setContent("Hello, World!");
     element.addAttribute("class", "my-class");
@@ -21,14 +21,14 @@ public class HtmlElementUtilTest {
     element.addAttribute("bar", null);
     element.addAttributes(Map.of("id", "my-id", "style", "color: red;"));
     element.addAttributes(null);
-    element.addChild(HtmlElement.builder()
+    element.addChild(XmlElement.builder()
         .tag("span")
         .content("Child Element")
         .build());
     element.addChild(null);
     element.addChildren(List.of(
-        HtmlElement.builder().tag("p").content("Paragraph 1").build(),
-        HtmlElement.builder().tag("p").content("Paragraph 2").build()
+        XmlElement.builder().tag("p").content("Paragraph 1").build(),
+        XmlElement.builder().tag("p").content("Paragraph 2").build()
     ));
     element.addChildren(null);
     Assert.assertEquals("div", element.getTag());
@@ -47,11 +47,11 @@ public class HtmlElementUtilTest {
   
   @Test
   public void testToString() {
-    HtmlElement element = HtmlElement.builder()
+    XmlElement element = XmlElement.builder()
         .tag("div")
         .content("Hello, World!")
-        .attribute("class", "my-class")
-        .child(HtmlElement.builder()
+        .attr("class", "my-class")
+        .child(XmlElement.builder()
             .tag("span")
             .content("Child Element")
             .build())
@@ -61,14 +61,14 @@ public class HtmlElementUtilTest {
   
   @Test
   public void testBuilder() {
-    HtmlElement element = HtmlElement.builder()
+    XmlElement element = XmlElement.builder()
         .tag("div").content("Hello, World!")
-        .attribute("class", "my-class")
+        .attr("class", "my-class")
         .addAttributes(Map.of("id", "my-id", "style", "color: red;"))
-        .child(HtmlElement.builder().tag("span").content("Child Element").build())
+        .child(XmlElement.builder().tag("span").content("Child Element").build())
         .children(List.of(
-            HtmlElement.builder().tag("p").content("Paragraph 1").build(),
-            HtmlElement.builder().tag("p").content("Paragraph 2").build()))
+            XmlElement.builder().tag("p").content("Paragraph 1").build(),
+            XmlElement.builder().tag("p").content("Paragraph 2").build()))
         .build();
 
     Assert.assertEquals("div", element.getTag());
@@ -85,16 +85,16 @@ public class HtmlElementUtilTest {
   
   @Test
   public void testDeepClone() {
-    HtmlElement element = HtmlElement.builder()
+    XmlElement element = XmlElement.builder()
         .tag("div").content("Hello, World!")
-        .attribute("class", "my-class")
+        .attr("class", "my-class")
         .addAttributes(Map.of("id", "my-id", "style", "color: red;"))
-        .child(HtmlElement.builder().tag("span").content("Child Element").build())
+        .child(XmlElement.builder().tag("span").content("Child Element").build())
         .children(List.of(
-            HtmlElement.builder().tag("p").content("Paragraph 1").build(),
-            HtmlElement.builder().tag("p").content("Paragraph 2").build()))
+            XmlElement.builder().tag("p").content("Paragraph 1").build(),
+            XmlElement.builder().tag("p").content("Paragraph 2").build()))
         .build();
-    HtmlElement clonedElement = element.deepClone();
+    XmlElement clonedElement = element.deepClone();
 
     Assert.assertEquals(element.getTag(), clonedElement.getTag());
     Assert.assertEquals(element.getContent(), clonedElement.getContent());
@@ -111,21 +111,21 @@ public class HtmlElementUtilTest {
   @Test
   public void testEquals() {
     
-    HtmlElement element = HtmlElement.builder()
+    XmlElement element = XmlElement.builder()
         .tag("div").content("Hello, World!")
-        .attribute("class", "my-class")
+        .attr("class", "my-class")
         .addAttributes(Map.of("id", "my-id", "style", "color: red;"))
-        .child(HtmlElement.builder().tag("span").content("Child Element").build())
+        .child(XmlElement.builder().tag("span").content("Child Element").build())
         .children(List.of(
-            HtmlElement.builder().tag("p").content("Paragraph 1").build(),
-            HtmlElement.builder().tag("p").content("Paragraph 2").build()))
+            XmlElement.builder().tag("p").content("Paragraph 1").build(),
+            XmlElement.builder().tag("p").content("Paragraph 2").build()))
         .build();
     
     Assert.assertEquals(element, element); // reflexive
     Assert.assertFalse(element.equals(null)); // non-null
     Assert.assertFalse(element.equals(new Object())); // non-instance
     
-    HtmlElement clonedElement = element.deepClone();
+    XmlElement clonedElement = element.deepClone();
 
     Assert.assertEquals(element, clonedElement);
     
@@ -141,7 +141,7 @@ public class HtmlElementUtilTest {
     Assert.assertNotEquals(element, clonedElement);
     
     clonedElement = element.deepClone();
-    clonedElement.addChild(HtmlElement.builder().tag("span").content("Another Child").build());
+    clonedElement.addChild(XmlElement.builder().tag("span").content("Another Child").build());
     Assert.assertNotEquals(element, clonedElement);
   }
 

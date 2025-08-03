@@ -64,8 +64,11 @@ public class ExchangeDemoPropertiesFileGenerator {
    * 
    * @param exchangeId         the exchange id
    * @param exchangeProperties the exchange configuration properties
+   * @param demoProperties     the exchange demo configuration properties
    */
-  public ExchangeDemoPropertiesFileGenerator(String exchangeId, List<ConfigPropertyDescriptor> exchangeProperties, List<ConfigPropertyDescriptor> demoProperties) {
+  public ExchangeDemoPropertiesFileGenerator(String exchangeId, 
+                                             List<ConfigPropertyDescriptor> exchangeProperties, 
+                                             List<ConfigPropertyDescriptor> demoProperties) {
     this.exchangeId = exchangeId;
     this.exchangeProperties = exchangeProperties;
     this.demoProperties = demoProperties;
@@ -165,10 +168,20 @@ public class ExchangeDemoPropertiesFileGenerator {
     Files.writeString(propertiesFile, generate());
   }
 
+  /**
+   * Returns the demo properties.
+   * 
+   * @return the demo properties
+   */
   public List<ConfigPropertyDescriptor> getDemoProperties() {
     return demoProperties;
   }
 
+  /**
+   * Sets the demo properties.
+   * 
+   * @param demoProperties the demo properties to set
+   */
   public void setDemoProperties(List<ConfigPropertyDescriptor> demoProperties) {
     this.demoProperties = demoProperties;
   }

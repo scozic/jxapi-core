@@ -6,49 +6,49 @@ import org.junit.Assert;
 import org.junit.Test;
 
 /**
- * Unit test for {@link HtmlGenerationUtil}
+ * Unit test for {@link HtmlGenUtil}
  */
-public class HtmlGenerationUtilTest {
+public class HtmlGenUtilTest {
 
   @Test
   public void testGenerateMarkers() {
     String text = "Hello, World!";
-    Assert.assertEquals("<span></span>", HtmlGenerationUtil.generateMarkers(null, "span"));
-    Assert.assertEquals("<span>Hello, World!</span>", HtmlGenerationUtil.generateMarkers(text, "span"));
+    Assert.assertEquals("<span></span>", HtmlGenUtil.generateMarkers(null, "span"));
+    Assert.assertEquals("<span>Hello, World!</span>", HtmlGenUtil.generateMarkers(text, "span"));
   }
   
   @Test
   public void testGenerateHtmlForElement() {
-    HtmlElement element = HtmlElement.builder()
+    XmlElement element = XmlElement.builder()
         .tag("div")
-        .attribute("class", "my-class")
-        .attribute("id", "my-id")
-        .attribute("style", "color: red;")
-        .child(HtmlElement.builder().tag("span").content("Child Element").build())
+        .attr("class", "my-class")
+        .attr("id", "my-id")
+        .attr("style", "color: red;")
+        .child(XmlElement.builder().tag("span").content("Child Element").build())
         .child(
-          HtmlElement.builder()
+          XmlElement.builder()
            .tag("table")
            .children(List.of(
-             HtmlElement.builder()
+             XmlElement.builder()
                .tag("tr")
                .children(List.of(
-                 HtmlElement.builder()
+                 XmlElement.builder()
                    .tag("td")
                    .content("Cell 1")
                    .build(),
-                 HtmlElement.builder()
+                 XmlElement.builder()
                    .tag("td")
                    .content("Cell 2")
                    .build()))
                 .build(),
-            HtmlElement.builder()
+            XmlElement.builder()
               .tag("tr")
               .children(List.of(
-                HtmlElement.builder()
+                XmlElement.builder()
                   .tag("td")
                   .content("Cell 3")
                   .build(),
-                HtmlElement.builder()
+                XmlElement.builder()
                   .tag("td")
                   .content("Cell 4")
                   .build()))
@@ -67,7 +67,7 @@ public class HtmlGenerationUtilTest {
         + "      <td>Cell 4</td>\n"
         + "    </tr>\n"
         + "  </table>\n"
-        + "</div>", HtmlGenerationUtil.generateHtmlForElement(element));
+        + "</div>", HtmlGenUtil.generateHtmlForElement(element));
   }
   
   @Test
@@ -92,7 +92,7 @@ public class HtmlGenerationUtilTest {
           + "    <td>val11</td>\n"
           + "  </tr>\n"
           + "</table>", 
-          HtmlGenerationUtil.generateTable("myTable", cols, cells));    
+          HtmlGenUtil.generateTable("myTable", cols, cells));    
   }
   
   @Test
@@ -111,7 +111,7 @@ public class HtmlGenerationUtilTest {
           + "    <td>val11</td>\n"
           + "  </tr>\n"
           + "</table>", 
-          HtmlGenerationUtil.generateTable(null, null, cells));    
+          HtmlGenUtil.generateTable(null, null, cells));    
   }
   
   @Test
@@ -123,7 +123,7 @@ public class HtmlGenerationUtilTest {
           + "    <th>col2</th>\n"
           + "  </tr>\n"
           + "</table>", 
-          HtmlGenerationUtil.generateTable(null, cols, null));    
+          HtmlGenUtil.generateTable(null, cols, null));    
   }
 
 }

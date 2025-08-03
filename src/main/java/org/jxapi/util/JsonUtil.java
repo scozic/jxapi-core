@@ -541,22 +541,48 @@ public class JsonUtil {
     }
   }
   
+  /**
+   * A wrapper for a {@link JsonParser} that can be serialized to JSON. The
+   * serializer will copy the current structure of the parser into the JSON
+   * output. This is useful when you want to serialize JSON from a parser that is already
+   * positioned on a value, and you want to include that value in the JSON output.
+   * @see JsonGenerator#copyCurrentStructure(JsonParser)
+   */
   @JsonSerialize(using = JsonSerializableFromParserSerializer.class)
   public static class JsonSerializableFromParser {
     
     private final JsonParser parser;
     
+    /**
+     * Creates a new instance of {@link JsonSerializableFromParser} with the given
+     * parser.
+     * 
+     * @param parser The parser to wrap, must not be <code>null</code>.
+     */
     public JsonSerializableFromParser(JsonParser parser) {
       this.parser = parser;
     }
     
+    /**
+     * Returns the parser wrapped by this instance.
+     * 
+     * @return The parser wrapped by this instance.
+     */
     public JsonParser getParser() {
       return parser;
     }
   }
   
+  /**
+   * Custom serializer for {@link JsonSerializableFromParser} that copies the
+   * current structure of the parser into the JSON output.
+   */
   public static class JsonSerializableFromParserSerializer extends StdSerializer<JsonSerializableFromParser> {
 
+    /**
+     * Creates a new {@link JsonSerializableFromParserSerializer} instance, suitable
+     * for serializing {@link JsonSerializableFromParser} instances.
+     */
     public JsonSerializableFromParserSerializer() {
       super(JsonSerializableFromParser.class);
     }

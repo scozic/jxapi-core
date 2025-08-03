@@ -16,8 +16,8 @@ import org.jxapi.exchange.descriptor.ExchangeDescriptor;
 import org.jxapi.exchange.descriptor.RestEndpointDescriptor;
 import org.jxapi.exchange.descriptor.Type;
 import org.jxapi.exchange.descriptor.WebsocketEndpointDescriptor;
-import org.jxapi.generator.html.HtmlElement;
-import org.jxapi.generator.html.HtmlGenerationUtil;
+import org.jxapi.generator.html.XmlElement;
+import org.jxapi.generator.html.HtmlGenUtil;
 import org.jxapi.generator.java.JavaCodeGenUtil;
 import org.jxapi.generator.java.exchange.ExchangeGenUtil;
 import org.jxapi.generator.java.exchange.api.ExchangeApiGenUtil;
@@ -227,7 +227,7 @@ public class ExchangeReadmeMdGenerator {
         .append(" ")
         .append(api.getName())
         .append(" websocket endpoints").toString();
-    return HtmlGenerationUtil.generateTable(caption, columns, cells);
+    return HtmlGenUtil.generateTable(caption, columns, cells);
   }
 
   private String generateRestEndpointsTable(ExchangeApiDescriptor api, PlaceHolderResolver docPlaceHolderResolver) {
@@ -265,7 +265,7 @@ public class ExchangeReadmeMdGenerator {
         .append(" ")
         .append(api.getName())
         .append(" REST endpoints").toString();
-    return HtmlGenerationUtil.generateTable(caption, columns, cells);
+    return HtmlGenUtil.generateTable(caption, columns, cells);
   }
   
   private String getInterfaceJavadocLink(String interfaceClass) {
@@ -299,35 +299,35 @@ public class ExchangeReadmeMdGenerator {
                                          String propertiesPrefix, 
                                          PlaceHolderResolver docPlaceHolderResolver) {
     List<String> columns = List.of("Name", "Type", "description", "Default value");
-    List<List<HtmlElement>> cells = new ArrayList<>();
+    List<List<XmlElement>> cells = new ArrayList<>();
     collectPropertiesTableRows(propertiesPrefix, properties, cells, docPlaceHolderResolver);
-    HtmlElement tableElement = HtmlElement.builder()
+    XmlElement tableElement = XmlElement.builder()
         .tag("table")
-        .child(HtmlElement.builder().tag("caption").content(tableName).build())
-        .child(HtmlElement.builder().tag("tr").children(columns.stream()
-            .map(col -> HtmlElement.builder().tag("th").content(col).build())
+        .child(XmlElement.builder().tag("caption").content(tableName).build())
+        .child(XmlElement.builder().tag("tr").children(columns.stream()
+            .map(col -> XmlElement.builder().tag("th").content(col).build())
             .collect(Collectors.toList())
           ).build())
         .children(cells.stream()
-            .map(row -> HtmlElement.builder().tag("tr").children(row).build())
+            .map(row -> XmlElement.builder().tag("tr").children(row).build())
             .collect(Collectors.toList()))
         .build();
-    return HtmlGenerationUtil.generateHtmlForElement(tableElement);
+    return HtmlGenUtil.generateHtmlForElement(tableElement);
   }
   
   private void collectPropertiesTableRows(String prefix, 
                                           List<ConfigPropertyDescriptor> properties, 
-                                          List<List<HtmlElement>> cells, 
+                                          List<List<XmlElement>> cells, 
                                           PlaceHolderResolver docPlaceHolderResolver) {
     properties.forEach(p -> {
-      List<HtmlElement> row = new ArrayList<>();
+      List<XmlElement> row = new ArrayList<>();
       String name = StringUtils.defaultString(p.getName());
-      String fullName = PropertiesGenUtil.getPropertyFullName(name, prefix);
+      String fullName = PropertiesGenUtil.getPropertyFullName(prefix, name);
       row.add(createTd(fullName));
       if (p.isGroup()) {
         row.add(createTd("group"));
         String descr = StringUtils.defaultString(docPlaceHolderResolver.resolve(p.getDescription()));
-        HtmlElement descriptionTd = createTd(descr);
+        XmlElement descriptionTd = createTd(descr);
         descriptionTd.addAttribute("colspan", "2");
         row.add(descriptionTd);
         cells.add(row);
@@ -344,8 +344,8 @@ public class ExchangeReadmeMdGenerator {
     });
   }
   
-  private HtmlElement createTd(String content) {
-    return HtmlElement.builder().tag("td").content(content).build();
+  private XmlElement createTd(String content) {
+    return XmlElement.builder().tag("td").content(content).build();
   }
   
   private String generateDemoSnippetsDocumentation(PlaceHolderResolver docPlaceHolderResolver) {

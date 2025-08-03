@@ -11,14 +11,14 @@ import org.jxapi.util.CollectionUtil;
 /**
  * Helper methods around HTML generation
  */
-public class HtmlGenerationUtil {
+public class HtmlGenUtil {
   
   /**
    * Indentation string used in HTML generation
    */
   public static final String INDENTATION = "  ";
 
-  private HtmlGenerationUtil() {}
+  private HtmlGenUtil() {}
   
   /**
    * Generates a HTML table with given caption, header and rows
@@ -28,15 +28,15 @@ public class HtmlGenerationUtil {
    * @return HTML <code>&lt;table&gt;</code> code fragment.
    */
   public static String generateTable(String caption, List<String> columns, List<List<String>> cells) {
-    HtmlElement.Builder tableBuilder = HtmlElement.builder().tag("table");
+    XmlElement.Builder tableBuilder = XmlElement.builder().tag("table");
     if (!StringUtils.isBlank(caption)) {
-      tableBuilder.child(HtmlElement.builder().tag("caption").content(caption).build());
+      tableBuilder.child(XmlElement.builder().tag("caption").content(caption).build());
     }
         
     if (!CollectionUtil.isEmpty(columns)) {
-      tableBuilder.child(HtmlElement.builder().tag("tr")
+      tableBuilder.child(XmlElement.builder().tag("tr")
           .children(columns.stream()
-              .map(c -> HtmlElement.builder()
+              .map(c -> XmlElement.builder()
                 .tag("th")
                 .content(c)
                 .build())
@@ -45,11 +45,11 @@ public class HtmlGenerationUtil {
     }
     if (!CollectionUtils.isEmpty(cells)) {
       cells.forEach(row -> {
-        HtmlElement.Builder rowBuilder = HtmlElement.builder().tag("tr");
+        XmlElement.Builder rowBuilder = XmlElement.builder().tag("tr");
         if (!CollectionUtil.isEmpty(row)) {
           rowBuilder.children(
               row.stream()
-                .map(c -> HtmlElement.builder()
+                .map(c -> XmlElement.builder()
                   .tag("td")
                   .content(c)
                   .build())
@@ -87,7 +87,13 @@ public class HtmlGenerationUtil {
         .toString();
   }
   
-  public static String generateHtmlForElement(HtmlElement htmlElement) {
+  /**
+   * Generates HTML for the given XML element.
+   * 
+   * @param htmlElement The XML element to generate HTML for.
+   * @return A String containing the generated HTML.
+   */
+  public static String generateHtmlForElement(XmlElement htmlElement) {
     StringBuilder sb = new StringBuilder();
     sb.append("<")
       .append(htmlElement.getTag());

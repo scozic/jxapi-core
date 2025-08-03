@@ -539,22 +539,23 @@ public class ExchangeGenUtil {
   }
   
   /**
-   * Returns the full class name of the generated constant class where the
-   * given constant is defined. When the given constant is a group constant, the returned class name is this constant group class name, for instance 'com.jxapi.myexchange.MyExchangeConstants.GroupConstantName'.
-   * Otherwise, the returned class name is the full class name of the class containing given constant property.
+   * Returns the full class name of the generated constant class where the given
+   * constant is defined. When the given constant is a group constant, the
+   * returned class name is this constant group class name, for instance
+   * 'com.jxapi.myexchange.MyExchangeConstants.GroupConstantName'. Otherwise, the
+   * returned class name is the full class name of the class containing given
+   * constant property.
    * 
    * @param constantName       The constant to get the class name for as provided
    *                           by {@link Constant#getName()}
    * @param exchangeDescriptor The exchange descriptor where to look for
-   *                           'exchange' level constants, cannot be
-   *                           <code>null</code>.
-   * @param apiDescriptor      The exchange API descriptor to get look for API
-   *                           group level constants, can be <code>null</code> in
-   *                           which case only exchange level constants are
-   *                           searched.
+   *                           constants, cannot be <code>null</code>.
    * @return The full class name of the generated constant interface where the
    *         constant is defined, or <code>null</code> if the constant is not
-   *         found in the API group or exchange level constants.
+   *         found in exchange constants.
+   * @throws IllegalArgumentException if the exchange descriptor is
+   *                                  <code>null</code> or if constant name is
+   *                                  <code>null</code> or empty.
    */
   public static String getClassNameForConstant(String constantName, 
                                                ExchangeDescriptor exchangeDescriptor) {
@@ -630,7 +631,7 @@ public class ExchangeGenUtil {
    * 
    * @param configPropertyName The configuration property name to get the class
    *                           name for
-   * @param descriptor         The exchange descriptor where the configuration
+   * @param exchangeDescriptor The exchange descriptor where the configuration
    *                           property is defined
    * @return The full class name of the generated properties interface where the
    *         configuration property is defined, or <code>null</code> if the
@@ -672,18 +673,18 @@ public class ExchangeGenUtil {
    * Returns the value declaration for the given constant name. The value
    * declaration is the reference to the constant in the generated constants class
    * 
-   * @param constantName  The name of the constant to get the value declaration
-   *                      for. If the constant is nested in a group, the name must provide full constant address like 'myGroup.myConstant'.
-   * @param exchangeDescriptor    The exchange descriptor where the constant may be
-   *                      defined
-   * @param apiDescriptor The exchange API descriptor where the constant may be
-   *                      defined
-   * @param imports       The imports of the generator context that will be
-   *                      populated with classes used by returned type. That set
-   *                      must be not <code>null</code> and mutable.
+   * @param constantName       The name of the constant to get the value
+   *                           declaration for. If the constant is nested in a
+   *                           group, the name must provide full constant address
+   *                           like 'myGroup.myConstant'.
+   * @param exchangeDescriptor The exchange descriptor where the constant may be
+   *                           defined
+   * @param imports            The imports of the generator context that will be
+   *                           populated with classes used by returned type. That
+   *                           set must be not <code>null</code> and mutable.
    * @return The value declaration for the given constant name, or
-   *         <code>null</code> if the constant is not found in constants.
-   *         exchange level constants.
+   *         <code>null</code> if the constant is not found in constants. exchange
+   *         level constants.
    */
   public static String getValueDeclarationForConstant(String constantName, 
                                                       ExchangeDescriptor exchangeDescriptor,
@@ -758,21 +759,14 @@ public class ExchangeGenUtil {
   /**
    * Retrieves all possible placeholders keys for the given exchange, and their
    * replacement as JavaDoc code links like
-   * {@link #getDescriptionReplacements(ExchangeDescriptor, String, String)} using
+   * {@link #getDescriptionReplacements(ExchangeDescriptor, String)} using
    * <code>null</code> as value for javaDoc base URL.
    * 
    * @param exchangeDescriptor The exchange descriptor to get the placeholders
    *                           keys for
-   * @param apiGroupName       The name of the API group to get the placeholders
-   *                           keys for when in context of such group. If
-   *                           <code>null</code>, only exchange level constants
-   *                           and properties are considered. Otherwise, API group
-   *                           level constants are also considered. Otherwise,
-   *                           this group name should match one of provided
-   *                           exchangge descriptor nested API groups.
    * @return A map of placeholders keys to their replacement values as javadoc
    *         links.
-   * @see #getDescriptionReplacements(ExchangeDescriptor, String, String)        
+   * @see #getDescriptionReplacements(ExchangeDescriptor, String)        
    */
   public static Map<String, Object> getDescriptionReplacements(ExchangeDescriptor exchangeDescriptor) {
     return getDescriptionReplacements(exchangeDescriptor, null);
@@ -785,21 +779,11 @@ public class ExchangeGenUtil {
    * <li>Exchange constants, see {@link ExchangeDescriptor#getConstants()}</li>
    * <li>Exchange configuration properties, see
    * {@link ExchangeDescriptor#getProperties()}</li>
-   * <li>Exchange API group constants, see
-   * {@link ExchangeApiDescriptor#getConstants()}. Placeholders keys are looked
-   * for in API group level constants when <code>apiGroupName</code> is
-   * provided.</li>
+   * <li>Exchange demo configuration properties, see {@link ExchangeDescriptor#getDemoProperties()}</li>
    * </ul>
    * 
    * @param exchangeDescriptor The exchange descriptor to get the placeholders
    *                           keys for
-   * @param apiGroupName       The name of the API group to get the placeholders
-   *                           keys for when in context of such group.
-   *                           If <code>null</code>, only exchange level
-   *                           constants and properties are considered. Otherwise,
-   *                           API group level constants are also considered.
-   *                           Otherwise, this group name should match one of
-   *                           provided exchangge descriptor nested API groups.
    * @param baseHtmlDocUrl     The base HTML documentation URL to use for Javadoc links. If <code>null</code>, a code link will be generated instead.                       
    * @return A map of placeholders keys to their replacement values as javadoc links.
    */

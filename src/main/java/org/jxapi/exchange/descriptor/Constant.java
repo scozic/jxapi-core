@@ -153,10 +153,22 @@ public class Constant {
     return constants;
   }
   
+  /**
+   * Returns <code>true</code> if this constant is a group of constants, 
+   * i.e. {@link #getConstants()} returns a non-empty list of nested constants.
+   * 
+   * @return <code>true</code> if this constant is a group of constants, otherwise
+   *         <code>false</code>
+   */
   public boolean isGroup() {
     return !CollectionUtil.isEmpty(constants);
   }
 
+  /**
+   * Sets the list of nested constants, if this constant is a group of constants.
+   * 
+   * @param constants List of nested constants, if this constant is a group of constants.
+   */
   public void setConstants(List<Constant> constants) {
     this.constants = constants;
   }

@@ -8,7 +8,7 @@ import java.util.Properties;
 import org.jxapi.exchange.descriptor.ConfigPropertyDescriptor;
 import org.jxapi.exchange.descriptor.ExchangeDescriptor;
 import org.jxapi.exchange.descriptor.Type;
-import org.jxapi.generator.html.HtmlGenerationUtil;
+import org.jxapi.generator.html.HtmlGenUtil;
 import org.jxapi.generator.java.JavaCodeGenUtil;
 import org.jxapi.generator.java.JavaTypeGenerator;
 import org.jxapi.generator.java.exchange.ExchangeGenUtil;
@@ -69,10 +69,11 @@ public class PropertiesClassGenerator extends JavaTypeGenerator {
    * 
    * @param fullClassName          Full name of the interface to generate,
    *                               example: com.example.MyProperties
-   * @param exchangeName           The name of exchange configuration properties
-   *                               are generated for
+   * @param exchange               The exchange descriptor configuration 
+   *                               properties are generated for
    * @param properties             List of properties to generate in the interface
-   * @param docPlaceHolderResolver PlaceHolderResolver to resolve placeholders in
+   * @param prefix                 Prefix to use for property names, can be empty 
+   *                               or <code>null</code>
    */
   public PropertiesClassGenerator(String fullClassName, 
                                   ExchangeDescriptor exchange, 
@@ -101,7 +102,7 @@ public class PropertiesClassGenerator extends JavaTypeGenerator {
     List<String> columns = List.of("Name", "Type", "Description", "Default value");
     List<List<String>> rows = new ArrayList<>();
     addDescriptionRows(rows, "", properties);
-    sb.append(HtmlGenerationUtil.generateTable(exchange.getId() + " properties", columns, rows))
+    sb.append(HtmlGenUtil.generateTable(exchange.getId() + " properties", columns, rows))
       .append("\n<br>\nExposes helper methods are available to retrieve value of each of these properties ")
       .append("with right type, returning default value if not present in properties.")
       .append("\n@see ConfigProperty");
@@ -143,7 +144,7 @@ public class PropertiesClassGenerator extends JavaTypeGenerator {
       PropertiesClassGenerator groupGen = new PropertiesClassGenerator(getName() + "." + groupClassName,
           exchange, // No exchange descriptor for group properties
           property.getProperties(),
-          PropertiesGenUtil.getPropertyFullName(property.getName(), prefix));
+          PropertiesGenUtil.getPropertyFullName(prefix, property.getName()));
       groupGen.setTypeDeclaration("public static class");
       groupGen.setGeneratePackageAndImports(false);
       groupGen.setDescription(property.getDescription());

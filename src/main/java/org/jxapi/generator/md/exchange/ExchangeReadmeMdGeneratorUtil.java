@@ -15,6 +15,11 @@ public class ExchangeReadmeMdGeneratorUtil {
    * will be replaced with the actual table of contents.
    */
   public static final String BEGIN_TABLE_OF_CONTENTS_PLACEHOLDER = "<!-- BEGIN TABLE OF CONTENTS -->";
+  
+  /**
+   * Placeholder for the end of the table of contents in Markdown files. This
+   * placeholder will be used to mark the end of the table of contents section.
+   */
   public static final String END_TABLE_OF_CONTENTS_PLACEHOLDER = "<!-- END TABLE OF CONTENTS -->";
 
   /**

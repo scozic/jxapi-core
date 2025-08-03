@@ -276,5 +276,12 @@ public class PropertiesGenUtilTest {
     ConfigPropertyDescriptor boolProperty = ConfigPropertyDescriptor.create("myBoolProp", Type.BOOLEAN, "A test property", null);
     Assert.assertEquals("isMyBoolProp", PropertiesGenUtil.getPropertyGetterMethodName(boolProperty, null));
   }
+  
+  @Test
+  public void testGetPropertyFullName() {
+    Assert.assertEquals("myProp", PropertiesGenUtil.getPropertyFullName(null, "myProp"));
+    Assert.assertEquals("myProp", PropertiesGenUtil.getPropertyFullName("", "myProp"));
+    Assert.assertEquals("demo.myProp", PropertiesGenUtil.getPropertyFullName("demo", "myProp"));
+  }
 
 }

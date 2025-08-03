@@ -888,4 +888,6 @@ public class ExchangeGenUtilTest {
      Assert.assertEquals("com.x.gen.MyExchangeProperties", it.next());
      Assert.assertEquals(EncodingUtil.class.getName(), it.next());
   }
+  
+  
 }
