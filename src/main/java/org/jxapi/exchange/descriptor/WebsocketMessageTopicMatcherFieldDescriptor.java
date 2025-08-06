@@ -9,7 +9,7 @@ import org.jxapi.util.EncodingUtil;
  */
 public class WebsocketMessageTopicMatcherFieldDescriptor {
 
-  private String fieldName;
+  private String name;
 
   private String value;
 
@@ -17,15 +17,15 @@ public class WebsocketMessageTopicMatcherFieldDescriptor {
    * @return the name of the field that must match the topic of the endpoint.
    */
   public String getName() {
-    return fieldName;
+    return name;
   }
 
   /**
-   * @param fieldName the name of the field that must match the topic of the
+   * @param name the name of the field that must match the topic of the
    *                  endpoint.
    */
-  public void setName(String fieldName) {
-    this.fieldName = fieldName;
+  public void setName(String name) {
+    this.name = name;
   }
 
   /**

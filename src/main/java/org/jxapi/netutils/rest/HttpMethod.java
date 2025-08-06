@@ -23,7 +23,7 @@ public enum HttpMethod {
   /**
    * <a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Methods/DELETE"><strong>DELETE</strong> HTTP method</a>
    */
-  DELETE(false, false),
+  DELETE(true, true),
   
   /**
    * <a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Methods/HEAD"><strong>HEAD</strong> HTTP method</a>

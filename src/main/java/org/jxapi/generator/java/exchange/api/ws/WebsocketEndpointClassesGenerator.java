@@ -17,6 +17,7 @@ import org.jxapi.generator.java.exchange.api.ExchangeApiGenUtil;
 import org.jxapi.generator.java.exchange.api.pojo.JsonMessageDeserializerClassesGenerator;
 import org.jxapi.generator.java.exchange.api.pojo.JsonPojoSerializerClassesGenerator;
 import org.jxapi.generator.java.exchange.api.pojo.PojoClassesGenerator;
+import org.jxapi.util.PlaceHolderResolver;
 
 /**
  * Generates all classes used by a particular Websocket endpoint defined in an  
@@ -34,18 +35,22 @@ public class WebsocketEndpointClassesGenerator implements ClassesGenerator {
   private final ExchangeApiDescriptor apiDescriptor;
   private final WebsocketEndpointDescriptor websocketEndpointDescriptor;
   private final Field request;
+  private final PlaceHolderResolver docPlaceHolderResolver;
   
   /**
    * @param exchangeDescriptor Exchange descriptor where API with REST endpoint are defined
    * @param apiDescriptor API group of exchange descriptor defining the REST endpoint
    * @param websocketEndpointDescriptor REST endpoint descriptor to generate related Java classes for.
+   * @param docPlaceHolderResolver Place holder resolver for resolution of placeholders in descriptions.
    */
   public WebsocketEndpointClassesGenerator(ExchangeDescriptor exchangeDescriptor, 
-      ExchangeApiDescriptor apiDescriptor, 
-      WebsocketEndpointDescriptor websocketEndpointDescriptor) {
+                                           ExchangeApiDescriptor apiDescriptor, 
+                                           WebsocketEndpointDescriptor websocketEndpointDescriptor,
+                                           PlaceHolderResolver docPlaceHolderResolver) {
     this.exchangeDescriptor = exchangeDescriptor;
     this.apiDescriptor = apiDescriptor;
     this.websocketEndpointDescriptor = websocketEndpointDescriptor;
+    this.docPlaceHolderResolver = docPlaceHolderResolver;
     this.request = ExchangeApiGenUtil.resolveFieldProperties(apiDescriptor, websocketEndpointDescriptor.getRequest());
   }
   
@@ -104,7 +109,8 @@ public class WebsocketEndpointClassesGenerator implements ClassesGenerator {
             + " websocket endpoint<br>\n" 
             + websocketEndpointDescriptor.getDescription(),
           request.getProperties(), 
-          request.getImplementedInterfaces() 
+          request.getImplementedInterfaces(),
+          docPlaceHolderResolver
         ).generateClasses(outputFolder);
     }
     
@@ -120,7 +126,8 @@ public class WebsocketEndpointClassesGenerator implements ClassesGenerator {
             + websocketEndpointDescriptor.getName() + " websocket endpoint request<br>\n"
             + websocketEndpointDescriptor.getDescription(),
           websocketEndpointDescriptor.getMessage().getProperties(), 
-          websocketEndpointDescriptor.getMessage().getImplementedInterfaces() 
+          websocketEndpointDescriptor.getMessage().getImplementedInterfaces(),
+          docPlaceHolderResolver
         ).generateClasses(outputFolder);
     }
   }

@@ -25,6 +25,12 @@ public class JavaCodeGenUtil {
    * String value of <code>null</code>
    */
   public static final String NULL = "null";
+  
+  /**
+   * Arguments separator in super constructor call when such arguments should be
+   * displayed in multiple lines to make code more readable.
+   */
+  public static final String SUPER_ARG_SEPARATOR = ",\n      ";
 
   private JavaCodeGenUtil() {}
   
@@ -322,9 +328,12 @@ public class JavaCodeGenUtil {
     for (int i = 0; i < sampleValueStr.length(); i++) {
       char c = sampleValueStr.charAt(i);
       if (c == '"') {
-        sb.append('\\');
+        sb.append("\\\"");
+      } else if (c == '\n') {
+        sb.append("\\n");
+      } else {
+        sb.append(c);
       }
-      sb.append(c);
     }
     return sb.append('"').toString();
   }
@@ -405,7 +414,18 @@ public class JavaCodeGenUtil {
    * @return URL to HTML Javadoc file
    */
   public static String getClassJavadocUrl(String baseUrl, String javaClassName) {
-    return getClassUrl(baseUrl, javaClassName, ".html");
+    return getClassJavadocUrl(baseUrl, javaClassName, null);
+  }
+  
+  /**
+   * Generates URL to a class javadoc file from a base URL and full class name
+   * @param baseUrl The base URL used as prefix
+   * @param javaClassName Full class name with package prefix
+   * @param innerClassName Name of inner class, e.g. <code>Foo.Bar</code>. Optional, ignored if null or empty.
+   * @return URL to HTML Javadoc file
+   */
+  public static String getClassJavadocUrl(String baseUrl, String javaClassName, String innerClassName) {
+    return getClassUrl(baseUrl, javaClassName, innerClassName, ".html");
   }
   
   /**
@@ -418,22 +438,26 @@ public class JavaCodeGenUtil {
    * getClassUrl("https://docs.oracle.com/javase/8/docs/api/", "java.lang.String", ".html") &rarr; "https://docs.oracle.com/javase/8/docs/api/java/lang/String.html"
    * </pre>
    * 
-   * @param baseUrl       The base URL used as prefix
-   * @param javaClassName Full class name with package prefix
+   * @param baseUrl        The base URL used as prefix
+   * @param javaClassName  Full class name with package prefix
+   * @param innerClassName Name of inner class, e.g. <code>Foo.Bar</code>. Optional, ignored if null or empty.
    * @param suffix        Suffix to append to class name for instance ".html" 
    * @return URL to class file
    */
-  public static String getClassUrl(String baseUrl, String javaClassName, String suffix) {
-    return new StringBuilder()
+  public static String getClassUrl(String baseUrl, String javaClassName, String innerClassName, String suffix) {
+    StringBuilder s = new StringBuilder()
         .append(baseUrl)
-        .append(javaClassName.replace('.', '/'))
-        .append(suffix)
-        .toString();
+        .append(javaClassName.replace('.', '/'));
+    if (StringUtils.isNotBlank(innerClassName)) {
+       s.append('.')
+        .append(innerClassName);
+    }
+     return s.append(suffix).toString();
   }
 
   /**
    * Gets class name as it should be written in a javadoc method link as argument
-   * of this methdi.<br>
+   * of this method.<br>
    * e.g. comma separated full class names of function argument. If one argument
    * is generic, the full class name of class holding generic (for instance
    * <code>java.util.List</code> if argument is of
@@ -461,5 +485,66 @@ public class JavaCodeGenUtil {
     default:
       return canonicalTypeClass.getName();
     }
+  }
+  
+  /**
+   * Checks if the given identifier is a valid camel case identifier. A valid
+   * camel case identifier starts with a lowercase letter, and contains only
+   * letters, digits, and underscores.
+   * 
+   * @param identifier the identifier to check
+   * @return <code>true</code> if the identifier is valid, <code>false</code>
+   *         otherwise
+   */
+  public static boolean isValidCamelCaseIdentifier(String identifier) {
+    if (identifier == null || identifier.isEmpty()) {
+      return false;
+    }
+    char start = identifier.charAt(0);
+    if (!Character.isLetter(start) || !Character.isLowerCase(start)) {
+      return false;
+    }
+    for (int i = 1; i < identifier.length(); i++) {
+      char c = identifier.charAt(i);
+      if (!Character.isJavaIdentifierPart(c)) {
+        return false;
+      }
+    }
+    return true;
+  }
+  
+  /**
+   * Generates a Javadoc link to a class or property or method of a class, for instance
+   * <code>{\@link com.x.y.z.Foo#bar()}</code> for method <code>bar()</code> of
+   * class <code>com.x.y.z.Foo</code>.
+   * 
+   * @param link the link to generate, can be a class name, or a class name with
+   *             method name, like <code>com.x.y.z.Foo#bar()</code>
+   * @return Javadoc link to given class or method
+   */
+  public static final String getJavaDocLink(String link) {
+    if (link == null) {
+      return null;
+    }
+    return new StringBuilder()
+        .append("{@link ")
+        .append(link)
+        .append("}").toString();
+  }
+  
+  /**
+   * Generates a Javadoc link to a class property or method, for instance
+   * <code>{\@link com.x.y.z.Foo#bar}</code> for property <code>bar</code> of class
+   * <code>com.x.y.z.Foo</code>.
+   * 
+   * @param className full class name with package prefix, e.g. <code>com.x.y.z.Foo</code>
+   * @param attribute property name of the class, e.g. <code>bar</code>
+   * @return Javadoc link to given class property or method
+   */
+  public static final String getJavaDocLink(String className, String attribute) {
+    if (attribute == null) {
+      return getJavaDocLink(className);
+    }
+    return getJavaDocLink(className + "#" + attribute);
   }
 }

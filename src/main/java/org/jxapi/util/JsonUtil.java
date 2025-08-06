@@ -7,6 +7,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.jxapi.netutils.deserialization.json.JsonDeserializer;
+
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonParseException;
@@ -17,9 +19,9 @@ import com.fasterxml.jackson.databind.MapperFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.SerializerProvider;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.databind.ser.std.StdSerializer;
-import org.jxapi.netutils.deserialization.json.JsonDeserializer;
 
 /**
  * Helper methods around JSON serialization/deserialization.
@@ -39,8 +41,18 @@ public class JsonUtil {
     return m;
   }
 
-  private static class ExceptionSerializer extends StdSerializer<Exception> {
+  /**
+   * Custom serializer for {@link Exception} objects, that serializes them as a
+   * readable string.
+   * <p>
+   * This serializer is registered in the default {@link ObjectMapper} returned by
+   * {@link JsonUtil#createDefaultJsonToStringObjectMapper()}.
+   */
+  public static class ExceptionSerializer extends StdSerializer<Exception> {
 
+    /**
+     * Creates a new {@link ExceptionSerializer} instance.
+     */
     public ExceptionSerializer() {
       super(Exception.class);
     }
@@ -113,6 +125,56 @@ public class JsonUtil {
     } catch (JsonProcessingException e) {
       throw new IllegalArgumentException(
           "Error while trying to serialize " + pojo.getClass().getName() + " instance to JSON", e);
+    }
+  }
+  
+
+  /**
+   * Reads (and consumes) the next token from the parser and returns it as a
+   * String. The parser is expected to be positioned on the value to read. The
+   * current token is expected to be a {@link JsonToken#VALUE_STRING} or a
+   * {@link JsonToken#VALUE_NULL}.
+   * 
+   * @param parser The parser to read from
+   * @return <code>null</code> if the next token is {@link JsonToken#VALUE_NULL},
+   *         the String value otherwise.
+   * @throws IOException Eventually thrown by the parser
+   * 
+   * @see JsonParser#nextToken()
+   * @see #readCurrentString(JsonParser)
+   */
+  public static String readNextString(JsonParser parser) throws IOException {
+    parser.nextToken();
+    return readCurrentString(parser);
+  }
+
+  /**
+   * Reads (and consumes) the next token from the parser and returns it as a
+   * String. The parser is expected to be positioned on the value to read. The
+   * current token is expected to be a {@link JsonToken#VALUE_STRING} or a
+   * {@link JsonToken#VALUE_NULL}.
+   * 
+   * @param parser The parser to read from
+   * @return <code>null</code> if the next token is {@link JsonToken#VALUE_NULL},
+   *         the String value otherwise.
+   * @throws IOException Eventually thrown by the parser
+   * 
+   * @see JsonParser#nextToken()
+   */
+  public static String readCurrentString(JsonParser parser) throws IOException {
+    switch (parser.currentToken()) {
+    case VALUE_STRING:
+    case VALUE_NUMBER_FLOAT:
+    case VALUE_NUMBER_INT:
+    case VALUE_FALSE:
+    case VALUE_TRUE:
+      return parser.getText();
+    case VALUE_NULL:
+      return null;
+    default:
+      // Array or object, or other token
+      // Write a string containing the whole json of array or object
+      return DEFAULT_OBJECT_MAPPER.writeValueAsString(new JsonSerializableFromParser(parser));
     }
   }
 
@@ -397,6 +459,142 @@ public class JsonUtil {
       default:
         break;
     }
+  }
+  
+  /**
+   * Writes a string field to the JSON generator, only if the value is not null.
+   * 
+   * @param gen       The JSON generator to write to
+   * @param fieldName The name of the field to write
+   * @param value     The value of the field to write
+   * @throws IOException If an error occurs while writing to the generator
+   */
+  public static void writeStringField(JsonGenerator gen, String fieldName, String value) throws IOException {
+    if (value != null) {
+      gen.writeStringField(fieldName, value);
+    }
+  }
+  
+  /**
+   * Writes a string field to the JSON generator, only if the value is not null.
+   * 
+   * @param gen       The JSON generator to write to
+   * @param fieldName The name of the field to write
+   * @param value     The value of the field to write
+   * @throws IOException If an error occurs while writing to the generator
+   */
+  public static void writeObjectField(JsonGenerator gen, String fieldName, Object value) throws IOException {
+    if (value != null) {
+      gen.writeObjectField(fieldName, value);
+    }
+  }
+  
+  /**
+   * Writes a boolean field to the JSON generator, only if the value is true.
+   * @param gen the JSON generator to write to
+   * @param fieldName the name of the field to write
+   * @param value the value of the field to write
+   * @throws IOException If an error occurs while writing to the generator
+   */
+  public static void writeBooleanField(JsonGenerator gen, String fieldName, Boolean value) throws IOException {
+    if (value != null && value) {
+      gen.writeBooleanField(fieldName, value);
+    }
+  }
+  
+  /**
+   * Writes a Long field to the JSON generator, only if the value is not null.
+   * @param gen the JSON generator to write to
+   * @param fieldName the name of the field to write
+   * @param value the value of the field to write
+   * @throws IOException If an error occurs while writing to the generator
+   */
+  public static void writeLongField(JsonGenerator gen, String fieldName, Long value) throws IOException {
+    if (value != null) {
+      gen.writeNumberField(fieldName, value);
+    }
+  }
+  
+  /**
+   * Writes a BigDecimal field to the JSON generator, only if the value is not null.
+   * @param gen the JSON generator to write to
+   * @param fieldName the name of the field to write
+   * @param value the value of the field to write
+   * @throws IOException If an error occurs while writing to the generator
+   */
+  public static void writeBigDecimalField(JsonGenerator gen, String fieldName, BigDecimal value) throws IOException {
+    if (value != null) {
+      gen.writeNumberField(fieldName, value);
+    }
+  }
+  
+  /**
+   * Writes a BigDecimal field to the JSON generator, only if the value is not null.
+   * @param gen the JSON generator to write to
+   * @param fieldName the name of the field to write
+   * @param value the value of the field to write
+   * @throws IOException If an error occurs while writing to the generator
+   */
+  public static void writeIntField(JsonGenerator gen, String fieldName, Integer value) throws IOException {
+    if (value != null) {
+      gen.writeNumberField(fieldName, value);
+    }
+  }
+  
+  /**
+   * A wrapper for a {@link JsonParser} that can be serialized to JSON. The
+   * serializer will copy the current structure of the parser into the JSON
+   * output. This is useful when you want to serialize JSON from a parser that is already
+   * positioned on a value, and you want to include that value in the JSON output.
+   * @see JsonGenerator#copyCurrentStructure(JsonParser)
+   */
+  @JsonSerialize(using = JsonSerializableFromParserSerializer.class)
+  public static class JsonSerializableFromParser {
+    
+    private final JsonParser parser;
+    
+    /**
+     * Creates a new instance of {@link JsonSerializableFromParser} with the given
+     * parser.
+     * 
+     * @param parser The parser to wrap, must not be <code>null</code>.
+     */
+    public JsonSerializableFromParser(JsonParser parser) {
+      this.parser = parser;
+    }
+    
+    /**
+     * Returns the parser wrapped by this instance.
+     * 
+     * @return The parser wrapped by this instance.
+     */
+    public JsonParser getParser() {
+      return parser;
+    }
+  }
+  
+  /**
+   * Custom serializer for {@link JsonSerializableFromParser} that copies the
+   * current structure of the parser into the JSON output.
+   */
+  public static class JsonSerializableFromParserSerializer extends StdSerializer<JsonSerializableFromParser> {
+
+    /**
+     * Creates a new {@link JsonSerializableFromParserSerializer} instance, suitable
+     * for serializing {@link JsonSerializableFromParser} instances.
+     */
+    public JsonSerializableFromParserSerializer() {
+      super(JsonSerializableFromParser.class);
+    }
+
+    @Override
+    public void serialize(JsonSerializableFromParser value, JsonGenerator gen, SerializerProvider provider)
+        throws IOException {
+      if (value.getParser() != null) {
+        gen.copyCurrentStructure(value.getParser());
+      }
+    }
+    
   }
 
 }

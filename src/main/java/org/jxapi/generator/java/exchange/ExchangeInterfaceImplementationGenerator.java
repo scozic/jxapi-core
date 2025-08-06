@@ -6,8 +6,6 @@ import java.util.List;
 import java.util.Properties;
 import java.util.Set;
 
-import org.springframework.util.CollectionUtils;
-
 import org.jxapi.exchange.AbstractExchange;
 import org.jxapi.exchange.Exchange;
 import org.jxapi.exchange.ExchangeApi;
@@ -17,22 +15,37 @@ import org.jxapi.generator.java.JavaCodeGenUtil;
 import org.jxapi.generator.java.JavaTypeGenerator;
 import org.jxapi.netutils.rest.ratelimits.RateLimitRule;
 import org.jxapi.netutils.rest.ratelimits.RequestThrottler;
+import org.jxapi.util.CollectionUtil;
+import org.springframework.util.CollectionUtils;
 
 /**
- * Generates source code of implementation of an interface  {@link ExchangeDescriptor}
+ * Generates source code of implementation of an interface
+ * {@link ExchangeDescriptor}
  * <ul>
- * <li>Generates a class that implements the interface {@link ExchangeDescriptor}</li>
- * <li>Generates a constructor that initializes the exchange name and properties, and {@link ExchangeApi} implementation instances</li>
- * <li>Generates a public static final field for each rate limit rule. Exchange API implementation should 
- * use reference to that field when in REST endpoint calls</li>
+ * <li>Generates a class that extends {@link AbstractExchange} and therefore
+ * implements the {@link ExchangeDescriptor} interface</li>
+ * <li>Generates a constructor that initializes the exchange name and
+ * properties, and {@link ExchangeApi} implementation instances</li>
+ * <li>Generates a public static final field for each rate limit rule. Exchange
+ * API implementation should use reference to that field when in REST endpoint
+ * calls</li>
  * <li>Generates a field for each API</li>
- * <li>Generates a getter for each API, implmenting corresponding Exchange interface</li>
- * <li>Generates a request throttler if there are rate limits, and at least one API that has REST endpoints. 
- * When some rate limits are defined in exchange, and exchange API has at least one API, its implementation 
- * constructor is expected to have a RequestThrottler argument</li>
- * <li>Generated class javadoc will display link to corresponding Exchange interface and a warning about generated code</li>
+ * <li>Generates a getter for each API, implmenting corresponding Exchange
+ * interface</li>
+ * <li>Generates a request throttler if there are rate limits, and at least one
+ * API that has REST endpoints. When some rate limits are defined in exchange,
+ * and exchange API has at least one API, its implementation constructor is
+ * expected to have a RequestThrottler argument</li>
+ * <li>Generates a getter for each rate limit rule</li>
+ * <li>The <code>httpUrl</code> and <code>websocket url</code> properties are
+ * set in constructor using corresponding properties in descriptor, with
+ * eventual placeholders resolved against constants and configuration properties
+ * </li>
+ * <li>Generated class javadoc will display link to corresponding Exchange
+ * interface and a warning about generated code</li>
  * <li>Will throw an exception if there are duplicate rate limit rule names</li>
- * <li>Will throw an exception if a rate limit rule has a <code>null</code> id</li>
+ * <li>Will throw an exception if a rate limit rule has a <code>null</code>
+ * id</li>
  * </ul>
  * 
  * @see ExchangeDescriptor
@@ -65,8 +78,9 @@ public class ExchangeInterfaceImplementationGenerator extends JavaTypeGenerator 
    * @param exchangeDescriptor the exchange descriptor to generate classes for
    */
   public ExchangeInterfaceImplementationGenerator(ExchangeDescriptor exchangeDescriptor) {
-    super(ExchangeJavaGenUtil.getExchangeInterfaceImplementationName(exchangeDescriptor));
+    super(ExchangeGenUtil.getExchangeInterfaceImplementationName(exchangeDescriptor));
     this.exchangeDescriptor = exchangeDescriptor;
+    this.setParentClassName(AbstractExchange.class.getName());
   }
   
   @Override
@@ -81,16 +95,6 @@ public class ExchangeInterfaceImplementationGenerator extends JavaTypeGenerator 
     setDescription("Actual implementation of {@link " + simpleInterfaceName + "}<br>");
     appendToBody("\n");
     
-    String httpUrlDeclaration = ExchangeJavaGenUtil.getHttpUrlVariableDeclaration(exchangeDescriptor);
-    if (httpUrlDeclaration != null) {
-      appendToBody(httpUrlDeclaration).append("\n\n");
-    }
-    
-    String websocketUrlDeclaration = ExchangeJavaGenUtil.getWebsocketUrlVariableDeclaration(exchangeDescriptor);
-    if (websocketUrlDeclaration != null) {
-      appendToBody(websocketUrlDeclaration).append("\n\n");
-    }
-    
     List<RateLimitRule> rateLimits = exchangeDescriptor.getRateLimits();
     List<ExchangeApiDescriptor> apis = exchangeDescriptor.getApis();
     boolean hasRateLimits = !CollectionUtils.isEmpty(rateLimits);
@@ -98,15 +102,15 @@ public class ExchangeInterfaceImplementationGenerator extends JavaTypeGenerator 
       rateLimits.forEach(this::generateRateLimitVariable);
       if (apis != null && apis.stream().anyMatch(api -> !CollectionUtils.isEmpty(api.getRestEndpoints()))) {
         addImport(RequestThrottler.class);
-        appendToBody("\nprivate final ");
-        appendToBody(RequestThrottler.class.getSimpleName());
-        appendToBody(" ");
-        appendToBody(REQUEST_THROTTLER_VARIABLE_NAME);
-        appendToBody(" = new ");
-        appendToBody(RequestThrottler.class.getSimpleName());
-        appendToBody("(\"");
-        appendToBody(exchangeDescriptor.getId());
-        appendToBody("\");\n");
+        appendToBody("\nprivate final ")
+          .append(RequestThrottler.class.getSimpleName())
+          .append(" ")
+          .append(REQUEST_THROTTLER_VARIABLE_NAME)
+          .append(" = new ")
+          .append(RequestThrottler.class.getSimpleName())
+          .append("(\"")
+          .append(exchangeDescriptor.getId())
+          .append("\");\n");
       }
     }
     
@@ -114,18 +118,30 @@ public class ExchangeInterfaceImplementationGenerator extends JavaTypeGenerator 
     implementationConstructorBody
       .append("super(")
       .append(ExchangeInterfaceGenerator.EXCHANGE_ID_VARIABLE)
-      .append(", ")
-            .append(ExchangeInterfaceGenerator.EXCHANGE_VERSION_VARIABLE)
-      .append(", ")
+      .append(JavaCodeGenUtil.SUPER_ARG_SEPARATOR)
+      .append(ExchangeInterfaceGenerator.EXCHANGE_VERSION_VARIABLE)
+      .append(JavaCodeGenUtil.SUPER_ARG_SEPARATOR)
       .append(EXCHANGE_NAME_PARAMETER)
-      .append(", ")
+      .append(JavaCodeGenUtil.SUPER_ARG_SEPARATOR)
       .append(PROPERTIES_PARAMETER)
+      .append(JavaCodeGenUtil.SUPER_ARG_SEPARATOR)
+      .append(ExchangeGenUtil.generateSubstitutionInstructionDeclaration(
+          exchangeDescriptor.getHttpUrl(), 
+          exchangeDescriptor, 
+          PROPERTIES_PARAMETER,
+          getImports()))
+      .append(JavaCodeGenUtil.SUPER_ARG_SEPARATOR)
+      .append(ExchangeGenUtil.generateSubstitutionInstructionDeclaration(
+          exchangeDescriptor.getWebsocketUrl(), 
+          exchangeDescriptor, 
+          PROPERTIES_PARAMETER,
+          getImports()))
       .append(");\n");
     
     StringBuilder apiMethodsDeclarations = new StringBuilder(); 
     if (exchangeDescriptor.getApis() != null) {
       for (ExchangeApiDescriptor api: exchangeDescriptor.getApis()) {
-        String apiClassName = ExchangeJavaGenUtil.getApiInterfaceClassName(exchangeDescriptor, api);
+        String apiClassName = ExchangeGenUtil.getApiInterfaceClassName(exchangeDescriptor, api);
         String apiSimpleClassName = JavaCodeGenUtil.getClassNameWithoutPackage(apiClassName);
         String apiImplClassName = apiClassName + "Impl";
         String simpleApiImplClassName = JavaCodeGenUtil.getClassNameWithoutPackage(apiImplClassName);
@@ -139,8 +155,7 @@ public class ExchangeInterfaceImplementationGenerator extends JavaTypeGenerator 
             .append(apiVariableName)
             .append(" = addApi(new ")
             .append(simpleApiImplClassName)
-            .append("(getName(), ")
-            .append(PROPERTIES_PARAMETER);
+            .append("(this");
         if (hasRateLimits && !CollectionUtils.isEmpty(api.getRestEndpoints())) {
           implementationConstructorBody.append(", ").append(REQUEST_THROTTLER_VARIABLE_NAME);
         }
@@ -152,23 +167,38 @@ public class ExchangeInterfaceImplementationGenerator extends JavaTypeGenerator 
                     .append("\n");
       }
     }
+    
+    String afterInitHookFactory = exchangeDescriptor.getAfterInitHookFactory();
+    if (afterInitHookFactory != null) {
+      implementationConstructorBody
+          .append("afterInit(")
+          .append(JavaCodeGenUtil.getQuotedString(afterInitHookFactory))
+          .append(");\n");
+    }
     addImport(Properties.class);
     
     appendToBody("\n");
     String implementationConstructorSignature = new StringBuilder()
-          .append("public ")
-          .append(simpleImplementationName)
-          .append("(String ")
-          .append(EXCHANGE_NAME_PARAMETER)
-          .append(", Properties ")
-          .append(PROPERTIES_PARAMETER)
-          .append(")").toString();
+            .append("public ")
+            .append(simpleImplementationName)
+            .append("(String ")
+            .append(EXCHANGE_NAME_PARAMETER)
+            .append(", Properties ")
+            .append(PROPERTIES_PARAMETER)
+            .append(")").toString();
           
     appendMethod(implementationConstructorSignature, implementationConstructorBody.toString());
     appendToBody("\n");
     appendToBody(apiMethodsDeclarations.toString());
-    
+    generateRateLimitRuleGetters();
     return super.generate();
+  }
+  
+  private void generateRateLimitRuleGetters() {
+    for (RateLimitRule rateLimitRule : CollectionUtil.emptyIfNull(exchangeDescriptor.getRateLimits())) {
+      appendToBody(ExchangeGenUtil.generateRateLimitGetterImplementationMethodDeclaration(rateLimitRule.getId()))
+          .append("\n");
+    }
   }
   
   private String generateRateLimitVariable(RateLimitRule rateLimitRule) {
@@ -176,7 +206,7 @@ public class ExchangeInterfaceImplementationGenerator extends JavaTypeGenerator 
     if (name == null) {
       throw new IllegalArgumentException("rateLimitRule:" + rateLimitRule + " should have an id");
     }
-    String variableName = ExchangeJavaGenUtil.generateRateLimitVariableName(name);
+    String variableName = ExchangeGenUtil.generateRateLimitVariableName(name);
     if (rateLimitNames.contains(name)) {
       throw new IllegalArgumentException("Duplicate rate limit rule name:[" + name + "] in " + exchangeDescriptor);
     }
@@ -188,7 +218,7 @@ public class ExchangeInterfaceImplementationGenerator extends JavaTypeGenerator 
     } else {
       declaration +=  "RateLimitRule.createRule(\"" + name + "\", " + rateLimitRule.getTimeFrame()+ ", " + rateLimitRule.getMaxRequestCount() + ");";
     }
-    appendToBody("public static final " + declaration + "\n");
+    appendToBody("private final " + declaration + "\n");
     return variableName;
   }
 

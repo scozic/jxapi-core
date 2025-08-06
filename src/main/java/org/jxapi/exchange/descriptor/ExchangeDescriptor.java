@@ -4,9 +4,11 @@ import java.util.List;
 
 import org.jxapi.exchange.Exchange;
 import org.jxapi.exchange.ExchangeApi;
+import org.jxapi.exchange.ExchangeHookFactory;
 import org.jxapi.netutils.rest.HttpRequestExecutorFactory;
 import org.jxapi.netutils.rest.HttpRequestInterceptorFactory;
 import org.jxapi.netutils.rest.ratelimits.RateLimitRule;
+import org.jxapi.util.DefaultConfigProperty;
 import org.jxapi.util.EncodingUtil;
 
 /**
@@ -123,7 +125,9 @@ public class ExchangeDescriptor {
 
   private List<Constant> constants;
 
-  private List<DefaultConfigProperty> properties;
+  private List<ConfigPropertyDescriptor> properties;
+  
+  private List<ConfigPropertyDescriptor> demoProperties;
 
   private String httpRequestInterceptorFactory;
 
@@ -138,6 +142,8 @@ public class ExchangeDescriptor {
   private String httpUrl;
 
   private String websocketUrl;
+  
+  private String afterInitHookFactory;
 
   /**
    * Returns the list of APIs of the exchange.
@@ -275,7 +281,7 @@ public class ExchangeDescriptor {
    *         for instance API keys, secret keys, etc.
    * @see DefaultConfigProperty
    */
-  public List<DefaultConfigProperty> getProperties() {
+  public List<ConfigPropertyDescriptor> getProperties() {
     return properties;
   }
 
@@ -284,7 +290,7 @@ public class ExchangeDescriptor {
    *                   wrapper, for instance API keys, secret keys, etc.
    * @see DefaultConfigProperty
    */
-  public void setProperties(List<DefaultConfigProperty> properties) {
+  public void setProperties(List<ConfigPropertyDescriptor> properties) {
     this.properties = properties;
   }
 
@@ -438,6 +444,44 @@ public class ExchangeDescriptor {
    */
   public void setVersion(String version) {
     this.version = version;
+  }
+  
+  /**
+   * @return The factory class for the after-init hook.
+   * @see ExchangeHookFactory
+   */
+  public String getAfterInitHookFactory() {
+    return afterInitHookFactory;
+  }
+  
+  /**
+   * Sets the factory class for the after-init hook.
+   * 
+   * @param afterInitHookFactory The factory class for the after-init hook.
+   * @see ExchangeHookFactory
+   */
+  public void setAfterInitHookFactory(String afterInitHookFactory) {
+    this.afterInitHookFactory = afterInitHookFactory;
+  }
+  
+  /**
+   * @return List of configuration properties that are relevant for demo snippets.
+   * @see DefaultConfigProperty
+   */
+  public List<ConfigPropertyDescriptor> getDemoProperties() {
+    return demoProperties;
+  }
+
+  /**
+   * Sets the list of configuration properties that are relevant for demo
+   * snippets.
+   * 
+   * @param demoProperties List of configuration properties that are relevant for
+   *                       demo snippets.
+   * @see DefaultConfigProperty
+   */
+  public void setDemoProperties(List<ConfigPropertyDescriptor> demoProperties) {
+    this.demoProperties = demoProperties;
   }
 
   /**

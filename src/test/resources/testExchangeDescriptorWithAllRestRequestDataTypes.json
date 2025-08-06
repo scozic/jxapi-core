@@ -137,7 +137,7 @@
 				{
 					"name": "getRestRequestDataTypeObjectListMap",
 					"httpMethod": "GET",
-					"description": "A sample REST endpoint using GET (hence url query params) and object list map request type.",
+					"description": "A sample REST endpoint using GET (hence url query params) and object list map request type, and sample value with full structure.",
 					"url": "/getObjectListMap",
 					"request": {
 						"type": "OBJECT_LIST_MAP",
@@ -147,8 +147,10 @@
 							{"name":"symbolList", "type": "STRING_LIST", "description":"List of full symbol names", "sampleValue":["BTC_USDT", "ETH_USDT"]},
 							{"name":"symbolMap", "type": "STRING_LIST_MAP", "description":"Symbols as a map of quote asset keys map with base asset as values", "sampleValue":{"USDT":["BTC_USDT", "ETH"]}},
 							{"name":"symbolObject", "type": "OBJECT", "msgField":"so", "objectName":"SingleSymbol"}
-						]
+						],
+						"sampleValue": "{\"foo\": [{\"symbol\": \"BTC_USDT\", \"symbolMap\": {\"USDT\": [\"BTC_USDT\", \"ETH\"]}, \"symbolObject\": {}}]}"
 					},
+					
 					"response": {
 						"objectName": "GenericResponse"
 					}

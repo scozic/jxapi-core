@@ -6,9 +6,8 @@ import java.util.function.Function;
 
 import org.junit.Assert;
 import org.junit.Test;
-
+import org.jxapi.exchange.descriptor.ConfigPropertyDescriptor;
 import org.jxapi.exchange.descriptor.Constant;
-import org.jxapi.exchange.descriptor.DefaultConfigProperty;
 import org.jxapi.exchange.descriptor.ExchangeApiDescriptor;
 import org.jxapi.exchange.descriptor.ExchangeDescriptor;
 import org.jxapi.exchange.descriptor.RestEndpointDescriptor;
@@ -84,16 +83,6 @@ public class ExchangeDescriptorMergeUtilTest {
     api1.setDescription("My API description");
     api1.setHttpUrl("http://myapi.com");
     api1.setWebsocketUrl("ws://myapi.com");
-    List<Constant> constants1 = new ArrayList<>();
-    Constant c1 = new Constant();
-    c1.setName("const1");
-    c1.setValue("value1");
-    constants1.add(c1);
-    Constant c2 = new Constant();
-    c2.setName("const2");
-    c2.setValue("value2");
-    constants1.add(c2);
-    api1.setConstants(constants1);
     List<RestEndpointDescriptor> restEndpoints1 = new ArrayList<>();
     RestEndpointDescriptor restApi1 = new RestEndpointDescriptor();
     restApi1.setName("restApi1");
@@ -116,12 +105,6 @@ public class ExchangeDescriptorMergeUtilTest {
     api2.setHttpRequestInterceptorFactory("com.x.y.MyHttpRequestInterceptorFactory");
     api2.setWebsocketFactory("com.x.y.MyWebsocketFactory");
     api2.setHttpRequestTimeout(1000L);
-    List<Constant> constants2 = new ArrayList<>();
-    Constant c3 = new Constant();
-    c3.setName("const3");
-    c3.setValue("value3");
-    constants2.add(c3);
-    api2.setConstants(constants2);
     List<RestEndpointDescriptor> restEndpoints2 = new ArrayList<>();
     RestEndpointDescriptor restApi2 = new RestEndpointDescriptor();
     restApi2.setName("restApi2");
@@ -153,10 +136,6 @@ public class ExchangeDescriptorMergeUtilTest {
     Assert.assertEquals("com.x.y.MyHttpRequestInterceptorFactory", merged.getHttpRequestInterceptorFactory());
     Assert.assertEquals("com.x.y.MyWebsocketFactory", merged.getWebsocketFactory());
     Assert.assertEquals(1000L, merged.getHttpRequestTimeout());
-    Assert.assertEquals(3, merged.getConstants().size());
-    Assert.assertEquals(c1, merged.getConstants().get(0));
-    Assert.assertEquals(c2, merged.getConstants().get(1));
-    Assert.assertEquals(c3, merged.getConstants().get(2));
     Assert.assertEquals(3, merged.getRestEndpoints().size());
     Assert.assertEquals(restApi1, merged.getRestEndpoints().get(0));
     Assert.assertEquals(restApi2, merged.getRestEndpoints().get(1));
@@ -253,6 +232,7 @@ public class ExchangeDescriptorMergeUtilTest {
     ex1.setDescription("Exchange 1 description");
     ex1.setBasePackage("com.x.y.gen");
     ex1.setDocUrl("https://ex1.com/docs");
+    ex1.setAfterInitHookFactory("com.x.y.gen.MyAfterInitHookFactory");
     
     ExchangeApiDescriptor api1 = new ExchangeApiDescriptor();
     api1.setName("myApi1");
@@ -264,9 +244,12 @@ public class ExchangeDescriptorMergeUtilTest {
     RateLimitRule rule1 = new RateLimitRule();
     rule1.setId("rule1");
     ex1.setRateLimits(List.of(rule1));
-    DefaultConfigProperty prop1 = new DefaultConfigProperty();
+    ConfigPropertyDescriptor prop1 = new ConfigPropertyDescriptor();
     prop1.setName("prop1");
     ex1.setProperties(List.of(prop1));
+    ConfigPropertyDescriptor demoProp1 = new ConfigPropertyDescriptor();
+    demoProp1.setName("demoProp1");
+    ex1.setDemoProperties(List.of(demoProp1));
     
     ExchangeDescriptor ex2 = new ExchangeDescriptor();
     ex2.setId("ex1");
@@ -288,9 +271,12 @@ public class ExchangeDescriptorMergeUtilTest {
     RateLimitRule rule2 = new RateLimitRule();
     rule2.setId("rule2");
     ex2.setRateLimits(List.of(rule2));
-    DefaultConfigProperty prop2 = new DefaultConfigProperty();
+    ConfigPropertyDescriptor prop2 = new ConfigPropertyDescriptor();
     prop2.setName("prop2");
     ex2.setProperties(List.of(prop2));
+    ConfigPropertyDescriptor demoProp2 = new ConfigPropertyDescriptor();
+    demoProp2.setName("demoProp2");
+    ex2.setDemoProperties(List.of(demoProp2));
     
     ExchangeDescriptor merged = ExchangeDescriptorMergeUtil.mergeExchangeDescriptors(ex1, ex2);
     Assert.assertEquals("ex1", merged.getId());
@@ -304,6 +290,7 @@ public class ExchangeDescriptorMergeUtilTest {
     Assert.assertEquals("com.x.y.MyHttpRequestInterceptorFactory", merged.getHttpRequestInterceptorFactory());
     Assert.assertEquals("com.x.y.MyWebsocketFactory", merged.getWebsocketFactory());
     Assert.assertEquals("ws://ex1.com", merged.getWebsocketUrl());
+    Assert.assertEquals("com.x.y.gen.MyAfterInitHookFactory", merged.getAfterInitHookFactory());
     Assert.assertEquals(1000L, merged.getHttpRequestTimeout());
     Assert.assertEquals(2, merged.getApis().size());
     Assert.assertEquals(api1, merged.getApis().get(0));
@@ -317,6 +304,136 @@ public class ExchangeDescriptorMergeUtilTest {
     Assert.assertEquals(2, merged.getProperties().size());
     Assert.assertEquals(prop1, merged.getProperties().get(0));
     Assert.assertEquals(prop2, merged.getProperties().get(1));
+    Assert.assertEquals(2, merged.getDemoProperties().size());
+    Assert.assertEquals(demoProp1, merged.getDemoProperties().get(0));
+    Assert.assertEquals(demoProp2, merged.getDemoProperties().get(1));
+  }
+  
+  @Test
+  public void testMergeConstants() {
+    Assert.assertEquals(List.of(), ExchangeDescriptorMergeUtil.mergeConstants(null, null));
+    
+    Constant c1 = new Constant();
+    c1.setName("const1");
+    c1.setDescription("Constant 1 description");
+    c1.setValue("value1");
+    
+    Constant c2 = new Constant();
+    c2.setDescription("Constant 2 description");
+    c2.setName("const2");
+    
+    Constant c3 = new Constant();
+    c3.setName("const3");
+    c3.setName("Constant3 description");
+    c3.setValue("value3");
+    
+    Assert.assertEquals(List.of(c1, c2, c3), 
+                        ExchangeDescriptorMergeUtil.mergeConstants(
+                            List.of(c1), 
+                            List.of(c2, c3)));
+    
+    Constant c1b = new Constant();
+    c1b.setName("const1");
+    c1b.setDescription("Constant 1 description");
+    c1b.setValue("value1");
+    
+    Assert.assertEquals(List.of(c1, c2), 
+        ExchangeDescriptorMergeUtil.mergeConstants(
+            List.of(c1), 
+            List.of(c2, c1b)));
+  }
+  
+  @Test
+  public void testMergeConstantGroups() {
+    Constant c1 = new Constant();
+    c1.setDescription("Constant 1 description");
+    c1.setValue("value1");
+    c1.setName("const1");
+    
+    Constant c1b = new Constant();
+    c1b.setName("const1");
+    c1b.setDescription("Constant 1 description");
+    c1b.setValue("value1");
+    
+    Constant c2 = new Constant();
+    c2.setName("const2");
+    c2.setDescription("Constant 2 description");
+    
+    Constant c3 = new Constant();
+    c3.setName("const3");
+    c3.setName("Constant3 description");
+    c3.setValue("value3");
+    
+    Constant c4 = new Constant();
+    c4.setName("const4");
+    c4.setDescription("Constant 4 description");
+    c4.setValue("value4");
+    
+    Constant c5 = new Constant();
+    c5.setName("const5");
+    c5.setDescription("Constant 5 description");
+    
+    Constant g1 = Constant.createGroup("group1", "Group 1 description", List.of(c1, c2));
+    Constant g1b = Constant.createGroup("group1", "Group 1 description", List.of(c3, c1b));
+    Constant g2 = Constant.createGroup("group2", "Group 2 description", List.of(c4));
+    
+    Assert.assertEquals(List.of(c1, c2, c3), 
+                        ExchangeDescriptorMergeUtil.mergeConstants(
+                            List.of(c1), 
+                            List.of(c2, c3)));
+    
+
+    
+    Assert.assertEquals(List.of(c4, g1, g2), 
+        ExchangeDescriptorMergeUtil.mergeConstants(
+            List.of(c4, g1), 
+            List.of(g1b, g2)));
+  }
+  
+  @Test(expected = IllegalArgumentException.class)
+  public void testMergeConstants_SameNameForASingleAndAGroupConstant() {
+    Constant c1 = new Constant();
+    c1.setName("const1");
+    c1.setDescription("Constant 1 description");
+    c1.setValue("value1");
+    
+    
+    Constant c2 = new Constant();
+    c2.setName("const2");
+    c2.setDescription("Constant 2 description");
+    
+    Constant g1 = new Constant();
+    g1.setName("const1");
+    g1.setDescription("Constant 1 description");
+    g1.setValue("value1");
+    g1.setConstants(List.of(c2));
+    
+    ExchangeDescriptorMergeUtil.mergeConstants(
+        List.of(c1), 
+        List.of(g1));
+  }
+  
+  @Test(expected = IllegalArgumentException.class)
+  public void testMergeConstants_SameNameForASingleAndAGroupConstan2() {
+    Constant c1 = new Constant();
+    c1.setName("const1");
+    c1.setDescription("Constant 1 description");
+    c1.setValue("value1");
+    
+    
+    Constant c2 = new Constant();
+    c2.setName("const2");
+    c2.setDescription("Constant 2 description");
+    
+    Constant g1 = new Constant();
+    g1.setName("const1");
+    g1.setDescription("Constant 1 description");
+    g1.setValue("value1");
+    g1.setConstants(List.of(c2));
+    
+    ExchangeDescriptorMergeUtil.mergeConstants(
+        List.of(g1), 
+        List.of(c1));
   }
   
   private class MyType {

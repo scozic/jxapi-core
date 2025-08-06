@@ -17,13 +17,12 @@ import org.jxapi.exchange.descriptor.Type;
 import org.jxapi.exchange.descriptor.WebsocketEndpointDescriptor;
 import org.jxapi.generator.java.Imports;
 import org.jxapi.generator.java.JavaCodeGenUtil;
-import org.jxapi.generator.java.exchange.ExchangeJavaGenUtil;
+import org.jxapi.generator.java.exchange.ExchangeGenUtil;
 import org.jxapi.netutils.deserialization.RawBigDecimalMessageDeserializer;
 import org.jxapi.netutils.deserialization.RawBooleanMessageDeserializer;
 import org.jxapi.netutils.deserialization.RawIntegerMessageDeserializer;
 import org.jxapi.netutils.deserialization.RawLongMessageDeserializer;
 import org.jxapi.netutils.deserialization.RawStringMessageDeserializer;
-import org.jxapi.util.EncodingUtil;
 
 /**
  * Helper static methods around generation of {@link ExchangeApi} java classes implementation.
@@ -322,13 +321,13 @@ public class ExchangeApiGenUtil {
   public static String getClassNameForField(Field field, 
                         Imports imports, 
                         String enclosingClassName) {
-    Type fieldType = ExchangeJavaGenUtil.getFieldType(field);
+    Type fieldType = ExchangeGenUtil.getFieldType(field);
     String objectClassName = null;
     if (fieldType.isObject()) {
        objectClassName = getFieldObjectClassName(field, enclosingClassName);
        
     }
-    return ExchangeJavaGenUtil.getClassNameForType(
+    return ExchangeGenUtil.getClassNameForType(
           fieldType,
           imports, 
           objectClassName);
@@ -371,7 +370,7 @@ public class ExchangeApiGenUtil {
    * <li>Otherwise, the class name is the concatenation of the package of the
    * enclosing class name and the class name generated
    * by
-   * {@link ExchangeJavaGenUtil#getClassNameForType(Type, Imports, String)}
+   * {@link ExchangeGenUtil#getClassNameForType(Type, Imports, String)}
    * for the
    * leaf subType of the field type.</li>
    * </ul>
@@ -397,7 +396,7 @@ public class ExchangeApiGenUtil {
       return pkg + objectName;
     }
     
-    return pkg + ExchangeJavaGenUtil.getClassNameForType(
+    return pkg + ExchangeGenUtil.getClassNameForType(
           leafSubType,
           new Imports(),
           enclosingClassName) 
@@ -416,7 +415,7 @@ public class ExchangeApiGenUtil {
    * <li>For other 'structured' types (object, list or map) types, the
    * corresponding new
    * Json field deserializer instruction is returned, see
-   * {@link ExchangeJavaGenUtil#getNewJsonFieldDeserializerInstruction(Type, String, Imports)}.</li>
+   * {@link ExchangeGenUtil#getNewJsonFieldDeserializerInstruction(Type, String, Imports)}.</li>
    * <li>
    * </ul>
    * 
@@ -451,7 +450,7 @@ public class ExchangeApiGenUtil {
     case LIST:
     case MAP:
     default:
-      return ExchangeJavaGenUtil.getNewJsonFieldDeserializerInstruction(messageType, messageFullClassName, imports);
+      return ExchangeGenUtil.getNewJsonFieldDeserializerInstruction(messageType, messageFullClassName, imports);
     }
   }
 
@@ -534,7 +533,7 @@ public class ExchangeApiGenUtil {
     if (endpointRequest == null) {
       return false;
     }
-    Type dataType = ExchangeJavaGenUtil.getFieldType(endpointRequest);
+    Type dataType = ExchangeGenUtil.getFieldType(endpointRequest);
     return dataType.getCanonicalType() != CanonicalType.OBJECT 
         || getFieldPropertiesCount(endpointRequest, exchangeApiDescriptor) > 0;
   }
@@ -737,173 +736,13 @@ public class ExchangeApiGenUtil {
     return fields.stream().map(f -> resolveFieldProperties(exchangeApiDescriptor, f))
                 .collect(Collectors.toList());
   }
-
+  
   /**
-   * Generates expected public static variable name in a generated {@link ExchangeApi} for HTTP URL of a REST endpoint.
+   * Generates expected property name in a generated {@link ExchangeApi} for HTTP URL of a REST endpoint.
    * @param restEndpointDescriptor The REST endpoint descriptor
-   * @return The expected static variable name for the REST endpoint URL, for instance <code>MY_REST_ENDPOINT_URL</code>
+   * @return The expected property name for the REST endpoint URL, for instance <code>myRestEndpointUrl</code>
    */
-  public static String getRestEndpointUrlStaticVariableName(RestEndpointDescriptor restEndpointDescriptor) {
-    return JavaCodeGenUtil.getStaticVariableName(restEndpointDescriptor.getName()) + "_URL";
+  public static String getRestEndpointUrlVariableName(RestEndpointDescriptor restEndpointDescriptor) {
+    return JavaCodeGenUtil.firstLetterToLowerCase(restEndpointDescriptor.getName() + "HttpUrl");
   }
-  
-    /**
-   * Generates expected public static variable name in a generated {@link ExchangeApi} for websocket HTTP URL.
-   * @param exchangeApiDescriptor The ExchangeApi descriptor
-   * @return The expected static variable name for the websocket URL, for instance <code>MY_API_WS_URL</code>
-   */
-  public static String getWebsocketUrlStaticVariableName(ExchangeApiDescriptor exchangeApiDescriptor) {
-    return JavaCodeGenUtil.getStaticVariableName(exchangeApiDescriptor.getName()) + "_WS_URL";
-  }
-  
-  /**
-   * Generates expected public static variable declaration in a generated {@link ExchangeApi} for REST base URL.
-   * It will be a concatenation of the exchange base URL and the API base URL if the API base URL is not an absolute URL.
-   * @param exchangeDescriptor The exchange descriptor
-   * @param exchangeApiDescriptor The exchange API descriptor
-   * @param imports The imports of the generated class
-   * @return public static declaration for a variable named {@link ExchangeJavaGenUtil#HTTP_URL_STATIC_VARIABLE} holding the base URL of the REST API.
-   */
-  public static String getHttpUrlVariableDeclaration(ExchangeDescriptor exchangeDescriptor, 
-                             ExchangeApiDescriptor exchangeApiDescriptor,
-                             Imports imports) {
-    StringBuilder javadoc = new StringBuilder()
-        .append("Base URL for <i>")
-        .append(exchangeDescriptor.getId())
-        .append("</i> exchange <i>")
-        .append(exchangeApiDescriptor.getName())
-        .append("</i> API REST endpoints");
-    
-    StringBuilder s = new StringBuilder()
-        .append("\n")
-        .append(JavaCodeGenUtil.generateJavaDoc(javadoc.toString()))
-        .append("\npublic static final String ")
-        .append(ExchangeJavaGenUtil.HTTP_URL_STATIC_VARIABLE)
-        .append(" = ");
-    String url = "";
-    String apiUrl = exchangeApiDescriptor.getHttpUrl();
-    if (apiUrl != null) {
-      url = JavaCodeGenUtil.getQuotedString(apiUrl);
-      if (EncodingUtil.isAbsoluteUrl(apiUrl)) {
-        return s.append(url).append(";").toString();
-      }
-    }
-    
-    String exchangeUrl = exchangeDescriptor.getHttpUrl();
-    if (exchangeUrl != null) {
-      String exchangeInterfaceImplementationName = ExchangeJavaGenUtil.getExchangeInterfaceImplementationName(exchangeDescriptor);
-      imports.add(exchangeInterfaceImplementationName);
-      String exchangeUrlVar = JavaCodeGenUtil.getClassNameWithoutPackage(exchangeInterfaceImplementationName) 
-                 + "."  
-                 + ExchangeJavaGenUtil.HTTP_URL_STATIC_VARIABLE;
-      if (!url.isEmpty()) {
-        exchangeUrlVar += " + " + url;
-      }
-      url = exchangeUrlVar;
-    }
-    if (url.isEmpty()) {
-      return null;
-    }
-    
-    return s.append(url).append(";").toString();
-  }
-  
-  /**
-   * Generates expected public static variable declaration in a generated
-   * {@link ExchangeApi} for REST endpoint URL.
-   * It will be a concatenation of the base URL and the endpoint URL if the
-   * endpoint URL is not an absolute URL.
-   * 
-   * @param hasBaseUrl             <code>true</code> if the API has a base URL,
-   *                               <code>false</code> otherwise
-   * @param restEndpointDescriptor The REST endpoint descriptor
-   * @return public static declaration for a variable named
-   *         <code>MY_REST_ENDPOINT_URL</code> holding the URL of the REST
-   *         endpoint.
-   */
-  public static String getRestEndpointUrlVariableDeclaration(boolean hasBaseUrl, 
-                                 RestEndpointDescriptor restEndpointDescriptor) {
-    StringBuilder s = new StringBuilder()
-              .append("public static final String ")
-              .append(getRestEndpointUrlStaticVariableName(restEndpointDescriptor))
-              .append(" = ");
-    String restUrl = restEndpointDescriptor.getUrl();
-    String url = "";
-    if (restUrl != null) {
-      url =  JavaCodeGenUtil.getQuotedString(restUrl);
-      if (EncodingUtil.isAbsoluteUrl(restUrl)) {
-        return s.append(url).append(";").toString();
-      }
-    }
-    
-    if (hasBaseUrl) {
-      s.append(ExchangeJavaGenUtil.HTTP_URL_STATIC_VARIABLE);
-      if (!url.isEmpty()) {
-        s.append(" + ").append(url);
-      }
-      return s.append(";").toString();
-    }
-    
-    throw new IllegalArgumentException("Invalid URL '" 
-                      + url 
-                      + "' for enpoint:" 
-                      + restEndpointDescriptor);
-  }
-  
-  /**
-   * Generates expected public static variable declaration in a generated
-   * {@link ExchangeApi} for websocket URL.
-   * It will be a concatenation of the exchange websocket URL and the API
-   * websocket URL if the API websocket URL is not an absolute URL.
-   * 
-   * @param exchangeDescriptor    The exchange descriptor
-   * @param exchangeApiDescriptor The exchange API descriptor
-   * @param imports               The imports of the generated class
-   * @return public static declaration for a variable named
-   *         {@link ExchangeJavaGenUtil#WEBSOCKET_URL_STATIC_VARIABLE}
-   *         holding the base URL of the websocket API.
-   */
-  public static String getWebsocketUrlVariableDeclaration(ExchangeDescriptor exchangeDescriptor, 
-                              ExchangeApiDescriptor exchangeApiDescriptor,
-                              Imports imports) {
-    StringBuilder javadoc = new StringBuilder()
-        .append("Base URL for <i>")
-        .append(exchangeDescriptor.getId())
-        .append("</i> exchange <i>")
-        .append(exchangeApiDescriptor.getName())
-        .append("</i> API Websocket endpoints");
-    StringBuilder s = new StringBuilder()
-        .append(JavaCodeGenUtil.generateJavaDoc(javadoc.toString()))
-        .append("\npublic static final String ")
-        .append(ExchangeJavaGenUtil.WEBSOCKET_URL_STATIC_VARIABLE)
-        .append(" = ");
-    String url = "";
-    String apiUrl = exchangeApiDescriptor.getWebsocketUrl();
-    if (apiUrl != null) {
-      String apiUrlQuoted = JavaCodeGenUtil.getQuotedString(apiUrl);
-      url = apiUrlQuoted;
-      if (EncodingUtil.isAbsoluteUrl(apiUrl)) {
-        return s.append(url).append(";").toString();
-      }
-    }
-    
-    String exchangeUrl = exchangeDescriptor.getWebsocketUrl();
-    if (exchangeUrl != null) {
-      String exchangeInterfaceName = ExchangeJavaGenUtil.getExchangeInterfaceImplementationName(exchangeDescriptor);
-      imports.add(exchangeInterfaceName);
-      String exchangeUrlVar = JavaCodeGenUtil.getClassNameWithoutPackage(exchangeInterfaceName) 
-                   + "."  
-                   + ExchangeJavaGenUtil.WEBSOCKET_URL_STATIC_VARIABLE;
-      if (!url.isEmpty()) {
-        exchangeUrlVar += " + " + url;
-      }
-      url = exchangeUrlVar;
-    }
-    if (url.isEmpty()) {
-       return null;
-    }
-    
-    return s.append(url).append(";").toString();
-  }
-  
 }

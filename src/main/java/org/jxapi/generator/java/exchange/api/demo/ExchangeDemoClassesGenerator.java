@@ -2,12 +2,16 @@ package org.jxapi.generator.java.exchange.api.demo;
 
 import java.io.IOException;
 import java.nio.file.Path;
+import java.util.List;
 
+import org.jxapi.exchange.descriptor.ConfigPropertyDescriptor;
 import org.jxapi.exchange.descriptor.ExchangeApiDescriptor;
 import org.jxapi.exchange.descriptor.ExchangeDescriptor;
 import org.jxapi.exchange.descriptor.RestEndpointDescriptor;
 import org.jxapi.exchange.descriptor.WebsocketEndpointDescriptor;
 import org.jxapi.generator.java.exchange.ClassesGenerator;
+import org.jxapi.generator.java.exchange.ExchangeGenUtil;
+import org.jxapi.generator.java.exchange.properties.PropertiesClassGenerator;
 
 /**
  * Generates demo classes for an exchange, e.g. one snippet class for each REST
@@ -43,6 +47,17 @@ public class ExchangeDemoClassesGenerator implements ClassesGenerator {
           WebsocketEndpointDemoGenerator websocketEndpointDemoGenerator = new WebsocketEndpointDemoGenerator(exchangeDescriptor, api, websocketApi);
           websocketEndpointDemoGenerator.writeJavaFile(outputFolder);
         }
+      }
+      
+      // Generate properties interface
+      List<ConfigPropertyDescriptor> properties = exchangeDescriptor.getDemoProperties();
+      if (properties != null) {
+        PropertiesClassGenerator pgen = new PropertiesClassGenerator(
+            ExchangeGenUtil.getExchangeDemoPropertiesInterfaceName(exchangeDescriptor), 
+            exchangeDescriptor, 
+            properties,
+            "demo");
+        pgen.writeJavaFile(outputFolder);
       }
     }
   }

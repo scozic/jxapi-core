@@ -1,6 +1,8 @@
 package org.jxapi.util;
 
 import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 import org.junit.Assert;
@@ -10,6 +12,15 @@ import org.junit.Test;
  * Unit test for {@link EncodingUtil}
  */
 public class EncodingUtilTest {
+  
+  @Test
+  public void testFormatTimestamp() {
+    long ts = 1696166400000L; // 2023-10-01T12:00:00Z
+    String expected = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ").format(new Date(ts));
+    Assert.assertEquals(expected, EncodingUtil.formatTimestamp(ts));
+    Assert.assertEquals(expected, EncodingUtil.formatTimestamp(new Date(1696166400000L)));
+    Assert.assertNull(EncodingUtil.formatTimestamp(null));
+  }
   
   @Test(expected = IllegalArgumentException.class)
   public void testCreateUrlQueryParametersNullKeyThrows() {
@@ -38,7 +49,7 @@ public class EncodingUtilTest {
     bar.setName("babar");
     bar.setActive(true);
     bar.setScore(new BigDecimal("1.23"));
-    Assert.assertEquals("Bar{\"active\":true,\"name\":\"babar\",\"score\":1.23}", EncodingUtil.pojoToString(bar));
+    Assert.assertEquals("Bar{\"name\":\"babar\",\"active\":true,\"score\":1.23}", EncodingUtil.pojoToString(bar));
   }
   
   @Test
@@ -52,7 +63,7 @@ public class EncodingUtilTest {
     foo.setHello("Hi");
     foo.setBar(bar);
     
-    Assert.assertEquals("Foo{\"bar\":{\"active\":true,\"name\":\"babar\",\"score\":1.23},\"hello\":\"Hi\"}", EncodingUtil.pojoToString(foo));
+    Assert.assertEquals("Foo{\"hello\":\"Hi\",\"bar\":{\"name\":\"babar\",\"active\":true,\"score\":1.23}}", EncodingUtil.pojoToString(foo));
   }
   
   @Test
@@ -125,6 +136,13 @@ public class EncodingUtilTest {
   public void testPrettyPrintLongString_StringThatNeedsToBeShortened() {
     Assert.assertEquals("Hell....you?", EncodingUtil.prettyPrintLongString("Hello World! How are you?", 12));
   }
+  
+  @Test
+  public void testPrettyPrintLongString_StringThatNeedsToBeShortenedDefaultMaxLength() {
+    String longString = "12345678901234567890123456789012345678901234567890123456789012345678901234567890ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
+    Assert.assertEquals("12345678901234567890123456789012345678901234567890123456789012345678901234567890ABCDEFGHIJKLMNOPQR....KLMNOPQRSTUVWXYZ1234567890ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890", 
+                        EncodingUtil.prettyPrintLongString(longString));
+  }
 
   @Test
   public void testPrettyPrintLongString_NullString() {
@@ -136,9 +154,38 @@ public class EncodingUtilTest {
     EncodingUtil.prettyPrintLongString("Hello World!", 3);
   }
   
+  @Test
+  public void testRemovePrefix() {
+    Assert.assertNull(EncodingUtil.removePrefix(null, "foo"));
+    Assert.assertNull(EncodingUtil.removePrefix("bar", "foo"));
+    Assert.assertEquals("bar", EncodingUtil.removePrefix("foobar", "foo"));
+  }
+  
+  @Test(expected = IllegalArgumentException.class)
+  public void testRemovePrefix_NullPrefix() {
+    EncodingUtil.removePrefix(null, null);
+  }
+  
+  @Test
+  public void testBuildUrl_EmptyParts() {
+    Assert.assertEquals("", EncodingUtil.buildUrl());
+  }
+  
+  @Test
+  public void testBuildUrl_NotAbsoluteUrl() {
+    Assert.assertEquals("foo", EncodingUtil.buildUrl("foo"));
+  }
+  
+  @Test
+  public void testBuildUrl() {
+    Assert.assertEquals("http://foo/bar", EncodingUtil.buildUrl("http://foo", "/bar", null));
+    Assert.assertEquals("http://bar", EncodingUtil.buildUrl("http://foo/", null, "http://bar"));
+  }
+  
   private class Foo {
     private String hello;
     private Bar bar;
+    
     @SuppressWarnings("unused")
     public String getHello() {
       return hello;

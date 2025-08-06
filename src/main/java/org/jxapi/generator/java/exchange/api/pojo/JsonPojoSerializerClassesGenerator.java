@@ -7,7 +7,7 @@ import java.util.List;
 import org.jxapi.exchange.descriptor.Field;
 import org.jxapi.exchange.descriptor.Type;
 import org.jxapi.generator.java.exchange.ClassesGenerator;
-import org.jxapi.generator.java.exchange.ExchangeJavaGenUtil;
+import org.jxapi.generator.java.exchange.ExchangeGenUtil;
 import org.jxapi.generator.java.exchange.api.ExchangeApiGenUtil;
 import org.jxapi.netutils.deserialization.json.AbstractJsonMessageDeserializer;
 
@@ -42,7 +42,7 @@ public class JsonPojoSerializerClassesGenerator implements ClassesGenerator {
   public void generateClasses(Path outputFolder) throws IOException {
     JsonPojoSerializerGenerator generator = new JsonPojoSerializerGenerator(deserializedClassName, fields);
     for (Field field: fields) {
-      Type type = ExchangeJavaGenUtil.getFieldType(field);
+      Type type = ExchangeGenUtil.getFieldType(field);
       if ((type.isObject())
         && field.getProperties() != null) {
         new JsonPojoSerializerClassesGenerator( 

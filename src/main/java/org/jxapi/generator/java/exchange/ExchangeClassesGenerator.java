@@ -4,14 +4,15 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.util.List;
 
+import org.jxapi.exchange.descriptor.ConfigPropertyDescriptor;
 import org.jxapi.exchange.descriptor.Constant;
 import org.jxapi.exchange.descriptor.ExchangeApiDescriptor;
 import org.jxapi.exchange.descriptor.ExchangeDescriptor;
-import org.jxapi.exchange.descriptor.DefaultConfigProperty;
 import org.jxapi.generator.java.exchange.api.ExchangeApiClassesGenerator;
 import org.jxapi.generator.java.exchange.constants.ConstantsClassGenerator;
-import org.jxapi.generator.java.exchange.constants.PropertiesClassGenerator;
+import org.jxapi.generator.java.exchange.properties.PropertiesClassGenerator;
 import org.jxapi.netutils.rest.ratelimits.RateLimitManager;
+import org.jxapi.util.PlaceHolderResolver;
 import org.springframework.util.CollectionUtils;
 
 /**
@@ -46,8 +47,10 @@ public class ExchangeClassesGenerator implements ClassesGenerator {
    */
   @Override
   public void generateClasses(Path outputFolder) throws IOException {
+    PlaceHolderResolver docPlaceHolderResolver = 
+      PlaceHolderResolver.create(ExchangeGenUtil.getDescriptionReplacements(exchangeDescriptor, null));
     // Generate exchange interface class
-    ExchangeInterfaceGenerator exchangeInterfaceGenerator = new ExchangeInterfaceGenerator(exchangeDescriptor);
+    ExchangeInterfaceGenerator exchangeInterfaceGenerator = new ExchangeInterfaceGenerator(exchangeDescriptor, docPlaceHolderResolver);
     exchangeInterfaceGenerator.writeJavaFile(outputFolder);
     
     // Generate exchange interface implementation class
@@ -62,19 +65,26 @@ public class ExchangeClassesGenerator implements ClassesGenerator {
     List<Constant> constants = exchangeDescriptor.getConstants();
     if (!CollectionUtils.isEmpty(constants)) {
       ConstantsClassGenerator cgen = new ConstantsClassGenerator(
-          ExchangeJavaGenUtil.getExchangeConstantsInterfaceName(exchangeDescriptor), 
-          constants); 
+          ExchangeGenUtil.getExchangeConstantsClassName(exchangeDescriptor), 
+          constants,
+          docPlaceHolderResolver);
+      cgen.setConstantValuePlaceHolderResolver(s -> ExchangeGenUtil.generateSubstitutionInstructionDeclaration(
+                                                      s, 
+                                                      exchangeDescriptor, 
+                                                      null,
+                                                      cgen.getImports()));
       cgen.setDescription("Constants used in {@link " + exchangeInterfaceGenerator.getName() + "} API wrapper");
       cgen.writeJavaFile(outputFolder);
     }
     
     // Generate properties interface
-    List<DefaultConfigProperty> properties = exchangeDescriptor.getProperties();
+    List<ConfigPropertyDescriptor> properties = exchangeDescriptor.getProperties();
     if (properties != null) {
       PropertiesClassGenerator pgen = new PropertiesClassGenerator(
-          ExchangeJavaGenUtil.getExchangePropertiesInterfaceName(exchangeDescriptor), 
-          exchangeDescriptor.getId(), 
-          properties);
+          ExchangeGenUtil.getExchangePropertiesInterfaceName(exchangeDescriptor), 
+          exchangeDescriptor, 
+          properties,
+          null);
       pgen.writeJavaFile(outputFolder);
     }
   }

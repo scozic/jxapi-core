@@ -1,5 +1,0 @@
-id: "Employee"
-constants:
- - name: "baseUrlPattern"
-   description: "Value to replace in HTTP or Websocket base URL with value of <i>baseHttpUrl</i> or <i>baseWebsocketUrl</i> properties"
-   value: "BASEURL"

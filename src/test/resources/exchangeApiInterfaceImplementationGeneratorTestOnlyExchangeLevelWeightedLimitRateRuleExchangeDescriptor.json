@@ -13,11 +13,14 @@
 			"rateLimits":[],
 			"restEndpoints": [
 				{
-					"name": "exchangeInfo",
+					"name": "ExchangeInfo",
 					"httpMethod": "GET",
 					"description": "Fetch market information of symbols that can be traded",
 					"url": "https://com.sample.mycex/exchangeInfo",
 					"requestWeight": 60,
+					"rateLimits": [
+						"exchangeGlobalRule"
+					],
 					"request": {
 						"properties": [
 							{"name":"symbols", "type": "STRING_LIST", "description":"The list of symbol to fetch market information for. Leave empty to fetch all markets", "sampleValue":""}

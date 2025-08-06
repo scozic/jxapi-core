@@ -1,9 +1,5 @@
 package org.jxapi.exchanges.demo.net;
 
-import java.util.Properties;
-
-import org.apache.commons.lang3.StringUtils;
-
 import org.jxapi.exchanges.demo.gen.DemoExchangeConstants;
 import org.jxapi.exchanges.demo.gen.DemoExchangeExchange;
 import org.jxapi.exchanges.demo.gen.DemoExchangeProperties;
@@ -21,16 +17,6 @@ import org.jxapi.netutils.websocket.WebsocketManager;
  * </ul>
  */
 public class DemoExchangeWebsocketHook extends AbstractWebsocketHook {
-  
-  @Override
-  public void init(WebsocketManager websocketManager) {
-    super.init(websocketManager);
-    Properties props = websocketManager.getExchangeApi().getProperties();
-    String baseUrl = DemoExchangeProperties.getBaseWebsocketUrl(props);
-        String url = websocketManager.getUrl(); 
-    url = StringUtils.replace(url, DemoExchangeConstants.BASE_URL_PATTERN, baseUrl);
-    websocketManager.setUrl(url);
-  }
   
   @Override
   public void afterConnect() throws WebsocketException {

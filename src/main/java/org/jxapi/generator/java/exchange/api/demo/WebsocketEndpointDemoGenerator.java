@@ -10,11 +10,12 @@ import org.jxapi.exchange.descriptor.Type;
 import org.jxapi.exchange.descriptor.WebsocketEndpointDescriptor;
 import org.jxapi.generator.java.JavaCodeGenUtil;
 import org.jxapi.generator.java.JavaTypeGenerator;
-import org.jxapi.generator.java.exchange.ExchangeJavaGenUtil;
+import org.jxapi.generator.java.exchange.ExchangeGenUtil;
 import org.jxapi.generator.java.exchange.api.ExchangeApiGenUtil;
 import org.jxapi.netutils.websocket.WebsocketListener;
 import org.jxapi.util.DemoProperties;
 import org.jxapi.util.DemoUtil;
+import org.jxapi.util.PlaceHolderResolver;
 import org.slf4j.Logger;
 
 /**
@@ -70,6 +71,7 @@ public class WebsocketEndpointDemoGenerator extends JavaTypeGenerator {
   private final String exchangeClassName;
   private final String exchangeSimpleClassName;
   private final Type requestDataType;
+  private final PlaceHolderResolver sampleValuePlaceHolderResolver;
   
   /**
    * Constructor.
@@ -84,14 +86,14 @@ public class WebsocketEndpointDemoGenerator extends JavaTypeGenerator {
     super(EndpointDemoGenUtil.getWebsocketApiDemoClassName(exchangeDescriptor, exchangeApiDescriptor, websocketApi));
     this.exchangeDescriptor = exchangeDescriptor;
     this.request = ExchangeApiGenUtil.resolveFieldProperties(exchangeApiDescriptor, websocketApi.getRequest());
-    this.exchangeClassName = ExchangeJavaGenUtil.getExchangeInterfaceName(exchangeDescriptor);
+    this.exchangeClassName = ExchangeGenUtil.getExchangeInterfaceName(exchangeDescriptor);
     this.exchangeSimpleClassName = JavaCodeGenUtil.getClassNameWithoutPackage(exchangeClassName);
     subscribeMethodName = ExchangeApiGenUtil.getWebsocketSubscribeMethodName(websocketApi);
     unsubscribeMethodName = ExchangeApiGenUtil.getWebsocketUnsubscribeMethodName(websocketApi);
     setTypeDeclaration("public class");
     this.hasArguments = ExchangeApiGenUtil.websocketEndpointHasArguments(websocketApi, exchangeApiDescriptor);
     if (hasArguments) {
-      this.requestDataType =  ExchangeJavaGenUtil.getFieldType(request);
+      this.requestDataType =  ExchangeGenUtil.getFieldType(request);
       if (this.requestDataType.getCanonicalType().isPrimitive) {
         this.requestClassName = requestDataType.getCanonicalType().typeClass.getName();
       } else {
@@ -99,7 +101,7 @@ public class WebsocketEndpointDemoGenerator extends JavaTypeGenerator {
       }
       
       addImport(requestClassName);
-      this.requestSimpleClassName = ExchangeJavaGenUtil.getClassNameForType(
+      this.requestSimpleClassName = ExchangeGenUtil.getClassNameForType(
           requestDataType, 
           getImports(), 
           requestClassName);
@@ -108,15 +110,20 @@ public class WebsocketEndpointDemoGenerator extends JavaTypeGenerator {
       this.requestSimpleClassName = null;
       this.requestDataType = null;
     }
-    this.apiInterfaceClassName = ExchangeJavaGenUtil.getApiInterfaceClassName(exchangeDescriptor, exchangeApiDescriptor);
+    this.apiInterfaceClassName = ExchangeGenUtil.getApiInterfaceClassName(exchangeDescriptor, exchangeApiDescriptor);
     this.simpleApiClassName = JavaCodeGenUtil.getClassNameWithoutPackage(apiInterfaceClassName);
+    this.sampleValuePlaceHolderResolver = s -> ExchangeGenUtil.generateSubstitutionInstructionDeclaration(
+        s, 
+        exchangeDescriptor, 
+        "properties",
+        getImports());
     addImport(apiInterfaceClassName);
     setDescription(getClassJavadoc());
     this.fullStreamName = exchangeDescriptor.getId() + " " 
                 + exchangeApiDescriptor.getName() 
                 + " " + websocketApi.getName();
-    Type messageDataType = ExchangeJavaGenUtil.getFieldType(websocketApi.getMessage());
-    messageClassSimpleName = ExchangeJavaGenUtil.getClassNameForType(
+    Type messageDataType = ExchangeGenUtil.getFieldType(websocketApi.getMessage());
+    messageClassSimpleName = ExchangeGenUtil.getClassNameForType(
         messageDataType, 
         getImports(), 
         ExchangeApiGenUtil.generateWebsocketEndpointMessagePojoClassName(
@@ -139,7 +146,9 @@ public class WebsocketEndpointDemoGenerator extends JavaTypeGenerator {
       this.appendToBody(EndpointDemoGenUtil.generateFieldCreationMethod(
                 request,  
                 requestClassName, 
-                getImports()))
+                ExchangeApiGenUtil.DEFAULT_REQUEST_ARG_NAME,
+                getImports(),
+                sampleValuePlaceHolderResolver))
         .append("\n");
     }
     generateSubscribeMethod();
@@ -281,22 +290,28 @@ public class WebsocketEndpointDemoGenerator extends JavaTypeGenerator {
   }
   
   private void generateMainMethod() {
-    StringBuilder bodyBuilder = new StringBuilder();
-    String exchangeInterfaceClassName = ExchangeJavaGenUtil.getExchangeInterfaceName(exchangeDescriptor);
-    String exchangeImplClassName = ExchangeJavaGenUtil.getExchangeInterfaceImplementationName(exchangeInterfaceClassName);
+    String exchangeInterfaceClassName = ExchangeGenUtil.getExchangeInterfaceName(exchangeDescriptor);
+    String exchangeImplClassName = ExchangeGenUtil.getExchangeInterfaceImplementationName(exchangeInterfaceClassName);
     addImport(exchangeImplClassName);
-
-    
-    bodyBuilder.append("subscribe(");
+    String propsVar = EndpointDemoGenUtil.CREATE_REQUEST_PROPERTIES_ARG_NAME;
+    StringBuilder bodyBuilder = new StringBuilder()
+      .append("Properties ")
+      .append(propsVar)
+      .append(" = ")
+      .append(EndpointDemoGenUtil.getTestPropertiesInstruction(exchangeSimpleClassName, getImports()))
+      .append(";\n")
+      .append("subscribe(");
     if (hasArguments) {
       bodyBuilder.append(EndpointDemoGenUtil.generateFieldCreationMethodName(request))
-             .append("(),\n")
-             .append(MAIN_METHOD_SUBSCRIBE_METHOD_CALL_ARGUMENT_INDENT);
+        .append("(")
+        .append(propsVar)
+        .append("),\n")
+        .append(MAIN_METHOD_SUBSCRIBE_METHOD_CALL_ARGUMENT_INDENT);
     }
     bodyBuilder.append(DemoUtil.class.getSimpleName())
            .append("::logWsMessage,\n")
            .append(MAIN_METHOD_SUBSCRIBE_METHOD_CALL_ARGUMENT_INDENT)
-           .append(EndpointDemoGenUtil.getTestPropertiesInstruction(exchangeSimpleClassName, getImports()))
+           .append(propsVar)
            .append(",\n")
            .append(MAIN_METHOD_SUBSCRIBE_METHOD_CALL_ARGUMENT_INDENT)
            .append(DemoUtil.class.getSimpleName())

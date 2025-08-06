@@ -11,12 +11,13 @@ import org.jxapi.exchange.descriptor.Field;
 import org.jxapi.exchange.descriptor.Type;
 import org.jxapi.generator.java.JavaCodeGenUtil;
 import org.jxapi.generator.java.JavaTypeGenerator;
-import org.jxapi.generator.java.exchange.ExchangeJavaGenUtil;
+import org.jxapi.generator.java.exchange.ExchangeGenUtil;
 import org.jxapi.generator.java.exchange.api.ExchangeApiGenUtil;
 import org.jxapi.util.CollectionUtil;
 import org.jxapi.util.CompareUtil;
 import org.jxapi.util.DeepCloneable;
 import org.jxapi.util.EncodingUtil;
+import org.jxapi.util.PlaceHolderResolver;
 import org.jxapi.util.Pojo;
 
 /**
@@ -74,15 +75,7 @@ public class PojoGenerator extends JavaTypeGenerator {
   private static final String END_NO_PARAM_METHOD_INST_TOKEN = "();\n";
   
   private final List<Field> fields = new ArrayList<>();
-  
-  /**
-   * Creates a new POJO generator for the given type name
-   * @param fullTypeName Full class name e.g. <i>com.x.y.z.Foo</i>
-   */
-  public PojoGenerator(String fullTypeName) {
-    this(fullTypeName, null, null, null);
-    
-  }
+  private final PlaceHolderResolver docPlaceHolderResolver;
   
   /**
    * Constructor.
@@ -90,13 +83,16 @@ public class PojoGenerator extends JavaTypeGenerator {
    * @param description The description to display in javadoc of the class
    * @param fields The properties of the class
    * @param implementedInterfaces The interfaces implemented by the class (in addition to {@link Pojo})
+   * @param docPlaceHolderResolver PlaceHolderResolver to resolve placeholders in descriptions.
    */
   public PojoGenerator(String className, 
        String description, 
        List<Field> fields, 
-       List<String> implementedInterfaces) {
+       List<String> implementedInterfaces,
+       PlaceHolderResolver docPlaceHolderResolver) {
     super(className);
     setTypeDeclaration("public class");
+    this.docPlaceHolderResolver = Optional.ofNullable(docPlaceHolderResolver).orElse(PlaceHolderResolver.NO_OP);
     this.fields.addAll(Optional.ofNullable(fields).orElse(List.of()));
     String serializerClassName = PojoGenUtil.getSerializerClassName(className);
     addImport(serializerClassName);
@@ -105,7 +101,7 @@ public class PojoGenerator extends JavaTypeGenerator {
                     + JavaCodeGenUtil.getClassNameWithoutPackage(serializerClassName) 
                     + ".class)\n" 
                     + getTypeDeclaration());
-    setDescription(description);
+    setDescription(this.docPlaceHolderResolver.resolve(description));
     addImport(Pojo.class.getName());
     String pojoInterface = Pojo.class.getName() + "<" + getSimpleName() + ">";
     setImplementedInterfaces(CollectionUtil.mergeLists(List.of(pojoInterface), implementedInterfaces));
@@ -253,10 +249,10 @@ public class PojoGenerator extends JavaTypeGenerator {
     String typeClass = getFieldClass(field);
     typeClass = JavaCodeGenUtil.getClassNameWithoutPackage(typeClass);
     String name = field.getName();
-    String description = field.getDescription();
+    String description = docPlaceHolderResolver.resolve(field.getDescription());
     String msgFieldDescription = "";
     if (field.getMsgField() != null) {
-      msgFieldDescription = "Message field <strong>" + field.getMsgField() + "</strong>";
+      msgFieldDescription = "<br>Message field <strong>" + field.getMsgField() + "</strong>";
       if (description == null) {
         description = msgFieldDescription;
       } else {
@@ -306,11 +302,11 @@ public class PojoGenerator extends JavaTypeGenerator {
   }
   
   private void generateBuilderMethodsDeclaration(Field field, JavaTypeGenerator builder) {
-    Type fieldType = ExchangeJavaGenUtil.getFieldType(field);
+    Type fieldType = ExchangeGenUtil.getFieldType(field);
     String typeClass = getFieldClass(field);
     typeClass = JavaCodeGenUtil.getClassNameWithoutPackage(typeClass);
     String name = field.getName();
-    String description = field.getDescription();
+    String description = docPlaceHolderResolver.resolve(field.getDescription());
     String msgFieldDescription = "";
     if (field.getMsgField() != null) {
       msgFieldDescription = "Message field <strong>" + field.getMsgField() + "</strong>";
@@ -374,7 +370,7 @@ public class PojoGenerator extends JavaTypeGenerator {
   
   private void generateAddToListBuilderMethod(Field field, JavaTypeGenerator builder) {
     String name = field.getName();
-    Type fieldType = ExchangeJavaGenUtil.getFieldType(field);
+    Type fieldType = ExchangeGenUtil.getFieldType(field);
     Field itemField = Field.builder()
                   .name(name)
                   .type(fieldType.getSubType())
@@ -423,7 +419,7 @@ public class PojoGenerator extends JavaTypeGenerator {
   
   private void generateAddToMapBuilderMethod(Field field, JavaTypeGenerator builder) {
     String name = field.getName();
-    Type fieldType = ExchangeJavaGenUtil.getFieldType(field);
+    Type fieldType = ExchangeGenUtil.getFieldType(field);
     Field itemField = Field.builder()
                   .name(name)
                   .type(fieldType.getSubType())
@@ -478,12 +474,12 @@ public class PojoGenerator extends JavaTypeGenerator {
   
   private String getFieldClass(Field field) {
     String fieldClass = null;
-    Type fieldType = ExchangeJavaGenUtil.getFieldType(field);
-    if (ExchangeJavaGenUtil.isObjectField(field)) {
+    Type fieldType = ExchangeGenUtil.getFieldType(field);
+    if (ExchangeGenUtil.isObjectField(field)) {
       String className = getName();
       fieldClass = ExchangeApiGenUtil.getClassNameForField(field, getImports(), className);
     } else {
-      fieldClass = ExchangeJavaGenUtil.getClassNameForType(fieldType, getImports(), null);
+      fieldClass = ExchangeGenUtil.getClassNameForType(fieldType, getImports(), null);
     }
     return JavaCodeGenUtil.getClassNameWithoutPackage(fieldClass);
   }

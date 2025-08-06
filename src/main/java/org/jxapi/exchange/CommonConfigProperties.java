@@ -2,10 +2,10 @@ package org.jxapi.exchange;
 
 import java.util.List;
 
-import org.jxapi.exchange.descriptor.ConfigProperty;
-import org.jxapi.exchange.descriptor.DefaultConfigProperty;
 import org.jxapi.exchange.descriptor.Type;
 import org.jxapi.netutils.rest.ratelimits.RequestThrottlingMode;
+import org.jxapi.util.ConfigProperty;
+import org.jxapi.util.DefaultConfigProperty;
 
 /**
  * Lists every {@link ConfigProperty} that is relevant for any {@link Exchange}

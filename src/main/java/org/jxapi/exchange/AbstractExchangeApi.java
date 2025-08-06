@@ -3,6 +3,7 @@ package org.jxapi.exchange;
 
 import java.net.http.HttpClient;
 import java.util.Properties;
+import java.util.function.Function;
 
 import org.jxapi.netutils.deserialization.MessageDeserializer;
 import org.jxapi.netutils.rest.FutureRestResponse;
@@ -14,6 +15,10 @@ import org.jxapi.netutils.rest.HttpRequestInterceptor;
 import org.jxapi.netutils.rest.HttpRequestInterceptorFactory;
 import org.jxapi.netutils.rest.RestResponse;
 import org.jxapi.netutils.rest.javanet.JavaNetHttpRequestExecutor;
+import org.jxapi.netutils.rest.pagination.NextPageResolver;
+import org.jxapi.netutils.rest.pagination.PaginatedRestRequest;
+import org.jxapi.netutils.rest.pagination.PaginatedRestResponse;
+import org.jxapi.netutils.rest.pagination.PaginationUtil;
 import org.jxapi.netutils.rest.ratelimits.RequestThrottler;
 import org.jxapi.netutils.rest.ratelimits.RequestThrottlingMode;
 import org.jxapi.netutils.websocket.DefaultWebsocketEndpoint;
@@ -28,9 +33,12 @@ import org.jxapi.netutils.websocket.WebsocketManager;
 import org.jxapi.observability.Observable;
 import org.jxapi.observability.SynchronizedObservable;
 import org.jxapi.util.DefaultDisposable;
+import org.jxapi.util.EncodingUtil;
 import org.jxapi.util.FactoryUtil;
 import org.jxapi.util.JsonUtil;
 import org.jxapi.util.PropertiesUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * The AbstractExchangeApi class is an abstract base class that provides common
@@ -61,6 +69,8 @@ import org.jxapi.util.PropertiesUtil;
  * @see Observable
  */
 public abstract class AbstractExchangeApi extends DefaultDisposable implements ExchangeApi {
+  
+  private static final Logger log = LoggerFactory.getLogger(AbstractExchangeApi.class);
 
   /**
    * The name of this exchange API group.
@@ -68,24 +78,27 @@ public abstract class AbstractExchangeApi extends DefaultDisposable implements E
   protected final String name;
   
   /**
-   * The name of the exchange instance associated with this API group.
+   * The the exchange instance associated with this API.
    */
-  protected final String exchangeName;
-  
-  /**
-   * The ID of the exchange instance associated with this API group.
-   */
-  protected final String exchangeId;
-  
-  /**
-   * The properties associated with the exchange instance.
-   */
-  protected final Properties properties;
+  protected final Exchange exchange;
   
   /**
    * The request throttler used for REST request rate limiting.
    */
   protected final RequestThrottler requestThrottler;
+  
+  /**
+   * The base HTTP URL for all REST endpoints of this API group.
+   * @see #getHttpUrl()
+   */
+  protected final String httpUrl;
+  
+  /**
+   * The base WebSocket URL used for websocket connections.
+   * 
+   * @see #getWsUrl()
+   */
+  protected final String wsUrl;
   
   /**
    * The HTTP request executor used to submit REST APIrequests.
@@ -110,18 +123,14 @@ public abstract class AbstractExchangeApi extends DefaultDisposable implements E
   
   /**
    * Creates a new AbstractExchangeApi instance with the specified API name,
-   * exchange name, exchange ID, and properties.
+   * exchange name, exchange ID, and properties.<p>
+   * Request throttler, httop URL and websocket URL are set to <code>null</code>.<br>
    * 
    * @param apiName      The name of the API.
-   * @param exchangeName The name of the exchange instance.
-   * @param exchangeId   The ID of the exchange.
-   * @param properties   The properties associated with the exchange instance.
+   * @param exchange     The exchange instance associated with this API.
    */
-  protected AbstractExchangeApi(String apiName, 
-                 String exchangeName, 
-                 String exchangeId, 
-                 Properties properties) {
-    this(apiName, exchangeName, exchangeId, properties, null);
+  protected AbstractExchangeApi(String apiName, Exchange exchange) {
+    this(apiName, exchange, null, null, null);
   }  
 
   /**
@@ -129,20 +138,20 @@ public abstract class AbstractExchangeApi extends DefaultDisposable implements E
    * exchange name, exchange ID, properties, and request throttler.
    * 
    * @param apiName          The name of the API.
-   * @param exchangeName     The name of the exchange instance.
-   * @param exchangeId       The ID of the exchange.
-   * @param properties       The properties associated with the exchange instance.
+   * @param exchange         The exchange instance associated with this API.
    * @param requestThrottler The request throttler to use for rate limiting.
+   * @param httpUrl          The base HTTP URL for all REST endpoints of this API group.
+   * @param wsUrl            The base WebSocket URL used for websocket connections.
    */
   protected AbstractExchangeApi(String apiName, 
-                 String exchangeName, 
-                 String exchangeId, 
-                 Properties properties, 
-                 RequestThrottler requestThrottler) {
+                                Exchange exchange, 
+                                RequestThrottler requestThrottler,
+                                String httpUrl,
+                                String wsUrl) {
     this.name = apiName;
-    this.exchangeName = exchangeName;
-    this.exchangeId = exchangeId;
-    this.properties = properties;
+    this.exchange = exchange;
+    this.httpUrl = EncodingUtil.buildUrl(exchange.getHttpUrl(), httpUrl);
+    this.wsUrl = EncodingUtil.buildUrl(exchange.getWsUrl(), wsUrl);
     this.requestThrottler = requestThrottler;
     if (requestThrottler != null) {
       applyRequestThrottlerProperties();
@@ -150,11 +159,12 @@ public abstract class AbstractExchangeApi extends DefaultDisposable implements E
   }
   
   private void applyRequestThrottlerProperties() {
+    Properties properties = exchange.getProperties();
     String requestThrottlingModeValue = properties.getProperty(CommonConfigProperties.REQUEST_THROTTLING_MODE_PROPERTY.getName());
     if (requestThrottlingModeValue != null) {
       requestThrottler.setThrottlingMode(RequestThrottlingMode.valueOf(requestThrottlingModeValue));
     }
-    Long maxThrottleDelay = PropertiesUtil.getLongProperty(properties, CommonConfigProperties.MAX_REQUEST_THROTTLE_DELAY_PROPERTY.getName(), null);
+    Long maxThrottleDelay = PropertiesUtil.getLong(properties, CommonConfigProperties.MAX_REQUEST_THROTTLE_DELAY_PROPERTY.getName(), null);
     if (maxThrottleDelay != null) {
       requestThrottler.setMaxThrottleDelay(maxThrottleDelay);
     }
@@ -165,23 +175,13 @@ public abstract class AbstractExchangeApi extends DefaultDisposable implements E
    * @return The name of the exchange instance.
    */
   @Override
-  public String getExchangeName() {
-    return exchangeName;
+  public Exchange getExchange() {
+    return exchange;
   }
   
   @Override
   public String getName() {
     return name;
-  }
-  
-  @Override
-  public String getExchangeId() {
-    return exchangeId;
-  }
-  
-  @Override
-  public Properties getProperties() {
-    return properties;
   }
   
   /**
@@ -243,7 +243,7 @@ public abstract class AbstractExchangeApi extends DefaultDisposable implements E
     } else {
       httpRequestExecutor = new JavaNetHttpRequestExecutor(HttpClient.newHttpClient());
     }
-    long requestTimeout = PropertiesUtil.getLongProperty(
+    long requestTimeout = PropertiesUtil.getLong(
         getProperties(), 
         CommonConfigProperties.HTTP_REQUEST_TIMEOUT_PROPERTY.getName(), 
         defaultRequestTimeout);
@@ -253,24 +253,57 @@ public abstract class AbstractExchangeApi extends DefaultDisposable implements E
   }
   
   /**
-   * Submits a REST request asynchronously using the specified request and message deserializer to deserialize response.
-   * If a request throttler is set, the request is submitted through the throttler.
-   * <br>
+   * Submits a REST request asynchronously using the specified request and message
+   * deserializer to deserialize response. If a request throttler is set, the
+   * request is submitted through the throttler. <br>
    * This method should used by subclasses to submit REST requests.
-   * @param <A> The type of the response to the request
-   * @param request The request to submit
+   * 
+   * @param <R>                   The type of the request to submit, must extend
+   *                              {@link PaginatedRestRequest}
+   * @param <A>                   The type of the response to the request
+   * @param request               The request to submit
+   * @param deserializer          The deserializer to use to deserialize the
+   *                              response
+   * @param paginatedRestEndpoint The function for calling the paginated REST
+   *                              endpoint, from endpint enclosing API group
+   *                              interface.
+   * @return The response to the request, as a {@link FutureRestResponse}
+   */
+  @SuppressWarnings("unchecked")
+  protected <R extends PaginatedRestRequest, A extends PaginatedRestResponse> FutureRestResponse<A> submitPaginated(
+      HttpRequest request, 
+      MessageDeserializer<A> deserializer, 
+      Function<R, FutureRestResponse<A>> paginatedRestEndpoint) {
+    return submit(request, deserializer, PaginationUtil.getNextPageResolver((R) request.getRequest(), paginatedRestEndpoint));
+  }
+  
+  /**
+   * Submits a REST request asynchronously using the specified request and message
+   * deserializer to deserialize response. If a request throttler is set, the
+   * request is submitted through the throttler. <br>
+   * This method should used by subclasses to submit REST requests.
+   * 
+   * @param <A>          The type of the response to the request
+   * @param request      The request to submit
    * @param deserializer The deserializer to use to deserialize the response
    * @return The response to the request, as a {@link FutureRestResponse}
    */
   protected <A> FutureRestResponse<A> submit(HttpRequest request, MessageDeserializer<A> deserializer) {
+    return submit(request, deserializer, null);
+  }
+  
+  private <A> FutureRestResponse<A> submit(HttpRequest request, MessageDeserializer<A> deserializer, NextPageResolver<A> nextPageResolver) {
+    log.debug("{} {} > {}", request.getHttpMethod(), request.getEndpoint(), request);
+    dispatchApiEvent(ExchangeApiEvent.createHttpRequestEvent(request));
     if (request.getHttpMethod().requestHasBody && request.getRequest() != null) {
-      request.setBody(JsonUtil.pojoToJsonString(request.getRequest()));
+      serializeRequestBody(request);
     }
     if (requestThrottler != null) {
       return requestThrottler.submit(request, r -> { 
         try {
-          return submitNow(r, deserializer);
+          return submitNow(r, deserializer, nextPageResolver);
         } catch (Exception ex) {
+          log.error("Error submitting request " + request, ex);
           FutureRestResponse<A> callback = new FutureRestResponse<>();
           RestResponse<A> response = new RestResponse<>();
           response.setException(ex);
@@ -279,22 +312,26 @@ public abstract class AbstractExchangeApi extends DefaultDisposable implements E
         }
       });
     } else {
-      return submitNow(request, deserializer);
+      return submitNow(request, deserializer, nextPageResolver);
     }
   }
 
-  private <A> FutureRestResponse<A> submitNow(HttpRequest request, MessageDeserializer<A> deserializer) {
+  private <A> FutureRestResponse<A> submitNow(HttpRequest request, MessageDeserializer<A> deserializer, NextPageResolver<A> nextPageResolver) {
     if (httpRequestExecutor == null) {
       throw new IllegalStateException("No " + HttpRequestExecutor.class.getSimpleName() + " set");
     }
     if (httpRequestInterceptor != null) {
       httpRequestInterceptor.intercept(request);
     }
-    dispatchApiEvent(ExchangeApiEvent.createHttpRequestEvent(request));
+    
     FutureRestResponse<A> callback = new FutureRestResponse<>();
     httpRequestExecutor.execute(request).thenAccept(httpResponse -> {
       RestResponse<A> response = new RestResponse<>(httpResponse);
       response.setHttpStatus(httpResponse.getResponseCode());
+      if (nextPageResolver != null) {
+        response.setNextPageResolver(nextPageResolver);
+        response.setPaginated(true);
+      }
       if(response.isOk()) {
         try {
           response.setResponse(deserializer.deserialize(httpResponse.getBody()));
@@ -302,8 +339,13 @@ public abstract class AbstractExchangeApi extends DefaultDisposable implements E
           response.setException(ex);
         }
       }
+      log.debug("{} {} < {}", request.getHttpMethod(), request.getEndpoint(), response);
       dispatchApiEvent(ExchangeApiEvent.createRestResponseEvent(response));
-      callback.complete(response);
+      try {
+        callback.complete(response);
+      } catch (Exception ex) {
+        log.error("Error completing request " + request, ex);
+      }
     });
     return callback;
   }
@@ -363,21 +405,28 @@ public abstract class AbstractExchangeApi extends DefaultDisposable implements E
    * @param event The exchange API event to dispatch.
    */
   protected void dispatchApiEvent(ExchangeApiEvent event) {
-    event.setExchangeName(exchangeName);
+    event.setExchangeName(exchange.getName());
     event.setExchangeApiName(name);
-    event.setExchangeId(exchangeId);
+    event.setExchangeId(exchange.getId());
     observable.dispatch(event);
   }
   
   /**
-   * When submitting a REST request call, outgoing HTT request may carry a body, this is usually the case for {@link HttpMethod#POST} method, see {@link HttpMethod#requestHasBody}.
-   * This method will serialize POJO or plain value type to body, by default as JSON 
-   * @param request Request data to serialize as HTTP request body
-   * @return The serialized request data to use as HTTP request body.
+   * When submitting a REST request call, outgoing HTTP request may carry a body,
+   * this is usually the case for {@link HttpMethod#POST} method, see
+   * {@link HttpMethod#requestHasBody}.<br>
+   * This method is called when submitting such request and is responsible for
+   * setting the body of incoming request serialized as String. Default
+   * implementation will serialize the nested request POJO (see
+   * {@link HttpRequest#getRequest()}) as JSON.
+   * 
+   * @param request HTTP Request to set the body for.
    * @see JsonUtil#pojoToJsonString(Object)
+   * @see HttpRequest#getRequest()
+   * @see HttpRequest#setBody(String)
    */
-  protected String serializeRequestBody(Object request) {
-    return JsonUtil.pojoToJsonString(request);
+  protected void serializeRequestBody(HttpRequest request) {
+    request.setBody(JsonUtil.pojoToJsonString(request.getRequest()));
   }
   
   @Override
@@ -437,5 +486,15 @@ public abstract class AbstractExchangeApi extends DefaultDisposable implements E
       return httpRequestExecutor.getRequestTimeout();
     }
     return -1L;
+  }
+  
+  @Override
+  public String getHttpUrl() {
+    return httpUrl;
+  }
+  
+  @Override
+  public String getWsUrl() {
+    return wsUrl;
   }
 }

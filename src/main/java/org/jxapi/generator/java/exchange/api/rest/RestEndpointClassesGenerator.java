@@ -3,6 +3,7 @@ package org.jxapi.generator.java.exchange.api.rest;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.List;
+import java.util.Optional;
 
 import org.jxapi.exchange.descriptor.ExchangeApiDescriptor;
 import org.jxapi.exchange.descriptor.ExchangeDescriptor;
@@ -13,6 +14,7 @@ import org.jxapi.generator.java.exchange.api.ExchangeApiGenUtil;
 import org.jxapi.generator.java.exchange.api.pojo.JsonMessageDeserializerClassesGenerator;
 import org.jxapi.generator.java.exchange.api.pojo.JsonPojoSerializerClassesGenerator;
 import org.jxapi.generator.java.exchange.api.pojo.PojoClassesGenerator;
+import org.jxapi.util.PlaceHolderResolver;
 
 /**
  * Generates all classes used by a particular REST endpoint defined in an exchange descriptor 
@@ -29,29 +31,38 @@ public class RestEndpointClassesGenerator implements ClassesGenerator {
   /**
    * Exchange descriptor where API with REST endpoint are defined
    */
-  protected final ExchangeDescriptor exchangeDescriptor;
+  private final ExchangeDescriptor exchangeDescriptor;
   
   /**
    * API of exchange descriptor defining the REST endpoint
    */
-  protected final ExchangeApiDescriptor apiDescriptor;
+  private final ExchangeApiDescriptor apiDescriptor;
   
   /**
    * REST endpoint descriptor to generate related Java classes for.
    */
-  protected final RestEndpointDescriptor restEndpointDescriptor;
+  private final RestEndpointDescriptor restEndpointDescriptor;
+  
+  /**
+   * Place holder resolver for documentation generation.
+   */
+  private final PlaceHolderResolver docPlaceHolderResolver;
 
   /**
    * @param exchangeDescriptor Exchange descriptor where API with REST endpoint are defined
    * @param apiDescriptor API of exchange descriptor defining the REST endpoint
    * @param restEndpointDescriptor REST endpoint descriptor to generate related Java classes for.
+   * @param docPlaceHolderResolver Place holder resolver for resolution of placeholders in descriptions.
    */
   public RestEndpointClassesGenerator(ExchangeDescriptor exchangeDescriptor, 
                     ExchangeApiDescriptor apiDescriptor, 
-                    RestEndpointDescriptor restEndpointDescriptor) {
+                    RestEndpointDescriptor restEndpointDescriptor,
+                    PlaceHolderResolver docPlaceHolderResolver) {
     this.exchangeDescriptor = exchangeDescriptor;
     this.apiDescriptor = apiDescriptor;
     this.restEndpointDescriptor = restEndpointDescriptor;
+    this.docPlaceHolderResolver = Optional.ofNullable(docPlaceHolderResolver)
+                                          .orElse(PlaceHolderResolver.NO_OP);
   }
   
   /**
@@ -79,7 +90,8 @@ public class RestEndpointClassesGenerator implements ClassesGenerator {
             + restEndpointDescriptor.getName() + " REST endpoint<br>\n"
             + restEndpointDescriptor.getDescription(),
             request.getProperties(),
-            request.getImplementedInterfaces()
+            request.getImplementedInterfaces(),
+            docPlaceHolderResolver
             ).generateClasses(outputFolder);
     }
     
@@ -96,7 +108,8 @@ public class RestEndpointClassesGenerator implements ClassesGenerator {
             + " REST endpoint request<br>\n"
             + restEndpointDescriptor.getDescription(),
             response.getProperties(),
-            response.getImplementedInterfaces()
+            response.getImplementedInterfaces(),
+            docPlaceHolderResolver
           ).generateClasses(outputFolder);
     }
   }

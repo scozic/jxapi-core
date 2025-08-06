@@ -29,14 +29,14 @@ public class SingleSymbol implements Pojo<SingleSymbol> {
   private String symbol;
   
   /**
-   * @return Symbol name Message field <strong>s</strong>
+   * @return Symbol name <br>Message field <strong>s</strong>
    */
   public String getSymbol() {
     return symbol;
   }
   
   /**
-   * @param symbol Symbol name Message field <strong>s</strong>
+   * @param symbol Symbol name <br>Message field <strong>s</strong>
    */
   public void setSymbol(String symbol) {
     this.symbol = symbol;

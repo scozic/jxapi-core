@@ -8,6 +8,8 @@ import org.junit.Test;
 import org.jxapi.exchange.descriptor.ExchangeApiDescriptor;
 import org.jxapi.exchange.descriptor.ExchangeDescriptor;
 import org.jxapi.exchange.descriptor.parser.ExchangeDescriptorParser;
+import org.jxapi.generator.java.exchange.ExchangeGenUtil;
+import org.jxapi.util.PlaceHolderResolver;
 
 
 /**
@@ -19,7 +21,10 @@ public class ExchangeApiInterfaceGeneratorTest {
   public void testGenerateExchangeApi() throws Exception {
     ExchangeDescriptor exchangeDescriptor = ExchangeDescriptorParser.fromJson(Paths.get(".", "src", "test", "resources", "testExchangeDescriptor.json"));
     ExchangeApiDescriptor exchangeApiDescriptor = exchangeDescriptor.getApis().get(0);
-    ExchangeApiInterfaceGenerator apiInterfaceGenerator = new ExchangeApiInterfaceGenerator(exchangeDescriptor, exchangeApiDescriptor);
+    PlaceHolderResolver docPlaceHolderResolver = 
+        PlaceHolderResolver.create(ExchangeGenUtil.getDescriptionReplacements(exchangeDescriptor));
+    
+    ExchangeApiInterfaceGenerator apiInterfaceGenerator = new ExchangeApiInterfaceGenerator(exchangeDescriptor, exchangeApiDescriptor, docPlaceHolderResolver);
     Assert.assertEquals("package com.foo.bar.gen.marketdata;\n"
         + "\n"
         + "import com.foo.bar.gen.marketdata.pojo.MyTestExchangeMarketDataExchangeInfoRequest;\n"
@@ -34,7 +39,7 @@ public class ExchangeApiInterfaceGeneratorTest {
         + "\n"
         + "/**\n"
         + " * MyTestExchange MarketData API<br>\n"
-        + " * The market data API of MyTestExchange\n"
+        + " * The market data API of MyTestExchange. Author: {@link com.foo.bar.gen.MyTestExchangeConstants#AUTHOR_FULL_NAME}\n"
         + " */\n"
         + "@Generated(\"org.jxapi.generator.java.exchange.api.ExchangeApiInterfaceGenerator\")\n"
         + "public interface MyTestExchangeMarketDataApi extends ExchangeApi {\n"
@@ -60,24 +65,24 @@ public class ExchangeApiInterfaceGeneratorTest {
         + "  String TICKER_STREAM_WS_API = \"tickerStream\";\n"
         + "  \n"
         + "  /**\n"
-        + "   * Fetch market information of symbols that can be traded\n"
-        + "   * @param request request\n"
+        + "   * Fetch market information of symbols that can be traded. Author: {@link com.foo.bar.gen.MyTestExchangeConstants#AUTHOR_FULL_NAME}\n"
+        + "   * @param request Request parameters for fetching exchange info. Author: {@link com.foo.bar.gen.MyTestExchangeConstants#AUTHOR_FULL_NAME}\n"
         + "   * @return A {@link FutureRestResponse} that will complete when request submitted asynchronously has been processed.\n"
         + "   * @see <a href=\"https://docs.myexchange.com/api/rest/marketData/exchangeInfo\">Reference documentation</a>\n"
         + "   */\n"
         + "  FutureRestResponse<MyTestExchangeMarketDataExchangeInfoResponse> exchangeInfo(MyTestExchangeMarketDataExchangeInfoRequest request);\n"
         + "  \n"
         + "  /**\n"
-        + "   * Fetch current tickers\n"
+        + "   * Fetch current tickers. Author: {@link com.foo.bar.gen.MyTestExchangeConstants#AUTHOR_FULL_NAME}\n"
         + "   * @return A {@link FutureRestResponse} that will complete when request submitted asynchronously has been processed\n"
         + "   */\n"
         + "  FutureRestResponse<MyTestExchangeMarketDataTickersResponse> tickers();\n"
         + "  \n"
         + "  /**\n"
         + "   * Subscribe to tickerStream stream.<br>\n"
-        + "   * Subscribe to ticker stream\n"
+        + "   * Subscribe to ticker stream. Author: {@link com.foo.bar.gen.MyTestExchangeConstants#AUTHOR_FULL_NAME}\n"
         + "   * \n"
-        + "   * @param request request\n"
+        + "   * @param request Request parameters for subscribing to ticker stream. Use {@link com.foo.bar.gen.MyTestExchangeConstants#ALL_TICKERS} to subscribe to every ticker. Author: {@link com.foo.bar.gen.MyTestExchangeConstants#AUTHOR_FULL_NAME}\n"
         + "   * @param listener listener that will receive incoming messages\n"
         + "   * @return client subscriptionId to use for unsubscription using {@link #unsubscribeTickerStream(String)}\n"
         + "   * @see <a href=\"https://docs.myexchange.com/api/ws/marketData/tickerStream\">Reference documentation</a>\n"
@@ -92,7 +97,8 @@ public class ExchangeApiInterfaceGeneratorTest {
         + "   * @see #subscribeTickerStream(MyTestExchangeMarketDataTickerStreamRequest, WebsocketListener)\n"
         + "   */\n"
         + "  boolean unsubscribeTickerStream(String subscriptionId);\n"
-        + "}\n", 
+        + "}\n"
+        + "", 
         apiInterfaceGenerator.generate());
   }
   
@@ -100,7 +106,7 @@ public class ExchangeApiInterfaceGeneratorTest {
   public void testGenerateExchangeApiNoWsEndpoint() throws Exception {
     ExchangeDescriptor exchangeDescriptor = ExchangeDescriptorParser.fromJson(Paths.get(".", "src", "test", "resources", "testExchangeDescriptorNoWebsocketEndpoint.json"));
     ExchangeApiDescriptor exchangeApiDescriptor = exchangeDescriptor.getApis().get(0);
-    ExchangeApiInterfaceGenerator apiInterfaceGenerator = new ExchangeApiInterfaceGenerator(exchangeDescriptor, exchangeApiDescriptor);
+    ExchangeApiInterfaceGenerator apiInterfaceGenerator = new ExchangeApiInterfaceGenerator(exchangeDescriptor, exchangeApiDescriptor, null);
     Assert.assertEquals("package com.foo.bar.gen.marketdata;\n"
         + "\n"
         + "import com.foo.bar.gen.marketdata.pojo.MyTestExchangeMarketDataExchangeInfoRequest;\n"
@@ -140,7 +146,7 @@ public class ExchangeApiInterfaceGeneratorTest {
   public void testGenerateExchangeApiNoRestEndpoint() throws Exception {
     ExchangeDescriptor exchangeDescriptor = ExchangeDescriptorParser.fromJson(Paths.get(".", "src", "test", "resources", "testExchangeDescriptorNoRestEndpoint.json"));
     ExchangeApiDescriptor exchangeApiDescriptor = exchangeDescriptor.getApis().get(0);
-    ExchangeApiInterfaceGenerator apiInterfaceGenerator = new ExchangeApiInterfaceGenerator(exchangeDescriptor, exchangeApiDescriptor);
+    ExchangeApiInterfaceGenerator apiInterfaceGenerator = new ExchangeApiInterfaceGenerator(exchangeDescriptor, exchangeApiDescriptor, null);
     Assert.assertEquals("package com.foo.bar.gen.marketdata;\n"
         + "\n"
         + "import com.foo.bar.gen.marketdata.pojo.MyTestExchangeMarketDataTickerStreamStringObjectTypeRequest;\n"
@@ -216,7 +222,7 @@ public class ExchangeApiInterfaceGeneratorTest {
   public void testGenerateExchangeApiSpecificResponseDataTypes() throws Exception {
     ExchangeDescriptor exchangeDescriptor = ExchangeDescriptorParser.fromJson(Paths.get(".", "src", "test", "resources", "testExchangeDescriptorWithAllRestResponseDataTypes.json"));
     ExchangeApiDescriptor exchangeApiDescriptor = exchangeDescriptor.getApis().get(0);
-    ExchangeApiInterfaceGenerator apiInterfaceGenerator = new ExchangeApiInterfaceGenerator(exchangeDescriptor, exchangeApiDescriptor);
+    ExchangeApiInterfaceGenerator apiInterfaceGenerator = new ExchangeApiInterfaceGenerator(exchangeDescriptor, exchangeApiDescriptor, null);
     Assert.assertEquals("package com.foo.bar.gen.marketdata;\n"
         + "\n"
         + "import java.math.BigDecimal;\n"
@@ -396,7 +402,7 @@ public class ExchangeApiInterfaceGeneratorTest {
   public void testGenerateExchangeApiSpecificRequestDataTypes() throws Exception {
     ExchangeDescriptor exchangeDescriptor = ExchangeDescriptorParser.fromJson(Paths.get(".", "src", "test", "resources", "testExchangeDescriptorWithAllRestRequestDataTypes.json"));
     ExchangeApiDescriptor exchangeApiDescriptor = exchangeDescriptor.getApis().get(0);
-    ExchangeApiInterfaceGenerator apiInterfaceGenerator = new ExchangeApiInterfaceGenerator(exchangeDescriptor, exchangeApiDescriptor);
+    ExchangeApiInterfaceGenerator apiInterfaceGenerator = new ExchangeApiInterfaceGenerator(exchangeDescriptor, exchangeApiDescriptor, null);
     Assert.assertEquals("package com.foo.bar.gen.marketdata;\n"
         + "\n"
         + "import java.math.BigDecimal;\n"
@@ -608,7 +614,7 @@ public class ExchangeApiInterfaceGeneratorTest {
         + "  FutureRestResponse<GenericResponse> postRestRequestDataTypeObjectListMap(Map<String, List<SingleSymbol>> request);\n"
         + "  \n"
         + "  /**\n"
-        + "   * A sample REST endpoint using GET (hence url query params) and object list map request type.\n"
+        + "   * A sample REST endpoint using GET (hence url query params) and object list map request type, and sample value with full structure.\n"
         + "   * @param request request\n"
         + "   * @return A {@link FutureRestResponse} that will complete when request submitted asynchronously has been processed\n"
         + "   */\n"
@@ -839,7 +845,8 @@ public class ExchangeApiInterfaceGeneratorTest {
         + "   * @see #subscribeStreamWithNullTopicAndPrimitiveTypeRequest(String, WebsocketListener)\n"
         + "   */\n"
         + "  boolean unsubscribeStreamWithNullTopicAndPrimitiveTypeRequest(String subscriptionId);\n"
-        + "}\n", 
+        + "}\n"
+        + "", 
         apiInterfaceGenerator.generate());
   }
 }

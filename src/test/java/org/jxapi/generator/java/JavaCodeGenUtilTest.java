@@ -3,9 +3,11 @@ package org.jxapi.generator.java;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 
 import org.junit.Assert;
 import org.junit.Test;
+import org.jxapi.exchange.descriptor.Type;
 
 /**
  * Unit test for {@link JavaCodeGenUtil}
@@ -99,6 +101,11 @@ public class JavaCodeGenUtilTest {
   @Test
   public void testClassPackageNullClassPackage() {
     Assert.assertEquals("", JavaCodeGenUtil.getClassPackage(null));
+  }
+  
+  @Test
+  public void testGetSetAccessorMethodName() {
+    Assert.assertEquals("setBar", JavaCodeGenUtil.getSetAccessorMethodName("bar", List.of()));
   }
   
   @Test
@@ -268,6 +275,12 @@ public class JavaCodeGenUtilTest {
   }
   
   @Test
+  public void testGetQuotedString_StringWithQuotesAndLineFeed() {
+    Assert.assertEquals("\"Hello\\n\\\"World\\\"\"", 
+              JavaCodeGenUtil.getQuotedString("Hello\n\"World\""));
+  }
+  
+  @Test
   public void testGetHtmlLink() {
     Assert.assertEquals("<a href=\"https://scam.org\">Click here</a>", 
               JavaCodeGenUtil.getHtmlLink("https://scam.org", "Click here"));
@@ -358,7 +371,49 @@ public class JavaCodeGenUtilTest {
   @Test
   public void testGetClassUrl() {
     Assert.assertEquals("https://docs.oracle.com/javase/8/docs/api/java/util/List.html", 
-        JavaCodeGenUtil.getClassUrl("https://docs.oracle.com/javase/8/docs/api/", List.class.getName(), ".html"));
+        JavaCodeGenUtil.getClassUrl("https://docs.oracle.com/javase/8/docs/api/", List.class.getName(), null, ".html"));
+  }
+  
+  @Test
+  public void testGetClassUrl_InnerClass() {
+    Assert.assertEquals("https://docs.oracle.com/javase/8/docs/api/java/util/List.MyInnerClass.MySubInnerClass.html", 
+        JavaCodeGenUtil.getClassUrl("https://docs.oracle.com/javase/8/docs/api/", List.class.getName(), "MyInnerClass.MySubInnerClass", ".html"));
+  }
+  
+  @Test
+  public void testIsValidCamelCaseIdentifier() {
+    Assert.assertFalse(JavaCodeGenUtil.isValidCamelCaseIdentifier(null));
+    Assert.assertFalse(JavaCodeGenUtil.isValidCamelCaseIdentifier(""));
+    Assert.assertFalse(JavaCodeGenUtil.isValidCamelCaseIdentifier("9Wrong"));
+    Assert.assertFalse(JavaCodeGenUtil.isValidCamelCaseIdentifier("wrong-identifier"));
+    Assert.assertFalse(JavaCodeGenUtil.isValidCamelCaseIdentifier("Wrong_identifier"));
+    Assert.assertTrue(JavaCodeGenUtil.isValidCamelCaseIdentifier("wrong_identifier"));
+    Assert.assertTrue(JavaCodeGenUtil.isValidCamelCaseIdentifier("myVariableName"));
+    Assert.assertTrue(JavaCodeGenUtil.isValidCamelCaseIdentifier("myVariableName0"));
+  }
+  
+  @Test
+  public void testGetMethodArgumentJavaDoc() {
+    Assert.assertEquals("", JavaCodeGenUtil.getMethodArgumentJavadoc(null, null));
+    Assert.assertEquals(Integer.class.getName(), JavaCodeGenUtil.getMethodArgumentJavadoc(Type.INT, null));
+    Assert.assertEquals(List.class.getName(), JavaCodeGenUtil.getMethodArgumentJavadoc(Type.fromTypeName("INT_LIST"), null));
+    Assert.assertEquals(Map.class.getName(), JavaCodeGenUtil.getMethodArgumentJavadoc(Type.fromTypeName("OBJECT_MAP"), "com.foo.Bar"));
+    Assert.assertEquals("com.foo.Bar", JavaCodeGenUtil.getMethodArgumentJavadoc(Type.OBJECT, "com.foo.Bar")); 
+  }
+  
+  @Test
+  public void testGetJavaDocLink_NullLink() {
+    Assert.assertNull(JavaCodeGenUtil.getJavaDocLink(null));
+  }
+  
+  @Test
+  public void testGetJavaDocLink() {
+    Assert.assertEquals("{@link com.x.y.Foo}", JavaCodeGenUtil.getJavaDocLink("com.x.y.Foo"));
+  }
+  
+  @Test
+  public void testGetJavaDocLinkForAttribute() {
+    Assert.assertEquals("{@link com.x.y.Foo#BAR}", JavaCodeGenUtil.getJavaDocLink("com.x.y.Foo", "BAR"));
   }
 }
 

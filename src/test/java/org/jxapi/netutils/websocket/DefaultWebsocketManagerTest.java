@@ -1,6 +1,5 @@
 package org.jxapi.netutils.websocket;
 
-import java.util.Properties;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -9,11 +8,9 @@ import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import org.jxapi.exchange.AbstractExchangeApi;
 import org.jxapi.exchange.ExchangeApi;
+import org.jxapi.exchange.ExchangeStub;
 import org.jxapi.netutils.websocket.mock.MockWebsocket;
 import org.jxapi.netutils.websocket.mock.MockWebsocketEvent;
 import org.jxapi.netutils.websocket.mock.MockWebsocketEventType;
@@ -21,7 +18,12 @@ import org.jxapi.netutils.websocket.mock.MockWebsocketHook;
 import org.jxapi.netutils.websocket.mock.MockWebsocketHookEvent;
 import org.jxapi.netutils.websocket.mock.MockWebsocketHookEventType;
 import org.jxapi.netutils.websocket.multiplexing.WebsocketMessageTopicMatcherFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+/**
+ * Unit test for {@link DefaultWebsocketManager}.
+ */
 public class DefaultWebsocketManagerTest {
 
   
@@ -30,7 +32,7 @@ public class DefaultWebsocketManagerTest {
   private static final long NO_EVENT_DELAY = 50;
   private static final long HEARTBEAT_INTERVAL = 200;
   
-  private static final ExchangeApi EXCHANGE_API = new AbstractExchangeApi("myApi", "myExchange", "myExchangeID", new Properties()) {};
+  private static final ExchangeApi EXCHANGE_API = new AbstractExchangeApi("myApi", ExchangeStub.INSTANCE) {};
 
   private MockWebsocket ws;
   private MockWebsocketHook wsHook;

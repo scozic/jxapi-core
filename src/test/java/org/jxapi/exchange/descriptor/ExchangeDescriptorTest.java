@@ -28,7 +28,8 @@ public class ExchangeDescriptorTest {
         exchangeDescriptor.setRateLimits(List.of(new RateLimitRule()));
         exchangeDescriptor.setDocUrl("https://doc.myexchange.com");
         exchangeDescriptor.setConstants(List.of(new Constant()));
-        exchangeDescriptor.setProperties(List.of(new DefaultConfigProperty()));
+        exchangeDescriptor.setProperties(List.of(new ConfigPropertyDescriptor()));
+        exchangeDescriptor.setDemoProperties(List.of(new ConfigPropertyDescriptor(), new ConfigPropertyDescriptor()));
         exchangeDescriptor.setHttpRequestInterceptorFactory("com.x.y.net.MyHttpRequestInterceptorFactory");
         exchangeDescriptor.setHttpRequestExecutorFactory("com.x.y.net.MyHttpRequestExecutorFactory");
         exchangeDescriptor.setHttpRequestTimeout(2000L);
@@ -36,6 +37,7 @@ public class ExchangeDescriptorTest {
         exchangeDescriptor.setWebsocketHookFactory("com.x.y.net.MyWebsocketHookFactory");
         exchangeDescriptor.setVersion("1.0.0");
         exchangeDescriptor.setJxapi("0.15.0");
+        exchangeDescriptor.setAfterInitHookFactory("com.x.y.MyExchangeHookFactory");
         Assert.assertEquals("name", exchangeDescriptor.getId());
         Assert.assertEquals("description", exchangeDescriptor.getDescription());
         Assert.assertEquals("com.x.y", exchangeDescriptor.getBasePackage());
@@ -44,6 +46,7 @@ public class ExchangeDescriptorTest {
         Assert.assertEquals(1, exchangeDescriptor.getRateLimits().size());
         Assert.assertEquals(1, exchangeDescriptor.getConstants().size());
         Assert.assertEquals(1, exchangeDescriptor.getProperties().size());
+        Assert.assertEquals(2, exchangeDescriptor.getDemoProperties().size());
         Assert.assertEquals("com.x.y.net.MyHttpRequestInterceptorFactory", exchangeDescriptor.getHttpRequestInterceptorFactory());
         Assert.assertEquals("com.x.y.net.MyHttpRequestExecutorFactory", exchangeDescriptor.getHttpRequestExecutorFactory());
         Assert.assertEquals(2000L, exchangeDescriptor.getHttpRequestTimeout());
@@ -51,6 +54,7 @@ public class ExchangeDescriptorTest {
         Assert.assertEquals("com.x.y.net.MyWebsocketHookFactory", exchangeDescriptor.getWebsocketHookFactory());
         Assert.assertEquals("1.0.0", exchangeDescriptor.getVersion());
         Assert.assertEquals("0.15.0", exchangeDescriptor.getJxapi());
+        Assert.assertEquals("com.x.y.MyExchangeHookFactory", exchangeDescriptor.getAfterInitHookFactory());
     }
 
     @Test
@@ -63,6 +67,6 @@ public class ExchangeDescriptorTest {
         exchangeDescriptor.setRateLimits(List.of(new RateLimitRule()));
         exchangeDescriptor.setVersion("1.0.0");
         exchangeDescriptor.setJxapi("0.15.0");
-        Assert.assertEquals("ExchangeDescriptor{\"apis\":[{\"httpRequestTimeout\":-1}],\"basePackage\":\"basePackage\",\"description\":\"description\",\"httpRequestTimeout\":-1,\"id\":\"name\",\"jxapi\":\"0.15.0\",\"rateLimits\":[{\"granularity\":10,\"maxRequestCount\":-1,\"maxTotalWeight\":-1,\"timeFrame\":0}],\"version\":\"1.0.0\"}", exchangeDescriptor.toString());
+        Assert.assertEquals("ExchangeDescriptor{\"id\":\"name\",\"jxapi\":\"0.15.0\",\"version\":\"1.0.0\",\"description\":\"description\",\"basePackage\":\"basePackage\",\"apis\":[{\"httpRequestTimeout\":-1}],\"rateLimits\":[{\"timeFrame\":0,\"maxRequestCount\":-1,\"maxTotalWeight\":-1,\"granularity\":10}],\"httpRequestTimeout\":-1}", exchangeDescriptor.toString());
     }
 }

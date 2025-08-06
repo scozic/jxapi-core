@@ -4,12 +4,12 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import org.jxapi.exchange.ExchangeApiEvent;
 import org.jxapi.exchange.ExchangeApiObserver;
 import org.jxapi.netutils.deserialization.MessageDeserializer;
+import org.jxapi.util.EncodingUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Default implementation of a {@link WebsocketEndpoint}.
@@ -89,6 +89,7 @@ public class DefaultWebsocketEndpoint<M> implements WebsocketEndpoint<M> {
     if (observer != null) {
       dispatchApiEvent(ExchangeApiEvent.createWebsocketSubscribeEvent(request, subId));
     }
+    log.debug("subscribeTickerStream > {} returned subscriptionId:{}", request, subId);
     return subId;
   }
 
@@ -102,8 +103,13 @@ public class DefaultWebsocketEndpoint<M> implements WebsocketEndpoint<M> {
       dispatchApiEvent(ExchangeApiEvent.createWebsocketUnsubscribeEvent(sub.request, unsubscriptionId));
     }
     sub.removeListener(unsubscriptionId);
-    if (sub.listeners.size() <= 0) {
-      subscriptionsByTopic.remove(sub.request.getTopic());
+    String topic = sub.request.getTopic();
+    int remaining = subscriptionsByTopic.size();
+    if (remaining <= 0) {
+      log.debug("Unsubscribing from topic {}", topic);
+      subscriptionsByTopic.remove(topic);
+    } else {
+      log.debug("Unsubscribing from topic {} but still {} listeners", topic, remaining);
     }
     return true;
   }
@@ -167,7 +173,7 @@ public class DefaultWebsocketEndpoint<M> implements WebsocketEndpoint<M> {
           }
         }
       } catch (Exception ex) {
-        String errMsg = "Error while dispatching message [" + message + "]"; 
+        String errMsg = "Error while dispatching message [" + EncodingUtil.prettyPrintLongString(message) + "]"; 
         log.error(errMsg, ex);
         dispatchApiEvent(ExchangeApiEvent.createWebsocketErrorEvent(new WebsocketException(errMsg, ex)));
       }

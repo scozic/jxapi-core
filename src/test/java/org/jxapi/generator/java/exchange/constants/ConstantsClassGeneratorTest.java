@@ -1,0 +1,203 @@
+package org.jxapi.generator.java.exchange.constants;
+
+import java.util.List;
+import java.util.Map;
+
+import org.junit.Assert;
+import org.junit.Test;
+
+import org.jxapi.exchange.descriptor.Constant;
+import org.jxapi.exchange.descriptor.Type;
+import org.jxapi.generator.java.JavaCodeGenUtil;
+import org.jxapi.util.EncodingUtil;
+import org.jxapi.util.PlaceHolderResolver;
+
+/**
+ * Unit test for {@link ConstantsClassGenerator}
+ */
+public class ConstantsClassGeneratorTest {
+  
+  @Test
+  public void testGettersAndSetters() {
+    ConstantsClassGenerator gen = new ConstantsClassGenerator("com.x.y.MyConstants", List.of(), null);
+    PlaceHolderResolver valuesPlaceHolderResolver = s -> "foo";
+    gen.setConstantValuePlaceHolderResolver(valuesPlaceHolderResolver);
+    Assert.assertSame(valuesPlaceHolderResolver, gen.getConstantValuePlaceHolderResolver());
+  }
+
+  @Test
+  public void testGenerateClassWitheNoConstants() {
+    ConstantsClassGenerator gen = new ConstantsClassGenerator("com.x.y.MyConstants", List.of(), null);
+    Assert.assertEquals("package com.x.y;\n"
+        + "\n"
+        + "import javax.annotation.processing.Generated;\n"
+        + "\n"
+        + "\n"
+        + "@Generated(\"org.jxapi.generator.java.exchange.constants.ConstantsClassGenerator\")\n"
+        + "public class MyConstants {\n"
+        + "  \n"
+        + "  private MyConstants(){}\n"
+        + "}\n", gen.generate());
+  }
+  
+  @Test
+  public void testGenerateClassWithMultipleConstants() {
+    Constant c01 = Constant.create("myString", Type.STRING, null, "foo");
+    Constant c02 = Constant.create("myInt", Type.INT, "A test Integer constant, for instance '${testMyIntValue}'", "${testMyIntValue}");
+    Constant c03 = Constant.create("myIntWithValueAsString", Type.INT, "A test Integer constant with value specified as String", "123");
+    Constant c04 = Constant.create("myBool", Type.BOOLEAN, "A test Boolean constant", true);
+    Constant c05 = Constant.create("myBoolWithValueAsString", Type.INT, "A test Boolean constant with value specified as String", "true");
+    Constant c06 = Constant.create("myLong", Type.LONG, "A test Long constant", 1234567890123456L);
+    Constant c07 = Constant.create("myLongWithValueAsString", Type.LONG, "A test Long constant with value specified as String", "12345678901234567");
+    Constant c08 = Constant.create("myTimestamp", Type.LONG, "A test Timestamp constant using 'now()' placeholder", "now()");
+    Constant c09 = Constant.create("myBigDecimal", Type.BIGDECIMAL, "A test BigDecimal constant", 1.2345);
+    Constant c10 = Constant.create("myBigDecimalWithValueAsString", Type.BIGDECIMAL, "A test BigDecimal constant with value specified as String", "5.4321");
+    
+    PlaceHolderResolver docPlaceholderResolver = PlaceHolderResolver.create(Map.of("testMyIntValue", "123"));
+    PlaceHolderResolver valuesPlaceHolderResolver = s -> {
+      s = EncodingUtil.substituteArguments(s, Map.of("testMyIntValue", "1234"));
+      return JavaCodeGenUtil.getQuotedString(s);
+    };
+    
+    ConstantsClassGenerator gen = new ConstantsClassGenerator("com.x.y.MyConstants", List.of(c01, c02, c03, c04, c05, c06, c07, c08, c09, c10), docPlaceholderResolver);
+    gen.setConstantValuePlaceHolderResolver(valuesPlaceHolderResolver);
+    Assert.assertEquals("package com.x.y;\n"
+        + "\n"
+        + "import java.math.BigDecimal;\n"
+        + "\n"
+        + "import javax.annotation.processing.Generated;\n"
+        + "\n"
+        + "\n"
+        + "@Generated(\"org.jxapi.generator.java.exchange.constants.ConstantsClassGenerator\")\n"
+        + "public class MyConstants {\n"
+        + "  \n"
+        + "  private MyConstants(){}\n"
+        + "  \n"
+        + "  public static final String MY_STRING = \"foo\";\n"
+        + "  \n"
+        + "  /**\n"
+        + "   * A test Integer constant, for instance '123'\n"
+        + "   */\n"
+        + "  public static final Integer MY_INT = Integer.valueOf(\"1234\");\n"
+        + "  \n"
+        + "  /**\n"
+        + "   * A test Integer constant with value specified as String\n"
+        + "   */\n"
+        + "  public static final Integer MY_INT_WITH_VALUE_AS_STRING = Integer.valueOf(\"123\");\n"
+        + "  \n"
+        + "  /**\n"
+        + "   * A test Boolean constant\n"
+        + "   */\n"
+        + "  public static final Boolean MY_BOOL = Boolean.valueOf(\"true\");\n"
+        + "  \n"
+        + "  /**\n"
+        + "   * A test Boolean constant with value specified as String\n"
+        + "   */\n"
+        + "  public static final Integer MY_BOOL_WITH_VALUE_AS_STRING = Integer.valueOf(\"true\");\n"
+        + "  \n"
+        + "  /**\n"
+        + "   * A test Long constant\n"
+        + "   */\n"
+        + "  public static final Long MY_LONG = Long.valueOf(\"1234567890123456\");\n"
+        + "  \n"
+        + "  /**\n"
+        + "   * A test Long constant with value specified as String\n"
+        + "   */\n"
+        + "  public static final Long MY_LONG_WITH_VALUE_AS_STRING = Long.valueOf(\"12345678901234567\");\n"
+        + "  \n"
+        + "  /**\n"
+        + "   * A test Timestamp constant using 'now()' placeholder\n"
+        + "   */\n"
+        + "  public static final Long MY_TIMESTAMP = Long.valueOf(System.currentTimeMillis());\n"
+        + "  \n"
+        + "  /**\n"
+        + "   * A test BigDecimal constant\n"
+        + "   */\n"
+        + "  public static final BigDecimal MY_BIG_DECIMAL = new BigDecimal(\"1.2345\");\n"
+        + "  \n"
+        + "  /**\n"
+        + "   * A test BigDecimal constant with value specified as String\n"
+        + "   */\n"
+        + "  public static final BigDecimal MY_BIG_DECIMAL_WITH_VALUE_AS_STRING = new BigDecimal(\"5.4321\");\n"
+        + "}\n", gen.generate());
+  }
+  
+  @Test(expected = IllegalArgumentException.class)
+  public void testInvalidConstantNotAPrimitiveType() {
+    new ConstantsClassGenerator("com.x.y.MyConstants", List.of(Constant.create("myConst", Type.fromTypeName("INT_LIST"), "My description", "[1, 2, 3]")), null).generate();
+  }
+  
+  @Test
+  public void testGenerateClassWithConstantGroups() {
+    Constant c01 = Constant.create("myString", Type.STRING, null, "foo");
+    
+    Constant c0201 = Constant.create("myInt", Type.INT, "A test Integer constant, for instance '${testMyIntValue}'", "${testMyIntValue}");
+    Constant c0202 = Constant.create("myBigDecimal", Type.BIGDECIMAL, "A test BigDecimal constant", 1.2345);
+    
+    Constant c020301 = Constant.create("myLong", Type.LONG, "A test Long constant, for instance ${testMyLongValue}", "${testMyLongValue}");
+    Constant g0203 = Constant.createGroup("myNestedGroup", "A group of constants nested in a parent group", List.of(c020301)); 
+    
+    Constant g02 = Constant.createGroup("myGroup", "A ${bar} related group of constants", List.of(c0201, c0202, g0203));
+    
+    PlaceHolderResolver docPlaceholderResolver = PlaceHolderResolver.create(Map.of("testMyIntValue", "123", "testMyLongValue", "1234567890123459L", "foo", "Foo", "bar", "Bar"));
+    PlaceHolderResolver valuesPlaceHolderResolver = s -> {
+      s = EncodingUtil.substituteArguments(s, Map.of("testMyIntValue", 1234, "testMyLongValue", 1234567890123456L));
+      return JavaCodeGenUtil.getQuotedString(s);
+    };
+    
+    ConstantsClassGenerator gen = new ConstantsClassGenerator("com.x.y.MyConstants", List.of(c01, g02), docPlaceholderResolver);
+    gen.setDescription("Constants for ${foo}");
+    gen.setConstantValuePlaceHolderResolver(valuesPlaceHolderResolver);
+    
+    Assert.assertEquals("package com.x.y;\n"
+        + "\n"
+        + "import java.math.BigDecimal;\n"
+        + "\n"
+        + "import javax.annotation.processing.Generated;\n"
+        + "\n"
+        + "/**\n"
+        + " * Constants for Foo\n"
+        + " */\n"
+        + "@Generated(\"org.jxapi.generator.java.exchange.constants.ConstantsClassGenerator\")\n"
+        + "public class MyConstants {\n"
+        + "  \n"
+        + "  private MyConstants(){}\n"
+        + "  \n"
+        + "  public static final String MY_STRING = \"foo\";\n"
+        + "  \n"
+        + "  /**\n"
+        + "   * A Bar related group of constants\n"
+        + "   */\n"
+        + "  @Generated(\"org.jxapi.generator.java.exchange.constants.ConstantsClassGenerator\")\n"
+        + "  public static class MyGroup {\n"
+        + "    \n"
+        + "    private MyGroup(){}\n"
+        + "    \n"
+        + "    /**\n"
+        + "     * A test Integer constant, for instance '123'\n"
+        + "     */\n"
+        + "    public static final Integer MY_INT = Integer.valueOf(\"1234\");\n"
+        + "    \n"
+        + "    /**\n"
+        + "     * A test BigDecimal constant\n"
+        + "     */\n"
+        + "    public static final BigDecimal MY_BIG_DECIMAL = new BigDecimal(\"1.2345\");\n"
+        + "    \n"
+        + "    /**\n"
+        + "     * A group of constants nested in a parent group\n"
+        + "     */\n"
+        + "    @Generated(\"org.jxapi.generator.java.exchange.constants.ConstantsClassGenerator\")\n"
+        + "    public static class MyNestedGroup {\n"
+        + "      \n"
+        + "      private MyNestedGroup(){}\n"
+        + "      \n"
+        + "      /**\n"
+        + "       * A test Long constant, for instance 1234567890123459L\n"
+        + "       */\n"
+        + "      public static final Long MY_LONG = Long.valueOf(\"1234567890123456\");\n"
+        + "    }\n"
+        + "  }\n"
+        + "}\n"
+        + "", gen.generate());
+  }
+}

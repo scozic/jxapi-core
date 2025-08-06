@@ -1,7 +1,10 @@
 
 # JXAPI
 
-Generate a Java REST and/or Websocket API wrapper efficiently using code generation tools.
+Code generation tools to generate a Java REST and/or Websocket API wrapper (SDK) efficiently.
+
+<!-- BEGIN TABLE OF CONTENTS -->
+<!-- END TABLE OF CONTENTS -->
 
 ## Introduction
 Many web services are consumed as HTTP REST/Websocket APIs. Those APIs disseminate data as structured JSON objects.
@@ -29,8 +32,8 @@ See [Wrapper module Setup](doc/manual/WrapperModuleSetup.md): Basically, you jus
 ## Manage REST/Websocket API protocol specificites using custom hooks
 A few lines of Java code have to be written manually to manage API protocol specificities like authentication challenges.
 See dedicated guides:
- * If your wrapper exposes REST endpoints: You may need to write a specific `HttpRequestInterceptor` to customize incoming request headers, as explained in [HttpRequestInterceptorDevGuide](./doc/manual/HttpRequestInterceptorDevGuide.md). The full class name of `HttpRequestInterceptorFactory` that creates instances of your `HttpRequestInterceptor` must be set in the exchange descriptor file `httpRequestInterceptorFactory` at the exchange or API group level.
- * If your wrapper exposes websocket endpoints, you should set in `websocketHookFactory` property of the exchange descriptor file at the exchange or API group level with the full name of the class implementing `WebsocketHookFactory` that creates specific hooks for the websocket protocol of your API, see [WebsocketHookDevGuide](./doc/manual/WebsocketHookDevGuide.md).
+ * If your wrapper exposes REST endpoints: You may set `httpRequestInterceptorFactory` property with full class name of [HttpRequestInterceptorFactory](./src/main/java/org/jxapi/netutils/rest/HttpRequestInterceptorFactory.java) that creates specific hooks for HTTP requests at the exchange or API group level. Such hooks are used to modify a request before it is sent, for instance adding it specific headers, as explained in [HttpRequestInterceptorDevGuide](./doc/manual/HttpRequestInterceptorDevGuide.md)
+ * If your wrapper exposes websocket endpoints, you should set in `websocketHookFactory` property of the exchange descriptor file at the exchange or API group level with the full name of the class implementing [WebsocketHookFactory](./src/main/java/org/jxapi/netutils/websocket/WebsocketHookFactory.java) that creates specific hooks for the websocket protocol of your API, see [WebsocketHookDevGuide](./doc/manual/WebsocketHookDevGuide.md).
 
 ## Write Descriptor File for API Descriptor
 Now the tedious work is done, let's create some API wrappers.
@@ -39,7 +42,7 @@ Follow [Exchange descriptor file documentation](./doc/manual/ExchangeDescriptorF
 
 AI assistants can be efficient to write such files &#128521;.
 
-RRunning the `mvn exec:java` command triggers the generation of wrapper code in the `src/main/java` folder, demos in `src/test/java`, and a sample `_MyExchangeREADME.md_` file at the root of the module project.
+Running the `mvn exec:java` command triggers the generation of wrapper code in the `src/main/java` folder, demos in `src/test/java`, and a sample `_MyExchangeREADME.md_` file at the root of the module project.
 II recommend writing the API descriptor file incrementally and running the generator after adding an endpoint to run the demo snippet (see [Demos](#demo-snippets)) to ensure it works as expected.
 
 ## Resulting Generated Code

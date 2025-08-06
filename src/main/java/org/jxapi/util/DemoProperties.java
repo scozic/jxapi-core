@@ -3,8 +3,6 @@ package org.jxapi.util;
 import java.util.List;
 import java.util.Properties;
 
-import org.jxapi.exchange.descriptor.ConfigProperty;
-import org.jxapi.exchange.descriptor.DefaultConfigProperty;
 import org.jxapi.exchange.descriptor.Type;
 
 /**
@@ -55,7 +53,7 @@ public class DemoProperties {
    *         subscription in WebSocket endpoint demo classes.
    */
   public static final long getWebsocketSubscriptionDuration(Properties properties) {
-    return PropertiesUtil.getLongProperty(
+    return PropertiesUtil.getLong(
           properties, 
           DEMO_WS_SUBSCRIPTION_DURATION_PROPERTY.getName(), 
           DEMO_WS_SUBSCRIPTION_DURATION_PROPERTY.getDefaultValue());
@@ -70,7 +68,7 @@ public class DemoProperties {
    *         program after unsubscribing in WebSocket endpoint demo classes.
    */
   public static final long getWebsocketDelayBeforeExit(Properties properties) {
-    return PropertiesUtil.getLongProperty(
+    return PropertiesUtil.getLong(
           properties, 
           DEMO_WS_DELAY_BEFORE_EXIT_AFTER_UNSUBSCRIPTION_PROPERTY.getName(), 
           DEMO_WS_DELAY_BEFORE_EXIT_AFTER_UNSUBSCRIPTION_PROPERTY.getDefaultValue());

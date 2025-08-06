@@ -24,7 +24,12 @@ import org.slf4j.LoggerFactory;
 public class DemoExchangeMarketDataPostRestRequestDataTypeIntListDemo {
   private static final Logger log = LoggerFactory.getLogger(DemoExchangeMarketDataPostRestRequestDataTypeIntListDemo.class);
   
-  public static List<Integer> createRequest() {
+  /**
+   * Creates a sample value for the request field of type List<Integer> using sample value(s) defined in the field descriptor.
+   * 
+   * @param properties the configuration properties to use for the sample value generation.
+   */
+  public static List<Integer> createRequest(Properties properties) {
     return new ListJsonFieldDeserializer<>(IntegerJsonFieldDeserializer.getInstance()).deserialize("[1, 3, 5]");
   }
   
@@ -61,8 +66,9 @@ public class DemoExchangeMarketDataPostRestRequestDataTypeIntListDemo {
    */
   public static void main(String[] args) {
     try {
-      execute(createRequest(),
-              DemoUtil.loadDemoExchangeProperties(DemoExchangeExchange.ID),
+      Properties properties = DemoUtil.loadDemoExchangeProperties(DemoExchangeExchange.ID);
+      execute(createRequest(properties),
+              properties,
               DemoUtil::logRestApiEvent);
       System.exit(0);
     }

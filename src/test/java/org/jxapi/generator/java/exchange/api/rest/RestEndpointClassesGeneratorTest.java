@@ -15,6 +15,8 @@ import org.jxapi.exchange.descriptor.RestEndpointDescriptor;
 import org.jxapi.exchange.descriptor.parser.ExchangeDescriptorParser;
 import org.jxapi.generator.java.JavaCodeGenUtil;
 import org.jxapi.generator.java.exchange.ClassesGeneratorTestUtil;
+import org.jxapi.generator.java.exchange.ExchangeGenUtil;
+import org.jxapi.util.PlaceHolderResolver;
 
 /**
  * Unit test for {@link RestEndpointClassesGenerator}
@@ -47,7 +49,9 @@ public class RestEndpointClassesGeneratorTest {
     ExchangeDescriptor exchange = ExchangeDescriptorParser.fromJson(Paths.get(".", "src", "test", "resources", "testExchangeDescriptor.json"));
     ExchangeApiDescriptor api = exchange.getApis().get(0);
     RestEndpointDescriptor restEndpoint = api.getRestEndpoints().get(0);
-    RestEndpointClassesGenerator generator = new RestEndpointClassesGenerator(exchange, api, restEndpoint);
+    PlaceHolderResolver docPlaceHolderResolver = 
+        PlaceHolderResolver.create(ExchangeGenUtil.getDescriptionReplacements(exchange));
+    RestEndpointClassesGenerator generator = new RestEndpointClassesGenerator(exchange, api, restEndpoint, docPlaceHolderResolver);
     generator.generateClasses(srcFolder);
     
     checkJavaFilesCount(Paths.get("deserializers"), 2);
@@ -62,6 +66,7 @@ public class RestEndpointClassesGeneratorTest {
         + "import java.util.Objects;\n"
         + "\n"
         + "import com.fasterxml.jackson.databind.annotation.JsonSerialize;\n"
+        + "import com.foo.bar.MyTestExchangePaginatedRequest;\n"
         + "import com.foo.bar.gen.marketdata.serializers.MyTestExchangeMarketDataExchangeInfoRequestSerializer;\n"
         + "import javax.annotation.processing.Generated;\n"
         + "import org.jxapi.util.CollectionUtil;\n"
@@ -71,13 +76,13 @@ public class RestEndpointClassesGeneratorTest {
         + "\n"
         + "/**\n"
         + " * Request for MyTestExchange MarketData API exchangeInfo REST endpoint<br>\n"
-        + " * Fetch market information of symbols that can be traded\n"
+        + " * Fetch market information of symbols that can be traded. Author: {@link com.foo.bar.gen.MyTestExchangeConstants#AUTHOR_FULL_NAME}\n"
         + " */\n"
         + "@Generated(\"org.jxapi.generator.java.exchange.api.pojo.PojoGenerator\")\n"
         + "@JsonSerialize(using = MyTestExchangeMarketDataExchangeInfoRequestSerializer.class)\n"
-        + "public class MyTestExchangeMarketDataExchangeInfoRequest implements Pojo<MyTestExchangeMarketDataExchangeInfoRequest> {\n"
+        + "public class MyTestExchangeMarketDataExchangeInfoRequest implements Pojo<MyTestExchangeMarketDataExchangeInfoRequest>, MyTestExchangePaginatedRequest {\n"
         + "  \n"
-        + "  private static final long serialVersionUID = -7359536303780923329L;\n"
+        + "  private static final long serialVersionUID = -4193695595206420816L;\n"
         + "  \n"
         + "  /**\n"
         + "   * @return A new builder to build {@link MyTestExchangeMarketDataExchangeInfoRequest} objects\n"
@@ -87,19 +92,64 @@ public class RestEndpointClassesGeneratorTest {
         + "  }\n"
         + "  \n"
         + "  private List<String> symbols;\n"
+        + "  private String apiKey;\n"
+        + "  private String author;\n"
+        + "  private Integer page;\n"
         + "  \n"
         + "  /**\n"
-        + "   * @return The list of symbol to fetch market information for. Leave empty to fetch all markets\n"
+        + "   * @return The list of symbol to fetch market information for. Leave empty to fetch all markets. Author: {@link com.foo.bar.gen.MyTestExchangeConstants#AUTHOR_FULL_NAME}\n"
         + "   */\n"
         + "  public List<String> getSymbols() {\n"
         + "    return symbols;\n"
         + "  }\n"
         + "  \n"
         + "  /**\n"
-        + "   * @param symbols The list of symbol to fetch market information for. Leave empty to fetch all markets\n"
+        + "   * @param symbols The list of symbol to fetch market information for. Leave empty to fetch all markets. Author: {@link com.foo.bar.gen.MyTestExchangeConstants#AUTHOR_FULL_NAME}\n"
         + "   */\n"
         + "  public void setSymbols(List<String> symbols) {\n"
         + "    this.symbols = symbols;\n"
+        + "  }\n"
+        + "  \n"
+        + "  /**\n"
+        + "   * @return API key, see {@link com.foo.bar.gen.MyTestExchangeProperties#API_KEY}\n"
+        + "   */\n"
+        + "  public String getApiKey() {\n"
+        + "    return apiKey;\n"
+        + "  }\n"
+        + "  \n"
+        + "  /**\n"
+        + "   * @param apiKey API key, see {@link com.foo.bar.gen.MyTestExchangeProperties#API_KEY}\n"
+        + "   */\n"
+        + "  public void setApiKey(String apiKey) {\n"
+        + "    this.apiKey = apiKey;\n"
+        + "  }\n"
+        + "  \n"
+        + "  /**\n"
+        + "   * @return Author name, see {@link com.foo.bar.gen.MyTestExchangeConstants#AUTHOR_FULL_NAME}\n"
+        + "   */\n"
+        + "  public String getAuthor() {\n"
+        + "    return author;\n"
+        + "  }\n"
+        + "  \n"
+        + "  /**\n"
+        + "   * @param author Author name, see {@link com.foo.bar.gen.MyTestExchangeConstants#AUTHOR_FULL_NAME}\n"
+        + "   */\n"
+        + "  public void setAuthor(String author) {\n"
+        + "    this.author = author;\n"
+        + "  }\n"
+        + "  \n"
+        + "  /**\n"
+        + "   * @return Page number to return, defaults to 1. Author: {@link com.foo.bar.gen.MyTestExchangeConstants#AUTHOR_FULL_NAME}\n"
+        + "   */\n"
+        + "  public Integer getPage() {\n"
+        + "    return page;\n"
+        + "  }\n"
+        + "  \n"
+        + "  /**\n"
+        + "   * @param page Page number to return, defaults to 1. Author: {@link com.foo.bar.gen.MyTestExchangeConstants#AUTHOR_FULL_NAME}\n"
+        + "   */\n"
+        + "  public void setPage(Integer page) {\n"
+        + "    this.page = page;\n"
         + "  }\n"
         + "  \n"
         + "  @Override\n"
@@ -109,7 +159,10 @@ public class RestEndpointClassesGeneratorTest {
         + "    if (!getClass().equals(other.getClass()))\n"
         + "      return false;\n"
         + "    MyTestExchangeMarketDataExchangeInfoRequest o = (MyTestExchangeMarketDataExchangeInfoRequest) other;\n"
-        + "    return Objects.equals(symbols, o.symbols);\n"
+        + "    return Objects.equals(symbols, o.symbols)\n"
+        + "            && Objects.equals(apiKey, o.apiKey)\n"
+        + "            && Objects.equals(author, o.author)\n"
+        + "            && Objects.equals(page, o.page);\n"
         + "  }\n"
         + "  \n"
         + "  @Override\n"
@@ -119,18 +172,33 @@ public class RestEndpointClassesGeneratorTest {
         + "    }\n"
         + "    int res = 0;\n"
         + "    res = CompareUtil.compareLists(this.symbols, other.symbols, CompareUtil::compare);\n"
+        + "    if (res != 0) {\n"
+        + "      return res;\n"
+        + "    }\n"
+        + "    res = CompareUtil.compare(this.apiKey, other.apiKey);\n"
+        + "    if (res != 0) {\n"
+        + "      return res;\n"
+        + "    }\n"
+        + "    res = CompareUtil.compare(this.author, other.author);\n"
+        + "    if (res != 0) {\n"
+        + "      return res;\n"
+        + "    }\n"
+        + "    res = CompareUtil.compare(this.page, other.page);\n"
         + "    return res;\n"
         + "  }\n"
         + "  \n"
         + "  @Override\n"
         + "  public int hashCode() {\n"
-        + "    return Objects.hash(symbols);\n"
+        + "    return Objects.hash(symbols, apiKey, author, page);\n"
         + "  }\n"
         + "  \n"
         + "  @Override\n"
         + "  public MyTestExchangeMarketDataExchangeInfoRequest deepClone() {\n"
         + "    MyTestExchangeMarketDataExchangeInfoRequest clone = new MyTestExchangeMarketDataExchangeInfoRequest();\n"
         + "    clone.symbols = CollectionUtil.cloneList(this.symbols);\n"
+        + "    clone.apiKey = this.apiKey;\n"
+        + "    clone.author = this.author;\n"
+        + "    clone.page = this.page;\n"
         + "    return clone;\n"
         + "  }\n"
         + "  \n"
@@ -146,10 +214,13 @@ public class RestEndpointClassesGeneratorTest {
         + "  public static class Builder {\n"
         + "    \n"
         + "    private List<String> symbols;\n"
+        + "    private String apiKey;\n"
+        + "    private String author;\n"
+        + "    private Integer page;\n"
         + "    \n"
         + "    /**\n"
         + "     * Will set the value of <code>symbols</code> field in the builder\n"
-        + "     * @param symbols The list of symbol to fetch market information for. Leave empty to fetch all markets\n"
+        + "     * @param symbols The list of symbol to fetch market information for. Leave empty to fetch all markets. Author: {@link com.foo.bar.gen.MyTestExchangeConstants#AUTHOR_FULL_NAME}\n"
         + "     * @return Builder instance\n"
         + "     * @see #setSymbols(List<String>)\n"
         + "     */\n"
@@ -174,15 +245,52 @@ public class RestEndpointClassesGeneratorTest {
         + "    }\n"
         + "    \n"
         + "    /**\n"
+        + "     * Will set the value of <code>apiKey</code> field in the builder\n"
+        + "     * @param apiKey API key, see {@link com.foo.bar.gen.MyTestExchangeProperties#API_KEY}\n"
+        + "     * @return Builder instance\n"
+        + "     * @see #setApiKey(String)\n"
+        + "     */\n"
+        + "    public Builder apiKey(String apiKey)  {\n"
+        + "      this.apiKey = apiKey;\n"
+        + "      return this;\n"
+        + "    }\n"
+        + "    \n"
+        + "    /**\n"
+        + "     * Will set the value of <code>author</code> field in the builder\n"
+        + "     * @param author Author name, see {@link com.foo.bar.gen.MyTestExchangeConstants#AUTHOR_FULL_NAME}\n"
+        + "     * @return Builder instance\n"
+        + "     * @see #setAuthor(String)\n"
+        + "     */\n"
+        + "    public Builder author(String author)  {\n"
+        + "      this.author = author;\n"
+        + "      return this;\n"
+        + "    }\n"
+        + "    \n"
+        + "    /**\n"
+        + "     * Will set the value of <code>page</code> field in the builder\n"
+        + "     * @param page Page number to return, defaults to 1. Author: {@link com.foo.bar.gen.MyTestExchangeConstants#AUTHOR_FULL_NAME}\n"
+        + "     * @return Builder instance\n"
+        + "     * @see #setPage(Integer)\n"
+        + "     */\n"
+        + "    public Builder page(Integer page)  {\n"
+        + "      this.page = page;\n"
+        + "      return this;\n"
+        + "    }\n"
+        + "    \n"
+        + "    /**\n"
         + "     * @return a new instance of MyTestExchangeMarketDataExchangeInfoRequest using the values set in this builder\n"
         + "     */\n"
         + "    public MyTestExchangeMarketDataExchangeInfoRequest build() {\n"
         + "      MyTestExchangeMarketDataExchangeInfoRequest res = new MyTestExchangeMarketDataExchangeInfoRequest();\n"
         + "      res.symbols = CollectionUtil.cloneList(this.symbols);\n"
+        + "      res.apiKey = this.apiKey;\n"
+        + "      res.author = this.author;\n"
+        + "      res.page = this.page;\n"
         + "      return res;\n"
         + "    }\n"
         + "  }\n"
-        + "}\n", 
+        + "}\n"
+        + "", 
         Files.readString(checkSourceFileExists(Paths.get("pojo", "MyTestExchangeMarketDataExchangeInfoRequest.java"))));
     
     Assert.assertEquals("package com.foo.bar.gen.marketdata.pojo;\n"
@@ -191,6 +299,7 @@ public class RestEndpointClassesGeneratorTest {
         + "import java.util.Objects;\n"
         + "\n"
         + "import com.fasterxml.jackson.databind.annotation.JsonSerialize;\n"
+        + "import com.foo.bar.MyTestExchangePaginatedResponse;\n"
         + "import com.foo.bar.gen.marketdata.serializers.MyTestExchangeMarketDataExchangeInfoResponseSerializer;\n"
         + "import javax.annotation.processing.Generated;\n"
         + "import org.jxapi.util.CollectionUtil;\n"
@@ -202,13 +311,13 @@ public class RestEndpointClassesGeneratorTest {
         + "/**\n"
         + " * Response to MyTestExchange MarketData API <br>\n"
         + " * exchangeInfo REST endpoint request<br>\n"
-        + " * Fetch market information of symbols that can be traded\n"
+        + " * Fetch market information of symbols that can be traded. Author: {@link com.foo.bar.gen.MyTestExchangeConstants#AUTHOR_FULL_NAME}\n"
         + " */\n"
         + "@Generated(\"org.jxapi.generator.java.exchange.api.pojo.PojoGenerator\")\n"
         + "@JsonSerialize(using = MyTestExchangeMarketDataExchangeInfoResponseSerializer.class)\n"
-        + "public class MyTestExchangeMarketDataExchangeInfoResponse implements Pojo<MyTestExchangeMarketDataExchangeInfoResponse> {\n"
+        + "public class MyTestExchangeMarketDataExchangeInfoResponse implements Pojo<MyTestExchangeMarketDataExchangeInfoResponse>, MyTestExchangePaginatedResponse {\n"
         + "  \n"
-        + "  private static final long serialVersionUID = 5277898936976859226L;\n"
+        + "  private static final long serialVersionUID = 7439089996962557233L;\n"
         + "  \n"
         + "  /**\n"
         + "   * @return A new builder to build {@link MyTestExchangeMarketDataExchangeInfoResponse} objects\n"
@@ -218,6 +327,8 @@ public class RestEndpointClassesGeneratorTest {
         + "  }\n"
         + "  \n"
         + "  private Integer responseCode;\n"
+        + "  private Integer currentPage;\n"
+        + "  private Integer totalPages;\n"
         + "  private List<MyTestExchangeMarketDataExchangeInfoResponsePayload> payload;\n"
         + "  \n"
         + "  /**\n"
@@ -235,14 +346,42 @@ public class RestEndpointClassesGeneratorTest {
         + "  }\n"
         + "  \n"
         + "  /**\n"
-        + "   * @return List of market information for each requested symbol\n"
+        + "   * @return Current page index.\n"
+        + "   */\n"
+        + "  public Integer getCurrentPage() {\n"
+        + "    return currentPage;\n"
+        + "  }\n"
+        + "  \n"
+        + "  /**\n"
+        + "   * @param currentPage Current page index.\n"
+        + "   */\n"
+        + "  public void setCurrentPage(Integer currentPage) {\n"
+        + "    this.currentPage = currentPage;\n"
+        + "  }\n"
+        + "  \n"
+        + "  /**\n"
+        + "   * @return Total number of pages.\n"
+        + "   */\n"
+        + "  public Integer getTotalPages() {\n"
+        + "    return totalPages;\n"
+        + "  }\n"
+        + "  \n"
+        + "  /**\n"
+        + "   * @param totalPages Total number of pages.\n"
+        + "   */\n"
+        + "  public void setTotalPages(Integer totalPages) {\n"
+        + "    this.totalPages = totalPages;\n"
+        + "  }\n"
+        + "  \n"
+        + "  /**\n"
+        + "   * @return List of market information for each requested symbol. Author: {@link com.foo.bar.gen.MyTestExchangeConstants#AUTHOR_FULL_NAME}\n"
         + "   */\n"
         + "  public List<MyTestExchangeMarketDataExchangeInfoResponsePayload> getPayload() {\n"
         + "    return payload;\n"
         + "  }\n"
         + "  \n"
         + "  /**\n"
-        + "   * @param payload List of market information for each requested symbol\n"
+        + "   * @param payload List of market information for each requested symbol. Author: {@link com.foo.bar.gen.MyTestExchangeConstants#AUTHOR_FULL_NAME}\n"
         + "   */\n"
         + "  public void setPayload(List<MyTestExchangeMarketDataExchangeInfoResponsePayload> payload) {\n"
         + "    this.payload = payload;\n"
@@ -256,6 +395,8 @@ public class RestEndpointClassesGeneratorTest {
         + "      return false;\n"
         + "    MyTestExchangeMarketDataExchangeInfoResponse o = (MyTestExchangeMarketDataExchangeInfoResponse) other;\n"
         + "    return Objects.equals(responseCode, o.responseCode)\n"
+        + "            && Objects.equals(currentPage, o.currentPage)\n"
+        + "            && Objects.equals(totalPages, o.totalPages)\n"
         + "            && Objects.equals(payload, o.payload);\n"
         + "  }\n"
         + "  \n"
@@ -269,19 +410,29 @@ public class RestEndpointClassesGeneratorTest {
         + "    if (res != 0) {\n"
         + "      return res;\n"
         + "    }\n"
+        + "    res = CompareUtil.compare(this.currentPage, other.currentPage);\n"
+        + "    if (res != 0) {\n"
+        + "      return res;\n"
+        + "    }\n"
+        + "    res = CompareUtil.compare(this.totalPages, other.totalPages);\n"
+        + "    if (res != 0) {\n"
+        + "      return res;\n"
+        + "    }\n"
         + "    res = CompareUtil.compareLists(this.payload, other.payload, CompareUtil::compare);\n"
         + "    return res;\n"
         + "  }\n"
         + "  \n"
         + "  @Override\n"
         + "  public int hashCode() {\n"
-        + "    return Objects.hash(responseCode, payload);\n"
+        + "    return Objects.hash(responseCode, currentPage, totalPages, payload);\n"
         + "  }\n"
         + "  \n"
         + "  @Override\n"
         + "  public MyTestExchangeMarketDataExchangeInfoResponse deepClone() {\n"
         + "    MyTestExchangeMarketDataExchangeInfoResponse clone = new MyTestExchangeMarketDataExchangeInfoResponse();\n"
         + "    clone.responseCode = this.responseCode;\n"
+        + "    clone.currentPage = this.currentPage;\n"
+        + "    clone.totalPages = this.totalPages;\n"
         + "    clone.payload = CollectionUtil.deepCloneList(this.payload, DeepCloneable::deepClone);\n"
         + "    return clone;\n"
         + "  }\n"
@@ -298,6 +449,8 @@ public class RestEndpointClassesGeneratorTest {
         + "  public static class Builder {\n"
         + "    \n"
         + "    private Integer responseCode;\n"
+        + "    private Integer currentPage;\n"
+        + "    private Integer totalPages;\n"
         + "    private List<MyTestExchangeMarketDataExchangeInfoResponsePayload> payload;\n"
         + "    \n"
         + "    /**\n"
@@ -312,8 +465,30 @@ public class RestEndpointClassesGeneratorTest {
         + "    }\n"
         + "    \n"
         + "    /**\n"
+        + "     * Will set the value of <code>currentPage</code> field in the builder\n"
+        + "     * @param currentPage Current page index.\n"
+        + "     * @return Builder instance\n"
+        + "     * @see #setCurrentPage(Integer)\n"
+        + "     */\n"
+        + "    public Builder currentPage(Integer currentPage)  {\n"
+        + "      this.currentPage = currentPage;\n"
+        + "      return this;\n"
+        + "    }\n"
+        + "    \n"
+        + "    /**\n"
+        + "     * Will set the value of <code>totalPages</code> field in the builder\n"
+        + "     * @param totalPages Total number of pages.\n"
+        + "     * @return Builder instance\n"
+        + "     * @see #setTotalPages(Integer)\n"
+        + "     */\n"
+        + "    public Builder totalPages(Integer totalPages)  {\n"
+        + "      this.totalPages = totalPages;\n"
+        + "      return this;\n"
+        + "    }\n"
+        + "    \n"
+        + "    /**\n"
         + "     * Will set the value of <code>payload</code> field in the builder\n"
-        + "     * @param payload List of market information for each requested symbol\n"
+        + "     * @param payload List of market information for each requested symbol. Author: {@link com.foo.bar.gen.MyTestExchangeConstants#AUTHOR_FULL_NAME}\n"
         + "     * @return Builder instance\n"
         + "     * @see #setPayload(List<MyTestExchangeMarketDataExchangeInfoResponsePayload>)\n"
         + "     */\n"
@@ -343,11 +518,14 @@ public class RestEndpointClassesGeneratorTest {
         + "    public MyTestExchangeMarketDataExchangeInfoResponse build() {\n"
         + "      MyTestExchangeMarketDataExchangeInfoResponse res = new MyTestExchangeMarketDataExchangeInfoResponse();\n"
         + "      res.responseCode = this.responseCode;\n"
+        + "      res.currentPage = this.currentPage;\n"
+        + "      res.totalPages = this.totalPages;\n"
         + "      res.payload = CollectionUtil.deepCloneList(this.payload, DeepCloneable::deepClone);\n"
         + "      return res;\n"
         + "    }\n"
         + "  }\n"
-        + "}\n", 
+        + "}\n"
+        + "", 
         Files.readString(checkSourceFileExists(Paths.get("pojo", "MyTestExchangeMarketDataExchangeInfoResponse.java"))));
     
     checkSourceFileExists(Paths.get("pojo", "MyTestExchangeMarketDataExchangeInfoResponsePayload.java"));
@@ -364,7 +542,7 @@ public class RestEndpointClassesGeneratorTest {
     ExchangeDescriptor exchange = ExchangeDescriptorParser.fromJson(Paths.get(".", "src", "test", "resources", "testExchangeDescriptorWithRequestAndResponseImplementingCustomInterfaces.json"));
     ExchangeApiDescriptor api = exchange.getApis().get(0);
     RestEndpointDescriptor restEndpoint = ClassesGeneratorTestUtil.findRestEndpointByName("exchangeInfo", api);
-    RestEndpointClassesGenerator generator = new RestEndpointClassesGenerator(exchange, api, restEndpoint);
+    RestEndpointClassesGenerator generator = new RestEndpointClassesGenerator(exchange, api, restEndpoint, null);
     generator.generateClasses(srcFolder);
     
     checkJavaFilesCount(Paths.get("deserializers"), 2);
@@ -685,7 +863,7 @@ public class RestEndpointClassesGeneratorTest {
     ExchangeDescriptor exchange = ExchangeDescriptorParser.fromJson(Paths.get(".", "src", "test", "resources", "testExchangeDescriptorWithAllRestRequestDataTypes.json"));
     ExchangeApiDescriptor api = exchange.getApis().get(0);
     RestEndpointDescriptor restEndpoint = ClassesGeneratorTestUtil.findRestEndpointByName("postRestRequestDataTypeInt", api);
-    RestEndpointClassesGenerator generator = new RestEndpointClassesGenerator(exchange, api, restEndpoint);
+    RestEndpointClassesGenerator generator = new RestEndpointClassesGenerator(exchange, api, restEndpoint, null);
     generator.generateClasses(srcFolder);
     
     checkJavaFilesCount(Paths.get("deserializers"), 1);
@@ -704,7 +882,7 @@ public class RestEndpointClassesGeneratorTest {
     ExchangeDescriptor exchange = ExchangeDescriptorParser.fromJson(Paths.get(".", "src", "test", "resources", "testExchangeDescriptorWithAllRestRequestDataTypes.json"));
     ExchangeApiDescriptor api = exchange.getApis().get(0);
     RestEndpointDescriptor restEndpoint = ClassesGeneratorTestUtil.findRestEndpointByName("postRestRequestDataTypeIntList", api);
-    RestEndpointClassesGenerator generator = new RestEndpointClassesGenerator(exchange, api, restEndpoint);
+    RestEndpointClassesGenerator generator = new RestEndpointClassesGenerator(exchange, api, restEndpoint, null);
     generator.generateClasses(srcFolder);
     checkJavaFilesCount(srcFolder, 0);        
   }
@@ -715,7 +893,7 @@ public class RestEndpointClassesGeneratorTest {
     ExchangeDescriptor exchange = ExchangeDescriptorParser.fromJson(Paths.get(".", "src", "test", "resources", "testExchangeDescriptorWithAllRestRequestDataTypes.json"));
     ExchangeApiDescriptor api = exchange.getApis().get(0);
     RestEndpointDescriptor restEndpoint = ClassesGeneratorTestUtil.findRestEndpointByName("postRestRequestDataTypeObjectNoParameters", api);
-    RestEndpointClassesGenerator generator = new RestEndpointClassesGenerator(exchange, api, restEndpoint);
+    RestEndpointClassesGenerator generator = new RestEndpointClassesGenerator(exchange, api, restEndpoint, null);
     generator.generateClasses(srcFolder);
     checkJavaFilesCount(srcFolder, 0);        
   }
@@ -726,7 +904,7 @@ public class RestEndpointClassesGeneratorTest {
     ExchangeDescriptor exchange = ExchangeDescriptorParser.fromJson(Paths.get(".", "src", "test", "resources", "testExchangeDescriptorWithAllRestResponseDataTypes.json"));
     ExchangeApiDescriptor api = exchange.getApis().get(0);
     RestEndpointDescriptor restEndpoint = ClassesGeneratorTestUtil.findRestEndpointByName("getRestResponseDataTypeInt", api);
-    RestEndpointClassesGenerator generator = new RestEndpointClassesGenerator(exchange, api, restEndpoint);
+    RestEndpointClassesGenerator generator = new RestEndpointClassesGenerator(exchange, api, restEndpoint, null);
     generator.generateClasses(srcFolder);
     checkJavaFilesCount(srcFolder, 0); 
   }
@@ -737,7 +915,7 @@ public class RestEndpointClassesGeneratorTest {
     ExchangeDescriptor exchange = ExchangeDescriptorParser.fromJson(Paths.get(".", "src", "test", "resources", "testExchangeDescriptorWithAllRestResponseDataTypes.json"));
     ExchangeApiDescriptor api = exchange.getApis().get(0);
     RestEndpointDescriptor restEndpoint = ClassesGeneratorTestUtil.findRestEndpointByName("getRestResponseDataTypeIntList", api);
-    RestEndpointClassesGenerator generator = new RestEndpointClassesGenerator(exchange, api, restEndpoint);
+    RestEndpointClassesGenerator generator = new RestEndpointClassesGenerator(exchange, api, restEndpoint, null);
     generator.generateClasses(srcFolder);
     checkJavaFilesCount(srcFolder, 0); 
   }
@@ -748,7 +926,7 @@ public class RestEndpointClassesGeneratorTest {
     ExchangeDescriptor exchange = ExchangeDescriptorParser.fromJson(Paths.get(".", "src", "test", "resources", "testExchangeDescriptorWithAllRestResponseDataTypes.json"));
     ExchangeApiDescriptor api = exchange.getApis().get(0);
     RestEndpointDescriptor restEndpoint = ClassesGeneratorTestUtil.findRestEndpointByName("getRestEmptyResponseDataType", api);
-    RestEndpointClassesGenerator generator = new RestEndpointClassesGenerator(exchange, api, restEndpoint);
+    RestEndpointClassesGenerator generator = new RestEndpointClassesGenerator(exchange, api, restEndpoint, null);
     generator.generateClasses(srcFolder);
     checkJavaFilesCount(srcFolder, 0); 
   }

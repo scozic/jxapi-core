@@ -3,19 +3,13 @@ package org.jxapi.generator.java.exchange.api;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedHashMap;
-import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.Properties;
-import java.util.Set;
 import java.util.TreeMap;
 import java.util.stream.Collectors;
-
-import org.slf4j.Logger;
-import org.springframework.util.CollectionUtils;
 
 import org.jxapi.exchange.AbstractExchangeApi;
 import org.jxapi.exchange.descriptor.CanonicalType;
@@ -28,8 +22,7 @@ import org.jxapi.exchange.descriptor.WebsocketEndpointDescriptor;
 import org.jxapi.exchange.descriptor.WebsocketMessageTopicMatcherFieldDescriptor;
 import org.jxapi.generator.java.JavaCodeGenUtil;
 import org.jxapi.generator.java.JavaTypeGenerator;
-import org.jxapi.generator.java.exchange.ExchangeInterfaceGenerator;
-import org.jxapi.generator.java.exchange.ExchangeJavaGenUtil;
+import org.jxapi.generator.java.exchange.ExchangeGenUtil;
 import org.jxapi.netutils.deserialization.MessageDeserializer;
 import org.jxapi.netutils.rest.FutureRestResponse;
 import org.jxapi.netutils.rest.HttpMethod;
@@ -43,10 +36,13 @@ import org.jxapi.netutils.websocket.multiplexing.WebsocketMessageTopicMatcherFac
 import org.jxapi.util.CollectionUtil;
 import org.jxapi.util.EncodingUtil;
 import org.jxapi.util.JsonUtil;
+import org.slf4j.Logger;
+import org.springframework.util.CollectionUtils;
 
 /**
  * Generates the Java source code for the implementation class of an API
- * interface for an exchange, as described in {@link ExchangeApiDescriptor}.
+ * interface for an exchange API group, as described in
+ * {@link ExchangeApiDescriptor}.
  * <p>
  * This class generates the actual implementation of the API interface, with
  * methods for every REST endpoint call and subscribe/unsubscribe methods for
@@ -61,13 +57,25 @@ import org.jxapi.util.JsonUtil;
  * <li>It contains final deserializers (see {@link MessageDeserializer}) final
  * properties declarations for every REST endpoint response and websocket
  * message.
- * <li>When rate limits are defined for the exchange or the API, the generated
- * class contains final list of rate limit rule declarations for evenry rule
- * used in REST APIs exposed by this interface. These lists contain both
- * exchange wide, exchange API wide, and REST endpoint specific rules e.g. all
- * rules that must be enforced by calling the corresponding API.
+ * <li>When rate limits are defined for the API group, a final field is
+ * generated for this {@link RateLimitRule} with a public getter method.
+ * <li>If any of the defined REST endpoints has a rate limit, a
+ * {@link RequestThrottler} property is generated and passed to the constructor
+ * of the API interface. The generated code for rest endpoint call methods will
+ * use this throttler to submit the request, passing it all applicable rate
+ * limit rules that should be referenced in REST endpoint descriptor, see
+ * {@link RestEndpointDescriptor#getRateLimits()}. Remark: An
+ * IllegalArgumentException will be thrown if one if the rate limit rule IDs
+ * defined in REST endpoint does not match one of an existing rate limit rule
+ * defined in enclosing API group or exchange.
  * <li>A {@link Logger} declaration generated.
- * <li>Base URL for REST endpoints and websocket URL are declared as static variables. If the base URL is not defined in the API descriptor, it is concatenated to URL.
+ * <li>Base URL for REST endpoints and websocket URL are declared as final
+ * members and computed by from API group descriptor baseUrl (see
+ * {@link ExchangeApiDescriptor#getHttpUrl()} and
+ * {@link ExchangeApiDescriptor#getWebsocketUrl()}) properties, replacing
+ * eventual placeholders using API group constants, exchange level constants, or
+ * configuration properties, and concatenating to the exchange base URL (see
+ * {@link EncodingUtil#buildUrl(String...)}.
  * </ul>
  * <p>
  * Regarding REST endpoint call methods generation:
@@ -160,12 +168,14 @@ import org.jxapi.util.JsonUtil;
  */
 public class ExchangeApiInterfaceImplementationGenerator extends JavaTypeGenerator {
   
-  private static final String EXCHANGE_NAME_ARGUMENT_NAME = "exchangeName";
+  private static final String GET_PROPERTIES = ".getProperties()";
+  private static final String RETURN = "return ";
+  private static final String THIS = "this.";
+  private static final String EXCHANGE_ARGUMENT_NAME = "exchange";
   private static final String REQUEST_THROTTLER_VARIABLE_NAME = "requestThrottler";
-  private static final String PUBLIC_STATIC_FINAL = "public static final ";
   private static final String PRIVATE_FINAL = "private final ";
-  private static final String LOG_DEBUG = "log.debug(\"";
   private static final String OVERRIDE_PUBLIC = "@Override\npublic ";
+  private static final String WS_URL_PROPERTY_NAME = "wsUrl";
   
   private final ExchangeDescriptor exchangeDescriptor;
   
@@ -175,18 +185,15 @@ public class ExchangeApiInterfaceImplementationGenerator extends JavaTypeGenerat
   private Map<String, String> restMethods;
   private Map<String, Map<String, String>> wsMethods;
   private final boolean hasRateLimits;
-  private List<String> apiGlobalRateLimitVariables;
-  private Set<String> endpointSpecificRateLimitIds;
-  private boolean hasBaseHttpUrl = false;
   private final String simpleImplementationName;
   private final List<RateLimitRule> exchangeRateLimits;
   private final boolean hasExchangeLimits;
   private final boolean hasRestEnpoints;
   private final boolean hasWsEnpoints;
-  private final String exchangeClassName;
   
   private List<String> restEndpointUrlDeclarations;
   private List<String> rateLimitVariablesDeclarations;
+  private List<String> rateLimitVariablesInstantiationDeclarations;
   private List<String> websocketEndpointDeclarations;
   private List<String> messageDeserializerVariablesDeclarations;
   
@@ -199,11 +206,11 @@ public class ExchangeApiInterfaceImplementationGenerator extends JavaTypeGenerat
    */
   public ExchangeApiInterfaceImplementationGenerator(ExchangeDescriptor exchangeDescriptor, 
                              ExchangeApiDescriptor exchangeApiDescriptor) {
-    super(ExchangeJavaGenUtil.getApiInterfaceImplementationClassName(exchangeDescriptor, exchangeApiDescriptor));
+    super(ExchangeGenUtil.getApiInterfaceImplementationClassName(exchangeDescriptor, exchangeApiDescriptor));
     this.exchangeDescriptor = exchangeDescriptor;
     this.exchangeApiDescriptor = exchangeApiDescriptor;
     setTypeDeclaration("public class");
-    String fullInterfaceName = ExchangeJavaGenUtil.getApiInterfaceClassName(exchangeDescriptor, exchangeApiDescriptor);
+    String fullInterfaceName = ExchangeGenUtil.getApiInterfaceClassName(exchangeDescriptor, exchangeApiDescriptor);
     addImport(fullInterfaceName);
     this.simpleInterfaceName = JavaCodeGenUtil.getClassNameWithoutPackage(fullInterfaceName);
     setImplementedInterfaces(Arrays.asList(fullInterfaceName));
@@ -215,84 +222,41 @@ public class ExchangeApiInterfaceImplementationGenerator extends JavaTypeGenerat
     hasExchangeLimits = !CollectionUtils.isEmpty(exchangeRateLimits);
     hasRestEnpoints = !CollectionUtils.isEmpty(exchangeApiDescriptor.getRestEndpoints());
     hasWsEnpoints = !CollectionUtils.isEmpty(exchangeApiDescriptor.getWebsocketEndpoints());
-    exchangeClassName = ExchangeJavaGenUtil.getExchangeInterfaceName(exchangeDescriptor);
   }
 
   @Override
   public String generate() {
-    appendToBody("\n");
-    JavaCodeGenUtil.generateSlf4jLoggerDeclaration(this);
     restEndpointUrlDeclarations = new ArrayList<>();
     rateLimitVariablesDeclarations = new ArrayList<>();
+    rateLimitVariablesInstantiationDeclarations = new ArrayList<>();
     websocketEndpointDeclarations = new ArrayList<>();
     messageDeserializerVariablesDeclarations = new ArrayList<>();
     restMethods = new LinkedHashMap<>();
     wsMethods = new LinkedHashMap<>();
-    apiGlobalRateLimitVariables = new ArrayList<>();
-    endpointSpecificRateLimitIds = new LinkedHashSet<>();
-    addImport(exchangeClassName);
     generateApiGlobalRateLimits();
-    if (hasRestEnpoints) {
-      String httpUrlVariableDeclaration = ExchangeApiGenUtil.getHttpUrlVariableDeclaration(exchangeDescriptor, exchangeApiDescriptor, getImports());
-      this.hasBaseHttpUrl = httpUrlVariableDeclaration != null;
-      if (hasBaseHttpUrl) {
-          appendToBody("\n")
-            .append(httpUrlVariableDeclaration)
-            .append("\n");
-      }
-    }
     
-    if (exchangeApiDescriptor.getRestEndpoints() != null) {
-      for (RestEndpointDescriptor restApi: exchangeApiDescriptor.getRestEndpoints()) {
+    for (RestEndpointDescriptor restApi: CollectionUtil.emptyIfNull(exchangeApiDescriptor.getRestEndpoints())) {
         generateRestEndpointMethodDeclaration(restApi);
-      }
     }
     
-    if (hasWsEnpoints) {
-      String websocketUrlVariableDeclaration = ExchangeApiGenUtil.getWebsocketUrlVariableDeclaration(exchangeDescriptor, 
-                                          exchangeApiDescriptor,  
-                                          getImports());
-      if (websocketUrlVariableDeclaration == null) {
-        throw new IllegalArgumentException("No valid websocket URL for API with websocket endpoints:" 
-                          + exchangeApiDescriptor);
-      }
-      appendToBody("\n")
-        .append(websocketUrlVariableDeclaration)
-        .append("\n");
-      for (WebsocketEndpointDescriptor websocketApi : exchangeApiDescriptor.getWebsocketEndpoints()) {
-        generateWebsocketApiMethodsDeclarations(websocketApi);
-      }
+    for (WebsocketEndpointDescriptor websocketApi : CollectionUtil.emptyIfNull(exchangeApiDescriptor.getWebsocketEndpoints())) {
+      generateWebsocketApiMethodsDeclarations(websocketApi);
     }
-    
-    
     appendVariablesToBody(restEndpointUrlDeclarations, "REST endpoint URLs");
     appendVariablesToBody(rateLimitVariablesDeclarations, "REST endpoints rate limits");
     appendVariablesToBody(websocketEndpointDeclarations, "Websocket endpoints");
     appendVariablesToBody(messageDeserializerVariablesDeclarations, "Message deserializers");
-    addImport(Properties.class);
     appendSeparatorCommentLine("Constructor");
     appendMethod(generateConstructorSignature(), generateConstructorBody());
     appendRestMethods();
     appendWsMethods();
+    generateRateLimitRuleGetters();
     return super.generate();
   }
   
   private void generateApiGlobalRateLimits() {
-    if ((hasRateLimits || hasExchangeLimits) 
-        && (hasRestEnpoints)) {
-      
-      List<RateLimitRule> apiGlobalLimits = exchangeApiDescriptor.getRateLimits();
-      if (!CollectionUtil.isEmpty(apiGlobalLimits)) {
-        int rateLimitCounter = 0;
-        for (RateLimitRule apiGlobalLimit: apiGlobalLimits) {
-          apiGlobalRateLimitVariables.add(generateRateLimitVariable(
-              apiGlobalLimit, 
-              exchangeApiDescriptor.getName() + rateLimitCounter++,
-              "Rate limit shared between all REST API endpoints of this '" 
-                  + exchangeApiDescriptor.getName() 
-                  + "' API group"));
-        }
-      }
+    for (RateLimitRule rule : CollectionUtil.emptyIfNull(exchangeApiDescriptor.getRateLimits())) {
+      generateRateLimitVariable(rule);
     }
   }
   
@@ -332,14 +296,15 @@ public class ExchangeApiInterfaceImplementationGenerator extends JavaTypeGenerat
   }
   
   private String generateConstructorSignature() {
-    addImport(Properties.class);
+    String exchangeClassName = ExchangeGenUtil.getExchangeInterfaceName(exchangeDescriptor);
+    addImport(exchangeClassName);
     StringBuilder constructorSignature = new StringBuilder()
         .append("public ")
         .append(simpleImplementationName)
-        .append("(String ")
-        .append(EXCHANGE_NAME_ARGUMENT_NAME)
-        .append(", ")
-        .append("Properties properties");
+        .append("(")
+        .append(JavaCodeGenUtil.getClassNameWithoutPackage(exchangeClassName))
+        .append(" ")
+        .append(EXCHANGE_ARGUMENT_NAME);
     if (hasExchangeLimits && hasRestEnpoints) {
       addImport(RequestThrottler.class);
       constructorSignature.append(", ")
@@ -355,23 +320,20 @@ public class ExchangeApiInterfaceImplementationGenerator extends JavaTypeGenerat
     StringBuilder constructorBody = new StringBuilder();
     constructorBody.append("super(")
        .append(ExchangeApiInterfaceGenerator.EXCHANGE_API_NAME_VARIABLE)
-       .append(", ")
-       .append(EXCHANGE_NAME_ARGUMENT_NAME)
-       .append(", ")
-       .append(JavaCodeGenUtil.getClassNameWithoutPackage(exchangeClassName))
-       .append(".")
-       .append(ExchangeInterfaceGenerator.EXCHANGE_ID_VARIABLE)
-       .append(", ")
-       .append("properties");
+       .append(JavaCodeGenUtil.SUPER_ARG_SEPARATOR)
+       .append(EXCHANGE_ARGUMENT_NAME);
     if ((hasRateLimits || hasExchangeLimits) 
         && (hasRestEnpoints)) {
       addImport(RequestThrottler.class);
       
       if (hasExchangeLimits) {
-        constructorBody.append(", ").append(REQUEST_THROTTLER_VARIABLE_NAME);
+        constructorBody
+          .append(JavaCodeGenUtil.SUPER_ARG_SEPARATOR)
+          .append(REQUEST_THROTTLER_VARIABLE_NAME);
       } else {
         constructorBody
-          .append(", new ")
+          .append(JavaCodeGenUtil.SUPER_ARG_SEPARATOR)
+          .append("new ")
           .append(RequestThrottler.class.getSimpleName())
           .append("(\"")
           .append(exchangeDescriptor.getId())
@@ -379,57 +341,90 @@ public class ExchangeApiInterfaceImplementationGenerator extends JavaTypeGenerat
           .append("\")")
           .toString();
       }
+    } else {
+      constructorBody
+          .append(JavaCodeGenUtil.SUPER_ARG_SEPARATOR)
+          .append("null");
     }
+    constructorBody
+      .append(JavaCodeGenUtil.SUPER_ARG_SEPARATOR)
+      .append(ExchangeGenUtil.generateSubstitutionInstructionDeclaration(
+        exchangeApiDescriptor.getHttpUrl(), 
+        exchangeDescriptor, 
+        EXCHANGE_ARGUMENT_NAME + GET_PROPERTIES,
+        getImports()))
+      .append(JavaCodeGenUtil.SUPER_ARG_SEPARATOR)
+      .append(ExchangeGenUtil.generateSubstitutionInstructionDeclaration(
+        exchangeApiDescriptor.getWebsocketUrl(), 
+        exchangeDescriptor,  
+        EXCHANGE_ARGUMENT_NAME + GET_PROPERTIES, 
+        getImports()));
     constructorBody.append(");\n");
   
+    for (String rateLimitVariableInstantationDeclaration : rateLimitVariablesInstantiationDeclarations) {
+      constructorBody.append(rateLimitVariableInstantationDeclaration);
+    }
+    
     if (hasRestEnpoints) {
-      String httpRequestExecutorFactoryClassName  = getHttpRequestExecutorFactory();
-      String httpRequestTimeout = getHttpRequestTimeout() + "L";
-      constructorBody
-         .append("createHttpRequestExecutor(")
-         .append(httpRequestExecutorFactoryClassName != null? 
-               "\"" + httpRequestExecutorFactoryClassName + "\""
-               : "null")
-         .append(", ")
-         .append(httpRequestTimeout)
-         .append(");\n");
-      
-      String httpRequestInterceptorFactoryFullClassName = getHttpRequestInterceptorFactory();
-      if (httpRequestInterceptorFactoryFullClassName != null) {
-        constructorBody.append("createHttpRequestInterceptor(\"")
-                 .append(httpRequestInterceptorFactoryFullClassName)
-                 .append("\");\n");
-      }
+      generateConstructorBodyRestEndpointDeclarations(constructorBody);
     }
     if (hasWsEnpoints) {
-      constructorBody.append("createWebsocketManager(")
-               .append(ExchangeJavaGenUtil.WEBSOCKET_URL_STATIC_VARIABLE)
-               .append(", ")
-               .append(JavaCodeGenUtil.getQuotedString(getWebsocketFactory()))
-               .append(", ")
-               .append(JavaCodeGenUtil.getQuotedString(getWebsocketHookFactory()))
-               .append(");\n");
-      for (WebsocketEndpointDescriptor wsApi: exchangeApiDescriptor.getWebsocketEndpoints()) {
-        String websocketEndpointVariableName = getWebsocketEndpointVariableName(wsApi);
-        String messageClassObjectName = ExchangeApiGenUtil.generateWebsocketEndpointMessagePojoClassName(
-            exchangeDescriptor, 
-            exchangeApiDescriptor, 
-            wsApi);
-        Field message = ExchangeApiGenUtil.resolveFieldProperties(exchangeApiDescriptor, wsApi.getMessage());
-        Type messageDataType = ExchangeJavaGenUtil.getFieldType(message);
-        String getResponseDeserializerInstance = ExchangeApiGenUtil.getNewMessageDeserializerInstruction(messageDataType, messageClassObjectName, getImports());
-        constructorBody.append("this.")
-          .append(websocketEndpointVariableName)
-          .append(" = ")
-          .append("createWebsocketEndpoint(")
-          .append(ExchangeApiGenUtil.getWebsocketEndpointNameStaticVariable(wsApi.getName()))
-          .append(", ")
-          .append(getResponseDeserializerInstance)
-          .append(");\n");
-      }
-      
+      generateConstructorBodyWebsocketEndpointDeclarations(constructorBody);
     }
     return constructorBody.toString();
+  }
+  
+  private void generateConstructorBodyRestEndpointDeclarations(StringBuilder constructorBody) {
+    String httpRequestExecutorFactoryClassName  = getHttpRequestExecutorFactory();
+    String httpRequestTimeout = getHttpRequestTimeout() + "L";
+    constructorBody
+       .append("createHttpRequestExecutor(")
+       .append(httpRequestExecutorFactoryClassName != null? 
+             "\"" + httpRequestExecutorFactoryClassName + "\""
+             : "null")
+       .append(", ")
+       .append(httpRequestTimeout)
+       .append(");\n");
+    
+    String httpRequestInterceptorFactoryFullClassName = getHttpRequestInterceptorFactory();
+    if (httpRequestInterceptorFactoryFullClassName != null) {
+      constructorBody.append("createHttpRequestInterceptor(\"")
+               .append(httpRequestInterceptorFactoryFullClassName)
+               .append("\");\n");
+    }
+    exchangeApiDescriptor.getRestEndpoints().forEach(restApi -> 
+      constructorBody.append(generateRestEndpointUrlVariableInstantiationInstruction(restApi)));
+  }
+  
+  private void generateConstructorBodyWebsocketEndpointDeclarations(StringBuilder constructorBody) {
+    addImport(EncodingUtil.class);
+    constructorBody.append("createWebsocketManager(")
+             .append(THIS)
+             .append(WS_URL_PROPERTY_NAME)
+             .append(", ")
+             .append(JavaCodeGenUtil.getQuotedString(getWebsocketFactory()))
+             .append(", ")
+             .append(JavaCodeGenUtil.getQuotedString(getWebsocketHookFactory()))
+             .append(");\n");
+             
+    for (WebsocketEndpointDescriptor wsApi: exchangeApiDescriptor.getWebsocketEndpoints()) {
+      String websocketEndpointVariableName = getWebsocketEndpointVariableName(wsApi);
+      String messageClassObjectName = ExchangeApiGenUtil.generateWebsocketEndpointMessagePojoClassName(
+          exchangeDescriptor, 
+          exchangeApiDescriptor, 
+          wsApi);
+      Field message = ExchangeApiGenUtil.resolveFieldProperties(exchangeApiDescriptor, wsApi.getMessage());
+      Type messageDataType = ExchangeGenUtil.getFieldType(message);
+      String getResponseDeserializerInstance = ExchangeApiGenUtil.getNewMessageDeserializerInstruction(messageDataType, messageClassObjectName, getImports());
+      constructorBody.append(THIS)
+        .append(websocketEndpointVariableName)
+        .append(" = ")
+        .append("createWebsocketEndpoint(")
+        .append(ExchangeApiGenUtil.getWebsocketEndpointNameStaticVariable(wsApi.getName()))
+        .append(", ")
+        .append(getResponseDeserializerInstance)
+        .append(");\n");
+    }
   }
   
   private void addRestMethod(String methodDeclaration, String methodBody) {
@@ -447,9 +442,9 @@ public class ExchangeApiInterfaceImplementationGenerator extends JavaTypeGenerat
 
   private void generateWebsocketApiMethodsDeclarations(WebsocketEndpointDescriptor websocketApi) {
     Field request = ExchangeApiGenUtil.resolveFieldProperties(exchangeApiDescriptor, websocketApi.getRequest());
-    Type requestDataType = ExchangeJavaGenUtil.getFieldType(request);
+    Type requestDataType = ExchangeGenUtil.getFieldType(request);
     Field message = ExchangeApiGenUtil.resolveFieldProperties(exchangeApiDescriptor, websocketApi.getMessage());
-    Type messageDataType = ExchangeJavaGenUtil.getFieldType(message);
+    Type messageDataType = ExchangeGenUtil.getFieldType(message);
     addImport(WebsocketEndpoint.class);
     boolean hasArguments = ExchangeApiGenUtil.websocketEndpointHasArguments(websocketApi, exchangeApiDescriptor);
     String requestClassName = null;
@@ -462,7 +457,7 @@ public class ExchangeApiInterfaceImplementationGenerator extends JavaTypeGenerat
                     exchangeApiDescriptor, 
                     websocketApi);
       }
-      requestSimpleClassName = ExchangeJavaGenUtil.getClassNameForType(
+      requestSimpleClassName = ExchangeGenUtil.getClassNameForType(
                           requestDataType, 
                           getImports(), 
                           requestClassName);
@@ -472,7 +467,7 @@ public class ExchangeApiInterfaceImplementationGenerator extends JavaTypeGenerat
                       exchangeDescriptor, 
                       exchangeApiDescriptor, 
                       websocketApi);
-    String messageClassSimpleName = ExchangeJavaGenUtil.getClassNameForType(
+    String messageClassSimpleName = ExchangeGenUtil.getClassNameForType(
                       messageDataType, 
                       getImports(), 
                       messageClassObjectName);
@@ -514,21 +509,14 @@ public class ExchangeApiInterfaceImplementationGenerator extends JavaTypeGenerat
     subscribeMethodBody
       .append(generateWebsocketTopicMatcherDeclaration(websocketApi, request, message, requestArgName, requestClassName))
       .append(");\n")
-      .append("String subId = ")
+      .append(RETURN)
       .append(websocketEndpointVariableName)
-      .append (".subscribe(subscribeRequest, listener);\n")
-      .append(LOG_DEBUG)
-      .append(subscribeMethodName)
-      .append(" > {} returned subscriptionId:{}\", subscribeRequest, subId);\n")
-      .append("return subId;");
+      .append (".subscribe(subscribeRequest, listener);\n");
     addWebsocketMethod(websocketApi.getName(), OVERRIDE_PUBLIC + subscribeMethodSignature, subscribeMethodBody.toString());
     
     
     StringBuilder unsubscribeMethodBody = new StringBuilder()
-        .append(LOG_DEBUG)
-        .append(unsubscribeMethodName)
-        .append(": subscriptionId:{}\", subscriptionId);\n")
-        .append("return ")
+        .append(RETURN)
         .append(websocketEndpointVariableName)
         .append(".unsubscribe(subscriptionId);\n");
     addWebsocketMethod(websocketApi.getName(), OVERRIDE_PUBLIC + unsubscribeMethodSignature, unsubscribeMethodBody.toString());
@@ -550,10 +538,10 @@ public class ExchangeApiInterfaceImplementationGenerator extends JavaTypeGenerat
       replacements.add(ExchangeApiGenUtil.getRequestArgName(request.getName()));
       replacements.add("\" + " + requestArgName + " + \"");
     }
-    List<Field> requestFields = Optional.ofNullable(request == null? null: request.getProperties()).orElse(List.of());
+    List<Field> requestFields = CollectionUtil.emptyIfNull(request == null? null: request.getProperties());
     for (Field param: requestFields) {
       replacements.add(param.getMsgField() != null? param.getMsgField(): param.getName());
-      String fieldClass = ExchangeJavaGenUtil.getClassNameForType(param.getType(), getImports(), requestClassName);
+      String fieldClass = ExchangeGenUtil.getClassNameForType(param.getType(), getImports(), requestClassName);
       replacements.add("\" + request." 
                  + JavaCodeGenUtil.getGetAccessorMethodName(
                          param.getName(), 
@@ -598,7 +586,7 @@ public class ExchangeApiInterfaceImplementationGenerator extends JavaTypeGenerat
    *         name see {@link Field#getName()} matching that field.
    */
   private String getMsgFieldName(String name, Field msg) {
-    Type messageDataType = ExchangeJavaGenUtil.getFieldType(msg);
+    Type messageDataType = ExchangeGenUtil.getFieldType(msg);
     if (Objects.equals(msg.getName(), name)) {
       return Optional.ofNullable(msg.getMsgField()).orElse(name);
     } else if (messageDataType.isObject()) {
@@ -615,13 +603,15 @@ public class ExchangeApiInterfaceImplementationGenerator extends JavaTypeGenerat
   private String generateWebsocketTopicSerializerDeclaration(WebsocketEndpointDescriptor websocketApi) {
     String topicSerializerBody = "\"\"";
     Field request = ExchangeApiGenUtil.resolveFieldProperties(exchangeApiDescriptor, websocketApi.getRequest());
+    Type requestDataType = ExchangeGenUtil.getFieldType(request);
     if (ExchangeApiGenUtil.websocketEndpointHasArguments(websocketApi, exchangeApiDescriptor)) {
       if (websocketApi.getTopic() != null) {
         topicSerializerBody =  generateUrlParametersOrTopicSerializerBodyFromTemplate(
                         websocketApi.getTopic(), 
                         request.getProperties(), 
                         websocketApi.getTopicParametersListSeparator(),
-                        websocketApi.getRequest().getName());
+                        websocketApi.getRequest().getName(),
+                        requestDataType);
       } else {
         topicSerializerBody = "request == null? \"\": \"\" + JsonUtil.pojoToJsonString(request)";
       }      
@@ -634,9 +624,9 @@ public class ExchangeApiInterfaceImplementationGenerator extends JavaTypeGenerat
   
   private void generateRestEndpointMethodDeclaration(RestEndpointDescriptor restApi) {
     Field request = restApi.getRequest();
-    Type requestDataType = ExchangeJavaGenUtil.getFieldType(request);
+    Type requestDataType = ExchangeGenUtil.getFieldType(request);
     Field response = restApi.getResponse();
-    Type responseDataType =  ExchangeJavaGenUtil.getFieldType(response);
+    Type responseDataType =  ExchangeGenUtil.getFieldType(response);
     boolean hasArguments = ExchangeApiGenUtil.restEndpointHasArguments(restApi, exchangeApiDescriptor);
     String requestSimpleClassName = "Object";
     String requestArgName = ExchangeApiGenUtil.DEFAULT_REQUEST_ARG_NAME;
@@ -646,10 +636,10 @@ public class ExchangeApiInterfaceImplementationGenerator extends JavaTypeGenerat
       if (requestDataType.isObject()) {
         requestClassName = ExchangeApiGenUtil.generateRestEnpointRequestPojoClassName(exchangeDescriptor, exchangeApiDescriptor, restApi);
       }
-      requestSimpleClassName = ExchangeJavaGenUtil.getClassNameForType(
+      requestSimpleClassName = ExchangeGenUtil.getClassNameForType(
           requestDataType, 
           getImports(), 
-          requestClassName);
+          requestClassName); 
     }
     boolean hasResponse = ExchangeApiGenUtil.restEndpointHasResponse(restApi, exchangeApiDescriptor);
     String responseSimpleClassName = "String";
@@ -663,7 +653,7 @@ public class ExchangeApiInterfaceImplementationGenerator extends JavaTypeGenerat
             restApi);
       }
       
-      responseSimpleClassName = ExchangeJavaGenUtil.getClassNameForType(
+      responseSimpleClassName = ExchangeGenUtil.getClassNameForType(
           responseDataType, 
           getImports(), 
           restResponseClassName);
@@ -705,31 +695,24 @@ public class ExchangeApiInterfaceImplementationGenerator extends JavaTypeGenerat
       urlParametersSerializerDeclaration = "String " + urlParametersSerializerVariableName + " = " + urlParametersSerializerDeclaration;
     }
     StringBuilder apiMethodBody = new StringBuilder()
-        .append(Optional.ofNullable(urlParametersSerializerDeclaration).orElse(""))
-        .append(LOG_DEBUG)
-        .append(restApi.getHttpMethod().name())
-        .append(" ")
-        .append(restApi.getName())
-        .append(" >")
-        .append(hasArguments? " {}\", " + requestArgName : "\"")
-        .append(");\n");
+        .append(Optional.ofNullable(urlParametersSerializerDeclaration).orElse(""));
     
     List<String> rateLimitVariables = getRateLimitsVariables(restApi);
     
-    apiMethodBody.append("return ");
+    apiMethodBody.append(RETURN);
     
     String rateLimitsVariable = "null";
     int requestWeight = Optional.ofNullable(restApi.getRequestWeight()).orElse(0);
     String restEndpointJavadocLink = getRestEndpointJavaDocLink(restApi, hasArguments? requestSimpleClassName: null);
     if (!rateLimitVariables.isEmpty()) {
       addImport(RateLimitRule.class);
-      rateLimitsVariable = "RATE_LIMITS_" + JavaCodeGenUtil.getStaticVariableName(restApi.getName());
+      rateLimitsVariable = JavaCodeGenUtil.firstLetterToLowerCase(restApi.getName()) + "RateLimits";
       generateRateLimitListVariable(rateLimitsVariable, restApi.getName(), restEndpointJavadocLink, rateLimitVariables);
     }
     
     addImport(HttpRequest.class);
     addRestEndpointUrlDeclarations(restApi, restEndpointJavadocLink);
-    String endpointUrlVar = ExchangeApiGenUtil.getRestEndpointUrlStaticVariableName(restApi);
+    String endpointUrlVar = ExchangeApiGenUtil.getRestEndpointUrlVariableName(restApi);
     StringBuilder createHttpRequestInstruction = new StringBuilder()
         .append("HttpRequest.create(")
         .append(ExchangeApiGenUtil.getRestEndpointNameStaticVariable(restApi.getName()))
@@ -749,55 +732,49 @@ public class ExchangeApiInterfaceImplementationGenerator extends JavaTypeGenerat
         .append(rateLimitsVariable)
         .append(", ")
         .append(requestWeight)
-        .append(", ")
-        .append(getSerializeRequestBodyInstruction(restApi))
         .append(")");
         
-    StringBuilder sumbitRequestInstruction = new StringBuilder();
-    sumbitRequestInstruction
-    .append("submit(")
-    .append(createHttpRequestInstruction.toString())
-    .append(", ")
-    .append(deserializerVariableName)
-    .append(");\n");
-    apiMethodBody.append(sumbitRequestInstruction.toString());
+    StringBuilder submitRequestInstruction = new StringBuilder();
+    String endpointCallArg = "";
+    if (restApi.isPaginated()) {
+      submitRequestInstruction.append("submitPaginated(");
+      endpointCallArg = ", this::" + ExchangeApiGenUtil.getRestApiMethodName(restApi);
+    } else {
+      submitRequestInstruction.append("submit(");
+    }
+    submitRequestInstruction
+      .append(createHttpRequestInstruction.toString())
+      .append(", ")
+      .append(deserializerVariableName)
+      .append(endpointCallArg)
+      .append(");\n");
+    apiMethodBody.append(submitRequestInstruction.toString());
     
     addRestMethod(OVERRIDE_PUBLIC + apiMethodSignature, apiMethodBody.toString());
   }
   
-  private String getSerializeRequestBodyInstruction(RestEndpointDescriptor restApi) {
-    boolean hasArguments = ExchangeApiGenUtil.restEndpointHasArguments(restApi, exchangeApiDescriptor);
-    String requestArgName = ExchangeApiGenUtil.DEFAULT_REQUEST_ARG_NAME;
-    StringBuilder s = new StringBuilder();
-    if (restApi.getHttpMethod().requestHasBody && hasArguments) {
-       s.append("serializeRequestBody(")
-        .append(requestArgName)
-        .append(")");
-    } else {
-      s.append(JavaCodeGenUtil.NULL);
-    }
-    return s.toString();
-  }
-  
   private List<String> getRateLimitsVariables(RestEndpointDescriptor restApi) {
     List<String> rateLimitVariables = new ArrayList<>();
-    if  (!CollectionUtils.isEmpty(exchangeDescriptor.getRateLimits())) {
-      String exchangeImplClassName = ExchangeJavaGenUtil.getExchangeInterfaceImplementationName(exchangeDescriptor);
-      addImport(exchangeImplClassName);
-      String exchangeImplSimpleClassName = JavaCodeGenUtil.getClassNameWithoutPackage(exchangeImplClassName);
-      exchangeDescriptor.getRateLimits().forEach(
-          rateLimit -> rateLimitVariables.add(exchangeImplSimpleClassName + "." + ExchangeJavaGenUtil.generateRateLimitVariableName(rateLimit.getId()))); 
-    }
-    rateLimitVariables.addAll(apiGlobalRateLimitVariables);
-    if (!CollectionUtils.isEmpty(restApi.getRateLimits())) {
-      int rateLimitCounter = 1;
-      for (RateLimitRule rateLimit: restApi.getRateLimits()) {
-        rateLimitVariables.add(generateRateLimitVariable(
-            rateLimit, 
-            restApi.getName() + rateLimitCounter++, 
-            "Rate limit rule applicable to '" + restApi.getName() + "' REST API"));
+    
+    for (String rateLimitId : CollectionUtil.emptyIfNull(restApi.getRateLimits())) {
+      String  pfx = "";
+      boolean isExchangeLimit = CollectionUtil.emptyIfNull(exchangeDescriptor.getRateLimits())
+                                              .stream()
+                                              .anyMatch(l -> l.getId().equals(rateLimitId));
+      if (isExchangeLimit) {
+        pfx = EXCHANGE_ARGUMENT_NAME + ".";
+      } else if (CollectionUtil.emptyIfNull(exchangeApiDescriptor.getRateLimits())
+                                              .stream()
+                                              .noneMatch(l -> l.getId().equals(rateLimitId))) {
+          throw new IllegalArgumentException(
+              String.format("Rate limit rule with id '%s' is not defined in '%s' exchange descriptor nor in '%s' API group descriptor.",
+                            rateLimitId, 
+                            exchangeDescriptor.getId(), 
+                            exchangeApiDescriptor.getName()));
       }
+      rateLimitVariables.add(pfx + ExchangeGenUtil.generateRateLimitGetterMethodName(rateLimitId) + "()");
     }
+    
     return rateLimitVariables;
   }
   
@@ -813,7 +790,7 @@ public class ExchangeApiInterfaceImplementationGenerator extends JavaTypeGenerat
   }
   
   private void addRestEndpointUrlDeclarations(RestEndpointDescriptor restApi, 
-                        String interfaceJavadocLink) {
+                                              String interfaceJavadocLink) {
     StringBuilder javadoc = new StringBuilder()
         .append("URL for <i>")
         .append(restApi.getName())
@@ -824,77 +801,75 @@ public class ExchangeApiInterfaceImplementationGenerator extends JavaTypeGenerat
         .append("\n")
         .append(JavaCodeGenUtil.generateJavaDoc(javadoc.toString()))
         .append("\n")
-        .append(ExchangeApiGenUtil.getRestEndpointUrlVariableDeclaration(hasBaseHttpUrl, restApi));
+        .append("protected final String ")
+        .append(ExchangeApiGenUtil.getRestEndpointUrlVariableName(restApi))
+        .append(";");
     restEndpointUrlDeclarations.add(sb.toString()); 
-        
   }
   
   private boolean checkHasRateLimits() {
-    List<RateLimitRule> rateLimits = exchangeApiDescriptor.getRateLimits();
-    if (rateLimits != null && !rateLimits.isEmpty()) {
-      return true;
-    }
-    if (exchangeApiDescriptor.getRestEndpoints() != null) {
-      for (RestEndpointDescriptor restEndpoint : exchangeApiDescriptor.getRestEndpoints()) {
-        rateLimits = restEndpoint.getRateLimits();
-        if (rateLimits != null && !rateLimits.isEmpty()) {
-          return true;
-        }
-      }
-    }
-    return false;
+    return CollectionUtil.emptyIfNull(exchangeApiDescriptor.getRestEndpoints())
+              .stream()
+              .anyMatch(restEndpoint -> !CollectionUtil.isEmpty(restEndpoint.getRateLimits()));
   }
   
-  private String generateRateLimitVariable(RateLimitRule rateLimitRule, String defaultName, String description) {
-    String name = rateLimitRule.getId();
-    if (name == null) {
-      name = defaultName;
+  private String generateRateLimitVariable(RateLimitRule rateLimitRule) {
+    String id = rateLimitRule.getId();
+    if (!JavaCodeGenUtil.isValidCamelCaseIdentifier(id)) {
+      throw new IllegalArgumentException(String.format(
+          "Rate limit rule id '%s' is not valid camel case identifier in '%s' API group.",
+            id,
+            exchangeApiDescriptor.getName()));
     }
-    String variableName = ExchangeJavaGenUtil.generateRateLimitVariableName(name);
-    // Add new rule definition if no one exists with same name. Otherwise, rule is expected to be a reference to existing one.
-    if (!endpointSpecificRateLimitIds.contains(name)) {
-      endpointSpecificRateLimitIds.add(name);
-      StringBuilder declaration =  new StringBuilder()
-              .append("\n")
-              .append(JavaCodeGenUtil.generateJavaDoc(description))
-              .append("\n")
-          .append(PUBLIC_STATIC_FINAL)
-          .append(RateLimitRule.class.getSimpleName())
-          .append(" ")
-          .append(variableName)
-          .append(" = ");
-      addImport(RateLimitRule.class);
-      if (rateLimitRule.getMaxTotalWeight() >= 0) {
-        declaration
-          .append("RateLimitRule.createWeightedRule(\"")
-          .append(name)
-          .append("\", ")
-          .append(rateLimitRule.getTimeFrame())
-          .append(", ")
-          .append(rateLimitRule.getMaxTotalWeight())
-          .append(");");
-      } else {
-        declaration.append("RateLimitRule.createRule(\"")
-          .append(name)
-          .append("\", ")
-          .append(rateLimitRule.getTimeFrame())
-          .append(", ")
-          .append(rateLimitRule.getMaxRequestCount())
-          .append(");");
-      }
-      rateLimitVariablesDeclarations.add(declaration.toString());
+    String variableName = ExchangeGenUtil.generateRateLimitVariableName(id);
+    addImport(RateLimitRule.class);
+    StringBuilder declaration =  new StringBuilder()
+      .append(PRIVATE_FINAL)
+      .append(RateLimitRule.class.getSimpleName())
+      .append(" ")
+      .append(variableName)
+      .append(";");
+    rateLimitVariablesDeclarations.add(declaration.toString());
+    StringBuilder instantiationDeclaration = new StringBuilder()
+        .append(THIS)
+        .append(variableName)
+        .append(" = ");
+    if (rateLimitRule.getMaxTotalWeight() >= 0) {
+      instantiationDeclaration
+        .append("RateLimitRule.createWeightedRule(\"")
+        .append(id)
+        .append("\", ")
+        .append(rateLimitRule.getTimeFrame())
+        .append(", ")
+        .append(rateLimitRule.getMaxTotalWeight());
+    } else {
+      instantiationDeclaration
+        .append("RateLimitRule.createRule(\"")
+        .append(id)
+        .append("\", ")
+        .append(rateLimitRule.getTimeFrame())
+        .append(", ")
+        .append(rateLimitRule.getMaxRequestCount());
     }
-    
+    instantiationDeclaration.append(");\n");
+    rateLimitVariablesInstantiationDeclarations.add(instantiationDeclaration.toString());
     return variableName;
   }
   
+  private void generateRateLimitRuleGetters() {
+    CollectionUtil.emptyIfNull(exchangeApiDescriptor.getRateLimits()).forEach(rateLimitRule -> 
+      appendToBody(ExchangeGenUtil.generateRateLimitGetterImplementationMethodDeclaration(rateLimitRule.getId()))
+        .append("\n")
+    );
+  }
+  
   private void generateRateLimitListVariable(String variableName, 
-                         String restApiName,
-                         String restEndpointJavadocLink, 
-                         List<String> rateLimitRuleVariableNames) {
+                                             String restApiName,
+                                             String restEndpointJavadocLink, 
+                                             List<String> rateLimitRuleVariableNames) {
     addImport(List.class);
     StringBuilder javadoc = new StringBuilder()
-        .append("Rate limits applicable to ")
+        .append("List of all rate limits applicable to ")
         .append("<i>")
         .append(restApiName)
         .append("</i> REST API")
@@ -905,19 +880,43 @@ public class ExchangeApiInterfaceImplementationGenerator extends JavaTypeGenerat
       .append("\n")
       .append(JavaCodeGenUtil.generateJavaDoc(javadoc.toString()))
       .append("\n")
-      .append("public static final List<")
+      .append("protected final List<")
       .append(RateLimitRule.class.getSimpleName())
       .append("> ")
       .append(variableName)
-      .append(" = List.of(");
+      .append(";");
+    addImport(List.class);
+    rateLimitVariablesDeclarations.add(declaration.toString());
+    
+    StringBuilder instantationDeclaration = new StringBuilder()
+        .append(THIS)
+        .append(variableName)
+        .append(" = List.of(");
     for (int i = 0; i < rateLimitRuleVariableNames.size(); i++) {
-      declaration.append(rateLimitRuleVariableNames.get(i));
+      instantationDeclaration.append(rateLimitRuleVariableNames.get(i));
       if (i < rateLimitRuleVariableNames.size() - 1) {
-        declaration.append(", ");
+        instantationDeclaration.append(", ");
       }
     }
-    declaration.append(");");
-    rateLimitVariablesDeclarations.add(declaration.toString());
+    instantationDeclaration.append(");\n");
+    rateLimitVariablesInstantiationDeclarations.add(instantationDeclaration.toString());
+  }
+  
+  private String generateRestEndpointUrlVariableInstantiationInstruction(RestEndpointDescriptor restApi) {
+    addImport(EncodingUtil.class);
+    StringBuilder sb = new StringBuilder().append(THIS)
+        .append(ExchangeApiGenUtil.getRestEndpointUrlVariableName(restApi)).append(" = ")
+        .append(EncodingUtil.class.getSimpleName())
+        .append(".buildUrl(this.getHttpUrl(), ")
+        .append(ExchangeGenUtil.generateSubstitutionInstructionDeclaration(
+            restApi.getUrl(), 
+            exchangeDescriptor, 
+            EXCHANGE_ARGUMENT_NAME + GET_PROPERTIES, 
+            getImports()))
+        .append(");\n");
+    
+    
+    return sb.toString();
   }
   
   private String generateUrlParametersSerializerDeclaration(RestEndpointDescriptor restApi) {
@@ -928,7 +927,7 @@ public class ExchangeApiInterfaceImplementationGenerator extends JavaTypeGenerat
                             exchangeApiDescriptor, request).getProperties();
     if (ExchangeApiGenUtil.restEndpointHasArguments(restApi, exchangeApiDescriptor)) {
       String requestName = request == null? null: request.getName();
-      Type requestDataType = ExchangeJavaGenUtil.getFieldType(request);
+      Type requestDataType = ExchangeGenUtil.getFieldType(request);
       boolean hasQueryParams = restApi.isQueryParams()  
           || !restApi.getHttpMethod().requestHasBody;
       if (restApi.getUrlParameters() != null) {
@@ -936,7 +935,8 @@ public class ExchangeApiInterfaceImplementationGenerator extends JavaTypeGenerat
                         restApi.getUrlParameters(), 
                         enpointParameters, 
                         restApi.getUrlParametersListSeparator(),
-                        requestName);
+                        requestName,
+                        requestDataType);
       } else if (!CollectionUtil.isEmpty(enpointParameters) && hasQueryParams) {
         getUrlParametersBody = generateGetUrlParametersBodyUsingQueryParams(enpointParameters, false);
       } else if (!requestDataType.isObject() && hasQueryParams) {
@@ -973,7 +973,7 @@ public class ExchangeApiInterfaceImplementationGenerator extends JavaTypeGenerat
             + "()";
       }
 
-      Type type = ExchangeJavaGenUtil.getFieldType(f);
+      Type type = ExchangeGenUtil.getFieldType(f);
       if (type.getCanonicalType() == CanonicalType.LIST
         || type.getCanonicalType() == CanonicalType.MAP
         || type.isObject()) {
@@ -996,10 +996,11 @@ public class ExchangeApiInterfaceImplementationGenerator extends JavaTypeGenerat
   private String generateUrlParametersOrTopicSerializerBodyFromTemplate(String urlParametersTemplate, 
                                         List<Field> fields, 
                                         String stringListSeparator,
-                                        String requestArgName) {
+                                        String requestArgName,
+                                        Type requestType) {
     fields = Optional.ofNullable(fields).orElse(List.of());
     if (stringListSeparator == null) {
-      stringListSeparator = ExchangeJavaGenUtil.DEFAULT_STRING_LIST_SEPARATOR;
+      stringListSeparator = ExchangeGenUtil.DEFAULT_STRING_LIST_SEPARATOR;
     }
     StringBuilder sb = new StringBuilder();
     sb.append(EncodingUtil.class.getSimpleName())
@@ -1009,7 +1010,7 @@ public class ExchangeApiInterfaceImplementationGenerator extends JavaTypeGenerat
     int n = fields.size();
     for (int i = 0; i < n; i++) {
       Field f = fields.get(i);
-      Type type = ExchangeJavaGenUtil.getFieldType(f);
+      Type type = ExchangeGenUtil.getFieldType(f);
       String name = f.getName();
       if (!urlParametersTemplate.contains("${" + name + "}")) {
         continue;
@@ -1020,9 +1021,7 @@ public class ExchangeApiInterfaceImplementationGenerator extends JavaTypeGenerat
                 ExchangeApiGenUtil.getClassNameForField(f, null, f.getObjectName()), 
                 fields.stream().map(Field::getName).collect(Collectors.toList()))
                + "()";
-      if (type.getCanonicalType() == CanonicalType.LIST) {
-        value = EncodingUtil.class.getSimpleName() + ".listToString(" + value + ", \"" + stringListSeparator + "\")"; 
-      }
+      value = getListFieldToUrlParameterSerializerInstuction(value, type, stringListSeparator);
       sb.append(", \"").append(name).append("\", ").append(value);
     }
     if (urlParametersTemplate.contains("${" + requestArgName + "}")) {
@@ -1030,13 +1029,26 @@ public class ExchangeApiInterfaceImplementationGenerator extends JavaTypeGenerat
       sb.append(", \"")
         .append(requestArgName)
         .append("\", ")
-        .append(ExchangeApiGenUtil.DEFAULT_REQUEST_ARG_NAME);
+        .append(getListFieldToUrlParameterSerializerInstuction(ExchangeApiGenUtil.DEFAULT_REQUEST_ARG_NAME, requestType, stringListSeparator));
     } 
     if (n <= 0) {
       return JavaCodeGenUtil.getQuotedString(urlParametersTemplate);
     }
     addImport(EncodingUtil.class);
     sb.append(")");
+    return sb.toString();
+  }
+  
+  private String getListFieldToUrlParameterSerializerInstuction(String fieldValue, Type fieldType, String stringListSeparator) {
+    if (fieldType.getCanonicalType() != CanonicalType.LIST) {
+      return fieldValue;
+    }
+    StringBuilder sb = new StringBuilder()
+        .append(EncodingUtil.class.getSimpleName())
+        .append(".listToString(")
+        .append(fieldValue)
+        .append(", \"")
+        .append(stringListSeparator).append("\")");
     return sb.toString();
   }
   

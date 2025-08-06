@@ -2,20 +2,18 @@ package org.jxapi.generator.java.exchange.api;
 
 import java.io.IOException;
 import java.nio.file.Path;
-import java.util.List;
 
-import org.jxapi.exchange.descriptor.Constant;
 import org.jxapi.exchange.descriptor.ExchangeApiDescriptor;
 import org.jxapi.exchange.descriptor.ExchangeDescriptor;
 import org.jxapi.exchange.descriptor.RestEndpointDescriptor;
 import org.jxapi.exchange.descriptor.WebsocketEndpointDescriptor;
 import org.jxapi.generator.java.exchange.ClassesGenerator;
-import org.jxapi.generator.java.exchange.ExchangeJavaGenUtil;
+import org.jxapi.generator.java.exchange.ExchangeGenUtil;
 import org.jxapi.generator.java.exchange.api.rest.RestEndpointClassesGenerator;
 import org.jxapi.generator.java.exchange.api.ws.WebsocketEndpointClassesGenerator;
-import org.jxapi.generator.java.exchange.constants.ConstantsClassGenerator;
 import org.jxapi.netutils.rest.ratelimits.RateLimitManager;
 import org.jxapi.util.CollectionUtil;
+import org.jxapi.util.PlaceHolderResolver;
 
 /**
  * Generates all Java classes of an API Wrapper for an {@link ExchangeApiDescriptor} defined in an
@@ -44,41 +42,32 @@ public class ExchangeApiClassesGenerator implements ClassesGenerator {
    * @param exchangeApiDescriptor the API descriptor to generate classes for
    */
   public ExchangeApiClassesGenerator(ExchangeDescriptor exchangeDescriptor,
-                     ExchangeApiDescriptor exchangeApiDescriptor) {
+                                     ExchangeApiDescriptor exchangeApiDescriptor) {
     this.exchangeDescriptor = exchangeDescriptor;
     this.exchangeApiDescriptor = exchangeApiDescriptor;
   }
   
   @Override
   public void generateClasses(Path outputFolder) throws IOException {
-    ExchangeApiInterfaceGenerator exchangeApiInterfaceGenerator = new ExchangeApiInterfaceGenerator(exchangeDescriptor, exchangeApiDescriptor);
+    PlaceHolderResolver docPlaceHolderResolver = 
+      PlaceHolderResolver.create(ExchangeGenUtil.getDescriptionReplacements(exchangeDescriptor, exchangeApiDescriptor.getName()));
+    ExchangeApiInterfaceGenerator exchangeApiInterfaceGenerator = 
+      new ExchangeApiInterfaceGenerator(exchangeDescriptor, exchangeApiDescriptor, docPlaceHolderResolver);
     exchangeApiInterfaceGenerator.writeJavaFile(outputFolder); 
     
     new ExchangeApiInterfaceImplementationGenerator(exchangeDescriptor, exchangeApiDescriptor).writeJavaFile(outputFolder);
-    if (exchangeApiDescriptor.getRestEndpoints() != null) {
-      for (RestEndpointDescriptor restEndpointDescriptor: exchangeApiDescriptor.getRestEndpoints()) {
-        new RestEndpointClassesGenerator(exchangeDescriptor, exchangeApiDescriptor, restEndpointDescriptor).generateClasses(outputFolder);
-      }
+    for (RestEndpointDescriptor restEndpointDescriptor: CollectionUtil.emptyIfNull(exchangeApiDescriptor.getRestEndpoints())) {
+      new RestEndpointClassesGenerator(exchangeDescriptor, 
+                                         exchangeApiDescriptor, 
+                                         restEndpointDescriptor, 
+                                         docPlaceHolderResolver).generateClasses(outputFolder);
     }
     
-    if (exchangeApiDescriptor.getWebsocketEndpoints() != null) {
-      for (WebsocketEndpointDescriptor websocketEndpointDescriptor: exchangeApiDescriptor.getWebsocketEndpoints()) {
-        new WebsocketEndpointClassesGenerator(exchangeDescriptor, exchangeApiDescriptor, websocketEndpointDescriptor).generateClasses(outputFolder);
-      }
-    }
-    
-    // Generate constants interface
-    List<Constant> constants = exchangeApiDescriptor.getConstants();
-    if (!CollectionUtil.isEmpty(constants)) {
-      ConstantsClassGenerator cgen = new ConstantsClassGenerator(
-          ExchangeJavaGenUtil.getExchangeApiConstantsInterfaceName(exchangeDescriptor, exchangeApiDescriptor), 
-          constants); 
-      cgen.setDescription("Constants used in "
-                + exchangeDescriptor.getId() 
-                + " exchange API wrapper {@link " 
-                + exchangeApiInterfaceGenerator.getName() 
-                + "} API group");
-      cgen.writeJavaFile(outputFolder);
+    for (WebsocketEndpointDescriptor websocketEndpointDescriptor: CollectionUtil.emptyIfNull(exchangeApiDescriptor.getWebsocketEndpoints())) {
+      new WebsocketEndpointClassesGenerator(exchangeDescriptor, 
+                                            exchangeApiDescriptor, 
+                                            websocketEndpointDescriptor,
+                                            docPlaceHolderResolver).generateClasses(outputFolder);
     }
   }
 }

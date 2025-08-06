@@ -13,7 +13,7 @@ public interface HttpRequestExecutor extends Disposable {
    * Default delay in milliseconds after which connection should be aborted if
    * response to a request has not been received.
    */
-  long DEFAULT_REQUEST_TIMEOUT = 5000L;
+  long DEFAULT_REQUEST_TIMEOUT = 30000L;
 
   /**
    * Submits a request for asynchronous execution.

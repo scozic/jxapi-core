@@ -1,4 +1,15 @@
 # Using the wrapper
+<!-- BEGIN TABLE OF CONTENTS -->
+  - [Using the wrapper](#using-the-wrapper)
+  - [Creating a wrapper instance](#creating-a-wrapper-instance)
+    - [Rest endpoints](#rest-endpoints)
+      - [REST request pagination](#rest-request-pagination)
+    - [Websocket endpoints](#websocket-endpoints)
+    - [POJOs](#pojos)
+    - [Observability](#observability)
+    - [Disposability](#disposability)
+
+<!-- END TABLE OF CONTENTS -->
 
 The generated wrapper Java module can be exported as Maven artifact so client application can use it by adding it as a dependency.
 
@@ -13,6 +24,7 @@ EmployeeExchange exchange = new EmployeeExchangeImpl("myEmployeeClient1", config
 Where config properties are a `Properties` object with specific configuration properties set.
 The full list of available configuration properties (if there are) can be retrieved in generated `<ExchangeID>Properties` interface.
 Common properties can also be tuned.
+You can also create suitable .properties configuration file from generated `src/test/resources/demo-<ExchangeID>.properties.dist` file.
 
 Then, endpoints can be called from 'group' interfaces accessible from 'Exchange' instance like:
 ```java
@@ -63,3 +75,8 @@ When API exposes websocket endpoints, websocket service handles error and retrie
 ## Disposability
 
 Do not forget to call `Exchange.dispose()` method when done using the wrapper free resources used by wrapper like websocket connections and thread pools.
+
+## Constants
+
+A class named `<ExchangeID>Properties` is generated in main generated sources package with a list of `public static final` constants. These constants define values used across APIs you may want to use. Such constants may be organized in groups, for instance for grouping all possible values of an enumarated type field value. Groups are generated as inner static classes of main constants class.
+ 

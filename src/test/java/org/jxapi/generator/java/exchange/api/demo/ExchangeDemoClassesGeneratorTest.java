@@ -35,7 +35,8 @@ public class ExchangeDemoClassesGeneratorTest {
     ExchangeDescriptor exchange = ExchangeDescriptorParser.fromJson(Paths.get(".", "src", "test", "resources", "testExchangeDescriptor.json"));
     new ExchangeDemoClassesGenerator(exchange).generateClasses(srcFolder);
     Path pkgPath = Paths.get(".");
-    checkJavaFilesCount(pkgPath, 1);
+    checkJavaFilesCount(pkgPath, 2);
+    ClassesGeneratorTestUtil.checkSourceFileExists(srcFolder.resolve(BASE_PKG), Paths.get("MyTestExchangeDemoProperties.java"));
     pkgPath = pkgPath.resolve("marketData");
     checkJavaFilesCount(pkgPath, 1);
     pkgPath = pkgPath.resolve("demo");
@@ -52,7 +53,7 @@ public class ExchangeDemoClassesGeneratorTest {
     exchange.getApis().get(0).setRestEndpoints(null);
     new ExchangeDemoClassesGenerator(exchange).generateClasses(srcFolder);
     Path pkgPath = Paths.get(".");
-    checkJavaFilesCount(pkgPath, 1);
+    checkJavaFilesCount(pkgPath, 2);
     pkgPath = pkgPath.resolve("marketData");
     checkJavaFilesCount(pkgPath, 1);
     pkgPath = pkgPath.resolve("demo");
@@ -65,6 +66,7 @@ public class ExchangeDemoClassesGeneratorTest {
     srcFolder = ClassesGeneratorTestUtil.generateTmpDir();
     ExchangeDescriptor exchange = ExchangeDescriptorParser.fromJson(Paths.get(".", "src", "test", "resources", "testExchangeDescriptor.json"));
     exchange.getApis().get(0).setWebsocketEndpoints(null);
+    exchange.setDemoProperties(null);
     new ExchangeDemoClassesGenerator(exchange).generateClasses(srcFolder);
     Path pkgPath = Paths.get(".");
     checkJavaFilesCount(pkgPath, 1);

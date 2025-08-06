@@ -39,10 +39,9 @@ public class ExchangeClassesGeneratorTest {
     checkSourceFileExists(Paths.get("MyTestExchangeConstants.java"));
     checkSourceFileExists(Paths.get("MyTestExchangeProperties.java"));
     
-    checkJavaFilesCount(Paths.get("marketData"), 6);
+    checkJavaFilesCount(Paths.get("marketData"), 5);
     checkSourceFileExists(Paths.get("marketData", "MyTestExchangeMarketDataApi.java"));
     checkSourceFileExists(Paths.get("marketData", "MyTestExchangeMarketDataApiImpl.java"));
-    checkSourceFileExists(Paths.get("marketData", "MyTestExchangeMarketDataConstants.java"));
     
     checkJavaFilesCount(Paths.get("marketData", "deserializers"), 5);
     checkSourceFileExists(Paths.get("marketData", "deserializers", "MyTestExchangeMarketDataExchangeInfoResponseDeserializer.java"));

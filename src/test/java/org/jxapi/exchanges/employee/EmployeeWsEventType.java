@@ -1,13 +1,19 @@
 package org.jxapi.exchanges.employee;
 
-import org.jxapi.exchanges.employee.gen.v1.EmployeeV1Constants;
+import org.jxapi.exchanges.employee.gen.EmployeeConstants;
 
+/**
+ * Enumeration of WebSocket event types for Employee events.
+ */
 public enum EmployeeWsEventType {
 
-  EMPLOYEE_ADDED(EmployeeV1Constants.UPDATE_EMPLOYEE_TYPE_ADD), 
-  EMPLOYEE_UPDATED(EmployeeV1Constants.UPDATE_EMPLOYEE_TYPE_UPATE), 
-  EMPLOYEE_DELETED(EmployeeV1Constants.UPDATE_EMPLOYEE_TYPE_DELETE);
+  EMPLOYEE_ADDED(EmployeeConstants.UpdateEmployeeType.ADD), 
+  EMPLOYEE_UPDATED(EmployeeConstants.UpdateEmployeeType.UPDATE), 
+  EMPLOYEE_DELETED(EmployeeConstants.UpdateEmployeeType.DELETE);
   
+  /**
+   * The code representing the event type in message. Should be one of {@link EmployeeConstants.UpdateEmployeeType} enumerated values.
+   */
   public final String code;
   
   private EmployeeWsEventType(String eventType) {

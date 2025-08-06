@@ -1,5 +1,6 @@
 package org.jxapi.util;
 
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
@@ -8,9 +9,16 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import com.fasterxml.jackson.core.JsonFactory;
+import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.JsonToken;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializerProvider;
+import com.fasterxml.jackson.databind.module.SimpleModule;
+import com.fasterxml.jackson.databind.ser.std.StdSerializer;
+
 import org.jxapi.netutils.deserialization.json.field.IntegerJsonFieldDeserializer;
 
 /**
@@ -66,6 +74,81 @@ public class JsonUtilTest {
     Foo foo = new Foo("foo", List.of(cbar));
     cbar.setFoo(foo);
     JsonUtil.pojoToPrettyPrintJson(foo);
+  }
+  
+  // Read next / current String tests
+  @Test
+  public void testReadNextString_ValueTrueAsString() throws Exception {
+    JsonParser parser = new JsonFactory().createParser("true".getBytes());
+    Assert.assertEquals(Boolean.TRUE.toString(), JsonUtil.readNextString(parser));
+  }
+  
+  @Test
+  public void testReadNextString_ValueStringAsString() throws Exception {
+    JsonParser parser = new JsonFactory().createParser("\"bar\"".getBytes());
+    Assert.assertEquals("bar", JsonUtil.readNextString(parser));
+  }
+  
+  @Test
+  public void testReadNextString_ValueBigDecimalAsString() throws Exception {
+    JsonParser parser = new JsonFactory().createParser("123.45".getBytes());
+    Assert.assertEquals("123.45", JsonUtil.readNextString(parser));
+  }
+  
+  @Test
+  public void testReadNextString_ValueIntAsString() throws Exception {
+    JsonParser parser = new JsonFactory().createParser("123".getBytes());
+    Assert.assertEquals("123", JsonUtil.readNextString(parser));
+  }
+  
+  @Test
+  public void testReadNextString_ValueNullAsString() throws Exception {
+    JsonParser parser = new JsonFactory().createParser("null".getBytes());
+    Assert.assertNull(JsonUtil.readNextString(parser));
+  }
+  
+  @Test
+  public void testReadCurrentString_ValueTrueAsString() throws Exception {
+    JsonParser parser = new JsonFactory().createParser("true".getBytes());
+    Assert.assertEquals(JsonToken.VALUE_TRUE, parser.nextToken());
+    Assert.assertEquals(Boolean.TRUE.toString(), JsonUtil.readCurrentString(parser));
+  }
+  
+  @Test
+  public void testReadCurrentString_ValueStringAsString() throws Exception {
+    JsonParser parser = new JsonFactory().createParser("\"bar\"".getBytes());
+    Assert.assertEquals(JsonToken.VALUE_STRING, parser.nextToken());
+    Assert.assertEquals("bar", JsonUtil.readCurrentString(parser));
+  }
+  
+  @Test
+  public void testReadCurrentString_ValueBigDecimalAsString() throws Exception {
+    JsonParser parser = new JsonFactory().createParser("123.45".getBytes());
+    Assert.assertEquals(JsonToken.VALUE_NUMBER_FLOAT, parser.nextToken());
+    Assert.assertEquals("123.45", JsonUtil.readCurrentString(parser));
+  }
+  
+  @Test
+  public void testReadCurrentString_ValueIntAsString() throws Exception {
+    JsonParser parser = new JsonFactory().createParser("123".getBytes());
+    Assert.assertEquals(JsonToken.VALUE_NUMBER_INT, parser.nextToken());
+    Assert.assertEquals("123", JsonUtil.readCurrentString(parser));
+  }
+  
+  @Test
+  public void testReadCurrentString_ValueNullAsString() throws Exception {
+    JsonParser parser = new JsonFactory().createParser("null".getBytes());
+    Assert.assertEquals(JsonToken.VALUE_NULL, parser.nextToken());
+    Assert.assertNull(JsonUtil.readCurrentString(parser));
+  }
+  
+  @Test
+  public void testReadCurrentString_ValueObjectAsString() throws Exception {
+    JsonParser parser = new JsonFactory().createParser("{\"x\":{\"foo\":\"bar\"}, \"y\":123}".getBytes());
+    Assert.assertEquals(JsonToken.START_OBJECT, parser.nextToken());
+    Assert.assertEquals(JsonToken.FIELD_NAME, parser.nextToken());
+    Assert.assertEquals(JsonToken.START_OBJECT, parser.nextToken());
+    Assert.assertEquals("{\"foo\":\"bar\"}", JsonUtil.readCurrentString(parser));
   }
   
   // Read next / current BigDecimal tests
@@ -300,9 +383,28 @@ public class JsonUtilTest {
     doTestSkipNextPrimitiveValue("{\"x\": 1, \"y\": 0}");
   }
   
-  @Test()
+  @Test
   public void testCreateDefaultJsonToStringObjectMapper() {
     Assert.assertNotNull(JsonUtil.createDefaultJsonToStringObjectMapper());
+  }
+  
+  @Test
+  public void testWriteField() throws JsonProcessingException {
+    Foo foo = new Foo(null, null);
+    ObjectMapper mapper = new ObjectMapper();
+    SimpleModule module = new SimpleModule();
+    module.addSerializer(Foo.class, new FooToStringJsonSerializer());
+    mapper.registerModule(module); 
+    Assert.assertEquals("{}", mapper.writeValueAsString(foo));
+    foo.setActive(true);
+    foo.setId(123);
+    foo.setName("foo");
+    foo.setBars(List.of(new Bar(1), new Bar(2)));
+    foo.setPrice(new BigDecimal("12.34"));
+    foo.setTimestamp(123456789L);
+    Assert.assertEquals("{\"name\":\"foo\",\"bars\":[{\"id\":1},{\"id\":2}],\"id\":123,\"price\":12.34,\"timestamp\":123456789,\"active\":true}", mapper.writeValueAsString(foo));
+    foo.setActive(false);
+    Assert.assertEquals("{\"name\":\"foo\",\"bars\":[{\"id\":1},{\"id\":2}],\"id\":123,\"price\":12.34,\"timestamp\":123456789}", mapper.writeValueAsString(foo));
   }
   
   private void doTestSkipNextPrimitiveValue(String primitiveValue) throws Exception{
@@ -322,6 +424,10 @@ public class JsonUtilTest {
     private String name;
     private List<Bar> bars;
     private Exception exception;
+    private Integer id;
+    private BigDecimal price;
+    private Long timestamp;
+    private Boolean active;
     
     public Foo(String name, List<Bar> bars) {
       this.setName(name);
@@ -351,8 +457,62 @@ public class JsonUtilTest {
     public void setException(Exception exception) {
       this.exception = exception;
     }
+
+    public Integer getId() {
+      return id;
+    }
+
+    public void setId(Integer id) {
+      this.id = id;
+    }
+
+    public BigDecimal getPrice() {
+      return price;
+    }
+
+    public void setPrice(BigDecimal price) {
+      this.price = price;
+    }
+
+    public Long getTimestamp() {
+      return timestamp;
+    }
+
+    public void setTimestamp(Long timestamp) {
+      this.timestamp = timestamp;
+    }
+
+    public Boolean getActive() {
+      return active;
+    }
+
+    public void setActive(Boolean active) {
+      this.active = active;
+    }
     
 
+  }
+  
+  public static class FooToStringJsonSerializer extends StdSerializer<Foo> {
+
+    public FooToStringJsonSerializer() {
+      super(Foo.class);
+    }
+
+    @Override
+    public void serialize(Foo value, JsonGenerator gen, SerializerProvider provider) throws IOException {
+      gen.writeStartObject();
+      JsonUtil.writeStringField(gen, "name", value.getName());
+      JsonUtil.writeObjectField(gen, "bars", value.getBars());
+      if (value.getException() != null) {
+        JsonUtil.writeStringField(gen, "exception", value.getException().toString());
+      }
+      JsonUtil.writeIntField(gen, "id", value.getId());
+      JsonUtil.writeBigDecimalField(gen, "price", value.getPrice());
+      JsonUtil.writeLongField(gen, "timestamp", value.getTimestamp());
+      JsonUtil.writeBooleanField(gen, "active", value.getActive());
+      gen.writeEndObject();
+    }
   }
   
   public static class Bar {

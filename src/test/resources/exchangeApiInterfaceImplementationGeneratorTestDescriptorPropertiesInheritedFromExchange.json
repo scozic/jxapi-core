@@ -13,7 +13,7 @@
 			"description": "An API with both API global and endpoint specific rate limits",
 			"rateLimits": [
 				{"id": "globalWeightRule", "timeFrame": 2000,  "maxTotalWeight": 500},
-				{"timeFrame": 10000,  "maxRequestCount": 250}
+				{"id": "globalRateRule", "timeFrame": 10000,  "maxRequestCount": 250}
 			],
 			"restEndpoints": [
 				{
@@ -23,8 +23,8 @@
 					"url": "https://com.sample.mycex/exchangeInfo",
 					"requestWeight": 60,
 					"rateLimits": [
-						{"timeFrame": 3000,  "maxRequestCount": 30},
-						{"id": "customRule", "timeFrame": 1500,  "maxTotalWeight": 300}
+						"globalWeightRule",
+						"globalRateRule"
 					],
 					"request": {
 						"properties": [

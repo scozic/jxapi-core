@@ -7,28 +7,42 @@
 	"properties": [
 		{"name": "baseHttpUrl", "description": "Mock HTTP server base API URL", "defaultValue": "http://localhost:8080"},
 		{"name": "baseWebsocketUrl", "description": "Mock websocket server base API URL", "defaultValue": "ws://localhost:8090"},
-		{"name": "websocketHeartBeatInterval", "type":"INT",  "description": "Mock websocket server expected heartBeat interval", "defaultValue": -1}
+		{"name": "ws", "description": "Mock websocket server related properties", "properties":[
+				{"name": "websocketHeartBeatInterval", "type":"INT",  "description": "Mock websocket server expected heartBeat interval", "defaultValue": -1}
+			]
+		}
+	],
+	"demoProperties": [
+		{"name": "demoSymbol", "description": "Default value to use for market 'symbol' parameter in demo snippets", "defaultValue": "BTC_USDT"}
 	],
 	"constants": [
 		{"name": "pingMessage", "type":"STRING", "description": "Ping message", "value": "Ping!"},
 		{"name": "pongMessage", "type":"STRING", "description": "Pong message", "value": "Pong!"},
-		{"name": "baseUrlPattern", "type":"STRING", "description": "Value to replace in HTTP or Websocket base URL with value of <i>baseHttpUrl</i> or <i>baseWebsocketUrl</i> properties", "value": "BASEURL"},
+		{"name": "defaultAge", "type":"INT", "description": "Default age", "value": 18},
+		{
+			"name": "user",
+			"description": "User data",
+			"constants": [
+				{"name": "id", "type":"STRING", "description": "User ID", "value": "user1"},
+				{"name": "age", "type":"INT", "description": "User age", "value": "${constants.defaultAge}"}
+			]
+			
+		},
 		{"name": "websocketLoginMessage", "type":"STRING", "description": "Message to send to websocket server after connecting to complete handshake", "value": "Hello!"},
 		{"name": "websocketLogoutMessage", "type":"STRING", "description": "Message to send to websocket server before disconnecting", "value": "Bye!"},
 		{"name": "responseCodeOk", "type":"INT",  "description": "Possible value in <i>responseCode</i> field of rest request response: Successful response", "value": 200},
-		{"name": "responseCodeInternalServerError", "type":"INT",  "description": "Possible value in <i>responseCode</i> field of rest request response: Server internal error", "value": 500}
+		{"name": "responseCodeInternalServerError", "type":"INT",  "description": "Possible value in <i>responseCode</i> field of rest request response: Server internal error", "value": 500},
+		{"name": "allTickers", "type":"STRING", "description": "Constant for subscribing to all tickers", "value": "ticker@all"}
 	],
-	"httpUrl": "BASEURL",
-	"websocketUrl": "BASEURL",
+	"httpUrl": "${config.baseHttpUrl}",
+	"websocketUrl": "${config.baseWebsocketUrl}",
 	"httpRequestInterceptorFactory": "org.jxapi.exchanges.demo.net.DemoExchangeHttpRequestInterceptorFactory",
 	"websocketHookFactory": "org.jxapi.exchanges.demo.net.DemoExchangeWebsocketHookFactory",
+	"afterInitHookFactory": "org.jxapi.exchange.MockExchangeHookFactory",
 	"apis":[
 		{ 
 			"name": "MarketData",
 			"description": "Demo exchange market data API",
-			"constants": [
-				{"name": "allTickers", "type":"STRING", "description": "Constant for subscribing to all tickers", "value": "ticker@all"}
-			],
 			"httpUrl": "/marketData",
 			"restEndpoints": [
 				{
@@ -80,7 +94,7 @@
 					"url": "/postInt",
 					"request": {
 						"type": "INT",
-						"sampleValue": 12345
+						"sampleValue": "${constants.user.age}"
 					},
 					"response": {
 						"objectName": "GenericResponse",
@@ -128,7 +142,7 @@
 						"objectName": "SingleSymbol",
 						"sampleMapKeyValue": ["spot"],
 						"properties": [
-							{"name":"symbol", "type": "STRING", "msgField":"s", "description":"Symbol name", "sampleValue":"BTC_USDT"}
+							{"name":"symbol", "type": "STRING", "msgField":"s", "description":"Symbol name", "sampleValue":"${demo.config.demoSymbol}"}
 						]
 					},
 					"response": {
@@ -144,7 +158,7 @@
 					"description": "Subscribe to ticker stream",
 					"request": {
 						"properties": [
-							{"name": "symbol", "type":"STRING", "description":"Symbol to subscribe to ticker stream of", "sampleValue":"BTC_USDT"}
+							{"name": "symbol", "type":"STRING", "description":"Symbol to subscribe to ticker stream of", "sampleValue":"${demo.config.demoSymbol}"}
 						]
 					},
 					"messageTopicMatcherFields": [

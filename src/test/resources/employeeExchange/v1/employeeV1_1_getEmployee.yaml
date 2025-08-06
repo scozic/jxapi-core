@@ -12,7 +12,7 @@ apis:
        name: "id"
        type: INT
        description: "Employee ID"
-       sampleValue: 1
+       sampleValue: ${demo.config.employeeId}
       response:
        objectName: "Employee"
        type: OBJECT
@@ -20,7 +20,7 @@ apis:
         - name: "id"
           type: INT
           description: "Employee ID"
-          sampleValue: 1
+          sampleValue: ${demo.config.employeeId}
         - name: "firstName"
           description: "Employee first name"
           sampleValue: "John"
@@ -28,5 +28,5 @@ apis:
           description: "Employee last name"
           sampleValue: "Doe"
         - name: "profile"
-          description: "Employee profile. Can be 'regular' or 'admin'"
-          sampleValue: "REGULAR"
+          description: Employee profile. Can be ${constants.profile.regular} or ${constants.profile.admin}
+          sampleValue: ${constants.profile.regular}

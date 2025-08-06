@@ -28,6 +28,32 @@ public class CollectionUtil {
   }
   
   /**
+   * Check if a map is null or empty.
+   * 
+   * @param map Map to check.
+   * @return <code>true</code> if map is null or empty.
+   */
+  public static boolean isEmptyMap(Map<?, ?> map) {
+    if (map == null) {
+      return true;
+    }
+    return map.isEmpty();
+  }
+  
+  /**
+   * Returns a non-null list. If the input list is null, an empty non modifiable list is returned.
+   * @param list list to check.
+   * @param <T> The type of the items in the list
+   * @return A non-null list. If the input list is null, an empty non modifiable list is returned. Otherwise, the input list is returned.
+   */
+  public static <T> List<T> emptyIfNull(List<T> list) {
+    if (list == null) {
+      return List.of();
+    }
+    return list;
+  }
+  
+  /**
    * Creates a new modifiable list with default capacity.
    * 
    * @param <T> The type of the items in the list
@@ -65,6 +91,26 @@ public class CollectionUtil {
    */
   public static <T> Map<String, T> createMap(int initialCapacity) {
     return new LinkedHashMap<>(initialCapacity);
+  }
+  
+  /**
+   * Creates a new modifiable map with the given keys and values.
+   * @param keysAndValues alternating keys and values for the map.
+   * @return A new modifiable map with the given keys and values.
+   * @throws IllegalArgumentException if the keys and values are not in pairs ( <code>keysAndValues.length % 2 != 0</code>).
+   */
+  public static Map<String, Object> createMap(Object... keysAndValues) {
+    Map<String, Object> map = createMap();
+    if (keysAndValues.length == 0) {
+      return map;
+    }
+    if (keysAndValues.length % 2 != 0) {
+      throw new IllegalArgumentException("Keys and values must be in pairs.");
+    }
+    for (int i = 0; i < keysAndValues.length; i += 2) {
+      map.put(String.valueOf(keysAndValues[i]), keysAndValues[i + 1]);
+    }
+    return map;
   }
   
   /**
@@ -134,18 +180,41 @@ public class CollectionUtil {
   /**
    * Merge two lists into one.
    * 
-   * @param <T>  The type of the items in the lists
+   * @param <T>   The type of the items in the lists
    * @param list1 First list
    * @param list2 Second list
-   * @return A new list containing all items from both input lists. First list items are before second list items.
+   * @return A new list containing all items from both input lists. First list
+   *         items are before second list items. <code>null</code> arguments or
+   *         list items are ignored.
    */
   public static <T> List<T> mergeLists(List<T> list1, List<T> list2) {
-    List<T> merged = new ArrayList<>();
-    if (list1 != null) {
-      merged.addAll(list1);
+    if (list1 == null && list2 == null) {
+      return mergeLists(List.of());
+    } else if (list2 == null) {
+      return mergeLists(List.of(list1));
+    } else if (list1 == null) {
+      return mergeLists(List.of(list2));
     }
-    if (list2 != null) {
-      merged.addAll(list2);
+    return mergeLists(List.of(list1, list2));
+  }
+  
+  /**
+   * Merge multiple lists into one.
+   * 
+   * @param <T>   The type of the items in the lists
+   * @param lists A list of lists to merge
+   * @return A new unmodifiable list containing all items from all input lists. Items from each
+   *         list are added in order.
+   */
+  public static <T> List<T> mergeLists(List<List<T>> lists) {
+    List<T> merged = createList();
+    if (isEmpty(lists)) {
+      return merged;
+    }
+    for (List<T> list : lists) {
+      if (list != null) {
+        merged.addAll(list);
+      }
     }
     return merged;
   }

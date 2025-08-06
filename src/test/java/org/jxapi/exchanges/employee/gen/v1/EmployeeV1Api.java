@@ -1,11 +1,11 @@
 package org.jxapi.exchanges.employee.gen.v1;
 
-import java.util.List;
-
 import javax.annotation.processing.Generated;
 import org.jxapi.exchange.ExchangeApi;
 import org.jxapi.exchanges.employee.gen.v1.pojo.Employee;
 import org.jxapi.exchanges.employee.gen.v1.pojo.EmployeeV1EmployeeUpdatesMessage;
+import org.jxapi.exchanges.employee.gen.v1.pojo.EmployeeV1GetAllEmployeesRequest;
+import org.jxapi.exchanges.employee.gen.v1.pojo.EmployeeV1GetAllEmployeesResponse;
 import org.jxapi.netutils.rest.FutureRestResponse;
 import org.jxapi.netutils.websocket.WebsocketListener;
 
@@ -61,10 +61,11 @@ public interface EmployeeV1Api extends ExchangeApi {
   
   /**
    * Get all employees
+   * @param request Page request parameters for 'getAllEmployees' rest endpoint paginated requests.
    * @return A {@link FutureRestResponse} that will complete when request submitted asynchronously has been processed.
    * @see <a href="https://www.example.com/docs/employee/getAll">Reference documentation</a>
    */
-  FutureRestResponse<List<Employee>> getAllEmployees();
+  FutureRestResponse<EmployeeV1GetAllEmployeesResponse> getAllEmployees(EmployeeV1GetAllEmployeesRequest request);
   
   /**
    * Add a new employee

@@ -164,8 +164,6 @@ public class ExchangeApiDescriptor {
   
   private List<RateLimitRule> rateLimits;
 
-  private List<Constant> constants;
-
   /**
    * Retrieves the list of REST endpoints for this API.
    * @return The list of REST endpoints for this API, may be <code>null</code>.
@@ -392,28 +390,6 @@ public class ExchangeApiDescriptor {
    */
   public void setWebsocketUrl(String websocketUrl) {
     this.websocketUrl = websocketUrl;
-  }
-
-  /**
-   * @see Constant
-   * @return List of constants that are used in context of the exchange wrapper,
-   *         for
-   *         instance specific values for some APIs request/response/message
-   *         properties.
-   */
-  public List<Constant> getConstants() {
-    return constants;
-  }
-
-  /**
-   * @see Constant
-   * @param constants List of constants that are used in context of the exchange
-   *                  wrapper, for
-   *                  instance specific values for some APIs
-   *                  request/response/message properties.
-   */
-  public void setConstants(List<Constant> constants) {
-    this.constants = constants;
   }
   
   /**

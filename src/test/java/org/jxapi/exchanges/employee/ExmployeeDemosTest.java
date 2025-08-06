@@ -10,10 +10,9 @@ import org.junit.Before;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
+import org.jxapi.exchanges.employee.gen.EmployeeConstants;
 import org.jxapi.exchanges.employee.gen.EmployeeExchange;
 import org.jxapi.exchanges.employee.gen.EmployeeProperties;
-import org.jxapi.exchanges.employee.gen.v1.EmployeeV1Constants;
 import org.jxapi.exchanges.employee.gen.v1.demo.EmployeeV1AddEmployeeDemo;
 import org.jxapi.exchanges.employee.gen.v1.demo.EmployeeV1DeleteEmployeeDemo;
 import org.jxapi.exchanges.employee.gen.v1.demo.EmployeeV1EmployeeUpdatesDemo;
@@ -44,8 +43,8 @@ public class ExmployeeDemosTest {
     server = new EmployeeExchangeServer(httpPort, wsPort);
     server.start();
     config = new Properties();
-    config.setProperty(EmployeeProperties.BASE_HTTP_URL.getName(), server.getHttpBaseUrl());
-    config.setProperty(EmployeeProperties.BASE_WEBSOCKET_URL.getName(), server.getWebSocketBaseUrl());
+    config.setProperty(EmployeeProperties.Server.BASE_HTTP_URL.getName(), server.getHttpBaseUrl());
+    config.setProperty(EmployeeProperties.Server.BASE_WEBSOCKET_URL.getName(), server.getWebSocketBaseUrl());
     config.setProperty(DemoProperties.DEMO_WS_SUBSCRIPTION_DURATION_PROPERTY.getName(), "500");
     config.setProperty(DemoProperties.DEMO_WS_DELAY_BEFORE_EXIT_AFTER_UNSUBSCRIPTION_PROPERTY.getName(), "50");
   }
@@ -91,7 +90,7 @@ public class ExmployeeDemosTest {
     e.setId(1);
     e.setFirstName("John");
     e.setLastName("Doe");
-    e.setProfile(EmployeeV1Constants.PROFILE_ADMIN);
+    e.setProfile(EmployeeConstants.Profile.ADMIN);
     return e;
   }
   

@@ -41,6 +41,25 @@ public interface Exchange extends Disposable, HasProperties {
    * @return The version of the exchange
    */
   String getVersion();
+  
+  /**
+   * Returns the HTTP URL prefix for all REST endpoints of API groups of this
+   * exchange. This prefix is used to build the full URL of each endpoint. It is
+   * unused when either API group or REST endpoint defines an absolute URL.
+   * 
+   * @return The HTTP URL prefix for REST endpoints of this exchange.
+   */
+  String getHttpUrl();
+  
+  /**
+   * Returns the WebSocket URL prefix for all WebSocket endpoints of API groups of
+   * this exchange. This prefix is used to build the full URL of each API group. It
+   * is unused when API group defines an absolute
+   * URL.
+   * 
+   * @return The base websocket URLfor API groups of this exchange.
+   */
+  String getWsUrl();
 
   /**
    * Subscribes an observer to every {@link ExchangeApi} exposed.

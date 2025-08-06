@@ -55,12 +55,23 @@ public class PropertiesUtil {
    * @return The property value as a string or the default value if the property
    *         is not found
    */
-  public static String getStringProperty(Properties properties, String key, Object defaultValue) {
+  public static String getString(Properties properties, String key, Object defaultValue) {
     Object v = Optional.ofNullable(properties.get(key)).orElse(defaultValue);
     if (v != null) {
       return v.toString();
     }
     return null;
+  }
+  
+  /**
+   * Retrieves a property as a string from a properties instance.
+   * 
+   * @param properties   The properties instance
+   * @param property     The property
+   * @return The property value as a string or the default value if the property is not found in <code>properties</code>.
+   */
+  public static String getString(Properties properties, ConfigProperty property) {
+    return getString(properties, property.getName(), property.getDefaultValue());
   }
   
   /**
@@ -72,12 +83,24 @@ public class PropertiesUtil {
    * @return The property value as an integer or the default value if the property
    *         is not found
    */
-  public static Integer getIntProperty(Properties properties, String key, Object defaultValue) {
+  public static Integer getInt(Properties properties, String key, Object defaultValue) {
     Object v = Optional.ofNullable(properties.get(key)).orElse(defaultValue);
     if (v != null) {
       return Integer.valueOf(v.toString());
     }
     return null;
+  }
+  
+  /**
+   * Retrieves a property as an integer from a properties instance.
+   * 
+   * @param properties The properties instance
+   * @param property   The property
+   * @return The property value as an integer or the default value if the property
+   *         is not found in <code>properties</code>.
+   */
+  public static Integer getInt(Properties properties, ConfigProperty property) {
+    return getInt(properties, property.getName(), property.getDefaultValue());
   }
   
   /**
@@ -89,7 +112,7 @@ public class PropertiesUtil {
    * @return The property value as a long or the default value if the property is
    *         not found
    */
-  public static Long getLongProperty(Properties properties, String key, Object defaultValue) {
+  public static Long getLong(Properties properties, String key, Object defaultValue) {
     Object v = Optional.ofNullable(properties.get(key)).orElse(defaultValue);
     if (v != null) {
       if("now()".equals(v)) {
@@ -101,6 +124,18 @@ public class PropertiesUtil {
   }
   
   /**
+   * Retrieves a property as a long from a properties instance.
+   * 
+   * @param properties The properties instance
+   * @param property   The property
+   * @return The property value as a long or the default value if the property is
+   *         not found in <code>properties</code>.
+   */
+  public static Long getLong(Properties properties, ConfigProperty property) {
+    return getLong(properties, property.getName(), property.getDefaultValue());
+  }
+  
+  /**
    * Retrieves a property as a big decimal from a properties instance.
    * 
    * @param properties   The properties instance
@@ -109,12 +144,24 @@ public class PropertiesUtil {
    * @return The property value as a big decimal or the default value if the
    *         property is not found
    */
-  public static BigDecimal getBigDecimalProperty(Properties properties, String key, Object defaultValue) {
+  public static BigDecimal getBigDecimal(Properties properties, String key, Object defaultValue) {
     Object v = Optional.ofNullable(properties.get(key)).orElse(defaultValue);
     if (v != null) {
       return new BigDecimal(v.toString());
     }
     return null;
+  }
+  
+  /**
+   * Retrieves a property as a big decimal from a properties instance.
+   * 
+   * @param properties The properties instance
+   * @param property   The property
+   * @return The property value as a big decimal or the default value if the
+   *         property is not found in <code>properties</code>.
+   */
+  public static BigDecimal getBigDecimal(Properties properties, ConfigProperty property) {
+    return getBigDecimal(properties, property.getName(), property.getDefaultValue());
   }
   
   /**
@@ -126,12 +173,24 @@ public class PropertiesUtil {
    * @return The property value as a boolean or the default value if the property
    *         is not found
    */
-  public static Boolean getBooleanProperty(Properties properties, String key, Object defaultValue) {
+  public static Boolean getBoolean(Properties properties, String key, Object defaultValue) {
     Object v = Optional.ofNullable(properties.get(key)).orElse(defaultValue);
     if (v != null) {
       return Boolean.valueOf(v.toString());
     }
     return null;
+  }
+  
+  /**
+   * Retrieves a property as a boolean from a properties instance.
+   * 
+   * @param properties The properties instance
+   * @param property   The property
+   * @return The property value as a boolean or the default value if the property
+   *         is not found in <code>properties</code>.
+   */
+  public static Boolean getBoolean(Properties properties, ConfigProperty property) {
+    return getBoolean(properties, property.getName(), property.getDefaultValue());
   }
 
 }

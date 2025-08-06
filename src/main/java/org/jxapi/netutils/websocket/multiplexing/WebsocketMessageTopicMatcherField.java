@@ -18,16 +18,16 @@ public class WebsocketMessageTopicMatcherField {
    */
   public static List<WebsocketMessageTopicMatcherField> createList(String... namesAndValues) {
     List<WebsocketMessageTopicMatcherField> l = new ArrayList<>(namesAndValues.length / 2);
-    for (int i = 0; i < namesAndValues.length;i++) {
+    for (int i = 0; i < namesAndValues.length;i += 2) {
       WebsocketMessageTopicMatcherField f = new WebsocketMessageTopicMatcherField();
-      f.setName(namesAndValues[i++]);
-      f.setValue(namesAndValues[i]);
+      f.setName(namesAndValues[i]);
+      f.setValue(namesAndValues[i + 1]);
       l.add(f);
     }
     return l;
   }
 
-  private String fieldName;
+  private String name;
   
   private String value;
 
@@ -35,15 +35,15 @@ public class WebsocketMessageTopicMatcherField {
    * @return The field name
    */
   public String getName() {
-    return fieldName;
+    return name;
   }
 
   /**
    * Set the field name
-   * @param fieldName The field name
+   * @param name The field name
    */
-  public void setName(String fieldName) {
-    this.fieldName = fieldName;
+  public void setName(String name) {
+    this.name = name;
   }
 
   /**

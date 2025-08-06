@@ -131,40 +131,64 @@ public class AbstractExchangeTest {
         Assert.assertTrue(api1.isDisposed());
         Assert.assertTrue(api2.isDisposed());
     }
+    
+    @Test
+    public void testAfterInit() {
+      Assert.assertNull(exchange.getProperties().get(MockExchangeHook.MOCK_EXCHANGE_HOOK_PROPERTY));
+      exchange.afterInit(MockExchangeHookFactory.class.getName());
+      MockExchangeHook exchangeHook = (MockExchangeHook) exchange.getProperties().get(MockExchangeHook.MOCK_EXCHANGE_HOOK_PROPERTY);
+      Assert.assertNotNull(exchangeHook);
+      Assert.assertEquals(1, exchangeHook.size());
+      Assert.assertEquals(exchange, exchangeHook.pop());
+    }
+    
+    @Test(expected = IllegalArgumentException.class)
+    public void testAfterInit_InvalidFactoryClass() {
+      exchange.afterInit("WrongClassName");
+    }
 
     // Helper class for testing ExchangeApiObserver
     private static class TestExchangeApiObserver implements ExchangeApiObserver {
       
       List<ExchangeApiEvent> events = new ArrayList<>();
 
-    @Override
-    public void handleEvent(ExchangeApiEvent event) {
-      events.add(event);
-    }
+      @Override
+      public void handleEvent(ExchangeApiEvent event) {
+        events.add(event);
+      }
     }
 
     // Helper class for testing ExchangeApi
     private class TestExchangeApi extends AbstractExchangeApi {
 
-    public TestExchangeApi(String apiName) {
-      super(apiName, exchange.getName(), exchange.getId(), exchange.getProperties(), new RequestThrottler("TestApi"));
-    }
-    
-    @Override
-    public void dispatchApiEvent(ExchangeApiEvent event) {
-      super.dispatchApiEvent(event);
-    }
+      public TestExchangeApi(String apiName) {
+        super(apiName, 
+              ExchangeStub.INSTANCE, 
+              new RequestThrottler("TestApi"), 
+              "http://localhost:8080/api", 
+              "http://localhost:8080/ws");
+      }
+      
+      @Override
+      public void dispatchApiEvent(ExchangeApiEvent event) {
+        super.dispatchApiEvent(event);
+      }
     }
 
     // Helper class for testing AbstractExchange
     private static class TestExchange extends AbstractExchange {
         public TestExchange(String id, String version, String name, Properties properties) {
-            super(id, version, name, properties);
+            super(id, version, name, properties, null, null);
         }
         
         @Override
         public <T extends ExchangeApi> T addApi(T api) {
           return super.addApi(api);
+        }
+        
+        @Override
+        public void afterInit(String exchangeHookFactory) {
+          super.afterInit(exchangeHookFactory);
         }
     }
 }

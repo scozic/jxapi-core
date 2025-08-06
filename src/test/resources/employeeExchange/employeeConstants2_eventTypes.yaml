@@ -1,0 +1,14 @@
+id: "Employee"
+constants:
+  - name: "updateEmployeeType"
+    description: "Value of eventType field in WS message"
+    constants:        
+      - name: add
+        description: Value of eventType field in WS message for new employee added event
+        value: ADD
+      - name: update
+        description: Value of eventType field in WS message for update of an existing employee event
+        value: UPDATE
+      - name: delete
+        description: Value of eventType field in WS message for update of an existing employee event
+        value: DELETE

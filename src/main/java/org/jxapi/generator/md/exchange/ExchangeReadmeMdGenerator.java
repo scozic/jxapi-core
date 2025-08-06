@@ -6,22 +6,25 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
-
-import org.jxapi.exchange.descriptor.DefaultConfigProperty;
+import org.jxapi.exchange.descriptor.ConfigPropertyDescriptor;
 import org.jxapi.exchange.descriptor.Constant;
 import org.jxapi.exchange.descriptor.ExchangeApiDescriptor;
 import org.jxapi.exchange.descriptor.ExchangeDescriptor;
 import org.jxapi.exchange.descriptor.RestEndpointDescriptor;
 import org.jxapi.exchange.descriptor.Type;
 import org.jxapi.exchange.descriptor.WebsocketEndpointDescriptor;
-import org.jxapi.generator.html.HtmlGenerationUtil;
+import org.jxapi.generator.html.XmlElement;
+import org.jxapi.generator.html.HtmlGenUtil;
 import org.jxapi.generator.java.JavaCodeGenUtil;
-import org.jxapi.generator.java.exchange.ExchangeJavaGenUtil;
+import org.jxapi.generator.java.exchange.ExchangeGenUtil;
 import org.jxapi.generator.java.exchange.api.ExchangeApiGenUtil;
 import org.jxapi.generator.java.exchange.api.demo.EndpointDemoGenUtil;
+import org.jxapi.generator.java.exchange.properties.PropertiesGenUtil;
 import org.jxapi.util.CollectionUtil;
+import org.jxapi.util.PlaceHolderResolver;
 
 /**
  * Generates a README.md file for an exchange API wrapper.
@@ -64,10 +67,10 @@ public class ExchangeReadmeMdGenerator {
     this.exchangeDescriptor = exchangeDescriptor;
     this.baseJavadocUrl = baseJavadocUrl;
     this.baseSourceUrl = baseSourceUrl;
-    this.exchangeInterfaceName = ExchangeJavaGenUtil.getExchangeInterfaceName(exchangeDescriptor);
-    this.exchangeInterfaceImplementationName = ExchangeJavaGenUtil.getExchangeInterfaceImplementationName(exchangeInterfaceName);
+    this.exchangeInterfaceName = ExchangeGenUtil.getExchangeInterfaceName(exchangeDescriptor);
+    this.exchangeInterfaceImplementationName = ExchangeGenUtil.getExchangeInterfaceImplementationName(exchangeInterfaceName);
     this.demoClassName = findDemoClassName(exchangeDescriptor);
-    this.constantsInterfaceName = ExchangeJavaGenUtil.getExchangeConstantsInterfaceName(exchangeDescriptor);
+    this.constantsInterfaceName = ExchangeGenUtil.getExchangeConstantsClassName(exchangeDescriptor);
   }
 
   /**
@@ -76,10 +79,16 @@ public class ExchangeReadmeMdGenerator {
    * @return the README.md file content
    */
   public String generate() {
+    PlaceHolderResolver docPlaceHolderResolver = PlaceHolderResolver
+        .create(ExchangeGenUtil.getDescriptionReplacements(exchangeDescriptor, baseJavadocUrl));
     StringBuilder s = new StringBuilder().append("# ")
       .append(exchangeDescriptor.getId())
       .append(" API Java wrapper\n\n")
-      .append(exchangeDescriptor.getDescription())
+      .append(docPlaceHolderResolver.resolve(exchangeDescriptor.getDescription()))
+      .append("\n")
+      .append(ExchangeReadmeMdGeneratorUtil.BEGIN_TABLE_OF_CONTENTS_PLACEHOLDER)
+      .append("\n")
+      .append(ExchangeReadmeMdGeneratorUtil.END_TABLE_OF_CONTENTS_PLACEHOLDER)
       .append("\n");
     String docUrl = exchangeDescriptor.getDocUrl();
     if (docUrl != null) {
@@ -120,15 +129,15 @@ public class ExchangeReadmeMdGenerator {
        .append(getSourceFileLink(demoClassName, "test"))
        .append(" class for full usage example\n");
     }
-    List<DefaultConfigProperty> properties = exchangeDescriptor.getProperties();
+    List<ConfigPropertyDescriptor> properties = exchangeDescriptor.getProperties();
     if (!CollectionUtil.isEmpty(properties)) {
       s.append("\n### Properties\n\n")
-       .append(generatePropertiesTable(properties));
+       .append(generatePropertiesTable("Configuration properties", properties, null, docPlaceHolderResolver));
     }
     
     List<Constant> exchangeConstants = exchangeDescriptor.getConstants();
     if (!CollectionUtil.isEmpty(exchangeConstants)) {
-      s.append("\n### Constants\n\n")
+      s.append("\n\n### Constants\n\n")
        .append("Some useful constants are defined in ")
        .append(getInterfaceJavadocLink(constantsInterfaceName))
        .append("\n");
@@ -140,14 +149,16 @@ public class ExchangeReadmeMdGenerator {
        .append("APIs are available using the following interfaces accessible from ")
        .append(getInterfaceJavadocLink(exchangeInterfaceName))
        .append(" interface\n");
-      apiDescriptors.forEach(api -> s.append(generateApiDescriptorDoc(api)));
+      apiDescriptors.forEach(api -> s.append(generateApiDescriptorDoc(api, docPlaceHolderResolver)));
     }
-    return s.toString();    
+    
+    s.append(generateDemoSnippetsDocumentation(docPlaceHolderResolver));
+    return ExchangeReadmeMdGeneratorUtil.generateTableOfContent(s.toString());    
   }
   
-  private String generateApiDescriptorDoc(ExchangeApiDescriptor api) {
+  private String generateApiDescriptorDoc(ExchangeApiDescriptor api, PlaceHolderResolver docPlaceHolderResolver) {
     StringBuilder s = new StringBuilder();
-    String apiInterfaceClassName = ExchangeJavaGenUtil.getApiInterfaceClassName(exchangeDescriptor, api);
+    String apiInterfaceClassName = ExchangeGenUtil.getApiInterfaceClassName(exchangeDescriptor, api);
     String apiInterfaceSimpleClassName = JavaCodeGenUtil.getClassNameWithoutPackage(apiInterfaceClassName);
     s.append("\n### ")
      .append(api.getName())
@@ -165,36 +176,29 @@ public class ExchangeReadmeMdGenerator {
      s.append(getInterfaceJavadocLink(method))
       .append("\n\n");
      if (api.getDescription() != null) {
-       s.append(api.getDescription()).append("\n");
+       s.append(docPlaceHolderResolver.resolve(api.getDescription())).append("\n");
      }
      if (!CollectionUtil.isEmpty(api.getRestEndpoints())) {
        s.append("\n#### REST endpoints\n\n")
-        .append(generateRestEndpointsTable(api));
+        .append(generateRestEndpointsTable(api, docPlaceHolderResolver));
      }
     
      if (!CollectionUtil.isEmpty(api.getWebsocketEndpoints())) {
-       s.append("\n#### Websocket endpoints\n\n")
-        .append(generateWebsocketEndpointsTable(api));
+       s.append("\n\n#### Websocket endpoints\n\n")
+        .append(generateWebsocketEndpointsTable(api, docPlaceHolderResolver));
        
      }
     
-    List<Constant> apiConstants = api.getConstants();
-    if (!CollectionUtil.isEmpty(apiConstants)) {
-      String apiConstantsInterfaceName = ExchangeJavaGenUtil.getExchangeApiConstantsInterfaceName(exchangeDescriptor, api);
-      s.append("Some useful constants are defined in ")
-       .append(getInterfaceJavadocLink(apiConstantsInterfaceName))
-       .append("\n");
-    }
     return s.toString();
   }
   
-  private Object generateWebsocketEndpointsTable(ExchangeApiDescriptor api) {
+  private Object generateWebsocketEndpointsTable(ExchangeApiDescriptor api, PlaceHolderResolver docPlaceHolderResolver) {
     List<WebsocketEndpointDescriptor> websocketEndpoints = api.getWebsocketEndpoints();
-    String apiInterfaceClassName = ExchangeJavaGenUtil.getApiInterfaceClassName(exchangeDescriptor, api);
+    String apiInterfaceClassName = ExchangeGenUtil.getApiInterfaceClassName(exchangeDescriptor, api);
     List<String> columns = List.of("Subscription method", "Description", "API Reference");
     List<List<String>> cells = new ArrayList<>();
     websocketEndpoints.forEach(w -> {
-      Type requestDataType = ExchangeJavaGenUtil.getFieldType(w.getRequest());
+      Type requestDataType = ExchangeGenUtil.getFieldType(w.getRequest());
       String requestClassName = null;
       if (requestDataType != null && requestDataType.isObject()) {
         requestClassName = ExchangeApiGenUtil.generateWebsocketEndpointRequestPojoClassName(
@@ -210,7 +214,7 @@ public class ExchangeReadmeMdGenerator {
           .append(")")
           .toString();
       row.add(getInterfaceMethodJavadocLink(apiInterfaceClassName, method));
-      row.add(Optional.ofNullable(w.getDescription()).orElse(""));
+      row.add(Optional.ofNullable(docPlaceHolderResolver.resolve(w.getDescription())).orElse(""));
       String refDocLink = null;
       if (w.getDocUrl() != null) {
         refDocLink = JavaCodeGenUtil.getHtmlLink(w.getDocUrl(), "link");
@@ -223,16 +227,16 @@ public class ExchangeReadmeMdGenerator {
         .append(" ")
         .append(api.getName())
         .append(" websocket endpoints").toString();
-    return HtmlGenerationUtil.generateTable(caption, columns, cells);
+    return HtmlGenUtil.generateTable(caption, columns, cells);
   }
 
-  private String generateRestEndpointsTable(ExchangeApiDescriptor api) {
+  private String generateRestEndpointsTable(ExchangeApiDescriptor api, PlaceHolderResolver docPlaceHolderResolver) {
     List<RestEndpointDescriptor> restEndpoints = api.getRestEndpoints();
-    String apiInterfaceClassName = ExchangeJavaGenUtil.getApiInterfaceClassName(exchangeDescriptor, api);
+    String apiInterfaceClassName = ExchangeGenUtil.getApiInterfaceClassName(exchangeDescriptor, api);
     List<String> columns = List.of("Endpoint", "Description", "API Reference");
     List<List<String>> cells = new ArrayList<>();
     restEndpoints.forEach(r -> {
-      Type requestDataType = ExchangeJavaGenUtil.getFieldType(r.getRequest());
+      Type requestDataType = ExchangeGenUtil.getFieldType(r.getRequest());
       String requestClassName = null;
       if (requestDataType != null && requestDataType.isObject()) {
         requestClassName = ExchangeApiGenUtil.generateRestEnpointRequestPojoClassName(
@@ -248,7 +252,7 @@ public class ExchangeReadmeMdGenerator {
           .append(")")
           .toString();
       row.add(getInterfaceMethodJavadocLink(apiInterfaceClassName, method));
-      row.add(Optional.ofNullable(r.getDescription()).orElse(""));
+      row.add(docPlaceHolderResolver.resolve(Optional.ofNullable(docPlaceHolderResolver.resolve(r.getDescription())).orElse("")));
       String refDocLink = null;
       if (r.getDocUrl() != null) {
         refDocLink = JavaCodeGenUtil.getHtmlLink(r.getDocUrl(), "link");
@@ -261,7 +265,7 @@ public class ExchangeReadmeMdGenerator {
         .append(" ")
         .append(api.getName())
         .append(" REST endpoints").toString();
-    return HtmlGenerationUtil.generateTable(caption, columns, cells);
+    return HtmlGenUtil.generateTable(caption, columns, cells);
   }
   
   private String getInterfaceJavadocLink(String interfaceClass) {
@@ -285,22 +289,142 @@ public class ExchangeReadmeMdGenerator {
   private String getSourceFileLink(String className, String srcFolderName) {
     String baseUrl = String.format("%s/src/%s/java/", baseSourceUrl, srcFolderName);
         return JavaCodeGenUtil.getHtmlLink(
-                JavaCodeGenUtil.getClassUrl(baseUrl, className, ".java"), 
+                JavaCodeGenUtil.getClassUrl(baseUrl, className, null, ".java"), 
                 JavaCodeGenUtil.getClassNameWithoutPackage(className));
   }
   
-  private String generatePropertiesTable(List<DefaultConfigProperty> properties) {
+  private String generatePropertiesTable(String 
+                                         tableName, 
+                                         List<ConfigPropertyDescriptor> properties, 
+                                         String propertiesPrefix, 
+                                         PlaceHolderResolver docPlaceHolderResolver) {
     List<String> columns = List.of("Name", "Type", "description", "Default value");
-    List<List<String>> cells = new ArrayList<>();
+    List<List<XmlElement>> cells = new ArrayList<>();
+    collectPropertiesTableRows(propertiesPrefix, properties, cells, docPlaceHolderResolver);
+    XmlElement tableElement = XmlElement.builder()
+        .tag("table")
+        .child(XmlElement.builder().tag("caption").content(tableName).build())
+        .child(XmlElement.builder().tag("tr").children(columns.stream()
+            .map(col -> XmlElement.builder().tag("th").content(col).build())
+            .collect(Collectors.toList())
+          ).build())
+        .children(cells.stream()
+            .map(row -> XmlElement.builder().tag("tr").children(row).build())
+            .collect(Collectors.toList()))
+        .build();
+    return HtmlGenUtil.generateHtmlForElement(tableElement);
+  }
+  
+  private void collectPropertiesTableRows(String prefix, 
+                                          List<ConfigPropertyDescriptor> properties, 
+                                          List<List<XmlElement>> cells, 
+                                          PlaceHolderResolver docPlaceHolderResolver) {
     properties.forEach(p -> {
-      List<String> row = new ArrayList<>();
-      row.add(Optional.ofNullable(p.getName()).orElse(""));
-      row.add(String.valueOf(Optional.ofNullable(p.getType()).orElse(Type.STRING)));
-      row.add(Optional.ofNullable(p.getDescription()).orElse(""));
-      row.add(String.valueOf(Optional.ofNullable(p.getDefaultValue()).orElse("")));
-      cells.add(row);
+      List<XmlElement> row = new ArrayList<>();
+      String name = StringUtils.defaultString(p.getName());
+      String fullName = PropertiesGenUtil.getPropertyFullName(prefix, name);
+      row.add(createTd(fullName));
+      if (p.isGroup()) {
+        row.add(createTd("group"));
+        String descr = StringUtils.defaultString(docPlaceHolderResolver.resolve(p.getDescription()));
+        XmlElement descriptionTd = createTd(descr);
+        descriptionTd.addAttribute("colspan", "2");
+        row.add(descriptionTd);
+        cells.add(row);
+        collectPropertiesTableRows(fullName, p.getProperties(), cells, docPlaceHolderResolver);
+        return;
+      } else {
+        row.add(createTd(String.valueOf(Optional.ofNullable(p.getType()).orElse(Type.STRING))));
+        row.add(createTd(docPlaceHolderResolver.resolve(p.getDescription())));
+        String defValue = String.valueOf(Optional.ofNullable(p.getDefaultValue()).orElse(""));
+        defValue = docPlaceHolderResolver.resolve(defValue);
+        row.add(createTd(defValue));
+        cells.add(row);
+      }
     });
-    return HtmlGenerationUtil.generateTable("properties", columns, cells);
+  }
+  
+  private XmlElement createTd(String content) {
+    return XmlElement.builder().tag("td").content(content).build();
+  }
+  
+  private String generateDemoSnippetsDocumentation(PlaceHolderResolver docPlaceHolderResolver) {
+    if (!hasDemoSection()) {
+      return "";
+    }
+    StringBuilder s = new StringBuilder();
+    s.append("\n\n## Demo snippets\n\n")
+     .append("This wrapper contains demo snippets for the most important endpoints. These snippets are generated in _src/test/java/_ source folder.\n\n");
+    if (!CollectionUtil.isEmpty(exchangeDescriptor.getDemoProperties())) {
+      String exchangeDemoPropertiesInterfaceName = ExchangeGenUtil.getExchangeDemoPropertiesInterfaceName(exchangeDescriptor);
+      s.append("Some demo configuration properties are available to tune common request parameters used in snippets, as ")
+       .append(getSourceFileLink(exchangeDemoPropertiesInterfaceName, "test"))
+       .append(" class.\n These properties are used to configure default values for request parameters used in demo snippets.\n\n")
+       .append("In order to run demo snippets, you can set properties values in __demo-")
+       .append(exchangeDescriptor.getId())
+       .append(".properties__ properties file in src/test/resources folder.\n\n")
+       .append(generatePropertiesTable("Demo snippet properties", exchangeDescriptor.getDemoProperties(), "demo", docPlaceHolderResolver));
+    }
+    
+    if (hasEndpoints()) {
+      s.append("\n\n### Endpoint demo snippets\n\n");
+      exchangeDescriptor.getApis().stream()
+        .map(this::generateApiDescriptorDemoSnippetsDocumentation)
+        .forEach(s::append);
+    }
+    
+    return s.toString();
+  }
+  
+  private String generateApiDescriptorDemoSnippetsDocumentation(ExchangeApiDescriptor apiDescriptor) {
+    StringBuilder s = new StringBuilder();
+    if (!CollectionUtil.isEmpty(apiDescriptor.getRestEndpoints())) {
+      s.append("\n#### ")
+       .append(apiDescriptor.getName())
+       .append(" REST endpoints demo snippets:\n\n");
+       for (RestEndpointDescriptor restEndpoint : apiDescriptor.getRestEndpoints()) {
+         String demoSnippetClassName = EndpointDemoGenUtil.getRestApiDemoClassName(exchangeDescriptor, apiDescriptor, restEndpoint);
+         s.append(" - __")
+          .append(restEndpoint.getName())
+          .append("__: ")
+          .append(getSourceFileLink(demoSnippetClassName, "test"))
+          .append("\n");
+       }
+    }
+    
+    if (!CollectionUtil.isEmpty(apiDescriptor.getWebsocketEndpoints())) {
+      s.append("\n#### ")
+      .append(apiDescriptor.getName())
+      .append(" Websocket endpoints demo snippets\n\n");
+      for (WebsocketEndpointDescriptor websocketEndpoint : apiDescriptor.getWebsocketEndpoints()) {
+        String demoSnippetClassName = EndpointDemoGenUtil.getWebsocketApiDemoClassName(exchangeDescriptor, apiDescriptor, websocketEndpoint);
+        s.append(" - __")
+         .append(websocketEndpoint.getName())
+         .append("__: ")
+         .append(getSourceFileLink(demoSnippetClassName, "test"))
+         .append("\n");
+      }
+    }
+    return s.toString();
+  }
+  
+  /**
+   * Checks if the exchange has a demo section, which is determined by the
+   * presence of demo properties or any REST or WS endpoints.
+   * 
+   * @return true if there is a demo section, false otherwise
+   */
+  private boolean hasDemoSection() {
+    if (!CollectionUtil.isEmpty(exchangeDescriptor.getDemoProperties())) {
+      return true;
+    }
+    return hasEndpoints();
+  }
+  
+  private boolean hasEndpoints() {
+    return CollectionUtil.emptyIfNull(exchangeDescriptor.getApis()).stream()
+        .anyMatch(api -> !CollectionUtil.isEmpty(api.getRestEndpoints())
+                          || !CollectionUtil.isEmpty(api.getWebsocketEndpoints()));
   }
 
   /**

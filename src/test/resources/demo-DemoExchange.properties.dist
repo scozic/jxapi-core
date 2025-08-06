@@ -4,7 +4,6 @@
 # The resulting file will be read as default configuration file for demo snippets.
 # Uncomment and set following properties and adjust their values per your needs.
 
-
 # DemoExchange specific configuration properties
 
 # Mock HTTP server base API URL
@@ -13,6 +12,7 @@
 # Mock websocket server base API URL
 # baseWebsocketUrl=ws://localhost:8090
 
+# # Mock websocket server related properties
 # Mock websocket server expected heartBeat interval
 # websocketHeartBeatInterval=-1
 
@@ -29,10 +29,17 @@
 # jxapi.maxRequestThrottleDelay=
 
 
-# Demo REST/WEBSOCKET snippets configuration properties
+# Demo REST/WEBSOCKET snippets common configuration properties
 
 # The duration in ms of the subscription in websocket endpoint demo classes
 # jxapi.demo.ws.subscriptionDuration=30000
 
 # Delay in ms before exiting program after unsubscribing in websocked endpoint demo classes.
 # jxapi.demo.ws.delayBeforeExitAfterUnsubscription=1000
+
+
+# Demo REST/WEBSOCKET specific configuration properties
+
+# Default value to use for market 'symbol' parameter in demo snippets
+# demoSymbol=BTC_USDT
+

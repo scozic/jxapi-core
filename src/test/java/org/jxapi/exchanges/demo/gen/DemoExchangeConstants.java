@@ -1,6 +1,7 @@
 package org.jxapi.exchanges.demo.gen;
 
 import javax.annotation.processing.Generated;
+import org.jxapi.util.EncodingUtil;
 
 /**
  * Constants used in {@link org.jxapi.exchanges.demo.gen.DemoExchangeExchange} API wrapper
@@ -21,9 +22,28 @@ public class DemoExchangeConstants {
   public static final String PONG_MESSAGE = "Pong!";
   
   /**
-   * Value to replace in HTTP or Websocket base URL with value of <i>baseHttpUrl</i> or <i>baseWebsocketUrl</i> properties
+   * Default age
    */
-  public static final String BASE_URL_PATTERN = "BASEURL";
+  public static final Integer DEFAULT_AGE = Integer.valueOf("18");
+  
+  /**
+   * User data
+   */
+  @Generated("org.jxapi.generator.java.exchange.constants.ConstantsClassGenerator")
+  public static class User {
+    
+    private User(){}
+    
+    /**
+     * User ID
+     */
+    public static final String ID = "user1";
+    
+    /**
+     * User age
+     */
+    public static final Integer AGE = Integer.valueOf(EncodingUtil.substituteArguments("${constants.defaultAge}", "constants.defaultAge", DemoExchangeConstants.DEFAULT_AGE));
+  }
   
   /**
    * Message to send to websocket server after connecting to complete handshake
@@ -38,10 +58,15 @@ public class DemoExchangeConstants {
   /**
    * Possible value in <i>responseCode</i> field of rest request response: Successful response
    */
-  public static final Integer RESPONSE_CODE_OK = Integer.valueOf(200);
+  public static final Integer RESPONSE_CODE_OK = Integer.valueOf("200");
   
   /**
    * Possible value in <i>responseCode</i> field of rest request response: Server internal error
    */
-  public static final Integer RESPONSE_CODE_INTERNAL_SERVER_ERROR = Integer.valueOf(500);
+  public static final Integer RESPONSE_CODE_INTERNAL_SERVER_ERROR = Integer.valueOf("500");
+  
+  /**
+   * Constant for subscribing to all tickers
+   */
+  public static final String ALL_TICKERS = "ticker@all";
 }

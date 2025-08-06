@@ -4,11 +4,16 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
+import org.apache.commons.lang3.StringUtils;
 import org.jxapi.exchange.CommonConfigProperties;
-import org.jxapi.exchange.descriptor.ConfigProperty;
+import org.jxapi.exchange.descriptor.ConfigPropertyDescriptor;
 import org.jxapi.generator.java.JavaCodeGenUtil;
+import org.jxapi.generator.java.exchange.properties.PropertiesGenUtil;
 import org.jxapi.util.CollectionUtil;
+import org.jxapi.util.ConfigProperty;
 import org.jxapi.util.DemoProperties;
 
 /**
@@ -44,13 +49,14 @@ public class ExchangeDemoPropertiesFileGenerator {
   }
 
   private String exchangeId;
-  private List<ConfigProperty> exchangeProperties;
+  private List<ConfigPropertyDescriptor> exchangeProperties;
+  private List<ConfigPropertyDescriptor> demoProperties;
   
   /**
    * Constructor
      */
   public ExchangeDemoPropertiesFileGenerator() {
-    this(null, List.of());
+    this(null, List.of(), List.of());
   }
 
   /**
@@ -58,10 +64,14 @@ public class ExchangeDemoPropertiesFileGenerator {
    * 
    * @param exchangeId         the exchange id
    * @param exchangeProperties the exchange configuration properties
+   * @param demoProperties     the exchange demo configuration properties
    */
-  public ExchangeDemoPropertiesFileGenerator(String exchangeId, List<ConfigProperty> exchangeProperties) {
+  public ExchangeDemoPropertiesFileGenerator(String exchangeId, 
+                                             List<ConfigPropertyDescriptor> exchangeProperties, 
+                                             List<ConfigPropertyDescriptor> demoProperties) {
     this.exchangeId = exchangeId;
     this.exchangeProperties = exchangeProperties;
+    this.demoProperties = demoProperties;
   }
 
   /**
@@ -81,14 +91,14 @@ public class ExchangeDemoPropertiesFileGenerator {
   /**
    * @return the exchange configuration properties
    */
-  public List<ConfigProperty> getExchangeProperties() {
+  public List<ConfigPropertyDescriptor> getExchangeProperties() {
     return exchangeProperties;
   }
 
   /**
    * @param exchangeProperties the exchange configuration properties
    */
-  public void setExchangeProperties(List<ConfigProperty> exchangeProperties) {
+  public void setExchangeProperties(List<ConfigPropertyDescriptor> exchangeProperties) {
     this.exchangeProperties = exchangeProperties;
   }
 
@@ -101,33 +111,51 @@ public class ExchangeDemoPropertiesFileGenerator {
     StringBuilder s = new StringBuilder();
     s.append(generatePropertiesFileComment(String.format(DESCRIPTION, exchangeId)))
      .append(generateCommentedOutproperties(String.format("%s specific configuration properties", exchangeId), exchangeProperties))
-     .append(generateCommentedOutproperties("Common configuration properties", CommonConfigProperties.ALL))
-     .append(generateCommentedOutproperties("Demo REST/WEBSOCKET snippets configuration properties", DemoProperties.ALL));
+     .append(generateCommentedOutproperties("Common configuration properties", convertToConfigPropertyDescriptors(CommonConfigProperties.ALL)))
+     .append(generateCommentedOutproperties("Demo REST/WEBSOCKET snippets common configuration properties", convertToConfigPropertyDescriptors(DemoProperties.ALL)))
+     .append(generateCommentedOutproperties("Demo REST/WEBSOCKET specific configuration properties", demoProperties));
     return s.toString();
   }
   
-  private String generateCommentedOutproperties(String description, List<ConfigProperty> properties) {
+  private static List<ConfigPropertyDescriptor> convertToConfigPropertyDescriptors(List<ConfigProperty> properties) {
+    return properties.stream().map(PropertiesGenUtil::asConfigPropertyDescriptor).collect(Collectors.toList());
+  }
+  
+  private String generateCommentedOutproperties(String description, List<ConfigPropertyDescriptor> properties) {
     if (CollectionUtil.isEmpty(properties)) {
       return "";
     }
     StringBuilder s = new StringBuilder()
-      .append("\n\n")
-      .append(generatePropertiesFileComment(description));
-    for (ConfigProperty p: properties) {
-      s.append("\n");
-      String pdesc = p.getDescription();
-      if (!"".equals(pdesc)) {
-        s.append(generatePropertiesFileComment(p.getDescription()));
+      .append("\n")
+      .append(generatePropertiesFileComment(description))
+      .append("\n")
+      .append(generatePropertiesDeclarations(properties, 1));
+    return s.toString();
+  }
+  
+  private String generatePropertiesDeclarations(List<ConfigPropertyDescriptor> properties, int depth) {
+    StringBuilder s = new StringBuilder();
+    for (ConfigPropertyDescriptor property : properties) {
+      if (property.isGroup()) {
+        if (!StringUtils.isEmpty(property.getDescription())) {
+          StringBuilder descr = new StringBuilder();
+          descr.append(StringUtils.leftPad("", depth, '#'))
+               .append(" ")
+               .append(StringUtils.defaultString(property.getDescription()));
+          s.append(generatePropertiesFileComment(descr.toString()));
+        }
+        
+        s.append(generatePropertiesDeclarations(property.getProperties(), depth + 1));
+      } else {
+        if (!StringUtils.isEmpty(property.getDescription())) {
+          s.append(generatePropertiesFileComment(property.getDescription()));
+        }
+        String defValue = Optional.ofNullable(property.getDefaultValue()).orElse("").toString();
+        s.append(generatePropertiesFileComment(property.getName() + "=" + defValue))
+         .append("\n");
       }
-      StringBuilder propDeclaration = new StringBuilder()
-          .append(p.getName())
-          .append("=");
-      if (p.getDefaultValue() != null) {
-        propDeclaration.append(p.getDefaultValue());
-      }
-      s.append(generatePropertiesFileComment(propDeclaration.toString()));
-      
     }
+    
     return s.toString();
   }
   
@@ -138,6 +166,24 @@ public class ExchangeDemoPropertiesFileGenerator {
    */
   public void writeJavaFile(Path propertiesFile) throws IOException {
     Files.writeString(propertiesFile, generate());
+  }
+
+  /**
+   * Returns the demo properties.
+   * 
+   * @return the demo properties
+   */
+  public List<ConfigPropertyDescriptor> getDemoProperties() {
+    return demoProperties;
+  }
+
+  /**
+   * Sets the demo properties.
+   * 
+   * @param demoProperties the demo properties to set
+   */
+  public void setDemoProperties(List<ConfigPropertyDescriptor> demoProperties) {
+    this.demoProperties = demoProperties;
   }
   
   

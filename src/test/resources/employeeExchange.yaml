@@ -1,122 +1,168 @@
-id: "Employee"
-version: "1.0.0"
+id: Employee
+version: 1.0.0
 description: > 
- Employee exchange is a demo exchange REST APIs to get, add, delete and 
- update employees and a websocket endpoint to get notified of updates from an employee database.<br>
- A server can be started using <code>org.jxapi.exchanges.employee.EmployeeExchangeServer</code> class to serve these APIs.<br>
- The URL of the server must be set using the baseUrl property.<br>
- Notice how the 'employee' object present in APIs request and responses is used in multiple endpoints and its properties defined only once.
-docUrl: "https://www.example.com/docs/employee"
+  Employee exchange is a demo exchange REST APIs to get, add, delete and
+  update employees and a websocket endpoint to get notified of updates from an employee database.<br>
+  A server can be started using <code>org.jxapi.exchanges.employee.EmployeeExchangeServer</code> class to serve these APIs.<br>
+  The URL of the HTTP server and Websocket server must be set using the ${config.baseHttpUrl} and ${config.baseWebsocketUrl} properties.<br>
+  Notice how the 'employee' object present in APIs request and responses is used in multiple endpoints and its properties defined only once.
+docUrl: https://www.example.com/docs/employee
 properties:
- - name: "baseHttpUrl"
-   description: "Base URL for REST endpoints the Employee Exchange API"
- - name: "baseWebsocketUrl"
-   description: "Base URL for websocket endpoints of the Employee Exchange API"   
-constants:
- - name: "baseUrlPattern"
-   description: "Value to replace in HTTP or Websocket base URL with value of <i>baseHttpUrl</i> or <i>baseWebsocketUrl</i> properties"
-   value: "BASEURL"
-basePackage: "org.jxapi.exchanges.employee.gen"
-httpUrl: "BASEURL"
+ - name: server
+   description: Server related properties
+   properties:
+    - name: "baseHttpUrl"
+      description: "Base URL for REST endpoints the Employee Exchange API"
+    - name: "baseWebsocketUrl"
+      description: "Base URL for websocket endpoints of the Employee Exchange API"
+demoProperties:      
+ - name: employeeId
+   description: "Used in demo snippets to set as value of Employee 'id' property"
+   defaultValue: 1
+basePackage: org.jxapi.exchanges.employee.gen
+httpUrl: ${config.server.baseHttpUrl}
 httpRequestInterceptorFactory: org.jxapi.exchanges.demo.net.DemoExchangeHttpRequestInterceptorFactory
+constants:
+  - name: defaultPageSize
+    type: INT
+    description: Default page size for paginated requests
+    value: 10
+  - name: maxPageSize
+    type: INT
+    description: Maximum page size for paginated requests
+    value: 10000
+  - name: "profile"
+    description: "Employee profile types"
+    constants:
+      - name: regular
+        description: "Regular employee profile"
+        value: REGULAR
+      - name: admin
+        description: "Admin employee profile"
+        value: ADMIN
+  - name: "updateEmployeeType"
+    description: "Value of eventType field in WS message"
+    constants:        
+      - name: add
+        description: Value of eventType field in WS message for new employee added event
+        value: ADD
+      - name: update
+        description: Value of eventType field in WS message for update of an existing employee event
+        value: UPDATE
+      - name: delete
+        description: Value of eventType field in WS message for update of an existing employee event
+        value: DELETE
 apis:
  - name: V1
    description: "Version 1 of the Employee API"
-   httpUrl: "v1"
-   constants:
-    - name: "profileRegular"
-      description: "Regular employee profile"
-      value: "REGULAR"
-    - name: "profileAdmin"
-      description: "Admin employee profile"
-      value: "ADMIN"
-    - name: "updateEmployeeTypeAdd"
-      description: "Value of eventType field in WS message for new employee added event"
-      value: "ADD"
-    - name: "updateEmployeeTypeUpate"
-      description: "Value of eventType field in WS message for update of an existing employee event"
-      value: "UPDATE"
-    - name: "updateEmployeeTypeDelete"
-      description: "Value of eventType field in WS message for update of an existing employee event"
-      value: "DELETE"      
+   httpUrl: v1
    restEndpoints:
-    - name: "getEmployee"
-      description: "Get employee details by ID"
-      httpMethod: "GET"
-      docUrl: "https://www.example.com/docs/employee/get"
-      url: "/employee"
-      urlParameters: "/${id}"
+    - name: getEmployee
+      description: Get employee details by ID
+      httpMethod: GET
+      docUrl: https://www.example.com/docs/employee/get
+      url: /employee
+      urlParameters: /${id}
       request:
-       name: "id"
+       name: id
        type: INT
-       description: "Employee ID"
-       sampleValue: 1
+       description: Employee ID
+       sampleValue: ${demo.config.employeeId}
       response:
-       objectName: "Employee"
+       objectName: Employee
        type: OBJECT
        properties:
-        - name: "id"
+        - name: id
           type: INT
-          description: "Employee ID"
-          sampleValue: 1
-        - name: "firstName"
+          description: Employee ID
+          sampleValue: ${demo.config.employeeId}
+        - name: firstName
           description: "Employee first name"
-          sampleValue: "John"
-        - name: "lastName"
-          description: "Employee last name"
-          sampleValue: "Doe"
-        - name: "profile"
-          description: "Employee profile. Can be 'regular' or 'admin'"
-          sampleValue: "REGULAR"
-    - name: "getAllEmployees"
-      description: "Get all employees"
-      httpMethod: "GET"
-      docUrl: "https://www.example.com/docs/employee/getAll"
-      url: "/employees"
+          sampleValue: John
+        - name: lastName
+          description: Employee last name
+          sampleValue: Doe
+        - name: profile
+          description: Employee profile. Can be ${constants.profile.regular} or ${constants.profile.admin}
+          sampleValue: ${constants.profile.regular}
+    - name: getAllEmployees
+      description: Get all employees
+      httpMethod: GET
+      docUrl: https://www.example.com/docs/employee/getAll
+      url: /employees
+      paginated: true
+      request:
+        implementedInterfaces: 
+        - org.jxapi.exchanges.employee.EmployeePaginatedRequest
+        description: Page request parameters for 'getAllEmployees' rest endpoint paginated requests.
+        properties:
+        - name: page
+          type: INT
+          description: Page number to return, defaults to 1.
+          sampleValue: 1
+        - name: size
+          type: INT
+          description: >
+            Number of employees to return per page.<br>
+            Defaults to ${constants.defaultPageSize}.<br>
+            Maximum is ${constants.maxPageSize}.
+          sampleValue: 10
       response:
-       objectName: "Employee"
-       type: OBJECT_LIST          
-    - name: "addEmployee"
-      description: "Add a new employee"
-      httpMethod: "POST"
-      docUrl: "https://www.example.com/docs/employee/add"
-      url: "/employee"
+        implementedInterfaces:
+        - org.jxapi.exchanges.employee.EmployeePaginatedResponse
+        properties:
+        - name: page
+          type: INT
+          description: Page index, starting from 1
+          sampleValue: 1
+        - name: totalPages
+          type: INT
+          description: Total number of pages available
+          sampleValue: 10
+        - name: employees
+          objectName: Employee			
+          type: OBJECT_LIST       
+    - name: addEmployee
+      description: Add a new employee
+      httpMethod: POST
+      docUrl: https://www.example.com/docs/employee/add
+      url: /employee
       request:
-       description: "Employee to add"
-       objectName: "Employee"
-    - name: "updateEmployee"
-      description: "Update an existing employee"
-      httpMethod: "PUT"
-      docUrl: "https://www.example.com/docs/employee/add"
-      url: "/employee"
+       description: Employee to add
+       objectName: Employee
+    - name: updateEmployee
+      description: Update an existing employee
+      httpMethod: PUT
+      docUrl: https://www.example.com/docs/employee/add
+      url: /employee
       request:
-       description: "Employee to update"
-       objectName: "Employee"       
-    - name: "deleteEmployee"
-      description: "Delete an employee"
-      httpMethod: "DELETE"
-      docUrl: "https://www.example.com/docs/employee/delete"
-      url: "/employee"
-      urlParameters: "/${id}"
+       description: Employee to update
+       objectName: Employee
+    - name: deleteEmployee
+      description: Delete an employee
+      httpMethod: DELETE
+      docUrl: https://www.example.com/docs/employee/delete
+      url: /employee
+      urlParameters: /${id}
       request:
-       name: "id"
+       name: id
        type: INT
-       description: "Employee ID"
-       sampleValue: 1
-   websocketUrl: "BASEURL"
+       description: Employee ID
+       sampleValue: ${demo.config.employeeId}
+   websocketUrl: ${config.server.baseWebsocketUrl}
    websocketHookFactory: org.jxapi.exchanges.demo.net.DemoExchangeWebsocketHookFactory  
    websocketEndpoints:
-    - name: "employeeUpdates"
-      description: "Employee updates websocket"
-      docUrl: "https://www.example.com/docs/employee/updates"
+    - name: employeeUpdates
+      description: Employee updates websocket
+      docUrl: https://www.example.com/docs/employee/updates
       message:
-       description: "Employee update message"
+       description: Employee update message
        properties:
-        - name: "eventType"
-          description: "Type of event. Can be 'ADD', 'UPDATE' or 'DELETE'"
-          sampleValue: 1
-        - name: "employee"
-          objectName: "Employee"
-          description: "Employee that was updated"
-          sampleValue: "John"
+        - name: eventType
+          description: Type of event, e.g. one of ${constants.updateEmployeeType.add}, ${constants.updateEmployeeType.update} or ${constants.updateEmployeeType.delete} (see ${constants.updateEmployeeType} constants).
+          sampleValue: ${constants.updateEmployeeType.update}
+        - name: employee
+          objectName: Employee
+          description: Employee that was updated
+          sampleValue: John
        

@@ -24,7 +24,12 @@ import org.slf4j.LoggerFactory;
 public class DemoExchangeMarketDataExchangeInfoDemo {
   private static final Logger log = LoggerFactory.getLogger(DemoExchangeMarketDataExchangeInfoDemo.class);
   
-  public static DemoExchangeMarketDataExchangeInfoRequest createRequest() {
+  /**
+   * Creates a sample value for the request field of type DemoExchangeMarketDataExchangeInfoRequest using sample value(s) defined in the field descriptor.
+   * 
+   * @param properties the configuration properties to use for the sample value generation.
+   */
+  public static DemoExchangeMarketDataExchangeInfoRequest createRequest(Properties properties) {
     DemoExchangeMarketDataExchangeInfoRequest request = new DemoExchangeMarketDataExchangeInfoRequest();
     request.setSymbols(new ListJsonFieldDeserializer<>(StringJsonFieldDeserializer.getInstance()).deserialize("[\"BTC_USDT\", \"ETH_USDT\"]"));
     return request;
@@ -63,8 +68,9 @@ public class DemoExchangeMarketDataExchangeInfoDemo {
    */
   public static void main(String[] args) {
     try {
-      execute(createRequest(),
-              DemoUtil.loadDemoExchangeProperties(DemoExchangeExchange.ID),
+      Properties properties = DemoUtil.loadDemoExchangeProperties(DemoExchangeExchange.ID);
+      execute(createRequest(properties),
+              properties,
               DemoUtil::logRestApiEvent);
       System.exit(0);
     }

@@ -30,14 +30,14 @@ public class EmployeeV1EmployeeUpdatesMessage implements Pojo<EmployeeV1Employee
   private Employee employee;
   
   /**
-   * @return Type of event. Can be 'ADD', 'UPDATE' or 'DELETE'
+   * @return Type of event, e.g. one of <a href="V1org/jxapi/exchanges/employee/gen/EmployeeConstants.UpdateEmployeeType.html#ADD">add</a>, <a href="V1org/jxapi/exchanges/employee/gen/EmployeeConstants.UpdateEmployeeType.html#UPDATE">update</a> or <a href="V1org/jxapi/exchanges/employee/gen/EmployeeConstants.UpdateEmployeeType.html#DELETE">delete</a> (see <a href="V1org/jxapi/exchanges/employee/gen/EmployeeConstants.UpdateEmployeeType.html">updateEmployeeType</a> constants).
    */
   public String getEventType() {
     return eventType;
   }
   
   /**
-   * @param eventType Type of event. Can be 'ADD', 'UPDATE' or 'DELETE'
+   * @param eventType Type of event, e.g. one of <a href="V1org/jxapi/exchanges/employee/gen/EmployeeConstants.UpdateEmployeeType.html#ADD">add</a>, <a href="V1org/jxapi/exchanges/employee/gen/EmployeeConstants.UpdateEmployeeType.html#UPDATE">update</a> or <a href="V1org/jxapi/exchanges/employee/gen/EmployeeConstants.UpdateEmployeeType.html#DELETE">delete</a> (see <a href="V1org/jxapi/exchanges/employee/gen/EmployeeConstants.UpdateEmployeeType.html">updateEmployeeType</a> constants).
    */
   public void setEventType(String eventType) {
     this.eventType = eventType;
@@ -111,7 +111,7 @@ public class EmployeeV1EmployeeUpdatesMessage implements Pojo<EmployeeV1Employee
     
     /**
      * Will set the value of <code>eventType</code> field in the builder
-     * @param eventType Type of event. Can be 'ADD', 'UPDATE' or 'DELETE'
+     * @param eventType Type of event, e.g. one of <a href="V1org/jxapi/exchanges/employee/gen/EmployeeConstants.UpdateEmployeeType.html#ADD">add</a>, <a href="V1org/jxapi/exchanges/employee/gen/EmployeeConstants.UpdateEmployeeType.html#UPDATE">update</a> or <a href="V1org/jxapi/exchanges/employee/gen/EmployeeConstants.UpdateEmployeeType.html#DELETE">delete</a> (see <a href="V1org/jxapi/exchanges/employee/gen/EmployeeConstants.UpdateEmployeeType.html">updateEmployeeType</a> constants).
      * @return Builder instance
      * @see #setEventType(String)
      */

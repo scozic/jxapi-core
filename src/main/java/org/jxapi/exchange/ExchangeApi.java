@@ -1,5 +1,7 @@
 package org.jxapi.exchange;
 
+import java.util.Properties;
+
 import org.jxapi.exchange.descriptor.Type;
 import org.jxapi.netutils.rest.FutureRestResponse;
 import org.jxapi.netutils.rest.HttpRequestExecutor;
@@ -12,7 +14,7 @@ import org.jxapi.util.Disposable;
 import org.jxapi.util.HasProperties;
 
 /**
- * Interface for a set of REST and/or Websocket endpoints of an API belonging to
+ * Interface for a group of of REST and/or Websocket endpoints of an API belonging to
  * an {@link Exchange} wrapper.<br>
  * Actual implmentations will expose methods for calling REST enpoints, and
  * subscribe / unsubscribe methods for Websocket endpoints.
@@ -59,15 +61,9 @@ public interface ExchangeApi extends Disposable, HasProperties {
   String getName();
 
   /**
-   * @return Exchange instance name see {@link Exchange#getName()}
+   * @return Exchange instance this API group belongs to see {@link Exchange}
    */
-  String getExchangeName();
-
-  /**
-   * @return Unique exchange name (common to all instances) see
-   *         {@link Exchange#getId()}
-   */
-  String getExchangeId();
+  Exchange getExchange();
 
   /**
    * Subscribes an observer to be notified of all REST or Websocket events of this
@@ -144,4 +140,28 @@ public interface ExchangeApi extends Disposable, HasProperties {
    * @return the request timeout for calls to REST endpoints used by {@link HttpRequestExecutor} in ms
    */
   long getHttpRequestTimeout();
+  
+  /**
+   * Returns the HTTP URL prefix for all REST endpoints of API groups of this
+   * exchange. This prefix is used to build the full URL of each endpoint. It is
+   * unused when either API group or REST endpoint defines an absolute URL.
+   * 
+   * @return The HTTP URL prefix for REST endpoints of this exchange.
+   */
+  String getHttpUrl();
+  
+  /**
+   * Returns the WebSocket URL prefix for all WebSocket endpoints of API groups of
+   * this exchange. This prefix is used to build the full URL of each API group. It
+   * is unused when API group defines an absolute
+   * URL.
+   * 
+   * @return The base websocket URLfor API groups of this exchange.
+   */
+  String getWsUrl();
+  
+  @Override
+  default Properties getProperties() {
+    return getExchange() == null? null: getExchange().getProperties();
+  }
 }

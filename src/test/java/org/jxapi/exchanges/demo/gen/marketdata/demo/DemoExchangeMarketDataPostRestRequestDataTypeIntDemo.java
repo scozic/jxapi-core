@@ -5,12 +5,14 @@ import java.util.concurrent.ExecutionException;
 
 import javax.annotation.processing.Generated;
 import org.jxapi.exchange.ExchangeApiObserver;
+import org.jxapi.exchanges.demo.gen.DemoExchangeConstants;
 import org.jxapi.exchanges.demo.gen.DemoExchangeExchange;
 import org.jxapi.exchanges.demo.gen.DemoExchangeExchangeImpl;
 import org.jxapi.exchanges.demo.gen.marketdata.DemoExchangeMarketDataApi;
 import org.jxapi.exchanges.demo.gen.marketdata.pojo.GenericResponse;
 import org.jxapi.netutils.rest.RestResponse;
 import org.jxapi.util.DemoUtil;
+import org.jxapi.util.EncodingUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -21,8 +23,13 @@ import org.slf4j.LoggerFactory;
 public class DemoExchangeMarketDataPostRestRequestDataTypeIntDemo {
   private static final Logger log = LoggerFactory.getLogger(DemoExchangeMarketDataPostRestRequestDataTypeIntDemo.class);
   
-  public static Integer createRequest() {
-    return Integer.valueOf(12345);
+  /**
+   * Creates a sample value for the request field of type Integer using sample value(s) defined in the field descriptor.
+   * 
+   * @param properties the configuration properties to use for the sample value generation.
+   */
+  public static Integer createRequest(Properties properties) {
+    return Integer.valueOf(EncodingUtil.substituteArguments("${constants.user.age}", "constants.user.age", DemoExchangeConstants.User.AGE));
   }
   
   /**
@@ -58,8 +65,9 @@ public class DemoExchangeMarketDataPostRestRequestDataTypeIntDemo {
    */
   public static void main(String[] args) {
     try {
-      execute(createRequest(),
-              DemoUtil.loadDemoExchangeProperties(DemoExchangeExchange.ID),
+      Properties properties = DemoUtil.loadDemoExchangeProperties(DemoExchangeExchange.ID);
+      execute(createRequest(properties),
+              properties,
               DemoUtil::logRestApiEvent);
       System.exit(0);
     }

@@ -6,6 +6,8 @@ import org.jxapi.generator.java.exchange.api.ExchangeApiClassesGenerator;
 import org.jxapi.generator.java.exchange.api.ExchangeApiInterfaceImplementationGenerator;
 import org.jxapi.generator.java.exchange.api.rest.RestEndpointClassesGenerator;
 import org.jxapi.netutils.rest.HttpMethod;
+import org.jxapi.netutils.rest.pagination.PaginatedRestRequest;
+import org.jxapi.netutils.rest.pagination.PaginatedRestResponse;
 import org.jxapi.netutils.rest.ratelimits.RateLimitRule;
 import org.jxapi.util.EncodingUtil;
 
@@ -34,10 +36,10 @@ import org.jxapi.util.EncodingUtil;
  * for an API expected request data as URL parameters or query params, the corresponding serialized 
  * object will be URL encoded value of JSON.</li>
  * <li><code>queryParams</code> - whether the request data should be serialized as URL are query parameters.<br> 
- * <strong>About query parameters</strong>:<br>
+ * <strong>About query parameters <i>queryParams</i> property</strong>:<br>
  * <ul>
  * <li>The default value used in generated code depends on HTTP method, it will be true for methods
- * where corresponding requests expect a body: <code>GET</code>, <code>DELETE</code>, <code>HEAD</code>, 
+ * where corresponding requests do not expect a body: <code>GET</code>, <code>HEAD</code>, 
  * <code>OPTIONS</code>, <code>TRACE</code>.</li>
  * <li>Query parameters are serialized in form of <code>?name1=value1&amp;name2=value2</code> 
  * and appended to URL endpoint.</li>
@@ -98,7 +100,9 @@ public class RestEndpointDescriptor {
   
   private Integer requestWeight;
   
-  private List<RateLimitRule> rateLimits;
+  private List<String> rateLimits;
+  
+  private boolean paginated = false;
    
   /**
    * @return the name of the REST API endpoint
@@ -199,16 +203,20 @@ public class RestEndpointDescriptor {
   }
   
   /**
-   * @return the rate limits this REST API subject to
+   * @return The list of IDs of rate limits this REST API subject to. These must
+   *         be defined either in enclosing API group descriptor (see
+   *         {@link ExchangeApiDescriptor#getRateLimits()}) or in enclosing
+   *         exchange descriptor, see {@link ExchangeDescriptor#getRateLimits()}.
    */
-  public List<RateLimitRule> getRateLimits() {
+  public List<String> getRateLimits() {
     return rateLimits;
   }
 
   /**
-   * @param rateLimits the rate limits this REST API subject to
+   * @param rateLimits The list of IDs of rate limits this REST API subject to.
+   * @see #getRateLimits()
    */
-  public void setRateLimits(List<RateLimitRule> rateLimits) {
+  public void setRateLimits(List<String> rateLimits) {
     this.rateLimits = rateLimits;
   }
   
@@ -266,6 +274,41 @@ public class RestEndpointDescriptor {
    */
   public void setDocUrl(String docUrl) {
     this.docUrl = docUrl;
+  }
+  
+  /**
+   * Returns <code>true</code> if this endpoint supports pagination.
+   * <p>
+   * For an enpoint to support pagination, it must comply with the following:
+   * <ul>
+   * <li>The request must be of type {@link Type#OBJECT} type and implement
+   * {@link PaginatedRestRequest}
+   * interface.</li>
+   * <li>The response must be of type {@link Type#OBJECT} type and implement
+   * {@link PaginatedRestResponse} interface.</li>
+   * </ul>
+   * Actual wrapper should provide custom sub-interface of
+   * {@link PaginatedRestResponse} and
+   * {@link PaginatedRestRequest} with default
+   * implementation of
+   * {@link PaginatedRestRequest#setNextPage(PaginatedRestResponse)}
+   * with default implementations for methods of these interfaces relying on API
+   * specific fields to find out if a response carries last page and set next
+   * request page index from last response otherwise.
+   * 
+   * @return <code>true</code> If this endpoint supports pagination, <code>false</code> otherwise.
+   */
+  public boolean isPaginated() {
+    return paginated;
+  }
+
+  /**
+   * Sets whether this endpoint supports pagination. T
+   * @param isPaginated <code>true</code> if this endpoint supports pagination, <code>false</code> otherwise.
+   * @see #isPaginated()
+   */
+  public void setPaginated(boolean isPaginated) {
+    this.paginated = isPaginated;
   }
   
   /**

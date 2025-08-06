@@ -4,7 +4,9 @@ import org.junit.Assert;
 import org.junit.Test;
 
 /**
- * Unit test for {@link RestResponse}
+ * Unit test for {@link RestResponse} and
+ * {@link RestResponseToStringJsonSerializer} through
+ * {@link RestResponse#toString()}.
  */
 public class RestResponseTest {
 
@@ -95,40 +97,15 @@ public class RestResponseTest {
     @Test
     public void testToString() {
         RestResponse<String> response = new RestResponse<>();
-        response.setHttpStatus(200);
-        response.setResponse("response");
-        response.setException(new Exception("fail!"));
         HttpResponse httpResponse = new HttpResponse();
+        httpResponse.setResponseCode(200);
+        httpResponse.setBody("response");
         httpResponse.setHeader("headerName", "headerValue");
+        httpResponse.setException(new Exception("fail!"));
         response.setHttpResponse(httpResponse);
-        Assert.assertEquals("RestResponse{\"exception\":\"java.lang.Exception: fail!\",\"httpStatus\":200,\"response\":\"\\\"response\\\"\"}", response.toString());
+        Assert.assertEquals("RestResponse{\"httpResponse\":{\"responseCode\":200,\"exception\":\"java.lang.Exception: fail!\",\"body\":\"response\",\"headers\":{\"headerName\":[\"headerValue\"]},\"roundTrip\":0}}", response.toString());
+        response.setPaginated(true);
+        Assert.assertEquals("RestResponse{\"httpResponse\":{\"responseCode\":200,\"exception\":\"java.lang.Exception: fail!\",\"body\":\"response\",\"headers\":{\"headerName\":[\"headerValue\"]},\"roundTrip\":0},\"paginated\":true}", response.toString());
     }     
     
-    @Test
-    public void testToString_NullException() {
-        RestResponse<String> response = new RestResponse<>();
-        response.setHttpStatus(200);
-        response.setResponse("response");
-        HttpResponse httpResponse = new HttpResponse();
-        httpResponse.setHeader("headerName", "headerValue");
-        response.setHttpResponse(httpResponse);
-        Assert.assertEquals("RestResponse{\"httpStatus\":200,\"response\":\"\\\"response\\\"\"}", response.toString());
-    }
-    
-    @Test
-    public void testToString_NullResponseButHttpResponse() {
-        RestResponse<String> response = new RestResponse<>();
-        response.setHttpStatus(200);
-        HttpResponse httpResponse = new HttpResponse();
-        httpResponse.setHeader("headerName", "headerValue");
-        response.setHttpResponse(httpResponse);
-        Assert.assertEquals("RestResponse{\"httpStatus\":200,\"roundtrip\":0}", response.toString());
-    }
-    
-    @Test
-    public void testToString_NullResponseAndNullHttpResponse() {
-        RestResponse<String> response = new RestResponse<>();
-        response.setHttpStatus(200);
-        Assert.assertEquals("RestResponse{\"httpStatus\":200}", response.toString());
-    }
 }

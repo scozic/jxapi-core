@@ -5,18 +5,67 @@ import java.math.BigDecimal;
 import java.net.URI;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Arrays;
-import java.util.HashMap;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
 import org.apache.commons.text.StringSubstitutor;
+import org.jxapi.exchange.ExchangeApiEventToStringJsonSerializer;
+import org.jxapi.netutils.rest.HttpRequestToStringJsonSerializer;
+import org.jxapi.netutils.rest.HttpResponseToStringJsonSerializer;
+import org.jxapi.netutils.rest.RestResponseToStringJsonSerializer;
+
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonSerializer;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.databind.module.SimpleModule;
 
 /**
  * Helper methods around String encoding.
  */
 public class EncodingUtil {
+  
+  /**
+   * Default maximum length for a long string to be pretty printed.
+   * <p>
+   * Used by {@link #prettyPrintLongString(String)}.
+   */
+  public static final int DEFAULT_PRETTY_PRINT_LONG_STRING_MAX_LENGTH = 200;
+  
+  /**
+   * Default date format used for timestamp formatting, in ISO 8601 format:
+   * <code>yyyy-MM-dd'T'HH:mm:ss.SSSZ</code>.
+   * <p>
+   * Used by {@link #formatTimestamp(long)} and {@link #formatTimestamp(Date)}.
+   */
+  public static final String DATE_FORMAT_ISO_8601 = "yyyy-MM-dd'T'HH:mm:ss.SSSZ";
+  
+  private static final List<JsonSerializer<?>> DEFAULT_JSON_SERIALIZERS = List.of(
+        new JsonUtil.ExceptionSerializer(),
+        new HttpRequestToStringJsonSerializer(),
+        new HttpResponseToStringJsonSerializer(),
+        new RestResponseToStringJsonSerializer(),
+        new ExchangeApiEventToStringJsonSerializer()
+      );
+  
+  private static final ObjectMapper DEFAULT_TOSTRING_OBJECT_MAPPER = createDefaultJsonToStringObjectMapper();
+  
+  private static ObjectMapper createDefaultJsonToStringObjectMapper() {
+    ObjectMapper om = new ObjectMapper();
+    om.disable(SerializationFeature.FAIL_ON_EMPTY_BEANS);
+    om.enable(SerializationFeature.ORDER_MAP_ENTRIES_BY_KEYS);
+    om.setSerializationInclusion(Include.NON_NULL);
+    final SimpleModule serializerModule = new SimpleModule();
+    DEFAULT_JSON_SERIALIZERS.forEach(serializerModule::addSerializer);
+    om.registerModule(serializerModule);
+    return om;
+  }
   
   /**
    * Separator used to reduce a long string to a maximum length by keeping the
@@ -25,8 +74,36 @@ public class EncodingUtil {
    * @see #prettyPrintLongString(String, int)
    */
   public static final String PRETTY_PRINT_LONG_STRING_REDUCE_SEPARATOR = "....";
+  
+  private static final ThreadLocal<DateFormat> DEFAULT_TIMESTAMP_FORMAT = ThreadLocal.withInitial(() -> 
+    new SimpleDateFormat(DATE_FORMAT_ISO_8601));
 
   private EncodingUtil() {
+  }
+
+  /**
+   * Formats a timestamp string using the default format
+   * "yyyy-MM-dd'T'HH:mm:ss.SSSZ" (ISO 8601 format).
+   * 
+   * @param timestamp the timestamp to format, in milliseconds since epoch
+   * @return formatted timestamp string
+   */
+  public static String formatTimestamp(long timestamp) {
+    return formatTimestamp(new Date(timestamp));
+  }
+  
+  /**
+   * Formats a {@link Date} to a timestamp string using the default format
+   * "yyyy-MM-dd'T'HH:mm:ss.SSSZ" (ISO 8601 format).
+   * 
+   * @param date the date to format
+   * @return formatted timestamp string
+   */
+  public static String formatTimestamp(Date date) {
+    if (date == null) {
+      return null;
+    }
+    return DEFAULT_TIMESTAMP_FORMAT.get().format(date);
   }
 
   /**
@@ -51,11 +128,29 @@ public class EncodingUtil {
     if (keysAndValues.length == 0) {
       return template;
     }
-    Map<String, Object> m = new HashMap<>(keysAndValues.length / 2);
-    for (int i = 0; i < keysAndValues.length; i++) {
-      m.put(String.valueOf(keysAndValues[i++]), keysAndValues[i]);
-    }
-    StringSubstitutor sub = new StringSubstitutor(m);
+    return substituteArguments(template, CollectionUtil.createMap(keysAndValues));
+  }
+  
+  /**
+   * Substitutes properties from a map using provided key values pairs.<br>
+   * Example:
+   * 
+   * <pre>
+   * substituteArguments("Hello ${stranger}, I am ${me}", Map.of("stranger", "Bob", "me", "Roger"))
+   * </pre>
+   * 
+   * returns:
+   * 
+   * <pre>
+   * "Hello Bob, I am Roger"
+   * </pre>
+   * 
+   * @param template     the template String to perform that contains variables
+   * @param replacements map of key, value pairs for variable substitutions
+   * @return Template with properties substituted
+   */
+  public static String substituteArguments(String template, Map<String, Object> replacements) {
+    StringSubstitutor sub = new StringSubstitutor(replacements);
     return sub.replace(template);
   }
 
@@ -81,12 +176,12 @@ public class EncodingUtil {
     }
     StringBuilder s = new StringBuilder();
     boolean first = true;
-    for (int i = 0; i < keysAndValues.length; i++) {
-      Object key = keysAndValues[i++];
+    for (int i = 0; i < keysAndValues.length; i += 2) {
+      Object key = keysAndValues[i];
       if (key == null) {
         throw new IllegalArgumentException("null key in for parameter #" + (i / 2) + " in:" + Arrays.toString(keysAndValues));
       }
-      Object value = keysAndValues[i];
+      Object value = keysAndValues[i + 1];
       if (value == null) {
         continue;
       }
@@ -158,8 +253,29 @@ public class EncodingUtil {
    *         string representation
    */
   public static String pojoToString(Object pojo) {
-    return pojo.getClass().getSimpleName() + JsonUtil.pojoToJsonString(pojo); 
+    return pojo.getClass().getSimpleName() +  pojoToFormattedJsonString(pojo); 
   }
+  
+  /**
+   * Converts a POJO to a JSON 'formatted' string, this means using
+   * <code>toString</code> representation specific serialiazers for some classes,
+   * to avoid producing too long strings on log output.
+   * <p>
+   * For a complete JSON representation of a POJO, use {@link JsonUtil#pojoToJsonString(Object)}.
+   * 
+   * @param pojo POJO to convert
+   * @return concatenation of <code>pojo</code> simple class name and its JSON
+   *         string representation
+   */
+  public static String pojoToFormattedJsonString(Object pojo) {
+    try {
+      return DEFAULT_TOSTRING_OBJECT_MAPPER.writeValueAsString(pojo);
+    } catch (JsonProcessingException e) {
+      throw new IllegalArgumentException(
+          "Error while trying to serialize " + pojo.getClass().getName() + " instance to JSON", e);
+    }
+  }
+  
   
   /**
    * Shortcut for
@@ -216,6 +332,21 @@ public class EncodingUtil {
     int l = (maxLength - sep.length()) / 2;
     return longString.substring(0, l) + sep + longString.substring(longString.length() - l);
   }
+  
+  /**
+   * Shortens a long string to a maximum length like using
+   * {@link #prettyPrintLongString(String, int)} with
+   * {@link #DEFAULT_PRETTY_PRINT_LONG_STRING_MAX_LENGTH} as maxLength.
+   * 
+   * @param longString the string to shorten
+   * @return the shortened string, or the original string if it is already shorter
+   *         than {@link #DEFAULT_PRETTY_PRINT_LONG_STRING_MAX_LENGTH}, or
+   *         <code>null</code> if the input string is <code>null</code>.
+   * @see #prettyPrintLongString(String, int)        
+   */
+  public static String prettyPrintLongString(String longString) {
+    return prettyPrintLongString(longString, DEFAULT_PRETTY_PRINT_LONG_STRING_MAX_LENGTH);
+  }
 
   /**
    * Checks if a given URL is absolute or relative, e.g. if it starts with a scheme like "http://".
@@ -226,5 +357,67 @@ public class EncodingUtil {
    */
   public static boolean isAbsoluteUrl(String url) {
     return URI.create(url).getScheme() != null;
+  }
+  
+  /**
+   * Removes a prefix from a string if it starts with that prefix.
+   * 
+   * @param s      the string to modify
+   * @param prefix the prefix to remove
+   * @return the modified string without the prefix, or <code>null</code> if the
+   *         string does not start with the prefix
+   */
+  public static String removePrefix(String s, String prefix) {
+    if (prefix == null) {
+      throw new IllegalArgumentException("prefix cannot be null");
+    }
+    s = Optional.ofNullable(s).orElse("");
+    if (s.startsWith(prefix)) {
+      return s.substring(prefix.length());
+    }
+    return null;
+  }
+  
+  /**
+   * Builds a URL from the given parts. This method contatenates the parts, unless
+   * a part is an absolute URL, in which case it is considered as a base URL, and
+   * the result will be the concatenation of that base URL and the remaining
+   * parts.
+   * <p>
+   * Examples:
+   * <ul>
+   * <li>buildUrl("http://example.com", "path", "to", "resource") returns
+   * "http://example.com/path/to/resource"</li>
+   * <li>buildUrl("http://example.com", "path", "to", "resource",
+   * "http://another.com") returns "http://another.com"</li>
+   * </ul>
+   * Rmark: Consistency of returned URL is not guaranteed, as the method does not
+   * check for duplicate slashes or other URL formatting issues. Returned URL may
+   * not be valid. If both parts are empty or <code>null</code>, an empty string
+   * is returned.
+   * 
+   * @param urlParts the parts of the URL to concatenate
+   * @return the concatenated URL
+   */
+  public static String buildUrl(String... urlParts) {
+    if (urlParts.length == 0) {
+      return "";
+    }
+    if (urlParts.length == 1) {
+      return Optional.ofNullable(urlParts[0]).orElse("");
+    }
+    StringBuilder sb = new StringBuilder();
+    for (String part: urlParts) {
+      if (part == null) {
+        continue;
+      }
+      if (isAbsoluteUrl(part)) {
+        sb.setLength(0);
+        sb.append(part);
+      } else {
+        sb.append(part);
+      }
+    }
+    return sb.toString();
   }
 }

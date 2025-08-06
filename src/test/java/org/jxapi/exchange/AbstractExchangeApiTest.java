@@ -7,11 +7,14 @@ import static org.junit.Assert.assertTrue;
 import java.util.Properties;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.function.Function;
 
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-
+import org.jxapi.exchanges.employee.gen.v1.deserializers.EmployeeV1GetAllEmployeesResponseDeserializer;
+import org.jxapi.exchanges.employee.gen.v1.pojo.EmployeeV1GetAllEmployeesRequest;
+import org.jxapi.exchanges.employee.gen.v1.pojo.EmployeeV1GetAllEmployeesResponse;
 import org.jxapi.netutils.deserialization.MessageDeserializer;
 import org.jxapi.netutils.deserialization.RawStringMessageDeserializer;
 import org.jxapi.netutils.rest.FutureRestResponse;
@@ -42,6 +45,7 @@ import org.jxapi.netutils.websocket.multiplexing.WebsocketMessageTopicMatcherFac
 import org.jxapi.netutils.websocket.spring.SpringWebsocket;
 import org.jxapi.observability.MockExchangeApiObserver;
 import org.jxapi.observability.Observable;
+import org.jxapi.util.JsonUtil;
 
 /**
  * Unit test for {@link AbstractExchangeApi}
@@ -53,12 +57,7 @@ public class AbstractExchangeApiTest {
   @Before
   public void setUp() {
     // Initialize the exchangeApi object with test data
-    exchangeApi = new TestExchangeApi("TestApi", "test-MyExchange", "MyExchange", new Properties());
-  }
-
-  @Test
-  public void testGetExchangeName() {
-    assertEquals("test-MyExchange", exchangeApi.getExchangeName());
+    exchangeApi = new TestExchangeApi("TestApi");
   }
 
   @Test
@@ -67,13 +66,13 @@ public class AbstractExchangeApiTest {
   }
 
   @Test
-  public void testGetExchangeId() {
-    assertEquals("MyExchange", exchangeApi.getExchangeId());
+  public void testGetExchange() {
+    Assert.assertSame(ExchangeStub.INSTANCE, exchangeApi.getExchange());
   }
-
+  
   @Test
   public void testGetProperties() {
-    assertEquals(new Properties(), exchangeApi.getProperties());
+    Assert.assertSame(ExchangeStub.INSTANCE.getProperties(), exchangeApi.getProperties());
   }
 
   @Test
@@ -124,6 +123,49 @@ public class AbstractExchangeApiTest {
     Assert.assertTrue(actualResponse.isOk());
     Assert.assertEquals("pong", actualResponse.getResponse());
     Assert.assertEquals(200, actualResponse.getHttpStatus());
+    event = observer.pop();
+    Assert.assertEquals(ExchangeApiEventType.HTTP_RESPONSE, event.getType());
+    Assert.assertTrue(event.getHttpResponse().isOk());
+  }
+  
+  @Test
+  public void testSubmitAndExecutePaginatedRequest() throws Exception {
+    MockExchangeApiObserver observer = new MockExchangeApiObserver();
+    exchangeApi.subscribeObserver(observer);
+    MockHttpRequestExecutor executor = createMockHttpRequestExecutor();
+    
+    EmployeeV1GetAllEmployeesRequest pageRequest = new EmployeeV1GetAllEmployeesRequest();
+    pageRequest.setSize(10);
+    pageRequest.setPage(1);
+    EmployeeV1GetAllEmployeesResponse pageResponse = new EmployeeV1GetAllEmployeesResponse();
+    pageResponse.setTotalPages(25);
+    pageResponse.setPage(1);
+    
+    Function<EmployeeV1GetAllEmployeesRequest, FutureRestResponse<EmployeeV1GetAllEmployeesResponse>> paginatedRestEndpoint = r -> { 
+      // Not called in this test, just a dummy function
+      return new FutureRestResponse<>();
+    };
+    
+    HttpRequest request = createDummyRequest();
+    request.setRequest(pageRequest);
+    MessageDeserializer<EmployeeV1GetAllEmployeesResponse> deserializer = new EmployeeV1GetAllEmployeesResponseDeserializer();
+    FutureRestResponse<EmployeeV1GetAllEmployeesResponse> response = exchangeApi.submitPaginated(request, deserializer, paginatedRestEndpoint);
+    ExchangeApiEvent event = observer.pop();
+    Assert.assertEquals(ExchangeApiEventType.HTTP_REQUEST, event.getType());
+    Assert.assertEquals(request, event.getHttpRequest());
+    MockFutureHttpResponse mockResponse = executor.popRequest();
+    HttpResponse okResponse = createDummyOkResponse(request);
+    RestResponse<EmployeeV1GetAllEmployeesResponse> restResponse = new RestResponse<>(okResponse);
+    restResponse.setResponse(pageResponse);
+    okResponse.setBody(JsonUtil.pojoToJsonString(pageResponse));
+    mockResponse.complete(okResponse);
+    Assert.assertEquals(request, mockResponse.getRequest());
+    
+    RestResponse<EmployeeV1GetAllEmployeesResponse> actualResponse = response.get(1, TimeUnit.MILLISECONDS);
+    Assert.assertTrue(actualResponse.isOk());
+    Assert.assertEquals(pageResponse, actualResponse.getResponse());
+    Assert.assertEquals(200, actualResponse.getHttpStatus());
+    Assert.assertNotNull(actualResponse.getNextPageResolver());
     event = observer.pop();
     Assert.assertEquals(ExchangeApiEventType.HTTP_RESPONSE, event.getType());
     Assert.assertTrue(event.getHttpResponse().isOk());
@@ -329,7 +371,7 @@ public class AbstractExchangeApiTest {
   
   @Test
   public void setThrottlingModeAndMaxThrottleDelayNoRequestThrottler() {
-    exchangeApi = new TestExchangeApi("TestApi", "test-MyExchange", "MyExchange", new Properties());
+    exchangeApi = new TestExchangeApi("TestApi");
     exchangeApi.setRequestThrottlingMode(RequestThrottlingMode.BLOCK);
     exchangeApi.setMaxRequestThrottleDelay(1000L);
     Assert.assertEquals(RequestThrottlingMode.NONE, exchangeApi.getRequestThrottlingMode());
@@ -352,21 +394,21 @@ public class AbstractExchangeApiTest {
   
   @Test
   public void testDispose_BothRequestThrottlerHttpRequestExecutorWebsocketManagerNull() {
-    exchangeApi = new TestExchangeApi("TestApi", "test-MyExchange", "MyExchange", new Properties());
+    exchangeApi = new TestExchangeApi("TestApi");
     exchangeApi.dispose();
     Assert.assertTrue(exchangeApi.isDisposed());
   }
   
   @Test
   public void testSetHttpRequesTimeout_NoHttpRequestExecutor() {
-    exchangeApi = new TestExchangeApi("TestApi", "test-MyExchange", "MyExchange", new Properties());
+    exchangeApi = new TestExchangeApi("TestApi");
     exchangeApi.setHttpRequestTimeout(500L);
     Assert.assertEquals(-1L, exchangeApi.getHttpRequestTimeout());
   }
   
   @Test
   public void testSetHttpRequesTimeout_WithHttpRequestExecutor() {
-    exchangeApi = new TestExchangeApi("TestApi", "test-MyExchange", "MyExchange", new Properties());
+    exchangeApi = new TestExchangeApi("TestApi");
     exchangeApi.createHttpRequestExecutor(null, 200L);
     Assert.assertEquals(200L, exchangeApi.getHttpRequestTimeout());
     exchangeApi.setHttpRequestTimeout(500L);
@@ -386,8 +428,10 @@ public class AbstractExchangeApiTest {
   
   @Test
   public void testSerializeRequestBody() {
-    exchangeApi = new TestExchangeApi("TestApi", "test-MyExchange", "MyExchange", new Properties());
-    Assert.assertEquals("\"ping\"", exchangeApi.serializeRequestBody("ping"));
+    exchangeApi = new TestExchangeApi("TestApi");
+    HttpRequest request = createDummyRequest();
+    exchangeApi.serializeRequestBody(request);
+    Assert.assertEquals("\"ping\"", request.getBody());
   }
   
   private HttpRequest createDummyRequest() {
@@ -434,12 +478,12 @@ public class AbstractExchangeApiTest {
 
   private class TestExchangeApi extends AbstractExchangeApi {
     
-    public TestExchangeApi(String apiName, String exchangeName, String exchangeId, Properties properties) {
-      super(apiName, exchangeName, exchangeId, properties);
+    public TestExchangeApi(String apiName) {
+      super(apiName, ExchangeStub.INSTANCE);
     }
     
     public TestExchangeApi(String apiName, String exchangeName, String exchangeId, Properties properties, RequestThrottler requestThrottler) {
-      super(apiName, exchangeName, exchangeId, properties, requestThrottler);
+      super(apiName, new AbstractExchange(exchangeId, "1.0.0", exchangeName, properties, null, null) {}, requestThrottler, null, null);
     }
     
     public Observable<ExchangeApiObserver, ExchangeApiEvent> getObservable() {

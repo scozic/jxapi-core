@@ -4,9 +4,9 @@
 # The resulting file will be read as default configuration file for demo snippets.
 # Uncomment and set following properties and adjust their values per your needs.
 
-
 # Employee specific configuration properties
 
+# # Server related properties
 # Base URL for REST endpoints the Employee Exchange API
 # baseHttpUrl=
 
@@ -26,10 +26,17 @@
 # jxapi.maxRequestThrottleDelay=
 
 
-# Demo REST/WEBSOCKET snippets configuration properties
+# Demo REST/WEBSOCKET snippets common configuration properties
 
 # The duration in ms of the subscription in websocket endpoint demo classes
 # jxapi.demo.ws.subscriptionDuration=30000
 
 # Delay in ms before exiting program after unsubscribing in websocked endpoint demo classes.
 # jxapi.demo.ws.delayBeforeExitAfterUnsubscription=1000
+
+
+# Demo REST/WEBSOCKET specific configuration properties
+
+# Used in demo snippets to set as value of Employee 'id' property
+# employeeId=1
+
