@@ -5,9 +5,11 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
 import org.jxapi.exchange.descriptor.CanonicalType;
@@ -16,9 +18,12 @@ import org.jxapi.exchange.descriptor.Constant;
 import org.jxapi.exchange.descriptor.ExchangeApiDescriptor;
 import org.jxapi.exchange.descriptor.ExchangeDescriptor;
 import org.jxapi.exchange.descriptor.Field;
+import org.jxapi.exchange.descriptor.RestEndpointDescriptor;
 import org.jxapi.exchange.descriptor.Type;
+import org.jxapi.exchange.descriptor.WebsocketEndpointDescriptor;
 import org.jxapi.generator.java.Imports;
 import org.jxapi.generator.java.JavaCodeGenUtil;
+import org.jxapi.generator.java.exchange.api.ExchangeApiGenUtil;
 import org.jxapi.generator.java.exchange.properties.PropertiesGenUtil;
 import org.jxapi.netutils.deserialization.json.AbstractJsonMessageDeserializer;
 import org.jxapi.netutils.deserialization.json.field.BigDecimalJsonFieldDeserializer;
@@ -722,15 +727,16 @@ public class ExchangeGenUtil {
    */
   public static String getValueDeclarationForConfigProperty(String configPropertyName, 
                                                           ExchangeDescriptor exchangeDescriptor,
+                                                          List<ConfigPropertyDescriptor> demoProperties,
                                                           String propertiesVariable,
                                                           Imports imports) {
     String className = null;
     List<ConfigPropertyDescriptor> sieblingProperties = null;
     List<ConfigPropertyDescriptor> hierarchy = retrievePropertiesHierarchy(configPropertyName, exchangeDescriptor.getProperties());
     if(hierarchy.isEmpty()) {
-      hierarchy = retrievePropertiesHierarchy(configPropertyName, exchangeDescriptor.getDemoProperties());
+      hierarchy = retrievePropertiesHierarchy(configPropertyName, demoProperties);
       className = getExchangeDemoPropertiesInterfaceName(exchangeDescriptor);
-      sieblingProperties = exchangeDescriptor.getDemoProperties();
+      sieblingProperties = demoProperties;
     } else {
       className = getExchangePropertiesInterfaceName(exchangeDescriptor);
       sieblingProperties = exchangeDescriptor.getProperties();
@@ -901,6 +907,7 @@ public class ExchangeGenUtil {
   public static String generateSubstitutionInstructionDeclaration(
                         String template, 
                         ExchangeDescriptor exchangeDescriptor, 
+                        List<ConfigPropertyDescriptor> demoProperties,
                         String propertiesVariable,
                         Imports imports) {
     if (template == null) {
@@ -920,7 +927,7 @@ public class ExchangeGenUtil {
         String propertyName = Optional.ofNullable(getConfigPropertyPlaceHolder(placeHolder))
                                       .orElse(getDemoConfigPropertyPlaceHolder(placeHolder));
         if (propertyName != null) {
-          valueDeclaration = getValueDeclarationForConfigProperty(propertyName, exchangeDescriptor, propertiesVariable, imports);
+          valueDeclaration = getValueDeclarationForConfigProperty(propertyName, exchangeDescriptor, demoProperties, propertiesVariable, imports);
         }
       }
       if (valueDeclaration != null) {

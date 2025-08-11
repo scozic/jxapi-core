@@ -10,7 +10,7 @@ import java.util.stream.Collectors;
 
 import org.junit.Assert;
 import org.junit.Test;
-
+import org.jxapi.exchange.descriptor.ConfigPropertyDescriptor;
 import org.jxapi.exchange.descriptor.ExchangeApiDescriptor;
 import org.jxapi.exchange.descriptor.ExchangeDescriptor;
 import org.jxapi.exchange.descriptor.Field;
@@ -651,5 +651,286 @@ public class EndpointDemoGenUtilTest {
     String exchangeClassName = "com.x.y.z.gen.MyExchange";
     Assert.assertEquals("MyExchange exchange = new MyExchangeImpl(\"test-\" + MyExchange.ID, props);",
         EndpointDemoGenUtil.getNewTestExchangeInstruction(exchangeClassName, "exchange", "props"));
+  }
+  
+  @Test
+  public void testCollectDemoConfigProperties_ExchangeWithoutApiGroup() {
+    ExchangeDescriptor exchangeDescriptor = new ExchangeDescriptor();
+    exchangeDescriptor.setId("MyExchange");
+    exchangeDescriptor.setBasePackage("com.x.y.z.gen");
+    List<ConfigPropertyDescriptor> demoGroupProp = EndpointDemoGenUtil.collectDemoConfigProperties(exchangeDescriptor);
+    Assert.assertEquals(0, demoGroupProp.size());
+  }
+  
+  @Test
+  public void testGetPropertiesInstruction() {
+    Imports imports = new Imports();
+    Assert.assertEquals(
+        "DemoUtil.loadDemoExchangeProperties(properties.ID)",
+        EndpointDemoGenUtil.getTestPropertiesInstruction("properties", imports));
+  }
+  
+  @Test
+  public void testCollectDemoConfigProperties_ExchangeWithOneApiGroupWithoutEndpoint() {
+    ExchangeDescriptor exchangeDescriptor = new ExchangeDescriptor();
+    exchangeDescriptor.setId("MyExchange");
+    exchangeDescriptor.setBasePackage("com.x.y.z.gen");
+    ExchangeApiDescriptor exchangeApiDescriptor = new ExchangeApiDescriptor();
+    exchangeApiDescriptor.setName("MyApi");
+    exchangeDescriptor.setApis(List.of(exchangeApiDescriptor));
+    List<ConfigPropertyDescriptor> demoGroupProp = EndpointDemoGenUtil.collectDemoConfigProperties(exchangeDescriptor);
+    Assert.assertEquals(0, demoGroupProp.size());
+  }
+  
+  @Test
+  public void testCollectDemoConfigProperties_ExchangeWithOneApiWithRestAndWsEnpointsWithoutRequest() {
+    ExchangeDescriptor exchangeDescriptor = new ExchangeDescriptor();
+    exchangeDescriptor.setId("MyExchange");
+    exchangeDescriptor.setBasePackage("com.x.y.z.gen");
+    ExchangeApiDescriptor exchangeApiDescriptor = new ExchangeApiDescriptor();
+    exchangeApiDescriptor.setName("MyApi");
+    RestEndpointDescriptor restEndpointDescriptor = new RestEndpointDescriptor();
+    restEndpointDescriptor.setName("MyRestEndpoint");
+    exchangeApiDescriptor.setRestEndpoints(List.of(restEndpointDescriptor));
+    WebsocketEndpointDescriptor websocketEndpointDescriptor = new WebsocketEndpointDescriptor();
+    websocketEndpointDescriptor.setName("MyWebsocketEndpoint");
+    exchangeDescriptor.setApis(List.of(exchangeApiDescriptor));
+    exchangeApiDescriptor.setWebsocketEndpoints(List.of(websocketEndpointDescriptor));
+    List<ConfigPropertyDescriptor> demoGroupProp = EndpointDemoGenUtil.collectDemoConfigProperties(exchangeDescriptor);
+    Assert.assertEquals(0, demoGroupProp.size());
+  }
+  
+  @Test
+  public void testCollectDemoConfigProperties_RestEndpointWithPrimitiveTypeRequest() {
+    ExchangeDescriptor exchangeDescriptor = new ExchangeDescriptor();
+    exchangeDescriptor.setId("myExchange");
+    exchangeDescriptor.setBasePackage("com.x.y.z.gen");
+    ExchangeApiDescriptor exchangeApiDescriptor = new ExchangeApiDescriptor();
+    exchangeApiDescriptor.setName("myApi");
+    exchangeDescriptor.setApis(List.of(exchangeApiDescriptor));
+    RestEndpointDescriptor restEndpointDescriptor = new RestEndpointDescriptor();
+    restEndpointDescriptor.setName("myRestEndpoint");
+    Field request = Field.builder()
+        .type(Type.INT)
+        .description("This is a test parameter")
+        .sampleValue(123).build();
+    restEndpointDescriptor.setRequest(request);
+    exchangeApiDescriptor.setRestEndpoints(List.of(restEndpointDescriptor));
+    List<ConfigPropertyDescriptor> demoGroupProp = EndpointDemoGenUtil.collectDemoConfigProperties(exchangeDescriptor);
+    Assert.assertEquals(1, demoGroupProp.size());
+    ConfigPropertyDescriptor apiDemoGroupProp = demoGroupProp.get(0);
+    checkDemoProperty(apiDemoGroupProp, "myApi", "Configuration properties for myApi API group endpoints demo snippets", Type.OBJECT, null);
+    Assert.assertEquals(1, apiDemoGroupProp.getProperties().size());
+    ConfigPropertyDescriptor restEndpointsGroup = apiDemoGroupProp.getProperties().get(0);
+    checkDemoProperty(restEndpointsGroup, "myApi.rest", "Configuration properties for REST endpoints demo snippets of myApi API group", Type.OBJECT, null);
+    Assert.assertEquals(1, restEndpointsGroup.getProperties().size());
+    ConfigPropertyDescriptor endpointGroup = restEndpointsGroup.getProperties().get(0);
+    checkDemoProperty(endpointGroup, 
+        "myApi.rest.myRestEndpoint", 
+        "Configuration properties for myApi.rest myRestEndpoint endpoint of myApi API group", 
+        Type.OBJECT, 
+        null);
+    Assert.assertEquals(1, endpointGroup.getProperties().size());
+    ConfigPropertyDescriptor endpointRequestProp = endpointGroup.getProperties().get(0);
+    checkDemoProperty(endpointRequestProp, "myApi.rest.myRestEndpoint.request", 
+        "Demo configuration property for myRestEndpoint.request field<p>\n"
+        + "This is a test parameter", 
+        Type.INT, 
+        123);
+  }
+  
+  @Test
+  public void testCollectDemoConfigProperties_WsEndpointWithPrimitiveTypeRequest() {
+    ExchangeDescriptor exchangeDescriptor = new ExchangeDescriptor();
+    exchangeDescriptor.setId("myExchange");
+    exchangeDescriptor.setBasePackage("com.x.y.z.gen");
+    ExchangeApiDescriptor exchangeApiDescriptor = new ExchangeApiDescriptor();
+    exchangeApiDescriptor.setName("myApi");
+    exchangeDescriptor.setApis(List.of(exchangeApiDescriptor));
+    WebsocketEndpointDescriptor wsEndpointDescriptor = new WebsocketEndpointDescriptor();
+    wsEndpointDescriptor.setName("myRestEndpoint");
+    Field request = Field.builder()
+        .name("myStringParam")
+        .description("This is a test parameter")
+        .sampleValue(123).build();
+    wsEndpointDescriptor.setRequest(request);
+    exchangeApiDescriptor.setWebsocketEndpoints(List.of(wsEndpointDescriptor));
+    List<ConfigPropertyDescriptor> demoGroupProp = EndpointDemoGenUtil.collectDemoConfigProperties(exchangeDescriptor);
+    Assert.assertEquals(1, demoGroupProp.size());
+    ConfigPropertyDescriptor apiDemoGroupProp = demoGroupProp.get(0);
+    checkDemoProperty(apiDemoGroupProp, 
+        "myApi", 
+        "Configuration properties for myApi API group endpoints demo snippets", 
+        Type.OBJECT, 
+        null);
+    Assert.assertEquals(1, apiDemoGroupProp.getProperties().size());
+    ConfigPropertyDescriptor restEndpointsGroup = apiDemoGroupProp.getProperties().get(0);
+    checkDemoProperty(restEndpointsGroup, 
+        "myApi.ws", 
+        "Configuration properties for websocket endpoints demo snippets of myApi API group", 
+        Type.OBJECT, 
+        null);
+    Assert.assertEquals(1, restEndpointsGroup.getProperties().size());
+    ConfigPropertyDescriptor endpointGroup = restEndpointsGroup.getProperties().get(0);
+    checkDemoProperty(endpointGroup, 
+        "myApi.ws.myRestEndpoint", 
+        "Configuration properties for myApi.ws myRestEndpoint endpoint of myApi API group", 
+        Type.OBJECT, 
+        null);
+    Assert.assertEquals(1, endpointGroup.getProperties().size());
+    ConfigPropertyDescriptor endpointRequestProp = endpointGroup.getProperties().get(0);
+    checkDemoProperty(endpointRequestProp, 
+        "myApi.ws.myRestEndpoint.myStringParam", 
+        "Demo configuration property for myRestEndpoint.myStringParam field<p>\n"
+        + "This is a test parameter", 
+        Type.STRING, 
+        123);
+  }
+  
+  @Test
+  public void testCollectDemoConfigProperties_RestEndpointWithObjectTypeRequestAndWsEndpointWithReferenceToSameObject() {
+    ExchangeDescriptor exchangeDescriptor = new ExchangeDescriptor();
+    exchangeDescriptor.setId("myExchange");
+    exchangeDescriptor.setBasePackage("com.x.y.z.gen");
+    ExchangeApiDescriptor exchangeApiDescriptor = new ExchangeApiDescriptor();
+    exchangeApiDescriptor.setName("myApi");
+    exchangeDescriptor.setApis(List.of(exchangeApiDescriptor));
+    RestEndpointDescriptor restEndpointDescriptor = new RestEndpointDescriptor();
+    restEndpointDescriptor.setName("myRestEndpoint");
+    Field restRequest = Field.builder()
+        .description("This is a test parameter")
+        .objectName("MyRequest")
+        .properties(List.of(
+            Field.builder()
+                .type(Type.INT)
+                .name("myIntParam")
+                .sampleValue(123)
+                .build(),
+            Field.builder()
+                .name("mySubParam")
+                .property(Field.builder()
+                    .name("hello")
+                    .sampleValue("Hello World")
+                    .build())
+                .build()
+         ))
+        .build();
+    restEndpointDescriptor.setRequest(restRequest);
+    exchangeApiDescriptor.setRestEndpoints(List.of(restEndpointDescriptor));
+    
+    WebsocketEndpointDescriptor wsEndpointDescriptor = new WebsocketEndpointDescriptor();
+    wsEndpointDescriptor.setName("myWsEndpoint");
+    Field wsRequest = Field.builder()
+        .name("mySubscribeRequest")
+        .objectName("MyRequest")
+        .description("This is a test parameter for the mySubscribeRequest field")
+        .build();
+    wsEndpointDescriptor.setRequest(wsRequest);
+    exchangeApiDescriptor.setWebsocketEndpoints(List.of(wsEndpointDescriptor));
+    
+    List<ConfigPropertyDescriptor> demoGroupProp = EndpointDemoGenUtil.collectDemoConfigProperties(exchangeDescriptor);
+    Assert.assertEquals(1, demoGroupProp.size());
+    ConfigPropertyDescriptor apiDemoGroupProp = demoGroupProp.get(0);
+    checkDemoProperty(apiDemoGroupProp, 
+        "myApi", 
+        "Configuration properties for myApi API group endpoints demo snippets", 
+        Type.OBJECT, 
+        null);
+    Assert.assertEquals(2, apiDemoGroupProp.getProperties().size());
+    
+    // REST endpoints group
+    ConfigPropertyDescriptor restEndpointsGroup = apiDemoGroupProp.getProperties().get(0);
+    checkDemoProperty(restEndpointsGroup, 
+        "myApi.rest", 
+        "Configuration properties for REST endpoints demo snippets of myApi API group", 
+        Type.OBJECT, 
+        null);
+    Assert.assertEquals(1, restEndpointsGroup.getProperties().size());
+    ConfigPropertyDescriptor restEndpointGroup = restEndpointsGroup.getProperties().get(0);
+    checkDemoProperty(restEndpointGroup, 
+        "myApi.rest.myRestEndpoint", "Configuration properties for myApi.rest myRestEndpoint endpoint of myApi API group", 
+        Type.OBJECT, 
+        null);
+    Assert.assertEquals(1, restEndpointGroup.getProperties().size());
+    ConfigPropertyDescriptor requestProp = restEndpointGroup.getProperties().get(0);
+    checkDemoProperty(requestProp, 
+        "myApi.rest.myRestEndpoint.request", 
+        "Demo configuration property for myRestEndpoint.request field<p>\n"
+        + "This is a test parameter", 
+        Type.OBJECT, 
+        null);
+    Assert.assertEquals(2, requestProp.getProperties().size());
+    checkDemoProperty(requestProp.getProperties().get(0), 
+        "myApi.rest.myRestEndpoint.request.myIntParam",
+        "Demo configuration property for request.myIntParam field", 
+        Type.INT, 
+        123);
+    
+    ConfigPropertyDescriptor mySubParam = requestProp.getProperties().get(1);
+    checkDemoProperty(mySubParam, 
+        "myApi.rest.myRestEndpoint.request.mySubParam",
+        "Demo configuration property for request.mySubParam field", 
+        Type.OBJECT, 
+        null);
+    Assert.assertEquals(1, mySubParam.getProperties().size());
+    ConfigPropertyDescriptor helloProp = mySubParam.getProperties().get(0);
+    checkDemoProperty(helloProp, 
+        "myApi.rest.myRestEndpoint.request.mySubParam.hello",
+        "Demo configuration property for mySubParam.hello field", 
+        Type.STRING, 
+        "Hello World");
+    
+    // Websocket endpoints group
+    ConfigPropertyDescriptor wsEndpointsGroup = apiDemoGroupProp.getProperties().get(1);
+    checkDemoProperty(wsEndpointsGroup, 
+        "myApi.ws", 
+        "Configuration properties for websocket endpoints demo snippets of myApi API group",
+        Type.OBJECT, 
+        null);
+    Assert.assertEquals(1, restEndpointsGroup.getProperties().size());
+    ConfigPropertyDescriptor wsEndpointGroup = wsEndpointsGroup.getProperties().get(0);
+    checkDemoProperty(wsEndpointGroup, 
+        "myApi.ws.myWsEndpoint", 
+        "Configuration properties for myApi.ws myWsEndpoint endpoint of myApi API group", 
+        Type.OBJECT, 
+        null);
+    Assert.assertEquals(1, wsEndpointGroup.getProperties().size());
+    ConfigPropertyDescriptor wsRequestProp = wsEndpointGroup.getProperties().get(0);
+    checkDemoProperty(wsRequestProp, 
+        "myApi.ws.myWsEndpoint.mySubscribeRequest", 
+        "Demo configuration property for myWsEndpoint.mySubscribeRequest field<p>\n"
+        + "This is a test parameter for the mySubscribeRequest field", 
+        Type.OBJECT, 
+        null);
+    Assert.assertEquals(2, wsRequestProp.getProperties().size());
+    checkDemoProperty(wsRequestProp.getProperties().get(0), 
+        "myApi.ws.myWsEndpoint.mySubscribeRequest.myIntParam",
+        "Demo configuration property for mySubscribeRequest.myIntParam field", 
+        Type.INT, 
+        123);
+    
+    ConfigPropertyDescriptor wsMySubParam = wsRequestProp.getProperties().get(1);
+    checkDemoProperty(wsMySubParam, 
+        "myApi.ws.myWsEndpoint.mySubscribeRequest.mySubParam",
+        "Demo configuration property for mySubscribeRequest.mySubParam field", 
+        Type.OBJECT, 
+        null);
+    Assert.assertEquals(1, wsMySubParam.getProperties().size());
+    checkDemoProperty(wsMySubParam.getProperties().get(0), 
+        "myApi.ws.myWsEndpoint.mySubscribeRequest.mySubParam.hello",
+        "Demo configuration property for mySubParam.hello field", 
+        Type.STRING, 
+        "Hello World");
+  }
+  
+  private void checkDemoProperty(ConfigPropertyDescriptor prop, 
+                                 String name, 
+                                 String description, 
+                                 Type type, 
+                                 Object sampleValue) {
+    Assert.assertEquals(name, prop.getName());
+    Assert.assertEquals("Invalid description for prop:" + name, description, prop.getDescription());
+    Assert.assertEquals(type, prop.getType());
+    Assert.assertEquals("Invalid default value for prop:" + name, sampleValue, prop.getDefaultValue());
   }
 }

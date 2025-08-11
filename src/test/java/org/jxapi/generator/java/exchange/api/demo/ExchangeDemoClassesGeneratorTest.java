@@ -66,7 +66,6 @@ public class ExchangeDemoClassesGeneratorTest {
     srcFolder = ClassesGeneratorTestUtil.generateTmpDir();
     ExchangeDescriptor exchange = ExchangeDescriptorParser.fromJson(Paths.get(".", "src", "test", "resources", "testExchangeDescriptor.json"));
     exchange.getApis().get(0).setWebsocketEndpoints(null);
-    exchange.setDemoProperties(null);
     new ExchangeDemoClassesGenerator(exchange).generateClasses(srcFolder);
     Path pkgPath = Paths.get(".");
     checkJavaFilesCount(pkgPath, 1);

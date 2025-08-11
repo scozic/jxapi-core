@@ -111,7 +111,7 @@ public class RestEndpointDemoGeneratorTest {
         + "  }\n"
         + "}\n"
         + "", 
-        new RestEndpointDemoGenerator(exchange, api, restEndpointDescriptor).generate());
+        new RestEndpointDemoGenerator(exchange, api, restEndpointDescriptor, EndpointDemoGenUtil.collectDemoConfigProperties(exchange)).generate());
   }
   
   @Test
@@ -119,7 +119,7 @@ public class RestEndpointDemoGeneratorTest {
     ExchangeDescriptor exchange = ExchangeDescriptorParser.fromJson(Paths.get(".", "src", "test", "resources", "testExchangeDescriptorWithAllRestRequestDataTypes.json"));
     ExchangeApiDescriptor api = exchange.getApis().get(0);
     RestEndpointDescriptor restEndpoint = ClassesGeneratorTestUtil.findRestEndpointByName("postRestRequestDataTypeInt", api);
-    RestEndpointDemoGenerator generator = new RestEndpointDemoGenerator(exchange, api, restEndpoint);
+    RestEndpointDemoGenerator generator = createGenerator(exchange, api, restEndpoint);
     Assert.assertEquals("package com.foo.bar.gen.marketdata.demo;\n"
         + "\n"
         + "import java.util.Properties;\n"
@@ -205,7 +205,7 @@ public class RestEndpointDemoGeneratorTest {
     ExchangeDescriptor exchange = ExchangeDescriptorParser.fromJson(Paths.get(".", "src", "test", "resources", "testExchangeDescriptorWithAllRestRequestDataTypes.json"));
     ExchangeApiDescriptor api = exchange.getApis().get(0);
     RestEndpointDescriptor restEndpoint = ClassesGeneratorTestUtil.findRestEndpointByName("postRestRequestDataTypeStringImplicit", api);
-    RestEndpointDemoGenerator generator = new RestEndpointDemoGenerator(exchange, api, restEndpoint);
+    RestEndpointDemoGenerator generator = createGenerator(exchange, api, restEndpoint);
     Assert.assertEquals("package com.foo.bar.gen.marketdata.demo;\n"
         + "\n"
         + "import java.util.Properties;\n"
@@ -291,7 +291,7 @@ public class RestEndpointDemoGeneratorTest {
     ExchangeDescriptor exchange = ExchangeDescriptorParser.fromJson(Paths.get(".", "src", "test", "resources", "testExchangeDescriptorWithAllRestRequestDataTypes.json"));
     ExchangeApiDescriptor api = exchange.getApis().get(0);
     RestEndpointDescriptor restEndpoint = ClassesGeneratorTestUtil.findRestEndpointByName("postRestRequestDataTypeObjectNoParameters", api);
-    RestEndpointDemoGenerator generator = new RestEndpointDemoGenerator(exchange, api, restEndpoint);
+    RestEndpointDemoGenerator generator = createGenerator(exchange, api, restEndpoint);
     Assert.assertEquals("package com.foo.bar.gen.marketdata.demo;\n"
         + "\n"
         + "import java.util.Properties;\n"
@@ -366,7 +366,7 @@ public class RestEndpointDemoGeneratorTest {
     ExchangeDescriptor exchange = ExchangeDescriptorParser.fromJson(Paths.get(".", "src", "test", "resources", "testExchangeDescriptorWithAllRestRequestDataTypes.json"));
     ExchangeApiDescriptor api = exchange.getApis().get(0);
     RestEndpointDescriptor restEndpoint = ClassesGeneratorTestUtil.findRestEndpointByName("postRestRequestDataTypeObjectListMap", api);
-    RestEndpointDemoGenerator generator = new RestEndpointDemoGenerator(exchange, api, restEndpoint);
+    RestEndpointDemoGenerator generator = createGenerator(exchange, api, restEndpoint);
     Assert.assertEquals("package com.foo.bar.gen.marketdata.demo;\n"
         + "\n"
         + "import java.util.List;\n"
@@ -457,7 +457,7 @@ public class RestEndpointDemoGeneratorTest {
     ExchangeDescriptor exchange = ExchangeDescriptorParser.fromJson(Paths.get(".", "src", "test", "resources", "testExchangeDescriptorWithAllRestRequestDataTypes.json"));
     ExchangeApiDescriptor api = exchange.getApis().get(0);
     RestEndpointDescriptor restEndpoint = ClassesGeneratorTestUtil.findRestEndpointByName("getRestRequestDataTypeObjectListMap", api);
-    RestEndpointDemoGenerator generator = new RestEndpointDemoGenerator(exchange, api, restEndpoint);
+    RestEndpointDemoGenerator generator = createGenerator(exchange, api, restEndpoint);
     Assert.assertEquals("package com.foo.bar.gen.marketdata.demo;\n"
         + "\n"
         + "import java.util.List;\n"
@@ -550,7 +550,7 @@ public class RestEndpointDemoGeneratorTest {
     ExchangeDescriptor exchange = ExchangeDescriptorParser.fromJson(Paths.get(".", "src", "test", "resources", "testExchangeDescriptorWithAllRestRequestDataTypes.json"));
     ExchangeApiDescriptor api = exchange.getApis().get(0);
     RestEndpointDescriptor restEndpoint = ClassesGeneratorTestUtil.findRestEndpointByName("postRestRequestDataTypeIntList", api);
-    RestEndpointDemoGenerator generator = new RestEndpointDemoGenerator(exchange, api, restEndpoint);
+    RestEndpointDemoGenerator generator = createGenerator(exchange, api, restEndpoint);
     Assert.assertEquals("package com.foo.bar.gen.marketdata.demo;\n"
         + "\n"
         + "import java.util.List;\n"
@@ -639,7 +639,7 @@ public class RestEndpointDemoGeneratorTest {
     ExchangeDescriptor exchange = ExchangeDescriptorParser.fromJson(Paths.get(".", "src", "test", "resources", "testExchangeDescriptorWithAllRestResponseDataTypes.json"));
     ExchangeApiDescriptor api = exchange.getApis().get(0);
     RestEndpointDescriptor restEndpoint = ClassesGeneratorTestUtil.findRestEndpointByName("getRestEmptyResponseDataType", api);
-    RestEndpointDemoGenerator generator = new RestEndpointDemoGenerator(exchange, api, restEndpoint);
+    RestEndpointDemoGenerator generator = createGenerator(exchange, api, restEndpoint);
     Assert.assertEquals("package com.foo.bar.gen.marketdata.demo;\n"
         + "\n"
         + "import java.util.Properties;\n"
@@ -706,5 +706,12 @@ public class RestEndpointDemoGeneratorTest {
         + "  }\n"
         + "}\n", 
         generator.generate());
+  }
+  
+  private RestEndpointDemoGenerator createGenerator(
+      ExchangeDescriptor exchange, 
+      ExchangeApiDescriptor api,
+      RestEndpointDescriptor restEndpoint) throws Exception {
+    return new RestEndpointDemoGenerator(exchange, api, restEndpoint, EndpointDemoGenUtil.collectDemoConfigProperties(exchange));
   }
 }

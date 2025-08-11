@@ -113,7 +113,7 @@ public class WebsocketEndpointDemoGeneratorTest {
         + "  }\n"
         + "}\n"
         + "", 
-        new WebsocketEndpointDemoGenerator(exchangeDescriptor, exchangeApiDescriptor, websocketEndpointDescriptor).generate());
+        createGenerator(exchangeDescriptor, exchangeApiDescriptor, websocketEndpointDescriptor).generate());
   }
   
   @Test
@@ -205,7 +205,7 @@ public class WebsocketEndpointDemoGeneratorTest {
         + "    }\n"
         + "  }\n"
         + "}\n", 
-        new WebsocketEndpointDemoGenerator(exchange, exchangeApiDescriptor, websocketEndpointDescriptor).generate());
+        createGenerator(exchange, exchangeApiDescriptor, websocketEndpointDescriptor).generate());
   }
   
   @Test
@@ -285,7 +285,7 @@ public class WebsocketEndpointDemoGeneratorTest {
         + "    }\n"
         + "  }\n"
         + "}\n", 
-        new WebsocketEndpointDemoGenerator(exchange, exchangeApiDescriptor, websocketEndpointDescriptor).generate());
+        createGenerator(exchange, exchangeApiDescriptor, websocketEndpointDescriptor).generate());
   }
   
   @Test
@@ -390,7 +390,14 @@ public class WebsocketEndpointDemoGeneratorTest {
         + "    }\n"
         + "  }\n"
         + "}\n", 
-        new WebsocketEndpointDemoGenerator(exchange, exchangeApiDescriptor, websocketEndpointDescriptor).generate());
+        createGenerator(exchange, exchangeApiDescriptor, websocketEndpointDescriptor).generate());
+  }
+  
+  private WebsocketEndpointDemoGenerator createGenerator(
+      ExchangeDescriptor exchange,
+      ExchangeApiDescriptor api, 
+      WebsocketEndpointDescriptor websocketEndpoint) {
+    return new WebsocketEndpointDemoGenerator(exchange, api, websocketEndpoint, EndpointDemoGenUtil.collectDemoConfigProperties(exchange));
   }
 
 }

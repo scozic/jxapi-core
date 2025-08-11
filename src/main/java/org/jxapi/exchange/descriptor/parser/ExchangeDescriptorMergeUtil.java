@@ -141,7 +141,6 @@ public class ExchangeDescriptorMergeUtil {
     res.setConstants(mergeConstants(e1.getConstants(), e2.getConstants()));
     res.setRateLimits(mergeLists("rateLimits of exchange " + exchangeName, e1.getRateLimits(), e2.getRateLimits(), RateLimitRule::getId));
     res.setProperties(mergeLists("properties of exchange " + exchangeName, e1.getProperties(), e2.getProperties(), ConfigPropertyDescriptor::getName));
-    res.setDemoProperties(mergeLists("demoProperties of exchange " + exchangeName, e1.getDemoProperties(), e2.getDemoProperties(), ConfigPropertyDescriptor::getName));
     res.setApis(mergeExchangeApiDescriptorLists(e1.getApis(), e2.getApis()));
     return res;
   }

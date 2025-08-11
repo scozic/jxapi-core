@@ -297,7 +297,6 @@ public class ExchangeDescriptorParserTest {
     Assert.assertEquals("org.jxapi.exchanges.employee.gen", exchangeDescriptor.getBasePackage());
 
     checkEmployeeExchangeProperties(exchangeDescriptor);
-    checkEmployeeExchangeDemoProperties(exchangeDescriptor);
     
     Assert.assertEquals("${config.server.baseHttpUrl}", exchangeDescriptor.getHttpUrl());
     Assert.assertEquals("org.jxapi.exchanges.demo.net.DemoExchangeHttpRequestInterceptorFactory", 
@@ -319,15 +318,6 @@ public class ExchangeDescriptorParserTest {
     ConfigPropertyDescriptor wsHttpUrlProp = serverGroupProp.getProperties().get(1);
     Assert.assertEquals("baseWebsocketUrl", wsHttpUrlProp.getName());
     Assert.assertEquals("Base URL for websocket endpoints of the Employee Exchange API", wsHttpUrlProp.getDescription());
-  }
-  
-  private void checkEmployeeExchangeDemoProperties(ExchangeDescriptor exchangeDescriptor) {
-    List<ConfigPropertyDescriptor> properties = exchangeDescriptor.getDemoProperties();
-    Assert.assertEquals(1, properties.size());
-    ConfigPropertyDescriptor demoEmployeeProperty = properties.get(0);
-    Assert.assertEquals("employeeId", demoEmployeeProperty.getName());
-    Assert.assertEquals("Used in demo snippets to set as value of Employee 'id' property", demoEmployeeProperty.getDescription());
-    Assert.assertEquals(1, demoEmployeeProperty.getDefaultValue());
   }
   
   private void checkEmployeeExchangeV1ApiGroup(ExchangeApiDescriptor api) {

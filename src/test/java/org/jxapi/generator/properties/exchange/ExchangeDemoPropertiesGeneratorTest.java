@@ -16,6 +16,7 @@ import org.jxapi.exchange.descriptor.Type;
 import org.jxapi.exchange.descriptor.parser.ExchangeDescriptorParser;
 import org.jxapi.generator.java.JavaCodeGenUtil;
 import org.jxapi.generator.java.exchange.ClassesGeneratorTestUtil;
+import org.jxapi.generator.java.exchange.api.demo.EndpointDemoGenUtil;
 
 /**
  * Unit test for {@link ExchangeDemoPropertiesFileGenerator}
@@ -43,7 +44,7 @@ public class ExchangeDemoPropertiesGeneratorTest {
     List<ConfigPropertyDescriptor> configProperties = new ArrayList<>();
     configProperties.addAll(exchangeDescriptor.getProperties());
     List<ConfigPropertyDescriptor> demoProperties = new ArrayList<>();
-    demoProperties.addAll(exchangeDescriptor.getDemoProperties());
+    demoProperties.addAll(EndpointDemoGenUtil.collectDemoConfigProperties(exchangeDescriptor));
     new ExchangeDemoPropertiesFileGenerator(exchangeDescriptor.getId(), 
                         configProperties,
                         demoProperties)

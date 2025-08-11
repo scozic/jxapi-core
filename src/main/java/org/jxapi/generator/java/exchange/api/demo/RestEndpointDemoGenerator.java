@@ -1,9 +1,11 @@
 package org.jxapi.generator.java.exchange.api.demo;
 
+import java.util.List;
 import java.util.Properties;
 import java.util.concurrent.ExecutionException;
 
 import org.jxapi.exchange.ExchangeApiObserver;
+import org.jxapi.exchange.descriptor.ConfigPropertyDescriptor;
 import org.jxapi.exchange.descriptor.ExchangeApiDescriptor;
 import org.jxapi.exchange.descriptor.ExchangeDescriptor;
 import org.jxapi.exchange.descriptor.Field;
@@ -64,10 +66,12 @@ public class RestEndpointDemoGenerator extends JavaTypeGenerator {
    * @param exchangeDescriptor the exchange descriptor
    * @param exchangeApiDescriptor the exchange API descriptor
    * @param restApi the REST endpoint descriptor
+   * @param demoProperties the list of demo configuration properties available for demo snippets
    */
   public RestEndpointDemoGenerator(ExchangeDescriptor exchangeDescriptor, 
                    ExchangeApiDescriptor exchangeApiDescriptor, 
-                   RestEndpointDescriptor restApi) {
+                   RestEndpointDescriptor restApi,
+                   List<ConfigPropertyDescriptor> demoProperties) {
     super(EndpointDemoGenUtil.getRestApiDemoClassName(exchangeDescriptor, exchangeApiDescriptor, restApi));
     setTypeDeclaration("public class");
     this.restApi = restApi;
@@ -79,6 +83,7 @@ public class RestEndpointDemoGenerator extends JavaTypeGenerator {
     this.sampleValuePlaceHolderResolver = s -> ExchangeGenUtil.generateSubstitutionInstructionDeclaration(
         s, 
         exchangeDescriptor, 
+        demoProperties,
         "properties",
         getImports());
     if (hasArguments) {

@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Properties;
 
+import org.apache.commons.lang3.StringUtils;
 import org.jxapi.exchange.descriptor.ConfigPropertyDescriptor;
 import org.jxapi.exchange.descriptor.ExchangeDescriptor;
 import org.jxapi.exchange.descriptor.Type;
@@ -83,9 +84,11 @@ public class PropertiesClassGenerator extends JavaTypeGenerator {
     this.exchange = exchange;
     this.properties = properties;
     this.prefix = prefix;
+    List<ConfigPropertyDescriptor> demoProperties = StringUtils.defaultString(prefix).startsWith("demo")? properties: List.of();
     this.sampleValuePlaceHolderResolver = s -> ExchangeGenUtil.generateSubstitutionInstructionDeclaration(
         s, 
         exchange, 
+        demoProperties,
         null,
         getImports());
     this.docPlaceHolderResolver = PlaceHolderResolver.create(ExchangeGenUtil.getDescriptionReplacements(exchange, null));

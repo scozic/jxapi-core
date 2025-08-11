@@ -34,23 +34,24 @@ public class ExchangeDemoClassesGenerator implements ClassesGenerator {
 
   @Override
   public void generateClasses(Path outputFolder) throws IOException {
+    List<ConfigPropertyDescriptor> demoProperties = EndpointDemoGenUtil.collectDemoConfigProperties(exchangeDescriptor);
     for (ExchangeApiDescriptor api: exchangeDescriptor.getApis()) {  
       if (api.getRestEndpoints() != null) {
         for (RestEndpointDescriptor restApi: api.getRestEndpoints()) {
-          RestEndpointDemoGenerator restEndpointDemoGenerator = new RestEndpointDemoGenerator(exchangeDescriptor, api, restApi);
+          RestEndpointDemoGenerator restEndpointDemoGenerator = new RestEndpointDemoGenerator(exchangeDescriptor, api, restApi, demoProperties);
           restEndpointDemoGenerator.writeJavaFile(outputFolder);
         }
       }
       
       if (api.getWebsocketEndpoints() != null) {
         for (WebsocketEndpointDescriptor websocketApi: api.getWebsocketEndpoints()) {
-          WebsocketEndpointDemoGenerator websocketEndpointDemoGenerator = new WebsocketEndpointDemoGenerator(exchangeDescriptor, api, websocketApi);
+          WebsocketEndpointDemoGenerator websocketEndpointDemoGenerator = new WebsocketEndpointDemoGenerator(exchangeDescriptor, api, websocketApi, demoProperties);
           websocketEndpointDemoGenerator.writeJavaFile(outputFolder);
         }
       }
       
       // Generate properties interface
-      List<ConfigPropertyDescriptor> properties = exchangeDescriptor.getDemoProperties();
+      List<ConfigPropertyDescriptor> properties = EndpointDemoGenUtil.collectDemoConfigProperties(exchangeDescriptor);
       if (properties != null) {
         PropertiesClassGenerator pgen = new PropertiesClassGenerator(
             ExchangeGenUtil.getExchangeDemoPropertiesInterfaceName(exchangeDescriptor), 

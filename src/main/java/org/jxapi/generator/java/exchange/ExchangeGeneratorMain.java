@@ -238,7 +238,8 @@ public class ExchangeGeneratorMain {
     List<ConfigPropertyDescriptor> configProperties = new ArrayList<>();
     configProperties.addAll(Optional.ofNullable(exchangeDescriptor.getProperties()).orElse(List.of()));
     List<ConfigPropertyDescriptor> demoProperties = new ArrayList<>();
-    demoProperties.addAll(Optional.ofNullable(exchangeDescriptor.getDemoProperties()).orElse(List.of()));
+    // FIXME
+//    demoProperties.addAll(Optional.ofNullable(exchangeDescriptor.getDemoProperties()).orElse(List.of()));
     new ExchangeDemoPropertiesFileGenerator(exchangeDescriptor.getId(), 
                         configProperties, 
                         demoProperties)

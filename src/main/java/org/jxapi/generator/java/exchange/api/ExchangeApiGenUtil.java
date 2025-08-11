@@ -602,6 +602,7 @@ public class ExchangeApiGenUtil {
      if (field == null) {
       return null;
     }
+    // FIXME use getFieldType
     Type type = field.getType();
     if (type == null) {
       if (field.getObjectName() != null) {

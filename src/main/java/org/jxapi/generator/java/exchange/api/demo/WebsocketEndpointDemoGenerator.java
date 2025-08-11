@@ -1,8 +1,10 @@
 package org.jxapi.generator.java.exchange.api.demo;
 
+import java.util.List;
 import java.util.Properties;
 
 import org.jxapi.exchange.ExchangeApiObserver;
+import org.jxapi.exchange.descriptor.ConfigPropertyDescriptor;
 import org.jxapi.exchange.descriptor.ExchangeApiDescriptor;
 import org.jxapi.exchange.descriptor.ExchangeDescriptor;
 import org.jxapi.exchange.descriptor.Field;
@@ -81,8 +83,9 @@ public class WebsocketEndpointDemoGenerator extends JavaTypeGenerator {
    * @param websocketApi the Websocket endpoint descriptor
    */
   public WebsocketEndpointDemoGenerator(ExchangeDescriptor exchangeDescriptor, 
-                      ExchangeApiDescriptor exchangeApiDescriptor, 
-                      WebsocketEndpointDescriptor websocketApi) {
+                                        ExchangeApiDescriptor exchangeApiDescriptor, 
+                                        WebsocketEndpointDescriptor websocketApi,
+                                        List<ConfigPropertyDescriptor> demoProperties) {
     super(EndpointDemoGenUtil.getWebsocketApiDemoClassName(exchangeDescriptor, exchangeApiDescriptor, websocketApi));
     this.exchangeDescriptor = exchangeDescriptor;
     this.request = ExchangeApiGenUtil.resolveFieldProperties(exchangeApiDescriptor, websocketApi.getRequest());
@@ -115,6 +118,7 @@ public class WebsocketEndpointDemoGenerator extends JavaTypeGenerator {
     this.sampleValuePlaceHolderResolver = s -> ExchangeGenUtil.generateSubstitutionInstructionDeclaration(
         s, 
         exchangeDescriptor, 
+        demoProperties,
         "properties",
         getImports());
     addImport(apiInterfaceClassName);

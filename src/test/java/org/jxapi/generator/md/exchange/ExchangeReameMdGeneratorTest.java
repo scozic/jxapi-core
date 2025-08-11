@@ -819,7 +819,6 @@ public class ExchangeReameMdGeneratorTest {
   public void testGenerateExchangeReadme_NoApiGroupNoDemoProperties() throws IOException {
     ExchangeDescriptor exchange = ExchangeDescriptorParser.fromJson(Paths.get(".", "src", "test", "resources", "testExchangeDescriptor.json"));
     exchange.setApis(null);
-    exchange.setDemoProperties(null);
     String actual = new ExchangeReadmeMdGenerator(exchange, "https://javadoc.io/myproject/", "https://myrepo.com/myproject/master/src/main/java").generate();
     Assert.assertEquals("# MyTestExchange API Java wrapper\n"
         + "\n"

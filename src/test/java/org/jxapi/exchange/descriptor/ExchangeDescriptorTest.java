@@ -29,7 +29,6 @@ public class ExchangeDescriptorTest {
         exchangeDescriptor.setDocUrl("https://doc.myexchange.com");
         exchangeDescriptor.setConstants(List.of(new Constant()));
         exchangeDescriptor.setProperties(List.of(new ConfigPropertyDescriptor()));
-        exchangeDescriptor.setDemoProperties(List.of(new ConfigPropertyDescriptor(), new ConfigPropertyDescriptor()));
         exchangeDescriptor.setHttpRequestInterceptorFactory("com.x.y.net.MyHttpRequestInterceptorFactory");
         exchangeDescriptor.setHttpRequestExecutorFactory("com.x.y.net.MyHttpRequestExecutorFactory");
         exchangeDescriptor.setHttpRequestTimeout(2000L);
@@ -46,7 +45,6 @@ public class ExchangeDescriptorTest {
         Assert.assertEquals(1, exchangeDescriptor.getRateLimits().size());
         Assert.assertEquals(1, exchangeDescriptor.getConstants().size());
         Assert.assertEquals(1, exchangeDescriptor.getProperties().size());
-        Assert.assertEquals(2, exchangeDescriptor.getDemoProperties().size());
         Assert.assertEquals("com.x.y.net.MyHttpRequestInterceptorFactory", exchangeDescriptor.getHttpRequestInterceptorFactory());
         Assert.assertEquals("com.x.y.net.MyHttpRequestExecutorFactory", exchangeDescriptor.getHttpRequestExecutorFactory());
         Assert.assertEquals(2000L, exchangeDescriptor.getHttpRequestTimeout());
