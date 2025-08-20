@@ -547,4 +547,40 @@ public class JavaCodeGenUtil {
     }
     return getJavaDocLink(className + "#" + attribute);
   }
+  
+  public static String generateOptionalOfNullableStatement(String optionalStatement, String orElseStatement, boolean multiline) {
+    if (StringUtils.isEmpty(optionalStatement)) {
+      return orElseStatement;
+    }
+    if (StringUtils.isEmpty(orElseStatement)) {
+      return optionalStatement;
+    }
+    StringBuilder sb = new StringBuilder().append("Optional");
+    StringBuilder optStatement = new StringBuilder()
+        .append(".ofNullable(")
+        .append(optionalStatement)
+        .append(")");
+    
+    if (multiline) {
+      sb.append("\n")
+        .append(JavaCodeGenUtil.indent(optStatement.toString()));
+    } else {
+      sb.append(optStatement);
+    }
+    
+
+    
+    StringBuilder orElse = new StringBuilder()
+        .append(".orElse(")
+        .append(orElseStatement)
+        .append(")");
+    
+    if (multiline) {
+      sb.append("\n")
+        .append(JavaCodeGenUtil.indent(orElse.toString()));
+    } else {
+      sb.append(orElse);
+    }
+    return sb.toString();
+  }
 }

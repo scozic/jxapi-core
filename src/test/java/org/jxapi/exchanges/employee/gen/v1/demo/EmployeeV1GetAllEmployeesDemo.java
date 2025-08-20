@@ -5,9 +5,11 @@ import java.util.concurrent.ExecutionException;
 
 import javax.annotation.processing.Generated;
 import org.jxapi.exchange.ExchangeApiObserver;
+import org.jxapi.exchanges.employee.gen.EmployeeDemoProperties;
 import org.jxapi.exchanges.employee.gen.EmployeeExchange;
 import org.jxapi.exchanges.employee.gen.EmployeeExchangeImpl;
 import org.jxapi.exchanges.employee.gen.v1.EmployeeV1Api;
+import org.jxapi.exchanges.employee.gen.v1.deserializers.EmployeeV1GetAllEmployeesRequestDeserializer;
 import org.jxapi.exchanges.employee.gen.v1.pojo.EmployeeV1GetAllEmployeesRequest;
 import org.jxapi.exchanges.employee.gen.v1.pojo.EmployeeV1GetAllEmployeesResponse;
 import org.jxapi.netutils.rest.RestResponse;
@@ -23,15 +25,17 @@ public class EmployeeV1GetAllEmployeesDemo {
   private static final Logger log = LoggerFactory.getLogger(EmployeeV1GetAllEmployeesDemo.class);
   
   /**
-   * Creates a sample value for the request field of type EmployeeV1GetAllEmployeesRequest using sample value(s) defined in the field descriptor.
+   * Creates a sample value for the request field of type EmployeeV1GetAllEmployeesRequest using sample value(s) defined in demo configuration properties.
    * 
    * @param properties the configuration properties to use for the sample value generation.
    */
   public static EmployeeV1GetAllEmployeesRequest createRequest(Properties properties) {
-    EmployeeV1GetAllEmployeesRequest request = new EmployeeV1GetAllEmployeesRequest();
-    request.setPage(Integer.valueOf("1"));
-    request.setSize(Integer.valueOf("10"));
-    return request;
+    return Optional
+      .ofNullable(new EmployeeV1GetAllEmployeesRequestDeserializer().deserialize(EmployeeDemoProperties.V1.Rest.GetAllEmployees.getRequest(properties)))
+      .orElse(EmployeeV1GetAllEmployeesRequest.builder()  
+        .page(EmployeeDemoProperties.V1.Rest.GetAllEmployees.Request.getPage(properties))
+        .size(EmployeeDemoProperties.V1.Rest.GetAllEmployees.Request.getSize(properties))
+        .build());
   }
   
   /**

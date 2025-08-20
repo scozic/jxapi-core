@@ -137,21 +137,6 @@ Some demo configuration properties are available to tune common request paramete
 
 In order to run demo snippets, you can set properties values in __demo-Employee.properties__ properties file in src/test/resources folder.
 
-<table>
-  <caption>Demo snippet properties</caption>
-  <tr>
-    <th>Name</th>
-    <th>Type</th>
-    <th>description</th>
-    <th>Default value</th>
-  </tr>
-  <tr>
-    <td>demo.employeeId</td>
-    <td>STRING</td>
-    <td>Used in demo snippets to set as value of Employee 'id' property</td>
-    <td>1</td>
-  </tr>
-</table>
 
 ### Endpoint demo snippets
 

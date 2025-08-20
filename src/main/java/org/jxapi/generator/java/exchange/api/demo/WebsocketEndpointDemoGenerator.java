@@ -17,7 +17,6 @@ import org.jxapi.generator.java.exchange.api.ExchangeApiGenUtil;
 import org.jxapi.netutils.websocket.WebsocketListener;
 import org.jxapi.util.DemoProperties;
 import org.jxapi.util.DemoUtil;
-import org.jxapi.util.PlaceHolderResolver;
 import org.slf4j.Logger;
 
 /**
@@ -73,7 +72,9 @@ public class WebsocketEndpointDemoGenerator extends JavaTypeGenerator {
   private final String exchangeClassName;
   private final String exchangeSimpleClassName;
   private final Type requestDataType;
-  private final PlaceHolderResolver sampleValuePlaceHolderResolver;
+  private final ExchangeApiDescriptor exchangeApi;
+  private final WebsocketEndpointDescriptor websocketApi;
+  private final List<ConfigPropertyDescriptor> demoProperties;
   
   /**
    * Constructor.
@@ -88,6 +89,9 @@ public class WebsocketEndpointDemoGenerator extends JavaTypeGenerator {
                                         List<ConfigPropertyDescriptor> demoProperties) {
     super(EndpointDemoGenUtil.getWebsocketApiDemoClassName(exchangeDescriptor, exchangeApiDescriptor, websocketApi));
     this.exchangeDescriptor = exchangeDescriptor;
+    this.exchangeApi = exchangeApiDescriptor;
+    this.websocketApi = websocketApi;
+    this.demoProperties = demoProperties;
     this.request = ExchangeApiGenUtil.resolveFieldProperties(exchangeApiDescriptor, websocketApi.getRequest());
     this.exchangeClassName = ExchangeGenUtil.getExchangeInterfaceName(exchangeDescriptor);
     this.exchangeSimpleClassName = JavaCodeGenUtil.getClassNameWithoutPackage(exchangeClassName);
@@ -115,12 +119,7 @@ public class WebsocketEndpointDemoGenerator extends JavaTypeGenerator {
     }
     this.apiInterfaceClassName = ExchangeGenUtil.getApiInterfaceClassName(exchangeDescriptor, exchangeApiDescriptor);
     this.simpleApiClassName = JavaCodeGenUtil.getClassNameWithoutPackage(apiInterfaceClassName);
-    this.sampleValuePlaceHolderResolver = s -> ExchangeGenUtil.generateSubstitutionInstructionDeclaration(
-        s, 
-        exchangeDescriptor, 
-        demoProperties,
-        "properties",
-        getImports());
+
     addImport(apiInterfaceClassName);
     setDescription(getClassJavadoc());
     this.fullStreamName = exchangeDescriptor.getId() + " " 
@@ -148,11 +147,14 @@ public class WebsocketEndpointDemoGenerator extends JavaTypeGenerator {
     JavaCodeGenUtil.generateSlf4jLoggerDeclaration(this);
     if (hasArguments) {
       this.appendToBody(EndpointDemoGenUtil.generateFieldCreationMethod(
-                request,  
-                requestClassName, 
-                ExchangeApiGenUtil.DEFAULT_REQUEST_ARG_NAME,
-                getImports(),
-                sampleValuePlaceHolderResolver))
+          request,  
+          requestClassName, 
+          exchangeDescriptor,
+          exchangeApi,
+          EndpointDemoGenUtil.WEBSOCKET_DEMO_GROUP_NAME,
+          websocketApi.getName(),
+          demoProperties,
+          getImports()))
         .append("\n");
     }
     generateSubscribeMethod();

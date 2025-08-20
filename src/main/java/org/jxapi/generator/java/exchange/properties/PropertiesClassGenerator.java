@@ -15,6 +15,7 @@ import org.jxapi.generator.java.JavaTypeGenerator;
 import org.jxapi.generator.java.exchange.ExchangeGenUtil;
 import org.jxapi.util.CollectionUtil;
 import org.jxapi.util.ConfigProperty;
+import org.jxapi.util.JsonUtil;
 import org.jxapi.util.PlaceHolderResolver;
 import org.jxapi.util.PropertiesUtil;
 
@@ -64,6 +65,7 @@ public class PropertiesClassGenerator extends JavaTypeGenerator {
   private final String prefix;
   private final PlaceHolderResolver docPlaceHolderResolver;
   private final PlaceHolderResolver sampleValuePlaceHolderResolver;
+  private boolean generateSimplePropertiesForGroups = false;
 
   /**
    * Constructor
@@ -94,6 +96,29 @@ public class PropertiesClassGenerator extends JavaTypeGenerator {
     this.docPlaceHolderResolver = PlaceHolderResolver.create(ExchangeGenUtil.getDescriptionReplacements(exchange, null));
     setTypeDeclaration("public class");
     setDescription(generateExchangePropertiesClassDescription());
+  }
+  
+  /**
+   * @see #setGenerateSimplePropertiesForGroups(boolean)
+   * @return <code>true</code> if simple properties for groups should be
+   *         generated, <code>false</code> if only inner property class for group
+   *         should be generated.
+   */
+  public boolean isGenerateSimplePropertiesForGroups() {
+    return generateSimplePropertiesForGroups;
+  }
+
+  /**
+   * Sets whether to generate simple properties for group properties, in addition to inner
+   * properties classes. This is used for demo properties to allow setting non primitive
+   * properties values as a whole structure.
+   * 
+   * @param generateSimplePropertiesForGroups <code>true</code> to generate simple
+   *                                          properties for groups,
+   *                                          <code>false</code> otherwise
+   */
+  public void setGenerateSimplePropertiesForGroups(boolean generateSimplePropertiesForGroups) {
+    this.generateSimplePropertiesForGroups = generateSimplePropertiesForGroups;
   }
   
   private String generateExchangePropertiesClassDescription() {
@@ -135,14 +160,21 @@ public class PropertiesClassGenerator extends JavaTypeGenerator {
     .append("(){}\n");
     properties
       .forEach(c -> appendToBody("\n")
-                      .append(generatePropertyDeclaration(c)));
+                      .append(generatePropertyDeclaration(c, this.prefix)));
     this.properties.forEach(this::generatePropertyGetterMethod);
     appendToBody(PropertiesGenUtil.generateAllPropertiesListMethod(properties, getImports()));
     return super.generate();
   }
 
-  private String generatePropertyDeclaration(ConfigPropertyDescriptor property) {
+  private String generatePropertyDeclaration(ConfigPropertyDescriptor property, String prefix) {
+    String simplePropertyValueDeclaration = PropertiesGenUtil.generateSimplePropertyValueDeclaration(
+        property, 
+        prefix,
+        getImports(), 
+        docPlaceHolderResolver, 
+        sampleValuePlaceHolderResolver);
     if (property.isGroup()) {
+      StringBuilder s = new StringBuilder();
       String groupClassName = JavaCodeGenUtil.firstLetterToUpperCase(property.getName());
       PropertiesClassGenerator groupGen = new PropertiesClassGenerator(getName() + "." + groupClassName,
           exchange, // No exchange descriptor for group properties
@@ -151,22 +183,20 @@ public class PropertiesClassGenerator extends JavaTypeGenerator {
       groupGen.setTypeDeclaration("public static class");
       groupGen.setGeneratePackageAndImports(false);
       groupGen.setDescription(property.getDescription());
-      String res = groupGen.generate();
+      if (isGenerateSimplePropertiesForGroups()) {
+        s.append(simplePropertyValueDeclaration).append("\n");
+        groupGen.setGenerateSimplePropertiesForGroups(true);
+      }
+      s.append(groupGen.generate());
       this.getImports().addAll(groupGen.getImports());
-      return res;
+      return s.toString();
     } else {
-      return PropertiesGenUtil.generateSimplePropertyValueDeclaration(
-              property, 
-              prefix,
-              getImports(), 
-              docPlaceHolderResolver, 
-              sampleValuePlaceHolderResolver);
+      return simplePropertyValueDeclaration;
     }
   }
   
   private void generatePropertyGetterMethod(ConfigPropertyDescriptor property) {
-    if (property.isGroup()) {
-      // Skip group properties, they are handled by generatePropertyDeclaration
+    if (property.isGroup() && !isGenerateSimplePropertiesForGroups()) {
       return;
     }
     StringBuilder sb = new StringBuilder()
@@ -174,6 +204,10 @@ public class PropertiesClassGenerator extends JavaTypeGenerator {
     String name = property.getName();
     Type type = property.getType();
     Object def = property.getDefaultValue();
+    if (property.isGroup()) {
+      type = Type.STRING;
+      def = JsonUtil.pojoToJsonString(def);
+    }
     StringBuilder desc = new StringBuilder()
         .append("Retrieves value of '")
         .append(name)

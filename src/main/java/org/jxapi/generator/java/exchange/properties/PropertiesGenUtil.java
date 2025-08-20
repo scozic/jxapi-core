@@ -14,6 +14,7 @@ import org.jxapi.generator.java.exchange.ExchangeGenUtil;
 import org.jxapi.util.CollectionUtil;
 import org.jxapi.util.ConfigProperty;
 import org.jxapi.util.DefaultConfigProperty;
+import org.jxapi.util.JsonUtil;
 import org.jxapi.util.PlaceHolderResolver;
 
 /**
@@ -199,6 +200,9 @@ public class PropertiesGenUtil {
     String name = getPropertyFullName(prefix, property.getName());
     String description = Optional.ofNullable(docPlaceHolderResolver).orElse(PlaceHolderResolver.NO_OP).resolve(property.getDescription());
     Object sampleValue = property.getDefaultValue();
+    if (!property.getType().getCanonicalType().isPrimitive) {
+      sampleValue = JsonUtil.pojoToJsonString(sampleValue);
+    }
     String sampleValueStr = sampleValue == null? null: 
       Optional.ofNullable(sampleValuePlaceHolderResolver)
         .orElse(JavaCodeGenUtil::getQuotedString)
@@ -244,7 +248,11 @@ public class PropertiesGenUtil {
    */
   public static String getPropertyGetterMethodName(ConfigPropertyDescriptor property, List<ConfigPropertyDescriptor> allProperties) {
     String name = property.getName();
-    String typeClass = ExchangeGenUtil.getClassNameForType(property.getType(), new Imports(), null);
+    Type type = property.getType();
+    if (property.isGroup()) {
+      type = Type.STRING;
+    }
+    String typeClass = ExchangeGenUtil.getClassNameForType(type, new Imports(), null);
     return JavaCodeGenUtil.getGetAccessorMethodName(
         name, 
         typeClass, 

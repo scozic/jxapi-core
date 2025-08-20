@@ -72,6 +72,7 @@ public class FieldBuilder {
    *                           {@link Field#getSampleMapKeyValue()}
    * @return this builder
    */
+  @Deprecated
   public FieldBuilder sampleMapKeyValues(List<String> sampleMapKeyValues) {
     field.setSampleMapKeyValue(sampleMapKeyValues);
     return this;
@@ -84,6 +85,7 @@ public class FieldBuilder {
    *                          {@link Field#getSampleMapKeyValue()}
    * @return this builder
    */
+  @Deprecated
   public FieldBuilder sampleMapKeyValue(String sampleMapKeyValue) {
     List<String> sampleMapKeyValues = Optional.ofNullable(field.getSampleMapKeyValue())
         .orElse(List.of());

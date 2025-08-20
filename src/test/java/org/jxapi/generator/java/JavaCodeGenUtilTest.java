@@ -415,5 +415,32 @@ public class JavaCodeGenUtilTest {
   public void testGetJavaDocLinkForAttribute() {
     Assert.assertEquals("{@link com.x.y.Foo#BAR}", JavaCodeGenUtil.getJavaDocLink("com.x.y.Foo", "BAR"));
   }
+  
+  @Test
+  public void testGenerateOptionalOfNullableStatement() {
+    Assert.assertEquals(
+        "foo", 
+        JavaCodeGenUtil.generateOptionalOfNullableStatement("foo", null, false));
+    Assert.assertEquals(
+        "bar", 
+        JavaCodeGenUtil.generateOptionalOfNullableStatement(null, "bar", false));
+    Assert.assertEquals(
+        "Optional.ofNullable(foo).orElse(bar)", 
+        JavaCodeGenUtil.generateOptionalOfNullableStatement("foo", "bar", false));
+    
+    Assert.assertEquals(
+        "foo", 
+        JavaCodeGenUtil.generateOptionalOfNullableStatement("foo", null, true));
+    
+    Assert.assertEquals(
+        "bar", 
+        JavaCodeGenUtil.generateOptionalOfNullableStatement(null, "bar", false));
+    
+    Assert.assertEquals(
+        "Optional\n"
+          + "  .ofNullable(foo)\n"
+          + "  .orElse(bar)", 
+        JavaCodeGenUtil.generateOptionalOfNullableStatement("foo", "bar", true));
+  }
 }
 

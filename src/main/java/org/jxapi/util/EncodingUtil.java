@@ -253,7 +253,7 @@ public class EncodingUtil {
    *         string representation
    */
   public static String pojoToString(Object pojo) {
-    return pojo.getClass().getSimpleName() +  pojoToFormattedJsonString(pojo); 
+    return pojo.getClass().getSimpleName() +  pojoToJsonString(pojo); 
   }
   
   /**
@@ -267,7 +267,7 @@ public class EncodingUtil {
    * @return concatenation of <code>pojo</code> simple class name and its JSON
    *         string representation
    */
-  public static String pojoToFormattedJsonString(Object pojo) {
+  public static String pojoToJsonString(Object pojo) {
     try {
       return DEFAULT_TOSTRING_OBJECT_MAPPER.writeValueAsString(pojo);
     } catch (JsonProcessingException e) {

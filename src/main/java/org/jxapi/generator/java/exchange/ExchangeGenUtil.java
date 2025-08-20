@@ -5,11 +5,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
 import org.jxapi.exchange.descriptor.CanonicalType;
@@ -18,12 +16,9 @@ import org.jxapi.exchange.descriptor.Constant;
 import org.jxapi.exchange.descriptor.ExchangeApiDescriptor;
 import org.jxapi.exchange.descriptor.ExchangeDescriptor;
 import org.jxapi.exchange.descriptor.Field;
-import org.jxapi.exchange.descriptor.RestEndpointDescriptor;
 import org.jxapi.exchange.descriptor.Type;
-import org.jxapi.exchange.descriptor.WebsocketEndpointDescriptor;
 import org.jxapi.generator.java.Imports;
 import org.jxapi.generator.java.JavaCodeGenUtil;
-import org.jxapi.generator.java.exchange.api.ExchangeApiGenUtil;
 import org.jxapi.generator.java.exchange.properties.PropertiesGenUtil;
 import org.jxapi.netutils.deserialization.json.AbstractJsonMessageDeserializer;
 import org.jxapi.netutils.deserialization.json.field.BigDecimalJsonFieldDeserializer;
@@ -737,12 +732,15 @@ public class ExchangeGenUtil {
       hierarchy = retrievePropertiesHierarchy(configPropertyName, demoProperties);
       className = getExchangeDemoPropertiesInterfaceName(exchangeDescriptor);
       sieblingProperties = demoProperties;
+      if (hierarchy.size() > 1) {
+        sieblingProperties = hierarchy.get(hierarchy.size() - 2).getProperties();
+      }
     } else {
       className = getExchangePropertiesInterfaceName(exchangeDescriptor);
       sieblingProperties = exchangeDescriptor.getProperties();
     }
     
-    if(hierarchy.isEmpty() || hierarchy.get(hierarchy.size() - 1).isGroup()) {
+    if(hierarchy.isEmpty()) {
       // Property not found or is a group property
       return null;
     }

@@ -46,6 +46,6 @@ public class MockFutureHttpResponse extends FutureHttpResponse {
    */
   @Override
   public String toString() {
-    return getClass().getSimpleName() + "{" + "\"request\":" + EncodingUtil.pojoToFormattedJsonString(request) + '}';
+    return getClass().getSimpleName() + "{" + "\"request\":" + EncodingUtil.pojoToJsonString(request) + '}';
   }
 }

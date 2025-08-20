@@ -156,6 +156,7 @@ public class Field {
   
   private Type type;
   
+  @Deprecated
   private List<String> sampleMapKeyValue;
   
   private Object sampleValue;
@@ -328,6 +329,7 @@ public class Field {
   /**
    * @return The list of key-value pairs for a sample map
    */
+  @Deprecated
   public List<String> getSampleMapKeyValue() {
     return sampleMapKeyValue;
   }
@@ -335,6 +337,7 @@ public class Field {
   /**
    * @param sampleMapKeyValue The list of key-value pairs for a sample map
    */
+  @Deprecated
   public void setSampleMapKeyValue(List<String> sampleMapKeyValue) {
     this.sampleMapKeyValue = sampleMapKeyValue;
   }

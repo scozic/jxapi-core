@@ -9,6 +9,7 @@ import org.junit.Test;
 import org.jxapi.exchange.descriptor.ConfigPropertyDescriptor;
 import org.jxapi.exchange.descriptor.Type;
 import org.jxapi.generator.java.Imports;
+import org.jxapi.generator.java.JavaCodeGenUtil;
 import org.jxapi.util.CollectionUtil;
 import org.jxapi.util.ConfigProperty;
 import org.jxapi.util.DefaultConfigProperty;
@@ -81,7 +82,7 @@ public class PropertiesGenUtilTest {
         "A test ${hello} property",
         "Hi ${foo}!");
     PlaceHolderResolver docPlaceHolderResolver = PlaceHolderResolver.create(Map.of("hello", "Hello World"));
-    PlaceHolderResolver sampleValuePlaceHolderResolver = PlaceHolderResolver.create(Map.of("foo", "bar"));
+    PlaceHolderResolver sampleValuePlaceHolderResolver = createSampleValueResolver(Map.of("foo", "bar"));
     String code = PropertiesGenUtil.generateSimplePropertyValueDeclaration(property, "demo", imports, docPlaceHolderResolver, sampleValuePlaceHolderResolver);
     Assert.assertEquals(
         "/**\n"
@@ -91,7 +92,37 @@ public class PropertiesGenUtilTest {
         + "  \"demo.helloProp\",\n"
         + "  Type.STRING,\n"
         + "  \"A test Hello World property\",\n"
-        + "  Hi bar!);\n"
+        + "  \"Hi bar!\");\n"
+        + "",
+        code);
+    Assert.assertEquals(3, imports.size());
+    Iterator<String> it = imports.iterator();
+    Assert.assertEquals(Type.class.getName(), it.next());
+    Assert.assertEquals(ConfigProperty.class.getName(), it.next());
+    Assert.assertEquals(DefaultConfigProperty.class.getName(), it.next());
+  }
+  
+  @Test
+  public void testGenerateSimplePropertyValueDeclaration_WithdObjecOFtSampleValueType() {
+    Imports imports = new Imports();
+    Person samplePerson = new Person("John ${lastName}", 30);
+    ConfigPropertyDescriptor property = ConfigPropertyDescriptor.create(
+        "personProp", 
+        Type.OBJECT, 
+        "A test person like ${fullName}  property",
+        samplePerson);
+    PlaceHolderResolver docPlaceHolderResolver = PlaceHolderResolver.create(Map.of("fullName", "Bob Smith"));
+    PlaceHolderResolver sampleValuePlaceHolderResolver = createSampleValueResolver(Map.of("lastName", "Doe"));
+    String code = PropertiesGenUtil.generateSimplePropertyValueDeclaration(property, "demo", imports, docPlaceHolderResolver, sampleValuePlaceHolderResolver);
+    Assert.assertEquals(
+        "/**\n"
+        + " * A test person like Bob Smith  property\n"
+        + " */\n"
+        + "public static final ConfigProperty PERSON_PROP = DefaultConfigProperty.create(\n"
+        + "  \"demo.personProp\",\n"
+        + "  Type.OBJECT,\n"
+        + "  \"A test person like Bob Smith  property\",\n"
+        + "  \"{\\\"age\\\":30,\\\"name\\\":\\\"John Doe\\\"}\");\n"
         + "",
         code);
     Assert.assertEquals(3, imports.size());
@@ -275,6 +306,9 @@ public class PropertiesGenUtilTest {
     
     ConfigPropertyDescriptor boolProperty = ConfigPropertyDescriptor.create("myBoolProp", Type.BOOLEAN, "A test property", null);
     Assert.assertEquals("isMyBoolProp", PropertiesGenUtil.getPropertyGetterMethodName(boolProperty, null));
+    
+    ConfigPropertyDescriptor groupProperty = ConfigPropertyDescriptor.createGroup("myGroup", "A test group", List.of(property, boolProperty));
+    Assert.assertEquals("getMyGroup", PropertiesGenUtil.getPropertyGetterMethodName(groupProperty, List.of(property)));
   }
   
   @Test
@@ -283,5 +317,37 @@ public class PropertiesGenUtilTest {
     Assert.assertEquals("myProp", PropertiesGenUtil.getPropertyFullName("", "myProp"));
     Assert.assertEquals("demo.myProp", PropertiesGenUtil.getPropertyFullName("demo", "myProp"));
   }
+  
+  private static PlaceHolderResolver createSampleValueResolver(Map<String, Object> values) {
+    PlaceHolderResolver map = PlaceHolderResolver.create(values);
+    return s -> JavaCodeGenUtil.getQuotedString(map.resolve(s));
+  }
 
+  private static class Person {
+    private String name;
+    private int age;
+
+    public Person(String name, int age) {
+      this.setName(name);
+      this.setAge(age);
+    }
+
+    @SuppressWarnings("unused")
+    public String getName() {
+      return name;
+    }
+
+    public void setName(String name) {
+      this.name = name;
+    }
+
+    @SuppressWarnings("unused")
+    public int getAge() {
+      return age;
+    }
+
+    public void setAge(int age) {
+      this.age = age;
+    }
+  }
 }

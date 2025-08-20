@@ -1,6 +1,5 @@
 package org.jxapi.generator.java.exchange.api.demo;
 
-import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
@@ -8,6 +7,7 @@ import java.util.Optional;
 import java.util.Properties;
 import java.util.stream.Collectors;
 
+import org.apache.commons.lang3.StringUtils;
 import org.jxapi.exchange.Exchange;
 import org.jxapi.exchange.ExchangeApi;
 import org.jxapi.exchange.descriptor.CanonicalType;
@@ -31,11 +31,18 @@ import org.jxapi.util.PlaceHolderResolver;
  */
 public class EndpointDemoGenUtil {
   
+  public static final String REST_DEMO_GROUP_NAME = "rest";
+  
+  public static final String WEBSOCKET_DEMO_GROUP_NAME = "ws";
+  
   /**
    * Name of the properties argument for methods that create request or response
    * sample values.
    */
   public static final String CREATE_REQUEST_PROPERTIES_ARG_NAME = "properties";
+  
+//  private static final String OPTIONAL_OF_NULLABLE = "Optional.ofNullable(";
+//  private static final String OR_ELSE = ")\n.orElse(\n";
   
   private EndpointDemoGenUtil() {}
   
@@ -66,6 +73,7 @@ public class EndpointDemoGenUtil {
    * 
    * @see #generateFieldCreationMethodDeclaration(Field, String, String, Imports)
    */
+  @Deprecated
   public static String generateFieldCreationMethod(Field property, 
                                                    String objectClassName,
                                                    String defaultFieldName,
@@ -88,6 +96,69 @@ public class EndpointDemoGenUtil {
                    placeholderResolver) 
                  + ";"))
            .toString();
+  }
+  
+  /**
+   * Generates a method (with full signature and method body) that creates a
+   * sample value for the given {@link Field} (which can be the data type
+   * definition of a REST/Websocket request, response/message, or of a nested
+   * {@link Type#OBJECT} property.
+   * 
+   * @param property            the property for which to generate the creation
+   *                            method.
+   * @param objectClassName     Default class name for property value, relevant
+   *                            when property is an object type and has no object
+   *                            name.
+   * @param defaultFieldName    The name to use for field, either 'request' or
+   *                            'response' when the field name is
+   *                            <code>null</code>.
+   * @param imports             the set of imports to add to the class containing
+   *                            the method. Will be populated with the necessary
+   *                            imports.
+   * @param placeholderResolver the placeholder resolver to use to resolve
+   *                            constants and configuration properties
+   *                            placeholders. This should be a reference to
+   *                            constant in its inteface, or property resolution
+   *                            from using {@link Properties} reference variable
+   *                            named <code>properties</code>.
+   * @return the method code with signature (method declaration) and body
+   * 
+   * @see #generateFieldCreationMethodDeclaration(Field, String, String, Imports)
+   */
+  public static String generateFieldCreationMethod(Field property, 
+                                                   String objectClassName,
+                                                   ExchangeDescriptor exchangeDescriptor,
+                                                   ExchangeApiDescriptor exchangeApiDescriptor,
+                                                   String apiEndpointGroupName,
+                                                   String endpointName,
+                                                   List<ConfigPropertyDescriptor> demoConfigProperties,
+                                                   Imports imports) {
+    String fieldName = ExchangeApiGenUtil.getRequestArgName(property.getName());
+    String demoPropertyName = StringUtils.join(List.of(
+        exchangeApiDescriptor.getName(),
+        apiEndpointGroupName,
+        endpointName, 
+        fieldName), 
+        ".");
+    return new StringBuilder()
+        .append(generateFieldCreationMethodDeclaration(
+            property, 
+            objectClassName, 
+            fieldName,
+            imports))
+        .append(" ")
+        .append(JavaCodeGenUtil.generateCodeBlock(
+              "return " 
+              + generateFieldSampleValueDeclaration2(
+                  property,  
+                  demoPropertyName,
+                  objectClassName,
+                  exchangeDescriptor,
+                  exchangeApiDescriptor,
+                  demoConfigProperties,
+                  imports) 
+              + ";"))
+        .toString();
   }
   
   /**
@@ -123,7 +194,7 @@ public class EndpointDemoGenUtil {
         .append(fieldName)
         .append(" field of type ")
         .append(fieldClassName)
-        .append(" using sample value(s) defined in the field descriptor.\n\n")
+        .append(" using sample value(s) defined in demo configuration properties.\n\n")
         .append("@param ")
         .append(CREATE_REQUEST_PROPERTIES_ARG_NAME)
         .append(" the configuration properties to use for the sample value generation.");
@@ -181,8 +252,12 @@ public class EndpointDemoGenUtil {
     } else {
       fieldValue = JavaCodeGenUtil.getQuotedString(sampleValue);
     }
+    if (canonicalType == CanonicalType.OBJECT && sampleValue != null) {
+      fieldValue =  ExchangeApiGenUtil.getNewMessageDeserializerInstruction(type, objectClassName, imports) 
+                      + ".deserialize(" + fieldValue + ")";
+    }
     
-  if (canonicalType != CanonicalType.OBJECT) {
+   if (canonicalType != CanonicalType.OBJECT) {
       // Not primitive nor object type -> map or list type.
       if (type.isObject() && sampleValue == null) {
         fieldValue = getMapOrListSampleValueDeclaration(
@@ -205,6 +280,205 @@ public class EndpointDemoGenUtil {
       return res.toString();
     }
   }
+  
+  private static String generateFieldSampleValueDeclaration2(
+      Field field, 
+      String demoPropertyName,
+      String objectClassName, 
+      ExchangeDescriptor exchangeDescriptor,
+      ExchangeApiDescriptor exchangeApiDescriptor,
+      List<ConfigPropertyDescriptor> demoConfigProperties,
+      Imports imports) {
+    Type type = ExchangeGenUtil.getFieldType(field);
+    if (type.getCanonicalType() == CanonicalType.LIST 
+        || type.getCanonicalType() == CanonicalType.MAP) {
+      return generateFieldSampleValueDeclaration2MapOrList(
+          field, 
+          demoPropertyName, 
+          objectClassName, 
+          exchangeDescriptor,
+          exchangeApiDescriptor, 
+          demoConfigProperties, 
+          imports);
+    }
+    if (type.isObject()) {
+      return generateFieldSampleValueDeclaration2Object(
+          field, 
+          demoPropertyName, 
+          objectClassName, 
+          exchangeDescriptor,
+          exchangeApiDescriptor, 
+          demoConfigProperties, 
+          imports);
+    }
+    return ExchangeGenUtil.getValueDeclarationForConfigProperty(
+        demoPropertyName, 
+        exchangeDescriptor, 
+        demoConfigProperties, 
+        CREATE_REQUEST_PROPERTIES_ARG_NAME, 
+        imports);
+  }
+  
+  private static String generateFieldSampleValueDeclaration2MapOrList(
+      Field field, 
+      String demoPropertyName,
+      String objectClassName, 
+      ExchangeDescriptor exchangeDescriptor,
+      ExchangeApiDescriptor exchangeApiDescriptor,
+      List<ConfigPropertyDescriptor> demoConfigProperties,
+      Imports imports) {
+    Type type = ExchangeGenUtil.getFieldType(field);
+    String deserializeSampleValueInstr = generateDeserializeSampleValueInstruction(
+        field, 
+        demoPropertyName, 
+        objectClassName, 
+        exchangeDescriptor, 
+        exchangeApiDescriptor,
+        demoConfigProperties, 
+        imports);
+    if (type.isObject()) {
+      return JavaCodeGenUtil.generateOptionalOfNullableStatement(
+          deserializeSampleValueInstr, 
+          generateObjectListOrMapWithoutGlobalSampleValueInstruction(
+            field, 
+            demoPropertyName, 
+            objectClassName, 
+            exchangeDescriptor, 
+            exchangeApiDescriptor, 
+            demoConfigProperties, 
+            imports), 
+          true);
+    }
+    return deserializeSampleValueInstr;
+  }
+  
+  private static String generateDeserializeSampleValueInstruction(
+      Field field, 
+      String demoPropertyName,
+      String objectClassName, 
+      ExchangeDescriptor exchangeDescriptor, 
+      ExchangeApiDescriptor exchangeApiDescriptor,
+      List<ConfigPropertyDescriptor> demoConfigProperties, 
+      Imports imports) {
+    Type type = ExchangeGenUtil.getFieldType(field);
+    imports.add(objectClassName);
+    return new StringBuilder()
+        .append(ExchangeApiGenUtil.getNewMessageDeserializerInstruction(type, objectClassName, imports))
+        .append(".deserialize(")
+        .append(ExchangeGenUtil.getValueDeclarationForConfigProperty(
+            demoPropertyName,
+            exchangeDescriptor, 
+            demoConfigProperties, 
+            CREATE_REQUEST_PROPERTIES_ARG_NAME, 
+            imports))
+        .append(")")
+        .toString();
+    
+  }
+  
+  private static String generateObjectListOrMapWithoutGlobalSampleValueInstruction(Field field, String demoPropertyName,
+      String objectClassName, ExchangeDescriptor exchangeDescriptor, ExchangeApiDescriptor exchangeApiDescriptor,
+      List<ConfigPropertyDescriptor> demoConfigProperties, Imports imports) {
+    Type type = ExchangeGenUtil.getFieldType(field);
+    if (type.getCanonicalType() == CanonicalType.MAP) {
+      return null;
+    }
+    if (type.getCanonicalType() == CanonicalType.LIST) {
+      Field itemField = field.deepClone();
+      itemField.setType(type.getSubType());
+      String subFieldInstruction = generateObjectListOrMapWithoutGlobalSampleValueInstruction(
+          itemField, 
+          demoPropertyName, 
+          objectClassName, 
+          exchangeDescriptor, 
+          exchangeApiDescriptor, 
+          demoConfigProperties, 
+          imports);
+      if (subFieldInstruction == null) {
+        return null; // No sample value to set
+      }
+      imports.add(List.class);
+      return "List.of(" + subFieldInstruction + ")";
+    }
+    // else: leaf object type
+    return generateSampleObjectBuilderInstruction(
+        field, 
+        demoPropertyName, 
+        objectClassName,
+        exchangeDescriptor, 
+        exchangeApiDescriptor, 
+        demoConfigProperties, 
+        imports);
+  }
+  
+  private static String generateFieldSampleValueDeclaration2Object(Field field, 
+      String demoPropertyName,
+      String objectClassName, 
+      ExchangeDescriptor exchangeDescriptor,
+      ExchangeApiDescriptor exchangeApiDescriptor,
+      List<ConfigPropertyDescriptor> demoConfigProperties,
+      Imports imports) {
+    return JavaCodeGenUtil.generateOptionalOfNullableStatement(
+        generateDeserializeSampleValueInstruction(
+            field, 
+            demoPropertyName, 
+            objectClassName, 
+            exchangeDescriptor,
+            exchangeApiDescriptor, 
+            demoConfigProperties, 
+            imports),
+        generateObjectListOrMapWithoutGlobalSampleValueInstruction(
+            field, 
+            demoPropertyName, 
+            objectClassName,
+            exchangeDescriptor, 
+            exchangeApiDescriptor, 
+            demoConfigProperties, 
+            imports),
+        true);
+  }
+  
+  private static String generateSampleObjectBuilderInstruction(Field field, 
+      String demoPropertyName,
+      String objectClassName, 
+      ExchangeDescriptor exchangeDescriptor,
+      ExchangeApiDescriptor exchangeApiDescriptor,
+      List<ConfigPropertyDescriptor> demoConfigProperties,
+      Imports imports) {
+    StringBuilder s = new StringBuilder();
+    imports.add(objectClassName);
+    s.append(JavaCodeGenUtil.getClassNameWithoutPackage(objectClassName))
+     .append(".builder()");
+    StringBuilder builderInstruction = new StringBuilder();
+    builderInstruction.append("\n");
+    List<Field> properties = ExchangeApiGenUtil.resolveFieldProperties(exchangeApiDescriptor, field).getProperties();
+    for (Field childParam : properties) {
+      String childParamName = childParam.getName();
+      String childDemoPropertyName = demoPropertyName + "." + childParamName;
+      String childClassName = ExchangeApiGenUtil.getFieldObjectClassName(childParam, objectClassName);
+      String itemValue = generateFieldSampleValueDeclaration2(
+          childParam,
+          childDemoPropertyName, 
+          childClassName,
+          exchangeDescriptor, 
+          exchangeApiDescriptor, 
+          demoConfigProperties, 
+          imports);
+      if (itemValue != null) {
+        builderInstruction
+          .append(".")
+          .append(childParamName)
+          .append("(")
+          .append(itemValue)
+          .append(")\n");
+      }
+    }
+    return s
+        .append(JavaCodeGenUtil.indent(builderInstruction.toString()))
+        .append(".build()")
+        .toString();
+  }
+  
   
   private static String generateSampleFieldValueDeclarationObjectFieldWithNoSampleValue(
         StringBuilder res, 
@@ -481,9 +755,6 @@ public class EndpointDemoGenUtil {
   
   private static ConfigPropertyDescriptor createDemoConfigPropertyGroup(ExchangeApiDescriptor api) {
     String apiName = api.getName();
-    String restApiGroupName = apiName + ".rest";
-    String wsApiGroupName = apiName + ".ws";
-
     return ConfigPropertyDescriptor.createGroup
       (
         apiName, 
@@ -492,14 +763,14 @@ public class EndpointDemoGenUtil {
         (
           ConfigPropertyDescriptor.createGroup
           (
-            restApiGroupName, 
+            REST_DEMO_GROUP_NAME, 
             String.format("Configuration properties for REST endpoints demo snippets of %s API group", apiName), 
             CollectionUtil.emptyIfNull(api.getRestEndpoints()).stream()
               .map
                 (endpoint -> createEndpointDemoConfigPropertyForEndpointRequest
                   (
                    api, 
-                   restApiGroupName,
+                   REST_DEMO_GROUP_NAME,
                    endpoint.getName(), 
                    endpoint.getRequest()
                   )
@@ -509,14 +780,14 @@ public class EndpointDemoGenUtil {
           ),
           ConfigPropertyDescriptor.createGroup
           (
-            wsApiGroupName, 
+            WEBSOCKET_DEMO_GROUP_NAME, 
             String.format("Configuration properties for websocket endpoints demo snippets of %s API group", apiName), 
             CollectionUtil.emptyIfNull(api.getWebsocketEndpoints()).stream()
               .map
                 (endpoint -> createEndpointDemoConfigPropertyForEndpointRequest
                   (
                     api, 
-                    wsApiGroupName,
+                    WEBSOCKET_DEMO_GROUP_NAME,
                     endpoint.getName(), 
                     endpoint.getRequest()
                   )
@@ -535,18 +806,17 @@ public class EndpointDemoGenUtil {
       String endpointGroup, 
       String endpointName, 
       Field endpointRequest) {
-    String endpointGroupName = endpointGroup + "." + endpointName;
-    ConfigPropertyDescriptor requestProperty = generateDemoConfigPropertyForField(api, endpointGroupName, endpointName, endpointRequest);
+    ConfigPropertyDescriptor requestProperty = generateDemoConfigPropertyForField(api, endpointName, endpointRequest);
+    String endpointGroupDisplayName = Objects.equals(endpointGroup, REST_DEMO_GROUP_NAME)? "REST": "websocket";
     return ConfigPropertyDescriptor.createGroup(
-        endpointGroupName, 
-        String.format("Configuration properties for %s %s endpoint of %s API group", endpointGroup, endpointName, api.getName()), 
+        endpointName,
+        String.format("Configuration properties for %s %s endpoint of %s API group", endpointGroupDisplayName, endpointName, api.getName()), 
         requestProperty == null? List.of(): List.of(requestProperty)
     );
   }
   
   private static ConfigPropertyDescriptor generateDemoConfigPropertyForField(
-      ExchangeApiDescriptor api, 
-      String prefix, 
+      ExchangeApiDescriptor api,  
       String parentField, 
       Field f) {
     if (f == null) {
@@ -554,18 +824,19 @@ public class EndpointDemoGenUtil {
     }
     String fieldName = ExchangeApiGenUtil.getRequestArgName(f.getName());
     Type type = ExchangeGenUtil.getFieldType(f);
-    String fieldDescription = String.format("Demo configuration property for %s.%s field", parentField, fieldName);
+    String fieldDescription = String.format("Demo configuration property for %s.%s field.", parentField, fieldName);
     if (f.getDescription() != null) {
       fieldDescription += "<p>\n" + f.getDescription();
     }
-    String propertyName = prefix + "." + fieldName;
+
+    String propertyName = fieldName;
     if (type.isObject()) {
       f = ExchangeApiGenUtil.resolveFieldProperties(api, f);
       return ConfigPropertyDescriptor.createGroup(
           propertyName, 
           fieldDescription,
           CollectionUtil.emptyIfNull(f.getProperties()).stream()
-          .map(p -> generateDemoConfigPropertyForField(api, propertyName, fieldName, p))
+          .map(p -> generateDemoConfigPropertyForField(api, fieldName, p))
           .filter(Objects::nonNull)
           .collect(Collectors.toList()));
     }
@@ -575,5 +846,4 @@ public class EndpointDemoGenUtil {
         fieldDescription, 
         f.getSampleValue());
   }
-
 }

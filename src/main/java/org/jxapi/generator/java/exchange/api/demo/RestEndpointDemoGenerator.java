@@ -17,7 +17,6 @@ import org.jxapi.generator.java.exchange.ExchangeGenUtil;
 import org.jxapi.generator.java.exchange.api.ExchangeApiGenUtil;
 import org.jxapi.netutils.rest.RestResponse;
 import org.jxapi.util.DemoUtil;
-import org.jxapi.util.PlaceHolderResolver;
 import org.slf4j.Logger;
 
 /**
@@ -58,7 +57,9 @@ public class RestEndpointDemoGenerator extends JavaTypeGenerator {
   private final Type responseDataType;
   private final String apiEndpointMethodJavadocLink;
   private final String apiMethodName;
-  private final PlaceHolderResolver sampleValuePlaceHolderResolver;
+  private final ExchangeDescriptor exchange;
+  private final ExchangeApiDescriptor exchangeApi;
+  private final List<ConfigPropertyDescriptor> demoProperties;
   
   /**
    * Constructor.
@@ -74,18 +75,15 @@ public class RestEndpointDemoGenerator extends JavaTypeGenerator {
                    List<ConfigPropertyDescriptor> demoProperties) {
     super(EndpointDemoGenUtil.getRestApiDemoClassName(exchangeDescriptor, exchangeApiDescriptor, restApi));
     setTypeDeclaration("public class");
+    this.exchange = exchangeDescriptor;
+    this.exchangeApi = exchangeApiDescriptor;
     this.restApi = restApi;
+    this.demoProperties = demoProperties;
     this.exchangeClassName = ExchangeGenUtil.getExchangeInterfaceName(exchangeDescriptor);
     this.exchangeSimpleClassName = JavaCodeGenUtil.getClassNameWithoutPackage(exchangeClassName);
     this.hasArguments = ExchangeApiGenUtil.restEndpointHasArguments(restApi, exchangeApiDescriptor);
     this.request = ExchangeApiGenUtil.resolveFieldProperties(exchangeApiDescriptor, restApi.getRequest());
     this.exchangeImplClassName = ExchangeGenUtil.getExchangeInterfaceImplementationName(exchangeDescriptor);
-    this.sampleValuePlaceHolderResolver = s -> ExchangeGenUtil.generateSubstitutionInstructionDeclaration(
-        s, 
-        exchangeDescriptor, 
-        demoProperties,
-        "properties",
-        getImports());
     if (hasArguments) {
       requestDataType =  ExchangeGenUtil.getFieldType(request);
       if (requestDataType.getCanonicalType().isPrimitive) {
@@ -152,9 +150,12 @@ public class RestEndpointDemoGenerator extends JavaTypeGenerator {
       this.appendToBody(EndpointDemoGenUtil.generateFieldCreationMethod(
                 request,  
                 requestClassName, 
-                ExchangeApiGenUtil.DEFAULT_REQUEST_ARG_NAME,
-                getImports(),
-                sampleValuePlaceHolderResolver));
+                exchange,
+                exchangeApi,
+                EndpointDemoGenUtil.REST_DEMO_GROUP_NAME,
+                restApi.getName(),
+                demoProperties,
+                getImports()));
       this.appendToBody("\n");
     }
     generateExecuteMethod();
