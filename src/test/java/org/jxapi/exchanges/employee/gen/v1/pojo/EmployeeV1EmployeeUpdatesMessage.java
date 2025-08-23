@@ -10,7 +10,7 @@ import org.jxapi.util.EncodingUtil;
 import org.jxapi.util.Pojo;
 
 /**
- * Message disseminated upon subscription to Employee V1 API employeeUpdates websocket endpoint request<br>
+ * Message disseminated upon subscription to Employee v1 API employeeUpdates websocket endpoint request<br>
  * Employee updates websocket
  */
 @Generated("org.jxapi.generator.java.exchange.api.pojo.PojoGenerator")
@@ -30,14 +30,14 @@ public class EmployeeV1EmployeeUpdatesMessage implements Pojo<EmployeeV1Employee
   private Employee employee;
   
   /**
-   * @return Type of event, e.g. one of <a href="V1org/jxapi/exchanges/employee/gen/EmployeeConstants.UpdateEmployeeType.html#ADD">add</a>, <a href="V1org/jxapi/exchanges/employee/gen/EmployeeConstants.UpdateEmployeeType.html#UPDATE">update</a> or <a href="V1org/jxapi/exchanges/employee/gen/EmployeeConstants.UpdateEmployeeType.html#DELETE">delete</a> (see <a href="V1org/jxapi/exchanges/employee/gen/EmployeeConstants.UpdateEmployeeType.html">updateEmployeeType</a> constants).
+   * @return Type of event, e.g. one of <a href="v1org/jxapi/exchanges/employee/gen/EmployeeConstants.UpdateEmployeeType.html#ADD">add</a>, <a href="v1org/jxapi/exchanges/employee/gen/EmployeeConstants.UpdateEmployeeType.html#UPDATE">update</a> or <a href="v1org/jxapi/exchanges/employee/gen/EmployeeConstants.UpdateEmployeeType.html#DELETE">delete</a> (see <a href="v1org/jxapi/exchanges/employee/gen/EmployeeConstants.UpdateEmployeeType.html">updateEmployeeType</a> constants).
    */
   public String getEventType() {
     return eventType;
   }
   
   /**
-   * @param eventType Type of event, e.g. one of <a href="V1org/jxapi/exchanges/employee/gen/EmployeeConstants.UpdateEmployeeType.html#ADD">add</a>, <a href="V1org/jxapi/exchanges/employee/gen/EmployeeConstants.UpdateEmployeeType.html#UPDATE">update</a> or <a href="V1org/jxapi/exchanges/employee/gen/EmployeeConstants.UpdateEmployeeType.html#DELETE">delete</a> (see <a href="V1org/jxapi/exchanges/employee/gen/EmployeeConstants.UpdateEmployeeType.html">updateEmployeeType</a> constants).
+   * @param eventType Type of event, e.g. one of <a href="v1org/jxapi/exchanges/employee/gen/EmployeeConstants.UpdateEmployeeType.html#ADD">add</a>, <a href="v1org/jxapi/exchanges/employee/gen/EmployeeConstants.UpdateEmployeeType.html#UPDATE">update</a> or <a href="v1org/jxapi/exchanges/employee/gen/EmployeeConstants.UpdateEmployeeType.html#DELETE">delete</a> (see <a href="v1org/jxapi/exchanges/employee/gen/EmployeeConstants.UpdateEmployeeType.html">updateEmployeeType</a> constants).
    */
   public void setEventType(String eventType) {
     this.eventType = eventType;
@@ -111,7 +111,7 @@ public class EmployeeV1EmployeeUpdatesMessage implements Pojo<EmployeeV1Employee
     
     /**
      * Will set the value of <code>eventType</code> field in the builder
-     * @param eventType Type of event, e.g. one of <a href="V1org/jxapi/exchanges/employee/gen/EmployeeConstants.UpdateEmployeeType.html#ADD">add</a>, <a href="V1org/jxapi/exchanges/employee/gen/EmployeeConstants.UpdateEmployeeType.html#UPDATE">update</a> or <a href="V1org/jxapi/exchanges/employee/gen/EmployeeConstants.UpdateEmployeeType.html#DELETE">delete</a> (see <a href="V1org/jxapi/exchanges/employee/gen/EmployeeConstants.UpdateEmployeeType.html">updateEmployeeType</a> constants).
+     * @param eventType Type of event, e.g. one of <a href="v1org/jxapi/exchanges/employee/gen/EmployeeConstants.UpdateEmployeeType.html#ADD">add</a>, <a href="v1org/jxapi/exchanges/employee/gen/EmployeeConstants.UpdateEmployeeType.html#UPDATE">update</a> or <a href="v1org/jxapi/exchanges/employee/gen/EmployeeConstants.UpdateEmployeeType.html#DELETE">delete</a> (see <a href="v1org/jxapi/exchanges/employee/gen/EmployeeConstants.UpdateEmployeeType.html">updateEmployeeType</a> constants).
      * @return Builder instance
      * @see #setEventType(String)
      */

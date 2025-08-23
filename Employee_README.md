@@ -8,13 +8,13 @@ Employee exchange is a demo exchange REST APIs to get, add, delete and update em
       - [Properties](#properties)
       - [Constants](#constants)
     - [API Groups](#api-groups)
-      - [V1](#v1)
+      - [v1](#v1)
         - [REST endpoints](#rest-endpoints)
         - [Websocket endpoints](#websocket-endpoints)
     - [Demo snippets](#demo-snippets)
       - [Endpoint demo snippets](#endpoint-demo-snippets)
-        - [V1 REST endpoints demo snippets:](#v1-rest-endpoints-demo-snippets)
-        - [V1 Websocket endpoints demo snippets](#v1-websocket-endpoints-demo-snippets)
+        - [v1 REST endpoints demo snippets:](#v1-rest-endpoints-demo-snippets)
+        - [v1 Websocket endpoints demo snippets](#v1-websocket-endpoints-demo-snippets)
 
 <!-- END TABLE OF CONTENTS -->
 See <a href="https://www.example.com/docs/employee">reference documentation</a>
@@ -71,7 +71,7 @@ Some useful constants are defined in <a href="./doc/javadoc/org/jxapi/exchanges/
 ## API Groups
 APIs are available using the following interfaces accessible from <a href="./doc/javadoc/org/jxapi/exchanges/employee/gen/EmployeeExchange.html">EmployeeExchange</a> interface
 
-### V1
+### v1
 Methods exposed in <a href="./doc/javadoc/org/jxapi/exchanges/employee/gen/v1/EmployeeV1Api.html">EmployeeV1Api</a> accessible from <a href="./doc/javadoc/org/jxapi/exchanges/employee/gen/EmployeeExchange#getEmployeeV1Api().html">EmployeeExchange#getEmployeeV1Api()</a>
 
 Version 1 of the Employee API
@@ -79,7 +79,7 @@ Version 1 of the Employee API
 #### REST endpoints
 
 <table>
-  <caption>Employee V1 REST endpoints</caption>
+  <caption>Employee v1 REST endpoints</caption>
   <tr>
     <th>Endpoint</th>
     <th>Description</th>
@@ -115,7 +115,7 @@ Version 1 of the Employee API
 #### Websocket endpoints
 
 <table>
-  <caption>Employee V1 websocket endpoints</caption>
+  <caption>Employee v1 websocket endpoints</caption>
   <tr>
     <th>Subscription method</th>
     <th>Description</th>
@@ -141,7 +141,7 @@ In order to run demo snippets, you can set properties values in __demo-Employee.
 ### Endpoint demo snippets
 
 
-#### V1 REST endpoints demo snippets:
+#### v1 REST endpoints demo snippets:
 
  - __getEmployee__: <a href="./src/test/java/org/jxapi/exchanges/employee/gen/v1/demo/EmployeeV1GetEmployeeDemo.java">EmployeeV1GetEmployeeDemo</a>
  - __getAllEmployees__: <a href="./src/test/java/org/jxapi/exchanges/employee/gen/v1/demo/EmployeeV1GetAllEmployeesDemo.java">EmployeeV1GetAllEmployeesDemo</a>
@@ -149,6 +149,6 @@ In order to run demo snippets, you can set properties values in __demo-Employee.
  - __updateEmployee__: <a href="./src/test/java/org/jxapi/exchanges/employee/gen/v1/demo/EmployeeV1UpdateEmployeeDemo.java">EmployeeV1UpdateEmployeeDemo</a>
  - __deleteEmployee__: <a href="./src/test/java/org/jxapi/exchanges/employee/gen/v1/demo/EmployeeV1DeleteEmployeeDemo.java">EmployeeV1DeleteEmployeeDemo</a>
 
-#### V1 Websocket endpoints demo snippets
+#### v1 Websocket endpoints demo snippets
 
  - __employeeUpdates__: <a href="./src/test/java/org/jxapi/exchanges/employee/gen/v1/demo/EmployeeV1EmployeeUpdatesDemo.java">EmployeeV1EmployeeUpdatesDemo</a>

@@ -37,13 +37,13 @@ public class EmployeeV1EmployeeUpdatesDemo {
     EmployeeV1Api api = exchange.getEmployeeV1Api();
     long subscriptionDuration = DemoProperties.getWebsocketSubscriptionDuration(configProperties);
     long delayBeforeExit = DemoProperties.getWebsocketDelayBeforeExit(configProperties);
-    log.info("Subscribing to websocket API 'Employee V1 employeeUpdates' for {} ms", subscriptionDuration);
+    log.info("Subscribing to websocket API 'Employee v1 employeeUpdates' for {} ms", subscriptionDuration);
     if (apiObserver != null) {
       api.subscribeObserver(apiObserver);
     }
     String subId = api.subscribeEmployeeUpdates(messageListener);
     DemoUtil.sleep(subscriptionDuration);
-    log.info("Unubscribing from 'Employee V1 employeeUpdates' stream");
+    log.info("Unubscribing from 'Employee v1 employeeUpdates' stream");
     api.unsubscribeEmployeeUpdates(subId);
     DemoUtil.sleep(delayBeforeExit);
     if (apiObserver != null) {
@@ -53,7 +53,7 @@ public class EmployeeV1EmployeeUpdatesDemo {
   }
   
   /**
-   * Runs websocket endpoint 'Employee V1 employeeUpdates' subscription demo.
+   * Runs websocket endpoint 'Employee v1 employeeUpdates' subscription demo.
    * @param args no arguments expected
    */
   public static void main(String[] args) {

@@ -8,6 +8,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
 import org.jxapi.exchange.descriptor.CanonicalType;
@@ -589,10 +590,17 @@ public class ExchangeGenUtil {
   }
   
   private static ConfigPropertyDescriptor findProperty(String propertyName, List<ConfigPropertyDescriptor> properties) {
-    return CollectionUtil.emptyIfNull(properties)
+    List<ConfigPropertyDescriptor> propertiesMatchingName = CollectionUtil.emptyIfNull(properties)
             .stream().filter(p -> propertyName.equals(p.getName()))
-            .findFirst()
-            .orElse(null);
+            .collect(Collectors.toList());
+    if (CollectionUtil.isEmpty(propertiesMatchingName)) {
+      return null; // Property not found
+    } else {
+      return propertiesMatchingName.stream()
+          .filter(ConfigPropertyDescriptor::isGroup)
+          .findFirst()
+          .orElse(propertiesMatchingName.get(0)); // Return first property if no group found
+    }
   }
   
   private static List<Constant> retrieveConstantHierarchy(String constantName, ExchangeDescriptor exchangeDescriptor) {

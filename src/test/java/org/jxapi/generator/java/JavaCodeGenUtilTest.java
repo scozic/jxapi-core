@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -418,29 +419,31 @@ public class JavaCodeGenUtilTest {
   
   @Test
   public void testGenerateOptionalOfNullableStatement() {
-    Assert.assertEquals(
-        "foo", 
-        JavaCodeGenUtil.generateOptionalOfNullableStatement("foo", null, false));
-    Assert.assertEquals(
-        "bar", 
-        JavaCodeGenUtil.generateOptionalOfNullableStatement(null, "bar", false));
-    Assert.assertEquals(
-        "Optional.ofNullable(foo).orElse(bar)", 
-        JavaCodeGenUtil.generateOptionalOfNullableStatement("foo", "bar", false));
+    testGenerateOptionalOfNullableStatement("bar", false, null, "bar", false);
+    testGenerateOptionalOfNullableStatement("bar", false, "bar", null, false);
+    testGenerateOptionalOfNullableStatement("bar", false, null, "bar", true);
+    testGenerateOptionalOfNullableStatement("bar", false, "bar", null, true);
     
-    Assert.assertEquals(
-        "foo", 
-        JavaCodeGenUtil.generateOptionalOfNullableStatement("foo", null, true));
-    
-    Assert.assertEquals(
-        "bar", 
-        JavaCodeGenUtil.generateOptionalOfNullableStatement(null, "bar", false));
-    
-    Assert.assertEquals(
-        "Optional\n"
-          + "  .ofNullable(foo)\n"
-          + "  .orElse(bar)", 
-        JavaCodeGenUtil.generateOptionalOfNullableStatement("foo", "bar", true));
+    testGenerateOptionalOfNullableStatement("Optional.ofNullable(foo).orElse(bar)", true, "foo", "bar", false);
+    testGenerateOptionalOfNullableStatement("Optional\n"
+        + "  .ofNullable(foo)\n"
+        + "  .orElse(bar)", true, "foo", "bar", true);
   }
+  
+  private void testGenerateOptionalOfNullableStatement(
+      String expected, 
+      boolean optionalClassImported,
+      String ofNullableStatement, 
+      String orElseStatemet, 
+      boolean multiline) {
+    Imports imports = new Imports();
+    String actual = JavaCodeGenUtil.generateOptionalOfNullableStatement(ofNullableStatement, orElseStatemet, imports, multiline);
+    Assert.assertEquals(expected, actual);
+    if (optionalClassImported) {
+      Assert.assertEquals(1, imports.size());
+      Assert.assertTrue(imports.contains(Optional.class));
+    }
+  }
+  
 }
 

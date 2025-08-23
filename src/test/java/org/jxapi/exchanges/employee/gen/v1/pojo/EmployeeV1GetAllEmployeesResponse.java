@@ -14,7 +14,7 @@ import org.jxapi.util.EncodingUtil;
 import org.jxapi.util.Pojo;
 
 /**
- * Response to Employee V1 API <br>
+ * Response to Employee v1 API <br>
  * getAllEmployees REST endpoint request<br>
  * Get all employees
  */

@@ -12,7 +12,7 @@ import org.jxapi.util.EncodingUtil;
 import org.jxapi.util.PropertiesUtil;
 
 /**
- * Configurable properties for <strong>Employee</strong> exchange:<br>
+ * Configurable demo properties for <strong>Employee</strong> exchange:<br>
  * <table>
  *   <caption>Employee properties</caption>
  *   <tr>
@@ -22,21 +22,28 @@ import org.jxapi.util.PropertiesUtil;
  *     <th>Default value</th>
  *   </tr>
  *   <tr>
- *     <td>V1.rest.getEmployee.id</td>
+ *     <td>v1.rest.getEmployee.id</td>
  *     <td>INT</td>
  *     <td>Demo configuration property for getEmployee.id field.<p>
  *     Employee ID</td>
  *     <td>1</td>
  *   </tr>
  *   <tr>
- *     <td>V1.rest.getAllEmployees.request.page</td>
+ *     <td>v1.rest.getAllEmployees.request</td>
+ *     <td>STRING</td>
+ *     <td>Demo configuration property for getAllEmployees.request field as raw JSON string value.<p>
+ *     Page request parameters for 'getAllEmployees' rest endpoint paginated requests.</td>
+ *     <td></td>
+ *   </tr>
+ *   <tr>
+ *     <td>v1.rest.getAllEmployees.request.page</td>
  *     <td>INT</td>
  *     <td>Demo configuration property for request.page field.<p>
  *     Page number to return, defaults to 1.</td>
  *     <td>1</td>
  *   </tr>
  *   <tr>
- *     <td>V1.rest.getAllEmployees.request.size</td>
+ *     <td>v1.rest.getAllEmployees.request.size</td>
  *     <td>INT</td>
  *     <td>Demo configuration property for request.size field.<p>
  *     Number of employees to return per page.<br> Defaults to {@link org.jxapi.exchanges.employee.gen.EmployeeConstants#DEFAULT_PAGE_SIZE}.<br> Maximum is {@link org.jxapi.exchanges.employee.gen.EmployeeConstants#MAX_PAGE_SIZE}.
@@ -44,63 +51,77 @@ import org.jxapi.util.PropertiesUtil;
  *     <td>10</td>
  *   </tr>
  *   <tr>
- *     <td>V1.rest.addEmployee.request.id</td>
+ *     <td>v1.rest.addEmployee.request</td>
+ *     <td>STRING</td>
+ *     <td>Demo configuration property for addEmployee.request field as raw JSON string value.<p>
+ *     Employee to add</td>
+ *     <td></td>
+ *   </tr>
+ *   <tr>
+ *     <td>v1.rest.addEmployee.request.id</td>
  *     <td>INT</td>
  *     <td>Demo configuration property for request.id field.<p>
  *     Employee ID</td>
  *     <td>1</td>
  *   </tr>
  *   <tr>
- *     <td>V1.rest.addEmployee.request.firstName</td>
+ *     <td>v1.rest.addEmployee.request.firstName</td>
  *     <td>STRING</td>
  *     <td>Demo configuration property for request.firstName field.<p>
  *     Employee first name</td>
  *     <td>John</td>
  *   </tr>
  *   <tr>
- *     <td>V1.rest.addEmployee.request.lastName</td>
+ *     <td>v1.rest.addEmployee.request.lastName</td>
  *     <td>STRING</td>
  *     <td>Demo configuration property for request.lastName field.<p>
  *     Employee last name</td>
  *     <td>Doe</td>
  *   </tr>
  *   <tr>
- *     <td>V1.rest.addEmployee.request.profile</td>
+ *     <td>v1.rest.addEmployee.request.profile</td>
  *     <td>STRING</td>
  *     <td>Demo configuration property for request.profile field.<p>
  *     Employee profile. Can be {@link org.jxapi.exchanges.employee.gen.EmployeeConstants.Profile#REGULAR} or {@link org.jxapi.exchanges.employee.gen.EmployeeConstants.Profile#ADMIN}</td>
  *     <td>{@link org.jxapi.exchanges.employee.gen.EmployeeConstants.Profile#REGULAR}</td>
  *   </tr>
  *   <tr>
- *     <td>V1.rest.updateEmployee.request.id</td>
+ *     <td>v1.rest.updateEmployee.request</td>
+ *     <td>STRING</td>
+ *     <td>Demo configuration property for updateEmployee.request field as raw JSON string value.<p>
+ *     Employee to update</td>
+ *     <td></td>
+ *   </tr>
+ *   <tr>
+ *     <td>v1.rest.updateEmployee.request.id</td>
  *     <td>INT</td>
  *     <td>Demo configuration property for request.id field.<p>
  *     Employee ID</td>
  *     <td>1</td>
  *   </tr>
  *   <tr>
- *     <td>V1.rest.updateEmployee.request.firstName</td>
+ *     <td>v1.rest.updateEmployee.request.firstName</td>
  *     <td>STRING</td>
  *     <td>Demo configuration property for request.firstName field.<p>
  *     Employee first name</td>
  *     <td>John</td>
  *   </tr>
  *   <tr>
- *     <td>V1.rest.updateEmployee.request.lastName</td>
+ *     <td>v1.rest.updateEmployee.request.lastName</td>
  *     <td>STRING</td>
  *     <td>Demo configuration property for request.lastName field.<p>
  *     Employee last name</td>
  *     <td>Doe</td>
  *   </tr>
  *   <tr>
- *     <td>V1.rest.updateEmployee.request.profile</td>
+ *     <td>v1.rest.updateEmployee.request.profile</td>
  *     <td>STRING</td>
  *     <td>Demo configuration property for request.profile field.<p>
  *     Employee profile. Can be {@link org.jxapi.exchanges.employee.gen.EmployeeConstants.Profile#REGULAR} or {@link org.jxapi.exchanges.employee.gen.EmployeeConstants.Profile#ADMIN}</td>
  *     <td>{@link org.jxapi.exchanges.employee.gen.EmployeeConstants.Profile#REGULAR}</td>
  *   </tr>
  *   <tr>
- *     <td>V1.rest.deleteEmployee.id</td>
+ *     <td>v1.rest.deleteEmployee.id</td>
  *     <td>INT</td>
  *     <td>Demo configuration property for deleteEmployee.id field.<p>
  *     Employee ID</td>
@@ -117,7 +138,7 @@ public class EmployeeDemoProperties {
   private EmployeeDemoProperties(){}
   
   /**
-   * Configuration properties for V1 API group endpoints demo snippets
+   * Configuration properties for v1 API group endpoints demo snippets
    */
   @Generated("org.jxapi.generator.java.exchange.properties.PropertiesClassGenerator")
   public static class V1 {
@@ -125,7 +146,7 @@ public class EmployeeDemoProperties {
     private V1(){}
     
     /**
-     * Configuration properties for REST endpoints demo snippets of V1 API group
+     * Configuration properties for REST endpoints demo snippets of v1 API group
      */
     @Generated("org.jxapi.generator.java.exchange.properties.PropertiesClassGenerator")
     public static class Rest {
@@ -133,7 +154,7 @@ public class EmployeeDemoProperties {
       private Rest(){}
       
       /**
-       * Configuration properties for REST getEmployee endpoint of V1 API group
+       * Configuration properties for REST getEmployee endpoint of v1 API group
        */
       @Generated("org.jxapi.generator.java.exchange.properties.PropertiesClassGenerator")
       public static class GetEmployee {
@@ -145,7 +166,7 @@ public class EmployeeDemoProperties {
          * Employee ID
          */
         public static final ConfigProperty ID = DefaultConfigProperty.create(
-          "demo.V1.rest.getEmployee.id",
+          "demo.v1.rest.getEmployee.id",
           Type.INT,
           "Demo configuration property for getEmployee.id field.<p>\nEmployee ID",
           "1");
@@ -165,7 +186,7 @@ public class EmployeeDemoProperties {
       }
       
       /**
-       * Configuration properties for REST getAllEmployees endpoint of V1 API group
+       * Configuration properties for REST getAllEmployees endpoint of v1 API group
        */
       @Generated("org.jxapi.generator.java.exchange.properties.PropertiesClassGenerator")
       public static class GetAllEmployees {
@@ -173,7 +194,17 @@ public class EmployeeDemoProperties {
         private GetAllEmployees(){}
         
         /**
-         * Demo configuration property for getAllEmployees.request field.<p>
+         * Demo configuration property for getAllEmployees.request field as raw JSON string value.<p>
+         * Page request parameters for 'getAllEmployees' rest endpoint paginated requests.
+         */
+        public static final ConfigProperty REQUEST = DefaultConfigProperty.create(
+          "demo.v1.rest.getAllEmployees.request",
+          Type.STRING,
+          "Demo configuration property for getAllEmployees.request field as raw JSON string value.<p>\nPage request parameters for 'getAllEmployees' rest endpoint paginated requests.",
+          null);
+        
+        /**
+         * Demo configuration properties for getAllEmployees.request field object instance.<p>
          * Page request parameters for 'getAllEmployees' rest endpoint paginated requests.
          */
         @Generated("org.jxapi.generator.java.exchange.properties.PropertiesClassGenerator")
@@ -186,7 +217,7 @@ public class EmployeeDemoProperties {
            * Page number to return, defaults to 1.
            */
           public static final ConfigProperty PAGE = DefaultConfigProperty.create(
-            "demo.V1.rest.getAllEmployees.request.page",
+            "demo.v1.rest.getAllEmployees.request.page",
             Type.INT,
             "Demo configuration property for request.page field.<p>\nPage number to return, defaults to 1.",
             "1");
@@ -197,7 +228,7 @@ public class EmployeeDemoProperties {
            * 
            */
           public static final ConfigProperty SIZE = DefaultConfigProperty.create(
-            "demo.V1.rest.getAllEmployees.request.size",
+            "demo.v1.rest.getAllEmployees.request.size",
             Type.INT,
             "Demo configuration property for request.size field.<p>\nNumber of employees to return per page.<br> Defaults to {@link org.jxapi.exchanges.employee.gen.EmployeeConstants#DEFAULT_PAGE_SIZE}.<br> Maximum is {@link org.jxapi.exchanges.employee.gen.EmployeeConstants#MAX_PAGE_SIZE}.\n",
             "10");
@@ -223,15 +254,25 @@ public class EmployeeDemoProperties {
               PAGE,
               SIZE))));
         }
+        
+        /**
+         * Retrieves value of 'request' property.
+         * @param properties Properties to look for value of 'request' property into.
+         * @return Value found in properties or <code>null</code> if not found.
+         */
+        public static String getRequest(Properties properties) {return PropertiesUtil.getString(properties, REQUEST);}
         /**
          * List of all configuration properties defined in this class
          */
         public static final List<ConfigProperty> ALL = List.copyOf(CollectionUtil.mergeLists(List.of(
+          List.of(
+            REQUEST
+          ),
           Request.ALL)));
       }
       
       /**
-       * Configuration properties for REST addEmployee endpoint of V1 API group
+       * Configuration properties for REST addEmployee endpoint of v1 API group
        */
       @Generated("org.jxapi.generator.java.exchange.properties.PropertiesClassGenerator")
       public static class AddEmployee {
@@ -239,7 +280,17 @@ public class EmployeeDemoProperties {
         private AddEmployee(){}
         
         /**
-         * Demo configuration property for addEmployee.request field.<p>
+         * Demo configuration property for addEmployee.request field as raw JSON string value.<p>
+         * Employee to add
+         */
+        public static final ConfigProperty REQUEST = DefaultConfigProperty.create(
+          "demo.v1.rest.addEmployee.request",
+          Type.STRING,
+          "Demo configuration property for addEmployee.request field as raw JSON string value.<p>\nEmployee to add",
+          null);
+        
+        /**
+         * Demo configuration properties for addEmployee.request field object instance.<p>
          * Employee to add
          */
         @Generated("org.jxapi.generator.java.exchange.properties.PropertiesClassGenerator")
@@ -252,7 +303,7 @@ public class EmployeeDemoProperties {
            * Employee ID
            */
           public static final ConfigProperty ID = DefaultConfigProperty.create(
-            "demo.V1.rest.addEmployee.request.id",
+            "demo.v1.rest.addEmployee.request.id",
             Type.INT,
             "Demo configuration property for request.id field.<p>\nEmployee ID",
             "1");
@@ -262,7 +313,7 @@ public class EmployeeDemoProperties {
            * Employee first name
            */
           public static final ConfigProperty FIRST_NAME = DefaultConfigProperty.create(
-            "demo.V1.rest.addEmployee.request.firstName",
+            "demo.v1.rest.addEmployee.request.firstName",
             Type.STRING,
             "Demo configuration property for request.firstName field.<p>\nEmployee first name",
             "John");
@@ -272,7 +323,7 @@ public class EmployeeDemoProperties {
            * Employee last name
            */
           public static final ConfigProperty LAST_NAME = DefaultConfigProperty.create(
-            "demo.V1.rest.addEmployee.request.lastName",
+            "demo.v1.rest.addEmployee.request.lastName",
             Type.STRING,
             "Demo configuration property for request.lastName field.<p>\nEmployee last name",
             "Doe");
@@ -282,7 +333,7 @@ public class EmployeeDemoProperties {
            * Employee profile. Can be {@link org.jxapi.exchanges.employee.gen.EmployeeConstants.Profile#REGULAR} or {@link org.jxapi.exchanges.employee.gen.EmployeeConstants.Profile#ADMIN}
            */
           public static final ConfigProperty PROFILE = DefaultConfigProperty.create(
-            "demo.V1.rest.addEmployee.request.profile",
+            "demo.v1.rest.addEmployee.request.profile",
             Type.STRING,
             "Demo configuration property for request.profile field.<p>\nEmployee profile. Can be {@link org.jxapi.exchanges.employee.gen.EmployeeConstants.Profile#REGULAR} or {@link org.jxapi.exchanges.employee.gen.EmployeeConstants.Profile#ADMIN}",
             EncodingUtil.substituteArguments("${constants.profile.regular}", "constants.profile.regular", EmployeeConstants.Profile.REGULAR));
@@ -324,15 +375,25 @@ public class EmployeeDemoProperties {
               LAST_NAME,
               PROFILE))));
         }
+        
+        /**
+         * Retrieves value of 'request' property.
+         * @param properties Properties to look for value of 'request' property into.
+         * @return Value found in properties or <code>null</code> if not found.
+         */
+        public static String getRequest(Properties properties) {return PropertiesUtil.getString(properties, REQUEST);}
         /**
          * List of all configuration properties defined in this class
          */
         public static final List<ConfigProperty> ALL = List.copyOf(CollectionUtil.mergeLists(List.of(
+          List.of(
+            REQUEST
+          ),
           Request.ALL)));
       }
       
       /**
-       * Configuration properties for REST updateEmployee endpoint of V1 API group
+       * Configuration properties for REST updateEmployee endpoint of v1 API group
        */
       @Generated("org.jxapi.generator.java.exchange.properties.PropertiesClassGenerator")
       public static class UpdateEmployee {
@@ -340,7 +401,17 @@ public class EmployeeDemoProperties {
         private UpdateEmployee(){}
         
         /**
-         * Demo configuration property for updateEmployee.request field.<p>
+         * Demo configuration property for updateEmployee.request field as raw JSON string value.<p>
+         * Employee to update
+         */
+        public static final ConfigProperty REQUEST = DefaultConfigProperty.create(
+          "demo.v1.rest.updateEmployee.request",
+          Type.STRING,
+          "Demo configuration property for updateEmployee.request field as raw JSON string value.<p>\nEmployee to update",
+          null);
+        
+        /**
+         * Demo configuration properties for updateEmployee.request field object instance.<p>
          * Employee to update
          */
         @Generated("org.jxapi.generator.java.exchange.properties.PropertiesClassGenerator")
@@ -353,7 +424,7 @@ public class EmployeeDemoProperties {
            * Employee ID
            */
           public static final ConfigProperty ID = DefaultConfigProperty.create(
-            "demo.V1.rest.updateEmployee.request.id",
+            "demo.v1.rest.updateEmployee.request.id",
             Type.INT,
             "Demo configuration property for request.id field.<p>\nEmployee ID",
             "1");
@@ -363,7 +434,7 @@ public class EmployeeDemoProperties {
            * Employee first name
            */
           public static final ConfigProperty FIRST_NAME = DefaultConfigProperty.create(
-            "demo.V1.rest.updateEmployee.request.firstName",
+            "demo.v1.rest.updateEmployee.request.firstName",
             Type.STRING,
             "Demo configuration property for request.firstName field.<p>\nEmployee first name",
             "John");
@@ -373,7 +444,7 @@ public class EmployeeDemoProperties {
            * Employee last name
            */
           public static final ConfigProperty LAST_NAME = DefaultConfigProperty.create(
-            "demo.V1.rest.updateEmployee.request.lastName",
+            "demo.v1.rest.updateEmployee.request.lastName",
             Type.STRING,
             "Demo configuration property for request.lastName field.<p>\nEmployee last name",
             "Doe");
@@ -383,7 +454,7 @@ public class EmployeeDemoProperties {
            * Employee profile. Can be {@link org.jxapi.exchanges.employee.gen.EmployeeConstants.Profile#REGULAR} or {@link org.jxapi.exchanges.employee.gen.EmployeeConstants.Profile#ADMIN}
            */
           public static final ConfigProperty PROFILE = DefaultConfigProperty.create(
-            "demo.V1.rest.updateEmployee.request.profile",
+            "demo.v1.rest.updateEmployee.request.profile",
             Type.STRING,
             "Demo configuration property for request.profile field.<p>\nEmployee profile. Can be {@link org.jxapi.exchanges.employee.gen.EmployeeConstants.Profile#REGULAR} or {@link org.jxapi.exchanges.employee.gen.EmployeeConstants.Profile#ADMIN}",
             EncodingUtil.substituteArguments("${constants.profile.regular}", "constants.profile.regular", EmployeeConstants.Profile.REGULAR));
@@ -425,15 +496,25 @@ public class EmployeeDemoProperties {
               LAST_NAME,
               PROFILE))));
         }
+        
+        /**
+         * Retrieves value of 'request' property.
+         * @param properties Properties to look for value of 'request' property into.
+         * @return Value found in properties or <code>null</code> if not found.
+         */
+        public static String getRequest(Properties properties) {return PropertiesUtil.getString(properties, REQUEST);}
         /**
          * List of all configuration properties defined in this class
          */
         public static final List<ConfigProperty> ALL = List.copyOf(CollectionUtil.mergeLists(List.of(
+          List.of(
+            REQUEST
+          ),
           Request.ALL)));
       }
       
       /**
-       * Configuration properties for REST deleteEmployee endpoint of V1 API group
+       * Configuration properties for REST deleteEmployee endpoint of v1 API group
        */
       @Generated("org.jxapi.generator.java.exchange.properties.PropertiesClassGenerator")
       public static class DeleteEmployee {
@@ -445,7 +526,7 @@ public class EmployeeDemoProperties {
          * Employee ID
          */
         public static final ConfigProperty ID = DefaultConfigProperty.create(
-          "demo.V1.rest.deleteEmployee.id",
+          "demo.v1.rest.deleteEmployee.id",
           Type.INT,
           "Demo configuration property for deleteEmployee.id field.<p>\nEmployee ID",
           "1");

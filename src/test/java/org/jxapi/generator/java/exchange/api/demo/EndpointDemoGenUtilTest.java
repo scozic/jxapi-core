@@ -258,25 +258,40 @@ public class EndpointDemoGenUtilTest {
         "myRestEndpoint", "Configuration properties for REST myRestEndpoint endpoint of myApi API group", 
         Type.OBJECT, 
         null);
-    Assert.assertEquals(1, restEndpointGroup.getProperties().size());
-    ConfigPropertyDescriptor requestProp = restEndpointGroup.getProperties().get(0);
-    checkDemoProperty(requestProp, 
+    Assert.assertEquals(2, restEndpointGroup.getProperties().size());
+    ConfigPropertyDescriptor rawRequestProp = restEndpointGroup.getProperties().get(0);
+    checkDemoProperty(rawRequestProp, 
         "request", 
-        "Demo configuration property for myRestEndpoint.request field.<p>\n"
+        "Demo configuration property for myRestEndpoint.request field as raw JSON string value.<p>\n"
+        + "This is a test parameter", 
+        Type.STRING, 
+        null);
+    
+    ConfigPropertyDescriptor requestGroupProp = restEndpointGroup.getProperties().get(1);
+    checkDemoProperty(requestGroupProp, 
+        "request", 
+        "Demo configuration properties for myRestEndpoint.request field object instance.<p>\n"
         + "This is a test parameter", 
         Type.OBJECT, 
         null);
-    Assert.assertEquals(2, requestProp.getProperties().size());
-    checkDemoProperty(requestProp.getProperties().get(0), 
+    Assert.assertEquals(3, requestGroupProp.getProperties().size());
+    checkDemoProperty(requestGroupProp.getProperties().get(0), 
         "myIntParam",
         "Demo configuration property for request.myIntParam field.", 
         Type.INT, 
         123);
     
-    ConfigPropertyDescriptor mySubParam = requestProp.getProperties().get(1);
+    ConfigPropertyDescriptor rawMySubParamProp = requestGroupProp.getProperties().get(1);
+    checkDemoProperty(rawMySubParamProp, 
+        "mySubParam", 
+        "Demo configuration property for request.mySubParam field as raw JSON string value.", 
+        Type.STRING, 
+        null);
+    
+    ConfigPropertyDescriptor mySubParam = requestGroupProp.getProperties().get(2);
     checkDemoProperty(mySubParam, 
         "mySubParam",
-        "Demo configuration property for request.mySubParam field.", 
+        "Demo configuration properties for request.mySubParam field object instance.", 
         Type.OBJECT, 
         null);
     Assert.assertEquals(1, mySubParam.getProperties().size());
@@ -301,25 +316,41 @@ public class EndpointDemoGenUtilTest {
         "Configuration properties for websocket myWsEndpoint endpoint of myApi API group", 
         Type.OBJECT, 
         null);
-    Assert.assertEquals(1, wsEndpointGroup.getProperties().size());
-    ConfigPropertyDescriptor wsRequestProp = wsEndpointGroup.getProperties().get(0);
+    Assert.assertEquals(2, wsEndpointGroup.getProperties().size());
+    
+    ConfigPropertyDescriptor rawWsRequestProp = wsEndpointGroup.getProperties().get(0);
+    checkDemoProperty(rawWsRequestProp, 
+        "mySubscribeRequest",
+        "Demo configuration property for myWsEndpoint.mySubscribeRequest field as raw JSON string value.<p>\n"
+            + "This is a test parameter for the mySubscribeRequest field",
+        Type.STRING, 
+        null);
+    
+    ConfigPropertyDescriptor wsRequestProp = wsEndpointGroup.getProperties().get(1);
     checkDemoProperty(wsRequestProp, 
         "mySubscribeRequest", 
-        "Demo configuration property for myWsEndpoint.mySubscribeRequest field.<p>\n"
+        "Demo configuration properties for myWsEndpoint.mySubscribeRequest field object instance.<p>\n"
         + "This is a test parameter for the mySubscribeRequest field", 
         Type.OBJECT, 
         null);
-    Assert.assertEquals(2, wsRequestProp.getProperties().size());
+    Assert.assertEquals(3, wsRequestProp.getProperties().size());
     checkDemoProperty(wsRequestProp.getProperties().get(0), 
         "myIntParam",
         "Demo configuration property for mySubscribeRequest.myIntParam field.", 
         Type.INT, 
         123);
     
-    ConfigPropertyDescriptor wsMySubParam = wsRequestProp.getProperties().get(1);
+    ConfigPropertyDescriptor rawWsMySubParam = wsRequestProp.getProperties().get(1);
+    checkDemoProperty(rawWsMySubParam, 
+        "mySubParam",
+        "Demo configuration property for mySubscribeRequest.mySubParam field as raw JSON string value.", 
+        Type.STRING,
+        null);
+    
+    ConfigPropertyDescriptor wsMySubParam = wsRequestProp.getProperties().get(2);
     checkDemoProperty(wsMySubParam, 
         "mySubParam",
-        "Demo configuration property for mySubscribeRequest.mySubParam field.", 
+        "Demo configuration properties for mySubscribeRequest.mySubParam field object instance.", 
         Type.OBJECT, 
         null);
     Assert.assertEquals(1, wsMySubParam.getProperties().size());

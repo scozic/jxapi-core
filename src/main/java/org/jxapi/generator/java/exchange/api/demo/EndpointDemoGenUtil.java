@@ -347,6 +347,7 @@ public class EndpointDemoGenUtil {
             exchangeApiDescriptor, 
             demoConfigProperties, 
             imports), 
+          imports,
           true);
     }
     return deserializeSampleValueInstr;
@@ -435,6 +436,7 @@ public class EndpointDemoGenUtil {
             exchangeApiDescriptor, 
             demoConfigProperties, 
             imports),
+        imports,
         true);
   }
   
@@ -806,44 +808,68 @@ public class EndpointDemoGenUtil {
       String endpointGroup, 
       String endpointName, 
       Field endpointRequest) {
-    ConfigPropertyDescriptor requestProperty = generateDemoConfigPropertyForField(api, endpointName, endpointRequest);
+    List<ConfigPropertyDescriptor> requestProperty = 
+        generateDemoConfigPropertyForField(api, endpointName, endpointRequest);
     String endpointGroupDisplayName = Objects.equals(endpointGroup, REST_DEMO_GROUP_NAME)? "REST": "websocket";
     return ConfigPropertyDescriptor.createGroup(
         endpointName,
-        String.format("Configuration properties for %s %s endpoint of %s API group", endpointGroupDisplayName, endpointName, api.getName()), 
-        requestProperty == null? List.of(): List.of(requestProperty)
+        String.format(
+            "Configuration properties for %s %s endpoint of %s API group", 
+            endpointGroupDisplayName, endpointName, 
+            api.getName()), 
+        requestProperty
     );
   }
   
-  private static ConfigPropertyDescriptor generateDemoConfigPropertyForField(
+  private static List<ConfigPropertyDescriptor> generateDemoConfigPropertyForField(
       ExchangeApiDescriptor api,  
       String parentField, 
       Field f) {
     if (f == null) {
-      return null;
+      return List.of();
     }
     String fieldName = ExchangeApiGenUtil.getRequestArgName(f.getName());
+    String fieldDescription = f.getDescription();
+    fieldDescription = fieldDescription == null? "" : "<p>\n" + fieldDescription;
     Type type = ExchangeGenUtil.getFieldType(f);
-    String fieldDescription = String.format("Demo configuration property for %s.%s field.", parentField, fieldName);
-    if (f.getDescription() != null) {
-      fieldDescription += "<p>\n" + f.getDescription();
-    }
-
     String propertyName = fieldName;
     if (type.isObject()) {
       f = ExchangeApiGenUtil.resolveFieldProperties(api, f);
-      return ConfigPropertyDescriptor.createGroup(
-          propertyName, 
-          fieldDescription,
-          CollectionUtil.emptyIfNull(f.getProperties()).stream()
-          .map(p -> generateDemoConfigPropertyForField(api, fieldName, p))
-          .filter(Objects::nonNull)
-          .collect(Collectors.toList()));
+      String rawValueDemoPropertyDescription = String.format(
+          "Demo configuration property for %s.%s field as raw JSON string value.%s", 
+          parentField, 
+          fieldName,
+          fieldDescription);
+      String objectGroupDescription = String.format(
+          "Demo configuration properties for %s.%s field object instance.%s", 
+          parentField, 
+          fieldName,
+          fieldDescription);
+      return List.of(
+          ConfigPropertyDescriptor.create(
+              propertyName, 
+              Type.STRING,
+              rawValueDemoPropertyDescription, 
+              f.getSampleValue()),
+          ConfigPropertyDescriptor.createGroup(
+            propertyName, 
+            objectGroupDescription,
+            CollectionUtil.emptyIfNull(f.getProperties())
+              .stream()
+              .map(p -> generateDemoConfigPropertyForField(api, fieldName, p))
+              .reduce(CollectionUtil::mergeLists)
+              .orElse(List.of()))
+          );
     }
-    return ConfigPropertyDescriptor.create(
+    return List.of(ConfigPropertyDescriptor.create(
         propertyName, 
         type,
-        fieldDescription, 
-        f.getSampleValue());
+        String.format(
+            "Demo configuration property for %s.%s field.%s", 
+            parentField, 
+            fieldName,
+            fieldDescription), 
+        f.getSampleValue()));
   }
+  
 }

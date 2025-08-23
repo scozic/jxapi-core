@@ -10,16 +10,16 @@ import org.jxapi.netutils.rest.FutureRestResponse;
 import org.jxapi.netutils.websocket.WebsocketListener;
 
 /**
- * Employee V1 API<br>
+ * Employee v1 API<br>
  * Version 1 of the Employee API
  */
 @Generated("org.jxapi.generator.java.exchange.api.ExchangeApiInterfaceGenerator")
 public interface EmployeeV1Api extends ExchangeApi {
   
   /**
-   * Name of 'V1' API group.
+   * Name of 'v1' API group.
    */
-  String ID = "V1";
+  String ID = "v1";
   
   /**
    * Name of the 'getEmployee' API endpoint.

@@ -7,6 +7,7 @@ import java.nio.file.Path;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Stream;
 
 import org.apache.commons.lang3.StringUtils;
@@ -548,13 +549,14 @@ public class JavaCodeGenUtil {
     return getJavaDocLink(className + "#" + attribute);
   }
   
-  public static String generateOptionalOfNullableStatement(String optionalStatement, String orElseStatement, boolean multiline) {
+  public static String generateOptionalOfNullableStatement(String optionalStatement, String orElseStatement, Imports imports, boolean multiline) {
     if (StringUtils.isEmpty(optionalStatement)) {
       return orElseStatement;
     }
     if (StringUtils.isEmpty(orElseStatement)) {
       return optionalStatement;
     }
+    imports.add(Optional.class);
     StringBuilder sb = new StringBuilder().append("Optional");
     StringBuilder optStatement = new StringBuilder()
         .append(".ofNullable(")

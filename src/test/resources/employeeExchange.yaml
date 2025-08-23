@@ -49,7 +49,7 @@ constants:
         description: Value of eventType field in WS message for update of an existing employee event
         value: DELETE
 apis:
- - name: V1
+ - name: v1
    description: "Version 1 of the Employee API"
    httpUrl: v1
    restEndpoints:

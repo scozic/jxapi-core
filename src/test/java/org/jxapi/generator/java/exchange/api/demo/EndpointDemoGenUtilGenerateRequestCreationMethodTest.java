@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Properties;
 import java.util.function.BinaryOperator;
 import java.util.function.Function;
@@ -95,6 +96,7 @@ public class EndpointDemoGenUtilGenerateRequestCreationMethodTest {
         + "}\n"
         + "",  
          List.class,
+         Optional.class,
          Properties.class,
          "com.x.gen.MyExchangeDemoProperties",
          "com.x.gen.myapi.deserializers.MyExchangeMyApiMyRestEndpointRequestBarDeserializer",
@@ -258,6 +260,7 @@ public class EndpointDemoGenUtilGenerateRequestCreationMethodTest {
         + "}\n"
         + "",
         List.class, 
+        Optional.class,
         Properties.class,
         "com.x.gen.MyExchangeDemoProperties",
         "com.x.gen.myapi.deserializers.MyExchangeMyApiMyRestEndpointRequestDeserializer",
@@ -456,6 +459,7 @@ public class EndpointDemoGenUtilGenerateRequestCreationMethodTest {
         + "      .build());\n"
         + "}\n"
         + "",
+        Optional.class,
         Properties.class,
         "com.x.gen.MyExchangeDemoProperties",
         "com.x.gen.myapi.deserializers.MyExchangeMyApiMyRestEndpointRequestDeserializer",

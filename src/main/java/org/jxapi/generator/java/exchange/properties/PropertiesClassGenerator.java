@@ -123,7 +123,9 @@ public class PropertiesClassGenerator extends JavaTypeGenerator {
   
   private String generateExchangePropertiesClassDescription() {
     StringBuilder sb = new StringBuilder();
-    sb.append("Configurable properties for <strong>")
+    sb.append("Configurable")
+      .append(prefix != null? " " + prefix: "")
+      .append(" properties for <strong>")
       .append(exchange.getId())
       .append("</strong> exchange:<br>\n");
       
