@@ -54,8 +54,9 @@ public class WebsocketEndpointClassesGeneratorTest {
     WebsocketEndpointClassesGenerator generator = new WebsocketEndpointClassesGenerator(exchange, api, wsEndpoint, docPlaceHolderResolver);
     generator.generateClasses(srcFolder);
     
-    checkJavaFilesCount(Paths.get("deserializers"), 1);
+    checkJavaFilesCount(Paths.get("deserializers"), 2);
     checkSourceFileExists(Paths.get("deserializers", "MyTestExchangeMarketDataTickerStreamMessageDeserializer.java"));
+    checkSourceFileExists(Paths.get("deserializers", "MyTestExchangeMarketDataTickerStreamRequestDeserializer.java"));
     
     checkJavaFilesCount(Paths.get("pojo"), 2);
     
@@ -503,8 +504,9 @@ public class WebsocketEndpointClassesGeneratorTest {
     WebsocketEndpointDescriptor wsEndpoint = api.getWebsocketEndpoints().get(0);
     WebsocketEndpointClassesGenerator generator = new WebsocketEndpointClassesGenerator(exchange, api, wsEndpoint, null);
     generator.generateClasses(srcFolder);
-    checkJavaFilesCount(Paths.get("deserializers"), 1);
+    checkJavaFilesCount(Paths.get("deserializers"), 2);
     checkSourceFileExists(Paths.get("deserializers", "MyTestExchangeMarketDataTickerStreamMessageDeserializer.java"));
+    checkSourceFileExists(Paths.get("deserializers", "MyTestExchangeMarketDataTickerStreamRequestDeserializer.java"));
     
     checkJavaFilesCount(Paths.get("pojo"), 2);
     

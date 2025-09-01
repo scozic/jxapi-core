@@ -362,7 +362,7 @@ public class EndpointDemoGenUtil {
       List<ConfigPropertyDescriptor> demoConfigProperties, 
       Imports imports) {
     Type type = ExchangeGenUtil.getFieldType(field);
-    imports.add(objectClassName);
+//    imports.add(objectClassName);
     return new StringBuilder()
         .append(ExchangeApiGenUtil.getNewMessageDeserializerInstruction(type, objectClassName, imports))
         .append(".deserialize(")

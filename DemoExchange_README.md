@@ -147,21 +147,6 @@ Some demo configuration properties are available to tune common request paramete
 
 In order to run demo snippets, you can set properties values in __demo-DemoExchange.properties__ properties file in src/test/resources folder.
 
-<table>
-  <caption>Demo snippet properties</caption>
-  <tr>
-    <th>Name</th>
-    <th>Type</th>
-    <th>description</th>
-    <th>Default value</th>
-  </tr>
-  <tr>
-    <td>demo.demoSymbol</td>
-    <td>STRING</td>
-    <td>Default value to use for market 'symbol' parameter in demo snippets</td>
-    <td>BTC_USDT</td>
-  </tr>
-</table>
 
 ### Endpoint demo snippets
 

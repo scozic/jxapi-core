@@ -13,6 +13,7 @@ import org.jxapi.generator.java.JavaCodeGenUtil;
 import org.jxapi.util.CollectionUtil;
 import org.jxapi.util.ConfigProperty;
 import org.jxapi.util.DefaultConfigProperty;
+import org.jxapi.util.EncodingUtil;
 import org.jxapi.util.PlaceHolderResolver;
 
 /**
@@ -54,7 +55,7 @@ public class PropertiesGenUtilTest {
     Imports imports = new Imports();
     ConfigPropertyDescriptor property = ConfigPropertyDescriptor.create("myProp", Type.STRING, "A test property",
         "defaultValue");
-    String code = PropertiesGenUtil.generateSimplePropertyValueDeclaration(property, null, imports, null, null);
+    String code = PropertiesGenUtil.generateSimplePropertyValueDeclaration(property, null, null, imports, null, null);
     Assert.assertEquals(
         "/**\n"
         + " * A test property\n"
@@ -74,7 +75,31 @@ public class PropertiesGenUtilTest {
   }
   
   @Test
-  public void ttestGenerateSimplePropertyValueDeclaration_WithDescriptionAndSampleVlauePlaceholders() {
+  public void testGenerateSimplePropertyValueDeclaration_NonPrimitiveType() {
+    Imports imports = new Imports();
+    ConfigPropertyDescriptor property = ConfigPropertyDescriptor.create("myProp", Type.fromTypeName("INT_LIST"), "A test property",
+        "[1, 2, 3]");
+    String code = PropertiesGenUtil.generateSimplePropertyValueDeclaration(property, null, null, imports, null, null);
+    Assert.assertEquals(
+        "/**\n"
+        + " * A test property\n"
+        + " */\n"
+        + "public static final ConfigProperty MY_PROP = DefaultConfigProperty.create(\n"
+        + "  \"myProp\",\n"
+        + "  Type.STRING,\n"
+        + "  \"A test property\",\n"
+        + "  \"[1, 2, 3]\");\n"
+        + "",
+        code);
+    Assert.assertEquals(3, imports.size());
+    Iterator<String> it = imports.iterator();
+    Assert.assertEquals(Type.class.getName(), it.next());
+    Assert.assertEquals(ConfigProperty.class.getName(), it.next());
+    Assert.assertEquals(DefaultConfigProperty.class.getName(), it.next());
+  }
+  
+  @Test
+  public void testGenerateSimplePropertyValueDeclaration_WithDescriptionAndSampleVlauePlaceholders() {
     Imports imports = new Imports();
     ConfigPropertyDescriptor property = ConfigPropertyDescriptor.create(
         "helloProp", 
@@ -83,7 +108,7 @@ public class PropertiesGenUtilTest {
         "Hi ${foo}!");
     PlaceHolderResolver docPlaceHolderResolver = PlaceHolderResolver.create(Map.of("hello", "Hello World"));
     PlaceHolderResolver sampleValuePlaceHolderResolver = createSampleValueResolver(Map.of("foo", "bar"));
-    String code = PropertiesGenUtil.generateSimplePropertyValueDeclaration(property, "demo", imports, docPlaceHolderResolver, sampleValuePlaceHolderResolver);
+    String code = PropertiesGenUtil.generateSimplePropertyValueDeclaration(property, null, "demo", imports, docPlaceHolderResolver, sampleValuePlaceHolderResolver);
     Assert.assertEquals(
         "/**\n"
         + " * A test Hello World property\n"
@@ -103,26 +128,37 @@ public class PropertiesGenUtilTest {
   }
   
   @Test
-  public void testGenerateSimplePropertyValueDeclaration_WithdObjecOFtSampleValueType() {
+  public void testGenerateSimplePropertyValueDeclaration_ObjectPropertyRawWValueDemoProperty() {
     Imports imports = new Imports();
     Person samplePerson = new Person("John ${lastName}", 30);
-    ConfigPropertyDescriptor property = ConfigPropertyDescriptor.create(
+    ConfigPropertyDescriptor rawValueProperty = ConfigPropertyDescriptor.create(
         "personProp", 
-        Type.OBJECT, 
+        Type.STRING, 
         "A test person like ${fullName}  property",
-        samplePerson);
+        EncodingUtil.pojoToJsonString(samplePerson));
+    ConfigPropertyDescriptor groupProperty = ConfigPropertyDescriptor.createGroup(
+        "personProp", 
+        "Group for object type 'personProp'", 
+        List.of());
+    List<ConfigPropertyDescriptor> allProperties = List.of(rawValueProperty, groupProperty);
     PlaceHolderResolver docPlaceHolderResolver = PlaceHolderResolver.create(Map.of("fullName", "Bob Smith"));
     PlaceHolderResolver sampleValuePlaceHolderResolver = createSampleValueResolver(Map.of("lastName", "Doe"));
-    String code = PropertiesGenUtil.generateSimplePropertyValueDeclaration(property, "demo", imports, docPlaceHolderResolver, sampleValuePlaceHolderResolver);
+    String code = PropertiesGenUtil.generateSimplePropertyValueDeclaration(
+        rawValueProperty, 
+        allProperties, 
+        "demo", 
+        imports, 
+        docPlaceHolderResolver, 
+        sampleValuePlaceHolderResolver);
     Assert.assertEquals(
         "/**\n"
         + " * A test person like Bob Smith  property\n"
         + " */\n"
         + "public static final ConfigProperty PERSON_PROP = DefaultConfigProperty.create(\n"
         + "  \"demo.personProp\",\n"
-        + "  Type.OBJECT,\n"
+        + "  Type.STRING,\n"
         + "  \"A test person like Bob Smith  property\",\n"
-        + "  \"{\\\"age\\\":30,\\\"name\\\":\\\"John Doe\\\"}\");\n"
+        + "  \"{\\\"name\\\":\\\"John Doe\\\",\\\"age\\\":30}\");\n"
         + "",
         code);
     Assert.assertEquals(3, imports.size());
@@ -140,7 +176,7 @@ public class PropertiesGenUtilTest {
       Type.STRING, 
       "A test property",
       null);
-    String code = PropertiesGenUtil.generateSimplePropertyValueDeclaration(property, null, imports, null, null);
+    String code = PropertiesGenUtil.generateSimplePropertyValueDeclaration(property, null, null, imports, null, null);
     Assert.assertEquals(
         "/**\n"
         + " * A test property\n"
@@ -318,6 +354,82 @@ public class PropertiesGenUtilTest {
     Assert.assertEquals("demo.myProp", PropertiesGenUtil.getPropertyFullName("demo", "myProp"));
   }
   
+  @Test
+  public void testGetPropertyVariableName_SimpleProp() {
+    ConfigPropertyDescriptor p = ConfigPropertyDescriptor.create("myProp", Type.STRING, null, null);
+    Assert.assertEquals("MY_PROP", PropertiesGenUtil.getPropertyVariableName(p, null));
+  }
+  
+  @Test
+  public void testGetPropertyVariableName_SimplePropWithSameStaticVariableNameAsOtherSimpleProp() {
+    ConfigPropertyDescriptor p1 = ConfigPropertyDescriptor.create("com.x.gen.p1", Type.STRING, null, null);
+    ConfigPropertyDescriptor p1Up = ConfigPropertyDescriptor.create("com.x.gen.P1", Type.STRING, null, null);
+    ConfigPropertyDescriptor p1Underscore = ConfigPropertyDescriptor.create("com.x.gen.p1_", Type.STRING, null, null);
+    ConfigPropertyDescriptor p1UpUnderscore = ConfigPropertyDescriptor.create("com.x.gen.P1_", Type.STRING, null, null);
+    List<ConfigPropertyDescriptor> allProps = List.of(p1, p1Up, p1Underscore, p1UpUnderscore);
+    Assert.assertEquals("P1", PropertiesGenUtil.getPropertyVariableName(p1, allProps));
+    Assert.assertEquals("P1_", PropertiesGenUtil.getPropertyVariableName(p1Up, allProps));
+    Assert.assertEquals("P1__", PropertiesGenUtil.getPropertyVariableName(p1Underscore, allProps));
+    Assert.assertEquals("P1___", PropertiesGenUtil.getPropertyVariableName(p1UpUnderscore, allProps));
+  }
+  
+  @Test
+  public void testGetPropertyVariableName_SimplePropWithSameStaticVariableNameAsGroupPropClassName() {
+    ConfigPropertyDescriptor p1 = ConfigPropertyDescriptor.create("p1", Type.STRING, null, null);
+    ConfigPropertyDescriptor g1 = ConfigPropertyDescriptor.createGroup("P1", "A group", List.of());
+    List<ConfigPropertyDescriptor> allProps = List.of(p1, g1);
+    Assert.assertEquals("P1", PropertiesGenUtil.getPropertyVariableName(p1, allProps));
+    Assert.assertEquals("P1_", PropertiesGenUtil.getPropertyVariableName(g1, allProps));
+  }
+  
+  @Test
+  public void testGetPropertyVariableName_ObjectPropAsRawValueAndGroupProp() {
+    ConfigPropertyDescriptor p1 = ConfigPropertyDescriptor.create("myObjectProp", Type.STRING, "Raw value prop for myGroupProp", null);
+    ConfigPropertyDescriptor g1 = ConfigPropertyDescriptor.createGroup("myObjectProp", "Group property for myGrouupProp", List.of());
+    List<ConfigPropertyDescriptor> allProps = List.of(p1, g1);
+    Assert.assertEquals("MY_OBJECT_PROP", PropertiesGenUtil.getPropertyVariableName(p1, allProps));
+    Assert.assertEquals("MyObjectProp", PropertiesGenUtil.getPropertyVariableName(g1, allProps));
+  }
+  
+  @Test
+  public void testGetPropertyValueDeclaration() {
+    ConfigPropertyDescriptor p = ConfigPropertyDescriptor.create(
+        "myProp", 
+        Type.STRING, 
+        "A test string value property, for instance '${constants.bar}'", 
+        "foo");
+    Imports imports = new Imports();
+    PlaceHolderResolver placeholderResolver = PlaceHolderResolver.create(Map.of("constants.bar", "bar"));
+    Assert.assertEquals("/**\n"
+        + " * A test string value property, for instance 'bar'\n"
+        + " */\n"
+        + "public static final ConfigProperty MY_PROP = DefaultConfigProperty.create(\n"
+        + "  \"myProp\",\n"
+        + "  Type.STRING,\n"
+        + "  \"A test string value property, for instance 'bar'\",\n"
+        + "  \"foo\");\n", 
+        PropertiesGenUtil.generateSimplePropertyValueDeclaration(p, null, null, imports, placeholderResolver, null));
+  }
+  
+  @Test
+  public void testGetPropertyValueDeclaration_ValueWithPlaceholder() {
+    ConfigPropertyDescriptor p = ConfigPropertyDescriptor.create("myProp", Type.STRING, "A test string value property,\nfor instance '${constants.bar}'", "${constants.foo}");
+    Imports imports = new Imports();
+    PlaceHolderResolver docPlaceholderResolver = PlaceHolderResolver.create(Map.of("constants.bar", "bar"));
+    PlaceHolderResolver defaultValuePlaceholderResolver = PlaceHolderResolver.create(Map.of("constants.foo", "\"myFooValue\""));
+    Assert.assertEquals("/**\n"
+        + " * A test string value property,\n"
+        + " * for instance 'bar'\n"
+        + " */\n"
+        + "public static final ConfigProperty MY_PROP = DefaultConfigProperty.create(\n"
+        + "  \"myProp\",\n"
+        + "  Type.STRING,\n"
+        + "  \"A test string value property,\\nfor instance 'bar'\",\n"
+        + "  \"myFooValue\");\n"
+        + "", 
+        PropertiesGenUtil.generateSimplePropertyValueDeclaration(p, null, "", imports, docPlaceholderResolver, defaultValuePlaceholderResolver));
+  }
+  
   private static PlaceHolderResolver createSampleValueResolver(Map<String, Object> values) {
     PlaceHolderResolver map = PlaceHolderResolver.create(values);
     return s -> JavaCodeGenUtil.getQuotedString(map.resolve(s));
@@ -350,4 +462,5 @@ public class PropertiesGenUtilTest {
       this.age = age;
     }
   }
+  
 }

@@ -37,9 +37,3 @@
 # Delay in ms before exiting program after unsubscribing in websocked endpoint demo classes.
 # jxapi.demo.ws.delayBeforeExitAfterUnsubscription=1000
 
-
-# Demo REST/WEBSOCKET specific configuration properties
-
-# Default value to use for market 'symbol' parameter in demo snippets
-# demoSymbol=BTC_USDT
-

@@ -11,11 +11,13 @@ import org.jxapi.exchanges.demo.gen.DemoExchangeDemoProperties;
 import org.jxapi.exchanges.demo.gen.DemoExchangeExchange;
 import org.jxapi.exchanges.demo.gen.DemoExchangeExchangeImpl;
 import org.jxapi.exchanges.demo.gen.marketdata.DemoExchangeMarketDataApi;
+import org.jxapi.exchanges.demo.gen.marketdata.deserializers.SingleSymbolDeserializer;
 import org.jxapi.exchanges.demo.gen.marketdata.pojo.GenericResponse;
 import org.jxapi.exchanges.demo.gen.marketdata.pojo.SingleSymbol;
+import org.jxapi.netutils.deserialization.json.field.ListJsonFieldDeserializer;
+import org.jxapi.netutils.deserialization.json.field.MapJsonFieldDeserializer;
 import org.jxapi.netutils.rest.RestResponse;
 import org.jxapi.util.DemoUtil;
-import org.jxapi.util.EncodingUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -27,14 +29,12 @@ public class DemoExchangeMarketDataPostRestRequestDataTypeObjectListMapDemo {
   private static final Logger log = LoggerFactory.getLogger(DemoExchangeMarketDataPostRestRequestDataTypeObjectListMapDemo.class);
   
   /**
-   * Creates a sample value for the request field of type Map<String, List<SingleSymbol>> using sample value(s) defined in the field descriptor.
+   * Creates a sample value for the request field of type Map<String, List<SingleSymbol>> using sample value(s) defined in demo configuration properties.
    * 
    * @param properties the configuration properties to use for the sample value generation.
    */
   public static Map<String, List<SingleSymbol>> createRequest(Properties properties) {
-    SingleSymbol requestItem = new SingleSymbol();
-    requestItem.setSymbol(EncodingUtil.substituteArguments("${demo.config.demoSymbol}", "demo.config.demoSymbol", DemoExchangeDemoProperties.getDemoSymbol(properties)));
-    return Map.of("spot", List.of(requestItem));
+    return new MapJsonFieldDeserializer<>(new ListJsonFieldDeserializer<>(new SingleSymbolDeserializer())).deserialize(DemoExchangeDemoProperties.MarketData.Rest.PostRestRequestDataTypeObjectListMap.getRequest(properties));
   }
   
   /**

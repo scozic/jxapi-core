@@ -5,6 +5,7 @@ import java.util.concurrent.ExecutionException;
 
 import javax.annotation.processing.Generated;
 import org.jxapi.exchange.ExchangeApiObserver;
+import org.jxapi.exchanges.demo.gen.DemoExchangeDemoProperties;
 import org.jxapi.exchanges.demo.gen.DemoExchangeExchange;
 import org.jxapi.exchanges.demo.gen.DemoExchangeExchangeImpl;
 import org.jxapi.exchanges.demo.gen.marketdata.DemoExchangeMarketDataApi;
@@ -22,12 +23,12 @@ public class DemoExchangeMarketDataGetRestRequestDataTypePrimitiveWithMsgFieldDe
   private static final Logger log = LoggerFactory.getLogger(DemoExchangeMarketDataGetRestRequestDataTypePrimitiveWithMsgFieldDemo.class);
   
   /**
-   * Creates a sample value for the age field of type Integer using sample value(s) defined in the field descriptor.
+   * Creates a sample value for the age field of type Integer using sample value(s) defined in demo configuration properties.
    * 
    * @param properties the configuration properties to use for the sample value generation.
    */
   public static Integer createAge(Properties properties) {
-    return Integer.valueOf("18");
+    return DemoExchangeDemoProperties.MarketData.Rest.GetRestRequestDataTypePrimitiveWithMsgField.getAge(properties);
   }
   
   /**

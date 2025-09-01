@@ -65,7 +65,6 @@ public class PropertiesClassGenerator extends JavaTypeGenerator {
   private final String prefix;
   private final PlaceHolderResolver docPlaceHolderResolver;
   private final PlaceHolderResolver sampleValuePlaceHolderResolver;
-  private boolean generateSimplePropertiesForGroups = false;
 
   /**
    * Constructor
@@ -98,33 +97,10 @@ public class PropertiesClassGenerator extends JavaTypeGenerator {
     setDescription(generateExchangePropertiesClassDescription());
   }
   
-  /**
-   * @see #setGenerateSimplePropertiesForGroups(boolean)
-   * @return <code>true</code> if simple properties for groups should be
-   *         generated, <code>false</code> if only inner property class for group
-   *         should be generated.
-   */
-  public boolean isGenerateSimplePropertiesForGroups() {
-    return generateSimplePropertiesForGroups;
-  }
-
-  /**
-   * Sets whether to generate simple properties for group properties, in addition to inner
-   * properties classes. This is used for demo properties to allow setting non primitive
-   * properties values as a whole structure.
-   * 
-   * @param generateSimplePropertiesForGroups <code>true</code> to generate simple
-   *                                          properties for groups,
-   *                                          <code>false</code> otherwise
-   */
-  public void setGenerateSimplePropertiesForGroups(boolean generateSimplePropertiesForGroups) {
-    this.generateSimplePropertiesForGroups = generateSimplePropertiesForGroups;
-  }
-  
   private String generateExchangePropertiesClassDescription() {
     StringBuilder sb = new StringBuilder();
     sb.append("Configurable")
-      .append(prefix != null? " " + prefix: "")
+      .append(StringUtils.isEmpty(prefix) ? "": " " + prefix)
       .append(" properties for <strong>")
       .append(exchange.getId())
       .append("</strong> exchange:<br>\n");
@@ -169,12 +145,6 @@ public class PropertiesClassGenerator extends JavaTypeGenerator {
   }
 
   private String generatePropertyDeclaration(ConfigPropertyDescriptor property, String prefix) {
-    String simplePropertyValueDeclaration = PropertiesGenUtil.generateSimplePropertyValueDeclaration(
-        property, 
-        prefix,
-        getImports(), 
-        docPlaceHolderResolver, 
-        sampleValuePlaceHolderResolver);
     if (property.isGroup()) {
       StringBuilder s = new StringBuilder();
       String groupClassName = JavaCodeGenUtil.firstLetterToUpperCase(property.getName());
@@ -185,20 +155,22 @@ public class PropertiesClassGenerator extends JavaTypeGenerator {
       groupGen.setTypeDeclaration("public static class");
       groupGen.setGeneratePackageAndImports(false);
       groupGen.setDescription(property.getDescription());
-      if (isGenerateSimplePropertiesForGroups()) {
-        s.append(simplePropertyValueDeclaration).append("\n");
-        groupGen.setGenerateSimplePropertiesForGroups(true);
-      }
       s.append(groupGen.generate());
       this.getImports().addAll(groupGen.getImports());
       return s.toString();
     } else {
-      return simplePropertyValueDeclaration;
+      return PropertiesGenUtil.generateSimplePropertyValueDeclaration(
+          property, 
+          this.properties,
+          prefix,
+          getImports(), 
+          docPlaceHolderResolver, 
+          sampleValuePlaceHolderResolver);
     }
   }
   
   private void generatePropertyGetterMethod(ConfigPropertyDescriptor property) {
-    if (property.isGroup() && !isGenerateSimplePropertiesForGroups()) {
+    if (property.isGroup()) {
       return;
     }
     StringBuilder sb = new StringBuilder()
@@ -206,7 +178,7 @@ public class PropertiesClassGenerator extends JavaTypeGenerator {
     String name = property.getName();
     Type type = property.getType();
     Object def = property.getDefaultValue();
-    if (property.isGroup()) {
+    if (property.isGroup() || !type.getCanonicalType().isPrimitive) {
       type = Type.STRING;
       def = JsonUtil.pojoToJsonString(def);
     }
@@ -235,7 +207,7 @@ public class PropertiesClassGenerator extends JavaTypeGenerator {
     String typeClass = ExchangeGenUtil.getClassNameForType(type, getImports(), null);
     String methodName = PropertiesGenUtil.getPropertyGetterMethodName(property, properties);
     String getPropertiesUtilMethodName = getPropertiesUtilGetPropertyMethodName(property);
-    String keyVariableName = JavaCodeGenUtil.getStaticVariableName(PropertiesGenUtil.getPropertyKeyPropertyName(property));
+    String keyVariableName = PropertiesGenUtil.getPropertyVariableName(property, this.properties);
     addImport(Properties.class);
     addImport(PropertiesUtil.class);
     sb.append("public static ")
