@@ -27,7 +27,7 @@ public class ConfigPropertyDescriptorTest {
     Assert.assertEquals("myGroup", property.getName());
     Assert.assertEquals("My group", property.getDescription());
     
-    Assert.assertEquals(Type.STRING, property.getType());
+    Assert.assertEquals(Type.OBJECT, property.getType());
     Assert.assertNull(property.getDefaultValue());
     Assert.assertNotNull(property.getProperties());
     Assert.assertEquals(2, property.getProperties().size());

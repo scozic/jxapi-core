@@ -1,6 +1,6 @@
 id: "Employee"
 apis:
- - name: V1    
+ - name: v1    
    restEndpoints:
     - name: "getEmployee"
       description: "Get employee details by ID"

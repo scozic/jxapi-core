@@ -68,8 +68,12 @@ public class ExchangeDemoClassesGeneratorTest {
     exchange.getApis().get(0).setWebsocketEndpoints(null);
     new ExchangeDemoClassesGenerator(exchange).generateClasses(srcFolder);
     Path pkgPath = Paths.get(".");
-    checkJavaFilesCount(pkgPath, 1);
+    checkJavaFilesCount(pkgPath, 2);
     pkgPath = pkgPath.resolve("marketData");
+    ClassesGeneratorTestUtil.checkSourceFileExists(srcFolder.
+        resolve(BASE_PKG)
+        .resolve("marketData"),
+        Paths.get("MyTestExchangeDemoProperties.java"));
     checkJavaFilesCount(pkgPath, 1);
     pkgPath = pkgPath.resolve("demo");
     checkJavaFilesCount(pkgPath, 2);

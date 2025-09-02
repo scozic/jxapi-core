@@ -54,7 +54,8 @@ public class RestEndpointClassesGeneratorTest {
     RestEndpointClassesGenerator generator = new RestEndpointClassesGenerator(exchange, api, restEndpoint, docPlaceHolderResolver);
     generator.generateClasses(srcFolder);
     
-    checkJavaFilesCount(Paths.get("deserializers"), 2);
+    checkJavaFilesCount(Paths.get("deserializers"), 3);
+    checkSourceFileExists(Paths.get("deserializers", "MyTestExchangeMarketDataExchangeInfoRequestDeserializer.java"));
     checkSourceFileExists(Paths.get("deserializers", "MyTestExchangeMarketDataExchangeInfoResponseDeserializer.java"));
     checkSourceFileExists(Paths.get("deserializers", "MyTestExchangeMarketDataExchangeInfoResponsePayloadDeserializer.java"));
     
@@ -545,7 +546,8 @@ public class RestEndpointClassesGeneratorTest {
     RestEndpointClassesGenerator generator = new RestEndpointClassesGenerator(exchange, api, restEndpoint, null);
     generator.generateClasses(srcFolder);
     
-    checkJavaFilesCount(Paths.get("deserializers"), 2);
+    checkJavaFilesCount(Paths.get("deserializers"), 3);
+    checkSourceFileExists(Paths.get("deserializers", "MyTestExchangeMarketDataExchangeInfoRequestDeserializer.java"));
     checkSourceFileExists(Paths.get("deserializers", "MyTestExchangeMarketDataExchangeInfoResponseDeserializer.java"));
     checkSourceFileExists(Paths.get("deserializers", "MyTestExchangeMarketDataExchangeInfoResponsePayloadDeserializer.java"));
     

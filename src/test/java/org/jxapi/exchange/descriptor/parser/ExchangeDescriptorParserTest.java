@@ -154,7 +154,7 @@ public class ExchangeDescriptorParserTest {
     Assert.assertEquals("The list of symbol to fetch market information for. Leave empty to fetch all markets. Author: ${constants.authorFullName}", symbolsParameter.getDescription());
     Assert.assertEquals(CanonicalType.LIST, symbolsParameter.getType().getCanonicalType());
     Assert.assertEquals(CanonicalType.STRING, symbolsParameter.getType().getSubType().getCanonicalType());
-    Assert.assertEquals("[\"${config.demoSymbol}\"]", symbolsParameter.getSampleValue());
+    Assert.assertEquals("[\"${constants.demoSymbol}\"]", symbolsParameter.getSampleValue());
     
     Field apiKeyParameter = exchangeInfoParameters.get(1);
     Assert.assertEquals("apiKey", apiKeyParameter.getName());
@@ -234,7 +234,7 @@ public class ExchangeDescriptorParserTest {
     Assert.assertEquals("symbol", symbols.getName());
     Assert.assertEquals("Symbol to subscribe to ticker stream of. Use ${constants.allTickers} to subscribe to every ticker. Author: ${constants.authorFullName}", symbols.getDescription());
     Assert.assertEquals(CanonicalType.STRING, symbols.getType().getCanonicalType());
-    Assert.assertEquals("${config.wsTickerStreamDemo.symbol}", symbols.getSampleValue());
+    Assert.assertEquals("${constants.demoSymbol}", symbols.getSampleValue());
     
     List<WebsocketMessageTopicMatcherFieldDescriptor> messageTopicMatcherFields = tickerStreamEndpoint.getMessageTopicMatcherFields();
     Assert.assertEquals(2, messageTopicMatcherFields.size());
@@ -321,7 +321,7 @@ public class ExchangeDescriptorParserTest {
   }
   
   private void checkEmployeeExchangeV1ApiGroup(ExchangeApiDescriptor api) {
-    Assert.assertEquals("V1", api.getName());
+    Assert.assertEquals("v1", api.getName());
     Assert.assertEquals("Version 1 of the Employee API", api.getDescription());
     Assert.assertEquals("v1", api.getHttpUrl());
     List<RestEndpointDescriptor> restEndpoints = api.getRestEndpoints();
@@ -429,7 +429,7 @@ public class ExchangeDescriptorParserTest {
     Assert.assertEquals("id", getEmployeeIdByIdRequest.getName());
     Assert.assertEquals(Type.INT, getEmployeeIdByIdRequest.getType());
     Assert.assertEquals("Employee ID", getEmployeeIdByIdRequest.getDescription());
-    Assert.assertEquals("${demo.config.employeeId}", getEmployeeIdByIdRequest.getSampleValue());
+    Assert.assertEquals(1, getEmployeeIdByIdRequest.getSampleValue());
     Field employeeField = restEndpointGetEmployee.getResponse();
     checkEmployeeObjectField(employeeField);
   }
@@ -518,7 +518,7 @@ public class ExchangeDescriptorParserTest {
     Assert.assertEquals("id", deleteEmployeeIdRequest.getName());
     Assert.assertEquals(Type.INT, deleteEmployeeIdRequest.getType());
     Assert.assertEquals("Employee ID", deleteEmployeeIdRequest.getDescription());
-    Assert.assertEquals("${demo.config.employeeId}", deleteEmployeeIdRequest.getSampleValue());
+    Assert.assertEquals(1, deleteEmployeeIdRequest.getSampleValue());
   }
   
   private void checkEmployeeObjectField(Field employeeField) {
@@ -529,7 +529,7 @@ public class ExchangeDescriptorParserTest {
     Assert.assertEquals("id", idField.getName());
     Assert.assertEquals(Type.INT, idField.getType());
     Assert.assertEquals("Employee ID", idField.getDescription());
-    Assert.assertEquals("${demo.config.employeeId}", idField.getSampleValue());
+    Assert.assertEquals(1, idField.getSampleValue());
     
     Field firstNameField = employeeProperties.get(1);
     Assert.assertEquals("firstName", firstNameField.getName());
