@@ -732,13 +732,17 @@ public class ExchangeGenUtilTest {
     
     List<ConfigPropertyDescriptor> demoProperties = List.of(groupProp);
     Imports imports = new Imports();
-    Assert.assertNull(ExchangeGenUtil.getValueDeclarationForConfigProperty(
+    // Remark for a group, the corresponding property is expected to be of STRING 
+    // type so the value declaration is JSON value for the whole group object.
+    Assert.assertEquals("MyExchangeDemoProperties.getMyGroup(myProps)", 
+        ExchangeGenUtil.getValueDeclarationForConfigProperty(
         "myGroup", 
         exchangeDescriptor, 
         demoProperties, 
         "myProps", 
         imports));
-    Assert.assertEquals(0, imports.size());
+    Assert.assertEquals(1, imports.size());
+    Assert.assertTrue(imports.contains("com.x.y.z.MyExchangeDemoProperties"));
   }
   
   @Test
@@ -823,6 +827,31 @@ public class ExchangeGenUtilTest {
     Assert.assertEquals("<a href=\"http://example.com/javadoc/com/x/y/z/TestExchangeConstants.MyGroup.NestedGroup2.html#NC2\">nc2</a>", replacements.get("constants.myGroup.nestedGroup2.nc2"));
     Assert.assertEquals("<a href=\"http://example.com/javadoc/com/x/y/z/TestExchangeProperties.html#CONFIG_PROP1\">configProp1</a>", replacements.get("config.configProp1"));
     Assert.assertEquals("<a href=\"http://example.com/javadoc/com/x/y/z/TestExchangeProperties.html#CONFIG_PROP2\">configProp2</a>", replacements.get("config.configProp2"));
+  }
+  
+  @Test
+  public void testGetValuesReplacements() {
+    Assert.assertEquals(0, ExchangeGenUtil.getValuesReplacements(null).size());
+    ExchangeDescriptor exchangeDescriptor = new ExchangeDescriptor();
+    exchangeDescriptor.setId("TestExchange");
+    exchangeDescriptor.setBasePackage("com.x.y.z");
+    Constant exConstant1 = Constant.create("exchangeConstant1", Type.STRING, "Exchange constant 1", "exConst1Value");
+    Constant exConstant2 = Constant.create("exchangeConstant2", Type.INT, "Exchange constant 2", 123);
+    
+    Constant nestedConstant1 = Constant.create("nc1", Type.STRING, "Nested constant 1", "nc1Value");
+    Constant nestedConstant2 = Constant.create("nc2", Type.STRING, "Nested constant 1", "nc2Value");
+    
+    Constant nestedGroup = Constant.createGroup("nestedGroup2", "Nested nested group", List.of(nestedConstant1, nestedConstant2));
+    Constant group = Constant.createGroup("myGroup", "A constant group", List.of(nestedGroup));
+    
+    exchangeDescriptor.setConstants(List.of(exConstant1, group, exConstant2));
+    
+    Map<String, Object> replacements = ExchangeGenUtil.getValuesReplacements(exchangeDescriptor);
+    Assert.assertEquals(4, replacements.size());
+    Assert.assertEquals("exConst1Value", replacements.get("constants.exchangeConstant1"));
+    Assert.assertEquals(123, replacements.get("constants.exchangeConstant2"));
+    Assert.assertEquals("nc1Value", replacements.get("constants.myGroup.nestedGroup2.nc1"));
+    Assert.assertEquals("nc2Value", replacements.get("constants.myGroup.nestedGroup2.nc2"));
   }
   
   @Test

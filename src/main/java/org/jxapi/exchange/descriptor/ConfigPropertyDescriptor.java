@@ -1,7 +1,9 @@
 package org.jxapi.exchange.descriptor;
 
 import java.util.List;
+import java.util.Optional;
 
+import org.jxapi.util.CollectionUtil;
 import org.jxapi.util.EncodingUtil;
 /**
  * Represents a configuration property or a group of properties of an exchange like authentication credentials (API Key,secret) the wraooer client should provide to instantiate a wrapper.br>
@@ -60,7 +62,7 @@ public class ConfigPropertyDescriptor {
     ConfigPropertyDescriptor p = new ConfigPropertyDescriptor();
     p.setName(name);
     p.setDescription(description);
-    p.setProperties(properties);
+    p.setProperties(CollectionUtil.emptyIfNull(properties));
     p.setType(Type.OBJECT);
     return p;
   }

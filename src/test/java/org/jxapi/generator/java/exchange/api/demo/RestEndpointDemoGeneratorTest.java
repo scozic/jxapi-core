@@ -23,15 +23,15 @@ public class RestEndpointDemoGeneratorTest {
     RestEndpointDescriptor restEndpointDescriptor = ClassesGeneratorTestUtil.findRestEndpointByName("exchangeInfo", api);
     Assert.assertEquals("package com.foo.bar.gen.marketdata.demo;\n"
         + "\n"
+        + "import java.util.Optional;\n"
         + "import java.util.Properties;\n"
         + "import java.util.concurrent.ExecutionException;\n"
         + "\n"
-        + "import com.foo.bar.gen.MyTestExchangeConstants;\n"
         + "import com.foo.bar.gen.MyTestExchangeDemoProperties;\n"
         + "import com.foo.bar.gen.MyTestExchangeExchange;\n"
         + "import com.foo.bar.gen.MyTestExchangeExchangeImpl;\n"
-        + "import com.foo.bar.gen.MyTestExchangeProperties;\n"
         + "import com.foo.bar.gen.marketdata.MyTestExchangeMarketDataApi;\n"
+        + "import com.foo.bar.gen.marketdata.deserializers.MyTestExchangeMarketDataExchangeInfoRequestDeserializer;\n"
         + "import com.foo.bar.gen.marketdata.pojo.MyTestExchangeMarketDataExchangeInfoRequest;\n"
         + "import com.foo.bar.gen.marketdata.pojo.MyTestExchangeMarketDataExchangeInfoResponse;\n"
         + "import javax.annotation.processing.Generated;\n"
@@ -40,7 +40,6 @@ public class RestEndpointDemoGeneratorTest {
         + "import org.jxapi.netutils.deserialization.json.field.StringJsonFieldDeserializer;\n"
         + "import org.jxapi.netutils.rest.RestResponse;\n"
         + "import org.jxapi.util.DemoUtil;\n"
-        + "import org.jxapi.util.EncodingUtil;\n"
         + "import org.slf4j.Logger;\n"
         + "import org.slf4j.LoggerFactory;\n"
         + "\n"
@@ -52,17 +51,19 @@ public class RestEndpointDemoGeneratorTest {
         + "  private static final Logger log = LoggerFactory.getLogger(MyTestExchangeMarketDataExchangeInfoDemo.class);\n"
         + "  \n"
         + "  /**\n"
-        + "   * Creates a sample value for the request field of type MyTestExchangeMarketDataExchangeInfoRequest using sample value(s) defined in the field descriptor.\n"
+        + "   * Creates a sample value for the request field of type MyTestExchangeMarketDataExchangeInfoRequest using sample value(s) defined in demo configuration properties.\n"
         + "   * \n"
         + "   * @param properties the configuration properties to use for the sample value generation.\n"
         + "   */\n"
         + "  public static MyTestExchangeMarketDataExchangeInfoRequest createRequest(Properties properties) {\n"
-        + "    MyTestExchangeMarketDataExchangeInfoRequest request = new MyTestExchangeMarketDataExchangeInfoRequest();\n"
-        + "    request.setSymbols(new ListJsonFieldDeserializer<>(StringJsonFieldDeserializer.getInstance()).deserialize(EncodingUtil.substituteArguments(\"[\\\"${config.demoSymbol}\\\"]\", \"config.demoSymbol\", MyTestExchangeDemoProperties.getDemoSymbol(properties))));\n"
-        + "    request.setApiKey(EncodingUtil.substituteArguments(\"${config.apiKey}\", \"config.apiKey\", MyTestExchangeProperties.getApiKey(properties)));\n"
-        + "    request.setAuthor(EncodingUtil.substituteArguments(\"${constants.author.firstName} ${constants.author.lastName}\", \"constants.author.firstName\", MyTestExchangeConstants.Author.FIRST_NAME, \"constants.author.lastName\", MyTestExchangeConstants.Author.LAST_NAME));\n"
-        + "    request.setPage(Integer.valueOf(\"1\"));\n"
-        + "    return request;\n"
+        + "    return Optional\n"
+        + "      .ofNullable(new MyTestExchangeMarketDataExchangeInfoRequestDeserializer().deserialize(MyTestExchangeDemoProperties.MarketData.Rest.ExchangeInfo.getRequest(properties)))\n"
+        + "      .orElse(MyTestExchangeMarketDataExchangeInfoRequest.builder()  \n"
+        + "        .symbols(new ListJsonFieldDeserializer<>(StringJsonFieldDeserializer.getInstance()).deserialize(MyTestExchangeDemoProperties.MarketData.Rest.ExchangeInfo.Request.getSymbols(properties)))\n"
+        + "        .apiKey(MyTestExchangeDemoProperties.MarketData.Rest.ExchangeInfo.Request.getApiKey(properties))\n"
+        + "        .author(MyTestExchangeDemoProperties.MarketData.Rest.ExchangeInfo.Request.getAuthor(properties))\n"
+        + "        .page(MyTestExchangeDemoProperties.MarketData.Rest.ExchangeInfo.Request.getPage(properties))\n"
+        + "        .build());\n"
         + "  }\n"
         + "  \n"
         + "  /**\n"
@@ -115,7 +116,7 @@ public class RestEndpointDemoGeneratorTest {
   }
   
   @Test
-  public void testGenerateRestEndpointDemoSpecificRequesTypePrimitiveInt() throws Exception {
+  public void testGenerateRestEndpointDemo_RequesTypePrimitiveInt() throws Exception {
     ExchangeDescriptor exchange = ExchangeDescriptorParser.fromJson(Paths.get(".", "src", "test", "resources", "testExchangeDescriptorWithAllRestRequestDataTypes.json"));
     ExchangeApiDescriptor api = exchange.getApis().get(0);
     RestEndpointDescriptor restEndpoint = ClassesGeneratorTestUtil.findRestEndpointByName("postRestRequestDataTypeInt", api);
@@ -125,6 +126,7 @@ public class RestEndpointDemoGeneratorTest {
         + "import java.util.Properties;\n"
         + "import java.util.concurrent.ExecutionException;\n"
         + "\n"
+        + "import com.foo.bar.gen.MyTestExchangeDemoProperties;\n"
         + "import com.foo.bar.gen.MyTestExchangeExchange;\n"
         + "import com.foo.bar.gen.MyTestExchangeExchangeImpl;\n"
         + "import com.foo.bar.gen.marketdata.MyTestExchangeMarketDataApi;\n"
@@ -144,12 +146,12 @@ public class RestEndpointDemoGeneratorTest {
         + "  private static final Logger log = LoggerFactory.getLogger(MyTestExchangeMarketDataPostRestRequestDataTypeIntDemo.class);\n"
         + "  \n"
         + "  /**\n"
-        + "   * Creates a sample value for the request field of type Integer using sample value(s) defined in the field descriptor.\n"
+        + "   * Creates a sample value for the request field of type Integer using sample value(s) defined in demo configuration properties.\n"
         + "   * \n"
         + "   * @param properties the configuration properties to use for the sample value generation.\n"
         + "   */\n"
         + "  public static Integer createRequest(Properties properties) {\n"
-        + "    return Integer.valueOf(\"12345\");\n"
+        + "    return MyTestExchangeDemoProperties.MarketData.Rest.PostRestRequestDataTypeInt.getRequest(properties);\n"
         + "  }\n"
         + "  \n"
         + "  /**\n"
@@ -196,12 +198,13 @@ public class RestEndpointDemoGeneratorTest {
         + "      System.exit(-1);\n"
         + "    }\n"
         + "  }\n"
-        + "}\n", 
+        + "}\n"
+        + "", 
         generator.generate());
   }
   
   @Test
-  public void testGenerateRestEndpointDemoSpecificRequesTypePrimitiveStringWithNamedArg() throws Exception {
+  public void testGenerateRestEndpointDemo_RequesTypePrimitiveStringWithNamedArg() throws Exception {
     ExchangeDescriptor exchange = ExchangeDescriptorParser.fromJson(Paths.get(".", "src", "test", "resources", "testExchangeDescriptorWithAllRestRequestDataTypes.json"));
     ExchangeApiDescriptor api = exchange.getApis().get(0);
     RestEndpointDescriptor restEndpoint = ClassesGeneratorTestUtil.findRestEndpointByName("postRestRequestDataTypeStringImplicit", api);
@@ -211,6 +214,7 @@ public class RestEndpointDemoGeneratorTest {
         + "import java.util.Properties;\n"
         + "import java.util.concurrent.ExecutionException;\n"
         + "\n"
+        + "import com.foo.bar.gen.MyTestExchangeDemoProperties;\n"
         + "import com.foo.bar.gen.MyTestExchangeExchange;\n"
         + "import com.foo.bar.gen.MyTestExchangeExchangeImpl;\n"
         + "import com.foo.bar.gen.marketdata.MyTestExchangeMarketDataApi;\n"
@@ -230,12 +234,12 @@ public class RestEndpointDemoGeneratorTest {
         + "  private static final Logger log = LoggerFactory.getLogger(MyTestExchangeMarketDataPostRestRequestDataTypeStringImplicitDemo.class);\n"
         + "  \n"
         + "  /**\n"
-        + "   * Creates a sample value for the hello field of type String using sample value(s) defined in the field descriptor.\n"
+        + "   * Creates a sample value for the hello field of type String using sample value(s) defined in demo configuration properties.\n"
         + "   * \n"
         + "   * @param properties the configuration properties to use for the sample value generation.\n"
         + "   */\n"
         + "  public static String createHello(Properties properties) {\n"
-        + "    return \"Hello world!\";\n"
+        + "    return MyTestExchangeDemoProperties.MarketData.Rest.PostRestRequestDataTypeStringImplicit.getHello(properties);\n"
         + "  }\n"
         + "  \n"
         + "  /**\n"
@@ -282,12 +286,13 @@ public class RestEndpointDemoGeneratorTest {
         + "      System.exit(-1);\n"
         + "    }\n"
         + "  }\n"
-        + "}\n", 
+        + "}\n"
+        + "", 
       generator.generate());
   }
   
   @Test
-  public void testGenerateRestEndpointDemoNoArgEndpoint() throws Exception {
+  public void testGenerateRestEndpointDemo_NoArgEndpoint() throws Exception {
     ExchangeDescriptor exchange = ExchangeDescriptorParser.fromJson(Paths.get(".", "src", "test", "resources", "testExchangeDescriptorWithAllRestRequestDataTypes.json"));
     ExchangeApiDescriptor api = exchange.getApis().get(0);
     RestEndpointDescriptor restEndpoint = ClassesGeneratorTestUtil.findRestEndpointByName("postRestRequestDataTypeObjectNoParameters", api);
@@ -362,7 +367,7 @@ public class RestEndpointDemoGeneratorTest {
   }
   
   @Test
-  public void testGenerateRestEndpointSpecificRequestTypeObjectListMapWithReferencedObject() throws Exception {
+  public void testGenerateRestEndpointDemo_RequestTypeObjectListMapWithReferencedObject() throws Exception {
     ExchangeDescriptor exchange = ExchangeDescriptorParser.fromJson(Paths.get(".", "src", "test", "resources", "testExchangeDescriptorWithAllRestRequestDataTypes.json"));
     ExchangeApiDescriptor api = exchange.getApis().get(0);
     RestEndpointDescriptor restEndpoint = ClassesGeneratorTestUtil.findRestEndpointByName("postRestRequestDataTypeObjectListMap", api);
@@ -374,13 +379,17 @@ public class RestEndpointDemoGeneratorTest {
         + "import java.util.Properties;\n"
         + "import java.util.concurrent.ExecutionException;\n"
         + "\n"
+        + "import com.foo.bar.gen.MyTestExchangeDemoProperties;\n"
         + "import com.foo.bar.gen.MyTestExchangeExchange;\n"
         + "import com.foo.bar.gen.MyTestExchangeExchangeImpl;\n"
         + "import com.foo.bar.gen.marketdata.MyTestExchangeMarketDataApi;\n"
+        + "import com.foo.bar.gen.marketdata.deserializers.SingleSymbolDeserializer;\n"
         + "import com.foo.bar.gen.marketdata.pojo.GenericResponse;\n"
         + "import com.foo.bar.gen.marketdata.pojo.SingleSymbol;\n"
         + "import javax.annotation.processing.Generated;\n"
         + "import org.jxapi.exchange.ExchangeApiObserver;\n"
+        + "import org.jxapi.netutils.deserialization.json.field.ListJsonFieldDeserializer;\n"
+        + "import org.jxapi.netutils.deserialization.json.field.MapJsonFieldDeserializer;\n"
         + "import org.jxapi.netutils.rest.RestResponse;\n"
         + "import org.jxapi.util.DemoUtil;\n"
         + "import org.slf4j.Logger;\n"
@@ -394,14 +403,12 @@ public class RestEndpointDemoGeneratorTest {
         + "  private static final Logger log = LoggerFactory.getLogger(MyTestExchangeMarketDataPostRestRequestDataTypeObjectListMapDemo.class);\n"
         + "  \n"
         + "  /**\n"
-        + "   * Creates a sample value for the request field of type Map<String, List<SingleSymbol>> using sample value(s) defined in the field descriptor.\n"
+        + "   * Creates a sample value for the request field of type Map<String, List<SingleSymbol>> using sample value(s) defined in demo configuration properties.\n"
         + "   * \n"
         + "   * @param properties the configuration properties to use for the sample value generation.\n"
         + "   */\n"
         + "  public static Map<String, List<SingleSymbol>> createRequest(Properties properties) {\n"
-        + "    SingleSymbol requestItem = new SingleSymbol();\n"
-        + "    requestItem.setSymbol(\"BTC_USDT\");\n"
-        + "    return Map.of(\"spot\", List.of(requestItem));\n"
+        + "    return new MapJsonFieldDeserializer<>(new ListJsonFieldDeserializer<>(new SingleSymbolDeserializer())).deserialize(MyTestExchangeDemoProperties.MarketData.Rest.PostRestRequestDataTypeObjectListMap.getRequest(properties));\n"
         + "  }\n"
         + "  \n"
         + "  /**\n"
@@ -448,12 +455,13 @@ public class RestEndpointDemoGeneratorTest {
         + "      System.exit(-1);\n"
         + "    }\n"
         + "  }\n"
-        + "}\n", 
+        + "}\n"
+        + "", 
         generator.generate());
   }
   
   @Test
-  public void testGenerateRestEndpointSpecificRequestTypeObjectListMapWithExplicitSampleValue() throws Exception {
+  public void testGenerateRestEndpointDemo_RequestTypeObjectListMapWithExplicitSampleValue() throws Exception {
     ExchangeDescriptor exchange = ExchangeDescriptorParser.fromJson(Paths.get(".", "src", "test", "resources", "testExchangeDescriptorWithAllRestRequestDataTypes.json"));
     ExchangeApiDescriptor api = exchange.getApis().get(0);
     RestEndpointDescriptor restEndpoint = ClassesGeneratorTestUtil.findRestEndpointByName("getRestRequestDataTypeObjectListMap", api);
@@ -465,6 +473,7 @@ public class RestEndpointDemoGeneratorTest {
         + "import java.util.Properties;\n"
         + "import java.util.concurrent.ExecutionException;\n"
         + "\n"
+        + "import com.foo.bar.gen.MyTestExchangeDemoProperties;\n"
         + "import com.foo.bar.gen.MyTestExchangeExchange;\n"
         + "import com.foo.bar.gen.MyTestExchangeExchangeImpl;\n"
         + "import com.foo.bar.gen.marketdata.MyTestExchangeMarketDataApi;\n"
@@ -488,12 +497,12 @@ public class RestEndpointDemoGeneratorTest {
         + "  private static final Logger log = LoggerFactory.getLogger(MyTestExchangeMarketDataGetRestRequestDataTypeObjectListMapDemo.class);\n"
         + "  \n"
         + "  /**\n"
-        + "   * Creates a sample value for the request field of type Map<String, List<MultiSymbol>> using sample value(s) defined in the field descriptor.\n"
+        + "   * Creates a sample value for the request field of type Map<String, List<MultiSymbol>> using sample value(s) defined in demo configuration properties.\n"
         + "   * \n"
         + "   * @param properties the configuration properties to use for the sample value generation.\n"
         + "   */\n"
         + "  public static Map<String, List<MultiSymbol>> createRequest(Properties properties) {\n"
-        + "    return new MapJsonFieldDeserializer<>(new ListJsonFieldDeserializer<>(new MultiSymbolDeserializer())).deserialize(\"{\\\"foo\\\": [{\\\"symbol\\\": \\\"BTC_USDT\\\", \\\"symbolMap\\\": {\\\"USDT\\\": [\\\"BTC_USDT\\\", \\\"ETH\\\"]}, \\\"symbolObject\\\": {}}]}\");\n"
+        + "    return new MapJsonFieldDeserializer<>(new ListJsonFieldDeserializer<>(new MultiSymbolDeserializer())).deserialize(MyTestExchangeDemoProperties.MarketData.Rest.GetRestRequestDataTypeObjectListMap.getRequest(properties));\n"
         + "  }\n"
         + "  \n"
         + "  /**\n"
@@ -546,7 +555,7 @@ public class RestEndpointDemoGeneratorTest {
   }
   
   @Test
-  public void testGenerateRestEndpointRequestTypeIntList() throws Exception {
+  public void testGenerateRestEndpointDemo_RequestTypeIntList() throws Exception {
     ExchangeDescriptor exchange = ExchangeDescriptorParser.fromJson(Paths.get(".", "src", "test", "resources", "testExchangeDescriptorWithAllRestRequestDataTypes.json"));
     ExchangeApiDescriptor api = exchange.getApis().get(0);
     RestEndpointDescriptor restEndpoint = ClassesGeneratorTestUtil.findRestEndpointByName("postRestRequestDataTypeIntList", api);
@@ -557,6 +566,7 @@ public class RestEndpointDemoGeneratorTest {
         + "import java.util.Properties;\n"
         + "import java.util.concurrent.ExecutionException;\n"
         + "\n"
+        + "import com.foo.bar.gen.MyTestExchangeDemoProperties;\n"
         + "import com.foo.bar.gen.MyTestExchangeExchange;\n"
         + "import com.foo.bar.gen.MyTestExchangeExchangeImpl;\n"
         + "import com.foo.bar.gen.marketdata.MyTestExchangeMarketDataApi;\n"
@@ -578,12 +588,12 @@ public class RestEndpointDemoGeneratorTest {
         + "  private static final Logger log = LoggerFactory.getLogger(MyTestExchangeMarketDataPostRestRequestDataTypeIntListDemo.class);\n"
         + "  \n"
         + "  /**\n"
-        + "   * Creates a sample value for the request field of type List<Integer> using sample value(s) defined in the field descriptor.\n"
+        + "   * Creates a sample value for the request field of type List<Integer> using sample value(s) defined in demo configuration properties.\n"
         + "   * \n"
         + "   * @param properties the configuration properties to use for the sample value generation.\n"
         + "   */\n"
         + "  public static List<Integer> createRequest(Properties properties) {\n"
-        + "    return new ListJsonFieldDeserializer<>(IntegerJsonFieldDeserializer.getInstance()).deserialize(\"[1, 3, 5]\");\n"
+        + "    return new ListJsonFieldDeserializer<>(IntegerJsonFieldDeserializer.getInstance()).deserialize(MyTestExchangeDemoProperties.MarketData.Rest.PostRestRequestDataTypeIntList.getRequest(properties));\n"
         + "  }\n"
         + "  \n"
         + "  /**\n"
@@ -630,12 +640,13 @@ public class RestEndpointDemoGeneratorTest {
         + "      System.exit(-1);\n"
         + "    }\n"
         + "  }\n"
-        + "}\n", 
+        + "}\n"
+        + "", 
         generator.generate());
   }
   
   @Test
-  public void testGenerateRestEndpointEmptyResponseDataType() throws Exception {
+  public void testGenerateRestEndpointDemo_EmptyResponseDataType() throws Exception {
     ExchangeDescriptor exchange = ExchangeDescriptorParser.fromJson(Paths.get(".", "src", "test", "resources", "testExchangeDescriptorWithAllRestResponseDataTypes.json"));
     ExchangeApiDescriptor api = exchange.getApis().get(0);
     RestEndpointDescriptor restEndpoint = ClassesGeneratorTestUtil.findRestEndpointByName("getRestEmptyResponseDataType", api);
@@ -705,6 +716,109 @@ public class RestEndpointDemoGeneratorTest {
         + "    }\n"
         + "  }\n"
         + "}\n", 
+        generator.generate());
+  }
+  
+  @Test
+  public void testGenerateRestEndpointDemo_ConflictingParameterNames() throws Exception {
+    ExchangeDescriptor exchange = ExchangeDescriptorParser.fromYaml(Paths.get(".", "src", "test", "resources", "exchangeWithEndpointWithConflictingPropertyNames.yaml"));
+    ExchangeApiDescriptor api = exchange.getApis().get(0);
+    RestEndpointDescriptor restEndpoint = api.getRestEndpoints().get(0);
+    RestEndpointDemoGenerator generator = createGenerator(exchange, api, restEndpoint);
+    Assert.assertEquals("package org.jxapi.exchanges.conflict.gen.v1.demo;\n"
+        + "\n"
+        + "import java.util.Optional;\n"
+        + "import java.util.Properties;\n"
+        + "import java.util.concurrent.ExecutionException;\n"
+        + "\n"
+        + "import javax.annotation.processing.Generated;\n"
+        + "import org.jxapi.exchange.ExchangeApiObserver;\n"
+        + "import org.jxapi.exchanges.conflict.gen.ConflictDemoProperties;\n"
+        + "import org.jxapi.exchanges.conflict.gen.ConflictExchange;\n"
+        + "import org.jxapi.exchanges.conflict.gen.ConflictExchangeImpl;\n"
+        + "import org.jxapi.exchanges.conflict.gen.v1.ConflictV1Api;\n"
+        + "import org.jxapi.exchanges.conflict.gen.v1.deserializers.ConflictRequestDeserializer;\n"
+        + "import org.jxapi.exchanges.conflict.gen.v1.deserializers.ConflictRequestP1_Deserializer;\n"
+        + "import org.jxapi.exchanges.conflict.gen.v1.pojo.ConflictRequest;\n"
+        + "import org.jxapi.exchanges.conflict.gen.v1.pojo.ConflictRequestP1_;\n"
+        + "import org.jxapi.netutils.rest.RestResponse;\n"
+        + "import org.jxapi.util.DemoUtil;\n"
+        + "import org.slf4j.Logger;\n"
+        + "import org.slf4j.LoggerFactory;\n"
+        + "\n"
+        + "/**\n"
+        + " * Snippet to test call to {@link ConflictV1Api#myRestEndpoint(org.jxapi.exchanges.conflict.gen.v1.pojo.ConflictRequest)})}<br>\n"
+        + " */\n"
+        + "@Generated(\"org.jxapi.generator.java.exchange.api.demo.RestEndpointDemoGenerator\")\n"
+        + "public class ConflictV1MyRestEndpointDemo {\n"
+        + "  private static final Logger log = LoggerFactory.getLogger(ConflictV1MyRestEndpointDemo.class);\n"
+        + "  \n"
+        + "  /**\n"
+        + "   * Creates a sample value for the request field of type ConflictRequest using sample value(s) defined in demo configuration properties.\n"
+        + "   * \n"
+        + "   * @param properties the configuration properties to use for the sample value generation.\n"
+        + "   */\n"
+        + "  public static ConflictRequest createRequest(Properties properties) {\n"
+        + "    return Optional\n"
+        + "      .ofNullable(new ConflictRequestDeserializer().deserialize(ConflictDemoProperties.V1.Rest.MyRestEndpoint.getRequest(properties)))\n"
+        + "      .orElse(ConflictRequest.builder()  \n"
+        + "        .p1(ConflictDemoProperties.V1.Rest.MyRestEndpoint.Request.getp1(properties))\n"
+        + "        .P1(ConflictDemoProperties.V1.Rest.MyRestEndpoint.Request.getP1(properties))\n"
+        + "        .p1_(ConflictDemoProperties.V1.Rest.MyRestEndpoint.Request.getp1_(properties))\n"
+        + "        .P1_(Optional\n"
+        + "          .ofNullable(new ConflictRequestP1_Deserializer().deserialize(ConflictDemoProperties.V1.Rest.MyRestEndpoint.Request.getP1_(properties)))\n"
+        + "          .orElse(ConflictRequestP1_.builder()  \n"
+        + "            .subParam(ConflictDemoProperties.V1.Rest.MyRestEndpoint.Request.P1_.getSubParam(properties))\n"
+        + "            .build()))\n"
+        + "        .build());\n"
+        + "  }\n"
+        + "  \n"
+        + "  /**\n"
+        + "   * Submits a call to {@link ConflictV1Api#myRestEndpoint(org.jxapi.exchanges.conflict.gen.v1.pojo.ConflictRequest)}and waits for response.\n"
+        + "   * @param request     The request to submit\n"
+        + "   * @param configProperties  The configuration properties to instantiate exchange with\n"
+        + "   * @param apiObserver API observer that will notified of events. Is subscribed before REST API call and unsubscribed right after. Ignored if <code>null</code>\n"
+        + "   * @return Response data resulting from this API call\n"
+        + "   * @throws InterruptedException eventually thrown waiting for response\n"
+        + "   * @throws ExecutionException raised if response is not OK, see {@link RestResponse#isOk()}\n"
+        + "   */\n"
+        + "  public static RestResponse<String> execute(ConflictRequest request, Properties configProperties, ExchangeApiObserver apiObserver) throws InterruptedException, ExecutionException {\n"
+        + "    ConflictExchange exchange = new ConflictExchangeImpl(\"test-\" + ConflictExchange.ID, configProperties);\n"
+        + "    ConflictV1Api api = exchange.getConflictV1Api();\n"
+        + "    log.info(\"Calling org.jxapi.exchanges.conflict.gen.v1.ConflictV1Api.myRestEndpoint() API with request:{}\", request);\n"
+        + "    if (apiObserver != null) {\n"
+        + "      api.subscribeObserver(apiObserver);\n"
+        + "    }\n"
+        + "    try {\n"
+        + "      return DemoUtil.checkResponse(api.myRestEndpoint(request));\n"
+        + "    }\n"
+        + "    finally {\n"
+        + "      if (apiObserver != null) {\n"
+        + "        api.unsubscribeObserver(apiObserver);\n"
+        + "      }\n"
+        + "      exchange.dispose();\n"
+        + "    }\n"
+        + "  }\n"
+        + "  \n"
+        + "  /**\n"
+        + "   * Runs REST endpoint demo snippet calling {@link ConflictV1Api#myRestEndpoint(org.jxapi.exchanges.conflict.gen.v1.pojo.ConflictRequest)}\n"
+        + "   * @param args no argument expected\n"
+        + "   */\n"
+        + "  public static void main(String[] args) {\n"
+        + "    try {\n"
+        + "      Properties properties = DemoUtil.loadDemoExchangeProperties(ConflictExchange.ID);\n"
+        + "      execute(createRequest(properties),\n"
+        + "              properties,\n"
+        + "              DemoUtil::logRestApiEvent);\n"
+        + "      System.exit(0);\n"
+        + "    }\n"
+        + "    catch (Throwable t) {\n"
+        + "      log.error(\"Exception raised from main()\", t);\n"
+        + "      System.exit(-1);\n"
+        + "    }\n"
+        + "  }\n"
+        + "}\n"
+        + "", 
         generator.generate());
   }
   

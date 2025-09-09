@@ -12,6 +12,7 @@ import org.jxapi.exchange.descriptor.WebsocketEndpointDescriptor;
 import org.jxapi.generator.java.exchange.ClassesGenerator;
 import org.jxapi.generator.java.exchange.ExchangeGenUtil;
 import org.jxapi.generator.java.exchange.properties.PropertiesClassGenerator;
+import org.jxapi.generator.java.exchange.properties.PropertiesGenUtil;
 
 /**
  * Generates demo classes for an exchange, e.g. one snippet class for each REST
@@ -57,7 +58,7 @@ public class ExchangeDemoClassesGenerator implements ClassesGenerator {
             ExchangeGenUtil.getExchangeDemoPropertiesInterfaceName(exchangeDescriptor), 
             exchangeDescriptor, 
             properties,
-            "demo");
+            PropertiesGenUtil.DEMO_PREFIX);
         pgen.writeJavaFile(outputFolder);
       }
     }

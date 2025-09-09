@@ -545,7 +545,8 @@ public class ExchangeDescriptorParserTest {
     Field profileField = employeeProperties.get(3);
     Assert.assertEquals("profile", profileField.getName());
     Assert.assertNull(profileField.getType());
-    Assert.assertEquals("Employee profile. Can be ${constants.profile.regular} or ${constants.profile.admin}", profileField.getDescription());
+    Assert.assertEquals("Employee profile. See ${constants.profile}", 
+                        profileField.getDescription());
     Assert.assertEquals("${constants.profile.regular}", profileField.getSampleValue());
   }
   

@@ -34,7 +34,11 @@ public class ExchangeReameMdGeneratorTest {
   public void testGenerateExchangeReadmeFile() throws IOException {
     srcFolder = ClassesGeneratorTestUtil.generateTmpDir();
     ExchangeDescriptor exchange = ExchangeDescriptorParser.fromJson(Paths.get(".", "src", "test", "resources", "testExchangeDescriptor.json"));
-    new ExchangeReadmeMdGenerator(exchange, "https://javadoc.io/myproject/", "https://myrepo.com/myproject/master/src/main/java").writeJavaFile(srcFolder);
+    new ExchangeReadmeMdGenerator(
+        exchange, 
+        "https://javadoc.io/myproject/", 
+        "https://myrepo.com/myproject/master/src/main/java",
+        true).writeJavaFile(srcFolder);
     File expected = srcFolder.resolve("MyTestExchange_README.md").toFile();
     Assert.assertTrue("File " + expected.getAbsolutePath() + " does not exists", expected.exists());
   }
@@ -42,7 +46,10 @@ public class ExchangeReameMdGeneratorTest {
   @Test
   public void testGenerateExchangeReadme() throws IOException {
     ExchangeDescriptor exchange = ExchangeDescriptorParser.fromJson(Paths.get(".", "src", "test", "resources", "testExchangeDescriptor.json"));
-    String actual = new ExchangeReadmeMdGenerator(exchange, "https://javadoc.io/myproject/", "https://myrepo.com/myproject/master/src/main/java").generate();
+    String actual = new ExchangeReadmeMdGenerator(
+        exchange,
+        "https://javadoc.io/myproject/", "https://myrepo.com/myproject/master/src/main/java",
+        true).generate();
     Assert.assertEquals("# MyTestExchange API Java wrapper\n"
         + "\n"
         + "A sample Exchange descriptor file. Should be provided config properties: <a href=\"https://javadoc.io/myproject/com/foo/bar/gen/MyTestExchangeProperties.html#API_KEY\">apiKey</a>, <a href=\"https://javadoc.io/myproject/com/foo/bar/gen/MyTestExchangeProperties.html#API_SECRET\">apiSecret</a>. Author: <a href=\"https://javadoc.io/myproject/com/foo/bar/gen/MyTestExchangeConstants.Author.html#FIRST_NAME\">firstName</a> <a href=\"https://javadoc.io/myproject/com/foo/bar/gen/MyTestExchangeConstants.Author.html#LAST_NAME\">lastName</a>\n"
@@ -102,6 +109,11 @@ public class ExchangeReameMdGeneratorTest {
         + "    <td></td>\n"
         + "  </tr>\n"
         + "</table>\n"
+        + "Some demo configuration properties are available to tune common request parameters used in demo snippets, as <a href=\"https://myrepo.com/myproject/master/src/main/java/src/test/java/com/foo/bar/gen/MyTestExchangeDemoProperties.java\">MyTestExchangeDemoProperties</a> class.\n"
+        + " These properties are used to configure default values for request parameters used in demo snippets.\n"
+        + "\n"
+        + "In order to run demo snippets, you can uncomment and set properties values in __demo-MyTestExchange.properties__ properties file you create from .dist template in src/test/resources folder.\n"
+        + "\n"
         + "\n"
         + "### Constants\n"
         + "\n"
@@ -161,32 +173,6 @@ public class ExchangeReameMdGeneratorTest {
         + "\n"
         + "In order to run demo snippets, you can set properties values in __demo-MyTestExchange.properties__ properties file in src/test/resources folder.\n"
         + "\n"
-        + "<table>\n"
-        + "  <caption>Demo snippet properties</caption>\n"
-        + "  <tr>\n"
-        + "    <th>Name</th>\n"
-        + "    <th>Type</th>\n"
-        + "    <th>description</th>\n"
-        + "    <th>Default value</th>\n"
-        + "  </tr>\n"
-        + "  <tr>\n"
-        + "    <td>demo.demoSymbol</td>\n"
-        + "    <td>STRING</td>\n"
-        + "    <td>Market symbol to use in demo snippets</td>\n"
-        + "    <td><a href=\"https://javadoc.io/myproject/com/foo/bar/gen/MyTestExchangeConstants.html#DEFAULT_DEMO_SYMBOL\">defaultDemoSymbol</a></td>\n"
-        + "  </tr>\n"
-        + "  <tr>\n"
-        + "    <td>demo.wsTickerStreamDemo</td>\n"
-        + "    <td>group</td>\n"
-        + "    <td colspan=\"2\">Websocket ticker stream demo properties</td>\n"
-        + "  </tr>\n"
-        + "  <tr>\n"
-        + "    <td>demo.wsTickerStreamDemo.symbol</td>\n"
-        + "    <td>STRING</td>\n"
-        + "    <td>Market symbol to use in demo snippets, defaults to <a href=\"https://javadoc.io/myproject/com/foo/bar/gen/MyTestExchangeConstants.html#ALL_TICKERS\">allTickers</a>.</td>\n"
-        + "    <td><a href=\"https://javadoc.io/myproject/com/foo/bar/gen/MyTestExchangeConstants.html#ALL_TICKERS\">allTickers</a></td>\n"
-        + "  </tr>\n"
-        + "</table>\n"
         + "\n"
         + "### Endpoint demo snippets\n"
         + "\n"
@@ -207,13 +193,17 @@ public class ExchangeReameMdGeneratorTest {
   @Test
   public void testGenerateExchangeReadme_AllRequestDataTypes() throws IOException {
     ExchangeDescriptor exchange = ExchangeDescriptorParser.fromJson(Paths.get(".", "src", "test", "resources", "testExchangeDescriptorWithAllRestRequestDataTypes.json"));
-    String actual = new ExchangeReadmeMdGenerator(exchange, "https://javadoc.io/myproject/", "https://myrepo.com/myproject/master/src/main/java").generate();
+    String actual = new ExchangeReadmeMdGenerator(
+        exchange, 
+        "https://javadoc.io/myproject/", "https://myrepo.com/myproject/master/src/main/java",
+        true).generate();
     Assert.assertEquals("# MyTestExchange API Java wrapper\n"
         + "\n"
         + "A sample Exchange descriptor file\n"
         + "<!-- BEGIN TABLE OF CONTENTS -->\n"
         + "  - [MyTestExchange API Java wrapper](#mytestexchange-api-java-wrapper)\n"
         + "      - [Quick start](#quick-start)\n"
+        + "      - [Properties](#properties)\n"
         + "    - [API Groups](#api-groups)\n"
         + "      - [MarketData](#marketdata)\n"
         + "        - [REST endpoints](#rest-endpoints)\n"
@@ -240,6 +230,14 @@ public class ExchangeReameMdGeneratorTest {
         + "}\n"
         + "```\n"
         + "You may have a look at <a href=\"https://myrepo.com/myproject/master/src/main/java/src/test/java/com/foo/bar/gen/marketdata/demo/MyTestExchangeMarketDataPostRestRequestDataTypeIntDemo.java\">MyTestExchangeMarketDataPostRestRequestDataTypeIntDemo</a> class for full usage example\n"
+        + "\n"
+        + "### Properties\n"
+        + "\n"
+        + "\n"
+        + "Some demo configuration properties are available to tune common request parameters used in demo snippets, as <a href=\"https://myrepo.com/myproject/master/src/main/java/src/test/java/com/foo/bar/gen/MyTestExchangeDemoProperties.java\">MyTestExchangeDemoProperties</a> class.\n"
+        + " These properties are used to configure default values for request parameters used in demo snippets.\n"
+        + "\n"
+        + "In order to run demo snippets, you can uncomment and set properties values in __demo-MyTestExchange.properties__ properties file you create from .dist template in src/test/resources folder.\n"
         + "\n"
         + "## API Groups\n"
         + "APIs are available using the following interfaces accessible from <a href=\"https://javadoc.io/myproject/com/foo/bar/gen/MyTestExchangeExchange.html\">MyTestExchangeExchange</a> interface\n"
@@ -395,6 +393,10 @@ public class ExchangeReameMdGeneratorTest {
         + "\n"
         + "This wrapper contains demo snippets for the most important endpoints. These snippets are generated in _src/test/java/_ source folder.\n"
         + "\n"
+        + "Some demo configuration properties are available to tune common request parameters used in snippets, as <a href=\"https://myrepo.com/myproject/master/src/main/java/src/test/java/com/foo/bar/gen/MyTestExchangeDemoProperties.java\">MyTestExchangeDemoProperties</a> class.\n"
+        + " These properties are used to configure default values for request parameters used in demo snippets.\n"
+        + "\n"
+        + "In order to run demo snippets, you can set properties values in __demo-MyTestExchange.properties__ properties file in src/test/resources folder.\n"
         + "\n"
         + "\n"
         + "### Endpoint demo snippets\n"
@@ -437,7 +439,11 @@ public class ExchangeReameMdGeneratorTest {
   public void testGenerateExchangeReadme_ApiGroupWithNoWebsocketEndpoints() throws IOException {
     ExchangeDescriptor exchange = ExchangeDescriptorParser.fromJson(Paths.get(".", "src", "test", "resources", "testExchangeDescriptor.json"));
     exchange.getApis().get(0).setWebsocketEndpoints(null);
-    String actual = new ExchangeReadmeMdGenerator(exchange, "https://javadoc.io/myproject/", "https://myrepo.com/myproject/master").generate();
+    String actual = new ExchangeReadmeMdGenerator(
+        exchange, 
+        "https://javadoc.io/myproject/", 
+        "https://myrepo.com/myproject/master",
+        true).generate();
     Assert.assertEquals("# MyTestExchange API Java wrapper\n"
         + "\n"
         + "A sample Exchange descriptor file. Should be provided config properties: <a href=\"https://javadoc.io/myproject/com/foo/bar/gen/MyTestExchangeProperties.html#API_KEY\">apiKey</a>, <a href=\"https://javadoc.io/myproject/com/foo/bar/gen/MyTestExchangeProperties.html#API_SECRET\">apiSecret</a>. Author: <a href=\"https://javadoc.io/myproject/com/foo/bar/gen/MyTestExchangeConstants.Author.html#FIRST_NAME\">firstName</a> <a href=\"https://javadoc.io/myproject/com/foo/bar/gen/MyTestExchangeConstants.Author.html#LAST_NAME\">lastName</a>\n"
@@ -495,6 +501,11 @@ public class ExchangeReameMdGeneratorTest {
         + "    <td></td>\n"
         + "  </tr>\n"
         + "</table>\n"
+        + "Some demo configuration properties are available to tune common request parameters used in demo snippets, as <a href=\"https://myrepo.com/myproject/master/src/test/java/com/foo/bar/gen/MyTestExchangeDemoProperties.java\">MyTestExchangeDemoProperties</a> class.\n"
+        + " These properties are used to configure default values for request parameters used in demo snippets.\n"
+        + "\n"
+        + "In order to run demo snippets, you can uncomment and set properties values in __demo-MyTestExchange.properties__ properties file you create from .dist template in src/test/resources folder.\n"
+        + "\n"
         + "\n"
         + "### Constants\n"
         + "\n"
@@ -538,32 +549,6 @@ public class ExchangeReameMdGeneratorTest {
         + "\n"
         + "In order to run demo snippets, you can set properties values in __demo-MyTestExchange.properties__ properties file in src/test/resources folder.\n"
         + "\n"
-        + "<table>\n"
-        + "  <caption>Demo snippet properties</caption>\n"
-        + "  <tr>\n"
-        + "    <th>Name</th>\n"
-        + "    <th>Type</th>\n"
-        + "    <th>description</th>\n"
-        + "    <th>Default value</th>\n"
-        + "  </tr>\n"
-        + "  <tr>\n"
-        + "    <td>demo.demoSymbol</td>\n"
-        + "    <td>STRING</td>\n"
-        + "    <td>Market symbol to use in demo snippets</td>\n"
-        + "    <td><a href=\"https://javadoc.io/myproject/com/foo/bar/gen/MyTestExchangeConstants.html#DEFAULT_DEMO_SYMBOL\">defaultDemoSymbol</a></td>\n"
-        + "  </tr>\n"
-        + "  <tr>\n"
-        + "    <td>demo.wsTickerStreamDemo</td>\n"
-        + "    <td>group</td>\n"
-        + "    <td colspan=\"2\">Websocket ticker stream demo properties</td>\n"
-        + "  </tr>\n"
-        + "  <tr>\n"
-        + "    <td>demo.wsTickerStreamDemo.symbol</td>\n"
-        + "    <td>STRING</td>\n"
-        + "    <td>Market symbol to use in demo snippets, defaults to <a href=\"https://javadoc.io/myproject/com/foo/bar/gen/MyTestExchangeConstants.html#ALL_TICKERS\">allTickers</a>.</td>\n"
-        + "    <td><a href=\"https://javadoc.io/myproject/com/foo/bar/gen/MyTestExchangeConstants.html#ALL_TICKERS\">allTickers</a></td>\n"
-        + "  </tr>\n"
-        + "</table>\n"
         + "\n"
         + "### Endpoint demo snippets\n"
         + "\n"
@@ -581,7 +566,11 @@ public class ExchangeReameMdGeneratorTest {
     ExchangeDescriptor exchange = ExchangeDescriptorParser.fromJson(Paths.get(".", "src", "test", "resources", "testExchangeDescriptor.json"));
     ExchangeApiDescriptor api = exchange.getApis().get(0);
     api.setRestEndpoints(null);
-    String actual = new ExchangeReadmeMdGenerator(exchange, "https://javadoc.io/myproject/", "https://myrepo.com/myproject/master/src/main/java").generate();
+    String actual = new ExchangeReadmeMdGenerator(
+        exchange, 
+        "https://javadoc.io/myproject/", 
+        "https://myrepo.com/myproject/master/src/main/java",
+        false).generate();
     Assert.assertEquals("# MyTestExchange API Java wrapper\n"
         + "\n"
         + "A sample Exchange descriptor file. Should be provided config properties: <a href=\"https://javadoc.io/myproject/com/foo/bar/gen/MyTestExchangeProperties.html#API_KEY\">apiKey</a>, <a href=\"https://javadoc.io/myproject/com/foo/bar/gen/MyTestExchangeProperties.html#API_SECRET\">apiSecret</a>. Author: <a href=\"https://javadoc.io/myproject/com/foo/bar/gen/MyTestExchangeConstants.Author.html#FIRST_NAME\">firstName</a> <a href=\"https://javadoc.io/myproject/com/foo/bar/gen/MyTestExchangeConstants.Author.html#LAST_NAME\">lastName</a>\n"
@@ -678,32 +667,6 @@ public class ExchangeReameMdGeneratorTest {
         + "\n"
         + "In order to run demo snippets, you can set properties values in __demo-MyTestExchange.properties__ properties file in src/test/resources folder.\n"
         + "\n"
-        + "<table>\n"
-        + "  <caption>Demo snippet properties</caption>\n"
-        + "  <tr>\n"
-        + "    <th>Name</th>\n"
-        + "    <th>Type</th>\n"
-        + "    <th>description</th>\n"
-        + "    <th>Default value</th>\n"
-        + "  </tr>\n"
-        + "  <tr>\n"
-        + "    <td>demo.demoSymbol</td>\n"
-        + "    <td>STRING</td>\n"
-        + "    <td>Market symbol to use in demo snippets</td>\n"
-        + "    <td><a href=\"https://javadoc.io/myproject/com/foo/bar/gen/MyTestExchangeConstants.html#DEFAULT_DEMO_SYMBOL\">defaultDemoSymbol</a></td>\n"
-        + "  </tr>\n"
-        + "  <tr>\n"
-        + "    <td>demo.wsTickerStreamDemo</td>\n"
-        + "    <td>group</td>\n"
-        + "    <td colspan=\"2\">Websocket ticker stream demo properties</td>\n"
-        + "  </tr>\n"
-        + "  <tr>\n"
-        + "    <td>demo.wsTickerStreamDemo.symbol</td>\n"
-        + "    <td>STRING</td>\n"
-        + "    <td>Market symbol to use in demo snippets, defaults to <a href=\"https://javadoc.io/myproject/com/foo/bar/gen/MyTestExchangeConstants.html#ALL_TICKERS\">allTickers</a>.</td>\n"
-        + "    <td><a href=\"https://javadoc.io/myproject/com/foo/bar/gen/MyTestExchangeConstants.html#ALL_TICKERS\">allTickers</a></td>\n"
-        + "  </tr>\n"
-        + "</table>\n"
         + "\n"
         + "### Endpoint demo snippets\n"
         + "\n"
@@ -719,107 +682,11 @@ public class ExchangeReameMdGeneratorTest {
   public void testGenerateExchangeReadme_NoApiGroup() throws IOException {
     ExchangeDescriptor exchange = ExchangeDescriptorParser.fromJson(Paths.get(".", "src", "test", "resources", "testExchangeDescriptor.json"));
     exchange.setApis(null);
-    String actual = new ExchangeReadmeMdGenerator(exchange, "https://javadoc.io/myproject/", "https://myrepo.com/myproject/master/src/main/java").generate();
-    Assert.assertEquals("# MyTestExchange API Java wrapper\n"
-        + "\n"
-        + "A sample Exchange descriptor file. Should be provided config properties: <a href=\"https://javadoc.io/myproject/com/foo/bar/gen/MyTestExchangeProperties.html#API_KEY\">apiKey</a>, <a href=\"https://javadoc.io/myproject/com/foo/bar/gen/MyTestExchangeProperties.html#API_SECRET\">apiSecret</a>. Author: <a href=\"https://javadoc.io/myproject/com/foo/bar/gen/MyTestExchangeConstants.Author.html#FIRST_NAME\">firstName</a> <a href=\"https://javadoc.io/myproject/com/foo/bar/gen/MyTestExchangeConstants.Author.html#LAST_NAME\">lastName</a>\n"
-        + "<!-- BEGIN TABLE OF CONTENTS -->\n"
-        + "  - [MyTestExchange API Java wrapper](#mytestexchange-api-java-wrapper)\n"
-        + "      - [Quick start](#quick-start)\n"
-        + "      - [Properties](#properties)\n"
-        + "      - [Constants](#constants)\n"
-        + "    - [Demo snippets](#demo-snippets)\n"
-        + "\n"
-        + "<!-- END TABLE OF CONTENTS -->\n"
-        + "See <a href=\"https://docs.myexchange.com/api\">reference documentation</a>\n"
-        + "### Quick start\n"
-        + "\n"
-        + "This wrapper offers Java interfaces for using MyTestExchange API\n"
-        + "Add maven dependency to your project, then you can use the wrapper by instantiating <a href=\"https://javadoc.io/myproject/com/foo/bar/gen/MyTestExchangeExchange.html\">MyTestExchangeExchange</a> in your code:\n"
-        + "``` java\n"
-        + "import com.foo.bar.gen.MyTestExchangeExchange;\n"
-        + "import com.foo.bar.gen.MyTestExchangeExchangeImpl;\n"
-        + "\n"
-        + "public void call() {\n"
-        + "  Properties properties = new Properties();\n"
-        + "  // Set relevant configuration properties (see documentation) in 'props'\n"
-        + "  MyTestExchangeExchange   exchange = new MyTestExchangeExchangeImpl(properties);\n"
-        + "  // Access API groups and their endpoints through 'exchange' methods.\n"
-        + "}\n"
-        + "```\n"
-        + "\n"
-        + "### Properties\n"
-        + "\n"
-        + "<table>\n"
-        + "  <caption>Configuration properties</caption>\n"
-        + "  <tr>\n"
-        + "    <th>Name</th>\n"
-        + "    <th>Type</th>\n"
-        + "    <th>description</th>\n"
-        + "    <th>Default value</th>\n"
-        + "  </tr>\n"
-        + "  <tr>\n"
-        + "    <td>apiKey</td>\n"
-        + "    <td>STRING</td>\n"
-        + "    <td>API key</td>\n"
-        + "    <td></td>\n"
-        + "  </tr>\n"
-        + "  <tr>\n"
-        + "    <td>apiSecret</td>\n"
-        + "    <td>STRING</td>\n"
-        + "    <td>API secret</td>\n"
-        + "    <td></td>\n"
-        + "  </tr>\n"
-        + "</table>\n"
-        + "\n"
-        + "### Constants\n"
-        + "\n"
-        + "Some useful constants are defined in <a href=\"https://javadoc.io/myproject/com/foo/bar/gen/MyTestExchangeConstants.html\">MyTestExchangeConstants</a>\n"
-        + "\n"
-        + "\n"
-        + "## Demo snippets\n"
-        + "\n"
-        + "This wrapper contains demo snippets for the most important endpoints. These snippets are generated in _src/test/java/_ source folder.\n"
-        + "\n"
-        + "Some demo configuration properties are available to tune common request parameters used in snippets, as <a href=\"https://myrepo.com/myproject/master/src/main/java/src/test/java/com/foo/bar/gen/MyTestExchangeDemoProperties.java\">MyTestExchangeDemoProperties</a> class.\n"
-        + " These properties are used to configure default values for request parameters used in demo snippets.\n"
-        + "\n"
-        + "In order to run demo snippets, you can set properties values in __demo-MyTestExchange.properties__ properties file in src/test/resources folder.\n"
-        + "\n"
-        + "<table>\n"
-        + "  <caption>Demo snippet properties</caption>\n"
-        + "  <tr>\n"
-        + "    <th>Name</th>\n"
-        + "    <th>Type</th>\n"
-        + "    <th>description</th>\n"
-        + "    <th>Default value</th>\n"
-        + "  </tr>\n"
-        + "  <tr>\n"
-        + "    <td>demo.demoSymbol</td>\n"
-        + "    <td>STRING</td>\n"
-        + "    <td>Market symbol to use in demo snippets</td>\n"
-        + "    <td><a href=\"https://javadoc.io/myproject/com/foo/bar/gen/MyTestExchangeConstants.html#DEFAULT_DEMO_SYMBOL\">defaultDemoSymbol</a></td>\n"
-        + "  </tr>\n"
-        + "  <tr>\n"
-        + "    <td>demo.wsTickerStreamDemo</td>\n"
-        + "    <td>group</td>\n"
-        + "    <td colspan=\"2\">Websocket ticker stream demo properties</td>\n"
-        + "  </tr>\n"
-        + "  <tr>\n"
-        + "    <td>demo.wsTickerStreamDemo.symbol</td>\n"
-        + "    <td>STRING</td>\n"
-        + "    <td>Market symbol to use in demo snippets, defaults to <a href=\"https://javadoc.io/myproject/com/foo/bar/gen/MyTestExchangeConstants.html#ALL_TICKERS\">allTickers</a>.</td>\n"
-        + "    <td><a href=\"https://javadoc.io/myproject/com/foo/bar/gen/MyTestExchangeConstants.html#ALL_TICKERS\">allTickers</a></td>\n"
-        + "  </tr>\n"
-        + "</table>",
-        actual);
-  }
-  
-  @Test
-  public void testGenerateExchangeReadme_NoApiGroupNoDemoProperties() throws IOException {
-    ExchangeDescriptor exchange = ExchangeDescriptorParser.fromJson(Paths.get(".", "src", "test", "resources", "testExchangeDescriptor.json"));
-    exchange.setApis(null);
-    String actual = new ExchangeReadmeMdGenerator(exchange, "https://javadoc.io/myproject/", "https://myrepo.com/myproject/master/src/main/java").generate();
+    String actual = new ExchangeReadmeMdGenerator(
+        exchange, 
+        "https://javadoc.io/myproject/", "https://myrepo.com/myproject/master/src/main/java",
+        false
+        ).generate();
     Assert.assertEquals("# MyTestExchange API Java wrapper\n"
         + "\n"
         + "A sample Exchange descriptor file. Should be provided config properties: <a href=\"https://javadoc.io/myproject/com/foo/bar/gen/MyTestExchangeProperties.html#API_KEY\">apiKey</a>, <a href=\"https://javadoc.io/myproject/com/foo/bar/gen/MyTestExchangeProperties.html#API_SECRET\">apiSecret</a>. Author: <a href=\"https://javadoc.io/myproject/com/foo/bar/gen/MyTestExchangeConstants.Author.html#FIRST_NAME\">firstName</a> <a href=\"https://javadoc.io/myproject/com/foo/bar/gen/MyTestExchangeConstants.Author.html#LAST_NAME\">lastName</a>\n"
@@ -879,13 +746,14 @@ public class ExchangeReameMdGeneratorTest {
   }
   
   @Test
-  public void testGenerateExchangeReadme_ApiGroupWithNoDescriptionNoRestNoWsEndpoint() throws IOException {
+  public void testGenerateExchangeReadme_NoApiGroupNoDemoProperties() throws IOException {
     ExchangeDescriptor exchange = ExchangeDescriptorParser.fromJson(Paths.get(".", "src", "test", "resources", "testExchangeDescriptor.json"));
-    ExchangeApiDescriptor api = exchange.getApis().get(0);
-    api.setRestEndpoints(null);
-    api.setWebsocketEndpoints(null);
-    api.setDescription(null);
-    String actual = new ExchangeReadmeMdGenerator(exchange, "https://javadoc.io/myproject/", "https://myrepo.com/myproject/master/src/main/java").generate();
+    exchange.setApis(null);
+    String actual = new ExchangeReadmeMdGenerator(
+        exchange, 
+        "https://javadoc.io/myproject/", 
+        "https://myrepo.com/myproject/master/src/main/java", 
+        true).generate();
     Assert.assertEquals("# MyTestExchange API Java wrapper\n"
         + "\n"
         + "A sample Exchange descriptor file. Should be provided config properties: <a href=\"https://javadoc.io/myproject/com/foo/bar/gen/MyTestExchangeProperties.html#API_KEY\">apiKey</a>, <a href=\"https://javadoc.io/myproject/com/foo/bar/gen/MyTestExchangeProperties.html#API_SECRET\">apiSecret</a>. Author: <a href=\"https://javadoc.io/myproject/com/foo/bar/gen/MyTestExchangeConstants.Author.html#FIRST_NAME\">firstName</a> <a href=\"https://javadoc.io/myproject/com/foo/bar/gen/MyTestExchangeConstants.Author.html#LAST_NAME\">lastName</a>\n"
@@ -894,9 +762,6 @@ public class ExchangeReameMdGeneratorTest {
         + "      - [Quick start](#quick-start)\n"
         + "      - [Properties](#properties)\n"
         + "      - [Constants](#constants)\n"
-        + "    - [API Groups](#api-groups)\n"
-        + "      - [MarketData](#marketdata)\n"
-        + "    - [Demo snippets](#demo-snippets)\n"
         + "\n"
         + "<!-- END TABLE OF CONTENTS -->\n"
         + "See <a href=\"https://docs.myexchange.com/api\">reference documentation</a>\n"
@@ -939,6 +804,87 @@ public class ExchangeReameMdGeneratorTest {
         + "    <td></td>\n"
         + "  </tr>\n"
         + "</table>\n"
+        + "Some demo configuration properties are available to tune common request parameters used in demo snippets, as <a href=\"https://myrepo.com/myproject/master/src/main/java/src/test/java/com/foo/bar/gen/MyTestExchangeDemoProperties.java\">MyTestExchangeDemoProperties</a> class.\n"
+        + " These properties are used to configure default values for request parameters used in demo snippets.\n"
+        + "\n"
+        + "In order to run demo snippets, you can uncomment and set properties values in __demo-MyTestExchange.properties__ properties file you create from .dist template in src/test/resources folder.\n"
+        + "\n"
+        + "\n"
+        + "### Constants\n"
+        + "\n"
+        + "Some useful constants are defined in <a href=\"https://javadoc.io/myproject/com/foo/bar/gen/MyTestExchangeConstants.html\">MyTestExchangeConstants</a>\n"
+        + "",
+        actual);
+  }
+  
+  @Test
+  public void testGenerateExchangeReadme_ApiGroupWithNoDescriptionNoRestNoWsEndpoint() throws IOException {
+    ExchangeDescriptor exchange = ExchangeDescriptorParser.fromJson(Paths.get(".", "src", "test", "resources", "testExchangeDescriptor.json"));
+    ExchangeApiDescriptor api = exchange.getApis().get(0);
+    api.setRestEndpoints(null);
+    api.setWebsocketEndpoints(null);
+    api.setDescription(null);
+    String actual = new ExchangeReadmeMdGenerator(
+        exchange, 
+        "https://javadoc.io/myproject/", "https://myrepo.com/myproject/master/src/main/java",
+        true).generate();
+    Assert.assertEquals("# MyTestExchange API Java wrapper\n"
+        + "\n"
+        + "A sample Exchange descriptor file. Should be provided config properties: <a href=\"https://javadoc.io/myproject/com/foo/bar/gen/MyTestExchangeProperties.html#API_KEY\">apiKey</a>, <a href=\"https://javadoc.io/myproject/com/foo/bar/gen/MyTestExchangeProperties.html#API_SECRET\">apiSecret</a>. Author: <a href=\"https://javadoc.io/myproject/com/foo/bar/gen/MyTestExchangeConstants.Author.html#FIRST_NAME\">firstName</a> <a href=\"https://javadoc.io/myproject/com/foo/bar/gen/MyTestExchangeConstants.Author.html#LAST_NAME\">lastName</a>\n"
+        + "<!-- BEGIN TABLE OF CONTENTS -->\n"
+        + "  - [MyTestExchange API Java wrapper](#mytestexchange-api-java-wrapper)\n"
+        + "      - [Quick start](#quick-start)\n"
+        + "      - [Properties](#properties)\n"
+        + "      - [Constants](#constants)\n"
+        + "    - [API Groups](#api-groups)\n"
+        + "      - [MarketData](#marketdata)\n"
+        + "\n"
+        + "<!-- END TABLE OF CONTENTS -->\n"
+        + "See <a href=\"https://docs.myexchange.com/api\">reference documentation</a>\n"
+        + "### Quick start\n"
+        + "\n"
+        + "This wrapper offers Java interfaces for using MyTestExchange API\n"
+        + "Add maven dependency to your project, then you can use the wrapper by instantiating <a href=\"https://javadoc.io/myproject/com/foo/bar/gen/MyTestExchangeExchange.html\">MyTestExchangeExchange</a> in your code:\n"
+        + "``` java\n"
+        + "import com.foo.bar.gen.MyTestExchangeExchange;\n"
+        + "import com.foo.bar.gen.MyTestExchangeExchangeImpl;\n"
+        + "\n"
+        + "public void call() {\n"
+        + "  Properties properties = new Properties();\n"
+        + "  // Set relevant configuration properties (see documentation) in 'props'\n"
+        + "  MyTestExchangeExchange   exchange = new MyTestExchangeExchangeImpl(properties);\n"
+        + "  // Access API groups and their endpoints through 'exchange' methods.\n"
+        + "}\n"
+        + "```\n"
+        + "\n"
+        + "### Properties\n"
+        + "\n"
+        + "<table>\n"
+        + "  <caption>Configuration properties</caption>\n"
+        + "  <tr>\n"
+        + "    <th>Name</th>\n"
+        + "    <th>Type</th>\n"
+        + "    <th>description</th>\n"
+        + "    <th>Default value</th>\n"
+        + "  </tr>\n"
+        + "  <tr>\n"
+        + "    <td>apiKey</td>\n"
+        + "    <td>STRING</td>\n"
+        + "    <td>API key</td>\n"
+        + "    <td></td>\n"
+        + "  </tr>\n"
+        + "  <tr>\n"
+        + "    <td>apiSecret</td>\n"
+        + "    <td>STRING</td>\n"
+        + "    <td>API secret</td>\n"
+        + "    <td></td>\n"
+        + "  </tr>\n"
+        + "</table>\n"
+        + "Some demo configuration properties are available to tune common request parameters used in demo snippets, as <a href=\"https://myrepo.com/myproject/master/src/main/java/src/test/java/com/foo/bar/gen/MyTestExchangeDemoProperties.java\">MyTestExchangeDemoProperties</a> class.\n"
+        + " These properties are used to configure default values for request parameters used in demo snippets.\n"
+        + "\n"
+        + "In order to run demo snippets, you can uncomment and set properties values in __demo-MyTestExchange.properties__ properties file you create from .dist template in src/test/resources folder.\n"
+        + "\n"
         + "\n"
         + "### Constants\n"
         + "\n"
@@ -950,43 +896,7 @@ public class ExchangeReameMdGeneratorTest {
         + "### MarketData\n"
         + "Methods exposed in <a href=\"https://javadoc.io/myproject/com/foo/bar/gen/marketdata/MyTestExchangeMarketDataApi.html\">MyTestExchangeMarketDataApi</a> accessible from <a href=\"https://javadoc.io/myproject/com/foo/bar/gen/MyTestExchangeExchange#getMyTestExchangeMarketDataApi().html\">MyTestExchangeExchange#getMyTestExchangeMarketDataApi()</a>\n"
         + "\n"
-        + "\n"
-        + "\n"
-        + "## Demo snippets\n"
-        + "\n"
-        + "This wrapper contains demo snippets for the most important endpoints. These snippets are generated in _src/test/java/_ source folder.\n"
-        + "\n"
-        + "Some demo configuration properties are available to tune common request parameters used in snippets, as <a href=\"https://myrepo.com/myproject/master/src/main/java/src/test/java/com/foo/bar/gen/MyTestExchangeDemoProperties.java\">MyTestExchangeDemoProperties</a> class.\n"
-        + " These properties are used to configure default values for request parameters used in demo snippets.\n"
-        + "\n"
-        + "In order to run demo snippets, you can set properties values in __demo-MyTestExchange.properties__ properties file in src/test/resources folder.\n"
-        + "\n"
-        + "<table>\n"
-        + "  <caption>Demo snippet properties</caption>\n"
-        + "  <tr>\n"
-        + "    <th>Name</th>\n"
-        + "    <th>Type</th>\n"
-        + "    <th>description</th>\n"
-        + "    <th>Default value</th>\n"
-        + "  </tr>\n"
-        + "  <tr>\n"
-        + "    <td>demo.demoSymbol</td>\n"
-        + "    <td>STRING</td>\n"
-        + "    <td>Market symbol to use in demo snippets</td>\n"
-        + "    <td><a href=\"https://javadoc.io/myproject/com/foo/bar/gen/MyTestExchangeConstants.html#DEFAULT_DEMO_SYMBOL\">defaultDemoSymbol</a></td>\n"
-        + "  </tr>\n"
-        + "  <tr>\n"
-        + "    <td>demo.wsTickerStreamDemo</td>\n"
-        + "    <td>group</td>\n"
-        + "    <td colspan=\"2\">Websocket ticker stream demo properties</td>\n"
-        + "  </tr>\n"
-        + "  <tr>\n"
-        + "    <td>demo.wsTickerStreamDemo.symbol</td>\n"
-        + "    <td>STRING</td>\n"
-        + "    <td>Market symbol to use in demo snippets, defaults to <a href=\"https://javadoc.io/myproject/com/foo/bar/gen/MyTestExchangeConstants.html#ALL_TICKERS\">allTickers</a>.</td>\n"
-        + "    <td><a href=\"https://javadoc.io/myproject/com/foo/bar/gen/MyTestExchangeConstants.html#ALL_TICKERS\">allTickers</a></td>\n"
-        + "  </tr>\n"
-        + "</table>",
+        + "",
         actual);
   }
 }

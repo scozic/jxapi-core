@@ -75,14 +75,14 @@ public class Employee implements Pojo<Employee> {
   }
   
   /**
-   * @return Employee profile. Can be <a href="v1org/jxapi/exchanges/employee/gen/EmployeeConstants.Profile.html#REGULAR">regular</a> or <a href="v1org/jxapi/exchanges/employee/gen/EmployeeConstants.Profile.html#ADMIN">admin</a>
+   * @return Employee profile. See <a href="v1org/jxapi/exchanges/employee/gen/EmployeeConstants.Profile.html">profile</a>
    */
   public String getProfile() {
     return profile;
   }
   
   /**
-   * @param profile Employee profile. Can be <a href="v1org/jxapi/exchanges/employee/gen/EmployeeConstants.Profile.html#REGULAR">regular</a> or <a href="v1org/jxapi/exchanges/employee/gen/EmployeeConstants.Profile.html#ADMIN">admin</a>
+   * @param profile Employee profile. See <a href="v1org/jxapi/exchanges/employee/gen/EmployeeConstants.Profile.html">profile</a>
    */
   public void setProfile(String profile) {
     this.profile = profile;
@@ -189,7 +189,7 @@ public class Employee implements Pojo<Employee> {
     
     /**
      * Will set the value of <code>profile</code> field in the builder
-     * @param profile Employee profile. Can be <a href="v1org/jxapi/exchanges/employee/gen/EmployeeConstants.Profile.html#REGULAR">regular</a> or <a href="v1org/jxapi/exchanges/employee/gen/EmployeeConstants.Profile.html#ADMIN">admin</a>
+     * @param profile Employee profile. See <a href="v1org/jxapi/exchanges/employee/gen/EmployeeConstants.Profile.html">profile</a>
      * @return Builder instance
      * @see #setProfile(String)
      */

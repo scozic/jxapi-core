@@ -35,7 +35,10 @@ public class PropertiesGenUtilTest {
   
   @Test(expected = IllegalArgumentException.class)
   public void testAsConfigProperty_Group() {
-    PropertiesGenUtil.asConfigProperty(ConfigPropertyDescriptor.createGroup("myGroup", null, List.of(ConfigPropertyDescriptor.create("myProp", Type.STRING, null, null))));
+    PropertiesGenUtil.asConfigProperty(ConfigPropertyDescriptor.createGroup(
+        "myGroup", 
+        null, 
+        List.of(ConfigPropertyDescriptor.create("myProp", Type.STRING, null, null))));
   }
   
   @Test
@@ -108,7 +111,13 @@ public class PropertiesGenUtilTest {
         "Hi ${foo}!");
     PlaceHolderResolver docPlaceHolderResolver = PlaceHolderResolver.create(Map.of("hello", "Hello World"));
     PlaceHolderResolver sampleValuePlaceHolderResolver = createSampleValueResolver(Map.of("foo", "bar"));
-    String code = PropertiesGenUtil.generateSimplePropertyValueDeclaration(property, null, "demo", imports, docPlaceHolderResolver, sampleValuePlaceHolderResolver);
+    String code = PropertiesGenUtil.generateSimplePropertyValueDeclaration(
+        property, 
+        null, 
+        "demo", 
+        imports, 
+        docPlaceHolderResolver, 
+        sampleValuePlaceHolderResolver);
     Assert.assertEquals(
         "/**\n"
         + " * A test Hello World property\n"
@@ -361,11 +370,11 @@ public class PropertiesGenUtilTest {
   }
   
   @Test
-  public void testGetPropertyVariableName_SimplePropWithSameStaticVariableNameAsOtherSimpleProp() {
+  public void testGetPropertyVariableName_SimplePropWithSameVariableNameAsOtherSimpleProps() {
     ConfigPropertyDescriptor p1 = ConfigPropertyDescriptor.create("com.x.gen.p1", Type.STRING, null, null);
     ConfigPropertyDescriptor p1Up = ConfigPropertyDescriptor.create("com.x.gen.P1", Type.STRING, null, null);
     ConfigPropertyDescriptor p1Underscore = ConfigPropertyDescriptor.create("com.x.gen.p1_", Type.STRING, null, null);
-    ConfigPropertyDescriptor p1UpUnderscore = ConfigPropertyDescriptor.create("com.x.gen.P1_", Type.STRING, null, null);
+    ConfigPropertyDescriptor p1UpUnderscore = ConfigPropertyDescriptor.createGroup("com.x.gen.P1_", null, null);
     List<ConfigPropertyDescriptor> allProps = List.of(p1, p1Up, p1Underscore, p1UpUnderscore);
     Assert.assertEquals("P1", PropertiesGenUtil.getPropertyVariableName(p1, allProps));
     Assert.assertEquals("P1_", PropertiesGenUtil.getPropertyVariableName(p1Up, allProps));

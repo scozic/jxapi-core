@@ -68,6 +68,11 @@ You may have a look at <a href="./src/test/java/org/jxapi/exchanges/demo/gen/mar
     <td>-1</td>
   </tr>
 </table>
+Some demo configuration properties are available to tune common request parameters used in demo snippets, as <a href="./src/test/java/org/jxapi/exchanges/demo/gen/DemoExchangeDemoProperties.java">DemoExchangeDemoProperties</a> class.
+ These properties are used to configure default values for request parameters used in demo snippets.
+
+In order to run demo snippets, you can uncomment and set properties values in __demo-DemoExchange.properties__ properties file you create from .dist template in src/test/resources folder.
+
 
 ### Constants
 

@@ -147,7 +147,7 @@ public class PropertiesClassGenerator extends JavaTypeGenerator {
   private String generatePropertyDeclaration(ConfigPropertyDescriptor property, String prefix) {
     if (property.isGroup()) {
       StringBuilder s = new StringBuilder();
-      String groupClassName = JavaCodeGenUtil.firstLetterToUpperCase(property.getName());
+      String groupClassName = PropertiesGenUtil.getPropertyVariableName(property, properties);
       PropertiesClassGenerator groupGen = new PropertiesClassGenerator(getName() + "." + groupClassName,
           exchange, // No exchange descriptor for group properties
           property.getProperties(),

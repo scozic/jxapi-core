@@ -16,11 +16,13 @@ import org.jxapi.exchange.descriptor.ExchangeDescriptor;
 import org.jxapi.exchange.descriptor.parser.ExchangeDescriptorParser;
 import org.jxapi.generator.java.JavaCodeGenUtil;
 import org.jxapi.generator.java.exchange.api.ExchangeApiClassesGenerator;
+import org.jxapi.generator.java.exchange.api.demo.EndpointDemoGenUtil;
 import org.jxapi.generator.java.exchange.api.demo.ExchangeDemoClassesGenerator;
 import org.jxapi.generator.md.exchange.ExchangeReadmeMdGenerator;
 import org.jxapi.generator.properties.exchange.ExchangeDemoPropertiesFileGenerator;
 import org.jxapi.netutils.rest.ratelimits.RateLimitManager;
 import org.jxapi.util.DemoUtil;
+import org.jxapi.util.PlaceHolderResolver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -198,7 +200,8 @@ public class ExchangeGeneratorMain {
                              Path projectFolder, 
                              String baseJavaDocUrl, 
                              String baseSrcUrl) throws IOException {
-    new ExchangeReadmeMdGenerator(exchangeDescriptor, baseJavaDocUrl, baseSrcUrl).writeJavaFile(projectFolder);
+    boolean hasDemoProperties = !EndpointDemoGenUtil.collectDemoConfigProperties(exchangeDescriptor).isEmpty();
+    new ExchangeReadmeMdGenerator(exchangeDescriptor, baseJavaDocUrl, baseSrcUrl, hasDemoProperties).writeJavaFile(projectFolder);
   }
 
   /**
@@ -237,12 +240,15 @@ public class ExchangeGeneratorMain {
     log.info("Generating demo exchange properties template file:{}", filePath);
     List<ConfigPropertyDescriptor> configProperties = new ArrayList<>();
     configProperties.addAll(Optional.ofNullable(exchangeDescriptor.getProperties()).orElse(List.of()));
-    List<ConfigPropertyDescriptor> demoProperties = new ArrayList<>();
-    // FIXME
-//    demoProperties.addAll(Optional.ofNullable(exchangeDescriptor.getDemoProperties()).orElse(List.of()));
+    List<ConfigPropertyDescriptor> demoProperties = EndpointDemoGenUtil.collectDemoConfigProperties(exchangeDescriptor);
+    PlaceHolderResolver valuesPlaceHolderResolver = PlaceHolderResolver.create(ExchangeGenUtil.getValuesReplacements(exchangeDescriptor));
+    PlaceHolderResolver descriptionPlaceHolderResolver = PlaceHolderResolver
+        .create(ExchangeGenUtil.getDescriptionReplacements(exchangeDescriptor, null));
     new ExchangeDemoPropertiesFileGenerator(exchangeDescriptor.getId(), 
                         configProperties, 
-                        demoProperties)
+                        demoProperties,
+                        valuesPlaceHolderResolver,
+                        descriptionPlaceHolderResolver)
       .writeJavaFile(filePath);
   }
 

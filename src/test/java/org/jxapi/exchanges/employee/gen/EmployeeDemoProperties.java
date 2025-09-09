@@ -82,7 +82,7 @@ import org.jxapi.util.PropertiesUtil;
  *     <td>v1.rest.addEmployee.request.profile</td>
  *     <td>STRING</td>
  *     <td>Demo configuration property for request.profile field.<p>
- *     Employee profile. Can be {@link org.jxapi.exchanges.employee.gen.EmployeeConstants.Profile#REGULAR} or {@link org.jxapi.exchanges.employee.gen.EmployeeConstants.Profile#ADMIN}</td>
+ *     Employee profile. See {@link org.jxapi.exchanges.employee.gen.EmployeeConstants.Profile}</td>
  *     <td>{@link org.jxapi.exchanges.employee.gen.EmployeeConstants.Profile#REGULAR}</td>
  *   </tr>
  *   <tr>
@@ -117,7 +117,7 @@ import org.jxapi.util.PropertiesUtil;
  *     <td>v1.rest.updateEmployee.request.profile</td>
  *     <td>STRING</td>
  *     <td>Demo configuration property for request.profile field.<p>
- *     Employee profile. Can be {@link org.jxapi.exchanges.employee.gen.EmployeeConstants.Profile#REGULAR} or {@link org.jxapi.exchanges.employee.gen.EmployeeConstants.Profile#ADMIN}</td>
+ *     Employee profile. See {@link org.jxapi.exchanges.employee.gen.EmployeeConstants.Profile}</td>
  *     <td>{@link org.jxapi.exchanges.employee.gen.EmployeeConstants.Profile#REGULAR}</td>
  *   </tr>
  *   <tr>
@@ -330,12 +330,12 @@ public class EmployeeDemoProperties {
           
           /**
            * Demo configuration property for request.profile field.<p>
-           * Employee profile. Can be {@link org.jxapi.exchanges.employee.gen.EmployeeConstants.Profile#REGULAR} or {@link org.jxapi.exchanges.employee.gen.EmployeeConstants.Profile#ADMIN}
+           * Employee profile. See {@link org.jxapi.exchanges.employee.gen.EmployeeConstants.Profile}
            */
           public static final ConfigProperty PROFILE = DefaultConfigProperty.create(
             "demo.v1.rest.addEmployee.request.profile",
             Type.STRING,
-            "Demo configuration property for request.profile field.<p>\nEmployee profile. Can be {@link org.jxapi.exchanges.employee.gen.EmployeeConstants.Profile#REGULAR} or {@link org.jxapi.exchanges.employee.gen.EmployeeConstants.Profile#ADMIN}",
+            "Demo configuration property for request.profile field.<p>\nEmployee profile. See {@link org.jxapi.exchanges.employee.gen.EmployeeConstants.Profile}",
             EncodingUtil.substituteArguments("${constants.profile.regular}", "constants.profile.regular", EmployeeConstants.Profile.REGULAR));
           
           /**
@@ -451,12 +451,12 @@ public class EmployeeDemoProperties {
           
           /**
            * Demo configuration property for request.profile field.<p>
-           * Employee profile. Can be {@link org.jxapi.exchanges.employee.gen.EmployeeConstants.Profile#REGULAR} or {@link org.jxapi.exchanges.employee.gen.EmployeeConstants.Profile#ADMIN}
+           * Employee profile. See {@link org.jxapi.exchanges.employee.gen.EmployeeConstants.Profile}
            */
           public static final ConfigProperty PROFILE = DefaultConfigProperty.create(
             "demo.v1.rest.updateEmployee.request.profile",
             Type.STRING,
-            "Demo configuration property for request.profile field.<p>\nEmployee profile. Can be {@link org.jxapi.exchanges.employee.gen.EmployeeConstants.Profile#REGULAR} or {@link org.jxapi.exchanges.employee.gen.EmployeeConstants.Profile#ADMIN}",
+            "Demo configuration property for request.profile field.<p>\nEmployee profile. See {@link org.jxapi.exchanges.employee.gen.EmployeeConstants.Profile}",
             EncodingUtil.substituteArguments("${constants.profile.regular}", "constants.profile.regular", EmployeeConstants.Profile.REGULAR));
           
           /**

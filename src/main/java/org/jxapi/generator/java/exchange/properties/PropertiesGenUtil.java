@@ -22,6 +22,11 @@ import org.jxapi.util.PlaceHolderResolver;
 public class PropertiesGenUtil {
   
   /**
+   * Prefix for endpoint demo snippet specific properties.
+   */
+  public static final String DEMO_PREFIX = "demo";
+  
+  /**
    * Name of the static 'ALL' variable that contains a list of all configuration properties.
    */
   public static final String ALL_PROPERTY = "ALL";
@@ -254,17 +259,6 @@ public class PropertiesGenUtil {
     return name.toString();
   }
   
-  private static String getPropertyDefaultVariableName(ConfigPropertyDescriptor property) {
-    String name = property.getName();
-    if (name.contains(".")) {
-      name = StringUtils.substringAfterLast(name, ".");
-    }
-    if (property.isGroup()) {
-      return JavaCodeGenUtil.firstLetterToUpperCase(name);
-    }
-    return JavaCodeGenUtil.getStaticVariableName(name);
-  }
-  
   private static boolean hasDifferentPropertyWithSameVariableName(
       ConfigPropertyDescriptor property, 
       String staticVariableName,
@@ -278,6 +272,17 @@ public class PropertiesGenUtil {
       }
     }
     return false;
+  }
+  
+  private static String getPropertyDefaultVariableName(ConfigPropertyDescriptor property) {
+    String name = property.getName();
+    if (name.contains(".")) {
+      name = StringUtils.substringAfterLast(name, ".");
+    }
+    if (property.isGroup()) {
+      return JavaCodeGenUtil.firstLetterToUpperCase(name);
+    }
+    return JavaCodeGenUtil.getStaticVariableName(name);
   }
   
   /**

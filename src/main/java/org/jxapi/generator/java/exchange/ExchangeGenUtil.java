@@ -713,20 +713,24 @@ public class ExchangeGenUtil {
   
   /**
    * Returns the value declaration for the given configuration property name. The
-   * value declaration is the reference to the configuration property in the
-   * generated properties class.
+   * value declaration is the reference to the configuration property in either
+   * the generated properties class, or the demo generated properties if provided.
    * 
    * @param configPropertyName The name of the configuration property to get the
    *                           value declaration for
    * @param exchangeDescriptor The exchange descriptor where the configuration
    *                           property is defined
+   * @param demoProperties     The demo configuration properties for the exchange,
+   *                           may be <code>null</code> or empty if value must be
+   *                           retrieved from exchange properties only.
    * @param propertiesVariable The name of the variable holding the properties
    *                           map, usually <code>properties</code>.
    * @param imports            The imports of the generator context that will be
    *                           populated with classes used by returned type. That
    *                           set must be not <code>null</code> and mutable.
    * @return The value declaration for the given configuration property name, or
-   *         <code>null</code> if the configuration property is not found or is a group.
+   *         <code>null</code> if the configuration property is not found or is a
+   *         group.
    */
   public static String getValueDeclarationForConfigProperty(String configPropertyName, 
                                                           ExchangeDescriptor exchangeDescriptor,
@@ -754,9 +758,12 @@ public class ExchangeGenUtil {
     }
     
     imports.add(className);
-    StringBuilder s = new StringBuilder().append(JavaCodeGenUtil.getClassNameWithoutPackage(className)).append(".");
+    StringBuilder s = new StringBuilder()
+        .append(JavaCodeGenUtil.getClassNameWithoutPackage(className))
+        .append(".");
     for (int i = 0; i < hierarchy.size() - 1; i++) {
       ConfigPropertyDescriptor p = hierarchy.get(i);
+      // FIXME: actual class name may differ if there are variable name conflicts
       s.append(JavaCodeGenUtil.firstLetterToUpperCase(hierarchy.get(i).getName())).append(".");
       sieblingProperties = p.getProperties();
     }
@@ -817,10 +824,10 @@ public class ExchangeGenUtil {
     for (ConfigPropertyDescriptor prop : CollectionUtil.emptyIfNull(exchangeDescriptor.getProperties())) {
       String pname = prop.getName();
       String cls = getExchangePropertiesInterfaceName(exchangeDescriptor);
+      // FIXME manage group properties
       replacements.put(CONFIG_PLACEHOLDER_PREFIX + prop.getName(), getDocLink(cls, null, pname, baseHtmlDocUrl));
     }
     
-
     return replacements;
   }
   
@@ -836,6 +843,7 @@ public class ExchangeGenUtil {
       String cname = constant.getName();
       String cfullName = prefix + cname;
       if (constant.isGroup()) {
+        // FIXME actual simple class name may differ if there are variable name conflicts
         String groupSimpleClassName = JavaCodeGenUtil.firstLetterToUpperCase(cname);
         StringBuilder groupPropertiesClassName = new StringBuilder();
         if (!innerPropertiesClassName.isEmpty()) {
@@ -847,6 +855,45 @@ public class ExchangeGenUtil {
       } else {
         
         replacements.put(cfullName, getDocLink(propertiesClassName, innerPropertiesClassName, cname, baseHtmlDocUrl));
+      }
+      
+    }
+  }
+  
+  /**
+   * Retrieves all possible constant placeholders keys for the given exchange, and their
+   * replacement as actual constant values. These placeholders are
+   * Exchange constants, see {@link ExchangeDescriptor#getConstants()}
+   * 
+   * @param exchangeDescriptor The exchange descriptor to collect the placeholders
+   *                           keys for                       
+   * @return A map of placeholders keys to their replacement values as javadoc links.
+   */
+  public static Map<String, Object> getValuesReplacements(ExchangeDescriptor exchangeDescriptor) {
+    Map<String, Object> replacements = CollectionUtil.createMap();
+    if (exchangeDescriptor == null) {
+      return replacements;
+    }
+    // Add exchange constants
+    collectConstantValuesReplacements(
+        replacements, 
+        CONSTANT_PLACEHOLDER_PREFIX,
+        exchangeDescriptor.getConstants());
+    
+    return replacements;
+  }
+  
+  private static void collectConstantValuesReplacements(
+      Map<String, Object> replacements, 
+      String prefix,   
+      List<Constant> constants) {
+    for (Constant constant : CollectionUtil.emptyIfNull(constants)) {      
+      String cname = constant.getName();
+      String cfullName = prefix + cname;
+      if (constant.isGroup()) {
+        collectConstantValuesReplacements(replacements, cfullName + ".", constant.getConstants());
+      } else {
+        replacements.put(cfullName, constant.getValue());
       }
       
     }

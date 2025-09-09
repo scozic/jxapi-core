@@ -15,6 +15,7 @@ import org.jxapi.generator.java.exchange.properties.PropertiesGenUtil;
 import org.jxapi.util.CollectionUtil;
 import org.jxapi.util.ConfigProperty;
 import org.jxapi.util.DemoProperties;
+import org.jxapi.util.PlaceHolderResolver;
 
 /**
  * Generates a demo configuration properties file for an exchange.
@@ -51,12 +52,14 @@ public class ExchangeDemoPropertiesFileGenerator {
   private String exchangeId;
   private List<ConfigPropertyDescriptor> exchangeProperties;
   private List<ConfigPropertyDescriptor> demoProperties;
+  private PlaceHolderResolver constantsResolver;
+  private PlaceHolderResolver descriptionResolver;
   
   /**
    * Constructor
      */
   public ExchangeDemoPropertiesFileGenerator() {
-    this(null, List.of(), List.of());
+    this(null, List.of(), List.of(), null, null);
   }
 
   /**
@@ -65,13 +68,20 @@ public class ExchangeDemoPropertiesFileGenerator {
    * @param exchangeId         the exchange id
    * @param exchangeProperties the exchange configuration properties
    * @param demoProperties     the exchange demo configuration properties
+   * @param constantsResolver  A resolver to resolve constants references like
+   *                           <code>${constants.myConstant}</code> in
+   *                           descriptions and default values.
    */
   public ExchangeDemoPropertiesFileGenerator(String exchangeId, 
                                              List<ConfigPropertyDescriptor> exchangeProperties, 
-                                             List<ConfigPropertyDescriptor> demoProperties) {
+                                             List<ConfigPropertyDescriptor> demoProperties,
+                                             PlaceHolderResolver constantsResolver,
+                                             PlaceHolderResolver descriptionResolver) {
     this.exchangeId = exchangeId;
     this.exchangeProperties = exchangeProperties;
     this.demoProperties = demoProperties;
+    this.constantsResolver = constantsResolver;
+    this.descriptionResolver = descriptionResolver;
   }
 
   /**
@@ -110,18 +120,32 @@ public class ExchangeDemoPropertiesFileGenerator {
   public String generate() {
     StringBuilder s = new StringBuilder();
     s.append(generatePropertiesFileComment(String.format(DESCRIPTION, exchangeId)))
-     .append(generateCommentedOutproperties(String.format("%s specific configuration properties", exchangeId), exchangeProperties))
-     .append(generateCommentedOutproperties("Common configuration properties", convertToConfigPropertyDescriptors(CommonConfigProperties.ALL)))
-     .append(generateCommentedOutproperties("Demo REST/WEBSOCKET snippets common configuration properties", convertToConfigPropertyDescriptors(DemoProperties.ALL)))
-     .append(generateCommentedOutproperties("Demo REST/WEBSOCKET specific configuration properties", demoProperties));
+     .append(generateCommentedOutproperties(
+         String.format("%s specific configuration properties", exchangeId), 
+         exchangeProperties, 
+         ""))
+     .append(generateCommentedOutproperties(
+         "Common configuration properties", 
+         convertToConfigPropertyDescriptors(CommonConfigProperties.ALL), 
+         ""))
+     .append(generateCommentedOutproperties(
+         "Demo REST/WEBSOCKET snippets common configuration properties", 
+         convertToConfigPropertyDescriptors(DemoProperties.ALL), 
+         ""))
+     .append(generateCommentedOutproperties(
+         "Demo REST/WEBSOCKET specific configuration properties", 
+         demoProperties,
+         PropertiesGenUtil.DEMO_PREFIX));
     return s.toString();
   }
   
   private static List<ConfigPropertyDescriptor> convertToConfigPropertyDescriptors(List<ConfigProperty> properties) {
-    return properties.stream().map(PropertiesGenUtil::asConfigPropertyDescriptor).collect(Collectors.toList());
+    return properties.stream()
+        .map(PropertiesGenUtil::asConfigPropertyDescriptor)
+        .collect(Collectors.toList());
   }
   
-  private String generateCommentedOutproperties(String description, List<ConfigPropertyDescriptor> properties) {
+  private String generateCommentedOutproperties(String description, List<ConfigPropertyDescriptor> properties, String prefix) {
     if (CollectionUtil.isEmpty(properties)) {
       return "";
     }
@@ -129,29 +153,46 @@ public class ExchangeDemoPropertiesFileGenerator {
       .append("\n")
       .append(generatePropertiesFileComment(description))
       .append("\n")
-      .append(generatePropertiesDeclarations(properties, 1));
+      .append(generatePropertiesDeclarations(properties, 1, prefix));
     return s.toString();
   }
   
-  private String generatePropertiesDeclarations(List<ConfigPropertyDescriptor> properties, int depth) {
+  private String generatePropertiesDeclarations(List<ConfigPropertyDescriptor> properties, int depth, String prefix) {
+    PlaceHolderResolver valueResolver = Optional
+        .ofNullable(this.getConstantsResolver())
+        .orElse(PlaceHolderResolver.NO_OP);
+    PlaceHolderResolver descResolver = Optional
+        .ofNullable(this.descriptionResolver)
+        .orElse(PlaceHolderResolver.NO_OP);
     StringBuilder s = new StringBuilder();
     for (ConfigPropertyDescriptor property : properties) {
+      String pDescription = StringUtils.defaultString(descResolver.resolve(property.getDescription()));
       if (property.isGroup()) {
-        if (!StringUtils.isEmpty(property.getDescription())) {
+        if (!StringUtils.isEmpty(pDescription)) {
           StringBuilder descr = new StringBuilder();
           descr.append(StringUtils.leftPad("", depth, '#'))
                .append(" ")
-               .append(StringUtils.defaultString(property.getDescription()));
+               .append(pDescription);
           s.append(generatePropertiesFileComment(descr.toString()));
         }
         
-        s.append(generatePropertiesDeclarations(property.getProperties(), depth + 1));
+        s.append(generatePropertiesDeclarations(
+            property.getProperties(), 
+            depth + 1, 
+            PropertiesGenUtil.getPropertyFullName(prefix, property.getName())));
       } else {
         if (!StringUtils.isEmpty(property.getDescription())) {
-          s.append(generatePropertiesFileComment(property.getDescription()));
+          s.append(generatePropertiesFileComment(pDescription));
         }
-        String defValue = Optional.ofNullable(property.getDefaultValue()).orElse("").toString();
-        s.append(generatePropertiesFileComment(property.getName() + "=" + defValue))
+        String defValue = Optional
+            .ofNullable(property.getDefaultValue())
+            .orElse("")
+            .toString();
+        defValue = valueResolver.resolve(defValue);
+        s.append(generatePropertiesFileComment(
+            PropertiesGenUtil.getPropertyFullName(prefix, property.getName()) 
+            + "=" 
+            + defValue))
          .append("\n");
       }
     }
@@ -184,6 +225,14 @@ public class ExchangeDemoPropertiesFileGenerator {
    */
   public void setDemoProperties(List<ConfigPropertyDescriptor> demoProperties) {
     this.demoProperties = demoProperties;
+  }
+
+  public PlaceHolderResolver getConstantsResolver() {
+    return constantsResolver;
+  }
+
+  public void setConstantsResolver(PlaceHolderResolver constantsResolver) {
+    this.constantsResolver = constantsResolver;
   }
   
   

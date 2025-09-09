@@ -69,11 +69,10 @@ public class ExchangeDemoClassesGeneratorTest {
     new ExchangeDemoClassesGenerator(exchange).generateClasses(srcFolder);
     Path pkgPath = Paths.get(".");
     checkJavaFilesCount(pkgPath, 2);
-    pkgPath = pkgPath.resolve("marketData");
     ClassesGeneratorTestUtil.checkSourceFileExists(srcFolder.
-        resolve(BASE_PKG)
-        .resolve("marketData"),
+        resolve(BASE_PKG),
         Paths.get("MyTestExchangeDemoProperties.java"));
+    pkgPath = pkgPath.resolve("marketData");
     checkJavaFilesCount(pkgPath, 1);
     pkgPath = pkgPath.resolve("demo");
     checkJavaFilesCount(pkgPath, 2);

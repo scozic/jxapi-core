@@ -63,6 +63,11 @@ You may have a look at <a href="./src/test/java/org/jxapi/exchanges/employee/gen
     <td></td>
   </tr>
 </table>
+Some demo configuration properties are available to tune common request parameters used in demo snippets, as <a href="./src/test/java/org/jxapi/exchanges/employee/gen/EmployeeDemoProperties.java">EmployeeDemoProperties</a> class.
+ These properties are used to configure default values for request parameters used in demo snippets.
+
+In order to run demo snippets, you can uncomment and set properties values in __demo-Employee.properties__ properties file you create from .dist template in src/test/resources folder.
+
 
 ### Constants
 

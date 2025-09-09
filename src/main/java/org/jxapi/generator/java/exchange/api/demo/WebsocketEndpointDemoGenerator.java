@@ -219,11 +219,11 @@ public class WebsocketEndpointDemoGenerator extends JavaTypeGenerator {
          .append("then after waiting for <code>subscriptionDuration</code> delay, unsubscription is performed.\n")
          .append("Finally waits for <code>delayBeforeExitAfterUnsubscription</code> delay before returning to make sure no more messages are dispatched.\n");
     if (hasArguments) {
-      javadoc.append("@param request                            The subscription request\n");
+      javadoc.append("@param request          The subscription request\n");
     }
-    javadoc.append("@param messageListener                    The listener that will receive messages dispatched while subscription is active\n")
-            .append("@param configProperties                   Exchange configuration properties.\n")
-            .append("@param apiObserver                       {@link ExchangeApiObserver} (optional, ignored if <code>null</code>) observer will")
+    javadoc.append("@param messageListener  The listener that will receive messages dispatched while subscription is active\n")
+            .append("@param configProperties Exchange configuration properties.\n")
+            .append("@param apiObserver      {@link ExchangeApiObserver} (optional, ignored if <code>null</code>) observer will")
             .append (" be subscribed to Exchange API exposing websocket endpoint that will be notifed of received websocket events.")
             .append("Useful in particular to get notified of websocket errors.\n")
             .append("@throws InterruptedException eventually thrown while sleeping for <code>subscriptionDuration</code> or <code>delayBeforeExitAfterUnsubscription</code> delays");

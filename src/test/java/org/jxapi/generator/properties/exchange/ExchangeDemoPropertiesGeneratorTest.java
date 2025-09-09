@@ -16,7 +16,10 @@ import org.jxapi.exchange.descriptor.Type;
 import org.jxapi.exchange.descriptor.parser.ExchangeDescriptorParser;
 import org.jxapi.generator.java.JavaCodeGenUtil;
 import org.jxapi.generator.java.exchange.ClassesGeneratorTestUtil;
+import org.jxapi.generator.java.exchange.ExchangeGenUtil;
 import org.jxapi.generator.java.exchange.api.demo.EndpointDemoGenUtil;
+import org.jxapi.util.CollectionUtil;
+import org.jxapi.util.PlaceHolderResolver;
 
 /**
  * Unit test for {@link ExchangeDemoPropertiesFileGenerator}
@@ -34,31 +37,136 @@ public class ExchangeDemoPropertiesGeneratorTest {
   }
   
   @Test
-  public void testGenerateDemoPropertiesTemplateFile() throws Exception {
+  public void testGenerateDemoExchangePropertiesTemplateFile() throws Exception {
     tmpFolder = ClassesGeneratorTestUtil.generateTmpDir();
     Path srcTestResourcesFolder = Paths.get(".", "src", "test", "resources");
     Path exchangeDescriptorFile = srcTestResourcesFolder.resolve("demoExchange.json");
     ExchangeDescriptor exchangeDescriptor = ExchangeDescriptorParser.fromJson(exchangeDescriptorFile);
     String fileName = "demo-DemoExchange.properties.dist";
     Path actualFilePath = tmpFolder.resolve(fileName);
-    List<ConfigPropertyDescriptor> configProperties = new ArrayList<>();
-    configProperties.addAll(exchangeDescriptor.getProperties());
-    List<ConfigPropertyDescriptor> demoProperties = new ArrayList<>();
-    demoProperties.addAll(EndpointDemoGenUtil.collectDemoConfigProperties(exchangeDescriptor));
-    new ExchangeDemoPropertiesFileGenerator(exchangeDescriptor.getId(), 
-                        configProperties,
-                        demoProperties)
-      .writeJavaFile(actualFilePath);
     String expected = Files.readString(srcTestResourcesFolder.resolve(fileName));
+    ExchangeDemoPropertiesFileGenerator gen = doTestGenerateDemoPropertiesFileForExchange(exchangeDescriptor, expected);
+    gen.writeJavaFile(actualFilePath);
     String actual = Files.readString(actualFilePath);
     Assert.assertEquals(expected, actual);
+  }
+  
+  @Test
+  public void testGenerateConflictExchangePropertiesTemplateFile() throws Exception {
+    ExchangeDescriptor exchangeDescriptor = ExchangeDescriptorParser.fromYaml(Paths.get(".", "src", "test", "resources", "exchangeWithEndpointWithConflictingPropertyNames.yaml"));
+    doTestGenerateDemoPropertiesFileForExchange(exchangeDescriptor, 
+          "# Demo configuration properties file for conflict exchange.\n"
+        + "# You should create a copy of this file without the '.dist' extension and add that .properties file\n"
+        + "# to your .gitignore because properties may carry sensitive data you do not want to commit.\n"
+        + "# The resulting file will be read as default configuration file for demo snippets.\n"
+        + "# Uncomment and set following properties and adjust their values per your needs.\n"
+        + "\n"
+        + "# Common configuration properties\n"
+        + "\n"
+        + "# The request timeout for calls to REST endpoints of every API. A negative value means no timeout (discouraged)\n"
+        + "# jxapi.httpRequestTimeout=\n"
+        + "\n"
+        + "# Sets the HTTP request throttling policy in case a rate limit rule is breached, for every exposed ExchangeApi, see enum org.jxapi.netutils.rest.ratelimits.RequestThrottlingMode\n"
+        + "# jxapi.requestThrottlingMode=\n"
+        + "\n"
+        + "# Set the max HTTP request throttle delay for rate limit rule enforcement, for every exposed ExchangeApi.\n"
+        + "# jxapi.maxRequestThrottleDelay=\n"
+        + "\n"
+        + "\n"
+        + "# Demo REST/WEBSOCKET snippets common configuration properties\n"
+        + "\n"
+        + "# The duration in ms of the subscription in websocket endpoint demo classes\n"
+        + "# jxapi.demo.ws.subscriptionDuration=30000\n"
+        + "\n"
+        + "# Delay in ms before exiting program after unsubscribing in websocked endpoint demo classes.\n"
+        + "# jxapi.demo.ws.delayBeforeExitAfterUnsubscription=1000\n"
+        + "\n"
+        + "\n"
+        + "# Demo REST/WEBSOCKET specific configuration properties\n"
+        + "\n"
+        + "# # Configuration properties for v1 API group endpoints demo snippets\n"
+        + "# ## Configuration properties for REST endpoints demo snippets of v1 API group\n"
+        + "# ### Configuration properties for REST myRestEndpoint endpoint of v1 API group\n"
+        + "# Demo configuration property for myRestEndpoint.request field as raw JSON string value.\n"
+        + "# demo.v1.rest.myRestEndpoint.request=\n"
+        + "\n"
+        + "# #### Demo configuration properties for myRestEndpoint.request field object instance.\n"
+        + "# Demo configuration property for request.p1 field.<p>\n"
+        + "# p1 parameter\n"
+        + "# demo.v1.rest.myRestEndpoint.request.p1=12340\n"
+        + "\n"
+        + "# Demo configuration property for request.P1 field.<p>\n"
+        + "# P1 parameter (note the uppercase 'P'). Its  value should be one of the values of the {@link org.jxapi.exchanges.conflict.gen.ConflictConstants.C1_} constant group\n"
+        + "# demo.v1.rest.myRestEndpoint.request.P1=barVal\n"
+        + "\n"
+        + "# Demo configuration property for request.p1_ field.<p>\n"
+        + "# p1_ parameter (note the underscore)\n"
+        + "# demo.v1.rest.myRestEndpoint.request.p1_=1234567890\n"
+        + "\n"
+        + "# Demo configuration property for request.P1_ field as raw JSON string value.<p>\n"
+        + "# P1_ parameter (note the uppercase 'P' and underscore)\n"
+        + "# demo.v1.rest.myRestEndpoint.request.P1_=\n"
+        + "\n"
+        + "# ##### Demo configuration properties for request.P1_ field object instance.<p>\n"
+        + "# P1_ parameter (note the uppercase 'P' and underscore)\n"
+        + "# Demo configuration property for P1_.subParam field.<p>\n"
+        + "# subParam parameter\n"
+        + "# demo.v1.rest.myRestEndpoint.request.P1_.subParam=12.35\n"
+        + "\n"
+        + "# ## Configuration properties for websocket endpoints demo snippets of v1 API group\n"
+        + "# ### Configuration properties for websocket myWsEndpoint endpoint of v1 API group\n"
+        + "# Demo configuration property for myWsEndpoint.request field as raw JSON string value.\n"
+        + "# demo.v1.ws.myWsEndpoint.request=\n"
+        + "\n"
+        + "# #### Demo configuration properties for myWsEndpoint.request field object instance.\n"
+        + "# Demo configuration property for request.p1 field.<p>\n"
+        + "# p1 parameter\n"
+        + "# demo.v1.ws.myWsEndpoint.request.p1=12340\n"
+        + "\n"
+        + "# Demo configuration property for request.P1 field.<p>\n"
+        + "# P1 parameter (note the uppercase 'P'). Its  value should be one of the values of the {@link org.jxapi.exchanges.conflict.gen.ConflictConstants.C1_} constant group\n"
+        + "# demo.v1.ws.myWsEndpoint.request.P1=barVal\n"
+        + "\n"
+        + "# Demo configuration property for request.p1_ field.<p>\n"
+        + "# p1_ parameter (note the underscore)\n"
+        + "# demo.v1.ws.myWsEndpoint.request.p1_=1234567890\n"
+        + "\n"
+        + "# Demo configuration property for request.P1_ field as raw JSON string value.<p>\n"
+        + "# P1_ parameter (note the uppercase 'P' and underscore)\n"
+        + "# demo.v1.ws.myWsEndpoint.request.P1_=\n"
+        + "\n"
+        + "# ##### Demo configuration properties for request.P1_ field object instance.<p>\n"
+        + "# P1_ parameter (note the uppercase 'P' and underscore)\n"
+        + "# Demo configuration property for P1_.subParam field.<p>\n"
+        + "# subParam parameter\n"
+        + "# demo.v1.ws.myWsEndpoint.request.P1_.subParam=12.35\n"
+        + "\n"
+        + "");
+  }
+  
+  private ExchangeDemoPropertiesFileGenerator doTestGenerateDemoPropertiesFileForExchange(
+      ExchangeDescriptor exchangeDescriptor,
+      String expectedContent) {
+    PlaceHolderResolver valuesPlaceHolderResolver = PlaceHolderResolver.create(ExchangeGenUtil.getValuesReplacements(exchangeDescriptor));
+    PlaceHolderResolver descriptionPlaceHolderResolver = PlaceHolderResolver.create(ExchangeGenUtil.getDescriptionReplacements(exchangeDescriptor));
+    List<ConfigPropertyDescriptor> configProperties = CollectionUtil.emptyIfNull(exchangeDescriptor.getProperties());
+    List<ConfigPropertyDescriptor> demoProperties = EndpointDemoGenUtil.collectDemoConfigProperties(exchangeDescriptor);
+    ExchangeDemoPropertiesFileGenerator generator = new ExchangeDemoPropertiesFileGenerator(
+        exchangeDescriptor.getId(),
+        configProperties, 
+        demoProperties, 
+        valuesPlaceHolderResolver, 
+        descriptionPlaceHolderResolver);
+    String content = generator.generate();
+    Assert.assertEquals(expectedContent, content);
+    return generator;
   }
 
   @Test
   public void testGenerateDemoPropertiesTemplateFile_EmptyConfigProperties() {
     List<ConfigPropertyDescriptor> configProperties = List.of();
     List<ConfigPropertyDescriptor> demoProperties = List.of();
-    ExchangeDemoPropertiesFileGenerator generator = new ExchangeDemoPropertiesFileGenerator("DemoExchange", configProperties, demoProperties);
+    ExchangeDemoPropertiesFileGenerator generator = new ExchangeDemoPropertiesFileGenerator("DemoExchange", configProperties, demoProperties, null, null);
     String content = generator.generate();
     Assert.assertEquals("# Demo configuration properties file for DemoExchange exchange.\n"
         + "# You should create a copy of this file without the '.dist' extension and add that .properties file\n"
@@ -122,8 +230,9 @@ public class ExchangeDemoPropertiesGeneratorTest {
     ConfigPropertyDescriptor group = ConfigPropertyDescriptor.createGroup("myGroup", null, List.of(property));
     List<ConfigPropertyDescriptor> properties = List.of(group);
     List<ConfigPropertyDescriptor> demoProperties = List.of();
-    ExchangeDemoPropertiesFileGenerator generator = new ExchangeDemoPropertiesFileGenerator("TestExchange", properties, demoProperties);
-    Assert.assertEquals("# Demo configuration properties file for TestExchange exchange.\n"
+    ExchangeDemoPropertiesFileGenerator generator = new ExchangeDemoPropertiesFileGenerator("TestExchange", properties, demoProperties, null, null);
+    Assert.assertEquals(
+        "# Demo configuration properties file for TestExchange exchange.\n"
         + "# You should create a copy of this file without the '.dist' extension and add that .properties file\n"
         + "# to your .gitignore because properties may carry sensitive data you do not want to commit.\n"
         + "# The resulting file will be read as default configuration file for demo snippets.\n"
@@ -131,7 +240,7 @@ public class ExchangeDemoPropertiesGeneratorTest {
         + "\n"
         + "# TestExchange specific configuration properties\n"
         + "\n"
-        + "# myProp=159\n"
+        + "# myGroup.myProp=159\n"
         + "\n"
         + "\n"
         + "# Common configuration properties\n"
