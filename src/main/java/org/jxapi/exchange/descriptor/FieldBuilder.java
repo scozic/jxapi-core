@@ -66,37 +66,6 @@ public class FieldBuilder {
   }
 
   /**
-   * Sets the sample Map key values list of the field.
-   * 
-   * @param sampleMapKeyValues the sample Map key values of the field to set, see
-   *                           {@link Field#getSampleMapKeyValue()}
-   * @return this builder
-   */
-  @Deprecated
-  public FieldBuilder sampleMapKeyValues(List<String> sampleMapKeyValues) {
-    field.setSampleMapKeyValue(sampleMapKeyValues);
-    return this;
-  }
-
-  /**
-   * Adds a sample Map key value to the field.
-   * 
-   * @param sampleMapKeyValue the sample Map key value to add, see
-   *                          {@link Field#getSampleMapKeyValue()}
-   * @return this builder
-   */
-  @Deprecated
-  public FieldBuilder sampleMapKeyValue(String sampleMapKeyValue) {
-    List<String> sampleMapKeyValues = Optional.ofNullable(field.getSampleMapKeyValue())
-        .orElse(List.of());
-    List<String> res = new ArrayList<>(sampleMapKeyValues.size() + 1);
-    res.addAll(sampleMapKeyValues);
-    res.add(sampleMapKeyValue);
-    field.setSampleMapKeyValue(List.copyOf(res));
-    return this;
-  }
-
-  /**
    * Sets the sample value of the field.
    * 
    * @param sampleValue the sample value of the field to set, see

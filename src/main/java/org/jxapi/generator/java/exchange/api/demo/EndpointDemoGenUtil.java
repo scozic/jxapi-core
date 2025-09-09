@@ -1,6 +1,5 @@
 package org.jxapi.generator.java.exchange.api.demo;
 
-import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -24,7 +23,6 @@ import org.jxapi.generator.java.exchange.ExchangeGenUtil;
 import org.jxapi.generator.java.exchange.api.ExchangeApiGenUtil;
 import org.jxapi.util.CollectionUtil;
 import org.jxapi.util.DemoUtil;
-import org.jxapi.util.PlaceHolderResolver;
 
 /**
  * Helper methods around REST or Websocket endpoint demo snippets code generation.
@@ -41,62 +39,7 @@ public class EndpointDemoGenUtil {
    */
   public static final String CREATE_REQUEST_PROPERTIES_ARG_NAME = "properties";
   
-//  private static final String OPTIONAL_OF_NULLABLE = "Optional.ofNullable(";
-//  private static final String OR_ELSE = ")\n.orElse(\n";
-  
   private EndpointDemoGenUtil() {}
-  
-  /**
-   * Generates a method (with full signature and method body) that creates a
-   * sample value for the given {@link Field} (which can be the data type
-   * definition of a REST/Websocket request, response/message, or of a nested
-   * {@link Type#OBJECT} property.
-   * 
-   * @param property            the property for which to generate the creation
-   *                            method.
-   * @param objectClassName     Default class name for property value, relevant
-   *                            when property is an object type and has no object
-   *                            name.
-   * @param defaultFieldName    The name to use for field, either 'request' or
-   *                            'response' when the field name is
-   *                            <code>null</code>.
-   * @param imports             the set of imports to add to the class containing
-   *                            the method. Will be populated with the necessary
-   *                            imports.
-   * @param placeholderResolver the placeholder resolver to use to resolve
-   *                            constants and configuration properties
-   *                            placeholders. This should be a reference to
-   *                            constant in its inteface, or property resolution
-   *                            from using {@link Properties} reference variable
-   *                            named <code>properties</code>.
-   * @return the method code with signature (method declaration) and body
-   * 
-   * @see #generateFieldCreationMethodDeclaration(Field, String, String, Imports)
-   */
-  @Deprecated
-  public static String generateFieldCreationMethod(Field property, 
-                                                   String objectClassName,
-                                                   String defaultFieldName,
-                                                   Imports imports,
-                                                   PlaceHolderResolver placeholderResolver) {
-    return new StringBuilder()
-           .append(generateFieldCreationMethodDeclaration(
-               property, 
-               objectClassName, 
-               defaultFieldName,
-               imports))
-           .append(" ")
-           .append(JavaCodeGenUtil.generateCodeBlock(
-                 generateFieldSampleValueDeclaration(
-                   property,  
-                   defaultFieldName,
-                   objectClassName, 
-                   imports,
-                   "return ",
-                   placeholderResolver) 
-                 + ";"))
-           .toString();
-  }
   
   /**
    * Generates a method (with full signature and method body) that creates a
@@ -222,64 +165,7 @@ public class EndpointDemoGenUtil {
     return "create" + JavaCodeGenUtil.firstLetterToUpperCase(Optional.ofNullable(field.getName()).orElse("request"));
   }
 
-  private static String generateFieldSampleValueDeclaration(Field field, 
-                                                            String sampleValueVariableName, 
-                                                            String objectClassName, 
-                                                            Imports imports,
-                                                            String returnOrResultAffectation,
-                                                            PlaceHolderResolver placeholderResolver) {
-    Type type = ExchangeGenUtil.getFieldType(field);
-    Object sampleValue = field.getSampleValue();
-    if (sampleValue == null && !type.isObject()) {
-      return returnOrResultAffectation + "null";
-    }
-    CanonicalType canonicalType = type.getCanonicalType();
-    if (canonicalType.isPrimitive) {
-      imports.add(canonicalType.typeClass.getName());
-      return returnOrResultAffectation + getPrimitiveTypeFieldSampleValueDeclaration(field, imports, placeholderResolver);
-    }
 
-    String fieldValue = null;
-    StringBuilder res = new StringBuilder();
-    if (type.isObject() && sampleValue == null) {
-      fieldValue = generateSampleFieldValueDeclarationObjectFieldWithNoSampleValue(
-                     res, 
-                     field, 
-                     sampleValueVariableName, 
-                     objectClassName, 
-                     imports, 
-                     placeholderResolver);
-    } else {
-      fieldValue = JavaCodeGenUtil.getQuotedString(sampleValue);
-    }
-    if (canonicalType == CanonicalType.OBJECT && sampleValue != null) {
-      fieldValue =  ExchangeApiGenUtil.getNewMessageDeserializerInstruction(type, objectClassName, imports) 
-                      + ".deserialize(" + fieldValue + ")";
-    }
-    
-   if (canonicalType != CanonicalType.OBJECT) {
-      // Not primitive nor object type -> map or list type.
-      if (type.isObject() && sampleValue == null) {
-        fieldValue = getMapOrListSampleValueDeclaration(
-                      type, 
-                      fieldValue, 
-                      field.getSampleMapKeyValue() == null? null: 
-                      field.getSampleMapKeyValue().iterator(), 
-                      imports);
-      } 
-      else {
-        fieldValue = ExchangeApiGenUtil.getNewMessageDeserializerInstruction(type, objectClassName, imports) 
-                  + ".deserialize(" + fieldValue + ")";
-      }
-    }
-    
-    if (fieldValue == null) {
-      return returnOrResultAffectation + "null";
-    } else {
-      res.append(returnOrResultAffectation).append(fieldValue);
-      return res.toString();
-    }
-  }
   
   private static String generateFieldSampleValueDeclaration2(
       Field field, 
@@ -479,133 +365,6 @@ public class EndpointDemoGenUtil {
         .append(JavaCodeGenUtil.indent(builderInstruction.toString()))
         .append(".build()")
         .toString();
-  }
-  
-  
-  private static String generateSampleFieldValueDeclarationObjectFieldWithNoSampleValue(
-        StringBuilder res, 
-        Field field, 
-        String sampleValueVariableName, 
-        String objectClassName, 
-        Imports imports,
-        PlaceHolderResolver sampleValuePlaceholderResolver) {
-    Type type = ExchangeGenUtil.getFieldType(field);
-    CanonicalType canonicalType = type.getCanonicalType();
-    String itemVariableName = sampleValueVariableName;
-    String fieldValue = null;
-    if (canonicalType != CanonicalType.OBJECT) {
-      itemVariableName = itemVariableName + "Item";
-    }
-    String itemClassName = ExchangeGenUtil.getClassNameForType(
-                  Type.getLeafSubType(type), 
-                  imports, 
-                  objectClassName);
-    res.append(itemClassName)
-       .append(" ")
-       .append(itemVariableName)
-       .append(" = new ")
-       .append(itemClassName)
-       .append("();\n");
-      
-    for (Field childParam: field.getProperties()) {
-      generateSampleFieldValueDeclarationObjectFieldChild(
-        res, 
-        field, 
-        childParam, 
-        itemVariableName, 
-        objectClassName, 
-        imports, 
-        sampleValuePlaceholderResolver);
-    }
-      
-    fieldValue = itemVariableName;
-    
-    return fieldValue;
-  }
-  
-  private static void generateSampleFieldValueDeclarationObjectFieldChild(
-      StringBuilder res, 
-      Field field, 
-      Field childParam, 
-      String itemVariableName, 
-      String objectClassName, 
-      Imports imports, 
-      PlaceHolderResolver sampleValuePlaceholderResolver) {
-    Type childParamType = ExchangeGenUtil.getFieldType(childParam);
-    Object childParamSampleValue = childParam.getSampleValue();
-    if (childParamSampleValue == null && !childParamType.isObject()) {
-      return; // No sample value to set
-    }
-    String setArg = Optional.ofNullable(sampleValuePlaceholderResolver)
-                      .orElse(JavaCodeGenUtil::getQuotedString)
-                      .resolve(String.valueOf(childParamSampleValue));
-    String setAccessorName = JavaCodeGenUtil.getSetAccessorMethodName(
-        childParam.getName(),  
-        field.getProperties().stream()
-                 .map(Field::getName).collect(Collectors.toList()));
-    String setChildParamInstruction = 
-          new StringBuilder()
-              .append(itemVariableName)
-              .append(".")
-              .append(setAccessorName)
-              .append("(")
-              .toString();
-    if (childParamType.isObject()) {
-      setArg = itemVariableName + "_" + childParam.getName();
-      res.append(generateFieldSampleValueDeclaration(childParam, 
-              setArg, 
-              ExchangeApiGenUtil.getFieldObjectClassName(childParam, objectClassName), 
-              imports,
-              setChildParamInstruction, 
-              sampleValuePlaceholderResolver));
-    } else if(childParamType.getCanonicalType().isPrimitive) {
-      setArg = getPrimitiveTypeFieldSampleValueDeclaration(childParam, imports, sampleValuePlaceholderResolver);
-      if (setArg != null) {
-        res.append(setChildParamInstruction).append(setArg);
-      }
-    } else {
-      // List or map
-      if (setArg != null) {
-        setArg = ExchangeApiGenUtil.getNewMessageDeserializerInstruction(childParamType, objectClassName, imports) 
-              + ".deserialize(" + setArg + ")";
-        res.append(setChildParamInstruction).append(setArg);
-      }
-    }
-    if (setArg != null) {
-      res.append(");\n");
-    }
-  }
-  
-  private static String getMapOrListSampleValueDeclaration(Type type, 
-                               String itemValue, 
-                               Iterator<String> sampleMapKeyValues, 
-                               Imports imports) {
-    if (type.getSubType() == null) {
-      return itemValue;
-    }
-    
-    if (type.getCanonicalType() == CanonicalType.LIST) {
-      imports.add(List.class.getName());
-      return "List.of(" + getMapOrListSampleValueDeclaration(type.getSubType(), itemValue, sampleMapKeyValues, imports) + ")";
-    } else { // MAP
-      if (sampleMapKeyValues == null || !sampleMapKeyValues.hasNext()) {
-        return null;
-      }
-      String sampleKeyValue = JavaCodeGenUtil.getQuotedString(sampleMapKeyValues.next());
-      return "Map.of(" 
-              + sampleKeyValue 
-              + ", " 
-              + getMapOrListSampleValueDeclaration(type.getSubType(), itemValue, sampleMapKeyValues, imports) 
-              + ")";
-    }
-  }
-  
-  private static String getPrimitiveTypeFieldSampleValueDeclaration(Field field, Imports imports, PlaceHolderResolver placeholderResolver) {
-    return ExchangeGenUtil.getPrimitiveTypeFieldSampleValueDeclaration(
-          ExchangeGenUtil.getFieldType(field), 
-          field.getSampleValue(), 
-          imports,
-          placeholderResolver);
   }
 
   /**

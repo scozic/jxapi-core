@@ -1,7 +1,6 @@
 package org.jxapi.exchange.descriptor;
 
 import java.util.List;
-import java.util.Optional;
 
 import org.jxapi.util.CollectionUtil;
 import org.jxapi.util.EncodingUtil;
