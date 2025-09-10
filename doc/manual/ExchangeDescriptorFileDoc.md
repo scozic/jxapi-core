@@ -9,7 +9,11 @@ This section describes such descriptor file.
   - [API descriptor file](#api-descriptor-file)
   - ['Demo' exchange descriptor example](#demo-exchange-descriptor-example)
     - [Exchange](#exchange)
-    - [API$ groups](#api-groups)
+    - [Configuration properties and constants.](#configuration-properties-and-constants)
+      - [Constants](#constants)
+      - [Configuration properties](#configuration-properties)
+        - [Demo configuration properties](#demo-configuration-properties)
+    - [API groups](#api-groups)
     - [REST API endpoints](#rest-api-endpoints)
     - [WebSocket API endpoints](#websocket-api-endpoints)
       - [Topic Placeholders](#topic-placeholders)
@@ -233,11 +237,21 @@ The generated code will substitute placeholders like `${constants.myGroup.myCons
 
 ### Configuration properties
 
-The descriptor root `exchange` structure exposes a `properties` property that can be defined a list of configuration properties, that wrapper client can use to configure the wrapper.
+The descriptor root `exchange` structure exposes a `properties` property that can be defined a list of configuration properties (like API key/secret for authentification), that wrapper client can use to configure the wrapper.
 
 The wrapper client will instantiate it by creating an `<ExchangeID>ExchangeImpl` instance that takes a `Properties` instance in constructor. This class will expose configuration properties as `public static final ConfigProperty` members and static getter methods making it easy to retrieve the value of a property from such properties instance.
 
 For instance API Key/Secret properties can be listed, to be used by wrapper `HttpRequestInterceptor` implementation to sign outgoing authenticated requests.
+
+#### Demo configuration properties
+
+The generated wrapper contains [demo snippets](./UsingTheWrapper.md#demo-snippets) to test each defined REST or Websocket endpoint.
+In addition to specific configuration properties defined in descriptor and common ones, some properties specific to demo snippets are also generated in `Demo<exchangeId>Properties` class in _src/test/java_ source folder.
+There is one property for each parameter of each. List/Map/Object parameters can be configured using a raw JSON value.
+
+Every available property is listed in generated `demo-<exchangeId>.properties.dist` file.
+This file should be duplicated as `demo-<exchangeId>.properties` file (not to be put under version control if it contains sensitive/secret informations), that is used be default by demo snippets.
+
 
 ## API groups
 
@@ -422,7 +436,6 @@ Example of associated JSON data structure:
 ```json
 {
 	"A": [
-25},
 		{"name": "Aline", "age": 19}
 	]
 	"B": [

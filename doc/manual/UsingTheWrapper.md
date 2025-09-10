@@ -8,6 +8,8 @@
     - [POJOs](#pojos)
     - [Observability](#observability)
     - [Disposability](#disposability)
+    - [Constants](#constants)
+    - [Demo snippets](#demo-snippets)
 
 <!-- END TABLE OF CONTENTS -->
 
@@ -79,4 +81,20 @@ Do not forget to call `Exchange.dispose()` method when done using the wrapper fr
 ## Constants
 
 A class named `<ExchangeID>Properties` is generated in main generated sources package with a list of `public static final` constants. These constants define values used across APIs you may want to use. Such constants may be organized in groups, for instance for grouping all possible values of an enumarated type field value. Groups are generated as inner static classes of main constants class.
+
+## Demo snippets
+
+The generated wrapper contains demo snippets, e.g. classes with a `public static void main(String[] args)` method in `src/test/java` source folder. There is one of such snippet to test calling each endpoint.
+ - For REST endpoints, snippet execution will issue a single call to the endpoint with a request created using configured 'demo' properties.
+ - For Websocket endpoints, snippet execution will subscribe as single listener to enpoint websocket stream for a configurable delay (see `jxapi.demo.ws.subscriptionDuration` property) during which every received incoming message on websocket stream will be logged, then unsubscribe from stream.
+
+The snippets loads configuration from `src/test/resources/demo-<exchangeId>.properties` file. A template of this file is generated: 
+`src/test/resources/demo-<exchangeId>.properties.dist` and can be duplicated for tuning configuration. This configuration contains 3 kind
+ of configuration properties:
+  - Common configuration properties: Properties available for any wrapper like `jxapi.httpRequestTimeout` controlling the timeout before giving up waiting for response to a REST endpoint HTTP call.
+  - Specific exchange properties that are defined in `properties` property of the exchange descriptor root. For instance API key/secret to provide for authentification.
+  - Demo properties: These properties prefixed with `demo` are available to configure each parameter of each endpoint REST/Websocket subscribe request.
+
+Uncomment and  customize any property in `src/test/resources/demo-<exchangeId>.properties` following your needs.
+Then you can test any API endpoint by running its corresponding snippet.
  
