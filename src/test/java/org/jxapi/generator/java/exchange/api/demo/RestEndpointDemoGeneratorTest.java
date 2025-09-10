@@ -825,7 +825,7 @@ public class RestEndpointDemoGeneratorTest {
   private RestEndpointDemoGenerator createGenerator(
       ExchangeDescriptor exchange, 
       ExchangeApiDescriptor api,
-      RestEndpointDescriptor restEndpoint) throws Exception {
+      RestEndpointDescriptor restEndpoint) {
     return new RestEndpointDemoGenerator(exchange, api, restEndpoint, EndpointDemoGenUtil.collectDemoConfigProperties(exchange));
   }
 }

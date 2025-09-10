@@ -7,8 +7,6 @@ import java.util.Set;
 import java.util.TreeSet;
 import java.util.stream.Collectors;
 
-import org.apache.commons.lang3.StringUtils;
-
 /**
  * Manages imports in Java code generation.
  * <p>
@@ -55,10 +53,6 @@ public class Imports implements Iterable<String> {
    * @param imp the full name of class to import
    */
   public void add(String imp) {
-    // FIXME
-    if (StringUtils.defaultString(imp).contains("DemoExchangeMarketDataExchangeInfoRequestSymbols")) {
-      System.out.println("here");
-    }
     if (imp == null) {
       throw new IllegalArgumentException("null import");
     }

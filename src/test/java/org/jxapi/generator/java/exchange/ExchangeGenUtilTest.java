@@ -313,12 +313,12 @@ public class ExchangeGenUtilTest {
   }
 
   @Test
-  public void testGetExchangePropertiesInterfaceName() {
+  public void testGetExchangePropertiesClassName() {
     ExchangeDescriptor exchangeDescriptor = new ExchangeDescriptor();
     exchangeDescriptor.setId("TestExchange");
     exchangeDescriptor.setBasePackage("com.x.y.z");
     Assert.assertEquals("com.x.y.z.TestExchangeProperties", 
-              ExchangeGenUtil.getExchangePropertiesInterfaceName(exchangeDescriptor));
+              ExchangeGenUtil.getExchangePropertiesClassName(exchangeDescriptor));
   }
   
   @Test
@@ -768,17 +768,20 @@ public class ExchangeGenUtilTest {
     
     exchangeDescriptor.setConstants(List.of(exConstant1, group, exConstant2));
     
-
-    
     ConfigPropertyDescriptor exConfigProp1 = new ConfigPropertyDescriptor();
     exConfigProp1.setName("configProp1");
     ConfigPropertyDescriptor exConfigProp2 = new ConfigPropertyDescriptor();
     exConfigProp2.setName("configProp2");
     
-    exchangeDescriptor.setProperties(List.of(exConfigProp1, exConfigProp2));
+    ConfigPropertyDescriptor nestedConfigProp1 = ConfigPropertyDescriptor.create("np1", Type.STRING, "Nested config prop", "np1Value");
+    ConfigPropertyDescriptor nestedConfigProp2 = ConfigPropertyDescriptor.create("np2", Type.STRING, "Nested config prop", "np2Value");
+    ConfigPropertyDescriptor grouupConfigProp = ConfigPropertyDescriptor.createGroup("myGroup", "A property group", List.of(nestedConfigProp1, nestedConfigProp2));
+    
+    
+    exchangeDescriptor.setProperties(List.of(exConfigProp1, exConfigProp2, grouupConfigProp));
     
     Map<String, Object> replacements = ExchangeGenUtil.getDescriptionReplacements(exchangeDescriptor);
-    Assert.assertEquals(8, replacements.size());
+    Assert.assertEquals(11, replacements.size());
     Assert.assertEquals("{@link com.x.y.z.TestExchangeConstants#EXCHANGE_CONSTANT1}", replacements.get("constants.exchangeConstant1"));
     Assert.assertEquals("{@link com.x.y.z.TestExchangeConstants#EXCHANGE_CONSTANT2}", replacements.get("constants.exchangeConstant2"));
     Assert.assertEquals("{@link com.x.y.z.TestExchangeConstants.MyGroup}", replacements.get("constants.myGroup"));
@@ -787,6 +790,10 @@ public class ExchangeGenUtilTest {
     Assert.assertEquals("{@link com.x.y.z.TestExchangeConstants.MyGroup.NestedGroup2#NC2}", replacements.get("constants.myGroup.nestedGroup2.nc2"));
     Assert.assertEquals("{@link com.x.y.z.TestExchangeProperties#CONFIG_PROP1}", replacements.get("config.configProp1"));
     Assert.assertEquals("{@link com.x.y.z.TestExchangeProperties#CONFIG_PROP2}", replacements.get("config.configProp2"));
+    Assert.assertEquals("{@link com.x.y.z.TestExchangeProperties.MyGroup}", replacements.get("config.myGroup"));
+    Assert.assertEquals("{@link com.x.y.z.TestExchangeProperties.MyGroup#NP1}", replacements.get("config.myGroup.np1"));
+    Assert.assertEquals("{@link com.x.y.z.TestExchangeProperties.MyGroup#NP2}", replacements.get("config.myGroup.np2"));
+    
     
   }
   

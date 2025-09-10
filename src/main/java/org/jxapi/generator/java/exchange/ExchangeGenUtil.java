@@ -20,6 +20,7 @@ import org.jxapi.exchange.descriptor.Field;
 import org.jxapi.exchange.descriptor.Type;
 import org.jxapi.generator.java.Imports;
 import org.jxapi.generator.java.JavaCodeGenUtil;
+import org.jxapi.generator.java.exchange.constants.ConstantsGenUtil;
 import org.jxapi.generator.java.exchange.properties.PropertiesGenUtil;
 import org.jxapi.netutils.deserialization.json.AbstractJsonMessageDeserializer;
 import org.jxapi.netutils.deserialization.json.field.BigDecimalJsonFieldDeserializer;
@@ -204,7 +205,7 @@ public class ExchangeGenUtil {
    * @return The full class name of configuration properties interface for the given exchange.
    * @see ExchangeDescriptor#getProperties()
    */
-  public static String getExchangePropertiesInterfaceName(ExchangeDescriptor exchangeDescriptor) {
+  public static String getExchangePropertiesClassName(ExchangeDescriptor exchangeDescriptor) {
     return exchangeDescriptor.getBasePackage() 
         + "." 
         + JavaCodeGenUtil.firstLetterToUpperCase(exchangeDescriptor.getId()) 
@@ -663,7 +664,7 @@ public class ExchangeGenUtil {
       sb.append(getExchangeDemoPropertiesInterfaceName(exchangeDescriptor));
     } else {
       // Property found in exchange properties
-      sb.append(getExchangePropertiesInterfaceName(exchangeDescriptor));
+      sb.append(getExchangePropertiesClassName(exchangeDescriptor));
     }
     if (constants.isEmpty()) {
       // Property not found in exchange properties or demo properties
@@ -748,7 +749,7 @@ public class ExchangeGenUtil {
         sieblingProperties = hierarchy.get(hierarchy.size() - 2).getProperties();
       }
     } else {
-      className = getExchangePropertiesInterfaceName(exchangeDescriptor);
+      className = getExchangePropertiesClassName(exchangeDescriptor);
       sieblingProperties = exchangeDescriptor.getProperties();
     }
     
@@ -821,12 +822,13 @@ public class ExchangeGenUtil {
         baseHtmlDocUrl);
     
     // Add exchange configuration properties
-    for (ConfigPropertyDescriptor prop : CollectionUtil.emptyIfNull(exchangeDescriptor.getProperties())) {
-      String pname = prop.getName();
-      String cls = getExchangePropertiesInterfaceName(exchangeDescriptor);
-      // FIXME manage group properties
-      replacements.put(CONFIG_PLACEHOLDER_PREFIX + prop.getName(), getDocLink(cls, null, pname, baseHtmlDocUrl));
-    }
+    collectPropertiesDescriptionReplacements(
+        replacements, 
+        CONFIG_PLACEHOLDER_PREFIX,
+        getExchangePropertiesClassName(exchangeDescriptor), 
+        "",
+        exchangeDescriptor.getProperties(),
+        baseHtmlDocUrl);
     
     return replacements;
   }
@@ -843,20 +845,55 @@ public class ExchangeGenUtil {
       String cname = constant.getName();
       String cfullName = prefix + cname;
       if (constant.isGroup()) {
-        // FIXME actual simple class name may differ if there are variable name conflicts
-        String groupSimpleClassName = JavaCodeGenUtil.firstLetterToUpperCase(cname);
+        String groupSimpleClassName = ConstantsGenUtil.getConstantVariableName(constant, constants);
         StringBuilder groupPropertiesClassName = new StringBuilder();
         if (!innerPropertiesClassName.isEmpty()) {
           groupPropertiesClassName.append(innerPropertiesClassName).append(".");
         }
         groupPropertiesClassName.append(groupSimpleClassName);
         replacements.put(cfullName, getDocLink(propertiesClassName, groupPropertiesClassName.toString(), null, baseHtmlDocUrl));
-        collectConstantDescriptionReplacements(replacements, cfullName + ".", propertiesClassName, groupPropertiesClassName.toString(), constant.getConstants(), baseHtmlDocUrl);
+        collectConstantDescriptionReplacements(
+            replacements, 
+            cfullName + ".", 
+            propertiesClassName, 
+            groupPropertiesClassName.toString(), 
+            constant.getConstants(), 
+            baseHtmlDocUrl);
       } else {
-        
         replacements.put(cfullName, getDocLink(propertiesClassName, innerPropertiesClassName, cname, baseHtmlDocUrl));
       }
-      
+    }
+  }
+  
+  private static void collectPropertiesDescriptionReplacements(
+      Map<String, Object> replacements, 
+      String prefix, 
+      String propertiesClassName, 
+      String innerPropertiesClassName, 
+      List<ConfigPropertyDescriptor> properties, 
+      String baseHtmlDocUrl) {
+    innerPropertiesClassName = StringUtils.defaultString(innerPropertiesClassName);
+    for (ConfigPropertyDescriptor prop : CollectionUtil.emptyIfNull(properties)) {      
+      String cname = prop.getName();
+      String cfullName = prefix + cname;
+      if (prop.isGroup()) {
+        String groupSimpleClassName = PropertiesGenUtil.getPropertyVariableName(prop, properties);
+        StringBuilder groupPropertiesClassName = new StringBuilder();
+        if (!innerPropertiesClassName.isEmpty()) {
+          groupPropertiesClassName.append(innerPropertiesClassName).append(".");
+        }
+        groupPropertiesClassName.append(groupSimpleClassName);
+        replacements.put(cfullName, getDocLink(propertiesClassName, groupPropertiesClassName.toString(), null, baseHtmlDocUrl));
+        collectPropertiesDescriptionReplacements(
+            replacements, 
+            cfullName + ".", 
+            propertiesClassName, 
+            groupPropertiesClassName.toString(), 
+            prop.getProperties(), 
+            baseHtmlDocUrl);
+      } else {
+        replacements.put(cfullName, getDocLink(propertiesClassName, innerPropertiesClassName, cname, baseHtmlDocUrl));
+      }
     }
   }
   

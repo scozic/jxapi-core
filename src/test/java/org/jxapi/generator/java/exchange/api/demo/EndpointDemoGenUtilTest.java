@@ -246,7 +246,14 @@ public class EndpointDemoGenUtilTest {
     Assert.assertEquals(2, apiDemoGroupProp.getProperties().size());
     
     // REST endpoints group
-    ConfigPropertyDescriptor restEndpointsGroup = apiDemoGroupProp.getProperties().get(0);
+    checkRestEndpointGroup(apiDemoGroupProp.getProperties().get(0));
+    
+    // Websocket endpoints group
+    checkWsEndpointGroup(apiDemoGroupProp.getProperties().get(1));
+  }
+  
+  private void checkRestEndpointGroup(ConfigPropertyDescriptor restEndpointsGroup) {
+    Assert.assertEquals(1, restEndpointsGroup.getProperties().size());
     checkDemoProperty(restEndpointsGroup, 
         "rest", 
         "Configuration properties for REST endpoints demo snippets of myApi API group", 
@@ -301,15 +308,15 @@ public class EndpointDemoGenUtilTest {
         "Demo configuration property for mySubParam.hello field.", 
         Type.STRING, 
         "Hello World");
-    
-    // Websocket endpoints group
-    ConfigPropertyDescriptor wsEndpointsGroup = apiDemoGroupProp.getProperties().get(1);
+  }
+  
+  private void checkWsEndpointGroup(ConfigPropertyDescriptor wsEndpointsGroup) {
     checkDemoProperty(wsEndpointsGroup, 
         "ws", 
         "Configuration properties for websocket endpoints demo snippets of myApi API group",
         Type.OBJECT, 
         null);
-    Assert.assertEquals(1, restEndpointsGroup.getProperties().size());
+    
     ConfigPropertyDescriptor wsEndpointGroup = wsEndpointsGroup.getProperties().get(0);
     checkDemoProperty(wsEndpointGroup, 
         "myWsEndpoint", 
@@ -359,6 +366,7 @@ public class EndpointDemoGenUtilTest {
         "Demo configuration property for mySubParam.hello field.", 
         Type.STRING, 
         "Hello World");
+    
   }
   
   private void checkDemoProperty(ConfigPropertyDescriptor prop, 

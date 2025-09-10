@@ -219,7 +219,6 @@ public class EndpointDemoGenUtil {
         demoPropertyName, 
         objectClassName, 
         exchangeDescriptor, 
-        exchangeApiDescriptor,
         demoConfigProperties, 
         imports);
     if (type.isObject()) {
@@ -244,11 +243,9 @@ public class EndpointDemoGenUtil {
       String demoPropertyName,
       String objectClassName, 
       ExchangeDescriptor exchangeDescriptor, 
-      ExchangeApiDescriptor exchangeApiDescriptor,
       List<ConfigPropertyDescriptor> demoConfigProperties, 
       Imports imports) {
     Type type = ExchangeGenUtil.getFieldType(field);
-//    imports.add(objectClassName);
     return new StringBuilder()
         .append(ExchangeApiGenUtil.getNewMessageDeserializerInstruction(type, objectClassName, imports))
         .append(".deserialize(")
@@ -311,7 +308,6 @@ public class EndpointDemoGenUtil {
             demoPropertyName, 
             objectClassName, 
             exchangeDescriptor,
-            exchangeApiDescriptor, 
             demoConfigProperties, 
             imports),
         generateObjectListOrMapWithoutGlobalSampleValueInstruction(

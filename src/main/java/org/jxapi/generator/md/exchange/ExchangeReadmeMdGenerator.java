@@ -176,7 +176,7 @@ public class ExchangeReadmeMdGenerator {
       apiDescriptors.forEach(api -> s.append(generateApiDescriptorDoc(api, docPlaceHolderResolver)));
     }
     
-    s.append(generateDemoSnippetsDocumentation(docPlaceHolderResolver));
+    s.append(generateDemoSnippetsDocumentation());
     return ExchangeReadmeMdGeneratorUtil.generateTableOfContent(s.toString());    
   }
   
@@ -372,7 +372,7 @@ public class ExchangeReadmeMdGenerator {
     return XmlElement.builder().tag("td").content(content).build();
   }
   
-  private String generateDemoSnippetsDocumentation(PlaceHolderResolver docPlaceHolderResolver) {
+  private String generateDemoSnippetsDocumentation() {
     if (!hasDemoSection()) {
       return "";
     }
