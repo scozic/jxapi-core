@@ -6,6 +6,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import org.junit.After;
 import org.junit.Assert;
@@ -22,9 +23,9 @@ import org.jxapi.util.CollectionUtil;
 import org.jxapi.util.PlaceHolderResolver;
 
 /**
- * Unit test for {@link ExchangeDemoPropertiesFileGenerator}
+ * Unit test for {@link ExchangeDemoPropertiesTemplateGenerator}
  */
-public class ExchangeDemoPropertiesGeneratorTest {
+public class ExchangeDemoPropertiesTemplateGeneratorTest {
   
   private Path tmpFolder;
   
@@ -45,7 +46,7 @@ public class ExchangeDemoPropertiesGeneratorTest {
     String fileName = "demo-DemoExchange.properties.dist";
     Path actualFilePath = tmpFolder.resolve(fileName);
     String expected = Files.readString(srcTestResourcesFolder.resolve(fileName));
-    ExchangeDemoPropertiesFileGenerator gen = doTestGenerateDemoPropertiesFileForExchange(exchangeDescriptor, expected);
+    ExchangeDemoPropertiesTemplateGenerator gen = doTestGenerateDemoPropertiesFileForExchange(exchangeDescriptor, expected);
     gen.writeJavaFile(actualFilePath);
     String actual = Files.readString(actualFilePath);
     Assert.assertEquals(expected, actual);
@@ -144,14 +145,14 @@ public class ExchangeDemoPropertiesGeneratorTest {
           + "");
   }
   
-  private ExchangeDemoPropertiesFileGenerator doTestGenerateDemoPropertiesFileForExchange(
+  private ExchangeDemoPropertiesTemplateGenerator doTestGenerateDemoPropertiesFileForExchange(
       ExchangeDescriptor exchangeDescriptor,
       String expectedContent) {
     PlaceHolderResolver valuesPlaceHolderResolver = PlaceHolderResolver.create(ExchangeGenUtil.getValuesReplacements(exchangeDescriptor));
     PlaceHolderResolver descriptionPlaceHolderResolver = PlaceHolderResolver.create(ExchangeGenUtil.getDescriptionReplacements(exchangeDescriptor));
     List<ConfigPropertyDescriptor> configProperties = CollectionUtil.emptyIfNull(exchangeDescriptor.getProperties());
     List<ConfigPropertyDescriptor> demoProperties = EndpointDemoGenUtil.collectDemoConfigProperties(exchangeDescriptor);
-    ExchangeDemoPropertiesFileGenerator generator = new ExchangeDemoPropertiesFileGenerator(
+    ExchangeDemoPropertiesTemplateGenerator generator = new ExchangeDemoPropertiesTemplateGenerator(
         exchangeDescriptor.getId(),
         configProperties, 
         demoProperties, 
@@ -166,7 +167,7 @@ public class ExchangeDemoPropertiesGeneratorTest {
   public void testGenerateDemoPropertiesTemplateFile_EmptyConfigProperties() {
     List<ConfigPropertyDescriptor> configProperties = List.of();
     List<ConfigPropertyDescriptor> demoProperties = List.of();
-    ExchangeDemoPropertiesFileGenerator generator = new ExchangeDemoPropertiesFileGenerator("DemoExchange", configProperties, demoProperties, null, null);
+    ExchangeDemoPropertiesTemplateGenerator generator = new ExchangeDemoPropertiesTemplateGenerator("DemoExchange", configProperties, demoProperties, null, null);
     String content = generator.generate();
     Assert.assertEquals("# Demo configuration properties file for DemoExchange exchange.\n"
         + "# You should create a copy of this file without the '.dist' extension and add that .properties file\n"
@@ -199,16 +200,16 @@ public class ExchangeDemoPropertiesGeneratorTest {
   
   @Test
   public void testGeneratePropertiesFileComment() {
-    Assert.assertEquals("", ExchangeDemoPropertiesFileGenerator.generatePropertiesFileComment(null));
+    Assert.assertEquals("", ExchangeDemoPropertiesTemplateGenerator.generatePropertiesFileComment(null));
     String comment = "This is a test comment.\n" + "It should be indented with '# ' prefix.";
     String expected = "# This is a test comment.\n" + "# It should be indented with '# ' prefix.\n";
-    String actual = ExchangeDemoPropertiesFileGenerator.generatePropertiesFileComment(comment);
+    String actual = ExchangeDemoPropertiesTemplateGenerator.generatePropertiesFileComment(comment);
     Assert.assertEquals(expected, actual);
   }
   
   @Test
   public void testGettersAndSetters() {
-    ExchangeDemoPropertiesFileGenerator generator = new ExchangeDemoPropertiesFileGenerator();
+    ExchangeDemoPropertiesTemplateGenerator generator = new ExchangeDemoPropertiesTemplateGenerator();
     Assert.assertNull(generator.getExchangeId());
 
     String exchangeId = "TestExchange";
@@ -222,6 +223,14 @@ public class ExchangeDemoPropertiesGeneratorTest {
     List<ConfigPropertyDescriptor> demoProperties = new ArrayList<>();
     generator.setDemoProperties(demoProperties);
     Assert.assertSame(demoProperties, generator.getDemoProperties());
+    
+    PlaceHolderResolver constantsPlaceHolderResolver = PlaceHolderResolver.create(Map.of("key", "value"));
+    generator.setConstantsResolver(constantsPlaceHolderResolver);
+    Assert.assertSame(constantsPlaceHolderResolver, generator.getConstantsResolver());
+    
+    PlaceHolderResolver descriptionPlaceHolderResolver = PlaceHolderResolver.create(Map.of("keyDescr", "valueDescr"));
+    generator.setDescriptionResolver(descriptionPlaceHolderResolver);
+    Assert.assertSame(descriptionPlaceHolderResolver, generator.getDescriptionResolver());
   }
   
   @Test
@@ -230,7 +239,7 @@ public class ExchangeDemoPropertiesGeneratorTest {
     ConfigPropertyDescriptor group = ConfigPropertyDescriptor.createGroup("myGroup", null, List.of(property));
     List<ConfigPropertyDescriptor> properties = List.of(group);
     List<ConfigPropertyDescriptor> demoProperties = List.of();
-    ExchangeDemoPropertiesFileGenerator generator = new ExchangeDemoPropertiesFileGenerator("TestExchange", properties, demoProperties, null, null);
+    ExchangeDemoPropertiesTemplateGenerator generator = new ExchangeDemoPropertiesTemplateGenerator("TestExchange", properties, demoProperties, null, null);
     Assert.assertEquals(
         "# Demo configuration properties file for TestExchange exchange.\n"
         + "# You should create a copy of this file without the '.dist' extension and add that .properties file\n"

@@ -55,7 +55,7 @@ public class ExchangeDemoClassesGenerator implements ClassesGenerator {
       List<ConfigPropertyDescriptor> properties = EndpointDemoGenUtil.collectDemoConfigProperties(exchangeDescriptor);
       if (properties != null) {
         PropertiesClassGenerator pgen = new PropertiesClassGenerator(
-            ExchangeGenUtil.getExchangeDemoPropertiesInterfaceName(exchangeDescriptor), 
+            ExchangeGenUtil.getExchangeDemoPropertiesClassName(exchangeDescriptor), 
             exchangeDescriptor, 
             properties,
             PropertiesGenUtil.DEMO_PREFIX);

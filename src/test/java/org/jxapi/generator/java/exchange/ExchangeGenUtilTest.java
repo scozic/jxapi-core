@@ -327,7 +327,7 @@ public class ExchangeGenUtilTest {
     exchangeDescriptor.setId("TestExchange");
     exchangeDescriptor.setBasePackage("com.x.y.z");
     Assert.assertEquals("com.x.y.z.TestExchangeDemoProperties", 
-              ExchangeGenUtil.getExchangeDemoPropertiesInterfaceName(exchangeDescriptor));
+              ExchangeGenUtil.getExchangeDemoPropertiesClassName(exchangeDescriptor));
   }
   
   @Test

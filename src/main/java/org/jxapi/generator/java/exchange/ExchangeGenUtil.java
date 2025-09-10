@@ -214,10 +214,9 @@ public class ExchangeGenUtil {
   
   /**
    * @param exchangeDescriptor The exchange where demo configuration properties are defined
-   * @return The full class name of demo configuration properties interface for the given exchange.
-   * @see ExchangeDescriptor#getDemoProperties()
+   * @return The full class name of demo configuration properties class for the given exchange.
    */
-  public static String getExchangeDemoPropertiesInterfaceName(ExchangeDescriptor exchangeDescriptor) {
+  public static String getExchangeDemoPropertiesClassName(ExchangeDescriptor exchangeDescriptor) {
     return exchangeDescriptor.getBasePackage() 
         + "." 
         + JavaCodeGenUtil.firstLetterToUpperCase(exchangeDescriptor.getId())
@@ -661,7 +660,7 @@ public class ExchangeGenUtil {
     if (constants.isEmpty()) {
       // Property not found in exchange properties, try demo properties
       constants = retrievePropertiesHierarchy(configPropertyName, exchangeDescriptor.getProperties());
-      sb.append(getExchangeDemoPropertiesInterfaceName(exchangeDescriptor));
+      sb.append(getExchangeDemoPropertiesClassName(exchangeDescriptor));
     } else {
       // Property found in exchange properties
       sb.append(getExchangePropertiesClassName(exchangeDescriptor));
@@ -743,7 +742,7 @@ public class ExchangeGenUtil {
     List<ConfigPropertyDescriptor> hierarchy = retrievePropertiesHierarchy(configPropertyName, exchangeDescriptor.getProperties());
     if(hierarchy.isEmpty()) {
       hierarchy = retrievePropertiesHierarchy(configPropertyName, demoProperties);
-      className = getExchangeDemoPropertiesInterfaceName(exchangeDescriptor);
+      className = getExchangeDemoPropertiesClassName(exchangeDescriptor);
       sieblingProperties = demoProperties;
       if (hierarchy.size() > 1) {
         sieblingProperties = hierarchy.get(hierarchy.size() - 2).getProperties();
@@ -799,7 +798,7 @@ public class ExchangeGenUtil {
    * <li>Exchange constants, see {@link ExchangeDescriptor#getConstants()}</li>
    * <li>Exchange configuration properties, see
    * {@link ExchangeDescriptor#getProperties()}</li>
-   * <li>Exchange demo configuration properties, see {@link ExchangeDescriptor#getDemoProperties()}</li>
+   * <li>Exchange demo configuration properties</li>
    * </ul>
    * 
    * @param exchangeDescriptor The exchange descriptor to get the placeholders
@@ -985,6 +984,7 @@ public class ExchangeGenUtil {
    * @param exchangeDescriptor    The exchange descriptor to use to resolve the
    *                              constants and configuration properties used in
    *                              the template.
+   * @param demoProperties        The demo configuration properties for the exchange,
    * @param propertiesVariable    The name of the variable or instruction
    *                              referencing the configuration properties.
    *                              If <code>null</code>, the configuration properties 

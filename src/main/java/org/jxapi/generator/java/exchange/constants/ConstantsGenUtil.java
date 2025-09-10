@@ -30,6 +30,7 @@ public class ConstantsGenUtil {
    * </pre>
    * Where {@code MY_INT} is the constant name, {@code Integer} is the type of the constant and {@code 42} is the value of the constant.
    * @param constant the constant to generate the declaration for
+   * @param sieblings the list of constants declared in the same class as the constant, used to avoid name clashes
    * @param imports the set of imports to add to the generated code
    * @param docPlaceHolderResolver the resolver for placeholders in the constant's description
    * @param sampleValuePlaceHolderResolver the resolver for placeholders in the constant's sample value
@@ -74,6 +75,7 @@ public class ConstantsGenUtil {
    * Returns the name of variable holding either the property or group property class name.
    * That name may be 
    * @param constant the property to generate the property key property name for, for instance 'myProperty'.
+   * @param sieblings the list of properties declared in the same class as the property, used to avoid name clashes
    * @return the property key property name, for instance 'myPropertyProperty'
    */
   public static String getConstantVariableName(Constant constant, List<Constant> sieblings) {

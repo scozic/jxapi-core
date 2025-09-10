@@ -549,6 +549,18 @@ public class JavaCodeGenUtil {
     return getJavaDocLink(className + "#" + attribute);
   }
   
+  /**
+   * Generates Java code like <code>Optional.ofNullable(optionalStatement).orElse(orElseStatement)</code>
+   * <ul>
+   * <li>If <code>optionalStatement</code> is empty, returns <code>orElseStatement</code>.
+   * <li>If <code>orElseStatement</code> is empty, returns <code>optionalStatement</code>.
+   * </ul>
+   * @param optionalStatement the optional statement to evaluate
+   * @param orElseStatement the statement to return if the optional is empty
+   * @param imports the imports to add
+   * @param multiline whether to format the code in multiple lines
+   * @return Java code for constant declaration
+   */
   public static String generateOptionalOfNullableStatement(String optionalStatement, String orElseStatement, Imports imports, boolean multiline) {
     if (StringUtils.isEmpty(optionalStatement)) {
       return orElseStatement;

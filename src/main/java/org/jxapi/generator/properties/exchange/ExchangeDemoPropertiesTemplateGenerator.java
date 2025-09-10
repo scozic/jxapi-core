@@ -29,7 +29,7 @@ import org.jxapi.util.PlaceHolderResolver;
  * that .properties file to your .gitignore because properties may carry
  * sensitive data you do not want to commit. Then uncomment and set properties you need.
  */
-public class ExchangeDemoPropertiesFileGenerator {
+public class ExchangeDemoPropertiesTemplateGenerator {
   
   private static final String DESCRIPTION = "Demo configuration properties file for %s exchange.\n"
       + "You should create a copy of this file without the '.dist' extension and add that .properties file\n" 
@@ -58,21 +58,22 @@ public class ExchangeDemoPropertiesFileGenerator {
   /**
    * Constructor
      */
-  public ExchangeDemoPropertiesFileGenerator() {
+  public ExchangeDemoPropertiesTemplateGenerator() {
     this(null, List.of(), List.of(), null, null);
   }
 
   /**
    * Constructor
    * 
-   * @param exchangeId         the exchange id
-   * @param exchangeProperties the exchange configuration properties
-   * @param demoProperties     the exchange demo configuration properties
-   * @param constantsResolver  A resolver to resolve constants references like
-   *                           <code>${constants.myConstant}</code> in
-   *                           descriptions and default values.
+   * @param exchangeId          the exchange id
+   * @param exchangeProperties  the exchange configuration properties
+   * @param demoProperties      the exchange demo configuration properties
+   * @param constantsResolver   A resolver to resolve constants references like
+   *                            <code>${constants.myConstant}</code> in
+   *                            descriptions and default values.
+   * @param descriptionResolver A resolver to resolve placeholders for constants or properties in descriptions.
    */
-  public ExchangeDemoPropertiesFileGenerator(String exchangeId, 
+  public ExchangeDemoPropertiesTemplateGenerator(String exchangeId, 
                                              List<ConfigPropertyDescriptor> exchangeProperties, 
                                              List<ConfigPropertyDescriptor> demoProperties,
                                              PlaceHolderResolver constantsResolver,
@@ -227,13 +228,37 @@ public class ExchangeDemoPropertiesFileGenerator {
     this.demoProperties = demoProperties;
   }
 
+  /**
+   * Returns the resolver to resolve constants references like
+   * <code>${constants.myConstant}</code> in descriptions and default values.
+   * @return the resolver to resolve references to constants
+   */
   public PlaceHolderResolver getConstantsResolver() {
     return constantsResolver;
   }
 
+  /**
+   * Sets the resolver to resolve constants references like
+   * <code>${constants.myConstant}</code> in descriptions and default values.
+   * @param constantsResolver the resolver to resolve references to constants
+   */
   public void setConstantsResolver(PlaceHolderResolver constantsResolver) {
     this.constantsResolver = constantsResolver;
   }
   
-  
+  /**
+   * Returns the resolver to resolve placeholders for constants or properties in descriptions.
+   * @return the resolver to resolve placeholders for constants or properties in descriptions
+   */
+  public PlaceHolderResolver getDescriptionResolver() {
+    return descriptionResolver;
+  }
+
+  /**
+   * Sets the resolver to resolve placeholders for constants or properties in descriptions.
+   * @param descriptionResolver the resolver to resolve placeholders for constants or properties in descriptions
+   */
+  public void setDescriptionResolver(PlaceHolderResolver descriptionResolver) {
+    this.descriptionResolver = descriptionResolver;
+  }
 }

@@ -29,8 +29,14 @@ import org.jxapi.util.DemoUtil;
  */
 public class EndpointDemoGenUtil {
   
+  /**
+   * Name of the demo configuration property group for REST endpoints.
+   */
   public static final String REST_DEMO_GROUP_NAME = "rest";
   
+  /**
+   * Name of the demo configuration property group for Websocket endpoints.
+   */
   public static final String WEBSOCKET_DEMO_GROUP_NAME = "ws";
   
   /**
@@ -46,24 +52,21 @@ public class EndpointDemoGenUtil {
    * sample value for the given {@link Field} (which can be the data type
    * definition of a REST/Websocket request, response/message, or of a nested
    * {@link Type#OBJECT} property.
-   * 
-   * @param property            the property for which to generate the creation
-   *                            method.
-   * @param objectClassName     Default class name for property value, relevant
-   *                            when property is an object type and has no object
-   *                            name.
-   * @param defaultFieldName    The name to use for field, either 'request' or
-   *                            'response' when the field name is
-   *                            <code>null</code>.
-   * @param imports             the set of imports to add to the class containing
-   *                            the method. Will be populated with the necessary
-   *                            imports.
-   * @param placeholderResolver the placeholder resolver to use to resolve
-   *                            constants and configuration properties
-   *                            placeholders. This should be a reference to
-   *                            constant in its inteface, or property resolution
-   *                            from using {@link Properties} reference variable
-   *                            named <code>properties</code>.
+   *    
+   * @param property               the property for which to generate the creation
+   *                               method.
+   * @param objectClassName        Default class name for property value, relevant
+   *                               when property is an object type and has no object
+   *                               name.
+   * @param exchangeDescriptor     the exchange descriptor containing the API.
+   * @param exchangeApiDescriptor  the API descriptor containing the endpoint.
+   * @param apiEndpointGroupName   the name of the API endpoint group containing the endpoint.
+   * @param endpointName           the name of the endpoint containing the property.
+   * @param demoConfigProperties   the list of demo configuration properties for
+   *                               the exchange.
+   * @param imports                the set of imports to add to the class containing
+   *                               the method. Will be populated with the necessary
+   *                               imports.
    * @return the method code with signature (method declaration) and body
    * 
    * @see #generateFieldCreationMethodDeclaration(Field, String, String, Imports)
@@ -503,6 +506,11 @@ public class EndpointDemoGenUtil {
         .toString();
   }
 
+  /**
+   * Collects the demo configuration properties for all endpoints of all APIs of the given exchange descriptor.
+   * @param exchangeDescriptor the exchange descriptor containing the APIs and endpoints
+   * @return the list of demo configuration properties for all endpoints of all APIs of the given exchange descriptor.
+   */
   public static List<ConfigPropertyDescriptor> collectDemoConfigProperties(ExchangeDescriptor exchangeDescriptor) {
       return CollectionUtil.emptyIfNull(exchangeDescriptor.getApis()).stream()
                 .map(EndpointDemoGenUtil::createDemoConfigPropertyGroup)

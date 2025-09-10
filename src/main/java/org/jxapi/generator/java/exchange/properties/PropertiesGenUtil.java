@@ -190,6 +190,7 @@ public class PropertiesGenUtil {
    * property and {@code myDefaultValue} is the default value of the property.
    * 
    * @param property                       the property to generate the declaration for
+   * @param sieblings                      the list of properties declared in the same class as the property, used to avoid name clashes
    * @param prefix                         the prefix to prepend to the property name, for instance 'myExchange'.
    * @param imports                        the set of imports to add to the generated code
    * @param docPlaceHolderResolver         the resolver for placeholders in the property's description
@@ -243,7 +244,8 @@ public class PropertiesGenUtil {
   /**
    * Returns the name of variable holding either the property or group property class name.
    * That name may be 
-   * @param property the property to generate the property key property name for, for instance 'myProperty'.
+   * @param property  the property to generate the property key property name for, for instance 'myProperty'.
+   * @param sieblings the list of properties declared in the same class as the property, used to avoid name clashes
    * @return the property key property name, for instance 'myPropertyProperty'
    */
   public static String getPropertyVariableName(ConfigPropertyDescriptor property, List<ConfigPropertyDescriptor> sieblings) {

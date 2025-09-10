@@ -148,7 +148,7 @@ public class ExchangeReadmeMdGenerator {
       }
       if (hasDemoProperties) {
         String exchangeDemoPropertiesInterfaceName = ExchangeGenUtil
-            .getExchangeDemoPropertiesInterfaceName(exchangeDescriptor);
+            .getExchangeDemoPropertiesClassName(exchangeDescriptor);
         s.append(
             "\nSome demo configuration properties are available to tune common request parameters used in demo snippets, as ")
             .append(getSourceFileLink(exchangeDemoPropertiesInterfaceName, "test"))
@@ -376,7 +376,7 @@ public class ExchangeReadmeMdGenerator {
     if (!hasDemoSection()) {
       return "";
     }
-    String exchangeDemoPropertiesInterfaceName = ExchangeGenUtil.getExchangeDemoPropertiesInterfaceName(exchangeDescriptor);
+    String exchangeDemoPropertiesInterfaceName = ExchangeGenUtil.getExchangeDemoPropertiesClassName(exchangeDescriptor);
     StringBuilder s = new StringBuilder();
     s.append("\n\n## Demo snippets\n\n")
      .append("This wrapper contains demo snippets for the most important endpoints. These snippets are generated in _src/test/java/_ source folder.\n\n") 

@@ -82,6 +82,7 @@ public class WebsocketEndpointDemoGenerator extends JavaTypeGenerator {
    * @param exchangeDescriptor the exchange descriptor
    * @param exchangeApiDescriptor the exchange API descriptor
    * @param websocketApi the Websocket endpoint descriptor
+   * @param demoProperties the demo configuration properties for the exchange
    */
   public WebsocketEndpointDemoGenerator(ExchangeDescriptor exchangeDescriptor, 
                                         ExchangeApiDescriptor exchangeApiDescriptor, 

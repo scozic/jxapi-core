@@ -19,7 +19,7 @@ import org.jxapi.generator.java.exchange.api.ExchangeApiClassesGenerator;
 import org.jxapi.generator.java.exchange.api.demo.EndpointDemoGenUtil;
 import org.jxapi.generator.java.exchange.api.demo.ExchangeDemoClassesGenerator;
 import org.jxapi.generator.md.exchange.ExchangeReadmeMdGenerator;
-import org.jxapi.generator.properties.exchange.ExchangeDemoPropertiesFileGenerator;
+import org.jxapi.generator.properties.exchange.ExchangeDemoPropertiesTemplateGenerator;
 import org.jxapi.netutils.rest.ratelimits.RateLimitManager;
 import org.jxapi.util.DemoUtil;
 import org.jxapi.util.PlaceHolderResolver;
@@ -244,7 +244,7 @@ public class ExchangeGeneratorMain {
     PlaceHolderResolver valuesPlaceHolderResolver = PlaceHolderResolver.create(ExchangeGenUtil.getValuesReplacements(exchangeDescriptor));
     PlaceHolderResolver descriptionPlaceHolderResolver = PlaceHolderResolver
         .create(ExchangeGenUtil.getDescriptionReplacements(exchangeDescriptor, null));
-    new ExchangeDemoPropertiesFileGenerator(exchangeDescriptor.getId(), 
+    new ExchangeDemoPropertiesTemplateGenerator(exchangeDescriptor.getId(), 
                         configProperties, 
                         demoProperties,
                         valuesPlaceHolderResolver,
