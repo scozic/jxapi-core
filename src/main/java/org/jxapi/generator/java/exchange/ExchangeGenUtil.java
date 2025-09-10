@@ -763,9 +763,9 @@ public class ExchangeGenUtil {
         .append(".");
     for (int i = 0; i < hierarchy.size() - 1; i++) {
       ConfigPropertyDescriptor p = hierarchy.get(i);
-      // FIXME: actual class name may differ if there are variable name conflicts
-      s.append(JavaCodeGenUtil.firstLetterToUpperCase(hierarchy.get(i).getName())).append(".");
+      s.append(PropertiesGenUtil.getPropertyVariableName(p, sieblingProperties)).append(".");
       sieblingProperties = p.getProperties();
+      
     }
     String methodName = PropertiesGenUtil.getPropertyGetterMethodName(hierarchy.get(hierarchy.size() - 1), sieblingProperties);
     return s.append(methodName)                

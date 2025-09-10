@@ -442,7 +442,7 @@ public class WebsocketEndpointDemoGeneratorTest {
         + "        .P1_(Optional\n"
         + "          .ofNullable(new ConflictRequestP1_Deserializer().deserialize(ConflictDemoProperties.V1.Ws.MyWsEndpoint.Request.getP1_(properties)))\n"
         + "          .orElse(ConflictRequestP1_.builder()  \n"
-        + "            .subParam(ConflictDemoProperties.V1.Ws.MyWsEndpoint.Request.P1_.getSubParam(properties))\n"
+        + "            .subParam(ConflictDemoProperties.V1.Ws.MyWsEndpoint.Request.P1____.getSubParam(properties))\n"
         + "            .build()))\n"
         + "        .build());\n"
         + "  }\n"

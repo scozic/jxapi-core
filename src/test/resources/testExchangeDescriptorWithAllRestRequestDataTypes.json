@@ -127,8 +127,7 @@
 					"url": "/postObjectListMap",
 					"request": {
 						"type": "OBJECT_LIST_MAP",
-						"objectName": "SingleSymbol",
-						"sampleMapKeyValue": ["spot"]
+						"objectName": "SingleSymbol"
 					},
 					"response": {
 						"objectName": "GenericResponse"
@@ -142,7 +141,6 @@
 					"request": {
 						"type": "OBJECT_LIST_MAP",
 						"objectName": "MultiSymbol",
-						"sampleMapKeyValue": ["spot"],
 						"properties": [
 							{"name":"symbolList", "type": "STRING_LIST", "description":"List of full symbol names", "sampleValue":["BTC_USDT", "ETH_USDT"]},
 							{"name":"symbolMap", "type": "STRING_LIST_MAP", "description":"Symbols as a map of quote asset keys map with base asset as values", "sampleValue":{"USDT":["BTC_USDT", "ETH"]}},
@@ -331,8 +329,7 @@
 					"description": "Subscribe to stream with OBJECT_LIST_MAP request type. The objectName field is set to a name already defined in other API definition.",
 					"request": {
 						"objectName": "MultiSymbol",
-						"type": "OBJECT_LIST_MAP",
-						"sampleMapKeyValue": ["spot"]
+						"type": "OBJECT_LIST_MAP"
 					},
 					"messageTopicMatcherFields": [
 						{"name": "topic",  "value": "streamWithObjectListMapRequestDataTypeTopic"}

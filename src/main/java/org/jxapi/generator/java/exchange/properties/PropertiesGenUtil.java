@@ -164,7 +164,7 @@ public class PropertiesGenUtil {
       StringBuilder s, 
       String indent) {
       if (property.isGroup()) {
-          s.append(JavaCodeGenUtil.firstLetterToUpperCase(property.getName()))
+          s.append(PropertiesGenUtil.getPropertyVariableName(property, sieblings))
            .append(".").append(ALL_PROPERTY);
       } else {
           s.append(indent)

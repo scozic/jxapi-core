@@ -677,72 +677,67 @@ public class ExchangeGenUtilTest {
   
   @Test
   public void testGetValueDeclarationForConfigProperty_ExchangeConfigProperty() {
-    ExchangeDescriptor exchangeDescriptor = new ExchangeDescriptor();
-    exchangeDescriptor.setId("MyExchange");
-    exchangeDescriptor.setBasePackage("com.x.y.z");
     ConfigPropertyDescriptor configProperty = new ConfigPropertyDescriptor();
     configProperty.setName("foo");
-    exchangeDescriptor.setProperties(List.of(configProperty));
-    Imports imports = new Imports();
-    Assert.assertEquals("MyExchangeProperties.getFoo(myProps)", 
-                        ExchangeGenUtil.getValueDeclarationForConfigProperty(
-                            "foo", 
-                            exchangeDescriptor, 
-                            null, 
-                            "myProps", 
-                            imports));
-    Assert.assertEquals(1, imports.size());
-    Assert.assertTrue(imports.contains("com.x.y.z.MyExchangeProperties"));
+    List<ConfigPropertyDescriptor> allProps = List.of(configProperty);
+    doTestGetValueDeclarationForConfigProperty("MyExchangeProperties.getFoo(myProps)", "foo", allProps, false);
+  }
+  
+  @Test
+  public void testGetValueDeclarationForConfigProperty_ConflictingPropertyNames() {
+    ConfigPropertyDescriptor p1 = ConfigPropertyDescriptor.create("p1", Type.STRING, null, null);
+    ConfigPropertyDescriptor p1Up = ConfigPropertyDescriptor.create("P1", Type.STRING, null, null);
+    ConfigPropertyDescriptor p1Underscore = ConfigPropertyDescriptor.create("p1_", Type.STRING, null, null);
+    ConfigPropertyDescriptor subProp = ConfigPropertyDescriptor.create("sub", Type.STRING, null, null);
+    ConfigPropertyDescriptor p1UpUnderscore = ConfigPropertyDescriptor.createGroup("P1_", null, List.of(subProp));
+    List<ConfigPropertyDescriptor> allProps = List.of(p1, p1Up, p1Underscore, p1UpUnderscore);
+    
+    doTestGetValueDeclarationForConfigProperty("MyExchangeProperties.getp1(myProps)", "p1", allProps, false);
+    doTestGetValueDeclarationForConfigProperty("MyExchangeProperties.getP1(myProps)", "P1", allProps, false);
+    doTestGetValueDeclarationForConfigProperty("MyExchangeProperties.getp1_(myProps)", "p1_", allProps, false);
+    doTestGetValueDeclarationForConfigProperty("MyExchangeProperties.getP1_(myProps)", "P1_", allProps, false);
+    doTestGetValueDeclarationForConfigProperty("MyExchangeProperties.P1___.getSub(myProps)", "P1_.sub", allProps, false);
   }
   
   @Test
   public void testGetValueDeclarationForConfigProperty_DemoPropertyNestedInGroup() {
-    ExchangeDescriptor exchangeDescriptor = new ExchangeDescriptor();
-    exchangeDescriptor.setId("MyExchange");
-    exchangeDescriptor.setBasePackage("com.x.y.z");
-    ConfigPropertyDescriptor configProperty = ConfigPropertyDescriptor.create("foo", Type.STRING, "A demo property",
-        "defaultValue");
-    configProperty.setName("foo");
-    
+    ConfigPropertyDescriptor configProperty = ConfigPropertyDescriptor.create("foo", Type.STRING, "A demo property", "defaultValue");
     ConfigPropertyDescriptor groupProp = ConfigPropertyDescriptor.createGroup("myGroup", "A property group", List.of(configProperty));
-    
     List<ConfigPropertyDescriptor> demoProperties = List.of(groupProp);
-    Imports imports = new Imports();
-    Assert.assertEquals("MyExchangeDemoProperties.MyGroup.getFoo(myProps)", 
-                        ExchangeGenUtil.getValueDeclarationForConfigProperty(
-                            "myGroup.foo", 
-                            exchangeDescriptor, 
-                            demoProperties, 
-                            "myProps", 
-                            imports));
-    Assert.assertEquals(1, imports.size());
-    Assert.assertTrue(imports.contains("com.x.y.z.MyExchangeDemoProperties"));
+    doTestGetValueDeclarationForConfigProperty("MyExchangeDemoProperties.MyGroup.getFoo(myProps)", "myGroup.foo", demoProperties, true);
   }
   
   @Test
   public void testGetValueDeclarationForConfigProperty_GroupProp() {
-    ExchangeDescriptor exchangeDescriptor = new ExchangeDescriptor();
-    exchangeDescriptor.setId("MyExchange");
-    exchangeDescriptor.setBasePackage("com.x.y.z");
     ConfigPropertyDescriptor configProperty = ConfigPropertyDescriptor.create("foo", Type.STRING, "A demo property",
         "defaultValue");
     configProperty.setName("foo");
-    
     ConfigPropertyDescriptor groupProp = ConfigPropertyDescriptor.createGroup("myGroup", "A property group", List.of(configProperty));
-    
     List<ConfigPropertyDescriptor> demoProperties = List.of(groupProp);
+    doTestGetValueDeclarationForConfigProperty("MyExchangeDemoProperties.MyGroup.getFoo(myProps)", "myGroup.foo", demoProperties, true);
+  }
+  
+  private void doTestGetValueDeclarationForConfigProperty(String expected, String propName,
+      List<ConfigPropertyDescriptor> exchangeProperties, boolean demoProps) {
+    ExchangeDescriptor exchangeDescriptor = new ExchangeDescriptor();
+    exchangeDescriptor.setId("MyExchange");
+    exchangeDescriptor.setBasePackage("com.x.y.z");
+    List<ConfigPropertyDescriptor> demoProperties = null;
+    if (demoProps) {
+      demoProperties = exchangeProperties;
+    }  else {
+      exchangeDescriptor.setProperties(exchangeProperties); 
+    }
+    
     Imports imports = new Imports();
-    // Remark for a group, the corresponding property is expected to be of STRING 
-    // type so the value declaration is JSON value for the whole group object.
-    Assert.assertEquals("MyExchangeDemoProperties.getMyGroup(myProps)", 
-        ExchangeGenUtil.getValueDeclarationForConfigProperty(
-        "myGroup", 
-        exchangeDescriptor, 
-        demoProperties, 
-        "myProps", 
-        imports));
+    Assert.assertEquals(expected, ExchangeGenUtil.getValueDeclarationForConfigProperty(propName, exchangeDescriptor,
+        demoProperties, "myProps", imports));
     Assert.assertEquals(1, imports.size());
-    Assert.assertTrue(imports.contains("com.x.y.z.MyExchangeDemoProperties"));
+    if (demoProps) {
+      Assert.assertTrue(imports.contains("com.x.y.z.MyExchangeDemoProperties"));
+    } else {
+      Assert.assertTrue(imports.contains("com.x.y.z.MyExchangeProperties"));
+    }
   }
   
   @Test
