@@ -73,7 +73,9 @@ public class ConstantsGenUtil {
   
   /**
    * Returns the name of variable holding either the property or group property class name.
-   * That name may be 
+   * <p>
+   * For a regular (not group) constant the returned  value is the static variable name (uppercase) of the constant name.
+   * For a group constant the returned value is the constant name with first letter upper cased.
    * @param constant the property to generate the property key property name for, for instance 'myProperty'.
    * @param sieblings the list of properties declared in the same class as the property, used to avoid name clashes
    * @return the property key property name, for instance 'myPropertyProperty'

@@ -29,7 +29,7 @@ public class PropertiesGenUtil {
   /**
    * Name of the static 'ALL' variable that contains a list of all configuration properties.
    */
-  public static final String ALL_PROPERTY = "ALL";
+  public static final String ALL_PROPERTY = "all";
 
   private PropertiesGenUtil() {}
   
@@ -80,8 +80,11 @@ public class PropertiesGenUtil {
   
 
   /**
-   * Generates the Java code for a static member named {@link #ALL_PROPERTY} variable that refers to a list of all
-   * configuration properties defined in the class. 
+   * Generates the Java code for a static member variable named 'ALL' that refers to a list of all
+   * configuration properties defined in the class. The list will contain references to all properties and 
+   * properties of group properties defined in the class flattened in a single list.<p>
+   * Remark: If properties contains a property named 'all' the generated variable will be named 'ALL_'
+   * (underscores will be appended until name does not collide with another property static variable name).
    * @param properties the list of configuration properties to include in the generated list.
    * @param imports the set of imports which will be updated with the necessary imports for the generated code.
    * @return the Java code for the static member variable that contains a list of all configuration properties.
@@ -89,11 +92,10 @@ public class PropertiesGenUtil {
   public static String generateAllPropertiesListMethod(List<ConfigPropertyDescriptor> properties, Imports imports) {
       imports.add(List.class);
       imports.add(ConfigProperty.class);
-  
       StringBuilder s = new StringBuilder();
       s.append(JavaCodeGenUtil.generateJavaDoc("List of all configuration properties defined in this class"))
        .append("\npublic static final List<ConfigProperty> ")
-       .append(ALL_PROPERTY)
+       .append(generateAllPropertiesVariableName(properties))
        .append(" = ");
   
       if (CollectionUtil.isEmpty(properties)) {
@@ -110,6 +112,11 @@ public class PropertiesGenUtil {
   
       s.append(")));\n");
       return s.toString();
+  }
+  
+  private static String generateAllPropertiesVariableName(List<ConfigPropertyDescriptor> properties) {
+    ConfigPropertyDescriptor allPropertyVar = ConfigPropertyDescriptor.create(ALL_PROPERTY, Type.STRING, null, null);
+    return getPropertyVariableName(allPropertyVar, CollectionUtil.mergeLists(properties, List.of(allPropertyVar)));
   }
   
   private static void appendPropertiesListToAllPropertiesListMethod(List<ConfigPropertyDescriptor> properties, StringBuilder s) {
@@ -165,7 +172,7 @@ public class PropertiesGenUtil {
       String indent) {
       if (property.isGroup()) {
           s.append(PropertiesGenUtil.getPropertyVariableName(property, sieblings))
-           .append(".").append(ALL_PROPERTY);
+           .append(".").append(generateAllPropertiesVariableName(property.getProperties()));
       } else {
           s.append(indent)
            .append(PropertiesGenUtil.getPropertyVariableName(property, sieblings));
@@ -243,7 +250,13 @@ public class PropertiesGenUtil {
 
   /**
    * Returns the name of variable holding either the property or group property class name.
-   * That name may be 
+   * That name may be the default static (to upperc case with underscores) variable name for the property,
+   * if it stands for a simple property, or the property name with first letter to upper case e.g. associated class
+   * name if it stands for a group property.
+   * <p>
+   * In case the variable name clashes with another property or group property in the same class, which means 
+   * two properties have same name ignoring case and dots, underscores will be appended to the variable (or class) name.
+   * 
    * @param property  the property to generate the property key property name for, for instance 'myProperty'.
    * @param sieblings the list of properties declared in the same class as the property, used to avoid name clashes
    * @return the property key property name, for instance 'myPropertyProperty'
