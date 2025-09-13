@@ -516,7 +516,16 @@ public class EndpointDemoGenUtil {
                 .map(EndpointDemoGenUtil::createDemoConfigPropertyGroup)
                 .filter(o -> !CollectionUtil.isEmpty(o.getProperties()))
                 .collect(Collectors.toList());
-    }
+      // FIXME
+//    Logger log = LoggerFactory.getLogger(EndpointDemoGenUtil.class);
+//    log.info("collectDemoConfigProperties:START");
+//    List<ConfigPropertyDescriptor> result = CollectionUtil.emptyIfNull(exchangeDescriptor.getApis()).stream()
+//        .map(EndpointDemoGenUtil::createDemoConfigPropertyGroup)
+//        .filter(o -> !CollectionUtil.isEmpty(o.getProperties()))
+//        .collect(Collectors.toList());
+//    log.info("collectDemoConfigProperties:END", new Exception("dummy"));
+//    return result;
+  }
   
   private static ConfigPropertyDescriptor createDemoConfigPropertyGroup(ExchangeApiDescriptor api) {
     String apiName = api.getName();

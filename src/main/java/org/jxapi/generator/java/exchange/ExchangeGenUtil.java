@@ -744,9 +744,6 @@ public class ExchangeGenUtil {
       hierarchy = retrievePropertiesHierarchy(configPropertyName, demoProperties);
       className = getExchangeDemoPropertiesClassName(exchangeDescriptor);
       sieblingProperties = demoProperties;
-      if (hierarchy.size() > 1) {
-        sieblingProperties = hierarchy.get(hierarchy.size() - 2).getProperties();
-      }
     } else {
       className = getExchangePropertiesClassName(exchangeDescriptor);
       sieblingProperties = exchangeDescriptor.getProperties();

@@ -262,27 +262,48 @@ public class PropertiesGenUtil {
    * @return the property key property name, for instance 'myPropertyProperty'
    */
   public static String getPropertyVariableName(ConfigPropertyDescriptor property, List<ConfigPropertyDescriptor> sieblings) {
-    StringBuilder name = new StringBuilder()
-        .append(getPropertyDefaultVariableName(property));
     sieblings = CollectionUtil.emptyIfNull(sieblings);
-    while (hasDifferentPropertyWithSameVariableName(
-        property,
-        name.toString(),  
-        sieblings)) {
-      name.append("_");
+    int off = sieblings.indexOf(property);
+    if (off < 0 ) {
+      throw new IllegalArgumentException("Property '" + property.getName() + "' is not part of the sieblings list: " + sieblings);
     }
-    return name.toString();
+    return getPropertyVariableName(property, sieblings, off, CollectionUtil.createList(sieblings.size() + 1));
+  }
+  
+  private static String getPropertyVariableName(
+      ConfigPropertyDescriptor property, 
+      List<ConfigPropertyDescriptor> sieblings, 
+      int index, 
+      List<String> propertyNames) {
+    if (index >= propertyNames.size()) {
+      StringBuilder name = new StringBuilder()
+          .append(getPropertyDefaultVariableName(property));
+      sieblings = CollectionUtil.emptyIfNull(sieblings);
+      while (hasDifferentPropertyWithSameVariableName(
+                property,
+                name.toString(),  
+                sieblings,
+                propertyNames)) {
+        name.append("_");
+      }
+      propertyNames.add(name.toString());
+    }
+    
+    return propertyNames.get(index);
   }
   
   private static boolean hasDifferentPropertyWithSameVariableName(
       ConfigPropertyDescriptor property, 
       String staticVariableName,
-      List<ConfigPropertyDescriptor> sieblings) {
-    for (ConfigPropertyDescriptor p : CollectionUtil.emptyIfNull(sieblings)) {
+      List<ConfigPropertyDescriptor> sieblings,
+      List<String> propertyNames) {
+    List<ConfigPropertyDescriptor> l = CollectionUtil.emptyIfNull(sieblings);
+    for (int i = 0; i < l.size(); i++) {
+      ConfigPropertyDescriptor p = l.get(i);
       if (p == property) {
         return false;
       }
-      if (getPropertyVariableName(p, sieblings).equals(staticVariableName)) {
+      if (getPropertyVariableName(p, sieblings, i, propertyNames).equals(staticVariableName)) {
         return true;
       }
     }
