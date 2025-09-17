@@ -22,7 +22,7 @@ public class ConstantsGenUtilTest {
     Assert.assertEquals( "public static final String MY_STRING = \"foo\";\n", 
         ConstantsGenUtil.generateConstantDeclaration(
             c, 
-            List.of(), 
+            List.of(c), 
             imports, 
             null, 
             null));
@@ -38,7 +38,7 @@ public class ConstantsGenUtilTest {
         + " * My int constant with string value, for instance '123'\n"
         + " */\n"
         + "public static final Integer MY_INT = Integer.valueOf(\"42\");\n", 
-        ConstantsGenUtil.generateConstantDeclaration(c, List.of(), imports, placeholderResolver, null));
+        ConstantsGenUtil.generateConstantDeclaration(c, List.of(c), imports, placeholderResolver, null));
     Assert.assertEquals(0, imports.size());
   }
 
@@ -50,7 +50,7 @@ public class ConstantsGenUtilTest {
         + " * My int constant with int value\n"
         + " */\n"
         + "public static final Integer MY_INT = Integer.valueOf(\"42\");\n", 
-         ConstantsGenUtil.generateConstantDeclaration(c, List.of(), imports, null, null));
+         ConstantsGenUtil.generateConstantDeclaration(c, List.of(c), imports, null, null));
     Assert.assertEquals(0, imports.size());
   }
 
@@ -58,20 +58,22 @@ public class ConstantsGenUtilTest {
   public void testCreateLongConstantWithNow() {
     Imports imports = new Imports();
     Constant c = Constant.create("myTimestamp", Type.LONG, null, "now()");
-    Assert.assertEquals( "public static final Long MY_TIMESTAMP = Long.valueOf(System.currentTimeMillis());\n", ConstantsGenUtil.generateConstantDeclaration(c, List.of(), imports, null, null));
+    Assert.assertEquals(
+      "public static final Long MY_TIMESTAMP = Long.valueOf(System.currentTimeMillis());\n", 
+      ConstantsGenUtil.generateConstantDeclaration(c, List.of(c), imports, null, null));
     Assert.assertEquals(0, imports.size());
   }
   
   @Test(expected = IllegalArgumentException.class)
   public void testCreateStringConstantInvalidType() {
     Constant c = Constant.create("myString", Type.fromTypeName("STRING_LIST"), null, "foo");
-    ConstantsGenUtil.generateConstantDeclaration(c, List.of(), new Imports(), null, null);
+    ConstantsGenUtil.generateConstantDeclaration(c, List.of(c), new Imports(), null, null);
   }
   
   @Test
   public void testGetConstantVariableName_SimpleConstant() {
     Constant c = Constant.create("myConstant", Type.STRING, null, "foo");
-    Assert.assertEquals("MY_CONSTANT", ConstantsGenUtil.getConstantVariableName(c, List.of()));
+    Assert.assertEquals("MY_CONSTANT", ConstantsGenUtil.getConstantVariableName(c, List.of(c)));
   }
   
   @Test

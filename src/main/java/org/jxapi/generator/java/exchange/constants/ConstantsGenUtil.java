@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.apache.commons.lang3.StringUtils;
+import org.jxapi.exchange.descriptor.ConfigPropertyDescriptor;
 import org.jxapi.exchange.descriptor.Constant;
 import org.jxapi.exchange.descriptor.Type;
 import org.jxapi.generator.java.Imports;
@@ -81,27 +82,48 @@ public class ConstantsGenUtil {
    * @return the property key property name, for instance 'myPropertyProperty'
    */
   public static String getConstantVariableName(Constant constant, List<Constant> sieblings) {
-    StringBuilder name = new StringBuilder()
-        .append(getConstantDefaultVariableName(constant));
     sieblings = CollectionUtil.emptyIfNull(sieblings);
-    while (hasDifferentConstantWithSameVariableName(
-        constant,
-        name.toString(),  
-        sieblings)) {
-      name.append("_");
+    int off = sieblings.indexOf(constant);
+    if (off < 0 ) {
+      throw new IllegalArgumentException("Constant '" + constant.getName() + "' is not part of the sieblings list: " + sieblings);
     }
-    return name.toString();
+    return getConstantVariableName(constant, sieblings, off, CollectionUtil.createList(sieblings.size() + 1));
+  }
+  
+  private static String getConstantVariableName(
+      Constant property, 
+      List<Constant> sieblings, 
+      int index, 
+      List<String> constantNames) {
+    if (index >= constantNames.size()) {
+      StringBuilder name = new StringBuilder()
+          .append(getConstantDefaultVariableName(property));
+      sieblings = CollectionUtil.emptyIfNull(sieblings);
+      while (hasDifferentConstantWithSameVariableName(
+                property,
+                name.toString(),  
+                sieblings,
+                constantNames)) {
+        name.append("_");
+      }
+      constantNames.add(name.toString());
+    }
+    
+    return constantNames.get(index);
   }
   
   private static boolean hasDifferentConstantWithSameVariableName(
-      Constant constant, 
+      Constant property, 
       String staticVariableName,
-      List<Constant> sieblings) {
-    for (Constant p : CollectionUtil.emptyIfNull(sieblings)) {
-      if (p == constant) {
+      List<Constant> sieblings,
+      List<String> constantNames) {
+    List<Constant> l = CollectionUtil.emptyIfNull(sieblings);
+    for (int i = 0; i < l.size(); i++) {
+      Constant p = l.get(i);
+      if (p == property) {
         return false;
       }
-      if (getConstantVariableName(p, sieblings).equals(staticVariableName)) {
+      if (getConstantVariableName(p, sieblings, i, constantNames).equals(staticVariableName)) {
         return true;
       }
     }
