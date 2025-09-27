@@ -59,19 +59,26 @@ public class EmployeeV1EmployeeUpdatesMessage implements Pojo<EmployeeV1Employee
   
   @Override
   public boolean equals(Object other) {
-    if (other == null)
+    if (other == null) {
       return false;
+    }
+    if (this == other) {
+      return true;
+    }
     if (!getClass().equals(other.getClass()))
       return false;
     EmployeeV1EmployeeUpdatesMessage o = (EmployeeV1EmployeeUpdatesMessage) other;
-    return Objects.equals(eventType, o.eventType)
-            && Objects.equals(employee, o.employee);
+    return Objects.equals(this.eventType, o.eventType)
+            && Objects.equals(this.employee, o.employee);
   }
   
   @Override
   public int compareTo(EmployeeV1EmployeeUpdatesMessage other) {
     if (other == null) {
       return 1;
+    }
+    if (this == other) {
+      return 0;
     }
     int res = 0;
     res = CompareUtil.compare(this.eventType, other.eventType);

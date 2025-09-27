@@ -62,19 +62,26 @@ public class EmployeeV1GetAllEmployeesRequest implements Pojo<EmployeeV1GetAllEm
   
   @Override
   public boolean equals(Object other) {
-    if (other == null)
+    if (other == null) {
       return false;
+    }
+    if (this == other) {
+      return true;
+    }
     if (!getClass().equals(other.getClass()))
       return false;
     EmployeeV1GetAllEmployeesRequest o = (EmployeeV1GetAllEmployeesRequest) other;
-    return Objects.equals(page, o.page)
-            && Objects.equals(size, o.size);
+    return Objects.equals(this.page, o.page)
+            && Objects.equals(this.size, o.size);
   }
   
   @Override
   public int compareTo(EmployeeV1GetAllEmployeesRequest other) {
     if (other == null) {
       return 1;
+    }
+    if (this == other) {
+      return 0;
     }
     int res = 0;
     res = CompareUtil.compare(this.page, other.page);

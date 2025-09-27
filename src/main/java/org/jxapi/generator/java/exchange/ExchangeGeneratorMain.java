@@ -102,6 +102,7 @@ public class ExchangeGeneratorMain {
       log.error("Error from " + ExchangeGeneratorMain.class.getName() + ".main", t);
       System.exit(-1);
     }
+    System.exit(0);
   }
   
   /**

@@ -165,6 +165,9 @@ public class PojoGenerator extends JavaTypeGenerator {
     StringBuilder compareBody = new StringBuilder()
         .append("if (other == null) {\n")
         .append(JavaCodeGenUtil.indent("return 1;"))
+        .append(END_BLOCK_TOKEN)
+        .append("if (this == other) {\n")
+        .append(JavaCodeGenUtil.indent("return 0;"))
         .append(END_BLOCK_TOKEN);
     if (CollectionUtil.isEmpty(this.fields)) {
       compareBody.append("return 0;\n");
@@ -493,9 +496,13 @@ public class PojoGenerator extends JavaTypeGenerator {
   
   private void generateEqualsMethod() {
     StringBuilder body = new StringBuilder()
-      .append("if (other == null)\n")
+      .append("if (other == null) {\n")
       .append(JavaCodeGenUtil.indent("return false;"))
-      .append("\nif (!getClass().equals(other.getClass()))\n")
+      .append(END_BLOCK_TOKEN)
+      .append("if (this == other) {\n")
+      .append(JavaCodeGenUtil.indent("return true;"))
+      .append(END_BLOCK_TOKEN)
+      .append("if (!getClass().equals(other.getClass()))\n")
       .append(JavaCodeGenUtil.indent("return false;"))
       .append("\n");
       
@@ -520,7 +527,7 @@ public class PojoGenerator extends JavaTypeGenerator {
             .append(JavaCodeGenUtil.INDENTATION)
             .append("&& ");
         }
-        body.append("Objects.equals(")
+        body.append("Objects.equals(this.")
           .append(f)
           .append(", o.")
           .append(f)

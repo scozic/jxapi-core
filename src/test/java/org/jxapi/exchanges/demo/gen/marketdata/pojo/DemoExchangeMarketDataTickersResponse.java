@@ -63,19 +63,26 @@ public class DemoExchangeMarketDataTickersResponse implements Pojo<DemoExchangeM
   
   @Override
   public boolean equals(Object other) {
-    if (other == null)
+    if (other == null) {
       return false;
+    }
+    if (this == other) {
+      return true;
+    }
     if (!getClass().equals(other.getClass()))
       return false;
     DemoExchangeMarketDataTickersResponse o = (DemoExchangeMarketDataTickersResponse) other;
-    return Objects.equals(responseCode, o.responseCode)
-            && Objects.equals(payload, o.payload);
+    return Objects.equals(this.responseCode, o.responseCode)
+            && Objects.equals(this.payload, o.payload);
   }
   
   @Override
   public int compareTo(DemoExchangeMarketDataTickersResponse other) {
     if (other == null) {
       return 1;
+    }
+    if (this == other) {
+      return 0;
     }
     int res = 0;
     res = CompareUtil.compare(this.responseCode, other.responseCode);
