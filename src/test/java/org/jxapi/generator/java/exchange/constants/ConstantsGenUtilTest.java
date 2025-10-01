@@ -8,6 +8,10 @@ import org.junit.Test;
 import org.jxapi.exchange.descriptor.Constant;
 import org.jxapi.exchange.descriptor.Type;
 import org.jxapi.generator.java.Imports;
+import org.jxapi.netutils.deserialization.json.field.IntegerJsonFieldDeserializer;
+import org.jxapi.netutils.deserialization.json.field.ListJsonFieldDeserializer;
+import org.jxapi.netutils.deserialization.json.field.MapJsonFieldDeserializer;
+import org.jxapi.util.EncodingUtil;
 import org.jxapi.util.PlaceHolderResolver;
 
 /**
@@ -53,6 +57,44 @@ public class ConstantsGenUtilTest {
          ConstantsGenUtil.generateConstantDeclaration(c, List.of(c), imports, null, null));
     Assert.assertEquals(0, imports.size());
   }
+  
+  @Test
+  public void testCreateIntConstant_IntMapListValueWithValueAsMapObject() {
+    Imports imports = new Imports();
+    List<Map<String, Integer>> value = List.of(Map.of("a", 1, "b", 2), Map.of("c", 3));
+    Constant c = Constant.create("myInt", Type.fromTypeName("INT_MAP_LIST"), "My int constant with list of map with integer values", value);
+    Assert.assertEquals( "/**\n"
+        + " * My int constant with list of map with integer values\n"
+        + " */\n"
+        + "public static final List<Map<String, Integer>> MY_INT = new ListJsonFieldDeserializer<>(new MapJsonFieldDeserializer<>(IntegerJsonFieldDeserializer.getInstance())).deserialize(\"[{\\\"a\\\":1,\\\"b\\\":2},{\\\"c\\\":3}]\");\n"
+        + "", 
+         ConstantsGenUtil.generateConstantDeclaration(c, List.of(c), imports, null, null));
+    Assert.assertEquals(5, imports.size());
+    Assert.assertTrue(imports.contains(Map.class.getName()));
+    Assert.assertTrue(imports.contains(List.class.getName()));
+    Assert.assertTrue(imports.contains(IntegerJsonFieldDeserializer.class.getName()));
+    Assert.assertTrue(imports.contains(ListJsonFieldDeserializer.class.getName()));
+    Assert.assertTrue(imports.contains(MapJsonFieldDeserializer.class.getName()));
+  }
+  
+  @Test
+  public void testCreateIntConstant_IntMapListValueWithValueAsStringObject() {
+    Imports imports = new Imports();
+    String value = EncodingUtil.pojoToJsonString(List.of(Map.of("a", 1, "b", 2), Map.of("c", 3)));
+    Constant c = Constant.create("myInt", Type.fromTypeName("INT_MAP_LIST"), "My int constant with list of map with integer values", value);
+    Assert.assertEquals( "/**\n"
+        + " * My int constant with list of map with integer values\n"
+        + " */\n"
+        + "public static final List<Map<String, Integer>> MY_INT = new ListJsonFieldDeserializer<>(new MapJsonFieldDeserializer<>(IntegerJsonFieldDeserializer.getInstance())).deserialize(\"[{\\\"a\\\":1,\\\"b\\\":2},{\\\"c\\\":3}]\");\n"
+        + "", 
+         ConstantsGenUtil.generateConstantDeclaration(c, List.of(c), imports, null, null));
+    Assert.assertEquals(5, imports.size());
+    Assert.assertTrue(imports.contains(Map.class.getName()));
+    Assert.assertTrue(imports.contains(List.class.getName()));
+    Assert.assertTrue(imports.contains(IntegerJsonFieldDeserializer.class.getName()));
+    Assert.assertTrue(imports.contains(ListJsonFieldDeserializer.class.getName()));
+    Assert.assertTrue(imports.contains(MapJsonFieldDeserializer.class.getName()));
+  }
 
   @Test
   public void testCreateLongConstantWithNow() {
@@ -66,7 +108,7 @@ public class ConstantsGenUtilTest {
   
   @Test(expected = IllegalArgumentException.class)
   public void testCreateStringConstantInvalidType() {
-    Constant c = Constant.create("myString", Type.fromTypeName("STRING_LIST"), null, "foo");
+    Constant c = Constant.create("myString", Type.fromTypeName("OBJECT_LIST"), null, "foo");
     ConstantsGenUtil.generateConstantDeclaration(c, List.of(c), new Imports(), null, null);
   }
   
@@ -87,6 +129,12 @@ public class ConstantsGenUtilTest {
     Assert.assertEquals("C1_", ConstantsGenUtil.getConstantVariableName(c1Up, all));
     Assert.assertEquals("C1__", ConstantsGenUtil.getConstantVariableName(c1Underscore, all));
     Assert.assertEquals("C1___", ConstantsGenUtil.getConstantVariableName(c1UpUnderscore, all));
+  }
+  
+  @Test(expected = IllegalArgumentException.class)
+  public void testGetConstantVariableNameConstantNotProvidedInSieblings() {
+    Constant c = Constant.create("myConstant", Type.STRING, null, "foo");
+    ConstantsGenUtil.getConstantVariableName(c, List.of());
   }
 
 }

@@ -633,9 +633,9 @@ public class ExchangeGenUtilTest {
     
     exchangeDescriptor.setConstants(List.of(constantGroup));
     Imports imports = new Imports();
-    // Retrieved value should be null because it is a group constant and only individual constants value declarations are supported.
-    Assert.assertNull(ExchangeGenUtil.getValueDeclarationForConstant("myGroup", exchangeDescriptor, imports));
-    Assert.assertEquals(0, imports.size());
+    Assert.assertEquals("MyExchangeConstants.MyGroup", ExchangeGenUtil.getValueDeclarationForConstant("myGroup", exchangeDescriptor, imports));
+    Assert.assertEquals(1, imports.size());
+    Assert.assertTrue(imports.contains("com.x.y.z.MyExchangeConstants"));
   }
   
   @Test
@@ -658,6 +658,47 @@ public class ExchangeGenUtilTest {
     exchangeDescriptor.setConstants(List.of(constantGroup));
     Imports imports = new Imports();
     Assert.assertEquals("MyExchangeConstants.MyGroup.FOO", ExchangeGenUtil.getValueDeclarationForConstant("myGroup.foo", exchangeDescriptor, imports));
+    Assert.assertEquals(1, imports.size());
+    Assert.assertTrue(imports.contains("com.x.y.z.MyExchangeConstants"));
+  }
+  
+  @Test
+  public void testGetValueDeclarationForConstant_ConstantNestedInGroupWithConflictingStaticVariableName() {
+    ExchangeDescriptor exchangeDescriptor = new ExchangeDescriptor();
+    exchangeDescriptor.setId("MyExchange");
+    exchangeDescriptor.setBasePackage("com.x.y.z");
+    
+    Constant constant = new Constant();
+    constant.setName("foo");
+    constant.setValue("bar");
+    constant.setType(Type.STRING);
+    
+    Constant constant2 = new Constant();
+    constant2.setName("Foo");
+    constant2.setValue("Bar");
+    constant2.setType(Type.STRING);
+    
+    // Create a constant group
+    Constant constantGroup = new Constant();
+    constantGroup.setName("myGroup");
+    constantGroup.setDescription("A constant group");
+    constantGroup.setConstants(List.of(constant, constant2));
+    
+    Constant constant3 = new Constant();
+    constant3.setName("hello");
+    constant3.setValue("world");
+    constant3.setType(Type.STRING);
+    
+    Constant group2 = new Constant();
+    group2.setName("MyGroup");
+    group2.setDescription("Another constant group to test case sensitivity");
+    group2.setConstants(List.of(constant3));
+    
+    exchangeDescriptor.setConstants(List.of(constantGroup, group2));
+    Imports imports = new Imports();
+    Assert.assertEquals("MyExchangeConstants.MyGroup.FOO", ExchangeGenUtil.getValueDeclarationForConstant("myGroup.foo", exchangeDescriptor, imports));
+    Assert.assertEquals("MyExchangeConstants.MyGroup.FOO_", ExchangeGenUtil.getValueDeclarationForConstant("myGroup.Foo", exchangeDescriptor, imports));
+    Assert.assertEquals("MyExchangeConstants.MyGroup_.HELLO", ExchangeGenUtil.getValueDeclarationForConstant("MyGroup.hello", exchangeDescriptor, imports));
     Assert.assertEquals(1, imports.size());
     Assert.assertTrue(imports.contains("com.x.y.z.MyExchangeConstants"));
   }

@@ -31,8 +31,7 @@ import org.slf4j.Logger;
  * <li>The subscription request is created if the API method has arguments using
  * a generated <code>public static</code> method for creating that request.</li>
  * <li>That request creation method uses sample values provided with each field
- * of the request sample values, see {@link Field#getSampleValue()} and
- * {@link Field#getSampleMapKeyValue()}.</li>
+ * of the request sample values, see {@link Field#getSampleValue()} and.</li>
  * <li>Logs the subscription and unsubscription actions.</li>
  * <li>Logs the messages received from the websocket stream.</li>
  * <li>Unsubscribes from stream after some delay has elapsed after subscription.

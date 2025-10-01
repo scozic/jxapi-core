@@ -10,6 +10,7 @@ import org.jxapi.generator.java.Imports;
 import org.jxapi.generator.java.JavaCodeGenUtil;
 import org.jxapi.generator.java.exchange.ExchangeGenUtil;
 import org.jxapi.util.CollectionUtil;
+import org.jxapi.util.EncodingUtil;
 import org.jxapi.util.PlaceHolderResolver;
 
 /**
@@ -42,18 +43,13 @@ public class ConstantsGenUtil {
                                                    PlaceHolderResolver docPlaceHolderResolver,
                                                    PlaceHolderResolver sampleValuePlaceHolderResolver) {
     StringBuilder code = new StringBuilder();
-    Type type = constant.getType();
-    if (!type.getCanonicalType().isPrimitive) {
-      throw new IllegalArgumentException("Constant " + constant + " has not a primitive type");
+    Type type = Optional.ofNullable(constant.getType()).orElse(Type.STRING);
+    if (type.isObject()) {
+      throw new IllegalArgumentException("Constant " + constant + " can not be of type Object");
     }
     String className = ExchangeGenUtil.getClassNameForType(type, imports, null);
     String varName = getConstantVariableName(constant, sieblings);
-    String value = ExchangeGenUtil.getPrimitiveTypeFieldSampleValueDeclaration(
-                    type, 
-                    constant.
-                    getValue(), 
-                    imports, 
-                    sampleValuePlaceHolderResolver);
+    String value = getConstantSampleValueDeclaration(constant, imports, sampleValuePlaceHolderResolver);
     String description = Optional.ofNullable(docPlaceHolderResolver)
                                  .orElse(PlaceHolderResolver.NO_OP)
                                  .resolve(constant.getDescription());
@@ -69,6 +65,26 @@ public class ConstantsGenUtil {
       .append(value)
       .append(";\n");
     return code.toString();
+  }
+  
+  private static String getConstantSampleValueDeclaration(Constant constant, Imports imports,
+      PlaceHolderResolver sampleValuePlaceHolderResolver) {
+    Type type = Optional.ofNullable(constant.getType()).orElse(Type.STRING);
+    if (type.getCanonicalType().isPrimitive) {
+      return ExchangeGenUtil.getPrimitiveTypeFieldSampleValueDeclaration(type, constant.getValue(), imports,
+          sampleValuePlaceHolderResolver);
+    }
+    // Map or list
+    StringBuilder s = new StringBuilder()
+        .append(ExchangeGenUtil.getNewJsonFieldDeserializerInstruction(type, null, imports))
+        .append(".deserialize(");
+    Object v = constant.getValue();
+    if (!(v instanceof String)) {
+      v = EncodingUtil.pojoToJsonString(v);
+    } 
+    s.append(ExchangeGenUtil.getPrimitiveTypeFieldSampleValueDeclaration(Type.STRING, v, imports, sampleValuePlaceHolderResolver))
+     .append(")");
+    return s.toString();
   }
   
   /**

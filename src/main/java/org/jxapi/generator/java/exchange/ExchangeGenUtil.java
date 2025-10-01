@@ -697,17 +697,30 @@ public class ExchangeGenUtil {
   public static String getValueDeclarationForConstant(String constantName, 
                                                       ExchangeDescriptor exchangeDescriptor,
                                                       Imports imports) {
-    List<Constant> constants = retrieveConstantHierarchy(constantName, exchangeDescriptor);
-    if(constants.isEmpty() || constants.get(constants.size() - 1).isGroup()) {
-      return null; // Constant not found
-    }
     String className = getExchangeConstantsClassName(exchangeDescriptor);
-    imports.add(className);
-    StringBuilder s = new StringBuilder().append(JavaCodeGenUtil.getClassNameWithoutPackage(className)).append(".");
-    for (int i = 0; i < constants.size() - 1; i++) {
-      s.append(JavaCodeGenUtil.firstLetterToUpperCase(constants.get(i).getName())).append(".");
+    List<Constant> sieblingProperties = null;
+    List<Constant> hierarchy = retrieveConstantHierarchy(constantName, exchangeDescriptor);
+    
+    if(hierarchy.isEmpty()) {
+      // Property not found or is a group property
+      return null;
+    } else {
+      sieblingProperties = CollectionUtil.emptyIfNull(exchangeDescriptor.getConstants());
     }
-    s.append(JavaCodeGenUtil.getStaticVariableName(constants.get(constants.size() - 1).getName()));
+    
+    imports.add(className);
+    StringBuilder s = new StringBuilder()
+        .append(JavaCodeGenUtil.getClassNameWithoutPackage(className))
+        .append(".");
+    for (int i = 0; i < hierarchy.size(); i++) {
+      Constant p = hierarchy.get(i);
+      s.append(ConstantsGenUtil.getConstantVariableName(p, sieblingProperties));
+      if (i < hierarchy.size() - 1) {
+        s.append(".");
+        sieblingProperties = p.getConstants();
+      }
+      
+    }
     return s.toString();
   }
   

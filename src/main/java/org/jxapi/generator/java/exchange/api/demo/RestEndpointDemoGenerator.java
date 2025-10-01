@@ -30,8 +30,7 @@ import org.slf4j.Logger;
  * <li>The request is created if the API method has arguments using a generated
  * <code>public static</code> method for creating that request.</li>
  * <li>That request creation method uses sample values provided with each field
- * of the request sample values, see {@link Field#getSampleValue()} and
- * {@link Field#getSampleMapKeyValue()}.</li>
+ * of the request sample values, see {@link Field#getSampleValue()}.</li>
  * </ul>
  */
 public class RestEndpointDemoGenerator extends JavaTypeGenerator {

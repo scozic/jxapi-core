@@ -31,6 +31,10 @@ public class ExchangeDemoClassesGenerator implements ClassesGenerator {
    * Constructor.
    * 
    * @param exchangeDescriptor the exchange descriptor
+   * @param demoProperties     the demo configuration properties, if null or empty
+   *                           then description or sample value replacements will
+   *                           be performed using exchange descriptor constants
+   *                           and config properties only.
    */
   public ExchangeDemoClassesGenerator(ExchangeDescriptor exchangeDescriptor, List<ConfigPropertyDescriptor> demoProperties) {
     this.exchangeDescriptor = exchangeDescriptor;

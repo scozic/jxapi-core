@@ -129,7 +129,7 @@ public class ConstantsClassGeneratorTest {
   
   @Test(expected = IllegalArgumentException.class)
   public void testInvalidConstantNotAPrimitiveType() {
-    new ConstantsClassGenerator("com.x.y.MyConstants", List.of(Constant.create("myConst", Type.fromTypeName("INT_LIST"), "My description", "[1, 2, 3]")), null).generate();
+    new ConstantsClassGenerator("com.x.y.MyConstants", List.of(Constant.create("myConst", Type.fromTypeName("OBJECT_MAP"), "My description", "[1, 2, 3]")), null).generate();
   }
   
   @Test
