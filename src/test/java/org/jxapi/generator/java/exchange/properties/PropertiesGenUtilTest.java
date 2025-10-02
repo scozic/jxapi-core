@@ -14,6 +14,7 @@ import org.jxapi.util.CollectionUtil;
 import org.jxapi.util.ConfigProperty;
 import org.jxapi.util.DefaultConfigProperty;
 import org.jxapi.util.EncodingUtil;
+import org.jxapi.util.JsonUtil;
 import org.jxapi.util.PlaceHolderResolver;
 
 /**
@@ -144,7 +145,7 @@ public class PropertiesGenUtilTest {
         "personProp", 
         Type.STRING, 
         "A test person like ${fullName}  property",
-        EncodingUtil.pojoToJsonString(samplePerson));
+        JsonUtil.pojoToJsonString(samplePerson, EncodingUtil.createDefaultPojoToToStringObjectMapper()));
     ConfigPropertyDescriptor groupProperty = ConfigPropertyDescriptor.createGroup(
         "personProp", 
         "Group for object type 'personProp'", 

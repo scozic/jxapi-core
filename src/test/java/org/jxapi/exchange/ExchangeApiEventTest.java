@@ -50,13 +50,13 @@ public class ExchangeApiEventTest {
         HttpRequest request = new HttpRequest();
         request.setEndpoint("myRestEndpoint");
         ExchangeApiEvent event = ExchangeApiEvent.createHttpRequestEvent(request);
-        Assert.assertEquals("ExchangeApiEvent{\"type\":\"HTTP_REQUEST\",\"endpoint\":\"myRestEndpoint\",\"httpRequest\":{\"endpoint\":\"myRestEndpoint\"}}", 
+        Assert.assertEquals("{\"type\":\"HTTP_REQUEST\",\"endpoint\":\"myRestEndpoint\",\"httpRequest\":{\"endpoint\":\"myRestEndpoint\"}}", 
                             event.toString());
         event = ExchangeApiEvent.createWebsocketErrorEvent(new WebsocketException("error"));
         event.setExchangeName("myExchange");
         event.setExchangeId("myExchangeId");
         event.setExchangeApiName("myExchangeApi");
-        Assert.assertEquals("ExchangeApiEvent{\"type\":\"WEBSOCKET_ERROR\",\"exchangeName\":\"myExchange\",\"exchangId\":\"myExchangeId\",\"exchangeName\":\"myExchange\",\"exchangApiName\":\"myExchangeApi\",\"websocketError\":\"org.jxapi.netutils.websocket.WebsocketException: error\"}",
+        Assert.assertEquals("{\"type\":\"WEBSOCKET_ERROR\",\"exchangeName\":\"myExchange\",\"exchangId\":\"myExchangeId\",\"exchangeName\":\"myExchange\",\"exchangApiName\":\"myExchangeApi\",\"websocketError\":\"org.jxapi.netutils.websocket.WebsocketException: error\"}",
                             event.toString());
     }
 

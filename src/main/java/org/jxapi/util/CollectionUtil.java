@@ -60,7 +60,7 @@ public class CollectionUtil {
    * @return A new modifiable list.
    */
   public static <T> List<T> createList() {
-    return new ArrayList<>();
+    return new ModifiableList<>();
   }
   
   /**
@@ -70,7 +70,7 @@ public class CollectionUtil {
    * @return A new modifiable list with the given capacity.
    */
   public static <T> List<T> createList(int initialCapacity) {
-    return new ArrayList<>(initialCapacity);
+    return new ModifiableList<>(initialCapacity);
   }
   
   /**
@@ -79,7 +79,7 @@ public class CollectionUtil {
    * @return A new modifiable map with the default initial capacity.
    */
   public static <T> Map<String, T> createMap() {
-    return new LinkedHashMap<>();
+    return new ModifiableMap<>();
   }
   
   
@@ -90,7 +90,7 @@ public class CollectionUtil {
    * @return A new modifiable map with the given initial capacity.
    */
   public static <T> Map<String, T> createMap(int initialCapacity) {
-    return new LinkedHashMap<>(initialCapacity);
+    return new ModifiableMap<>(initialCapacity);
   }
   
   /**
@@ -123,7 +123,7 @@ public class CollectionUtil {
     if (list == null) {
       return null;
     }
-    return new ArrayList<>(list);
+    return new ModifiableList<>(list);
   }
   
   /**
@@ -217,5 +217,41 @@ public class CollectionUtil {
       }
     }
     return merged;
+  }
+  
+  private static class ModifiableMap<K, V> extends LinkedHashMap<K, V> {
+    
+    public ModifiableMap() {
+      super();
+    }
+    
+    public ModifiableMap(int capacity) {
+      super(capacity);
+    }
+    
+    @Override
+    public String toString() {
+      return JsonUtil.pojoToJsonString(this);
+    }
+  }
+  
+  private static class ModifiableList<T> extends ArrayList<T> {
+    
+    public ModifiableList() {
+      super();
+    }
+    
+    public ModifiableList(int initialCapacity) {
+      super(initialCapacity);
+    }
+    
+    public ModifiableList(List<T> list) {
+      super(list);
+    }
+    
+    @Override
+    public String toString() {
+      return JsonUtil.pojoToJsonString(this);
+    }
   }
 }

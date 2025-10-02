@@ -11,7 +11,7 @@ import org.jxapi.generator.java.Imports;
 import org.jxapi.netutils.deserialization.json.field.IntegerJsonFieldDeserializer;
 import org.jxapi.netutils.deserialization.json.field.ListJsonFieldDeserializer;
 import org.jxapi.netutils.deserialization.json.field.MapJsonFieldDeserializer;
-import org.jxapi.util.EncodingUtil;
+import org.jxapi.util.JsonUtil;
 import org.jxapi.util.PlaceHolderResolver;
 
 /**
@@ -80,7 +80,7 @@ public class ConstantsGenUtilTest {
   @Test
   public void testCreateIntConstant_IntMapListValueWithValueAsStringObject() {
     Imports imports = new Imports();
-    String value = EncodingUtil.pojoToJsonString(List.of(Map.of("a", 1, "b", 2), Map.of("c", 3)));
+    String value = JsonUtil.pojoToJsonString(List.of(Map.of("a", 1, "b", 2), Map.of("c", 3)));
     Constant c = Constant.create("myInt", Type.fromTypeName("INT_MAP_LIST"), "My int constant with list of map with integer values", value);
     Assert.assertEquals( "/**\n"
         + " * My int constant with list of map with integer values\n"

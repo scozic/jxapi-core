@@ -38,7 +38,10 @@ public class HttpRequestToStringJsonSerializer extends StdSerializer<HttpRequest
     if (request != null) {
       JsonUtil.writeStringField(gen, "request", EncodingUtil.prettyPrintLongString(JsonUtil.pojoToJsonString(request)));
     }
-    JsonUtil.writeStringField(gen, "body", EncodingUtil.prettyPrintLongString(httpRequest.getBody()));
+    String body = httpRequest.getBody();
+    if (body != null) {
+      gen.writeStringField("body", "length=" + body.length());
+    }
     List<RateLimitRule> rateLimits = httpRequest.getRateLimits();
     if(!CollectionUtil.isEmpty(rateLimits)) {
       gen.writeObjectField("rateLimits", rateLimits);

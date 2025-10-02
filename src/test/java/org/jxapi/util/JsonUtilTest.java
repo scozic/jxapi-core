@@ -385,7 +385,7 @@ public class JsonUtilTest {
   
   @Test
   public void testCreateDefaultJsonToStringObjectMapper() {
-    Assert.assertNotNull(JsonUtil.createDefaultJsonToStringObjectMapper());
+    Assert.assertNotNull(JsonUtil.createDefaultObjectMapper());
   }
   
   @Test

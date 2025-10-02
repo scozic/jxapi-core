@@ -10,7 +10,7 @@ import org.jxapi.generator.java.Imports;
 import org.jxapi.generator.java.JavaCodeGenUtil;
 import org.jxapi.generator.java.exchange.ExchangeGenUtil;
 import org.jxapi.util.CollectionUtil;
-import org.jxapi.util.EncodingUtil;
+import org.jxapi.util.JsonUtil;
 import org.jxapi.util.PlaceHolderResolver;
 
 /**
@@ -80,7 +80,7 @@ public class ConstantsGenUtil {
         .append(".deserialize(");
     Object v = constant.getValue();
     if (!(v instanceof String)) {
-      v = EncodingUtil.pojoToJsonString(v);
+      v = JsonUtil.pojoToJsonString(v);
     } 
     s.append(ExchangeGenUtil.getPrimitiveTypeFieldSampleValueDeclaration(Type.STRING, v, imports, sampleValuePlaceHolderResolver))
      .append(")");

@@ -33,7 +33,7 @@ public class JsonUtil {
   
   private static final SimpleModule EXCEPTION_SERIALIZATION_MODULE = createExceptionSerializationModule();
   
-  private static final ObjectMapper DEFAULT_OBJECT_MAPPER = createDefaultJsonToStringObjectMapper();
+  private static final ObjectMapper DEFAULT_OBJECT_MAPPER = createDefaultObjectMapper();
   
   private static SimpleModule createExceptionSerializationModule() {
     SimpleModule m = new SimpleModule();
@@ -46,7 +46,7 @@ public class JsonUtil {
    * readable string.
    * <p>
    * This serializer is registered in the default {@link ObjectMapper} returned by
-   * {@link JsonUtil#createDefaultJsonToStringObjectMapper()}.
+   * {@link JsonUtil#createDefaultObjectMapper()}.
    */
   public static class ExceptionSerializer extends StdSerializer<Exception> {
 
@@ -74,7 +74,7 @@ public class JsonUtil {
    *         <li>{@link MapperFeature#SORT_PROPERTIES_ALPHABETICALLY} enabled</li>
    *         </ul>
    */
-  public static ObjectMapper createDefaultJsonToStringObjectMapper() {
+  public static ObjectMapper createDefaultObjectMapper() {
     ObjectMapper om = new ObjectMapper();
     om.disable(SerializationFeature.FAIL_ON_EMPTY_BEANS);
     om.enable(SerializationFeature.ORDER_MAP_ENTRIES_BY_KEYS);
@@ -94,11 +94,23 @@ public class JsonUtil {
    *                                  {@link ObjectMapper#writeValueAsString(Object)}
    */
   public static String pojoToJsonString(Object pojo) {
+    return pojoToJsonString(pojo, DEFAULT_OBJECT_MAPPER);
+  }
+  
+  /**
+   * Converts a POJO to a JSON String using provided {@link ObjectMapper}.  
+   * 
+   * @param pojo POJO to convert
+   * @param objectMapper the {@link ObjectMapper} to use for serialization
+   * @return The JSON string representation of the POJO, or <code>null</code> if the POJO is <code>null</code>.
+   * @throws IllegalArgumentException If an error occurs during serialization
+   */
+  public static String pojoToJsonString(Object pojo, ObjectMapper objectMapper) {
     if (pojo == null) {
       return null;
     }
     try {
-      return DEFAULT_OBJECT_MAPPER.writeValueAsString(pojo);
+      return objectMapper.writeValueAsString(pojo);
     } catch (JsonProcessingException e) {
       throw new IllegalArgumentException(
           "Error while trying to serialize " + pojo.getClass().getName() + " instance to JSON", e);
