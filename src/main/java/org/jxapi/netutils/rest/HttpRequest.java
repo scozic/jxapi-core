@@ -8,6 +8,7 @@ import java.util.Map;
 import org.jxapi.netutils.rest.ratelimits.RateLimitRule;
 import org.jxapi.netutils.rest.ratelimits.RequestThrottler;
 import org.jxapi.util.EncodingUtil;
+import org.jxapi.util.ExceptionToStringJsonSerializer;
 import org.jxapi.util.JsonUtil;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -18,7 +19,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 public class HttpRequest {
   
   private static final ObjectMapper TOSTRING_OBJECT_MAPPER = EncodingUtil.createDefaultPojoToToStringObjectMapper(
-      new JsonUtil.ExceptionSerializer(),
+      new ExceptionToStringJsonSerializer(),
       new HttpRequestToStringJsonSerializer()
     );
   

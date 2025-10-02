@@ -4,6 +4,7 @@ import org.jxapi.exchange.ExchangeApi;
 import org.jxapi.netutils.rest.pagination.NextPageResolver;
 import org.jxapi.netutils.rest.pagination.PaginatedRestResponse;
 import org.jxapi.util.EncodingUtil;
+import org.jxapi.util.ExceptionToStringJsonSerializer;
 import org.jxapi.util.JsonUtil;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -22,7 +23,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 public class RestResponse<A> {
   
   private static final ObjectMapper TOSTRING_OBJECT_MAPPER = EncodingUtil.createDefaultPojoToToStringObjectMapper(
-      new JsonUtil.ExceptionSerializer(),
+      new ExceptionToStringJsonSerializer(),
       new HttpRequestToStringJsonSerializer(),
       new HttpResponseToStringJsonSerializer(),
       new RestResponseToStringJsonSerializer()      

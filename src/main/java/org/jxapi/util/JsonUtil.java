@@ -37,32 +37,10 @@ public class JsonUtil {
   
   private static SimpleModule createExceptionSerializationModule() {
     SimpleModule m = new SimpleModule();
-    m.addSerializer(new ExceptionSerializer());
+    m.addSerializer(new ExceptionToStringJsonSerializer());
     return m;
   }
 
-  /**
-   * Custom serializer for {@link Exception} objects, that serializes them as a
-   * readable string.
-   * <p>
-   * This serializer is registered in the default {@link ObjectMapper} returned by
-   * {@link JsonUtil#createDefaultObjectMapper()}.
-   */
-  public static class ExceptionSerializer extends StdSerializer<Exception> {
-
-    /**
-     * Creates a new {@link ExceptionSerializer} instance.
-     */
-    public ExceptionSerializer() {
-      super(Exception.class);
-    }
-
-    @Override
-    public void serialize(Exception value, JsonGenerator gen, SerializerProvider provider) throws IOException {
-      gen.writeString(String.valueOf(value));
-    }
-  }
-  
   /**
    * @return A new {@link ObjectMapper} instance with default configuration for
    *         JSON serialization. The returned instance is configured with:

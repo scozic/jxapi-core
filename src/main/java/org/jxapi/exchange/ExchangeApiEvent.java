@@ -8,6 +8,7 @@ import org.jxapi.netutils.rest.RestResponseToStringJsonSerializer;
 import org.jxapi.netutils.websocket.WebsocketException;
 import org.jxapi.netutils.websocket.WebsocketSubscribeRequest;
 import org.jxapi.util.EncodingUtil;
+import org.jxapi.util.ExceptionToStringJsonSerializer;
 import org.jxapi.util.JsonUtil;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -27,7 +28,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 public class ExchangeApiEvent {
   
   private static final ObjectMapper TOSTRING_OBJECT_MAPPER = EncodingUtil.createDefaultPojoToToStringObjectMapper(
-      new JsonUtil.ExceptionSerializer(),
+      new ExceptionToStringJsonSerializer(),
       new HttpRequestToStringJsonSerializer(),
       new HttpResponseToStringJsonSerializer(),
       new RestResponseToStringJsonSerializer(),
