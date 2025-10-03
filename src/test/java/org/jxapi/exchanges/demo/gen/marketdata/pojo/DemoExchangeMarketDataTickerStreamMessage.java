@@ -145,12 +145,12 @@ public class DemoExchangeMarketDataTickerStreamMessage implements Pojo<DemoExcha
       return false;
     DemoExchangeMarketDataTickerStreamMessage o = (DemoExchangeMarketDataTickerStreamMessage) other;
     return Objects.equals(this.topic, o.topic)
-            && Objects.equals(this.symbol, o.symbol)
-            && Objects.equals(this.last, o.last)
-            && Objects.equals(this.high, o.high)
-            && Objects.equals(this.low, o.low)
-            && Objects.equals(this.volume, o.volume)
-            && Objects.equals(this.time, o.time);
+        && Objects.equals(this.symbol, o.symbol)
+        && Objects.equals(this.last, o.last)
+        && Objects.equals(this.high, o.high)
+        && Objects.equals(this.low, o.low)
+        && Objects.equals(this.volume, o.volume)
+        && Objects.equals(this.time, o.time);
   }
   
   @Override

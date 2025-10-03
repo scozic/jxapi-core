@@ -114,10 +114,10 @@ public class DemoExchangeMarketDataTickersResponsePayload implements Pojo<DemoEx
       return false;
     DemoExchangeMarketDataTickersResponsePayload o = (DemoExchangeMarketDataTickersResponsePayload) other;
     return Objects.equals(this.last, o.last)
-            && Objects.equals(this.high, o.high)
-            && Objects.equals(this.low, o.low)
-            && Objects.equals(this.volume, o.volume)
-            && Objects.equals(this.time, o.time);
+        && Objects.equals(this.high, o.high)
+        && Objects.equals(this.low, o.low)
+        && Objects.equals(this.volume, o.volume)
+        && Objects.equals(this.time, o.time);
   }
   
   @Override

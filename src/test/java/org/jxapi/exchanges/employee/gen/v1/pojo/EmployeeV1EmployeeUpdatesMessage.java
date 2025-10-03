@@ -69,7 +69,7 @@ public class EmployeeV1EmployeeUpdatesMessage implements Pojo<EmployeeV1Employee
       return false;
     EmployeeV1EmployeeUpdatesMessage o = (EmployeeV1EmployeeUpdatesMessage) other;
     return Objects.equals(this.eventType, o.eventType)
-            && Objects.equals(this.employee, o.employee);
+        && Objects.equals(this.employee, o.employee);
   }
   
   @Override

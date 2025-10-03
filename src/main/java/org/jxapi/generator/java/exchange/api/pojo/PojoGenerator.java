@@ -523,8 +523,6 @@ public class PojoGenerator extends JavaTypeGenerator {
           body.append("\n")
             .append(JavaCodeGenUtil.INDENTATION)
             .append(JavaCodeGenUtil.INDENTATION)
-            .append(JavaCodeGenUtil.INDENTATION)
-            .append(JavaCodeGenUtil.INDENTATION)
             .append("&& ");
         }
         body.append("Objects.equals(this.")

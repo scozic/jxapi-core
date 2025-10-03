@@ -84,8 +84,8 @@ public class DemoExchangeMarketDataExchangeInfoResponsePayload implements Pojo<D
       return false;
     DemoExchangeMarketDataExchangeInfoResponsePayload o = (DemoExchangeMarketDataExchangeInfoResponsePayload) other;
     return Objects.equals(this.symbol, o.symbol)
-            && Objects.equals(this.minOrderSize, o.minOrderSize)
-            && Objects.equals(this.orderTickSize, o.orderTickSize);
+        && Objects.equals(this.minOrderSize, o.minOrderSize)
+        && Objects.equals(this.orderTickSize, o.orderTickSize);
   }
   
   @Override

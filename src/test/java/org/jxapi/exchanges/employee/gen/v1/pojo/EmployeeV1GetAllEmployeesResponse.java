@@ -83,8 +83,8 @@ public class EmployeeV1GetAllEmployeesResponse implements Pojo<EmployeeV1GetAllE
       return false;
     EmployeeV1GetAllEmployeesResponse o = (EmployeeV1GetAllEmployeesResponse) other;
     return Objects.equals(this.page, o.page)
-            && Objects.equals(this.totalPages, o.totalPages)
-            && Objects.equals(this.employees, o.employees);
+        && Objects.equals(this.totalPages, o.totalPages)
+        && Objects.equals(this.employees, o.employees);
   }
   
   @Override

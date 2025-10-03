@@ -73,7 +73,7 @@ public class DemoExchangeMarketDataTickersResponse implements Pojo<DemoExchangeM
       return false;
     DemoExchangeMarketDataTickersResponse o = (DemoExchangeMarketDataTickersResponse) other;
     return Objects.equals(this.responseCode, o.responseCode)
-            && Objects.equals(this.payload, o.payload);
+        && Objects.equals(this.payload, o.payload);
   }
   
   @Override

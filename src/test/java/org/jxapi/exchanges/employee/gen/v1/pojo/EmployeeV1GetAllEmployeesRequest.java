@@ -72,7 +72,7 @@ public class EmployeeV1GetAllEmployeesRequest implements Pojo<EmployeeV1GetAllEm
       return false;
     EmployeeV1GetAllEmployeesRequest o = (EmployeeV1GetAllEmployeesRequest) other;
     return Objects.equals(this.page, o.page)
-            && Objects.equals(this.size, o.size);
+        && Objects.equals(this.size, o.size);
   }
   
   @Override

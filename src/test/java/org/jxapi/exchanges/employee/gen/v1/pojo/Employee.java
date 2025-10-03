@@ -100,9 +100,9 @@ public class Employee implements Pojo<Employee> {
       return false;
     Employee o = (Employee) other;
     return Objects.equals(this.id, o.id)
-            && Objects.equals(this.firstName, o.firstName)
-            && Objects.equals(this.lastName, o.lastName)
-            && Objects.equals(this.profile, o.profile);
+        && Objects.equals(this.firstName, o.firstName)
+        && Objects.equals(this.lastName, o.lastName)
+        && Objects.equals(this.profile, o.profile);
   }
   
   @Override
