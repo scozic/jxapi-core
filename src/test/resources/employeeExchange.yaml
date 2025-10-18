@@ -15,10 +15,6 @@ properties:
       description: "Base URL for REST endpoints the Employee Exchange API"
     - name: "baseWebsocketUrl"
       description: "Base URL for websocket endpoints of the Employee Exchange API"
-demoProperties:      
- - name: employeeId
-   description: "Used in demo snippets to set as value of Employee 'id' property"
-   defaultValue: 1
 basePackage: org.jxapi.exchanges.employee.gen
 httpUrl: ${config.server.baseHttpUrl}
 httpRequestInterceptorFactory: org.jxapi.exchanges.demo.net.DemoExchangeHttpRequestInterceptorFactory
@@ -53,7 +49,7 @@ constants:
         description: Value of eventType field in WS message for update of an existing employee event
         value: DELETE
 apis:
- - name: V1
+ - name: v1
    description: "Version 1 of the Employee API"
    httpUrl: v1
    restEndpoints:
@@ -67,7 +63,7 @@ apis:
        name: id
        type: INT
        description: Employee ID
-       sampleValue: ${demo.config.employeeId}
+       sampleValue: 1
       response:
        objectName: Employee
        type: OBJECT
@@ -75,7 +71,7 @@ apis:
         - name: id
           type: INT
           description: Employee ID
-          sampleValue: ${demo.config.employeeId}
+          sampleValue: 1
         - name: firstName
           description: "Employee first name"
           sampleValue: John
@@ -83,7 +79,7 @@ apis:
           description: Employee last name
           sampleValue: Doe
         - name: profile
-          description: Employee profile. Can be ${constants.profile.regular} or ${constants.profile.admin}
+          description: Employee profile. See ${constants.profile}
           sampleValue: ${constants.profile.regular}
     - name: getAllEmployees
       description: Get all employees
@@ -148,7 +144,7 @@ apis:
        name: id
        type: INT
        description: Employee ID
-       sampleValue: ${demo.config.employeeId}
+       sampleValue: 1
    websocketUrl: ${config.server.baseWebsocketUrl}
    websocketHookFactory: org.jxapi.exchanges.demo.net.DemoExchangeWebsocketHookFactory  
    websocketEndpoints:

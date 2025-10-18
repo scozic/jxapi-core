@@ -39,27 +39,6 @@ public class FieldBuilderTest {
     }
 
     @Test
-    public void testSetSampleMapKeyValues() {
-        FieldBuilder builder = new FieldBuilder();
-        Field field = builder.sampleMapKeyValues(List.of("foo", "bar")).build();
-        Assert.assertEquals(List.of("foo", "bar"), field.getSampleMapKeyValue());
-    }
-
-    @Test
-    public void testSetSampleMapKeyValuesNull() {
-        FieldBuilder builder = new FieldBuilder();
-        Field field = builder.sampleMapKeyValues(null).build();
-        Assert.assertNull(field.getSampleMapKeyValue());
-    }
-
-    @Test
-    public void testSetSampleMapKeyValue() {
-        FieldBuilder builder = new FieldBuilder();
-        Field field = builder.sampleMapKeyValue("foo").sampleMapKeyValue("bar") .build();
-        Assert.assertEquals(List.of("foo", "bar"), field.getSampleMapKeyValue());
-    }
-
-    @Test
     public void testSetSampleValue() {
         FieldBuilder builder = new FieldBuilder();
         Field field = builder.sampleValue("foo").build();

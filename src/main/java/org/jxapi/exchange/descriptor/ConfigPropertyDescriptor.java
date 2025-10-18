@@ -27,7 +27,7 @@ import org.jxapi.util.EncodingUtil;
 public class ConfigPropertyDescriptor {
   
   /**
-   * Factory method to create a property instance
+   * Factory method to create a simple (not group) property instance
    * 
    * @param name         Property name
    * @param type         Property value type, see {@link Type}, should be a
@@ -61,7 +61,8 @@ public class ConfigPropertyDescriptor {
     ConfigPropertyDescriptor p = new ConfigPropertyDescriptor();
     p.setName(name);
     p.setDescription(description);
-    p.setProperties(properties);
+    p.setProperties(CollectionUtil.emptyIfNull(properties));
+    p.setType(Type.OBJECT);
     return p;
   }
 
@@ -108,7 +109,7 @@ public class ConfigPropertyDescriptor {
    * Type#STRING}, {@link Type#INT}, {@link Type#BOOLEAN}, {@link
    * Type#BIGDECIMAL}, {@link Type#LONG}. 
    * <p> Not relevant for groups of properties, i.e. when {@link #isGroup()} 
-   * returns <code>true</code>. 
+   * returns <code>true</code>. In that case {@link Type#OBJECT} type is used by convention. 
    * <p>
    * Default value is {@link Type#STRING} (therefore type property can be ommitted
    * in descriptor when it values are of String type).
@@ -121,7 +122,9 @@ public class ConfigPropertyDescriptor {
   /**
    * Property value type, see {@link Type}, should be a primitive type e.g.
    * {@link Type#STRING}, {@link Type#INT}, {@link Type#BOOLEAN},
-   * {@link Type#BIGDECIMAL}, {@link Type#LONG}.
+   * {@link Type#BIGDECIMAL} or {@link Type#LONG}, unless it is a group of
+   * properties, i.e. when {@link #isGroup()} returns <code>true</code>.
+   * In that case type is not relevant but should be {@link Type#OBJECT} by convention.
    * @param type Property value type
    */
   public void setType(Type type) {
@@ -185,7 +188,7 @@ public class ConfigPropertyDescriptor {
    * @return <code>true</code> if this property is a group of properties
    */
   public boolean isGroup() {
-    return !CollectionUtil.isEmpty(properties);
+    return properties != null;
   }
   
   /**

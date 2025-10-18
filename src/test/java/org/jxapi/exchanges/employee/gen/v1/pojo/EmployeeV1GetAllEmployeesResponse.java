@@ -14,7 +14,7 @@ import org.jxapi.util.EncodingUtil;
 import org.jxapi.util.Pojo;
 
 /**
- * Response to Employee V1 API <br>
+ * Response to Employee v1 API <br>
  * getAllEmployees REST endpoint request<br>
  * Get all employees
  */
@@ -73,20 +73,27 @@ public class EmployeeV1GetAllEmployeesResponse implements Pojo<EmployeeV1GetAllE
   
   @Override
   public boolean equals(Object other) {
-    if (other == null)
+    if (other == null) {
       return false;
+    }
+    if (this == other) {
+      return true;
+    }
     if (!getClass().equals(other.getClass()))
       return false;
     EmployeeV1GetAllEmployeesResponse o = (EmployeeV1GetAllEmployeesResponse) other;
-    return Objects.equals(page, o.page)
-            && Objects.equals(totalPages, o.totalPages)
-            && Objects.equals(employees, o.employees);
+    return Objects.equals(this.page, o.page)
+        && Objects.equals(this.totalPages, o.totalPages)
+        && Objects.equals(this.employees, o.employees);
   }
   
   @Override
   public int compareTo(EmployeeV1GetAllEmployeesResponse other) {
     if (other == null) {
       return 1;
+    }
+    if (this == other) {
+      return 0;
     }
     int res = 0;
     res = CompareUtil.compare(this.page, other.page);

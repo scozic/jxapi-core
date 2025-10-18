@@ -8,11 +8,20 @@ import java.util.Map;
 import org.jxapi.netutils.rest.ratelimits.RateLimitRule;
 import org.jxapi.netutils.rest.ratelimits.RequestThrottler;
 import org.jxapi.util.EncodingUtil;
+import org.jxapi.util.ExceptionToStringJsonSerializer;
+import org.jxapi.util.JsonUtil;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
  * Generic HTTP request for a REST API call.
  */
 public class HttpRequest {
+  
+  private static final ObjectMapper TOSTRING_OBJECT_MAPPER = EncodingUtil.createDefaultPojoToToStringObjectMapper(
+      new ExceptionToStringJsonSerializer(),
+      new HttpRequestToStringJsonSerializer()
+    );
   
   /**
    * Creates a new {@link HttpRequest} object with <code>null</code> body.
@@ -295,8 +304,14 @@ public class HttpRequest {
     this.endpoint = endpoint;
   }
 
+  /**
+   * Returns a JSON like string representation of this object, with properties ordered by importance.
+   * Some fields are pretty printed or shortened to enhance readability.
+   * @return A string representation of this object, with properties in JSON format ordered by importance.
+   * @see HttpResponseToStringJsonSerializer
+   */
   @Override
   public String toString() {
-    return EncodingUtil.pojoToString(this);
+    return JsonUtil.pojoToJsonString(this, TOSTRING_OBJECT_MAPPER);
   }
 }

@@ -8,17 +8,6 @@
 		{"name": "apiKey", "description": "API key"},
 		{"name": "apiSecret", "description": "API secret"}
 	],
-	"demoProperties": [
-		{"name": "demoSymbol", "description": "Market symbol to use in demo snippets", "defaultValue": "${constants.defaultDemoSymbol}"},
-		{"name": "wsTickerStreamDemo", "description": "Websocket ticker stream demo properties", "properties": [
-				{
-					"name": "symbol",
-					"description": "Market symbol to use in demo snippets, defaults to ${constants.allTickers}.",
-					"defaultValue": "${constants.allTickers}"
-				}
-			]
-		}
-	],
 	"constants": [
 		{"name": "pingMessage", "type":"STRING", "description": "Ping message", "value": "Ping!"},
 		{"name": "pongMessage", "type":"STRING", "description": "Pong message", "value": "Pong!"},
@@ -30,7 +19,6 @@
 				{"name": "lastName", "type":"STRING", "description": "Author last name", "value": "Smith"}
 			]
 		},
-		{"name": "defaultDemoSymbol", "type":"STRING", "description": "Default value for market 'symbol' parameter in demo snippets", "value": "BTC_USDT"},
 		{"name": "authorFullName", "type":"STRING", "description": "Author name like ${constants.authorFullName}", "value": "${constants.author.firstName} ${constants.author.lastName}"},
 		{"name": "allTickers", "type":"STRING", "description": "Constant for subscribing to all tickers", "value": "all"},
 		{"name": "demoSymbol", "type":"STRING", "description": "Value to use for 'symbol' property of endpoint demo snippet requests.", "value": "BTC_USDT"}
@@ -54,7 +42,7 @@
 						], 
 					    "description": "Request parameters for fetching exchange info. Author: ${constants.authorFullName}",
 						"properties": [
-							{"name":"symbols", "type": "STRING_LIST", "description":"The list of symbol to fetch market information for. Leave empty to fetch all markets. Author: ${constants.authorFullName}", "sampleValue":"[\"${config.demoSymbol}\"]"},
+							{"name":"symbols", "type": "STRING_LIST", "description":"The list of symbol to fetch market information for. Leave empty to fetch all markets. Author: ${constants.authorFullName}", "sampleValue":"[\"${constants.demoSymbol}\"]"},
 							{"name": "apiKey", "type":"STRING", "description":"API key, see ${config.apiKey}", "sampleValue": "${config.apiKey}"},
 							{"name": "author", "type":"STRING", "description":"Author name, see ${constants.authorFullName}", "sampleValue": "${constants.author.firstName} ${constants.author.lastName}"},
 							{"name": "page", "type": "INT", "description": "Page number to return, defaults to 1. Author: ${constants.authorFullName}", "sampleValue": 1}
@@ -109,7 +97,7 @@
 					"request": {
 					    "description": "Request parameters for subscribing to ticker stream. Use ${constants.allTickers} to subscribe to every ticker. Author: ${constants.authorFullName}",
 						"properties": [
-							{"name": "symbol", "type":"STRING", "description":"Symbol to subscribe to ticker stream of. Use ${constants.allTickers} to subscribe to every ticker. Author: ${constants.authorFullName}", "sampleValue": "${config.wsTickerStreamDemo.symbol}"},
+							{"name": "symbol", "type":"STRING", "description":"Symbol to subscribe to ticker stream of. Use ${constants.allTickers} to subscribe to every ticker. Author: ${constants.authorFullName}", "sampleValue": "${constants.demoSymbol}"},
 							{"name": "apiKey", "type":"STRING", "description":"API key, see ${config.apiKey}", "sampleValue": "${config.apiKey}"}
 						]
 					},

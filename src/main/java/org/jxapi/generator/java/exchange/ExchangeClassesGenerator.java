@@ -72,6 +72,7 @@ public class ExchangeClassesGenerator implements ClassesGenerator {
                                                       s, 
                                                       exchangeDescriptor, 
                                                       null,
+                                                      null,
                                                       cgen.getImports()));
       cgen.setDescription("Constants used in {@link " + exchangeInterfaceGenerator.getName() + "} API wrapper");
       cgen.writeJavaFile(outputFolder);
@@ -81,7 +82,7 @@ public class ExchangeClassesGenerator implements ClassesGenerator {
     List<ConfigPropertyDescriptor> properties = exchangeDescriptor.getProperties();
     if (properties != null) {
       PropertiesClassGenerator pgen = new PropertiesClassGenerator(
-          ExchangeGenUtil.getExchangePropertiesInterfaceName(exchangeDescriptor), 
+          ExchangeGenUtil.getExchangePropertiesClassName(exchangeDescriptor), 
           exchangeDescriptor, 
           properties,
           null);

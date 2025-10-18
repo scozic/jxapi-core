@@ -33,7 +33,7 @@ public class ExchangeDemoClassesGeneratorTest {
   public void testGenerateExchangeDemoClasses() throws IOException {
     srcFolder = ClassesGeneratorTestUtil.generateTmpDir();
     ExchangeDescriptor exchange = ExchangeDescriptorParser.fromJson(Paths.get(".", "src", "test", "resources", "testExchangeDescriptor.json"));
-    new ExchangeDemoClassesGenerator(exchange).generateClasses(srcFolder);
+    new ExchangeDemoClassesGenerator(exchange, EndpointDemoGenUtil.collectDemoConfigProperties(exchange)).generateClasses(srcFolder);
     Path pkgPath = Paths.get(".");
     checkJavaFilesCount(pkgPath, 2);
     ClassesGeneratorTestUtil.checkSourceFileExists(srcFolder.resolve(BASE_PKG), Paths.get("MyTestExchangeDemoProperties.java"));
@@ -51,7 +51,7 @@ public class ExchangeDemoClassesGeneratorTest {
     srcFolder = ClassesGeneratorTestUtil.generateTmpDir();
     ExchangeDescriptor exchange = ExchangeDescriptorParser.fromJson(Paths.get(".", "src", "test", "resources", "testExchangeDescriptor.json"));
     exchange.getApis().get(0).setRestEndpoints(null);
-    new ExchangeDemoClassesGenerator(exchange).generateClasses(srcFolder);
+    new ExchangeDemoClassesGenerator(exchange, null).generateClasses(srcFolder);
     Path pkgPath = Paths.get(".");
     checkJavaFilesCount(pkgPath, 2);
     pkgPath = pkgPath.resolve("marketData");
@@ -66,10 +66,12 @@ public class ExchangeDemoClassesGeneratorTest {
     srcFolder = ClassesGeneratorTestUtil.generateTmpDir();
     ExchangeDescriptor exchange = ExchangeDescriptorParser.fromJson(Paths.get(".", "src", "test", "resources", "testExchangeDescriptor.json"));
     exchange.getApis().get(0).setWebsocketEndpoints(null);
-    exchange.setDemoProperties(null);
-    new ExchangeDemoClassesGenerator(exchange).generateClasses(srcFolder);
+    new ExchangeDemoClassesGenerator(exchange, null).generateClasses(srcFolder);
     Path pkgPath = Paths.get(".");
-    checkJavaFilesCount(pkgPath, 1);
+    checkJavaFilesCount(pkgPath, 2);
+    ClassesGeneratorTestUtil.checkSourceFileExists(srcFolder.
+        resolve(BASE_PKG),
+        Paths.get("MyTestExchangeDemoProperties.java"));
     pkgPath = pkgPath.resolve("marketData");
     checkJavaFilesCount(pkgPath, 1);
     pkgPath = pkgPath.resolve("demo");

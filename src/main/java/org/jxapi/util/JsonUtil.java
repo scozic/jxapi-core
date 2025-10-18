@@ -33,36 +33,14 @@ public class JsonUtil {
   
   private static final SimpleModule EXCEPTION_SERIALIZATION_MODULE = createExceptionSerializationModule();
   
-  private static final ObjectMapper DEFAULT_OBJECT_MAPPER = createDefaultJsonToStringObjectMapper();
+  private static final ObjectMapper DEFAULT_OBJECT_MAPPER = createDefaultObjectMapper();
   
   private static SimpleModule createExceptionSerializationModule() {
     SimpleModule m = new SimpleModule();
-    m.addSerializer(new ExceptionSerializer());
+    m.addSerializer(new ExceptionToStringJsonSerializer());
     return m;
   }
 
-  /**
-   * Custom serializer for {@link Exception} objects, that serializes them as a
-   * readable string.
-   * <p>
-   * This serializer is registered in the default {@link ObjectMapper} returned by
-   * {@link JsonUtil#createDefaultJsonToStringObjectMapper()}.
-   */
-  public static class ExceptionSerializer extends StdSerializer<Exception> {
-
-    /**
-     * Creates a new {@link ExceptionSerializer} instance.
-     */
-    public ExceptionSerializer() {
-      super(Exception.class);
-    }
-
-    @Override
-    public void serialize(Exception value, JsonGenerator gen, SerializerProvider provider) throws IOException {
-      gen.writeString(String.valueOf(value));
-    }
-  }
-  
   /**
    * @return A new {@link ObjectMapper} instance with default configuration for
    *         JSON serialization. The returned instance is configured with:
@@ -74,7 +52,7 @@ public class JsonUtil {
    *         <li>{@link MapperFeature#SORT_PROPERTIES_ALPHABETICALLY} enabled</li>
    *         </ul>
    */
-  public static ObjectMapper createDefaultJsonToStringObjectMapper() {
+  public static ObjectMapper createDefaultObjectMapper() {
     ObjectMapper om = new ObjectMapper();
     om.disable(SerializationFeature.FAIL_ON_EMPTY_BEANS);
     om.enable(SerializationFeature.ORDER_MAP_ENTRIES_BY_KEYS);
@@ -94,11 +72,23 @@ public class JsonUtil {
    *                                  {@link ObjectMapper#writeValueAsString(Object)}
    */
   public static String pojoToJsonString(Object pojo) {
+    return pojoToJsonString(pojo, DEFAULT_OBJECT_MAPPER);
+  }
+  
+  /**
+   * Converts a POJO to a JSON String using provided {@link ObjectMapper}.  
+   * 
+   * @param pojo POJO to convert
+   * @param objectMapper the {@link ObjectMapper} to use for serialization
+   * @return The JSON string representation of the POJO, or <code>null</code> if the POJO is <code>null</code>.
+   * @throws IllegalArgumentException If an error occurs during serialization
+   */
+  public static String pojoToJsonString(Object pojo, ObjectMapper objectMapper) {
     if (pojo == null) {
       return null;
     }
     try {
-      return DEFAULT_OBJECT_MAPPER.writeValueAsString(pojo);
+      return objectMapper.writeValueAsString(pojo);
     } catch (JsonProcessingException e) {
       throw new IllegalArgumentException(
           "Error while trying to serialize " + pojo.getClass().getName() + " instance to JSON", e);

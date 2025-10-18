@@ -89,6 +89,16 @@ public class WebsocketEndpointClassesGenerator implements ClassesGenerator {
   }
 
   private void generateDeserializers(Path outputFolder) throws IOException {
+    if (shouldGenerateRequestPojo()) {
+      new JsonMessageDeserializerClassesGenerator( 
+          ExchangeApiGenUtil.generateWebsocketEndpointRequestPojoClassName(
+              exchangeDescriptor, 
+              apiDescriptor, 
+              websocketEndpointDescriptor),
+              request.getProperties())
+        .generateClasses(outputFolder);
+    }
+    
     if (shouldGenerateMessagePojo()) {
       new JsonMessageDeserializerClassesGenerator(
           ExchangeApiGenUtil.generateWebsocketEndpointMessagePojoClassName(

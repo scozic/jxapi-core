@@ -14,13 +14,8 @@ import java.util.Map;
 import java.util.Optional;
 
 import org.apache.commons.text.StringSubstitutor;
-import org.jxapi.exchange.ExchangeApiEventToStringJsonSerializer;
-import org.jxapi.netutils.rest.HttpRequestToStringJsonSerializer;
-import org.jxapi.netutils.rest.HttpResponseToStringJsonSerializer;
-import org.jxapi.netutils.rest.RestResponseToStringJsonSerializer;
 
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
@@ -46,23 +41,30 @@ public class EncodingUtil {
    */
   public static final String DATE_FORMAT_ISO_8601 = "yyyy-MM-dd'T'HH:mm:ss.SSSZ";
   
-  private static final List<JsonSerializer<?>> DEFAULT_JSON_SERIALIZERS = List.of(
-        new JsonUtil.ExceptionSerializer(),
-        new HttpRequestToStringJsonSerializer(),
-        new HttpResponseToStringJsonSerializer(),
-        new RestResponseToStringJsonSerializer(),
-        new ExchangeApiEventToStringJsonSerializer()
-      );
+  private static final ObjectMapper DEFAULT_TOSTRING_OBJECT_MAPPER = createDefaultPojoToToStringObjectMapper();
   
-  private static final ObjectMapper DEFAULT_TOSTRING_OBJECT_MAPPER = createDefaultJsonToStringObjectMapper();
-  
-  private static ObjectMapper createDefaultJsonToStringObjectMapper() {
+  /**
+   * Creates a default {@link ObjectMapper} for POJO to string conversion for display in logs, with
+   * the following settings:
+   * <ul>
+   * <li>SerializationFeature.FAIL_ON_EMPTY_BEANS disabled</li>
+   * <li>SerializationFeature.ORDER_MAP_ENTRIES_BY_KEYS enabled</li>
+   * <li>Include.NON_NULL inclusion for serialization</li>
+   * </ul>
+   * Additional serializers can be provided as var args.
+   * These are tyupically custom serializers for specific POJOs that need special handling.
+   * 
+   * @param additionalSerializers additional serializers to register in the object
+   *                              mapper
+   * @return the created object mapper
+   */
+  public static ObjectMapper createDefaultPojoToToStringObjectMapper(JsonSerializer<?>... additionalSerializers) {
     ObjectMapper om = new ObjectMapper();
     om.disable(SerializationFeature.FAIL_ON_EMPTY_BEANS);
     om.enable(SerializationFeature.ORDER_MAP_ENTRIES_BY_KEYS);
     om.setSerializationInclusion(Include.NON_NULL);
     final SimpleModule serializerModule = new SimpleModule();
-    DEFAULT_JSON_SERIALIZERS.forEach(serializerModule::addSerializer);
+    Arrays.stream(additionalSerializers).forEach(serializerModule::addSerializer);
     om.registerModule(serializerModule);
     return om;
   }
@@ -253,27 +255,7 @@ public class EncodingUtil {
    *         string representation
    */
   public static String pojoToString(Object pojo) {
-    return pojo.getClass().getSimpleName() +  pojoToFormattedJsonString(pojo); 
-  }
-  
-  /**
-   * Converts a POJO to a JSON 'formatted' string, this means using
-   * <code>toString</code> representation specific serialiazers for some classes,
-   * to avoid producing too long strings on log output.
-   * <p>
-   * For a complete JSON representation of a POJO, use {@link JsonUtil#pojoToJsonString(Object)}.
-   * 
-   * @param pojo POJO to convert
-   * @return concatenation of <code>pojo</code> simple class name and its JSON
-   *         string representation
-   */
-  public static String pojoToFormattedJsonString(Object pojo) {
-    try {
-      return DEFAULT_TOSTRING_OBJECT_MAPPER.writeValueAsString(pojo);
-    } catch (JsonProcessingException e) {
-      throw new IllegalArgumentException(
-          "Error while trying to serialize " + pojo.getClass().getName() + " instance to JSON", e);
-    }
+    return pojo.getClass().getSimpleName() +  JsonUtil.pojoToJsonString(pojo, DEFAULT_TOSTRING_OBJECT_MAPPER); 
   }
   
   

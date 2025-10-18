@@ -46,18 +46,25 @@ public class DemoExchangeMarketDataExchangeInfoRequest implements Pojo<DemoExcha
   
   @Override
   public boolean equals(Object other) {
-    if (other == null)
+    if (other == null) {
       return false;
+    }
+    if (this == other) {
+      return true;
+    }
     if (!getClass().equals(other.getClass()))
       return false;
     DemoExchangeMarketDataExchangeInfoRequest o = (DemoExchangeMarketDataExchangeInfoRequest) other;
-    return Objects.equals(symbols, o.symbols);
+    return Objects.equals(this.symbols, o.symbols);
   }
   
   @Override
   public int compareTo(DemoExchangeMarketDataExchangeInfoRequest other) {
     if (other == null) {
       return 1;
+    }
+    if (this == other) {
+      return 0;
     }
     int res = 0;
     res = CompareUtil.compareLists(this.symbols, other.symbols, CompareUtil::compare);

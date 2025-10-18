@@ -50,7 +50,7 @@ public class ExchangeApiClassesGenerator implements ClassesGenerator {
   @Override
   public void generateClasses(Path outputFolder) throws IOException {
     PlaceHolderResolver docPlaceHolderResolver = 
-      PlaceHolderResolver.create(ExchangeGenUtil.getDescriptionReplacements(exchangeDescriptor, exchangeApiDescriptor.getName()));
+      PlaceHolderResolver.create(ExchangeGenUtil.getDescriptionReplacements(exchangeDescriptor, null));
     ExchangeApiInterfaceGenerator exchangeApiInterfaceGenerator = 
       new ExchangeApiInterfaceGenerator(exchangeDescriptor, exchangeApiDescriptor, docPlaceHolderResolver);
     exchangeApiInterfaceGenerator.writeJavaFile(outputFolder); 

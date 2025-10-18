@@ -7,6 +7,7 @@ import java.nio.file.Path;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Stream;
 
 import org.apache.commons.lang3.StringUtils;
@@ -546,5 +547,54 @@ public class JavaCodeGenUtil {
       return getJavaDocLink(className);
     }
     return getJavaDocLink(className + "#" + attribute);
+  }
+  
+  /**
+   * Generates Java code like <code>Optional.ofNullable(optionalStatement).orElse(orElseStatement)</code>
+   * <ul>
+   * <li>If <code>optionalStatement</code> is empty, returns <code>orElseStatement</code>.
+   * <li>If <code>orElseStatement</code> is empty, returns <code>optionalStatement</code>.
+   * </ul>
+   * @param optionalStatement the optional statement to evaluate
+   * @param orElseStatement the statement to return if the optional is empty
+   * @param imports the imports to add
+   * @param multiline whether to format the code in multiple lines
+   * @return Java code for constant declaration
+   */
+  public static String generateOptionalOfNullableStatement(String optionalStatement, String orElseStatement, Imports imports, boolean multiline) {
+    if (StringUtils.isEmpty(optionalStatement)) {
+      return orElseStatement;
+    }
+    if (StringUtils.isEmpty(orElseStatement)) {
+      return optionalStatement;
+    }
+    imports.add(Optional.class);
+    StringBuilder sb = new StringBuilder().append("Optional");
+    StringBuilder optStatement = new StringBuilder()
+        .append(".ofNullable(")
+        .append(optionalStatement)
+        .append(")");
+    
+    if (multiline) {
+      sb.append("\n")
+        .append(JavaCodeGenUtil.indent(optStatement.toString()));
+    } else {
+      sb.append(optStatement);
+    }
+    
+
+    
+    StringBuilder orElse = new StringBuilder()
+        .append(".orElse(")
+        .append(orElseStatement)
+        .append(")");
+    
+    if (multiline) {
+      sb.append("\n")
+        .append(JavaCodeGenUtil.indent(orElse.toString()));
+    } else {
+      sb.append(orElse);
+    }
+    return sb.toString();
   }
 }

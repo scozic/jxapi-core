@@ -16,11 +16,13 @@ import org.jxapi.exchange.descriptor.ExchangeDescriptor;
 import org.jxapi.exchange.descriptor.parser.ExchangeDescriptorParser;
 import org.jxapi.generator.java.JavaCodeGenUtil;
 import org.jxapi.generator.java.exchange.api.ExchangeApiClassesGenerator;
+import org.jxapi.generator.java.exchange.api.demo.EndpointDemoGenUtil;
 import org.jxapi.generator.java.exchange.api.demo.ExchangeDemoClassesGenerator;
 import org.jxapi.generator.md.exchange.ExchangeReadmeMdGenerator;
-import org.jxapi.generator.properties.exchange.ExchangeDemoPropertiesFileGenerator;
+import org.jxapi.generator.properties.exchange.ExchangeDemoPropertiesTemplateGenerator;
 import org.jxapi.netutils.rest.ratelimits.RateLimitManager;
 import org.jxapi.util.DemoUtil;
+import org.jxapi.util.PlaceHolderResolver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -100,6 +102,7 @@ public class ExchangeGeneratorMain {
       log.error("Error from " + ExchangeGeneratorMain.class.getName() + ".main", t);
       System.exit(-1);
     }
+    System.exit(0);
   }
   
   /**
@@ -174,14 +177,16 @@ public class ExchangeGeneratorMain {
     Path outputSrcTestFolder = projectFolder.resolve(Paths.get("src", "test", "java"));
     Path genTestPackagesFolder = outputSrcTestFolder.resolve(mainPackagePath);
     JavaCodeGenUtil.deletePath(genTestPackagesFolder);
-    generateExchangeWrapperDemos(exchangeDescriptor, outputSrcTestFolder);
+    List<ConfigPropertyDescriptor> demoProperties = EndpointDemoGenUtil.collectDemoConfigProperties(exchangeDescriptor);
+    generateExchangeWrapperDemos(exchangeDescriptor, demoProperties, outputSrcTestFolder);
     
     Path srcTestResourcesFolder = projectFolder.resolve(Paths.get("src", "test", "resources"));
     log.info("Generating demo exchange configuration properties file template in {}", srcTestResourcesFolder);
-    generateDemoPropertiesFileTemplate(exchangeDescriptor, srcTestResourcesFolder);
+    generateDemoPropertiesFileTemplate(exchangeDescriptor, demoProperties, srcTestResourcesFolder);
     
     log.info("Generating exchange README for:{}", exchangeDescriptor.getId());
-    generateExchangeWrapperReadme(exchangeDescriptor, projectFolder, baseJavaDocUrl, baseSrcUrl);
+    boolean hasDemoProperties = !demoProperties.isEmpty();
+    generateExchangeWrapperReadme(exchangeDescriptor, projectFolder, baseJavaDocUrl, baseSrcUrl, hasDemoProperties);
     
     log.info("Done generating java code for {}", exchangeDescriptor.getId());
   }
@@ -198,8 +203,17 @@ public class ExchangeGeneratorMain {
                              Path projectFolder, 
                              String baseJavaDocUrl, 
                              String baseSrcUrl) throws IOException {
-    new ExchangeReadmeMdGenerator(exchangeDescriptor, baseJavaDocUrl, baseSrcUrl).writeJavaFile(projectFolder);
+    boolean hasDemoProperties = !EndpointDemoGenUtil.collectDemoConfigProperties(exchangeDescriptor).isEmpty();
+    new ExchangeReadmeMdGenerator(exchangeDescriptor, baseJavaDocUrl, baseSrcUrl, hasDemoProperties).writeJavaFile(projectFolder);
   }
+  
+  private static void generateExchangeWrapperReadme(ExchangeDescriptor exchangeDescriptor, 
+      Path projectFolder, 
+      String baseJavaDocUrl, 
+      String baseSrcUrl,
+      boolean hasDemoProperties) throws IOException {
+    new ExchangeReadmeMdGenerator(exchangeDescriptor, baseJavaDocUrl, baseSrcUrl, hasDemoProperties).writeJavaFile(projectFolder);
+}
 
   /**
    * Generates exchange API wrapper (without demo snippets) for given exchange descriptor
@@ -218,7 +232,16 @@ public class ExchangeGeneratorMain {
    * @throws IOException If error occurs during generation
    */
   public static void generateExchangeWrapperDemos(ExchangeDescriptor exchangeDescriptor, Path srcFolder) throws IOException {
-    new ExchangeDemoClassesGenerator(exchangeDescriptor).generateClasses(srcFolder);
+    generateExchangeWrapperDemos(
+        exchangeDescriptor,
+        EndpointDemoGenUtil.collectDemoConfigProperties(exchangeDescriptor), 
+        srcFolder);
+  }
+  
+  private static void generateExchangeWrapperDemos(
+      ExchangeDescriptor exchangeDescriptor, 
+      List<ConfigPropertyDescriptor> demoProperties, Path srcFolder) throws IOException {
+    new ExchangeDemoClassesGenerator(exchangeDescriptor, demoProperties).generateClasses(srcFolder);
   }
   
   /**
@@ -231,17 +254,29 @@ public class ExchangeGeneratorMain {
    * @throws IOException If error occurs while writing the file
    */
   public static void generateDemoPropertiesFileTemplate(ExchangeDescriptor exchangeDescriptor, Path resourcesFolder) throws IOException {
+    generateDemoPropertiesFileTemplate(exchangeDescriptor,
+        EndpointDemoGenUtil.collectDemoConfigProperties(exchangeDescriptor), 
+        resourcesFolder);
+  }
+  
+  private static void generateDemoPropertiesFileTemplate(
+      ExchangeDescriptor exchangeDescriptor, 
+      List<ConfigPropertyDescriptor> demoProperties, 
+      Path resourcesFolder) throws IOException {
     String fileName = DemoUtil.getDefaultDemoExchangePropertiesFileName(exchangeDescriptor.getId()) + ".dist";
     Files.createDirectories(resourcesFolder);
     Path filePath = resourcesFolder.resolve(Paths.get(fileName));
     log.info("Generating demo exchange properties template file:{}", filePath);
     List<ConfigPropertyDescriptor> configProperties = new ArrayList<>();
     configProperties.addAll(Optional.ofNullable(exchangeDescriptor.getProperties()).orElse(List.of()));
-    List<ConfigPropertyDescriptor> demoProperties = new ArrayList<>();
-    demoProperties.addAll(Optional.ofNullable(exchangeDescriptor.getDemoProperties()).orElse(List.of()));
-    new ExchangeDemoPropertiesFileGenerator(exchangeDescriptor.getId(), 
+    PlaceHolderResolver valuesPlaceHolderResolver = PlaceHolderResolver.create(ExchangeGenUtil.getValuesReplacements(exchangeDescriptor));
+    PlaceHolderResolver descriptionPlaceHolderResolver = PlaceHolderResolver
+        .create(ExchangeGenUtil.getDescriptionReplacements(exchangeDescriptor, null));
+    new ExchangeDemoPropertiesTemplateGenerator(exchangeDescriptor.getId(), 
                         configProperties, 
-                        demoProperties)
+                        demoProperties,
+                        valuesPlaceHolderResolver,
+                        descriptionPlaceHolderResolver)
       .writeJavaFile(filePath);
   }
 

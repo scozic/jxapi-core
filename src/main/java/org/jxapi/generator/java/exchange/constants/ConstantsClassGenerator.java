@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.Optional;
 
 import org.jxapi.exchange.descriptor.Constant;
-import org.jxapi.generator.java.JavaCodeGenUtil;
 import org.jxapi.generator.java.JavaTypeGenerator;
 import org.jxapi.util.PlaceHolderResolver;
 
@@ -71,7 +70,7 @@ public class ConstantsClassGenerator extends JavaTypeGenerator {
   private void generateConstantDeclaration(Constant constant) {
     if (constant.isGroup()) {
       ConstantsClassGenerator groupGenerator = new ConstantsClassGenerator(
-        JavaCodeGenUtil.firstLetterToUpperCase(constant.getName()), 
+        ConstantsGenUtil.getConstantVariableName(constant, constants), 
         constant.getConstants(), 
         docPlaceHolderResolver);
       groupGenerator.setTypeDeclaration("public static class");
@@ -84,6 +83,7 @@ public class ConstantsClassGenerator extends JavaTypeGenerator {
       appendToBody("\n")
         .append(ConstantsGenUtil.generateConstantDeclaration(
                 constant, 
+                constants,
                 getImports(), 
                 docPlaceHolderResolver,
                 constantValuePlaceHolderResolver));

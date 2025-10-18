@@ -22,9 +22,14 @@ import org.jxapi.util.PlaceHolderResolver;
 public class PropertiesGenUtil {
   
   /**
+   * Prefix for endpoint demo snippet specific properties.
+   */
+  public static final String DEMO_PREFIX = "demo";
+  
+  /**
    * Name of the static 'ALL' variable that contains a list of all configuration properties.
    */
-  public static final String ALL_PROPERTY = "ALL";
+  public static final String ALL_PROPERTY = "all";
 
   private PropertiesGenUtil() {}
   
@@ -75,8 +80,11 @@ public class PropertiesGenUtil {
   
 
   /**
-   * Generates the Java code for a static member named {@link #ALL_PROPERTY} variable that refers to a list of all
-   * configuration properties defined in the class. 
+   * Generates the Java code for a static member variable named 'ALL' that refers to a list of all
+   * configuration properties defined in the class. The list will contain references to all properties and 
+   * properties of group properties defined in the class flattened in a single list.<p>
+   * Remark: If properties contains a property named 'all' the generated variable will be named 'ALL_'
+   * (underscores will be appended until name does not collide with another property static variable name).
    * @param properties the list of configuration properties to include in the generated list.
    * @param imports the set of imports which will be updated with the necessary imports for the generated code.
    * @return the Java code for the static member variable that contains a list of all configuration properties.
@@ -84,11 +92,10 @@ public class PropertiesGenUtil {
   public static String generateAllPropertiesListMethod(List<ConfigPropertyDescriptor> properties, Imports imports) {
       imports.add(List.class);
       imports.add(ConfigProperty.class);
-  
       StringBuilder s = new StringBuilder();
       s.append(JavaCodeGenUtil.generateJavaDoc("List of all configuration properties defined in this class"))
        .append("\npublic static final List<ConfigProperty> ")
-       .append(ALL_PROPERTY)
+       .append(generateAllPropertiesVariableName(properties))
        .append(" = ");
   
       if (CollectionUtil.isEmpty(properties)) {
@@ -105,6 +112,11 @@ public class PropertiesGenUtil {
   
       s.append(")));\n");
       return s.toString();
+  }
+  
+  private static String generateAllPropertiesVariableName(List<ConfigPropertyDescriptor> properties) {
+    ConfigPropertyDescriptor allPropertyVar = ConfigPropertyDescriptor.create(ALL_PROPERTY, Type.STRING, null, null);
+    return getPropertyVariableName(allPropertyVar, CollectionUtil.mergeLists(properties, List.of(allPropertyVar)));
   }
   
   private static void appendPropertiesListToAllPropertiesListMethod(List<ConfigPropertyDescriptor> properties, StringBuilder s) {
@@ -130,7 +142,7 @@ public class PropertiesGenUtil {
               inList = true;
           }
   
-          appendPropertyReferenceToAllPropertiesListMethod(property, s, indent);
+          appendPropertyReferenceToAllPropertiesListMethod(property, properties, s, indent);
       }
   
       if (inList) {
@@ -153,13 +165,17 @@ public class PropertiesGenUtil {
       s.append("List.of(\n").append(indent);
   }
   
-  private static void appendPropertyReferenceToAllPropertiesListMethod(ConfigPropertyDescriptor property, StringBuilder s, String indent) {
+  private static void appendPropertyReferenceToAllPropertiesListMethod(
+      ConfigPropertyDescriptor property,
+      List<ConfigPropertyDescriptor> sieblings,
+      StringBuilder s, 
+      String indent) {
       if (property.isGroup()) {
-          s.append(JavaCodeGenUtil.firstLetterToUpperCase(property.getName()))
-           .append(".").append(ALL_PROPERTY);
+          s.append(PropertiesGenUtil.getPropertyVariableName(property, sieblings))
+           .append(".").append(generateAllPropertiesVariableName(property.getProperties()));
       } else {
           s.append(indent)
-           .append(JavaCodeGenUtil.getStaticVariableName(PropertiesGenUtil.getPropertyKeyPropertyName(property)));
+           .append(PropertiesGenUtil.getPropertyVariableName(property, sieblings));
       }
   }
 
@@ -181,6 +197,7 @@ public class PropertiesGenUtil {
    * property and {@code myDefaultValue} is the default value of the property.
    * 
    * @param property                       the property to generate the declaration for
+   * @param sieblings                      the list of properties declared in the same class as the property, used to avoid name clashes
    * @param prefix                         the prefix to prepend to the property name, for instance 'myExchange'.
    * @param imports                        the set of imports to add to the generated code
    * @param docPlaceHolderResolver         the resolver for placeholders in the property's description
@@ -189,6 +206,7 @@ public class PropertiesGenUtil {
    */
   public static String generateSimplePropertyValueDeclaration(
       ConfigPropertyDescriptor property, 
+      List<ConfigPropertyDescriptor> sieblings,
       String  prefix,
       Imports imports, 
       PlaceHolderResolver docPlaceHolderResolver, 
@@ -199,14 +217,19 @@ public class PropertiesGenUtil {
     String name = getPropertyFullName(prefix, property.getName());
     String description = Optional.ofNullable(docPlaceHolderResolver).orElse(PlaceHolderResolver.NO_OP).resolve(property.getDescription());
     Object sampleValue = property.getDefaultValue();
+    Type propType = property.getType();
+    if (!propType.getCanonicalType().isPrimitive) {
+      propType = Type.STRING;
+    }
     String sampleValueStr = sampleValue == null? null: 
       Optional.ofNullable(sampleValuePlaceHolderResolver)
         .orElse(JavaCodeGenUtil::getQuotedString)
         .resolve(sampleValue.toString());
+
     return new StringBuilder()
         .append(JavaCodeGenUtil.generateJavaDoc(description))
         .append("\npublic static final ConfigProperty ")
-        .append(JavaCodeGenUtil.getStaticVariableName(PropertiesGenUtil.getPropertyKeyPropertyName(property)))
+        .append(PropertiesGenUtil.getPropertyVariableName(property, sieblings))
         .append(" = DefaultConfigProperty.create(\n")
         .append(JavaCodeGenUtil.INDENTATION)
         .append(JavaCodeGenUtil.getQuotedString(name))
@@ -214,7 +237,7 @@ public class PropertiesGenUtil {
         .append(JavaCodeGenUtil.INDENTATION)
         .append(Type.class.getSimpleName())
         .append(".")
-        .append(property.getType().toString())
+        .append(propType.toString())
         .append(",\n")
         .append(JavaCodeGenUtil.INDENTATION)
         .append(JavaCodeGenUtil.getQuotedString(description))
@@ -226,11 +249,76 @@ public class PropertiesGenUtil {
   }
 
   /**
-   * @param property the property to generate the property key property name for, for instance 'myProperty'.
+   * Returns the name of variable holding either the property or group property class name.
+   * That name may be the default static (to upperc case with underscores) variable name for the property,
+   * if it stands for a simple property, or the property name with first letter to upper case e.g. associated class
+   * name if it stands for a group property.
+   * <p>
+   * In case the variable name clashes with another property or group property in the same class, which means 
+   * two properties have same name ignoring case and dots, underscores will be appended to the variable (or class) name.
+   * 
+   * @param property  the property to generate the property key property name for, for instance 'myProperty'.
+   * @param sieblings the list of properties declared in the same class as the property, used to avoid name clashes
    * @return the property key property name, for instance 'myPropertyProperty'
    */
-  public static String getPropertyKeyPropertyName(ConfigPropertyDescriptor property) {
-    return  property.getName();
+  public static String getPropertyVariableName(ConfigPropertyDescriptor property, List<ConfigPropertyDescriptor> sieblings) {
+    sieblings = CollectionUtil.emptyIfNull(sieblings);
+    int off = sieblings.indexOf(property);
+    if (off < 0 ) {
+      throw new IllegalArgumentException("Property '" + property.getName() + "' is not part of the sieblings list: " + sieblings);
+    }
+    return getPropertyVariableName(property, sieblings, off, CollectionUtil.createList(sieblings.size() + 1));
+  }
+  
+  private static String getPropertyVariableName(
+      ConfigPropertyDescriptor property, 
+      List<ConfigPropertyDescriptor> sieblings, 
+      int index, 
+      List<String> propertyNames) {
+    if (index >= propertyNames.size()) {
+      StringBuilder name = new StringBuilder()
+          .append(getPropertyDefaultVariableName(property));
+      sieblings = CollectionUtil.emptyIfNull(sieblings);
+      while (hasDifferentPropertyWithSameVariableName(
+                property,
+                name.toString(),  
+                sieblings,
+                propertyNames)) {
+        name.append("_");
+      }
+      propertyNames.add(name.toString());
+    }
+    
+    return propertyNames.get(index);
+  }
+  
+  private static boolean hasDifferentPropertyWithSameVariableName(
+      ConfigPropertyDescriptor property, 
+      String staticVariableName,
+      List<ConfigPropertyDescriptor> sieblings,
+      List<String> propertyNames) {
+    List<ConfigPropertyDescriptor> l = CollectionUtil.emptyIfNull(sieblings);
+    for (int i = 0; i < l.size(); i++) {
+      ConfigPropertyDescriptor p = l.get(i);
+      if (p == property) {
+        return false;
+      }
+      if (getPropertyVariableName(p, sieblings, i, propertyNames).equals(staticVariableName)) {
+        return true;
+      }
+    }
+    return false;
+  }
+  
+  private static String getPropertyDefaultVariableName(ConfigPropertyDescriptor property) {
+    String name = property.getName();
+    if (name.contains(".")) {
+      name = StringUtils.substringAfterLast(name, ".");
+    }
+    if (property.isGroup()) {
+      return JavaCodeGenUtil.firstLetterToUpperCase(name);
+    }
+    return JavaCodeGenUtil.getStaticVariableName(name);
   }
   
   /**
@@ -244,11 +332,17 @@ public class PropertiesGenUtil {
    */
   public static String getPropertyGetterMethodName(ConfigPropertyDescriptor property, List<ConfigPropertyDescriptor> allProperties) {
     String name = property.getName();
-    String typeClass = ExchangeGenUtil.getClassNameForType(property.getType(), new Imports(), null);
+    Type type = property.getType();
+    if (property.isGroup()) {
+      type = Type.STRING;
+    }
+    String typeClass = ExchangeGenUtil.getClassNameForType(type, new Imports(), null);
     return JavaCodeGenUtil.getGetAccessorMethodName(
         name, 
         typeClass, 
-        CollectionUtil.emptyIfNull(allProperties).stream().map(p -> p.getName()).collect(Collectors.toList())
+        CollectionUtil.emptyIfNull(allProperties).stream()
+          .map(p -> p.getName())
+          .collect(Collectors.toList())
     );
   }
   

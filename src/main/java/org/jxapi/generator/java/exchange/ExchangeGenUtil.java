@@ -8,6 +8,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
 import org.jxapi.exchange.descriptor.CanonicalType;
@@ -19,6 +20,7 @@ import org.jxapi.exchange.descriptor.Field;
 import org.jxapi.exchange.descriptor.Type;
 import org.jxapi.generator.java.Imports;
 import org.jxapi.generator.java.JavaCodeGenUtil;
+import org.jxapi.generator.java.exchange.constants.ConstantsGenUtil;
 import org.jxapi.generator.java.exchange.properties.PropertiesGenUtil;
 import org.jxapi.netutils.deserialization.json.AbstractJsonMessageDeserializer;
 import org.jxapi.netutils.deserialization.json.field.BigDecimalJsonFieldDeserializer;
@@ -203,7 +205,7 @@ public class ExchangeGenUtil {
    * @return The full class name of configuration properties interface for the given exchange.
    * @see ExchangeDescriptor#getProperties()
    */
-  public static String getExchangePropertiesInterfaceName(ExchangeDescriptor exchangeDescriptor) {
+  public static String getExchangePropertiesClassName(ExchangeDescriptor exchangeDescriptor) {
     return exchangeDescriptor.getBasePackage() 
         + "." 
         + JavaCodeGenUtil.firstLetterToUpperCase(exchangeDescriptor.getId()) 
@@ -212,10 +214,9 @@ public class ExchangeGenUtil {
   
   /**
    * @param exchangeDescriptor The exchange where demo configuration properties are defined
-   * @return The full class name of demo configuration properties interface for the given exchange.
-   * @see ExchangeDescriptor#getDemoProperties()
+   * @return The full class name of demo configuration properties class for the given exchange.
    */
-  public static String getExchangeDemoPropertiesInterfaceName(ExchangeDescriptor exchangeDescriptor) {
+  public static String getExchangeDemoPropertiesClassName(ExchangeDescriptor exchangeDescriptor) {
     return exchangeDescriptor.getBasePackage() 
         + "." 
         + JavaCodeGenUtil.firstLetterToUpperCase(exchangeDescriptor.getId())
@@ -589,10 +590,17 @@ public class ExchangeGenUtil {
   }
   
   private static ConfigPropertyDescriptor findProperty(String propertyName, List<ConfigPropertyDescriptor> properties) {
-    return CollectionUtil.emptyIfNull(properties)
+    List<ConfigPropertyDescriptor> propertiesMatchingName = CollectionUtil.emptyIfNull(properties)
             .stream().filter(p -> propertyName.equals(p.getName()))
-            .findFirst()
-            .orElse(null);
+            .collect(Collectors.toList());
+    if (CollectionUtil.isEmpty(propertiesMatchingName)) {
+      return null; // Property not found
+    } else {
+      return propertiesMatchingName.stream()
+          .filter(ConfigPropertyDescriptor::isGroup)
+          .findFirst()
+          .orElse(propertiesMatchingName.get(0)); // Return first property if no group found
+    }
   }
   
   private static List<Constant> retrieveConstantHierarchy(String constantName, ExchangeDescriptor exchangeDescriptor) {
@@ -652,10 +660,10 @@ public class ExchangeGenUtil {
     if (constants.isEmpty()) {
       // Property not found in exchange properties, try demo properties
       constants = retrievePropertiesHierarchy(configPropertyName, exchangeDescriptor.getProperties());
-      sb.append(getExchangeDemoPropertiesInterfaceName(exchangeDescriptor));
+      sb.append(getExchangeDemoPropertiesClassName(exchangeDescriptor));
     } else {
       // Property found in exchange properties
-      sb.append(getExchangePropertiesInterfaceName(exchangeDescriptor));
+      sb.append(getExchangePropertiesClassName(exchangeDescriptor));
     }
     if (constants.isEmpty()) {
       // Property not found in exchange properties or demo properties
@@ -689,64 +697,85 @@ public class ExchangeGenUtil {
   public static String getValueDeclarationForConstant(String constantName, 
                                                       ExchangeDescriptor exchangeDescriptor,
                                                       Imports imports) {
-    List<Constant> constants = retrieveConstantHierarchy(constantName, exchangeDescriptor);
-    if(constants.isEmpty() || constants.get(constants.size() - 1).isGroup()) {
-      return null; // Constant not found
-    }
     String className = getExchangeConstantsClassName(exchangeDescriptor);
-    imports.add(className);
-    StringBuilder s = new StringBuilder().append(JavaCodeGenUtil.getClassNameWithoutPackage(className)).append(".");
-    for (int i = 0; i < constants.size() - 1; i++) {
-      s.append(JavaCodeGenUtil.firstLetterToUpperCase(constants.get(i).getName())).append(".");
+    List<Constant> sieblingProperties = null;
+    List<Constant> hierarchy = retrieveConstantHierarchy(constantName, exchangeDescriptor);
+    
+    if(hierarchy.isEmpty()) {
+      // Property not found or is a group property
+      return null;
+    } else {
+      sieblingProperties = CollectionUtil.emptyIfNull(exchangeDescriptor.getConstants());
     }
-    s.append(JavaCodeGenUtil.getStaticVariableName(constants.get(constants.size() - 1).getName()));
+    
+    imports.add(className);
+    StringBuilder s = new StringBuilder()
+        .append(JavaCodeGenUtil.getClassNameWithoutPackage(className))
+        .append(".");
+    for (int i = 0; i < hierarchy.size(); i++) {
+      Constant p = hierarchy.get(i);
+      s.append(ConstantsGenUtil.getConstantVariableName(p, sieblingProperties));
+      if (i < hierarchy.size() - 1) {
+        s.append(".");
+        sieblingProperties = p.getConstants();
+      }
+      
+    }
     return s.toString();
   }
   
   /**
    * Returns the value declaration for the given configuration property name. The
-   * value declaration is the reference to the configuration property in the
-   * generated properties class.
+   * value declaration is the reference to the configuration property in either
+   * the generated properties class, or the demo generated properties if provided.
    * 
    * @param configPropertyName The name of the configuration property to get the
    *                           value declaration for
    * @param exchangeDescriptor The exchange descriptor where the configuration
    *                           property is defined
+   * @param demoProperties     The demo configuration properties for the exchange,
+   *                           may be <code>null</code> or empty if value must be
+   *                           retrieved from exchange properties only.
    * @param propertiesVariable The name of the variable holding the properties
    *                           map, usually <code>properties</code>.
    * @param imports            The imports of the generator context that will be
    *                           populated with classes used by returned type. That
    *                           set must be not <code>null</code> and mutable.
    * @return The value declaration for the given configuration property name, or
-   *         <code>null</code> if the configuration property is not found or is a group.
+   *         <code>null</code> if the configuration property is not found or is a
+   *         group.
    */
   public static String getValueDeclarationForConfigProperty(String configPropertyName, 
                                                           ExchangeDescriptor exchangeDescriptor,
+                                                          List<ConfigPropertyDescriptor> demoProperties,
                                                           String propertiesVariable,
                                                           Imports imports) {
     String className = null;
     List<ConfigPropertyDescriptor> sieblingProperties = null;
     List<ConfigPropertyDescriptor> hierarchy = retrievePropertiesHierarchy(configPropertyName, exchangeDescriptor.getProperties());
     if(hierarchy.isEmpty()) {
-      hierarchy = retrievePropertiesHierarchy(configPropertyName, exchangeDescriptor.getDemoProperties());
-      className = getExchangeDemoPropertiesInterfaceName(exchangeDescriptor);
-      sieblingProperties = exchangeDescriptor.getDemoProperties();
+      hierarchy = retrievePropertiesHierarchy(configPropertyName, demoProperties);
+      className = getExchangeDemoPropertiesClassName(exchangeDescriptor);
+      sieblingProperties = demoProperties;
     } else {
-      className = getExchangePropertiesInterfaceName(exchangeDescriptor);
+      className = getExchangePropertiesClassName(exchangeDescriptor);
       sieblingProperties = exchangeDescriptor.getProperties();
     }
     
-    if(hierarchy.isEmpty() || hierarchy.get(hierarchy.size() - 1).isGroup()) {
+    if(hierarchy.isEmpty()) {
       // Property not found or is a group property
       return null;
     }
     
     imports.add(className);
-    StringBuilder s = new StringBuilder().append(JavaCodeGenUtil.getClassNameWithoutPackage(className)).append(".");
+    StringBuilder s = new StringBuilder()
+        .append(JavaCodeGenUtil.getClassNameWithoutPackage(className))
+        .append(".");
     for (int i = 0; i < hierarchy.size() - 1; i++) {
       ConfigPropertyDescriptor p = hierarchy.get(i);
-      s.append(JavaCodeGenUtil.firstLetterToUpperCase(hierarchy.get(i).getName())).append(".");
+      s.append(PropertiesGenUtil.getPropertyVariableName(p, sieblingProperties)).append(".");
       sieblingProperties = p.getProperties();
+      
     }
     String methodName = PropertiesGenUtil.getPropertyGetterMethodName(hierarchy.get(hierarchy.size() - 1), sieblingProperties);
     return s.append(methodName)                
@@ -779,7 +808,7 @@ public class ExchangeGenUtil {
    * <li>Exchange constants, see {@link ExchangeDescriptor#getConstants()}</li>
    * <li>Exchange configuration properties, see
    * {@link ExchangeDescriptor#getProperties()}</li>
-   * <li>Exchange demo configuration properties, see {@link ExchangeDescriptor#getDemoProperties()}</li>
+   * <li>Exchange demo configuration properties</li>
    * </ul>
    * 
    * @param exchangeDescriptor The exchange descriptor to get the placeholders
@@ -802,13 +831,14 @@ public class ExchangeGenUtil {
         baseHtmlDocUrl);
     
     // Add exchange configuration properties
-    for (ConfigPropertyDescriptor prop : CollectionUtil.emptyIfNull(exchangeDescriptor.getProperties())) {
-      String pname = prop.getName();
-      String cls = getExchangePropertiesInterfaceName(exchangeDescriptor);
-      replacements.put(CONFIG_PLACEHOLDER_PREFIX + prop.getName(), getDocLink(cls, null, pname, baseHtmlDocUrl));
-    }
+    collectPropertiesDescriptionReplacements(
+        replacements, 
+        CONFIG_PLACEHOLDER_PREFIX,
+        getExchangePropertiesClassName(exchangeDescriptor), 
+        "",
+        exchangeDescriptor.getProperties(),
+        baseHtmlDocUrl);
     
-
     return replacements;
   }
   
@@ -824,17 +854,92 @@ public class ExchangeGenUtil {
       String cname = constant.getName();
       String cfullName = prefix + cname;
       if (constant.isGroup()) {
-        String groupSimpleClassName = JavaCodeGenUtil.firstLetterToUpperCase(cname);
+        String groupSimpleClassName = ConstantsGenUtil.getConstantVariableName(constant, constants);
         StringBuilder groupPropertiesClassName = new StringBuilder();
         if (!innerPropertiesClassName.isEmpty()) {
           groupPropertiesClassName.append(innerPropertiesClassName).append(".");
         }
         groupPropertiesClassName.append(groupSimpleClassName);
         replacements.put(cfullName, getDocLink(propertiesClassName, groupPropertiesClassName.toString(), null, baseHtmlDocUrl));
-        collectConstantDescriptionReplacements(replacements, cfullName + ".", propertiesClassName, groupPropertiesClassName.toString(), constant.getConstants(), baseHtmlDocUrl);
+        collectConstantDescriptionReplacements(
+            replacements, 
+            cfullName + ".", 
+            propertiesClassName, 
+            groupPropertiesClassName.toString(), 
+            constant.getConstants(), 
+            baseHtmlDocUrl);
       } else {
-        
         replacements.put(cfullName, getDocLink(propertiesClassName, innerPropertiesClassName, cname, baseHtmlDocUrl));
+      }
+    }
+  }
+  
+  private static void collectPropertiesDescriptionReplacements(
+      Map<String, Object> replacements, 
+      String prefix, 
+      String propertiesClassName, 
+      String innerPropertiesClassName, 
+      List<ConfigPropertyDescriptor> properties, 
+      String baseHtmlDocUrl) {
+    innerPropertiesClassName = StringUtils.defaultString(innerPropertiesClassName);
+    for (ConfigPropertyDescriptor prop : CollectionUtil.emptyIfNull(properties)) {      
+      String cname = prop.getName();
+      String cfullName = prefix + cname;
+      if (prop.isGroup()) {
+        String groupSimpleClassName = PropertiesGenUtil.getPropertyVariableName(prop, properties);
+        StringBuilder groupPropertiesClassName = new StringBuilder();
+        if (!innerPropertiesClassName.isEmpty()) {
+          groupPropertiesClassName.append(innerPropertiesClassName).append(".");
+        }
+        groupPropertiesClassName.append(groupSimpleClassName);
+        replacements.put(cfullName, getDocLink(propertiesClassName, groupPropertiesClassName.toString(), null, baseHtmlDocUrl));
+        collectPropertiesDescriptionReplacements(
+            replacements, 
+            cfullName + ".", 
+            propertiesClassName, 
+            groupPropertiesClassName.toString(), 
+            prop.getProperties(), 
+            baseHtmlDocUrl);
+      } else {
+        replacements.put(cfullName, getDocLink(propertiesClassName, innerPropertiesClassName, cname, baseHtmlDocUrl));
+      }
+    }
+  }
+  
+  /**
+   * Retrieves all possible constant placeholders keys for the given exchange, and their
+   * replacement as actual constant values. These placeholders are
+   * Exchange constants, see {@link ExchangeDescriptor#getConstants()}
+   * 
+   * @param exchangeDescriptor The exchange descriptor to collect the placeholders
+   *                           keys for                       
+   * @return A map of placeholders keys to their replacement values as javadoc links.
+   */
+  public static Map<String, Object> getValuesReplacements(ExchangeDescriptor exchangeDescriptor) {
+    Map<String, Object> replacements = CollectionUtil.createMap();
+    if (exchangeDescriptor == null) {
+      return replacements;
+    }
+    // Add exchange constants
+    collectConstantValuesReplacements(
+        replacements, 
+        CONSTANT_PLACEHOLDER_PREFIX,
+        exchangeDescriptor.getConstants());
+    
+    return replacements;
+  }
+  
+  private static void collectConstantValuesReplacements(
+      Map<String, Object> replacements, 
+      String prefix,   
+      List<Constant> constants) {
+    for (Constant constant : CollectionUtil.emptyIfNull(constants)) {      
+      String cname = constant.getName();
+      String cfullName = prefix + cname;
+      if (constant.isGroup()) {
+        collectConstantValuesReplacements(replacements, cfullName + ".", constant.getConstants());
+      } else {
+        replacements.put(cfullName, constant.getValue());
       }
       
     }
@@ -889,6 +994,7 @@ public class ExchangeGenUtil {
    * @param exchangeDescriptor    The exchange descriptor to use to resolve the
    *                              constants and configuration properties used in
    *                              the template.
+   * @param demoProperties        The demo configuration properties for the exchange,
    * @param propertiesVariable    The name of the variable or instruction
    *                              referencing the configuration properties.
    *                              If <code>null</code>, the configuration properties 
@@ -901,6 +1007,7 @@ public class ExchangeGenUtil {
   public static String generateSubstitutionInstructionDeclaration(
                         String template, 
                         ExchangeDescriptor exchangeDescriptor, 
+                        List<ConfigPropertyDescriptor> demoProperties,
                         String propertiesVariable,
                         Imports imports) {
     if (template == null) {
@@ -920,7 +1027,7 @@ public class ExchangeGenUtil {
         String propertyName = Optional.ofNullable(getConfigPropertyPlaceHolder(placeHolder))
                                       .orElse(getDemoConfigPropertyPlaceHolder(placeHolder));
         if (propertyName != null) {
-          valueDeclaration = getValueDeclarationForConfigProperty(propertyName, exchangeDescriptor, propertiesVariable, imports);
+          valueDeclaration = getValueDeclarationForConfigProperty(propertyName, exchangeDescriptor, demoProperties, propertiesVariable, imports);
         }
       }
       if (valueDeclaration != null) {

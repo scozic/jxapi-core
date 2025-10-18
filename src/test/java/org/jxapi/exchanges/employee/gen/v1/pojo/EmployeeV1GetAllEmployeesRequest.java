@@ -11,7 +11,7 @@ import org.jxapi.util.EncodingUtil;
 import org.jxapi.util.Pojo;
 
 /**
- * Request for Employee V1 API getAllEmployees REST endpoint<br>
+ * Request for Employee v1 API getAllEmployees REST endpoint<br>
  * Get all employees
  */
 @Generated("org.jxapi.generator.java.exchange.api.pojo.PojoGenerator")
@@ -45,7 +45,7 @@ public class EmployeeV1GetAllEmployeesRequest implements Pojo<EmployeeV1GetAllEm
   }
   
   /**
-   * @return Number of employees to return per page.<br> Defaults to <a href="V1org/jxapi/exchanges/employee/gen/EmployeeConstants.html#DEFAULT_PAGE_SIZE">defaultPageSize</a>.<br> Maximum is <a href="V1org/jxapi/exchanges/employee/gen/EmployeeConstants.html#MAX_PAGE_SIZE">maxPageSize</a>.
+   * @return Number of employees to return per page.<br> Defaults to {@link org.jxapi.exchanges.employee.gen.EmployeeConstants#DEFAULT_PAGE_SIZE}.<br> Maximum is {@link org.jxapi.exchanges.employee.gen.EmployeeConstants#MAX_PAGE_SIZE}.
    * 
    */
   public Integer getSize() {
@@ -53,7 +53,7 @@ public class EmployeeV1GetAllEmployeesRequest implements Pojo<EmployeeV1GetAllEm
   }
   
   /**
-   * @param size Number of employees to return per page.<br> Defaults to <a href="V1org/jxapi/exchanges/employee/gen/EmployeeConstants.html#DEFAULT_PAGE_SIZE">defaultPageSize</a>.<br> Maximum is <a href="V1org/jxapi/exchanges/employee/gen/EmployeeConstants.html#MAX_PAGE_SIZE">maxPageSize</a>.
+   * @param size Number of employees to return per page.<br> Defaults to {@link org.jxapi.exchanges.employee.gen.EmployeeConstants#DEFAULT_PAGE_SIZE}.<br> Maximum is {@link org.jxapi.exchanges.employee.gen.EmployeeConstants#MAX_PAGE_SIZE}.
    * 
    */
   public void setSize(Integer size) {
@@ -62,19 +62,26 @@ public class EmployeeV1GetAllEmployeesRequest implements Pojo<EmployeeV1GetAllEm
   
   @Override
   public boolean equals(Object other) {
-    if (other == null)
+    if (other == null) {
       return false;
+    }
+    if (this == other) {
+      return true;
+    }
     if (!getClass().equals(other.getClass()))
       return false;
     EmployeeV1GetAllEmployeesRequest o = (EmployeeV1GetAllEmployeesRequest) other;
-    return Objects.equals(page, o.page)
-            && Objects.equals(size, o.size);
+    return Objects.equals(this.page, o.page)
+        && Objects.equals(this.size, o.size);
   }
   
   @Override
   public int compareTo(EmployeeV1GetAllEmployeesRequest other) {
     if (other == null) {
       return 1;
+    }
+    if (this == other) {
+      return 0;
     }
     int res = 0;
     res = CompareUtil.compare(this.page, other.page);
@@ -125,7 +132,7 @@ public class EmployeeV1GetAllEmployeesRequest implements Pojo<EmployeeV1GetAllEm
     
     /**
      * Will set the value of <code>size</code> field in the builder
-     * @param size Number of employees to return per page.<br> Defaults to <a href="V1org/jxapi/exchanges/employee/gen/EmployeeConstants.html#DEFAULT_PAGE_SIZE">defaultPageSize</a>.<br> Maximum is <a href="V1org/jxapi/exchanges/employee/gen/EmployeeConstants.html#MAX_PAGE_SIZE">maxPageSize</a>.
+     * @param size Number of employees to return per page.<br> Defaults to {@link org.jxapi.exchanges.employee.gen.EmployeeConstants#DEFAULT_PAGE_SIZE}.<br> Maximum is {@link org.jxapi.exchanges.employee.gen.EmployeeConstants#MAX_PAGE_SIZE}.
      * 
      * @return Builder instance
      * @see #setSize(Integer)

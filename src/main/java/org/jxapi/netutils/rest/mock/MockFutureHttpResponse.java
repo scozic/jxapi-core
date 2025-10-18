@@ -2,7 +2,6 @@ package org.jxapi.netutils.rest.mock;
 
 import org.jxapi.netutils.rest.FutureHttpResponse;
 import org.jxapi.netutils.rest.HttpRequest;
-import org.jxapi.util.EncodingUtil;
 
 /**
  * This class represents a mock implementation of the FutureHttpResponse class.
@@ -46,6 +45,6 @@ public class MockFutureHttpResponse extends FutureHttpResponse {
    */
   @Override
   public String toString() {
-    return getClass().getSimpleName() + "{" + "\"request\":" + EncodingUtil.pojoToFormattedJsonString(request) + '}';
+    return getClass().getSimpleName() + "{" + "\"request\":" + request + '}';
   }
 }

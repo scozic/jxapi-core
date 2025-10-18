@@ -1,13 +1,16 @@
 package org.jxapi.exchanges.demo.gen.marketdata.demo;
 
+import java.util.Optional;
 import java.util.Properties;
 import java.util.concurrent.ExecutionException;
 
 import javax.annotation.processing.Generated;
 import org.jxapi.exchange.ExchangeApiObserver;
+import org.jxapi.exchanges.demo.gen.DemoExchangeDemoProperties;
 import org.jxapi.exchanges.demo.gen.DemoExchangeExchange;
 import org.jxapi.exchanges.demo.gen.DemoExchangeExchangeImpl;
 import org.jxapi.exchanges.demo.gen.marketdata.DemoExchangeMarketDataApi;
+import org.jxapi.exchanges.demo.gen.marketdata.deserializers.DemoExchangeMarketDataExchangeInfoRequestDeserializer;
 import org.jxapi.exchanges.demo.gen.marketdata.pojo.DemoExchangeMarketDataExchangeInfoRequest;
 import org.jxapi.exchanges.demo.gen.marketdata.pojo.DemoExchangeMarketDataExchangeInfoResponse;
 import org.jxapi.netutils.deserialization.json.field.ListJsonFieldDeserializer;
@@ -25,14 +28,16 @@ public class DemoExchangeMarketDataExchangeInfoDemo {
   private static final Logger log = LoggerFactory.getLogger(DemoExchangeMarketDataExchangeInfoDemo.class);
   
   /**
-   * Creates a sample value for the request field of type DemoExchangeMarketDataExchangeInfoRequest using sample value(s) defined in the field descriptor.
+   * Creates a sample value for the request field of type DemoExchangeMarketDataExchangeInfoRequest using sample value(s) defined in demo configuration properties.
    * 
    * @param properties the configuration properties to use for the sample value generation.
    */
   public static DemoExchangeMarketDataExchangeInfoRequest createRequest(Properties properties) {
-    DemoExchangeMarketDataExchangeInfoRequest request = new DemoExchangeMarketDataExchangeInfoRequest();
-    request.setSymbols(new ListJsonFieldDeserializer<>(StringJsonFieldDeserializer.getInstance()).deserialize("[\"BTC_USDT\", \"ETH_USDT\"]"));
-    return request;
+    return Optional
+      .ofNullable(new DemoExchangeMarketDataExchangeInfoRequestDeserializer().deserialize(DemoExchangeDemoProperties.MarketData.Rest.ExchangeInfo.getRequest(properties)))
+      .orElse(DemoExchangeMarketDataExchangeInfoRequest.builder()  
+        .symbols(new ListJsonFieldDeserializer<>(StringJsonFieldDeserializer.getInstance()).deserialize(DemoExchangeDemoProperties.MarketData.Rest.ExchangeInfo.Request.getSymbols(properties)))
+        .build());
   }
   
   /**

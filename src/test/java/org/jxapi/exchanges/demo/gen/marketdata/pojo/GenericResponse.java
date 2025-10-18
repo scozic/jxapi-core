@@ -45,18 +45,25 @@ public class GenericResponse implements Pojo<GenericResponse> {
   
   @Override
   public boolean equals(Object other) {
-    if (other == null)
+    if (other == null) {
       return false;
+    }
+    if (this == other) {
+      return true;
+    }
     if (!getClass().equals(other.getClass()))
       return false;
     GenericResponse o = (GenericResponse) other;
-    return Objects.equals(responseCode, o.responseCode);
+    return Objects.equals(this.responseCode, o.responseCode);
   }
   
   @Override
   public int compareTo(GenericResponse other) {
     if (other == null) {
       return 1;
+    }
+    if (this == other) {
+      return 0;
     }
     int res = 0;
     res = CompareUtil.compare(this.responseCode, other.responseCode);

@@ -1,8 +1,10 @@
 package org.jxapi.generator.java.exchange.api.demo;
 
+import java.util.List;
 import java.util.Properties;
 
 import org.jxapi.exchange.ExchangeApiObserver;
+import org.jxapi.exchange.descriptor.ConfigPropertyDescriptor;
 import org.jxapi.exchange.descriptor.ExchangeApiDescriptor;
 import org.jxapi.exchange.descriptor.ExchangeDescriptor;
 import org.jxapi.exchange.descriptor.Field;
@@ -15,7 +17,6 @@ import org.jxapi.generator.java.exchange.api.ExchangeApiGenUtil;
 import org.jxapi.netutils.websocket.WebsocketListener;
 import org.jxapi.util.DemoProperties;
 import org.jxapi.util.DemoUtil;
-import org.jxapi.util.PlaceHolderResolver;
 import org.slf4j.Logger;
 
 /**
@@ -30,8 +31,7 @@ import org.slf4j.Logger;
  * <li>The subscription request is created if the API method has arguments using
  * a generated <code>public static</code> method for creating that request.</li>
  * <li>That request creation method uses sample values provided with each field
- * of the request sample values, see {@link Field#getSampleValue()} and
- * {@link Field#getSampleMapKeyValue()}.</li>
+ * of the request sample values, see {@link Field#getSampleValue()} and.</li>
  * <li>Logs the subscription and unsubscription actions.</li>
  * <li>Logs the messages received from the websocket stream.</li>
  * <li>Unsubscribes from stream after some delay has elapsed after subscription.
@@ -71,7 +71,9 @@ public class WebsocketEndpointDemoGenerator extends JavaTypeGenerator {
   private final String exchangeClassName;
   private final String exchangeSimpleClassName;
   private final Type requestDataType;
-  private final PlaceHolderResolver sampleValuePlaceHolderResolver;
+  private final ExchangeApiDescriptor exchangeApi;
+  private final WebsocketEndpointDescriptor websocketApi;
+  private final List<ConfigPropertyDescriptor> demoProperties;
   
   /**
    * Constructor.
@@ -79,12 +81,17 @@ public class WebsocketEndpointDemoGenerator extends JavaTypeGenerator {
    * @param exchangeDescriptor the exchange descriptor
    * @param exchangeApiDescriptor the exchange API descriptor
    * @param websocketApi the Websocket endpoint descriptor
+   * @param demoProperties the demo configuration properties for the exchange
    */
   public WebsocketEndpointDemoGenerator(ExchangeDescriptor exchangeDescriptor, 
-                      ExchangeApiDescriptor exchangeApiDescriptor, 
-                      WebsocketEndpointDescriptor websocketApi) {
+                                        ExchangeApiDescriptor exchangeApiDescriptor, 
+                                        WebsocketEndpointDescriptor websocketApi,
+                                        List<ConfigPropertyDescriptor> demoProperties) {
     super(EndpointDemoGenUtil.getWebsocketApiDemoClassName(exchangeDescriptor, exchangeApiDescriptor, websocketApi));
     this.exchangeDescriptor = exchangeDescriptor;
+    this.exchangeApi = exchangeApiDescriptor;
+    this.websocketApi = websocketApi;
+    this.demoProperties = demoProperties;
     this.request = ExchangeApiGenUtil.resolveFieldProperties(exchangeApiDescriptor, websocketApi.getRequest());
     this.exchangeClassName = ExchangeGenUtil.getExchangeInterfaceName(exchangeDescriptor);
     this.exchangeSimpleClassName = JavaCodeGenUtil.getClassNameWithoutPackage(exchangeClassName);
@@ -112,11 +119,7 @@ public class WebsocketEndpointDemoGenerator extends JavaTypeGenerator {
     }
     this.apiInterfaceClassName = ExchangeGenUtil.getApiInterfaceClassName(exchangeDescriptor, exchangeApiDescriptor);
     this.simpleApiClassName = JavaCodeGenUtil.getClassNameWithoutPackage(apiInterfaceClassName);
-    this.sampleValuePlaceHolderResolver = s -> ExchangeGenUtil.generateSubstitutionInstructionDeclaration(
-        s, 
-        exchangeDescriptor, 
-        "properties",
-        getImports());
+
     addImport(apiInterfaceClassName);
     setDescription(getClassJavadoc());
     this.fullStreamName = exchangeDescriptor.getId() + " " 
@@ -144,11 +147,14 @@ public class WebsocketEndpointDemoGenerator extends JavaTypeGenerator {
     JavaCodeGenUtil.generateSlf4jLoggerDeclaration(this);
     if (hasArguments) {
       this.appendToBody(EndpointDemoGenUtil.generateFieldCreationMethod(
-                request,  
-                requestClassName, 
-                ExchangeApiGenUtil.DEFAULT_REQUEST_ARG_NAME,
-                getImports(),
-                sampleValuePlaceHolderResolver))
+          request,  
+          requestClassName, 
+          exchangeDescriptor,
+          exchangeApi,
+          EndpointDemoGenUtil.WEBSOCKET_DEMO_GROUP_NAME,
+          websocketApi.getName(),
+          demoProperties,
+          getImports()))
         .append("\n");
     }
     generateSubscribeMethod();
@@ -213,11 +219,11 @@ public class WebsocketEndpointDemoGenerator extends JavaTypeGenerator {
          .append("then after waiting for <code>subscriptionDuration</code> delay, unsubscription is performed.\n")
          .append("Finally waits for <code>delayBeforeExitAfterUnsubscription</code> delay before returning to make sure no more messages are dispatched.\n");
     if (hasArguments) {
-      javadoc.append("@param request                            The subscription request\n");
+      javadoc.append("@param request          The subscription request\n");
     }
-    javadoc.append("@param messageListener                    The listener that will receive messages dispatched while subscription is active\n")
-            .append("@param configProperties                   Exchange configuration properties.\n")
-            .append("@param apiObserver                       {@link ExchangeApiObserver} (optional, ignored if <code>null</code>) observer will")
+    javadoc.append("@param messageListener  The listener that will receive messages dispatched while subscription is active\n")
+            .append("@param configProperties Exchange configuration properties.\n")
+            .append("@param apiObserver      {@link ExchangeApiObserver} (optional, ignored if <code>null</code>) observer will")
             .append (" be subscribed to Exchange API exposing websocket endpoint that will be notifed of received websocket events.")
             .append("Useful in particular to get notified of websocket errors.\n")
             .append("@throws InterruptedException eventually thrown while sleeping for <code>subscriptionDuration</code> or <code>delayBeforeExitAfterUnsubscription</code> delays");

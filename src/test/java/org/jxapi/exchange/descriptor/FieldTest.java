@@ -26,7 +26,6 @@ public class FieldTest {
         field.setObjectName("MyObject");
         field.setProperties(List.of());
         field.setImplementedInterfaces(List.of("com.x.y.MyInterface"));
-        field.setSampleMapKeyValue(List.of("key1", "value1"));
         Assert.assertEquals("name", field.getName());
         Assert.assertEquals(Type.fromTypeName("OBJECT_MAP"), field.getType());
         Assert.assertEquals("description", field.getDescription());
@@ -35,7 +34,6 @@ public class FieldTest {
         Assert.assertEquals("MyObject", field.getObjectName());
         Assert.assertEquals(List.of(), field.getProperties());
         Assert.assertEquals(List.of("com.x.y.MyInterface"), field.getImplementedInterfaces());
-        Assert.assertEquals(List.of("key1", "value1"), field.getSampleMapKeyValue());
     }
 
     @Test
@@ -49,7 +47,6 @@ public class FieldTest {
         field.setObjectName("MyObject");
         field.setProperties(List.of());
         field.setImplementedInterfaces(List.of("com.x.y.MyInterface"));
-        field.setSampleMapKeyValue(List.of("key1", "value1"));
 
         field = field.deepClone();
 
@@ -61,7 +58,6 @@ public class FieldTest {
         Assert.assertEquals("MyObject", field.getObjectName());
         Assert.assertEquals(List.of(), field.getProperties());
         Assert.assertEquals(List.of("com.x.y.MyInterface"), field.getImplementedInterfaces());
-        Assert.assertEquals(List.of("key1", "value1"), field.getSampleMapKeyValue());
     }
 
     @Test

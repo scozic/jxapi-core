@@ -10,7 +10,7 @@ import org.jxapi.util.EncodingUtil;
 import org.jxapi.util.Pojo;
 
 /**
- * Message disseminated upon subscription to Employee V1 API employeeUpdates websocket endpoint request<br>
+ * Message disseminated upon subscription to Employee v1 API employeeUpdates websocket endpoint request<br>
  * Employee updates websocket
  */
 @Generated("org.jxapi.generator.java.exchange.api.pojo.PojoGenerator")
@@ -30,14 +30,14 @@ public class EmployeeV1EmployeeUpdatesMessage implements Pojo<EmployeeV1Employee
   private Employee employee;
   
   /**
-   * @return Type of event, e.g. one of <a href="V1org/jxapi/exchanges/employee/gen/EmployeeConstants.UpdateEmployeeType.html#ADD">add</a>, <a href="V1org/jxapi/exchanges/employee/gen/EmployeeConstants.UpdateEmployeeType.html#UPDATE">update</a> or <a href="V1org/jxapi/exchanges/employee/gen/EmployeeConstants.UpdateEmployeeType.html#DELETE">delete</a> (see <a href="V1org/jxapi/exchanges/employee/gen/EmployeeConstants.UpdateEmployeeType.html">updateEmployeeType</a> constants).
+   * @return Type of event, e.g. one of {@link org.jxapi.exchanges.employee.gen.EmployeeConstants.UpdateEmployeeType#ADD}, {@link org.jxapi.exchanges.employee.gen.EmployeeConstants.UpdateEmployeeType#UPDATE} or {@link org.jxapi.exchanges.employee.gen.EmployeeConstants.UpdateEmployeeType#DELETE} (see {@link org.jxapi.exchanges.employee.gen.EmployeeConstants.UpdateEmployeeType} constants).
    */
   public String getEventType() {
     return eventType;
   }
   
   /**
-   * @param eventType Type of event, e.g. one of <a href="V1org/jxapi/exchanges/employee/gen/EmployeeConstants.UpdateEmployeeType.html#ADD">add</a>, <a href="V1org/jxapi/exchanges/employee/gen/EmployeeConstants.UpdateEmployeeType.html#UPDATE">update</a> or <a href="V1org/jxapi/exchanges/employee/gen/EmployeeConstants.UpdateEmployeeType.html#DELETE">delete</a> (see <a href="V1org/jxapi/exchanges/employee/gen/EmployeeConstants.UpdateEmployeeType.html">updateEmployeeType</a> constants).
+   * @param eventType Type of event, e.g. one of {@link org.jxapi.exchanges.employee.gen.EmployeeConstants.UpdateEmployeeType#ADD}, {@link org.jxapi.exchanges.employee.gen.EmployeeConstants.UpdateEmployeeType#UPDATE} or {@link org.jxapi.exchanges.employee.gen.EmployeeConstants.UpdateEmployeeType#DELETE} (see {@link org.jxapi.exchanges.employee.gen.EmployeeConstants.UpdateEmployeeType} constants).
    */
   public void setEventType(String eventType) {
     this.eventType = eventType;
@@ -59,19 +59,26 @@ public class EmployeeV1EmployeeUpdatesMessage implements Pojo<EmployeeV1Employee
   
   @Override
   public boolean equals(Object other) {
-    if (other == null)
+    if (other == null) {
       return false;
+    }
+    if (this == other) {
+      return true;
+    }
     if (!getClass().equals(other.getClass()))
       return false;
     EmployeeV1EmployeeUpdatesMessage o = (EmployeeV1EmployeeUpdatesMessage) other;
-    return Objects.equals(eventType, o.eventType)
-            && Objects.equals(employee, o.employee);
+    return Objects.equals(this.eventType, o.eventType)
+        && Objects.equals(this.employee, o.employee);
   }
   
   @Override
   public int compareTo(EmployeeV1EmployeeUpdatesMessage other) {
     if (other == null) {
       return 1;
+    }
+    if (this == other) {
+      return 0;
     }
     int res = 0;
     res = CompareUtil.compare(this.eventType, other.eventType);
@@ -111,7 +118,7 @@ public class EmployeeV1EmployeeUpdatesMessage implements Pojo<EmployeeV1Employee
     
     /**
      * Will set the value of <code>eventType</code> field in the builder
-     * @param eventType Type of event, e.g. one of <a href="V1org/jxapi/exchanges/employee/gen/EmployeeConstants.UpdateEmployeeType.html#ADD">add</a>, <a href="V1org/jxapi/exchanges/employee/gen/EmployeeConstants.UpdateEmployeeType.html#UPDATE">update</a> or <a href="V1org/jxapi/exchanges/employee/gen/EmployeeConstants.UpdateEmployeeType.html#DELETE">delete</a> (see <a href="V1org/jxapi/exchanges/employee/gen/EmployeeConstants.UpdateEmployeeType.html">updateEmployeeType</a> constants).
+     * @param eventType Type of event, e.g. one of {@link org.jxapi.exchanges.employee.gen.EmployeeConstants.UpdateEmployeeType#ADD}, {@link org.jxapi.exchanges.employee.gen.EmployeeConstants.UpdateEmployeeType#UPDATE} or {@link org.jxapi.exchanges.employee.gen.EmployeeConstants.UpdateEmployeeType#DELETE} (see {@link org.jxapi.exchanges.employee.gen.EmployeeConstants.UpdateEmployeeType} constants).
      * @return Builder instance
      * @see #setEventType(String)
      */

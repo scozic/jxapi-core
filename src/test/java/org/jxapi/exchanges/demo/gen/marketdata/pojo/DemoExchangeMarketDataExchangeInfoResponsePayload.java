@@ -74,20 +74,27 @@ public class DemoExchangeMarketDataExchangeInfoResponsePayload implements Pojo<D
   
   @Override
   public boolean equals(Object other) {
-    if (other == null)
+    if (other == null) {
       return false;
+    }
+    if (this == other) {
+      return true;
+    }
     if (!getClass().equals(other.getClass()))
       return false;
     DemoExchangeMarketDataExchangeInfoResponsePayload o = (DemoExchangeMarketDataExchangeInfoResponsePayload) other;
-    return Objects.equals(symbol, o.symbol)
-            && Objects.equals(minOrderSize, o.minOrderSize)
-            && Objects.equals(orderTickSize, o.orderTickSize);
+    return Objects.equals(this.symbol, o.symbol)
+        && Objects.equals(this.minOrderSize, o.minOrderSize)
+        && Objects.equals(this.orderTickSize, o.orderTickSize);
   }
   
   @Override
   public int compareTo(DemoExchangeMarketDataExchangeInfoResponsePayload other) {
     if (other == null) {
       return 1;
+    }
+    if (this == other) {
+      return 0;
     }
     int res = 0;
     res = CompareUtil.compare(this.symbol, other.symbol);

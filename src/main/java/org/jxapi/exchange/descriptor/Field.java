@@ -156,8 +156,6 @@ public class Field {
   
   private Type type;
   
-  private List<String> sampleMapKeyValue;
-  
   private Object sampleValue;
   
   private String msgField;
@@ -177,7 +175,6 @@ public class Field {
     clone.name = this.name;
     clone.description = this.description;
     clone.type = this.type;
-    clone.sampleMapKeyValue = cloneList(this.sampleMapKeyValue);
     clone.sampleValue = this.sampleValue;
     clone.msgField = this.msgField;
     clone.objectName = this.objectName;
@@ -323,20 +320,6 @@ public class Field {
    */
   public void setImplementedInterfaces(List<String> implementedInterfaces) {
     this.implementedInterfaces = implementedInterfaces;
-  }
-
-  /**
-   * @return The list of key-value pairs for a sample map
-   */
-  public List<String> getSampleMapKeyValue() {
-    return sampleMapKeyValue;
-  }
-
-  /**
-   * @param sampleMapKeyValue The list of key-value pairs for a sample map
-   */
-  public void setSampleMapKeyValue(List<String> sampleMapKeyValue) {
-    this.sampleMapKeyValue = sampleMapKeyValue;
   }
 
   /**

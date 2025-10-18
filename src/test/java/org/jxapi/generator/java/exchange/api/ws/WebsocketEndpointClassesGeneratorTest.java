@@ -54,8 +54,9 @@ public class WebsocketEndpointClassesGeneratorTest {
     WebsocketEndpointClassesGenerator generator = new WebsocketEndpointClassesGenerator(exchange, api, wsEndpoint, docPlaceHolderResolver);
     generator.generateClasses(srcFolder);
     
-    checkJavaFilesCount(Paths.get("deserializers"), 1);
+    checkJavaFilesCount(Paths.get("deserializers"), 2);
     checkSourceFileExists(Paths.get("deserializers", "MyTestExchangeMarketDataTickerStreamMessageDeserializer.java"));
+    checkSourceFileExists(Paths.get("deserializers", "MyTestExchangeMarketDataTickerStreamRequestDeserializer.java"));
     
     checkJavaFilesCount(Paths.get("pojo"), 2);
     
@@ -120,19 +121,26 @@ public class WebsocketEndpointClassesGeneratorTest {
         + "  \n"
         + "  @Override\n"
         + "  public boolean equals(Object other) {\n"
-        + "    if (other == null)\n"
+        + "    if (other == null) {\n"
         + "      return false;\n"
+        + "    }\n"
+        + "    if (this == other) {\n"
+        + "      return true;\n"
+        + "    }\n"
         + "    if (!getClass().equals(other.getClass()))\n"
         + "      return false;\n"
         + "    MyTestExchangeMarketDataTickerStreamRequest o = (MyTestExchangeMarketDataTickerStreamRequest) other;\n"
-        + "    return Objects.equals(symbol, o.symbol)\n"
-        + "            && Objects.equals(apiKey, o.apiKey);\n"
+        + "    return Objects.equals(this.symbol, o.symbol)\n"
+        + "        && Objects.equals(this.apiKey, o.apiKey);\n"
         + "  }\n"
         + "  \n"
         + "  @Override\n"
         + "  public int compareTo(MyTestExchangeMarketDataTickerStreamRequest other) {\n"
         + "    if (other == null) {\n"
         + "      return 1;\n"
+        + "    }\n"
+        + "    if (this == other) {\n"
+        + "      return 0;\n"
         + "    }\n"
         + "    int res = 0;\n"
         + "    res = CompareUtil.compare(this.symbol, other.symbol);\n"
@@ -328,23 +336,30 @@ public class WebsocketEndpointClassesGeneratorTest {
         + "  \n"
         + "  @Override\n"
         + "  public boolean equals(Object other) {\n"
-        + "    if (other == null)\n"
+        + "    if (other == null) {\n"
         + "      return false;\n"
+        + "    }\n"
+        + "    if (this == other) {\n"
+        + "      return true;\n"
+        + "    }\n"
         + "    if (!getClass().equals(other.getClass()))\n"
         + "      return false;\n"
         + "    MyTestExchangeMarketDataTickerStreamMessage o = (MyTestExchangeMarketDataTickerStreamMessage) other;\n"
-        + "    return Objects.equals(topic, o.topic)\n"
-        + "            && Objects.equals(symbol, o.symbol)\n"
-        + "            && Objects.equals(timestamp, o.timestamp)\n"
-        + "            && Objects.equals(priceChange, o.priceChange)\n"
-        + "            && Objects.equals(priceChangePercent, o.priceChangePercent)\n"
-        + "            && Objects.equals(last, o.last);\n"
+        + "    return Objects.equals(this.topic, o.topic)\n"
+        + "        && Objects.equals(this.symbol, o.symbol)\n"
+        + "        && Objects.equals(this.timestamp, o.timestamp)\n"
+        + "        && Objects.equals(this.priceChange, o.priceChange)\n"
+        + "        && Objects.equals(this.priceChangePercent, o.priceChangePercent)\n"
+        + "        && Objects.equals(this.last, o.last);\n"
         + "  }\n"
         + "  \n"
         + "  @Override\n"
         + "  public int compareTo(MyTestExchangeMarketDataTickerStreamMessage other) {\n"
         + "    if (other == null) {\n"
         + "      return 1;\n"
+        + "    }\n"
+        + "    if (this == other) {\n"
+        + "      return 0;\n"
         + "    }\n"
         + "    int res = 0;\n"
         + "    res = CompareUtil.compare(this.topic, other.topic);\n"
@@ -503,8 +518,9 @@ public class WebsocketEndpointClassesGeneratorTest {
     WebsocketEndpointDescriptor wsEndpoint = api.getWebsocketEndpoints().get(0);
     WebsocketEndpointClassesGenerator generator = new WebsocketEndpointClassesGenerator(exchange, api, wsEndpoint, null);
     generator.generateClasses(srcFolder);
-    checkJavaFilesCount(Paths.get("deserializers"), 1);
+    checkJavaFilesCount(Paths.get("deserializers"), 2);
     checkSourceFileExists(Paths.get("deserializers", "MyTestExchangeMarketDataTickerStreamMessageDeserializer.java"));
+    checkSourceFileExists(Paths.get("deserializers", "MyTestExchangeMarketDataTickerStreamRequestDeserializer.java"));
     
     checkJavaFilesCount(Paths.get("pojo"), 2);
     
@@ -556,18 +572,25 @@ public class WebsocketEndpointClassesGeneratorTest {
         + "  \n"
         + "  @Override\n"
         + "  public boolean equals(Object other) {\n"
-        + "    if (other == null)\n"
+        + "    if (other == null) {\n"
         + "      return false;\n"
+        + "    }\n"
+        + "    if (this == other) {\n"
+        + "      return true;\n"
+        + "    }\n"
         + "    if (!getClass().equals(other.getClass()))\n"
         + "      return false;\n"
         + "    MyTestExchangeMarketDataTickerStreamRequest o = (MyTestExchangeMarketDataTickerStreamRequest) other;\n"
-        + "    return Objects.equals(symbol, o.symbol);\n"
+        + "    return Objects.equals(this.symbol, o.symbol);\n"
         + "  }\n"
         + "  \n"
         + "  @Override\n"
         + "  public int compareTo(MyTestExchangeMarketDataTickerStreamRequest other) {\n"
         + "    if (other == null) {\n"
         + "      return 1;\n"
+        + "    }\n"
+        + "    if (this == other) {\n"
+        + "      return 0;\n"
         + "    }\n"
         + "    int res = 0;\n"
         + "    res = CompareUtil.compare(this.symbol, other.symbol);\n"
@@ -619,7 +642,8 @@ public class WebsocketEndpointClassesGeneratorTest {
         + "      return res;\n"
         + "    }\n"
         + "  }\n"
-        + "}\n", 
+        + "}\n"
+        + "", 
         Files.readString(checkSourceFileExists(Paths.get("pojo", "MyTestExchangeMarketDataTickerStreamRequest.java"))));
     
     Assert.assertEquals("package com.foo.bar.gen.marketdata.pojo;\n"
@@ -701,20 +725,27 @@ public class WebsocketEndpointClassesGeneratorTest {
         + "  \n"
         + "  @Override\n"
         + "  public boolean equals(Object other) {\n"
-        + "    if (other == null)\n"
+        + "    if (other == null) {\n"
         + "      return false;\n"
+        + "    }\n"
+        + "    if (this == other) {\n"
+        + "      return true;\n"
+        + "    }\n"
         + "    if (!getClass().equals(other.getClass()))\n"
         + "      return false;\n"
         + "    MyTestExchangeMarketDataTickerStreamMessage o = (MyTestExchangeMarketDataTickerStreamMessage) other;\n"
-        + "    return Objects.equals(topic, o.topic)\n"
-        + "            && Objects.equals(symbol, o.symbol)\n"
-        + "            && Objects.equals(last, o.last);\n"
+        + "    return Objects.equals(this.topic, o.topic)\n"
+        + "        && Objects.equals(this.symbol, o.symbol)\n"
+        + "        && Objects.equals(this.last, o.last);\n"
         + "  }\n"
         + "  \n"
         + "  @Override\n"
         + "  public int compareTo(MyTestExchangeMarketDataTickerStreamMessage other) {\n"
         + "    if (other == null) {\n"
         + "      return 1;\n"
+        + "    }\n"
+        + "    if (this == other) {\n"
+        + "      return 0;\n"
         + "    }\n"
         + "    int res = 0;\n"
         + "    res = CompareUtil.compare(this.topic, other.topic);\n"
@@ -802,7 +833,8 @@ public class WebsocketEndpointClassesGeneratorTest {
         + "      return res;\n"
         + "    }\n"
         + "  }\n"
-        + "}\n", 
+        + "}\n"
+        + "", 
         Files.readString(checkSourceFileExists(Paths.get("pojo", "MyTestExchangeMarketDataTickerStreamMessage.java"))));
     
     checkJavaFilesCount(Paths.get("serializers"), 2);

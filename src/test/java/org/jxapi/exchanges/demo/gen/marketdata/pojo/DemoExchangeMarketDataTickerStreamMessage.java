@@ -135,24 +135,31 @@ public class DemoExchangeMarketDataTickerStreamMessage implements Pojo<DemoExcha
   
   @Override
   public boolean equals(Object other) {
-    if (other == null)
+    if (other == null) {
       return false;
+    }
+    if (this == other) {
+      return true;
+    }
     if (!getClass().equals(other.getClass()))
       return false;
     DemoExchangeMarketDataTickerStreamMessage o = (DemoExchangeMarketDataTickerStreamMessage) other;
-    return Objects.equals(topic, o.topic)
-            && Objects.equals(symbol, o.symbol)
-            && Objects.equals(last, o.last)
-            && Objects.equals(high, o.high)
-            && Objects.equals(low, o.low)
-            && Objects.equals(volume, o.volume)
-            && Objects.equals(time, o.time);
+    return Objects.equals(this.topic, o.topic)
+        && Objects.equals(this.symbol, o.symbol)
+        && Objects.equals(this.last, o.last)
+        && Objects.equals(this.high, o.high)
+        && Objects.equals(this.low, o.low)
+        && Objects.equals(this.volume, o.volume)
+        && Objects.equals(this.time, o.time);
   }
   
   @Override
   public int compareTo(DemoExchangeMarketDataTickerStreamMessage other) {
     if (other == null) {
       return 1;
+    }
+    if (this == other) {
+      return 0;
     }
     int res = 0;
     res = CompareUtil.compare(this.topic, other.topic);

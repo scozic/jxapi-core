@@ -27,13 +27,24 @@ public class ConfigPropertyDescriptorTest {
     Assert.assertEquals("myGroup", property.getName());
     Assert.assertEquals("My group", property.getDescription());
     
-    Assert.assertEquals(Type.STRING, property.getType());
+    Assert.assertEquals(Type.OBJECT, property.getType());
     Assert.assertNull(property.getDefaultValue());
     Assert.assertNotNull(property.getProperties());
     Assert.assertEquals(2, property.getProperties().size());
     Assert.assertEquals(p1, property.getProperties().get(0));
     Assert.assertEquals(p2, property.getProperties().get(1));
     
+  }
+  
+  @Test
+  public void testCreateEmptyGroup() {
+    ConfigPropertyDescriptor property = ConfigPropertyDescriptor.createGroup("myGroup", "My group", null);
+    Assert.assertEquals("myGroup", property.getName());
+    Assert.assertEquals("My group", property.getDescription());
+    Assert.assertEquals(Type.OBJECT, property.getType());
+    Assert.assertNull(property.getDefaultValue());
+    Assert.assertNotNull(property.getProperties());
+    Assert.assertEquals(0, property.getProperties().size());
   }
   
   @Test

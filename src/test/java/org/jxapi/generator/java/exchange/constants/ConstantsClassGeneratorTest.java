@@ -1,5 +1,7 @@
 package org.jxapi.generator.java.exchange.constants;
 
+import java.io.IOException;
+import java.nio.file.Paths;
 import java.util.List;
 import java.util.Map;
 
@@ -7,8 +9,11 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import org.jxapi.exchange.descriptor.Constant;
+import org.jxapi.exchange.descriptor.ExchangeDescriptor;
 import org.jxapi.exchange.descriptor.Type;
+import org.jxapi.exchange.descriptor.parser.ExchangeDescriptorParser;
 import org.jxapi.generator.java.JavaCodeGenUtil;
+import org.jxapi.generator.java.exchange.ExchangeGenUtil;
 import org.jxapi.util.EncodingUtil;
 import org.jxapi.util.PlaceHolderResolver;
 
@@ -124,7 +129,7 @@ public class ConstantsClassGeneratorTest {
   
   @Test(expected = IllegalArgumentException.class)
   public void testInvalidConstantNotAPrimitiveType() {
-    new ConstantsClassGenerator("com.x.y.MyConstants", List.of(Constant.create("myConst", Type.fromTypeName("INT_LIST"), "My description", "[1, 2, 3]")), null).generate();
+    new ConstantsClassGenerator("com.x.y.MyConstants", List.of(Constant.create("myConst", Type.fromTypeName("OBJECT_MAP"), "My description", "[1, 2, 3]")), null).generate();
   }
   
   @Test
@@ -199,5 +204,71 @@ public class ConstantsClassGeneratorTest {
         + "  }\n"
         + "}\n"
         + "", gen.generate());
+  }
+  
+  @Test
+  public void testGenerateClassForExchangeWithConflictingConstantNames() throws IOException {
+    ExchangeDescriptor exchangeDescriptor = ExchangeDescriptorParser.fromYaml(Paths.get(".", "src", "test", "resources", "exchangeWithEndpointWithConflictingPropertyNames.yaml"));
+    PlaceHolderResolver docPlaceHolderResolver = 
+        PlaceHolderResolver.create(ExchangeGenUtil.getDescriptionReplacements(exchangeDescriptor, null));
+    ConstantsClassGenerator gen = new ConstantsClassGenerator(
+        ExchangeGenUtil.getExchangeConstantsClassName(exchangeDescriptor), 
+        exchangeDescriptor.getConstants(),
+        docPlaceHolderResolver);
+    gen.setConstantValuePlaceHolderResolver(s -> ExchangeGenUtil.generateSubstitutionInstructionDeclaration(
+        s, 
+        exchangeDescriptor, 
+        null,
+        null,
+        gen.getImports()));
+    gen.setDescription("Constants used in {@link " + ExchangeGenUtil.getExchangeInterfaceName(exchangeDescriptor) + "} API wrapper");
+    Assert.assertEquals("package org.jxapi.exchanges.conflict.gen;\n"
+        + "\n"
+        + "import javax.annotation.processing.Generated;\n"
+        + "\n"
+        + "/**\n"
+        + " * Constants used in {@link org.jxapi.exchanges.conflict.gen.ConflictExchange} API wrapper\n"
+        + " */\n"
+        + "@Generated(\"org.jxapi.generator.java.exchange.constants.ConstantsClassGenerator\")\n"
+        + "public class ConflictConstants {\n"
+        + "  \n"
+        + "  private ConflictConstants(){}\n"
+        + "  \n"
+        + "  /**\n"
+        + "   * 'c1' constant\n"
+        + "   */\n"
+        + "  public static final Integer C1 = Integer.valueOf(\"12340\");\n"
+        + "  \n"
+        + "  /**\n"
+        + "   * 'C1' constant (note the uppercase 'C')\n"
+        + "   */\n"
+        + "  public static final String C1_ = \"10000\";\n"
+        + "  \n"
+        + "  /**\n"
+        + "   * 'c1_' constant (note the underscore)\n"
+        + "   */\n"
+        + "  public static final Long C1__ = Long.valueOf(\"1234567890\");\n"
+        + "  \n"
+        + "  /**\n"
+        + "   * 'C1_' constant group (note the uppercase 'C' and underscore)\n"
+        + "   */\n"
+        + "  @Generated(\"org.jxapi.generator.java.exchange.constants.ConstantsClassGenerator\")\n"
+        + "  public static class C1___ {\n"
+        + "    \n"
+        + "    private C1___(){}\n"
+        + "    \n"
+        + "    /**\n"
+        + "     * Foo constant of C1 group\n"
+        + "     */\n"
+        + "    public static final String FOO = \"fooVal\";\n"
+        + "    \n"
+        + "    /**\n"
+        + "     * Bar constant of C1 group\n"
+        + "     */\n"
+        + "    public static final String BAR = \"barVal\";\n"
+        + "  }\n"
+        + "}\n"
+        + "", 
+        gen.generate());
   }
 }

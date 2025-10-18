@@ -44,18 +44,25 @@ public class SingleSymbol implements Pojo<SingleSymbol> {
   
   @Override
   public boolean equals(Object other) {
-    if (other == null)
+    if (other == null) {
       return false;
+    }
+    if (this == other) {
+      return true;
+    }
     if (!getClass().equals(other.getClass()))
       return false;
     SingleSymbol o = (SingleSymbol) other;
-    return Objects.equals(symbol, o.symbol);
+    return Objects.equals(this.symbol, o.symbol);
   }
   
   @Override
   public int compareTo(SingleSymbol other) {
     if (other == null) {
       return 1;
+    }
+    if (this == other) {
+      return 0;
     }
     int res = 0;
     res = CompareUtil.compare(this.symbol, other.symbol);

@@ -6,6 +6,10 @@ import java.util.List;
 import java.util.Map;
 
 import org.jxapi.util.EncodingUtil;
+import org.jxapi.util.ExceptionToStringJsonSerializer;
+import org.jxapi.util.JsonUtil;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
  * Represents a HTTP response, raised upon completion of a {@link FutureHttpResponse}.
@@ -13,6 +17,12 @@ import org.jxapi.util.EncodingUtil;
  * @see FutureHttpResponse
  */
 public class HttpResponse {
+  
+  private static final ObjectMapper TOSTRING_OBJECT_MAPPER = EncodingUtil.createDefaultPojoToToStringObjectMapper(
+      new ExceptionToStringJsonSerializer(),
+      new HttpRequestToStringJsonSerializer(),
+      new HttpResponseToStringJsonSerializer()
+    );
   
   /**
    * Checks if a HTTP status code is in the 2XX range.
@@ -152,9 +162,15 @@ public class HttpResponse {
     return 0L;
   }
   
+  /**
+   * Returns a JSON like string representation of this object, with properties ordered by importance.
+   * Some fields are pretty printed or shortened to enhance readability.
+   * @return A string representation of this object, with properties in JSON format ordered by importance.
+   * @see HttpResponseToStringJsonSerializer
+   */
   @Override
   public String toString() {
-    return EncodingUtil.pojoToString(this);
+    return JsonUtil.pojoToJsonString(this, TOSTRING_OBJECT_MAPPER);
   }
 
 }

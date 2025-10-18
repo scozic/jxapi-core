@@ -30,7 +30,7 @@
         </Root>
 
         <!-- Loggers -->
-        <Logger name="org.jxapi" level="info"></Logger>
+        <Logger name="org.jxapi" level="INFO"></Logger>
         
         
     </Loggers>

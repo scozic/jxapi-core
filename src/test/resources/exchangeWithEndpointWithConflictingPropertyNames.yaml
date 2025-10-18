@@ -1,0 +1,92 @@
+id: conflict
+version: 1.0.0
+description: > 
+  A dummy exchange where one REST and one websocket endpoint are defined, using parameters with names so
+  that their generated code associated variables or classes would conflict.
+  Will be used for tests that ensure that such conflicts are properly resolved.
+docUrl: https://www.example.com/docs/conflict
+basePackage: org.jxapi.exchanges.conflict.gen
+httpUrl: https://api.example.com/conflict
+httpRequestInterceptorFactory: org.jxapi.exchanges.demo.net.DemoExchangeHttpRequestInterceptorFactory
+constants:
+  - name: c1
+    type: INT
+    description: "'c1' constant"
+    value: 12340
+  - name: C1
+    type: STRING
+    description: "'C1' constant (note the uppercase 'C')"
+    value: 10000
+  - name: c1_
+    type: LONG
+    description: "'c1_' constant (note the underscore)"
+    value: 1234567890
+  - name: C1_
+    description: "'C1_' constant group (note the uppercase 'C' and underscore)"
+    constants:
+      - name: foo
+        description: Foo constant of C1 group
+        value: fooVal
+      - name: bar
+        description: Bar constant of C1 group
+        value: barVal
+apis:
+ - name: v1
+   description: "Version 1 of the Employee API"
+   httpUrl: v1
+   restEndpoints:
+    - name: myRestEndpoint
+      description: Get employee details by ID
+      httpMethod: GET
+      url: /myApi
+      request:
+       objectName: ConflictRequest
+       properties:
+        - name: p1
+          type: INT
+          description: p1 parameter
+          sampleValue: ${constants.c1}
+        - name: P1
+          type: STRING
+          description: P1 parameter (note the uppercase 'P'). Its  value should be one of the values of the ${constants.C1_} constant group
+          sampleValue: ${constants.C1_.bar}  
+        - name: p1_
+          type: LONG
+          description: p1_ parameter (note the underscore)
+          sampleValue: ${constants.c1_}
+        - name: P1_
+          type: OBJECT
+          description: P1_ parameter (note the uppercase 'P' and underscore)
+          properties:
+            - name: subParam
+              type: BIGDECIMAL
+              description: subParam parameter
+              sampleValue: 12.35
+   websocketUrl: ${config.server.baseWebsocketUrl}
+   websocketHookFactory: org.jxapi.exchanges.demo.net.DemoExchangeWebsocketHookFactory  
+   websocketEndpoints:
+    - name: myWsEndpoint
+      description: Employee updates websocket
+      docUrl: https://www.example.com/docs/employee/updates
+      request:
+       objectName: ConflictRequest
+      message:
+       description: Update message
+       properties:
+        - name: m1
+          type: INT
+          description: m1 parameter
+          sampleValue: 1
+        - name: M1
+          type: STRING
+          description: M1 parameter (note the uppercase 'M')
+          sampleValue: test
+        - name: m1_
+          type: BOOLEAN
+          description: m1_ parameter (note the underscore)
+          sampleValue: true
+        - name: M1_
+          type: BIGDECIMAL
+          description: M1_ parameter (note the uppercase 'M' and underscore)
+          sampleValue: 12.35
+       

@@ -6,7 +6,7 @@
 
   <groupId>org.jxapi</groupId>
   <artifactId>jxapi-core</artifactId>
-  <version>0.16.1</version>
+  <version>0.16.2-SNAPSHOT</version>
 
   <name>jxapi-core</name>
   <!-- FIXME change it to the project's website -->
@@ -19,7 +19,7 @@
     <maven.compiler.source>1.8</maven.compiler.source>
     
         <!-- JaCoCo Properties -->
-    <jacoco.version>0.8.12</jacoco.version>
+    <jacoco.version>0.8.13</jacoco.version>
     <sonar.java.coveragePlugin>jacoco</sonar.java.coveragePlugin>
     <sonar.dynamicAnalysis>reuseReports</sonar.dynamicAnalysis>
     <sonar.jacoco.reportPath>${project.basedir}/../target/jacoco.exec</sonar.jacoco.reportPath>

@@ -1,9 +1,11 @@
 package org.jxapi.generator.java.exchange.api.demo;
 
+import java.util.List;
 import java.util.Properties;
 import java.util.concurrent.ExecutionException;
 
 import org.jxapi.exchange.ExchangeApiObserver;
+import org.jxapi.exchange.descriptor.ConfigPropertyDescriptor;
 import org.jxapi.exchange.descriptor.ExchangeApiDescriptor;
 import org.jxapi.exchange.descriptor.ExchangeDescriptor;
 import org.jxapi.exchange.descriptor.Field;
@@ -15,7 +17,6 @@ import org.jxapi.generator.java.exchange.ExchangeGenUtil;
 import org.jxapi.generator.java.exchange.api.ExchangeApiGenUtil;
 import org.jxapi.netutils.rest.RestResponse;
 import org.jxapi.util.DemoUtil;
-import org.jxapi.util.PlaceHolderResolver;
 import org.slf4j.Logger;
 
 /**
@@ -29,8 +30,7 @@ import org.slf4j.Logger;
  * <li>The request is created if the API method has arguments using a generated
  * <code>public static</code> method for creating that request.</li>
  * <li>That request creation method uses sample values provided with each field
- * of the request sample values, see {@link Field#getSampleValue()} and
- * {@link Field#getSampleMapKeyValue()}.</li>
+ * of the request sample values, see {@link Field#getSampleValue()}.</li>
  * </ul>
  */
 public class RestEndpointDemoGenerator extends JavaTypeGenerator {
@@ -56,7 +56,9 @@ public class RestEndpointDemoGenerator extends JavaTypeGenerator {
   private final Type responseDataType;
   private final String apiEndpointMethodJavadocLink;
   private final String apiMethodName;
-  private final PlaceHolderResolver sampleValuePlaceHolderResolver;
+  private final ExchangeDescriptor exchange;
+  private final ExchangeApiDescriptor exchangeApi;
+  private final List<ConfigPropertyDescriptor> demoProperties;
   
   /**
    * Constructor.
@@ -64,23 +66,23 @@ public class RestEndpointDemoGenerator extends JavaTypeGenerator {
    * @param exchangeDescriptor the exchange descriptor
    * @param exchangeApiDescriptor the exchange API descriptor
    * @param restApi the REST endpoint descriptor
+   * @param demoProperties the list of demo configuration properties available for demo snippets
    */
   public RestEndpointDemoGenerator(ExchangeDescriptor exchangeDescriptor, 
                    ExchangeApiDescriptor exchangeApiDescriptor, 
-                   RestEndpointDescriptor restApi) {
+                   RestEndpointDescriptor restApi,
+                   List<ConfigPropertyDescriptor> demoProperties) {
     super(EndpointDemoGenUtil.getRestApiDemoClassName(exchangeDescriptor, exchangeApiDescriptor, restApi));
     setTypeDeclaration("public class");
+    this.exchange = exchangeDescriptor;
+    this.exchangeApi = exchangeApiDescriptor;
     this.restApi = restApi;
+    this.demoProperties = demoProperties;
     this.exchangeClassName = ExchangeGenUtil.getExchangeInterfaceName(exchangeDescriptor);
     this.exchangeSimpleClassName = JavaCodeGenUtil.getClassNameWithoutPackage(exchangeClassName);
     this.hasArguments = ExchangeApiGenUtil.restEndpointHasArguments(restApi, exchangeApiDescriptor);
     this.request = ExchangeApiGenUtil.resolveFieldProperties(exchangeApiDescriptor, restApi.getRequest());
     this.exchangeImplClassName = ExchangeGenUtil.getExchangeInterfaceImplementationName(exchangeDescriptor);
-    this.sampleValuePlaceHolderResolver = s -> ExchangeGenUtil.generateSubstitutionInstructionDeclaration(
-        s, 
-        exchangeDescriptor, 
-        "properties",
-        getImports());
     if (hasArguments) {
       requestDataType =  ExchangeGenUtil.getFieldType(request);
       if (requestDataType.getCanonicalType().isPrimitive) {
@@ -147,9 +149,12 @@ public class RestEndpointDemoGenerator extends JavaTypeGenerator {
       this.appendToBody(EndpointDemoGenUtil.generateFieldCreationMethod(
                 request,  
                 requestClassName, 
-                ExchangeApiGenUtil.DEFAULT_REQUEST_ARG_NAME,
-                getImports(),
-                sampleValuePlaceHolderResolver));
+                exchange,
+                exchangeApi,
+                EndpointDemoGenUtil.REST_DEMO_GROUP_NAME,
+                restApi.getName(),
+                demoProperties,
+                getImports()));
       this.appendToBody("\n");
     }
     generateExecuteMethod();

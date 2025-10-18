@@ -1,5 +1,6 @@
 package org.jxapi.exchanges.demo.gen.marketdata.demo;
 
+import java.util.Optional;
 import java.util.Properties;
 
 import javax.annotation.processing.Generated;
@@ -8,12 +9,12 @@ import org.jxapi.exchanges.demo.gen.DemoExchangeDemoProperties;
 import org.jxapi.exchanges.demo.gen.DemoExchangeExchange;
 import org.jxapi.exchanges.demo.gen.DemoExchangeExchangeImpl;
 import org.jxapi.exchanges.demo.gen.marketdata.DemoExchangeMarketDataApi;
+import org.jxapi.exchanges.demo.gen.marketdata.deserializers.DemoExchangeMarketDataTickerStreamRequestDeserializer;
 import org.jxapi.exchanges.demo.gen.marketdata.pojo.DemoExchangeMarketDataTickerStreamMessage;
 import org.jxapi.exchanges.demo.gen.marketdata.pojo.DemoExchangeMarketDataTickerStreamRequest;
 import org.jxapi.netutils.websocket.WebsocketListener;
 import org.jxapi.util.DemoProperties;
 import org.jxapi.util.DemoUtil;
-import org.jxapi.util.EncodingUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -25,24 +26,26 @@ public class DemoExchangeMarketDataTickerStreamDemo {
   private static final Logger log = LoggerFactory.getLogger(DemoExchangeMarketDataTickerStreamDemo.class);
   
   /**
-   * Creates a sample value for the request field of type DemoExchangeMarketDataTickerStreamRequest using sample value(s) defined in the field descriptor.
+   * Creates a sample value for the request field of type DemoExchangeMarketDataTickerStreamRequest using sample value(s) defined in demo configuration properties.
    * 
    * @param properties the configuration properties to use for the sample value generation.
    */
   public static DemoExchangeMarketDataTickerStreamRequest createRequest(Properties properties) {
-    DemoExchangeMarketDataTickerStreamRequest request = new DemoExchangeMarketDataTickerStreamRequest();
-    request.setSymbol(EncodingUtil.substituteArguments("${demo.config.demoSymbol}", "demo.config.demoSymbol", DemoExchangeDemoProperties.getDemoSymbol(properties)));
-    return request;
+    return Optional
+      .ofNullable(new DemoExchangeMarketDataTickerStreamRequestDeserializer().deserialize(DemoExchangeDemoProperties.MarketData.Ws.TickerStream.getRequest(properties)))
+      .orElse(DemoExchangeMarketDataTickerStreamRequest.builder()  
+        .symbol(DemoExchangeDemoProperties.MarketData.Ws.TickerStream.Request.getSymbol(properties))
+        .build());
   }
   
   /**
    * {@link DemoExchangeMarketDataApi#subscribeTickerStream(org.jxapi.exchanges.demo.gen.marketdata.pojo.DemoExchangeMarketDataTickerStreamRequest, org.jxapi.netutils.websocket.WebsocketListener)}.
    * <br>Websocket endpoint subscription will be performed using given websocket listener then after waiting for <code>subscriptionDuration</code> delay, unsubscription is performed.
    * Finally waits for <code>delayBeforeExitAfterUnsubscription</code> delay before returning to make sure no more messages are dispatched.
-   * @param request                            The subscription request
-   * @param messageListener                    The listener that will receive messages dispatched while subscription is active
-   * @param configProperties                   Exchange configuration properties.
-   * @param apiObserver                       {@link ExchangeApiObserver} (optional, ignored if <code>null</code>) observer will be subscribed to Exchange API exposing websocket endpoint that will be notifed of received websocket events.Useful in particular to get notified of websocket errors.
+   * @param request          The subscription request
+   * @param messageListener  The listener that will receive messages dispatched while subscription is active
+   * @param configProperties Exchange configuration properties.
+   * @param apiObserver      {@link ExchangeApiObserver} (optional, ignored if <code>null</code>) observer will be subscribed to Exchange API exposing websocket endpoint that will be notifed of received websocket events.Useful in particular to get notified of websocket errors.
    * @throws InterruptedException eventually thrown while sleeping for <code>subscriptionDuration</code> or <code>delayBeforeExitAfterUnsubscription</code> delays
    */
   public static void subscribe(DemoExchangeMarketDataTickerStreamRequest request,

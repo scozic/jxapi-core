@@ -117,21 +117,21 @@ public class HttpResponseTest {
     public void testToString() {
         HttpResponse response = new HttpResponse();
         response.setResponseCode(200);
-        response.setBody("body");
+        response.setBody("hello");
         response.setException(new RuntimeException("error!"));
         response.setHeader("headerName", "headerValue");
         response.setTime(new Date(1725663894119L));
         HttpRequest request = new HttpRequest();
         request.setTime(new Date(response.getTime().getTime() - 1000L));
         response.setRequest(request);
-        Assert.assertEquals("HttpResponse{\"responseCode\":200,\"exception\":\"java.lang.RuntimeException: error!\",\"request\":{\"time\":\"2024-09-07T01:04:53.119+0200\"},\"body\":\"body\",\"headers\":{\"headerName\":[\"headerValue\"]},\"time\":\"2024-09-07T01:04:54.119+0200\",\"roundTrip\":1000}", 
+        Assert.assertEquals("{\"responseCode\":200,\"exception\":\"java.lang.RuntimeException: error!\",\"request\":{\"time\":\"2024-09-07T01:04:53.119+0200\"},\"body\":\"length=5\",\"headers\":{\"headerName\":[\"headerValue\"]},\"time\":\"2024-09-07T01:04:54.119+0200\",\"roundTrip\":1000}", 
                             response.toString());
         response.setBody(null);
         response.setException(null);
         response.setHeaders(null);
         response.setTime(null);
         response.setRequest(null);
-        Assert.assertEquals("HttpResponse{\"responseCode\":200,\"roundTrip\":0}", 
+        Assert.assertEquals("{\"responseCode\":200,\"roundTrip\":0}", 
             response.toString());
     }
 }

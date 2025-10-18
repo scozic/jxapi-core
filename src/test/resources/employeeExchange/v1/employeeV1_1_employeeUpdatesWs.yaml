@@ -1,6 +1,6 @@
 id: "Employee"
 apis:
- - name: V1    
+ - name: v1    
    websocketEndpoints:
     - name: employeeUpdates
       description: Employee updates websocket

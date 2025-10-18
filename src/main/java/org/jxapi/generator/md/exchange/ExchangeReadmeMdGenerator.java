@@ -55,6 +55,8 @@ public class ExchangeReadmeMdGenerator {
   private final String demoClassName;
 
   private final String constantsInterfaceName;
+  
+  private final boolean hasDemoProperties;
 
   /**
    * Constructor.
@@ -62,8 +64,16 @@ public class ExchangeReadmeMdGenerator {
    * @param exchangeDescriptor the exchange descriptor to generate the README for
    * @param baseJavadocUrl     base URL for Javadoc links
    * @param baseSourceUrl      base URL for source links
+   * @param hasDemoProperties  <code>true</code> if the exchange has demo
+   *                           properties, which is the case if at least one
+   *                           endpoint is defined with a request containing
+   *                           parameters.
    */
-  public ExchangeReadmeMdGenerator(ExchangeDescriptor exchangeDescriptor, String baseJavadocUrl, String baseSourceUrl) {
+  public ExchangeReadmeMdGenerator(ExchangeDescriptor 
+                                   exchangeDescriptor, 
+                                   String baseJavadocUrl, 
+                                   String baseSourceUrl, 
+                                   boolean hasDemoProperties) {
     this.exchangeDescriptor = exchangeDescriptor;
     this.baseJavadocUrl = baseJavadocUrl;
     this.baseSourceUrl = baseSourceUrl;
@@ -71,6 +81,7 @@ public class ExchangeReadmeMdGenerator {
     this.exchangeInterfaceImplementationName = ExchangeGenUtil.getExchangeInterfaceImplementationName(exchangeInterfaceName);
     this.demoClassName = findDemoClassName(exchangeDescriptor);
     this.constantsInterfaceName = ExchangeGenUtil.getExchangeConstantsClassName(exchangeDescriptor);
+    this.hasDemoProperties = hasDemoProperties;
   }
 
   /**
@@ -123,16 +134,29 @@ public class ExchangeReadmeMdGenerator {
      .append("(properties);\n")
      .append("  // Access API groups and their endpoints through 'exchange' methods.\n")
      .append("}\n")
-        .append("```\n");
+     .append("```\n");
     if (demoClassName != null) {
       s.append("You may have a look at ")
        .append(getSourceFileLink(demoClassName, "test"))
        .append(" class for full usage example\n");
     }
     List<ConfigPropertyDescriptor> properties = exchangeDescriptor.getProperties();
-    if (!CollectionUtil.isEmpty(properties)) {
-      s.append("\n### Properties\n\n")
-       .append(generatePropertiesTable("Configuration properties", properties, null, docPlaceHolderResolver));
+    if (!CollectionUtil.isEmpty(properties) || hasDemoProperties) {
+      s.append("\n### Properties\n\n");
+      if (!CollectionUtil.isEmpty(properties)) {
+        s.append(generatePropertiesTable("Configuration properties", properties, null, docPlaceHolderResolver));
+      }
+      if (hasDemoProperties) {
+        String exchangeDemoPropertiesInterfaceName = ExchangeGenUtil
+            .getExchangeDemoPropertiesClassName(exchangeDescriptor);
+        s.append(
+            "\nSome demo configuration properties are available to tune common request parameters used in demo snippets, as ")
+            .append(getSourceFileLink(exchangeDemoPropertiesInterfaceName, "test"))
+            .append(" class.\n These properties are used to configure default values for request parameters used in demo snippets.\n\n")
+            .append("In order to run demo snippets, you can uncomment and set properties values in __demo-")
+            .append(exchangeDescriptor.getId())
+            .append(".properties__ properties file you create from .dist template in src/test/resources folder.\n");
+      }
     }
     
     List<Constant> exchangeConstants = exchangeDescriptor.getConstants();
@@ -152,7 +176,7 @@ public class ExchangeReadmeMdGenerator {
       apiDescriptors.forEach(api -> s.append(generateApiDescriptorDoc(api, docPlaceHolderResolver)));
     }
     
-    s.append(generateDemoSnippetsDocumentation(docPlaceHolderResolver));
+    s.append(generateDemoSnippetsDocumentation());
     return ExchangeReadmeMdGeneratorUtil.generateTableOfContent(s.toString());    
   }
   
@@ -348,23 +372,20 @@ public class ExchangeReadmeMdGenerator {
     return XmlElement.builder().tag("td").content(content).build();
   }
   
-  private String generateDemoSnippetsDocumentation(PlaceHolderResolver docPlaceHolderResolver) {
+  private String generateDemoSnippetsDocumentation() {
     if (!hasDemoSection()) {
       return "";
     }
+    String exchangeDemoPropertiesInterfaceName = ExchangeGenUtil.getExchangeDemoPropertiesClassName(exchangeDescriptor);
     StringBuilder s = new StringBuilder();
     s.append("\n\n## Demo snippets\n\n")
-     .append("This wrapper contains demo snippets for the most important endpoints. These snippets are generated in _src/test/java/_ source folder.\n\n");
-    if (!CollectionUtil.isEmpty(exchangeDescriptor.getDemoProperties())) {
-      String exchangeDemoPropertiesInterfaceName = ExchangeGenUtil.getExchangeDemoPropertiesInterfaceName(exchangeDescriptor);
-      s.append("Some demo configuration properties are available to tune common request parameters used in snippets, as ")
-       .append(getSourceFileLink(exchangeDemoPropertiesInterfaceName, "test"))
-       .append(" class.\n These properties are used to configure default values for request parameters used in demo snippets.\n\n")
-       .append("In order to run demo snippets, you can set properties values in __demo-")
-       .append(exchangeDescriptor.getId())
-       .append(".properties__ properties file in src/test/resources folder.\n\n")
-       .append(generatePropertiesTable("Demo snippet properties", exchangeDescriptor.getDemoProperties(), "demo", docPlaceHolderResolver));
-    }
+     .append("This wrapper contains demo snippets for the most important endpoints. These snippets are generated in _src/test/java/_ source folder.\n\n") 
+     .append("Some demo configuration properties are available to tune common request parameters used in snippets, as ")
+     .append(getSourceFileLink(exchangeDemoPropertiesInterfaceName, "test"))
+     .append(" class.\n These properties are used to configure default values for request parameters used in demo snippets.\n\n")
+     .append("In order to run demo snippets, you can set properties values in __demo-")
+     .append(exchangeDescriptor.getId())
+     .append(".properties__ properties file in src/test/resources folder.\n");
     
     if (hasEndpoints()) {
       s.append("\n\n### Endpoint demo snippets\n\n");
@@ -415,9 +436,6 @@ public class ExchangeReadmeMdGenerator {
    * @return true if there is a demo section, false otherwise
    */
   private boolean hasDemoSection() {
-    if (!CollectionUtil.isEmpty(exchangeDescriptor.getDemoProperties())) {
-      return true;
-    }
     return hasEndpoints();
   }
   

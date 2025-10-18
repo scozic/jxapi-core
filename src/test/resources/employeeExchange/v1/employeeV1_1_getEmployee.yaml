@@ -1,6 +1,6 @@
 id: "Employee"
 apis:
- - name: V1    
+ - name: v1    
    restEndpoints:
     - name: "getEmployee"
       description: "Get employee details by ID"
@@ -12,7 +12,7 @@ apis:
        name: "id"
        type: INT
        description: "Employee ID"
-       sampleValue: ${demo.config.employeeId}
+       sampleValue: 1
       response:
        objectName: "Employee"
        type: OBJECT
@@ -20,7 +20,7 @@ apis:
         - name: "id"
           type: INT
           description: "Employee ID"
-          sampleValue: ${demo.config.employeeId}
+          sampleValue: 1
         - name: "firstName"
           description: "Employee first name"
           sampleValue: "John"
@@ -28,5 +28,5 @@ apis:
           description: "Employee last name"
           sampleValue: "Doe"
         - name: "profile"
-          description: Employee profile. Can be ${constants.profile.regular} or ${constants.profile.admin}
+          description: Employee profile. See ${constants.profile}
           sampleValue: ${constants.profile.regular}

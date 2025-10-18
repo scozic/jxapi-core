@@ -10,7 +10,7 @@ import org.jxapi.util.EncodingUtil;
 import org.jxapi.util.Pojo;
 
 /**
- * Response to Employee V1 API <br>
+ * Response to Employee v1 API <br>
  * getEmployee REST endpoint request<br>
  * Get employee details by ID
  */
@@ -75,14 +75,14 @@ public class Employee implements Pojo<Employee> {
   }
   
   /**
-   * @return Employee profile. Can be <a href="V1org/jxapi/exchanges/employee/gen/EmployeeConstants.Profile.html#REGULAR">regular</a> or <a href="V1org/jxapi/exchanges/employee/gen/EmployeeConstants.Profile.html#ADMIN">admin</a>
+   * @return Employee profile. See {@link org.jxapi.exchanges.employee.gen.EmployeeConstants.Profile}
    */
   public String getProfile() {
     return profile;
   }
   
   /**
-   * @param profile Employee profile. Can be <a href="V1org/jxapi/exchanges/employee/gen/EmployeeConstants.Profile.html#REGULAR">regular</a> or <a href="V1org/jxapi/exchanges/employee/gen/EmployeeConstants.Profile.html#ADMIN">admin</a>
+   * @param profile Employee profile. See {@link org.jxapi.exchanges.employee.gen.EmployeeConstants.Profile}
    */
   public void setProfile(String profile) {
     this.profile = profile;
@@ -90,21 +90,28 @@ public class Employee implements Pojo<Employee> {
   
   @Override
   public boolean equals(Object other) {
-    if (other == null)
+    if (other == null) {
       return false;
+    }
+    if (this == other) {
+      return true;
+    }
     if (!getClass().equals(other.getClass()))
       return false;
     Employee o = (Employee) other;
-    return Objects.equals(id, o.id)
-            && Objects.equals(firstName, o.firstName)
-            && Objects.equals(lastName, o.lastName)
-            && Objects.equals(profile, o.profile);
+    return Objects.equals(this.id, o.id)
+        && Objects.equals(this.firstName, o.firstName)
+        && Objects.equals(this.lastName, o.lastName)
+        && Objects.equals(this.profile, o.profile);
   }
   
   @Override
   public int compareTo(Employee other) {
     if (other == null) {
       return 1;
+    }
+    if (this == other) {
+      return 0;
     }
     int res = 0;
     res = CompareUtil.compare(this.id, other.id);
@@ -189,7 +196,7 @@ public class Employee implements Pojo<Employee> {
     
     /**
      * Will set the value of <code>profile</code> field in the builder
-     * @param profile Employee profile. Can be <a href="V1org/jxapi/exchanges/employee/gen/EmployeeConstants.Profile.html#REGULAR">regular</a> or <a href="V1org/jxapi/exchanges/employee/gen/EmployeeConstants.Profile.html#ADMIN">admin</a>
+     * @param profile Employee profile. See {@link org.jxapi.exchanges.employee.gen.EmployeeConstants.Profile}
      * @return Builder instance
      * @see #setProfile(String)
      */

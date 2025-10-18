@@ -1,19 +1,19 @@
 package org.jxapi.exchanges.employee.gen.v1.demo;
 
+import java.util.Optional;
 import java.util.Properties;
 import java.util.concurrent.ExecutionException;
 
 import javax.annotation.processing.Generated;
 import org.jxapi.exchange.ExchangeApiObserver;
-import org.jxapi.exchanges.employee.gen.EmployeeConstants;
 import org.jxapi.exchanges.employee.gen.EmployeeDemoProperties;
 import org.jxapi.exchanges.employee.gen.EmployeeExchange;
 import org.jxapi.exchanges.employee.gen.EmployeeExchangeImpl;
 import org.jxapi.exchanges.employee.gen.v1.EmployeeV1Api;
+import org.jxapi.exchanges.employee.gen.v1.deserializers.EmployeeDeserializer;
 import org.jxapi.exchanges.employee.gen.v1.pojo.Employee;
 import org.jxapi.netutils.rest.RestResponse;
 import org.jxapi.util.DemoUtil;
-import org.jxapi.util.EncodingUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -25,17 +25,19 @@ public class EmployeeV1AddEmployeeDemo {
   private static final Logger log = LoggerFactory.getLogger(EmployeeV1AddEmployeeDemo.class);
   
   /**
-   * Creates a sample value for the request field of type Employee using sample value(s) defined in the field descriptor.
+   * Creates a sample value for the request field of type Employee using sample value(s) defined in demo configuration properties.
    * 
    * @param properties the configuration properties to use for the sample value generation.
    */
   public static Employee createRequest(Properties properties) {
-    Employee request = new Employee();
-    request.setId(Integer.valueOf(EncodingUtil.substituteArguments("${demo.config.employeeId}", "demo.config.employeeId", EmployeeDemoProperties.getEmployeeId(properties))));
-    request.setFirstName("John");
-    request.setLastName("Doe");
-    request.setProfile(EncodingUtil.substituteArguments("${constants.profile.regular}", "constants.profile.regular", EmployeeConstants.Profile.REGULAR));
-    return request;
+    return Optional
+      .ofNullable(new EmployeeDeserializer().deserialize(EmployeeDemoProperties.V1.Rest.AddEmployee.getRequest(properties)))
+      .orElse(Employee.builder()  
+        .id(EmployeeDemoProperties.V1.Rest.AddEmployee.Request.getId(properties))
+        .firstName(EmployeeDemoProperties.V1.Rest.AddEmployee.Request.getFirstName(properties))
+        .lastName(EmployeeDemoProperties.V1.Rest.AddEmployee.Request.getLastName(properties))
+        .profile(EmployeeDemoProperties.V1.Rest.AddEmployee.Request.getProfile(properties))
+        .build());
   }
   
   /**

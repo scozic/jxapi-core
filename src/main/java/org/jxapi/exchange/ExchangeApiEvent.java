@@ -1,10 +1,17 @@
 package org.jxapi.exchange;
 
 import org.jxapi.netutils.rest.HttpRequest;
+import org.jxapi.netutils.rest.HttpRequestToStringJsonSerializer;
+import org.jxapi.netutils.rest.HttpResponseToStringJsonSerializer;
 import org.jxapi.netutils.rest.RestResponse;
+import org.jxapi.netutils.rest.RestResponseToStringJsonSerializer;
 import org.jxapi.netutils.websocket.WebsocketException;
 import org.jxapi.netutils.websocket.WebsocketSubscribeRequest;
 import org.jxapi.util.EncodingUtil;
+import org.jxapi.util.ExceptionToStringJsonSerializer;
+import org.jxapi.util.JsonUtil;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
  * Encapsulates an event that occurs during the execution of an exchange API
@@ -19,6 +26,14 @@ import org.jxapi.util.EncodingUtil;
  * @see ExchangeApiObserver
  */
 public class ExchangeApiEvent {
+  
+  private static final ObjectMapper TOSTRING_OBJECT_MAPPER = EncodingUtil.createDefaultPojoToToStringObjectMapper(
+      new ExceptionToStringJsonSerializer(),
+      new HttpRequestToStringJsonSerializer(),
+      new HttpResponseToStringJsonSerializer(),
+      new RestResponseToStringJsonSerializer(),
+      new ExchangeApiEventToStringJsonSerializer()
+    );
 
   /**
    * Factory method to create a new {@link ExchangeApiEvent} object for a REST
@@ -328,12 +343,15 @@ public class ExchangeApiEvent {
   }
 
   /**
-   * @return A string representation of this object.
-   * @see EncodingUtil#pojoToString(Object)
+   * Provides a JSON like string representation of this object, with properties
+   * ordered by importance. Some fields are shortened or pretty-printed to
+   * enhance readability.
+   * @return A JSON like string representation of this object.
+   * @see ExchangeApiEventToStringJsonSerializer 
    */
   @Override
   public String toString() {
-    return EncodingUtil.pojoToString(this);
+    return JsonUtil.pojoToJsonString(this, TOSTRING_OBJECT_MAPPER);
   }
 
 }

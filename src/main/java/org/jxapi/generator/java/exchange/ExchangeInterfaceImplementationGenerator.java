@@ -128,12 +128,14 @@ public class ExchangeInterfaceImplementationGenerator extends JavaTypeGenerator 
       .append(ExchangeGenUtil.generateSubstitutionInstructionDeclaration(
           exchangeDescriptor.getHttpUrl(), 
           exchangeDescriptor, 
+          null,
           PROPERTIES_PARAMETER,
           getImports()))
       .append(JavaCodeGenUtil.SUPER_ARG_SEPARATOR)
       .append(ExchangeGenUtil.generateSubstitutionInstructionDeclaration(
           exchangeDescriptor.getWebsocketUrl(), 
           exchangeDescriptor, 
+          null,
           PROPERTIES_PARAMETER,
           getImports()))
       .append(");\n");

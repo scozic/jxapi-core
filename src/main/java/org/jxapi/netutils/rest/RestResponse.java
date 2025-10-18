@@ -4,6 +4,10 @@ import org.jxapi.exchange.ExchangeApi;
 import org.jxapi.netutils.rest.pagination.NextPageResolver;
 import org.jxapi.netutils.rest.pagination.PaginatedRestResponse;
 import org.jxapi.util.EncodingUtil;
+import org.jxapi.util.ExceptionToStringJsonSerializer;
+import org.jxapi.util.JsonUtil;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
  * Represents the response from a call to a REST endpoint in an
@@ -17,6 +21,13 @@ import org.jxapi.util.EncodingUtil;
  * @param <A> the type of the response object
  */
 public class RestResponse<A> {
+  
+  private static final ObjectMapper TOSTRING_OBJECT_MAPPER = EncodingUtil.createDefaultPojoToToStringObjectMapper(
+      new ExceptionToStringJsonSerializer(),
+      new HttpRequestToStringJsonSerializer(),
+      new HttpResponseToStringJsonSerializer(),
+      new RestResponseToStringJsonSerializer()      
+    );
 
   private int httpStatus;
 
@@ -186,10 +197,12 @@ public class RestResponse<A> {
   }
   
   /**
-   * @return String representation of the response.
+   * Returns a JSON like string representation of this object, with properties ordered by importance.
+   * The body and response object are serialized as pretty-printed strings (limited length) to enhance readability.
+   * @return JSON like String representation of the response.
    */
   public String toString() {
-    return EncodingUtil.pojoToString(this);
+    return JsonUtil.pojoToJsonString(this, TOSTRING_OBJECT_MAPPER);
   }
 
 }

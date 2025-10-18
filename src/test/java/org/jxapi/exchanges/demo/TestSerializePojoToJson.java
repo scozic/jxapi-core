@@ -97,7 +97,7 @@ public class TestSerializePojoToJson {
   }
   
   private static ObjectMapper createObjectMapper(boolean registerSerializer) {
-    ObjectMapper om = JsonUtil.createDefaultJsonToStringObjectMapper();
+    ObjectMapper om = JsonUtil.createDefaultObjectMapper();
     if (registerSerializer) {
       om.registerModule(new SimpleModule().addSerializer(
           DemoExchangeMarketDataExchangeInfoResponse.class, 

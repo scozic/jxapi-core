@@ -351,12 +351,14 @@ public class ExchangeApiInterfaceImplementationGenerator extends JavaTypeGenerat
       .append(ExchangeGenUtil.generateSubstitutionInstructionDeclaration(
         exchangeApiDescriptor.getHttpUrl(), 
         exchangeDescriptor, 
+        List.of(),
         EXCHANGE_ARGUMENT_NAME + GET_PROPERTIES,
         getImports()))
       .append(JavaCodeGenUtil.SUPER_ARG_SEPARATOR)
       .append(ExchangeGenUtil.generateSubstitutionInstructionDeclaration(
         exchangeApiDescriptor.getWebsocketUrl(), 
         exchangeDescriptor,  
+        List.of(),
         EXCHANGE_ARGUMENT_NAME + GET_PROPERTIES, 
         getImports()));
     constructorBody.append(");\n");
@@ -911,6 +913,7 @@ public class ExchangeApiInterfaceImplementationGenerator extends JavaTypeGenerat
         .append(ExchangeGenUtil.generateSubstitutionInstructionDeclaration(
             restApi.getUrl(), 
             exchangeDescriptor, 
+            List.of(),
             EXCHANGE_ARGUMENT_NAME + GET_PROPERTIES, 
             getImports()))
         .append(");\n");

@@ -64,15 +64,14 @@ public class DemoExchangeWebsocketEndpointDemoTest {
   
   @Test
   public void testDemoExchangeMarketDataTickerStreamDemo() throws Exception {
-    DemoExchangeMarketDataTickerStreamRequest request = new DemoExchangeMarketDataTickerStreamRequest();
-    request.setSymbol("BTC_USDT");
+    DemoExchangeMarketDataTickerStreamRequest request = DemoExchangeMarketDataTickerStreamDemo.createRequest(config);
     CompletableFuture<Exception> execution = runSubsribeDemoAsync();
     popClientConnectEvent();
     popMessageReceivedFromClient(DemoExchangeConstants.WEBSOCKET_LOGIN_MESSAGE);
     
     DemoExchangeMarketDataTickerStreamMessage msg1 = new DemoExchangeMarketDataTickerStreamMessage();
     msg1.setTopic("ticker");
-    msg1.setSymbol("BTC_USDT");
+    msg1.setSymbol(request.getSymbol());
     msg1.setHigh(new BigDecimal("103486.00"));
     msg1.setLast(new BigDecimal("103271.20"));
     msg1.setLow(new BigDecimal("101049.10"));
@@ -83,7 +82,7 @@ public class DemoExchangeWebsocketEndpointDemoTest {
     Assert.assertEquals(msg1, actualMsg1);
     DemoExchangeMarketDataTickerStreamMessage msg2 = new DemoExchangeMarketDataTickerStreamMessage();
     msg2.setTopic("ticker");
-    msg2.setSymbol("BTC_USDT");
+    msg2.setSymbol(request.getSymbol());
     msg2.setHigh(new BigDecimal("103686.00"));
     msg2.setLast(new BigDecimal("103171.20"));
     msg2.setLow(new BigDecimal("101048.10"));

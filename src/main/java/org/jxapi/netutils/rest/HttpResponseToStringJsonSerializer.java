@@ -37,7 +37,10 @@ public class HttpResponseToStringJsonSerializer extends StdSerializer<HttpRespon
     if (request != null) {
       gen.writeObjectField("request", request);
     }
-    JsonUtil.writeStringField(gen, "body", EncodingUtil.prettyPrintLongString(httpResponse.getBody()));
+    String body = httpResponse.getBody();
+    if (body != null) {
+      gen.writeStringField("body", "length=" + body.length());
+    }
     Map<String, List<String>> headers = httpResponse.getHeaders();
     if (!CollectionUtil.isEmptyMap(headers)) {
       gen.writeObjectField("headers", headers);
