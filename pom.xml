@@ -6,7 +6,7 @@
 
   <groupId>org.jxapi</groupId>
   <artifactId>jxapi-core</artifactId>
-  <version>0.16.2-SNAPSHOT</version>
+  <version>0.17.0</version>
 
   <name>jxapi-core</name>
   <!-- FIXME change it to the project's website -->
