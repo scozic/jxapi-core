@@ -181,14 +181,56 @@
 					}
 				},
 				{
-					"name": "postRestRequestDataTypeNoParamsButUrlParameters",
-					"httpMethod": "POST",
-					"description": "A sample REST endpoint using POST method (hence no url parameters by default), no arguments, but url parameters through 'urlParameters' property",
-					"url": "/postInt",
-					"urlParameters":"/customUrSuffix",
+					"name": "getRestRequestDataTypePrimitiveWithMsgFieldAsPathPAram",
+					"httpMethod": "GET",
+					"description": "A sample REST endpoint using GET (hence url query params) primitive request type, with 'msgField' property defined. That msgField value should be used as query param argument name",
+					"url": "/getIntWithMsgFieldAsPathParam",
 					"request": {
-						"type": "OBJECT",
-						"properties": []
+						"type": "INT",
+						"name": "age",
+						"msgField": "a",
+						"in": "PATH"
+					},
+					"response": {
+						"objectName": "GenericResponse"
+					}
+				},
+				{
+					"name": "getRestRequestDataTypeWithBothPathAndQueryParams",
+					"httpMethod": "GET",
+					"description": "A sample REST endpoint using GET (hence url query params) primitive request type, with 'msgField' property defined. That msgField value should be used as query param argument name",
+					"url": "/getRestRequestDataTypeWithBothPathAndQueryParams",
+					"request": {
+						"properties": [
+							{
+								"name": "id",
+								"type": "INT",
+								"msgField": "i",
+								"in": "QUERY"
+							},
+							{
+								"name": "name",
+								"type": "STRING",
+								"msgField": "n",
+								"in": "PATH"
+							},
+							{
+								"name": "address",
+								"properties": [
+									{
+										"name": "street",
+										"type": "STRING",
+										"in": "QUERY"
+									},
+									{
+										"name": "city",
+										"type": "STRING",
+										"in": "PATH"
+									}
+								]
+							}
+							
+						]
 					},
 					"response": {
 						"objectName": "GenericResponse"

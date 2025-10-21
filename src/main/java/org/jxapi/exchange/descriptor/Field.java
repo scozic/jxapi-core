@@ -166,6 +166,8 @@ public class Field {
   
   private List<String> implementedInterfaces;
   
+  private UrlParameterType in;
+  
   /**
    * Clone this field
    * @return Deep cloned instance of this field.
@@ -180,6 +182,7 @@ public class Field {
     clone.objectName = this.objectName;
     clone.properties = cloneList(this.properties);
     clone.implementedInterfaces = cloneList(this.implementedInterfaces);
+    clone.in = this.in;
     return clone;
   }
 
@@ -329,6 +332,49 @@ public class Field {
   @Override
   public String toString() {
     return EncodingUtil.pojoToString(this);
+  }
+  
+  /**
+   * When this field represents a URL parameter, get its type.
+   * <br>
+   * This is relevant when the field is used in a REST endpoint descriptor,
+   * see {@link RestEndpointDescriptor#getUrlParameters()}, as part of the request.
+   * In this case, field hierarchy representing the request will be serialzed
+   * as URL parameters, when the request HTTP method request has no body,
+   * like GET, DELETE, etc.
+   * <br>
+   * The URL parameters can be path parameters or query parameters, see {@link UrlParameterType}.
+   * When the request has no body, all fields representing the request
+   * are considered as {@link UrlParameterType#QUERY} parameters. Unless specified otherwise by setting
+   * this property to {@link UrlParameterType#PATH}.
+   * <br>
+   * 
+   * @return The type of URL parameter, see {@link UrlParameterType}
+   */
+  public UrlParameterType getIn() {
+    return in;
+  }
+
+  /**
+   * When this field represents a URL parameter, set its type. <br>
+   * This is relevant when the field is used in a REST endpoint descriptor, see
+   * {@link RestEndpointDescriptor#getUrlParameters()}, as part of the request. In
+   * this case, field hierarchy representing the request will be serialzed as URL
+   * parameters, when the request HTTP method request has no body, like GET,
+   * DELETE, etc. <br>
+   * The URL parameters can be path parameters or query parameters, see
+   * {@link UrlParameterType}. When the request has no body, all fields
+   * representing the request are considered as {@link UrlParameterType#QUERY}
+   * parameters. Unless specified otherwise by setting this property to
+   * {@link UrlParameterType#PATH}. <br>
+   * The path parameters are provided before query parameters in the URL.
+   * The order of path and query parameters is determined by the order they are
+   * declared in the descriptor file.
+   * 
+   * @param in The type of URL parameter, see {@link UrlParameterType}
+   */
+  public void setIn(UrlParameterType in) {
+    this.in = in;
   }
   
   @Override

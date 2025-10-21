@@ -18,6 +18,7 @@ import org.jxapi.exchange.descriptor.ExchangeDescriptor;
 import org.jxapi.exchange.descriptor.Field;
 import org.jxapi.exchange.descriptor.RestEndpointDescriptor;
 import org.jxapi.exchange.descriptor.Type;
+import org.jxapi.exchange.descriptor.UrlParameterType;
 import org.jxapi.exchange.descriptor.WebsocketEndpointDescriptor;
 import org.jxapi.exchange.descriptor.WebsocketMessageTopicMatcherFieldDescriptor;
 import org.jxapi.generator.java.JavaCodeGenUtil;
@@ -691,13 +692,19 @@ public class ExchangeApiInterfaceImplementationGenerator extends JavaTypeGenerat
                       .append(")").toString(); 
     
     addImport(FutureRestResponse.class);
-    String urlParametersSerializerVariableName = "urlParameters";
-    String urlParametersSerializerDeclaration = generateUrlParametersSerializerDeclaration(restApi);
-    if (urlParametersSerializerDeclaration != null) {
-      urlParametersSerializerDeclaration = "String " + urlParametersSerializerVariableName + " = " + urlParametersSerializerDeclaration;
+    String urlVariableName = "url";
+    String urlDeclaration = generateRestEndpointUrlVariableDeclaration(restApi);
+    if (urlDeclaration != null) {
+      urlDeclaration = new StringBuilder()
+          .append("String ")
+          .append(urlVariableName)
+          .append(" = ")
+          .append(urlDeclaration)
+          .append(".toString();\n")
+          .toString();
     }
     StringBuilder apiMethodBody = new StringBuilder()
-        .append(Optional.ofNullable(urlParametersSerializerDeclaration).orElse(""));
+        .append(Optional.ofNullable(urlDeclaration).orElse(""));
     
     List<String> rateLimitVariables = getRateLimitsVariables(restApi);
     
@@ -718,12 +725,13 @@ public class ExchangeApiInterfaceImplementationGenerator extends JavaTypeGenerat
     StringBuilder createHttpRequestInstruction = new StringBuilder()
         .append("HttpRequest.create(")
         .append(ExchangeApiGenUtil.getRestEndpointNameStaticVariable(restApi.getName()))
-        .append(", ")
-        .append(endpointUrlVar);
-    if (urlParametersSerializerDeclaration != null) {
+        .append(", ");
+    if (urlDeclaration != null) {
       createHttpRequestInstruction
-        .append(" + ")
-        .append(urlParametersSerializerVariableName);
+        .append(urlVariableName);
+    } else {
+      createHttpRequestInstruction
+      .append(endpointUrlVar);
     }
     addImport(HttpMethod.class);
     createHttpRequestInstruction.append(", HttpMethod.")
@@ -922,79 +930,188 @@ public class ExchangeApiInterfaceImplementationGenerator extends JavaTypeGenerat
     return sb.toString();
   }
   
-  private String generateUrlParametersSerializerDeclaration(RestEndpointDescriptor restApi) {
-    Field request = restApi.getRequest();
-    String getUrlParametersBody = null;
-    List<Field> enpointParameters = request == null? null:
-                          ExchangeApiGenUtil.resolveFieldProperties(
-                            exchangeApiDescriptor, request).getProperties();
-    if (ExchangeApiGenUtil.restEndpointHasArguments(restApi, exchangeApiDescriptor)) {
-      String requestName = request == null? null: request.getName();
-      Type requestDataType = ExchangeGenUtil.getFieldType(request);
-      boolean hasQueryParams = restApi.isQueryParams()  
-          || !restApi.getHttpMethod().requestHasBody;
-      if (restApi.getUrlParameters() != null) {
-        getUrlParametersBody =  generateUrlParametersOrTopicSerializerBodyFromTemplate(
-                        restApi.getUrlParameters(), 
-                        enpointParameters, 
-                        restApi.getUrlParametersListSeparator(),
-                        requestName,
-                        requestDataType);
-      } else if (!CollectionUtil.isEmpty(enpointParameters) && hasQueryParams) {
-        getUrlParametersBody = generateGetUrlParametersBodyUsingQueryParams(enpointParameters, false);
-      } else if (!requestDataType.isObject() && hasQueryParams) {
-        getUrlParametersBody = generateGetUrlParametersBodyUsingQueryParams(List.of(request), true);
-      } // else object type with 0 properties, no url parameter
-    } else if (restApi.getUrlParameters() != null) {
-      getUrlParametersBody = "\"" + restApi.getUrlParameters() + "\"";
+//  private String generateUrlVariableDeclaration(RestEndpointDescriptor restApi) {
+//    Field request = restApi.getRequest();
+//    String getUrlParametersBody = null;
+//    List<Field> enpointParameters = request == null? null:
+//                          ExchangeApiGenUtil.resolveFieldProperties(
+//                            exchangeApiDescriptor, request).getProperties();
+//    if (ExchangeApiGenUtil.restEndpointHasArguments(restApi, exchangeApiDescriptor)) {
+//      String requestName = request == null? null: request.getName();
+//      Type requestDataType = ExchangeGenUtil.getFieldType(request);
+//      boolean hasQueryParams = restApi.isQueryParams()  
+//          || !restApi.getHttpMethod().requestHasBody;
+//      if (restApi.getUrlParameters() != null) {
+//        getUrlParametersBody =  generateUrlParametersOrTopicSerializerBodyFromTemplate(
+//                        restApi.getUrlParameters(), 
+//                        enpointParameters, 
+//                        restApi.getUrlParametersListSeparator(),
+//                        requestName,
+//                        requestDataType);
+//      } else if (!CollectionUtil.isEmpty(enpointParameters) && hasQueryParams) {
+//        getUrlParametersBody = generateGetUrlParametersBodyUsingQueryParams(enpointParameters, false);
+//      } else if (!requestDataType.isObject() && hasQueryParams) {
+//        getUrlParametersBody = generateGetUrlParametersBodyUsingQueryParams(List.of(request), true);
+//      } // else object type with 0 properties, no url parameter
+//    } else if (restApi.getUrlParameters() != null) {
+//      getUrlParametersBody = "\"" + restApi.getUrlParameters() + "\"";
+//    }
+//    if (getUrlParametersBody != null) {
+//      getUrlParametersBody = getUrlParametersBody + ";\n";
+//    }
+//    return getUrlParametersBody;
+//  }
+  
+  private String generateRestEndpointUrlVariableDeclaration(RestEndpointDescriptor restApi) {
+    if (!ExchangeApiGenUtil.restEndpointHasArguments(restApi, exchangeApiDescriptor)) {
+      return null;
     }
-    if (getUrlParametersBody != null) {
-      getUrlParametersBody = getUrlParametersBody + ";\n";
+    Field request = ExchangeApiGenUtil.resolveFieldProperties(
+          exchangeApiDescriptor, restApi.getRequest());
+    List<String> pathParamArgs = new ArrayList<>();
+    collectUrlParameterArguments(
+        restApi, 
+        request, 
+        null, 
+        UrlParameterType.PATH, 
+        "request", 
+        pathParamArgs);
+    List<String> queryParamArgs = new ArrayList<>();
+    collectUrlParameterArguments(
+        restApi, 
+        request, 
+        null,
+        UrlParameterType.QUERY, 
+        "request", 
+        queryParamArgs);
+    if (pathParamArgs.isEmpty() && queryParamArgs.isEmpty()) {
+      return null;
     }
-    return getUrlParametersBody;
+    StringBuilder sb = new StringBuilder()
+      .append("new StringBuilder(128).append(")
+      .append(ExchangeApiGenUtil.getRestEndpointUrlVariableName(restApi))
+      .append(")");
+    if (!pathParamArgs.isEmpty()) {
+      addImport(EncodingUtil.class);
+      sb.append("\n")
+        .append(JavaCodeGenUtil.INDENTATION)
+        .append(".append(")
+        .append(EncodingUtil.class.getSimpleName())
+        .append(".createUrlPathParameters(")
+        .append(String.join(", ", pathParamArgs))
+        .append("))");    
+    }
+
+    if (!queryParamArgs.isEmpty()) {
+      addImport(EncodingUtil.class);
+      sb.append("\n")
+        .append(JavaCodeGenUtil.INDENTATION)
+        .append(".append(")
+        .append(EncodingUtil.class.getSimpleName())
+        .append(".createUrlQueryParameters(")
+        .append(String.join(", ", queryParamArgs))
+        .append("))");
+    }
+    return sb.toString();  
   }
   
-  private String generateGetUrlParametersBodyUsingQueryParams(List<Field> requestFields, boolean singleRequestParam) {
-    addImport(EncodingUtil.class);
-    StringBuilder s = new StringBuilder().append(EncodingUtil.class.getSimpleName() + ".createUrlQueryParameters(");
-    for (int i = 0; i < requestFields.size(); i++) {
-      if (i > 0) {
-        s.append(", ");
+  private void collectUrlParameterArguments(RestEndpointDescriptor restApi, Field f, List<Field> sieblings, UrlParameterType urlParameterType, String valuePrefix, List<String> res) {
+    f = ExchangeApiGenUtil.resolveFieldProperties(exchangeApiDescriptor, f);
+    UrlParameterType defUrlParamType = restApi.getHttpMethod().requestHasBody? null: UrlParameterType.QUERY;
+    UrlParameterType fieldUrlParamType = f.getIn();
+    Type type = ExchangeGenUtil.getFieldType(f);
+    List<Field> properties = ExchangeApiGenUtil.resolveFieldProperties(exchangeApiDescriptor, f).getProperties();
+    if (sieblings != null) {
+      valuePrefix += "." 
+        + JavaCodeGenUtil.getGetAccessorMethodName(
+          f.getName(),
+          ExchangeApiGenUtil.getClassNameForField(f, null, f.getObjectName()),
+          sieblings.stream().map(Field::getName).collect(Collectors.toList())) 
+        + "()";
+    }
+    if (fieldUrlParamType == null && !CollectionUtil.isEmpty(properties)) { 
+      for (Field p : properties) {
+        collectUrlParameterArguments(restApi, p, properties, urlParameterType, valuePrefix, res);
       }
-      Field f = requestFields.get(i);
-      String name = Optional.ofNullable(f.getMsgField()).orElse(f.getName());
-      s.append("\"")
-       .append(name)
-       .append("\", ");
-      String value = "request";
-      if (!singleRequestParam) {
-        value += "." 
-            + JavaCodeGenUtil.getGetAccessorMethodName(
-              f.getName(), 
-              ExchangeApiGenUtil.getClassNameForField(f, null, f.getObjectName()), 
-              requestFields.stream().map(Field::getName).collect(Collectors.toList()))
-            + "()";
+    } else if (Optional
+        .ofNullable(fieldUrlParamType)
+        .orElse(defUrlParamType) == urlParameterType) {
+      if (urlParameterType == UrlParameterType.QUERY) {
+        String name = Optional.ofNullable(f.getMsgField()).orElse(f.getName());
+        res.add(JavaCodeGenUtil.getQuotedString(name));
       }
-
-      Type type = ExchangeGenUtil.getFieldType(f);
-      if (type.getCanonicalType() == CanonicalType.LIST
-        || type.getCanonicalType() == CanonicalType.MAP
-        || type.isObject()) {
+      String value = valuePrefix;
+      if (type.getCanonicalType() == CanonicalType.LIST 
+          || type.getCanonicalType() == CanonicalType.MAP
+          || type.isObject()) {
         addImport(JsonUtil.class);
         value = new StringBuilder()
-                .append("JsonUtil.pojoToJsonString(")
-                .append(value)
-                .append(")").toString(); 
-      } else if (type.getCanonicalType() == CanonicalType.STRING) {
-        value = new StringBuilder()
+            .append("JsonUtil.pojoToJsonString(")
             .append(value)
-            .toString(); 
+            .append(")")
+            .toString();
       }
-      s.append(value);
-      
+      res.add(value);
     }
-    return s.append(")").toString();
   }
+  
+//  private String generateGetUrlParameterParameterValue(Field f, boolean singleRequestParam) {
+//    String value = "request";
+//    if (!singleRequestParam) {
+//      value += "." + JavaCodeGenUtil.getGetAccessorMethodName(f.getName(),
+//          ExchangeApiGenUtil.getClassNameForField(f, null, f.getObjectName()), Collections.emptyList()) + "()";
+//    }
+//
+//    Type type = ExchangeGenUtil.getFieldType(f);
+//    if (type.getCanonicalType() == CanonicalType.LIST || type.getCanonicalType() == CanonicalType.MAP
+//        || type.isObject()) {
+//      addImport(JsonUtil.class);
+//      value = new StringBuilder().append("JsonUtil.pojoToJsonString(").append(value).append(")").toString();
+//    } 
+//    return value;
+//  }
+//  
+//  private String generateGetUrlParametersBodyUsingQueryParams(List<Field> requestFields, boolean singleRequestParam) {
+//    addImport(EncodingUtil.class);
+//    StringBuilder s = new StringBuilder().append(EncodingUtil.class.getSimpleName() + ".createUrlQueryParameters(");
+//    for (int i = 0; i < requestFields.size(); i++) {
+//      if (i > 0) {
+//        s.append(", ");
+//      }
+//      Field f = requestFields.get(i);
+//      String name = Optional.ofNullable(f.getMsgField()).orElse(f.getName());
+//      s.append("\"")
+//       .append(name)
+//       .append("\", ");
+//      String value = "request";
+//      if (!singleRequestParam) {
+//        value += "." 
+//            + JavaCodeGenUtil.getGetAccessorMethodName(
+//              f.getName(), 
+//              ExchangeApiGenUtil.getClassNameForField(f, null, f.getObjectName()), 
+//              requestFields.stream().map(Field::getName).collect(Collectors.toList()))
+//            + "()";
+//      }
+//
+//      Type type = ExchangeGenUtil.getFieldType(f);
+//      if (type.getCanonicalType() == CanonicalType.LIST
+//        || type.getCanonicalType() == CanonicalType.MAP
+//        || type.isObject()) {
+//        addImport(JsonUtil.class);
+//        value = new StringBuilder()
+//                .append("JsonUtil.pojoToJsonString(")
+//                .append(value)
+//                .append(")").toString(); 
+//      } else if (type.getCanonicalType() == CanonicalType.STRING) {
+//        value = new StringBuilder()
+//            .append(value)
+//            .toString(); 
+//      }
+//      s.append(value);
+//      
+//    }
+//    return s.append(")").toString();
+//  }
 
   private String generateUrlParametersOrTopicSerializerBodyFromTemplate(String urlParametersTemplate, 
                                         List<Field> fields, 

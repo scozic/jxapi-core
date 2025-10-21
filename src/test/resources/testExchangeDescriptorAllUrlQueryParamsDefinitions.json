@@ -68,7 +68,7 @@
 						]
 					}
 				},
-		{
+				{
 					"name": "getRestRequestDataTypeStringListWithCustomListSeparator",
 					"httpMethod": "GET",
 					"description": "A sample REST endpoint using STRING_LIST data type with GET method. Expecting one query param named id with value as comma separated string as since 'urlParameters' is used and property",

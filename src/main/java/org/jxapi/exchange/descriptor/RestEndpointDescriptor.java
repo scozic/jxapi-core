@@ -92,10 +92,13 @@ public class RestEndpointDescriptor {
   
   private Field response;
 
+  @Deprecated
   private String urlParameters;
   
+  @Deprecated
   private String urlParametersListSeparator;
   
+  @Deprecated
   private boolean queryParams;
   
   private Integer requestWeight;
@@ -161,8 +164,10 @@ public class RestEndpointDescriptor {
   }
   
   /**
+   * 
    * @return The request url parameters template. Can contain place holders like <code>${myArg}</code>
    */
+  @Deprecated
   public String getUrlParameters() {
     return urlParameters;
   }
@@ -170,6 +175,7 @@ public class RestEndpointDescriptor {
   /**
    * @param urlParameters The request url parameters template. Can contain place holders like <code>${myArg}</code>
    */
+  @Deprecated
   public void setUrlParameters(String urlParameters) {
     this.urlParameters = urlParameters;
   }
@@ -177,6 +183,7 @@ public class RestEndpointDescriptor {
   /**
    * @return The separator used between items of a list in serialized request url parameters
    */
+  @Deprecated
   public String getUrlParametersListSeparator() {
     return urlParametersListSeparator;
   }
@@ -184,11 +191,13 @@ public class RestEndpointDescriptor {
   /**
    * @param urlParametersListSeparator The separator used between items of a list in serialized request url parameters
    */
+  @Deprecated
   public void setUrlParametersListSeparator(String urlParametersListSeparator) {
     this.urlParametersListSeparator = urlParametersListSeparator;
   }
   
   /**
+   * @deprecated
    * @return whether the request data should be serialized as URL are query parameters
    */
   public boolean isQueryParams() {
@@ -196,6 +205,7 @@ public class RestEndpointDescriptor {
   }
 
   /**
+   * @deprecated
    * @param queryParams whether the request data should be serialized as URL are query parameters
    */
   public void setQueryParams(boolean queryParams) {

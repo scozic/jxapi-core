@@ -91,14 +91,16 @@ public class EmployeeV1ApiImpl extends AbstractExchangeApi implements EmployeeV1
   // REST endpoint method call implementations
   @Override
   public FutureRestResponse<Employee> getEmployee(Integer request) {
-    String urlParameters = EncodingUtil.substituteArguments("/${id}", "id", request);
-    return submit(HttpRequest.create(GET_EMPLOYEE_REST_API, getEmployeeHttpUrl + urlParameters, HttpMethod.GET, request, null, 0), getEmployeeResponseDeserializer);
+    String url = new StringBuilder(128).append(getEmployeeHttpUrl)
+      .append(EncodingUtil.createUrlQueryParameters("id", request)).toString();
+    return submit(HttpRequest.create(GET_EMPLOYEE_REST_API, url, HttpMethod.GET, request, null, 0), getEmployeeResponseDeserializer);
   }
   
   @Override
   public FutureRestResponse<EmployeeV1GetAllEmployeesResponse> getAllEmployees(EmployeeV1GetAllEmployeesRequest request) {
-    String urlParameters = EncodingUtil.createUrlQueryParameters("page", request.getPage(), "size", request.getSize());
-    return submitPaginated(HttpRequest.create(GET_ALL_EMPLOYEES_REST_API, getAllEmployeesHttpUrl + urlParameters, HttpMethod.GET, request, null, 0), getAllEmployeesResponseDeserializer, this::getAllEmployees);
+    String url = new StringBuilder(128).append(getAllEmployeesHttpUrl)
+      .append(EncodingUtil.createUrlQueryParameters("page", request.getPage(), "size", request.getSize())).toString();
+    return submitPaginated(HttpRequest.create(GET_ALL_EMPLOYEES_REST_API, url, HttpMethod.GET, request, null, 0), getAllEmployeesResponseDeserializer, this::getAllEmployees);
   }
   
   @Override
@@ -113,8 +115,7 @@ public class EmployeeV1ApiImpl extends AbstractExchangeApi implements EmployeeV1
   
   @Override
   public FutureRestResponse<String> deleteEmployee(Integer request) {
-    String urlParameters = EncodingUtil.substituteArguments("/${id}", "id", request);
-    return submit(HttpRequest.create(DELETE_EMPLOYEE_REST_API, deleteEmployeeHttpUrl + urlParameters, HttpMethod.DELETE, request, null, 0), deleteEmployeeResponseDeserializer);
+    return submit(HttpRequest.create(DELETE_EMPLOYEE_REST_API, deleteEmployeeHttpUrl, HttpMethod.DELETE, request, null, 0), deleteEmployeeResponseDeserializer);
   }
   
   

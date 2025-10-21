@@ -14,6 +14,7 @@ import org.jxapi.exchange.descriptor.ExchangeDescriptor;
 import org.jxapi.exchange.descriptor.Field;
 import org.jxapi.exchange.descriptor.RestEndpointDescriptor;
 import org.jxapi.exchange.descriptor.Type;
+import org.jxapi.exchange.descriptor.UrlParameterType;
 import org.jxapi.exchange.descriptor.WebsocketEndpointDescriptor;
 import org.jxapi.generator.java.Imports;
 import org.jxapi.generator.java.JavaCodeGenUtil;
@@ -23,6 +24,7 @@ import org.jxapi.netutils.deserialization.RawBooleanMessageDeserializer;
 import org.jxapi.netutils.deserialization.RawIntegerMessageDeserializer;
 import org.jxapi.netutils.deserialization.RawLongMessageDeserializer;
 import org.jxapi.netutils.deserialization.RawStringMessageDeserializer;
+import org.jxapi.util.CollectionUtil;
 
 /**
  * Helper static methods around generation of {@link ExchangeApi} java classes implementation.
@@ -738,4 +740,42 @@ public class ExchangeApiGenUtil {
   public static String getRestEndpointUrlVariableName(RestEndpointDescriptor restEndpointDescriptor) {
     return JavaCodeGenUtil.firstLetterToLowerCase(restEndpointDescriptor.getName() + "HttpUrl");
   }
+
+//  /**
+//   * Collects all fields of a request that are URL parameters of given type.
+//   * The collection is done recursively in all properties of the request.
+//   * 
+//   * @param request                 The request field
+//   * @param urlParameterType        The URL parameter type to collect
+//   * @param defaultUrlParameterType The default URL parameter type to consider for
+//   *                                fields that do not have 'in'
+//   *                                attribute defined.
+//   * @return The list of fields of the request that are URL parameters of given
+//   *         type, or have no type and the default type is the given type.
+//   * @see Field#getIn()        
+//   */
+//  public static List<Field> collectUrlParameterFields(Field request, UrlParameterType urlParameterType, UrlParameterType defaultUrlParameterType) {
+//    return collectUrlParameterFields(request, urlParameterType, defaultUrlParameterType, CollectionUtil.createList());
+//  }
+//  
+//  private static List<Field> collectUrlParameterFields(
+//      Field request, 
+//      UrlParameterType urlParameterType, 
+//      UrlParameterType defaultUrlParameterType, 
+//      List<Field> result) {
+//    if (request == null) {
+//      return result;
+//    }
+//    UrlParameterType requestIn = request.getIn();
+//    List<Field> properties = CollectionUtil.emptyIfNull(request.getProperties());
+//    if (requestIn == null && !properties.isEmpty()) {
+//      properties.forEach(p -> collectUrlParameterFields(p, urlParameterType, defaultUrlParameterType, result));
+//      return result;
+//    } else if (Optional
+//                .ofNullable(requestIn)
+//                .orElse(defaultUrlParameterType) == urlParameterType) {
+//      result.add(request);
+//    }
+//    return result;
+//  }
 }

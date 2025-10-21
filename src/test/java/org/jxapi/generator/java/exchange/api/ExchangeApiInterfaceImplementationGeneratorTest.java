@@ -78,8 +78,9 @@ public class ExchangeApiInterfaceImplementationGeneratorTest {
         + "  // REST endpoint method call implementations\n"
         + "  @Override\n"
         + "  public FutureRestResponse<MyTestExchangeMarketDataExchangeInfoResponse> exchangeInfo(MyTestExchangeMarketDataExchangeInfoRequest request) {\n"
-        + "    String urlParameters = EncodingUtil.createUrlQueryParameters(\"symbols\", JsonUtil.pojoToJsonString(request.getSymbols()));\n"
-        + "    return submit(HttpRequest.create(EXCHANGE_INFO_REST_API, exchangeInfoHttpUrl + urlParameters, HttpMethod.GET, request, null, 0), exchangeInfoResponseDeserializer);\n"
+        + "    String url = new StringBuilder(128).append(exchangeInfoHttpUrl)\n"
+        + "      .append(EncodingUtil.createUrlQueryParameters(\"symbols\", JsonUtil.pojoToJsonString(request.getSymbols()))).toString();\n"
+        + "    return submit(HttpRequest.create(EXCHANGE_INFO_REST_API, url, HttpMethod.GET, request, null, 0), exchangeInfoResponseDeserializer);\n"
         + "  }\n"
         + "  \n"
         + "  \n"
@@ -96,7 +97,8 @@ public class ExchangeApiInterfaceImplementationGeneratorTest {
         + "    return tickerStreamWs.unsubscribe(subscriptionId);\n"
         + "  }\n"
         + "  \n"
-        + "}\n",  
+        + "}\n"
+        + "",  
         apiInterfaceGenerator.generate());
   }
   
@@ -157,8 +159,9 @@ public class ExchangeApiInterfaceImplementationGeneratorTest {
         + "  // REST endpoint method call implementations\n"
         + "  @Override\n"
         + "  public FutureRestResponse<MyTestExchangeTradingExchangeInfoResponse> exchangeInfo(MyTestExchangeTradingExchangeInfoRequest request) {\n"
-        + "    String urlParameters = EncodingUtil.createUrlQueryParameters(\"symbols\", JsonUtil.pojoToJsonString(request.getSymbols()));\n"
-        + "    return submit(HttpRequest.create(EXCHANGE_INFO_REST_API, exchangeInfoHttpUrl + urlParameters, HttpMethod.GET, request, null, 60), exchangeInfoResponseDeserializer);\n"
+        + "    String url = new StringBuilder(128).append(exchangeInfoHttpUrl)\n"
+        + "      .append(EncodingUtil.createUrlQueryParameters(\"symbols\", JsonUtil.pojoToJsonString(request.getSymbols()))).toString();\n"
+        + "    return submit(HttpRequest.create(EXCHANGE_INFO_REST_API, url, HttpMethod.GET, request, null, 60), exchangeInfoResponseDeserializer);\n"
         + "  }\n"
         + "  \n"
         + "  @Override\n"
@@ -166,7 +169,8 @@ public class ExchangeApiInterfaceImplementationGeneratorTest {
         + "    return this.rateLimitUnusedRule;\n"
         + "  }\n"
         + "  \n"
-        + "}\n",  
+        + "}\n"
+        + "",  
         apiInterfaceGenerator.generate());
   }
   
@@ -250,14 +254,16 @@ public class ExchangeApiInterfaceImplementationGeneratorTest {
         + "  // REST endpoint method call implementations\n"
         + "  @Override\n"
         + "  public FutureRestResponse<MyTestExchangeFuturesMarketDataExchangeInfoResponse> exchangeInfo(MyTestExchangeFuturesMarketDataExchangeInfoRequest request) {\n"
-        + "    String urlParameters = EncodingUtil.createUrlQueryParameters(\"symbols\", JsonUtil.pojoToJsonString(request.getSymbols()));\n"
-        + "    return submit(HttpRequest.create(EXCHANGE_INFO_REST_API, exchangeInfoHttpUrl + urlParameters, HttpMethod.GET, request, exchangeInfoRateLimits, 0), exchangeInfoResponseDeserializer);\n"
+        + "    String url = new StringBuilder(128).append(exchangeInfoHttpUrl)\n"
+        + "      .append(EncodingUtil.createUrlQueryParameters(\"symbols\", JsonUtil.pojoToJsonString(request.getSymbols()))).toString();\n"
+        + "    return submit(HttpRequest.create(EXCHANGE_INFO_REST_API, url, HttpMethod.GET, request, exchangeInfoRateLimits, 0), exchangeInfoResponseDeserializer);\n"
         + "  }\n"
         + "  \n"
         + "  @Override\n"
         + "  public FutureRestResponse<MyTestExchangeFuturesMarketDataExchangeInfo2Response> exchangeInfo2(MyTestExchangeFuturesMarketDataExchangeInfo2Request request) {\n"
-        + "    String urlParameters = EncodingUtil.createUrlQueryParameters(\"symbols\", JsonUtil.pojoToJsonString(request.getSymbols()));\n"
-        + "    return submit(HttpRequest.create(EXCHANGE_INFO2_REST_API, exchangeInfo2HttpUrl + urlParameters, HttpMethod.GET, request, null, 0), exchangeInfo2ResponseDeserializer);\n"
+        + "    String url = new StringBuilder(128).append(exchangeInfo2HttpUrl)\n"
+        + "      .append(EncodingUtil.createUrlQueryParameters(\"symbols\", JsonUtil.pojoToJsonString(request.getSymbols()))).toString();\n"
+        + "    return submit(HttpRequest.create(EXCHANGE_INFO2_REST_API, url, HttpMethod.GET, request, null, 0), exchangeInfo2ResponseDeserializer);\n"
         + "  }\n"
         + "  \n"
         + "  @Override\n"
@@ -270,7 +276,8 @@ public class ExchangeApiInterfaceImplementationGeneratorTest {
         + "    return this.rateLimitUnusedRule;\n"
         + "  }\n"
         + "  \n"
-        + "}\n",  
+        + "}\n"
+        + "",  
         apiInterfaceGenerator.generate());
   }
   
@@ -345,8 +352,9 @@ public class ExchangeApiInterfaceImplementationGeneratorTest {
         + "  // REST endpoint method call implementations\n"
         + "  @Override\n"
         + "  public FutureRestResponse<MyTestExchangeFuturesTradingExchangeInfoResponse> exchangeInfo(MyTestExchangeFuturesTradingExchangeInfoRequest request) {\n"
-        + "    String urlParameters = EncodingUtil.createUrlQueryParameters(\"symbols\", JsonUtil.pojoToJsonString(request.getSymbols()));\n"
-        + "    return submit(HttpRequest.create(EXCHANGE_INFO_REST_API, exchangeInfoHttpUrl + urlParameters, HttpMethod.GET, request, exchangeInfoRateLimits, 60), exchangeInfoResponseDeserializer);\n"
+        + "    String url = new StringBuilder(128).append(exchangeInfoHttpUrl)\n"
+        + "      .append(EncodingUtil.createUrlQueryParameters(\"symbols\", JsonUtil.pojoToJsonString(request.getSymbols()))).toString();\n"
+        + "    return submit(HttpRequest.create(EXCHANGE_INFO_REST_API, url, HttpMethod.GET, request, exchangeInfoRateLimits, 60), exchangeInfoResponseDeserializer);\n"
         + "  }\n"
         + "  \n"
         + "  @Override\n"
@@ -364,7 +372,8 @@ public class ExchangeApiInterfaceImplementationGeneratorTest {
         + "    return this.rateLimitUnusedRule;\n"
         + "  }\n"
         + "  \n"
-        + "}\n",  
+        + "}\n"
+        + "",  
         apiInterfaceGenerator.generate());
   }
   
@@ -437,8 +446,9 @@ public class ExchangeApiInterfaceImplementationGeneratorTest {
         + "  // REST endpoint method call implementations\n"
         + "  @Override\n"
         + "  public FutureRestResponse<MyTestExchangeFuturesTradingExchangeInfoResponse> exchangeInfo(MyTestExchangeFuturesTradingExchangeInfoRequest request) {\n"
-        + "    String urlParameters = EncodingUtil.createUrlQueryParameters(\"symbols\", JsonUtil.pojoToJsonString(request.getSymbols()));\n"
-        + "    return submit(HttpRequest.create(EXCHANGE_INFO_REST_API, exchangeInfoHttpUrl + urlParameters, HttpMethod.GET, request, exchangeInfoRateLimits, 60), exchangeInfoResponseDeserializer);\n"
+        + "    String url = new StringBuilder(128).append(exchangeInfoHttpUrl)\n"
+        + "      .append(EncodingUtil.createUrlQueryParameters(\"symbols\", JsonUtil.pojoToJsonString(request.getSymbols()))).toString();\n"
+        + "    return submit(HttpRequest.create(EXCHANGE_INFO_REST_API, url, HttpMethod.GET, request, exchangeInfoRateLimits, 60), exchangeInfoResponseDeserializer);\n"
         + "  }\n"
         + "  \n"
         + "  @Override\n"
@@ -451,7 +461,8 @@ public class ExchangeApiInterfaceImplementationGeneratorTest {
         + "    return this.rateLimitUnusedRule;\n"
         + "  }\n"
         + "  \n"
-        + "}\n",  
+        + "}\n"
+        + "",  
       apiInterfaceGenerator.generate());
   }
   
@@ -547,11 +558,13 @@ public class ExchangeApiInterfaceImplementationGeneratorTest {
         + "  // REST endpoint method call implementations\n"
         + "  @Override\n"
         + "  public FutureRestResponse<MyTestExchangeFuturesTradingExchangeInfoResponse> exchangeInfo(MyTestExchangeFuturesTradingExchangeInfoRequest request) {\n"
-        + "    String urlParameters = EncodingUtil.createUrlQueryParameters(\"symbols\", JsonUtil.pojoToJsonString(request.getSymbols()));\n"
-        + "    return submit(HttpRequest.create(EXCHANGE_INFO_REST_API, exchangeInfoHttpUrl + urlParameters, HttpMethod.GET, request, exchangeInfoRateLimits, 60), exchangeInfoResponseDeserializer);\n"
+        + "    String url = new StringBuilder(128).append(exchangeInfoHttpUrl)\n"
+        + "      .append(EncodingUtil.createUrlQueryParameters(\"symbols\", JsonUtil.pojoToJsonString(request.getSymbols()))).toString();\n"
+        + "    return submit(HttpRequest.create(EXCHANGE_INFO_REST_API, url, HttpMethod.GET, request, exchangeInfoRateLimits, 60), exchangeInfoResponseDeserializer);\n"
         + "  }\n"
         + "  \n"
-        + "}\n",
+        + "}\n"
+        + "",
         apiInterfaceGenerator.generate());
   }
   
@@ -636,11 +649,13 @@ public class ExchangeApiInterfaceImplementationGeneratorTest {
         + "  // REST endpoint method call implementations\n"
         + "  @Override\n"
         + "  public FutureRestResponse<MyTestExchangeMarketDataExchangeInfoResponse> exchangeInfo(MyTestExchangeMarketDataExchangeInfoRequest request) {\n"
-        + "    String urlParameters = EncodingUtil.createUrlQueryParameters(\"symbols\", JsonUtil.pojoToJsonString(request.getSymbols()));\n"
-        + "    return submit(HttpRequest.create(EXCHANGE_INFO_REST_API, exchangeInfoHttpUrl + urlParameters, HttpMethod.GET, request, null, 0), exchangeInfoResponseDeserializer);\n"
+        + "    String url = new StringBuilder(128).append(exchangeInfoHttpUrl)\n"
+        + "      .append(EncodingUtil.createUrlQueryParameters(\"symbols\", JsonUtil.pojoToJsonString(request.getSymbols()))).toString();\n"
+        + "    return submit(HttpRequest.create(EXCHANGE_INFO_REST_API, url, HttpMethod.GET, request, null, 0), exchangeInfoResponseDeserializer);\n"
         + "  }\n"
         + "  \n"
-        + "}\n",
+        + "}\n"
+        + "",
         apiInterfaceGenerator.generate());
   }
   
@@ -946,6 +961,7 @@ public class ExchangeApiInterfaceImplementationGeneratorTest {
         + "import com.foo.bar.gen.marketdata.deserializers.TickerDeserializer;\n"
         + "import com.foo.bar.gen.marketdata.pojo.GenericResponse;\n"
         + "import com.foo.bar.gen.marketdata.pojo.MultiSymbol;\n"
+        + "import com.foo.bar.gen.marketdata.pojo.MyTestExchangeMarketDataGetRestRequestDataTypeWithBothPathAndQueryParamsRequest;\n"
         + "import com.foo.bar.gen.marketdata.pojo.MyTestExchangeMarketDataPostRestRequestDataTypeObjectOneParameterRequest;\n"
         + "import com.foo.bar.gen.marketdata.pojo.SingleSymbol;\n"
         + "import com.foo.bar.gen.marketdata.pojo.Ticker;\n"
@@ -1043,10 +1059,16 @@ public class ExchangeApiInterfaceImplementationGeneratorTest {
         + "  protected final String getRestRequestDataTypePrimitiveWithMsgFieldHttpUrl;\n"
         + "  \n"
         + "  /**\n"
-        + "   * URL for <i>postRestRequestDataTypeNoParamsButUrlParameters</i> REST endpoint.\n"
-        + "   * @see MyTestExchangeMarketDataApi#postRestRequestDataTypeNoParamsButUrlParameters()\n"
+        + "   * URL for <i>getRestRequestDataTypePrimitiveWithMsgFieldAsPathPAram</i> REST endpoint.\n"
+        + "   * @see MyTestExchangeMarketDataApi#getRestRequestDataTypePrimitiveWithMsgFieldAsPathPAram(Integer)\n"
         + "   */\n"
-        + "  protected final String postRestRequestDataTypeNoParamsButUrlParametersHttpUrl;\n"
+        + "  protected final String getRestRequestDataTypePrimitiveWithMsgFieldAsPathPAramHttpUrl;\n"
+        + "  \n"
+        + "  /**\n"
+        + "   * URL for <i>getRestRequestDataTypeWithBothPathAndQueryParams</i> REST endpoint.\n"
+        + "   * @see MyTestExchangeMarketDataApi#getRestRequestDataTypeWithBothPathAndQueryParams(MyTestExchangeMarketDataGetRestRequestDataTypeWithBothPathAndQueryParamsRequest)\n"
+        + "   */\n"
+        + "  protected final String getRestRequestDataTypeWithBothPathAndQueryParamsHttpUrl;\n"
         + "  \n"
         + "  // Websocket endpoints\n"
         + "  private final WebsocketEndpoint<Ticker> streamWithObjectRequestDataTypeZeroParametersWs;\n"
@@ -1074,7 +1096,8 @@ public class ExchangeApiInterfaceImplementationGeneratorTest {
         + "  private final MessageDeserializer<GenericResponse> getRestRequestDataTypeObjectListMapResponseDeserializer = new GenericResponseDeserializer();\n"
         + "  private final MessageDeserializer<GenericResponse> getRestRequestDataTypeEmptyObjectResponseDeserializer = new GenericResponseDeserializer();\n"
         + "  private final MessageDeserializer<GenericResponse> getRestRequestDataTypePrimitiveWithMsgFieldResponseDeserializer = new GenericResponseDeserializer();\n"
-        + "  private final MessageDeserializer<GenericResponse> postRestRequestDataTypeNoParamsButUrlParametersResponseDeserializer = new GenericResponseDeserializer();\n"
+        + "  private final MessageDeserializer<GenericResponse> getRestRequestDataTypePrimitiveWithMsgFieldAsPathPAramResponseDeserializer = new GenericResponseDeserializer();\n"
+        + "  private final MessageDeserializer<GenericResponse> getRestRequestDataTypeWithBothPathAndQueryParamsResponseDeserializer = new GenericResponseDeserializer();\n"
         + "  \n"
         + "  // Constructor\n"
         + "  public MyTestExchangeMarketDataApiImpl(MyTestExchangeExchange exchange) {\n"
@@ -1097,7 +1120,8 @@ public class ExchangeApiInterfaceImplementationGeneratorTest {
         + "    this.getRestRequestDataTypeObjectListMapHttpUrl = EncodingUtil.buildUrl(this.getHttpUrl(), \"/getObjectListMap\");\n"
         + "    this.getRestRequestDataTypeEmptyObjectHttpUrl = EncodingUtil.buildUrl(this.getHttpUrl(), \"/getEmptyObject\");\n"
         + "    this.getRestRequestDataTypePrimitiveWithMsgFieldHttpUrl = EncodingUtil.buildUrl(this.getHttpUrl(), \"/getIntWithMsgField\");\n"
-        + "    this.postRestRequestDataTypeNoParamsButUrlParametersHttpUrl = EncodingUtil.buildUrl(this.getHttpUrl(), \"/postInt\");\n"
+        + "    this.getRestRequestDataTypePrimitiveWithMsgFieldAsPathPAramHttpUrl = EncodingUtil.buildUrl(this.getHttpUrl(), \"/getIntWithMsgFieldAsPathParam\");\n"
+        + "    this.getRestRequestDataTypeWithBothPathAndQueryParamsHttpUrl = EncodingUtil.buildUrl(this.getHttpUrl(), \"/getRestRequestDataTypeWithBothPathAndQueryParams\");\n"
         + "    createWebsocketManager(this.wsUrl, \"com.foo.bar.BarWebsocketFactory\", \"com.foo.bar.BarWebsocketHookFactory\");\n"
         + "    this.streamWithObjectRequestDataTypeZeroParametersWs = createWebsocketEndpoint(STREAM_WITH_OBJECT_REQUEST_DATA_TYPE_ZERO_PARAMETERS_WS_API, new TickerDeserializer());\n"
         + "    this.streamWithObjectRequestDataTypeOneParameterWs = createWebsocketEndpoint(STREAM_WITH_OBJECT_REQUEST_DATA_TYPE_ONE_PARAMETER_WS_API, new TickerDeserializer());\n"
@@ -1160,8 +1184,9 @@ public class ExchangeApiInterfaceImplementationGeneratorTest {
         + "  \n"
         + "  @Override\n"
         + "  public FutureRestResponse<GenericResponse> getRestRequestDataTypeObjectListMap(Map<String, List<MultiSymbol>> request) {\n"
-        + "    String urlParameters = EncodingUtil.createUrlQueryParameters(\"symbolList\", JsonUtil.pojoToJsonString(request.getSymbolList()), \"symbolMap\", JsonUtil.pojoToJsonString(request.getSymbolMap()), \"so\", JsonUtil.pojoToJsonString(request.getSymbolObject()));\n"
-        + "    return submit(HttpRequest.create(GET_REST_REQUEST_DATA_TYPE_OBJECT_LIST_MAP_REST_API, getRestRequestDataTypeObjectListMapHttpUrl + urlParameters, HttpMethod.GET, request, null, 0), getRestRequestDataTypeObjectListMapResponseDeserializer);\n"
+        + "    String url = new StringBuilder(128).append(getRestRequestDataTypeObjectListMapHttpUrl)\n"
+        + "      .append(EncodingUtil.createUrlQueryParameters(\"symbolList\", JsonUtil.pojoToJsonString(request.getSymbolList()), \"symbolMap\", JsonUtil.pojoToJsonString(request.getSymbolMap()), \"s\", request.getSymbolObject().getSymbol())).toString();\n"
+        + "    return submit(HttpRequest.create(GET_REST_REQUEST_DATA_TYPE_OBJECT_LIST_MAP_REST_API, url, HttpMethod.GET, request, null, 0), getRestRequestDataTypeObjectListMapResponseDeserializer);\n"
         + "  }\n"
         + "  \n"
         + "  @Override\n"
@@ -1171,14 +1196,24 @@ public class ExchangeApiInterfaceImplementationGeneratorTest {
         + "  \n"
         + "  @Override\n"
         + "  public FutureRestResponse<GenericResponse> getRestRequestDataTypePrimitiveWithMsgField(Integer request) {\n"
-        + "    String urlParameters = EncodingUtil.createUrlQueryParameters(\"a\", request);\n"
-        + "    return submit(HttpRequest.create(GET_REST_REQUEST_DATA_TYPE_PRIMITIVE_WITH_MSG_FIELD_REST_API, getRestRequestDataTypePrimitiveWithMsgFieldHttpUrl + urlParameters, HttpMethod.GET, request, null, 0), getRestRequestDataTypePrimitiveWithMsgFieldResponseDeserializer);\n"
+        + "    String url = new StringBuilder(128).append(getRestRequestDataTypePrimitiveWithMsgFieldHttpUrl)\n"
+        + "      .append(EncodingUtil.createUrlQueryParameters(\"a\", request)).toString();\n"
+        + "    return submit(HttpRequest.create(GET_REST_REQUEST_DATA_TYPE_PRIMITIVE_WITH_MSG_FIELD_REST_API, url, HttpMethod.GET, request, null, 0), getRestRequestDataTypePrimitiveWithMsgFieldResponseDeserializer);\n"
         + "  }\n"
         + "  \n"
         + "  @Override\n"
-        + "  public FutureRestResponse<GenericResponse> postRestRequestDataTypeNoParamsButUrlParameters() {\n"
-        + "    String urlParameters = \"/customUrSuffix\";\n"
-        + "    return submit(HttpRequest.create(POST_REST_REQUEST_DATA_TYPE_NO_PARAMS_BUT_URL_PARAMETERS_REST_API, postRestRequestDataTypeNoParamsButUrlParametersHttpUrl + urlParameters, HttpMethod.POST, null, null, 0), postRestRequestDataTypeNoParamsButUrlParametersResponseDeserializer);\n"
+        + "  public FutureRestResponse<GenericResponse> getRestRequestDataTypePrimitiveWithMsgFieldAsPathPAram(Integer request) {\n"
+        + "    String url = new StringBuilder(128).append(getRestRequestDataTypePrimitiveWithMsgFieldAsPathPAramHttpUrl)\n"
+        + "      .append(EncodingUtil.createUrlPathParameters(request)).toString();\n"
+        + "    return submit(HttpRequest.create(GET_REST_REQUEST_DATA_TYPE_PRIMITIVE_WITH_MSG_FIELD_AS_PATH_P_ARAM_REST_API, url, HttpMethod.GET, request, null, 0), getRestRequestDataTypePrimitiveWithMsgFieldAsPathPAramResponseDeserializer);\n"
+        + "  }\n"
+        + "  \n"
+        + "  @Override\n"
+        + "  public FutureRestResponse<GenericResponse> getRestRequestDataTypeWithBothPathAndQueryParams(MyTestExchangeMarketDataGetRestRequestDataTypeWithBothPathAndQueryParamsRequest request) {\n"
+        + "    String url = new StringBuilder(128).append(getRestRequestDataTypeWithBothPathAndQueryParamsHttpUrl)\n"
+        + "      .append(EncodingUtil.createUrlPathParameters(request.getName(), request.getAddress().getCity()))\n"
+        + "      .append(EncodingUtil.createUrlQueryParameters(\"i\", request.getId(), \"street\", request.getAddress().getStreet())).toString();\n"
+        + "    return submit(HttpRequest.create(GET_REST_REQUEST_DATA_TYPE_WITH_BOTH_PATH_AND_QUERY_PARAMS_REST_API, url, HttpMethod.GET, request, null, 0), getRestRequestDataTypeWithBothPathAndQueryParamsResponseDeserializer);\n"
         + "  }\n"
         + "  \n"
         + "  \n"
@@ -1315,7 +1350,8 @@ public class ExchangeApiInterfaceImplementationGeneratorTest {
         + "    return streamWithNullTopicAndPrimitiveTypeRequestWs.unsubscribe(subscriptionId);\n"
         + "  }\n"
         + "  \n"
-        + "}\n",
+        + "}\n"
+        + "",
       apiInterfaceGenerator.generate());
   }
   
@@ -1471,26 +1507,30 @@ public class ExchangeApiInterfaceImplementationGeneratorTest {
         + "  // REST endpoint method call implementations\n"
         + "  @Override\n"
         + "  public FutureRestResponse<GenericResponse> getRestRequestDataTypeInt(Integer request) {\n"
-        + "    String urlParameters = EncodingUtil.createUrlQueryParameters(\"id\", request);\n"
-        + "    return submit(HttpRequest.create(GET_REST_REQUEST_DATA_TYPE_INT_REST_API, getRestRequestDataTypeIntHttpUrl + urlParameters, HttpMethod.GET, request, null, 0), getRestRequestDataTypeIntResponseDeserializer);\n"
+        + "    String url = new StringBuilder(128).append(getRestRequestDataTypeIntHttpUrl)\n"
+        + "      .append(EncodingUtil.createUrlQueryParameters(\"id\", request)).toString();\n"
+        + "    return submit(HttpRequest.create(GET_REST_REQUEST_DATA_TYPE_INT_REST_API, url, HttpMethod.GET, request, null, 0), getRestRequestDataTypeIntResponseDeserializer);\n"
         + "  }\n"
         + "  \n"
         + "  @Override\n"
         + "  public FutureRestResponse<GenericResponse> getRestRequestDataTypeObject(PersonFilter request) {\n"
-        + "    String urlParameters = EncodingUtil.createUrlQueryParameters(\"age\", request.getAge(), \"city\", request.getCity());\n"
-        + "    return submit(HttpRequest.create(GET_REST_REQUEST_DATA_TYPE_OBJECT_REST_API, getRestRequestDataTypeObjectHttpUrl + urlParameters, HttpMethod.GET, request, null, 0), getRestRequestDataTypeObjectResponseDeserializer);\n"
+        + "    String url = new StringBuilder(128).append(getRestRequestDataTypeObjectHttpUrl)\n"
+        + "      .append(EncodingUtil.createUrlQueryParameters(\"age\", request.getAge(), \"city\", request.getCity())).toString();\n"
+        + "    return submit(HttpRequest.create(GET_REST_REQUEST_DATA_TYPE_OBJECT_REST_API, url, HttpMethod.GET, request, null, 0), getRestRequestDataTypeObjectResponseDeserializer);\n"
         + "  }\n"
         + "  \n"
         + "  @Override\n"
         + "  public FutureRestResponse<List<GenericResponse>> getRestRequestDataTypeStringList(List<String> request) {\n"
-        + "    String urlParameters = EncodingUtil.createUrlQueryParameters(\"ids\", JsonUtil.pojoToJsonString(request));\n"
-        + "    return submit(HttpRequest.create(GET_REST_REQUEST_DATA_TYPE_STRING_LIST_REST_API, getRestRequestDataTypeStringListHttpUrl + urlParameters, HttpMethod.GET, request, null, 0), getRestRequestDataTypeStringListResponseDeserializer);\n"
+        + "    String url = new StringBuilder(128).append(getRestRequestDataTypeStringListHttpUrl)\n"
+        + "      .append(EncodingUtil.createUrlQueryParameters(\"ids\", JsonUtil.pojoToJsonString(request))).toString();\n"
+        + "    return submit(HttpRequest.create(GET_REST_REQUEST_DATA_TYPE_STRING_LIST_REST_API, url, HttpMethod.GET, request, null, 0), getRestRequestDataTypeStringListResponseDeserializer);\n"
         + "  }\n"
         + "  \n"
         + "  @Override\n"
         + "  public FutureRestResponse<List<GenericResponse>> getRestRequestDataTypeStringListWithCustomListSeparator(List<String> request) {\n"
-        + "    String urlParameters = EncodingUtil.substituteArguments(\"${ids}\", \"ids\", EncodingUtil.listToString(request, \",\"));\n"
-        + "    return submit(HttpRequest.create(GET_REST_REQUEST_DATA_TYPE_STRING_LIST_WITH_CUSTOM_LIST_SEPARATOR_REST_API, getRestRequestDataTypeStringListWithCustomListSeparatorHttpUrl + urlParameters, HttpMethod.GET, request, null, 0), getRestRequestDataTypeStringListWithCustomListSeparatorResponseDeserializer);\n"
+        + "    String url = new StringBuilder(128).append(getRestRequestDataTypeStringListWithCustomListSeparatorHttpUrl)\n"
+        + "      .append(EncodingUtil.createUrlQueryParameters(\"ids\", JsonUtil.pojoToJsonString(request))).toString();\n"
+        + "    return submit(HttpRequest.create(GET_REST_REQUEST_DATA_TYPE_STRING_LIST_WITH_CUSTOM_LIST_SEPARATOR_REST_API, url, HttpMethod.GET, request, null, 0), getRestRequestDataTypeStringListWithCustomListSeparatorResponseDeserializer);\n"
         + "  }\n"
         + "  \n"
         + "  @Override\n"
@@ -1500,8 +1540,7 @@ public class ExchangeApiInterfaceImplementationGeneratorTest {
         + "  \n"
         + "  @Override\n"
         + "  public FutureRestResponse<GenericResponse> deleteRestRequestDataTypeIntAsQueryParam(Integer request) {\n"
-        + "    String urlParameters = EncodingUtil.createUrlQueryParameters(\"id\", request);\n"
-        + "    return submit(HttpRequest.create(DELETE_REST_REQUEST_DATA_TYPE_INT_AS_QUERY_PARAM_REST_API, deleteRestRequestDataTypeIntAsQueryParamHttpUrl + urlParameters, HttpMethod.DELETE, request, null, 0), deleteRestRequestDataTypeIntAsQueryParamResponseDeserializer);\n"
+        + "    return submit(HttpRequest.create(DELETE_REST_REQUEST_DATA_TYPE_INT_AS_QUERY_PARAM_REST_API, deleteRestRequestDataTypeIntAsQueryParamHttpUrl, HttpMethod.DELETE, request, null, 0), deleteRestRequestDataTypeIntAsQueryParamResponseDeserializer);\n"
         + "  }\n"
         + "  \n"
         + "  @Override\n"
@@ -1516,29 +1555,28 @@ public class ExchangeApiInterfaceImplementationGeneratorTest {
         + "  \n"
         + "  @Override\n"
         + "  public FutureRestResponse<GenericResponse> putRestRequestDataTypeObjectUsingCustomQueryParams(Person request) {\n"
-        + "    String urlParameters = EncodingUtil.substituteArguments(\"?id=${id}&name=${name}&age=${age}&city=${city}\", \"id\", request.getId(), \"name\", request.getName(), \"age\", request.getAge(), \"city\", request.getCity());\n"
-        + "    return submit(HttpRequest.create(PUT_REST_REQUEST_DATA_TYPE_OBJECT_USING_CUSTOM_QUERY_PARAMS_REST_API, putRestRequestDataTypeObjectUsingCustomQueryParamsHttpUrl + urlParameters, HttpMethod.PUT, request, null, 0), putRestRequestDataTypeObjectUsingCustomQueryParamsResponseDeserializer);\n"
+        + "    return submit(HttpRequest.create(PUT_REST_REQUEST_DATA_TYPE_OBJECT_USING_CUSTOM_QUERY_PARAMS_REST_API, putRestRequestDataTypeObjectUsingCustomQueryParamsHttpUrl, HttpMethod.PUT, request, null, 0), putRestRequestDataTypeObjectUsingCustomQueryParamsResponseDeserializer);\n"
         + "  }\n"
         + "  \n"
         + "  @Override\n"
         + "  public FutureRestResponse<GenericResponse> putRestRequestDataTypeObjectUsingDefaultQueryParams(Person request) {\n"
-        + "    String urlParameters = EncodingUtil.createUrlQueryParameters(\"id\", request.getId(), \"name\", request.getName(), \"age\", request.getAge(), \"city\", request.getCity());\n"
-        + "    return submit(HttpRequest.create(PUT_REST_REQUEST_DATA_TYPE_OBJECT_USING_DEFAULT_QUERY_PARAMS_REST_API, putRestRequestDataTypeObjectUsingDefaultQueryParamsHttpUrl + urlParameters, HttpMethod.PUT, request, null, 0), putRestRequestDataTypeObjectUsingDefaultQueryParamsResponseDeserializer);\n"
+        + "    return submit(HttpRequest.create(PUT_REST_REQUEST_DATA_TYPE_OBJECT_USING_DEFAULT_QUERY_PARAMS_REST_API, putRestRequestDataTypeObjectUsingDefaultQueryParamsHttpUrl, HttpMethod.PUT, request, null, 0), putRestRequestDataTypeObjectUsingDefaultQueryParamsResponseDeserializer);\n"
         + "  }\n"
         + "  \n"
         + "  @Override\n"
         + "  public FutureRestResponse<GenericResponse> postRestRequestDataTypeIntListAsQueryParam(List<Integer> request) {\n"
-        + "    String urlParameters = EncodingUtil.createUrlQueryParameters(\"intListArg\", JsonUtil.pojoToJsonString(request));\n"
-        + "    return submit(HttpRequest.create(POST_REST_REQUEST_DATA_TYPE_INT_LIST_AS_QUERY_PARAM_REST_API, postRestRequestDataTypeIntListAsQueryParamHttpUrl + urlParameters, HttpMethod.POST, request, null, 0), postRestRequestDataTypeIntListAsQueryParamResponseDeserializer);\n"
+        + "    return submit(HttpRequest.create(POST_REST_REQUEST_DATA_TYPE_INT_LIST_AS_QUERY_PARAM_REST_API, postRestRequestDataTypeIntListAsQueryParamHttpUrl, HttpMethod.POST, request, null, 0), postRestRequestDataTypeIntListAsQueryParamResponseDeserializer);\n"
         + "  }\n"
         + "  \n"
         + "  @Override\n"
         + "  public FutureRestResponse<GenericResponse> getRestRequestDataTypeStringImplicit(String request) {\n"
-        + "    String urlParameters = EncodingUtil.createUrlQueryParameters(\"id\", request);\n"
-        + "    return submit(HttpRequest.create(GET_REST_REQUEST_DATA_TYPE_STRING_IMPLICIT_REST_API, getRestRequestDataTypeStringImplicitHttpUrl + urlParameters, HttpMethod.GET, request, null, 0), getRestRequestDataTypeStringImplicitResponseDeserializer);\n"
+        + "    String url = new StringBuilder(128).append(getRestRequestDataTypeStringImplicitHttpUrl)\n"
+        + "      .append(EncodingUtil.createUrlQueryParameters(\"id\", request)).toString();\n"
+        + "    return submit(HttpRequest.create(GET_REST_REQUEST_DATA_TYPE_STRING_IMPLICIT_REST_API, url, HttpMethod.GET, request, null, 0), getRestRequestDataTypeStringImplicitResponseDeserializer);\n"
         + "  }\n"
         + "  \n"
-        + "}\n",
+        + "}\n"
+        + "",
         apiInterfaceGenerator.generate());
   }
   
@@ -1623,8 +1661,9 @@ public class ExchangeApiInterfaceImplementationGeneratorTest {
         + "  // REST endpoint method call implementations\n"
         + "  @Override\n"
         + "  public FutureRestResponse<MyTestExchangeFuturesTradingExchangeInfoResponse> exchangeInfo(MyTestExchangeFuturesTradingExchangeInfoRequest request) {\n"
-        + "    String urlParameters = EncodingUtil.createUrlQueryParameters(\"symbols\", JsonUtil.pojoToJsonString(request.getSymbols()));\n"
-        + "    return submit(HttpRequest.create(EXCHANGE_INFO_REST_API, exchangeInfoHttpUrl + urlParameters, HttpMethod.GET, request, exchangeInfoRateLimits, 60), exchangeInfoResponseDeserializer);\n"
+        + "    String url = new StringBuilder(128).append(exchangeInfoHttpUrl)\n"
+        + "      .append(EncodingUtil.createUrlQueryParameters(\"symbols\", JsonUtil.pojoToJsonString(request.getSymbols()))).toString();\n"
+        + "    return submit(HttpRequest.create(EXCHANGE_INFO_REST_API, url, HttpMethod.GET, request, exchangeInfoRateLimits, 60), exchangeInfoResponseDeserializer);\n"
         + "  }\n"
         + "  \n"
         + "  \n"
@@ -1651,7 +1690,8 @@ public class ExchangeApiInterfaceImplementationGeneratorTest {
         + "    return this.rateLimitGlobalRateRule;\n"
         + "  }\n"
         + "  \n"
-        + "}\n",
+        + "}\n"
+        + "",
       apiInterfaceGenerator.generate());
   }
   
@@ -1729,8 +1769,9 @@ public class ExchangeApiInterfaceImplementationGeneratorTest {
         + "  // REST endpoint method call implementations\n"
         + "  @Override\n"
         + "  public FutureRestResponse<MyTestExchangeMarketDataExchangeInfoResponse> exchangeInfo(MyTestExchangeMarketDataExchangeInfoRequest request) {\n"
-        + "    String urlParameters = EncodingUtil.createUrlQueryParameters(\"symbols\", JsonUtil.pojoToJsonString(request.getSymbols()), \"apiKey\", request.getApiKey(), \"author\", request.getAuthor(), \"page\", request.getPage());\n"
-        + "    return submitPaginated(HttpRequest.create(EXCHANGE_INFO_REST_API, exchangeInfoHttpUrl + urlParameters, HttpMethod.GET, request, null, 0), exchangeInfoResponseDeserializer, this::exchangeInfo);\n"
+        + "    String url = new StringBuilder(128).append(exchangeInfoHttpUrl)\n"
+        + "      .append(EncodingUtil.createUrlQueryParameters(\"symbols\", JsonUtil.pojoToJsonString(request.getSymbols()), \"apiKey\", request.getApiKey(), \"author\", request.getAuthor(), \"page\", request.getPage())).toString();\n"
+        + "    return submitPaginated(HttpRequest.create(EXCHANGE_INFO_REST_API, url, HttpMethod.GET, request, null, 0), exchangeInfoResponseDeserializer, this::exchangeInfo);\n"
         + "  }\n"
         + "  \n"
         + "  @Override\n"

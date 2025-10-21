@@ -105,8 +105,9 @@ public class DemoExchangeMarketDataApiImpl extends AbstractExchangeApi implement
   // REST endpoint method call implementations
   @Override
   public FutureRestResponse<DemoExchangeMarketDataExchangeInfoResponse> exchangeInfo(DemoExchangeMarketDataExchangeInfoRequest request) {
-    String urlParameters = EncodingUtil.createUrlQueryParameters("symbols", JsonUtil.pojoToJsonString(request.getSymbols()));
-    return submit(HttpRequest.create(EXCHANGE_INFO_REST_API, exchangeInfoHttpUrl + urlParameters, HttpMethod.GET, request, null, 0), exchangeInfoResponseDeserializer);
+    String url = new StringBuilder(128).append(exchangeInfoHttpUrl)
+      .append(EncodingUtil.createUrlQueryParameters("symbols", JsonUtil.pojoToJsonString(request.getSymbols()))).toString();
+    return submit(HttpRequest.create(EXCHANGE_INFO_REST_API, url, HttpMethod.GET, request, null, 0), exchangeInfoResponseDeserializer);
   }
   
   @Override
@@ -121,8 +122,9 @@ public class DemoExchangeMarketDataApiImpl extends AbstractExchangeApi implement
   
   @Override
   public FutureRestResponse<GenericResponse> getRestRequestDataTypePrimitiveWithMsgField(Integer request) {
-    String urlParameters = EncodingUtil.createUrlQueryParameters("a", request);
-    return submit(HttpRequest.create(GET_REST_REQUEST_DATA_TYPE_PRIMITIVE_WITH_MSG_FIELD_REST_API, getRestRequestDataTypePrimitiveWithMsgFieldHttpUrl + urlParameters, HttpMethod.GET, request, null, 0), getRestRequestDataTypePrimitiveWithMsgFieldResponseDeserializer);
+    String url = new StringBuilder(128).append(getRestRequestDataTypePrimitiveWithMsgFieldHttpUrl)
+      .append(EncodingUtil.createUrlQueryParameters("a", request)).toString();
+    return submit(HttpRequest.create(GET_REST_REQUEST_DATA_TYPE_PRIMITIVE_WITH_MSG_FIELD_REST_API, url, HttpMethod.GET, request, null, 0), getRestRequestDataTypePrimitiveWithMsgFieldResponseDeserializer);
   }
   
   @Override

@@ -233,7 +233,9 @@ A constant definition may contain nested constants in its `constants` properties
 The resulting generated code will list constants as `public static final` members of a generated `<ExchangeID>Constants` class in main generated wrapper file.
 
 Constants can be referenced in description, sample values of fields, http/websocket base URL property definitions of the descriptor file.
-The generated code will substitute placeholders like `${constants.myGroup.myConstant}` with actual 
+The generated code will substitute placeholders like `${constants.myGroup.myConstant}` with javadoc link, markdown link for javadoc/markdown documentation, or reference to the constant for a sample value.
+
+Remark: The type must be either a primitive type, e.g. `STRING` (default), `INT`, `LONG`, `BOOLEAN`, `BIGDECIMAL`, or a `MAP` or `LIST` with primitive type value like `INT_LIST_MAP`.
 
 ### Configuration properties
 
@@ -242,6 +244,8 @@ The descriptor root `exchange` structure exposes a `properties` property that ca
 The wrapper client will instantiate it by creating an `<ExchangeID>ExchangeImpl` instance that takes a `Properties` instance in constructor. This class will expose configuration properties as `public static final ConfigProperty` members and static getter methods making it easy to retrieve the value of a property from such properties instance.
 
 For instance API Key/Secret properties can be listed, to be used by wrapper `HttpRequestInterceptor` implementation to sign outgoing authenticated requests.
+
+Remark: The type of a configuration property must be a primitive type, e.g. `STRING` (default), `INT`, `LONG`, `BOOLEAN`, `BIGDECIMAL`. 
 
 #### Demo configuration properties
 

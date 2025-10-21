@@ -26,6 +26,7 @@ public class FieldTest {
         field.setObjectName("MyObject");
         field.setProperties(List.of());
         field.setImplementedInterfaces(List.of("com.x.y.MyInterface"));
+        field.setIn(UrlParameterType.QUERY);
         Assert.assertEquals("name", field.getName());
         Assert.assertEquals(Type.fromTypeName("OBJECT_MAP"), field.getType());
         Assert.assertEquals("description", field.getDescription());
@@ -34,6 +35,7 @@ public class FieldTest {
         Assert.assertEquals("MyObject", field.getObjectName());
         Assert.assertEquals(List.of(), field.getProperties());
         Assert.assertEquals(List.of("com.x.y.MyInterface"), field.getImplementedInterfaces());
+        Assert.assertEquals(UrlParameterType.QUERY, field.getIn());
     }
 
     @Test
@@ -68,6 +70,7 @@ public class FieldTest {
         field.setDescription("description");
         field.setSampleValue("sampleValue");
         field.setMsgField("f");
+        field.setIn(UrlParameterType.PATH);
 
         field = field.deepClone();
 
@@ -76,6 +79,7 @@ public class FieldTest {
         Assert.assertEquals("description", field.getDescription());
         Assert.assertEquals("sampleValue", field.getSampleValue());
         Assert.assertEquals("f", field.getMsgField());
+        Assert.assertEquals(UrlParameterType.PATH, field.getIn());
     }
 
     @Test

@@ -140,6 +140,18 @@ public class FieldBuilder {
     field.setImplementedInterfaces(implementedInterfaces);
     return this;
   }
+  
+  /**
+   * Sets the URL parameter type of the field.
+   * 
+   * @param in the URL parameter type of the field to set, see
+   *           {@link Field#getIn()}
+   * @return this builder
+   */
+  public FieldBuilder in(UrlParameterType in) {
+    field.setIn(in);
+    return this;
+  }
 
   /**
    * Adds an implemented interface to the field.
