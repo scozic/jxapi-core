@@ -424,7 +424,6 @@ public class ExchangeDescriptorParserTest {
     Assert.assertEquals(HttpMethod.GET, restEndpointGetEmployee.getHttpMethod());
     Assert.assertEquals("https://www.example.com/docs/employee/get", restEndpointGetEmployee.getDocUrl());
     Assert.assertEquals("/employee", restEndpointGetEmployee.getUrl());
-    Assert.assertEquals("/${id}", restEndpointGetEmployee.getUrlParameters());
     Field getEmployeeIdByIdRequest = restEndpointGetEmployee.getRequest();
     Assert.assertEquals("id", getEmployeeIdByIdRequest.getName());
     Assert.assertEquals(Type.INT, getEmployeeIdByIdRequest.getType());
@@ -513,7 +512,6 @@ public class ExchangeDescriptorParserTest {
     Assert.assertEquals(HttpMethod.DELETE, restEndpointDescriptor.getHttpMethod());
     Assert.assertEquals("https://www.example.com/docs/employee/delete", restEndpointDescriptor.getDocUrl());
     Assert.assertEquals("/employee", restEndpointDescriptor.getUrl());
-    Assert.assertEquals("/${id}", restEndpointDescriptor.getUrlParameters());
     Field deleteEmployeeIdRequest = restEndpointDescriptor.getRequest();
     Assert.assertEquals("id", deleteEmployeeIdRequest.getName());
     Assert.assertEquals(Type.INT, deleteEmployeeIdRequest.getType());

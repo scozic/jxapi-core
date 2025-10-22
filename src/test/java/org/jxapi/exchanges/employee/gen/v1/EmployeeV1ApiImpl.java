@@ -92,7 +92,7 @@ public class EmployeeV1ApiImpl extends AbstractExchangeApi implements EmployeeV1
   @Override
   public FutureRestResponse<Employee> getEmployee(Integer request) {
     String url = new StringBuilder(128).append(getEmployeeHttpUrl)
-      .append(EncodingUtil.createUrlQueryParameters("id", request)).toString();
+      .append(EncodingUtil.createUrlPathParameters(request)).toString();
     return submit(HttpRequest.create(GET_EMPLOYEE_REST_API, url, HttpMethod.GET, request, null, 0), getEmployeeResponseDeserializer);
   }
   
@@ -115,7 +115,9 @@ public class EmployeeV1ApiImpl extends AbstractExchangeApi implements EmployeeV1
   
   @Override
   public FutureRestResponse<String> deleteEmployee(Integer request) {
-    return submit(HttpRequest.create(DELETE_EMPLOYEE_REST_API, deleteEmployeeHttpUrl, HttpMethod.DELETE, request, null, 0), deleteEmployeeResponseDeserializer);
+    String url = new StringBuilder(128).append(deleteEmployeeHttpUrl)
+      .append(EncodingUtil.createUrlPathParameters(request)).toString();
+    return submit(HttpRequest.create(DELETE_EMPLOYEE_REST_API, url, HttpMethod.DELETE, request, null, 0), deleteEmployeeResponseDeserializer);
   }
   
   

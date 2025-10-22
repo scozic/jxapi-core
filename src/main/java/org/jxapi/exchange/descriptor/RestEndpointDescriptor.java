@@ -23,26 +23,22 @@ import org.jxapi.util.EncodingUtil;
  * <li><code>url</code> - the URL of the endpoint</li>
  * <li><code>httpMethod</code> - the HTTP method to be used for the request</li>
  * <li><code>request</code> - the request data</li>
- * <li><code>response</code> - the response data</li>
- * <li><code>urlParameters</code> - the URL parameters. A String that will be used as suffix to URL endpoint.
- * Can contain place holders like <code>${myArg}</code> that will be replaced with either the 
- * name of <code>request</code>, or, if request field name does not match and field is of 
- * object type (see {@link Type#isObject()} ), the name of a field of that nested object structure.
- * Can be <code>null</code> if no URL parameters are expected or if request should be serialized 
- * as query parameters (see <code>queryParams</code>).
- * </li>
- * <li><code>urlParametersListSeparator</code> - When request is of LIST type, the separator used between 
- * items of that list in serialzed request. Remark: If request is of type MAP which is not likely 
- * for an API expected request data as URL parameters or query params, the corresponding serialized 
- * object will be URL encoded value of JSON.</li>
- * <li><code>queryParams</code> - whether the request data should be serialized as URL are query parameters.<br> 
- * <strong>About query parameters <i>queryParams</i> property</strong>:<br>
+ * <li><code>response</code> - the response data</li> 
+ * <strong>About request serialization into request parameters:</strong>:<br>
  * <ul>
- * <li>The default value used in generated code depends on HTTP method, it will be true for methods
- * where corresponding requests do not expect a body: <code>GET</code>, <code>HEAD</code>, 
- * <code>OPTIONS</code>, <code>TRACE</code>.</li>
- * <li>Query parameters are serialized in form of <code>?name1=value1&amp;name2=value2</code> 
- * and appended to URL endpoint.</li>
+ * <li>The request will be serialized as URL path (<code>/value1/value2</code>) or query param (<code>?param1=value1&param2=value2...</code>) depends on HTTP method, it will be true for methods
+ * where corresponding requests do not expect a body: <code>GET</code>, <code>DELETE</code> <code>HEAD</code>, 
+ * <code>OPTIONS</code>, <code>TRACE</code> (see {@link HttpMethod#requestHasBody}).</li>
+ * <li>The parameters serialized to URL path or query parameters are derived from <code>request</code> field properties.</li>
+ * <li>Serialization rules:
+ * <li>Fields are serialized as query parameters by default. In order to specifically serialize request fields as URL path parameters,
+ * the {@link Field#getIn()} property must be set to {@link UrlParameterType#PATH}.</li>}
+ * <li>If request field is of primitive type, its value will be used as single URL path or query parameter URL encoded value</li>
+ * <li>If request or a child field is of object type, and its <code>in</code> property is 
+ * unset, its child fields will be serialized as URL path or query parameters</li> 
+ * <li>If request or a child field is of object type, and its <code>in</code> property is set, 
+ * or of MAP or LIST type, its will be serialized as URL encoded JSON object</li>
+ * <ul>
  * <li>Field values will be URL encoded</li>
  * <li>If field is of object type, the object fields will be serialized as query parameters. 
  * If nested objects are contained (object field has fields of object type), their properties 
@@ -91,15 +87,6 @@ public class RestEndpointDescriptor {
   private Field request;
   
   private Field response;
-
-  @Deprecated
-  private String urlParameters;
-  
-  @Deprecated
-  private String urlParametersListSeparator;
-  
-  @Deprecated
-  private boolean queryParams;
   
   private Integer requestWeight;
   
@@ -161,55 +148,6 @@ public class RestEndpointDescriptor {
    */
   public void setHttpMethod(HttpMethod httpMethod) {
     this.httpMethod = httpMethod;
-  }
-  
-  /**
-   * 
-   * @return The request url parameters template. Can contain place holders like <code>${myArg}</code>
-   */
-  @Deprecated
-  public String getUrlParameters() {
-    return urlParameters;
-  }
-
-  /**
-   * @param urlParameters The request url parameters template. Can contain place holders like <code>${myArg}</code>
-   */
-  @Deprecated
-  public void setUrlParameters(String urlParameters) {
-    this.urlParameters = urlParameters;
-  }
-
-  /**
-   * @return The separator used between items of a list in serialized request url parameters
-   */
-  @Deprecated
-  public String getUrlParametersListSeparator() {
-    return urlParametersListSeparator;
-  }
-
-  /**
-   * @param urlParametersListSeparator The separator used between items of a list in serialized request url parameters
-   */
-  @Deprecated
-  public void setUrlParametersListSeparator(String urlParametersListSeparator) {
-    this.urlParametersListSeparator = urlParametersListSeparator;
-  }
-  
-  /**
-   * @deprecated
-   * @return whether the request data should be serialized as URL are query parameters
-   */
-  public boolean isQueryParams() {
-    return queryParams;
-  }
-
-  /**
-   * @deprecated
-   * @param queryParams whether the request data should be serialized as URL are query parameters
-   */
-  public void setQueryParams(boolean queryParams) {
-    this.queryParams = queryParams;
   }
   
   /**

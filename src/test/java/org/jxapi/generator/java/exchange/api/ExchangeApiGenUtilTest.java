@@ -11,7 +11,6 @@ import org.jxapi.exchange.descriptor.ExchangeDescriptor;
 import org.jxapi.exchange.descriptor.Field;
 import org.jxapi.exchange.descriptor.RestEndpointDescriptor;
 import org.jxapi.exchange.descriptor.Type;
-import org.jxapi.exchange.descriptor.UrlParameterType;
 import org.jxapi.exchange.descriptor.WebsocketEndpointDescriptor;
 import org.jxapi.generator.java.Imports;
 import org.jxapi.netutils.deserialization.RawBigDecimalMessageDeserializer;
@@ -1012,75 +1011,5 @@ public class ExchangeApiGenUtilTest {
       restEndpointDescriptor.setName("MyRestApi");
       Assert.assertEquals("myRestApi", ExchangeApiGenUtil.getRestApiMethodName(restEndpointDescriptor));
     }
-    
-//    @Test
-//    public void testCollectUrlParametersFields_NullField() {
-//      Assert.assertTrue(ExchangeApiGenUtil.collectUrlParameterFields(null, null, null).isEmpty());
-//      
-//      Field requestParam = Field.builder().name("param1").type(Type.STRING).in(UrlParameterType.PATH).build();
-//      List<Field> urlParams = ExchangeApiGenUtil.collectUrlParameterFields(requestParam, UrlParameterType.PATH, null);
-//      Assert.assertEquals(1, urlParams.size());
-//      Assert.assertEquals(requestParam, urlParams.get(0));
-//      Assert.assertTrue(ExchangeApiGenUtil.collectUrlParameterFields(
-//          requestParam, UrlParameterType.QUERY, 
-//          UrlParameterType.QUERY).isEmpty());
-//    }
-//    
-//    @Test
-//    public void testCollectUrlParametersFields_SimpleFieldWithInExplicitelySet() {
-//      Field requestParam = Field.builder().name("param1").type(Type.STRING).in(UrlParameterType.PATH).build();
-//      List<Field> urlParams = ExchangeApiGenUtil.collectUrlParameterFields(requestParam, UrlParameterType.PATH, null);
-//      Assert.assertEquals(1, urlParams.size());
-//      Assert.assertEquals(requestParam, urlParams.get(0));
-//      Assert.assertTrue(ExchangeApiGenUtil.collectUrlParameterFields(
-//          requestParam, UrlParameterType.QUERY, 
-//          UrlParameterType.QUERY).isEmpty());
-//    }
-//    
-//    @Test
-//    public void testCollectUrlParametersFields_SimpleFieldWithInNotSet() {
-//      Field requestParam = Field.builder().name("param1").type(Type.STRING).build();
-//      List<Field> urlParams = ExchangeApiGenUtil.collectUrlParameterFields(
-//          requestParam, 
-//          UrlParameterType.PATH, 
-//          UrlParameterType.PATH);
-//      Assert.assertEquals(1, urlParams.size());
-//      Assert.assertEquals(requestParam, urlParams.get(0));
-//      Assert.assertTrue(ExchangeApiGenUtil.collectUrlParameterFields(
-//          requestParam, 
-//          UrlParameterType.PATH, 
-//          UrlParameterType.QUERY).isEmpty());
-//    }
-//    
-//    @Test
-//    public void testCollectUrlParametersFields_ObjectField() {
-//      Field subParam1 = Field.builder().name("subParam1").type(Type.STRING).in(UrlParameterType.PATH).build();
-//      Field subParam2 = Field.builder().name("subParam2").type(Type.INT).in(UrlParameterType.QUERY).build();
-//      Field subParam3 = Field.builder().name("subParam2").type(Type.BOOLEAN).build();
-//      Field requestParam = Field.builder()
-//          .name("param1")
-//          .type(Type.OBJECT)
-//          .properties(List.of(
-//              subParam1,
-//              subParam2,
-//              subParam3
-//              ))
-//          .build();
-//      
-//      List<Field> urlParams = ExchangeApiGenUtil.collectUrlParameterFields(
-//          requestParam, 
-//          UrlParameterType.PATH, 
-//          UrlParameterType.PATH);
-//      Assert.assertEquals(2, urlParams.size());
-//      Assert.assertEquals(subParam1, urlParams.get(0));
-//      Assert.assertEquals(subParam3, urlParams.get(1));
-//      
-//      urlParams = ExchangeApiGenUtil.collectUrlParameterFields(
-//          requestParam, 
-//          UrlParameterType.QUERY, 
-//          UrlParameterType.PATH);
-//      Assert.assertEquals(1, urlParams.size());
-//      Assert.assertEquals(subParam2, urlParams.get(0));
-//    }
     
 }

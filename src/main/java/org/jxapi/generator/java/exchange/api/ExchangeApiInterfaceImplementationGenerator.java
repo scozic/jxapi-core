@@ -930,38 +930,6 @@ public class ExchangeApiInterfaceImplementationGenerator extends JavaTypeGenerat
     return sb.toString();
   }
   
-//  private String generateUrlVariableDeclaration(RestEndpointDescriptor restApi) {
-//    Field request = restApi.getRequest();
-//    String getUrlParametersBody = null;
-//    List<Field> enpointParameters = request == null? null:
-//                          ExchangeApiGenUtil.resolveFieldProperties(
-//                            exchangeApiDescriptor, request).getProperties();
-//    if (ExchangeApiGenUtil.restEndpointHasArguments(restApi, exchangeApiDescriptor)) {
-//      String requestName = request == null? null: request.getName();
-//      Type requestDataType = ExchangeGenUtil.getFieldType(request);
-//      boolean hasQueryParams = restApi.isQueryParams()  
-//          || !restApi.getHttpMethod().requestHasBody;
-//      if (restApi.getUrlParameters() != null) {
-//        getUrlParametersBody =  generateUrlParametersOrTopicSerializerBodyFromTemplate(
-//                        restApi.getUrlParameters(), 
-//                        enpointParameters, 
-//                        restApi.getUrlParametersListSeparator(),
-//                        requestName,
-//                        requestDataType);
-//      } else if (!CollectionUtil.isEmpty(enpointParameters) && hasQueryParams) {
-//        getUrlParametersBody = generateGetUrlParametersBodyUsingQueryParams(enpointParameters, false);
-//      } else if (!requestDataType.isObject() && hasQueryParams) {
-//        getUrlParametersBody = generateGetUrlParametersBodyUsingQueryParams(List.of(request), true);
-//      } // else object type with 0 properties, no url parameter
-//    } else if (restApi.getUrlParameters() != null) {
-//      getUrlParametersBody = "\"" + restApi.getUrlParameters() + "\"";
-//    }
-//    if (getUrlParametersBody != null) {
-//      getUrlParametersBody = getUrlParametersBody + ";\n";
-//    }
-//    return getUrlParametersBody;
-//  }
-  
   private String generateRestEndpointUrlVariableDeclaration(RestEndpointDescriptor restApi) {
     if (!ExchangeApiGenUtil.restEndpointHasArguments(restApi, exchangeApiDescriptor)) {
       return null;
@@ -974,7 +942,7 @@ public class ExchangeApiInterfaceImplementationGenerator extends JavaTypeGenerat
         request, 
         null, 
         UrlParameterType.PATH, 
-        "request", 
+        ExchangeApiGenUtil.DEFAULT_REQUEST_ARG_NAME, 
         pathParamArgs);
     List<String> queryParamArgs = new ArrayList<>();
     collectUrlParameterArguments(
@@ -982,7 +950,7 @@ public class ExchangeApiInterfaceImplementationGenerator extends JavaTypeGenerat
         request, 
         null,
         UrlParameterType.QUERY, 
-        "request", 
+        ExchangeApiGenUtil.DEFAULT_REQUEST_ARG_NAME,
         queryParamArgs);
     if (pathParamArgs.isEmpty() && queryParamArgs.isEmpty()) {
       return null;
@@ -1037,7 +1005,11 @@ public class ExchangeApiInterfaceImplementationGenerator extends JavaTypeGenerat
         .ofNullable(fieldUrlParamType)
         .orElse(defUrlParamType) == urlParameterType) {
       if (urlParameterType == UrlParameterType.QUERY) {
-        String name = Optional.ofNullable(f.getMsgField()).orElse(f.getName());
+        String name = Optional 
+            .ofNullable(Optional
+                .ofNullable(f.getMsgField())
+                .orElse(f.getName()))
+            .orElse(ExchangeApiGenUtil.DEFAULT_REQUEST_ARG_NAME);
         res.add(JavaCodeGenUtil.getQuotedString(name));
       }
       String value = valuePrefix;
@@ -1054,64 +1026,6 @@ public class ExchangeApiInterfaceImplementationGenerator extends JavaTypeGenerat
       res.add(value);
     }
   }
-  
-//  private String generateGetUrlParameterParameterValue(Field f, boolean singleRequestParam) {
-//    String value = "request";
-//    if (!singleRequestParam) {
-//      value += "." + JavaCodeGenUtil.getGetAccessorMethodName(f.getName(),
-//          ExchangeApiGenUtil.getClassNameForField(f, null, f.getObjectName()), Collections.emptyList()) + "()";
-//    }
-//
-//    Type type = ExchangeGenUtil.getFieldType(f);
-//    if (type.getCanonicalType() == CanonicalType.LIST || type.getCanonicalType() == CanonicalType.MAP
-//        || type.isObject()) {
-//      addImport(JsonUtil.class);
-//      value = new StringBuilder().append("JsonUtil.pojoToJsonString(").append(value).append(")").toString();
-//    } 
-//    return value;
-//  }
-//  
-//  private String generateGetUrlParametersBodyUsingQueryParams(List<Field> requestFields, boolean singleRequestParam) {
-//    addImport(EncodingUtil.class);
-//    StringBuilder s = new StringBuilder().append(EncodingUtil.class.getSimpleName() + ".createUrlQueryParameters(");
-//    for (int i = 0; i < requestFields.size(); i++) {
-//      if (i > 0) {
-//        s.append(", ");
-//      }
-//      Field f = requestFields.get(i);
-//      String name = Optional.ofNullable(f.getMsgField()).orElse(f.getName());
-//      s.append("\"")
-//       .append(name)
-//       .append("\", ");
-//      String value = "request";
-//      if (!singleRequestParam) {
-//        value += "." 
-//            + JavaCodeGenUtil.getGetAccessorMethodName(
-//              f.getName(), 
-//              ExchangeApiGenUtil.getClassNameForField(f, null, f.getObjectName()), 
-//              requestFields.stream().map(Field::getName).collect(Collectors.toList()))
-//            + "()";
-//      }
-//
-//      Type type = ExchangeGenUtil.getFieldType(f);
-//      if (type.getCanonicalType() == CanonicalType.LIST
-//        || type.getCanonicalType() == CanonicalType.MAP
-//        || type.isObject()) {
-//        addImport(JsonUtil.class);
-//        value = new StringBuilder()
-//                .append("JsonUtil.pojoToJsonString(")
-//                .append(value)
-//                .append(")").toString(); 
-//      } else if (type.getCanonicalType() == CanonicalType.STRING) {
-//        value = new StringBuilder()
-//            .append(value)
-//            .toString(); 
-//      }
-//      s.append(value);
-//      
-//    }
-//    return s.append(")").toString();
-//  }
 
   private String generateUrlParametersOrTopicSerializerBodyFromTemplate(String urlParametersTemplate, 
                                         List<Field> fields, 
