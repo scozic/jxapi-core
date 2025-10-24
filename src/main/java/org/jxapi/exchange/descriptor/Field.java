@@ -338,7 +338,7 @@ public class Field {
    * When this field represents a URL parameter, get its type.
    * <br>
    * This is relevant when the field is used in a REST endpoint descriptor,
-   * see {@link RestEndpointDescriptor#getUrlParameters()}, as part of the request.
+   * see {@link RestEndpointDescriptor#getRequest()}, as part of the request.
    * In this case, field hierarchy representing the request will be serialzed
    * as URL parameters, when the request HTTP method request has no body,
    * like GET, DELETE, etc.
@@ -358,7 +358,7 @@ public class Field {
   /**
    * When this field represents a URL parameter, set its type. <br>
    * This is relevant when the field is used in a REST endpoint descriptor, see
-   * {@link RestEndpointDescriptor#getUrlParameters()}, as part of the request. In
+   * {@link RestEndpointDescriptor#getRequest()}, as part of the request. In
    * this case, field hierarchy representing the request will be serialzed as URL
    * parameters, when the request HTTP method request has no body, like GET,
    * DELETE, etc. <br>

@@ -12,66 +12,54 @@ import org.jxapi.netutils.rest.ratelimits.RateLimitRule;
 import org.jxapi.util.EncodingUtil;
 
 /**
- * Part of JSON document describing a exchange API, describes a specific REST endpoint.
- * Such endpoints are expecting an HTTP request to given URL endpoint, with given request parameters, 
- * and a response should be received.
- * <p>
- * The endpoint is described using properties:
+ * Describes a REST endpoint as part of a larger exchange API defined in a JSON document.
+ * These endpoints handle HTTP requests to a specific URL, process request parameters, and return a response.
+ *
+ * <h2>Endpoint Properties</h2>
+ * The endpoint is defined by the following properties:
  * <ul>
- * <li><code>name</code> - a unique name of the endpoint</li>
- * <li><code>description</code> - a short description of the endpoint</li>
- * <li><code>url</code> - the URL of the endpoint</li>
- * <li><code>httpMethod</code> - the HTTP method to be used for the request</li>
- * <li><code>request</code> - the request data</li>
- * <li><code>response</code> - the response data</li> 
- * <strong>About request serialization into request parameters:</strong>:<br>
- * <ul>
- * <li>The request will be serialized as URL path (<code>/value1/value2</code>) or query param (<code>?param1=value1&param2=value2...</code>) depends on HTTP method, it will be true for methods
- * where corresponding requests do not expect a body: <code>GET</code>, <code>DELETE</code> <code>HEAD</code>, 
- * <code>OPTIONS</code>, <code>TRACE</code> (see {@link HttpMethod#requestHasBody}).</li>
- * <li>The parameters serialized to URL path or query parameters are derived from <code>request</code> field properties.</li>
- * <li>Serialization rules:
- * <li>Fields are serialized as query parameters by default. In order to specifically serialize request fields as URL path parameters,
- * the {@link Field#getIn()} property must be set to {@link UrlParameterType#PATH}.</li>}
- * <li>If request field is of primitive type, its value will be used as single URL path or query parameter URL encoded value</li>
- * <li>If request or a child field is of object type, and its <code>in</code> property is 
- * unset, its child fields will be serialized as URL path or query parameters</li> 
- * <li>If request or a child field is of object type, and its <code>in</code> property is set, 
- * or of MAP or LIST type, its will be serialized as URL encoded JSON object</li>
- * <ul>
- * <li>Field values will be URL encoded</li>
- * <li>If field is of object type, the object fields will be serialized as query parameters. 
- * If nested objects are contained (object field has fields of object type), their properties 
- * are appended to the list of query parameters</li>
- * <li>If field is of list type, the list items will be serialized as query parameters, 
- * using <code>urlParametersListSeparator</code> as separator</li>
+ *   <li>{@code name}: A unique identifier for the endpoint.</li>
+ *   <li>{@code description}: A brief summary of the endpoint's purpose.</li>
+ *   <li>{@code url}: The URL of the endpoint.</li>
+ *   <li>{@code httpMethod}: The HTTP method for the request (e.g., GET, POST).</li>
+ *   <li>{@code request}: The data structure for the request.</li>
+ *   <li>{@code response}: The data structure for the response.</li>
+ *   <li>{@code requestWeight}: The cost of a request, used for rate limiting.</li>
+ *   <li>{@code rateLimits}: The rate limits applied to this endpoint.</li>
  * </ul>
- * <li><code>requestWeight</code> - the weight of a request call if subject to weighted rate limit rules</li>
- * <li><code>rateLimits</code> - the rate limits this REST API subject to</li>
- * </ul>
- * <p>
- * API endpoints are child elements of api element (see ExchangeApiDescriptor ) in the JSON document.<br>
- * Such descriptor will be used to generate method declaration in API interface and its 
- * implementation, see {@link ExchangeApiInterfaceImplementationGenerator} and {@link ExchangeApiClassesGenerator}.<br>
- * <p>
- * About <code>request</code> and <code>response</code> properties:<br> 
+ *
+ * <h2>Request Serialization</h2>
+ * <strong>Serialization to URL Parameters:</strong>
  * <ul>
- * <li>Request and response parameters are described as {@link Field}. The name of the <code>request</code> field 
- * is the name of single argument of the method that will be generated in the API interface.<br></li>
- * <li>Request and response parameters are described as {@link Field}. 
- * The name of the <code>response</code> field is not relevant. 
- * <li><code>request</code> property is optional. If not present, the method will be generated with no argument.</li>
- * <li><code>response</code> property is optional. If not present, the method will be generated 
- * with STRING return value type containing raw response body value. 
- * This is intended for instance for REST APIs where status code is enough empty body is expected.</li>
+ *   <li>For HTTP methods that do not have a request body (e.g., {@code GET}, {@code DELETE}), the request is serialized into either URL path parameters (e.g., {@code /value1/value2}) or query parameters (e.g., {@code ?param1=value1}).</li>
+ *   <li>By default, request fields are serialized as query parameters. To serialize them as URL path parameters, set the {@link Field#getIn()} property to {@link UrlParameterType#PATH}.</li>
+ *   <li>If the request field is a primitive type, its value is URL-encoded and used as a single parameter.</li>
+ *   <li>If the request field is an object without the {@code in} property set, its child fields are serialized as parameters.</li>
+ *   <li>If the request field is an object with the {@code in} property set, or if it is a {@code MAP} or {@code LIST}, it is serialized as a URL-encoded JSON object.</li>
+ *   <li>All field values are URL-encoded.</li>
  * </ul>
- * 
+ *
+ * <h2>Code Generation</h2>
+ * API endpoints are defined as child elements of an {@code api} element in the JSON document (see {@link ExchangeApiDescriptor}).
+ * This descriptor is used to generate method declarations in the API interface and their implementations.
+ *
+ * @see ExchangeApiInterfaceImplementationGenerator
+ * @see ExchangeApiClassesGenerator
+ *
+ * <h2>Request and Response Properties</h2>
+ * <ul>
+ *   <li>Both {@code request} and {@code response} are described as {@link Field} objects.</li>
+ *   <li>The name of the {@code request} field becomes the argument name in the generated API method.</li>
+ *   <li>The name of the {@code response} field is not used in code generation.</li>
+ *   <li>If {@code request} is omitted, the generated method will have no arguments.</li>
+ *   <li>If {@code response} is omitted, the method will return a {@code STRING} containing the raw response body. This is useful when only the status code is needed and the body is empty.</li>
+ * </ul>
+ *
  * @see Field
  * @see RateLimitRule
  * @see RestEndpointClassesGenerator
  * @see Type
  * @see HttpMethod
- * @see ExchangeApiInterfaceImplementationGenerator
  */
 public class RestEndpointDescriptor {
   private String name;
