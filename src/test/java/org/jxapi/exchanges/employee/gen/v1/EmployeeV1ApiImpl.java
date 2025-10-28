@@ -93,31 +93,31 @@ public class EmployeeV1ApiImpl extends AbstractExchangeApi implements EmployeeV1
   public FutureRestResponse<Employee> getEmployee(Integer request) {
     String url = new StringBuilder(128).append(getEmployeeHttpUrl)
       .append(EncodingUtil.createUrlPathParameters(request)).toString();
-    return submit(HttpRequest.create(GET_EMPLOYEE_REST_API, url, HttpMethod.GET, request, null, 0), getEmployeeResponseDeserializer);
+    return submit(HttpRequest.create(GET_EMPLOYEE_REST_API, url, HttpMethod.GET, request, null, 0), false, getEmployeeResponseDeserializer);
   }
   
   @Override
   public FutureRestResponse<EmployeeV1GetAllEmployeesResponse> getAllEmployees(EmployeeV1GetAllEmployeesRequest request) {
     String url = new StringBuilder(128).append(getAllEmployeesHttpUrl)
       .append(EncodingUtil.createUrlQueryParameters("page", request.getPage(), "size", request.getSize())).toString();
-    return submitPaginated(HttpRequest.create(GET_ALL_EMPLOYEES_REST_API, url, HttpMethod.GET, request, null, 0), getAllEmployeesResponseDeserializer, this::getAllEmployees);
+    return submitPaginated(HttpRequest.create(GET_ALL_EMPLOYEES_REST_API, url, HttpMethod.GET, request, null, 0), false, getAllEmployeesResponseDeserializer, this::getAllEmployees);
   }
   
   @Override
   public FutureRestResponse<String> addEmployee(Employee request) {
-    return submit(HttpRequest.create(ADD_EMPLOYEE_REST_API, addEmployeeHttpUrl, HttpMethod.POST, request, null, 0), addEmployeeResponseDeserializer);
+    return submit(HttpRequest.create(ADD_EMPLOYEE_REST_API, addEmployeeHttpUrl, HttpMethod.POST, request, null, 0), true, addEmployeeResponseDeserializer);
   }
   
   @Override
   public FutureRestResponse<String> updateEmployee(Employee request) {
-    return submit(HttpRequest.create(UPDATE_EMPLOYEE_REST_API, updateEmployeeHttpUrl, HttpMethod.PUT, request, null, 0), updateEmployeeResponseDeserializer);
+    return submit(HttpRequest.create(UPDATE_EMPLOYEE_REST_API, updateEmployeeHttpUrl, HttpMethod.PUT, request, null, 0), true, updateEmployeeResponseDeserializer);
   }
   
   @Override
   public FutureRestResponse<String> deleteEmployee(Integer request) {
     String url = new StringBuilder(128).append(deleteEmployeeHttpUrl)
       .append(EncodingUtil.createUrlPathParameters(request)).toString();
-    return submit(HttpRequest.create(DELETE_EMPLOYEE_REST_API, url, HttpMethod.DELETE, request, null, 0), deleteEmployeeResponseDeserializer);
+    return submit(HttpRequest.create(DELETE_EMPLOYEE_REST_API, url, HttpMethod.DELETE, request, null, 0), false, deleteEmployeeResponseDeserializer);
   }
   
   

@@ -722,6 +722,9 @@ public class ExchangeApiInterfaceImplementationGenerator extends JavaTypeGenerat
     addImport(HttpRequest.class);
     addRestEndpointUrlDeclarations(restApi, restEndpointJavadocLink);
     String endpointUrlVar = ExchangeApiGenUtil.getRestEndpointUrlVariableName(restApi);
+    boolean requestHasBody = Optional
+        .ofNullable(restApi.isRequestHasBody())
+        .orElse(restApi.getHttpMethod().requestHasBody) && hasArguments;
     StringBuilder createHttpRequestInstruction = new StringBuilder()
         .append("HttpRequest.create(")
         .append(ExchangeApiGenUtil.getRestEndpointNameStaticVariable(restApi.getName()))
@@ -754,6 +757,8 @@ public class ExchangeApiInterfaceImplementationGenerator extends JavaTypeGenerat
     }
     submitRequestInstruction
       .append(createHttpRequestInstruction.toString())
+      .append(", ")
+      .append(requestHasBody)
       .append(", ")
       .append(deserializerVariableName)
       .append(endpointCallArg)

@@ -738,4 +738,5 @@ public class ExchangeApiGenUtil {
   public static String getRestEndpointUrlVariableName(RestEndpointDescriptor restEndpointDescriptor) {
     return JavaCodeGenUtil.firstLetterToLowerCase(restEndpointDescriptor.getName() + "HttpUrl");
   }
+
 }

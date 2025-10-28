@@ -130,6 +130,8 @@ public class HttpRequest {
    * actually sent.
    */
   private long throttledTime = 0L;
+  
+  private Boolean requestAsBody = null;
 
   /**
    * @return full request URL, including request parameters

@@ -67,6 +67,23 @@
 					}
 				},
 				{
+					"name": "postRestRequestDataTypeIntImplicitAsPathParam",
+					"httpMethod": "POST",
+					"description": "A sample REST endpoint using STRING response data type",
+					"url": "/postIntAsPathParam",
+					"requestHasBody": false,
+					"request": {
+						"name": "id",
+						"description": "Identifier",
+						"type": "INT",
+						"in": "PATH",
+						"sampleValue": 123
+					},
+					"response": {
+						"objectName": "GenericResponse"
+					}
+				},
+				{
 					"name": "postRestRequestDataTypeBoolean",
 					"httpMethod": "POST",
 					"description": "A sample REST endpoint using BOOLEAN response data type",
@@ -125,6 +142,33 @@
 					"httpMethod": "POST",
 					"description": "A sample REST endpoint using OBJECT_LIST_MAP request data type",
 					"url": "/postObjectListMap",
+					"request": {
+						"type": "OBJECT_LIST_MAP",
+						"objectName": "SingleSymbol"
+					},
+					"response": {
+						"objectName": "GenericResponse"
+					}
+				},
+				{
+					"name": "deletetRestRequestDataTypeObjectAsBody",
+					"httpMethod": "DELETE",
+					"description": "A sample REST DELETE endpoint using OBJECT request data type, and request serialized as body",
+					"url": "/deletetRestRequestDataTypeObjectAsBody",
+					"requestHasBody": true,
+					"request": {
+						"type": "OBJECT_LIST_MAP",
+						"objectName": "SingleSymbol"
+					},
+					"response": {
+						"objectName": "GenericResponse"
+					}
+				},
+				{
+					"name": "deletetRestRequestDataTypeObjectAsQueryParams",
+					"httpMethod": "DELETE",
+					"description": "A sample REST endpoint using OBJECT_LIST_MAP request data type",
+					"url": "/deletetRestRequestDataTypeObjectAsQueryParams",
 					"request": {
 						"type": "OBJECT_LIST_MAP",
 						"objectName": "SingleSymbol"

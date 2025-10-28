@@ -28,7 +28,7 @@ public enum HttpMethod {
    * we consider that DELETE requests do not carry a body. Wrappers  can override 
    * this behavior if needed, using {@link HttpRequestInterceptor}.
    */
-  DELETE(true, false),
+  DELETE(false, false),
   
   /**
    * <a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Methods/HEAD"><strong>HEAD</strong> HTTP method</a>

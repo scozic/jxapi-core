@@ -80,7 +80,9 @@ public class RestEndpointDescriptor {
   
   private List<String> rateLimits;
   
-  private boolean paginated = false;
+  private Boolean paginated = Boolean.FALSE;
+  
+  private Boolean requestHasBody = null;
    
   /**
    * @return the name of the REST API endpoint
@@ -253,6 +255,28 @@ public class RestEndpointDescriptor {
   @Override
   public String toString() {
     return EncodingUtil.pojoToString(this);
+  }
+
+  /**
+   * Indicates whether the request should be sent as the body of the HTTP request.
+   * Can (and generally should) be left null to use default behavior based on HTTP method.
+   * @return <code>null</code> to use default behavior, {@link Boolean#TRUE} to send request as body, ${@link Boolean#FALSE} otherwise.
+   */
+  public Boolean isRequestHasBody() {
+    return requestHasBody;
+  }
+
+  /**
+   * Sets whether the request should be sent as the body of the HTTP request. Can
+   * (and generally should) be left null to use default behavior based on HTTP
+   * method.
+   * 
+   * @param requestHasBody <code>null</code> to use default behavior,
+   *                      {@link Boolean#TRUE} to send request as body,
+   *                      ${@link Boolean#FALSE} otherwise.
+   */
+  public void setRequestHasBody(Boolean requestHasBody) {
+    this.requestHasBody = requestHasBody;
   }
 
 }
