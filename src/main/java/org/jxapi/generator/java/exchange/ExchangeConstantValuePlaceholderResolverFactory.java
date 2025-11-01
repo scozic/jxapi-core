@@ -1,0 +1,34 @@
+package org.jxapi.generator.java.exchange;
+
+import org.jxapi.exchange.descriptor.Constant;
+import org.jxapi.exchange.descriptor.ExchangeDescriptor;
+import org.jxapi.generator.java.Imports;
+import org.jxapi.util.PlaceHolderResolver;
+
+/**
+ * Specific implementation of ConstantValuePlaceholderResolverFactory, in the context of wrapper generation.
+ * This implementation creates PlaceHolderResolver instances that generate substitution instruction declarations
+ * for constants defined in the ExchangeDescriptor.
+ * 
+ * @see {@link ExchangeDescriptor}
+ * @see {@link Constant}
+ */
+public class ExchangeConstantValuePlaceholderResolverFactory implements ConstantValuePlaceholderResolverFactory {
+
+  private final ExchangeDescriptor exchangeDescriptor;
+  
+  public ExchangeConstantValuePlaceholderResolverFactory(ExchangeDescriptor exchangeDescriptor) {
+    this.exchangeDescriptor = exchangeDescriptor;
+  }
+
+  @Override
+  public PlaceHolderResolver createConstantValuePlaceholderResolver(Imports imports) {
+    return s -> ExchangeGenUtil.generateSubstitutionInstructionDeclaration(
+        s, 
+        exchangeDescriptor, 
+        null,
+        null,
+        imports);
+  }
+
+}

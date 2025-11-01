@@ -35,7 +35,7 @@ public class ExchangeApiClassesGeneratorTest {
     srcFolder = ClassesGeneratorTestUtil.generateTmpDir();
     ExchangeDescriptor exchange = ExchangeDescriptorParser.fromJson(Paths.get(".", "src", "test", "resources", "testExchangeDescriptor.json"));
     ExchangeApiDescriptor api = exchange.getApis().get(0);
-    ExchangeApiClassesGenerator generator = new ExchangeApiClassesGenerator(exchange, api);
+    ExchangeApiClassesGenerator generator = new ExchangeApiClassesGenerator(exchange, api, null);
     generator.generateClasses(srcFolder);
     
     checkJavaFilesCount(Paths.get("."), 5);
@@ -79,7 +79,7 @@ public class ExchangeApiClassesGeneratorTest {
     ExchangeDescriptor exchange = ExchangeDescriptorParser.fromJson(Paths.get(".", "src", "test", "resources", "testExchangeDescriptor.json"));
     ExchangeApiDescriptor api = exchange.getApis().get(0);
     api.setRestEndpoints(null);
-    ExchangeApiClassesGenerator generator = new ExchangeApiClassesGenerator(exchange, api);
+    ExchangeApiClassesGenerator generator = new ExchangeApiClassesGenerator(exchange, api, null);
     generator.generateClasses(srcFolder);
     
     checkJavaFilesCount(Paths.get("."), 5);
@@ -105,7 +105,7 @@ public class ExchangeApiClassesGeneratorTest {
     ExchangeDescriptor exchange = ExchangeDescriptorParser.fromJson(Paths.get(".", "src", "test", "resources", "testExchangeDescriptor.json"));
     ExchangeApiDescriptor api = exchange.getApis().get(0);
     api.setWebsocketEndpoints(null);
-    ExchangeApiClassesGenerator generator = new ExchangeApiClassesGenerator(exchange, api);
+    ExchangeApiClassesGenerator generator = new ExchangeApiClassesGenerator(exchange, api, null);
     generator.generateClasses(srcFolder);
     
     checkJavaFilesCount(Paths.get("."), 5);

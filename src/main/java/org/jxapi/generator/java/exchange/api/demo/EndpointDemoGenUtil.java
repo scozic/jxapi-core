@@ -95,7 +95,7 @@ public class EndpointDemoGenUtil {
         .append(" ")
         .append(JavaCodeGenUtil.generateCodeBlock(
               "return " 
-              + generateFieldSampleValueDeclaration2(
+              + generateFieldSampleValueDeclaration(
                   property,  
                   demoPropertyName,
                   objectClassName,
@@ -170,7 +170,7 @@ public class EndpointDemoGenUtil {
 
 
   
-  private static String generateFieldSampleValueDeclaration2(
+  private static String generateFieldSampleValueDeclaration(
       Field field, 
       String demoPropertyName,
       String objectClassName, 
@@ -191,7 +191,7 @@ public class EndpointDemoGenUtil {
           imports);
     }
     if (type.isObject()) {
-      return generateFieldSampleValueDeclaration2Object(
+      return generateObjectFieldSampleValueDeclaration(
           field, 
           demoPropertyName, 
           objectClassName, 
@@ -260,7 +260,6 @@ public class EndpointDemoGenUtil {
             imports))
         .append(")")
         .toString();
-    
   }
   
   private static String generateObjectListOrMapWithoutGlobalSampleValueInstruction(Field field, String demoPropertyName,
@@ -298,7 +297,7 @@ public class EndpointDemoGenUtil {
         imports);
   }
   
-  private static String generateFieldSampleValueDeclaration2Object(Field field, 
+  private static String generateObjectFieldSampleValueDeclaration(Field field, 
       String demoPropertyName,
       String objectClassName, 
       ExchangeDescriptor exchangeDescriptor,
@@ -343,7 +342,7 @@ public class EndpointDemoGenUtil {
       String childParamName = childParam.getName();
       String childDemoPropertyName = demoPropertyName + "." + childParamName;
       String childClassName = ExchangeApiGenUtil.getFieldObjectClassName(childParam, objectClassName);
-      String itemValue = generateFieldSampleValueDeclaration2(
+      String itemValue = generateFieldSampleValueDeclaration(
           childParam,
           childDemoPropertyName, 
           childClassName,

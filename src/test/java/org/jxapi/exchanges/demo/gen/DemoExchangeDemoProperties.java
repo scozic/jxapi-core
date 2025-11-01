@@ -32,7 +32,7 @@ import org.jxapi.util.PropertiesUtil;
  *     <td>STRING_LIST</td>
  *     <td>Demo configuration property for request.symbols field.<p>
  *     The list of symbol to fetch market information for. Leave empty to fetch all markets</td>
- *     <td>["BTC_USDT", "ETH_USDT"]</td>
+ *     <td>[{@link org.jxapi.exchanges.demo.gen.DemoExchangeConstants#DEFAULT_SYMBOL}, BNB_USDT]</td>
  *   </tr>
  *   <tr>
  *     <td>MarketData.rest.postRestRequestDataTypeInt.request</td>
@@ -137,12 +137,12 @@ public class DemoExchangeDemoProperties {
             "demo.MarketData.rest.exchangeInfo.request.symbols",
             Type.STRING,
             "Demo configuration property for request.symbols field.<p>\nThe list of symbol to fetch market information for. Leave empty to fetch all markets",
-            "[\"BTC_USDT\", \"ETH_USDT\"]");
+            EncodingUtil.substituteArguments("[\"${constants.defaultSymbol}\",\"BNB_USDT\"]", "constants.defaultSymbol", DemoExchangeConstants.DEFAULT_SYMBOL));
           
           /**
            * Retrieves value of 'symbols' property.
            * @param properties Properties to look for value of 'symbols' property into.
-           * @return Value found in properties or default value <i>"[\"BTC_USDT\", \"ETH_USDT\"]"</i> if not found.
+           * @return Value found in properties or default value <i>["{@link org.jxapi.exchanges.demo.gen.DemoExchangeConstants#DEFAULT_SYMBOL}","BNB_USDT"]</i> if not found.
            */
           public static String getSymbols(Properties properties) {return PropertiesUtil.getString(properties, SYMBOLS);}
           /**
@@ -246,7 +246,7 @@ public class DemoExchangeDemoProperties {
           "demo.MarketData.rest.postRestRequestDataTypeIntList.request",
           Type.STRING,
           "Demo configuration property for postRestRequestDataTypeIntList.request field.",
-          "[1, 3, 5]");
+          "[1,3,5]");
         
         /**
          * Retrieves value of 'request' property.

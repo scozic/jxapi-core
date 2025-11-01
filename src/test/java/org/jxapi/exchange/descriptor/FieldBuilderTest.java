@@ -111,4 +111,11 @@ public class FieldBuilderTest {
       Field field = builder.in(UrlParameterType.QUERY).build();
       Assert.assertEquals(UrlParameterType.QUERY, field.getIn());
     }
+    
+    @Test
+    public void testSetDefaultValue() {
+      FieldBuilder builder = new FieldBuilder();
+      Field field = builder.defaultValue(123).build();
+      Assert.assertEquals(Integer.valueOf(123), field.getDefaultValue());
+    }
 }

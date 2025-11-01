@@ -14,6 +14,7 @@ import org.jxapi.generator.java.exchange.ExchangeGenUtil;
 import org.jxapi.util.CollectionUtil;
 import org.jxapi.util.ConfigProperty;
 import org.jxapi.util.DefaultConfigProperty;
+import org.jxapi.util.JsonUtil;
 import org.jxapi.util.PlaceHolderResolver;
 
 /**
@@ -221,10 +222,15 @@ public class PropertiesGenUtil {
     if (!propType.getCanonicalType().isPrimitive) {
       propType = Type.STRING;
     }
-    String sampleValueStr = sampleValue == null? null: 
-      Optional.ofNullable(sampleValuePlaceHolderResolver)
-        .orElse(JavaCodeGenUtil::getQuotedString)
-        .resolve(sampleValue.toString());
+    String sampleValueStr = null;
+    if (sampleValue != null) {
+      if (!(sampleValue instanceof String)) {
+        sampleValue = JsonUtil.pojoToJsonString(sampleValue);
+      }
+      sampleValueStr = Optional.ofNullable(sampleValuePlaceHolderResolver)
+      .orElse(JavaCodeGenUtil::getQuotedString)
+      .resolve(sampleValue.toString());
+    }
 
     return new StringBuilder()
         .append(JavaCodeGenUtil.generateJavaDoc(description))

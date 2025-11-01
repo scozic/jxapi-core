@@ -69,4 +69,9 @@ public class DemoExchangeConstants {
    * Constant for subscribing to all tickers
    */
   public static final String ALL_TICKERS = "ticker@all";
+  
+  /**
+   * Default symbol to use in ticker related messages
+   */
+  public static final String DEFAULT_SYMBOL = "BTC_USDT";
 }

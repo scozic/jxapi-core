@@ -2,17 +2,20 @@ package org.jxapi.generator.java.exchange.api.pojo;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.jxapi.exchange.descriptor.CanonicalType;
+import org.jxapi.exchange.descriptor.Constant;
 import org.jxapi.exchange.descriptor.Field;
 import org.jxapi.exchange.descriptor.Type;
 import org.jxapi.generator.java.JavaCodeGenUtil;
 import org.jxapi.generator.java.JavaTypeGenerator;
 import org.jxapi.generator.java.exchange.ExchangeGenUtil;
 import org.jxapi.generator.java.exchange.api.ExchangeApiGenUtil;
+import org.jxapi.generator.java.exchange.constants.ConstantsGenUtil;
 import org.jxapi.util.CollectionUtil;
 import org.jxapi.util.CompareUtil;
 import org.jxapi.util.DeepCloneable;
@@ -76,6 +79,9 @@ public class PojoGenerator extends JavaTypeGenerator {
   
   private final List<Field> fields = new ArrayList<>();
   private final PlaceHolderResolver docPlaceHolderResolver;
+  private PlaceHolderResolver defaultValuePlaceHolderResolver;
+  
+  
   
   /**
    * Constructor.
@@ -132,9 +138,9 @@ public class PojoGenerator extends JavaTypeGenerator {
     appendMethod("public static Builder builder()", 
            "return new Builder();" , 
            "@return A new builder to build {@link " + getSimpleName() + "} objects");
-    
+    Map<String, String> defaultValueStaticVariables = generateDefaultValuesStaticFieldDeclarations(); 
     appendToBody("\n");
-    appendToBody(generateAllFieldsDeclaration());
+    appendToBody(generateAllFieldsDeclaration(defaultValueStaticVariables));
     appendToBody("\n");
     this.fields.forEach(f -> {
       appendToBody("\n");
@@ -151,10 +157,45 @@ public class PojoGenerator extends JavaTypeGenerator {
     appendToBody("\n");
     generateToStringMethod();
     appendToBody("\n");
-    generateBuilderClass();
+    generateBuilderClass(defaultValueStaticVariables);
     return super.generate();
   }
   
+  private Map<String, String> generateDefaultValuesStaticFieldDeclarations() {
+    Map<String, String> res = CollectionUtil.createMap();
+    Map<String, Constant> constants = CollectionUtil.createMap();
+    for (Field f : fields) {
+      Type fieldType = ExchangeGenUtil.getFieldType(f);
+      if (f.getDefaultValue() != null) {
+        if (fieldType.isObject()) {
+          throw new IllegalArgumentException(
+              "Field " + f.getName() + " is of object type, cannot carry a default value");
+        }
+        Constant c = Constant.create(
+            PojoGenUtil.getDefaultValueConstantName(f),
+            fieldType,
+           "Default value for field <code>" + f.getName() + "</code>",
+           f.getDefaultValue()
+         );
+        constants.put(f.getName(), c);
+      }
+    }
+    
+    List<Constant> allConstants = new ArrayList<>(constants.values());
+    constants.entrySet().forEach(e -> {
+      Constant c = e.getValue();
+      res.put(e.getKey(), ConstantsGenUtil.getConstantVariableName(c, allConstants));
+      appendToBody("\n")
+        .append(ConstantsGenUtil.generateConstantDeclaration(
+          c, 
+          allConstants,
+          getImports(), 
+          docPlaceHolderResolver, 
+          defaultValuePlaceHolderResolver));
+    });
+    return res;     
+  }
+
   private String generateSerialVersionUidDeclaration() {
     return "private static final long serialVersionUID = " 
         + PojoGenUtil.generateSerialVersionUid(getName(), fields, getImplementedInterfaces()) 
@@ -194,14 +235,14 @@ public class PojoGenerator extends JavaTypeGenerator {
     
   }
 
-  private void generateBuilderClass() {
+  private void generateBuilderClass(Map<String, String> defaultValueStaticVariables) {
     JavaTypeGenerator builder = new JavaTypeGenerator("Builder");
     builder.setGeneratePackageAndImports(false);
     String name = getSimpleName();
     builder.setDescription("Builder for {@link " + name + "}");
     builder.setTypeDeclaration("public static class");
     builder.appendToBody("\n");
-    builder.appendToBody(generateAllFieldsDeclaration());
+    builder.appendToBody(generateAllFieldsDeclaration(defaultValueStaticVariables));
     builder.appendToBody("\n");
     fields.forEach(f -> generateBuilderMethodsDeclaration(f, builder));
     builder.appendToBody("\n");
@@ -232,19 +273,24 @@ public class PojoGenerator extends JavaTypeGenerator {
     appendToBody(builder.generate());
   }
   
-  private String generateAllFieldsDeclaration() {
-    return fields.stream().map(this::generateFieldDeclaration).collect(Collectors.joining("\n"));
+  private String generateAllFieldsDeclaration(Map<String, String> defaultValueStaticVariables) {
+    return fields.stream()
+        .map(f -> this.generateFieldDeclaration(f, defaultValueStaticVariables.get(f.getName())))
+        .collect(Collectors.joining("\n"));
   }
   
-  private String generateFieldDeclaration(Field field) {
+  private String generateFieldDeclaration(Field field, String defaultValueStaticVariable) {
     String typeClass = getFieldClass(field);
     typeClass = JavaCodeGenUtil.getClassNameWithoutPackage(typeClass);
-    return new StringBuilder()
-        .append("private ")
-        .append(typeClass)
-        .append(" ")
-        .append(field.getName())
-        .append(";").toString();
+    StringBuilder sb = new StringBuilder()
+       .append("private ")
+       .append(typeClass)
+       .append(" ")
+       .append(field.getName());
+    if (defaultValueStaticVariable != null) {
+      sb.append(" = ").append(defaultValueStaticVariable);
+    }
+    return sb.append(";").toString();
   }
   
   private void generateAccessorsDeclaration(Field field) {
@@ -579,6 +625,24 @@ public class PojoGenerator extends JavaTypeGenerator {
       body.append("return clone;\n");
     }
     appendMethod(signature, body.toString());
+  }
+
+  /**
+   * Gets the resolver for constant references in default values.
+   * 
+   * @return the resolver to use to resolve default values. Can be null.
+   * @see #setConstantValuePlaceHolderResolver(PlaceHolderResolver)
+   */     
+  public PlaceHolderResolver getDefaultValuePlaceHolderResolver() {
+    return defaultValuePlaceHolderResolver;
+  }
+
+  /**
+   * Sets the resolver for constant references in default values.
+   * @param defaultValuePlaceHolderResolver the resolver to use to resolve default values. Can be null.
+   */
+  public void setDefaultValuePlaceHolderResolver(PlaceHolderResolver defaultValuePlaceHolderResolver) {
+    this.defaultValuePlaceHolderResolver = defaultValuePlaceHolderResolver;
   }
 
 }

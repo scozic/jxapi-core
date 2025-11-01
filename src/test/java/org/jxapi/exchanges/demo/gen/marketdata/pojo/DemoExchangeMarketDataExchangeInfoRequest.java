@@ -5,7 +5,10 @@ import java.util.Objects;
 
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import javax.annotation.processing.Generated;
+import org.jxapi.exchanges.demo.gen.DemoExchangeConstants;
 import org.jxapi.exchanges.demo.gen.marketdata.serializers.DemoExchangeMarketDataExchangeInfoRequestSerializer;
+import org.jxapi.netutils.deserialization.json.field.ListJsonFieldDeserializer;
+import org.jxapi.netutils.deserialization.json.field.StringJsonFieldDeserializer;
 import org.jxapi.util.CollectionUtil;
 import org.jxapi.util.CompareUtil;
 import org.jxapi.util.EncodingUtil;
@@ -28,7 +31,12 @@ public class DemoExchangeMarketDataExchangeInfoRequest implements Pojo<DemoExcha
     return new Builder();
   }
   
-  private List<String> symbols;
+  /**
+   * Default value for field <code>symbols</code>
+   */
+  public static final List<String> SYMBOLS_DEFAULT_VALUE = new ListJsonFieldDeserializer<>(StringJsonFieldDeserializer.getInstance()).deserialize(EncodingUtil.substituteArguments("[\"${constants.defaultSymbol}\",\"ETH_USDT\"]", "constants.defaultSymbol", DemoExchangeConstants.DEFAULT_SYMBOL));
+  
+  private List<String> symbols = SYMBOLS_DEFAULT_VALUE;
   
   /**
    * @return The list of symbol to fetch market information for. Leave empty to fetch all markets
@@ -94,7 +102,7 @@ public class DemoExchangeMarketDataExchangeInfoRequest implements Pojo<DemoExcha
   @Generated("org.jxapi.generator.java.JavaTypeGenerator")
   public static class Builder {
     
-    private List<String> symbols;
+    private List<String> symbols = SYMBOLS_DEFAULT_VALUE;
     
     /**
      * Will set the value of <code>symbols</code> field in the builder

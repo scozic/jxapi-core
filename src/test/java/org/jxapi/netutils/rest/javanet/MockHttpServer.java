@@ -95,7 +95,7 @@ public class MockHttpServer {
   public MockHttpRequest popRequest(long timeout) throws TimeoutException {
     MockHttpRequest r = null;
     try {
-      r = requests.poll(getPort(), TimeUnit.MILLISECONDS);
+      r = requests.poll(timeout, TimeUnit.MILLISECONDS);
     } catch (InterruptedException e) {
       log.warn("Interrupted waiting for request");
     }

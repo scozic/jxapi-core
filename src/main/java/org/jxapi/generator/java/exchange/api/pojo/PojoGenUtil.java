@@ -237,5 +237,9 @@ public class PojoGenUtil {
           throw new IllegalStateException("Unsupported hash algorithm '" + SERIAL_VERSION_UID_HASH_ALGORITHM + "'", e);
       }
   }
+  
+  public static String getDefaultValueConstantName(Field field) {
+    return field.getName() + "DefaultValue";
+  }
 
 }

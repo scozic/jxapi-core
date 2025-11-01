@@ -7,6 +7,7 @@ import java.util.List;
 import org.jxapi.exchange.descriptor.Field;
 import org.jxapi.exchange.descriptor.Type;
 import org.jxapi.generator.java.exchange.ClassesGenerator;
+import org.jxapi.generator.java.exchange.ConstantValuePlaceholderResolverFactory;
 import org.jxapi.generator.java.exchange.ExchangeGenUtil;
 import org.jxapi.generator.java.exchange.api.ExchangeApiGenUtil;
 import org.jxapi.util.PlaceHolderResolver;
@@ -29,6 +30,7 @@ public class PojoClassesGenerator implements ClassesGenerator {
   private final PojoGenerator rootPojoGenerator;
   private final List<Field> properties;
   private final PlaceHolderResolver docPlaceHolderResolver;
+  private final ConstantValuePlaceholderResolverFactory constantsValuePlaceHolderResolverFactory;
   
   /**
    * Constructor.
@@ -44,10 +46,13 @@ public class PojoClassesGenerator implements ClassesGenerator {
        String description, 
        List<Field> properties, 
        List<String> implementedInterfaces,
-       PlaceHolderResolver docPlaceHolderResolver) throws IOException {
+       PlaceHolderResolver docPlaceHolderResolver,
+       ConstantValuePlaceholderResolverFactory constantValuePlaceHolderResolverFactory) throws IOException {
     this.properties = properties;
     this.docPlaceHolderResolver = docPlaceHolderResolver;
     this.rootPojoGenerator = new PojoGenerator(className, description, properties, implementedInterfaces, docPlaceHolderResolver);
+    this.constantsValuePlaceHolderResolverFactory = constantValuePlaceHolderResolverFactory;
+    this.rootPojoGenerator.setDefaultValuePlaceHolderResolver(constantValuePlaceHolderResolverFactory.createConstantValuePlaceholderResolver(rootPojoGenerator.getImports()));
   }
 
   /**
@@ -71,11 +76,13 @@ public class PojoClassesGenerator implements ClassesGenerator {
                         className);
     
     if (field.getProperties() != null) {
-      new PojoClassesGenerator(objectParamClassName, 
+      PojoClassesGenerator subGen = new PojoClassesGenerator(objectParamClassName, 
                     field.getDescription(), 
                     field.getProperties(),
                     field.getImplementedInterfaces(),
-                    docPlaceHolderResolver).generateClasses(outputFolder);
+                    docPlaceHolderResolver,
+                    constantsValuePlaceHolderResolverFactory);
+      subGen.generateClasses(outputFolder);
     }
   }
 }

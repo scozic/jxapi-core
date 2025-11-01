@@ -158,6 +158,8 @@ public class Field {
   
   private Object sampleValue;
   
+  private Object defaultValue;
+  
   private String msgField;
   
   private String objectName;
@@ -178,6 +180,7 @@ public class Field {
     clone.description = this.description;
     clone.type = this.type;
     clone.sampleValue = this.sampleValue;
+    clone.defaultValue = this.defaultValue;
     clone.msgField = this.msgField;
     clone.objectName = this.objectName;
     clone.properties = cloneList(this.properties);
@@ -375,6 +378,23 @@ public class Field {
    */
   public void setIn(UrlParameterType in) {
     this.in = in;
+  }
+  
+  /**
+   * Gets the default value of this field.
+   * @return The default value of this field.
+   */
+  public Object getDefaultValue() {
+    return defaultValue;
+  }
+
+  /**
+   * Sets the default value of this field.<p> 
+   * 
+   * @param defaultValue The default value of this field.
+   */
+  public void setDefaultValue(Object defaultValue) {
+    this.defaultValue = defaultValue;
   }
   
   @Override

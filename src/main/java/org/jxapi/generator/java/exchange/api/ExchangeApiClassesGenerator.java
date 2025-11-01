@@ -8,7 +8,6 @@ import org.jxapi.exchange.descriptor.ExchangeDescriptor;
 import org.jxapi.exchange.descriptor.RestEndpointDescriptor;
 import org.jxapi.exchange.descriptor.WebsocketEndpointDescriptor;
 import org.jxapi.generator.java.exchange.ClassesGenerator;
-import org.jxapi.generator.java.exchange.ExchangeGenUtil;
 import org.jxapi.generator.java.exchange.api.rest.RestEndpointClassesGenerator;
 import org.jxapi.generator.java.exchange.api.ws.WebsocketEndpointClassesGenerator;
 import org.jxapi.netutils.rest.ratelimits.RateLimitManager;
@@ -34,6 +33,7 @@ public class ExchangeApiClassesGenerator implements ClassesGenerator {
 
   private final ExchangeDescriptor exchangeDescriptor;
   private final ExchangeApiDescriptor exchangeApiDescriptor;
+  private final PlaceHolderResolver docPlaceHolderResolver;
   
   /**
    * Constructor.
@@ -42,15 +42,15 @@ public class ExchangeApiClassesGenerator implements ClassesGenerator {
    * @param exchangeApiDescriptor the API descriptor to generate classes for
    */
   public ExchangeApiClassesGenerator(ExchangeDescriptor exchangeDescriptor,
-                                     ExchangeApiDescriptor exchangeApiDescriptor) {
+                                     ExchangeApiDescriptor exchangeApiDescriptor,
+                                     PlaceHolderResolver docPlaceHolderResolver) {
     this.exchangeDescriptor = exchangeDescriptor;
     this.exchangeApiDescriptor = exchangeApiDescriptor;
+    this.docPlaceHolderResolver = docPlaceHolderResolver;
   }
   
   @Override
   public void generateClasses(Path outputFolder) throws IOException {
-    PlaceHolderResolver docPlaceHolderResolver = 
-      PlaceHolderResolver.create(ExchangeGenUtil.getDescriptionReplacements(exchangeDescriptor, null));
     ExchangeApiInterfaceGenerator exchangeApiInterfaceGenerator = 
       new ExchangeApiInterfaceGenerator(exchangeDescriptor, exchangeApiDescriptor, docPlaceHolderResolver);
     exchangeApiInterfaceGenerator.writeJavaFile(outputFolder); 

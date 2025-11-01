@@ -152,6 +152,17 @@ public class FieldBuilder {
     field.setIn(in);
     return this;
   }
+  
+  /**
+   * Sets the default value of the field.
+   * @param defaultValue the default value of the field to set, see
+   *                  {@link Field#getDefaultValue()}
+   * @return this builder
+   */
+  public FieldBuilder defaultValue(Object defaultValue) {
+    field.setDefaultValue(defaultValue);
+    return this;
+  }
 
   /**
    * Adds an implemented interface to the field.

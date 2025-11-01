@@ -49,6 +49,8 @@ public class ExchangeClassesGenerator implements ClassesGenerator {
   public void generateClasses(Path outputFolder) throws IOException {
     PlaceHolderResolver docPlaceHolderResolver = 
       PlaceHolderResolver.create(ExchangeGenUtil.getDescriptionReplacements(exchangeDescriptor, null));
+    ConstantValuePlaceholderResolverFactory constantValuePlaceholderResolverFactory = 
+        new ExchangeConstantValuePlaceholderResolverFactory(exchangeDescriptor);
     // Generate exchange interface class
     ExchangeInterfaceGenerator exchangeInterfaceGenerator = new ExchangeInterfaceGenerator(exchangeDescriptor, docPlaceHolderResolver);
     exchangeInterfaceGenerator.writeJavaFile(outputFolder);
@@ -58,7 +60,7 @@ public class ExchangeClassesGenerator implements ClassesGenerator {
     
     // Generate classes for each exchange API group
     for (ExchangeApiDescriptor api: exchangeDescriptor.getApis()) {
-      new ExchangeApiClassesGenerator(exchangeDescriptor, api).generateClasses(outputFolder);
+      new ExchangeApiClassesGenerator(exchangeDescriptor, api, docPlaceHolderResolver).generateClasses(outputFolder);
     }
     
     // Generate constants interface
@@ -68,12 +70,7 @@ public class ExchangeClassesGenerator implements ClassesGenerator {
           ExchangeGenUtil.getExchangeConstantsClassName(exchangeDescriptor), 
           constants,
           docPlaceHolderResolver);
-      cgen.setConstantValuePlaceHolderResolver(s -> ExchangeGenUtil.generateSubstitutionInstructionDeclaration(
-                                                      s, 
-                                                      exchangeDescriptor, 
-                                                      null,
-                                                      null,
-                                                      cgen.getImports()));
+      cgen.setConstantValuePlaceHolderResolver(constantValuePlaceholderResolverFactory.createConstantValuePlaceholderResolver(cgen.getImports()));
       cgen.setDescription("Constants used in {@link " + exchangeInterfaceGenerator.getName() + "} API wrapper");
       cgen.writeJavaFile(outputFolder);
     }
