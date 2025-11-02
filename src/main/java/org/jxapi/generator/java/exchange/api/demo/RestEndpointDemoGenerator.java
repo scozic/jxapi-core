@@ -128,7 +128,7 @@ public class RestEndpointDemoGenerator extends JavaTypeGenerator {
     } else {
       responseSimpleClassName = String.class.getSimpleName();
     }
-    this.apiMethodName = ExchangeApiGenUtil.getRestApiMethodName(restApi);
+    this.apiMethodName = ExchangeApiGenUtil.getRestApiMethodName(restApi, exchangeApiDescriptor.getRestEndpoints());
     this.apiEndpointMethodJavadocLink = generateApiEndpointMethodJavadocLink();
     addImport(apiInterfaceClassName);
     addImport(exchangeClassName);

@@ -3,7 +3,10 @@
 	"description": "A sample Exchange descriptor file",
 	"httpUrl": "https://mycex.com",
 	"basePackage": "com.foo.bar.gen",
-		"apis":[
+	"constants": [
+		{"name": "myLongConst", "type":"LONG", "description": "A long constant", "value": 1234567890}
+	],
+	"apis":[
 		{ 
 			"name": "MarketData",
 			"description": "The market data API of MyTestExchange, with different request data types for websocket and REST endpoints. Remark: Only OBJECT (default) and STRING are usually used, but any data type is supported",
@@ -125,13 +128,14 @@
 					}
 				},
 				{
-					"name": "postRestRequestDataTypeIntList",
+					"name": "postRestRequestDataTypeIntListWithDefaultValue",
 					"httpMethod": "POST",
 					"description": "A sample REST endpoint using INT_LIST request data type",
 					"url": "/postIntList",
 					"request": {
 						"type": "INT_LIST",
-						"sampleValue": [1,3,5]
+						"sampleValue": [1,3,5],
+						"defaultValue": [2,4,6]
 					},
 					"response": {
 						"objectName": "GenericResponse"
@@ -341,7 +345,8 @@
 					"topic": "ticker",
 					"description": "Subscribe to stream with LONG request type",
 					"request": {
-						"type": "LONG"
+						"type": "LONG",
+						"defaultValue": "${constants.myLongConst}"
 					},
 					"messageTopicMatcherFields": [
 						{"name": "topic",  "value": "streamWithLongRequestDataTypeTopic"}

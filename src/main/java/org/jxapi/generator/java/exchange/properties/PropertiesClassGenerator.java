@@ -86,6 +86,7 @@ public class PropertiesClassGenerator extends JavaTypeGenerator {
     this.properties = properties;
     this.prefix = prefix;
     List<ConfigPropertyDescriptor> demoProperties = StringUtils.defaultString(prefix).startsWith("demo")? properties: List.of();
+    // FIXME: pass a ConstantValuePlaceholderResolverFactory instance
     this.sampleValuePlaceHolderResolver = s -> ExchangeGenUtil.generateSubstitutionInstructionDeclaration(
         s, 
         exchange, 

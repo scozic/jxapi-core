@@ -236,7 +236,11 @@ public class ExchangeApiGenUtilTest {
         WebsocketEndpointDescriptor endpointDescriptor = new WebsocketEndpointDescriptor();
         endpointDescriptor.setName("accountWs");
         Assert.assertEquals("subscribeAccountWs", 
-                  ExchangeApiGenUtil.getWebsocketSubscribeMethodName(endpointDescriptor));
+                  ExchangeApiGenUtil.getWebsocketSubscribeMethodName(endpointDescriptor, List.of(endpointDescriptor)));
+        WebsocketEndpointDescriptor endpointDescriptorSameNameButFirstLetterUpper = new WebsocketEndpointDescriptor();
+        endpointDescriptorSameNameButFirstLetterUpper.setName("AccountWs");
+        Assert.assertEquals("subscribeaccountWs", 
+            ExchangeApiGenUtil.getWebsocketSubscribeMethodName(endpointDescriptor, List.of(endpointDescriptor, endpointDescriptorSameNameButFirstLetterUpper)));
     }
 
     @Test
@@ -244,7 +248,11 @@ public class ExchangeApiGenUtilTest {
         WebsocketEndpointDescriptor endpointDescriptor = new WebsocketEndpointDescriptor();
         endpointDescriptor.setName("accountWs");
         Assert.assertEquals("unsubscribeAccountWs", 
-                  ExchangeApiGenUtil.getWebsocketUnsubscribeMethodName(endpointDescriptor));
+                  ExchangeApiGenUtil.getWebsocketUnsubscribeMethodName(endpointDescriptor, List.of(endpointDescriptor)));
+        WebsocketEndpointDescriptor endpointDescriptorSameNameButFirstLetterUpper = new WebsocketEndpointDescriptor();
+        endpointDescriptorSameNameButFirstLetterUpper.setName("AccountWs");
+        Assert.assertEquals("unsubscribeaccountWs", ExchangeApiGenUtil.getWebsocketUnsubscribeMethodName(
+            endpointDescriptor, List.of(endpointDescriptor, endpointDescriptorSameNameButFirstLetterUpper)));
     }
     
     @Test
@@ -1008,8 +1016,75 @@ public class ExchangeApiGenUtilTest {
     @Test 
     public void testGetRestApiMethodName() {
       RestEndpointDescriptor restEndpointDescriptor = new RestEndpointDescriptor();
-      restEndpointDescriptor.setName("MyRestApi");
-      Assert.assertEquals("myRestApi", ExchangeApiGenUtil.getRestApiMethodName(restEndpointDescriptor));
+      restEndpointDescriptor.setName("myRestApi");
+      RestEndpointDescriptor restEndpointDescriptorSameNameButFirstLetterUpper = new RestEndpointDescriptor();
+      restEndpointDescriptorSameNameButFirstLetterUpper.setName("MyRestApi");
+      List<RestEndpointDescriptor> restEndpoints = List.of(restEndpointDescriptor, restEndpointDescriptorSameNameButFirstLetterUpper);
+      Assert.assertEquals("myRestApi", ExchangeApiGenUtil.getRestApiMethodName(restEndpointDescriptor, restEndpoints));
+      Assert.assertEquals("myRestApi", ExchangeApiGenUtil.getRestApiMethodName(restEndpointDescriptorSameNameButFirstLetterUpper, List.of(restEndpointDescriptorSameNameButFirstLetterUpper)));
+      Assert.assertEquals("MyRestApi", ExchangeApiGenUtil.getRestApiMethodName(restEndpointDescriptorSameNameButFirstLetterUpper, restEndpoints)); 
+    }
+    
+    @Test
+    public void testGetRestEndpointRequestDefaultValueVariableName() {
+      RestEndpointDescriptor endpointDescriptor = new RestEndpointDescriptor();
+      endpointDescriptor.setName("getAccount");
+      Assert.assertEquals("getAccountRestRequest", 
+          ExchangeApiGenUtil.getRestEndpointRequestDefaultValueVariableName(endpointDescriptor));
+    }
+    
+    @Test
+    public void testGetWebsocketEndpointRequestDefaultValueVariableName() {
+      WebsocketEndpointDescriptor endpointDescriptor = new WebsocketEndpointDescriptor();
+      endpointDescriptor.setName("getAccount");
+      Assert.assertEquals("getAccountWsRequest", 
+          ExchangeApiGenUtil.getWebsocketEndpointRequestDefaultValueVariableName(endpointDescriptor));
+    }
+    
+    @Test
+    public void testGenerateEndpointNameStaticVariablesDeclaration() {
+      List<String> endpointNames = List.of("getAccount", "a", "A");
+      String suffix = ExchangeApiGenUtil.REST_ENDPOINT_NAME_SUFFIX;
+      StringBuilder classBody = new StringBuilder();
+      Map<String, String> variables = ExchangeApiGenUtil.generateEndpointNameStaticVariablesDeclaration(
+          endpointNames,
+          suffix, 
+          classBody);
+      Assert.assertEquals(3, variables.size());
+      Assert.assertEquals("GET_ACCOUNT_REST_API", variables.get("getAccount"));
+      Assert.assertEquals("A_REST_API", variables.get("a"));
+      Assert.assertEquals("A_REST_API_", variables.get("A"));
+      Assert.assertEquals("\n"
+          + "/**\n"
+          + " * Name of <code>getAccount</code> RestApi API endpoint.\n"
+          + " */\n"
+          + "public static final String GET_ACCOUNT_REST_API = getAccount;\n"
+          + "\n"
+          + "/**\n"
+          + " * Name of <code>a</code> RestApi API endpoint.\n"
+          + " */\n"
+          + "public static final String A_REST_API = a;\n"
+          + "\n"
+          + "/**\n"
+          + " * Name of <code>A</code> RestApi API endpoint.\n"
+          + " */\n"
+          + "public static final String A_REST_API_ = A;\n"
+          + "", 
+          classBody.toString());
+    }
+    
+    @Test
+    public void testGenerateEndpointNameStaticVariablesDeclaration_NullClassBody() {
+      List<String> endpointNames = List.of("getAccount", "a", "A");
+      String suffix = ExchangeApiGenUtil.REST_ENDPOINT_NAME_SUFFIX;
+      Map<String, String> variables = ExchangeApiGenUtil.generateEndpointNameStaticVariablesDeclaration(
+          endpointNames,
+          suffix, 
+          null);
+      Assert.assertEquals(3, variables.size());
+      Assert.assertEquals("GET_ACCOUNT_REST_API", variables.get("getAccount"));
+      Assert.assertEquals("A_REST_API", variables.get("a"));
+      Assert.assertEquals("A_REST_API_", variables.get("A"));
     }
     
 }

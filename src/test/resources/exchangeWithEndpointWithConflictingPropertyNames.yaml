@@ -62,6 +62,28 @@ apis:
               type: BIGDECIMAL
               description: subParam parameter
               sampleValue: 12.35
+    - name: a
+      description: Rest endpoint 'a' with default value for request
+      httpMethod: GET
+      url: /myApi
+      request:
+       type: "LONG_MAP"      
+       defaultValue: 
+          foo: "${constants.c1_}"            
+          bar: 20000
+      response:
+       description: Response for endpoint 'a'
+    - name: A
+      description: Rest endpoint 'A' with default value for request
+      httpMethod: GET
+      url: /myApi
+      request:
+       type: "STRING_LIST"      
+       defaultValue: 
+          - ${constants.C1_.foo}
+          - ${constants.C1_.bar}
+      response:
+       description: Response for endpoint 'a'           
    websocketUrl: ${config.server.baseWebsocketUrl}
    websocketHookFactory: org.jxapi.exchanges.demo.net.DemoExchangeWebsocketHookFactory  
    websocketEndpoints:
@@ -89,4 +111,17 @@ apis:
           type: BIGDECIMAL
           description: M1_ parameter (note the uppercase 'M' and underscore)
           sampleValue: 12.35
+    - name: a
+      description: Websocket endpoint 'a' default value for request
+      request:
+       type: INT
+       defaultValue: "${constants.c1}"
+      message:
+       description: Update message
+    - name: A
+      description: Websocket endpoint 'A' default value for request
+      request:
+       defaultValue: "${constants.C1}"
+      message:
+       description: Update message       
        

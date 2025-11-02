@@ -232,7 +232,7 @@ public class ExchangeReadmeMdGenerator {
       }
       List<String> row = new ArrayList<>();
       String method = new StringBuilder()
-          .append(ExchangeApiGenUtil.getWebsocketSubscribeMethodName(w))
+          .append(ExchangeApiGenUtil.getWebsocketSubscribeMethodName(w, websocketEndpoints))
           .append("(")
           .append(JavaCodeGenUtil.getMethodArgumentJavadoc(requestDataType, requestClassName))
           .append(")")
@@ -270,7 +270,7 @@ public class ExchangeReadmeMdGenerator {
       }
       List<String> row = new ArrayList<>();
       String method = new StringBuilder()
-          .append(ExchangeApiGenUtil.getRestApiMethodName(r))
+          .append(ExchangeApiGenUtil.getRestApiMethodName(r, restEndpoints))
           .append("(")
           .append(JavaCodeGenUtil.getMethodArgumentJavadoc(requestDataType, requestClassName))
           .append(")")

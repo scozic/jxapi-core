@@ -2,18 +2,23 @@ package org.jxapi.generator.java.exchange.api.pojo;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
 
 import org.jxapi.exchange.descriptor.CanonicalType;
+import org.jxapi.exchange.descriptor.Constant;
 import org.jxapi.exchange.descriptor.Field;
 import org.jxapi.exchange.descriptor.Type;
 import org.jxapi.generator.java.Imports;
 import org.jxapi.generator.java.JavaCodeGenUtil;
 import org.jxapi.generator.java.exchange.ExchangeGenUtil;
+import org.jxapi.generator.java.exchange.constants.ConstantsGenUtil;
 import org.jxapi.util.CollectionUtil;
 import org.jxapi.util.DeepCloneable;
+import org.jxapi.util.PlaceHolderResolver;
 
 /**
  * Helper methods used in generation of exchange API REST/WEBSOCKET endpoints
@@ -240,6 +245,48 @@ public class PojoGenUtil {
   
   public static String getDefaultValueConstantName(Field field) {
     return field.getName() + "DefaultValue";
+  }
+  
+  public static Map<String, String> generateDefaultValuesStaticFieldDeclarations(
+      List<Field> fields, 
+      Imports imports,
+      PlaceHolderResolver docPlaceHolderResolver, 
+      PlaceHolderResolver defaultValuePlaceHolderResolver,
+      StringBuilder classBody) {
+    Map<String, String> res = CollectionUtil.createMap();
+    Map<String, Constant> constants = CollectionUtil.createMap();
+    for (Field f : fields) {
+      Type fieldType = ExchangeGenUtil.getFieldType(f);
+      if (f.getDefaultValue() != null) {
+        if (fieldType.isObject()) {
+          throw new IllegalArgumentException(
+              "Field " + f.getName() + " is of object type, cannot carry a default value");
+        }
+        Constant c = Constant.create(
+            PojoGenUtil.getDefaultValueConstantName(f),
+            fieldType,
+           "Default value for <code>" + f.getName() + "</code>",
+           f.getDefaultValue()
+         );
+        constants.put(f.getName(), c);
+      }
+    }
+    
+    List<Constant> allConstants = new ArrayList<>(constants.values());
+    constants.entrySet().forEach(e -> {
+      Constant c = e.getValue();
+      res.put(e.getKey(), ConstantsGenUtil.getConstantVariableName(c, allConstants));
+      if (classBody != null) {
+        classBody.append("\n")
+        .append(ConstantsGenUtil.generateConstantDeclaration(
+          c, 
+          allConstants,
+          imports, 
+          docPlaceHolderResolver, 
+          defaultValuePlaceHolderResolver));
+      }
+    });
+    return res;     
   }
 
 }

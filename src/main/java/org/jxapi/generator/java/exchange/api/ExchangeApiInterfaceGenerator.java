@@ -1,5 +1,6 @@
 package org.jxapi.generator.java.exchange.api;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.jxapi.exchange.ExchangeApi;
@@ -11,6 +12,7 @@ import org.jxapi.exchange.descriptor.Type;
 import org.jxapi.exchange.descriptor.WebsocketEndpointDescriptor;
 import org.jxapi.generator.java.JavaCodeGenUtil;
 import org.jxapi.generator.java.JavaTypeGenerator;
+import org.jxapi.generator.java.exchange.ExchangeConstantValuePlaceholderResolverFactory;
 import org.jxapi.generator.java.exchange.ExchangeGenUtil;
 import org.jxapi.netutils.rest.FutureRestResponse;
 import org.jxapi.netutils.rest.ratelimits.RateLimitRule;
@@ -92,21 +94,21 @@ public class ExchangeApiInterfaceGenerator extends JavaTypeGenerator {
       .append(" = ")
       .append(JavaCodeGenUtil.getQuotedString(exchangeApiDescriptor.getName()))
       .append(";\n");
-    if (exchangeApiDescriptor.getRestEndpoints() != null) {
-      for (RestEndpointDescriptor restApi: exchangeApiDescriptor.getRestEndpoints()) {
-        generateApiNameVariableDeclaration(
-            restApi.getName(), 
-            ExchangeApiGenUtil.getRestEndpointNameStaticVariable(restApi.getName()));
-      }
+    List<RestEndpointDescriptor> restApis = CollectionUtil.emptyIfNull(exchangeApiDescriptor.getRestEndpoints());
+    List<WebsocketEndpointDescriptor> wsApis = CollectionUtil.emptyIfNull(exchangeApiDescriptor.getWebsocketEndpoints());
+    
+    for (RestEndpointDescriptor restApi: restApis) {
+      generateApiNameVariableDeclaration(
+          restApi.getName(), 
+          ExchangeApiGenUtil.getRestEndpointNameStaticVariable(restApi.getName()));
+    }
+    for (WebsocketEndpointDescriptor websocketApi : wsApis) {
+      generateApiNameVariableDeclaration(
+          websocketApi.getName(), 
+          ExchangeApiGenUtil.getWebsocketEndpointNameStaticVariable(websocketApi.getName()));
     }
     
-    if (exchangeApiDescriptor.getWebsocketEndpoints() != null) {
-      for (WebsocketEndpointDescriptor websocketApi : exchangeApiDescriptor.getWebsocketEndpoints()) {
-        generateApiNameVariableDeclaration(
-            websocketApi.getName(), 
-            ExchangeApiGenUtil.getWebsocketEndpointNameStaticVariable(websocketApi.getName()));
-      }
-    }
+    generateEndpointDefaultValuesStaticFieldDeclarations();
     
     if (exchangeApiDescriptor.getRestEndpoints() != null) {
       for (RestEndpointDescriptor restApi: exchangeApiDescriptor.getRestEndpoints()) {
@@ -124,6 +126,23 @@ public class ExchangeApiInterfaceGenerator extends JavaTypeGenerator {
     generateRateLimitRuleMethodDeclarations();
     
     return super.generate();
+  }
+  
+  private void generateEndpointDefaultValuesStaticFieldDeclarations() {
+    PlaceHolderResolver constantInDefaultValuesPlaceHolderResolverFactory = 
+        new ExchangeConstantValuePlaceholderResolverFactory(exchangeDescriptor).createConstantValuePlaceholderResolver(getImports());
+    ExchangeApiGenUtil.generateRestEndpointRequestDefaultValuesStaticFieldDeclarations(
+        CollectionUtil.emptyIfNull(exchangeApiDescriptor.getRestEndpoints()), 
+        getImports(), 
+        docPlaceHolderResolver,
+        constantInDefaultValuesPlaceHolderResolverFactory,
+        body);
+    ExchangeApiGenUtil.generateWebsocketEndpointRequestDefaultValuesStaticFieldDeclarations(
+        CollectionUtil.emptyIfNull(exchangeApiDescriptor.getWebsocketEndpoints()), 
+        getImports(), 
+        docPlaceHolderResolver,
+        constantInDefaultValuesPlaceHolderResolverFactory,
+        body);
   }
   
   private void generateRateLimitRuleMethodDeclarations() {
@@ -174,8 +193,8 @@ public class ExchangeApiInterfaceGenerator extends JavaTypeGenerator {
             exchangeDescriptor, 
             exchangeApiDescriptor, 
             websocketApi));
-    String subscribeMethodName = ExchangeApiGenUtil.getWebsocketSubscribeMethodName(websocketApi);
-    String unsubscribeMethodName = ExchangeApiGenUtil.getWebsocketUnsubscribeMethodName(websocketApi);
+    String subscribeMethodName = ExchangeApiGenUtil.getWebsocketSubscribeMethodName(websocketApi, exchangeApiDescriptor.getWebsocketEndpoints());
+    String unsubscribeMethodName = ExchangeApiGenUtil.getWebsocketUnsubscribeMethodName(websocketApi, exchangeApiDescriptor.getWebsocketEndpoints());
     addImport(WebsocketListener.class);
     String subscribeMethodSignature = new StringBuilder()
         .append(STRING)
@@ -284,7 +303,7 @@ public class ExchangeApiInterfaceGenerator extends JavaTypeGenerator {
           getImports(), 
           restResponseClassName);
     }
-    String apiMethodName = ExchangeApiGenUtil.getRestApiMethodName(restApi);
+    String apiMethodName = ExchangeApiGenUtil.getRestApiMethodName(restApi, exchangeApiDescriptor.getRestEndpoints());
     String apiMethodSignature =  new StringBuilder()
         .append(FutureRestResponse.class.getSimpleName())
         .append("<")

@@ -956,6 +956,7 @@ public class ExchangeApiInterfaceImplementationGeneratorTest {
         + "import java.math.BigDecimal;\n"
         + "import java.util.List;\n"
         + "import java.util.Map;\n"
+        + "import java.util.Optional;\n"
         + "\n"
         + "import com.foo.bar.gen.MyTestExchangeExchange;\n"
         + "import com.foo.bar.gen.marketdata.deserializers.GenericResponseDeserializer;\n"
@@ -1036,10 +1037,10 @@ public class ExchangeApiInterfaceImplementationGeneratorTest {
         + "  protected final String postRestRequestDataTypeObjectOneParameterHttpUrl;\n"
         + "  \n"
         + "  /**\n"
-        + "   * URL for <i>postRestRequestDataTypeIntList</i> REST endpoint.\n"
-        + "   * @see MyTestExchangeMarketDataApi#postRestRequestDataTypeIntList(List)\n"
+        + "   * URL for <i>postRestRequestDataTypeIntListWithDefaultValue</i> REST endpoint.\n"
+        + "   * @see MyTestExchangeMarketDataApi#postRestRequestDataTypeIntListWithDefaultValue(List)\n"
         + "   */\n"
-        + "  protected final String postRestRequestDataTypeIntListHttpUrl;\n"
+        + "  protected final String postRestRequestDataTypeIntListWithDefaultValueHttpUrl;\n"
         + "  \n"
         + "  /**\n"
         + "   * URL for <i>postRestRequestDataTypeObjectListMap</i> REST endpoint.\n"
@@ -1111,7 +1112,7 @@ public class ExchangeApiInterfaceImplementationGeneratorTest {
         + "  private final MessageDeserializer<GenericResponse> postRestRequestDataTypeBooleanResponseDeserializer = new GenericResponseDeserializer();\n"
         + "  private final MessageDeserializer<GenericResponse> postRestRequestDataTypeObjectNoParametersResponseDeserializer = new GenericResponseDeserializer();\n"
         + "  private final MessageDeserializer<GenericResponse> postRestRequestDataTypeObjectOneParameterResponseDeserializer = new GenericResponseDeserializer();\n"
-        + "  private final MessageDeserializer<GenericResponse> postRestRequestDataTypeIntListResponseDeserializer = new GenericResponseDeserializer();\n"
+        + "  private final MessageDeserializer<GenericResponse> postRestRequestDataTypeIntListWithDefaultValueResponseDeserializer = new GenericResponseDeserializer();\n"
         + "  private final MessageDeserializer<GenericResponse> postRestRequestDataTypeObjectListMapResponseDeserializer = new GenericResponseDeserializer();\n"
         + "  private final MessageDeserializer<GenericResponse> deletetRestRequestDataTypeObjectAsBodyResponseDeserializer = new GenericResponseDeserializer();\n"
         + "  private final MessageDeserializer<GenericResponse> deletetRestRequestDataTypeObjectAsQueryParamsResponseDeserializer = new GenericResponseDeserializer();\n"
@@ -1138,7 +1139,7 @@ public class ExchangeApiInterfaceImplementationGeneratorTest {
         + "    this.postRestRequestDataTypeBooleanHttpUrl = EncodingUtil.buildUrl(this.getHttpUrl(), \"/postBoolean\");\n"
         + "    this.postRestRequestDataTypeObjectNoParametersHttpUrl = EncodingUtil.buildUrl(this.getHttpUrl(), \"/postNoParameter\");\n"
         + "    this.postRestRequestDataTypeObjectOneParameterHttpUrl = EncodingUtil.buildUrl(this.getHttpUrl(), \"/postObjectOneParameter\");\n"
-        + "    this.postRestRequestDataTypeIntListHttpUrl = EncodingUtil.buildUrl(this.getHttpUrl(), \"/postIntList\");\n"
+        + "    this.postRestRequestDataTypeIntListWithDefaultValueHttpUrl = EncodingUtil.buildUrl(this.getHttpUrl(), \"/postIntList\");\n"
         + "    this.postRestRequestDataTypeObjectListMapHttpUrl = EncodingUtil.buildUrl(this.getHttpUrl(), \"/postObjectListMap\");\n"
         + "    this.deletetRestRequestDataTypeObjectAsBodyHttpUrl = EncodingUtil.buildUrl(this.getHttpUrl(), \"/deletetRestRequestDataTypeObjectAsBody\");\n"
         + "    this.deletetRestRequestDataTypeObjectAsQueryParamsHttpUrl = EncodingUtil.buildUrl(this.getHttpUrl(), \"/deletetRestRequestDataTypeObjectAsQueryParams\");\n"
@@ -1205,8 +1206,9 @@ public class ExchangeApiInterfaceImplementationGeneratorTest {
         + "  }\n"
         + "  \n"
         + "  @Override\n"
-        + "  public FutureRestResponse<GenericResponse> postRestRequestDataTypeIntList(List<Integer> request) {\n"
-        + "    return submit(HttpRequest.create(POST_REST_REQUEST_DATA_TYPE_INT_LIST_REST_API, postRestRequestDataTypeIntListHttpUrl, HttpMethod.POST, request, null, 0), true, postRestRequestDataTypeIntListResponseDeserializer);\n"
+        + "  public FutureRestResponse<GenericResponse> postRestRequestDataTypeIntListWithDefaultValue(List<Integer> request) {\n"
+        + "    request = Optional.ofNullable(request).orElse(POST_REST_REQUEST_DATA_TYPE_INT_LIST_WITH_DEFAULT_VALUE_REST_REQUEST_DEFAULT_VALUE)\n"
+        + "    return submit(HttpRequest.create(POST_REST_REQUEST_DATA_TYPE_INT_LIST_WITH_DEFAULT_VALUE_REST_API, postRestRequestDataTypeIntListWithDefaultValueHttpUrl, HttpMethod.POST, request, null, 0), true, postRestRequestDataTypeIntListWithDefaultValueResponseDeserializer);\n"
         + "  }\n"
         + "  \n"
         + "  @Override\n"
@@ -1302,6 +1304,7 @@ public class ExchangeApiInterfaceImplementationGeneratorTest {
         + "  \n"
         + "  @Override\n"
         + "  public String subscribeStreamWithLongRequestDataType(Long request, WebsocketListener<Ticker> listener) {\n"
+        + "    request = Optional.ofNullable(request).orElse(STREAM_WITH_LONG_REQUEST_DATA_TYPE_WS_REQUEST_DEFAULT_VALUE)\n"
         + "    String topic = \"ticker\";\n"
         + "    WebsocketSubscribeRequest subscribeRequest = WebsocketSubscribeRequest.create(request, topic, WebsocketMessageTopicMatcherFactory.create(\"t\", \"streamWithLongRequestDataTypeTopic\"));\n"
         + "    return streamWithLongRequestDataTypeWs.subscribe(subscribeRequest, listener);\n"
@@ -1825,4 +1828,12 @@ public class ExchangeApiInterfaceImplementationGeneratorTest {
         + "",
         apiInterfaceGenerator.generate());
   }
+  
+  @Test
+  public void testGenerateConflictExchangeV1Api() throws Exception {
+    ExchangeDescriptor exchangeDescriptor = ExchangeDescriptorParser.fromYaml(Paths.get(".", "src", "test", "resources", "exchangeWithEndpointWithConflictingPropertyNames.yaml"));
+    ExchangeApiDescriptor exchangeApiDescriptor = exchangeDescriptor.getApis().get(0);
+    ExchangeApiInterfaceImplementationGenerator apiInterfaceGenerator = new ExchangeApiInterfaceImplementationGenerator(exchangeDescriptor, exchangeApiDescriptor);
+    Assert.assertEquals("", apiInterfaceGenerator.generate());
+  }    
 }

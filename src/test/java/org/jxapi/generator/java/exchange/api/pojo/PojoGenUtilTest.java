@@ -1,6 +1,7 @@
 package org.jxapi.generator.java.exchange.api.pojo;
 
 import java.util.List;
+import java.util.Map;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -8,8 +9,12 @@ import org.junit.Test;
 import org.jxapi.exchange.descriptor.Field;
 import org.jxapi.exchange.descriptor.Type;
 import org.jxapi.generator.java.Imports;
+import org.jxapi.generator.java.JavaCodeGenUtil;
+import org.jxapi.netutils.deserialization.json.field.ListJsonFieldDeserializer;
+import org.jxapi.netutils.deserialization.json.field.StringJsonFieldDeserializer;
 import org.jxapi.util.CollectionUtil;
 import org.jxapi.util.DeepCloneable;
+import org.jxapi.util.PlaceHolderResolver;
 
 /**
  * Unit test for {@link PojoGenUtil}
@@ -103,5 +108,113 @@ public class PojoGenUtilTest {
       );
     List<String> implementedInterfaces = List.of("com.x.y.MyInterface", "com.x.z.MyOtherInterface");
     Assert.assertEquals(-1752733059768616242L, PojoGenUtil.generateSerialVersionUid(className, fields, implementedInterfaces));
+  }
+  
+  @Test
+  public void testGenerateDefaultValuesStaticFieldDeclarations() {
+    List<Field> fields = List.of(
+      Field.builder().type(Type.INT).name("score").description("Current score, max is ${constants.maxScore}").defaultValue(100).build(),
+      Field.builder().type("STRING_LIST").name("profiles").description("Profile, one of ${constants.profiles}").defaultValue(List.of("${constants.profiles.admin}", "${constants.profiles.regular}")).build(),
+      Field.builder().type(Type.STRING).name("a").description("Random 'a' property").defaultValue("aVal").build(),
+      Field.builder().type(Type.STRING).name("A").description("Random 'A' property").defaultValue("AVal").build()
+    );
+    PlaceHolderResolver docPlaceHolderResolver = PlaceHolderResolver.create(Map.of("constants.maxScore", "100",
+                                                                                   "constants.barName", "Happy hour",
+                                                                                   "constants.profiles", "all_profiles"));
+    PlaceHolderResolver defaultValuePlaceHolderResolver = PlaceHolderResolver
+        .create(Map.of("constants.profiles.admin", "admin_profile", 
+                      "constants.profiles.regular", "regular_profile"));
+    PlaceHolderResolver defaultValuePlaceHolderResolverAsQuoteString = 
+        s -> JavaCodeGenUtil.getQuotedString(defaultValuePlaceHolderResolver.resolve(s));
+        
+    Imports imports = new Imports();
+    StringBuilder classBody = new StringBuilder();
+    Map<String, String> res = PojoGenUtil.generateDefaultValuesStaticFieldDeclarations(
+        fields, 
+        imports, 
+        docPlaceHolderResolver, 
+        defaultValuePlaceHolderResolverAsQuoteString, 
+        classBody);
+    Assert.assertEquals(4, res.size());
+    Assert.assertEquals("SCORE_DEFAULT_VALUE", res.get("score"));
+    Assert.assertEquals("PROFILES_DEFAULT_VALUE", res.get("profiles"));
+    Assert.assertEquals("A_DEFAULT_VALUE", res.get("a"));
+    Assert.assertEquals("A_DEFAULT_VALUE_", res.get("A"));
+    
+    Assert.assertEquals("\n"
+        + "/**\n"
+        + " * Default value for <code>score</code>\n"
+        + " */\n"
+        + "public static final Integer SCORE_DEFAULT_VALUE = Integer.valueOf(\"100\");\n"
+        + "\n"
+        + "/**\n"
+        + " * Default value for <code>profiles</code>\n"
+        + " */\n"
+        + "public static final List<String> PROFILES_DEFAULT_VALUE = new ListJsonFieldDeserializer<>(StringJsonFieldDeserializer.getInstance()).deserialize(\"[\\\"admin_profile\\\",\\\"regular_profile\\\"]\");\n"
+        + "\n"
+        + "/**\n"
+        + " * Default value for <code>a</code>\n"
+        + " */\n"
+        + "public static final String A_DEFAULT_VALUE = \"aVal\";\n"
+        + "\n"
+        + "/**\n"
+        + " * Default value for <code>A</code>\n"
+        + " */\n"
+        + "public static final String A_DEFAULT_VALUE_ = \"AVal\";\n"
+        + "", classBody.toString());
+    
+    Assert.assertEquals(3, imports.size());
+    Assert.assertTrue(imports.contains(List.class.getName()));
+    Assert.assertTrue(imports.contains(ListJsonFieldDeserializer.class.getName()));
+    Assert.assertTrue(imports.contains(StringJsonFieldDeserializer.class.getName()));
+  }
+  
+  @Test
+  public void testGenerateDefaultValuesStaticFieldDeclarations_NoClassBody() {
+    List<Field> fields = List.of(
+      Field.builder().type(Type.INT).name("score").description("Current score, max is ${constants.maxScore}").defaultValue(100).build(),
+      Field.builder().type("STRING_LIST").name("profiles").description("Profile, one of ${constants.profiles}").defaultValue(List.of("${constants.profiles.admin}", "${constants.profiles.regular}")).build(),
+      Field.builder().type(Type.STRING).name("a").description("Random 'a' property").defaultValue("aVal").build(),
+      Field.builder().type(Type.STRING).name("A").description("Random 'A' property").defaultValue("AVal").build()
+    );
+    PlaceHolderResolver docPlaceHolderResolver = PlaceHolderResolver.create(Map.of("constants.maxScore", "100",
+                                                                                   "constants.barName", "Happy hour",
+                                                                                   "constants.profiles", "all_profiles"));
+    PlaceHolderResolver defaultValuePlaceHolderResolver = PlaceHolderResolver
+        .create(Map.of("constants.profiles.admin", "admin_profile", 
+                      "constants.profiles.regular", "regular_profile"));
+    PlaceHolderResolver defaultValuePlaceHolderResolverAsQuoteString = 
+        s -> JavaCodeGenUtil.getQuotedString(defaultValuePlaceHolderResolver.resolve(s));
+        
+    Imports imports = new Imports();
+    Map<String, String> res = PojoGenUtil.generateDefaultValuesStaticFieldDeclarations(
+        fields, 
+        imports, 
+        docPlaceHolderResolver, 
+        defaultValuePlaceHolderResolverAsQuoteString, 
+        null);
+    Assert.assertEquals(4, res.size());
+    Assert.assertEquals("SCORE_DEFAULT_VALUE", res.get("score"));
+    Assert.assertEquals("PROFILES_DEFAULT_VALUE", res.get("profiles"));
+    Assert.assertEquals("A_DEFAULT_VALUE", res.get("a"));
+    Assert.assertEquals("A_DEFAULT_VALUE_", res.get("A"));
+  }
+  
+  @Test(expected = IllegalArgumentException.class)
+  public void testGenerateDefaultValuesStaticFieldDeclarations_InvalidObjectTypeFieldWithDefaultValue() {
+    List<Field> fields = List.of(
+      Field.builder()
+        .type("OBJECT_LIST")
+        .name("score")
+        .description("Current score, max is ${constants.maxScore}")
+        .defaultValue("[{\"name\": \"bob\", \"score\": 85},{\"name\": \"alice\",\"score\": 92}]")
+        .build()
+    );
+        
+    PojoGenUtil.generateDefaultValuesStaticFieldDeclarations(
+        fields, 
+        new Imports(), 
+        PlaceHolderResolver.NO_OP, PlaceHolderResolver.NO_OP, 
+        null);
   }
 }

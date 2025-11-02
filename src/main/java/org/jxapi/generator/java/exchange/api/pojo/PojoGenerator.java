@@ -8,14 +8,12 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.jxapi.exchange.descriptor.CanonicalType;
-import org.jxapi.exchange.descriptor.Constant;
 import org.jxapi.exchange.descriptor.Field;
 import org.jxapi.exchange.descriptor.Type;
 import org.jxapi.generator.java.JavaCodeGenUtil;
 import org.jxapi.generator.java.JavaTypeGenerator;
 import org.jxapi.generator.java.exchange.ExchangeGenUtil;
 import org.jxapi.generator.java.exchange.api.ExchangeApiGenUtil;
-import org.jxapi.generator.java.exchange.constants.ConstantsGenUtil;
 import org.jxapi.util.CollectionUtil;
 import org.jxapi.util.CompareUtil;
 import org.jxapi.util.DeepCloneable;
@@ -138,7 +136,13 @@ public class PojoGenerator extends JavaTypeGenerator {
     appendMethod("public static Builder builder()", 
            "return new Builder();" , 
            "@return A new builder to build {@link " + getSimpleName() + "} objects");
-    Map<String, String> defaultValueStaticVariables = generateDefaultValuesStaticFieldDeclarations(); 
+    Map<String, String> defaultValueStaticVariables = PojoGenUtil.generateDefaultValuesStaticFieldDeclarations(
+        this.fields,
+        getImports(),
+        docPlaceHolderResolver,
+        defaultValuePlaceHolderResolver,
+        this.body
+        ); 
     appendToBody("\n");
     appendToBody(generateAllFieldsDeclaration(defaultValueStaticVariables));
     appendToBody("\n");
@@ -159,41 +163,6 @@ public class PojoGenerator extends JavaTypeGenerator {
     appendToBody("\n");
     generateBuilderClass(defaultValueStaticVariables);
     return super.generate();
-  }
-  
-  private Map<String, String> generateDefaultValuesStaticFieldDeclarations() {
-    Map<String, String> res = CollectionUtil.createMap();
-    Map<String, Constant> constants = CollectionUtil.createMap();
-    for (Field f : fields) {
-      Type fieldType = ExchangeGenUtil.getFieldType(f);
-      if (f.getDefaultValue() != null) {
-        if (fieldType.isObject()) {
-          throw new IllegalArgumentException(
-              "Field " + f.getName() + " is of object type, cannot carry a default value");
-        }
-        Constant c = Constant.create(
-            PojoGenUtil.getDefaultValueConstantName(f),
-            fieldType,
-           "Default value for field <code>" + f.getName() + "</code>",
-           f.getDefaultValue()
-         );
-        constants.put(f.getName(), c);
-      }
-    }
-    
-    List<Constant> allConstants = new ArrayList<>(constants.values());
-    constants.entrySet().forEach(e -> {
-      Constant c = e.getValue();
-      res.put(e.getKey(), ConstantsGenUtil.getConstantVariableName(c, allConstants));
-      appendToBody("\n")
-        .append(ConstantsGenUtil.generateConstantDeclaration(
-          c, 
-          allConstants,
-          getImports(), 
-          docPlaceHolderResolver, 
-          defaultValuePlaceHolderResolver));
-    });
-    return res;     
   }
 
   private String generateSerialVersionUidDeclaration() {

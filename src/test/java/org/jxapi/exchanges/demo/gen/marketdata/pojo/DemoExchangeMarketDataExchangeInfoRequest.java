@@ -32,7 +32,7 @@ public class DemoExchangeMarketDataExchangeInfoRequest implements Pojo<DemoExcha
   }
   
   /**
-   * Default value for field <code>symbols</code>
+   * Default value for <code>symbols</code>
    */
   public static final List<String> SYMBOLS_DEFAULT_VALUE = new ListJsonFieldDeserializer<>(StringJsonFieldDeserializer.getInstance()).deserialize(EncodingUtil.substituteArguments("[\"${constants.defaultSymbol}\",\"ETH_USDT\"]", "constants.defaultSymbol", DemoExchangeConstants.DEFAULT_SYMBOL));
   
