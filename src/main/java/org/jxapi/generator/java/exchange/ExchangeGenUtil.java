@@ -110,9 +110,19 @@ public class ExchangeGenUtil {
    */
   public static String getApiInterfaceClassName(ExchangeDescriptor exchangeDescriptor, 
                           ExchangeApiDescriptor exchangeApiDescriptor) {
-    String pkgPrefix =  exchangeDescriptor.getBasePackage() + "." + exchangeApiDescriptor.getName().toLowerCase() + ".";
+    String pkgPrefix =  exchangeDescriptor.getBasePackage() 
+       + "." 
+       + exchangeApiDescriptor.getName().toLowerCase() 
+       + ".";
+    String apiUniqueName = JavaCodeGenUtil.getUniqueCamelCaseVariableNames(
+        exchangeDescriptor.getApis().stream()
+          .map(ExchangeApiDescriptor::getName)
+          .collect(Collectors.toList()),
+        true)
+      .get(exchangeApiDescriptor.getName());
     String simpleInterfaceName = JavaCodeGenUtil.firstLetterToUpperCase(exchangeDescriptor.getId()) 
-                    + JavaCodeGenUtil.firstLetterToUpperCase(exchangeApiDescriptor.getName()) + "Api";
+       + apiUniqueName 
+       + "Api";
     return pkgPrefix + simpleInterfaceName;
   }
   
@@ -1044,5 +1054,38 @@ public class ExchangeGenUtil {
                 .append(StringUtils.join(placeHoldersDeclarations, ", "))
                 .append(")")
                 .toString();
+  }
+  
+  /**
+   * Generates unique camel case method names for each API defined in the given
+   * exchange descriptor.
+   * 
+   * @param exchangeDescriptor exchange descriptor
+   * @return A map of API name to unique camel case getter method name for that
+   *         API.
+   */
+  public static Map<String, String> getApiGroupGetterMethodNames(List<ExchangeApiDescriptor> apis) {
+    return JavaCodeGenUtil.getUniqueCamelCaseVariableNames(
+        apis.stream().map(ExchangeApiDescriptor::getName).collect(Collectors.toList()),
+        true)
+      .entrySet()
+      .stream()
+      .collect(Collectors.toMap(
+          Map.Entry::getKey, 
+          entry -> "get" + entry.getValue() + "Api"
+      ));
+  }
+  
+  /**
+   * Generates the unique camel case method name for the given API defined in the
+   * given exchange descriptor.
+   * 
+   * @param exchangeDescriptor exchange descriptor
+   * @param api                The API to get the getter method name for
+   * @return The unique camel case getter method name for the given API.
+   */
+  public static String getApiGroupGetterMethodName(ExchangeDescriptor exchangeDescriptor, ExchangeApiDescriptor api) {
+    return getApiGroupGetterMethodNames(CollectionUtil.emptyIfNull(exchangeDescriptor.getApis()))
+            .get(api.getName());
   }
 }

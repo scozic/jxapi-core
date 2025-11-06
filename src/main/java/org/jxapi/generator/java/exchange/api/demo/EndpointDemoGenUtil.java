@@ -444,15 +444,16 @@ public class EndpointDemoGenUtil {
    */
   public static String getNewTestApiInstruction(String exchangeVariableName,
                                                 String apiVariableName,
-                                                String simpleApiClassName) {
+                                                String simpleApiClassName,
+                                                String apiGetterMethodName) {
     return new StringBuilder()
         .append(simpleApiClassName)
         .append(" ")
         .append(apiVariableName)
         .append(" = ")
         .append(exchangeVariableName)
-        .append(".get")
-        .append(simpleApiClassName)
+        .append(".")
+        .append(apiGetterMethodName)
         .append("();")
         .toString();
   }

@@ -48,7 +48,7 @@ public class DemoExchangeMarketDataPostRestRequestDataTypeObjectListMapDemo {
    */
   public static RestResponse<GenericResponse> execute(Map<String, List<SingleSymbol>> request, Properties configProperties, ExchangeApiObserver apiObserver) throws InterruptedException, ExecutionException {
     DemoExchangeExchange exchange = new DemoExchangeExchangeImpl("test-" + DemoExchangeExchange.ID, configProperties);
-    DemoExchangeMarketDataApi api = exchange.getDemoExchangeMarketDataApi();
+    DemoExchangeMarketDataApi api = exchange.getMarketDataApi();
     log.info("Calling org.jxapi.exchanges.demo.gen.marketdata.DemoExchangeMarketDataApi.postRestRequestDataTypeObjectListMap() API with request:{}", request);
     if (apiObserver != null) {
       api.subscribeObserver(apiObserver);

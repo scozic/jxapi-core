@@ -3,8 +3,10 @@ package org.jxapi.generator.java.exchange;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.jxapi.exchange.AbstractExchange;
 import org.jxapi.exchange.Exchange;
@@ -96,11 +98,13 @@ public class ExchangeInterfaceImplementationGenerator extends JavaTypeGenerator 
     appendToBody("\n");
     
     List<RateLimitRule> rateLimits = exchangeDescriptor.getRateLimits();
-    List<ExchangeApiDescriptor> apis = exchangeDescriptor.getApis();
+    List<ExchangeApiDescriptor> apis = CollectionUtil.emptyIfNull(exchangeDescriptor.getApis());
+    Map<String, String> apiGetterUniqueNames = ExchangeGenUtil.getApiGroupGetterMethodNames(apis);
+    Map<String, String> apiVariableNames = getApiVariableNames(apis);
     boolean hasRateLimits = !CollectionUtils.isEmpty(rateLimits);
     if (hasRateLimits) {
       rateLimits.forEach(this::generateRateLimitVariable);
-      if (apis != null && apis.stream().anyMatch(api -> !CollectionUtils.isEmpty(api.getRestEndpoints()))) {
+      if (apis.stream().anyMatch(api -> !CollectionUtils.isEmpty(api.getRestEndpoints()))) {
         addImport(RequestThrottler.class);
         appendToBody("\nprivate final ")
           .append(RequestThrottler.class.getSimpleName())
@@ -149,8 +153,8 @@ public class ExchangeInterfaceImplementationGenerator extends JavaTypeGenerator 
         String simpleApiImplClassName = JavaCodeGenUtil.getClassNameWithoutPackage(apiImplClassName);
         addImport(apiClassName);
         addImport(apiImplClassName);
-        String apiVariableName = JavaCodeGenUtil.firstLetterToLowerCase(apiSimpleClassName);
-        String getApiMethodSignature = apiSimpleClassName + " get" + apiSimpleClassName + "()";
+        String apiVariableName = apiVariableNames.get(api.getName());
+        String getApiMethodSignature = apiSimpleClassName + " " + apiGetterUniqueNames.get(api.getName()) + "()";
         appendToBody("private final " + apiSimpleClassName + " " + apiVariableName + ";\n");
         implementationConstructorBody
             .append("this.")
@@ -194,6 +198,18 @@ public class ExchangeInterfaceImplementationGenerator extends JavaTypeGenerator 
     appendToBody(apiMethodsDeclarations.toString());
     generateRateLimitRuleGetters();
     return super.generate();
+  }
+  
+  private Map<String, String> getApiVariableNames(List<ExchangeApiDescriptor> apis) {
+    return JavaCodeGenUtil.getUniqueCamelCaseVariableNames(
+        apis.stream().map(ExchangeApiDescriptor::getName).collect(Collectors.toList()),
+        false)
+      .entrySet()
+      .stream()
+      .collect(Collectors.toMap(
+          Map.Entry::getKey, 
+          entry -> entry.getValue() + "Api"
+      ));
   }
   
   private void generateRateLimitRuleGetters() {

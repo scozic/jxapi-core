@@ -1,5 +1,6 @@
 package org.jxapi.generator.java.exchange;
 
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -10,6 +11,7 @@ import org.jxapi.exchange.descriptor.Constant;
 import org.jxapi.exchange.descriptor.ExchangeApiDescriptor;
 import org.jxapi.exchange.descriptor.ExchangeDescriptor;
 import org.jxapi.exchange.descriptor.RestEndpointDescriptor;
+import org.jxapi.exchange.descriptor.parser.ExchangeDescriptorParser;
 import org.jxapi.netutils.rest.ratelimits.RateLimitRule;
 
 /**
@@ -67,8 +69,8 @@ public class ExchangeInterfaceImplementationGeneratorTest {
         + "@Generated(\"org.jxapi.generator.java.exchange.ExchangeInterfaceImplementationGenerator\")\n"
         + "public class FooExchangeImpl extends AbstractExchange implements FooExchange {\n"
         + "  \n"
-        + "  private final FooApi1Api fooApi1Api;\n"
-        + "  private final FooApi2Api fooApi2Api;\n"
+        + "  private final FooApi1Api api1Api;\n"
+        + "  private final FooApi2Api api2Api;\n"
         + "  \n"
         + "  public FooExchangeImpl(String exchangeName, Properties properties) {\n"
         + "    super(ID,\n"
@@ -77,19 +79,19 @@ public class ExchangeInterfaceImplementationGeneratorTest {
         + "          properties,\n"
         + "          EncodingUtil.substituteArguments(\"${config.serverHttpUrl}/api/v${constants.apiVersion}\", \"config.serverHttpUrl\", FooProperties.getServerHttpUrl(properties), \"constants.apiVersion\", FooConstants.API_VERSION),\n"
         + "          EncodingUtil.substituteArguments(\"${config.serverWsUrl}/ws\", \"config.serverWsUrl\", FooProperties.getServerWsUrl(properties)));\n"
-        + "    this.fooApi1Api = addApi(new FooApi1ApiImpl(this));\n"
-        + "    this.fooApi2Api = addApi(new FooApi2ApiImpl(this));\n"
+        + "    this.api1Api = addApi(new FooApi1ApiImpl(this));\n"
+        + "    this.api2Api = addApi(new FooApi2ApiImpl(this));\n"
         + "    afterInit(\"com.xxz.foo.gen.FooAfterInitExchangeHookFactory\");\n"
         + "  }\n"
         + "  \n"
         + "  @Override\n"
-        + "  public FooApi1Api getFooApi1Api() {\n"
-        + "    return this.fooApi1Api;\n"
+        + "  public FooApi1Api getApi1Api() {\n"
+        + "    return this.api1Api;\n"
         + "  }\n"
         + "  \n"
         + "  @Override\n"
-        + "  public FooApi2Api getFooApi2Api() {\n"
-        + "    return this.fooApi2Api;\n"
+        + "  public FooApi2Api getApi2Api() {\n"
+        + "    return this.api2Api;\n"
         + "  }\n"
         + "  \n"
         + "}\n"
@@ -143,9 +145,9 @@ public class ExchangeInterfaceImplementationGeneratorTest {
         + "  private final RateLimitRule rateLimitExchangeGlobalRateLimit = RateLimitRule.createRule(\"exchangeGlobalRateLimit\", 60000, 1000);\n"
         + "  \n"
         + "  private final RequestThrottler requestThrottler = new RequestThrottler(\"Foo\");\n"
-        + "  private final FooApi1Api fooApi1Api;\n"
-        + "  private final FooApi2Api fooApi2Api;\n"
-        + "  private final FooApi3Api fooApi3Api;\n"
+        + "  private final FooApi1Api api1Api;\n"
+        + "  private final FooApi2Api api2Api;\n"
+        + "  private final FooApi3Api api3Api;\n"
         + "  \n"
         + "  public FooExchangeImpl(String exchangeName, Properties properties) {\n"
         + "    super(ID,\n"
@@ -154,24 +156,24 @@ public class ExchangeInterfaceImplementationGeneratorTest {
         + "          properties,\n"
         + "          null,\n"
         + "          null);\n"
-        + "    this.fooApi1Api = addApi(new FooApi1ApiImpl(this, requestThrottler));\n"
-        + "    this.fooApi2Api = addApi(new FooApi2ApiImpl(this));\n"
-        + "    this.fooApi3Api = addApi(new FooApi3ApiImpl(this));\n"
+        + "    this.api1Api = addApi(new FooApi1ApiImpl(this, requestThrottler));\n"
+        + "    this.api2Api = addApi(new FooApi2ApiImpl(this));\n"
+        + "    this.api3Api = addApi(new FooApi3ApiImpl(this));\n"
         + "  }\n"
         + "  \n"
         + "  @Override\n"
-        + "  public FooApi1Api getFooApi1Api() {\n"
-        + "    return this.fooApi1Api;\n"
+        + "  public FooApi1Api getApi1Api() {\n"
+        + "    return this.api1Api;\n"
         + "  }\n"
         + "  \n"
         + "  @Override\n"
-        + "  public FooApi2Api getFooApi2Api() {\n"
-        + "    return this.fooApi2Api;\n"
+        + "  public FooApi2Api getApi2Api() {\n"
+        + "    return this.api2Api;\n"
         + "  }\n"
         + "  \n"
         + "  @Override\n"
-        + "  public FooApi3Api getFooApi3Api() {\n"
-        + "    return this.fooApi3Api;\n"
+        + "  public FooApi3Api getApi3Api() {\n"
+        + "    return this.api3Api;\n"
         + "  }\n"
         + "  \n"
         + "  @Override\n"
@@ -179,7 +181,8 @@ public class ExchangeInterfaceImplementationGeneratorTest {
         + "    return this.rateLimitExchangeGlobalRateLimit;\n"
         + "  }\n"
         + "  \n"
-        + "}\n", 
+        + "}\n"
+        + "", 
         exchangeGenerator.generate());
   }
   
@@ -212,7 +215,7 @@ public class ExchangeInterfaceImplementationGeneratorTest {
         + "@Generated(\"org.jxapi.generator.java.exchange.ExchangeInterfaceImplementationGenerator\")\n"
         + "public class FooExchangeImpl extends AbstractExchange implements FooExchange {\n"
         + "  \n"
-        + "  private final FooApi1Api fooApi1Api;\n"
+        + "  private final FooApi1Api api1Api;\n"
         + "  \n"
         + "  public FooExchangeImpl(String exchangeName, Properties properties) {\n"
         + "    super(ID,\n"
@@ -221,15 +224,16 @@ public class ExchangeInterfaceImplementationGeneratorTest {
         + "          properties,\n"
         + "          null,\n"
         + "          null);\n"
-        + "    this.fooApi1Api = addApi(new FooApi1ApiImpl(this));\n"
+        + "    this.api1Api = addApi(new FooApi1ApiImpl(this));\n"
         + "  }\n"
         + "  \n"
         + "  @Override\n"
-        + "  public FooApi1Api getFooApi1Api() {\n"
-        + "    return this.fooApi1Api;\n"
+        + "  public FooApi1Api getApi1Api() {\n"
+        + "    return this.api1Api;\n"
         + "  }\n"
         + "  \n"
-        + "}\n", 
+        + "}\n"
+        + "", 
         exchangeGenerator.generate());
   }
   
@@ -312,8 +316,8 @@ public class ExchangeInterfaceImplementationGeneratorTest {
         + "public class FooExchangeImpl extends AbstractExchange implements FooExchange {\n"
         + "  \n"
         + "  private final RateLimitRule rateLimitExchangeGlobalRateLimit = RateLimitRule.createRule(\"exchangeGlobalRateLimit\", 60000, 1000);\n"
-        + "  private final FooApi1Api fooApi1Api;\n"
-        + "  private final FooApi2Api fooApi2Api;\n"
+        + "  private final FooApi1Api api1Api;\n"
+        + "  private final FooApi2Api api2Api;\n"
         + "  \n"
         + "  public FooExchangeImpl(String exchangeName, Properties properties) {\n"
         + "    super(ID,\n"
@@ -322,18 +326,18 @@ public class ExchangeInterfaceImplementationGeneratorTest {
         + "          properties,\n"
         + "          null,\n"
         + "          null);\n"
-        + "    this.fooApi1Api = addApi(new FooApi1ApiImpl(this));\n"
-        + "    this.fooApi2Api = addApi(new FooApi2ApiImpl(this));\n"
+        + "    this.api1Api = addApi(new FooApi1ApiImpl(this));\n"
+        + "    this.api2Api = addApi(new FooApi2ApiImpl(this));\n"
         + "  }\n"
         + "  \n"
         + "  @Override\n"
-        + "  public FooApi1Api getFooApi1Api() {\n"
-        + "    return this.fooApi1Api;\n"
+        + "  public FooApi1Api getApi1Api() {\n"
+        + "    return this.api1Api;\n"
         + "  }\n"
         + "  \n"
         + "  @Override\n"
-        + "  public FooApi2Api getFooApi2Api() {\n"
-        + "    return this.fooApi2Api;\n"
+        + "  public FooApi2Api getApi2Api() {\n"
+        + "    return this.api2Api;\n"
         + "  }\n"
         + "  \n"
         + "  @Override\n"
@@ -341,7 +345,8 @@ public class ExchangeInterfaceImplementationGeneratorTest {
         + "    return this.rateLimitExchangeGlobalRateLimit;\n"
         + "  }\n"
         + "  \n"
-        + "}\n", 
+        + "}\n"
+        + "", 
         exchangeGenerator.generate());
   }
   
@@ -407,6 +412,65 @@ public class ExchangeInterfaceImplementationGeneratorTest {
         + "  }\n"
         + "  \n"
         + "}\n", 
+        exchangeGenerator.generate());
+  }
+  
+  @Test
+  public void testGenerateExchangeApiWithConflictingApiGroupNames() throws Exception {
+    ExchangeDescriptor exchangeDescriptor = ExchangeDescriptorParser.fromYaml(Paths.get(".", "src", "test", "resources", "exchangeWithEndpointWithConflictingPropertyNames.yaml"));
+    ExchangeInterfaceImplementationGenerator exchangeGenerator = new ExchangeInterfaceImplementationGenerator(exchangeDescriptor);
+    Assert.assertEquals("package org.jxapi.exchanges.conflict.gen;\n"
+        + "\n"
+        + "import java.util.Properties;\n"
+        + "\n"
+        + "import javax.annotation.processing.Generated;\n"
+        + "import org.jxapi.exchange.AbstractExchange;\n"
+        + "import org.jxapi.exchanges.conflict.gen.a.ConflictAApi;\n"
+        + "import org.jxapi.exchanges.conflict.gen.a.ConflictAApiImpl;\n"
+        + "import org.jxapi.exchanges.conflict.gen.a.ConflictaApi;\n"
+        + "import org.jxapi.exchanges.conflict.gen.a.ConflictaApiImpl;\n"
+        + "import org.jxapi.exchanges.conflict.gen.v1.ConflictV1Api;\n"
+        + "import org.jxapi.exchanges.conflict.gen.v1.ConflictV1ApiImpl;\n"
+        + "\n"
+        + "/**\n"
+        + " * Actual implementation of {@link ConflictExchange}<br>\n"
+        + " */\n"
+        + "@Generated(\"org.jxapi.generator.java.exchange.ExchangeInterfaceImplementationGenerator\")\n"
+        + "public class ConflictExchangeImpl extends AbstractExchange implements ConflictExchange {\n"
+        + "  \n"
+        + "  private final ConflictV1Api v1Api;\n"
+        + "  private final ConflictaApi aApi;\n"
+        + "  private final ConflictAApi AApi;\n"
+        + "  \n"
+        + "  public ConflictExchangeImpl(String exchangeName, Properties properties) {\n"
+        + "    super(ID,\n"
+        + "          VERSION,\n"
+        + "          exchangeName,\n"
+        + "          properties,\n"
+        + "          \"https://api.example.com/conflict\",\n"
+        + "          null);\n"
+        + "    this.v1Api = addApi(new ConflictV1ApiImpl(this));\n"
+        + "    this.aApi = addApi(new ConflictaApiImpl(this));\n"
+        + "    this.AApi = addApi(new ConflictAApiImpl(this));\n"
+        + "  }\n"
+        + "  \n"
+        + "  @Override\n"
+        + "  public ConflictV1Api getV1Api() {\n"
+        + "    return this.v1Api;\n"
+        + "  }\n"
+        + "  \n"
+        + "  @Override\n"
+        + "  public ConflictaApi getaApi() {\n"
+        + "    return this.aApi;\n"
+        + "  }\n"
+        + "  \n"
+        + "  @Override\n"
+        + "  public ConflictAApi getAApi() {\n"
+        + "    return this.AApi;\n"
+        + "  }\n"
+        + "  \n"
+        + "}\n"
+        + "", 
         exchangeGenerator.generate());
   }
 

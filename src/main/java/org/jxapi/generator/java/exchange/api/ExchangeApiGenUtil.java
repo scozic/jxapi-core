@@ -82,12 +82,17 @@ public class ExchangeApiGenUtil {
     if (request == null) {
       throw new IllegalArgumentException("No request for endpoint:" + restEndpointDescriptor);
     }
-    return generateEnpointPojoClassName(exchangeDescriptor, 
-                        exchangeApiDescriptor, 
-                        restEndpointDescriptor.getName(), 
-                        request.getType(), 
-                        request.getObjectName(), 
-                        "Request");
+    return generateEnpointPojoClassName(
+        exchangeDescriptor, 
+        exchangeApiDescriptor, 
+        exchangeApiDescriptor.getRestEndpoints()
+          .stream()
+          .map(RestEndpointDescriptor::getName)
+          .collect(Collectors.toList()),
+        restEndpointDescriptor.getName(), 
+        request.getType(), 
+        request.getObjectName(), 
+        "Request");
   }
 
   /**
@@ -101,19 +106,25 @@ public class ExchangeApiGenUtil {
    * @return The expected class name for a endpoint response, for instance <code>com.x.y.api.pojo.MyExchangeMyApiMyEndpointResponse</code>
    * @throws IllegalArgumentException If response is not defined for the endpoint or is not of object type (see {@link Type#isObject()})
    */
-  public static String generateRestEnpointResponsePojoClassName(ExchangeDescriptor exchangeDescriptor, 
-                                    ExchangeApiDescriptor exchangeApiDescriptor, 
-                                    RestEndpointDescriptor restEndpointDescriptor) {
+  public static String generateRestEnpointResponsePojoClassName(
+      ExchangeDescriptor exchangeDescriptor, 
+      ExchangeApiDescriptor exchangeApiDescriptor, 
+      RestEndpointDescriptor restEndpointDescriptor) {
     Field response = restEndpointDescriptor.getResponse();
     if (response == null) {
       throw new IllegalArgumentException("No response for endpoint:" + restEndpointDescriptor);
     }
-    return generateEnpointPojoClassName(exchangeDescriptor, 
-                        exchangeApiDescriptor, 
-                        restEndpointDescriptor.getName(), 
-                        response.getType(), 
-                        response.getObjectName(), 
-                        "Response");
+    return generateEnpointPojoClassName(
+      exchangeDescriptor, 
+      exchangeApiDescriptor, 
+      exchangeApiDescriptor.getRestEndpoints()
+        .stream()
+        .map(RestEndpointDescriptor::getName)
+        .collect(Collectors.toList()),
+      restEndpointDescriptor.getName(), 
+      response.getType(), 
+      response.getObjectName(), 
+      "Response");
   }
   
   /**
@@ -135,12 +146,17 @@ public class ExchangeApiGenUtil {
     if (message == null) {
       throw new IllegalArgumentException("No message for endpoint:" + websocketApi);
     }
-    return generateEnpointPojoClassName(exchangeDescriptor, 
-            exchangeApiDescriptor, 
-            websocketApi.getName(), 
-            message.getType(), 
-            message.getObjectName(), 
-            "Message");
+    return generateEnpointPojoClassName(
+      exchangeDescriptor, 
+      exchangeApiDescriptor, 
+      exchangeApiDescriptor.getWebsocketEndpoints()
+        .stream()
+        .map(WebsocketEndpointDescriptor::getName)
+        .collect(Collectors.toList()),
+      websocketApi.getName(), 
+      message.getType(), 
+      message.getObjectName(), 
+      "Message");
   }
   
   /**
@@ -164,7 +180,11 @@ public class ExchangeApiGenUtil {
     }
     return generateEnpointPojoClassName(
           exchangeDescriptor, 
-          exchangeApiDescriptor, 
+          exchangeApiDescriptor,
+          exchangeApiDescriptor.getWebsocketEndpoints()
+            .stream()
+            .map(WebsocketEndpointDescriptor::getName)
+            .collect(Collectors.toList()),
           websocketApi.getName(), 
           request.getType(), 
           request.getObjectName(), 
@@ -173,6 +193,7 @@ public class ExchangeApiGenUtil {
 
   private static String generateEnpointPojoClassName(ExchangeDescriptor exchangeDescriptor, 
                              ExchangeApiDescriptor exchangeApiDescriptor, 
+                             List<String> allEndpointNames,
                              String endpointName, 
                              Type type,
                              String objectName,
@@ -187,10 +208,15 @@ public class ExchangeApiGenUtil {
           + exchangeApiDescriptor.getName().toLowerCase() + ".pojo." 
           + JavaCodeGenUtil.firstLetterToUpperCase(objectName);
     }
+    String exchangeApiDescriptorName = JavaCodeGenUtil.getUniqueCamelCaseVariableNames(
+        exchangeDescriptor.getApis()
+        .stream().map(ExchangeApiDescriptor::getName).collect(Collectors.toList()), true)
+        .get(exchangeApiDescriptor.getName());
+    endpointName = JavaCodeGenUtil.getUniqueCamelCaseVariableNames(allEndpointNames, true).get(endpointName);
     return exchangeDescriptor.getBasePackage() + "." + exchangeApiDescriptor.getName().toLowerCase() + ".pojo."
         + JavaCodeGenUtil.firstLetterToUpperCase(exchangeDescriptor.getId()) 
-        + JavaCodeGenUtil.firstLetterToUpperCase(exchangeApiDescriptor.getName())
-        + JavaCodeGenUtil.firstLetterToUpperCase(endpointName)
+        + exchangeApiDescriptorName
+        + endpointName
         + suffix;
   }
   
@@ -521,17 +547,6 @@ public class ExchangeApiGenUtil {
   }
 
   /**
-   * Generates the name of expected static {@link String} variable holding a REST endpoint name.
-   * <br>
-   * Example: for <code>myRestEndpoint</code>, the returned value is <code>MY_REST_ENDPOINT_REST_API</code>
-   * @param restEndpointName The REST endpoint name
-   * @return the static variable name for the REST endpoint name.
-   */
-  public static String getRestEndpointNameStaticVariable(String restEndpointName) {
-    return JavaCodeGenUtil.getStaticVariableName(restEndpointName) + "_REST_API";
-  }
-
-  /**
    * @param restApi The REST endpoint descriptor
    * @param exchangeApiDescriptor The exchange API descriptor
    * @return <code>true</code> if the REST endpoint has a request defined 
@@ -606,6 +621,7 @@ public class ExchangeApiGenUtil {
    * @param websocketEndpointName The Websocket endpoint name
    * @return the static variable name for the Websocket endpoint name.
    */
+  @Deprecated
   public static String getWebsocketEndpointNameStaticVariable(String websocketEndpointName) {
     return JavaCodeGenUtil.getStaticVariableName(websocketEndpointName) + "_WS_API";
   }
@@ -776,13 +792,16 @@ public class ExchangeApiGenUtil {
    * @param restEndpointDescriptor The REST endpoint descriptor
    * @return The expected property name for the REST endpoint URL, for instance <code>myRestEndpointUrl</code>
    */
+  @Deprecated
   public static String getRestEndpointUrlVariableName(RestEndpointDescriptor restEndpointDescriptor) {
     return JavaCodeGenUtil.firstLetterToLowerCase(restEndpointDescriptor.getName() + "HttpUrl");
   }
   
   /**
    * Generates expected camel case value of varibale name in a generated {@link ExchangeApi}
-   * for default value of REST endpoint request.
+   * for default value of REST endpoint request.<p>
+   * Remark: The actual variable name will be the static variable name generated from this value, respecting uniqueness,
+   * see #generateRestEndpointRequestDefaultValuesStaticFieldDeclarations(List, Imports, PlaceHolderResolver, PlaceHolderResolver, StringBuilder)
    * 
    * @param restEndpointDescriptor The REST endpoint descriptor
    * @return The expected static variable name for the REST endpoint request
@@ -796,6 +815,8 @@ public class ExchangeApiGenUtil {
   /**
    * Generates expected static variable name in a generated {@link ExchangeApi}
    * for default value of Websocket endpoint request.
+   * Remark: The actual variable name will be the static variable name generated from this value, respecting uniqueness,
+   * see #generateWebsocketEndpointRequestDefaultValuesStaticFieldDeclarations(List, Imports, PlaceHolderResolver, PlaceHolderResolver, StringBuilder)
    * 
    * @param wsEndpointDescriptor The Websocket endpoint descriptor
    * @return The expected static variable name for the Websocket endpoint request
@@ -902,8 +923,8 @@ public class ExchangeApiGenUtil {
         Constant c = Constant.create(
             f + suffix,
             Type.STRING,
-           "Name of <code>" + f + "</code> " + suffix + " API endpoint.",
-           f
+           "Name of <code>" + f + "</code> " + suffix + " endpoint.",
+           JavaCodeGenUtil.getQuotedString(f)
          );
         constants.put(f, c);
     }
@@ -919,7 +940,8 @@ public class ExchangeApiGenUtil {
           allConstants,
           new Imports(), 
           PlaceHolderResolver.NO_OP, 
-          PlaceHolderResolver.NO_OP));
+          PlaceHolderResolver.NO_OP)
+            .replace("public static final ", ""));
       }
     });
     return res;     

@@ -185,6 +185,7 @@ public class RestEndpointDemoGenerator extends JavaTypeGenerator {
   }
   
   private void generateExecuteMethod() {
+    String apiGroupGetterMethodName = ExchangeGenUtil.getApiGroupGetterMethodName(exchange, exchangeApi);
     StringBuilder bodyBuilder = new StringBuilder();
         bodyBuilder.append(EndpointDemoGenUtil.getNewTestExchangeInstruction(
         exchangeClassName, 
@@ -194,7 +195,8 @@ public class RestEndpointDemoGenerator extends JavaTypeGenerator {
       .append(EndpointDemoGenUtil.getNewTestApiInstruction(
         EXCHANGE_VAR, 
         API_VAR,
-        simpleApiClassName))
+        simpleApiClassName,
+        apiGroupGetterMethodName))
       .append("\n")
       .append("log.info(\"Calling ")
       .append(apiInterfaceClassName)

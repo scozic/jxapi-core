@@ -27,5 +27,5 @@ public interface DemoExchangeExchange extends Exchange {
   /**
    * @return Demo exchange market data API
    */
-  DemoExchangeMarketDataApi getDemoExchangeMarketDataApi();
+  DemoExchangeMarketDataApi getMarketDataApi();
 }

@@ -50,7 +50,7 @@ public class EndpointDemoGenUtilTest {
   public void testGetNewTestApiInstruction() {
     String simpleApiClassName  = "MyApi";
     Assert.assertEquals("MyApi api = exchange.getMyApi();", 
-        EndpointDemoGenUtil.getNewTestApiInstruction("exchange", "api", simpleApiClassName));
+        EndpointDemoGenUtil.getNewTestApiInstruction("exchange", "api", simpleApiClassName, "getMyApi"));
   }
   
   @Test

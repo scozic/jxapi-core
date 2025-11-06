@@ -2,6 +2,7 @@ package org.jxapi.generator.java.exchange.api;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.jxapi.exchange.ExchangeApi;
 import org.jxapi.exchange.descriptor.ExchangeApiDescriptor;
@@ -96,17 +97,14 @@ public class ExchangeApiInterfaceGenerator extends JavaTypeGenerator {
       .append(";\n");
     List<RestEndpointDescriptor> restApis = CollectionUtil.emptyIfNull(exchangeApiDescriptor.getRestEndpoints());
     List<WebsocketEndpointDescriptor> wsApis = CollectionUtil.emptyIfNull(exchangeApiDescriptor.getWebsocketEndpoints());
-    
-    for (RestEndpointDescriptor restApi: restApis) {
-      generateApiNameVariableDeclaration(
-          restApi.getName(), 
-          ExchangeApiGenUtil.getRestEndpointNameStaticVariable(restApi.getName()));
-    }
-    for (WebsocketEndpointDescriptor websocketApi : wsApis) {
-      generateApiNameVariableDeclaration(
-          websocketApi.getName(), 
-          ExchangeApiGenUtil.getWebsocketEndpointNameStaticVariable(websocketApi.getName()));
-    }
+    ExchangeApiGenUtil.generateEndpointNameStaticVariablesDeclaration(
+        restApis.stream().map(RestEndpointDescriptor::getName).collect(Collectors.toList()), 
+        "RestApi", 
+        body);
+    ExchangeApiGenUtil.generateEndpointNameStaticVariablesDeclaration(
+        wsApis.stream().map(WebsocketEndpointDescriptor::getName).collect(Collectors.toList()), 
+        "WsApi", 
+        body);
     
     generateEndpointDefaultValuesStaticFieldDeclarations();
     
@@ -151,16 +149,6 @@ public class ExchangeApiInterfaceGenerator extends JavaTypeGenerator {
       addImport(RateLimitRule.class);
       appendToBody(ExchangeGenUtil.generateRateLimitRuleInterfaceMethodDeclaration(rateLimitName));
     }
-  }
-  
-  private void generateApiNameVariableDeclaration(String apiName, String apiNameVariable) {
-    appendToBody("\n")
-        .append(JavaCodeGenUtil.generateJavaDoc("Name of the '" + apiName + "' API endpoint."))
-        .append("\nString ")
-      .append(apiNameVariable)
-      .append(" = ")
-      .append(JavaCodeGenUtil.getQuotedString(apiName))
-      .append(";\n");
   }
 
   private void generateWebsocketApiMethodsDeclarations(WebsocketEndpointDescriptor websocketApi) {

@@ -54,12 +54,15 @@ public class JsonMessageDeserializerClassesGenerator implements ClassesGenerator
                      .properties(field.getProperties())
                      .objectName(field.getObjectName())
                      .build();
-        new JsonMessageDeserializerClassesGenerator(JavaCodeGenUtil.getClassPackage(deserializedClassName) + "."
-                                + ExchangeApiGenUtil.getClassNameForField(
-                                    objectParam, 
-                                    imports, 
-                                    deserializedClassName), 
-                              field.getProperties()).generateClasses(outputFolder);
+        new JsonMessageDeserializerClassesGenerator(
+            JavaCodeGenUtil.getClassPackage(deserializedClassName) 
+              + "."
+              + ExchangeApiGenUtil.getClassNameForField(
+                  objectParam, 
+                  imports, 
+                  deserializedClassName), 
+            field.getProperties())
+          .generateClasses(outputFolder);
       }
     }
     JsonMessageDeserializerGenerator deserializerGenerator = new JsonMessageDeserializerGenerator(deserializedClassName, fields);

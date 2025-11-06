@@ -60,7 +60,7 @@ public class EmployeeExchangeTest {
     config.setProperty(EmployeeProperties.Server.BASE_HTTP_URL.getName(), server.getHttpBaseUrl());
     config.setProperty(EmployeeProperties.Server.BASE_WEBSOCKET_URL.getName(), server.getWebSocketBaseUrl());
     this.exchange = new EmployeeExchangeImpl("testEmployeeClient", config);
-    this.api = exchange.getEmployeeV1Api();
+    this.api = exchange.getV1Api();
     this.wsListener = new MockWebsocketListener<>();
     api.subscribeEmployeeUpdates(wsListener);
     checkWsClientConnect();

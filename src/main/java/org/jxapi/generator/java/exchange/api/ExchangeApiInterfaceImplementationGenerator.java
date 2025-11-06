@@ -24,7 +24,6 @@ import org.jxapi.exchange.descriptor.WebsocketMessageTopicMatcherFieldDescriptor
 import org.jxapi.generator.java.JavaCodeGenUtil;
 import org.jxapi.generator.java.JavaTypeGenerator;
 import org.jxapi.generator.java.exchange.ExchangeGenUtil;
-import org.jxapi.generator.java.exchange.api.pojo.PojoGenUtil;
 import org.jxapi.netutils.deserialization.MessageDeserializer;
 import org.jxapi.netutils.rest.FutureRestResponse;
 import org.jxapi.netutils.rest.HttpMethod;
@@ -199,6 +198,10 @@ public class ExchangeApiInterfaceImplementationGenerator extends JavaTypeGenerat
   private List<String> rateLimitVariablesInstantiationDeclarations;
   private List<String> websocketEndpointDeclarations;
   private List<String> messageDeserializerVariablesDeclarations;
+  private Map<String, String> restEndpointVariables;
+  private Map<String, String> wsEndpointVariables;
+  private Map<String, String> restEndpointNamesStaticVariables;
+  private Map<String, String> wsEndpointNamesStaticVariables;
   
   
   /**
@@ -236,8 +239,23 @@ public class ExchangeApiInterfaceImplementationGenerator extends JavaTypeGenerat
     messageDeserializerVariablesDeclarations = new ArrayList<>();
     restMethods = new LinkedHashMap<>();
     wsMethods = new LinkedHashMap<>();
-    
     List<RestEndpointDescriptor> restApis = CollectionUtil.emptyIfNull(exchangeApiDescriptor.getRestEndpoints());
+    restEndpointVariables = JavaCodeGenUtil.getUniqueCamelCaseVariableNames(
+          restApis.stream().map(RestEndpointDescriptor::getName).collect(Collectors.toList()),
+          false);
+    List<WebsocketEndpointDescriptor> wsApis = CollectionUtil.emptyIfNull(exchangeApiDescriptor.getWebsocketEndpoints());
+    wsEndpointVariables = JavaCodeGenUtil.getUniqueCamelCaseVariableNames(
+          wsApis.stream().map(WebsocketEndpointDescriptor::getName).collect(Collectors.toList()),
+          false);
+    restEndpointNamesStaticVariables = ExchangeApiGenUtil.generateEndpointNameStaticVariablesDeclaration(
+        restApis.stream().map(RestEndpointDescriptor::getName).collect(Collectors.toList()), 
+        "RestApi", 
+        null);
+    wsEndpointNamesStaticVariables = ExchangeApiGenUtil.generateEndpointNameStaticVariablesDeclaration(
+        wsApis.stream().map(WebsocketEndpointDescriptor::getName).collect(Collectors.toList()), 
+        "WsApi", 
+        null);
+    
     Map<String, String> restRequestDefaultValuesStaticVariables = ExchangeApiGenUtil.generateRestEndpointRequestDefaultValuesStaticFieldDeclarations(
         restApis,
         getImports(),
@@ -250,7 +268,7 @@ public class ExchangeApiInterfaceImplementationGenerator extends JavaTypeGenerat
         generateRestEndpointMethodDeclaration(restApi, restRequestDefaultValuesStaticVariables);
     }
     
-    List<WebsocketEndpointDescriptor> wsApis = CollectionUtil.emptyIfNull(exchangeApiDescriptor.getWebsocketEndpoints());
+    
     Map<String, String> wsRequestDefaultValuesStaticVariables = ExchangeApiGenUtil.generateWebsocketEndpointRequestDefaultValuesStaticFieldDeclarations(
         wsApis,
         getImports(),
@@ -271,10 +289,6 @@ public class ExchangeApiInterfaceImplementationGenerator extends JavaTypeGenerat
     appendWsMethods();
     generateRateLimitRuleGetters();
     return super.generate();
-  }
-  
-  private void generateRestEndpointMethodsDeclarations() {
-    
   }
 
   private void generateApiGlobalRateLimits() {
@@ -433,7 +447,7 @@ public class ExchangeApiInterfaceImplementationGenerator extends JavaTypeGenerat
              .append(");\n");
              
     for (WebsocketEndpointDescriptor wsApi: exchangeApiDescriptor.getWebsocketEndpoints()) {
-      String websocketEndpointVariableName = getWebsocketEndpointVariableName(wsApi);
+      String websocketEndpointVariableName = getWebsocketEndpointVariable(wsApi);
       String messageClassObjectName = ExchangeApiGenUtil.generateWebsocketEndpointMessagePojoClassName(
           exchangeDescriptor, 
           exchangeApiDescriptor, 
@@ -445,7 +459,7 @@ public class ExchangeApiInterfaceImplementationGenerator extends JavaTypeGenerat
         .append(websocketEndpointVariableName)
         .append(" = ")
         .append("createWebsocketEndpoint(")
-        .append(ExchangeApiGenUtil.getWebsocketEndpointNameStaticVariable(wsApi.getName()))
+        .append(wsEndpointNamesStaticVariables.get(wsApi.getName()))
         .append(", ")
         .append(getResponseDeserializerInstance)
         .append(");\n");
@@ -459,10 +473,6 @@ public class ExchangeApiInterfaceImplementationGenerator extends JavaTypeGenerat
   private void addWebsocketMethod(String wsStreamName, String methodDeclaration, String methodBody) {
     wsMethods.computeIfAbsent(Optional.ofNullable(wsStreamName).orElse(""), k -> new TreeMap<>())
          .put(methodDeclaration, methodBody);
-  }
-  
-  private String getWebsocketEndpointVariableName(WebsocketEndpointDescriptor websocketApi) {
-    return JavaCodeGenUtil.firstLetterToLowerCase(websocketApi.getName()) + "Ws";
   }
 
   private void generateWebsocketApiMethodsDeclarations(WebsocketEndpointDescriptor websocketApi, Map<String, String> wsRequestDefaultValuesStaticVariables) {
@@ -498,7 +508,7 @@ public class ExchangeApiInterfaceImplementationGenerator extends JavaTypeGenerat
                       messageClassObjectName);
     String subscribeMethodName = ExchangeApiGenUtil.getWebsocketSubscribeMethodName(websocketApi, exchangeApiDescriptor.getWebsocketEndpoints());
     String unsubscribeMethodName = ExchangeApiGenUtil.getWebsocketUnsubscribeMethodName(websocketApi, exchangeApiDescriptor.getWebsocketEndpoints());
-    String websocketEndpointVariableName = getWebsocketEndpointVariableName(websocketApi);
+    String websocketEndpointVariableName = getWebsocketEndpointVariable(websocketApi);
     websocketEndpointDeclarations.add(new StringBuilder()
         .append(PRIVATE_FINAL)  
         .append("WebsocketEndpoint<")
@@ -691,7 +701,7 @@ public class ExchangeApiInterfaceImplementationGenerator extends JavaTypeGenerat
       getResponseDeserializerInstance = ExchangeApiGenUtil.getNewMessageDeserializerInstruction(null, null, getImports());
     }
     
-    String deserializerVariableName = JavaCodeGenUtil.firstLetterToLowerCase(restApi.getName()) + "ResponseDeserializer";
+    String deserializerVariableName = getRestEndpointResponseDeserializerVariable(restApi);
     addImport(MessageDeserializer.class);
     messageDeserializerVariablesDeclarations.add(new StringBuilder()
         .append(PRIVATE_FINAL)
@@ -747,13 +757,13 @@ public class ExchangeApiInterfaceImplementationGenerator extends JavaTypeGenerat
     
     addImport(HttpRequest.class);
     addRestEndpointUrlDeclarations(restApi, restEndpointJavadocLink);
-    String endpointUrlVar = ExchangeApiGenUtil.getRestEndpointUrlVariableName(restApi);
+    String endpointUrlVar = getRestEndpointUrlVariable(restApi);
     boolean requestHasBody = Optional
         .ofNullable(restApi.isRequestHasBody())
         .orElse(restApi.getHttpMethod().requestHasBody) && hasArguments;
     StringBuilder createHttpRequestInstruction = new StringBuilder()
         .append("HttpRequest.create(")
-        .append(ExchangeApiGenUtil.getRestEndpointNameStaticVariable(restApi.getName()))
+        .append(restEndpointNamesStaticVariables.get(restApi.getName()))
         .append(", ");
     if (urlDeclaration != null) {
       createHttpRequestInstruction
@@ -859,9 +869,21 @@ public class ExchangeApiInterfaceImplementationGenerator extends JavaTypeGenerat
         .append(JavaCodeGenUtil.generateJavaDoc(javadoc.toString()))
         .append("\n")
         .append("protected final String ")
-        .append(ExchangeApiGenUtil.getRestEndpointUrlVariableName(restApi))
+        .append(getRestEndpointUrlVariable(restApi))
         .append(";");
     restEndpointUrlDeclarations.add(sb.toString()); 
+  }
+  
+  private String getRestEndpointUrlVariable(RestEndpointDescriptor restApi) {
+    return restEndpointVariables.get(restApi.getName()) + "HttpUrl";
+  }
+  
+  private String getRestEndpointResponseDeserializerVariable(RestEndpointDescriptor restApi) {
+    return restEndpointVariables.get(restApi.getName()) + "ResponseDeserializer";
+  }
+  
+  private String getWebsocketEndpointVariable(WebsocketEndpointDescriptor websocketApi) {
+    return wsEndpointVariables.get(websocketApi.getName()) + "Ws";
   }
   
   private boolean checkHasRateLimits() {
@@ -962,7 +984,7 @@ public class ExchangeApiInterfaceImplementationGenerator extends JavaTypeGenerat
   private String generateRestEndpointUrlVariableInstantiationInstruction(RestEndpointDescriptor restApi) {
     addImport(EncodingUtil.class);
     StringBuilder sb = new StringBuilder().append(THIS)
-        .append(ExchangeApiGenUtil.getRestEndpointUrlVariableName(restApi)).append(" = ")
+        .append(getRestEndpointUrlVariable(restApi)).append(" = ")
         .append(EncodingUtil.class.getSimpleName())
         .append(".buildUrl(this.getHttpUrl(), ")
         .append(ExchangeGenUtil.generateSubstitutionInstructionDeclaration(
@@ -1004,7 +1026,7 @@ public class ExchangeApiInterfaceImplementationGenerator extends JavaTypeGenerat
     }
     StringBuilder sb = new StringBuilder()
       .append("new StringBuilder(128).append(")
-      .append(ExchangeApiGenUtil.getRestEndpointUrlVariableName(restApi))
+      .append(getRestEndpointUrlVariable(restApi))
       .append(")");
     if (!pathParamArgs.isEmpty()) {
       addImport(EncodingUtil.class);

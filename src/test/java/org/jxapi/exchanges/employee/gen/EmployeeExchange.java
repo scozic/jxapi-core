@@ -28,5 +28,5 @@ public interface EmployeeExchange extends Exchange {
   /**
    * @return Version 1 of the Employee API
    */
-  EmployeeV1Api getEmployeeV1Api();
+  EmployeeV1Api getV1Api();
 }

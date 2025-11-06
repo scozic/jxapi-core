@@ -231,6 +231,7 @@ public class WebsocketEndpointDemoGenerator extends JavaTypeGenerator {
   }
   
   private String generateSubscribeMethodBody() {
+    String apiGroupGetterMethodName = ExchangeGenUtil.getApiGroupGetterMethodName(exchangeDescriptor, exchangeApi);
     StringBuilder bodyBuilder = new StringBuilder();
     bodyBuilder.append(EndpointDemoGenUtil.getNewTestExchangeInstruction(
           exchangeClassName, 
@@ -240,7 +241,8 @@ public class WebsocketEndpointDemoGenerator extends JavaTypeGenerator {
         .append(EndpointDemoGenUtil.getNewTestApiInstruction(
           EXCHANGE_VAR, 
           API_VAR,
-          simpleApiClassName))
+          simpleApiClassName,
+          apiGroupGetterMethodName))
         .append("\n")
         .append("long ")
             .append(SUBSCRIPTION_DURATION_VAR_NAME)

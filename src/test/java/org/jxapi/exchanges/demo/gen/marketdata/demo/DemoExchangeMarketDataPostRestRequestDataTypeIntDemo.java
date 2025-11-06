@@ -42,7 +42,7 @@ public class DemoExchangeMarketDataPostRestRequestDataTypeIntDemo {
    */
   public static RestResponse<GenericResponse> execute(Integer request, Properties configProperties, ExchangeApiObserver apiObserver) throws InterruptedException, ExecutionException {
     DemoExchangeExchange exchange = new DemoExchangeExchangeImpl("test-" + DemoExchangeExchange.ID, configProperties);
-    DemoExchangeMarketDataApi api = exchange.getDemoExchangeMarketDataApi();
+    DemoExchangeMarketDataApi api = exchange.getMarketDataApi();
     log.info("Calling org.jxapi.exchanges.demo.gen.marketdata.DemoExchangeMarketDataApi.postRestRequestDataTypeInt() API with request:{}", request);
     if (apiObserver != null) {
       api.subscribeObserver(apiObserver);

@@ -83,7 +83,7 @@ public class DemoExchangeRestRequestTest {
   
   @Test
   public void testCallTickers() throws Exception {
-    FutureRestResponse<DemoExchangeMarketDataTickersResponse> futureResponse = exchange.getDemoExchangeMarketDataApi().tickers();
+    FutureRestResponse<DemoExchangeMarketDataTickersResponse> futureResponse = exchange.getMarketDataApi().tickers();
     DemoExchangeMarketDataTickersResponse expectedResponse = new DemoExchangeMarketDataTickersResponse();
     Map<String, DemoExchangeMarketDataTickersResponsePayload> expectedResponsePayloed = new TreeMap<>();
     expectedResponse.setPayload(expectedResponsePayloed);
@@ -126,7 +126,7 @@ public class DemoExchangeRestRequestTest {
   public void testCallExchangeInfoApi() throws Exception {
     DemoExchangeMarketDataExchangeInfoRequest request = new DemoExchangeMarketDataExchangeInfoRequest();
     request.setSymbols(List.of("BTC_USDT", "ETH_USDT"));
-    FutureRestResponse<DemoExchangeMarketDataExchangeInfoResponse> futureResponse = exchange.getDemoExchangeMarketDataApi().exchangeInfo(request);
+    FutureRestResponse<DemoExchangeMarketDataExchangeInfoResponse> futureResponse = exchange.getMarketDataApi().exchangeInfo(request);
     
     DemoExchangeMarketDataExchangeInfoResponse expectedResponse = new DemoExchangeMarketDataExchangeInfoResponse();
     expectedResponse.setResponseCode(DemoExchangeConstants.RESPONSE_CODE_OK);
@@ -161,7 +161,7 @@ public class DemoExchangeRestRequestTest {
   @Test
   public void testCallPostRequestDataTypeInt() throws Exception {
     Integer request = 123;
-    FutureRestResponse<GenericResponse> futureResponse = exchange.getDemoExchangeMarketDataApi().postRestRequestDataTypeInt(request);
+    FutureRestResponse<GenericResponse> futureResponse = exchange.getMarketDataApi().postRestRequestDataTypeInt(request);
     
     GenericResponse expectedResponse = new GenericResponse();
     expectedResponse.setResponseCode(DemoExchangeConstants.RESPONSE_CODE_OK);
@@ -185,7 +185,7 @@ public class DemoExchangeRestRequestTest {
   @Test
   public void testGetRestRequestDataTypePrimitiveWithMsgField() throws Exception {
     Integer request = 123;
-    FutureRestResponse<GenericResponse> futureResponse = exchange.getDemoExchangeMarketDataApi().getRestRequestDataTypePrimitiveWithMsgField(request);
+    FutureRestResponse<GenericResponse> futureResponse = exchange.getMarketDataApi().getRestRequestDataTypePrimitiveWithMsgField(request);
     
     GenericResponse expectedResponse = new GenericResponse();
     expectedResponse.setResponseCode(DemoExchangeConstants.RESPONSE_CODE_OK);
@@ -209,7 +209,7 @@ public class DemoExchangeRestRequestTest {
   @Test
   public void testGetRestRequestDataTypePrimitiveWithMsgFieldNotFound() throws Exception {
     Integer request = 123;
-    FutureRestResponse<GenericResponse> futureResponse = exchange.getDemoExchangeMarketDataApi().getRestRequestDataTypePrimitiveWithMsgField(request);
+    FutureRestResponse<GenericResponse> futureResponse = exchange.getMarketDataApi().getRestRequestDataTypePrimitiveWithMsgField(request);
     
     GenericResponse expectedResponse = new GenericResponse();
     expectedResponse.setResponseCode(DemoExchangeConstants.RESPONSE_CODE_OK);
@@ -234,7 +234,7 @@ public class DemoExchangeRestRequestTest {
   public void testGetRestRequestDataTypePrimitiveWithMsgFieldServerDown() throws Exception {
     mockHttpServer.stop();
     Integer request = 123;
-    FutureRestResponse<GenericResponse> futureResponse = exchange.getDemoExchangeMarketDataApi().getRestRequestDataTypePrimitiveWithMsgField(request);
+    FutureRestResponse<GenericResponse> futureResponse = exchange.getMarketDataApi().getRestRequestDataTypePrimitiveWithMsgField(request);
     
     RestResponse<GenericResponse> actualResponse = futureResponse.get(DEFAULT_WAIT_RESPONSE_TIMEOUT, TimeUnit.MILLISECONDS);
     Assert.assertFalse(actualResponse.isOk());
@@ -244,7 +244,7 @@ public class DemoExchangeRestRequestTest {
   @Test
   public void testPostRestRequestDataTypeIntList() throws Exception {
     List<Integer> request = List.of(123, 456, 789);
-    FutureRestResponse<GenericResponse> futureResponse = exchange.getDemoExchangeMarketDataApi().postRestRequestDataTypeIntList(request);
+    FutureRestResponse<GenericResponse> futureResponse = exchange.getMarketDataApi().postRestRequestDataTypeIntList(request);
     
     GenericResponse expectedResponse = new GenericResponse();
     expectedResponse.setResponseCode(DemoExchangeConstants.RESPONSE_CODE_OK);
@@ -277,7 +277,7 @@ public class DemoExchangeRestRequestTest {
     SingleSymbol singleSymbol3 = new SingleSymbol();
     singleSymbol3.setSymbol("SOL_USDT");
     request.put("futures", List.of(singleSymbol3));
-    FutureRestResponse<GenericResponse> futureResponse = exchange.getDemoExchangeMarketDataApi().postRestRequestDataTypeObjectListMap(request);
+    FutureRestResponse<GenericResponse> futureResponse = exchange.getMarketDataApi().postRestRequestDataTypeObjectListMap(request);
     
     GenericResponse expectedResponse = new GenericResponse();
     expectedResponse.setResponseCode(DemoExchangeConstants.RESPONSE_CODE_OK);

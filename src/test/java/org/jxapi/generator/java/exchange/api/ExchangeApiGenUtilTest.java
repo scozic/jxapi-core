@@ -40,6 +40,7 @@ public class ExchangeApiGenUtilTest {
         Field request = new Field();
         request.setType(Type.OBJECT);
         endpointDescriptor.setRequest(request);
+        apiDescriptor.setRestEndpoints(List.of(endpointDescriptor));
         Assert.assertEquals("com.test.exchange.myapi.pojo.TestExchangeMyApiGetAccountRequest", 
                   ExchangeApiGenUtil.generateRestEnpointRequestPojoClassName(
                       exchangeDescriptor, 
@@ -61,6 +62,7 @@ public class ExchangeApiGenUtilTest {
         request.setObjectName("MyRequest");
         request.setType(Type.OBJECT);
         endpointDescriptor.setRequest(request);
+        apiDescriptor.setRestEndpoints(List.of(endpointDescriptor));
         Assert.assertEquals("com.test.exchange.myapi.pojo.MyRequest", 
                   ExchangeApiGenUtil.generateRestEnpointRequestPojoClassName(
                       exchangeDescriptor, 
@@ -80,6 +82,7 @@ public class ExchangeApiGenUtilTest {
         endpointDescriptor.setName("GetAccount");
         Field request = new Field();
         endpointDescriptor.setRequest(request);
+        apiDescriptor.setRestEndpoints(List.of(endpointDescriptor));
         Assert.assertEquals("com.test.exchange.myapi.pojo.TestExchangeMyApiGetAccountRequest", 
                   ExchangeApiGenUtil.generateRestEnpointRequestPojoClassName(
                       exchangeDescriptor, 
@@ -101,6 +104,7 @@ public class ExchangeApiGenUtilTest {
         request.setObjectName("MyRequest");
         request.setType(Type.STRING);
         endpointDescriptor.setRequest(request);
+        apiDescriptor.setRestEndpoints(List.of(endpointDescriptor));
         ExchangeApiGenUtil.generateRestEnpointRequestPojoClassName(
             exchangeDescriptor, 
             apiDescriptor, 
@@ -136,6 +140,7 @@ public class ExchangeApiGenUtilTest {
         Field response = new Field();
         response.setType(Type.OBJECT);
         endpointDescriptor.setResponse(response);
+        apiDescriptor.setRestEndpoints(List.of(endpointDescriptor));
         Assert.assertEquals("com.test.exchange.myapi.pojo.TestExchangeMyApiGetAccountResponse", 
                   ExchangeApiGenUtil.generateRestEnpointResponsePojoClassName(
                       exchangeDescriptor, 
@@ -172,6 +177,7 @@ public class ExchangeApiGenUtilTest {
         Field request = new Field();
         request.setType(Type.OBJECT);
         endpointDescriptor.setRequest(request);
+        apiDescriptor.setWebsocketEndpoints(List.of(endpointDescriptor));
         Assert.assertEquals("com.test.exchange.myapi.pojo.TestExchangeMyApiAccountWsRequest", 
                   ExchangeApiGenUtil.generateWebsocketEndpointRequestPojoClassName(
                       exchangeDescriptor, 
@@ -208,6 +214,7 @@ public class ExchangeApiGenUtilTest {
         Field message = new Field();
         message.setType(Type.OBJECT);
         endpointDescriptor.setMessage(message);
+        apiDescriptor.setWebsocketEndpoints(List.of(endpointDescriptor));
         Assert.assertEquals("com.test.exchange.myapi.pojo.TestExchangeMyApiAccountWsMessage", 
                   ExchangeApiGenUtil.generateWebsocketEndpointMessagePojoClassName(
                       exchangeDescriptor, 
@@ -518,11 +525,6 @@ public class ExchangeApiGenUtilTest {
     }
     
     @Test
-    public void testGetRestEndpointNameStaticVariable() {
-        Assert.assertEquals("GET_ACCOUNT_REST_API", ExchangeApiGenUtil.getRestEndpointNameStaticVariable("GetAccount"));
-    }
-    
-    @Test
     public void testRestEnpointHasArguments_NullRequest() {
         ExchangeDescriptor exchangeDescriptor = new ExchangeDescriptor();
         exchangeDescriptor.setId("TestExchange");
@@ -626,11 +628,6 @@ public class ExchangeApiGenUtilTest {
     public void testGetRequestArgName_NotNull() {
       String argName = "myRequestArg";
       Assert.assertEquals(argName,  ExchangeApiGenUtil.getRequestArgName(argName));
-    }
-    
-    @Test
-    public void testGetWebsocketEndpointNameStaticVariable() {
-      Assert.assertEquals("SUBSCRIBE_ACCOUNT_WS_API",  ExchangeApiGenUtil.getWebsocketEndpointNameStaticVariable("subscribeAccount"));
     }
     
     @Test
@@ -1005,13 +1002,6 @@ public class ExchangeApiGenUtilTest {
         expected.setType(Type.OBJECT);
         Assert.assertEquals(List.of(expected), ExchangeApiGenUtil.resolveAllFieldProperties(apiDescriptor, List.of(f)));
     }
-
-    @Test
-    public void testGetRestEndpointUrlVariableName() {
-        RestEndpointDescriptor endpointDescriptor = new RestEndpointDescriptor();
-        endpointDescriptor.setName("GetAccount");
-        Assert.assertEquals("getAccountHttpUrl", ExchangeApiGenUtil.getRestEndpointUrlVariableName(endpointDescriptor));
-    }
     
     @Test 
     public void testGetRestApiMethodName() {
@@ -1056,19 +1046,19 @@ public class ExchangeApiGenUtilTest {
       Assert.assertEquals("A_REST_API_", variables.get("A"));
       Assert.assertEquals("\n"
           + "/**\n"
-          + " * Name of <code>getAccount</code> RestApi API endpoint.\n"
+          + " * Name of <code>getAccount</code> RestApi endpoint.\n"
           + " */\n"
-          + "public static final String GET_ACCOUNT_REST_API = getAccount;\n"
+          + "String GET_ACCOUNT_REST_API = \"getAccount\";\n"
           + "\n"
           + "/**\n"
-          + " * Name of <code>a</code> RestApi API endpoint.\n"
+          + " * Name of <code>a</code> RestApi endpoint.\n"
           + " */\n"
-          + "public static final String A_REST_API = a;\n"
+          + "String A_REST_API = \"a\";\n"
           + "\n"
           + "/**\n"
-          + " * Name of <code>A</code> RestApi API endpoint.\n"
+          + " * Name of <code>A</code> RestApi endpoint.\n"
           + " */\n"
-          + "public static final String A_REST_API_ = A;\n"
+          + "String A_REST_API_ = \"A\";\n"
           + "", 
           classBody.toString());
     }

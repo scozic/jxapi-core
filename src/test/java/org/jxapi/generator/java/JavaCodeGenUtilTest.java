@@ -430,6 +430,26 @@ public class JavaCodeGenUtilTest {
         + "  .orElse(bar)", true, "foo", "bar", true);
   }
   
+  @Test
+  public void testGetUniqueCamelCaseVariableNamesLowerCase() {
+    List<String> names = List.of("MyVariable", "aa", "Aa");
+    Map<String, String> uniqueNames = JavaCodeGenUtil.getUniqueCamelCaseVariableNames(names, false);
+    Assert.assertEquals(3, names.size());
+    Assert.assertEquals("myVariable", uniqueNames.get("MyVariable"));
+    Assert.assertEquals("aa", uniqueNames.get("aa"));
+    Assert.assertEquals("Aa", uniqueNames.get("Aa"));
+  }
+  
+  @Test
+  public void testGetUniqueCamelCaseVariableNamesUpperCase() {
+    List<String> names = List.of("myVariable", "aa", "Aa");
+    Map<String, String> uniqueNames = JavaCodeGenUtil.getUniqueCamelCaseVariableNames(names, true);
+    Assert.assertEquals(3, names.size());
+    Assert.assertEquals("MyVariable", uniqueNames.get("myVariable"));
+    Assert.assertEquals("aa", uniqueNames.get("aa"));
+    Assert.assertEquals("Aa", uniqueNames.get("Aa"));
+  }
+  
   private void testGenerateOptionalOfNullableStatement(
       String expected, 
       boolean optionalClassImported,
