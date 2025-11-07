@@ -1052,9 +1052,22 @@ public class ExchangeApiInterfaceImplementationGenerator extends JavaTypeGenerat
     return sb.toString();  
   }
   
-  private void collectUrlParameterArguments(RestEndpointDescriptor restApi, Field f, List<Field> sieblings, UrlParameterType urlParameterType, String valuePrefix, List<String> res) {
+  private void collectUrlParameterArguments(
+      RestEndpointDescriptor 
+      restApi, 
+      Field f, 
+      List<Field> sieblings, 
+      UrlParameterType 
+      urlParameterType, 
+      String valuePrefix, 
+      List<String> res) {
     f = ExchangeApiGenUtil.resolveFieldProperties(exchangeApiDescriptor, f);
-    UrlParameterType defUrlParamType = restApi.getHttpMethod().requestHasBody? null: UrlParameterType.QUERY;
+    UrlParameterType defUrlParamType = (Optional
+          .ofNullable(restApi.isRequestHasBody())
+          .orElse(false) 
+        || restApi.getHttpMethod().requestHasBody)?
+         null: 
+         UrlParameterType.QUERY;
     UrlParameterType fieldUrlParamType = f.getIn();
     Type type = ExchangeGenUtil.getFieldType(f);
     List<Field> properties = ExchangeApiGenUtil.resolveFieldProperties(exchangeApiDescriptor, f).getProperties();
@@ -1066,7 +1079,9 @@ public class ExchangeApiInterfaceImplementationGenerator extends JavaTypeGenerat
           sieblings.stream().map(Field::getName).collect(Collectors.toList())) 
         + "()";
     }
-    if (fieldUrlParamType == null && !CollectionUtil.isEmpty(properties)) { 
+    if (fieldUrlParamType == null 
+        && !CollectionUtil.isEmpty(properties) 
+        && type.getCanonicalType() == CanonicalType.OBJECT) { 
       for (Field p : properties) {
         collectUrlParameterArguments(restApi, p, properties, urlParameterType, valuePrefix, res);
       }
