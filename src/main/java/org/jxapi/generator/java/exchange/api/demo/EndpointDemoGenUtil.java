@@ -71,14 +71,15 @@ public class EndpointDemoGenUtil {
    * 
    * @see #generateFieldCreationMethodDeclaration(Field, String, String, Imports)
    */
-  public static String generateFieldCreationMethod(Field property, 
-                                                   String objectClassName,
-                                                   ExchangeDescriptor exchangeDescriptor,
-                                                   ExchangeApiDescriptor exchangeApiDescriptor,
-                                                   String apiEndpointGroupName,
-                                                   String endpointName,
-                                                   List<ConfigPropertyDescriptor> demoConfigProperties,
-                                                   Imports imports) {
+  public static String generateFieldCreationMethod(
+      Field property, 
+      String objectClassName,
+      ExchangeDescriptor exchangeDescriptor,
+      ExchangeApiDescriptor exchangeApiDescriptor,
+      String apiEndpointGroupName,
+      String endpointName,
+      List<ConfigPropertyDescriptor> demoConfigProperties,
+      Imports imports) {
     String fieldName = ExchangeApiGenUtil.getRequestArgName(property.getName());
     String demoPropertyName = StringUtils.join(List.of(
         exchangeApiDescriptor.getName(),
@@ -124,10 +125,11 @@ public class EndpointDemoGenUtil {
    *                               the necessary imports.
    * @return the method declaration
    */
-  public static String generateFieldCreationMethodDeclaration(Field field, 
-                                                              String defaultObjectClassName,
-                                                              String defaultFieldName,
-                                                              Imports imports) {
+  public static String generateFieldCreationMethodDeclaration(
+      Field field, 
+      String defaultObjectClassName,
+      String defaultFieldName,
+      Imports imports) {
     Type type = ExchangeGenUtil.getFieldType(field);
     String fieldClassName =  ExchangeGenUtil.getClassNameForType(
                         type, 

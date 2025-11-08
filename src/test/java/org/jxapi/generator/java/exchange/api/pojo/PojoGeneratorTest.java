@@ -588,8 +588,6 @@ public class PojoGeneratorTest {
     generator.addField(Field.builder().type(Type.INT).name("a").description("lower case 'a'").defaultValue(1).build());
     generator.addField(Field.builder().type(Type.INT).name("A").description("upper case 'A'").defaultValue(2).build());
     
-//    List<String> PROFILES_DEFAULT_VALUE = new ListJsonFieldDeserializer<>(StringJsonFieldDeserializer.getInstance()).deserialize(["admin_profile","regular_profile"]);
-    
     Assert.assertEquals("package x.y.z.pojo;\n"
         + "\n"
         + "import java.util.Objects;\n"

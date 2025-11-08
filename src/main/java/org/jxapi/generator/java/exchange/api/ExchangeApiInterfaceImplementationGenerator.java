@@ -658,7 +658,9 @@ public class ExchangeApiInterfaceImplementationGenerator extends JavaTypeGenerat
     return topicSerializerBody + ";\n";
   }
   
-  private void generateRestEndpointMethodDeclaration(RestEndpointDescriptor restApi, Map<String, String> restRequestDefaultStaticVariables) {
+  private void generateRestEndpointMethodDeclaration(
+      RestEndpointDescriptor restApi, 
+      Map<String, String> restRequestDefaultStaticVariables) {
     Field request = restApi.getRequest();
     Type requestDataType = ExchangeGenUtil.getFieldType(request);
     Field response = restApi.getResponse();
@@ -715,14 +717,14 @@ public class ExchangeApiInterfaceImplementationGenerator extends JavaTypeGenerat
     
     String apiMethodName = ExchangeApiGenUtil.getRestApiMethodName(restApi, exchangeApiDescriptor.getRestEndpoints());
     String apiMethodSignature =  new StringBuilder()
-                      .append(FutureRestResponse.class.getSimpleName())
-                      .append("<")
-                      .append(responseSimpleClassName)
-                      .append("> ")
-                      .append(apiMethodName)
-                      .append("(")
-                      .append(hasArguments? requestSimpleClassName + " " + requestArgName : "")
-                      .append(")").toString(); 
+        .append(FutureRestResponse.class.getSimpleName())
+        .append("<")
+        .append(responseSimpleClassName)
+        .append("> ")
+        .append(apiMethodName)
+        .append("(")
+        .append(hasArguments? requestSimpleClassName + " " + requestArgName : "")
+        .append(")").toString(); 
     
     addImport(FutureRestResponse.class);
     String urlVariableName = "url";
@@ -757,10 +759,37 @@ public class ExchangeApiInterfaceImplementationGenerator extends JavaTypeGenerat
     
     addImport(HttpRequest.class);
     addRestEndpointUrlDeclarations(restApi, restEndpointJavadocLink);
-    String endpointUrlVar = getRestEndpointUrlVariable(restApi);
+    
     boolean requestHasBody = Optional
         .ofNullable(restApi.isRequestHasBody())
         .orElse(restApi.getHttpMethod().requestHasBody) && hasArguments;
+    String createHttpRequestInstruction = generateRestEndpointMethodCreateHttpRequestInstruction(
+        restApi,
+        urlVariableName, 
+        urlDeclaration, 
+        rateLimitsVariable, 
+        requestWeight, 
+        hasArguments, 
+        requestArgName);
+        
+    apiMethodBody.append(createSubmitRequestInstruction(
+        restApi, 
+        createHttpRequestInstruction,
+        deserializerVariableName, 
+        requestHasBody));
+    
+    addRestMethod(OVERRIDE_PUBLIC + apiMethodSignature, apiMethodBody.toString());
+  }
+  
+  private String generateRestEndpointMethodCreateHttpRequestInstruction(
+      RestEndpointDescriptor restApi,
+      String urlVariableName, 
+      String urlDeclaration, 
+      String rateLimitsVariable, 
+      int requestWeight, 
+      boolean hasArguments,
+      String requestArgName) {
+    String endpointUrlVar = getRestEndpointUrlVariable(restApi);
     StringBuilder createHttpRequestInstruction = new StringBuilder()
         .append("HttpRequest.create(")
         .append(restEndpointNamesStaticVariables.get(restApi.getName()))
@@ -782,7 +811,14 @@ public class ExchangeApiInterfaceImplementationGenerator extends JavaTypeGenerat
         .append(", ")
         .append(requestWeight)
         .append(")");
-        
+    return createHttpRequestInstruction.toString();
+  }
+  
+  private String createSubmitRequestInstruction(
+      RestEndpointDescriptor restApi, 
+      String createHttpRequestInstruction,
+      String deserializerVariableName,
+      boolean requestHasBody) {
     StringBuilder submitRequestInstruction = new StringBuilder();
     String endpointCallArg = "";
     if (restApi.isPaginated()) {
@@ -792,16 +828,14 @@ public class ExchangeApiInterfaceImplementationGenerator extends JavaTypeGenerat
       submitRequestInstruction.append("submit(");
     }
     submitRequestInstruction
-      .append(createHttpRequestInstruction.toString())
+      .append(createHttpRequestInstruction)
       .append(", ")
       .append(requestHasBody)
       .append(", ")
       .append(deserializerVariableName)
       .append(endpointCallArg)
       .append(");\n");
-    apiMethodBody.append(submitRequestInstruction.toString());
-    
-    addRestMethod(OVERRIDE_PUBLIC + apiMethodSignature, apiMethodBody.toString());
+    return submitRequestInstruction.toString();
   }
   
   private String generateRequestAsDefaultValueIfNullInstruction(String defaultValueStaticVariableName) {

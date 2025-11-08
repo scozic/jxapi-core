@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.function.Function;
+import java.util.function.UnaryOperator;
 import java.util.stream.Collectors;
 
 import org.jxapi.exchange.ExchangeApi;
@@ -257,7 +257,7 @@ public class ExchangeApiGenUtil {
              JavaCodeGenUtil::firstLetterToUpperCase);
   }
   
-  private static String getEndpointMethodOrVariableName(String endpointName, List<String> allEndpointNames, Function<String, String> transformFunction) {
+  private static String getEndpointMethodOrVariableName(String endpointName, List<String> allEndpointNames, UnaryOperator<String> transformFunction) {
     for (String otherEndpointName : allEndpointNames) {
       if (!Objects.equals(endpointName, otherEndpointName)
           && Objects.equals(transformFunction.apply(endpointName), transformFunction.apply(otherEndpointName))) {
@@ -617,16 +617,6 @@ public class ExchangeApiGenUtil {
   }
 
   /**
-   * Generates the name of expected static {@link String} variable holding a Websocket endpoint name.
-   * @param websocketEndpointName The Websocket endpoint name
-   * @return the static variable name for the Websocket endpoint name.
-   */
-  @Deprecated
-  public static String getWebsocketEndpointNameStaticVariable(String websocketEndpointName) {
-    return JavaCodeGenUtil.getStaticVariableName(websocketEndpointName) + "_WS_API";
-  }
-
-  /**
    * A given {@link Field} may have an object name defined, see
    * {@link Field#getObjectName()} and properties of this objectName defined in
    * another API of the enclosing ExchangeApi, or it could be the case for some
@@ -785,16 +775,6 @@ public class ExchangeApiGenUtil {
                             List<Field> fields) {
     return fields.stream().map(f -> resolveFieldProperties(exchangeApiDescriptor, f))
                 .collect(Collectors.toList());
-  }
-  
-  /**
-   * Generates expected property name in a generated {@link ExchangeApi} for HTTP URL of a REST endpoint.
-   * @param restEndpointDescriptor The REST endpoint descriptor
-   * @return The expected property name for the REST endpoint URL, for instance <code>myRestEndpointUrl</code>
-   */
-  @Deprecated
-  public static String getRestEndpointUrlVariableName(RestEndpointDescriptor restEndpointDescriptor) {
-    return JavaCodeGenUtil.firstLetterToLowerCase(restEndpointDescriptor.getName() + "HttpUrl");
   }
   
   /**
