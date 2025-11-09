@@ -243,10 +243,32 @@ public class PojoGenUtil {
       }
   }
   
+  /**
+   * Generates the name of the constant representing the default value of a field.
+   * 
+   * @param field The field for which to generate the default value constant name
+   * @return The generated default value constant name
+   */
   public static String getDefaultValueConstantName(Field field) {
     return field.getName() + "DefaultValue";
   }
   
+  /**
+   * Generates static field declarations for default values of fields.
+   * 
+   * @param fields                          The fields to generate default value
+   *                                        static field declarations for
+   * @param imports                         The imports to add the necessary
+   *                                        imports to
+   * @param docPlaceHolderResolver          The placeholder resolver for
+   *                                        documentation
+   * @param defaultValuePlaceHolderResolver The placeholder resolver for default
+   *                                        values
+   * @param classBody                       The class body to append the generated
+   *                                        static field declarations to
+   * @return A map of field names to their corresponding default value constant
+   *         names
+   */
   public static Map<String, String> generateDefaultValuesStaticFieldDeclarations(
       List<Field> fields, 
       Imports imports,

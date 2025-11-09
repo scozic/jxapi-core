@@ -39,15 +39,14 @@ public class PojoGeneratorTest {
     PlaceHolderResolver defaultValuePlaceHolderResolver = PlaceHolderResolver
         .create(Map.of("constants.profiles.admin", "admin_profile", 
                       "constants.profiles.regular", "regular_profile"));
-    PlaceHolderResolver defaultValuePlaceHolderResolverAsQuoteString = 
-        s -> JavaCodeGenUtil.getQuotedString(defaultValuePlaceHolderResolver.resolve(s));
-    PojoGenerator generator = new PojoGenerator(typeName, 
-                                                typeDescription, 
-                                                properties, 
-                                                List.of("com.x.common.MyInterface"), 
-                                                docPlaceHolderResolver);
+    PojoGenerator generator = new PojoGenerator(
+        typeName, 
+        typeDescription, 
+        properties, 
+        List.of("com.x.common.MyInterface"), 
+        docPlaceHolderResolver,
+        imports -> s -> JavaCodeGenUtil.getQuotedString(defaultValuePlaceHolderResolver.resolve(s)));
     
-    generator.setDefaultValuePlaceHolderResolver(defaultValuePlaceHolderResolverAsQuoteString);
     Assert.assertEquals("package com.x;\n"
         + "\n"
         + "import java.util.List;\n"
@@ -367,7 +366,7 @@ public class PojoGeneratorTest {
             Field.builder().type(Type.LONG).name("id").description("identifier").build()))
       .build()
     );
-    PojoGenerator generator = new PojoGenerator(typeName, typeDescription, properties, null, null);
+    PojoGenerator generator = new PojoGenerator(typeName, typeDescription, properties, null, null, null);
     Assert.assertEquals("package com.x.pojo;\n"
         + "\n"
         + "import java.util.Objects;\n"
@@ -493,7 +492,7 @@ public class PojoGeneratorTest {
   public void testGenerate_NullProperties() {
     String typeName = "com.x.pojo.MyPojoWithNullProperties";
     String typeDescription = "Used in PojoGeneratorTest";
-    PojoGenerator generator = new PojoGenerator(typeName, typeDescription, null, null, null);
+    PojoGenerator generator = new PojoGenerator(typeName, typeDescription, null, null, null, null);
     Assert.assertEquals("package com.x.pojo;\n"
         + "\n"
         + "import com.fasterxml.jackson.databind.annotation.JsonSerialize;\n"
@@ -582,7 +581,7 @@ public class PojoGeneratorTest {
   
   @Test
   public void testGeneratePojoCodeMultipleFields() {
-    PojoGenerator generator = new PojoGenerator("x.y.z.pojo.Foo", null, null, null, null);
+    PojoGenerator generator = new PojoGenerator("x.y.z.pojo.Foo", null, null, null, null, null);
     generator.addField(Field.builder().type(Type.STRING).name("name").description("the name").build());
     generator.addField(Field.builder().objectName("Bar").name("bar").msgField("b").build());
     generator.addField(Field.builder().type(Type.INT).name("a").description("lower case 'a'").defaultValue(1).build());
@@ -824,7 +823,13 @@ public class PojoGeneratorTest {
     String typeName = "com.x.MyPojo";
     String typeDescription = "Used in PojoGeneratorTest";
     List<Field> properties = List.of();
-    PojoGenerator generator = new PojoGenerator(typeName, typeDescription, properties, List.of("com.x.common.MyInterface"), null);
+    PojoGenerator generator = new PojoGenerator(
+        typeName, 
+        typeDescription, 
+        properties, 
+        List.of("com.x.common.MyInterface"), 
+        null, 
+        null);
     Assert.assertEquals("package com.x;\n"
         + "\n"
         + "import com.fasterxml.jackson.databind.annotation.JsonSerialize;\n"

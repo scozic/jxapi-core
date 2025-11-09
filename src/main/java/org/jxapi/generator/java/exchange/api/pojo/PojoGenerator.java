@@ -12,6 +12,7 @@ import org.jxapi.exchange.descriptor.Field;
 import org.jxapi.exchange.descriptor.Type;
 import org.jxapi.generator.java.JavaCodeGenUtil;
 import org.jxapi.generator.java.JavaTypeGenerator;
+import org.jxapi.generator.java.exchange.ConstantValuePlaceholderResolverFactory;
 import org.jxapi.generator.java.exchange.ExchangeGenUtil;
 import org.jxapi.generator.java.exchange.api.ExchangeApiGenUtil;
 import org.jxapi.util.CollectionUtil;
@@ -88,15 +89,20 @@ public class PojoGenerator extends JavaTypeGenerator {
    * @param fields The properties of the class
    * @param implementedInterfaces The interfaces implemented by the class (in addition to {@link Pojo})
    * @param docPlaceHolderResolver PlaceHolderResolver to resolve placeholders in descriptions.
+   * @param constantValuePlaceHolderResolverFactory Factory to create PlaceHolderResolver
    */
   public PojoGenerator(String className, 
        String description, 
        List<Field> fields, 
        List<String> implementedInterfaces,
-       PlaceHolderResolver docPlaceHolderResolver) {
+       PlaceHolderResolver docPlaceHolderResolver,
+       ConstantValuePlaceholderResolverFactory constantValuePlaceHolderResolverFactory) {
     super(className);
     setTypeDeclaration("public class");
     this.docPlaceHolderResolver = Optional.ofNullable(docPlaceHolderResolver).orElse(PlaceHolderResolver.NO_OP);
+    this.defaultValuePlaceHolderResolver = constantValuePlaceHolderResolverFactory != null
+        ? constantValuePlaceHolderResolverFactory.createConstantValuePlaceholderResolver(getImports())
+        : JavaCodeGenUtil::getQuotedString;
     this.fields.addAll(Optional.ofNullable(fields).orElse(List.of()));
     String serializerClassName = PojoGenUtil.getSerializerClassName(className);
     addImport(serializerClassName);
@@ -357,9 +363,9 @@ public class PojoGenerator extends JavaTypeGenerator {
         .append("</code> field in the builder");
     if (description != null) {
       javadoc.append("\n@param ")
-                .append(name).append(" ")
-                .append(description);
-        }
+         .append(name).append(" ")
+         .append(description);
+    }
     
         
     javadoc.append("\n@return Builder instance")
@@ -595,23 +601,4 @@ public class PojoGenerator extends JavaTypeGenerator {
     }
     appendMethod(signature, body.toString());
   }
-
-  /**
-   * Gets the resolver for constant references in default values.
-   * 
-   * @return the resolver to use to resolve default values. Can be null.
-   * @see #setConstantValuePlaceHolderResolver(PlaceHolderResolver)
-   */     
-  public PlaceHolderResolver getDefaultValuePlaceHolderResolver() {
-    return defaultValuePlaceHolderResolver;
-  }
-
-  /**
-   * Sets the resolver for constant references in default values.
-   * @param defaultValuePlaceHolderResolver the resolver to use to resolve default values. Can be null.
-   */
-  public void setDefaultValuePlaceHolderResolver(PlaceHolderResolver defaultValuePlaceHolderResolver) {
-    this.defaultValuePlaceHolderResolver = defaultValuePlaceHolderResolver;
-  }
-
 }

@@ -222,6 +222,7 @@ public class ExchangeApiGenUtil {
   
   /**
    * @param restEndpointDescriptor REST endpoint
+   * @param allRestEndpoints       All REST endpoints of the exchange API,
    * @return Expected name for generated exchange API group interface method for
    *         calling given REST endpoint
    */

@@ -112,8 +112,7 @@ import org.springframework.util.CollectionUtils;
  * {@link HttpRequest#create(String, String, HttpMethod, Object, List, int, String)}
  * method.
  * <li>Set the url of the request using the endpoint URL static variable.
- * <li>Generate a submit request instruction using
- * {@link AbstractExchangeApi#submit(String, boolean, MessageDeserializer} method.
+ * <li>Generate a submit request instruction using protected <code>submit(</code> method.
  * </ul>
  * </ul>
  * <p>

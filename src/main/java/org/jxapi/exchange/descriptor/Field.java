@@ -389,7 +389,7 @@ public class Field {
   }
 
   /**
-   * Sets the default value of this field.<p> 
+   * Sets the default value of this field. 
    * 
    * @param defaultValue The default value of this field.
    */

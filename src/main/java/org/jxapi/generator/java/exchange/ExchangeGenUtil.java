@@ -1060,7 +1060,7 @@ public class ExchangeGenUtil {
    * Generates unique camel case method names for each API defined in the given
    * exchange descriptor.
    * 
-   * @param apis list of APIs defined in the exchange descriptor, should not be </code>null</code>
+   * @param apis list of APIs defined in the exchange descriptor, should not be <code>null</code>
    * @return A map of API name to unique camel case getter method name for that
    *         API.
    */

@@ -17,6 +17,10 @@ public class ExchangeConstantValuePlaceholderResolverFactory implements Constant
 
   private final ExchangeDescriptor exchangeDescriptor;
   
+  /**
+   * Constructor.
+   * @param exchangeDescriptor the exchange descriptor containing the constants
+   */
   public ExchangeConstantValuePlaceholderResolverFactory(ExchangeDescriptor exchangeDescriptor) {
     this.exchangeDescriptor = exchangeDescriptor;
   }
