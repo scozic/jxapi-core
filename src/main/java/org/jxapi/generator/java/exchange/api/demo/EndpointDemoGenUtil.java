@@ -439,6 +439,7 @@ public class EndpointDemoGenUtil {
    * @param exchangeVariableName The name of variable referencing an {@link Exchange} instance.
    * @param apiVariableName      The name of the variable to declare for the test API instance.
    * @param simpleApiClassName    The simple {@link ExchangeApi} interface class name.
+   * @param apiGetterMethodName  The getter method name in {@link Exchange} interface to retrieve the API instance.
    * @return the new test API instantiation instruction.
    * 
    * @see Exchange

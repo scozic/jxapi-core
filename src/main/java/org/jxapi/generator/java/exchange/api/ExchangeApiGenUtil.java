@@ -233,8 +233,12 @@ public class ExchangeApiGenUtil {
 
   /**
    * Generates expected name for a websocket endpoint subscription method
+   * 
    * @param websocketEndpointDescriptor The websocket endpoint descriptor
-   * @return expected name for a websocket endpoint subscription method, like <code>subscribeMyEndpoint</code>
+   * @param allWebsocketEndpoints       All websocket endpoints of the exchange
+   *                                    API, should not be <code>null</code>
+   * @return expected name for a websocket endpoint subscription method, like
+   *         <code>subscribeMyEndpoint</code>
    */
   public static String getWebsocketSubscribeMethodName(
       WebsocketEndpointDescriptor websocketEndpointDescriptor, 
@@ -246,8 +250,12 @@ public class ExchangeApiGenUtil {
 
   /**
    * Generates expected name for a websocket endpoint unsubscription method
+   * 
    * @param websocketEndpointDescriptor The websocket endpoint descriptor
-   * @return expected name for a websocket endpoint unsubscription method, like <code>unsubscribeMyEndpoint</code>
+   * @param allWebsocketEndpoints       All websocket endpoints of the exchange
+   *                                    API, should not be <code>null</code>
+   * @return expected name for a websocket endpoint unsubscription method, like
+   *         <code>unsubscribeMyEndpoint</code>
    */
   public static String getWebsocketUnsubscribeMethodName(
       WebsocketEndpointDescriptor websocketEndpointDescriptor, 
@@ -257,7 +265,10 @@ public class ExchangeApiGenUtil {
              JavaCodeGenUtil::firstLetterToUpperCase);
   }
   
-  private static String getEndpointMethodOrVariableName(String endpointName, List<String> allEndpointNames, UnaryOperator<String> transformFunction) {
+  private static String getEndpointMethodOrVariableName(
+      String endpointName, 
+      List<String> allEndpointNames, 
+      UnaryOperator<String> transformFunction) {
     for (String otherEndpointName : allEndpointNames) {
       if (!Objects.equals(endpointName, otherEndpointName)
           && Objects.equals(transformFunction.apply(endpointName), transformFunction.apply(otherEndpointName))) {
@@ -778,10 +789,13 @@ public class ExchangeApiGenUtil {
   }
   
   /**
-   * Generates expected camel case value of varibale name in a generated {@link ExchangeApi}
-   * for default value of REST endpoint request.<p>
-   * Remark: The actual variable name will be the static variable name generated from this value, respecting uniqueness,
-   * see #generateRestEndpointRequestDefaultValuesStaticFieldDeclarations(List, Imports, PlaceHolderResolver, PlaceHolderResolver, StringBuilder)
+   * Generates expected camel case value of varibale name in a generated
+   * {@link ExchangeApi} for default value of REST endpoint request.
+   * <p>
+   * Remark: The actual variable name will be the static variable name generated
+   * from this value, respecting uniqueness, see
+   * #generateRestEndpointRequestDefaultValuesStaticFieldDeclarations(List,
+   * Imports, PlaceHolderResolver, PlaceHolderResolver, StringBuilder)
    * 
    * @param restEndpointDescriptor The REST endpoint descriptor
    * @return The expected static variable name for the REST endpoint request
@@ -794,9 +808,11 @@ public class ExchangeApiGenUtil {
   
   /**
    * Generates expected static variable name in a generated {@link ExchangeApi}
-   * for default value of Websocket endpoint request.
-   * Remark: The actual variable name will be the static variable name generated from this value, respecting uniqueness,
-   * see #generateWebsocketEndpointRequestDefaultValuesStaticFieldDeclarations(List, Imports, PlaceHolderResolver, PlaceHolderResolver, StringBuilder)
+   * for default value of Websocket endpoint request. Remark: The actual variable
+   * name will be the static variable name generated from this value, respecting
+   * uniqueness, see
+   * #generateWebsocketEndpointRequestDefaultValuesStaticFieldDeclarations(List,
+   * Imports, PlaceHolderResolver, PlaceHolderResolver, StringBuilder)
    * 
    * @param wsEndpointDescriptor The Websocket endpoint descriptor
    * @return The expected static variable name for the Websocket endpoint request
@@ -869,7 +885,7 @@ public class ExchangeApiGenUtil {
    *                                        appended and associated imports not
    *                                        added to import list.
    * @return Map indexed with
-   *         {@link #getWebsocketEndpointRequestDefaultValueVariableName(RestEndpointDescriptor)}
+   *         {@link #getWebsocketEndpointRequestDefaultValueVariableName(WebsocketEndpointDescriptor)}
    *         for each websocket endpoint which request has a default value, mapped to
    *         associated static variable name.
    */
@@ -896,6 +912,25 @@ public class ExchangeApiGenUtil {
         classBody);  
   }
   
+  /**
+   * Generates static variable declarations for endpoint names with given suffix.
+   * <p>
+   * For each endpoint name in <code>enpointNames</code>, a static variable is
+   * generated with name <code>endpointName+suffix</code> and value the quoted
+   * string of the endpoint name.
+   * <p>
+   * If <code>classBody</code> is not <code>null</code>, the generated static
+   * variable declarations are appended to it.
+   * 
+   * @param enpointNames List of endpoint names
+   * @param suffix       Suffix to append to endpoint name to generate static
+   *                     variable name
+   * @param classBody    StringBuilder to append generated field declarations to.
+   *                     Can be null, in which case no field declarations are
+   *                     appended.
+   * @return Map indexed with endpoint name, mapped to associated static variable
+   *         name.
+   */
   public static Map<String, String> generateEndpointNameStaticVariablesDeclaration(List<String> enpointNames, String suffix, StringBuilder classBody) {
     Map<String, String> res = CollectionUtil.createMap();
     Map<String, Constant> constants = CollectionUtil.createMap();

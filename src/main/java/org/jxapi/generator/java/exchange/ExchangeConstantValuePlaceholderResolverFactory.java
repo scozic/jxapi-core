@@ -10,8 +10,8 @@ import org.jxapi.util.PlaceHolderResolver;
  * This implementation creates PlaceHolderResolver instances that generate substitution instruction declarations
  * for constants defined in the ExchangeDescriptor.
  * 
- * @see {@link ExchangeDescriptor}
- * @see {@link Constant}
+ * @see ExchangeDescriptor
+ * @see Constant
  */
 public class ExchangeConstantValuePlaceholderResolverFactory implements ConstantValuePlaceholderResolverFactory {
 

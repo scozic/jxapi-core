@@ -113,7 +113,7 @@ import org.springframework.util.CollectionUtils;
  * method.
  * <li>Set the url of the request using the endpoint URL static variable.
  * <li>Generate a submit request instruction using
- * {@link AbstractExchangeApi#submit(HttpRequest, MessageDeserializer)} method.
+ * {@link AbstractExchangeApi#submit(String, boolean, MessageDeserializer} method.
  * </ul>
  * </ul>
  * <p>

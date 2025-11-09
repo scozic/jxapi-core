@@ -38,8 +38,9 @@ public class ExchangeApiClassesGenerator implements ClassesGenerator {
   /**
    * Constructor.
    * 
-   * @param exchangeDescriptor    the exchange descriptor where the API is defined
-   * @param exchangeApiDescriptor the API descriptor to generate classes for
+   * @param exchangeDescriptor     the exchange descriptor where the API is defined
+   * @param exchangeApiDescriptor  the API descriptor to generate classes for
+   * @param docPlaceHolderResolver the placeholder resolver to use for documentation generation
    */
   public ExchangeApiClassesGenerator(ExchangeDescriptor exchangeDescriptor,
                                      ExchangeApiDescriptor exchangeApiDescriptor,

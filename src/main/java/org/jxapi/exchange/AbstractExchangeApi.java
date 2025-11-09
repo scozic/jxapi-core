@@ -404,7 +404,7 @@ public abstract class AbstractExchangeApi extends DefaultDisposable implements E
    * Dispatches the specified exchange API event to all observers.
    * <br>
    * Needs usually not be called by subclasses, as it is called for every call to
-   * {@link #submit(HttpRequest, MessageDeserializer)} and
+   * {@link #submit(HttpRequest, boolean, MessageDeserializer)} and
    * {@link #createWebsocketEndpoint(String, MessageDeserializer)}.
    * 
    * @param event The exchange API event to dispatch.
