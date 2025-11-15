@@ -1,6 +1,7 @@
 package org.jxapi.netutils.websocket.multiplexing;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Factory interface for creating {@link WebsocketMessageTopicMatcher} instances.
@@ -30,6 +31,7 @@ public interface WebsocketMessageTopicMatcherFactory {
    * 
    * @see DefaultWebsocketMessageTopicMatcher
    */
+  @Deprecated
   static WebsocketMessageTopicMatcherFactory create(String... fieldNamesAndValues) {
     if (fieldNamesAndValues.length <= 0) {
       return ANY_MATCHER_FACTORY;
@@ -43,4 +45,5 @@ public interface WebsocketMessageTopicMatcherFactory {
    */
   WebsocketMessageTopicMatcherFactory ANY_MATCHER_FACTORY = () -> WebsocketMessageTopicMatcher.ANY_MATCHER;
   
+
 }

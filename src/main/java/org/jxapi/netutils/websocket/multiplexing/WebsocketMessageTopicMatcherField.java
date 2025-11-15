@@ -8,7 +8,9 @@ import org.jxapi.util.EncodingUtil;
 /**
  * A field to match in a {@link WebsocketMessageTopicMatcher}.
  * Represents a key (field name) and a value for that field to match against.
+ * @deprecated As of release 0.19.0, replaced by specific {@link WebsocketMessageTopicMatcher} implementations like {@link FieldValueWebsocketMessageTopicMatcher} and {@link FieldRegexpWebsocketMessageTopicMatcher}.
  */
+@Deprecated
 public class WebsocketMessageTopicMatcherField {
   
   /**

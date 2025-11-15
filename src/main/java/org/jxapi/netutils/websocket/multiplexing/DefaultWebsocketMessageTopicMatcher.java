@@ -12,19 +12,18 @@ import org.jxapi.util.CollectionUtil;
  * @see WebsocketMessageTopicMatcher
  * @see WebsocketMessageTopicMatchStatus
  */
-public class DefaultWebsocketMessageTopicMatcher implements WebsocketMessageTopicMatcher {
+public class DefaultWebsocketMessageTopicMatcher extends AbstractWebsocketMessageTopicMatcher {
   
   private final Map<String, ValueToMatch> valuesToMatch;
   
   private int valuesToMatchCount = 0;
-  
-  private WebsocketMessageTopicMatchStatus status = WebsocketMessageTopicMatchStatus.NO_MATCH;
   
   /**
    * Constructor
    * 
    * @param fields list of fields and values incoming messages must match to be
    *               considered as matched
+   * @param regexpValues whether field values are regular expressions              
    */
   public DefaultWebsocketMessageTopicMatcher(List<WebsocketMessageTopicMatcherField> fields) {
     this.valuesToMatch = new HashMap<>(fields.size());
@@ -47,7 +46,7 @@ public class DefaultWebsocketMessageTopicMatcher implements WebsocketMessageTopi
     if (v == null) {
       return this.status;
     }
-    if (!v.value.equals(value)) {
+    if (!v.matches(value)) {
       this.status = WebsocketMessageTopicMatchStatus.CANT_MATCH;
     } else if (!v.matched) {
       v.matched = true;
@@ -57,11 +56,6 @@ public class DefaultWebsocketMessageTopicMatcher implements WebsocketMessageTopi
       }
     }
     
-    return this.status;
-  }
-
-  @Override
-  public WebsocketMessageTopicMatchStatus getStatus() {
     return this.status;
   }
 
@@ -78,8 +72,12 @@ public class DefaultWebsocketMessageTopicMatcher implements WebsocketMessageTopi
     final String value;
     boolean matched = false;
     
-    public ValueToMatch(String value) {
+    ValueToMatch(String value) {
       this.value = value;
+    }
+    
+    boolean matches(String v) {
+      return value.equals(v);
     }
     
     @Override
@@ -92,7 +90,8 @@ public class DefaultWebsocketMessageTopicMatcher implements WebsocketMessageTopi
   public String toString() {
     return new StringBuilder()
           .append(getClass().getSimpleName())
-          .append(valuesToMatch).toString();
+          .append(valuesToMatch)
+          .toString();
   }
 
 }

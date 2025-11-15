@@ -14,6 +14,9 @@ import org.jxapi.exchanges.demo.gen.marketdata.pojo.SingleSymbol;
  */
 @Generated("org.jxapi.generator.java.exchange.api.pojo.JsonPojoSerializerGenerator")
 public class SingleSymbolSerializer extends StdSerializer<SingleSymbol> {
+  /**
+   * Constructor
+   */
   public SingleSymbolSerializer() {
     super(SingleSymbol.class);
   }

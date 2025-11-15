@@ -71,6 +71,9 @@ public class EmployeeV1ApiImpl extends AbstractExchangeApi implements EmployeeV1
   private final MessageDeserializer<String> deleteEmployeeResponseDeserializer = RawStringMessageDeserializer.getInstance();
   
   // Constructor
+  /**
+   * Constructor
+   */
   public EmployeeV1ApiImpl(EmployeeExchange exchange) {
     super(ID,
           exchange,

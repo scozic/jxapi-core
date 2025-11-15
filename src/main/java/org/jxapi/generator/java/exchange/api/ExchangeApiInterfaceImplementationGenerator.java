@@ -283,7 +283,7 @@ public class ExchangeApiInterfaceImplementationGenerator extends JavaTypeGenerat
     appendVariablesToBody(websocketEndpointDeclarations, "Websocket endpoints");
     appendVariablesToBody(messageDeserializerVariablesDeclarations, "Message deserializers");
     appendSeparatorCommentLine("Constructor");
-    appendMethod(generateConstructorSignature(), generateConstructorBody());
+    appendMethod(generateConstructorSignature(), generateConstructorBody(), "Constructor");
     appendRestMethods();
     appendWsMethods();
     generateRateLimitRuleGetters();

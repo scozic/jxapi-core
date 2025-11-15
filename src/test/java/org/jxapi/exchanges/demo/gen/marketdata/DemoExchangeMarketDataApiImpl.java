@@ -84,6 +84,9 @@ public class DemoExchangeMarketDataApiImpl extends AbstractExchangeApi implement
   private final MessageDeserializer<GenericResponse> postRestRequestDataTypeObjectListMapResponseDeserializer = new GenericResponseDeserializer();
   
   // Constructor
+  /**
+   * Constructor
+   */
   public DemoExchangeMarketDataApiImpl(DemoExchangeExchange exchange) {
     super(ID,
           exchange,

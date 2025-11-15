@@ -63,7 +63,9 @@ public class JsonPojoSerializerGenerator extends JavaTypeGenerator {
   }
 
   private void generateConstructor() {
-    appendMethod("public " + getSimpleName() + "()", "super(" + JavaCodeGenUtil.getClassNameWithoutPackage(serializedTypeClassName) + ".class);");
+    appendMethod("public " + getSimpleName() + "()", 
+                "super(" + JavaCodeGenUtil.getClassNameWithoutPackage(serializedTypeClassName) + ".class);",
+                "Constructor");
     appendToBody("\n");  
   }
 

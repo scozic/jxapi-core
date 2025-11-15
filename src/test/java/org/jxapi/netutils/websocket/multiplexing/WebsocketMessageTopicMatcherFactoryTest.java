@@ -33,4 +33,5 @@ public class WebsocketMessageTopicMatcherFactoryTest {
         Assert.assertEquals(WebsocketMessageTopicMatchStatus.MATCHED, matcher.matches("f2", "value2"));
         Assert.assertEquals(WebsocketMessageTopicMatchStatus.MATCHED, matcher.getStatus());
   }
+  
 }
