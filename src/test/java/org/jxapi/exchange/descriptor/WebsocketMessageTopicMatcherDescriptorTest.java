@@ -6,36 +6,56 @@ import org.junit.Assert;
 import org.junit.Test;
 
 /**
- * Unit test for {@link WebsocketMessageTopicMatcherDescriptor}
+ * Unit test for {@link WebsocketTopicMatcherDescriptor}
  */
 public class WebsocketMessageTopicMatcherDescriptorTest {
 
     @Test
     public void testCreateWebsocketMessageTopicMatcherDescriptor() {
-        WebsocketMessageTopicMatcherDescriptor descriptor = new WebsocketMessageTopicMatcherDescriptor();
+        WebsocketTopicMatcherDescriptor descriptor = new WebsocketTopicMatcherDescriptor();
         Assert.assertNotNull(descriptor);
     }
 
     @Test
     public void testGettersAndSetters() {
-        WebsocketMessageTopicMatcherDescriptor descriptor = new WebsocketMessageTopicMatcherDescriptor();
-        WebsocketMessageTopicMatcherFieldDescriptor field = new WebsocketMessageTopicMatcherFieldDescriptor();
-        field.setName("name");
-        field.setValue("value");
-        descriptor.setFields(List.of(field));
-        Assert.assertEquals(1, descriptor.getFields().size());
-        Assert.assertEquals("name", descriptor.getFields().get(0).getName());
-        Assert.assertEquals("value", descriptor.getFields().get(0).getValue());
+        WebsocketTopicMatcherDescriptor descriptor = new WebsocketTopicMatcherDescriptor();
+        descriptor.setFieldName("testField");
+        descriptor.setFieldValue("testValue");
+        descriptor.setFieldRegexp("test.*");
+        List<WebsocketTopicMatcherDescriptor> orList = List.of(new WebsocketTopicMatcherDescriptor());
+        descriptor.setOr(orList);
+        List<WebsocketTopicMatcherDescriptor> andList = List.of(new WebsocketTopicMatcherDescriptor());
+        descriptor.setAnd(andList);
+        Assert.assertEquals("testField", descriptor.getFieldName());
+        Assert.assertEquals("testValue", descriptor.getFieldValue());
+        Assert.assertEquals("test.*", descriptor.getFieldRegexp());
+        Assert.assertSame(orList, descriptor.getOr());
+        Assert.assertSame(andList, descriptor.getAnd());
     }
 
     @Test
     public void testToString() {
-        WebsocketMessageTopicMatcherDescriptor descriptor = new WebsocketMessageTopicMatcherDescriptor();
-        WebsocketMessageTopicMatcherFieldDescriptor field = new WebsocketMessageTopicMatcherFieldDescriptor();
-        field.setName("name");
-        field.setValue("value");
-        descriptor.setFields(List.of(field));
-        Assert.assertEquals("WebsocketMessageTopicMatcherDescriptor{\"fields\":[{\"name\":\"name\",\"value\":\"value\"}]}", 
-                  descriptor.toString());
+        WebsocketTopicMatcherDescriptor fieldValuedescriptor = new WebsocketTopicMatcherDescriptor();
+        fieldValuedescriptor.setFieldName("foo");
+        fieldValuedescriptor.setFieldValue("bar");
+        Assert.assertEquals(
+            "WebsocketMessageTopicMatcherDescriptor{\"fieldName\":\"foo\",\"fieldValue\":\"bar\"}",
+            fieldValuedescriptor.toString());
+        WebsocketTopicMatcherDescriptor fieldRegexpDescriptor = new WebsocketTopicMatcherDescriptor();
+        fieldRegexpDescriptor.setFieldName("foo");
+        fieldRegexpDescriptor.setFieldRegexp("ba.*");
+        Assert.assertEquals(
+            "WebsocketMessageTopicMatcherDescriptor{\"fieldName\":\"foo\",\"fieldRegexp\":\"ba.*\"}",
+            fieldRegexpDescriptor.toString());
+        WebsocketTopicMatcherDescriptor orDescriptor = new WebsocketTopicMatcherDescriptor();
+        orDescriptor.setOr(List.of(fieldValuedescriptor, fieldRegexpDescriptor));
+        Assert.assertEquals(
+            "WebsocketMessageTopicMatcherDescriptor{\"or\":[{\"fieldName\":\"foo\",\"fieldValue\":\"bar\"},{\"fieldName\":\"foo\",\"fieldRegexp\":\"ba.*\"}]}",
+            orDescriptor.toString());
+        WebsocketTopicMatcherDescriptor andDescriptor = new WebsocketTopicMatcherDescriptor();
+        andDescriptor.setAnd(List.of(fieldValuedescriptor, fieldRegexpDescriptor));
+        Assert.assertEquals(
+            "WebsocketMessageTopicMatcherDescriptor{\"and\":[{\"fieldName\":\"foo\",\"fieldValue\":\"bar\"},{\"fieldName\":\"foo\",\"fieldRegexp\":\"ba.*\"}]}",
+            andDescriptor.toString());
     }
 }

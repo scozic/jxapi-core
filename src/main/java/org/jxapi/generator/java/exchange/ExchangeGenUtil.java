@@ -1088,4 +1088,5 @@ public class ExchangeGenUtil {
     return getApiGroupGetterMethodNames(CollectionUtil.emptyIfNull(exchangeDescriptor.getApis()))
             .get(api.getName());
   }
+  
 }

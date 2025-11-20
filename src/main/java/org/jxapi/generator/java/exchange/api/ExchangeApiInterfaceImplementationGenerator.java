@@ -6,7 +6,6 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.TreeMap;
 import java.util.stream.Collectors;
@@ -20,7 +19,6 @@ import org.jxapi.exchange.descriptor.RestEndpointDescriptor;
 import org.jxapi.exchange.descriptor.Type;
 import org.jxapi.exchange.descriptor.UrlParameterType;
 import org.jxapi.exchange.descriptor.WebsocketEndpointDescriptor;
-import org.jxapi.exchange.descriptor.WebsocketMessageTopicMatcherFieldDescriptor;
 import org.jxapi.generator.java.JavaCodeGenUtil;
 import org.jxapi.generator.java.JavaTypeGenerator;
 import org.jxapi.generator.java.exchange.ExchangeGenUtil;
@@ -535,6 +533,8 @@ public class ExchangeApiInterfaceImplementationGenerator extends JavaTypeGenerat
          wsRequestDefaultValuesStaticVariables.get(ExchangeApiGenUtil.getWebsocketEndpointRequestDefaultValueVariableName(websocketApi))))  
       .append("String topic = ")
       .append(generateWebsocketTopicSerializerDeclaration(websocketApi))
+      .append(generateWebsocketTopicMatcherDeclaration(websocketApi))
+      .append("\n")
       .append(WebsocketSubscribeRequest.class.getSimpleName())
       .append(" subscribeRequest = ")
       .append(WebsocketSubscribeRequest.class.getSimpleName())
@@ -543,7 +543,7 @@ public class ExchangeApiInterfaceImplementationGenerator extends JavaTypeGenerat
       .append(", topic, ");
     
     subscribeMethodBody
-      .append(generateWebsocketTopicMatcherDeclaration(websocketApi, request, message, requestArgName, requestClassName))
+      .append(ExchangeApiGenUtil.WEBSOCKET_TOPIC_MATCHER_FACTORY_VAR_NAME)
       .append(");\n")
       .append(RETURN)
       .append(websocketEndpointVariableName)
@@ -557,82 +557,12 @@ public class ExchangeApiInterfaceImplementationGenerator extends JavaTypeGenerat
     addWebsocketMethod(websocketApi.getName(), OVERRIDE_PUBLIC + unsubscribeMethodSignature, unsubscribeMethodBody.toString());
   }
   
-  private String generateWebsocketTopicMatcherDeclaration(WebsocketEndpointDescriptor websocketApi, 
-                              Field request, 
-                              Field msg,
-                              String requestArgName, 
-                              String requestClassName) {
-    StringBuilder topicMatcherDeclaration = new StringBuilder()
-        .append(WebsocketMessageTopicMatcherFactory.class.getSimpleName())
-        .append(".create(");
-    
-    List<String> replacements = new ArrayList<>();
-    replacements.add("topic");
-    replacements.add("\" + topic + \"");
-    if (request != null) {
-      replacements.add(ExchangeApiGenUtil.getRequestArgName(request.getName()));
-      replacements.add("\" + " + requestArgName + " + \"");
-    }
-    List<Field> requestFields = CollectionUtil.emptyIfNull(request == null? null: request.getProperties());
-    for (Field param: requestFields) {
-      replacements.add(param.getMsgField() != null? param.getMsgField(): param.getName());
-      String fieldClass = ExchangeGenUtil.getClassNameForType(param.getType(), getImports(), requestClassName);
-      replacements.add("\" + request." 
-                 + JavaCodeGenUtil.getGetAccessorMethodName(
-                         param.getName(), 
-                         fieldClass, 
-                         requestFields
-                                .stream()
-                                .map(Field::getName)
-                         .collect(Collectors.toList())) 
-                 + "() + \"");
-    }
-    
-    if (!CollectionUtil.isEmpty(websocketApi.getMessageTopicMatcherFields())) {
-      for (int i = 0; i < websocketApi.getMessageTopicMatcherFields().size(); i++) {
-        WebsocketMessageTopicMatcherFieldDescriptor topicMatcherField = websocketApi.getMessageTopicMatcherFields().get(i);
-        String topicMatcherFieldDeclaration = new StringBuilder()
-            .append("\"")
-            .append(getMsgFieldName(topicMatcherField.getName(), msg))
-            .append("\", ")
-            .append(EncodingUtil.substituteArguments("\"" + topicMatcherField.getValue() + "\"", (Object[]) replacements.toArray(new String[replacements.size()])))
-            .toString();
-        String emtpyStrAppend = " + \"\"";
-        if (topicMatcherFieldDeclaration.endsWith(emtpyStrAppend)) {
-          topicMatcherFieldDeclaration = topicMatcherFieldDeclaration.substring(0, topicMatcherFieldDeclaration.length() - emtpyStrAppend.length());
-        }
-        topicMatcherDeclaration.append(topicMatcherFieldDeclaration);  
-        if (i < websocketApi.getMessageTopicMatcherFields().size() - 1) {
-          topicMatcherDeclaration.append(", ");
-        }
-      }
-    }
-    return topicMatcherDeclaration.append(")").toString();
-  }
-  
-  /**
-   * Finds actual field name provided in JSON stream for a field with given name
-   * 
-   * @param name The field name provided in
-   *             {@link WebsocketMessageTopicMatcherFieldDescriptor}
-   * @param msg  The websocket stream data type
-   * @return The msgFieldName (see {@link Field#getMsgField()}) of provided field
-   *         or first of its child fields (see {@link Field#getProperties()} with
-   *         name see {@link Field#getName()} matching that field.
-   */
-  private String getMsgFieldName(String name, Field msg) {
-    Type messageDataType = ExchangeGenUtil.getFieldType(msg);
-    if (Objects.equals(msg.getName(), name)) {
-      return Optional.ofNullable(msg.getMsgField()).orElse(name);
-    } else if (messageDataType.isObject()) {
-      for (Field c: msg.getProperties()) {
-        String res = getMsgFieldName(name, c);
-        if (res != null) {
-          return res;
-        }
-      }
-    }
-    return null;
+  private String generateWebsocketTopicMatcherDeclaration(WebsocketEndpointDescriptor websocketApi) {
+    return ExchangeApiGenUtil.generateWebsocketTopicMatcherFactoryDeclaration(
+        exchangeDescriptor, 
+        exchangeApiDescriptor, 
+        websocketApi, 
+        getImports());
   }
   
   private String generateWebsocketTopicSerializerDeclaration(WebsocketEndpointDescriptor websocketApi) {
@@ -1090,8 +1020,7 @@ public class ExchangeApiInterfaceImplementationGenerator extends JavaTypeGenerat
       restApi, 
       Field f, 
       List<Field> sieblings, 
-      UrlParameterType 
-      urlParameterType, 
+      UrlParameterType urlParameterType, 
       String valuePrefix, 
       List<String> res) {
     f = ExchangeApiGenUtil.resolveFieldProperties(exchangeApiDescriptor, f);
@@ -1108,7 +1037,7 @@ public class ExchangeApiInterfaceImplementationGenerator extends JavaTypeGenerat
       valuePrefix += "." 
         + JavaCodeGenUtil.getGetAccessorMethodName(
           f.getName(),
-          ExchangeApiGenUtil.getClassNameForField(f, null, f.getObjectName()),
+          type,
           sieblings.stream().map(Field::getName).collect(Collectors.toList())) 
         + "()";
     }
@@ -1169,7 +1098,7 @@ public class ExchangeApiInterfaceImplementationGenerator extends JavaTypeGenerat
       String value = "request." 
                + JavaCodeGenUtil.getGetAccessorMethodName(
                 name, 
-                ExchangeApiGenUtil.getClassNameForField(f, null, f.getObjectName()), 
+                type, 
                 fields.stream().map(Field::getName).collect(Collectors.toList()))
                + "()";
       value = getListFieldToUrlParameterSerializerInstuction(value, type, stringListSeparator);

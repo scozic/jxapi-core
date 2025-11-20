@@ -31,8 +31,9 @@ public class WSMTMFUtil {
     };
   }
   
-  static WebsocketMessageTopicMatcherFactory value(String fieldName, String fieldValue) {
-    return () -> new FieldValueWebsocketMessageTopicMatcher(fieldName, fieldValue);
+  static WebsocketMessageTopicMatcherFactory value(String fieldName, Object fieldValue) {
+    String value = fieldValue != null ? fieldValue.toString() : null;
+    return () -> new FieldValueWebsocketMessageTopicMatcher(fieldName, value);
   }
   
   static WebsocketMessageTopicMatcherFactory regexp(String fieldName, String fieldValue) {

@@ -295,7 +295,10 @@ public class PojoGenerator extends JavaTypeGenerator {
       .append("public ")
       .append(typeClass)
       .append(" ")
-      .append(JavaCodeGenUtil.getGetAccessorMethodName(field.getName(), typeClass, getAllFieldNames()))
+      .append(JavaCodeGenUtil.getGetAccessorMethodName(
+          field.getName(), 
+          ExchangeGenUtil.getFieldType(field), 
+          getAllFieldNames()))
       .append("()")
       .toString();
     

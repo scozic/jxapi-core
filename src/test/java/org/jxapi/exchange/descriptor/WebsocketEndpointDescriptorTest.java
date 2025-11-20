@@ -1,7 +1,5 @@
 package org.jxapi.exchange.descriptor;
 
-import java.util.Arrays;
-
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -36,10 +34,10 @@ public class WebsocketEndpointDescriptorTest {
              .description("Test message")
              .sampleValue("bar")
              .build());
-        WebsocketMessageTopicMatcherFieldDescriptor websocketMessageTopicMatcherDescriptor = new WebsocketMessageTopicMatcherFieldDescriptor();
-        websocketMessageTopicMatcherDescriptor.setName("field1");
-        websocketMessageTopicMatcherDescriptor.setValue("value1");
-        descriptor.setMessageTopicMatcherFields(Arrays.asList(websocketMessageTopicMatcherDescriptor));
+        WebsocketTopicMatcherDescriptor websocketMessageTopicMatcherDescriptor = new WebsocketTopicMatcherDescriptor();
+        websocketMessageTopicMatcherDescriptor.setFieldName("field1");
+        websocketMessageTopicMatcherDescriptor.setFieldValue("value1");
+        descriptor.setTopicMatcher(websocketMessageTopicMatcherDescriptor);
     }
 
     @Test
@@ -51,9 +49,10 @@ public class WebsocketEndpointDescriptorTest {
         Assert.assertEquals("https://doc.myexchange.com/websocket/name", descriptor.getDocUrl());
         Assert.assertEquals("atopic", descriptor.getTopic());
         Assert.assertEquals("|", descriptor.getTopicParametersListSeparator());
-        Assert.assertEquals(1, descriptor.getMessageTopicMatcherFields().size());
-        Assert.assertEquals("field1", descriptor.getMessageTopicMatcherFields().get(0).getName());
-        Assert.assertEquals("value1", descriptor.getMessageTopicMatcherFields().get(0).getValue());
+        WebsocketTopicMatcherDescriptor matcherDescriptor = descriptor.getTopicMatcher();
+        Assert.assertNotNull(matcherDescriptor);
+        Assert.assertEquals("field1", matcherDescriptor.getFieldName());
+        Assert.assertEquals("value1", matcherDescriptor.getFieldValue());
         Assert.assertEquals("myRequestField", descriptor.getRequest().getName());
         Assert.assertEquals("STRING", descriptor.getRequest().getType().toString());
         Assert.assertEquals("mf", descriptor.getRequest().getMsgField());

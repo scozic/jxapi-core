@@ -342,10 +342,9 @@ public class PropertiesGenUtil {
     if (property.isGroup()) {
       type = Type.STRING;
     }
-    String typeClass = ExchangeGenUtil.getClassNameForType(type, new Imports(), null);
     return JavaCodeGenUtil.getGetAccessorMethodName(
         name, 
-        typeClass, 
+        type, 
         CollectionUtil.emptyIfNull(allProperties).stream()
           .map(p -> p.getName())
           .collect(Collectors.toList())

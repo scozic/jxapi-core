@@ -1,7 +1,6 @@
 package org.jxapi.netutils.websocket.multiplexing;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * Factory interface for creating {@link WebsocketMessageTopicMatcher} instances.
