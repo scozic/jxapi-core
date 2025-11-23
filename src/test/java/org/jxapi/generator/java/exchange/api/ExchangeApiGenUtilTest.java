@@ -6,13 +6,17 @@ import java.util.Map;
 
 import org.junit.Assert;
 import org.junit.Test;
+import org.jxapi.exchange.descriptor.ConfigPropertyDescriptor;
+import org.jxapi.exchange.descriptor.Constant;
 import org.jxapi.exchange.descriptor.ExchangeApiDescriptor;
 import org.jxapi.exchange.descriptor.ExchangeDescriptor;
 import org.jxapi.exchange.descriptor.Field;
 import org.jxapi.exchange.descriptor.RestEndpointDescriptor;
 import org.jxapi.exchange.descriptor.Type;
 import org.jxapi.exchange.descriptor.WebsocketEndpointDescriptor;
+import org.jxapi.exchange.descriptor.WebsocketTopicMatcherDescriptor;
 import org.jxapi.generator.java.Imports;
+import org.jxapi.generator.java.JavaCodeGenUtil;
 import org.jxapi.netutils.deserialization.RawBigDecimalMessageDeserializer;
 import org.jxapi.netutils.deserialization.RawBooleanMessageDeserializer;
 import org.jxapi.netutils.deserialization.RawIntegerMessageDeserializer;
@@ -21,6 +25,11 @@ import org.jxapi.netutils.deserialization.RawStringMessageDeserializer;
 import org.jxapi.netutils.deserialization.json.field.BigDecimalJsonFieldDeserializer;
 import org.jxapi.netutils.deserialization.json.field.ListJsonFieldDeserializer;
 import org.jxapi.netutils.deserialization.json.field.MapJsonFieldDeserializer;
+import org.jxapi.netutils.websocket.multiplexing.WSMTMFUtil;
+import org.jxapi.netutils.websocket.multiplexing.WebsocketMessageTopicMatcherFactory;
+import org.jxapi.util.EncodingUtil;
+import org.jxapi.util.JsonUtil;
+import org.jxapi.util.PlaceHolderResolver;
 
 /**
  * Unit test for {@link ExchangeApiGenUtil}
@@ -1077,4 +1086,735 @@ public class ExchangeApiGenUtilTest {
       Assert.assertEquals("A_REST_API_", variables.get("A"));
     }
     
+    @Test
+    public void generateValueDeclarationForRequestPlaceholder_validPlaceholders() {
+      // Initialize imports
+      Imports imports = new Imports();
+
+      // Create a mock request field with nested properties
+      Field subField1 = Field.builder().name("subField1").type(Type.BOOLEAN).build();
+      Field subFielda = Field.builder().name("a").build();
+      Field subFieldA = Field.builder().name("A").build();
+      Field nestedField = Field.builder().name("nestedField").type(Type.OBJECT)
+          .property(subField1)
+          .property(subFielda)
+          .property(subFieldA).build();
+
+      Field requestField = Field.builder().name("request").type(Type.OBJECT).property(nestedField).build();
+      Field requestFieldListType = Field.builder().name("request").type(Type.fromTypeName("INT_LIST")).build();
+      Field requestFieldMapType = Field.builder().name("request").type(Type.fromTypeName("OBJECT_MAP"))
+          .property(nestedField)
+          .build();
+      Field primitiveTypeRequestField = Field.builder().name("request").type(Type.LONG).build();
+        
+      // Test valid placeholder for nested field 'subField1'
+      Assert.assertEquals("request.getNestedField().isSubField1()", 
+          ExchangeApiGenUtil.generateValueDeclarationForRequestPlaceholder(
+            "request.nestedField.subField1", 
+            requestField, 
+            imports));
+      
+      // Test conflict between 'a' and 'A' field names
+      Assert.assertEquals("request.getNestedField().geta()", 
+          ExchangeApiGenUtil.generateValueDeclarationForRequestPlaceholder(
+            "request.nestedField.a", 
+            requestField, 
+            imports));
+      Assert.assertEquals("request.getNestedField().getA()", 
+          ExchangeApiGenUtil.generateValueDeclarationForRequestPlaceholder(
+            "request.nestedField.A", 
+            requestField, 
+            imports));
+      
+      // Test using 'request' as the placeholder, request field is of primitive type
+      Assert.assertEquals("request",
+          ExchangeApiGenUtil.generateValueDeclarationForRequestPlaceholder(
+              "request", 
+              primitiveTypeRequestField, 
+              imports));
+      Assert.assertEquals(0, imports.size());
+      
+      // Test using 'object', 'map' or 'list' target field type: should be converted to JSON string
+      Assert.assertEquals("JsonUtil.pojoToJsonString(request)",
+          ExchangeApiGenUtil.generateValueDeclarationForRequestPlaceholder(
+              "request", 
+              requestField, 
+              imports));
+      Assert.assertEquals(1, imports.size());
+      Assert.assertTrue(imports.contains(JsonUtil.class.getName()));
+      Assert.assertEquals("JsonUtil.pojoToJsonString(request)",
+          ExchangeApiGenUtil.generateValueDeclarationForRequestPlaceholder(
+              "request", 
+              requestFieldListType, 
+              imports));
+      Assert.assertEquals("JsonUtil.pojoToJsonString(request)",
+          ExchangeApiGenUtil.generateValueDeclarationForRequestPlaceholder(
+              "request", 
+              requestFieldMapType, 
+              imports));
+    }
+    
+    @Test( expected = IllegalArgumentException.class)
+    public void generateValueDeclarationForRequestPlaceholder_NotFoundPlaceHolder() {
+      Field subField1 = Field.builder().name("subField1").type(Type.BOOLEAN).build();
+      Field requestField = Field.builder().name("request").type(Type.OBJECT).property(subField1).build();
+      ExchangeApiGenUtil.generateValueDeclarationForRequestPlaceholder(
+          "request.foo", 
+          requestField, 
+          new Imports());
+    }
+    
+    @Test
+    public void testGetMsgFieldName() {
+      Assert.assertNull(ExchangeApiGenUtil.getMsgFieldName("foo", null));
+      Field field1 = Field.builder().name("field1").type(Type.BOOLEAN).build();
+      Assert.assertEquals("field1", ExchangeApiGenUtil.getMsgFieldName("field1", field1));
+      Assert.assertNull(ExchangeApiGenUtil.getMsgFieldName("f", field1));
+      Field field2 = Field.builder().name("field2").type(Type.BOOLEAN).msgField("f2").build();
+      Assert.assertEquals("f2", ExchangeApiGenUtil.getMsgFieldName("field2", field2));
+      Field objectField = Field.builder().name("objField").type(Type.OBJECT).property(field1).property(field2).build();
+      Assert.assertEquals("objField", ExchangeApiGenUtil.getMsgFieldName("objField", objectField));
+      Assert.assertEquals("field1", ExchangeApiGenUtil.getMsgFieldName("field1", objectField));
+      Assert.assertEquals("f2", ExchangeApiGenUtil.getMsgFieldName("field2", objectField));
+      Assert.assertNull(ExchangeApiGenUtil.getMsgFieldName("f", objectField));
+    }
+    
+    @Test( expected = IllegalArgumentException.class)
+    public void testGetMsgFieldName_NullName() {
+      Field field1 = Field.builder().name("field1").type(Type.BOOLEAN).build();
+      ExchangeApiGenUtil.getMsgFieldName(null, field1);
+    }
+    
+    @Test
+    public void testGenerateTopicValueSubstitutionInstructionDeclaration() {
+      ExchangeDescriptor exchangeDescriptor = new ExchangeDescriptor();
+      exchangeDescriptor.setId("TestExchange");
+      exchangeDescriptor.setBasePackage("com.test.exchange");
+      exchangeDescriptor.setProperties(List.of(
+          ConfigPropertyDescriptor.create("p1", Type.STRING, null, null),
+          ConfigPropertyDescriptor.create("P1", Type.BOOLEAN, null, null)
+      ));
+      exchangeDescriptor.setConstants(List.of(
+          Constant.create("c1", Type.STRING, null, "c1Value")
+      ));
+      Imports imports = new Imports();      
+      Field field1 = Field.builder().name("field1").type(Type.BOOLEAN).build();
+      Field field2 = Field.builder().name("a").type(Type.STRING).msgField("f2").build();
+      Field field3 = Field.builder().name("A").type(Type.INT).msgField("f2").build();
+      Field request = Field.builder()
+          .name("objField")
+          .type(Type.OBJECT)
+          .property(field1)
+          .property(field2)
+          .property(field3)
+          .build();
+      String template = "${constants.c1}_${config.p1}_${config.P1}_${request.field1}_${request.a}_${request.A}_${request}_${unresolved}";
+      Assert.assertNull(ExchangeApiGenUtil.generateTopicValueSubstitutionInstructionDeclaration(null, exchangeDescriptor, request, imports));
+      Assert.assertEquals("\"static/topic/value\"", 
+          ExchangeApiGenUtil.generateTopicValueSubstitutionInstructionDeclaration(
+              "static/topic/value", 
+              exchangeDescriptor, 
+              request, 
+              imports));
+      Assert.assertEquals(0, imports.size());
+      Assert.assertEquals("EncodingUtil.substituteArguments(\"" + template + "\"," 
+              + " \"constants.c1\", TestExchangeConstants.C1," 
+              + " \"config.p1\", TestExchangeProperties.getp1(getProperties())," 
+              + " \"config.P1\", TestExchangeProperties.isP1(getProperties())," 
+              + " \"request.field1\", request.isField1()," 
+              + " \"request.a\", request.geta()," 
+              + " \"request.A\", request.getA()," 
+              + " \"request\", JsonUtil.pojoToJsonString(request))", 
+          ExchangeApiGenUtil.generateTopicValueSubstitutionInstructionDeclaration(
+              template, 
+              exchangeDescriptor, 
+              request, 
+              imports));
+      Assert.assertEquals(4, imports.size());
+      Assert.assertTrue(imports.contains("com.test.exchange.TestExchangeConstants"));
+      Assert.assertTrue(imports.contains("com.test.exchange.TestExchangeProperties"));
+      Assert.assertTrue(imports.contains(EncodingUtil.class.getName()));
+      Assert.assertTrue(imports.contains(JsonUtil.class.getName()));
+    }
+    
+    @Test( expected = IllegalArgumentException.class)
+    public void testGenerateTopicValueSubstitutionInstructionDeclaration_InvalidTopicPlaceholder() {
+      ExchangeDescriptor exchangeDescriptor = new ExchangeDescriptor();
+      ExchangeApiGenUtil.generateTopicValueSubstitutionInstructionDeclaration(
+          "${topic}", 
+          exchangeDescriptor, 
+          Field.builder().name("request").build(), 
+          new Imports());
+    }
+    
+    @Test
+    public void testGenerateTopicMatcherValueSubstitutionInstructionDeclaration_NonStringValue() {
+      ExchangeDescriptor exchangeDescriptor = new ExchangeDescriptor();
+      Field request = Field.builder().name("field1").type(Type.INT).build();
+      Imports imports = new Imports();
+      Assert.assertNull(ExchangeApiGenUtil.generateTopicMatcherValueSubstitutionInstructionDeclaration(
+          null, 
+          exchangeDescriptor, 
+          request, 
+          imports));
+      Assert.assertEquals("123", 
+        ExchangeApiGenUtil.generateTopicMatcherValueSubstitutionInstructionDeclaration(
+            123, 
+            exchangeDescriptor, 
+            request, 
+            imports));
+    }
+    
+    @Test
+    public void testGenerateTopicMatcherValueSubstitutionInstructionDeclaration_templateValue() {
+      ExchangeDescriptor exchangeDescriptor = new ExchangeDescriptor();
+      exchangeDescriptor.setId("TestExchange");
+      exchangeDescriptor.setBasePackage("com.test.exchange");
+      exchangeDescriptor.setProperties(List.of(
+          ConfigPropertyDescriptor.create("p1", Type.STRING, null, null),
+          ConfigPropertyDescriptor.create("P1", Type.BOOLEAN, null, null)
+      ));
+      exchangeDescriptor.setConstants(List.of(
+          Constant.create("c1", Type.STRING, null, "c1Value")
+      ));
+      Imports imports = new Imports();      
+      Field field1 = Field.builder().name("field1").type(Type.BOOLEAN).build();
+      Field field2 = Field.builder().name("a").type(Type.STRING).msgField("f2").build();
+      Field field3 = Field.builder().name("A").type(Type.INT).msgField("f2").build();
+      Field request = Field.builder()
+          .name("objField")
+          .type(Type.OBJECT)
+          .property(field1)
+          .property(field2)
+          .property(field3)
+          .build();
+      String template = "${topic}_${constants.c1}_${config.p1}_${config.P1}_${request.field1}_${request.a}_${request.A}_${request}_${unresolved}";
+      Assert.assertNull(ExchangeApiGenUtil.generateTopicMatcherValueSubstitutionInstructionDeclaration(null, exchangeDescriptor, request, imports));
+      Assert.assertEquals("\"static/topic/value\"", 
+          ExchangeApiGenUtil.generateTopicMatcherValueSubstitutionInstructionDeclaration(
+              "static/topic/value", 
+              exchangeDescriptor, 
+              request, 
+              imports));
+      Assert.assertEquals(0, imports.size());
+      Assert.assertEquals("EncodingUtil.substituteArguments(\"" + template + "\"," 
+              + " \"topic\", topic," 
+              + " \"constants.c1\", TestExchangeConstants.C1," 
+              + " \"config.p1\", TestExchangeProperties.getp1(getProperties())," 
+              + " \"config.P1\", TestExchangeProperties.isP1(getProperties())," 
+              + " \"request.field1\", request.isField1()," 
+              + " \"request.a\", request.geta()," 
+              + " \"request.A\", request.getA()," 
+              + " \"request\", JsonUtil.pojoToJsonString(request))", 
+          ExchangeApiGenUtil.generateTopicMatcherValueSubstitutionInstructionDeclaration(
+              template, 
+              exchangeDescriptor, 
+              request, 
+              imports));
+      Assert.assertEquals(4, imports.size());
+      Assert.assertTrue(imports.contains("com.test.exchange.TestExchangeConstants"));
+      Assert.assertTrue(imports.contains("com.test.exchange.TestExchangeProperties"));
+      Assert.assertTrue(imports.contains(EncodingUtil.class.getName()));
+      Assert.assertTrue(imports.contains(JsonUtil.class.getName()));
+    }
+    
+    @Test(expected = IllegalArgumentException.class)
+    public void testGenerateTopicMatcherValueSubstitutionInstructionDeclaration_templateWithFieldNotFound() {
+      ExchangeDescriptor exchangeDescriptor = new ExchangeDescriptor();
+      exchangeDescriptor.setId("TestExchange");
+      exchangeDescriptor.setBasePackage("com.test.exchange");
+      Imports imports = new Imports();      
+      Field field1 = Field.builder().name("field1").type(Type.BOOLEAN).build();
+      Field request = Field.builder()
+          .name("objField")
+          .type(Type.OBJECT)
+          .property(field1)
+          .build();
+      String template = "${request.foo}";
+      ExchangeApiGenUtil.generateTopicMatcherValueSubstitutionInstructionDeclaration(
+          template, 
+          exchangeDescriptor, 
+          request, 
+          imports);
+    }
+    
+    @Test
+    public void testCheckValidWebsocketTopicMatcherDescriptor_ValidFieldValueDescriptor() {
+      String exchangeId = "MyExchange";
+      String apiName = "MyApi";
+      String endpointName = "MyWsEndpoint";
+      WebsocketTopicMatcherDescriptor topicMatcherDescriptor = new WebsocketTopicMatcherDescriptor();
+      topicMatcherDescriptor.setFieldName("field1");
+      topicMatcherDescriptor.setFieldValue("value1");
+      ExchangeApiGenUtil.checkValidWebsocketTopicMatcherDescriptor(exchangeId, apiName, endpointName,
+          topicMatcherDescriptor);
+    }
+    
+    @Test
+    public void testCheckValidWebsocketTopicMatcherDescriptor_ValidFieldRegexpDescriptor() {
+      String exchangeId = "MyExchange";
+      String apiName = "MyApi";
+      String endpointName = "MyWsEndpoint";
+      WebsocketTopicMatcherDescriptor topicMatcherDescriptor = new WebsocketTopicMatcherDescriptor();
+      topicMatcherDescriptor.setFieldName("field1");
+      topicMatcherDescriptor.setFieldRegexp(".*value1");
+      ExchangeApiGenUtil.checkValidWebsocketTopicMatcherDescriptor(exchangeId, apiName, endpointName,
+          topicMatcherDescriptor);
+    }
+    
+    @Test
+    public void testCheckValidWebsocketTopicMatcherDescriptor_ValidOrDescriptor() {
+      String exchangeId = "MyExchange";
+      String apiName = "MyApi";
+      String endpointName = "MyWsEndpoint";
+      WebsocketTopicMatcherDescriptor topicMatcherDescriptor = new WebsocketTopicMatcherDescriptor();
+      topicMatcherDescriptor.setOr(List.of());
+      ExchangeApiGenUtil.checkValidWebsocketTopicMatcherDescriptor(exchangeId, apiName, endpointName,
+          topicMatcherDescriptor);
+    }
+    
+    @Test
+    public void testCheckValidWebsocketTopicMatcherDescriptor_ValidDescriptor() {
+      String exchangeId = "MyExchange";
+      String apiName = "MyApi";
+      String endpointName = "MyWsEndpoint";
+      WebsocketTopicMatcherDescriptor topicMatcherDescriptor = new WebsocketTopicMatcherDescriptor();
+      topicMatcherDescriptor.setAnd(List.of());
+      ExchangeApiGenUtil.checkValidWebsocketTopicMatcherDescriptor(exchangeId, apiName, endpointName,
+          topicMatcherDescriptor);
+      ExchangeApiGenUtil.checkValidWebsocketTopicMatcherDescriptor(exchangeId, apiName, endpointName,
+          null);
+    }
+    
+    @Test(expected = IllegalArgumentException.class)
+    public void testCheckValidWebsocketTopicMatcherDescriptor_InvalidDescriptor_NoFieldNameNorOrNorAndSet() {
+      String exchangeId = "MyExchange";
+      String apiName = "MyApi";
+      String endpointName = "MyWsEndpoint";
+      WebsocketTopicMatcherDescriptor topicMatcherDescriptor = new WebsocketTopicMatcherDescriptor();
+      ExchangeApiGenUtil.checkValidWebsocketTopicMatcherDescriptor(exchangeId, apiName, endpointName,
+          topicMatcherDescriptor);
+    }
+    
+    @Test(expected = IllegalArgumentException.class)
+    public void testCheckValidWebsocketTopicMatcherDescriptor_InvalidDescriptor_FieldNameAndNoFieldValueNorRegexp() {
+      String exchangeId = "MyExchange";
+      String apiName = "MyApi";
+      String endpointName = "MyWsEndpoint";
+      WebsocketTopicMatcherDescriptor topicMatcherDescriptor = new WebsocketTopicMatcherDescriptor();
+      topicMatcherDescriptor.setFieldName("field1");
+      ExchangeApiGenUtil.checkValidWebsocketTopicMatcherDescriptor(exchangeId, apiName, endpointName,
+          topicMatcherDescriptor);
+    }
+    
+    @Test(expected = IllegalArgumentException.class)
+    public void testCheckValidWebsocketTopicMatcherDescriptor_InvalidDescriptor_FieldNameAndOrSet() {
+      String exchangeId = "MyExchange";
+      String apiName = "MyApi";
+      String endpointName = "MyWsEndpoint";
+      WebsocketTopicMatcherDescriptor topicMatcherDescriptor = new WebsocketTopicMatcherDescriptor();
+      topicMatcherDescriptor.setFieldName("field1");
+      topicMatcherDescriptor.setOr(List.of());
+      ExchangeApiGenUtil.checkValidWebsocketTopicMatcherDescriptor(exchangeId, apiName, endpointName,
+          topicMatcherDescriptor);
+    }
+    
+    @Test(expected = IllegalArgumentException.class)
+    public void testCheckValidWebsocketTopicMatcherDescriptor_InvalidDescriptor_FieldNameAndAndSet() {
+      String exchangeId = "MyExchange";
+      String apiName = "MyApi";
+      String endpointName = "MyWsEndpoint";
+      WebsocketTopicMatcherDescriptor topicMatcherDescriptor = new WebsocketTopicMatcherDescriptor();
+      topicMatcherDescriptor.setFieldName("field1");
+      topicMatcherDescriptor.setAnd(List.of());
+      ExchangeApiGenUtil.checkValidWebsocketTopicMatcherDescriptor(exchangeId, apiName, endpointName,
+          topicMatcherDescriptor);
+    }
+    
+    @Test(expected = IllegalArgumentException.class)
+    public void testCheckValidWebsocketTopicMatcherDescriptor_InvalidDescriptor_AndAndOrSet() {
+      String exchangeId = "MyExchange";
+      String apiName = "MyApi";
+      String endpointName = "MyWsEndpoint";
+      WebsocketTopicMatcherDescriptor topicMatcherDescriptor = new WebsocketTopicMatcherDescriptor();
+      topicMatcherDescriptor.setAnd(List.of());
+      topicMatcherDescriptor.setOr(List.of());
+      ExchangeApiGenUtil.checkValidWebsocketTopicMatcherDescriptor(exchangeId, apiName, endpointName,
+          topicMatcherDescriptor);
+    }
+    
+    @Test(expected = IllegalArgumentException.class)
+    public void testCheckValidWebsocketTopicMatcherDescriptor_InvalidDescriptor_AndAndFieldValueSet() {
+      String exchangeId = "MyExchange";
+      String apiName = "MyApi";
+      String endpointName = "MyWsEndpoint";
+      WebsocketTopicMatcherDescriptor topicMatcherDescriptor = new WebsocketTopicMatcherDescriptor();
+      topicMatcherDescriptor.setAnd(List.of());
+      topicMatcherDescriptor.setFieldValue("value1");
+      ExchangeApiGenUtil.checkValidWebsocketTopicMatcherDescriptor(exchangeId, apiName, endpointName,
+          topicMatcherDescriptor);
+    }
+    
+    @Test(expected = IllegalArgumentException.class)
+    public void testCheckValidWebsocketTopicMatcherDescriptor_InvalidDescriptor_AndAndFieldRegexpSet() {
+      String exchangeId = "MyExchange";
+      String apiName = "MyApi";
+      String endpointName = "MyWsEndpoint";
+      WebsocketTopicMatcherDescriptor topicMatcherDescriptor = new WebsocketTopicMatcherDescriptor();
+      topicMatcherDescriptor.setAnd(List.of());
+      topicMatcherDescriptor.setFieldRegexp("value1");
+      ExchangeApiGenUtil.checkValidWebsocketTopicMatcherDescriptor(exchangeId, apiName, endpointName,
+          topicMatcherDescriptor);
+    }
+    
+    @Test(expected = IllegalArgumentException.class)
+    public void testCheckValidWebsocketTopicMatcherDescriptor_InvalidDescriptor_OrAndFieldValueSet() {
+      String exchangeId = "MyExchange";
+      String apiName = "MyApi";
+      String endpointName = "MyWsEndpoint";
+      WebsocketTopicMatcherDescriptor topicMatcherDescriptor = new WebsocketTopicMatcherDescriptor();
+      topicMatcherDescriptor.setOr(List.of());
+      topicMatcherDescriptor.setFieldValue("value1");
+      ExchangeApiGenUtil.checkValidWebsocketTopicMatcherDescriptor(exchangeId, apiName, endpointName,
+          topicMatcherDescriptor);
+    }
+    
+    @Test(expected = IllegalArgumentException.class)
+    public void testCheckValidWebsocketTopicMatcherDescriptor_InvalidDescriptor_OrAndFieldRegexpSet() {
+      String exchangeId = "MyExchange";
+      String apiName = "MyApi";
+      String endpointName = "MyWsEndpoint";
+      WebsocketTopicMatcherDescriptor topicMatcherDescriptor = new WebsocketTopicMatcherDescriptor();
+      topicMatcherDescriptor.setOr(List.of());
+      topicMatcherDescriptor.setFieldRegexp("value1.*");
+      ExchangeApiGenUtil.checkValidWebsocketTopicMatcherDescriptor(exchangeId, apiName, endpointName,
+          topicMatcherDescriptor);
+    }
+    
+    @Test(expected = IllegalArgumentException.class)
+    public void testCheckValidWebsocketTopicMatcherDescriptor_InvalidDescriptor_OrWithInvalidSubMatcher() {
+      String exchangeId = "MyExchange";
+      String apiName = "MyApi";
+      String endpointName = "MyWsEndpoint";
+      WebsocketTopicMatcherDescriptor subMatcherDescriptor = new WebsocketTopicMatcherDescriptor();
+      WebsocketTopicMatcherDescriptor topicMatcherDescriptor = new WebsocketTopicMatcherDescriptor();
+      topicMatcherDescriptor.setOr(List.of(subMatcherDescriptor));
+      ExchangeApiGenUtil.checkValidWebsocketTopicMatcherDescriptor(exchangeId, apiName, endpointName,
+          topicMatcherDescriptor);
+    }
+    
+    @Test(expected = IllegalArgumentException.class)
+    public void testCheckValidWebsocketTopicMatcherDescriptor_InvalidDescriptor_AndWithInvalidSubMatcher() {
+      String exchangeId = "MyExchange";
+      String apiName = "MyApi";
+      String endpointName = "MyWsEndpoint";
+      WebsocketTopicMatcherDescriptor subMatcherDescriptor = new WebsocketTopicMatcherDescriptor();
+      WebsocketTopicMatcherDescriptor topicMatcherDescriptor = new WebsocketTopicMatcherDescriptor();
+      topicMatcherDescriptor.setAnd(List.of(subMatcherDescriptor));
+      ExchangeApiGenUtil.checkValidWebsocketTopicMatcherDescriptor(exchangeId, apiName, endpointName,
+          topicMatcherDescriptor);
+    }
+    
+    @Test
+    public void testGenerateWebsocketTopicMatcherFactoryDeclaration() {
+      ExchangeDescriptor exchangeDescriptor = new ExchangeDescriptor();
+      exchangeDescriptor.setProperties(List.of(
+          ConfigPropertyDescriptor.create("p1", Type.STRING, null, null),
+          ConfigPropertyDescriptor.create("P1", Type.BOOLEAN, null, null)
+      ));
+      exchangeDescriptor.setConstants(List.of(
+          Constant.create("c1", Type.STRING, null, "c1Value")
+      ));
+      exchangeDescriptor.setId("MyExchange");
+      exchangeDescriptor.setBasePackage("com.myexchange");
+      Imports imports = new Imports();
+      ExchangeApiDescriptor apiDescriptor = new ExchangeApiDescriptor();
+      apiDescriptor.setName("MyApi");
+      exchangeDescriptor.setApis(List.of(apiDescriptor));
+      WebsocketEndpointDescriptor endpointDescriptor = new WebsocketEndpointDescriptor();
+      endpointDescriptor.setName("MyWsEndpoint");
+      apiDescriptor.setWebsocketEndpoints(List.of(endpointDescriptor));
+      WebsocketTopicMatcherDescriptor fieldValueMatcherDescriptor = new WebsocketTopicMatcherDescriptor();
+      fieldValueMatcherDescriptor.setFieldName("field1");
+      fieldValueMatcherDescriptor.setFieldValue(1);
+      WebsocketTopicMatcherDescriptor fieldRegexpMatcherDescriptor = new WebsocketTopicMatcherDescriptor();
+      fieldRegexpMatcherDescriptor.setFieldName("field2");
+      fieldRegexpMatcherDescriptor.setFieldRegexp("value.*");
+      WebsocketTopicMatcherDescriptor aFieldValueMatcherDescriptor = new WebsocketTopicMatcherDescriptor();
+      aFieldValueMatcherDescriptor.setFieldName("a");
+      aFieldValueMatcherDescriptor.setFieldValue("valueA_${request}");
+      WebsocketTopicMatcherDescriptor aUpperFieldValueMatcherDescriptor = new WebsocketTopicMatcherDescriptor();
+      aUpperFieldValueMatcherDescriptor.setFieldName("A");
+      aUpperFieldValueMatcherDescriptor.setFieldValue("valueAUpper_${config.p1}_${constants.c1}");
+      WebsocketTopicMatcherDescriptor orMatcherDescriptor = new WebsocketTopicMatcherDescriptor();
+      orMatcherDescriptor.setOr(List.of(aFieldValueMatcherDescriptor, aUpperFieldValueMatcherDescriptor));
+      WebsocketTopicMatcherDescriptor andMatcherDescriptor = new WebsocketTopicMatcherDescriptor();
+      andMatcherDescriptor.setAnd(List.of(fieldValueMatcherDescriptor, fieldRegexpMatcherDescriptor, orMatcherDescriptor));
+      endpointDescriptor.setTopicMatcher(andMatcherDescriptor);
+      
+      Field request = Field.builder().name("field1").type(Type.INT).build();
+      
+      Field msgField1 = Field.builder().name("field1").type(Type.INT).build();
+      Field msgField2 = Field.builder().name("field2").type(Type.STRING).build();
+      Field msgFielda = Field.builder().name("a").build();
+      Field msgFieldA = Field.builder().name("A").build();
+      Field msgField = Field.builder()
+          .name("msg")
+          .type(Type.OBJECT)
+          .property(msgField1)
+          .property(msgField2)
+          .property(msgFielda)
+          .property(msgFieldA)
+          .build();
+      
+      endpointDescriptor.setMessage(msgField);
+      endpointDescriptor.setRequest(request);
+      
+      String factoryDeclaration = ExchangeApiGenUtil.generateWebsocketTopicMatcherFactoryDeclaration(
+          exchangeDescriptor,
+          apiDescriptor, 
+          endpointDescriptor, 
+          imports);
+      Assert.assertEquals("WebsocketMessageTopicMatcherFactory topicMatcherFactory = WSMTMFUtil.and(List.of(\n"
+          + "  WSMTMFUtil.value(\"field1\", 1),\n"
+          + "  WSMTMFUtil.regexp(\"field2\", \"value.*\"),\n"
+          + "  WSMTMFUtil.or(List.of(\n"
+          + "    WSMTMFUtil.value(\"a\", EncodingUtil.substituteArguments(\"valueA_${request}\", \"request\", request)),\n"
+          + "    WSMTMFUtil.value(\"A\", EncodingUtil.substituteArguments(\"valueAUpper_${config.p1}_${constants.c1}\", \"config.p1\", MyExchangeProperties.getp1(getProperties()), \"constants.c1\", MyExchangeConstants.C1))))));", factoryDeclaration);
+      Assert.assertEquals(6, imports.size());
+      Assert.assertTrue(imports.contains("com.myexchange.MyExchangeConstants"));
+      Assert.assertTrue(imports.contains("com.myexchange.MyExchangeProperties"));
+      Assert.assertTrue(imports.contains(EncodingUtil.class.getName()));
+      Assert.assertTrue(imports.contains(WSMTMFUtil.class.getName()));
+      Assert.assertTrue(imports.contains(List.class.getName()));
+      Assert.assertTrue(imports.contains(WebsocketMessageTopicMatcherFactory.class.getName()));
+    }
+    
+    @Test
+    public void testGenerateWebsocketTopicMatcherFactoryDeclaration_NullRequest() {
+      ExchangeDescriptor exchangeDescriptor = new ExchangeDescriptor();
+      exchangeDescriptor.setProperties(List.of(
+          ConfigPropertyDescriptor.create("p1", Type.STRING, null, null),
+          ConfigPropertyDescriptor.create("P1", Type.BOOLEAN, null, null)
+      ));
+      exchangeDescriptor.setConstants(List.of(
+          Constant.create("c1", Type.STRING, null, "c1Value")
+      ));
+      exchangeDescriptor.setId("MyExchange");
+      exchangeDescriptor.setBasePackage("com.myexchange");
+      Imports imports = new Imports();
+      ExchangeApiDescriptor apiDescriptor = new ExchangeApiDescriptor();
+      apiDescriptor.setName("MyApi");
+      exchangeDescriptor.setApis(List.of(apiDescriptor));
+      WebsocketEndpointDescriptor endpointDescriptor = new WebsocketEndpointDescriptor();
+      endpointDescriptor.setName("MyWsEndpoint");
+      apiDescriptor.setWebsocketEndpoints(List.of(endpointDescriptor));
+      WebsocketTopicMatcherDescriptor fieldValueMatcherDescriptor = new WebsocketTopicMatcherDescriptor();
+      fieldValueMatcherDescriptor.setFieldName("field1");
+      fieldValueMatcherDescriptor.setFieldValue("${config.p1}_${constants.c1}");
+      endpointDescriptor.setTopicMatcher(fieldValueMatcherDescriptor);
+      
+      Field msgField1 = Field.builder().name("field1").type(Type.STRING).build();
+      Field msgField = Field.builder()
+          .name("msg")
+          .type(Type.OBJECT)
+          .property(msgField1)
+          .build();
+      
+      endpointDescriptor.setMessage(msgField);
+      
+      String factoryDeclaration = ExchangeApiGenUtil.generateWebsocketTopicMatcherFactoryDeclaration(
+          exchangeDescriptor,
+          apiDescriptor, 
+          endpointDescriptor, 
+          imports);
+      Assert.assertEquals("WebsocketMessageTopicMatcherFactory topicMatcherFactory = WSMTMFUtil.value(\"field1\", EncodingUtil.substituteArguments(\"${config.p1}_${constants.c1}\", \"config.p1\", MyExchangeProperties.getp1(getProperties()), \"constants.c1\", MyExchangeConstants.C1));", 
+          factoryDeclaration);
+    }
+    
+    @Test
+    public void testGenerateWebsocketTopicMatcherFactoryDeclaration_NullRequestAndNullMatcherFactory() {
+      ExchangeDescriptor exchangeDescriptor = new ExchangeDescriptor();
+      exchangeDescriptor.setProperties(List.of(
+          ConfigPropertyDescriptor.create("p1", Type.STRING, null, null),
+          ConfigPropertyDescriptor.create("P1", Type.BOOLEAN, null, null)
+      ));
+      exchangeDescriptor.setConstants(List.of(
+          Constant.create("c1", Type.STRING, null, "c1Value")
+      ));
+      exchangeDescriptor.setId("MyExchange");
+      exchangeDescriptor.setBasePackage("com.myexchange");
+      Imports imports = new Imports();
+      ExchangeApiDescriptor apiDescriptor = new ExchangeApiDescriptor();
+      apiDescriptor.setName("MyApi");
+      exchangeDescriptor.setApis(List.of(apiDescriptor));
+      WebsocketEndpointDescriptor endpointDescriptor = new WebsocketEndpointDescriptor();
+      endpointDescriptor.setName("MyWsEndpoint");
+      apiDescriptor.setWebsocketEndpoints(List.of(endpointDescriptor));
+      
+      Field msgField1 = Field.builder().name("field1").type(Type.STRING).build();
+      Field msgField = Field.builder()
+          .name("msg")
+          .type(Type.OBJECT)
+          .property(msgField1)
+          .build();
+      
+      endpointDescriptor.setMessage(msgField);
+      
+      String factoryDeclaration = ExchangeApiGenUtil.generateWebsocketTopicMatcherFactoryDeclaration(
+          exchangeDescriptor,
+          apiDescriptor, 
+          endpointDescriptor, 
+          imports);
+      Assert.assertEquals("WebsocketMessageTopicMatcherFactory topicMatcherFactory = WebsocketMessageTopicMatcherFactory.ANY_MATCHER_FACTORY;", 
+          factoryDeclaration);
+      Assert.assertEquals(1, imports.size());
+      Assert.assertTrue(imports.contains(WebsocketMessageTopicMatcherFactory.class.getName()));
+    }
+    
+    @Test
+    public void testGenerateWebsocketEndpointRequestDefaultValuesStaticFieldDeclarations() {
+      WebsocketEndpointDescriptor ws1 = new WebsocketEndpointDescriptor();
+      ws1.setName("getAccount");
+      ws1.setRequest(Field.builder()
+          .name("request")
+          .description("'getAccount' WS endpoint request description. My ${placeHolder} here.")
+          .defaultValue(1.23)
+          .type(Type.BIGDECIMAL)
+          .build());
+      WebsocketEndpointDescriptor ws2 = new WebsocketEndpointDescriptor();
+      ws2.setName("getSymbol");
+      ws2.setRequest(Field.builder()
+          .name("request")
+          .description("'getSymbol' WS endpoint request description without default value.")
+          .type(Type.INT)
+          .build());
+      WebsocketEndpointDescriptor ws3 = new WebsocketEndpointDescriptor();
+      WebsocketEndpointDescriptor wsa = new WebsocketEndpointDescriptor();
+      wsa.setName("a");
+      wsa.setRequest(Field.builder()
+          .name("request")
+          .description("'a' WS endpoint request description")
+          .defaultValue("${default_a}")
+          .type(Type.STRING)
+          .build());
+      WebsocketEndpointDescriptor wsA = new WebsocketEndpointDescriptor();
+      wsA.setName("A");
+      wsA.setRequest(Field.builder()
+          .name("request")
+          .description("'A' WS endpoint request description")
+          .defaultValue("${default_A}")
+          .type(Type.STRING)
+          .build());
+      PlaceHolderResolver descriptionResolver = s -> s.replace("${placeHolder}", "resolved placeholder");
+      PlaceHolderResolver defaultValueResolver = s -> JavaCodeGenUtil.getQuotedString(
+          s.replace("${default_a}", "aaa")
+           .replace("${default_A}", "AAA"));
+      Imports imports = new Imports();
+      StringBuilder classBody = new StringBuilder();
+      Map<String, String> variables = ExchangeApiGenUtil
+          .generateWebsocketEndpointRequestDefaultValuesStaticFieldDeclarations(
+              List.of(ws1, ws2, ws3, wsa, wsA),
+              imports,
+              descriptionResolver,
+              defaultValueResolver,
+              classBody);
+      Assert.assertEquals(3, variables.size());
+      Assert.assertEquals("GET_ACCOUNT_WS_REQUEST_DEFAULT_VALUE", variables.get("getAccountWsRequest"));
+      Assert.assertEquals("A_WS_REQUEST_DEFAULT_VALUE", variables.get("aWsRequest"));
+      Assert.assertEquals("A_WS_REQUEST_DEFAULT_VALUE_", variables.get("AWsRequest"));
+      Assert.assertEquals(
+          "\n"
+          + "/**\n"
+          + " * Default value for <code>getAccountWsRequest</code>\n"
+          + " */\n"
+          + "public static final BigDecimal GET_ACCOUNT_WS_REQUEST_DEFAULT_VALUE = new BigDecimal(\"1.23\");\n"
+          + "\n"
+          + "/**\n"
+          + " * Default value for <code>aWsRequest</code>\n"
+          + " */\n"
+          + "public static final String A_WS_REQUEST_DEFAULT_VALUE = \"aaa\";\n"
+          + "\n"
+          + "/**\n"
+          + " * Default value for <code>AWsRequest</code>\n"
+          + " */\n"
+          + "public static final String A_WS_REQUEST_DEFAULT_VALUE_ = \"AAA\";\n"
+          + "",
+          classBody.toString());
+      Assert.assertEquals(1, imports.size());
+      Assert.assertTrue(imports.contains(BigDecimal.class.getName()));
+    }
+    
+    @Test
+    public void testGenerateRestEndpointRequestDefaultValuesStaticFieldDeclarations() {
+      RestEndpointDescriptor r1 = new RestEndpointDescriptor();
+      r1.setName("getAccount");
+      r1.setRequest(Field.builder()
+          .name("request")
+          .description("'getAccount' REST endpoint request description. My ${placeHolder} here.")
+          .defaultValue(1.23)
+          .type(Type.BIGDECIMAL)
+          .build());
+      RestEndpointDescriptor r2 = new RestEndpointDescriptor();
+      r2.setName("getSymbol");
+      r2.setRequest(Field.builder()
+          .name("request")
+          .description("'getAccount' REST endpoint request description without default value.")
+          .type(Type.INT)
+          .build());
+      RestEndpointDescriptor r3 = new RestEndpointDescriptor();
+      RestEndpointDescriptor ra = new RestEndpointDescriptor();
+      ra.setName("a");
+      ra.setRequest(Field.builder()
+          .name("request")
+          .description("'a' REST endpoint request description")
+          .defaultValue("${default_a}")
+          .type(Type.STRING)
+          .build());
+      RestEndpointDescriptor rA = new RestEndpointDescriptor();
+      rA.setName("A");
+      rA.setRequest(Field.builder()
+          .name("request")
+          .description("'A' REST endpoint request description")
+          .defaultValue("${default_A}")
+          .type(Type.STRING)
+          .build());
+      PlaceHolderResolver descriptionResolver = s -> s.replace("${placeHolder}", "resolved placeholder");
+      PlaceHolderResolver defaultValueResolver = s -> JavaCodeGenUtil.getQuotedString(
+          s.replace("${default_a}", "aaa")
+           .replace("${default_A}", "AAA"));
+      Imports imports = new Imports();
+      StringBuilder classBody = new StringBuilder();
+      Map<String, String> variables = ExchangeApiGenUtil
+          .generateRestEndpointRequestDefaultValuesStaticFieldDeclarations(
+              List.of(r1, r2, r3, ra, rA),
+              imports,
+              descriptionResolver,
+              defaultValueResolver,
+              classBody);
+      Assert.assertEquals(3, variables.size());
+      Assert.assertEquals("GET_ACCOUNT_REST_REQUEST_DEFAULT_VALUE", variables.get("getAccountRestRequest"));
+      Assert.assertEquals("A_REST_REQUEST_DEFAULT_VALUE", variables.get("aRestRequest"));
+      Assert.assertEquals("A_REST_REQUEST_DEFAULT_VALUE_", variables.get("ARestRequest"));
+      Assert.assertEquals(
+          "\n"
+          + "/**\n"
+          + " * Default value for <code>getAccountRestRequest</code>\n"
+          + " */\n"
+          + "public static final BigDecimal GET_ACCOUNT_REST_REQUEST_DEFAULT_VALUE = new BigDecimal(\"1.23\");\n"
+          + "\n"
+          + "/**\n"
+          + " * Default value for <code>aRestRequest</code>\n"
+          + " */\n"
+          + "public static final String A_REST_REQUEST_DEFAULT_VALUE = \"aaa\";\n"
+          + "\n"
+          + "/**\n"
+          + " * Default value for <code>ARestRequest</code>\n"
+          + " */\n"
+          + "public static final String A_REST_REQUEST_DEFAULT_VALUE_ = \"AAA\";\n"
+          + "",
+          classBody.toString());
+      Assert.assertEquals(1, imports.size());
+      Assert.assertTrue(imports.contains(BigDecimal.class.getName()));
+    }
 }

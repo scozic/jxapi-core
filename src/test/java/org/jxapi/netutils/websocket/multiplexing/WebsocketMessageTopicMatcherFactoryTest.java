@@ -1,5 +1,7 @@
 package org.jxapi.netutils.websocket.multiplexing;
 
+import java.util.List;
+
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -10,19 +12,15 @@ public class WebsocketMessageTopicMatcherFactoryTest {
 
   @Test
   public void testAnyMatcherFactory() {
-    Assert.assertEquals(WebsocketMessageTopicMatcher.ANY_MATCHER, 
+    Assert.assertSame(WebsocketMessageTopicMatcher.ANY_MATCHER, 
               WebsocketMessageTopicMatcherFactory.ANY_MATCHER_FACTORY.createWebsocketMessageTopicMatcher());
   }
   
   @Test
-  public void testCreateMessageTopicMatcherFactory_EmptyFieldListReturnsAnyMatcherFactory() {
-    Assert.assertEquals(WebsocketMessageTopicMatcherFactory.ANY_MATCHER_FACTORY, 
-              WebsocketMessageTopicMatcherFactory.create());
-  }
-  
-  @Test
   public void testCreateMessageTopicMatcherFactory_NotEmptyFieldList() {
-    WebsocketMessageTopicMatcherFactory fac = WebsocketMessageTopicMatcherFactory.create("f1", "value1", "f2", "value2");
+    WebsocketMessageTopicMatcherFactory fac = WSMTMFUtil.and(List.of(
+        WSMTMFUtil.value("f1", "value1"), 
+        WSMTMFUtil.value("f2", "value2"))); 
     Assert.assertNotNull(fac);
     WebsocketMessageTopicMatcher matcher = fac.createWebsocketMessageTopicMatcher();
         Assert.assertEquals(WebsocketMessageTopicMatchStatus.NO_MATCH, matcher.getStatus());
@@ -33,4 +31,5 @@ public class WebsocketMessageTopicMatcherFactoryTest {
         Assert.assertEquals(WebsocketMessageTopicMatchStatus.MATCHED, matcher.matches("f2", "value2"));
         Assert.assertEquals(WebsocketMessageTopicMatchStatus.MATCHED, matcher.getStatus());
   }
+  
 }

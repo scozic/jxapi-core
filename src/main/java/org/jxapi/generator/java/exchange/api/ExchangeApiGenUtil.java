@@ -9,6 +9,7 @@ import java.util.Optional;
 import java.util.function.UnaryOperator;
 import java.util.stream.Collectors;
 
+import org.apache.commons.lang3.StringUtils;
 import org.jxapi.exchange.ExchangeApi;
 import org.jxapi.exchange.descriptor.CanonicalType;
 import org.jxapi.exchange.descriptor.Constant;
@@ -18,6 +19,7 @@ import org.jxapi.exchange.descriptor.Field;
 import org.jxapi.exchange.descriptor.RestEndpointDescriptor;
 import org.jxapi.exchange.descriptor.Type;
 import org.jxapi.exchange.descriptor.WebsocketEndpointDescriptor;
+import org.jxapi.exchange.descriptor.WebsocketTopicMatcherDescriptor;
 import org.jxapi.generator.java.Imports;
 import org.jxapi.generator.java.JavaCodeGenUtil;
 import org.jxapi.generator.java.exchange.ExchangeGenUtil;
@@ -28,7 +30,11 @@ import org.jxapi.netutils.deserialization.RawBooleanMessageDeserializer;
 import org.jxapi.netutils.deserialization.RawIntegerMessageDeserializer;
 import org.jxapi.netutils.deserialization.RawLongMessageDeserializer;
 import org.jxapi.netutils.deserialization.RawStringMessageDeserializer;
+import org.jxapi.netutils.websocket.multiplexing.WSMTMFUtil;
+import org.jxapi.netutils.websocket.multiplexing.WebsocketMessageTopicMatcherFactory;
 import org.jxapi.util.CollectionUtil;
+import org.jxapi.util.EncodingUtil;
+import org.jxapi.util.JsonUtil;
 import org.jxapi.util.PlaceHolderResolver;
 
 /**
@@ -36,6 +42,12 @@ import org.jxapi.util.PlaceHolderResolver;
  */
 public class ExchangeApiGenUtil {
   
+  private static final String INVALID_TOPIC_MATCHER_FOR_WEBSOCKET_ENDPOINT = "Invalid topic matcher for websocket endpoint:";
+
+  private static final String OF_EXCHANGE = " of exchange:";
+
+  private static final String OF_EXCHANGE_API = " of exchange API:";
+
   private static final String GET_INSTANCE = ".getInstance()";
 
   private ExchangeApiGenUtil() {}
@@ -58,6 +70,21 @@ public class ExchangeApiGenUtil {
    * converted to upper case 'static' variable name.
    */
   public static final String WEBSOCKET_ENDPOINT_NAME_SUFFIX = "WsApi";
+  
+  /**
+   * Used as:
+   * <ul>
+   * <li>Placeholder in websocket topic patterns defined in value or regexp topic matchers of websocket endpoints,
+   * <li>Name of local variable in generated code for websocket endpoint stream topic building.
+   * </ul>
+   */
+  public static final String TOPIC = "topic";
+
+  /**
+   * Name of variable holding websocket topic matcher factory instance in
+   * generated websocket endpoint classes.
+   */
+  public static final String WEBSOCKET_TOPIC_MATCHER_FACTORY_VAR_NAME = "topicMatcherFactory";
 
   /**
    * Generates expected POJO class name for a REST endpoint request POJO.
@@ -932,7 +959,10 @@ public class ExchangeApiGenUtil {
    * @return Map indexed with endpoint name, mapped to associated static variable
    *         name.
    */
-  public static Map<String, String> generateEndpointNameStaticVariablesDeclaration(List<String> enpointNames, String suffix, StringBuilder classBody) {
+  public static Map<String, String> generateEndpointNameStaticVariablesDeclaration(
+      List<String> enpointNames, 
+      String suffix, 
+      StringBuilder classBody) {
     Map<String, String> res = CollectionUtil.createMap();
     Map<String, Constant> constants = CollectionUtil.createMap();
     for (String f : enpointNames) {
@@ -961,6 +991,462 @@ public class ExchangeApiGenUtil {
       }
     });
     return res;     
+  }
+  
+  /**
+   * Generates the declaration of a websocket topic matcher factory for a given
+   * endpoint. The generated instruction is declaration of a local variable named
+   * {@link #WEBSOCKET_TOPIC_MATCHER_FACTORY_VAR_NAME}, and a value initialized
+   * with call to {@link WSMTMFUtil} static methods to create the topic matcher
+   * factory.
+   * 
+   * @param exchangeDescriptor    The exchange descriptor
+   * @param exchangeApiDescriptor The exchange API descriptor
+   * @param websocketApi          The websocket endpoint descriptor
+   * @param imports               The imports of generator context that will be
+   *                              populated with classes used by generated fields.
+   * @return The websocket topic matcher factory declaration instruction.
+   */
+  public static String generateWebsocketTopicMatcherFactoryDeclaration(
+      ExchangeDescriptor exchangeDescriptor,
+      ExchangeApiDescriptor exchangeApiDescriptor,
+      WebsocketEndpointDescriptor websocketApi, 
+      Imports imports) {
+    imports.add(WebsocketMessageTopicMatcherFactory.class);
+    Field request = ExchangeApiGenUtil.resolveFieldProperties(exchangeApiDescriptor, websocketApi.getRequest());
+    Field message = ExchangeApiGenUtil.resolveFieldProperties(exchangeApiDescriptor, websocketApi.getMessage());
+    return new StringBuilder()
+        .append(WebsocketMessageTopicMatcherFactory.class.getSimpleName())
+        .append(" ")
+        .append(WEBSOCKET_TOPIC_MATCHER_FACTORY_VAR_NAME)
+        .append(" = ")
+        .append(generateWebsocketTopicMatcherFactoryDeclaration(
+            exchangeDescriptor, 
+            exchangeApiDescriptor, 
+            websocketApi, 
+            request,
+            message,
+            imports, 
+            websocketApi.getTopicMatcher()))
+        .append(";").toString();
+  }
+  
+  private static String generateWebsocketTopicMatcherFactoryDeclaration(
+      ExchangeDescriptor exchangeDescriptor,
+      ExchangeApiDescriptor exchangeApiDescriptor,
+      WebsocketEndpointDescriptor websocketApi, 
+      Field request, 
+      Field message,
+      Imports imports,
+      WebsocketTopicMatcherDescriptor topicMatcherDescriptor) {
+    checkValidWebsocketTopicMatcherDescriptor(
+        exchangeDescriptor.getId(), 
+        exchangeApiDescriptor.getName(),
+        websocketApi.getName(), 
+        topicMatcherDescriptor);
+    if (topicMatcherDescriptor == null) {
+      imports.add(WebsocketMessageTopicMatcherFactory.class);
+      return WebsocketMessageTopicMatcherFactory.class.getSimpleName() + ".ANY_MATCHER_FACTORY";
+    }
+    imports.add(WSMTMFUtil.class);
+    StringBuilder declaration = new StringBuilder()
+        .append(WSMTMFUtil.class.getSimpleName())
+        .append(".");
+    if (topicMatcherDescriptor.getFieldName() != null) {
+      Object value = topicMatcherDescriptor.getFieldValue();
+      if (topicMatcherDescriptor.getFieldValue() != null) {
+        declaration.append("value(");
+      } else { // fieldRegexp
+        declaration.append("regexp(");
+        value = topicMatcherDescriptor.getFieldRegexp();
+      }
+      declaration
+        .append(JavaCodeGenUtil.getQuotedString(
+            getMsgFieldName(topicMatcherDescriptor.getFieldName(), message)))
+        .append(", ")
+        .append(generateTopicMatcherValueSubstitutionInstructionDeclaration(
+          value, 
+          exchangeDescriptor, 
+          request, 
+          imports))
+      .append(")");
+    } else {
+      imports.add(WSMTMFUtil.class);
+      imports.add(List.class);
+      List<WebsocketTopicMatcherDescriptor> subMatchers = null;
+      if (topicMatcherDescriptor.getAnd() != null) {
+        declaration.append("and(List.of(\n");
+        subMatchers = topicMatcherDescriptor.getAnd();
+      } else { // or
+        declaration.append("or(List.of(\n");
+        subMatchers = topicMatcherDescriptor.getOr();
+      }
+      for (int i = 0; i < subMatchers.size(); i++) {
+        if (i > 0) {
+          declaration.append(",\n");
+        }
+        declaration.append(JavaCodeGenUtil.indent(
+            generateWebsocketTopicMatcherFactoryDeclaration(
+              exchangeDescriptor, 
+              exchangeApiDescriptor, 
+              websocketApi,
+              request, 
+              message,
+              imports, 
+              subMatchers.get(i))));
+      }
+      declaration.append("))");
+    }
+    return declaration.toString();
+  }
+  
+  /**
+   * Checks if given websocket topic matcher descriptor is valid. For a given
+   * topic matcher descriptor, exactly one of the following must be true:
+   * <ul>
+   * <li>fieldName is defined, and either fieldValue or fieldRegexp is
+   * defined</li>
+   * <li>'and' operator is defined with a list of sub-matchers</li>
+   * <li>'or' operator is defined with a list of sub-matchers</li>
+   * </ul>
+   * 
+   * @param exchangeId             Exchange identifier see
+   *                               {@link ExchangeDescriptor#getId()}
+   * @param apiName                API name, see
+   *                               {@link ExchangeApiDescriptor#getName()}
+   * @param endpointName           Websocket endpoint name, see
+   *                               {@link WebsocketEndpointDescriptor#getName()}
+   * @param topicMatcherDescriptor The websocket topic matcher descriptor to
+   *                               check, can be <code>null</code>, otherwise has
+   *                               to enforce above rules.
+   */
+  public static void checkValidWebsocketTopicMatcherDescriptor(
+      String exchangeId, 
+      String apiName, 
+      String endpointName, 
+      WebsocketTopicMatcherDescriptor topicMatcherDescriptor) {
+    if (topicMatcherDescriptor == null) {
+      return;
+    }
+    if (topicMatcherDescriptor.getFieldName() != null) {
+      if (topicMatcherDescriptor.getAnd() != null) {
+        throw new IllegalArgumentException(
+            INVALID_TOPIC_MATCHER_FOR_WEBSOCKET_ENDPOINT + endpointName + OF_EXCHANGE_API + apiName
+                + OF_EXCHANGE + exchangeId + ": fieldName cannot be defined with 'and' operator");
+      }
+      if (topicMatcherDescriptor.getOr() != null) {
+        throw new IllegalArgumentException(
+            INVALID_TOPIC_MATCHER_FOR_WEBSOCKET_ENDPOINT + endpointName + OF_EXCHANGE_API + apiName
+                + OF_EXCHANGE + exchangeId + ": fieldName cannot be defined with 'or' operator");
+      }
+      if (topicMatcherDescriptor.getFieldRegexp() == null && topicMatcherDescriptor.getFieldValue() == null) {
+        throw new IllegalArgumentException(INVALID_TOPIC_MATCHER_FOR_WEBSOCKET_ENDPOINT + endpointName
+            + OF_EXCHANGE_API + apiName + OF_EXCHANGE + exchangeId
+            + ": fieldName must be associated with either fieldValue or fieldRegexp");
+      }
+    } else if (topicMatcherDescriptor.getAnd() != null) {
+      if (topicMatcherDescriptor.getOr() != null) {
+        throw new IllegalArgumentException(
+            INVALID_TOPIC_MATCHER_FOR_WEBSOCKET_ENDPOINT + endpointName + OF_EXCHANGE_API + apiName
+                + OF_EXCHANGE + exchangeId + ": 'and' and 'or' operators cannot be defined together");
+      }
+      if (topicMatcherDescriptor.getFieldValue() != null || topicMatcherDescriptor.getFieldRegexp() != null) {
+        throw new IllegalArgumentException(
+            INVALID_TOPIC_MATCHER_FOR_WEBSOCKET_ENDPOINT + endpointName + OF_EXCHANGE_API + apiName
+                + OF_EXCHANGE + exchangeId + ": 'and' operator cannot be defined with fieldValue or fieldRegexp");
+      }
+      topicMatcherDescriptor.getAnd().forEach(
+          subMatcher -> checkValidWebsocketTopicMatcherDescriptor(exchangeId, apiName, endpointName, subMatcher));
+    } else if (topicMatcherDescriptor.getOr() != null) {
+      if (topicMatcherDescriptor.getFieldValue() != null || topicMatcherDescriptor.getFieldRegexp() != null) {
+        throw new IllegalArgumentException(
+            INVALID_TOPIC_MATCHER_FOR_WEBSOCKET_ENDPOINT + endpointName + OF_EXCHANGE_API + apiName
+                + OF_EXCHANGE + exchangeId + ": 'and' operator cannot be defined with fieldValue or fieldRegexp");
+      }
+      topicMatcherDescriptor.getOr().forEach(
+          subMatcher -> checkValidWebsocketTopicMatcherDescriptor(exchangeId, apiName, endpointName, subMatcher));
+    } else {
+      throw new IllegalArgumentException(
+          INVALID_TOPIC_MATCHER_FOR_WEBSOCKET_ENDPOINT + endpointName + OF_EXCHANGE_API + apiName
+              + OF_EXCHANGE + exchangeId + ": either fieldName, 'and' or 'or' operator must be defined");
+    }
+  }
+  
+  /**
+   * Generates Java code declaration for topic value substitution instruction
+   * for a given template.
+   * <p>
+   * If template has no placeholders, the quoted string of the template is
+   * returned.
+   * <p>
+   * Otherwise, the instruction to substitute arguments in the template is
+   * returned, using {@link EncodingUtil#substituteArguments(String, String...)}.
+   * <p>
+   * Each placeholder value is generated using by following rules:
+   * <ul>
+   * <li>If placeholder is a constant placeholder, see {@link ExchangeGenUtil#CONSTANT_PLACEHOLDER_PREFIX},
+   * the value is generated using {@link ExchangeGenUtil#getValueDeclarationForConstant(String, ExchangeDescriptor, Imports)},
+   * e.g. value used is reference from exchange's constants class corresponding constant</li>
+   * <li>If placeholder is a config property placeholder, see {@link ExchangeGenUtil#CONFIG_PLACEHOLDER_PREFIX},
+   * the value is generated using {@link ExchangeGenUtil#getValueDeclarationForConfigProperty(String, ExchangeDescriptor, List, String, Imports)},
+   * e.g. value used is reference from exchange's config properties</li>
+   * <li>If placeholder is a request field placeholder, starting with {@link #DEFAULT_REQUEST_ARG_NAME},
+   * the value is generated using:
+   * <ul>
+   * <li>if placeholder is exactly {@link #DEFAULT_REQUEST_ARG_NAME}, the value is the request argument itself</li>
+   * <li>if placeholder is like <code>request.subField1.subField2...</code>, the value generated is call
+   * to get sub-field value from request argument</li>
+   * </ul>
+   * </li>
+   * </ul>
+   * @param value The topic template with placeholders
+   * @param exchangeDescriptor The exchange descriptor to get constants and config properties from
+   * @param request The websocket subscribe request field
+   * @param imports The imports of generator context that will be populated with classes used by returned declaration.
+   * @return Java code declaration for topic value substitution
+   */
+  public static String generateTopicValueSubstitutionInstructionDeclaration(
+      Object value,
+      ExchangeDescriptor exchangeDescriptor,
+      Field request,
+      Imports imports) {
+    return generateTopicValueSubstitutionInstructionDeclaration(value, exchangeDescriptor, request, imports, false);
+  }
+
+  /**
+   * Generates Java code declaration for topic matcher value substitution
+   * instruction for a given template.
+   * <p>
+   * If template has no placeholders, the quoted string of the template is
+   * returned.
+   * <p>
+   * Otherwise, the instruction to substitute arguments in the template is
+   * returned, using {@link EncodingUtil#substituteArguments(String, String...)}.
+   * <p>
+   * Each placeholder value is generated using by following rules:
+   * <ul>
+   * <li>If placeholder is <code>topic</code>, the value is the local variable
+   * 'topic' see {@link #TOPIC}</li>
+   * <li>If placeholder is a constant placeholder, see
+   * {@link ExchangeGenUtil#CONSTANT_PLACEHOLDER_PREFIX}, the value is generated
+   * using
+   * {@link ExchangeGenUtil#getValueDeclarationForConstant(String, ExchangeDescriptor, Imports)},
+   * e.g. value used is reference from exchange's constants class corresponding
+   * constant</li>
+   * <li>If placeholder is a config property placeholder, see
+   * {@link ExchangeGenUtil#CONFIG_PLACEHOLDER_PREFIX}, the value is generated
+   * using
+   * {@link ExchangeGenUtil#getValueDeclarationForConfigProperty(String, ExchangeDescriptor, List, String, Imports)},
+   * e.g. value used is reference from exchange's config properties</li>
+   * <li>If placeholder is a request field placeholder, starting with
+   * {@link #DEFAULT_REQUEST_ARG_NAME}, the value is generated using:
+   * <ul>
+   * <li>if placeholder is exactly {@link #DEFAULT_REQUEST_ARG_NAME}, the value is
+   * the request argument itself</li>
+   * <li>if placeholder is like <code>request.subField1.subField2...</code>, the
+   * value generated is call to get sub-field value from request argument</li>
+   * </ul>
+   * </li>
+   * </ul>
+   * <p>
+   * Remark: This method behaves like
+   * {@link #generateTopicValueSubstitutionInstructionDeclaration(Object, ExchangeDescriptor, Field, Imports)}
+   * but also supports <code>topic</code> placeholder.
+   * 
+   * @param value              Either a String containing the topic matcher
+   *                           template with placeholders, or primitive value to
+   *                           be returned as String.
+   * @param exchangeDescriptor The exchange descriptor to get constants and config
+   *                           properties from
+   * @param request            The websocket subscribe request field
+   * @param imports            The imports of generator context that will be
+   *                           populated with classes used by returned
+   *                           declaration.
+   * @return Java code declaration for topic matcher value substitution
+   */
+  public static String generateTopicMatcherValueSubstitutionInstructionDeclaration(
+      Object value,
+      ExchangeDescriptor exchangeDescriptor,
+      Field request,
+      Imports imports) {
+    return generateTopicValueSubstitutionInstructionDeclaration(value, exchangeDescriptor, request, imports, true);
+  }
+  
+  private static String generateTopicValueSubstitutionInstructionDeclaration(
+      Object value,
+      ExchangeDescriptor exchangeDescriptor,
+      Field request,
+      Imports imports,
+      boolean topicMatcher) {
+    if (value == null) {
+      return null;
+    }
+    if (!(value instanceof String)) {
+      return String.valueOf(value);
+    }
+    String template = (String) value;
+    List<String> placeHolderNames = ExchangeGenUtil.findPlaceHolders(template);
+    if (placeHolderNames.isEmpty()) {
+      return JavaCodeGenUtil.getQuotedString(template);
+    }
+    List<String> placeHoldersDeclarations = new ArrayList<>(placeHolderNames.size());
+    for (String placeHolder : placeHolderNames) {
+      String valueDeclaration = generateTopicMatcherPlaceHolderValueSubstitution(
+          placeHolder, 
+          exchangeDescriptor,
+          request, 
+          imports,
+          topicMatcher);
+      if (valueDeclaration != null) {
+        placeHoldersDeclarations.add(JavaCodeGenUtil.getQuotedString(placeHolder));
+        placeHoldersDeclarations.add(valueDeclaration);
+      }
+    }
+    imports.add(EncodingUtil.class);
+    return new StringBuilder()
+        .append(EncodingUtil.class.getSimpleName())
+        .append(".substituteArguments(")
+        .append(JavaCodeGenUtil.getQuotedString(template))
+        .append(", ")
+        .append(StringUtils.join(placeHoldersDeclarations, ", "))
+        .append(")")
+        .toString();
+  }
+  
+  
+  
+  /**
+   * Finds actual field name from a {@link Field} or one of its child fields. <br>
+   * If provided field name matches name of provided field, then its msgFieldName
+   * is returned (see {@link Field#getMsgField()}) or the provided name if
+   * msgFieldName is <code>null</code>.<br>
+   * Otherwise, if provided field is of 'object' type (see
+   * {@link Type#isObject()}) then its child fields (see
+   * {@link Field#getProperties()}) are searched. <br>
+   * This is intented for determining actual field name in websocket message, from
+   * field name provided in
+   * {@link WebsocketTopicMatcherDescriptor#getFieldName()}.
+   * 
+   * @param name The field name provided in
+   *             {@link WebsocketTopicMatcherDescriptor#getFieldName()}. 
+   *             Cannot be <code>null</code>
+   * @param msg  The websocket stream data type
+   * @return The msgFieldName (see {@link Field#getMsgField()}) of provided field
+   *         or first of its child fields (see {@link Field#getProperties()} with
+   *         name see {@link Field#getName()} matching that field. If no match, or
+   *         <code>msg</code> is <code>null</code>, <code>null</code> is returned.
+   * @throws IllegalArgumentException if <code>name</code> is <code>null</code>
+   */
+  public static String getMsgFieldName(String name, Field msg) {
+    if (name == null) {
+      throw new IllegalArgumentException("null name");
+    }
+    if (msg == null) {
+      return null;
+    }
+    Type messageDataType = ExchangeGenUtil.getFieldType(msg);
+    if (Objects.equals(msg.getName(), name)) {
+      return Optional.ofNullable(msg.getMsgField()).orElse(name);
+    } else if (messageDataType.isObject()) {
+      for (Field c: msg.getProperties()) {
+        String res = getMsgFieldName(name, c);
+        if (res != null) {
+          return res;
+        }
+      }
+    }
+    return null;
+  }
+  
+  private static final String generateTopicMatcherPlaceHolderValueSubstitution(
+      String placeHolder,
+      ExchangeDescriptor exchangeDescriptor,
+      Field request,
+      Imports imports,
+      boolean topicMatcher) {
+    if (placeHolder.equals(TOPIC)) {
+      if (!topicMatcher) {
+        throw new IllegalArgumentException("'topic' placeholder is only allowed in websocket topic matcher templates");
+      }
+      // Topic placeholder: There is a local variable 'topic' in the
+      // generated subscribe method which holds the actual topic value.
+      return TOPIC;
+    }
+    if (placeHolder.startsWith(ExchangeGenUtil.CONSTANT_PLACEHOLDER_PREFIX)) {
+      return ExchangeGenUtil.getValueDeclarationForConstant(
+          ExchangeGenUtil.getConstantPlaceHolder(placeHolder), 
+          exchangeDescriptor, 
+          imports);
+    } else if (placeHolder.startsWith(ExchangeGenUtil.CONFIG_PLACEHOLDER_PREFIX)) {
+      return ExchangeGenUtil.getValueDeclarationForConfigProperty(
+          ExchangeGenUtil.getConfigPropertyPlaceHolder(placeHolder), 
+          exchangeDescriptor, 
+          null, 
+          "getProperties()", 
+          imports);
+    } else if (placeHolder.startsWith(DEFAULT_REQUEST_ARG_NAME)) {
+      return generateValueDeclarationForRequestPlaceholder(placeHolder, request, imports);
+    }
+    return null;
+  }
+  
+  /**
+   * Generates Java code declaration to get value for a given request field.
+   * <p>
+   * The requestFieldPlaceHolder is expected to be either <code>request</code>,
+   * that is the default request argument name, hence the full request object, or
+   * a sub-field of the request, like <code>request.subField1.subField2...</code>.
+   * 
+   * @param requestFieldPlaceHolder The request field placeholder to generate
+   *                                value declaration for.
+   * @param requestField            The request field descriptor.
+   * @param imports                 The imports of generator context that will be
+   *                                populated with classes used by returned
+   *                                declaration.
+   * @return Java code declaration to get value for given request field.
+   */
+  public static String generateValueDeclarationForRequestPlaceholder(
+      String requestFieldPlaceHolder, 
+      Field requestField, 
+      Imports imports) {
+    Type type = ExchangeGenUtil.getFieldType(requestField);
+    List<Field> properties = CollectionUtil.emptyIfNull(requestField.getProperties());
+    StringBuilder declaration = new StringBuilder();
+    declaration.append(DEFAULT_REQUEST_ARG_NAME);
+    if (!DEFAULT_REQUEST_ARG_NAME.equals(requestFieldPlaceHolder)) {
+      // placeholder is like request.subField1.subField2...
+      String[] parts = requestFieldPlaceHolder.split("\\.");
+      for (int i = 1; i < parts.length; i++) {
+        declaration.append(".");
+        String part = parts[i];
+        Field sub = CollectionUtil.emptyIfNull(properties).stream()
+          .filter(f -> f.getName().equals(part))
+          .findFirst()
+          .orElseThrow(() -> new IllegalArgumentException(
+             "No property named:" 
+               + part 
+               + " found in request field for placeholder:" 
+               + requestFieldPlaceHolder));
+        type = ExchangeGenUtil.getFieldType(sub);
+        declaration.append(JavaCodeGenUtil.getGetAccessorMethodName(
+            sub.getName(),
+            type,
+            properties.stream().map(Field::getName).collect(Collectors.toList()))).append("()");
+        properties = CollectionUtil.emptyIfNull(sub.getProperties());
+      }
+    } 
+    String res = declaration.toString();
+    if (type.getCanonicalType() == CanonicalType.LIST 
+        || type.getCanonicalType() == CanonicalType.MAP
+        || type.isObject()) {
+      imports.add(JsonUtil.class);
+      res = new StringBuilder()
+          .append("JsonUtil.pojoToJsonString(")
+          .append(res)
+          .append(")")
+          .toString();
+    }
+    return res;
   }
 
 }

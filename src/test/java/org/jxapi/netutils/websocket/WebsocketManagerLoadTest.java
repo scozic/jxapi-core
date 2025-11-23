@@ -15,7 +15,7 @@ import org.jxapi.exchange.ExchangeApi;
 import org.jxapi.exchange.ExchangeStub;
 import org.jxapi.netutils.websocket.mock.MockWebsocket;
 import org.jxapi.netutils.websocket.mock.MockWebsocketHook;
-import org.jxapi.netutils.websocket.multiplexing.WebsocketMessageTopicMatcherFactory;
+import org.jxapi.netutils.websocket.multiplexing.WSMTMFUtil;
 import org.jxapi.util.JsonUtil;
 import org.jxapi.util.PropertiesUtil;
 import org.slf4j.Logger;
@@ -108,13 +108,16 @@ public class WebsocketManagerLoadTest {
     List<Thread> threads = prepareThreads(allMessages, nbThreads, iterations);
     log.info("Subscribing topics...");
     wsManager.subscribe("topic1", 
-              WebsocketMessageTopicMatcherFactory.create("f1", "val1"), 
+              WSMTMFUtil.value("f1", "val1"), 
               wsMessageHandler1);
     wsManager.subscribe("topic2", 
-        WebsocketMessageTopicMatcherFactory.create("f2", "val2", "f5", "val5"), 
+        WSMTMFUtil.and(List.of(WSMTMFUtil.value("f2", "val2"), WSMTMFUtil.value("f5", "val5"))), 
         wsMessageHandler2);
     wsManager.subscribe("topic3", 
-        WebsocketMessageTopicMatcherFactory.create("f1", "val1_2", "f3", "val3", "f6", "val6"), 
+        WSMTMFUtil.and(List.of(
+            WSMTMFUtil.value("f1", "val1_2"), 
+            WSMTMFUtil.value("f3", "val3"), 
+            WSMTMFUtil.value("f6", "val6"))), 
         wsMessageHandler3);
     Thread.sleep(500L);
     log.info("Starting dispatch of {} messages, with {} messages related to one of {} subsribed topics", 
@@ -183,7 +186,8 @@ public class WebsocketManagerLoadTest {
   
   @Test
   public void testLoadTest() throws InterruptedException {
-    runTest(2, 50, 10, 2);
+    //runTest(2, 50, 10, 2);
+    runTest(TOPIC_COUNT, NB_MESSAGES_PER_TOPIC, ITERATIONS, NB_THREADS);
   }
 
   public static void main(String[] args) {

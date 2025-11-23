@@ -1,7 +1,5 @@
 package org.jxapi.exchange.descriptor;
 
-import java.util.Arrays;
-
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -20,7 +18,6 @@ public class WebsocketEndpointDescriptorTest {
       descriptor.setName("name");
         descriptor.setDescription("description");
         descriptor.setDocUrl("https://doc.myexchange.com/websocket/name");
-        descriptor.setTopicParametersListSeparator("|");
         descriptor.setTopic("atopic");
         descriptor.setRequest(Field.builder()
                .type(Type.STRING)
@@ -36,10 +33,10 @@ public class WebsocketEndpointDescriptorTest {
              .description("Test message")
              .sampleValue("bar")
              .build());
-        WebsocketMessageTopicMatcherFieldDescriptor websocketMessageTopicMatcherDescriptor = new WebsocketMessageTopicMatcherFieldDescriptor();
-        websocketMessageTopicMatcherDescriptor.setName("field1");
-        websocketMessageTopicMatcherDescriptor.setValue("value1");
-        descriptor.setMessageTopicMatcherFields(Arrays.asList(websocketMessageTopicMatcherDescriptor));
+        WebsocketTopicMatcherDescriptor websocketMessageTopicMatcherDescriptor = new WebsocketTopicMatcherDescriptor();
+        websocketMessageTopicMatcherDescriptor.setFieldName("field1");
+        websocketMessageTopicMatcherDescriptor.setFieldValue("value1");
+        descriptor.setTopicMatcher(websocketMessageTopicMatcherDescriptor);
     }
 
     @Test
@@ -50,10 +47,10 @@ public class WebsocketEndpointDescriptorTest {
         Assert.assertEquals("description", descriptor.getDescription());
         Assert.assertEquals("https://doc.myexchange.com/websocket/name", descriptor.getDocUrl());
         Assert.assertEquals("atopic", descriptor.getTopic());
-        Assert.assertEquals("|", descriptor.getTopicParametersListSeparator());
-        Assert.assertEquals(1, descriptor.getMessageTopicMatcherFields().size());
-        Assert.assertEquals("field1", descriptor.getMessageTopicMatcherFields().get(0).getName());
-        Assert.assertEquals("value1", descriptor.getMessageTopicMatcherFields().get(0).getValue());
+        WebsocketTopicMatcherDescriptor matcherDescriptor = descriptor.getTopicMatcher();
+        Assert.assertNotNull(matcherDescriptor);
+        Assert.assertEquals("field1", matcherDescriptor.getFieldName());
+        Assert.assertEquals("value1", matcherDescriptor.getFieldValue());
         Assert.assertEquals("myRequestField", descriptor.getRequest().getName());
         Assert.assertEquals("STRING", descriptor.getRequest().getType().toString());
         Assert.assertEquals("mf", descriptor.getRequest().getMsgField());
@@ -71,7 +68,7 @@ public class WebsocketEndpointDescriptorTest {
         WebsocketEndpointDescriptor descriptor = new WebsocketEndpointDescriptor();
         setTestValues(descriptor);
         Assert.assertEquals(
-            "WebsocketEndpointDescriptor{\"name\":\"name\",\"topic\":\"atopic\",\"description\":\"description\",\"docUrl\":\"https://doc.myexchange.com/websocket/name\",\"request\":{\"name\":\"myRequestField\",\"description\":\"Test request\",\"type\":{\"canonicalType\":\"STRING\",\"object\":false},\"sampleValue\":\"foo\",\"msgField\":\"mf\"},\"message\":{\"name\":\"myMessageField\",\"description\":\"Test message\",\"type\":{\"canonicalType\":\"STRING\",\"object\":false},\"sampleValue\":\"bar\",\"msgField\":\"mm\"},\"topicParametersListSeparator\":\"|\",\"messageTopicMatcherFields\":[{\"name\":\"field1\",\"value\":\"value1\"}]}", 
+            "WebsocketEndpointDescriptor{\"name\":\"name\",\"topic\":\"atopic\",\"description\":\"description\",\"docUrl\":\"https://doc.myexchange.com/websocket/name\",\"request\":{\"name\":\"myRequestField\",\"description\":\"Test request\",\"type\":{\"canonicalType\":\"STRING\",\"object\":false},\"sampleValue\":\"foo\",\"msgField\":\"mf\"},\"message\":{\"name\":\"myMessageField\",\"description\":\"Test message\",\"type\":{\"canonicalType\":\"STRING\",\"object\":false},\"sampleValue\":\"bar\",\"msgField\":\"mm\"},\"topicMatcher\":{\"fieldName\":\"field1\",\"fieldValue\":\"value1\"}}", 
                   descriptor.toString());
     }
 }

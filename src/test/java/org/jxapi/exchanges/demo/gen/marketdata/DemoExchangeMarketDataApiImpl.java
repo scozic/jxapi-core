@@ -24,6 +24,7 @@ import org.jxapi.netutils.rest.HttpRequest;
 import org.jxapi.netutils.websocket.WebsocketEndpoint;
 import org.jxapi.netutils.websocket.WebsocketListener;
 import org.jxapi.netutils.websocket.WebsocketSubscribeRequest;
+import org.jxapi.netutils.websocket.multiplexing.WSMTMFUtil;
 import org.jxapi.netutils.websocket.multiplexing.WebsocketMessageTopicMatcherFactory;
 import org.jxapi.util.EncodingUtil;
 import org.jxapi.util.JsonUtil;
@@ -84,6 +85,9 @@ public class DemoExchangeMarketDataApiImpl extends AbstractExchangeApi implement
   private final MessageDeserializer<GenericResponse> postRestRequestDataTypeObjectListMapResponseDeserializer = new GenericResponseDeserializer();
   
   // Constructor
+  /**
+   * Constructor
+   */
   public DemoExchangeMarketDataApiImpl(DemoExchangeExchange exchange) {
     super(ID,
           exchange,
@@ -141,8 +145,11 @@ public class DemoExchangeMarketDataApiImpl extends AbstractExchangeApi implement
   // Websocket endpoint subscribe/unsubscribe methods implementations
   @Override
   public String subscribeTickerStream(DemoExchangeMarketDataTickerStreamRequest request, WebsocketListener<DemoExchangeMarketDataTickerStreamMessage> listener) {
-    String topic = EncodingUtil.substituteArguments("${symbol}@ticker", "symbol", request.getSymbol());
-    WebsocketSubscribeRequest subscribeRequest = WebsocketSubscribeRequest.create(request, topic, WebsocketMessageTopicMatcherFactory.create("t", "ticker", "s", "" + request.getSymbol()));
+    String topic = EncodingUtil.substituteArguments("${request.symbol}@ticker", "request.symbol", request.getSymbol());
+    WebsocketMessageTopicMatcherFactory topicMatcherFactory = WSMTMFUtil.and(List.of(
+      WSMTMFUtil.value("t", "ticker"),
+      WSMTMFUtil.value("s", EncodingUtil.substituteArguments("${request.symbol}", "request.symbol", request.getSymbol()))));
+    WebsocketSubscribeRequest subscribeRequest = WebsocketSubscribeRequest.create(request, topic, topicMatcherFactory);
     return tickerStreamWs.subscribe(subscribeRequest, listener);
   }
   

@@ -10,7 +10,6 @@ import org.jxapi.exchange.descriptor.ConfigPropertyDescriptor;
 import org.jxapi.exchange.descriptor.Type;
 import org.jxapi.generator.java.Imports;
 import org.jxapi.generator.java.JavaCodeGenUtil;
-import org.jxapi.generator.java.exchange.ExchangeGenUtil;
 import org.jxapi.util.CollectionUtil;
 import org.jxapi.util.ConfigProperty;
 import org.jxapi.util.DefaultConfigProperty;
@@ -342,10 +341,9 @@ public class PropertiesGenUtil {
     if (property.isGroup()) {
       type = Type.STRING;
     }
-    String typeClass = ExchangeGenUtil.getClassNameForType(type, new Imports(), null);
     return JavaCodeGenUtil.getGetAccessorMethodName(
         name, 
-        typeClass, 
+        type, 
         CollectionUtil.emptyIfNull(allProperties).stream()
           .map(p -> p.getName())
           .collect(Collectors.toList())

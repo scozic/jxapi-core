@@ -152,17 +152,19 @@
 				{
 					"name": "tickerStream",
 					"docUrl": "https://docs.myexchange.com/api/ws/marketData/tickerStream",
-					"topic": "${symbol}@ticker",
+					"topic": "${request.symbol}@ticker",
 					"description": "Subscribe to ticker stream",
 					"request": {
 						"properties": [
 							{"name": "symbol", "type":"STRING", "description":"Symbol to subscribe to ticker stream of", "sampleValue":"ETH_USDT"}
 						]
 					},
-					"messageTopicMatcherFields": [
-						{"name": "topic",  "value": "ticker"},
-						{"name": "symbol",  "value": "${symbol}"}
-					],
+					"topicMatcher": {
+						"and": [
+							{"fieldName": "topic",  "fieldValue": "ticker"},
+							{"fieldName": "symbol",  "fieldValue": "${request.symbol}"}
+					    ]
+					},
 					"message": { 
 						"properties": [
 							{"name":"topic", "msgField":"t", "type": "STRING", "description":"Topic", "sampleValue":"ticker"},

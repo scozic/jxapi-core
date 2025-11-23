@@ -47,11 +47,10 @@
 							{"name": "symbol", "type":"STRING", "description":"Symbol to subscribe to ticker stream of", "sampleValue":"BTC_USDT"}
 						]
 					},
-					"topicParametersListSeparator": "|",
-					"messageTopicMatcherFields": [
-						{"name": "topic",  "value": "ticker"},
-						{"name": "symbol",  "value": "${symbol}"}
-					],
+					"topicMatcher": {
+						"fieldName": "topic",  
+						"fieldValue": "ticker"
+					},
 					"message": {
 						"implementedInterfaces": ["com.foo.bar.TickerStreamResponseInterface1", "com.foo.bar.TickerStreamResponseInterface2"],
 						"properties": [

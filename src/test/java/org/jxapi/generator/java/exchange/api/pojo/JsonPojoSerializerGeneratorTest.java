@@ -54,6 +54,9 @@ public class JsonPojoSerializerGeneratorTest {
         + " */\n"
         + "@Generated(\"org.jxapi.generator.java.exchange.api.pojo.JsonPojoSerializerGenerator\")\n"
         + "public class MyPojoSerializer extends StdSerializer<MyPojo> {\n"
+        + "  /**\n"
+        + "   * Constructor\n"
+        + "   */\n"
         + "  public MyPojoSerializer() {\n"
         + "    super(MyPojo.class);\n"
         + "  }\n"
@@ -87,7 +90,8 @@ public class JsonPojoSerializerGeneratorTest {
         + "    }\n"
         + "    gen.writeEndObject();\n"
         + "  }\n"
-        + "}\n", 
+        + "}\n"
+        + "", 
         generator.generate());
   }
 

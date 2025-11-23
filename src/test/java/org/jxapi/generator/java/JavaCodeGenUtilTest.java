@@ -131,22 +131,12 @@ public class JavaCodeGenUtilTest {
   
   @Test
   public void testGetGetAccessorMethodName_StringFieldType() {
-    Assert.assertEquals("getBar", JavaCodeGenUtil.getGetAccessorMethodName("bar", "String", List.of()));
+    Assert.assertEquals("getBar", JavaCodeGenUtil.getGetAccessorMethodName("bar", Type.STRING, List.of()));
   }
   
   @Test
   public void testGetGetAccessorMethodName_booleanFieldType() {
-    Assert.assertEquals("isBar", JavaCodeGenUtil.getGetAccessorMethodName("bar", "boolean", List.of()));
-  }
-  
-  @Test
-  public void testGetGetAccessorMethodName_JavaLangBooleanFieldType() {
-    Assert.assertEquals("isBar", JavaCodeGenUtil.getGetAccessorMethodName("bar", Boolean.class.getName(), List.of()));
-  }
-  
-  @Test
-  public void testGetGetAccessorMethodName_BooleanFieldType() {
-    Assert.assertEquals("isBar", JavaCodeGenUtil.getGetAccessorMethodName("bar", Boolean.class.getSimpleName(), List.of()));
+    Assert.assertEquals("isBar", JavaCodeGenUtil.getGetAccessorMethodName("bar", Type.BOOLEAN, List.of()));
   }
   
   @Test

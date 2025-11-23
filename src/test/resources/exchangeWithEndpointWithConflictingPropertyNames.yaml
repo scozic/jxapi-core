@@ -30,6 +30,15 @@ constants:
       - name: bar
         description: Bar constant of C1 group
         value: barVal
+properties:
+  - name: p1
+    type: INT
+    description: p1 property
+    defaultValue: ${constants.c1}
+  - name: P1
+    type: STRING
+    description: P1 property (note the uppercase 'P').
+    defaultValue: ${constants.C1}
 apis:
  - name: v1
    description: "Version 1 of the Employee API"
@@ -92,6 +101,17 @@ apis:
       docUrl: https://www.example.com/docs/employee/updates
       request:
        objectName: ConflictRequest
+      topicMatcher:
+        and:
+         - fieldName: m1
+           fieldValue: "${request.p1}"
+         - fieldName: M1
+           fieldValue: "${request.P1}"
+         - or:
+            - fieldName: m1_
+              fieldValue: "${constants.C1_.foo}"
+            - fieldName: "M1_"
+              fieldRegexp: ".*${config.p1}.*"
       message:
        description: Update message
        properties:

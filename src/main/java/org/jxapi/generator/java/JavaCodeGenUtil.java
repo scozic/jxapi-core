@@ -114,9 +114,9 @@ public class JavaCodeGenUtil {
    *         name if unique, field name as is if another field exist that is equal
    *         ignoring case to fieldName
    */
-  public static String getGetAccessorMethodName(String fieldName, String fieldType, List<String> allFieldNames) {
+  public static String getGetAccessorMethodName(String fieldName, Type fieldType, List<String> allFieldNames) {
     String prefix = "get";
-    if ("boolean".equalsIgnoreCase(fieldType) || Boolean.class.getName().equals(fieldType)) {
+    if (Type.BOOLEAN.equals(fieldType)) {
       prefix = "is";
     }
     return getAccessorMethodName(prefix, fieldName, allFieldNames);

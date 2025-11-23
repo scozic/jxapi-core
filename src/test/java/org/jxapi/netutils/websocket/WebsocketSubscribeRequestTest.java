@@ -1,8 +1,10 @@
 package org.jxapi.netutils.websocket;
 
+import java.util.List;
+
 import org.junit.Assert;
 import org.junit.Test;
-
+import org.jxapi.netutils.websocket.multiplexing.WSMTMFUtil;
 import org.jxapi.netutils.websocket.multiplexing.WebsocketMessageTopicMatcherFactory;
 
 /**
@@ -12,7 +14,8 @@ public class WebsocketSubscribeRequestTest {
 
     @Test
     public void testCreate() {
-        WebsocketSubscribeRequest request = WebsocketSubscribeRequest.create("request", "topic", WebsocketMessageTopicMatcherFactory.create());
+        WebsocketMessageTopicMatcherFactory topicMatcherFactory = WSMTMFUtil.and(List.of());
+        WebsocketSubscribeRequest request = WebsocketSubscribeRequest.create("request", "topic", topicMatcherFactory);
         Assert.assertNotNull(request);
         Assert.assertEquals("request", request.getRequest());
         Assert.assertEquals("topic", request.getTopic());
@@ -25,16 +28,18 @@ public class WebsocketSubscribeRequestTest {
         request.setEnpoint("endpoint");
         request.setRequest("request");
         request.setTopic("topic");
-        request.setMessageTopicMatcherFactory(WebsocketMessageTopicMatcherFactory.create());
+        WebsocketMessageTopicMatcherFactory topicMatcherFactory = WSMTMFUtil.and(List.of());
+        request.setMessageTopicMatcherFactory(topicMatcherFactory);
         Assert.assertEquals("endpoint", request.getEnpoint());
         Assert.assertEquals("request", request.getRequest());
         Assert.assertEquals("topic", request.getTopic());
-        Assert.assertNotNull(request.getMessageTopicMatcherFactory());
+        Assert.assertSame(topicMatcherFactory, request.getMessageTopicMatcherFactory());
     }
 
     @Test
     public void testToString() {
-        WebsocketSubscribeRequest request = WebsocketSubscribeRequest.create("request", "topic", WebsocketMessageTopicMatcherFactory.create());
+        WebsocketMessageTopicMatcherFactory topicMatcherFactory = WSMTMFUtil.and(List.of());
+        WebsocketSubscribeRequest request = WebsocketSubscribeRequest.create("request", "topic", topicMatcherFactory);
         Assert.assertEquals("WebsocketSubscribeRequest{\"request\":\"request\",\"messageTopicMatcherFactory\":{},\"topic\":\"topic\"}", 
                   request.toString());
     }
