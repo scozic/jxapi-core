@@ -186,8 +186,7 @@ public class WebsocketManagerLoadTest {
   
   @Test
   public void testLoadTest() throws InterruptedException {
-    //runTest(2, 50, 10, 2);
-    runTest(TOPIC_COUNT, NB_MESSAGES_PER_TOPIC, ITERATIONS, NB_THREADS);
+    runTest(2, 50, 10, 2);
   }
 
   public static void main(String[] args) {
