@@ -566,25 +566,14 @@ public class ExchangeApiInterfaceImplementationGenerator extends JavaTypeGenerat
   }
   
   private String generateWebsocketTopicSerializerDeclaration(WebsocketEndpointDescriptor websocketApi) {
-    String topicSerializerBody = "\"\"";
+    String defaultTopic = "\"" + websocketApi.getName() + "\"";
     Field request = ExchangeApiGenUtil.resolveFieldProperties(exchangeApiDescriptor, websocketApi.getRequest());
-    Type requestDataType = ExchangeGenUtil.getFieldType(request);
-    if (ExchangeApiGenUtil.websocketEndpointHasArguments(websocketApi, exchangeApiDescriptor)) {
-      if (websocketApi.getTopic() != null) {
-        topicSerializerBody =  generateUrlParametersOrTopicSerializerBodyFromTemplate(
-                        websocketApi.getTopic(), 
-                        request.getProperties(), 
-                        websocketApi.getTopicParametersListSeparator(),
-                        websocketApi.getRequest().getName(),
-                        requestDataType);
-      } else {
-        topicSerializerBody = "request == null? \"\": \"\" + JsonUtil.pojoToJsonString(request)";
-      }      
-    } else if (websocketApi.getTopic() != null) {
-      topicSerializerBody = "\"" + websocketApi.getTopic() + "\"";
-    }
-    
-    return topicSerializerBody + ";\n";
+    String declaration = ExchangeApiGenUtil.generateTopicValueSubstitutionInstructionDeclaration(
+        websocketApi.getTopic(),
+        exchangeDescriptor, 
+        request, 
+        getImports());
+    return Optional.ofNullable(declaration).orElse(defaultTopic) + ";\n";
   }
   
   private void generateRestEndpointMethodDeclaration(
@@ -1072,65 +1061,6 @@ public class ExchangeApiInterfaceImplementationGenerator extends JavaTypeGenerat
       res.add(value);
     }
   }
-
-  private String generateUrlParametersOrTopicSerializerBodyFromTemplate(String urlParametersTemplate, 
-                                        List<Field> fields, 
-                                        String stringListSeparator,
-                                        String requestArgName,
-                                        Type requestType) {
-    fields = Optional.ofNullable(fields).orElse(List.of());
-    if (stringListSeparator == null) {
-      stringListSeparator = ExchangeGenUtil.DEFAULT_STRING_LIST_SEPARATOR;
-    }
-    StringBuilder sb = new StringBuilder();
-    sb.append(EncodingUtil.class.getSimpleName())
-      .append(".substituteArguments(\"")
-      .append(urlParametersTemplate)
-      .append("\"");
-    int n = fields.size();
-    for (int i = 0; i < n; i++) {
-      Field f = fields.get(i);
-      Type type = ExchangeGenUtil.getFieldType(f);
-      String name = f.getName();
-      if (!urlParametersTemplate.contains("${" + name + "}")) {
-        continue;
-      }
-      String value = "request." 
-               + JavaCodeGenUtil.getGetAccessorMethodName(
-                name, 
-                type, 
-                fields.stream().map(Field::getName).collect(Collectors.toList()))
-               + "()";
-      value = getListFieldToUrlParameterSerializerInstuction(value, type, stringListSeparator);
-      sb.append(", \"").append(name).append("\", ").append(value);
-    }
-    if (urlParametersTemplate.contains("${" + requestArgName + "}")) {
-      n++;
-      sb.append(", \"")
-        .append(requestArgName)
-        .append("\", ")
-        .append(getListFieldToUrlParameterSerializerInstuction(ExchangeApiGenUtil.DEFAULT_REQUEST_ARG_NAME, requestType, stringListSeparator));
-    } 
-    if (n <= 0) {
-      return JavaCodeGenUtil.getQuotedString(urlParametersTemplate);
-    }
-    addImport(EncodingUtil.class);
-    sb.append(")");
-    return sb.toString();
-  }
-  
-  private String getListFieldToUrlParameterSerializerInstuction(String fieldValue, Type fieldType, String stringListSeparator) {
-    if (fieldType.getCanonicalType() != CanonicalType.LIST) {
-      return fieldValue;
-    }
-    StringBuilder sb = new StringBuilder()
-        .append(EncodingUtil.class.getSimpleName())
-        .append(".listToString(")
-        .append(fieldValue)
-        .append(", \"")
-        .append(stringListSeparator).append("\")");
-    return sb.toString();
-  }
   
   private String getHttpRequestInterceptorFactory() {
     return Optional.ofNullable(exchangeApiDescriptor.getHttpRequestInterceptorFactory())
@@ -1153,7 +1083,6 @@ public class ExchangeApiInterfaceImplementationGenerator extends JavaTypeGenerat
     }
     return -1L;
   }
-
 
   private String getWebsocketFactory() {
     return Optional.ofNullable(exchangeApiDescriptor.getWebsocketFactory())

@@ -225,8 +225,7 @@ public class ExchangeDescriptorParserTest {
   private void checkTickerStreamWebsocketEndpoint(WebsocketEndpointDescriptor tickerStreamEndpoint) {
     Assert.assertEquals("tickerStream", tickerStreamEndpoint.getName());
     Assert.assertEquals("Subscribe to ticker stream. Author: ${constants.authorFullName}", tickerStreamEndpoint.getDescription());
-    Assert.assertEquals("${symbol}@ticker", tickerStreamEndpoint.getTopic());
-    Assert.assertEquals("|", tickerStreamEndpoint.getTopicParametersListSeparator());
+    Assert.assertEquals("${request.symbol}@ticker", tickerStreamEndpoint.getTopic());
     
     List<Field> parameters = tickerStreamEndpoint.getRequest().getProperties();
     Field symbols = parameters.get(0);
@@ -234,15 +233,6 @@ public class ExchangeDescriptorParserTest {
     Assert.assertEquals("Symbol to subscribe to ticker stream of. Use ${constants.allTickers} to subscribe to every ticker. Author: ${constants.authorFullName}", symbols.getDescription());
     Assert.assertEquals(CanonicalType.STRING, symbols.getType().getCanonicalType());
     Assert.assertEquals("${constants.demoSymbol}", symbols.getSampleValue());
-
-    // FIXME
-//    List<WebsocketMessageTopicMatcherFieldDescriptor> messageTopicMatcherFields = tickerStreamEndpoint.getMessageTopicMatcherFields();
-//    Assert.assertEquals(2, messageTopicMatcherFields.size());
-//    Assert.assertEquals("topic", messageTopicMatcherFields.get(0).getName());
-//    Assert.assertEquals("ticker", messageTopicMatcherFields.get(0).getValue());
-//    Assert.assertEquals("symbol", messageTopicMatcherFields.get(1).getName());
-//    Assert.assertEquals("${symbol}", messageTopicMatcherFields.get(1).getValue());
-    
     List<Field> response = tickerStreamEndpoint.getMessage().getProperties();
     Assert.assertEquals(6, response.size());
     
@@ -344,10 +334,7 @@ public class ExchangeDescriptorParserTest {
     Assert.assertEquals("Employee updates websocket", websocketEndpointDescriptor.getDescription());
     Assert.assertEquals("https://www.example.com/docs/employee/updates", websocketEndpointDescriptor.getDocUrl());
     Assert.assertNull(websocketEndpointDescriptor.getTopic());
-    Assert.assertNull(websocketEndpointDescriptor.getTopicParametersListSeparator());
     Assert.assertNull(websocketEndpointDescriptor.getRequest());
-    // FIXME
-//    Assert.assertNull(websocketEndpointDescriptor.getMessageTopicMatcherFields());
     Field message = websocketEndpointDescriptor.getMessage();
     Assert.assertEquals("Employee update message", message.getDescription());
     List<Field> messageProperties = message.getProperties();

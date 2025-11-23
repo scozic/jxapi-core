@@ -2,13 +2,17 @@ package org.jxapi.netutils.websocket.multiplexing;
 
 import java.util.Objects;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * A {@link WebsocketMessageTopicMatcher} that matches a field's value against a
  * specific value.
  */
 public class FieldValueWebsocketMessageTopicMatcher extends AbstractWebsocketMessageTopicMatcher {
   
-  private WebsocketMessageTopicMatchStatus status = WebsocketMessageTopicMatchStatus.NO_MATCH;
+  private static final Logger log = LoggerFactory.getLogger(FieldRegexpWebsocketMessageTopicMatcher.class);
+  private static final boolean DEBUG = log.isDebugEnabled();
   
   private final String fieldName;
   private final String value;
@@ -27,13 +31,23 @@ public class FieldValueWebsocketMessageTopicMatcher extends AbstractWebsocketMes
   @Override
   public WebsocketMessageTopicMatchStatus matches(String fieldName, String value) {
     if (this.status != WebsocketMessageTopicMatchStatus.NO_MATCH) {
+      if (DEBUG) {
+        log.debug("{}:Already in terminal status {}, skipping match for field '{}' and value '{}'", 
+            this, this.status, fieldName, value);
+      }
       // Other statuses are terminal statuses
       return this.status;
     }
     if (this.fieldName.equals(fieldName)) {
       if (Objects.equals(this.value, value)) {
+        if (DEBUG) {
+          log.debug("{}:Matched field '{}' with value '{}'", this, fieldName, value);
+        }
         this.status = WebsocketMessageTopicMatchStatus.MATCHED;
       } else {
+        if (DEBUG) {
+          log.debug("{}:Field '{}' did not match value '{}'", this, fieldName, value);
+        }
         this.status = WebsocketMessageTopicMatchStatus.CANT_MATCH;
       }
     } 

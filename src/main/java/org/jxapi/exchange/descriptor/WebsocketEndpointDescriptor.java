@@ -23,8 +23,6 @@ public class WebsocketEndpointDescriptor {
 
   private Field message;
 
-  private String topicParametersListSeparator;
-
   private WebsocketTopicMatcherDescriptor topicMatcher;
 
   /**
@@ -94,28 +92,6 @@ public class WebsocketEndpointDescriptor {
    */
   public void setDescription(String description) {
     this.description = description;
-  }
-
-  /**
-   * When a websocket subscription topic carries references to a property of
-   * 'list' type, the separator used to concatenate parameters when serializing to
-   * string.
-   * 
-   * @return the separator used to concatenate
-   */
-  public String getTopicParametersListSeparator() {
-    return topicParametersListSeparator;
-  }
-
-  /**
-   * When a websocket subscription topic carries references to a property of
-   * 'list' type, the separator used to concatenate parameters when serializing to
-   * string.
-   * 
-   * @param topicParametersListSeparator the separator used to concatenate
-   */
-  public void setTopicParametersListSeparator(String topicParametersListSeparator) {
-    this.topicParametersListSeparator = topicParametersListSeparator;
   }
 
   /**

@@ -13,7 +13,7 @@ public class WSMTMFUtil {
     // Static helper class
   }
   
-  static WebsocketMessageTopicMatcherFactory and(List<WebsocketMessageTopicMatcherFactory> operandFactories) {
+  public static WebsocketMessageTopicMatcherFactory and(List<WebsocketMessageTopicMatcherFactory> operandFactories) {
     return () -> {
       List<WebsocketMessageTopicMatcher> matchers = operandFactories.stream()
           .map(WebsocketMessageTopicMatcherFactory::createWebsocketMessageTopicMatcher)
@@ -22,7 +22,7 @@ public class WSMTMFUtil {
     };
   }
   
-  static WebsocketMessageTopicMatcherFactory or(List<WebsocketMessageTopicMatcherFactory> operandFactories) {
+  public static WebsocketMessageTopicMatcherFactory or(List<WebsocketMessageTopicMatcherFactory> operandFactories) {
     return () -> {
       List<WebsocketMessageTopicMatcher> matchers = operandFactories.stream()
           .map(WebsocketMessageTopicMatcherFactory::createWebsocketMessageTopicMatcher)
@@ -31,12 +31,12 @@ public class WSMTMFUtil {
     };
   }
   
-  static WebsocketMessageTopicMatcherFactory value(String fieldName, Object fieldValue) {
+  public static WebsocketMessageTopicMatcherFactory value(String fieldName, Object fieldValue) {
     String value = fieldValue != null ? fieldValue.toString() : null;
     return () -> new FieldValueWebsocketMessageTopicMatcher(fieldName, value);
   }
   
-  static WebsocketMessageTopicMatcherFactory regexp(String fieldName, String fieldValue) {
+  public static WebsocketMessageTopicMatcherFactory regexp(String fieldName, String fieldValue) {
     return () -> new FieldRegexpWebsocketMessageTopicMatcher(fieldName, fieldValue);
   }
 }

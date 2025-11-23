@@ -39,23 +39,23 @@ public class WebsocketMessageTopicMatcherDescriptorTest {
         fieldValuedescriptor.setFieldName("foo");
         fieldValuedescriptor.setFieldValue("bar");
         Assert.assertEquals(
-            "WebsocketMessageTopicMatcherDescriptor{\"fieldName\":\"foo\",\"fieldValue\":\"bar\"}",
+            "WebsocketTopicMatcherDescriptor{\"fieldName\":\"foo\",\"fieldValue\":\"bar\"}",
             fieldValuedescriptor.toString());
         WebsocketTopicMatcherDescriptor fieldRegexpDescriptor = new WebsocketTopicMatcherDescriptor();
         fieldRegexpDescriptor.setFieldName("foo");
         fieldRegexpDescriptor.setFieldRegexp("ba.*");
         Assert.assertEquals(
-            "WebsocketMessageTopicMatcherDescriptor{\"fieldName\":\"foo\",\"fieldRegexp\":\"ba.*\"}",
+            "WebsocketTopicMatcherDescriptor{\"fieldName\":\"foo\",\"fieldRegexp\":\"ba.*\"}",
             fieldRegexpDescriptor.toString());
         WebsocketTopicMatcherDescriptor orDescriptor = new WebsocketTopicMatcherDescriptor();
         orDescriptor.setOr(List.of(fieldValuedescriptor, fieldRegexpDescriptor));
         Assert.assertEquals(
-            "WebsocketMessageTopicMatcherDescriptor{\"or\":[{\"fieldName\":\"foo\",\"fieldValue\":\"bar\"},{\"fieldName\":\"foo\",\"fieldRegexp\":\"ba.*\"}]}",
+            "WebsocketTopicMatcherDescriptor{\"or\":[{\"fieldName\":\"foo\",\"fieldValue\":\"bar\"},{\"fieldName\":\"foo\",\"fieldRegexp\":\"ba.*\"}]}",
             orDescriptor.toString());
         WebsocketTopicMatcherDescriptor andDescriptor = new WebsocketTopicMatcherDescriptor();
         andDescriptor.setAnd(List.of(fieldValuedescriptor, fieldRegexpDescriptor));
         Assert.assertEquals(
-            "WebsocketMessageTopicMatcherDescriptor{\"and\":[{\"fieldName\":\"foo\",\"fieldValue\":\"bar\"},{\"fieldName\":\"foo\",\"fieldRegexp\":\"ba.*\"}]}",
+            "WebsocketTopicMatcherDescriptor{\"and\":[{\"fieldName\":\"foo\",\"fieldValue\":\"bar\"},{\"fieldName\":\"foo\",\"fieldRegexp\":\"ba.*\"}]}",
             andDescriptor.toString());
     }
 }

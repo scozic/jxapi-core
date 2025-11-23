@@ -1,5 +1,6 @@
 package org.jxapi.netutils.websocket;
 
+import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -17,6 +18,7 @@ import org.jxapi.netutils.websocket.mock.MockWebsocketEventType;
 import org.jxapi.netutils.websocket.mock.MockWebsocketHook;
 import org.jxapi.netutils.websocket.mock.MockWebsocketHookEvent;
 import org.jxapi.netutils.websocket.mock.MockWebsocketHookEventType;
+import org.jxapi.netutils.websocket.multiplexing.WSMTMFUtil;
 import org.jxapi.netutils.websocket.multiplexing.WebsocketMessageTopicMatcherFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -107,7 +109,7 @@ public class DefaultWebsocketManagerTest {
     String unsubscribeTopicMsg = "unsubscribe:topic1";
     wsHook.setSubscribeRequestMessage(topic, subscribeTopicMsg);
     wsHook.setUnSubscribeRequestMessage(topic, unsubscribeTopicMsg);
-    WebsocketMessageTopicMatcherFactory topicMatcher = WebsocketMessageTopicMatcherFactory.create("myTopic", topic);
+    WebsocketMessageTopicMatcherFactory topicMatcher = WSMTMFUtil.value("myTopic", topic);
     wsManager.subscribe(topic, topicMatcher, wsMessageHandler1);
     popWebsocketHookBeforeConnectEvent();
     popWebsocketConnectEvent();
@@ -146,7 +148,7 @@ public class DefaultWebsocketManagerTest {
     String unsubscribeTopicMsg = "unsubscribe:topic1";
     wsHook.setSubscribeRequestMessage(topic, subscribeTopicMsg);
     wsHook.setUnSubscribeRequestMessage(topic, unsubscribeTopicMsg);
-    WebsocketMessageTopicMatcherFactory topicMatcher = WebsocketMessageTopicMatcherFactory.create("myTopic", topic);
+    WebsocketMessageTopicMatcherFactory topicMatcher = WSMTMFUtil.value("myTopic", topic);
     wsManager.subscribe(topic, topicMatcher, wsMessageHandler1);
     popWebsocketHookBeforeConnectEvent();
     popWebsocketConnectEvent();
@@ -174,7 +176,7 @@ public class DefaultWebsocketManagerTest {
     String unsubscribeTopicMsg = "unsubscribe:topic1";
     wsHook.setSubscribeRequestMessage(topic, subscribeTopicMsg);
     wsHook.setUnSubscribeRequestMessage(topic, unsubscribeTopicMsg);
-    WebsocketMessageTopicMatcherFactory topicMatcher = WebsocketMessageTopicMatcherFactory.create("myTopic", topic);
+    WebsocketMessageTopicMatcherFactory topicMatcher = WSMTMFUtil.value("myTopic", topic);
     wsManager.subscribe(topic, topicMatcher, wsMessageHandler1);
     popWebsocketHookBeforeConnectEvent();
     popWebsocketConnectEvent();
@@ -203,7 +205,7 @@ public class DefaultWebsocketManagerTest {
     String unsubscribeTopicMsg = "unsubscribe:topic1";
     wsHook.setSubscribeRequestMessage(topic, subscribeTopicMsg);
     wsHook.setUnSubscribeRequestMessage(topic, unsubscribeTopicMsg);
-    WebsocketMessageTopicMatcherFactory topicMatcher = WebsocketMessageTopicMatcherFactory.create("myTopic", topic);
+    WebsocketMessageTopicMatcherFactory topicMatcher = WSMTMFUtil.value("myTopic", topic);
     wsManager.subscribe(topic, topicMatcher, wsMessageHandler1);
     popWebsocketHookBeforeConnectEvent();
     popWebsocketConnectEvent();
@@ -230,7 +232,7 @@ public class DefaultWebsocketManagerTest {
     String unsubscribeTopicMsg = "unsubscribe:topic1";
     wsHook.setSubscribeRequestMessage(topic, subscribeTopicMsg);
     wsHook.setUnSubscribeRequestMessage(topic, unsubscribeTopicMsg);
-    WebsocketMessageTopicMatcherFactory topicMatcher = WebsocketMessageTopicMatcherFactory.create("myTopic", "topic1");
+    WebsocketMessageTopicMatcherFactory topicMatcher = WSMTMFUtil.value("myTopic", "topic1");
     wsManager.subscribe(topic, topicMatcher, wsMessageHandler1);
     popWebsocketHookBeforeConnectEvent();
     popWebsocketConnectEvent();
@@ -255,7 +257,7 @@ public class DefaultWebsocketManagerTest {
     String unsubscribeTopicMsg = "unsubscribe:topic1";
     wsHook.setSubscribeRequestMessage(topic, subscribeTopicMsg);
     wsHook.setUnSubscribeRequestMessage(topic, unsubscribeTopicMsg);
-    WebsocketMessageTopicMatcherFactory topicMatcher = WebsocketMessageTopicMatcherFactory.create("myTopic", "topic1");
+    WebsocketMessageTopicMatcherFactory topicMatcher = WSMTMFUtil.value("myTopic", "topic1");
     wsManager.subscribe(topic, topicMatcher, wsMessageHandler1);
     popWebsocketHookBeforeConnectEvent();
     popWebsocketConnectEvent();
@@ -297,7 +299,7 @@ public class DefaultWebsocketManagerTest {
     String unsubscribeTopicMsg = "unsubscribe:topic1";
     wsHook.setSubscribeRequestMessage(topic, subscribeTopicMsg);
     wsHook.setUnSubscribeRequestMessage(topic, unsubscribeTopicMsg);
-    WebsocketMessageTopicMatcherFactory topicMatcher = WebsocketMessageTopicMatcherFactory.create("myTopic", "topic1");
+    WebsocketMessageTopicMatcherFactory topicMatcher = WSMTMFUtil.value("myTopic", "topic1");
     wsManager.subscribe(topic, topicMatcher, wsMessageHandler1);
     popWebsocketHookBeforeConnectEvent();
     popWebsocketConnectEvent();
@@ -319,7 +321,7 @@ public class DefaultWebsocketManagerTest {
     popWebsocketAddErrorHandlerEvent();
     popWebsocketAddMessageHandlerEvent();
     String topic = "topic1";
-    WebsocketMessageTopicMatcherFactory topicMatcher = WebsocketMessageTopicMatcherFactory.create("myTopic", topic);
+    WebsocketMessageTopicMatcherFactory topicMatcher = WSMTMFUtil.value("myTopic", topic);
     wsManager.subscribe(topic, topicMatcher, wsMessageHandler1);
     popWebsocketConnectEvent();
     checkNoEvents();
@@ -365,9 +367,9 @@ public class DefaultWebsocketManagerTest {
     String heartBeatMsg = "{\"myTopic\":\"heartBeat\", \"payload\":\"PING\"}";
     wsHook.setHeartBeatMessage(heartBeatMsg);
     String heartBeatResponseMsg = "{\"myTopic\":\"heartBeat\", \"payload\":\"PONG\"}";
-    WebsocketMessageTopicMatcherFactory topicMatcher = WebsocketMessageTopicMatcherFactory.create("myTopic", "topic1");
+    WebsocketMessageTopicMatcherFactory topicMatcher = WSMTMFUtil.value("myTopic", "topic1");
     HeartBeatResponseSystemMsgHandler hbHandler = new HeartBeatResponseSystemMsgHandler();
-    wsManager.addSystemMessageHandler("heartBeat",  WebsocketMessageTopicMatcherFactory.create("myTopic", "heartBeat"), hbHandler);
+    wsManager.addSystemMessageHandler("heartBeat",  WSMTMFUtil.value("myTopic", "heartBeat"), hbHandler);
     checkNoEvents();
     wsManager.subscribe(topic, topicMatcher, wsMessageHandler1);
     popWebsocketHookBeforeConnectEvent();
@@ -408,10 +410,10 @@ public class DefaultWebsocketManagerTest {
     popWebsocketAddMessageHandlerEvent();
     String heartBeatMsg = "{\"myTopic\":\"heartBeat\", \"payload\":\"PING\"}";
     String heartBeatResponseMsg = "{\"myTopic\":\"heartBeat\", \"payload\":\"PONG\"}";
-    WebsocketMessageTopicMatcherFactory topicMatcher = WebsocketMessageTopicMatcherFactory.create("myTopic", "topic1");
+    WebsocketMessageTopicMatcherFactory topicMatcher = WSMTMFUtil.value("myTopic", "topic1");
     HeartBeatRequestSystemMsgHandler hbHandler = new HeartBeatRequestSystemMsgHandler();
     hbHandler.heartBeatResponseMsg = heartBeatResponseMsg;
-    wsManager.addSystemMessageHandler("heartBeat",  WebsocketMessageTopicMatcherFactory.create("myTopic", "heartBeat"), hbHandler);
+    wsManager.addSystemMessageHandler("heartBeat",  WSMTMFUtil.value("myTopic", "heartBeat"), hbHandler);
     checkNoEvents();
     wsManager.subscribe(null, topicMatcher, wsMessageHandler1);
     popWebsocketConnectEvent();
@@ -460,10 +462,10 @@ public class DefaultWebsocketManagerTest {
     String heartBeatMsg = "{\"myTopic\":\"heartBeat\", \"payload\":\"PING\"}";
     wsHook.setHeartBeatMessage(heartBeatMsg);
     String heartBeatResponseMsg = "{\"myTopic\":\"heartBeat\", \"payload\":\"PONG\"}";
-    WebsocketMessageTopicMatcherFactory topicMatcher = WebsocketMessageTopicMatcherFactory.create("myTopic", "topic1");
+    WebsocketMessageTopicMatcherFactory topicMatcher = WSMTMFUtil.value("myTopic", "topic1");
     HeartBeatRequestSystemMsgHandler hbHandler = new HeartBeatRequestSystemMsgHandler();
     hbHandler.heartBeatResponseMsg = heartBeatResponseMsg;
-    wsManager.addSystemMessageHandler("heartBeat",  WebsocketMessageTopicMatcherFactory.create("myTopic", "heartBeat"), hbHandler);
+    wsManager.addSystemMessageHandler("heartBeat",  WSMTMFUtil.value("myTopic", "heartBeat"), hbHandler);
     checkNoEvents();
     wsManager.subscribe(topic, topicMatcher, wsMessageHandler1);
     popWebsocketHookBeforeConnectEvent();
@@ -529,7 +531,7 @@ public class DefaultWebsocketManagerTest {
     wsHook.setSubscribeRequestMessage(topic, subscribeTopicMsg);
     wsHook.setUnSubscribeRequestMessage(topic, unsubscribeTopicMsg);
     wsHook.setHeartBeatMessage(null);
-    WebsocketMessageTopicMatcherFactory topicMatcher = WebsocketMessageTopicMatcherFactory.create("myTopic", "topic1");
+    WebsocketMessageTopicMatcherFactory topicMatcher = WSMTMFUtil.value("myTopic", "topic1");
     checkNoEvents();
     wsManager.subscribe(topic, topicMatcher, wsMessageHandler1);
     popWebsocketHookBeforeConnectEvent();
@@ -566,7 +568,7 @@ public class DefaultWebsocketManagerTest {
     String unsubscribeTopic1Msg = "unsubscribe:topic1";
     wsHook.setSubscribeRequestMessage(topic1, subscribeTopic1Msg);
     wsHook.setUnSubscribeRequestMessage(topic1, unsubscribeTopic1Msg);
-    WebsocketMessageTopicMatcherFactory topicMatcher = WebsocketMessageTopicMatcherFactory.create("myTopic", topic1);
+    WebsocketMessageTopicMatcherFactory topicMatcher = WSMTMFUtil.value("myTopic", topic1);
     wsManager.subscribe(topic1, topicMatcher, wsMessageHandler1);
     popWebsocketHookBeforeConnectEvent();
     popWebsocketConnectEvent();
@@ -585,7 +587,7 @@ public class DefaultWebsocketManagerTest {
     String unsubscribeTopic2Msg = "unsubscribe:topic2";
     wsHook.setSubscribeRequestMessage(topic2, subscribeTopic2Msg);
     wsHook.setUnSubscribeRequestMessage(topic2, unsubscribeTopic2Msg);
-    WebsocketMessageTopicMatcherFactory topic2Matcher = WebsocketMessageTopicMatcherFactory.create("myTopic", topic2);
+    WebsocketMessageTopicMatcherFactory topic2Matcher = WSMTMFUtil.value("myTopic", topic2);
     wsManager.subscribe(topic2, topic2Matcher, wsMessageHandler2);
     popWebsocketHookGetSubscribeRequestMessageEvent();
     popWebsocketSendMessageEvent(subscribeTopic2Msg);
@@ -648,7 +650,7 @@ public class DefaultWebsocketManagerTest {
     String unsubscribeTopic1Msg = "unsubscribe:topic1";
     wsHook.setSubscribeRequestMessage(topic1, subscribeTopic1Msg);
     wsHook.setUnSubscribeRequestMessage(topic1, unsubscribeTopic1Msg);
-    WebsocketMessageTopicMatcherFactory topicMatcher = WebsocketMessageTopicMatcherFactory.create("myTopic", topic1);
+    WebsocketMessageTopicMatcherFactory topicMatcher = WSMTMFUtil.value("myTopic", topic1);
     wsManager.subscribe(topic1, topicMatcher, wsMessageHandler1);
     popWebsocketHookBeforeConnectEvent();
     popWebsocketConnectEvent();
@@ -667,7 +669,7 @@ public class DefaultWebsocketManagerTest {
     String unsubscribeTopic2Msg = "unsubscribe:topic2";
     wsHook.setSubscribeRequestMessage(topic2, subscribeTopic2Msg);
     wsHook.setUnSubscribeRequestMessage(topic2, unsubscribeTopic2Msg);
-    WebsocketMessageTopicMatcherFactory topic2Matcher = WebsocketMessageTopicMatcherFactory.create("myTopic", topic1, "myOtherTopic", "foo");
+    WebsocketMessageTopicMatcherFactory topic2Matcher = WSMTMFUtil.and(List.of(WSMTMFUtil.value("myTopic", topic1), WSMTMFUtil.value("myOtherTopic", "foo")));
     wsManager.subscribe(topic2, topic2Matcher, wsMessageHandler2);
     popWebsocketHookGetSubscribeRequestMessageEvent();
     popWebsocketSendMessageEvent(subscribeTopic2Msg);
@@ -718,9 +720,9 @@ public class DefaultWebsocketManagerTest {
     String heartBeatMsg = "{\"myTopic\":\"heartBeat\", \"payload\":\"PING\"}";
     wsHook.setHeartBeatMessage(heartBeatMsg);
     String heartBeatResponseMsg = "{\"myTopic\":\"heartBeat\", \"payload\":\"PONG\"}";
-    WebsocketMessageTopicMatcherFactory topicMatcher = WebsocketMessageTopicMatcherFactory.create("myTopic", "topic1");
+    WebsocketMessageTopicMatcherFactory topicMatcher = WSMTMFUtil.value("myTopic", "topic1");
     HeartBeatResponseSystemMsgHandler hbHandler = new HeartBeatResponseSystemMsgHandler();
-    wsManager.addSystemMessageHandler("heartBeat",  WebsocketMessageTopicMatcherFactory.create("myTopic", "heartBeat"), hbHandler);
+    wsManager.addSystemMessageHandler("heartBeat",  WSMTMFUtil.value("myTopic", "heartBeat"), hbHandler);
     checkNoEvents();
     wsManager.subscribe(topic, topicMatcher, wsMessageHandler1);
     popWebsocketHookBeforeConnectEvent();
@@ -840,7 +842,7 @@ public class DefaultWebsocketManagerTest {
     String unsubscribeTopicMsg = "unsubscribe:topic1";
     wsHook.setSubscribeRequestMessage(topic, subscribeTopicMsg);
     wsHook.setUnSubscribeRequestMessage(topic, unsubscribeTopicMsg);
-    WebsocketMessageTopicMatcherFactory topicMatcher = WebsocketMessageTopicMatcherFactory.create("myTopic", topic);
+    WebsocketMessageTopicMatcherFactory topicMatcher = WSMTMFUtil.value("myTopic", topic);
     wsManager.subscribe(topic, topicMatcher, wsMessageHandler1);
     popWebsocketHookBeforeConnectEvent();
     popWebsocketConnectEvent();
@@ -904,7 +906,7 @@ public class DefaultWebsocketManagerTest {
     String unsubscribeTopicMsg = "unsubscribe:topic1";
     wsHook.setSubscribeRequestMessage(topic, subscribeTopicMsg);
     wsHook.setUnSubscribeRequestMessage(topic, unsubscribeTopicMsg);
-    WebsocketMessageTopicMatcherFactory topicMatcher = WebsocketMessageTopicMatcherFactory.create("myTopic", topic);
+    WebsocketMessageTopicMatcherFactory topicMatcher = WSMTMFUtil.value("myTopic", topic);
     ws.addExceptionToThrowOnConnect("Test error on connect");
     wsManager.subscribe(topic, topicMatcher, wsMessageHandler1);
     popWebsocketHookBeforeConnectEvent();
@@ -1143,7 +1145,7 @@ public class DefaultWebsocketManagerTest {
     wsManager.dispose();
     String topic = "topic1";
     String subscribeTopicMsg = "subscribe:topic1";
-    WebsocketMessageTopicMatcherFactory topicMatcher = WebsocketMessageTopicMatcherFactory.create("myTopic", topic);
+    WebsocketMessageTopicMatcherFactory topicMatcher = WSMTMFUtil.value("myTopic", topic);
     wsManager.subscribe(subscribeTopicMsg, topicMatcher, wsMessageHandler1);
   }
   

@@ -13,18 +13,19 @@
 			"websocketEndpoints": [
 				{
 					"name": "tickerStreamStringObjectType",
-					"topic": "${symbol}@ticker",
+					"topic": "${request.symbol}@ticker",
 					"description": "Subscribe to ticker stream",
 					"request":{
 						"properties": [
 							{"name": "symbol", "type":"STRING", "description":"Symbol to subscribe to ticker stream of", "sampleValue":"BTC_USDT"}
 						]
 					},					
-					"topicParametersListSeparator": "|",
-					"messageTopicMatcherFields": [
-						{"name": "subject",  "value": "ticker"},
-						{"name": "symbol",  "value": "${symbol}"}
-					],
+					"topicMatcher": {
+						"and": [
+							{"fieldName": "subject",  "fieldValue": "ticker"},
+							{"fieldName": "symbol",  "fieldValue": "${request.symbol}"}
+					    ]
+					},
 					"message": {
 						"objectName": "TickerMessage",
 						"properties": [
@@ -36,7 +37,7 @@
 				},				
 				{
 				"name": "tickerStreamStringRequestType",
-					"topic": "${symbol}@ticker",
+					"topic": "${request}@ticker",
 					"description": "Subscribe to ticker stream",
 					"request":{
 						"name": "symbol", 
@@ -44,11 +45,12 @@
 						"description":"Symbol to subscribe to ticker stream of", 
 						"sampleValue":"BTC_USDT"
 					},					
-					"topicParametersListSeparator": "|",
-					"messageTopicMatcherFields": [
-						{"name": "subject",  "value": "${topic}"},
-						{"name": "symbol",  "value": "${symbol}"}
-					],
+					"topicMatcher": {
+						"and": [
+							{"fieldName": "subject",  "fieldValue": "${topic}"},
+							{"fieldName": "symbol",  "fieldValue": "${request}"}
+					    ]
+					},
 					"message": {
 						"objectName": "TickerMessage"
 					}

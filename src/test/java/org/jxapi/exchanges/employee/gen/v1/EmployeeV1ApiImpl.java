@@ -127,8 +127,9 @@ public class EmployeeV1ApiImpl extends AbstractExchangeApi implements EmployeeV1
   // Websocket endpoint subscribe/unsubscribe methods implementations
   @Override
   public String subscribeEmployeeUpdates(WebsocketListener<EmployeeV1EmployeeUpdatesMessage> listener) {
-    String topic = "";
-    WebsocketSubscribeRequest subscribeRequest = WebsocketSubscribeRequest.create(null, topic, WebsocketMessageTopicMatcherFactory.create());
+    String topic = "employeeUpdates";
+    WebsocketMessageTopicMatcherFactory topicMatcherFactory = WebsocketMessageTopicMatcherFactory.ANY_MATCHER_FACTORY;
+    WebsocketSubscribeRequest subscribeRequest = WebsocketSubscribeRequest.create(null, topic, topicMatcherFactory);
     return employeeUpdatesWs.subscribe(subscribeRequest, listener);
   }
   
