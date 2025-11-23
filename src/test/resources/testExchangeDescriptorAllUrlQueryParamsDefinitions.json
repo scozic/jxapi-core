@@ -68,26 +68,6 @@
 						]
 					}
 				},
-		{
-					"name": "getRestRequestDataTypeStringListWithCustomListSeparator",
-					"httpMethod": "GET",
-					"description": "A sample REST endpoint using STRING_LIST data type with GET method. Expecting one query param named id with value as comma separated string as since 'urlParameters' is used and property",
-					"url": "/getRestRequestDataTypeStringListWithCustomListSeparator",
-					"urlParameters" : "${ids}",
-					"request": {
-						"name": "ids",
-						"type": "STRING_LIST",
-						"sampleValue": "[\"Joe\",\"Anne\",\"Bill\"]"
-					},
-					"response": {
-						"objectName": "GenericResponse",
-						"type": "OBJECT_LIST", 
-						"properties": [
-							{"name":"responseCode", "type": "INT", "description":"Request response code", "sampleValue":"0"},
-							{"name":"persons", "type": "OBJECT_LIST", "objectName": "Person"}
-						]
-					}
-				},
 				{
 					"name": "deleteRestRequestDataTypeInt",
 					"httpMethod": "DELETE",
@@ -107,7 +87,6 @@
 					"httpMethod": "DELETE",
 					"description": "A sample REST endpoint using INT request data type. Expecting single param of primitive type to be passed single query param",
 					"url": "/deleteRestRequestDataTypeIntAsQueryParam",
-					"queryParams" : true,
 					"request": {
 						"name": "id",
 						"type": "INT",
@@ -154,26 +133,13 @@
 					}
 				},
 				{
-					"name": "putRestRequestDataTypeObjectUsingCustomQueryParams",
-					"httpMethod": "PUT",
-					"urlParameters" : "?id=${id}&name=${name}&age=${age}&city=${city}",
-					"description": "A sample REST endpoint using OBJECT request data type with PUT method. Expecting query params as specified in 'urlParams' property",
-					"url": "/putRestRequestDataTypeObjectUsingCustomQueryParams",
-					"request": {
-						"objectName": "Person"
-					},
-					"response": {
-						"objectName": "GenericResponse"
-					}
-				},
-				{
 					"name": "putRestRequestDataTypeObjectUsingDefaultQueryParams",
 					"httpMethod": "PUT",
-					"queryParams" : true,
-					"description": "A sample REST endpoint using OBJECT request data type with PUT method. 'queryParams' is set to 'true' should request should be generated using query params",
+					"description": "A sample REST endpoint using OBJECT request data type with PUT method. 'in' property set 'QUERY' should cause request to be generated using query params",
 					"url": "/putRestRequestDataTypeObjectUsingDefaultQueryParams",
 					"request": {
-						"objectName": "Person"
+						"objectName": "Person",
+						"in": "QUERY"
 					},
 					"response": {
 						"objectName": "GenericResponse"
@@ -181,13 +147,13 @@
 				},
 				{
 					"name": "postRestRequestDataTypeIntListAsQueryParam",
-					"httpMethod": "POST",
-					"queryParams": true,
 					"description": "A sample REST endpoint using INT_LIST request data type",
 					"url": "/postRestRequestDataTypeIntListAsQueryParam",
+					"httpMethod": "POST",
 					"request": {
 						"name": "intListArg",
-						"type": "INT_LIST"
+						"type": "INT_LIST",
+						"in": "QUERY"
 					},
 					"response": {
 						"objectName": "GenericResponse"

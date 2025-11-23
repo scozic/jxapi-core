@@ -14,6 +14,9 @@ import org.jxapi.exchanges.employee.gen.v1.pojo.EmployeeV1GetAllEmployeesRespons
  */
 @Generated("org.jxapi.generator.java.exchange.api.pojo.JsonPojoSerializerGenerator")
 public class EmployeeV1GetAllEmployeesResponseSerializer extends StdSerializer<EmployeeV1GetAllEmployeesResponse> {
+  /**
+   * Constructor
+   */
   public EmployeeV1GetAllEmployeesResponseSerializer() {
     super(EmployeeV1GetAllEmployeesResponse.class);
   }

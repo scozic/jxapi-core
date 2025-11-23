@@ -1,6 +1,7 @@
 package org.jxapi.generator.java.exchange;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import org.jxapi.exchange.Exchange;
@@ -80,11 +81,12 @@ public class ExchangeInterfaceGenerator extends JavaTypeGenerator {
     if (apis.isEmpty()) {
       return;
     }
+    Map<String, String> apiGetterMethodNames = ExchangeGenUtil.getApiGroupGetterMethodNames(apis);
     appendToBody("\n// API groups\n");
     for (ExchangeApiDescriptor api: apis) {
       String apiClassName = ExchangeGenUtil.getApiInterfaceClassName(exchangeDescriptor, api);
       String apiSimpleClassName = JavaCodeGenUtil.getClassNameWithoutPackage(apiClassName);
-      String getApiMethodSignature = apiSimpleClassName + " get" + apiSimpleClassName + "()";
+      String getApiMethodSignature = apiSimpleClassName + " " + apiGetterMethodNames.get(api.getName()) + "()";
       addImport(apiClassName);
       appendToBody("\n")
         .append(getGetApiMethodJavadoc(api))

@@ -33,19 +33,6 @@ public class ExchangeDescriptorFromJsonToYaml {
     options.setWidth(BEST_WIDTH);
     options.setDereferenceAliases(true);
     options.setDefaultFlowStyle(DumperOptions.FlowStyle.BLOCK);
-//    Representer representer = new Representer(options) {
-//        @Override
-//        protected NodeTuple representJavaBeanProperty(Object javaBean, Property property, Object propertyValue,Tag customTag) {
-//            // if value of property is null, ignore it.
-//            if (propertyValue == null) {
-//                return null;
-//            }  
-//            else {
-//                return super.representJavaBeanProperty(javaBean, property, propertyValue, customTag);
-//            }
-//        }
-//    };
-//    Yaml yaml = new Yaml(representer);
     Yaml yaml = new Yaml(options);
       String outputContent = yaml.dump(exchangeDescriptor);
       log.info("Writing ExchangeDescriptor to YAML file: {}", outputYamlFile);

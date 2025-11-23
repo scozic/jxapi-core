@@ -57,6 +57,8 @@ public class ConstantsClassGeneratorTest {
     Constant c08 = Constant.create("myTimestamp", Type.LONG, "A test Timestamp constant using 'now()' placeholder", "now()");
     Constant c09 = Constant.create("myBigDecimal", Type.BIGDECIMAL, "A test BigDecimal constant", 1.2345);
     Constant c10 = Constant.create("myBigDecimalWithValueAsString", Type.BIGDECIMAL, "A test BigDecimal constant with value specified as String", "5.4321");
+    Constant c11 = Constant.create("myStringListWithValueAsObject", Type.fromTypeName("STRING_LIST"), "A test String list constant with value specified as list object", List.of("a", "b", "${testMyIntValue}"));
+    Constant c12 = Constant.create("myIntMapWithValueAsObject", Type.fromTypeName("INT_MAP"), "A test String list constant with value specified as list object", Map.of("a", "${testMyIntValue}", "b", 456));
     
     PlaceHolderResolver docPlaceholderResolver = PlaceHolderResolver.create(Map.of("testMyIntValue", "123"));
     PlaceHolderResolver valuesPlaceHolderResolver = s -> {
@@ -64,13 +66,20 @@ public class ConstantsClassGeneratorTest {
       return JavaCodeGenUtil.getQuotedString(s);
     };
     
-    ConstantsClassGenerator gen = new ConstantsClassGenerator("com.x.y.MyConstants", List.of(c01, c02, c03, c04, c05, c06, c07, c08, c09, c10), docPlaceholderResolver);
+    List<Constant> allConstants = List.of(c01, c02, c03, c04, c05, c06, c07, c08, c09, c10, c11, c12);
+    ConstantsClassGenerator gen = new ConstantsClassGenerator("com.x.y.MyConstants", allConstants, docPlaceholderResolver);
     gen.setConstantValuePlaceHolderResolver(valuesPlaceHolderResolver);
     Assert.assertEquals("package com.x.y;\n"
         + "\n"
         + "import java.math.BigDecimal;\n"
+        + "import java.util.List;\n"
+        + "import java.util.Map;\n"
         + "\n"
         + "import javax.annotation.processing.Generated;\n"
+        + "import org.jxapi.netutils.deserialization.json.field.IntegerJsonFieldDeserializer;\n"
+        + "import org.jxapi.netutils.deserialization.json.field.ListJsonFieldDeserializer;\n"
+        + "import org.jxapi.netutils.deserialization.json.field.MapJsonFieldDeserializer;\n"
+        + "import org.jxapi.netutils.deserialization.json.field.StringJsonFieldDeserializer;\n"
         + "\n"
         + "\n"
         + "@Generated(\"org.jxapi.generator.java.exchange.constants.ConstantsClassGenerator\")\n"
@@ -124,7 +133,18 @@ public class ConstantsClassGeneratorTest {
         + "   * A test BigDecimal constant with value specified as String\n"
         + "   */\n"
         + "  public static final BigDecimal MY_BIG_DECIMAL_WITH_VALUE_AS_STRING = new BigDecimal(\"5.4321\");\n"
-        + "}\n", gen.generate());
+        + "  \n"
+        + "  /**\n"
+        + "   * A test String list constant with value specified as list object\n"
+        + "   */\n"
+        + "  public static final List<String> MY_STRING_LIST_WITH_VALUE_AS_OBJECT = new ListJsonFieldDeserializer<>(StringJsonFieldDeserializer.getInstance()).deserialize(\"[\\\"a\\\",\\\"b\\\",\\\"1234\\\"]\");\n"
+        + "  \n"
+        + "  /**\n"
+        + "   * A test String list constant with value specified as list object\n"
+        + "   */\n"
+        + "  public static final Map<String, Integer> MY_INT_MAP_WITH_VALUE_AS_OBJECT = new MapJsonFieldDeserializer<>(IntegerJsonFieldDeserializer.getInstance()).deserialize(\"{\\\"a\\\":\\\"1234\\\",\\\"b\\\":456}\");\n"
+        + "}\n"
+        + "", gen.generate());
   }
   
   @Test(expected = IllegalArgumentException.class)

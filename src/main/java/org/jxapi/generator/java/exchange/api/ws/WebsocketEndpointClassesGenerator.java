@@ -13,6 +13,8 @@ import org.jxapi.exchange.descriptor.RestEndpointDescriptor;
 import org.jxapi.exchange.descriptor.Type;
 import org.jxapi.exchange.descriptor.WebsocketEndpointDescriptor;
 import org.jxapi.generator.java.exchange.ClassesGenerator;
+import org.jxapi.generator.java.exchange.ConstantValuePlaceholderResolverFactory;
+import org.jxapi.generator.java.exchange.ExchangeConstantValuePlaceholderResolverFactory;
 import org.jxapi.generator.java.exchange.api.ExchangeApiGenUtil;
 import org.jxapi.generator.java.exchange.api.pojo.JsonMessageDeserializerClassesGenerator;
 import org.jxapi.generator.java.exchange.api.pojo.JsonPojoSerializerClassesGenerator;
@@ -36,6 +38,7 @@ public class WebsocketEndpointClassesGenerator implements ClassesGenerator {
   private final WebsocketEndpointDescriptor websocketEndpointDescriptor;
   private final Field request;
   private final PlaceHolderResolver docPlaceHolderResolver;
+  private final ConstantValuePlaceholderResolverFactory constantInDefaultValuesPlaceHolderResolverFactory;
   
   /**
    * @param exchangeDescriptor Exchange descriptor where API with REST endpoint are defined
@@ -52,6 +55,7 @@ public class WebsocketEndpointClassesGenerator implements ClassesGenerator {
     this.websocketEndpointDescriptor = websocketEndpointDescriptor;
     this.docPlaceHolderResolver = docPlaceHolderResolver;
     this.request = ExchangeApiGenUtil.resolveFieldProperties(apiDescriptor, websocketEndpointDescriptor.getRequest());
+    this.constantInDefaultValuesPlaceHolderResolverFactory = new ExchangeConstantValuePlaceholderResolverFactory(exchangeDescriptor);
   }
   
   @Override
@@ -120,7 +124,8 @@ public class WebsocketEndpointClassesGenerator implements ClassesGenerator {
             + websocketEndpointDescriptor.getDescription(),
           request.getProperties(), 
           request.getImplementedInterfaces(),
-          docPlaceHolderResolver
+          docPlaceHolderResolver,
+          constantInDefaultValuesPlaceHolderResolverFactory
         ).generateClasses(outputFolder);
     }
     
@@ -137,7 +142,8 @@ public class WebsocketEndpointClassesGenerator implements ClassesGenerator {
             + websocketEndpointDescriptor.getDescription(),
           websocketEndpointDescriptor.getMessage().getProperties(), 
           websocketEndpointDescriptor.getMessage().getImplementedInterfaces(),
-          docPlaceHolderResolver
+          docPlaceHolderResolver,
+          constantInDefaultValuesPlaceHolderResolverFactory
         ).generateClasses(outputFolder);
     }
   }

@@ -95,8 +95,8 @@ public class WebsocketEndpointDemoGenerator extends JavaTypeGenerator {
     this.request = ExchangeApiGenUtil.resolveFieldProperties(exchangeApiDescriptor, websocketApi.getRequest());
     this.exchangeClassName = ExchangeGenUtil.getExchangeInterfaceName(exchangeDescriptor);
     this.exchangeSimpleClassName = JavaCodeGenUtil.getClassNameWithoutPackage(exchangeClassName);
-    subscribeMethodName = ExchangeApiGenUtil.getWebsocketSubscribeMethodName(websocketApi);
-    unsubscribeMethodName = ExchangeApiGenUtil.getWebsocketUnsubscribeMethodName(websocketApi);
+    subscribeMethodName = ExchangeApiGenUtil.getWebsocketSubscribeMethodName(websocketApi, exchangeApiDescriptor.getWebsocketEndpoints());
+    unsubscribeMethodName = ExchangeApiGenUtil.getWebsocketUnsubscribeMethodName(websocketApi, exchangeApiDescriptor.getWebsocketEndpoints());
     setTypeDeclaration("public class");
     this.hasArguments = ExchangeApiGenUtil.websocketEndpointHasArguments(websocketApi, exchangeApiDescriptor);
     if (hasArguments) {
@@ -231,6 +231,7 @@ public class WebsocketEndpointDemoGenerator extends JavaTypeGenerator {
   }
   
   private String generateSubscribeMethodBody() {
+    String apiGroupGetterMethodName = ExchangeGenUtil.getApiGroupGetterMethodName(exchangeDescriptor, exchangeApi);
     StringBuilder bodyBuilder = new StringBuilder();
     bodyBuilder.append(EndpointDemoGenUtil.getNewTestExchangeInstruction(
           exchangeClassName, 
@@ -240,7 +241,8 @@ public class WebsocketEndpointDemoGenerator extends JavaTypeGenerator {
         .append(EndpointDemoGenUtil.getNewTestApiInstruction(
           EXCHANGE_VAR, 
           API_VAR,
-          simpleApiClassName))
+          simpleApiClassName,
+          apiGroupGetterMethodName))
         .append("\n")
         .append("long ")
             .append(SUBSCRIPTION_DURATION_VAR_NAME)

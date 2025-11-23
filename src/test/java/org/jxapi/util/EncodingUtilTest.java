@@ -119,12 +119,15 @@ public class EncodingUtilTest {
 
   @Test
   public void testUrlEncode() {
+    Assert.assertNull(EncodingUtil.urlEncode(null));
     Assert.assertEquals("Hello+World%21", EncodingUtil.urlEncode("Hello World!"));
   }
 
   @Test
-  public void testUrlEncodeNull() {
-    Assert.assertNull(EncodingUtil.urlEncode(null));
+  public void testCreateUrlPathParameters() {
+    Assert.assertEquals("", EncodingUtil.createUrlPathParameters());
+    Assert.assertEquals("/1", EncodingUtil.createUrlPathParameters(null, 1));
+    Assert.assertEquals("/foo/John+Smith/baz%21", EncodingUtil.createUrlPathParameters("foo", "John Smith", "baz!"));
   }
 
   @Test

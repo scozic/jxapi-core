@@ -200,6 +200,25 @@ public class EncodingUtil {
   }
   
   /**
+   * Creates a URL path from a series of values. Each value is URL-encoded and
+   * prefixed with a forward slash.
+   *
+   * @param values The values to be converted to path parameters.
+   * @return The resulting URL path string.
+   */
+  public static String createUrlPathParameters(Object... values) {
+    StringBuilder s = new StringBuilder();
+    for (Object value: values) {
+      if (value == null) {
+        continue;
+      }
+      s.append("/")
+       .append(urlEncode(String.valueOf(value)));
+    }
+    return s.toString();
+  }
+  
+  /**
    * Converts a list of String to a plain String with items of list concatenated
    * using given separator.
    * 

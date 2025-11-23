@@ -32,6 +32,14 @@ public class FieldBuilderTest {
     }
 
     @Test
+    public void testSetTypeStr() {
+        FieldBuilder builder = new FieldBuilder();
+        Type type = Type.fromTypeName("INT_LIST_MAP");
+        Field field = builder.type(type.toString()).build();
+        Assert.assertEquals(type, field.getType());
+    }
+    
+    @Test
     public void testSetDescription() {
         FieldBuilder builder = new FieldBuilder();
         Field field = builder.description("description").build();
@@ -96,4 +104,18 @@ public class FieldBuilderTest {
                              .implementedInterface("com.x.z.Bar").build();
         Assert.assertEquals(List.of("com.x.y.Foo", "com.x.z.Bar"), field.getImplementedInterfaces());
     }   
+    
+    @Test
+    public void testSetIn() {
+      FieldBuilder builder = new FieldBuilder();
+      Field field = builder.in(UrlParameterType.QUERY).build();
+      Assert.assertEquals(UrlParameterType.QUERY, field.getIn());
+    }
+    
+    @Test
+    public void testSetDefaultValue() {
+      FieldBuilder builder = new FieldBuilder();
+      Field field = builder.defaultValue(123).build();
+      Assert.assertEquals(Integer.valueOf(123), field.getDefaultValue());
+    }
 }

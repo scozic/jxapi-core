@@ -65,7 +65,7 @@ public class DemoExchangeWebsocketEndpointTest {
   public void testSubscribeDemoExchangeMarketDataTickerStreamReceiveMessagesThenDispose() throws Exception {
     DemoExchangeMarketDataTickerStreamRequest request = new DemoExchangeMarketDataTickerStreamRequest();
     request.setSymbol("BTC_USDT");
-    String clientSubscription = exchange.getDemoExchangeMarketDataApi().subscribeTickerStream(request, msgListener);
+    String clientSubscription = exchange.getMarketDataApi().subscribeTickerStream(request, msgListener);
     popClientConnectEvent();
     popMessageReceivedFromClient(DemoExchangeConstants.WEBSOCKET_LOGIN_MESSAGE);
     
@@ -105,7 +105,7 @@ public class DemoExchangeWebsocketEndpointTest {
     DemoExchangeMarketDataTickerStreamMessage actualMsg3 = popReceivedMessage();
     Assert.assertEquals(msg3, actualMsg3);
     
-    exchange.getDemoExchangeMarketDataApi().unsubscribeTickerStream(clientSubscription);
+    exchange.getMarketDataApi().unsubscribeTickerStream(clientSubscription);
     checkNoMessageReceived();
     
     exchange.dispose();

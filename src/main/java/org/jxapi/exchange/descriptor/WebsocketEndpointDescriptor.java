@@ -1,7 +1,5 @@
 package org.jxapi.exchange.descriptor;
 
-import java.util.List;
-
 import org.jxapi.util.EncodingUtil;
 
 /**
@@ -25,9 +23,7 @@ public class WebsocketEndpointDescriptor {
 
   private Field message;
 
-  private String topicParametersListSeparator;
-
-  private List<WebsocketMessageTopicMatcherFieldDescriptor> messageTopicMatcherFields;
+  private WebsocketTopicMatcherDescriptor topicMatcher;
 
   /**
    * @return Websocket api endpoint name.
@@ -99,51 +95,6 @@ public class WebsocketEndpointDescriptor {
   }
 
   /**
-   * When a websocket subscription topic carries references to a property of
-   * 'list' type, the separator used to concatenate parameters when serializing to
-   * string.
-   * 
-   * @return the separator used to concatenate
-   */
-  public String getTopicParametersListSeparator() {
-    return topicParametersListSeparator;
-  }
-
-  /**
-   * When a websocket subscription topic carries references to a property of
-   * 'list' type, the separator used to concatenate parameters when serializing to
-   * string.
-   * 
-   * @param topicParametersListSeparator the separator used to concatenate
-   */
-  public void setTopicParametersListSeparator(String topicParametersListSeparator) {
-    this.topicParametersListSeparator = topicParametersListSeparator;
-  }
-
-  /**
-   * @return the list of field matchers that can be used to match the topic of a
-   *         message
-   *         received on the websocket. To match a topic, the message must match
-   *         all matchers.
-   */
-  public List<WebsocketMessageTopicMatcherFieldDescriptor> getMessageTopicMatcherFields() {
-    return messageTopicMatcherFields;
-  }
-
-  /**
-   * Set the list of field matchers that can be used to match the topic of a
-   * message
-   * received on the websocket. To match a topic, the message must match all
-   * matchers.
-   * 
-   * @param messageTopicMatcherFields the list of field matchers that can be used to match the topic of a message
-   */
-  public void setMessageTopicMatcherFields(
-      List<WebsocketMessageTopicMatcherFieldDescriptor> messageTopicMatcherFields) {
-    this.messageTopicMatcherFields = messageTopicMatcherFields;
-  }
-
-  /**
    * @return the data structure of the websocket endpoint subscription request.
    */
   public Field getRequest() {
@@ -169,6 +120,22 @@ public class WebsocketEndpointDescriptor {
    */
   public void setMessage(Field message) {
     this.message = message;
+  }
+  
+  /**
+   * @return the description of how to match messages against the topic of this
+   *         endpoint.
+   */
+  public WebsocketTopicMatcherDescriptor getTopicMatcher() {
+    return topicMatcher;
+  }
+
+  /**
+   * @param messageTopicMatcher the description of how to match messages against
+   *                            the topic of this endpoint.
+   */
+  public void setTopicMatcher(WebsocketTopicMatcherDescriptor messageTopicMatcher) {
+    this.topicMatcher = messageTopicMatcher;
   }
 
   /**

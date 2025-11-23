@@ -92,7 +92,7 @@
 				{
 					"name": "tickerStream",
 					"docUrl": "https://docs.myexchange.com/api/ws/marketData/tickerStream",
-					"topic": "${symbol}@ticker",
+					"topic": "${request.symbol}@ticker",
 					"description": "Subscribe to ticker stream. Author: ${constants.authorFullName}",
 					"request": {
 					    "description": "Request parameters for subscribing to ticker stream. Use ${constants.allTickers} to subscribe to every ticker. Author: ${constants.authorFullName}",
@@ -101,11 +101,12 @@
 							{"name": "apiKey", "type":"STRING", "description":"API key, see ${config.apiKey}", "sampleValue": "${config.apiKey}"}
 						]
 					},
-					"topicParametersListSeparator": "|",
-					"messageTopicMatcherFields": [
-						{"name": "topic",  "value": "ticker"},
-						{"name": "symbol",  "value": "${symbol}"}
-					],
+					"topicMatcher": {
+						"or": [
+							{"fieldName": "topic",  "fieldValue": "ticker"},
+							{"fieldName": "symbol",  "fieldValue": "${request.symbol}"}
+					    ]
+					},
 					"message": { 
 						"description": "Ticker message. Author: ${constants.authorFullName}",
 						"properties": [

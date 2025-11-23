@@ -71,14 +71,15 @@ public class EndpointDemoGenUtil {
    * 
    * @see #generateFieldCreationMethodDeclaration(Field, String, String, Imports)
    */
-  public static String generateFieldCreationMethod(Field property, 
-                                                   String objectClassName,
-                                                   ExchangeDescriptor exchangeDescriptor,
-                                                   ExchangeApiDescriptor exchangeApiDescriptor,
-                                                   String apiEndpointGroupName,
-                                                   String endpointName,
-                                                   List<ConfigPropertyDescriptor> demoConfigProperties,
-                                                   Imports imports) {
+  public static String generateFieldCreationMethod(
+      Field property, 
+      String objectClassName,
+      ExchangeDescriptor exchangeDescriptor,
+      ExchangeApiDescriptor exchangeApiDescriptor,
+      String apiEndpointGroupName,
+      String endpointName,
+      List<ConfigPropertyDescriptor> demoConfigProperties,
+      Imports imports) {
     String fieldName = ExchangeApiGenUtil.getRequestArgName(property.getName());
     String demoPropertyName = StringUtils.join(List.of(
         exchangeApiDescriptor.getName(),
@@ -95,7 +96,7 @@ public class EndpointDemoGenUtil {
         .append(" ")
         .append(JavaCodeGenUtil.generateCodeBlock(
               "return " 
-              + generateFieldSampleValueDeclaration2(
+              + generateFieldSampleValueDeclaration(
                   property,  
                   demoPropertyName,
                   objectClassName,
@@ -124,10 +125,11 @@ public class EndpointDemoGenUtil {
    *                               the necessary imports.
    * @return the method declaration
    */
-  public static String generateFieldCreationMethodDeclaration(Field field, 
-                                                              String defaultObjectClassName,
-                                                              String defaultFieldName,
-                                                              Imports imports) {
+  public static String generateFieldCreationMethodDeclaration(
+      Field field, 
+      String defaultObjectClassName,
+      String defaultFieldName,
+      Imports imports) {
     Type type = ExchangeGenUtil.getFieldType(field);
     String fieldClassName =  ExchangeGenUtil.getClassNameForType(
                         type, 
@@ -170,7 +172,7 @@ public class EndpointDemoGenUtil {
 
 
   
-  private static String generateFieldSampleValueDeclaration2(
+  private static String generateFieldSampleValueDeclaration(
       Field field, 
       String demoPropertyName,
       String objectClassName, 
@@ -191,7 +193,7 @@ public class EndpointDemoGenUtil {
           imports);
     }
     if (type.isObject()) {
-      return generateFieldSampleValueDeclaration2Object(
+      return generateObjectFieldSampleValueDeclaration(
           field, 
           demoPropertyName, 
           objectClassName, 
@@ -260,7 +262,6 @@ public class EndpointDemoGenUtil {
             imports))
         .append(")")
         .toString();
-    
   }
   
   private static String generateObjectListOrMapWithoutGlobalSampleValueInstruction(Field field, String demoPropertyName,
@@ -298,7 +299,7 @@ public class EndpointDemoGenUtil {
         imports);
   }
   
-  private static String generateFieldSampleValueDeclaration2Object(Field field, 
+  private static String generateObjectFieldSampleValueDeclaration(Field field, 
       String demoPropertyName,
       String objectClassName, 
       ExchangeDescriptor exchangeDescriptor,
@@ -343,7 +344,7 @@ public class EndpointDemoGenUtil {
       String childParamName = childParam.getName();
       String childDemoPropertyName = demoPropertyName + "." + childParamName;
       String childClassName = ExchangeApiGenUtil.getFieldObjectClassName(childParam, objectClassName);
-      String itemValue = generateFieldSampleValueDeclaration2(
+      String itemValue = generateFieldSampleValueDeclaration(
           childParam,
           childDemoPropertyName, 
           childClassName,
@@ -438,6 +439,7 @@ public class EndpointDemoGenUtil {
    * @param exchangeVariableName The name of variable referencing an {@link Exchange} instance.
    * @param apiVariableName      The name of the variable to declare for the test API instance.
    * @param simpleApiClassName    The simple {@link ExchangeApi} interface class name.
+   * @param apiGetterMethodName  The getter method name in {@link Exchange} interface to retrieve the API instance.
    * @return the new test API instantiation instruction.
    * 
    * @see Exchange
@@ -445,15 +447,16 @@ public class EndpointDemoGenUtil {
    */
   public static String getNewTestApiInstruction(String exchangeVariableName,
                                                 String apiVariableName,
-                                                String simpleApiClassName) {
+                                                String simpleApiClassName,
+                                                String apiGetterMethodName) {
     return new StringBuilder()
         .append(simpleApiClassName)
         .append(" ")
         .append(apiVariableName)
         .append(" = ")
         .append(exchangeVariableName)
-        .append(".get")
-        .append(simpleApiClassName)
+        .append(".")
+        .append(apiGetterMethodName)
         .append("();")
         .toString();
   }

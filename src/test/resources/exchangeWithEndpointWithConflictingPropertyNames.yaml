@@ -30,6 +30,15 @@ constants:
       - name: bar
         description: Bar constant of C1 group
         value: barVal
+properties:
+  - name: p1
+    type: INT
+    description: p1 property
+    defaultValue: ${constants.c1}
+  - name: P1
+    type: STRING
+    description: P1 property (note the uppercase 'P').
+    defaultValue: ${constants.C1}
 apis:
  - name: v1
    description: "Version 1 of the Employee API"
@@ -62,6 +71,28 @@ apis:
               type: BIGDECIMAL
               description: subParam parameter
               sampleValue: 12.35
+    - name: a
+      description: Rest endpoint 'a' with default value for request
+      httpMethod: GET
+      url: /myApi
+      request:
+       type: "LONG_MAP"      
+       defaultValue: 
+          foo: "${constants.c1_}"            
+          bar: 20000
+      response:
+       description: Response for endpoint 'a'
+    - name: A
+      description: Rest endpoint 'A' with default value for request
+      httpMethod: GET
+      url: /myApi
+      request:
+       type: "STRING_LIST"      
+       defaultValue: 
+          - ${constants.C1_.foo}
+          - ${constants.C1_.bar}
+      response:
+       description: Response for endpoint 'a'           
    websocketUrl: ${config.server.baseWebsocketUrl}
    websocketHookFactory: org.jxapi.exchanges.demo.net.DemoExchangeWebsocketHookFactory  
    websocketEndpoints:
@@ -70,6 +101,17 @@ apis:
       docUrl: https://www.example.com/docs/employee/updates
       request:
        objectName: ConflictRequest
+      topicMatcher:
+        and:
+         - fieldName: m1
+           fieldValue: "${request.p1}"
+         - fieldName: M1
+           fieldValue: "${request.P1}"
+         - or:
+            - fieldName: m1_
+              fieldValue: "${constants.C1_.foo}"
+            - fieldName: "M1_"
+              fieldRegexp: ".*${config.p1}.*"
       message:
        description: Update message
        properties:
@@ -89,4 +131,18 @@ apis:
           type: BIGDECIMAL
           description: M1_ parameter (note the uppercase 'M' and underscore)
           sampleValue: 12.35
-       
+    - name: a
+      description: Websocket endpoint 'a' default value for request
+      request:
+       type: INT
+       defaultValue: "${constants.c1}"
+      message:
+       description: Update message
+    - name: A
+      description: Websocket endpoint 'A' default value for request
+      request:
+       defaultValue: "${constants.C1}"
+      message:
+       description: Update message       
+ - name: a
+ - name: A

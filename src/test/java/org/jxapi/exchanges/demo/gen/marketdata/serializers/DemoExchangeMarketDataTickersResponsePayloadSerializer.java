@@ -15,6 +15,9 @@ import org.jxapi.util.EncodingUtil;
  */
 @Generated("org.jxapi.generator.java.exchange.api.pojo.JsonPojoSerializerGenerator")
 public class DemoExchangeMarketDataTickersResponsePayloadSerializer extends StdSerializer<DemoExchangeMarketDataTickersResponsePayload> {
+  /**
+   * Constructor
+   */
   public DemoExchangeMarketDataTickersResponsePayloadSerializer() {
     super(DemoExchangeMarketDataTickersResponsePayload.class);
   }

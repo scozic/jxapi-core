@@ -2,6 +2,7 @@ package org.jxapi.generator.java.exchange.api.pojo;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -11,6 +12,7 @@ import org.jxapi.exchange.descriptor.Field;
 import org.jxapi.exchange.descriptor.Type;
 import org.jxapi.generator.java.JavaCodeGenUtil;
 import org.jxapi.generator.java.JavaTypeGenerator;
+import org.jxapi.generator.java.exchange.ConstantValuePlaceholderResolverFactory;
 import org.jxapi.generator.java.exchange.ExchangeGenUtil;
 import org.jxapi.generator.java.exchange.api.ExchangeApiGenUtil;
 import org.jxapi.util.CollectionUtil;
@@ -76,6 +78,9 @@ public class PojoGenerator extends JavaTypeGenerator {
   
   private final List<Field> fields = new ArrayList<>();
   private final PlaceHolderResolver docPlaceHolderResolver;
+  private PlaceHolderResolver defaultValuePlaceHolderResolver;
+  
+  
   
   /**
    * Constructor.
@@ -84,15 +89,20 @@ public class PojoGenerator extends JavaTypeGenerator {
    * @param fields The properties of the class
    * @param implementedInterfaces The interfaces implemented by the class (in addition to {@link Pojo})
    * @param docPlaceHolderResolver PlaceHolderResolver to resolve placeholders in descriptions.
+   * @param constantValuePlaceHolderResolverFactory Factory to create PlaceHolderResolver
    */
   public PojoGenerator(String className, 
        String description, 
        List<Field> fields, 
        List<String> implementedInterfaces,
-       PlaceHolderResolver docPlaceHolderResolver) {
+       PlaceHolderResolver docPlaceHolderResolver,
+       ConstantValuePlaceholderResolverFactory constantValuePlaceHolderResolverFactory) {
     super(className);
     setTypeDeclaration("public class");
     this.docPlaceHolderResolver = Optional.ofNullable(docPlaceHolderResolver).orElse(PlaceHolderResolver.NO_OP);
+    this.defaultValuePlaceHolderResolver = constantValuePlaceHolderResolverFactory != null
+        ? constantValuePlaceHolderResolverFactory.createConstantValuePlaceholderResolver(getImports())
+        : JavaCodeGenUtil::getQuotedString;
     this.fields.addAll(Optional.ofNullable(fields).orElse(List.of()));
     String serializerClassName = PojoGenUtil.getSerializerClassName(className);
     addImport(serializerClassName);
@@ -132,9 +142,15 @@ public class PojoGenerator extends JavaTypeGenerator {
     appendMethod("public static Builder builder()", 
            "return new Builder();" , 
            "@return A new builder to build {@link " + getSimpleName() + "} objects");
-    
+    Map<String, String> defaultValueStaticVariables = PojoGenUtil.generateDefaultValuesStaticFieldDeclarations(
+        this.fields,
+        getImports(),
+        docPlaceHolderResolver,
+        defaultValuePlaceHolderResolver,
+        this.body
+        ); 
     appendToBody("\n");
-    appendToBody(generateAllFieldsDeclaration());
+    appendToBody(generateAllFieldsDeclaration(defaultValueStaticVariables));
     appendToBody("\n");
     this.fields.forEach(f -> {
       appendToBody("\n");
@@ -151,10 +167,10 @@ public class PojoGenerator extends JavaTypeGenerator {
     appendToBody("\n");
     generateToStringMethod();
     appendToBody("\n");
-    generateBuilderClass();
+    generateBuilderClass(defaultValueStaticVariables);
     return super.generate();
   }
-  
+
   private String generateSerialVersionUidDeclaration() {
     return "private static final long serialVersionUID = " 
         + PojoGenUtil.generateSerialVersionUid(getName(), fields, getImplementedInterfaces()) 
@@ -194,14 +210,14 @@ public class PojoGenerator extends JavaTypeGenerator {
     
   }
 
-  private void generateBuilderClass() {
+  private void generateBuilderClass(Map<String, String> defaultValueStaticVariables) {
     JavaTypeGenerator builder = new JavaTypeGenerator("Builder");
     builder.setGeneratePackageAndImports(false);
     String name = getSimpleName();
     builder.setDescription("Builder for {@link " + name + "}");
     builder.setTypeDeclaration("public static class");
     builder.appendToBody("\n");
-    builder.appendToBody(generateAllFieldsDeclaration());
+    builder.appendToBody(generateAllFieldsDeclaration(defaultValueStaticVariables));
     builder.appendToBody("\n");
     fields.forEach(f -> generateBuilderMethodsDeclaration(f, builder));
     builder.appendToBody("\n");
@@ -232,19 +248,24 @@ public class PojoGenerator extends JavaTypeGenerator {
     appendToBody(builder.generate());
   }
   
-  private String generateAllFieldsDeclaration() {
-    return fields.stream().map(this::generateFieldDeclaration).collect(Collectors.joining("\n"));
+  private String generateAllFieldsDeclaration(Map<String, String> defaultValueStaticVariables) {
+    return fields.stream()
+        .map(f -> this.generateFieldDeclaration(f, defaultValueStaticVariables.get(f.getName())))
+        .collect(Collectors.joining("\n"));
   }
   
-  private String generateFieldDeclaration(Field field) {
+  private String generateFieldDeclaration(Field field, String defaultValueStaticVariable) {
     String typeClass = getFieldClass(field);
     typeClass = JavaCodeGenUtil.getClassNameWithoutPackage(typeClass);
-    return new StringBuilder()
-        .append("private ")
-        .append(typeClass)
-        .append(" ")
-        .append(field.getName())
-        .append(";").toString();
+    StringBuilder sb = new StringBuilder()
+       .append("private ")
+       .append(typeClass)
+       .append(" ")
+       .append(field.getName());
+    if (defaultValueStaticVariable != null) {
+      sb.append(" = ").append(defaultValueStaticVariable);
+    }
+    return sb.append(";").toString();
   }
   
   private void generateAccessorsDeclaration(Field field) {
@@ -274,7 +295,10 @@ public class PojoGenerator extends JavaTypeGenerator {
       .append("public ")
       .append(typeClass)
       .append(" ")
-      .append(JavaCodeGenUtil.getGetAccessorMethodName(field.getName(), typeClass, getAllFieldNames()))
+      .append(JavaCodeGenUtil.getGetAccessorMethodName(
+          field.getName(), 
+          ExchangeGenUtil.getFieldType(field), 
+          getAllFieldNames()))
       .append("()")
       .toString();
     
@@ -342,9 +366,9 @@ public class PojoGenerator extends JavaTypeGenerator {
         .append("</code> field in the builder");
     if (description != null) {
       javadoc.append("\n@param ")
-                .append(name).append(" ")
-                .append(description);
-        }
+         .append(name).append(" ")
+         .append(description);
+    }
     
         
     javadoc.append("\n@return Builder instance")
@@ -580,5 +604,4 @@ public class PojoGenerator extends JavaTypeGenerator {
     }
     appendMethod(signature, body.toString());
   }
-
 }

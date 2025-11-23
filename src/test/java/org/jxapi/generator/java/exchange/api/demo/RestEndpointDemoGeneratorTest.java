@@ -77,7 +77,7 @@ public class RestEndpointDemoGeneratorTest {
         + "   */\n"
         + "  public static RestResponse<MyTestExchangeMarketDataExchangeInfoResponse> execute(MyTestExchangeMarketDataExchangeInfoRequest request, Properties configProperties, ExchangeApiObserver apiObserver) throws InterruptedException, ExecutionException {\n"
         + "    MyTestExchangeExchange exchange = new MyTestExchangeExchangeImpl(\"test-\" + MyTestExchangeExchange.ID, configProperties);\n"
-        + "    MyTestExchangeMarketDataApi api = exchange.getMyTestExchangeMarketDataApi();\n"
+        + "    MyTestExchangeMarketDataApi api = exchange.getMarketDataApi();\n"
         + "    log.info(\"Calling com.foo.bar.gen.marketdata.MyTestExchangeMarketDataApi.exchangeInfo() API with request:{}\", request);\n"
         + "    if (apiObserver != null) {\n"
         + "      api.subscribeObserver(apiObserver);\n"
@@ -165,7 +165,7 @@ public class RestEndpointDemoGeneratorTest {
         + "   */\n"
         + "  public static RestResponse<GenericResponse> execute(Integer request, Properties configProperties, ExchangeApiObserver apiObserver) throws InterruptedException, ExecutionException {\n"
         + "    MyTestExchangeExchange exchange = new MyTestExchangeExchangeImpl(\"test-\" + MyTestExchangeExchange.ID, configProperties);\n"
-        + "    MyTestExchangeMarketDataApi api = exchange.getMyTestExchangeMarketDataApi();\n"
+        + "    MyTestExchangeMarketDataApi api = exchange.getMarketDataApi();\n"
         + "    log.info(\"Calling com.foo.bar.gen.marketdata.MyTestExchangeMarketDataApi.postRestRequestDataTypeInt() API with request:{}\", request);\n"
         + "    if (apiObserver != null) {\n"
         + "      api.subscribeObserver(apiObserver);\n"
@@ -253,7 +253,7 @@ public class RestEndpointDemoGeneratorTest {
         + "   */\n"
         + "  public static RestResponse<GenericResponse> execute(String request, Properties configProperties, ExchangeApiObserver apiObserver) throws InterruptedException, ExecutionException {\n"
         + "    MyTestExchangeExchange exchange = new MyTestExchangeExchangeImpl(\"test-\" + MyTestExchangeExchange.ID, configProperties);\n"
-        + "    MyTestExchangeMarketDataApi api = exchange.getMyTestExchangeMarketDataApi();\n"
+        + "    MyTestExchangeMarketDataApi api = exchange.getMarketDataApi();\n"
         + "    log.info(\"Calling com.foo.bar.gen.marketdata.MyTestExchangeMarketDataApi.postRestRequestDataTypeStringImplicit() API with request:{}\", request);\n"
         + "    if (apiObserver != null) {\n"
         + "      api.subscribeObserver(apiObserver);\n"
@@ -330,7 +330,7 @@ public class RestEndpointDemoGeneratorTest {
         + "   */\n"
         + "  public static RestResponse<GenericResponse> execute(Properties configProperties, ExchangeApiObserver apiObserver) throws InterruptedException, ExecutionException {\n"
         + "    MyTestExchangeExchange exchange = new MyTestExchangeExchangeImpl(\"test-\" + MyTestExchangeExchange.ID, configProperties);\n"
-        + "    MyTestExchangeMarketDataApi api = exchange.getMyTestExchangeMarketDataApi();\n"
+        + "    MyTestExchangeMarketDataApi api = exchange.getMarketDataApi();\n"
         + "    log.info(\"Calling com.foo.bar.gen.marketdata.MyTestExchangeMarketDataApi.postRestRequestDataTypeObjectNoParameters() API\");\n"
         + "    if (apiObserver != null) {\n"
         + "      api.subscribeObserver(apiObserver);\n"
@@ -362,7 +362,8 @@ public class RestEndpointDemoGeneratorTest {
         + "      System.exit(-1);\n"
         + "    }\n"
         + "  }\n"
-        + "}\n", 
+        + "}\n"
+        + "", 
         generator.generate());
   }
   
@@ -422,7 +423,7 @@ public class RestEndpointDemoGeneratorTest {
         + "   */\n"
         + "  public static RestResponse<GenericResponse> execute(Map<String, List<SingleSymbol>> request, Properties configProperties, ExchangeApiObserver apiObserver) throws InterruptedException, ExecutionException {\n"
         + "    MyTestExchangeExchange exchange = new MyTestExchangeExchangeImpl(\"test-\" + MyTestExchangeExchange.ID, configProperties);\n"
-        + "    MyTestExchangeMarketDataApi api = exchange.getMyTestExchangeMarketDataApi();\n"
+        + "    MyTestExchangeMarketDataApi api = exchange.getMarketDataApi();\n"
         + "    log.info(\"Calling com.foo.bar.gen.marketdata.MyTestExchangeMarketDataApi.postRestRequestDataTypeObjectListMap() API with request:{}\", request);\n"
         + "    if (apiObserver != null) {\n"
         + "      api.subscribeObserver(apiObserver);\n"
@@ -516,7 +517,7 @@ public class RestEndpointDemoGeneratorTest {
         + "   */\n"
         + "  public static RestResponse<GenericResponse> execute(Map<String, List<MultiSymbol>> request, Properties configProperties, ExchangeApiObserver apiObserver) throws InterruptedException, ExecutionException {\n"
         + "    MyTestExchangeExchange exchange = new MyTestExchangeExchangeImpl(\"test-\" + MyTestExchangeExchange.ID, configProperties);\n"
-        + "    MyTestExchangeMarketDataApi api = exchange.getMyTestExchangeMarketDataApi();\n"
+        + "    MyTestExchangeMarketDataApi api = exchange.getMarketDataApi();\n"
         + "    log.info(\"Calling com.foo.bar.gen.marketdata.MyTestExchangeMarketDataApi.getRestRequestDataTypeObjectListMap() API with request:{}\", request);\n"
         + "    if (apiObserver != null) {\n"
         + "      api.subscribeObserver(apiObserver);\n"
@@ -558,7 +559,7 @@ public class RestEndpointDemoGeneratorTest {
   public void testGenerateRestEndpointDemo_RequestTypeIntList() throws Exception {
     ExchangeDescriptor exchange = ExchangeDescriptorParser.fromJson(Paths.get(".", "src", "test", "resources", "testExchangeDescriptorWithAllRestRequestDataTypes.json"));
     ExchangeApiDescriptor api = exchange.getApis().get(0);
-    RestEndpointDescriptor restEndpoint = ClassesGeneratorTestUtil.findRestEndpointByName("postRestRequestDataTypeIntList", api);
+    RestEndpointDescriptor restEndpoint = ClassesGeneratorTestUtil.findRestEndpointByName("postRestRequestDataTypeIntListWithDefaultValue", api);
     RestEndpointDemoGenerator generator = createGenerator(exchange, api, restEndpoint);
     Assert.assertEquals("package com.foo.bar.gen.marketdata.demo;\n"
         + "\n"
@@ -581,11 +582,11 @@ public class RestEndpointDemoGeneratorTest {
         + "import org.slf4j.LoggerFactory;\n"
         + "\n"
         + "/**\n"
-        + " * Snippet to test call to {@link MyTestExchangeMarketDataApi#postRestRequestDataTypeIntList(java.util.List)})}<br>\n"
+        + " * Snippet to test call to {@link MyTestExchangeMarketDataApi#postRestRequestDataTypeIntListWithDefaultValue(java.util.List)})}<br>\n"
         + " */\n"
         + "@Generated(\"org.jxapi.generator.java.exchange.api.demo.RestEndpointDemoGenerator\")\n"
-        + "public class MyTestExchangeMarketDataPostRestRequestDataTypeIntListDemo {\n"
-        + "  private static final Logger log = LoggerFactory.getLogger(MyTestExchangeMarketDataPostRestRequestDataTypeIntListDemo.class);\n"
+        + "public class MyTestExchangeMarketDataPostRestRequestDataTypeIntListWithDefaultValueDemo {\n"
+        + "  private static final Logger log = LoggerFactory.getLogger(MyTestExchangeMarketDataPostRestRequestDataTypeIntListWithDefaultValueDemo.class);\n"
         + "  \n"
         + "  /**\n"
         + "   * Creates a sample value for the request field of type List<Integer> using sample value(s) defined in demo configuration properties.\n"
@@ -593,11 +594,11 @@ public class RestEndpointDemoGeneratorTest {
         + "   * @param properties the configuration properties to use for the sample value generation.\n"
         + "   */\n"
         + "  public static List<Integer> createRequest(Properties properties) {\n"
-        + "    return new ListJsonFieldDeserializer<>(IntegerJsonFieldDeserializer.getInstance()).deserialize(MyTestExchangeDemoProperties.MarketData.Rest.PostRestRequestDataTypeIntList.getRequest(properties));\n"
+        + "    return new ListJsonFieldDeserializer<>(IntegerJsonFieldDeserializer.getInstance()).deserialize(MyTestExchangeDemoProperties.MarketData.Rest.PostRestRequestDataTypeIntListWithDefaultValue.getRequest(properties));\n"
         + "  }\n"
         + "  \n"
         + "  /**\n"
-        + "   * Submits a call to {@link MyTestExchangeMarketDataApi#postRestRequestDataTypeIntList(java.util.List)}and waits for response.\n"
+        + "   * Submits a call to {@link MyTestExchangeMarketDataApi#postRestRequestDataTypeIntListWithDefaultValue(java.util.List)}and waits for response.\n"
         + "   * @param request     The request to submit\n"
         + "   * @param configProperties  The configuration properties to instantiate exchange with\n"
         + "   * @param apiObserver API observer that will notified of events. Is subscribed before REST API call and unsubscribed right after. Ignored if <code>null</code>\n"
@@ -607,13 +608,13 @@ public class RestEndpointDemoGeneratorTest {
         + "   */\n"
         + "  public static RestResponse<GenericResponse> execute(List<Integer> request, Properties configProperties, ExchangeApiObserver apiObserver) throws InterruptedException, ExecutionException {\n"
         + "    MyTestExchangeExchange exchange = new MyTestExchangeExchangeImpl(\"test-\" + MyTestExchangeExchange.ID, configProperties);\n"
-        + "    MyTestExchangeMarketDataApi api = exchange.getMyTestExchangeMarketDataApi();\n"
-        + "    log.info(\"Calling com.foo.bar.gen.marketdata.MyTestExchangeMarketDataApi.postRestRequestDataTypeIntList() API with request:{}\", request);\n"
+        + "    MyTestExchangeMarketDataApi api = exchange.getMarketDataApi();\n"
+        + "    log.info(\"Calling com.foo.bar.gen.marketdata.MyTestExchangeMarketDataApi.postRestRequestDataTypeIntListWithDefaultValue() API with request:{}\", request);\n"
         + "    if (apiObserver != null) {\n"
         + "      api.subscribeObserver(apiObserver);\n"
         + "    }\n"
         + "    try {\n"
-        + "      return DemoUtil.checkResponse(api.postRestRequestDataTypeIntList(request));\n"
+        + "      return DemoUtil.checkResponse(api.postRestRequestDataTypeIntListWithDefaultValue(request));\n"
         + "    }\n"
         + "    finally {\n"
         + "      if (apiObserver != null) {\n"
@@ -624,7 +625,7 @@ public class RestEndpointDemoGeneratorTest {
         + "  }\n"
         + "  \n"
         + "  /**\n"
-        + "   * Runs REST endpoint demo snippet calling {@link MyTestExchangeMarketDataApi#postRestRequestDataTypeIntList(java.util.List)}\n"
+        + "   * Runs REST endpoint demo snippet calling {@link MyTestExchangeMarketDataApi#postRestRequestDataTypeIntListWithDefaultValue(java.util.List)}\n"
         + "   * @param args no argument expected\n"
         + "   */\n"
         + "  public static void main(String[] args) {\n"
@@ -683,7 +684,7 @@ public class RestEndpointDemoGeneratorTest {
         + "   */\n"
         + "  public static RestResponse<String> execute(Properties configProperties, ExchangeApiObserver apiObserver) throws InterruptedException, ExecutionException {\n"
         + "    MyTestExchangeExchange exchange = new MyTestExchangeExchangeImpl(\"test-\" + MyTestExchangeExchange.ID, configProperties);\n"
-        + "    MyTestExchangeMarketDataApi api = exchange.getMyTestExchangeMarketDataApi();\n"
+        + "    MyTestExchangeMarketDataApi api = exchange.getMarketDataApi();\n"
         + "    log.info(\"Calling com.foo.bar.gen.marketdata.MyTestExchangeMarketDataApi.getRestEmptyResponseDataType() API\");\n"
         + "    if (apiObserver != null) {\n"
         + "      api.subscribeObserver(apiObserver);\n"
@@ -715,7 +716,8 @@ public class RestEndpointDemoGeneratorTest {
         + "      System.exit(-1);\n"
         + "    }\n"
         + "  }\n"
-        + "}\n", 
+        + "}\n"
+        + "", 
         generator.generate());
   }
   
@@ -784,7 +786,7 @@ public class RestEndpointDemoGeneratorTest {
         + "   */\n"
         + "  public static RestResponse<String> execute(ConflictRequest request, Properties configProperties, ExchangeApiObserver apiObserver) throws InterruptedException, ExecutionException {\n"
         + "    ConflictExchange exchange = new ConflictExchangeImpl(\"test-\" + ConflictExchange.ID, configProperties);\n"
-        + "    ConflictV1Api api = exchange.getConflictV1Api();\n"
+        + "    ConflictV1Api api = exchange.getV1Api();\n"
         + "    log.info(\"Calling org.jxapi.exchanges.conflict.gen.v1.ConflictV1Api.myRestEndpoint() API with request:{}\", request);\n"
         + "    if (apiObserver != null) {\n"
         + "      api.subscribeObserver(apiObserver);\n"

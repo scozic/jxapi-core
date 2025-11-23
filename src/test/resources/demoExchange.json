@@ -29,7 +29,9 @@
 		{"name": "websocketLogoutMessage", "type":"STRING", "description": "Message to send to websocket server before disconnecting", "value": "Bye!"},
 		{"name": "responseCodeOk", "type":"INT",  "description": "Possible value in <i>responseCode</i> field of rest request response: Successful response", "value": 200},
 		{"name": "responseCodeInternalServerError", "type":"INT",  "description": "Possible value in <i>responseCode</i> field of rest request response: Server internal error", "value": 500},
-		{"name": "allTickers", "type":"STRING", "description": "Constant for subscribing to all tickers", "value": "ticker@all"}
+		{"name": "allTickers", "type":"STRING", "description": "Constant for subscribing to all tickers", "value": "ticker@all"},
+		{"name": "defaultSymbol", "type":"STRING", "description": "Default symbol to use in ticker related messages", "value": "BTC_USDT"}
+		
 	],
 	"httpUrl": "${config.baseHttpUrl}",
 	"websocketUrl": "${config.baseWebsocketUrl}",
@@ -50,7 +52,7 @@
 					"url": "/exchangeInfo",
 					"request":{
 						"properties": [
-							{"name":"symbols", "type": "STRING_LIST", "description":"The list of symbol to fetch market information for. Leave empty to fetch all markets", "sampleValue":"[\"BTC_USDT\", \"ETH_USDT\"]"}
+							{"name":"symbols", "type": "STRING_LIST", "description":"The list of symbol to fetch market information for. Leave empty to fetch all markets", "defaultValue":["${constants.defaultSymbol}", "ETH_USDT"], "sampleValue":["${constants.defaultSymbol}", "BNB_USDT"]}
 						]
 					},
 					"response":{ 
@@ -150,17 +152,19 @@
 				{
 					"name": "tickerStream",
 					"docUrl": "https://docs.myexchange.com/api/ws/marketData/tickerStream",
-					"topic": "${symbol}@ticker",
+					"topic": "${request.symbol}@ticker",
 					"description": "Subscribe to ticker stream",
 					"request": {
 						"properties": [
 							{"name": "symbol", "type":"STRING", "description":"Symbol to subscribe to ticker stream of", "sampleValue":"ETH_USDT"}
 						]
 					},
-					"messageTopicMatcherFields": [
-						{"name": "topic",  "value": "ticker"},
-						{"name": "symbol",  "value": "${symbol}"}
-					],
+					"topicMatcher": {
+						"and": [
+							{"fieldName": "topic",  "fieldValue": "ticker"},
+							{"fieldName": "symbol",  "fieldValue": "${request.symbol}"}
+					    ]
+					},
 					"message": { 
 						"properties": [
 							{"name":"topic", "msgField":"t", "type": "STRING", "description":"Topic", "sampleValue":"ticker"},

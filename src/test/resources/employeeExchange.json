@@ -40,10 +40,12 @@
                     "docUrl": "https://www.example.com/docs/employee/get",
                     "httpMethod": "GET",
                     "url": "/employee",
-                    "urlParameters": "/${id}",
-                    "queryParams": false,
                     "request": {
-                        "name": "id", "type":"INT", "description": "Employee ID", "sampleValue": 1
+                        "name": "id", 
+                        "type":"INT", 
+                        "description": "Employee ID", 
+                        "sampleValue": 1,
+                        "in": "PATH"
                     },
                     "response": {
                         "objectName": "Employee",
@@ -91,7 +93,6 @@
                     "docUrl": "https://www.example.com/docs/employee/add",
                     "httpMethod": "POST",
                     "url": "/employee",
-                    "queryParams": false,
                     "request": {
                         "description": "Employee to add",
                         "objectName": "Employee"
@@ -104,26 +105,25 @@
                     "docUrl": "https://www.example.com/docs/employee/add",
                     "httpMethod": "PUT",
                     "url": "/employee",
-                    "queryParams": false,
                     "request": {
                         "description": "Employee to update",
                         "objectName": "Employee"
                     }
                 },
                 {
+                    "name": "deleteEmployee",
+                    "url": "/employee",
                     "description": "Delete an employee",
                     "docUrl": "https://www.example.com/docs/employee/delete",
                     "httpMethod": "DELETE",
-                    "name": "deleteEmployee",
-                    "queryParams": false,
                     "request": {
                         "description": "Employee ID",
                         "name": "id",
                         "sampleValue": 1,
-                        "type": "INT"
-                    },
-                    "url": "/employee",
-                    "urlParameters": "/${id}"
+                        "type": "INT",
+                        "in": "PATH"
+                    }
+                    
                 }
             ],
             "websocketEndpoints": [

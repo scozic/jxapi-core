@@ -233,7 +233,9 @@ A constant definition may contain nested constants in its `constants` properties
 The resulting generated code will list constants as `public static final` members of a generated `<ExchangeID>Constants` class in main generated wrapper file.
 
 Constants can be referenced in description, sample values of fields, http/websocket base URL property definitions of the descriptor file.
-The generated code will substitute placeholders like `${constants.myGroup.myConstant}` with actual 
+The generated code will substitute placeholders like `${constants.myGroup.myConstant}` with javadoc link, markdown link for javadoc/markdown documentation, or reference to the constant for a sample value.
+
+Remark: The type must be either a primitive type, e.g. `STRING` (default), `INT`, `LONG`, `BOOLEAN`, `BIGDECIMAL`, or a `MAP` or `LIST` with primitive type value like `INT_LIST_MAP`.
 
 ### Configuration properties
 
@@ -242,6 +244,8 @@ The descriptor root `exchange` structure exposes a `properties` property that ca
 The wrapper client will instantiate it by creating an `<ExchangeID>ExchangeImpl` instance that takes a `Properties` instance in constructor. This class will expose configuration properties as `public static final ConfigProperty` members and static getter methods making it easy to retrieve the value of a property from such properties instance.
 
 For instance API Key/Secret properties can be listed, to be used by wrapper `HttpRequestInterceptor` implementation to sign outgoing authenticated requests.
+
+Remark: The type of a configuration property must be a primitive type, e.g. `STRING` (default), `INT`, `LONG`, `BOOLEAN`, `BIGDECIMAL`. 
 
 #### Demo configuration properties
 
@@ -270,10 +274,8 @@ This file should be duplicated as `demo-<exchangeId>.properties` file (not to be
 A REST endpoint is an API interface which consists in sending a HTTP request with expected URL, verb... and request parameters which can be specifed as URL query parameters or as request body encoded in JSON format.
 Such REST endpoint JSON object in descriptor file is mapped to [RestEndpointDescriptor](../../src/main/java/com/scz/jxapi/exchange/descriptor/RestEndpointDescriptor.java).
 
-GET, DELETE HTTP methods do not expect a body in request, so parameters will be encoded to URL query params by default.
-For other methods, request parameters are serialized as JSON in request body. It is possible to override default behavior by setting `queryParams` property: When set to _true_, the HTTP request will carry request data serialized as URL query params.
-
-It is also possible to customize query parameters set in request using `urlParameters` property, which value is a template of URL suffix (after base URL + '?') that can contain placeholders like `${request}` for the whole request or `${myField}` to substitute with first value found for property named _myField_ in request properties.
+GET, DELETE HTTP methods do not expect a body in request, so parameters will be encoded to URL query params by default. They may also be serialized as path par ameters by tuning field [in](#in-query-or-path) property to `PATH`.
+For other methods, request parameters are serialized as JSON in request body.
 
 The structure of request and response data are specified using the same JSON object as value of `request` and `response` properties, see [Flexible data structure](#flexible-data-structure-definition)
 
@@ -287,9 +289,6 @@ Each REST API endpoint is described by the following properties:
  * `url`: The URL path for the endpoint. Can be a relative path, in which case actual URL used is concatenation of of base `httpUrl` in parent (api group) property and value of this property if it is set.
  * `request`: The request data type definition as [Flexible data structure](#flexible-data-structure-definition)
  * `response`: The response object, containing properties for the response data.
- * `urlParameters`: The request url parameters template. Can contain place holders like `${myArg}`, referencing either the full request object (when it is of primitive type), or name of a property of an object type request.
- * `urlParametersListSeparator`: The separator used between items of a list in serialized request url parameters
- * `isQueryParams`: Boolean property indicating wether request parameters must be set as URL query parameters or as JSON body of the request. Set to _true_ by default for GET, DELETE HTTP requests.
  * `rateLimits`: List of [rate limits](#api-request-rate-limit) request rate limitation to enforce in addition to rules defined in parent API group and exchange.
  * `rateLimitWeight`: When using 'weighted' rate limit algorithm, the weight for one call to this REST API.
 
@@ -309,7 +308,7 @@ Each WebSocket API endpoint is described by the following properties:
  * `description`: A description of the endpoint. POST.
  * `description`: A description of the endpoint. May contain [placeholders](#placeholders) referencing exchange or API group contants, or configuration properties.  
  * `request`: The request object, containing properties for the request parameters, which will be used to build the subscription message to a topic.
- * `messageTopicMatcherFields`: Fields used to match the message topic, see [Message topic matcher fields](#message-topic-matcher-fields)
+ * `topicMatcher`: Describes the logic and fields used to match an incoming message on websocket as being relevant for subscription to this stream, see [Message topic matcher](#message-topic-matcher)
  * `message`: The message object, containing properties for the message data.
  
 Serializing a request to a subscription message, building the unsubscription message to cancel an existing subscription, sending or listening to 'heartbeat' messages is customized using a [WebsocketHook](../../src/main/java/com/scz/jxapi/netutils/websocket/WebsocketHook.java).
@@ -322,7 +321,7 @@ The `topic` property in a WebSocket endpoint can contain placeholders in the for
 Example:
 ```yaml
 name: "tickerStream"
-topic: "${symbol}@ticker"
+topic: "${request.symbol}@ticker"
 request:
   properties:
     - name: "symbol"
@@ -331,21 +330,79 @@ request:
       sampleValue: "BTC_USDT"
 ```
 
-In this example, the placeholder `${symbol}` in the topic will be replaced with the value of the `symbol` property from the request.
+In this example, the placeholder `${request.symbol}` in the topic will be replaced with the value of the `symbol` property from the request.
+Available placeholders are:
+
+- Request placeholders: `${request}` placeholder will be replaced with whole request object passed to subscription method. `${request.symbolInfo.symbol}` will be replaced with value of _symbol_ property of object carried in _symbolInfo_ property of request object.
+- Constant placeholders: `{$constants.group1.myConstant}` will be replaced with value of _myConstant_ constant from _group1_ constant group, see [constants](#constants). 
+- Configuration properties placeholders: `${config.myProperty}` will be replaced with configured value for _myProperty_ , see [configuration properties](#configuration-properties)
 
 ### Message topic matcher fields
 
 The `messageTopicMatcherFields` property is a list of fields used to match the message topic. Each field specifies a name and a value. The value can also contain placeholders that are replaced with actual values from the request.
 
-Example:
+Examples:
+
+#### Message matching using a single field
 ```yaml
-messageTopicMatcherFields:
-  - name: "topic"
-    value: "ticker"
-  - name: "symbol"
-    value: "${symbol}"
+topicMatcher:
+  - fieldName: "topic"
+    fieldValue: "${topic}"
 ```
-In this example, the incoming message `topic` field must have the value `ticker`, and the `symbol` field must match the value of the `symbol` property from the request.
+In this example, the incoming message `topic` field must have the value computed in 'topic', hence `{symbol}@ticker`, where `symbol` must match the value of the `symbol` property from the request.
+
+Alternatively, field value can be matched against a regular expression:
+```yaml
+topicMatcher:
+  - fieldName: "topic"
+    fieldRegexp: "ticker.*"
+```
+
+#### Matching messages using multiple fields
+
+```yaml
+topicMatcher:
+  - and:
+    - fieldName: "subject"
+      fieldValue: "ticker"
+    - fieldName: "symbol"
+      fieldValue: "${topic}"      
+```
+In this example the incoming message `subject` field must carry the value `ticker` and `symbol` field must carry the value of request object `symbol` property.
+Notice you could also use `or` logical matcher if a message must match value of either one of multiple fields
+
+```yaml
+topicMatcher:
+  - or:
+    - fieldName: "field1"
+      fieldValue: "field1Value"
+    - fieldName: "field2"
+      fieldValue: "field2Value"
+    - fieldName: "field3"
+      fieldValue: "field2Valu3"  
+```
+
+In the above example, a message will match when either `field1` carries `field1Value` or `field2` carries `field2Value` or `field3` carries `field3Value`.
+
+Finally, matchers can be composed to create any logical pattern to match a message against fields. Example:
+
+```yaml
+topicMatcher:
+  - and:
+    - or:
+      - fieldName: "field1"
+        fieldValue: "field1Value"
+      - fieldName: "field2"
+        fieldValue: "field2Value"
+    - fieldName: "field3"
+      fieldRegexp: "field3Value"
+```
+
+#### TopicMatcher Placeholders
+Like `topic` websocket endpoint property value, the value either plain value (`fieldValue`) or regular expression (`fieldRegexp`) property may contain placeholders for constants, configuration properties, subscription request or sub property of it, plus additionnal _topic_ (`${topic}`) placeholder is available,
+such placeholder will be replaced by computed value for `topic`.
+
+#### Matching messages carrying 2 fields with expected values
 
 ### Message Matching
 
@@ -355,7 +412,7 @@ Example:
 ```yaml
 message:
   properties:
-    - name: "topic"
+    - name: "subject"
       msgField: "t"
       type: "STRING"
       description: "Topic"
@@ -371,7 +428,7 @@ message:
       description: "Last traded price"
       sampleValue: "16000.00"
 ```
-In this example, the message is expected to contain fields `t` (topic), `s` (symbol), and `p` (last traded price). The values of these fields are used to match the message against the topic and request properties.
+In this example, the message is expected to contain fields `t` (subject), `s` (symbol), and `p` (last traded price). The values of these fields are used to match the message against the topic and request properties.
 
 By defining the topic with placeholders and specifying the message topic matcher fields, the WebSocket endpoint can accurately subscribe to the desired topic and match incoming messages based on the specified criteria.
 
@@ -472,6 +529,15 @@ In addition to provide simpler POJO names, this allows reusing the same object w
 
 ### Sample value
 `sampleValue` property of `Field` can be set with a sample value to use in demo snippets. The generated code of the demo snippet will create for instance a REST or websocket subscription request will be set with `sampleValue` property value of the request field. Such value may contain [placeholders](#placeholders) referencing constants, configuration properties or demo configuration properties. Such configuration properties can be set to customize request sent.
+
+### Default value
+`defaultValue` property of `Field` can be set with an initial value that will be used unless set explicitely. Such value may contain only 'constants' [placeholders](#placeholders). 
+
+### 'in' (QUERY or PATH)
+`in` property of field is designed for fields that describe a REST endpoint request (or one of it sub-structure fields) that should provide arguments in URL.
+Such arguments extracted from request properties can be passed either as URL path parameters (ex: _https/api.example/com/user/{id}_) or URL query parameters (ex: _https://api.example.com/user?id={id})_ ). 
+When `in` property is not set or set to `QUERY`, the corresponding request property is passed as URL query parameters. When explicitely set to `PATH`, the coresponding request property is passed as path parameters.
+Parameters are provided in order _pathParam1Value/pathParam2Value...?queryParam1=queryParam1Value.._ e.g. path parameters in order they are found in descriptor, then URL query parameters in order they are found in descriptor.
 
 ## API request rate limit
 

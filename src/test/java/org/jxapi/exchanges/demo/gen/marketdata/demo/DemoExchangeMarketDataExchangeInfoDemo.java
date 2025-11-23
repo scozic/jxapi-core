@@ -51,7 +51,7 @@ public class DemoExchangeMarketDataExchangeInfoDemo {
    */
   public static RestResponse<DemoExchangeMarketDataExchangeInfoResponse> execute(DemoExchangeMarketDataExchangeInfoRequest request, Properties configProperties, ExchangeApiObserver apiObserver) throws InterruptedException, ExecutionException {
     DemoExchangeExchange exchange = new DemoExchangeExchangeImpl("test-" + DemoExchangeExchange.ID, configProperties);
-    DemoExchangeMarketDataApi api = exchange.getDemoExchangeMarketDataApi();
+    DemoExchangeMarketDataApi api = exchange.getMarketDataApi();
     log.info("Calling org.jxapi.exchanges.demo.gen.marketdata.DemoExchangeMarketDataApi.exchangeInfo() API with request:{}", request);
     if (apiObserver != null) {
       api.subscribeObserver(apiObserver);

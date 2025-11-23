@@ -10,10 +10,10 @@ import org.jxapi.exchange.descriptor.ConfigPropertyDescriptor;
 import org.jxapi.exchange.descriptor.Type;
 import org.jxapi.generator.java.Imports;
 import org.jxapi.generator.java.JavaCodeGenUtil;
-import org.jxapi.generator.java.exchange.ExchangeGenUtil;
 import org.jxapi.util.CollectionUtil;
 import org.jxapi.util.ConfigProperty;
 import org.jxapi.util.DefaultConfigProperty;
+import org.jxapi.util.JsonUtil;
 import org.jxapi.util.PlaceHolderResolver;
 
 /**
@@ -221,10 +221,15 @@ public class PropertiesGenUtil {
     if (!propType.getCanonicalType().isPrimitive) {
       propType = Type.STRING;
     }
-    String sampleValueStr = sampleValue == null? null: 
-      Optional.ofNullable(sampleValuePlaceHolderResolver)
-        .orElse(JavaCodeGenUtil::getQuotedString)
-        .resolve(sampleValue.toString());
+    String sampleValueStr = null;
+    if (sampleValue != null) {
+      if (!(sampleValue instanceof String)) {
+        sampleValue = JsonUtil.pojoToJsonString(sampleValue);
+      }
+      sampleValueStr = Optional.ofNullable(sampleValuePlaceHolderResolver)
+      .orElse(JavaCodeGenUtil::getQuotedString)
+      .resolve(sampleValue.toString());
+    }
 
     return new StringBuilder()
         .append(JavaCodeGenUtil.generateJavaDoc(description))
@@ -336,10 +341,9 @@ public class PropertiesGenUtil {
     if (property.isGroup()) {
       type = Type.STRING;
     }
-    String typeClass = ExchangeGenUtil.getClassNameForType(type, new Imports(), null);
     return JavaCodeGenUtil.getGetAccessorMethodName(
         name, 
-        typeClass, 
+        type, 
         CollectionUtil.emptyIfNull(allProperties).stream()
           .map(p -> p.getName())
           .collect(Collectors.toList())

@@ -14,7 +14,7 @@ import org.jxapi.util.EncodingUtil;
 @Generated("org.jxapi.generator.java.exchange.ExchangeInterfaceImplementationGenerator")
 public class DemoExchangeExchangeImpl extends AbstractExchange implements DemoExchangeExchange {
   
-  private final DemoExchangeMarketDataApi demoExchangeMarketDataApi;
+  private final DemoExchangeMarketDataApi marketDataApi;
   
   public DemoExchangeExchangeImpl(String exchangeName, Properties properties) {
     super(ID,
@@ -23,13 +23,13 @@ public class DemoExchangeExchangeImpl extends AbstractExchange implements DemoEx
           properties,
           EncodingUtil.substituteArguments("${config.baseHttpUrl}", "config.baseHttpUrl", DemoExchangeProperties.getBaseHttpUrl(properties)),
           EncodingUtil.substituteArguments("${config.baseWebsocketUrl}", "config.baseWebsocketUrl", DemoExchangeProperties.getBaseWebsocketUrl(properties)));
-    this.demoExchangeMarketDataApi = addApi(new DemoExchangeMarketDataApiImpl(this));
+    this.marketDataApi = addApi(new DemoExchangeMarketDataApiImpl(this));
     afterInit("org.jxapi.exchange.MockExchangeHookFactory");
   }
   
   @Override
-  public DemoExchangeMarketDataApi getDemoExchangeMarketDataApi() {
-    return this.demoExchangeMarketDataApi;
+  public DemoExchangeMarketDataApi getMarketDataApi() {
+    return this.marketDataApi;
   }
   
 }

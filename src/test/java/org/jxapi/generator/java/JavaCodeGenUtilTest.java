@@ -131,22 +131,12 @@ public class JavaCodeGenUtilTest {
   
   @Test
   public void testGetGetAccessorMethodName_StringFieldType() {
-    Assert.assertEquals("getBar", JavaCodeGenUtil.getGetAccessorMethodName("bar", "String", List.of()));
+    Assert.assertEquals("getBar", JavaCodeGenUtil.getGetAccessorMethodName("bar", Type.STRING, List.of()));
   }
   
   @Test
   public void testGetGetAccessorMethodName_booleanFieldType() {
-    Assert.assertEquals("isBar", JavaCodeGenUtil.getGetAccessorMethodName("bar", "boolean", List.of()));
-  }
-  
-  @Test
-  public void testGetGetAccessorMethodName_JavaLangBooleanFieldType() {
-    Assert.assertEquals("isBar", JavaCodeGenUtil.getGetAccessorMethodName("bar", Boolean.class.getName(), List.of()));
-  }
-  
-  @Test
-  public void testGetGetAccessorMethodName_BooleanFieldType() {
-    Assert.assertEquals("isBar", JavaCodeGenUtil.getGetAccessorMethodName("bar", Boolean.class.getSimpleName(), List.of()));
+    Assert.assertEquals("isBar", JavaCodeGenUtil.getGetAccessorMethodName("bar", Type.BOOLEAN, List.of()));
   }
   
   @Test
@@ -428,6 +418,26 @@ public class JavaCodeGenUtilTest {
     testGenerateOptionalOfNullableStatement("Optional\n"
         + "  .ofNullable(foo)\n"
         + "  .orElse(bar)", true, "foo", "bar", true);
+  }
+  
+  @Test
+  public void testGetUniqueCamelCaseVariableNamesLowerCase() {
+    List<String> names = List.of("MyVariable", "aa", "Aa");
+    Map<String, String> uniqueNames = JavaCodeGenUtil.getUniqueCamelCaseVariableNames(names, false);
+    Assert.assertEquals(3, names.size());
+    Assert.assertEquals("myVariable", uniqueNames.get("MyVariable"));
+    Assert.assertEquals("aa", uniqueNames.get("aa"));
+    Assert.assertEquals("Aa", uniqueNames.get("Aa"));
+  }
+  
+  @Test
+  public void testGetUniqueCamelCaseVariableNamesUpperCase() {
+    List<String> names = List.of("myVariable", "aa", "Aa");
+    Map<String, String> uniqueNames = JavaCodeGenUtil.getUniqueCamelCaseVariableNames(names, true);
+    Assert.assertEquals(3, names.size());
+    Assert.assertEquals("MyVariable", uniqueNames.get("myVariable"));
+    Assert.assertEquals("aa", uniqueNames.get("aa"));
+    Assert.assertEquals("Aa", uniqueNames.get("Aa"));
   }
   
   private void testGenerateOptionalOfNullableStatement(

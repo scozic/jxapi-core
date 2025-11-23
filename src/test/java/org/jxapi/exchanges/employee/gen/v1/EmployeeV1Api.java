@@ -22,32 +22,32 @@ public interface EmployeeV1Api extends ExchangeApi {
   String ID = "v1";
   
   /**
-   * Name of the 'getEmployee' API endpoint.
+   * Name of <code>getEmployee</code> RestApi endpoint.
    */
   String GET_EMPLOYEE_REST_API = "getEmployee";
   
   /**
-   * Name of the 'getAllEmployees' API endpoint.
+   * Name of <code>getAllEmployees</code> RestApi endpoint.
    */
   String GET_ALL_EMPLOYEES_REST_API = "getAllEmployees";
   
   /**
-   * Name of the 'addEmployee' API endpoint.
+   * Name of <code>addEmployee</code> RestApi endpoint.
    */
   String ADD_EMPLOYEE_REST_API = "addEmployee";
   
   /**
-   * Name of the 'updateEmployee' API endpoint.
+   * Name of <code>updateEmployee</code> RestApi endpoint.
    */
   String UPDATE_EMPLOYEE_REST_API = "updateEmployee";
   
   /**
-   * Name of the 'deleteEmployee' API endpoint.
+   * Name of <code>deleteEmployee</code> RestApi endpoint.
    */
   String DELETE_EMPLOYEE_REST_API = "deleteEmployee";
   
   /**
-   * Name of the 'employeeUpdates' API endpoint.
+   * Name of <code>employeeUpdates</code> WsApi endpoint.
    */
   String EMPLOYEE_UPDATES_WS_API = "employeeUpdates";
   

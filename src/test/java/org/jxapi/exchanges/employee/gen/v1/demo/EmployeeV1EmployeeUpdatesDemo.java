@@ -34,7 +34,7 @@ public class EmployeeV1EmployeeUpdatesDemo {
                                Properties configProperties,
                                ExchangeApiObserver apiObserver) throws InterruptedException {
     EmployeeExchange exchange = new EmployeeExchangeImpl("test-" + EmployeeExchange.ID, configProperties);
-    EmployeeV1Api api = exchange.getEmployeeV1Api();
+    EmployeeV1Api api = exchange.getV1Api();
     long subscriptionDuration = DemoProperties.getWebsocketSubscriptionDuration(configProperties);
     long delayBeforeExit = DemoProperties.getWebsocketDelayBeforeExit(configProperties);
     log.info("Subscribing to websocket API 'Employee v1 employeeUpdates' for {} ms", subscriptionDuration);

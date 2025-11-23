@@ -71,6 +71,9 @@ public class EmployeeV1ApiImpl extends AbstractExchangeApi implements EmployeeV1
   private final MessageDeserializer<String> deleteEmployeeResponseDeserializer = RawStringMessageDeserializer.getInstance();
   
   // Constructor
+  /**
+   * Constructor
+   */
   public EmployeeV1ApiImpl(EmployeeExchange exchange) {
     super(ID,
           exchange,
@@ -91,38 +94,42 @@ public class EmployeeV1ApiImpl extends AbstractExchangeApi implements EmployeeV1
   // REST endpoint method call implementations
   @Override
   public FutureRestResponse<Employee> getEmployee(Integer request) {
-    String urlParameters = EncodingUtil.substituteArguments("/${id}", "id", request);
-    return submit(HttpRequest.create(GET_EMPLOYEE_REST_API, getEmployeeHttpUrl + urlParameters, HttpMethod.GET, request, null, 0), getEmployeeResponseDeserializer);
+    String url = new StringBuilder(128).append(getEmployeeHttpUrl)
+      .append(EncodingUtil.createUrlPathParameters(request)).toString();
+    return submit(HttpRequest.create(GET_EMPLOYEE_REST_API, url, HttpMethod.GET, request, null, 0), false, getEmployeeResponseDeserializer);
   }
   
   @Override
   public FutureRestResponse<EmployeeV1GetAllEmployeesResponse> getAllEmployees(EmployeeV1GetAllEmployeesRequest request) {
-    String urlParameters = EncodingUtil.createUrlQueryParameters("page", request.getPage(), "size", request.getSize());
-    return submitPaginated(HttpRequest.create(GET_ALL_EMPLOYEES_REST_API, getAllEmployeesHttpUrl + urlParameters, HttpMethod.GET, request, null, 0), getAllEmployeesResponseDeserializer, this::getAllEmployees);
+    String url = new StringBuilder(128).append(getAllEmployeesHttpUrl)
+      .append(EncodingUtil.createUrlQueryParameters("page", request.getPage(), "size", request.getSize())).toString();
+    return submitPaginated(HttpRequest.create(GET_ALL_EMPLOYEES_REST_API, url, HttpMethod.GET, request, null, 0), false, getAllEmployeesResponseDeserializer, this::getAllEmployees);
   }
   
   @Override
   public FutureRestResponse<String> addEmployee(Employee request) {
-    return submit(HttpRequest.create(ADD_EMPLOYEE_REST_API, addEmployeeHttpUrl, HttpMethod.POST, request, null, 0), addEmployeeResponseDeserializer);
+    return submit(HttpRequest.create(ADD_EMPLOYEE_REST_API, addEmployeeHttpUrl, HttpMethod.POST, request, null, 0), true, addEmployeeResponseDeserializer);
   }
   
   @Override
   public FutureRestResponse<String> updateEmployee(Employee request) {
-    return submit(HttpRequest.create(UPDATE_EMPLOYEE_REST_API, updateEmployeeHttpUrl, HttpMethod.PUT, request, null, 0), updateEmployeeResponseDeserializer);
+    return submit(HttpRequest.create(UPDATE_EMPLOYEE_REST_API, updateEmployeeHttpUrl, HttpMethod.PUT, request, null, 0), true, updateEmployeeResponseDeserializer);
   }
   
   @Override
   public FutureRestResponse<String> deleteEmployee(Integer request) {
-    String urlParameters = EncodingUtil.substituteArguments("/${id}", "id", request);
-    return submit(HttpRequest.create(DELETE_EMPLOYEE_REST_API, deleteEmployeeHttpUrl + urlParameters, HttpMethod.DELETE, request, null, 0), deleteEmployeeResponseDeserializer);
+    String url = new StringBuilder(128).append(deleteEmployeeHttpUrl)
+      .append(EncodingUtil.createUrlPathParameters(request)).toString();
+    return submit(HttpRequest.create(DELETE_EMPLOYEE_REST_API, url, HttpMethod.DELETE, request, null, 0), false, deleteEmployeeResponseDeserializer);
   }
   
   
   // Websocket endpoint subscribe/unsubscribe methods implementations
   @Override
   public String subscribeEmployeeUpdates(WebsocketListener<EmployeeV1EmployeeUpdatesMessage> listener) {
-    String topic = "";
-    WebsocketSubscribeRequest subscribeRequest = WebsocketSubscribeRequest.create(null, topic, WebsocketMessageTopicMatcherFactory.create());
+    String topic = "employeeUpdates";
+    WebsocketMessageTopicMatcherFactory topicMatcherFactory = WebsocketMessageTopicMatcherFactory.ANY_MATCHER_FACTORY;
+    WebsocketSubscribeRequest subscribeRequest = WebsocketSubscribeRequest.create(null, topic, topicMatcherFactory);
     return employeeUpdatesWs.subscribe(subscribeRequest, listener);
   }
   

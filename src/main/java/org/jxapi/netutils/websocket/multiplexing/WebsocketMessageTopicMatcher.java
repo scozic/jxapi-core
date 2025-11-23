@@ -7,19 +7,18 @@ package org.jxapi.netutils.websocket.multiplexing;
  * It is expected to be used a follows:<br>
  * Upon each call to  {@link #matches(String, String)}, checks if its status is still {@link WebsocketMessageTopicMatchStatus#NO_MATCH}:
  * <ul>
- *  <li>If the list of matching fields configured is emtpty or <code>null</code>, the matcher will match any message field, and will be therefore always in {@link WebsocketMessageTopicMatchStatus#MATCHED} state.  
- *  <li>If it is not, checks if next field corresponds to an expected one:
- *  <ul>
- *   <li>If it does, expected value is checked against input:
- *   <ul>
- *    <li>If matches expected input, the field has expected value. That field is removed from expected fields, if there are no more expected fields, parser switches to {@link WebsocketMessageTopicMatchStatus#MATCHED} if
- *    <li>If does not, message carries a field with a matching field but not matching expected value, this message cannot be matched and parser switches to {@link WebsocketMessageTopicMatchStatus#CANT_MATCH}.   
- *   </ul>
- *   <li>If not, parser remains in {@link WebsocketMessageTopicMatchStatus#NO_MATCH} status
- *  </ul>
+ *  <li>If not, returns current status (e.g. {@link WebsocketMessageTopicMatchStatus#MATCHED} or {@link WebsocketMessageTopicMatchStatus#CANT_MATCH}</li>
+ *  <li>If yes, checks if given fieldName/value pair matches expected criteria. If yes, updates internal state accordingly and returns current status.
  * </ul>
  * <p>
- * Implementation instances of this interface must be reusable and can be reset to initial state (all fields expected) using {@link #reset()} method. 
+ * Implementation instances of this interface must be reusable and can be reset to initial state (all fields expected) using {@link #reset()} method.
+ * 
+ *  @see WebsocketMessageTopicMatchStatus
+ *  @see FieldValueWebsocketMessageTopicMatcher
+ *  @see FieldRegexpWebsocketMessageTopicMatcher
+ *  @see AndWebsocketMessageTopicMatcher
+ *  @see OrWebsocketMessageTopicMatcher
+ *  @see WebsocketMessageTopicMatcherFactory
  */
 public interface WebsocketMessageTopicMatcher {
   

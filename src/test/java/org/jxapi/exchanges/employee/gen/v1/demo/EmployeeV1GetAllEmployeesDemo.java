@@ -50,7 +50,7 @@ public class EmployeeV1GetAllEmployeesDemo {
    */
   public static RestResponse<EmployeeV1GetAllEmployeesResponse> execute(EmployeeV1GetAllEmployeesRequest request, Properties configProperties, ExchangeApiObserver apiObserver) throws InterruptedException, ExecutionException {
     EmployeeExchange exchange = new EmployeeExchangeImpl("test-" + EmployeeExchange.ID, configProperties);
-    EmployeeV1Api api = exchange.getEmployeeV1Api();
+    EmployeeV1Api api = exchange.getV1Api();
     log.info("Calling org.jxapi.exchanges.employee.gen.v1.EmployeeV1Api.getAllEmployees() API with request:{}", request);
     if (apiObserver != null) {
       api.subscribeObserver(apiObserver);

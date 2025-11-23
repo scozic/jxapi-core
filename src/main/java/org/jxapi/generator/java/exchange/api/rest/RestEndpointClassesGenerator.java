@@ -10,6 +10,8 @@ import org.jxapi.exchange.descriptor.ExchangeDescriptor;
 import org.jxapi.exchange.descriptor.Field;
 import org.jxapi.exchange.descriptor.RestEndpointDescriptor;
 import org.jxapi.generator.java.exchange.ClassesGenerator;
+import org.jxapi.generator.java.exchange.ConstantValuePlaceholderResolverFactory;
+import org.jxapi.generator.java.exchange.ExchangeConstantValuePlaceholderResolverFactory;
 import org.jxapi.generator.java.exchange.api.ExchangeApiGenUtil;
 import org.jxapi.generator.java.exchange.api.pojo.JsonMessageDeserializerClassesGenerator;
 import org.jxapi.generator.java.exchange.api.pojo.JsonPojoSerializerClassesGenerator;
@@ -48,6 +50,8 @@ public class RestEndpointClassesGenerator implements ClassesGenerator {
    */
   private final PlaceHolderResolver docPlaceHolderResolver;
 
+  private ConstantValuePlaceholderResolverFactory constantInDefaultValuesPlaceHolderResolver;
+
   /**
    * @param exchangeDescriptor Exchange descriptor where API with REST endpoint are defined
    * @param apiDescriptor API of exchange descriptor defining the REST endpoint
@@ -63,6 +67,8 @@ public class RestEndpointClassesGenerator implements ClassesGenerator {
     this.restEndpointDescriptor = restEndpointDescriptor;
     this.docPlaceHolderResolver = Optional.ofNullable(docPlaceHolderResolver)
                                           .orElse(PlaceHolderResolver.NO_OP);
+    this.constantInDefaultValuesPlaceHolderResolver = new ExchangeConstantValuePlaceholderResolverFactory(exchangeDescriptor);
+    
   }
   
   /**
@@ -91,7 +97,8 @@ public class RestEndpointClassesGenerator implements ClassesGenerator {
             + restEndpointDescriptor.getDescription(),
             request.getProperties(),
             request.getImplementedInterfaces(),
-            docPlaceHolderResolver
+            docPlaceHolderResolver,
+            constantInDefaultValuesPlaceHolderResolver
             ).generateClasses(outputFolder);
     }
     
@@ -102,14 +109,15 @@ public class RestEndpointClassesGenerator implements ClassesGenerator {
               exchangeDescriptor, 
               apiDescriptor, 
               restEndpointDescriptor), 
-          "Response to " + exchangeDescriptor.getId() 
-            + " " + apiDescriptor.getName() + " API <br>\n" 
-            + restEndpointDescriptor.getName() 
-            + " REST endpoint request<br>\n"
-            + restEndpointDescriptor.getDescription(),
+            "Response to " + exchangeDescriptor.getId() 
+              + " " + apiDescriptor.getName() + " API <br>\n" 
+              + restEndpointDescriptor.getName() 
+              + " REST endpoint request<br>\n"
+              + restEndpointDescriptor.getDescription(),
             response.getProperties(),
             response.getImplementedInterfaces(),
-            docPlaceHolderResolver
+            docPlaceHolderResolver,
+            constantInDefaultValuesPlaceHolderResolver
           ).generateClasses(outputFolder);
     }
   }

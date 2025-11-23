@@ -6,7 +6,6 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.TreeMap;
 import java.util.stream.Collectors;
@@ -18,8 +17,8 @@ import org.jxapi.exchange.descriptor.ExchangeDescriptor;
 import org.jxapi.exchange.descriptor.Field;
 import org.jxapi.exchange.descriptor.RestEndpointDescriptor;
 import org.jxapi.exchange.descriptor.Type;
+import org.jxapi.exchange.descriptor.UrlParameterType;
 import org.jxapi.exchange.descriptor.WebsocketEndpointDescriptor;
-import org.jxapi.exchange.descriptor.WebsocketMessageTopicMatcherFieldDescriptor;
 import org.jxapi.generator.java.JavaCodeGenUtil;
 import org.jxapi.generator.java.JavaTypeGenerator;
 import org.jxapi.generator.java.exchange.ExchangeGenUtil;
@@ -36,6 +35,7 @@ import org.jxapi.netutils.websocket.multiplexing.WebsocketMessageTopicMatcherFac
 import org.jxapi.util.CollectionUtil;
 import org.jxapi.util.EncodingUtil;
 import org.jxapi.util.JsonUtil;
+import org.jxapi.util.PlaceHolderResolver;
 import org.slf4j.Logger;
 import org.springframework.util.CollectionUtils;
 
@@ -110,8 +110,7 @@ import org.springframework.util.CollectionUtils;
  * {@link HttpRequest#create(String, String, HttpMethod, Object, List, int, String)}
  * method.
  * <li>Set the url of the request using the endpoint URL static variable.
- * <li>Generate a submit request instruction using
- * {@link AbstractExchangeApi#submit(HttpRequest, MessageDeserializer)} method.
+ * <li>Generate a submit request instruction using protected <code>submit(</code> method.
  * </ul>
  * </ul>
  * <p>
@@ -196,6 +195,10 @@ public class ExchangeApiInterfaceImplementationGenerator extends JavaTypeGenerat
   private List<String> rateLimitVariablesInstantiationDeclarations;
   private List<String> websocketEndpointDeclarations;
   private List<String> messageDeserializerVariablesDeclarations;
+  private Map<String, String> restEndpointVariables;
+  private Map<String, String> wsEndpointVariables;
+  private Map<String, String> restEndpointNamesStaticVariables;
+  private Map<String, String> wsEndpointNamesStaticVariables;
   
   
   /**
@@ -233,27 +236,58 @@ public class ExchangeApiInterfaceImplementationGenerator extends JavaTypeGenerat
     messageDeserializerVariablesDeclarations = new ArrayList<>();
     restMethods = new LinkedHashMap<>();
     wsMethods = new LinkedHashMap<>();
-    generateApiGlobalRateLimits();
+    List<RestEndpointDescriptor> restApis = CollectionUtil.emptyIfNull(exchangeApiDescriptor.getRestEndpoints());
+    restEndpointVariables = JavaCodeGenUtil.getUniqueCamelCaseVariableNames(
+          restApis.stream().map(RestEndpointDescriptor::getName).collect(Collectors.toList()),
+          false);
+    List<WebsocketEndpointDescriptor> wsApis = CollectionUtil.emptyIfNull(exchangeApiDescriptor.getWebsocketEndpoints());
+    wsEndpointVariables = JavaCodeGenUtil.getUniqueCamelCaseVariableNames(
+          wsApis.stream().map(WebsocketEndpointDescriptor::getName).collect(Collectors.toList()),
+          false);
+    restEndpointNamesStaticVariables = ExchangeApiGenUtil.generateEndpointNameStaticVariablesDeclaration(
+        restApis.stream().map(RestEndpointDescriptor::getName).collect(Collectors.toList()), 
+        "RestApi", 
+        null);
+    wsEndpointNamesStaticVariables = ExchangeApiGenUtil.generateEndpointNameStaticVariablesDeclaration(
+        wsApis.stream().map(WebsocketEndpointDescriptor::getName).collect(Collectors.toList()), 
+        "WsApi", 
+        null);
     
-    for (RestEndpointDescriptor restApi: CollectionUtil.emptyIfNull(exchangeApiDescriptor.getRestEndpoints())) {
-        generateRestEndpointMethodDeclaration(restApi);
+    Map<String, String> restRequestDefaultValuesStaticVariables = ExchangeApiGenUtil.generateRestEndpointRequestDefaultValuesStaticFieldDeclarations(
+        restApis,
+        getImports(),
+        PlaceHolderResolver.NO_OP,
+        PlaceHolderResolver.NO_OP,
+        null
+        );
+    generateApiGlobalRateLimits();
+    for (RestEndpointDescriptor restApi: restApis) {
+        generateRestEndpointMethodDeclaration(restApi, restRequestDefaultValuesStaticVariables);
     }
     
-    for (WebsocketEndpointDescriptor websocketApi : CollectionUtil.emptyIfNull(exchangeApiDescriptor.getWebsocketEndpoints())) {
-      generateWebsocketApiMethodsDeclarations(websocketApi);
+    
+    Map<String, String> wsRequestDefaultValuesStaticVariables = ExchangeApiGenUtil.generateWebsocketEndpointRequestDefaultValuesStaticFieldDeclarations(
+        wsApis,
+        getImports(),
+        PlaceHolderResolver.NO_OP,
+        PlaceHolderResolver.NO_OP,
+        null
+        );
+    for (WebsocketEndpointDescriptor wsApi : wsApis) {
+      generateWebsocketApiMethodsDeclarations(wsApi, wsRequestDefaultValuesStaticVariables);
     }
     appendVariablesToBody(restEndpointUrlDeclarations, "REST endpoint URLs");
     appendVariablesToBody(rateLimitVariablesDeclarations, "REST endpoints rate limits");
     appendVariablesToBody(websocketEndpointDeclarations, "Websocket endpoints");
     appendVariablesToBody(messageDeserializerVariablesDeclarations, "Message deserializers");
     appendSeparatorCommentLine("Constructor");
-    appendMethod(generateConstructorSignature(), generateConstructorBody());
+    appendMethod(generateConstructorSignature(), generateConstructorBody(), "Constructor");
     appendRestMethods();
     appendWsMethods();
     generateRateLimitRuleGetters();
     return super.generate();
   }
-  
+
   private void generateApiGlobalRateLimits() {
     for (RateLimitRule rule : CollectionUtil.emptyIfNull(exchangeApiDescriptor.getRateLimits())) {
       generateRateLimitVariable(rule);
@@ -410,7 +444,7 @@ public class ExchangeApiInterfaceImplementationGenerator extends JavaTypeGenerat
              .append(");\n");
              
     for (WebsocketEndpointDescriptor wsApi: exchangeApiDescriptor.getWebsocketEndpoints()) {
-      String websocketEndpointVariableName = getWebsocketEndpointVariableName(wsApi);
+      String websocketEndpointVariableName = getWebsocketEndpointVariable(wsApi);
       String messageClassObjectName = ExchangeApiGenUtil.generateWebsocketEndpointMessagePojoClassName(
           exchangeDescriptor, 
           exchangeApiDescriptor, 
@@ -422,7 +456,7 @@ public class ExchangeApiInterfaceImplementationGenerator extends JavaTypeGenerat
         .append(websocketEndpointVariableName)
         .append(" = ")
         .append("createWebsocketEndpoint(")
-        .append(ExchangeApiGenUtil.getWebsocketEndpointNameStaticVariable(wsApi.getName()))
+        .append(wsEndpointNamesStaticVariables.get(wsApi.getName()))
         .append(", ")
         .append(getResponseDeserializerInstance)
         .append(");\n");
@@ -437,12 +471,8 @@ public class ExchangeApiInterfaceImplementationGenerator extends JavaTypeGenerat
     wsMethods.computeIfAbsent(Optional.ofNullable(wsStreamName).orElse(""), k -> new TreeMap<>())
          .put(methodDeclaration, methodBody);
   }
-  
-  private String getWebsocketEndpointVariableName(WebsocketEndpointDescriptor websocketApi) {
-    return JavaCodeGenUtil.firstLetterToLowerCase(websocketApi.getName()) + "Ws";
-  }
 
-  private void generateWebsocketApiMethodsDeclarations(WebsocketEndpointDescriptor websocketApi) {
+  private void generateWebsocketApiMethodsDeclarations(WebsocketEndpointDescriptor websocketApi, Map<String, String> wsRequestDefaultValuesStaticVariables) {
     Field request = ExchangeApiGenUtil.resolveFieldProperties(exchangeApiDescriptor, websocketApi.getRequest());
     Type requestDataType = ExchangeGenUtil.getFieldType(request);
     Field message = ExchangeApiGenUtil.resolveFieldProperties(exchangeApiDescriptor, websocketApi.getMessage());
@@ -473,9 +503,9 @@ public class ExchangeApiInterfaceImplementationGenerator extends JavaTypeGenerat
                       messageDataType, 
                       getImports(), 
                       messageClassObjectName);
-    String subscribeMethodName = ExchangeApiGenUtil.getWebsocketSubscribeMethodName(websocketApi);
-    String unsubscribeMethodName = ExchangeApiGenUtil.getWebsocketUnsubscribeMethodName(websocketApi);
-    String websocketEndpointVariableName = getWebsocketEndpointVariableName(websocketApi);
+    String subscribeMethodName = ExchangeApiGenUtil.getWebsocketSubscribeMethodName(websocketApi, exchangeApiDescriptor.getWebsocketEndpoints());
+    String unsubscribeMethodName = ExchangeApiGenUtil.getWebsocketUnsubscribeMethodName(websocketApi, exchangeApiDescriptor.getWebsocketEndpoints());
+    String websocketEndpointVariableName = getWebsocketEndpointVariable(websocketApi);
     websocketEndpointDeclarations.add(new StringBuilder()
         .append(PRIVATE_FINAL)  
         .append("WebsocketEndpoint<")
@@ -499,8 +529,12 @@ public class ExchangeApiInterfaceImplementationGenerator extends JavaTypeGenerat
     addImport(WebsocketMessageTopicMatcherFactory.class);
     
     StringBuilder subscribeMethodBody = new StringBuilder()
+      .append(generateRequestAsDefaultValueIfNullInstruction(
+         wsRequestDefaultValuesStaticVariables.get(ExchangeApiGenUtil.getWebsocketEndpointRequestDefaultValueVariableName(websocketApi))))  
       .append("String topic = ")
       .append(generateWebsocketTopicSerializerDeclaration(websocketApi))
+      .append(generateWebsocketTopicMatcherDeclaration(websocketApi))
+      .append("\n")
       .append(WebsocketSubscribeRequest.class.getSimpleName())
       .append(" subscribeRequest = ")
       .append(WebsocketSubscribeRequest.class.getSimpleName())
@@ -509,13 +543,12 @@ public class ExchangeApiInterfaceImplementationGenerator extends JavaTypeGenerat
       .append(", topic, ");
     
     subscribeMethodBody
-      .append(generateWebsocketTopicMatcherDeclaration(websocketApi, request, message, requestArgName, requestClassName))
+      .append(ExchangeApiGenUtil.WEBSOCKET_TOPIC_MATCHER_FACTORY_VAR_NAME)
       .append(");\n")
       .append(RETURN)
       .append(websocketEndpointVariableName)
       .append (".subscribe(subscribeRequest, listener);\n");
     addWebsocketMethod(websocketApi.getName(), OVERRIDE_PUBLIC + subscribeMethodSignature, subscribeMethodBody.toString());
-    
     
     StringBuilder unsubscribeMethodBody = new StringBuilder()
         .append(RETURN)
@@ -524,107 +557,28 @@ public class ExchangeApiInterfaceImplementationGenerator extends JavaTypeGenerat
     addWebsocketMethod(websocketApi.getName(), OVERRIDE_PUBLIC + unsubscribeMethodSignature, unsubscribeMethodBody.toString());
   }
   
-  private String generateWebsocketTopicMatcherDeclaration(WebsocketEndpointDescriptor websocketApi, 
-                              Field request, 
-                              Field msg,
-                              String requestArgName, 
-                              String requestClassName) {
-    StringBuilder topicMatcherDeclaration = new StringBuilder()
-        .append(WebsocketMessageTopicMatcherFactory.class.getSimpleName())
-        .append(".create(");
-    
-    List<String> replacements = new ArrayList<>();
-    replacements.add("topic");
-    replacements.add("\" + topic + \"");
-    if (request != null) {
-      replacements.add(ExchangeApiGenUtil.getRequestArgName(request.getName()));
-      replacements.add("\" + " + requestArgName + " + \"");
-    }
-    List<Field> requestFields = CollectionUtil.emptyIfNull(request == null? null: request.getProperties());
-    for (Field param: requestFields) {
-      replacements.add(param.getMsgField() != null? param.getMsgField(): param.getName());
-      String fieldClass = ExchangeGenUtil.getClassNameForType(param.getType(), getImports(), requestClassName);
-      replacements.add("\" + request." 
-                 + JavaCodeGenUtil.getGetAccessorMethodName(
-                         param.getName(), 
-                         fieldClass, 
-                         requestFields
-                                .stream()
-                                .map(Field::getName)
-                         .collect(Collectors.toList())) 
-                 + "() + \"");
-    }
-    
-    if (!CollectionUtil.isEmpty(websocketApi.getMessageTopicMatcherFields())) {
-      for (int i = 0; i < websocketApi.getMessageTopicMatcherFields().size(); i++) {
-        WebsocketMessageTopicMatcherFieldDescriptor topicMatcherField = websocketApi.getMessageTopicMatcherFields().get(i);
-        String topicMatcherFieldDeclaration = new StringBuilder()
-            .append("\"")
-            .append(getMsgFieldName(topicMatcherField.getName(), msg))
-            .append("\", ")
-            .append(EncodingUtil.substituteArguments("\"" + topicMatcherField.getValue() + "\"", (Object[]) replacements.toArray(new String[replacements.size()])))
-            .toString();
-        String emtpyStrAppend = " + \"\"";
-        if (topicMatcherFieldDeclaration.endsWith(emtpyStrAppend)) {
-          topicMatcherFieldDeclaration = topicMatcherFieldDeclaration.substring(0, topicMatcherFieldDeclaration.length() - emtpyStrAppend.length());
-        }
-        topicMatcherDeclaration.append(topicMatcherFieldDeclaration);  
-        if (i < websocketApi.getMessageTopicMatcherFields().size() - 1) {
-          topicMatcherDeclaration.append(", ");
-        }
-      }
-    }
-    return topicMatcherDeclaration.append(")").toString();
-  }
-  
-  /**
-   * Finds actual field name provided in JSON stream for a field with given name
-   * 
-   * @param name The field name provided in
-   *             {@link WebsocketMessageTopicMatcherFieldDescriptor}
-   * @param msg  The websocket stream data type
-   * @return The msgFieldName (see {@link Field#getMsgField()}) of provided field
-   *         or first of its child fields (see {@link Field#getProperties()} with
-   *         name see {@link Field#getName()} matching that field.
-   */
-  private String getMsgFieldName(String name, Field msg) {
-    Type messageDataType = ExchangeGenUtil.getFieldType(msg);
-    if (Objects.equals(msg.getName(), name)) {
-      return Optional.ofNullable(msg.getMsgField()).orElse(name);
-    } else if (messageDataType.isObject()) {
-      for (Field c: msg.getProperties()) {
-        String res = getMsgFieldName(name, c);
-        if (res != null) {
-          return res;
-        }
-      }
-    }
-    return null;
+  private String generateWebsocketTopicMatcherDeclaration(WebsocketEndpointDescriptor websocketApi) {
+    return ExchangeApiGenUtil.generateWebsocketTopicMatcherFactoryDeclaration(
+        exchangeDescriptor, 
+        exchangeApiDescriptor, 
+        websocketApi, 
+        getImports());
   }
   
   private String generateWebsocketTopicSerializerDeclaration(WebsocketEndpointDescriptor websocketApi) {
-    String topicSerializerBody = "\"\"";
+    String defaultTopic = "\"" + websocketApi.getName() + "\"";
     Field request = ExchangeApiGenUtil.resolveFieldProperties(exchangeApiDescriptor, websocketApi.getRequest());
-    Type requestDataType = ExchangeGenUtil.getFieldType(request);
-    if (ExchangeApiGenUtil.websocketEndpointHasArguments(websocketApi, exchangeApiDescriptor)) {
-      if (websocketApi.getTopic() != null) {
-        topicSerializerBody =  generateUrlParametersOrTopicSerializerBodyFromTemplate(
-                        websocketApi.getTopic(), 
-                        request.getProperties(), 
-                        websocketApi.getTopicParametersListSeparator(),
-                        websocketApi.getRequest().getName(),
-                        requestDataType);
-      } else {
-        topicSerializerBody = "request == null? \"\": \"\" + JsonUtil.pojoToJsonString(request)";
-      }      
-    } else if (websocketApi.getTopic() != null) {
-      topicSerializerBody = "\"" + websocketApi.getTopic() + "\"";
-    }
-    
-    return topicSerializerBody + ";\n";
+    String declaration = ExchangeApiGenUtil.generateTopicValueSubstitutionInstructionDeclaration(
+        websocketApi.getTopic(),
+        exchangeDescriptor, 
+        request, 
+        getImports());
+    return Optional.ofNullable(declaration).orElse(defaultTopic) + ";\n";
   }
   
-  private void generateRestEndpointMethodDeclaration(RestEndpointDescriptor restApi) {
+  private void generateRestEndpointMethodDeclaration(
+      RestEndpointDescriptor restApi, 
+      Map<String, String> restRequestDefaultStaticVariables) {
     Field request = restApi.getRequest();
     Type requestDataType = ExchangeGenUtil.getFieldType(request);
     Field response = restApi.getResponse();
@@ -667,7 +621,7 @@ public class ExchangeApiInterfaceImplementationGenerator extends JavaTypeGenerat
       getResponseDeserializerInstance = ExchangeApiGenUtil.getNewMessageDeserializerInstruction(null, null, getImports());
     }
     
-    String deserializerVariableName = JavaCodeGenUtil.firstLetterToLowerCase(restApi.getName()) + "ResponseDeserializer";
+    String deserializerVariableName = getRestEndpointResponseDeserializerVariable(restApi);
     addImport(MessageDeserializer.class);
     messageDeserializerVariablesDeclarations.add(new StringBuilder()
         .append(PRIVATE_FINAL)
@@ -679,25 +633,34 @@ public class ExchangeApiInterfaceImplementationGenerator extends JavaTypeGenerat
         .append(getResponseDeserializerInstance)
         .append(";").toString());
     
-    String apiMethodName = ExchangeApiGenUtil.getRestApiMethodName(restApi);
+    String apiMethodName = ExchangeApiGenUtil.getRestApiMethodName(restApi, exchangeApiDescriptor.getRestEndpoints());
     String apiMethodSignature =  new StringBuilder()
-                      .append(FutureRestResponse.class.getSimpleName())
-                      .append("<")
-                      .append(responseSimpleClassName)
-                      .append("> ")
-                      .append(apiMethodName)
-                      .append("(")
-                      .append(hasArguments? requestSimpleClassName + " " + requestArgName : "")
-                      .append(")").toString(); 
+        .append(FutureRestResponse.class.getSimpleName())
+        .append("<")
+        .append(responseSimpleClassName)
+        .append("> ")
+        .append(apiMethodName)
+        .append("(")
+        .append(hasArguments? requestSimpleClassName + " " + requestArgName : "")
+        .append(")").toString(); 
     
     addImport(FutureRestResponse.class);
-    String urlParametersSerializerVariableName = "urlParameters";
-    String urlParametersSerializerDeclaration = generateUrlParametersSerializerDeclaration(restApi);
-    if (urlParametersSerializerDeclaration != null) {
-      urlParametersSerializerDeclaration = "String " + urlParametersSerializerVariableName + " = " + urlParametersSerializerDeclaration;
+    String urlVariableName = "url";
+    String urlDeclaration = generateRestEndpointUrlVariableDeclaration(restApi);
+    if (urlDeclaration != null) {
+      urlDeclaration = new StringBuilder()
+          .append("String ")
+          .append(urlVariableName)
+          .append(" = ")
+          .append(urlDeclaration)
+          .append(".toString();\n")
+          .toString();
     }
+    
     StringBuilder apiMethodBody = new StringBuilder()
-        .append(Optional.ofNullable(urlParametersSerializerDeclaration).orElse(""));
+        .append(generateRequestAsDefaultValueIfNullInstruction(
+            restRequestDefaultStaticVariables.get(ExchangeApiGenUtil.getRestEndpointRequestDefaultValueVariableName(restApi))))
+        .append(Optional.ofNullable(urlDeclaration).orElse(""));
     
     List<String> rateLimitVariables = getRateLimitsVariables(restApi);
     
@@ -714,16 +677,47 @@ public class ExchangeApiInterfaceImplementationGenerator extends JavaTypeGenerat
     
     addImport(HttpRequest.class);
     addRestEndpointUrlDeclarations(restApi, restEndpointJavadocLink);
-    String endpointUrlVar = ExchangeApiGenUtil.getRestEndpointUrlVariableName(restApi);
+    
+    boolean requestHasBody = Optional
+        .ofNullable(restApi.isRequestHasBody())
+        .orElse(restApi.getHttpMethod().requestHasBody) && hasArguments;
+    String createHttpRequestInstruction = generateRestEndpointMethodCreateHttpRequestInstruction(
+        restApi,
+        urlVariableName, 
+        urlDeclaration, 
+        rateLimitsVariable, 
+        requestWeight, 
+        hasArguments, 
+        requestArgName);
+        
+    apiMethodBody.append(createSubmitRequestInstruction(
+        restApi, 
+        createHttpRequestInstruction,
+        deserializerVariableName, 
+        requestHasBody));
+    
+    addRestMethod(OVERRIDE_PUBLIC + apiMethodSignature, apiMethodBody.toString());
+  }
+  
+  private String generateRestEndpointMethodCreateHttpRequestInstruction(
+      RestEndpointDescriptor restApi,
+      String urlVariableName, 
+      String urlDeclaration, 
+      String rateLimitsVariable, 
+      int requestWeight, 
+      boolean hasArguments,
+      String requestArgName) {
+    String endpointUrlVar = getRestEndpointUrlVariable(restApi);
     StringBuilder createHttpRequestInstruction = new StringBuilder()
         .append("HttpRequest.create(")
-        .append(ExchangeApiGenUtil.getRestEndpointNameStaticVariable(restApi.getName()))
-        .append(", ")
-        .append(endpointUrlVar);
-    if (urlParametersSerializerDeclaration != null) {
+        .append(restEndpointNamesStaticVariables.get(restApi.getName()))
+        .append(", ");
+    if (urlDeclaration != null) {
       createHttpRequestInstruction
-        .append(" + ")
-        .append(urlParametersSerializerVariableName);
+        .append(urlVariableName);
+    } else {
+      createHttpRequestInstruction
+      .append(endpointUrlVar);
     }
     addImport(HttpMethod.class);
     createHttpRequestInstruction.append(", HttpMethod.")
@@ -735,24 +729,47 @@ public class ExchangeApiInterfaceImplementationGenerator extends JavaTypeGenerat
         .append(", ")
         .append(requestWeight)
         .append(")");
-        
+    return createHttpRequestInstruction.toString();
+  }
+  
+  private String createSubmitRequestInstruction(
+      RestEndpointDescriptor restApi, 
+      String createHttpRequestInstruction,
+      String deserializerVariableName,
+      boolean requestHasBody) {
     StringBuilder submitRequestInstruction = new StringBuilder();
     String endpointCallArg = "";
     if (restApi.isPaginated()) {
       submitRequestInstruction.append("submitPaginated(");
-      endpointCallArg = ", this::" + ExchangeApiGenUtil.getRestApiMethodName(restApi);
+      endpointCallArg = ", this::" + ExchangeApiGenUtil.getRestApiMethodName(restApi, exchangeApiDescriptor.getRestEndpoints());
     } else {
       submitRequestInstruction.append("submit(");
     }
     submitRequestInstruction
-      .append(createHttpRequestInstruction.toString())
+      .append(createHttpRequestInstruction)
+      .append(", ")
+      .append(requestHasBody)
       .append(", ")
       .append(deserializerVariableName)
       .append(endpointCallArg)
       .append(");\n");
-    apiMethodBody.append(submitRequestInstruction.toString());
-    
-    addRestMethod(OVERRIDE_PUBLIC + apiMethodSignature, apiMethodBody.toString());
+    return submitRequestInstruction.toString();
+  }
+  
+  private String generateRequestAsDefaultValueIfNullInstruction(String defaultValueStaticVariableName) {
+    if (defaultValueStaticVariableName != null) {
+      return new StringBuilder()
+        .append(ExchangeApiGenUtil.DEFAULT_REQUEST_ARG_NAME)
+        .append(" = ")
+        .append(JavaCodeGenUtil.generateOptionalOfNullableStatement(
+           ExchangeApiGenUtil.DEFAULT_REQUEST_ARG_NAME, 
+           defaultValueStaticVariableName, 
+           getImports(), 
+           false))
+        .append("\n")
+        .toString();
+    }
+    return "";
   }
   
   private List<String> getRateLimitsVariables(RestEndpointDescriptor restApi) {
@@ -785,7 +802,7 @@ public class ExchangeApiInterfaceImplementationGenerator extends JavaTypeGenerat
     return new StringBuilder()
           .append(this.simpleInterfaceName)
           .append("#")
-          .append(ExchangeApiGenUtil.getRestApiMethodName(restApi))
+          .append(ExchangeApiGenUtil.getRestApiMethodName(restApi, exchangeApiDescriptor.getRestEndpoints()))
           .append("(")
           .append(JavaCodeGenUtil.getMethodJavadocArgumentDeclaration(requestSimpleClassName))
           .append(")").toString();
@@ -804,9 +821,21 @@ public class ExchangeApiInterfaceImplementationGenerator extends JavaTypeGenerat
         .append(JavaCodeGenUtil.generateJavaDoc(javadoc.toString()))
         .append("\n")
         .append("protected final String ")
-        .append(ExchangeApiGenUtil.getRestEndpointUrlVariableName(restApi))
+        .append(getRestEndpointUrlVariable(restApi))
         .append(";");
     restEndpointUrlDeclarations.add(sb.toString()); 
+  }
+  
+  private String getRestEndpointUrlVariable(RestEndpointDescriptor restApi) {
+    return restEndpointVariables.get(restApi.getName()) + "HttpUrl";
+  }
+  
+  private String getRestEndpointResponseDeserializerVariable(RestEndpointDescriptor restApi) {
+    return restEndpointVariables.get(restApi.getName()) + "ResponseDeserializer";
+  }
+  
+  private String getWebsocketEndpointVariable(WebsocketEndpointDescriptor websocketApi) {
+    return wsEndpointVariables.get(websocketApi.getName()) + "Ws";
   }
   
   private boolean checkHasRateLimits() {
@@ -907,7 +936,7 @@ public class ExchangeApiInterfaceImplementationGenerator extends JavaTypeGenerat
   private String generateRestEndpointUrlVariableInstantiationInstruction(RestEndpointDescriptor restApi) {
     addImport(EncodingUtil.class);
     StringBuilder sb = new StringBuilder().append(THIS)
-        .append(ExchangeApiGenUtil.getRestEndpointUrlVariableName(restApi)).append(" = ")
+        .append(getRestEndpointUrlVariable(restApi)).append(" = ")
         .append(EncodingUtil.class.getSimpleName())
         .append(".buildUrl(this.getHttpUrl(), ")
         .append(ExchangeGenUtil.generateSubstitutionInstructionDeclaration(
@@ -922,137 +951,115 @@ public class ExchangeApiInterfaceImplementationGenerator extends JavaTypeGenerat
     return sb.toString();
   }
   
-  private String generateUrlParametersSerializerDeclaration(RestEndpointDescriptor restApi) {
-    Field request = restApi.getRequest();
-    String getUrlParametersBody = null;
-    List<Field> enpointParameters = request == null? null:
-                          ExchangeApiGenUtil.resolveFieldProperties(
-                            exchangeApiDescriptor, request).getProperties();
-    if (ExchangeApiGenUtil.restEndpointHasArguments(restApi, exchangeApiDescriptor)) {
-      String requestName = request == null? null: request.getName();
-      Type requestDataType = ExchangeGenUtil.getFieldType(request);
-      boolean hasQueryParams = restApi.isQueryParams()  
-          || !restApi.getHttpMethod().requestHasBody;
-      if (restApi.getUrlParameters() != null) {
-        getUrlParametersBody =  generateUrlParametersOrTopicSerializerBodyFromTemplate(
-                        restApi.getUrlParameters(), 
-                        enpointParameters, 
-                        restApi.getUrlParametersListSeparator(),
-                        requestName,
-                        requestDataType);
-      } else if (!CollectionUtil.isEmpty(enpointParameters) && hasQueryParams) {
-        getUrlParametersBody = generateGetUrlParametersBodyUsingQueryParams(enpointParameters, false);
-      } else if (!requestDataType.isObject() && hasQueryParams) {
-        getUrlParametersBody = generateGetUrlParametersBodyUsingQueryParams(List.of(request), true);
-      } // else object type with 0 properties, no url parameter
-    } else if (restApi.getUrlParameters() != null) {
-      getUrlParametersBody = "\"" + restApi.getUrlParameters() + "\"";
+  private String generateRestEndpointUrlVariableDeclaration(RestEndpointDescriptor restApi) {
+    if (!ExchangeApiGenUtil.restEndpointHasArguments(restApi, exchangeApiDescriptor)) {
+      return null;
     }
-    if (getUrlParametersBody != null) {
-      getUrlParametersBody = getUrlParametersBody + ";\n";
-    }
-    return getUrlParametersBody;
-  }
-  
-  private String generateGetUrlParametersBodyUsingQueryParams(List<Field> requestFields, boolean singleRequestParam) {
-    addImport(EncodingUtil.class);
-    StringBuilder s = new StringBuilder().append(EncodingUtil.class.getSimpleName() + ".createUrlQueryParameters(");
-    for (int i = 0; i < requestFields.size(); i++) {
-      if (i > 0) {
-        s.append(", ");
-      }
-      Field f = requestFields.get(i);
-      String name = Optional.ofNullable(f.getMsgField()).orElse(f.getName());
-      s.append("\"")
-       .append(name)
-       .append("\", ");
-      String value = "request";
-      if (!singleRequestParam) {
-        value += "." 
-            + JavaCodeGenUtil.getGetAccessorMethodName(
-              f.getName(), 
-              ExchangeApiGenUtil.getClassNameForField(f, null, f.getObjectName()), 
-              requestFields.stream().map(Field::getName).collect(Collectors.toList()))
-            + "()";
-      }
-
-      Type type = ExchangeGenUtil.getFieldType(f);
-      if (type.getCanonicalType() == CanonicalType.LIST
-        || type.getCanonicalType() == CanonicalType.MAP
-        || type.isObject()) {
-        addImport(JsonUtil.class);
-        value = new StringBuilder()
-                .append("JsonUtil.pojoToJsonString(")
-                .append(value)
-                .append(")").toString(); 
-      } else if (type.getCanonicalType() == CanonicalType.STRING) {
-        value = new StringBuilder()
-            .append(value)
-            .toString(); 
-      }
-      s.append(value);
-      
-    }
-    return s.append(")").toString();
-  }
-
-  private String generateUrlParametersOrTopicSerializerBodyFromTemplate(String urlParametersTemplate, 
-                                        List<Field> fields, 
-                                        String stringListSeparator,
-                                        String requestArgName,
-                                        Type requestType) {
-    fields = Optional.ofNullable(fields).orElse(List.of());
-    if (stringListSeparator == null) {
-      stringListSeparator = ExchangeGenUtil.DEFAULT_STRING_LIST_SEPARATOR;
-    }
-    StringBuilder sb = new StringBuilder();
-    sb.append(EncodingUtil.class.getSimpleName())
-      .append(".substituteArguments(\"")
-      .append(urlParametersTemplate)
-      .append("\"");
-    int n = fields.size();
-    for (int i = 0; i < n; i++) {
-      Field f = fields.get(i);
-      Type type = ExchangeGenUtil.getFieldType(f);
-      String name = f.getName();
-      if (!urlParametersTemplate.contains("${" + name + "}")) {
-        continue;
-      }
-      String value = "request." 
-               + JavaCodeGenUtil.getGetAccessorMethodName(
-                name, 
-                ExchangeApiGenUtil.getClassNameForField(f, null, f.getObjectName()), 
-                fields.stream().map(Field::getName).collect(Collectors.toList()))
-               + "()";
-      value = getListFieldToUrlParameterSerializerInstuction(value, type, stringListSeparator);
-      sb.append(", \"").append(name).append("\", ").append(value);
-    }
-    if (urlParametersTemplate.contains("${" + requestArgName + "}")) {
-      n++;
-      sb.append(", \"")
-        .append(requestArgName)
-        .append("\", ")
-        .append(getListFieldToUrlParameterSerializerInstuction(ExchangeApiGenUtil.DEFAULT_REQUEST_ARG_NAME, requestType, stringListSeparator));
-    } 
-    if (n <= 0) {
-      return JavaCodeGenUtil.getQuotedString(urlParametersTemplate);
-    }
-    addImport(EncodingUtil.class);
-    sb.append(")");
-    return sb.toString();
-  }
-  
-  private String getListFieldToUrlParameterSerializerInstuction(String fieldValue, Type fieldType, String stringListSeparator) {
-    if (fieldType.getCanonicalType() != CanonicalType.LIST) {
-      return fieldValue;
+    Field request = ExchangeApiGenUtil.resolveFieldProperties(
+          exchangeApiDescriptor, restApi.getRequest());
+    List<String> pathParamArgs = new ArrayList<>();
+    collectUrlParameterArguments(
+        restApi, 
+        request, 
+        null, 
+        UrlParameterType.PATH, 
+        ExchangeApiGenUtil.DEFAULT_REQUEST_ARG_NAME, 
+        pathParamArgs);
+    List<String> queryParamArgs = new ArrayList<>();
+    collectUrlParameterArguments(
+        restApi, 
+        request, 
+        null,
+        UrlParameterType.QUERY, 
+        ExchangeApiGenUtil.DEFAULT_REQUEST_ARG_NAME,
+        queryParamArgs);
+    if (pathParamArgs.isEmpty() && queryParamArgs.isEmpty()) {
+      return null;
     }
     StringBuilder sb = new StringBuilder()
+      .append("new StringBuilder(128).append(")
+      .append(getRestEndpointUrlVariable(restApi))
+      .append(")");
+    if (!pathParamArgs.isEmpty()) {
+      addImport(EncodingUtil.class);
+      sb.append("\n")
+        .append(JavaCodeGenUtil.INDENTATION)
+        .append(".append(")
         .append(EncodingUtil.class.getSimpleName())
-        .append(".listToString(")
-        .append(fieldValue)
-        .append(", \"")
-        .append(stringListSeparator).append("\")");
-    return sb.toString();
+        .append(".createUrlPathParameters(")
+        .append(String.join(", ", pathParamArgs))
+        .append("))");    
+    }
+
+    if (!queryParamArgs.isEmpty()) {
+      addImport(EncodingUtil.class);
+      sb.append("\n")
+        .append(JavaCodeGenUtil.INDENTATION)
+        .append(".append(")
+        .append(EncodingUtil.class.getSimpleName())
+        .append(".createUrlQueryParameters(")
+        .append(String.join(", ", queryParamArgs))
+        .append("))");
+    }
+    return sb.toString();  
+  }
+  
+  private void collectUrlParameterArguments(
+      RestEndpointDescriptor 
+      restApi, 
+      Field f, 
+      List<Field> sieblings, 
+      UrlParameterType urlParameterType, 
+      String valuePrefix, 
+      List<String> res) {
+    f = ExchangeApiGenUtil.resolveFieldProperties(exchangeApiDescriptor, f);
+    UrlParameterType defUrlParamType = (Optional
+          .ofNullable(restApi.isRequestHasBody())
+          .orElse(false) 
+        || restApi.getHttpMethod().requestHasBody)?
+         null: 
+         UrlParameterType.QUERY;
+    UrlParameterType fieldUrlParamType = f.getIn();
+    Type type = ExchangeGenUtil.getFieldType(f);
+    List<Field> properties = ExchangeApiGenUtil.resolveFieldProperties(exchangeApiDescriptor, f).getProperties();
+    if (sieblings != null) {
+      valuePrefix += "." 
+        + JavaCodeGenUtil.getGetAccessorMethodName(
+          f.getName(),
+          type,
+          sieblings.stream().map(Field::getName).collect(Collectors.toList())) 
+        + "()";
+    }
+    if (fieldUrlParamType == null 
+        && !CollectionUtil.isEmpty(properties) 
+        && type.getCanonicalType() == CanonicalType.OBJECT) { 
+      for (Field p : properties) {
+        collectUrlParameterArguments(restApi, p, properties, urlParameterType, valuePrefix, res);
+      }
+    } else if (Optional
+        .ofNullable(fieldUrlParamType)
+        .orElse(defUrlParamType) == urlParameterType) {
+      if (urlParameterType == UrlParameterType.QUERY) {
+        String name = Optional 
+            .ofNullable(Optional
+                .ofNullable(f.getMsgField())
+                .orElse(f.getName()))
+            .orElse(ExchangeApiGenUtil.DEFAULT_REQUEST_ARG_NAME);
+        res.add(JavaCodeGenUtil.getQuotedString(name));
+      }
+      String value = valuePrefix;
+      if (type.getCanonicalType() == CanonicalType.LIST 
+          || type.getCanonicalType() == CanonicalType.MAP
+          || type.isObject()) {
+        addImport(JsonUtil.class);
+        value = new StringBuilder()
+            .append("JsonUtil.pojoToJsonString(")
+            .append(value)
+            .append(")")
+            .toString();
+      }
+      res.add(value);
+    }
   }
   
   private String getHttpRequestInterceptorFactory() {
@@ -1076,7 +1083,6 @@ public class ExchangeApiInterfaceImplementationGenerator extends JavaTypeGenerat
     }
     return -1L;
   }
-
 
   private String getWebsocketFactory() {
     return Optional.ofNullable(exchangeApiDescriptor.getWebsocketFactory())

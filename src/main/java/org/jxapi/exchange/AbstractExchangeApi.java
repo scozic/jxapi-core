@@ -262,6 +262,8 @@ public abstract class AbstractExchangeApi extends DefaultDisposable implements E
    *                              {@link PaginatedRestRequest}
    * @param <A>                   The type of the response to the request
    * @param request               The request to submit
+   * @param hasBody               Indicates whether the request has a body, and 
+   *                              thus needs its request to be serialized before submission.
    * @param deserializer          The deserializer to use to deserialize the
    *                              response
    * @param paginatedRestEndpoint The function for calling the paginated REST
@@ -272,9 +274,10 @@ public abstract class AbstractExchangeApi extends DefaultDisposable implements E
   @SuppressWarnings("unchecked")
   protected <R extends PaginatedRestRequest, A extends PaginatedRestResponse> FutureRestResponse<A> submitPaginated(
       HttpRequest request, 
+      boolean hasBody,
       MessageDeserializer<A> deserializer, 
       Function<R, FutureRestResponse<A>> paginatedRestEndpoint) {
-    return submit(request, deserializer, PaginationUtil.getNextPageResolver((R) request.getRequest(), paginatedRestEndpoint));
+    return submit(request, hasBody, deserializer, PaginationUtil.getNextPageResolver((R) request.getRequest(), paginatedRestEndpoint));
   }
   
   /**
@@ -285,17 +288,19 @@ public abstract class AbstractExchangeApi extends DefaultDisposable implements E
    * 
    * @param <A>          The type of the response to the request
    * @param request      The request to submit
+   * @param hasBody      Indicates whether the request has a body, and thus needs 
+   *                     its request to be serialized before submission.
    * @param deserializer The deserializer to use to deserialize the response
    * @return The response to the request, as a {@link FutureRestResponse}
    */
-  protected <A> FutureRestResponse<A> submit(HttpRequest request, MessageDeserializer<A> deserializer) {
-    return submit(request, deserializer, null);
+  protected <A> FutureRestResponse<A> submit(HttpRequest request, boolean hasBody, MessageDeserializer<A> deserializer) {
+    return submit(request, hasBody, deserializer, null);
   }
   
-  private <A> FutureRestResponse<A> submit(HttpRequest request, MessageDeserializer<A> deserializer, NextPageResolver<A> nextPageResolver) {
+  private <A> FutureRestResponse<A> submit(HttpRequest request, boolean hasBody, MessageDeserializer<A> deserializer, NextPageResolver<A> nextPageResolver) {
     log.debug("{} {} > {}", request.getHttpMethod(), request.getEndpoint(), request);
     dispatchApiEvent(ExchangeApiEvent.createHttpRequestEvent(request));
-    if (request.getHttpMethod().requestHasBody && request.getRequest() != null) {
+    if (hasBody && request.getRequest() != null) {
       serializeRequestBody(request);
     }
     if (requestThrottler != null) {
@@ -399,7 +404,7 @@ public abstract class AbstractExchangeApi extends DefaultDisposable implements E
    * Dispatches the specified exchange API event to all observers.
    * <br>
    * Needs usually not be called by subclasses, as it is called for every call to
-   * {@link #submit(HttpRequest, MessageDeserializer)} and
+   * {@link #submit(HttpRequest, boolean, MessageDeserializer)} and
    * {@link #createWebsocketEndpoint(String, MessageDeserializer)}.
    * 
    * @param event The exchange API event to dispatch.

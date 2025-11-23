@@ -7,9 +7,9 @@ apis:
       httpMethod: "DELETE"
       docUrl: "https://www.example.com/docs/employee/delete"
       url: "/employee"
-      urlParameters: "/${id}"
       request:
        name: "id"
        type: INT
        description: "Employee ID"
        sampleValue: 1
+       in: PATH

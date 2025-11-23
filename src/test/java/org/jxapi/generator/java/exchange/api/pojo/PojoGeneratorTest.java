@@ -5,9 +5,9 @@ import java.util.Map;
 
 import org.junit.Assert;
 import org.junit.Test;
-
 import org.jxapi.exchange.descriptor.Field;
 import org.jxapi.exchange.descriptor.Type;
+import org.jxapi.generator.java.JavaCodeGenUtil;
 import org.jxapi.util.PlaceHolderResolver;
 
 /**
@@ -22,6 +22,7 @@ public class PojoGeneratorTest {
     List<Field> properties = List.of(
       Field.builder().type(Type.LONG).name("id").build(),
       Field.builder().type(Type.INT).name("score").description("Current score, max is ${constants.maxScore}").build(),
+      Field.builder().type("STRING_LIST").name("profiles").description("Profile, one of ${constants.profiles}").defaultValue(List.of("${constants.profiles.admin}", "${constants.profiles.regular}")).build(),
       Field.builder().type("OBJECT_LIST").name("foo").msgField("f").description("The foo")
              .property(Field.builder().type(Type.LONG).name("time").description("Creation time").build())
              .property(Field.builder().name("bar").description("The bar, which name can be ${constants.barName}")
@@ -33,12 +34,19 @@ public class PojoGeneratorTest {
              .build()
     );
     PlaceHolderResolver docPlaceHolderResolver = PlaceHolderResolver.create(Map.of("constants.maxScore", "100",
-                                                                                   "constants.barName", "Happy hour"));
-    PojoGenerator generator = new PojoGenerator(typeName, 
-                                                typeDescription, 
-                                                properties, 
-                                                List.of("com.x.common.MyInterface"), 
-                                                docPlaceHolderResolver);
+                                                                                   "constants.barName", "Happy hour",
+                                                                                   "constants.profiles", "all_profiles"));
+    PlaceHolderResolver defaultValuePlaceHolderResolver = PlaceHolderResolver
+        .create(Map.of("constants.profiles.admin", "admin_profile", 
+                      "constants.profiles.regular", "regular_profile"));
+    PojoGenerator generator = new PojoGenerator(
+        typeName, 
+        typeDescription, 
+        properties, 
+        List.of("com.x.common.MyInterface"), 
+        docPlaceHolderResolver,
+        imports -> s -> JavaCodeGenUtil.getQuotedString(defaultValuePlaceHolderResolver.resolve(s)));
+    
     Assert.assertEquals("package com.x;\n"
         + "\n"
         + "import java.util.List;\n"
@@ -49,6 +57,8 @@ public class PojoGeneratorTest {
         + "import com.x.common.MyInterface;\n"
         + "import com.x.serializers.MyPojoSerializer;\n"
         + "import javax.annotation.processing.Generated;\n"
+        + "import org.jxapi.netutils.deserialization.json.field.ListJsonFieldDeserializer;\n"
+        + "import org.jxapi.netutils.deserialization.json.field.StringJsonFieldDeserializer;\n"
         + "import org.jxapi.util.CollectionUtil;\n"
         + "import org.jxapi.util.CompareUtil;\n"
         + "import org.jxapi.util.DeepCloneable;\n"
@@ -62,7 +72,7 @@ public class PojoGeneratorTest {
         + "@JsonSerialize(using = MyPojoSerializer.class)\n"
         + "public class MyPojo implements Pojo<MyPojo>, MyInterface {\n"
         + "  \n"
-        + "  private static final long serialVersionUID = 926407479345105954L;\n"
+        + "  private static final long serialVersionUID = -7067947056594815436L;\n"
         + "  \n"
         + "  /**\n"
         + "   * @return A new builder to build {@link MyPojo} objects\n"
@@ -71,8 +81,14 @@ public class PojoGeneratorTest {
         + "    return new Builder();\n"
         + "  }\n"
         + "  \n"
+        + "  /**\n"
+        + "   * Default value for <code>profiles</code>\n"
+        + "   */\n"
+        + "  public static final List<String> PROFILES_DEFAULT_VALUE = new ListJsonFieldDeserializer<>(StringJsonFieldDeserializer.getInstance()).deserialize(\"[\\\"admin_profile\\\",\\\"regular_profile\\\"]\");\n"
+        + "  \n"
         + "  private Long id;\n"
         + "  private Integer score;\n"
+        + "  private List<String> profiles = PROFILES_DEFAULT_VALUE;\n"
         + "  private List<MyPojoFoo> foo;\n"
         + "  private Map<String, List<MyPojoToto>> toto;\n"
         + "  \n"
@@ -96,6 +112,20 @@ public class PojoGeneratorTest {
         + "   */\n"
         + "  public void setScore(Integer score) {\n"
         + "    this.score = score;\n"
+        + "  }\n"
+        + "  \n"
+        + "  /**\n"
+        + "   * @return Profile, one of all_profiles\n"
+        + "   */\n"
+        + "  public List<String> getProfiles() {\n"
+        + "    return profiles;\n"
+        + "  }\n"
+        + "  \n"
+        + "  /**\n"
+        + "   * @param profiles Profile, one of all_profiles\n"
+        + "   */\n"
+        + "  public void setProfiles(List<String> profiles) {\n"
+        + "    this.profiles = profiles;\n"
         + "  }\n"
         + "  \n"
         + "  /**\n"
@@ -139,6 +169,7 @@ public class PojoGeneratorTest {
         + "    MyPojo o = (MyPojo) other;\n"
         + "    return Objects.equals(this.id, o.id)\n"
         + "        && Objects.equals(this.score, o.score)\n"
+        + "        && Objects.equals(this.profiles, o.profiles)\n"
         + "        && Objects.equals(this.foo, o.foo)\n"
         + "        && Objects.equals(this.toto, o.toto);\n"
         + "  }\n"
@@ -160,6 +191,10 @@ public class PojoGeneratorTest {
         + "    if (res != 0) {\n"
         + "      return res;\n"
         + "    }\n"
+        + "    res = CompareUtil.compareLists(this.profiles, other.profiles, CompareUtil::compare);\n"
+        + "    if (res != 0) {\n"
+        + "      return res;\n"
+        + "    }\n"
         + "    res = CompareUtil.compareLists(this.foo, other.foo, CompareUtil::compare);\n"
         + "    if (res != 0) {\n"
         + "      return res;\n"
@@ -170,7 +205,7 @@ public class PojoGeneratorTest {
         + "  \n"
         + "  @Override\n"
         + "  public int hashCode() {\n"
-        + "    return Objects.hash(id, score, foo, toto);\n"
+        + "    return Objects.hash(id, score, profiles, foo, toto);\n"
         + "  }\n"
         + "  \n"
         + "  @Override\n"
@@ -178,6 +213,7 @@ public class PojoGeneratorTest {
         + "    MyPojo clone = new MyPojo();\n"
         + "    clone.id = this.id;\n"
         + "    clone.score = this.score;\n"
+        + "    clone.profiles = CollectionUtil.cloneList(this.profiles);\n"
         + "    clone.foo = CollectionUtil.deepCloneList(this.foo, DeepCloneable::deepClone);\n"
         + "    clone.toto = CollectionUtil.deepCloneMap(this.toto, l0 -> CollectionUtil.deepCloneList(l0, DeepCloneable::deepClone));\n"
         + "    return clone;\n"
@@ -196,6 +232,7 @@ public class PojoGeneratorTest {
         + "    \n"
         + "    private Long id;\n"
         + "    private Integer score;\n"
+        + "    private List<String> profiles = PROFILES_DEFAULT_VALUE;\n"
         + "    private List<MyPojoFoo> foo;\n"
         + "    private Map<String, List<MyPojoToto>> toto;\n"
         + "    \n"
@@ -217,6 +254,32 @@ public class PojoGeneratorTest {
         + "     */\n"
         + "    public Builder score(Integer score)  {\n"
         + "      this.score = score;\n"
+        + "      return this;\n"
+        + "    }\n"
+        + "    \n"
+        + "    /**\n"
+        + "     * Will set the value of <code>profiles</code> field in the builder\n"
+        + "     * @param profiles Profile, one of all_profiles\n"
+        + "     * @return Builder instance\n"
+        + "     * @see #setProfiles(List<String>)\n"
+        + "     */\n"
+        + "    public Builder profiles(List<String> profiles)  {\n"
+        + "      this.profiles = profiles;\n"
+        + "      return this;\n"
+        + "    }\n"
+        + "    \n"
+        + "    \n"
+        + "    /**\n"
+        + "     * Will add an item to the <code>profiles</code> list.\n"
+        + "     * @param item Item to add to current <code>profiles</code> list\n"
+        + "     * @return Builder instance\n"
+        + "     * @see MyPojo#setProfiles(String)\n"
+        + "     */\n"
+        + "    public Builder addToProfiles(String item) {\n"
+        + "      if (this.profiles == null) {\n"
+        + "        this.profiles = CollectionUtil.createList();\n"
+        + "      }\n"
+        + "      this.profiles.add(item);\n"
         + "      return this;\n"
         + "    }\n"
         + "    \n"
@@ -279,6 +342,7 @@ public class PojoGeneratorTest {
         + "      MyPojo res = new MyPojo();\n"
         + "      res.id = this.id;\n"
         + "      res.score = this.score;\n"
+        + "      res.profiles = CollectionUtil.cloneList(this.profiles);\n"
         + "      res.foo = CollectionUtil.deepCloneList(this.foo, DeepCloneable::deepClone);\n"
         + "      res.toto = CollectionUtil.deepCloneMap(this.toto, l0 -> CollectionUtil.deepCloneList(l0, DeepCloneable::deepClone));\n"
         + "      return res;\n"
@@ -302,7 +366,7 @@ public class PojoGeneratorTest {
             Field.builder().type(Type.LONG).name("id").description("identifier").build()))
       .build()
     );
-    PojoGenerator generator = new PojoGenerator(typeName, typeDescription, properties, null, null);
+    PojoGenerator generator = new PojoGenerator(typeName, typeDescription, properties, null, null, null);
     Assert.assertEquals("package com.x.pojo;\n"
         + "\n"
         + "import java.util.Objects;\n"
@@ -428,7 +492,7 @@ public class PojoGeneratorTest {
   public void testGenerate_NullProperties() {
     String typeName = "com.x.pojo.MyPojoWithNullProperties";
     String typeDescription = "Used in PojoGeneratorTest";
-    PojoGenerator generator = new PojoGenerator(typeName, typeDescription, null, null, null);
+    PojoGenerator generator = new PojoGenerator(typeName, typeDescription, null, null, null, null);
     Assert.assertEquals("package com.x.pojo;\n"
         + "\n"
         + "import com.fasterxml.jackson.databind.annotation.JsonSerialize;\n"
@@ -517,11 +581,11 @@ public class PojoGeneratorTest {
   
   @Test
   public void testGeneratePojoCodeMultipleFields() {
-    PojoGenerator generator = new PojoGenerator("x.y.z.pojo.Foo", null, null, null, null);
+    PojoGenerator generator = new PojoGenerator("x.y.z.pojo.Foo", null, null, null, null, null);
     generator.addField(Field.builder().type(Type.STRING).name("name").description("the name").build());
     generator.addField(Field.builder().objectName("Bar").name("bar").msgField("b").build());
-    generator.addField(Field.builder().type(Type.INT).name("a").description("lower case 'a'").build());
-    generator.addField(Field.builder().type(Type.INT).name("A").description("upper case 'A'").build());
+    generator.addField(Field.builder().type(Type.INT).name("a").description("lower case 'a'").defaultValue(1).build());
+    generator.addField(Field.builder().type(Type.INT).name("A").description("upper case 'A'").defaultValue(2).build());
     
     Assert.assertEquals("package x.y.z.pojo;\n"
         + "\n"
@@ -548,10 +612,20 @@ public class PojoGeneratorTest {
         + "    return new Builder();\n"
         + "  }\n"
         + "  \n"
+        + "  /**\n"
+        + "   * Default value for <code>a</code>\n"
+        + "   */\n"
+        + "  public static final Integer A_DEFAULT_VALUE = Integer.valueOf(\"1\");\n"
+        + "  \n"
+        + "  /**\n"
+        + "   * Default value for <code>A</code>\n"
+        + "   */\n"
+        + "  public static final Integer A_DEFAULT_VALUE_ = Integer.valueOf(\"2\");\n"
+        + "  \n"
         + "  private String name;\n"
         + "  private Bar bar;\n"
-        + "  private Integer a;\n"
-        + "  private Integer A;\n"
+        + "  private Integer a = A_DEFAULT_VALUE;\n"
+        + "  private Integer A = A_DEFAULT_VALUE_;\n"
         + "  \n"
         + "  /**\n"
         + "   * @return the name\n"
@@ -679,8 +753,8 @@ public class PojoGeneratorTest {
         + "    \n"
         + "    private String name;\n"
         + "    private Bar bar;\n"
-        + "    private Integer a;\n"
-        + "    private Integer A;\n"
+        + "    private Integer a = A_DEFAULT_VALUE;\n"
+        + "    private Integer A = A_DEFAULT_VALUE_;\n"
         + "    \n"
         + "    /**\n"
         + "     * Will set the value of <code>name</code> field in the builder\n"
@@ -749,7 +823,13 @@ public class PojoGeneratorTest {
     String typeName = "com.x.MyPojo";
     String typeDescription = "Used in PojoGeneratorTest";
     List<Field> properties = List.of();
-    PojoGenerator generator = new PojoGenerator(typeName, typeDescription, properties, List.of("com.x.common.MyInterface"), null);
+    PojoGenerator generator = new PojoGenerator(
+        typeName, 
+        typeDescription, 
+        properties, 
+        List.of("com.x.common.MyInterface"), 
+        null, 
+        null);
     Assert.assertEquals("package com.x;\n"
         + "\n"
         + "import com.fasterxml.jackson.databind.annotation.JsonSerialize;\n"

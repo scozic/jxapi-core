@@ -103,9 +103,10 @@
 					"name": "subscribeTicker",
 					"topic": "subscribeTickerTopic",
 					"description": "Subscribe to stream with OBJECT message type (default, explicit here)",
-					"messageTopicMatcherFields": [
-						{"name": "topic",  "value": "tickerMapList"}
-					],
+					"topicMatcher": {
+						"fieldName": "topic",  
+						"fieldValue": "tickerMapList"
+					},
 					"message": { 
 						"type":"OBJECT",
 						"properties": [
@@ -119,9 +120,10 @@
 					"name": "subscribeTickertMapListStream",
 					"topic": "subscribeTickerMapListTopic",
 					"description": "Subscribe to stream with OBJECT_MAP_LIST message type",
-					"messageTopicMatcherFields": [
-						{"name": "topic",  "value": "tickerMapList"}
-					],
+					"topicMatcher": {
+						"fieldName": "topic",  
+						"fieldValue": "tickerMapList"
+					},
 					"message": {
 						"type": "OBJECT_MAP_LIST",
 						"properties": [

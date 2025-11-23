@@ -7,6 +7,7 @@ import java.util.List;
 import org.jxapi.exchange.descriptor.Field;
 import org.jxapi.exchange.descriptor.Type;
 import org.jxapi.generator.java.exchange.ClassesGenerator;
+import org.jxapi.generator.java.exchange.ConstantValuePlaceholderResolverFactory;
 import org.jxapi.generator.java.exchange.ExchangeGenUtil;
 import org.jxapi.generator.java.exchange.api.ExchangeApiGenUtil;
 import org.jxapi.util.PlaceHolderResolver;
@@ -29,6 +30,7 @@ public class PojoClassesGenerator implements ClassesGenerator {
   private final PojoGenerator rootPojoGenerator;
   private final List<Field> properties;
   private final PlaceHolderResolver docPlaceHolderResolver;
+  private final ConstantValuePlaceholderResolverFactory constantsValuePlaceHolderResolverFactory;
   
   /**
    * Constructor.
@@ -38,16 +40,25 @@ public class PojoClassesGenerator implements ClassesGenerator {
    * @param properties the fields of the class
    * @param implementedInterfaces the interfaces implemented by the class
    * @param docPlaceHolderResolver the resolver to use to resolve placeholders in descriptions.
+   * @param constantValuePlaceHolderResolverFactory the factory to use for creating resolvers for constant value placeholders.
    * @throws IOException if an I/O error occurs
    */
   public PojoClassesGenerator(String className, 
        String description, 
        List<Field> properties, 
        List<String> implementedInterfaces,
-       PlaceHolderResolver docPlaceHolderResolver) throws IOException {
+       PlaceHolderResolver docPlaceHolderResolver,
+       ConstantValuePlaceholderResolverFactory constantValuePlaceHolderResolverFactory) throws IOException {
     this.properties = properties;
     this.docPlaceHolderResolver = docPlaceHolderResolver;
-    this.rootPojoGenerator = new PojoGenerator(className, description, properties, implementedInterfaces, docPlaceHolderResolver);
+    this.rootPojoGenerator = new PojoGenerator(
+        className, 
+        description, 
+        properties, 
+        implementedInterfaces, 
+        docPlaceHolderResolver, 
+        constantValuePlaceHolderResolverFactory);
+    this.constantsValuePlaceHolderResolverFactory = constantValuePlaceHolderResolverFactory;
   }
 
   /**
@@ -63,19 +74,25 @@ public class PojoClassesGenerator implements ClassesGenerator {
     }
   }
 
-  private void generateObjectFieldTypePojos(Path outputFolder, String className, Field field) throws IOException {
+  private void generateObjectFieldTypePojos(
+      Path outputFolder, 
+      String className, 
+      Field field) throws IOException {
     String objectParamClassName = ExchangeApiGenUtil.getFieldLeafSubTypeClassName(
-                        field.getName(), 
-                        ExchangeGenUtil.getFieldType(field), 
-                        field.getObjectName(), 
-                        className);
+      field.getName(), 
+      ExchangeGenUtil.getFieldType(field), 
+      field.getObjectName(), 
+      className);
     
     if (field.getProperties() != null) {
-      new PojoClassesGenerator(objectParamClassName, 
-                    field.getDescription(), 
-                    field.getProperties(),
-                    field.getImplementedInterfaces(),
-                    docPlaceHolderResolver).generateClasses(outputFolder);
+      PojoClassesGenerator subGen = new PojoClassesGenerator(
+          objectParamClassName, 
+          field.getDescription(), 
+          field.getProperties(),
+          field.getImplementedInterfaces(),
+          docPlaceHolderResolver,
+          constantsValuePlaceHolderResolverFactory);
+      subGen.generateClasses(outputFolder);
     }
   }
 }

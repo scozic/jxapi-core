@@ -53,7 +53,7 @@ public class DemoExchangeMarketDataTickerStreamDemo {
                                Properties configProperties,
                                ExchangeApiObserver apiObserver) throws InterruptedException {
     DemoExchangeExchange exchange = new DemoExchangeExchangeImpl("test-" + DemoExchangeExchange.ID, configProperties);
-    DemoExchangeMarketDataApi api = exchange.getDemoExchangeMarketDataApi();
+    DemoExchangeMarketDataApi api = exchange.getMarketDataApi();
     long subscriptionDuration = DemoProperties.getWebsocketSubscriptionDuration(configProperties);
     long delayBeforeExit = DemoProperties.getWebsocketDelayBeforeExit(configProperties);
     log.info("Subscribing to websocket API 'DemoExchange MarketData tickerStream' for {} ms with request:{}", subscriptionDuration, request);

@@ -37,6 +37,7 @@ public class ExchangeGenUtilTest {
     exchangeDescriptor.setBasePackage("com.x.y.z");
     ExchangeApiDescriptor apiDescriptor = new ExchangeApiDescriptor();
     apiDescriptor.setName("Spot");
+    exchangeDescriptor.setApis(List.of(apiDescriptor));
     Assert.assertEquals("com.x.y.z.spot.TestExchangeSpotApi", 
               ExchangeGenUtil.getApiInterfaceClassName(exchangeDescriptor, apiDescriptor));
   }
@@ -48,6 +49,7 @@ public class ExchangeGenUtilTest {
     exchangeDescriptor.setBasePackage("com.x.y.z");
     ExchangeApiDescriptor apiDescriptor = new ExchangeApiDescriptor();
     apiDescriptor.setName("Spot");
+    exchangeDescriptor.setApis(List.of(apiDescriptor));
     Assert.assertEquals("com.x.y.z.spot.TestExchangeSpotApiImpl", 
               ExchangeGenUtil.getApiInterfaceImplementationClassName(exchangeDescriptor, apiDescriptor));
   }  

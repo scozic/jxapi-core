@@ -41,7 +41,7 @@ public class EmployeeV1DeleteEmployeeDemo {
    */
   public static RestResponse<String> execute(Integer request, Properties configProperties, ExchangeApiObserver apiObserver) throws InterruptedException, ExecutionException {
     EmployeeExchange exchange = new EmployeeExchangeImpl("test-" + EmployeeExchange.ID, configProperties);
-    EmployeeV1Api api = exchange.getEmployeeV1Api();
+    EmployeeV1Api api = exchange.getV1Api();
     log.info("Calling org.jxapi.exchanges.employee.gen.v1.EmployeeV1Api.deleteEmployee() API with request:{}", request);
     if (apiObserver != null) {
       api.subscribeObserver(apiObserver);

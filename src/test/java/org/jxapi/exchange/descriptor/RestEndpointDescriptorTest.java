@@ -42,11 +42,9 @@ public class RestEndpointDescriptorTest {
          .sampleValue("sampleValue")
          .build();
         descriptor.setResponse(response);
-        descriptor.setUrlParameters("urlParameters");
-        descriptor.setUrlParametersListSeparator("urlParametersListSeparator");
-        descriptor.setQueryParams(true);
         descriptor.setRequestWeight(1);
         descriptor.setRateLimits(List.of());
+        descriptor.setRequestHasBody(true);
         Assert.assertEquals("name", descriptor.getName());
         Assert.assertEquals("description", descriptor.getDescription());
         Assert.assertEquals("url", descriptor.getUrl());
@@ -54,11 +52,9 @@ public class RestEndpointDescriptorTest {
         Assert.assertEquals(HttpMethod.GET, descriptor.getHttpMethod());
         Assert.assertEquals(request, descriptor.getRequest());
         Assert.assertEquals(response, descriptor.getResponse());
-        Assert.assertEquals("urlParameters", descriptor.getUrlParameters());
-        Assert.assertEquals("urlParametersListSeparator", descriptor.getUrlParametersListSeparator());
-        Assert.assertTrue(descriptor.isQueryParams());
         Assert.assertEquals(Integer.valueOf(1), descriptor.getRequestWeight());
         Assert.assertEquals(List.of(), descriptor.getRateLimits());
+        Assert.assertTrue(descriptor.isRequestHasBody());
     }
 
     @Test
@@ -68,7 +64,9 @@ public class RestEndpointDescriptorTest {
         descriptor.setDescription("description");
         descriptor.setUrl("url");
         descriptor.setHttpMethod(HttpMethod.GET);
-        Assert.assertEquals("RestEndpointDescriptor{\"name\":\"name\",\"description\":\"description\",\"url\":\"url\",\"httpMethod\":\"GET\",\"queryParams\":false,\"paginated\":false}", 
+        descriptor.setPaginated(true);
+        descriptor.setRequestHasBody(true);
+        Assert.assertEquals("RestEndpointDescriptor{\"name\":\"name\",\"description\":\"description\",\"url\":\"url\",\"httpMethod\":\"GET\",\"paginated\":true,\"requestHasBody\":true}", 
                             descriptor.toString());
         
     }

@@ -21,9 +21,14 @@ public enum HttpMethod {
   PUT(true, false),
   
   /**
-   * <a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Methods/DELETE"><strong>DELETE</strong> HTTP method</a>
+   * <a href=
+   * "https://developer.mozilla.org/en-US/docs/Web/HTTP/Methods/DELETE"><strong>DELETE</strong>
+   * HTTP method</a> Remark: although the HTTP specification does not forbid a
+   * body in DELETE requests, it is not common practice to send one. By default,
+   * we consider that DELETE requests do not carry a body. Wrappers  can override 
+   * this behavior if needed, using {@link HttpRequestInterceptor}.
    */
-  DELETE(true, true),
+  DELETE(false, false),
   
   /**
    * <a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Methods/HEAD"><strong>HEAD</strong> HTTP method</a>

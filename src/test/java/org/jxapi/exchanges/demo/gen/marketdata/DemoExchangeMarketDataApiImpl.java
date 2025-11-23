@@ -24,6 +24,7 @@ import org.jxapi.netutils.rest.HttpRequest;
 import org.jxapi.netutils.websocket.WebsocketEndpoint;
 import org.jxapi.netutils.websocket.WebsocketListener;
 import org.jxapi.netutils.websocket.WebsocketSubscribeRequest;
+import org.jxapi.netutils.websocket.multiplexing.WSMTMFUtil;
 import org.jxapi.netutils.websocket.multiplexing.WebsocketMessageTopicMatcherFactory;
 import org.jxapi.util.EncodingUtil;
 import org.jxapi.util.JsonUtil;
@@ -84,6 +85,9 @@ public class DemoExchangeMarketDataApiImpl extends AbstractExchangeApi implement
   private final MessageDeserializer<GenericResponse> postRestRequestDataTypeObjectListMapResponseDeserializer = new GenericResponseDeserializer();
   
   // Constructor
+  /**
+   * Constructor
+   */
   public DemoExchangeMarketDataApiImpl(DemoExchangeExchange exchange) {
     super(ID,
           exchange,
@@ -105,42 +109,47 @@ public class DemoExchangeMarketDataApiImpl extends AbstractExchangeApi implement
   // REST endpoint method call implementations
   @Override
   public FutureRestResponse<DemoExchangeMarketDataExchangeInfoResponse> exchangeInfo(DemoExchangeMarketDataExchangeInfoRequest request) {
-    String urlParameters = EncodingUtil.createUrlQueryParameters("symbols", JsonUtil.pojoToJsonString(request.getSymbols()));
-    return submit(HttpRequest.create(EXCHANGE_INFO_REST_API, exchangeInfoHttpUrl + urlParameters, HttpMethod.GET, request, null, 0), exchangeInfoResponseDeserializer);
+    String url = new StringBuilder(128).append(exchangeInfoHttpUrl)
+      .append(EncodingUtil.createUrlQueryParameters("symbols", JsonUtil.pojoToJsonString(request.getSymbols()))).toString();
+    return submit(HttpRequest.create(EXCHANGE_INFO_REST_API, url, HttpMethod.GET, request, null, 0), false, exchangeInfoResponseDeserializer);
   }
   
   @Override
   public FutureRestResponse<DemoExchangeMarketDataTickersResponse> tickers() {
-    return submit(HttpRequest.create(TICKERS_REST_API, tickersHttpUrl, HttpMethod.GET, null, null, 0), tickersResponseDeserializer);
+    return submit(HttpRequest.create(TICKERS_REST_API, tickersHttpUrl, HttpMethod.GET, null, null, 0), false, tickersResponseDeserializer);
   }
   
   @Override
   public FutureRestResponse<GenericResponse> postRestRequestDataTypeInt(Integer request) {
-    return submit(HttpRequest.create(POST_REST_REQUEST_DATA_TYPE_INT_REST_API, postRestRequestDataTypeIntHttpUrl, HttpMethod.POST, request, null, 0), postRestRequestDataTypeIntResponseDeserializer);
+    return submit(HttpRequest.create(POST_REST_REQUEST_DATA_TYPE_INT_REST_API, postRestRequestDataTypeIntHttpUrl, HttpMethod.POST, request, null, 0), true, postRestRequestDataTypeIntResponseDeserializer);
   }
   
   @Override
   public FutureRestResponse<GenericResponse> getRestRequestDataTypePrimitiveWithMsgField(Integer request) {
-    String urlParameters = EncodingUtil.createUrlQueryParameters("a", request);
-    return submit(HttpRequest.create(GET_REST_REQUEST_DATA_TYPE_PRIMITIVE_WITH_MSG_FIELD_REST_API, getRestRequestDataTypePrimitiveWithMsgFieldHttpUrl + urlParameters, HttpMethod.GET, request, null, 0), getRestRequestDataTypePrimitiveWithMsgFieldResponseDeserializer);
+    String url = new StringBuilder(128).append(getRestRequestDataTypePrimitiveWithMsgFieldHttpUrl)
+      .append(EncodingUtil.createUrlQueryParameters("a", request)).toString();
+    return submit(HttpRequest.create(GET_REST_REQUEST_DATA_TYPE_PRIMITIVE_WITH_MSG_FIELD_REST_API, url, HttpMethod.GET, request, null, 0), false, getRestRequestDataTypePrimitiveWithMsgFieldResponseDeserializer);
   }
   
   @Override
   public FutureRestResponse<GenericResponse> postRestRequestDataTypeIntList(List<Integer> request) {
-    return submit(HttpRequest.create(POST_REST_REQUEST_DATA_TYPE_INT_LIST_REST_API, postRestRequestDataTypeIntListHttpUrl, HttpMethod.POST, request, null, 0), postRestRequestDataTypeIntListResponseDeserializer);
+    return submit(HttpRequest.create(POST_REST_REQUEST_DATA_TYPE_INT_LIST_REST_API, postRestRequestDataTypeIntListHttpUrl, HttpMethod.POST, request, null, 0), true, postRestRequestDataTypeIntListResponseDeserializer);
   }
   
   @Override
   public FutureRestResponse<GenericResponse> postRestRequestDataTypeObjectListMap(Map<String, List<SingleSymbol>> request) {
-    return submit(HttpRequest.create(POST_REST_REQUEST_DATA_TYPE_OBJECT_LIST_MAP_REST_API, postRestRequestDataTypeObjectListMapHttpUrl, HttpMethod.POST, request, null, 0), postRestRequestDataTypeObjectListMapResponseDeserializer);
+    return submit(HttpRequest.create(POST_REST_REQUEST_DATA_TYPE_OBJECT_LIST_MAP_REST_API, postRestRequestDataTypeObjectListMapHttpUrl, HttpMethod.POST, request, null, 0), true, postRestRequestDataTypeObjectListMapResponseDeserializer);
   }
   
   
   // Websocket endpoint subscribe/unsubscribe methods implementations
   @Override
   public String subscribeTickerStream(DemoExchangeMarketDataTickerStreamRequest request, WebsocketListener<DemoExchangeMarketDataTickerStreamMessage> listener) {
-    String topic = EncodingUtil.substituteArguments("${symbol}@ticker", "symbol", request.getSymbol());
-    WebsocketSubscribeRequest subscribeRequest = WebsocketSubscribeRequest.create(request, topic, WebsocketMessageTopicMatcherFactory.create("t", "ticker", "s", "" + request.getSymbol()));
+    String topic = EncodingUtil.substituteArguments("${request.symbol}@ticker", "request.symbol", request.getSymbol());
+    WebsocketMessageTopicMatcherFactory topicMatcherFactory = WSMTMFUtil.and(List.of(
+      WSMTMFUtil.value("t", "ticker"),
+      WSMTMFUtil.value("s", EncodingUtil.substituteArguments("${request.symbol}", "request.symbol", request.getSymbol()))));
+    WebsocketSubscribeRequest subscribeRequest = WebsocketSubscribeRequest.create(request, topic, topicMatcherFactory);
     return tickerStreamWs.subscribe(subscribeRequest, listener);
   }
   

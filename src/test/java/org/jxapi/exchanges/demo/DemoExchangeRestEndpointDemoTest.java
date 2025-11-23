@@ -11,7 +11,6 @@ import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-
 import org.jxapi.exchanges.demo.gen.DemoExchangeConstants;
 import org.jxapi.exchanges.demo.gen.DemoExchangeProperties;
 import org.jxapi.exchanges.demo.gen.marketdata.demo.DemoExchangeMarketDataExchangeInfoDemo;
@@ -26,11 +25,15 @@ import org.jxapi.netutils.rest.javanet.MockHttpRequest;
 import org.jxapi.netutils.rest.javanet.MockHttpServer;
 import org.jxapi.util.DemoUtil;
 import org.jxapi.util.JsonUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Integration test for demo exchange REST endpoint demo snippet.
  */
 public class DemoExchangeRestEndpointDemoTest {
+  
+  private static final Logger log = LoggerFactory.getLogger(DemoExchangeRestEndpointDemoTest.class);
   
   private static final long DEFAULT_WAIT_RESPONSE_TIMEOUT = 1000L;
 
@@ -44,19 +47,19 @@ public class DemoExchangeRestEndpointDemoTest {
     mockHttpServer = new MockHttpServer();
     mockHttpServer.start();
     this.serverPort = mockHttpServer.getPort();
-    baseHttpUrl = "http://localhost:" + serverPort + "/";
+    baseHttpUrl = "http://localhost:" + serverPort;
     config = new Properties();
     config.setProperty(DemoExchangeProperties.BASE_HTTP_URL.getName(), baseHttpUrl);
   }
   
   @After
   public void tearDown() {
-        mockHttpServer.stop();
+    mockHttpServer.stop();
   }
 
   @Test
-  public void testDemoExchangeMArketDataExchangeInfoDemo() throws Exception {
-    FutureRestResponse<DemoExchangeMarketDataExchangeInfoResponse> futureResponse = excuteExchangeInfoAsync();
+  public void testDemoExchangeMarketDataExchangeInfoDemo() throws Exception {
+    FutureRestResponse<DemoExchangeMarketDataExchangeInfoResponse> futureResponse = exEcuteExchangeInfoAsync();
     DemoExchangeMarketDataExchangeInfoResponse expectedResponse = new DemoExchangeMarketDataExchangeInfoResponse();
     expectedResponse.setResponseCode(DemoExchangeConstants.RESPONSE_CODE_OK);
     
@@ -74,7 +77,8 @@ public class DemoExchangeRestEndpointDemoTest {
     MockHttpRequest mockRequest = mockHttpServer.popRequest(DEFAULT_WAIT_RESPONSE_TIMEOUT);
     
     HttpRequest actualRequest = mockRequest.getHttpRequest();
-    Assert.assertEquals(baseHttpUrl + "/marketData/exchangeInfo?symbols=%5B%22BTC_USDT%22%2C%22ETH_USDT%22%5D", actualRequest.getUrl());
+    Assert.assertEquals(baseHttpUrl + "/marketData/exchangeInfo?symbols=%5B%22BTC_USDT%22%2C%22BNB_USDT%22%5D", 
+                        actualRequest.getUrl());
     Assert.assertEquals(HttpMethod.GET, actualRequest.getHttpMethod());
     
     HttpResponse httpResponse = new HttpResponse();
@@ -82,18 +86,22 @@ public class DemoExchangeRestEndpointDemoTest {
     httpResponse.setResponseCode(200);
     httpResponse.setBody(JsonUtil.pojoToJsonString(expectedResponse));
     mockRequest.complete(httpResponse);
-    RestResponse<DemoExchangeMarketDataExchangeInfoResponse> actualResponse = futureResponse.get(DEFAULT_WAIT_RESPONSE_TIMEOUT, TimeUnit.MILLISECONDS);
+    RestResponse<DemoExchangeMarketDataExchangeInfoResponse> actualResponse = 
+        futureResponse.get(DEFAULT_WAIT_RESPONSE_TIMEOUT, TimeUnit.MILLISECONDS);
     Assert.assertTrue(actualResponse.isOk());
     Assert.assertEquals(expectedResponse, actualResponse.getResponse());
   }
   
-  private FutureRestResponse<DemoExchangeMarketDataExchangeInfoResponse> excuteExchangeInfoAsync() {
+  private FutureRestResponse<DemoExchangeMarketDataExchangeInfoResponse> exEcuteExchangeInfoAsync() {
     FutureRestResponse<DemoExchangeMarketDataExchangeInfoResponse> response = new FutureRestResponse<>();
     new Thread(() -> {
       try {
         response.complete(DemoExchangeMarketDataExchangeInfoDemo.execute(
-            DemoExchangeMarketDataExchangeInfoDemo.createRequest(config), config, DemoUtil::logRestApiEvent));
+            DemoExchangeMarketDataExchangeInfoDemo.createRequest(config), 
+            config, 
+            DemoUtil::logRestApiEvent));
       } catch (Exception e) {
+        log.error("Request failed", e);
         RestResponse<DemoExchangeMarketDataExchangeInfoResponse> r = new RestResponse<>();
         r.setException(e);
         response.complete(r);

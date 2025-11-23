@@ -14,6 +14,9 @@ import org.jxapi.exchanges.demo.gen.marketdata.pojo.DemoExchangeMarketDataExchan
  */
 @Generated("org.jxapi.generator.java.exchange.api.pojo.JsonPojoSerializerGenerator")
 public class DemoExchangeMarketDataExchangeInfoResponseSerializer extends StdSerializer<DemoExchangeMarketDataExchangeInfoResponse> {
+  /**
+   * Constructor
+   */
   public DemoExchangeMarketDataExchangeInfoResponseSerializer() {
     super(DemoExchangeMarketDataExchangeInfoResponse.class);
   }

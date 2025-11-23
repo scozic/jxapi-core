@@ -14,6 +14,7 @@ import org.jxapi.exchange.descriptor.Field;
 import org.jxapi.exchange.descriptor.Type;
 import org.jxapi.generator.java.JavaCodeGenUtil;
 import org.jxapi.generator.java.exchange.ClassesGeneratorTestUtil;
+import org.jxapi.generator.java.exchange.ConstantValuePlaceholderResolverFactory;
 import org.jxapi.util.PlaceHolderResolver;
 
 /**
@@ -48,7 +49,7 @@ public class PojoClassesGeneratorTest {
     properties.add(Field.builder().type("OBJECT_LIST_MAP").name("toto")
                   .property(Field.builder().type(Type.STRING).name("id").build())
                   .build());
-    PojoClassesGenerator generator = new PojoClassesGenerator(typeName, typeDescription, properties, null, null);
+    PojoClassesGenerator generator = new PojoClassesGenerator(typeName, typeDescription, properties, null, null, ConstantValuePlaceholderResolverFactory.NO_OP);
     generator.generateClasses(srcFolder);
     checkJavaFilesCount(4);
     checkSourceFileExists(Path.of("MyPojo.java"));
@@ -67,7 +68,7 @@ public class PojoClassesGeneratorTest {
     properties.add(Field.builder().type(Type.INT).name("score").description("Current score, max is ${constants.maxScore}").build());
     properties.add(Field.builder().type("OBJECT_LIST").name("foo").build());
     PlaceHolderResolver docPlaceHolderResolver = PlaceHolderResolver.create(Map.of("constants.maxScore", "100"));
-    PojoClassesGenerator generator = new PojoClassesGenerator(typeName, typeDescription, properties, null, docPlaceHolderResolver);
+    PojoClassesGenerator generator = new PojoClassesGenerator(typeName, typeDescription, properties, null, docPlaceHolderResolver, ConstantValuePlaceholderResolverFactory.NO_OP);
     generator.generateClasses(srcFolder);
     checkJavaFilesCount(1);
     checkSourceFileExists(Path.of("MyPojo.java"));

@@ -12,70 +12,54 @@ import org.jxapi.netutils.rest.ratelimits.RateLimitRule;
 import org.jxapi.util.EncodingUtil;
 
 /**
- * Part of JSON document describing a exchange API, describes a specific REST endpoint.
- * Such endpoints are expecting an HTTP request to given URL endpoint, with given request parameters, 
- * and a response should be received.
- * <p>
- * The endpoint is described using properties:
+ * Describes a REST endpoint as part of a larger exchange API defined in a JSON document.
+ * These endpoints handle HTTP requests to a specific URL, process request parameters, and return a response.
+ *
+ * <h2>Endpoint Properties</h2>
+ * The endpoint is defined by the following properties:
  * <ul>
- * <li><code>name</code> - a unique name of the endpoint</li>
- * <li><code>description</code> - a short description of the endpoint</li>
- * <li><code>url</code> - the URL of the endpoint</li>
- * <li><code>httpMethod</code> - the HTTP method to be used for the request</li>
- * <li><code>request</code> - the request data</li>
- * <li><code>response</code> - the response data</li>
- * <li><code>urlParameters</code> - the URL parameters. A String that will be used as suffix to URL endpoint.
- * Can contain place holders like <code>${myArg}</code> that will be replaced with either the 
- * name of <code>request</code>, or, if request field name does not match and field is of 
- * object type (see {@link Type#isObject()} ), the name of a field of that nested object structure.
- * Can be <code>null</code> if no URL parameters are expected or if request should be serialized 
- * as query parameters (see <code>queryParams</code>).
- * </li>
- * <li><code>urlParametersListSeparator</code> - When request is of LIST type, the separator used between 
- * items of that list in serialzed request. Remark: If request is of type MAP which is not likely 
- * for an API expected request data as URL parameters or query params, the corresponding serialized 
- * object will be URL encoded value of JSON.</li>
- * <li><code>queryParams</code> - whether the request data should be serialized as URL are query parameters.<br> 
- * <strong>About query parameters <i>queryParams</i> property</strong>:<br>
+ *   <li>{@code name}: A unique identifier for the endpoint.</li>
+ *   <li>{@code description}: A brief summary of the endpoint's purpose.</li>
+ *   <li>{@code url}: The URL of the endpoint.</li>
+ *   <li>{@code httpMethod}: The HTTP method for the request (e.g., GET, POST).</li>
+ *   <li>{@code request}: The data structure for the request.</li>
+ *   <li>{@code response}: The data structure for the response.</li>
+ *   <li>{@code requestWeight}: The cost of a request, used for rate limiting.</li>
+ *   <li>{@code rateLimits}: The rate limits applied to this endpoint.</li>
+ * </ul>
+ *
+ * <h2>Request Serialization</h2>
+ * <strong>Serialization to URL Parameters:</strong>
  * <ul>
- * <li>The default value used in generated code depends on HTTP method, it will be true for methods
- * where corresponding requests do not expect a body: <code>GET</code>, <code>HEAD</code>, 
- * <code>OPTIONS</code>, <code>TRACE</code>.</li>
- * <li>Query parameters are serialized in form of <code>?name1=value1&amp;name2=value2</code> 
- * and appended to URL endpoint.</li>
- * <li>Field values will be URL encoded</li>
- * <li>If field is of object type, the object fields will be serialized as query parameters. 
- * If nested objects are contained (object field has fields of object type), their properties 
- * are appended to the list of query parameters</li>
- * <li>If field is of list type, the list items will be serialized as query parameters, 
- * using <code>urlParametersListSeparator</code> as separator</li>
+ *   <li>For HTTP methods that do not have a request body (e.g., {@code GET}, {@code DELETE}), the request is serialized into either URL path parameters (e.g., {@code /value1/value2}) or query parameters (e.g., {@code ?param1=value1}).</li>
+ *   <li>By default, request fields are serialized as query parameters. To serialize them as URL path parameters, set the {@link Field#getIn()} property to {@link UrlParameterType#PATH}.</li>
+ *   <li>If the request field is a primitive type, its value is URL-encoded and used as a single parameter.</li>
+ *   <li>If the request field is an object without the {@code in} property set, its child fields are serialized as parameters.</li>
+ *   <li>If the request field is an object with the {@code in} property set, or if it is a {@code MAP} or {@code LIST}, it is serialized as a URL-encoded JSON object.</li>
+ *   <li>All field values are URL-encoded.</li>
  * </ul>
- * <li><code>requestWeight</code> - the weight of a request call if subject to weighted rate limit rules</li>
- * <li><code>rateLimits</code> - the rate limits this REST API subject to</li>
- * </ul>
- * <p>
- * API endpoints are child elements of api element (see ExchangeApiDescriptor ) in the JSON document.<br>
- * Such descriptor will be used to generate method declaration in API interface and its 
- * implementation, see {@link ExchangeApiInterfaceImplementationGenerator} and {@link ExchangeApiClassesGenerator}.<br>
- * <p>
- * About <code>request</code> and <code>response</code> properties:<br> 
+ *
+ * <h2>Code Generation</h2>
+ * API endpoints are defined as child elements of an {@code api} element in the JSON document (see {@link ExchangeApiDescriptor}).
+ * This descriptor is used to generate method declarations in the API interface and their implementations.
+ *
+ * @see ExchangeApiInterfaceImplementationGenerator
+ * @see ExchangeApiClassesGenerator
+ *
+ * <h2>Request and Response Properties</h2>
  * <ul>
- * <li>Request and response parameters are described as {@link Field}. The name of the <code>request</code> field 
- * is the name of single argument of the method that will be generated in the API interface.<br></li>
- * <li>Request and response parameters are described as {@link Field}. 
- * The name of the <code>response</code> field is not relevant. 
- * <li><code>request</code> property is optional. If not present, the method will be generated with no argument.</li>
- * <li><code>response</code> property is optional. If not present, the method will be generated 
- * with STRING return value type containing raw response body value. 
- * This is intended for instance for REST APIs where status code is enough empty body is expected.</li>
+ *   <li>Both {@code request} and {@code response} are described as {@link Field} objects.</li>
+ *   <li>The name of the {@code request} field becomes the argument name in the generated API method.</li>
+ *   <li>The name of the {@code response} field is not used in code generation.</li>
+ *   <li>If {@code request} is omitted, the generated method will have no arguments.</li>
+ *   <li>If {@code response} is omitted, the method will return a {@code STRING} containing the raw response body. This is useful when only the status code is needed and the body is empty.</li>
  * </ul>
- * 
+ *
  * @see Field
  * @see RateLimitRule
  * @see RestEndpointClassesGenerator
  * @see Type
  * @see HttpMethod
- * @see ExchangeApiInterfaceImplementationGenerator
  */
 public class RestEndpointDescriptor {
   private String name;
@@ -91,18 +75,14 @@ public class RestEndpointDescriptor {
   private Field request;
   
   private Field response;
-
-  private String urlParameters;
-  
-  private String urlParametersListSeparator;
-  
-  private boolean queryParams;
   
   private Integer requestWeight;
   
   private List<String> rateLimits;
   
-  private boolean paginated = false;
+  private Boolean paginated = Boolean.FALSE;
+  
+  private Boolean requestHasBody = null;
    
   /**
    * @return the name of the REST API endpoint
@@ -158,48 +138,6 @@ public class RestEndpointDescriptor {
    */
   public void setHttpMethod(HttpMethod httpMethod) {
     this.httpMethod = httpMethod;
-  }
-  
-  /**
-   * @return The request url parameters template. Can contain place holders like <code>${myArg}</code>
-   */
-  public String getUrlParameters() {
-    return urlParameters;
-  }
-
-  /**
-   * @param urlParameters The request url parameters template. Can contain place holders like <code>${myArg}</code>
-   */
-  public void setUrlParameters(String urlParameters) {
-    this.urlParameters = urlParameters;
-  }
-
-  /**
-   * @return The separator used between items of a list in serialized request url parameters
-   */
-  public String getUrlParametersListSeparator() {
-    return urlParametersListSeparator;
-  }
-
-  /**
-   * @param urlParametersListSeparator The separator used between items of a list in serialized request url parameters
-   */
-  public void setUrlParametersListSeparator(String urlParametersListSeparator) {
-    this.urlParametersListSeparator = urlParametersListSeparator;
-  }
-  
-  /**
-   * @return whether the request data should be serialized as URL are query parameters
-   */
-  public boolean isQueryParams() {
-    return queryParams;
-  }
-
-  /**
-   * @param queryParams whether the request data should be serialized as URL are query parameters
-   */
-  public void setQueryParams(boolean queryParams) {
-    this.queryParams = queryParams;
   }
   
   /**
@@ -317,6 +255,28 @@ public class RestEndpointDescriptor {
   @Override
   public String toString() {
     return EncodingUtil.pojoToString(this);
+  }
+
+  /**
+   * Indicates whether the request should be sent as the body of the HTTP request.
+   * Can (and generally should) be left null to use default behavior based on HTTP method.
+   * @return <code>null</code> to use default behavior, {@link Boolean#TRUE} to send request as body, ${@link Boolean#FALSE} otherwise.
+   */
+  public Boolean isRequestHasBody() {
+    return requestHasBody;
+  }
+
+  /**
+   * Sets whether the request should be sent as the body of the HTTP request. Can
+   * (and generally should) be left null to use default behavior based on HTTP
+   * method.
+   * 
+   * @param requestHasBody <code>null</code> to use default behavior,
+   *                      {@link Boolean#TRUE} to send request as body,
+   *                      ${@link Boolean#FALSE} otherwise.
+   */
+  public void setRequestHasBody(Boolean requestHasBody) {
+    this.requestHasBody = requestHasBody;
   }
 
 }
