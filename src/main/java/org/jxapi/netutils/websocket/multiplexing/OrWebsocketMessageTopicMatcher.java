@@ -22,6 +22,11 @@ public class OrWebsocketMessageTopicMatcher extends AbstractWebsocketMessageTopi
   private int unmatchedCount = 0;
   private int firstUnmatchedOffset = 0;
   
+  /**
+   * Constructor
+   * 
+   * @param matchers the operand matchers
+   */
   public OrWebsocketMessageTopicMatcher(List<WebsocketMessageTopicMatcher> matchers) {
     this.matchers = CollectionUtil.emptyIfNull(matchers);
     if (matchers.isEmpty()) {
@@ -32,6 +37,9 @@ public class OrWebsocketMessageTopicMatcher extends AbstractWebsocketMessageTopi
     reset();
   }
 
+  /**
+   * @return the operand matchers
+   */
   public List<WebsocketMessageTopicMatcher> getMatchers() {
     return matchers;
   }

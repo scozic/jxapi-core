@@ -50,8 +50,8 @@ public class WebsocketTopicMatcherDescriptor {
 
 
   /**
-   * @param operands Set the list of operand field matchers that can match the
-   *                 topic of the endpoint when this descriptor is a logical AND.
+   * @return When this descriptor is a logical AND, the list of operand field
+   *         matchers that must match the topic of the endpoint.
    */
   public List<WebsocketTopicMatcherDescriptor> getAnd() {
     return and;

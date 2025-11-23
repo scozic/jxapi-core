@@ -79,7 +79,11 @@ public class ExchangeApiGenUtil {
    * </ul>
    */
   public static final String TOPIC = "topic";
-  
+
+  /**
+   * Name of variable holding websocket topic matcher factory instance in
+   * generated websocket endpoint classes.
+   */
   public static final String WEBSOCKET_TOPIC_MATCHER_FACTORY_VAR_NAME = "topicMatcherFactory";
 
   /**
@@ -1184,7 +1188,7 @@ public class ExchangeApiGenUtil {
    * the value is generated using {@link ExchangeGenUtil#getValueDeclarationForConstant(String, ExchangeDescriptor, Imports)},
    * e.g. value used is reference from exchange's constants class corresponding constant</li>
    * <li>If placeholder is a config property placeholder, see {@link ExchangeGenUtil#CONFIG_PLACEHOLDER_PREFIX},
-   * the value is generated using {@link ExchangeGenUtil#getValueDeclarationForConfigProperty(String, ExchangeDescriptor, String, String, Imports)},
+   * the value is generated using {@link ExchangeGenUtil#getValueDeclarationForConfigProperty(String, ExchangeDescriptor, List, String, Imports)},
    * e.g. value used is reference from exchange's config properties</li>
    * <li>If placeholder is a request field placeholder, starting with {@link #DEFAULT_REQUEST_ARG_NAME},
    * the value is generated using:
@@ -1195,7 +1199,6 @@ public class ExchangeApiGenUtil {
    * </ul>
    * </li>
    * </ul>
-   * <p>
    * @param value The topic template with placeholders
    * @param exchangeDescriptor The exchange descriptor to get constants and config properties from
    * @param request The websocket subscribe request field
@@ -1222,30 +1225,43 @@ public class ExchangeApiGenUtil {
    * <p>
    * Each placeholder value is generated using by following rules:
    * <ul>
-   * <li>If placeholder is <code>topic</code>, the value is the local variable 'topic' see {@link #TOPIC} </li>
-   * <li>If placeholder is a constant placeholder, see {@link ExchangeGenUtil#CONSTANT_PLACEHOLDER_PREFIX},
-   * the value is generated using {@link ExchangeGenUtil#getValueDeclarationForConstant(String, ExchangeDescriptor, Imports)}, 
-   * e.g. value used is reference from exchange's constants class corresponding constant</li>
-   * <li>If placeholder is a config property placeholder, see {@link ExchangeGenUtil#CONFIG_PLACEHOLDER_PREFIX},
-   * the value is generated using {@link ExchangeGenUtil#getValueDeclarationForConfigProperty(String, ExchangeDescriptor, String, String, Imports)},
+   * <li>If placeholder is <code>topic</code>, the value is the local variable
+   * 'topic' see {@link #TOPIC}</li>
+   * <li>If placeholder is a constant placeholder, see
+   * {@link ExchangeGenUtil#CONSTANT_PLACEHOLDER_PREFIX}, the value is generated
+   * using
+   * {@link ExchangeGenUtil#getValueDeclarationForConstant(String, ExchangeDescriptor, Imports)},
+   * e.g. value used is reference from exchange's constants class corresponding
+   * constant</li>
+   * <li>If placeholder is a config property placeholder, see
+   * {@link ExchangeGenUtil#CONFIG_PLACEHOLDER_PREFIX}, the value is generated
+   * using
+   * {@link ExchangeGenUtil#getValueDeclarationForConfigProperty(String, ExchangeDescriptor, List, String, Imports)},
    * e.g. value used is reference from exchange's config properties</li>
-   * <li>If placeholder is a request field placeholder, starting with {@link #DEFAULT_REQUEST_ARG_NAME}, 
-   * the value is generated using:
+   * <li>If placeholder is a request field placeholder, starting with
+   * {@link #DEFAULT_REQUEST_ARG_NAME}, the value is generated using:
    * <ul>
-   * <li>if placeholder is exactly {@link #DEFAULT_REQUEST_ARG_NAME}, the value is the request argument itself</li>
-   * <li>if placeholder is like <code>request.subField1.subField2...</code>, the value generated is call 
-   * to get sub-field value from request argument</li>
+   * <li>if placeholder is exactly {@link #DEFAULT_REQUEST_ARG_NAME}, the value is
+   * the request argument itself</li>
+   * <li>if placeholder is like <code>request.subField1.subField2...</code>, the
+   * value generated is call to get sub-field value from request argument</li>
    * </ul>
    * </li>
    * </ul>
    * <p>
-   * Remark: This method behaves like {@link #generateTopicValueSubstitutionInstructionDeclaration(Object, ExchangeDescriptor, Field, Imports)}
+   * Remark: This method behaves like
+   * {@link #generateTopicValueSubstitutionInstructionDeclaration(Object, ExchangeDescriptor, Field, Imports)}
    * but also supports <code>topic</code> placeholder.
    * 
-   * @param template The topic matcher template with placeholders
-   * @param exchangeDescriptor The exchange descriptor to get constants and config properties from
-   * @param request The websocket subscribe request field
-   * @param imports The imports of generator context that will be populated with classes used by returned declaration.
+   * @param value              Either a String containing the topic matcher
+   *                           template with placeholders, or primitive value to
+   *                           be returned as String.
+   * @param exchangeDescriptor The exchange descriptor to get constants and config
+   *                           properties from
+   * @param request            The websocket subscribe request field
+   * @param imports            The imports of generator context that will be
+   *                           populated with classes used by returned
+   *                           declaration.
    * @return Java code declaration for topic matcher value substitution
    */
   public static String generateTopicMatcherValueSubstitutionInstructionDeclaration(
@@ -1300,26 +1316,26 @@ public class ExchangeApiGenUtil {
   
   
   /**
-   * Finds actual field name from a {@link Field} or one of its child fields.
-   * <br>
-   * If provided field name matches name of provided field, then its
-   * msgFieldName is returned (see {@link Field#getMsgField()}) or the provided
-   * name if msgFieldName is <code>null</code>.<br>
-   * Otherwise, if provided field is of 'object' type (see {@link Type#isObject()})
-   * then its child fields (see {@link Field#getProperties()}) are searched.
-   * <br>
-   * This is intented for determining actual field name in websocket message,
-   * from field name provided in {@link WebsocketMessageTopicMatcherFieldDescriptor}
+   * Finds actual field name from a {@link Field} or one of its child fields. <br>
+   * If provided field name matches name of provided field, then its msgFieldName
+   * is returned (see {@link Field#getMsgField()}) or the provided name if
+   * msgFieldName is <code>null</code>.<br>
+   * Otherwise, if provided field is of 'object' type (see
+   * {@link Type#isObject()}) then its child fields (see
+   * {@link Field#getProperties()}) are searched. <br>
+   * This is intented for determining actual field name in websocket message, from
+   * field name provided in
+   * {@link WebsocketTopicMatcherDescriptor#getFieldName()}.
    * 
    * @param name The field name provided in
-   *             {@link WebsocketMessageTopicMatcherFieldDescriptor}. 
+   *             {@link WebsocketTopicMatcherDescriptor#getFieldName()}. 
    *             Cannot be <code>null</code>
    * @param msg  The websocket stream data type
    * @return The msgFieldName (see {@link Field#getMsgField()}) of provided field
    *         or first of its child fields (see {@link Field#getProperties()} with
-   *         name see {@link Field#getName()} matching that field. If no match, 
-   *         or <code>msg</code> is <code>null</code>, <code>null</code> is returned.
-   * @throws IllegalArgumentException if <code>name</code> is <code>null</code>        
+   *         name see {@link Field#getName()} matching that field. If no match, or
+   *         <code>msg</code> is <code>null</code>, <code>null</code> is returned.
+   * @throws IllegalArgumentException if <code>name</code> is <code>null</code>
    */
   public static String getMsgFieldName(String name, Field msg) {
     if (name == null) {

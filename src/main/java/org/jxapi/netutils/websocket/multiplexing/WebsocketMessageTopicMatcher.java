@@ -14,7 +14,11 @@ package org.jxapi.netutils.websocket.multiplexing;
  * Implementation instances of this interface must be reusable and can be reset to initial state (all fields expected) using {@link #reset()} method.
  * 
  *  @see WebsocketMessageTopicMatchStatus
- *  @see WebsocketMessageTopicMatcherField
+ *  @see FieldValueWebsocketMessageTopicMatcher
+ *  @see FieldRegexpWebsocketMessageTopicMatcher
+ *  @see AndWebsocketMessageTopicMatcher
+ *  @see OrWebsocketMessageTopicMatcher
+ *  @see WebsocketMessageTopicMatcherFactory
  */
 public interface WebsocketMessageTopicMatcher {
   

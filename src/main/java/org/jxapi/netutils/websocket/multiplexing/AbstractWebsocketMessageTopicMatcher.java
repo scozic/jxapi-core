@@ -12,6 +12,9 @@ public abstract class AbstractWebsocketMessageTopicMatcher implements WebsocketM
   private static final Logger log = LoggerFactory.getLogger(AbstractWebsocketMessageTopicMatcher.class);
   private static final boolean DEBUG = log.isDebugEnabled();
   
+  /**
+   * Current status of matcher
+   */
   protected WebsocketMessageTopicMatchStatus status = WebsocketMessageTopicMatchStatus.NO_MATCH;
 
   @Override
