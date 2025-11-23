@@ -11,7 +11,7 @@ import org.slf4j.LoggerFactory;
  */
 public class FieldValueWebsocketMessageTopicMatcher extends AbstractWebsocketMessageTopicMatcher {
   
-  private static final Logger log = LoggerFactory.getLogger(FieldRegexpWebsocketMessageTopicMatcher.class);
+  private static final Logger log = LoggerFactory.getLogger(FieldValueWebsocketMessageTopicMatcher.class);
   private static final boolean DEBUG = log.isDebugEnabled();
   
   private final String fieldName;

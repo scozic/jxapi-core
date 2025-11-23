@@ -1094,7 +1094,7 @@ public class ExchangeApiGenUtilTest {
       // Create a mock request field with nested properties
       Field subField1 = Field.builder().name("subField1").type(Type.BOOLEAN).build();
       Field subFielda = Field.builder().name("a").build();
-      Field subFieldA = Field.builder().name("A").build();//  new Field("subField1", Type.STRING, null, null);
+      Field subFieldA = Field.builder().name("A").build();
       Field nestedField = Field.builder().name("nestedField").type(Type.OBJECT)
           .property(subField1)
           .property(subFielda)

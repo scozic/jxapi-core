@@ -186,7 +186,8 @@ public class WebsocketManagerLoadTest {
   
   @Test
   public void testLoadTest() throws InterruptedException {
-    runTest(2, 50, 10, 2);
+    //runTest(2, 50, 10, 2);
+    runTest(TOPIC_COUNT, NB_MESSAGES_PER_TOPIC, ITERATIONS, NB_THREADS);
   }
 
   public static void main(String[] args) {
@@ -199,21 +200,6 @@ public class WebsocketManagerLoadTest {
     }
     System.exit(0);
   }
-  
-  /*
-       wsManager.subscribe("topic1", 
-              WSMTMFUtil.value("f1", "val1"), 
-              wsMessageHandler1);
-    wsManager.subscribe("topic2", 
-        WSMTMFUtil.and(List.of(WSMTMFUtil.value("f2", "val2"), WSMTMFUtil.value("f5", "val5"))), 
-        wsMessageHandler2);
-    wsManager.subscribe("topic3", 
-        WSMTMFUtil.and(List.of(
-            WSMTMFUtil.value("f2", "val1_2"), 
-            WSMTMFUtil.value("f3", "val3"), 
-            WSMTMFUtil.value("f6", "val6"))), 
-        wsMessageHandler3); 
-   */
   
   /**
    * @return a random {@link LTMessage} with f1 = "val1" topic
