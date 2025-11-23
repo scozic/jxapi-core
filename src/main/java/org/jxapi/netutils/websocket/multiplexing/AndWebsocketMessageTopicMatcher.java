@@ -82,7 +82,9 @@ public class AndWebsocketMessageTopicMatcher extends AbstractWebsocketMessageTop
       log.debug("{}: AND matcher resetting", this);
     }
     if (!matchers.isEmpty()) {
-      this.matchers.forEach(WebsocketMessageTopicMatcher::reset);
+      for (int i = 0; i < matchers.size(); i++) {
+        matchers.get(i).reset();
+      }
       this.status = WebsocketMessageTopicMatchStatus.NO_MATCH;
       this.unmatchedCount = matchers.size();
       this.firstUnmatchedOffset = 0;

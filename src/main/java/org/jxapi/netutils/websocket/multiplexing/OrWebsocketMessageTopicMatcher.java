@@ -81,7 +81,9 @@ public class OrWebsocketMessageTopicMatcher extends AbstractWebsocketMessageTopi
       log.debug("{}: OR matcher resetting", this);
     }
     if (!matchers.isEmpty()) {
-      this.matchers.forEach(WebsocketMessageTopicMatcher::reset);
+      for (int i = 0; i < matchers.size(); i++) {
+        matchers.get(i).reset();
+      }
       this.status = WebsocketMessageTopicMatchStatus.NO_MATCH;
       this.unmatchedCount = matchers.size();
       this.firstUnmatchedOffset = 0;
