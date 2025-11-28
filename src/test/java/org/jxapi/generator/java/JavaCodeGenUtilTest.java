@@ -8,7 +8,7 @@ import java.util.Optional;
 
 import org.junit.Assert;
 import org.junit.Test;
-import org.jxapi.exchange.descriptor.Type;
+import org.jxapi.pojo.descriptor.Type;
 
 /**
  * Unit test for {@link JavaCodeGenUtil}

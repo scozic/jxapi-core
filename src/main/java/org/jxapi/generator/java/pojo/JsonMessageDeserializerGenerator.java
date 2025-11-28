@@ -1,4 +1,4 @@
-package org.jxapi.generator.java.exchange.api.pojo;
+package org.jxapi.generator.java.pojo;
 
 import java.io.IOException;
 import java.util.List;
@@ -9,9 +9,7 @@ import java.util.stream.Collectors;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonToken;
 import com.fasterxml.jackson.databind.JsonDeserializer;
-import org.jxapi.exchange.descriptor.CanonicalType;
-import org.jxapi.exchange.descriptor.Field;
-import org.jxapi.exchange.descriptor.Type;
+
 import org.jxapi.generator.java.Imports;
 import org.jxapi.generator.java.JavaCodeGenUtil;
 import org.jxapi.generator.java.JavaTypeGenerator;
@@ -21,6 +19,9 @@ import org.jxapi.netutils.deserialization.MessageDeserializer;
 import org.jxapi.netutils.deserialization.json.AbstractJsonMessageDeserializer;
 import org.jxapi.netutils.deserialization.json.field.ListJsonFieldDeserializer;
 import org.jxapi.netutils.deserialization.json.field.MapJsonFieldDeserializer;
+import org.jxapi.pojo.descriptor.CanonicalType;
+import org.jxapi.pojo.descriptor.Field;
+import org.jxapi.pojo.descriptor.Type;
 import org.jxapi.util.JsonUtil;
 
 /**
@@ -87,7 +88,7 @@ public class JsonMessageDeserializerGenerator extends JavaTypeGenerator {
         .append("switch(parser.getCurrentName()) {\n");
     String dblIndent = indent + indent;
     fields.forEach(field -> {
-      Type type = ExchangeGenUtil.getFieldType(field);
+      Type type = PojoGenUtil.getFieldType(field);
       body.append(indent)
         .append("case \"")
         .append(field.getMsgField() != null? field.getMsgField() : field.getName())
@@ -123,7 +124,7 @@ public class JsonMessageDeserializerGenerator extends JavaTypeGenerator {
   }
 
   private String getParseFieldInstruction(Field field) {
-    CanonicalType canonicalType = ExchangeGenUtil.getFieldType(field).getCanonicalType();
+    CanonicalType canonicalType = PojoGenUtil.getFieldType(field).getCanonicalType();
     if (!canonicalType.isPrimitive) {
       return generateNonPrimitiveTypeFieldDeserializerDeclaration(field) +".deserialize(parser)";
     }
@@ -148,7 +149,7 @@ public class JsonMessageDeserializerGenerator extends JavaTypeGenerator {
   }
   
   private String generateNonPrimitiveTypeFieldDeserializerDeclaration(Field field) {
-    Type type = ExchangeGenUtil.getFieldType(field);
+    Type type = PojoGenUtil.getFieldType(field);
     String objectFieldClassName = ExchangeApiGenUtil.getFieldLeafSubTypeClassName(
                           field.getName(), 
                           type, 

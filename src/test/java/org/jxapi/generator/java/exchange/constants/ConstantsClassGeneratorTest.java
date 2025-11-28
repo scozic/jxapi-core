@@ -10,10 +10,10 @@ import org.junit.Test;
 
 import org.jxapi.exchange.descriptor.Constant;
 import org.jxapi.exchange.descriptor.ExchangeDescriptor;
-import org.jxapi.exchange.descriptor.Type;
 import org.jxapi.exchange.descriptor.parser.ExchangeDescriptorParser;
 import org.jxapi.generator.java.JavaCodeGenUtil;
 import org.jxapi.generator.java.exchange.ExchangeGenUtil;
+import org.jxapi.pojo.descriptor.Type;
 import org.jxapi.util.EncodingUtil;
 import org.jxapi.util.PlaceHolderResolver;
 

@@ -1,6 +1,6 @@
 package org.jxapi.util;
 
-import org.jxapi.exchange.descriptor.Type;
+import org.jxapi.pojo.descriptor.Type;
 
 /**
  * Default {@link ConfigProperty} implementation as regular POJO with setters.

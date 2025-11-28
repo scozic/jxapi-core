@@ -11,8 +11,6 @@ import org.jxapi.exchange.descriptor.ConfigPropertyDescriptor;
 import org.jxapi.exchange.descriptor.Constant;
 import org.jxapi.exchange.descriptor.ExchangeApiDescriptor;
 import org.jxapi.exchange.descriptor.ExchangeDescriptor;
-import org.jxapi.exchange.descriptor.Field;
-import org.jxapi.exchange.descriptor.Type;
 import org.jxapi.generator.java.Imports;
 import org.jxapi.generator.java.JavaCodeGenUtil;
 import org.jxapi.netutils.deserialization.json.field.BigDecimalJsonFieldDeserializer;
@@ -22,6 +20,8 @@ import org.jxapi.netutils.deserialization.json.field.ListJsonFieldDeserializer;
 import org.jxapi.netutils.deserialization.json.field.LongJsonFieldDeserializer;
 import org.jxapi.netutils.deserialization.json.field.MapJsonFieldDeserializer;
 import org.jxapi.netutils.deserialization.json.field.StringJsonFieldDeserializer;
+import org.jxapi.pojo.descriptor.Field;
+import org.jxapi.pojo.descriptor.Type;
 import org.jxapi.util.EncodingUtil;
 import org.jxapi.util.PlaceHolderResolver;
 
@@ -383,42 +383,6 @@ public class ExchangeGenUtilTest {
   @Test
   public void testIsObjectField_StringType() {
     Assert.assertFalse(ExchangeGenUtil.isObjectField(Field.builder().name("test").type(Type.STRING).build()));
-  }
-  
-  @Test
-  public void testGetFieldType_NullField() {
-    Assert.assertNull(ExchangeGenUtil.getFieldType(null));
-  }
-  
-  @Test
-  public void testGetFieldType_ObjecListMapType() {
-    Type objectListMapType = Type.fromTypeName("OBJECT_LIST_MAP");
-    Assert.assertEquals(objectListMapType, 
-        ExchangeGenUtil.getFieldType((Field.builder().name("test").type(objectListMapType).build())));
-  }
-  
-  @Test
-  public void testGetFieldType_ObjectType_Explicit() {
-    Assert.assertEquals(Type.OBJECT, 
-        ExchangeGenUtil.getFieldType(Field.builder().name("test").type(Type.OBJECT).build()));
-  }
-  
-  @Test
-  public void testGetFieldType_ObjectType_ImplicitFromObjectName() {
-    Assert.assertEquals(Type.OBJECT, 
-        ExchangeGenUtil.getFieldType(Field.builder().name("test").objectName("MyObjectName").build()));
-  }
-  
-  @Test
-  public void testGetFieldType_ObjectType_ImplicitFromProperties() {
-    Assert.assertEquals(Type.OBJECT, 
-        ExchangeGenUtil.getFieldType(Field.builder().name("test").properties(List.of()).build()));
-  }
-  
-  @Test
-  public void testGetFieldType_String_Implicit() {
-    Assert.assertEquals(Type.STRING, 
-        ExchangeGenUtil.getFieldType(Field.builder().name("test").build()));
   }
   
   @Test

@@ -10,9 +10,9 @@ import org.junit.Test;
 import org.jxapi.exchange.descriptor.ConfigPropertyDescriptor;
 import org.jxapi.exchange.descriptor.Constant;
 import org.jxapi.exchange.descriptor.ExchangeDescriptor;
-import org.jxapi.exchange.descriptor.Type;
 import org.jxapi.exchange.descriptor.parser.ExchangeDescriptorParser;
 import org.jxapi.generator.java.exchange.api.demo.EndpointDemoGenUtil;
+import org.jxapi.pojo.descriptor.Type;
 
 /**
  * Unit test for {@link PropertiesClassGenerator}
@@ -50,7 +50,7 @@ public class PropertiesClassGeneratorTest {
             + "\n"
             + "import com.x.y.exchange.MyExchangeConstants;\n"
             + "import javax.annotation.processing.Generated;\n"
-            + "import org.jxapi.exchange.descriptor.Type;\n"
+            + "import org.jxapi.pojo.descriptor.Type;\n"
             + "import org.jxapi.util.CollectionUtil;\n"
             + "import org.jxapi.util.ConfigProperty;\n"
             + "import org.jxapi.util.DefaultConfigProperty;\n"
@@ -255,7 +255,7 @@ public class PropertiesClassGeneratorTest {
             + "\n"
             + "import com.x.y.exchange.MyExchangeConstants;\n"
             + "import javax.annotation.processing.Generated;\n"
-            + "import org.jxapi.exchange.descriptor.Type;\n"
+            + "import org.jxapi.pojo.descriptor.Type;\n"
             + "import org.jxapi.util.CollectionUtil;\n"
             + "import org.jxapi.util.ConfigProperty;\n"
             + "import org.jxapi.util.DefaultConfigProperty;\n"
@@ -558,7 +558,7 @@ public class PropertiesClassGeneratorTest {
           + "import java.util.Properties;\n"
           + "\n"
           + "import javax.annotation.processing.Generated;\n"
-          + "import org.jxapi.exchange.descriptor.Type;\n"
+          + "import org.jxapi.pojo.descriptor.Type;\n"
           + "import org.jxapi.util.CollectionUtil;\n"
           + "import org.jxapi.util.ConfigProperty;\n"
           + "import org.jxapi.util.DefaultConfigProperty;\n"
@@ -752,8 +752,8 @@ public class PropertiesClassGeneratorTest {
           + "import java.util.Properties;\n"
           + "\n"
           + "import javax.annotation.processing.Generated;\n"
-          + "import org.jxapi.exchange.descriptor.Type;\n"
           + "import org.jxapi.exchanges.conflict.gen.ConflictConstants;\n"
+          + "import org.jxapi.pojo.descriptor.Type;\n"
           + "import org.jxapi.util.CollectionUtil;\n"
           + "import org.jxapi.util.ConfigProperty;\n"
           + "import org.jxapi.util.DefaultConfigProperty;\n"

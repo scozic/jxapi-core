@@ -14,7 +14,7 @@ import org.jxapi.util.Pojo;
  * postRestRequestDataTypeInt REST endpoint request<br>
  * A sample REST endpoint using INT response data type
  */
-@Generated("org.jxapi.generator.java.exchange.api.pojo.PojoGenerator")
+@Generated("org.jxapi.generator.java.pojo.PojoGenerator")
 @JsonSerialize(using = GenericResponseSerializer.class)
 public class GenericResponse implements Pojo<GenericResponse> {
   

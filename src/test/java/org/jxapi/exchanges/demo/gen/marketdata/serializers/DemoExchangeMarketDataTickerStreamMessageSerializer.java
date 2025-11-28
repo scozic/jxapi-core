@@ -13,7 +13,7 @@ import org.jxapi.util.EncodingUtil;
  * Jackson JSON Serializer for org.jxapi.exchanges.demo.gen.marketdata.pojo.DemoExchangeMarketDataTickerStreamMessage
  * @see DemoExchangeMarketDataTickerStreamMessage
  */
-@Generated("org.jxapi.generator.java.exchange.api.pojo.JsonPojoSerializerGenerator")
+@Generated("org.jxapi.generator.java.pojo.JsonPojoSerializerGenerator")
 public class DemoExchangeMarketDataTickerStreamMessageSerializer extends StdSerializer<DemoExchangeMarketDataTickerStreamMessage> {
   /**
    * Constructor

@@ -1,4 +1,4 @@
-package org.jxapi.exchange.descriptor;
+package org.jxapi.pojo.descriptor;
 
 /**
  * Enum representing types of URL parameters.

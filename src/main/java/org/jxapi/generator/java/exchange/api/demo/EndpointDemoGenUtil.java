@@ -9,18 +9,19 @@ import java.util.stream.Collectors;
 import org.apache.commons.lang3.StringUtils;
 import org.jxapi.exchange.Exchange;
 import org.jxapi.exchange.ExchangeApi;
-import org.jxapi.exchange.descriptor.CanonicalType;
 import org.jxapi.exchange.descriptor.ConfigPropertyDescriptor;
 import org.jxapi.exchange.descriptor.ExchangeApiDescriptor;
 import org.jxapi.exchange.descriptor.ExchangeDescriptor;
-import org.jxapi.exchange.descriptor.Field;
 import org.jxapi.exchange.descriptor.RestEndpointDescriptor;
-import org.jxapi.exchange.descriptor.Type;
 import org.jxapi.exchange.descriptor.WebsocketEndpointDescriptor;
 import org.jxapi.generator.java.Imports;
 import org.jxapi.generator.java.JavaCodeGenUtil;
 import org.jxapi.generator.java.exchange.ExchangeGenUtil;
 import org.jxapi.generator.java.exchange.api.ExchangeApiGenUtil;
+import org.jxapi.generator.java.pojo.PojoGenUtil;
+import org.jxapi.pojo.descriptor.CanonicalType;
+import org.jxapi.pojo.descriptor.Field;
+import org.jxapi.pojo.descriptor.Type;
 import org.jxapi.util.CollectionUtil;
 import org.jxapi.util.DemoUtil;
 
@@ -130,7 +131,7 @@ public class EndpointDemoGenUtil {
       String defaultObjectClassName,
       String defaultFieldName,
       Imports imports) {
-    Type type = ExchangeGenUtil.getFieldType(field);
+    Type type = PojoGenUtil.getFieldType(field);
     String fieldClassName =  ExchangeGenUtil.getClassNameForType(
                         type, 
                         imports, 
@@ -180,7 +181,7 @@ public class EndpointDemoGenUtil {
       ExchangeApiDescriptor exchangeApiDescriptor,
       List<ConfigPropertyDescriptor> demoConfigProperties,
       Imports imports) {
-    Type type = ExchangeGenUtil.getFieldType(field);
+    Type type = PojoGenUtil.getFieldType(field);
     if (type.getCanonicalType() == CanonicalType.LIST 
         || type.getCanonicalType() == CanonicalType.MAP) {
       return generateFieldSampleValueDeclaration2MapOrList(
@@ -218,7 +219,7 @@ public class EndpointDemoGenUtil {
       ExchangeApiDescriptor exchangeApiDescriptor,
       List<ConfigPropertyDescriptor> demoConfigProperties,
       Imports imports) {
-    Type type = ExchangeGenUtil.getFieldType(field);
+    Type type = PojoGenUtil.getFieldType(field);
     String deserializeSampleValueInstr = generateDeserializeSampleValueInstruction(
         field, 
         demoPropertyName, 
@@ -250,7 +251,7 @@ public class EndpointDemoGenUtil {
       ExchangeDescriptor exchangeDescriptor, 
       List<ConfigPropertyDescriptor> demoConfigProperties, 
       Imports imports) {
-    Type type = ExchangeGenUtil.getFieldType(field);
+    Type type = PojoGenUtil.getFieldType(field);
     return new StringBuilder()
         .append(ExchangeApiGenUtil.getNewMessageDeserializerInstruction(type, objectClassName, imports))
         .append(".deserialize(")
@@ -267,7 +268,7 @@ public class EndpointDemoGenUtil {
   private static String generateObjectListOrMapWithoutGlobalSampleValueInstruction(Field field, String demoPropertyName,
       String objectClassName, ExchangeDescriptor exchangeDescriptor, ExchangeApiDescriptor exchangeApiDescriptor,
       List<ConfigPropertyDescriptor> demoConfigProperties, Imports imports) {
-    Type type = ExchangeGenUtil.getFieldType(field);
+    Type type = PojoGenUtil.getFieldType(field);
     if (type.getCanonicalType() == CanonicalType.MAP) {
       return null;
     }
@@ -597,7 +598,7 @@ public class EndpointDemoGenUtil {
     String fieldName = ExchangeApiGenUtil.getRequestArgName(f.getName());
     String fieldDescription = f.getDescription();
     fieldDescription = fieldDescription == null? "" : "<p>\n" + fieldDescription;
-    Type type = ExchangeGenUtil.getFieldType(f);
+    Type type = PojoGenUtil.getFieldType(f);
     String propertyName = fieldName;
     if (type.isObject()) {
       f = ExchangeApiGenUtil.resolveFieldProperties(api, f);

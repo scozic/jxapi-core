@@ -15,7 +15,7 @@ import static org.jxapi.util.JsonUtil.skipNextValue;
  * Parses incoming JSON messages into org.jxapi.exchanges.demo.gen.marketdata.pojo.DemoExchangeMarketDataExchangeInfoRequest instances
  * @see org.jxapi.exchanges.demo.gen.marketdata.pojo.DemoExchangeMarketDataExchangeInfoRequest
  */
-@Generated("org.jxapi.generator.java.exchange.api.pojo.JsonMessageDeserializerGenerator")
+@Generated("org.jxapi.generator.java.pojo.JsonMessageDeserializerGenerator")
 public class DemoExchangeMarketDataExchangeInfoRequestDeserializer extends AbstractJsonMessageDeserializer<DemoExchangeMarketDataExchangeInfoRequest> {
   private final ListJsonFieldDeserializer<String> symbolsDeserializer = new ListJsonFieldDeserializer<>(StringJsonFieldDeserializer.getInstance());
   

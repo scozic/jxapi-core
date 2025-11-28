@@ -14,7 +14,7 @@ import static org.jxapi.util.JsonUtil.skipNextValue;
  * Parses incoming JSON messages into org.jxapi.exchanges.employee.gen.v1.pojo.Employee instances
  * @see org.jxapi.exchanges.employee.gen.v1.pojo.Employee
  */
-@Generated("org.jxapi.generator.java.exchange.api.pojo.JsonMessageDeserializerGenerator")
+@Generated("org.jxapi.generator.java.pojo.JsonMessageDeserializerGenerator")
 public class EmployeeDeserializer extends AbstractJsonMessageDeserializer<Employee> {
   
   @Override

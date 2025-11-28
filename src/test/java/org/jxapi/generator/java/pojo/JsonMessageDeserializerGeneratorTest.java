@@ -1,12 +1,11 @@
-package org.jxapi.generator.java.exchange.api.pojo;
+package org.jxapi.generator.java.pojo;
 
 import java.util.List;
 
 import org.junit.Assert;
 import org.junit.Test;
-
-import org.jxapi.exchange.descriptor.Field;
-import org.jxapi.exchange.descriptor.Type;
+import org.jxapi.pojo.descriptor.Field;
+import org.jxapi.pojo.descriptor.Type;
 
 
 /**
@@ -62,7 +61,7 @@ public class JsonMessageDeserializerGeneratorTest {
         + " * Parses incoming JSON messages into com.x.MyPojo instances\n"
         + " * @see com.x.MyPojo\n"
         + " */\n"
-        + "@Generated(\"org.jxapi.generator.java.exchange.api.pojo.JsonMessageDeserializerGenerator\")\n"
+        + "@Generated(\"org.jxapi.generator.java.pojo.JsonMessageDeserializerGenerator\")\n"
         + "public class MyPojoDeserializer extends AbstractJsonMessageDeserializer<MyPojo> {\n"
         + "  private final ListJsonFieldDeserializer<MyPojoFoo> fooDeserializer = new ListJsonFieldDeserializer<>(new MyPojoFooDeserializer());\n"
         + "  private final MapJsonFieldDeserializer<List<MyPojoToto>> totoDeserializer = new MapJsonFieldDeserializer<>(new ListJsonFieldDeserializer<>(new MyPojoTotoDeserializer()));\n"
@@ -107,7 +106,8 @@ public class JsonMessageDeserializerGeneratorTest {
         + "    \n"
         + "     return msg;\n"
         + "  }\n"
-        + "}\n", 
+        + "}\n"
+        + "", 
         generator.generate());
   }
 }

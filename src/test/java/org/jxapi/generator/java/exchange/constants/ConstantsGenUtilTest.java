@@ -6,11 +6,11 @@ import java.util.Map;
 import org.junit.Assert;
 import org.junit.Test;
 import org.jxapi.exchange.descriptor.Constant;
-import org.jxapi.exchange.descriptor.Type;
 import org.jxapi.generator.java.Imports;
 import org.jxapi.netutils.deserialization.json.field.IntegerJsonFieldDeserializer;
 import org.jxapi.netutils.deserialization.json.field.ListJsonFieldDeserializer;
 import org.jxapi.netutils.deserialization.json.field.MapJsonFieldDeserializer;
+import org.jxapi.pojo.descriptor.Type;
 import org.jxapi.util.JsonUtil;
 import org.jxapi.util.PlaceHolderResolver;
 

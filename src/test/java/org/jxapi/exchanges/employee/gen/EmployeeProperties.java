@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.Properties;
 
 import javax.annotation.processing.Generated;
-import org.jxapi.exchange.descriptor.Type;
+import org.jxapi.pojo.descriptor.Type;
 import org.jxapi.util.CollectionUtil;
 import org.jxapi.util.ConfigProperty;
 import org.jxapi.util.DefaultConfigProperty;

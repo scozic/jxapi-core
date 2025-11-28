@@ -1,17 +1,17 @@
-package org.jxapi.generator.java.exchange.api.pojo;
+package org.jxapi.generator.java.pojo;
 
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.List;
 
-import org.jxapi.exchange.descriptor.Field;
-import org.jxapi.exchange.descriptor.Type;
 import org.jxapi.generator.java.Imports;
 import org.jxapi.generator.java.JavaCodeGenUtil;
 import org.jxapi.generator.java.exchange.ClassesGenerator;
 import org.jxapi.generator.java.exchange.ExchangeGenUtil;
 import org.jxapi.generator.java.exchange.api.ExchangeApiGenUtil;
 import org.jxapi.netutils.deserialization.json.AbstractJsonMessageDeserializer;
+import org.jxapi.pojo.descriptor.Field;
+import org.jxapi.pojo.descriptor.Type;
 
 /**
  * Generator for all classes for deserializing from JSON a particular POJO, that is:

@@ -14,7 +14,7 @@ import org.jxapi.util.Pojo;
  * Message disseminated upon subscription to DemoExchange MarketData API tickerStream websocket endpoint request<br>
  * Subscribe to ticker stream
  */
-@Generated("org.jxapi.generator.java.exchange.api.pojo.PojoGenerator")
+@Generated("org.jxapi.generator.java.pojo.PojoGenerator")
 @JsonSerialize(using = DemoExchangeMarketDataTickerStreamMessageSerializer.class)
 public class DemoExchangeMarketDataTickerStreamMessage implements Pojo<DemoExchangeMarketDataTickerStreamMessage> {
   

@@ -15,7 +15,7 @@ import static org.jxapi.util.JsonUtil.skipNextValue;
  * Parses incoming JSON messages into org.jxapi.exchanges.demo.gen.marketdata.pojo.DemoExchangeMarketDataTickerStreamMessage instances
  * @see org.jxapi.exchanges.demo.gen.marketdata.pojo.DemoExchangeMarketDataTickerStreamMessage
  */
-@Generated("org.jxapi.generator.java.exchange.api.pojo.JsonMessageDeserializerGenerator")
+@Generated("org.jxapi.generator.java.pojo.JsonMessageDeserializerGenerator")
 public class DemoExchangeMarketDataTickerStreamMessageDeserializer extends AbstractJsonMessageDeserializer<DemoExchangeMarketDataTickerStreamMessage> {
   
   @Override

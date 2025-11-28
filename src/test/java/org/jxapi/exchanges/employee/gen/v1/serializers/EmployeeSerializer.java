@@ -12,7 +12,7 @@ import org.jxapi.exchanges.employee.gen.v1.pojo.Employee;
  * Jackson JSON Serializer for org.jxapi.exchanges.employee.gen.v1.pojo.Employee
  * @see Employee
  */
-@Generated("org.jxapi.generator.java.exchange.api.pojo.JsonPojoSerializerGenerator")
+@Generated("org.jxapi.generator.java.pojo.JsonPojoSerializerGenerator")
 public class EmployeeSerializer extends StdSerializer<Employee> {
   /**
    * Constructor

@@ -9,18 +9,18 @@ import java.util.List;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Test;
-import org.jxapi.exchange.descriptor.CanonicalType;
 import org.jxapi.exchange.descriptor.ConfigPropertyDescriptor;
 import org.jxapi.exchange.descriptor.Constant;
 import org.jxapi.exchange.descriptor.ExchangeApiDescriptor;
 import org.jxapi.exchange.descriptor.ExchangeDescriptor;
-import org.jxapi.exchange.descriptor.Field;
 import org.jxapi.exchange.descriptor.RestEndpointDescriptor;
-import org.jxapi.exchange.descriptor.Type;
 import org.jxapi.exchange.descriptor.WebsocketEndpointDescriptor;
 import org.jxapi.generator.java.JavaCodeGenUtil;
 import org.jxapi.generator.java.exchange.ClassesGeneratorTestUtil;
 import org.jxapi.netutils.rest.HttpMethod;
+import org.jxapi.pojo.descriptor.CanonicalType;
+import org.jxapi.pojo.descriptor.Field;
+import org.jxapi.pojo.descriptor.Type;
 
 /**
  * Unit test for {@link ExchangeDescriptorParser}

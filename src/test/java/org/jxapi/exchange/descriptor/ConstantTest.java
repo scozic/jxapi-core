@@ -5,6 +5,7 @@ import java.util.Objects;
 
 import org.junit.Assert;
 import org.junit.Test;
+import org.jxapi.pojo.descriptor.Type;
 
 /**
  * Unit test for {@link Constant}

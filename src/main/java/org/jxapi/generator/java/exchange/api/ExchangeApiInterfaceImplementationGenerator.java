@@ -11,17 +11,14 @@ import java.util.TreeMap;
 import java.util.stream.Collectors;
 
 import org.jxapi.exchange.AbstractExchangeApi;
-import org.jxapi.exchange.descriptor.CanonicalType;
 import org.jxapi.exchange.descriptor.ExchangeApiDescriptor;
 import org.jxapi.exchange.descriptor.ExchangeDescriptor;
-import org.jxapi.exchange.descriptor.Field;
 import org.jxapi.exchange.descriptor.RestEndpointDescriptor;
-import org.jxapi.exchange.descriptor.Type;
-import org.jxapi.exchange.descriptor.UrlParameterType;
 import org.jxapi.exchange.descriptor.WebsocketEndpointDescriptor;
 import org.jxapi.generator.java.JavaCodeGenUtil;
 import org.jxapi.generator.java.JavaTypeGenerator;
 import org.jxapi.generator.java.exchange.ExchangeGenUtil;
+import org.jxapi.generator.java.pojo.PojoGenUtil;
 import org.jxapi.netutils.deserialization.MessageDeserializer;
 import org.jxapi.netutils.rest.FutureRestResponse;
 import org.jxapi.netutils.rest.HttpMethod;
@@ -32,6 +29,10 @@ import org.jxapi.netutils.websocket.WebsocketEndpoint;
 import org.jxapi.netutils.websocket.WebsocketListener;
 import org.jxapi.netutils.websocket.WebsocketSubscribeRequest;
 import org.jxapi.netutils.websocket.multiplexing.WebsocketMessageTopicMatcherFactory;
+import org.jxapi.pojo.descriptor.CanonicalType;
+import org.jxapi.pojo.descriptor.Field;
+import org.jxapi.pojo.descriptor.Type;
+import org.jxapi.pojo.descriptor.UrlParameterType;
 import org.jxapi.util.CollectionUtil;
 import org.jxapi.util.EncodingUtil;
 import org.jxapi.util.JsonUtil;
@@ -450,7 +451,7 @@ public class ExchangeApiInterfaceImplementationGenerator extends JavaTypeGenerat
           exchangeApiDescriptor, 
           wsApi);
       Field message = ExchangeApiGenUtil.resolveFieldProperties(exchangeApiDescriptor, wsApi.getMessage());
-      Type messageDataType = ExchangeGenUtil.getFieldType(message);
+      Type messageDataType = PojoGenUtil.getFieldType(message);
       String getResponseDeserializerInstance = ExchangeApiGenUtil.getNewMessageDeserializerInstruction(messageDataType, messageClassObjectName, getImports());
       constructorBody.append(THIS)
         .append(websocketEndpointVariableName)
@@ -474,9 +475,9 @@ public class ExchangeApiInterfaceImplementationGenerator extends JavaTypeGenerat
 
   private void generateWebsocketApiMethodsDeclarations(WebsocketEndpointDescriptor websocketApi, Map<String, String> wsRequestDefaultValuesStaticVariables) {
     Field request = ExchangeApiGenUtil.resolveFieldProperties(exchangeApiDescriptor, websocketApi.getRequest());
-    Type requestDataType = ExchangeGenUtil.getFieldType(request);
+    Type requestDataType = PojoGenUtil.getFieldType(request);
     Field message = ExchangeApiGenUtil.resolveFieldProperties(exchangeApiDescriptor, websocketApi.getMessage());
-    Type messageDataType = ExchangeGenUtil.getFieldType(message);
+    Type messageDataType = PojoGenUtil.getFieldType(message);
     addImport(WebsocketEndpoint.class);
     boolean hasArguments = ExchangeApiGenUtil.websocketEndpointHasArguments(websocketApi, exchangeApiDescriptor);
     String requestClassName = null;
@@ -580,9 +581,9 @@ public class ExchangeApiInterfaceImplementationGenerator extends JavaTypeGenerat
       RestEndpointDescriptor restApi, 
       Map<String, String> restRequestDefaultStaticVariables) {
     Field request = restApi.getRequest();
-    Type requestDataType = ExchangeGenUtil.getFieldType(request);
+    Type requestDataType = PojoGenUtil.getFieldType(request);
     Field response = restApi.getResponse();
-    Type responseDataType =  ExchangeGenUtil.getFieldType(response);
+    Type responseDataType =  PojoGenUtil.getFieldType(response);
     boolean hasArguments = ExchangeApiGenUtil.restEndpointHasArguments(restApi, exchangeApiDescriptor);
     String requestSimpleClassName = "Object";
     String requestArgName = ExchangeApiGenUtil.DEFAULT_REQUEST_ARG_NAME;
@@ -1020,7 +1021,7 @@ public class ExchangeApiInterfaceImplementationGenerator extends JavaTypeGenerat
          null: 
          UrlParameterType.QUERY;
     UrlParameterType fieldUrlParamType = f.getIn();
-    Type type = ExchangeGenUtil.getFieldType(f);
+    Type type = PojoGenUtil.getFieldType(f);
     List<Field> properties = ExchangeApiGenUtil.resolveFieldProperties(exchangeApiDescriptor, f).getProperties();
     if (sieblings != null) {
       valuePrefix += "." 

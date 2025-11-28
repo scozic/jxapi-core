@@ -1,15 +1,15 @@
-package org.jxapi.generator.java.exchange.api.pojo;
+package org.jxapi.generator.java.pojo;
 
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.List;
 
-import org.jxapi.exchange.descriptor.Field;
-import org.jxapi.exchange.descriptor.Type;
 import org.jxapi.generator.java.exchange.ClassesGenerator;
 import org.jxapi.generator.java.exchange.ConstantValuePlaceholderResolverFactory;
 import org.jxapi.generator.java.exchange.ExchangeGenUtil;
 import org.jxapi.generator.java.exchange.api.ExchangeApiGenUtil;
+import org.jxapi.pojo.descriptor.Field;
+import org.jxapi.pojo.descriptor.Type;
 import org.jxapi.util.PlaceHolderResolver;
 
 /**
@@ -80,7 +80,7 @@ public class PojoClassesGenerator implements ClassesGenerator {
       Field field) throws IOException {
     String objectParamClassName = ExchangeApiGenUtil.getFieldLeafSubTypeClassName(
       field.getName(), 
-      ExchangeGenUtil.getFieldType(field), 
+      PojoGenUtil.getFieldType(field), 
       field.getObjectName(), 
       className);
     

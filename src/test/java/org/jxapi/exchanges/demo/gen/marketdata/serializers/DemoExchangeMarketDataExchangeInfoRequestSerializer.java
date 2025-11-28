@@ -12,7 +12,7 @@ import org.jxapi.exchanges.demo.gen.marketdata.pojo.DemoExchangeMarketDataExchan
  * Jackson JSON Serializer for org.jxapi.exchanges.demo.gen.marketdata.pojo.DemoExchangeMarketDataExchangeInfoRequest
  * @see DemoExchangeMarketDataExchangeInfoRequest
  */
-@Generated("org.jxapi.generator.java.exchange.api.pojo.JsonPojoSerializerGenerator")
+@Generated("org.jxapi.generator.java.pojo.JsonPojoSerializerGenerator")
 public class DemoExchangeMarketDataExchangeInfoRequestSerializer extends StdSerializer<DemoExchangeMarketDataExchangeInfoRequest> {
   /**
    * Constructor

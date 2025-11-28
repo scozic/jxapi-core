@@ -1,7 +1,7 @@
 package org.jxapi.util;
 
 import org.jxapi.exchange.descriptor.ConfigPropertyDescriptor;
-import org.jxapi.exchange.descriptor.Type;
+import org.jxapi.pojo.descriptor.Type;
 
 /**
  * Represents a configuration property of an exchange, as described in a

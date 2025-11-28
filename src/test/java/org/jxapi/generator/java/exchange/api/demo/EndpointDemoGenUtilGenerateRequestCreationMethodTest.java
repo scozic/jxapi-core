@@ -15,13 +15,11 @@ import org.junit.Before;
 import org.junit.Test;
 import org.jxapi.exchange.descriptor.ExchangeApiDescriptor;
 import org.jxapi.exchange.descriptor.ExchangeDescriptor;
-import org.jxapi.exchange.descriptor.Field;
 import org.jxapi.exchange.descriptor.RestEndpointDescriptor;
-import org.jxapi.exchange.descriptor.Type;
 import org.jxapi.exchange.descriptor.WebsocketEndpointDescriptor;
 import org.jxapi.generator.java.Imports;
-import org.jxapi.generator.java.exchange.ExchangeGenUtil;
 import org.jxapi.generator.java.exchange.api.ExchangeApiGenUtil;
+import org.jxapi.generator.java.pojo.PojoGenUtil;
 import org.jxapi.netutils.deserialization.json.field.BigDecimalJsonFieldDeserializer;
 import org.jxapi.netutils.deserialization.json.field.BooleanJsonFieldDeserializer;
 import org.jxapi.netutils.deserialization.json.field.IntegerJsonFieldDeserializer;
@@ -29,9 +27,11 @@ import org.jxapi.netutils.deserialization.json.field.ListJsonFieldDeserializer;
 import org.jxapi.netutils.deserialization.json.field.LongJsonFieldDeserializer;
 import org.jxapi.netutils.deserialization.json.field.MapJsonFieldDeserializer;
 import org.jxapi.netutils.deserialization.json.field.StringJsonFieldDeserializer;
+import org.jxapi.pojo.descriptor.Field;
+import org.jxapi.pojo.descriptor.Type;
 
 /**
- * Unit tests for {@link EndpointDemoGenUtil#generateFieldCreationMethod(org.jxapi.exchange.descriptor.Field, String, org.jxapi.exchange.descriptor.ExchangeDescriptor, org.jxapi.exchange.descriptor.ExchangeApiDescriptor, String, org.jxapi.generator.java.Imports)}
+ * Unit tests for {@link EndpointDemoGenUtil#generateFieldCreationMethod(org.jxapi.pojo.descriptor.Field, String, org.jxapi.exchange.descriptor.ExchangeDescriptor, org.jxapi.exchange.descriptor.ExchangeApiDescriptor, String, org.jxapi.generator.java.Imports)}
  */
 public class EndpointDemoGenUtilGenerateRequestCreationMethodTest {
 
@@ -475,7 +475,7 @@ public class EndpointDemoGenUtilGenerateRequestCreationMethodTest {
     String requestClassName = null;
     Type requestDataType = null;
     if (hasArguments) {
-      requestDataType =  ExchangeGenUtil.getFieldType(request);
+      requestDataType =  PojoGenUtil.getFieldType(request);
       if (requestDataType.getCanonicalType().isPrimitive) {
         requestClassName = requestDataType.getCanonicalType().typeClass.getName();
       } else if (requestDataType.isObject() ){

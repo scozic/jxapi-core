@@ -1,5 +1,6 @@
 package org.jxapi.exchange.descriptor;
 
+import org.jxapi.pojo.descriptor.Field;
 import org.jxapi.util.EncodingUtil;
 
 /**

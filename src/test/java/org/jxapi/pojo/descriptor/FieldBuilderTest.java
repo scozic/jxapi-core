@@ -1,4 +1,4 @@
-package org.jxapi.exchange.descriptor;
+package org.jxapi.pojo.descriptor;
 
 import java.util.List;
 

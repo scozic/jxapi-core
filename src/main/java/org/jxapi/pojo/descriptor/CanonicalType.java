@@ -1,4 +1,4 @@
-package org.jxapi.exchange.descriptor;
+package org.jxapi.pojo.descriptor;
 
 import java.math.BigDecimal;
 import java.util.List;

@@ -17,7 +17,7 @@ import org.jxapi.util.Pojo;
  * tickers REST endpoint request<br>
  * Fetch current tickers for all markets
  */
-@Generated("org.jxapi.generator.java.exchange.api.pojo.PojoGenerator")
+@Generated("org.jxapi.generator.java.pojo.PojoGenerator")
 @JsonSerialize(using = DemoExchangeMarketDataTickersResponseSerializer.class)
 public class DemoExchangeMarketDataTickersResponse implements Pojo<DemoExchangeMarketDataTickersResponse> {
   

@@ -1,9 +1,11 @@
-package org.jxapi.exchange.descriptor;
+package org.jxapi.pojo.descriptor;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import org.jxapi.generator.java.exchange.ExchangeGenUtil;
+import org.jxapi.exchange.descriptor.RestEndpointDescriptor;
+import org.jxapi.exchange.descriptor.WebsocketEndpointDescriptor;
+import org.jxapi.generator.java.pojo.PojoGenUtil;
 import org.jxapi.util.EncodingUtil;
 
 /**
@@ -204,7 +206,7 @@ public class Field {
   }
 
   /**
-   * Remark: when processing a field accoring to its type, use {@link ExchangeGenUtil#getFieldType(Field)} instead of this method to retrieve the actual type.
+   * Remark: when processing a field accoring to its type, use {@link PojoGenUtil#getFieldType(Field)} instead of this method to retrieve the actual type.
    * @return The type of the field, see {@link Type}
    */
   public Type getType() {

@@ -9,6 +9,9 @@ import org.jxapi.netutils.rest.HttpMethod;
 import org.jxapi.netutils.rest.pagination.PaginatedRestRequest;
 import org.jxapi.netutils.rest.pagination.PaginatedRestResponse;
 import org.jxapi.netutils.rest.ratelimits.RateLimitRule;
+import org.jxapi.pojo.descriptor.Field;
+import org.jxapi.pojo.descriptor.Type;
+import org.jxapi.pojo.descriptor.UrlParameterType;
 import org.jxapi.util.EncodingUtil;
 
 /**

@@ -1,13 +1,13 @@
-package org.jxapi.generator.java.exchange.api.pojo;
+package org.jxapi.generator.java.pojo;
 
 import java.util.List;
 import java.util.Map;
 
 import org.junit.Assert;
 import org.junit.Test;
-import org.jxapi.exchange.descriptor.Field;
-import org.jxapi.exchange.descriptor.Type;
 import org.jxapi.generator.java.JavaCodeGenUtil;
+import org.jxapi.pojo.descriptor.Field;
+import org.jxapi.pojo.descriptor.Type;
 import org.jxapi.util.PlaceHolderResolver;
 
 /**
@@ -68,7 +68,7 @@ public class PojoGeneratorTest {
         + "/**\n"
         + " * Used in PojoGeneratorTest\n"
         + " */\n"
-        + "@Generated(\"org.jxapi.generator.java.exchange.api.pojo.PojoGenerator\")\n"
+        + "@Generated(\"org.jxapi.generator.java.pojo.PojoGenerator\")\n"
         + "@JsonSerialize(using = MyPojoSerializer.class)\n"
         + "public class MyPojo implements Pojo<MyPojo>, MyInterface {\n"
         + "  \n"
@@ -381,7 +381,7 @@ public class PojoGeneratorTest {
         + "/**\n"
         + " * Used in PojoGeneratorTest\n"
         + " */\n"
-        + "@Generated(\"org.jxapi.generator.java.exchange.api.pojo.PojoGenerator\")\n"
+        + "@Generated(\"org.jxapi.generator.java.pojo.PojoGenerator\")\n"
         + "@JsonSerialize(using = MyPojoWithNullAdditionnalBodySerializer.class)\n"
         + "public class MyPojoWithNullAdditionnalBody implements Pojo<MyPojoWithNullAdditionnalBody> {\n"
         + "  \n"
@@ -504,7 +504,7 @@ public class PojoGeneratorTest {
         + "/**\n"
         + " * Used in PojoGeneratorTest\n"
         + " */\n"
-        + "@Generated(\"org.jxapi.generator.java.exchange.api.pojo.PojoGenerator\")\n"
+        + "@Generated(\"org.jxapi.generator.java.pojo.PojoGenerator\")\n"
         + "@JsonSerialize(using = MyPojoWithNullPropertiesSerializer.class)\n"
         + "public class MyPojoWithNullProperties implements Pojo<MyPojoWithNullProperties> {\n"
         + "  \n"
@@ -599,7 +599,7 @@ public class PojoGeneratorTest {
         + "import x.y.z.serializers.FooSerializer;\n"
         + "\n"
         + "\n"
-        + "@Generated(\"org.jxapi.generator.java.exchange.api.pojo.PojoGenerator\")\n"
+        + "@Generated(\"org.jxapi.generator.java.pojo.PojoGenerator\")\n"
         + "@JsonSerialize(using = FooSerializer.class)\n"
         + "public class Foo implements Pojo<Foo> {\n"
         + "  \n"
@@ -842,7 +842,7 @@ public class PojoGeneratorTest {
         + "/**\n"
         + " * Used in PojoGeneratorTest\n"
         + " */\n"
-        + "@Generated(\"org.jxapi.generator.java.exchange.api.pojo.PojoGenerator\")\n"
+        + "@Generated(\"org.jxapi.generator.java.pojo.PojoGenerator\")\n"
         + "@JsonSerialize(using = MyPojoSerializer.class)\n"
         + "public class MyPojo implements Pojo<MyPojo>, MyInterface {\n"
         + "  \n"

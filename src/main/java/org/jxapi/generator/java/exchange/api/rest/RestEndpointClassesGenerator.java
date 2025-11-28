@@ -7,15 +7,15 @@ import java.util.Optional;
 
 import org.jxapi.exchange.descriptor.ExchangeApiDescriptor;
 import org.jxapi.exchange.descriptor.ExchangeDescriptor;
-import org.jxapi.exchange.descriptor.Field;
 import org.jxapi.exchange.descriptor.RestEndpointDescriptor;
 import org.jxapi.generator.java.exchange.ClassesGenerator;
 import org.jxapi.generator.java.exchange.ConstantValuePlaceholderResolverFactory;
 import org.jxapi.generator.java.exchange.ExchangeConstantValuePlaceholderResolverFactory;
 import org.jxapi.generator.java.exchange.api.ExchangeApiGenUtil;
-import org.jxapi.generator.java.exchange.api.pojo.JsonMessageDeserializerClassesGenerator;
-import org.jxapi.generator.java.exchange.api.pojo.JsonPojoSerializerClassesGenerator;
-import org.jxapi.generator.java.exchange.api.pojo.PojoClassesGenerator;
+import org.jxapi.generator.java.pojo.JsonMessageDeserializerClassesGenerator;
+import org.jxapi.generator.java.pojo.JsonPojoSerializerClassesGenerator;
+import org.jxapi.generator.java.pojo.PojoClassesGenerator;
+import org.jxapi.pojo.descriptor.Field;
 import org.jxapi.util.PlaceHolderResolver;
 
 /**

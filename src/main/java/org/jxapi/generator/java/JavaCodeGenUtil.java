@@ -15,9 +15,8 @@ import java.util.stream.Stream;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import org.jxapi.exchange.descriptor.CanonicalType;
-import org.jxapi.exchange.descriptor.Type;
+import org.jxapi.pojo.descriptor.CanonicalType;
+import org.jxapi.pojo.descriptor.Type;
 import org.jxapi.util.CollectionUtil;
 
 /**

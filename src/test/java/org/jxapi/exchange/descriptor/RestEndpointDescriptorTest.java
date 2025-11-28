@@ -6,6 +6,8 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import org.jxapi.netutils.rest.HttpMethod;
+import org.jxapi.pojo.descriptor.Field;
+import org.jxapi.pojo.descriptor.Type;
 
 /**
  * Unit test for {@link RestEndpointDescriptor}.

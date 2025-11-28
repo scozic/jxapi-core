@@ -13,7 +13,7 @@ import org.jxapi.util.Pojo;
  * Subscription request toDemoExchange MarketData API tickerStream websocket endpoint<br>
  * Subscribe to ticker stream
  */
-@Generated("org.jxapi.generator.java.exchange.api.pojo.PojoGenerator")
+@Generated("org.jxapi.generator.java.pojo.PojoGenerator")
 @JsonSerialize(using = DemoExchangeMarketDataTickerStreamRequestSerializer.class)
 public class DemoExchangeMarketDataTickerStreamRequest implements Pojo<DemoExchangeMarketDataTickerStreamRequest> {
   

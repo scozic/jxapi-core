@@ -1,17 +1,16 @@
-package org.jxapi.generator.java.exchange.api.pojo;
+package org.jxapi.generator.java.pojo;
 
 import java.util.List;
 import java.util.Map;
 
 import org.junit.Assert;
 import org.junit.Test;
-
-import org.jxapi.exchange.descriptor.Field;
-import org.jxapi.exchange.descriptor.Type;
 import org.jxapi.generator.java.Imports;
 import org.jxapi.generator.java.JavaCodeGenUtil;
 import org.jxapi.netutils.deserialization.json.field.ListJsonFieldDeserializer;
 import org.jxapi.netutils.deserialization.json.field.StringJsonFieldDeserializer;
+import org.jxapi.pojo.descriptor.Field;
+import org.jxapi.pojo.descriptor.Type;
 import org.jxapi.util.CollectionUtil;
 import org.jxapi.util.DeepCloneable;
 import org.jxapi.util.PlaceHolderResolver;
@@ -216,5 +215,41 @@ public class PojoGenUtilTest {
         new Imports(), 
         PlaceHolderResolver.NO_OP, PlaceHolderResolver.NO_OP, 
         null);
+  }
+  
+  @Test
+  public void testGetFieldType_NullField() {
+    Assert.assertNull(PojoGenUtil.getFieldType(null));
+  }
+  
+  @Test
+  public void testGetFieldType_ObjecListMapType() {
+    Type objectListMapType = Type.fromTypeName("OBJECT_LIST_MAP");
+    Assert.assertEquals(objectListMapType, 
+        PojoGenUtil.getFieldType((Field.builder().name("test").type(objectListMapType).build())));
+  }
+  
+  @Test
+  public void testGetFieldType_ObjectType_Explicit() {
+    Assert.assertEquals(Type.OBJECT, 
+        PojoGenUtil.getFieldType(Field.builder().name("test").type(Type.OBJECT).build()));
+  }
+  
+  @Test
+  public void testGetFieldType_ObjectType_ImplicitFromObjectName() {
+    Assert.assertEquals(Type.OBJECT, 
+        PojoGenUtil.getFieldType(Field.builder().name("test").objectName("MyObjectName").build()));
+  }
+  
+  @Test
+  public void testGetFieldType_ObjectType_ImplicitFromProperties() {
+    Assert.assertEquals(Type.OBJECT, 
+        PojoGenUtil.getFieldType(Field.builder().name("test").properties(List.of()).build()));
+  }
+  
+  @Test
+  public void testGetFieldType_String_Implicit() {
+    Assert.assertEquals(Type.STRING, 
+        PojoGenUtil.getFieldType(Field.builder().name("test").build()));
   }
 }

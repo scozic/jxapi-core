@@ -2,6 +2,7 @@ package org.jxapi.exchange.descriptor;
 
 import java.util.List;
 
+import org.jxapi.pojo.descriptor.Type;
 import org.jxapi.util.CollectionUtil;
 import org.jxapi.util.EncodingUtil;
 /**

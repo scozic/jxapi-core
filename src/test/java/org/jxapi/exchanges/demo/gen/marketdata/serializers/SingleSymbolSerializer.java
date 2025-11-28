@@ -12,7 +12,7 @@ import org.jxapi.exchanges.demo.gen.marketdata.pojo.SingleSymbol;
  * Jackson JSON Serializer for org.jxapi.exchanges.demo.gen.marketdata.pojo.SingleSymbol
  * @see SingleSymbol
  */
-@Generated("org.jxapi.generator.java.exchange.api.pojo.JsonPojoSerializerGenerator")
+@Generated("org.jxapi.generator.java.pojo.JsonPojoSerializerGenerator")
 public class SingleSymbolSerializer extends StdSerializer<SingleSymbol> {
   /**
    * Constructor

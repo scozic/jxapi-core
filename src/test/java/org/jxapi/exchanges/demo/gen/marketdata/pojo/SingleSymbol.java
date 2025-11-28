@@ -13,7 +13,7 @@ import org.jxapi.util.Pojo;
  * Request for DemoExchange MarketData API postRestRequestDataTypeObjectListMap REST endpoint<br>
  * A sample REST endpoint using OBJECT_LIST_MAP request data type
  */
-@Generated("org.jxapi.generator.java.exchange.api.pojo.PojoGenerator")
+@Generated("org.jxapi.generator.java.pojo.PojoGenerator")
 @JsonSerialize(using = SingleSymbolSerializer.class)
 public class SingleSymbol implements Pojo<SingleSymbol> {
   

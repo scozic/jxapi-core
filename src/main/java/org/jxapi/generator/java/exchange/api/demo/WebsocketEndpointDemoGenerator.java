@@ -7,14 +7,15 @@ import org.jxapi.exchange.ExchangeApiObserver;
 import org.jxapi.exchange.descriptor.ConfigPropertyDescriptor;
 import org.jxapi.exchange.descriptor.ExchangeApiDescriptor;
 import org.jxapi.exchange.descriptor.ExchangeDescriptor;
-import org.jxapi.exchange.descriptor.Field;
-import org.jxapi.exchange.descriptor.Type;
 import org.jxapi.exchange.descriptor.WebsocketEndpointDescriptor;
 import org.jxapi.generator.java.JavaCodeGenUtil;
 import org.jxapi.generator.java.JavaTypeGenerator;
 import org.jxapi.generator.java.exchange.ExchangeGenUtil;
 import org.jxapi.generator.java.exchange.api.ExchangeApiGenUtil;
+import org.jxapi.generator.java.pojo.PojoGenUtil;
 import org.jxapi.netutils.websocket.WebsocketListener;
+import org.jxapi.pojo.descriptor.Field;
+import org.jxapi.pojo.descriptor.Type;
 import org.jxapi.util.DemoProperties;
 import org.jxapi.util.DemoUtil;
 import org.slf4j.Logger;
@@ -100,7 +101,7 @@ public class WebsocketEndpointDemoGenerator extends JavaTypeGenerator {
     setTypeDeclaration("public class");
     this.hasArguments = ExchangeApiGenUtil.websocketEndpointHasArguments(websocketApi, exchangeApiDescriptor);
     if (hasArguments) {
-      this.requestDataType =  ExchangeGenUtil.getFieldType(request);
+      this.requestDataType =  PojoGenUtil.getFieldType(request);
       if (this.requestDataType.getCanonicalType().isPrimitive) {
         this.requestClassName = requestDataType.getCanonicalType().typeClass.getName();
       } else {
@@ -125,7 +126,7 @@ public class WebsocketEndpointDemoGenerator extends JavaTypeGenerator {
     this.fullStreamName = exchangeDescriptor.getId() + " " 
                 + exchangeApiDescriptor.getName() 
                 + " " + websocketApi.getName();
-    Type messageDataType = ExchangeGenUtil.getFieldType(websocketApi.getMessage());
+    Type messageDataType = PojoGenUtil.getFieldType(websocketApi.getMessage());
     messageClassSimpleName = ExchangeGenUtil.getClassNameForType(
         messageDataType, 
         getImports(), 

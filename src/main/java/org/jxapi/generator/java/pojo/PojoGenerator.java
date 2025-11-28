@@ -1,4 +1,4 @@
-package org.jxapi.generator.java.exchange.api.pojo;
+package org.jxapi.generator.java.pojo;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -7,14 +7,14 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import org.jxapi.exchange.descriptor.CanonicalType;
-import org.jxapi.exchange.descriptor.Field;
-import org.jxapi.exchange.descriptor.Type;
 import org.jxapi.generator.java.JavaCodeGenUtil;
 import org.jxapi.generator.java.JavaTypeGenerator;
 import org.jxapi.generator.java.exchange.ConstantValuePlaceholderResolverFactory;
 import org.jxapi.generator.java.exchange.ExchangeGenUtil;
 import org.jxapi.generator.java.exchange.api.ExchangeApiGenUtil;
+import org.jxapi.pojo.descriptor.CanonicalType;
+import org.jxapi.pojo.descriptor.Field;
+import org.jxapi.pojo.descriptor.Type;
 import org.jxapi.util.CollectionUtil;
 import org.jxapi.util.CompareUtil;
 import org.jxapi.util.DeepCloneable;
@@ -297,7 +297,7 @@ public class PojoGenerator extends JavaTypeGenerator {
       .append(" ")
       .append(JavaCodeGenUtil.getGetAccessorMethodName(
           field.getName(), 
-          ExchangeGenUtil.getFieldType(field), 
+          PojoGenUtil.getFieldType(field), 
           getAllFieldNames()))
       .append("()")
       .toString();
@@ -329,7 +329,7 @@ public class PojoGenerator extends JavaTypeGenerator {
   }
   
   private void generateBuilderMethodsDeclaration(Field field, JavaTypeGenerator builder) {
-    Type fieldType = ExchangeGenUtil.getFieldType(field);
+    Type fieldType = PojoGenUtil.getFieldType(field);
     String typeClass = getFieldClass(field);
     typeClass = JavaCodeGenUtil.getClassNameWithoutPackage(typeClass);
     String name = field.getName();
@@ -397,7 +397,7 @@ public class PojoGenerator extends JavaTypeGenerator {
   
   private void generateAddToListBuilderMethod(Field field, JavaTypeGenerator builder) {
     String name = field.getName();
-    Type fieldType = ExchangeGenUtil.getFieldType(field);
+    Type fieldType = PojoGenUtil.getFieldType(field);
     Field itemField = Field.builder()
                   .name(name)
                   .type(fieldType.getSubType())
@@ -446,7 +446,7 @@ public class PojoGenerator extends JavaTypeGenerator {
   
   private void generateAddToMapBuilderMethod(Field field, JavaTypeGenerator builder) {
     String name = field.getName();
-    Type fieldType = ExchangeGenUtil.getFieldType(field);
+    Type fieldType = PojoGenUtil.getFieldType(field);
     Field itemField = Field.builder()
                   .name(name)
                   .type(fieldType.getSubType())
@@ -501,7 +501,7 @@ public class PojoGenerator extends JavaTypeGenerator {
   
   private String getFieldClass(Field field) {
     String fieldClass = null;
-    Type fieldType = ExchangeGenUtil.getFieldType(field);
+    Type fieldType = PojoGenUtil.getFieldType(field);
     if (ExchangeGenUtil.isObjectField(field)) {
       String className = getName();
       fieldClass = ExchangeApiGenUtil.getClassNameForField(field, getImports(), className);

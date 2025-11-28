@@ -2,8 +2,8 @@ package org.jxapi.exchange;
 
 import java.util.List;
 
-import org.jxapi.exchange.descriptor.Type;
 import org.jxapi.netutils.rest.ratelimits.RequestThrottlingMode;
+import org.jxapi.pojo.descriptor.Type;
 import org.jxapi.util.ConfigProperty;
 import org.jxapi.util.DefaultConfigProperty;
 

@@ -13,7 +13,7 @@ import org.jxapi.util.Pojo;
 /**
  * List of market information for each requested symbol
  */
-@Generated("org.jxapi.generator.java.exchange.api.pojo.PojoGenerator")
+@Generated("org.jxapi.generator.java.pojo.PojoGenerator")
 @JsonSerialize(using = DemoExchangeMarketDataExchangeInfoResponsePayloadSerializer.class)
 public class DemoExchangeMarketDataExchangeInfoResponsePayload implements Pojo<DemoExchangeMarketDataExchangeInfoResponsePayload> {
   

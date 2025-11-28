@@ -1,4 +1,4 @@
-package org.jxapi.generator.java.exchange.api.pojo;
+package org.jxapi.generator.java.pojo;
 
 import java.io.IOException;
 import java.nio.file.Path;
@@ -7,11 +7,10 @@ import java.util.List;
 
 import org.junit.After;
 import org.junit.Test;
-
-import org.jxapi.exchange.descriptor.Field;
-import org.jxapi.exchange.descriptor.Type;
 import org.jxapi.generator.java.JavaCodeGenUtil;
 import org.jxapi.generator.java.exchange.ClassesGeneratorTestUtil;
+import org.jxapi.pojo.descriptor.Field;
+import org.jxapi.pojo.descriptor.Type;
 
 /**
  * Unit test for JsonPojoSerializerClassesGenerator

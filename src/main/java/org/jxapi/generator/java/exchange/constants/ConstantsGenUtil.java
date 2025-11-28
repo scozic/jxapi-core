@@ -5,10 +5,10 @@ import java.util.Optional;
 
 import org.apache.commons.lang3.StringUtils;
 import org.jxapi.exchange.descriptor.Constant;
-import org.jxapi.exchange.descriptor.Type;
 import org.jxapi.generator.java.Imports;
 import org.jxapi.generator.java.JavaCodeGenUtil;
 import org.jxapi.generator.java.exchange.ExchangeGenUtil;
+import org.jxapi.pojo.descriptor.Type;
 import org.jxapi.util.CollectionUtil;
 import org.jxapi.util.JsonUtil;
 import org.jxapi.util.PlaceHolderResolver;

@@ -13,7 +13,7 @@ import org.jxapi.util.Pojo;
 /**
  * Tickers for each symbol
  */
-@Generated("org.jxapi.generator.java.exchange.api.pojo.PojoGenerator")
+@Generated("org.jxapi.generator.java.pojo.PojoGenerator")
 @JsonSerialize(using = DemoExchangeMarketDataTickersResponsePayloadSerializer.class)
 public class DemoExchangeMarketDataTickersResponsePayload implements Pojo<DemoExchangeMarketDataTickersResponsePayload> {
   

@@ -1,4 +1,4 @@
-package org.jxapi.generator.java.exchange.api.pojo;
+package org.jxapi.generator.java.pojo;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -7,22 +7,19 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
-
-import org.jxapi.exchange.descriptor.CanonicalType;
 import org.jxapi.exchange.descriptor.Constant;
-import org.jxapi.exchange.descriptor.Field;
-import org.jxapi.exchange.descriptor.Type;
 import org.jxapi.generator.java.Imports;
 import org.jxapi.generator.java.JavaCodeGenUtil;
-import org.jxapi.generator.java.exchange.ExchangeGenUtil;
 import org.jxapi.generator.java.exchange.constants.ConstantsGenUtil;
+import org.jxapi.pojo.descriptor.CanonicalType;
+import org.jxapi.pojo.descriptor.Field;
+import org.jxapi.pojo.descriptor.Type;
 import org.jxapi.util.CollectionUtil;
 import org.jxapi.util.DeepCloneable;
 import org.jxapi.util.PlaceHolderResolver;
 
 /**
- * Helper methods used in generation of exchange API REST/WEBSOCKET endpoints
- * POJOs and associated JSON serializer/deserializers.
+ * Helper methods used in generation of POJOs and associated JSON serializer/deserializers.
  */
 public class PojoGenUtil {
   
@@ -56,7 +53,7 @@ public class PojoGenUtil {
    * @return The generated deep clone instruction
    */
   public static String generateDeepCloneFieldInstruction(Field f, Imports imports) {
-    Type type = ExchangeGenUtil.getFieldType(f);
+    Type type = PojoGenUtil.getFieldType(f);
     String name = f.getName();
     if (type.getCanonicalType().isPrimitive) {
       return "this." + name;
@@ -109,7 +106,7 @@ public class PojoGenUtil {
    */
   public static String generateCompareFieldsInstruction(Field f) {
     String name = f.getName();
-    Type type = ExchangeGenUtil.getFieldType(f);
+    Type type = PojoGenUtil.getFieldType(f);
     if (type.getCanonicalType().isPrimitive) {
       return "CompareUtil.compare(this." + name + OTHER_TOEN + name + ")";
     } else if (type.getCanonicalType() == CanonicalType.LIST) {
@@ -227,7 +224,7 @@ public class PojoGenUtil {
           MessageDigest md = MessageDigest.getInstance(SERIAL_VERSION_UID_HASH_ALGORITHM);
           StringBuilder sb = new StringBuilder().append(className);
           for (Field f : fields) {
-              sb.append(";").append(f.getName()).append(":").append(ExchangeGenUtil.getFieldType(f).toString());
+              sb.append(";").append(f.getName()).append(":").append(PojoGenUtil.getFieldType(f).toString());
           }
           for (String i : implementedInterfaces) {
               sb.append(";").append(i);
@@ -278,7 +275,7 @@ public class PojoGenUtil {
     Map<String, String> res = CollectionUtil.createMap();
     Map<String, Constant> constants = CollectionUtil.createMap();
     for (Field f : fields) {
-      Type fieldType = ExchangeGenUtil.getFieldType(f);
+      Type fieldType = PojoGenUtil.getFieldType(f);
       if (f.getDefaultValue() != null) {
         if (fieldType.isObject()) {
           throw new IllegalArgumentException(
@@ -309,6 +306,29 @@ public class PojoGenUtil {
       }
     });
     return res;     
+  }
+
+  /**
+   * Find the type of a field in context of REST/Websocket API code generation: If
+   * field type is specified, returns it, otherwise, if field properties or objectName are specified,
+   * returns {@link Type#OBJECT}, otherwise returns {@link Type#STRING}.
+   * 
+   * @param field The field to retrieve type of in context of REST/Websocket API
+   *              code generation
+   * @return <code>null</code> if field is <code>null</code>, the field type if it is specified, or 
+   */
+  public static Type getFieldType(Field field) {
+    if (field == null) {
+      return null;
+    }
+    Type  type = field.getType();
+    if (type != null) {
+      return type;
+    }
+    if (field.getProperties() != null || field.getObjectName() != null) {
+      return Type.OBJECT;
+    }
+    return Type.STRING;
   }
 
 }

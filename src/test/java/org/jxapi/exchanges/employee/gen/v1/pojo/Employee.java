@@ -14,7 +14,7 @@ import org.jxapi.util.Pojo;
  * getEmployee REST endpoint request<br>
  * Get employee details by ID
  */
-@Generated("org.jxapi.generator.java.exchange.api.pojo.PojoGenerator")
+@Generated("org.jxapi.generator.java.pojo.PojoGenerator")
 @JsonSerialize(using = EmployeeSerializer.class)
 public class Employee implements Pojo<Employee> {
   

@@ -1,4 +1,4 @@
-package org.jxapi.generator.java.exchange.api.pojo;
+package org.jxapi.generator.java.pojo;
 
 import java.io.IOException;
 import java.util.List;
@@ -8,11 +8,11 @@ import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.ser.std.StdSerializer;
-import org.jxapi.exchange.descriptor.Field;
-import org.jxapi.exchange.descriptor.Type;
+
 import org.jxapi.generator.java.JavaCodeGenUtil;
 import org.jxapi.generator.java.JavaTypeGenerator;
-import org.jxapi.generator.java.exchange.ExchangeGenUtil;
+import org.jxapi.pojo.descriptor.Field;
+import org.jxapi.pojo.descriptor.Type;
 import org.jxapi.util.EncodingUtil;
 
 /**
@@ -74,7 +74,7 @@ public class JsonPojoSerializerGenerator extends JavaTypeGenerator {
     String simpleDeserializedClassName = JavaCodeGenUtil.getClassNameWithoutPackage(serializedTypeClassName);
     body.append("gen.writeStartObject();\n");
     fields.forEach(field -> {
-      Type type = ExchangeGenUtil.getFieldType(field);
+      Type type = PojoGenUtil.getFieldType(field);
       String getFieldValue = "value." + JavaCodeGenUtil.getGetAccessorMethodName(
           field.getName(),
           type,
@@ -90,7 +90,7 @@ public class JsonPojoSerializerGenerator extends JavaTypeGenerator {
   }
   
   private String genWriteFieldInstruction(Field field, String getFieldValue) {
-    Type type = ExchangeGenUtil.getFieldType(field);
+    Type type = PojoGenUtil.getFieldType(field);
     if (!type.getCanonicalType().isPrimitive) {
       return "gen.writeObjectField(\"" + msgFieldName(field) + "\", " + getFieldValue + ");\n";
     }

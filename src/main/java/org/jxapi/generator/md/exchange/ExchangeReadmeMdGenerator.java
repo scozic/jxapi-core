@@ -14,7 +14,6 @@ import org.jxapi.exchange.descriptor.Constant;
 import org.jxapi.exchange.descriptor.ExchangeApiDescriptor;
 import org.jxapi.exchange.descriptor.ExchangeDescriptor;
 import org.jxapi.exchange.descriptor.RestEndpointDescriptor;
-import org.jxapi.exchange.descriptor.Type;
 import org.jxapi.exchange.descriptor.WebsocketEndpointDescriptor;
 import org.jxapi.generator.html.XmlElement;
 import org.jxapi.generator.html.HtmlGenUtil;
@@ -23,6 +22,8 @@ import org.jxapi.generator.java.exchange.ExchangeGenUtil;
 import org.jxapi.generator.java.exchange.api.ExchangeApiGenUtil;
 import org.jxapi.generator.java.exchange.api.demo.EndpointDemoGenUtil;
 import org.jxapi.generator.java.exchange.properties.PropertiesGenUtil;
+import org.jxapi.generator.java.pojo.PojoGenUtil;
+import org.jxapi.pojo.descriptor.Type;
 import org.jxapi.util.CollectionUtil;
 import org.jxapi.util.PlaceHolderResolver;
 
@@ -222,7 +223,7 @@ public class ExchangeReadmeMdGenerator {
     List<String> columns = List.of("Subscription method", "Description", "API Reference");
     List<List<String>> cells = new ArrayList<>();
     websocketEndpoints.forEach(w -> {
-      Type requestDataType = ExchangeGenUtil.getFieldType(w.getRequest());
+      Type requestDataType = PojoGenUtil.getFieldType(w.getRequest());
       String requestClassName = null;
       if (requestDataType != null && requestDataType.isObject()) {
         requestClassName = ExchangeApiGenUtil.generateWebsocketEndpointRequestPojoClassName(
@@ -260,7 +261,7 @@ public class ExchangeReadmeMdGenerator {
     List<String> columns = List.of("Endpoint", "Description", "API Reference");
     List<List<String>> cells = new ArrayList<>();
     restEndpoints.forEach(r -> {
-      Type requestDataType = ExchangeGenUtil.getFieldType(r.getRequest());
+      Type requestDataType = PojoGenUtil.getFieldType(r.getRequest());
       String requestClassName = null;
       if (requestDataType != null && requestDataType.isObject()) {
         requestClassName = ExchangeApiGenUtil.generateRestEnpointRequestPojoClassName(

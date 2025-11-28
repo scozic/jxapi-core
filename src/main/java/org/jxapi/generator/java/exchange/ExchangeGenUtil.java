@@ -11,17 +11,15 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
-import org.jxapi.exchange.descriptor.CanonicalType;
 import org.jxapi.exchange.descriptor.ConfigPropertyDescriptor;
 import org.jxapi.exchange.descriptor.Constant;
 import org.jxapi.exchange.descriptor.ExchangeApiDescriptor;
 import org.jxapi.exchange.descriptor.ExchangeDescriptor;
-import org.jxapi.exchange.descriptor.Field;
-import org.jxapi.exchange.descriptor.Type;
 import org.jxapi.generator.java.Imports;
 import org.jxapi.generator.java.JavaCodeGenUtil;
 import org.jxapi.generator.java.exchange.constants.ConstantsGenUtil;
 import org.jxapi.generator.java.exchange.properties.PropertiesGenUtil;
+import org.jxapi.generator.java.pojo.PojoGenUtil;
 import org.jxapi.netutils.deserialization.json.AbstractJsonMessageDeserializer;
 import org.jxapi.netutils.deserialization.json.field.BigDecimalJsonFieldDeserializer;
 import org.jxapi.netutils.deserialization.json.field.BooleanJsonFieldDeserializer;
@@ -31,6 +29,9 @@ import org.jxapi.netutils.deserialization.json.field.LongJsonFieldDeserializer;
 import org.jxapi.netutils.deserialization.json.field.MapJsonFieldDeserializer;
 import org.jxapi.netutils.deserialization.json.field.StringJsonFieldDeserializer;
 import org.jxapi.netutils.rest.ratelimits.RateLimitRule;
+import org.jxapi.pojo.descriptor.CanonicalType;
+import org.jxapi.pojo.descriptor.Field;
+import org.jxapi.pojo.descriptor.Type;
 import org.jxapi.util.CollectionUtil;
 import org.jxapi.util.ConfigProperty;
 import org.jxapi.util.EncodingUtil;
@@ -455,40 +456,17 @@ public class ExchangeGenUtil {
   }
   
   /**
-   * Find the type of a field in context of REST/Websocket API code generation: If
-   * field type is specified, returns it, otherwise, if field properties or objectName are specified,
-   * returns {@link Type#OBJECT}, otherwise returns {@link Type#STRING}.
-   * 
-   * @param field The field to retrieve type of in context of REST/Websocket API
-   *              code generation
-   * @return <code>null</code> if field is <code>null</code>, the field type if it is specified, or 
-   */
-  public static Type getFieldType(Field field) {
-    if (field == null) {
-      return null;
-    }
-    Type  type = field.getType();
-    if (type != null) {
-      return type;
-    }
-    if (field.getProperties() != null || field.getObjectName() != null) {
-      return Type.OBJECT;
-    }
-    return Type.STRING;
-  }
-  
-  /**
    * @param field The field to check if its type is an object type
    * @return <code>true</code> if the field is not <code>null</code> and its type is an object type,
    *         <code>false</code> otherwise
-   * @see #getFieldType(Field)  
+   * @see PojoGenUtil#getFieldType(Field)  
    * @see Type#isObject()      
    */
   public static boolean isObjectField(Field field) {
     if (field == null) {
       return false;
     }
-    return getFieldType(field).isObject();
+    return PojoGenUtil.getFieldType(field).isObject();
   }
   
   /**

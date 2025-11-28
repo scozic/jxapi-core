@@ -1,12 +1,11 @@
-package org.jxapi.generator.java.exchange.api.pojo;
+package org.jxapi.generator.java.pojo;
 
 import java.util.List;
 
 import org.junit.Assert;
 import org.junit.Test;
-
-import org.jxapi.exchange.descriptor.Field;
-import org.jxapi.exchange.descriptor.Type;
+import org.jxapi.pojo.descriptor.Field;
+import org.jxapi.pojo.descriptor.Type;
 
 /**
  * Unit test for {@link JsonPojoSerializerGenerator}
@@ -52,7 +51,7 @@ public class JsonPojoSerializerGeneratorTest {
         + " * Jackson JSON Serializer for com.x.MyPojo\n"
         + " * @see MyPojo\n"
         + " */\n"
-        + "@Generated(\"org.jxapi.generator.java.exchange.api.pojo.JsonPojoSerializerGenerator\")\n"
+        + "@Generated(\"org.jxapi.generator.java.pojo.JsonPojoSerializerGenerator\")\n"
         + "public class MyPojoSerializer extends StdSerializer<MyPojo> {\n"
         + "  /**\n"
         + "   * Constructor\n"

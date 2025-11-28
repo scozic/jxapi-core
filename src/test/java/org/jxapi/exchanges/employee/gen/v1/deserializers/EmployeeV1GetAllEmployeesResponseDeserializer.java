@@ -16,7 +16,7 @@ import static org.jxapi.util.JsonUtil.skipNextValue;
  * Parses incoming JSON messages into org.jxapi.exchanges.employee.gen.v1.pojo.EmployeeV1GetAllEmployeesResponse instances
  * @see org.jxapi.exchanges.employee.gen.v1.pojo.EmployeeV1GetAllEmployeesResponse
  */
-@Generated("org.jxapi.generator.java.exchange.api.pojo.JsonMessageDeserializerGenerator")
+@Generated("org.jxapi.generator.java.pojo.JsonMessageDeserializerGenerator")
 public class EmployeeV1GetAllEmployeesResponseDeserializer extends AbstractJsonMessageDeserializer<EmployeeV1GetAllEmployeesResponse> {
   private final ListJsonFieldDeserializer<Employee> employeesDeserializer = new ListJsonFieldDeserializer<>(new EmployeeDeserializer());
   

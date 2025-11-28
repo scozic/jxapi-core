@@ -18,7 +18,7 @@ import org.jxapi.util.Pojo;
  * getAllEmployees REST endpoint request<br>
  * Get all employees
  */
-@Generated("org.jxapi.generator.java.exchange.api.pojo.PojoGenerator")
+@Generated("org.jxapi.generator.java.pojo.PojoGenerator")
 @JsonSerialize(using = EmployeeV1GetAllEmployeesResponseSerializer.class)
 public class EmployeeV1GetAllEmployeesResponse implements Pojo<EmployeeV1GetAllEmployeesResponse>, EmployeePaginatedResponse {
   

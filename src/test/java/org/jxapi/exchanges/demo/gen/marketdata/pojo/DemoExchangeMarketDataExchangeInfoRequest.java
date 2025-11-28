@@ -18,7 +18,7 @@ import org.jxapi.util.Pojo;
  * Request for DemoExchange MarketData API exchangeInfo REST endpoint<br>
  * Fetch market information of symbols that can be traded
  */
-@Generated("org.jxapi.generator.java.exchange.api.pojo.PojoGenerator")
+@Generated("org.jxapi.generator.java.pojo.PojoGenerator")
 @JsonSerialize(using = DemoExchangeMarketDataExchangeInfoRequestSerializer.class)
 public class DemoExchangeMarketDataExchangeInfoRequest implements Pojo<DemoExchangeMarketDataExchangeInfoRequest> {
   

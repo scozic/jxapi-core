@@ -7,15 +7,15 @@ import org.junit.Test;
 import org.jxapi.exchange.descriptor.ConfigPropertyDescriptor;
 import org.jxapi.exchange.descriptor.ExchangeApiDescriptor;
 import org.jxapi.exchange.descriptor.ExchangeDescriptor;
-import org.jxapi.exchange.descriptor.Field;
 import org.jxapi.exchange.descriptor.RestEndpointDescriptor;
-import org.jxapi.exchange.descriptor.Type;
 import org.jxapi.exchange.descriptor.WebsocketEndpointDescriptor;
 import org.jxapi.generator.java.Imports;
+import org.jxapi.pojo.descriptor.Field;
+import org.jxapi.pojo.descriptor.Type;
 
 /**
  * Unit test for {@link EndpointDemoGenUtil}, excepts tests for
- * {@link EndpointDemoGenUtil#generateFieldCreationMethod(org.jxapi.exchange.descriptor.Field, String, org.jxapi.exchange.descriptor.ExchangeDescriptor, org.jxapi.exchange.descriptor.ExchangeApiDescriptor, String, org.jxapi.generator.java.Imports)}
+ * {@link EndpointDemoGenUtil#generateFieldCreationMethod(org.jxapi.pojo.descriptor.Field, String, org.jxapi.exchange.descriptor.ExchangeDescriptor, org.jxapi.exchange.descriptor.ExchangeApiDescriptor, String, org.jxapi.generator.java.Imports)}
  *  that are tested in {@link EndpointDemoGenUtilGenerateRequestCreationMethodTest}.
  */
 public class EndpointDemoGenUtilTest {

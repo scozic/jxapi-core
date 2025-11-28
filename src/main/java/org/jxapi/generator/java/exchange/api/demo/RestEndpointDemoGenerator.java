@@ -8,14 +8,15 @@ import org.jxapi.exchange.ExchangeApiObserver;
 import org.jxapi.exchange.descriptor.ConfigPropertyDescriptor;
 import org.jxapi.exchange.descriptor.ExchangeApiDescriptor;
 import org.jxapi.exchange.descriptor.ExchangeDescriptor;
-import org.jxapi.exchange.descriptor.Field;
 import org.jxapi.exchange.descriptor.RestEndpointDescriptor;
-import org.jxapi.exchange.descriptor.Type;
 import org.jxapi.generator.java.JavaCodeGenUtil;
 import org.jxapi.generator.java.JavaTypeGenerator;
 import org.jxapi.generator.java.exchange.ExchangeGenUtil;
 import org.jxapi.generator.java.exchange.api.ExchangeApiGenUtil;
+import org.jxapi.generator.java.pojo.PojoGenUtil;
 import org.jxapi.netutils.rest.RestResponse;
+import org.jxapi.pojo.descriptor.Field;
+import org.jxapi.pojo.descriptor.Type;
 import org.jxapi.util.DemoUtil;
 import org.slf4j.Logger;
 
@@ -84,7 +85,7 @@ public class RestEndpointDemoGenerator extends JavaTypeGenerator {
     this.request = ExchangeApiGenUtil.resolveFieldProperties(exchangeApiDescriptor, restApi.getRequest());
     this.exchangeImplClassName = ExchangeGenUtil.getExchangeInterfaceImplementationName(exchangeDescriptor);
     if (hasArguments) {
-      requestDataType =  ExchangeGenUtil.getFieldType(request);
+      requestDataType =  PojoGenUtil.getFieldType(request);
       if (requestDataType.getCanonicalType().isPrimitive) {
         requestClassName = requestDataType.getCanonicalType().typeClass.getName();
       } else if (requestDataType.isObject() ){
@@ -109,7 +110,7 @@ public class RestEndpointDemoGenerator extends JavaTypeGenerator {
     this.apiInterfaceClassName = ExchangeGenUtil.getApiInterfaceClassName(exchangeDescriptor, exchangeApiDescriptor);
     this.simpleApiClassName = JavaCodeGenUtil.getClassNameWithoutPackage(apiInterfaceClassName);
     response = restApi.getResponse();
-    responseDataType = ExchangeGenUtil.getFieldType(response);
+    responseDataType = PojoGenUtil.getFieldType(response);
     hasResponse = ExchangeApiGenUtil.restEndpointHasResponse(restApi, exchangeApiDescriptor);
     if (hasResponse) {
       String restResponseClassName = null;

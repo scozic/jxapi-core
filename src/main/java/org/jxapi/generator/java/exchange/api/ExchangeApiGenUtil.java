@@ -11,20 +11,17 @@ import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
 import org.jxapi.exchange.ExchangeApi;
-import org.jxapi.exchange.descriptor.CanonicalType;
 import org.jxapi.exchange.descriptor.Constant;
 import org.jxapi.exchange.descriptor.ExchangeApiDescriptor;
 import org.jxapi.exchange.descriptor.ExchangeDescriptor;
-import org.jxapi.exchange.descriptor.Field;
 import org.jxapi.exchange.descriptor.RestEndpointDescriptor;
-import org.jxapi.exchange.descriptor.Type;
 import org.jxapi.exchange.descriptor.WebsocketEndpointDescriptor;
 import org.jxapi.exchange.descriptor.WebsocketTopicMatcherDescriptor;
 import org.jxapi.generator.java.Imports;
 import org.jxapi.generator.java.JavaCodeGenUtil;
 import org.jxapi.generator.java.exchange.ExchangeGenUtil;
-import org.jxapi.generator.java.exchange.api.pojo.PojoGenUtil;
 import org.jxapi.generator.java.exchange.constants.ConstantsGenUtil;
+import org.jxapi.generator.java.pojo.PojoGenUtil;
 import org.jxapi.netutils.deserialization.RawBigDecimalMessageDeserializer;
 import org.jxapi.netutils.deserialization.RawBooleanMessageDeserializer;
 import org.jxapi.netutils.deserialization.RawIntegerMessageDeserializer;
@@ -32,6 +29,9 @@ import org.jxapi.netutils.deserialization.RawLongMessageDeserializer;
 import org.jxapi.netutils.deserialization.RawStringMessageDeserializer;
 import org.jxapi.netutils.websocket.multiplexing.WSMTMFUtil;
 import org.jxapi.netutils.websocket.multiplexing.WebsocketMessageTopicMatcherFactory;
+import org.jxapi.pojo.descriptor.CanonicalType;
+import org.jxapi.pojo.descriptor.Field;
+import org.jxapi.pojo.descriptor.Type;
 import org.jxapi.util.CollectionUtil;
 import org.jxapi.util.EncodingUtil;
 import org.jxapi.util.JsonUtil;
@@ -427,7 +427,7 @@ public class ExchangeApiGenUtil {
   public static String getClassNameForField(Field field, 
                         Imports imports, 
                         String enclosingClassName) {
-    Type fieldType = ExchangeGenUtil.getFieldType(field);
+    Type fieldType = PojoGenUtil.getFieldType(field);
     String objectClassName = null;
     if (fieldType.isObject()) {
        objectClassName = getFieldObjectClassName(field, enclosingClassName);
@@ -628,7 +628,7 @@ public class ExchangeApiGenUtil {
     if (endpointRequest == null) {
       return false;
     }
-    Type dataType = ExchangeGenUtil.getFieldType(endpointRequest);
+    Type dataType = PojoGenUtil.getFieldType(endpointRequest);
     return dataType.getCanonicalType() != CanonicalType.OBJECT 
         || getFieldPropertiesCount(endpointRequest, exchangeApiDescriptor) > 0;
   }
@@ -688,7 +688,7 @@ public class ExchangeApiGenUtil {
      if (field == null) {
       return null;
     }
-    Type type = ExchangeGenUtil.getFieldType(field);
+    Type type = PojoGenUtil.getFieldType(field);
     if (type.isObject() 
       && field.getObjectName() != null 
       && field.getProperties() == null) {
@@ -1344,7 +1344,7 @@ public class ExchangeApiGenUtil {
     if (msg == null) {
       return null;
     }
-    Type messageDataType = ExchangeGenUtil.getFieldType(msg);
+    Type messageDataType = PojoGenUtil.getFieldType(msg);
     if (Objects.equals(msg.getName(), name)) {
       return Optional.ofNullable(msg.getMsgField()).orElse(name);
     } else if (messageDataType.isObject()) {
@@ -1409,7 +1409,7 @@ public class ExchangeApiGenUtil {
       String requestFieldPlaceHolder, 
       Field requestField, 
       Imports imports) {
-    Type type = ExchangeGenUtil.getFieldType(requestField);
+    Type type = PojoGenUtil.getFieldType(requestField);
     List<Field> properties = CollectionUtil.emptyIfNull(requestField.getProperties());
     StringBuilder declaration = new StringBuilder();
     declaration.append(DEFAULT_REQUEST_ARG_NAME);
@@ -1427,7 +1427,7 @@ public class ExchangeApiGenUtil {
                + part 
                + " found in request field for placeholder:" 
                + requestFieldPlaceHolder));
-        type = ExchangeGenUtil.getFieldType(sub);
+        type = PojoGenUtil.getFieldType(sub);
         declaration.append(JavaCodeGenUtil.getGetAccessorMethodName(
             sub.getName(),
             type,
