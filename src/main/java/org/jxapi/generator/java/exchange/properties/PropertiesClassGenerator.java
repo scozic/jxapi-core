@@ -12,6 +12,7 @@ import org.jxapi.generator.html.HtmlGenUtil;
 import org.jxapi.generator.java.JavaCodeGenUtil;
 import org.jxapi.generator.java.JavaTypeGenerator;
 import org.jxapi.generator.java.exchange.ExchangeGenUtil;
+import org.jxapi.generator.java.pojo.PojoGenUtil;
 import org.jxapi.pojo.descriptor.Type;
 import org.jxapi.util.CollectionUtil;
 import org.jxapi.util.ConfigProperty;
@@ -204,7 +205,7 @@ public class PropertiesClassGenerator extends JavaTypeGenerator {
         
     sb.append(JavaCodeGenUtil.generateJavaDoc(desc.toString()))
       .append("\n");
-    String typeClass = ExchangeGenUtil.getClassNameForType(type, getImports(), null);
+    String typeClass = PojoGenUtil.getClassNameForType(type, getImports(), null);
     String methodName = PropertiesGenUtil.getPropertyGetterMethodName(property, properties);
     String getPropertiesUtilMethodName = getPropertiesUtilGetPropertyMethodName(property);
     String keyVariableName = PropertiesGenUtil.getPropertyVariableName(property, this.properties);

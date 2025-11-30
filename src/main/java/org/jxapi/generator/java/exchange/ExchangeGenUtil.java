@@ -6,7 +6,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
@@ -19,7 +18,6 @@ import org.jxapi.generator.java.Imports;
 import org.jxapi.generator.java.JavaCodeGenUtil;
 import org.jxapi.generator.java.exchange.constants.ConstantsGenUtil;
 import org.jxapi.generator.java.exchange.properties.PropertiesGenUtil;
-import org.jxapi.generator.java.pojo.PojoGenUtil;
 import org.jxapi.netutils.deserialization.json.AbstractJsonMessageDeserializer;
 import org.jxapi.netutils.deserialization.json.field.BigDecimalJsonFieldDeserializer;
 import org.jxapi.netutils.deserialization.json.field.BooleanJsonFieldDeserializer;
@@ -30,7 +28,6 @@ import org.jxapi.netutils.deserialization.json.field.MapJsonFieldDeserializer;
 import org.jxapi.netutils.deserialization.json.field.StringJsonFieldDeserializer;
 import org.jxapi.netutils.rest.ratelimits.RateLimitRule;
 import org.jxapi.pojo.descriptor.CanonicalType;
-import org.jxapi.pojo.descriptor.Field;
 import org.jxapi.pojo.descriptor.Type;
 import org.jxapi.util.CollectionUtil;
 import org.jxapi.util.ConfigProperty;
@@ -98,7 +95,7 @@ public class ExchangeGenUtil {
    */
   public static final String DEMO_CONFIG_PLACEHOLDER_PREFIX = "demo.config.";
   
-  private static final Pattern PLACEHOLDER_PATERN = Pattern.compile("\\$\\{([^}]+)}");
+  public static final Pattern PLACEHOLDER_PATERN = Pattern.compile("\\$\\{([^}]+)}");
   
   /**
    * @param exchangeDescriptor The exchange the API group belongs to
@@ -248,82 +245,6 @@ public class ExchangeGenUtil {
   }
 
   /**
-   * @param type            the type of field (see {@link Field}) to get type class name
-   *                        of.
-   * @param imports         The imports of generator context that will be
-   *                        populated with classes used by returned type. That set
-   *                        must be not <code>null</code> and mutable.
-   * @param objectClassName the object (full) class name of leaf object type if <code>type</code> is of object type
-   * @return The simple class name associated to given <code>type</code>:
-   *        <ul> 
-   *          <li>if this type is a 'Primitive' type, returns the simple class name of the corresponding Java class:
-   *            <ul>
-   *              <li>BIGDECIMAL: {@link BigDecimal}</li>
-   *              <li>BOOLEAN: {@link Boolean}</li>
-   *              <li>INT: {@link Integer}</li>
-   *              <li>LONG: {@link Long}</li>
-   *              <li>STRING: {@link String}</li>
-   *            </ul>
-   *          <li>If this type is a 'List' type, returns generic <code>List&lt;SubTypeClassName&gt;</code>, 
-   *         where <code>subTypeClassName</code> is the simple class name of the subType of the list, see {@link Type#getSubType()}.
-   *          <li>If this type is a 'Map' type, returns generic <code>Map&lt;String, SubTypeClassName&gt;</code>, 
-   *         where <code>subTypeClassName</code> is the simple class name of the subType of the map, see {@link Type#getSubType()}.
-   *          <li>If this type is an 'Object' type, returns the simple class name of the object class name, 
-   *          see {@link JavaCodeGenUtil#getClassNameWithoutPackage(String)}.
-   *          </li>
-   *        </ul>
-   * @see #getClassNameForType(Type, Imports, String)
-   * @throws IllegalArgumentException if the type is not recognized.
-   */
-  public static String getClassNameForType(Type type, 
-                         Imports imports, 
-                       String objectClassName) {
-    if (type == null) {
-      return null;
-    }
-    String subTypeClassName = null;
-    CanonicalType canonicalType = type.getCanonicalType();
-    Class<?> canonicalTypeClass = canonicalType.typeClass;
-    switch(canonicalType) {
-    case BIGDECIMAL:
-      if (imports != null) {
-        imports.add(BigDecimal.class.getName());
-      }
-      return canonicalTypeClass.getSimpleName();
-    case BOOLEAN:
-    case INT:
-    case LONG:
-    case STRING:
-      return canonicalTypeClass.getSimpleName();
-    case LIST:
-      subTypeClassName = getClassNameForType(type.getSubType(), imports, objectClassName);
-      if (imports != null) {
-        imports.add(canonicalTypeClass.getName());
-      }
-      return canonicalTypeClass.getSimpleName() 
-          + "<" 
-          + JavaCodeGenUtil.getClassNameWithoutPackage(subTypeClassName) 
-          + ">";
-    case MAP:
-      subTypeClassName = getClassNameForType(type.getSubType(), imports, objectClassName);
-      if (imports != null) {
-        imports.add(canonicalTypeClass.getName());
-      }
-      return canonicalTypeClass.getSimpleName() 
-          + "<String, " 
-          + JavaCodeGenUtil.getClassNameWithoutPackage(subTypeClassName) 
-          + ">";
-    case OBJECT:
-      if (imports != null) {
-        imports.add(objectClassName);
-      }
-      return JavaCodeGenUtil.getClassNameWithoutPackage(objectClassName);
-    default:
-      throw new IllegalArgumentException("Unexpected type for:" + type);
-    }
-  }
-
-  /**
    * Returns the instruction to create a new instance of a {@link AbstractJsonMessageDeserializer} for the given type.
    * @param type The type of the field to deserialize
    * @param objectClassName The object class name of the field to generate JsonFieldDeserializer for. 
@@ -453,41 +374,6 @@ public class ExchangeGenUtil {
    */
   public static String getExchangeInterfaceImplementationName(String exchangeClassName) {
     return exchangeClassName + "Impl";
-  }
-  
-  /**
-   * @param field The field to check if its type is an object type
-   * @return <code>true</code> if the field is not <code>null</code> and its type is an object type,
-   *         <code>false</code> otherwise
-   * @see PojoGenUtil#getFieldType(Field)  
-   * @see Type#isObject()      
-   */
-  public static boolean isObjectField(Field field) {
-    if (field == null) {
-      return false;
-    }
-    return PojoGenUtil.getFieldType(field).isObject();
-  }
-  
-  /**
-   * Finds all placeholders in the given string value. For instance with input
-   * string
-   * <code>"Hello ${name} you are using exchange ${exchange.name}"</code>, will return <code>["name", "exchange.name"]</code>
-   * 
-   * @param value The string value to find placeholders in
-   * @return A list of placeholders found in the given string value
-   */
-  public static List<String> findPlaceHolders(String value) {
-    List<String> res = new ArrayList<>();
-    if (StringUtils.isEmpty(value)) {
-      return res;
-    }
-
-    Matcher matcher = PLACEHOLDER_PATERN.matcher(value);
-    while (matcher.find()) {
-      res.add(matcher.group(1));
-    }
-    return res;
   }
   
   /**
@@ -1001,7 +887,7 @@ public class ExchangeGenUtil {
     if (template == null) {
       return JavaCodeGenUtil.NULL;
     }
-    List<String> placeHolderNames = findPlaceHolders(template);
+    List<String> placeHolderNames = JavaCodeGenUtil.findPlaceHolders(template);
     if (placeHolderNames.isEmpty()) {
       return JavaCodeGenUtil.getQuotedString(template);
     }

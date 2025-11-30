@@ -1,6 +1,5 @@
 package org.jxapi.generator.java.exchange.api;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -307,209 +306,6 @@ public class ExchangeApiGenUtil {
   }
 
   /**
-   * Generates expected class name for an {@link Field} instance
-   * according to its type (see
-   * {@link Field#getType()} .
-   * <ul>
-   * <li>For a primitive (see {@link CanonicalType#isPrimitive}
-   * field type, the corresponding primitive type class is returned:
-   * <code>java.lang.String</code>, <code>java.lang.Integer</code> ...)</li>
-   * <li>For an object (see {@link Type#OBJECT}
-   * field type), if the <code>objectName</code> (see
-   * {@link Field#getObjectName()} is defined, that object name is
-   * returned.</li>
-   * <li>For list or map (see {@link CanonicalType#LIST},
-   * {@link CanonicalType#MAP}), the corresponding generic class
-   * is returned e.g. <code>java.util.List</code> or <code>java.util.Map</code>,
-   * with generic parameter set with the class for subtype (see
-   * {@link Type#getSubType()} of <code>field</code>
-   * as returned by this method.</li>
-   * </ul>
-   * The returned value is the class simple name (without package prefix). The
-   * class full name is added to <code>imports</code> set passed in parameter. If
-   * type is a list or map, the generic parameter {@link List} or {@link Map} is
-   * also added to imports.
-   * <p>
-   * A few examples of returned values and imports added for some examples of a
-   * field named <code>Bar</code>:
-   * <table border="1">
-   * <caption>Examples of returned values and imports added</caption>
-   * <thead>
-   * <tr>
-   * <th>Type</th>
-   * <th>Enclosing class name</th>
-   * <th>objectName</th>
-   * <th>Returned value</th>
-   * <th>Imports added</th>
-   * <th>Notes</th>
-   * </tr>
-   * </thead> <tbody>
-   * <tr>
-   * <td><code>STRING</code></td>
-   * <td><i>any</i></td>
-   * <td><i>any</i></td>
-   * <td><code>String</code></td>
-   * <td><i>none</i></td>
-   * <td>Primitive field type, and {@link String} is in <code>java.lang</code>
-   * package, no import added.</td>
-   * </tr>
-   * 
-   * <tr>
-   * <td><code>BIGDECIMAL</code></td>
-   * <td><i>any</i></td>
-   * <td><i>any</i></td>
-   * <td><code>BigDecimal</code></td>
-   * <td><ul><li><code>java.lang.BigDecimal</code></li>
-   * </ul>
-   * </td>
-   * <td>Primitive field type, and {@link BigDecimal} is in
-   * <code>java.math</code> package, <code>java.lang.BigDecimal</code> import
-   * added.</td>
-   * </tr>
-   * 
-   * <tr>
-   * <td><code>OBJECT</code></td>
-   * <td><code>com.x.y.gen.pojo.Foo</code></td>
-   * <td><code>null</code></td>
-   * <td><code>FooBar</code></td>
-   * <td>
-   * <ul>
-   * <li><code>com.x.y.gen.pojo.FooBar</code></li>
-   * </ul>
-   * </td>
-   * <td><code>OBJECT</code> field type and no object name specified, the returned
-   * type is generated name by concatenating enclosing class name with field
-   * name</td>
-   * </tr>
-   * 
-   * <tr>
-   * <td><code>OBJECT</code></td>
-   * <td><code>com.x.y.gen.pojo.Foo</code></td>
-   * <td><code>MySpecialObjectName</code></td>
-   * <td><code>MySpecialObjectName</code></td>
-   * <td><ul><li><code>com.x.y.gen.pojo.MySpecialObjectName</code>
-   * </ul>
-   * </td>
-   * <td><code>OBJECT</code> field with <code>objectName</code> specified, the
-   * returned type is <code>objectName</code> as class name, assumed to be in same
-   * package as enclosing class name package.</td>
-   * </tr>
-   * 
-   * <tr>
-   * <td><code>OBJECT_MAP_LIST</code></td>
-   * <td><code>com.x.y.gen.pojo.Foo</code></td>
-   * <td><code>null</code></td>
-   * <td><code>List&lt;Map&lt;String, FooBar&gt;&gt;</code></td>
-   * <td>
-   * <ul>
-   * <li><code>java.util.List</code></li>
-   * <li><code>java.util.Map</code></li>
-   * <li><code>com.x.y.gen.pojo.FooBar</code></li>
-   * </ul>
-   * </td>
-   * <td><code>OBJECT</code> field nested in list of map with no
-   * <code>objectName</code> specified, the returned type is
-   * <code>List&lt;Map&lt;String, FooBar&gt;&gt;</code> and {@link Map},
-   * {@link List} and class for object field are added to imports.</td>
-   * </tr>
-   * </tbody>
-   * </table>
-   * 
-   * @param field  The field
-   * @param imports            The imports of generator context that will be
-   *                           populated with classes used by returned type. That
-   *                           set must be not <code>null</code> and mutable.
-   * @param enclosingClassName The POJO class containing the endpoint to generate
-   *                           class name for type of.
-   * @return The simple class name for type of <code>field</code>
-   *         parameter.
-   */
-  public static String getClassNameForField(Field field, 
-                        Imports imports, 
-                        String enclosingClassName) {
-    Type fieldType = PojoGenUtil.getFieldType(field);
-    String objectClassName = null;
-    if (fieldType.isObject()) {
-       objectClassName = getFieldObjectClassName(field, enclosingClassName);
-       
-    }
-    return ExchangeGenUtil.getClassNameForType(
-          fieldType,
-          imports, 
-          objectClassName);
-  }
-
-  /**
-   * Generates the expected full class name for the object described by an
-   * {@link Field}, assuming it is of 'object' type (see
-   * {@link Type#isObject()}).<br>
-   * The returned class package will be one of
-   * <code>enclosingClassName</code>.<br>
-   * 
-   * @param field  The {@link Type#OBJECT} type field to get object class name for 
-   * @param enclosingClassName The POJO class containing the endpoint to generate
-   *                           class name for type of.
-   * @return field object name with first letter to uppercase if
-   *         {@link Field#getObjectName()} is not <code>null</code>,
-   *         else concatenation of <code>&lt;enclosingClassName&gt;+&lt;Field name&gt;</code>
-   */
-  public static String getFieldObjectClassName(Field field, 
-                         String enclosingClassName) {
-    if (field.getObjectName() != null) {
-       return JavaCodeGenUtil.getClassPackage(enclosingClassName) 
-               + "." 
-               + JavaCodeGenUtil.firstLetterToUpperCase(field.getObjectName());
-     } else {
-       return enclosingClassName + JavaCodeGenUtil.firstLetterToUpperCase(field.getName());
-     }
-  }
-
-  /**
-   * Generates the expected full class name for the leaf subType of an endpoint.
-   * <ul>
-   * <li>If the leaf subType canonical type is a primitive type (see
-   * {@link CanonicalType#isPrimitive}), the corresponding primitive
-   * type class, see {@link CanonicalType#typeClass } is returned.</li>
-   * <li>If the supplied <code>objectName</code> is not <code>null</code>, the
-   * class name is the object name with first letter to
-   * uppercase, and its package is the package of the enclosing class name.</li>
-   * <li>Otherwise, the class name is the concatenation of the package of the
-   * enclosing class name and the class name generated
-   * by
-   * {@link ExchangeGenUtil#getClassNameForType(Type, Imports, String)}
-   * for the
-   * leaf subType of the field type.</li>
-   * </ul>
-   * {@link Type#getLeafSubType(Type)}.
-   * 
-   * @param fieldName       See {@link Field#getName()}
-   * @param type                  See {@link Field#getType()}
-   * @param objectName            See {@link Field#getObjectName()}
-   * @param enclosingClassName    The POJO class containing the endpoint to
-   *                              generate class name for type of.
-   * @return the full class name of leaf subType of field type.
-   */
-  public static String getFieldLeafSubTypeClassName(String fieldName, 
-                            Type type, 
-                            String objectName,  
-                            String enclosingClassName) {
-    Type leafSubType = Type.getLeafSubType(type);
-    if (leafSubType.getCanonicalType().isPrimitive) {
-      return leafSubType.getCanonicalType().typeClass.getName();
-    }
-    String pkg = JavaCodeGenUtil.getClassPackage(enclosingClassName) + ".";
-    if (objectName != null) {
-      return pkg + objectName;
-    }
-    
-    return pkg + ExchangeGenUtil.getClassNameForType(
-          leafSubType,
-          new Imports(),
-          enclosingClassName) 
-        + JavaCodeGenUtil.firstLetterToUpperCase(fieldName);
-  }
-
-  /**
    * Generates the part of instruction to get a new instance of a message
    * deserializer for a given message type.
    * <ul>
@@ -743,8 +539,8 @@ public class ExchangeApiGenUtil {
     List<Field> res = null;
     for (RestEndpointDescriptor restEndpointDescriptor: 
         Optional.ofNullable(exchangeApiDescriptor.getRestEndpoints()).orElse(List.of())) {
-      res = Optional.ofNullable(findPropertiesForObjectNameInField(requestObjectName, restEndpointDescriptor.getRequest()))
-          .orElse(findPropertiesForObjectNameInField(requestObjectName, restEndpointDescriptor.getResponse()));
+      res = Optional.ofNullable(PojoGenUtil.findPropertiesForObjectNameInField(requestObjectName, restEndpointDescriptor.getRequest()))
+          .orElse(PojoGenUtil.findPropertiesForObjectNameInField(requestObjectName, restEndpointDescriptor.getResponse()));
       if (res != null) {
         break;
       }
@@ -753,8 +549,8 @@ public class ExchangeApiGenUtil {
     if (res == null) {
       for (WebsocketEndpointDescriptor websocketEndpointDescriptor: 
           Optional.ofNullable(exchangeApiDescriptor.getWebsocketEndpoints()).orElse(List.of())) {
-        res = Optional.ofNullable(findPropertiesForObjectNameInField(requestObjectName, websocketEndpointDescriptor.getRequest()))
-            .orElse(findPropertiesForObjectNameInField(requestObjectName, websocketEndpointDescriptor.getMessage()));
+        res = Optional.ofNullable(PojoGenUtil.findPropertiesForObjectNameInField(requestObjectName, websocketEndpointDescriptor.getRequest()))
+            .orElse(PojoGenUtil.findPropertiesForObjectNameInField(requestObjectName, websocketEndpointDescriptor.getMessage()));
         if (res != null) {
           break;
         }
@@ -766,39 +562,6 @@ public class ExchangeApiGenUtil {
     }
     throw new IllegalArgumentException("Found no REST request or response or Websocket request or message with fields defined for objectName:"  
                        + requestObjectName);
-  }
-
-  /**
-   * Finds the properties of an object name in a field: return properties (see
-   * {@link Field#getProperties()}) found in provided field if it has the same
-   * object name as the one provided, or properties of first field found in its
-   * sub-properties that carries expected objectName recursively.
-   * 
-   * @param objectName The object name to find properties for.
-   * @param param      The field to search for properties of the object name.
-   * @return The list of properties of the object name in the field or <code>null</code> if properties could not be resolved.
-   */
-  public static List<Field> findPropertiesForObjectNameInField(String objectName, Field param) {
-    if (objectName == null) {
-      return null;
-    }
-    if (param == null) {
-      return null;
-    }
-    List<Field> res = param.getProperties();
-    if (res == null) {
-      return null;
-    }
-    if (Objects.equals(objectName, param.getObjectName())) {
-      return res;
-    }
-    for (Field p: res) {
-      res = findPropertiesForObjectNameInField(objectName, p);
-      if (res != null) {
-        return res;
-      }
-    }
-    return null;
   }
 
   /**
@@ -1062,7 +825,7 @@ public class ExchangeApiGenUtil {
       }
       declaration
         .append(JavaCodeGenUtil.getQuotedString(
-            getMsgFieldName(topicMatcherDescriptor.getFieldName(), message)))
+            PojoGenUtil.getMsgFieldName(topicMatcherDescriptor.getFieldName(), message)))
         .append(", ")
         .append(generateTopicMatcherValueSubstitutionInstructionDeclaration(
           value, 
@@ -1285,7 +1048,7 @@ public class ExchangeApiGenUtil {
       return String.valueOf(value);
     }
     String template = (String) value;
-    List<String> placeHolderNames = ExchangeGenUtil.findPlaceHolders(template);
+    List<String> placeHolderNames = JavaCodeGenUtil.findPlaceHolders(template);
     if (placeHolderNames.isEmpty()) {
       return JavaCodeGenUtil.getQuotedString(template);
     }
@@ -1314,49 +1077,6 @@ public class ExchangeApiGenUtil {
   }
   
   
-  
-  /**
-   * Finds actual field name from a {@link Field} or one of its child fields. <br>
-   * If provided field name matches name of provided field, then its msgFieldName
-   * is returned (see {@link Field#getMsgField()}) or the provided name if
-   * msgFieldName is <code>null</code>.<br>
-   * Otherwise, if provided field is of 'object' type (see
-   * {@link Type#isObject()}) then its child fields (see
-   * {@link Field#getProperties()}) are searched. <br>
-   * This is intented for determining actual field name in websocket message, from
-   * field name provided in
-   * {@link WebsocketTopicMatcherDescriptor#getFieldName()}.
-   * 
-   * @param name The field name provided in
-   *             {@link WebsocketTopicMatcherDescriptor#getFieldName()}. 
-   *             Cannot be <code>null</code>
-   * @param msg  The websocket stream data type
-   * @return The msgFieldName (see {@link Field#getMsgField()}) of provided field
-   *         or first of its child fields (see {@link Field#getProperties()} with
-   *         name see {@link Field#getName()} matching that field. If no match, or
-   *         <code>msg</code> is <code>null</code>, <code>null</code> is returned.
-   * @throws IllegalArgumentException if <code>name</code> is <code>null</code>
-   */
-  public static String getMsgFieldName(String name, Field msg) {
-    if (name == null) {
-      throw new IllegalArgumentException("null name");
-    }
-    if (msg == null) {
-      return null;
-    }
-    Type messageDataType = PojoGenUtil.getFieldType(msg);
-    if (Objects.equals(msg.getName(), name)) {
-      return Optional.ofNullable(msg.getMsgField()).orElse(name);
-    } else if (messageDataType.isObject()) {
-      for (Field c: msg.getProperties()) {
-        String res = getMsgFieldName(name, c);
-        if (res != null) {
-          return res;
-        }
-      }
-    }
-    return null;
-  }
   
   private static final String generateTopicMatcherPlaceHolderValueSubstitution(
       String placeHolder,

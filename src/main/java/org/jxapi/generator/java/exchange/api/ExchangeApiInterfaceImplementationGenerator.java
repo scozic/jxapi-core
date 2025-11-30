@@ -490,7 +490,7 @@ public class ExchangeApiInterfaceImplementationGenerator extends JavaTypeGenerat
                     exchangeApiDescriptor, 
                     websocketApi);
       }
-      requestSimpleClassName = ExchangeGenUtil.getClassNameForType(
+      requestSimpleClassName = PojoGenUtil.getClassNameForType(
                           requestDataType, 
                           getImports(), 
                           requestClassName);
@@ -500,7 +500,7 @@ public class ExchangeApiInterfaceImplementationGenerator extends JavaTypeGenerat
                       exchangeDescriptor, 
                       exchangeApiDescriptor, 
                       websocketApi);
-    String messageClassSimpleName = ExchangeGenUtil.getClassNameForType(
+    String messageClassSimpleName = PojoGenUtil.getClassNameForType(
                       messageDataType, 
                       getImports(), 
                       messageClassObjectName);
@@ -593,7 +593,7 @@ public class ExchangeApiInterfaceImplementationGenerator extends JavaTypeGenerat
       if (requestDataType.isObject()) {
         requestClassName = ExchangeApiGenUtil.generateRestEnpointRequestPojoClassName(exchangeDescriptor, exchangeApiDescriptor, restApi);
       }
-      requestSimpleClassName = ExchangeGenUtil.getClassNameForType(
+      requestSimpleClassName = PojoGenUtil.getClassNameForType(
           requestDataType, 
           getImports(), 
           requestClassName); 
@@ -610,7 +610,7 @@ public class ExchangeApiInterfaceImplementationGenerator extends JavaTypeGenerat
             restApi);
       }
       
-      responseSimpleClassName = ExchangeGenUtil.getClassNameForType(
+      responseSimpleClassName = PojoGenUtil.getClassNameForType(
           responseDataType, 
           getImports(), 
           restResponseClassName);

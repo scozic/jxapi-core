@@ -109,7 +109,7 @@ public class WebsocketEndpointDemoGenerator extends JavaTypeGenerator {
       }
       
       addImport(requestClassName);
-      this.requestSimpleClassName = ExchangeGenUtil.getClassNameForType(
+      this.requestSimpleClassName = PojoGenUtil.getClassNameForType(
           requestDataType, 
           getImports(), 
           requestClassName);
@@ -127,7 +127,7 @@ public class WebsocketEndpointDemoGenerator extends JavaTypeGenerator {
                 + exchangeApiDescriptor.getName() 
                 + " " + websocketApi.getName();
     Type messageDataType = PojoGenUtil.getFieldType(websocketApi.getMessage());
-    messageClassSimpleName = ExchangeGenUtil.getClassNameForType(
+    messageClassSimpleName = PojoGenUtil.getClassNameForType(
         messageDataType, 
         getImports(), 
         ExchangeApiGenUtil.generateWebsocketEndpointMessagePojoClassName(

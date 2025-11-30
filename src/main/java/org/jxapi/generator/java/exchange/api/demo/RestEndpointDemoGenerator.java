@@ -98,7 +98,7 @@ public class RestEndpointDemoGenerator extends JavaTypeGenerator {
       }
       
       addImport(requestClassName);
-      requestSimpleClassName = ExchangeGenUtil.getClassNameForType(
+      requestSimpleClassName = PojoGenUtil.getClassNameForType(
                     requestDataType, 
                     getImports(), 
                     requestClassName);
@@ -121,7 +121,7 @@ public class RestEndpointDemoGenerator extends JavaTypeGenerator {
             restApi);
         addImport(restResponseClassName);
       }
-      responseSimpleClassName = ExchangeGenUtil.getClassNameForType(
+      responseSimpleClassName = PojoGenUtil.getClassNameForType(
           responseDataType, 
           getImports(), 
           restResponseClassName);

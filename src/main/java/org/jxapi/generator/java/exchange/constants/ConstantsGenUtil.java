@@ -8,6 +8,7 @@ import org.jxapi.exchange.descriptor.Constant;
 import org.jxapi.generator.java.Imports;
 import org.jxapi.generator.java.JavaCodeGenUtil;
 import org.jxapi.generator.java.exchange.ExchangeGenUtil;
+import org.jxapi.generator.java.pojo.PojoGenUtil;
 import org.jxapi.pojo.descriptor.Type;
 import org.jxapi.util.CollectionUtil;
 import org.jxapi.util.JsonUtil;
@@ -47,7 +48,7 @@ public class ConstantsGenUtil {
     if (type.isObject()) {
       throw new IllegalArgumentException("Constant " + constant + " can not be of type Object");
     }
-    String className = ExchangeGenUtil.getClassNameForType(type, imports, null);
+    String className = PojoGenUtil.getClassNameForType(type, imports, null);
     String varName = getConstantVariableName(constant, sieblings);
     String value = getConstantSampleValueDeclaration(constant, imports, sampleValuePlaceHolderResolver);
     String description = Optional.ofNullable(docPlaceHolderResolver)

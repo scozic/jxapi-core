@@ -4,7 +4,7 @@ import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 
-import org.jxapi.generator.java.exchange.ExchangeGenUtil;
+import org.jxapi.generator.java.pojo.PojoGenUtil;
 
 /**
  * Canonical types for API interface fields, see {@link Type}.<br>
@@ -69,7 +69,7 @@ public enum CanonicalType {
    * The {@link Class} holding values of this type (see {@link #isPrimitive}, or
    * <code>null</code> for {@link #OBJECT} type (in which case the associated class is custom). To guess the class associated to a
    * non-primitive type, see
-   * {@link ExchangeGenUtil#getClassNameForType(Type, org.jxapi.generator.java.Imports, String)}
+   * {@link PojoGenUtil#getClassNameForType(Type, org.jxapi.generator.java.Imports, String)}
    */
   public final Class<?> typeClass;
   

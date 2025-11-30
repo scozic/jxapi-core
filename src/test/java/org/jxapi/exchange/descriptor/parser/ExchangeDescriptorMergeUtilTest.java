@@ -2,7 +2,6 @@ package org.jxapi.exchange.descriptor.parser;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Function;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -18,63 +17,6 @@ import org.jxapi.netutils.rest.ratelimits.RateLimitRule;
  * Unit test for {@link ExchangeDescriptorMergeUtil}
  */
 public class ExchangeDescriptorMergeUtilTest {
-
-  @Test
-  public void testMerge() {
-    Assert.assertEquals("foo", ExchangeDescriptorMergeUtil.merge(null, "foo", null));
-    Assert.assertEquals("foo", ExchangeDescriptorMergeUtil.merge(null,  null, "foo"));
-    Assert.assertNull(ExchangeDescriptorMergeUtil.merge(null, null, null));
-    Assert.assertEquals("foo", ExchangeDescriptorMergeUtil.merge(null,  "foo", "foo"));
-    try {
-      ExchangeDescriptorMergeUtil.merge("property 'hello'", "foo", "bar");
-      Assert.fail("Expected IllegalArgumentException");
-    } catch (IllegalArgumentException e) {
-      // expected
-      Assert.assertEquals("Conflict: Found distinct values for property 'hello':[foo] and [bar]", e.getMessage());
-    }
-  }
-  
-  @Test
-  public void testMergeLongs() {
-    Assert.assertEquals(1L, ExchangeDescriptorMergeUtil.mergePositiveLongs(null, 1L, -1L));
-    Assert.assertEquals(1L, ExchangeDescriptorMergeUtil.mergePositiveLongs(null, -1L, 1L));
-    Assert.assertEquals(1L, ExchangeDescriptorMergeUtil.mergePositiveLongs(null, 1L, 1L));
-    Assert.assertEquals(-1L, ExchangeDescriptorMergeUtil.mergePositiveLongs(null, -1L, -1L));
-    try {
-      ExchangeDescriptorMergeUtil.mergePositiveLongs("property 'hello'", 1L, 2L);
-      Assert.fail("Expected IllegalArgumentException");
-    } catch (IllegalArgumentException e) {
-      // expected
-      Assert.assertEquals("Conflict: Found distinct values for property 'hello':[1] and [2]", e.getMessage());
-    }
-  }
-  
-  @Test
-  public void testMergeLists() {
-    List<MyType> list1 = List.of(new MyType("foo"), new MyType("bar"));
-    List<MyType> list2 = List.of(new MyType("hello"), new MyType("world"));
-    List<MyType> list3 = List.of(new MyType("bye"), new MyType("foo"));
-    Function<MyType, String> idExtractor = MyType::getValue;
-    
-    Assert.assertEquals(list1, ExchangeDescriptorMergeUtil.mergeLists(null, list1, null, idExtractor));
-    Assert.assertEquals(list1, ExchangeDescriptorMergeUtil.mergeLists(null, null, list1, idExtractor));
-    Assert.assertEquals(List.of(), ExchangeDescriptorMergeUtil.mergeLists(null, null, null, null));
-    List<MyType> mergedL1L2 = ExchangeDescriptorMergeUtil.mergeLists(null, list1, list2, idExtractor);
-    Assert.assertEquals(4, mergedL1L2.size());
-    Assert.assertEquals("foo", mergedL1L2.get(0).getValue());
-    Assert.assertEquals("bar", mergedL1L2.get(1).getValue());
-    Assert.assertEquals("hello", mergedL1L2.get(2).getValue());
-    Assert.assertEquals("world", mergedL1L2.get(3).getValue());
-    
-    try {
-      ExchangeDescriptorMergeUtil.mergeLists("list property 'hello'", list1, list3, idExtractor);
-      Assert.fail("Expected IllegalArgumentException");
-    } catch (IllegalArgumentException e) {
-      // expected
-      Assert.assertEquals("Duplicate ID found in values of list property list property 'hello':[foo]", e.getMessage());
-    }
-    
-  }
   
   @Test
   public void testMergeExchangeApiDescriptors() {
@@ -431,22 +373,4 @@ public class ExchangeDescriptorMergeUtilTest {
         List.of(c1));
   }
   
-  private class MyType {
-    String value;
-
-    public MyType(String value) {
-      this.value = value;
-    }
-
-    public String getValue() {
-      return value;
-    }
-    
-    @Override
-    public String toString() {
-      return "'" + value + "'";
-    }
-    
-  }
-
 }

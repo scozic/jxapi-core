@@ -132,7 +132,7 @@ public class EndpointDemoGenUtil {
       String defaultFieldName,
       Imports imports) {
     Type type = PojoGenUtil.getFieldType(field);
-    String fieldClassName =  ExchangeGenUtil.getClassNameForType(
+    String fieldClassName =  PojoGenUtil.getClassNameForType(
                         type, 
                         imports, 
                         defaultObjectClassName);
@@ -344,7 +344,7 @@ public class EndpointDemoGenUtil {
     for (Field childParam : properties) {
       String childParamName = childParam.getName();
       String childDemoPropertyName = demoPropertyName + "." + childParamName;
-      String childClassName = ExchangeApiGenUtil.getFieldObjectClassName(childParam, objectClassName);
+      String childClassName = PojoGenUtil.getFieldObjectClassName(childParam, objectClassName);
       String itemValue = generateFieldSampleValueDeclaration(
           childParam,
           childDemoPropertyName, 

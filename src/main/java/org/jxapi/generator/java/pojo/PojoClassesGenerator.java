@@ -6,8 +6,6 @@ import java.util.List;
 
 import org.jxapi.generator.java.exchange.ClassesGenerator;
 import org.jxapi.generator.java.exchange.ConstantValuePlaceholderResolverFactory;
-import org.jxapi.generator.java.exchange.ExchangeGenUtil;
-import org.jxapi.generator.java.exchange.api.ExchangeApiGenUtil;
 import org.jxapi.pojo.descriptor.Field;
 import org.jxapi.pojo.descriptor.Type;
 import org.jxapi.util.PlaceHolderResolver;
@@ -68,7 +66,7 @@ public class PojoClassesGenerator implements ClassesGenerator {
   public void generateClasses(Path outputFolder) throws IOException {
     rootPojoGenerator.writeJavaFile(outputFolder);
     for (Field field: properties) {
-      if (ExchangeGenUtil.isObjectField(field)) {
+      if (PojoGenUtil.isObjectField(field)) {
         generateObjectFieldTypePojos(outputFolder, rootPojoGenerator.getName(), field);
       }
     }
@@ -78,7 +76,7 @@ public class PojoClassesGenerator implements ClassesGenerator {
       Path outputFolder, 
       String className, 
       Field field) throws IOException {
-    String objectParamClassName = ExchangeApiGenUtil.getFieldLeafSubTypeClassName(
+    String objectParamClassName = PojoGenUtil.getFieldLeafSubTypeClassName(
       field.getName(), 
       PojoGenUtil.getFieldType(field), 
       field.getObjectName(), 

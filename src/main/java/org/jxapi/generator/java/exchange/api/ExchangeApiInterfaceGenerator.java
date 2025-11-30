@@ -166,7 +166,7 @@ public class ExchangeApiInterfaceGenerator extends JavaTypeGenerator {
             exchangeApiDescriptor, 
             websocketApi);
       }
-      requestSimpleClassName = ExchangeGenUtil.getClassNameForType(
+      requestSimpleClassName = PojoGenUtil.getClassNameForType(
                           requestDataType, 
                           getImports(), 
                           requestClassName);
@@ -175,7 +175,7 @@ public class ExchangeApiInterfaceGenerator extends JavaTypeGenerator {
     }
     
     Type messageDataType = PojoGenUtil.getFieldType(websocketApi.getMessage());
-    String messageClassSimpleName = ExchangeGenUtil.getClassNameForType(
+    String messageClassSimpleName = PojoGenUtil.getClassNameForType(
         messageDataType, 
         getImports(), 
         ExchangeApiGenUtil.generateWebsocketEndpointMessagePojoClassName(
@@ -271,7 +271,7 @@ public class ExchangeApiInterfaceGenerator extends JavaTypeGenerator {
                     exchangeApiDescriptor, 
                     restApi);
       }
-      requestSimpleClassName = ExchangeGenUtil.getClassNameForType(
+      requestSimpleClassName = PojoGenUtil.getClassNameForType(
                     requestDataType, 
                     getImports(), 
                     requestClassName);
@@ -287,7 +287,7 @@ public class ExchangeApiInterfaceGenerator extends JavaTypeGenerator {
                       exchangeApiDescriptor, 
                       restApi);
       }
-      responseSimpleClassName = ExchangeGenUtil.getClassNameForType(
+      responseSimpleClassName = PojoGenUtil.getClassNameForType(
           responseDataType, 
           getImports(), 
           restResponseClassName);

@@ -14,7 +14,6 @@ import org.jxapi.generator.java.Imports;
 import org.jxapi.generator.java.JavaCodeGenUtil;
 import org.jxapi.generator.java.JavaTypeGenerator;
 import org.jxapi.generator.java.exchange.ExchangeGenUtil;
-import org.jxapi.generator.java.exchange.api.ExchangeApiGenUtil;
 import org.jxapi.netutils.deserialization.MessageDeserializer;
 import org.jxapi.netutils.deserialization.json.AbstractJsonMessageDeserializer;
 import org.jxapi.netutils.deserialization.json.field.ListJsonFieldDeserializer;
@@ -150,7 +149,7 @@ public class JsonMessageDeserializerGenerator extends JavaTypeGenerator {
   
   private String generateNonPrimitiveTypeFieldDeserializerDeclaration(Field field) {
     Type type = PojoGenUtil.getFieldType(field);
-    String objectFieldClassName = ExchangeApiGenUtil.getFieldLeafSubTypeClassName(
+    String objectFieldClassName = PojoGenUtil.getFieldLeafSubTypeClassName(
                           field.getName(), 
                           type, 
                           field.getObjectName(),
@@ -187,14 +186,14 @@ public class JsonMessageDeserializerGenerator extends JavaTypeGenerator {
       return JavaCodeGenUtil.getClassNameWithoutPackage(deserializerTypeName);
     case LIST:
       imports.add(ListJsonFieldDeserializer.class.getName());
-      fieldClass = ExchangeGenUtil.getClassNameForType(type.getSubType(), imports, objectClassName);
+      fieldClass = PojoGenUtil.getClassNameForType(type.getSubType(), imports, objectClassName);
       return ListJsonFieldDeserializer.class.getSimpleName() 
             + "<" 
             + fieldClass
             + ">";
     default: // MAP
       imports.add(MapJsonFieldDeserializer.class.getName());
-      fieldClass = ExchangeGenUtil.getClassNameForType(type.getSubType(), imports, objectClassName);
+      fieldClass = PojoGenUtil.getClassNameForType(type.getSubType(), imports, objectClassName);
       return MapJsonFieldDeserializer.class.getSimpleName() 
             + "<" 
             + JavaCodeGenUtil.getClassNameWithoutPackage(fieldClass)

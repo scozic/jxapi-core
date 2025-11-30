@@ -10,8 +10,6 @@ import java.util.stream.Collectors;
 import org.jxapi.generator.java.JavaCodeGenUtil;
 import org.jxapi.generator.java.JavaTypeGenerator;
 import org.jxapi.generator.java.exchange.ConstantValuePlaceholderResolverFactory;
-import org.jxapi.generator.java.exchange.ExchangeGenUtil;
-import org.jxapi.generator.java.exchange.api.ExchangeApiGenUtil;
 import org.jxapi.pojo.descriptor.CanonicalType;
 import org.jxapi.pojo.descriptor.Field;
 import org.jxapi.pojo.descriptor.Type;
@@ -502,11 +500,11 @@ public class PojoGenerator extends JavaTypeGenerator {
   private String getFieldClass(Field field) {
     String fieldClass = null;
     Type fieldType = PojoGenUtil.getFieldType(field);
-    if (ExchangeGenUtil.isObjectField(field)) {
+    if (PojoGenUtil.isObjectField(field)) {
       String className = getName();
-      fieldClass = ExchangeApiGenUtil.getClassNameForField(field, getImports(), className);
+      fieldClass = PojoGenUtil.getClassNameForField(field, getImports(), className);
     } else {
-      fieldClass = ExchangeGenUtil.getClassNameForType(fieldType, getImports(), null);
+      fieldClass = PojoGenUtil.getClassNameForType(fieldType, getImports(), null);
     }
     return JavaCodeGenUtil.getClassNameWithoutPackage(fieldClass);
   }

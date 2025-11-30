@@ -1,5 +1,6 @@
 package org.jxapi.generator.java.pojo;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 
@@ -252,4 +253,328 @@ public class PojoGenUtilTest {
     Assert.assertEquals(Type.STRING, 
         PojoGenUtil.getFieldType(Field.builder().name("test").build()));
   }
+  
+  @Test
+  public void testIsObjectField_NullField() {
+    Assert.assertFalse(PojoGenUtil.isObjectField(null));
+  }
+  
+  @Test
+  public void testIsObjectField_NullFieldType_ObjectTypeImplictFromProperties() {
+    Assert.assertTrue(PojoGenUtil.isObjectField(Field.builder().name("test").properties(List.of()).build()));
+  }
+  
+  @Test
+  public void testIsObjectField_ObjectType() {
+    Assert.assertTrue(PojoGenUtil.isObjectField(Field.builder().name("test").type(Type.OBJECT).build()));
+  }
+  
+  @Test
+  public void testIsObjectField_StringType() {
+    Assert.assertFalse(PojoGenUtil.isObjectField(Field.builder().name("test").type(Type.STRING).build()));
+  }
+  
+  @Test
+  public void testGetClassNameForType_INT() {
+    Assert.assertEquals("Integer", PojoGenUtil.getClassNameForType(Type.INT, new Imports(), null));
+  }
+
+  @Test
+  public void testGetClassNameForType_STRING() {
+    Assert.assertEquals("String", PojoGenUtil.getClassNameForType(Type.STRING, new Imports(), null));
+  }
+
+  @Test
+  public void testGetClassNameForType_BOOLEAN() {
+    Assert.assertEquals("Boolean", PojoGenUtil.getClassNameForType(Type.BOOLEAN, new Imports(), null));
+  }
+
+  @Test
+  public void testGetClassNameForType_BIGDECIMAL() {
+    Imports imports = new Imports();
+    Assert.assertEquals("BigDecimal", PojoGenUtil.getClassNameForType(Type.BIGDECIMAL, imports, null));
+    Assert.assertEquals(1, imports.size());
+    Assert.assertTrue(imports.contains(BigDecimal.class));
+  }
+
+  @Test
+  public void testGetClassNameForType_BIGDECIMAL_NullImports() {
+    Assert.assertEquals("BigDecimal", PojoGenUtil.getClassNameForType(Type.BIGDECIMAL, null, null));
+  }
+
+  @Test
+  public void testGetClassNameForType_LONG() {
+    Assert.assertEquals("Long", PojoGenUtil.getClassNameForType(Type.LONG, new Imports(), null));  
+  }
+
+  @Test
+  public void testGetClassNameForType_STRING_LIST() {
+    Imports imports = new Imports();
+    Assert.assertEquals("List<String>", PojoGenUtil.getClassNameForType(Type.fromTypeName("STRING_LIST"), imports, null));
+    Assert.assertEquals(1, imports.size());
+    Assert.assertTrue(imports.contains(List.class));
+  }
+
+  @Test
+  public void testGetClassNameForType_STRING_LIST_NullImports() {
+    Assert.assertEquals("List<String>", PojoGenUtil.getClassNameForType(Type.fromTypeName("STRING_LIST"), null, null));
+  }
+
+  @Test
+  public void testGetClassNameForType_INT_MAP() {
+    Imports imports = new Imports();
+    Assert.assertEquals("Map<String, Integer>", PojoGenUtil.getClassNameForType(Type.fromTypeName("INT_MAP"), imports, null));
+    Assert.assertEquals(1, imports.size());
+    Assert.assertTrue(imports.contains(Map.class));
+  }
+
+  @Test
+  public void testGetClassNameForType_INT_MAP_NullImports() {
+    Assert.assertEquals("Map<String, Integer>", PojoGenUtil.getClassNameForType(Type.fromTypeName("INT_MAP"), null, null));
+  }
+
+  @Test
+  public void testGetClassNameForType_OBJECT() {
+    Imports imports = new Imports();
+    String objectClassName = "com.x.y.z.MyObject";
+    Assert.assertEquals("MyObject", PojoGenUtil.getClassNameForType(Type.OBJECT, imports, objectClassName));
+    Assert.assertEquals(1, imports.size());
+    Assert.assertTrue(imports.contains(objectClassName));
+  }
+  
+  @Test
+  public void testGetClassNameForType_OBJECT_NullImports() {
+    String objectClassName = "com.x.y.z.MyObject";
+    Assert.assertEquals("MyObject", PojoGenUtil.getClassNameForType(Type.OBJECT, null, objectClassName));
+  }
+
+  @Test
+  public void testGetClassNameForType_OBJECT_LIST_MAP() {
+    Imports imports = new Imports();
+    String objectClassName = "com.x.y.z.MyObject";
+    Assert.assertEquals("Map<String, List<MyObject>>", PojoGenUtil.getClassNameForType(Type.fromTypeName("OBJECT_LIST_MAP"), imports, objectClassName));
+    Assert.assertEquals(3, imports.size());
+    Assert.assertTrue(imports.contains(objectClassName));
+    Assert.assertTrue(imports.contains(Map.class));
+    Assert.assertTrue(imports.contains(List.class));
+  }
+
+  @Test
+  public void testGetClassNameForType_NullType() {
+    Assert.assertNull(PojoGenUtil.getClassNameForType(null, null, null));
+  }
+  
+  @Test
+public void testGetClassNameForField_STRING_Type() {
+      Imports imports = new Imports();
+      Field f = new Field();
+      f.setType(Type.STRING);
+      Assert.assertEquals(String.class.getSimpleName(), 
+                PojoGenUtil.getClassNameForField(f, imports, null));
+      Assert.assertEquals(0, imports.size());
+  }
+
+  @Test
+public void testGetClassNameForField_BIGDECIMAL_Type() {
+      Imports imports = new Imports();
+      Field f = new Field();
+      f.setType(Type.BIGDECIMAL);
+      Assert.assertEquals(BigDecimal.class.getSimpleName(), 
+                PojoGenUtil.getClassNameForField(f, imports, null));
+      Assert.assertEquals(1, imports.size());
+      Assert.assertTrue(imports.contains(BigDecimal.class.getName()));
+  }
+
+  @Test
+  public void testGetClassNameForField_OBJECT_NoObjectName() {
+      Imports imports = new Imports();
+      Field f = new Field();
+      f.setName("bar");
+      f.setType(Type.OBJECT);
+      Assert.assertEquals("FooBar", 
+                PojoGenUtil.getClassNameForField(f, imports, "com.x.y.gen.pojo.Foo"));
+      Assert.assertEquals(1, imports.size());
+      Assert.assertTrue(imports.contains("com.x.y.gen.pojo.FooBar"));
+  }
+
+  @Test
+  public void testGetClassNameForField_Implicit_OBJECT_WithObjectName() {
+      Imports imports = new Imports();
+      Field f = new Field();
+      f.setName("bar");
+      f.setObjectName("MyCustomObjectName");
+      Assert.assertEquals("MyCustomObjectName", 
+                PojoGenUtil.getClassNameForField(f, imports, "com.x.y.gen.pojo.Foo"));
+      Assert.assertEquals(1, imports.size());
+      Assert.assertTrue(imports.contains("com.x.y.gen.pojo.MyCustomObjectName"));
+  }
+
+  @Test
+  public void testGetClassNameForField_OBJECT_MAP_LIST() {
+      Imports imports = new Imports();
+      Field f = new Field();
+      f.setName("bar");
+      f.setType(Type.fromTypeName("OBJECT_MAP_LIST"));
+      Assert.assertEquals("List<Map<String, FooBar>>", 
+                PojoGenUtil.getClassNameForField(f, imports, "com.x.y.gen.pojo.Foo"));
+      Assert.assertEquals(3, imports.size());
+      Assert.assertTrue(imports.contains("com.x.y.gen.pojo.FooBar"));
+      Assert.assertTrue(imports.contains(Map.class.getName()));
+      Assert.assertTrue(imports.contains(List.class.getName()));
+  }
+  
+  @Test
+  public void testGetFieldObjectClassName_WithSimpleClassObjectName() {
+      Field f = new Field();
+      f.setName("bar");
+      f.setType(Type.OBJECT);
+      f.setObjectName("MyCustomObjectName");
+      Assert.assertEquals("com.x.y.gen.pojo.MyCustomObjectName", 
+                PojoGenUtil.getFieldObjectClassName(f, "com.x.y.gen.pojo.Foo"));
+  }
+  
+  @Test
+  public void testGetFieldObjectClassName_WithFullClassObjectName() {
+      Field f = new Field();
+      f.setName("bar");
+      f.setType(Type.OBJECT);
+      f.setObjectName("com.y.MyCustomObjectName");
+      Assert.assertEquals("com.y.MyCustomObjectName", 
+                PojoGenUtil.getFieldObjectClassName(f, "com.x.y.gen.pojo.Foo"));
+  }
+
+  @Test
+  public void testGetFieldObjectClassName_WithoutObjectName() {
+      Field f = new Field();
+      f.setName("bar");
+      f.setType(Type.OBJECT);
+      Assert.assertEquals("com.x.y.gen.pojo.FooBar", 
+                PojoGenUtil.getFieldObjectClassName(f, "com.x.y.gen.pojo.Foo"));
+  }
+  
+  @Test
+  public void testGetFieldLeafSubTypeClassName_OBJECT() {
+      String endpointParameterName = "bar";
+      Assert.assertEquals("com.x.y.gen.pojo.FooBar", 
+        PojoGenUtil.getFieldLeafSubTypeClassName(
+          endpointParameterName, 
+          Type.OBJECT, 
+          null, 
+          "com.x.y.gen.pojo.Foo"));
+  }
+
+  @Test
+  public void testGetFieldLeafSubTypeClassName_OBJECT_LIST_MAP() {
+      String endpointParameterName = "bar";
+      Assert.assertEquals("com.x.y.gen.pojo.FooBar", 
+        PojoGenUtil.getFieldLeafSubTypeClassName(
+          endpointParameterName, 
+          Type.fromTypeName("OBJECT_LIST_MAP"), 
+          null, 
+          "com.x.y.gen.pojo.Foo"));
+  }
+  
+  @Test
+  public void testGetFieldLeafSubTypeClassName_OBJECTWithObjectName() {
+      String endpointParameterName = "bar";
+      Assert.assertEquals("com.x.y.gen.pojo.MyPojo", 
+        PojoGenUtil.getFieldLeafSubTypeClassName(
+          endpointParameterName, 
+          Type.OBJECT, 
+          "MyPojo", 
+          "com.x.y.gen.pojo.Foo"));
+  }
+  
+  @Test
+  public void testGetFieldLeafSubTypeClassName_INT() {
+      Assert.assertEquals("java.lang.Integer", 
+        PojoGenUtil.getFieldLeafSubTypeClassName(
+            "bar", 
+            Type.INT, 
+            null, 
+            "com.x.y.gen.pojo.Foo"));
+  }
+  
+  @Test
+  public void testFindPropertiesForObjectNameInField_NullField() {
+    Assert.assertNull(PojoGenUtil.findPropertiesForObjectNameInField("MyPojo", null));
+  }
+  
+  @Test
+  public void testFindPropertiesForObjectNameInField_NullObjectName() {
+      Assert.assertNull(PojoGenUtil.findPropertiesForObjectNameInField(null, new Field()));
+  }
+  
+  @Test
+  public void testFindPropertiesForObjectNameInField_NullFieldProperties() {
+      Assert.assertNull(PojoGenUtil.findPropertiesForObjectNameInField("MyPojo", new Field()));
+  }
+  
+  @Test
+  public void testFindPropertiesForObjectNameInField_FieldCarriesExpectedObjectName() {
+    String objectName = "MyPojo";
+    Field f = new Field();
+    f.setObjectName(objectName);
+    
+    Field prop = new Field();
+    prop.setName("foo");
+    prop.setType(Type.STRING);
+    List<Field> expectedProperties = List.of(prop);
+    f.setProperties(expectedProperties);
+    Assert.assertEquals(expectedProperties, PojoGenUtil.findPropertiesForObjectNameInField(objectName, f));
+  }
+  
+  @Test
+  public void testFindPropertiesForObjectNameInField_FieldSubPropertyCarriesExpectedObjectName() {
+    String objectName = "MyPojo";
+    Field f = new Field();
+    Field prop = new Field();
+    prop.setName("foo");
+    prop.setType(Type.OBJECT);
+    prop.setObjectName(objectName);
+    Field subProp = new Field();
+    subProp.setName("bar");
+    subProp.setType(Type.STRING);
+    List<Field> expectedProperties = List.of(subProp);
+    prop.setProperties(List.of(subProp));
+    f.setProperties(List.of(prop));
+    Assert.assertEquals(expectedProperties, PojoGenUtil.findPropertiesForObjectNameInField(objectName, f));
+  }
+  
+  @Test
+  public void testFindPropertiesForObjectNameInField_ObjectNameNotFound() {
+    String objectName = "MyPojo";
+    Field f = new Field();
+    Field prop = new Field();
+    prop.setName("foo");
+    prop.setType(Type.OBJECT);
+    Field subProp = new Field();
+    subProp.setName("bar");
+    subProp.setType(Type.STRING);
+    prop.setProperties(List.of(subProp));
+    f.setProperties(List.of(prop));
+    Assert.assertNull(PojoGenUtil.findPropertiesForObjectNameInField(objectName, f));
+  }
+  
+  @Test
+  public void testGetMsgFieldName() {
+    Assert.assertNull(PojoGenUtil.getMsgFieldName("foo", null));
+    Field field1 = Field.builder().name("field1").type(Type.BOOLEAN).build();
+    Assert.assertEquals("field1", PojoGenUtil.getMsgFieldName("field1", field1));
+    Assert.assertNull(PojoGenUtil.getMsgFieldName("f", field1));
+    Field field2 = Field.builder().name("field2").type(Type.BOOLEAN).msgField("f2").build();
+    Assert.assertEquals("f2", PojoGenUtil.getMsgFieldName("field2", field2));
+    Field objectField = Field.builder().name("objField").type(Type.OBJECT).property(field1).property(field2).build();
+    Assert.assertEquals("objField", PojoGenUtil.getMsgFieldName("objField", objectField));
+    Assert.assertEquals("field1", PojoGenUtil.getMsgFieldName("field1", objectField));
+    Assert.assertEquals("f2", PojoGenUtil.getMsgFieldName("field2", objectField));
+    Assert.assertNull(PojoGenUtil.getMsgFieldName("f", objectField));
+  }
+  
+  @Test( expected = IllegalArgumentException.class)
+  public void testGetMsgFieldName_NullName() {
+    Field field1 = Field.builder().name("field1").type(Type.BOOLEAN).build();
+    PojoGenUtil.getMsgFieldName(null, field1);
+  }
+  
 }

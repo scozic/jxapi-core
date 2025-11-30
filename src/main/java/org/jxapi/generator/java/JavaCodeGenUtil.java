@@ -4,17 +4,20 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
+import java.util.regex.Matcher;
 import java.util.stream.Stream;
 
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.jxapi.generator.java.exchange.ExchangeGenUtil;
 import org.jxapi.pojo.descriptor.CanonicalType;
 import org.jxapi.pojo.descriptor.Type;
 import org.jxapi.util.CollectionUtil;
@@ -251,6 +254,15 @@ public class JavaCodeGenUtil {
       return StringUtils.substringBeforeLast(fullClassName, ".");
     }
     return "";
+  }
+  
+  /**
+   * @param className full or simple class name
+   * @return <code>true</code> if <code>className</code> contains a package prefix
+   *         (contains a '.' char), <code>false</code> otherwise.
+   */
+  public static boolean isFullClassName(String className) {
+    return className != null && className.contains(".");
   }
   
   /**
@@ -629,6 +641,27 @@ public class JavaCodeGenUtil {
           firstLetterToUpperCase? 
               JavaCodeGenUtil::firstLetterToUpperCase : 
               JavaCodeGenUtil::firstLetterToLowerCase);
+    }
+    return res;
+  }
+
+  /**
+   * Finds all placeholders in the given string value. For instance with input
+   * string
+   * <code>"Hello ${name} you are using exchange ${exchange.name}"</code>, will return <code>["name", "exchange.name"]</code>
+   * 
+   * @param value The string value to find placeholders in
+   * @return A list of placeholders found in the given string value
+   */
+  public static List<String> findPlaceHolders(String value) {
+    List<String> res = new ArrayList<>();
+    if (StringUtils.isEmpty(value)) {
+      return res;
+    }
+  
+    Matcher matcher = ExchangeGenUtil.PLACEHOLDER_PATERN.matcher(value);
+    while (matcher.find()) {
+      res.add(matcher.group(1));
     }
     return res;
   }

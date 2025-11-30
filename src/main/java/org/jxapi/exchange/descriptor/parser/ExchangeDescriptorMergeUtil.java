@@ -5,7 +5,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.function.Function;
 
 import org.jxapi.exchange.descriptor.Constant;
 import org.jxapi.exchange.descriptor.ExchangeApiDescriptor;
@@ -15,6 +14,7 @@ import org.jxapi.exchange.descriptor.WebsocketEndpointDescriptor;
 import org.jxapi.netutils.rest.ratelimits.RateLimitRule;
 import org.jxapi.util.CollectionUtil;
 import org.jxapi.util.DefaultConfigProperty;
+import org.jxapi.util.MergeUtil;
 import org.jxapi.exchange.descriptor.ConfigPropertyDescriptor;
 
 /**
@@ -125,22 +125,22 @@ public class ExchangeDescriptorMergeUtil {
       throw new IllegalArgumentException(String.format("Cannot merge exchanges with different IDs:'%s' and '%s'", e1.getId(), e2.getId()));
     }
     res.setId(e1.getId());
-    res.setVersion(merge("version of exchange " + exchangeName, e1.getVersion(), e2.getVersion()));
-    res.setJxapi(merge("JXAPI version of exchange " + exchangeName, e1.getJxapi(), e2.getJxapi()));
-    res.setDescription(merge("description of exchange " + exchangeName, e1.getDescription(), e2.getDescription()));
-    res.setDocUrl(merge("docUrl of exchange " + exchangeName, e1.getDocUrl(), e2.getDocUrl()));
-    res.setBasePackage(merge("basePackage of exchange " + exchangeName, e1.getBasePackage(), e2.getBasePackage()));
-    res.setHttpRequestExecutorFactory(merge("httpRequestExecutorFactory of exchange " + exchangeName, e1.getHttpRequestExecutorFactory(), e2.getHttpRequestExecutorFactory()));
-    res.setHttpRequestInterceptorFactory(merge("httpRequestInterceptorFactory of exchange " + exchangeName, e1.getHttpRequestInterceptorFactory(), e2.getHttpRequestInterceptorFactory()));
-    res.setHttpRequestTimeout(mergePositiveLongs("httpRequestTimeout of exchange " + exchangeName, e1.getHttpRequestTimeout(), e2.getHttpRequestTimeout()));
-    res.setWebsocketFactory(merge("websocketFactory of exchange " + exchangeName, e1.getWebsocketFactory(), e2.getWebsocketFactory()));
-    res.setWebsocketHookFactory(merge("websocketHookFactory of exchange " + exchangeName, e1.getWebsocketHookFactory(), e2.getWebsocketHookFactory()));
-    res.setWebsocketUrl(merge("websocketUrl of exchange " + exchangeName, e1.getWebsocketUrl(), e2.getWebsocketUrl()));
-    res.setHttpUrl(merge("httpUrl of exchange " + exchangeName, e1.getHttpUrl(), e2.getHttpUrl()));
-    res.setAfterInitHookFactory(merge("afterInitHookFactory of exchange " + exchangeName, e1.getAfterInitHookFactory(), e2.getAfterInitHookFactory()));
+    res.setVersion(MergeUtil.merge("version of exchange " + exchangeName, e1.getVersion(), e2.getVersion()));
+    res.setJxapi(MergeUtil.merge("JXAPI version of exchange " + exchangeName, e1.getJxapi(), e2.getJxapi()));
+    res.setDescription(MergeUtil.merge("description of exchange " + exchangeName, e1.getDescription(), e2.getDescription()));
+    res.setDocUrl(MergeUtil.merge("docUrl of exchange " + exchangeName, e1.getDocUrl(), e2.getDocUrl()));
+    res.setBasePackage(MergeUtil.merge("basePackage of exchange " + exchangeName, e1.getBasePackage(), e2.getBasePackage()));
+    res.setHttpRequestExecutorFactory(MergeUtil.merge("httpRequestExecutorFactory of exchange " + exchangeName, e1.getHttpRequestExecutorFactory(), e2.getHttpRequestExecutorFactory()));
+    res.setHttpRequestInterceptorFactory(MergeUtil.merge("httpRequestInterceptorFactory of exchange " + exchangeName, e1.getHttpRequestInterceptorFactory(), e2.getHttpRequestInterceptorFactory()));
+    res.setHttpRequestTimeout(MergeUtil.mergePositiveLongs("httpRequestTimeout of exchange " + exchangeName, e1.getHttpRequestTimeout(), e2.getHttpRequestTimeout()));
+    res.setWebsocketFactory(MergeUtil.merge("websocketFactory of exchange " + exchangeName, e1.getWebsocketFactory(), e2.getWebsocketFactory()));
+    res.setWebsocketHookFactory(MergeUtil.merge("websocketHookFactory of exchange " + exchangeName, e1.getWebsocketHookFactory(), e2.getWebsocketHookFactory()));
+    res.setWebsocketUrl(MergeUtil.merge("websocketUrl of exchange " + exchangeName, e1.getWebsocketUrl(), e2.getWebsocketUrl()));
+    res.setHttpUrl(MergeUtil.merge("httpUrl of exchange " + exchangeName, e1.getHttpUrl(), e2.getHttpUrl()));
+    res.setAfterInitHookFactory(MergeUtil.merge("afterInitHookFactory of exchange " + exchangeName, e1.getAfterInitHookFactory(), e2.getAfterInitHookFactory()));
     res.setConstants(mergeConstants(e1.getConstants(), e2.getConstants()));
-    res.setRateLimits(mergeLists("rateLimits of exchange " + exchangeName, e1.getRateLimits(), e2.getRateLimits(), RateLimitRule::getId));
-    res.setProperties(mergeLists("properties of exchange " + exchangeName, e1.getProperties(), e2.getProperties(), ConfigPropertyDescriptor::getName));
+    res.setRateLimits(MergeUtil.mergeLists("rateLimits of exchange " + exchangeName, e1.getRateLimits(), e2.getRateLimits(), RateLimitRule::getId));
+    res.setProperties(MergeUtil.mergeLists("properties of exchange " + exchangeName, e1.getProperties(), e2.getProperties(), ConfigPropertyDescriptor::getName));
     res.setApis(mergeExchangeApiDescriptorLists(e1.getApis(), e2.getApis()));
     return res;
   }
@@ -164,10 +164,10 @@ public class ExchangeDescriptorMergeUtil {
         Constant c2 = it.next();
         if (cName.equals((c2.getName()))) {
           if (c1.isGroup() && c2.isGroup()) {
-            c1.setDescription(merge("description of constant group " + cName, c1.getDescription(), c2.getDescription()));
+            c1.setDescription(MergeUtil.merge("description of constant group " + cName, c1.getDescription(), c2.getDescription()));
             c1.setConstants(mergeConstants(c1.getConstants(), c2.getConstants()));
           } else {
-            merge("constant " + cName, c1, c2);
+            MergeUtil.merge("constant " + cName, c1, c2);
           }
           it.remove();
         }
@@ -224,106 +224,19 @@ public class ExchangeDescriptorMergeUtil {
       throw new IllegalArgumentException(String.format("Cannot merge API groups with different names:'%s' and '%s'", a1.getName(), a2.getName()));
     }
     res.setName(apiName);
-    res.setDescription(merge("description of API " + apiName, a1.getDescription(), a2.getDescription()));
-    res.setRestEndpoints(mergeLists("restEndpoints of API " + apiName, a1.getRestEndpoints(), a2.getRestEndpoints(), RestEndpointDescriptor::getName));
-    res.setWebsocketEndpoints(mergeLists("websocketEndpoints of API " + apiName, a1.getWebsocketEndpoints(), a2.getWebsocketEndpoints(), WebsocketEndpointDescriptor::getName));
-    res.setHttpRequestExecutorFactory(merge("httpRequestExecutorFactory of API " + apiName, a1.getHttpRequestExecutorFactory(), a2.getHttpRequestExecutorFactory()));
-    res.setHttpRequestInterceptorFactory(merge("httpRequestInterceptorFactory of API " + apiName, a1.getHttpRequestInterceptorFactory(), a2.getHttpRequestInterceptorFactory()));
-    res.setHttpRequestTimeout(mergePositiveLongs("httpRequestTimeout of API " + apiName, a1.getHttpRequestTimeout(), a2.getHttpRequestTimeout()));
-    res.setWebsocketFactory(merge("websocketFactory of API " + apiName, a1.getWebsocketFactory(), a2.getWebsocketFactory()));
-    res.setWebsocketHookFactory(merge("websocketHookFactory of API " + apiName, a1.getWebsocketHookFactory(), a2.getWebsocketHookFactory()));
-    res.setWebsocketUrl(merge("websocketUrl of API " + apiName, a1.getWebsocketUrl(), a2.getWebsocketUrl()));
-    res.setHttpUrl(merge("httpUrl of API " + apiName, a1.getHttpUrl(), a2.getHttpUrl()));
-    res.setRateLimits(mergeLists("rateLimits of API " + apiName, a1.getRateLimits(), a2.getRateLimits(), RateLimitRule::getId));
-    res.setRestEndpoints(mergeLists("REST endpoints of API " + apiName, a1.getRestEndpoints(), a2.getRestEndpoints(), RestEndpointDescriptor::getName));
+    res.setDescription(MergeUtil.merge("description of API " + apiName, a1.getDescription(), a2.getDescription()));
+    res.setRestEndpoints(MergeUtil.mergeLists("restEndpoints of API " + apiName, a1.getRestEndpoints(), a2.getRestEndpoints(), RestEndpointDescriptor::getName));
+    res.setWebsocketEndpoints(MergeUtil.mergeLists("websocketEndpoints of API " + apiName, a1.getWebsocketEndpoints(), a2.getWebsocketEndpoints(), WebsocketEndpointDescriptor::getName));
+    res.setHttpRequestExecutorFactory(MergeUtil.merge("httpRequestExecutorFactory of API " + apiName, a1.getHttpRequestExecutorFactory(), a2.getHttpRequestExecutorFactory()));
+    res.setHttpRequestInterceptorFactory(MergeUtil.merge("httpRequestInterceptorFactory of API " + apiName, a1.getHttpRequestInterceptorFactory(), a2.getHttpRequestInterceptorFactory()));
+    res.setHttpRequestTimeout(MergeUtil.mergePositiveLongs("httpRequestTimeout of API " + apiName, a1.getHttpRequestTimeout(), a2.getHttpRequestTimeout()));
+    res.setWebsocketFactory(MergeUtil.merge("websocketFactory of API " + apiName, a1.getWebsocketFactory(), a2.getWebsocketFactory()));
+    res.setWebsocketHookFactory(MergeUtil.merge("websocketHookFactory of API " + apiName, a1.getWebsocketHookFactory(), a2.getWebsocketHookFactory()));
+    res.setWebsocketUrl(MergeUtil.merge("websocketUrl of API " + apiName, a1.getWebsocketUrl(), a2.getWebsocketUrl()));
+    res.setHttpUrl(MergeUtil.merge("httpUrl of API " + apiName, a1.getHttpUrl(), a2.getHttpUrl()));
+    res.setRateLimits(MergeUtil.mergeLists("rateLimits of API " + apiName, a1.getRateLimits(), a2.getRateLimits(), RateLimitRule::getId));
+    res.setRestEndpoints(MergeUtil.mergeLists("REST endpoints of API " + apiName, a1.getRestEndpoints(), a2.getRestEndpoints(), RestEndpointDescriptor::getName));
     return res;
   }
-
-  /**
-   * Merges two values of the same type. If the values are equal, the result is
-   * the value. If the values are different, an exception is thrown. If one of the
-   * value is <code>null</code>, the other value is returned.
-   * 
-   * @param <T>     Type of the values
-   * @param context Context of the values (used in exception message)
-   * @param e1      First value
-   * @param e2      Second value
-   * @return The merged value
-   * @throws IllegalArgumentException if the values are not <code>null</code> and different
-   */
-  public static <T> T merge(String context, T e1, T e2) {
-    if (e1 == null) {
-      return e2;
-    }
-    if (e2 == null) {
-      return e1;
-    }
-    if (e1.equals(e2)) {
-            return e1;
-        }
-    throw new IllegalArgumentException(String.format("Conflict: Found distinct values for %s:[%s] and [%s]", context, e1, e2));
-  }
-  
-  /**
-   * Merges values of properties holding positive longs, assuming a negative value
-   * means 'unset'. If the values are equal, the result is the value. If the
-   * values are different, an exception is thrown. If one of the value is &lt; 0,
-   * the other value is returned. If one of the value is negative, the other value
-   * is returned.
-   * 
-   * @param context Context of the values (used in exception message)
-   * @param e1      First value
-   * @param e2      Second value
-   * @return The merged value
-   * @throws IllegalArgumentException if the values are not <code>null</code> and
-   *                                  different
-   */
-  public static long mergePositiveLongs(String context, long e1, long e2) {
-        if (e1 == e2) {
-            return e1;
-        }
-        if (e1 < 0) {
-            return e2;
-        }
-        if (e2 < 0) {
-            return e1;
-        }
-        throw new IllegalArgumentException(String.format("Conflict: Found distinct values for %s:[%d] and [%d]", context, e1, e2));
-    }
-  
-  /**
-   * Merges two lists of values of the same type. The result is a new list
-   * containing all the values of the two input lists. If an item with the same
-   * identifier (name) is present in both lists, an exception is thrown.
-   * 
-   * @param <T>         Type of the values
-   * @param context     Context of the values (used in exception message)
-   * @param e1          First list of values
-   * @param e2          Second list of values
-   * @param idExtractor Function to extract the identifier (name) of the values
-   * @return A new list containing all the values of the two input lists
-   * @throws IllegalArgumentException if an item with the same identifier (name)
-   *                                  is present in both lists
-   */
-  public static <T> List<T> mergeLists(String context, List<T> e1, List<T> e2, Function<T, String> idExtractor) {
-        List<T> res = new ArrayList<>();
-    if (e1 == null && e2 == null) {
-      return res;
-    } else if (e1 == null) {
-      return e2;
-    } else if (e2 == null) {
-      return e1;
-    }
-    
-    for (List<T> l : List.of(e1, e2)) {
-      for (T item : l) {
-        if (res.stream().anyMatch(c -> idExtractor.apply(c).equals(idExtractor.apply(item)))) {
-          throw new IllegalArgumentException(String.format("Duplicate ID found in values of list property %s:[%s]", context, idExtractor.apply(item)));
-        }
-        res.add(item);
-      }
-    }
-    return res;
-    }
 
 }
