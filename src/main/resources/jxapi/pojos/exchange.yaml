@@ -1,0 +1,169 @@
+basePackage: org.jxapi.exchange.descriptor.gen
+pojos:
+  - name: exchange
+    description: >
+      Root element of a JSON Exchange descriptor.<br>
+      This class describes an exchange and its APIs<br>
+      API will be described in groups of endpoints, as
+      {@link ExchangeApiDescriptor} list.<br>
+      Rate limits will be described as {@link RateLimitRule} list. These limits
+      will be applied to all endpoints of each API group of the exchange.
+      
+      JSON example:
+      
+      <pre>
+      {
+          "name": "Binance",
+          "ID": "BINANCE",
+          "description": "Binance exchange",
+          "docUrl": "https://binance-docs.github.io/apidocs",
+          "basePackage": "org.jxapi.exchange.binance",
+          "properties": [
+            {
+              "name": "apiKey",
+              "type": "STRING",
+              "description": "API key for authentication",
+            }
+          ],
+          "constants": [
+            {
+              "name": "API_BASE_URL",
+              "description": "Base URL of the API",
+              "type": "STRING",
+              "value": "https://api.myexchange.com"
+            }
+          "apis": [
+            {
+              "name": "Spot",
+              "description": "Spot trading API",
+              "httpRequestExecutorFactory": "org.jxapi.netutils.rest.mock.MockHttpRequestExecutorFactory",
+              "httpRequestInterceptorFactory": "org.jxapi.netutils.rest.mock.MockHttpRequestInterceptorFactory",
+              "restEndpoints": [
+                // RESTendpoints here
+              ],
+              "websocketEndpoints": [
+                // Websocket endpoints here
+              ],
+            }
+          ],
+          "rateLimits": [
+            {
+              "timeFrame": 60000,
+                  "maxRequestCount": 1200,
+                  "maxTotalWeight": 1200
+            }
+          ]
+      }
+      </pre>
+      
+      <ul>
+      <li>name: the name of the exchange. Remark that this is map to the ID of the
+      exchange.</li>
+      <li>description: the description of the exchange.</li>
+      <li>basePackage: the base package of the exchange implementation
+      classes.</li>
+      <li>apis: the list of API groups of the exchange. See
+      {@link ExchangeApiDescriptor}</li>
+      <li>rateLimits: the list of rate limits of the exchange. These limits will be
+      applied to all endpoints of each API group of the exchange. See
+      {@link RateLimitRule}</li>
+      <li>constants: list of constants that are used in context of the exchange
+      wrapper, for instance specific values for some APIs request/response/message
+      properties. See {@link Constant}</li>
+      <li>properties: list of configuration properties that can be configured for
+      the exchange wrapper, for instance API keys, secret keys, etc. See
+      {@link DefaultConfigProperty}</li>
+      <li><code>httpRequestInterceptorFactory</code>,
+      <code>httpRequestExecutorFactory</code>, <code>httpRequestTimeout</code>,
+      <code>websocketFactory</code>, <code>websocketHookFactory</code> properties
+      can be set with default values for corresponding properties in
+      {@link ExchangeApiDescriptor}: value defined in {@link ExchangeDescriptor} is
+      used when undefined in {@link ExchangeApiDescriptor}.
+      <li>httpUrl: the base URL of the HTTP (REST) API of the exchange. This URL
+      can be concateneted to websocket API group <code>httpUrl</code> property (see
+      {@link ExchangeApiDescriptor#getHttpUrl()} ) and endpoint URL (see
+      {@link RestEndpointDescriptor#getUrl()} when one of these properties are not
+      absolute)</li>
+      <li>websocketUrl: the base URL of the Websocket API of the exchange. This URL
+      can be concateneted to websocket API group <code>websocketUrl</code> property
+      if API group <code>websocketUrl</code> is not not absolute</li>
+      </ul>
+      
+      This class is used to map the JSON descriptor of an exchange. It is used to
+      generate code for the {@link Exchange} interface and implementation.
+      
+      @see Exchange
+      @see ExchangeApiDescriptor
+    properties:
+      - name: id
+        description: The ID of the exchange
+        type: STRING
+      - name: jxapi
+        description: The JXAPI version supported by the exchange
+        type: STRING
+      - name: version
+        description: The version of the exchange descriptor
+        type: STRING
+      - name: description
+        description: The description of the exchange
+        type: STRING
+      - name: docUrl
+        description: The documentation URL of the exchange   
+        type: STRING
+      - name: basePackage
+        description: The base package of the exchange implementation classes
+        type: STRING
+      - name: httpRequestExecutorFactory
+        description: >
+          The fully qualified class name of the
+          {@link org.jxapi.netutils.rest.HttpRequestExecutorFactory} to use by
+          default for all REST endpoints of all API groups of the exchange, unless
+          overridden at API group level.
+        type: STRING
+      - name: httpRequestInterceptorFactory
+        description: >
+          The fully qualified class name of the
+          {@link org.jxapi.netutils.rest.HttpRequestInterceptorFactory} to use by
+          default for all REST endpoints of all API groups of the exchange, unless
+          overridden at API group level.
+        type: STRING
+      - name: httpUrl     
+        description: >
+          The base URL of the HTTP (REST) API of the exchange. This URL can be
+          concateneted to API group <code>httpUrl</code> and endpoint URL when one
+          of these properties are not absolute.
+        type: STRING
+      - name: websocketUrl
+        description: >
+          The base URL of the Websocket API of the exchange. This URL can be
+          concateneted to API group <code>websocketUrl</code> if API group
+          <code>websocketUrl</code> is not not absolute.  
+        type: STRING
+      - name: websocketFactory
+        description: >
+          The fully qualified class name of the
+          {@link org.jxapi.netutils.ws.WebsocketFactory} to use by default for all
+          Websocket endpoints of all API groups of the exchange, unless overridden
+          at API group level.
+        type: STRING
+      - name: websocketHookFactory
+        description: >
+          The fully qualified class name of the
+          {@link org.jxapi.netutils.ws.WebsocketHookFactory} to use by default for
+          all Websocket endpoints of all API groups of the exchange, unless
+          overridden at API group level.
+        type: STRING
+      - name: httpRequestTimeout        
+        description: >
+          The default HTTP request timeout in milliseconds to use by default for
+          all REST endpoints of all API groups of the exchange, unless overridden
+          at API group level.
+        type: LONG
+      - name: afterInitHookFactory
+        description: >
+          The fully qualified class name of the
+          {@link org.jxapi.exchange.ExchangetHookFactory} to be used
+          to create an
+          {@link org.jxapi.exchange.hooks.AfterExchangeInitHook} that will be
+          executed just after the exchange wrapper initialization.
+        type: STRING  

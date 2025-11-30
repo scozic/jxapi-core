@@ -155,5 +155,21 @@
 			</build>
 		</profile>
 	</profiles>
+
+  <build>
+		<pluginManagement>
+			<plugins>
+				<plugin>
+					<groupId>org.codehaus.mojo</groupId>
+					<artifactId>exec-maven-plugin</artifactId>
+					<configuration>
+						<mainClass>
+							org.jxapi.generator.java.pojo.PojosGeneratorMain
+						</mainClass>
+					</configuration>
+				</plugin>
+			</plugins>
+		</pluginManagement>
+  	</build>
  
 </project>
