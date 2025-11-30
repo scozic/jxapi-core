@@ -100,11 +100,9 @@ public class PojosGeneratorMain {
     
   }
 
-  private static void generatePojosInProject(PojosDescriptor exchangeDescriptor, Path projectFolder) throws IOException {
+  private static void generatePojosInProject(PojosDescriptor pojosDescriptor, Path projectFolder) throws IOException {
     Path outputSrcMainFolder = projectFolder.resolve(Paths.get("src", "main", "java"));
-    Path mainPackagePath = Paths.get(StringUtils.replace(exchangeDescriptor.getBasePackage(), ".", "/"));
-    Path genMainPackagesFolder = outputSrcMainFolder.resolve(mainPackagePath);
-    generatePojos(exchangeDescriptor, genMainPackagesFolder);
+    generatePojos(pojosDescriptor, outputSrcMainFolder);
     
   }
   
@@ -116,13 +114,16 @@ public class PojosGeneratorMain {
    * @param basePackageFolder the base package folder where to generate the POJOs
    * @throws IOException if an I/O error occurs
    */
-  public static void generatePojos(PojosDescriptor pojosDescriptor, Path basePackageFolder) throws IOException {
+  public static void generatePojos(PojosDescriptor pojosDescriptor, Path srcMainFolder) throws IOException {
+    Path mainPackagePath = Paths.get(StringUtils.replace(pojosDescriptor.getBasePackage(), ".", "/"));
+    Path genPackagesFolder = srcMainFolder.resolve(mainPackagePath);
+    JavaCodeGenUtil.deletePath(genPackagesFolder);
     log.info("Generating pojos with base package :{} in {}", 
         pojosDescriptor.getBasePackage(), 
-        basePackageFolder.toAbsolutePath());
-    JavaCodeGenUtil.deletePath(basePackageFolder);
+        genPackagesFolder.toAbsolutePath());
+    
     for (Field pojoDescriptor : pojosDescriptor.getPojos()) {
-      generateClassesForPojo(pojoDescriptor, pojosDescriptor.getBasePackage(), basePackageFolder);
+      generateClassesForPojo(pojoDescriptor, pojosDescriptor.getBasePackage(), srcMainFolder);
     }
   }
   
@@ -137,14 +138,21 @@ public class PojosGeneratorMain {
       
     List<Field> properties = pojoDescriptor.getProperties();
       if (properties!= null) {
-        PojoClassesGenerator subGen = new PojoClassesGenerator(
+        new PojoClassesGenerator(
             objectClassName, 
             pojoDescriptor.getDescription(), 
             properties,
             pojoDescriptor.getImplementedInterfaces(),
             null,
-            null);
-        subGen.generateClasses(basePackageFolder);
+            null).generateClasses(basePackageFolder);
+            
+          new JsonPojoSerializerClassesGenerator( 
+            objectClassName,
+            properties).generateClasses(basePackageFolder);
+          
+          new JsonMessageDeserializerClassesGenerator(
+              objectClassName, 
+              properties).generateClasses(basePackageFolder);
       }
   }
 }
