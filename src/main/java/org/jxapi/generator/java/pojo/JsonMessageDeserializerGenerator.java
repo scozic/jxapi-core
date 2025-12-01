@@ -37,6 +37,7 @@ import org.jxapi.util.JsonUtil;
  */
 public class JsonMessageDeserializerGenerator extends JavaTypeGenerator {
   
+  private static final String STATIC = "static ";
   private final String deserializedTypeClassName;
   private final List<Field> fields;
   private final Set<String> nonPrimitiveTypeFieldsDeserializerDeclarations = new TreeSet<>();
@@ -92,9 +93,10 @@ public class JsonMessageDeserializerGenerator extends JavaTypeGenerator {
         .append("case \"")
         .append(field.getMsgField() != null? field.getMsgField() : field.getName())
         .append("\":\n");
-      if (!type.getCanonicalType().isPrimitive) {
+      if (!type.getCanonicalType().isPrimitive 
+          && !JavaCodeGenUtil.isFullClassName(field.getObjectName())) {
         body.append(dblIndent)
-          .append("parser.nextToken();\n");
+            .append("parser.nextToken();\n");
       }
       body.append(dblIndent)
         .append("msg.")
@@ -107,7 +109,7 @@ public class JsonMessageDeserializerGenerator extends JavaTypeGenerator {
         .append(");\n")  
         .append(indent).append("break;\n");
     });
-    addImport("static " + JsonUtil.class.getName() + ".skipNextValue");
+    addImport(STATIC + JsonUtil.class.getName() + ".skipNextValue");
     body.append(indent).append("default:\n")
       .append(dblIndent)
         .append("skipNextValue(parser);\n")
@@ -125,49 +127,68 @@ public class JsonMessageDeserializerGenerator extends JavaTypeGenerator {
   private String getParseFieldInstruction(Field field) {
     CanonicalType canonicalType = PojoGenUtil.getFieldType(field).getCanonicalType();
     if (!canonicalType.isPrimitive) {
-      return generateNonPrimitiveTypeFieldDeserializerDeclaration(field) +".deserialize(parser)";
+      return generateNonPrimitiveTypeFieldDeserializerDeclaration(field);
     }
     
     switch (canonicalType) {
     case BIGDECIMAL:
-      return getPrimitiveNonStringParseFieldInstruction("readNextBigDecimal");
+      return getPrimitiveParseFieldInstruction("readNextBigDecimal");
     case BOOLEAN:
-      return getPrimitiveNonStringParseFieldInstruction("readNextBoolean");
+      return getPrimitiveParseFieldInstruction("readNextBoolean");
     case INT:
-      return getPrimitiveNonStringParseFieldInstruction("readNextInteger");
+      return getPrimitiveParseFieldInstruction("readNextInteger");
     case LONG:
-      return getPrimitiveNonStringParseFieldInstruction("readNextLong");
+      return getPrimitiveParseFieldInstruction("readNextLong");
     default: // STRING
-      return "parser.nextTextValue()";
+      return getPrimitiveParseFieldInstruction("readNextString");
     }
   }
   
-  private String getPrimitiveNonStringParseFieldInstruction(String methodName) {
-    addImport("static " + JsonUtil.class.getName() + "." + methodName);
+  private String getPrimitiveParseFieldInstruction(String methodName) {
+    addImport(STATIC + JsonUtil.class.getName() + "." + methodName);
     return methodName + "(parser)";
   }
   
   private String generateNonPrimitiveTypeFieldDeserializerDeclaration(Field field) {
+    String objectName = field.getObjectName();
+    if (JavaCodeGenUtil.isFullClassName(objectName)) {
+      return getFullClassObjectNameParseFieldInstruction(field);
+    }
     Type type = PojoGenUtil.getFieldType(field);
     String objectFieldClassName = PojoGenUtil.getFieldLeafSubTypeClassName(
-                          field.getName(), 
-                          type, 
-                          field.getObjectName(),
-                          deserializedTypeClassName);
+      field.getName(), 
+      type, 
+      objectName,
+      deserializedTypeClassName);
     String simpleDeserializerTypeName = generateNonPrimitiveFieldDeserializerClassName(
-                        type, 
-                        objectFieldClassName, 
-                        getImports());
+      type, 
+      objectFieldClassName, 
+      getImports());
     
     String deserializerVariableName = JavaCodeGenUtil.firstLetterToLowerCase(field.getName() + "Deserializer");
-    String variableDeclaration = "private final " + simpleDeserializerTypeName + " " + deserializerVariableName + " = " 
-                    + ExchangeGenUtil.getNewJsonFieldDeserializerInstruction(
-                      type, 
-                      objectFieldClassName, 
-                      getImports()) 
-                    + ";\n";
+    String variableDeclaration = "private final " 
+      + simpleDeserializerTypeName 
+      + " " 
+      + deserializerVariableName 
+      + " = " 
+      + ExchangeGenUtil.getNewJsonFieldDeserializerInstruction(
+          type,
+          objectFieldClassName, 
+          getImports()) 
+      + ";\n";
     nonPrimitiveTypeFieldsDeserializerDeclarations.add(variableDeclaration);
-    return deserializerVariableName;
+    return deserializerVariableName + ".deserialize(parser)";
+  }
+  
+  private String getFullClassObjectNameParseFieldInstruction(Field field) {
+    String objectName = field.getObjectName();
+    String res = "readNextObject(parser";
+    addImport(STATIC + JsonUtil.class.getName() + ".readNextObject");
+    if (Object.class.getName().equals(objectName)) {
+      return res + ")";
+    } else {
+      return res + ", " + objectName + ".class)";
+    }
   }
   
   /**

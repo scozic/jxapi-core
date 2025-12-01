@@ -61,7 +61,8 @@
 							{"name":"payload", "type": "OBJECT_LIST", "description":"List of market information for each requested symbol", "properties":[
 									{"name":"symbol", "type": "STRING", "description":"Market symbol", "sampleValue":"BTC_USDT"},
 									{"name":"minOrderSize", "type": "BIGDECIMAL", "description":"Minimum order amount", "sampleValue":"0.0001"},
-									{"name":"orderTickSize", "type": "BIGDECIMAL", "description":"Price precision. Prce of an order should be a multiple of this value", "sampleValue":0.05}
+									{"name":"orderTickSize", "type": "BIGDECIMAL", "description":"Price precision. Prce of an order should be a multiple of this value", "sampleValue":0.05},
+									{"name": "blob", "description": "Additional metadata for the symbol", "objectName": "java.lang.Object"}
 								]
 							}
 						]
@@ -80,7 +81,8 @@
 									{"name":"high", "type": "BIGDECIMAL", "description":"Last traded price", "sampleValue":10.0},
 									{"name":"low", "type": "BIGDECIMAL", "description":"Last traded price", "sampleValue":10.0},
 									{"name":"volume", "type": "BIGDECIMAL", "description":"Total traded amount in base asset during the last 24h from now", "sampleValue":10.0},
-									{"name":"time", "type": "LONG", "description":"Current time", "sampleValue":"now()"}
+									{"name":"time", "type": "LONG", "description":"Current time", "sampleValue":"now()"},
+									{"name": "meta", "description": "Additional metadata for the ticker", "objectName": "org.jxapi.exchanges.demo.TickerMeta"}
 								]
 							}
 						]

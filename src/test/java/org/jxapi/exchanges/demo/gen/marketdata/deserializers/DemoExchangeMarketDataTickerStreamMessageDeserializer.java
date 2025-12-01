@@ -9,6 +9,7 @@ import org.jxapi.exchanges.demo.gen.marketdata.pojo.DemoExchangeMarketDataTicker
 import org.jxapi.netutils.deserialization.json.AbstractJsonMessageDeserializer;
 import static org.jxapi.util.JsonUtil.readNextBigDecimal;
 import static org.jxapi.util.JsonUtil.readNextLong;
+import static org.jxapi.util.JsonUtil.readNextString;
 import static org.jxapi.util.JsonUtil.skipNextValue;
 
 /**
@@ -24,10 +25,10 @@ public class DemoExchangeMarketDataTickerStreamMessageDeserializer extends Abstr
     while(parser.nextToken() != JsonToken.END_OBJECT) {
       switch(parser.getCurrentName()) {
       case "t":
-        msg.setTopic(parser.nextTextValue());
+        msg.setTopic(readNextString(parser));
       break;
       case "s":
-        msg.setSymbol(parser.nextTextValue());
+        msg.setSymbol(readNextString(parser));
       break;
       case "p":
         msg.setLast(readNextBigDecimal(parser));

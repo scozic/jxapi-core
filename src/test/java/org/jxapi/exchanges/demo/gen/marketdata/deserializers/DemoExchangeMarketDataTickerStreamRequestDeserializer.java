@@ -7,6 +7,7 @@ import com.fasterxml.jackson.core.JsonToken;
 import javax.annotation.processing.Generated;
 import org.jxapi.exchanges.demo.gen.marketdata.pojo.DemoExchangeMarketDataTickerStreamRequest;
 import org.jxapi.netutils.deserialization.json.AbstractJsonMessageDeserializer;
+import static org.jxapi.util.JsonUtil.readNextString;
 import static org.jxapi.util.JsonUtil.skipNextValue;
 
 /**
@@ -22,7 +23,7 @@ public class DemoExchangeMarketDataTickerStreamRequestDeserializer extends Abstr
     while(parser.nextToken() != JsonToken.END_OBJECT) {
       switch(parser.getCurrentName()) {
       case "symbol":
-        msg.setSymbol(parser.nextTextValue());
+        msg.setSymbol(readNextString(parser));
       break;
       default:
         skipNextValue(parser);

@@ -26,8 +26,7 @@ import org.jxapi.util.PlaceHolderResolver;
  * Helper methods used in generation of POJOs and associated JSON serializer/deserializers.
  */
 public class PojoGenUtil {
-  
-  private static final String OTHER_TOEN = ", other.";
+  private static final String THIS = "this.";
   /**
    * The hash algorithm used to generate the serial version UID hash.
      */
@@ -57,10 +56,13 @@ public class PojoGenUtil {
    * @return The generated deep clone instruction
    */
   public static String generateDeepCloneFieldInstruction(Field f, Imports imports) {
+    if (f == null) {
+      throw new IllegalArgumentException("Field cannot be null");
+    }
     Type type = PojoGenUtil.getFieldType(f);
     String name = f.getName();
-    if (type.getCanonicalType().isPrimitive) {
-      return "this." + name;
+    if (type.getCanonicalType().isPrimitive || isJavaLangObjectField(f)) {
+      return THIS + name;
     } else if (type.getCanonicalType() == CanonicalType.LIST) {
       imports.add(CollectionUtil.class);
       Type subType = type.getSubType();
@@ -95,7 +97,7 @@ public class PojoGenUtil {
       }
     }
     // Object type
-    return new StringBuilder("this.")
+    return new StringBuilder(THIS)
           .append(name)
           .append(" != null ? this.")
           .append(name)
@@ -111,31 +113,37 @@ public class PojoGenUtil {
   public static String generateCompareFieldsInstruction(Field f) {
     String name = f.getName();
     Type type = PojoGenUtil.getFieldType(f);
+    String thisCommaOther = THIS + name + ", other." + name;
     if (type.getCanonicalType().isPrimitive) {
-      return "CompareUtil.compare(this." + name + OTHER_TOEN + name + ")";
+      return "CompareUtil.compare(" + thisCommaOther + ")";
     } else if (type.getCanonicalType() == CanonicalType.LIST) {
       return new StringBuilder()
-          .append("CompareUtil.compareLists(this.")
-          .append(name)
-          .append(OTHER_TOEN)
-          .append(name)
+          .append("CompareUtil.compareLists(")
+          .append(thisCommaOther)
           .append(", ")
           .append(generateItemComparatorDeclaration(type.getSubType(), 0))
           .append(")")
           .toString();
     } else if (type.getCanonicalType() == CanonicalType.MAP) {
       return new StringBuilder()
-          .append("CompareUtil.compareMaps(this.")
-          .append(name)
-          .append(OTHER_TOEN)
-          .append(name)
+          .append("CompareUtil.compareMaps(")
+          .append(thisCommaOther)
           .append(", ")
           .append(generateItemComparatorDeclaration(type.getSubType(), 0))
           .append(")")
           .toString();
     }
+    
     // Object type
-    return "CompareUtil.compare(this." + f.getName() + OTHER_TOEN + f.getName() + ")";
+    //Special case: java.lang.Object fields: we cannot assume they implement Comparable. Comparing their string representation
+    if (isJavaLangObjectField(f)) {
+      return "CompareUtil.compareObjects(" + thisCommaOther + ")";
+    }
+    return "CompareUtil.compare(" + thisCommaOther + ")";
+  }
+  
+  public static boolean isJavaLangObjectField(Field field) {
+    return Object.class.getName().equals(field.getObjectName());
   }
   
   private static String generateItemComparatorDeclaration(Type itemType, int depth) {
@@ -546,6 +554,10 @@ public class PojoGenUtil {
   public static String getClassNameForField(Field field, 
                         Imports imports, 
                         String enclosingClassName) {
+    // FIXME
+    if (field.getName().equals("meta")) {
+      System.out.println("meta!");
+    }
     Type fieldType = getFieldType(field);
     String objectClassName = null;
     if (fieldType.isObject()) {

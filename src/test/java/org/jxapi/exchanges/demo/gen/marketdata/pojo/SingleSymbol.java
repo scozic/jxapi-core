@@ -2,8 +2,10 @@ package org.jxapi.exchanges.demo.gen.marketdata.pojo;
 
 import java.util.Objects;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import javax.annotation.processing.Generated;
+import org.jxapi.exchanges.demo.gen.marketdata.deserializers.SingleSymbolDeserializer;
 import org.jxapi.exchanges.demo.gen.marketdata.serializers.SingleSymbolSerializer;
 import org.jxapi.util.CompareUtil;
 import org.jxapi.util.EncodingUtil;
@@ -15,6 +17,7 @@ import org.jxapi.util.Pojo;
  */
 @Generated("org.jxapi.generator.java.pojo.PojoGenerator")
 @JsonSerialize(using = SingleSymbolSerializer.class)
+@JsonDeserialize(using = SingleSymbolDeserializer.class)
 public class SingleSymbol implements Pojo<SingleSymbol> {
   
   private static final long serialVersionUID = 3008479971180440278L;

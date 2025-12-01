@@ -407,6 +407,112 @@ public class JsonUtilTest {
     Assert.assertEquals("{\"name\":\"foo\",\"bars\":[{\"id\":1},{\"id\":2}],\"id\":123,\"price\":12.34,\"timestamp\":123456789}", mapper.writeValueAsString(foo));
   }
   
+  @Test
+  public void testReadNextObject_Primitives() throws IOException {
+    ObjectMapper objectMapper = new ObjectMapper();
+      JsonParser parser = objectMapper.getFactory().createParser("123");
+      Assert.assertEquals(123, JsonUtil.readNextObject(parser));
+
+      parser = objectMapper.getFactory().createParser("123.45");
+      Assert.assertEquals(123.45, JsonUtil.readNextObject(parser));
+
+      parser = objectMapper.getFactory().createParser("\"test\"");
+      Assert.assertEquals("test", JsonUtil.readNextObject(parser));
+
+      parser = objectMapper.getFactory().createParser("true");
+      Assert.assertEquals(true, JsonUtil.readNextObject(parser));
+
+      parser = objectMapper.getFactory().createParser("null");
+      Assert.assertEquals(null, JsonUtil.readNextObject(parser));
+  }
+
+  @SuppressWarnings("unchecked")
+  @Test
+  public void testReadNextObject_ComplexTypes() throws IOException {
+    ObjectMapper objectMapper = new ObjectMapper();
+      JsonParser parser = objectMapper.getFactory().createParser("{\"key\":\"value\",\"number\":42}");
+      Map<String, Object> map = (Map<String, Object>) JsonUtil.readNextObject(parser);
+      Assert.assertEquals(2, map.size());
+      Assert.assertEquals("value", map.get("key"));
+      Assert.assertEquals(42, map.get("number"));
+
+      parser = objectMapper.getFactory().createParser("[1,2,3]");
+      List<Object> list = (List<Object>) JsonUtil.readNextObject(parser);
+      Assert.assertEquals(3, list.size());
+      Assert.assertEquals(1, list.get(0));
+      Assert.assertEquals(2, list.get(1));
+      Assert.assertEquals(3, list.get(2));
+  }
+  
+  @SuppressWarnings("unchecked")
+  @Test
+  public void testReadCurrentObject_NestedStructures() throws IOException {
+    ObjectMapper objectMapper = new ObjectMapper();
+      JsonParser parser = objectMapper.getFactory().createParser("{\"list\":[1,2,{\"nestedKey\":\"nestedValue\"}]}");
+      Map<String, Object> map = (Map<String, Object>) JsonUtil.readCurrentObject(parser);
+      Assert.assertTrue(map.containsKey("list"));
+
+      List<Object> list = (List<Object>) map.get("list");
+      Assert.assertEquals(3, list.size());
+      Assert.assertEquals(1, list.get(0));
+      Assert.assertEquals(2, list.get(1));
+
+      Map<String, Object> nestedMap = (Map<String, Object>) list.get(2);
+      Assert.assertEquals("nestedValue", nestedMap.get("nestedKey"));
+  }
+
+  @SuppressWarnings("unchecked")
+  @Test
+  public void testReadNextObject_NestedStructures() throws IOException {
+    ObjectMapper objectMapper = new ObjectMapper();
+      JsonParser parser = objectMapper.getFactory().createParser("{\"list\":[1,2,{\"nestedKey\":\"nestedValue\"}]}");
+      Map<String, Object> map = (Map<String, Object>) JsonUtil.readNextObject(parser);
+      Assert.assertTrue(map.containsKey("list"));
+
+      List<Object> list = (List<Object>) map.get("list");
+      Assert.assertEquals(3, list.size());
+      Assert.assertEquals(1, list.get(0));
+      Assert.assertEquals(2, list.get(1));
+
+      Map<String, Object> nestedMap = (Map<String, Object>) list.get(2);
+      Assert.assertEquals("nestedValue", nestedMap.get("nestedKey"));
+  }
+  
+  @Test
+  public void testReadNextObject() throws IOException {
+    ObjectMapper objectMapper = new ObjectMapper();
+    String json = "{\"name\":\"TestFoo\",\"bars\":[{\"id\":1},{\"id\":2}],\"id\":123,\"price\":99.99,\"timestamp\":1633024800000,\"active\":true}";
+    JsonParser parser = objectMapper.getFactory().createParser(json);
+
+    Foo result = JsonUtil.readNextObject(parser, Foo.class);
+
+    Assert.assertNotNull(result);
+    Assert.assertEquals("TestFoo", result.getName());
+    Assert.assertEquals(2, result.getBars().size());
+    Assert.assertEquals(Integer.valueOf(123), result.getId());
+    Assert.assertEquals(new BigDecimal("99.99"), result.getPrice());
+    Assert.assertEquals(Long.valueOf(1633024800000L), result.getTimestamp());
+    Assert.assertEquals(Boolean.TRUE, result.getActive());
+  }
+
+  @Test
+  public void testReadCurrentObject() throws IOException {
+    ObjectMapper objectMapper = new ObjectMapper();
+    String json = "{\"name\":\"TestFoo\",\"bars\":[{\"id\":1},{\"id\":2}],\"id\":123,\"price\":99.99,\"timestamp\":1633024800000,\"active\":true}";
+    JsonParser parser = objectMapper.getFactory().createParser(json);
+    parser.nextToken(); // Move to the first token
+
+    Foo result = JsonUtil.readCurrentObject(parser, Foo.class);
+
+    Assert.assertNotNull(result);
+    Assert.assertEquals("TestFoo", result.getName());
+    Assert.assertEquals(2, result.getBars().size());
+    Assert.assertEquals(Integer.valueOf(123), result.getId());
+    Assert.assertEquals(new BigDecimal("99.99"), result.getPrice());
+    Assert.assertEquals(Long.valueOf(1633024800000L), result.getTimestamp());
+    Assert.assertEquals(Boolean.TRUE, result.getActive());
+  }
+  
   private void doTestSkipNextPrimitiveValue(String primitiveValue) throws Exception{
     String s = "{\"a\": " + primitiveValue + ", \"b\": true}";
     JsonParser parser = new JsonFactory().createParser(s.getBytes());
@@ -428,6 +534,9 @@ public class JsonUtilTest {
     private BigDecimal price;
     private Long timestamp;
     private Boolean active;
+    
+    public Foo() {
+    }
     
     public Foo(String name, List<Bar> bars) {
       this.setName(name);

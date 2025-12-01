@@ -5,6 +5,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Objects;
 import java.util.Set;
 
 /**
@@ -124,6 +125,40 @@ public class CompareUtil {
       }
     }
     return 0;
+  }
+  
+  /**
+   * Compares two objects that may be null. Since Objects do not implement
+   * {@link Comparable}, the comparison is done:
+   * <ul>
+   * <li>by checking if both are the same object reference
+   * <li>by checking if both are equal using {@link Objects#equals(Object, Object)}
+   * <li>by comparing their class names
+   * <li>by comparing their string representations using {@link Object#toString()}
+   * </ul>
+   * 
+   * @param o1 The first object
+   * @param o2 The second object
+   * @return 0 if both are <code>null</code>, -1 if o1 is <code>null</code>, 1 if 
+   *         o2 is <code>null</code>, otherwise the result of comparing their string representations.
+   */
+  public static int compareObjects(Object o1, Object o2) {
+    if (o1 == null) {
+      return (o2 == null) ? 0 : -1;
+    } else if (o2 == null) {
+      return 1;
+    }
+    if (o1 == o2) {
+      return 0;
+    }
+    if (Objects.equals(o1, o2)) {
+      return 0;
+    }
+    int res = o1.getClass().getName().compareTo(o2.getClass().getName());
+    if (res != 0) {
+      return res;
+    }
+    return o1.toString().compareTo(o2.toString());
   }
 
 }

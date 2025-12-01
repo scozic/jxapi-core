@@ -3,8 +3,11 @@ package org.jxapi.exchanges.demo.gen.marketdata.pojo;
 import java.math.BigDecimal;
 import java.util.Objects;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import javax.annotation.processing.Generated;
+import org.jxapi.exchanges.demo.TickerMeta;
+import org.jxapi.exchanges.demo.gen.marketdata.deserializers.DemoExchangeMarketDataTickersResponsePayloadDeserializer;
 import org.jxapi.exchanges.demo.gen.marketdata.serializers.DemoExchangeMarketDataTickersResponsePayloadSerializer;
 import org.jxapi.util.CompareUtil;
 import org.jxapi.util.EncodingUtil;
@@ -15,9 +18,10 @@ import org.jxapi.util.Pojo;
  */
 @Generated("org.jxapi.generator.java.pojo.PojoGenerator")
 @JsonSerialize(using = DemoExchangeMarketDataTickersResponsePayloadSerializer.class)
+@JsonDeserialize(using = DemoExchangeMarketDataTickersResponsePayloadDeserializer.class)
 public class DemoExchangeMarketDataTickersResponsePayload implements Pojo<DemoExchangeMarketDataTickersResponsePayload> {
   
-  private static final long serialVersionUID = -6095854297432180978L;
+  private static final long serialVersionUID = 2227932091088175817L;
   
   /**
    * @return A new builder to build {@link DemoExchangeMarketDataTickersResponsePayload} objects
@@ -31,6 +35,7 @@ public class DemoExchangeMarketDataTickersResponsePayload implements Pojo<DemoEx
   private BigDecimal low;
   private BigDecimal volume;
   private Long time;
+  private TickerMeta meta;
   
   /**
    * @return Last traded price
@@ -102,6 +107,20 @@ public class DemoExchangeMarketDataTickersResponsePayload implements Pojo<DemoEx
     this.time = time;
   }
   
+  /**
+   * @return Additional metadata for the ticker
+   */
+  public TickerMeta getMeta() {
+    return meta;
+  }
+  
+  /**
+   * @param meta Additional metadata for the ticker
+   */
+  public void setMeta(TickerMeta meta) {
+    this.meta = meta;
+  }
+  
   @Override
   public boolean equals(Object other) {
     if (other == null) {
@@ -117,7 +136,8 @@ public class DemoExchangeMarketDataTickersResponsePayload implements Pojo<DemoEx
         && Objects.equals(this.high, o.high)
         && Objects.equals(this.low, o.low)
         && Objects.equals(this.volume, o.volume)
-        && Objects.equals(this.time, o.time);
+        && Objects.equals(this.time, o.time)
+        && Objects.equals(this.meta, o.meta);
   }
   
   @Override
@@ -146,12 +166,16 @@ public class DemoExchangeMarketDataTickersResponsePayload implements Pojo<DemoEx
       return res;
     }
     res = CompareUtil.compare(this.time, other.time);
+    if (res != 0) {
+      return res;
+    }
+    res = CompareUtil.compare(this.meta, other.meta);
     return res;
   }
   
   @Override
   public int hashCode() {
-    return Objects.hash(last, high, low, volume, time);
+    return Objects.hash(last, high, low, volume, time, meta);
   }
   
   @Override
@@ -162,6 +186,7 @@ public class DemoExchangeMarketDataTickersResponsePayload implements Pojo<DemoEx
     clone.low = this.low;
     clone.volume = this.volume;
     clone.time = this.time;
+    clone.meta = this.meta != null ? this.meta.deepClone() : null;
     return clone;
   }
   
@@ -181,6 +206,7 @@ public class DemoExchangeMarketDataTickersResponsePayload implements Pojo<DemoEx
     private BigDecimal low;
     private BigDecimal volume;
     private Long time;
+    private TickerMeta meta;
     
     /**
      * Will set the value of <code>last</code> field in the builder
@@ -238,6 +264,17 @@ public class DemoExchangeMarketDataTickersResponsePayload implements Pojo<DemoEx
     }
     
     /**
+     * Will set the value of <code>meta</code> field in the builder
+     * @param meta Additional metadata for the ticker
+     * @return Builder instance
+     * @see #setMeta(TickerMeta)
+     */
+    public Builder meta(TickerMeta meta)  {
+      this.meta = meta;
+      return this;
+    }
+    
+    /**
      * @return a new instance of DemoExchangeMarketDataTickersResponsePayload using the values set in this builder
      */
     public DemoExchangeMarketDataTickersResponsePayload build() {
@@ -247,6 +284,7 @@ public class DemoExchangeMarketDataTickersResponsePayload implements Pojo<DemoEx
       res.low = this.low;
       res.volume = this.volume;
       res.time = this.time;
+      res.meta = this.meta != null ? this.meta.deepClone() : null;
       return res;
     }
   }

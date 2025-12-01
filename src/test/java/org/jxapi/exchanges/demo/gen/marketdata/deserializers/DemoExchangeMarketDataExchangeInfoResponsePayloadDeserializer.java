@@ -8,6 +8,8 @@ import javax.annotation.processing.Generated;
 import org.jxapi.exchanges.demo.gen.marketdata.pojo.DemoExchangeMarketDataExchangeInfoResponsePayload;
 import org.jxapi.netutils.deserialization.json.AbstractJsonMessageDeserializer;
 import static org.jxapi.util.JsonUtil.readNextBigDecimal;
+import static org.jxapi.util.JsonUtil.readNextObject;
+import static org.jxapi.util.JsonUtil.readNextString;
 import static org.jxapi.util.JsonUtil.skipNextValue;
 
 /**
@@ -23,13 +25,16 @@ public class DemoExchangeMarketDataExchangeInfoResponsePayloadDeserializer exten
     while(parser.nextToken() != JsonToken.END_OBJECT) {
       switch(parser.getCurrentName()) {
       case "symbol":
-        msg.setSymbol(parser.nextTextValue());
+        msg.setSymbol(readNextString(parser));
       break;
       case "minOrderSize":
         msg.setMinOrderSize(readNextBigDecimal(parser));
       break;
       case "orderTickSize":
         msg.setOrderTickSize(readNextBigDecimal(parser));
+      break;
+      case "blob":
+        msg.setBlob(readNextObject(parser));
       break;
       default:
         skipNextValue(parser);

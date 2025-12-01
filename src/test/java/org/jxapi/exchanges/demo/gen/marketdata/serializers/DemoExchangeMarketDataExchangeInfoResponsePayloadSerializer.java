@@ -34,6 +34,9 @@ public class DemoExchangeMarketDataExchangeInfoResponsePayloadSerializer extends
     if (value.getOrderTickSize() != null){
       gen.writeStringField("orderTickSize", EncodingUtil.bigDecimalToString(value.getOrderTickSize()));
     }
+    if (value.getBlob() != null){
+      gen.writeObjectField("blob", value.getBlob());
+    }
     gen.writeEndObject();
   }
 }

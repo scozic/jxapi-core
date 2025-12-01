@@ -2,8 +2,10 @@ package org.jxapi.exchanges.demo.gen.marketdata.pojo;
 
 import java.util.Objects;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import javax.annotation.processing.Generated;
+import org.jxapi.exchanges.demo.gen.marketdata.deserializers.DemoExchangeMarketDataTickerStreamRequestDeserializer;
 import org.jxapi.exchanges.demo.gen.marketdata.serializers.DemoExchangeMarketDataTickerStreamRequestSerializer;
 import org.jxapi.util.CompareUtil;
 import org.jxapi.util.EncodingUtil;
@@ -15,6 +17,7 @@ import org.jxapi.util.Pojo;
  */
 @Generated("org.jxapi.generator.java.pojo.PojoGenerator")
 @JsonSerialize(using = DemoExchangeMarketDataTickerStreamRequestSerializer.class)
+@JsonDeserialize(using = DemoExchangeMarketDataTickerStreamRequestDeserializer.class)
 public class DemoExchangeMarketDataTickerStreamRequest implements Pojo<DemoExchangeMarketDataTickerStreamRequest> {
   
   private static final long serialVersionUID = -1523648742655057287L;

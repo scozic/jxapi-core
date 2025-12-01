@@ -3,9 +3,11 @@ package org.jxapi.exchanges.demo.gen.marketdata.pojo;
 import java.util.List;
 import java.util.Objects;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import javax.annotation.processing.Generated;
 import org.jxapi.exchanges.demo.gen.DemoExchangeConstants;
+import org.jxapi.exchanges.demo.gen.marketdata.deserializers.DemoExchangeMarketDataExchangeInfoRequestDeserializer;
 import org.jxapi.exchanges.demo.gen.marketdata.serializers.DemoExchangeMarketDataExchangeInfoRequestSerializer;
 import org.jxapi.netutils.deserialization.json.field.ListJsonFieldDeserializer;
 import org.jxapi.netutils.deserialization.json.field.StringJsonFieldDeserializer;
@@ -20,6 +22,7 @@ import org.jxapi.util.Pojo;
  */
 @Generated("org.jxapi.generator.java.pojo.PojoGenerator")
 @JsonSerialize(using = DemoExchangeMarketDataExchangeInfoRequestSerializer.class)
+@JsonDeserialize(using = DemoExchangeMarketDataExchangeInfoRequestDeserializer.class)
 public class DemoExchangeMarketDataExchangeInfoRequest implements Pojo<DemoExchangeMarketDataExchangeInfoRequest> {
   
   private static final long serialVersionUID = 6651377746235151905L;

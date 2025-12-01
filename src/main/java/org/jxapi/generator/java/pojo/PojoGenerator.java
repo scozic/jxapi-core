@@ -10,6 +10,7 @@ import java.util.stream.Collectors;
 import org.jxapi.generator.java.JavaCodeGenUtil;
 import org.jxapi.generator.java.JavaTypeGenerator;
 import org.jxapi.generator.java.exchange.ConstantValuePlaceholderResolverFactory;
+import org.jxapi.generator.java.exchange.ExchangeGenUtil;
 import org.jxapi.pojo.descriptor.CanonicalType;
 import org.jxapi.pojo.descriptor.Field;
 import org.jxapi.pojo.descriptor.Type;
@@ -96,7 +97,6 @@ public class PojoGenerator extends JavaTypeGenerator {
        PlaceHolderResolver docPlaceHolderResolver,
        ConstantValuePlaceholderResolverFactory constantValuePlaceHolderResolverFactory) {
     super(className);
-    setTypeDeclaration("public class");
     this.docPlaceHolderResolver = Optional.ofNullable(docPlaceHolderResolver).orElse(PlaceHolderResolver.NO_OP);
     this.defaultValuePlaceHolderResolver = constantValuePlaceHolderResolverFactory != null
         ? constantValuePlaceHolderResolverFactory.createConstantValuePlaceholderResolver(getImports())
@@ -104,15 +104,29 @@ public class PojoGenerator extends JavaTypeGenerator {
     this.fields.addAll(Optional.ofNullable(fields).orElse(List.of()));
     String serializerClassName = PojoGenUtil.getSerializerClassName(className);
     addImport(serializerClassName);
-    addImport(com.fasterxml.jackson.databind.annotation.JsonSerialize.class.getName());
-    setTypeDeclaration("@JsonSerialize(using = " 
-                    + JavaCodeGenUtil.getClassNameWithoutPackage(serializerClassName) 
-                    + ".class)\n" 
-                    + getTypeDeclaration());
+    
+    setTypeDeclaration(generateTypeDeclaration());
     setDescription(this.docPlaceHolderResolver.resolve(description));
     addImport(Pojo.class.getName());
     String pojoInterface = Pojo.class.getName() + "<" + getSimpleName() + ">";
     setImplementedInterfaces(CollectionUtil.mergeLists(List.of(pojoInterface), implementedInterfaces));
+  }
+  
+  private String generateTypeDeclaration() {
+    String serializerClassName = PojoGenUtil.getSerializerClassName(getName());
+    String deserializerClassName = ExchangeGenUtil.getJsonMessageDeserializerClassName(getName());
+    addImport(serializerClassName);
+    addImport(deserializerClassName);
+    addImport(com.fasterxml.jackson.databind.annotation.JsonSerialize.class.getName());
+    addImport(com.fasterxml.jackson.databind.annotation.JsonDeserialize.class.getName());
+    return new StringBuilder()
+        .append("@JsonSerialize(using = ")
+        .append(JavaCodeGenUtil.getClassNameWithoutPackage(serializerClassName))
+        .append(".class)\n")
+        .append("@JsonDeserialize(using = ")
+        .append(JavaCodeGenUtil.getClassNameWithoutPackage(deserializerClassName))
+        .append(".class)\n")
+        .append("public class").toString();
   }
   
   /**

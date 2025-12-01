@@ -2,8 +2,6 @@ package org.jxapi.util;
 
 import java.io.IOException;
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -385,7 +383,7 @@ public class JsonUtil {
           "Expecting start array of items to be deserialized using " + itemDeserializer);
     }
 
-    List<T> res = new ArrayList<>();
+    List<T> res = CollectionUtil.createList();
     while (parser.nextToken() != JsonToken.END_ARRAY) {
       res.add(itemDeserializer.deserialize(parser));
     }
@@ -420,7 +418,7 @@ public class JsonUtil {
               + parser.currentToken());
     }
 
-    Map<String, T> res = new HashMap<>();
+    Map<String, T> res = CollectionUtil.createMap();
     while (parser.nextToken() != JsonToken.END_OBJECT) {
       String key = parser.getCurrentName();
       parser.nextToken();
@@ -449,6 +447,76 @@ public class JsonUtil {
       default:
         break;
     }
+  }
+  
+  public static Object readNextObject(JsonParser parser) throws IOException {
+    parser.nextToken();
+    return readCurrentObject(parser);
+  }
+  
+  /**
+   * Reads the current token from the parser and returns it as a generic Object.
+   * The parser is expected to be positioned on the value to read.
+   * <p>
+   * The returned object type depends on the JSON structure:
+   * <ul>
+   * <li>JSON number (integer) - returns {@link Integer}</li>
+   * <li>JSON number (floating point) - returns {@link Double}</li>
+   * <li>JSON string - returns {@link String}</li>
+   * <li>JSON object - returns {@link Map}&lt;String, Object&gt;</li>
+   * <li>JSON array - returns {@link List}&lt;Object&gt;</li>
+   * <li>JSON boolean - returns {@link Boolean}</li>
+   * <li>JSON null - returns <code>null</code></li>
+   * </ul>
+   * <br>
+   * In case of JSON object or array, the method is called recursively to
+   * construct the full structure.
+   * @param parser The parser to read from
+   * @return The deserialized object
+   * @throws IOException Eventually thrown by the parser
+   */
+  public static Object readCurrentObject(JsonParser parser) throws IOException {
+    JsonToken token = parser.currentToken();
+    if (token == null) {
+        token = parser.nextToken();
+    }
+    switch (token) {
+        case VALUE_NUMBER_INT:
+            return parser.getIntValue();
+        case VALUE_NUMBER_FLOAT:
+            return parser.getDoubleValue();
+        case VALUE_STRING:
+            return parser.getText();
+        case START_OBJECT:
+            Map<String, Object> map = CollectionUtil.createMap();
+            while (parser.nextToken() != JsonToken.END_OBJECT) {
+                String fieldName = parser.getCurrentName();
+                map.put(fieldName, readNextObject(parser));
+            }
+            return map;
+        case START_ARRAY:
+            List<Object> list = CollectionUtil.createList();
+            while (parser.nextToken() != JsonToken.END_ARRAY) {
+                list.add(readCurrentObject(parser));
+            }
+            return list;
+        case VALUE_TRUE:
+        case VALUE_FALSE:
+            return parser.getBooleanValue();
+        case VALUE_NULL:
+            return null;
+        default:
+            throw new IllegalArgumentException("Unsupported JSON token: " + token);
+    }
+  }
+  
+  public static <T> T readNextObject(JsonParser parser, Class<T> clazz) throws IOException {
+    parser.nextToken();
+    return readCurrentObject(parser, clazz);
+  }
+  
+  public static <T> T readCurrentObject(JsonParser parser, Class<T> clazz) throws IOException {
+    return parser.readValueAs(clazz);
   }
   
   /**

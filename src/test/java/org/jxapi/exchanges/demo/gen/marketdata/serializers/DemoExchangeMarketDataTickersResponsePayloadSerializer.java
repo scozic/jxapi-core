@@ -40,6 +40,9 @@ public class DemoExchangeMarketDataTickersResponsePayloadSerializer extends StdS
     if (value.getTime() != null){
       gen.writeNumberField("time", value.getTime());
     }
+    if (value.getMeta() != null){
+      gen.writeObjectField("meta", value.getMeta());
+    }
     gen.writeEndObject();
   }
 }

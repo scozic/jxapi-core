@@ -9,6 +9,7 @@ import org.jxapi.exchanges.demo.gen.marketdata.pojo.DemoExchangeMarketDataTicker
 import org.jxapi.netutils.deserialization.json.AbstractJsonMessageDeserializer;
 import static org.jxapi.util.JsonUtil.readNextBigDecimal;
 import static org.jxapi.util.JsonUtil.readNextLong;
+import static org.jxapi.util.JsonUtil.readNextObject;
 import static org.jxapi.util.JsonUtil.skipNextValue;
 
 /**
@@ -37,6 +38,9 @@ public class DemoExchangeMarketDataTickersResponsePayloadDeserializer extends Ab
       break;
       case "time":
         msg.setTime(readNextLong(parser));
+      break;
+      case "meta":
+        msg.setMeta(readNextObject(parser, org.jxapi.exchanges.demo.TickerMeta.class));
       break;
       default:
         skipNextValue(parser);

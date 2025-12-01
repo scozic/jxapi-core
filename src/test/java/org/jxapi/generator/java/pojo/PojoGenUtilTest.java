@@ -59,7 +59,15 @@ public class PojoGenUtilTest {
         "CollectionUtil.deepCloneList(this.myField, m0 -> CollectionUtil.deepCloneMap(m0, l1 -> CollectionUtil.deepCloneList(l1, m2 -> CollectionUtil.deepCloneMap(m2, DeepCloneable::deepClone))))", 
         CollectionUtil.class.getName(),
         DeepCloneable.class.getName());
+    Field f = Field.builder().name("myField").type(Type.OBJECT).objectName(Object.class.getName()).build();
+    Assert.assertEquals("this.myField",
+        PojoGenUtil.generateDeepCloneFieldInstruction(f, new Imports()));
         
+  }
+  
+  @Test(expected = IllegalArgumentException.class)
+  public void testGenerateDeepCloneFieldInstruction_NullField() {
+    PojoGenUtil.generateDeepCloneFieldInstruction(null, new Imports());
   }
   
   private void doTestGenerateDeepCloneFieldInstruction(Type type, String expectedInstruction, String... expectedImports) {
@@ -92,6 +100,8 @@ public class PojoGenUtilTest {
         "CompareUtil.compareMaps(this.myField, other.myField, (m0a, m0b) -> CompareUtil.compareMaps(m0a,m0b, (m1a, m1b) -> CompareUtil.compareMaps(m1a,m1b, CompareUtil::compare)))");
     doTestGenerateCompareFieldsInstruction(Type.fromTypeName("OBJECT_MAP_LIST_MAP_LIST"),
         "CompareUtil.compareLists(this.myField, other.myField, (m0a, m0b) -> CompareUtil.compareMaps(m0a,m0b, (l1a, l1b) -> CompareUtil.compareLists(l1a,l1b, (m2a, m2b) -> CompareUtil.compareMaps(m2a,m2b, CompareUtil::compare))))");
+    Field f = Field.builder().name("myField").type(Type.OBJECT).objectName(Object.class.getName()).build();
+    Assert.assertEquals("CompareUtil.compareObjects(this.myField, other.myField)", PojoGenUtil.generateCompareFieldsInstruction(f));
   }
   
   private void doTestGenerateCompareFieldsInstruction(Type type, String expectedInstruction) {

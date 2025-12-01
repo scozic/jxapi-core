@@ -3,9 +3,11 @@ package org.jxapi.exchanges.employee.gen.v1.pojo;
 import java.util.List;
 import java.util.Objects;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import javax.annotation.processing.Generated;
 import org.jxapi.exchanges.employee.EmployeePaginatedResponse;
+import org.jxapi.exchanges.employee.gen.v1.deserializers.EmployeeV1GetAllEmployeesResponseDeserializer;
 import org.jxapi.exchanges.employee.gen.v1.serializers.EmployeeV1GetAllEmployeesResponseSerializer;
 import org.jxapi.util.CollectionUtil;
 import org.jxapi.util.CompareUtil;
@@ -20,6 +22,7 @@ import org.jxapi.util.Pojo;
  */
 @Generated("org.jxapi.generator.java.pojo.PojoGenerator")
 @JsonSerialize(using = EmployeeV1GetAllEmployeesResponseSerializer.class)
+@JsonDeserialize(using = EmployeeV1GetAllEmployeesResponseDeserializer.class)
 public class EmployeeV1GetAllEmployeesResponse implements Pojo<EmployeeV1GetAllEmployeesResponse>, EmployeePaginatedResponse {
   
   private static final long serialVersionUID = -4780534191544812805L;

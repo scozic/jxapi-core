@@ -7,6 +7,7 @@ import com.fasterxml.jackson.core.JsonToken;
 import javax.annotation.processing.Generated;
 import org.jxapi.exchanges.employee.gen.v1.pojo.EmployeeV1EmployeeUpdatesMessage;
 import org.jxapi.netutils.deserialization.json.AbstractJsonMessageDeserializer;
+import static org.jxapi.util.JsonUtil.readNextString;
 import static org.jxapi.util.JsonUtil.skipNextValue;
 
 /**
@@ -23,7 +24,7 @@ public class EmployeeV1EmployeeUpdatesMessageDeserializer extends AbstractJsonMe
     while(parser.nextToken() != JsonToken.END_OBJECT) {
       switch(parser.getCurrentName()) {
       case "eventType":
-        msg.setEventType(parser.nextTextValue());
+        msg.setEventType(readNextString(parser));
       break;
       case "employee":
         parser.nextToken();

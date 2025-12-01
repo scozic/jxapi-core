@@ -33,6 +33,12 @@ public class JsonMessageDeserializerGeneratorTest {
              .build(),
       Field.builder().type(Type.OBJECT).name("titi").msgField("ti")
              .property(Field.builder().type(Type.STRING).name("name").build())
+             .build(),
+      Field.builder().type(Type.OBJECT).name("myRawObject").msgField("raw")
+             .objectName(Object.class.getName())
+             .build(),
+      Field.builder().type(Type.OBJECT).name("myExternalClassObject").msgField("ext")
+             .objectName("com.x.y.z.ExternalClass")
              .build()
     );
     
@@ -55,6 +61,8 @@ public class JsonMessageDeserializerGeneratorTest {
         + "import static org.jxapi.util.JsonUtil.readNextBoolean;\n"
         + "import static org.jxapi.util.JsonUtil.readNextInteger;\n"
         + "import static org.jxapi.util.JsonUtil.readNextLong;\n"
+        + "import static org.jxapi.util.JsonUtil.readNextObject;\n"
+        + "import static org.jxapi.util.JsonUtil.readNextString;\n"
         + "import static org.jxapi.util.JsonUtil.skipNextValue;\n"
         + "\n"
         + "/**\n"
@@ -76,7 +84,7 @@ public class JsonMessageDeserializerGeneratorTest {
         + "        msg.setId(readNextLong(parser));\n"
         + "      break;\n"
         + "      case \"name\":\n"
-        + "        msg.setName(parser.nextTextValue());\n"
+        + "        msg.setName(readNextString(parser));\n"
         + "      break;\n"
         + "      case \"level\":\n"
         + "        msg.setLevel(readNextInteger(parser));\n"
@@ -98,6 +106,12 @@ public class JsonMessageDeserializerGeneratorTest {
         + "      case \"ti\":\n"
         + "        parser.nextToken();\n"
         + "        msg.setTiti(titiDeserializer.deserialize(parser));\n"
+        + "      break;\n"
+        + "      case \"raw\":\n"
+        + "        msg.setMyRawObject(readNextObject(parser));\n"
+        + "      break;\n"
+        + "      case \"ext\":\n"
+        + "        msg.setMyExternalClassObject(readNextObject(parser, com.x.y.z.ExternalClass.class));\n"
         + "      break;\n"
         + "      default:\n"
         + "        skipNextValue(parser);\n"

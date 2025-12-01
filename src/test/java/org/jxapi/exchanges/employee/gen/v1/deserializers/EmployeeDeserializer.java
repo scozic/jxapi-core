@@ -8,6 +8,7 @@ import javax.annotation.processing.Generated;
 import org.jxapi.exchanges.employee.gen.v1.pojo.Employee;
 import org.jxapi.netutils.deserialization.json.AbstractJsonMessageDeserializer;
 import static org.jxapi.util.JsonUtil.readNextInteger;
+import static org.jxapi.util.JsonUtil.readNextString;
 import static org.jxapi.util.JsonUtil.skipNextValue;
 
 /**
@@ -26,13 +27,13 @@ public class EmployeeDeserializer extends AbstractJsonMessageDeserializer<Employ
         msg.setId(readNextInteger(parser));
       break;
       case "firstName":
-        msg.setFirstName(parser.nextTextValue());
+        msg.setFirstName(readNextString(parser));
       break;
       case "lastName":
-        msg.setLastName(parser.nextTextValue());
+        msg.setLastName(readNextString(parser));
       break;
       case "profile":
-        msg.setProfile(parser.nextTextValue());
+        msg.setProfile(readNextString(parser));
       break;
       default:
         skipNextValue(parser);
