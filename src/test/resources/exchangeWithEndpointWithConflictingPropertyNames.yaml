@@ -92,7 +92,7 @@ apis:
           - ${constants.C1_.foo}
           - ${constants.C1_.bar}
       response:
-       description: Response for endpoint 'a'           
+       description: Response for endpoint 'A'           
    websocketUrl: ${config.server.baseWebsocketUrl}
    websocketHookFactory: org.jxapi.exchanges.demo.net.DemoExchangeWebsocketHookFactory  
    websocketEndpoints:

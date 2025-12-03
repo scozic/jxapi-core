@@ -215,6 +215,30 @@
 					}
 				},
 				{
+					"name": "getRestRequestDataTypeExternalObject",
+					"httpMethod": "POST",
+					"description": "A sample REST endpoint using POST (hence request body) and request with object name representing a class with full package name, which is not to be generated",
+					"url": "/postEmptyObject",
+					"request": {
+						"objectName": "com.external.pkg.ExternalObject"
+					},
+					"response": {
+						"objectName": "GenericResponse"
+					}
+				},				
+				{
+					"name": "postRestRequestDataTypeRawObject",
+					"httpMethod": "POST",
+					"description": "A sample REST endpoint using POST (hence request body) and raw <code>java.lang.Object</code> request object",
+					"url": "/postEmptyObject",
+					"request": {
+						"objectName": "java.lang.Object"
+					},
+					"response": {
+						"objectName": "GenericResponse"
+					}
+				},
+				{
 					"name": "getRestRequestDataTypePrimitiveWithMsgField",
 					"httpMethod": "GET",
 					"description": "A sample REST endpoint using GET (hence url query params) primitive request type, with 'msgField' property defined. That msgField value should be used as query param argument name",

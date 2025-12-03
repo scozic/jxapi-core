@@ -21,8 +21,10 @@ import org.jxapi.netutils.deserialization.RawIntegerMessageDeserializer;
 import org.jxapi.netutils.deserialization.RawLongMessageDeserializer;
 import org.jxapi.netutils.deserialization.RawStringMessageDeserializer;
 import org.jxapi.netutils.deserialization.json.field.BigDecimalJsonFieldDeserializer;
+import org.jxapi.netutils.deserialization.json.field.GenericObjectJsonFieldDeserializer;
 import org.jxapi.netutils.deserialization.json.field.ListJsonFieldDeserializer;
 import org.jxapi.netutils.deserialization.json.field.MapJsonFieldDeserializer;
+import org.jxapi.netutils.deserialization.json.field.RawObjectJsonFieldDeserializer;
 import org.jxapi.netutils.websocket.multiplexing.WSMTMFUtil;
 import org.jxapi.netutils.websocket.multiplexing.WebsocketMessageTopicMatcherFactory;
 import org.jxapi.pojo.descriptor.Field;
@@ -136,6 +138,27 @@ public class ExchangeApiGenUtilTest {
             endpointDescriptor);
     }
 
+    @Test
+    public void testGenerateRestEndpointResponsePojoClassName_RawObjectResponseType() {
+        ExchangeDescriptor exchangeDescriptor = new ExchangeDescriptor();
+        exchangeDescriptor.setId("TestExchange");
+        exchangeDescriptor.setBasePackage("com.test.exchange");
+        ExchangeApiDescriptor apiDescriptor = new ExchangeApiDescriptor();
+        apiDescriptor.setName("MyApi");
+        exchangeDescriptor.setApis(List.of(apiDescriptor));
+        RestEndpointDescriptor endpointDescriptor = new RestEndpointDescriptor();
+        endpointDescriptor.setName("GetAccount");
+        Field response = new Field();
+        response.setObjectName(Object.class.getName());
+        endpointDescriptor.setResponse(response);
+        apiDescriptor.setRestEndpoints(List.of(endpointDescriptor));
+        Assert.assertEquals(Object.class.getName(),
+                  ExchangeApiGenUtil.generateRestEnpointResponsePojoClassName(
+                      exchangeDescriptor, 
+                      apiDescriptor, 
+                      endpointDescriptor));
+    }
+    
     @Test
     public void testGenerateRestEndpointResponsePojoClassName() {
         ExchangeDescriptor exchangeDescriptor = new ExchangeDescriptor();
@@ -275,7 +298,7 @@ public class ExchangeApiGenUtilTest {
     public void testGetNewMessageDeserializerInstruction_INT() {
         Imports imports = new Imports();
         Assert.assertEquals("RawIntegerMessageDeserializer.getInstance()", 
-            ExchangeApiGenUtil.getNewMessageDeserializerInstruction(Type.INT, null, imports));
+            ExchangeApiGenUtil.getNewMessageDeserializerInstruction(Type.INT, null, false, imports));
             Assert.assertEquals(1, imports.size());
             Assert.assertTrue(imports.contains(RawIntegerMessageDeserializer.class.getName()));
     }
@@ -284,7 +307,7 @@ public class ExchangeApiGenUtilTest {
     public void testGetNewMessageDeserializerInstruction_BIGDECIMAL() {
         Imports imports = new Imports();
         Assert.assertEquals("RawBigDecimalMessageDeserializer.getInstance()", 
-            ExchangeApiGenUtil.getNewMessageDeserializerInstruction(Type.BIGDECIMAL, null, imports));
+            ExchangeApiGenUtil.getNewMessageDeserializerInstruction(Type.BIGDECIMAL, null, false, imports));
             Assert.assertEquals(1, imports.size());
             Assert.assertTrue(imports.contains(RawBigDecimalMessageDeserializer.class.getName()));
     }
@@ -293,7 +316,7 @@ public class ExchangeApiGenUtilTest {
     public void testGetNewMessageDeserializerInstruction_BOOLEAN() {
         Imports imports = new Imports();
         Assert.assertEquals("RawBooleanMessageDeserializer.getInstance()", 
-            ExchangeApiGenUtil.getNewMessageDeserializerInstruction(Type.BOOLEAN, null, imports));
+            ExchangeApiGenUtil.getNewMessageDeserializerInstruction(Type.BOOLEAN, null, false, imports));
             Assert.assertEquals(1, imports.size());
             Assert.assertTrue(imports.contains(RawBooleanMessageDeserializer.class.getName()));
     }
@@ -302,7 +325,7 @@ public class ExchangeApiGenUtilTest {
     public void testGetNewMessageDeserializerInstruction_STRING() {
         Imports imports = new Imports();
         Assert.assertEquals("RawStringMessageDeserializer.getInstance()", 
-            ExchangeApiGenUtil.getNewMessageDeserializerInstruction(Type.STRING, null, imports));
+            ExchangeApiGenUtil.getNewMessageDeserializerInstruction(Type.STRING, null, false, imports));
             Assert.assertEquals(1, imports.size());
             Assert.assertTrue(imports.contains(RawStringMessageDeserializer.class.getName()));
     }
@@ -311,7 +334,7 @@ public class ExchangeApiGenUtilTest {
     public void testGetNewMessageDeserializerInstruction_null() {
         Imports imports = new Imports();
         Assert.assertEquals("RawStringMessageDeserializer.getInstance()", 
-            ExchangeApiGenUtil.getNewMessageDeserializerInstruction(null, null, imports));
+            ExchangeApiGenUtil.getNewMessageDeserializerInstruction(null, null, false, imports));
             Assert.assertEquals(1, imports.size());
             Assert.assertTrue(imports.contains(RawStringMessageDeserializer.class.getName()));
     }
@@ -320,7 +343,7 @@ public class ExchangeApiGenUtilTest {
     public void testGetNewMessageDeserializerInstruction_LONG() {
         Imports imports = new Imports();
         Assert.assertEquals("RawLongMessageDeserializer.getInstance()", 
-            ExchangeApiGenUtil.getNewMessageDeserializerInstruction(Type.LONG, null, imports));
+            ExchangeApiGenUtil.getNewMessageDeserializerInstruction(Type.LONG, null, false, imports));
             Assert.assertEquals(1, imports.size());
             Assert.assertTrue(imports.contains(RawLongMessageDeserializer.class.getName()));
     }
@@ -329,16 +352,35 @@ public class ExchangeApiGenUtilTest {
     public void testGetNewMessageDeserializerInstruction_OBJECT() {
         Imports imports = new Imports();
         Assert.assertEquals("new MyMessageDeserializer()", 
-                    ExchangeApiGenUtil.getNewMessageDeserializerInstruction(Type.OBJECT, "com.x.y.z.MyMessage", imports));
+                    ExchangeApiGenUtil.getNewMessageDeserializerInstruction(Type.OBJECT, "com.x.y.z.MyMessage", false,  imports));
         Assert.assertEquals(1, imports.size());
         Assert.assertTrue(imports.contains("com.x.y.z.deserializers.MyMessageDeserializer")); 
+    }
+    
+    @Test
+    public void testGetNewMessageDeserializerInstruction_RawObject() {
+        Imports imports = new Imports();
+        Assert.assertEquals("RawObjectJsonFieldDeserializer.getInstance()", 
+                    ExchangeApiGenUtil.getNewMessageDeserializerInstruction(Type.OBJECT, Object.class.getName(), false, imports));
+        Assert.assertEquals(1, imports.size());
+        Assert.assertTrue(imports.contains(RawObjectJsonFieldDeserializer.class)); 
+    }
+    
+    @Test
+    public void testGetNewMessageDeserializerInstruction_GenericObject() {
+        Imports imports = new Imports();
+        Assert.assertEquals("new GenericObjectJsonFieldDeserializer<>(MyMessage.class)", 
+                    ExchangeApiGenUtil.getNewMessageDeserializerInstruction(Type.OBJECT, "com.x.y.z.MyMessage", true, imports));
+        Assert.assertEquals(2, imports.size());
+        Assert.assertTrue(imports.contains(GenericObjectJsonFieldDeserializer.class));
+        Assert.assertTrue(imports.contains("com.x.y.z.MyMessage"));
     }
 
     @Test
     public void testGetNewMessageDeserializerInstruction_OBJECT_MAP() {
         Imports imports = new Imports();
         Assert.assertEquals("new MapJsonFieldDeserializer<>(new MyMessageDeserializer())", 
-                    ExchangeApiGenUtil.getNewMessageDeserializerInstruction(Type.fromTypeName("OBJECT_MAP"), "com.x.y.z.MyMessage", imports));
+                    ExchangeApiGenUtil.getNewMessageDeserializerInstruction(Type.fromTypeName("OBJECT_MAP"), "com.x.y.z.MyMessage", false, imports));
         Assert.assertEquals(2, imports.size());
         Assert.assertTrue(imports.contains(MapJsonFieldDeserializer.class.getName())); 
         Assert.assertTrue(imports.contains("com.x.y.z.deserializers.MyMessageDeserializer")); 
@@ -348,7 +390,7 @@ public class ExchangeApiGenUtilTest {
     public void testGetNewMessageDeserializerInstruction_BIGDECIMAL_LIST() {
         Imports imports = new Imports();
         Assert.assertEquals("new ListJsonFieldDeserializer<>(BigDecimalJsonFieldDeserializer.getInstance())", 
-                    ExchangeApiGenUtil.getNewMessageDeserializerInstruction(Type.fromTypeName("BIGDECIMAL_LIST"), "com.x.y.z.MyMessage", imports));
+                    ExchangeApiGenUtil.getNewMessageDeserializerInstruction(Type.fromTypeName("BIGDECIMAL_LIST"), "com.x.y.z.MyMessage", false, imports));
         Assert.assertEquals(2, imports.size());
         Assert.assertTrue(imports.contains(BigDecimalJsonFieldDeserializer.class.getName())); 
         Assert.assertTrue(imports.contains(ListJsonFieldDeserializer.class.getName())); 
@@ -376,17 +418,6 @@ public class ExchangeApiGenUtilTest {
     }
     
     @Test
-    public void testRestEndpointHasResponse_NullResponseType() {
-        ExchangeApiDescriptor apiDescriptor = new ExchangeApiDescriptor();
-        apiDescriptor.setName("MyApi");
-        RestEndpointDescriptor endpointDescriptor = new RestEndpointDescriptor();
-        endpointDescriptor.setName("GetAccount");
-        Field response = new Field();
-        endpointDescriptor.setResponse(response);
-        Assert.assertFalse(ExchangeApiGenUtil.restEndpointHasResponse(endpointDescriptor, apiDescriptor));
-    }
-    
-    @Test
     public void testRestEndpointHasResponse_ObjectResponseTypeWithNoParameters() {
         ExchangeApiDescriptor apiDescriptor = new ExchangeApiDescriptor();
         apiDescriptor.setName("MyApi");
@@ -405,9 +436,34 @@ public class ExchangeApiGenUtilTest {
         RestEndpointDescriptor endpointDescriptor = new RestEndpointDescriptor();
         endpointDescriptor.setName("GetAccount");
         Field response = new Field();
-        response.setType(Type.OBJECT);
         Field objectParam = new Field();
         response.setProperties(List.of(objectParam));
+        endpointDescriptor.setResponse(response);
+        Assert.assertTrue(ExchangeApiGenUtil.restEndpointHasResponse(endpointDescriptor, apiDescriptor));
+    }
+    
+    @Test
+    public void testRestEndpointHasResponse_RawObjectResponseType() {
+        ExchangeApiDescriptor apiDescriptor = new ExchangeApiDescriptor();
+        apiDescriptor.setName("MyApi");
+        RestEndpointDescriptor endpointDescriptor = new RestEndpointDescriptor();
+        endpointDescriptor.setName("GetAccount");
+        Field response = new Field();
+        response.setType(Type.OBJECT);
+        response.setObjectName(Object.class.getName());
+        endpointDescriptor.setResponse(response);
+        Assert.assertTrue(ExchangeApiGenUtil.restEndpointHasResponse(endpointDescriptor, apiDescriptor));
+    }
+    
+    @Test
+    public void testRestEndpointHasResponse_ExternalObjectResponseType() {
+        ExchangeApiDescriptor apiDescriptor = new ExchangeApiDescriptor();
+        apiDescriptor.setName("MyApi");
+        RestEndpointDescriptor endpointDescriptor = new RestEndpointDescriptor();
+        endpointDescriptor.setName("GetAccount");
+        Field response = new Field();
+        response.setType(Type.OBJECT);
+        response.setObjectName("com.external.package.ExternalPojo");
         endpointDescriptor.setResponse(response);
         Assert.assertTrue(ExchangeApiGenUtil.restEndpointHasResponse(endpointDescriptor, apiDescriptor));
     }
@@ -535,6 +591,14 @@ public class ExchangeApiGenUtilTest {
       Field f = new Field();
       f.setName("foo");
       f.setType(Type.INT);
+      Assert.assertEquals(f, ExchangeApiGenUtil.resolveFieldProperties(null, f));
+    }
+    
+    @Test
+    public void testResolveFieldProperties_ExternalClassObjectNameFieldType() {
+      Field f = new Field();
+      f.setName("foo");
+      f.setObjectName("com.external.package.ExternalPojo");
       Assert.assertEquals(f, ExchangeApiGenUtil.resolveFieldProperties(null, f));
     }
     

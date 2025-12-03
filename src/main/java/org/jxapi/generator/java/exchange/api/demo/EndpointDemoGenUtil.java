@@ -253,7 +253,7 @@ public class EndpointDemoGenUtil {
       Imports imports) {
     Type type = PojoGenUtil.getFieldType(field);
     return new StringBuilder()
-        .append(ExchangeApiGenUtil.getNewMessageDeserializerInstruction(type, objectClassName, imports))
+        .append(ExchangeApiGenUtil.getNewMessageDeserializerInstruction(type, objectClassName, PojoGenUtil.isExternalClassObjectField(field), imports))
         .append(".deserialize(")
         .append(ExchangeGenUtil.getValueDeclarationForConfigProperty(
             demoPropertyName,

@@ -272,8 +272,7 @@ public class ExchangeApiInterfaceImplementationGenerator extends JavaTypeGenerat
         getImports(),
         PlaceHolderResolver.NO_OP,
         PlaceHolderResolver.NO_OP,
-        null
-        );
+        null);
     for (WebsocketEndpointDescriptor wsApi : wsApis) {
       generateWebsocketApiMethodsDeclarations(wsApi, wsRequestDefaultValuesStaticVariables);
     }
@@ -452,7 +451,11 @@ public class ExchangeApiInterfaceImplementationGenerator extends JavaTypeGenerat
           wsApi);
       Field message = ExchangeApiGenUtil.resolveFieldProperties(exchangeApiDescriptor, wsApi.getMessage());
       Type messageDataType = PojoGenUtil.getFieldType(message);
-      String getResponseDeserializerInstance = ExchangeApiGenUtil.getNewMessageDeserializerInstruction(messageDataType, messageClassObjectName, getImports());
+      String getResponseDeserializerInstance = ExchangeApiGenUtil.getNewMessageDeserializerInstruction(
+          messageDataType, 
+          messageClassObjectName,
+          PojoGenUtil.isExternalClassObjectField(message),
+          getImports());
       constructorBody.append(THIS)
         .append(websocketEndpointVariableName)
         .append(" = ")
@@ -598,12 +601,18 @@ public class ExchangeApiInterfaceImplementationGenerator extends JavaTypeGenerat
           getImports(), 
           requestClassName); 
     }
+    // FIXME
+    if ("getRestResponseDataTypeRawObject".equals(restApi.getName())) {
+      System.out.println("HERE!");
+    }
     boolean hasResponse = ExchangeApiGenUtil.restEndpointHasResponse(restApi, exchangeApiDescriptor);
     String responseSimpleClassName = "String";
     String getResponseDeserializerInstance = null;
+    boolean externalClassObjectFieldType = false;
     if (hasResponse) {
       String restResponseClassName = null;
       if (responseDataType.isObject()) {
+        externalClassObjectFieldType = PojoGenUtil.isExternalClassObjectField(response);
         restResponseClassName = ExchangeApiGenUtil.generateRestEnpointResponsePojoClassName(
             exchangeDescriptor, 
             exchangeApiDescriptor, 
@@ -617,9 +626,10 @@ public class ExchangeApiInterfaceImplementationGenerator extends JavaTypeGenerat
       getResponseDeserializerInstance = ExchangeApiGenUtil.getNewMessageDeserializerInstruction(
           responseDataType, 
           restResponseClassName,
+          externalClassObjectFieldType,
           getImports());
     } else {
-      getResponseDeserializerInstance = ExchangeApiGenUtil.getNewMessageDeserializerInstruction(null, null, getImports());
+      getResponseDeserializerInstance = ExchangeApiGenUtil.getNewMessageDeserializerInstruction(null, null, false, getImports());
     }
     
     String deserializerVariableName = getRestEndpointResponseDeserializerVariable(restApi);

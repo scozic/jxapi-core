@@ -356,6 +356,41 @@ public class PojoGenUtil {
     }
     return getFieldType(field).isObject();
   }
+  
+  /**
+   * @param field The field to check if its type is an object type
+   * @return <code>true</code> if the field is not <code>null</code> and its type is an object type,
+   *         <code>false</code> otherwise
+   * @see getFieldType  
+   * @see Type#isObject()      
+   */
+  public static boolean isExternalClassObjectField(Field field) {
+    if (!isObjectField(field)) {
+      return false;
+    }
+    String objectName = field.getObjectName();
+    if (objectName == null) {
+      return false;
+    }
+    if (Object.class.getName().equals(objectName)) {
+      return false;
+    }
+    return JavaCodeGenUtil.isFullClassName(objectName);
+  }
+  
+  /**
+   * @param field The field to check if its type is an object type
+   * @return <code>true</code> if the field is not <code>null</code> and its type is an object type,
+   *         <code>false</code> otherwise
+   * @see getFieldType  
+   * @see Type#isObject()      
+   */
+  public static boolean isRawObjectField(Field field) {
+    if (!isObjectField(field)) {
+      return false;
+    }
+    return Object.class.getName().equals(field.getObjectName());
+  }
 
   /**
    * @param type            the type of field (see {@link Field}) to get type class name
@@ -388,6 +423,10 @@ public class PojoGenUtil {
   public static String getClassNameForType(Type type, 
                          Imports imports, 
                        String objectClassName) {
+    // FIXME
+    if ("com.external.pkg.ExternalObject".equals(objectClassName)) {
+      System.out.println("ExternalObject!");
+    }
     if (type == null) {
       return null;
     }
@@ -554,15 +593,10 @@ public class PojoGenUtil {
   public static String getClassNameForField(Field field, 
                         Imports imports, 
                         String enclosingClassName) {
-    // FIXME
-    if (field.getName().equals("meta")) {
-      System.out.println("meta!");
-    }
     Type fieldType = getFieldType(field);
     String objectClassName = null;
-    if (fieldType.isObject()) {
+    if (PojoGenUtil.isObjectField(field)) {
        objectClassName = PojoGenUtil.getFieldObjectClassName(field, enclosingClassName);
-       
     }
     return getClassNameForType(
           fieldType,

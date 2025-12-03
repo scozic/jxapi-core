@@ -11,6 +11,7 @@ import org.jxapi.generator.java.JavaCodeGenUtil;
 import org.jxapi.netutils.deserialization.json.field.ListJsonFieldDeserializer;
 import org.jxapi.netutils.deserialization.json.field.StringJsonFieldDeserializer;
 import org.jxapi.pojo.descriptor.Field;
+import org.jxapi.pojo.descriptor.FieldBuilder;
 import org.jxapi.pojo.descriptor.Type;
 import org.jxapi.util.CollectionUtil;
 import org.jxapi.util.DeepCloneable;
@@ -585,6 +586,28 @@ public void testGetClassNameForField_BIGDECIMAL_Type() {
   public void testGetMsgFieldName_NullName() {
     Field field1 = Field.builder().name("field1").type(Type.BOOLEAN).build();
     PojoGenUtil.getMsgFieldName(null, field1);
+  }
+  
+  @Test
+  public void testIsExternalClassObjectField() {
+    FieldBuilder fb = Field.builder().name("f1");
+    Assert.assertFalse(PojoGenUtil.isExternalClassObjectField(null));
+    Assert.assertFalse(PojoGenUtil.isExternalClassObjectField(fb.type(Type.STRING).build()));
+    Assert.assertFalse(PojoGenUtil.isExternalClassObjectField(fb.type(Type.OBJECT).build()));
+    Assert.assertFalse(PojoGenUtil.isExternalClassObjectField(fb.type(Type.OBJECT).objectName("MyPojo").build()));
+    Assert.assertFalse(PojoGenUtil.isExternalClassObjectField(fb.type(Type.OBJECT).objectName(Object.class.getName()).build()));
+    Assert.assertTrue(PojoGenUtil.isExternalClassObjectField(fb.type(Type.OBJECT).objectName("com.x.y.MyPojo").build()));
+  }
+  
+  @Test
+  public void testIsRawObjectField() {
+    FieldBuilder fb = Field.builder().name("f1");
+    Assert.assertFalse(PojoGenUtil.isRawObjectField(null));
+    Assert.assertFalse(PojoGenUtil.isRawObjectField(fb.type(Type.STRING).build()));
+    Assert.assertFalse(PojoGenUtil.isRawObjectField(fb.type(Type.OBJECT).build()));
+    Assert.assertFalse(PojoGenUtil.isRawObjectField(fb.type(Type.OBJECT).objectName("MyPojo").build()));
+    Assert.assertTrue(PojoGenUtil.isRawObjectField(fb.type(Type.OBJECT).objectName(Object.class.getName()).build()));
+    Assert.assertFalse(PojoGenUtil.isRawObjectField(fb.type(Type.OBJECT).objectName("com.x.y.MyPojo").build()));
   }
   
 }

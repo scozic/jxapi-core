@@ -26,6 +26,8 @@ import org.jxapi.netutils.deserialization.RawBooleanMessageDeserializer;
 import org.jxapi.netutils.deserialization.RawIntegerMessageDeserializer;
 import org.jxapi.netutils.deserialization.RawLongMessageDeserializer;
 import org.jxapi.netutils.deserialization.RawStringMessageDeserializer;
+import org.jxapi.netutils.deserialization.json.field.GenericObjectJsonFieldDeserializer;
+import org.jxapi.netutils.deserialization.json.field.RawObjectJsonFieldDeserializer;
 import org.jxapi.netutils.websocket.multiplexing.WSMTMFUtil;
 import org.jxapi.netutils.websocket.multiplexing.WebsocketMessageTopicMatcherFactory;
 import org.jxapi.pojo.descriptor.CanonicalType;
@@ -230,6 +232,9 @@ public class ExchangeApiGenUtil {
     if (!type.isObject())
       throw new IllegalArgumentException("Not an object field type:" + type);
     if (objectName != null) {
+      if (JavaCodeGenUtil.isFullClassName(objectName)) {
+        return objectName;
+      }
       return exchangeDescriptor.getBasePackage() + "." 
           + exchangeApiDescriptor.getName().toLowerCase() + ".pojo." 
           + JavaCodeGenUtil.firstLetterToUpperCase(objectName);
@@ -328,7 +333,12 @@ public class ExchangeApiGenUtil {
    */
   public static String getNewMessageDeserializerInstruction(Type messageType, 
                                 String messageFullClassName, 
+                                boolean externalClass,
                                 Imports imports) {
+    // FIXME
+    if ("java.lang.Object".equals(messageFullClassName)) {
+      System.out.println("HERE");
+    }
     if (messageType == null) {
       messageType  = Type.STRING;
     }
@@ -349,6 +359,20 @@ public class ExchangeApiGenUtil {
       imports.add(RawStringMessageDeserializer.class.getName());
       return RawStringMessageDeserializer.class.getSimpleName() + GET_INSTANCE;
     case OBJECT:
+      if (Object.class.getName().equals(messageFullClassName)) {
+        imports.add(RawObjectJsonFieldDeserializer.class.getName());
+        return RawObjectJsonFieldDeserializer.class.getSimpleName() + GET_INSTANCE;
+      }
+      if (externalClass) {
+        imports.add(GenericObjectJsonFieldDeserializer.class.getName());
+        imports.add(messageFullClassName);
+        return "new " 
+          + GenericObjectJsonFieldDeserializer.class.getSimpleName() 
+          + "<>("
+          +  JavaCodeGenUtil.getClassNameWithoutPackage(messageFullClassName) 
+          + ".class)";
+      }
+      return ExchangeGenUtil.getNewJsonFieldDeserializerInstruction(messageType, messageFullClassName, imports);
     case LIST:
     case MAP:
     default:
@@ -376,9 +400,10 @@ public class ExchangeApiGenUtil {
     if (response == null) {
       return false;
     }
-    Type dataType = response.getType();
-    return (dataType != null && dataType.getCanonicalType() != CanonicalType.OBJECT) 
-        || getFieldPropertiesCount(response, exchangeApiDescriptor) > 0;
+    Type dataType = PojoGenUtil.getFieldType(response);
+    return (dataType.getCanonicalType() != CanonicalType.OBJECT) 
+        || getFieldPropertiesCount(response, exchangeApiDescriptor) > 0
+        || JavaCodeGenUtil.isFullClassName(response.getObjectName());
   }
 
   /**
@@ -425,8 +450,9 @@ public class ExchangeApiGenUtil {
       return false;
     }
     Type dataType = PojoGenUtil.getFieldType(endpointRequest);
-    return dataType.getCanonicalType() != CanonicalType.OBJECT 
-        || getFieldPropertiesCount(endpointRequest, exchangeApiDescriptor) > 0;
+    return (dataType.getCanonicalType() != CanonicalType.OBJECT) 
+        || getFieldPropertiesCount(endpointRequest, exchangeApiDescriptor) > 0
+        || JavaCodeGenUtil.isFullClassName(endpointRequest.getObjectName());
   }
 
   /**
@@ -485,12 +511,15 @@ public class ExchangeApiGenUtil {
       return null;
     }
     Type type = PojoGenUtil.getFieldType(field);
-    if (type.isObject() 
-      && field.getObjectName() != null 
-      && field.getProperties() == null) {
-      field = field.deepClone();
-      field.setType(type);
-      field.setProperties(findPropertiesForObjectNameInApi(field.getObjectName(), exchangeApiDescriptor));
+    if (type.isObject()) {
+      String objectName = field.getObjectName();
+      if (!JavaCodeGenUtil.isFullClassName(objectName)
+          && objectName != null
+          && field.getProperties() == null) {
+        field = field.deepClone();
+        field.setType(type);
+        field.setProperties(findPropertiesForObjectNameInApi(objectName, exchangeApiDescriptor));
+      }
     }
     return field;
   }
