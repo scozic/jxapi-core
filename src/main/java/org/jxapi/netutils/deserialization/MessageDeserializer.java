@@ -15,4 +15,12 @@ public interface MessageDeserializer<T> {
    * @return the deserialized object, or <code>null</code> if the message is <code>null</code>.
    */
   T deserialize(String msg);
+  
+  /**
+   * Deserializer for plain String values.<br>
+   * A no-operation deserializer that returns the input string as is.
+   * 
+   * @return the input string
+   */
+  static MessageDeserializer<String> NO_OP = s -> s;
 }

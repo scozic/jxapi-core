@@ -21,13 +21,14 @@ import org.jxapi.generator.java.JavaCodeGenUtil;
 import org.jxapi.generator.java.exchange.ExchangeGenUtil;
 import org.jxapi.generator.java.exchange.constants.ConstantsGenUtil;
 import org.jxapi.generator.java.pojo.PojoGenUtil;
-import org.jxapi.netutils.deserialization.RawBigDecimalMessageDeserializer;
-import org.jxapi.netutils.deserialization.RawBooleanMessageDeserializer;
-import org.jxapi.netutils.deserialization.RawIntegerMessageDeserializer;
-import org.jxapi.netutils.deserialization.RawLongMessageDeserializer;
-import org.jxapi.netutils.deserialization.RawStringMessageDeserializer;
+import org.jxapi.netutils.deserialization.MessageDeserializer;
+import org.jxapi.netutils.deserialization.json.field.BigDecimalJsonFieldDeserializer;
+import org.jxapi.netutils.deserialization.json.field.BooleanJsonFieldDeserializer;
 import org.jxapi.netutils.deserialization.json.field.GenericObjectJsonFieldDeserializer;
+import org.jxapi.netutils.deserialization.json.field.IntegerJsonFieldDeserializer;
+import org.jxapi.netutils.deserialization.json.field.LongJsonFieldDeserializer;
 import org.jxapi.netutils.deserialization.json.field.RawObjectJsonFieldDeserializer;
+import org.jxapi.netutils.deserialization.json.field.StringJsonFieldDeserializer;
 import org.jxapi.netutils.websocket.multiplexing.WSMTMFUtil;
 import org.jxapi.netutils.websocket.multiplexing.WebsocketMessageTopicMatcherFactory;
 import org.jxapi.pojo.descriptor.CanonicalType;
@@ -317,47 +318,56 @@ public class ExchangeApiGenUtil {
    * <li>For primitive types, the corresponding deserializer singleton instance is
    * returned,
    * for instance if type is {@link Type#STRING},
-   * {@link RawStringMessageDeserializer#getInstance()} singleton is returned.
+   * {@link StringJsonFieldDeserializer#getInstance()} singleton is returned.
    * The deserializer class is added to imports</li>
    * <li>For other 'structured' types (object, list or map) types, the
    * corresponding new
    * Json field deserializer instruction is returned, see
    * {@link ExchangeGenUtil#getNewJsonFieldDeserializerInstruction(Type, String, Imports)}.</li>
    * <li>
+   * <li>If message type is <code>null</code>, it is considered as 
+   * {@link Type#STRING}.</li>
+   * <li>Case of object type with external class name defined:
+   * a new instance of {@link GenericObjectJsonFieldDeserializer} is
+   * returned, initialized with the external class.
+   * In this case, both {@link GenericObjectJsonFieldDeserializer} and
+   * the external class are added to imports.</li>
+   * <li>Case of <code>Object.class</code> as message class name:
+   * the {@link RawObjectJsonFieldDeserializer#getInstance()} singleton is returned,
    * </ul>
    * 
    * @param messageType The message type
    * @param messageFullClassName The full class name of the message
    * @param imports The imports of generator context that will be populated with
+   *                 classes used by generated code.
+   * @param externalClass <code>true</code> if the message class is not generated 
+   * *                    as part of the exchange API generation, <code>false</code> otherwise.                
    * @return Java code instruction to get a new instance of a message deserializer
    */
   public static String getNewMessageDeserializerInstruction(Type messageType, 
                                 String messageFullClassName, 
                                 boolean externalClass,
                                 Imports imports) {
-    // FIXME
-    if ("java.lang.Object".equals(messageFullClassName)) {
-      System.out.println("HERE");
-    }
     if (messageType == null) {
-      messageType  = Type.STRING;
+      imports.add(MessageDeserializer.class.getName());
+      return MessageDeserializer.class.getSimpleName() + ".NO_OP";
     }
     switch (messageType.getCanonicalType()) {
     case BIGDECIMAL:
-      imports.add(RawBigDecimalMessageDeserializer.class.getName());
-      return RawBigDecimalMessageDeserializer.class.getSimpleName() + GET_INSTANCE;
+      imports.add(BigDecimalJsonFieldDeserializer.class.getName());
+      return BigDecimalJsonFieldDeserializer.class.getSimpleName() + GET_INSTANCE;
     case BOOLEAN:
-      imports.add(RawBooleanMessageDeserializer.class.getName());
-      return RawBooleanMessageDeserializer.class.getSimpleName() + GET_INSTANCE;
+      imports.add(BooleanJsonFieldDeserializer.class.getName());
+      return BooleanJsonFieldDeserializer.class.getSimpleName() + GET_INSTANCE;
     case INT:
-      imports.add(RawIntegerMessageDeserializer.class.getName());
-      return RawIntegerMessageDeserializer.class.getSimpleName() + GET_INSTANCE;
+      imports.add(IntegerJsonFieldDeserializer.class.getName());
+      return IntegerJsonFieldDeserializer.class.getSimpleName() + GET_INSTANCE;
     case LONG:
-      imports.add(RawLongMessageDeserializer.class.getName());
-      return RawLongMessageDeserializer.class.getSimpleName() + GET_INSTANCE;
+      imports.add(LongJsonFieldDeserializer.class.getName());
+      return LongJsonFieldDeserializer.class.getSimpleName() + GET_INSTANCE;
     case STRING:
-      imports.add(RawStringMessageDeserializer.class.getName());
-      return RawStringMessageDeserializer.class.getSimpleName() + GET_INSTANCE;
+      imports.add(StringJsonFieldDeserializer.class.getName());
+      return StringJsonFieldDeserializer.class.getSimpleName() + GET_INSTANCE;
     case OBJECT:
       if (Object.class.getName().equals(messageFullClassName)) {
         imports.add(RawObjectJsonFieldDeserializer.class.getName());

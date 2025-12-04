@@ -12,7 +12,6 @@ import org.jxapi.exchanges.employee.gen.v1.pojo.EmployeeV1EmployeeUpdatesMessage
 import org.jxapi.exchanges.employee.gen.v1.pojo.EmployeeV1GetAllEmployeesRequest;
 import org.jxapi.exchanges.employee.gen.v1.pojo.EmployeeV1GetAllEmployeesResponse;
 import org.jxapi.netutils.deserialization.MessageDeserializer;
-import org.jxapi.netutils.deserialization.RawStringMessageDeserializer;
 import org.jxapi.netutils.rest.FutureRestResponse;
 import org.jxapi.netutils.rest.HttpMethod;
 import org.jxapi.netutils.rest.HttpRequest;
@@ -66,9 +65,9 @@ public class EmployeeV1ApiImpl extends AbstractExchangeApi implements EmployeeV1
   // Message deserializers
   private final MessageDeserializer<Employee> getEmployeeResponseDeserializer = new EmployeeDeserializer();
   private final MessageDeserializer<EmployeeV1GetAllEmployeesResponse> getAllEmployeesResponseDeserializer = new EmployeeV1GetAllEmployeesResponseDeserializer();
-  private final MessageDeserializer<String> addEmployeeResponseDeserializer = RawStringMessageDeserializer.getInstance();
-  private final MessageDeserializer<String> updateEmployeeResponseDeserializer = RawStringMessageDeserializer.getInstance();
-  private final MessageDeserializer<String> deleteEmployeeResponseDeserializer = RawStringMessageDeserializer.getInstance();
+  private final MessageDeserializer<String> addEmployeeResponseDeserializer = MessageDeserializer.NO_OP;
+  private final MessageDeserializer<String> updateEmployeeResponseDeserializer = MessageDeserializer.NO_OP;
+  private final MessageDeserializer<String> deleteEmployeeResponseDeserializer = MessageDeserializer.NO_OP;
   
   // Constructor
   /**
