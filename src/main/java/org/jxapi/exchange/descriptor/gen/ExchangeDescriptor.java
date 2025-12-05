@@ -69,7 +69,7 @@ import org.jxapi.util.Pojo;
 @JsonDeserialize(using = ExchangeDescriptorDeserializer.class)
 public class ExchangeDescriptor implements Pojo<ExchangeDescriptor> {
   
-  private static final long serialVersionUID = 7398812344382681620L;
+  private static final long serialVersionUID = -3402866496304173868L;
   
   /**
    * @return A new builder to build {@link ExchangeDescriptor} objects
@@ -95,6 +95,7 @@ public class ExchangeDescriptor implements Pojo<ExchangeDescriptor> {
   private ConfigPropertyDescriptor properties;
   private Constant constants;
   private List<RateLimitRule> rateLimits;
+  private List<ExchangeApiDescriptor> apis;
   
   /**
    * @return The ID of the exchange
@@ -356,6 +357,188 @@ public class ExchangeDescriptor implements Pojo<ExchangeDescriptor> {
     this.rateLimits = rateLimits;
   }
   
+  /**
+   * @return Part of a JSON document descriptor that describes a group of REST and or Websocket endpoints. Child element of ExchangeDescriptor. <br>
+   * <h2>Constants</h2> <ul> <li>Can be specified a List of constants that are used in context of this API group of the exchange wrapper, for instance specific values for some APIs request/response/message properties.</li> <li>Each constant is described as a {@link Constant}</li> </ul> <h2>REST endpoints</h2> <ul> <li>There can be multiple REST endpoints, or no such endpoint, in which case <code>restEndpoints</code> property can be <code>null</code></li> <li>Each REST endpoint is described as a {@link RestEndpointDescriptor}</li> <li>Each REST endpoint share the same HttpRequestExecutor and HttpRequestInterceptor, that are created from factories classes provided  in <code>httpRequestExecutorFactory</code> and <code>httpRequestInterceptorFactory</code> properties </li> <li><code>httpRequestExecutorFactory</code> property may be supplied to specify a factory class that creates HttpRequestExecutor instances, see {@link HttpRequestExecutorFactory}. When property is not set, default {@link JavaNetHttpRequestExecutor} is used</li> <li><code>httpRequestInterceptorFactory</code> property may be supplied to specify a factory class that creates HttpRequestInterceptor instances, see {@link HttpRequestInterceptorFactory}. When property is not set, no request interceptor is used</li> <li>API global Rate limits can be specified for the REST endpoints in <code>rateLimits</code> property. Those limits are shared among all defined REST endpoints.</li> <li>Rate limits from enclosing exchange descriptor are inherited by the API descriptor. Exchange global limit are shared among all REST endpoints of every API specified in exchange</li> </ul> <h2>Websocket endpoints</h2> <ul> <li>There can be multiple Websocket endpoints, or no such endpoint, in which case <code>websocketEndpoints</code> property can be <code>null</code></li> <li>Each Websocket endpoint is described as a {@link WebsocketEndpointDescriptor}</li> <li>Each Websocket endpoint share the same WebsocketFactory and WebsocketHook, that are created from factories classes provided in <code>websocketFactory</code> and <code>websocketHookFactory</code> properties</li> <li><code>websocketFactory</code> property may be supplied to specify a factory class that creates Websocket instances, see {@link WebsocketFactory}. When property is not set, default {@link DefaultWebsocketFactory} is used</li> <li><code>websocketHookFactory</code> property may be supplied to specify a factory class that creates WebsocketHook instances, see {@link WebsocketHookFactory}. When property is not set, no websocket hook is used. Such hook is needed though to implement specific handshake, heartbeat management and socket multiplexing (e.g. subscribing to multiple topics using same socket)</li> <li><code>websocketUrl</code> property may be supplied to specify the URL of the websocket endpoint. When property is not set, the URL is expected to be set by WebsocketHook on WebsocketManager during {@link WebsocketHook#init(org.jxapi.netutils.websocket.WebsocketManager)} or {@link WebsocketHook#beforeConnect()}</li> </ul>
+   * <h2>Example of corresponding JSON, with sample REST endpoint and WebsocketEndpoint</h2> <pre> { 
+   *   "name": "MarketData",
+   *   "description": "The market data API of MyTestExchange",
+   *   "httpRequestInterceptorFactory": "com.foo.bar.BarHttpRequestInterceptorFactory",
+   *   "rateLimits": [
+   *    {"id": "customRule", "timeFrame": 1500,  "maxTotalWeight": 300}
+   *  ],
+   *  "constants": 
+   *     {"name":"responseCodeOk", "type": "INT", "description":"Value for REST response <i>responseCode</i> field. Success", "value":0},
+   *     {"name":"responseCodeError", "type": "INT", "description":"Value for REST response <i>responseCode</i> field. Error", "value":-1}
+   *   ],
+   *   "restEndpoints": [
+   *     {
+   *       "name": "exchangeInfo",
+   *       "httpMethod": "GET",
+   *       "description": "Fetch market information of symbols that can be traded",
+   *       "url": "https://com.sample.mycex/exchangeInfo",
+   *       "request":{
+   *         "properties": [
+   *           {"name":"symbols", "type": "STRING_LIST", "description":"The list of symbol to fetch market information for. Leave empty to fetch all markets", "sampleValue":"[\"BTC\", \"ETH\"]"}
+   *         ]
+   *       },
+   *       "response":{ 
+   *         "properties": [
+   *           {"name":"responseCode", "type": "INT", "description":"Request response code", "sampleValue":"0"},
+   *           {"name":"payload", "type": "OBJECT_LIST", "description":"List of market information for each requested symbol", "properties":[
+   *               {"name":"symbol", "type": "STRING", "description":"Market symbol", "sampleValue":"BTC_USDT"},
+   *               {"name":"minOrderSize", "type": "BIGDECIMAL", "description":"Minimum order amount", "sampleValue":"0.0001"},
+   *               {"name":"levels", "type": "INT_LIST", "description":"Amount precision levels", "sampleValue":[1,10,500]}
+   *             ]
+   *           }
+   *         ]
+   *       }
+   *     },
+   *     {
+   *       "name": "tickers",
+   *       "httpMethod": "GET",
+   *       "description": "Fetch current tickers",
+   *       "url": "https://com.sample.mycex/tickers",
+   *       "request":{
+   *         "properties": []
+   *       },
+   *       "response": { 
+   *         "properties": [
+   *           {"name":"responseCode", "type": "INT", "description":"Request response code", "sampleValue":"0"},
+   *           {"name":"payload", "type": "OBJECT_MAP", "description":"Tickers for each symbol", "properties":[
+   *               {"name":"last", "type": "BIGDECIMAL", "description":"Last traded price", "sampleValue":10.0}
+   *             ]
+   *           }
+   *         ]
+   *       }
+   *     }
+   *   ],
+   *   "websocketUrl": "wss://com.foo.exchange/ws",
+   *   "websocketFactory": "com.foo.bar.BarWebsocketFactory",
+   *   "websocketHookFactory": "com.foo.bar.BarWebsocketHookFactory",
+   *   "websocketEndpoints": [
+   *     {
+   *       "name": "tickerStream",
+   *       "topic": "${symbol}@ticker",
+   *       "description": "Subscribe to ticker stream",
+   *       "request": {
+   *         "properties": [
+   *           {"name": "symbol", "type":"STRING", "description":"Symbol to subscribe to ticker stream of", "sampleValue":"BTC_USDT"}
+   *         ]
+   *       },
+   *       "topicParametersListSeparator": "|",
+   *       "messageTopicMatcherFields": [
+   *         {"name": "topic",  "value": "ticker"},
+   *         {"name": "symbol",  "value": "${symbol}"}
+   *       ],
+   *       "message": { 
+   *         "properties": [
+   *           {"name":"topic", "msgField":"t", "type": "STRING", "description":"Topic", "sampleValue":"ticker"},
+   *           {"name":"symbol", "msgField":"s", "type": "STRING", "description":"Symbol name", "sampleValue":"BTC_USDT"},
+   *           {"name":"last", "msgField":"p", "type": "BIGDECIMAL", "description":"Last traded price", "sampleValue":"16000.00"}
+   *         ]
+   *       }
+   *     }
+   *   ]
+   * } </pre>
+   * @see ExchangeDescriptor @see RestEndpointDescriptor @see WebsocketEndpointDescriptor @see RateLimitRule @see org.jxapi.netutils.rest.HttpRequestInterceptorFactory @see org.jxapi.netutils.rest.HttpRequestExecutorFactory @see org.jxapi.netutils.websocket.WebsocketFactory @see org.jxapi.netutils.websocket.WebsocketHookFactory @see Constant
+   * 
+   */
+  public List<ExchangeApiDescriptor> getApis() {
+    return apis;
+  }
+  
+  /**
+   * @param apis Part of a JSON document descriptor that describes a group of REST and or Websocket endpoints. Child element of ExchangeDescriptor. <br>
+   * <h2>Constants</h2> <ul> <li>Can be specified a List of constants that are used in context of this API group of the exchange wrapper, for instance specific values for some APIs request/response/message properties.</li> <li>Each constant is described as a {@link Constant}</li> </ul> <h2>REST endpoints</h2> <ul> <li>There can be multiple REST endpoints, or no such endpoint, in which case <code>restEndpoints</code> property can be <code>null</code></li> <li>Each REST endpoint is described as a {@link RestEndpointDescriptor}</li> <li>Each REST endpoint share the same HttpRequestExecutor and HttpRequestInterceptor, that are created from factories classes provided  in <code>httpRequestExecutorFactory</code> and <code>httpRequestInterceptorFactory</code> properties </li> <li><code>httpRequestExecutorFactory</code> property may be supplied to specify a factory class that creates HttpRequestExecutor instances, see {@link HttpRequestExecutorFactory}. When property is not set, default {@link JavaNetHttpRequestExecutor} is used</li> <li><code>httpRequestInterceptorFactory</code> property may be supplied to specify a factory class that creates HttpRequestInterceptor instances, see {@link HttpRequestInterceptorFactory}. When property is not set, no request interceptor is used</li> <li>API global Rate limits can be specified for the REST endpoints in <code>rateLimits</code> property. Those limits are shared among all defined REST endpoints.</li> <li>Rate limits from enclosing exchange descriptor are inherited by the API descriptor. Exchange global limit are shared among all REST endpoints of every API specified in exchange</li> </ul> <h2>Websocket endpoints</h2> <ul> <li>There can be multiple Websocket endpoints, or no such endpoint, in which case <code>websocketEndpoints</code> property can be <code>null</code></li> <li>Each Websocket endpoint is described as a {@link WebsocketEndpointDescriptor}</li> <li>Each Websocket endpoint share the same WebsocketFactory and WebsocketHook, that are created from factories classes provided in <code>websocketFactory</code> and <code>websocketHookFactory</code> properties</li> <li><code>websocketFactory</code> property may be supplied to specify a factory class that creates Websocket instances, see {@link WebsocketFactory}. When property is not set, default {@link DefaultWebsocketFactory} is used</li> <li><code>websocketHookFactory</code> property may be supplied to specify a factory class that creates WebsocketHook instances, see {@link WebsocketHookFactory}. When property is not set, no websocket hook is used. Such hook is needed though to implement specific handshake, heartbeat management and socket multiplexing (e.g. subscribing to multiple topics using same socket)</li> <li><code>websocketUrl</code> property may be supplied to specify the URL of the websocket endpoint. When property is not set, the URL is expected to be set by WebsocketHook on WebsocketManager during {@link WebsocketHook#init(org.jxapi.netutils.websocket.WebsocketManager)} or {@link WebsocketHook#beforeConnect()}</li> </ul>
+   * <h2>Example of corresponding JSON, with sample REST endpoint and WebsocketEndpoint</h2> <pre> { 
+   *   "name": "MarketData",
+   *   "description": "The market data API of MyTestExchange",
+   *   "httpRequestInterceptorFactory": "com.foo.bar.BarHttpRequestInterceptorFactory",
+   *   "rateLimits": [
+   *    {"id": "customRule", "timeFrame": 1500,  "maxTotalWeight": 300}
+   *  ],
+   *  "constants": 
+   *     {"name":"responseCodeOk", "type": "INT", "description":"Value for REST response <i>responseCode</i> field. Success", "value":0},
+   *     {"name":"responseCodeError", "type": "INT", "description":"Value for REST response <i>responseCode</i> field. Error", "value":-1}
+   *   ],
+   *   "restEndpoints": [
+   *     {
+   *       "name": "exchangeInfo",
+   *       "httpMethod": "GET",
+   *       "description": "Fetch market information of symbols that can be traded",
+   *       "url": "https://com.sample.mycex/exchangeInfo",
+   *       "request":{
+   *         "properties": [
+   *           {"name":"symbols", "type": "STRING_LIST", "description":"The list of symbol to fetch market information for. Leave empty to fetch all markets", "sampleValue":"[\"BTC\", \"ETH\"]"}
+   *         ]
+   *       },
+   *       "response":{ 
+   *         "properties": [
+   *           {"name":"responseCode", "type": "INT", "description":"Request response code", "sampleValue":"0"},
+   *           {"name":"payload", "type": "OBJECT_LIST", "description":"List of market information for each requested symbol", "properties":[
+   *               {"name":"symbol", "type": "STRING", "description":"Market symbol", "sampleValue":"BTC_USDT"},
+   *               {"name":"minOrderSize", "type": "BIGDECIMAL", "description":"Minimum order amount", "sampleValue":"0.0001"},
+   *               {"name":"levels", "type": "INT_LIST", "description":"Amount precision levels", "sampleValue":[1,10,500]}
+   *             ]
+   *           }
+   *         ]
+   *       }
+   *     },
+   *     {
+   *       "name": "tickers",
+   *       "httpMethod": "GET",
+   *       "description": "Fetch current tickers",
+   *       "url": "https://com.sample.mycex/tickers",
+   *       "request":{
+   *         "properties": []
+   *       },
+   *       "response": { 
+   *         "properties": [
+   *           {"name":"responseCode", "type": "INT", "description":"Request response code", "sampleValue":"0"},
+   *           {"name":"payload", "type": "OBJECT_MAP", "description":"Tickers for each symbol", "properties":[
+   *               {"name":"last", "type": "BIGDECIMAL", "description":"Last traded price", "sampleValue":10.0}
+   *             ]
+   *           }
+   *         ]
+   *       }
+   *     }
+   *   ],
+   *   "websocketUrl": "wss://com.foo.exchange/ws",
+   *   "websocketFactory": "com.foo.bar.BarWebsocketFactory",
+   *   "websocketHookFactory": "com.foo.bar.BarWebsocketHookFactory",
+   *   "websocketEndpoints": [
+   *     {
+   *       "name": "tickerStream",
+   *       "topic": "${symbol}@ticker",
+   *       "description": "Subscribe to ticker stream",
+   *       "request": {
+   *         "properties": [
+   *           {"name": "symbol", "type":"STRING", "description":"Symbol to subscribe to ticker stream of", "sampleValue":"BTC_USDT"}
+   *         ]
+   *       },
+   *       "topicParametersListSeparator": "|",
+   *       "messageTopicMatcherFields": [
+   *         {"name": "topic",  "value": "ticker"},
+   *         {"name": "symbol",  "value": "${symbol}"}
+   *       ],
+   *       "message": { 
+   *         "properties": [
+   *           {"name":"topic", "msgField":"t", "type": "STRING", "description":"Topic", "sampleValue":"ticker"},
+   *           {"name":"symbol", "msgField":"s", "type": "STRING", "description":"Symbol name", "sampleValue":"BTC_USDT"},
+   *           {"name":"last", "msgField":"p", "type": "BIGDECIMAL", "description":"Last traded price", "sampleValue":"16000.00"}
+   *         ]
+   *       }
+   *     }
+   *   ]
+   * } </pre>
+   * @see ExchangeDescriptor @see RestEndpointDescriptor @see WebsocketEndpointDescriptor @see RateLimitRule @see org.jxapi.netutils.rest.HttpRequestInterceptorFactory @see org.jxapi.netutils.rest.HttpRequestExecutorFactory @see org.jxapi.netutils.websocket.WebsocketFactory @see org.jxapi.netutils.websocket.WebsocketHookFactory @see Constant
+   * 
+   */
+  public void setApis(List<ExchangeApiDescriptor> apis) {
+    this.apis = apis;
+  }
+  
   @Override
   public boolean equals(Object other) {
     if (other == null) {
@@ -383,7 +566,8 @@ public class ExchangeDescriptor implements Pojo<ExchangeDescriptor> {
         && Objects.equals(this.afterInitHookFactory, o.afterInitHookFactory)
         && Objects.equals(this.properties, o.properties)
         && Objects.equals(this.constants, o.constants)
-        && Objects.equals(this.rateLimits, o.rateLimits);
+        && Objects.equals(this.rateLimits, o.rateLimits)
+        && Objects.equals(this.apis, o.apis);
   }
   
   @Override
@@ -460,12 +644,16 @@ public class ExchangeDescriptor implements Pojo<ExchangeDescriptor> {
       return res;
     }
     res = CompareUtil.compareLists(this.rateLimits, other.rateLimits, CompareUtil::compare);
+    if (res != 0) {
+      return res;
+    }
+    res = CompareUtil.compareLists(this.apis, other.apis, CompareUtil::compare);
     return res;
   }
   
   @Override
   public int hashCode() {
-    return Objects.hash(id, jxapi, version, description, docUrl, basePackage, httpRequestExecutorFactory, httpRequestInterceptorFactory, httpUrl, websocketUrl, websocketFactory, websocketHookFactory, httpRequestTimeout, afterInitHookFactory, properties, constants, rateLimits);
+    return Objects.hash(id, jxapi, version, description, docUrl, basePackage, httpRequestExecutorFactory, httpRequestInterceptorFactory, httpUrl, websocketUrl, websocketFactory, websocketHookFactory, httpRequestTimeout, afterInitHookFactory, properties, constants, rateLimits, apis);
   }
   
   @Override
@@ -488,6 +676,7 @@ public class ExchangeDescriptor implements Pojo<ExchangeDescriptor> {
     clone.properties = this.properties != null ? this.properties.deepClone() : null;
     clone.constants = this.constants != null ? this.constants.deepClone() : null;
     clone.rateLimits = CollectionUtil.deepCloneList(this.rateLimits, DeepCloneable::deepClone);
+    clone.apis = CollectionUtil.deepCloneList(this.apis, DeepCloneable::deepClone);
     return clone;
   }
   
@@ -519,6 +708,7 @@ public class ExchangeDescriptor implements Pojo<ExchangeDescriptor> {
     private ConfigPropertyDescriptor properties;
     private Constant constants;
     private List<RateLimitRule> rateLimits;
+    private List<ExchangeApiDescriptor> apis;
     
     /**
      * Will set the value of <code>id</code> field in the builder
@@ -734,6 +924,116 @@ public class ExchangeDescriptor implements Pojo<ExchangeDescriptor> {
     }
     
     /**
+     * Will set the value of <code>apis</code> field in the builder
+     * @param apis Part of a JSON document descriptor that describes a group of REST and or Websocket endpoints. Child element of ExchangeDescriptor. <br>
+     * <h2>Constants</h2> <ul> <li>Can be specified a List of constants that are used in context of this API group of the exchange wrapper, for instance specific values for some APIs request/response/message properties.</li> <li>Each constant is described as a {@link Constant}</li> </ul> <h2>REST endpoints</h2> <ul> <li>There can be multiple REST endpoints, or no such endpoint, in which case <code>restEndpoints</code> property can be <code>null</code></li> <li>Each REST endpoint is described as a {@link RestEndpointDescriptor}</li> <li>Each REST endpoint share the same HttpRequestExecutor and HttpRequestInterceptor, that are created from factories classes provided  in <code>httpRequestExecutorFactory</code> and <code>httpRequestInterceptorFactory</code> properties </li> <li><code>httpRequestExecutorFactory</code> property may be supplied to specify a factory class that creates HttpRequestExecutor instances, see {@link HttpRequestExecutorFactory}. When property is not set, default {@link JavaNetHttpRequestExecutor} is used</li> <li><code>httpRequestInterceptorFactory</code> property may be supplied to specify a factory class that creates HttpRequestInterceptor instances, see {@link HttpRequestInterceptorFactory}. When property is not set, no request interceptor is used</li> <li>API global Rate limits can be specified for the REST endpoints in <code>rateLimits</code> property. Those limits are shared among all defined REST endpoints.</li> <li>Rate limits from enclosing exchange descriptor are inherited by the API descriptor. Exchange global limit are shared among all REST endpoints of every API specified in exchange</li> </ul> <h2>Websocket endpoints</h2> <ul> <li>There can be multiple Websocket endpoints, or no such endpoint, in which case <code>websocketEndpoints</code> property can be <code>null</code></li> <li>Each Websocket endpoint is described as a {@link WebsocketEndpointDescriptor}</li> <li>Each Websocket endpoint share the same WebsocketFactory and WebsocketHook, that are created from factories classes provided in <code>websocketFactory</code> and <code>websocketHookFactory</code> properties</li> <li><code>websocketFactory</code> property may be supplied to specify a factory class that creates Websocket instances, see {@link WebsocketFactory}. When property is not set, default {@link DefaultWebsocketFactory} is used</li> <li><code>websocketHookFactory</code> property may be supplied to specify a factory class that creates WebsocketHook instances, see {@link WebsocketHookFactory}. When property is not set, no websocket hook is used. Such hook is needed though to implement specific handshake, heartbeat management and socket multiplexing (e.g. subscribing to multiple topics using same socket)</li> <li><code>websocketUrl</code> property may be supplied to specify the URL of the websocket endpoint. When property is not set, the URL is expected to be set by WebsocketHook on WebsocketManager during {@link WebsocketHook#init(org.jxapi.netutils.websocket.WebsocketManager)} or {@link WebsocketHook#beforeConnect()}</li> </ul>
+     * <h2>Example of corresponding JSON, with sample REST endpoint and WebsocketEndpoint</h2> <pre> { 
+     *   "name": "MarketData",
+     *   "description": "The market data API of MyTestExchange",
+     *   "httpRequestInterceptorFactory": "com.foo.bar.BarHttpRequestInterceptorFactory",
+     *   "rateLimits": [
+     *    {"id": "customRule", "timeFrame": 1500,  "maxTotalWeight": 300}
+     *  ],
+     *  "constants": 
+     *     {"name":"responseCodeOk", "type": "INT", "description":"Value for REST response <i>responseCode</i> field. Success", "value":0},
+     *     {"name":"responseCodeError", "type": "INT", "description":"Value for REST response <i>responseCode</i> field. Error", "value":-1}
+     *   ],
+     *   "restEndpoints": [
+     *     {
+     *       "name": "exchangeInfo",
+     *       "httpMethod": "GET",
+     *       "description": "Fetch market information of symbols that can be traded",
+     *       "url": "https://com.sample.mycex/exchangeInfo",
+     *       "request":{
+     *         "properties": [
+     *           {"name":"symbols", "type": "STRING_LIST", "description":"The list of symbol to fetch market information for. Leave empty to fetch all markets", "sampleValue":"[\"BTC\", \"ETH\"]"}
+     *         ]
+     *       },
+     *       "response":{ 
+     *         "properties": [
+     *           {"name":"responseCode", "type": "INT", "description":"Request response code", "sampleValue":"0"},
+     *           {"name":"payload", "type": "OBJECT_LIST", "description":"List of market information for each requested symbol", "properties":[
+     *               {"name":"symbol", "type": "STRING", "description":"Market symbol", "sampleValue":"BTC_USDT"},
+     *               {"name":"minOrderSize", "type": "BIGDECIMAL", "description":"Minimum order amount", "sampleValue":"0.0001"},
+     *               {"name":"levels", "type": "INT_LIST", "description":"Amount precision levels", "sampleValue":[1,10,500]}
+     *             ]
+     *           }
+     *         ]
+     *       }
+     *     },
+     *     {
+     *       "name": "tickers",
+     *       "httpMethod": "GET",
+     *       "description": "Fetch current tickers",
+     *       "url": "https://com.sample.mycex/tickers",
+     *       "request":{
+     *         "properties": []
+     *       },
+     *       "response": { 
+     *         "properties": [
+     *           {"name":"responseCode", "type": "INT", "description":"Request response code", "sampleValue":"0"},
+     *           {"name":"payload", "type": "OBJECT_MAP", "description":"Tickers for each symbol", "properties":[
+     *               {"name":"last", "type": "BIGDECIMAL", "description":"Last traded price", "sampleValue":10.0}
+     *             ]
+     *           }
+     *         ]
+     *       }
+     *     }
+     *   ],
+     *   "websocketUrl": "wss://com.foo.exchange/ws",
+     *   "websocketFactory": "com.foo.bar.BarWebsocketFactory",
+     *   "websocketHookFactory": "com.foo.bar.BarWebsocketHookFactory",
+     *   "websocketEndpoints": [
+     *     {
+     *       "name": "tickerStream",
+     *       "topic": "${symbol}@ticker",
+     *       "description": "Subscribe to ticker stream",
+     *       "request": {
+     *         "properties": [
+     *           {"name": "symbol", "type":"STRING", "description":"Symbol to subscribe to ticker stream of", "sampleValue":"BTC_USDT"}
+     *         ]
+     *       },
+     *       "topicParametersListSeparator": "|",
+     *       "messageTopicMatcherFields": [
+     *         {"name": "topic",  "value": "ticker"},
+     *         {"name": "symbol",  "value": "${symbol}"}
+     *       ],
+     *       "message": { 
+     *         "properties": [
+     *           {"name":"topic", "msgField":"t", "type": "STRING", "description":"Topic", "sampleValue":"ticker"},
+     *           {"name":"symbol", "msgField":"s", "type": "STRING", "description":"Symbol name", "sampleValue":"BTC_USDT"},
+     *           {"name":"last", "msgField":"p", "type": "BIGDECIMAL", "description":"Last traded price", "sampleValue":"16000.00"}
+     *         ]
+     *       }
+     *     }
+     *   ]
+     * } </pre>
+     * @see ExchangeDescriptor @see RestEndpointDescriptor @see WebsocketEndpointDescriptor @see RateLimitRule @see org.jxapi.netutils.rest.HttpRequestInterceptorFactory @see org.jxapi.netutils.rest.HttpRequestExecutorFactory @see org.jxapi.netutils.websocket.WebsocketFactory @see org.jxapi.netutils.websocket.WebsocketHookFactory @see Constant
+     * 
+     * @return Builder instance
+     * @see #setApis(List<ExchangeApiDescriptor>)
+     */
+    public Builder apis(List<ExchangeApiDescriptor> apis)  {
+      this.apis = apis;
+      return this;
+    }
+    
+    
+    /**
+     * Will add an item to the <code>apis</code> list.
+     * @param item Item to add to current <code>apis</code> list
+     * @return Builder instance
+     * @see ExchangeDescriptor#setApis(ExchangeApiDescriptor)
+     */
+    public Builder addToApis(ExchangeApiDescriptor item) {
+      if (this.apis == null) {
+        this.apis = CollectionUtil.createList();
+      }
+      this.apis.add(item);
+      return this;
+    }
+    
+    /**
      * @return a new instance of ExchangeDescriptor using the values set in this builder
      */
     public ExchangeDescriptor build() {
@@ -755,6 +1055,7 @@ public class ExchangeDescriptor implements Pojo<ExchangeDescriptor> {
       res.properties = this.properties != null ? this.properties.deepClone() : null;
       res.constants = this.constants != null ? this.constants.deepClone() : null;
       res.rateLimits = CollectionUtil.deepCloneList(this.rateLimits, DeepCloneable::deepClone);
+      res.apis = CollectionUtil.deepCloneList(this.apis, DeepCloneable::deepClone);
       return res;
     }
   }

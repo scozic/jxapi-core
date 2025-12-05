@@ -6,7 +6,9 @@ import java.util.List;
 import org.jxapi.exchange.descriptor.RestEndpointDescriptor;
 import org.jxapi.exchange.descriptor.WebsocketEndpointDescriptor;
 import org.jxapi.generator.java.pojo.PojoGenUtil;
+import org.jxapi.util.CompareUtil;
 import org.jxapi.util.EncodingUtil;
+import org.jxapi.util.Pojo;
 
 /**
  * Element of exchange descriptor JSON document describing a given field of a
@@ -138,7 +140,9 @@ import org.jxapi.util.EncodingUtil;
  * @see Field
  * @see WebsocketEndpointDescriptor
  */
-public class Field {
+public class Field implements Pojo<Field> {
+  
+  private static final long serialVersionUID = 8123456789012345678L;
 
   /**
    * @return New Builder for incrementally building a {@link Field} instance
@@ -176,6 +180,7 @@ public class Field {
    * Clone this field
    * @return Deep cloned instance of this field.
    */
+  @Override
   public Field deepClone() {
     Field clone = new Field();
     clone.name = this.name;
@@ -410,5 +415,10 @@ public class Field {
   @Override
   public int hashCode() {
     return toString().hashCode();
+  }
+
+  @Override
+  public int compareTo(Field o) {
+    return CompareUtil.compare(this.name, o.name);
   }
 }

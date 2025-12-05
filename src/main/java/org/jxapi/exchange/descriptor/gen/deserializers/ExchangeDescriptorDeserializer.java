@@ -5,6 +5,7 @@ import java.io.IOException;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonToken;
 import javax.annotation.processing.Generated;
+import org.jxapi.exchange.descriptor.gen.ExchangeApiDescriptor;
 import org.jxapi.exchange.descriptor.gen.ExchangeDescriptor;
 import org.jxapi.exchange.descriptor.gen.RateLimitRule;
 import org.jxapi.netutils.deserialization.json.AbstractJsonMessageDeserializer;
@@ -21,6 +22,7 @@ import static org.jxapi.util.JsonUtil.skipNextValue;
 public class ExchangeDescriptorDeserializer extends AbstractJsonMessageDeserializer<ExchangeDescriptor> {
   private final ConfigPropertyDescriptorDeserializer propertiesDeserializer = new ConfigPropertyDescriptorDeserializer();
   private final ConstantDeserializer constantsDeserializer = new ConstantDeserializer();
+  private final ListJsonFieldDeserializer<ExchangeApiDescriptor> apisDeserializer = new ListJsonFieldDeserializer<>(new ExchangeApiDescriptorDeserializer());
   private final ListJsonFieldDeserializer<RateLimitRule> rateLimitsDeserializer = new ListJsonFieldDeserializer<>(new RateLimitRuleDeserializer());
   
   @Override
@@ -81,6 +83,10 @@ public class ExchangeDescriptorDeserializer extends AbstractJsonMessageDeseriali
       case "rateLimits":
         parser.nextToken();
         msg.setRateLimits(rateLimitsDeserializer.deserialize(parser));
+      break;
+      case "apis":
+        parser.nextToken();
+        msg.setApis(apisDeserializer.deserialize(parser));
       break;
       default:
         skipNextValue(parser);

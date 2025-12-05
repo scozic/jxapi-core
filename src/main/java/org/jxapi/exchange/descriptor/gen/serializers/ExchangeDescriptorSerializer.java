@@ -75,6 +75,9 @@ public class ExchangeDescriptorSerializer extends StdSerializer<ExchangeDescript
     if (value.getRateLimits() != null){
       gen.writeObjectField("rateLimits", value.getRateLimits());
     }
+    if (value.getApis() != null){
+      gen.writeObjectField("apis", value.getApis());
+    }
     gen.writeEndObject();
   }
 }

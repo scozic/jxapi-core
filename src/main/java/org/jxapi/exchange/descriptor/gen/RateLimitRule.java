@@ -29,11 +29,16 @@ public class RateLimitRule implements Pojo<RateLimitRule> {
     return new Builder();
   }
   
+  /**
+   * Default value for <code>granularity</code>
+   */
+  public static final Integer GRANULARITY_DEFAULT_VALUE = Integer.valueOf("10");
+  
   private String id;
   private Long timeFrame;
   private Integer maxTotalWeight;
   private Integer maxRequestCount;
-  private Integer granularity;
+  private Integer granularity = GRANULARITY_DEFAULT_VALUE;
   
   /**
    * @return Unique identifier of the rate limit rule
@@ -191,7 +196,7 @@ public class RateLimitRule implements Pojo<RateLimitRule> {
     private Long timeFrame;
     private Integer maxTotalWeight;
     private Integer maxRequestCount;
-    private Integer granularity;
+    private Integer granularity = GRANULARITY_DEFAULT_VALUE;
     
     /**
      * Will set the value of <code>id</code> field in the builder
