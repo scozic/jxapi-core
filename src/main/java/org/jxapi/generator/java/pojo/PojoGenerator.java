@@ -10,7 +10,6 @@ import java.util.stream.Collectors;
 import org.jxapi.generator.java.JavaCodeGenUtil;
 import org.jxapi.generator.java.JavaTypeGenerator;
 import org.jxapi.generator.java.exchange.ConstantValuePlaceholderResolverFactory;
-import org.jxapi.generator.java.exchange.ExchangeGenUtil;
 import org.jxapi.pojo.descriptor.CanonicalType;
 import org.jxapi.pojo.descriptor.Field;
 import org.jxapi.pojo.descriptor.Type;
@@ -114,7 +113,7 @@ public class PojoGenerator extends JavaTypeGenerator {
   
   private String generateTypeDeclaration() {
     String serializerClassName = PojoGenUtil.getSerializerClassName(getName());
-    String deserializerClassName = ExchangeGenUtil.getJsonMessageDeserializerClassName(getName());
+    String deserializerClassName = PojoGenUtil.getJsonMessageDeserializerClassName(getName());
     addImport(serializerClassName);
     addImport(deserializerClassName);
     addImport(com.fasterxml.jackson.databind.annotation.JsonSerialize.class.getName());

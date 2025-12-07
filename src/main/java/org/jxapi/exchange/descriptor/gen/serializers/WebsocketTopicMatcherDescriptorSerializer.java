@@ -28,7 +28,7 @@ public class WebsocketTopicMatcherDescriptorSerializer extends StdSerializer<Web
       gen.writeStringField("fieldName", String.valueOf(value.getFieldName()));
     }
     if (value.getFieldValue() != null){
-      gen.writeStringField("fieldValue", String.valueOf(value.getFieldValue()));
+      gen.writeObjectField("fieldValue", value.getFieldValue());
     }
     if (value.getFieldRegexp() != null){
       gen.writeStringField("fieldRegexp", String.valueOf(value.getFieldRegexp()));

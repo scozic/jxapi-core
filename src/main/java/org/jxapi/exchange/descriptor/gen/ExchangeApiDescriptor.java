@@ -106,7 +106,7 @@ import org.jxapi.util.Pojo;
 @JsonDeserialize(using = ExchangeApiDescriptorDeserializer.class)
 public class ExchangeApiDescriptor implements Pojo<ExchangeApiDescriptor> {
   
-  private static final long serialVersionUID = -1869915283273929710L;
+  private static final long serialVersionUID = 798372772153268035L;
   
   /**
    * @return A new builder to build {@link ExchangeApiDescriptor} objects
@@ -124,8 +124,9 @@ public class ExchangeApiDescriptor implements Pojo<ExchangeApiDescriptor> {
   private String websocketFactory;
   private String websocketHookFactory;
   private String websocketUrl;
+  private List<RateLimitRuleDescriptor> rateLimits;
   private List<RestEndpointDescriptor> restEndpoints;
-  private WebsocketEndpointDescriptor websocketEndpoints;
+  private List<WebsocketEndpointDescriptor> websocketEndpoints;
   
   /**
    * @return The unique name of the API group within the exchange
@@ -267,6 +268,14 @@ public class ExchangeApiDescriptor implements Pojo<ExchangeApiDescriptor> {
     this.websocketUrl = websocketUrl;
   }
   
+  public List<RateLimitRuleDescriptor> getRateLimits() {
+    return rateLimits;
+  }
+  
+  public void setRateLimits(List<RateLimitRuleDescriptor> rateLimits) {
+    this.rateLimits = rateLimits;
+  }
+  
   /**
    * @return Describes a REST endpoint as part of a larger exchange API defined in a JSON document. These endpoints handle HTTP requests to a specific URL, process request parameters, and return a response.
    * <h2>Endpoint Properties</h2> The endpoint is defined by the following properties: <ul>
@@ -343,7 +352,7 @@ public class ExchangeApiDescriptor implements Pojo<ExchangeApiDescriptor> {
    * @return Part of JSON document describing a crypo exchange API, describes a websocket endpoint where clients subscription can be performed using specified topic and eventual additional parameters. The structure of additional subscription parameters and response format are described as {@link Field} lists.
    * 
    */
-  public WebsocketEndpointDescriptor getWebsocketEndpoints() {
+  public List<WebsocketEndpointDescriptor> getWebsocketEndpoints() {
     return websocketEndpoints;
   }
   
@@ -351,7 +360,7 @@ public class ExchangeApiDescriptor implements Pojo<ExchangeApiDescriptor> {
    * @param websocketEndpoints Part of JSON document describing a crypo exchange API, describes a websocket endpoint where clients subscription can be performed using specified topic and eventual additional parameters. The structure of additional subscription parameters and response format are described as {@link Field} lists.
    * 
    */
-  public void setWebsocketEndpoints(WebsocketEndpointDescriptor websocketEndpoints) {
+  public void setWebsocketEndpoints(List<WebsocketEndpointDescriptor> websocketEndpoints) {
     this.websocketEndpoints = websocketEndpoints;
   }
   
@@ -375,6 +384,7 @@ public class ExchangeApiDescriptor implements Pojo<ExchangeApiDescriptor> {
         && Objects.equals(this.websocketFactory, o.websocketFactory)
         && Objects.equals(this.websocketHookFactory, o.websocketHookFactory)
         && Objects.equals(this.websocketUrl, o.websocketUrl)
+        && Objects.equals(this.rateLimits, o.rateLimits)
         && Objects.equals(this.restEndpoints, o.restEndpoints)
         && Objects.equals(this.websocketEndpoints, o.websocketEndpoints);
   }
@@ -424,17 +434,21 @@ public class ExchangeApiDescriptor implements Pojo<ExchangeApiDescriptor> {
     if (res != 0) {
       return res;
     }
+    res = CompareUtil.compareLists(this.rateLimits, other.rateLimits, CompareUtil::compare);
+    if (res != 0) {
+      return res;
+    }
     res = CompareUtil.compareLists(this.restEndpoints, other.restEndpoints, CompareUtil::compare);
     if (res != 0) {
       return res;
     }
-    res = CompareUtil.compare(this.websocketEndpoints, other.websocketEndpoints);
+    res = CompareUtil.compareLists(this.websocketEndpoints, other.websocketEndpoints, CompareUtil::compare);
     return res;
   }
   
   @Override
   public int hashCode() {
-    return Objects.hash(name, description, httpRequestExecutorFactory, httpRequestInterceptorFactory, httpUrl, httpRequestTimeout, websocketFactory, websocketHookFactory, websocketUrl, restEndpoints, websocketEndpoints);
+    return Objects.hash(name, description, httpRequestExecutorFactory, httpRequestInterceptorFactory, httpUrl, httpRequestTimeout, websocketFactory, websocketHookFactory, websocketUrl, rateLimits, restEndpoints, websocketEndpoints);
   }
   
   @Override
@@ -449,8 +463,9 @@ public class ExchangeApiDescriptor implements Pojo<ExchangeApiDescriptor> {
     clone.websocketFactory = this.websocketFactory;
     clone.websocketHookFactory = this.websocketHookFactory;
     clone.websocketUrl = this.websocketUrl;
+    clone.rateLimits = CollectionUtil.deepCloneList(this.rateLimits, DeepCloneable::deepClone);
     clone.restEndpoints = CollectionUtil.deepCloneList(this.restEndpoints, DeepCloneable::deepClone);
-    clone.websocketEndpoints = this.websocketEndpoints != null ? this.websocketEndpoints.deepClone() : null;
+    clone.websocketEndpoints = CollectionUtil.deepCloneList(this.websocketEndpoints, DeepCloneable::deepClone);
     return clone;
   }
   
@@ -474,8 +489,9 @@ public class ExchangeApiDescriptor implements Pojo<ExchangeApiDescriptor> {
     private String websocketFactory;
     private String websocketHookFactory;
     private String websocketUrl;
+    private List<RateLimitRuleDescriptor> rateLimits;
     private List<RestEndpointDescriptor> restEndpoints;
-    private WebsocketEndpointDescriptor websocketEndpoints;
+    private List<WebsocketEndpointDescriptor> websocketEndpoints;
     
     /**
      * Will set the value of <code>name</code> field in the builder
@@ -584,6 +600,31 @@ public class ExchangeApiDescriptor implements Pojo<ExchangeApiDescriptor> {
     }
     
     /**
+     * Will set the value of <code>rateLimits</code> field in the builder
+     * @return Builder instance
+     * @see #setRateLimits(List<RateLimitRuleDescriptor>)
+     */
+    public Builder rateLimits(List<RateLimitRuleDescriptor> rateLimits)  {
+      this.rateLimits = rateLimits;
+      return this;
+    }
+    
+    
+    /**
+     * Will add an item to the <code>rateLimits</code> list.
+     * @param item Item to add to current <code>rateLimits</code> list
+     * @return Builder instance
+     * @see ExchangeApiDescriptor#setRateLimits(RateLimitRuleDescriptor)
+     */
+    public Builder addToRateLimits(RateLimitRuleDescriptor item) {
+      if (this.rateLimits == null) {
+        this.rateLimits = CollectionUtil.createList();
+      }
+      this.rateLimits.add(item);
+      return this;
+    }
+    
+    /**
      * Will set the value of <code>restEndpoints</code> field in the builder
      * @param restEndpoints Describes a REST endpoint as part of a larger exchange API defined in a JSON document. These endpoints handle HTTP requests to a specific URL, process request parameters, and return a response.
      * <h2>Endpoint Properties</h2> The endpoint is defined by the following properties: <ul>
@@ -643,10 +684,25 @@ public class ExchangeApiDescriptor implements Pojo<ExchangeApiDescriptor> {
      * @param websocketEndpoints Part of JSON document describing a crypo exchange API, describes a websocket endpoint where clients subscription can be performed using specified topic and eventual additional parameters. The structure of additional subscription parameters and response format are described as {@link Field} lists.
      * 
      * @return Builder instance
-     * @see #setWebsocketEndpoints(WebsocketEndpointDescriptor)
+     * @see #setWebsocketEndpoints(List<WebsocketEndpointDescriptor>)
      */
-    public Builder websocketEndpoints(WebsocketEndpointDescriptor websocketEndpoints)  {
+    public Builder websocketEndpoints(List<WebsocketEndpointDescriptor> websocketEndpoints)  {
       this.websocketEndpoints = websocketEndpoints;
+      return this;
+    }
+    
+    
+    /**
+     * Will add an item to the <code>websocketEndpoints</code> list.
+     * @param item Item to add to current <code>websocketEndpoints</code> list
+     * @return Builder instance
+     * @see ExchangeApiDescriptor#setWebsocketEndpoints(WebsocketEndpointDescriptor)
+     */
+    public Builder addToWebsocketEndpoints(WebsocketEndpointDescriptor item) {
+      if (this.websocketEndpoints == null) {
+        this.websocketEndpoints = CollectionUtil.createList();
+      }
+      this.websocketEndpoints.add(item);
       return this;
     }
     
@@ -664,8 +720,9 @@ public class ExchangeApiDescriptor implements Pojo<ExchangeApiDescriptor> {
       res.websocketFactory = this.websocketFactory;
       res.websocketHookFactory = this.websocketHookFactory;
       res.websocketUrl = this.websocketUrl;
+      res.rateLimits = CollectionUtil.deepCloneList(this.rateLimits, DeepCloneable::deepClone);
       res.restEndpoints = CollectionUtil.deepCloneList(this.restEndpoints, DeepCloneable::deepClone);
-      res.websocketEndpoints = this.websocketEndpoints != null ? this.websocketEndpoints.deepClone() : null;
+      res.websocketEndpoints = CollectionUtil.deepCloneList(this.websocketEndpoints, DeepCloneable::deepClone);
       return res;
     }
   }

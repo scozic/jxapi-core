@@ -6,7 +6,7 @@ import java.util.Map;
 
 import org.junit.Assert;
 import org.junit.Test;
-import org.jxapi.exchange.descriptor.ConfigPropertyDescriptor;
+import org.jxapi.exchange.descriptor.gen.ConfigPropertyDescriptor;
 import org.jxapi.generator.java.Imports;
 import org.jxapi.generator.java.JavaCodeGenUtil;
 import org.jxapi.pojo.descriptor.Type;
@@ -25,7 +25,13 @@ public class PropertiesGenUtilTest {
   @Test
   public void testAsConfigProperty() {
     Assert.assertNull(PropertiesGenUtil.asConfigProperty(null));
-    ConfigPropertyDescriptor propertyDescriptor = ConfigPropertyDescriptor.create("myProp", Type.INT, "A test property", 456);
+    ConfigPropertyDescriptor propertyDescriptor = ConfigPropertyDescriptor
+        .builder()
+        .name("myProp")
+        .description("A test property")
+        .type(Type.INT.toString())
+        .defaultValue(456)
+        .build();
     ConfigProperty property = PropertiesGenUtil.asConfigProperty(propertyDescriptor);
     Assert.assertNotNull(property);
     Assert.assertEquals("myProp", property.getName());
@@ -36,10 +42,16 @@ public class PropertiesGenUtilTest {
   
   @Test(expected = IllegalArgumentException.class)
   public void testAsConfigProperty_Group() {
-    PropertiesGenUtil.asConfigProperty(ConfigPropertyDescriptor.createGroup(
-        "myGroup", 
-        null, 
-        List.of(ConfigPropertyDescriptor.create("myProp", Type.STRING, null, null))));
+    ConfigPropertyDescriptor groupPropertyDescriptor = ConfigPropertyDescriptor
+        .builder()
+        .name("myGroup")
+        .addToProperties(ConfigPropertyDescriptor
+            .builder()
+            .name("myProp")
+            .type(Type.STRING.toString())
+            .build())
+        .build();
+    PropertiesGenUtil.asConfigProperty(groupPropertyDescriptor);
   }
   
   @Test
@@ -49,7 +61,7 @@ public class PropertiesGenUtilTest {
     ConfigPropertyDescriptor propertyDescriptor = PropertiesGenUtil.asConfigPropertyDescriptor(property);
     Assert.assertNotNull(propertyDescriptor);
     Assert.assertEquals("myProp", propertyDescriptor.getName());
-    Assert.assertEquals(Type.BOOLEAN, propertyDescriptor.getType());
+    Assert.assertEquals(Type.BOOLEAN.toString(), propertyDescriptor.getType());
     Assert.assertEquals("A boolean property", propertyDescriptor.getDescription());
     Assert.assertEquals(true, propertyDescriptor.getDefaultValue());
   }
@@ -57,8 +69,12 @@ public class PropertiesGenUtilTest {
   @Test
   public void testGenerateSimplePropertyValueDeclaration() {
     Imports imports = new Imports();
-    ConfigPropertyDescriptor property = ConfigPropertyDescriptor.create("myProp", Type.STRING, "A test property",
-        "defaultValue");
+    ConfigPropertyDescriptor property = ConfigPropertyDescriptor.builder()
+        .name("myProp")
+        .type(Type.STRING.toString())
+        .description("A test property")
+        .defaultValue("defaultValue")
+        .build();
     String code = PropertiesGenUtil.generateSimplePropertyValueDeclaration(property, List.of(property), null, imports, null, null);
     Assert.assertEquals(
         "/**\n"
@@ -81,8 +97,12 @@ public class PropertiesGenUtilTest {
   @Test
   public void testGenerateSimplePropertyValueDeclaration_NonPrimitiveType() {
     Imports imports = new Imports();
-    ConfigPropertyDescriptor property = ConfigPropertyDescriptor.create("myProp", Type.fromTypeName("INT_LIST"), "A test property",
-        "[1, 2, 3]");
+    ConfigPropertyDescriptor property = ConfigPropertyDescriptor.builder()
+        .name("myProp")
+        .type("INT_LIST")
+        .description("A test property")
+        .defaultValue(List.of(1, 2, 3))
+        .build();
     String code = PropertiesGenUtil.generateSimplePropertyValueDeclaration(property, List.of(property), null, imports, null, null);
     Assert.assertEquals(
         "/**\n"
@@ -92,7 +112,7 @@ public class PropertiesGenUtilTest {
         + "  \"myProp\",\n"
         + "  Type.STRING,\n"
         + "  \"A test property\",\n"
-        + "  \"[1, 2, 3]\");\n"
+        + "  \"[1,2,3]\");\n"
         + "",
         code);
     Assert.assertEquals(3, imports.size());
@@ -105,11 +125,13 @@ public class PropertiesGenUtilTest {
   @Test
   public void testGenerateSimplePropertyValueDeclaration_WithDescriptionAndSampleVlauePlaceholders() {
     Imports imports = new Imports();
-    ConfigPropertyDescriptor property = ConfigPropertyDescriptor.create(
-        "helloProp", 
-        Type.STRING, 
-        "A test ${hello} property",
-        "Hi ${foo}!");
+    ConfigPropertyDescriptor property = ConfigPropertyDescriptor.builder()
+        .name("helloProp")
+        .type(Type.STRING.toString())
+        .description("A test ${hello} property")
+        .defaultValue("Hi ${foo}!")
+        .build();
+    
     PlaceHolderResolver docPlaceHolderResolver = PlaceHolderResolver.create(Map.of("hello", "Hello World"));
     PlaceHolderResolver sampleValuePlaceHolderResolver = createSampleValueResolver(Map.of("foo", "bar"));
     String code = PropertiesGenUtil.generateSimplePropertyValueDeclaration(
@@ -141,15 +163,19 @@ public class PropertiesGenUtilTest {
   public void testGenerateSimplePropertyValueDeclaration_ObjectPropertyRawWValueDemoProperty() {
     Imports imports = new Imports();
     Person samplePerson = new Person("John ${lastName}", 30);
-    ConfigPropertyDescriptor rawValueProperty = ConfigPropertyDescriptor.create(
-        "personProp", 
-        Type.STRING, 
-        "A test person like ${fullName}  property",
-        JsonUtil.pojoToJsonString(samplePerson, EncodingUtil.createDefaultPojoToToStringObjectMapper()));
-    ConfigPropertyDescriptor groupProperty = ConfigPropertyDescriptor.createGroup(
-        "personProp", 
-        "Group for object type 'personProp'", 
-        List.of());
+    ConfigPropertyDescriptor rawValueProperty = ConfigPropertyDescriptor.builder()
+        .name("personProp")
+        .type(Type.STRING.toString())
+        .description("A test person like ${fullName}  property")
+        .defaultValue(JsonUtil.pojoToJsonString(samplePerson, EncodingUtil.createDefaultPojoToToStringObjectMapper()))
+        .build();
+
+    ConfigPropertyDescriptor groupProperty = ConfigPropertyDescriptor.builder()
+        .name("groupProp")
+        .description("Group property'")
+        .properties(List.of())
+        .build();
+        
     List<ConfigPropertyDescriptor> allProperties = List.of(rawValueProperty, groupProperty);
     PlaceHolderResolver docPlaceHolderResolver = PlaceHolderResolver.create(Map.of("fullName", "Bob Smith"));
     PlaceHolderResolver sampleValuePlaceHolderResolver = createSampleValueResolver(Map.of("lastName", "Doe"));
@@ -181,11 +207,11 @@ public class PropertiesGenUtilTest {
   @Test
   public void testGenerateSimplePropertyValueDeclaration_NullSampleValue() {
     Imports imports = new Imports();
-    ConfigPropertyDescriptor property = ConfigPropertyDescriptor.create(
-      "myProp", 
-      Type.STRING, 
-      "A test property",
-      null);
+    ConfigPropertyDescriptor property = ConfigPropertyDescriptor.builder()
+        .name("myProp")
+        .type(Type.STRING.toString())
+        .description("A test property")
+        .build();
     String code = PropertiesGenUtil.generateSimplePropertyValueDeclaration(property, List.of(property), null, imports, null, null);
     Assert.assertEquals(
         "/**\n"
@@ -221,10 +247,29 @@ public class PropertiesGenUtilTest {
   @Test
   public void testGenerateAllPropertiesListMethod_PropertiesWithGroupFirst() {
     Imports imports = new Imports();
-    ConfigPropertyDescriptor prop1 = ConfigPropertyDescriptor.create("prop1", Type.STRING, "First property", "default1");
-    ConfigPropertyDescriptor prop2 = ConfigPropertyDescriptor.create("prop2", Type.INT, "Second property", 42);
-    ConfigPropertyDescriptor prop3 = ConfigPropertyDescriptor.create("prop3", Type.BOOLEAN, "Third property", false);
-    ConfigPropertyDescriptor group1 = ConfigPropertyDescriptor.createGroup("group1", "A group of properties", List.of(prop2, prop3));    
+    ConfigPropertyDescriptor prop1 = ConfigPropertyDescriptor.builder()
+        .name("prop1")
+        .type(Type.STRING.toString())
+        .description("First property")
+        .defaultValue("default1")
+        .build();
+    ConfigPropertyDescriptor prop2 = ConfigPropertyDescriptor.builder()
+        .name("prop2")
+        .type(Type.INT.toString())
+        .description("Second property")
+        .defaultValue(42)
+        .build();
+    ConfigPropertyDescriptor prop3 = ConfigPropertyDescriptor.builder()
+        .name("prop3")
+        .type(Type.BOOLEAN.toString())
+        .description("Third property")
+        .defaultValue(false)
+        .build();
+    ConfigPropertyDescriptor group1 = ConfigPropertyDescriptor.builder()
+        .name("group1")
+        .description("A group of properties")
+        .properties(List.of(prop2, prop3))
+        .build();    
     
     Assert.assertEquals("/**\n"
         + " * List of all configuration properties defined in this class\n"
@@ -245,10 +290,29 @@ public class PropertiesGenUtilTest {
   @Test
   public void testGenerateAllPropertiesListMethod_PropertiesWithGroupLast() {
     Imports imports = new Imports();
-    ConfigPropertyDescriptor prop1 = ConfigPropertyDescriptor.create("prop1", Type.STRING, "First property", "default1");
-    ConfigPropertyDescriptor prop2 = ConfigPropertyDescriptor.create("prop2", Type.INT, "Second property", 42);
-    ConfigPropertyDescriptor prop3 = ConfigPropertyDescriptor.create("prop3", Type.BOOLEAN, "Third property", false);
-    ConfigPropertyDescriptor group1 = ConfigPropertyDescriptor.createGroup("group1", "A group of properties", List.of(prop2, prop3));    
+    ConfigPropertyDescriptor prop1 = ConfigPropertyDescriptor.builder()
+        .name("prop1")
+        .type(Type.STRING.toString())
+        .description("First property")
+        .defaultValue("default1")
+        .build();
+    ConfigPropertyDescriptor prop2 = ConfigPropertyDescriptor.builder()
+        .name("prop2")
+        .type(Type.INT.toString())
+        .description("Second property")
+        .defaultValue(42)
+        .build();
+    ConfigPropertyDescriptor prop3 = ConfigPropertyDescriptor.builder()
+        .name("prop3")
+        .type(Type.BOOLEAN.toString())
+        .description("Third property")
+        .defaultValue(false)
+        .build();
+    ConfigPropertyDescriptor group1 = ConfigPropertyDescriptor.builder()
+        .name("group1")
+        .description("A group of properties")
+        .properties(List.of(prop2, prop3))
+        .build();      
     
     Assert.assertEquals("/**\n"
         + " * List of all configuration properties defined in this class\n"
@@ -270,10 +334,29 @@ public class PropertiesGenUtilTest {
   @Test
   public void testGenerateAllPropertiesListMethod_PropertiesWithGroupInMiddle() {
     Imports imports = new Imports();
-    ConfigPropertyDescriptor prop1 = ConfigPropertyDescriptor.create("prop1", Type.STRING, "First property", "default1");
-    ConfigPropertyDescriptor prop2 = ConfigPropertyDescriptor.create("prop2", Type.INT, "Second property", 42);
-    ConfigPropertyDescriptor prop3 = ConfigPropertyDescriptor.create("prop3", Type.BOOLEAN, "Third property", false);
-    ConfigPropertyDescriptor group1 = ConfigPropertyDescriptor.createGroup("group1", "A group of properties", List.of(prop2));    
+    ConfigPropertyDescriptor prop1 = ConfigPropertyDescriptor.builder()
+        .name("prop1")
+        .type(Type.STRING.toString())
+        .description("First property")
+        .defaultValue("default1")
+        .build();
+    ConfigPropertyDescriptor prop2 = ConfigPropertyDescriptor.builder()
+        .name("prop2")
+        .type(Type.INT.toString())
+        .description("Second property")
+        .defaultValue(42)
+        .build();
+    ConfigPropertyDescriptor prop3 = ConfigPropertyDescriptor.builder()
+        .name("prop3")
+        .type(Type.BOOLEAN.toString())
+        .description("Third property")
+        .defaultValue(false)
+        .build();
+    ConfigPropertyDescriptor group1 = ConfigPropertyDescriptor.builder()
+        .name("group1")
+        .description("A group of properties")
+        .addToProperties(prop2)
+        .build();        
     
     Assert.assertEquals("/**\n"
         + " * List of all configuration properties defined in this class\n"
@@ -297,9 +380,24 @@ public class PropertiesGenUtilTest {
   @Test
   public void testGenerateAllPropertiesListMethod_PropertiesWithoutGroup() {
     Imports imports = new Imports();
-    ConfigPropertyDescriptor prop1 = ConfigPropertyDescriptor.create("prop1", Type.STRING, "First property", "default1");
-    ConfigPropertyDescriptor prop2 = ConfigPropertyDescriptor.create("prop2", Type.INT, "Second property", 42);
-    ConfigPropertyDescriptor prop3 = ConfigPropertyDescriptor.create("prop3", Type.BOOLEAN, "Third property", false);    
+    ConfigPropertyDescriptor prop1 = ConfigPropertyDescriptor.builder()
+        .name("prop1")
+        .type(Type.STRING.toString())
+        .description("First property")
+        .defaultValue("default1")
+        .build();
+    ConfigPropertyDescriptor prop2 = ConfigPropertyDescriptor.builder()
+        .name("prop2")
+        .type(Type.INT.toString())
+        .description("Second property")
+        .defaultValue(42)
+        .build();
+    ConfigPropertyDescriptor prop3 = ConfigPropertyDescriptor.builder()
+        .name("prop3")
+        .type(Type.BOOLEAN.toString())
+        .description("Third property")
+        .defaultValue(false)
+        .build();   
     
     Assert.assertEquals("/**\n"
         + " * List of all configuration properties defined in this class\n"
@@ -322,11 +420,34 @@ public class PropertiesGenUtilTest {
   @Test
   public void testGenerateAllPropertiesListMethod_PropertiesWithOnlyGroups() {
     Imports imports = new Imports();
-    ConfigPropertyDescriptor prop1 = ConfigPropertyDescriptor.create("prop1", Type.STRING, "First property", "default1");
-    ConfigPropertyDescriptor prop2 = ConfigPropertyDescriptor.create("prop2", Type.INT, "Second property", 42);
-    ConfigPropertyDescriptor prop3 = ConfigPropertyDescriptor.create("prop3", Type.BOOLEAN, "Third property", false);
-    ConfigPropertyDescriptor group1 = ConfigPropertyDescriptor.createGroup("group1", "A group of properties", List.of(prop2, prop3));
-    ConfigPropertyDescriptor group2 = ConfigPropertyDescriptor.createGroup("group2", "A 2nd group of properties", List.of(prop1));
+    ConfigPropertyDescriptor prop1 = ConfigPropertyDescriptor.builder()
+        .name("prop1")
+        .type(Type.STRING.toString())
+        .description("First property")
+        .defaultValue("default1")
+        .build();
+    ConfigPropertyDescriptor prop2 = ConfigPropertyDescriptor.builder()
+        .name("prop2")
+        .type(Type.INT.toString())
+        .description("Second property")
+        .defaultValue(42)
+        .build();
+    ConfigPropertyDescriptor prop3 = ConfigPropertyDescriptor.builder()
+        .name("prop3")
+        .type(Type.BOOLEAN.toString())
+        .description("Third property")
+        .defaultValue(false)
+        .build();
+    ConfigPropertyDescriptor group1 = ConfigPropertyDescriptor.builder()
+        .name("group1")
+        .description("A group of properties")
+        .properties(List.of(prop2, prop3))
+        .build();
+    ConfigPropertyDescriptor group2 = ConfigPropertyDescriptor.builder()
+        .name("group2")
+        .description("A 2nd group of properties")
+        .addToProperties(prop1)
+        .build();
     
     Assert.assertEquals("/**\n"
         + " * List of all configuration properties defined in this class\n"
@@ -345,15 +466,35 @@ public class PropertiesGenUtilTest {
   
   @Test
   public void testGetPropertyGetterMethodName() {
-    ConfigPropertyDescriptor property = ConfigPropertyDescriptor.create("myProp", Type.STRING, "A test property", null);
+    ConfigPropertyDescriptor property = ConfigPropertyDescriptor.builder()
+        .name("myProp")
+        .type(Type.STRING.toString())
+        .description("A test property")
+        .build();
     Assert.assertEquals("getMyProp", PropertiesGenUtil.getPropertyGetterMethodName(property, List.of(property)));
-    ConfigPropertyDescriptor propertyWithSameNameButFirstLetterUppercase = ConfigPropertyDescriptor.create("MyProp", Type.STRING, "A test property with same name as 'myProp' but first letter as uppercase", "defaultValue");
+    
+    ConfigPropertyDescriptor propertyWithSameNameButFirstLetterUppercase = ConfigPropertyDescriptor.builder()
+        .name("MyProp")
+        .type(Type.STRING.toString())
+        .description("A test property with same name as 'myProp' but first letter as uppercase")
+        .defaultValue("defaultValue")
+        .build();
+
     Assert.assertEquals("getmyProp", PropertiesGenUtil.getPropertyGetterMethodName(property, List.of(property, propertyWithSameNameButFirstLetterUppercase)));
     
-    ConfigPropertyDescriptor boolProperty = ConfigPropertyDescriptor.create("myBoolProp", Type.BOOLEAN, "A test property", null);
+    ConfigPropertyDescriptor boolProperty = ConfigPropertyDescriptor.builder()
+        .name("myBoolProp")
+        .type(Type.BOOLEAN.toString())
+        .description("A test property")
+        .build();
     Assert.assertEquals("isMyBoolProp", PropertiesGenUtil.getPropertyGetterMethodName(boolProperty, null));
     
-    ConfigPropertyDescriptor groupProperty = ConfigPropertyDescriptor.createGroup("myGroup", "A test group", List.of(property, boolProperty));
+    ConfigPropertyDescriptor groupProperty = ConfigPropertyDescriptor.builder()
+        .name("myGroup")
+        .description("A test group")
+        .properties(List.of(property, boolProperty))
+        .build();
+
     Assert.assertEquals("getMyGroup", PropertiesGenUtil.getPropertyGetterMethodName(groupProperty, List.of(property)));
   }
   
@@ -366,16 +507,41 @@ public class PropertiesGenUtilTest {
   
   @Test
   public void testGetPropertyVariableName_SimpleProp() {
-    ConfigPropertyDescriptor p = ConfigPropertyDescriptor.create("myProp", Type.STRING, null, null);
+    ConfigPropertyDescriptor p = ConfigPropertyDescriptor.builder()
+        .name("myProp")
+        .type(Type.STRING.toString())
+        .description("A test property")
+        .build();
     Assert.assertEquals("MY_PROP", PropertiesGenUtil.getPropertyVariableName(p, List.of(p)));
   }
   
   @Test
   public void testGetPropertyVariableName_SimplePropWithSameVariableNameAsOtherSimpleProps() {
-    ConfigPropertyDescriptor p1 = ConfigPropertyDescriptor.create("com.x.gen.p1", Type.STRING, null, null);
-    ConfigPropertyDescriptor p1Up = ConfigPropertyDescriptor.create("com.x.gen.P1", Type.STRING, null, null);
-    ConfigPropertyDescriptor p1Underscore = ConfigPropertyDescriptor.create("com.x.gen.p1_", Type.STRING, null, null);
-    ConfigPropertyDescriptor p1UpUnderscore = ConfigPropertyDescriptor.createGroup("com.x.gen.P1_", null, null);
+    ConfigPropertyDescriptor p1 = ConfigPropertyDescriptor.builder()
+        .name("p1")
+        .type(Type.STRING.toString())
+        .description("First p1 property")
+        .build();
+    ConfigPropertyDescriptor p1Up = ConfigPropertyDescriptor.builder()
+        .name("P1")
+        .type(Type.STRING.toString())
+        .description("Second p1 property with uppercase first letter")
+        .build();
+    ConfigPropertyDescriptor p1Underscore = ConfigPropertyDescriptor
+        .builder()
+        .name("p1_")
+        .type(Type.STRING.toString())
+        .description("Third p1 property with underscore")
+        .build();
+    ConfigPropertyDescriptor p1UpUnderscore = ConfigPropertyDescriptor.builder()
+        .name("P1_")
+        .type(Type.STRING.toString())
+        .description("Fourth p1 property with uppercase first letter and underscore")
+        .build();
+    //ConfigPropertyDescriptor p1 = ConfigPropertyDescriptor.create("com.x.gen.p1", Type.STRING, null, null);
+    // ConfigPropertyDescriptor p1Up = ConfigPropertyDescriptor.create("com.x.gen.P1", Type.STRING, null, null);
+    //ConfigPropertyDescriptor p1Underscore = ConfigPropertyDescriptor.create("com.x.gen.p1_", Type.STRING, null, null);
+    // ConfigPropertyDescriptor p1UpUnderscore = ConfigPropertyDescriptor.createGroup("com.x.gen.P1_", null, null);
     List<ConfigPropertyDescriptor> allProps = List.of(p1, p1Up, p1Underscore, p1UpUnderscore);
     Assert.assertEquals("P1", PropertiesGenUtil.getPropertyVariableName(p1, allProps));
     Assert.assertEquals("P1_", PropertiesGenUtil.getPropertyVariableName(p1Up, allProps));
@@ -385,8 +551,16 @@ public class PropertiesGenUtilTest {
   
   @Test
   public void testGetPropertyVariableName_SimplePropWithSameStaticVariableNameAsGroupPropClassName() {
-    ConfigPropertyDescriptor p1 = ConfigPropertyDescriptor.create("p1", Type.STRING, null, null);
-    ConfigPropertyDescriptor g1 = ConfigPropertyDescriptor.createGroup("P1", "A group", List.of());
+    ConfigPropertyDescriptor p1 = ConfigPropertyDescriptor.builder()
+        .name("p1")
+        .type(Type.STRING.toString())
+        .description("A simple p1 property")
+        .build();
+    ConfigPropertyDescriptor g1 = ConfigPropertyDescriptor.builder()
+        .name("P1")
+        .description("A group p1 property")
+        .properties(List.of())
+        .build();
     List<ConfigPropertyDescriptor> allProps = List.of(p1, g1);
     Assert.assertEquals("P1", PropertiesGenUtil.getPropertyVariableName(p1, allProps));
     Assert.assertEquals("P1_", PropertiesGenUtil.getPropertyVariableName(g1, allProps));
@@ -394,8 +568,19 @@ public class PropertiesGenUtilTest {
   
   @Test
   public void testGetPropertyVariableName_ObjectPropAsRawValueAndGroupProp() {
-    ConfigPropertyDescriptor p1 = ConfigPropertyDescriptor.create("myObjectProp", Type.STRING, "Raw value prop for myGroupProp", null);
-    ConfigPropertyDescriptor g1 = ConfigPropertyDescriptor.createGroup("myObjectProp", "Group property for myGrouupProp", List.of());
+    ConfigPropertyDescriptor p1 = ConfigPropertyDescriptor.builder()
+        .name("myObjectProp")
+        .type(Type.STRING.toString())
+        .description("Raw value prop for myGroupProp")
+        .build();
+    ConfigPropertyDescriptor g1 = ConfigPropertyDescriptor.builder()
+        .name("myObjectProp")
+        .description("Group property for myGrouupProp")
+        .properties(List.of())
+        .build();
+    //ConfigPropertyDescriptor p1 = ConfigPropertyDescriptor.create("myObjectProp", Type.STRING, "Raw value prop for myGroupProp", null);
+    //ConfigPropertyDescriptor g1 = ConfigPropertyDescriptor.createGroup("myObjectProp", "Group property for myGrouupProp", List.of());
+    //List<ConfigPropertyDescriptor> allProps = List.of(p1, g1);
     List<ConfigPropertyDescriptor> allProps = List.of(p1, g1);
     Assert.assertEquals("MY_OBJECT_PROP", PropertiesGenUtil.getPropertyVariableName(p1, allProps));
     Assert.assertEquals("MyObjectProp", PropertiesGenUtil.getPropertyVariableName(g1, allProps));
@@ -403,11 +588,12 @@ public class PropertiesGenUtilTest {
   
   @Test
   public void testGetPropertyValueDeclaration() {
-    ConfigPropertyDescriptor p = ConfigPropertyDescriptor.create(
-        "myProp", 
-        Type.STRING, 
-        "A test string value property, for instance '${constants.bar}'", 
-        "foo");
+    ConfigPropertyDescriptor p = ConfigPropertyDescriptor.builder()
+        .name("myProp")
+        .type(Type.STRING.toString())
+        .description("A test string value property, for instance '${constants.bar}'")
+        .defaultValue("foo")
+        .build();
     Imports imports = new Imports();
     PlaceHolderResolver placeholderResolver = PlaceHolderResolver.create(Map.of("constants.bar", "bar"));
     Assert.assertEquals("/**\n"
@@ -423,7 +609,12 @@ public class PropertiesGenUtilTest {
   
   @Test
   public void testGetPropertyValueDeclaration_ValueWithPlaceholder() {
-    ConfigPropertyDescriptor p = ConfigPropertyDescriptor.create("myProp", Type.STRING, "A test string value property,\nfor instance '${constants.bar}'", "${constants.foo}");
+    ConfigPropertyDescriptor p = ConfigPropertyDescriptor.builder()
+        .name("myProp")
+        .type(Type.STRING.toString())
+        .description("A test string value property,\nfor instance '${constants.bar}'")
+        .defaultValue("${constants.foo}")
+        .build();
     Imports imports = new Imports();
     PlaceHolderResolver docPlaceholderResolver = PlaceHolderResolver.create(Map.of("constants.bar", "bar"));
     PlaceHolderResolver defaultValuePlaceholderResolver = PlaceHolderResolver.create(Map.of("constants.foo", "\"myFooValue\""));

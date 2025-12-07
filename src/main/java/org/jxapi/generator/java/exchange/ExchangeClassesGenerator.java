@@ -4,10 +4,10 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.util.List;
 
-import org.jxapi.exchange.descriptor.ConfigPropertyDescriptor;
 import org.jxapi.exchange.descriptor.Constant;
-import org.jxapi.exchange.descriptor.ExchangeApiDescriptor;
-import org.jxapi.exchange.descriptor.ExchangeDescriptor;
+import org.jxapi.exchange.descriptor.gen.ConfigPropertyDescriptor;
+import org.jxapi.exchange.descriptor.gen.ExchangeApiDescriptor;
+import org.jxapi.exchange.descriptor.gen.ExchangeDescriptor;
 import org.jxapi.generator.java.exchange.api.ExchangeApiClassesGenerator;
 import org.jxapi.generator.java.exchange.constants.ConstantsClassGenerator;
 import org.jxapi.generator.java.exchange.properties.PropertiesClassGenerator;
@@ -64,7 +64,7 @@ public class ExchangeClassesGenerator implements ClassesGenerator {
     }
     
     // Generate constants interface
-    List<Constant> constants = exchangeDescriptor.getConstants();
+    List<Constant> constants = Constant.fromDescriptors(exchangeDescriptor.getConstants());
     if (!CollectionUtils.isEmpty(constants)) {
       ConstantsClassGenerator cgen = new ConstantsClassGenerator(
           ExchangeGenUtil.getExchangeConstantsClassName(exchangeDescriptor), 

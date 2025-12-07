@@ -7,15 +7,17 @@ import java.util.Objects;
 import java.util.Optional;
 
 import org.jxapi.exchange.descriptor.Constant;
-import org.jxapi.exchange.descriptor.ExchangeApiDescriptor;
-import org.jxapi.exchange.descriptor.ExchangeDescriptor;
-import org.jxapi.exchange.descriptor.RestEndpointDescriptor;
-import org.jxapi.exchange.descriptor.WebsocketEndpointDescriptor;
+import org.jxapi.exchange.descriptor.gen.ConfigPropertyDescriptor;
+import org.jxapi.exchange.descriptor.gen.ConstantDescriptor;
+import org.jxapi.exchange.descriptor.gen.ExchangeApiDescriptor;
+import org.jxapi.exchange.descriptor.gen.ExchangeDescriptor;
+import org.jxapi.exchange.descriptor.gen.RateLimitRuleDescriptor;
+import org.jxapi.exchange.descriptor.gen.RestEndpointDescriptor;
+import org.jxapi.exchange.descriptor.gen.WebsocketEndpointDescriptor;
 import org.jxapi.netutils.rest.ratelimits.RateLimitRule;
 import org.jxapi.util.CollectionUtil;
 import org.jxapi.util.DefaultConfigProperty;
 import org.jxapi.util.MergeUtil;
-import org.jxapi.exchange.descriptor.ConfigPropertyDescriptor;
 
 /**
  * Helper methods around exchange descriptor merging.
@@ -139,7 +141,7 @@ public class ExchangeDescriptorMergeUtil {
     res.setHttpUrl(MergeUtil.merge("httpUrl of exchange " + exchangeName, e1.getHttpUrl(), e2.getHttpUrl()));
     res.setAfterInitHookFactory(MergeUtil.merge("afterInitHookFactory of exchange " + exchangeName, e1.getAfterInitHookFactory(), e2.getAfterInitHookFactory()));
     res.setConstants(mergeConstants(e1.getConstants(), e2.getConstants()));
-    res.setRateLimits(MergeUtil.mergeLists("rateLimits of exchange " + exchangeName, e1.getRateLimits(), e2.getRateLimits(), RateLimitRule::getId));
+    res.setRateLimits(MergeUtil.mergeLists("rateLimits of exchange " + exchangeName, e1.getRateLimits(), e2.getRateLimits(), RateLimitRuleDescriptor::getId));
     res.setProperties(MergeUtil.mergeLists("properties of exchange " + exchangeName, e1.getProperties(), e2.getProperties(), ConfigPropertyDescriptor::getName));
     res.setApis(mergeExchangeApiDescriptorLists(e1.getApis(), e2.getApis()));
     return res;
@@ -154,16 +156,17 @@ public class ExchangeDescriptorMergeUtil {
    * @param l2 Second list of constants
    * @return A new list of constants, result of the merge of the two input lists
    */
-  public static List<Constant> mergeConstants(List<Constant> l1, List<Constant> l2) {
+  public static List<ConstantDescriptor> mergeConstants(List<ConstantDescriptor> l1, List<ConstantDescriptor> l2) {
     l1 = CollectionUtil.emptyIfNull(l1);
     l2 = new ArrayList<>(CollectionUtil.emptyIfNull(l2));
-    List<Constant> res = new ArrayList<>();
-    for (Constant c1 : l1) {
+    List<ConstantDescriptor> res = new ArrayList<>();
+    for (ConstantDescriptor c1 : l1) {
       String cName = c1.getName();
-      for (Iterator<Constant> it = l2.iterator(); it.hasNext();) {
-        Constant c2 = it.next();
+      for (Iterator<ConstantDescriptor> it = l2.iterator(); it.hasNext();) {
+        ConstantDescriptor c2 = it.next();
         if (cName.equals((c2.getName()))) {
-          if (c1.isGroup() && c2.isGroup()) {
+          if (!CollectionUtil.isEmpty(c1.getConstants()) 
+              && !CollectionUtil.isEmpty(c2.getConstants())) {
             c1.setDescription(MergeUtil.merge("description of constant group " + cName, c1.getDescription(), c2.getDescription()));
             c1.setConstants(mergeConstants(c1.getConstants(), c2.getConstants()));
           } else {
@@ -234,7 +237,7 @@ public class ExchangeDescriptorMergeUtil {
     res.setWebsocketHookFactory(MergeUtil.merge("websocketHookFactory of API " + apiName, a1.getWebsocketHookFactory(), a2.getWebsocketHookFactory()));
     res.setWebsocketUrl(MergeUtil.merge("websocketUrl of API " + apiName, a1.getWebsocketUrl(), a2.getWebsocketUrl()));
     res.setHttpUrl(MergeUtil.merge("httpUrl of API " + apiName, a1.getHttpUrl(), a2.getHttpUrl()));
-    res.setRateLimits(MergeUtil.mergeLists("rateLimits of API " + apiName, a1.getRateLimits(), a2.getRateLimits(), RateLimitRule::getId));
+    res.setRateLimits(MergeUtil.mergeLists("rateLimits of API " + apiName, a1.getRateLimits(), a2.getRateLimits(), RateLimitRuleDescriptor::getId));
     res.setRestEndpoints(MergeUtil.mergeLists("REST endpoints of API " + apiName, a1.getRestEndpoints(), a2.getRestEndpoints(), RestEndpointDescriptor::getName));
     return res;
   }

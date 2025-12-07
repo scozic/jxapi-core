@@ -610,4 +610,69 @@ public void testGetClassNameForField_BIGDECIMAL_Type() {
     Assert.assertFalse(PojoGenUtil.isRawObjectField(fb.type(Type.OBJECT).objectName("com.x.y.MyPojo").build()));
   }
   
+  @Test 
+  public void testGetPrimitiveTypeFieldSampleValueDeclaration_NullSampleValue() {
+    Imports imports = new Imports();
+    Assert.assertEquals("null", PojoGenUtil.getPrimitiveTypeFieldSampleValueDeclaration(Type.INT, null, imports, null));
+    Assert.assertEquals(0, imports.size());
+  }
+
+  @Test 
+  public void testGetPrimitiveTypeFieldSampleValueDeclaration_BigDecimalSampleValue() {
+    Imports imports = new Imports();
+    Assert.assertEquals("new BigDecimal(\"1.23\")", PojoGenUtil.getPrimitiveTypeFieldSampleValueDeclaration(Type.BIGDECIMAL, "1.23", imports, null));
+    Assert.assertEquals(1, imports.size());
+    Assert.assertTrue(imports.contains(BigDecimal.class));
+  }
+
+  @Test
+  public void testGetPrimitiveTypeFieldSampleValueDeclaration_LongSampleValue() {
+    Imports imports = new Imports();
+    Assert.assertEquals("Long.valueOf(\"123\")", PojoGenUtil.getPrimitiveTypeFieldSampleValueDeclaration(Type.LONG, "123", imports, null));
+    Assert.assertEquals(0, imports.size());
+  }
+
+  @Test
+  public void testGetPrimitiveTypeFieldSampleValueDeclaration_LongpNowSampleValue() {
+    Imports imports = new Imports();
+    Assert.assertEquals("Long.valueOf(System.currentTimeMillis())", PojoGenUtil.getPrimitiveTypeFieldSampleValueDeclaration(Type.LONG, "now()", imports, null));
+    Assert.assertEquals(0, imports.size());
+  }
+
+  @Test
+  public void testGetPrimitiveTypeFieldSampleValueDeclaration_StringSampleValue() {
+    Imports imports = new Imports();
+    Assert.assertEquals("\"test\"", PojoGenUtil.getPrimitiveTypeFieldSampleValueDeclaration(Type.STRING, "test", imports, null));
+    Assert.assertEquals(0, imports.size());
+  }
+
+  @Test
+  public void testGetPrimitiveTypeFieldSampleValueDeclaration_IntegersSampleValue() {
+    Imports imports = new Imports();
+    Assert.assertEquals("Integer.valueOf(\"1\")", PojoGenUtil.getPrimitiveTypeFieldSampleValueDeclaration(Type.INT, 1, imports, null));
+    Assert.assertEquals(0, imports.size());
+  }
+  
+  @Test
+  public void testGetPrimitiveTypeFieldSampleValueDeclaration_IntegersSampleValueWithPlaceHolder() {
+    Imports imports = new Imports();
+    PlaceHolderResolver placeholderResolver = PlaceHolderResolver.create(Map.of("config.myInt1", "1234", "config.myInt2", "5678"));
+    Assert.assertEquals("Integer.valueOf(12345678)", PojoGenUtil.getPrimitiveTypeFieldSampleValueDeclaration(Type.INT, "${config.myInt1}${config.myInt2}", imports, placeholderResolver));
+    Assert.assertEquals(0, imports.size());
+  }
+
+  @Test
+  public void testGetPrimitiveTypeFieldSampleValueDeclaration_BooleanSampleValue() {
+    Imports imports = new Imports();
+    Assert.assertEquals("Boolean.valueOf(\"true\")", PojoGenUtil.getPrimitiveTypeFieldSampleValueDeclaration(Type.BOOLEAN, "true", imports, null));
+    Assert.assertEquals(0, imports.size());
+  }
+
+  @Test
+  public void testGetPrimitiveTypeFieldSampleValueDeclaration_NonPrimitiveType() {
+    Imports imports = new Imports();
+    Assert.assertEquals("\"[1, 3, 5]\"", PojoGenUtil.getPrimitiveTypeFieldSampleValueDeclaration(Type.fromTypeName("INT_LIST"), "[1, 3, 5]", imports, null));
+    Assert.assertEquals(0, imports.size());
+  }
+  
 }

@@ -5,8 +5,8 @@ import java.util.Objects;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import javax.annotation.processing.Generated;
-import org.jxapi.exchange.descriptor.gen.deserializers.RateLimitRuleDeserializer;
-import org.jxapi.exchange.descriptor.gen.serializers.RateLimitRuleSerializer;
+import org.jxapi.exchange.descriptor.gen.deserializers.RateLimitRuleDescriptorDeserializer;
+import org.jxapi.exchange.descriptor.gen.serializers.RateLimitRuleDescriptorSerializer;
 import org.jxapi.util.CompareUtil;
 import org.jxapi.util.EncodingUtil;
 import org.jxapi.util.Pojo;
@@ -16,14 +16,14 @@ import org.jxapi.util.Pojo;
  * 
  */
 @Generated("org.jxapi.generator.java.pojo.PojoGenerator")
-@JsonSerialize(using = RateLimitRuleSerializer.class)
-@JsonDeserialize(using = RateLimitRuleDeserializer.class)
-public class RateLimitRule implements Pojo<RateLimitRule> {
+@JsonSerialize(using = RateLimitRuleDescriptorSerializer.class)
+@JsonDeserialize(using = RateLimitRuleDescriptorDeserializer.class)
+public class RateLimitRuleDescriptor implements Pojo<RateLimitRuleDescriptor> {
   
-  private static final long serialVersionUID = -5469817799147233617L;
+  private static final long serialVersionUID = 222675654459556526L;
   
   /**
-   * @return A new builder to build {@link RateLimitRule} objects
+   * @return A new builder to build {@link RateLimitRuleDescriptor} objects
    */
   public static Builder builder() {
     return new Builder();
@@ -128,7 +128,7 @@ public class RateLimitRule implements Pojo<RateLimitRule> {
     }
     if (!getClass().equals(other.getClass()))
       return false;
-    RateLimitRule o = (RateLimitRule) other;
+    RateLimitRuleDescriptor o = (RateLimitRuleDescriptor) other;
     return Objects.equals(this.id, o.id)
         && Objects.equals(this.timeFrame, o.timeFrame)
         && Objects.equals(this.maxTotalWeight, o.maxTotalWeight)
@@ -137,7 +137,7 @@ public class RateLimitRule implements Pojo<RateLimitRule> {
   }
   
   @Override
-  public int compareTo(RateLimitRule other) {
+  public int compareTo(RateLimitRuleDescriptor other) {
     if (other == null) {
       return 1;
     }
@@ -171,8 +171,8 @@ public class RateLimitRule implements Pojo<RateLimitRule> {
   }
   
   @Override
-  public RateLimitRule deepClone() {
-    RateLimitRule clone = new RateLimitRule();
+  public RateLimitRuleDescriptor deepClone() {
+    RateLimitRuleDescriptor clone = new RateLimitRuleDescriptor();
     clone.id = this.id;
     clone.timeFrame = this.timeFrame;
     clone.maxTotalWeight = this.maxTotalWeight;
@@ -187,7 +187,7 @@ public class RateLimitRule implements Pojo<RateLimitRule> {
   }
   
   /**
-   * Builder for {@link RateLimitRule}
+   * Builder for {@link RateLimitRuleDescriptor}
    */
   @Generated("org.jxapi.generator.java.JavaTypeGenerator")
   public static class Builder {
@@ -258,10 +258,10 @@ public class RateLimitRule implements Pojo<RateLimitRule> {
     }
     
     /**
-     * @return a new instance of RateLimitRule using the values set in this builder
+     * @return a new instance of RateLimitRuleDescriptor using the values set in this builder
      */
-    public RateLimitRule build() {
-      RateLimitRule res = new RateLimitRule();
+    public RateLimitRuleDescriptor build() {
+      RateLimitRuleDescriptor res = new RateLimitRuleDescriptor();
       res.id = this.id;
       res.timeFrame = this.timeFrame;
       res.maxTotalWeight = this.maxTotalWeight;

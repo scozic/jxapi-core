@@ -9,12 +9,12 @@ import java.util.List;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Test;
-import org.jxapi.exchange.descriptor.ConfigPropertyDescriptor;
-import org.jxapi.exchange.descriptor.Constant;
-import org.jxapi.exchange.descriptor.ExchangeApiDescriptor;
-import org.jxapi.exchange.descriptor.ExchangeDescriptor;
-import org.jxapi.exchange.descriptor.RestEndpointDescriptor;
-import org.jxapi.exchange.descriptor.WebsocketEndpointDescriptor;
+import org.jxapi.exchange.descriptor.gen.ConfigPropertyDescriptor;
+import org.jxapi.exchange.descriptor.gen.ConstantDescriptor;
+import org.jxapi.exchange.descriptor.gen.ExchangeApiDescriptor;
+import org.jxapi.exchange.descriptor.gen.ExchangeDescriptor;
+import org.jxapi.exchange.descriptor.gen.RestEndpointDescriptor;
+import org.jxapi.exchange.descriptor.gen.WebsocketEndpointDescriptor;
 import org.jxapi.generator.java.JavaCodeGenUtil;
 import org.jxapi.generator.java.exchange.ClassesGeneratorTestUtil;
 import org.jxapi.netutils.rest.HttpMethod;
@@ -107,7 +107,7 @@ public class ExchangeDescriptorParserTest {
   private void checkTickersRestEndpooint(RestEndpointDescriptor tickersEndPoint) {
     Assert.assertEquals("tickers", tickersEndPoint.getName());
     Assert.assertEquals("Fetch current tickers. Author: ${constants.authorFullName}", tickersEndPoint.getDescription());
-    Assert.assertEquals(HttpMethod.GET, tickersEndPoint.getHttpMethod());
+    Assert.assertEquals(HttpMethod.GET.toString(), tickersEndPoint.getHttpMethod());
     Assert.assertEquals("https://com.sample.mycex/tickers", tickersEndPoint.getUrl());
     List<Field> exchangeInfoParameters = tickersEndPoint.getRequest().getProperties();
     Assert.assertEquals(0, exchangeInfoParameters.size());
@@ -143,7 +143,7 @@ public class ExchangeDescriptorParserTest {
   private void checkExchangeInfoRestEndpoint(RestEndpointDescriptor exchangeInfoEndPoint) {
     Assert.assertEquals("exchangeInfo", exchangeInfoEndPoint.getName());
     Assert.assertEquals("Fetch market information of symbols that can be traded. Author: ${constants.authorFullName}", exchangeInfoEndPoint.getDescription());
-    Assert.assertEquals(HttpMethod.GET, exchangeInfoEndPoint.getHttpMethod());
+    Assert.assertEquals(HttpMethod.GET.toString(), exchangeInfoEndPoint.getHttpMethod());
     Assert.assertEquals("https://com.sample.mycex/exchangeInfo", exchangeInfoEndPoint.getUrl());
     List<Field> exchangeInfoParameters = exchangeInfoEndPoint.getRequest().getProperties();
     
@@ -351,10 +351,10 @@ public class ExchangeDescriptorParserTest {
     Assert.assertEquals("Employee", employee.getObjectName());
   }
 
-  private void checkEmployeeExchangeConstants(List<Constant> constants) {
+  private void checkEmployeeExchangeConstants(List<ConstantDescriptor> constants) {
     Assert.assertEquals(4, constants.size());
     
-    Constant constant = constants.get(0);
+    ConstantDescriptor constant = constants.get(0);
     Assert.assertEquals("defaultPageSize", constant.getName());
     Assert.assertEquals("Default page size for paginated requests", constant.getDescription());
     
@@ -365,19 +365,17 @@ public class ExchangeDescriptorParserTest {
     constant = constants.get(2);
     Assert.assertEquals("profile", constant.getName());
     Assert.assertEquals("Employee profile types", constant.getDescription());
-    Assert.assertTrue(constant.isGroup());
     checkEmployeeExchangeProfileConstants(constant.getConstants());
     
     
     constant = constants.get(3);
     Assert.assertEquals("updateEmployeeType", constant.getName());
     Assert.assertEquals("Value of eventType field in WS message", constant.getDescription());
-    Assert.assertTrue(constant.isGroup());
     checkEmployeeExchangeUpdateEmployeeTypeConstants(constant.getConstants());
   }
   
-  private void checkEmployeeExchangeUpdateEmployeeTypeConstants(List<Constant> constants) {
-    Constant constant = constants.get(0);
+  private void checkEmployeeExchangeUpdateEmployeeTypeConstants(List<ConstantDescriptor> constants) {
+    ConstantDescriptor constant = constants.get(0);
     Assert.assertEquals("add", constant.getName());
     Assert.assertEquals("Value of eventType field in WS message for new employee added event", constant.getDescription());
     Assert.assertEquals("ADD", constant.getValue());
@@ -393,8 +391,8 @@ public class ExchangeDescriptorParserTest {
     
   }
 
-  private void checkEmployeeExchangeProfileConstants(List<Constant> constants) {
-    Constant constant = constants.get(0);
+  private void checkEmployeeExchangeProfileConstants(List<ConstantDescriptor> constants) {
+    ConstantDescriptor constant = constants.get(0);
     Assert.assertEquals("regular", constant.getName());
     Assert.assertEquals("Regular employee profile", constant.getDescription());
     Assert.assertEquals("REGULAR", constant.getValue());
@@ -409,7 +407,7 @@ public class ExchangeDescriptorParserTest {
   private void checkEmployeeExchangeV1ApiGroupGetEmployeeRestEndpoint(RestEndpointDescriptor restEndpointGetEmployee) {
     Assert.assertEquals("getEmployee", restEndpointGetEmployee.getName());
     Assert.assertEquals("Get employee details by ID", restEndpointGetEmployee.getDescription());
-    Assert.assertEquals(HttpMethod.GET, restEndpointGetEmployee.getHttpMethod());
+    Assert.assertEquals(HttpMethod.GET.name(), restEndpointGetEmployee.getHttpMethod());
     Assert.assertEquals("https://www.example.com/docs/employee/get", restEndpointGetEmployee.getDocUrl());
     Assert.assertEquals("/employee", restEndpointGetEmployee.getUrl());
     Field getEmployeeIdByIdRequest = restEndpointGetEmployee.getRequest();
@@ -424,7 +422,7 @@ public class ExchangeDescriptorParserTest {
   private void checkEmployeeExchangeV1ApiGroupGetAllEmployeesRestEndpoint(RestEndpointDescriptor restEndpointGetAllEmployees) {
     Assert.assertEquals("getAllEmployees", restEndpointGetAllEmployees.getName());
     Assert.assertEquals("Get all employees", restEndpointGetAllEmployees.getDescription());
-    Assert.assertEquals(HttpMethod.GET, restEndpointGetAllEmployees.getHttpMethod());
+    Assert.assertEquals(HttpMethod.GET.name(), restEndpointGetAllEmployees.getHttpMethod());
     Assert.assertEquals("https://www.example.com/docs/employee/getAll", restEndpointGetAllEmployees.getDocUrl());
     Assert.assertEquals("/employees", restEndpointGetAllEmployees.getUrl());
     Assert.assertTrue(restEndpointGetAllEmployees.isPaginated());
@@ -477,7 +475,7 @@ public class ExchangeDescriptorParserTest {
   private void checkEmployeeExchangeV1ApiGroupAddEmployeesRestEndpoint(RestEndpointDescriptor restEndpointGetEmployee) {
     Assert.assertEquals("addEmployee", restEndpointGetEmployee.getName());
     Assert.assertEquals("Add a new employee", restEndpointGetEmployee.getDescription());
-    Assert.assertEquals(HttpMethod.POST, restEndpointGetEmployee.getHttpMethod());
+    Assert.assertEquals(HttpMethod.POST.name(), restEndpointGetEmployee.getHttpMethod());
     Assert.assertEquals("https://www.example.com/docs/employee/add", restEndpointGetEmployee.getDocUrl());
     Assert.assertEquals("/employee", restEndpointGetEmployee.getUrl());
     Field employeeField = restEndpointGetEmployee.getRequest();
@@ -487,7 +485,7 @@ public class ExchangeDescriptorParserTest {
   private void checkEmployeeExchangeV1ApiGroupUpdateEmployeesRestEndpoint(RestEndpointDescriptor restEndpointDescriptor) {
     Assert.assertEquals("updateEmployee", restEndpointDescriptor.getName());
         Assert.assertEquals("Update an existing employee", restEndpointDescriptor.getDescription());
-        Assert.assertEquals(HttpMethod.PUT, restEndpointDescriptor.getHttpMethod());
+        Assert.assertEquals(HttpMethod.PUT.name(), restEndpointDescriptor.getHttpMethod());
         Assert.assertEquals("https://www.example.com/docs/employee/add", restEndpointDescriptor.getDocUrl());
         Assert.assertEquals("/employee", restEndpointDescriptor.getUrl());
         Field updateEmployeeRequest = restEndpointDescriptor.getRequest();
@@ -497,7 +495,7 @@ public class ExchangeDescriptorParserTest {
   private void checkEmployeeExchangeV1ApiGroupDeleteEmployeesRestEndpoint(RestEndpointDescriptor restEndpointDescriptor) {
     Assert.assertEquals("deleteEmployee", restEndpointDescriptor.getName());
     Assert.assertEquals("Delete an employee", restEndpointDescriptor.getDescription());
-    Assert.assertEquals(HttpMethod.DELETE, restEndpointDescriptor.getHttpMethod());
+    Assert.assertEquals(HttpMethod.DELETE.name(), restEndpointDescriptor.getHttpMethod());
     Assert.assertEquals("https://www.example.com/docs/employee/delete", restEndpointDescriptor.getDocUrl());
     Assert.assertEquals("/employee", restEndpointDescriptor.getUrl());
     Field deleteEmployeeIdRequest = restEndpointDescriptor.getRequest();

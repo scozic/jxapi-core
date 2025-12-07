@@ -5,8 +5,8 @@ import java.util.Map;
 import java.util.Optional;
 
 import org.jxapi.exchange.Exchange;
-import org.jxapi.exchange.descriptor.ExchangeApiDescriptor;
-import org.jxapi.exchange.descriptor.ExchangeDescriptor;
+import org.jxapi.exchange.descriptor.gen.ExchangeApiDescriptor;
+import org.jxapi.exchange.descriptor.gen.ExchangeDescriptor;
 import org.jxapi.generator.java.JavaCodeGenUtil;
 import org.jxapi.generator.java.JavaTypeGenerator;
 import org.jxapi.netutils.rest.ratelimits.RateLimitRule;
@@ -103,7 +103,7 @@ public class ExchangeInterfaceGenerator extends JavaTypeGenerator {
   }
   
   private void generateRateLimitRuleMethodDeclarations() {
-    List<RateLimitRule> rateLimits = CollectionUtil.emptyIfNull(exchangeDescriptor.getRateLimits());
+    List<RateLimitRule> rateLimits = RateLimitRule.fromDescriptors(exchangeDescriptor.getRateLimits());
     if (rateLimits.isEmpty()) {
       return;
     }

@@ -3,8 +3,8 @@ package org.jxapi.pojo.descriptor;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.jxapi.exchange.descriptor.RestEndpointDescriptor;
-import org.jxapi.exchange.descriptor.WebsocketEndpointDescriptor;
+import org.jxapi.exchange.descriptor.gen.RestEndpointDescriptor;
+import org.jxapi.exchange.descriptor.gen.WebsocketEndpointDescriptor;
 import org.jxapi.generator.java.pojo.PojoGenUtil;
 import org.jxapi.util.CompareUtil;
 import org.jxapi.util.EncodingUtil;

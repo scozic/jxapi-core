@@ -137,6 +137,7 @@ import org.jxapi.util.EncodingUtil;
  * @see WebsocketFactory
  * @see WebsocketHookFactory
  * @see Constant
+ * @deprecated
  */
 public class ExchangeApiDescriptor {
   

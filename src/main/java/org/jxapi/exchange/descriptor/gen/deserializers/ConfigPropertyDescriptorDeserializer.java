@@ -18,7 +18,7 @@ import static org.jxapi.util.JsonUtil.skipNextValue;
  */
 @Generated("org.jxapi.generator.java.pojo.JsonMessageDeserializerGenerator")
 public class ConfigPropertyDescriptorDeserializer extends AbstractJsonMessageDeserializer<ConfigPropertyDescriptor> {
-  private final ListJsonFieldDeserializer<ConfigPropertyDescriptor> propertiesDeserializer = new ListJsonFieldDeserializer<>(new ConfigPropertyDescriptorDeserializer());
+  private ListJsonFieldDeserializer<ConfigPropertyDescriptor> propertiesDeserializer;
   
   @Override
   public ConfigPropertyDescriptor deserialize(JsonParser parser) throws IOException {
@@ -39,6 +39,9 @@ public class ConfigPropertyDescriptorDeserializer extends AbstractJsonMessageDes
       break;
       case "properties":
         parser.nextToken();
+        if(propertiesDeserializer == null) {
+          propertiesDeserializer = new ListJsonFieldDeserializer<>(new ConfigPropertyDescriptorDeserializer());
+        }
         msg.setProperties(propertiesDeserializer.deserialize(parser));
       break;
       default:

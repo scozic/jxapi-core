@@ -6,23 +6,23 @@ import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.ser.std.StdSerializer;
 import javax.annotation.processing.Generated;
-import org.jxapi.exchange.descriptor.gen.RateLimitRule;
+import org.jxapi.exchange.descriptor.gen.RateLimitRuleDescriptor;
 
 /**
- * Jackson JSON Serializer for org.jxapi.exchange.descriptor.gen.RateLimitRule
- * @see RateLimitRule
+ * Jackson JSON Serializer for org.jxapi.exchange.descriptor.gen.RateLimitRuleDescriptor
+ * @see RateLimitRuleDescriptor
  */
 @Generated("org.jxapi.generator.java.pojo.JsonPojoSerializerGenerator")
-public class RateLimitRuleSerializer extends StdSerializer<RateLimitRule> {
+public class RateLimitRuleDescriptorSerializer extends StdSerializer<RateLimitRuleDescriptor> {
   /**
    * Constructor
    */
-  public RateLimitRuleSerializer() {
-    super(RateLimitRule.class);
+  public RateLimitRuleDescriptorSerializer() {
+    super(RateLimitRuleDescriptor.class);
   }
   
   @Override
-  public void serialize(RateLimitRule value, JsonGenerator gen, SerializerProvider provider) throws IOException {
+  public void serialize(RateLimitRuleDescriptor value, JsonGenerator gen, SerializerProvider provider) throws IOException {
     gen.writeStartObject();
     if (value.getId() != null){
       gen.writeStringField("id", String.valueOf(value.getId()));

@@ -60,14 +60,20 @@ public class MergeUtil {
    * @throws IllegalArgumentException if the values are not <code>null</code> and
    *                                  different
    */
-  public static long mergePositiveLongs(String context, long e1, long e2) {
-        if (e1 == e2) {
+  public static Long mergePositiveLongs(String context, Long e1, Long e2) {
+        if (e1 == null) {
+          return e2;
+        }
+        if (e2 == null) {
+          return e1;
+        }
+        if (e1.equals(e2)) {
             return e1;
         }
-        if (e1 < 0) {
+        if (e1.longValue() < 0) {
             return e2;
         }
-        if (e2 < 0) {
+        if (e2.longValue() < 0) {
             return e1;
         }
         throw new IllegalArgumentException(String.format("Conflict: Found distinct values for %s:[%d] and [%d]", context, e1, e2));

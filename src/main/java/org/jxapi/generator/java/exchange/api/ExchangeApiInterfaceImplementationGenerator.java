@@ -11,10 +11,10 @@ import java.util.TreeMap;
 import java.util.stream.Collectors;
 
 import org.jxapi.exchange.AbstractExchangeApi;
-import org.jxapi.exchange.descriptor.ExchangeApiDescriptor;
-import org.jxapi.exchange.descriptor.ExchangeDescriptor;
-import org.jxapi.exchange.descriptor.RestEndpointDescriptor;
-import org.jxapi.exchange.descriptor.WebsocketEndpointDescriptor;
+import org.jxapi.exchange.descriptor.gen.ExchangeApiDescriptor;
+import org.jxapi.exchange.descriptor.gen.ExchangeDescriptor;
+import org.jxapi.exchange.descriptor.gen.RestEndpointDescriptor;
+import org.jxapi.exchange.descriptor.gen.WebsocketEndpointDescriptor;
 import org.jxapi.generator.java.JavaCodeGenUtil;
 import org.jxapi.generator.java.JavaTypeGenerator;
 import org.jxapi.generator.java.exchange.ExchangeGenUtil;
@@ -222,7 +222,7 @@ public class ExchangeApiInterfaceImplementationGenerator extends JavaTypeGenerat
     setDescription("Actual implementation of {@link " + simpleInterfaceName + "}<br>");
     hasRateLimits = checkHasRateLimits();
     simpleImplementationName =  JavaCodeGenUtil.getClassNameWithoutPackage(getName());
-    exchangeRateLimits = exchangeDescriptor.getRateLimits();
+    exchangeRateLimits = RateLimitRule.fromDescriptors(exchangeDescriptor.getRateLimits());
     hasExchangeLimits = !CollectionUtils.isEmpty(exchangeRateLimits);
     hasRestEnpoints = !CollectionUtils.isEmpty(exchangeApiDescriptor.getRestEndpoints());
     hasWsEnpoints = !CollectionUtils.isEmpty(exchangeApiDescriptor.getWebsocketEndpoints());
@@ -289,7 +289,7 @@ public class ExchangeApiInterfaceImplementationGenerator extends JavaTypeGenerat
   }
 
   private void generateApiGlobalRateLimits() {
-    for (RateLimitRule rule : CollectionUtil.emptyIfNull(exchangeApiDescriptor.getRateLimits())) {
+    for (RateLimitRule rule : RateLimitRule.fromDescriptors(exchangeApiDescriptor.getRateLimits())) {
       generateRateLimitVariable(rule);
     }
   }
@@ -601,10 +601,6 @@ public class ExchangeApiInterfaceImplementationGenerator extends JavaTypeGenerat
           getImports(), 
           requestClassName); 
     }
-    // FIXME
-    if ("getRestResponseDataTypeRawObject".equals(restApi.getName())) {
-      System.out.println("HERE!");
-    }
     boolean hasResponse = ExchangeApiGenUtil.restEndpointHasResponse(restApi, exchangeApiDescriptor);
     String responseSimpleClassName = "String";
     String getResponseDeserializerInstance = null;
@@ -691,7 +687,7 @@ public class ExchangeApiInterfaceImplementationGenerator extends JavaTypeGenerat
     
     boolean requestHasBody = Optional
         .ofNullable(restApi.isRequestHasBody())
-        .orElse(restApi.getHttpMethod().requestHasBody) && hasArguments;
+        .orElse(HttpMethod.valueOf(restApi.getHttpMethod()).requestHasBody) && hasArguments;
     String createHttpRequestInstruction = generateRestEndpointMethodCreateHttpRequestInstruction(
         restApi,
         urlVariableName, 
@@ -732,7 +728,7 @@ public class ExchangeApiInterfaceImplementationGenerator extends JavaTypeGenerat
     }
     addImport(HttpMethod.class);
     createHttpRequestInstruction.append(", HttpMethod.")
-        .append(restApi.getHttpMethod().name())
+        .append(restApi.getHttpMethod())
         .append(", ")
         .append(hasArguments? requestArgName: "null")
         .append(", ")
@@ -750,7 +746,7 @@ public class ExchangeApiInterfaceImplementationGenerator extends JavaTypeGenerat
       boolean requestHasBody) {
     StringBuilder submitRequestInstruction = new StringBuilder();
     String endpointCallArg = "";
-    if (restApi.isPaginated()) {
+    if (Boolean.TRUE.equals(restApi.isPaginated())) {
       submitRequestInstruction.append("submitPaginated(");
       endpointCallArg = ", this::" + ExchangeApiGenUtil.getRestApiMethodName(restApi, exchangeApiDescriptor.getRestEndpoints());
     } else {
@@ -1027,7 +1023,7 @@ public class ExchangeApiInterfaceImplementationGenerator extends JavaTypeGenerat
     UrlParameterType defUrlParamType = (Optional
           .ofNullable(restApi.isRequestHasBody())
           .orElse(false) 
-        || restApi.getHttpMethod().requestHasBody)?
+        || HttpMethod.valueOf(restApi.getHttpMethod()).requestHasBody)?
          null: 
          UrlParameterType.QUERY;
     UrlParameterType fieldUrlParamType = f.getIn();
@@ -1084,11 +1080,11 @@ public class ExchangeApiInterfaceImplementationGenerator extends JavaTypeGenerat
   }
 
   private long getHttpRequestTimeout() {
-    long timeout = exchangeApiDescriptor.getHttpRequestTimeout();
+    long timeout = Optional.ofNullable(exchangeApiDescriptor.getHttpRequestTimeout()).orElse(-1L);
     if (timeout >= 0) {
       return timeout;
     }
-    timeout = exchangeDescriptor.getHttpRequestTimeout();
+    timeout = Optional.ofNullable(exchangeDescriptor.getHttpRequestTimeout()).orElse(-1L);
     if (timeout >= 0) {
       return timeout;
     }

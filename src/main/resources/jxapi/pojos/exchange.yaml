@@ -187,7 +187,8 @@ pojos:
            sub-properties for API key, secret, etc listed. Those properties can be
            referenced with key auth.apiKey, auth.apiSecret, etc. Groups may contain
            other groups, so the structure is hierarchical.
-        objectName: ConfigPropertyDescriptor   
+        objectName: ConfigPropertyDescriptor
+        type: OBJECT_LIST
         properties:
           - name: name
             description: The name of the property
@@ -208,7 +209,7 @@ pojos:
             type: OBJECT_LIST
             objectName: ConfigPropertyDescriptor
       - name: constants
-        objectName: Constant
+        objectName: ConstantDescriptor
         description: > 
           Represents a constant value used across APIs of an exchange or a group of such constants.<br>
           Exchange descriptor may contain a list of such constants as value of
@@ -248,9 +249,10 @@ pojos:
             description: >
               The list of nested constants if this constant is a group of constants.
             type: OBJECT_LIST
-            objectName: Constant
+            objectName: ConstantDescriptor
+        type: OBJECT_LIST
       - name: rateLimits
-        objectName: RateLimitRule
+        objectName: RateLimitRuleDescriptor
         description: >
           Represents a rate limit rule that applies to all API groups of the exchange.<br>
           Exchange descriptor may contain a list of such rate limit rules as value of
@@ -469,6 +471,9 @@ pojos:
             description: >
               The base URL of the Websocket API of this API group. This URL can be
               concateneted to endpoint URL when endpoint URL is not absolute.  
+          - name: rateLimits
+            objectName: RateLimitRuleDescriptor
+            type: OBJECT_LIST   
           - name: restEndpoints
             objectName: RestEndpointDescriptor
             description: >
@@ -551,8 +556,7 @@ pojos:
                   be defined either in enclosing API group descriptor (see
                   {@link ExchangeApiDescriptor#getRateLimits()}) or in enclosing
                   exchange descriptor, see {@link ExchangeDescriptor#getRateLimits()}.
-                type: OBJECT_LIST
-                objectName: RateLimitRule
+                type: STRING_LIST
               - name: paginated
                 description: >
                   Whether this endpoint supports pagination.
@@ -577,6 +581,7 @@ pojos:
               and eventual additional parameters.
               The structure of additional subscription parameters and response format are
               described as {@link Field} lists.
+            type: OBJECT_LIST  
             properties:
               - name: name
                 description: The unique name of the Websocket endpoint within the API group
@@ -617,7 +622,7 @@ pojos:
                     type: STRING
                   - name: fieldValue
                     description: The value the field with 'fieldName' should have to match.
-                    type: STRING
+                    objectName: java.lang.Object
                   - name: fieldRegexp
                     description: The pattern (Java regular expression) field with 'fieldName' should match.
                     type: STRING                    

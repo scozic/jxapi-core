@@ -6,7 +6,7 @@ import java.util.Properties;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
-import org.jxapi.exchange.descriptor.ConfigPropertyDescriptor;
+import org.jxapi.exchange.descriptor.gen.ConfigPropertyDescriptor;
 import org.jxapi.generator.java.Imports;
 import org.jxapi.generator.java.JavaCodeGenUtil;
 import org.jxapi.pojo.descriptor.Type;
@@ -48,12 +48,12 @@ public class PropertiesGenUtil {
     if (propertyDescriptor == null) {
       return null;
     }
-    if (propertyDescriptor.isGroup()) {
+    if (isGroup(propertyDescriptor)) {
       throw new IllegalArgumentException("Property '" + propertyDescriptor.getName() + "' is a group, not a property");
     }
     return DefaultConfigProperty.create(
         propertyDescriptor.getName(),
-        propertyDescriptor.getType(),
+        getType(propertyDescriptor),
         propertyDescriptor.getDescription(),
         propertyDescriptor.getDefaultValue());
   }
@@ -71,11 +71,12 @@ public class PropertiesGenUtil {
     if (configProperty == null) {
       return null;
     }
-    return ConfigPropertyDescriptor.create(
-        configProperty.getName(),
-        configProperty.getType(),
-        configProperty.getDescription(),
-        configProperty.getDefaultValue());
+    return ConfigPropertyDescriptor.builder()
+        .name(configProperty.getName())
+        .type(configProperty.getType() != null ? configProperty.getType().toString() : null)
+        .description(configProperty.getDescription())
+        .defaultValue(configProperty.getDefaultValue())
+        .build();
   }
   
 
@@ -115,7 +116,10 @@ public class PropertiesGenUtil {
   }
   
   private static String generateAllPropertiesVariableName(List<ConfigPropertyDescriptor> properties) {
-    ConfigPropertyDescriptor allPropertyVar = ConfigPropertyDescriptor.create(ALL_PROPERTY, Type.STRING, null, null);
+    ConfigPropertyDescriptor allPropertyVar = ConfigPropertyDescriptor.builder()
+        .name(ALL_PROPERTY)
+        .type(Type.STRING.toString())
+        .build();
     return getPropertyVariableName(allPropertyVar, CollectionUtil.mergeLists(properties, List.of(allPropertyVar)));
   }
   
@@ -129,15 +133,15 @@ public class PropertiesGenUtil {
               first = false;
               s.append(indent);
           } else {
-              appendSeparatorToAllPropertiesListMethod(s, inList, property.isGroup(), indent);
+              appendSeparatorToAllPropertiesListMethod(s, inList, isGroup(property), indent);
           }
   
           if (inList) {
-              if (property.isGroup()) {
+              if (isGroup(property)) {
                   closeGroupListInAllPropertiesListMethod(s, indent);
                   inList = false;
               }
-          } else if (!property.isGroup()) {
+          } else if (!isGroup(property)) {
               startNewListInAllPropertiesListMethod(s, indent);
               inList = true;
           }
@@ -170,7 +174,7 @@ public class PropertiesGenUtil {
       List<ConfigPropertyDescriptor> sieblings,
       StringBuilder s, 
       String indent) {
-      if (property.isGroup()) {
+      if (isGroup(property)) {
           s.append(PropertiesGenUtil.getPropertyVariableName(property, sieblings))
            .append(".").append(generateAllPropertiesVariableName(property.getProperties()));
       } else {
@@ -217,7 +221,7 @@ public class PropertiesGenUtil {
     String name = getPropertyFullName(prefix, property.getName());
     String description = Optional.ofNullable(docPlaceHolderResolver).orElse(PlaceHolderResolver.NO_OP).resolve(property.getDescription());
     Object sampleValue = property.getDefaultValue();
-    Type propType = property.getType();
+    Type propType = property.getType() == null ? Type.STRING : Type.fromTypeName(property.getType());
     if (!propType.getCanonicalType().isPrimitive) {
       propType = Type.STRING;
     }
@@ -320,7 +324,7 @@ public class PropertiesGenUtil {
     if (name.contains(".")) {
       name = StringUtils.substringAfterLast(name, ".");
     }
-    if (property.isGroup()) {
+    if (isGroup(property)) {
       return JavaCodeGenUtil.firstLetterToUpperCase(name);
     }
     return JavaCodeGenUtil.getStaticVariableName(name);
@@ -337,8 +341,8 @@ public class PropertiesGenUtil {
    */
   public static String getPropertyGetterMethodName(ConfigPropertyDescriptor property, List<ConfigPropertyDescriptor> allProperties) {
     String name = property.getName();
-    Type type = property.getType();
-    if (property.isGroup()) {
+    Type type = getType(property);
+    if (isGroup(property)) {
       type = Type.STRING;
     }
     return JavaCodeGenUtil.getGetAccessorMethodName(
@@ -362,6 +366,32 @@ public class PropertiesGenUtil {
       return propertyName;
     }
     return prefix + "." + propertyName;
+  }
+  
+  /**
+   * Returns <code>true</code> if the given property is a group of properties,
+   * i.e. it contains nested properties.
+   * 
+   * @param property the property to check
+   * @return <code>true</code> if the given property is a group of properties,
+   *         otherwise <code>false</code>
+   */
+  public static boolean isGroup(ConfigPropertyDescriptor property) {
+    return property != null 
+        && property.getProperties() != null;
+  }
+  
+  public static Type getType(ConfigPropertyDescriptor property) {
+    if (property == null) {
+      return null;
+    }
+    if (property.getType() == null) {
+      if (isGroup(property)) {
+        return Type.OBJECT;
+      }
+      return Type.STRING;
+    }
+    return Type.fromTypeName(property.getType());
   }
 
 }

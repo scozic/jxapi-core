@@ -9,13 +9,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Stream;
 
+import org.jxapi.exchange.descriptor.gen.ExchangeDescriptor;
 import org.yaml.snakeyaml.Yaml;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
-import org.jxapi.exchange.descriptor.ExchangeDescriptor;
 
 /**
  * Contains methods for parsing ExchangeDescriptor objects from JSON and YAML files.

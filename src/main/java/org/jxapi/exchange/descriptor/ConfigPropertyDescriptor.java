@@ -25,6 +25,7 @@ import org.jxapi.util.EncodingUtil;
  * other groups, so the structure is hierarchical.
  * 
  */
+@Deprecated
 public class ConfigPropertyDescriptor {
   
   /**

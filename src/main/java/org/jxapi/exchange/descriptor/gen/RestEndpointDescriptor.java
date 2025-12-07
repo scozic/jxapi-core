@@ -11,7 +11,6 @@ import org.jxapi.exchange.descriptor.gen.serializers.RestEndpointDescriptorSeria
 import org.jxapi.pojo.descriptor.Field;
 import org.jxapi.util.CollectionUtil;
 import org.jxapi.util.CompareUtil;
-import org.jxapi.util.DeepCloneable;
 import org.jxapi.util.EncodingUtil;
 import org.jxapi.util.Pojo;
 
@@ -52,7 +51,7 @@ import org.jxapi.util.Pojo;
 @JsonDeserialize(using = RestEndpointDescriptorDeserializer.class)
 public class RestEndpointDescriptor implements Pojo<RestEndpointDescriptor> {
   
-  private static final long serialVersionUID = 7768971894300098840L;
+  private static final long serialVersionUID = -7459346607038526664L;
   
   /**
    * @return A new builder to build {@link RestEndpointDescriptor} objects
@@ -68,7 +67,7 @@ public class RestEndpointDescriptor implements Pojo<RestEndpointDescriptor> {
   private String docUrl;
   private Long httpRequestTimeout;
   private Integer requestWeight;
-  private List<RateLimitRule> rateLimits;
+  private List<String> rateLimits;
   private Boolean paginated;
   private Boolean requestHasBody;
   private Field request;
@@ -180,7 +179,7 @@ public class RestEndpointDescriptor implements Pojo<RestEndpointDescriptor> {
    * @return The list of IDs of rate limits this REST API subject to. These must be defined either in enclosing API group descriptor (see {@link ExchangeApiDescriptor#getRateLimits()}) or in enclosing exchange descriptor, see {@link ExchangeDescriptor#getRateLimits()}.
    * 
    */
-  public List<RateLimitRule> getRateLimits() {
+  public List<String> getRateLimits() {
     return rateLimits;
   }
   
@@ -188,7 +187,7 @@ public class RestEndpointDescriptor implements Pojo<RestEndpointDescriptor> {
    * @param rateLimits The list of IDs of rate limits this REST API subject to. These must be defined either in enclosing API group descriptor (see {@link ExchangeApiDescriptor#getRateLimits()}) or in enclosing exchange descriptor, see {@link ExchangeDescriptor#getRateLimits()}.
    * 
    */
-  public void setRateLimits(List<RateLimitRule> rateLimits) {
+  public void setRateLimits(List<String> rateLimits) {
     this.rateLimits = rateLimits;
   }
   
@@ -349,7 +348,7 @@ public class RestEndpointDescriptor implements Pojo<RestEndpointDescriptor> {
     clone.docUrl = this.docUrl;
     clone.httpRequestTimeout = this.httpRequestTimeout;
     clone.requestWeight = this.requestWeight;
-    clone.rateLimits = CollectionUtil.deepCloneList(this.rateLimits, DeepCloneable::deepClone);
+    clone.rateLimits = CollectionUtil.cloneList(this.rateLimits);
     clone.paginated = this.paginated;
     clone.requestHasBody = this.requestHasBody;
     clone.request = this.request != null ? this.request.deepClone() : null;
@@ -375,7 +374,7 @@ public class RestEndpointDescriptor implements Pojo<RestEndpointDescriptor> {
     private String docUrl;
     private Long httpRequestTimeout;
     private Integer requestWeight;
-    private List<RateLimitRule> rateLimits;
+    private List<String> rateLimits;
     private Boolean paginated;
     private Boolean requestHasBody;
     private Field request;
@@ -465,9 +464,9 @@ public class RestEndpointDescriptor implements Pojo<RestEndpointDescriptor> {
      * @param rateLimits The list of IDs of rate limits this REST API subject to. These must be defined either in enclosing API group descriptor (see {@link ExchangeApiDescriptor#getRateLimits()}) or in enclosing exchange descriptor, see {@link ExchangeDescriptor#getRateLimits()}.
      * 
      * @return Builder instance
-     * @see #setRateLimits(List<RateLimitRule>)
+     * @see #setRateLimits(List<String>)
      */
-    public Builder rateLimits(List<RateLimitRule> rateLimits)  {
+    public Builder rateLimits(List<String> rateLimits)  {
       this.rateLimits = rateLimits;
       return this;
     }
@@ -477,9 +476,9 @@ public class RestEndpointDescriptor implements Pojo<RestEndpointDescriptor> {
      * Will add an item to the <code>rateLimits</code> list.
      * @param item Item to add to current <code>rateLimits</code> list
      * @return Builder instance
-     * @see RestEndpointDescriptor#setRateLimits(RateLimitRule)
+     * @see RestEndpointDescriptor#setRateLimits(String)
      */
-    public Builder addToRateLimits(RateLimitRule item) {
+    public Builder addToRateLimits(String item) {
       if (this.rateLimits == null) {
         this.rateLimits = CollectionUtil.createList();
       }
@@ -545,7 +544,7 @@ public class RestEndpointDescriptor implements Pojo<RestEndpointDescriptor> {
       res.docUrl = this.docUrl;
       res.httpRequestTimeout = this.httpRequestTimeout;
       res.requestWeight = this.requestWeight;
-      res.rateLimits = CollectionUtil.deepCloneList(this.rateLimits, DeepCloneable::deepClone);
+      res.rateLimits = CollectionUtil.cloneList(this.rateLimits);
       res.paginated = this.paginated;
       res.requestHasBody = this.requestHasBody;
       res.request = this.request != null ? this.request.deepClone() : null;

@@ -51,6 +51,9 @@ public class ExchangeApiDescriptorSerializer extends StdSerializer<ExchangeApiDe
     if (value.getWebsocketUrl() != null){
       gen.writeStringField("websocketUrl", String.valueOf(value.getWebsocketUrl()));
     }
+    if (value.getRateLimits() != null){
+      gen.writeObjectField("rateLimits", value.getRateLimits());
+    }
     if (value.getRestEndpoints() != null){
       gen.writeObjectField("restEndpoints", value.getRestEndpoints());
     }

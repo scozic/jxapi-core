@@ -8,6 +8,7 @@ import javax.annotation.processing.Generated;
 import org.jxapi.exchange.descriptor.gen.WebsocketTopicMatcherDescriptor;
 import org.jxapi.netutils.deserialization.json.AbstractJsonMessageDeserializer;
 import org.jxapi.netutils.deserialization.json.field.ListJsonFieldDeserializer;
+import static org.jxapi.util.JsonUtil.readNextObject;
 import static org.jxapi.util.JsonUtil.readNextString;
 import static org.jxapi.util.JsonUtil.skipNextValue;
 
@@ -17,8 +18,8 @@ import static org.jxapi.util.JsonUtil.skipNextValue;
  */
 @Generated("org.jxapi.generator.java.pojo.JsonMessageDeserializerGenerator")
 public class WebsocketTopicMatcherDescriptorDeserializer extends AbstractJsonMessageDeserializer<WebsocketTopicMatcherDescriptor> {
-  private final ListJsonFieldDeserializer<WebsocketTopicMatcherDescriptor> andDeserializer = new ListJsonFieldDeserializer<>(new WebsocketTopicMatcherDescriptorDeserializer());
-  private final ListJsonFieldDeserializer<WebsocketTopicMatcherDescriptor> orDeserializer = new ListJsonFieldDeserializer<>(new WebsocketTopicMatcherDescriptorDeserializer());
+  private ListJsonFieldDeserializer<WebsocketTopicMatcherDescriptor> andDeserializer;
+  private ListJsonFieldDeserializer<WebsocketTopicMatcherDescriptor> orDeserializer;
   
   @Override
   public WebsocketTopicMatcherDescriptor deserialize(JsonParser parser) throws IOException {
@@ -29,17 +30,23 @@ public class WebsocketTopicMatcherDescriptorDeserializer extends AbstractJsonMes
         msg.setFieldName(readNextString(parser));
       break;
       case "fieldValue":
-        msg.setFieldValue(readNextString(parser));
+        msg.setFieldValue(readNextObject(parser));
       break;
       case "fieldRegexp":
         msg.setFieldRegexp(readNextString(parser));
       break;
       case "and":
         parser.nextToken();
+        if(andDeserializer == null) {
+          andDeserializer = new ListJsonFieldDeserializer<>(new WebsocketTopicMatcherDescriptorDeserializer());
+        }
         msg.setAnd(andDeserializer.deserialize(parser));
       break;
       case "or":
         parser.nextToken();
+        if(orDeserializer == null) {
+          orDeserializer = new ListJsonFieldDeserializer<>(new WebsocketTopicMatcherDescriptorDeserializer());
+        }
         msg.setOr(orDeserializer.deserialize(parser));
       break;
       default:

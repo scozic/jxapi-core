@@ -23,7 +23,7 @@ import org.jxapi.util.Pojo;
 @JsonDeserialize(using = WebsocketTopicMatcherDescriptorDeserializer.class)
 public class WebsocketTopicMatcherDescriptor implements Pojo<WebsocketTopicMatcherDescriptor> {
   
-  private static final long serialVersionUID = -4491377580278679558L;
+  private static final long serialVersionUID = 1247228024754855825L;
   
   /**
    * @return A new builder to build {@link WebsocketTopicMatcherDescriptor} objects
@@ -33,7 +33,7 @@ public class WebsocketTopicMatcherDescriptor implements Pojo<WebsocketTopicMatch
   }
   
   private String fieldName;
-  private String fieldValue;
+  private Object fieldValue;
   private String fieldRegexp;
   private List<WebsocketTopicMatcherDescriptor> and;
   private List<WebsocketTopicMatcherDescriptor> or;
@@ -55,14 +55,14 @@ public class WebsocketTopicMatcherDescriptor implements Pojo<WebsocketTopicMatch
   /**
    * @return The value the field with 'fieldName' should have to match.
    */
-  public String getFieldValue() {
+  public Object getFieldValue() {
     return fieldValue;
   }
   
   /**
    * @param fieldValue The value the field with 'fieldName' should have to match.
    */
-  public void setFieldValue(String fieldValue) {
+  public void setFieldValue(Object fieldValue) {
     this.fieldValue = fieldValue;
   }
   
@@ -143,7 +143,7 @@ public class WebsocketTopicMatcherDescriptor implements Pojo<WebsocketTopicMatch
     if (res != 0) {
       return res;
     }
-    res = CompareUtil.compare(this.fieldValue, other.fieldValue);
+    res = CompareUtil.compareObjects(this.fieldValue, other.fieldValue);
     if (res != 0) {
       return res;
     }
@@ -187,7 +187,7 @@ public class WebsocketTopicMatcherDescriptor implements Pojo<WebsocketTopicMatch
   public static class Builder {
     
     private String fieldName;
-    private String fieldValue;
+    private Object fieldValue;
     private String fieldRegexp;
     private List<WebsocketTopicMatcherDescriptor> and;
     private List<WebsocketTopicMatcherDescriptor> or;
@@ -207,9 +207,9 @@ public class WebsocketTopicMatcherDescriptor implements Pojo<WebsocketTopicMatch
      * Will set the value of <code>fieldValue</code> field in the builder
      * @param fieldValue The value the field with 'fieldName' should have to match.
      * @return Builder instance
-     * @see #setFieldValue(String)
+     * @see #setFieldValue(Object)
      */
-    public Builder fieldValue(String fieldValue)  {
+    public Builder fieldValue(Object fieldValue)  {
       this.fieldValue = fieldValue;
       return this;
     }

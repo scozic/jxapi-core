@@ -9,7 +9,7 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import org.jxapi.exchange.descriptor.Constant;
-import org.jxapi.exchange.descriptor.ExchangeDescriptor;
+import org.jxapi.exchange.descriptor.gen.ExchangeDescriptor;
 import org.jxapi.exchange.descriptor.parser.ExchangeDescriptorParser;
 import org.jxapi.generator.java.JavaCodeGenUtil;
 import org.jxapi.generator.java.exchange.ExchangeGenUtil;
@@ -233,7 +233,7 @@ public class ConstantsClassGeneratorTest {
         PlaceHolderResolver.create(ExchangeGenUtil.getDescriptionReplacements(exchangeDescriptor, null));
     ConstantsClassGenerator gen = new ConstantsClassGenerator(
         ExchangeGenUtil.getExchangeConstantsClassName(exchangeDescriptor), 
-        exchangeDescriptor.getConstants(),
+        Constant.fromDescriptors(exchangeDescriptor.getConstants()),
         docPlaceHolderResolver);
     gen.setConstantValuePlaceHolderResolver(s -> ExchangeGenUtil.generateSubstitutionInstructionDeclaration(
         s, 

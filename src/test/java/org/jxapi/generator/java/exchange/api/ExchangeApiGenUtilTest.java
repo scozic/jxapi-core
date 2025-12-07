@@ -6,13 +6,13 @@ import java.util.Map;
 
 import org.junit.Assert;
 import org.junit.Test;
-import org.jxapi.exchange.descriptor.ConfigPropertyDescriptor;
-import org.jxapi.exchange.descriptor.Constant;
-import org.jxapi.exchange.descriptor.ExchangeApiDescriptor;
-import org.jxapi.exchange.descriptor.ExchangeDescriptor;
-import org.jxapi.exchange.descriptor.RestEndpointDescriptor;
-import org.jxapi.exchange.descriptor.WebsocketEndpointDescriptor;
-import org.jxapi.exchange.descriptor.WebsocketTopicMatcherDescriptor;
+import org.jxapi.exchange.descriptor.gen.ConfigPropertyDescriptor;
+import org.jxapi.exchange.descriptor.gen.ConstantDescriptor;
+import org.jxapi.exchange.descriptor.gen.ExchangeApiDescriptor;
+import org.jxapi.exchange.descriptor.gen.ExchangeDescriptor;
+import org.jxapi.exchange.descriptor.gen.RestEndpointDescriptor;
+import org.jxapi.exchange.descriptor.gen.WebsocketEndpointDescriptor;
+import org.jxapi.exchange.descriptor.gen.WebsocketTopicMatcherDescriptor;
 import org.jxapi.generator.java.Imports;
 import org.jxapi.generator.java.JavaCodeGenUtil;
 import org.jxapi.netutils.deserialization.MessageDeserializer;
@@ -1052,11 +1052,11 @@ public class ExchangeApiGenUtilTest {
       exchangeDescriptor.setId("TestExchange");
       exchangeDescriptor.setBasePackage("com.test.exchange");
       exchangeDescriptor.setProperties(List.of(
-          ConfigPropertyDescriptor.create("p1", Type.STRING, null, null),
-          ConfigPropertyDescriptor.create("P1", Type.BOOLEAN, null, null)
+          ConfigPropertyDescriptor.builder().name("p1").type(Type.STRING.toString()).build(),
+          ConfigPropertyDescriptor.builder().name("P1").type(Type.BOOLEAN.toString()).build()
       ));
       exchangeDescriptor.setConstants(List.of(
-          Constant.create("c1", Type.STRING, null, "c1Value")
+          ConstantDescriptor.builder().name("c1").type(Type.STRING.toString()).value("c1Value").build()
       ));
       Imports imports = new Imports();      
       Field field1 = Field.builder().name("field1").type(Type.BOOLEAN).build();
@@ -1132,11 +1132,11 @@ public class ExchangeApiGenUtilTest {
       exchangeDescriptor.setId("TestExchange");
       exchangeDescriptor.setBasePackage("com.test.exchange");
       exchangeDescriptor.setProperties(List.of(
-          ConfigPropertyDescriptor.create("p1", Type.STRING, null, null),
-          ConfigPropertyDescriptor.create("P1", Type.BOOLEAN, null, null)
+          ConfigPropertyDescriptor.builder().name("p1").type(Type.STRING.toString()).build(),
+          ConfigPropertyDescriptor.builder().name("P1").type(Type.BOOLEAN.toString()).build()
       ));
       exchangeDescriptor.setConstants(List.of(
-          Constant.create("c1", Type.STRING, null, "c1Value")
+          ConstantDescriptor.builder().name("c1").type(Type.STRING.toString()).value("c1Value").build()
       ));
       Imports imports = new Imports();      
       Field field1 = Field.builder().name("field1").type(Type.BOOLEAN).build();
@@ -1380,11 +1380,11 @@ public class ExchangeApiGenUtilTest {
     public void testGenerateWebsocketTopicMatcherFactoryDeclaration() {
       ExchangeDescriptor exchangeDescriptor = new ExchangeDescriptor();
       exchangeDescriptor.setProperties(List.of(
-          ConfigPropertyDescriptor.create("p1", Type.STRING, null, null),
-          ConfigPropertyDescriptor.create("P1", Type.BOOLEAN, null, null)
+          ConfigPropertyDescriptor.builder().name("p1").type(Type.STRING.toString()).build(),
+          ConfigPropertyDescriptor.builder().name("P1").type(Type.BOOLEAN.toString()).build()
       ));
       exchangeDescriptor.setConstants(List.of(
-          Constant.create("c1", Type.STRING, null, "c1Value")
+          ConstantDescriptor.builder().name("c1").type(Type.STRING.toString()).value("c1Value").build()
       ));
       exchangeDescriptor.setId("MyExchange");
       exchangeDescriptor.setBasePackage("com.myexchange");
@@ -1455,11 +1455,11 @@ public class ExchangeApiGenUtilTest {
     public void testGenerateWebsocketTopicMatcherFactoryDeclaration_NullRequest() {
       ExchangeDescriptor exchangeDescriptor = new ExchangeDescriptor();
       exchangeDescriptor.setProperties(List.of(
-          ConfigPropertyDescriptor.create("p1", Type.STRING, null, null),
-          ConfigPropertyDescriptor.create("P1", Type.BOOLEAN, null, null)
+          ConfigPropertyDescriptor.builder().name("p1").type(Type.STRING.toString()).build(),
+          ConfigPropertyDescriptor.builder().name("P1").type(Type.BOOLEAN.toString()).build()
       ));
       exchangeDescriptor.setConstants(List.of(
-          Constant.create("c1", Type.STRING, null, "c1Value")
+          ConstantDescriptor.builder().name("c1").type(Type.STRING.toString()).value("c1Value").build()
       ));
       exchangeDescriptor.setId("MyExchange");
       exchangeDescriptor.setBasePackage("com.myexchange");
@@ -1497,11 +1497,11 @@ public class ExchangeApiGenUtilTest {
     public void testGenerateWebsocketTopicMatcherFactoryDeclaration_NullRequestAndNullMatcherFactory() {
       ExchangeDescriptor exchangeDescriptor = new ExchangeDescriptor();
       exchangeDescriptor.setProperties(List.of(
-          ConfigPropertyDescriptor.create("p1", Type.STRING, null, null),
-          ConfigPropertyDescriptor.create("P1", Type.BOOLEAN, null, null)
+          ConfigPropertyDescriptor.builder().name("p1").type(Type.STRING.toString()).build(),
+          ConfigPropertyDescriptor.builder().name("P1").type(Type.BOOLEAN.toString()).build()
       ));
       exchangeDescriptor.setConstants(List.of(
-          Constant.create("c1", Type.STRING, null, "c1Value")
+          ConstantDescriptor.builder().name("c1").type(Type.STRING.toString()).value("c1Value").build()
       ));
       exchangeDescriptor.setId("MyExchange");
       exchangeDescriptor.setBasePackage("com.myexchange");

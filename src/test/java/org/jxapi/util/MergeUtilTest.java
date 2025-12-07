@@ -28,11 +28,13 @@ public class MergeUtilTest {
   }
   
   @Test
-  public void testMergeLongs() {
-    Assert.assertEquals(1L, MergeUtil.mergePositiveLongs(null, 1L, -1L));
-    Assert.assertEquals(1L, MergeUtil.mergePositiveLongs(null, -1L, 1L));
-    Assert.assertEquals(1L, MergeUtil.mergePositiveLongs(null, 1L, 1L));
-    Assert.assertEquals(-1L, MergeUtil.mergePositiveLongs(null, -1L, -1L));
+  public void testMergePositiveLongs() {
+    Assert.assertEquals(Long.valueOf(1L), MergeUtil.mergePositiveLongs(null, 1L, -1L));
+    Assert.assertEquals(Long.valueOf(1L), MergeUtil.mergePositiveLongs(null, -1L, 1L));
+    Assert.assertEquals(Long.valueOf(1L), MergeUtil.mergePositiveLongs(null, 1L, 1L));
+    Assert.assertEquals(Long.valueOf(-1L), MergeUtil.mergePositiveLongs(null, -1L, -1L));
+    Assert.assertEquals(Long.valueOf(-2L), MergeUtil.mergePositiveLongs(null, null, -2L));
+    Assert.assertEquals(Long.valueOf(-2L), MergeUtil.mergePositiveLongs(null, -2L, null));
     try {
       MergeUtil.mergePositiveLongs("property 'hello'", 1L, 2L);
       Assert.fail("Expected IllegalArgumentException");

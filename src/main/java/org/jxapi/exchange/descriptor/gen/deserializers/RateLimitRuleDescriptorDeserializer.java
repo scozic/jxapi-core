@@ -5,7 +5,7 @@ import java.io.IOException;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonToken;
 import javax.annotation.processing.Generated;
-import org.jxapi.exchange.descriptor.gen.RateLimitRule;
+import org.jxapi.exchange.descriptor.gen.RateLimitRuleDescriptor;
 import org.jxapi.netutils.deserialization.json.AbstractJsonMessageDeserializer;
 import static org.jxapi.util.JsonUtil.readNextInteger;
 import static org.jxapi.util.JsonUtil.readNextLong;
@@ -13,15 +13,15 @@ import static org.jxapi.util.JsonUtil.readNextString;
 import static org.jxapi.util.JsonUtil.skipNextValue;
 
 /**
- * Parses incoming JSON messages into org.jxapi.exchange.descriptor.gen.RateLimitRule instances
- * @see org.jxapi.exchange.descriptor.gen.RateLimitRule
+ * Parses incoming JSON messages into org.jxapi.exchange.descriptor.gen.RateLimitRuleDescriptor instances
+ * @see org.jxapi.exchange.descriptor.gen.RateLimitRuleDescriptor
  */
 @Generated("org.jxapi.generator.java.pojo.JsonMessageDeserializerGenerator")
-public class RateLimitRuleDeserializer extends AbstractJsonMessageDeserializer<RateLimitRule> {
+public class RateLimitRuleDescriptorDeserializer extends AbstractJsonMessageDeserializer<RateLimitRuleDescriptor> {
   
   @Override
-  public RateLimitRule deserialize(JsonParser parser) throws IOException {
-    RateLimitRule msg = new RateLimitRule();
+  public RateLimitRuleDescriptor deserialize(JsonParser parser) throws IOException {
+    RateLimitRuleDescriptor msg = new RateLimitRuleDescriptor();
     while(parser.nextToken() != JsonToken.END_OBJECT) {
       switch(parser.getCurrentName()) {
       case "id":

@@ -104,6 +104,7 @@ import org.jxapi.util.EncodingUtil;
  * 
  * @see Exchange
  * @see ExchangeApiDescriptor
+ * @deprecated
  */
 public class ExchangeDescriptor {
 

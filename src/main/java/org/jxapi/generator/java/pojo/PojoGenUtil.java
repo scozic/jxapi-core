@@ -11,9 +11,9 @@ import java.util.Optional;
 
 import org.apache.commons.lang3.StringUtils;
 import org.jxapi.exchange.descriptor.Constant;
-import org.jxapi.exchange.descriptor.WebsocketTopicMatcherDescriptor;
 import org.jxapi.generator.java.Imports;
 import org.jxapi.generator.java.JavaCodeGenUtil;
+import org.jxapi.generator.java.exchange.ExchangeGenUtil;
 import org.jxapi.generator.java.exchange.constants.ConstantsGenUtil;
 import org.jxapi.pojo.descriptor.CanonicalType;
 import org.jxapi.pojo.descriptor.Field;
@@ -753,6 +753,66 @@ public class PojoGenUtil {
       }
     }
     return null;
+  }
+
+  /**
+   * @param deserializedTypeClassName The full class name of the type to generate JSON message deserializer class name for.
+   * @return The name of JSON message deserializer class for the given deserialized type.
+   */
+  public static String getJsonMessageDeserializerClassName(String deserializedTypeClassName) {
+    return new StringBuilder()
+          .append(StringUtils.substringBefore(JavaCodeGenUtil.getClassPackage(deserializedTypeClassName), ".pojo"))
+          .append(".deserializers.")
+          .append(JavaCodeGenUtil.getClassNameWithoutPackage(deserializedTypeClassName))
+          .append("Deserializer")
+          .toString();
+  }
+
+  /**
+   * @param type                           must be a primitive type:
+   *                                       {@link Type#STRING}, {@link Type#INT},
+   *                                       {@link Type#LONG},
+   *                                       {@link Type#BIGDECIMAL}. Otherwise,
+   * @param sampleValue                    primitive type sample value which can
+   *                                       be a string '\"12\"' or object value
+   *                                       '12'. Can be <code>null</code> in which
+   *                                       case returned value is
+   *                                       <code>null</code>
+   * @param imports                        Imports set to add eventual additional
+   *                                       classes required by the generation
+   *                                       instruction to
+   * @param sampleValuePlaceHolderResolver a placeholder resolver to resolve
+   *                                       references to constants or
+   *                                       configuration properties in the sample
+   *                                       value.
+   * @return An instruction to create value represented by sample value
+   */
+  public static String getPrimitiveTypeFieldSampleValueDeclaration(Type type, 
+                                   Object sampleValue,  
+                                   Imports imports,
+                                   PlaceHolderResolver sampleValuePlaceHolderResolver) {
+    if (sampleValue == null) {
+      return JavaCodeGenUtil.NULL;
+    }
+    String sampleValueStr = Optional.ofNullable(sampleValuePlaceHolderResolver)
+                                    .orElse(JavaCodeGenUtil::getQuotedString)
+                                    .resolve(sampleValue.toString());
+    switch (type.getCanonicalType()) {
+    case BIGDECIMAL:
+      imports.add(BigDecimal.class.getName());
+      return "new BigDecimal(" + sampleValueStr + ")";
+    case BOOLEAN:
+      return "Boolean.valueOf(" + sampleValueStr + ")";
+    case INT:
+      return "Integer.valueOf(" + sampleValueStr + ")";
+    case LONG:
+      if (ExchangeGenUtil.SPECIAL_SAMPLE_VALUE_NOW.equals(sampleValue)) {
+        return "Long.valueOf(System.currentTimeMillis())";
+      }
+      return "Long.valueOf(" + sampleValueStr + ")";
+    default: // STRING
+      return sampleValueStr;
+    }
   }
 
 }

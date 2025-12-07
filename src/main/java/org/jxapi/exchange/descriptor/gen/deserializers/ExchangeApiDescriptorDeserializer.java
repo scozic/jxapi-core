@@ -6,7 +6,9 @@ import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonToken;
 import javax.annotation.processing.Generated;
 import org.jxapi.exchange.descriptor.gen.ExchangeApiDescriptor;
+import org.jxapi.exchange.descriptor.gen.RateLimitRuleDescriptor;
 import org.jxapi.exchange.descriptor.gen.RestEndpointDescriptor;
+import org.jxapi.exchange.descriptor.gen.WebsocketEndpointDescriptor;
 import org.jxapi.netutils.deserialization.json.AbstractJsonMessageDeserializer;
 import org.jxapi.netutils.deserialization.json.field.ListJsonFieldDeserializer;
 import static org.jxapi.util.JsonUtil.readNextLong;
@@ -19,8 +21,9 @@ import static org.jxapi.util.JsonUtil.skipNextValue;
  */
 @Generated("org.jxapi.generator.java.pojo.JsonMessageDeserializerGenerator")
 public class ExchangeApiDescriptorDeserializer extends AbstractJsonMessageDeserializer<ExchangeApiDescriptor> {
-  private final ListJsonFieldDeserializer<RestEndpointDescriptor> restEndpointsDeserializer = new ListJsonFieldDeserializer<>(new RestEndpointDescriptorDeserializer());
-  private final WebsocketEndpointDescriptorDeserializer websocketEndpointsDeserializer = new WebsocketEndpointDescriptorDeserializer();
+  private ListJsonFieldDeserializer<RateLimitRuleDescriptor> rateLimitsDeserializer;
+  private ListJsonFieldDeserializer<RestEndpointDescriptor> restEndpointsDeserializer;
+  private ListJsonFieldDeserializer<WebsocketEndpointDescriptor> websocketEndpointsDeserializer;
   
   @Override
   public ExchangeApiDescriptor deserialize(JsonParser parser) throws IOException {
@@ -54,12 +57,25 @@ public class ExchangeApiDescriptorDeserializer extends AbstractJsonMessageDeseri
       case "websocketUrl":
         msg.setWebsocketUrl(readNextString(parser));
       break;
+      case "rateLimits":
+        parser.nextToken();
+        if(rateLimitsDeserializer == null) {
+          rateLimitsDeserializer = new ListJsonFieldDeserializer<>(new RateLimitRuleDescriptorDeserializer());
+        }
+        msg.setRateLimits(rateLimitsDeserializer.deserialize(parser));
+      break;
       case "restEndpoints":
         parser.nextToken();
+        if(restEndpointsDeserializer == null) {
+          restEndpointsDeserializer = new ListJsonFieldDeserializer<>(new RestEndpointDescriptorDeserializer());
+        }
         msg.setRestEndpoints(restEndpointsDeserializer.deserialize(parser));
       break;
       case "websocketEndpoints":
         parser.nextToken();
+        if(websocketEndpointsDeserializer == null) {
+          websocketEndpointsDeserializer = new ListJsonFieldDeserializer<>(new WebsocketEndpointDescriptorDeserializer());
+        }
         msg.setWebsocketEndpoints(websocketEndpointsDeserializer.deserialize(parser));
       break;
       default:

@@ -5,13 +5,13 @@ import java.util.List;
 
 import org.junit.Assert;
 import org.junit.Test;
-import org.jxapi.exchange.descriptor.ConfigPropertyDescriptor;
-import org.jxapi.exchange.descriptor.Constant;
-import org.jxapi.exchange.descriptor.ExchangeApiDescriptor;
-import org.jxapi.exchange.descriptor.ExchangeDescriptor;
-import org.jxapi.exchange.descriptor.RestEndpointDescriptor;
-import org.jxapi.exchange.descriptor.WebsocketEndpointDescriptor;
-import org.jxapi.netutils.rest.ratelimits.RateLimitRule;
+import org.jxapi.exchange.descriptor.gen.ConfigPropertyDescriptor;
+import org.jxapi.exchange.descriptor.gen.ConstantDescriptor;
+import org.jxapi.exchange.descriptor.gen.ExchangeApiDescriptor;
+import org.jxapi.exchange.descriptor.gen.ExchangeDescriptor;
+import org.jxapi.exchange.descriptor.gen.RateLimitRuleDescriptor;
+import org.jxapi.exchange.descriptor.gen.RestEndpointDescriptor;
+import org.jxapi.exchange.descriptor.gen.WebsocketEndpointDescriptor;
 
 /**
  * Unit test for {@link ExchangeDescriptorMergeUtil}
@@ -35,8 +35,8 @@ public class ExchangeDescriptorMergeUtilTest {
     wsApi1.setName("wsApi1");
     websocketEndpoints1.add(wsApi1);
     api1.setWebsocketEndpoints(websocketEndpoints1);
-    List<RateLimitRule> rateLimitRules1 = new ArrayList<>();
-    RateLimitRule rule1 = new RateLimitRule();
+    List<RateLimitRuleDescriptor> rateLimitRules1 = new ArrayList<>();
+    RateLimitRuleDescriptor rule1 = new RateLimitRuleDescriptor();
     rule1.setId("rule1");
     rateLimitRules1.add(rule1);
     api1.setRateLimits(rateLimitRules1);
@@ -63,8 +63,8 @@ public class ExchangeDescriptorMergeUtilTest {
     wsApi3.setName("wsApi3");
     websocketEndpoints2.add(wsApi3);
     api2.setWebsocketEndpoints(websocketEndpoints2);
-    List<RateLimitRule> rateLimitRules2 = new ArrayList<>();
-    RateLimitRule rule2 = new RateLimitRule();
+    List<RateLimitRuleDescriptor> rateLimitRules2 = new ArrayList<>();
+    RateLimitRuleDescriptor rule2 = new RateLimitRuleDescriptor();
     rule2.setId("rule2");
     rateLimitRules2.add(rule2);
     api2.setRateLimits(rateLimitRules2);
@@ -77,7 +77,7 @@ public class ExchangeDescriptorMergeUtilTest {
     Assert.assertEquals("com.x.y.MyHttpRequestExecutorFactory", merged.getHttpRequestExecutorFactory());
     Assert.assertEquals("com.x.y.MyHttpRequestInterceptorFactory", merged.getHttpRequestInterceptorFactory());
     Assert.assertEquals("com.x.y.MyWebsocketFactory", merged.getWebsocketFactory());
-    Assert.assertEquals(1000L, merged.getHttpRequestTimeout());
+    Assert.assertEquals(1000L, merged.getHttpRequestTimeout().longValue());
     Assert.assertEquals(3, merged.getRestEndpoints().size());
     Assert.assertEquals(restApi1, merged.getRestEndpoints().get(0));
     Assert.assertEquals(restApi2, merged.getRestEndpoints().get(1));
@@ -179,11 +179,11 @@ public class ExchangeDescriptorMergeUtilTest {
     ExchangeApiDescriptor api1 = new ExchangeApiDescriptor();
     api1.setName("myApi1");
     ex1.setApis(List.of(api1));
-    Constant c1 = new Constant();
+    ConstantDescriptor c1 = new ConstantDescriptor();
     c1.setName("const1");
     c1.setValue("value1");
     ex1.setConstants(List.of(c1));
-    RateLimitRule rule1 = new RateLimitRule();
+    RateLimitRuleDescriptor rule1 = new RateLimitRuleDescriptor();
     rule1.setId("rule1");
     ex1.setRateLimits(List.of(rule1));
     ConfigPropertyDescriptor prop1 = new ConfigPropertyDescriptor();
@@ -205,11 +205,11 @@ public class ExchangeDescriptorMergeUtilTest {
     ExchangeApiDescriptor api2 = new ExchangeApiDescriptor();
     api2.setName("myApi2");
     ex2.setApis(List.of(api2));
-    Constant c2 = new Constant();
+    ConstantDescriptor c2 = new ConstantDescriptor();
     c2.setName("const2");
     c2.setValue("value1");
     ex2.setConstants(List.of(c2));
-    RateLimitRule rule2 = new RateLimitRule();
+    RateLimitRuleDescriptor rule2 = new RateLimitRuleDescriptor();
     rule2.setId("rule2");
     ex2.setRateLimits(List.of(rule2));
     ConfigPropertyDescriptor prop2 = new ConfigPropertyDescriptor();
@@ -231,7 +231,7 @@ public class ExchangeDescriptorMergeUtilTest {
     Assert.assertEquals("com.x.y.MyWebsocketFactory", merged.getWebsocketFactory());
     Assert.assertEquals("ws://ex1.com", merged.getWebsocketUrl());
     Assert.assertEquals("com.x.y.gen.MyAfterInitHookFactory", merged.getAfterInitHookFactory());
-    Assert.assertEquals(1000L, merged.getHttpRequestTimeout());
+    Assert.assertEquals(1000L, merged.getHttpRequestTimeout().longValue());
     Assert.assertEquals(2, merged.getApis().size());
     Assert.assertEquals(api1, merged.getApis().get(0));
     Assert.assertEquals(api2, merged.getApis().get(1));
@@ -250,16 +250,16 @@ public class ExchangeDescriptorMergeUtilTest {
   public void testMergeConstants() {
     Assert.assertEquals(List.of(), ExchangeDescriptorMergeUtil.mergeConstants(null, null));
     
-    Constant c1 = new Constant();
+    ConstantDescriptor c1 = new ConstantDescriptor();
     c1.setName("const1");
     c1.setDescription("Constant 1 description");
     c1.setValue("value1");
     
-    Constant c2 = new Constant();
+    ConstantDescriptor c2 = new ConstantDescriptor();
     c2.setDescription("Constant 2 description");
     c2.setName("const2");
     
-    Constant c3 = new Constant();
+    ConstantDescriptor c3 = new ConstantDescriptor();
     c3.setName("const3");
     c3.setName("Constant3 description");
     c3.setValue("value3");
@@ -269,7 +269,7 @@ public class ExchangeDescriptorMergeUtilTest {
                             List.of(c1), 
                             List.of(c2, c3)));
     
-    Constant c1b = new Constant();
+    ConstantDescriptor c1b = new ConstantDescriptor();
     c1b.setName("const1");
     c1b.setDescription("Constant 1 description");
     c1b.setValue("value1");
@@ -282,45 +282,54 @@ public class ExchangeDescriptorMergeUtilTest {
   
   @Test
   public void testMergeConstantGroups() {
-    Constant c1 = new Constant();
-    c1.setDescription("Constant 1 description");
-    c1.setValue("value1");
-    c1.setName("const1");
+    ConstantDescriptor c1 = ConstantDescriptor.builder()
+        .name("const1")
+        .description("Constant 1 description")
+        .value("value1").build();
     
-    Constant c1b = new Constant();
-    c1b.setName("const1");
-    c1b.setDescription("Constant 1 description");
-    c1b.setValue("value1");
+    ConstantDescriptor c1b = ConstantDescriptor.builder()
+        .name("const1")
+        .description("Constant 1 description")
+        .value("value1")
+        .build();
     
-    Constant c2 = new Constant();
-    c2.setName("const2");
-    c2.setDescription("Constant 2 description");
+    ConstantDescriptor c2 = ConstantDescriptor.builder()
+        .name("const2")
+        .description("Constant 2 description")
+        .build();
     
-    Constant c3 = new Constant();
-    c3.setName("const3");
-    c3.setName("Constant3 description");
-    c3.setValue("value3");
+    ConstantDescriptor c3 = ConstantDescriptor.builder()
+        .name("const3")
+        .description("Constant3 description")
+        .value("value3")
+        .build();
     
-    Constant c4 = new Constant();
-    c4.setName("const4");
-    c4.setDescription("Constant 4 description");
-    c4.setValue("value4");
+    ConstantDescriptor c4 = ConstantDescriptor.builder()
+        .name("const4")
+        .description("Constant 4 description")
+        .value("value4")
+        .build();
     
-    Constant c5 = new Constant();
-    c5.setName("const5");
-    c5.setDescription("Constant 5 description");
+    ConstantDescriptor g1 = ConstantDescriptor.builder()
+        .name("group1")
+        .description("Group 1 description")
+        .constants(List.of(c1, c2)).build();
     
-    Constant g1 = Constant.createGroup("group1", "Group 1 description", List.of(c1, c2));
-    Constant g1b = Constant.createGroup("group1", "Group 1 description", List.of(c3, c1b));
-    Constant g2 = Constant.createGroup("group2", "Group 2 description", List.of(c4));
+    ConstantDescriptor g1b = ConstantDescriptor.builder()
+        .name("group1")
+        .description("Group 1 description")
+        .constants(List.of(c3, c1b)).build();
+    
+    ConstantDescriptor g2 = ConstantDescriptor.builder()
+        .name("group2")
+        .description("Group 2 description")
+        .constants(List.of(c4)).build();
     
     Assert.assertEquals(List.of(c1, c2, c3), 
                         ExchangeDescriptorMergeUtil.mergeConstants(
                             List.of(c1), 
                             List.of(c2, c3)));
-    
 
-    
     Assert.assertEquals(List.of(c4, g1, g2), 
         ExchangeDescriptorMergeUtil.mergeConstants(
             List.of(c4, g1), 
@@ -329,21 +338,23 @@ public class ExchangeDescriptorMergeUtilTest {
   
   @Test(expected = IllegalArgumentException.class)
   public void testMergeConstants_SameNameForASingleAndAGroupConstant() {
-    Constant c1 = new Constant();
-    c1.setName("const1");
-    c1.setDescription("Constant 1 description");
-    c1.setValue("value1");
+    ConstantDescriptor c1 = ConstantDescriptor.builder()
+        .name("const1")
+        .description("Constant 1 description")
+        .value("value1")
+        .build();
     
     
-    Constant c2 = new Constant();
-    c2.setName("const2");
-    c2.setDescription("Constant 2 description");
+    ConstantDescriptor c2 = ConstantDescriptor.builder()
+        .name("const2")
+        .description("Constant 2 description")
+        .build();
     
-    Constant g1 = new Constant();
-    g1.setName("const1");
-    g1.setDescription("Constant 1 description");
-    g1.setValue("value1");
-    g1.setConstants(List.of(c2));
+    ConstantDescriptor g1 = ConstantDescriptor.builder()
+        .name("const1")
+        .description("Constant 1 description")
+        .value("value1")
+        .constants(List.of(c2)).build();
     
     ExchangeDescriptorMergeUtil.mergeConstants(
         List.of(c1), 
@@ -352,21 +363,22 @@ public class ExchangeDescriptorMergeUtilTest {
   
   @Test(expected = IllegalArgumentException.class)
   public void testMergeConstants_SameNameForASingleAndAGroupConstan2() {
-    Constant c1 = new Constant();
-    c1.setName("const1");
-    c1.setDescription("Constant 1 description");
-    c1.setValue("value1");
+    ConstantDescriptor c1 = ConstantDescriptor.builder()
+        .name("const1")
+        .description("Constant 1 description")
+        .value("value1")
+        .build();
     
+    ConstantDescriptor c2 = ConstantDescriptor.builder()
+        .name("const2")
+        .description("Constant 2 description")
+        .build();
     
-    Constant c2 = new Constant();
-    c2.setName("const2");
-    c2.setDescription("Constant 2 description");
-    
-    Constant g1 = new Constant();
-    g1.setName("const1");
-    g1.setDescription("Constant 1 description");
-    g1.setValue("value1");
-    g1.setConstants(List.of(c2));
+    ConstantDescriptor g1 = ConstantDescriptor.builder()
+        .name("const1")
+        .description("Constant 1 description")
+        .constants(List.of(c2))
+        .build();
     
     ExchangeDescriptorMergeUtil.mergeConstants(
         List.of(g1), 

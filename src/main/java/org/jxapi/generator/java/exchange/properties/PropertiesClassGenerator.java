@@ -6,8 +6,8 @@ import java.util.Optional;
 import java.util.Properties;
 
 import org.apache.commons.lang3.StringUtils;
-import org.jxapi.exchange.descriptor.ConfigPropertyDescriptor;
-import org.jxapi.exchange.descriptor.ExchangeDescriptor;
+import org.jxapi.exchange.descriptor.gen.ConfigPropertyDescriptor;
+import org.jxapi.exchange.descriptor.gen.ExchangeDescriptor;
 import org.jxapi.generator.html.HtmlGenUtil;
 import org.jxapi.generator.java.JavaCodeGenUtil;
 import org.jxapi.generator.java.JavaTypeGenerator;
@@ -119,15 +119,15 @@ public class PropertiesClassGenerator extends JavaTypeGenerator {
   private void addDescriptionRows(List<List<String>> rows, String pfx, List<ConfigPropertyDescriptor> properties) {
     for (ConfigPropertyDescriptor p : CollectionUtil.emptyIfNull(properties)) {
       String pName = pfx + String.valueOf(p.getName());
-      if (p.isGroup()) {
+      if (PropertiesGenUtil.isGroup(p)) {
         addDescriptionRows(rows, pName + ".", p.getProperties());
       } else {
-        String pType = String.valueOf(p.getType());
+        Type pType = p.getType() == null ? Type.STRING : Type.fromTypeName(p.getType());
         String pDesc = Optional.ofNullable(p.getDescription()).orElse("");
         pDesc = docPlaceHolderResolver.resolve(pDesc);
         String pDef = Optional.ofNullable(p.getDefaultValue()).orElse("").toString();
         pDef = docPlaceHolderResolver.resolve(pDef);
-        rows.add(List.of(pName, pType, pDesc, pDef));
+        rows.add(List.of(pName, pType.toString(), pDesc, pDef));
       }
     }
   }
@@ -146,7 +146,7 @@ public class PropertiesClassGenerator extends JavaTypeGenerator {
   }
 
   private String generatePropertyDeclaration(ConfigPropertyDescriptor property, String prefix) {
-    if (property.isGroup()) {
+    if (PropertiesGenUtil.isGroup(property)) {
       StringBuilder s = new StringBuilder();
       String groupClassName = PropertiesGenUtil.getPropertyVariableName(property, properties);
       PropertiesClassGenerator groupGen = new PropertiesClassGenerator(getName() + "." + groupClassName,
@@ -171,15 +171,15 @@ public class PropertiesClassGenerator extends JavaTypeGenerator {
   }
   
   private void generatePropertyGetterMethod(ConfigPropertyDescriptor property) {
-    if (property.isGroup()) {
+    if (PropertiesGenUtil.isGroup(property)) {
       return;
     }
     StringBuilder sb = new StringBuilder()
         .append("\n");
     String name = property.getName();
-    Type type = property.getType();
+    Type type = PropertiesGenUtil.getType(property);
     Object def = property.getDefaultValue();
-    if (property.isGroup() || !type.getCanonicalType().isPrimitive) {
+    if (!type.getCanonicalType().isPrimitive) {
       type = Type.STRING;
       def = JsonUtil.pojoToJsonString(def);
     }
@@ -224,7 +224,7 @@ public class PropertiesClassGenerator extends JavaTypeGenerator {
   }
   
   private String getPropertiesUtilGetPropertyMethodName(ConfigPropertyDescriptor property) {
-    switch (property.getType().getCanonicalType()) {
+    switch (PropertiesGenUtil.getType(property).getCanonicalType()) {
     case BIGDECIMAL:
       return "getBigDecimal";
     case BOOLEAN:

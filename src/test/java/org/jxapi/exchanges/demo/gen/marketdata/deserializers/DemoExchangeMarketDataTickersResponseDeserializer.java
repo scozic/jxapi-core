@@ -18,7 +18,7 @@ import static org.jxapi.util.JsonUtil.skipNextValue;
  */
 @Generated("org.jxapi.generator.java.pojo.JsonMessageDeserializerGenerator")
 public class DemoExchangeMarketDataTickersResponseDeserializer extends AbstractJsonMessageDeserializer<DemoExchangeMarketDataTickersResponse> {
-  private final MapJsonFieldDeserializer<DemoExchangeMarketDataTickersResponsePayload> payloadDeserializer = new MapJsonFieldDeserializer<>(new DemoExchangeMarketDataTickersResponsePayloadDeserializer());
+  private MapJsonFieldDeserializer<DemoExchangeMarketDataTickersResponsePayload> payloadDeserializer;
   
   @Override
   public DemoExchangeMarketDataTickersResponse deserialize(JsonParser parser) throws IOException {
@@ -30,6 +30,9 @@ public class DemoExchangeMarketDataTickersResponseDeserializer extends AbstractJ
       break;
       case "payload":
         parser.nextToken();
+        if(payloadDeserializer == null) {
+          payloadDeserializer = new MapJsonFieldDeserializer<>(new DemoExchangeMarketDataTickersResponsePayloadDeserializer());
+        }
         msg.setPayload(payloadDeserializer.deserialize(parser));
       break;
       default:

@@ -20,6 +20,7 @@ import org.jxapi.util.EncodingUtil;
  * This means {@link #getAnd()} and {@link #getOr()} are mutually exclusive, and when neither is set,
  * then only fieldName with either {@link #getFieldValue()} or {@link #getFieldRegexp()} must be set.
  * see {@link WebsocketEndpointDescriptor}
+ * @deprecated see {@link org.jxapi.exchange.descriptor.gen.WebsocketTopicMatcherDescriptor}
  */
 public class WebsocketTopicMatcherDescriptor {
   

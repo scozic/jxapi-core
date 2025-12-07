@@ -18,7 +18,7 @@ import static org.jxapi.util.JsonUtil.skipNextValue;
  */
 @Generated("org.jxapi.generator.java.pojo.JsonMessageDeserializerGenerator")
 public class EmployeeV1GetAllEmployeesResponseDeserializer extends AbstractJsonMessageDeserializer<EmployeeV1GetAllEmployeesResponse> {
-  private final ListJsonFieldDeserializer<Employee> employeesDeserializer = new ListJsonFieldDeserializer<>(new EmployeeDeserializer());
+  private ListJsonFieldDeserializer<Employee> employeesDeserializer;
   
   @Override
   public EmployeeV1GetAllEmployeesResponse deserialize(JsonParser parser) throws IOException {
@@ -33,6 +33,9 @@ public class EmployeeV1GetAllEmployeesResponseDeserializer extends AbstractJsonM
       break;
       case "employees":
         parser.nextToken();
+        if(employeesDeserializer == null) {
+          employeesDeserializer = new ListJsonFieldDeserializer<>(new EmployeeDeserializer());
+        }
         msg.setEmployees(employeesDeserializer.deserialize(parser));
       break;
       default:

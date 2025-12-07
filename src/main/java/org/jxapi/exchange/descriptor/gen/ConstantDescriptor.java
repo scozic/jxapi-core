@@ -6,8 +6,8 @@ import java.util.Objects;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import javax.annotation.processing.Generated;
-import org.jxapi.exchange.descriptor.gen.deserializers.ConstantDeserializer;
-import org.jxapi.exchange.descriptor.gen.serializers.ConstantSerializer;
+import org.jxapi.exchange.descriptor.gen.deserializers.ConstantDescriptorDeserializer;
+import org.jxapi.exchange.descriptor.gen.serializers.ConstantDescriptorSerializer;
 import org.jxapi.util.CollectionUtil;
 import org.jxapi.util.CompareUtil;
 import org.jxapi.util.DeepCloneable;
@@ -19,14 +19,14 @@ import org.jxapi.util.Pojo;
  * 
  */
 @Generated("org.jxapi.generator.java.pojo.PojoGenerator")
-@JsonSerialize(using = ConstantSerializer.class)
-@JsonDeserialize(using = ConstantDeserializer.class)
-public class Constant implements Pojo<Constant> {
+@JsonSerialize(using = ConstantDescriptorSerializer.class)
+@JsonDeserialize(using = ConstantDescriptorDeserializer.class)
+public class ConstantDescriptor implements Pojo<ConstantDescriptor> {
   
-  private static final long serialVersionUID = -1332540413963436362L;
+  private static final long serialVersionUID = -4269134152873248313L;
   
   /**
-   * @return A new builder to build {@link Constant} objects
+   * @return A new builder to build {@link ConstantDescriptor} objects
    */
   public static Builder builder() {
     return new Builder();
@@ -36,7 +36,7 @@ public class Constant implements Pojo<Constant> {
   private String description;
   private String type;
   private Object value;
-  private List<Constant> constants;
+  private List<ConstantDescriptor> constants;
   
   /**
    * @return The name of the constant
@@ -102,7 +102,7 @@ public class Constant implements Pojo<Constant> {
    * @return The list of nested constants if this constant is a group of constants.
    * 
    */
-  public List<Constant> getConstants() {
+  public List<ConstantDescriptor> getConstants() {
     return constants;
   }
   
@@ -110,7 +110,7 @@ public class Constant implements Pojo<Constant> {
    * @param constants The list of nested constants if this constant is a group of constants.
    * 
    */
-  public void setConstants(List<Constant> constants) {
+  public void setConstants(List<ConstantDescriptor> constants) {
     this.constants = constants;
   }
   
@@ -124,7 +124,7 @@ public class Constant implements Pojo<Constant> {
     }
     if (!getClass().equals(other.getClass()))
       return false;
-    Constant o = (Constant) other;
+    ConstantDescriptor o = (ConstantDescriptor) other;
     return Objects.equals(this.name, o.name)
         && Objects.equals(this.description, o.description)
         && Objects.equals(this.type, o.type)
@@ -133,7 +133,7 @@ public class Constant implements Pojo<Constant> {
   }
   
   @Override
-  public int compareTo(Constant other) {
+  public int compareTo(ConstantDescriptor other) {
     if (other == null) {
       return 1;
     }
@@ -167,8 +167,8 @@ public class Constant implements Pojo<Constant> {
   }
   
   @Override
-  public Constant deepClone() {
-    Constant clone = new Constant();
+  public ConstantDescriptor deepClone() {
+    ConstantDescriptor clone = new ConstantDescriptor();
     clone.name = this.name;
     clone.description = this.description;
     clone.type = this.type;
@@ -183,7 +183,7 @@ public class Constant implements Pojo<Constant> {
   }
   
   /**
-   * Builder for {@link Constant}
+   * Builder for {@link ConstantDescriptor}
    */
   @Generated("org.jxapi.generator.java.JavaTypeGenerator")
   public static class Builder {
@@ -192,7 +192,7 @@ public class Constant implements Pojo<Constant> {
     private String description;
     private String type;
     private Object value;
-    private List<Constant> constants;
+    private List<ConstantDescriptor> constants;
     
     /**
      * Will set the value of <code>name</code> field in the builder
@@ -245,9 +245,9 @@ public class Constant implements Pojo<Constant> {
      * @param constants The list of nested constants if this constant is a group of constants.
      * 
      * @return Builder instance
-     * @see #setConstants(List<Constant>)
+     * @see #setConstants(List<ConstantDescriptor>)
      */
-    public Builder constants(List<Constant> constants)  {
+    public Builder constants(List<ConstantDescriptor> constants)  {
       this.constants = constants;
       return this;
     }
@@ -257,9 +257,9 @@ public class Constant implements Pojo<Constant> {
      * Will add an item to the <code>constants</code> list.
      * @param item Item to add to current <code>constants</code> list
      * @return Builder instance
-     * @see Constant#setConstants(Constant)
+     * @see ConstantDescriptor#setConstants(ConstantDescriptor)
      */
-    public Builder addToConstants(Constant item) {
+    public Builder addToConstants(ConstantDescriptor item) {
       if (this.constants == null) {
         this.constants = CollectionUtil.createList();
       }
@@ -268,10 +268,10 @@ public class Constant implements Pojo<Constant> {
     }
     
     /**
-     * @return a new instance of Constant using the values set in this builder
+     * @return a new instance of ConstantDescriptor using the values set in this builder
      */
-    public Constant build() {
-      Constant res = new Constant();
+    public ConstantDescriptor build() {
+      ConstantDescriptor res = new ConstantDescriptor();
       res.name = this.name;
       res.description = this.description;
       res.type = this.type;

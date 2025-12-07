@@ -5,10 +5,10 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.jxapi.exchange.ExchangeApi;
-import org.jxapi.exchange.descriptor.ExchangeApiDescriptor;
-import org.jxapi.exchange.descriptor.ExchangeDescriptor;
-import org.jxapi.exchange.descriptor.RestEndpointDescriptor;
-import org.jxapi.exchange.descriptor.WebsocketEndpointDescriptor;
+import org.jxapi.exchange.descriptor.gen.ExchangeApiDescriptor;
+import org.jxapi.exchange.descriptor.gen.ExchangeDescriptor;
+import org.jxapi.exchange.descriptor.gen.RestEndpointDescriptor;
+import org.jxapi.exchange.descriptor.gen.WebsocketEndpointDescriptor;
 import org.jxapi.generator.java.JavaCodeGenUtil;
 import org.jxapi.generator.java.JavaTypeGenerator;
 import org.jxapi.generator.java.exchange.ExchangeConstantValuePlaceholderResolverFactory;
@@ -145,7 +145,7 @@ public class ExchangeApiInterfaceGenerator extends JavaTypeGenerator {
   }
   
   private void generateRateLimitRuleMethodDeclarations() {
-    for (RateLimitRule rateLimit : CollectionUtil.emptyIfNull(exchangeApiDescriptor.getRateLimits())) {
+    for (RateLimitRule rateLimit : RateLimitRule.fromDescriptors(exchangeApiDescriptor.getRateLimits())) {
       String rateLimitName = rateLimit.getId();
       addImport(RateLimitRule.class);
       appendToBody(ExchangeGenUtil.generateRateLimitRuleInterfaceMethodDeclaration(rateLimitName));

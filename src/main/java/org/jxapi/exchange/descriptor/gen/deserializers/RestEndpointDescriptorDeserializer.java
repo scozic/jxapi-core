@@ -5,10 +5,10 @@ import java.io.IOException;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonToken;
 import javax.annotation.processing.Generated;
-import org.jxapi.exchange.descriptor.gen.RateLimitRule;
 import org.jxapi.exchange.descriptor.gen.RestEndpointDescriptor;
 import org.jxapi.netutils.deserialization.json.AbstractJsonMessageDeserializer;
 import org.jxapi.netutils.deserialization.json.field.ListJsonFieldDeserializer;
+import org.jxapi.netutils.deserialization.json.field.StringJsonFieldDeserializer;
 import static org.jxapi.util.JsonUtil.readNextBoolean;
 import static org.jxapi.util.JsonUtil.readNextInteger;
 import static org.jxapi.util.JsonUtil.readNextLong;
@@ -22,7 +22,7 @@ import static org.jxapi.util.JsonUtil.skipNextValue;
  */
 @Generated("org.jxapi.generator.java.pojo.JsonMessageDeserializerGenerator")
 public class RestEndpointDescriptorDeserializer extends AbstractJsonMessageDeserializer<RestEndpointDescriptor> {
-  private final ListJsonFieldDeserializer<RateLimitRule> rateLimitsDeserializer = new ListJsonFieldDeserializer<>(new RateLimitRuleDeserializer());
+  private final ListJsonFieldDeserializer<String> rateLimitsDeserializer = new ListJsonFieldDeserializer<>(StringJsonFieldDeserializer.getInstance());
   
   @Override
   public RestEndpointDescriptor deserialize(JsonParser parser) throws IOException {

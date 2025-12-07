@@ -9,6 +9,7 @@ import org.jxapi.util.EncodingUtil;
  * and eventual additional parameters.
  * The structure of additional subscription parameters and response format are
  * described as {@link Field} lists.
+ * @deprecated see {@link org.jxapi.exchange.descriptor.gen.WebsocketEndpointDescriptor}
  */
 public class WebsocketEndpointDescriptor {
 

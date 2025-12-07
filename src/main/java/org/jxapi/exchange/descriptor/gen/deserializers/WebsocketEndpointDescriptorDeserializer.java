@@ -17,7 +17,7 @@ import static org.jxapi.util.JsonUtil.skipNextValue;
  */
 @Generated("org.jxapi.generator.java.pojo.JsonMessageDeserializerGenerator")
 public class WebsocketEndpointDescriptorDeserializer extends AbstractJsonMessageDeserializer<WebsocketEndpointDescriptor> {
-  private final WebsocketTopicMatcherDescriptorDeserializer topicMatcherDeserializer = new WebsocketTopicMatcherDescriptorDeserializer();
+  private WebsocketTopicMatcherDescriptorDeserializer topicMatcherDeserializer;
   
   @Override
   public WebsocketEndpointDescriptor deserialize(JsonParser parser) throws IOException {
@@ -47,6 +47,9 @@ public class WebsocketEndpointDescriptorDeserializer extends AbstractJsonMessage
       break;
       case "topicMatcher":
         parser.nextToken();
+        if(topicMatcherDeserializer == null) {
+          topicMatcherDeserializer = new WebsocketTopicMatcherDescriptorDeserializer();
+        }
         msg.setTopicMatcher(topicMatcherDeserializer.deserialize(parser));
       break;
       default:

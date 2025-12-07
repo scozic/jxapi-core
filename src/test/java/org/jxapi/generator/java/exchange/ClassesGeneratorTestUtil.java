@@ -11,12 +11,11 @@ import java.util.Date;
 
 import org.apache.commons.lang3.RandomUtils;
 import org.junit.Assert;
+import org.jxapi.exchange.descriptor.gen.ExchangeApiDescriptor;
+import org.jxapi.exchange.descriptor.gen.RestEndpointDescriptor;
+import org.jxapi.exchange.descriptor.gen.WebsocketEndpointDescriptor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import org.jxapi.exchange.descriptor.ExchangeApiDescriptor;
-import org.jxapi.exchange.descriptor.RestEndpointDescriptor;
-import org.jxapi.exchange.descriptor.WebsocketEndpointDescriptor;
 
 /**
  * Helper methods around .java files generator tests.

@@ -69,7 +69,7 @@ import org.jxapi.util.Pojo;
 @JsonDeserialize(using = ExchangeDescriptorDeserializer.class)
 public class ExchangeDescriptor implements Pojo<ExchangeDescriptor> {
   
-  private static final long serialVersionUID = -3402866496304173868L;
+  private static final long serialVersionUID = -5091655605456715066L;
   
   /**
    * @return A new builder to build {@link ExchangeDescriptor} objects
@@ -92,9 +92,9 @@ public class ExchangeDescriptor implements Pojo<ExchangeDescriptor> {
   private String websocketHookFactory;
   private Long httpRequestTimeout;
   private String afterInitHookFactory;
-  private ConfigPropertyDescriptor properties;
-  private Constant constants;
-  private List<RateLimitRule> rateLimits;
+  private List<ConfigPropertyDescriptor> properties;
+  private List<ConstantDescriptor> constants;
+  private List<RateLimitRuleDescriptor> rateLimits;
   private List<ExchangeApiDescriptor> apis;
   
   /**
@@ -313,7 +313,7 @@ public class ExchangeDescriptor implements Pojo<ExchangeDescriptor> {
    * @return Represents a configuration property or a group of properties of an exchange like authentication credentials (API Key,secret) the wraooer client should provide to instantiate a wrapper.br> Exchange descriptor may contain a list of such properties as value of 'properties' property of exchange.<p> The name of a property should be spelled 'camelCase' like a Java variable name.<p> The value of a property can be a 'primitive' type e.g. {@link Type#STRING}, {@link Type#INT}, {@link Type#BOOLEAN}, {@link Type#BIGDECIMAL}, {@link Type#LONG}. It can't be a list, map, or object.<p> The properties will be exposed as static properties of a generated Java class named [exchangeId]Constants. That class wlll list constants for property names and default values, and default 'getter' methods for retrieving there values from properties <p> The properties can be grouped together. For example, authentication credentials can be grouped into a 'group' property called 'auth' with sub-properties for API key, secret, etc listed. Those properties can be referenced with key auth.apiKey, auth.apiSecret, etc. Groups may contain other groups, so the structure is hierarchical.
    * 
    */
-  public ConfigPropertyDescriptor getProperties() {
+  public List<ConfigPropertyDescriptor> getProperties() {
     return properties;
   }
   
@@ -321,7 +321,7 @@ public class ExchangeDescriptor implements Pojo<ExchangeDescriptor> {
    * @param properties Represents a configuration property or a group of properties of an exchange like authentication credentials (API Key,secret) the wraooer client should provide to instantiate a wrapper.br> Exchange descriptor may contain a list of such properties as value of 'properties' property of exchange.<p> The name of a property should be spelled 'camelCase' like a Java variable name.<p> The value of a property can be a 'primitive' type e.g. {@link Type#STRING}, {@link Type#INT}, {@link Type#BOOLEAN}, {@link Type#BIGDECIMAL}, {@link Type#LONG}. It can't be a list, map, or object.<p> The properties will be exposed as static properties of a generated Java class named [exchangeId]Constants. That class wlll list constants for property names and default values, and default 'getter' methods for retrieving there values from properties <p> The properties can be grouped together. For example, authentication credentials can be grouped into a 'group' property called 'auth' with sub-properties for API key, secret, etc listed. Those properties can be referenced with key auth.apiKey, auth.apiSecret, etc. Groups may contain other groups, so the structure is hierarchical.
    * 
    */
-  public void setProperties(ConfigPropertyDescriptor properties) {
+  public void setProperties(List<ConfigPropertyDescriptor> properties) {
     this.properties = properties;
   }
   
@@ -329,7 +329,7 @@ public class ExchangeDescriptor implements Pojo<ExchangeDescriptor> {
    * @return Represents a constant value used across APIs of an exchange or a group of such constants.<br> Exchange descriptor may contain a list of such constants as value of 'constants' property of exchange<br> Such constants will be exposed as static final fields in a generated Java class of the generated Java wrapper class for the exchange.<br> A constant may not be a final constant but a 'group' of constants that functionally come together. For example, when an exchange uses constants to represent bid or ask a side of,  it makes sense to group them together in a single constant group. In this case, final constants of the group will be exposed as static field of a nested public class in the main constant class, named after group name. A constant represents a group when its  <code>constants</code> property is set with a non empty list of nested constants<br> The name of a constant should be a valid camel case Java identifier.<br> The value of a constant must be a 'primitive' type e.g. {@link Type#STRING}, {@link Type#INT}, {@link Type#BOOLEAN}, {@link Type#BIGDECIMAL}, {@link Type#LONG}. It can't be a list, map, or object. <code>value</code> and <code>type</code> properties are relevant only when constant is not a group.<br> The name of a constant should provide a more readable name for the value. The description allows to provide semantic details.<br>
    * 
    */
-  public Constant getConstants() {
+  public List<ConstantDescriptor> getConstants() {
     return constants;
   }
   
@@ -337,7 +337,7 @@ public class ExchangeDescriptor implements Pojo<ExchangeDescriptor> {
    * @param constants Represents a constant value used across APIs of an exchange or a group of such constants.<br> Exchange descriptor may contain a list of such constants as value of 'constants' property of exchange<br> Such constants will be exposed as static final fields in a generated Java class of the generated Java wrapper class for the exchange.<br> A constant may not be a final constant but a 'group' of constants that functionally come together. For example, when an exchange uses constants to represent bid or ask a side of,  it makes sense to group them together in a single constant group. In this case, final constants of the group will be exposed as static field of a nested public class in the main constant class, named after group name. A constant represents a group when its  <code>constants</code> property is set with a non empty list of nested constants<br> The name of a constant should be a valid camel case Java identifier.<br> The value of a constant must be a 'primitive' type e.g. {@link Type#STRING}, {@link Type#INT}, {@link Type#BOOLEAN}, {@link Type#BIGDECIMAL}, {@link Type#LONG}. It can't be a list, map, or object. <code>value</code> and <code>type</code> properties are relevant only when constant is not a group.<br> The name of a constant should provide a more readable name for the value. The description allows to provide semantic details.<br>
    * 
    */
-  public void setConstants(Constant constants) {
+  public void setConstants(List<ConstantDescriptor> constants) {
     this.constants = constants;
   }
   
@@ -345,7 +345,7 @@ public class ExchangeDescriptor implements Pojo<ExchangeDescriptor> {
    * @return Represents a rate limit rule that applies to all API groups of the exchange.<br> Exchange descriptor may contain a list of such rate limit rules as value of 'rateLimits' property of exchange.<br> Such rate limit rules will be applied to all endpoints of each API group of the exchange.<br> See {@link RateLimitRule} for details.
    * 
    */
-  public List<RateLimitRule> getRateLimits() {
+  public List<RateLimitRuleDescriptor> getRateLimits() {
     return rateLimits;
   }
   
@@ -353,7 +353,7 @@ public class ExchangeDescriptor implements Pojo<ExchangeDescriptor> {
    * @param rateLimits Represents a rate limit rule that applies to all API groups of the exchange.<br> Exchange descriptor may contain a list of such rate limit rules as value of 'rateLimits' property of exchange.<br> Such rate limit rules will be applied to all endpoints of each API group of the exchange.<br> See {@link RateLimitRule} for details.
    * 
    */
-  public void setRateLimits(List<RateLimitRule> rateLimits) {
+  public void setRateLimits(List<RateLimitRuleDescriptor> rateLimits) {
     this.rateLimits = rateLimits;
   }
   
@@ -635,11 +635,11 @@ public class ExchangeDescriptor implements Pojo<ExchangeDescriptor> {
     if (res != 0) {
       return res;
     }
-    res = CompareUtil.compare(this.properties, other.properties);
+    res = CompareUtil.compareLists(this.properties, other.properties, CompareUtil::compare);
     if (res != 0) {
       return res;
     }
-    res = CompareUtil.compare(this.constants, other.constants);
+    res = CompareUtil.compareLists(this.constants, other.constants, CompareUtil::compare);
     if (res != 0) {
       return res;
     }
@@ -673,8 +673,8 @@ public class ExchangeDescriptor implements Pojo<ExchangeDescriptor> {
     clone.websocketHookFactory = this.websocketHookFactory;
     clone.httpRequestTimeout = this.httpRequestTimeout;
     clone.afterInitHookFactory = this.afterInitHookFactory;
-    clone.properties = this.properties != null ? this.properties.deepClone() : null;
-    clone.constants = this.constants != null ? this.constants.deepClone() : null;
+    clone.properties = CollectionUtil.deepCloneList(this.properties, DeepCloneable::deepClone);
+    clone.constants = CollectionUtil.deepCloneList(this.constants, DeepCloneable::deepClone);
     clone.rateLimits = CollectionUtil.deepCloneList(this.rateLimits, DeepCloneable::deepClone);
     clone.apis = CollectionUtil.deepCloneList(this.apis, DeepCloneable::deepClone);
     return clone;
@@ -705,9 +705,9 @@ public class ExchangeDescriptor implements Pojo<ExchangeDescriptor> {
     private String websocketHookFactory;
     private Long httpRequestTimeout;
     private String afterInitHookFactory;
-    private ConfigPropertyDescriptor properties;
-    private Constant constants;
-    private List<RateLimitRule> rateLimits;
+    private List<ConfigPropertyDescriptor> properties;
+    private List<ConstantDescriptor> constants;
+    private List<RateLimitRuleDescriptor> rateLimits;
     private List<ExchangeApiDescriptor> apis;
     
     /**
@@ -877,10 +877,25 @@ public class ExchangeDescriptor implements Pojo<ExchangeDescriptor> {
      * @param properties Represents a configuration property or a group of properties of an exchange like authentication credentials (API Key,secret) the wraooer client should provide to instantiate a wrapper.br> Exchange descriptor may contain a list of such properties as value of 'properties' property of exchange.<p> The name of a property should be spelled 'camelCase' like a Java variable name.<p> The value of a property can be a 'primitive' type e.g. {@link Type#STRING}, {@link Type#INT}, {@link Type#BOOLEAN}, {@link Type#BIGDECIMAL}, {@link Type#LONG}. It can't be a list, map, or object.<p> The properties will be exposed as static properties of a generated Java class named [exchangeId]Constants. That class wlll list constants for property names and default values, and default 'getter' methods for retrieving there values from properties <p> The properties can be grouped together. For example, authentication credentials can be grouped into a 'group' property called 'auth' with sub-properties for API key, secret, etc listed. Those properties can be referenced with key auth.apiKey, auth.apiSecret, etc. Groups may contain other groups, so the structure is hierarchical.
      * 
      * @return Builder instance
-     * @see #setProperties(ConfigPropertyDescriptor)
+     * @see #setProperties(List<ConfigPropertyDescriptor>)
      */
-    public Builder properties(ConfigPropertyDescriptor properties)  {
+    public Builder properties(List<ConfigPropertyDescriptor> properties)  {
       this.properties = properties;
+      return this;
+    }
+    
+    
+    /**
+     * Will add an item to the <code>properties</code> list.
+     * @param item Item to add to current <code>properties</code> list
+     * @return Builder instance
+     * @see ExchangeDescriptor#setProperties(ConfigPropertyDescriptor)
+     */
+    public Builder addToProperties(ConfigPropertyDescriptor item) {
+      if (this.properties == null) {
+        this.properties = CollectionUtil.createList();
+      }
+      this.properties.add(item);
       return this;
     }
     
@@ -889,10 +904,25 @@ public class ExchangeDescriptor implements Pojo<ExchangeDescriptor> {
      * @param constants Represents a constant value used across APIs of an exchange or a group of such constants.<br> Exchange descriptor may contain a list of such constants as value of 'constants' property of exchange<br> Such constants will be exposed as static final fields in a generated Java class of the generated Java wrapper class for the exchange.<br> A constant may not be a final constant but a 'group' of constants that functionally come together. For example, when an exchange uses constants to represent bid or ask a side of,  it makes sense to group them together in a single constant group. In this case, final constants of the group will be exposed as static field of a nested public class in the main constant class, named after group name. A constant represents a group when its  <code>constants</code> property is set with a non empty list of nested constants<br> The name of a constant should be a valid camel case Java identifier.<br> The value of a constant must be a 'primitive' type e.g. {@link Type#STRING}, {@link Type#INT}, {@link Type#BOOLEAN}, {@link Type#BIGDECIMAL}, {@link Type#LONG}. It can't be a list, map, or object. <code>value</code> and <code>type</code> properties are relevant only when constant is not a group.<br> The name of a constant should provide a more readable name for the value. The description allows to provide semantic details.<br>
      * 
      * @return Builder instance
-     * @see #setConstants(Constant)
+     * @see #setConstants(List<ConstantDescriptor>)
      */
-    public Builder constants(Constant constants)  {
+    public Builder constants(List<ConstantDescriptor> constants)  {
       this.constants = constants;
+      return this;
+    }
+    
+    
+    /**
+     * Will add an item to the <code>constants</code> list.
+     * @param item Item to add to current <code>constants</code> list
+     * @return Builder instance
+     * @see ExchangeDescriptor#setConstants(ConstantDescriptor)
+     */
+    public Builder addToConstants(ConstantDescriptor item) {
+      if (this.constants == null) {
+        this.constants = CollectionUtil.createList();
+      }
+      this.constants.add(item);
       return this;
     }
     
@@ -901,9 +931,9 @@ public class ExchangeDescriptor implements Pojo<ExchangeDescriptor> {
      * @param rateLimits Represents a rate limit rule that applies to all API groups of the exchange.<br> Exchange descriptor may contain a list of such rate limit rules as value of 'rateLimits' property of exchange.<br> Such rate limit rules will be applied to all endpoints of each API group of the exchange.<br> See {@link RateLimitRule} for details.
      * 
      * @return Builder instance
-     * @see #setRateLimits(List<RateLimitRule>)
+     * @see #setRateLimits(List<RateLimitRuleDescriptor>)
      */
-    public Builder rateLimits(List<RateLimitRule> rateLimits)  {
+    public Builder rateLimits(List<RateLimitRuleDescriptor> rateLimits)  {
       this.rateLimits = rateLimits;
       return this;
     }
@@ -913,9 +943,9 @@ public class ExchangeDescriptor implements Pojo<ExchangeDescriptor> {
      * Will add an item to the <code>rateLimits</code> list.
      * @param item Item to add to current <code>rateLimits</code> list
      * @return Builder instance
-     * @see ExchangeDescriptor#setRateLimits(RateLimitRule)
+     * @see ExchangeDescriptor#setRateLimits(RateLimitRuleDescriptor)
      */
-    public Builder addToRateLimits(RateLimitRule item) {
+    public Builder addToRateLimits(RateLimitRuleDescriptor item) {
       if (this.rateLimits == null) {
         this.rateLimits = CollectionUtil.createList();
       }
@@ -1052,8 +1082,8 @@ public class ExchangeDescriptor implements Pojo<ExchangeDescriptor> {
       res.websocketHookFactory = this.websocketHookFactory;
       res.httpRequestTimeout = this.httpRequestTimeout;
       res.afterInitHookFactory = this.afterInitHookFactory;
-      res.properties = this.properties != null ? this.properties.deepClone() : null;
-      res.constants = this.constants != null ? this.constants.deepClone() : null;
+      res.properties = CollectionUtil.deepCloneList(this.properties, DeepCloneable::deepClone);
+      res.constants = CollectionUtil.deepCloneList(this.constants, DeepCloneable::deepClone);
       res.rateLimits = CollectionUtil.deepCloneList(this.rateLimits, DeepCloneable::deepClone);
       res.apis = CollectionUtil.deepCloneList(this.apis, DeepCloneable::deepClone);
       return res;

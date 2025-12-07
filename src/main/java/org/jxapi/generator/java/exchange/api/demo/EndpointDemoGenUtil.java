@@ -9,11 +9,11 @@ import java.util.stream.Collectors;
 import org.apache.commons.lang3.StringUtils;
 import org.jxapi.exchange.Exchange;
 import org.jxapi.exchange.ExchangeApi;
-import org.jxapi.exchange.descriptor.ConfigPropertyDescriptor;
-import org.jxapi.exchange.descriptor.ExchangeApiDescriptor;
-import org.jxapi.exchange.descriptor.ExchangeDescriptor;
-import org.jxapi.exchange.descriptor.RestEndpointDescriptor;
-import org.jxapi.exchange.descriptor.WebsocketEndpointDescriptor;
+import org.jxapi.exchange.descriptor.gen.ConfigPropertyDescriptor;
+import org.jxapi.exchange.descriptor.gen.ExchangeApiDescriptor;
+import org.jxapi.exchange.descriptor.gen.ExchangeDescriptor;
+import org.jxapi.exchange.descriptor.gen.RestEndpointDescriptor;
+import org.jxapi.exchange.descriptor.gen.WebsocketEndpointDescriptor;
 import org.jxapi.generator.java.Imports;
 import org.jxapi.generator.java.JavaCodeGenUtil;
 import org.jxapi.generator.java.exchange.ExchangeGenUtil;
@@ -522,52 +522,90 @@ public class EndpointDemoGenUtil {
                 .collect(Collectors.toList());
   }
   
+//  private static ConfigPropertyDescriptor createDemoConfigPropertyGroup(ExchangeApiDescriptor api) {
+//    String apiName = api.getName();
+//    return ConfigPropertyDescriptor.createGroup
+//      (
+//        apiName, 
+//        String.format("Configuration properties for %s API group endpoints demo snippets", apiName), 
+//        List.of
+//        (
+//          ConfigPropertyDescriptor.createGroup
+//          (
+//            REST_DEMO_GROUP_NAME, 
+//            String.format("Configuration properties for REST endpoints demo snippets of %s API group", apiName), 
+//            CollectionUtil.emptyIfNull(api.getRestEndpoints()).stream()
+//              .map
+//                (endpoint -> createEndpointDemoConfigPropertyForEndpointRequest
+//                  (
+//                   api, 
+//                   REST_DEMO_GROUP_NAME,
+//                   endpoint.getName(), 
+//                   endpoint.getRequest()
+//                  )
+//                )
+//              .filter(o -> !CollectionUtil.isEmpty(o.getProperties()))
+//              .collect(Collectors.toList())
+//          ),
+//          ConfigPropertyDescriptor.createGroup
+//          (
+//            WEBSOCKET_DEMO_GROUP_NAME, 
+//            String.format("Configuration properties for websocket endpoints demo snippets of %s API group", apiName), 
+//            CollectionUtil.emptyIfNull(api.getWebsocketEndpoints()).stream()
+//              .map
+//                (endpoint -> createEndpointDemoConfigPropertyForEndpointRequest
+//                  (
+//                    api, 
+//                    WEBSOCKET_DEMO_GROUP_NAME,
+//                    endpoint.getName(), 
+//                    endpoint.getRequest()
+//                  )
+//                )
+//              .filter(o -> !CollectionUtil.isEmpty(o.getProperties()))
+//              .collect(Collectors.toList())
+//          )
+//        ).stream()
+//         .filter(o -> !CollectionUtil.isEmpty(o.getProperties()))
+//         .collect(Collectors.toList())
+//      );
+//  }
+  
   private static ConfigPropertyDescriptor createDemoConfigPropertyGroup(ExchangeApiDescriptor api) {
     String apiName = api.getName();
-    return ConfigPropertyDescriptor.createGroup
-      (
-        apiName, 
-        String.format("Configuration properties for %s API group endpoints demo snippets", apiName), 
-        List.of
-        (
-          ConfigPropertyDescriptor.createGroup
-          (
-            REST_DEMO_GROUP_NAME, 
-            String.format("Configuration properties for REST endpoints demo snippets of %s API group", apiName), 
-            CollectionUtil.emptyIfNull(api.getRestEndpoints()).stream()
-              .map
-                (endpoint -> createEndpointDemoConfigPropertyForEndpointRequest
-                  (
-                   api, 
-                   REST_DEMO_GROUP_NAME,
-                   endpoint.getName(), 
-                   endpoint.getRequest()
-                  )
-                )
-              .filter(o -> !CollectionUtil.isEmpty(o.getProperties()))
-              .collect(Collectors.toList())
-          ),
-          ConfigPropertyDescriptor.createGroup
-          (
-            WEBSOCKET_DEMO_GROUP_NAME, 
-            String.format("Configuration properties for websocket endpoints demo snippets of %s API group", apiName), 
-            CollectionUtil.emptyIfNull(api.getWebsocketEndpoints()).stream()
-              .map
-                (endpoint -> createEndpointDemoConfigPropertyForEndpointRequest
-                  (
-                    api, 
-                    WEBSOCKET_DEMO_GROUP_NAME,
-                    endpoint.getName(), 
-                    endpoint.getRequest()
-                  )
-                )
-              .filter(o -> !CollectionUtil.isEmpty(o.getProperties()))
-              .collect(Collectors.toList())
-          )
-        ).stream()
-         .filter(o -> !CollectionUtil.isEmpty(o.getProperties()))
-         .collect(Collectors.toList())
-      );
+    return ConfigPropertyDescriptor.builder()
+        .name(apiName)
+        .description(String.format("Configuration properties for %s API group endpoints demo snippets", apiName))
+        .properties(List.of(
+            ConfigPropertyDescriptor.builder()
+              .name(REST_DEMO_GROUP_NAME)
+              .description(String.format("Configuration properties for REST endpoints demo snippets of %s API group", apiName))
+              .properties(
+                  CollectionUtil.emptyIfNull(api.getRestEndpoints()).stream()
+                    .map(endpoint -> createEndpointDemoConfigPropertyForEndpointRequest(
+                         api, 
+                         REST_DEMO_GROUP_NAME,
+                         endpoint.getName(), 
+                         endpoint.getRequest()))
+                    .filter(o -> !CollectionUtil.isEmpty(o.getProperties()))
+                    .collect(Collectors.toList())
+                ).build(),
+            ConfigPropertyDescriptor.builder()
+              .name(WEBSOCKET_DEMO_GROUP_NAME)
+              .description(String.format("Configuration properties for websocket endpoints demo snippets of %s API group", apiName))
+              .properties(
+                  CollectionUtil.emptyIfNull(api.getWebsocketEndpoints()).stream()
+                    .map(endpoint -> createEndpointDemoConfigPropertyForEndpointRequest(
+                      api, 
+                      WEBSOCKET_DEMO_GROUP_NAME,
+                      endpoint.getName(), 
+                      endpoint.getRequest()))
+                    .filter(o -> !CollectionUtil.isEmpty(o.getProperties()))
+                    .collect(Collectors.toList())
+                ).build())
+          .stream()
+          .filter(o -> !CollectionUtil.isEmpty(o.getProperties()))
+            .collect(Collectors.toList()))
+        .build();
   }
   
   private static ConfigPropertyDescriptor createEndpointDemoConfigPropertyForEndpointRequest(
@@ -575,17 +613,17 @@ public class EndpointDemoGenUtil {
       String endpointGroup, 
       String endpointName, 
       Field endpointRequest) {
-    List<ConfigPropertyDescriptor> requestProperty = 
+    List<ConfigPropertyDescriptor> requestProperties = 
         generateDemoConfigPropertyForField(api, endpointName, endpointRequest);
     String endpointGroupDisplayName = Objects.equals(endpointGroup, REST_DEMO_GROUP_NAME)? "REST": "websocket";
-    return ConfigPropertyDescriptor.createGroup(
-        endpointName,
-        String.format(
+    return ConfigPropertyDescriptor.builder()
+        .name(endpointName)
+        .description(String.format(
             "Configuration properties for %s %s endpoint of %s API group", 
             endpointGroupDisplayName, endpointName, 
-            api.getName()), 
-        requestProperty
-    );
+            api.getName()))
+        .properties(requestProperties)
+        .build();
   }
   
   private static List<ConfigPropertyDescriptor> generateDemoConfigPropertyForField(
@@ -613,30 +651,36 @@ public class EndpointDemoGenUtil {
           fieldName,
           fieldDescription);
       return List.of(
-          ConfigPropertyDescriptor.create(
-              propertyName, 
-              Type.STRING,
-              rawValueDemoPropertyDescription, 
-              f.getSampleValue()),
-          ConfigPropertyDescriptor.createGroup(
-            propertyName, 
-            objectGroupDescription,
-            CollectionUtil.emptyIfNull(f.getProperties())
-              .stream()
-              .map(p -> generateDemoConfigPropertyForField(api, fieldName, p))
-              .reduce(CollectionUtil::mergeLists)
-              .orElse(List.of()))
+          ConfigPropertyDescriptor.builder()
+              .name(propertyName)
+              .type(Type.STRING.toString())
+              .description(rawValueDemoPropertyDescription)
+              .defaultValue(f.getSampleValue())
+              .build(),
+          ConfigPropertyDescriptor.builder()
+              .name(propertyName)
+              .description(objectGroupDescription)
+              .properties(
+                CollectionUtil.emptyIfNull(f.getProperties())
+                  .stream()
+                  .map(p -> generateDemoConfigPropertyForField(api, fieldName, p))
+                  .reduce(CollectionUtil::mergeLists)
+                  .orElse(List.of()))
+              .build()
           );
     }
-    return List.of(ConfigPropertyDescriptor.create(
-        propertyName, 
-        type,
-        String.format(
+    
+    return List.of(ConfigPropertyDescriptor.builder()
+        .name(propertyName) 
+        .type(type.toString())
+        .description(
+          String.format(
             "Demo configuration property for %s.%s field.%s", 
             parentField, 
             fieldName,
-            fieldDescription), 
-        f.getSampleValue()));
+            fieldDescription))
+        .defaultValue(f.getSampleValue())
+        .build());
   }
   
 }

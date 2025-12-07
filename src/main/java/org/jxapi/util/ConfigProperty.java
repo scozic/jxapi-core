@@ -1,6 +1,6 @@
 package org.jxapi.util;
 
-import org.jxapi.exchange.descriptor.ConfigPropertyDescriptor;
+import org.jxapi.exchange.descriptor.gen.ConfigPropertyDescriptor;
 import org.jxapi.pojo.descriptor.Type;
 
 /**

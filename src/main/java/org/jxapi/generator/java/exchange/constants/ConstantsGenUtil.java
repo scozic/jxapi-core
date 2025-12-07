@@ -72,7 +72,7 @@ public class ConstantsGenUtil {
       PlaceHolderResolver sampleValuePlaceHolderResolver) {
     Type type = Optional.ofNullable(constant.getType()).orElse(Type.STRING);
     if (type.getCanonicalType().isPrimitive) {
-      return ExchangeGenUtil.getPrimitiveTypeFieldSampleValueDeclaration(type, constant.getValue(), imports,
+      return PojoGenUtil.getPrimitiveTypeFieldSampleValueDeclaration(type, constant.getValue(), imports,
           sampleValuePlaceHolderResolver);
     }
     // Map or list
@@ -83,7 +83,7 @@ public class ConstantsGenUtil {
     if (!(v instanceof String)) {
       v = JsonUtil.pojoToJsonString(v);
     } 
-    s.append(ExchangeGenUtil.getPrimitiveTypeFieldSampleValueDeclaration(Type.STRING, v, imports, sampleValuePlaceHolderResolver))
+    s.append(PojoGenUtil.getPrimitiveTypeFieldSampleValueDeclaration(Type.STRING, v, imports, sampleValuePlaceHolderResolver))
      .append(")");
     return s.toString();
   }
@@ -156,5 +156,4 @@ public class ConstantsGenUtil {
     }
     return JavaCodeGenUtil.getStaticVariableName(name);
   }
-
 }

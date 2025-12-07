@@ -2,10 +2,14 @@ package org.jxapi.exchange.descriptor;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
+import org.jxapi.exchange.descriptor.gen.ConstantDescriptor;
 import org.jxapi.pojo.descriptor.Type;
 import org.jxapi.util.CollectionUtil;
+import org.jxapi.util.CompareUtil;
 import org.jxapi.util.EncodingUtil;
+import org.jxapi.util.Pojo;
 
 /**
  * Represents a constant value used across APIs of an exchange or a group of such constants.<br>
@@ -27,7 +31,7 @@ import org.jxapi.util.EncodingUtil;
  * The name of a constant should provide a more readable name for the value. The
  * description allows to provide semantic details.<br>
  */
-public class Constant {
+public class Constant implements Pojo<Constant> {
 
   /**
    * Factory method to create a constant instance
@@ -66,6 +70,40 @@ public class Constant {
     g.setDescription(description);
     g.setConstants(nestedConstants);
     return g;
+  }
+  
+  /**
+   * Converts a ConstantDescriptor to a Constant.
+   * 
+   * @param descriptor the ConstantDescriptor to convert
+   * @return the converted Constant
+   */
+  public static Constant fromConstantDescriptor(ConstantDescriptor descriptor) {
+    Constant constant = new Constant();
+    constant.setName(descriptor.getName());
+    constant.setDescription(descriptor.getDescription());
+    constant.setType(descriptor.getType());
+    constant.setValue(descriptor.getValue());
+    if (descriptor.getConstants() != null) {
+      List<Constant> nestedConstants = CollectionUtil.createList();
+      for (ConstantDescriptor cd : descriptor.getConstants()) {
+        nestedConstants.add(fromConstantDescriptor(cd));
+      }
+      constant.setConstants(nestedConstants);
+    }
+    return constant;
+  }
+  
+  /**
+   * Converts a list of ConstantDescriptor to a list of Constant.
+   * 
+   * @param descriptors the list of ConstantDescriptor to convert
+   * @return the converted list of Constant
+   */
+  public static List<Constant> fromDescriptors(List<ConstantDescriptor> descriptors) {
+    return CollectionUtil.emptyIfNull(descriptors).stream()
+        .map(Constant::fromConstantDescriptor)
+        .collect(Collectors.toList());
   }
 
   private String name;
@@ -173,6 +211,39 @@ public class Constant {
   public void setConstants(List<Constant> constants) {
     this.constants = constants;
   }
+  
+  @Override
+  public int hashCode() {
+    return Objects.hash(name, type, value, description, constants);
+  }
+
+  @Override
+  public Constant deepClone() {
+    Constant c = new Constant();
+    c.setName(this.name);
+    c.setDescription(this.description);
+    c.setType(this.type);
+    c.setValue(this.value);
+    if (!CollectionUtil.isEmpty(this.constants)) {
+      List<Constant> nestedConstants = CollectionUtil.createList(this.constants.size());
+      for (Constant cc : this.constants) {
+        nestedConstants.add(cc.deepClone());
+      }
+      c.setConstants(nestedConstants);
+    }
+    return c;
+  }
+
+  @Override
+  public int compareTo(Constant o) {
+    if (o == null) {
+      return 1;
+    }
+    if (this == o) {
+      return 0;
+    }
+    return CompareUtil.compare(this.name, o.name);
+  }
 
   /**
    * @return String representation of the constant, see
@@ -199,8 +270,4 @@ public class Constant {
         && Objects.equals(this.constants, other.constants);
   }
   
-  @Override
-  public int hashCode() {
-    return Objects.hash(name, type, value, description, constants);
-  }
 }

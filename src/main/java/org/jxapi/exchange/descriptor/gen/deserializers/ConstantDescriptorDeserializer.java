@@ -5,7 +5,7 @@ import java.io.IOException;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonToken;
 import javax.annotation.processing.Generated;
-import org.jxapi.exchange.descriptor.gen.Constant;
+import org.jxapi.exchange.descriptor.gen.ConstantDescriptor;
 import org.jxapi.netutils.deserialization.json.AbstractJsonMessageDeserializer;
 import org.jxapi.netutils.deserialization.json.field.ListJsonFieldDeserializer;
 import static org.jxapi.util.JsonUtil.readNextObject;
@@ -13,16 +13,16 @@ import static org.jxapi.util.JsonUtil.readNextString;
 import static org.jxapi.util.JsonUtil.skipNextValue;
 
 /**
- * Parses incoming JSON messages into org.jxapi.exchange.descriptor.gen.Constant instances
- * @see org.jxapi.exchange.descriptor.gen.Constant
+ * Parses incoming JSON messages into org.jxapi.exchange.descriptor.gen.ConstantDescriptor instances
+ * @see org.jxapi.exchange.descriptor.gen.ConstantDescriptor
  */
 @Generated("org.jxapi.generator.java.pojo.JsonMessageDeserializerGenerator")
-public class ConstantDeserializer extends AbstractJsonMessageDeserializer<Constant> {
-  private final ListJsonFieldDeserializer<Constant> constantsDeserializer = new ListJsonFieldDeserializer<>(new ConstantDeserializer());
+public class ConstantDescriptorDeserializer extends AbstractJsonMessageDeserializer<ConstantDescriptor> {
+  private ListJsonFieldDeserializer<ConstantDescriptor> constantsDeserializer;
   
   @Override
-  public Constant deserialize(JsonParser parser) throws IOException {
-    Constant msg = new Constant();
+  public ConstantDescriptor deserialize(JsonParser parser) throws IOException {
+    ConstantDescriptor msg = new ConstantDescriptor();
     while(parser.nextToken() != JsonToken.END_OBJECT) {
       switch(parser.getCurrentName()) {
       case "name":
@@ -39,6 +39,9 @@ public class ConstantDeserializer extends AbstractJsonMessageDeserializer<Consta
       break;
       case "constants":
         parser.nextToken();
+        if(constantsDeserializer == null) {
+          constantsDeserializer = new ListJsonFieldDeserializer<>(new ConstantDescriptorDeserializer());
+        }
         msg.setConstants(constantsDeserializer.deserialize(parser));
       break;
       default:

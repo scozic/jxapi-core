@@ -63,6 +63,7 @@ import org.jxapi.util.EncodingUtil;
  * @see RestEndpointClassesGenerator
  * @see Type
  * @see HttpMethod
+ * @deprecated
  */
 public class RestEndpointDescriptor {
   private String name;
