@@ -323,7 +323,7 @@ public class ExchangeApiGenUtil {
    * <li>For other 'structured' types (object, list or map) types, the
    * corresponding new
    * Json field deserializer instruction is returned, see
-   * {@link ExchangeGenUtil#getNewJsonFieldDeserializerInstruction(Type, String, Imports)}.</li>
+   * {@link PojoGenUtil#getNewJsonFieldDeserializerInstruction(Type, String, Imports)}.</li>
    * <li>
    * <li>If message type is <code>null</code>, it is considered as 
    * {@link Type#STRING}.</li>
@@ -382,11 +382,11 @@ public class ExchangeApiGenUtil {
           +  JavaCodeGenUtil.getClassNameWithoutPackage(messageFullClassName) 
           + ".class)";
       }
-      return ExchangeGenUtil.getNewJsonFieldDeserializerInstruction(messageType, messageFullClassName, imports);
+      return PojoGenUtil.getNewJsonFieldDeserializerInstruction(messageType, messageFullClassName, imports);
     case LIST:
     case MAP:
     default:
-      return ExchangeGenUtil.getNewJsonFieldDeserializerInstruction(messageType, messageFullClassName, imports);
+      return PojoGenUtil.getNewJsonFieldDeserializerInstruction(messageType, messageFullClassName, imports);
     }
   }
 

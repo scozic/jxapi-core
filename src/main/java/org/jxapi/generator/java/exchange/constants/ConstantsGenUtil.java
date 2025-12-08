@@ -7,7 +7,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.jxapi.exchange.descriptor.Constant;
 import org.jxapi.generator.java.Imports;
 import org.jxapi.generator.java.JavaCodeGenUtil;
-import org.jxapi.generator.java.exchange.ExchangeGenUtil;
 import org.jxapi.generator.java.pojo.PojoGenUtil;
 import org.jxapi.pojo.descriptor.Type;
 import org.jxapi.util.CollectionUtil;
@@ -77,7 +76,7 @@ public class ConstantsGenUtil {
     }
     // Map or list
     StringBuilder s = new StringBuilder()
-        .append(ExchangeGenUtil.getNewJsonFieldDeserializerInstruction(type, null, imports))
+        .append(PojoGenUtil.getNewJsonFieldDeserializerInstruction(type, null, imports))
         .append(".deserialize(");
     Object v = constant.getValue();
     if (!(v instanceof String)) {

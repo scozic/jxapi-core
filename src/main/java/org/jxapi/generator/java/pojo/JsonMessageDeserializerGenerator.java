@@ -13,7 +13,6 @@ import com.fasterxml.jackson.databind.JsonDeserializer;
 import org.jxapi.generator.java.Imports;
 import org.jxapi.generator.java.JavaCodeGenUtil;
 import org.jxapi.generator.java.JavaTypeGenerator;
-import org.jxapi.generator.java.exchange.ExchangeGenUtil;
 import org.jxapi.netutils.deserialization.MessageDeserializer;
 import org.jxapi.netutils.deserialization.json.AbstractJsonMessageDeserializer;
 import org.jxapi.netutils.deserialization.json.field.ListJsonFieldDeserializer;
@@ -169,7 +168,7 @@ public class JsonMessageDeserializerGenerator extends JavaTypeGenerator {
       getImports());
     
     String deserializerVariableName = JavaCodeGenUtil.firstLetterToLowerCase(field.getName() + "Deserializer");
-    String newDeserializerInstruction = ExchangeGenUtil.getNewJsonFieldDeserializerInstruction(
+    String newDeserializerInstruction = PojoGenUtil.getNewJsonFieldDeserializerInstruction(
             type,
             objectFieldClassName, 
             getImports());

@@ -8,7 +8,12 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.jxapi.generator.java.Imports;
 import org.jxapi.generator.java.JavaCodeGenUtil;
+import org.jxapi.netutils.deserialization.json.field.BigDecimalJsonFieldDeserializer;
+import org.jxapi.netutils.deserialization.json.field.BooleanJsonFieldDeserializer;
+import org.jxapi.netutils.deserialization.json.field.IntegerJsonFieldDeserializer;
 import org.jxapi.netutils.deserialization.json.field.ListJsonFieldDeserializer;
+import org.jxapi.netutils.deserialization.json.field.LongJsonFieldDeserializer;
+import org.jxapi.netutils.deserialization.json.field.MapJsonFieldDeserializer;
 import org.jxapi.netutils.deserialization.json.field.StringJsonFieldDeserializer;
 import org.jxapi.pojo.descriptor.Field;
 import org.jxapi.pojo.descriptor.FieldBuilder;
@@ -645,34 +650,93 @@ public void testGetClassNameForField_BIGDECIMAL_Type() {
     Assert.assertEquals("\"test\"", PojoGenUtil.getPrimitiveTypeFieldSampleValueDeclaration(Type.STRING, "test", imports, null));
     Assert.assertEquals(0, imports.size());
   }
-
-  @Test
-  public void testGetPrimitiveTypeFieldSampleValueDeclaration_IntegersSampleValue() {
-    Imports imports = new Imports();
-    Assert.assertEquals("Integer.valueOf(\"1\")", PojoGenUtil.getPrimitiveTypeFieldSampleValueDeclaration(Type.INT, 1, imports, null));
-    Assert.assertEquals(0, imports.size());
-  }
   
-  @Test
-  public void testGetPrimitiveTypeFieldSampleValueDeclaration_IntegersSampleValueWithPlaceHolder() {
-    Imports imports = new Imports();
-    PlaceHolderResolver placeholderResolver = PlaceHolderResolver.create(Map.of("config.myInt1", "1234", "config.myInt2", "5678"));
-    Assert.assertEquals("Integer.valueOf(12345678)", PojoGenUtil.getPrimitiveTypeFieldSampleValueDeclaration(Type.INT, "${config.myInt1}${config.myInt2}", imports, placeholderResolver));
-    Assert.assertEquals(0, imports.size());
-  }
-
   @Test
   public void testGetPrimitiveTypeFieldSampleValueDeclaration_BooleanSampleValue() {
     Imports imports = new Imports();
     Assert.assertEquals("Boolean.valueOf(\"true\")", PojoGenUtil.getPrimitiveTypeFieldSampleValueDeclaration(Type.BOOLEAN, "true", imports, null));
     Assert.assertEquals(0, imports.size());
   }
+  
+  @Test
+  public void testGetNewJsonFieldDeserializerInstruction_INT() {
+    Imports imports = new Imports();
+    Assert.assertEquals("IntegerJsonFieldDeserializer.getInstance()", PojoGenUtil.getNewJsonFieldDeserializerInstruction(Type.INT, null, imports));
+    Assert.assertEquals(1, imports.size());
+    Assert.assertTrue(imports.contains(IntegerJsonFieldDeserializer.class));
+  }
 
   @Test
-  public void testGetPrimitiveTypeFieldSampleValueDeclaration_NonPrimitiveType() {
+  public void testGetNewJsonFieldDeserializerInstruction_BOOLEAN() {
     Imports imports = new Imports();
-    Assert.assertEquals("\"[1, 3, 5]\"", PojoGenUtil.getPrimitiveTypeFieldSampleValueDeclaration(Type.fromTypeName("INT_LIST"), "[1, 3, 5]", imports, null));
-    Assert.assertEquals(0, imports.size());
+    Assert.assertEquals("BooleanJsonFieldDeserializer.getInstance()", PojoGenUtil.getNewJsonFieldDeserializerInstruction(Type.BOOLEAN, null, imports));
+    Assert.assertEquals(1, imports.size());
+    Assert.assertTrue(imports.contains(BooleanJsonFieldDeserializer.class));
+  }
+
+  @Test
+  public void testGetNewJsonFieldDeserializerInstruction_BIGDECIMAL() {
+    Imports imports = new Imports();
+    Assert.assertEquals("BigDecimalJsonFieldDeserializer.getInstance()", PojoGenUtil.getNewJsonFieldDeserializerInstruction(Type.BIGDECIMAL, null, imports));
+    Assert.assertEquals(1, imports.size());
+    Assert.assertTrue(imports.contains(BigDecimalJsonFieldDeserializer.class));
+  }
+
+  @Test
+  public void testGetNewJsonFieldDeserializerInstruction_LONG() {
+    Imports imports = new Imports();
+    Assert.assertEquals("LongJsonFieldDeserializer.getInstance()", PojoGenUtil.getNewJsonFieldDeserializerInstruction(Type.LONG, null, imports));
+    Assert.assertEquals(1, imports.size());
+    Assert.assertTrue(imports.contains(LongJsonFieldDeserializer.class));
+  }
+
+  @Test
+  public void testGetNewJsonFieldDeserializerInstruction_STRING() {
+    Imports imports = new Imports();
+    Assert.assertEquals("StringJsonFieldDeserializer.getInstance()", PojoGenUtil.getNewJsonFieldDeserializerInstruction(Type.STRING, null, imports));
+    Assert.assertEquals(1, imports.size());
+    Assert.assertTrue(imports.contains(StringJsonFieldDeserializer.class));
+  }
+  
+  @Test
+  public void testGetNewJsonFieldDeserializerInstruction_STRING_LIST() {
+    Imports imports = new Imports();
+    Assert.assertEquals("new ListJsonFieldDeserializer<>(StringJsonFieldDeserializer.getInstance())", PojoGenUtil.getNewJsonFieldDeserializerInstruction(Type.fromTypeName("STRING_LIST"), null, imports));
+    Assert.assertEquals(2, imports.size());
+    Assert.assertTrue(imports.contains(ListJsonFieldDeserializer.class));
+    Assert.assertTrue(imports.contains(StringJsonFieldDeserializer.class));
+  }
+
+  @Test
+  public void testGetNewJsonFieldDeserializerInstruction_INT_MAP() {
+    Imports imports = new Imports();
+    Assert.assertEquals("new MapJsonFieldDeserializer<>(IntegerJsonFieldDeserializer.getInstance())", PojoGenUtil.getNewJsonFieldDeserializerInstruction(Type.fromTypeName("INT_MAP"), null, imports));
+    Assert.assertEquals(2, imports.size());
+    Assert.assertTrue(imports.contains(MapJsonFieldDeserializer.class));
+    Assert.assertTrue(imports.contains(IntegerJsonFieldDeserializer.class));
+  }
+
+  @Test
+  public void testGetNewJsonFieldDeserializerInstruction_OBJECT() {
+    Imports imports = new Imports();
+    String objectClassName = "com.x.gen.MyObject";
+    Assert.assertEquals("new MyObjectDeserializer()", PojoGenUtil.getNewJsonFieldDeserializerInstruction(Type.fromTypeName("OBJECT"), objectClassName, imports));
+    Assert.assertEquals(1, imports.size());
+    Assert.assertTrue(imports.contains("com.x.gen.deserializers.MyObjectDeserializer"));
+  }
+
+  @Test
+  public void testGetNewJsonFieldDeserializerInstruction_NullType() {
+    Imports imports = new Imports();
+    Assert.assertEquals("StringJsonFieldDeserializer.getInstance()", PojoGenUtil.getNewJsonFieldDeserializerInstruction(null, null, imports));
+    Assert.assertEquals(1, imports.size());
+    Assert.assertTrue(imports.contains(StringJsonFieldDeserializer.class));
+  }
+  
+  @Test
+  public void testGetJsonMessageDeserializerClassName() {
+    Assert.assertEquals("com.x.y.deserializers.MyObjectDeserializer", 
+              PojoGenUtil.getJsonMessageDeserializerClassName("com.x.y.pojo.MyObject"));
   }
   
 }
