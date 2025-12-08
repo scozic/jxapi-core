@@ -171,6 +171,7 @@ public class JsonMessageDeserializerGenerator extends JavaTypeGenerator {
     String newDeserializerInstruction = PojoGenUtil.getNewJsonFieldDeserializerInstruction(
             type,
             objectFieldClassName, 
+            false,
             getImports());
     StringBuilder variableDeclaration = new StringBuilder()
         .append("private ");

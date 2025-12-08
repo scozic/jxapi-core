@@ -14,13 +14,16 @@ import org.jxapi.exchange.descriptor.Constant;
 import org.jxapi.generator.java.Imports;
 import org.jxapi.generator.java.JavaCodeGenUtil;
 import org.jxapi.generator.java.exchange.constants.ConstantsGenUtil;
+import org.jxapi.netutils.deserialization.MessageDeserializer;
 import org.jxapi.netutils.deserialization.json.AbstractJsonMessageDeserializer;
 import org.jxapi.netutils.deserialization.json.field.BigDecimalJsonFieldDeserializer;
 import org.jxapi.netutils.deserialization.json.field.BooleanJsonFieldDeserializer;
+import org.jxapi.netutils.deserialization.json.field.GenericObjectJsonFieldDeserializer;
 import org.jxapi.netutils.deserialization.json.field.IntegerJsonFieldDeserializer;
 import org.jxapi.netutils.deserialization.json.field.ListJsonFieldDeserializer;
 import org.jxapi.netutils.deserialization.json.field.LongJsonFieldDeserializer;
 import org.jxapi.netutils.deserialization.json.field.MapJsonFieldDeserializer;
+import org.jxapi.netutils.deserialization.json.field.RawObjectJsonFieldDeserializer;
 import org.jxapi.netutils.deserialization.json.field.StringJsonFieldDeserializer;
 import org.jxapi.pojo.descriptor.CanonicalType;
 import org.jxapi.pojo.descriptor.Field;
@@ -856,9 +859,14 @@ public class PojoGenUtil {
    * @see Type
    * @throws IllegalArgumentException if the type is not recognized.
    */
-  public static String getNewJsonFieldDeserializerInstruction(Type type, String objectClassName, Imports imports) {
+  public static String getNewJsonFieldDeserializerInstruction(
+      Type type, 
+      String objectClassName, 
+      boolean externalClass, 
+      Imports imports) {
     if (type == null) {
-      type  = Type.fromTypeName(CanonicalType.STRING.name());
+      imports.add(MessageDeserializer.class.getName());
+      return MessageDeserializer.class.getSimpleName() + ".NO_OP";
     }
     switch (type.getCanonicalType()) {
     case BIGDECIMAL:
@@ -879,12 +887,25 @@ public class PojoGenUtil {
     case LIST:
       imports.add(ListJsonFieldDeserializer.class.getName());
       return "new " + ListJsonFieldDeserializer.class.getSimpleName() + "<>(" 
-          + getNewJsonFieldDeserializerInstruction(type.getSubType(), objectClassName, imports) + ")";
+          + getNewJsonFieldDeserializerInstruction(type.getSubType(), objectClassName, externalClass, imports) + ")";
     case MAP:
       imports.add(MapJsonFieldDeserializer.class.getName());
       return "new " + MapJsonFieldDeserializer.class.getSimpleName() 
-          + "<>(" + getNewJsonFieldDeserializerInstruction(type.getSubType(), objectClassName, imports) +")";
+          + "<>(" + getNewJsonFieldDeserializerInstruction(type.getSubType(), objectClassName, externalClass, imports) +")";
     case OBJECT:
+      if (Object.class.getName().equals(objectClassName)) {
+        imports.add(RawObjectJsonFieldDeserializer.class.getName());
+        return RawObjectJsonFieldDeserializer.class.getSimpleName() + GET_INSTANCE;
+      }
+      if (externalClass) {
+        imports.add(GenericObjectJsonFieldDeserializer.class.getName());
+        imports.add(objectClassName);
+        return "new " 
+          + GenericObjectJsonFieldDeserializer.class.getSimpleName() 
+          + "<>("
+          +  JavaCodeGenUtil.getClassNameWithoutPackage(objectClassName) 
+          + ".class)";
+      }
       String objectDeserializerClass = getJsonMessageDeserializerClassName(objectClassName);
       imports.add(objectDeserializerClass);
       return "new " +  JavaCodeGenUtil.getClassNameWithoutPackage(objectDeserializerClass) + "()";

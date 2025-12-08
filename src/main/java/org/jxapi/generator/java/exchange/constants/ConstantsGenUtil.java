@@ -76,7 +76,7 @@ public class ConstantsGenUtil {
     }
     // Map or list
     StringBuilder s = new StringBuilder()
-        .append(PojoGenUtil.getNewJsonFieldDeserializerInstruction(type, null, imports))
+        .append(PojoGenUtil.getNewJsonFieldDeserializerInstruction(type, null, false, imports))
         .append(".deserialize(");
     Object v = constant.getValue();
     if (!(v instanceof String)) {

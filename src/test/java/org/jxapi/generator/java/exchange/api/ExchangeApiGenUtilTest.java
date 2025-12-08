@@ -15,16 +15,6 @@ import org.jxapi.exchange.descriptor.gen.WebsocketEndpointDescriptor;
 import org.jxapi.exchange.descriptor.gen.WebsocketTopicMatcherDescriptor;
 import org.jxapi.generator.java.Imports;
 import org.jxapi.generator.java.JavaCodeGenUtil;
-import org.jxapi.netutils.deserialization.MessageDeserializer;
-import org.jxapi.netutils.deserialization.json.field.BigDecimalJsonFieldDeserializer;
-import org.jxapi.netutils.deserialization.json.field.BooleanJsonFieldDeserializer;
-import org.jxapi.netutils.deserialization.json.field.GenericObjectJsonFieldDeserializer;
-import org.jxapi.netutils.deserialization.json.field.IntegerJsonFieldDeserializer;
-import org.jxapi.netutils.deserialization.json.field.ListJsonFieldDeserializer;
-import org.jxapi.netutils.deserialization.json.field.LongJsonFieldDeserializer;
-import org.jxapi.netutils.deserialization.json.field.MapJsonFieldDeserializer;
-import org.jxapi.netutils.deserialization.json.field.RawObjectJsonFieldDeserializer;
-import org.jxapi.netutils.deserialization.json.field.StringJsonFieldDeserializer;
 import org.jxapi.netutils.websocket.multiplexing.WSMTMFUtil;
 import org.jxapi.netutils.websocket.multiplexing.WebsocketMessageTopicMatcherFactory;
 import org.jxapi.pojo.descriptor.Field;
@@ -292,108 +282,6 @@ public class ExchangeApiGenUtilTest {
         endpointDescriptorSameNameButFirstLetterUpper.setName("AccountWs");
         Assert.assertEquals("unsubscribeaccountWs", ExchangeApiGenUtil.getWebsocketUnsubscribeMethodName(
             endpointDescriptor, List.of(endpointDescriptor, endpointDescriptorSameNameButFirstLetterUpper)));
-    }
-
-    @Test
-    public void testGetNewMessageDeserializerInstruction_INT() {
-        Imports imports = new Imports();
-        Assert.assertEquals("IntegerJsonFieldDeserializer.getInstance()", 
-            ExchangeApiGenUtil.getNewMessageDeserializerInstruction(Type.INT, null, false, imports));
-            Assert.assertEquals(1, imports.size());
-            Assert.assertTrue(imports.contains(IntegerJsonFieldDeserializer.class.getName()));
-    }
-
-    @Test
-    public void testGetNewMessageDeserializerInstruction_BIGDECIMAL() {
-        Imports imports = new Imports();
-        Assert.assertEquals("BigDecimalJsonFieldDeserializer.getInstance()", 
-            ExchangeApiGenUtil.getNewMessageDeserializerInstruction(Type.BIGDECIMAL, null, false, imports));
-            Assert.assertEquals(1, imports.size());
-            Assert.assertTrue(imports.contains(BigDecimalJsonFieldDeserializer.class.getName()));
-    }
-
-    @Test
-    public void testGetNewMessageDeserializerInstruction_BOOLEAN() {
-        Imports imports = new Imports();
-        Assert.assertEquals("BooleanJsonFieldDeserializer.getInstance()", 
-            ExchangeApiGenUtil.getNewMessageDeserializerInstruction(Type.BOOLEAN, null, false, imports));
-            Assert.assertEquals(1, imports.size());
-            Assert.assertTrue(imports.contains(BooleanJsonFieldDeserializer.class.getName()));
-    }
-
-    @Test
-    public void testGetNewMessageDeserializerInstruction_STRING() {
-        Imports imports = new Imports();
-        Assert.assertEquals("StringJsonFieldDeserializer.getInstance()", 
-            ExchangeApiGenUtil.getNewMessageDeserializerInstruction(Type.STRING, null, false, imports));
-            Assert.assertEquals(1, imports.size());
-            Assert.assertTrue(imports.contains(StringJsonFieldDeserializer.class.getName()));
-    }
-
-    @Test
-    public void testGetNewMessageDeserializerInstruction_null() {
-        Imports imports = new Imports();
-        Assert.assertEquals("MessageDeserializer.NO_OP", 
-            ExchangeApiGenUtil.getNewMessageDeserializerInstruction(null, null, false, imports));
-            Assert.assertEquals(1, imports.size());
-            Assert.assertTrue(imports.contains(MessageDeserializer.class.getName()));
-    }
-
-    @Test
-    public void testGetNewMessageDeserializerInstruction_LONG() {
-        Imports imports = new Imports();
-        Assert.assertEquals("LongJsonFieldDeserializer.getInstance()", 
-            ExchangeApiGenUtil.getNewMessageDeserializerInstruction(Type.LONG, null, false, imports));
-            Assert.assertEquals(1, imports.size());
-            Assert.assertTrue(imports.contains(LongJsonFieldDeserializer.class.getName()));
-    }
-
-    @Test
-    public void testGetNewMessageDeserializerInstruction_OBJECT() {
-        Imports imports = new Imports();
-        Assert.assertEquals("new MyMessageDeserializer()", 
-                    ExchangeApiGenUtil.getNewMessageDeserializerInstruction(Type.OBJECT, "com.x.y.z.MyMessage", false,  imports));
-        Assert.assertEquals(1, imports.size());
-        Assert.assertTrue(imports.contains("com.x.y.z.deserializers.MyMessageDeserializer")); 
-    }
-    
-    @Test
-    public void testGetNewMessageDeserializerInstruction_RawObject() {
-        Imports imports = new Imports();
-        Assert.assertEquals("RawObjectJsonFieldDeserializer.getInstance()", 
-                    ExchangeApiGenUtil.getNewMessageDeserializerInstruction(Type.OBJECT, Object.class.getName(), false, imports));
-        Assert.assertEquals(1, imports.size());
-        Assert.assertTrue(imports.contains(RawObjectJsonFieldDeserializer.class)); 
-    }
-    
-    @Test
-    public void testGetNewMessageDeserializerInstruction_GenericObject() {
-        Imports imports = new Imports();
-        Assert.assertEquals("new GenericObjectJsonFieldDeserializer<>(MyMessage.class)", 
-                    ExchangeApiGenUtil.getNewMessageDeserializerInstruction(Type.OBJECT, "com.x.y.z.MyMessage", true, imports));
-        Assert.assertEquals(2, imports.size());
-        Assert.assertTrue(imports.contains(GenericObjectJsonFieldDeserializer.class));
-        Assert.assertTrue(imports.contains("com.x.y.z.MyMessage"));
-    }
-
-    @Test
-    public void testGetNewMessageDeserializerInstruction_OBJECT_MAP() {
-        Imports imports = new Imports();
-        Assert.assertEquals("new MapJsonFieldDeserializer<>(new MyMessageDeserializer())", 
-                    ExchangeApiGenUtil.getNewMessageDeserializerInstruction(Type.fromTypeName("OBJECT_MAP"), "com.x.y.z.MyMessage", false, imports));
-        Assert.assertEquals(2, imports.size());
-        Assert.assertTrue(imports.contains(MapJsonFieldDeserializer.class.getName())); 
-        Assert.assertTrue(imports.contains("com.x.y.z.deserializers.MyMessageDeserializer")); 
-    }
-    
-    @Test
-    public void testGetNewMessageDeserializerInstruction_BIGDECIMAL_LIST() {
-        Imports imports = new Imports();
-        Assert.assertEquals("new ListJsonFieldDeserializer<>(BigDecimalJsonFieldDeserializer.getInstance())", 
-                    ExchangeApiGenUtil.getNewMessageDeserializerInstruction(Type.fromTypeName("BIGDECIMAL_LIST"), "com.x.y.z.MyMessage", false, imports));
-        Assert.assertEquals(2, imports.size());
-        Assert.assertTrue(imports.contains(BigDecimalJsonFieldDeserializer.class.getName())); 
-        Assert.assertTrue(imports.contains(ListJsonFieldDeserializer.class.getName())); 
     }
     
     @Test

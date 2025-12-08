@@ -451,7 +451,7 @@ public class ExchangeApiInterfaceImplementationGenerator extends JavaTypeGenerat
           wsApi);
       Field message = ExchangeApiGenUtil.resolveFieldProperties(exchangeApiDescriptor, wsApi.getMessage());
       Type messageDataType = PojoGenUtil.getFieldType(message);
-      String getResponseDeserializerInstance = ExchangeApiGenUtil.getNewMessageDeserializerInstruction(
+      String getResponseDeserializerInstance = PojoGenUtil.getNewJsonFieldDeserializerInstruction(
           messageDataType, 
           messageClassObjectName,
           PojoGenUtil.isExternalClassObjectField(message),
@@ -619,13 +619,13 @@ public class ExchangeApiInterfaceImplementationGenerator extends JavaTypeGenerat
           responseDataType, 
           getImports(), 
           restResponseClassName);
-      getResponseDeserializerInstance = ExchangeApiGenUtil.getNewMessageDeserializerInstruction(
+      getResponseDeserializerInstance = PojoGenUtil.getNewJsonFieldDeserializerInstruction(
           responseDataType, 
           restResponseClassName,
           externalClassObjectFieldType,
           getImports());
     } else {
-      getResponseDeserializerInstance = ExchangeApiGenUtil.getNewMessageDeserializerInstruction(null, null, false, getImports());
+      getResponseDeserializerInstance = PojoGenUtil.getNewJsonFieldDeserializerInstruction(null, null, false, getImports());
     }
     
     String deserializerVariableName = getRestEndpointResponseDeserializerVariable(restApi);
