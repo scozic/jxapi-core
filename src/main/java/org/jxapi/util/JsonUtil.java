@@ -8,6 +8,7 @@ import java.util.Map;
 import org.jxapi.netutils.deserialization.json.JsonDeserializer;
 
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
+import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonParser;
@@ -31,7 +32,36 @@ public class JsonUtil {
   
   private static final SimpleModule EXCEPTION_SERIALIZATION_MODULE = createExceptionSerializationModule();
   
-  private static final ObjectMapper DEFAULT_OBJECT_MAPPER = createDefaultObjectMapper();
+  /***
+   * A default {@link ObjectMapper} instance with default configuration for JSON
+   * serialization.
+   * <p>
+   * The instance is configured with:
+   * <ul>
+   * <li>{@link SerializationFeature#FAIL_ON_EMPTY_BEANS} disabled</li>
+   * <li>{@link SerializationFeature#ORDER_MAP_ENTRIES_BY_KEYS} enabled</li>
+   * <li>{@link Include#NON_NULL} serialization inclusion</li>
+   * <li>Registration of module to serialize exceptions as readable strings</li>
+   * <li>{@link MapperFeature#SORT_PROPERTIES_ALPHABETICALLY} enabled</li>
+   * </ul>
+   * 
+   * Use this mapper as a singleton wherever possible to avoid the overhead of 
+   * creating multiple instances.
+   * But in case you need a different configuration, use {@link #createDefaultObjectMapper()}
+   * to create a new instance with the same default configuration you can overwrite.
+   */
+  public static final ObjectMapper DEFAULT_OBJECT_MAPPER = createDefaultObjectMapper();
+  
+  /****
+   * A default {@link JsonFactory} instance with default configuration for JSON
+   * serialization.
+   * <p>
+   * The instance is created from {@link #DEFAULT_OBJECT_MAPPER}.
+   * 
+   * Use this factory as a singleton wherever possible to avoid the overhead of
+   * creating multiple instances.
+   */
+  public static final JsonFactory DEFAULT_JSON_FACTORY = DEFAULT_OBJECT_MAPPER.getFactory();
   
   private static SimpleModule createExceptionSerializationModule() {
     SimpleModule m = new SimpleModule();
@@ -596,6 +626,101 @@ public class JsonUtil {
   public static void writeIntField(JsonGenerator gen, String fieldName, Integer value) throws IOException {
     if (value != null) {
       gen.writeNumberField(fieldName, value);
+    }
+  }
+  
+  /**
+   * Writes a BigDecimal value to the JSON generator.
+   * 
+   * @param gen   the JSON generator to write to
+   * @param value the value to write, if <code>null</code> a JSON null value will be written
+   * @throws IOException If an error occurs while writing to the generator
+   */
+  public static void writeBigDecimalValue(JsonGenerator gen, BigDecimal value) throws IOException {
+    if (value != null) {
+      gen.writeNumber(value);
+    } else {
+      gen.writeNull();
+    }
+  }
+  
+  /**
+   * Writes a Boolean value to the JSON generator.
+   * 
+   * @param gen   the JSON generator to write to
+   * @param value the value to write, if <code>null</code> a JSON null value will
+   *              be written
+   * @throws IOException If an error occurs while writing to the generator
+   */
+  public static void writeBooleanValue(JsonGenerator gen, Boolean value) throws IOException {
+    if (value != null) {
+      gen.writeBoolean(value);
+    } else {
+      gen.writeNull();
+    }
+  }
+  
+  /**
+   * Writes an Object value to the JSON generator.
+   * 
+   * @param gen   the JSON generator to write to
+   * @param value the value to write, if <code>null</code> a JSON null value will
+   *              be written
+   * @throws IOException If an error occurs while writing to the generator
+   */
+  public static void writeObjectValue(JsonGenerator gen, Object value) throws IOException {
+    if (value != null) {
+      gen.writeObject(value);
+    } else {
+      gen.writeNull();
+    }
+  }
+  
+  /**
+   * Writes an Integer value to the JSON generator.
+   * 
+   * @param gen   the JSON generator to write to
+   * @param value the value to write, if <code>null</code> a JSON null value will
+   *              be written
+   * @throws IOException If an error occurs while writing to the generator
+   */
+  public static void writeIntegerValue(JsonGenerator gen, Integer value) throws IOException {
+    if (value != null) {
+      gen.writeNumber(value);
+    } else {
+      gen.writeNull();
+    }
+  }
+  
+  /**
+   * Writes an Long value to the JSON generator.
+   * 
+   * @param gen   the JSON generator to write to
+   * @param value the value to write, if <code>null</code> a JSON null value will
+   *              be written
+   * @throws IOException If an error occurs while writing to the generator
+   */
+  public static void writeLongValue(JsonGenerator gen, Long value) throws IOException {
+    if (value != null) {
+      gen.writeNumber(value);
+    } else {
+      gen.writeNull();
+    }
+  }
+  
+  /**
+   * Writes a String value to the JSON generator.
+   * 
+   * @param gen   the JSON generator to write to
+   * @param value the value to write, if <code>null</code> a JSON null value will
+   *              be written
+   * @throws IOException If an error occurs while writing to the generator
+   */
+  public static void writeStringValue(JsonGenerator gen, String value) throws IOException {
+    if (value != null) {
+      gen.writeString(value);
+    } else {
+      gen.writeNull();
     }
   }
   
