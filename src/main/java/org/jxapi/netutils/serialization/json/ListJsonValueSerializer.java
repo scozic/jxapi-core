@@ -25,7 +25,7 @@ public class ListJsonValueSerializer<T> extends AbstractJsonMessageSerializer<Li
    * @param elementSerializer the serializer for the list elements
    */
   @SuppressWarnings("unchecked")
-  protected ListJsonValueSerializer(StdSerializer<T> elementSerializer) {
+  public ListJsonValueSerializer(StdSerializer<T> elementSerializer) {
     super((Class<List<T>>) (Class<?>) List.class);
     this.elementSerializer = elementSerializer;
   }

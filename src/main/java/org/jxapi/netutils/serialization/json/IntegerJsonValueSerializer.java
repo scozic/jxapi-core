@@ -7,18 +7,18 @@ import org.jxapi.util.JsonUtil;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.SerializerProvider;
 
-public class IntegerValueJsonSerializer extends AbstractJsonMessageSerializer<Integer> {
+public class IntegerJsonValueSerializer extends AbstractJsonMessageSerializer<Integer> {
 
-  private static final IntegerValueJsonSerializer INSTANCE = new IntegerValueJsonSerializer();
+  private static final IntegerJsonValueSerializer INSTANCE = new IntegerJsonValueSerializer();
 
   /**
    * @return the singleton instance of this class
    */
-  public static IntegerValueJsonSerializer getInstance() {
+  public static IntegerJsonValueSerializer getInstance() {
     return INSTANCE;
   }
 
-  private IntegerValueJsonSerializer() {
+  private IntegerJsonValueSerializer() {
     super(Integer.class);
   }
 

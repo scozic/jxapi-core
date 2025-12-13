@@ -18,6 +18,7 @@ import org.jxapi.netutils.deserialization.json.field.LongJsonFieldDeserializer;
 import org.jxapi.netutils.deserialization.json.field.MapJsonFieldDeserializer;
 import org.jxapi.netutils.deserialization.json.field.RawObjectJsonFieldDeserializer;
 import org.jxapi.netutils.deserialization.json.field.StringJsonFieldDeserializer;
+import org.jxapi.netutils.serialization.MessageSerializer;
 import org.jxapi.pojo.descriptor.Field;
 import org.jxapi.pojo.descriptor.FieldBuilder;
 import org.jxapi.pojo.descriptor.Type;
@@ -770,6 +771,96 @@ public void testGetClassNameForField_BIGDECIMAL_Type() {
               PojoGenUtil.getJsonMessageDeserializerClassName("com.x.y.pojo.MyObject"));
   }
   
+  @Test
+  public void testGetNewJsonValueSerializerInstructionForPrimitiveTypes() {
+      Imports imports = new Imports();
+
+      String result = PojoGenUtil.getNewJsonValueSerializerInstruction(Type.BIGDECIMAL, null, false, imports);
+      Assert.assertEquals("BigDecimalJsonValueSerializer.getInstance()", result);
+      Assert.assertTrue(imports.contains("org.jxapi.netutils.serialization.json.BigDecimalJsonValueSerializer"));
+
+      result = PojoGenUtil.getNewJsonValueSerializerInstruction(Type.BOOLEAN, null, false, imports);
+      Assert.assertEquals("BooleanJsonValueSerializer.getInstance()", result);
+      Assert.assertTrue(imports.contains("org.jxapi.netutils.serialization.json.BooleanJsonValueSerializer"));
+      
+      result = PojoGenUtil.getNewJsonValueSerializerInstruction(Type.INT, null, false, imports);
+      Assert.assertEquals("IntegerJsonValueSerializer.getInstance()", result);
+      Assert.assertTrue(imports.contains("org.jxapi.netutils.serialization.json.IntegerJsonValueSerializer"));
+      
+      result = PojoGenUtil.getNewJsonValueSerializerInstruction(Type.LONG, null, false, imports);
+      Assert.assertEquals("LongJsonValueSerializer.getInstance()", result);
+      Assert.assertTrue(imports.contains("org.jxapi.netutils.serialization.json.LongJsonValueSerializer"));
+      
+      result = PojoGenUtil.getNewJsonValueSerializerInstruction(Type.STRING, null, false, imports);
+      Assert.assertEquals("StringJsonValueSerializer.getInstance()", result);
+      Assert.assertTrue(imports.contains("org.jxapi.netutils.serialization.json.StringJsonValueSerializer"));
+  }
+
+  @Test
+  public void testGetNewJsonValueSerializerInstructionForList() {
+      Imports imports = new Imports();
+
+      // Test for LIST with STRING subType
+      Type listType = Type.fromTypeName("STRING_LIST");
+      String result = PojoGenUtil.getNewJsonValueSerializerInstruction(listType, null, false, imports);
+      Assert.assertEquals("new ListJsonValueSerializer<>(StringJsonValueSerializer.getInstance())", result);
+      Assert.assertTrue(imports.contains("org.jxapi.netutils.serialization.json.ListJsonValueSerializer"));
+      Assert.assertTrue(imports.contains("org.jxapi.netutils.serialization.json.StringJsonValueSerializer"));
+  }
+
+  @Test
+  public void testGetNewJsonValueSerializerInstructionForMap() {
+      Imports imports = new Imports();
+
+      // Test for MAP with STRING subType
+      Type mapType = Type.fromTypeName("STRING_MAP");
+      String result = PojoGenUtil.getNewJsonValueSerializerInstruction(mapType, null, false, imports);
+      Assert.assertEquals("new MapJsonValueSerializer<>(StringJsonValueSerializer.getInstance())", result);
+      Assert.assertTrue(imports.contains("org.jxapi.netutils.serialization.json.MapJsonValueSerializer"));
+      Assert.assertTrue(imports.contains("org.jxapi.netutils.serialization.json.StringJsonValueSerializer"));
+  }
+
+  @Test
+  public void testGetNewJsonValueSerializerInstructionForExternalObject() {
+      Imports imports = new Imports();
+
+      // Test for OBJECT with external class
+      String objectClassName = "com.example.MyObject";
+      Type objectType = Type.OBJECT;
+      String result = PojoGenUtil.getNewJsonValueSerializerInstruction(objectType, objectClassName, true, imports);
+      Assert.assertEquals("ObjectJsonValueSerializer.getInstance()", result);
+      Assert.assertTrue(imports.contains("org.jxapi.netutils.serialization.json.ObjectJsonValueSerializer"));
+  }
   
+  @Test
+  public void testGetNewJsonValueSerializerInstructionForRawObject() {
+      Imports imports = new Imports();
+
+      // Test for OBJECT with external class
+      String objectClassName = "java.lang.Object";
+      Type objectType = Type.OBJECT;
+      String result = PojoGenUtil.getNewJsonValueSerializerInstruction(objectType, objectClassName, true, imports);
+      Assert.assertEquals("ObjectJsonValueSerializer.getInstance()", result);
+      Assert.assertTrue(imports.contains("org.jxapi.netutils.serialization.json.ObjectJsonValueSerializer"));
+  }
   
+  @Test
+  public void testGetNewJsonValueSerializerInstructionForObject() {
+      Imports imports = new Imports();
+
+      // Test for OBJECT with internal (in generator scope) class
+      String objectClassName = "com.x.gen.MyObject";
+      Type objectType = Type.OBJECT;
+      String result = PojoGenUtil.getNewJsonValueSerializerInstruction(objectType, objectClassName, false, imports);
+      Assert.assertEquals("new MyObjectSerializer()", result);
+      Assert.assertTrue(imports.contains("com.x.gen.serializers.MyObjectSerializer"));
+  }
+  
+  @Test
+  public void testGetNewJsonValueSerializerNullType() {
+      Imports imports = new Imports();
+      String result = PojoGenUtil.getNewJsonValueSerializerInstruction(null, null, false, imports);
+      Assert.assertEquals("MessageSerializer.NO_OP", result);
+      Assert.assertTrue(imports.contains(MessageSerializer.class));
+  }
 }

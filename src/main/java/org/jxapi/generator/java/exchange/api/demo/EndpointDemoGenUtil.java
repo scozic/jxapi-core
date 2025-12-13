@@ -526,54 +526,6 @@ public class EndpointDemoGenUtil {
                 .collect(Collectors.toList());
   }
   
-//  private static ConfigPropertyDescriptor createDemoConfigPropertyGroup(ExchangeApiDescriptor api) {
-//    String apiName = api.getName();
-//    return ConfigPropertyDescriptor.createGroup
-//      (
-//        apiName, 
-//        String.format("Configuration properties for %s API group endpoints demo snippets", apiName), 
-//        List.of
-//        (
-//          ConfigPropertyDescriptor.createGroup
-//          (
-//            REST_DEMO_GROUP_NAME, 
-//            String.format("Configuration properties for REST endpoints demo snippets of %s API group", apiName), 
-//            CollectionUtil.emptyIfNull(api.getRestEndpoints()).stream()
-//              .map
-//                (endpoint -> createEndpointDemoConfigPropertyForEndpointRequest
-//                  (
-//                   api, 
-//                   REST_DEMO_GROUP_NAME,
-//                   endpoint.getName(), 
-//                   endpoint.getRequest()
-//                  )
-//                )
-//              .filter(o -> !CollectionUtil.isEmpty(o.getProperties()))
-//              .collect(Collectors.toList())
-//          ),
-//          ConfigPropertyDescriptor.createGroup
-//          (
-//            WEBSOCKET_DEMO_GROUP_NAME, 
-//            String.format("Configuration properties for websocket endpoints demo snippets of %s API group", apiName), 
-//            CollectionUtil.emptyIfNull(api.getWebsocketEndpoints()).stream()
-//              .map
-//                (endpoint -> createEndpointDemoConfigPropertyForEndpointRequest
-//                  (
-//                    api, 
-//                    WEBSOCKET_DEMO_GROUP_NAME,
-//                    endpoint.getName(), 
-//                    endpoint.getRequest()
-//                  )
-//                )
-//              .filter(o -> !CollectionUtil.isEmpty(o.getProperties()))
-//              .collect(Collectors.toList())
-//          )
-//        ).stream()
-//         .filter(o -> !CollectionUtil.isEmpty(o.getProperties()))
-//         .collect(Collectors.toList())
-//      );
-//  }
-  
   private static ConfigPropertyDescriptor createDemoConfigPropertyGroup(ExchangeApiDescriptor api) {
     String apiName = api.getName();
     return ConfigPropertyDescriptor.builder()
@@ -589,7 +541,7 @@ public class EndpointDemoGenUtil {
                          api, 
                          REST_DEMO_GROUP_NAME,
                          endpoint.getName(), 
-                         endpoint.getRequest()))
+                         getEndpointDemoRequest(api, endpoint)))
                     .filter(o -> !CollectionUtil.isEmpty(o.getProperties()))
                     .collect(Collectors.toList())
                 ).build(),
@@ -610,6 +562,15 @@ public class EndpointDemoGenUtil {
           .filter(o -> !CollectionUtil.isEmpty(o.getProperties()))
             .collect(Collectors.toList()))
         .build();
+  }
+  
+  private static Field getEndpointDemoRequest(ExchangeApiDescriptor exchangeApiDescriptor, RestEndpointDescriptor restApi) {
+    boolean hasArguments = ExchangeApiGenUtil.restEndpointHasArguments(restApi, exchangeApiDescriptor);
+    boolean requestHasBody = ExchangeApiGenUtil.restEndpointRequestHasBody(restApi);
+    if (requestHasBody && !hasArguments) {
+      return ExchangeApiGenUtil.createDefaultRawBodyRequest();
+    }
+    return restApi.getRequest();
   }
   
   private static ConfigPropertyDescriptor createEndpointDemoConfigPropertyForEndpointRequest(

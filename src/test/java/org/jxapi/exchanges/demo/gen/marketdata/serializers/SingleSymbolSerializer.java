@@ -4,16 +4,18 @@ import java.io.IOException;
 
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.SerializerProvider;
-import com.fasterxml.jackson.databind.ser.std.StdSerializer;
 import javax.annotation.processing.Generated;
 import org.jxapi.exchanges.demo.gen.marketdata.pojo.SingleSymbol;
+import org.jxapi.netutils.serialization.json.AbstractJsonMessageSerializer;
+import static org.jxapi.util.JsonUtil.writeStringField;
 
 /**
  * Jackson JSON Serializer for org.jxapi.exchanges.demo.gen.marketdata.pojo.SingleSymbol
  * @see SingleSymbol
  */
 @Generated("org.jxapi.generator.java.pojo.JsonPojoSerializerGenerator")
-public class SingleSymbolSerializer extends StdSerializer<SingleSymbol> {
+public class SingleSymbolSerializer extends AbstractJsonMessageSerializer<SingleSymbol> {
+  
   /**
    * Constructor
    */
@@ -21,12 +23,11 @@ public class SingleSymbolSerializer extends StdSerializer<SingleSymbol> {
     super(SingleSymbol.class);
   }
   
+  
   @Override
   public void serialize(SingleSymbol value, JsonGenerator gen, SerializerProvider provider) throws IOException {
     gen.writeStartObject();
-    if (value.getSymbol() != null){
-      gen.writeStringField("s", String.valueOf(value.getSymbol()));
-    }
+    writeStringField(gen, "s", value.getSymbol());
     gen.writeEndObject();
   }
 }

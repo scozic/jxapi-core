@@ -107,7 +107,6 @@ public class ExchangeReadmeMdGenerator {
       s.append("See ")
        .append(JavaCodeGenUtil.getHtmlLink(docUrl, "reference documentation"))
        .append("\n");
-      
     }
     s.append("### Quick start\n")
      .append("\n")
@@ -148,8 +147,8 @@ public class ExchangeReadmeMdGenerator {
         s.append(generatePropertiesTable("Configuration properties", properties, null, docPlaceHolderResolver));
       }
       if (hasDemoProperties) {
-        String exchangeDemoPropertiesInterfaceName = ExchangeGenUtil
-            .getExchangeDemoPropertiesClassName(exchangeDescriptor);
+        String exchangeDemoPropertiesInterfaceName = 
+          ExchangeGenUtil.getExchangeDemoPropertiesClassName(exchangeDescriptor);
         s.append(
             "\nSome demo configuration properties are available to tune common request parameters used in demo snippets, as ")
             .append(getSourceFileLink(exchangeDemoPropertiesInterfaceName, "test"))
@@ -261,6 +260,13 @@ public class ExchangeReadmeMdGenerator {
     List<String> columns = List.of("Endpoint", "Description", "API Reference");
     List<List<String>> cells = new ArrayList<>();
     restEndpoints.forEach(r -> {
+      boolean hasArguments = ExchangeApiGenUtil.restEndpointHasArguments(r, api);
+      boolean requestHasBody = ExchangeApiGenUtil.restEndpointRequestHasBody(r);
+      if (requestHasBody && !hasArguments) {
+        r = r.deepClone();
+        r.setRequest(ExchangeApiGenUtil.createDefaultRawBodyRequest());
+        hasArguments = true;
+      }
       Type requestDataType = PojoGenUtil.getFieldType(r.getRequest());
       String requestClassName = null;
       if (requestDataType != null && requestDataType.isObject()) {
@@ -270,6 +276,10 @@ public class ExchangeReadmeMdGenerator {
                     r);
       }
       List<String> row = new ArrayList<>();
+      // FIXME
+      if ("postRestRequestNoParameters".equals(r.getName())) {
+        System.out.println("HERE");
+      }
       String method = new StringBuilder()
           .append(ExchangeApiGenUtil.getRestApiMethodName(r, restEndpoints))
           .append("(")

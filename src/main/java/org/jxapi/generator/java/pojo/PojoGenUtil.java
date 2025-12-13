@@ -25,6 +25,15 @@ import org.jxapi.netutils.deserialization.json.field.LongJsonFieldDeserializer;
 import org.jxapi.netutils.deserialization.json.field.MapJsonFieldDeserializer;
 import org.jxapi.netutils.deserialization.json.field.RawObjectJsonFieldDeserializer;
 import org.jxapi.netutils.deserialization.json.field.StringJsonFieldDeserializer;
+import org.jxapi.netutils.serialization.MessageSerializer;
+import org.jxapi.netutils.serialization.json.BigDecimalJsonValueSerializer;
+import org.jxapi.netutils.serialization.json.BooleanJsonValueSerializer;
+import org.jxapi.netutils.serialization.json.IntegerJsonValueSerializer;
+import org.jxapi.netutils.serialization.json.ListJsonValueSerializer;
+import org.jxapi.netutils.serialization.json.LongJsonValueSerializer;
+import org.jxapi.netutils.serialization.json.MapJsonValueSerializer;
+import org.jxapi.netutils.serialization.json.ObjectJsonValueSerializer;
+import org.jxapi.netutils.serialization.json.StringJsonValueSerializer;
 import org.jxapi.pojo.descriptor.CanonicalType;
 import org.jxapi.pojo.descriptor.Field;
 import org.jxapi.pojo.descriptor.Type;
@@ -907,6 +916,72 @@ public class PojoGenUtil {
           + ".class)";
       }
       String objectDeserializerClass = getJsonMessageDeserializerClassName(objectClassName);
+      imports.add(objectDeserializerClass);
+      return "new " +  JavaCodeGenUtil.getClassNameWithoutPackage(objectDeserializerClass) + "()";
+    default:
+      throw new IllegalArgumentException("Unexpected field type:" + type);
+    }
+  }
+  
+
+  /**
+   * Returns the instruction to create a new instance of a {@link AbstractJsonValueSerializer} for the given type.
+   * <p>
+   * <ul>
+   * <li>if this type is a 'primitive' type, returns the instruction to get the
+   * singleton instance of the corresponding JsonValueSerializer:
+   * <li>If this type is a 'List' type, returns the instruction to create a new instance of
+   * a {@link ListJsonValueSerializer} with the corresponding serializer as item serializer for subType of the list, see {@link Type#getSubType()}.
+   * <li>If this type is a 'Map' type, returns the instruction to create a new instance of
+   * a {@link MapJsonValueSerializer} with the corresponding serializer as item serializer for subType of the map, see {@link Type#getSubType()}.
+   * <li>If this type is an 'Object' type, returns the returns the reference to the singleton instance of 
+   * a {@link ObjectJsonValueSerializer} if the object class name is <code>java.lang.Object</code> or if the object class is external,
+   * @param type
+   * @param objectClassName
+   * @param externalClass
+   * @param imports
+   * @return
+   */
+  
+  public static String getNewJsonValueSerializerInstruction(
+      Type type, 
+      String objectClassName, 
+      boolean externalClass, 
+      Imports imports) {
+    if (type == null) {
+      imports.add(MessageSerializer.class.getName());
+      return MessageSerializer.class.getSimpleName() + ".NO_OP";
+    }
+    switch (type.getCanonicalType()) {
+    case BIGDECIMAL:
+      imports.add(BigDecimalJsonValueSerializer.class.getName());
+      return BigDecimalJsonValueSerializer.class.getSimpleName() + GET_INSTANCE;
+    case BOOLEAN:
+      imports.add(BooleanJsonValueSerializer.class.getName());
+      return  BooleanJsonValueSerializer.class.getSimpleName() + GET_INSTANCE;
+    case INT:
+      imports.add(IntegerJsonValueSerializer.class.getName());
+      return  IntegerJsonValueSerializer.class.getSimpleName() + GET_INSTANCE;
+    case LONG:
+      imports.add(LongJsonValueSerializer.class.getName());
+      return  LongJsonValueSerializer.class.getSimpleName() + GET_INSTANCE;
+    case STRING:
+      imports.add(StringJsonValueSerializer.class.getName());
+      return  StringJsonValueSerializer.class.getSimpleName() + GET_INSTANCE;
+    case LIST:
+      imports.add(ListJsonValueSerializer.class.getName());
+      return "new " + ListJsonValueSerializer.class.getSimpleName() + "<>(" 
+          + getNewJsonValueSerializerInstruction(type.getSubType(), objectClassName, externalClass, imports) + ")";
+    case MAP:
+      imports.add(MapJsonValueSerializer.class.getName());
+      return "new " + MapJsonValueSerializer.class.getSimpleName() 
+          + "<>(" + getNewJsonValueSerializerInstruction(type.getSubType(), objectClassName, externalClass, imports) +")";
+    case OBJECT:
+      if (Object.class.getName().equals(objectClassName) || externalClass) {
+        imports.add(ObjectJsonValueSerializer.class.getName());
+        return ObjectJsonValueSerializer.class.getSimpleName() + GET_INSTANCE;
+      }
+      String objectDeserializerClass = getSerializerClassName(objectClassName);
       imports.add(objectDeserializerClass);
       return "new " +  JavaCodeGenUtil.getClassNameWithoutPackage(objectDeserializerClass) + "()";
     default:

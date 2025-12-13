@@ -4,17 +4,20 @@ import java.io.IOException;
 
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.SerializerProvider;
-import com.fasterxml.jackson.databind.ser.std.StdSerializer;
 import javax.annotation.processing.Generated;
 import org.jxapi.exchanges.demo.gen.marketdata.pojo.DemoExchangeMarketDataExchangeInfoResponsePayload;
-import org.jxapi.util.EncodingUtil;
+import org.jxapi.netutils.serialization.json.AbstractJsonMessageSerializer;
+import static org.jxapi.util.JsonUtil.writeBigDecimalField;
+import static org.jxapi.util.JsonUtil.writeObjectField;
+import static org.jxapi.util.JsonUtil.writeStringField;
 
 /**
  * Jackson JSON Serializer for org.jxapi.exchanges.demo.gen.marketdata.pojo.DemoExchangeMarketDataExchangeInfoResponsePayload
  * @see DemoExchangeMarketDataExchangeInfoResponsePayload
  */
 @Generated("org.jxapi.generator.java.pojo.JsonPojoSerializerGenerator")
-public class DemoExchangeMarketDataExchangeInfoResponsePayloadSerializer extends StdSerializer<DemoExchangeMarketDataExchangeInfoResponsePayload> {
+public class DemoExchangeMarketDataExchangeInfoResponsePayloadSerializer extends AbstractJsonMessageSerializer<DemoExchangeMarketDataExchangeInfoResponsePayload> {
+  
   /**
    * Constructor
    */
@@ -22,21 +25,14 @@ public class DemoExchangeMarketDataExchangeInfoResponsePayloadSerializer extends
     super(DemoExchangeMarketDataExchangeInfoResponsePayload.class);
   }
   
+  
   @Override
   public void serialize(DemoExchangeMarketDataExchangeInfoResponsePayload value, JsonGenerator gen, SerializerProvider provider) throws IOException {
     gen.writeStartObject();
-    if (value.getSymbol() != null){
-      gen.writeStringField("symbol", String.valueOf(value.getSymbol()));
-    }
-    if (value.getMinOrderSize() != null){
-      gen.writeStringField("minOrderSize", EncodingUtil.bigDecimalToString(value.getMinOrderSize()));
-    }
-    if (value.getOrderTickSize() != null){
-      gen.writeStringField("orderTickSize", EncodingUtil.bigDecimalToString(value.getOrderTickSize()));
-    }
-    if (value.getBlob() != null){
-      gen.writeObjectField("blob", value.getBlob());
-    }
+    writeStringField(gen, "symbol", value.getSymbol());
+    writeBigDecimalField(gen, "minOrderSize", value.getMinOrderSize());
+    writeBigDecimalField(gen, "orderTickSize", value.getOrderTickSize());
+    writeObjectField(gen, "blob", value.getBlob());
     gen.writeEndObject();
   }
 }

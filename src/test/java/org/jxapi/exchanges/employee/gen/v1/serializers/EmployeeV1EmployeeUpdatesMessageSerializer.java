@@ -4,16 +4,19 @@ import java.io.IOException;
 
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.SerializerProvider;
-import com.fasterxml.jackson.databind.ser.std.StdSerializer;
 import javax.annotation.processing.Generated;
 import org.jxapi.exchanges.employee.gen.v1.pojo.EmployeeV1EmployeeUpdatesMessage;
+import org.jxapi.netutils.serialization.json.AbstractJsonMessageSerializer;
+import static org.jxapi.util.JsonUtil.writeCustomSerializerField;
+import static org.jxapi.util.JsonUtil.writeStringField;
 
 /**
  * Jackson JSON Serializer for org.jxapi.exchanges.employee.gen.v1.pojo.EmployeeV1EmployeeUpdatesMessage
  * @see EmployeeV1EmployeeUpdatesMessage
  */
 @Generated("org.jxapi.generator.java.pojo.JsonPojoSerializerGenerator")
-public class EmployeeV1EmployeeUpdatesMessageSerializer extends StdSerializer<EmployeeV1EmployeeUpdatesMessage> {
+public class EmployeeV1EmployeeUpdatesMessageSerializer extends AbstractJsonMessageSerializer<EmployeeV1EmployeeUpdatesMessage> {
+  
   /**
    * Constructor
    */
@@ -21,15 +24,16 @@ public class EmployeeV1EmployeeUpdatesMessageSerializer extends StdSerializer<Em
     super(EmployeeV1EmployeeUpdatesMessage.class);
   }
   
+  private EmployeeSerializer employeeSerializer;
+  
   @Override
   public void serialize(EmployeeV1EmployeeUpdatesMessage value, JsonGenerator gen, SerializerProvider provider) throws IOException {
     gen.writeStartObject();
-    if (value.getEventType() != null){
-      gen.writeStringField("eventType", String.valueOf(value.getEventType()));
+    writeStringField(gen, "eventType", value.getEventType());
+    if(employeeSerializer == null) {
+      employeeSerializer = new EmployeeSerializer();
     }
-    if (value.getEmployee() != null){
-      gen.writeObjectField("employee", value.getEmployee());
-    }
+    writeCustomSerializerField(gen, "employee", value.getEmployee(), employeeSerializer, provider);
     gen.writeEndObject();
   }
 }

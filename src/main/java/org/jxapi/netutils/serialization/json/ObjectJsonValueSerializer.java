@@ -28,8 +28,6 @@ public class ObjectJsonValueSerializer extends AbstractJsonMessageSerializer<Obj
 
   private ObjectJsonValueSerializer() {
     super(Object.class);
-    // Skip setting up a custom ObjectMapper, use the default one
-    this.objectMapper = JsonUtil.DEFAULT_OBJECT_MAPPER;
   }
 
   @Override

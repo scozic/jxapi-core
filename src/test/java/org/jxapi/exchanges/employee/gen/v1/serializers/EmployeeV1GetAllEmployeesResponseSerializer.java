@@ -4,16 +4,21 @@ import java.io.IOException;
 
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.SerializerProvider;
-import com.fasterxml.jackson.databind.ser.std.StdSerializer;
 import javax.annotation.processing.Generated;
+import org.jxapi.exchanges.employee.gen.v1.pojo.Employee;
 import org.jxapi.exchanges.employee.gen.v1.pojo.EmployeeV1GetAllEmployeesResponse;
+import org.jxapi.netutils.serialization.json.AbstractJsonMessageSerializer;
+import org.jxapi.netutils.serialization.json.ListJsonValueSerializer;
+import static org.jxapi.util.JsonUtil.writeCustomSerializerField;
+import static org.jxapi.util.JsonUtil.writeIntField;
 
 /**
  * Jackson JSON Serializer for org.jxapi.exchanges.employee.gen.v1.pojo.EmployeeV1GetAllEmployeesResponse
  * @see EmployeeV1GetAllEmployeesResponse
  */
 @Generated("org.jxapi.generator.java.pojo.JsonPojoSerializerGenerator")
-public class EmployeeV1GetAllEmployeesResponseSerializer extends StdSerializer<EmployeeV1GetAllEmployeesResponse> {
+public class EmployeeV1GetAllEmployeesResponseSerializer extends AbstractJsonMessageSerializer<EmployeeV1GetAllEmployeesResponse> {
+  
   /**
    * Constructor
    */
@@ -21,18 +26,17 @@ public class EmployeeV1GetAllEmployeesResponseSerializer extends StdSerializer<E
     super(EmployeeV1GetAllEmployeesResponse.class);
   }
   
+  private ListJsonValueSerializer<Employee> employeesSerializer;
+  
   @Override
   public void serialize(EmployeeV1GetAllEmployeesResponse value, JsonGenerator gen, SerializerProvider provider) throws IOException {
     gen.writeStartObject();
-    if (value.getPage() != null){
-      gen.writeNumberField("page", value.getPage());
+    writeIntField(gen, "page", value.getPage());
+    writeIntField(gen, "totalPages", value.getTotalPages());
+    if(employeesSerializer == null) {
+      employeesSerializer = new ListJsonValueSerializer<>(new EmployeeSerializer());
     }
-    if (value.getTotalPages() != null){
-      gen.writeNumberField("totalPages", value.getTotalPages());
-    }
-    if (value.getEmployees() != null){
-      gen.writeObjectField("employees", value.getEmployees());
-    }
+    writeCustomSerializerField(gen, "employees", value.getEmployees(), employeesSerializer, provider);
     gen.writeEndObject();
   }
 }

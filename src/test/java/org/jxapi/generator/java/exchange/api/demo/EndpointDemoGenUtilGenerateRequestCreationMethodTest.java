@@ -27,6 +27,7 @@ import org.jxapi.netutils.deserialization.json.field.ListJsonFieldDeserializer;
 import org.jxapi.netutils.deserialization.json.field.LongJsonFieldDeserializer;
 import org.jxapi.netutils.deserialization.json.field.MapJsonFieldDeserializer;
 import org.jxapi.netutils.deserialization.json.field.StringJsonFieldDeserializer;
+import org.jxapi.netutils.rest.HttpMethod;
 import org.jxapi.pojo.descriptor.Field;
 import org.jxapi.pojo.descriptor.Type;
 
@@ -48,6 +49,7 @@ public class EndpointDemoGenUtilGenerateRequestCreationMethodTest {
     exchangeApiDescriptor = new ExchangeApiDescriptor();
     exchangeApiDescriptor.setName("myApi");
     restEndpointDescriptor = new RestEndpointDescriptor();
+    restEndpointDescriptor.setHttpMethod(HttpMethod.GET.name());
     restEndpointDescriptor.setName("myRestEndpoint");
     exchangeApiDescriptor.setRestEndpoints(List.of(restEndpointDescriptor));
     websocketEndpointDescriptor = new WebsocketEndpointDescriptor();

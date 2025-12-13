@@ -936,7 +936,7 @@ public class RestEndpointClassesGeneratorTest {
     srcFolder = ClassesGeneratorTestUtil.generateTmpDir();
     ExchangeDescriptor exchange = ExchangeDescriptorParser.fromJson(Paths.get(".", "src", "test", "resources", "testExchangeDescriptorWithAllRestRequestDataTypes.json"));
     ExchangeApiDescriptor api = exchange.getApis().get(0);
-    RestEndpointDescriptor restEndpoint = ClassesGeneratorTestUtil.findRestEndpointByName("postRestRequestDataTypeObjectNoParameters", api);
+    RestEndpointDescriptor restEndpoint = ClassesGeneratorTestUtil.findRestEndpointByName("postRestRequestNoParameters", api);
     RestEndpointClassesGenerator generator = new RestEndpointClassesGenerator(exchange, api, restEndpoint, null);
     generator.generateClasses(srcFolder);
     checkJavaFilesCount(srcFolder, 0);        

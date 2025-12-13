@@ -257,12 +257,18 @@ public class ExchangeApiInterfaceGenerator extends JavaTypeGenerator {
 
   private void generateRestEndpointMethodDeclaration(RestEndpointDescriptor restApi) {
     boolean hasArguments = ExchangeApiGenUtil.restEndpointHasArguments(restApi, exchangeApiDescriptor);
+    boolean requestHasBody = ExchangeApiGenUtil.restEndpointRequestHasBody(restApi);
+    if (requestHasBody && !hasArguments) {
+      restApi = restApi.deepClone();
+      restApi.setRequest(ExchangeApiGenUtil.createDefaultRawBodyRequest());
+      hasArguments = true;
+    }
     Field request = restApi.getRequest();
     Type requestDataType = PojoGenUtil.getFieldType(request);
     Field response = restApi.getResponse();
     Type responseDataType = PojoGenUtil.getFieldType(response);
     String requestSimpleClassName = "Object";
-    String requestArgName = null;
+    String requestArgName = null;    
     if (hasArguments) {
       String requestClassName = null;
       if (requestDataType != null && requestDataType.isObject()) {
@@ -276,7 +282,10 @@ public class ExchangeApiInterfaceGenerator extends JavaTypeGenerator {
                     getImports(), 
                     requestClassName);
       requestArgName = ExchangeApiGenUtil.getRequestArgName(request.getName());
+    } else if (requestHasBody) {
+      requestArgName = "body";
     }
+    
     boolean hasResponse = ExchangeApiGenUtil.restEndpointHasResponse(restApi, exchangeApiDescriptor);
     String responseSimpleClassName = "String";
     if (hasResponse) {
@@ -300,10 +309,7 @@ public class ExchangeApiInterfaceGenerator extends JavaTypeGenerator {
         .append("> ")
         .append(apiMethodName)
         .append("(")
-        .append(hasArguments? requestSimpleClassName 
-                     + " " +
-                     requestArgName
-                   : "")
+        .append(requestArgName != null? requestSimpleClassName + " " + requestArgName : "")
         .append(")").toString(); 
     StringBuilder javaDoc = new StringBuilder();
     if (restApi.getDescription() != null) {

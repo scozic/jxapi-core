@@ -4,16 +4,18 @@ import java.io.IOException;
 
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.SerializerProvider;
-import com.fasterxml.jackson.databind.ser.std.StdSerializer;
 import javax.annotation.processing.Generated;
 import org.jxapi.exchanges.demo.gen.marketdata.pojo.DemoExchangeMarketDataTickerStreamRequest;
+import org.jxapi.netutils.serialization.json.AbstractJsonMessageSerializer;
+import static org.jxapi.util.JsonUtil.writeStringField;
 
 /**
  * Jackson JSON Serializer for org.jxapi.exchanges.demo.gen.marketdata.pojo.DemoExchangeMarketDataTickerStreamRequest
  * @see DemoExchangeMarketDataTickerStreamRequest
  */
 @Generated("org.jxapi.generator.java.pojo.JsonPojoSerializerGenerator")
-public class DemoExchangeMarketDataTickerStreamRequestSerializer extends StdSerializer<DemoExchangeMarketDataTickerStreamRequest> {
+public class DemoExchangeMarketDataTickerStreamRequestSerializer extends AbstractJsonMessageSerializer<DemoExchangeMarketDataTickerStreamRequest> {
+  
   /**
    * Constructor
    */
@@ -21,12 +23,11 @@ public class DemoExchangeMarketDataTickerStreamRequestSerializer extends StdSeri
     super(DemoExchangeMarketDataTickerStreamRequest.class);
   }
   
+  
   @Override
   public void serialize(DemoExchangeMarketDataTickerStreamRequest value, JsonGenerator gen, SerializerProvider provider) throws IOException {
     gen.writeStartObject();
-    if (value.getSymbol() != null){
-      gen.writeStringField("symbol", String.valueOf(value.getSymbol()));
-    }
+    writeStringField(gen, "symbol", value.getSymbol());
     gen.writeEndObject();
   }
 }

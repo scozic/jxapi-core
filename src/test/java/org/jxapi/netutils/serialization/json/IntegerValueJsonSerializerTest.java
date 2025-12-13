@@ -10,8 +10,8 @@ public class IntegerValueJsonSerializerTest {
 
   @Test
   public void testSerialize() {
-    Assert.assertNull(IntegerValueJsonSerializer.getInstance().serialize(null));
-    Assert.assertEquals("123", IntegerValueJsonSerializer.getInstance().serialize(123));
+    Assert.assertNull(IntegerJsonValueSerializer.getInstance().serialize(null));
+    Assert.assertEquals("123", IntegerJsonValueSerializer.getInstance().serialize(123));
   }
 
 }

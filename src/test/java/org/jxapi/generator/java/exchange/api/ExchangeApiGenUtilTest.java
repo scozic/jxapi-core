@@ -15,6 +15,7 @@ import org.jxapi.exchange.descriptor.gen.WebsocketEndpointDescriptor;
 import org.jxapi.exchange.descriptor.gen.WebsocketTopicMatcherDescriptor;
 import org.jxapi.generator.java.Imports;
 import org.jxapi.generator.java.JavaCodeGenUtil;
+import org.jxapi.netutils.rest.HttpMethod;
 import org.jxapi.netutils.websocket.multiplexing.WSMTMFUtil;
 import org.jxapi.netutils.websocket.multiplexing.WebsocketMessageTopicMatcherFactory;
 import org.jxapi.pojo.descriptor.Field;
@@ -1565,5 +1566,41 @@ public class ExchangeApiGenUtilTest {
           classBody.toString());
       Assert.assertEquals(1, imports.size());
       Assert.assertTrue(imports.contains(BigDecimal.class.getName()));
+    }
+    
+    @Test
+    public void testCreateDefaultRawBodyRequest() {
+      Field expected = Field.builder()
+          .name("body")
+          .type(Type.STRING)
+          .description("Raw body request field.")
+          .build();
+      Field actual = ExchangeApiGenUtil.createDefaultRawBodyRequest();
+      Assert.assertEquals(expected, actual);
+    }
+    
+    @Test
+    public void testRestEndpointRequestHasBody() {
+      RestEndpointDescriptor getEndpointWithRequestHasBodySet = RestEndpointDescriptor.builder()
+          .requestHasBody(true)
+          .httpMethod(HttpMethod.GET.name())
+          .build();
+      Assert.assertTrue(ExchangeApiGenUtil.restEndpointRequestHasBody(getEndpointWithRequestHasBodySet));
+      
+      RestEndpointDescriptor postEndpointWithRequestHasBodySet = RestEndpointDescriptor.builder()
+          .requestHasBody(false)
+          .httpMethod(HttpMethod.POST.name())
+          .build();
+      Assert.assertFalse(ExchangeApiGenUtil.restEndpointRequestHasBody(postEndpointWithRequestHasBodySet));
+      
+      RestEndpointDescriptor getEndpointWithRequestHasBodyUnset = RestEndpointDescriptor.builder()
+          .httpMethod(HttpMethod.GET.name())
+          .build();
+      Assert.assertFalse(ExchangeApiGenUtil.restEndpointRequestHasBody(getEndpointWithRequestHasBodyUnset));
+      
+      RestEndpointDescriptor postEndpointWithRequestHasBodyUnset = RestEndpointDescriptor.builder()
+          .httpMethod(HttpMethod.POST.name())
+          .build();
+      Assert.assertTrue(ExchangeApiGenUtil.restEndpointRequestHasBody(postEndpointWithRequestHasBodyUnset));
     }
 }

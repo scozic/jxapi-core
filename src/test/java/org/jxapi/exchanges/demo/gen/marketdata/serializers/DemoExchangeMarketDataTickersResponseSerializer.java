@@ -4,16 +4,21 @@ import java.io.IOException;
 
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.SerializerProvider;
-import com.fasterxml.jackson.databind.ser.std.StdSerializer;
 import javax.annotation.processing.Generated;
 import org.jxapi.exchanges.demo.gen.marketdata.pojo.DemoExchangeMarketDataTickersResponse;
+import org.jxapi.exchanges.demo.gen.marketdata.pojo.DemoExchangeMarketDataTickersResponsePayload;
+import org.jxapi.netutils.serialization.json.AbstractJsonMessageSerializer;
+import org.jxapi.netutils.serialization.json.MapJsonValueSerializer;
+import static org.jxapi.util.JsonUtil.writeCustomSerializerField;
+import static org.jxapi.util.JsonUtil.writeIntField;
 
 /**
  * Jackson JSON Serializer for org.jxapi.exchanges.demo.gen.marketdata.pojo.DemoExchangeMarketDataTickersResponse
  * @see DemoExchangeMarketDataTickersResponse
  */
 @Generated("org.jxapi.generator.java.pojo.JsonPojoSerializerGenerator")
-public class DemoExchangeMarketDataTickersResponseSerializer extends StdSerializer<DemoExchangeMarketDataTickersResponse> {
+public class DemoExchangeMarketDataTickersResponseSerializer extends AbstractJsonMessageSerializer<DemoExchangeMarketDataTickersResponse> {
+  
   /**
    * Constructor
    */
@@ -21,15 +26,16 @@ public class DemoExchangeMarketDataTickersResponseSerializer extends StdSerializ
     super(DemoExchangeMarketDataTickersResponse.class);
   }
   
+  private MapJsonValueSerializer<DemoExchangeMarketDataTickersResponsePayload> payloadSerializer;
+  
   @Override
   public void serialize(DemoExchangeMarketDataTickersResponse value, JsonGenerator gen, SerializerProvider provider) throws IOException {
     gen.writeStartObject();
-    if (value.getResponseCode() != null){
-      gen.writeNumberField("responseCode", value.getResponseCode());
+    writeIntField(gen, "responseCode", value.getResponseCode());
+    if(payloadSerializer == null) {
+      payloadSerializer = new MapJsonValueSerializer<>(new DemoExchangeMarketDataTickersResponsePayloadSerializer());
     }
-    if (value.getPayload() != null){
-      gen.writeObjectField("payload", value.getPayload());
-    }
+    writeCustomSerializerField(gen, "payload", value.getPayload(), payloadSerializer, provider);
     gen.writeEndObject();
   }
 }

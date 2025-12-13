@@ -2,6 +2,7 @@ package org.jxapi.generator.java.pojo;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.stream.Collectors;
@@ -90,7 +91,7 @@ public class JsonMessageDeserializerGenerator extends JavaTypeGenerator {
       Type type = PojoGenUtil.getFieldType(field);
       body.append(indent)
         .append("case \"")
-        .append(field.getMsgField() != null? field.getMsgField() : field.getName())
+        .append(Optional.ofNullable(field.getMsgField()).orElse(field.getName()))
         .append("\":\n");
       if (!type.getCanonicalType().isPrimitive 
           && !JavaCodeGenUtil.isFullClassName(field.getObjectName())) {

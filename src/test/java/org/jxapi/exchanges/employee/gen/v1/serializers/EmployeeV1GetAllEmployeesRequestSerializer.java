@@ -4,16 +4,18 @@ import java.io.IOException;
 
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.SerializerProvider;
-import com.fasterxml.jackson.databind.ser.std.StdSerializer;
 import javax.annotation.processing.Generated;
 import org.jxapi.exchanges.employee.gen.v1.pojo.EmployeeV1GetAllEmployeesRequest;
+import org.jxapi.netutils.serialization.json.AbstractJsonMessageSerializer;
+import static org.jxapi.util.JsonUtil.writeIntField;
 
 /**
  * Jackson JSON Serializer for org.jxapi.exchanges.employee.gen.v1.pojo.EmployeeV1GetAllEmployeesRequest
  * @see EmployeeV1GetAllEmployeesRequest
  */
 @Generated("org.jxapi.generator.java.pojo.JsonPojoSerializerGenerator")
-public class EmployeeV1GetAllEmployeesRequestSerializer extends StdSerializer<EmployeeV1GetAllEmployeesRequest> {
+public class EmployeeV1GetAllEmployeesRequestSerializer extends AbstractJsonMessageSerializer<EmployeeV1GetAllEmployeesRequest> {
+  
   /**
    * Constructor
    */
@@ -21,15 +23,12 @@ public class EmployeeV1GetAllEmployeesRequestSerializer extends StdSerializer<Em
     super(EmployeeV1GetAllEmployeesRequest.class);
   }
   
+  
   @Override
   public void serialize(EmployeeV1GetAllEmployeesRequest value, JsonGenerator gen, SerializerProvider provider) throws IOException {
     gen.writeStartObject();
-    if (value.getPage() != null){
-      gen.writeNumberField("page", value.getPage());
-    }
-    if (value.getSize() != null){
-      gen.writeNumberField("size", value.getSize());
-    }
+    writeIntField(gen, "page", value.getPage());
+    writeIntField(gen, "size", value.getSize());
     gen.writeEndObject();
   }
 }

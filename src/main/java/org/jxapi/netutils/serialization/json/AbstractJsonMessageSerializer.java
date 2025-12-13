@@ -1,10 +1,13 @@
 package org.jxapi.netutils.serialization.json;
 
+import java.io.IOException;
+import java.io.StringWriter;
+
 import org.jxapi.netutils.serialization.MessageSerializer;
 import org.jxapi.util.JsonUtil;
 
+import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.databind.ser.std.StdSerializer;
 
 /**
@@ -19,14 +22,6 @@ import com.fasterxml.jackson.databind.ser.std.StdSerializer;
  * @see MessageSerializer
  */
 public abstract class AbstractJsonMessageSerializer<T> extends StdSerializer<T> implements MessageSerializer<T> {
-
-  /**
-   * The Jackson ObjectMapper used for serialization.
-   * </p>
-   * Initialized lazily in the {@link #serialize(Object)} method, to avoid 
-   * creating it if not needed and this instance is used only for {@link StdSerializer} functionality.
-   */
-  protected ObjectMapper objectMapper;
   
   /**
    * Constructor
@@ -38,13 +33,16 @@ public abstract class AbstractJsonMessageSerializer<T> extends StdSerializer<T> 
 
   @Override
   public String serialize(T obj) {
-    if (objectMapper == null) {
-      objectMapper = JsonUtil.createDefaultObjectMapper();
-      SimpleModule m = new SimpleModule();
-      m.addSerializer(this);
-      objectMapper.registerModule(m);
+    if (obj == null) {
+      return null;
     }
-    return JsonUtil.pojoToJsonString(obj, objectMapper);
+    StringWriter writer = new StringWriter();
+    try (JsonGenerator gen = JsonUtil.DEFAULT_JSON_FACTORY.createGenerator(writer)) {
+      serialize(obj, gen, JsonUtil.DEFAULT_OBJECT_MAPPER.getSerializerProvider());
+    } catch (IOException e) {
+      throw new IllegalStateException("Error serializing object to JSON", e);
+    }
+    return writer.toString();
   }
 
 }

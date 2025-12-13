@@ -21,6 +21,7 @@ import org.jxapi.generator.java.JavaCodeGenUtil;
 import org.jxapi.generator.java.exchange.ExchangeGenUtil;
 import org.jxapi.generator.java.exchange.constants.ConstantsGenUtil;
 import org.jxapi.generator.java.pojo.PojoGenUtil;
+import org.jxapi.netutils.rest.HttpMethod;
 import org.jxapi.netutils.websocket.multiplexing.WSMTMFUtil;
 import org.jxapi.netutils.websocket.multiplexing.WebsocketMessageTopicMatcherFactory;
 import org.jxapi.pojo.descriptor.CanonicalType;
@@ -41,6 +42,8 @@ public class ExchangeApiGenUtil {
   private static final String OF_EXCHANGE = " of exchange:";
 
   private static final String OF_EXCHANGE_API = " of exchange API:";
+  
+  public static final String RAW_BODY_REST_REQUEST_ARG_NAME = "body";
 
   private ExchangeApiGenUtil() {}
   
@@ -1117,6 +1120,42 @@ public class ExchangeApiGenUtil {
           .toString();
     }
     return res;
+  }
+  
+  /**
+   * Creates a default raw body REST request field.
+   * When an enpoint does not define a request field, but request has a body,
+   * which is the case of HTTP methods like POST, PUT, PATCH, or when REST endpoint
+   * <code>requestHasBody</code> is set to true, then a default String parameter
+   * is defined on enpoint method to allow passing the raw body of the request.
+   * @return A Field of string type named 'body' with description 'Raw body
+   *         request field.'
+   */
+  public static final Field createDefaultRawBodyRequest() {
+    return Field.builder()
+        .name(RAW_BODY_REST_REQUEST_ARG_NAME)
+        .type(Type.STRING)
+        .description("Raw body request field.")
+        .build();
+  }
+  
+  /**
+   * Determines if a REST endpoint has a body in its request.
+   * <p>
+   * If {@link RestEndpointDescriptor#isRequestHasBody()} is defined, its value is
+   * returned.
+   * <p>
+   * Otherwise, the default behavior is applied based on HTTP method of the
+   * endpoint: for HTTP methods POST, PUT, PATCH, the request has body, for other
+   * HTTP methods it has not.
+   * 
+   * @param restApi The REST endpoint descriptor
+   * @return <code>true</code> if the REST endpoint request has a body.
+   */
+  public static boolean restEndpointRequestHasBody(RestEndpointDescriptor restApi) {
+    return Optional
+        .ofNullable(restApi.isRequestHasBody())
+        .orElse(HttpMethod.valueOf(restApi.getHttpMethod()).requestHasBody);
   }
 
 }

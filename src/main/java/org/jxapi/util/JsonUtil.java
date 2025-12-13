@@ -585,7 +585,7 @@ public class JsonUtil {
    * @throws IOException If an error occurs while writing to the generator
    */
   public static void writeBooleanField(JsonGenerator gen, String fieldName, Boolean value) throws IOException {
-    if (value != null && value) {
+    if (value != null) {
       gen.writeBooleanField(fieldName, value);
     }
   }
@@ -626,6 +626,25 @@ public class JsonUtil {
   public static void writeIntField(JsonGenerator gen, String fieldName, Integer value) throws IOException {
     if (value != null) {
       gen.writeNumberField(fieldName, value);
+    }
+  }
+  
+  /**
+   * Writes a field with a custom serializer to the JSON generator, only if the
+   * value is not null.
+   * 
+   * @param gen             the JSON generator to write to
+   * @param fieldName       the name of the field to write
+   * @param value           the value of the field to write
+   * @param valueSerializer the custom serializer to use for the value
+   * @param provider        the serializer provider
+   * @param <T>             the type of the value
+   * @throws IOException If an error occurs while writing to the generator
+   */
+  public static <T> void writeCustomSerializerField(JsonGenerator gen, String fieldName, T value, StdSerializer<T> valueSerializer, SerializerProvider provider) throws IOException {
+    if (value != null) {
+      gen.writeFieldName(fieldName);
+      valueSerializer.serialize(value,  gen,  provider);
     }
   }
   

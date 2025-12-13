@@ -103,7 +103,7 @@ public class RestResponseTest {
         httpResponse.setHeader("headerName", "headerValue");
         httpResponse.setException(new Exception("fail!"));
         response.setHttpResponse(httpResponse);
-        Assert.assertEquals("{\"httpResponse\":{\"responseCode\":200,\"exception\":\"java.lang.Exception: fail!\",\"body\":\"length=8\",\"headers\":{\"headerName\":[\"headerValue\"]},\"roundTrip\":0}}", response.toString());
+        Assert.assertEquals("{\"httpResponse\":{\"responseCode\":200,\"exception\":\"java.lang.Exception: fail!\",\"body\":\"length=8\",\"headers\":{\"headerName\":[\"headerValue\"]},\"roundTrip\":0},\"paginated\":false}", response.toString());
         response.setPaginated(true);
         Assert.assertEquals("{\"httpResponse\":{\"responseCode\":200,\"exception\":\"java.lang.Exception: fail!\",\"body\":\"length=8\",\"headers\":{\"headerName\":[\"headerValue\"]},\"roundTrip\":0},\"paginated\":true}", response.toString());
     }     

@@ -100,14 +100,10 @@
 					}
 				},
 				{
-					"name": "postRestRequestDataTypeObjectNoParameters",
+					"name": "postRestRequestNoParameters",
 					"httpMethod": "POST",
-					"description": "A sample REST endpoint using OBJECT request data type (implicit), and no parameters",
+					"description": "A sample REST endpoint using POST method (HTTP request expecting a body), and no parameters. One String argument should be generated to pass raw body",
 					"url": "/postNoParameter",
-					"request": {
-						"type": "OBJECT",
-						"properties": []
-					},
 					"response": {
 						"objectName": "GenericResponse"
 					}

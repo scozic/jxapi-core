@@ -25,6 +25,7 @@ import org.jxapi.netutils.rest.HttpMethod;
 import org.jxapi.netutils.rest.HttpRequest;
 import org.jxapi.netutils.rest.ratelimits.RateLimitRule;
 import org.jxapi.netutils.rest.ratelimits.RequestThrottler;
+import org.jxapi.netutils.serialization.MessageSerializer;
 import org.jxapi.netutils.websocket.WebsocketEndpoint;
 import org.jxapi.netutils.websocket.WebsocketListener;
 import org.jxapi.netutils.websocket.WebsocketSubscribeRequest;
@@ -195,6 +196,7 @@ public class ExchangeApiInterfaceImplementationGenerator extends JavaTypeGenerat
   private List<String> rateLimitVariablesDeclarations;
   private List<String> rateLimitVariablesInstantiationDeclarations;
   private List<String> websocketEndpointDeclarations;
+  private List<String> messageSerializerVariablesDeclarations;
   private List<String> messageDeserializerVariablesDeclarations;
   private Map<String, String> restEndpointVariables;
   private Map<String, String> wsEndpointVariables;
@@ -235,6 +237,7 @@ public class ExchangeApiInterfaceImplementationGenerator extends JavaTypeGenerat
     rateLimitVariablesInstantiationDeclarations = new ArrayList<>();
     websocketEndpointDeclarations = new ArrayList<>();
     messageDeserializerVariablesDeclarations = new ArrayList<>();
+    messageSerializerVariablesDeclarations = new ArrayList<>();
     restMethods = new LinkedHashMap<>();
     wsMethods = new LinkedHashMap<>();
     List<RestEndpointDescriptor> restApis = CollectionUtil.emptyIfNull(exchangeApiDescriptor.getRestEndpoints());
@@ -279,6 +282,7 @@ public class ExchangeApiInterfaceImplementationGenerator extends JavaTypeGenerat
     appendVariablesToBody(restEndpointUrlDeclarations, "REST endpoint URLs");
     appendVariablesToBody(rateLimitVariablesDeclarations, "REST endpoints rate limits");
     appendVariablesToBody(websocketEndpointDeclarations, "Websocket endpoints");
+    appendVariablesToBody(messageSerializerVariablesDeclarations, "Request serializers");
     appendVariablesToBody(messageDeserializerVariablesDeclarations, "Message deserializers");
     appendSeparatorCommentLine("Constructor");
     appendMethod(generateConstructorSignature(), generateConstructorBody(), "Constructor");
@@ -589,26 +593,61 @@ public class ExchangeApiInterfaceImplementationGenerator extends JavaTypeGenerat
     Type responseDataType =  PojoGenUtil.getFieldType(response);
     boolean hasArguments = ExchangeApiGenUtil.restEndpointHasArguments(restApi, exchangeApiDescriptor);
     String requestSimpleClassName = "Object";
-    String requestArgName = ExchangeApiGenUtil.DEFAULT_REQUEST_ARG_NAME;
-    
+    String requestArgName = null;
+    String getRequestSerializerInstance = null;
+    boolean requestHasBody = ExchangeApiGenUtil.restEndpointRequestHasBody(restApi);
+    String requestClassName = null;
+    boolean externalClassObjectRequestType = false;
     if (hasArguments) {
-      String requestClassName = null;
+      requestArgName = ExchangeApiGenUtil.DEFAULT_REQUEST_ARG_NAME;
       if (requestDataType.isObject()) {
+        externalClassObjectRequestType = PojoGenUtil.isExternalClassObjectField(request);
         requestClassName = ExchangeApiGenUtil.generateRestEnpointRequestPojoClassName(exchangeDescriptor, exchangeApiDescriptor, restApi);
       }
       requestSimpleClassName = PojoGenUtil.getClassNameForType(
           requestDataType, 
           getImports(), 
           requestClassName); 
+      
+
+    } else if (requestHasBody) {
+      // If request has body but no arguments, the request argument is generated as
+      // String in method signature
+      requestArgName = ExchangeApiGenUtil.DEFAULT_REQUEST_ARG_NAME;
+      requestSimpleClassName = String.class.getSimpleName();
     }
+    
+    String serializerVariableName = null;
+    if (hasArguments && requestHasBody) {
+      getRequestSerializerInstance = PojoGenUtil.getNewJsonValueSerializerInstruction(
+          requestDataType,
+          requestClassName, 
+          externalClassObjectRequestType, 
+          getImports());
+      serializerVariableName = getRestEndpointResponseSerializerVariable(restApi, hasArguments);
+      addImport(MessageSerializer.class);
+      messageSerializerVariablesDeclarations.add(new StringBuilder()
+          .append(PRIVATE_FINAL)
+          .append(MessageSerializer.class.getSimpleName())
+          .append("<")
+          .append(requestSimpleClassName)
+          .append("> ")
+          .append(serializerVariableName)
+          .append(" = ")
+          .append(getRequestSerializerInstance)
+          .append(";")
+          .toString());
+    }
+    
     boolean hasResponse = ExchangeApiGenUtil.restEndpointHasResponse(restApi, exchangeApiDescriptor);
     String responseSimpleClassName = "String";
     String getResponseDeserializerInstance = null;
-    boolean externalClassObjectFieldType = false;
+    
     if (hasResponse) {
+      boolean externalClassObjectResponseType = false;
       String restResponseClassName = null;
       if (responseDataType.isObject()) {
-        externalClassObjectFieldType = PojoGenUtil.isExternalClassObjectField(response);
+        externalClassObjectResponseType = PojoGenUtil.isExternalClassObjectField(response);
         restResponseClassName = ExchangeApiGenUtil.generateRestEnpointResponsePojoClassName(
             exchangeDescriptor, 
             exchangeApiDescriptor, 
@@ -622,7 +661,7 @@ public class ExchangeApiInterfaceImplementationGenerator extends JavaTypeGenerat
       getResponseDeserializerInstance = PojoGenUtil.getNewJsonFieldDeserializerInstruction(
           responseDataType, 
           restResponseClassName,
-          externalClassObjectFieldType,
+          externalClassObjectResponseType,
           getImports());
     } else {
       getResponseDeserializerInstance = PojoGenUtil.getNewJsonFieldDeserializerInstruction(null, null, false, getImports());
@@ -648,13 +687,14 @@ public class ExchangeApiInterfaceImplementationGenerator extends JavaTypeGenerat
         .append("> ")
         .append(apiMethodName)
         .append("(")
-        .append(hasArguments? requestSimpleClassName + " " + requestArgName : "")
+        .append(requestArgName != null? requestSimpleClassName + " " + requestArgName : "")
         .append(")").toString(); 
     
     addImport(FutureRestResponse.class);
-    String urlVariableName = "url";
+    String urlVariableName = null;
     String urlDeclaration = generateRestEndpointUrlVariableDeclaration(restApi);
     if (urlDeclaration != null) {
+      urlVariableName = "url";
       urlDeclaration = new StringBuilder()
           .append("String ")
           .append(urlVariableName)
@@ -685,41 +725,37 @@ public class ExchangeApiInterfaceImplementationGenerator extends JavaTypeGenerat
     addImport(HttpRequest.class);
     addRestEndpointUrlDeclarations(restApi, restEndpointJavadocLink);
     
-    boolean requestHasBody = Optional
-        .ofNullable(restApi.isRequestHasBody())
-        .orElse(HttpMethod.valueOf(restApi.getHttpMethod()).requestHasBody) && hasArguments;
     String createHttpRequestInstruction = generateRestEndpointMethodCreateHttpRequestInstruction(
         restApi,
         urlVariableName, 
-        urlDeclaration, 
         rateLimitsVariable, 
         requestWeight, 
-        hasArguments, 
-        requestArgName);
+        requestHasBody, 
+        requestArgName,
+        serializerVariableName);
         
     apiMethodBody.append(createSubmitRequestInstruction(
         restApi, 
         createHttpRequestInstruction,
-        deserializerVariableName, 
-        requestHasBody));
+        deserializerVariableName));
     
     addRestMethod(OVERRIDE_PUBLIC + apiMethodSignature, apiMethodBody.toString());
   }
   
   private String generateRestEndpointMethodCreateHttpRequestInstruction(
       RestEndpointDescriptor restApi,
-      String urlVariableName, 
-      String urlDeclaration, 
+      String urlVariableName,  
       String rateLimitsVariable, 
       int requestWeight, 
-      boolean hasArguments,
-      String requestArgName) {
+      boolean requestHasBody,
+      String requestArgName,
+      String serializerVariableName) {
     String endpointUrlVar = getRestEndpointUrlVariable(restApi);
     StringBuilder createHttpRequestInstruction = new StringBuilder()
         .append("HttpRequest.create(")
         .append(restEndpointNamesStaticVariables.get(restApi.getName()))
         .append(", ");
-    if (urlDeclaration != null) {
+    if (urlVariableName != null) {
       createHttpRequestInstruction
         .append(urlVariableName);
     } else {
@@ -728,22 +764,36 @@ public class ExchangeApiInterfaceImplementationGenerator extends JavaTypeGenerat
     }
     addImport(HttpMethod.class);
     createHttpRequestInstruction.append(", HttpMethod.")
-        .append(restApi.getHttpMethod())
+      .append(restApi.getHttpMethod())
+      .append(", ")
+      .append(requestArgName)
+      .append(", ")
+      .append(rateLimitsVariable)
+      .append(", ")
+      .append(requestWeight);
+    if (serializerVariableName != null) {
+      createHttpRequestInstruction
         .append(", ")
-        .append(hasArguments? requestArgName: "null")
-        .append(", ")
-        .append(rateLimitsVariable)
-        .append(", ")
-        .append(requestWeight)
+        .append(serializerVariableName)
+        .append(".serialize(")
+        .append(requestArgName)
         .append(")");
+    } else if (requestHasBody) {
+      // No serializer, but request has body: In this case endpoint method is generated with default 'body' argument named 'request' in implementation
+      // of type String and can be used to pass the raw body content.
+      createHttpRequestInstruction
+        .append(", ")
+        .append(requestArgName);
+    }
+    
+      createHttpRequestInstruction.append(")");
     return createHttpRequestInstruction.toString();
   }
   
   private String createSubmitRequestInstruction(
       RestEndpointDescriptor restApi, 
       String createHttpRequestInstruction,
-      String deserializerVariableName,
-      boolean requestHasBody) {
+      String deserializerVariableName) {
     StringBuilder submitRequestInstruction = new StringBuilder();
     String endpointCallArg = "";
     if (Boolean.TRUE.equals(restApi.isPaginated())) {
@@ -754,8 +804,6 @@ public class ExchangeApiInterfaceImplementationGenerator extends JavaTypeGenerat
     }
     submitRequestInstruction
       .append(createHttpRequestInstruction)
-      .append(", ")
-      .append(requestHasBody)
       .append(", ")
       .append(deserializerVariableName)
       .append(endpointCallArg)
@@ -839,6 +887,13 @@ public class ExchangeApiInterfaceImplementationGenerator extends JavaTypeGenerat
   
   private String getRestEndpointResponseDeserializerVariable(RestEndpointDescriptor restApi) {
     return restEndpointVariables.get(restApi.getName()) + "ResponseDeserializer";
+  }
+  
+  private String getRestEndpointResponseSerializerVariable(RestEndpointDescriptor restApi, boolean hasArguments) {
+    if (!hasArguments) {
+      return null;
+    }
+    return restEndpointVariables.get(restApi.getName()) + "RequestSerializer";
   }
   
   private String getWebsocketEndpointVariable(WebsocketEndpointDescriptor websocketApi) {

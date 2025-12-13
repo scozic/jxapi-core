@@ -10,6 +10,8 @@ import org.jxapi.exchange.descriptor.gen.ExchangeDescriptor;
 import org.jxapi.exchange.descriptor.gen.RestEndpointDescriptor;
 import org.jxapi.exchange.descriptor.gen.WebsocketEndpointDescriptor;
 import org.jxapi.generator.java.Imports;
+import org.jxapi.generator.java.exchange.api.ExchangeApiGenUtil;
+import org.jxapi.netutils.rest.HttpMethod;
 import org.jxapi.pojo.descriptor.Field;
 import org.jxapi.pojo.descriptor.Type;
 
@@ -98,6 +100,7 @@ public class EndpointDemoGenUtilTest {
     exchangeApiDescriptor.setName("MyApi");
     RestEndpointDescriptor restEndpointDescriptor = new RestEndpointDescriptor();
     restEndpointDescriptor.setName("MyRestEndpoint");
+    restEndpointDescriptor.setHttpMethod(HttpMethod.GET.toString());
     exchangeApiDescriptor.setRestEndpoints(List.of(restEndpointDescriptor));
     WebsocketEndpointDescriptor websocketEndpointDescriptor = new WebsocketEndpointDescriptor();
     websocketEndpointDescriptor.setName("MyWebsocketEndpoint");
@@ -122,6 +125,7 @@ public class EndpointDemoGenUtilTest {
         .description("This is a test parameter")
         .sampleValue(123).build();
     restEndpointDescriptor.setRequest(request);
+    restEndpointDescriptor.setHttpMethod(HttpMethod.GET.toString());
     exchangeApiDescriptor.setRestEndpoints(List.of(restEndpointDescriptor));
     List<ConfigPropertyDescriptor> demoGroupProp = EndpointDemoGenUtil.collectDemoConfigProperties(exchangeDescriptor);
     Assert.assertEquals(1, demoGroupProp.size());
@@ -144,6 +148,41 @@ public class EndpointDemoGenUtilTest {
         + "This is a test parameter", 
         Type.INT, 
         123);
+  }
+  
+  @Test
+  public void testCollectDemoConfigProperties_RestEndpointWithBodyAndNoRequest() {
+    ExchangeDescriptor exchangeDescriptor = new ExchangeDescriptor();
+    exchangeDescriptor.setId("myExchange");
+    exchangeDescriptor.setBasePackage("com.x.y.z.gen");
+    ExchangeApiDescriptor exchangeApiDescriptor = new ExchangeApiDescriptor();
+    exchangeApiDescriptor.setName("myApi");
+    exchangeDescriptor.setApis(List.of(exchangeApiDescriptor));
+    RestEndpointDescriptor restEndpointDescriptor = new RestEndpointDescriptor();
+    restEndpointDescriptor.setName("myRestEndpoint");
+    restEndpointDescriptor.setHttpMethod(HttpMethod.PUT.toString());
+    exchangeApiDescriptor.setRestEndpoints(List.of(restEndpointDescriptor));
+    List<ConfigPropertyDescriptor> demoGroupProp = EndpointDemoGenUtil.collectDemoConfigProperties(exchangeDescriptor);
+    Assert.assertEquals(1, demoGroupProp.size());
+    ConfigPropertyDescriptor apiDemoGroupProp = demoGroupProp.get(0);
+    checkDemoProperty(apiDemoGroupProp, "myApi", "Configuration properties for myApi API group endpoints demo snippets", null, null);
+    Assert.assertEquals(1, apiDemoGroupProp.getProperties().size());
+    ConfigPropertyDescriptor restEndpointsGroup = apiDemoGroupProp.getProperties().get(0);
+    checkDemoProperty(restEndpointsGroup, "rest", "Configuration properties for REST endpoints demo snippets of myApi API group", null, null);
+    Assert.assertEquals(1, restEndpointsGroup.getProperties().size());
+    ConfigPropertyDescriptor endpointGroup = restEndpointsGroup.getProperties().get(0);
+    checkDemoProperty(endpointGroup, 
+        "myRestEndpoint", 
+        "Configuration properties for REST myRestEndpoint endpoint of myApi API group", 
+        null, 
+        null);
+    Assert.assertEquals(1, endpointGroup.getProperties().size());
+    ConfigPropertyDescriptor endpointRequestProp = endpointGroup.getProperties().get(0);
+    checkDemoProperty(endpointRequestProp, ExchangeApiGenUtil.RAW_BODY_REST_REQUEST_ARG_NAME, 
+        "Demo configuration property for myRestEndpoint.body field.<p>\n"
+        + "Raw body request field.", 
+        Type.STRING, 
+        null);
   }
   
   @Test
@@ -204,6 +243,7 @@ public class EndpointDemoGenUtilTest {
     exchangeDescriptor.setApis(List.of(exchangeApiDescriptor));
     RestEndpointDescriptor restEndpointDescriptor = new RestEndpointDescriptor();
     restEndpointDescriptor.setName("myRestEndpoint");
+    restEndpointDescriptor.setHttpMethod(HttpMethod.POST.toString());
     Field restRequest = Field.builder()
         .description("This is a test parameter")
         .objectName("MyRequest")

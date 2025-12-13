@@ -77,14 +77,21 @@ public class RestEndpointDemoGenerator extends JavaTypeGenerator {
     setTypeDeclaration("public class");
     this.exchange = exchangeDescriptor;
     this.exchangeApi = exchangeApiDescriptor;
+    boolean hasSomeArguments = ExchangeApiGenUtil.restEndpointHasArguments(restApi, exchangeApiDescriptor);
+    boolean requestHasBody = ExchangeApiGenUtil.restEndpointRequestHasBody(restApi);
+    if (requestHasBody && !hasSomeArguments) {
+      restApi = restApi.deepClone();
+      restApi.setRequest(ExchangeApiGenUtil.createDefaultRawBodyRequest());
+      hasSomeArguments = true;
+    }
+    this.hasArguments = hasSomeArguments;
     this.restApi = restApi;
     this.demoProperties = demoProperties;
     this.exchangeClassName = ExchangeGenUtil.getExchangeInterfaceName(exchangeDescriptor);
     this.exchangeSimpleClassName = JavaCodeGenUtil.getClassNameWithoutPackage(exchangeClassName);
-    this.hasArguments = ExchangeApiGenUtil.restEndpointHasArguments(restApi, exchangeApiDescriptor);
     this.request = ExchangeApiGenUtil.resolveFieldProperties(exchangeApiDescriptor, restApi.getRequest());
     this.exchangeImplClassName = ExchangeGenUtil.getExchangeInterfaceImplementationName(exchangeDescriptor);
-    if (hasArguments) {
+    if (hasSomeArguments) {
       requestDataType =  PojoGenUtil.getFieldType(request);
       if (requestDataType.getCanonicalType().isPrimitive) {
         requestClassName = requestDataType.getCanonicalType().typeClass.getName();

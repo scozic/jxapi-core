@@ -4,16 +4,19 @@ import java.io.IOException;
 
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.SerializerProvider;
-import com.fasterxml.jackson.databind.ser.std.StdSerializer;
 import javax.annotation.processing.Generated;
 import org.jxapi.exchanges.employee.gen.v1.pojo.Employee;
+import org.jxapi.netutils.serialization.json.AbstractJsonMessageSerializer;
+import static org.jxapi.util.JsonUtil.writeIntField;
+import static org.jxapi.util.JsonUtil.writeStringField;
 
 /**
  * Jackson JSON Serializer for org.jxapi.exchanges.employee.gen.v1.pojo.Employee
  * @see Employee
  */
 @Generated("org.jxapi.generator.java.pojo.JsonPojoSerializerGenerator")
-public class EmployeeSerializer extends StdSerializer<Employee> {
+public class EmployeeSerializer extends AbstractJsonMessageSerializer<Employee> {
+  
   /**
    * Constructor
    */
@@ -21,21 +24,14 @@ public class EmployeeSerializer extends StdSerializer<Employee> {
     super(Employee.class);
   }
   
+  
   @Override
   public void serialize(Employee value, JsonGenerator gen, SerializerProvider provider) throws IOException {
     gen.writeStartObject();
-    if (value.getId() != null){
-      gen.writeNumberField("id", value.getId());
-    }
-    if (value.getFirstName() != null){
-      gen.writeStringField("firstName", String.valueOf(value.getFirstName()));
-    }
-    if (value.getLastName() != null){
-      gen.writeStringField("lastName", String.valueOf(value.getLastName()));
-    }
-    if (value.getProfile() != null){
-      gen.writeStringField("profile", String.valueOf(value.getProfile()));
-    }
+    writeIntField(gen, "id", value.getId());
+    writeStringField(gen, "firstName", value.getFirstName());
+    writeStringField(gen, "lastName", value.getLastName());
+    writeStringField(gen, "profile", value.getProfile());
     gen.writeEndObject();
   }
 }

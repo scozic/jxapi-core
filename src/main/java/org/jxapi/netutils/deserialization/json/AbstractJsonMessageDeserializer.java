@@ -3,9 +3,9 @@ package org.jxapi.netutils.deserialization.json;
 import java.io.IOException;
 
 import org.jxapi.netutils.deserialization.MessageDeserializer;
+import org.jxapi.util.JsonUtil;
 
 import com.fasterxml.jackson.core.JacksonException;
-import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.DeserializationContext;
 
@@ -24,15 +24,13 @@ import com.fasterxml.jackson.databind.DeserializationContext;
  */
 public abstract class AbstractJsonMessageDeserializer<T> extends com.fasterxml.jackson.databind.JsonDeserializer<T> implements MessageDeserializer<T>, JsonDeserializer<T> {
   
-  private final JsonFactory jsonFactory = new JsonFactory();
-  
   @Override
   public T deserialize(String msg) {
     try {
       if (msg == null) {
         return null;
       }
-      JsonParser parser = jsonFactory.createParser(msg.getBytes());
+      JsonParser parser = JsonUtil.DEFAULT_JSON_FACTORY.createParser(msg.getBytes());
       parser.nextToken();
       return deserialize(parser);
     } catch (IOException e) {
