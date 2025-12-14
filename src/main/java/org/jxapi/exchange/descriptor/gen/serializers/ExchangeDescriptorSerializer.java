@@ -4,16 +4,25 @@ import java.io.IOException;
 
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.SerializerProvider;
-import com.fasterxml.jackson.databind.ser.std.StdSerializer;
 import javax.annotation.processing.Generated;
+import org.jxapi.exchange.descriptor.gen.ConfigPropertyDescriptor;
+import org.jxapi.exchange.descriptor.gen.ConstantDescriptor;
+import org.jxapi.exchange.descriptor.gen.ExchangeApiDescriptor;
 import org.jxapi.exchange.descriptor.gen.ExchangeDescriptor;
+import org.jxapi.exchange.descriptor.gen.RateLimitRuleDescriptor;
+import org.jxapi.netutils.serialization.json.AbstractJsonMessageSerializer;
+import org.jxapi.netutils.serialization.json.ListJsonValueSerializer;
+import static org.jxapi.util.JsonUtil.writeCustomSerializerField;
+import static org.jxapi.util.JsonUtil.writeLongField;
+import static org.jxapi.util.JsonUtil.writeStringField;
 
 /**
  * Jackson JSON Serializer for org.jxapi.exchange.descriptor.gen.ExchangeDescriptor
  * @see ExchangeDescriptor
  */
 @Generated("org.jxapi.generator.java.pojo.JsonPojoSerializerGenerator")
-public class ExchangeDescriptorSerializer extends StdSerializer<ExchangeDescriptor> {
+public class ExchangeDescriptorSerializer extends AbstractJsonMessageSerializer<ExchangeDescriptor> {
+  
   /**
    * Constructor
    */
@@ -21,63 +30,44 @@ public class ExchangeDescriptorSerializer extends StdSerializer<ExchangeDescript
     super(ExchangeDescriptor.class);
   }
   
+  private ListJsonValueSerializer<ConfigPropertyDescriptor> propertiesSerializer;
+  private ListJsonValueSerializer<ConstantDescriptor> constantsSerializer;
+  private ListJsonValueSerializer<ExchangeApiDescriptor> apisSerializer;
+  private ListJsonValueSerializer<RateLimitRuleDescriptor> rateLimitsSerializer;
+  
   @Override
   public void serialize(ExchangeDescriptor value, JsonGenerator gen, SerializerProvider provider) throws IOException {
     gen.writeStartObject();
-    if (value.getId() != null){
-      gen.writeStringField("id", String.valueOf(value.getId()));
+    writeStringField(gen, "id", value.getId());
+    writeStringField(gen, "jxapi", value.getJxapi());
+    writeStringField(gen, "version", value.getVersion());
+    writeStringField(gen, "description", value.getDescription());
+    writeStringField(gen, "docUrl", value.getDocUrl());
+    writeStringField(gen, "basePackage", value.getBasePackage());
+    writeStringField(gen, "httpRequestExecutorFactory", value.getHttpRequestExecutorFactory());
+    writeStringField(gen, "httpRequestInterceptorFactory", value.getHttpRequestInterceptorFactory());
+    writeStringField(gen, "httpUrl", value.getHttpUrl());
+    writeStringField(gen, "websocketUrl", value.getWebsocketUrl());
+    writeStringField(gen, "websocketFactory", value.getWebsocketFactory());
+    writeStringField(gen, "websocketHookFactory", value.getWebsocketHookFactory());
+    writeLongField(gen, "httpRequestTimeout", value.getHttpRequestTimeout());
+    writeStringField(gen, "afterInitHookFactory", value.getAfterInitHookFactory());
+    if(propertiesSerializer == null) {
+      propertiesSerializer = new ListJsonValueSerializer<>(new ConfigPropertyDescriptorSerializer());
     }
-    if (value.getJxapi() != null){
-      gen.writeStringField("jxapi", String.valueOf(value.getJxapi()));
+    writeCustomSerializerField(gen, "properties", value.getProperties(), propertiesSerializer, provider);
+    if(constantsSerializer == null) {
+      constantsSerializer = new ListJsonValueSerializer<>(new ConstantDescriptorSerializer());
     }
-    if (value.getVersion() != null){
-      gen.writeStringField("version", String.valueOf(value.getVersion()));
+    writeCustomSerializerField(gen, "constants", value.getConstants(), constantsSerializer, provider);
+    if(rateLimitsSerializer == null) {
+      rateLimitsSerializer = new ListJsonValueSerializer<>(new RateLimitRuleDescriptorSerializer());
     }
-    if (value.getDescription() != null){
-      gen.writeStringField("description", String.valueOf(value.getDescription()));
+    writeCustomSerializerField(gen, "rateLimits", value.getRateLimits(), rateLimitsSerializer, provider);
+    if(apisSerializer == null) {
+      apisSerializer = new ListJsonValueSerializer<>(new ExchangeApiDescriptorSerializer());
     }
-    if (value.getDocUrl() != null){
-      gen.writeStringField("docUrl", String.valueOf(value.getDocUrl()));
-    }
-    if (value.getBasePackage() != null){
-      gen.writeStringField("basePackage", String.valueOf(value.getBasePackage()));
-    }
-    if (value.getHttpRequestExecutorFactory() != null){
-      gen.writeStringField("httpRequestExecutorFactory", String.valueOf(value.getHttpRequestExecutorFactory()));
-    }
-    if (value.getHttpRequestInterceptorFactory() != null){
-      gen.writeStringField("httpRequestInterceptorFactory", String.valueOf(value.getHttpRequestInterceptorFactory()));
-    }
-    if (value.getHttpUrl() != null){
-      gen.writeStringField("httpUrl", String.valueOf(value.getHttpUrl()));
-    }
-    if (value.getWebsocketUrl() != null){
-      gen.writeStringField("websocketUrl", String.valueOf(value.getWebsocketUrl()));
-    }
-    if (value.getWebsocketFactory() != null){
-      gen.writeStringField("websocketFactory", String.valueOf(value.getWebsocketFactory()));
-    }
-    if (value.getWebsocketHookFactory() != null){
-      gen.writeStringField("websocketHookFactory", String.valueOf(value.getWebsocketHookFactory()));
-    }
-    if (value.getHttpRequestTimeout() != null){
-      gen.writeNumberField("httpRequestTimeout", value.getHttpRequestTimeout());
-    }
-    if (value.getAfterInitHookFactory() != null){
-      gen.writeStringField("afterInitHookFactory", String.valueOf(value.getAfterInitHookFactory()));
-    }
-    if (value.getProperties() != null){
-      gen.writeObjectField("properties", value.getProperties());
-    }
-    if (value.getConstants() != null){
-      gen.writeObjectField("constants", value.getConstants());
-    }
-    if (value.getRateLimits() != null){
-      gen.writeObjectField("rateLimits", value.getRateLimits());
-    }
-    if (value.getApis() != null){
-      gen.writeObjectField("apis", value.getApis());
-    }
+    writeCustomSerializerField(gen, "apis", value.getApis(), apisSerializer, provider);
     gen.writeEndObject();
   }
 }

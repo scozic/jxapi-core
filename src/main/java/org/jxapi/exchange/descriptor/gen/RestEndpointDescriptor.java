@@ -28,16 +28,16 @@ import org.jxapi.util.Pojo;
  * </ul>
  * <h2>Request Serialization</h2> <strong>Serialization to URL Parameters:</strong> <ul>
  *   <li>For HTTP methods that do not have a request body (e.g., {@code GET}, {@code DELETE}), the request is serialized into either URL path parameters (e.g., {@code /value1/value2}) or query parameters (e.g., {@code ?param1=value1}).</li>
- *   <li>By default, request fields are serialized as query parameters. To serialize them as URL path parameters, set the {@link Field#getIn()} property to {@link UrlParameterType#PATH}.</li>
+ *   <li>By default, request fields are serialized as query parameters. To serialize them as URL path parameters, set the {@link org.jxapi.pojo.descriptor.Field#getIn()} property to {@link org.jxapi.pojo.descriptor.UrlParameterType#PATH}.</li>
  *   <li>If the request field is a primitive type, its value is URL-encoded and used as a single parameter.</li>
  *   <li>If the request field is an object without the {@code in} property set, its child fields are serialized as parameters.</li>
  *   <li>If the request field is an object with the {@code in} property set, or if it is a {@code MAP} or {@code LIST}, it is serialized as a URL-encoded JSON object.</li>
  *   <li>All field values are URL-encoded.</li>
  * </ul>
- * <h2>Code Generation</h2> API endpoints are defined as child elements of an {@code api} element in the JSON document (see {@link ExchangeApiDescriptor}). This descriptor is used to generate method declarations in the API interface and their implementations.
- * @see ExchangeApiInterfaceImplementationGenerator @see ExchangeApiClassesGenerator
+ * <h2>Code Generation</h2> API endpoints are defined as child elements of an {@code api} element in the JSON document (see {@link org.jxapi.exchange.descriptor.gen.ExchangeApiDescriptor}). This descriptor is used to generate method declarations in the API interface and their implementations.
+ * @see org.jxapi.exchange.descriptor.gen.ExchangeApiInterfaceImplementationGenerator @see org.jxapi.exchange.descriptor.gen.ExchangeApiClassesGenerator
  * <h2>Request and Response Properties</h2> <ul>
- *   <li>Both {@code request} and {@code response} are described as {@link Field} objects.</li>
+ *   <li>Both {@code request} and {@code response} are described as {@link org.jxapi.pojo.descriptor.Field} objects.</li>
  *   <li>The name of the {@code request} field becomes the argument name in the generated API method.</li>
  *   <li>The name of the {@code response} field is not used in code generation.</li>
  *   <li>If {@code request} is omitted, the generated method will have no arguments.</li>
@@ -176,7 +176,7 @@ public class RestEndpointDescriptor implements Pojo<RestEndpointDescriptor> {
   }
   
   /**
-   * @return The list of IDs of rate limits this REST API subject to. These must be defined either in enclosing API group descriptor (see {@link ExchangeApiDescriptor#getRateLimits()}) or in enclosing exchange descriptor, see {@link ExchangeDescriptor#getRateLimits()}.
+   * @return The list of IDs of rate limits this REST API subject to. These must be defined either in enclosing API group descriptor (see {@link org.jxapi.exchange.descriptor.gen.ExchangeApiDescriptor#getRateLimits()}) or in enclosing exchange descriptor, see {@link org.jxapi.exchange.descriptor.gen.ExchangeDescriptor#getRateLimits()}.
    * 
    */
   public List<String> getRateLimits() {
@@ -184,7 +184,7 @@ public class RestEndpointDescriptor implements Pojo<RestEndpointDescriptor> {
   }
   
   /**
-   * @param rateLimits The list of IDs of rate limits this REST API subject to. These must be defined either in enclosing API group descriptor (see {@link ExchangeApiDescriptor#getRateLimits()}) or in enclosing exchange descriptor, see {@link ExchangeDescriptor#getRateLimits()}.
+   * @param rateLimits The list of IDs of rate limits this REST API subject to. These must be defined either in enclosing API group descriptor (see {@link org.jxapi.exchange.descriptor.gen.ExchangeApiDescriptor#getRateLimits()}) or in enclosing exchange descriptor, see {@link org.jxapi.exchange.descriptor.gen.ExchangeDescriptor#getRateLimits()}.
    * 
    */
   public void setRateLimits(List<String> rateLimits) {
@@ -461,7 +461,7 @@ public class RestEndpointDescriptor implements Pojo<RestEndpointDescriptor> {
     
     /**
      * Will set the value of <code>rateLimits</code> field in the builder
-     * @param rateLimits The list of IDs of rate limits this REST API subject to. These must be defined either in enclosing API group descriptor (see {@link ExchangeApiDescriptor#getRateLimits()}) or in enclosing exchange descriptor, see {@link ExchangeDescriptor#getRateLimits()}.
+     * @param rateLimits The list of IDs of rate limits this REST API subject to. These must be defined either in enclosing API group descriptor (see {@link org.jxapi.exchange.descriptor.gen.ExchangeApiDescriptor#getRateLimits()}) or in enclosing exchange descriptor, see {@link org.jxapi.exchange.descriptor.gen.ExchangeDescriptor#getRateLimits()}.
      * 
      * @return Builder instance
      * @see #setRateLimits(List<String>)
@@ -476,7 +476,7 @@ public class RestEndpointDescriptor implements Pojo<RestEndpointDescriptor> {
      * Will add an item to the <code>rateLimits</code> list.
      * @param item Item to add to current <code>rateLimits</code> list
      * @return Builder instance
-     * @see RestEndpointDescriptor#setRateLimits(String)
+     * @see RestEndpointDescriptor#setRateLimits(List)
      */
     public Builder addToRateLimits(String item) {
       if (this.rateLimits == null) {

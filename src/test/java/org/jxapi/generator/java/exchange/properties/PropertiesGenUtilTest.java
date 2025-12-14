@@ -516,6 +516,11 @@ public class PropertiesGenUtilTest {
   }
   
   @Test
+  public void testGetPropertyVariableName_NullProp() {
+    Assert.assertNull(PropertiesGenUtil.getPropertyVariableName(null, null));
+  }
+  
+  @Test
   public void testGetPropertyVariableName_SimplePropWithSameVariableNameAsOtherSimpleProps() {
     ConfigPropertyDescriptor p1 = ConfigPropertyDescriptor.builder()
         .name("p1")
@@ -538,10 +543,6 @@ public class PropertiesGenUtilTest {
         .type(Type.STRING.toString())
         .description("Fourth p1 property with uppercase first letter and underscore")
         .build();
-    //ConfigPropertyDescriptor p1 = ConfigPropertyDescriptor.create("com.x.gen.p1", Type.STRING, null, null);
-    // ConfigPropertyDescriptor p1Up = ConfigPropertyDescriptor.create("com.x.gen.P1", Type.STRING, null, null);
-    //ConfigPropertyDescriptor p1Underscore = ConfigPropertyDescriptor.create("com.x.gen.p1_", Type.STRING, null, null);
-    // ConfigPropertyDescriptor p1UpUnderscore = ConfigPropertyDescriptor.createGroup("com.x.gen.P1_", null, null);
     List<ConfigPropertyDescriptor> allProps = List.of(p1, p1Up, p1Underscore, p1UpUnderscore);
     Assert.assertEquals("P1", PropertiesGenUtil.getPropertyVariableName(p1, allProps));
     Assert.assertEquals("P1_", PropertiesGenUtil.getPropertyVariableName(p1Up, allProps));
@@ -578,9 +579,6 @@ public class PropertiesGenUtilTest {
         .description("Group property for myGrouupProp")
         .properties(List.of())
         .build();
-    //ConfigPropertyDescriptor p1 = ConfigPropertyDescriptor.create("myObjectProp", Type.STRING, "Raw value prop for myGroupProp", null);
-    //ConfigPropertyDescriptor g1 = ConfigPropertyDescriptor.createGroup("myObjectProp", "Group property for myGrouupProp", List.of());
-    //List<ConfigPropertyDescriptor> allProps = List.of(p1, g1);
     List<ConfigPropertyDescriptor> allProps = List.of(p1, g1);
     Assert.assertEquals("MY_OBJECT_PROP", PropertiesGenUtil.getPropertyVariableName(p1, allProps));
     Assert.assertEquals("MyObjectProp", PropertiesGenUtil.getPropertyVariableName(g1, allProps));

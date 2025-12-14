@@ -4,16 +4,20 @@ import java.io.IOException;
 
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.SerializerProvider;
-import com.fasterxml.jackson.databind.ser.std.StdSerializer;
 import javax.annotation.processing.Generated;
 import org.jxapi.exchange.descriptor.gen.WebsocketEndpointDescriptor;
+import org.jxapi.netutils.serialization.json.AbstractJsonMessageSerializer;
+import static org.jxapi.util.JsonUtil.writeCustomSerializerField;
+import static org.jxapi.util.JsonUtil.writeObjectField;
+import static org.jxapi.util.JsonUtil.writeStringField;
 
 /**
  * Jackson JSON Serializer for org.jxapi.exchange.descriptor.gen.WebsocketEndpointDescriptor
  * @see WebsocketEndpointDescriptor
  */
 @Generated("org.jxapi.generator.java.pojo.JsonPojoSerializerGenerator")
-public class WebsocketEndpointDescriptorSerializer extends StdSerializer<WebsocketEndpointDescriptor> {
+public class WebsocketEndpointDescriptorSerializer extends AbstractJsonMessageSerializer<WebsocketEndpointDescriptor> {
+  
   /**
    * Constructor
    */
@@ -21,33 +25,22 @@ public class WebsocketEndpointDescriptorSerializer extends StdSerializer<Websock
     super(WebsocketEndpointDescriptor.class);
   }
   
+  private WebsocketTopicMatcherDescriptorSerializer topicMatcherSerializer;
+  
   @Override
   public void serialize(WebsocketEndpointDescriptor value, JsonGenerator gen, SerializerProvider provider) throws IOException {
     gen.writeStartObject();
-    if (value.getName() != null){
-      gen.writeStringField("name", String.valueOf(value.getName()));
+    writeStringField(gen, "name", value.getName());
+    writeStringField(gen, "description", value.getDescription());
+    writeStringField(gen, "topic", value.getTopic());
+    writeStringField(gen, "topicParametersListSeparator", value.getTopicParametersListSeparator());
+    writeStringField(gen, "docUrl", value.getDocUrl());
+    writeObjectField(gen, "request", value.getRequest());
+    writeObjectField(gen, "message", value.getMessage());
+    if(topicMatcherSerializer == null) {
+      topicMatcherSerializer = new WebsocketTopicMatcherDescriptorSerializer();
     }
-    if (value.getDescription() != null){
-      gen.writeStringField("description", String.valueOf(value.getDescription()));
-    }
-    if (value.getTopic() != null){
-      gen.writeStringField("topic", String.valueOf(value.getTopic()));
-    }
-    if (value.getTopicParametersListSeparator() != null){
-      gen.writeStringField("topicParametersListSeparator", String.valueOf(value.getTopicParametersListSeparator()));
-    }
-    if (value.getDocUrl() != null){
-      gen.writeStringField("docUrl", String.valueOf(value.getDocUrl()));
-    }
-    if (value.getRequest() != null){
-      gen.writeObjectField("request", value.getRequest());
-    }
-    if (value.getMessage() != null){
-      gen.writeObjectField("message", value.getMessage());
-    }
-    if (value.getTopicMatcher() != null){
-      gen.writeObjectField("topicMatcher", value.getTopicMatcher());
-    }
+    writeCustomSerializerField(gen, "topicMatcher", value.getTopicMatcher(), topicMatcherSerializer, provider);
     gen.writeEndObject();
   }
 }

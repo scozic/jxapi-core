@@ -276,10 +276,6 @@ public class ExchangeReadmeMdGenerator {
                     r);
       }
       List<String> row = new ArrayList<>();
-      // FIXME
-      if ("postRestRequestNoParameters".equals(r.getName())) {
-        System.out.println("HERE");
-      }
       String method = new StringBuilder()
           .append(ExchangeApiGenUtil.getRestApiMethodName(r, restEndpoints))
           .append("(")

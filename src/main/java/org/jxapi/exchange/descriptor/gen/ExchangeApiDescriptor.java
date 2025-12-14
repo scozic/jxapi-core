@@ -16,7 +16,7 @@ import org.jxapi.util.Pojo;
 
 /**
  * Part of a JSON document descriptor that describes a group of REST and or Websocket endpoints. Child element of ExchangeDescriptor. <br>
- * <h2>Constants</h2> <ul> <li>Can be specified a List of constants that are used in context of this API group of the exchange wrapper, for instance specific values for some APIs request/response/message properties.</li> <li>Each constant is described as a {@link Constant}</li> </ul> <h2>REST endpoints</h2> <ul> <li>There can be multiple REST endpoints, or no such endpoint, in which case <code>restEndpoints</code> property can be <code>null</code></li> <li>Each REST endpoint is described as a {@link RestEndpointDescriptor}</li> <li>Each REST endpoint share the same HttpRequestExecutor and HttpRequestInterceptor, that are created from factories classes provided  in <code>httpRequestExecutorFactory</code> and <code>httpRequestInterceptorFactory</code> properties </li> <li><code>httpRequestExecutorFactory</code> property may be supplied to specify a factory class that creates HttpRequestExecutor instances, see {@link HttpRequestExecutorFactory}. When property is not set, default {@link JavaNetHttpRequestExecutor} is used</li> <li><code>httpRequestInterceptorFactory</code> property may be supplied to specify a factory class that creates HttpRequestInterceptor instances, see {@link HttpRequestInterceptorFactory}. When property is not set, no request interceptor is used</li> <li>API global Rate limits can be specified for the REST endpoints in <code>rateLimits</code> property. Those limits are shared among all defined REST endpoints.</li> <li>Rate limits from enclosing exchange descriptor are inherited by the API descriptor. Exchange global limit are shared among all REST endpoints of every API specified in exchange</li> </ul> <h2>Websocket endpoints</h2> <ul> <li>There can be multiple Websocket endpoints, or no such endpoint, in which case <code>websocketEndpoints</code> property can be <code>null</code></li> <li>Each Websocket endpoint is described as a {@link WebsocketEndpointDescriptor}</li> <li>Each Websocket endpoint share the same WebsocketFactory and WebsocketHook, that are created from factories classes provided in <code>websocketFactory</code> and <code>websocketHookFactory</code> properties</li> <li><code>websocketFactory</code> property may be supplied to specify a factory class that creates Websocket instances, see {@link WebsocketFactory}. When property is not set, default {@link DefaultWebsocketFactory} is used</li> <li><code>websocketHookFactory</code> property may be supplied to specify a factory class that creates WebsocketHook instances, see {@link WebsocketHookFactory}. When property is not set, no websocket hook is used. Such hook is needed though to implement specific handshake, heartbeat management and socket multiplexing (e.g. subscribing to multiple topics using same socket)</li> <li><code>websocketUrl</code> property may be supplied to specify the URL of the websocket endpoint. When property is not set, the URL is expected to be set by WebsocketHook on WebsocketManager during {@link WebsocketHook#init(org.jxapi.netutils.websocket.WebsocketManager)} or {@link WebsocketHook#beforeConnect()}</li> </ul>
+ * <h1>Constants</h1> <ul> <li>Can be specified a List of constants that are used in context of this API group of the exchange wrapper, for instance specific values for some APIs request/response/message properties.</li> <li>Each constant is described as a {@link org.jxapi.exchange.descriptor.Constant}</li> </ul> <h1>REST endpoints</h1> <ul> <li>There can be multiple REST endpoints, or no such endpoint, in which case <code>restEndpoints</code> property can be <code>null</code></li> <li>Each REST endpoint is described as a {@link org.jxapi.exchange.descriptor.gen.RestEndpointDescriptor}</li> <li>Each REST endpoint share the same HttpRequestExecutor and HttpRequestInterceptor, that are created from factories classes provided  in <code>httpRequestExecutorFactory</code> and <code>httpRequestInterceptorFactory</code> properties </li> <li><code>httpRequestExecutorFactory</code> property may be supplied to specify a factory class that creates HttpRequestExecutor instances, see {@link org.jxapi.netutils.rest.HttpRequestExecutorFactory}. When property is not set, default {@link JavaNetHttpRequestExecutor} is used</li> <li><code>httpRequestInterceptorFactory</code> property may be supplied to specify a factory class that creates HttpRequestInterceptor instances, see {@link org.jxapi.netutils.rest.HttpRequestInterceptorFactory}. When property is not set, no request interceptor is used</li> <li>API global Rate limits can be specified for the REST endpoints in <code>rateLimits</code> property. Those limits are shared among all defined REST endpoints.</li> <li>Rate limits from enclosing exchange descriptor are inherited by the API descriptor. Exchange global limit are shared among all REST endpoints of every API specified in exchange</li> </ul> <h1>Websocket endpoints</h1> <ul> <li>There can be multiple Websocket endpoints, or no such endpoint, in which case <code>websocketEndpoints</code> property can be <code>null</code></li> <li>Each Websocket endpoint is described as a {@link org.jxapi.exchange.descriptor.gen.WebsocketEndpointDescriptor}</li> <li>Each Websocket endpoint share the same WebsocketFactory and WebsocketHook, that are created from factories classes provided in <code>websocketFactory</code> and <code>websocketHookFactory</code> properties</li> <li><code>websocketFactory</code> property may be supplied to specify a factory class that creates Websocket instances, see {@link org.jxapi.netutils.websocket.WebsocketFactory}. When property is not set, default {@link org.jxapi.netutils.websocket.DefaultWebsocketFactory} is used</li> <li><code>websocketHookFactory</code> property may be supplied to specify a factory class that creates WebsocketHook instances, see {@link org.jxapi.netutils.websocket.WebsocketHookFactory}. When property is not set, no websocket hook is used. Such hook is needed though to implement specific handshake, heartbeat management and socket multiplexing (e.g. subscribing to multiple topics using same socket)</li> <li><code>websocketUrl</code> property may be supplied to specify the URL of the websocket endpoint. When property is not set, the URL is expected to be set by WebsocketHook on WebsocketManager during {@link org.jxapi.netutils.websocket.WebsocketHook#init(org.jxapi.netutils.websocket.WebsocketManager)} or {@link org.jxapi.netutils.websocket.WebsocketHook#beforeConnect()}</li> </ul>
  * <h2>Example of corresponding JSON, with sample REST endpoint and WebsocketEndpoint</h2> <pre> { 
  *   "name": "MarketData",
  *   "description": "The market data API of MyTestExchange",
@@ -290,16 +290,16 @@ public class ExchangeApiDescriptor implements Pojo<ExchangeApiDescriptor> {
    * </ul>
    * <h2>Request Serialization</h2> <strong>Serialization to URL Parameters:</strong> <ul>
    *   <li>For HTTP methods that do not have a request body (e.g., {@code GET}, {@code DELETE}), the request is serialized into either URL path parameters (e.g., {@code /value1/value2}) or query parameters (e.g., {@code ?param1=value1}).</li>
-   *   <li>By default, request fields are serialized as query parameters. To serialize them as URL path parameters, set the {@link Field#getIn()} property to {@link UrlParameterType#PATH}.</li>
+   *   <li>By default, request fields are serialized as query parameters. To serialize them as URL path parameters, set the {@link org.jxapi.pojo.descriptor.Field#getIn()} property to {@link org.jxapi.pojo.descriptor.UrlParameterType#PATH}.</li>
    *   <li>If the request field is a primitive type, its value is URL-encoded and used as a single parameter.</li>
    *   <li>If the request field is an object without the {@code in} property set, its child fields are serialized as parameters.</li>
    *   <li>If the request field is an object with the {@code in} property set, or if it is a {@code MAP} or {@code LIST}, it is serialized as a URL-encoded JSON object.</li>
    *   <li>All field values are URL-encoded.</li>
    * </ul>
-   * <h2>Code Generation</h2> API endpoints are defined as child elements of an {@code api} element in the JSON document (see {@link ExchangeApiDescriptor}). This descriptor is used to generate method declarations in the API interface and their implementations.
-   * @see ExchangeApiInterfaceImplementationGenerator @see ExchangeApiClassesGenerator
+   * <h2>Code Generation</h2> API endpoints are defined as child elements of an {@code api} element in the JSON document (see {@link org.jxapi.exchange.descriptor.gen.ExchangeApiDescriptor}). This descriptor is used to generate method declarations in the API interface and their implementations.
+   * @see org.jxapi.exchange.descriptor.gen.ExchangeApiInterfaceImplementationGenerator @see org.jxapi.exchange.descriptor.gen.ExchangeApiClassesGenerator
    * <h2>Request and Response Properties</h2> <ul>
-   *   <li>Both {@code request} and {@code response} are described as {@link Field} objects.</li>
+   *   <li>Both {@code request} and {@code response} are described as {@link org.jxapi.pojo.descriptor.Field} objects.</li>
    *   <li>The name of the {@code request} field becomes the argument name in the generated API method.</li>
    *   <li>The name of the {@code response} field is not used in code generation.</li>
    *   <li>If {@code request} is omitted, the generated method will have no arguments.</li>
@@ -326,16 +326,16 @@ public class ExchangeApiDescriptor implements Pojo<ExchangeApiDescriptor> {
    * </ul>
    * <h2>Request Serialization</h2> <strong>Serialization to URL Parameters:</strong> <ul>
    *   <li>For HTTP methods that do not have a request body (e.g., {@code GET}, {@code DELETE}), the request is serialized into either URL path parameters (e.g., {@code /value1/value2}) or query parameters (e.g., {@code ?param1=value1}).</li>
-   *   <li>By default, request fields are serialized as query parameters. To serialize them as URL path parameters, set the {@link Field#getIn()} property to {@link UrlParameterType#PATH}.</li>
+   *   <li>By default, request fields are serialized as query parameters. To serialize them as URL path parameters, set the {@link org.jxapi.pojo.descriptor.Field#getIn()} property to {@link org.jxapi.pojo.descriptor.UrlParameterType#PATH}.</li>
    *   <li>If the request field is a primitive type, its value is URL-encoded and used as a single parameter.</li>
    *   <li>If the request field is an object without the {@code in} property set, its child fields are serialized as parameters.</li>
    *   <li>If the request field is an object with the {@code in} property set, or if it is a {@code MAP} or {@code LIST}, it is serialized as a URL-encoded JSON object.</li>
    *   <li>All field values are URL-encoded.</li>
    * </ul>
-   * <h2>Code Generation</h2> API endpoints are defined as child elements of an {@code api} element in the JSON document (see {@link ExchangeApiDescriptor}). This descriptor is used to generate method declarations in the API interface and their implementations.
-   * @see ExchangeApiInterfaceImplementationGenerator @see ExchangeApiClassesGenerator
+   * <h2>Code Generation</h2> API endpoints are defined as child elements of an {@code api} element in the JSON document (see {@link org.jxapi.exchange.descriptor.gen.ExchangeApiDescriptor}). This descriptor is used to generate method declarations in the API interface and their implementations.
+   * @see org.jxapi.exchange.descriptor.gen.ExchangeApiInterfaceImplementationGenerator @see org.jxapi.exchange.descriptor.gen.ExchangeApiClassesGenerator
    * <h2>Request and Response Properties</h2> <ul>
-   *   <li>Both {@code request} and {@code response} are described as {@link Field} objects.</li>
+   *   <li>Both {@code request} and {@code response} are described as {@link org.jxapi.pojo.descriptor.Field} objects.</li>
    *   <li>The name of the {@code request} field becomes the argument name in the generated API method.</li>
    *   <li>The name of the {@code response} field is not used in code generation.</li>
    *   <li>If {@code request} is omitted, the generated method will have no arguments.</li>
@@ -349,7 +349,7 @@ public class ExchangeApiDescriptor implements Pojo<ExchangeApiDescriptor> {
   }
   
   /**
-   * @return Part of JSON document describing a crypo exchange API, describes a websocket endpoint where clients subscription can be performed using specified topic and eventual additional parameters. The structure of additional subscription parameters and response format are described as {@link Field} lists.
+   * @return Part of JSON document describing a crypo exchange API, describes a websocket endpoint where clients subscription can be performed using specified topic and eventual additional parameters. The structure of additional subscription parameters and response format are described as {@link org.jxapi.pojo.descriptor.Field} lists.
    * 
    */
   public List<WebsocketEndpointDescriptor> getWebsocketEndpoints() {
@@ -357,7 +357,7 @@ public class ExchangeApiDescriptor implements Pojo<ExchangeApiDescriptor> {
   }
   
   /**
-   * @param websocketEndpoints Part of JSON document describing a crypo exchange API, describes a websocket endpoint where clients subscription can be performed using specified topic and eventual additional parameters. The structure of additional subscription parameters and response format are described as {@link Field} lists.
+   * @param websocketEndpoints Part of JSON document describing a crypo exchange API, describes a websocket endpoint where clients subscription can be performed using specified topic and eventual additional parameters. The structure of additional subscription parameters and response format are described as {@link org.jxapi.pojo.descriptor.Field} lists.
    * 
    */
   public void setWebsocketEndpoints(List<WebsocketEndpointDescriptor> websocketEndpoints) {
@@ -614,7 +614,7 @@ public class ExchangeApiDescriptor implements Pojo<ExchangeApiDescriptor> {
      * Will add an item to the <code>rateLimits</code> list.
      * @param item Item to add to current <code>rateLimits</code> list
      * @return Builder instance
-     * @see ExchangeApiDescriptor#setRateLimits(RateLimitRuleDescriptor)
+     * @see ExchangeApiDescriptor#setRateLimits(List)
      */
     public Builder addToRateLimits(RateLimitRuleDescriptor item) {
       if (this.rateLimits == null) {
@@ -639,16 +639,16 @@ public class ExchangeApiDescriptor implements Pojo<ExchangeApiDescriptor> {
      * </ul>
      * <h2>Request Serialization</h2> <strong>Serialization to URL Parameters:</strong> <ul>
      *   <li>For HTTP methods that do not have a request body (e.g., {@code GET}, {@code DELETE}), the request is serialized into either URL path parameters (e.g., {@code /value1/value2}) or query parameters (e.g., {@code ?param1=value1}).</li>
-     *   <li>By default, request fields are serialized as query parameters. To serialize them as URL path parameters, set the {@link Field#getIn()} property to {@link UrlParameterType#PATH}.</li>
+     *   <li>By default, request fields are serialized as query parameters. To serialize them as URL path parameters, set the {@link org.jxapi.pojo.descriptor.Field#getIn()} property to {@link org.jxapi.pojo.descriptor.UrlParameterType#PATH}.</li>
      *   <li>If the request field is a primitive type, its value is URL-encoded and used as a single parameter.</li>
      *   <li>If the request field is an object without the {@code in} property set, its child fields are serialized as parameters.</li>
      *   <li>If the request field is an object with the {@code in} property set, or if it is a {@code MAP} or {@code LIST}, it is serialized as a URL-encoded JSON object.</li>
      *   <li>All field values are URL-encoded.</li>
      * </ul>
-     * <h2>Code Generation</h2> API endpoints are defined as child elements of an {@code api} element in the JSON document (see {@link ExchangeApiDescriptor}). This descriptor is used to generate method declarations in the API interface and their implementations.
-     * @see ExchangeApiInterfaceImplementationGenerator @see ExchangeApiClassesGenerator
+     * <h2>Code Generation</h2> API endpoints are defined as child elements of an {@code api} element in the JSON document (see {@link org.jxapi.exchange.descriptor.gen.ExchangeApiDescriptor}). This descriptor is used to generate method declarations in the API interface and their implementations.
+     * @see org.jxapi.exchange.descriptor.gen.ExchangeApiInterfaceImplementationGenerator @see org.jxapi.exchange.descriptor.gen.ExchangeApiClassesGenerator
      * <h2>Request and Response Properties</h2> <ul>
-     *   <li>Both {@code request} and {@code response} are described as {@link Field} objects.</li>
+     *   <li>Both {@code request} and {@code response} are described as {@link org.jxapi.pojo.descriptor.Field} objects.</li>
      *   <li>The name of the {@code request} field becomes the argument name in the generated API method.</li>
      *   <li>The name of the {@code response} field is not used in code generation.</li>
      *   <li>If {@code request} is omitted, the generated method will have no arguments.</li>
@@ -669,7 +669,7 @@ public class ExchangeApiDescriptor implements Pojo<ExchangeApiDescriptor> {
      * Will add an item to the <code>restEndpoints</code> list.
      * @param item Item to add to current <code>restEndpoints</code> list
      * @return Builder instance
-     * @see ExchangeApiDescriptor#setRestEndpoints(RestEndpointDescriptor)
+     * @see ExchangeApiDescriptor#setRestEndpoints(List)
      */
     public Builder addToRestEndpoints(RestEndpointDescriptor item) {
       if (this.restEndpoints == null) {
@@ -681,7 +681,7 @@ public class ExchangeApiDescriptor implements Pojo<ExchangeApiDescriptor> {
     
     /**
      * Will set the value of <code>websocketEndpoints</code> field in the builder
-     * @param websocketEndpoints Part of JSON document describing a crypo exchange API, describes a websocket endpoint where clients subscription can be performed using specified topic and eventual additional parameters. The structure of additional subscription parameters and response format are described as {@link Field} lists.
+     * @param websocketEndpoints Part of JSON document describing a crypo exchange API, describes a websocket endpoint where clients subscription can be performed using specified topic and eventual additional parameters. The structure of additional subscription parameters and response format are described as {@link org.jxapi.pojo.descriptor.Field} lists.
      * 
      * @return Builder instance
      * @see #setWebsocketEndpoints(List<WebsocketEndpointDescriptor>)
@@ -696,7 +696,7 @@ public class ExchangeApiDescriptor implements Pojo<ExchangeApiDescriptor> {
      * Will add an item to the <code>websocketEndpoints</code> list.
      * @param item Item to add to current <code>websocketEndpoints</code> list
      * @return Builder instance
-     * @see ExchangeApiDescriptor#setWebsocketEndpoints(WebsocketEndpointDescriptor)
+     * @see ExchangeApiDescriptor#setWebsocketEndpoints(List)
      */
     public Builder addToWebsocketEndpoints(WebsocketEndpointDescriptor item) {
       if (this.websocketEndpoints == null) {

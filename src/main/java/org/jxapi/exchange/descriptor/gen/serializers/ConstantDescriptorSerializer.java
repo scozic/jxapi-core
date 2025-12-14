@@ -4,16 +4,21 @@ import java.io.IOException;
 
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.SerializerProvider;
-import com.fasterxml.jackson.databind.ser.std.StdSerializer;
 import javax.annotation.processing.Generated;
 import org.jxapi.exchange.descriptor.gen.ConstantDescriptor;
+import org.jxapi.netutils.serialization.json.AbstractJsonMessageSerializer;
+import org.jxapi.netutils.serialization.json.ListJsonValueSerializer;
+import static org.jxapi.util.JsonUtil.writeCustomSerializerField;
+import static org.jxapi.util.JsonUtil.writeObjectField;
+import static org.jxapi.util.JsonUtil.writeStringField;
 
 /**
  * Jackson JSON Serializer for org.jxapi.exchange.descriptor.gen.ConstantDescriptor
  * @see ConstantDescriptor
  */
 @Generated("org.jxapi.generator.java.pojo.JsonPojoSerializerGenerator")
-public class ConstantDescriptorSerializer extends StdSerializer<ConstantDescriptor> {
+public class ConstantDescriptorSerializer extends AbstractJsonMessageSerializer<ConstantDescriptor> {
+  
   /**
    * Constructor
    */
@@ -21,24 +26,19 @@ public class ConstantDescriptorSerializer extends StdSerializer<ConstantDescript
     super(ConstantDescriptor.class);
   }
   
+  private ListJsonValueSerializer<ConstantDescriptor> constantsSerializer;
+  
   @Override
   public void serialize(ConstantDescriptor value, JsonGenerator gen, SerializerProvider provider) throws IOException {
     gen.writeStartObject();
-    if (value.getName() != null){
-      gen.writeStringField("name", String.valueOf(value.getName()));
+    writeStringField(gen, "name", value.getName());
+    writeStringField(gen, "description", value.getDescription());
+    writeStringField(gen, "type", value.getType());
+    writeObjectField(gen, "value", value.getValue());
+    if(constantsSerializer == null) {
+      constantsSerializer = new ListJsonValueSerializer<>(new ConstantDescriptorSerializer());
     }
-    if (value.getDescription() != null){
-      gen.writeStringField("description", String.valueOf(value.getDescription()));
-    }
-    if (value.getType() != null){
-      gen.writeStringField("type", String.valueOf(value.getType()));
-    }
-    if (value.getValue() != null){
-      gen.writeObjectField("value", value.getValue());
-    }
-    if (value.getConstants() != null){
-      gen.writeObjectField("constants", value.getConstants());
-    }
+    writeCustomSerializerField(gen, "constants", value.getConstants(), constantsSerializer, provider);
     gen.writeEndObject();
   }
 }

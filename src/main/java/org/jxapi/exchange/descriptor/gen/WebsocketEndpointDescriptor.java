@@ -13,7 +13,7 @@ import org.jxapi.util.EncodingUtil;
 import org.jxapi.util.Pojo;
 
 /**
- * Part of JSON document describing a crypo exchange API, describes a websocket endpoint where clients subscription can be performed using specified topic and eventual additional parameters. The structure of additional subscription parameters and response format are described as {@link Field} lists.
+ * Part of JSON document describing a crypo exchange API, describes a websocket endpoint where clients subscription can be performed using specified topic and eventual additional parameters. The structure of additional subscription parameters and response format are described as {@link org.jxapi.pojo.descriptor.Field} lists.
  * 
  */
 @Generated("org.jxapi.generator.java.pojo.PojoGenerator")

@@ -15,7 +15,7 @@ import org.jxapi.util.EncodingUtil;
 import org.jxapi.util.Pojo;
 
 /**
- * Represents a constant value used across APIs of an exchange or a group of such constants.<br> Exchange descriptor may contain a list of such constants as value of 'constants' property of exchange<br> Such constants will be exposed as static final fields in a generated Java class of the generated Java wrapper class for the exchange.<br> A constant may not be a final constant but a 'group' of constants that functionally come together. For example, when an exchange uses constants to represent bid or ask a side of,  it makes sense to group them together in a single constant group. In this case, final constants of the group will be exposed as static field of a nested public class in the main constant class, named after group name. A constant represents a group when its  <code>constants</code> property is set with a non empty list of nested constants<br> The name of a constant should be a valid camel case Java identifier.<br> The value of a constant must be a 'primitive' type e.g. {@link Type#STRING}, {@link Type#INT}, {@link Type#BOOLEAN}, {@link Type#BIGDECIMAL}, {@link Type#LONG}. It can't be a list, map, or object. <code>value</code> and <code>type</code> properties are relevant only when constant is not a group.<br> The name of a constant should provide a more readable name for the value. The description allows to provide semantic details.<br>
+ * Represents a constant value used across APIs of an exchange or a group of such constants.<br> Exchange descriptor may contain a list of such constants as value of 'constants' property of exchange<br> Such constants will be exposed as static final fields in a generated Java class of the generated Java wrapper class for the exchange.<br> A constant may not be a final constant but a 'group' of constants that functionally come together. For example, when an exchange uses constants to represent bid or ask a side of,  it makes sense to group them together in a single constant group. In this case, final constants of the group will be exposed as static field of a nested public class in the main constant class, named after group name. A constant represents a group when its  <code>constants</code> property is set with a non empty list of nested constants<br> The name of a constant should be a valid camel case Java identifier.<br> The value of a constant must be a 'primitive' type e.g. {@link org.jxapi.pojo.descriptor.Type#STRING}, {@link org.jxapi.pojo.descriptor.Type#INT}, {@link org.jxapi.pojo.descriptor.Type#BOOLEAN},  {@link org.jxapi.pojo.descriptor.Type#BIGDECIMAL}, {@link org.jxapi.pojo.descriptor.Type#LONG}.  It can't be a list, map, or object. <code>value</code> and <code>type</code> properties are relevant only when constant is not a group.<br> The name of a constant should provide a more readable name for the value. The description allows to provide semantic details.<br>
  * 
  */
 @Generated("org.jxapi.generator.java.pojo.PojoGenerator")
@@ -257,7 +257,7 @@ public class ConstantDescriptor implements Pojo<ConstantDescriptor> {
      * Will add an item to the <code>constants</code> list.
      * @param item Item to add to current <code>constants</code> list
      * @return Builder instance
-     * @see ConstantDescriptor#setConstants(ConstantDescriptor)
+     * @see ConstantDescriptor#setConstants(List)
      */
     public Builder addToConstants(ConstantDescriptor item) {
       if (this.constants == null) {

@@ -18,7 +18,7 @@ import com.fasterxml.jackson.core.JsonParser;
  */
 public class RawObjectJsonFieldDeserializer extends AbstractJsonMessageDeserializer<Object> {
   
-  private static RawObjectJsonFieldDeserializer INSTANCE = new RawObjectJsonFieldDeserializer();
+  private static final RawObjectJsonFieldDeserializer INSTANCE = new RawObjectJsonFieldDeserializer();
   
   /**
    * @return the singleton instance of this deserializer

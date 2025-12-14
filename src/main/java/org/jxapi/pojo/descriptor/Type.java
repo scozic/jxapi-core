@@ -1,5 +1,6 @@
 package org.jxapi.pojo.descriptor;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Map;
@@ -27,7 +28,7 @@ import java.util.Optional;
  * {@link Field} that defines the object
  * 
  */
-public class Type {
+public class Type implements Serializable {
   
   private static final Map<String, Type> CANONICAL_TYPES = new HashMap<>(6);
 
@@ -142,6 +143,10 @@ public class Type {
     return et;
   }
   
+  private CanonicalType canonicalType;
+  
+  private Type subType;
+  
   /**
    * Creates a type with no canonical type and no subtype (setters should be used to set these values)
    */
@@ -163,9 +168,7 @@ public class Type {
     }
   }
 
-  private CanonicalType canonicalType;
-  
-  private Type subType;
+
 
   /**
    * Get the canonical type of the type

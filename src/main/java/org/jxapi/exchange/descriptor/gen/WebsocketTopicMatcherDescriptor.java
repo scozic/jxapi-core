@@ -242,7 +242,7 @@ public class WebsocketTopicMatcherDescriptor implements Pojo<WebsocketTopicMatch
      * Will add an item to the <code>and</code> list.
      * @param item Item to add to current <code>and</code> list
      * @return Builder instance
-     * @see WebsocketTopicMatcherDescriptor#setAnd(WebsocketTopicMatcherDescriptor)
+     * @see WebsocketTopicMatcherDescriptor#setAnd(List)
      */
     public Builder addToAnd(WebsocketTopicMatcherDescriptor item) {
       if (this.and == null) {
@@ -269,7 +269,7 @@ public class WebsocketTopicMatcherDescriptor implements Pojo<WebsocketTopicMatch
      * Will add an item to the <code>or</code> list.
      * @param item Item to add to current <code>or</code> list
      * @return Builder instance
-     * @see WebsocketTopicMatcherDescriptor#setOr(WebsocketTopicMatcherDescriptor)
+     * @see WebsocketTopicMatcherDescriptor#setOr(List)
      */
     public Builder addToOr(WebsocketTopicMatcherDescriptor item) {
       if (this.or == null) {

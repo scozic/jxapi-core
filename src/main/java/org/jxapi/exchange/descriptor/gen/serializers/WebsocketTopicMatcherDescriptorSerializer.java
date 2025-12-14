@@ -4,16 +4,21 @@ import java.io.IOException;
 
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.SerializerProvider;
-import com.fasterxml.jackson.databind.ser.std.StdSerializer;
 import javax.annotation.processing.Generated;
 import org.jxapi.exchange.descriptor.gen.WebsocketTopicMatcherDescriptor;
+import org.jxapi.netutils.serialization.json.AbstractJsonMessageSerializer;
+import org.jxapi.netutils.serialization.json.ListJsonValueSerializer;
+import static org.jxapi.util.JsonUtil.writeCustomSerializerField;
+import static org.jxapi.util.JsonUtil.writeObjectField;
+import static org.jxapi.util.JsonUtil.writeStringField;
 
 /**
  * Jackson JSON Serializer for org.jxapi.exchange.descriptor.gen.WebsocketTopicMatcherDescriptor
  * @see WebsocketTopicMatcherDescriptor
  */
 @Generated("org.jxapi.generator.java.pojo.JsonPojoSerializerGenerator")
-public class WebsocketTopicMatcherDescriptorSerializer extends StdSerializer<WebsocketTopicMatcherDescriptor> {
+public class WebsocketTopicMatcherDescriptorSerializer extends AbstractJsonMessageSerializer<WebsocketTopicMatcherDescriptor> {
+  
   /**
    * Constructor
    */
@@ -21,24 +26,23 @@ public class WebsocketTopicMatcherDescriptorSerializer extends StdSerializer<Web
     super(WebsocketTopicMatcherDescriptor.class);
   }
   
+  private ListJsonValueSerializer<WebsocketTopicMatcherDescriptor> andSerializer;
+  private ListJsonValueSerializer<WebsocketTopicMatcherDescriptor> orSerializer;
+  
   @Override
   public void serialize(WebsocketTopicMatcherDescriptor value, JsonGenerator gen, SerializerProvider provider) throws IOException {
     gen.writeStartObject();
-    if (value.getFieldName() != null){
-      gen.writeStringField("fieldName", String.valueOf(value.getFieldName()));
+    writeStringField(gen, "fieldName", value.getFieldName());
+    writeObjectField(gen, "fieldValue", value.getFieldValue());
+    writeStringField(gen, "fieldRegexp", value.getFieldRegexp());
+    if(andSerializer == null) {
+      andSerializer = new ListJsonValueSerializer<>(new WebsocketTopicMatcherDescriptorSerializer());
     }
-    if (value.getFieldValue() != null){
-      gen.writeObjectField("fieldValue", value.getFieldValue());
+    writeCustomSerializerField(gen, "and", value.getAnd(), andSerializer, provider);
+    if(orSerializer == null) {
+      orSerializer = new ListJsonValueSerializer<>(new WebsocketTopicMatcherDescriptorSerializer());
     }
-    if (value.getFieldRegexp() != null){
-      gen.writeStringField("fieldRegexp", String.valueOf(value.getFieldRegexp()));
-    }
-    if (value.getAnd() != null){
-      gen.writeObjectField("and", value.getAnd());
-    }
-    if (value.getOr() != null){
-      gen.writeObjectField("or", value.getOr());
-    }
+    writeCustomSerializerField(gen, "or", value.getOr(), orSerializer, provider);
     gen.writeEndObject();
   }
 }

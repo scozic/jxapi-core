@@ -55,12 +55,6 @@ public class PropertiesClassGeneratorTest {
           .description("My BigDecimal property")
           .defaultValue("1.2345")
           .build();
-        //ConfigPropertyDescriptor stringProp = ConfigPropertyDescriptor.create("myString", Type.STRING, "My String property, for instance ${constants.stringPropDefaultValue}", "${constants.stringPropDefaultValue}");
-        //ConfigPropertyDescriptor stringPropWithNoDescriptionNoDefaultValue = ConfigPropertyDescriptor.create("myStringWithNoDescriptionNoDefaultValue", Type.STRING, null, null);
-        //ConfigPropertyDescriptor intProp = ConfigPropertyDescriptor.create("myInt", Type.INT, "My int property", "${constants.intPropDefaultValue}");
-        //ConfigPropertyDescriptor longProp = ConfigPropertyDescriptor.create("myLong", Type.LONG, "My long property", 1234567890123456L);
-        //ConfigPropertyDescriptor boolProp = ConfigPropertyDescriptor.create("myBool", Type.BOOLEAN, "My boolean property", true);
-        //ConfigPropertyDescriptor bigDecimalProp = ConfigPropertyDescriptor.create("myBigDecimal", Type.BIGDECIMAL, "My BigDecimal property", 1.2345);
         ExchangeDescriptor exchangeDescriptor = new ExchangeDescriptor();
         exchangeDescriptor.setId("myExchange");
         exchangeDescriptor.setBasePackage("com.x.y.exchange");
@@ -77,8 +71,6 @@ public class PropertiesClassGeneratorTest {
             .description("Sample int value")
             .value(42)
             .build();
-        //Constant c1 = Constant.create("stringPropDefaultValue", Type.STRING, "Sample string value", "fooVal");
-        //Constant c2 = Constant.create("intPropDefaultValue", Type.INT, "Sample int value", 42);
         exchangeDescriptor.setConstants(List.of(c1, c2));
         PropertiesClassGenerator gen = new PropertiesClassGenerator("com.x.y.MyProperties", exchangeDescriptor, 
             List.of(stringProp, 
@@ -276,7 +268,6 @@ public class PropertiesClassGeneratorTest {
           .description("My String property, for instance ${constants.stringPropDefaultValue}")
           .defaultValue("${constants.stringPropDefaultValue}")
           .build();
-        //ConfigPropertyDescriptor stringProp = ConfigPropertyDescriptor.create("myString", Type.STRING, "My String property, for instance ${constants.stringPropDefaultValue}", "${constants.stringPropDefaultValue}");
         ConfigPropertyDescriptor stringPropWithNoDescriptionNoDefaultValue = ConfigPropertyDescriptor.builder()
             .name("myStringWithNoDescriptionNoDefaultValue")
             .type(Type.STRING.toString())
@@ -326,15 +317,6 @@ public class PropertiesClassGeneratorTest {
             .description("My group2 description")
             .properties(List.of(groupProp21, boolProp))
             .build();
-        //ConfigPropertyDescriptor stringPropWithNoDescriptionNoDefaultValue = ConfigPropertyDescriptor.create("myStringWithNoDescriptionNoDefaultValue", Type.STRING, null, null);
-        //ConfigPropertyDescriptor intProp = ConfigPropertyDescriptor.create("myInt", Type.INT, "My int property", "${constants.intPropDefaultValue}");
-        //ConfigPropertyDescriptor intListProp = ConfigPropertyDescriptor.create("myIntList", Type.fromTypeName("INT_LIST"), "My int list property", "[1,2,3]");
-        //ConfigPropertyDescriptor longProp = ConfigPropertyDescriptor.create("myLong", Type.LONG, "My long property", 1234567890123456L);
-        ///ConfigPropertyDescriptor boolProp = ConfigPropertyDescriptor.create("myBool", Type.BOOLEAN, "My boolean property", true);
-        //ConfigPropertyDescriptor bigDecimalProp = ConfigPropertyDescriptor.create("myBigDecimal", Type.BIGDECIMAL, "My BigDecimal property", 1.2345);
-        //ConfigPropertyDescriptor groupProp1 = ConfigPropertyDescriptor.createGroup("myGroup1", "My group1 description", List.of(stringPropWithNoDescriptionNoDefaultValue, intProp, intListProp));
-        //ConfigPropertyDescriptor groupProp21 = ConfigPropertyDescriptor.createGroup("myGroup21", "My group nested in group2 description", List.of(longProp));
-        //ConfigPropertyDescriptor groupProp2 = ConfigPropertyDescriptor.createGroup("myGroup2", "My group2 description", List.of(groupProp21, boolProp));
         ExchangeDescriptor exchangeDescriptor = new ExchangeDescriptor();
         exchangeDescriptor.setId("myExchange");
         exchangeDescriptor.setBasePackage("com.x.y.exchange");
@@ -351,8 +333,6 @@ public class PropertiesClassGeneratorTest {
             .description("Sample int value")
             .value(42)
             .build();
-        //Constant c1 = Constant.create("stringPropDefaultValue", Type.STRING, "Sample string value", "fooVal");
-        //Constant c2 = Constant.create("intPropDefaultValue", Type.INT, "Sample int value", 42);
         exchangeDescriptor.setConstants(List.of(c1, c2));
         PropertiesClassGenerator gen = new PropertiesClassGenerator("com.x.y.MyProperties", exchangeDescriptor, 
             List.of(stringProp, 
@@ -683,14 +663,6 @@ public class PropertiesClassGeneratorTest {
           .type(Type.STRING.toString())
           .description("all_ specific prop")
           .build();
-      //ConfigPropertyDescriptor p1 = ConfigPropertyDescriptor.create("p1", Type.STRING, null, null);
-      //ConfigPropertyDescriptor p1Up = ConfigPropertyDescriptor.create("P1", Type.STRING, null, null);
-      //ConfigPropertyDescriptor p1Underscore = ConfigPropertyDescriptor.create("p1_", Type.STRING, null, null);
-      //ConfigPropertyDescriptor subAll = ConfigPropertyDescriptor.create("all", Type.STRING, "all speciific prop for P1_ group properties", null);
-      //ConfigPropertyDescriptor p1UpUnderscore = ConfigPropertyDescriptor.createGroup("P1_", null, List.of(subAll));
-      //ConfigPropertyDescriptor all = ConfigPropertyDescriptor.create("all", Type.STRING, "all speciific prop", null);
-      //ConfigPropertyDescriptor allUnderscore = ConfigPropertyDescriptor.create("all_", Type.STRING, "all_ specific prop", null);
-      
       List<ConfigPropertyDescriptor> allProps = List.of(p1, p1Up, p1Underscore, p1UpUnderscore, all, allUnderscore);
       ExchangeDescriptor exchangeDescriptor = new ExchangeDescriptor();
       exchangeDescriptor.setId("myExchange");

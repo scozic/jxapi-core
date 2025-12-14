@@ -271,6 +271,9 @@ public class PropertiesGenUtil {
    * @return the property key property name, for instance 'myPropertyProperty'
    */
   public static String getPropertyVariableName(ConfigPropertyDescriptor property, List<ConfigPropertyDescriptor> sieblings) {
+    if (property == null) {
+      return null;
+    }
     sieblings = CollectionUtil.emptyIfNull(sieblings);
     int off = sieblings.indexOf(property);
     if (off < 0 ) {

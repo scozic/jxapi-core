@@ -150,7 +150,7 @@ public class DemoExchangeMarketDataTickersResponse implements Pojo<DemoExchangeM
      * Will add or update a key/value pair to the <code>payload</code> map.
      * @param item Item to add to current <code>payload</code> list
      * @return Builder instance
-     * @see DemoExchangeMarketDataTickersResponse#setPayload(DemoExchangeMarketDataTickersResponsePayload)
+     * @see DemoExchangeMarketDataTickersResponse#setPayload(Map)
      */
     public Builder addToPayload(String key, DemoExchangeMarketDataTickersResponsePayload item) {
       if (this.payload == null) {

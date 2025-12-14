@@ -435,7 +435,7 @@ public class PojoGenerator extends JavaTypeGenerator {
         .append(getSimpleName())
         .append("#")
         .append(JavaCodeGenUtil.getSetAccessorMethodName(name, getAllFieldNames()))
-        .append("(").append(itemTypeClass)
+        .append("(").append(List.class.getSimpleName())
         .append(")").toString();
     addImport(CollectionUtil.class);
     String methodBody = new StringBuilder()
@@ -486,7 +486,7 @@ public class PojoGenerator extends JavaTypeGenerator {
         .append(getSimpleName())
         .append("#")
         .append(JavaCodeGenUtil.getSetAccessorMethodName(name, getAllFieldNames()))
-        .append("(").append(itemTypeClass)
+        .append("(").append(Map.class.getSimpleName())
         .append(")").toString();
     
     addImport(CollectionUtil.class);

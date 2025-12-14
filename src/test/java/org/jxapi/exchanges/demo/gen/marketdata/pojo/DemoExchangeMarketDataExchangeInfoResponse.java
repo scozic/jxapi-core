@@ -150,7 +150,7 @@ public class DemoExchangeMarketDataExchangeInfoResponse implements Pojo<DemoExch
      * Will add an item to the <code>payload</code> list.
      * @param item Item to add to current <code>payload</code> list
      * @return Builder instance
-     * @see DemoExchangeMarketDataExchangeInfoResponse#setPayload(DemoExchangeMarketDataExchangeInfoResponsePayload)
+     * @see DemoExchangeMarketDataExchangeInfoResponse#setPayload(List)
      */
     public Builder addToPayload(DemoExchangeMarketDataExchangeInfoResponsePayload item) {
       if (this.payload == null) {

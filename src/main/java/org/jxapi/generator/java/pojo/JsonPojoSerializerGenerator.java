@@ -36,6 +36,8 @@ import com.fasterxml.jackson.databind.ser.std.StdSerializer;
  */
 public class JsonPojoSerializerGenerator extends JavaTypeGenerator {
   
+  private static final String GEN = "(gen, ";
+
   private static final String STATIC = "static ";
 
   private final String serializedTypeClassName;
@@ -135,7 +137,7 @@ public class JsonPojoSerializerGenerator extends JavaTypeGenerator {
     addImport(STATIC + JsonUtil.class.getName() + "." + methodName);
     return new StringBuilder()
         .append(methodName)
-        .append("(gen, ")
+        .append(GEN)
         .append(JavaCodeGenUtil.getQuotedString(msgFieldName))
         .append(", ")
         .append(getFieldValue)
@@ -204,7 +206,7 @@ public class JsonPojoSerializerGenerator extends JavaTypeGenerator {
     addImport(STATIC + JsonUtil.class.getName() + "." + methodName);
     return new StringBuilder()
         .append(methodName)
-        .append("(gen, ")
+        .append(GEN)
         .append(JavaCodeGenUtil.getQuotedString(msgFieldName))
         .append(", ")
         .append(getFieldValue)
@@ -219,7 +221,7 @@ public class JsonPojoSerializerGenerator extends JavaTypeGenerator {
     addImport(STATIC + JsonUtil.class.getName() + "." + methodName);
     return new StringBuilder()
         .append(methodName)
-        .append("(gen, ")
+        .append(GEN)
         .append(JavaCodeGenUtil.getQuotedString(msgFieldName))
         .append(", ")
         .append(getFieldValue)

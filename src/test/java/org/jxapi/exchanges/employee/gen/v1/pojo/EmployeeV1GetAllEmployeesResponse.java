@@ -177,7 +177,7 @@ public class EmployeeV1GetAllEmployeesResponse implements Pojo<EmployeeV1GetAllE
      * Will add an item to the <code>employees</code> list.
      * @param item Item to add to current <code>employees</code> list
      * @return Builder instance
-     * @see EmployeeV1GetAllEmployeesResponse#setEmployees(Employee)
+     * @see EmployeeV1GetAllEmployeesResponse#setEmployees(List)
      */
     public Builder addToEmployees(Employee item) {
       if (this.employees == null) {

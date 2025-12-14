@@ -123,7 +123,7 @@ public class DemoExchangeMarketDataExchangeInfoRequest implements Pojo<DemoExcha
      * Will add an item to the <code>symbols</code> list.
      * @param item Item to add to current <code>symbols</code> list
      * @return Builder instance
-     * @see DemoExchangeMarketDataExchangeInfoRequest#setSymbols(String)
+     * @see DemoExchangeMarketDataExchangeInfoRequest#setSymbols(List)
      */
     public Builder addToSymbols(String item) {
       if (this.symbols == null) {
