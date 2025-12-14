@@ -15,8 +15,7 @@ import org.jxapi.util.EncodingUtil;
 import org.jxapi.util.Pojo;
 
 /**
- * Response to DemoExchange MarketData API <br>
- * tickers REST endpoint request<br>
+ * Response object for DemoExchange MarketData API tickers REST endpoint<br>
  * Fetch current tickers for all markets
  */
 @Generated("org.jxapi.generator.java.pojo.PojoGenerator")

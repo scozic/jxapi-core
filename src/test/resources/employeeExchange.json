@@ -49,6 +49,8 @@
                     },
                     "response": {
                         "objectName": "Employee",
+                        "description": "Employee details response for requested employee ID",
+                        "objectDescription": "Employee details",
                         "properties": [
                             {"name": "id", "type": "INT", "description": "Employee ID", "sampleValue": 1},
                             {"name": "firstName", "description": "Employee first name", "sampleValue": "John"},

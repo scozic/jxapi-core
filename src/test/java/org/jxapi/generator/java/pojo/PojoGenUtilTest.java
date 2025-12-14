@@ -863,4 +863,14 @@ public void testGetClassNameForField_BIGDECIMAL_Type() {
       Assert.assertEquals("MessageSerializer.NO_OP", result);
       Assert.assertTrue(imports.contains(MessageSerializer.class));
   }
+  
+  @Test
+  public void testGetObjectDescription() {
+    FieldBuilder fb = Field.builder().name("myField");
+    Assert.assertNull(PojoGenUtil.getObjectDescription(fb.build()));
+    fb.description("The field description");
+    Assert.assertEquals("The field description", PojoGenUtil.getObjectDescription(fb.build()));
+    fb.objectDescription("This is my field object description");
+    Assert.assertEquals("This is my field object description", PojoGenUtil.getObjectDescription(fb.build()));
+  }
 }

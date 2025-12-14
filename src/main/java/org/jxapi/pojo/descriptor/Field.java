@@ -170,6 +170,8 @@ public class Field implements Pojo<Field> {
   
   private String objectName;
   
+  private String objectDescription;
+  
   private List<Field> properties;
   
   private List<String> implementedInterfaces;
@@ -185,6 +187,7 @@ public class Field implements Pojo<Field> {
     Field clone = new Field();
     clone.name = this.name;
     clone.description = this.description;
+    clone.objectDescription = this.objectDescription;
     clone.type = this.type;
     clone.sampleValue = this.sampleValue;
     clone.defaultValue = this.defaultValue;
@@ -393,6 +396,37 @@ public class Field implements Pojo<Field> {
    */
   public Object getDefaultValue() {
     return defaultValue;
+  }
+  
+  /**
+   * Gets the description of the object represented by this field. This relevant especially when the field type is an object, see {@link Type#isObject()}, with defined objectName.
+   * Such objects may be reused across multiple APIs, so having a description of the object itself is useful. It can be different from the field description, which explains 
+   * the role of the field in the enclosing structure.<p>
+   * This description will be used in generated JavaDoc of the generated class representing the object.
+   * When it is not set, the field description is used instead.
+   * @return The description of the object represented by this field.
+   */
+  public String getObjectDescription() {
+    return objectDescription;
+  }
+
+  /**
+   * Sets the description of the object represented by this field. This relevant
+   * especially when the field type is an object, see {@link Type#isObject()},
+   * with defined objectName. Such objects may be reused across multiple APIs, so
+   * having a description of the object itself is useful. It can be different from
+   * the field description, which explains the role of the field in the enclosing
+   * structure.
+   * <p>
+   * This description will be used in generated JavaDoc of the generated class
+   * representing the object. When it is not set, the field description is used
+   * instead.
+   * 
+   * @param objectDescription The description of the object represented by this
+   *                          field.
+   */
+  public void setObjectDescription(String objectDescription) {
+    this.objectDescription = objectDescription;
   }
 
   /**

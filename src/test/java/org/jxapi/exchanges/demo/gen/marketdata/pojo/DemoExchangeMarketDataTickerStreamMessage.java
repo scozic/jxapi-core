@@ -13,7 +13,7 @@ import org.jxapi.util.EncodingUtil;
 import org.jxapi.util.Pojo;
 
 /**
- * Message disseminated upon subscription to DemoExchange MarketData API tickerStream websocket endpoint request<br>
+ * Message object for DemoExchange MarketData API tickerStream Websocket endpoint<br>
  * Subscribe to ticker stream
  */
 @Generated("org.jxapi.generator.java.pojo.PojoGenerator")

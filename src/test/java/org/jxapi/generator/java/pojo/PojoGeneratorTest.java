@@ -592,7 +592,7 @@ public class PojoGeneratorTest {
   public void testGeneratePojoCodeMultipleFields() {
     PojoGenerator generator = new PojoGenerator("x.y.z.pojo.Foo", null, null, null, null, null);
     generator.addField(Field.builder().type(Type.STRING).name("name").description("the name").build());
-    generator.addField(Field.builder().objectName("Bar").name("bar").msgField("b").build());
+    generator.addField(Field.builder().objectName("Bar").name("bar").objectDescription("The Bar class description").msgField("b").build());
     generator.addField(Field.builder().type(Type.INT).name("a").description("lower case 'a'").defaultValue(1).build());
     generator.addField(Field.builder().type(Type.INT).name("A").description("upper case 'A'").defaultValue(2).build());
     

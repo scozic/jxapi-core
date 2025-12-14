@@ -5,6 +5,7 @@ import java.nio.file.Path;
 import java.util.List;
 import java.util.Optional;
 
+import org.apache.commons.lang3.StringUtils;
 import org.jxapi.exchange.descriptor.gen.ExchangeApiDescriptor;
 import org.jxapi.exchange.descriptor.gen.ExchangeDescriptor;
 import org.jxapi.exchange.descriptor.gen.RestEndpointDescriptor;
@@ -15,6 +16,7 @@ import org.jxapi.generator.java.exchange.api.ExchangeApiGenUtil;
 import org.jxapi.generator.java.pojo.JsonMessageDeserializerClassesGenerator;
 import org.jxapi.generator.java.pojo.JsonPojoSerializerClassesGenerator;
 import org.jxapi.generator.java.pojo.PojoClassesGenerator;
+import org.jxapi.generator.java.pojo.PojoGenUtil;
 import org.jxapi.pojo.descriptor.Field;
 import org.jxapi.util.PlaceHolderResolver;
 
@@ -92,14 +94,12 @@ public class RestEndpointClassesGenerator implements ClassesGenerator {
     if (request != null && request.getProperties() != null) {
       new PojoClassesGenerator(
           ExchangeApiGenUtil.generateRestEnpointRequestPojoClassName(exchangeDescriptor, apiDescriptor, restEndpointDescriptor), 
-          "Request for " + exchangeDescriptor.getId() + " " + apiDescriptor.getName() + " API " 
-            + restEndpointDescriptor.getName() + " REST endpoint<br>\n"
-            + restEndpointDescriptor.getDescription(),
-            request.getProperties(),
-            request.getImplementedInterfaces(),
-            docPlaceHolderResolver,
-            constantInDefaultValuesPlaceHolderResolver
-            ).generateClasses(outputFolder);
+          getRestEndpointRequestOrResponseDescription("Request", request),
+          request.getProperties(),
+          request.getImplementedInterfaces(),
+          docPlaceHolderResolver,
+          constantInDefaultValuesPlaceHolderResolver
+          ).generateClasses(outputFolder);
     }
     
     Field response = restEndpointDescriptor.getResponse();
@@ -109,17 +109,29 @@ public class RestEndpointClassesGenerator implements ClassesGenerator {
               exchangeDescriptor, 
               apiDescriptor, 
               restEndpointDescriptor), 
-            "Response to " + exchangeDescriptor.getId() 
-              + " " + apiDescriptor.getName() + " API <br>\n" 
-              + restEndpointDescriptor.getName() 
-              + " REST endpoint request<br>\n"
-              + restEndpointDescriptor.getDescription(),
+            getRestEndpointRequestOrResponseDescription("Response", response),
             response.getProperties(),
             response.getImplementedInterfaces(),
             docPlaceHolderResolver,
             constantInDefaultValuesPlaceHolderResolver
           ).generateClasses(outputFolder);
     }
+  }
+  
+  private String getRestEndpointRequestOrResponseDescription(String prefix, Field objField) {
+    return Optional
+      .ofNullable(PojoGenUtil.getObjectDescription(objField))
+      .orElse(new StringBuilder().append(prefix)
+          .append(" object for ")
+          .append(exchangeDescriptor.getId())
+          .append(" ")
+          .append(apiDescriptor.getName())
+          .append(" API ")
+          .append(restEndpointDescriptor.getName())
+          .append(" REST endpoint<br>\n")
+          .append(StringUtils.defaultString(restEndpointDescriptor.getDescription()))
+          .toString());
+    
   }
   
   private void generateDeserializers(Path outputFolder) throws IOException {

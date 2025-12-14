@@ -12,8 +12,7 @@ import org.jxapi.util.EncodingUtil;
 import org.jxapi.util.Pojo;
 
 /**
- * Response to DemoExchange MarketData API <br>
- * postRestRequestDataTypeInt REST endpoint request<br>
+ * Response object for DemoExchange MarketData API postRestRequestDataTypeInt REST endpoint<br>
  * A sample REST endpoint using INT response data type
  */
 @Generated("org.jxapi.generator.java.pojo.PojoGenerator")

@@ -15,8 +15,7 @@ import org.jxapi.util.EncodingUtil;
 import org.jxapi.util.Pojo;
 
 /**
- * Response to DemoExchange MarketData API <br>
- * exchangeInfo REST endpoint request<br>
+ * Response object for DemoExchange MarketData API exchangeInfo REST endpoint<br>
  * Fetch market information of symbols that can be traded
  */
 @Generated("org.jxapi.generator.java.pojo.PojoGenerator")

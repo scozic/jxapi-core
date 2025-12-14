@@ -89,6 +89,13 @@ public class FieldBuilderTest {
         Field field = builder.objectName("Foo").build();
         Assert.assertEquals("Foo", field.getObjectName());
     }
+    
+    @Test
+    public void testSetObjectDescription() {
+        FieldBuilder builder = new FieldBuilder();
+        Field field = builder.objectDescription("Foo").build();
+        Assert.assertEquals("Foo", field.getObjectDescription());
+    }
 
     @Test
     public void testSetImplmentedInterfaces() {

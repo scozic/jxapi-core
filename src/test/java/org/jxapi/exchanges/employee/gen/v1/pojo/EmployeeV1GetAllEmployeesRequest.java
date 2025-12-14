@@ -13,8 +13,7 @@ import org.jxapi.util.EncodingUtil;
 import org.jxapi.util.Pojo;
 
 /**
- * Request for Employee v1 API getAllEmployees REST endpoint<br>
- * Get all employees
+ * Page request parameters for 'getAllEmployees' rest endpoint paginated requests.
  */
 @Generated("org.jxapi.generator.java.pojo.PojoGenerator")
 @JsonSerialize(using = EmployeeV1GetAllEmployeesRequestSerializer.class)

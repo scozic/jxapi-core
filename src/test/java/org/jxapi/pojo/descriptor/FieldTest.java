@@ -24,6 +24,7 @@ public class FieldTest {
         field.setSampleValue("sampleValue");
         field.setMsgField("f");
         field.setObjectName("MyObject");
+        field.setObjectDescription("The object description");
         field.setProperties(List.of());
         field.setImplementedInterfaces(List.of("com.x.y.MyInterface"));
         field.setIn(UrlParameterType.QUERY);
@@ -33,6 +34,7 @@ public class FieldTest {
         Assert.assertEquals("sampleValue", field.getSampleValue());
         Assert.assertEquals("f", field.getMsgField());
         Assert.assertEquals("MyObject", field.getObjectName());
+        Assert.assertEquals("The object description", field.getObjectDescription());
         Assert.assertEquals(List.of(), field.getProperties());
         Assert.assertEquals(List.of("com.x.y.MyInterface"), field.getImplementedInterfaces());
         Assert.assertEquals(UrlParameterType.QUERY, field.getIn());
@@ -47,6 +49,7 @@ public class FieldTest {
         field.setSampleValue("sampleValue");
         field.setMsgField("f");
         field.setObjectName("MyObject");
+        field.setObjectDescription("The object description");
         field.setProperties(List.of());
         field.setImplementedInterfaces(List.of("com.x.y.MyInterface"));
 
@@ -55,6 +58,7 @@ public class FieldTest {
         Assert.assertEquals("name", field.getName());
         Assert.assertEquals(Type.fromTypeName("OBJECT_MAP") , field.getType());
         Assert.assertEquals("description", field.getDescription());
+        Assert.assertEquals("The object description", field.getObjectDescription());
         Assert.assertEquals("sampleValue", field.getSampleValue());
         Assert.assertEquals("f", field.getMsgField());
         Assert.assertEquals("MyObject", field.getObjectName());

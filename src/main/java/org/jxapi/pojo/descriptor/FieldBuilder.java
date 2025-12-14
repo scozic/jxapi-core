@@ -128,6 +128,18 @@ public class FieldBuilder {
     field.setObjectName(objectName);
     return this;
   }
+  
+  /**
+   * Sets the object description of the field.
+   * 
+   * @param objectDescription the object description of the field to set, see
+   *                          {@link Field#getObjectDescription()}
+   * @return this builder
+   */
+  public FieldBuilder objectDescription(String objectDescription) {
+    field.setObjectDescription(objectDescription);
+    return this;
+  }
 
   /**
    * Sets the implemented interfaces of the field.

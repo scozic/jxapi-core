@@ -82,10 +82,11 @@ public class PojoClassesGenerator implements ClassesGenerator {
       field.getObjectName(), 
       className);
     
+    String description = PojoGenUtil.getObjectDescription(field);
     if (field.getProperties() != null) {
       PojoClassesGenerator subGen = new PojoClassesGenerator(
           objectParamClassName, 
-          field.getDescription(), 
+          description, 
           field.getProperties(),
           field.getImplementedInterfaces(),
           docPlaceHolderResolver,

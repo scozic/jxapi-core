@@ -12,8 +12,7 @@ import org.jxapi.util.EncodingUtil;
 import org.jxapi.util.Pojo;
 
 /**
- * Message disseminated upon subscription to Employee v1 API employeeUpdates websocket endpoint request<br>
- * Employee updates websocket
+ * Employee update message
  */
 @Generated("org.jxapi.generator.java.pojo.PojoGenerator")
 @JsonSerialize(using = EmployeeV1EmployeeUpdatesMessageSerializer.class)

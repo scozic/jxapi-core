@@ -12,9 +12,7 @@ import org.jxapi.util.EncodingUtil;
 import org.jxapi.util.Pojo;
 
 /**
- * Response to Employee v1 API <br>
- * getEmployee REST endpoint request<br>
- * Get employee details by ID
+ * Employee details
  */
 @Generated("org.jxapi.generator.java.pojo.PojoGenerator")
 @JsonSerialize(using = EmployeeSerializer.class)

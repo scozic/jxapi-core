@@ -988,5 +988,16 @@ public class PojoGenUtil {
       throw new IllegalArgumentException("Unexpected field type:" + type);
     }
   }
+  
+  /**
+   * @param objectField A field of object type (see {@link Type#isObject()})
+   * @return Either the object description (see {@link Field#getObjectDescription()}), 
+   *         or if that is <code>null</code>, the field description (see {@link Field#getDescription()})
+   */
+  public static String getObjectDescription(Field objectField) {
+    return Optional
+        .ofNullable(objectField.getObjectDescription())
+        .orElse(objectField.getDescription());
+  }
 
 }
