@@ -9,8 +9,8 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
-import org.apache.commons.lang3.StringUtils;
 import org.jxapi.exchange.descriptor.Constant;
+import org.jxapi.exchange.descriptor.gen.WebsocketTopicMatcherDescriptor;
 import org.jxapi.generator.java.Imports;
 import org.jxapi.generator.java.JavaCodeGenUtil;
 import org.jxapi.generator.java.exchange.constants.ConstantsGenUtil;
@@ -72,7 +72,7 @@ public class PojoGenUtil {
    *         <code>&lt;POJO simple class name&gt; + 'Serializer'</code>.
    */
   public static String getSerializerClassName(String pojoClassName) {
-    String pkg = StringUtils.substringBefore(JavaCodeGenUtil.getClassPackage(pojoClassName), ".pojo");
+    String pkg = JavaCodeGenUtil.getClassPackage(pojoClassName);
     return pkg + ".serializers." + JavaCodeGenUtil.getClassNameWithoutPackage(pojoClassName) + "Serializer";
   }
   
@@ -784,7 +784,7 @@ public class PojoGenUtil {
    */
   public static String getJsonMessageDeserializerClassName(String deserializedTypeClassName) {
     return new StringBuilder()
-          .append(StringUtils.substringBefore(JavaCodeGenUtil.getClassPackage(deserializedTypeClassName), ".pojo"))
+          .append(JavaCodeGenUtil.getClassPackage(deserializedTypeClassName))
           .append(".deserializers.")
           .append(JavaCodeGenUtil.getClassNameWithoutPackage(deserializedTypeClassName))
           .append("Deserializer")

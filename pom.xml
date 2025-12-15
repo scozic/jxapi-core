@@ -177,6 +177,7 @@
 	            <version>3.4.1</version>
 	            <configuration>
 	                <additionalJOptions>
+					    <!-- Remove warnings about missing comments because undocumented private fields/methods are common in this project -->
 	                    <arg>-Xdoclint:all,-missing</arg>
 	                </additionalJOptions>
 	            </configuration>

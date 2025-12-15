@@ -17,7 +17,7 @@ import org.jxapi.pojo.descriptor.Type;
  */
 public class JsonPojoSerializerClassesGeneratorTest {
   
-  private static final Path BASE_PKG = Paths.get("com", "x", "serializers");
+  private static final Path BASE_PKG = Paths.get("com", "x", "pojo", "serializers");
   
   private Path srcFolder;
   
@@ -33,7 +33,7 @@ public class JsonPojoSerializerClassesGeneratorTest {
   public void testGenerateJsonSerializerClasses() throws IOException {
     srcFolder = ClassesGeneratorTestUtil.generateTmpDir();
     
-    String typeName = "com.x.MyPojo";
+    String typeName = "com.x.pojo.MyPojo";
     List<Field> endpointParameters = List.of(
       Field.builder().type(Type.LONG).name("id").description("identifier").build(),
       Field.builder().type(Type.INT).name("score").description("Current score").build(),
@@ -68,7 +68,7 @@ public class JsonPojoSerializerClassesGeneratorTest {
   public void testGenerateJsonSerializerClasses_NullObjectFieldSubProperties() throws IOException {
     srcFolder = ClassesGeneratorTestUtil.generateTmpDir();
     
-    String typeName = "com.x.MyPojo";
+    String typeName = "com.x.pojo.MyPojo";
     List<Field> endpointParameters = List.of(
       Field.builder().type(Type.LONG).name("id").description("identifier").build(),
       Field.builder().type(Type.INT).name("score").description("Current score").build(),

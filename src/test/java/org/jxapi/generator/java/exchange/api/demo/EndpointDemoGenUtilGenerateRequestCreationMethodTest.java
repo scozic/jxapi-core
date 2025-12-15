@@ -101,10 +101,10 @@ public class EndpointDemoGenUtilGenerateRequestCreationMethodTest {
          Optional.class,
          Properties.class,
          "com.x.gen.MyExchangeDemoProperties",
-         "com.x.gen.myapi.deserializers.MyExchangeMyApiMyRestEndpointRequestBarDeserializer",
-         "com.x.gen.myapi.deserializers.MyExchangeMyApiMyRestEndpointRequestDeserializer",
          "com.x.gen.myapi.pojo.MyExchangeMyApiMyRestEndpointRequest",
          "com.x.gen.myapi.pojo.MyExchangeMyApiMyRestEndpointRequestBar",
+         "com.x.gen.myapi.pojo.deserializers.MyExchangeMyApiMyRestEndpointRequestBarDeserializer",
+         "com.x.gen.myapi.pojo.deserializers.MyExchangeMyApiMyRestEndpointRequestDeserializer",
          BigDecimalJsonFieldDeserializer.class,
          ListJsonFieldDeserializer.class,
          MapJsonFieldDeserializer.class);
@@ -264,8 +264,8 @@ public class EndpointDemoGenUtilGenerateRequestCreationMethodTest {
         Optional.class,
         Properties.class,
         "com.x.gen.MyExchangeDemoProperties",
-        "com.x.gen.myapi.deserializers.MyExchangeMyApiMyRestEndpointRequestDeserializer",
         "com.x.gen.myapi.pojo.MyExchangeMyApiMyRestEndpointRequest",
+        "com.x.gen.myapi.pojo.deserializers.MyExchangeMyApiMyRestEndpointRequestDeserializer",
         ListJsonFieldDeserializer.class);
   }
   
@@ -298,8 +298,8 @@ public class EndpointDemoGenUtilGenerateRequestCreationMethodTest {
         Map.class, 
         Properties.class,
         "com.x.gen.MyExchangeDemoProperties",
-        "com.x.gen.myapi.deserializers.MyExchangeMyApiMyRestEndpointRequestDeserializer",
         "com.x.gen.myapi.pojo.MyExchangeMyApiMyRestEndpointRequest",
+        "com.x.gen.myapi.pojo.deserializers.MyExchangeMyApiMyRestEndpointRequestDeserializer",
         MapJsonFieldDeserializer.class);
   }
   
@@ -334,8 +334,8 @@ public class EndpointDemoGenUtilGenerateRequestCreationMethodTest {
         Map.class, 
         Properties.class,
         "com.x.gen.MyExchangeDemoProperties",
-        "com.x.gen.myapi.deserializers.MyExchangeMyApiMyRestEndpointRequestDeserializer",
         "com.x.gen.myapi.pojo.MyExchangeMyApiMyRestEndpointRequest",
+        "com.x.gen.myapi.pojo.deserializers.MyExchangeMyApiMyRestEndpointRequestDeserializer",
         ListJsonFieldDeserializer.class,
         MapJsonFieldDeserializer.class);
   }
@@ -463,8 +463,8 @@ public class EndpointDemoGenUtilGenerateRequestCreationMethodTest {
         Optional.class,
         Properties.class,
         "com.x.gen.MyExchangeDemoProperties",
-        "com.x.gen.myapi.deserializers.MyExchangeMyApiMyRestEndpointRequestDeserializer",
         "com.x.gen.myapi.pojo.MyExchangeMyApiMyRestEndpointRequest",
+        "com.x.gen.myapi.pojo.deserializers.MyExchangeMyApiMyRestEndpointRequestDeserializer",
         ListJsonFieldDeserializer.class,
         MapJsonFieldDeserializer.class,
         StringJsonFieldDeserializer.class);

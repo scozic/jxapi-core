@@ -33,7 +33,7 @@ public class PojoGenUtilTest {
 
   @Test
   public void testGetSerializerClassName() {
-        Assert.assertEquals("com.x.y.serializers.MyPojoSerializer", 
+        Assert.assertEquals("com.x.y.pojo.serializers.MyPojoSerializer", 
                             PojoGenUtil.getSerializerClassName("com.x.y.pojo.MyPojo"));
   }
   
@@ -767,7 +767,7 @@ public void testGetClassNameForField_BIGDECIMAL_Type() {
   
   @Test
   public void testGetJsonMessageDeserializerClassName() {
-    Assert.assertEquals("com.x.y.deserializers.MyObjectDeserializer", 
+    Assert.assertEquals("com.x.y.pojo.deserializers.MyObjectDeserializer", 
               PojoGenUtil.getJsonMessageDeserializerClassName("com.x.y.pojo.MyObject"));
   }
   

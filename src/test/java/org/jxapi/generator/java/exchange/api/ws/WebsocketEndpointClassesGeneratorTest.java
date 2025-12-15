@@ -54,11 +54,11 @@ public class WebsocketEndpointClassesGeneratorTest {
     WebsocketEndpointClassesGenerator generator = new WebsocketEndpointClassesGenerator(exchange, api, wsEndpoint, docPlaceHolderResolver);
     generator.generateClasses(srcFolder);
     
-    checkJavaFilesCount(Paths.get("deserializers"), 2);
-    checkSourceFileExists(Paths.get("deserializers", "MyTestExchangeMarketDataTickerStreamMessageDeserializer.java"));
-    checkSourceFileExists(Paths.get("deserializers", "MyTestExchangeMarketDataTickerStreamRequestDeserializer.java"));
+    checkJavaFilesCount(Paths.get("pojo/deserializers"), 2);
+    checkSourceFileExists(Paths.get("pojo/deserializers", "MyTestExchangeMarketDataTickerStreamMessageDeserializer.java"));
+    checkSourceFileExists(Paths.get("pojo/deserializers", "MyTestExchangeMarketDataTickerStreamRequestDeserializer.java"));
     
-    checkJavaFilesCount(Paths.get("pojo"), 2);
+    checkJavaFilesCount(Paths.get("pojo"), 4);
     
     Assert.assertEquals("package com.foo.bar.gen.marketdata.pojo;\n"
         + "\n"
@@ -66,8 +66,8 @@ public class WebsocketEndpointClassesGeneratorTest {
         + "\n"
         + "import com.fasterxml.jackson.databind.annotation.JsonDeserialize;\n"
         + "import com.fasterxml.jackson.databind.annotation.JsonSerialize;\n"
-        + "import com.foo.bar.gen.marketdata.deserializers.MyTestExchangeMarketDataTickerStreamRequestDeserializer;\n"
-        + "import com.foo.bar.gen.marketdata.serializers.MyTestExchangeMarketDataTickerStreamRequestSerializer;\n"
+        + "import com.foo.bar.gen.marketdata.pojo.deserializers.MyTestExchangeMarketDataTickerStreamRequestDeserializer;\n"
+        + "import com.foo.bar.gen.marketdata.pojo.serializers.MyTestExchangeMarketDataTickerStreamRequestSerializer;\n"
         + "import javax.annotation.processing.Generated;\n"
         + "import org.jxapi.util.CompareUtil;\n"
         + "import org.jxapi.util.EncodingUtil;\n"
@@ -223,8 +223,8 @@ public class WebsocketEndpointClassesGeneratorTest {
         + "\n"
         + "import com.fasterxml.jackson.databind.annotation.JsonDeserialize;\n"
         + "import com.fasterxml.jackson.databind.annotation.JsonSerialize;\n"
-        + "import com.foo.bar.gen.marketdata.deserializers.MyTestExchangeMarketDataTickerStreamMessageDeserializer;\n"
-        + "import com.foo.bar.gen.marketdata.serializers.MyTestExchangeMarketDataTickerStreamMessageSerializer;\n"
+        + "import com.foo.bar.gen.marketdata.pojo.deserializers.MyTestExchangeMarketDataTickerStreamMessageDeserializer;\n"
+        + "import com.foo.bar.gen.marketdata.pojo.serializers.MyTestExchangeMarketDataTickerStreamMessageSerializer;\n"
         + "import javax.annotation.processing.Generated;\n"
         + "import org.jxapi.util.CompareUtil;\n"
         + "import org.jxapi.util.EncodingUtil;\n"
@@ -509,9 +509,9 @@ public class WebsocketEndpointClassesGeneratorTest {
         + "", 
         Files.readString(checkSourceFileExists(Paths.get("pojo", "MyTestExchangeMarketDataTickerStreamMessage.java"))));
     
-    checkJavaFilesCount(Paths.get("serializers"), 2);
-    checkSourceFileExists(Paths.get("serializers", "MyTestExchangeMarketDataTickerStreamRequestSerializer.java"));
-    checkSourceFileExists(Paths.get("serializers", "MyTestExchangeMarketDataTickerStreamMessageSerializer.java"));
+    checkJavaFilesCount(Paths.get("pojo/serializers"), 2);
+    checkSourceFileExists(Paths.get("pojo/serializers", "MyTestExchangeMarketDataTickerStreamRequestSerializer.java"));
+    checkSourceFileExists(Paths.get("pojo/serializers", "MyTestExchangeMarketDataTickerStreamMessageSerializer.java"));
   }
   
   @Test
@@ -522,11 +522,11 @@ public class WebsocketEndpointClassesGeneratorTest {
     WebsocketEndpointDescriptor wsEndpoint = api.getWebsocketEndpoints().get(0);
     WebsocketEndpointClassesGenerator generator = new WebsocketEndpointClassesGenerator(exchange, api, wsEndpoint, null);
     generator.generateClasses(srcFolder);
-    checkJavaFilesCount(Paths.get("deserializers"), 2);
-    checkSourceFileExists(Paths.get("deserializers", "MyTestExchangeMarketDataTickerStreamMessageDeserializer.java"));
-    checkSourceFileExists(Paths.get("deserializers", "MyTestExchangeMarketDataTickerStreamRequestDeserializer.java"));
+    checkJavaFilesCount(Paths.get("pojo/deserializers"), 2);
+    checkSourceFileExists(Paths.get("pojo/deserializers", "MyTestExchangeMarketDataTickerStreamMessageDeserializer.java"));
+    checkSourceFileExists(Paths.get("pojo/deserializers", "MyTestExchangeMarketDataTickerStreamRequestDeserializer.java"));
     
-    checkJavaFilesCount(Paths.get("pojo"), 2);
+    checkJavaFilesCount(Paths.get("pojo"), 4);
     
     Assert.assertEquals("package com.foo.bar.gen.marketdata.pojo;\n"
         + "\n"
@@ -536,8 +536,8 @@ public class WebsocketEndpointClassesGeneratorTest {
         + "import com.fasterxml.jackson.databind.annotation.JsonSerialize;\n"
         + "import com.foo.bar.TickerStreamRequestInterface1;\n"
         + "import com.foo.bar.TickerStreamRequestInterface2;\n"
-        + "import com.foo.bar.gen.marketdata.deserializers.MyTestExchangeMarketDataTickerStreamRequestDeserializer;\n"
-        + "import com.foo.bar.gen.marketdata.serializers.MyTestExchangeMarketDataTickerStreamRequestSerializer;\n"
+        + "import com.foo.bar.gen.marketdata.pojo.deserializers.MyTestExchangeMarketDataTickerStreamRequestDeserializer;\n"
+        + "import com.foo.bar.gen.marketdata.pojo.serializers.MyTestExchangeMarketDataTickerStreamRequestSerializer;\n"
         + "import javax.annotation.processing.Generated;\n"
         + "import org.jxapi.util.CompareUtil;\n"
         + "import org.jxapi.util.EncodingUtil;\n"
@@ -661,8 +661,8 @@ public class WebsocketEndpointClassesGeneratorTest {
         + "import com.fasterxml.jackson.databind.annotation.JsonSerialize;\n"
         + "import com.foo.bar.TickerStreamResponseInterface1;\n"
         + "import com.foo.bar.TickerStreamResponseInterface2;\n"
-        + "import com.foo.bar.gen.marketdata.deserializers.MyTestExchangeMarketDataTickerStreamMessageDeserializer;\n"
-        + "import com.foo.bar.gen.marketdata.serializers.MyTestExchangeMarketDataTickerStreamMessageSerializer;\n"
+        + "import com.foo.bar.gen.marketdata.pojo.deserializers.MyTestExchangeMarketDataTickerStreamMessageDeserializer;\n"
+        + "import com.foo.bar.gen.marketdata.pojo.serializers.MyTestExchangeMarketDataTickerStreamMessageSerializer;\n"
         + "import javax.annotation.processing.Generated;\n"
         + "import org.jxapi.util.CompareUtil;\n"
         + "import org.jxapi.util.EncodingUtil;\n"
@@ -845,9 +845,9 @@ public class WebsocketEndpointClassesGeneratorTest {
         + "", 
         Files.readString(checkSourceFileExists(Paths.get("pojo", "MyTestExchangeMarketDataTickerStreamMessage.java"))));
     
-    checkJavaFilesCount(Paths.get("serializers"), 2);
-    checkSourceFileExists(Paths.get("serializers", "MyTestExchangeMarketDataTickerStreamRequestSerializer.java"));
-    checkSourceFileExists(Paths.get("serializers", "MyTestExchangeMarketDataTickerStreamMessageSerializer.java"));
+    checkJavaFilesCount(Paths.get("pojo/serializers"), 2);
+    checkSourceFileExists(Paths.get("pojo/serializers", "MyTestExchangeMarketDataTickerStreamRequestSerializer.java"));
+    checkSourceFileExists(Paths.get("pojo/serializers", "MyTestExchangeMarketDataTickerStreamMessageSerializer.java"));
     
   }
   
@@ -870,12 +870,12 @@ public class WebsocketEndpointClassesGeneratorTest {
     WebsocketEndpointDescriptor websocketEndpoint = ClassesGeneratorTestUtil.findWebsocketEndpointByName("streamWithObjectRequestDataTypeZeroParameters", api);
     WebsocketEndpointClassesGenerator generator = new WebsocketEndpointClassesGenerator(exchange, api, websocketEndpoint, null);
     generator.generateClasses(srcFolder);
-    checkJavaFilesCount(Paths.get("."), 3);
-    checkJavaFilesCount(Paths.get("serializers"), 1);
-    checkSourceFileExists(Paths.get("serializers", "TickerSerializer.java"));
-    checkJavaFilesCount(Paths.get("deserializers"), 1);
-    checkSourceFileExists(Paths.get("deserializers", "TickerDeserializer.java"));
-    checkJavaFilesCount(Paths.get("pojo"), 1);
+    checkJavaFilesCount(Paths.get("."), 1);
+    checkJavaFilesCount(Paths.get("pojo/serializers"), 1);
+    checkSourceFileExists(Paths.get("pojo/serializers", "TickerSerializer.java"));
+    checkJavaFilesCount(Paths.get("pojo/deserializers"), 1);
+    checkSourceFileExists(Paths.get("pojo/deserializers", "TickerDeserializer.java"));
+    checkJavaFilesCount(Paths.get("pojo"), 3);
     checkSourceFileExists(Paths.get("pojo", "Ticker.java"));
   }
   

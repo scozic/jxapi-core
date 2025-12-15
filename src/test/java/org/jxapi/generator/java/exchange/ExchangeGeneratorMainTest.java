@@ -61,8 +61,6 @@ public class ExchangeGeneratorMainTest {
         "DemoExchangeProperties.java",
         "marketdata/DemoExchangeMarketDataApi.java",
         "marketdata/DemoExchangeMarketDataApiImpl.java",
-        "marketdata/deserializers",
-        "marketdata/serializers",
         "marketdata/pojo",}) {
       FileComparator.checkSameFiles(
           projectDemoWrapperPackage.resolve(fileName), 
@@ -114,8 +112,6 @@ public class ExchangeGeneratorMainTest {
         "EmployeeProperties.java",
         "v1/EmployeeV1Api.java",
         "v1/EmployeeV1ApiImpl.java",
-        "v1/deserializers",
-        "v1/serializers",
         "v1/pojo",}) {
       FileComparator.checkSameFiles(
           projectDemoWrapperPackage.resolve(fileName), 

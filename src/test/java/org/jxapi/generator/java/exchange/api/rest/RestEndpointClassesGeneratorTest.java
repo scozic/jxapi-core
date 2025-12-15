@@ -54,12 +54,7 @@ public class RestEndpointClassesGeneratorTest {
     RestEndpointClassesGenerator generator = new RestEndpointClassesGenerator(exchange, api, restEndpoint, docPlaceHolderResolver);
     generator.generateClasses(srcFolder);
     
-    checkJavaFilesCount(Paths.get("deserializers"), 3);
-    checkSourceFileExists(Paths.get("deserializers", "MyTestExchangeMarketDataExchangeInfoRequestDeserializer.java"));
-    checkSourceFileExists(Paths.get("deserializers", "MyTestExchangeMarketDataExchangeInfoResponseDeserializer.java"));
-    checkSourceFileExists(Paths.get("deserializers", "MyTestExchangeMarketDataExchangeInfoResponsePayloadDeserializer.java"));
-    
-    checkJavaFilesCount(Paths.get("pojo"), 3);
+    checkJavaFilesCount(Paths.get("pojo"), 5);
     
     Assert.assertEquals("package com.foo.bar.gen.marketdata.pojo;\n"
         + "\n"
@@ -69,8 +64,8 @@ public class RestEndpointClassesGeneratorTest {
         + "import com.fasterxml.jackson.databind.annotation.JsonDeserialize;\n"
         + "import com.fasterxml.jackson.databind.annotation.JsonSerialize;\n"
         + "import com.foo.bar.MyTestExchangePaginatedRequest;\n"
-        + "import com.foo.bar.gen.marketdata.deserializers.MyTestExchangeMarketDataExchangeInfoRequestDeserializer;\n"
-        + "import com.foo.bar.gen.marketdata.serializers.MyTestExchangeMarketDataExchangeInfoRequestSerializer;\n"
+        + "import com.foo.bar.gen.marketdata.pojo.deserializers.MyTestExchangeMarketDataExchangeInfoRequestDeserializer;\n"
+        + "import com.foo.bar.gen.marketdata.pojo.serializers.MyTestExchangeMarketDataExchangeInfoRequestSerializer;\n"
         + "import javax.annotation.processing.Generated;\n"
         + "import org.jxapi.util.CollectionUtil;\n"
         + "import org.jxapi.util.CompareUtil;\n"
@@ -311,8 +306,8 @@ public class RestEndpointClassesGeneratorTest {
         + "import com.fasterxml.jackson.databind.annotation.JsonDeserialize;\n"
         + "import com.fasterxml.jackson.databind.annotation.JsonSerialize;\n"
         + "import com.foo.bar.MyTestExchangePaginatedResponse;\n"
-        + "import com.foo.bar.gen.marketdata.deserializers.MyTestExchangeMarketDataExchangeInfoResponseDeserializer;\n"
-        + "import com.foo.bar.gen.marketdata.serializers.MyTestExchangeMarketDataExchangeInfoResponseSerializer;\n"
+        + "import com.foo.bar.gen.marketdata.pojo.deserializers.MyTestExchangeMarketDataExchangeInfoResponseDeserializer;\n"
+        + "import com.foo.bar.gen.marketdata.pojo.serializers.MyTestExchangeMarketDataExchangeInfoResponseSerializer;\n"
         + "import javax.annotation.processing.Generated;\n"
         + "import org.jxapi.util.CollectionUtil;\n"
         + "import org.jxapi.util.CompareUtil;\n"
@@ -549,10 +544,15 @@ public class RestEndpointClassesGeneratorTest {
     
     checkSourceFileExists(Paths.get("pojo", "MyTestExchangeMarketDataExchangeInfoResponsePayload.java"));
     
-    checkJavaFilesCount(Paths.get("serializers"), 3);
-    checkSourceFileExists(Paths.get("serializers", "MyTestExchangeMarketDataExchangeInfoRequestSerializer.java"));        
-    checkSourceFileExists(Paths.get("serializers", "MyTestExchangeMarketDataExchangeInfoResponsePayloadSerializer.java"));
-    checkSourceFileExists(Paths.get("serializers", "MyTestExchangeMarketDataExchangeInfoResponseSerializer.java"));               
+    checkJavaFilesCount(Paths.get("pojo/serializers"), 3);
+    checkSourceFileExists(Paths.get("pojo/serializers", "MyTestExchangeMarketDataExchangeInfoRequestSerializer.java"));        
+    checkSourceFileExists(Paths.get("pojo/serializers", "MyTestExchangeMarketDataExchangeInfoResponsePayloadSerializer.java"));
+    checkSourceFileExists(Paths.get("pojo/serializers", "MyTestExchangeMarketDataExchangeInfoResponseSerializer.java"));  
+    
+    checkJavaFilesCount(Paths.get("pojo/deserializers"), 3);
+    checkSourceFileExists(Paths.get("pojo/deserializers", "MyTestExchangeMarketDataExchangeInfoRequestDeserializer.java"));
+    checkSourceFileExists(Paths.get("pojo/deserializers", "MyTestExchangeMarketDataExchangeInfoResponseDeserializer.java"));
+    checkSourceFileExists(Paths.get("pojo/deserializers", "MyTestExchangeMarketDataExchangeInfoResponsePayloadDeserializer.java"));
   }
   
   @Test
@@ -564,12 +564,7 @@ public class RestEndpointClassesGeneratorTest {
     RestEndpointClassesGenerator generator = new RestEndpointClassesGenerator(exchange, api, restEndpoint, null);
     generator.generateClasses(srcFolder);
     
-    checkJavaFilesCount(Paths.get("deserializers"), 3);
-    checkSourceFileExists(Paths.get("deserializers", "MyTestExchangeMarketDataExchangeInfoRequestDeserializer.java"));
-    checkSourceFileExists(Paths.get("deserializers", "MyTestExchangeMarketDataExchangeInfoResponseDeserializer.java"));
-    checkSourceFileExists(Paths.get("deserializers", "MyTestExchangeMarketDataExchangeInfoResponsePayloadDeserializer.java"));
-    
-    checkJavaFilesCount(Paths.get("pojo"), 3);
+    checkJavaFilesCount(Paths.get("pojo"), 5);
     
     Assert.assertEquals("package com.foo.bar.gen.marketdata.pojo;\n"
         + "\n"
@@ -580,8 +575,8 @@ public class RestEndpointClassesGeneratorTest {
         + "import com.fasterxml.jackson.databind.annotation.JsonSerialize;\n"
         + "import com.foo.bar.ExchangeInfoRequestInterface1;\n"
         + "import com.foo.bar.ExchangeInfoRequestInterface2;\n"
-        + "import com.foo.bar.gen.marketdata.deserializers.MyTestExchangeMarketDataExchangeInfoRequestDeserializer;\n"
-        + "import com.foo.bar.gen.marketdata.serializers.MyTestExchangeMarketDataExchangeInfoRequestSerializer;\n"
+        + "import com.foo.bar.gen.marketdata.pojo.deserializers.MyTestExchangeMarketDataExchangeInfoRequestDeserializer;\n"
+        + "import com.foo.bar.gen.marketdata.pojo.serializers.MyTestExchangeMarketDataExchangeInfoRequestSerializer;\n"
         + "import javax.annotation.processing.Generated;\n"
         + "import org.jxapi.util.CollectionUtil;\n"
         + "import org.jxapi.util.CompareUtil;\n"
@@ -721,8 +716,8 @@ public class RestEndpointClassesGeneratorTest {
         + "import com.fasterxml.jackson.databind.annotation.JsonSerialize;\n"
         + "import com.foo.bar.ExchangeInfoResponseInterface1;\n"
         + "import com.foo.bar.ExchangeInfoResponseInterface2;\n"
-        + "import com.foo.bar.gen.marketdata.deserializers.MyTestExchangeMarketDataExchangeInfoResponseDeserializer;\n"
-        + "import com.foo.bar.gen.marketdata.serializers.MyTestExchangeMarketDataExchangeInfoResponseSerializer;\n"
+        + "import com.foo.bar.gen.marketdata.pojo.deserializers.MyTestExchangeMarketDataExchangeInfoResponseDeserializer;\n"
+        + "import com.foo.bar.gen.marketdata.pojo.serializers.MyTestExchangeMarketDataExchangeInfoResponseSerializer;\n"
         + "import javax.annotation.processing.Generated;\n"
         + "import org.jxapi.util.CollectionUtil;\n"
         + "import org.jxapi.util.CompareUtil;\n"
@@ -890,10 +885,15 @@ public class RestEndpointClassesGeneratorTest {
     
     checkSourceFileExists(Paths.get("pojo", "MyTestExchangeMarketDataExchangeInfoResponsePayload.java"));
     
-    checkJavaFilesCount(Paths.get("serializers"), 3);
-    checkSourceFileExists(Paths.get("serializers", "MyTestExchangeMarketDataExchangeInfoRequestSerializer.java"));        
-    checkSourceFileExists(Paths.get("serializers", "MyTestExchangeMarketDataExchangeInfoResponsePayloadSerializer.java"));
-    checkSourceFileExists(Paths.get("serializers", "MyTestExchangeMarketDataExchangeInfoResponseSerializer.java"));               
+    checkJavaFilesCount(Paths.get("pojo/serializers"), 3);
+    checkSourceFileExists(Paths.get("pojo/serializers", "MyTestExchangeMarketDataExchangeInfoRequestSerializer.java"));        
+    checkSourceFileExists(Paths.get("pojo/serializers", "MyTestExchangeMarketDataExchangeInfoResponsePayloadSerializer.java"));
+    checkSourceFileExists(Paths.get("pojo/serializers", "MyTestExchangeMarketDataExchangeInfoResponseSerializer.java"));  
+    
+    checkJavaFilesCount(Paths.get("pojo/deserializers"), 3);
+    checkSourceFileExists(Paths.get("pojo/deserializers", "MyTestExchangeMarketDataExchangeInfoRequestDeserializer.java"));
+    checkSourceFileExists(Paths.get("pojo/deserializers", "MyTestExchangeMarketDataExchangeInfoResponseDeserializer.java"));
+    checkSourceFileExists(Paths.get("pojo/deserializers", "MyTestExchangeMarketDataExchangeInfoResponsePayloadDeserializer.java"));
   }
 
   @Test
@@ -905,14 +905,14 @@ public class RestEndpointClassesGeneratorTest {
     RestEndpointClassesGenerator generator = new RestEndpointClassesGenerator(exchange, api, restEndpoint, null);
     generator.generateClasses(srcFolder);
     
-    checkJavaFilesCount(Paths.get("deserializers"), 1);
-    checkSourceFileExists(Paths.get("deserializers", "GenericResponseDeserializer.java"));
-    
-    checkJavaFilesCount(Paths.get("pojo"), 1);
+    checkJavaFilesCount(Paths.get("pojo"), 3);
     checkSourceFileExists(Paths.get("pojo", "GenericResponse.java"));
     
-    checkJavaFilesCount(Paths.get("serializers"), 1);
-    checkSourceFileExists(Paths.get("serializers", "GenericResponseSerializer.java"));           
+    checkJavaFilesCount(Paths.get("pojo/deserializers"), 1);
+    checkSourceFileExists(Paths.get("pojo/deserializers", "GenericResponseDeserializer.java"));
+    
+    checkJavaFilesCount(Paths.get("pojo/serializers"), 1);
+    checkSourceFileExists(Paths.get("pojo/serializers", "GenericResponseSerializer.java"));           
   }
   
   @Test

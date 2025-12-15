@@ -1,4 +1,4 @@
-package org.jxapi.exchanges.demo.gen.marketdata.serializers;
+package org.jxapi.exchanges.demo.gen.marketdata.pojo.serializers;
 
 import java.io.IOException;
 

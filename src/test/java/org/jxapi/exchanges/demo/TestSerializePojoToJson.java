@@ -7,7 +7,7 @@ import java.util.List;
 import org.jxapi.exchanges.demo.gen.DemoExchangeConstants;
 import org.jxapi.exchanges.demo.gen.marketdata.pojo.DemoExchangeMarketDataExchangeInfoResponse;
 import org.jxapi.exchanges.demo.gen.marketdata.pojo.DemoExchangeMarketDataExchangeInfoResponsePayload;
-import org.jxapi.exchanges.demo.gen.marketdata.serializers.DemoExchangeMarketDataExchangeInfoResponseSerializer;
+import org.jxapi.exchanges.demo.gen.marketdata.pojo.serializers.DemoExchangeMarketDataExchangeInfoResponseSerializer;
 import org.jxapi.util.JsonUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

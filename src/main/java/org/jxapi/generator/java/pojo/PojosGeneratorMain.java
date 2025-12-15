@@ -128,6 +128,7 @@ public class PojosGeneratorMain {
   }
   
   private static void generateClassesForPojo(Field pojoDescriptor, String basePackage, Path basePackageFolder) throws IOException {
+    JavaCodeGenUtil.deletePath(basePackageFolder);
     Type type = PojoGenUtil.getFieldType(pojoDescriptor);
     if (!type.isObject()) {
       throw new IllegalArgumentException("POJO descriptor must be of type 'object'. POJO name:" + pojoDescriptor.getName());

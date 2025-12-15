@@ -39,22 +39,11 @@ public class ExchangeClassesGeneratorTest {
     checkSourceFileExists(Paths.get("MyTestExchangeConstants.java"));
     checkSourceFileExists(Paths.get("MyTestExchangeProperties.java"));
     
-    checkJavaFilesCount(Paths.get("marketData"), 5);
+    checkJavaFilesCount(Paths.get("marketData"), 3);
     checkSourceFileExists(Paths.get("marketData", "MyTestExchangeMarketDataApi.java"));
     checkSourceFileExists(Paths.get("marketData", "MyTestExchangeMarketDataApiImpl.java"));
     
-    checkJavaFilesCount(Paths.get("marketData", "deserializers"), 8);
-    checkSourceFileExists(Paths.get("marketData", "deserializers", "MyTestExchangeMarketDataExchangeInfoRequestDeserializer.java"));
-    checkSourceFileExists(Paths.get("marketData", "deserializers", "MyTestExchangeMarketDataExchangeInfoResponseDeserializer.java"));
-    checkSourceFileExists(Paths.get("marketData", "deserializers", "MyTestExchangeMarketDataExchangeInfoResponsePayloadDeserializer.java"));
-    checkSourceFileExists(Paths.get("marketData", "deserializers", "MyTestExchangeMarketDataTickersRequestDeserializer.java"));
-    checkSourceFileExists(Paths.get("marketData", "deserializers", "MyTestExchangeMarketDataTickersResponseDeserializer.java"));
-    checkSourceFileExists(Paths.get("marketData", "deserializers", "MyTestExchangeMarketDataTickersResponsePayloadDeserializer.java"));
-    checkSourceFileExists(Paths.get("marketData", "deserializers", "MyTestExchangeMarketDataTickerStreamMessageDeserializer.java"));
-    checkSourceFileExists(Paths.get("marketData", "deserializers", "MyTestExchangeMarketDataTickerStreamRequestDeserializer.java"));
-    
-    
-    checkJavaFilesCount(Paths.get("marketData", "pojo"), 8);
+    checkJavaFilesCount(Paths.get("marketData", "pojo"), 10);
     checkSourceFileExists(Paths.get("marketData", "pojo", "MyTestExchangeMarketDataExchangeInfoRequest.java"));
     checkSourceFileExists(Paths.get("marketData", "pojo", "MyTestExchangeMarketDataExchangeInfoResponse.java"));
     checkSourceFileExists(Paths.get("marketData", "pojo", "MyTestExchangeMarketDataExchangeInfoResponsePayload.java"));
@@ -64,15 +53,25 @@ public class ExchangeClassesGeneratorTest {
     checkSourceFileExists(Paths.get("marketData", "pojo", "MyTestExchangeMarketDataTickerStreamRequest.java"));
     checkSourceFileExists(Paths.get("marketData", "pojo", "MyTestExchangeMarketDataTickerStreamMessage.java"));
     
-    checkJavaFilesCount(Paths.get("marketData", "serializers"), 8);
-    checkSourceFileExists(Paths.get("marketData", "serializers", "MyTestExchangeMarketDataExchangeInfoRequestSerializer.java"));        
-    checkSourceFileExists(Paths.get("marketData", "serializers", "MyTestExchangeMarketDataExchangeInfoResponsePayloadSerializer.java"));
-    checkSourceFileExists(Paths.get("marketData", "serializers", "MyTestExchangeMarketDataExchangeInfoResponseSerializer.java"));       
-    checkSourceFileExists(Paths.get("marketData", "serializers", "MyTestExchangeMarketDataTickersRequestSerializer.java"));             
-    checkSourceFileExists(Paths.get("marketData", "serializers", "MyTestExchangeMarketDataTickersResponsePayloadSerializer.java"));     
-    checkSourceFileExists(Paths.get("marketData", "serializers", "MyTestExchangeMarketDataTickersResponseSerializer.java"));
-    checkSourceFileExists(Paths.get("marketData", "serializers", "MyTestExchangeMarketDataTickerStreamRequestSerializer.java"));
-    checkSourceFileExists(Paths.get("marketData", "serializers", "MyTestExchangeMarketDataTickerStreamMessageSerializer.java"));
+    checkJavaFilesCount(Paths.get("marketData", "pojo", "deserializers"), 8);
+    checkSourceFileExists(Paths.get("marketData", "pojo", "deserializers", "MyTestExchangeMarketDataExchangeInfoRequestDeserializer.java"));
+    checkSourceFileExists(Paths.get("marketData", "pojo", "deserializers", "MyTestExchangeMarketDataExchangeInfoResponseDeserializer.java"));
+    checkSourceFileExists(Paths.get("marketData", "pojo", "deserializers", "MyTestExchangeMarketDataExchangeInfoResponsePayloadDeserializer.java"));
+    checkSourceFileExists(Paths.get("marketData", "pojo", "deserializers", "MyTestExchangeMarketDataTickersRequestDeserializer.java"));
+    checkSourceFileExists(Paths.get("marketData", "pojo", "deserializers", "MyTestExchangeMarketDataTickersResponseDeserializer.java"));
+    checkSourceFileExists(Paths.get("marketData", "pojo", "deserializers", "MyTestExchangeMarketDataTickersResponsePayloadDeserializer.java"));
+    checkSourceFileExists(Paths.get("marketData", "pojo", "deserializers", "MyTestExchangeMarketDataTickerStreamMessageDeserializer.java"));
+    checkSourceFileExists(Paths.get("marketData", "pojo", "deserializers", "MyTestExchangeMarketDataTickerStreamRequestDeserializer.java"));
+    
+    checkJavaFilesCount(Paths.get("marketData", "pojo", "serializers"), 8);
+    checkSourceFileExists(Paths.get("marketData", "pojo", "serializers", "MyTestExchangeMarketDataExchangeInfoRequestSerializer.java"));        
+    checkSourceFileExists(Paths.get("marketData", "pojo", "serializers", "MyTestExchangeMarketDataExchangeInfoResponsePayloadSerializer.java"));
+    checkSourceFileExists(Paths.get("marketData", "pojo", "serializers", "MyTestExchangeMarketDataExchangeInfoResponseSerializer.java"));       
+    checkSourceFileExists(Paths.get("marketData", "pojo", "serializers", "MyTestExchangeMarketDataTickersRequestSerializer.java"));             
+    checkSourceFileExists(Paths.get("marketData", "pojo", "serializers", "MyTestExchangeMarketDataTickersResponsePayloadSerializer.java"));     
+    checkSourceFileExists(Paths.get("marketData", "pojo", "serializers", "MyTestExchangeMarketDataTickersResponseSerializer.java"));
+    checkSourceFileExists(Paths.get("marketData", "pojo", "serializers", "MyTestExchangeMarketDataTickerStreamRequestSerializer.java"));
+    checkSourceFileExists(Paths.get("marketData", "pojo", "serializers", "MyTestExchangeMarketDataTickerStreamMessageSerializer.java"));
   }
   
   @Test

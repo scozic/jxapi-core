@@ -1,4 +1,4 @@
-package org.jxapi.exchanges.employee.gen.v1.serializers;
+package org.jxapi.exchanges.employee.gen.v1.pojo.serializers;
 
 import java.io.IOException;
 

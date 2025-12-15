@@ -57,7 +57,7 @@ public class ExchangeGenUtilTest {
 
   @Test
   public void testGetJsonMessageDeserializerClassName() {
-    Assert.assertEquals("com.x.y.deserializers.MyObjectDeserializer", 
+    Assert.assertEquals("com.x.y.pojo.deserializers.MyObjectDeserializer", 
               PojoGenUtil.getJsonMessageDeserializerClassName("com.x.y.pojo.MyObject"));
   }
 
