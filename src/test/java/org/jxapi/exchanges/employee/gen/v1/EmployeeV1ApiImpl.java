@@ -4,18 +4,19 @@ import javax.annotation.processing.Generated;
 import org.jxapi.exchange.AbstractExchangeApi;
 import org.jxapi.exchanges.employee.gen.EmployeeExchange;
 import org.jxapi.exchanges.employee.gen.EmployeeProperties;
-import org.jxapi.exchanges.employee.gen.v1.deserializers.EmployeeDeserializer;
-import org.jxapi.exchanges.employee.gen.v1.deserializers.EmployeeV1EmployeeUpdatesMessageDeserializer;
-import org.jxapi.exchanges.employee.gen.v1.deserializers.EmployeeV1GetAllEmployeesResponseDeserializer;
 import org.jxapi.exchanges.employee.gen.v1.pojo.Employee;
 import org.jxapi.exchanges.employee.gen.v1.pojo.EmployeeV1EmployeeUpdatesMessage;
 import org.jxapi.exchanges.employee.gen.v1.pojo.EmployeeV1GetAllEmployeesRequest;
 import org.jxapi.exchanges.employee.gen.v1.pojo.EmployeeV1GetAllEmployeesResponse;
+import org.jxapi.exchanges.employee.gen.v1.pojo.deserializers.EmployeeDeserializer;
+import org.jxapi.exchanges.employee.gen.v1.pojo.deserializers.EmployeeV1EmployeeUpdatesMessageDeserializer;
+import org.jxapi.exchanges.employee.gen.v1.pojo.deserializers.EmployeeV1GetAllEmployeesResponseDeserializer;
+import org.jxapi.exchanges.employee.gen.v1.pojo.serializers.EmployeeSerializer;
 import org.jxapi.netutils.deserialization.MessageDeserializer;
-import org.jxapi.netutils.deserialization.RawStringMessageDeserializer;
 import org.jxapi.netutils.rest.FutureRestResponse;
 import org.jxapi.netutils.rest.HttpMethod;
 import org.jxapi.netutils.rest.HttpRequest;
+import org.jxapi.netutils.serialization.MessageSerializer;
 import org.jxapi.netutils.websocket.WebsocketEndpoint;
 import org.jxapi.netutils.websocket.WebsocketListener;
 import org.jxapi.netutils.websocket.WebsocketSubscribeRequest;
@@ -63,12 +64,16 @@ public class EmployeeV1ApiImpl extends AbstractExchangeApi implements EmployeeV1
   // Websocket endpoints
   private final WebsocketEndpoint<EmployeeV1EmployeeUpdatesMessage> employeeUpdatesWs;
   
+  // Request serializers
+  private final MessageSerializer<Employee> addEmployeeRequestSerializer = new EmployeeSerializer();
+  private final MessageSerializer<Employee> updateEmployeeRequestSerializer = new EmployeeSerializer();
+  
   // Message deserializers
   private final MessageDeserializer<Employee> getEmployeeResponseDeserializer = new EmployeeDeserializer();
   private final MessageDeserializer<EmployeeV1GetAllEmployeesResponse> getAllEmployeesResponseDeserializer = new EmployeeV1GetAllEmployeesResponseDeserializer();
-  private final MessageDeserializer<String> addEmployeeResponseDeserializer = RawStringMessageDeserializer.getInstance();
-  private final MessageDeserializer<String> updateEmployeeResponseDeserializer = RawStringMessageDeserializer.getInstance();
-  private final MessageDeserializer<String> deleteEmployeeResponseDeserializer = RawStringMessageDeserializer.getInstance();
+  private final MessageDeserializer<String> addEmployeeResponseDeserializer = MessageDeserializer.NO_OP;
+  private final MessageDeserializer<String> updateEmployeeResponseDeserializer = MessageDeserializer.NO_OP;
+  private final MessageDeserializer<String> deleteEmployeeResponseDeserializer = MessageDeserializer.NO_OP;
   
   // Constructor
   /**
@@ -96,31 +101,31 @@ public class EmployeeV1ApiImpl extends AbstractExchangeApi implements EmployeeV1
   public FutureRestResponse<Employee> getEmployee(Integer request) {
     String url = new StringBuilder(128).append(getEmployeeHttpUrl)
       .append(EncodingUtil.createUrlPathParameters(request)).toString();
-    return submit(HttpRequest.create(GET_EMPLOYEE_REST_API, url, HttpMethod.GET, request, null, 0), false, getEmployeeResponseDeserializer);
+    return submit(HttpRequest.create(GET_EMPLOYEE_REST_API, url, HttpMethod.GET, request, null, 0), getEmployeeResponseDeserializer);
   }
   
   @Override
   public FutureRestResponse<EmployeeV1GetAllEmployeesResponse> getAllEmployees(EmployeeV1GetAllEmployeesRequest request) {
     String url = new StringBuilder(128).append(getAllEmployeesHttpUrl)
       .append(EncodingUtil.createUrlQueryParameters("page", request.getPage(), "size", request.getSize())).toString();
-    return submitPaginated(HttpRequest.create(GET_ALL_EMPLOYEES_REST_API, url, HttpMethod.GET, request, null, 0), false, getAllEmployeesResponseDeserializer, this::getAllEmployees);
+    return submitPaginated(HttpRequest.create(GET_ALL_EMPLOYEES_REST_API, url, HttpMethod.GET, request, null, 0), getAllEmployeesResponseDeserializer, this::getAllEmployees);
   }
   
   @Override
   public FutureRestResponse<String> addEmployee(Employee request) {
-    return submit(HttpRequest.create(ADD_EMPLOYEE_REST_API, addEmployeeHttpUrl, HttpMethod.POST, request, null, 0), true, addEmployeeResponseDeserializer);
+    return submit(HttpRequest.create(ADD_EMPLOYEE_REST_API, addEmployeeHttpUrl, HttpMethod.POST, request, null, 0, addEmployeeRequestSerializer.serialize(request)), addEmployeeResponseDeserializer);
   }
   
   @Override
   public FutureRestResponse<String> updateEmployee(Employee request) {
-    return submit(HttpRequest.create(UPDATE_EMPLOYEE_REST_API, updateEmployeeHttpUrl, HttpMethod.PUT, request, null, 0), true, updateEmployeeResponseDeserializer);
+    return submit(HttpRequest.create(UPDATE_EMPLOYEE_REST_API, updateEmployeeHttpUrl, HttpMethod.PUT, request, null, 0, updateEmployeeRequestSerializer.serialize(request)), updateEmployeeResponseDeserializer);
   }
   
   @Override
   public FutureRestResponse<String> deleteEmployee(Integer request) {
     String url = new StringBuilder(128).append(deleteEmployeeHttpUrl)
       .append(EncodingUtil.createUrlPathParameters(request)).toString();
-    return submit(HttpRequest.create(DELETE_EMPLOYEE_REST_API, url, HttpMethod.DELETE, request, null, 0), false, deleteEmployeeResponseDeserializer);
+    return submit(HttpRequest.create(DELETE_EMPLOYEE_REST_API, url, HttpMethod.DELETE, request, null, 0), deleteEmployeeResponseDeserializer);
   }
   
   

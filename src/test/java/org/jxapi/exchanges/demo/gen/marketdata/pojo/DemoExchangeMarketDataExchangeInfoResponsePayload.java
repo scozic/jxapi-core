@@ -3,9 +3,11 @@ package org.jxapi.exchanges.demo.gen.marketdata.pojo;
 import java.math.BigDecimal;
 import java.util.Objects;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import javax.annotation.processing.Generated;
-import org.jxapi.exchanges.demo.gen.marketdata.serializers.DemoExchangeMarketDataExchangeInfoResponsePayloadSerializer;
+import org.jxapi.exchanges.demo.gen.marketdata.pojo.deserializers.DemoExchangeMarketDataExchangeInfoResponsePayloadDeserializer;
+import org.jxapi.exchanges.demo.gen.marketdata.pojo.serializers.DemoExchangeMarketDataExchangeInfoResponsePayloadSerializer;
 import org.jxapi.util.CompareUtil;
 import org.jxapi.util.EncodingUtil;
 import org.jxapi.util.Pojo;
@@ -13,11 +15,12 @@ import org.jxapi.util.Pojo;
 /**
  * List of market information for each requested symbol
  */
-@Generated("org.jxapi.generator.java.exchange.api.pojo.PojoGenerator")
+@Generated("org.jxapi.generator.java.pojo.PojoGenerator")
 @JsonSerialize(using = DemoExchangeMarketDataExchangeInfoResponsePayloadSerializer.class)
+@JsonDeserialize(using = DemoExchangeMarketDataExchangeInfoResponsePayloadDeserializer.class)
 public class DemoExchangeMarketDataExchangeInfoResponsePayload implements Pojo<DemoExchangeMarketDataExchangeInfoResponsePayload> {
   
-  private static final long serialVersionUID = 1879878527622871947L;
+  private static final long serialVersionUID = 8233098697383898261L;
   
   /**
    * @return A new builder to build {@link DemoExchangeMarketDataExchangeInfoResponsePayload} objects
@@ -29,6 +32,7 @@ public class DemoExchangeMarketDataExchangeInfoResponsePayload implements Pojo<D
   private String symbol;
   private BigDecimal minOrderSize;
   private BigDecimal orderTickSize;
+  private Object blob;
   
   /**
    * @return Market symbol
@@ -72,6 +76,20 @@ public class DemoExchangeMarketDataExchangeInfoResponsePayload implements Pojo<D
     this.orderTickSize = orderTickSize;
   }
   
+  /**
+   * @return Additional metadata for the symbol
+   */
+  public Object getBlob() {
+    return blob;
+  }
+  
+  /**
+   * @param blob Additional metadata for the symbol
+   */
+  public void setBlob(Object blob) {
+    this.blob = blob;
+  }
+  
   @Override
   public boolean equals(Object other) {
     if (other == null) {
@@ -85,7 +103,8 @@ public class DemoExchangeMarketDataExchangeInfoResponsePayload implements Pojo<D
     DemoExchangeMarketDataExchangeInfoResponsePayload o = (DemoExchangeMarketDataExchangeInfoResponsePayload) other;
     return Objects.equals(this.symbol, o.symbol)
         && Objects.equals(this.minOrderSize, o.minOrderSize)
-        && Objects.equals(this.orderTickSize, o.orderTickSize);
+        && Objects.equals(this.orderTickSize, o.orderTickSize)
+        && Objects.equals(this.blob, o.blob);
   }
   
   @Override
@@ -106,12 +125,16 @@ public class DemoExchangeMarketDataExchangeInfoResponsePayload implements Pojo<D
       return res;
     }
     res = CompareUtil.compare(this.orderTickSize, other.orderTickSize);
+    if (res != 0) {
+      return res;
+    }
+    res = CompareUtil.compareObjects(this.blob, other.blob);
     return res;
   }
   
   @Override
   public int hashCode() {
-    return Objects.hash(symbol, minOrderSize, orderTickSize);
+    return Objects.hash(symbol, minOrderSize, orderTickSize, blob);
   }
   
   @Override
@@ -120,6 +143,7 @@ public class DemoExchangeMarketDataExchangeInfoResponsePayload implements Pojo<D
     clone.symbol = this.symbol;
     clone.minOrderSize = this.minOrderSize;
     clone.orderTickSize = this.orderTickSize;
+    clone.blob = this.blob;
     return clone;
   }
   
@@ -137,6 +161,7 @@ public class DemoExchangeMarketDataExchangeInfoResponsePayload implements Pojo<D
     private String symbol;
     private BigDecimal minOrderSize;
     private BigDecimal orderTickSize;
+    private Object blob;
     
     /**
      * Will set the value of <code>symbol</code> field in the builder
@@ -172,6 +197,17 @@ public class DemoExchangeMarketDataExchangeInfoResponsePayload implements Pojo<D
     }
     
     /**
+     * Will set the value of <code>blob</code> field in the builder
+     * @param blob Additional metadata for the symbol
+     * @return Builder instance
+     * @see #setBlob(Object)
+     */
+    public Builder blob(Object blob)  {
+      this.blob = blob;
+      return this;
+    }
+    
+    /**
      * @return a new instance of DemoExchangeMarketDataExchangeInfoResponsePayload using the values set in this builder
      */
     public DemoExchangeMarketDataExchangeInfoResponsePayload build() {
@@ -179,6 +215,7 @@ public class DemoExchangeMarketDataExchangeInfoResponsePayload implements Pojo<D
       res.symbol = this.symbol;
       res.minOrderSize = this.minOrderSize;
       res.orderTickSize = this.orderTickSize;
+      res.blob = this.blob;
       return res;
     }
   }

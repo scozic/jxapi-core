@@ -3,7 +3,7 @@ package org.jxapi.util;
 import java.util.List;
 import java.util.Properties;
 
-import org.jxapi.exchange.descriptor.Type;
+import org.jxapi.pojo.descriptor.Type;
 
 /**
  * Lists configuration properties uused in demo snippets

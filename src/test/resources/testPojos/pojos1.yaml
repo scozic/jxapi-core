@@ -1,0 +1,31 @@
+basePackage: org.jxapi.pojos1.gen
+pojos:
+  - name: foo
+    description: Foo object
+    properties:
+      - name: id
+        description: Identifier
+        type: STRING
+      - name: value
+        description: Value of the foo
+        type: INT
+      - name: bar
+        description: Bar object
+        properties:
+          - name: name
+            description: Name of the bar
+          - name: amount
+            description: Amount in the bar
+            type: BIGDECIMAL      
+  - name: baz
+    description: Baz object
+    implementedInterfaces:
+      - org.jxapi.pojos1.BazInterface
+    properties:
+      - name: timestamp
+        description: Timestamp of the baz
+        type: LONG
+      - name: active
+        description: Is the baz active
+        type: BOOLEAN
+        in: PATH

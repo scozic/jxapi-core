@@ -7,12 +7,12 @@ import java.util.List;
 
 import org.junit.Assert;
 import org.junit.Test;
-import org.jxapi.exchange.descriptor.ConfigPropertyDescriptor;
-import org.jxapi.exchange.descriptor.Constant;
-import org.jxapi.exchange.descriptor.ExchangeDescriptor;
-import org.jxapi.exchange.descriptor.Type;
+import org.jxapi.exchange.descriptor.gen.ConfigPropertyDescriptor;
+import org.jxapi.exchange.descriptor.gen.ConstantDescriptor;
+import org.jxapi.exchange.descriptor.gen.ExchangeDescriptor;
 import org.jxapi.exchange.descriptor.parser.ExchangeDescriptorParser;
 import org.jxapi.generator.java.exchange.api.demo.EndpointDemoGenUtil;
+import org.jxapi.pojo.descriptor.Type;
 
 /**
  * Unit test for {@link PropertiesClassGenerator}
@@ -21,18 +21,56 @@ public class PropertiesClassGeneratorTest {
 
     @Test
     public void testGenerate_NoGroup() {
-        ConfigPropertyDescriptor stringProp = ConfigPropertyDescriptor.create("myString", Type.STRING, "My String property, for instance ${constants.stringPropDefaultValue}", "${constants.stringPropDefaultValue}");
-        ConfigPropertyDescriptor stringPropWithNoDescriptionNoDefaultValue = ConfigPropertyDescriptor.create("myStringWithNoDescriptionNoDefaultValue", Type.STRING, null, null);
-        ConfigPropertyDescriptor intProp = ConfigPropertyDescriptor.create("myInt", Type.INT, "My int property", "${constants.intPropDefaultValue}");
-        ConfigPropertyDescriptor longProp = ConfigPropertyDescriptor.create("myLong", Type.LONG, "My long property", 1234567890123456L);
-        ConfigPropertyDescriptor boolProp = ConfigPropertyDescriptor.create("myBool", Type.BOOLEAN, "My boolean property", true);
-        ConfigPropertyDescriptor bigDecimalProp = ConfigPropertyDescriptor.create("myBigDecimal", Type.BIGDECIMAL, "My BigDecimal property", 1.2345);
+      ConfigPropertyDescriptor stringProp = ConfigPropertyDescriptor.builder()
+          .name("myString")
+          .type(Type.STRING.toString())
+          .description("My String property, for instance ${constants.stringPropDefaultValue}")
+          .defaultValue("${constants.stringPropDefaultValue}")
+          .build();
+      ConfigPropertyDescriptor stringPropWithNoDescriptionNoDefaultValue = ConfigPropertyDescriptor.builder()
+          .name("myStringWithNoDescriptionNoDefaultValue")
+          .type(Type.STRING.toString())
+          .build();
+      ConfigPropertyDescriptor intProp = ConfigPropertyDescriptor.builder()
+          .name("myInt")
+          .type(Type.INT.toString())
+          .description("My int property")
+          .defaultValue("${constants.intPropDefaultValue}")
+          .build();
+      ConfigPropertyDescriptor longProp = ConfigPropertyDescriptor.builder()
+          .name("myLong")
+          .type(Type.LONG.toString())
+          .description("My long property")
+          .defaultValue("1234567890123456")
+          .build();
+      ConfigPropertyDescriptor boolProp = ConfigPropertyDescriptor.builder()
+          .name("myBool")
+          .type(Type.BOOLEAN.toString())
+          .description("My boolean property")
+          .defaultValue("true")
+          .build();
+      ConfigPropertyDescriptor bigDecimalProp = ConfigPropertyDescriptor.builder()
+          .name("myBigDecimal")
+          .type(Type.BIGDECIMAL.toString())
+          .description("My BigDecimal property")
+          .defaultValue("1.2345")
+          .build();
         ExchangeDescriptor exchangeDescriptor = new ExchangeDescriptor();
         exchangeDescriptor.setId("myExchange");
         exchangeDescriptor.setBasePackage("com.x.y.exchange");
         exchangeDescriptor.setDescription("My exchange description");
-        Constant c1 = Constant.create("stringPropDefaultValue", Type.STRING, "Sample string value", "fooVal");
-        Constant c2 = Constant.create("intPropDefaultValue", Type.INT, "Sample int value", 42);
+        ConstantDescriptor c1 = ConstantDescriptor.builder()
+            .name("stringPropDefaultValue")
+            .type(Type.STRING.toString())
+            .description("Sample string value")
+            .value("fooVal")
+            .build();
+        ConstantDescriptor c2 = ConstantDescriptor.builder()
+            .name("intPropDefaultValue")
+            .type(Type.INT.toString())
+            .description("Sample int value")
+            .value(42)
+            .build();
         exchangeDescriptor.setConstants(List.of(c1, c2));
         PropertiesClassGenerator gen = new PropertiesClassGenerator("com.x.y.MyProperties", exchangeDescriptor, 
             List.of(stringProp, 
@@ -50,7 +88,7 @@ public class PropertiesClassGeneratorTest {
             + "\n"
             + "import com.x.y.exchange.MyExchangeConstants;\n"
             + "import javax.annotation.processing.Generated;\n"
-            + "import org.jxapi.exchange.descriptor.Type;\n"
+            + "import org.jxapi.pojo.descriptor.Type;\n"
             + "import org.jxapi.util.CollectionUtil;\n"
             + "import org.jxapi.util.ConfigProperty;\n"
             + "import org.jxapi.util.DefaultConfigProperty;\n"
@@ -224,22 +262,77 @@ public class PropertiesClassGeneratorTest {
     
     @Test
     public void testGenerate_WithGroups() {
-        ConfigPropertyDescriptor stringProp = ConfigPropertyDescriptor.create("myString", Type.STRING, "My String property, for instance ${constants.stringPropDefaultValue}", "${constants.stringPropDefaultValue}");
-        ConfigPropertyDescriptor stringPropWithNoDescriptionNoDefaultValue = ConfigPropertyDescriptor.create("myStringWithNoDescriptionNoDefaultValue", Type.STRING, null, null);
-        ConfigPropertyDescriptor intProp = ConfigPropertyDescriptor.create("myInt", Type.INT, "My int property", "${constants.intPropDefaultValue}");
-        ConfigPropertyDescriptor intListProp = ConfigPropertyDescriptor.create("myIntList", Type.fromTypeName("INT_LIST"), "My int list property", "[1,2,3]");
-        ConfigPropertyDescriptor longProp = ConfigPropertyDescriptor.create("myLong", Type.LONG, "My long property", 1234567890123456L);
-        ConfigPropertyDescriptor boolProp = ConfigPropertyDescriptor.create("myBool", Type.BOOLEAN, "My boolean property", true);
-        ConfigPropertyDescriptor bigDecimalProp = ConfigPropertyDescriptor.create("myBigDecimal", Type.BIGDECIMAL, "My BigDecimal property", 1.2345);
-        ConfigPropertyDescriptor groupProp1 = ConfigPropertyDescriptor.createGroup("myGroup1", "My group1 description", List.of(stringPropWithNoDescriptionNoDefaultValue, intProp, intListProp));
-        ConfigPropertyDescriptor groupProp21 = ConfigPropertyDescriptor.createGroup("myGroup21", "My group nested in group2 description", List.of(longProp));
-        ConfigPropertyDescriptor groupProp2 = ConfigPropertyDescriptor.createGroup("myGroup2", "My group2 description", List.of(groupProp21, boolProp));
+      ConfigPropertyDescriptor stringProp = ConfigPropertyDescriptor.builder()
+          .name("myString")
+          .type(Type.STRING.toString())
+          .description("My String property, for instance ${constants.stringPropDefaultValue}")
+          .defaultValue("${constants.stringPropDefaultValue}")
+          .build();
+        ConfigPropertyDescriptor stringPropWithNoDescriptionNoDefaultValue = ConfigPropertyDescriptor.builder()
+            .name("myStringWithNoDescriptionNoDefaultValue")
+            .type(Type.STRING.toString())
+            .build();
+        ConfigPropertyDescriptor intProp = ConfigPropertyDescriptor.builder()
+            .name("myInt")
+            .type(Type.INT.toString())
+            .description("My int property")
+            .defaultValue("${constants.intPropDefaultValue}")
+            .build();
+        ConfigPropertyDescriptor intListProp = ConfigPropertyDescriptor.builder()
+            .name("myIntList")
+            .type("INT_LIST")
+            .description("My int list property")
+            .defaultValue("[1,2,3]")
+            .build();
+        ConfigPropertyDescriptor longProp = ConfigPropertyDescriptor.builder()
+            .name("myLong")
+            .type(Type.LONG.toString())
+            .description("My long property")
+            .defaultValue("1234567890123456")
+            .build();
+        ConfigPropertyDescriptor boolProp = ConfigPropertyDescriptor.builder()
+            .name("myBool")
+            .type(Type.BOOLEAN.toString())
+            .description("My boolean property")
+            .defaultValue("true")
+            .build();
+        ConfigPropertyDescriptor bigDecimalProp = ConfigPropertyDescriptor.builder()
+            .name("myBigDecimal")
+            .type(Type.BIGDECIMAL.toString())
+            .description("My BigDecimal property")
+            .defaultValue("1.2345")
+            .build();
+        ConfigPropertyDescriptor groupProp1 = ConfigPropertyDescriptor.builder()
+            .name("myGroup1")
+            .description("My group1 description")
+            .properties(List.of(stringPropWithNoDescriptionNoDefaultValue, intProp, intListProp))
+            .build();
+        ConfigPropertyDescriptor groupProp21 = ConfigPropertyDescriptor.builder()
+            .name("myGroup21")
+            .description("My group nested in group2 description")
+            .properties(List.of(longProp))
+            .build();
+        ConfigPropertyDescriptor groupProp2 = ConfigPropertyDescriptor.builder()
+            .name("myGroup2")
+            .description("My group2 description")
+            .properties(List.of(groupProp21, boolProp))
+            .build();
         ExchangeDescriptor exchangeDescriptor = new ExchangeDescriptor();
         exchangeDescriptor.setId("myExchange");
         exchangeDescriptor.setBasePackage("com.x.y.exchange");
         exchangeDescriptor.setDescription("My exchange description");
-        Constant c1 = Constant.create("stringPropDefaultValue", Type.STRING, "Sample string value", "fooVal");
-        Constant c2 = Constant.create("intPropDefaultValue", Type.INT, "Sample int value", 42);
+        ConstantDescriptor c1 = ConstantDescriptor.builder()
+            .name("stringPropDefaultValue")
+            .type(Type.STRING.toString())
+            .description("Sample string value")
+            .value("fooVal")
+            .build();
+        ConstantDescriptor c2 = ConstantDescriptor.builder()
+            .name("intPropDefaultValue")
+            .type(Type.INT.toString())
+            .description("Sample int value")
+            .value(42)
+            .build();
         exchangeDescriptor.setConstants(List.of(c1, c2));
         PropertiesClassGenerator gen = new PropertiesClassGenerator("com.x.y.MyProperties", exchangeDescriptor, 
             List.of(stringProp, 
@@ -255,7 +348,7 @@ public class PropertiesClassGeneratorTest {
             + "\n"
             + "import com.x.y.exchange.MyExchangeConstants;\n"
             + "import javax.annotation.processing.Generated;\n"
-            + "import org.jxapi.exchange.descriptor.Type;\n"
+            + "import org.jxapi.pojo.descriptor.Type;\n"
             + "import org.jxapi.util.CollectionUtil;\n"
             + "import org.jxapi.util.ConfigProperty;\n"
             + "import org.jxapi.util.DefaultConfigProperty;\n"
@@ -539,14 +632,37 @@ public class PropertiesClassGeneratorTest {
     
     @Test
     public void testGenerateProperties_WithConflictingPropertyNames() {
-      ConfigPropertyDescriptor p1 = ConfigPropertyDescriptor.create("p1", Type.STRING, null, null);
-      ConfigPropertyDescriptor p1Up = ConfigPropertyDescriptor.create("P1", Type.STRING, null, null);
-      ConfigPropertyDescriptor p1Underscore = ConfigPropertyDescriptor.create("p1_", Type.STRING, null, null);
-      ConfigPropertyDescriptor subAll = ConfigPropertyDescriptor.create("all", Type.STRING, "all speciific prop for P1_ group properties", null);
-      ConfigPropertyDescriptor p1UpUnderscore = ConfigPropertyDescriptor.createGroup("P1_", null, List.of(subAll));
-      ConfigPropertyDescriptor all = ConfigPropertyDescriptor.create("all", Type.STRING, "all speciific prop", null);
-      ConfigPropertyDescriptor allUnderscore = ConfigPropertyDescriptor.create("all_", Type.STRING, "all_ specific prop", null);
-      
+      ConfigPropertyDescriptor p1 = ConfigPropertyDescriptor.builder()
+          .name("p1")
+          .type(Type.STRING.toString())
+          .build();
+      ConfigPropertyDescriptor p1Up = ConfigPropertyDescriptor.builder()
+          .name("P1")
+          .type(Type.STRING.toString())
+          .build();
+      ConfigPropertyDescriptor p1Underscore = ConfigPropertyDescriptor.builder()
+          .name("p1_")
+          .type(Type.STRING.toString())
+          .build();
+      ConfigPropertyDescriptor subAll = ConfigPropertyDescriptor.builder()
+          .name("all")
+          .type(Type.STRING.toString())
+          .description("all speciific prop for P1_ group properties")
+          .build();
+      ConfigPropertyDescriptor p1UpUnderscore = ConfigPropertyDescriptor.builder()
+          .name("P1_")
+          .properties(List.of(subAll))
+          .build();
+      ConfigPropertyDescriptor all = ConfigPropertyDescriptor.builder()
+          .name("all")
+          .type(Type.STRING.toString())
+          .description("all speciific prop")
+          .build();
+      ConfigPropertyDescriptor allUnderscore = ConfigPropertyDescriptor.builder()
+          .name("all_")
+          .type(Type.STRING.toString())
+          .description("all_ specific prop")
+          .build();
       List<ConfigPropertyDescriptor> allProps = List.of(p1, p1Up, p1Underscore, p1UpUnderscore, all, allUnderscore);
       ExchangeDescriptor exchangeDescriptor = new ExchangeDescriptor();
       exchangeDescriptor.setId("myExchange");
@@ -558,7 +674,7 @@ public class PropertiesClassGeneratorTest {
           + "import java.util.Properties;\n"
           + "\n"
           + "import javax.annotation.processing.Generated;\n"
-          + "import org.jxapi.exchange.descriptor.Type;\n"
+          + "import org.jxapi.pojo.descriptor.Type;\n"
           + "import org.jxapi.util.CollectionUtil;\n"
           + "import org.jxapi.util.ConfigProperty;\n"
           + "import org.jxapi.util.DefaultConfigProperty;\n"
@@ -752,8 +868,8 @@ public class PropertiesClassGeneratorTest {
           + "import java.util.Properties;\n"
           + "\n"
           + "import javax.annotation.processing.Generated;\n"
-          + "import org.jxapi.exchange.descriptor.Type;\n"
           + "import org.jxapi.exchanges.conflict.gen.ConflictConstants;\n"
+          + "import org.jxapi.pojo.descriptor.Type;\n"
           + "import org.jxapi.util.CollectionUtil;\n"
           + "import org.jxapi.util.ConfigProperty;\n"
           + "import org.jxapi.util.DefaultConfigProperty;\n"

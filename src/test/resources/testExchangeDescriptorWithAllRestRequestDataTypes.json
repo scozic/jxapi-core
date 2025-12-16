@@ -100,14 +100,10 @@
 					}
 				},
 				{
-					"name": "postRestRequestDataTypeObjectNoParameters",
+					"name": "postRestRequestNoParameters",
 					"httpMethod": "POST",
-					"description": "A sample REST endpoint using OBJECT request data type (implicit), and no parameters",
+					"description": "A sample REST endpoint using POST method (HTTP request expecting a body), and no parameters. One String argument should be generated to pass raw body",
 					"url": "/postNoParameter",
-					"request": {
-						"type": "OBJECT",
-						"properties": []
-					},
 					"response": {
 						"objectName": "GenericResponse"
 					}
@@ -209,6 +205,30 @@
 					"request": {
 						"type": "OBJECT",
 						"properties": []
+					},
+					"response": {
+						"objectName": "GenericResponse"
+					}
+				},
+				{
+					"name": "getRestRequestDataTypeExternalObject",
+					"httpMethod": "POST",
+					"description": "A sample REST endpoint using POST (hence request body) and request with object name representing a class with full package name, which is not to be generated",
+					"url": "/postEmptyObject",
+					"request": {
+						"objectName": "com.external.pkg.ExternalObject"
+					},
+					"response": {
+						"objectName": "GenericResponse"
+					}
+				},				
+				{
+					"name": "postRestRequestDataTypeRawObject",
+					"httpMethod": "POST",
+					"description": "A sample REST endpoint using POST (hence request body) and raw <code>java.lang.Object</code> request object",
+					"url": "/postEmptyObject",
+					"request": {
+						"objectName": "java.lang.Object"
 					},
 					"response": {
 						"objectName": "GenericResponse"

@@ -2,7 +2,6 @@ package org.jxapi.exchange;
 
 import java.util.Properties;
 
-import org.jxapi.exchange.descriptor.Type;
 import org.jxapi.netutils.rest.FutureRestResponse;
 import org.jxapi.netutils.rest.HttpRequestExecutor;
 import org.jxapi.netutils.rest.HttpRequestInterceptor;
@@ -10,6 +9,7 @@ import org.jxapi.netutils.rest.ratelimits.RateLimitRule;
 import org.jxapi.netutils.rest.ratelimits.RequestThrottler;
 import org.jxapi.netutils.rest.ratelimits.RequestThrottlingMode;
 import org.jxapi.netutils.websocket.WebsocketManager;
+import org.jxapi.pojo.descriptor.Type;
 import org.jxapi.util.Disposable;
 import org.jxapi.util.HasProperties;
 

@@ -66,6 +66,8 @@ apis:
         in: PATH
       response:
        objectName: Employee
+       description: Employee details response for requested employee ID
+       objectDescription: Employee details
        type: OBJECT
        properties:
         - name: id

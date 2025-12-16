@@ -2,9 +2,12 @@ package org.jxapi.netutils.deserialization.json;
 
 import java.io.IOException;
 
-import com.fasterxml.jackson.core.JsonFactory;
-import com.fasterxml.jackson.core.JsonParser;
 import org.jxapi.netutils.deserialization.MessageDeserializer;
+import org.jxapi.util.JsonUtil;
+
+import com.fasterxml.jackson.core.JacksonException;
+import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.databind.DeserializationContext;
 
 /**
  * Abstract base class for JSON data message deserializers.
@@ -19,9 +22,7 @@ import org.jxapi.netutils.deserialization.MessageDeserializer;
  * @see MessageDeserializer
  * @see JsonDeserializer
  */
-public abstract class AbstractJsonMessageDeserializer<T> implements MessageDeserializer<T>, JsonDeserializer<T> {
-  
-  private final JsonFactory jsonFactory = new JsonFactory();
+public abstract class AbstractJsonMessageDeserializer<T> extends com.fasterxml.jackson.databind.JsonDeserializer<T> implements MessageDeserializer<T>, JsonDeserializer<T> {
   
   @Override
   public T deserialize(String msg) {
@@ -29,12 +30,17 @@ public abstract class AbstractJsonMessageDeserializer<T> implements MessageDeser
       if (msg == null) {
         return null;
       }
-      JsonParser parser = jsonFactory.createParser(msg.getBytes());
+      JsonParser parser = JsonUtil.DEFAULT_JSON_FACTORY.createParser(msg.getBytes());
       parser.nextToken();
       return deserialize(parser);
     } catch (IOException e) {
       throw new IllegalArgumentException("Error parsing JSON:[" + msg + "]", e);
     } 
+  }
+  
+  @Override
+  public T deserialize(JsonParser p, DeserializationContext ctxt) throws IOException, JacksonException {
+    return deserialize(p);
   }
   
 }

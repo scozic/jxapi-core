@@ -3,9 +3,11 @@ package org.jxapi.exchanges.demo.gen.marketdata.pojo;
 import java.util.Map;
 import java.util.Objects;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import javax.annotation.processing.Generated;
-import org.jxapi.exchanges.demo.gen.marketdata.serializers.DemoExchangeMarketDataTickersResponseSerializer;
+import org.jxapi.exchanges.demo.gen.marketdata.pojo.deserializers.DemoExchangeMarketDataTickersResponseDeserializer;
+import org.jxapi.exchanges.demo.gen.marketdata.pojo.serializers.DemoExchangeMarketDataTickersResponseSerializer;
 import org.jxapi.util.CollectionUtil;
 import org.jxapi.util.CompareUtil;
 import org.jxapi.util.DeepCloneable;
@@ -13,12 +15,12 @@ import org.jxapi.util.EncodingUtil;
 import org.jxapi.util.Pojo;
 
 /**
- * Response to DemoExchange MarketData API <br>
- * tickers REST endpoint request<br>
+ * Response object for DemoExchange MarketData API tickers REST endpoint<br>
  * Fetch current tickers for all markets
  */
-@Generated("org.jxapi.generator.java.exchange.api.pojo.PojoGenerator")
+@Generated("org.jxapi.generator.java.pojo.PojoGenerator")
 @JsonSerialize(using = DemoExchangeMarketDataTickersResponseSerializer.class)
+@JsonDeserialize(using = DemoExchangeMarketDataTickersResponseDeserializer.class)
 public class DemoExchangeMarketDataTickersResponse implements Pojo<DemoExchangeMarketDataTickersResponse> {
   
   private static final long serialVersionUID = 927904055578287526L;
@@ -147,7 +149,7 @@ public class DemoExchangeMarketDataTickersResponse implements Pojo<DemoExchangeM
      * Will add or update a key/value pair to the <code>payload</code> map.
      * @param item Item to add to current <code>payload</code> list
      * @return Builder instance
-     * @see DemoExchangeMarketDataTickersResponse#setPayload(DemoExchangeMarketDataTickersResponsePayload)
+     * @see DemoExchangeMarketDataTickersResponse#setPayload(Map)
      */
     public Builder addToPayload(String key, DemoExchangeMarketDataTickersResponsePayload item) {
       if (this.payload == null) {

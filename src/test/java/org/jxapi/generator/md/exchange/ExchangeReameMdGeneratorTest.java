@@ -9,8 +9,8 @@ import org.junit.After;
 import org.junit.Assert;
 import org.junit.Test;
 
-import org.jxapi.exchange.descriptor.ExchangeApiDescriptor;
-import org.jxapi.exchange.descriptor.ExchangeDescriptor;
+import org.jxapi.exchange.descriptor.gen.ExchangeApiDescriptor;
+import org.jxapi.exchange.descriptor.gen.ExchangeDescriptor;
 import org.jxapi.exchange.descriptor.parser.ExchangeDescriptorParser;
 import org.jxapi.generator.java.JavaCodeGenUtil;
 import org.jxapi.generator.java.exchange.ClassesGeneratorTestUtil;
@@ -293,8 +293,8 @@ public class ExchangeReameMdGeneratorTest {
         + "    <td></td>\n"
         + "  </tr>\n"
         + "  <tr>\n"
-        + "    <td><a href=\"https://javadoc.io/myproject/com/foo/bar/gen/marketdata/MyTestExchangeMarketDataApi.html#postRestRequestDataTypeObjectNoParameters(com.foo.bar.gen.marketdata.pojo.MyTestExchangeMarketDataPostRestRequestDataTypeObjectNoParametersRequest)\">postRestRequestDataTypeObjectNoParameters</a></td>\n"
-        + "    <td>A sample REST endpoint using OBJECT request data type (implicit), and no parameters</td>\n"
+        + "    <td><a href=\"https://javadoc.io/myproject/com/foo/bar/gen/marketdata/MyTestExchangeMarketDataApi.html#postRestRequestNoParameters(java.lang.String)\">postRestRequestNoParameters</a></td>\n"
+        + "    <td>A sample REST endpoint using POST method (HTTP request expecting a body), and no parameters. One String argument should be generated to pass raw body</td>\n"
         + "    <td></td>\n"
         + "  </tr>\n"
         + "  <tr>\n"
@@ -330,6 +330,16 @@ public class ExchangeReameMdGeneratorTest {
         + "  <tr>\n"
         + "    <td><a href=\"https://javadoc.io/myproject/com/foo/bar/gen/marketdata/MyTestExchangeMarketDataApi.html#getRestRequestDataTypeEmptyObject(com.foo.bar.gen.marketdata.pojo.MyTestExchangeMarketDataGetRestRequestDataTypeEmptyObjectRequest)\">getRestRequestDataTypeEmptyObject</a></td>\n"
         + "    <td>A sample REST endpoint using GET (hence url query params) and empty request object</td>\n"
+        + "    <td></td>\n"
+        + "  </tr>\n"
+        + "  <tr>\n"
+        + "    <td><a href=\"https://javadoc.io/myproject/com/foo/bar/gen/marketdata/MyTestExchangeMarketDataApi.html#getRestRequestDataTypeExternalObject(com.external.pkg.ExternalObject)\">getRestRequestDataTypeExternalObject</a></td>\n"
+        + "    <td>A sample REST endpoint using POST (hence request body) and request with object name representing a class with full package name, which is not to be generated</td>\n"
+        + "    <td></td>\n"
+        + "  </tr>\n"
+        + "  <tr>\n"
+        + "    <td><a href=\"https://javadoc.io/myproject/com/foo/bar/gen/marketdata/MyTestExchangeMarketDataApi.html#postRestRequestDataTypeRawObject(java.lang.Object)\">postRestRequestDataTypeRawObject</a></td>\n"
+        + "    <td>A sample REST endpoint using POST (hence request body) and raw <code>java.lang.Object</code> request object</td>\n"
         + "    <td></td>\n"
         + "  </tr>\n"
         + "  <tr>\n"
@@ -436,7 +446,7 @@ public class ExchangeReameMdGeneratorTest {
         + " - __postRestRequestDataTypeStringImplicit__: <a href=\"https://myrepo.com/myproject/master/src/main/java/src/test/java/com/foo/bar/gen/marketdata/demo/MyTestExchangeMarketDataPostRestRequestDataTypeStringImplicitDemo.java\">MyTestExchangeMarketDataPostRestRequestDataTypeStringImplicitDemo</a>\n"
         + " - __postRestRequestDataTypeIntImplicitAsPathParam__: <a href=\"https://myrepo.com/myproject/master/src/main/java/src/test/java/com/foo/bar/gen/marketdata/demo/MyTestExchangeMarketDataPostRestRequestDataTypeIntImplicitAsPathParamDemo.java\">MyTestExchangeMarketDataPostRestRequestDataTypeIntImplicitAsPathParamDemo</a>\n"
         + " - __postRestRequestDataTypeBoolean__: <a href=\"https://myrepo.com/myproject/master/src/main/java/src/test/java/com/foo/bar/gen/marketdata/demo/MyTestExchangeMarketDataPostRestRequestDataTypeBooleanDemo.java\">MyTestExchangeMarketDataPostRestRequestDataTypeBooleanDemo</a>\n"
-        + " - __postRestRequestDataTypeObjectNoParameters__: <a href=\"https://myrepo.com/myproject/master/src/main/java/src/test/java/com/foo/bar/gen/marketdata/demo/MyTestExchangeMarketDataPostRestRequestDataTypeObjectNoParametersDemo.java\">MyTestExchangeMarketDataPostRestRequestDataTypeObjectNoParametersDemo</a>\n"
+        + " - __postRestRequestNoParameters__: <a href=\"https://myrepo.com/myproject/master/src/main/java/src/test/java/com/foo/bar/gen/marketdata/demo/MyTestExchangeMarketDataPostRestRequestNoParametersDemo.java\">MyTestExchangeMarketDataPostRestRequestNoParametersDemo</a>\n"
         + " - __postRestRequestDataTypeObjectOneParameter__: <a href=\"https://myrepo.com/myproject/master/src/main/java/src/test/java/com/foo/bar/gen/marketdata/demo/MyTestExchangeMarketDataPostRestRequestDataTypeObjectOneParameterDemo.java\">MyTestExchangeMarketDataPostRestRequestDataTypeObjectOneParameterDemo</a>\n"
         + " - __postRestRequestDataTypeIntListWithDefaultValue__: <a href=\"https://myrepo.com/myproject/master/src/main/java/src/test/java/com/foo/bar/gen/marketdata/demo/MyTestExchangeMarketDataPostRestRequestDataTypeIntListWithDefaultValueDemo.java\">MyTestExchangeMarketDataPostRestRequestDataTypeIntListWithDefaultValueDemo</a>\n"
         + " - __postRestRequestDataTypeObjectListMap__: <a href=\"https://myrepo.com/myproject/master/src/main/java/src/test/java/com/foo/bar/gen/marketdata/demo/MyTestExchangeMarketDataPostRestRequestDataTypeObjectListMapDemo.java\">MyTestExchangeMarketDataPostRestRequestDataTypeObjectListMapDemo</a>\n"
@@ -444,6 +454,8 @@ public class ExchangeReameMdGeneratorTest {
         + " - __deletetRestRequestDataTypeObjectAsQueryParams__: <a href=\"https://myrepo.com/myproject/master/src/main/java/src/test/java/com/foo/bar/gen/marketdata/demo/MyTestExchangeMarketDataDeletetRestRequestDataTypeObjectAsQueryParamsDemo.java\">MyTestExchangeMarketDataDeletetRestRequestDataTypeObjectAsQueryParamsDemo</a>\n"
         + " - __getRestRequestDataTypeObjectListMap__: <a href=\"https://myrepo.com/myproject/master/src/main/java/src/test/java/com/foo/bar/gen/marketdata/demo/MyTestExchangeMarketDataGetRestRequestDataTypeObjectListMapDemo.java\">MyTestExchangeMarketDataGetRestRequestDataTypeObjectListMapDemo</a>\n"
         + " - __getRestRequestDataTypeEmptyObject__: <a href=\"https://myrepo.com/myproject/master/src/main/java/src/test/java/com/foo/bar/gen/marketdata/demo/MyTestExchangeMarketDataGetRestRequestDataTypeEmptyObjectDemo.java\">MyTestExchangeMarketDataGetRestRequestDataTypeEmptyObjectDemo</a>\n"
+        + " - __getRestRequestDataTypeExternalObject__: <a href=\"https://myrepo.com/myproject/master/src/main/java/src/test/java/com/foo/bar/gen/marketdata/demo/MyTestExchangeMarketDataGetRestRequestDataTypeExternalObjectDemo.java\">MyTestExchangeMarketDataGetRestRequestDataTypeExternalObjectDemo</a>\n"
+        + " - __postRestRequestDataTypeRawObject__: <a href=\"https://myrepo.com/myproject/master/src/main/java/src/test/java/com/foo/bar/gen/marketdata/demo/MyTestExchangeMarketDataPostRestRequestDataTypeRawObjectDemo.java\">MyTestExchangeMarketDataPostRestRequestDataTypeRawObjectDemo</a>\n"
         + " - __getRestRequestDataTypePrimitiveWithMsgField__: <a href=\"https://myrepo.com/myproject/master/src/main/java/src/test/java/com/foo/bar/gen/marketdata/demo/MyTestExchangeMarketDataGetRestRequestDataTypePrimitiveWithMsgFieldDemo.java\">MyTestExchangeMarketDataGetRestRequestDataTypePrimitiveWithMsgFieldDemo</a>\n"
         + " - __getRestRequestDataTypePrimitiveWithMsgFieldAsPathPAram__: <a href=\"https://myrepo.com/myproject/master/src/main/java/src/test/java/com/foo/bar/gen/marketdata/demo/MyTestExchangeMarketDataGetRestRequestDataTypePrimitiveWithMsgFieldAsPathPAramDemo.java\">MyTestExchangeMarketDataGetRestRequestDataTypePrimitiveWithMsgFieldAsPathPAramDemo</a>\n"
         + " - __getRestRequestDataTypeWithBothPathAndQueryParams__: <a href=\"https://myrepo.com/myproject/master/src/main/java/src/test/java/com/foo/bar/gen/marketdata/demo/MyTestExchangeMarketDataGetRestRequestDataTypeWithBothPathAndQueryParamsDemo.java\">MyTestExchangeMarketDataGetRestRequestDataTypeWithBothPathAndQueryParamsDemo</a>\n"

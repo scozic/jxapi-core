@@ -11,8 +11,8 @@ import java.util.stream.Collectors;
 import org.jxapi.exchange.AbstractExchange;
 import org.jxapi.exchange.Exchange;
 import org.jxapi.exchange.ExchangeApi;
-import org.jxapi.exchange.descriptor.ExchangeApiDescriptor;
-import org.jxapi.exchange.descriptor.ExchangeDescriptor;
+import org.jxapi.exchange.descriptor.gen.ExchangeApiDescriptor;
+import org.jxapi.exchange.descriptor.gen.ExchangeDescriptor;
 import org.jxapi.generator.java.JavaCodeGenUtil;
 import org.jxapi.generator.java.JavaTypeGenerator;
 import org.jxapi.netutils.rest.ratelimits.RateLimitRule;
@@ -73,6 +73,7 @@ public class ExchangeInterfaceImplementationGenerator extends JavaTypeGenerator 
   
   private final ExchangeDescriptor exchangeDescriptor;
   private final Set<String> rateLimitNames = new HashSet<>();
+  private final List<RateLimitRule> rateLimits;
   
   /**
    * Constructor.
@@ -83,6 +84,7 @@ public class ExchangeInterfaceImplementationGenerator extends JavaTypeGenerator 
     super(ExchangeGenUtil.getExchangeInterfaceImplementationName(exchangeDescriptor));
     this.exchangeDescriptor = exchangeDescriptor;
     this.setParentClassName(AbstractExchange.class.getName());
+    rateLimits = RateLimitRule.fromDescriptors(exchangeDescriptor.getRateLimits());
   }
   
   @Override
@@ -97,7 +99,7 @@ public class ExchangeInterfaceImplementationGenerator extends JavaTypeGenerator 
     setDescription("Actual implementation of {@link " + simpleInterfaceName + "}<br>");
     appendToBody("\n");
     
-    List<RateLimitRule> rateLimits = exchangeDescriptor.getRateLimits();
+    
     List<ExchangeApiDescriptor> apis = CollectionUtil.emptyIfNull(exchangeDescriptor.getApis());
     Map<String, String> apiGetterUniqueNames = ExchangeGenUtil.getApiGroupGetterMethodNames(apis);
     Map<String, String> apiVariableNames = getApiVariableNames(apis);
@@ -213,7 +215,7 @@ public class ExchangeInterfaceImplementationGenerator extends JavaTypeGenerator 
   }
   
   private void generateRateLimitRuleGetters() {
-    for (RateLimitRule rateLimitRule : CollectionUtil.emptyIfNull(exchangeDescriptor.getRateLimits())) {
+    for (RateLimitRule rateLimitRule : rateLimits) {
       appendToBody(ExchangeGenUtil.generateRateLimitGetterImplementationMethodDeclaration(rateLimitRule.getId()))
           .append("\n");
     }

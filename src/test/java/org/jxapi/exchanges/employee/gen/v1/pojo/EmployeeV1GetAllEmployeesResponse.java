@@ -3,10 +3,12 @@ package org.jxapi.exchanges.employee.gen.v1.pojo;
 import java.util.List;
 import java.util.Objects;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import javax.annotation.processing.Generated;
 import org.jxapi.exchanges.employee.EmployeePaginatedResponse;
-import org.jxapi.exchanges.employee.gen.v1.serializers.EmployeeV1GetAllEmployeesResponseSerializer;
+import org.jxapi.exchanges.employee.gen.v1.pojo.deserializers.EmployeeV1GetAllEmployeesResponseDeserializer;
+import org.jxapi.exchanges.employee.gen.v1.pojo.serializers.EmployeeV1GetAllEmployeesResponseSerializer;
 import org.jxapi.util.CollectionUtil;
 import org.jxapi.util.CompareUtil;
 import org.jxapi.util.DeepCloneable;
@@ -14,12 +16,12 @@ import org.jxapi.util.EncodingUtil;
 import org.jxapi.util.Pojo;
 
 /**
- * Response to Employee v1 API <br>
- * getAllEmployees REST endpoint request<br>
+ * Response object for Employee v1 API getAllEmployees REST endpoint<br>
  * Get all employees
  */
-@Generated("org.jxapi.generator.java.exchange.api.pojo.PojoGenerator")
+@Generated("org.jxapi.generator.java.pojo.PojoGenerator")
 @JsonSerialize(using = EmployeeV1GetAllEmployeesResponseSerializer.class)
+@JsonDeserialize(using = EmployeeV1GetAllEmployeesResponseDeserializer.class)
 public class EmployeeV1GetAllEmployeesResponse implements Pojo<EmployeeV1GetAllEmployeesResponse>, EmployeePaginatedResponse {
   
   private static final long serialVersionUID = -4780534191544812805L;
@@ -174,7 +176,7 @@ public class EmployeeV1GetAllEmployeesResponse implements Pojo<EmployeeV1GetAllE
      * Will add an item to the <code>employees</code> list.
      * @param item Item to add to current <code>employees</code> list
      * @return Builder instance
-     * @see EmployeeV1GetAllEmployeesResponse#setEmployees(Employee)
+     * @see EmployeeV1GetAllEmployeesResponse#setEmployees(List)
      */
     public Builder addToEmployees(Employee item) {
       if (this.employees == null) {

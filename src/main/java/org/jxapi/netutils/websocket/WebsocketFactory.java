@@ -1,7 +1,7 @@
 package org.jxapi.netutils.websocket;
 
 import org.jxapi.exchange.ExchangeApi;
-import org.jxapi.exchange.descriptor.ExchangeApiDescriptor;
+import org.jxapi.exchange.descriptor.gen.ExchangeApiDescriptor;
 import org.jxapi.util.FactoryUtil;
 
 /**

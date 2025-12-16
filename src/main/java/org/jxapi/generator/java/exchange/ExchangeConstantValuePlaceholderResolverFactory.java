@@ -1,7 +1,7 @@
 package org.jxapi.generator.java.exchange;
 
 import org.jxapi.exchange.descriptor.Constant;
-import org.jxapi.exchange.descriptor.ExchangeDescriptor;
+import org.jxapi.exchange.descriptor.gen.ExchangeDescriptor;
 import org.jxapi.generator.java.Imports;
 import org.jxapi.util.PlaceHolderResolver;
 

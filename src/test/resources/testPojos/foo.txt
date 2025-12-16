@@ -1,0 +1,1 @@
+This non-yaml nor JSON file should be ignored.

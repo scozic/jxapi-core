@@ -9,7 +9,7 @@ import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
 import org.jxapi.exchange.CommonConfigProperties;
-import org.jxapi.exchange.descriptor.ConfigPropertyDescriptor;
+import org.jxapi.exchange.descriptor.gen.ConfigPropertyDescriptor;
 import org.jxapi.generator.java.JavaCodeGenUtil;
 import org.jxapi.generator.java.exchange.properties.PropertiesGenUtil;
 import org.jxapi.util.CollectionUtil;
@@ -168,7 +168,7 @@ public class ExchangeDemoPropertiesTemplateGenerator {
     StringBuilder s = new StringBuilder();
     for (ConfigPropertyDescriptor property : properties) {
       String pDescription = StringUtils.defaultString(descResolver.resolve(property.getDescription()));
-      if (property.isGroup()) {
+      if (PropertiesGenUtil.isGroup(property)) {
         if (!StringUtils.isEmpty(pDescription)) {
           StringBuilder descr = new StringBuilder();
           descr.append(StringUtils.leftPad("", depth, '#'))

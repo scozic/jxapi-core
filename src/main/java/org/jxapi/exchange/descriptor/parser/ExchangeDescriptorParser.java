@@ -9,13 +9,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Stream;
 
+import org.jxapi.exchange.descriptor.gen.ExchangeDescriptor;
 import org.yaml.snakeyaml.Yaml;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
-import org.jxapi.exchange.descriptor.ExchangeDescriptor;
 
 /**
  * Contains methods for parsing ExchangeDescriptor objects from JSON and YAML files.
@@ -82,20 +82,20 @@ public class ExchangeDescriptorParser {
    * @throws IllegalArgumentException If an error occurs while parsing the files
    */
   public static List<ExchangeDescriptor> collectAndMergeExchangeDescriptors(Path descriptorsPath) throws IOException {
-      Map<String, ExchangeDescriptor> exchangeDescriptors = new HashMap<>();
+    Map<String, ExchangeDescriptor> exchangeDescriptors = new HashMap<>();
     try (Stream<Path> p = Files.walk(descriptorsPath)) {
-       p.filter(Files::isRegularFile)
-        .sorted(Comparator.naturalOrder())
-        .filter(f -> f.toString().endsWith(".json") || f.toString().endsWith(".yaml"))
-        .forEach(f -> {
-         try {
-                    ExchangeDescriptor exchange = f.toString().endsWith(".json") ? fromJson(f) : fromYaml(f);
-                    exchangeDescriptors.merge(exchange.getId(), exchange, ExchangeDescriptorMergeUtil::mergeExchangeDescriptors);
-                } catch (Exception e) {
-                    // Catch all exceptions and rethrow as IllegalArgumentException providing the file path as context
-                    throw new IllegalArgumentException("Error parsing file:" + f.toAbsolutePath().toString(), e);
-                }
-       });
+      p.filter(Files::isRegularFile).sorted(Comparator.naturalOrder())
+          .filter(f -> f.toString().endsWith(".json") || f.toString().endsWith(".yaml")).forEach(f -> {
+            try {
+              ExchangeDescriptor exchange = f.toString().endsWith(".json") ? fromJson(f) : fromYaml(f);
+              exchangeDescriptors.merge(exchange.getId(), exchange,
+                  ExchangeDescriptorMergeUtil::mergeExchangeDescriptors);
+            } catch (Exception e) {
+              // Catch all exceptions and rethrow as IllegalArgumentException providing the
+              // file path as context
+              throw new IllegalArgumentException("Error parsing file:" + f.toAbsolutePath().toString(), e);
+            }
+          });
     }
     return List.copyOf(exchangeDescriptors.values());
   }

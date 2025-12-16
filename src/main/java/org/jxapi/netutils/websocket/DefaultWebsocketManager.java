@@ -14,17 +14,17 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicLong;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import com.fasterxml.jackson.core.JsonFactory;
-import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.core.JsonToken;
 import org.jxapi.exchange.ExchangeApi;
 import org.jxapi.netutils.websocket.multiplexing.WebsocketMessageTopicMatchStatus;
 import org.jxapi.netutils.websocket.multiplexing.WebsocketMessageTopicMatcher;
 import org.jxapi.netutils.websocket.multiplexing.WebsocketMessageTopicMatcherFactory;
 import org.jxapi.util.DefaultDisposable;
+import org.jxapi.util.JsonUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.core.JsonToken;
 
 /**
  * Default implementation of {@link WebsocketManager}.
@@ -87,7 +87,6 @@ public class DefaultWebsocketManager extends DefaultDisposable implements Websoc
   protected AtomicLong lastHeartBeatTime = new AtomicLong(0L);
   
   private final List<WebsocketErrorHandler> errorHandlers = new ArrayList<>();
-  private final JsonFactory jsonFactory = new JsonFactory();
   private final AtomicLong messageReceivedCount = new AtomicLong(0);
   private final RawWebsocketMessageHandler rawMessageHandler = this::dispatchMessage;
   private final WebsocketErrorHandler websocketErrorHandler = this::notifyError;
@@ -252,10 +251,10 @@ public class DefaultWebsocketManager extends DefaultDisposable implements Websoc
    */
   protected final void connect() throws WebsocketException {
     checkNotDisposed();
-    if (isConnected()) {
+    if (connected.getAndSet(true)) {
+      // Already connected
       return;
     }
-    connected.set(true);
     log.info("Connecting WS:{}", this);
     try {
       if (websocketHook != null) {
@@ -469,7 +468,7 @@ public class DefaultWebsocketManager extends DefaultDisposable implements Websoc
   private void dispatchSingleMessage(String message) {
     messageReceivedCount.incrementAndGet();
     List<TopicMatcher> allTopics = getTopicMatcherList();
-    try (JsonParser jsonParser = jsonFactory.createParser(message.getBytes())) {
+    try (JsonParser jsonParser = JsonUtil.DEFAULT_JSON_FACTORY.createParser(message.getBytes())) {
       for (JsonToken tok = jsonParser.nextToken(); tok != null && !allTopics.isEmpty(); tok = jsonParser.nextToken()) {
         if (tok == JsonToken.FIELD_NAME) {
           String fieldName = jsonParser.currentName();

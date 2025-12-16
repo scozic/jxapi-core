@@ -3,9 +3,11 @@ package org.jxapi.exchanges.demo.gen.marketdata.pojo;
 import java.util.List;
 import java.util.Objects;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import javax.annotation.processing.Generated;
-import org.jxapi.exchanges.demo.gen.marketdata.serializers.DemoExchangeMarketDataExchangeInfoResponseSerializer;
+import org.jxapi.exchanges.demo.gen.marketdata.pojo.deserializers.DemoExchangeMarketDataExchangeInfoResponseDeserializer;
+import org.jxapi.exchanges.demo.gen.marketdata.pojo.serializers.DemoExchangeMarketDataExchangeInfoResponseSerializer;
 import org.jxapi.util.CollectionUtil;
 import org.jxapi.util.CompareUtil;
 import org.jxapi.util.DeepCloneable;
@@ -13,12 +15,12 @@ import org.jxapi.util.EncodingUtil;
 import org.jxapi.util.Pojo;
 
 /**
- * Response to DemoExchange MarketData API <br>
- * exchangeInfo REST endpoint request<br>
+ * Response object for DemoExchange MarketData API exchangeInfo REST endpoint<br>
  * Fetch market information of symbols that can be traded
  */
-@Generated("org.jxapi.generator.java.exchange.api.pojo.PojoGenerator")
+@Generated("org.jxapi.generator.java.pojo.PojoGenerator")
 @JsonSerialize(using = DemoExchangeMarketDataExchangeInfoResponseSerializer.class)
+@JsonDeserialize(using = DemoExchangeMarketDataExchangeInfoResponseDeserializer.class)
 public class DemoExchangeMarketDataExchangeInfoResponse implements Pojo<DemoExchangeMarketDataExchangeInfoResponse> {
   
   private static final long serialVersionUID = 2532768580321491677L;
@@ -147,7 +149,7 @@ public class DemoExchangeMarketDataExchangeInfoResponse implements Pojo<DemoExch
      * Will add an item to the <code>payload</code> list.
      * @param item Item to add to current <code>payload</code> list
      * @return Builder instance
-     * @see DemoExchangeMarketDataExchangeInfoResponse#setPayload(DemoExchangeMarketDataExchangeInfoResponsePayload)
+     * @see DemoExchangeMarketDataExchangeInfoResponse#setPayload(List)
      */
     public Builder addToPayload(DemoExchangeMarketDataExchangeInfoResponsePayload item) {
       if (this.payload == null) {

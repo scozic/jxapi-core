@@ -93,7 +93,26 @@
 					"httpMethod": "GET",
 					"description": "A sample REST endpoint using empty response data type",
 					"url": "https://com.sample.mycex/getEmptyResponse"
+				},
+				{
+					"name": "getRestResponseDataTypeRawObject",
+					"httpMethod": "GET",
+					"description": "A sample REST endpoint using empty response data type",
+					"url": "https://com.sample.mycex/getEmptyResponse",
+					"response": {
+						"objectName": "java.lang.Object"
+					}
+				},
+				{
+					"name": "getRestResponseDataTypeExternalObject",
+					"httpMethod": "GET",
+					"description": "A sample REST endpoint using STRING_LIST response data type",
+					"url": "https://com.sample.mycex/getStringList",
+					"response": {
+						"objectName": "com.external.pkg.ExternalObject"
+					}
 				}
+
 			],
 			"websocketUrl": "wss://com.foo.exchange/ws",
 			"websocketFactory": "com.foo.bar.BarWebsocketFactory",

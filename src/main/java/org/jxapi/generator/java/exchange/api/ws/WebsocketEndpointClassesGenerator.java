@@ -5,20 +5,21 @@ import java.nio.file.Path;
 import java.util.Optional;
 
 import org.springframework.util.CollectionUtils;
-
-import org.jxapi.exchange.descriptor.ExchangeApiDescriptor;
-import org.jxapi.exchange.descriptor.ExchangeDescriptor;
-import org.jxapi.exchange.descriptor.Field;
-import org.jxapi.exchange.descriptor.RestEndpointDescriptor;
-import org.jxapi.exchange.descriptor.Type;
-import org.jxapi.exchange.descriptor.WebsocketEndpointDescriptor;
+import org.apache.commons.lang3.StringUtils;
+import org.jxapi.exchange.descriptor.gen.ExchangeApiDescriptor;
+import org.jxapi.exchange.descriptor.gen.ExchangeDescriptor;
+import org.jxapi.exchange.descriptor.gen.RestEndpointDescriptor;
+import org.jxapi.exchange.descriptor.gen.WebsocketEndpointDescriptor;
 import org.jxapi.generator.java.exchange.ClassesGenerator;
 import org.jxapi.generator.java.exchange.ConstantValuePlaceholderResolverFactory;
 import org.jxapi.generator.java.exchange.ExchangeConstantValuePlaceholderResolverFactory;
 import org.jxapi.generator.java.exchange.api.ExchangeApiGenUtil;
-import org.jxapi.generator.java.exchange.api.pojo.JsonMessageDeserializerClassesGenerator;
-import org.jxapi.generator.java.exchange.api.pojo.JsonPojoSerializerClassesGenerator;
-import org.jxapi.generator.java.exchange.api.pojo.PojoClassesGenerator;
+import org.jxapi.generator.java.pojo.JsonMessageDeserializerClassesGenerator;
+import org.jxapi.generator.java.pojo.JsonPojoSerializerClassesGenerator;
+import org.jxapi.generator.java.pojo.PojoClassesGenerator;
+import org.jxapi.generator.java.pojo.PojoGenUtil;
+import org.jxapi.pojo.descriptor.Field;
+import org.jxapi.pojo.descriptor.Type;
 import org.jxapi.util.PlaceHolderResolver;
 
 /**
@@ -117,11 +118,7 @@ public class WebsocketEndpointClassesGenerator implements ClassesGenerator {
     if (shouldGenerateRequestPojo()) {
       new PojoClassesGenerator( 
           ExchangeApiGenUtil.generateWebsocketEndpointRequestPojoClassName(exchangeDescriptor, apiDescriptor, websocketEndpointDescriptor), 
-          "Subscription request to" + exchangeDescriptor.getId() 
-            + " " + apiDescriptor.getName() + " API " 
-            + websocketEndpointDescriptor.getName() 
-            + " websocket endpoint<br>\n" 
-            + websocketEndpointDescriptor.getDescription(),
+          getWsEndpointRequestOrMessageDescription("Subscription request", request),
           request.getProperties(), 
           request.getImplementedInterfaces(),
           docPlaceHolderResolver,
@@ -135,17 +132,29 @@ public class WebsocketEndpointClassesGenerator implements ClassesGenerator {
               exchangeDescriptor, 
               apiDescriptor, 
               websocketEndpointDescriptor), 
-          "Message disseminated upon subscription to " 
-            + exchangeDescriptor.getId() + " " 
-            + apiDescriptor.getName() + " API " 
-            + websocketEndpointDescriptor.getName() + " websocket endpoint request<br>\n"
-            + websocketEndpointDescriptor.getDescription(),
+          getWsEndpointRequestOrMessageDescription("Message", websocketEndpointDescriptor.getMessage()),
           websocketEndpointDescriptor.getMessage().getProperties(), 
           websocketEndpointDescriptor.getMessage().getImplementedInterfaces(),
           docPlaceHolderResolver,
           constantInDefaultValuesPlaceHolderResolverFactory
         ).generateClasses(outputFolder);
     }
+  }
+  
+  private String getWsEndpointRequestOrMessageDescription(String prefix, Field objField) {
+    return Optional
+      .ofNullable(PojoGenUtil.getObjectDescription(objField))
+      .orElse(new StringBuilder().append(prefix)
+          .append(" object for ")
+          .append(exchangeDescriptor.getId())
+          .append(" ")
+          .append(apiDescriptor.getName())
+          .append(" API ")
+          .append(websocketEndpointDescriptor.getName())
+          .append(" Websocket endpoint<br>\n")
+          .append(StringUtils.defaultString(websocketEndpointDescriptor.getDescription()))
+          .toString());
+    
   }
   
   private boolean shouldGenerateRequestPojo() {

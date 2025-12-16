@@ -3,19 +3,22 @@ package org.jxapi.exchanges.demo.gen.marketdata.pojo;
 import java.math.BigDecimal;
 import java.util.Objects;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import javax.annotation.processing.Generated;
-import org.jxapi.exchanges.demo.gen.marketdata.serializers.DemoExchangeMarketDataTickerStreamMessageSerializer;
+import org.jxapi.exchanges.demo.gen.marketdata.pojo.deserializers.DemoExchangeMarketDataTickerStreamMessageDeserializer;
+import org.jxapi.exchanges.demo.gen.marketdata.pojo.serializers.DemoExchangeMarketDataTickerStreamMessageSerializer;
 import org.jxapi.util.CompareUtil;
 import org.jxapi.util.EncodingUtil;
 import org.jxapi.util.Pojo;
 
 /**
- * Message disseminated upon subscription to DemoExchange MarketData API tickerStream websocket endpoint request<br>
+ * Message object for DemoExchange MarketData API tickerStream Websocket endpoint<br>
  * Subscribe to ticker stream
  */
-@Generated("org.jxapi.generator.java.exchange.api.pojo.PojoGenerator")
+@Generated("org.jxapi.generator.java.pojo.PojoGenerator")
 @JsonSerialize(using = DemoExchangeMarketDataTickerStreamMessageSerializer.class)
+@JsonDeserialize(using = DemoExchangeMarketDataTickerStreamMessageDeserializer.class)
 public class DemoExchangeMarketDataTickerStreamMessage implements Pojo<DemoExchangeMarketDataTickerStreamMessage> {
   
   private static final long serialVersionUID = 1440987101262228707L;

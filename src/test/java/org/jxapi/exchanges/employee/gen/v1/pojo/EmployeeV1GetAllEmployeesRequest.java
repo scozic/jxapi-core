@@ -2,20 +2,22 @@ package org.jxapi.exchanges.employee.gen.v1.pojo;
 
 import java.util.Objects;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import javax.annotation.processing.Generated;
 import org.jxapi.exchanges.employee.EmployeePaginatedRequest;
-import org.jxapi.exchanges.employee.gen.v1.serializers.EmployeeV1GetAllEmployeesRequestSerializer;
+import org.jxapi.exchanges.employee.gen.v1.pojo.deserializers.EmployeeV1GetAllEmployeesRequestDeserializer;
+import org.jxapi.exchanges.employee.gen.v1.pojo.serializers.EmployeeV1GetAllEmployeesRequestSerializer;
 import org.jxapi.util.CompareUtil;
 import org.jxapi.util.EncodingUtil;
 import org.jxapi.util.Pojo;
 
 /**
- * Request for Employee v1 API getAllEmployees REST endpoint<br>
- * Get all employees
+ * Page request parameters for 'getAllEmployees' rest endpoint paginated requests.
  */
-@Generated("org.jxapi.generator.java.exchange.api.pojo.PojoGenerator")
+@Generated("org.jxapi.generator.java.pojo.PojoGenerator")
 @JsonSerialize(using = EmployeeV1GetAllEmployeesRequestSerializer.class)
+@JsonDeserialize(using = EmployeeV1GetAllEmployeesRequestDeserializer.class)
 public class EmployeeV1GetAllEmployeesRequest implements Pojo<EmployeeV1GetAllEmployeesRequest>, EmployeePaginatedRequest {
   
   private static final long serialVersionUID = -7439815753884330991L;

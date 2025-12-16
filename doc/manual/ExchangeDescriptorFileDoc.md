@@ -337,9 +337,9 @@ Available placeholders are:
 - Constant placeholders: `{$constants.group1.myConstant}` will be replaced with value of _myConstant_ constant from _group1_ constant group, see [constants](#constants). 
 - Configuration properties placeholders: `${config.myProperty}` will be replaced with configured value for _myProperty_ , see [configuration properties](#configuration-properties)
 
-### Message topic matcher fields
+### Message topic matcher
 
-The `messageTopicMatcherFields` property is a list of fields used to match the message topic. Each field specifies a name and a value. The value can also contain placeholders that are replaced with actual values from the request.
+The `topicMatcher` property describes how an incoming message on websocket is matcheds as relevant for a subscription to this endpoint. This is achieved by matching one or more fields of message against a pattern.
 
 Examples:
 

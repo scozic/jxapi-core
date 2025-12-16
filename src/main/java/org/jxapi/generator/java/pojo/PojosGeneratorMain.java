@@ -1,0 +1,158 @@
+package org.jxapi.generator.java.pojo;
+
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.List;
+import java.util.Optional;
+import java.util.concurrent.atomic.AtomicReference;
+
+import org.apache.commons.lang3.StringUtils;
+import org.jxapi.generator.java.JavaCodeGenUtil;
+import org.jxapi.generator.java.exchange.ExchangeGeneratorMain;
+import org.jxapi.pojo.descriptor.Field;
+import org.jxapi.pojo.descriptor.PojosDescriptor;
+import org.jxapi.pojo.descriptor.Type;
+import org.jxapi.pojo.parser.PojosDescriptorParseUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+/**
+ * Main class to generate all POJOs defined in POJOs descriptor files located in
+ * the "src/main/resources/jxapi/pojos" folder of the current project.
+ *
+ */
+public class PojosGeneratorMain {
+  
+  private static final Logger log = LoggerFactory.getLogger(PojosGeneratorMain.class);
+
+  /**
+   * Folder where exchange descriptor files are located in the wrapper project.
+   */
+  public static final Path DESCRIPTOR_FOLDER = Paths.get("src", "main", "resources", "jxapi", "pojos");
+
+  /**
+   * Key for system property that can be passed to JVM running
+   * {@link #main(String[])} to specify the base URL for Java module project to
+   * use by generator. This should be the cuurrent project folder path. Can be
+   * retrieved using maven property ${project.basedir}. If not set, the current
+   * JVM folder is used.
+   */
+  public static final String BASE_PROJECT_DIR_PROP = "baseProjectDir";
+
+  /**
+   * Main entry point to generate exchange API wrappers for all exchange
+   * descriptor files in the current project "src/main/resources/" folder.
+   * 
+   * @param args Not used
+   * @see #generateExchangeWrappersInCurrentProject(String, String, String)
+   */
+  public static void main(String[] args) {
+    try {
+      String baseProjectDir = System.getProperty(BASE_PROJECT_DIR_PROP);
+      generatePojosInCurrentProject(baseProjectDir);
+    } catch (Throwable t) {
+      log.error("Error from " + ExchangeGeneratorMain.class.getName() + ".main", t);
+      System.exit(-1);
+    }
+    System.exit(0);
+  }
+
+  /**
+   * Generates exchange API wrappers for all exchange descriptor files in the
+   * specified project "src/main/resources/jxapi/pojos" folder.
+   * 
+   * @param baseProjectDir the base folder of the project where to generate the
+   *                       exchange API wrappers. If null, current folder (".") is
+   *                       used.
+   * @throws Exception if an error occurs
+   */
+  public static final void  generatePojosInCurrentProject(String baseProjectDir) throws Exception {
+    baseProjectDir = Optional.ofNullable(baseProjectDir).orElse(".");
+    Path projectFolder = Paths.get(baseProjectDir);
+    Path resources = projectFolder.resolve(DESCRIPTOR_FOLDER);
+    if (!Files.exists(resources)) {
+      resources.toFile().mkdirs();
+      Files.writeString(resources.resolve("README.txt"), 
+          "JXAPI Exchange descriptor files (.json or .yaml) should be written in this folder.\nYou may delete this README.txt file");
+      return;
+    }
+    log.info("Generating exchange API wrapper and demos for all exchange descriptor files in {}", resources.toAbsolutePath());
+    AtomicReference<Exception> error = new AtomicReference<>();
+    PojosDescriptorParseUtil.collectAndMergePojosDescriptors(resources)
+        .forEach(pojosDescriptor -> {
+          try {
+            generatePojosInProject(pojosDescriptor, projectFolder);
+          } catch (Exception ex) {
+            // Remark: intentionally catching all exceptions to continue generation for other exchanges
+            log.error("Error while generating POJOs with base package:{} : {}" ,
+                pojosDescriptor.getBasePackage(),
+                 ex.getMessage(), 
+                 ex);
+            error.set(ex);
+          }
+        });
+    Exception ex = error.get();
+    if (ex != null) {
+      throw ex;
+    }
+    
+  }
+
+  private static void generatePojosInProject(PojosDescriptor pojosDescriptor, Path projectFolder) throws IOException {
+    Path outputSrcMainFolder = projectFolder.resolve(Paths.get("src", "main", "java"));
+    generatePojos(pojosDescriptor, outputSrcMainFolder);
+    
+  }
+  
+  /**
+   * Generates all POJOs defined in the specified POJOs descriptor into the
+   * specified base package folder.
+   * 
+   * @param pojosDescriptor   the POJOs descriptor defining the POJOs to generate
+   * @param basePackageFolder the base package folder where to generate the POJOs
+   * @throws IOException if an I/O error occurs
+   */
+  public static void generatePojos(PojosDescriptor pojosDescriptor, Path srcMainFolder) throws IOException {
+    Path mainPackagePath = Paths.get(StringUtils.replace(pojosDescriptor.getBasePackage(), ".", "/"));
+    Path genPackagesFolder = srcMainFolder.resolve(mainPackagePath);
+    JavaCodeGenUtil.deletePath(genPackagesFolder);
+    log.info("Generating pojos with base package :{} in {}", 
+        pojosDescriptor.getBasePackage(), 
+        genPackagesFolder.toAbsolutePath());
+    
+    for (Field pojoDescriptor : pojosDescriptor.getPojos()) {
+      generateClassesForPojo(pojoDescriptor, pojosDescriptor.getBasePackage(), srcMainFolder);
+    }
+  }
+  
+  private static void generateClassesForPojo(Field pojoDescriptor, String basePackage, Path basePackageFolder) throws IOException {
+    Type type = PojoGenUtil.getFieldType(pojoDescriptor);
+    if (!type.isObject()) {
+      throw new IllegalArgumentException("POJO descriptor must be of type 'object'. POJO name:" + pojoDescriptor.getName());
+    }
+    String objectClassName = PojoGenUtil.getFieldObjectClassName(
+        pojoDescriptor,
+        basePackage + ".");
+      
+    List<Field> properties = pojoDescriptor.getProperties();
+      if (properties!= null) {
+        new PojoClassesGenerator(
+            objectClassName, 
+            pojoDescriptor.getDescription(), 
+            properties,
+            pojoDescriptor.getImplementedInterfaces(),
+            null,
+            null).generateClasses(basePackageFolder);
+            
+          new JsonPojoSerializerClassesGenerator( 
+            objectClassName,
+            properties).generateClasses(basePackageFolder);
+          
+          new JsonMessageDeserializerClassesGenerator(
+              objectClassName, 
+              properties).generateClasses(basePackageFolder);
+      }
+  }
+}

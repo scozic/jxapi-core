@@ -9,9 +9,9 @@ import org.junit.After;
 import org.junit.Assert;
 import org.junit.Test;
 
-import org.jxapi.exchange.descriptor.ExchangeApiDescriptor;
-import org.jxapi.exchange.descriptor.ExchangeDescriptor;
-import org.jxapi.exchange.descriptor.RestEndpointDescriptor;
+import org.jxapi.exchange.descriptor.gen.ExchangeApiDescriptor;
+import org.jxapi.exchange.descriptor.gen.ExchangeDescriptor;
+import org.jxapi.exchange.descriptor.gen.RestEndpointDescriptor;
 import org.jxapi.exchange.descriptor.parser.ExchangeDescriptorParser;
 import org.jxapi.generator.java.JavaCodeGenUtil;
 import org.jxapi.generator.java.exchange.ClassesGeneratorTestUtil;
@@ -54,21 +54,18 @@ public class RestEndpointClassesGeneratorTest {
     RestEndpointClassesGenerator generator = new RestEndpointClassesGenerator(exchange, api, restEndpoint, docPlaceHolderResolver);
     generator.generateClasses(srcFolder);
     
-    checkJavaFilesCount(Paths.get("deserializers"), 3);
-    checkSourceFileExists(Paths.get("deserializers", "MyTestExchangeMarketDataExchangeInfoRequestDeserializer.java"));
-    checkSourceFileExists(Paths.get("deserializers", "MyTestExchangeMarketDataExchangeInfoResponseDeserializer.java"));
-    checkSourceFileExists(Paths.get("deserializers", "MyTestExchangeMarketDataExchangeInfoResponsePayloadDeserializer.java"));
-    
-    checkJavaFilesCount(Paths.get("pojo"), 3);
+    checkJavaFilesCount(Paths.get("pojo"), 5);
     
     Assert.assertEquals("package com.foo.bar.gen.marketdata.pojo;\n"
         + "\n"
         + "import java.util.List;\n"
         + "import java.util.Objects;\n"
         + "\n"
+        + "import com.fasterxml.jackson.databind.annotation.JsonDeserialize;\n"
         + "import com.fasterxml.jackson.databind.annotation.JsonSerialize;\n"
         + "import com.foo.bar.MyTestExchangePaginatedRequest;\n"
-        + "import com.foo.bar.gen.marketdata.serializers.MyTestExchangeMarketDataExchangeInfoRequestSerializer;\n"
+        + "import com.foo.bar.gen.marketdata.pojo.deserializers.MyTestExchangeMarketDataExchangeInfoRequestDeserializer;\n"
+        + "import com.foo.bar.gen.marketdata.pojo.serializers.MyTestExchangeMarketDataExchangeInfoRequestSerializer;\n"
         + "import javax.annotation.processing.Generated;\n"
         + "import org.jxapi.util.CollectionUtil;\n"
         + "import org.jxapi.util.CompareUtil;\n"
@@ -76,11 +73,11 @@ public class RestEndpointClassesGeneratorTest {
         + "import org.jxapi.util.Pojo;\n"
         + "\n"
         + "/**\n"
-        + " * Request for MyTestExchange MarketData API exchangeInfo REST endpoint<br>\n"
-        + " * Fetch market information of symbols that can be traded. Author: {@link com.foo.bar.gen.MyTestExchangeConstants#AUTHOR_FULL_NAME}\n"
+        + " * Request parameters for fetching exchange info. Author: {@link com.foo.bar.gen.MyTestExchangeConstants#AUTHOR_FULL_NAME}\n"
         + " */\n"
-        + "@Generated(\"org.jxapi.generator.java.exchange.api.pojo.PojoGenerator\")\n"
+        + "@Generated(\"org.jxapi.generator.java.pojo.PojoGenerator\")\n"
         + "@JsonSerialize(using = MyTestExchangeMarketDataExchangeInfoRequestSerializer.class)\n"
+        + "@JsonDeserialize(using = MyTestExchangeMarketDataExchangeInfoRequestDeserializer.class)\n"
         + "public class MyTestExchangeMarketDataExchangeInfoRequest implements Pojo<MyTestExchangeMarketDataExchangeInfoRequest>, MyTestExchangePaginatedRequest {\n"
         + "  \n"
         + "  private static final long serialVersionUID = -4193695595206420816L;\n"
@@ -242,7 +239,7 @@ public class RestEndpointClassesGeneratorTest {
         + "     * Will add an item to the <code>symbols</code> list.\n"
         + "     * @param item Item to add to current <code>symbols</code> list\n"
         + "     * @return Builder instance\n"
-        + "     * @see MyTestExchangeMarketDataExchangeInfoRequest#setSymbols(String)\n"
+        + "     * @see MyTestExchangeMarketDataExchangeInfoRequest#setSymbols(List)\n"
         + "     */\n"
         + "    public Builder addToSymbols(String item) {\n"
         + "      if (this.symbols == null) {\n"
@@ -306,9 +303,11 @@ public class RestEndpointClassesGeneratorTest {
         + "import java.util.List;\n"
         + "import java.util.Objects;\n"
         + "\n"
+        + "import com.fasterxml.jackson.databind.annotation.JsonDeserialize;\n"
         + "import com.fasterxml.jackson.databind.annotation.JsonSerialize;\n"
         + "import com.foo.bar.MyTestExchangePaginatedResponse;\n"
-        + "import com.foo.bar.gen.marketdata.serializers.MyTestExchangeMarketDataExchangeInfoResponseSerializer;\n"
+        + "import com.foo.bar.gen.marketdata.pojo.deserializers.MyTestExchangeMarketDataExchangeInfoResponseDeserializer;\n"
+        + "import com.foo.bar.gen.marketdata.pojo.serializers.MyTestExchangeMarketDataExchangeInfoResponseSerializer;\n"
         + "import javax.annotation.processing.Generated;\n"
         + "import org.jxapi.util.CollectionUtil;\n"
         + "import org.jxapi.util.CompareUtil;\n"
@@ -317,12 +316,12 @@ public class RestEndpointClassesGeneratorTest {
         + "import org.jxapi.util.Pojo;\n"
         + "\n"
         + "/**\n"
-        + " * Response to MyTestExchange MarketData API <br>\n"
-        + " * exchangeInfo REST endpoint request<br>\n"
+        + " * Response object for MyTestExchange MarketData API exchangeInfo REST endpoint<br>\n"
         + " * Fetch market information of symbols that can be traded. Author: {@link com.foo.bar.gen.MyTestExchangeConstants#AUTHOR_FULL_NAME}\n"
         + " */\n"
-        + "@Generated(\"org.jxapi.generator.java.exchange.api.pojo.PojoGenerator\")\n"
+        + "@Generated(\"org.jxapi.generator.java.pojo.PojoGenerator\")\n"
         + "@JsonSerialize(using = MyTestExchangeMarketDataExchangeInfoResponseSerializer.class)\n"
+        + "@JsonDeserialize(using = MyTestExchangeMarketDataExchangeInfoResponseDeserializer.class)\n"
         + "public class MyTestExchangeMarketDataExchangeInfoResponse implements Pojo<MyTestExchangeMarketDataExchangeInfoResponse>, MyTestExchangePaginatedResponse {\n"
         + "  \n"
         + "  private static final long serialVersionUID = 7439089996962557233L;\n"
@@ -517,7 +516,7 @@ public class RestEndpointClassesGeneratorTest {
         + "     * Will add an item to the <code>payload</code> list.\n"
         + "     * @param item Item to add to current <code>payload</code> list\n"
         + "     * @return Builder instance\n"
-        + "     * @see MyTestExchangeMarketDataExchangeInfoResponse#setPayload(MyTestExchangeMarketDataExchangeInfoResponsePayload)\n"
+        + "     * @see MyTestExchangeMarketDataExchangeInfoResponse#setPayload(List)\n"
         + "     */\n"
         + "    public Builder addToPayload(MyTestExchangeMarketDataExchangeInfoResponsePayload item) {\n"
         + "      if (this.payload == null) {\n"
@@ -545,10 +544,15 @@ public class RestEndpointClassesGeneratorTest {
     
     checkSourceFileExists(Paths.get("pojo", "MyTestExchangeMarketDataExchangeInfoResponsePayload.java"));
     
-    checkJavaFilesCount(Paths.get("serializers"), 3);
-    checkSourceFileExists(Paths.get("serializers", "MyTestExchangeMarketDataExchangeInfoRequestSerializer.java"));        
-    checkSourceFileExists(Paths.get("serializers", "MyTestExchangeMarketDataExchangeInfoResponsePayloadSerializer.java"));
-    checkSourceFileExists(Paths.get("serializers", "MyTestExchangeMarketDataExchangeInfoResponseSerializer.java"));               
+    checkJavaFilesCount(Paths.get("pojo/serializers"), 3);
+    checkSourceFileExists(Paths.get("pojo/serializers", "MyTestExchangeMarketDataExchangeInfoRequestSerializer.java"));        
+    checkSourceFileExists(Paths.get("pojo/serializers", "MyTestExchangeMarketDataExchangeInfoResponsePayloadSerializer.java"));
+    checkSourceFileExists(Paths.get("pojo/serializers", "MyTestExchangeMarketDataExchangeInfoResponseSerializer.java"));  
+    
+    checkJavaFilesCount(Paths.get("pojo/deserializers"), 3);
+    checkSourceFileExists(Paths.get("pojo/deserializers", "MyTestExchangeMarketDataExchangeInfoRequestDeserializer.java"));
+    checkSourceFileExists(Paths.get("pojo/deserializers", "MyTestExchangeMarketDataExchangeInfoResponseDeserializer.java"));
+    checkSourceFileExists(Paths.get("pojo/deserializers", "MyTestExchangeMarketDataExchangeInfoResponsePayloadDeserializer.java"));
   }
   
   @Test
@@ -560,22 +564,19 @@ public class RestEndpointClassesGeneratorTest {
     RestEndpointClassesGenerator generator = new RestEndpointClassesGenerator(exchange, api, restEndpoint, null);
     generator.generateClasses(srcFolder);
     
-    checkJavaFilesCount(Paths.get("deserializers"), 3);
-    checkSourceFileExists(Paths.get("deserializers", "MyTestExchangeMarketDataExchangeInfoRequestDeserializer.java"));
-    checkSourceFileExists(Paths.get("deserializers", "MyTestExchangeMarketDataExchangeInfoResponseDeserializer.java"));
-    checkSourceFileExists(Paths.get("deserializers", "MyTestExchangeMarketDataExchangeInfoResponsePayloadDeserializer.java"));
-    
-    checkJavaFilesCount(Paths.get("pojo"), 3);
+    checkJavaFilesCount(Paths.get("pojo"), 5);
     
     Assert.assertEquals("package com.foo.bar.gen.marketdata.pojo;\n"
         + "\n"
         + "import java.util.List;\n"
         + "import java.util.Objects;\n"
         + "\n"
+        + "import com.fasterxml.jackson.databind.annotation.JsonDeserialize;\n"
         + "import com.fasterxml.jackson.databind.annotation.JsonSerialize;\n"
         + "import com.foo.bar.ExchangeInfoRequestInterface1;\n"
         + "import com.foo.bar.ExchangeInfoRequestInterface2;\n"
-        + "import com.foo.bar.gen.marketdata.serializers.MyTestExchangeMarketDataExchangeInfoRequestSerializer;\n"
+        + "import com.foo.bar.gen.marketdata.pojo.deserializers.MyTestExchangeMarketDataExchangeInfoRequestDeserializer;\n"
+        + "import com.foo.bar.gen.marketdata.pojo.serializers.MyTestExchangeMarketDataExchangeInfoRequestSerializer;\n"
         + "import javax.annotation.processing.Generated;\n"
         + "import org.jxapi.util.CollectionUtil;\n"
         + "import org.jxapi.util.CompareUtil;\n"
@@ -583,11 +584,11 @@ public class RestEndpointClassesGeneratorTest {
         + "import org.jxapi.util.Pojo;\n"
         + "\n"
         + "/**\n"
-        + " * Request for MyTestExchange MarketData API exchangeInfo REST endpoint<br>\n"
-        + " * Fetch market information of symbols that can be traded\n"
+        + " * Exchange info request\n"
         + " */\n"
-        + "@Generated(\"org.jxapi.generator.java.exchange.api.pojo.PojoGenerator\")\n"
+        + "@Generated(\"org.jxapi.generator.java.pojo.PojoGenerator\")\n"
         + "@JsonSerialize(using = MyTestExchangeMarketDataExchangeInfoRequestSerializer.class)\n"
+        + "@JsonDeserialize(using = MyTestExchangeMarketDataExchangeInfoRequestDeserializer.class)\n"
         + "public class MyTestExchangeMarketDataExchangeInfoRequest implements Pojo<MyTestExchangeMarketDataExchangeInfoRequest>, ExchangeInfoRequestInterface1, ExchangeInfoRequestInterface2 {\n"
         + "  \n"
         + "  private static final long serialVersionUID = 9027087182370646227L;\n"
@@ -683,7 +684,7 @@ public class RestEndpointClassesGeneratorTest {
         + "     * Will add an item to the <code>symbols</code> list.\n"
         + "     * @param item Item to add to current <code>symbols</code> list\n"
         + "     * @return Builder instance\n"
-        + "     * @see MyTestExchangeMarketDataExchangeInfoRequest#setSymbols(String)\n"
+        + "     * @see MyTestExchangeMarketDataExchangeInfoRequest#setSymbols(List)\n"
         + "     */\n"
         + "    public Builder addToSymbols(String item) {\n"
         + "      if (this.symbols == null) {\n"
@@ -711,10 +712,12 @@ public class RestEndpointClassesGeneratorTest {
         + "import java.util.List;\n"
         + "import java.util.Objects;\n"
         + "\n"
+        + "import com.fasterxml.jackson.databind.annotation.JsonDeserialize;\n"
         + "import com.fasterxml.jackson.databind.annotation.JsonSerialize;\n"
         + "import com.foo.bar.ExchangeInfoResponseInterface1;\n"
         + "import com.foo.bar.ExchangeInfoResponseInterface2;\n"
-        + "import com.foo.bar.gen.marketdata.serializers.MyTestExchangeMarketDataExchangeInfoResponseSerializer;\n"
+        + "import com.foo.bar.gen.marketdata.pojo.deserializers.MyTestExchangeMarketDataExchangeInfoResponseDeserializer;\n"
+        + "import com.foo.bar.gen.marketdata.pojo.serializers.MyTestExchangeMarketDataExchangeInfoResponseSerializer;\n"
         + "import javax.annotation.processing.Generated;\n"
         + "import org.jxapi.util.CollectionUtil;\n"
         + "import org.jxapi.util.CompareUtil;\n"
@@ -723,12 +726,11 @@ public class RestEndpointClassesGeneratorTest {
         + "import org.jxapi.util.Pojo;\n"
         + "\n"
         + "/**\n"
-        + " * Response to MyTestExchange MarketData API <br>\n"
-        + " * exchangeInfo REST endpoint request<br>\n"
-        + " * Fetch market information of symbols that can be traded\n"
+        + " * Exchange info response\n"
         + " */\n"
-        + "@Generated(\"org.jxapi.generator.java.exchange.api.pojo.PojoGenerator\")\n"
+        + "@Generated(\"org.jxapi.generator.java.pojo.PojoGenerator\")\n"
         + "@JsonSerialize(using = MyTestExchangeMarketDataExchangeInfoResponseSerializer.class)\n"
+        + "@JsonDeserialize(using = MyTestExchangeMarketDataExchangeInfoResponseDeserializer.class)\n"
         + "public class MyTestExchangeMarketDataExchangeInfoResponse implements Pojo<MyTestExchangeMarketDataExchangeInfoResponse>, ExchangeInfoResponseInterface1, ExchangeInfoResponseInterface2 {\n"
         + "  \n"
         + "  private static final long serialVersionUID = -7476378049371763608L;\n"
@@ -857,7 +859,7 @@ public class RestEndpointClassesGeneratorTest {
         + "     * Will add an item to the <code>payload</code> list.\n"
         + "     * @param item Item to add to current <code>payload</code> list\n"
         + "     * @return Builder instance\n"
-        + "     * @see MyTestExchangeMarketDataExchangeInfoResponse#setPayload(MyTestExchangeMarketDataExchangeInfoResponsePayload)\n"
+        + "     * @see MyTestExchangeMarketDataExchangeInfoResponse#setPayload(List)\n"
         + "     */\n"
         + "    public Builder addToPayload(MyTestExchangeMarketDataExchangeInfoResponsePayload item) {\n"
         + "      if (this.payload == null) {\n"
@@ -883,10 +885,15 @@ public class RestEndpointClassesGeneratorTest {
     
     checkSourceFileExists(Paths.get("pojo", "MyTestExchangeMarketDataExchangeInfoResponsePayload.java"));
     
-    checkJavaFilesCount(Paths.get("serializers"), 3);
-    checkSourceFileExists(Paths.get("serializers", "MyTestExchangeMarketDataExchangeInfoRequestSerializer.java"));        
-    checkSourceFileExists(Paths.get("serializers", "MyTestExchangeMarketDataExchangeInfoResponsePayloadSerializer.java"));
-    checkSourceFileExists(Paths.get("serializers", "MyTestExchangeMarketDataExchangeInfoResponseSerializer.java"));               
+    checkJavaFilesCount(Paths.get("pojo/serializers"), 3);
+    checkSourceFileExists(Paths.get("pojo/serializers", "MyTestExchangeMarketDataExchangeInfoRequestSerializer.java"));        
+    checkSourceFileExists(Paths.get("pojo/serializers", "MyTestExchangeMarketDataExchangeInfoResponsePayloadSerializer.java"));
+    checkSourceFileExists(Paths.get("pojo/serializers", "MyTestExchangeMarketDataExchangeInfoResponseSerializer.java"));  
+    
+    checkJavaFilesCount(Paths.get("pojo/deserializers"), 3);
+    checkSourceFileExists(Paths.get("pojo/deserializers", "MyTestExchangeMarketDataExchangeInfoRequestDeserializer.java"));
+    checkSourceFileExists(Paths.get("pojo/deserializers", "MyTestExchangeMarketDataExchangeInfoResponseDeserializer.java"));
+    checkSourceFileExists(Paths.get("pojo/deserializers", "MyTestExchangeMarketDataExchangeInfoResponsePayloadDeserializer.java"));
   }
 
   @Test
@@ -898,14 +905,14 @@ public class RestEndpointClassesGeneratorTest {
     RestEndpointClassesGenerator generator = new RestEndpointClassesGenerator(exchange, api, restEndpoint, null);
     generator.generateClasses(srcFolder);
     
-    checkJavaFilesCount(Paths.get("deserializers"), 1);
-    checkSourceFileExists(Paths.get("deserializers", "GenericResponseDeserializer.java"));
-    
-    checkJavaFilesCount(Paths.get("pojo"), 1);
+    checkJavaFilesCount(Paths.get("pojo"), 3);
     checkSourceFileExists(Paths.get("pojo", "GenericResponse.java"));
     
-    checkJavaFilesCount(Paths.get("serializers"), 1);
-    checkSourceFileExists(Paths.get("serializers", "GenericResponseSerializer.java"));           
+    checkJavaFilesCount(Paths.get("pojo/deserializers"), 1);
+    checkSourceFileExists(Paths.get("pojo/deserializers", "GenericResponseDeserializer.java"));
+    
+    checkJavaFilesCount(Paths.get("pojo/serializers"), 1);
+    checkSourceFileExists(Paths.get("pojo/serializers", "GenericResponseSerializer.java"));           
   }
   
   @Test
@@ -924,7 +931,7 @@ public class RestEndpointClassesGeneratorTest {
     srcFolder = ClassesGeneratorTestUtil.generateTmpDir();
     ExchangeDescriptor exchange = ExchangeDescriptorParser.fromJson(Paths.get(".", "src", "test", "resources", "testExchangeDescriptorWithAllRestRequestDataTypes.json"));
     ExchangeApiDescriptor api = exchange.getApis().get(0);
-    RestEndpointDescriptor restEndpoint = ClassesGeneratorTestUtil.findRestEndpointByName("postRestRequestDataTypeObjectNoParameters", api);
+    RestEndpointDescriptor restEndpoint = ClassesGeneratorTestUtil.findRestEndpointByName("postRestRequestNoParameters", api);
     RestEndpointClassesGenerator generator = new RestEndpointClassesGenerator(exchange, api, restEndpoint, null);
     generator.generateClasses(srcFolder);
     checkJavaFilesCount(srcFolder, 0);        

@@ -10,14 +10,14 @@ import java.util.Optional;
 import java.util.concurrent.atomic.AtomicReference;
 
 import org.apache.commons.lang3.StringUtils;
-import org.jxapi.exchange.descriptor.ConfigPropertyDescriptor;
-import org.jxapi.exchange.descriptor.ExchangeApiDescriptor;
-import org.jxapi.exchange.descriptor.ExchangeDescriptor;
+import org.jxapi.exchange.descriptor.gen.ConfigPropertyDescriptor;
+import org.jxapi.exchange.descriptor.gen.ExchangeDescriptor;
 import org.jxapi.exchange.descriptor.parser.ExchangeDescriptorParser;
 import org.jxapi.generator.java.JavaCodeGenUtil;
 import org.jxapi.generator.java.exchange.api.ExchangeApiClassesGenerator;
 import org.jxapi.generator.java.exchange.api.demo.EndpointDemoGenUtil;
 import org.jxapi.generator.java.exchange.api.demo.ExchangeDemoClassesGenerator;
+import org.jxapi.generator.java.pojo.PojosGeneratorMain;
 import org.jxapi.generator.md.exchange.ExchangeReadmeMdGenerator;
 import org.jxapi.generator.properties.exchange.ExchangeDemoPropertiesTemplateGenerator;
 import org.jxapi.netutils.rest.ratelimits.RateLimitManager;
@@ -61,13 +61,7 @@ public class ExchangeGeneratorMain {
      */
   public static final Path DESCRIPTOR_FOLDER = Paths.get("src", "main", "resources", "jxapi", "exchange");
   
-  /**
-   * Key for system property that can be passed to JVM running
-   * {@link #main(String[])} to specify the base URL for Java wrapper project
-   *  to use by generator. This should be the cuurrent project folder path. Can be retrieved using maven property ${project.basedir}.
-   *  If not set, the current JVM folder is used.
-   */
-  public static final String BASE_PROJECT_DIR_PROP = "baseProjectDir";
+
   
   /**
    * Key for system property that can be passed to JVM running
@@ -94,7 +88,7 @@ public class ExchangeGeneratorMain {
    */
   public static void main(String[] args) {
     try {
-      String baseProjectDir = System.getProperty(BASE_PROJECT_DIR_PROP);
+      String baseProjectDir = System.getProperty(PojosGeneratorMain.BASE_PROJECT_DIR_PROP);
       String baseJavaDocUrl = System.getProperty(BASE_JAVADOC_URL_SYS_PROP);
       String baseSrcUrl = System.getProperty(BASE_SRC_URL_SYS_PROP);
       generateExchangeWrappersInCurrentProject(baseProjectDir, baseJavaDocUrl, baseSrcUrl);

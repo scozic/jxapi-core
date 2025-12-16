@@ -6,13 +6,13 @@ import java.util.List;
 
 import org.junit.Assert;
 import org.junit.Test;
-import org.jxapi.exchange.descriptor.ConfigPropertyDescriptor;
-import org.jxapi.exchange.descriptor.Constant;
-import org.jxapi.exchange.descriptor.ExchangeApiDescriptor;
-import org.jxapi.exchange.descriptor.ExchangeDescriptor;
-import org.jxapi.exchange.descriptor.RestEndpointDescriptor;
+import org.jxapi.exchange.descriptor.gen.ConfigPropertyDescriptor;
+import org.jxapi.exchange.descriptor.gen.ConstantDescriptor;
+import org.jxapi.exchange.descriptor.gen.ExchangeApiDescriptor;
+import org.jxapi.exchange.descriptor.gen.ExchangeDescriptor;
+import org.jxapi.exchange.descriptor.gen.RateLimitRuleDescriptor;
+import org.jxapi.exchange.descriptor.gen.RestEndpointDescriptor;
 import org.jxapi.exchange.descriptor.parser.ExchangeDescriptorParser;
-import org.jxapi.netutils.rest.ratelimits.RateLimitRule;
 
 /**
  * Unit test for {@link ExchangeInterfaceImplementationGenerator}
@@ -29,9 +29,10 @@ public class ExchangeInterfaceImplementationGeneratorTest {
     exchangeDescriptor.setWebsocketUrl("${config.serverWsUrl}/ws");
     exchangeDescriptor.setAfterInitHookFactory("com.xxz.foo.gen.FooAfterInitExchangeHookFactory");
     
-    Constant apiVersion = new Constant();
-    apiVersion.setName("apiVersion");
-    apiVersion.setValue("1");
+    ConstantDescriptor apiVersion = ConstantDescriptor.builder()
+        .name("apiVersion")
+        .value("1")
+        .build();
     exchangeDescriptor.setConstants(List.of(apiVersion));
     
     ConfigPropertyDescriptor serverHttpUrl = new ConfigPropertyDescriptor();
@@ -119,7 +120,12 @@ public class ExchangeInterfaceImplementationGeneratorTest {
     api3.setName("api3");
     apis.add(api3);
     exchangeDescriptor.setApis(apis);
-    exchangeDescriptor.setRateLimits(List.of(RateLimitRule.createRule("exchangeGlobalRateLimit", 60000, 1000)));
+    RateLimitRuleDescriptor exchangeGlobalRateLimit = RateLimitRuleDescriptor.builder()
+        .id("exchangeGlobalRateLimit")
+        .timeFrame(60000L)
+        .maxRequestCount(1000)
+        .build();
+    exchangeDescriptor.setRateLimits(List.of(exchangeGlobalRateLimit));
     ExchangeInterfaceImplementationGenerator exchangeGenerator = new ExchangeInterfaceImplementationGenerator(exchangeDescriptor);
     Assert.assertEquals("package com.xyz.foo.gen;\n"
         + "\n"
@@ -243,7 +249,12 @@ public class ExchangeInterfaceImplementationGeneratorTest {
     exchangeDescriptor.setId("Foo");
     exchangeDescriptor.setBasePackage("com.xyz.foo.gen");
     exchangeDescriptor.setDescription("Foo exchange description");
-    exchangeDescriptor.setRateLimits(List.of(RateLimitRule.createRule("exchangeGlobalRateLimit", 60000, 1000)));
+    RateLimitRuleDescriptor exchangeGlobalRateLimit = RateLimitRuleDescriptor.builder()
+        .id("exchangeGlobalRateLimit")
+        .timeFrame(60000L)
+        .maxRequestCount(1000)
+        .build();
+    exchangeDescriptor.setRateLimits(List.of(exchangeGlobalRateLimit));
     ExchangeInterfaceImplementationGenerator exchangeGenerator = new ExchangeInterfaceImplementationGenerator(exchangeDescriptor);
     Assert.assertEquals("package com.xyz.foo.gen;\n"
         + "\n"
@@ -295,7 +306,12 @@ public class ExchangeInterfaceImplementationGeneratorTest {
     api2.setName("api2");
     apis.add(api2);
     exchangeDescriptor.setApis(apis);
-    exchangeDescriptor.setRateLimits(List.of(RateLimitRule.createRule("exchangeGlobalRateLimit", 60000, 1000)));
+    RateLimitRuleDescriptor exchangeGlobalRateLimit = RateLimitRuleDescriptor.builder()
+        .id("exchangeGlobalRateLimit")
+        .timeFrame(60000L)
+        .maxRequestCount(1000)
+        .build();
+    exchangeDescriptor.setRateLimits(List.of(exchangeGlobalRateLimit));
     ExchangeInterfaceImplementationGenerator exchangeGenerator = new ExchangeInterfaceImplementationGenerator(exchangeDescriptor);
     Assert.assertEquals("package com.xyz.foo.gen;\n"
         + "\n"
@@ -356,7 +372,11 @@ public class ExchangeInterfaceImplementationGeneratorTest {
     exchangeDescriptor.setId("Foo");
     exchangeDescriptor.setBasePackage("com.xyz.foo.gen");
     exchangeDescriptor.setDescription("Foo exchange description");
-    exchangeDescriptor.setRateLimits(List.of(RateLimitRule.createRule(null, 60000, 1000)));
+    RateLimitRuleDescriptor exchangeGlobalRateLimit = RateLimitRuleDescriptor.builder()
+        .timeFrame(60000L)
+        .maxRequestCount(1000)
+        .build();
+    exchangeDescriptor.setRateLimits(List.of(exchangeGlobalRateLimit));
     ExchangeInterfaceImplementationGenerator exchangeGenerator = new ExchangeInterfaceImplementationGenerator(exchangeDescriptor);
     exchangeGenerator.generate();
   }
@@ -367,8 +387,12 @@ public class ExchangeInterfaceImplementationGeneratorTest {
     exchangeDescriptor.setId("Foo");
     exchangeDescriptor.setBasePackage("com.xyz.foo.gen");
     exchangeDescriptor.setDescription("Foo exchange description");
-    exchangeDescriptor.setRateLimits(List.of(RateLimitRule.createRule("myReule", 60000, 1000), 
-                         RateLimitRule.createRule("myReule", 60000, 1000)));
+    RateLimitRuleDescriptor exchangeGlobalRateLimit = RateLimitRuleDescriptor.builder()
+        .id("exchangeGlobalRateLimit")
+        .timeFrame(60000L)
+        .maxRequestCount(1000)
+        .build();
+    exchangeDescriptor.setRateLimits(List.of(exchangeGlobalRateLimit, exchangeGlobalRateLimit.deepClone()));
     ExchangeInterfaceImplementationGenerator exchangeGenerator = new ExchangeInterfaceImplementationGenerator(exchangeDescriptor);
     exchangeGenerator.generate();
   }
@@ -379,7 +403,12 @@ public class ExchangeInterfaceImplementationGeneratorTest {
     exchangeDescriptor.setId("Foo");
     exchangeDescriptor.setBasePackage("com.xyz.foo.gen");
     exchangeDescriptor.setDescription("Foo exchange description");
-    exchangeDescriptor.setRateLimits(List.of(RateLimitRule.createWeightedRule("exchangeGlobalRateLimit", 60000, 1000)));
+    RateLimitRuleDescriptor exchangeGlobalRateLimit = RateLimitRuleDescriptor.builder()
+        .id("exchangeGlobalRateLimit")
+        .timeFrame(60000L)
+        .maxTotalWeight(1000)
+        .build();
+    exchangeDescriptor.setRateLimits(List.of(exchangeGlobalRateLimit));
     ExchangeInterfaceImplementationGenerator exchangeGenerator = new ExchangeInterfaceImplementationGenerator(exchangeDescriptor);
     Assert.assertEquals("package com.xyz.foo.gen;\n"
         + "\n"

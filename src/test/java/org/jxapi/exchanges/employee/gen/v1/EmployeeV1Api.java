@@ -54,7 +54,8 @@ public interface EmployeeV1Api extends ExchangeApi {
   /**
    * Get employee details by ID
    * @param id Employee ID
-   * @return A {@link FutureRestResponse} that will complete when request submitted asynchronously has been processed.
+   * @return A {@link FutureRestResponse} that will complete when request submitted asynchronously has been processed. If successful, will provide response: Employee details response for requested employee ID
+   * 
    * @see <a href="https://www.example.com/docs/employee/get">Reference documentation</a>
    */
   FutureRestResponse<Employee> getEmployee(Integer id);

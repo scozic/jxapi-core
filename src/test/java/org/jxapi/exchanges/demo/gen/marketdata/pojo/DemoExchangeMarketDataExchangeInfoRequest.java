@@ -3,10 +3,12 @@ package org.jxapi.exchanges.demo.gen.marketdata.pojo;
 import java.util.List;
 import java.util.Objects;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import javax.annotation.processing.Generated;
 import org.jxapi.exchanges.demo.gen.DemoExchangeConstants;
-import org.jxapi.exchanges.demo.gen.marketdata.serializers.DemoExchangeMarketDataExchangeInfoRequestSerializer;
+import org.jxapi.exchanges.demo.gen.marketdata.pojo.deserializers.DemoExchangeMarketDataExchangeInfoRequestDeserializer;
+import org.jxapi.exchanges.demo.gen.marketdata.pojo.serializers.DemoExchangeMarketDataExchangeInfoRequestSerializer;
 import org.jxapi.netutils.deserialization.json.field.ListJsonFieldDeserializer;
 import org.jxapi.netutils.deserialization.json.field.StringJsonFieldDeserializer;
 import org.jxapi.util.CollectionUtil;
@@ -15,11 +17,12 @@ import org.jxapi.util.EncodingUtil;
 import org.jxapi.util.Pojo;
 
 /**
- * Request for DemoExchange MarketData API exchangeInfo REST endpoint<br>
+ * Request object for DemoExchange MarketData API exchangeInfo REST endpoint<br>
  * Fetch market information of symbols that can be traded
  */
-@Generated("org.jxapi.generator.java.exchange.api.pojo.PojoGenerator")
+@Generated("org.jxapi.generator.java.pojo.PojoGenerator")
 @JsonSerialize(using = DemoExchangeMarketDataExchangeInfoRequestSerializer.class)
+@JsonDeserialize(using = DemoExchangeMarketDataExchangeInfoRequestDeserializer.class)
 public class DemoExchangeMarketDataExchangeInfoRequest implements Pojo<DemoExchangeMarketDataExchangeInfoRequest> {
   
   private static final long serialVersionUID = 6651377746235151905L;
@@ -120,7 +123,7 @@ public class DemoExchangeMarketDataExchangeInfoRequest implements Pojo<DemoExcha
      * Will add an item to the <code>symbols</code> list.
      * @param item Item to add to current <code>symbols</code> list
      * @return Builder instance
-     * @see DemoExchangeMarketDataExchangeInfoRequest#setSymbols(String)
+     * @see DemoExchangeMarketDataExchangeInfoRequest#setSymbols(List)
      */
     public Builder addToSymbols(String item) {
       if (this.symbols == null) {

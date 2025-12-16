@@ -5,17 +5,18 @@ import java.util.Properties;
 import java.util.concurrent.ExecutionException;
 
 import org.jxapi.exchange.ExchangeApiObserver;
-import org.jxapi.exchange.descriptor.ConfigPropertyDescriptor;
-import org.jxapi.exchange.descriptor.ExchangeApiDescriptor;
-import org.jxapi.exchange.descriptor.ExchangeDescriptor;
-import org.jxapi.exchange.descriptor.Field;
-import org.jxapi.exchange.descriptor.RestEndpointDescriptor;
-import org.jxapi.exchange.descriptor.Type;
+import org.jxapi.exchange.descriptor.gen.ConfigPropertyDescriptor;
+import org.jxapi.exchange.descriptor.gen.ExchangeApiDescriptor;
+import org.jxapi.exchange.descriptor.gen.ExchangeDescriptor;
+import org.jxapi.exchange.descriptor.gen.RestEndpointDescriptor;
 import org.jxapi.generator.java.JavaCodeGenUtil;
 import org.jxapi.generator.java.JavaTypeGenerator;
 import org.jxapi.generator.java.exchange.ExchangeGenUtil;
 import org.jxapi.generator.java.exchange.api.ExchangeApiGenUtil;
+import org.jxapi.generator.java.pojo.PojoGenUtil;
 import org.jxapi.netutils.rest.RestResponse;
+import org.jxapi.pojo.descriptor.Field;
+import org.jxapi.pojo.descriptor.Type;
 import org.jxapi.util.DemoUtil;
 import org.slf4j.Logger;
 
@@ -76,15 +77,22 @@ public class RestEndpointDemoGenerator extends JavaTypeGenerator {
     setTypeDeclaration("public class");
     this.exchange = exchangeDescriptor;
     this.exchangeApi = exchangeApiDescriptor;
+    boolean hasSomeArguments = ExchangeApiGenUtil.restEndpointHasArguments(restApi, exchangeApiDescriptor);
+    boolean requestHasBody = ExchangeApiGenUtil.restEndpointRequestHasBody(restApi);
+    if (requestHasBody && !hasSomeArguments) {
+      restApi = restApi.deepClone();
+      restApi.setRequest(ExchangeApiGenUtil.createDefaultRawBodyRequest());
+      hasSomeArguments = true;
+    }
+    this.hasArguments = hasSomeArguments;
     this.restApi = restApi;
     this.demoProperties = demoProperties;
     this.exchangeClassName = ExchangeGenUtil.getExchangeInterfaceName(exchangeDescriptor);
     this.exchangeSimpleClassName = JavaCodeGenUtil.getClassNameWithoutPackage(exchangeClassName);
-    this.hasArguments = ExchangeApiGenUtil.restEndpointHasArguments(restApi, exchangeApiDescriptor);
     this.request = ExchangeApiGenUtil.resolveFieldProperties(exchangeApiDescriptor, restApi.getRequest());
     this.exchangeImplClassName = ExchangeGenUtil.getExchangeInterfaceImplementationName(exchangeDescriptor);
-    if (hasArguments) {
-      requestDataType =  ExchangeGenUtil.getFieldType(request);
+    if (hasSomeArguments) {
+      requestDataType =  PojoGenUtil.getFieldType(request);
       if (requestDataType.getCanonicalType().isPrimitive) {
         requestClassName = requestDataType.getCanonicalType().typeClass.getName();
       } else if (requestDataType.isObject() ){
@@ -97,7 +105,7 @@ public class RestEndpointDemoGenerator extends JavaTypeGenerator {
       }
       
       addImport(requestClassName);
-      requestSimpleClassName = ExchangeGenUtil.getClassNameForType(
+      requestSimpleClassName = PojoGenUtil.getClassNameForType(
                     requestDataType, 
                     getImports(), 
                     requestClassName);
@@ -109,7 +117,7 @@ public class RestEndpointDemoGenerator extends JavaTypeGenerator {
     this.apiInterfaceClassName = ExchangeGenUtil.getApiInterfaceClassName(exchangeDescriptor, exchangeApiDescriptor);
     this.simpleApiClassName = JavaCodeGenUtil.getClassNameWithoutPackage(apiInterfaceClassName);
     response = restApi.getResponse();
-    responseDataType = ExchangeGenUtil.getFieldType(response);
+    responseDataType = PojoGenUtil.getFieldType(response);
     hasResponse = ExchangeApiGenUtil.restEndpointHasResponse(restApi, exchangeApiDescriptor);
     if (hasResponse) {
       String restResponseClassName = null;
@@ -120,7 +128,7 @@ public class RestEndpointDemoGenerator extends JavaTypeGenerator {
             restApi);
         addImport(restResponseClassName);
       }
-      responseSimpleClassName = ExchangeGenUtil.getClassNameForType(
+      responseSimpleClassName = PojoGenUtil.getClassNameForType(
           responseDataType, 
           getImports(), 
           restResponseClassName);

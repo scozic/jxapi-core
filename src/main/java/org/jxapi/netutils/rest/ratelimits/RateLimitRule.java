@@ -1,5 +1,11 @@
 package org.jxapi.netutils.rest.ratelimits;
 
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
+import org.jxapi.exchange.descriptor.gen.RateLimitRuleDescriptor;
+import org.jxapi.util.CollectionUtil;
 import org.jxapi.util.EncodingUtil;
 
 /**
@@ -52,6 +58,37 @@ public class RateLimitRule {
     rule.setTimeFrame(timeFrame);
     rule.setMaxTotalWeight(maxWeight);
     return rule;
+  }
+  
+  /**
+   * Creates a new rate limit rule from given descriptor.
+   * 
+   * @param descriptor the rate limit rule descriptor.
+   * @return A new rate limit rule.
+   */
+  public static RateLimitRule fromDescriptor(RateLimitRuleDescriptor descriptor) {
+    RateLimitRule rule = new RateLimitRule();
+    rule.setId(descriptor.getId());
+    rule.setTimeFrame(Optional.ofNullable(descriptor.getTimeFrame()).orElse(0L));
+    rule.setMaxRequestCount(Optional.ofNullable(descriptor.getMaxRequestCount()).orElse(-1));
+    rule.setMaxTotalWeight(Optional.ofNullable(descriptor.getMaxTotalWeight()).orElse(-1));
+    rule.setGranularity(Optional.ofNullable(descriptor.getGranularity()).orElse(DEFAULT_GRANULARITY));
+    return rule;
+  }
+  
+  /**
+   * Converts all rate limit rules defined at exchange level from
+   * {@link RateLimitRuleDescriptor} to {@link RateLimitRule}.
+   * 
+   * @param exchangeDescriptor The exchange descriptor to get the rate limit rules
+   *                           from
+   * @return The list of rate limit rules defined at exchange level, never
+   *         <code>null</code> but may be empty.
+   */
+  public static List<RateLimitRule> fromDescriptors(List<RateLimitRuleDescriptor> descriptors) {
+    return CollectionUtil.emptyIfNull(descriptors).stream()
+        .map(RateLimitRule::fromDescriptor)
+        .collect(Collectors.toList());
   }
   
   private String id;

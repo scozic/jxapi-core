@@ -2,19 +2,21 @@ package org.jxapi.exchanges.employee.gen.v1.pojo;
 
 import java.util.Objects;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import javax.annotation.processing.Generated;
-import org.jxapi.exchanges.employee.gen.v1.serializers.EmployeeV1EmployeeUpdatesMessageSerializer;
+import org.jxapi.exchanges.employee.gen.v1.pojo.deserializers.EmployeeV1EmployeeUpdatesMessageDeserializer;
+import org.jxapi.exchanges.employee.gen.v1.pojo.serializers.EmployeeV1EmployeeUpdatesMessageSerializer;
 import org.jxapi.util.CompareUtil;
 import org.jxapi.util.EncodingUtil;
 import org.jxapi.util.Pojo;
 
 /**
- * Message disseminated upon subscription to Employee v1 API employeeUpdates websocket endpoint request<br>
- * Employee updates websocket
+ * Employee update message
  */
-@Generated("org.jxapi.generator.java.exchange.api.pojo.PojoGenerator")
+@Generated("org.jxapi.generator.java.pojo.PojoGenerator")
 @JsonSerialize(using = EmployeeV1EmployeeUpdatesMessageSerializer.class)
+@JsonDeserialize(using = EmployeeV1EmployeeUpdatesMessageDeserializer.class)
 public class EmployeeV1EmployeeUpdatesMessage implements Pojo<EmployeeV1EmployeeUpdatesMessage> {
   
   private static final long serialVersionUID = -1771730097053933571L;

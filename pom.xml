@@ -6,7 +6,7 @@
 
   <groupId>org.jxapi</groupId>
   <artifactId>jxapi-core</artifactId>
-  <version>0.18.0</version>
+  <version>0.18.1-SNAPSHOT</version>
 
   <name>jxapi-core</name>
   <!-- FIXME change it to the project's website -->
@@ -155,5 +155,34 @@
 			</build>
 		</profile>
 	</profiles>
+
+  <build>
+		<pluginManagement>
+			<plugins>
+				<plugin>
+					<groupId>org.codehaus.mojo</groupId>
+					<artifactId>exec-maven-plugin</artifactId>
+					<configuration>
+						<mainClass>
+							org.jxapi.generator.java.pojo.PojosGeneratorMain
+						</mainClass>
+					</configuration>
+				</plugin>
+			</plugins>
+		</pluginManagement>
+		<plugins>
+	        <plugin>
+	            <groupId>org.apache.maven.plugins</groupId>
+	            <artifactId>maven-javadoc-plugin</artifactId>
+	            <version>3.4.1</version>
+	            <configuration>
+	                <additionalJOptions>
+					    <!-- Remove warnings about missing comments because undocumented private fields/methods are common in this project -->
+	                    <arg>-Xdoclint:all,-missing</arg>
+	                </additionalJOptions>
+	            </configuration>
+	        </plugin>
+        </plugins>
+  	</build>
  
 </project>

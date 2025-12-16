@@ -2,20 +2,22 @@ package org.jxapi.exchanges.demo.gen.marketdata.pojo;
 
 import java.util.Objects;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import javax.annotation.processing.Generated;
-import org.jxapi.exchanges.demo.gen.marketdata.serializers.GenericResponseSerializer;
+import org.jxapi.exchanges.demo.gen.marketdata.pojo.deserializers.GenericResponseDeserializer;
+import org.jxapi.exchanges.demo.gen.marketdata.pojo.serializers.GenericResponseSerializer;
 import org.jxapi.util.CompareUtil;
 import org.jxapi.util.EncodingUtil;
 import org.jxapi.util.Pojo;
 
 /**
- * Response to DemoExchange MarketData API <br>
- * postRestRequestDataTypeInt REST endpoint request<br>
+ * Response object for DemoExchange MarketData API postRestRequestDataTypeInt REST endpoint<br>
  * A sample REST endpoint using INT response data type
  */
-@Generated("org.jxapi.generator.java.exchange.api.pojo.PojoGenerator")
+@Generated("org.jxapi.generator.java.pojo.PojoGenerator")
 @JsonSerialize(using = GenericResponseSerializer.class)
+@JsonDeserialize(using = GenericResponseDeserializer.class)
 public class GenericResponse implements Pojo<GenericResponse> {
   
   private static final long serialVersionUID = 6491747203800805580L;

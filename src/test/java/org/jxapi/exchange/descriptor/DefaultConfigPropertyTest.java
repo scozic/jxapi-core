@@ -2,6 +2,7 @@ package org.jxapi.exchange.descriptor;
 
 import org.junit.Assert;
 import org.junit.Test;
+import org.jxapi.pojo.descriptor.Type;
 import org.jxapi.util.ConfigProperty;
 import org.jxapi.util.DefaultConfigProperty;
 

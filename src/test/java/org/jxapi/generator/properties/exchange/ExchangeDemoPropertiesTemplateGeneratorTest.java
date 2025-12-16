@@ -11,14 +11,14 @@ import java.util.Map;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Test;
-import org.jxapi.exchange.descriptor.ConfigPropertyDescriptor;
-import org.jxapi.exchange.descriptor.ExchangeDescriptor;
-import org.jxapi.exchange.descriptor.Type;
+import org.jxapi.exchange.descriptor.gen.ConfigPropertyDescriptor;
+import org.jxapi.exchange.descriptor.gen.ExchangeDescriptor;
 import org.jxapi.exchange.descriptor.parser.ExchangeDescriptorParser;
 import org.jxapi.generator.java.JavaCodeGenUtil;
 import org.jxapi.generator.java.exchange.ClassesGeneratorTestUtil;
 import org.jxapi.generator.java.exchange.ExchangeGenUtil;
 import org.jxapi.generator.java.exchange.api.demo.EndpointDemoGenUtil;
+import org.jxapi.pojo.descriptor.Type;
 import org.jxapi.util.CollectionUtil;
 import org.jxapi.util.PlaceHolderResolver;
 
@@ -260,8 +260,16 @@ public class ExchangeDemoPropertiesTemplateGeneratorTest {
   
   @Test
   public void testGeneratePropertiesFileComment_NoDescriptionInProperties() {
-    ConfigPropertyDescriptor property = ConfigPropertyDescriptor.create("myProp", Type.INT, null, 159);
-    ConfigPropertyDescriptor group = ConfigPropertyDescriptor.createGroup("myGroup", null, List.of(property));
+    ConfigPropertyDescriptor property = ConfigPropertyDescriptor.builder()
+        .name("myProp")
+        .type(Type.INT.toString())
+        .defaultValue(159).build();
+
+    ConfigPropertyDescriptor group = ConfigPropertyDescriptor.builder()
+        .name("myGroup")
+        .addToProperties(property)
+        .build();
+
     List<ConfigPropertyDescriptor> properties = List.of(group);
     List<ConfigPropertyDescriptor> demoProperties = List.of();
     ExchangeDemoPropertiesTemplateGenerator generator = new ExchangeDemoPropertiesTemplateGenerator("TestExchange", properties, demoProperties, null, null);

@@ -7,7 +7,6 @@ import java.util.function.Function;
 
 import org.jxapi.netutils.deserialization.MessageDeserializer;
 import org.jxapi.netutils.rest.FutureRestResponse;
-import org.jxapi.netutils.rest.HttpMethod;
 import org.jxapi.netutils.rest.HttpRequest;
 import org.jxapi.netutils.rest.HttpRequestExecutor;
 import org.jxapi.netutils.rest.HttpRequestExecutorFactory;
@@ -35,7 +34,6 @@ import org.jxapi.observability.SynchronizedObservable;
 import org.jxapi.util.DefaultDisposable;
 import org.jxapi.util.EncodingUtil;
 import org.jxapi.util.FactoryUtil;
-import org.jxapi.util.JsonUtil;
 import org.jxapi.util.PropertiesUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -274,10 +272,9 @@ public abstract class AbstractExchangeApi extends DefaultDisposable implements E
   @SuppressWarnings("unchecked")
   protected <R extends PaginatedRestRequest, A extends PaginatedRestResponse> FutureRestResponse<A> submitPaginated(
       HttpRequest request, 
-      boolean hasBody,
       MessageDeserializer<A> deserializer, 
       Function<R, FutureRestResponse<A>> paginatedRestEndpoint) {
-    return submit(request, hasBody, deserializer, PaginationUtil.getNextPageResolver((R) request.getRequest(), paginatedRestEndpoint));
+    return submit(request, deserializer, PaginationUtil.getNextPageResolver((R) request.getRequest(), paginatedRestEndpoint));
   }
   
   /**
@@ -288,21 +285,16 @@ public abstract class AbstractExchangeApi extends DefaultDisposable implements E
    * 
    * @param <A>          The type of the response to the request
    * @param request      The request to submit
-   * @param hasBody      Indicates whether the request has a body, and thus needs 
-   *                     its request to be serialized before submission.
    * @param deserializer The deserializer to use to deserialize the response
    * @return The response to the request, as a {@link FutureRestResponse}
    */
-  protected <A> FutureRestResponse<A> submit(HttpRequest request, boolean hasBody, MessageDeserializer<A> deserializer) {
-    return submit(request, hasBody, deserializer, null);
+  protected <A> FutureRestResponse<A> submit(HttpRequest request, MessageDeserializer<A> deserializer) {
+    return submit(request, deserializer, null);
   }
   
-  private <A> FutureRestResponse<A> submit(HttpRequest request, boolean hasBody, MessageDeserializer<A> deserializer, NextPageResolver<A> nextPageResolver) {
+  private <A> FutureRestResponse<A> submit(HttpRequest request, MessageDeserializer<A> deserializer, NextPageResolver<A> nextPageResolver) {
     log.debug("{} {} > {}", request.getHttpMethod(), request.getEndpoint(), request);
     dispatchApiEvent(ExchangeApiEvent.createHttpRequestEvent(request));
-    if (hasBody && request.getRequest() != null) {
-      serializeRequestBody(request);
-    }
     if (requestThrottler != null) {
       return requestThrottler.submit(request, r -> { 
         try {
@@ -414,24 +406,6 @@ public abstract class AbstractExchangeApi extends DefaultDisposable implements E
     event.setExchangeApiName(name);
     event.setExchangeId(exchange.getId());
     observable.dispatch(event);
-  }
-  
-  /**
-   * When submitting a REST request call, outgoing HTTP request may carry a body,
-   * this is usually the case for {@link HttpMethod#POST} method, see
-   * {@link HttpMethod#requestHasBody}.<br>
-   * This method is called when submitting such request and is responsible for
-   * setting the body of incoming request serialized as String. Default
-   * implementation will serialize the nested request POJO (see
-   * {@link HttpRequest#getRequest()}) as JSON.
-   * 
-   * @param request HTTP Request to set the body for.
-   * @see JsonUtil#pojoToJsonString(Object)
-   * @see HttpRequest#getRequest()
-   * @see HttpRequest#setBody(String)
-   */
-  protected void serializeRequestBody(HttpRequest request) {
-    request.setBody(JsonUtil.pojoToJsonString(request.getRequest()));
   }
   
   @Override

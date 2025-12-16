@@ -9,13 +9,12 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
-import org.jxapi.exchange.descriptor.ConfigPropertyDescriptor;
+import org.jxapi.exchange.descriptor.gen.ConfigPropertyDescriptor;
 import org.jxapi.exchange.descriptor.Constant;
-import org.jxapi.exchange.descriptor.ExchangeApiDescriptor;
-import org.jxapi.exchange.descriptor.ExchangeDescriptor;
-import org.jxapi.exchange.descriptor.RestEndpointDescriptor;
-import org.jxapi.exchange.descriptor.Type;
-import org.jxapi.exchange.descriptor.WebsocketEndpointDescriptor;
+import org.jxapi.exchange.descriptor.gen.ExchangeApiDescriptor;
+import org.jxapi.exchange.descriptor.gen.ExchangeDescriptor;
+import org.jxapi.exchange.descriptor.gen.RestEndpointDescriptor;
+import org.jxapi.exchange.descriptor.gen.WebsocketEndpointDescriptor;
 import org.jxapi.generator.html.XmlElement;
 import org.jxapi.generator.html.HtmlGenUtil;
 import org.jxapi.generator.java.JavaCodeGenUtil;
@@ -23,6 +22,8 @@ import org.jxapi.generator.java.exchange.ExchangeGenUtil;
 import org.jxapi.generator.java.exchange.api.ExchangeApiGenUtil;
 import org.jxapi.generator.java.exchange.api.demo.EndpointDemoGenUtil;
 import org.jxapi.generator.java.exchange.properties.PropertiesGenUtil;
+import org.jxapi.generator.java.pojo.PojoGenUtil;
+import org.jxapi.pojo.descriptor.Type;
 import org.jxapi.util.CollectionUtil;
 import org.jxapi.util.PlaceHolderResolver;
 
@@ -106,7 +107,6 @@ public class ExchangeReadmeMdGenerator {
       s.append("See ")
        .append(JavaCodeGenUtil.getHtmlLink(docUrl, "reference documentation"))
        .append("\n");
-      
     }
     s.append("### Quick start\n")
      .append("\n")
@@ -147,8 +147,8 @@ public class ExchangeReadmeMdGenerator {
         s.append(generatePropertiesTable("Configuration properties", properties, null, docPlaceHolderResolver));
       }
       if (hasDemoProperties) {
-        String exchangeDemoPropertiesInterfaceName = ExchangeGenUtil
-            .getExchangeDemoPropertiesClassName(exchangeDescriptor);
+        String exchangeDemoPropertiesInterfaceName = 
+          ExchangeGenUtil.getExchangeDemoPropertiesClassName(exchangeDescriptor);
         s.append(
             "\nSome demo configuration properties are available to tune common request parameters used in demo snippets, as ")
             .append(getSourceFileLink(exchangeDemoPropertiesInterfaceName, "test"))
@@ -159,7 +159,7 @@ public class ExchangeReadmeMdGenerator {
       }
     }
     
-    List<Constant> exchangeConstants = exchangeDescriptor.getConstants();
+    List<Constant> exchangeConstants = Constant.fromDescriptors(exchangeDescriptor.getConstants());
     if (!CollectionUtil.isEmpty(exchangeConstants)) {
       s.append("\n\n### Constants\n\n")
        .append("Some useful constants are defined in ")
@@ -222,7 +222,7 @@ public class ExchangeReadmeMdGenerator {
     List<String> columns = List.of("Subscription method", "Description", "API Reference");
     List<List<String>> cells = new ArrayList<>();
     websocketEndpoints.forEach(w -> {
-      Type requestDataType = ExchangeGenUtil.getFieldType(w.getRequest());
+      Type requestDataType = PojoGenUtil.getFieldType(w.getRequest());
       String requestClassName = null;
       if (requestDataType != null && requestDataType.isObject()) {
         requestClassName = ExchangeApiGenUtil.generateWebsocketEndpointRequestPojoClassName(
@@ -260,7 +260,14 @@ public class ExchangeReadmeMdGenerator {
     List<String> columns = List.of("Endpoint", "Description", "API Reference");
     List<List<String>> cells = new ArrayList<>();
     restEndpoints.forEach(r -> {
-      Type requestDataType = ExchangeGenUtil.getFieldType(r.getRequest());
+      boolean hasArguments = ExchangeApiGenUtil.restEndpointHasArguments(r, api);
+      boolean requestHasBody = ExchangeApiGenUtil.restEndpointRequestHasBody(r);
+      if (requestHasBody && !hasArguments) {
+        r = r.deepClone();
+        r.setRequest(ExchangeApiGenUtil.createDefaultRawBodyRequest());
+        hasArguments = true;
+      }
+      Type requestDataType = PojoGenUtil.getFieldType(r.getRequest());
       String requestClassName = null;
       if (requestDataType != null && requestDataType.isObject()) {
         requestClassName = ExchangeApiGenUtil.generateRestEnpointRequestPojoClassName(
@@ -348,7 +355,7 @@ public class ExchangeReadmeMdGenerator {
       String name = StringUtils.defaultString(p.getName());
       String fullName = PropertiesGenUtil.getPropertyFullName(prefix, name);
       row.add(createTd(fullName));
-      if (p.isGroup()) {
+      if (PropertiesGenUtil.isGroup(p)) {
         row.add(createTd("group"));
         String descr = StringUtils.defaultString(docPlaceHolderResolver.resolve(p.getDescription()));
         XmlElement descriptionTd = createTd(descr);
@@ -358,7 +365,7 @@ public class ExchangeReadmeMdGenerator {
         collectPropertiesTableRows(fullName, p.getProperties(), cells, docPlaceHolderResolver);
         return;
       } else {
-        row.add(createTd(String.valueOf(Optional.ofNullable(p.getType()).orElse(Type.STRING))));
+        row.add(createTd(String.valueOf(Optional.ofNullable(Type.fromTypeName(p.getType())).orElse(Type.STRING))));
         row.add(createTd(docPlaceHolderResolver.resolve(p.getDescription())));
         String defValue = String.valueOf(Optional.ofNullable(p.getDefaultValue()).orElse(""));
         defValue = docPlaceHolderResolver.resolve(defValue);

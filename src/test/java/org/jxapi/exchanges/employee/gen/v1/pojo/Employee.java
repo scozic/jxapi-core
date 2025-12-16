@@ -2,20 +2,21 @@ package org.jxapi.exchanges.employee.gen.v1.pojo;
 
 import java.util.Objects;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import javax.annotation.processing.Generated;
-import org.jxapi.exchanges.employee.gen.v1.serializers.EmployeeSerializer;
+import org.jxapi.exchanges.employee.gen.v1.pojo.deserializers.EmployeeDeserializer;
+import org.jxapi.exchanges.employee.gen.v1.pojo.serializers.EmployeeSerializer;
 import org.jxapi.util.CompareUtil;
 import org.jxapi.util.EncodingUtil;
 import org.jxapi.util.Pojo;
 
 /**
- * Response to Employee v1 API <br>
- * getEmployee REST endpoint request<br>
- * Get employee details by ID
+ * Employee details
  */
-@Generated("org.jxapi.generator.java.exchange.api.pojo.PojoGenerator")
+@Generated("org.jxapi.generator.java.pojo.PojoGenerator")
 @JsonSerialize(using = EmployeeSerializer.class)
+@JsonDeserialize(using = EmployeeDeserializer.class)
 public class Employee implements Pojo<Employee> {
   
   private static final long serialVersionUID = 607196601431828222L;

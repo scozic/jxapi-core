@@ -1,29 +1,21 @@
 package org.jxapi.generator.java.exchange;
 
-import java.math.BigDecimal;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
 import org.junit.Assert;
 import org.junit.Test;
-import org.jxapi.exchange.descriptor.ConfigPropertyDescriptor;
 import org.jxapi.exchange.descriptor.Constant;
-import org.jxapi.exchange.descriptor.ExchangeApiDescriptor;
-import org.jxapi.exchange.descriptor.ExchangeDescriptor;
-import org.jxapi.exchange.descriptor.Field;
-import org.jxapi.exchange.descriptor.Type;
+import org.jxapi.exchange.descriptor.gen.ConfigPropertyDescriptor;
+import org.jxapi.exchange.descriptor.gen.ConstantDescriptor;
+import org.jxapi.exchange.descriptor.gen.ExchangeApiDescriptor;
+import org.jxapi.exchange.descriptor.gen.ExchangeDescriptor;
 import org.jxapi.generator.java.Imports;
 import org.jxapi.generator.java.JavaCodeGenUtil;
-import org.jxapi.netutils.deserialization.json.field.BigDecimalJsonFieldDeserializer;
-import org.jxapi.netutils.deserialization.json.field.BooleanJsonFieldDeserializer;
-import org.jxapi.netutils.deserialization.json.field.IntegerJsonFieldDeserializer;
-import org.jxapi.netutils.deserialization.json.field.ListJsonFieldDeserializer;
-import org.jxapi.netutils.deserialization.json.field.LongJsonFieldDeserializer;
-import org.jxapi.netutils.deserialization.json.field.MapJsonFieldDeserializer;
-import org.jxapi.netutils.deserialization.json.field.StringJsonFieldDeserializer;
+import org.jxapi.generator.java.pojo.PojoGenUtil;
+import org.jxapi.pojo.descriptor.Type;
 import org.jxapi.util.EncodingUtil;
-import org.jxapi.util.PlaceHolderResolver;
 
 /**
  * Unit test for {@link ExchangeGenUtil}
@@ -32,34 +24,28 @@ public class ExchangeGenUtilTest {
   
   @Test
   public void testGetApiInterfaceClassName() {
-    ExchangeDescriptor exchangeDescriptor = new ExchangeDescriptor();
-    exchangeDescriptor.setId("TestExchange");
-    exchangeDescriptor.setBasePackage("com.x.y.z");
+    ExchangeDescriptor exchangeDescriptor = new TestExchangeDescriptor();
     ExchangeApiDescriptor apiDescriptor = new ExchangeApiDescriptor();
     apiDescriptor.setName("Spot");
     exchangeDescriptor.setApis(List.of(apiDescriptor));
-    Assert.assertEquals("com.x.y.z.spot.TestExchangeSpotApi", 
+    Assert.assertEquals("com.x.gen.spot.MyExchangeSpotApi", 
               ExchangeGenUtil.getApiInterfaceClassName(exchangeDescriptor, apiDescriptor));
   }
   
   @Test
   public void testGetApiInterfaceImplementationClassName() {
-    ExchangeDescriptor exchangeDescriptor = new ExchangeDescriptor();
-    exchangeDescriptor.setId("TestExchange");
-    exchangeDescriptor.setBasePackage("com.x.y.z");
+    ExchangeDescriptor exchangeDescriptor = new TestExchangeDescriptor();
     ExchangeApiDescriptor apiDescriptor = new ExchangeApiDescriptor();
     apiDescriptor.setName("Spot");
     exchangeDescriptor.setApis(List.of(apiDescriptor));
-    Assert.assertEquals("com.x.y.z.spot.TestExchangeSpotApiImpl", 
+    Assert.assertEquals("com.x.gen.spot.MyExchangeSpotApiImpl", 
               ExchangeGenUtil.getApiInterfaceImplementationClassName(exchangeDescriptor, apiDescriptor));
   }  
     
   @Test
   public void testGetExchangeInterfaceName() {
-    ExchangeDescriptor exchangeDescriptor = new ExchangeDescriptor();
-    exchangeDescriptor.setId("TestExchange");
-    exchangeDescriptor.setBasePackage("com.x.y.z");
-    Assert.assertEquals("com.x.y.z.TestExchangeExchange", 
+    ExchangeDescriptor exchangeDescriptor = new TestExchangeDescriptor();
+    Assert.assertEquals("com.x.gen.MyExchangeExchange", 
               ExchangeGenUtil.getExchangeInterfaceName(exchangeDescriptor));
   }
 
@@ -71,264 +57,28 @@ public class ExchangeGenUtilTest {
 
   @Test
   public void testGetJsonMessageDeserializerClassName() {
-    Assert.assertEquals("com.x.y.deserializers.MyObjectDeserializer", 
-              ExchangeGenUtil.getJsonMessageDeserializerClassName("com.x.y.pojo.MyObject"));
-  }
-
-  @Test
-  public void testGetClassNameForType_INT() {
-    Assert.assertEquals("Integer", ExchangeGenUtil.getClassNameForType(Type.INT, new Imports(), null));
-  }
-
-  @Test
-  public void testGetClassNameForType_STRING() {
-    Assert.assertEquals("String", ExchangeGenUtil.getClassNameForType(Type.STRING, new Imports(), null));
-  }
-
-  @Test
-  public void testGetClassNameForType_BOOLEAN() {
-    Assert.assertEquals("Boolean", ExchangeGenUtil.getClassNameForType(Type.BOOLEAN, new Imports(), null));
-  }
-
-  @Test
-  public void testGetClassNameForType_BIGDECIMAL() {
-    Imports imports = new Imports();
-    Assert.assertEquals("BigDecimal", ExchangeGenUtil.getClassNameForType(Type.BIGDECIMAL, imports, null));
-    Assert.assertEquals(1, imports.size());
-    Assert.assertTrue(imports.contains(BigDecimal.class));
-  }
-
-  @Test
-  public void testGetClassNameForType_BIGDECIMAL_NullImports() {
-    Assert.assertEquals("BigDecimal", ExchangeGenUtil.getClassNameForType(Type.BIGDECIMAL, null, null));
-  }
-
-  @Test
-  public void testGetClassNameForType_LONG() {
-    Assert.assertEquals("Long", ExchangeGenUtil.getClassNameForType(Type.LONG, new Imports(), null));  
-  }
-
-  @Test
-  public void testGetClassNameForType_STRING_LIST() {
-    Imports imports = new Imports();
-    Assert.assertEquals("List<String>", ExchangeGenUtil.getClassNameForType(Type.fromTypeName("STRING_LIST"), imports, null));
-    Assert.assertEquals(1, imports.size());
-    Assert.assertTrue(imports.contains(List.class));
-  }
-
-  @Test
-  public void testGetClassNameForType_STRING_LIST_NullImports() {
-    Assert.assertEquals("List<String>", ExchangeGenUtil.getClassNameForType(Type.fromTypeName("STRING_LIST"), null, null));
-  }
-
-  @Test
-  public void testGetClassNameForType_INT_MAP() {
-    Imports imports = new Imports();
-    Assert.assertEquals("Map<String, Integer>", ExchangeGenUtil.getClassNameForType(Type.fromTypeName("INT_MAP"), imports, null));
-    Assert.assertEquals(1, imports.size());
-    Assert.assertTrue(imports.contains(Map.class));
-  }
-
-  @Test
-  public void testGetClassNameForType_INT_MAP_NullImports() {
-    Assert.assertEquals("Map<String, Integer>", ExchangeGenUtil.getClassNameForType(Type.fromTypeName("INT_MAP"), null, null));
-  }
-
-  @Test
-  public void testGetClassNameForType_OBJECT() {
-    Imports imports = new Imports();
-    String objectClassName = "com.x.y.z.MyObject";
-    Assert.assertEquals("MyObject", ExchangeGenUtil.getClassNameForType(Type.OBJECT, imports, objectClassName));
-    Assert.assertEquals(1, imports.size());
-    Assert.assertTrue(imports.contains(objectClassName));
-  }
-  
-  @Test
-  public void testGetClassNameForType_OBJECT_NullImports() {
-    String objectClassName = "com.x.y.z.MyObject";
-    Assert.assertEquals("MyObject", ExchangeGenUtil.getClassNameForType(Type.OBJECT, null, objectClassName));
-  }
-
-  @Test
-  public void testGetClassNameForType_OBJECT_LIST_MAP() {
-    Imports imports = new Imports();
-    String objectClassName = "com.x.y.z.MyObject";
-    Assert.assertEquals("Map<String, List<MyObject>>", ExchangeGenUtil.getClassNameForType(Type.fromTypeName("OBJECT_LIST_MAP"), imports, objectClassName));
-    Assert.assertEquals(3, imports.size());
-    Assert.assertTrue(imports.contains(objectClassName));
-    Assert.assertTrue(imports.contains(Map.class));
-    Assert.assertTrue(imports.contains(List.class));
-  }
-
-  @Test
-  public void testGetClassNameForType_NullType() {
-    Assert.assertNull(ExchangeGenUtil.getClassNameForType(null, null, null));
-  }
-
-  @Test
-  public void testGetNewJsonFieldDeserializerInstruction_INT() {
-    Imports imports = new Imports();
-    Assert.assertEquals("IntegerJsonFieldDeserializer.getInstance()", ExchangeGenUtil.getNewJsonFieldDeserializerInstruction(Type.INT, null, imports));
-    Assert.assertEquals(1, imports.size());
-    Assert.assertTrue(imports.contains(IntegerJsonFieldDeserializer.class));
-  }
-
-  @Test
-  public void testGetNewJsonFieldDeserializerInstruction_BOOLEAN() {
-    Imports imports = new Imports();
-    Assert.assertEquals("BooleanJsonFieldDeserializer.getInstance()", ExchangeGenUtil.getNewJsonFieldDeserializerInstruction(Type.BOOLEAN, null, imports));
-    Assert.assertEquals(1, imports.size());
-    Assert.assertTrue(imports.contains(BooleanJsonFieldDeserializer.class));
-  }
-
-  @Test
-  public void testGetNewJsonFieldDeserializerInstruction_BIGDECIMAL() {
-    Imports imports = new Imports();
-    Assert.assertEquals("BigDecimalJsonFieldDeserializer.getInstance()", ExchangeGenUtil.getNewJsonFieldDeserializerInstruction(Type.BIGDECIMAL, null, imports));
-    Assert.assertEquals(1, imports.size());
-    Assert.assertTrue(imports.contains(BigDecimalJsonFieldDeserializer.class));
-  }
-
-  @Test
-  public void testGetNewJsonFieldDeserializerInstruction_LONG() {
-    Imports imports = new Imports();
-    Assert.assertEquals("LongJsonFieldDeserializer.getInstance()", ExchangeGenUtil.getNewJsonFieldDeserializerInstruction(Type.LONG, null, imports));
-    Assert.assertEquals(1, imports.size());
-    Assert.assertTrue(imports.contains(LongJsonFieldDeserializer.class));
-  }
-
-  @Test
-  public void testGetNewJsonFieldDeserializerInstruction_STRING() {
-    Imports imports = new Imports();
-    Assert.assertEquals("StringJsonFieldDeserializer.getInstance()", ExchangeGenUtil.getNewJsonFieldDeserializerInstruction(Type.STRING, null, imports));
-    Assert.assertEquals(1, imports.size());
-    Assert.assertTrue(imports.contains(StringJsonFieldDeserializer.class));
-  }
-  
-  @Test
-  public void testGetNewJsonFieldDeserializerInstruction_STRING_LIST() {
-    Imports imports = new Imports();
-    Assert.assertEquals("new ListJsonFieldDeserializer<>(StringJsonFieldDeserializer.getInstance())", ExchangeGenUtil.getNewJsonFieldDeserializerInstruction(Type.fromTypeName("STRING_LIST"), null, imports));
-    Assert.assertEquals(2, imports.size());
-    Assert.assertTrue(imports.contains(ListJsonFieldDeserializer.class));
-    Assert.assertTrue(imports.contains(StringJsonFieldDeserializer.class));
-  }
-
-  @Test
-  public void testGetNewJsonFieldDeserializerInstruction_INT_MAP() {
-    Imports imports = new Imports();
-    Assert.assertEquals("new MapJsonFieldDeserializer<>(IntegerJsonFieldDeserializer.getInstance())", ExchangeGenUtil.getNewJsonFieldDeserializerInstruction(Type.fromTypeName("INT_MAP"), null, imports));
-    Assert.assertEquals(2, imports.size());
-    Assert.assertTrue(imports.contains(MapJsonFieldDeserializer.class));
-    Assert.assertTrue(imports.contains(IntegerJsonFieldDeserializer.class));
-  }
-
-  @Test
-  public void testGetNewJsonFieldDeserializerInstruction_OBJECT() {
-    Imports imports = new Imports();
-    String objectClassName = "com.x.y.z.MyObject";
-    Assert.assertEquals("new MyObjectDeserializer()", ExchangeGenUtil.getNewJsonFieldDeserializerInstruction(Type.fromTypeName("OBJECT"), objectClassName, imports));
-    Assert.assertEquals(1, imports.size());
-    Assert.assertTrue(imports.contains("com.x.y.z.deserializers.MyObjectDeserializer"));
-  }
-
-  @Test
-  public void testGetNewJsonFieldDeserializerInstruction_NullType() {
-    Imports imports = new Imports();
-    Assert.assertEquals("StringJsonFieldDeserializer.getInstance()", ExchangeGenUtil.getNewJsonFieldDeserializerInstruction(null, null, imports));
-    Assert.assertEquals(1, imports.size());
-    Assert.assertTrue(imports.contains(StringJsonFieldDeserializer.class));
-  }
-  
-  @Test 
-  public void testGetPrimitiveTypeFieldSampleValueDeclaration_NullSampleValue() {
-    Imports imports = new Imports();
-    Assert.assertEquals("null", ExchangeGenUtil.getPrimitiveTypeFieldSampleValueDeclaration(Type.INT, null, imports, null));
-    Assert.assertEquals(0, imports.size());
-  }
-
-  @Test 
-  public void testGetPrimitiveTypeFieldSampleValueDeclaration_BigDecimalSampleValue() {
-    Imports imports = new Imports();
-    Assert.assertEquals("new BigDecimal(\"1.23\")", ExchangeGenUtil.getPrimitiveTypeFieldSampleValueDeclaration(Type.BIGDECIMAL, "1.23", imports, null));
-    Assert.assertEquals(1, imports.size());
-    Assert.assertTrue(imports.contains(BigDecimal.class));
-  }
-
-  @Test
-  public void testGetPrimitiveTypeFieldSampleValueDeclaration_LongSampleValue() {
-    Imports imports = new Imports();
-    Assert.assertEquals("Long.valueOf(\"123\")", ExchangeGenUtil.getPrimitiveTypeFieldSampleValueDeclaration(Type.LONG, "123", imports, null));
-    Assert.assertEquals(0, imports.size());
-  }
-
-  @Test
-  public void testGetPrimitiveTypeFieldSampleValueDeclaration_LongpNowSampleValue() {
-    Imports imports = new Imports();
-    Assert.assertEquals("Long.valueOf(System.currentTimeMillis())", ExchangeGenUtil.getPrimitiveTypeFieldSampleValueDeclaration(Type.LONG, "now()", imports, null));
-    Assert.assertEquals(0, imports.size());
-  }
-
-  @Test
-  public void testGetPrimitiveTypeFieldSampleValueDeclaration_StringSampleValue() {
-    Imports imports = new Imports();
-    Assert.assertEquals("\"test\"", ExchangeGenUtil.getPrimitiveTypeFieldSampleValueDeclaration(Type.STRING, "test", imports, null));
-    Assert.assertEquals(0, imports.size());
-  }
-
-  @Test
-  public void testGetPrimitiveTypeFieldSampleValueDeclaration_IntegersSampleValue() {
-    Imports imports = new Imports();
-    Assert.assertEquals("Integer.valueOf(\"1\")", ExchangeGenUtil.getPrimitiveTypeFieldSampleValueDeclaration(Type.INT, 1, imports, null));
-    Assert.assertEquals(0, imports.size());
-  }
-  
-  @Test
-  public void testGetPrimitiveTypeFieldSampleValueDeclaration_IntegersSampleValueWithPlaceHolder() {
-    Imports imports = new Imports();
-    PlaceHolderResolver placeholderResolver = PlaceHolderResolver.create(Map.of("config.myInt1", "1234", "config.myInt2", "5678"));
-    Assert.assertEquals("Integer.valueOf(12345678)", ExchangeGenUtil.getPrimitiveTypeFieldSampleValueDeclaration(Type.INT, "${config.myInt1}${config.myInt2}", imports, placeholderResolver));
-    Assert.assertEquals(0, imports.size());
-  }
-
-  @Test
-  public void testGetPrimitiveTypeFieldSampleValueDeclaration_BooleanSampleValue() {
-    Imports imports = new Imports();
-    Assert.assertEquals("Boolean.valueOf(\"true\")", ExchangeGenUtil.getPrimitiveTypeFieldSampleValueDeclaration(Type.BOOLEAN, "true", imports, null));
-    Assert.assertEquals(0, imports.size());
-  }
-
-  @Test
-  public void testGetPrimitiveTypeFieldSampleValueDeclaration_NonPrimitiveType() {
-    Imports imports = new Imports();
-    Assert.assertEquals("\"[1, 3, 5]\"", ExchangeGenUtil.getPrimitiveTypeFieldSampleValueDeclaration(Type.fromTypeName("INT_LIST"), "[1, 3, 5]", imports, null));
-    Assert.assertEquals(0, imports.size());
+    Assert.assertEquals("com.x.y.pojo.deserializers.MyObjectDeserializer", 
+              PojoGenUtil.getJsonMessageDeserializerClassName("com.x.y.pojo.MyObject"));
   }
 
   @Test
   public void testGetExchangeConstantsInterfaceName() {
-    ExchangeDescriptor exchangeDescriptor = new ExchangeDescriptor();
-    exchangeDescriptor.setId("TestExchange");
-    exchangeDescriptor.setBasePackage("com.x.y.z");
-    Assert.assertEquals("com.x.y.z.TestExchangeConstants", 
+    ExchangeDescriptor exchangeDescriptor = new TestExchangeDescriptor();
+    Assert.assertEquals("com.x.gen.MyExchangeConstants", 
               ExchangeGenUtil.getExchangeConstantsClassName(exchangeDescriptor));
   }
 
   @Test
   public void testGetExchangePropertiesClassName() {
-    ExchangeDescriptor exchangeDescriptor = new ExchangeDescriptor();
-    exchangeDescriptor.setId("TestExchange");
-    exchangeDescriptor.setBasePackage("com.x.y.z");
-    Assert.assertEquals("com.x.y.z.TestExchangeProperties", 
+    ExchangeDescriptor exchangeDescriptor = new TestExchangeDescriptor();
+    Assert.assertEquals("com.x.gen.MyExchangeProperties", 
               ExchangeGenUtil.getExchangePropertiesClassName(exchangeDescriptor));
   }
   
   @Test
   public void testGetExchangeDemoPropertiesInterfaceName() {
-    ExchangeDescriptor exchangeDescriptor = new ExchangeDescriptor();
-    exchangeDescriptor.setId("TestExchange");
-    exchangeDescriptor.setBasePackage("com.x.y.z");
-    Assert.assertEquals("com.x.y.z.TestExchangeDemoProperties", 
+    ExchangeDescriptor exchangeDescriptor = new TestExchangeDescriptor();
+    Assert.assertEquals("com.x.gen.MyExchangeDemoProperties", 
               ExchangeGenUtil.getExchangeDemoPropertiesClassName(exchangeDescriptor));
   }
   
@@ -366,84 +116,16 @@ public class ExchangeGenUtilTest {
   }
   
   @Test
-  public void testIsObjectField_NullField() {
-    Assert.assertFalse(ExchangeGenUtil.isObjectField(null));
-  }
-  
-  @Test
-  public void testIsObjectField_NullFieldType_ObjectTypeImplictFromProperties() {
-    Assert.assertTrue(ExchangeGenUtil.isObjectField(Field.builder().name("test").properties(List.of()).build()));
-  }
-  
-  @Test
-  public void testIsObjectField_ObjectType() {
-    Assert.assertTrue(ExchangeGenUtil.isObjectField(Field.builder().name("test").type(Type.OBJECT).build()));
-  }
-  
-  @Test
-  public void testIsObjectField_StringType() {
-    Assert.assertFalse(ExchangeGenUtil.isObjectField(Field.builder().name("test").type(Type.STRING).build()));
-  }
-  
-  @Test
-  public void testGetFieldType_NullField() {
-    Assert.assertNull(ExchangeGenUtil.getFieldType(null));
-  }
-  
-  @Test
-  public void testGetFieldType_ObjecListMapType() {
-    Type objectListMapType = Type.fromTypeName("OBJECT_LIST_MAP");
-    Assert.assertEquals(objectListMapType, 
-        ExchangeGenUtil.getFieldType((Field.builder().name("test").type(objectListMapType).build())));
-  }
-  
-  @Test
-  public void testGetFieldType_ObjectType_Explicit() {
-    Assert.assertEquals(Type.OBJECT, 
-        ExchangeGenUtil.getFieldType(Field.builder().name("test").type(Type.OBJECT).build()));
-  }
-  
-  @Test
-  public void testGetFieldType_ObjectType_ImplicitFromObjectName() {
-    Assert.assertEquals(Type.OBJECT, 
-        ExchangeGenUtil.getFieldType(Field.builder().name("test").objectName("MyObjectName").build()));
-  }
-  
-  @Test
-  public void testGetFieldType_ObjectType_ImplicitFromProperties() {
-    Assert.assertEquals(Type.OBJECT, 
-        ExchangeGenUtil.getFieldType(Field.builder().name("test").properties(List.of()).build()));
-  }
-  
-  @Test
-  public void testGetFieldType_String_Implicit() {
-    Assert.assertEquals(Type.STRING, 
-        ExchangeGenUtil.getFieldType(Field.builder().name("test").build()));
-  }
-  
-  @Test
   public void testGetExchangeInterfaceImplementationNameFromExchangeClassName() {
-    Assert.assertEquals("com.x.y.z.TestExchangeImpl",
-        ExchangeGenUtil.getExchangeInterfaceImplementationName("com.x.y.z.TestExchange"));
+    Assert.assertEquals("com.x.gen.MyExchangeImpl",
+        ExchangeGenUtil.getExchangeInterfaceImplementationName("com.x.gen.MyExchange"));
   }
   
   @Test
   public void testGetExchangeInterfaceImplementationNameFromExchangeDescriptor() {
-    ExchangeDescriptor exchangeDescriptor = new ExchangeDescriptor();
-    exchangeDescriptor.setId("Test");
-    exchangeDescriptor.setBasePackage("com.x.y.z");
-    Assert.assertEquals("com.x.y.z.TestExchangeImpl",
+    ExchangeDescriptor exchangeDescriptor = new TestExchangeDescriptor();
+    Assert.assertEquals("com.x.gen.MyExchangeExchangeImpl",
         ExchangeGenUtil.getExchangeInterfaceImplementationName(exchangeDescriptor));
-  }
-  
-  @Test
-  public void testFindPlaceHolders() {
-    Assert.assertEquals(0, ExchangeGenUtil.findPlaceHolders(null).size());
-    String value = "Hello ${name} you are using exchange ${exchange.name}";
-    List<String> placeHolders = ExchangeGenUtil.findPlaceHolders(value);
-    Assert.assertEquals(2, placeHolders.size());
-    Assert.assertEquals("name", placeHolders.get(0));
-    Assert.assertEquals("exchange.name", placeHolders.get(1));
   }
   
   @Test
@@ -473,18 +155,14 @@ public class ExchangeGenUtilTest {
   }
   
   @Test
-  public void testGetClassNameForConstant_NullConstants( ) {
-    ExchangeDescriptor exchangeDescriptor = new ExchangeDescriptor();
-    exchangeDescriptor.setId("Test");
-    exchangeDescriptor.setBasePackage("com.x.y.z");
+  public void testGetClassNameForConstant_NullConstants() {
+    ExchangeDescriptor exchangeDescriptor = new TestExchangeDescriptor();
     Assert.assertNull(ExchangeGenUtil.getClassNameForConstant("foo", exchangeDescriptor));
   }
   
   @Test(expected = IllegalArgumentException.class)
-  public void testGetClassNameForConstant_NullConstantName( ) {
-    ExchangeDescriptor exchangeDescriptor = new ExchangeDescriptor();
-    exchangeDescriptor.setId("Test");
-    exchangeDescriptor.setBasePackage("com.x.y.z");
+  public void testGetClassNameForConstant_NullConstantName() {
+    ExchangeDescriptor exchangeDescriptor = new TestExchangeDescriptor();
     ExchangeGenUtil.getClassNameForConstant(null, exchangeDescriptor);
   }
   
@@ -494,81 +172,87 @@ public class ExchangeGenUtilTest {
   }
   
   @Test
-  public void testGetClassNameForConstant_NotFound( ) {
-    ExchangeDescriptor exchangeDescriptor = new ExchangeDescriptor();
-    exchangeDescriptor.setId("Test");
-    exchangeDescriptor.setBasePackage("com.x.y.z");
-    Constant constant = new Constant();
-    constant.setName("bar");
-    exchangeDescriptor.setConstants(List.of(constant));
-    Assert.assertNull(ExchangeGenUtil.getClassNameForConstant("foo", exchangeDescriptor));
+  public void testGetClassNameForConstant_NotFound() {
+    ExchangeDescriptor exchangeDescriptor = new TestExchangeDescriptor();
+    ConstantDescriptor groupConstant = new ConstantDescriptor();
+    groupConstant.setName("myGroup");
+    groupConstant.setConstants(List.of(ConstantDescriptor.builder()
+        .name("foo")
+        .type(Type.STRING.toString())
+        .description("Foo constant")
+        .value("fooVal").build()));
+    exchangeDescriptor.setConstants(List.of(groupConstant));
+    Assert.assertNull(ExchangeGenUtil.getClassNameForConstant("bar", exchangeDescriptor));
+    Assert.assertNull(ExchangeGenUtil.getClassNameForConstant("myGroup.foo.toto", exchangeDescriptor));
   }
   
   @Test(expected = IllegalArgumentException.class)
-  public void testGetClassNameForConstant_NotFound_NullExchange( ) {
+  public void testGetClassNameForConstant_NotFound_NullExchange() {
     ExchangeGenUtil.getClassNameForConstant("foo", null);
   }
   
   @Test
-  public void testGetClassNameForConstant_ConstantFound( ) {
-    ExchangeDescriptor exchangeDescriptor = new ExchangeDescriptor();
-    exchangeDescriptor.setId("Test");
-    exchangeDescriptor.setBasePackage("com.x.y.z");
-    Constant constant = new Constant();
+  public void testGetClassNameForConstant_ConstantFound() {
+    ExchangeDescriptor exchangeDescriptor = new TestExchangeDescriptor();
+    ConstantDescriptor constant = new ConstantDescriptor();
     constant.setName("foo");
     exchangeDescriptor.setConstants(List.of(constant));
-    Assert.assertEquals("com.x.y.z.TestConstants", ExchangeGenUtil.getClassNameForConstant("foo", exchangeDescriptor));
+    Assert.assertEquals("com.x.gen.MyExchangeConstants", ExchangeGenUtil.getClassNameForConstant("foo", exchangeDescriptor));
   }
   
   @Test
-  public void testGetClassNameForConstant_GroupConstantFound( ) {
-    ExchangeDescriptor exchangeDescriptor = new ExchangeDescriptor();
-    exchangeDescriptor.setId("Test");
-    exchangeDescriptor.setBasePackage("com.x.y.z");
-    Constant constant = new Constant();
+  public void testGetClassNameForConstant_GroupConstantFound() {
+    ExchangeDescriptor exchangeDescriptor = new TestExchangeDescriptor();
+    ConstantDescriptor constant = new ConstantDescriptor();
     constant.setName("myGroup");
-    constant.setConstants(List.of(Constant.create("foo", Type.STRING, "Foo constant", "bar")));
+    constant.setConstants(List.of(ConstantDescriptor.builder()
+        .name("foo")
+        .type(Type.STRING.toString())
+        .description("Foo constant")
+        .value("bar").build()));
     exchangeDescriptor.setConstants(List.of(constant));
-    Assert.assertEquals("com.x.y.z.TestConstants.MyGroup", ExchangeGenUtil.getClassNameForConstant("myGroup", exchangeDescriptor));
+    Assert.assertEquals("com.x.gen.MyExchangeConstants.MyGroup", ExchangeGenUtil.getClassNameForConstant("myGroup", exchangeDescriptor));
   }
   
   @Test
-  public void testGetClassNameForConstant_ConstantFoundInGroup( ) {
-    ExchangeDescriptor exchangeDescriptor = new ExchangeDescriptor();
+  public void testGetClassNameForConstant_ConstantFoundInGroup() {
+    ExchangeDescriptor exchangeDescriptor = new TestExchangeDescriptor();
     exchangeDescriptor.setId("Test");
-    exchangeDescriptor.setBasePackage("com.x.y.z");
-    Constant constant = new Constant();
-    constant.setName("myGroup");
-    constant.setConstants(List.of(Constant.create("foo", Type.STRING, "Foo constant", "bar")));
+    ConstantDescriptor constant = ConstantDescriptor.builder()
+        .name("myGroup")
+        .addToConstants(ConstantDescriptor.builder()
+            .name("foo")
+            .type(Type.STRING.toString())
+            .description("Foo constant")
+            .value("bar").build())
+        .build();
     exchangeDescriptor.setConstants(List.of(constant));
-    Assert.assertEquals("com.x.y.z.TestConstants.MyGroup", ExchangeGenUtil.getClassNameForConstant("myGroup.foo", exchangeDescriptor));
+    Assert.assertEquals("com.x.gen.TestConstants.MyGroup", ExchangeGenUtil.getClassNameForConstant("myGroup.foo", exchangeDescriptor));
   }
   
   @Test
   public void testGetClassNameForConfigProperty_NotFound() {
-    ExchangeDescriptor exchangeDescriptor = new ExchangeDescriptor();
-    exchangeDescriptor.setId("Test");
-    exchangeDescriptor.setBasePackage("com.x.y.z");
+    ExchangeDescriptor exchangeDescriptor = new TestExchangeDescriptor();
     exchangeDescriptor.setProperties(List.of());
     Assert.assertNull(ExchangeGenUtil.getClassNameForConfigProperty("foo", exchangeDescriptor));
   }
   
   @Test
   public void testGetClassNameForConfigProperty() {
-    ExchangeDescriptor exchangeDescriptor = new ExchangeDescriptor();
-    exchangeDescriptor.setId("Test");
-    exchangeDescriptor.setBasePackage("com.x.y.z");
-    ConfigPropertyDescriptor configProperty = ConfigPropertyDescriptor.create("myProp", Type.STRING, "A demo property", "defaultValue");
+    ExchangeDescriptor exchangeDescriptor = new TestExchangeDescriptor();
+    ConfigPropertyDescriptor configProperty = ConfigPropertyDescriptor.builder()
+        .name("myProp")
+        .type(Type.STRING.toString())
+        .description("A demo property")
+        .defaultValue("defaultValue").build();
     exchangeDescriptor.setProperties(List.of(configProperty));
     Assert.assertNull(ExchangeGenUtil.getClassNameForConfigProperty("foo", exchangeDescriptor));
-    Assert.assertEquals("com.x.y.z.TestProperties", ExchangeGenUtil.getClassNameForConfigProperty("myProp", exchangeDescriptor));
+    Assert.assertEquals("com.x.gen.MyExchangeProperties", ExchangeGenUtil.getClassNameForConfigProperty("myProp", exchangeDescriptor));
   }
   
   @Test(expected = IllegalArgumentException.class)
   public void testGetClassNameForConfigProperty_NullProp() {
-    ExchangeDescriptor exchangeDescriptor = new ExchangeDescriptor();
-    exchangeDescriptor.setId("Test");
-    exchangeDescriptor.setBasePackage("com.x.y.z");
+    ExchangeDescriptor exchangeDescriptor = new TestExchangeDescriptor();
     ExchangeGenUtil.getClassNameForConfigProperty(null, exchangeDescriptor);
   }
   
@@ -579,122 +263,153 @@ public class ExchangeGenUtilTest {
   
   @Test
   public void testGetClassNameForConfigProperty_GroupProperty() {
-    ExchangeDescriptor exchangeDescriptor = new ExchangeDescriptor();
-    exchangeDescriptor.setId("Test");
-    exchangeDescriptor.setBasePackage("com.x.y.z");
-    ConfigPropertyDescriptor configProperty = ConfigPropertyDescriptor.create("myProp", Type.STRING, "A demo property", "defaultValue");
-    ConfigPropertyDescriptor nestedGroupProp = ConfigPropertyDescriptor.createGroup("myNestedGroup", "A property group", List.of(configProperty));
-    ConfigPropertyDescriptor groupProp = ConfigPropertyDescriptor.createGroup("myGroup", "A property group", List.of(nestedGroupProp));
+    ExchangeDescriptor exchangeDescriptor = new TestExchangeDescriptor();
+    
+    ConfigPropertyDescriptor configProperty = ConfigPropertyDescriptor.builder()
+        .name("myProp")
+        .type(Type.STRING.toString())
+        .description("A demo property")
+        .defaultValue("defaultValue")
+        .build();
+    
+    ConfigPropertyDescriptor configProperty2 = ConfigPropertyDescriptor.builder()
+        .name("myProp2")
+        .type(Type.STRING.toString())
+        .description("A second demo property")
+        .defaultValue("defaultValue2")
+        .build();
+    
+    ConfigPropertyDescriptor nestedGroupProp = ConfigPropertyDescriptor.builder()
+        .name("myNestedGroup")
+        .description("A property group")
+        .addToProperties(configProperty)
+        .build();
+    
+    ConfigPropertyDescriptor groupProp = ConfigPropertyDescriptor.builder().name("myGroup")
+        .description("A property group")
+        .addToProperties(nestedGroupProp)
+        .addToProperties(configProperty2)
+        .build();
+    
     exchangeDescriptor.setProperties(List.of(groupProp));
     Assert.assertNull(ExchangeGenUtil.getClassNameForConfigProperty("foo", exchangeDescriptor));
-    Assert.assertEquals("com.x.y.z.TestProperties.MyGroup.MyNestedGroup", ExchangeGenUtil.getClassNameForConfigProperty("myGroup.myNestedGroup.myProp", exchangeDescriptor));
+    Assert.assertEquals("com.x.gen.MyExchangeProperties.MyGroup.MyNestedGroup", ExchangeGenUtil.getClassNameForConfigProperty("myGroup.myNestedGroup.myProp", exchangeDescriptor));
+    Assert.assertNull(ExchangeGenUtil.getClassNameForConfigProperty("myGroup.myProp2.myProp", exchangeDescriptor));
   }
   
   @Test
   public void testGetValueDeclarationForConstant_ConstantNotFound() {
-    ExchangeDescriptor exchangeDescriptor = new ExchangeDescriptor();
-    exchangeDescriptor.setId("Test");
-    exchangeDescriptor.setBasePackage("com.x.y.z");
+    ExchangeDescriptor exchangeDescriptor = new TestExchangeDescriptor();
     exchangeDescriptor.setConstants(List.of());
     Assert.assertNull(ExchangeGenUtil.getValueDeclarationForConstant("foo", exchangeDescriptor, null));
   }
   
   @Test
   public void testGetValueDeclarationForConstant_ExchangeLevelConstant() {
-    ExchangeDescriptor exchangeDescriptor = new ExchangeDescriptor();
-    exchangeDescriptor.setId("MyExchange");
-    exchangeDescriptor.setBasePackage("com.x.y.z");
-    
-    Constant constant = new Constant();
-    constant.setName("foo");
-    constant.setValue("bar");
-    constant.setType(Type.STRING);
+    ExchangeDescriptor exchangeDescriptor = new TestExchangeDescriptor();
+    ConstantDescriptor constant = ConstantDescriptor.builder()
+        .name("foo")
+        .type(Type.STRING.toString())
+        .description("Foo constant")
+        .value("bar")
+        .build();
     exchangeDescriptor.setConstants(List.of(constant));
     Imports imports = new Imports();
-    Assert.assertEquals("MyExchangeConstants.FOO", ExchangeGenUtil.getValueDeclarationForConstant("foo", exchangeDescriptor, imports));
+    Assert.assertEquals(
+        "MyExchangeConstants.FOO", 
+        ExchangeGenUtil.getValueDeclarationForConstant("foo", exchangeDescriptor, imports));
     Assert.assertEquals(1, imports.size());
-    Assert.assertTrue(imports.contains("com.x.y.z.MyExchangeConstants"));
+    Assert.assertTrue(imports.contains("com.x.gen.MyExchangeConstants"));
   }
   
   @Test
   public void testGetValueDeclarationForConstant_GroupConstant() {
-    ExchangeDescriptor exchangeDescriptor = new ExchangeDescriptor();
-    exchangeDescriptor.setId("MyExchange");
-    exchangeDescriptor.setBasePackage("com.x.y.z");
+    ExchangeDescriptor exchangeDescriptor = new TestExchangeDescriptor();
     
-    Constant constant = new Constant();
-    constant.setName("foo");
-    constant.setValue("bar");
-    constant.setType(Type.STRING);
+    ConstantDescriptor constant = ConstantDescriptor.builder()
+        .name("foo")
+        .type(Type.STRING.toString())
+        .description("Foo constant")
+        .value("bar")
+        .build();
     
     // Create a constant group
-    Constant constantGroup = new Constant();
-    constantGroup.setName("myGroup");
-    constantGroup.setDescription("A constant group");
-    constantGroup.setConstants(List.of(constant));
+    ConstantDescriptor constantGroup = ConstantDescriptor.builder()
+        .name("myGroup")
+        .description("A constant group")
+        .addToConstants(constant)
+        .build();
     
     exchangeDescriptor.setConstants(List.of(constantGroup));
     Imports imports = new Imports();
     Assert.assertEquals("MyExchangeConstants.MyGroup", ExchangeGenUtil.getValueDeclarationForConstant("myGroup", exchangeDescriptor, imports));
     Assert.assertEquals(1, imports.size());
-    Assert.assertTrue(imports.contains("com.x.y.z.MyExchangeConstants"));
+    Assert.assertTrue(imports.contains("com.x.gen.MyExchangeConstants"));
   }
   
   @Test
   public void testGetValueDeclarationForConstant_ConstantNestedInGroup() {
-    ExchangeDescriptor exchangeDescriptor = new ExchangeDescriptor();
-    exchangeDescriptor.setId("MyExchange");
-    exchangeDescriptor.setBasePackage("com.x.y.z");
+    ExchangeDescriptor exchangeDescriptor = new TestExchangeDescriptor();
     
-    Constant constant = new Constant();
-    constant.setName("foo");
-    constant.setValue("bar");
-    constant.setType(Type.STRING);
+    ConstantDescriptor constant = ConstantDescriptor.builder()
+        .name("foo")
+        .type(Type.STRING.toString())
+        .description("Foo constant")
+        .value("bar")
+        .build();
     
     // Create a constant group
-    Constant constantGroup = new Constant();
-    constantGroup.setName("myGroup");
-    constantGroup.setDescription("A constant group");
-    constantGroup.setConstants(List.of(constant));
+    ConstantDescriptor constantGroup = ConstantDescriptor.builder()
+        .name("myGroup")
+        .description("A constant group")
+        .addToConstants(constant)
+        .build();
     
     exchangeDescriptor.setConstants(List.of(constantGroup));
     Imports imports = new Imports();
     Assert.assertEquals("MyExchangeConstants.MyGroup.FOO", ExchangeGenUtil.getValueDeclarationForConstant("myGroup.foo", exchangeDescriptor, imports));
     Assert.assertEquals(1, imports.size());
-    Assert.assertTrue(imports.contains("com.x.y.z.MyExchangeConstants"));
+    Assert.assertTrue(imports.contains("com.x.gen.MyExchangeConstants"));
   }
   
   @Test
   public void testGetValueDeclarationForConstant_ConstantNestedInGroupWithConflictingStaticVariableName() {
-    ExchangeDescriptor exchangeDescriptor = new ExchangeDescriptor();
-    exchangeDescriptor.setId("MyExchange");
-    exchangeDescriptor.setBasePackage("com.x.y.z");
+    ExchangeDescriptor exchangeDescriptor = new TestExchangeDescriptor();
     
-    Constant constant = new Constant();
-    constant.setName("foo");
-    constant.setValue("bar");
-    constant.setType(Type.STRING);
+    ConstantDescriptor constant = ConstantDescriptor.builder()
+        .name("foo")
+        .type(Type.STRING.toString())
+        .description("Foo constant")
+        .value("bar")
+        .build();
     
-    Constant constant2 = new Constant();
-    constant2.setName("Foo");
-    constant2.setValue("Bar");
-    constant2.setType(Type.STRING);
+    ConstantDescriptor constant2 = ConstantDescriptor.builder()
+        .name("Foo")
+        .type(Type.STRING.toString())
+        .description("Foo constant with different casing")
+        .value("Bar")
+        .build();
     
     // Create a constant group
-    Constant constantGroup = new Constant();
-    constantGroup.setName("myGroup");
-    constantGroup.setDescription("A constant group");
-    constantGroup.setConstants(List.of(constant, constant2));
+    ConstantDescriptor constantGroup = ConstantDescriptor.builder()
+        .name("myGroup")
+        .description("A constant group")
+        .addToConstants(constant)
+        .addToConstants(constant2)
+        .build();
     
-    Constant constant3 = new Constant();
-    constant3.setName("hello");
-    constant3.setValue("world");
-    constant3.setType(Type.STRING);
+    ConstantDescriptor constant3 = ConstantDescriptor.builder()
+        .name("hello")
+        .type(Type.STRING.toString())
+        .description("Hello constant")
+        .value("world")
+        .build();
     
-    Constant group2 = new Constant();
-    group2.setName("MyGroup");
-    group2.setDescription("Another constant group to test case sensitivity");
-    group2.setConstants(List.of(constant3));
+    ConstantDescriptor group2 = ConstantDescriptor.builder()
+        .name("MyGroup")
+        .description("Another constant group to test case sensitivity")
+        .addToConstants(constant3)
+        .build();
     
     exchangeDescriptor.setConstants(List.of(constantGroup, group2));
     Imports imports = new Imports();
@@ -702,14 +417,12 @@ public class ExchangeGenUtilTest {
     Assert.assertEquals("MyExchangeConstants.MyGroup.FOO_", ExchangeGenUtil.getValueDeclarationForConstant("myGroup.Foo", exchangeDescriptor, imports));
     Assert.assertEquals("MyExchangeConstants.MyGroup_.HELLO", ExchangeGenUtil.getValueDeclarationForConstant("MyGroup.hello", exchangeDescriptor, imports));
     Assert.assertEquals(1, imports.size());
-    Assert.assertTrue(imports.contains("com.x.y.z.MyExchangeConstants"));
+    Assert.assertTrue(imports.contains("com.x.gen.MyExchangeConstants"));
   }
   
   @Test
   public void testGetValueDeclarationForConfigProperty_PropertyNotFound() {
-    ExchangeDescriptor exchangeDescriptor = new ExchangeDescriptor();
-    exchangeDescriptor.setId("MyExchange");
-    exchangeDescriptor.setBasePackage("com.x.y.z");
+    ExchangeDescriptor exchangeDescriptor = new TestExchangeDescriptor();
     Assert.assertNull(ExchangeGenUtil.getValueDeclarationForConfigProperty(
       "foo", 
       exchangeDescriptor, 
@@ -728,11 +441,11 @@ public class ExchangeGenUtilTest {
   
   @Test
   public void testGetValueDeclarationForConfigProperty_ConflictingPropertyNames() {
-    ConfigPropertyDescriptor p1 = ConfigPropertyDescriptor.create("p1", Type.STRING, null, null);
-    ConfigPropertyDescriptor p1Up = ConfigPropertyDescriptor.create("P1", Type.STRING, null, null);
-    ConfigPropertyDescriptor p1Underscore = ConfigPropertyDescriptor.create("p1_", Type.STRING, null, null);
-    ConfigPropertyDescriptor subProp = ConfigPropertyDescriptor.create("sub", Type.STRING, null, null);
-    ConfigPropertyDescriptor p1UpUnderscore = ConfigPropertyDescriptor.createGroup("P1_", null, List.of(subProp));
+    ConfigPropertyDescriptor p1 = ConfigPropertyDescriptor.builder().name("p1").type(Type.STRING.toString()).build();
+    ConfigPropertyDescriptor p1Up = ConfigPropertyDescriptor.builder().name("P1").type(Type.STRING.toString()).build();
+    ConfigPropertyDescriptor p1Underscore = ConfigPropertyDescriptor.builder().name("p1_").type(Type.STRING.toString()).build();
+    ConfigPropertyDescriptor subProp = ConfigPropertyDescriptor.builder().name("sub").type(Type.STRING.toString()).build();
+    ConfigPropertyDescriptor p1UpUnderscore = ConfigPropertyDescriptor.builder().name("P1_").addToProperties(subProp).build();
     List<ConfigPropertyDescriptor> allProps = List.of(p1, p1Up, p1Underscore, p1UpUnderscore);
     
     doTestGetValueDeclarationForConfigProperty("MyExchangeProperties.getp1(myProps)", "p1", allProps, false);
@@ -744,27 +457,29 @@ public class ExchangeGenUtilTest {
   
   @Test
   public void testGetValueDeclarationForConfigProperty_DemoPropertyNestedInGroup() {
-    ConfigPropertyDescriptor configProperty = ConfigPropertyDescriptor.create("foo", Type.STRING, "A demo property", "defaultValue");
-    ConfigPropertyDescriptor groupProp = ConfigPropertyDescriptor.createGroup("myGroup", "A property group", List.of(configProperty));
+    ConfigPropertyDescriptor configProperty = ConfigPropertyDescriptor.builder()
+        .name("foo")
+        .type(Type.STRING.toString())
+        .description("A demo property")
+        .defaultValue("defaultValue")
+        .build();
+    
+    ConfigPropertyDescriptor groupProp = ConfigPropertyDescriptor.builder()
+        .name("myGroup")
+        .description("A property group")
+        .addToProperties(configProperty)
+        .build();
+    
     List<ConfigPropertyDescriptor> demoProperties = List.of(groupProp);
     doTestGetValueDeclarationForConfigProperty("MyExchangeDemoProperties.MyGroup.getFoo(myProps)", "myGroup.foo", demoProperties, true);
   }
   
-  @Test
-  public void testGetValueDeclarationForConfigProperty_GroupProp() {
-    ConfigPropertyDescriptor configProperty = ConfigPropertyDescriptor.create("foo", Type.STRING, "A demo property",
-        "defaultValue");
-    configProperty.setName("foo");
-    ConfigPropertyDescriptor groupProp = ConfigPropertyDescriptor.createGroup("myGroup", "A property group", List.of(configProperty));
-    List<ConfigPropertyDescriptor> demoProperties = List.of(groupProp);
-    doTestGetValueDeclarationForConfigProperty("MyExchangeDemoProperties.MyGroup.getFoo(myProps)", "myGroup.foo", demoProperties, true);
-  }
-  
-  private void doTestGetValueDeclarationForConfigProperty(String expected, String propName,
-      List<ConfigPropertyDescriptor> exchangeProperties, boolean demoProps) {
-    ExchangeDescriptor exchangeDescriptor = new ExchangeDescriptor();
-    exchangeDescriptor.setId("MyExchange");
-    exchangeDescriptor.setBasePackage("com.x.y.z");
+  private void doTestGetValueDeclarationForConfigProperty(
+      String expected, 
+      String propName,
+      List<ConfigPropertyDescriptor> exchangeProperties, 
+      boolean demoProps) {
+    ExchangeDescriptor exchangeDescriptor = new TestExchangeDescriptor();
     List<ConfigPropertyDescriptor> demoProperties = null;
     if (demoProps) {
       demoProperties = exchangeProperties;
@@ -777,9 +492,9 @@ public class ExchangeGenUtilTest {
         demoProperties, "myProps", imports));
     Assert.assertEquals(1, imports.size());
     if (demoProps) {
-      Assert.assertTrue(imports.contains("com.x.y.z.MyExchangeDemoProperties"));
+      Assert.assertTrue(imports.contains("com.x.gen.MyExchangeDemoProperties"));
     } else {
-      Assert.assertTrue(imports.contains("com.x.y.z.MyExchangeProperties"));
+      Assert.assertTrue(imports.contains("com.x.gen.MyExchangeProperties"));
     }
   }
   
@@ -790,70 +505,167 @@ public class ExchangeGenUtilTest {
   
   @Test
   public void testGetDescriptionReplacements() {
-    ExchangeDescriptor exchangeDescriptor = new ExchangeDescriptor();
-    exchangeDescriptor.setId("TestExchange");
-    exchangeDescriptor.setBasePackage("com.x.y.z");
-    Constant exConstant1 = new Constant();
-    exConstant1.setName("exchangeConstant1");
-    Constant exConstant2 = new Constant();
-    exConstant2.setName("exchangeConstant2");
+    ExchangeDescriptor exchangeDescriptor = new TestExchangeDescriptor();
     
-    Constant nestedConstant1 = Constant.create("nc1", Type.STRING, "Nested constant 1", "nc1Value");
-    Constant nestedConstant2 = Constant.create("nc2", Type.STRING, "Nested constant 1", "nc1Value");
+    ConstantDescriptor exConstant1 = ConstantDescriptor.builder()
+        .name("exchangeConstant1")
+        .type(Type.STRING.toString())
+        .description("Exchange constant 1")
+        .value("exConstant1Value")
+        .build();
     
-    Constant nestedGroup = Constant.createGroup("nestedGroup2", "Nested nested group", List.of(nestedConstant1, nestedConstant2));
-    Constant group = Constant.createGroup("myGroup", "A constant group", List.of(nestedGroup));
+    ConstantDescriptor exConstant2 = ConstantDescriptor.builder()
+        .name("exchangeConstant2")
+        .type(Type.STRING.toString())
+        .description("Exchange constant 2")
+        .value("exConstant2Value")
+        .build();
+    
+    ConstantDescriptor nestedConstant1 = ConstantDescriptor.builder()
+        .name("nc1")
+        .type(Type.STRING.toString())
+        .description("Nested constant 1")
+        .value("nc1Value")
+        .build();
+    
+    ConstantDescriptor nestedConstant2 = ConstantDescriptor.builder()
+        .name("nc2")
+        .type(Type.STRING.toString())
+        .description("Nested constant 2")
+        .value("nc2Value")
+        .build();
+    
+    ConstantDescriptor nestedGroup = ConstantDescriptor.builder()
+        .name("nestedGroup2")
+        .description("Nested nested group")
+        .addToConstants(nestedConstant1)
+        .addToConstants(nestedConstant2)
+        .build();
+    
+    ConstantDescriptor group = ConstantDescriptor.builder()
+        .name("myGroup")
+        .description("A constant group")
+        .addToConstants(nestedGroup)
+        .build();
     
     exchangeDescriptor.setConstants(List.of(exConstant1, group, exConstant2));
     
-    ConfigPropertyDescriptor exConfigProp1 = new ConfigPropertyDescriptor();
-    exConfigProp1.setName("configProp1");
-    ConfigPropertyDescriptor exConfigProp2 = new ConfigPropertyDescriptor();
-    exConfigProp2.setName("configProp2");
+    ConfigPropertyDescriptor exConfigProp1 = ConfigPropertyDescriptor.builder()
+        .name("configProp1")
+        .type(Type.STRING.toString())
+        .description("Config property 1")
+        .defaultValue("configProp1Value")
+        .build();
     
-    ConfigPropertyDescriptor nestedConfigProp1 = ConfigPropertyDescriptor.create("np1", Type.STRING, "Nested config prop", "np1Value");
-    ConfigPropertyDescriptor nestedConfigProp2 = ConfigPropertyDescriptor.create("np2", Type.STRING, "Nested config prop", "np2Value");
-    ConfigPropertyDescriptor grouupConfigProp = ConfigPropertyDescriptor.createGroup("myGroup", "A property group", List.of(nestedConfigProp1, nestedConfigProp2));
+    ConfigPropertyDescriptor exConfigProp2 = ConfigPropertyDescriptor.builder()
+        .name("configProp2")
+        .type(Type.STRING.toString())
+        .description("Config property 2")
+        .defaultValue("configProp2Value")
+        .build();
     
+    ConfigPropertyDescriptor nestedConfigProp1 = ConfigPropertyDescriptor.builder()
+        .name("np1")
+        .type(Type.STRING.toString())
+        .description("Nested config prop 1")
+        .defaultValue("np1Value")
+        .build();
+    
+    ConfigPropertyDescriptor nestedConfigProp2 = ConfigPropertyDescriptor.builder()
+        .name("np2")
+        .type(Type.STRING.toString())
+        .description("Nested config prop 2")
+        .defaultValue("np2Value")
+        .build();
+    
+    ConfigPropertyDescriptor nestedConfigGroupNestedProp1 = ConfigPropertyDescriptor.builder()
+        .name("nnp1")
+        .type(Type.STRING.toString())
+        .description("Nested config group nested prop")
+        .defaultValue("nnp1Value")
+        .build();
+    
+    ConfigPropertyDescriptor nestedGroupConfigProp = ConfigPropertyDescriptor.builder()
+        .name("mySubGroup")
+        .description("A sub group property")
+        .addToProperties(nestedConfigGroupNestedProp1)
+        .build();
+    
+    ConfigPropertyDescriptor grouupConfigProp = ConfigPropertyDescriptor.builder()
+        .name("myGroup")
+        .description("A property group")
+        .addToProperties(nestedConfigProp1)
+        .addToProperties(nestedConfigProp2)
+        .addToProperties(nestedGroupConfigProp)
+        .build();
     
     exchangeDescriptor.setProperties(List.of(exConfigProp1, exConfigProp2, grouupConfigProp));
     
     Map<String, Object> replacements = ExchangeGenUtil.getDescriptionReplacements(exchangeDescriptor);
-    Assert.assertEquals(11, replacements.size());
-    Assert.assertEquals("{@link com.x.y.z.TestExchangeConstants#EXCHANGE_CONSTANT1}", replacements.get("constants.exchangeConstant1"));
-    Assert.assertEquals("{@link com.x.y.z.TestExchangeConstants#EXCHANGE_CONSTANT2}", replacements.get("constants.exchangeConstant2"));
-    Assert.assertEquals("{@link com.x.y.z.TestExchangeConstants.MyGroup}", replacements.get("constants.myGroup"));
-    Assert.assertEquals("{@link com.x.y.z.TestExchangeConstants.MyGroup.NestedGroup2}", replacements.get("constants.myGroup.nestedGroup2"));
-    Assert.assertEquals("{@link com.x.y.z.TestExchangeConstants.MyGroup.NestedGroup2#NC1}", replacements.get("constants.myGroup.nestedGroup2.nc1"));
-    Assert.assertEquals("{@link com.x.y.z.TestExchangeConstants.MyGroup.NestedGroup2#NC2}", replacements.get("constants.myGroup.nestedGroup2.nc2"));
-    Assert.assertEquals("{@link com.x.y.z.TestExchangeProperties#CONFIG_PROP1}", replacements.get("config.configProp1"));
-    Assert.assertEquals("{@link com.x.y.z.TestExchangeProperties#CONFIG_PROP2}", replacements.get("config.configProp2"));
-    Assert.assertEquals("{@link com.x.y.z.TestExchangeProperties.MyGroup}", replacements.get("config.myGroup"));
-    Assert.assertEquals("{@link com.x.y.z.TestExchangeProperties.MyGroup#NP1}", replacements.get("config.myGroup.np1"));
-    Assert.assertEquals("{@link com.x.y.z.TestExchangeProperties.MyGroup#NP2}", replacements.get("config.myGroup.np2"));
+    Assert.assertEquals(13, replacements.size());
+    Assert.assertEquals("{@link com.x.gen.MyExchangeConstants#EXCHANGE_CONSTANT1}", replacements.get("constants.exchangeConstant1"));
+    Assert.assertEquals("{@link com.x.gen.MyExchangeConstants#EXCHANGE_CONSTANT2}", replacements.get("constants.exchangeConstant2"));
+    Assert.assertEquals("{@link com.x.gen.MyExchangeConstants.MyGroup}", replacements.get("constants.myGroup"));
+    Assert.assertEquals("{@link com.x.gen.MyExchangeConstants.MyGroup.NestedGroup2}", replacements.get("constants.myGroup.nestedGroup2"));
+    Assert.assertEquals("{@link com.x.gen.MyExchangeConstants.MyGroup.NestedGroup2#NC1}", replacements.get("constants.myGroup.nestedGroup2.nc1"));
+    Assert.assertEquals("{@link com.x.gen.MyExchangeConstants.MyGroup.NestedGroup2#NC2}", replacements.get("constants.myGroup.nestedGroup2.nc2"));
+    Assert.assertEquals("{@link com.x.gen.MyExchangeProperties#CONFIG_PROP1}", replacements.get("config.configProp1"));
+    Assert.assertEquals("{@link com.x.gen.MyExchangeProperties#CONFIG_PROP2}", replacements.get("config.configProp2"));
+    Assert.assertEquals("{@link com.x.gen.MyExchangeProperties.MyGroup}", replacements.get("config.myGroup"));
+    Assert.assertEquals("{@link com.x.gen.MyExchangeProperties.MyGroup#NP1}", replacements.get("config.myGroup.np1"));
+    Assert.assertEquals("{@link com.x.gen.MyExchangeProperties.MyGroup#NP2}", replacements.get("config.myGroup.np2"));
+    Assert.assertEquals("{@link com.x.gen.MyExchangeProperties.MyGroup.MySubGroup}", replacements.get("config.myGroup.mySubGroup"));
+    Assert.assertEquals("{@link com.x.gen.MyExchangeProperties.MyGroup.MySubGroup#NNP1}", replacements.get("config.myGroup.mySubGroup.nnp1"));
     
     
   }
   
   @Test
   public void testGetDescriptionReplacements_HtmlLinks() {
-    ExchangeDescriptor exchangeDescriptor = new ExchangeDescriptor();
-    exchangeDescriptor.setId("TestExchange");
-    exchangeDescriptor.setBasePackage("com.x.y.z");
-    Constant exConstant1 = new Constant();
-    exConstant1.setName("exchangeConstant1");
-    Constant exConstant2 = new Constant();
-    exConstant2.setName("exchangeConstant2");
+    ExchangeDescriptor exchangeDescriptor = new TestExchangeDescriptor();
     
-    Constant nestedConstant1 = Constant.create("nc1", Type.STRING, "Nested constant 1", "nc1Value");
-    Constant nestedConstant2 = Constant.create("nc2", Type.STRING, "Nested constant 1", "nc1Value");
+    ConstantDescriptor exConstant1 = ConstantDescriptor.builder()
+        .name("exchangeConstant1")
+        .type(Type.STRING.toString())
+        .description("Exchange constant 1")
+        .value("exConstant1Value")
+        .build();
     
-    Constant nestedGroup = Constant.createGroup("nestedGroup2", "Nested nested group", List.of(nestedConstant1, nestedConstant2));
-    Constant group = Constant.createGroup("myGroup", "A constant group", List.of(nestedGroup));
+    ConstantDescriptor exConstant2 = ConstantDescriptor.builder()
+        .name("exchangeConstant2")
+        .type(Type.STRING.toString())
+        .description("Exchange constant 2")
+        .value("exConstant2Value")
+        .build();
+    
+    ConstantDescriptor nestedConstant1 = ConstantDescriptor.builder()
+        .name("nc1")
+        .type(Type.STRING.toString())
+        .description("Nested constant 1")
+        .value("nc1Value")
+        .build();
+    
+    ConstantDescriptor nestedConstant2 = ConstantDescriptor.builder()
+        .name("nc2")
+        .type(Type.STRING.toString())
+        .description("Nested constant 2")
+        .value("nc2Value")
+        .build();
+    
+    ConstantDescriptor nestedGroup = ConstantDescriptor.builder()
+        .name("nestedGroup2")
+        .description("Nested nested group")
+        .addToConstants(nestedConstant1)
+        .addToConstants(nestedConstant2)
+        .build();
+    
+    ConstantDescriptor group = ConstantDescriptor.builder()
+        .name("myGroup")
+        .description("A constant group")
+        .addToConstants(nestedGroup)
+        .build();
     
     exchangeDescriptor.setConstants(List.of(exConstant1, group, exConstant2));
-    
-
     
     ConfigPropertyDescriptor exConfigProp1 = new ConfigPropertyDescriptor();
     exConfigProp1.setName("configProp1");
@@ -864,30 +676,61 @@ public class ExchangeGenUtilTest {
     
     Map<String, Object> replacements = ExchangeGenUtil.getDescriptionReplacements(exchangeDescriptor, "http://example.com/javadoc/");
     Assert.assertEquals(8, replacements.size());
-    Assert.assertEquals("<a href=\"http://example.com/javadoc/com/x/y/z/TestExchangeConstants.html#EXCHANGE_CONSTANT1\">exchangeConstant1</a>", replacements.get("constants.exchangeConstant1"));
-    Assert.assertEquals("<a href=\"http://example.com/javadoc/com/x/y/z/TestExchangeConstants.html#EXCHANGE_CONSTANT2\">exchangeConstant2</a>", replacements.get("constants.exchangeConstant2"));
-    Assert.assertEquals("<a href=\"http://example.com/javadoc/com/x/y/z/TestExchangeConstants.MyGroup.html\">myGroup</a>", replacements.get("constants.myGroup"));
-    Assert.assertEquals("<a href=\"http://example.com/javadoc/com/x/y/z/TestExchangeConstants.MyGroup.NestedGroup2.html\">nestedGroup2</a>", replacements.get("constants.myGroup.nestedGroup2"));
-    Assert.assertEquals("<a href=\"http://example.com/javadoc/com/x/y/z/TestExchangeConstants.MyGroup.NestedGroup2.html#NC1\">nc1</a>", replacements.get("constants.myGroup.nestedGroup2.nc1"));
-    Assert.assertEquals("<a href=\"http://example.com/javadoc/com/x/y/z/TestExchangeConstants.MyGroup.NestedGroup2.html#NC2\">nc2</a>", replacements.get("constants.myGroup.nestedGroup2.nc2"));
-    Assert.assertEquals("<a href=\"http://example.com/javadoc/com/x/y/z/TestExchangeProperties.html#CONFIG_PROP1\">configProp1</a>", replacements.get("config.configProp1"));
-    Assert.assertEquals("<a href=\"http://example.com/javadoc/com/x/y/z/TestExchangeProperties.html#CONFIG_PROP2\">configProp2</a>", replacements.get("config.configProp2"));
+    Assert.assertEquals("<a href=\"http://example.com/javadoc/com/x/gen/MyExchangeConstants.html#EXCHANGE_CONSTANT1\">exchangeConstant1</a>", replacements.get("constants.exchangeConstant1"));
+    Assert.assertEquals("<a href=\"http://example.com/javadoc/com/x/gen/MyExchangeConstants.html#EXCHANGE_CONSTANT2\">exchangeConstant2</a>", replacements.get("constants.exchangeConstant2"));
+    Assert.assertEquals("<a href=\"http://example.com/javadoc/com/x/gen/MyExchangeConstants.MyGroup.html\">myGroup</a>", replacements.get("constants.myGroup"));
+    Assert.assertEquals("<a href=\"http://example.com/javadoc/com/x/gen/MyExchangeConstants.MyGroup.NestedGroup2.html\">nestedGroup2</a>", replacements.get("constants.myGroup.nestedGroup2"));
+    Assert.assertEquals("<a href=\"http://example.com/javadoc/com/x/gen/MyExchangeConstants.MyGroup.NestedGroup2.html#NC1\">nc1</a>", replacements.get("constants.myGroup.nestedGroup2.nc1"));
+    Assert.assertEquals("<a href=\"http://example.com/javadoc/com/x/gen/MyExchangeConstants.MyGroup.NestedGroup2.html#NC2\">nc2</a>", replacements.get("constants.myGroup.nestedGroup2.nc2"));
+    Assert.assertEquals("<a href=\"http://example.com/javadoc/com/x/gen/MyExchangeProperties.html#CONFIG_PROP1\">configProp1</a>", replacements.get("config.configProp1"));
+    Assert.assertEquals("<a href=\"http://example.com/javadoc/com/x/gen/MyExchangeProperties.html#CONFIG_PROP2\">configProp2</a>", replacements.get("config.configProp2"));
   }
   
   @Test
   public void testGetValuesReplacements() {
     Assert.assertEquals(0, ExchangeGenUtil.getValuesReplacements(null).size());
-    ExchangeDescriptor exchangeDescriptor = new ExchangeDescriptor();
-    exchangeDescriptor.setId("TestExchange");
-    exchangeDescriptor.setBasePackage("com.x.y.z");
-    Constant exConstant1 = Constant.create("exchangeConstant1", Type.STRING, "Exchange constant 1", "exConst1Value");
-    Constant exConstant2 = Constant.create("exchangeConstant2", Type.INT, "Exchange constant 2", 123);
+    ExchangeDescriptor exchangeDescriptor = new TestExchangeDescriptor();
     
-    Constant nestedConstant1 = Constant.create("nc1", Type.STRING, "Nested constant 1", "nc1Value");
-    Constant nestedConstant2 = Constant.create("nc2", Type.STRING, "Nested constant 1", "nc2Value");
+    ConstantDescriptor exConstant1 = ConstantDescriptor.builder()
+        .name("exchangeConstant1")
+        .type(Type.STRING.toString())
+        .description("Exchange constant 1")
+        .value("exConst1Value")
+        .build();
     
-    Constant nestedGroup = Constant.createGroup("nestedGroup2", "Nested nested group", List.of(nestedConstant1, nestedConstant2));
-    Constant group = Constant.createGroup("myGroup", "A constant group", List.of(nestedGroup));
+    ConstantDescriptor exConstant2 = ConstantDescriptor.builder()
+        .name("exchangeConstant2")
+        .type(Type.INT.toString())
+        .description("Exchange constant 2")
+        .value(123)
+        .build();
+    
+    ConstantDescriptor nestedConstant1 = ConstantDescriptor.builder()
+        .name("nc1")
+        .type(Type.STRING.toString())
+        .description("Nested constant 1")
+        .value("nc1Value")
+        .build();
+    
+    ConstantDescriptor nestedConstant2 = ConstantDescriptor.builder()
+        .name("nc2")
+        .type(Type.STRING.toString())
+        .description("Nested constant 2")
+        .value("nc2Value")
+        .build();
+    
+    ConstantDescriptor nestedGroup = ConstantDescriptor.builder()
+        .name("nestedGroup2")
+        .description("Nested nested group")
+        .addToConstants(nestedConstant1)
+        .addToConstants(nestedConstant2)
+        .build();
+    
+    ConstantDescriptor group = ConstantDescriptor.builder()
+        .name("myGroup")
+        .description("A constant group")
+        .addToConstants(nestedGroup)
+        .build();
     
     exchangeDescriptor.setConstants(List.of(exConstant1, group, exConstant2));
     
@@ -911,17 +754,19 @@ public class ExchangeGenUtilTest {
   
   @Test
   public void generateSubstitutionInstructionDeclaration_NoConfigProperties() {
-    ExchangeDescriptor exchangeDescriptor = new ExchangeDescriptor();
-    exchangeDescriptor.setId("MyExchange");
-    exchangeDescriptor.setBasePackage("com.x.gen");
-    Constant ownName = new Constant();
-    ownName.setName("ownName");
+    ExchangeDescriptor exchangeDescriptor = new TestExchangeDescriptor();
+    ConstantDescriptor ownName = ConstantDescriptor.builder()
+        .name("ownName")
+        .type(Type.STRING.toString())
+        .description("Narratory name")
+        .value("John Doe")
+        .build();
     exchangeDescriptor.setConstants(List.of(ownName));
     Imports imports = new Imports();
     Assert.assertEquals(
-        "EncodingUtil.substituteArguments(\"Hello I am ${constants.ownName}, this placeholder is not resolved: ${config.city}\", \"constants.ownName\", MyExchangeConstants.OWN_NAME)", 
+        "EncodingUtil.substituteArguments(\"Hello I am ${constants.ownName}, this placeholder is not resolved: ${config.city}, nor this one: ${foo}.\", \"constants.ownName\", MyExchangeConstants.OWN_NAME)", 
         ExchangeGenUtil.generateSubstitutionInstructionDeclaration(
-            "Hello I am ${constants.ownName}, this placeholder is not resolved: ${config.city}", 
+            "Hello I am ${constants.ownName}, this placeholder is not resolved: ${config.city}, nor this one: ${foo}.", 
             exchangeDescriptor, 
             null,
             null,
@@ -934,25 +779,57 @@ public class ExchangeGenUtilTest {
   
   @Test
   public void generateSubstitutionInstructionDeclaration() {
-    ExchangeDescriptor exchangeDescriptor = new ExchangeDescriptor();
-    exchangeDescriptor.setProperties(List.of(ConfigPropertyDescriptor.create("stranger", Type.STRING, "Your name", "Bob")));
-    ConfigPropertyDescriptor demoCityProp = ConfigPropertyDescriptor.create("city", Type.STRING, "Your city", "London");
-    ConfigPropertyDescriptor demoGroupProp = ConfigPropertyDescriptor.createGroup("address", "Demo properties group", List.of(demoCityProp));
-    List<ConfigPropertyDescriptor> demoProperties = List.of(demoGroupProp);
-    exchangeDescriptor.setId("MyExchange");
-    exchangeDescriptor.setBasePackage("com.x.gen");
-    Constant ownName = new Constant();
-    ownName.setName("ownName");
-    ownName.setType(Type.STRING);
-    ownName.setDescription("Narratory name");
-    ownName.setValue("John Doe");
+    ExchangeDescriptor exchangeDescriptor = new TestExchangeDescriptor();
+    ConfigPropertyDescriptor strangerProp = ConfigPropertyDescriptor.builder()
+        .name("stranger")
+        .type(Type.STRING.toString())
+        .description("Your name")
+        .defaultValue("Bob")
+        .build();
+    exchangeDescriptor.setProperties(List.of(strangerProp));
+    ConfigPropertyDescriptor demoCityProp = ConfigPropertyDescriptor.builder()
+        .name("city")
+        .type(Type.STRING.toString())
+        .description("Your city")
+        .defaultValue("London")
+        .build();
     
-    Constant airports = Constant.createGroup(
-        "airports", 
-        "Common airports", 
-        List.of(Constant.create("london", Type.STRING, "Main airport of London","LHR"), 
-            Constant.create("paris", Type.STRING, "Main airport of Paris","CDG"),
-            Constant.create("ny", Type.STRING, "Main airport of New York","JFK")));
+    ConfigPropertyDescriptor demoGroupProp = ConfigPropertyDescriptor.builder()
+        .name("address")
+        .description("Demo properties group")
+        .addToProperties(demoCityProp)
+        .build();
+
+    List<ConfigPropertyDescriptor> demoProperties = List.of(demoGroupProp);
+    
+    ConstantDescriptor ownName = ConstantDescriptor.builder()
+        .name("ownName")
+        .type(Type.STRING.toString())
+        .description("Narratory name")
+        .value("John Doe")
+        .build();
+    
+    ConstantDescriptor airports = ConstantDescriptor.builder()
+        .name("airports")
+        .description("Common airports")
+        .addToConstants(ConstantDescriptor.builder()
+            .name("london")
+            .type(Type.STRING.toString())
+            .description("Main airport of London")
+            .value("LHR").build())
+        .addToConstants(ConstantDescriptor.builder()
+            .name("paris")
+            .type(Type.STRING.toString())
+            .description("Main airport of Paris")
+            .value("CDG").build())
+        .addToConstants(ConstantDescriptor.builder()
+            .name("ny")
+            .type(Type.STRING.toString())
+            .description("Main airport of New York")
+            .value("JFK")
+            .build())
+        .build();
+    
     exchangeDescriptor.setConstants(List.of(ownName, airports));
     
     Constant birthYear = new Constant();
@@ -967,7 +844,7 @@ public class ExchangeGenUtilTest {
           + "\"Hello ${config.stranger}, I am ${constants.ownName}, " 
           + "born in ${constants.birthYear} in the city of ${demo.config.address.city}. " 
           + "The code of the main airport in London is ${constants.airports.london}." 
-          + " These placeholders are not resolved: ${constants.notFoundConstant}, ${config.notFoundProp}.\", " 
+          + " These placeholders are not resolved: ${constants.notFoundConstant}, ${config.notFoundProp}, ${foo}.\", " 
           + "\"config.stranger\", MyExchangeProperties.getStranger(myProps), " 
           + "\"constants.ownName\", MyExchangeConstants.OWN_NAME, " 
           + "\"demo.config.address.city\", MyExchangeDemoProperties.Address.getCity(myProps), " 
@@ -976,7 +853,7 @@ public class ExchangeGenUtilTest {
          "Hello ${config.stranger}, I am ${constants.ownName}, " 
           + "born in ${constants.birthYear} in the city of ${demo.config.address.city}. " 
           + "The code of the main airport in London is ${constants.airports.london}. " 
-          + "These placeholders are not resolved: ${constants.notFoundConstant}, ${config.notFoundProp}.", 
+          + "These placeholders are not resolved: ${constants.notFoundConstant}, ${config.notFoundProp}, ${foo}.", 
             exchangeDescriptor, 
             demoProperties,
             "myProps", 
@@ -989,5 +866,42 @@ public class ExchangeGenUtilTest {
      Assert.assertEquals(EncodingUtil.class.getName(), it.next());
   }
   
+  @Test
+  public void testGetApiGroupGetterMethodNames() {
+    ExchangeApiDescriptor api1 = new ExchangeApiDescriptor();
+    api1.setName("group1");
+    ExchangeApiDescriptor api2 = new ExchangeApiDescriptor();
+    api2.setName("a");
+    ExchangeApiDescriptor api3 = new ExchangeApiDescriptor();
+    api3.setName("A");
+    List<ExchangeApiDescriptor> apis = List.of(api1, api2, api3);
+    Map<String, String> methodNames = ExchangeGenUtil.getApiGroupGetterMethodNames(apis);
+    Assert.assertEquals(3, methodNames.size());
+    Assert.assertEquals("getGroup1Api", methodNames.get("group1"));
+    Assert.assertEquals("getaApi", methodNames.get("a"));
+    Assert.assertEquals("getAApi", methodNames.get("A"));
+  }
+  
+  @Test
+  public void testGetApiGroupGetterMethodName() {
+    ExchangeApiDescriptor api1 = new ExchangeApiDescriptor();
+    api1.setName("group1");
+    ExchangeApiDescriptor api2 = new ExchangeApiDescriptor();
+    api2.setName("a");
+    ExchangeApiDescriptor api3 = new ExchangeApiDescriptor();
+    api3.setName("A");
+    ExchangeDescriptor exchange = new TestExchangeDescriptor();
+    exchange.setApis(List.of(api1, api2, api3));
+    Assert.assertEquals("getGroup1Api", ExchangeGenUtil.getApiGroupGetterMethodName(exchange,api1));
+    Assert.assertEquals("getaApi", ExchangeGenUtil.getApiGroupGetterMethodName(exchange,api2));
+    Assert.assertEquals("getAApi", ExchangeGenUtil.getApiGroupGetterMethodName(exchange,api3));
+  }
+  
+  private static class TestExchangeDescriptor extends ExchangeDescriptor {
+    public TestExchangeDescriptor() {
+      setId("MyExchange");
+      setBasePackage("com.x.gen");
+    }
+  }
   
 }

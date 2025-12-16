@@ -8,7 +8,7 @@ import java.util.Optional;
 
 import org.junit.Assert;
 import org.junit.Test;
-import org.jxapi.exchange.descriptor.Type;
+import org.jxapi.pojo.descriptor.Type;
 
 /**
  * Unit test for {@link JavaCodeGenUtil}
@@ -136,7 +136,7 @@ public class JavaCodeGenUtilTest {
   
   @Test
   public void testGetGetAccessorMethodName_booleanFieldType() {
-    Assert.assertEquals("isBar", JavaCodeGenUtil.getGetAccessorMethodName("bar", Type.BOOLEAN, List.of()));
+    Assert.assertEquals("isBar", JavaCodeGenUtil.getGetAccessorMethodName("bar", Type.BOOLEAN, List.of("foo")));
   }
   
   @Test
@@ -398,8 +398,9 @@ public class JavaCodeGenUtilTest {
   }
   
   @Test
-  public void testGetJavaDocLink() {
+  public void testGetClassJavaDocLink() {
     Assert.assertEquals("{@link com.x.y.Foo}", JavaCodeGenUtil.getJavaDocLink("com.x.y.Foo"));
+    Assert.assertEquals("{@link com.x.y.Foo}", JavaCodeGenUtil.getJavaDocLink("com.x.y.Foo", null));
   }
   
   @Test
@@ -453,6 +454,24 @@ public class JavaCodeGenUtilTest {
       Assert.assertEquals(1, imports.size());
       Assert.assertTrue(imports.contains(Optional.class));
     }
+  }
+  
+  @Test
+  public void testFindPlaceHolders() {
+    Assert.assertEquals(0, JavaCodeGenUtil.findPlaceHolders(null).size());
+    String value = "Hello ${name} you are using exchange ${exchange.name}";
+    List<String> placeHolders = JavaCodeGenUtil.findPlaceHolders(value);
+    Assert.assertEquals(2, placeHolders.size());
+    Assert.assertEquals("name", placeHolders.get(0));
+    Assert.assertEquals("exchange.name", placeHolders.get(1));
+  }
+  
+  @Test
+  public void testIsFullClassName() {
+    Assert.assertFalse(JavaCodeGenUtil.isFullClassName(null));
+    Assert.assertFalse(JavaCodeGenUtil.isFullClassName(""));
+    Assert.assertFalse(JavaCodeGenUtil.isFullClassName("MyClass"));
+    Assert.assertTrue(JavaCodeGenUtil.isFullClassName("com.x.y.MyClass"));
   }
   
 }

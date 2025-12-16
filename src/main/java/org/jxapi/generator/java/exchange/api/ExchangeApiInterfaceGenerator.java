@@ -5,19 +5,20 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.jxapi.exchange.ExchangeApi;
-import org.jxapi.exchange.descriptor.ExchangeApiDescriptor;
-import org.jxapi.exchange.descriptor.ExchangeDescriptor;
-import org.jxapi.exchange.descriptor.Field;
-import org.jxapi.exchange.descriptor.RestEndpointDescriptor;
-import org.jxapi.exchange.descriptor.Type;
-import org.jxapi.exchange.descriptor.WebsocketEndpointDescriptor;
+import org.jxapi.exchange.descriptor.gen.ExchangeApiDescriptor;
+import org.jxapi.exchange.descriptor.gen.ExchangeDescriptor;
+import org.jxapi.exchange.descriptor.gen.RestEndpointDescriptor;
+import org.jxapi.exchange.descriptor.gen.WebsocketEndpointDescriptor;
 import org.jxapi.generator.java.JavaCodeGenUtil;
 import org.jxapi.generator.java.JavaTypeGenerator;
 import org.jxapi.generator.java.exchange.ExchangeConstantValuePlaceholderResolverFactory;
 import org.jxapi.generator.java.exchange.ExchangeGenUtil;
+import org.jxapi.generator.java.pojo.PojoGenUtil;
 import org.jxapi.netutils.rest.FutureRestResponse;
 import org.jxapi.netutils.rest.ratelimits.RateLimitRule;
 import org.jxapi.netutils.websocket.WebsocketListener;
+import org.jxapi.pojo.descriptor.Field;
+import org.jxapi.pojo.descriptor.Type;
 import org.jxapi.util.CollectionUtil;
 import org.jxapi.util.PlaceHolderResolver;
 
@@ -144,7 +145,7 @@ public class ExchangeApiInterfaceGenerator extends JavaTypeGenerator {
   }
   
   private void generateRateLimitRuleMethodDeclarations() {
-    for (RateLimitRule rateLimit : CollectionUtil.emptyIfNull(exchangeApiDescriptor.getRateLimits())) {
+    for (RateLimitRule rateLimit : RateLimitRule.fromDescriptors(exchangeApiDescriptor.getRateLimits())) {
       String rateLimitName = rateLimit.getId();
       addImport(RateLimitRule.class);
       appendToBody(ExchangeGenUtil.generateRateLimitRuleInterfaceMethodDeclaration(rateLimitName));
@@ -152,7 +153,7 @@ public class ExchangeApiInterfaceGenerator extends JavaTypeGenerator {
   }
 
   private void generateWebsocketApiMethodsDeclarations(WebsocketEndpointDescriptor websocketApi) {
-    Type requestDataType = ExchangeGenUtil.getFieldType(websocketApi.getRequest());
+    Type requestDataType = PojoGenUtil.getFieldType(websocketApi.getRequest());
     boolean hasArguments = ExchangeApiGenUtil.websocketEndpointHasArguments(websocketApi, exchangeApiDescriptor);
     String requestSimpleClassName = Object.class.getSimpleName();
     String requestDescription = null;
@@ -165,7 +166,7 @@ public class ExchangeApiInterfaceGenerator extends JavaTypeGenerator {
             exchangeApiDescriptor, 
             websocketApi);
       }
-      requestSimpleClassName = ExchangeGenUtil.getClassNameForType(
+      requestSimpleClassName = PojoGenUtil.getClassNameForType(
                           requestDataType, 
                           getImports(), 
                           requestClassName);
@@ -173,8 +174,8 @@ public class ExchangeApiInterfaceGenerator extends JavaTypeGenerator {
       requestArgName = ExchangeApiGenUtil.getRequestArgName(websocketApi.getRequest().getName());
     }
     
-    Type messageDataType = ExchangeGenUtil.getFieldType(websocketApi.getMessage());
-    String messageClassSimpleName = ExchangeGenUtil.getClassNameForType(
+    Type messageDataType = PojoGenUtil.getFieldType(websocketApi.getMessage());
+    String messageClassSimpleName = PojoGenUtil.getClassNameForType(
         messageDataType, 
         getImports(), 
         ExchangeApiGenUtil.generateWebsocketEndpointMessagePojoClassName(
@@ -256,87 +257,105 @@ public class ExchangeApiInterfaceGenerator extends JavaTypeGenerator {
 
   private void generateRestEndpointMethodDeclaration(RestEndpointDescriptor restApi) {
     boolean hasArguments = ExchangeApiGenUtil.restEndpointHasArguments(restApi, exchangeApiDescriptor);
-    Field request = restApi.getRequest();
-    Type requestDataType = ExchangeGenUtil.getFieldType(request);
-    Field response = restApi.getResponse();
-    Type responseDataType = ExchangeGenUtil.getFieldType(response);
+    boolean requestHasBody = ExchangeApiGenUtil.restEndpointRequestHasBody(restApi);
+
+    if (requestHasBody && !hasArguments) {
+        restApi = restApi.deepClone();
+        restApi.setRequest(ExchangeApiGenUtil.createDefaultRawBodyRequest());
+    }
+  
     String requestSimpleClassName = "Object";
     String requestArgName = null;
-    if (hasArguments) {
-      String requestClassName = null;
-      if (requestDataType != null && requestDataType.isObject()) {
-        requestClassName = ExchangeApiGenUtil.generateRestEnpointRequestPojoClassName(
-                    exchangeDescriptor, 
-                    exchangeApiDescriptor, 
-                    restApi);
-      }
-      requestSimpleClassName = ExchangeGenUtil.getClassNameForType(
-                    requestDataType, 
-                    getImports(), 
-                    requestClassName);
-      requestArgName = ExchangeApiGenUtil.getRequestArgName(request.getName());
+  
+    if (ExchangeApiGenUtil.restEndpointHasArguments(restApi, exchangeApiDescriptor)) {
+        requestSimpleClassName = getRequestSimpleClassName(restApi);
+        requestArgName = ExchangeApiGenUtil.getRequestArgName(restApi.getRequest().getName());
+    } else if (ExchangeApiGenUtil.restEndpointRequestHasBody(restApi)) {
+        requestArgName = "body";
     }
-    boolean hasResponse = ExchangeApiGenUtil.restEndpointHasResponse(restApi, exchangeApiDescriptor);
-    String responseSimpleClassName = "String";
-    if (hasResponse) {
-      String restResponseClassName = null;
-      if (responseDataType != null && responseDataType.isObject()) {
-        restResponseClassName = ExchangeApiGenUtil.generateRestEnpointResponsePojoClassName(
-                      exchangeDescriptor, 
-                      exchangeApiDescriptor, 
-                      restApi);
-      }
-      responseSimpleClassName = ExchangeGenUtil.getClassNameForType(
-          responseDataType, 
-          getImports(), 
-          restResponseClassName);
-    }
+  
+    String responseSimpleClassName = getRestEndpointResponseSimpleClassName(restApi);
     String apiMethodName = ExchangeApiGenUtil.getRestApiMethodName(restApi, exchangeApiDescriptor.getRestEndpoints());
-    String apiMethodSignature =  new StringBuilder()
-        .append(FutureRestResponse.class.getSimpleName())
-        .append("<")
-        .append(responseSimpleClassName)
-        .append("> ")
-        .append(apiMethodName)
-        .append("(")
-        .append(hasArguments? requestSimpleClassName 
-                     + " " +
-                     requestArgName
-                   : "")
-        .append(")").toString(); 
-    StringBuilder javaDoc = new StringBuilder();
-    if (restApi.getDescription() != null) {
-      javaDoc.append(docPlaceHolderResolver.resolve(restApi.getDescription()))
-           .append("\n");
-    }
-    if (hasArguments) {
-      String paramDescription = Optional.ofNullable(docPlaceHolderResolver.resolve(request.getDescription())).orElse("request");
-      javaDoc.append("@param ")
-           .append(requestArgName)
-           .append(" ")
-           .append(paramDescription)
-           .append("\n");
-    }
-    
-    javaDoc.append("@return A {@link FutureRestResponse} that will complete when request submitted asynchronously has been processed.");
-    if (hasResponse && response.getDescription() != null) {
-      javaDoc.append("If successful, will provide response:")
-             .append(docPlaceHolderResolver.resolve(response.getDescription()))
-             .append("\n");
-    }
-    
-    if (restApi.getDocUrl() != null) {
-      javaDoc.append("\n@see ")
-             .append(JavaCodeGenUtil.getHtmlLink(restApi.getDocUrl(), "Reference documentation"))
-             .append("\n");
-    }
-    if (javaDoc.length() > 0) {
-      // Remove trailing '\n'
-      javaDoc.delete(javaDoc.length() - 1, javaDoc.length());
-      appendToBody(JavaCodeGenUtil.generateJavaDoc(javaDoc.toString())).append("\n");
-    }
+    String apiMethodSignature = buildRestEnpointMethodSignature(requestSimpleClassName, requestArgName, responseSimpleClassName, apiMethodName);
+  
+    StringBuilder javaDoc = buildRestEndpointJavaDoc(restApi, requestArgName);
+    appendToBody(JavaCodeGenUtil.generateJavaDoc(javaDoc.toString())).append("\n");
     appendToBody(apiMethodSignature + ";\n");
+  
     addImport(FutureRestResponse.class);
+  }
+  
+  private String getRequestSimpleClassName(RestEndpointDescriptor restApi) {
+    Field request = restApi.getRequest();
+    Type requestDataType = PojoGenUtil.getFieldType(request);
+    String requestClassName = null;
+
+    if (requestDataType != null && requestDataType.isObject()) {
+      requestClassName = ExchangeApiGenUtil.generateRestEnpointRequestPojoClassName(
+          exchangeDescriptor,
+          exchangeApiDescriptor, 
+          restApi);
+    }
+    return PojoGenUtil.getClassNameForType(requestDataType, getImports(), requestClassName);
+  }
+  
+  private String getRestEndpointResponseSimpleClassName(RestEndpointDescriptor restApi) {
+    if (!ExchangeApiGenUtil.restEndpointHasResponse(restApi, exchangeApiDescriptor)) {
+      return "String";
+    }
+
+    Field response = restApi.getResponse();
+    Type responseDataType = PojoGenUtil.getFieldType(response);
+    String restResponseClassName = null;
+
+    if (responseDataType != null && responseDataType.isObject()) {
+      restResponseClassName = ExchangeApiGenUtil.generateRestEnpointResponsePojoClassName(exchangeDescriptor,
+          exchangeApiDescriptor, restApi);
+    }
+    return PojoGenUtil.getClassNameForType(responseDataType, getImports(), restResponseClassName);
+  }
+  
+  private String buildRestEnpointMethodSignature(String requestSimpleClassName, String requestArgName, String responseSimpleClassName, String apiMethodName) {
+    return new StringBuilder()
+              .append(FutureRestResponse.class.getSimpleName())
+              .append("<")
+              .append(responseSimpleClassName)
+              .append("> ")
+              .append(apiMethodName)
+              .append("(")
+              .append(requestArgName != null ? requestSimpleClassName + " " + requestArgName : "")
+              .append(")")
+              .toString();
+  }
+  
+  private StringBuilder buildRestEndpointJavaDoc(RestEndpointDescriptor restApi, String requestArgName) {
+    StringBuilder javaDoc = new StringBuilder();
+  
+    if (restApi.getDescription() != null) {
+        javaDoc.append(docPlaceHolderResolver.resolve(restApi.getDescription())).append("\n");
+    }
+  
+    if (requestArgName != null) {
+        String paramDescription = Optional.ofNullable(docPlaceHolderResolver.resolve(restApi.getRequest().getDescription())).orElse("request");
+        javaDoc.append("@param ").append(requestArgName).append(" ").append(paramDescription).append("\n");
+    }
+  
+    javaDoc.append("@return A {@link FutureRestResponse} that will complete when request submitted asynchronously has been processed.");
+    if (ExchangeApiGenUtil.restEndpointHasResponse(restApi, exchangeApiDescriptor) && restApi.getResponse().getDescription() != null) {
+        javaDoc.append(" If successful, will provide response: ")
+               .append(docPlaceHolderResolver.resolve(restApi.getResponse().getDescription()))
+               .append("\n");
+    }
+  
+    if (restApi.getDocUrl() != null) {
+        javaDoc.append("\n@see ").append(JavaCodeGenUtil.getHtmlLink(restApi.getDocUrl(), "Reference documentation")).append("\n");
+    }
+  
+    if (javaDoc.length() > 0) {
+        javaDoc.delete(javaDoc.length() - 1, javaDoc.length()); // Remove trailing '\n'
+    }
+  
+    return javaDoc;
   }
 
 }

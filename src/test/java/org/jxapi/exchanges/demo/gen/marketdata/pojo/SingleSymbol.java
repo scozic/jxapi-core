@@ -2,19 +2,22 @@ package org.jxapi.exchanges.demo.gen.marketdata.pojo;
 
 import java.util.Objects;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import javax.annotation.processing.Generated;
-import org.jxapi.exchanges.demo.gen.marketdata.serializers.SingleSymbolSerializer;
+import org.jxapi.exchanges.demo.gen.marketdata.pojo.deserializers.SingleSymbolDeserializer;
+import org.jxapi.exchanges.demo.gen.marketdata.pojo.serializers.SingleSymbolSerializer;
 import org.jxapi.util.CompareUtil;
 import org.jxapi.util.EncodingUtil;
 import org.jxapi.util.Pojo;
 
 /**
- * Request for DemoExchange MarketData API postRestRequestDataTypeObjectListMap REST endpoint<br>
+ * Request object for DemoExchange MarketData API postRestRequestDataTypeObjectListMap REST endpoint<br>
  * A sample REST endpoint using OBJECT_LIST_MAP request data type
  */
-@Generated("org.jxapi.generator.java.exchange.api.pojo.PojoGenerator")
+@Generated("org.jxapi.generator.java.pojo.PojoGenerator")
 @JsonSerialize(using = SingleSymbolSerializer.class)
+@JsonDeserialize(using = SingleSymbolDeserializer.class)
 public class SingleSymbol implements Pojo<SingleSymbol> {
   
   private static final long serialVersionUID = 3008479971180440278L;

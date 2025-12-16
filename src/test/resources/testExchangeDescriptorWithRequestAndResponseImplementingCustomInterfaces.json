@@ -14,12 +14,14 @@
 					"description": "Fetch market information of symbols that can be traded",
 					"url": "https://com.sample.mycex/exchangeInfo",
 					"request": {
+						"description": "Exchange info request",
 						"implementedInterfaces": ["com.foo.bar.ExchangeInfoRequestInterface1", "com.foo.bar.ExchangeInfoRequestInterface2"],
 						"properties": [
 							{"name":"symbols", "type": "STRING_LIST", "description":"The list of symbol to fetch market information for. Leave empty to fetch all markets", "sampleValue":null}
 						]
 					},
 					"response": {
+						"objectDescription": "Exchange info response",
 						"implementedInterfaces": ["com.foo.bar.ExchangeInfoResponseInterface1", "com.foo.bar.ExchangeInfoResponseInterface2"],
 						"properties": [
 							{"name":"responseCode", "type": "INT", "description":"Request response code", "sampleValue":"0"},
@@ -42,6 +44,7 @@
 					"topic": "${symbol}@ticker",
 					"description": "Subscribe to ticker stream",
 					"request": {
+						"description": "Ticker stream subscription request",
 						"implementedInterfaces": ["com.foo.bar.TickerStreamRequestInterface1", "com.foo.bar.TickerStreamRequestInterface2"],
 						"properties": [
 							{"name": "symbol", "type":"STRING", "description":"Symbol to subscribe to ticker stream of", "sampleValue":"BTC_USDT"}
@@ -52,6 +55,7 @@
 						"fieldValue": "ticker"
 					},
 					"message": {
+						"objectDescription": "Ticker stream message",
 						"implementedInterfaces": ["com.foo.bar.TickerStreamResponseInterface1", "com.foo.bar.TickerStreamResponseInterface2"],
 						"properties": [
 							{"name":"topic", "msgField":"t", "type": "STRING", "description":"Topic", "sampleValue":"ticker"},

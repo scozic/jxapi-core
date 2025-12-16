@@ -3,11 +3,12 @@ package org.jxapi.netutils.deserialization.json.field;
 import java.io.IOException;
 import java.math.BigDecimal;
 
-import com.fasterxml.jackson.core.JsonParser;
 import org.jxapi.netutils.deserialization.MessageDeserializer;
 import org.jxapi.netutils.deserialization.json.AbstractJsonMessageDeserializer;
 import org.jxapi.netutils.deserialization.json.JsonDeserializer;
 import org.jxapi.util.JsonUtil;
+
+import com.fasterxml.jackson.core.JsonParser;
 
 /**
  * {@link AbstractJsonMessageDeserializer} for {@link BigDecimal} fields in JSON
@@ -36,4 +37,5 @@ public class BigDecimalJsonFieldDeserializer extends AbstractJsonMessageDeserial
   public BigDecimal deserialize(JsonParser parser) throws IOException {
     return JsonUtil.readCurrentBigDecimal(parser);
   }
+
 }
