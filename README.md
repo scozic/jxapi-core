@@ -1,7 +1,7 @@
 
 # JXAPI
 
-Code generation tools to generate a Java REST and/or Websocket API wrapper (SDK) efficiently.
+Code generation tools to generate POJOs, or a Java REST and/or Websocket API wrapper (SDK) efficiently from JSON or YAML descriptor files.
 
 <!-- BEGIN TABLE OF CONTENTS -->
 <!-- END TABLE OF CONTENTS -->
@@ -10,6 +10,7 @@ Code generation tools to generate a Java REST and/or Websocket API wrapper (SDK)
 Many web services are consumed as HTTP REST/Websocket APIs. Those APIs disseminate data as structured JSON objects.
 JXAPI is for generating Java code to call those REST and Websocket APIs using a simple function with a Java POJO as request and response/message data.
 
+The generator can be used to generate either POJOs  only, or a wrapper for REST/Websocket APIs.
 The generator will take as input a JSON or YAML file describing APIs, and generate request/response POJOs, Java interfaces to REST APIs and Websockets and their implementation, and also demo snippets and a documentation skeleton.
 You will also need to write a few lines of code for API-specific implementation aspects like:
  * Authentication challenge (like computing authorization header added requests using API key/secret and request parameters)
