@@ -1,5 +1,6 @@
 package org.jxapi.netutils.websocket;
 
+import org.jxapi.exchange.Exchange;
 import org.jxapi.exchange.ExchangeApi;
 import org.jxapi.netutils.websocket.spring.SpringWebsocket;
 
@@ -17,6 +18,11 @@ public class DefaultWebsocketFactory implements WebsocketFactory {
 
   @Override
   public Websocket createWebsocket(ExchangeApi exchangeApi) {
+    return new SpringWebsocket();
+  }
+
+  @Override
+  public Websocket createWebsocket(Exchange exchange) {
     return new SpringWebsocket();
   }
 

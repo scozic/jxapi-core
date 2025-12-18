@@ -30,7 +30,6 @@ import org.jxapi.netutils.websocket.WebsocketHook;
 import org.jxapi.netutils.websocket.WebsocketHookFactory;
 import org.jxapi.netutils.websocket.WebsocketManager;
 import org.jxapi.observability.Observable;
-import org.jxapi.observability.SynchronizedObservable;
 import org.jxapi.util.DefaultDisposable;
 import org.jxapi.util.EncodingUtil;
 import org.jxapi.util.FactoryUtil;
@@ -96,7 +95,8 @@ public abstract class AbstractExchangeApi extends DefaultDisposable implements E
    * 
    * @see #getWsUrl()
    */
-  protected final String wsUrl;
+  @Deprecated
+  protected final String wsUrl = null;
   
   /**
    * The HTTP request executor used to submit REST APIrequests.
@@ -113,11 +113,7 @@ public abstract class AbstractExchangeApi extends DefaultDisposable implements E
    */
   protected WebsocketManager websocketManager = null;
   
-  /**
-   * The observable used to handle exchange API events.
-   */
-  protected final Observable<ExchangeApiObserver, ExchangeApiEvent> observable 
-            = new SynchronizedObservable<>(ExchangeApiObserver::handleEvent);
+  private final ExchangeApiObserver exchangeObserver;
   
   /**
    * Creates a new AbstractExchangeApi instance with the specified API name,
@@ -127,10 +123,38 @@ public abstract class AbstractExchangeApi extends DefaultDisposable implements E
    * @param apiName      The name of the API.
    * @param exchange     The exchange instance associated with this API.
    */
+  @Deprecated
   protected AbstractExchangeApi(String apiName, Exchange exchange) {
-    this(apiName, exchange, null, null, null);
+    this(apiName, exchange, null, (String) null, null);
   }  
 
+  /**
+   * Creates a new AbstractExchangeApi instance with the specified API name,
+   * exchange name, exchange ID, properties, and request throttler.
+   * 
+   * @param apiName          The name of the API.
+   * @param exchange         The exchange instance associated with this API.
+   * @param requestThrottler The request throttler to use for rate limiting.
+   * @param httpUrl          The base HTTP URL for all REST endpoints of this API group.
+   * @param wsUrl            The base WebSocket URL used for websocket connections.
+   */
+  @Deprecated
+  protected AbstractExchangeApi(String apiName, 
+                                Exchange exchange, 
+                                RequestThrottler requestThrottler,
+                                String httpUrl,
+                                String wsUrl) {
+    this.name = apiName;
+    this.exchange = exchange;
+    this.httpUrl = EncodingUtil.buildUrl(exchange.getHttpUrl(), httpUrl);
+    //this.wsUrl = EncodingUtil.buildUrl(exchange.getWsUrl(), wsUrl);
+    this.exchangeObserver = null;
+    this.requestThrottler = requestThrottler;
+    if (requestThrottler != null) {
+      applyRequestThrottlerProperties();
+    }
+  }
+  
   /**
    * Creates a new AbstractExchangeApi instance with the specified API name,
    * exchange name, exchange ID, properties, and request throttler.
@@ -144,12 +168,12 @@ public abstract class AbstractExchangeApi extends DefaultDisposable implements E
   protected AbstractExchangeApi(String apiName, 
                                 Exchange exchange, 
                                 RequestThrottler requestThrottler,
-                                String httpUrl,
-                                String wsUrl) {
+                                ExchangeApiObserver exchangeApiObserver,
+                                String httpUrl) {
     this.name = apiName;
     this.exchange = exchange;
     this.httpUrl = EncodingUtil.buildUrl(exchange.getHttpUrl(), httpUrl);
-    this.wsUrl = EncodingUtil.buildUrl(exchange.getWsUrl(), wsUrl);
+    this.exchangeObserver = exchangeApiObserver;
     this.requestThrottler = requestThrottler;
     if (requestThrottler != null) {
       applyRequestThrottlerProperties();
@@ -198,12 +222,13 @@ public abstract class AbstractExchangeApi extends DefaultDisposable implements E
   
   @Override
   public void subscribeObserver(ExchangeApiObserver exchangeApiObserver) {
-    this.observable.subscribe(exchangeApiObserver);
+    // deprecated: subscribe observer at exchange level
   }
 
   @Override
   public boolean unsubscribeObserver(ExchangeApiObserver exchangeApiObserver) {
-    return this.observable.unsubscribe(exchangeApiObserver);
+    // deprecated: unsubscribe observer at exchange level
+    return false;
   }
   
   /**
@@ -215,6 +240,7 @@ public abstract class AbstractExchangeApi extends DefaultDisposable implements E
    * @param factoryClassName The fully qualified class name of the factory class
    *                         that creates the HTTP request interceptor.
    */
+  @Deprecated
   protected void createHttpRequestInterceptor(String factoryClassName) {
     httpRequestInterceptor = ((HttpRequestInterceptorFactory) FactoryUtil.fromClassName(factoryClassName)).createInterceptor(this);
   }
@@ -235,6 +261,7 @@ public abstract class AbstractExchangeApi extends DefaultDisposable implements E
    *                         {@link HttpRequestExecutor#DEFAULT_REQUEST_TIMEOUT}
    *                         is used.
    */
+  @Deprecated
   protected void createHttpRequestExecutor(String factoryClassName, long defaultRequestTimeout) {
     if  (factoryClassName != null) {
       httpRequestExecutor = ((HttpRequestExecutorFactory)  FactoryUtil.fromClassName(factoryClassName)).createExecutor(this);
@@ -269,6 +296,7 @@ public abstract class AbstractExchangeApi extends DefaultDisposable implements E
    *                              interface.
    * @return The response to the request, as a {@link FutureRestResponse}
    */
+  @Deprecated
   @SuppressWarnings("unchecked")
   protected <R extends PaginatedRestRequest, A extends PaginatedRestResponse> FutureRestResponse<A> submitPaginated(
       HttpRequest request, 
@@ -292,6 +320,7 @@ public abstract class AbstractExchangeApi extends DefaultDisposable implements E
     return submit(request, deserializer, null);
   }
   
+  @Deprecated
   private <A> FutureRestResponse<A> submit(HttpRequest request, MessageDeserializer<A> deserializer, NextPageResolver<A> nextPageResolver) {
     log.debug("{} {} > {}", request.getHttpMethod(), request.getEndpoint(), request);
     dispatchApiEvent(ExchangeApiEvent.createHttpRequestEvent(request));
@@ -313,6 +342,7 @@ public abstract class AbstractExchangeApi extends DefaultDisposable implements E
     }
   }
 
+  @Deprecated
   private <A> FutureRestResponse<A> submitNow(HttpRequest request, MessageDeserializer<A> deserializer, NextPageResolver<A> nextPageResolver) {
     if (httpRequestExecutor == null) {
       throw new IllegalStateException("No " + HttpRequestExecutor.class.getSimpleName() + " set");
@@ -355,6 +385,7 @@ public abstract class AbstractExchangeApi extends DefaultDisposable implements E
    * @param websocketFactoryClassName The fully qualified class name of the websocket factory class that creates the websocket.
    * @param websocketHookFactoryClassName The fully qualified class name of the websocket hook factory class that creates the websocket hook.
    */
+  @Deprecated
   protected void createWebsocketManager(String url, 
                       String websocketFactoryClassName, 
                       String websocketHookFactoryClassName) {
@@ -402,10 +433,8 @@ public abstract class AbstractExchangeApi extends DefaultDisposable implements E
    * @param event The exchange API event to dispatch.
    */
   protected void dispatchApiEvent(ExchangeApiEvent event) {
-    event.setExchangeName(exchange.getName());
     event.setExchangeApiName(name);
-    event.setExchangeId(exchange.getId());
-    observable.dispatch(event);
+    this.exchangeObserver.handleEvent(event);
   }
   
   @Override

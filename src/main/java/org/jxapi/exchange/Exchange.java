@@ -3,6 +3,7 @@ package org.jxapi.exchange;
 import java.util.List;
 import java.util.Properties;
 
+import org.jxapi.netutils.Network;
 import org.jxapi.netutils.rest.ratelimits.RateLimitRule;
 import org.jxapi.netutils.rest.ratelimits.RequestThrottlingMode;
 import org.jxapi.util.Disposable;
@@ -114,5 +115,11 @@ public interface Exchange extends Disposable, HasProperties {
    * @see ExchangeApi#setHttpRequestTimeout(long)
    */
   void setHttpRequesTimeout(long httpRequestTimeout);
+  
+  /**.
+   * @return the network used by this exchange
+   * @see Network
+   */
+  Network getNetwork();
 
 }

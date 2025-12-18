@@ -2,7 +2,7 @@ package org.jxapi.netutils.rest;
 
 import org.junit.Assert;
 import org.junit.Test;
-
+import org.jxapi.exchange.Exchange;
 import org.jxapi.exchange.ExchangeApi;
 
 /**
@@ -21,6 +21,11 @@ public class HttpRequestInterceptorFactoryTest {
 
     @Override
     public HttpRequestInterceptor createInterceptor(ExchangeApi exchangeApi) {
+      return null;
+    }
+
+    @Override
+    public HttpRequestInterceptor createInterceptor(Exchange exchange) {
       return null;
     }
     

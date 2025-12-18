@@ -12,6 +12,8 @@ import org.junit.Test;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+
+import org.jxapi.exchange.Exchange;
 import org.jxapi.exchange.ExchangeApiEvent;
 import org.jxapi.exchange.ExchangeApiEventType;
 import org.jxapi.exchange.ExchangeApiObserver;
@@ -236,7 +238,7 @@ public class DefaultWebsocketEndpointTest {
   private static class MockWebsocketManager extends DefaultWebsocketManager {
 
     public MockWebsocketManager() {
-      super(null, new MockWebsocket(), null);
+      super((Exchange) null, new MockWebsocket(), null);
     }
     
     final Map<String, RawWebsocketMessageHandler> subscribeRequests = new HashMap<>();

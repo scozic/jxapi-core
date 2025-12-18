@@ -1,7 +1,6 @@
 package org.jxapi.netutils.rest.javanet;
 
 import java.io.IOException;
-import java.net.http.HttpClient;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -27,7 +26,6 @@ public class JavaNetHttpRequestExecutorTest {
 
   private MockHttpServer mockHttpServer;
   private JavaNetHttpRequestExecutor executor;
-  private HttpClient httpClient;
   private int serverPort;
   
   @Before
@@ -35,8 +33,7 @@ public class JavaNetHttpRequestExecutorTest {
     mockHttpServer = new MockHttpServer();
     mockHttpServer.start();
     this.serverPort = mockHttpServer.getPort();
-    httpClient = HttpClient.newHttpClient();
-    executor = new JavaNetHttpRequestExecutor(httpClient);
+    executor = new JavaNetHttpRequestExecutor();
   }
   
   @After

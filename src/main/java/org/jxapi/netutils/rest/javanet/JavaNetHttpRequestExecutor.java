@@ -31,6 +31,14 @@ public class JavaNetHttpRequestExecutor extends AbstractHttpRequestExecutor {
   private static final Logger log = LoggerFactory.getLogger(JavaNetHttpRequestExecutor.class);
   
   private final HttpClient httpClient;
+  
+  /**
+   * Creates a new instance of this class.
+   * @param httpClient The {@link HttpClient} to use for requests
+   */
+  public JavaNetHttpRequestExecutor() {
+    this(HttpClient.newHttpClient());
+  }
 
   /**
    * Creates a new instance of this class.

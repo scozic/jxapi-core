@@ -20,6 +20,7 @@ import org.jxapi.netutils.websocket.WebsocketManager;
  * 
  * @see ExchangeApiEvent
  */
+// TODO: Rename all ExchangeApi**Observ* to Exchange**Observ*
 public interface ExchangeApiObserver {
 
   /**

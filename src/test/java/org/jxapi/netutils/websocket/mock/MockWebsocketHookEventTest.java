@@ -4,7 +4,7 @@ import static org.junit.Assert.assertEquals;
 
 import org.junit.Before;
 import org.junit.Test;
-
+import org.jxapi.exchange.Exchange;
 import org.jxapi.netutils.websocket.DefaultWebsocketManager;
 import org.jxapi.netutils.websocket.WebsocketManager;
 
@@ -20,7 +20,7 @@ public class MockWebsocketHookEventTest {
     @Before
     public void setUp() {
         mockWebsocketHook = new MockWebsocketHook();
-        websocketManager = new DefaultWebsocketManager(null, new MockWebsocket(), mockWebsocketHook);
+        websocketManager = new DefaultWebsocketManager((Exchange) null, new MockWebsocket(), mockWebsocketHook);
         mockWebsocketHookEvent = new MockWebsocketHookEvent(MockWebsocketHookEventType.INIT, mockWebsocketHook);
         mockWebsocketHookEvent.setWebsocketManager(websocketManager);
     }
@@ -42,7 +42,7 @@ public class MockWebsocketHookEventTest {
 
     @Test
     public void testSetWebsocketManager() {
-        WebsocketManager newWebsocketManager = new DefaultWebsocketManager(null, new MockWebsocket(), mockWebsocketHook);
+        WebsocketManager newWebsocketManager = new DefaultWebsocketManager((Exchange) null, new MockWebsocket(), mockWebsocketHook);
         mockWebsocketHookEvent.setWebsocketManager(newWebsocketManager);
         assertEquals(newWebsocketManager, mockWebsocketHookEvent.getWebsocketManager());
     }

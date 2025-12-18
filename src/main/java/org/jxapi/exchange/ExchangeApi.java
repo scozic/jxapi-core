@@ -133,12 +133,15 @@ public interface ExchangeApi extends Disposable, HasProperties {
    * Sets the request timeout for calls to REST endpoints used by {@link HttpRequestExecutor}
    * @param httpRequestTimeout The HTTP request timeout in ms
    * @see HttpRequestExecutor#getRequestTimeout()
+   * @Deprecated Use {@link Exchange#setHttpRequestTimeout(long)} to set timeout for all APIs of the exchange
    */
   void setHttpRequestTimeout(long httpRequestTimeout);
   
   /**
    * @return the request timeout for calls to REST endpoints used by {@link HttpRequestExecutor} in ms
+   * @deprecated Use {@link Exchange#getHttpRequestTimeout()} to get timeout for all APIs of the exchange
    */
+  @Deprecated
   long getHttpRequestTimeout();
   
   /**

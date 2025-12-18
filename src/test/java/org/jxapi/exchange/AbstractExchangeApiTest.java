@@ -565,7 +565,8 @@ public class AbstractExchangeApiTest {
     }
     
     public Observable<ExchangeApiObserver, ExchangeApiEvent> getObservable() {
-      return observable;
+      // FIXME
+      return null;
     }
     
     public MockHttpRequestInterceptor getRequestInterceptor() {

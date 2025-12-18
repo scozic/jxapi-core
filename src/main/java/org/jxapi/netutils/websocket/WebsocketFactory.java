@@ -1,5 +1,6 @@
 package org.jxapi.netutils.websocket;
 
+import org.jxapi.exchange.Exchange;
 import org.jxapi.exchange.ExchangeApi;
 import org.jxapi.exchange.descriptor.gen.ExchangeApiDescriptor;
 import org.jxapi.util.FactoryUtil;
@@ -20,8 +21,19 @@ public interface WebsocketFactory {
    *                    retrieve configuration properties.
    * @return a new instance of a {@link Websocket} implementation, initially in
    *         'disconnected' state.
+   * @deprecated Use {@link #createWebsocket(Exchange)} instead.         
    */
   Websocket createWebsocket(ExchangeApi exchangeApi);
+  
+  /**
+   * Create a new instance of a {@link Websocket} implementation.
+   * 
+   * @param exchange the {@link Exchange} instance that can be used to
+   *                    retrieve configuration properties.
+   * @return a new instance of a {@link Websocket} implementation, initially in
+   *         'disconnected' state.
+   */
+  Websocket createWebsocket(Exchange exchange);
 
   /**
    * Static method to instantiate {@link WebsocketFactory} from its

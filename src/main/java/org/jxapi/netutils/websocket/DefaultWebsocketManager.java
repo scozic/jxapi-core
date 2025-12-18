@@ -14,6 +14,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicLong;
 
+import org.jxapi.exchange.Exchange;
 import org.jxapi.exchange.ExchangeApi;
 import org.jxapi.netutils.websocket.multiplexing.WebsocketMessageTopicMatchStatus;
 import org.jxapi.netutils.websocket.multiplexing.WebsocketMessageTopicMatcher;
@@ -63,8 +64,15 @@ public class DefaultWebsocketManager extends DefaultDisposable implements Websoc
   
   /**
    * The exchange API associated with this websocket manager.
+   * @deprecated use {@link #exchange} instead
    */
+  @Deprecated
   protected final ExchangeApi exchangeApi;
+  
+  /**
+   * The exchange API associated with this websocket manager.
+   */
+  protected final Exchange exchange;
   
   /**
    * The websocket implementation used by this manager.
@@ -108,10 +116,34 @@ public class DefaultWebsocketManager extends DefaultDisposable implements Websoc
    * @param websocket     the websocket implementation used by this manager
    * @param websocketHook the hook to provide additional websocket handling
    */
+  @Deprecated
   public DefaultWebsocketManager(ExchangeApi exchangeApi, 
                    Websocket websocket, 
                    WebsocketHook websocketHook) {
+    this.exchange = exchangeApi.getExchange();
     this.exchangeApi = exchangeApi;
+    this.websocket = websocket;
+    this.websocketHook = websocketHook;
+    this.writeExecutor = Executors.newSingleThreadScheduledExecutor();
+    this.websocket.addErrorHandler(websocketErrorHandler);
+    this.websocket.addMessageHandler(rawMessageHandler);
+    if (websocketHook != null) {
+      websocketHook.init(this);
+    }
+  }
+  
+  /**
+   * Constructor
+   * 
+   * @param exchangeApi   the exchange API associated with this websocket manager
+   * @param websocket     the websocket implementation used by this manager
+   * @param websocketHook the hook to provide additional websocket handling
+   */
+  public DefaultWebsocketManager(Exchange exchange, 
+                   Websocket websocket, 
+                   WebsocketHook websocketHook) {
+    this.exchange = exchange;
+    this.exchangeApi = null;
     this.websocket = websocket;
     this.websocketHook = websocketHook;
     this.writeExecutor = Executors.newSingleThreadScheduledExecutor();

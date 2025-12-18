@@ -1,5 +1,6 @@
 package org.jxapi.netutils.rest;
 
+import org.jxapi.exchange.Exchange;
 import org.jxapi.exchange.ExchangeApi;
 import org.jxapi.util.FactoryUtil;
 
@@ -16,8 +17,17 @@ public interface HttpRequestExecutorFactory {
    * 
    * @param exchangeApi API group that will use the executor to send requests.
    * @return {@link HttpRequestExecutor} instance.
+   * @deprecated Use {@link #createExecutor(Exchange)} instead.
    */
   HttpRequestExecutor createExecutor(ExchangeApi exchangeApi);
+  
+  /**
+   * Creates an {@link HttpRequestExecutor} instance for the given exchange.
+   * 
+   * @param exchange Exchange for which the executor is created.
+   * @return {@link HttpRequestExecutor} instance.
+   */
+  HttpRequestExecutor createExecutor(Exchange exchange);
   
   /**
    * Factory method to instantiate {@link HttpRequestExecutorFactory} from its
