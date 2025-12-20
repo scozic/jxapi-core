@@ -10,13 +10,13 @@ import org.jxapi.netutils.websocket.WebsocketException;
 import org.jxapi.netutils.websocket.WebsocketSubscribeRequest;
 
 /**
- * Unit test for {@link ExchangeApiEvent} and {@link ExchangeApiEventToStringJsonSerializer} through the {@link ExchangeApiEvent#toString()} method.
+ * Unit test for {@link ExchangeEvent} and {@link ExchangeApiEventToStringJsonSerializer} through the {@link ExchangeEvent#toString()} method.
  */
-public class ExchangeApiEventTest {
+public class ExchangeEventTest {
 
   @Test
     public void testGettersAndSetters() {
-        ExchangeApiEvent event = new ExchangeApiEvent(ExchangeApiEventType.HTTP_RESPONSE);
+        ExchangeEvent event = new ExchangeEvent(ExchangeEventType.HTTP_RESPONSE);
         event.setExchangeName("exchangeName");
         event.setExchangeId("exchangeId");
         event.setExchangeApiName("exchangeApiName");
@@ -41,7 +41,7 @@ public class ExchangeApiEventTest {
 
     @Test
     public void testGetEndpointNull() {
-        ExchangeApiEvent event = new ExchangeApiEvent(ExchangeApiEventType.HTTP_RESPONSE);
+        ExchangeEvent event = new ExchangeEvent(ExchangeEventType.HTTP_RESPONSE);
         Assert.assertNull(event.getEndpoint());
     }
     
@@ -49,10 +49,10 @@ public class ExchangeApiEventTest {
     public void testToString() {
         HttpRequest request = new HttpRequest();
         request.setEndpoint("myRestEndpoint");
-        ExchangeApiEvent event = ExchangeApiEvent.createHttpRequestEvent(request);
+        ExchangeEvent event = ExchangeEvent.createHttpRequestEvent(request);
         Assert.assertEquals("{\"type\":\"HTTP_REQUEST\",\"endpoint\":\"myRestEndpoint\",\"httpRequest\":{\"endpoint\":\"myRestEndpoint\"}}", 
                             event.toString());
-        event = ExchangeApiEvent.createWebsocketErrorEvent(new WebsocketException("error"));
+        event = ExchangeEvent.createWebsocketErrorEvent(new WebsocketException("error"));
         event.setExchangeName("myExchange");
         event.setExchangeId("myExchangeId");
         event.setExchangeApiName("myExchangeApi");
@@ -68,8 +68,8 @@ public class ExchangeApiEventTest {
         httpRequest.setEndpoint("myWsEndpoint");
         httpResponse.setRequest(httpRequest);
         response.setHttpResponse(httpResponse);
-        ExchangeApiEvent event = ExchangeApiEvent.createRestResponseEvent(response);
-        Assert.assertEquals(ExchangeApiEventType.HTTP_RESPONSE, event.getType());
+        ExchangeEvent event = ExchangeEvent.createRestResponseEvent(response);
+        Assert.assertEquals(ExchangeEventType.HTTP_RESPONSE, event.getType());
         Assert.assertEquals("myWsEndpoint", event.getEndpoint());
         Assert.assertEquals(response, event.getHttpResponse());
     }
@@ -77,8 +77,8 @@ public class ExchangeApiEventTest {
     @Test
     public void testCreateWebsocketMessageEvent() {
         WebsocketSubscribeRequest request = WebsocketSubscribeRequest.create(null, "wsTopic", null);
-        ExchangeApiEvent event = ExchangeApiEvent.createWebsocketMessageEvent(request, "myWsMessage");
-        Assert.assertEquals(ExchangeApiEventType.WEBSOCKET_MESSAGE, event.getType());
+        ExchangeEvent event = ExchangeEvent.createWebsocketMessageEvent(request, "myWsMessage");
+        Assert.assertEquals(ExchangeEventType.WEBSOCKET_MESSAGE, event.getType());
         Assert.assertEquals("wsTopic", event.getWebsocketSubscribeRequest().getTopic());
         Assert.assertEquals("myWsMessage", event.getWebsocketMessage());
     }
@@ -86,8 +86,8 @@ public class ExchangeApiEventTest {
     @Test
     public void testCreateWebsocketSubcribeEvent() {
       WebsocketSubscribeRequest request = WebsocketSubscribeRequest.create(null, "wsTopic", null);
-        ExchangeApiEvent event = ExchangeApiEvent.createWebsocketSubscribeEvent(request, "myWsSubscriptionId");
-        Assert.assertEquals(ExchangeApiEventType.WEBSOCKET_SUBSCRIBE, event.getType());
+        ExchangeEvent event = ExchangeEvent.createWebsocketSubscribeEvent(request, "myWsSubscriptionId");
+        Assert.assertEquals(ExchangeEventType.WEBSOCKET_SUBSCRIBE, event.getType());
         Assert.assertEquals("wsTopic", event.getWebsocketSubscribeRequest().getTopic());
         Assert.assertEquals("myWsSubscriptionId", event.getWebsocketSubscriptionId());
     }
@@ -95,8 +95,8 @@ public class ExchangeApiEventTest {
     @Test
     public void testCreateWebsocketUnsubscribeEvent() {
       WebsocketSubscribeRequest request = WebsocketSubscribeRequest.create(null, "wsTopic", null);
-        ExchangeApiEvent event = ExchangeApiEvent.createWebsocketUnsubscribeEvent(request, "myWsSubscriptionId");
-        Assert.assertEquals(ExchangeApiEventType.WEBSOCKET_UNSUBSCRIBE, event.getType());
+        ExchangeEvent event = ExchangeEvent.createWebsocketUnsubscribeEvent(request, "myWsSubscriptionId");
+        Assert.assertEquals(ExchangeEventType.WEBSOCKET_UNSUBSCRIBE, event.getType());
         Assert.assertEquals("wsTopic", event.getWebsocketSubscribeRequest().getTopic());
         Assert.assertEquals("myWsSubscriptionId", event.getWebsocketSubscriptionId());
     }
@@ -104,8 +104,8 @@ public class ExchangeApiEventTest {
     @Test
     public void testCreateWebsocketErrorEvent() {
         WebsocketException error = new WebsocketException("error");
-        ExchangeApiEvent event = ExchangeApiEvent.createWebsocketErrorEvent(error);
-        Assert.assertEquals(ExchangeApiEventType.WEBSOCKET_ERROR, event.getType());
+        ExchangeEvent event = ExchangeEvent.createWebsocketErrorEvent(error);
+        Assert.assertEquals(ExchangeEventType.WEBSOCKET_ERROR, event.getType());
         Assert.assertEquals(null, event.getEndpoint());
         Assert.assertEquals(error, event.getWebsocketError());
     }
@@ -114,8 +114,8 @@ public class ExchangeApiEventTest {
     public void testCreateHttpRequestEvent() {
         HttpRequest request = new HttpRequest();
         request.setEndpoint("myRestEndpoint");
-        ExchangeApiEvent event = ExchangeApiEvent.createHttpRequestEvent(request);
-        Assert.assertEquals(ExchangeApiEventType.HTTP_REQUEST, event.getType());
+        ExchangeEvent event = ExchangeEvent.createHttpRequestEvent(request);
+        Assert.assertEquals(ExchangeEventType.HTTP_REQUEST, event.getType());
         Assert.assertEquals("myRestEndpoint", event.getEndpoint());
     }
 }

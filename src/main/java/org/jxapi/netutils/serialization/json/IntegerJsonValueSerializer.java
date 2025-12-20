@@ -2,12 +2,21 @@ package org.jxapi.netutils.serialization.json;
 
 import java.io.IOException;
 
+import org.jxapi.netutils.serialization.MessageSerializer;
 import org.jxapi.util.JsonUtil;
 
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.SerializerProvider;
 
-public class IntegerJsonValueSerializer extends AbstractJsonMessageSerializer<Integer> {
+/**
+ * {@link AbstractJsonValueSerializer} for {@link Integer} values in JSON
+ * messages.
+ * <p>
+ * This class is a singleton, use {@link #getInstance()} to get the instance.
+ * 
+ * @see MessageSerializer
+ */
+public class IntegerJsonValueSerializer extends AbstractJsonValueSerializer<Integer> {
 
   private static final IntegerJsonValueSerializer INSTANCE = new IntegerJsonValueSerializer();
 

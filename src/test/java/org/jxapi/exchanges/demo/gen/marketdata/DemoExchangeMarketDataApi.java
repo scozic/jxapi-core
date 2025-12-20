@@ -26,41 +26,39 @@ public interface DemoExchangeMarketDataApi extends ExchangeApi {
    * Name of 'MarketData' API group.
    */
   String ID = "MarketData";
+  /**
+   * Name of <code>exchangeInfo</code> RestApi.
+   */
+   String EXCHANGE_INFO_REST_API = "exchangeInfo";
   
   /**
-   * Name of <code>exchangeInfo</code> RestApi endpoint.
+   * Name of <code>tickers</code> RestApi.
    */
-  String EXCHANGE_INFO_REST_API = "exchangeInfo";
+   String TICKERS_REST_API = "tickers";
   
   /**
-   * Name of <code>tickers</code> RestApi endpoint.
+   * Name of <code>postRestRequestDataTypeInt</code> RestApi.
    */
-  String TICKERS_REST_API = "tickers";
+   String POST_REST_REQUEST_DATA_TYPE_INT_REST_API = "postRestRequestDataTypeInt";
   
   /**
-   * Name of <code>postRestRequestDataTypeInt</code> RestApi endpoint.
+   * Name of <code>getRestRequestDataTypePrimitiveWithMsgField</code> RestApi.
    */
-  String POST_REST_REQUEST_DATA_TYPE_INT_REST_API = "postRestRequestDataTypeInt";
+   String GET_REST_REQUEST_DATA_TYPE_PRIMITIVE_WITH_MSG_FIELD_REST_API = "getRestRequestDataTypePrimitiveWithMsgField";
   
   /**
-   * Name of <code>getRestRequestDataTypePrimitiveWithMsgField</code> RestApi endpoint.
+   * Name of <code>postRestRequestDataTypeIntList</code> RestApi.
    */
-  String GET_REST_REQUEST_DATA_TYPE_PRIMITIVE_WITH_MSG_FIELD_REST_API = "getRestRequestDataTypePrimitiveWithMsgField";
+   String POST_REST_REQUEST_DATA_TYPE_INT_LIST_REST_API = "postRestRequestDataTypeIntList";
   
   /**
-   * Name of <code>postRestRequestDataTypeIntList</code> RestApi endpoint.
+   * Name of <code>postRestRequestDataTypeObjectListMap</code> RestApi.
    */
-  String POST_REST_REQUEST_DATA_TYPE_INT_LIST_REST_API = "postRestRequestDataTypeIntList";
-  
+   String POST_REST_REQUEST_DATA_TYPE_OBJECT_LIST_MAP_REST_API = "postRestRequestDataTypeObjectListMap";
   /**
-   * Name of <code>postRestRequestDataTypeObjectListMap</code> RestApi endpoint.
+   * Name of <code>tickerStream</code> WsApi.
    */
-  String POST_REST_REQUEST_DATA_TYPE_OBJECT_LIST_MAP_REST_API = "postRestRequestDataTypeObjectListMap";
-  
-  /**
-   * Name of <code>tickerStream</code> WsApi endpoint.
-   */
-  String TICKER_STREAM_WS_API = "tickerStream";
+   String TICKER_STREAM_WS_API = "tickerStream";
   
   /**
    * Fetch market information of symbols that can be traded

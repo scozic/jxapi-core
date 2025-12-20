@@ -3,7 +3,7 @@ package org.jxapi.exchanges.employee.gen.v1.demo;
 import java.util.Properties;
 
 import javax.annotation.processing.Generated;
-import org.jxapi.exchange.ExchangeApiObserver;
+import org.jxapi.exchange.ExchangeObserver;
 import org.jxapi.exchanges.employee.gen.EmployeeExchange;
 import org.jxapi.exchanges.employee.gen.EmployeeExchangeImpl;
 import org.jxapi.exchanges.employee.gen.v1.EmployeeV1Api;
@@ -27,27 +27,27 @@ public class EmployeeV1EmployeeUpdatesDemo {
    * Finally waits for <code>delayBeforeExitAfterUnsubscription</code> delay before returning to make sure no more messages are dispatched.
    * @param messageListener  The listener that will receive messages dispatched while subscription is active
    * @param configProperties Exchange configuration properties.
-   * @param apiObserver      {@link ExchangeApiObserver} (optional, ignored if <code>null</code>) observer will be subscribed to Exchange API exposing websocket endpoint that will be notifed of received websocket events.Useful in particular to get notified of websocket errors.
+   * @param observer      {@link ExchangeObserver} (optional, ignored if <code>null</code>) observer will be subscribed to Exchange API exposing websocket endpoint that will be notifed of received websocket events.Useful in particular to get notified of websocket errors.
    * @throws InterruptedException eventually thrown while sleeping for <code>subscriptionDuration</code> or <code>delayBeforeExitAfterUnsubscription</code> delays
    */
   public static void subscribe(WebsocketListener<EmployeeV1EmployeeUpdatesMessage> messageListener,
                                Properties configProperties,
-                               ExchangeApiObserver apiObserver) throws InterruptedException {
+                               ExchangeObserver observer) throws InterruptedException {
     EmployeeExchange exchange = new EmployeeExchangeImpl("test-" + EmployeeExchange.ID, configProperties);
     EmployeeV1Api api = exchange.getV1Api();
     long subscriptionDuration = DemoProperties.getWebsocketSubscriptionDuration(configProperties);
     long delayBeforeExit = DemoProperties.getWebsocketDelayBeforeExit(configProperties);
     log.info("Subscribing to websocket API 'Employee v1 employeeUpdates' for {} ms", subscriptionDuration);
-    if (apiObserver != null) {
-      api.subscribeObserver(apiObserver);
+    if (observer != null) {
+      exchange.subscribeObserver(observer);
     }
     String subId = api.subscribeEmployeeUpdates(messageListener);
     DemoUtil.sleep(subscriptionDuration);
     log.info("Unubscribing from 'Employee v1 employeeUpdates' stream");
     api.unsubscribeEmployeeUpdates(subId);
     DemoUtil.sleep(delayBeforeExit);
-    if (apiObserver != null) {
-      api.subscribeObserver(apiObserver);
+    if (observer != null) {
+      exchange.unsubscribeObserver(observer);
     }
     exchange.dispose();
   }

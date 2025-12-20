@@ -22,6 +22,14 @@ public interface EmployeeExchange extends Exchange {
    * Version of the 'Employee' exchange
    */
   String VERSION = "1.0.0";
+  /**
+   * Name of <code>httpDefault</code> HttpClient.
+   */
+   String HTTP_DEFAULT_HTTP_CLIENT = "httpDefault";
+  /**
+   * Name of <code>wsDefault</code> WebsocketClient.
+   */
+   String WS_DEFAULT_WEBSOCKET_CLIENT = "wsDefault";
   
   // API groups
   

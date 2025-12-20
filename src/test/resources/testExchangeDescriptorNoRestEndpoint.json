@@ -3,13 +3,20 @@
 	"description": "A sample Exchange descriptor file",
 	"basePackage": "com.foo.bar.gen",
 	"rateLimits": [{"id":"MyTestExchangeGlobalRateLimit", "timeFrame": 1000,  "maxRequestCount": 10}],
+	"network": {
+		"websocketClients": [
+			{
+				"name": "wsDefault",
+				"websocketUrl": "wss://com.foo.exchange/ws",
+				"websocketFactory": "com.foo.bar.BarWebsocketFactory",
+				"websocketHookFactory": "com.foo.bar.BarWebsocketHookFactory"
+			}
+		]
+	},
 	"apis":[
 		{ 
 			"name": "MarketData",
 			"description": "The market data API of MyTestExchange",
-			"websocketUrl": "wss://com.foo.exchange/ws",
-			"websocketFactory": "com.foo.bar.BarWebsocketFactory",
-			"websocketHookFactory": "com.foo.bar.BarWebsocketHookFactory",
 			"websocketEndpoints": [
 				{
 					"name": "tickerStreamStringObjectType",

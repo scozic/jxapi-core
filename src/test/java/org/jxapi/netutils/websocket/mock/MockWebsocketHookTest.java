@@ -4,10 +4,9 @@ import static org.junit.Assert.assertEquals;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.jxapi.exchange.Exchange;
-import org.jxapi.netutils.websocket.DefaultWebsocketManager;
+import org.jxapi.netutils.websocket.DefaultWebsocketClient;
 import org.jxapi.netutils.websocket.WebsocketException;
-import org.jxapi.netutils.websocket.WebsocketManager;
+import org.jxapi.netutils.websocket.WebsocketClient;
 
 /**
  * Unit test for {@link MockWebsocketHook}
@@ -22,65 +21,65 @@ public class MockWebsocketHookTest {
     }
 
     @Test
-    public void testGetWebsocketManager() {
-        WebsocketManager expectedWebsocketManager = new DefaultWebsocketManager((Exchange) null, new MockWebsocket(), mockWebsocketHook);
-        mockWebsocketHook.init(expectedWebsocketManager);
-        WebsocketManager actualWebsocketManager = mockWebsocketHook.getWebsocketManager();
-        assertEquals(expectedWebsocketManager, actualWebsocketManager);
+    public void testGetWebsocketClient() {
+        WebsocketClient expectedWebsocketClient = new DefaultWebsocketClient(new MockWebsocket(), mockWebsocketHook);
+        mockWebsocketHook.init(expectedWebsocketClient);
+        WebsocketClient actualWebsocketClient = mockWebsocketHook.getWebsocketClient();
+        assertEquals(expectedWebsocketClient, actualWebsocketClient);
     }
 
     @Test
     public void testAfterInit() {
-        WebsocketManager expectedWebsocketManager = new DefaultWebsocketManager((Exchange) null, new MockWebsocket(), mockWebsocketHook);
+        WebsocketClient expectedWebsocketClient = new DefaultWebsocketClient(new MockWebsocket(), mockWebsocketHook);
         MockWebsocketHookEvent event = mockWebsocketHook.pop();
         assertEquals(MockWebsocketHookEventType.INIT, event.getType());
         assertEquals(mockWebsocketHook, event.getSource());
-        assertEquals(expectedWebsocketManager, event.getWebsocketManager());
-        assertEquals(expectedWebsocketManager, mockWebsocketHook.getWebsocketManager());
+        assertEquals(expectedWebsocketClient, event.getWebsocketClient());
+        assertEquals(expectedWebsocketClient, mockWebsocketHook.getWebsocketClient());
     }
 
     @Test
     public void testBeforeConnect() throws WebsocketException {
-        WebsocketManager expectedWebsocketManager = new DefaultWebsocketManager((Exchange) null, new MockWebsocket(), mockWebsocketHook);
+        WebsocketClient expectedWebsocketClient = new DefaultWebsocketClient(new MockWebsocket(), mockWebsocketHook);
         assertEquals(MockWebsocketHookEventType.INIT, mockWebsocketHook.pop().getType());
         mockWebsocketHook.beforeConnect();
         MockWebsocketHookEvent event = mockWebsocketHook.pop();
         assertEquals(MockWebsocketHookEventType.BEFORE_CONNECT, event.getType());
         assertEquals(mockWebsocketHook, event.getSource());
-        assertEquals(expectedWebsocketManager, mockWebsocketHook.getWebsocketManager());
+        assertEquals(expectedWebsocketClient, mockWebsocketHook.getWebsocketClient());
     }
 
     @Test
     public void testAfterConnect() throws WebsocketException {
-        WebsocketManager expectedWebsocketManager = new DefaultWebsocketManager((Exchange) null, new MockWebsocket(), mockWebsocketHook);
+        WebsocketClient expectedWebsocketClient = new DefaultWebsocketClient(new MockWebsocket(), mockWebsocketHook);
         assertEquals(MockWebsocketHookEventType.INIT, mockWebsocketHook.pop().getType());
         mockWebsocketHook.afterConnect();
         MockWebsocketHookEvent event = mockWebsocketHook.pop();
         assertEquals(MockWebsocketHookEventType.AFTER_CONNECT, event.getType());
         assertEquals(mockWebsocketHook, event.getSource());
-        assertEquals(expectedWebsocketManager, mockWebsocketHook.getWebsocketManager());
+        assertEquals(expectedWebsocketClient, mockWebsocketHook.getWebsocketClient());
     }
 
     @Test
     public void testBeforeDisconnect() throws WebsocketException {
-        WebsocketManager expectedWebsocketManager = new DefaultWebsocketManager((Exchange) null, new MockWebsocket(), mockWebsocketHook);
+        WebsocketClient expectedWebsocketClient = new DefaultWebsocketClient(new MockWebsocket(), mockWebsocketHook);
         assertEquals(MockWebsocketHookEventType.INIT, mockWebsocketHook.pop().getType());
         mockWebsocketHook.beforeDisconnect();
         MockWebsocketHookEvent event = mockWebsocketHook.pop();
         assertEquals(MockWebsocketHookEventType.BEFORE_DISCONNECT, event.getType());
         assertEquals(mockWebsocketHook, event.getSource());
-        assertEquals(expectedWebsocketManager, mockWebsocketHook.getWebsocketManager());
+        assertEquals(expectedWebsocketClient, mockWebsocketHook.getWebsocketClient());
     }
 
     @Test
     public void testAfterDisconnect() throws WebsocketException {
-        WebsocketManager expectedWebsocketManager = new DefaultWebsocketManager((Exchange) null, new MockWebsocket(), mockWebsocketHook);
+        WebsocketClient expectedWebsocketClient = new DefaultWebsocketClient(new MockWebsocket(), mockWebsocketHook);
         assertEquals(MockWebsocketHookEventType.INIT, mockWebsocketHook.pop().getType());
         mockWebsocketHook.afterDisconnect();
         MockWebsocketHookEvent event = mockWebsocketHook.pop();
         assertEquals(MockWebsocketHookEventType.AFTER_DISCONNECT, event.getType());
         assertEquals(mockWebsocketHook, event.getSource());
-        assertEquals(expectedWebsocketManager, mockWebsocketHook.getWebsocketManager());
+        assertEquals(expectedWebsocketClient, mockWebsocketHook.getWebsocketClient());
     }
 
     @Test

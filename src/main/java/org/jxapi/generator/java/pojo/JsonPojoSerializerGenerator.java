@@ -10,7 +10,7 @@ import java.util.stream.Collectors;
 import org.jxapi.generator.java.Imports;
 import org.jxapi.generator.java.JavaCodeGenUtil;
 import org.jxapi.generator.java.JavaTypeGenerator;
-import org.jxapi.netutils.serialization.json.AbstractJsonMessageSerializer;
+import org.jxapi.netutils.serialization.json.AbstractJsonValueSerializer;
 import org.jxapi.netutils.serialization.json.ListJsonValueSerializer;
 import org.jxapi.netutils.serialization.json.MapJsonValueSerializer;
 import org.jxapi.pojo.descriptor.CanonicalType;
@@ -57,7 +57,7 @@ public class JsonPojoSerializerGenerator extends JavaTypeGenerator {
     this.fields = fields;
     setTypeDeclaration("public class");
     String simpleDeserializedClassName = JavaCodeGenUtil.getClassNameWithoutPackage(serializedTypeClassName);
-    setParentClassName(AbstractJsonMessageSerializer.class.getName() + "<" + simpleDeserializedClassName + ">");
+    setParentClassName(AbstractJsonValueSerializer.class.getName() + "<" + simpleDeserializedClassName + ">");
     setDescription("Jackson JSON Serializer for " 
             + serializedTypeClassName 
             + "\n@see " + simpleDeserializedClassName);
@@ -68,7 +68,7 @@ public class JsonPojoSerializerGenerator extends JavaTypeGenerator {
     addImport(IOException.class.getName());
     addImport(JsonGenerator.class);
     addImport(SerializerProvider.class);
-    addImport(AbstractJsonMessageSerializer.class);
+    addImport(AbstractJsonValueSerializer.class);
     addImport(serializedTypeClassName);
     nonPrimitiveTypeFieldsSerializerDeclarations.forEach(this::appendToBody);
     appendToBody("\n");

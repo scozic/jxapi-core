@@ -21,13 +21,13 @@ import com.fasterxml.jackson.databind.ser.std.StdSerializer;
  * 
  * @see MessageSerializer
  */
-public abstract class AbstractJsonMessageSerializer<T> extends StdSerializer<T> implements MessageSerializer<T> {
+public abstract class AbstractJsonValueSerializer<T> extends StdSerializer<T> implements MessageSerializer<T> {
   
   /**
    * Constructor
    * @param serializedClass the class of the serialized object
    */
-  protected AbstractJsonMessageSerializer(Class<T> serializedClass) {
+  protected AbstractJsonValueSerializer(Class<T> serializedClass) {
     super(serializedClass);
   }
 

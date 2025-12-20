@@ -1,29 +1,27 @@
 package org.jxapi.netutils.websocket;
 
-import org.jxapi.exchange.ExchangeApi;
-
 /**
  * Interface for hooking into the websocket lifecycle.
  * <p>
  * Exchange websocket API specifications usually have specific requirements for:
  * <ul>
- * <li><strong>Intialization</strong>: See {@link #init(WebsocketManager)}
- * method called at end {@link WebsocketManager} constructor. The
- * {@link WebsocketManager} instance passed in parameter to
- * {@link #init(WebsocketManager)} method is bound to this hook instance and all
+ * <li><strong>Intialization</strong>: See {@link #init(WebsocketClient)}
+ * method called at end {@link WebsocketClient} constructor. The
+ * {@link WebsocketClient} instance passed in parameter to
+ * {@link #init(WebsocketClient)} method is bound to this hook instance and all
  * further hook calls will be performed from its write executor thread. A
  * reference to this manager should be kept, subclassing
  * {@link AbstractWebsocketHook} is recommanded for implementations that need
  * resources from the manager. Websocket is not connected or connecting then.
  * This is where configuration that remains unchanged can be performed, for
  * instance subscribing 'technical' message listeners see
- * {@link WebsocketManager#addSystemMessageHandler(String, org.jxapi.netutils.websocket.multiplexing.WebsocketMessageTopicMatcherFactory, RawWebsocketMessageHandler)},
+ * {@link WebsocketClient#addSystemMessageHandler(String, org.jxapi.netutils.websocket.multiplexing.WebsocketMessageTopicMatcherFactory, RawWebsocketMessageHandler)},
  * or customizing manager's configuration like heartbeat timeout, no message
  * timeout or delay before reconnection.</li>
  * <li><strong>Connection</strong>: See {@link #beforeConnect()} and
  * {@link #afterConnect()} methods called just before and after connecting
  * socket. For instance API specific protocol may require to append base url a
- * token, {@link WebsocketManager#setUrl(String)} must be called before
+ * token, {@link WebsocketClient#setUrl(String)} must be called before
  * connecting to specialize websocket URL. Or a specific message for
  * authentication should be sent right after connection</li>
  * <li><strong>Disconnection</strong>: See {@link #beforeConnect()} and See
@@ -38,11 +36,11 @@ import org.jxapi.exchange.ExchangeApi;
  * method must be overridden</li>
  * </ul>
  * Remarks: An instance of {@link WebsocketHook} is bound to a
- * {@link WebsocketManager} using {@link #init(WebsocketManager)} method and all
+ * {@link WebsocketClient} using {@link #init(WebsocketClient)} method and all
  * other methods will be called from manager single 'write' thread so
  * implementations do not need to be stateless or thread safe.
  * 
- * @see WebsocketManager
+ * @see WebsocketClient
  * @see Websocket
  */
 public interface WebsocketHook {
@@ -53,40 +51,32 @@ public interface WebsocketHook {
    * <p>
    * This is where configuration that remains unchanged can be performed, for
    * instance subscribing 'technical' message listeners see
-   * {@link WebsocketManager#addSystemMessageHandler(String, org.jxapi.netutils.websocket.multiplexing.WebsocketMessageTopicMatcherFactory, RawWebsocketMessageHandler)},
+   * {@link WebsocketClient#addSystemMessageHandler(String, org.jxapi.netutils.websocket.multiplexing.WebsocketMessageTopicMatcherFactory, RawWebsocketMessageHandler)},
    * or customizing manager's configuration like heartbeat timeout, no message
    * timeout or delay before reconnection.
-   * <p>
-   * Notice the {@link ExchangeApi} implementation exposing REST APIs like 'token'
-   * and configuration properties can be retrieved from
-   * {@link WebsocketManager#getExchangeApi()}.
    * 
-   * @param websocketManager the websocket manager this hook is bound to. All
+   * @param websocketClient the websocket manager this hook is bound to. All
    *                         calls to further websocket lifecycle methods will be
    *                         called from this manager instance dedicated write
    *                         thread.
    */
-  default void init(WebsocketManager websocketManager) {
+  default void init(WebsocketClient websocketClient) {
   }
 
   /**
    * Called just before connecting the websocket.
    * <p>
    * For instance API specific protocol may require to append base url a token,
-   * {@link WebsocketManager#setUrl(String)} must be called from this method
+   * {@link WebsocketClient#setUrl(String)} must be called from this method
    * before connecting to specialize websocket URL. The token may require to be
-   * refreshed before each connection using a REST API method. The
-   * {@link ExchangeApi} implementation containing that token REST API can be
-   * retrieved from {@link WebsocketManager#getExchangeApi()} (and cast to
-   * exchange specific class).
+   * refreshed before each connection using a REST API method. 
    * 
    * @throws WebsocketException if an error occurs during the connection process.
    *                            Websocket connection will process will fail and
-   *                            WebsocketManager will eventually retry to connect.
+   *                            WebsocketClient will eventually retry to connect.
    * 
-   * @see WebsocketManager
-   * @see WebsocketManager#getExchangeApi()
-   * @see WebsocketManager#setUrl(String)
+   * @see WebsocketClient
+   * @see WebsocketClient#setUrl(String)
    */
   default void beforeConnect() throws WebsocketException {
   }
@@ -99,7 +89,7 @@ public interface WebsocketHook {
    * 
    * @throws WebsocketException if an error occurs after during post connection
    *                            process. Websocket connection will be closed and
-   *                            WebsocketManager will eventually retry to connect.
+   *                            WebsocketClient will eventually retry to connect.
    */
   default void afterConnect() throws WebsocketException {
   }
@@ -112,7 +102,7 @@ public interface WebsocketHook {
    * 
    * @throws WebsocketException if an error occurs during the disconnection
    *                            process. Websocket connection will be closed and
-   *                            WebsocketManager will eventually retry to connect.
+   *                            WebsocketClient will eventually retry to connect.
    */
   default void beforeDisconnect() throws WebsocketException {
   }
@@ -125,7 +115,7 @@ public interface WebsocketHook {
    * 
    * @throws WebsocketException if an error occurs after during post disconnection
    *                            process. Websocket connection will be closed and
-   *                            WebsocketManager will eventually retry to connect.
+   *                            WebsocketClient will eventually retry to connect.
    */
   default void afterDisconnect() throws WebsocketException {
   }

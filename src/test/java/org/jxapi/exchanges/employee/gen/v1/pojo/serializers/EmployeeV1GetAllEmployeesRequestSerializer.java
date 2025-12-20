@@ -6,7 +6,7 @@ import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import javax.annotation.processing.Generated;
 import org.jxapi.exchanges.employee.gen.v1.pojo.EmployeeV1GetAllEmployeesRequest;
-import org.jxapi.netutils.serialization.json.AbstractJsonMessageSerializer;
+import org.jxapi.netutils.serialization.json.AbstractJsonValueSerializer;
 import static org.jxapi.util.JsonUtil.writeIntField;
 
 /**
@@ -14,7 +14,7 @@ import static org.jxapi.util.JsonUtil.writeIntField;
  * @see EmployeeV1GetAllEmployeesRequest
  */
 @Generated("org.jxapi.generator.java.pojo.JsonPojoSerializerGenerator")
-public class EmployeeV1GetAllEmployeesRequestSerializer extends AbstractJsonMessageSerializer<EmployeeV1GetAllEmployeesRequest> {
+public class EmployeeV1GetAllEmployeesRequestSerializer extends AbstractJsonValueSerializer<EmployeeV1GetAllEmployeesRequest> {
   
   /**
    * Constructor

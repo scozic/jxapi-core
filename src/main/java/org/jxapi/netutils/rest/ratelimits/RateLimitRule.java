@@ -80,8 +80,7 @@ public class RateLimitRule {
    * Converts all rate limit rules defined at exchange level from
    * {@link RateLimitRuleDescriptor} to {@link RateLimitRule}.
    * 
-   * @param exchangeDescriptor The exchange descriptor to get the rate limit rules
-   *                           from
+   * @param descriptors The list of rate limit rule descriptors defined at exchange level.
    * @return The list of rate limit rules defined at exchange level, never
    *         <code>null</code> but may be empty.
    */

@@ -6,7 +6,7 @@ import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import javax.annotation.processing.Generated;
 import org.jxapi.exchange.descriptor.gen.RateLimitRuleDescriptor;
-import org.jxapi.netutils.serialization.json.AbstractJsonMessageSerializer;
+import org.jxapi.netutils.serialization.json.AbstractJsonValueSerializer;
 import static org.jxapi.util.JsonUtil.writeIntField;
 import static org.jxapi.util.JsonUtil.writeLongField;
 import static org.jxapi.util.JsonUtil.writeStringField;
@@ -16,7 +16,7 @@ import static org.jxapi.util.JsonUtil.writeStringField;
  * @see RateLimitRuleDescriptor
  */
 @Generated("org.jxapi.generator.java.pojo.JsonPojoSerializerGenerator")
-public class RateLimitRuleDescriptorSerializer extends AbstractJsonMessageSerializer<RateLimitRuleDescriptor> {
+public class RateLimitRuleDescriptorSerializer extends AbstractJsonValueSerializer<RateLimitRuleDescriptor> {
   
   /**
    * Constructor

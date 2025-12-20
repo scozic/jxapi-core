@@ -11,11 +11,9 @@ import org.jxapi.exchange.descriptor.gen.RestEndpointDescriptor;
 import org.jxapi.exchange.descriptor.gen.WebsocketEndpointDescriptor;
 import org.jxapi.generator.java.JavaCodeGenUtil;
 import org.jxapi.generator.java.JavaTypeGenerator;
-import org.jxapi.generator.java.exchange.ExchangeConstantValuePlaceholderResolverFactory;
 import org.jxapi.generator.java.exchange.ExchangeGenUtil;
 import org.jxapi.generator.java.pojo.PojoGenUtil;
 import org.jxapi.netutils.rest.FutureRestResponse;
-import org.jxapi.netutils.rest.ratelimits.RateLimitRule;
 import org.jxapi.netutils.websocket.WebsocketListener;
 import org.jxapi.pojo.descriptor.Field;
 import org.jxapi.pojo.descriptor.Type;
@@ -98,58 +96,26 @@ public class ExchangeApiInterfaceGenerator extends JavaTypeGenerator {
       .append(";\n");
     List<RestEndpointDescriptor> restApis = CollectionUtil.emptyIfNull(exchangeApiDescriptor.getRestEndpoints());
     List<WebsocketEndpointDescriptor> wsApis = CollectionUtil.emptyIfNull(exchangeApiDescriptor.getWebsocketEndpoints());
-    ExchangeApiGenUtil.generateEndpointNameStaticVariablesDeclaration(
+    ExchangeGenUtil.generateNamesStaticVariablesDeclarations(
         restApis.stream().map(RestEndpointDescriptor::getName).collect(Collectors.toList()), 
         "RestApi", 
-        body);
-    ExchangeApiGenUtil.generateEndpointNameStaticVariablesDeclaration(
+        body,
+        "");
+    ExchangeGenUtil.generateNamesStaticVariablesDeclarations(
         wsApis.stream().map(WebsocketEndpointDescriptor::getName).collect(Collectors.toList()), 
         "WsApi", 
-        body);
-    
-    generateEndpointDefaultValuesStaticFieldDeclarations();
-    
-    if (exchangeApiDescriptor.getRestEndpoints() != null) {
-      for (RestEndpointDescriptor restApi: exchangeApiDescriptor.getRestEndpoints()) {
-          appendToBody("\n");
-        generateRestEndpointMethodDeclaration(restApi);
-      }
+        body,
+        "");
+    for (RestEndpointDescriptor restApi: restApis) {
+      appendToBody("\n");
+      generateRestEndpointMethodDeclaration(restApi);
     }
     
-    if (exchangeApiDescriptor.getWebsocketEndpoints() != null) {
-      for (WebsocketEndpointDescriptor websocketApi : exchangeApiDescriptor.getWebsocketEndpoints()) {
-        generateWebsocketApiMethodsDeclarations(websocketApi);
-      }
+    for (WebsocketEndpointDescriptor websocketApi : wsApis) {
+      generateWebsocketApiMethodsDeclarations(websocketApi);
     }
-    
-    generateRateLimitRuleMethodDeclarations();
     
     return super.generate();
-  }
-  
-  private void generateEndpointDefaultValuesStaticFieldDeclarations() {
-    PlaceHolderResolver constantInDefaultValuesPlaceHolderResolverFactory = 
-        new ExchangeConstantValuePlaceholderResolverFactory(exchangeDescriptor).createConstantValuePlaceholderResolver(getImports());
-    ExchangeApiGenUtil.generateRestEndpointRequestDefaultValuesStaticFieldDeclarations(
-        CollectionUtil.emptyIfNull(exchangeApiDescriptor.getRestEndpoints()), 
-        getImports(), 
-        docPlaceHolderResolver,
-        constantInDefaultValuesPlaceHolderResolverFactory,
-        body);
-    ExchangeApiGenUtil.generateWebsocketEndpointRequestDefaultValuesStaticFieldDeclarations(
-        CollectionUtil.emptyIfNull(exchangeApiDescriptor.getWebsocketEndpoints()), 
-        getImports(), 
-        docPlaceHolderResolver,
-        constantInDefaultValuesPlaceHolderResolverFactory,
-        body);
-  }
-  
-  private void generateRateLimitRuleMethodDeclarations() {
-    for (RateLimitRule rateLimit : RateLimitRule.fromDescriptors(exchangeApiDescriptor.getRateLimits())) {
-      String rateLimitName = rateLimit.getId();
-      addImport(RateLimitRule.class);
-      appendToBody(ExchangeGenUtil.generateRateLimitRuleInterfaceMethodDeclaration(rateLimitName));
-    }
   }
 
   private void generateWebsocketApiMethodsDeclarations(WebsocketEndpointDescriptor websocketApi) {

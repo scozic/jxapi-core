@@ -1,23 +1,16 @@
 package org.jxapi.exchange;
 
-import java.util.Properties;
-
 import org.jxapi.netutils.rest.FutureRestResponse;
-import org.jxapi.netutils.rest.HttpRequestExecutor;
-import org.jxapi.netutils.rest.HttpRequestInterceptor;
 import org.jxapi.netutils.rest.ratelimits.RateLimitRule;
-import org.jxapi.netutils.rest.ratelimits.RequestThrottler;
-import org.jxapi.netutils.rest.ratelimits.RequestThrottlingMode;
-import org.jxapi.netutils.websocket.WebsocketManager;
+import org.jxapi.netutils.websocket.WebsocketClient;
 import org.jxapi.pojo.descriptor.Type;
-import org.jxapi.util.Disposable;
-import org.jxapi.util.HasProperties;
 
 /**
  * Interface for a group of of REST and/or Websocket endpoints of an API belonging to
  * an {@link Exchange} wrapper.<br>
- * Actual implmentations will expose methods for calling REST enpoints, and
- * subscribe / unsubscribe methods for Websocket endpoints.
+ * Actual implmentations will expose methods for calling REST enpoints,
+ * subscribe / unsubscribe methods for Websocket endpoints,
+ * and constants for identifying endpoint names.
  * 
  * <p>
  * Regarding REST endpoints call methods:
@@ -27,10 +20,8 @@ import org.jxapi.util.HasProperties;
  * {@link Type}).
  * <li>Return a {@link FutureRestResponse} object to receive the response to
  * REST call asynchronously.
- * <li>Shares the same {@link HttpRequestExecutor} and
- * {@link HttpRequestInterceptor} as other endpoints of this API group
  * <li>Is applied endpoint specific {@link RateLimitRule} throughput
- * limitations, shared limits from API and from {@link Exchange}
+ * limitations, shared limits from {@link Exchange}
  * </ul>
  * <p>
  * Regarding Websocket endpoints
@@ -38,133 +29,14 @@ import org.jxapi.util.HasProperties;
  * <li>Has a subscribe[apiName] method to subscribe a message listener for a
  * specific topic , with one subscription parameters argument of any
  * {@link Type}
- * <li>Each websocket endpoint shares the same {@link WebsocketManager}
  * <li>Has an unsubscribe[apiName] method to unsubscribe a message l istener
  * from a specific topic.
  * <li>Actual websocket connection is opened when first listener is subscribed.
  * <li>Actual websocket connection is closed when last listener is unsubscribed.
- * <li>Shared {@link WebsocketManager} manages keeping alive connection and
+ * <li>Associated {@link WebsocketClient} manages keeping alive connection and
  * automatic reconnection and resubscription to topics upon error.
  * </ul>
- * <p>
- * Observability API (see {@link #subscribeObserver(ExchangeApiObserver)}) can
- * be used to monitor REST endpoint calls, and Websocket subscriptions, received
- * message and errors.<br>
- * Recurring disconnection errors on websocket may indicate network or remote
- * end service outage or bad configuration.
  */
-public interface ExchangeApi extends Disposable, HasProperties {
-  
-  /**
-   * @return Unique API Group name (common to all instances).
-   */
-  String getName();
-
-  /**
-   * @return Exchange instance this API group belongs to see {@link Exchange}
-   */
-  Exchange getExchange();
-
-  /**
-   * Subscribes an observer to be notified of all REST or Websocket events of this
-   * API group endpoints.
-   * 
-   * @param exchangeApiObserver observer that will be notifed of incoming
-   *                            {@link ExchangeApiEvent} events.
-   */
-  void subscribeObserver(ExchangeApiObserver exchangeApiObserver);
-
-  /**
-   * Unsubscribes an observer from being notified of all REST or Websocket events
-   * of this API group endpoints.
-   * 
-   * @param exchangeApiObserver observer that will be notifed of incoming
-   *                            {@link ExchangeApiEvent} events.
-   * @return true if observer was subscribed, false otherwise.
-   */
-  boolean unsubscribeObserver(ExchangeApiObserver exchangeApiObserver);
-  
-  /**
-   * Sets the request throttling policy for calls to exposed REST endpoints.
-   * Relevant when some of REST endpoints must enfore rate limit rules
-   * <p>
-   * Warning: If some rate limits are defined at 'exchange' level, the
-   * {@link RequestThrottler} instance is shared between all API groups, changing
-   * this parameter also changes it for other API groups. Instead of using this
-   * method, it is recommended to set this property for whole exchange using
-   * {@link Exchange#setRequestThrottlingMode(RequestThrottlingMode)}
-   * 
-   * @see RateLimitRule
-   * @see RequestThrottler
-   * @param requestThrottlingMode the request throttling policy
-   */
-  void setRequestThrottlingMode(RequestThrottlingMode requestThrottlingMode);
-  
-  /**
-   * @return The request throttling policy applied
-   * @see #setRequestThrottlingMode(RequestThrottlingMode)
-   */
-  RequestThrottlingMode getRequestThrottlingMode();
-
-  /**
-   * The maximum request throttle delay applied for REST endpoints when rate
-   * limits are breached and some time has to be awaited for before resubmitting a
-   * request. Relevant when some {@link RateLimitRule} are defined. A negative
-   * value means no request throttle delay limit. {@link ExchangeApi}.
-   * <p>
-   * Warning: If some rate limits are defined at 'exchange' level, the
-   * {@link RequestThrottler} instance is shared between all API groups, changing
-   * this parameter also changes it for other API groups. Instead of using this
-   * method, it is recommended to set this property for whole exchange using
-   * {@link Exchange#setMaxRequestThrottleDelay(long)}
-   * 
-   * @param maxRequestThrottleDelay The maximum request throttle delay
-   */
-  void setMaxRequestThrottleDelay(long maxRequestThrottleDelay);
-  
-  /**
-   * @return The maximum request throttle delay applied for REST endpoint APIs
-   *         requests, or a negative value if there are no rate limits set or no max request
-   *         throttle delay limit.
-   */
-  long getMaxRequestThrottleDelay();
-  
-  /**
-   * Sets the request timeout for calls to REST endpoints used by {@link HttpRequestExecutor}
-   * @param httpRequestTimeout The HTTP request timeout in ms
-   * @see HttpRequestExecutor#getRequestTimeout()
-   * @Deprecated Use {@link Exchange#setHttpRequestTimeout(long)} to set timeout for all APIs of the exchange
-   */
-  void setHttpRequestTimeout(long httpRequestTimeout);
-  
-  /**
-   * @return the request timeout for calls to REST endpoints used by {@link HttpRequestExecutor} in ms
-   * @deprecated Use {@link Exchange#getHttpRequestTimeout()} to get timeout for all APIs of the exchange
-   */
-  @Deprecated
-  long getHttpRequestTimeout();
-  
-  /**
-   * Returns the HTTP URL prefix for all REST endpoints of API groups of this
-   * exchange. This prefix is used to build the full URL of each endpoint. It is
-   * unused when either API group or REST endpoint defines an absolute URL.
-   * 
-   * @return The HTTP URL prefix for REST endpoints of this exchange.
-   */
-  String getHttpUrl();
-  
-  /**
-   * Returns the WebSocket URL prefix for all WebSocket endpoints of API groups of
-   * this exchange. This prefix is used to build the full URL of each API group. It
-   * is unused when API group defines an absolute
-   * URL.
-   * 
-   * @return The base websocket URLfor API groups of this exchange.
-   */
-  String getWsUrl();
-  
-  @Override
-  default Properties getProperties() {
-    return getExchange() == null? null: getExchange().getProperties();
-  }
+public interface ExchangeApi {
+ 
 }

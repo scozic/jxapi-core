@@ -10,10 +10,9 @@ import org.jxapi.exchange.descriptor.gen.ConstantDescriptor;
 import org.jxapi.exchange.descriptor.gen.ExchangeApiDescriptor;
 import org.jxapi.exchange.descriptor.gen.ExchangeDescriptor;
 import org.jxapi.exchange.descriptor.gen.RateLimitRuleDescriptor;
-import org.jxapi.netutils.serialization.json.AbstractJsonMessageSerializer;
+import org.jxapi.netutils.serialization.json.AbstractJsonValueSerializer;
 import org.jxapi.netutils.serialization.json.ListJsonValueSerializer;
 import static org.jxapi.util.JsonUtil.writeCustomSerializerField;
-import static org.jxapi.util.JsonUtil.writeLongField;
 import static org.jxapi.util.JsonUtil.writeStringField;
 
 /**
@@ -21,7 +20,7 @@ import static org.jxapi.util.JsonUtil.writeStringField;
  * @see ExchangeDescriptor
  */
 @Generated("org.jxapi.generator.java.pojo.JsonPojoSerializerGenerator")
-public class ExchangeDescriptorSerializer extends AbstractJsonMessageSerializer<ExchangeDescriptor> {
+public class ExchangeDescriptorSerializer extends AbstractJsonValueSerializer<ExchangeDescriptor> {
   
   /**
    * Constructor
@@ -34,6 +33,7 @@ public class ExchangeDescriptorSerializer extends AbstractJsonMessageSerializer<
   private ListJsonValueSerializer<ConstantDescriptor> constantsSerializer;
   private ListJsonValueSerializer<ExchangeApiDescriptor> apisSerializer;
   private ListJsonValueSerializer<RateLimitRuleDescriptor> rateLimitsSerializer;
+  private NetworkDescriptorSerializer networkSerializer;
   
   @Override
   public void serialize(ExchangeDescriptor value, JsonGenerator gen, SerializerProvider provider) throws IOException {
@@ -44,13 +44,7 @@ public class ExchangeDescriptorSerializer extends AbstractJsonMessageSerializer<
     writeStringField(gen, "description", value.getDescription());
     writeStringField(gen, "docUrl", value.getDocUrl());
     writeStringField(gen, "basePackage", value.getBasePackage());
-    writeStringField(gen, "httpRequestExecutorFactory", value.getHttpRequestExecutorFactory());
-    writeStringField(gen, "httpRequestInterceptorFactory", value.getHttpRequestInterceptorFactory());
     writeStringField(gen, "httpUrl", value.getHttpUrl());
-    writeStringField(gen, "websocketUrl", value.getWebsocketUrl());
-    writeStringField(gen, "websocketFactory", value.getWebsocketFactory());
-    writeStringField(gen, "websocketHookFactory", value.getWebsocketHookFactory());
-    writeLongField(gen, "httpRequestTimeout", value.getHttpRequestTimeout());
     writeStringField(gen, "afterInitHookFactory", value.getAfterInitHookFactory());
     if(propertiesSerializer == null) {
       propertiesSerializer = new ListJsonValueSerializer<>(new ConfigPropertyDescriptorSerializer());
@@ -64,6 +58,10 @@ public class ExchangeDescriptorSerializer extends AbstractJsonMessageSerializer<
       rateLimitsSerializer = new ListJsonValueSerializer<>(new RateLimitRuleDescriptorSerializer());
     }
     writeCustomSerializerField(gen, "rateLimits", value.getRateLimits(), rateLimitsSerializer, provider);
+    if(networkSerializer == null) {
+      networkSerializer = new NetworkDescriptorSerializer();
+    }
+    writeCustomSerializerField(gen, "network", value.getNetwork(), networkSerializer, provider);
     if(apisSerializer == null) {
       apisSerializer = new ListJsonValueSerializer<>(new ExchangeApiDescriptorSerializer());
     }

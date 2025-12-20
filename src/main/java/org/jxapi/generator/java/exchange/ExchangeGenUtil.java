@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -14,14 +15,19 @@ import org.jxapi.exchange.descriptor.Constant;
 import org.jxapi.exchange.descriptor.gen.ConfigPropertyDescriptor;
 import org.jxapi.exchange.descriptor.gen.ExchangeApiDescriptor;
 import org.jxapi.exchange.descriptor.gen.ExchangeDescriptor;
+import org.jxapi.exchange.descriptor.gen.HttpClientDescriptor;
+import org.jxapi.exchange.descriptor.gen.NetworkDescriptor;
+import org.jxapi.exchange.descriptor.gen.WebsocketClientDescriptor;
 import org.jxapi.generator.java.Imports;
 import org.jxapi.generator.java.JavaCodeGenUtil;
 import org.jxapi.generator.java.exchange.constants.ConstantsGenUtil;
 import org.jxapi.generator.java.exchange.properties.PropertiesGenUtil;
 import org.jxapi.netutils.rest.ratelimits.RateLimitRule;
+import org.jxapi.pojo.descriptor.Type;
 import org.jxapi.util.CollectionUtil;
 import org.jxapi.util.ConfigProperty;
 import org.jxapi.util.EncodingUtil;
+import org.jxapi.util.PlaceHolderResolver;
 
 /**
  * Helper static methods for generation of Java classes of a given exchange wrapper
@@ -41,13 +47,6 @@ public class ExchangeGenUtil {
    * {@link ExchangeApiDescriptor#getHttpUrl()}.
    */
   public static final String HTTP_URL_STATIC_VARIABLE = "HTTP_URL";
-
-  /**
-   * Name of static variable storing the base Websocket URL of an exchange (see
-   * {@link ExchangeDescriptor#getWebsocketUrl()} or an API group (see
-   * {@link ExchangeApiDescriptor#getWebsocketUrl()}.
-   */
-  public static final String WEBSOCKET_URL_STATIC_VARIABLE = "WEBSOCKET_URL";
   
   /**
    * Prefix of constant placeholder name. This prefix is used to identify constant
@@ -804,6 +803,113 @@ public class ExchangeGenUtil {
   public static String getApiGroupGetterMethodName(ExchangeDescriptor exchangeDescriptor, ExchangeApiDescriptor api) {
     return getApiGroupGetterMethodNames(CollectionUtil.emptyIfNull(exchangeDescriptor.getApis()))
             .get(api.getName());
+  }
+
+  /**
+   * Generates static variable declarations for list of camel-case variable
+   *  names with given suffix.
+   * <p>
+   * For each name in <code>names</code>, a static variable (uppercase) is
+   * generated with name <code>name+suffix</code> and value the name as quoted
+   * string .
+   * <p>
+   * If <code>classBody</code> is not <code>null</code>, the generated static
+   * variable declarations are appended to it.
+   * 
+   * @param names        List of  names
+   * @param suffix       Suffix to append to name to generate static
+   *                     variable name
+   * @param classBody    StringBuilder to append generated field declarations to.
+   *                     Can be null, in which case no field declarations are
+   *                     appended.
+   * @return Map indexed with name, mapped to associated static variable
+   *         name.
+   */
+  public static Map<String, String> generateNamesStaticVariablesDeclarations(
+      List<String> names, 
+      String suffix, 
+      StringBuilder classBody,
+      String modifiers) {
+    Map<String, String> res = CollectionUtil.createMap();
+    Map<String, Constant> constants = CollectionUtil.createMap();
+    for (String f : names) {
+        Constant c = Constant.create(
+            f + suffix,
+            Type.STRING,
+           "Name of <code>" + f + "</code> " + suffix + ".",
+           JavaCodeGenUtil.getQuotedString(f)
+         );
+        constants.put(f, c);
+    }
+    
+    List<Constant> allConstants = new ArrayList<>(constants.values());
+    boolean first = true;
+    for(Entry<String, Constant> e : constants.entrySet()) {
+      Constant c = e.getValue();
+      res.put(e.getKey(), ConstantsGenUtil.getConstantVariableName(c, allConstants));
+      if (classBody != null) {
+        if (first) {
+          first = false;
+        } else {
+          classBody.append("\n");
+        }
+        classBody.append(ConstantsGenUtil.generateConstantDeclaration(
+          c, 
+          allConstants,
+          new Imports(), 
+          PlaceHolderResolver.NO_OP, 
+          PlaceHolderResolver.NO_OP,
+          modifiers)
+        );
+      }
+    }
+    return res;     
+  }
+  
+  /**
+   * Generates static variable declarations for HTTP client names defined in the
+   * given network descriptor.
+   * 
+   * @param network The network descriptor defining HTTP clients, may be
+   *                <code>null</code>.
+   * @param body    The class body to append the generated static variable
+   *                declarations to, may be <code>null</code>.
+   * @return A map indexed with HTTP client name, mapped to associated static
+   *         variable name.
+   */
+  public static Map<String, String> generateHttpClientNamesStaticVariablesDeclarations(NetworkDescriptor network, StringBuilder body) {
+    network = Optional.ofNullable(network).orElse(new NetworkDescriptor());
+    return ExchangeGenUtil.generateNamesStaticVariablesDeclarations(
+        CollectionUtil.emptyIfNull(network.getHttpClients())
+          .stream()
+          .map(HttpClientDescriptor::getName)
+          .toList(),
+        "HttpClient", 
+        body,
+        "");
+  }
+  
+  /**
+   * Generates static variable declarations for websocket client names defined in
+   * the given network descriptor.
+   * 
+   * @param network The network descriptor defining websocket clients, may be
+   *                <code>null</code>.
+   * @param body    The class body to append the generated static variable
+   *                declarations to, may be <code>null</code>.
+   * @return A map indexed with websocket client name, mapped to associated static
+   *         variable name.
+   */
+  public static Map<String, String> generateWebsocketClientNamesStaticVariablesDeclarations(NetworkDescriptor network, StringBuilder body) {
+    network = Optional.ofNullable(network).orElse(new NetworkDescriptor());
+    return ExchangeGenUtil.generateNamesStaticVariablesDeclarations(
+        CollectionUtil.emptyIfNull(network.getWebsocketClients())
+          .stream()
+          .map(WebsocketClientDescriptor::getName)
+          .toList(),
+        "WebsocketClient", 
+        body,
+        "");
   }
   
 }

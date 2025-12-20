@@ -1,11 +1,11 @@
 package org.jxapi.exchange;
 
 /**
- * Enumeration of event types that can be dispatched by the exchange API.
+ * Enumeration of event types that can be dispatched by the exchange observability API.
  * 
- * @see ExchangeApiEvent
+ * @see ExchangeEvent
  */
-public enum ExchangeApiEventType {
+public enum ExchangeEventType {
 
   /**
    * A new HTTP request has been submitted.

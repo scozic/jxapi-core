@@ -2,6 +2,14 @@
 	"id": "MyTestExchange",
 	"description": "A sample exchange descriptor file used in ExchangeApiInterfaceImplementationGeneratorTest unit test, to test generation of API interface implementation with rateLimits rules defined at both exchange, API and REST endpoint levels",
 	"basePackage": "com.foo.bar.gen",
+	"network": {
+		"httpClients": [
+			{
+				"name": "httpDefault",
+				"httpRequestInterceptorFactory": "com.foo.bar.BarRequestInterceptorFactory"
+			}
+		]
+	},
 	"rateLimits": [
 		{"id": "exchangeGlobalRule", "timeFrame": 60000,  "maxRequestCount": 1000}
 	],
@@ -13,7 +21,7 @@
 				{"id": "apiGlobalWeightRule", "timeFrame": 2000,  "maxTotalWeight": 500},
 				{"id": "unusedRule", "timeFrame": 10000,  "maxRequestCount": 250}
 			],
-			"httpRequestInterceptorFactory": "com.foo.bar.BarRequestInterceptorFactory",
+			"defaultHttpClient": "httpDefault",
 			"restEndpoints": [
 				{
 					"name": "exchangeInfo",

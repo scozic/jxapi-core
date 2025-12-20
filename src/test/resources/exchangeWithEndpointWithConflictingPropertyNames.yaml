@@ -7,7 +7,14 @@ description: >
 docUrl: https://www.example.com/docs/conflict
 basePackage: org.jxapi.exchanges.conflict.gen
 httpUrl: https://api.example.com/conflict
-httpRequestInterceptorFactory: org.jxapi.exchanges.demo.net.DemoExchangeHttpRequestInterceptorFactory
+network:
+  httpClients:
+   - name: httpDefault
+     httpRequestInterceptorFactory: org.jxapi.exchanges.demo.net.DemoExchangeHttpRequestInterceptorFactory
+  websocketClients:
+   - name: wsDefault
+     websocketUrl: ${config.server.baseWebsocketUrl}
+     websocketHookFactory: org.jxapi.exchanges.demo.net.DemoExchangeWebsocketHookFactory
 constants:
   - name: c1
     type: INT
@@ -25,22 +32,24 @@ constants:
     description: "'C1_' constant group (note the uppercase 'C' and underscore)"
     constants:
       - name: foo
-        description: Foo constant of C1 group
-        value: fooVal
+        description: Foo constant of C1 group. Value is default websocket URL
+        value: wss://ws.api.example.com/conflict
       - name: bar
         description: Bar constant of C1 group
         value: barVal
 properties:
   - name: p1
     type: INT
-    description: p1 property
+    description: p1 property. 
     defaultValue: ${constants.c1}
   - name: P1
     type: STRING
-    description: P1 property (note the uppercase 'P').
-    defaultValue: ${constants.C1}
+    description: P1 property (note the uppercase 'P'). Base URL for websocket endpoints of the Conflict Exchange API
+    defaultValue: ${constants.C1_.foo}   
 apis:
  - name: v1
+   defaultHttpClient: httpDefault
+   defaultWebsocketClient: wsDefault
    description: "Version 1 of the Employee API"
    httpUrl: v1
    restEndpoints:
@@ -93,8 +102,6 @@ apis:
           - ${constants.C1_.bar}
       response:
        description: Response for endpoint 'A'           
-   websocketUrl: ${config.server.baseWebsocketUrl}
-   websocketHookFactory: org.jxapi.exchanges.demo.net.DemoExchangeWebsocketHookFactory  
    websocketEndpoints:
     - name: myWsEndpoint
       description: Employee updates websocket

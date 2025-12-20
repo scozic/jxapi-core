@@ -3,12 +3,10 @@
 Most APIs REST interfaces require specific headers to be set in requests, for instance to carry authentication data.
 JXAPI Java wrapper generator allows to write custom interceptors to alter HTTP requests before they are submitted.
 
-This is achieved by implementing [HttpRequestInterceptor](../../src/main/java/com/scz/jxapi/netutils/rest/HttpRequestInterceptor.java) interface: `intercept(HttpRequest)` method allows to modify any part of an outgoing request: headers, URL, body... before it is submitted.
+This is achieved by implementing [HttpRequestInterceptor](../../src/main/java/org/jxapi/netutils/rest/HttpRequestInterceptor.java) interface: `intercept(HttpRequest)` method allows to modify any part of an outgoing request: headers, URL, body... before it is submitted.
 
-In exchange descriptor JSON file you should declare property `httpRequestInterceptorFactory` with value containing name of a class implementing [HttpRequestInterceptorFactory](../../src/main/java/com/scz/jxapi/netutils/rest/HttpRequestInterceptorFactory.java) class.
-Such class must have a defaut public constructor. The `createInterceptor(ExchangeApi exchangeApi)` method implementation must return a `HttpRequestInterceptor` instance. Notice the [ExchangeApi](../../src/main/java/com/scz/jxapi/exchange/ExchangeApi.java) instance parameter carries configuration properties like API Key that may be needed to compute authentication headers. 
-
-Notice `httpRequestInterceptorFactory` property can be set in JSON exchange descriptor at _exchange_ or _API group_ level. One at _API group_ level has precedence. This property is not mandatory, and can be omitted when no specific tuning on outgoing HTTP requests is needed.
+In exchange descriptor JSON file you should declare property `httpRequestInterceptorFactory` property of structure describing an HTTP client among ones defined in `network\httpClients` part of exchange descriptor, with value containing name of a class implementing [HttpRequestInterceptorFactory](../../src/main/java/org/jxapi/netutils/rest/HttpRequestInterceptorFactory.java) class.
+Such class must have a defaut public constructor. The `createInterceptor(Exchange exchange)` method implementation must return a `HttpRequestInterceptor` instance. 
 
 Here is an example of a simple `HttpRequestInterceptor` implementation that adds a custom header to each request:
 
@@ -26,7 +24,7 @@ And the corresponding factory class:
 ```java
 public class CustomHeaderInterceptorFactory implements HttpRequestInterceptorFactory {
     @Override
-    public HttpRequestInterceptor createInterceptor(ExchangeApi exchangeApi) {
+    public HttpRequestInterceptor createInterceptor(Exchange exchange) {
         return new CustomHeaderInterceptor();
     }
 }

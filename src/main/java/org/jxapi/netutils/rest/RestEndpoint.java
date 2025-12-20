@@ -2,12 +2,11 @@ package org.jxapi.netutils.rest;
 
 import java.util.List;
 
-import org.jxapi.exchange.ExchangeApiEvent;
-import org.jxapi.exchange.ExchangeApiObserver;
+import org.jxapi.exchange.ExchangeEvent;
+import org.jxapi.exchange.ExchangeObserver;
 import org.jxapi.netutils.deserialization.MessageDeserializer;
 import org.jxapi.netutils.rest.pagination.NextPageResolver;
 import org.jxapi.netutils.rest.ratelimits.RateLimitRule;
-import org.jxapi.netutils.rest.ratelimits.RequestThrottler;
 import org.jxapi.netutils.serialization.MessageSerializer;
 import org.jxapi.util.EncodingUtil;
 import org.slf4j.Logger;
@@ -18,43 +17,15 @@ public class RestEndpoint<R, A> {
   private static final Logger log = LoggerFactory.getLogger(RestEndpoint.class);
   
   private HttpMethod httpMethod;
-  private String endpointName;
+  private String name;
   private String url;
   private HttpRequestExecutor httpRequestExecutor;
   private MessageDeserializer<A> deserializer;
   private MessageSerializer<R> serializer;
   private List<RateLimitRule> rateLimitRules;
   private int weight;
-  private RequestThrottler requestThrottler;
-  private ExchangeApiObserver observer;
+  private ExchangeObserver observer;
   private HttpRequestUrlParamsSerializer<R> urlParamsSerializer;
-  
-//  /**
-//   * Submits a REST request asynchronously using the specified request and message
-//   * deserializer to deserialize response. If a request throttler is set, the
-//   * request is submitted through the throttler. <br>
-//   * This method should used by subclasses to submit REST requests.
-//   * 
-//   * @param <R>                   The type of the request to submit, must extend
-//   *                              {@link PaginatedRestRequest}
-//   * @param <A>                   The type of the response to the request
-//   * @param request               The request to submit
-//   * @param hasBody               Indicates whether the request has a body, and 
-//   *                              thus needs its request to be serialized before submission.
-//   * @param deserializer          The deserializer to use to deserialize the
-//   *                              response
-//   * @param paginatedRestEndpoint The function for calling the paginated REST
-//   *                              endpoint, from endpint enclosing API group
-//   *                              interface.
-//   * @return The response to the request, as a {@link FutureRestResponse}
-//   */
-//  @SuppressWarnings("unchecked")
-//  protected <R extends PaginatedRestRequest, A extends PaginatedRestResponse> FutureRestResponse<A> submitPaginated(
-//      HttpRequest request, 
-//      MessageDeserializer<A> deserializer, 
-//      Function<R, FutureRestResponse<A>> paginatedRestEndpoint) {
-//    return submit(request, deserializer, PaginationUtil.getNextPageResolver((R) request.getRequest(), paginatedRestEndpoint));
-//  }
   
   /**
    * Submits a REST request asynchronously using the specified request and message
@@ -62,9 +33,7 @@ public class RestEndpoint<R, A> {
    * request is submitted through the throttler. <br>
    * This method should used by subclasses to submit REST requests.
    * 
-   * @param <A>          The type of the response to the request
    * @param request      The request to submit
-   * @param deserializer The deserializer to use to deserialize the response
    * @return The response to the request, as a {@link FutureRestResponse}
    */
   public FutureRestResponse<A> submit(R request) {
@@ -73,41 +42,35 @@ public class RestEndpoint<R, A> {
   
   protected HttpRequest createHttpRequest(R requestData) {
     String u = url;
-    if (urlParamsSerializer != null) {
-      u = urlParamsSerializer.serializeUrlParams(requestData, u);
+    String body = null;
+    if (requestData != null) {
+      if (urlParamsSerializer != null) {
+        u = urlParamsSerializer.serializeUrlParams(requestData, u);
+      }
+      if (serializer != null) {
+        body = serializer.serialize(requestData);
+      }
     }
-    return HttpRequest.create(endpointName, u, httpMethod, requestData, rateLimitRules, weight);
+    return HttpRequest.create(
+        name, 
+        u, 
+        httpMethod, 
+        requestData, 
+        rateLimitRules, 
+        weight, 
+        body);
   }
   
   protected FutureRestResponse<A> submit(R request, NextPageResolver<A> nextPageResolver) {
-    HttpRequest httpRequest = createHttpRequest(request);
-    log.debug("{} {} > {}", httpRequest.getHttpMethod(), httpRequest.getEndpoint(), httpRequest);
-    dispatchApiEvent(ExchangeApiEvent.createHttpRequestEvent(httpRequest));
-    if (requestThrottler != null) {
-      return requestThrottler.submit(httpRequest, r -> { 
-        try {
-          return submitNow(r, nextPageResolver);
-        } catch (Exception ex) {
-          log.error("Error submitting request " + httpRequest, ex);
-          FutureRestResponse<A> callback = new FutureRestResponse<>();
-          RestResponse<A> response = new RestResponse<>();
-          response.setException(ex);
-          callback.complete(response);
-          return callback;
-        }
-      });
-    } else {
-      return submitNow(httpRequest, nextPageResolver);
-    }
-  }
-
-  private FutureRestResponse<A> submitNow(HttpRequest request, NextPageResolver<A> nextPageResolver) {
     if (httpRequestExecutor == null) {
       throw new IllegalStateException("No " + HttpRequestExecutor.class.getSimpleName() + " set");
     }
+    HttpRequest httpRequest = createHttpRequest(request);
+    log.debug("{} {} > {}", httpRequest.getHttpMethod(), httpRequest.getEndpoint(), httpRequest);
+    dispatchApiEvent(ExchangeEvent.createHttpRequestEvent(httpRequest));
     
     FutureRestResponse<A> callback = new FutureRestResponse<>();
-    httpRequestExecutor.execute(request).thenAccept(httpResponse -> {
+    httpRequestExecutor.execute(httpRequest).thenAccept(httpResponse -> {
       RestResponse<A> response = new RestResponse<>(httpResponse);
       response.setHttpStatus(httpResponse.getResponseCode());
       if (nextPageResolver != null) {
@@ -121,12 +84,12 @@ public class RestEndpoint<R, A> {
           response.setException(ex);
         }
       }
-      log.debug("{} {} < {}", request.getHttpMethod(), request.getEndpoint(), response);
-      dispatchApiEvent(ExchangeApiEvent.createRestResponseEvent(response));
+      log.debug("{} {} < {}", httpRequest.getHttpMethod(), httpRequest.getEndpoint(), response);
+      dispatchApiEvent(ExchangeEvent.createRestResponseEvent(response));
       try {
         callback.complete(response);
       } catch (Exception ex) {
-        log.error("Error completing request " + request, ex);
+        log.error("Error completing request " + httpRequest, ex);
       }
     });
     return callback;
@@ -134,23 +97,19 @@ public class RestEndpoint<R, A> {
   
   /**
    * Dispatches the specified exchange API event to all observers.
-   * <br>
-   * Needs usually not be called by subclasses, as it is called for every call to
-   * {@link #submit(HttpRequest, boolean, MessageDeserializer)} and
-   * {@link #createWebsocketEndpoint(String, MessageDeserializer)}.
    * 
    * @param event The exchange API event to dispatch.
    */
-  protected void dispatchApiEvent(ExchangeApiEvent event) {
+  protected void dispatchApiEvent(ExchangeEvent event) {
     observer.handleEvent(event);
   }
 
-  public String getEndpointName() {
-    return endpointName;
+  public String getName() {
+    return name;
   }
 
-  public void setEndpointName(String endpointName) {
-    this.endpointName = endpointName;
+  public void setName(String endpointName) {
+    this.name = endpointName;
   }
 
   public String getUrl() {
@@ -201,11 +160,11 @@ public class RestEndpoint<R, A> {
     this.weight = weight;
   }
   
-  public ExchangeApiObserver getObserver() {
+  public ExchangeObserver getObserver() {
     return observer;
   }
 
-  public void setObserver(ExchangeApiObserver observer) {
+  public void setObserver(ExchangeObserver observer) {
     this.observer = observer;
   }
   
@@ -219,6 +178,14 @@ public class RestEndpoint<R, A> {
 
   public boolean isPaginated() {
     return false;
+  }
+  
+  public HttpMethod getHttpMethod() {
+    return httpMethod;
+  }
+
+  public void setHttpMethod(HttpMethod httpMethod) {
+    this.httpMethod = httpMethod;
   }
   
   @Override

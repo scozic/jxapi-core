@@ -5,7 +5,6 @@ import java.io.IOException;
 import org.jxapi.netutils.deserialization.MessageDeserializer;
 import org.jxapi.util.JsonUtil;
 
-import com.fasterxml.jackson.core.JacksonException;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.DeserializationContext;
 
@@ -39,7 +38,7 @@ public abstract class AbstractJsonMessageDeserializer<T> extends com.fasterxml.j
   }
   
   @Override
-  public T deserialize(JsonParser p, DeserializationContext ctxt) throws IOException, JacksonException {
+  public T deserialize(JsonParser p, DeserializationContext ctxt) throws IOException {
     return deserialize(p);
   }
   

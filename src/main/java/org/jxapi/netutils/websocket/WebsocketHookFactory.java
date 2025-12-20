@@ -1,7 +1,6 @@
 package org.jxapi.netutils.websocket;
 
 import org.jxapi.exchange.Exchange;
-import org.jxapi.exchange.ExchangeApi;
 import org.jxapi.util.FactoryUtil;
 
 /**
@@ -12,26 +11,16 @@ import org.jxapi.util.FactoryUtil;
  * reflection.
  */
 public interface WebsocketHookFactory {
-
-  /**
-   * Create a new instance of a {@link WebsocketHook} implementation.
-   * 
-   * @param exchangeApi the {@link ExchangeApi} instance that can be used to
-   *                    retrieve configuration properties.
-   * @return a new instance of a {@link WebsocketHook} implementation.
-   */
-  @Deprecated
-  WebsocketHook createWebsocketHook(ExchangeApi exchangeApi);
   
   /**
    * Create a new instance of a {@link WebsocketHook} implementation.
    * 
    * @param exchange the {@link Exchange} instance that can be used to
-   *                    retrieve configuration properties or be cast as
-   *                    specific implementation of Exchange to access its API endpoints.
+   *                 retrieve configuration properties or be cast as
+   *                 specific implementation of Exchange to access its API endpoints.
    * @return a new instance of a {@link WebsocketHook} implementation.
    */
-  WebsocketHook createWebsocketHook(Exchange exchangeApi);
+  WebsocketHook createWebsocketHook(Exchange exchange);
   
   /**
    * Factory method to instantiate {@link WebsocketHookFactory} from its

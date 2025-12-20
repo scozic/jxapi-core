@@ -5,7 +5,7 @@ import java.util.Properties;
 import java.util.concurrent.ExecutionException;
 
 import javax.annotation.processing.Generated;
-import org.jxapi.exchange.ExchangeApiObserver;
+import org.jxapi.exchange.ExchangeObserver;
 import org.jxapi.exchanges.employee.gen.EmployeeDemoProperties;
 import org.jxapi.exchanges.employee.gen.EmployeeExchange;
 import org.jxapi.exchanges.employee.gen.EmployeeExchangeImpl;
@@ -43,24 +43,24 @@ public class EmployeeV1GetAllEmployeesDemo {
    * Submits a call to {@link EmployeeV1Api#getAllEmployees(org.jxapi.exchanges.employee.gen.v1.pojo.EmployeeV1GetAllEmployeesRequest)}and waits for response.
    * @param request     The request to submit
    * @param configProperties  The configuration properties to instantiate exchange with
-   * @param apiObserver API observer that will notified of events. Is subscribed before REST API call and unsubscribed right after. Ignored if <code>null</code>
+   * @param observer API observer that will notified of events. Is subscribed before REST API call and unsubscribed right after. Ignored if <code>null</code>
    * @return Response data resulting from this API call
    * @throws InterruptedException eventually thrown waiting for response
    * @throws ExecutionException raised if response is not OK, see {@link RestResponse#isOk()}
    */
-  public static RestResponse<EmployeeV1GetAllEmployeesResponse> execute(EmployeeV1GetAllEmployeesRequest request, Properties configProperties, ExchangeApiObserver apiObserver) throws InterruptedException, ExecutionException {
+  public static RestResponse<EmployeeV1GetAllEmployeesResponse> execute(EmployeeV1GetAllEmployeesRequest request, Properties configProperties, ExchangeObserver observer) throws InterruptedException, ExecutionException {
     EmployeeExchange exchange = new EmployeeExchangeImpl("test-" + EmployeeExchange.ID, configProperties);
     EmployeeV1Api api = exchange.getV1Api();
     log.info("Calling org.jxapi.exchanges.employee.gen.v1.EmployeeV1Api.getAllEmployees() API with request:{}", request);
-    if (apiObserver != null) {
-      api.subscribeObserver(apiObserver);
+    if (observer != null) {
+      exchange.subscribeObserver(observer);
     }
     try {
       return DemoUtil.checkResponse(api.getAllEmployees(request));
     }
     finally {
-      if (apiObserver != null) {
-        api.unsubscribeObserver(apiObserver);
+      if (observer != null) {
+        exchange.unsubscribeObserver(observer);
       }
       exchange.dispose();
     }

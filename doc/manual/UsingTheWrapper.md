@@ -47,7 +47,7 @@ The resolved `RestResponse` object wraps the result of REST API call, and `isOk(
 ### REST request pagination
 
 A common design in REST APIs is to provide 'pagination' interface to load large data in chunks. Such APIs use a page index in request to specify which 'page' of data to load, and response provide next page (or last page) information.
-The `RestRequestPagination` class has been designed to load all pages from a specified index from a generic such API. See [RestRequestPagination](./RestRequestPagination.md) to learn more.
+The `PaginationUtil` class has been designed to load all pages from a specified index from a generic such API. See [RestRequestPagination](./RestRequestPagination.md) to learn more.
 
 ## Websocket endpoints
 
@@ -80,7 +80,7 @@ Do not forget to call `Exchange.dispose()` method when done using the wrapper fr
 
 ## Constants
 
-A class named `<ExchangeID>Properties` is generated in main generated sources package with a list of `public static final` constants. These constants define values used across APIs you may want to use. Such constants may be organized in groups, for instance for grouping all possible values of an enumarated type field value. Groups are generated as inner static classes of main constants class.
+A class named `<ExchangeID>Constants` is generated in the main generated sources package with a list of `public static final` constants. These constants define values used across APIs you may want to use. Such constants may be organized in groups, for instance for grouping all possible values of an enumerated type field value. Groups are generated as inner static classes of the main constants class.
 
 ## Demo snippets
 

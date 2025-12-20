@@ -3,12 +3,14 @@ package org.jxapi.netutils.serialization.json;
 import java.io.IOException;
 import java.util.Map;
 
+import org.jxapi.netutils.serialization.MessageSerializer;
+
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.ser.std.StdSerializer;
 
 /**
- * {@link AbstractJsonMessageSerializer} for {@link Map} values in JSON
+ * {@link AbstractJsonValueSerializer} for {@link Map} values in JSON
  * messages.
  * <p>
  * This class is parameterized with the type of the map values and requires an
@@ -16,7 +18,7 @@ import com.fasterxml.jackson.databind.ser.std.StdSerializer;
  * 
  * @see MessageSerializer
  */
-public class MapJsonValueSerializer<T> extends AbstractJsonMessageSerializer<Map<String, T>> {
+public class MapJsonValueSerializer<T> extends AbstractJsonValueSerializer<Map<String, T>> {
 
   protected final StdSerializer<T> elementSerializer;
   

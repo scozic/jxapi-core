@@ -12,8 +12,8 @@ import java.util.concurrent.ExecutionException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import org.jxapi.exchange.ExchangeApiEvent;
-import org.jxapi.exchange.ExchangeApiEventType;
+import org.jxapi.exchange.ExchangeEvent;
+import org.jxapi.exchange.ExchangeEventType;
 import org.jxapi.netutils.rest.FutureRestResponse;
 import org.jxapi.netutils.rest.RestResponse;
 
@@ -64,15 +64,15 @@ public class DemoUtil {
   /**
    * Logs incoming websocket related event with level:
    * <ul> 
-   * <li>DEBUG if event type is {@link ExchangeApiEventType#WEBSOCKET_MESSAGE},
-   * <li>INFO if event type is {@link ExchangeApiEventType#WEBSOCKET_SUBSCRIBE}, or {@link ExchangeApiEventType#WEBSOCKET_UNSUBSCRIBE},
-   * <li>ERROR if event type is {@link ExchangeApiEventType#WEBSOCKET_ERROR}.
+   * <li>DEBUG if event type is {@link ExchangeEventType#WEBSOCKET_MESSAGE},
+   * <li>INFO if event type is {@link ExchangeEventType#WEBSOCKET_SUBSCRIBE}, or {@link ExchangeEventType#WEBSOCKET_UNSUBSCRIBE},
+   * <li>ERROR if event type is {@link ExchangeEventType#WEBSOCKET_ERROR}.
    * </ul>
    * Nothing is logged for other event types.
    * 
    * @param event Event to log
    */
-  public static void logWsApiEvent(ExchangeApiEvent event) {
+  public static void logWsApiEvent(ExchangeEvent event) {
     switch (event.getType()) {
     case WEBSOCKET_ERROR:
       if (log.isErrorEnabled())
@@ -94,12 +94,12 @@ public class DemoUtil {
   
   /**
    * Logs incoming REST API relate event with DEBUG level. Nothing is logged for
-   * other event types other than {@link ExchangeApiEventType#HTTP_REQUEST} and
-   * {@link ExchangeApiEventType#HTTP_RESPONSE}.
+   * other event types other than {@link ExchangeEventType#HTTP_REQUEST} and
+   * {@link ExchangeEventType#HTTP_RESPONSE}.
    * 
    * @param event Event to log
    */
-  public static void logRestApiEvent(ExchangeApiEvent event) {
+  public static void logRestApiEvent(ExchangeEvent event) {
     switch (event.getType()) {
     case HTTP_REQUEST:
     case HTTP_RESPONSE:

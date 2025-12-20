@@ -13,7 +13,11 @@ import org.jxapi.util.EncodingUtil;
 import org.jxapi.util.Pojo;
 
 /**
- * Part of JSON document describing a crypo exchange API, describes a websocket endpoint where clients subscription can be performed using specified topic and eventual additional parameters. The structure of additional subscription parameters and response format are described as {@link org.jxapi.pojo.descriptor.Field} lists.
+ * Part of JSON document describing a crypo exchange API, describes a websocket
+ * endpoint where clients subscription can be performed using specified topic
+ * and eventual additional parameters.
+ * The structure of additional subscription parameters and response format are
+ * described as {@link org.jxapi.pojo.descriptor.Field} lists.
  * 
  */
 @Generated("org.jxapi.generator.java.pojo.PojoGenerator")
@@ -21,7 +25,7 @@ import org.jxapi.util.Pojo;
 @JsonDeserialize(using = WebsocketEndpointDescriptorDeserializer.class)
 public class WebsocketEndpointDescriptor implements Pojo<WebsocketEndpointDescriptor> {
   
-  private static final long serialVersionUID = -4588135679291429359L;
+  private static final long serialVersionUID = 325731743287611067L;
   
   /**
    * @return A new builder to build {@link WebsocketEndpointDescriptor} objects
@@ -33,7 +37,7 @@ public class WebsocketEndpointDescriptor implements Pojo<WebsocketEndpointDescri
   private String name;
   private String description;
   private String topic;
-  private String topicParametersListSeparator;
+  private String websocketClient;
   private String docUrl;
   private Field request;
   private Field message;
@@ -82,19 +86,23 @@ public class WebsocketEndpointDescriptor implements Pojo<WebsocketEndpointDescri
   }
   
   /**
-   * @return The separator to use when multiple topic parameters are provided in a single string.
+   * @return The name of the Websocket client to use for this Websocket endpoint, as defined
+   * in exchange 'network' section. When not set, default client of API
+   * group is used.
    * 
    */
-  public String getTopicParametersListSeparator() {
-    return topicParametersListSeparator;
+  public String getWebsocketClient() {
+    return websocketClient;
   }
   
   /**
-   * @param topicParametersListSeparator The separator to use when multiple topic parameters are provided in a single string.
+   * @param websocketClient The name of the Websocket client to use for this Websocket endpoint, as defined
+   * in exchange 'network' section. When not set, default client of API
+   * group is used.
    * 
    */
-  public void setTopicParametersListSeparator(String topicParametersListSeparator) {
-    this.topicParametersListSeparator = topicParametersListSeparator;
+  public void setWebsocketClient(String websocketClient) {
+    this.websocketClient = websocketClient;
   }
   
   /**
@@ -140,7 +148,13 @@ public class WebsocketEndpointDescriptor implements Pojo<WebsocketEndpointDescri
   }
   
   /**
-   * @return The description of how to match incoming messages to this topic. This can be either the value or pattern of a specific field, or a logical combination of field matchers using AND/OR operations. Remarks: <ul> <li>One of <code>fieldName</code> or <code>and</code> or <code>or</code> must be provided.</li> <li>If <code>fieldName</code> is provided, either <code>fieldValue</code> or <code>fieldRegexp</code> must be provided.</li> </ul>
+   * @return The description of how to match incoming messages to this topic.
+   * This can be either the value or pattern of a specific field, or a logical combination of field matchers using AND/OR operations.
+   * Remarks:
+   * <ul>
+   * <li>One of <code>fieldName</code> or <code>and</code> or <code>or</code> must be provided.</li>
+   * <li>If <code>fieldName</code> is provided, either <code>fieldValue</code> or <code>fieldRegexp</code> must be provided.</li>
+   * </ul>
    * 
    */
   public WebsocketTopicMatcherDescriptor getTopicMatcher() {
@@ -148,7 +162,13 @@ public class WebsocketEndpointDescriptor implements Pojo<WebsocketEndpointDescri
   }
   
   /**
-   * @param topicMatcher The description of how to match incoming messages to this topic. This can be either the value or pattern of a specific field, or a logical combination of field matchers using AND/OR operations. Remarks: <ul> <li>One of <code>fieldName</code> or <code>and</code> or <code>or</code> must be provided.</li> <li>If <code>fieldName</code> is provided, either <code>fieldValue</code> or <code>fieldRegexp</code> must be provided.</li> </ul>
+   * @param topicMatcher The description of how to match incoming messages to this topic.
+   * This can be either the value or pattern of a specific field, or a logical combination of field matchers using AND/OR operations.
+   * Remarks:
+   * <ul>
+   * <li>One of <code>fieldName</code> or <code>and</code> or <code>or</code> must be provided.</li>
+   * <li>If <code>fieldName</code> is provided, either <code>fieldValue</code> or <code>fieldRegexp</code> must be provided.</li>
+   * </ul>
    * 
    */
   public void setTopicMatcher(WebsocketTopicMatcherDescriptor topicMatcher) {
@@ -169,7 +189,7 @@ public class WebsocketEndpointDescriptor implements Pojo<WebsocketEndpointDescri
     return Objects.equals(this.name, o.name)
         && Objects.equals(this.description, o.description)
         && Objects.equals(this.topic, o.topic)
-        && Objects.equals(this.topicParametersListSeparator, o.topicParametersListSeparator)
+        && Objects.equals(this.websocketClient, o.websocketClient)
         && Objects.equals(this.docUrl, o.docUrl)
         && Objects.equals(this.request, o.request)
         && Objects.equals(this.message, o.message)
@@ -197,7 +217,7 @@ public class WebsocketEndpointDescriptor implements Pojo<WebsocketEndpointDescri
     if (res != 0) {
       return res;
     }
-    res = CompareUtil.compare(this.topicParametersListSeparator, other.topicParametersListSeparator);
+    res = CompareUtil.compare(this.websocketClient, other.websocketClient);
     if (res != 0) {
       return res;
     }
@@ -219,7 +239,7 @@ public class WebsocketEndpointDescriptor implements Pojo<WebsocketEndpointDescri
   
   @Override
   public int hashCode() {
-    return Objects.hash(name, description, topic, topicParametersListSeparator, docUrl, request, message, topicMatcher);
+    return Objects.hash(name, description, topic, websocketClient, docUrl, request, message, topicMatcher);
   }
   
   @Override
@@ -228,7 +248,7 @@ public class WebsocketEndpointDescriptor implements Pojo<WebsocketEndpointDescri
     clone.name = this.name;
     clone.description = this.description;
     clone.topic = this.topic;
-    clone.topicParametersListSeparator = this.topicParametersListSeparator;
+    clone.websocketClient = this.websocketClient;
     clone.docUrl = this.docUrl;
     clone.request = this.request != null ? this.request.deepClone() : null;
     clone.message = this.message != null ? this.message.deepClone() : null;
@@ -250,7 +270,7 @@ public class WebsocketEndpointDescriptor implements Pojo<WebsocketEndpointDescri
     private String name;
     private String description;
     private String topic;
-    private String topicParametersListSeparator;
+    private String websocketClient;
     private String docUrl;
     private Field request;
     private Field message;
@@ -290,14 +310,16 @@ public class WebsocketEndpointDescriptor implements Pojo<WebsocketEndpointDescri
     }
     
     /**
-     * Will set the value of <code>topicParametersListSeparator</code> field in the builder
-     * @param topicParametersListSeparator The separator to use when multiple topic parameters are provided in a single string.
+     * Will set the value of <code>websocketClient</code> field in the builder
+     * @param websocketClient The name of the Websocket client to use for this Websocket endpoint, as defined
+     * in exchange 'network' section. When not set, default client of API
+     * group is used.
      * 
      * @return Builder instance
-     * @see #setTopicParametersListSeparator(String)
+     * @see #setWebsocketClient(String)
      */
-    public Builder topicParametersListSeparator(String topicParametersListSeparator)  {
-      this.topicParametersListSeparator = topicParametersListSeparator;
+    public Builder websocketClient(String websocketClient)  {
+      this.websocketClient = websocketClient;
       return this;
     }
     
@@ -336,7 +358,13 @@ public class WebsocketEndpointDescriptor implements Pojo<WebsocketEndpointDescri
     
     /**
      * Will set the value of <code>topicMatcher</code> field in the builder
-     * @param topicMatcher The description of how to match incoming messages to this topic. This can be either the value or pattern of a specific field, or a logical combination of field matchers using AND/OR operations. Remarks: <ul> <li>One of <code>fieldName</code> or <code>and</code> or <code>or</code> must be provided.</li> <li>If <code>fieldName</code> is provided, either <code>fieldValue</code> or <code>fieldRegexp</code> must be provided.</li> </ul>
+     * @param topicMatcher The description of how to match incoming messages to this topic.
+     * This can be either the value or pattern of a specific field, or a logical combination of field matchers using AND/OR operations.
+     * Remarks:
+     * <ul>
+     * <li>One of <code>fieldName</code> or <code>and</code> or <code>or</code> must be provided.</li>
+     * <li>If <code>fieldName</code> is provided, either <code>fieldValue</code> or <code>fieldRegexp</code> must be provided.</li>
+     * </ul>
      * 
      * @return Builder instance
      * @see #setTopicMatcher(WebsocketTopicMatcherDescriptor)
@@ -354,7 +382,7 @@ public class WebsocketEndpointDescriptor implements Pojo<WebsocketEndpointDescri
       res.name = this.name;
       res.description = this.description;
       res.topic = this.topic;
-      res.topicParametersListSeparator = this.topicParametersListSeparator;
+      res.websocketClient = this.websocketClient;
       res.docUrl = this.docUrl;
       res.request = this.request != null ? this.request.deepClone() : null;
       res.message = this.message != null ? this.message.deepClone() : null;

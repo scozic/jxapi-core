@@ -16,4 +16,8 @@ public interface HttpRequestUrlParamsSerializer<R> {
    * @return the serialized query string
    */
   String serializeUrlParams(R request, String baseUrl);
+  
+  static <R> HttpRequestUrlParamsSerializer<R> noParams() {
+    return (request, url) -> url;
+  }
 }

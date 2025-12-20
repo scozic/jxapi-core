@@ -2,6 +2,14 @@
 	"id": "MyTestExchange",
 	"description": "A sample exchange descriptor file used in ExchangeApiInterfaceImplementationGeneratorTest unit test, to test case where there is only rateLimits defined at exchange level, and no additionnal rules at API or  REST endpoint level but requestWeight.",
 	"basePackage": "com.foo.bar.gen",
+	"network": {
+		"httpClients": [
+			{
+				"name": "httpDefault",
+				"httpRequestInterceptorFactory": "com.foo.bar.BarRequestInterceptorFactory"
+			}
+		]
+	},
 	"rateLimits": [
 		{"id": "exchangeGlobalRule", "timeFrame": 60000,  "maxTotalWeight": 1000}
 	],
@@ -9,7 +17,6 @@
 		{ 
 			"name": "FuturesTrading",
 			"description": "An API with both API global and endpoint specific rate limits",
-			"httpRequestInterceptorFactory": "com.foo.bar.BarRequestInterceptorFactory",
 			"rateLimits":[],
 			"restEndpoints": [
 				{

@@ -10,20 +10,20 @@ import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.ser.std.StdSerializer;
 
 /**
- * Specific Serializer for {@link ExchangeApiEvent} for serialization to JSON from toString() method.
+ * Specific Serializer for {@link ExchangeEvent} for serialization to JSON from toString() method.
  * 
  */
-public class ExchangeApiEventToStringJsonSerializer extends StdSerializer<ExchangeApiEvent> {
+public class ExchangeApiEventToStringJsonSerializer extends StdSerializer<ExchangeEvent> {
 
   /**
-   * Constructor that initializes the serializer for {@link ExchangeApiEvent}.
+   * Constructor that initializes the serializer for {@link ExchangeEvent}.
    */
   public ExchangeApiEventToStringJsonSerializer() {
-    super(ExchangeApiEvent.class);
+    super(ExchangeEvent.class);
   }
 
   @Override
-  public void serialize(ExchangeApiEvent value, JsonGenerator gen, SerializerProvider provider) throws IOException {
+  public void serialize(ExchangeEvent value, JsonGenerator gen, SerializerProvider provider) throws IOException {
     gen.writeStartObject();
     JsonUtil.writeStringField(gen, "type", value.getType().name());
     JsonUtil.writeStringField(gen, "exchangeName", value.getExchangeName());

@@ -4,9 +4,8 @@ import static org.junit.Assert.assertEquals;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.jxapi.exchange.Exchange;
-import org.jxapi.netutils.websocket.DefaultWebsocketManager;
-import org.jxapi.netutils.websocket.WebsocketManager;
+import org.jxapi.netutils.websocket.DefaultWebsocketClient;
+import org.jxapi.netutils.websocket.WebsocketClient;
 
 /**
  * Unit test for {@link MockWebsocketHookEvent}
@@ -15,14 +14,14 @@ public class MockWebsocketHookEventTest {
 
     private MockWebsocketHookEvent mockWebsocketHookEvent;
     private MockWebsocketHook mockWebsocketHook;
-    private WebsocketManager websocketManager;
+    private WebsocketClient websocketClient;
 
     @Before
     public void setUp() {
         mockWebsocketHook = new MockWebsocketHook();
-        websocketManager = new DefaultWebsocketManager((Exchange) null, new MockWebsocket(), mockWebsocketHook);
+        websocketClient = new DefaultWebsocketClient(new MockWebsocket(), mockWebsocketHook);
         mockWebsocketHookEvent = new MockWebsocketHookEvent(MockWebsocketHookEventType.INIT, mockWebsocketHook);
-        mockWebsocketHookEvent.setWebsocketManager(websocketManager);
+        mockWebsocketHookEvent.setWebsocketClient(websocketClient);
     }
 
     @Test
@@ -36,15 +35,15 @@ public class MockWebsocketHookEventTest {
     }
 
     @Test
-    public void testGetWebsocketManager() {
-        assertEquals(websocketManager, mockWebsocketHookEvent.getWebsocketManager());
+    public void testGetWebsocketClient() {
+        assertEquals(websocketClient, mockWebsocketHookEvent.getWebsocketClient());
     }
 
     @Test
-    public void testSetWebsocketManager() {
-        WebsocketManager newWebsocketManager = new DefaultWebsocketManager((Exchange) null, new MockWebsocket(), mockWebsocketHook);
-        mockWebsocketHookEvent.setWebsocketManager(newWebsocketManager);
-        assertEquals(newWebsocketManager, mockWebsocketHookEvent.getWebsocketManager());
+    public void testSetWebsocketClient() {
+        WebsocketClient newWebsocketClient = new DefaultWebsocketClient(new MockWebsocket(), mockWebsocketHook);
+        mockWebsocketHookEvent.setWebsocketClient(newWebsocketClient);
+        assertEquals(newWebsocketClient, mockWebsocketHookEvent.getWebsocketClient());
     }
 
     @Test
@@ -68,10 +67,10 @@ public class MockWebsocketHookEventTest {
     
     @Test
     public void testCreateInitEvent() {
-        MockWebsocketHookEvent event = MockWebsocketHookEvent.createInitEvent(mockWebsocketHook, websocketManager);
+        MockWebsocketHookEvent event = MockWebsocketHookEvent.createInitEvent(mockWebsocketHook, websocketClient);
         assertEquals(MockWebsocketHookEventType.INIT, event.getType());
         assertEquals(mockWebsocketHook, event.getSource());
-        assertEquals(websocketManager, event.getWebsocketManager());
+        assertEquals(websocketClient, event.getWebsocketClient());
     }
 
     @Test

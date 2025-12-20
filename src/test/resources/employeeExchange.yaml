@@ -17,7 +17,6 @@ properties:
       description: "Base URL for websocket endpoints of the Employee Exchange API"
 basePackage: org.jxapi.exchanges.employee.gen
 httpUrl: ${config.server.baseHttpUrl}
-httpRequestInterceptorFactory: org.jxapi.exchanges.demo.net.DemoExchangeHttpRequestInterceptorFactory
 constants:
   - name: defaultPageSize
     type: INT
@@ -48,10 +47,20 @@ constants:
       - name: delete
         description: Value of eventType field in WS message for update of an existing employee event
         value: DELETE
+network:
+ httpClients:
+  - name: httpDefault
+    httpRequestInterceptorFactory: org.jxapi.exchanges.demo.net.DemoExchangeHttpRequestInterceptorFactory
+ websocketClients:
+  - name: wsDefault
+    websocketUrl: ${config.server.baseWebsocketUrl}
+    websocketHookFactory: org.jxapi.exchanges.demo.net.DemoExchangeWebsocketHookFactory        
 apis:
  - name: v1
    description: "Version 1 of the Employee API"
    httpUrl: v1
+   defaultHttpClient: httpDefault
+   defaultWebsocketClient: wsDefault
    restEndpoints:
     - name: getEmployee
       description: Get employee details by ID
@@ -147,8 +156,6 @@ apis:
        description: Employee ID
        sampleValue: 1
        in: PATH
-   websocketUrl: ${config.server.baseWebsocketUrl}
-   websocketHookFactory: org.jxapi.exchanges.demo.net.DemoExchangeWebsocketHookFactory  
    websocketEndpoints:
     - name: employeeUpdates
       description: Employee updates websocket

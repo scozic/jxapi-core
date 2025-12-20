@@ -1,14 +1,15 @@
 package org.jxapi.netutils;
 
 import org.jxapi.netutils.rest.HttpClient;
-import org.jxapi.netutils.websocket.WebsocketManager;
+import org.jxapi.netutils.websocket.WebsocketClient;
+import org.jxapi.util.Disposable;
 
 /**
  * Network interface providing HTTP clients and WebSocket managers.
  */
-public interface Network {
+public interface Network extends Disposable {
 
   HttpClient getHttpClient(String clientId);
   
-  WebsocketManager getWebsocket(String wsId);
+  WebsocketClient getWebsocket(String wsId);
 }

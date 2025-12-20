@@ -12,14 +12,6 @@ import org.jxapi.util.FactoryUtil;
  * @see HttpRequestInterceptor
  */
 public interface HttpRequestInterceptorFactory {
-
-  /**
-   * @param exchangeApi {@link ExchangeApi} instance to configure the interceptor
-   *                    for. It can be used to access configuration properties.
-   * @return new instance of {@link HttpRequestInterceptor} with properties set.
-   */
-  @Deprecated
-  HttpRequestInterceptor createInterceptor(ExchangeApi exchangeApi);
   
   /**
    * @param exchange    {@link ExchangeApi} instance to configure the interceptor

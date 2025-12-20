@@ -7,6 +7,7 @@ import java.util.Optional;
 import org.jxapi.exchange.Exchange;
 import org.jxapi.exchange.descriptor.gen.ExchangeApiDescriptor;
 import org.jxapi.exchange.descriptor.gen.ExchangeDescriptor;
+import org.jxapi.exchange.descriptor.gen.NetworkDescriptor;
 import org.jxapi.generator.java.JavaCodeGenUtil;
 import org.jxapi.generator.java.JavaTypeGenerator;
 import org.jxapi.netutils.rest.ratelimits.RateLimitRule;
@@ -68,12 +69,18 @@ public class ExchangeInterfaceGenerator extends JavaTypeGenerator {
       .append(" = ")
       .append(JavaCodeGenUtil.getQuotedString(exchangeDescriptor.getVersion()))
       .append(";\n");
-    
+    generateNetworkClientIdsConstants();
     generateApiMethodsDeclarations();
     
     generateRateLimitRuleMethodDeclarations();
     
     return super.generate();
+  }
+  
+  private void generateNetworkClientIdsConstants() {
+    NetworkDescriptor network = exchangeDescriptor.getNetwork();
+    ExchangeGenUtil.generateHttpClientNamesStaticVariablesDeclarations(network, body);
+    ExchangeGenUtil.generateWebsocketClientNamesStaticVariablesDeclarations(network, body);
   }
   
   private void generateApiMethodsDeclarations() {

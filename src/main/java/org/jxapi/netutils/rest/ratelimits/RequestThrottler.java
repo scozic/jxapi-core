@@ -9,16 +9,14 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
 
+import org.jxapi.netutils.rest.FutureHttpResponse;
+import org.jxapi.netutils.rest.HttpRequest;
+import org.jxapi.netutils.rest.HttpResponse;
+import org.jxapi.util.DefaultDisposable;
+import org.jxapi.util.ThreadUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.CollectionUtils;
-
-import org.jxapi.netutils.rest.FutureRestResponse;
-import org.jxapi.netutils.rest.HttpRequest;
-import org.jxapi.netutils.rest.HttpResponse;
-import org.jxapi.netutils.rest.RestResponse;
-import org.jxapi.util.DefaultDisposable;
-import org.jxapi.util.ThreadUtil;
 
 /**
  * Enforces a list of applicable {@link RateLimitRule} to incoming requests.
@@ -98,7 +96,6 @@ public class RequestThrottler extends DefaultDisposable {
    * breached.
    * </ul>
    * 
-   * @param <A>      Type of response payload
    * @param request  the request submitted for execution
    * @param executor the function to execute this request. Should wrap actual call
    *                 to REST API.
@@ -107,7 +104,7 @@ public class RequestThrottler extends DefaultDisposable {
    * @throws IllegalStateException if in 'disposed' state when called(see
    *                               {@link #isDisposed()})
    */
-  public synchronized <A> FutureRestResponse<A> submit(HttpRequest request, Function<HttpRequest, FutureRestResponse<A>> executor) {
+  public synchronized FutureHttpResponse submit(HttpRequest request, Function<HttpRequest, FutureHttpResponse> executor) {
     checkNotDisposed();
     List<RateLimitRule> rateLimits = request.getRateLimits();
     if (CollectionUtils.isEmpty(rateLimits) || throttlingMode == RequestThrottlingMode.NONE) {
@@ -116,11 +113,11 @@ public class RequestThrottler extends DefaultDisposable {
     }
     for (RateLimitRule rateLimit: rateLimits) {
       final RateLimitThrottling rlManager = getOrCreateRateLimit(rateLimit);
-      FutureRestResponse<?> queued = rlManager.queued;
+      FutureHttpResponse queued = rlManager.queued;
       if (queued != null) {
         log.debug("Already has a queued request for {}, request:{} will be submitted again after it completes", 
               rlManager.rateLimitManager.getRule(), request);
-        FutureRestResponse<A> r = new FutureRestResponse<>();
+        FutureHttpResponse r = new FutureHttpResponse();
         queued.thenRun(() -> submit(request, executor).thenAccept(r::complete));
         return r;
       }
@@ -139,14 +136,14 @@ public class RequestThrottler extends DefaultDisposable {
     return executor.apply(request);
   }
   
-  private <A> FutureRestResponse<A> completeWithRateLimitReachedException(HttpRequest request, RateLimitRule rateLimit, long delayBeforeResubmit) {
-    FutureRestResponse<A> futureResponse = new FutureRestResponse<>();
+  private FutureHttpResponse completeWithRateLimitReachedException(HttpRequest request, RateLimitRule rateLimit, long delayBeforeResubmit) {
+    FutureHttpResponse futureResponse = new FutureHttpResponse();
     HttpResponse httpResponse = new HttpResponse();
     httpResponse.setRequest(request);
     httpResponse.setTime(new Date());
     httpResponse.setResponseCode(429);// Too many requests
     httpResponse.setException(new RateLimitReachedException(rateLimit, delayBeforeResubmit));
-    futureResponse.complete(new RestResponse<>(httpResponse));
+    futureResponse.complete(httpResponse);
     return futureResponse;
   }
   
@@ -190,8 +187,8 @@ public class RequestThrottler extends DefaultDisposable {
     return rateLimitManagers.computeIfAbsent(rateLimit.getId(), k -> new RateLimitThrottling(rateLimit));
   }
   
-  private <A> FutureRestResponse<A> queue(HttpRequest request, Function<HttpRequest, FutureRestResponse<A>> executor, long delay, RateLimitThrottling rateLimit) {
-    FutureRestResponse<A> r = new FutureRestResponse<>();
+  private FutureHttpResponse queue(HttpRequest request, Function<HttpRequest, FutureHttpResponse> executor, long delay, RateLimitThrottling rateLimit) {
+    FutureHttpResponse r = new FutureHttpResponse();
     rateLimit.queued = r;
     if (throttlingExecutor == null) {
       String namePrefix = "THROTTLE";
@@ -213,7 +210,7 @@ public class RequestThrottler extends DefaultDisposable {
   
   private class RateLimitThrottling {
     final RateLimitManager rateLimitManager;
-    FutureRestResponse<?> queued = null;
+    FutureHttpResponse queued = null;
     
     public RateLimitThrottling(RateLimitRule rateLimit) {
       rateLimitManager = new RateLimitManager(rateLimit);

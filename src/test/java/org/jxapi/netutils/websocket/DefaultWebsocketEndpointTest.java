@@ -9,14 +9,9 @@ import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-
-import org.jxapi.exchange.Exchange;
-import org.jxapi.exchange.ExchangeApiEvent;
-import org.jxapi.exchange.ExchangeApiEventType;
-import org.jxapi.exchange.ExchangeApiObserver;
+import org.jxapi.exchange.ExchangeEvent;
+import org.jxapi.exchange.ExchangeEventType;
+import org.jxapi.exchange.ExchangeObserver;
 import org.jxapi.netutils.deserialization.MessageDeserializer;
 import org.jxapi.netutils.websocket.mock.MockWebsocket;
 import org.jxapi.netutils.websocket.multiplexing.WebsocketMessageTopicMatcherFactory;
@@ -24,26 +19,29 @@ import org.jxapi.observability.GenericObserver;
 import org.jxapi.observability.MockExchangeApiObserver;
 import org.jxapi.util.JsonUtil;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 /**
  * Unit test for {@link DefaultWebsocketEndpoint}
  */
 public class DefaultWebsocketEndpointTest {
   
-  private MockWebsocketManager websocketManager;
+  private MockWebsocketClient websocketClient;
   private MockExchangeApiObserver apiObserver;
   private TestWebsocketEndpoint websocketEndpoint;
   
   @Before
   public void setUp() {
-    websocketManager = new MockWebsocketManager();
+    websocketClient = new MockWebsocketClient();
     apiObserver = new MockExchangeApiObserver();
-    websocketEndpoint = new TestWebsocketEndpoint("myWsEndpoint", websocketManager, apiObserver);
+    websocketEndpoint = new TestWebsocketEndpoint("myWsEndpoint", websocketClient, apiObserver);
   }
   
   @After
   public void tearDown() {
-    websocketManager.dispose();
-    websocketManager = null;
+    websocketClient.dispose();
+    websocketClient = null;
     apiObserver = null;
     websocketEndpoint = null;
   }
@@ -63,7 +61,7 @@ public class DefaultWebsocketEndpointTest {
 
   @Test
   public void testDispatchApiEvent() {
-    ExchangeApiEvent event = ExchangeApiEvent.createWebsocketSubscribeEvent(new WebsocketSubscribeRequest(), "subId");
+    ExchangeEvent event = ExchangeEvent.createWebsocketSubscribeEvent(new WebsocketSubscribeRequest(), "subId");
     websocketEndpoint.dispatchApiEvent(event);
     Assert.assertEquals(1, apiObserver.size());
     Assert.assertEquals(event, apiObserver.pop());
@@ -78,7 +76,7 @@ public class DefaultWebsocketEndpointTest {
     Assert.assertNotNull(subId);
     popWebsocketSubscribeRequestEvent(subscribeRequest, subId);
     TestMessage testMessage = TestMessage.create(topic, "foo");
-    websocketManager.dispatchMessage(topic, testMessage);
+    websocketClient.dispatchMessage(topic, testMessage);
     Assert.assertEquals(1, listener.size());
     Assert.assertEquals(testMessage, listener.pop());
   }
@@ -92,14 +90,14 @@ public class DefaultWebsocketEndpointTest {
     String subId1 = websocketEndpoint.subscribe(subscribeRequest, listener1);
     Assert.assertNotNull(subId1);
     popWebsocketSubscribeRequestEvent(subscribeRequest, subId1);
-    Assert.assertEquals(1, websocketManager.subscribeRequests.size());
-    Assert.assertTrue(websocketManager.subscribeRequests.containsKey(topic));
+    Assert.assertEquals(1, websocketClient.subscribeRequests.size());
+    Assert.assertTrue(websocketClient.subscribeRequests.containsKey(topic));
     String subId2 = websocketEndpoint.subscribe(subscribeRequest, listener2);
     popWebsocketSubscribeRequestEvent(subscribeRequest, subId2);
     Assert.assertNotNull(subId2);
     Assert.assertNotEquals(subId1, subId2);
     TestMessage testMessage = TestMessage.create(topic, "foo");
-    websocketManager.dispatchMessage(topic, testMessage);
+    websocketClient.dispatchMessage(topic, testMessage);
     Assert.assertEquals(1, listener1.size());
     Assert.assertEquals(testMessage, listener1.pop());
     Assert.assertEquals(1, listener2.size());
@@ -114,8 +112,8 @@ public class DefaultWebsocketEndpointTest {
     TestMessageListener listener2 = new TestMessageListener();
     String subId1 = websocketEndpoint.subscribe(subscribeRequest, listener1);
     popWebsocketSubscribeRequestEvent(subscribeRequest, subId1);
-    Assert.assertEquals(1, websocketManager.subscribeRequests.size());
-    Assert.assertTrue(websocketManager.subscribeRequests.containsKey(topic));
+    Assert.assertEquals(1, websocketClient.subscribeRequests.size());
+    Assert.assertTrue(websocketClient.subscribeRequests.containsKey(topic));
     Assert.assertNotNull(subId1);
     String subId2 = websocketEndpoint.subscribe(subscribeRequest, listener2);
     popWebsocketSubscribeRequestEvent(subscribeRequest, subId2);
@@ -124,10 +122,10 @@ public class DefaultWebsocketEndpointTest {
     
     websocketEndpoint.unsubscribe(subId1);
     popWebsocketUnsubscribeRequestEvent(subId1);
-    Assert.assertEquals(0, websocketManager.unsubscribeRequests.size());
+    Assert.assertEquals(0, websocketClient.unsubscribeRequests.size());
     
     TestMessage testMessage = TestMessage.create(topic, "foo");
-    websocketManager.dispatchMessage(topic, testMessage);
+    websocketClient.dispatchMessage(topic, testMessage);
     Assert.assertEquals(0, listener1.size());
     Assert.assertEquals(1, listener2.size());
     Assert.assertEquals(testMessage, listener2.pop());
@@ -135,11 +133,11 @@ public class DefaultWebsocketEndpointTest {
     
     websocketEndpoint.unsubscribe(subId2);
     popWebsocketUnsubscribeRequestEvent(subId2);
-    Assert.assertEquals(1, websocketManager.unsubscribeRequests.size());
-    Assert.assertEquals(topic, websocketManager.unsubscribeRequests.get(0));
+    Assert.assertEquals(1, websocketClient.unsubscribeRequests.size());
+    Assert.assertEquals(topic, websocketClient.unsubscribeRequests.get(0));
     
     TestMessage testMessage3 = TestMessage.create(topic, "bar");
-    websocketManager.dispatchMessage(topic, testMessage3);
+    websocketClient.dispatchMessage(topic, testMessage3);
     Assert.assertEquals(0, listener1.size());
     Assert.assertEquals(0, listener2.size());
     checkNoExchangeApiEvents();
@@ -165,49 +163,49 @@ public class DefaultWebsocketEndpointTest {
     
     // Invalid message because it has additionnal 'success' field not expected by message deserializer for TestMessage class
     TestMessageChild testMessage = TestMessageChild.create(topic, "foo", true);
-    websocketManager.dispatchMessage(topic, testMessage);
+    websocketClient.dispatchMessage(topic, testMessage);
     Assert.assertEquals(0, listener.size());
     popWebsocketErrorEvent();
   }
   
   @Test
   public void testSubscribeAndReceiveMessageAndUnsubscribeNoExchangeApiObserver() {
-    websocketEndpoint = new TestWebsocketEndpoint("myWsEndpoint", websocketManager, null);
+    websocketEndpoint = new TestWebsocketEndpoint("myWsEndpoint", websocketClient, apiObserver);
     String topic = "topic1";
     WebsocketSubscribeRequest subscribeRequest = WebsocketSubscribeRequest.create(null, topic, WebsocketMessageTopicMatcherFactory.ANY_MATCHER_FACTORY);
     TestMessageListener listener = new TestMessageListener();
     String subId = websocketEndpoint.subscribe(subscribeRequest, listener);
     Assert.assertNotNull(subId);
     TestMessage testMessage = TestMessage.create(topic, "foo");
-    websocketManager.dispatchMessage(topic, testMessage);
+    websocketClient.dispatchMessage(topic, testMessage);
     Assert.assertEquals(1, listener.size());
     Assert.assertEquals(testMessage, listener.pop());
     websocketEndpoint.unsubscribe(subId);
     
   }
   private void popWebsocketSubscribeRequestEvent(WebsocketSubscribeRequest request, String subscriptionId) {
-    ExchangeApiEvent e = apiObserver.pop();
-    Assert.assertEquals(ExchangeApiEventType.WEBSOCKET_SUBSCRIBE, e.getType());
+    ExchangeEvent e = apiObserver.pop();
+    Assert.assertEquals(ExchangeEventType.WEBSOCKET_SUBSCRIBE, e.getType());
     Assert.assertEquals(request, e.getWebsocketSubscribeRequest());
     Assert.assertEquals(subscriptionId, e.getWebsocketSubscriptionId());
   }
   
   private void popWebsocketUnsubscribeRequestEvent(String subscriptionId) {
-    ExchangeApiEvent e = apiObserver.pop();
-    Assert.assertEquals(ExchangeApiEventType.WEBSOCKET_UNSUBSCRIBE, e.getType());
+    ExchangeEvent e = apiObserver.pop();
+    Assert.assertEquals(ExchangeEventType.WEBSOCKET_UNSUBSCRIBE, e.getType());
     Assert.assertEquals(subscriptionId, e.getWebsocketSubscriptionId());
   }
   
   private void popWebsocketMessageEvent(TestMessage tm) {
-    ExchangeApiEvent e = apiObserver.pop();
-    Assert.assertEquals(ExchangeApiEventType.WEBSOCKET_MESSAGE, e.getType());
+    ExchangeEvent e = apiObserver.pop();
+    Assert.assertEquals(ExchangeEventType.WEBSOCKET_MESSAGE, e.getType());
     Assert.assertEquals(tm.toString(), e.getWebsocketMessage());
     Assert.assertEquals(tm.getMyTopic(), e.getWebsocketSubscribeRequest().getTopic());
   }
   
   private void popWebsocketErrorEvent() {
-    ExchangeApiEvent e = apiObserver.pop();
-    Assert.assertEquals(ExchangeApiEventType.WEBSOCKET_ERROR, e.getType());
+    ExchangeEvent e = apiObserver.pop();
+    Assert.assertEquals(ExchangeEventType.WEBSOCKET_ERROR, e.getType());
     Assert.assertNotNull(e.getWebsocketError());
   }
   
@@ -218,9 +216,13 @@ public class DefaultWebsocketEndpointTest {
   private class TestWebsocketEndpoint extends DefaultWebsocketEndpoint<TestMessage> {
 
     public TestWebsocketEndpoint(String endpointName, 
-                   WebsocketManager websocketManager, 
-                   ExchangeApiObserver observer) {
-      super(endpointName, websocketManager,  new TestMessageDeserializer(), observer);
+                   WebsocketClient websocketClient, 
+                   ExchangeObserver observer) {
+      super();
+      setEndpointName(endpointName);
+      setWebsocketClient(websocketClient);
+      setObserver(observer);
+      setMessageDeserializer(new TestMessageDeserializer());
     }
     
     @Override
@@ -229,16 +231,16 @@ public class DefaultWebsocketEndpointTest {
     }
     
     @Override
-    public void dispatchApiEvent(ExchangeApiEvent event) {
+    public void dispatchApiEvent(ExchangeEvent event) {
       super.dispatchApiEvent(event);
     }
     
   }
 
-  private static class MockWebsocketManager extends DefaultWebsocketManager {
+  private static class MockWebsocketClient extends DefaultWebsocketClient {
 
-    public MockWebsocketManager() {
-      super((Exchange) null, new MockWebsocket(), null);
+    public MockWebsocketClient() {
+      super(new MockWebsocket(), null);
     }
     
     final Map<String, RawWebsocketMessageHandler> subscribeRequests = new HashMap<>();

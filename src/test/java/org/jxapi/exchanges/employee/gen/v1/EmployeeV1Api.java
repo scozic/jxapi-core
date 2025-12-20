@@ -20,36 +20,34 @@ public interface EmployeeV1Api extends ExchangeApi {
    * Name of 'v1' API group.
    */
   String ID = "v1";
+  /**
+   * Name of <code>getEmployee</code> RestApi.
+   */
+   String GET_EMPLOYEE_REST_API = "getEmployee";
   
   /**
-   * Name of <code>getEmployee</code> RestApi endpoint.
+   * Name of <code>getAllEmployees</code> RestApi.
    */
-  String GET_EMPLOYEE_REST_API = "getEmployee";
+   String GET_ALL_EMPLOYEES_REST_API = "getAllEmployees";
   
   /**
-   * Name of <code>getAllEmployees</code> RestApi endpoint.
+   * Name of <code>addEmployee</code> RestApi.
    */
-  String GET_ALL_EMPLOYEES_REST_API = "getAllEmployees";
+   String ADD_EMPLOYEE_REST_API = "addEmployee";
   
   /**
-   * Name of <code>addEmployee</code> RestApi endpoint.
+   * Name of <code>updateEmployee</code> RestApi.
    */
-  String ADD_EMPLOYEE_REST_API = "addEmployee";
+   String UPDATE_EMPLOYEE_REST_API = "updateEmployee";
   
   /**
-   * Name of <code>updateEmployee</code> RestApi endpoint.
+   * Name of <code>deleteEmployee</code> RestApi.
    */
-  String UPDATE_EMPLOYEE_REST_API = "updateEmployee";
-  
+   String DELETE_EMPLOYEE_REST_API = "deleteEmployee";
   /**
-   * Name of <code>deleteEmployee</code> RestApi endpoint.
+   * Name of <code>employeeUpdates</code> WsApi.
    */
-  String DELETE_EMPLOYEE_REST_API = "deleteEmployee";
-  
-  /**
-   * Name of <code>employeeUpdates</code> WsApi endpoint.
-   */
-  String EMPLOYEE_UPDATES_WS_API = "employeeUpdates";
+   String EMPLOYEE_UPDATES_WS_API = "employeeUpdates";
   
   /**
    * Get employee details by ID

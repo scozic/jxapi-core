@@ -10,8 +10,11 @@ import org.jxapi.exchange.descriptor.gen.ConfigPropertyDescriptor;
 import org.jxapi.exchange.descriptor.gen.ConstantDescriptor;
 import org.jxapi.exchange.descriptor.gen.ExchangeApiDescriptor;
 import org.jxapi.exchange.descriptor.gen.ExchangeDescriptor;
+import org.jxapi.exchange.descriptor.gen.HttpClientDescriptor;
+import org.jxapi.exchange.descriptor.gen.NetworkDescriptor;
 import org.jxapi.exchange.descriptor.gen.RateLimitRuleDescriptor;
 import org.jxapi.exchange.descriptor.gen.RestEndpointDescriptor;
+import org.jxapi.exchange.descriptor.gen.WebsocketClientDescriptor;
 import org.jxapi.exchange.descriptor.parser.ExchangeDescriptorParser;
 
 /**
@@ -26,7 +29,6 @@ public class ExchangeInterfaceImplementationGeneratorTest {
     exchangeDescriptor.setBasePackage("com.xyz.foo.gen");
     exchangeDescriptor.setDescription("Foo exchange description");
     exchangeDescriptor.setHttpUrl("${config.serverHttpUrl}/api/v${constants.apiVersion}");
-    exchangeDescriptor.setWebsocketUrl("${config.serverWsUrl}/ws");
     exchangeDescriptor.setAfterInitHookFactory("com.xxz.foo.gen.FooAfterInitExchangeHookFactory");
     
     ConstantDescriptor apiVersion = ConstantDescriptor.builder()
@@ -51,6 +53,7 @@ public class ExchangeInterfaceImplementationGeneratorTest {
     api2.setName("api2");
     apis.add(api2);
     exchangeDescriptor.setApis(apis);
+    exchangeDescriptor.setNetwork(NetworkDescriptor.builder().build());
     ExchangeInterfaceImplementationGenerator exchangeGenerator = new ExchangeInterfaceImplementationGenerator(exchangeDescriptor);
     Assert.assertEquals("package com.xyz.foo.gen;\n"
         + "\n"
@@ -79,9 +82,12 @@ public class ExchangeInterfaceImplementationGeneratorTest {
         + "          exchangeName,\n"
         + "          properties,\n"
         + "          EncodingUtil.substituteArguments(\"${config.serverHttpUrl}/api/v${constants.apiVersion}\", \"config.serverHttpUrl\", FooProperties.getServerHttpUrl(properties), \"constants.apiVersion\", FooConstants.API_VERSION),\n"
-        + "          EncodingUtil.substituteArguments(\"${config.serverWsUrl}/ws\", \"config.serverWsUrl\", FooProperties.getServerWsUrl(properties)));\n"
-        + "    this.api1Api = addApi(new FooApi1ApiImpl(this));\n"
-        + "    this.api2Api = addApi(new FooApi2ApiImpl(this));\n"
+        + "          false);\n"
+        + "    // Network\n"
+        + "    \n"
+        + "     // APIs\n"
+        + "    this.api1Api = addApi(FooApi1Api.ID, new FooApi1ApiImpl(this, exchangeObserver));\n"
+        + "    this.api2Api = addApi(FooApi2Api.ID, new FooApi2ApiImpl(this, exchangeObserver));\n"
         + "    afterInit(\"com.xxz.foo.gen.FooAfterInitExchangeHookFactory\");\n"
         + "  }\n"
         + "  \n"
@@ -120,6 +126,11 @@ public class ExchangeInterfaceImplementationGeneratorTest {
     api3.setName("api3");
     apis.add(api3);
     exchangeDescriptor.setApis(apis);
+    exchangeDescriptor.setNetwork(NetworkDescriptor.builder()
+      .addToHttpClients(HttpClientDescriptor.builder()
+        .name("httpDefault")
+        .build())
+      .build());
     RateLimitRuleDescriptor exchangeGlobalRateLimit = RateLimitRuleDescriptor.builder()
         .id("exchangeGlobalRateLimit")
         .timeFrame(60000L)
@@ -140,7 +151,6 @@ public class ExchangeInterfaceImplementationGeneratorTest {
         + "import javax.annotation.processing.Generated;\n"
         + "import org.jxapi.exchange.AbstractExchange;\n"
         + "import org.jxapi.netutils.rest.ratelimits.RateLimitRule;\n"
-        + "import org.jxapi.netutils.rest.ratelimits.RequestThrottler;\n"
         + "\n"
         + "/**\n"
         + " * Actual implementation of {@link FooExchange}<br>\n"
@@ -149,8 +159,6 @@ public class ExchangeInterfaceImplementationGeneratorTest {
         + "public class FooExchangeImpl extends AbstractExchange implements FooExchange {\n"
         + "  \n"
         + "  private final RateLimitRule rateLimitExchangeGlobalRateLimit = RateLimitRule.createRule(\"exchangeGlobalRateLimit\", 60000, 1000);\n"
-        + "  \n"
-        + "  private final RequestThrottler requestThrottler = new RequestThrottler(\"Foo\");\n"
         + "  private final FooApi1Api api1Api;\n"
         + "  private final FooApi2Api api2Api;\n"
         + "  private final FooApi3Api api3Api;\n"
@@ -161,10 +169,17 @@ public class ExchangeInterfaceImplementationGeneratorTest {
         + "          exchangeName,\n"
         + "          properties,\n"
         + "          null,\n"
-        + "          null);\n"
-        + "    this.api1Api = addApi(new FooApi1ApiImpl(this, requestThrottler));\n"
-        + "    this.api2Api = addApi(new FooApi2ApiImpl(this));\n"
-        + "    this.api3Api = addApi(new FooApi3ApiImpl(this));\n"
+        + "          true);\n"
+        + "    // Network\n"
+        + "    createHttpClient(\"httpDefault\",\n"
+        + "      null,\n"
+        + "      null,\n"
+        + "      null);\n"
+        + "    \n"
+        + "     // APIs\n"
+        + "    this.api1Api = addApi(FooApi1Api.ID, new FooApi1ApiImpl(this, exchangeObserver));\n"
+        + "    this.api2Api = addApi(FooApi2Api.ID, new FooApi2ApiImpl(this, exchangeObserver));\n"
+        + "    this.api3Api = addApi(FooApi3Api.ID, new FooApi3ApiImpl(this, exchangeObserver));\n"
         + "  }\n"
         + "  \n"
         + "  @Override\n"
@@ -205,6 +220,7 @@ public class ExchangeInterfaceImplementationGeneratorTest {
     apis.add(api1);
     exchangeDescriptor.setApis(apis);
     exchangeDescriptor.setRateLimits(List.of());
+    exchangeDescriptor.setNetwork(NetworkDescriptor.builder().build());
     ExchangeInterfaceImplementationGenerator exchangeGenerator = new ExchangeInterfaceImplementationGenerator(exchangeDescriptor);
     Assert.assertEquals("package com.xyz.foo.gen;\n"
         + "\n"
@@ -229,8 +245,11 @@ public class ExchangeInterfaceImplementationGeneratorTest {
         + "          exchangeName,\n"
         + "          properties,\n"
         + "          null,\n"
-        + "          null);\n"
-        + "    this.api1Api = addApi(new FooApi1ApiImpl(this));\n"
+        + "          false);\n"
+        + "    // Network\n"
+        + "    \n"
+        + "     // APIs\n"
+        + "    this.api1Api = addApi(FooApi1Api.ID, new FooApi1ApiImpl(this, exchangeObserver));\n"
         + "  }\n"
         + "  \n"
         + "  @Override\n"
@@ -255,6 +274,20 @@ public class ExchangeInterfaceImplementationGeneratorTest {
         .maxRequestCount(1000)
         .build();
     exchangeDescriptor.setRateLimits(List.of(exchangeGlobalRateLimit));
+    exchangeDescriptor.setNetwork(NetworkDescriptor.builder()
+        .addToHttpClients(HttpClientDescriptor.builder()
+            .name("httpDefault")
+            .httpRequestInterceptorFactory("com.xyz.foo.gen.FooHttpRequestInterceptorFactory")
+            .httpRequestExecutorFactory("com.xyz.foo.gen.FooHttpRequestExecutorFactory")
+            .httpRequestTimeout(15000L)
+            .build())
+        .addToWebsocketClients(WebsocketClientDescriptor.builder()
+            .name("wsDefault")
+            .websocketFactory("com.xyz.foo.gen.FooWebsocketFactory")
+            .websocketUrl("wss://foo.example.com/ws")
+            .websocketHookFactory("com.xyz.foo.gen.FooWebsocketHookFactory")
+            .build())
+        .build());
     ExchangeInterfaceImplementationGenerator exchangeGenerator = new ExchangeInterfaceImplementationGenerator(exchangeDescriptor);
     Assert.assertEquals("package com.xyz.foo.gen;\n"
         + "\n"
@@ -278,7 +311,16 @@ public class ExchangeInterfaceImplementationGeneratorTest {
         + "          exchangeName,\n"
         + "          properties,\n"
         + "          null,\n"
-        + "          null);\n"
+        + "          true);\n"
+        + "    // Network\n"
+        + "    createHttpClient(\"httpDefault\",\n"
+        + "      \"com.xyz.foo.gen.FooHttpRequestInterceptorFactory\",\n"
+        + "      \"com.xyz.foo.gen.FooHttpRequestExecutorFactory\",\n"
+        + "      15000);\n"
+        + "    createWebsocketClient(\"wsDefault\",\n"
+        + "      \"wss://foo.example.com/ws\",\n"
+        + "      \"com.xyz.foo.gen.FooWebsocketFactory\",\n"
+        + "      \"com.xyz.foo.gen.FooWebsocketHookFactory\");\n"
         + "  }\n"
         + "  \n"
         + "  @Override\n"
@@ -286,7 +328,8 @@ public class ExchangeInterfaceImplementationGeneratorTest {
         + "    return this.rateLimitExchangeGlobalRateLimit;\n"
         + "  }\n"
         + "  \n"
-        + "}\n", 
+        + "}\n"
+        + "", 
         exchangeGenerator.generate());
   }
   
@@ -312,6 +355,14 @@ public class ExchangeInterfaceImplementationGeneratorTest {
         .maxRequestCount(1000)
         .build();
     exchangeDescriptor.setRateLimits(List.of(exchangeGlobalRateLimit));
+    exchangeDescriptor.setNetwork(NetworkDescriptor.builder()
+        .addToWebsocketClients(WebsocketClientDescriptor.builder()
+            .name("wsDefault")
+            .websocketFactory("com.xyz.foo.gen.FooWebsocketFactory")
+            .websocketUrl("wss://foo.example.com/ws")
+            .websocketHookFactory("com.xyz.foo.gen.FooWebsocketHookFactory")
+            .build())
+        .build());
     ExchangeInterfaceImplementationGenerator exchangeGenerator = new ExchangeInterfaceImplementationGenerator(exchangeDescriptor);
     Assert.assertEquals("package com.xyz.foo.gen;\n"
         + "\n"
@@ -341,9 +392,16 @@ public class ExchangeInterfaceImplementationGeneratorTest {
         + "          exchangeName,\n"
         + "          properties,\n"
         + "          null,\n"
-        + "          null);\n"
-        + "    this.api1Api = addApi(new FooApi1ApiImpl(this));\n"
-        + "    this.api2Api = addApi(new FooApi2ApiImpl(this));\n"
+        + "          true);\n"
+        + "    // Network\n"
+        + "    createWebsocketClient(\"wsDefault\",\n"
+        + "      \"wss://foo.example.com/ws\",\n"
+        + "      \"com.xyz.foo.gen.FooWebsocketFactory\",\n"
+        + "      \"com.xyz.foo.gen.FooWebsocketHookFactory\");\n"
+        + "    \n"
+        + "     // APIs\n"
+        + "    this.api1Api = addApi(FooApi1Api.ID, new FooApi1ApiImpl(this, exchangeObserver));\n"
+        + "    this.api2Api = addApi(FooApi2Api.ID, new FooApi2ApiImpl(this, exchangeObserver));\n"
         + "  }\n"
         + "  \n"
         + "  @Override\n"
@@ -409,6 +467,13 @@ public class ExchangeInterfaceImplementationGeneratorTest {
         .maxTotalWeight(1000)
         .build();
     exchangeDescriptor.setRateLimits(List.of(exchangeGlobalRateLimit));
+    exchangeDescriptor.setNetwork(NetworkDescriptor.builder()
+      .addToHttpClients(HttpClientDescriptor.builder()
+        .name("httpDefault")
+        .httpRequestInterceptorFactory("com.xyz.foo.gen.FooHttpRequestInterceptorFactory")
+        .httpRequestExecutorFactory("com.xyz.foo.gen.FooHttpRequestExecutorFactory")
+        .build())
+      .build());
     ExchangeInterfaceImplementationGenerator exchangeGenerator = new ExchangeInterfaceImplementationGenerator(exchangeDescriptor);
     Assert.assertEquals("package com.xyz.foo.gen;\n"
         + "\n"
@@ -432,7 +497,12 @@ public class ExchangeInterfaceImplementationGeneratorTest {
         + "          exchangeName,\n"
         + "          properties,\n"
         + "          null,\n"
-        + "          null);\n"
+        + "          true);\n"
+        + "    // Network\n"
+        + "    createHttpClient(\"httpDefault\",\n"
+        + "      \"com.xyz.foo.gen.FooHttpRequestInterceptorFactory\",\n"
+        + "      \"com.xyz.foo.gen.FooHttpRequestExecutorFactory\",\n"
+        + "      null);\n"
         + "  }\n"
         + "  \n"
         + "  @Override\n"
@@ -440,7 +510,8 @@ public class ExchangeInterfaceImplementationGeneratorTest {
         + "    return this.rateLimitExchangeGlobalRateLimit;\n"
         + "  }\n"
         + "  \n"
-        + "}\n", 
+        + "}\n"
+        + "", 
         exchangeGenerator.generate());
   }
   
@@ -460,6 +531,7 @@ public class ExchangeInterfaceImplementationGeneratorTest {
         + "import org.jxapi.exchanges.conflict.gen.a.ConflictaApiImpl;\n"
         + "import org.jxapi.exchanges.conflict.gen.v1.ConflictV1Api;\n"
         + "import org.jxapi.exchanges.conflict.gen.v1.ConflictV1ApiImpl;\n"
+        + "import org.jxapi.util.EncodingUtil;\n"
         + "\n"
         + "/**\n"
         + " * Actual implementation of {@link ConflictExchange}<br>\n"
@@ -477,10 +549,21 @@ public class ExchangeInterfaceImplementationGeneratorTest {
         + "          exchangeName,\n"
         + "          properties,\n"
         + "          \"https://api.example.com/conflict\",\n"
-        + "          null);\n"
-        + "    this.v1Api = addApi(new ConflictV1ApiImpl(this));\n"
-        + "    this.aApi = addApi(new ConflictaApiImpl(this));\n"
-        + "    this.AApi = addApi(new ConflictAApiImpl(this));\n"
+        + "          false);\n"
+        + "    // Network\n"
+        + "    createHttpClient(\"httpDefault\",\n"
+        + "      \"org.jxapi.exchanges.demo.net.DemoExchangeHttpRequestInterceptorFactory\",\n"
+        + "      null,\n"
+        + "      null);\n"
+        + "    createWebsocketClient(\"wsDefault\",\n"
+        + "      EncodingUtil.substituteArguments(\"${config.server.baseWebsocketUrl}\", ),\n"
+        + "      null,\n"
+        + "      \"org.jxapi.exchanges.demo.net.DemoExchangeWebsocketHookFactory\");\n"
+        + "    \n"
+        + "     // APIs\n"
+        + "    this.v1Api = addApi(ConflictV1Api.ID, new ConflictV1ApiImpl(this, exchangeObserver));\n"
+        + "    this.aApi = addApi(ConflictaApi.ID, new ConflictaApiImpl(this, exchangeObserver));\n"
+        + "    this.AApi = addApi(ConflictAApi.ID, new ConflictAApiImpl(this, exchangeObserver));\n"
         + "  }\n"
         + "  \n"
         + "  @Override\n"

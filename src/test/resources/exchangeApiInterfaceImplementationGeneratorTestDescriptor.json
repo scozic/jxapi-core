@@ -3,7 +3,43 @@
 	"description": "A sample exchange descriptor file used in ExchangeApiInterfaceImplementationGeneratorTest unit test",
 	"basePackage": "com.foo.bar.gen",
 	"httpUrl": "https://myexchange.com",
-	"websocketUrl": "wss://com.foo.exchange",
+	"network": {
+		"httpClients": [
+			{
+				"name": "httpDefault"
+			},
+			{
+				"name": "trading",
+				"httpRequestInterceptorFactory": "com.foo.net.TradingInterceptorFactory",
+				"httpRequestExecutorFactory": "com.foo.net.TradingExecutorFactory",
+				"httpRequestTimeout": 2500
+			},
+			{
+				"name": "futuresMarketData",
+				"httpRequestInterceptorFactory": "com.foo.bar.FuturesMarketDataInterceptorFactory",
+				"httpRequestTimeout": 3000
+			},
+			{
+				"name": "futuresTrading",
+				"httpRequestInterceptorFactory": "com.foo.net.FuturesTradingInterceptorFactory",
+				"httpRequestTimeout": 3500
+			}
+		],
+		"websocketClients": [
+			{
+				"name": "wsDefault",
+				"websocketUrl": "wss://com.foo.exchange/ws",
+				"websocketFactory": "com.foo.bar.BarWebsocketFactory",
+				"websocketHookFactory": "com.foo.bar.BarWebsocketHookFactory"
+			}
+		]
+	},
+	"rateLimits": [
+		{"id": "futuresTradeGlobalWeightRule", "timeFrame": 2000,  "maxTotalWeight": 500},
+		{"id": "futuresTradeGlobalCountRule", "timeFrame": 1500,  "maxTotalWeight": 300},
+		{"id": "exchangeInfoCountRule", "timeFrame": 1500,  "maxTotalWeight": 300},
+		{"id": "unusedRule", "timeFrame": 10000,  "maxRequestCount": 250}
+	],
 	"apis":[
 		{ 
 			"name": "MarketData",
@@ -30,9 +66,6 @@
 					}
 				}
 			],
-			"websocketUrl": "/ws",
-			"websocketFactory": "com.foo.bar.BarWebsocketFactory",
-			"websocketHookFactory": "com.foo.bar.BarWebsocketHookFactory",
 			"websocketEndpoints": [
 				{
 					"name": "tickerStream",
@@ -61,13 +94,7 @@
 		},
 		{ 
 			"name": "Trading",
-			"description": "An API group with one rule that is not used by any endpoint. The getter method should be still generated, but no RequestThrottler used.",
-			"rateLimits": [
-				{"id": "unusedRule", "timeFrame": 2000,  "maxTotalWeight": 500}
-			],
-			"httpRequestInterceptorFactory": "com.foo.net.TradingInterceptorFactory",
-			"httpRequestExecutorFactory": "com.foo.net.TradingExecutorFactory",
-			"httpRequestTimeout": 2500,
+			"description": "An API group with one REST endpoint and no websocket endpoints.",
 			"httpUrl": "/spot",
 			"restEndpoints": [
 				{
@@ -76,6 +103,7 @@
 					"description": "Fetch market information of symbols that can be traded",
 					"url": "/exchangeInfo",
 					"requestWeight": 60,
+					"httpClient": "trading",
 					"request": {
 						"properties": [
 								{"name":"symbols", "type": "STRING_LIST", "description":"The list of symbol to fetch market information for. Leave empty to fetch all markets", "sampleValue":""}
@@ -97,12 +125,8 @@
 		{ 
 			"name": "FuturesMarketData",
 			"description": "An API with endpoint specific rate limit",
-			"httpRequestInterceptorFactory": "com.foo.bar.FuturesMarketDataInterceptorFactory",
+			"defaultHttpClient": "futuresMarketData",
 			"httpUrl": "/futures",
-			"rateLimits": [
-				{"id": "exchangeInfoCountRule", "timeFrame": 1500,  "maxTotalWeight": 300},
-				{"id": "unusedRule", "timeFrame": 10000,  "maxRequestCount": 250}
-			],
 			"restEndpoints": [
 				{
 					"name": "exchangeInfo",
@@ -151,14 +175,8 @@
 		},
 		{ 
 			"name": "FuturesTrading",
-			"description": "An API with API group specific rate limits",
-			"rateLimits": [
-				{"id": "futuresTradeGlobalWeightRule", "timeFrame": 2000,  "maxTotalWeight": 500},
-				{"id": "futuresTradeGlobalCountRule", "timeFrame": 1500,  "maxTotalWeight": 300},
-				{"id": "unusedRule", "timeFrame": 10000,  "maxRequestCount": 250}
-			],
-			"httpRequestInterceptorFactory": "com.foo.net.FuturesTradingInterceptorFactory",
-			"httpRequestTimeout": 3500,
+			"description": "An API group with one REST endpoint using futuresTrading http client and 2 rate limit rules",
+			"defaultHttpClient": "futuresTrading",
 			"restEndpoints": [
 				{
 					"name": "exchangeInfo",

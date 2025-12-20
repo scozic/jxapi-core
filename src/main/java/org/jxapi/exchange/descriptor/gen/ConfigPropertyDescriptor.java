@@ -15,7 +15,26 @@ import org.jxapi.util.EncodingUtil;
 import org.jxapi.util.Pojo;
 
 /**
- * Represents a configuration property or a group of properties of an exchange like authentication credentials (API Key,secret) the wraooer client should provide to instantiate a wrapper.br> Exchange descriptor may contain a list of such properties as value of 'properties' property of exchange.<p> The name of a property should be spelled 'camelCase' like a Java variable name.<p> The value of a property can be a 'primitive' type e.g. {@link org.jxapi.pojo.descriptor.Type#STRING}, {@link org.jxapi.pojo.descriptor.Type#INT}, {@link org.jxapi.pojo.descriptor.Type#BOOLEAN},  {@link org.jxapi.pojo.descriptor.Type#BIGDECIMAL}, {@link org.jxapi.pojo.descriptor.Type#LONG}.  It can't be a list, map, or object.<p> The properties will be exposed as static properties of a generated Java class named [exchangeId]Constants. That class wlll list constants for property names and default values, and default 'getter' methods for retrieving there values from properties <p> The properties can be grouped together. For example, authentication credentials can be grouped into a 'group' property called 'auth' with sub-properties for API key, secret, etc listed. Those properties can be referenced with key auth.apiKey, auth.apiSecret, etc. Groups may contain other groups, so the structure is hierarchical.
+ * Represents a configuration property or a group of properties of an exchange like authentication credentials 
+ * (API Key,secret) the wrapper client should provide to instantiate a wrapper.<br>
+ * Exchange descriptor may contain a list of such properties as value of
+ * 'properties' property of exchange.<p>
+ * The name of a property should be spelled 'camelCase' like a Java variable
+ * name.
+ * <p>
+ * The value of a property can be a 'primitive' type e.g. {@link org.jxapi.pojo.descriptor.Type#STRING},
+ * {@link org.jxapi.pojo.descriptor.Type#INT}, {@link org.jxapi.pojo.descriptor.Type#BOOLEAN}, 
+ * {@link org.jxapi.pojo.descriptor.Type#BIGDECIMAL}, {@link org.jxapi.pojo.descriptor.Type#LONG}. 
+ * It can't be a list, map, or object.<p>
+ * The properties will be exposed as static properties of a generated Java class named [exchangeId]Constants. 
+ * That class wlll list constants for property names and default values, and default 'getter' methods for 
+ * retrieving their values from properties
+ * <p>
+ * The properties can be grouped together. For example, authentication
+ * credentials can be grouped into a 'group' property called 'auth' with
+ * sub-properties for API key, secret, etc listed. Those properties can be
+ * referenced with key auth.apiKey, auth.apiSecret, etc. Groups may contain
+ * other groups, so the structure is hierarchical.
  * 
  */
 @Generated("org.jxapi.generator.java.pojo.PojoGenerator")
@@ -67,7 +86,8 @@ public class ConfigPropertyDescriptor implements Pojo<ConfigPropertyDescriptor> 
   }
   
   /**
-   * @return * Property value type, see {@link org.jxapi.pojo.descriptor.Type}, should be a primitive type e.g.
+   * @return Property value type, see {@link org.jxapi.pojo.descriptor.Type}, should be a primitive type e.g. 'STRING', 'INT', 'LONG', 'BIGDECIMAL', 'BOOLEAN'.
+   * When property is a group of sub-properties, this property is ignored.
    * 
    */
   public String getType() {
@@ -75,7 +95,8 @@ public class ConfigPropertyDescriptor implements Pojo<ConfigPropertyDescriptor> 
   }
   
   /**
-   * @param type * Property value type, see {@link org.jxapi.pojo.descriptor.Type}, should be a primitive type e.g.
+   * @param type Property value type, see {@link org.jxapi.pojo.descriptor.Type}, should be a primitive type e.g. 'STRING', 'INT', 'LONG', 'BIGDECIMAL', 'BOOLEAN'.
+   * When property is a group of sub-properties, this property is ignored.
    * 
    */
   public void setType(String type) {
@@ -98,7 +119,6 @@ public class ConfigPropertyDescriptor implements Pojo<ConfigPropertyDescriptor> 
   
   /**
    * @return The list of sub-properties if this property is a group of properties.
-   * 
    */
   public List<ConfigPropertyDescriptor> getProperties() {
     return properties;
@@ -106,7 +126,6 @@ public class ConfigPropertyDescriptor implements Pojo<ConfigPropertyDescriptor> 
   
   /**
    * @param properties The list of sub-properties if this property is a group of properties.
-   * 
    */
   public void setProperties(List<ConfigPropertyDescriptor> properties) {
     this.properties = properties;
@@ -216,7 +235,8 @@ public class ConfigPropertyDescriptor implements Pojo<ConfigPropertyDescriptor> 
     
     /**
      * Will set the value of <code>type</code> field in the builder
-     * @param type * Property value type, see {@link org.jxapi.pojo.descriptor.Type}, should be a primitive type e.g.
+     * @param type Property value type, see {@link org.jxapi.pojo.descriptor.Type}, should be a primitive type e.g. 'STRING', 'INT', 'LONG', 'BIGDECIMAL', 'BOOLEAN'.
+     * When property is a group of sub-properties, this property is ignored.
      * 
      * @return Builder instance
      * @see #setType(String)
@@ -240,7 +260,6 @@ public class ConfigPropertyDescriptor implements Pojo<ConfigPropertyDescriptor> 
     /**
      * Will set the value of <code>properties</code> field in the builder
      * @param properties The list of sub-properties if this property is a group of properties.
-     * 
      * @return Builder instance
      * @see #setProperties(List<ConfigPropertyDescriptor>)
      */

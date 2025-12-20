@@ -2,13 +2,13 @@
 
 <!-- BEGIN TABLE OF CONTENTS -->
   - [REST endpoint pagination](#rest-endpoint-pagination)
-    - [Developping a wrapper: Have a REST endpoint implement pagination features.](#developping-a-wrapper-have-a-rest-endpoint-implement-pagination-features)
+    - [Developing a wrapper: Have a REST endpoint implement pagination features.](#developing-a-wrapper-have-a-rest-endpoint-implement-pagination-features)
     - [Using a wrapper: handle pagination with PaginationUtil class](#using-a-wrapper-handle-pagination-with-paginationutil-class)
       - [Key Features](#key-features)
       - [Example Usage of a paginated endpoint](#example-usage-of-a-paginated-endpoint)
         - [Step 1: Define Your API and Request](#step-1-define-your-api-and-request)
         - [Step 2: Prepare the Initial Request](#step-2-prepare-the-initial-request)
-        - [Step 3: Use `PaginationUtil.fetchAllPAges(FutureRestResponse)` to fetch response remaining pages.](#step-3-use-paginationutilfetchallpagesfuturerestresponse-to-fetch-response-remaining-pages)
+        - [Step 3: Use `PaginationUtil.fetchAllPages(FutureRestResponse)` to fetch response remaining pages.](#step-3-use-paginationutilfetchallpagesfuturerestresponse-to-fetch-response-remaining-pages)
 
 <!-- END TABLE OF CONTENTS -->
 
@@ -17,7 +17,7 @@ A common feature in REST APIs is the 'pagination' of responses to an endpoint. W
 JXAPI wrapper allows to define pagination for such endpoint, so that fetching next or remaining pages from a response can be handled easily regardless of pagination protocol.
 
 
-## Developping a wrapper: Have a REST endpoint implement pagination features.
+## Developing a wrapper: Have a REST endpoint implement pagination features.
 
 Here is an example of a paginated endpoint definition in a descriptor file:
 ```yaml
@@ -114,7 +114,7 @@ request.setPage(1);
 The example above assumes there is a `page` property available on request object to set the desired page index.
 Paginated REST APIs often also provide a parameter to set the desired page size (max number of items per page).
 
-#### Step 3: Use `PaginationUtil.fetchAllPAges(FutureRestResponse)` to fetch response remaining pages.
+#### Step 3: Use `PaginationUtil.fetchAllPages(FutureRestResponse)` to fetch response remaining pages.
 Call the `fetchAllPages` method to fetch all pages of data:
 ```java
 FutureRestResponse<List<MyApiPaginatedResponse>> response = PaginationUtil.fetchAllPages(getPage(request));

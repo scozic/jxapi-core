@@ -4,8 +4,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import org.jxapi.exchange.ExchangeApiEvent;
-import org.jxapi.exchange.ExchangeApiObserver;
+import org.jxapi.exchange.ExchangeEvent;
+import org.jxapi.exchange.ExchangeObserver;
 import org.jxapi.netutils.deserialization.MessageDeserializer;
 import org.jxapi.util.EncodingUtil;
 import org.slf4j.Logger;
@@ -15,7 +15,7 @@ import org.slf4j.LoggerFactory;
  * Default implementation of a {@link WebsocketEndpoint}.
  * <p>
  * This class manages the subscriptions to a websocket topic, using a
- * {@link WebsocketManager} to wrap {@link Websocket} and subscribe/unsubscribe
+ * {@link WebsocketClient} to wrap {@link Websocket} and subscribe/unsubscribe
  * to topic, and a {@link MessageDeserializer} to deserialize incoming messages.
  * 
  * @param <M> the type of messages that this endpoint will handle.
@@ -26,19 +26,19 @@ public class DefaultWebsocketEndpoint<M> implements WebsocketEndpoint<M> {
   private final Logger log = LoggerFactory.getLogger(DefaultWebsocketEndpoint.class);
   
   /**
-   * The {@link WebsocketManager} that will be used to subscribe/unsubscribe to topics
+   * The {@link WebsocketClient} that will be used to subscribe/unsubscribe to topics
    */
-  protected final WebsocketManager websocketManager;
+  private WebsocketClient websocketClient;
   
   /**
    * The {@link MessageDeserializer} that will be used to deserialize incoming messages
    */
-  protected final MessageDeserializer<M> messageDeserializer;
+  private MessageDeserializer<M> messageDeserializer;
   
   /**
    * Map of subscriptions by topic name (key is the topic name)
    */
-  protected final Map<String, Subscription> subscriptionsByTopic  = new HashMap<>();
+  private final Map<String, Subscription> subscriptionsByTopic  = new HashMap<>();
   
   /**
    * Map of subscriptions by subscription id (key is the subscription id)
@@ -48,46 +48,25 @@ public class DefaultWebsocketEndpoint<M> implements WebsocketEndpoint<M> {
   /**
    * The endpoint name
    */
-  protected final String endpointName;
+  private String endpointName;
   
   /**
-   * The {@link ExchangeApiObserver} that will be used to dispatch events
+   * The {@link ExchangeObserver} that will be used to dispatch events
    */
-  protected final ExchangeApiObserver observer;
+  private ExchangeObserver observer;
   
   private AtomicInteger subscriptionCounter = new AtomicInteger(0);
 
-  /**
-   * Constructor
-   * 
-   * @param endpointName        the endpoint name
-   * @param websocketManager    the {@link WebsocketManager} that will be used to
-   *                            subscribe/unsubscribe to topics
-   * @param messageDeserializer the {@link MessageDeserializer} that will be used
-   *                            to deserialize incoming messages
-   * @param observer            the {@link ExchangeApiObserver} that will be used
-   *                            to dispatch events
-   */
-  public DefaultWebsocketEndpoint(String endpointName,  
-                  WebsocketManager websocketManager, 
-                  MessageDeserializer<M> messageDeserializer,
-                  ExchangeApiObserver observer) {
-    this.endpointName = endpointName;
-    this.messageDeserializer = messageDeserializer;
-    this.websocketManager = websocketManager;
-    this.observer = observer;
-  }
-
   @Override
   public synchronized String subscribe(WebsocketSubscribeRequest request, WebsocketListener<M> listener) {
-    request.setEnpoint(endpointName);
+    request.setEnpoint(getEndpointName());
     String topic = request.getTopic();
     Subscription sub = subscriptionsByTopic.computeIfAbsent(topic, t -> new Subscription(request));
     String subId = generateSubscriptionId(request);
     sub.addListener(subId, listener);
     subscriptionsById.put(subId, sub);
-    if (observer != null) {
-      dispatchApiEvent(ExchangeApiEvent.createWebsocketSubscribeEvent(request, subId));
+    if (getObserver() != null) {
+      dispatchApiEvent(ExchangeEvent.createWebsocketSubscribeEvent(request, subId));
     }
     log.debug("subscribeTickerStream > {} returned subscriptionId:{}", request, subId);
     return subId;
@@ -99,8 +78,8 @@ public class DefaultWebsocketEndpoint<M> implements WebsocketEndpoint<M> {
     if (sub == null) {
       return false;
     }
-    if (observer != null) {
-      dispatchApiEvent(ExchangeApiEvent.createWebsocketUnsubscribeEvent(sub.request, unsubscriptionId));
+    if (getObserver() != null) {
+      dispatchApiEvent(ExchangeEvent.createWebsocketUnsubscribeEvent(sub.request, unsubscriptionId));
     }
     sub.removeListener(unsubscriptionId);
     String topic = sub.request.getTopic();
@@ -131,13 +110,41 @@ public class DefaultWebsocketEndpoint<M> implements WebsocketEndpoint<M> {
   }
 
   /**
-   * Dispatches an {@link ExchangeApiEvent} to the {@link ExchangeApiObserver}.
-   * @param event the {@link ExchangeApiEvent} to dispatch
+   * Dispatches an {@link ExchangeEvent} to the {@link ExchangeObserver}.
+   * @param event the {@link ExchangeEvent} to dispatch
    */
-  protected void dispatchApiEvent(ExchangeApiEvent event) {
-    this.observer.handleEvent(event);
+  protected void dispatchApiEvent(ExchangeEvent event) {
+    this.getObserver().handleEvent(event);
   }
   
+  public WebsocketClient getWebsocketClient() {
+    return websocketClient;
+  }
+
+  public void setWebsocketClient(WebsocketClient websocketClient) {
+    this.websocketClient = websocketClient;
+  }
+
+  public ExchangeObserver getObserver() {
+    return observer;
+  }
+
+  public void setObserver(ExchangeObserver observer) {
+    this.observer = observer;
+  }
+
+  public void setEndpointName(String endpointName) {
+    this.endpointName = endpointName;
+  }
+
+  public MessageDeserializer<M> getMessageDeserializer() {
+    return messageDeserializer;
+  }
+
+  public void setMessageDeserializer(MessageDeserializer<M> messageDeserializer) {
+    this.messageDeserializer = messageDeserializer;
+  }
+
   private class Subscription {
     final WebsocketSubscribeRequest request;
     final Map<String , WebsocketListener<M>> listeners = new HashMap<>();
@@ -150,7 +157,7 @@ public class DefaultWebsocketEndpoint<M> implements WebsocketEndpoint<M> {
       listeners.put(subscriptionId, listener);
       if (listeners.size() == 1) {
         // First subscription
-        websocketManager.subscribe(request.getTopic(), 
+        getWebsocketClient().subscribe(request.getTopic(), 
                        request.getMessageTopicMatcherFactory(), 
                        this::dispatch);
       }
@@ -159,23 +166,23 @@ public class DefaultWebsocketEndpoint<M> implements WebsocketEndpoint<M> {
     public void removeListener(String subscriptionId) {
       listeners.remove(subscriptionId);
       if (listeners.size() <= 0) {
-        websocketManager.unsubscribe(request.getTopic());
+        getWebsocketClient().unsubscribe(request.getTopic());
       }
     }
     
     private void dispatch(String message) {
       try {
         if (!listeners.isEmpty()) {
-          M msg = messageDeserializer.deserialize(message);
+          M msg = getMessageDeserializer().deserialize(message);
           listeners.values().forEach(l -> l.handleMessage(msg));
-          if (observer != null) {
-            dispatchApiEvent(ExchangeApiEvent.createWebsocketMessageEvent(request, message));
+          if (getObserver() != null) {
+            dispatchApiEvent(ExchangeEvent.createWebsocketMessageEvent(request, message));
           }
         }
       } catch (Exception ex) {
         String errMsg = "Error while dispatching message [" + EncodingUtil.prettyPrintLongString(message) + "]"; 
         log.error(errMsg, ex);
-        dispatchApiEvent(ExchangeApiEvent.createWebsocketErrorEvent(new WebsocketException(errMsg, ex)));
+        dispatchApiEvent(ExchangeEvent.createWebsocketErrorEvent(new WebsocketException(errMsg, ex)));
       }
       
     }

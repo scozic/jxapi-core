@@ -4,20 +4,21 @@ import java.util.List;
 import java.util.Map;
 
 import org.jxapi.netutils.rest.HttpClient;
-import org.jxapi.netutils.websocket.WebsocketManager;
+import org.jxapi.netutils.websocket.WebsocketClient;
 import org.jxapi.util.CollectionUtil;
+import org.jxapi.util.DefaultDisposable;
 
-public class DefaultNetwork implements Network {
+public class DefaultNetwork extends DefaultDisposable implements Network {
   
   private final Map<String, HttpClient> httpClients = CollectionUtil.createMap();
-  private final Map<String, WebsocketManager> websockets = CollectionUtil.createMap();
+  private final Map<String, WebsocketClient> websockets = CollectionUtil.createMap();
 
   public void registerHttpClient(String clientId, HttpClient httpClient) {
     this.httpClients.put(clientId, httpClient);
   }
   
-  public void registerWebsocket(String wsId, WebsocketManager websocketManager) {
-    this.websockets.put(wsId, websocketManager);
+  public void registerWebsocket(String wsId, WebsocketClient websocketClient) {
+    this.websockets.put(wsId, websocketClient);
   }
 
   @Override
@@ -26,7 +27,7 @@ public class DefaultNetwork implements Network {
   }
 
   @Override
-  public WebsocketManager getWebsocket(String wsId) {
+  public WebsocketClient getWebsocket(String wsId) {
     return this.websockets.get(wsId);
   }
   
@@ -36,6 +37,17 @@ public class DefaultNetwork implements Network {
   
   public final List<String> getRegisteredWebsocketIds() {
     return this.websockets.keySet().stream().toList();
+  }
+
+  @Override
+  public void dispose() {
+    super.dispose();
+    for (HttpClient httpClient : this.httpClients.values()) {
+      httpClient.dispose();
+    }
+    for (WebsocketClient websocketClient : this.websockets.values()) {
+      websocketClient.dispose();
+    }
   }
 
 }
