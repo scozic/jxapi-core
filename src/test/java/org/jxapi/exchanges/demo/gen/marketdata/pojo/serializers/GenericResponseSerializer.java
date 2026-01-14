@@ -6,7 +6,7 @@ import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import javax.annotation.processing.Generated;
 import org.jxapi.exchanges.demo.gen.marketdata.pojo.GenericResponse;
-import org.jxapi.netutils.serialization.json.AbstractJsonMessageSerializer;
+import org.jxapi.netutils.serialization.json.AbstractJsonValueSerializer;
 import static org.jxapi.util.JsonUtil.writeIntField;
 
 /**
@@ -14,7 +14,7 @@ import static org.jxapi.util.JsonUtil.writeIntField;
  * @see GenericResponse
  */
 @Generated("org.jxapi.generator.java.pojo.JsonPojoSerializerGenerator")
-public class GenericResponseSerializer extends AbstractJsonMessageSerializer<GenericResponse> {
+public class GenericResponseSerializer extends AbstractJsonValueSerializer<GenericResponse> {
   
   /**
    * Constructor

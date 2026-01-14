@@ -3,19 +3,19 @@ package org.jxapi.util;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import org.jxapi.exchange.ExchangeApiEvent;
-import org.jxapi.exchange.ExchangeApiObserver;
+import org.jxapi.exchange.ExchangeEvent;
+import org.jxapi.exchange.ExchangeObserver;
 
 /**
- * {@link ExchangeApiObserver} implementation used in websocket subscription
+ * {@link ExchangeObserver} implementation used in websocket subscription
  * demo snippets: Logs websocket event related messages.
  */
-public class WebsocketDemoApiObserver implements ExchangeApiObserver {
+public class WebsocketDemoApiObserver implements ExchangeObserver {
   
   private static final Logger log = LoggerFactory.getLogger(WebsocketDemoApiObserver.class);
 
   @Override
-  public void handleEvent(ExchangeApiEvent event) {
+  public void handleEvent(ExchangeEvent event) {
     switch (event.getType()) {
     case WEBSOCKET_ERROR:
       log.error("Error raised from websocket{}", event, event.getWebsocketError());

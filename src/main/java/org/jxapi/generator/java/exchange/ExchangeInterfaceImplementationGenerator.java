@@ -13,8 +13,12 @@ import org.jxapi.exchange.Exchange;
 import org.jxapi.exchange.ExchangeApi;
 import org.jxapi.exchange.descriptor.gen.ExchangeApiDescriptor;
 import org.jxapi.exchange.descriptor.gen.ExchangeDescriptor;
+import org.jxapi.exchange.descriptor.gen.HttpClientDescriptor;
+import org.jxapi.exchange.descriptor.gen.NetworkDescriptor;
+import org.jxapi.exchange.descriptor.gen.WebsocketClientDescriptor;
 import org.jxapi.generator.java.JavaCodeGenUtil;
 import org.jxapi.generator.java.JavaTypeGenerator;
+import org.jxapi.generator.java.exchange.api.ExchangeApiInterfaceGenerator;
 import org.jxapi.netutils.rest.ratelimits.RateLimitRule;
 import org.jxapi.netutils.rest.ratelimits.RequestThrottler;
 import org.jxapi.util.CollectionUtil;
@@ -60,7 +64,8 @@ public class ExchangeInterfaceImplementationGenerator extends JavaTypeGenerator 
   
   private static final String EXCHANGE_NAME_PARAMETER = "exchangeName";
   private static final String PROPERTIES_PARAMETER = "properties";
-  private static final String REQUEST_THROTTLER_VARIABLE_NAME = "requestThrottler";
+  private static final String ARG_SEPARATOR = ",\n" + JavaCodeGenUtil.INDENTATION;
+  
   
   /**
    * Generates the name of the interface implementation class for the given exchange descriptor
@@ -106,18 +111,6 @@ public class ExchangeInterfaceImplementationGenerator extends JavaTypeGenerator 
     boolean hasRateLimits = !CollectionUtils.isEmpty(rateLimits);
     if (hasRateLimits) {
       rateLimits.forEach(this::generateRateLimitVariable);
-      if (apis.stream().anyMatch(api -> !CollectionUtils.isEmpty(api.getRestEndpoints()))) {
-        addImport(RequestThrottler.class);
-        appendToBody("\nprivate final ")
-          .append(RequestThrottler.class.getSimpleName())
-          .append(" ")
-          .append(REQUEST_THROTTLER_VARIABLE_NAME)
-          .append(" = new ")
-          .append(RequestThrottler.class.getSimpleName())
-          .append("(\"")
-          .append(exchangeDescriptor.getId())
-          .append("\");\n");
-      }
     }
     
     StringBuilder implementationConstructorBody = new StringBuilder();
@@ -138,16 +131,12 @@ public class ExchangeInterfaceImplementationGenerator extends JavaTypeGenerator 
           PROPERTIES_PARAMETER,
           getImports()))
       .append(JavaCodeGenUtil.SUPER_ARG_SEPARATOR)
-      .append(ExchangeGenUtil.generateSubstitutionInstructionDeclaration(
-          exchangeDescriptor.getWebsocketUrl(), 
-          exchangeDescriptor, 
-          null,
-          PROPERTIES_PARAMETER,
-          getImports()))
+      .append(hasRateLimits)
       .append(");\n");
-    
+    generateCreateNetworkInstructions(implementationConstructorBody);
     StringBuilder apiMethodsDeclarations = new StringBuilder(); 
     if (exchangeDescriptor.getApis() != null) {
+      implementationConstructorBody.append("\n // APIs\n");
       for (ExchangeApiDescriptor api: exchangeDescriptor.getApis()) {
         String apiClassName = ExchangeGenUtil.getApiInterfaceClassName(exchangeDescriptor, api);
         String apiSimpleClassName = JavaCodeGenUtil.getClassNameWithoutPackage(apiClassName);
@@ -161,13 +150,13 @@ public class ExchangeInterfaceImplementationGenerator extends JavaTypeGenerator 
         implementationConstructorBody
             .append("this.")
             .append(apiVariableName)
-            .append(" = addApi(new ")
+            .append(" = addApi(")
+            .append(apiSimpleClassName)
+            .append(".")
+            .append(ExchangeApiInterfaceGenerator.EXCHANGE_API_NAME_VARIABLE)
+            .append(", new ")
             .append(simpleApiImplClassName)
-            .append("(this");
-        if (hasRateLimits && !CollectionUtils.isEmpty(api.getRestEndpoints())) {
-          implementationConstructorBody.append(", ").append(REQUEST_THROTTLER_VARIABLE_NAME);
-        }
-        implementationConstructorBody.append("));\n");
+            .append("(this, exchangeObserver));\n");
         apiMethodsDeclarations.append("@Override\npublic ")
                     .append(getApiMethodSignature)
                     .append(" ")
@@ -240,6 +229,43 @@ public class ExchangeInterfaceImplementationGenerator extends JavaTypeGenerator 
     }
     appendToBody("private final " + declaration + "\n");
     return variableName;
+  }
+  
+  private void generateCreateNetworkInstructions(StringBuilder constructorBody) {
+    constructorBody.append("// Network\n");
+    NetworkDescriptor network = exchangeDescriptor.getNetwork();
+    for (HttpClientDescriptor httpClient: CollectionUtil.emptyIfNull(network.getHttpClients())) {
+      constructorBody.append("createHttpClient(")
+          .append(JavaCodeGenUtil.getQuotedString(httpClient.getName()))
+          .append(ARG_SEPARATOR)
+          .append(JavaCodeGenUtil.getQuotedString(httpClient.getHttpRequestInterceptorFactory()))
+          .append(ARG_SEPARATOR)
+          .append(JavaCodeGenUtil.getQuotedString(httpClient.getHttpRequestExecutorFactory()))
+          .append(ARG_SEPARATOR)
+          .append(httpClient.getHttpRequestTimeout())
+          .append(");\n");
+    }
+    
+    for (WebsocketClientDescriptor websocketClient : CollectionUtil.emptyIfNull(network.getWebsocketClients())) {
+      constructorBody.append("createWebsocketClient(")
+          .append(JavaCodeGenUtil.getQuotedString(websocketClient.getName()))
+          .append(ARG_SEPARATOR)
+          .append(generateConstantOrPropertiesPlaceholdersSubstitutionInstruction(websocketClient.getWebsocketUrl()))
+          .append(ARG_SEPARATOR)
+          .append(generateConstantOrPropertiesPlaceholdersSubstitutionInstruction(websocketClient.getWebsocketFactory()))
+          .append(ARG_SEPARATOR)
+          .append(generateConstantOrPropertiesPlaceholdersSubstitutionInstruction(websocketClient.getWebsocketHookFactory()))
+          .append(");\n");
+    }
+  }
+  
+  private String generateConstantOrPropertiesPlaceholdersSubstitutionInstruction(String template) {
+    return ExchangeGenUtil.generateSubstitutionInstructionDeclaration(
+        template, 
+        exchangeDescriptor,  
+        List.of(),
+        PROPERTIES_PARAMETER, 
+        getImports());
   }
 
 }

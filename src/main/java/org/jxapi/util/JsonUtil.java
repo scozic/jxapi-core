@@ -781,7 +781,9 @@ public class JsonUtil {
    */
   public static class JsonSerializableFromParserSerializer extends StdSerializer<JsonSerializableFromParser> {
 
-    /**
+    private static final long serialVersionUID = -8453149308374664479L;
+
+	/**
      * Creates a new {@link JsonSerializableFromParserSerializer} instance, suitable
      * for serializing {@link JsonSerializableFromParser} instances.
      */

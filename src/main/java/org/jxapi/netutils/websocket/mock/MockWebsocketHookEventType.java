@@ -9,7 +9,7 @@ public enum MockWebsocketHookEventType {
 
   /**
    * Event that is sent when the
-   * {@link MockWebsocketHook#init(org.jxapi.netutils.websocket.WebsocketManager)}
+   * {@link MockWebsocketHook#init(org.jxapi.netutils.websocket.WebsocketClient)}
    * method has been called.
    */
   INIT,

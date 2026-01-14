@@ -91,14 +91,10 @@ public class ExchangeDescriptorParserTest {
   private void checkMarketDataApi(ExchangeApiDescriptor marketDataApi) {
     Assert.assertEquals("MarketData", marketDataApi.getName());
     Assert.assertEquals("The market data API of MyTestExchange. Author: ${constants.authorFullName}", marketDataApi.getDescription());
-    Assert.assertEquals("com.foo.bar.BarHttpRequestInterceptorFactory", marketDataApi.getHttpRequestInterceptorFactory());
     List<RestEndpointDescriptor> restEndpoints = marketDataApi.getRestEndpoints();
     Assert.assertEquals(2, restEndpoints.size());
     checkExchangeInfoRestEndpoint(restEndpoints.get(0));
     checkTickersRestEndpooint(restEndpoints.get(1));
-    Assert.assertEquals("wss://com.foo.exchange/ws", marketDataApi.getWebsocketUrl());
-    Assert.assertEquals("com.foo.bar.BarWebsocketFactory", marketDataApi.getWebsocketFactory());
-    Assert.assertEquals("com.foo.bar.BarWebsocketHookFactory", marketDataApi.getWebsocketHookFactory());
     List<WebsocketEndpointDescriptor> websocketEndpoints = marketDataApi.getWebsocketEndpoints();
     Assert.assertEquals(1, websocketEndpoints.size());
     checkTickerStreamWebsocketEndpoint(websocketEndpoints.get(0));
@@ -289,8 +285,6 @@ public class ExchangeDescriptorParserTest {
     checkEmployeeExchangeProperties(exchangeDescriptor);
     
     Assert.assertEquals("${config.server.baseHttpUrl}", exchangeDescriptor.getHttpUrl());
-    Assert.assertEquals("org.jxapi.exchanges.demo.net.DemoExchangeHttpRequestInterceptorFactory", 
-              exchangeDescriptor.getHttpRequestInterceptorFactory());
     Assert.assertEquals(1, exchangeDescriptor.getApis().size());
     checkEmployeeExchangeConstants(exchangeDescriptor.getConstants());
     checkEmployeeExchangeV1ApiGroup(exchangeDescriptor.getApis().get(0));
@@ -321,9 +315,6 @@ public class ExchangeDescriptorParserTest {
     checkEmployeeExchangeV1ApiGroupAddEmployeesRestEndpoint(restEndpoints.get(2));
     checkEmployeeExchangeV1ApiGroupUpdateEmployeesRestEndpoint(restEndpoints.get(3));
     checkEmployeeExchangeV1ApiGroupDeleteEmployeesRestEndpoint(restEndpoints.get(4));
-    Assert.assertEquals("${config.server.baseWebsocketUrl}", api.getWebsocketUrl());
-    Assert.assertEquals("org.jxapi.exchanges.demo.net.DemoExchangeWebsocketHookFactory", 
-              api.getWebsocketHookFactory());
     List<WebsocketEndpointDescriptor> websocketEndpoints = api.getWebsocketEndpoints();
     Assert.assertEquals(1, websocketEndpoints.size());
     checkEmployeeUpdatesWebsocketEndpoint(websocketEndpoints.get(0));

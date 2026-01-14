@@ -221,7 +221,9 @@ public class CollectionUtil {
   
   private static class ModifiableMap<K, V> extends LinkedHashMap<K, V> {
     
-    public ModifiableMap() {
+    private static final long serialVersionUID = -6725437561193347431L;
+
+	public ModifiableMap() {
       super();
     }
     
@@ -237,7 +239,9 @@ public class CollectionUtil {
   
   private static class ModifiableList<T> extends ArrayList<T> {
     
-    public ModifiableList() {
+    private static final long serialVersionUID = 8279767079893684245L;
+
+	public ModifiableList() {
       super();
     }
     

@@ -7,17 +7,22 @@ This section describes such descriptor file.
 
 <!-- BEGIN TABLE OF CONTENTS -->
   - [API descriptor file](#api-descriptor-file)
-  - ['Demo' exchange descriptor example](#demo-exchange-descriptor-example)
+  - ['Employee' exchange descriptor example](#employee-exchange-descriptor-example)
     - [Exchange](#exchange)
     - [Configuration properties and constants.](#configuration-properties-and-constants)
       - [Constants](#constants)
       - [Configuration properties](#configuration-properties)
         - [Demo configuration properties](#demo-configuration-properties)
+      - [Network](#network)
+        - [HTTP client](#http-client)
     - [API groups](#api-groups)
     - [REST API endpoints](#rest-api-endpoints)
     - [WebSocket API endpoints](#websocket-api-endpoints)
       - [Topic Placeholders](#topic-placeholders)
-      - [Message topic matcher fields](#message-topic-matcher-fields)
+      - [Message topic matcher](#message-topic-matcher)
+        - [Message matching using a single field](#message-matching-using-a-single-field)
+        - [Matching messages using multiple fields](#matching-messages-using-multiple-fields)
+        - [TopicMatcher Placeholders](#topicmatcher-placeholders)
       - [Message Matching](#message-matching)
     - [Flexible data structure definition](#flexible-data-structure-definition)
       - [Primitive Types](#primitive-types)
@@ -29,6 +34,8 @@ This section describes such descriptor file.
         - [LONG_LIST_LIST](#longlistlist)
       - [Object name](#object-name)
       - [Sample value](#sample-value)
+      - [Default value](#default-value)
+      - ['in' (QUERY or PATH)](#in-query-or-path)
     - [API request rate limit](#api-request-rate-limit)
       - [Rate Limit Levels](#rate-limit-levels)
       - [Example](#example)
@@ -36,7 +43,7 @@ This section describes such descriptor file.
 
 <!-- END TABLE OF CONTENTS -->
 
-# 'Demo' exchange descriptor example
+# 'Employee' exchange descriptor example
 
 The following is content of a complete descriptor file [employeeExchange.yaml](../../src/test/resources/employeeExchange.yaml).
 Descriptor file can also be specified in JSON format, see [employeeExchange.json](../../src/test/resources/employeeExchange.json).
@@ -52,64 +59,81 @@ description: >
   Notice how the 'employee' object present in APIs request and responses is used in multiple endpoints and its properties defined only once.
 docUrl: https://www.example.com/docs/employee
 properties:
- - name: baseHttpUrl
-   description: "Base URL for REST endpoints the Employee Exchange API"
- - name: baseWebsocketUrl
-   description: Base URL for websocket endpoints of the Employee Exchange API
- - name: demoEmployeeId
-   description: "Used in demo snippets to set as value of Employee 'id' property"
-   defaultValue: 1
+ - name: server
+   description: Server related properties
+   properties:
+    - name: "baseHttpUrl"
+      description: "Base URL for REST endpoints the Employee Exchange API"
+    - name: "baseWebsocketUrl"
+      description: "Base URL for websocket endpoints of the Employee Exchange API"
 basePackage: org.jxapi.exchanges.employee.gen
-httpUrl: ${config.baseHttpUrl}
-httpRequestInterceptorFactory: org.jxapi.exchanges.demo.net.DemoExchangeHttpRequestInterceptorFactory
+httpUrl: ${config.server.baseHttpUrl}
+constants:
+  - name: defaultPageSize
+    type: INT
+    description: Default page size for paginated requests
+    value: 10
+  - name: maxPageSize
+    type: INT
+    description: Maximum page size for paginated requests
+    value: 10000
+  - name: "profile"
+    description: "Employee profile types"
+    constants:
+      - name: regular
+        description: "Regular employee profile"
+        value: REGULAR
+      - name: admin
+        description: "Admin employee profile"
+        value: ADMIN
+  - name: "updateEmployeeType"
+    description: "Value of eventType field in WS message"
+    constants:        
+      - name: add
+        description: Value of eventType field in WS message for new employee added event
+        value: ADD
+      - name: update
+        description: Value of eventType field in WS message for update of an existing employee event
+        value: UPDATE
+      - name: delete
+        description: Value of eventType field in WS message for update of an existing employee event
+        value: DELETE
+network:
+ httpClients:
+  - name: httpDefault
+    httpRequestInterceptorFactory: org.jxapi.exchanges.demo.net.DemoExchangeHttpRequestInterceptorFactory
+ websocketClients:
+  - name: wsDefault
+    websocketUrl: ${config.server.baseWebsocketUrl}
+    websocketHookFactory: org.jxapi.exchanges.demo.net.DemoExchangeWebsocketHookFactory        
 apis:
- - name: V1
+ - name: v1
    description: "Version 1 of the Employee API"
    httpUrl: v1
-   constants:
-    - name: defaultPageSize
-      type: INT
-      description: Default page size for paginated requests
-      value: 10
-    - name: maxPageSize
-      type: INT
-      description: Maximum page size for paginated requests
-      value: 10000
-    - name: profileRegular
-      description: Regular employee profile
-      value: REGULAR
-    - name: profileAdmin
-      description: Admin employee profile
-      value: ADMIN
-    - name: updateEmployeeTypeAdd
-      description: Value of eventType field in WS message for new employee added event
-      value: ADD
-    - name: updateEmployeeTypeUpate
-      description: Value of eventType field in WS message for update of an existing employee event
-      value: UPDATE
-    - name: updateEmployeeTypeDelete
-      description: Value of eventType field in WS message for update of an existing employee event
-      value: DELETE
+   defaultHttpClient: httpDefault
+   defaultWebsocketClient: wsDefault
    restEndpoints:
     - name: getEmployee
       description: Get employee details by ID
       httpMethod: GET
       docUrl: https://www.example.com/docs/employee/get
       url: /employee
-      urlParameters: /${id}
       request:
-       name: id
-       type: INT
-       description: Employee ID
-       sampleValue: ${config.demoEmployeeId}
+        name: id
+        type: INT
+        description: Employee ID
+        sampleValue: 1
+        in: PATH
       response:
        objectName: Employee
+       description: Employee details response for requested employee ID
+       objectDescription: Employee details
        type: OBJECT
        properties:
         - name: id
           type: INT
           description: Employee ID
-          sampleValue: ${config.demoEmployeeId}
+          sampleValue: 1
         - name: firstName
           description: "Employee first name"
           sampleValue: John
@@ -117,8 +141,8 @@ apis:
           description: Employee last name
           sampleValue: Doe
         - name: profile
-          description: Employee profile. Can be ${constants.profileRegular} or ${constants.profileAdmin}
-          sampleValue: ${constants.profileRegular}
+          description: Employee profile. See ${constants.profile}
+          sampleValue: ${constants.profile.regular}
     - name: getAllEmployees
       description: Get all employees
       httpMethod: GET
@@ -177,14 +201,12 @@ apis:
       httpMethod: DELETE
       docUrl: https://www.example.com/docs/employee/delete
       url: /employee
-      urlParameters: /${id}
       request:
        name: id
        type: INT
        description: Employee ID
-       sampleValue: ${config.demoEmployeeId}
-   websocketUrl: ${config.baseWebsocketUrl}
-   websocketHookFactory: org.jxapi.exchanges.demo.net.DemoExchangeWebsocketHookFactory  
+       sampleValue: 1
+       in: PATH
    websocketEndpoints:
     - name: employeeUpdates
       description: Employee updates websocket
@@ -193,8 +215,8 @@ apis:
        description: Employee update message
        properties:
         - name: eventType
-          description: Type of event, e.g. one of ${constants.updateEmployeeTypeAdd}, ${constants.updateEmployeeTypeUpdate} or ${constants.updateEmployeeTypeDelete}
-          sampleValue: ${constants.updateEmployeeTypeUpdate}
+          description: Type of event, e.g. one of ${constants.updateEmployeeType.add}, ${constants.updateEmployeeType.update} or ${constants.updateEmployeeType.delete} (see ${constants.updateEmployeeType} constants).
+          sampleValue: ${constants.updateEmployeeType.update}
         - name: employee
           objectName: Employee
           description: Employee that was updated
@@ -206,19 +228,19 @@ Such exchange descriptor can also be written across multiple files with same exc
 For complex API specifications with many endpoints it is preferable to do so. Have a look at [employeeExchange](../../src/test/resources/employeeExchange/) folder to see the same exchange as above defined in multiple files.
 
 ## Exchange
-The root of JSON descriptor data is a JSON object referred to as 'exchange'. An exchange is the root of API wrapper, mapped to [ExchangeDescriptor](../../src/main/java/com/scz/jxapi/exchange/descriptor/ExchangeDescriptor.java). It is composed of the following properties:
+The root of JSON descriptor data is a JSON object referred to as 'exchange'. An exchange is the root of API wrapper, mapped to [ExchangeDescriptor](../../src/main/java/org/jxapi/exchange/descriptor/ExchangeDescriptor.java). It is composed of the following properties:
  * `name`: The name of this wrapper or API ( here `Employee`)
  * `description`: A description of this exchange. May contain [placeholders](#placeholders) referencing exchange contants or properties.
  * `docUrl`: Link to exchange website API documentation home page
  * `basePackage`: The base Java package name for the generated code. It is recommended this package name contains `.gen.` as a convention for packages containing generated code that should not be edited manually.
- * `properties`: A list of properties required to configure the exchange. A property object is mapped to [ConfigProperty](../../src/main/java/com/scz/jxapi/exchange/descriptor/ConfigProperty.java). Wrappers are instantiated with `Properties` object expected to carry defined configuration properties like API key / secret.
- * `constants`: A list of constant values used in the exchange. A constant object is mapped to [Constant](../../src/main/java/com/scz/jxapi/exchange/descriptor/Constant.java) object. Defining constants for instance for possible values of a request or response field improves clarity and avoids duplication. Constants values or description may contain  [placeholders](#placeholders) referencing other previously defined exchange contants.
+ * `properties`: A list of properties required to configure the exchange. A property object is mapped to [ConfigProperty](../../src/main/java/org/jxapi/exchange/descriptor/ConfigProperty.java). Wrappers are instantiated with `Properties` object expected to carry defined configuration properties like API key / secret.
+ * `constants`: A list of constant values used in the exchange. A constant object is mapped to [Constant](../../src/main/java/org/jxapi/exchange/descriptor/Constant.java) object. Defining constants for instance for possible values of a request or response field improves clarity and avoids duplication. Constants values or description may contain  [placeholders](#placeholders) referencing other previously defined exchange contants.
  * `httpUrl`: The base URL for HTTP API endpoints. The value may contain  [placeholders](#placeholders) referencing exchange contants or configuration properties. In sample above, it is set to a placeholder `config.baseHttpUrl` that is meant to be replaced by base server URL set in `baseHttpUrl` config property. This property may not be set when there are every REST endpoint is defined with either `url` property set to a relative URL or belonging to API group with `httpUrl` set to an absolute URL.
- * `websocketUrl`: The base URL for websocket API endpoints. Works like `httpUrl` property: The value may contain  [placeholders](#placeholders) referencing exchange contants or configuration properties. In sample above, it is set to a placeholder `config.baseWebsocketUrl` that is meant to be replaced by base server URL set in `baseWebsocketUrl` config property. This property may not be set when there are every REST endpoint is defined with either `url` property set to a relative URL or belonging to API group with `baseWebsocketUrl` set to an absolute URL.
- * `httpRequestInterceptorFactory`: The factory class for creating HTTP request interceptors, see [HttpRequestInterceptorFactory](../../src/main/java/com/scz/jxapi/netutils/rest/HttpRequestInterceptorFactory.java). If for exchange requires specific headers to be  set for instance for authentication, a specific interceptor has to be provided through this property, see [HTTP request interceptor dev guide](./HttpRequestInterceptorDevGuide.md).
- * `httpRequestExecutorFactory`:  The factory for HTTP request executor, see [HttpRequestExecutorFactory](../../src/main/java/com/scz/jxapi/netutils/rest/HttpRequestExecutorFactory.java). Default implementation used when this property is not set is usually sufficient.
- * `websocketHookFactory`: The factory class for creating WebSocket hooks, see [WebsocketFactory](../../src/main/java/com/scz/jxapi/netutils/websocket/WebsocketHookFactory.java). Using a custom factory for hooks that implements exchange protocol specific handshake, heartbeats is generally required, see [Websocket hook dev guide](./WebsocketHookDevGuide.md)..
- * `websocketFactory`: The factory class for creating base websocket, see [WebsocketFactory](../../src/main/java/com/scz/jxapi/netutils/websocket/WebsocketFactory.java). The default implementation is usually sufficient.
+ * `httpRequestInterceptorFactory`: The factory class for creating HTTP request interceptors, see [HttpRequestInterceptorFactory](../../src/main/java/org/jxapi/netutils/rest/HttpRequestInterceptorFactory.java). If for exchange requires specific headers to be  set for instance for authentication, a specific interceptor has to be provided through this property, see [HTTP request interceptor dev guide](./HttpRequestInterceptorDevGuide.md).
+ * `httpRequestExecutorFactory`:  The factory for HTTP request executor, see [HttpRequestExecutorFactory](../../src/main/java/org/jxapi/netutils/rest/HttpRequestExecutorFactory.java). Default implementation used when this property is not set is usually sufficient.
+ * `websocketHookFactory`: The factory class for creating WebSocket hooks, see [WebsocketFactory](../../src/main/java/org/jxapi/netutils/websocket/WebsocketHookFactory.java). Using a custom factory for hooks that implements exchange protocol specific handshake, heartbeats is generally required, see [Websocket hook dev guide](./WebsocketHookDevGuide.md)..
+ * `websocketFactory`: The factory class for creating base websocket, see [WebsocketFactory](../../src/main/java/org/jxapi/netutils/websocket/WebsocketFactory.java). The default implementation is usually sufficient.
+ * `network`: This section describes the different HTTP and Websocket clients that will carry endpoint requests. Each REST endpoint must be defined an HTTP client and each Websocket endpoint must be defined a websocket endpoint present declared in [network](#network).
  * `apis`: A list of API groups, each containing HTTP and WebSocket endpoints, see [below](#api-groups).
 
 ## Configuration properties and constants.
@@ -256,23 +278,39 @@ There is one property for each parameter of each. List/Map/Object parameters can
 Every available property is listed in generated `demo-<exchangeId>.properties.dist` file.
 This file should be duplicated as `demo-<exchangeId>.properties` file (not to be put under version control if it contains sensitive/secret informations), that is used be default by demo snippets.
 
+### Network
+
+The `network` section declares HTTP and Websocket clients used by endpoints.
+
+#### HTTP client
+
+An HTTP client processes REST endpoint requests. It is composed of an interceptor that will pre-process incoming HTTP requests and executor that will send it on network and receive response asynchronously. If there are any REST endpoints, at least one HTTP client must be defined.
+
+ * `name`: Identifier of the client that can be referenced either in API groups `defaultHttpClient` or REST endpoint `httpClient` properties.
+ * `httpRequestInterceptorFactory`: The factory class for creating HTTP request interceptors, see [HttpRequestInterceptorFactory](../../src/main/java/org/jxapi/netutils/rest/HttpRequestInterceptorFactory.java). If for exchange requires specific headers to be  set for instance for authentication, a specific interceptor has to be provided through this property, see [HTTP request interceptor dev guide](./HttpRequestInterceptorDevGuide.md).
+ * `httpRequestExecutorFactory`:  The factory for HTTP request executor, see [HttpRequestExecutorFactory](../../src/main/java/org/jxapi/netutils/rest/HttpRequestExecutorFactory.java). Default implementation used when this property is not set is usually sufficient: This default implementation uses a shared [HttpClient](https://docs.oracle.com/en/java/javase/11/docs/api/java.net.http/java/net/http/HttpClient.html) with its dedicated multiple thread pool executor.
+
+
+ #### Websocket client
+
+ * `name`: Identifier of the client that can be referenced either in API groups `defaultWebsocketClient` or REST endpoint `websocketClient` properties.
+ * `websocketHookFactory`: The factory class for creating WebSocket hooks. Must be defined with a custom websocket hook factory, see [Websocket hook factory dev guide](./WebsocketHookDevGuide.md).
+ * `websocketFactory`: The factory class for creating base websocket, see [WebsocketFactory](../../src/main/java/org/jxapi/netutils/websocket/WebsocketFactory.java). The default implementation used when this property is not set is usually sufficient.
+ * `websocketUrl`: The URL to open websocket connection to. The value may contain  [placeholders](#placeholders) referencing exchange contants or configuration properties.
 
 ## API groups
 
- The exchange REST/Websocket endpoints are sorted in groups, this is useful to regroup API endpoints by functional affinity and not list every endpoint in a single interface. The API group object is mapped to [ExchangeApiDescriptor](../../src/main/java/com/scz/jxapi/exchange/descriptor/ExchangeApiDescriptor.java). It is composed of the following properties:
+ The exchange REST/Websocket endpoints are sorted in groups, this is useful to regroup API endpoints by functional affinity and not list every endpoint in a single interface. The API group object is mapped to [ExchangeApiDescriptor](../../src/main/java/org/jxapi/exchange/descriptor/ExchangeApiDescriptor.java). It is composed of the following properties:
  * `name`: API group name
  * `description`: A description of the API group. May contain [placeholders](#placeholders) referencing exchange or API group contants, or configuration properties. 
  * `httpUrl`: The base URL for HTTP API endpoints. It can be a relative path, in which case the actual base url is result of concantenation of base `httpUrl` in parent (exchange) property and value of this property if it is set. The value may contain  [placeholders](#placeholders) referencing exchange contants or configuration properties.
- * `websocketUrl`: The base URL for WebSocket API endpoints. It can be a relative path, in which case the actual base url is result of concantenation of base `websocketUrl` in parent (exchange) property and value of this property if it is set. The value may contain  [placeholders](#placeholders) referencing exchange contants or configuration properties.
- * `httpRequestInterceptorFactory`: The factory class for creating HTTP request interceptors. If not defined, the value of `httpRequestInterceptorFactory` in parent (exchange) property is used.
- * `websocketHookFactory`: The factory class for creating WebSocket hooks. If not defined, the value of `websocketHookFactory` in parent (exchange) property is used.
  * `rateLimits`: List of [rate limits](#api-request-rate-limit) request rate limitation to enforce in addition to rules defined in parent exchange.
  * `restEndpoints`: A list of REST API endpoints in this group, see [below](#rest-api-endpoints).
  * `websocketEndpoints`: A list of WebSocket API endpoints in this group, see [below](#websocket-api-endpoints).
 
 ## REST API endpoints
 A REST endpoint is an API interface which consists in sending a HTTP request with expected URL, verb... and request parameters which can be specifed as URL query parameters or as request body encoded in JSON format.
-Such REST endpoint JSON object in descriptor file is mapped to [RestEndpointDescriptor](../../src/main/java/com/scz/jxapi/exchange/descriptor/RestEndpointDescriptor.java).
+Such REST endpoint JSON object in descriptor file is mapped to [RestEndpointDescriptor](../../src/main/java/org/jxapi/exchange/descriptor/RestEndpointDescriptor.java).
 
 GET, DELETE HTTP methods do not expect a body in request, so parameters will be encoded to URL query params by default. They may also be serialized as path par ameters by tuning field [in](#in-query-or-path) property to `PATH`.
 For other methods, request parameters are serialized as JSON in request body.
@@ -305,13 +343,12 @@ Each WebSocket API endpoint is described by the following properties:
  * `name`: The name of the endpoint.
  * `docUrl`: Link to the endpoint's documentation.
  * `topic`: The topic to subscribe to. Should uniquely identify a websocket stream among every endpoints of this API group. May contain placeholders as specified in [Topic placeholders](#topic-placeholders).
- * `description`: A description of the endpoint. POST.
  * `description`: A description of the endpoint. May contain [placeholders](#placeholders) referencing exchange or API group contants, or configuration properties.  
  * `request`: The request object, containing properties for the request parameters, which will be used to build the subscription message to a topic.
  * `topicMatcher`: Describes the logic and fields used to match an incoming message on websocket as being relevant for subscription to this stream, see [Message topic matcher](#message-topic-matcher)
  * `message`: The message object, containing properties for the message data.
  
-Serializing a request to a subscription message, building the unsubscription message to cancel an existing subscription, sending or listening to 'heartbeat' messages is customized using a [WebsocketHook](../../src/main/java/com/scz/jxapi/netutils/websocket/WebsocketHook.java).
+Serializing a request to a subscription message, building the unsubscription message to cancel an existing subscription, sending or listening to 'heartbeat' messages is customized using a [WebsocketHook](../../src/main/java/org/jxapi/netutils/websocket/WebsocketHook.java).
 See [Websocket Hook dev guide](./WebsocketHookDevGuide.md)
 
 ### Topic Placeholders
@@ -339,7 +376,7 @@ Available placeholders are:
 
 ### Message topic matcher
 
-The `topicMatcher` property describes how an incoming message on websocket is matcheds as relevant for a subscription to this endpoint. This is achieved by matching one or more fields of message against a pattern.
+The `topicMatcher` property describes how an incoming message on websocket is matched as relevant for a subscription to this endpoint. This is achieved by matching one or more fields of message against a pattern.
 
 Examples:
 
@@ -402,7 +439,7 @@ topicMatcher:
 Like `topic` websocket endpoint property value, the value either plain value (`fieldValue`) or regular expression (`fieldRegexp`) property may contain placeholders for constants, configuration properties, subscription request or sub property of it, plus additionnal _topic_ (`${topic}`) placeholder is available,
 such placeholder will be replaced by computed value for `topic`.
 
-#### Matching messages carrying 2 fields with expected values
+
 
 ### Message Matching
 
@@ -433,7 +470,7 @@ In this example, the message is expected to contain fields `t` (subject), `s` (s
 By defining the topic with placeholders and specifying the message topic matcher fields, the WebSocket endpoint can accurately subscribe to the desired topic and match incoming messages based on the specified criteria.
 
 ## Flexible data structure definition
-Both REST endpoints request and response, Websocket endpoints subscription request and response message are defined in exchange descriptor file using the same object structure, mapped to [Field](../../src/main/java/com/scz/jxapi/exchange/descriptor/Field.java) class. This class is used to define the structure of request and response data for both REST and WebSocket endpoints. It allows for a flexible type definition that can represent primitive types, lists, maps, or composite objects.
+Both REST endpoints request and response, Websocket endpoints subscription request and response message are defined in exchange descriptor file using the same object structure, mapped to [Field](../../src/main/java/org/jxapi/exchange/descriptor/Field.java) class. This class is used to define the structure of request and response data for both REST and WebSocket endpoints. It allows for a flexible type definition that can represent primitive types, lists, maps, or composite objects.
 
 ### Primitive Types
 A field can be a primitive type such as `STRING`, `INT`, `BIGDECIMAL`, or `LONG`. These types are directly mapped to their respective Java types.
@@ -456,15 +493,15 @@ properties:
   - name: "id"
     type: "STRING"
     description: "Unique identifier"
+    sampleValue: bob1234
   - name: "values"
-    type: "LIST"
-    elementType: "INT"
+    type: "INT_LIST"
     description: "List of integer values"
+    defaultValue: [1, 3, 5]
   - name: "attributes"
     type: "MAP"
-    keyType: "STRING"
-    valueType: "STRING"
     description: "Map of attributes"
+
 ```
 
 ### Composite Types
@@ -584,7 +621,7 @@ In example above, request submitted to `myRestApi` REST API of `V1` API group of
  * `apiGroupLimit` defined at API group level: No more than 50 request must be output among all requests sent to any REST API of `V1` group.
  * `myRestApiRule` defined at REST endpoint level: No more that 10 requests per second should be sumitted to `myRestApi` REST API.
 
-Rate limits are defined either at exchange, api group or REST endpoint level as a `rateLimits` property that carries as value a list of [RateLimitRule](../../src/main/java/com/scz/jxapi/netutils/rest/ratelimits/RateLimitRule.java) objects defined by following properties:
+Rate limits are defined either at exchange, api group or REST endpoint level as a `rateLimits` property that carries as value a list of [RateLimitRule](../../src/main/java/org/jxapi/netutils/rest/ratelimits/RateLimitRule.java) objects defined by following properties:
  * `id`: Unique identifier
  * `timeframe`: Time frame in ms for which request count or cumulated weight should not exceed limit.
  * `maxRequestCount`: The maximum number of requests that can be attempted within rolling time frame. A negative value means it should not be taken into account and this rate limit is expressed in cumulated weight.
@@ -594,10 +631,10 @@ Rate limits are defined either at exchange, api group or REST endpoint level as 
 When a request is submitted to an endpoint, each rate limit rule is checked, taking into account the request (incrementing current request count if it does not exceed any rule), or providing the remaining delay before it can be executed if it should not be submitted immediately.
 Accordingly the request is either submitted immediately or delayed for the minimum time to wait for and then submitted again. See 
 This when `THROTTLE` policy is applied, which is the default. Beware that client applications breaking rate limits may experience increasing delay in request execution and accumulation of requests in queue may cause a memory leak. For this reason it is advised to set a maximum wait delay on request throttling using `Exchange#setMaxRequestThrottleDelay(long)`method.
-See [RequestThrottler](../../src/main/java/com/scz/jxapi/netutils/rest/ratelimits/RequestThrottler.java).
+See [RequestThrottler](../../src/main/java/org/jxapi/netutils/rest/ratelimits/RequestThrottler.java).
 
-Different policies may be specified using `Exchange#setRequestThrottlingMode(RequestThrottlingMode requestThrottlingMode)`, see [RequestThrottlingMode](../../src/main/java/com/scz/jxapi/netutils/rest/ratelimits//RequestThrottlingMode.java):
- * `BLOCK`: Instead of throttling request, immediately anwser that request with a response carrying a [RateLimitReachedException](../../src/main/java/com/scz/jxapi/netutils/rest/ratelimits/RateLimitReachedException.java) exception stating how much time should be awaited for before retrying this request, and HTTP response code 429 (_TOO_MANY_REQUESTS_). This is similar to `THROTTLE` mode with `maxRequestThrottleDelay` set to 0.
+Different policies may be specified using `Exchange#setRequestThrottlingMode(RequestThrottlingMode requestThrottlingMode)`, see [RequestThrottlingMode](../../src/main/java/org/jxapi/netutils/rest/ratelimits/RequestThrottlingMode.java):
+ * `BLOCK`: Instead of throttling request, immediately anwser that request with a response carrying a [RateLimitReachedException](../../src/main/java/org/jxapi/netutils/rest/ratelimits/RateLimitReachedException.java) exception stating how much time should be awaited for before retrying this request, and HTTP response code 429 (_TOO_MANY_REQUESTS_). This is similar to `THROTTLE` mode with `maxRequestThrottleDelay` set to 0.
  * `NONE`: Ignores rate limits check and always submit requests immediately. 
  
 ## Placeholders

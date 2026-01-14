@@ -6,13 +6,11 @@ import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import javax.annotation.processing.Generated;
 import org.jxapi.exchange.descriptor.gen.ExchangeApiDescriptor;
-import org.jxapi.exchange.descriptor.gen.RateLimitRuleDescriptor;
 import org.jxapi.exchange.descriptor.gen.RestEndpointDescriptor;
 import org.jxapi.exchange.descriptor.gen.WebsocketEndpointDescriptor;
-import org.jxapi.netutils.serialization.json.AbstractJsonMessageSerializer;
+import org.jxapi.netutils.serialization.json.AbstractJsonValueSerializer;
 import org.jxapi.netutils.serialization.json.ListJsonValueSerializer;
 import static org.jxapi.util.JsonUtil.writeCustomSerializerField;
-import static org.jxapi.util.JsonUtil.writeLongField;
 import static org.jxapi.util.JsonUtil.writeStringField;
 
 /**
@@ -20,7 +18,7 @@ import static org.jxapi.util.JsonUtil.writeStringField;
  * @see ExchangeApiDescriptor
  */
 @Generated("org.jxapi.generator.java.pojo.JsonPojoSerializerGenerator")
-public class ExchangeApiDescriptorSerializer extends AbstractJsonMessageSerializer<ExchangeApiDescriptor> {
+public class ExchangeApiDescriptorSerializer extends AbstractJsonValueSerializer<ExchangeApiDescriptor> {
   
   /**
    * Constructor
@@ -29,7 +27,6 @@ public class ExchangeApiDescriptorSerializer extends AbstractJsonMessageSerializ
     super(ExchangeApiDescriptor.class);
   }
   
-  private ListJsonValueSerializer<RateLimitRuleDescriptor> rateLimitsSerializer;
   private ListJsonValueSerializer<RestEndpointDescriptor> restEndpointsSerializer;
   private ListJsonValueSerializer<WebsocketEndpointDescriptor> websocketEndpointsSerializer;
   
@@ -38,17 +35,9 @@ public class ExchangeApiDescriptorSerializer extends AbstractJsonMessageSerializ
     gen.writeStartObject();
     writeStringField(gen, "name", value.getName());
     writeStringField(gen, "description", value.getDescription());
-    writeStringField(gen, "httpRequestExecutorFactory", value.getHttpRequestExecutorFactory());
-    writeStringField(gen, "httpRequestInterceptorFactory", value.getHttpRequestInterceptorFactory());
     writeStringField(gen, "httpUrl", value.getHttpUrl());
-    writeLongField(gen, "httpRequestTimeout", value.getHttpRequestTimeout());
-    writeStringField(gen, "websocketFactory", value.getWebsocketFactory());
-    writeStringField(gen, "websocketHookFactory", value.getWebsocketHookFactory());
-    writeStringField(gen, "websocketUrl", value.getWebsocketUrl());
-    if(rateLimitsSerializer == null) {
-      rateLimitsSerializer = new ListJsonValueSerializer<>(new RateLimitRuleDescriptorSerializer());
-    }
-    writeCustomSerializerField(gen, "rateLimits", value.getRateLimits(), rateLimitsSerializer, provider);
+    writeStringField(gen, "defaultHttpClient", value.getDefaultHttpClient());
+    writeStringField(gen, "defaultWebsocketClient", value.getDefaultWebsocketClient());
     if(restEndpointsSerializer == null) {
       restEndpointsSerializer = new ListJsonValueSerializer<>(new RestEndpointDescriptorSerializer());
     }

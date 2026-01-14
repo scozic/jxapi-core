@@ -1,6 +1,6 @@
 package org.jxapi.netutils.rest.mock;
 
-import org.jxapi.exchange.ExchangeApi;
+import org.jxapi.exchange.Exchange;
 import org.jxapi.netutils.rest.HttpRequestInterceptor;
 import org.jxapi.netutils.rest.HttpRequestInterceptorFactory;
 
@@ -12,7 +12,7 @@ import org.jxapi.netutils.rest.HttpRequestInterceptorFactory;
 public class MockHttpRequestInterceptorFactory implements HttpRequestInterceptorFactory {
 
   @Override
-  public HttpRequestInterceptor createInterceptor(ExchangeApi exchangeApi) {
+  public HttpRequestInterceptor createInterceptor(Exchange exchange) {
     return new MockHttpRequestInterceptor();
   }
 

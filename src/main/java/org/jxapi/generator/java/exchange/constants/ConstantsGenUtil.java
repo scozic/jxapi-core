@@ -20,6 +20,7 @@ public class ConstantsGenUtil {
 
   private ConstantsGenUtil() {}
 
+  
   /**
    * Generates the Java code for a declared <code>public static final</code> constant in a Java class.
    * <p>
@@ -42,6 +43,38 @@ public class ConstantsGenUtil {
                                                    Imports imports, 
                                                    PlaceHolderResolver docPlaceHolderResolver,
                                                    PlaceHolderResolver sampleValuePlaceHolderResolver) {
+    return generateConstantDeclaration(
+        constant, 
+        sieblings, 
+        imports, 
+        docPlaceHolderResolver,
+        sampleValuePlaceHolderResolver, 
+        "public static final");
+  }
+  
+  /**
+   * Generates the Java code for a declared <code>public static final</code> constant in a Java class.
+   * <p>
+   * Example:
+   * <pre>
+   * {@code
+   * Integer MY_INT = Integer.valueOf(42);
+   * }
+   * </pre>
+   * Where {@code MY_INT} is the constant name, {@code Integer} is the type of the constant and {@code 42} is the value of the constant.
+   * @param constant the constant to generate the declaration for
+   * @param sieblings the list of constants declared in the same class as the constant, used to avoid name clashes
+   * @param imports the set of imports to add to the generated code
+   * @param docPlaceHolderResolver the resolver for placeholders in the constant's description
+   * @param sampleValuePlaceHolderResolver the resolver for placeholders in the constant's sample value
+   * @return the Java code for the constant declaration
+   */
+  public static String generateConstantDeclaration(Constant constant, 
+                                                   List<Constant> sieblings,
+                                                   Imports imports, 
+                                                   PlaceHolderResolver docPlaceHolderResolver,
+                                                   PlaceHolderResolver sampleValuePlaceHolderResolver,
+                                                   String modifiers) {
     StringBuilder code = new StringBuilder();
     Type type = Optional.ofNullable(constant.getType()).orElse(Type.STRING);
     if (type.isObject()) {
@@ -57,7 +90,8 @@ public class ConstantsGenUtil {
       code.append(JavaCodeGenUtil.generateJavaDoc(description))
         .append("\n");
     }
-    code.append("public static final ")
+    code.append(modifiers)
+      .append(" ")
       .append(className)
       .append(" ")
       .append(varName)

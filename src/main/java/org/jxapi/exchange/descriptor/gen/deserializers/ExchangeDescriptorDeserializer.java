@@ -12,7 +12,6 @@ import org.jxapi.exchange.descriptor.gen.ExchangeDescriptor;
 import org.jxapi.exchange.descriptor.gen.RateLimitRuleDescriptor;
 import org.jxapi.netutils.deserialization.json.AbstractJsonMessageDeserializer;
 import org.jxapi.netutils.deserialization.json.field.ListJsonFieldDeserializer;
-import static org.jxapi.util.JsonUtil.readNextLong;
 import static org.jxapi.util.JsonUtil.readNextString;
 import static org.jxapi.util.JsonUtil.skipNextValue;
 
@@ -26,6 +25,7 @@ public class ExchangeDescriptorDeserializer extends AbstractJsonMessageDeseriali
   private ListJsonFieldDeserializer<ConstantDescriptor> constantsDeserializer;
   private ListJsonFieldDeserializer<ExchangeApiDescriptor> apisDeserializer;
   private ListJsonFieldDeserializer<RateLimitRuleDescriptor> rateLimitsDeserializer;
+  private NetworkDescriptorDeserializer networkDeserializer;
   
   @Override
   public ExchangeDescriptor deserialize(JsonParser parser) throws IOException {
@@ -50,26 +50,8 @@ public class ExchangeDescriptorDeserializer extends AbstractJsonMessageDeseriali
       case "basePackage":
         msg.setBasePackage(readNextString(parser));
       break;
-      case "httpRequestExecutorFactory":
-        msg.setHttpRequestExecutorFactory(readNextString(parser));
-      break;
-      case "httpRequestInterceptorFactory":
-        msg.setHttpRequestInterceptorFactory(readNextString(parser));
-      break;
       case "httpUrl":
         msg.setHttpUrl(readNextString(parser));
-      break;
-      case "websocketUrl":
-        msg.setWebsocketUrl(readNextString(parser));
-      break;
-      case "websocketFactory":
-        msg.setWebsocketFactory(readNextString(parser));
-      break;
-      case "websocketHookFactory":
-        msg.setWebsocketHookFactory(readNextString(parser));
-      break;
-      case "httpRequestTimeout":
-        msg.setHttpRequestTimeout(readNextLong(parser));
       break;
       case "afterInitHookFactory":
         msg.setAfterInitHookFactory(readNextString(parser));
@@ -94,6 +76,13 @@ public class ExchangeDescriptorDeserializer extends AbstractJsonMessageDeseriali
           rateLimitsDeserializer = new ListJsonFieldDeserializer<>(new RateLimitRuleDescriptorDeserializer());
         }
         msg.setRateLimits(rateLimitsDeserializer.deserialize(parser));
+      break;
+      case "network":
+        parser.nextToken();
+        if(networkDeserializer == null) {
+          networkDeserializer = new NetworkDescriptorDeserializer();
+        }
+        msg.setNetwork(networkDeserializer.deserialize(parser));
       break;
       case "apis":
         parser.nextToken();

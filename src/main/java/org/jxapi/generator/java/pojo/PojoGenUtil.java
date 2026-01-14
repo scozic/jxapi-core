@@ -26,6 +26,7 @@ import org.jxapi.netutils.deserialization.json.field.MapJsonFieldDeserializer;
 import org.jxapi.netutils.deserialization.json.field.RawObjectJsonFieldDeserializer;
 import org.jxapi.netutils.deserialization.json.field.StringJsonFieldDeserializer;
 import org.jxapi.netutils.serialization.MessageSerializer;
+import org.jxapi.netutils.serialization.json.AbstractJsonValueSerializer;
 import org.jxapi.netutils.serialization.json.BigDecimalJsonValueSerializer;
 import org.jxapi.netutils.serialization.json.BooleanJsonValueSerializer;
 import org.jxapi.netutils.serialization.json.IntegerJsonValueSerializer;
@@ -315,7 +316,7 @@ public class PojoGenUtil {
     Map<String, Constant> constants = CollectionUtil.createMap();
     for (Field f : fields) {
       Type fieldType = PojoGenUtil.getFieldType(f);
-      if (f.getDefaultValue() != null) {
+      if (f != null && f.getDefaultValue() != null) {
         if (fieldType.isObject()) {
           throw new IllegalArgumentException(
               "Field " + f.getName() + " is of object type, cannot carry a default value");
@@ -925,24 +926,36 @@ public class PojoGenUtil {
   
 
   /**
-   * Returns the instruction to create a new instance of a {@link AbstractJsonValueSerializer} for the given type.
-   * <p>
+   * Returns the instruction to create a new instance of a
+   * {@link AbstractJsonValueSerializer} for the given type.
    * <ul>
    * <li>if this type is a 'primitive' type, returns the instruction to get the
    * singleton instance of the corresponding JsonValueSerializer:
-   * <li>If this type is a 'List' type, returns the instruction to create a new instance of
-   * a {@link ListJsonValueSerializer} with the corresponding serializer as item serializer for subType of the list, see {@link Type#getSubType()}.
-   * <li>If this type is a 'Map' type, returns the instruction to create a new instance of
-   * a {@link MapJsonValueSerializer} with the corresponding serializer as item serializer for subType of the map, see {@link Type#getSubType()}.
-   * <li>If this type is an 'Object' type, returns the returns the reference to the singleton instance of 
-   * a {@link ObjectJsonValueSerializer} if the object class name is <code>java.lang.Object</code> or if the object class is external,
-   * @param type
-   * @param objectClassName
-   * @param externalClass
-   * @param imports
-   * @return
+   * <li>If this type is a 'List' type, returns the instruction to create a new
+   * instance of a {@link ListJsonValueSerializer} with the corresponding
+   * serializer as item serializer for subType of the list, see
+   * {@link Type#getSubType()}.
+   * <li>If this type is a 'Map' type, returns the instruction to create a new
+   * instance of a {@link MapJsonValueSerializer} with the corresponding
+   * serializer as item serializer for subType of the map, see
+   * {@link Type#getSubType()}.
+   * <li>If this type is an 'Object' type, returns the returns the reference to
+   * the singleton instance of a {@link ObjectJsonValueSerializer} if the object
+   * class name is <code>java.lang.Object</code> or if the object class is
+   * external. Otherwise, for an object managed by the generator,
+   *  returns the 'new' instruction to create a new instance of
+   * a {@link AbstractJsonValueSerializer} for the object class name.
+   * </ul>
+   * @param type            The type of the field to serialize
+   * @param objectClassName The object class name of the field to generate
+   *                        JsonValueSerializer for.
+   * @param externalClass   Indicates whether the object class is external to
+   *                        generated code.
+   * @param imports         The imports of the generator context that will be
+   *                        populated with classes
+   * @return The instruction to get or create a new instance of a
+   *         {@link AbstractJsonValueSerializer} for the given type.
    */
-  
   public static String getNewJsonValueSerializerInstruction(
       Type type, 
       String objectClassName, 

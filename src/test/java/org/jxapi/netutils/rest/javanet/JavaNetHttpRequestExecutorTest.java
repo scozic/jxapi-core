@@ -5,6 +5,9 @@ import java.net.http.HttpClient;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
 import org.glassfish.grizzly.http.util.HttpStatus;
@@ -27,7 +30,6 @@ public class JavaNetHttpRequestExecutorTest {
 
   private MockHttpServer mockHttpServer;
   private JavaNetHttpRequestExecutor executor;
-  private HttpClient httpClient;
   private int serverPort;
   
   @Before
@@ -35,8 +37,7 @@ public class JavaNetHttpRequestExecutorTest {
     mockHttpServer = new MockHttpServer();
     mockHttpServer.start();
     this.serverPort = mockHttpServer.getPort();
-    httpClient = HttpClient.newHttpClient();
-    executor = new JavaNetHttpRequestExecutor(httpClient);
+    executor = new JavaNetHttpRequestExecutor();
   }
   
   @After
@@ -213,5 +214,34 @@ public class JavaNetHttpRequestExecutorTest {
     response.setRequest(request);
     executor.dispose();
     executor.execute(request);
+  }
+  
+  @Test
+  public void testCreateJavaNetHttpClientExecutorService() throws Exception {
+    String threadNamePrefix = "TestThread-";
+    ExecutorService executorService = JavaNetHttpRequestExecutor.createJavaNetHttpClientExecutorService(threadNamePrefix);
+    try {
+      Future<String> future = executorService.submit(() -> Thread.currentThread().getName());
+      String threadName = future.get();
+      Assert.assertTrue(threadName.startsWith(threadNamePrefix));
+    } finally {
+      executorService.shutdownNow();
+    }
+  }
+  
+  @Test
+  public void testDisposeDoesNotShutdownExternalExecutorService() {
+      // Arrange
+      ExecutorService externalExecutor = Executors.newCachedThreadPool();
+      HttpClient httpClient = HttpClient.newHttpClient();
+      JavaNetHttpRequestExecutor exec = new JavaNetHttpRequestExecutor(httpClient, externalExecutor);
+      try {
+        exec.dispose();
+        Assert.assertFalse(externalExecutor.isShutdown());
+      } finally {
+        externalExecutor.shutdownNow();
+      }
+      // Act
+      exec.dispose();
   }
 }

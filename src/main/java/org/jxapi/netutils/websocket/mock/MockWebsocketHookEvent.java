@@ -1,6 +1,6 @@
 package org.jxapi.netutils.websocket.mock;
 
-import org.jxapi.netutils.websocket.WebsocketManager;
+import org.jxapi.netutils.websocket.WebsocketClient;
 
 /**
  * Event that is sent by a {@link MockWebsocketHook} when one of its methods is
@@ -10,13 +10,13 @@ public class MockWebsocketHookEvent {
 
   /**
    * @param source           the source of the event
-   * @param websocketManager manager associated to this event.
+   * @param websocketClient manager associated to this event.
    * @return A new {@link MockWebsocketHookEventType#INIT} event for the given
-   *         {@link MockWebsocketHook} and {@link WebsocketManager}.
+   *         {@link MockWebsocketHook} and {@link WebsocketClient}.
    */
-  public static MockWebsocketHookEvent createInitEvent(MockWebsocketHook source, WebsocketManager websocketManager) {
+  public static MockWebsocketHookEvent createInitEvent(MockWebsocketHook source, WebsocketClient websocketClient) {
     MockWebsocketHookEvent res = new MockWebsocketHookEvent(MockWebsocketHookEventType.INIT, source);
-    res.setWebsocketManager(websocketManager);
+    res.setWebsocketClient(websocketClient);
     return res;
   }
 
@@ -97,7 +97,7 @@ public class MockWebsocketHookEvent {
 
   private final MockWebsocketHook source;
 
-  private WebsocketManager websocketManager;
+  private WebsocketClient websocketClient;
 
   private String topic;
 
@@ -134,22 +134,22 @@ public class MockWebsocketHookEvent {
   }
 
   /**
-   * Retrieve the {@link WebsocketManager} associated with this event.
+   * Retrieve the {@link WebsocketClient} associated with this event.
    * This field is set when type is {@link MockWebsocketHookEventType#INIT}.
    * 
-   * @return The {@link WebsocketManager} associated with this event.
+   * @return The {@link WebsocketClient} associated with this event.
    */
-  public WebsocketManager getWebsocketManager() {
-    return websocketManager;
+  public WebsocketClient getWebsocketClient() {
+    return websocketClient;
   }
 
   /**
-   * Set the {@link WebsocketManager} associated with this event.
+   * Set the {@link WebsocketClient} associated with this event.
    * 
-   * @param websocketManager The {@link WebsocketManager} to set.
+   * @param websocketClient The {@link WebsocketClient} to set.
    */
-  public void setWebsocketManager(WebsocketManager websocketManager) {
-    this.websocketManager = websocketManager;
+  public void setWebsocketClient(WebsocketClient websocketClient) {
+    this.websocketClient = websocketClient;
   }
 
   /**

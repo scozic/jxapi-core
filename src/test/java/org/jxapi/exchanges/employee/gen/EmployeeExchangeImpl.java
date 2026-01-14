@@ -22,8 +22,19 @@ public class EmployeeExchangeImpl extends AbstractExchange implements EmployeeEx
           exchangeName,
           properties,
           EncodingUtil.substituteArguments("${config.server.baseHttpUrl}", "config.server.baseHttpUrl", EmployeeProperties.Server.getBaseHttpUrl(properties)),
-          null);
-    this.v1Api = addApi(new EmployeeV1ApiImpl(this));
+          false);
+    // Network
+    createHttpClient("httpDefault",
+      "org.jxapi.exchanges.demo.net.DemoExchangeHttpRequestInterceptorFactory",
+      null,
+      null);
+    createWebsocketClient("wsDefault",
+      EncodingUtil.substituteArguments("${config.server.baseWebsocketUrl}", "config.server.baseWebsocketUrl", EmployeeProperties.Server.getBaseWebsocketUrl(properties)),
+      null,
+      "org.jxapi.exchanges.demo.net.DemoExchangeWebsocketHookFactory");
+    
+     // APIs
+    this.v1Api = addApi(EmployeeV1Api.ID, new EmployeeV1ApiImpl(this, exchangeObserver));
   }
   
   @Override

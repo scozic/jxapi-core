@@ -12,6 +12,7 @@ import org.jxapi.netutils.rest.HttpRequest;
  */
 public class RateLimitReachedException extends Exception {
   
+  private static final long serialVersionUID = -5826543906820128810L;
   /**
    * Delay to wait for before trying to resubmit request
    */

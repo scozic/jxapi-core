@@ -1,6 +1,6 @@
 package org.jxapi.exchanges.demo.net;
 
-import org.jxapi.exchange.ExchangeApi;
+import org.jxapi.exchange.Exchange;
 import org.jxapi.exchanges.demo.gen.DemoExchangeExchange;
 import org.jxapi.netutils.rest.HttpRequestInterceptor;
 import org.jxapi.netutils.rest.HttpRequestInterceptorFactory;
@@ -13,7 +13,7 @@ import org.jxapi.netutils.rest.HttpRequestInterceptorFactory;
 public class DemoExchangeHttpRequestInterceptorFactory implements HttpRequestInterceptorFactory {
 
   @Override
-  public HttpRequestInterceptor createInterceptor(ExchangeApi exchangeApi) {
+  public HttpRequestInterceptor createInterceptor(Exchange exchange) {
     return new DemoExchangeHttpRequestInterceptor();
   }
 

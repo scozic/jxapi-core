@@ -10,19 +10,17 @@ import org.apache.commons.lang3.time.DurationFormatUtils;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Test;
-import org.jxapi.exchange.AbstractExchangeApi;
-import org.jxapi.exchange.ExchangeApi;
-import org.jxapi.exchange.ExchangeStub;
 import org.jxapi.netutils.websocket.mock.MockWebsocket;
 import org.jxapi.netutils.websocket.mock.MockWebsocketHook;
 import org.jxapi.netutils.websocket.multiplexing.WSMTMFUtil;
+import org.jxapi.util.DemoUtil;
 import org.jxapi.util.JsonUtil;
 import org.jxapi.util.PropertiesUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Tests performances of {@link WebsocketManager} implementation.
+ * Tests performances of {@link WebsocketClient} implementation.
  * Will instantiate one, using Mock WS implementation.
  * The {@link #runTest(int, int, int, int)} method starts a load test where X messages are
  * dispatched for 3 topics and some messages unrelated to any topic.<br>
@@ -36,11 +34,9 @@ import org.slf4j.LoggerFactory;
  * Actual slf4j logger implementation should be configured using INFO threshold.
  * Keeping debug is likely to output much verbose logs.
  */
-public class WebsocketManagerLoadTest {
+public class WebsocketClientLoadTest {
   
-  private static final Logger log = LoggerFactory.getLogger(WebsocketManagerLoadTest.class);
-  
-  private static final ExchangeApi EXCHANGE_API = new AbstractExchangeApi("myApi", ExchangeStub.INSTANCE) {};
+  private static final Logger log = LoggerFactory.getLogger(WebsocketClientLoadTest.class);
   
   /**
    * Number of different message topics
@@ -74,13 +70,13 @@ public class WebsocketManagerLoadTest {
   
   private final MockWebsocket ws = new MockWebsocket();
   private final MockWebsocketHook wsHook = new MockWebsocketHook();
-  private final WebsocketManager wsManager = new DefaultWebsocketManager(EXCHANGE_API, ws, wsHook);
+  private final WebsocketClient wsManager = new DefaultWebsocketClient(ws, wsHook);
   private final GenericWebsocketErrorHandler errorHandler = new GenericWebsocketErrorHandler();
   
   /**
    * Constructor
    */
-  public WebsocketManagerLoadTest() {
+  public WebsocketClientLoadTest() {
     wsManager.subscribeErrorHandler(errorHandler);
   }
   
@@ -119,7 +115,7 @@ public class WebsocketManagerLoadTest {
             WSMTMFUtil.value("f3", "val3"), 
             WSMTMFUtil.value("f6", "val6"))), 
         wsMessageHandler3);
-    Thread.sleep(500L);
+    DemoUtil.sleep(500L);
     log.info("Starting dispatch of {} messages, with {} messages related to one of {} subsribed topics", 
          totalMessageCount, 
          totalTopicRelatedMessageCount, 
@@ -191,7 +187,7 @@ public class WebsocketManagerLoadTest {
 
   public static void main(String[] args) {
     try {
-      new WebsocketManagerLoadTest().runTest(TOPIC_COUNT, NB_MESSAGES_PER_TOPIC, ITERATIONS, NB_THREADS);
+      new WebsocketClientLoadTest().runTest(TOPIC_COUNT, NB_MESSAGES_PER_TOPIC, ITERATIONS, NB_THREADS);
       log.info("DONE");
     } catch (Throwable t) {
       log.error("Error raised", t);

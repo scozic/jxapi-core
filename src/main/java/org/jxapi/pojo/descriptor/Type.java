@@ -30,6 +30,8 @@ import java.util.Optional;
  */
 public class Type implements Serializable {
   
+  private static final long serialVersionUID = 6954595325720722821L;
+
   private static final Map<String, Type> CANONICAL_TYPES = new HashMap<>(6);
 
   /**

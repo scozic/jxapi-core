@@ -5,6 +5,7 @@ import java.util.Map;
 
 import javax.annotation.processing.Generated;
 import org.jxapi.exchange.AbstractExchangeApi;
+import org.jxapi.exchange.ExchangeObserver;
 import org.jxapi.exchanges.demo.gen.DemoExchangeExchange;
 import org.jxapi.exchanges.demo.gen.marketdata.pojo.DemoExchangeMarketDataExchangeInfoRequest;
 import org.jxapi.exchanges.demo.gen.marketdata.pojo.DemoExchangeMarketDataExchangeInfoResponse;
@@ -21,7 +22,8 @@ import org.jxapi.exchanges.demo.gen.marketdata.pojo.serializers.SingleSymbolSeri
 import org.jxapi.netutils.deserialization.MessageDeserializer;
 import org.jxapi.netutils.rest.FutureRestResponse;
 import org.jxapi.netutils.rest.HttpMethod;
-import org.jxapi.netutils.rest.HttpRequest;
+import org.jxapi.netutils.rest.HttpRequestUrlParamsSerializer;
+import org.jxapi.netutils.rest.RestEndpoint;
 import org.jxapi.netutils.serialization.MessageSerializer;
 import org.jxapi.netutils.serialization.json.IntegerJsonValueSerializer;
 import org.jxapi.netutils.serialization.json.ListJsonValueSerializer;
@@ -40,115 +42,124 @@ import org.jxapi.util.JsonUtil;
 @Generated("org.jxapi.generator.java.exchange.api.ExchangeApiInterfaceImplementationGenerator")
 public class DemoExchangeMarketDataApiImpl extends AbstractExchangeApi implements DemoExchangeMarketDataApi {
   
-  // REST endpoint URLs
-  
-  /**
-   * URL for <i>exchangeInfo</i> REST endpoint.
-   * @see DemoExchangeMarketDataApi#exchangeInfo(DemoExchangeMarketDataExchangeInfoRequest)
-   */
-  protected final String exchangeInfoHttpUrl;
-  
-  /**
-   * URL for <i>tickers</i> REST endpoint.
-   * @see DemoExchangeMarketDataApi#tickers()
-   */
-  protected final String tickersHttpUrl;
-  
-  /**
-   * URL for <i>postRestRequestDataTypeInt</i> REST endpoint.
-   * @see DemoExchangeMarketDataApi#postRestRequestDataTypeInt(Integer)
-   */
-  protected final String postRestRequestDataTypeIntHttpUrl;
-  
-  /**
-   * URL for <i>getRestRequestDataTypePrimitiveWithMsgField</i> REST endpoint.
-   * @see DemoExchangeMarketDataApi#getRestRequestDataTypePrimitiveWithMsgField(Integer)
-   */
-  protected final String getRestRequestDataTypePrimitiveWithMsgFieldHttpUrl;
-  
-  /**
-   * URL for <i>postRestRequestDataTypeIntList</i> REST endpoint.
-   * @see DemoExchangeMarketDataApi#postRestRequestDataTypeIntList(List)
-   */
-  protected final String postRestRequestDataTypeIntListHttpUrl;
-  
-  /**
-   * URL for <i>postRestRequestDataTypeObjectListMap</i> REST endpoint.
-   * @see DemoExchangeMarketDataApi#postRestRequestDataTypeObjectListMap(Map)
-   */
-  protected final String postRestRequestDataTypeObjectListMapHttpUrl;
-  
-  // Websocket endpoints
-  private final WebsocketEndpoint<DemoExchangeMarketDataTickerStreamMessage> tickerStreamWs;
+  // REST endpoints URL parameter serializers
+  private static final HttpRequestUrlParamsSerializer<DemoExchangeMarketDataExchangeInfoRequest> EXCHANGE_INFO_REST_API_URL_PARAMS_SERIALIZER = (request, url) -> new StringBuilder(128).append(url)
+    .append(EncodingUtil.createUrlQueryParameters("symbols", JsonUtil.pojoToJsonString(request.getSymbols()))).toString();
+  private static final HttpRequestUrlParamsSerializer<Integer> POST_REST_REQUEST_DATA_TYPE_INT_REST_API_URL_PARAMS_SERIALIZER = HttpRequestUrlParamsSerializer.noParams();
+  private static final HttpRequestUrlParamsSerializer<Integer> GET_REST_REQUEST_DATA_TYPE_PRIMITIVE_WITH_MSG_FIELD_REST_API_URL_PARAMS_SERIALIZER = (request, url) -> new StringBuilder(128).append(url)
+    .append(EncodingUtil.createUrlQueryParameters("a", request)).toString();
+  private static final HttpRequestUrlParamsSerializer<List<Integer>> POST_REST_REQUEST_DATA_TYPE_INT_LIST_REST_API_URL_PARAMS_SERIALIZER = HttpRequestUrlParamsSerializer.noParams();
+  private static final HttpRequestUrlParamsSerializer<Map<String, List<SingleSymbol>>> POST_REST_REQUEST_DATA_TYPE_OBJECT_LIST_MAP_REST_API_URL_PARAMS_SERIALIZER = HttpRequestUrlParamsSerializer.noParams();
   
   // Request serializers
-  private final MessageSerializer<Integer> postRestRequestDataTypeIntRequestSerializer = IntegerJsonValueSerializer.getInstance();
-  private final MessageSerializer<List<Integer>> postRestRequestDataTypeIntListRequestSerializer = new ListJsonValueSerializer<>(IntegerJsonValueSerializer.getInstance());
-  private final MessageSerializer<Map<String, List<SingleSymbol>>> postRestRequestDataTypeObjectListMapRequestSerializer = new MapJsonValueSerializer<>(new ListJsonValueSerializer<>(new SingleSymbolSerializer()));
+  private static final MessageSerializer<Integer> POST_REST_REQUEST_DATA_TYPE_INT_REST_API_REQUEST_SERIALIZER = IntegerJsonValueSerializer.getInstance();
+  private static final MessageSerializer<List<Integer>> POST_REST_REQUEST_DATA_TYPE_INT_LIST_REST_API_REQUEST_SERIALIZER = new ListJsonValueSerializer<>(IntegerJsonValueSerializer.getInstance());
+  private static final MessageSerializer<Map<String, List<SingleSymbol>>> POST_REST_REQUEST_DATA_TYPE_OBJECT_LIST_MAP_REST_API_REQUEST_SERIALIZER = new MapJsonValueSerializer<>(new ListJsonValueSerializer<>(new SingleSymbolSerializer()));
   
   // Message deserializers
-  private final MessageDeserializer<DemoExchangeMarketDataExchangeInfoResponse> exchangeInfoResponseDeserializer = new DemoExchangeMarketDataExchangeInfoResponseDeserializer();
-  private final MessageDeserializer<DemoExchangeMarketDataTickersResponse> tickersResponseDeserializer = new DemoExchangeMarketDataTickersResponseDeserializer();
-  private final MessageDeserializer<GenericResponse> postRestRequestDataTypeIntResponseDeserializer = new GenericResponseDeserializer();
-  private final MessageDeserializer<GenericResponse> getRestRequestDataTypePrimitiveWithMsgFieldResponseDeserializer = new GenericResponseDeserializer();
-  private final MessageDeserializer<GenericResponse> postRestRequestDataTypeIntListResponseDeserializer = new GenericResponseDeserializer();
-  private final MessageDeserializer<GenericResponse> postRestRequestDataTypeObjectListMapResponseDeserializer = new GenericResponseDeserializer();
+  private static final MessageDeserializer<DemoExchangeMarketDataExchangeInfoResponse> EXCHANGE_INFO_REST_API_RESPONSE_DESERIALIZER = new DemoExchangeMarketDataExchangeInfoResponseDeserializer();
+  private static final MessageDeserializer<DemoExchangeMarketDataTickersResponse> TICKERS_REST_API_RESPONSE_DESERIALIZER = new DemoExchangeMarketDataTickersResponseDeserializer();
+  private static final MessageDeserializer<GenericResponse> POST_REST_REQUEST_DATA_TYPE_INT_REST_API_RESPONSE_DESERIALIZER = new GenericResponseDeserializer();
+  private static final MessageDeserializer<GenericResponse> GET_REST_REQUEST_DATA_TYPE_PRIMITIVE_WITH_MSG_FIELD_REST_API_RESPONSE_DESERIALIZER = new GenericResponseDeserializer();
+  private static final MessageDeserializer<GenericResponse> POST_REST_REQUEST_DATA_TYPE_INT_LIST_REST_API_RESPONSE_DESERIALIZER = new GenericResponseDeserializer();
+  private static final MessageDeserializer<GenericResponse> POST_REST_REQUEST_DATA_TYPE_OBJECT_LIST_MAP_REST_API_RESPONSE_DESERIALIZER = new GenericResponseDeserializer();
+  private static final MessageDeserializer<DemoExchangeMarketDataTickerStreamMessage> TICKER_STREAM_WS_API_MESSAGE_DESERIALIZER = new DemoExchangeMarketDataTickerStreamMessageDeserializer();
+  
+  // REST endpoints
+  private final RestEndpoint<DemoExchangeMarketDataExchangeInfoRequest, DemoExchangeMarketDataExchangeInfoResponse> exchangeInfoRestEndpoint;
+  private final RestEndpoint<Void, DemoExchangeMarketDataTickersResponse> tickersRestEndpoint;
+  private final RestEndpoint<Integer, GenericResponse> postRestRequestDataTypeIntRestEndpoint;
+  private final RestEndpoint<Integer, GenericResponse> getRestRequestDataTypePrimitiveWithMsgFieldRestEndpoint;
+  private final RestEndpoint<List<Integer>, GenericResponse> postRestRequestDataTypeIntListRestEndpoint;
+  private final RestEndpoint<Map<String, List<SingleSymbol>>, GenericResponse> postRestRequestDataTypeObjectListMapRestEndpoint;
+  
+  // Websocket endpoints
+  private final WebsocketEndpoint<DemoExchangeMarketDataTickerStreamMessage> tickerStreamWsEndpoint;
   
   // Constructor
   /**
    * Constructor
+   * 
+   * @param exchange the exchange instance
+   * @param exchangeObserver the exchange API observer to dispatch endpoint events to
+   * 
    */
-  public DemoExchangeMarketDataApiImpl(DemoExchangeExchange exchange) {
+  public DemoExchangeMarketDataApiImpl(DemoExchangeExchange exchange, ExchangeObserver exchangeObserver) {
     super(ID,
           exchange,
-          null,
-          "/marketData",
-          null);
-    createHttpRequestExecutor(null, -1L);
-    createHttpRequestInterceptor("org.jxapi.exchanges.demo.net.DemoExchangeHttpRequestInterceptorFactory");
-    this.exchangeInfoHttpUrl = EncodingUtil.buildUrl(this.getHttpUrl(), "/exchangeInfo");
-    this.tickersHttpUrl = EncodingUtil.buildUrl(this.getHttpUrl(), "/tickers");
-    this.postRestRequestDataTypeIntHttpUrl = EncodingUtil.buildUrl(this.getHttpUrl(), "/postInt");
-    this.getRestRequestDataTypePrimitiveWithMsgFieldHttpUrl = EncodingUtil.buildUrl(this.getHttpUrl(), "/getIntWithMsgField");
-    this.postRestRequestDataTypeIntListHttpUrl = EncodingUtil.buildUrl(this.getHttpUrl(), "/postIntList");
-    this.postRestRequestDataTypeObjectListMapHttpUrl = EncodingUtil.buildUrl(this.getHttpUrl(), "/postObjectListMap");
-    createWebsocketManager(this.wsUrl, null, "org.jxapi.exchanges.demo.net.DemoExchangeWebsocketHookFactory");
-    this.tickerStreamWs = createWebsocketEndpoint(TICKER_STREAM_WS_API, new DemoExchangeMarketDataTickerStreamMessageDeserializer());
+          exchangeObserver,
+          "/marketData");
+    this.exchangeInfoRestEndpoint = createRestEndpoint(EXCHANGE_INFO_REST_API, DemoExchangeExchange.HTTP_DEFAULT_HTTP_CLIENT);
+    this.exchangeInfoRestEndpoint.setHttpMethod(HttpMethod.GET);
+    this.exchangeInfoRestEndpoint.setUrl(EncodingUtil.buildUrl(this.httpUrl, "/exchangeInfo"));
+    this.exchangeInfoRestEndpoint.setUrlParamsSerializer(EXCHANGE_INFO_REST_API_URL_PARAMS_SERIALIZER);
+    this.exchangeInfoRestEndpoint.setDeserializer(EXCHANGE_INFO_REST_API_RESPONSE_DESERIALIZER);
+    
+    this.tickersRestEndpoint = createRestEndpoint(TICKERS_REST_API, DemoExchangeExchange.HTTP_DEFAULT_HTTP_CLIENT);
+    this.tickersRestEndpoint.setHttpMethod(HttpMethod.GET);
+    this.tickersRestEndpoint.setUrl(EncodingUtil.buildUrl(this.httpUrl, "/tickers"));
+    this.tickersRestEndpoint.setUrlParamsSerializer(HttpRequestUrlParamsSerializer.noParams());
+    this.tickersRestEndpoint.setDeserializer(TICKERS_REST_API_RESPONSE_DESERIALIZER);
+    
+    this.postRestRequestDataTypeIntRestEndpoint = createRestEndpoint(POST_REST_REQUEST_DATA_TYPE_INT_REST_API, DemoExchangeExchange.HTTP_DEFAULT_HTTP_CLIENT);
+    this.postRestRequestDataTypeIntRestEndpoint.setHttpMethod(HttpMethod.POST);
+    this.postRestRequestDataTypeIntRestEndpoint.setUrl(EncodingUtil.buildUrl(this.httpUrl, "/postInt"));
+    this.postRestRequestDataTypeIntRestEndpoint.setUrlParamsSerializer(POST_REST_REQUEST_DATA_TYPE_INT_REST_API_URL_PARAMS_SERIALIZER);
+    this.postRestRequestDataTypeIntRestEndpoint.setSerializer(POST_REST_REQUEST_DATA_TYPE_INT_REST_API_REQUEST_SERIALIZER);
+    this.postRestRequestDataTypeIntRestEndpoint.setDeserializer(POST_REST_REQUEST_DATA_TYPE_INT_REST_API_RESPONSE_DESERIALIZER);
+    
+    this.getRestRequestDataTypePrimitiveWithMsgFieldRestEndpoint = createRestEndpoint(GET_REST_REQUEST_DATA_TYPE_PRIMITIVE_WITH_MSG_FIELD_REST_API, DemoExchangeExchange.HTTP_DEFAULT_HTTP_CLIENT);
+    this.getRestRequestDataTypePrimitiveWithMsgFieldRestEndpoint.setHttpMethod(HttpMethod.GET);
+    this.getRestRequestDataTypePrimitiveWithMsgFieldRestEndpoint.setUrl(EncodingUtil.buildUrl(this.httpUrl, "/getIntWithMsgField"));
+    this.getRestRequestDataTypePrimitiveWithMsgFieldRestEndpoint.setUrlParamsSerializer(GET_REST_REQUEST_DATA_TYPE_PRIMITIVE_WITH_MSG_FIELD_REST_API_URL_PARAMS_SERIALIZER);
+    this.getRestRequestDataTypePrimitiveWithMsgFieldRestEndpoint.setDeserializer(GET_REST_REQUEST_DATA_TYPE_PRIMITIVE_WITH_MSG_FIELD_REST_API_RESPONSE_DESERIALIZER);
+    
+    this.postRestRequestDataTypeIntListRestEndpoint = createRestEndpoint(POST_REST_REQUEST_DATA_TYPE_INT_LIST_REST_API, DemoExchangeExchange.HTTP_DEFAULT_HTTP_CLIENT);
+    this.postRestRequestDataTypeIntListRestEndpoint.setHttpMethod(HttpMethod.POST);
+    this.postRestRequestDataTypeIntListRestEndpoint.setUrl(EncodingUtil.buildUrl(this.httpUrl, "/postIntList"));
+    this.postRestRequestDataTypeIntListRestEndpoint.setUrlParamsSerializer(POST_REST_REQUEST_DATA_TYPE_INT_LIST_REST_API_URL_PARAMS_SERIALIZER);
+    this.postRestRequestDataTypeIntListRestEndpoint.setSerializer(POST_REST_REQUEST_DATA_TYPE_INT_LIST_REST_API_REQUEST_SERIALIZER);
+    this.postRestRequestDataTypeIntListRestEndpoint.setDeserializer(POST_REST_REQUEST_DATA_TYPE_INT_LIST_REST_API_RESPONSE_DESERIALIZER);
+    
+    this.postRestRequestDataTypeObjectListMapRestEndpoint = createRestEndpoint(POST_REST_REQUEST_DATA_TYPE_OBJECT_LIST_MAP_REST_API, DemoExchangeExchange.HTTP_DEFAULT_HTTP_CLIENT);
+    this.postRestRequestDataTypeObjectListMapRestEndpoint.setHttpMethod(HttpMethod.POST);
+    this.postRestRequestDataTypeObjectListMapRestEndpoint.setUrl(EncodingUtil.buildUrl(this.httpUrl, "/postObjectListMap"));
+    this.postRestRequestDataTypeObjectListMapRestEndpoint.setUrlParamsSerializer(POST_REST_REQUEST_DATA_TYPE_OBJECT_LIST_MAP_REST_API_URL_PARAMS_SERIALIZER);
+    this.postRestRequestDataTypeObjectListMapRestEndpoint.setSerializer(POST_REST_REQUEST_DATA_TYPE_OBJECT_LIST_MAP_REST_API_REQUEST_SERIALIZER);
+    this.postRestRequestDataTypeObjectListMapRestEndpoint.setDeserializer(POST_REST_REQUEST_DATA_TYPE_OBJECT_LIST_MAP_REST_API_RESPONSE_DESERIALIZER);
+    
+    this.tickerStreamWsEndpoint = createWebsocketEndpoint(TICKER_STREAM_WS_API, DemoExchangeExchange.WS_DEFAULT_WEBSOCKET_CLIENT, TICKER_STREAM_WS_API_MESSAGE_DESERIALIZER);
   }
   
   // REST endpoint method call implementations
   @Override
   public FutureRestResponse<DemoExchangeMarketDataExchangeInfoResponse> exchangeInfo(DemoExchangeMarketDataExchangeInfoRequest request) {
-    String url = new StringBuilder(128).append(exchangeInfoHttpUrl)
-      .append(EncodingUtil.createUrlQueryParameters("symbols", JsonUtil.pojoToJsonString(request.getSymbols()))).toString();
-    return submit(HttpRequest.create(EXCHANGE_INFO_REST_API, url, HttpMethod.GET, request, null, 0), exchangeInfoResponseDeserializer);
+    return exchangeInfoRestEndpoint.submit(request);
   }
   
   @Override
   public FutureRestResponse<DemoExchangeMarketDataTickersResponse> tickers() {
-    return submit(HttpRequest.create(TICKERS_REST_API, tickersHttpUrl, HttpMethod.GET, null, null, 0), tickersResponseDeserializer);
+    return tickersRestEndpoint.submit(null);
   }
   
   @Override
   public FutureRestResponse<GenericResponse> postRestRequestDataTypeInt(Integer request) {
-    return submit(HttpRequest.create(POST_REST_REQUEST_DATA_TYPE_INT_REST_API, postRestRequestDataTypeIntHttpUrl, HttpMethod.POST, request, null, 0, postRestRequestDataTypeIntRequestSerializer.serialize(request)), postRestRequestDataTypeIntResponseDeserializer);
+    return postRestRequestDataTypeIntRestEndpoint.submit(request);
   }
   
   @Override
   public FutureRestResponse<GenericResponse> getRestRequestDataTypePrimitiveWithMsgField(Integer request) {
-    String url = new StringBuilder(128).append(getRestRequestDataTypePrimitiveWithMsgFieldHttpUrl)
-      .append(EncodingUtil.createUrlQueryParameters("a", request)).toString();
-    return submit(HttpRequest.create(GET_REST_REQUEST_DATA_TYPE_PRIMITIVE_WITH_MSG_FIELD_REST_API, url, HttpMethod.GET, request, null, 0), getRestRequestDataTypePrimitiveWithMsgFieldResponseDeserializer);
+    return getRestRequestDataTypePrimitiveWithMsgFieldRestEndpoint.submit(request);
   }
   
   @Override
   public FutureRestResponse<GenericResponse> postRestRequestDataTypeIntList(List<Integer> request) {
-    return submit(HttpRequest.create(POST_REST_REQUEST_DATA_TYPE_INT_LIST_REST_API, postRestRequestDataTypeIntListHttpUrl, HttpMethod.POST, request, null, 0, postRestRequestDataTypeIntListRequestSerializer.serialize(request)), postRestRequestDataTypeIntListResponseDeserializer);
+    return postRestRequestDataTypeIntListRestEndpoint.submit(request);
   }
   
   @Override
   public FutureRestResponse<GenericResponse> postRestRequestDataTypeObjectListMap(Map<String, List<SingleSymbol>> request) {
-    return submit(HttpRequest.create(POST_REST_REQUEST_DATA_TYPE_OBJECT_LIST_MAP_REST_API, postRestRequestDataTypeObjectListMapHttpUrl, HttpMethod.POST, request, null, 0, postRestRequestDataTypeObjectListMapRequestSerializer.serialize(request)), postRestRequestDataTypeObjectListMapResponseDeserializer);
+    return postRestRequestDataTypeObjectListMapRestEndpoint.submit(request);
   }
   
   
@@ -160,12 +171,12 @@ public class DemoExchangeMarketDataApiImpl extends AbstractExchangeApi implement
       WSMTMFUtil.value("t", "ticker"),
       WSMTMFUtil.value("s", EncodingUtil.substituteArguments("${request.symbol}", "request.symbol", request.getSymbol()))));
     WebsocketSubscribeRequest subscribeRequest = WebsocketSubscribeRequest.create(request, topic, topicMatcherFactory);
-    return tickerStreamWs.subscribe(subscribeRequest, listener);
+    return tickerStreamWsEndpoint.subscribe(subscribeRequest, listener);
   }
   
   @Override
   public boolean unsubscribeTickerStream(String subscriptionId) {
-    return tickerStreamWs.unsubscribe(subscriptionId);
+    return tickerStreamWsEndpoint.unsubscribe(subscriptionId);
   }
   
 }

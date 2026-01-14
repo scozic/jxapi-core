@@ -6,7 +6,7 @@ import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import javax.annotation.processing.Generated;
 import org.jxapi.exchange.descriptor.gen.WebsocketTopicMatcherDescriptor;
-import org.jxapi.netutils.serialization.json.AbstractJsonMessageSerializer;
+import org.jxapi.netutils.serialization.json.AbstractJsonValueSerializer;
 import org.jxapi.netutils.serialization.json.ListJsonValueSerializer;
 import static org.jxapi.util.JsonUtil.writeCustomSerializerField;
 import static org.jxapi.util.JsonUtil.writeObjectField;
@@ -17,7 +17,7 @@ import static org.jxapi.util.JsonUtil.writeStringField;
  * @see WebsocketTopicMatcherDescriptor
  */
 @Generated("org.jxapi.generator.java.pojo.JsonPojoSerializerGenerator")
-public class WebsocketTopicMatcherDescriptorSerializer extends AbstractJsonMessageSerializer<WebsocketTopicMatcherDescriptor> {
+public class WebsocketTopicMatcherDescriptorSerializer extends AbstractJsonValueSerializer<WebsocketTopicMatcherDescriptor> {
   
   /**
    * Constructor

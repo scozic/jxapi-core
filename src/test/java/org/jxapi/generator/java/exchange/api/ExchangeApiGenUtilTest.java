@@ -812,52 +812,6 @@ public class ExchangeApiGenUtilTest {
     }
     
     @Test
-    public void testGenerateEndpointNameStaticVariablesDeclaration() {
-      List<String> endpointNames = List.of("getAccount", "a", "A");
-      String suffix = ExchangeApiGenUtil.REST_ENDPOINT_NAME_SUFFIX;
-      StringBuilder classBody = new StringBuilder();
-      Map<String, String> variables = ExchangeApiGenUtil.generateEndpointNameStaticVariablesDeclaration(
-          endpointNames,
-          suffix, 
-          classBody);
-      Assert.assertEquals(3, variables.size());
-      Assert.assertEquals("GET_ACCOUNT_REST_API", variables.get("getAccount"));
-      Assert.assertEquals("A_REST_API", variables.get("a"));
-      Assert.assertEquals("A_REST_API_", variables.get("A"));
-      Assert.assertEquals("\n"
-          + "/**\n"
-          + " * Name of <code>getAccount</code> RestApi endpoint.\n"
-          + " */\n"
-          + "String GET_ACCOUNT_REST_API = \"getAccount\";\n"
-          + "\n"
-          + "/**\n"
-          + " * Name of <code>a</code> RestApi endpoint.\n"
-          + " */\n"
-          + "String A_REST_API = \"a\";\n"
-          + "\n"
-          + "/**\n"
-          + " * Name of <code>A</code> RestApi endpoint.\n"
-          + " */\n"
-          + "String A_REST_API_ = \"A\";\n"
-          + "", 
-          classBody.toString());
-    }
-    
-    @Test
-    public void testGenerateEndpointNameStaticVariablesDeclaration_NullClassBody() {
-      List<String> endpointNames = List.of("getAccount", "a", "A");
-      String suffix = ExchangeApiGenUtil.REST_ENDPOINT_NAME_SUFFIX;
-      Map<String, String> variables = ExchangeApiGenUtil.generateEndpointNameStaticVariablesDeclaration(
-          endpointNames,
-          suffix, 
-          null);
-      Assert.assertEquals(3, variables.size());
-      Assert.assertEquals("GET_ACCOUNT_REST_API", variables.get("getAccount"));
-      Assert.assertEquals("A_REST_API", variables.get("a"));
-      Assert.assertEquals("A_REST_API_", variables.get("A"));
-    }
-    
-    @Test
     public void generateValueDeclarationForRequestPlaceholder_validPlaceholders() {
       // Initialize imports
       Imports imports = new Imports();

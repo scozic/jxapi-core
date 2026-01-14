@@ -5,33 +5,33 @@ import java.util.Map;
 
 import org.jxapi.netutils.websocket.WebsocketException;
 import org.jxapi.netutils.websocket.WebsocketHook;
-import org.jxapi.netutils.websocket.WebsocketManager;
+import org.jxapi.netutils.websocket.WebsocketClient;
 import org.jxapi.observability.GenericObserver;
 
 /**
  * The MockWebsocketHook class is a mock implementation of the WebsocketHook interface.
- * It provides hooks for various events in the WebsocketManager lifecycle and allows customization of request messages.
+ * It provides hooks for various events in the WebsocketClient lifecycle and allows customization of request messages.
  */
 public class MockWebsocketHook extends GenericObserver<MockWebsocketHookEvent> implements WebsocketHook {
   
   private final Map<String, String> subscribeRequestMessages = new HashMap<>();
   private final Map<String, String> unSubscribeRequestMessages = new HashMap<>();
   private String heartBeatMessage;
-  private WebsocketManager websocketManager;
+  private WebsocketClient websocketClient;
 
   /**
-   * Called after the WebsocketManager is initialized.
+   * Called after the WebsocketClient is initialized.
    * 
-   * @param websocketManager The initialized WebsocketManager instance.
+   * @param websocketClient The initialized WebsocketClient instance.
    */
   @Override
-  public void init(WebsocketManager websocketManager) {
-    this.websocketManager = websocketManager;
-    this.handleEvent(MockWebsocketHookEvent.createInitEvent(this, websocketManager));
+  public void init(WebsocketClient websocketClient) {
+    this.websocketClient = websocketClient;
+    this.handleEvent(MockWebsocketHookEvent.createInitEvent(this, websocketClient));
   }
 
   /**
-   * Called before the WebsocketManager connects to the server.
+   * Called before the WebsocketClient connects to the server.
    * 
    * @throws WebsocketException If an error occurs during the connection process.
    */
@@ -41,7 +41,7 @@ public class MockWebsocketHook extends GenericObserver<MockWebsocketHookEvent> i
   }
 
   /**
-   * Called after the WebsocketManager successfully connects to the server.
+   * Called after the WebsocketClient successfully connects to the server.
    * 
    * @throws WebsocketException If an error occurs after the connection is established.
    */
@@ -51,7 +51,7 @@ public class MockWebsocketHook extends GenericObserver<MockWebsocketHookEvent> i
   }
 
   /**
-   * Called before the WebsocketManager disconnects from the server.
+   * Called before the WebsocketClient disconnects from the server.
    * 
    * @throws WebsocketException If an error occurs during the disconnection process.
    */
@@ -61,7 +61,7 @@ public class MockWebsocketHook extends GenericObserver<MockWebsocketHookEvent> i
   }
 
   /**
-   * Called after the WebsocketManager is disconnected from the server.
+   * Called after the WebsocketClient is disconnected from the server.
    * 
    * @throws WebsocketException If an error occurs after the disconnection is completed.
    */
@@ -135,11 +135,11 @@ public class MockWebsocketHook extends GenericObserver<MockWebsocketHookEvent> i
   }
 
   /**
-   * Retrieves the WebsocketManager instance associated with this hook.
+   * Retrieves the WebsocketClient instance associated with this hook.
    * 
-   * @return The WebsocketManager instance.
+   * @return The WebsocketClient instance.
    */
-  public WebsocketManager getWebsocketManager() {
-    return websocketManager;
+  public WebsocketClient getWebsocketClient() {
+    return websocketClient;
   }
 }

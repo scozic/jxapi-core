@@ -4,6 +4,8 @@ package org.jxapi.netutils.serialization;
  * Interface for serializing messages. Each implementation should provide a
  * method to serialize an object into a raw String for use in HTTP requests or
  * Websocket messages.
+ * 
+ * @param <T> the type of object that this serializer will handle.
  */
 public interface MessageSerializer<T> {
 
@@ -18,8 +20,6 @@ public interface MessageSerializer<T> {
   /**
    * Serializer for plain String values.<br>
    * A no-operation serializer that returns the input string as is.
-   * 
-   * @return the input string
    */
   static MessageSerializer<String> NO_OP = s -> s;
 }

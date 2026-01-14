@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.Properties;
 import java.util.concurrent.ExecutionException;
 
-import org.jxapi.exchange.ExchangeApiObserver;
+import org.jxapi.exchange.ExchangeObserver;
 import org.jxapi.exchange.descriptor.gen.ConfigPropertyDescriptor;
 import org.jxapi.exchange.descriptor.gen.ExchangeApiDescriptor;
 import org.jxapi.exchange.descriptor.gen.ExchangeDescriptor;
@@ -39,6 +39,7 @@ public class RestEndpointDemoGenerator extends JavaTypeGenerator {
   private static final String EXECUTE_METHOD_ARG_INDENT = "        ";
   private static final String EXCHANGE_VAR = "exchange";
   private static final String API_VAR = "api";
+  private static final String OBSERVER_VAR = "observer";
   
   private final RestEndpointDescriptor restApi;
   private final boolean hasArguments;
@@ -146,7 +147,7 @@ public class RestEndpointDemoGenerator extends JavaTypeGenerator {
     addImport(InterruptedException.class);
     addImport(RestResponse.class);
     addImport(Properties.class);
-    addImport(ExchangeApiObserver.class);
+    addImport(ExchangeObserver.class);
     setDescription(generateClassJavadoc());
   }
   
@@ -218,8 +219,10 @@ public class RestEndpointDemoGenerator extends JavaTypeGenerator {
     }
     
     bodyBuilder.append(");\n")
-       .append("if (apiObserver != null) ")
-       .append(JavaCodeGenUtil.generateCodeBlock(API_VAR + ".subscribeObserver(apiObserver);"));
+       .append("if (")
+       .append(OBSERVER_VAR)
+       .append(" != null) ")
+       .append(JavaCodeGenUtil.generateCodeBlock(EXCHANGE_VAR + ".subscribeObserver(" + OBSERVER_VAR + ");"));
     
     StringBuilder tryClause = new StringBuilder();
     tryClause.append("return DemoUtil.checkResponse(")
@@ -233,8 +236,10 @@ public class RestEndpointDemoGenerator extends JavaTypeGenerator {
     tryClause.append("));");
          
     StringBuilder finallyClause = new StringBuilder()
-        .append("if (apiObserver != null) ")
-        .append(JavaCodeGenUtil.generateCodeBlock(API_VAR + ".unsubscribeObserver(apiObserver);"))
+        .append("if (")
+        .append(OBSERVER_VAR)
+        .append(" != null) ")
+        .append(JavaCodeGenUtil.generateCodeBlock(EXCHANGE_VAR + ".unsubscribeObserver(" + OBSERVER_VAR + ");"))
         .append(EXCHANGE_VAR)
             .append(".dispose();\n");
     
@@ -254,7 +259,10 @@ public class RestEndpointDemoGenerator extends JavaTypeGenerator {
            .append(" ")
            .append("request, ");
     }
-    signature.append("Properties configProperties, ExchangeApiObserver apiObserver) throws InterruptedException, ExecutionException");
+    signature
+      .append("Properties configProperties, ExchangeObserver ")
+      .append(OBSERVER_VAR)
+      .append(") throws InterruptedException, ExecutionException");
     
     appendMethod(signature.toString(), bodyBuilder.toString(), generateExecuteMethodJavadoc());
   }
@@ -268,7 +276,9 @@ public class RestEndpointDemoGenerator extends JavaTypeGenerator {
       javadoc.append("@param request     The request to submit\n");
     }
     javadoc.append("@param configProperties  The configuration properties to instantiate exchange with\n")
-         .append("@param apiObserver API observer that will notified of events. Is subscribed before REST API call and unsubscribed right after. Ignored if <code>null</code>\n")
+         .append("@param ")
+         .append(OBSERVER_VAR)
+         .append(" API observer that will notified of events. Is subscribed before REST API call and unsubscribed right after. Ignored if <code>null</code>\n")
          .append("@return Response data resulting from this API call\n")
          .append("@throws InterruptedException eventually thrown waiting for response\n")
          .append("@throws ExecutionException raised if response is not OK, see {@link RestResponse#isOk()}");

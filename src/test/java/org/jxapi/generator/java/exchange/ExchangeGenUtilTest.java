@@ -11,8 +11,12 @@ import org.jxapi.exchange.descriptor.gen.ConfigPropertyDescriptor;
 import org.jxapi.exchange.descriptor.gen.ConstantDescriptor;
 import org.jxapi.exchange.descriptor.gen.ExchangeApiDescriptor;
 import org.jxapi.exchange.descriptor.gen.ExchangeDescriptor;
+import org.jxapi.exchange.descriptor.gen.HttpClientDescriptor;
+import org.jxapi.exchange.descriptor.gen.NetworkDescriptor;
+import org.jxapi.exchange.descriptor.gen.WebsocketClientDescriptor;
 import org.jxapi.generator.java.Imports;
 import org.jxapi.generator.java.JavaCodeGenUtil;
+import org.jxapi.generator.java.exchange.api.ExchangeApiGenUtil;
 import org.jxapi.generator.java.pojo.PojoGenUtil;
 import org.jxapi.pojo.descriptor.Type;
 import org.jxapi.util.EncodingUtil;
@@ -895,6 +899,129 @@ public class ExchangeGenUtilTest {
     Assert.assertEquals("getGroup1Api", ExchangeGenUtil.getApiGroupGetterMethodName(exchange,api1));
     Assert.assertEquals("getaApi", ExchangeGenUtil.getApiGroupGetterMethodName(exchange,api2));
     Assert.assertEquals("getAApi", ExchangeGenUtil.getApiGroupGetterMethodName(exchange,api3));
+  }
+  
+  @Test
+  public void testGenerateNamesStaticVariablesDeclarations() {
+    List<String> endpointNames = List.of("getAccount", "a", "A");
+    String suffix = ExchangeApiGenUtil.REST_ENDPOINT_NAME_SUFFIX;
+    StringBuilder classBody = new StringBuilder();
+    Map<String, String> variables = ExchangeGenUtil.generateNamesStaticVariablesDeclarations(
+        endpointNames,
+        suffix, 
+        classBody,
+        "public static final");
+    Assert.assertEquals(3, variables.size());
+    Assert.assertEquals("GET_ACCOUNT_REST_API", variables.get("getAccount"));
+    Assert.assertEquals("A_REST_API", variables.get("a"));
+    Assert.assertEquals("A_REST_API_", variables.get("A"));
+    Assert.assertEquals("/**\n"
+        + " * Name of <code>getAccount</code> RestApi.\n"
+        + " */\n"
+        + "public static final String GET_ACCOUNT_REST_API = \"getAccount\";\n"
+        + "\n"
+        + "/**\n"
+        + " * Name of <code>a</code> RestApi.\n"
+        + " */\n"
+        + "public static final String A_REST_API = \"a\";\n"
+        + "\n"
+        + "/**\n"
+        + " * Name of <code>A</code> RestApi.\n"
+        + " */\n"
+        + "public static final String A_REST_API_ = \"A\";\n"
+        + "", 
+        classBody.toString());
+  }
+  
+  @Test
+  public void testGenerateNamesStaticVariablesDeclarations_NullClassBody() {
+    List<String> endpointNames = List.of("getAccount", "a", "A");
+    String suffix = ExchangeApiGenUtil.REST_ENDPOINT_NAME_SUFFIX;
+    Map<String, String> variables = ExchangeGenUtil.generateNamesStaticVariablesDeclarations(
+        endpointNames,
+        suffix, 
+        null,
+        "public static final");
+    Assert.assertEquals(3, variables.size());
+    Assert.assertEquals("GET_ACCOUNT_REST_API", variables.get("getAccount"));
+    Assert.assertEquals("A_REST_API", variables.get("a"));
+    Assert.assertEquals("A_REST_API_", variables.get("A"));
+  }
+  
+  @Test 
+  public void testGenerateHttpClientNamesStaticVariablesDeclarations() {
+    NetworkDescriptor net = NetworkDescriptor.builder()
+        .addToHttpClients(HttpClientDescriptor.builder().name("client1").build())
+        .addToHttpClients(HttpClientDescriptor.builder().name("a").build())
+        .addToHttpClients(HttpClientDescriptor.builder().name("A").build())
+        .build();
+    StringBuilder body = new StringBuilder();
+    Map<String, String> variables = ExchangeGenUtil.generateHttpClientNamesStaticVariablesDeclarations(net, body);
+    Assert.assertEquals(3, variables.size());
+    Assert.assertEquals("CLIENT1_HTTP_CLIENT", variables.get("client1"));
+    Assert.assertEquals("A_HTTP_CLIENT", variables.get("a"));
+    Assert.assertEquals("A_HTTP_CLIENT_", variables.get("A"));
+    Assert.assertEquals("/**\n"
+        + " * Name of <code>client1</code> HttpClient.\n"
+        + " */\n"
+        + " String CLIENT1_HTTP_CLIENT = \"client1\";\n"
+        + "\n"
+        + "/**\n"
+        + " * Name of <code>a</code> HttpClient.\n"
+        + " */\n"
+        + " String A_HTTP_CLIENT = \"a\";\n"
+        + "\n"
+        + "/**\n"
+        + " * Name of <code>A</code> HttpClient.\n"
+        + " */\n"
+        + " String A_HTTP_CLIENT_ = \"A\";\n"
+        + "", body.toString());
+  }
+  
+  @Test 
+  public void testGenerateHttpClientNamesStaticVariablesDeclarations_NullNetwork() {
+    StringBuilder body = new StringBuilder();
+    Map<String, String> variables = ExchangeGenUtil.generateHttpClientNamesStaticVariablesDeclarations(null, body);
+    Assert.assertEquals(0, variables.size());
+    Assert.assertEquals("", body.toString());
+  }
+  
+  @Test 
+  public void testGenerateWebsocketClientNamesStaticVariablesDeclarations() {
+    NetworkDescriptor net = NetworkDescriptor.builder()
+        .addToWebsocketClients(WebsocketClientDescriptor.builder().name("client1").build())
+        .addToWebsocketClients(WebsocketClientDescriptor.builder().name("a").build())
+        .addToWebsocketClients(WebsocketClientDescriptor.builder().name("A").build())
+        .build();
+    StringBuilder body = new StringBuilder();
+    Map<String, String> variables = ExchangeGenUtil.generateWebsocketClientNamesStaticVariablesDeclarations(net, body);
+    Assert.assertEquals(3, variables.size());
+    Assert.assertEquals("CLIENT1_WEBSOCKET_CLIENT", variables.get("client1"));
+    Assert.assertEquals("A_WEBSOCKET_CLIENT", variables.get("a"));
+    Assert.assertEquals("A_WEBSOCKET_CLIENT_", variables.get("A"));
+    Assert.assertEquals("/**\n"
+        + " * Name of <code>client1</code> WebsocketClient.\n"
+        + " */\n"
+        + " String CLIENT1_WEBSOCKET_CLIENT = \"client1\";\n"
+        + "\n"
+        + "/**\n"
+        + " * Name of <code>a</code> WebsocketClient.\n"
+        + " */\n"
+        + " String A_WEBSOCKET_CLIENT = \"a\";\n"
+        + "\n"
+        + "/**\n"
+        + " * Name of <code>A</code> WebsocketClient.\n"
+        + " */\n"
+        + " String A_WEBSOCKET_CLIENT_ = \"A\";\n"
+        + "", body.toString());
+  }
+  
+  @Test 
+  public void testGenerateWebsocketClientNamesStaticVariablesDeclarations_NullNetwork() {
+    StringBuilder body = new StringBuilder();
+    Map<String, String> variables = ExchangeGenUtil.generateWebsocketClientNamesStaticVariablesDeclarations(null, body);
+    Assert.assertEquals(0, variables.size());
+    Assert.assertEquals("", body.toString());
   }
   
   private static class TestExchangeDescriptor extends ExchangeDescriptor {

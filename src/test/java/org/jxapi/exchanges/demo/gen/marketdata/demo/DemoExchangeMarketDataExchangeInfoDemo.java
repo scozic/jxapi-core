@@ -5,7 +5,7 @@ import java.util.Properties;
 import java.util.concurrent.ExecutionException;
 
 import javax.annotation.processing.Generated;
-import org.jxapi.exchange.ExchangeApiObserver;
+import org.jxapi.exchange.ExchangeObserver;
 import org.jxapi.exchanges.demo.gen.DemoExchangeDemoProperties;
 import org.jxapi.exchanges.demo.gen.DemoExchangeExchange;
 import org.jxapi.exchanges.demo.gen.DemoExchangeExchangeImpl;
@@ -44,24 +44,24 @@ public class DemoExchangeMarketDataExchangeInfoDemo {
    * Submits a call to {@link DemoExchangeMarketDataApi#exchangeInfo(org.jxapi.exchanges.demo.gen.marketdata.pojo.DemoExchangeMarketDataExchangeInfoRequest)}and waits for response.
    * @param request     The request to submit
    * @param configProperties  The configuration properties to instantiate exchange with
-   * @param apiObserver API observer that will notified of events. Is subscribed before REST API call and unsubscribed right after. Ignored if <code>null</code>
+   * @param observer API observer that will notified of events. Is subscribed before REST API call and unsubscribed right after. Ignored if <code>null</code>
    * @return Response data resulting from this API call
    * @throws InterruptedException eventually thrown waiting for response
    * @throws ExecutionException raised if response is not OK, see {@link RestResponse#isOk()}
    */
-  public static RestResponse<DemoExchangeMarketDataExchangeInfoResponse> execute(DemoExchangeMarketDataExchangeInfoRequest request, Properties configProperties, ExchangeApiObserver apiObserver) throws InterruptedException, ExecutionException {
+  public static RestResponse<DemoExchangeMarketDataExchangeInfoResponse> execute(DemoExchangeMarketDataExchangeInfoRequest request, Properties configProperties, ExchangeObserver observer) throws InterruptedException, ExecutionException {
     DemoExchangeExchange exchange = new DemoExchangeExchangeImpl("test-" + DemoExchangeExchange.ID, configProperties);
     DemoExchangeMarketDataApi api = exchange.getMarketDataApi();
     log.info("Calling org.jxapi.exchanges.demo.gen.marketdata.DemoExchangeMarketDataApi.exchangeInfo() API with request:{}", request);
-    if (apiObserver != null) {
-      api.subscribeObserver(apiObserver);
+    if (observer != null) {
+      exchange.subscribeObserver(observer);
     }
     try {
       return DemoUtil.checkResponse(api.exchangeInfo(request));
     }
     finally {
-      if (apiObserver != null) {
-        api.unsubscribeObserver(apiObserver);
+      if (observer != null) {
+        exchange.unsubscribeObserver(observer);
       }
       exchange.dispose();
     }

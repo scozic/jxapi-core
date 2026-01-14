@@ -1,7 +1,6 @@
 package org.jxapi.exchanges.employee;
 
 import java.io.IOException;
-import java.net.http.HttpClient;
 import java.util.List;
 import java.util.Properties;
 import java.util.concurrent.ExecutionException;
@@ -249,7 +248,7 @@ public class EmployeeExchangeTest {
   
   @Test
   public void testGetEmployee_InvalidUrlParam() throws InterruptedException, ExecutionException {
-    HttpRequestExecutor executor = new JavaNetHttpRequestExecutor(HttpClient.newHttpClient());
+    HttpRequestExecutor executor = new JavaNetHttpRequestExecutor();
     try {
       HttpRequest request = new HttpRequest();
       request.setUrl(server.getHttpBaseUrl() + "/v1/employee/invalid");
@@ -272,7 +271,7 @@ public class EmployeeExchangeTest {
   }
   
   private void doTestAddOrUpdateEmployeeInvalidBody(HttpMethod method) throws InterruptedException, ExecutionException {
-    HttpRequestExecutor executor = new JavaNetHttpRequestExecutor(HttpClient.newHttpClient());
+    HttpRequestExecutor executor = new JavaNetHttpRequestExecutor();
     try {
       HttpRequest request = new HttpRequest();
       request.setUrl(server.getHttpBaseUrl() + "/v1/employee");

@@ -6,7 +6,7 @@ import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import javax.annotation.processing.Generated;
 import org.jxapi.exchanges.demo.gen.marketdata.pojo.SingleSymbol;
-import org.jxapi.netutils.serialization.json.AbstractJsonMessageSerializer;
+import org.jxapi.netutils.serialization.json.AbstractJsonValueSerializer;
 import static org.jxapi.util.JsonUtil.writeStringField;
 
 /**
@@ -14,7 +14,7 @@ import static org.jxapi.util.JsonUtil.writeStringField;
  * @see SingleSymbol
  */
 @Generated("org.jxapi.generator.java.pojo.JsonPojoSerializerGenerator")
-public class SingleSymbolSerializer extends AbstractJsonMessageSerializer<SingleSymbol> {
+public class SingleSymbolSerializer extends AbstractJsonValueSerializer<SingleSymbol> {
   
   /**
    * Constructor

@@ -46,7 +46,6 @@ public class PojosGeneratorMain {
    * descriptor files in the current project "src/main/resources/" folder.
    * 
    * @param args Not used
-   * @see #generateExchangeWrappersInCurrentProject(String, String, String)
    */
   public static void main(String[] args) {
     try {
@@ -111,7 +110,7 @@ public class PojosGeneratorMain {
    * specified base package folder.
    * 
    * @param pojosDescriptor   the POJOs descriptor defining the POJOs to generate
-   * @param basePackageFolder the base package folder where to generate the POJOs
+   * @param srcMainFolder     the base package folder where to generate the POJOs
    * @throws IOException if an I/O error occurs
    */
   public static void generatePojos(PojosDescriptor pojosDescriptor, Path srcMainFolder) throws IOException {

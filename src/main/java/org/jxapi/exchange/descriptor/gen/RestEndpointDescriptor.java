@@ -15,9 +15,14 @@ import org.jxapi.util.EncodingUtil;
 import org.jxapi.util.Pojo;
 
 /**
- * Describes a REST endpoint as part of a larger exchange API defined in a JSON document. These endpoints handle HTTP requests to a specific URL, process request parameters, and return a response.
- * <h2>Endpoint Properties</h2> The endpoint is defined by the following properties: <ul>
+ * Describes a REST endpoint as part of a larger exchange API defined in a JSON document.
+ * These endpoints handle HTTP requests to a specific URL, process request parameters, and return a response.
+ * 
+ * <h2>Endpoint Properties</h2>
+ * The endpoint is defined by the following properties:
+ * <ul>
  *   <li>{@code name}: A unique identifier for the endpoint.</li>
+ *   <li>{@code httpClient}: The name of the HTTP client to use for this REST endpoint, as defined in exchange 'network' section. When not set, default client of API group is used.</li>
  *   <li>{@code description}: A brief summary of the endpoint's purpose.</li>
  *   <li>{@code url}: The URL of the endpoint.</li>
  *   <li>{@code httpMethod}: The HTTP method for the request (e.g., GET, POST).</li>
@@ -26,7 +31,10 @@ import org.jxapi.util.Pojo;
  *   <li>{@code requestWeight}: The cost of a request, used for rate limiting.</li>
  *   <li>{@code rateLimits}: The rate limits applied to this endpoint.</li>
  * </ul>
- * <h2>Request Serialization</h2> <strong>Serialization to URL Parameters:</strong> <ul>
+ * 
+ * <h2>Request Serialization</h2>
+ * <strong>Serialization to URL Parameters:</strong>
+ * <ul>
  *   <li>For HTTP methods that do not have a request body (e.g., {@code GET}, {@code DELETE}), the request is serialized into either URL path parameters (e.g., {@code /value1/value2}) or query parameters (e.g., {@code ?param1=value1}).</li>
  *   <li>By default, request fields are serialized as query parameters. To serialize them as URL path parameters, set the {@link org.jxapi.pojo.descriptor.Field#getIn()} property to {@link org.jxapi.pojo.descriptor.UrlParameterType#PATH}.</li>
  *   <li>If the request field is a primitive type, its value is URL-encoded and used as a single parameter.</li>
@@ -34,16 +42,27 @@ import org.jxapi.util.Pojo;
  *   <li>If the request field is an object with the {@code in} property set, or if it is a {@code MAP} or {@code LIST}, it is serialized as a URL-encoded JSON object.</li>
  *   <li>All field values are URL-encoded.</li>
  * </ul>
- * <h2>Code Generation</h2> API endpoints are defined as child elements of an {@code api} element in the JSON document (see {@link org.jxapi.exchange.descriptor.gen.ExchangeApiDescriptor}). This descriptor is used to generate method declarations in the API interface and their implementations.
- * @see org.jxapi.exchange.descriptor.gen.ExchangeApiInterfaceImplementationGenerator @see org.jxapi.exchange.descriptor.gen.ExchangeApiClassesGenerator
- * <h2>Request and Response Properties</h2> <ul>
+ * 
+ * <h2>Code Generation</h2>
+ * API endpoints are defined as child elements of an {@code api} element in the JSON document (see {@link org.jxapi.exchange.descriptor.gen.ExchangeApiDescriptor}).
+ * This descriptor is used to generate method declarations in the API interface and their implementations.
+ * 
+ * <h2>Request and Response Properties</h2>
+ * <ul>
  *   <li>Both {@code request} and {@code response} are described as {@link org.jxapi.pojo.descriptor.Field} objects.</li>
  *   <li>The name of the {@code request} field becomes the argument name in the generated API method.</li>
  *   <li>The name of the {@code response} field is not used in code generation.</li>
  *   <li>If {@code request} is omitted, the generated method will have no arguments.</li>
  *   <li>If {@code response} is omitted, the method will return a {@code STRING} containing the raw response body. This is useful when only the status code is needed and the body is empty.</li>
  * </ul>
- * @see Field @see RateLimitRule @see RestEndpointClassesGenerator @see Type @see HttpMethod
+ * 
+ * @see org.jxapi.pojo.descriptor.Field
+ * @see org.jxapi.netutils.rest.ratelimits.RateLimitRule
+ * @see org.jxapi.generator.java.exchange.api.rest.RestEndpointClassesGenerator
+ * @see org.jxapi.pojo.descriptor.Type
+ * @see org.jxapi.netutils.rest.HttpMethod
+ * @see org.jxapi.generator.java.exchange.api.ExchangeApiInterfaceImplementationGenerator
+ * @see org.jxapi.generator.java.exchange.api.ExchangeApiClassesGenerator
  * 
  */
 @Generated("org.jxapi.generator.java.pojo.PojoGenerator")
@@ -51,7 +70,7 @@ import org.jxapi.util.Pojo;
 @JsonDeserialize(using = RestEndpointDescriptorDeserializer.class)
 public class RestEndpointDescriptor implements Pojo<RestEndpointDescriptor> {
   
-  private static final long serialVersionUID = -7459346607038526664L;
+  private static final long serialVersionUID = 3220828939988892700L;
   
   /**
    * @return A new builder to build {@link RestEndpointDescriptor} objects
@@ -65,7 +84,7 @@ public class RestEndpointDescriptor implements Pojo<RestEndpointDescriptor> {
   private String httpMethod;
   private String url;
   private String docUrl;
-  private Long httpRequestTimeout;
+  private String httpClient;
   private Integer requestWeight;
   private List<String> rateLimits;
   private Boolean paginated;
@@ -144,19 +163,23 @@ public class RestEndpointDescriptor implements Pojo<RestEndpointDescriptor> {
   }
   
   /**
-   * @return The HTTP request timeout in milliseconds for this REST endpoint.
+   * @return The name of the HTTP client to use for this REST endpoint, as defined
+   * in exchange 'network' section. When not set, default client of API
+   * group is used.
    * 
    */
-  public Long getHttpRequestTimeout() {
-    return httpRequestTimeout;
+  public String getHttpClient() {
+    return httpClient;
   }
   
   /**
-   * @param httpRequestTimeout The HTTP request timeout in milliseconds for this REST endpoint.
+   * @param httpClient The name of the HTTP client to use for this REST endpoint, as defined
+   * in exchange 'network' section. When not set, default client of API
+   * group is used.
    * 
    */
-  public void setHttpRequestTimeout(Long httpRequestTimeout) {
-    this.httpRequestTimeout = httpRequestTimeout;
+  public void setHttpClient(String httpClient) {
+    this.httpClient = httpClient;
   }
   
   /**
@@ -176,7 +199,8 @@ public class RestEndpointDescriptor implements Pojo<RestEndpointDescriptor> {
   }
   
   /**
-   * @return The list of IDs of rate limits this REST API subject to. These must be defined either in enclosing API group descriptor (see {@link org.jxapi.exchange.descriptor.gen.ExchangeApiDescriptor#getRateLimits()}) or in enclosing exchange descriptor, see {@link org.jxapi.exchange.descriptor.gen.ExchangeDescriptor#getRateLimits()}.
+   * @return The list of IDs of rate limits this REST API subject to. These must
+   * be defined either in enclosing exchange descriptor, see {@link org.jxapi.exchange.descriptor.gen.ExchangeDescriptor#getRateLimits()}.
    * 
    */
   public List<String> getRateLimits() {
@@ -184,7 +208,8 @@ public class RestEndpointDescriptor implements Pojo<RestEndpointDescriptor> {
   }
   
   /**
-   * @param rateLimits The list of IDs of rate limits this REST API subject to. These must be defined either in enclosing API group descriptor (see {@link org.jxapi.exchange.descriptor.gen.ExchangeApiDescriptor#getRateLimits()}) or in enclosing exchange descriptor, see {@link org.jxapi.exchange.descriptor.gen.ExchangeDescriptor#getRateLimits()}.
+   * @param rateLimits The list of IDs of rate limits this REST API subject to. These must
+   * be defined either in enclosing exchange descriptor, see {@link org.jxapi.exchange.descriptor.gen.ExchangeDescriptor#getRateLimits()}.
    * 
    */
   public void setRateLimits(List<String> rateLimits) {
@@ -208,7 +233,9 @@ public class RestEndpointDescriptor implements Pojo<RestEndpointDescriptor> {
   }
   
   /**
-   * @return Whether this endpoint's request has a body. If true, the request will be sent in the body of the HTTP request. If false, the request will be sent as URL parameters.
+   * @return Whether this endpoint's request has a body. If true, the request
+   * will be sent in the body of the HTTP request. If false, the request
+   * will be sent as URL parameters.
    * 
    */
   public Boolean isRequestHasBody() {
@@ -216,7 +243,9 @@ public class RestEndpointDescriptor implements Pojo<RestEndpointDescriptor> {
   }
   
   /**
-   * @param requestHasBody Whether this endpoint's request has a body. If true, the request will be sent in the body of the HTTP request. If false, the request will be sent as URL parameters.
+   * @param requestHasBody Whether this endpoint's request has a body. If true, the request
+   * will be sent in the body of the HTTP request. If false, the request
+   * will be sent as URL parameters.
    * 
    */
   public void setRequestHasBody(Boolean requestHasBody) {
@@ -267,7 +296,7 @@ public class RestEndpointDescriptor implements Pojo<RestEndpointDescriptor> {
         && Objects.equals(this.httpMethod, o.httpMethod)
         && Objects.equals(this.url, o.url)
         && Objects.equals(this.docUrl, o.docUrl)
-        && Objects.equals(this.httpRequestTimeout, o.httpRequestTimeout)
+        && Objects.equals(this.httpClient, o.httpClient)
         && Objects.equals(this.requestWeight, o.requestWeight)
         && Objects.equals(this.rateLimits, o.rateLimits)
         && Objects.equals(this.paginated, o.paginated)
@@ -305,7 +334,7 @@ public class RestEndpointDescriptor implements Pojo<RestEndpointDescriptor> {
     if (res != 0) {
       return res;
     }
-    res = CompareUtil.compare(this.httpRequestTimeout, other.httpRequestTimeout);
+    res = CompareUtil.compare(this.httpClient, other.httpClient);
     if (res != 0) {
       return res;
     }
@@ -335,7 +364,7 @@ public class RestEndpointDescriptor implements Pojo<RestEndpointDescriptor> {
   
   @Override
   public int hashCode() {
-    return Objects.hash(name, description, httpMethod, url, docUrl, httpRequestTimeout, requestWeight, rateLimits, paginated, requestHasBody, request, response);
+    return Objects.hash(name, description, httpMethod, url, docUrl, httpClient, requestWeight, rateLimits, paginated, requestHasBody, request, response);
   }
   
   @Override
@@ -346,7 +375,7 @@ public class RestEndpointDescriptor implements Pojo<RestEndpointDescriptor> {
     clone.httpMethod = this.httpMethod;
     clone.url = this.url;
     clone.docUrl = this.docUrl;
-    clone.httpRequestTimeout = this.httpRequestTimeout;
+    clone.httpClient = this.httpClient;
     clone.requestWeight = this.requestWeight;
     clone.rateLimits = CollectionUtil.cloneList(this.rateLimits);
     clone.paginated = this.paginated;
@@ -372,7 +401,7 @@ public class RestEndpointDescriptor implements Pojo<RestEndpointDescriptor> {
     private String httpMethod;
     private String url;
     private String docUrl;
-    private Long httpRequestTimeout;
+    private String httpClient;
     private Integer requestWeight;
     private List<String> rateLimits;
     private Boolean paginated;
@@ -436,14 +465,16 @@ public class RestEndpointDescriptor implements Pojo<RestEndpointDescriptor> {
     }
     
     /**
-     * Will set the value of <code>httpRequestTimeout</code> field in the builder
-     * @param httpRequestTimeout The HTTP request timeout in milliseconds for this REST endpoint.
+     * Will set the value of <code>httpClient</code> field in the builder
+     * @param httpClient The name of the HTTP client to use for this REST endpoint, as defined
+     * in exchange 'network' section. When not set, default client of API
+     * group is used.
      * 
      * @return Builder instance
-     * @see #setHttpRequestTimeout(Long)
+     * @see #setHttpClient(String)
      */
-    public Builder httpRequestTimeout(Long httpRequestTimeout)  {
-      this.httpRequestTimeout = httpRequestTimeout;
+    public Builder httpClient(String httpClient)  {
+      this.httpClient = httpClient;
       return this;
     }
     
@@ -461,7 +492,8 @@ public class RestEndpointDescriptor implements Pojo<RestEndpointDescriptor> {
     
     /**
      * Will set the value of <code>rateLimits</code> field in the builder
-     * @param rateLimits The list of IDs of rate limits this REST API subject to. These must be defined either in enclosing API group descriptor (see {@link org.jxapi.exchange.descriptor.gen.ExchangeApiDescriptor#getRateLimits()}) or in enclosing exchange descriptor, see {@link org.jxapi.exchange.descriptor.gen.ExchangeDescriptor#getRateLimits()}.
+     * @param rateLimits The list of IDs of rate limits this REST API subject to. These must
+     * be defined either in enclosing exchange descriptor, see {@link org.jxapi.exchange.descriptor.gen.ExchangeDescriptor#getRateLimits()}.
      * 
      * @return Builder instance
      * @see #setRateLimits(List<String>)
@@ -500,7 +532,9 @@ public class RestEndpointDescriptor implements Pojo<RestEndpointDescriptor> {
     
     /**
      * Will set the value of <code>requestHasBody</code> field in the builder
-     * @param requestHasBody Whether this endpoint's request has a body. If true, the request will be sent in the body of the HTTP request. If false, the request will be sent as URL parameters.
+     * @param requestHasBody Whether this endpoint's request has a body. If true, the request
+     * will be sent in the body of the HTTP request. If false, the request
+     * will be sent as URL parameters.
      * 
      * @return Builder instance
      * @see #setRequestHasBody(Boolean)
@@ -542,7 +576,7 @@ public class RestEndpointDescriptor implements Pojo<RestEndpointDescriptor> {
       res.httpMethod = this.httpMethod;
       res.url = this.url;
       res.docUrl = this.docUrl;
-      res.httpRequestTimeout = this.httpRequestTimeout;
+      res.httpClient = this.httpClient;
       res.requestWeight = this.requestWeight;
       res.rateLimits = CollectionUtil.cloneList(this.rateLimits);
       res.paginated = this.paginated;
