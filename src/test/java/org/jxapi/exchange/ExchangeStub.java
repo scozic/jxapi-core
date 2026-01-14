@@ -13,7 +13,7 @@ public class ExchangeStub extends AbstractExchange {
   public static final ExchangeStub INSTANCE = new ExchangeStub("myExchange");
   
   public ExchangeStub(String name) {
-    super(EXCHANGE_ID, "1.0.0", name, new Properties(), "http://localhost:8080/api", "ws://localhost:8080/ws");
+    super(EXCHANGE_ID, "1.0.0", name, new Properties(), "http://localhost:8080/api", false);
   }
 
 }

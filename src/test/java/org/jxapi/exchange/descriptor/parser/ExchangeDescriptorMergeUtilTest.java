@@ -9,8 +9,11 @@ import org.jxapi.exchange.descriptor.gen.ConfigPropertyDescriptor;
 import org.jxapi.exchange.descriptor.gen.ConstantDescriptor;
 import org.jxapi.exchange.descriptor.gen.ExchangeApiDescriptor;
 import org.jxapi.exchange.descriptor.gen.ExchangeDescriptor;
+import org.jxapi.exchange.descriptor.gen.HttpClientDescriptor;
+import org.jxapi.exchange.descriptor.gen.NetworkDescriptor;
 import org.jxapi.exchange.descriptor.gen.RateLimitRuleDescriptor;
 import org.jxapi.exchange.descriptor.gen.RestEndpointDescriptor;
+import org.jxapi.exchange.descriptor.gen.WebsocketClientDescriptor;
 import org.jxapi.exchange.descriptor.gen.WebsocketEndpointDescriptor;
 
 /**
@@ -24,7 +27,6 @@ public class ExchangeDescriptorMergeUtilTest {
     api1.setName("myApi");
     api1.setDescription("My API description");
     api1.setHttpUrl("http://myapi.com");
-    api1.setWebsocketUrl("ws://myapi.com");
     List<RestEndpointDescriptor> restEndpoints1 = new ArrayList<>();
     RestEndpointDescriptor restApi1 = new RestEndpointDescriptor();
     restApi1.setName("restApi1");
@@ -39,14 +41,9 @@ public class ExchangeDescriptorMergeUtilTest {
     RateLimitRuleDescriptor rule1 = new RateLimitRuleDescriptor();
     rule1.setId("rule1");
     rateLimitRules1.add(rule1);
-    api1.setRateLimits(rateLimitRules1);
     
     ExchangeApiDescriptor api2 = new ExchangeApiDescriptor();
     api2.setName("myApi");
-    api2.setHttpRequestExecutorFactory("com.x.y.MyHttpRequestExecutorFactory");
-    api2.setHttpRequestInterceptorFactory("com.x.y.MyHttpRequestInterceptorFactory");
-    api2.setWebsocketFactory("com.x.y.MyWebsocketFactory");
-    api2.setHttpRequestTimeout(1000L);
     List<RestEndpointDescriptor> restEndpoints2 = new ArrayList<>();
     RestEndpointDescriptor restApi2 = new RestEndpointDescriptor();
     restApi2.setName("restApi2");
@@ -67,17 +64,11 @@ public class ExchangeDescriptorMergeUtilTest {
     RateLimitRuleDescriptor rule2 = new RateLimitRuleDescriptor();
     rule2.setId("rule2");
     rateLimitRules2.add(rule2);
-    api2.setRateLimits(rateLimitRules2);
     
     ExchangeApiDescriptor merged = ExchangeDescriptorMergeUtil.mergeExchangeApiDescriptors(api1, api2);
     Assert.assertEquals("myApi", merged.getName());
     Assert.assertEquals("My API description", merged.getDescription());
     Assert.assertEquals("http://myapi.com", merged.getHttpUrl());
-    Assert.assertEquals("ws://myapi.com", merged.getWebsocketUrl());
-    Assert.assertEquals("com.x.y.MyHttpRequestExecutorFactory", merged.getHttpRequestExecutorFactory());
-    Assert.assertEquals("com.x.y.MyHttpRequestInterceptorFactory", merged.getHttpRequestInterceptorFactory());
-    Assert.assertEquals("com.x.y.MyWebsocketFactory", merged.getWebsocketFactory());
-    Assert.assertEquals(1000L, merged.getHttpRequestTimeout().longValue());
     Assert.assertEquals(3, merged.getRestEndpoints().size());
     Assert.assertEquals(restApi1, merged.getRestEndpoints().get(0));
     Assert.assertEquals(restApi2, merged.getRestEndpoints().get(1));
@@ -86,9 +77,6 @@ public class ExchangeDescriptorMergeUtilTest {
     Assert.assertEquals(wsApi1, merged.getWebsocketEndpoints().get(0));
     Assert.assertEquals(wsApi2, merged.getWebsocketEndpoints().get(1));
     Assert.assertEquals(wsApi3, merged.getWebsocketEndpoints().get(2));
-    Assert.assertEquals(2, merged.getRateLimits().size());
-    Assert.assertEquals(rule1, merged.getRateLimits().get(0));
-    Assert.assertEquals(rule2, merged.getRateLimits().get(1));
   }
   
   @Test
@@ -189,19 +177,16 @@ public class ExchangeDescriptorMergeUtilTest {
     ConfigPropertyDescriptor prop1 = new ConfigPropertyDescriptor();
     prop1.setName("prop1");
     ex1.setProperties(List.of(prop1));
-    ConfigPropertyDescriptor demoProp1 = new ConfigPropertyDescriptor();
-    demoProp1.setName("demoProp1");
+    NetworkDescriptor n1 = new NetworkDescriptor.Builder()
+        .addToHttpClients(HttpClientDescriptor.builder().name("client1").build())
+        .build();
+    ex1.setNetwork(n1);
     
     ExchangeDescriptor ex2 = new ExchangeDescriptor();
     ex2.setId("ex1");
     ex2.setVersion("1.0.1");
     ex2.setJxapi("1.0.0");
     ex2.setHttpUrl("http://ex1.com");
-    ex2.setHttpRequestExecutorFactory("com.x.y.MyHttpRequestExecutorFactory");
-    ex2.setHttpRequestInterceptorFactory("com.x.y.MyHttpRequestInterceptorFactory");
-    ex2.setWebsocketFactory("com.x.y.MyWebsocketFactory");
-    ex2.setWebsocketUrl("ws://ex1.com");
-    ex2.setHttpRequestTimeout(1000L);
     ExchangeApiDescriptor api2 = new ExchangeApiDescriptor();
     api2.setName("myApi2");
     ex2.setApis(List.of(api2));
@@ -215,8 +200,10 @@ public class ExchangeDescriptorMergeUtilTest {
     ConfigPropertyDescriptor prop2 = new ConfigPropertyDescriptor();
     prop2.setName("prop2");
     ex2.setProperties(List.of(prop2));
-    ConfigPropertyDescriptor demoProp2 = new ConfigPropertyDescriptor();
-    demoProp2.setName("demoProp2");
+    NetworkDescriptor n2 = new NetworkDescriptor.Builder()
+        .addToWebsocketClients(WebsocketClientDescriptor.builder().name("ws1").build())
+        .build();
+    ex2.setNetwork(n2);
     
     ExchangeDescriptor merged = ExchangeDescriptorMergeUtil.mergeExchangeDescriptors(ex1, ex2);
     Assert.assertEquals("ex1", merged.getId());
@@ -226,12 +213,7 @@ public class ExchangeDescriptorMergeUtilTest {
     Assert.assertEquals("com.x.y.gen", merged.getBasePackage());
     Assert.assertEquals("https://ex1.com/docs", merged.getDocUrl());
     Assert.assertEquals("http://ex1.com", merged.getHttpUrl());
-    Assert.assertEquals("com.x.y.MyHttpRequestExecutorFactory", merged.getHttpRequestExecutorFactory());
-    Assert.assertEquals("com.x.y.MyHttpRequestInterceptorFactory", merged.getHttpRequestInterceptorFactory());
-    Assert.assertEquals("com.x.y.MyWebsocketFactory", merged.getWebsocketFactory());
-    Assert.assertEquals("ws://ex1.com", merged.getWebsocketUrl());
     Assert.assertEquals("com.x.y.gen.MyAfterInitHookFactory", merged.getAfterInitHookFactory());
-    Assert.assertEquals(1000L, merged.getHttpRequestTimeout().longValue());
     Assert.assertEquals(2, merged.getApis().size());
     Assert.assertEquals(api1, merged.getApis().get(0));
     Assert.assertEquals(api2, merged.getApis().get(1));
@@ -244,6 +226,10 @@ public class ExchangeDescriptorMergeUtilTest {
     Assert.assertEquals(2, merged.getProperties().size());
     Assert.assertEquals(prop1, merged.getProperties().get(0));
     Assert.assertEquals(prop2, merged.getProperties().get(1));
+    Assert.assertEquals(1, merged.getNetwork().getHttpClients().size());
+    Assert.assertEquals("client1", merged.getNetwork().getHttpClients().get(0).getName());
+    Assert.assertEquals(1, merged.getNetwork().getWebsocketClients().size());
+    Assert.assertEquals("ws1", merged.getNetwork().getWebsocketClients().get(0).getName());
   }
   
   @Test
@@ -278,6 +264,49 @@ public class ExchangeDescriptorMergeUtilTest {
         ExchangeDescriptorMergeUtil.mergeConstants(
             List.of(c1), 
             List.of(c2, c1b)));
+  }
+  
+  @Test
+  public void testMergeNetworks() {
+    NetworkDescriptor n1 = new NetworkDescriptor.Builder()
+        .addToHttpClients(HttpClientDescriptor.builder().name("client1").build())
+        .addToWebsocketClients(WebsocketClientDescriptor.builder().name("ws1").build())
+        .build();
+    NetworkDescriptor n2 = new NetworkDescriptor.Builder()
+        .addToHttpClients(HttpClientDescriptor.builder().name("client2").build())
+        .addToWebsocketClients(WebsocketClientDescriptor.builder().name("ws2").build())
+        .build();
+    NetworkDescriptor merged = ExchangeDescriptorMergeUtil.mergeNetworks(n1, n2);
+    Assert.assertSame(n1, ExchangeDescriptorMergeUtil.mergeNetworks(n1, null));
+    Assert.assertSame(n2, ExchangeDescriptorMergeUtil.mergeNetworks(null, n2));
+    Assert.assertEquals(2, merged.getHttpClients().size());
+    Assert.assertEquals("client1", merged.getHttpClients().get(0).getName());
+    Assert.assertEquals("client2", merged.getHttpClients().get(1).getName());
+    Assert.assertEquals(2, merged.getWebsocketClients().size());
+    Assert.assertEquals("ws1", merged.getWebsocketClients().get(0).getName());
+    Assert.assertEquals("ws2", merged.getWebsocketClients().get(1).getName());
+  }
+  
+  @Test(expected = IllegalArgumentException.class)
+  public void testMergeNetworks_DuplicateHttpClientName() {
+    NetworkDescriptor n1 = new NetworkDescriptor.Builder()
+        .addToHttpClients(HttpClientDescriptor.builder().name("client1").build())
+        .build();
+    NetworkDescriptor n2 = new NetworkDescriptor.Builder()
+        .addToHttpClients(HttpClientDescriptor.builder().name("client1").build())
+        .build();
+    ExchangeDescriptorMergeUtil.mergeNetworks(n1, n2);
+  }
+  
+  @Test(expected = IllegalArgumentException.class)
+  public void testMergeNetworks_DuplicateWebsocketClientName() {
+    NetworkDescriptor n1 = new NetworkDescriptor.Builder()
+        .addToWebsocketClients(WebsocketClientDescriptor.builder().name("ws1").build())
+        .build();
+    NetworkDescriptor n2 = new NetworkDescriptor.Builder()
+        .addToWebsocketClients(WebsocketClientDescriptor.builder().name("ws1").build())
+        .build();
+    ExchangeDescriptorMergeUtil.mergeNetworks(n1, n2);
   }
   
   @Test

@@ -33,16 +33,30 @@
 		{"name": "defaultSymbol", "type":"STRING", "description": "Default symbol to use in ticker related messages", "value": "BTC_USDT"}
 		
 	],
+	"network": {
+		"httpClients": [
+			{
+				"name": "httpDefault",
+				"httpRequestInterceptorFactory": "org.jxapi.exchanges.demo.net.DemoExchangeHttpRequestInterceptorFactory"
+			}
+		],
+		"websocketClients": [
+			{
+				"name": "wsDefault",
+				"websocketUrl": "${config.baseWebsocketUrl}",
+				"websocketHookFactory": "org.jxapi.exchanges.demo.net.DemoExchangeWebsocketHookFactory"
+			}
+		]
+	},
 	"httpUrl": "${config.baseHttpUrl}",
-	"websocketUrl": "${config.baseWebsocketUrl}",
-	"httpRequestInterceptorFactory": "org.jxapi.exchanges.demo.net.DemoExchangeHttpRequestInterceptorFactory",
-	"websocketHookFactory": "org.jxapi.exchanges.demo.net.DemoExchangeWebsocketHookFactory",
 	"afterInitHookFactory": "org.jxapi.exchange.MockExchangeHookFactory",
 	"apis":[
 		{ 
 			"name": "MarketData",
 			"description": "Demo exchange market data API",
 			"httpUrl": "/marketData",
+			"defaultHttpClient": "httpDefault",
+			"defaultWebsocketClient": "wsDefault",
 			"restEndpoints": [
 				{
 					"name": "exchangeInfo",

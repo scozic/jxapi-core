@@ -12,7 +12,12 @@ import org.jxapi.util.EncodingUtil;
 import org.jxapi.util.Pojo;
 
 /**
- * Represents a rate limit rule that applies to all API groups of the exchange.<br> Exchange descriptor may contain a list of such rate limit rules as value of 'rateLimits' property of exchange.<br> Such rate limit rules will be applied to all endpoints of each API group of the exchange.<br> See {@link org.jxapi.netutils.rest.ratelimits.RateLimitRule} for details.
+ * Represents a rate limit rule that applies to all API groups of the exchange.<br>
+ * Exchange descriptor may contain a list of such rate limit rules as value of
+ * 'rateLimits' property of exchange.<br>
+ * Such rate limit rules will be applied to all endpoints of each API group of
+ * the exchange.<br>
+ * See {@link org.jxapi.netutils.rest.ratelimits.RateLimitRule} for details.
  * 
  */
 @Generated("org.jxapi.generator.java.pojo.PojoGenerator")
@@ -83,7 +88,10 @@ public class RateLimitRuleDescriptor implements Pojo<RateLimitRuleDescriptor> {
   }
   
   /**
-   * @return The maximum number of requests that can be attempted within rolling time frame. A negative value means it should not be taken into account and this rate limit is expressed in cumulated weight.
+   * @return The maximum number of requests that can be attempted
+   * within rolling time frame. A negative value means it
+   * should not be taken into account and this rate limit
+   * is expressed in cumulated weight.
    * 
    */
   public Integer getMaxRequestCount() {
@@ -91,7 +99,10 @@ public class RateLimitRuleDescriptor implements Pojo<RateLimitRuleDescriptor> {
   }
   
   /**
-   * @param maxRequestCount The maximum number of requests that can be attempted within rolling time frame. A negative value means it should not be taken into account and this rate limit is expressed in cumulated weight.
+   * @param maxRequestCount The maximum number of requests that can be attempted
+   * within rolling time frame. A negative value means it
+   * should not be taken into account and this rate limit
+   * is expressed in cumulated weight.
    * 
    */
   public void setMaxRequestCount(Integer maxRequestCount) {
@@ -99,9 +110,18 @@ public class RateLimitRuleDescriptor implements Pojo<RateLimitRuleDescriptor> {
   }
   
   /**
-   * @return The suggested granularity in ms to use when enforcing. This is the time unit used to keep track of rate limit state. <br> Every time a request is made, a request count is incremented for current time in ms, and  a total weight is incremented for current time in ms. These values are stored with granularity  that is if granularity is X ms, the counters are updated at time T are stored for
+   * @return The suggested granularity in ms to use when enforcing. This is the time unit used to keep
+   * track of rate limit state. <br>
+   * Every time a request is made, a request count is incremented for current time in ms, and 
+   * a total weight is incremented for current time in ms. These values are stored with granularity 
+   * that is if granularity is X ms, the counters are updated at time T are stored for
    *  grain N*X where N*X &lt;= T and (N+1)*X &gt; n <br>
-   * The grains for time older than rule's timeframe are purged before counting or updating.<br> The number/total weight of calls that occurred on rolling time frame is then the sum of  request count or weight for all grain.<br> Default is 10ms. The finer the granularity, the more precise the rate limit enforcement will be. However, the more memory will be used to keep track of state, and the more CPU will be used to update or evaluate it.<br>
+   * The grains for time older than rule's timeframe are purged before counting or updating.<br>
+   * The number/total weight of calls that occurred on rolling time frame is then the sum of 
+   * request count or weight for all grain.<br>
+   * Default is 10ms. The finer the granularity, the more precise
+   * the rate limit enforcement will be. However, the more memory will be used to
+   * keep track of state, and the more CPU will be used to update or evaluate it.<br>
    * 
    */
   public Integer getGranularity() {
@@ -109,9 +129,18 @@ public class RateLimitRuleDescriptor implements Pojo<RateLimitRuleDescriptor> {
   }
   
   /**
-   * @param granularity The suggested granularity in ms to use when enforcing. This is the time unit used to keep track of rate limit state. <br> Every time a request is made, a request count is incremented for current time in ms, and  a total weight is incremented for current time in ms. These values are stored with granularity  that is if granularity is X ms, the counters are updated at time T are stored for
+   * @param granularity The suggested granularity in ms to use when enforcing. This is the time unit used to keep
+   * track of rate limit state. <br>
+   * Every time a request is made, a request count is incremented for current time in ms, and 
+   * a total weight is incremented for current time in ms. These values are stored with granularity 
+   * that is if granularity is X ms, the counters are updated at time T are stored for
    *  grain N*X where N*X &lt;= T and (N+1)*X &gt; n <br>
-   * The grains for time older than rule's timeframe are purged before counting or updating.<br> The number/total weight of calls that occurred on rolling time frame is then the sum of  request count or weight for all grain.<br> Default is 10ms. The finer the granularity, the more precise the rate limit enforcement will be. However, the more memory will be used to keep track of state, and the more CPU will be used to update or evaluate it.<br>
+   * The grains for time older than rule's timeframe are purged before counting or updating.<br>
+   * The number/total weight of calls that occurred on rolling time frame is then the sum of 
+   * request count or weight for all grain.<br>
+   * Default is 10ms. The finer the granularity, the more precise
+   * the rate limit enforcement will be. However, the more memory will be used to
+   * keep track of state, and the more CPU will be used to update or evaluate it.<br>
    * 
    */
   public void setGranularity(Integer granularity) {
@@ -233,7 +262,10 @@ public class RateLimitRuleDescriptor implements Pojo<RateLimitRuleDescriptor> {
     
     /**
      * Will set the value of <code>maxRequestCount</code> field in the builder
-     * @param maxRequestCount The maximum number of requests that can be attempted within rolling time frame. A negative value means it should not be taken into account and this rate limit is expressed in cumulated weight.
+     * @param maxRequestCount The maximum number of requests that can be attempted
+     * within rolling time frame. A negative value means it
+     * should not be taken into account and this rate limit
+     * is expressed in cumulated weight.
      * 
      * @return Builder instance
      * @see #setMaxRequestCount(Integer)
@@ -245,9 +277,18 @@ public class RateLimitRuleDescriptor implements Pojo<RateLimitRuleDescriptor> {
     
     /**
      * Will set the value of <code>granularity</code> field in the builder
-     * @param granularity The suggested granularity in ms to use when enforcing. This is the time unit used to keep track of rate limit state. <br> Every time a request is made, a request count is incremented for current time in ms, and  a total weight is incremented for current time in ms. These values are stored with granularity  that is if granularity is X ms, the counters are updated at time T are stored for
+     * @param granularity The suggested granularity in ms to use when enforcing. This is the time unit used to keep
+     * track of rate limit state. <br>
+     * Every time a request is made, a request count is incremented for current time in ms, and 
+     * a total weight is incremented for current time in ms. These values are stored with granularity 
+     * that is if granularity is X ms, the counters are updated at time T are stored for
      *  grain N*X where N*X &lt;= T and (N+1)*X &gt; n <br>
-     * The grains for time older than rule's timeframe are purged before counting or updating.<br> The number/total weight of calls that occurred on rolling time frame is then the sum of  request count or weight for all grain.<br> Default is 10ms. The finer the granularity, the more precise the rate limit enforcement will be. However, the more memory will be used to keep track of state, and the more CPU will be used to update or evaluate it.<br>
+     * The grains for time older than rule's timeframe are purged before counting or updating.<br>
+     * The number/total weight of calls that occurred on rolling time frame is then the sum of 
+     * request count or weight for all grain.<br>
+     * Default is 10ms. The finer the granularity, the more precise
+     * the rate limit enforcement will be. However, the more memory will be used to
+     * keep track of state, and the more CPU will be used to update or evaluate it.<br>
      * 
      * @return Builder instance
      * @see #setGranularity(Integer)

@@ -15,9 +15,17 @@ import org.jxapi.util.EncodingUtil;
 import org.jxapi.util.Pojo;
 
 /**
- * Root element of a JSON Exchange descriptor.<br> This class describes an exchange and its APIs<br> API will be described in groups of endpoints, as {@link org.jxapi.exchange.descriptor.gen.ExchangeApiDescriptor} list.<br> Rate limits will be described as {@link org.jxapi.netutils.rest.ratelimits.RateLimitRule} list. These limits will be applied to all endpoints of each API group of the exchange.
+ * Root element of a JSON Exchange descriptor.<br>
+ * This class describes an exchange and its APIs<br>
+ * API will be described in groups of endpoints, as
+ * {@link org.jxapi.exchange.descriptor.gen.ExchangeApiDescriptor} list.<br>
+ * Rate limits will be described as {@link org.jxapi.netutils.rest.ratelimits.RateLimitRule} list. These limits
+ * will be applied to all endpoints of each API group of the exchange.
+ * 
  * JSON example:
- * <pre> {
+ * 
+ * <pre>
+ * {
  *     "name": "Binance",
  *     "ID": "BINANCE",
  *     "description": "Binance exchange",
@@ -58,10 +66,48 @@ import org.jxapi.util.Pojo;
  *             "maxTotalWeight": 1200
  *       }
  *     ]
- * } </pre>
- * <ul> <li>name: the name of the exchange. Remark that this is map to the ID of the exchange.</li> <li>description: the description of the exchange.</li> <li>basePackage: the base package of the exchange implementation classes.</li> <li>apis: the list of API groups of the exchange. See {@link org.jxapi.exchange.descriptor.gen.ExchangeApiDescriptor}</li> <li>rateLimits: the list of rate limits of the exchange. These limits will be applied to all endpoints of each API group of the exchange. See {@link org.jxapi.netutils.rest.ratelimits.RateLimitRule}</li> <li>constants: list of constants that are used in context of the exchange wrapper, for instance specific values for some APIs request/response/message properties. See {@link org.jxapi.exchange.descriptorConstant}</li> <li>properties: list of configuration properties that can be configured for the exchange wrapper, for instance API keys, secret keys, etc. See {@link org.jxapi.util.DefaultConfigProperty}</li> <li><code>httpRequestInterceptorFactory</code>, <code>httpRequestExecutorFactory</code>, <code>httpRequestTimeout</code>, <code>websocketFactory</code>, <code>websocketHookFactory</code> properties can be set with default values for corresponding properties in {@link org.jxapi.exchange.descriptor.gen.ExchangeApiDescriptor}: value defined in  {@link org.jxapi.exchange.descriptor.gen.ExchangeDescriptor} is used when undefined in {@link org.jxapi.exchange.descriptor.gen.ExchangeApiDescriptor}. <li>httpUrl: the base URL of the HTTP (REST) API of the exchange. This URL can be concateneted to websocket API group <code>httpUrl</code> property (see {@link org.jxapi.exchange.descriptor.gen.ExchangeApiDescriptor#getHttpUrl()} ) and endpoint URL (see {@link org.jxapi.exchange.descriptor.gen.RestEndpointDescriptor#getUrl()} when one of these properties are not absolute)</li> <li>websocketUrl: the base URL of the Websocket API of the exchange. This URL can be concateneted to websocket API group <code>websocketUrl</code> property if API group <code>websocketUrl</code> is not not absolute</li> </ul>
- * This class is used to map the JSON descriptor of an exchange. It is used to generate code for the {@link Exchange} interface and implementation.
- * @see Exchange @see ExchangeApiDescriptor
+ * }
+ * </pre>
+ * 
+ * <ul>
+ * <li>name: the name of the exchange. Remark that this is map to the ID of the
+ * exchange.</li>
+ * <li>description: the description of the exchange.</li>
+ * <li>basePackage: the base package of the exchange implementation
+ * classes.</li>
+ * <li>apis: the list of API groups of the exchange. See
+ * {@link org.jxapi.exchange.descriptor.gen.ExchangeApiDescriptor}</li>
+ * <li>rateLimits: the list of rate limits of the exchange. These limits will be
+ * applied to all endpoints of each API group of the exchange. See
+ * {@link org.jxapi.netutils.rest.ratelimits.RateLimitRule}</li>
+ * <li>constants: list of constants that are used in context of the exchange
+ * wrapper, for instance specific values for some APIs request/response/message
+ * properties. See {@link org.jxapi.exchange.descriptor.Constant}</li>
+ * <li>properties: list of configuration properties that can be configured for
+ * the exchange wrapper, for instance API keys, secret keys, etc. See
+ * {@link org.jxapi.util.DefaultConfigProperty}</li>
+ * <li><code>httpRequestInterceptorFactory</code>,
+ * <code>httpRequestExecutorFactory</code>, <code>httpRequestTimeout</code>,
+ * <code>websocketFactory</code>, <code>websocketHookFactory</code> properties
+ * can be set with default values for corresponding properties in
+ * {@link org.jxapi.exchange.descriptor.gen.ExchangeApiDescriptor}: value defined in 
+ * {@link org.jxapi.exchange.descriptor.gen.ExchangeDescriptor} is
+ * used when undefined in {@link org.jxapi.exchange.descriptor.gen.ExchangeApiDescriptor}.
+ * <li>httpUrl: the base URL of the HTTP (REST) API of the exchange. This URL
+ * can be concateneted to websocket API group <code>httpUrl</code> property (see
+ * {@link org.jxapi.exchange.descriptor.gen.ExchangeApiDescriptor#getHttpUrl()} ) and endpoint URL (see
+ * {@link org.jxapi.exchange.descriptor.gen.RestEndpointDescriptor#getUrl()} when one of these properties are not
+ * absolute)</li>
+ * <li>websocketUrl: the base URL of the Websocket API of the exchange. This URL
+ * can be concateneted to websocket API group <code>websocketUrl</code> property
+ * if API group <code>websocketUrl</code> is not not absolute</li>
+ * </ul>
+ * 
+ * This class is used to map the JSON descriptor of an exchange. It is used to
+ * generate code for the {@link org.jxapi.exchange.Exchange} interface and implementation.
+ * 
+ * @see org.jxapi.exchange.Exchange
+ * @see org.jxapi.exchange.descriptor.gen.ExchangeApiDescriptor
  * 
  */
 @Generated("org.jxapi.generator.java.pojo.PojoGenerator")
@@ -69,7 +115,7 @@ import org.jxapi.util.Pojo;
 @JsonDeserialize(using = ExchangeDescriptorDeserializer.class)
 public class ExchangeDescriptor implements Pojo<ExchangeDescriptor> {
   
-  private static final long serialVersionUID = -5091655605456715066L;
+  private static final long serialVersionUID = -4300521477549623759L;
   
   /**
    * @return A new builder to build {@link ExchangeDescriptor} objects
@@ -84,17 +130,12 @@ public class ExchangeDescriptor implements Pojo<ExchangeDescriptor> {
   private String description;
   private String docUrl;
   private String basePackage;
-  private String httpRequestExecutorFactory;
-  private String httpRequestInterceptorFactory;
   private String httpUrl;
-  private String websocketUrl;
-  private String websocketFactory;
-  private String websocketHookFactory;
-  private Long httpRequestTimeout;
   private String afterInitHookFactory;
   private List<ConfigPropertyDescriptor> properties;
   private List<ConstantDescriptor> constants;
   private List<RateLimitRuleDescriptor> rateLimits;
+  private NetworkDescriptor network;
   private List<ExchangeApiDescriptor> apis;
   
   /**
@@ -182,39 +223,9 @@ public class ExchangeDescriptor implements Pojo<ExchangeDescriptor> {
   }
   
   /**
-   * @return The fully qualified class name of the {@link org.jxapi.netutils.rest.HttpRequestExecutorFactory} to use by default for all REST endpoints of all API groups of the exchange, unless overridden at API group level.
-   * 
-   */
-  public String getHttpRequestExecutorFactory() {
-    return httpRequestExecutorFactory;
-  }
-  
-  /**
-   * @param httpRequestExecutorFactory The fully qualified class name of the {@link org.jxapi.netutils.rest.HttpRequestExecutorFactory} to use by default for all REST endpoints of all API groups of the exchange, unless overridden at API group level.
-   * 
-   */
-  public void setHttpRequestExecutorFactory(String httpRequestExecutorFactory) {
-    this.httpRequestExecutorFactory = httpRequestExecutorFactory;
-  }
-  
-  /**
-   * @return The fully qualified class name of the {@link org.jxapi.netutils.rest.HttpRequestInterceptorFactory} to use by default for all REST endpoints of all API groups of the exchange, unless overridden at API group level.
-   * 
-   */
-  public String getHttpRequestInterceptorFactory() {
-    return httpRequestInterceptorFactory;
-  }
-  
-  /**
-   * @param httpRequestInterceptorFactory The fully qualified class name of the {@link org.jxapi.netutils.rest.HttpRequestInterceptorFactory} to use by default for all REST endpoints of all API groups of the exchange, unless overridden at API group level.
-   * 
-   */
-  public void setHttpRequestInterceptorFactory(String httpRequestInterceptorFactory) {
-    this.httpRequestInterceptorFactory = httpRequestInterceptorFactory;
-  }
-  
-  /**
-   * @return The base URL of the HTTP (REST) API of the exchange. This URL can be concateneted to API group <code>httpUrl</code> and endpoint URL when one of these properties are not absolute.
+   * @return The base URL of the HTTP (REST) API of the exchange. This URL can be
+   * concateneted to API group <code>httpUrl</code> and endpoint URL when one
+   * of these properties are not absolute.
    * 
    */
   public String getHttpUrl() {
@@ -222,7 +233,9 @@ public class ExchangeDescriptor implements Pojo<ExchangeDescriptor> {
   }
   
   /**
-   * @param httpUrl The base URL of the HTTP (REST) API of the exchange. This URL can be concateneted to API group <code>httpUrl</code> and endpoint URL when one of these properties are not absolute.
+   * @param httpUrl The base URL of the HTTP (REST) API of the exchange. This URL can be
+   * concateneted to API group <code>httpUrl</code> and endpoint URL when one
+   * of these properties are not absolute.
    * 
    */
   public void setHttpUrl(String httpUrl) {
@@ -230,71 +243,11 @@ public class ExchangeDescriptor implements Pojo<ExchangeDescriptor> {
   }
   
   /**
-   * @return The base URL of the Websocket API of the exchange. This URL can be concateneted to API group <code>websocketUrl</code> if API group <code>websocketUrl</code> is not not absolute.  
-   * 
-   */
-  public String getWebsocketUrl() {
-    return websocketUrl;
-  }
-  
-  /**
-   * @param websocketUrl The base URL of the Websocket API of the exchange. This URL can be concateneted to API group <code>websocketUrl</code> if API group <code>websocketUrl</code> is not not absolute.  
-   * 
-   */
-  public void setWebsocketUrl(String websocketUrl) {
-    this.websocketUrl = websocketUrl;
-  }
-  
-  /**
-   * @return The fully qualified class name of the {@link org.jxapi.netutils.ws.WebsocketFactory} to use by default for all Websocket endpoints of all API groups of the exchange, unless overridden at API group level.
-   * 
-   */
-  public String getWebsocketFactory() {
-    return websocketFactory;
-  }
-  
-  /**
-   * @param websocketFactory The fully qualified class name of the {@link org.jxapi.netutils.ws.WebsocketFactory} to use by default for all Websocket endpoints of all API groups of the exchange, unless overridden at API group level.
-   * 
-   */
-  public void setWebsocketFactory(String websocketFactory) {
-    this.websocketFactory = websocketFactory;
-  }
-  
-  /**
-   * @return The fully qualified class name of the {@link org.jxapi.netutils.ws.WebsocketHookFactory} to use by default for all Websocket endpoints of all API groups of the exchange, unless overridden at API group level.
-   * 
-   */
-  public String getWebsocketHookFactory() {
-    return websocketHookFactory;
-  }
-  
-  /**
-   * @param websocketHookFactory The fully qualified class name of the {@link org.jxapi.netutils.ws.WebsocketHookFactory} to use by default for all Websocket endpoints of all API groups of the exchange, unless overridden at API group level.
-   * 
-   */
-  public void setWebsocketHookFactory(String websocketHookFactory) {
-    this.websocketHookFactory = websocketHookFactory;
-  }
-  
-  /**
-   * @return The default HTTP request timeout in milliseconds to use by default for all REST endpoints of all API groups of the exchange, unless overridden at API group level.
-   * 
-   */
-  public Long getHttpRequestTimeout() {
-    return httpRequestTimeout;
-  }
-  
-  /**
-   * @param httpRequestTimeout The default HTTP request timeout in milliseconds to use by default for all REST endpoints of all API groups of the exchange, unless overridden at API group level.
-   * 
-   */
-  public void setHttpRequestTimeout(Long httpRequestTimeout) {
-    this.httpRequestTimeout = httpRequestTimeout;
-  }
-  
-  /**
-   * @return The fully qualified class name of the {@link org.jxapi.exchange.ExchangetHookFactory} to be used to create an {@link org.jxapi.exchange.hooks.AfterExchangeInitHook} that will be executed just after the exchange wrapper initialization.
+   * @return The fully qualified class name of the
+   * {@link org.jxapi.exchange.ExchangeHookFactory} to be used
+   * to create an
+   * {@link org.jxapi.exchange.ExchangeHook} that will be
+   * executed just after the exchange wrapper initialization.
    * 
    */
   public String getAfterInitHookFactory() {
@@ -302,7 +255,11 @@ public class ExchangeDescriptor implements Pojo<ExchangeDescriptor> {
   }
   
   /**
-   * @param afterInitHookFactory The fully qualified class name of the {@link org.jxapi.exchange.ExchangetHookFactory} to be used to create an {@link org.jxapi.exchange.hooks.AfterExchangeInitHook} that will be executed just after the exchange wrapper initialization.
+   * @param afterInitHookFactory The fully qualified class name of the
+   * {@link org.jxapi.exchange.ExchangeHookFactory} to be used
+   * to create an
+   * {@link org.jxapi.exchange.ExchangeHook} that will be
+   * executed just after the exchange wrapper initialization.
    * 
    */
   public void setAfterInitHookFactory(String afterInitHookFactory) {
@@ -310,7 +267,26 @@ public class ExchangeDescriptor implements Pojo<ExchangeDescriptor> {
   }
   
   /**
-   * @return Represents a configuration property or a group of properties of an exchange like authentication credentials (API Key,secret) the wraooer client should provide to instantiate a wrapper.br> Exchange descriptor may contain a list of such properties as value of 'properties' property of exchange.<p> The name of a property should be spelled 'camelCase' like a Java variable name.<p> The value of a property can be a 'primitive' type e.g. {@link org.jxapi.pojo.descriptor.Type#STRING}, {@link org.jxapi.pojo.descriptor.Type#INT}, {@link org.jxapi.pojo.descriptor.Type#BOOLEAN},  {@link org.jxapi.pojo.descriptor.Type#BIGDECIMAL}, {@link org.jxapi.pojo.descriptor.Type#LONG}.  It can't be a list, map, or object.<p> The properties will be exposed as static properties of a generated Java class named [exchangeId]Constants. That class wlll list constants for property names and default values, and default 'getter' methods for retrieving there values from properties <p> The properties can be grouped together. For example, authentication credentials can be grouped into a 'group' property called 'auth' with sub-properties for API key, secret, etc listed. Those properties can be referenced with key auth.apiKey, auth.apiSecret, etc. Groups may contain other groups, so the structure is hierarchical.
+   * @return Represents a configuration property or a group of properties of an exchange like authentication credentials 
+   * (API Key,secret) the wrapper client should provide to instantiate a wrapper.<br>
+   * Exchange descriptor may contain a list of such properties as value of
+   * 'properties' property of exchange.<p>
+   * The name of a property should be spelled 'camelCase' like a Java variable
+   * name.
+   * <p>
+   * The value of a property can be a 'primitive' type e.g. {@link org.jxapi.pojo.descriptor.Type#STRING},
+   * {@link org.jxapi.pojo.descriptor.Type#INT}, {@link org.jxapi.pojo.descriptor.Type#BOOLEAN}, 
+   * {@link org.jxapi.pojo.descriptor.Type#BIGDECIMAL}, {@link org.jxapi.pojo.descriptor.Type#LONG}. 
+   * It can't be a list, map, or object.<p>
+   * The properties will be exposed as static properties of a generated Java class named [exchangeId]Constants. 
+   * That class wlll list constants for property names and default values, and default 'getter' methods for 
+   * retrieving their values from properties
+   * <p>
+   * The properties can be grouped together. For example, authentication
+   * credentials can be grouped into a 'group' property called 'auth' with
+   * sub-properties for API key, secret, etc listed. Those properties can be
+   * referenced with key auth.apiKey, auth.apiSecret, etc. Groups may contain
+   * other groups, so the structure is hierarchical.
    * 
    */
   public List<ConfigPropertyDescriptor> getProperties() {
@@ -318,7 +294,26 @@ public class ExchangeDescriptor implements Pojo<ExchangeDescriptor> {
   }
   
   /**
-   * @param properties Represents a configuration property or a group of properties of an exchange like authentication credentials (API Key,secret) the wraooer client should provide to instantiate a wrapper.br> Exchange descriptor may contain a list of such properties as value of 'properties' property of exchange.<p> The name of a property should be spelled 'camelCase' like a Java variable name.<p> The value of a property can be a 'primitive' type e.g. {@link org.jxapi.pojo.descriptor.Type#STRING}, {@link org.jxapi.pojo.descriptor.Type#INT}, {@link org.jxapi.pojo.descriptor.Type#BOOLEAN},  {@link org.jxapi.pojo.descriptor.Type#BIGDECIMAL}, {@link org.jxapi.pojo.descriptor.Type#LONG}.  It can't be a list, map, or object.<p> The properties will be exposed as static properties of a generated Java class named [exchangeId]Constants. That class wlll list constants for property names and default values, and default 'getter' methods for retrieving there values from properties <p> The properties can be grouped together. For example, authentication credentials can be grouped into a 'group' property called 'auth' with sub-properties for API key, secret, etc listed. Those properties can be referenced with key auth.apiKey, auth.apiSecret, etc. Groups may contain other groups, so the structure is hierarchical.
+   * @param properties Represents a configuration property or a group of properties of an exchange like authentication credentials 
+   * (API Key,secret) the wrapper client should provide to instantiate a wrapper.<br>
+   * Exchange descriptor may contain a list of such properties as value of
+   * 'properties' property of exchange.<p>
+   * The name of a property should be spelled 'camelCase' like a Java variable
+   * name.
+   * <p>
+   * The value of a property can be a 'primitive' type e.g. {@link org.jxapi.pojo.descriptor.Type#STRING},
+   * {@link org.jxapi.pojo.descriptor.Type#INT}, {@link org.jxapi.pojo.descriptor.Type#BOOLEAN}, 
+   * {@link org.jxapi.pojo.descriptor.Type#BIGDECIMAL}, {@link org.jxapi.pojo.descriptor.Type#LONG}. 
+   * It can't be a list, map, or object.<p>
+   * The properties will be exposed as static properties of a generated Java class named [exchangeId]Constants. 
+   * That class wlll list constants for property names and default values, and default 'getter' methods for 
+   * retrieving their values from properties
+   * <p>
+   * The properties can be grouped together. For example, authentication
+   * credentials can be grouped into a 'group' property called 'auth' with
+   * sub-properties for API key, secret, etc listed. Those properties can be
+   * referenced with key auth.apiKey, auth.apiSecret, etc. Groups may contain
+   * other groups, so the structure is hierarchical.
    * 
    */
   public void setProperties(List<ConfigPropertyDescriptor> properties) {
@@ -326,7 +321,8 @@ public class ExchangeDescriptor implements Pojo<ExchangeDescriptor> {
   }
   
   /**
-   * @return Represents a constant value used across APIs of an exchange or a group of such constants.<br> Exchange descriptor may contain a list of such constants as value of 'constants' property of exchange<br> Such constants will be exposed as static final fields in a generated Java class of the generated Java wrapper class for the exchange.<br> A constant may not be a final constant but a 'group' of constants that functionally come together. For example, when an exchange uses constants to represent bid or ask a side of,  it makes sense to group them together in a single constant group. In this case, final constants of the group will be exposed as static field of a nested public class in the main constant class, named after group name. A constant represents a group when its  <code>constants</code> property is set with a non empty list of nested constants<br> The name of a constant should be a valid camel case Java identifier.<br> The value of a constant must be a 'primitive' type e.g. {@link org.jxapi.pojo.descriptor.Type#STRING}, {@link org.jxapi.pojo.descriptor.Type#INT}, {@link org.jxapi.pojo.descriptor.Type#BOOLEAN},  {@link org.jxapi.pojo.descriptor.Type#BIGDECIMAL}, {@link org.jxapi.pojo.descriptor.Type#LONG}.  It can't be a list, map, or object. <code>value</code> and <code>type</code> properties are relevant only when constant is not a group.<br> The name of a constant should provide a more readable name for the value. The description allows to provide semantic details.<br>
+   * @return The list of constants that are used in context of the exchange.wrapper, for instance specific values for some APIs request/response/message properties.<br>
+   * See {@link org.jxapi.exchange.descriptor.Constant} for details.
    * 
    */
   public List<ConstantDescriptor> getConstants() {
@@ -334,7 +330,8 @@ public class ExchangeDescriptor implements Pojo<ExchangeDescriptor> {
   }
   
   /**
-   * @param constants Represents a constant value used across APIs of an exchange or a group of such constants.<br> Exchange descriptor may contain a list of such constants as value of 'constants' property of exchange<br> Such constants will be exposed as static final fields in a generated Java class of the generated Java wrapper class for the exchange.<br> A constant may not be a final constant but a 'group' of constants that functionally come together. For example, when an exchange uses constants to represent bid or ask a side of,  it makes sense to group them together in a single constant group. In this case, final constants of the group will be exposed as static field of a nested public class in the main constant class, named after group name. A constant represents a group when its  <code>constants</code> property is set with a non empty list of nested constants<br> The name of a constant should be a valid camel case Java identifier.<br> The value of a constant must be a 'primitive' type e.g. {@link org.jxapi.pojo.descriptor.Type#STRING}, {@link org.jxapi.pojo.descriptor.Type#INT}, {@link org.jxapi.pojo.descriptor.Type#BOOLEAN},  {@link org.jxapi.pojo.descriptor.Type#BIGDECIMAL}, {@link org.jxapi.pojo.descriptor.Type#LONG}.  It can't be a list, map, or object. <code>value</code> and <code>type</code> properties are relevant only when constant is not a group.<br> The name of a constant should provide a more readable name for the value. The description allows to provide semantic details.<br>
+   * @param constants The list of constants that are used in context of the exchange.wrapper, for instance specific values for some APIs request/response/message properties.<br>
+   * See {@link org.jxapi.exchange.descriptor.Constant} for details.
    * 
    */
   public void setConstants(List<ConstantDescriptor> constants) {
@@ -342,7 +339,8 @@ public class ExchangeDescriptor implements Pojo<ExchangeDescriptor> {
   }
   
   /**
-   * @return Represents a rate limit rule that applies to all API groups of the exchange.<br> Exchange descriptor may contain a list of such rate limit rules as value of 'rateLimits' property of exchange.<br> Such rate limit rules will be applied to all endpoints of each API group of the exchange.<br> See {@link org.jxapi.netutils.rest.ratelimits.RateLimitRule} for details.
+   * @return The list of rate limit rules that apply to all API groups of the exchange.<br>
+   * See {@link org.jxapi.netutils.rest.ratelimits.RateLimitRule} for details.
    * 
    */
   public List<RateLimitRuleDescriptor> getRateLimits() {
@@ -350,7 +348,8 @@ public class ExchangeDescriptor implements Pojo<ExchangeDescriptor> {
   }
   
   /**
-   * @param rateLimits Represents a rate limit rule that applies to all API groups of the exchange.<br> Exchange descriptor may contain a list of such rate limit rules as value of 'rateLimits' property of exchange.<br> Such rate limit rules will be applied to all endpoints of each API group of the exchange.<br> See {@link org.jxapi.netutils.rest.ratelimits.RateLimitRule} for details.
+   * @param rateLimits The list of rate limit rules that apply to all API groups of the exchange.<br>
+   * See {@link org.jxapi.netutils.rest.ratelimits.RateLimitRule} for details.
    * 
    */
   public void setRateLimits(List<RateLimitRuleDescriptor> rateLimits) {
@@ -358,90 +357,28 @@ public class ExchangeDescriptor implements Pojo<ExchangeDescriptor> {
   }
   
   /**
-   * @return Part of a JSON document descriptor that describes a group of REST and or Websocket endpoints. Child element of ExchangeDescriptor. <br>
-   * <h1>Constants</h1> <ul> <li>Can be specified a List of constants that are used in context of this API group of the exchange wrapper, for instance specific values for some APIs request/response/message properties.</li> <li>Each constant is described as a {@link org.jxapi.exchange.descriptor.Constant}</li> </ul> <h1>REST endpoints</h1> <ul> <li>There can be multiple REST endpoints, or no such endpoint, in which case <code>restEndpoints</code> property can be <code>null</code></li> <li>Each REST endpoint is described as a {@link org.jxapi.exchange.descriptor.gen.RestEndpointDescriptor}</li> <li>Each REST endpoint share the same HttpRequestExecutor and HttpRequestInterceptor, that are created from factories classes provided  in <code>httpRequestExecutorFactory</code> and <code>httpRequestInterceptorFactory</code> properties </li> <li><code>httpRequestExecutorFactory</code> property may be supplied to specify a factory class that creates HttpRequestExecutor instances, see {@link org.jxapi.netutils.rest.HttpRequestExecutorFactory}. When property is not set, default {@link JavaNetHttpRequestExecutor} is used</li> <li><code>httpRequestInterceptorFactory</code> property may be supplied to specify a factory class that creates HttpRequestInterceptor instances, see {@link org.jxapi.netutils.rest.HttpRequestInterceptorFactory}. When property is not set, no request interceptor is used</li> <li>API global Rate limits can be specified for the REST endpoints in <code>rateLimits</code> property. Those limits are shared among all defined REST endpoints.</li> <li>Rate limits from enclosing exchange descriptor are inherited by the API descriptor. Exchange global limit are shared among all REST endpoints of every API specified in exchange</li> </ul> <h1>Websocket endpoints</h1> <ul> <li>There can be multiple Websocket endpoints, or no such endpoint, in which case <code>websocketEndpoints</code> property can be <code>null</code></li> <li>Each Websocket endpoint is described as a {@link org.jxapi.exchange.descriptor.gen.WebsocketEndpointDescriptor}</li> <li>Each Websocket endpoint share the same WebsocketFactory and WebsocketHook, that are created from factories classes provided in <code>websocketFactory</code> and <code>websocketHookFactory</code> properties</li> <li><code>websocketFactory</code> property may be supplied to specify a factory class that creates Websocket instances, see {@link org.jxapi.netutils.websocket.WebsocketFactory}. When property is not set, default {@link org.jxapi.netutils.websocket.DefaultWebsocketFactory} is used</li> <li><code>websocketHookFactory</code> property may be supplied to specify a factory class that creates WebsocketHook instances, see {@link org.jxapi.netutils.websocket.WebsocketHookFactory}. When property is not set, no websocket hook is used. Such hook is needed though to implement specific handshake, heartbeat management and socket multiplexing (e.g. subscribing to multiple topics using same socket)</li> <li><code>websocketUrl</code> property may be supplied to specify the URL of the websocket endpoint. When property is not set, the URL is expected to be set by WebsocketHook on WebsocketManager during {@link org.jxapi.netutils.websocket.WebsocketHook#init(org.jxapi.netutils.websocket.WebsocketManager)} or {@link org.jxapi.netutils.websocket.WebsocketHook#beforeConnect()}</li> </ul>
-   * <h2>Example of corresponding JSON, with sample REST endpoint and WebsocketEndpoint</h2> <pre> { 
-   *   "name": "MarketData",
-   *   "description": "The market data API of MyTestExchange",
-   *   "httpRequestInterceptorFactory": "com.foo.bar.BarHttpRequestInterceptorFactory",
-   *   "rateLimits": [
-   *    {"id": "customRule", "timeFrame": 1500,  "maxTotalWeight": 300}
-   *  ],
-   *  "constants": 
-   *     {"name":"responseCodeOk", "type": "INT", "description":"Value for REST response <i>responseCode</i> field. Success", "value":0},
-   *     {"name":"responseCodeError", "type": "INT", "description":"Value for REST response <i>responseCode</i> field. Error", "value":-1}
-   *   ],
-   *   "restEndpoints": [
-   *     {
-   *       "name": "exchangeInfo",
-   *       "httpMethod": "GET",
-   *       "description": "Fetch market information of symbols that can be traded",
-   *       "url": "https://com.sample.mycex/exchangeInfo",
-   *       "request":{
-   *         "properties": [
-   *           {"name":"symbols", "type": "STRING_LIST", "description":"The list of symbol to fetch market information for. Leave empty to fetch all markets", "sampleValue":"[\"BTC\", \"ETH\"]"}
-   *         ]
-   *       },
-   *       "response":{ 
-   *         "properties": [
-   *           {"name":"responseCode", "type": "INT", "description":"Request response code", "sampleValue":"0"},
-   *           {"name":"payload", "type": "OBJECT_LIST", "description":"List of market information for each requested symbol", "properties":[
-   *               {"name":"symbol", "type": "STRING", "description":"Market symbol", "sampleValue":"BTC_USDT"},
-   *               {"name":"minOrderSize", "type": "BIGDECIMAL", "description":"Minimum order amount", "sampleValue":"0.0001"},
-   *               {"name":"levels", "type": "INT_LIST", "description":"Amount precision levels", "sampleValue":[1,10,500]}
-   *             ]
-   *           }
-   *         ]
-   *       }
-   *     },
-   *     {
-   *       "name": "tickers",
-   *       "httpMethod": "GET",
-   *       "description": "Fetch current tickers",
-   *       "url": "https://com.sample.mycex/tickers",
-   *       "request":{
-   *         "properties": []
-   *       },
-   *       "response": { 
-   *         "properties": [
-   *           {"name":"responseCode", "type": "INT", "description":"Request response code", "sampleValue":"0"},
-   *           {"name":"payload", "type": "OBJECT_MAP", "description":"Tickers for each symbol", "properties":[
-   *               {"name":"last", "type": "BIGDECIMAL", "description":"Last traded price", "sampleValue":10.0}
-   *             ]
-   *           }
-   *         ]
-   *       }
-   *     }
-   *   ],
-   *   "websocketUrl": "wss://com.foo.exchange/ws",
-   *   "websocketFactory": "com.foo.bar.BarWebsocketFactory",
-   *   "websocketHookFactory": "com.foo.bar.BarWebsocketHookFactory",
-   *   "websocketEndpoints": [
-   *     {
-   *       "name": "tickerStream",
-   *       "topic": "${symbol}@ticker",
-   *       "description": "Subscribe to ticker stream",
-   *       "request": {
-   *         "properties": [
-   *           {"name": "symbol", "type":"STRING", "description":"Symbol to subscribe to ticker stream of", "sampleValue":"BTC_USDT"}
-   *         ]
-   *       },
-   *       "topicParametersListSeparator": "|",
-   *       "messageTopicMatcherFields": [
-   *         {"name": "topic",  "value": "ticker"},
-   *         {"name": "symbol",  "value": "${symbol}"}
-   *       ],
-   *       "message": { 
-   *         "properties": [
-   *           {"name":"topic", "msgField":"t", "type": "STRING", "description":"Topic", "sampleValue":"ticker"},
-   *           {"name":"symbol", "msgField":"s", "type": "STRING", "description":"Symbol name", "sampleValue":"BTC_USDT"},
-   *           {"name":"last", "msgField":"p", "type": "BIGDECIMAL", "description":"Last traded price", "sampleValue":"16000.00"}
-   *         ]
-   *       }
-   *     }
-   *   ]
-   * } </pre>
-   * @see ExchangeDescriptor @see RestEndpointDescriptor @see WebsocketEndpointDescriptor @see RateLimitRule @see org.jxapi.netutils.rest.HttpRequestInterceptorFactory @see org.jxapi.netutils.rest.HttpRequestExecutorFactory @see org.jxapi.netutils.websocket.WebsocketFactory @see org.jxapi.netutils.websocket.WebsocketHookFactory @see Constant
+   * @return Represents network configuration with HTTP clients for REST APIs and
+   * Websocket clients for Websocket APIs of the exchange wrapper.
+   * 
+   */
+  public NetworkDescriptor getNetwork() {
+    return network;
+  }
+  
+  /**
+   * @param network Represents network configuration with HTTP clients for REST APIs and
+   * Websocket clients for Websocket APIs of the exchange wrapper.
+   * 
+   */
+  public void setNetwork(NetworkDescriptor network) {
+    this.network = network;
+  }
+  
+  /**
+   * @return The list of API groups of the exchange. Each API group describes a set of
+   * REST and/or Websocket endpoints that share common configuration like base
+   * URL, HTTP client, Websocket client, etc.<br>
+   * See {@link org.jxapi.exchange.descriptor.gen.ExchangeApiDescriptor} for details.
    * 
    */
   public List<ExchangeApiDescriptor> getApis() {
@@ -449,90 +386,10 @@ public class ExchangeDescriptor implements Pojo<ExchangeDescriptor> {
   }
   
   /**
-   * @param apis Part of a JSON document descriptor that describes a group of REST and or Websocket endpoints. Child element of ExchangeDescriptor. <br>
-   * <h1>Constants</h1> <ul> <li>Can be specified a List of constants that are used in context of this API group of the exchange wrapper, for instance specific values for some APIs request/response/message properties.</li> <li>Each constant is described as a {@link org.jxapi.exchange.descriptor.Constant}</li> </ul> <h1>REST endpoints</h1> <ul> <li>There can be multiple REST endpoints, or no such endpoint, in which case <code>restEndpoints</code> property can be <code>null</code></li> <li>Each REST endpoint is described as a {@link org.jxapi.exchange.descriptor.gen.RestEndpointDescriptor}</li> <li>Each REST endpoint share the same HttpRequestExecutor and HttpRequestInterceptor, that are created from factories classes provided  in <code>httpRequestExecutorFactory</code> and <code>httpRequestInterceptorFactory</code> properties </li> <li><code>httpRequestExecutorFactory</code> property may be supplied to specify a factory class that creates HttpRequestExecutor instances, see {@link org.jxapi.netutils.rest.HttpRequestExecutorFactory}. When property is not set, default {@link JavaNetHttpRequestExecutor} is used</li> <li><code>httpRequestInterceptorFactory</code> property may be supplied to specify a factory class that creates HttpRequestInterceptor instances, see {@link org.jxapi.netutils.rest.HttpRequestInterceptorFactory}. When property is not set, no request interceptor is used</li> <li>API global Rate limits can be specified for the REST endpoints in <code>rateLimits</code> property. Those limits are shared among all defined REST endpoints.</li> <li>Rate limits from enclosing exchange descriptor are inherited by the API descriptor. Exchange global limit are shared among all REST endpoints of every API specified in exchange</li> </ul> <h1>Websocket endpoints</h1> <ul> <li>There can be multiple Websocket endpoints, or no such endpoint, in which case <code>websocketEndpoints</code> property can be <code>null</code></li> <li>Each Websocket endpoint is described as a {@link org.jxapi.exchange.descriptor.gen.WebsocketEndpointDescriptor}</li> <li>Each Websocket endpoint share the same WebsocketFactory and WebsocketHook, that are created from factories classes provided in <code>websocketFactory</code> and <code>websocketHookFactory</code> properties</li> <li><code>websocketFactory</code> property may be supplied to specify a factory class that creates Websocket instances, see {@link org.jxapi.netutils.websocket.WebsocketFactory}. When property is not set, default {@link org.jxapi.netutils.websocket.DefaultWebsocketFactory} is used</li> <li><code>websocketHookFactory</code> property may be supplied to specify a factory class that creates WebsocketHook instances, see {@link org.jxapi.netutils.websocket.WebsocketHookFactory}. When property is not set, no websocket hook is used. Such hook is needed though to implement specific handshake, heartbeat management and socket multiplexing (e.g. subscribing to multiple topics using same socket)</li> <li><code>websocketUrl</code> property may be supplied to specify the URL of the websocket endpoint. When property is not set, the URL is expected to be set by WebsocketHook on WebsocketManager during {@link org.jxapi.netutils.websocket.WebsocketHook#init(org.jxapi.netutils.websocket.WebsocketManager)} or {@link org.jxapi.netutils.websocket.WebsocketHook#beforeConnect()}</li> </ul>
-   * <h2>Example of corresponding JSON, with sample REST endpoint and WebsocketEndpoint</h2> <pre> { 
-   *   "name": "MarketData",
-   *   "description": "The market data API of MyTestExchange",
-   *   "httpRequestInterceptorFactory": "com.foo.bar.BarHttpRequestInterceptorFactory",
-   *   "rateLimits": [
-   *    {"id": "customRule", "timeFrame": 1500,  "maxTotalWeight": 300}
-   *  ],
-   *  "constants": 
-   *     {"name":"responseCodeOk", "type": "INT", "description":"Value for REST response <i>responseCode</i> field. Success", "value":0},
-   *     {"name":"responseCodeError", "type": "INT", "description":"Value for REST response <i>responseCode</i> field. Error", "value":-1}
-   *   ],
-   *   "restEndpoints": [
-   *     {
-   *       "name": "exchangeInfo",
-   *       "httpMethod": "GET",
-   *       "description": "Fetch market information of symbols that can be traded",
-   *       "url": "https://com.sample.mycex/exchangeInfo",
-   *       "request":{
-   *         "properties": [
-   *           {"name":"symbols", "type": "STRING_LIST", "description":"The list of symbol to fetch market information for. Leave empty to fetch all markets", "sampleValue":"[\"BTC\", \"ETH\"]"}
-   *         ]
-   *       },
-   *       "response":{ 
-   *         "properties": [
-   *           {"name":"responseCode", "type": "INT", "description":"Request response code", "sampleValue":"0"},
-   *           {"name":"payload", "type": "OBJECT_LIST", "description":"List of market information for each requested symbol", "properties":[
-   *               {"name":"symbol", "type": "STRING", "description":"Market symbol", "sampleValue":"BTC_USDT"},
-   *               {"name":"minOrderSize", "type": "BIGDECIMAL", "description":"Minimum order amount", "sampleValue":"0.0001"},
-   *               {"name":"levels", "type": "INT_LIST", "description":"Amount precision levels", "sampleValue":[1,10,500]}
-   *             ]
-   *           }
-   *         ]
-   *       }
-   *     },
-   *     {
-   *       "name": "tickers",
-   *       "httpMethod": "GET",
-   *       "description": "Fetch current tickers",
-   *       "url": "https://com.sample.mycex/tickers",
-   *       "request":{
-   *         "properties": []
-   *       },
-   *       "response": { 
-   *         "properties": [
-   *           {"name":"responseCode", "type": "INT", "description":"Request response code", "sampleValue":"0"},
-   *           {"name":"payload", "type": "OBJECT_MAP", "description":"Tickers for each symbol", "properties":[
-   *               {"name":"last", "type": "BIGDECIMAL", "description":"Last traded price", "sampleValue":10.0}
-   *             ]
-   *           }
-   *         ]
-   *       }
-   *     }
-   *   ],
-   *   "websocketUrl": "wss://com.foo.exchange/ws",
-   *   "websocketFactory": "com.foo.bar.BarWebsocketFactory",
-   *   "websocketHookFactory": "com.foo.bar.BarWebsocketHookFactory",
-   *   "websocketEndpoints": [
-   *     {
-   *       "name": "tickerStream",
-   *       "topic": "${symbol}@ticker",
-   *       "description": "Subscribe to ticker stream",
-   *       "request": {
-   *         "properties": [
-   *           {"name": "symbol", "type":"STRING", "description":"Symbol to subscribe to ticker stream of", "sampleValue":"BTC_USDT"}
-   *         ]
-   *       },
-   *       "topicParametersListSeparator": "|",
-   *       "messageTopicMatcherFields": [
-   *         {"name": "topic",  "value": "ticker"},
-   *         {"name": "symbol",  "value": "${symbol}"}
-   *       ],
-   *       "message": { 
-   *         "properties": [
-   *           {"name":"topic", "msgField":"t", "type": "STRING", "description":"Topic", "sampleValue":"ticker"},
-   *           {"name":"symbol", "msgField":"s", "type": "STRING", "description":"Symbol name", "sampleValue":"BTC_USDT"},
-   *           {"name":"last", "msgField":"p", "type": "BIGDECIMAL", "description":"Last traded price", "sampleValue":"16000.00"}
-   *         ]
-   *       }
-   *     }
-   *   ]
-   * } </pre>
-   * @see ExchangeDescriptor @see RestEndpointDescriptor @see WebsocketEndpointDescriptor @see RateLimitRule @see org.jxapi.netutils.rest.HttpRequestInterceptorFactory @see org.jxapi.netutils.rest.HttpRequestExecutorFactory @see org.jxapi.netutils.websocket.WebsocketFactory @see org.jxapi.netutils.websocket.WebsocketHookFactory @see Constant
+   * @param apis The list of API groups of the exchange. Each API group describes a set of
+   * REST and/or Websocket endpoints that share common configuration like base
+   * URL, HTTP client, Websocket client, etc.<br>
+   * See {@link org.jxapi.exchange.descriptor.gen.ExchangeApiDescriptor} for details.
    * 
    */
   public void setApis(List<ExchangeApiDescriptor> apis) {
@@ -556,17 +413,12 @@ public class ExchangeDescriptor implements Pojo<ExchangeDescriptor> {
         && Objects.equals(this.description, o.description)
         && Objects.equals(this.docUrl, o.docUrl)
         && Objects.equals(this.basePackage, o.basePackage)
-        && Objects.equals(this.httpRequestExecutorFactory, o.httpRequestExecutorFactory)
-        && Objects.equals(this.httpRequestInterceptorFactory, o.httpRequestInterceptorFactory)
         && Objects.equals(this.httpUrl, o.httpUrl)
-        && Objects.equals(this.websocketUrl, o.websocketUrl)
-        && Objects.equals(this.websocketFactory, o.websocketFactory)
-        && Objects.equals(this.websocketHookFactory, o.websocketHookFactory)
-        && Objects.equals(this.httpRequestTimeout, o.httpRequestTimeout)
         && Objects.equals(this.afterInitHookFactory, o.afterInitHookFactory)
         && Objects.equals(this.properties, o.properties)
         && Objects.equals(this.constants, o.constants)
         && Objects.equals(this.rateLimits, o.rateLimits)
+        && Objects.equals(this.network, o.network)
         && Objects.equals(this.apis, o.apis);
   }
   
@@ -603,31 +455,7 @@ public class ExchangeDescriptor implements Pojo<ExchangeDescriptor> {
     if (res != 0) {
       return res;
     }
-    res = CompareUtil.compare(this.httpRequestExecutorFactory, other.httpRequestExecutorFactory);
-    if (res != 0) {
-      return res;
-    }
-    res = CompareUtil.compare(this.httpRequestInterceptorFactory, other.httpRequestInterceptorFactory);
-    if (res != 0) {
-      return res;
-    }
     res = CompareUtil.compare(this.httpUrl, other.httpUrl);
-    if (res != 0) {
-      return res;
-    }
-    res = CompareUtil.compare(this.websocketUrl, other.websocketUrl);
-    if (res != 0) {
-      return res;
-    }
-    res = CompareUtil.compare(this.websocketFactory, other.websocketFactory);
-    if (res != 0) {
-      return res;
-    }
-    res = CompareUtil.compare(this.websocketHookFactory, other.websocketHookFactory);
-    if (res != 0) {
-      return res;
-    }
-    res = CompareUtil.compare(this.httpRequestTimeout, other.httpRequestTimeout);
     if (res != 0) {
       return res;
     }
@@ -647,13 +475,17 @@ public class ExchangeDescriptor implements Pojo<ExchangeDescriptor> {
     if (res != 0) {
       return res;
     }
+    res = CompareUtil.compare(this.network, other.network);
+    if (res != 0) {
+      return res;
+    }
     res = CompareUtil.compareLists(this.apis, other.apis, CompareUtil::compare);
     return res;
   }
   
   @Override
   public int hashCode() {
-    return Objects.hash(id, jxapi, version, description, docUrl, basePackage, httpRequestExecutorFactory, httpRequestInterceptorFactory, httpUrl, websocketUrl, websocketFactory, websocketHookFactory, httpRequestTimeout, afterInitHookFactory, properties, constants, rateLimits, apis);
+    return Objects.hash(id, jxapi, version, description, docUrl, basePackage, httpUrl, afterInitHookFactory, properties, constants, rateLimits, network, apis);
   }
   
   @Override
@@ -665,17 +497,12 @@ public class ExchangeDescriptor implements Pojo<ExchangeDescriptor> {
     clone.description = this.description;
     clone.docUrl = this.docUrl;
     clone.basePackage = this.basePackage;
-    clone.httpRequestExecutorFactory = this.httpRequestExecutorFactory;
-    clone.httpRequestInterceptorFactory = this.httpRequestInterceptorFactory;
     clone.httpUrl = this.httpUrl;
-    clone.websocketUrl = this.websocketUrl;
-    clone.websocketFactory = this.websocketFactory;
-    clone.websocketHookFactory = this.websocketHookFactory;
-    clone.httpRequestTimeout = this.httpRequestTimeout;
     clone.afterInitHookFactory = this.afterInitHookFactory;
     clone.properties = CollectionUtil.deepCloneList(this.properties, DeepCloneable::deepClone);
     clone.constants = CollectionUtil.deepCloneList(this.constants, DeepCloneable::deepClone);
     clone.rateLimits = CollectionUtil.deepCloneList(this.rateLimits, DeepCloneable::deepClone);
+    clone.network = this.network != null ? this.network.deepClone() : null;
     clone.apis = CollectionUtil.deepCloneList(this.apis, DeepCloneable::deepClone);
     return clone;
   }
@@ -697,17 +524,12 @@ public class ExchangeDescriptor implements Pojo<ExchangeDescriptor> {
     private String description;
     private String docUrl;
     private String basePackage;
-    private String httpRequestExecutorFactory;
-    private String httpRequestInterceptorFactory;
     private String httpUrl;
-    private String websocketUrl;
-    private String websocketFactory;
-    private String websocketHookFactory;
-    private Long httpRequestTimeout;
     private String afterInitHookFactory;
     private List<ConfigPropertyDescriptor> properties;
     private List<ConstantDescriptor> constants;
     private List<RateLimitRuleDescriptor> rateLimits;
+    private NetworkDescriptor network;
     private List<ExchangeApiDescriptor> apis;
     
     /**
@@ -777,32 +599,10 @@ public class ExchangeDescriptor implements Pojo<ExchangeDescriptor> {
     }
     
     /**
-     * Will set the value of <code>httpRequestExecutorFactory</code> field in the builder
-     * @param httpRequestExecutorFactory The fully qualified class name of the {@link org.jxapi.netutils.rest.HttpRequestExecutorFactory} to use by default for all REST endpoints of all API groups of the exchange, unless overridden at API group level.
-     * 
-     * @return Builder instance
-     * @see #setHttpRequestExecutorFactory(String)
-     */
-    public Builder httpRequestExecutorFactory(String httpRequestExecutorFactory)  {
-      this.httpRequestExecutorFactory = httpRequestExecutorFactory;
-      return this;
-    }
-    
-    /**
-     * Will set the value of <code>httpRequestInterceptorFactory</code> field in the builder
-     * @param httpRequestInterceptorFactory The fully qualified class name of the {@link org.jxapi.netutils.rest.HttpRequestInterceptorFactory} to use by default for all REST endpoints of all API groups of the exchange, unless overridden at API group level.
-     * 
-     * @return Builder instance
-     * @see #setHttpRequestInterceptorFactory(String)
-     */
-    public Builder httpRequestInterceptorFactory(String httpRequestInterceptorFactory)  {
-      this.httpRequestInterceptorFactory = httpRequestInterceptorFactory;
-      return this;
-    }
-    
-    /**
      * Will set the value of <code>httpUrl</code> field in the builder
-     * @param httpUrl The base URL of the HTTP (REST) API of the exchange. This URL can be concateneted to API group <code>httpUrl</code> and endpoint URL when one of these properties are not absolute.
+     * @param httpUrl The base URL of the HTTP (REST) API of the exchange. This URL can be
+     * concateneted to API group <code>httpUrl</code> and endpoint URL when one
+     * of these properties are not absolute.
      * 
      * @return Builder instance
      * @see #setHttpUrl(String)
@@ -813,56 +613,12 @@ public class ExchangeDescriptor implements Pojo<ExchangeDescriptor> {
     }
     
     /**
-     * Will set the value of <code>websocketUrl</code> field in the builder
-     * @param websocketUrl The base URL of the Websocket API of the exchange. This URL can be concateneted to API group <code>websocketUrl</code> if API group <code>websocketUrl</code> is not not absolute.  
-     * 
-     * @return Builder instance
-     * @see #setWebsocketUrl(String)
-     */
-    public Builder websocketUrl(String websocketUrl)  {
-      this.websocketUrl = websocketUrl;
-      return this;
-    }
-    
-    /**
-     * Will set the value of <code>websocketFactory</code> field in the builder
-     * @param websocketFactory The fully qualified class name of the {@link org.jxapi.netutils.ws.WebsocketFactory} to use by default for all Websocket endpoints of all API groups of the exchange, unless overridden at API group level.
-     * 
-     * @return Builder instance
-     * @see #setWebsocketFactory(String)
-     */
-    public Builder websocketFactory(String websocketFactory)  {
-      this.websocketFactory = websocketFactory;
-      return this;
-    }
-    
-    /**
-     * Will set the value of <code>websocketHookFactory</code> field in the builder
-     * @param websocketHookFactory The fully qualified class name of the {@link org.jxapi.netutils.ws.WebsocketHookFactory} to use by default for all Websocket endpoints of all API groups of the exchange, unless overridden at API group level.
-     * 
-     * @return Builder instance
-     * @see #setWebsocketHookFactory(String)
-     */
-    public Builder websocketHookFactory(String websocketHookFactory)  {
-      this.websocketHookFactory = websocketHookFactory;
-      return this;
-    }
-    
-    /**
-     * Will set the value of <code>httpRequestTimeout</code> field in the builder
-     * @param httpRequestTimeout The default HTTP request timeout in milliseconds to use by default for all REST endpoints of all API groups of the exchange, unless overridden at API group level.
-     * 
-     * @return Builder instance
-     * @see #setHttpRequestTimeout(Long)
-     */
-    public Builder httpRequestTimeout(Long httpRequestTimeout)  {
-      this.httpRequestTimeout = httpRequestTimeout;
-      return this;
-    }
-    
-    /**
      * Will set the value of <code>afterInitHookFactory</code> field in the builder
-     * @param afterInitHookFactory The fully qualified class name of the {@link org.jxapi.exchange.ExchangetHookFactory} to be used to create an {@link org.jxapi.exchange.hooks.AfterExchangeInitHook} that will be executed just after the exchange wrapper initialization.
+     * @param afterInitHookFactory The fully qualified class name of the
+     * {@link org.jxapi.exchange.ExchangeHookFactory} to be used
+     * to create an
+     * {@link org.jxapi.exchange.ExchangeHook} that will be
+     * executed just after the exchange wrapper initialization.
      * 
      * @return Builder instance
      * @see #setAfterInitHookFactory(String)
@@ -874,7 +630,26 @@ public class ExchangeDescriptor implements Pojo<ExchangeDescriptor> {
     
     /**
      * Will set the value of <code>properties</code> field in the builder
-     * @param properties Represents a configuration property or a group of properties of an exchange like authentication credentials (API Key,secret) the wraooer client should provide to instantiate a wrapper.br> Exchange descriptor may contain a list of such properties as value of 'properties' property of exchange.<p> The name of a property should be spelled 'camelCase' like a Java variable name.<p> The value of a property can be a 'primitive' type e.g. {@link org.jxapi.pojo.descriptor.Type#STRING}, {@link org.jxapi.pojo.descriptor.Type#INT}, {@link org.jxapi.pojo.descriptor.Type#BOOLEAN},  {@link org.jxapi.pojo.descriptor.Type#BIGDECIMAL}, {@link org.jxapi.pojo.descriptor.Type#LONG}.  It can't be a list, map, or object.<p> The properties will be exposed as static properties of a generated Java class named [exchangeId]Constants. That class wlll list constants for property names and default values, and default 'getter' methods for retrieving there values from properties <p> The properties can be grouped together. For example, authentication credentials can be grouped into a 'group' property called 'auth' with sub-properties for API key, secret, etc listed. Those properties can be referenced with key auth.apiKey, auth.apiSecret, etc. Groups may contain other groups, so the structure is hierarchical.
+     * @param properties Represents a configuration property or a group of properties of an exchange like authentication credentials 
+     * (API Key,secret) the wrapper client should provide to instantiate a wrapper.<br>
+     * Exchange descriptor may contain a list of such properties as value of
+     * 'properties' property of exchange.<p>
+     * The name of a property should be spelled 'camelCase' like a Java variable
+     * name.
+     * <p>
+     * The value of a property can be a 'primitive' type e.g. {@link org.jxapi.pojo.descriptor.Type#STRING},
+     * {@link org.jxapi.pojo.descriptor.Type#INT}, {@link org.jxapi.pojo.descriptor.Type#BOOLEAN}, 
+     * {@link org.jxapi.pojo.descriptor.Type#BIGDECIMAL}, {@link org.jxapi.pojo.descriptor.Type#LONG}. 
+     * It can't be a list, map, or object.<p>
+     * The properties will be exposed as static properties of a generated Java class named [exchangeId]Constants. 
+     * That class wlll list constants for property names and default values, and default 'getter' methods for 
+     * retrieving their values from properties
+     * <p>
+     * The properties can be grouped together. For example, authentication
+     * credentials can be grouped into a 'group' property called 'auth' with
+     * sub-properties for API key, secret, etc listed. Those properties can be
+     * referenced with key auth.apiKey, auth.apiSecret, etc. Groups may contain
+     * other groups, so the structure is hierarchical.
      * 
      * @return Builder instance
      * @see #setProperties(List<ConfigPropertyDescriptor>)
@@ -901,7 +676,8 @@ public class ExchangeDescriptor implements Pojo<ExchangeDescriptor> {
     
     /**
      * Will set the value of <code>constants</code> field in the builder
-     * @param constants Represents a constant value used across APIs of an exchange or a group of such constants.<br> Exchange descriptor may contain a list of such constants as value of 'constants' property of exchange<br> Such constants will be exposed as static final fields in a generated Java class of the generated Java wrapper class for the exchange.<br> A constant may not be a final constant but a 'group' of constants that functionally come together. For example, when an exchange uses constants to represent bid or ask a side of,  it makes sense to group them together in a single constant group. In this case, final constants of the group will be exposed as static field of a nested public class in the main constant class, named after group name. A constant represents a group when its  <code>constants</code> property is set with a non empty list of nested constants<br> The name of a constant should be a valid camel case Java identifier.<br> The value of a constant must be a 'primitive' type e.g. {@link org.jxapi.pojo.descriptor.Type#STRING}, {@link org.jxapi.pojo.descriptor.Type#INT}, {@link org.jxapi.pojo.descriptor.Type#BOOLEAN},  {@link org.jxapi.pojo.descriptor.Type#BIGDECIMAL}, {@link org.jxapi.pojo.descriptor.Type#LONG}.  It can't be a list, map, or object. <code>value</code> and <code>type</code> properties are relevant only when constant is not a group.<br> The name of a constant should provide a more readable name for the value. The description allows to provide semantic details.<br>
+     * @param constants The list of constants that are used in context of the exchange.wrapper, for instance specific values for some APIs request/response/message properties.<br>
+     * See {@link org.jxapi.exchange.descriptor.Constant} for details.
      * 
      * @return Builder instance
      * @see #setConstants(List<ConstantDescriptor>)
@@ -928,7 +704,8 @@ public class ExchangeDescriptor implements Pojo<ExchangeDescriptor> {
     
     /**
      * Will set the value of <code>rateLimits</code> field in the builder
-     * @param rateLimits Represents a rate limit rule that applies to all API groups of the exchange.<br> Exchange descriptor may contain a list of such rate limit rules as value of 'rateLimits' property of exchange.<br> Such rate limit rules will be applied to all endpoints of each API group of the exchange.<br> See {@link org.jxapi.netutils.rest.ratelimits.RateLimitRule} for details.
+     * @param rateLimits The list of rate limit rules that apply to all API groups of the exchange.<br>
+     * See {@link org.jxapi.netutils.rest.ratelimits.RateLimitRule} for details.
      * 
      * @return Builder instance
      * @see #setRateLimits(List<RateLimitRuleDescriptor>)
@@ -954,91 +731,24 @@ public class ExchangeDescriptor implements Pojo<ExchangeDescriptor> {
     }
     
     /**
+     * Will set the value of <code>network</code> field in the builder
+     * @param network Represents network configuration with HTTP clients for REST APIs and
+     * Websocket clients for Websocket APIs of the exchange wrapper.
+     * 
+     * @return Builder instance
+     * @see #setNetwork(NetworkDescriptor)
+     */
+    public Builder network(NetworkDescriptor network)  {
+      this.network = network;
+      return this;
+    }
+    
+    /**
      * Will set the value of <code>apis</code> field in the builder
-     * @param apis Part of a JSON document descriptor that describes a group of REST and or Websocket endpoints. Child element of ExchangeDescriptor. <br>
-     * <h1>Constants</h1> <ul> <li>Can be specified a List of constants that are used in context of this API group of the exchange wrapper, for instance specific values for some APIs request/response/message properties.</li> <li>Each constant is described as a {@link org.jxapi.exchange.descriptor.Constant}</li> </ul> <h1>REST endpoints</h1> <ul> <li>There can be multiple REST endpoints, or no such endpoint, in which case <code>restEndpoints</code> property can be <code>null</code></li> <li>Each REST endpoint is described as a {@link org.jxapi.exchange.descriptor.gen.RestEndpointDescriptor}</li> <li>Each REST endpoint share the same HttpRequestExecutor and HttpRequestInterceptor, that are created from factories classes provided  in <code>httpRequestExecutorFactory</code> and <code>httpRequestInterceptorFactory</code> properties </li> <li><code>httpRequestExecutorFactory</code> property may be supplied to specify a factory class that creates HttpRequestExecutor instances, see {@link org.jxapi.netutils.rest.HttpRequestExecutorFactory}. When property is not set, default {@link JavaNetHttpRequestExecutor} is used</li> <li><code>httpRequestInterceptorFactory</code> property may be supplied to specify a factory class that creates HttpRequestInterceptor instances, see {@link org.jxapi.netutils.rest.HttpRequestInterceptorFactory}. When property is not set, no request interceptor is used</li> <li>API global Rate limits can be specified for the REST endpoints in <code>rateLimits</code> property. Those limits are shared among all defined REST endpoints.</li> <li>Rate limits from enclosing exchange descriptor are inherited by the API descriptor. Exchange global limit are shared among all REST endpoints of every API specified in exchange</li> </ul> <h1>Websocket endpoints</h1> <ul> <li>There can be multiple Websocket endpoints, or no such endpoint, in which case <code>websocketEndpoints</code> property can be <code>null</code></li> <li>Each Websocket endpoint is described as a {@link org.jxapi.exchange.descriptor.gen.WebsocketEndpointDescriptor}</li> <li>Each Websocket endpoint share the same WebsocketFactory and WebsocketHook, that are created from factories classes provided in <code>websocketFactory</code> and <code>websocketHookFactory</code> properties</li> <li><code>websocketFactory</code> property may be supplied to specify a factory class that creates Websocket instances, see {@link org.jxapi.netutils.websocket.WebsocketFactory}. When property is not set, default {@link org.jxapi.netutils.websocket.DefaultWebsocketFactory} is used</li> <li><code>websocketHookFactory</code> property may be supplied to specify a factory class that creates WebsocketHook instances, see {@link org.jxapi.netutils.websocket.WebsocketHookFactory}. When property is not set, no websocket hook is used. Such hook is needed though to implement specific handshake, heartbeat management and socket multiplexing (e.g. subscribing to multiple topics using same socket)</li> <li><code>websocketUrl</code> property may be supplied to specify the URL of the websocket endpoint. When property is not set, the URL is expected to be set by WebsocketHook on WebsocketManager during {@link org.jxapi.netutils.websocket.WebsocketHook#init(org.jxapi.netutils.websocket.WebsocketManager)} or {@link org.jxapi.netutils.websocket.WebsocketHook#beforeConnect()}</li> </ul>
-     * <h2>Example of corresponding JSON, with sample REST endpoint and WebsocketEndpoint</h2> <pre> { 
-     *   "name": "MarketData",
-     *   "description": "The market data API of MyTestExchange",
-     *   "httpRequestInterceptorFactory": "com.foo.bar.BarHttpRequestInterceptorFactory",
-     *   "rateLimits": [
-     *    {"id": "customRule", "timeFrame": 1500,  "maxTotalWeight": 300}
-     *  ],
-     *  "constants": 
-     *     {"name":"responseCodeOk", "type": "INT", "description":"Value for REST response <i>responseCode</i> field. Success", "value":0},
-     *     {"name":"responseCodeError", "type": "INT", "description":"Value for REST response <i>responseCode</i> field. Error", "value":-1}
-     *   ],
-     *   "restEndpoints": [
-     *     {
-     *       "name": "exchangeInfo",
-     *       "httpMethod": "GET",
-     *       "description": "Fetch market information of symbols that can be traded",
-     *       "url": "https://com.sample.mycex/exchangeInfo",
-     *       "request":{
-     *         "properties": [
-     *           {"name":"symbols", "type": "STRING_LIST", "description":"The list of symbol to fetch market information for. Leave empty to fetch all markets", "sampleValue":"[\"BTC\", \"ETH\"]"}
-     *         ]
-     *       },
-     *       "response":{ 
-     *         "properties": [
-     *           {"name":"responseCode", "type": "INT", "description":"Request response code", "sampleValue":"0"},
-     *           {"name":"payload", "type": "OBJECT_LIST", "description":"List of market information for each requested symbol", "properties":[
-     *               {"name":"symbol", "type": "STRING", "description":"Market symbol", "sampleValue":"BTC_USDT"},
-     *               {"name":"minOrderSize", "type": "BIGDECIMAL", "description":"Minimum order amount", "sampleValue":"0.0001"},
-     *               {"name":"levels", "type": "INT_LIST", "description":"Amount precision levels", "sampleValue":[1,10,500]}
-     *             ]
-     *           }
-     *         ]
-     *       }
-     *     },
-     *     {
-     *       "name": "tickers",
-     *       "httpMethod": "GET",
-     *       "description": "Fetch current tickers",
-     *       "url": "https://com.sample.mycex/tickers",
-     *       "request":{
-     *         "properties": []
-     *       },
-     *       "response": { 
-     *         "properties": [
-     *           {"name":"responseCode", "type": "INT", "description":"Request response code", "sampleValue":"0"},
-     *           {"name":"payload", "type": "OBJECT_MAP", "description":"Tickers for each symbol", "properties":[
-     *               {"name":"last", "type": "BIGDECIMAL", "description":"Last traded price", "sampleValue":10.0}
-     *             ]
-     *           }
-     *         ]
-     *       }
-     *     }
-     *   ],
-     *   "websocketUrl": "wss://com.foo.exchange/ws",
-     *   "websocketFactory": "com.foo.bar.BarWebsocketFactory",
-     *   "websocketHookFactory": "com.foo.bar.BarWebsocketHookFactory",
-     *   "websocketEndpoints": [
-     *     {
-     *       "name": "tickerStream",
-     *       "topic": "${symbol}@ticker",
-     *       "description": "Subscribe to ticker stream",
-     *       "request": {
-     *         "properties": [
-     *           {"name": "symbol", "type":"STRING", "description":"Symbol to subscribe to ticker stream of", "sampleValue":"BTC_USDT"}
-     *         ]
-     *       },
-     *       "topicParametersListSeparator": "|",
-     *       "messageTopicMatcherFields": [
-     *         {"name": "topic",  "value": "ticker"},
-     *         {"name": "symbol",  "value": "${symbol}"}
-     *       ],
-     *       "message": { 
-     *         "properties": [
-     *           {"name":"topic", "msgField":"t", "type": "STRING", "description":"Topic", "sampleValue":"ticker"},
-     *           {"name":"symbol", "msgField":"s", "type": "STRING", "description":"Symbol name", "sampleValue":"BTC_USDT"},
-     *           {"name":"last", "msgField":"p", "type": "BIGDECIMAL", "description":"Last traded price", "sampleValue":"16000.00"}
-     *         ]
-     *       }
-     *     }
-     *   ]
-     * } </pre>
-     * @see ExchangeDescriptor @see RestEndpointDescriptor @see WebsocketEndpointDescriptor @see RateLimitRule @see org.jxapi.netutils.rest.HttpRequestInterceptorFactory @see org.jxapi.netutils.rest.HttpRequestExecutorFactory @see org.jxapi.netutils.websocket.WebsocketFactory @see org.jxapi.netutils.websocket.WebsocketHookFactory @see Constant
+     * @param apis The list of API groups of the exchange. Each API group describes a set of
+     * REST and/or Websocket endpoints that share common configuration like base
+     * URL, HTTP client, Websocket client, etc.<br>
+     * See {@link org.jxapi.exchange.descriptor.gen.ExchangeApiDescriptor} for details.
      * 
      * @return Builder instance
      * @see #setApis(List<ExchangeApiDescriptor>)
@@ -1074,17 +784,12 @@ public class ExchangeDescriptor implements Pojo<ExchangeDescriptor> {
       res.description = this.description;
       res.docUrl = this.docUrl;
       res.basePackage = this.basePackage;
-      res.httpRequestExecutorFactory = this.httpRequestExecutorFactory;
-      res.httpRequestInterceptorFactory = this.httpRequestInterceptorFactory;
       res.httpUrl = this.httpUrl;
-      res.websocketUrl = this.websocketUrl;
-      res.websocketFactory = this.websocketFactory;
-      res.websocketHookFactory = this.websocketHookFactory;
-      res.httpRequestTimeout = this.httpRequestTimeout;
       res.afterInitHookFactory = this.afterInitHookFactory;
       res.properties = CollectionUtil.deepCloneList(this.properties, DeepCloneable::deepClone);
       res.constants = CollectionUtil.deepCloneList(this.constants, DeepCloneable::deepClone);
       res.rateLimits = CollectionUtil.deepCloneList(this.rateLimits, DeepCloneable::deepClone);
+      res.network = this.network != null ? this.network.deepClone() : null;
       res.apis = CollectionUtil.deepCloneList(this.apis, DeepCloneable::deepClone);
       return res;
     }

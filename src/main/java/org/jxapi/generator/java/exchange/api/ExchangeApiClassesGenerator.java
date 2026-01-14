@@ -55,20 +55,24 @@ public class ExchangeApiClassesGenerator implements ClassesGenerator {
     ExchangeApiInterfaceGenerator exchangeApiInterfaceGenerator = 
       new ExchangeApiInterfaceGenerator(exchangeDescriptor, exchangeApiDescriptor, docPlaceHolderResolver);
     exchangeApiInterfaceGenerator.writeJavaFile(outputFolder); 
-    
-    new ExchangeApiInterfaceImplementationGenerator(exchangeDescriptor, exchangeApiDescriptor).writeJavaFile(outputFolder);
+    new ExchangeApiInterfaceImplementationGenerator(
+        exchangeDescriptor, 
+        exchangeApiDescriptor, 
+        docPlaceHolderResolver).writeJavaFile(outputFolder);
     for (RestEndpointDescriptor restEndpointDescriptor: CollectionUtil.emptyIfNull(exchangeApiDescriptor.getRestEndpoints())) {
-      new RestEndpointClassesGenerator(exchangeDescriptor, 
-                                         exchangeApiDescriptor, 
-                                         restEndpointDescriptor, 
-                                         docPlaceHolderResolver).generateClasses(outputFolder);
+      new RestEndpointClassesGenerator(
+          exchangeDescriptor, 
+          exchangeApiDescriptor, 
+          restEndpointDescriptor, 
+          docPlaceHolderResolver).generateClasses(outputFolder);
     }
     
     for (WebsocketEndpointDescriptor websocketEndpointDescriptor: CollectionUtil.emptyIfNull(exchangeApiDescriptor.getWebsocketEndpoints())) {
-      new WebsocketEndpointClassesGenerator(exchangeDescriptor, 
-                                            exchangeApiDescriptor, 
-                                            websocketEndpointDescriptor,
-                                            docPlaceHolderResolver).generateClasses(outputFolder);
+      new WebsocketEndpointClassesGenerator(
+          exchangeDescriptor, 
+          exchangeApiDescriptor, 
+          websocketEndpointDescriptor,
+          docPlaceHolderResolver).generateClasses(outputFolder);
     }
   }
 }

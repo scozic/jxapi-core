@@ -16,6 +16,8 @@ import com.fasterxml.jackson.databind.ser.std.StdSerializer;
  */
 public class ExceptionToStringJsonSerializer extends StdSerializer<Exception> {
 
+  private static final long serialVersionUID = 6364701948343737765L;
+
   /**
    * Creates a new {@link ExceptionToStringJsonSerializer} instance.
    */

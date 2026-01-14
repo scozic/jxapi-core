@@ -6,7 +6,7 @@ import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import javax.annotation.processing.Generated;
 import org.jxapi.exchanges.demo.gen.marketdata.pojo.DemoExchangeMarketDataExchangeInfoRequest;
-import org.jxapi.netutils.serialization.json.AbstractJsonMessageSerializer;
+import org.jxapi.netutils.serialization.json.AbstractJsonValueSerializer;
 import org.jxapi.netutils.serialization.json.ListJsonValueSerializer;
 import org.jxapi.netutils.serialization.json.StringJsonValueSerializer;
 import static org.jxapi.util.JsonUtil.writeCustomSerializerField;
@@ -16,7 +16,7 @@ import static org.jxapi.util.JsonUtil.writeCustomSerializerField;
  * @see DemoExchangeMarketDataExchangeInfoRequest
  */
 @Generated("org.jxapi.generator.java.pojo.JsonPojoSerializerGenerator")
-public class DemoExchangeMarketDataExchangeInfoRequestSerializer extends AbstractJsonMessageSerializer<DemoExchangeMarketDataExchangeInfoRequest> {
+public class DemoExchangeMarketDataExchangeInfoRequestSerializer extends AbstractJsonValueSerializer<DemoExchangeMarketDataExchangeInfoRequest> {
   
   /**
    * Constructor

@@ -2,20 +2,20 @@ package org.jxapi.netutils.websocket;
 
 /**
  * Abstract implementation of a {@link WebsocketHook}. It provides a reference
- * to the {@link WebsocketManager} that is passed to the hook in the
- * {@link #init(WebsocketManager)} method.
+ * to the {@link WebsocketClient} that is passed to the hook in the
+ * {@link #init(WebsocketClient)} method.
  */
 public abstract class AbstractWebsocketHook implements WebsocketHook {
 
   /**
-   * The {@link WebsocketManager} instance that is passed to the hook in the
-   * {@link #init(WebsocketManager)} method.
+   * The {@link WebsocketClient} instance that is passed to the hook in the
+   * {@link #init(WebsocketClient)} method.
    */
-  protected WebsocketManager websocketManager;
+  protected WebsocketClient websocketClient;
   
   @Override
-  public void init(WebsocketManager websocketManager) {
-    this.websocketManager = websocketManager;
+  public void init(WebsocketClient websocketClient) {
+    this.websocketClient = websocketClient;
   }
 
 }

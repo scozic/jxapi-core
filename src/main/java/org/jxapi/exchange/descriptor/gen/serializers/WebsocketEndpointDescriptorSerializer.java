@@ -6,7 +6,7 @@ import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import javax.annotation.processing.Generated;
 import org.jxapi.exchange.descriptor.gen.WebsocketEndpointDescriptor;
-import org.jxapi.netutils.serialization.json.AbstractJsonMessageSerializer;
+import org.jxapi.netutils.serialization.json.AbstractJsonValueSerializer;
 import static org.jxapi.util.JsonUtil.writeCustomSerializerField;
 import static org.jxapi.util.JsonUtil.writeObjectField;
 import static org.jxapi.util.JsonUtil.writeStringField;
@@ -16,7 +16,7 @@ import static org.jxapi.util.JsonUtil.writeStringField;
  * @see WebsocketEndpointDescriptor
  */
 @Generated("org.jxapi.generator.java.pojo.JsonPojoSerializerGenerator")
-public class WebsocketEndpointDescriptorSerializer extends AbstractJsonMessageSerializer<WebsocketEndpointDescriptor> {
+public class WebsocketEndpointDescriptorSerializer extends AbstractJsonValueSerializer<WebsocketEndpointDescriptor> {
   
   /**
    * Constructor
@@ -33,7 +33,7 @@ public class WebsocketEndpointDescriptorSerializer extends AbstractJsonMessageSe
     writeStringField(gen, "name", value.getName());
     writeStringField(gen, "description", value.getDescription());
     writeStringField(gen, "topic", value.getTopic());
-    writeStringField(gen, "topicParametersListSeparator", value.getTopicParametersListSeparator());
+    writeStringField(gen, "websocketClient", value.getWebsocketClient());
     writeStringField(gen, "docUrl", value.getDocUrl());
     writeObjectField(gen, "request", value.getRequest());
     writeObjectField(gen, "message", value.getMessage());

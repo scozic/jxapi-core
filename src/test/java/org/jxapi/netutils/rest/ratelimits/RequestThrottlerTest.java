@@ -1,5 +1,6 @@
 package org.jxapi.netutils.rest.ratelimits;
 
+import java.util.Date;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
@@ -11,10 +12,9 @@ import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-
-import org.jxapi.netutils.rest.FutureRestResponse;
+import org.jxapi.netutils.rest.FutureHttpResponse;
 import org.jxapi.netutils.rest.HttpRequest;
-import org.jxapi.netutils.rest.RestResponse;
+import org.jxapi.netutils.rest.HttpResponse;
 
 /**
  * Unit test for {@link RequestThrottler}
@@ -73,8 +73,8 @@ public class RequestThrottlerTest {
     checkCompletesIn(throttler.submit(request1, endpoint), 0L);
     // Request2 has to wait 1s to enforce rule1 and but does not reached threshold for rule2
     long start = System.currentTimeMillis();
-    FutureRestResponse<Long> response2 = throttler.submit(request2, endpoint);
-    FutureRestResponse<Long> response3 = throttler.submit(request3, endpoint);
+    FutureHttpResponse response2 = throttler.submit(request2, endpoint);
+    FutureHttpResponse response3 = throttler.submit(request3, endpoint);
     checkCompletesIn(response2, 1000L, start);
     checkCompletesIn(response3, 3000L, start);
   }
@@ -99,8 +99,8 @@ public class RequestThrottlerTest {
     checkCompletesIn(throttler.submit(request1, endpoint), 0L);
     // Request2 has to wait 1s to enforce rule1 and but does not reached threshold for rule2
     long start = System.currentTimeMillis();
-    FutureRestResponse<Long> response2 = throttler.submit(request2, endpoint);
-    FutureRestResponse<Long> response3 = throttler.submit(request3, endpoint);
+    FutureHttpResponse response2 = throttler.submit(request2, endpoint);
+    FutureHttpResponse response3 = throttler.submit(request3, endpoint);
     checkCompletesIn(response2, 1000L, start);
     checkCompletesIn(response3, 3000L, start);
   }
@@ -120,9 +120,9 @@ public class RequestThrottlerTest {
     // Request1 enforces all rules and will be submitted immediately
     checkCompletesIn(throttler.submit(request1, endpoint), 0L);
     // Request2 has to wait 1s to enforce rule1 and will be rejected because BLOCK mode is used
-    FutureRestResponse<Long> response2 = throttler.submit(request2, endpoint);
-    RestResponse<Long> restResponse2 = response2.get(5000L, TimeUnit.MILLISECONDS);
-    Assert.assertEquals(429, restResponse2.getHttpStatus());
+    FutureHttpResponse response2 = throttler.submit(request2, endpoint);
+    HttpResponse restResponse2 = response2.get(5000L, TimeUnit.MILLISECONDS);
+    Assert.assertEquals(429, restResponse2.getResponseCode());
     RateLimitReachedException ex = (RateLimitReachedException) restResponse2.getException();
     Assert.assertNotNull(ex);
   }
@@ -144,9 +144,9 @@ public class RequestThrottlerTest {
     // Request1 enforces all rules and will be submitted immediately
     checkCompletesIn(throttler.submit(request1, endpoint), 0L);
     // Request2 has to wait 1s to enforce rule1 and will be rejected because BLOCK mode is used
-    FutureRestResponse<Long> response2 = throttler.submit(request2, endpoint);
-    RestResponse<Long> restResponse2 = response2.get(5000L, TimeUnit.MILLISECONDS);
-    Assert.assertEquals(429, restResponse2.getHttpStatus());
+    FutureHttpResponse response2 = throttler.submit(request2, endpoint);
+    HttpResponse restResponse2 = response2.get(5000L, TimeUnit.MILLISECONDS);
+    Assert.assertEquals(429, restResponse2.getResponseCode());
     RateLimitReachedException ex = (RateLimitReachedException) restResponse2.getException();
     Assert.assertNotNull(ex);
   }
@@ -168,8 +168,8 @@ public class RequestThrottlerTest {
     checkCompletesIn(throttler.submit(request1, endpoint), 0L);
     // Request2 has to wait 1s to enforce rule1 and but does not reached threshold for rule2
     long start = System.currentTimeMillis();
-    FutureRestResponse<Long> response2 = throttler.submit(request2, endpoint);
-    FutureRestResponse<Long> response3 = throttler.submit(request3, endpoint);
+    FutureHttpResponse response2 = throttler.submit(request2, endpoint);
+    FutureHttpResponse response3 = throttler.submit(request3, endpoint);
     checkCompletesIn(response2, 0L, start);
     checkCompletesIn(response3, 0L, start);
   }
@@ -182,25 +182,26 @@ public class RequestThrottlerTest {
     throttler.submit(request, endpoint);
   }
   
-  private void checkCompletesIn(FutureRestResponse<Long> response, long delay) throws InterruptedException, ExecutionException, TimeoutException {
+  private void checkCompletesIn(FutureHttpResponse response, long delay) throws InterruptedException, ExecutionException, TimeoutException {
     checkCompletesIn(response, delay, System.currentTimeMillis());
   }
   
-  private void checkCompletesIn(FutureRestResponse<Long> response, long delay, long start) throws InterruptedException, ExecutionException, TimeoutException {
-    long end = response.get(5000L, TimeUnit.MILLISECONDS).getResponse();
+  private void checkCompletesIn(FutureHttpResponse response, long delay, long start) throws InterruptedException, ExecutionException, TimeoutException {
+    long end = response.get(5000L, TimeUnit.MILLISECONDS).getTime().getTime();
     long actualDelay = end - start;
     Assert.assertTrue("Response received after:" + actualDelay + ", instead of at least:" + delay, 
               actualDelay >= delay - 500L && actualDelay <= delay + 500L);
   }
   
-  private class RestEndpointStub implements Function<HttpRequest, FutureRestResponse<Long>> {
+  private class RestEndpointStub implements Function<HttpRequest, FutureHttpResponse> {
 
     @Override
-    public FutureRestResponse<Long> apply(HttpRequest request) {
-      FutureRestResponse<Long> response = new FutureRestResponse<>();
-      RestResponse<Long> restResponse = new RestResponse<>();
-      restResponse.setResponse(System.currentTimeMillis());
-      response.complete(restResponse);
+    public FutureHttpResponse apply(HttpRequest request) {
+      HttpResponse httpResponse = new HttpResponse();
+      httpResponse.setRequest(request);
+      httpResponse.setTime(new Date());
+      FutureHttpResponse response = new FutureHttpResponse();
+      response.complete(httpResponse);
       return response;
     }
     

@@ -3,7 +3,7 @@ package org.jxapi.generator.java.exchange.api.demo;
 import java.util.List;
 import java.util.Properties;
 
-import org.jxapi.exchange.ExchangeApiObserver;
+import org.jxapi.exchange.ExchangeObserver;
 import org.jxapi.exchange.descriptor.gen.ConfigPropertyDescriptor;
 import org.jxapi.exchange.descriptor.gen.ExchangeApiDescriptor;
 import org.jxapi.exchange.descriptor.gen.ExchangeDescriptor;
@@ -49,6 +49,7 @@ public class WebsocketEndpointDemoGenerator extends JavaTypeGenerator {
   private static final String MAIN_METHOD_SUBSCRIBE_METHOD_CALL_ARGUMENT_INDENT = spaces("subscribe(".length());
   private static final String EXCHANGE_VAR = "exchange";
   private static final String API_VAR = "api";
+  private static final String OBSERVER_VAR = "observer";
   
   private static String spaces(int count) {
     StringBuilder sb = new StringBuilder();
@@ -137,7 +138,7 @@ public class WebsocketEndpointDemoGenerator extends JavaTypeGenerator {
     addImport(WebsocketListener.class);
     addImport(DemoUtil.class);
     addImport(Properties.class);
-    addImport(ExchangeApiObserver.class);
+    addImport(ExchangeObserver.class);
     addImport(DemoProperties.class);
     addImport(InterruptedException.class);
     addImport(this.exchangeClassName);
@@ -184,7 +185,10 @@ public class WebsocketEndpointDemoGenerator extends JavaTypeGenerator {
          .append(SUBSCRIBE_METHOD_ARGUMENT_INDENT)
          .append("Properties configProperties,\n")
          .append(SUBSCRIBE_METHOD_ARGUMENT_INDENT)
-         .append("ExchangeApiObserver apiObserver) throws ")
+         .append(ExchangeObserver.class.getSimpleName())
+         .append(" ")
+         .append(OBSERVER_VAR)
+         .append(") throws ")
          .append(InterruptedException.class.getSimpleName());
     return signature.toString();
   }
@@ -224,7 +228,7 @@ public class WebsocketEndpointDemoGenerator extends JavaTypeGenerator {
     }
     javadoc.append("@param messageListener  The listener that will receive messages dispatched while subscription is active\n")
             .append("@param configProperties Exchange configuration properties.\n")
-            .append("@param apiObserver      {@link ExchangeApiObserver} (optional, ignored if <code>null</code>) observer will")
+            .append("@param observer      {@link ExchangeObserver} (optional, ignored if <code>null</code>) observer will")
             .append (" be subscribed to Exchange API exposing websocket endpoint that will be notifed of received websocket events.")
             .append("Useful in particular to get notified of websocket errors.\n")
             .append("@throws InterruptedException eventually thrown while sleeping for <code>subscriptionDuration</code> or <code>delayBeforeExitAfterUnsubscription</code> delays");
@@ -267,9 +271,11 @@ public class WebsocketEndpointDemoGenerator extends JavaTypeGenerator {
              .append(SUBSCRIPTION_DURATION_VAR_NAME)
              .append(");\n");
     }
-    bodyBuilder.append("if (apiObserver != null) ")
-           .append(JavaCodeGenUtil.generateCodeBlock(API_VAR + ".subscribeObserver(apiObserver);"));
-    bodyBuilder.append("String subId = api.")
+    bodyBuilder.append("if (")
+      .append(OBSERVER_VAR)
+      .append(" != null) ")
+      .append(JavaCodeGenUtil.generateCodeBlock(EXCHANGE_VAR + ".subscribeObserver(" + OBSERVER_VAR + ");"))
+      .append("String subId = api.")
       .append(subscribeMethodName)
       .append("(");
     if (hasArguments) {
@@ -290,8 +296,10 @@ public class WebsocketEndpointDemoGenerator extends JavaTypeGenerator {
       .append("DemoUtil.sleep(")
       .append(DELAY_BEFORE_EXIT_VAR_NAME)
       .append(");\n")
-      .append("if (apiObserver != null) ")
-      .append(JavaCodeGenUtil.generateCodeBlock(API_VAR + ".subscribeObserver(apiObserver);\n"))
+      .append("if (")
+      .append(OBSERVER_VAR)
+      .append(" != null) ")
+      .append(JavaCodeGenUtil.generateCodeBlock(EXCHANGE_VAR + ".unsubscribeObserver(" + OBSERVER_VAR + ");"))
       .append(EXCHANGE_VAR)
       .append(".dispose();");
     

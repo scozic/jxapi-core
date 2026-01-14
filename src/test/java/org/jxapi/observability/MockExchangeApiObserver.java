@@ -1,8 +1,8 @@
 package org.jxapi.observability;
 
-import org.jxapi.exchange.ExchangeApiEvent;
-import org.jxapi.exchange.ExchangeApiObserver;
+import org.jxapi.exchange.ExchangeEvent;
+import org.jxapi.exchange.ExchangeObserver;
 
-public class MockExchangeApiObserver extends GenericObserver<ExchangeApiEvent> implements ExchangeApiObserver {
+public class MockExchangeApiObserver extends GenericObserver<ExchangeEvent> implements ExchangeObserver {
 
 }

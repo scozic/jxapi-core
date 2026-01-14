@@ -14,7 +14,6 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicLong;
 
-import org.jxapi.exchange.ExchangeApi;
 import org.jxapi.netutils.websocket.multiplexing.WebsocketMessageTopicMatchStatus;
 import org.jxapi.netutils.websocket.multiplexing.WebsocketMessageTopicMatcher;
 import org.jxapi.netutils.websocket.multiplexing.WebsocketMessageTopicMatcherFactory;
@@ -27,7 +26,7 @@ import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonToken;
 
 /**
- * Default implementation of {@link WebsocketManager}.
+ * Default implementation of {@link WebsocketClient}.
  * 
  * <p>
  * Uses object pooling to reduce creation of objects in incoming message
@@ -37,14 +36,14 @@ import com.fasterxml.jackson.core.JsonToken;
  * thread race between 'writer' threads modifying topics subscription list and
  * socket dispatcher threads iterating over that list.
  */
-public class DefaultWebsocketManager extends DefaultDisposable implements WebsocketManager {
+public class DefaultWebsocketClient extends DefaultDisposable implements WebsocketClient {
   
   /**
    * Default keep alive time for write executor.
    */
   public static final long WRITE_EXECUTOR_KEEP_ALIVE = 30000L;
   
-  private static final Logger log = LoggerFactory.getLogger(DefaultWebsocketManager.class);
+  private static final Logger log = LoggerFactory.getLogger(DefaultWebsocketClient.class);
   
   /**
    * A topic manager for a topic, with its message handler and message matcher.
@@ -60,11 +59,6 @@ public class DefaultWebsocketManager extends DefaultDisposable implements Websoc
    * Flag to track connection status.
      */
   protected final AtomicBoolean connected = new AtomicBoolean(false);
-  
-  /**
-   * The exchange API associated with this websocket manager.
-   */
-  protected final ExchangeApi exchangeApi;
   
   /**
    * The websocket implementation used by this manager.
@@ -104,14 +98,10 @@ public class DefaultWebsocketManager extends DefaultDisposable implements Websoc
   /**
    * Constructor
    * 
-   * @param exchangeApi   the exchange API associated with this websocket manager
    * @param websocket     the websocket implementation used by this manager
    * @param websocketHook the hook to provide additional websocket handling
    */
-  public DefaultWebsocketManager(ExchangeApi exchangeApi, 
-                   Websocket websocket, 
-                   WebsocketHook websocketHook) {
-    this.exchangeApi = exchangeApi;
+  public DefaultWebsocketClient(Websocket websocket, WebsocketHook websocketHook) {
     this.websocket = websocket;
     this.websocketHook = websocketHook;
     this.writeExecutor = Executors.newSingleThreadScheduledExecutor();
@@ -423,11 +413,6 @@ public class DefaultWebsocketManager extends DefaultDisposable implements Websoc
   public void setUrl(String url) {
     websocket.setUrl(url);
   }
-  
-  @Override
-  public ExchangeApi getExchangeApi() {
-    return this.exchangeApi;
-  }
 
   @Override
   public CompletableFuture<WebsocketException> sendAsync(String msg) {
@@ -718,7 +703,7 @@ public class DefaultWebsocketManager extends DefaultDisposable implements Websoc
           onError(new WebsocketException("No message received last " 
                           + noMessageTimeout 
                           + "ms, on websocket" 
-                          + DefaultWebsocketManager.this 
+                          + DefaultWebsocketClient.this 
                           + " reconnecting websocket"));
         }
       } catch (Exception ex) {

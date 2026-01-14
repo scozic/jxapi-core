@@ -22,8 +22,19 @@ public class DemoExchangeExchangeImpl extends AbstractExchange implements DemoEx
           exchangeName,
           properties,
           EncodingUtil.substituteArguments("${config.baseHttpUrl}", "config.baseHttpUrl", DemoExchangeProperties.getBaseHttpUrl(properties)),
-          EncodingUtil.substituteArguments("${config.baseWebsocketUrl}", "config.baseWebsocketUrl", DemoExchangeProperties.getBaseWebsocketUrl(properties)));
-    this.marketDataApi = addApi(new DemoExchangeMarketDataApiImpl(this));
+          false);
+    // Network
+    createHttpClient("httpDefault",
+      "org.jxapi.exchanges.demo.net.DemoExchangeHttpRequestInterceptorFactory",
+      null,
+      null);
+    createWebsocketClient("wsDefault",
+      EncodingUtil.substituteArguments("${config.baseWebsocketUrl}", "config.baseWebsocketUrl", DemoExchangeProperties.getBaseWebsocketUrl(properties)),
+      null,
+      "org.jxapi.exchanges.demo.net.DemoExchangeWebsocketHookFactory");
+    
+     // APIs
+    this.marketDataApi = addApi(DemoExchangeMarketDataApi.ID, new DemoExchangeMarketDataApiImpl(this, exchangeObserver));
     afterInit("org.jxapi.exchange.MockExchangeHookFactory");
   }
   

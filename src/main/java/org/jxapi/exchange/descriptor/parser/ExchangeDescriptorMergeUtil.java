@@ -4,15 +4,17 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 
 import org.jxapi.exchange.descriptor.Constant;
 import org.jxapi.exchange.descriptor.gen.ConfigPropertyDescriptor;
 import org.jxapi.exchange.descriptor.gen.ConstantDescriptor;
 import org.jxapi.exchange.descriptor.gen.ExchangeApiDescriptor;
 import org.jxapi.exchange.descriptor.gen.ExchangeDescriptor;
+import org.jxapi.exchange.descriptor.gen.HttpClientDescriptor;
+import org.jxapi.exchange.descriptor.gen.NetworkDescriptor;
 import org.jxapi.exchange.descriptor.gen.RateLimitRuleDescriptor;
 import org.jxapi.exchange.descriptor.gen.RestEndpointDescriptor;
+import org.jxapi.exchange.descriptor.gen.WebsocketClientDescriptor;
 import org.jxapi.exchange.descriptor.gen.WebsocketEndpointDescriptor;
 import org.jxapi.netutils.rest.ratelimits.RateLimitRule;
 import org.jxapi.util.CollectionUtil;
@@ -63,6 +65,8 @@ public class ExchangeDescriptorMergeUtil {
    * with with description, configuration properties but no API group</li>
    * <li><i>constants.json</i> contains a descriptor for same exchange
    * 'exchange1', but contains constants for the exchange</li>
+   * <li><i>network.json</i> contains a descriptor for same exchange
+   * 'exchange1', but contains only the network definition of the exchange</li>
    * <li><i>api1.json</i> contains a descriptor for same exchange 'exchange1' and
    * describes one API group 'api1' with common properties like
    * <i>websocketHookFactory</i>, no endpoints</li>
@@ -132,15 +136,10 @@ public class ExchangeDescriptorMergeUtil {
     res.setDescription(MergeUtil.merge("description of exchange " + exchangeName, e1.getDescription(), e2.getDescription()));
     res.setDocUrl(MergeUtil.merge("docUrl of exchange " + exchangeName, e1.getDocUrl(), e2.getDocUrl()));
     res.setBasePackage(MergeUtil.merge("basePackage of exchange " + exchangeName, e1.getBasePackage(), e2.getBasePackage()));
-    res.setHttpRequestExecutorFactory(MergeUtil.merge("httpRequestExecutorFactory of exchange " + exchangeName, e1.getHttpRequestExecutorFactory(), e2.getHttpRequestExecutorFactory()));
-    res.setHttpRequestInterceptorFactory(MergeUtil.merge("httpRequestInterceptorFactory of exchange " + exchangeName, e1.getHttpRequestInterceptorFactory(), e2.getHttpRequestInterceptorFactory()));
-    res.setHttpRequestTimeout(MergeUtil.mergePositiveLongs("httpRequestTimeout of exchange " + exchangeName, e1.getHttpRequestTimeout(), e2.getHttpRequestTimeout()));
-    res.setWebsocketFactory(MergeUtil.merge("websocketFactory of exchange " + exchangeName, e1.getWebsocketFactory(), e2.getWebsocketFactory()));
-    res.setWebsocketHookFactory(MergeUtil.merge("websocketHookFactory of exchange " + exchangeName, e1.getWebsocketHookFactory(), e2.getWebsocketHookFactory()));
-    res.setWebsocketUrl(MergeUtil.merge("websocketUrl of exchange " + exchangeName, e1.getWebsocketUrl(), e2.getWebsocketUrl()));
     res.setHttpUrl(MergeUtil.merge("httpUrl of exchange " + exchangeName, e1.getHttpUrl(), e2.getHttpUrl()));
     res.setAfterInitHookFactory(MergeUtil.merge("afterInitHookFactory of exchange " + exchangeName, e1.getAfterInitHookFactory(), e2.getAfterInitHookFactory()));
     res.setConstants(mergeConstants(e1.getConstants(), e2.getConstants()));
+    res.setNetwork(mergeNetworks(e1.getNetwork(), e2.getNetwork()));
     res.setRateLimits(MergeUtil.mergeLists("rateLimits of exchange " + exchangeName, e1.getRateLimits(), e2.getRateLimits(), RateLimitRuleDescriptor::getId));
     res.setProperties(MergeUtil.mergeLists("properties of exchange " + exchangeName, e1.getProperties(), e2.getProperties(), ConfigPropertyDescriptor::getName));
     res.setApis(mergeExchangeApiDescriptorLists(e1.getApis(), e2.getApis()));
@@ -182,6 +181,23 @@ public class ExchangeDescriptorMergeUtil {
   }
   
   /**
+   * Merges two network descriptors.
+   * 
+   * @param n1 First network descriptor
+   * @param n2 Second network descriptor
+   * @return A new network descriptor, result of the merge of the two input
+   *         descriptors
+   */
+  public static NetworkDescriptor mergeNetworks(NetworkDescriptor n1, NetworkDescriptor n2) {
+    if (n1 == null) return n2;
+    if (n2 == null) return n1;
+    NetworkDescriptor res = new NetworkDescriptor();
+    res.setHttpClients(MergeUtil.mergeLists("httpClients of network", n1.getHttpClients(), n2.getHttpClients(), HttpClientDescriptor::getName));
+    res.setWebsocketClients(MergeUtil.mergeLists("websocketClients of network", n1.getWebsocketClients(), n2.getWebsocketClients(), WebsocketClientDescriptor::getName));    
+    return res;
+  }
+  
+  /**
    * Merges two lists of exchange API descriptors.<br>
    * If two APIs have the same name, the result will contain a single API
    * descriptor with the name and merged properties and endpoints of the two input
@@ -194,11 +210,11 @@ public class ExchangeDescriptorMergeUtil {
    * @see #mergeExchangeApiDescriptors(ExchangeApiDescriptor,
    *      ExchangeApiDescriptor)
    */
-  public static List<ExchangeApiDescriptor> mergeExchangeApiDescriptorLists(List<ExchangeApiDescriptor> l1,
+  public static List<ExchangeApiDescriptor> mergeExchangeApiDescriptorLists(
+      List<ExchangeApiDescriptor> l1,
       List<ExchangeApiDescriptor> l2) {
     List<ExchangeApiDescriptor> res = new ArrayList<>();
-    for (List<ExchangeApiDescriptor> l: List.of(Optional.ofNullable(l1).orElse(List.of()), 
-                          Optional.ofNullable(l2).orElse(List.of()))) {
+    for (List<ExchangeApiDescriptor> l: List.of(CollectionUtil.emptyIfNull(l1), CollectionUtil.emptyIfNull(l2))) {
       for (ExchangeApiDescriptor api : l) {
         ExchangeApiDescriptor existing = res.stream().filter(a -> a.getName().equals(api.getName())).findFirst().orElse(null);
         if (existing != null) {
@@ -230,14 +246,9 @@ public class ExchangeDescriptorMergeUtil {
     res.setDescription(MergeUtil.merge("description of API " + apiName, a1.getDescription(), a2.getDescription()));
     res.setRestEndpoints(MergeUtil.mergeLists("restEndpoints of API " + apiName, a1.getRestEndpoints(), a2.getRestEndpoints(), RestEndpointDescriptor::getName));
     res.setWebsocketEndpoints(MergeUtil.mergeLists("websocketEndpoints of API " + apiName, a1.getWebsocketEndpoints(), a2.getWebsocketEndpoints(), WebsocketEndpointDescriptor::getName));
-    res.setHttpRequestExecutorFactory(MergeUtil.merge("httpRequestExecutorFactory of API " + apiName, a1.getHttpRequestExecutorFactory(), a2.getHttpRequestExecutorFactory()));
-    res.setHttpRequestInterceptorFactory(MergeUtil.merge("httpRequestInterceptorFactory of API " + apiName, a1.getHttpRequestInterceptorFactory(), a2.getHttpRequestInterceptorFactory()));
-    res.setHttpRequestTimeout(MergeUtil.mergePositiveLongs("httpRequestTimeout of API " + apiName, a1.getHttpRequestTimeout(), a2.getHttpRequestTimeout()));
-    res.setWebsocketFactory(MergeUtil.merge("websocketFactory of API " + apiName, a1.getWebsocketFactory(), a2.getWebsocketFactory()));
-    res.setWebsocketHookFactory(MergeUtil.merge("websocketHookFactory of API " + apiName, a1.getWebsocketHookFactory(), a2.getWebsocketHookFactory()));
-    res.setWebsocketUrl(MergeUtil.merge("websocketUrl of API " + apiName, a1.getWebsocketUrl(), a2.getWebsocketUrl()));
     res.setHttpUrl(MergeUtil.merge("httpUrl of API " + apiName, a1.getHttpUrl(), a2.getHttpUrl()));
-    res.setRateLimits(MergeUtil.mergeLists("rateLimits of API " + apiName, a1.getRateLimits(), a2.getRateLimits(), RateLimitRuleDescriptor::getId));
+    res.setDefaultWebsocketClient(MergeUtil.merge("defaultWebsocketClient of API " + apiName, a1.getDefaultWebsocketClient(), a2.getDefaultWebsocketClient()));
+    res.setDefaultHttpClient(MergeUtil.merge("defaultHttpClient of API " + apiName, a1.getDefaultHttpClient(), a2.getDefaultHttpClient()));
     res.setRestEndpoints(MergeUtil.mergeLists("REST endpoints of API " + apiName, a1.getRestEndpoints(), a2.getRestEndpoints(), RestEndpointDescriptor::getName));
     return res;
   }

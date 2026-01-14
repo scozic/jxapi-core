@@ -1,194 +1,187 @@
 package org.jxapi.exchange;
 
-import java.util.ArrayList;
-import java.util.List;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
+
 import java.util.Properties;
 
+import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-
+import org.jxapi.netutils.rest.mock.MockHttpRequestExecutorFactory;
+import org.jxapi.netutils.rest.mock.MockHttpRequestInterceptorFactory;
 import org.jxapi.netutils.rest.ratelimits.RequestThrottler;
-import org.jxapi.netutils.rest.ratelimits.RequestThrottlingMode;
-import org.jxapi.netutils.websocket.WebsocketSubscribeRequest;
+import org.jxapi.netutils.websocket.mock.MockWebsocketFactory;
+import org.jxapi.netutils.websocket.mock.MockWebsocketHookFactory;
 
 /**
- * Unit test for {@link AbstractExchange}
+ * Unit tests for {@link AbstractExchange}.
  */
 public class AbstractExchangeTest {
 
-    private TestExchange exchange;
+    private AbstractExchange exchange;
+    private Properties properties;
 
     @Before
     public void setUp() {
-        // Initialize the AbstractExchange instance with test data
-        String id = "testId";
-        String name = "testName";
-        String version = "1.0.0";
-        Properties properties = new Properties();
-        exchange = new TestExchange(id, version, name, properties);
+        properties = new Properties();
+        properties.setProperty("testKey", "testValue");
+
+        exchange = new TestExchange(false);
+    }
+    
+    @After
+    public void tearDown() {
+        exchange.dispose();
+    }
+
+    @Test
+    public void testGetters() {
+      assertEquals("testId", exchange.getId());
+      assertEquals("TestExchange", exchange.getName());
+      assertEquals("http://example.com", exchange.getHttpUrl());
+      assertSame(properties, exchange.getProperties());
+      assertNotNull(exchange.getNetwork());
+    }
+
+    @Test
+    public void testGetVersion() {
+        assertEquals("1.0", exchange.getVersion());
     }
 
     @Test
     public void testGetProperties() {
-        // Test the getProperties() method
-        Properties expectedProperties = new Properties();
-        Properties actualProperties = exchange.getProperties();
-        Assert.assertEquals(expectedProperties, actualProperties);
-    }
-
-    @Test
-    public void testGetName() {
-        Assert.assertEquals("testName", exchange.getName());
-    }
-
-    @Test
-    public void testGetId() {
-        Assert.assertEquals("testId", exchange.getId());
-    }
-    
-    @Test
-    public void testGetVersion() {
-      Assert.assertEquals("1.0.0", exchange.getVersion());
-    }
-
-    @Test
-    public void testSubscribeObserver() {
-      TestExchangeApi api = new TestExchangeApi("myExchangeApi");
-        exchange.addApi(api);
-        TestExchangeApiObserver observer = new TestExchangeApiObserver();
-        exchange.subscribeObserver(observer);
-        ExchangeApiEvent event = ExchangeApiEvent.createWebsocketMessageEvent(WebsocketSubscribeRequest.create(observer, "greetings", null), "hello!");
-        api.dispatchApiEvent(event);
-        Assert.assertEquals(1, observer.events.size());
-        Assert.assertEquals(event, observer.events.get(0));
-    }
-    
-    @Test
-    public void testUnsubscribeObserverReturnsFalseWhenObserverNeverSubscribed() {
-        ExchangeApi api = new TestExchangeApi("myExchangeApi");
-        exchange.addApi(api);
-        ExchangeApiObserver observer = new TestExchangeApiObserver();
-        Assert.assertFalse(exchange.unsubscribeObserver(observer));
-    }
-    
-    @Test
-    public void testUnsubscribeObserverReturnsFalseWhenNoExchangeApiAdded() {
-        ExchangeApiObserver observer = new TestExchangeApiObserver();
-        Assert.assertFalse(exchange.unsubscribeObserver(observer));
-        exchange.subscribeObserver(observer);
-        // Will return false because api was not  registered and listener was not removed from any api.  
-        Assert.assertFalse(exchange.unsubscribeObserver(observer));
-    }
-
-    @Test
-    public void testUnsubscribeObserverReturnsTrueWhenSubscribedFromOneExchangeApi() {
-        ExchangeApiObserver observer = new TestExchangeApiObserver();
-        Assert.assertFalse(exchange.unsubscribeObserver(observer));
-        exchange.subscribeObserver(observer);
-        // Will return false because api was not  registered and listener was not removed from any api.  
-        Assert.assertFalse(exchange.unsubscribeObserver(observer));
-        ExchangeApi api = new TestExchangeApi("myExchangeApi");
-        exchange.addApi(api);
-        exchange.subscribeObserver(observer);
-        Assert.assertTrue(exchange.unsubscribeObserver(observer));
+        Properties properties = exchange.getProperties();
+        assertNotNull(properties);
+        assertEquals("testValue", properties.getProperty("testKey"));
     }
 
     @Test
     public void testAddApi() {
-        // Test the addApi() method
-        ExchangeApi api = new TestExchangeApi("myExchangeApi");
-        ExchangeApi result = exchange.addApi(api);
-        Assert.assertEquals(api, result);
-        Assert.assertEquals(1, exchange.getApis().size());
-        Assert.assertEquals(api, exchange.getApis().get(0));
+        ExchangeApi api = new ExchangeApi() {
+        };
+        exchange.addApi("api1", api);
+        assertEquals(1, exchange.getApis().size());
+        assertSame(api, exchange.getApis().get(0));
+    }
+
+    @Test
+    public void testSubscribeAndUnsubscribeObserver() {
+        ExchangeObserver observer = event -> {};
+        exchange.subscribeObserver(observer);
+
+        assertTrue(exchange.unsubscribeObserver(observer));
+        assertFalse(exchange.unsubscribeObserver(observer));
+    }
+
+    @Test
+    public void testDispatchApiEvent() {
+        ExchangeEvent event = new ExchangeEvent(ExchangeEventType.HTTP_REQUEST);
+        exchange.dispatchApiEvent(event);
+        assertEquals(ExchangeEventType.HTTP_REQUEST, event.getType());
+        assertEquals("testId", event.getExchangeId());
+        assertEquals("TestExchange", event.getExchangeName());
+    }
+
+    @Test
+    public void testDispose() {
+        exchange.dispose();
+        assertTrue(exchange.isDisposed());
+    }
+    
+    @Test
+    public void testCreateHttpClientWithDefaultExecutorAndNoInterceptor() {
+        // Act
+        exchange.createHttpClient("testClient", null, null, 5000L);
+
+        // Assert
+        assertNotNull(exchange.getHttpClient("testClient"));
+        
         
     }
     
     @Test
-    public void testSetRequestThrottlingMode() {
-        ExchangeApi api1 = exchange.addApi(new TestExchangeApi("myExchangeApi1"));
-        ExchangeApi api2 = exchange.addApi(new TestExchangeApi("myExchangeApi2"));
-        exchange.setRequestThrottlingMode(RequestThrottlingMode.BLOCK);
-        Assert.assertEquals(RequestThrottlingMode.BLOCK, api1.getRequestThrottlingMode());
-        Assert.assertEquals(RequestThrottlingMode.BLOCK, api2.getRequestThrottlingMode());
+    public void testCreateHttpClientWithCustomExecutorAndInterceptor() {
+      
+      // Act
+      exchange.createHttpClient(
+          "customClient", 
+          MockHttpRequestInterceptorFactory.class.getName(), 
+          MockHttpRequestExecutorFactory.class.getName(), 
+          5000L);
+
+      // Assert
+      assertNotNull(exchange.getHttpClient("customClient"));
     }
     
+    @Test(expected = IllegalArgumentException.class)
+    public void testGetHttpClientThrowsExceptionForUnregisteredClient() {
+        // Act
+        exchange.getHttpClient("nonExistentClient");
+    }
+
     @Test
-    public void testSetRequestMaxThrottlingDelay() {
-        ExchangeApi api1 = exchange.addApi(new TestExchangeApi("myExchangeApi1"));
-        ExchangeApi api2 = exchange.addApi(new TestExchangeApi("myExchangeApi2"));
-        exchange.setMaxRequestThrottleDelay(500L);
-        Assert.assertEquals(500L, api1.getMaxRequestThrottleDelay());
-        Assert.assertEquals(500L, api2.getMaxRequestThrottleDelay());
+    public void testCreateWebsocketClientWithDefaultFactory() {
+        // Act
+        exchange.createWebsocketClient("testWebsocket", null, null, null);
+
+        // Assert
+        assertNotNull(exchange.getNetwork().getWebsocket("testWebsocket"));
     }
-    
-    @Test 
-    public void testDispose() {
-        ExchangeApi api1 = exchange.addApi(new TestExchangeApi("myExchangeApi1"));
-        ExchangeApi api2 = exchange.addApi(new TestExchangeApi("myExchangeApi2"));
-        exchange.dispose();
-        Assert.assertTrue(api1.isDisposed());
-        Assert.assertTrue(api2.isDisposed());
+
+    @Test
+    public void testCreateWebsocketClientWithCustomFactory() {
+        // Arrange
+        String customWebsocketFactoryClass = MockWebsocketFactory.class.getName();
+        String customWebsocketHookFactoryClass = MockWebsocketHookFactory.class.getName();
+
+        // Act
+        exchange.createWebsocketClient("customWebsocket", "ws://example.com", customWebsocketFactoryClass, customWebsocketHookFactoryClass);
+
+        // Assert
+        assertNotNull(exchange.getNetwork().getWebsocket("customWebsocket"));
     }
     
     @Test
     public void testAfterInit() {
-      Assert.assertNull(exchange.getProperties().get(MockExchangeHook.MOCK_EXCHANGE_HOOK_PROPERTY));
+      exchange.afterInit(null);
       exchange.afterInit(MockExchangeHookFactory.class.getName());
-      MockExchangeHook exchangeHook = (MockExchangeHook) exchange.getProperties().get(MockExchangeHook.MOCK_EXCHANGE_HOOK_PROPERTY);
-      Assert.assertNotNull(exchangeHook);
-      Assert.assertEquals(1, exchangeHook.size());
-      Assert.assertEquals(exchange, exchangeHook.pop());
+      MockExchangeHook hook = (MockExchangeHook) exchange.getProperties().get(MockExchangeHook.MOCK_EXCHANGE_HOOK_PROPERTY);
+      assertNotNull(hook);
+      Assert.assertEquals(1, hook.size());
+      Assert.assertSame(exchange, hook.pop());
     }
     
-    @Test(expected = IllegalArgumentException.class)
-    public void testAfterInit_InvalidFactoryClass() {
-      exchange.afterInit("WrongClassName");
+    @Test
+    public void testCreateWithRequestThrottler() {
+      TestExchange rateLimitedExchange = new TestExchange(true);
+      RequestThrottler throttler = rateLimitedExchange.getRequestThrottler();
+      Assert.assertNotNull(throttler);
+      rateLimitedExchange.dispose();
+      Assert.assertTrue(throttler.isDisposed());
     }
-
-    // Helper class for testing ExchangeApiObserver
-    private static class TestExchangeApiObserver implements ExchangeApiObserver {
+    
+    private class TestExchange extends AbstractExchange {
       
-      List<ExchangeApiEvent> events = new ArrayList<>();
+      public TestExchange(boolean hasRateLimiting) {
+        super("testId", "1.0", "TestExchange", AbstractExchangeTest.this.properties, "http://example.com", hasRateLimiting);
+      }
 
       @Override
-      public void handleEvent(ExchangeApiEvent event) {
-        events.add(event);
-      }
-    }
-
-    // Helper class for testing ExchangeApi
-    private class TestExchangeApi extends AbstractExchangeApi {
-
-      public TestExchangeApi(String apiName) {
-        super(apiName, 
-              ExchangeStub.INSTANCE, 
-              new RequestThrottler("TestApi"), 
-              "http://localhost:8080/api", 
-              "http://localhost:8080/ws");
+      public void dispose() {
+        super.dispose();
       }
       
-      @Override
-      public void dispatchApiEvent(ExchangeApiEvent event) {
-        super.dispatchApiEvent(event);
+      public RequestThrottler getRequestThrottler() {
+        return this.requestThrottler;
       }
     }
-
-    // Helper class for testing AbstractExchange
-    private static class TestExchange extends AbstractExchange {
-        public TestExchange(String id, String version, String name, Properties properties) {
-            super(id, version, name, properties, null, null);
-        }
-        
-        @Override
-        public <T extends ExchangeApi> T addApi(T api) {
-          return super.addApi(api);
-        }
-        
-        @Override
-        public void afterInit(String exchangeHookFactory) {
-          super.afterInit(exchangeHookFactory);
-        }
-    }
+    
+    
 }
+

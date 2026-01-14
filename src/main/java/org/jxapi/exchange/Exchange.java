@@ -3,8 +3,7 @@ package org.jxapi.exchange;
 import java.util.List;
 import java.util.Properties;
 
-import org.jxapi.netutils.rest.ratelimits.RateLimitRule;
-import org.jxapi.netutils.rest.ratelimits.RequestThrottlingMode;
+import org.jxapi.netutils.Network;
 import org.jxapi.util.Disposable;
 import org.jxapi.util.HasProperties;
 
@@ -43,23 +42,13 @@ public interface Exchange extends Disposable, HasProperties {
   String getVersion();
   
   /**
-   * Returns the HTTP URL prefix for all REST endpoints of API groups of this
+   * Returns the base HTTP URL prefix for all REST endpoints of API groups of this
    * exchange. This prefix is used to build the full URL of each endpoint. It is
    * unused when either API group or REST endpoint defines an absolute URL.
    * 
    * @return The HTTP URL prefix for REST endpoints of this exchange.
    */
   String getHttpUrl();
-  
-  /**
-   * Returns the WebSocket URL prefix for all WebSocket endpoints of API groups of
-   * this exchange. This prefix is used to build the full URL of each API group. It
-   * is unused when API group defines an absolute
-   * URL.
-   * 
-   * @return The base websocket URLfor API groups of this exchange.
-   */
-  String getWsUrl();
 
   /**
    * Subscribes an observer to every {@link ExchangeApi} exposed.
@@ -68,7 +57,7 @@ public interface Exchange extends Disposable, HasProperties {
    *                            {@link ExchangeApi} exposed.
    * @see ExchangeApi
    */
-  void subscribeObserver(ExchangeApiObserver exchangeApiObserver);
+  void subscribeObserver(ExchangeObserver exchangeApiObserver);
 
   /**
    * Unsubscribes an observer from every {@link ExchangeApi} exposed.
@@ -78,7 +67,7 @@ public interface Exchange extends Disposable, HasProperties {
    * @return <code>true</code> if observer was actually removed from at least one
    *         endpoint, <code>false</code> otherwise.
    */
-  boolean unsubscribeObserver(ExchangeApiObserver exchangeApiObserver);
+  boolean unsubscribeObserver(ExchangeObserver exchangeApiObserver);
 
   /**
    * Returns list of {@link ExchangeApi} instances exposed by this exchange.
@@ -89,30 +78,12 @@ public interface Exchange extends Disposable, HasProperties {
    */
   List<ExchangeApi> getApis();
   
-  /**
-   * Sets the request throttling policy for all REST requests of every exposed
-   * {@link ExchangeApi}. Relevant when some of REST endpoints must enfore rate
-   * limit rules
-   * 
-   * @see RateLimitRule
-   * @param requestThrottlingMode the request throttling policy
-   * @see ExchangeApi#setRequestThrottlingMode(RequestThrottlingMode)
+  /**.
+   * @return the network used by this exchange
+   * @see Network
    */
-  void setRequestThrottlingMode(RequestThrottlingMode requestThrottlingMode);
+  Network getNetwork();
 
-  /**
-   * Set the max request throttle delay for all REST requests of every exposed
-   * {@link ExchangeApi}.
-   * @param maxRequestThrottleDelay the max request throttle delay for all REST requests
-   * @see ExchangeApi#setMaxRequestThrottleDelay(long)
-   */
-  void setMaxRequestThrottleDelay(long maxRequestThrottleDelay);
   
-  /**
-   * Sets the request timeout for calls to REST endpoints of every API
-   * @param httpRequestTimeout The HTTP request timeout in ms
-   * @see ExchangeApi#setHttpRequestTimeout(long)
-   */
-  void setHttpRequesTimeout(long httpRequestTimeout);
 
 }

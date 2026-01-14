@@ -2,18 +2,17 @@ package org.jxapi.netutils.websocket;
 
 import java.util.concurrent.CompletableFuture;
 
-import org.jxapi.exchange.ExchangeApi;
 import org.jxapi.netutils.websocket.multiplexing.WebsocketMessageTopicMatcher;
 import org.jxapi.netutils.websocket.multiplexing.WebsocketMessageTopicMatcherFactory;
 import org.jxapi.util.Disposable;
 
 /**
- * A WebsocketManager is a wrapper around a {@link Websocket} that manages most
+ * A WebsocketClient is a wrapper around a {@link Websocket} that manages most
  * common operations specified in a Websocket API.
  * <br>
  * <h2>Multiplexing</h2>
  * Given that a Websocket can be used to subscribe to multiple topics, a
- * WebsocketManager allows to subscribe a single message handler to a topic.
+ * WebsocketClient allows to subscribe a single message handler to a topic.
  * The actual message that must be sent to the server to subscribe to a topic is
  * managed by the {@link WebsocketHook}, see
  * {@link WebsocketHook#getSubscribeRequestMessage(String)}.
@@ -27,24 +26,24 @@ import org.jxapi.util.Disposable;
  * {@link WebsocketEndpoint}.
  * <br>
  * API specification may not require multiplexing, in which case a single
- * message handler can be subscribed to the WebsocketManager using
+ * message handler can be subscribed to the WebsocketClient using
  * <code>null</code> as topic.
  * 
  * <h2>Wrapping {@link Websocket} methods</h2>
- * The WebsocketManager is responsible to ensure that the underlying Websocket
+ * The WebsocketClient is responsible to ensure that the underlying Websocket
  * is connected before sending a message or subscribing to a topic.
  * Calls to {@link Websocket#connect()}, {@link Websocket#disconnect()},
  * {@link Websocket#send(String)} methods are called asynchronously and thread
- * safe from the WebsocketManager dedicated write executor.
+ * safe from the WebsocketClient dedicated write executor.
  * <br>
  * Errors that occur during the connection process, while sending messages or
  * anytime when connection is alive are dispatched to all error handlers using
  * {@link WebsocketErrorHandler#handleWebsocketError(WebsocketException)}.
- * Before such error is dispatched, the WebsocketManager will disconnect the
+ * Before such error is dispatched, the WebsocketClient will disconnect the
  * underlying Websocket and try to reconnect it if reconnection is configured.
  * 
  * <h2>Injection of API specific logic using {@link WebsocketHook}</h2>
- * When provided a {@link WebsocketHook}, the WebsocketManager will call the
+ * When provided a {@link WebsocketHook}, the WebsocketClient will call the
  * hook methods at specific points in the Websocket lifecycle, allowing to
  * inject API specific logic.
  * <br>
@@ -57,12 +56,12 @@ import org.jxapi.util.Disposable;
  * send to the server to keep the connection alive.
  * 
  * <h2>Heartbeat</h2>
- * The WebsocketManager is responsible to manage the heartbeat mechanism. It
+ * The WebsocketClient is responsible to manage the heartbeat mechanism. It
  * will send a heartbeat message to the server at regular interval if configured
  * for it.
  * Usually, the server will respond to the heartbeat message with a heartbeat
  * response message. If no response is received within a timeout, the
- * WebsocketManager will disconnect the underlying Websocket and try to
+ * WebsocketClient will disconnect the underlying Websocket and try to
  * reconnect it if reconnection is configured.<br>
  * It is the responsibility of the WebsocketHook to provide the heartbeat
  * message to send to the server.<br>
@@ -86,28 +85,28 @@ import org.jxapi.util.Disposable;
  * Using <code>no heartbeat response timeout</code> means client expects
  * heartbeats from server.
  * <h2>Reconnection</h2>
- * The WebsocketManager is responsible to manage the reconnection mechanism. It
+ * The WebsocketClient is responsible to manage the reconnection mechanism. It
  * will try to reconnect the underlying Websocket upon error if reconnection is
  * configured, see {@link #setReconnectDelay(long)}. Upon successful connection,
- * the WebsocketManager will resubscribe all message handlers to the topics that
+ * the WebsocketClient will resubscribe all message handlers to the topics that
  * were subscribed to before the disconnection.
  * 
  * <h2>Idle timeout</h2>
- * The WebsocketManager is responsible to manage the idle timeout mechanism. It
+ * The WebsocketClient is responsible to manage the idle timeout mechanism. It
  * will disconnect the underlying Websocket if no message is received within a
  * timeout, see {@link #setNoMessageTimeout(long)}
  * 
  * <h2>Additional notes</h2>
- * The WebsocketManager is responsible to manage the connection state of the
+ * The WebsocketClient is responsible to manage the connection state of the
  * underlying Websocket. This means client implementation should not call
  * {@link Websocket#connect()}, {@link Websocket#disconnect()},
  * {@link Websocket#send(String)} methods directly on the underlying Websocket.
  * Rather, client implementation should call {@link #sendAsync(String)} to
  * dispatch a message asynchronously and {@link #dispose()} to dispose the
- * WebsocketManager and underlying Websocket definitely.
+ * WebsocketClient and underlying Websocket definitely.
  * 
  */
-public interface WebsocketManager extends Disposable {
+public interface WebsocketClient extends Disposable {
 
   /**
    * Adds a message handler to handle specific/non business messages. This is
@@ -133,7 +132,7 @@ public interface WebsocketManager extends Disposable {
    * Client implementations must take care not to subscribe multiple message
    * handlers to the same topic. This is managed by the {@link WebsocketEndpoint}.
    * Subscribing a message handler for a topic that already has a message handler
-   * will cause an error to be raised by the WebsocketManager.
+   * will cause an error to be raised by the WebsocketClient.
    * 
    * @param topic          The topic to subscribe to. Can be <code>null</code> if
    *                       no multiplexing is required. In this case the message
@@ -150,16 +149,16 @@ public interface WebsocketManager extends Disposable {
    * Unsubscribes from a topic.
    * 
    * @param topic The topic to unsubscribe from.
-   * @see WebsocketManager#subscribe(String, WebsocketMessageTopicMatcherFactory, RawWebsocketMessageHandler)
+   * @see WebsocketClient#subscribe(String, WebsocketMessageTopicMatcherFactory, RawWebsocketMessageHandler)
    */
   void unsubscribe(String topic);
 
   /**
    * Adds an error handler to handle errors that occur during the connection
    * process, while sending messages or anytime when connection is alive.
-   * Client implementations should not initiate shutdown of the WebsocketManager
+   * Client implementations should not initiate shutdown of the WebsocketClient
    * or underlying Websocket from the error handler. Reconnection is managed by
-   * the WebsocketManager.
+   * the WebsocketClient.
    * 
    * @param websocketErrorHandler The error handler to add.
    */
@@ -185,7 +184,7 @@ public interface WebsocketManager extends Disposable {
    * <br>
    * Sending messages from another thread should be done using
    * {@link #sendAsync(String)} which will write on websocket output
-   * asynchronously from WebsocketManager dedicated write excutor.
+   * asynchronously from WebsocketClient dedicated write excutor.
    * <br>
    * A typical use case would be sending a message for authentication handshake
    * from {@link WebsocketHook#afterConnect()}.
@@ -200,7 +199,7 @@ public interface WebsocketManager extends Disposable {
    * Sends a message to this manager underlying {@link Websocket} asynchronously.
    * <br>
    * This method can be called from any thread. The message will be written on
-   * websocket output asynchronously from WebsocketManager dedicated write
+   * websocket output asynchronously from WebsocketClient dedicated write
    * executor.
    * 
    * @param msg Message to send on underlying Websocket output.
@@ -324,12 +323,4 @@ public interface WebsocketManager extends Disposable {
    * @param exception The exception that caused the error.
    */
   void notifyError(WebsocketException exception);
-  
-  /**
-   * @return The exchange API this manager wraps websocket connection for. Can be
-   *         used by {@link WebsocketHook} to retrieve configuration properties,
-   *         or cast to actual {@link ExchangeApi} implementation to access it
-   *         APIs such as websocket token retrieval REST API.
-   */
-  ExchangeApi getExchangeApi();
 }

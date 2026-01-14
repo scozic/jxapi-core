@@ -4,7 +4,6 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
-import org.jxapi.exchange.AbstractExchangeApi;
 import org.jxapi.exchange.ExchangeStub;
 import org.jxapi.netutils.websocket.WebsocketHook;
 
@@ -16,16 +15,9 @@ public class MockWebsocketHookFactoryTest {
     @Test
     public void testCreateHook() {
         MockWebsocketHookFactory factory = new MockWebsocketHookFactory();
-        WebsocketHook hook = factory.createWebsocketHook(new MockExchangeApi());
+        WebsocketHook hook = factory.createWebsocketHook(ExchangeStub.INSTANCE);
         assertNotNull(hook);
         assertTrue(hook instanceof MockWebsocketHook);
     }
 
-        // Mock implementation of ExchangeApi for testing purposes
-    private static class MockExchangeApi extends AbstractExchangeApi {
-
-        public MockExchangeApi() {
-            super("TestApi", ExchangeStub.INSTANCE);
-        }
-    }
 }

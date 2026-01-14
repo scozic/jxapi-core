@@ -6,13 +6,12 @@ import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import javax.annotation.processing.Generated;
 import org.jxapi.exchange.descriptor.gen.RestEndpointDescriptor;
-import org.jxapi.netutils.serialization.json.AbstractJsonMessageSerializer;
+import org.jxapi.netutils.serialization.json.AbstractJsonValueSerializer;
 import org.jxapi.netutils.serialization.json.ListJsonValueSerializer;
 import org.jxapi.netutils.serialization.json.StringJsonValueSerializer;
 import static org.jxapi.util.JsonUtil.writeBooleanField;
 import static org.jxapi.util.JsonUtil.writeCustomSerializerField;
 import static org.jxapi.util.JsonUtil.writeIntField;
-import static org.jxapi.util.JsonUtil.writeLongField;
 import static org.jxapi.util.JsonUtil.writeObjectField;
 import static org.jxapi.util.JsonUtil.writeStringField;
 
@@ -21,7 +20,7 @@ import static org.jxapi.util.JsonUtil.writeStringField;
  * @see RestEndpointDescriptor
  */
 @Generated("org.jxapi.generator.java.pojo.JsonPojoSerializerGenerator")
-public class RestEndpointDescriptorSerializer extends AbstractJsonMessageSerializer<RestEndpointDescriptor> {
+public class RestEndpointDescriptorSerializer extends AbstractJsonValueSerializer<RestEndpointDescriptor> {
   
   /**
    * Constructor
@@ -40,7 +39,7 @@ public class RestEndpointDescriptorSerializer extends AbstractJsonMessageSeriali
     writeStringField(gen, "httpMethod", value.getHttpMethod());
     writeStringField(gen, "url", value.getUrl());
     writeStringField(gen, "docUrl", value.getDocUrl());
-    writeLongField(gen, "httpRequestTimeout", value.getHttpRequestTimeout());
+    writeStringField(gen, "httpClient", value.getHttpClient());
     writeIntField(gen, "requestWeight", value.getRequestWeight());
     writeCustomSerializerField(gen, "rateLimits", value.getRateLimits(), rateLimitsSerializer, provider);
     writeBooleanField(gen, "paginated", value.isPaginated());

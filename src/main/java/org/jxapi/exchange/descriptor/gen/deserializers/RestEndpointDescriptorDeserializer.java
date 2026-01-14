@@ -11,7 +11,6 @@ import org.jxapi.netutils.deserialization.json.field.ListJsonFieldDeserializer;
 import org.jxapi.netutils.deserialization.json.field.StringJsonFieldDeserializer;
 import static org.jxapi.util.JsonUtil.readNextBoolean;
 import static org.jxapi.util.JsonUtil.readNextInteger;
-import static org.jxapi.util.JsonUtil.readNextLong;
 import static org.jxapi.util.JsonUtil.readNextObject;
 import static org.jxapi.util.JsonUtil.readNextString;
 import static org.jxapi.util.JsonUtil.skipNextValue;
@@ -44,8 +43,8 @@ public class RestEndpointDescriptorDeserializer extends AbstractJsonMessageDeser
       case "docUrl":
         msg.setDocUrl(readNextString(parser));
       break;
-      case "httpRequestTimeout":
-        msg.setHttpRequestTimeout(readNextLong(parser));
+      case "httpClient":
+        msg.setHttpClient(readNextString(parser));
       break;
       case "requestWeight":
         msg.setRequestWeight(readNextInteger(parser));

@@ -6,12 +6,10 @@ import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonToken;
 import javax.annotation.processing.Generated;
 import org.jxapi.exchange.descriptor.gen.ExchangeApiDescriptor;
-import org.jxapi.exchange.descriptor.gen.RateLimitRuleDescriptor;
 import org.jxapi.exchange.descriptor.gen.RestEndpointDescriptor;
 import org.jxapi.exchange.descriptor.gen.WebsocketEndpointDescriptor;
 import org.jxapi.netutils.deserialization.json.AbstractJsonMessageDeserializer;
 import org.jxapi.netutils.deserialization.json.field.ListJsonFieldDeserializer;
-import static org.jxapi.util.JsonUtil.readNextLong;
 import static org.jxapi.util.JsonUtil.readNextString;
 import static org.jxapi.util.JsonUtil.skipNextValue;
 
@@ -21,7 +19,6 @@ import static org.jxapi.util.JsonUtil.skipNextValue;
  */
 @Generated("org.jxapi.generator.java.pojo.JsonMessageDeserializerGenerator")
 public class ExchangeApiDescriptorDeserializer extends AbstractJsonMessageDeserializer<ExchangeApiDescriptor> {
-  private ListJsonFieldDeserializer<RateLimitRuleDescriptor> rateLimitsDeserializer;
   private ListJsonFieldDeserializer<RestEndpointDescriptor> restEndpointsDeserializer;
   private ListJsonFieldDeserializer<WebsocketEndpointDescriptor> websocketEndpointsDeserializer;
   
@@ -36,33 +33,14 @@ public class ExchangeApiDescriptorDeserializer extends AbstractJsonMessageDeseri
       case "description":
         msg.setDescription(readNextString(parser));
       break;
-      case "httpRequestExecutorFactory":
-        msg.setHttpRequestExecutorFactory(readNextString(parser));
-      break;
-      case "httpRequestInterceptorFactory":
-        msg.setHttpRequestInterceptorFactory(readNextString(parser));
-      break;
       case "httpUrl":
         msg.setHttpUrl(readNextString(parser));
       break;
-      case "httpRequestTimeout":
-        msg.setHttpRequestTimeout(readNextLong(parser));
+      case "defaultHttpClient":
+        msg.setDefaultHttpClient(readNextString(parser));
       break;
-      case "websocketFactory":
-        msg.setWebsocketFactory(readNextString(parser));
-      break;
-      case "websocketHookFactory":
-        msg.setWebsocketHookFactory(readNextString(parser));
-      break;
-      case "websocketUrl":
-        msg.setWebsocketUrl(readNextString(parser));
-      break;
-      case "rateLimits":
-        parser.nextToken();
-        if(rateLimitsDeserializer == null) {
-          rateLimitsDeserializer = new ListJsonFieldDeserializer<>(new RateLimitRuleDescriptorDeserializer());
-        }
-        msg.setRateLimits(rateLimitsDeserializer.deserialize(parser));
+      case "defaultWebsocketClient":
+        msg.setDefaultWebsocketClient(readNextString(parser));
       break;
       case "restEndpoints":
         parser.nextToken();

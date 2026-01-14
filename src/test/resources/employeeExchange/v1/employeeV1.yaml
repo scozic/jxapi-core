@@ -3,5 +3,5 @@ apis:
  - name: v1
    description: "Version 1 of the Employee API"
    httpUrl: "v1"
-   websocketUrl: "${config.server.baseWebsocketUrl}"
-   websocketHookFactory: "org.jxapi.exchanges.demo.net.DemoExchangeWebsocketHookFactory"     
+   defaultHttpClient: httpDefault
+   defaultWebsocketClient: wsDefault

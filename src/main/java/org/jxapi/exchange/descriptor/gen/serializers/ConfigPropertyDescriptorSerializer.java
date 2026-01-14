@@ -6,7 +6,7 @@ import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import javax.annotation.processing.Generated;
 import org.jxapi.exchange.descriptor.gen.ConfigPropertyDescriptor;
-import org.jxapi.netutils.serialization.json.AbstractJsonMessageSerializer;
+import org.jxapi.netutils.serialization.json.AbstractJsonValueSerializer;
 import org.jxapi.netutils.serialization.json.ListJsonValueSerializer;
 import static org.jxapi.util.JsonUtil.writeCustomSerializerField;
 import static org.jxapi.util.JsonUtil.writeObjectField;
@@ -17,7 +17,7 @@ import static org.jxapi.util.JsonUtil.writeStringField;
  * @see ConfigPropertyDescriptor
  */
 @Generated("org.jxapi.generator.java.pojo.JsonPojoSerializerGenerator")
-public class ConfigPropertyDescriptorSerializer extends AbstractJsonMessageSerializer<ConfigPropertyDescriptor> {
+public class ConfigPropertyDescriptorSerializer extends AbstractJsonValueSerializer<ConfigPropertyDescriptor> {
   
   /**
    * Constructor

@@ -33,8 +33,8 @@ public class WebsocketEndpointDescriptorDeserializer extends AbstractJsonMessage
       case "topic":
         msg.setTopic(readNextString(parser));
       break;
-      case "topicParametersListSeparator":
-        msg.setTopicParametersListSeparator(readNextString(parser));
+      case "websocketClient":
+        msg.setWebsocketClient(readNextString(parser));
       break;
       case "docUrl":
         msg.setDocUrl(readNextString(parser));

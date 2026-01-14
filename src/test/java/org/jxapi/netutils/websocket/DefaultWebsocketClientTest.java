@@ -9,9 +9,6 @@ import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import org.jxapi.exchange.AbstractExchangeApi;
-import org.jxapi.exchange.ExchangeApi;
-import org.jxapi.exchange.ExchangeStub;
 import org.jxapi.netutils.websocket.mock.MockWebsocket;
 import org.jxapi.netutils.websocket.mock.MockWebsocketEvent;
 import org.jxapi.netutils.websocket.mock.MockWebsocketEventType;
@@ -20,25 +17,24 @@ import org.jxapi.netutils.websocket.mock.MockWebsocketHookEvent;
 import org.jxapi.netutils.websocket.mock.MockWebsocketHookEventType;
 import org.jxapi.netutils.websocket.multiplexing.WSMTMFUtil;
 import org.jxapi.netutils.websocket.multiplexing.WebsocketMessageTopicMatcherFactory;
+import org.jxapi.util.DemoUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Unit test for {@link DefaultWebsocketManager}.
+ * Unit test for {@link DefaultWebsocketClient}.
  */
-public class DefaultWebsocketManagerTest {
+public class DefaultWebsocketClientTest {
 
   
-  private static final Logger log = LoggerFactory.getLogger(DefaultWebsocketManagerTest.class);
+  private static final Logger log = LoggerFactory.getLogger(DefaultWebsocketClientTest.class);
   
   private static final long NO_EVENT_DELAY = 50;
   private static final long HEARTBEAT_INTERVAL = 200;
-  
-  private static final ExchangeApi EXCHANGE_API = new AbstractExchangeApi("myApi", ExchangeStub.INSTANCE) {};
 
   private MockWebsocket ws;
   private MockWebsocketHook wsHook;
-  private DefaultWebsocketManager wsManager;
+  private DefaultWebsocketClient wsManager;
   private GenericRawWebsocketMessageHandler wsMessageHandler1;
   private GenericRawWebsocketMessageHandler wsMessageHandler2;
   private GenericWebsocketErrorHandler errorHandler;
@@ -65,10 +61,9 @@ public class DefaultWebsocketManagerTest {
   
   @Test
   public void testGettersAndSetters() throws Exception {
-    wsManager = new DefaultWebsocketManager(EXCHANGE_API, ws, wsHook);
+    wsManager = new DefaultWebsocketClient(ws, wsHook);
     Assert.assertEquals(wsHook, wsManager.getWebsocketHook());
     Assert.assertEquals(ws, wsManager.getWebsocket());
-    Assert.assertEquals(EXCHANGE_API, wsManager.getExchangeApi());
     popWebsocketAddErrorHandlerEvent();
     popWebsocketAddMessageHandlerEvent();
     long heartBeatInterval = 1000L;
@@ -99,7 +94,7 @@ public class DefaultWebsocketManagerTest {
   
   @Test
   public void testSubscribeToSingleTopicReceiveOneMessageForTopicThenUnsubscribeThenReceiveMesssageForTopicNotDispatchedAsUnsubscribedThenDisposeWsManager() throws Exception{
-    wsManager = new DefaultWebsocketManager(EXCHANGE_API, ws, wsHook);
+    wsManager = new DefaultWebsocketClient(ws, wsHook);
     wsManager.subscribeErrorHandler(errorHandler);
     popWebsocketAddErrorHandlerEvent();
     popWebsocketAddMessageHandlerEvent();
@@ -138,7 +133,7 @@ public class DefaultWebsocketManagerTest {
   
   @Test
   public void testSubscribeToSingleTopicReceiveOneMessageForTopicWithTopicFieldInSubObject() throws Exception{
-    wsManager = new DefaultWebsocketManager(EXCHANGE_API, ws, wsHook);
+    wsManager = new DefaultWebsocketClient(ws, wsHook);
     wsManager.subscribeErrorHandler(errorHandler);
     popWebsocketAddErrorHandlerEvent();
     popWebsocketAddMessageHandlerEvent();
@@ -166,7 +161,7 @@ public class DefaultWebsocketManagerTest {
   
   @Test
   public void testSubscribeToSingleTopicReceiveOneMessageForDifferentTopic() throws Exception{
-    wsManager = new DefaultWebsocketManager(EXCHANGE_API, ws, wsHook);
+    wsManager = new DefaultWebsocketClient(ws, wsHook);
     wsManager.subscribeErrorHandler(errorHandler);
     popWebsocketAddErrorHandlerEvent();
     popWebsocketAddMessageHandlerEvent();
@@ -195,7 +190,7 @@ public class DefaultWebsocketManagerTest {
   
   @Test
   public void testSubscribeToSingleTopicReceiveOneMessageWithoutTopicButDifferentFieldsOfBooleanNumberAndSubObjectTypes() throws Exception{
-    wsManager = new DefaultWebsocketManager(EXCHANGE_API, ws, wsHook);
+    wsManager = new DefaultWebsocketClient(ws, wsHook);
     wsManager.subscribeErrorHandler(errorHandler);
     popWebsocketAddErrorHandlerEvent();
     popWebsocketAddMessageHandlerEvent();
@@ -222,7 +217,7 @@ public class DefaultWebsocketManagerTest {
   
   @Test
   public void testSubscribeSecondListenersToSingleTopicTriggersError() throws Exception{
-    wsManager = new DefaultWebsocketManager(EXCHANGE_API, ws, wsHook);
+    wsManager = new DefaultWebsocketClient(ws, wsHook);
     wsManager.subscribeErrorHandler(errorHandler);
     popWebsocketAddErrorHandlerEvent();
     popWebsocketAddMessageHandlerEvent();
@@ -246,7 +241,7 @@ public class DefaultWebsocketManagerTest {
   
   @Test
   public void testWebsocketErrorWhileConnectedTriggersReconnection() throws Exception{
-    wsManager = new DefaultWebsocketManager(EXCHANGE_API, ws, wsHook);
+    wsManager = new DefaultWebsocketClient(ws, wsHook);
     wsManager.setReconnectDelay(NO_EVENT_DELAY * 2);
     wsManager.subscribeErrorHandler(errorHandler);
     popWebsocketAddErrorHandlerEvent();
@@ -288,7 +283,7 @@ public class DefaultWebsocketManagerTest {
   
   @Test
   public void testWebsocketErrorNoReconnectWhenReconnectDelayInfZero() throws Exception {
-    wsManager = new DefaultWebsocketManager(EXCHANGE_API, ws, wsHook);
+    wsManager = new DefaultWebsocketClient(ws, wsHook);
     wsManager.setReconnectDelay(-1L);
     wsManager.subscribeErrorHandler(errorHandler);
     popWebsocketAddErrorHandlerEvent();
@@ -316,7 +311,7 @@ public class DefaultWebsocketManagerTest {
   
   @Test
   public void testSubscribeUnsubscribeSingleTopicNoWebsocketHook() throws Exception {
-    wsManager = new DefaultWebsocketManager(EXCHANGE_API, ws, null);
+    wsManager = new DefaultWebsocketClient(ws, null);
     wsManager.subscribeErrorHandler(errorHandler);
     popWebsocketAddErrorHandlerEvent();
     popWebsocketAddMessageHandlerEvent();
@@ -351,7 +346,7 @@ public class DefaultWebsocketManagerTest {
   
   @Test
   public void testHeartBeatInitiatedByClientResponseReceivedAndHandledBySystemMsgHandlerThenHeartBeatTimeout() throws Exception {
-    wsManager = new DefaultWebsocketManager(EXCHANGE_API, ws, wsHook);
+    wsManager = new DefaultWebsocketClient(ws, wsHook);
     wsManager.setHeartBeatInterval(HEARTBEAT_INTERVAL);
     long noHeartBeatResponseTimeout = HEARTBEAT_INTERVAL + 25;
     wsManager.setNoHeartBeatResponseTimeout(noHeartBeatResponseTimeout);
@@ -401,7 +396,7 @@ public class DefaultWebsocketManagerTest {
   
   @Test
   public void testHeartBeatInitiatedByServerHandledBySystemMsgHandlerThatRespondsWithHeartBeatResponseThenHeartBeatTimeoutReconnectionThenAnotherHeartBeatHandled() throws Exception {
-    wsManager = new DefaultWebsocketManager(EXCHANGE_API, ws, null);
+    wsManager = new DefaultWebsocketClient(ws, null);
     long noHeartBeatResponseTimeout = HEARTBEAT_INTERVAL + 25;
     wsManager.setNoHeartBeatResponseTimeout(noHeartBeatResponseTimeout);
     wsManager.subscribeErrorHandler(errorHandler);
@@ -445,7 +440,7 @@ public class DefaultWebsocketManagerTest {
   
   @Test
   public void testHeartBeatInitiatedByBothClientAndServerHandledBySystemMsgHandlerThatRespondsWithHeartBeatResponseThenHeartBeatTimeoutReconnectionThenAnotherHeartBeatHandled() throws Exception {
-    wsManager = new DefaultWebsocketManager(EXCHANGE_API, ws, wsHook);
+    wsManager = new DefaultWebsocketClient(ws, wsHook);
     wsManager.setHeartBeatInterval(HEARTBEAT_INTERVAL);
     long noHeartBeatResponseTimeout = HEARTBEAT_INTERVAL + 25;
     wsManager.setNoHeartBeatResponseTimeout(noHeartBeatResponseTimeout);
@@ -517,7 +512,7 @@ public class DefaultWebsocketManagerTest {
   
   @Test
   public void testHeartBeatInitiatedByClientNullHeartBeatMessageFromWebsocketHookTriggersErrorEventButNoDisconnectionThenDisconnectionOccursForHeartBeatTimeout() throws Exception {
-    wsManager = new DefaultWebsocketManager(EXCHANGE_API, ws, wsHook);
+    wsManager = new DefaultWebsocketClient(ws, wsHook);
     wsManager.setHeartBeatInterval(HEARTBEAT_INTERVAL);
     long noHeartBeatResponseTimeout = HEARTBEAT_INTERVAL + 25;
     wsManager.setNoHeartBeatResponseTimeout(noHeartBeatResponseTimeout);
@@ -556,7 +551,7 @@ public class DefaultWebsocketManagerTest {
   @Test
   public void testSubscribeToTwoTopicsReceiveOneMessageOnBothThenUnsubscribe() throws Exception{
     // Init WS manager
-    wsManager = new DefaultWebsocketManager(EXCHANGE_API, ws, wsHook);
+    wsManager = new DefaultWebsocketClient(ws, wsHook);
     wsManager.subscribeErrorHandler(errorHandler);
     popWebsocketAddErrorHandlerEvent();
     popWebsocketAddMessageHandlerEvent();
@@ -638,7 +633,7 @@ public class DefaultWebsocketManagerTest {
   @Test
   public void testSubscribeToTwoTopicWithOneCommonTopicFieldReceiveOneMessageOnBothThenUnsubscribe() throws Exception{
     // Init WS manager
-    wsManager = new DefaultWebsocketManager(EXCHANGE_API, ws, wsHook);
+    wsManager = new DefaultWebsocketClient(ws, wsHook);
     wsManager.subscribeErrorHandler(errorHandler);
     popWebsocketAddErrorHandlerEvent();
     popWebsocketAddMessageHandlerEvent();
@@ -703,7 +698,7 @@ public class DefaultWebsocketManagerTest {
   
   @Test
   public void testErrorOnHeartBeatSendTriggersErrorEventAndReconnectionAndHeartBeatTimeoutAfterReonnection() throws Exception {
-    wsManager = new DefaultWebsocketManager(EXCHANGE_API, ws, wsHook);
+    wsManager = new DefaultWebsocketClient(ws, wsHook);
     wsManager.setReconnectDelay(HEARTBEAT_INTERVAL);
     wsManager.setHeartBeatInterval(HEARTBEAT_INTERVAL);
     long noHeartBeatResponseTimeout = HEARTBEAT_INTERVAL + 25;
@@ -775,7 +770,7 @@ public class DefaultWebsocketManagerTest {
   
   @Test
   public void testConnectionInitiatedBySubscribingToDefaultTopicNoMessageTimeoutTriggersReconnectionThenAnotherMessageTimeoutTriggersSecondReconnection() throws Exception {
-    wsManager = new DefaultWebsocketManager(EXCHANGE_API, ws, null);
+    wsManager = new DefaultWebsocketClient(ws, null);
     popWebsocketAddErrorHandlerEvent();
     popWebsocketAddMessageHandlerEvent();
     wsManager.setReconnectDelay(HEARTBEAT_INTERVAL);
@@ -819,20 +814,20 @@ public class DefaultWebsocketManagerTest {
   
   @Test(expected = IllegalStateException.class)
   public void testHeartBeatIntervalSetButNoWebsocketHookThrowsException() {
-    wsManager = new DefaultWebsocketManager(EXCHANGE_API, ws, null);
+    wsManager = new DefaultWebsocketClient(ws, null);
     wsManager.setHeartBeatInterval(HEARTBEAT_INTERVAL);
   }
   
   @Test
   public void testHeartBeatIntervalSetToNegativeValueWhenNoWebsocketHook() {
-    wsManager = new DefaultWebsocketManager(EXCHANGE_API, ws, null);
+    wsManager = new DefaultWebsocketClient(ws, null);
     wsManager.setHeartBeatInterval(-2L);
     Assert.assertEquals(-2L, wsManager.getHeartBeatInterval());
   }
   
   @Test
   public void testErrorRaisedWhenSendingUnsubscriptionFromTopic() throws Exception {
-    wsManager = new DefaultWebsocketManager(EXCHANGE_API, ws, wsHook);
+    wsManager = new DefaultWebsocketClient(ws, wsHook);
     wsManager.subscribeErrorHandler(errorHandler);
     popWebsocketAddErrorHandlerEvent();
     popWebsocketAddMessageHandlerEvent();
@@ -861,7 +856,7 @@ public class DefaultWebsocketManagerTest {
   
   @Test
   public void testErrorAndDisconnectionRaisedFromWebsocketHookOnFirstCallToBeforeConnectThenSuccessfulReconnection() throws Exception {
-    wsManager = new DefaultWebsocketManager(EXCHANGE_API, ws, null);
+    wsManager = new DefaultWebsocketClient(ws, null);
     wsManager.subscribeErrorHandler(errorHandler);
     wsManager.setReconnectDelay(NO_EVENT_DELAY * 2);
     popWebsocketAddErrorHandlerEvent();
@@ -895,7 +890,7 @@ public class DefaultWebsocketManagerTest {
   
   @Test
   public void testErrorOnConnectionWhileSubscribingToSecondTopicSuccessfulReconnectionThenUnsubscribeAndDispose() throws Exception{
-    wsManager = new DefaultWebsocketManager(EXCHANGE_API, ws, wsHook);
+    wsManager = new DefaultWebsocketClient(ws, wsHook);
     wsManager.subscribeErrorHandler(errorHandler);
     wsManager.setReconnectDelay(NO_EVENT_DELAY * 2);
     popWebsocketAddErrorHandlerEvent();
@@ -953,7 +948,7 @@ public class DefaultWebsocketManagerTest {
         throw new WebsocketException("Error from WebsocketHook before disconnect");
       }
     };
-    wsManager = new DefaultWebsocketManager(EXCHANGE_API, ws, wsHook);
+    wsManager = new DefaultWebsocketClient(ws, wsHook);
     wsManager.subscribeErrorHandler(errorHandler);
     wsManager.setReconnectDelay(NO_EVENT_DELAY * 2);
     popWebsocketAddErrorHandlerEvent();
@@ -992,7 +987,7 @@ public class DefaultWebsocketManagerTest {
         throw new WebsocketException("Error from WebsocketHook after disconnect");
       }
     };
-    wsManager = new DefaultWebsocketManager(EXCHANGE_API, ws, wsHook);
+    wsManager = new DefaultWebsocketClient(ws, wsHook);
     wsManager.subscribeErrorHandler(errorHandler);
     wsManager.setReconnectDelay(NO_EVENT_DELAY * 2);
     popWebsocketAddErrorHandlerEvent();
@@ -1025,7 +1020,7 @@ public class DefaultWebsocketManagerTest {
   
   @Test
   public void testSendMessageWhileDisconnectedTriggersConnectionAndSendingOnWsThenDisposeWsManagerAndSendAsyncAndSyncMessageThatShouldNotBeSentToWs() throws Exception {
-    wsManager = new DefaultWebsocketManager(EXCHANGE_API, ws, null);
+    wsManager = new DefaultWebsocketClient(ws, null);
     wsManager.subscribeErrorHandler(errorHandler);
     popWebsocketAddErrorHandlerEvent();
     popWebsocketAddMessageHandlerEvent();
@@ -1051,7 +1046,7 @@ public class DefaultWebsocketManagerTest {
   
   @Test
   public void testErrorOnConnectWhileSendingFirstMessageThenErrorOnReconnectAttemptThenSuccessfulConnectionAndMessageSent() throws Exception {
-    wsManager = new DefaultWebsocketManager(EXCHANGE_API, ws, null);
+    wsManager = new DefaultWebsocketClient(ws, null);
     wsManager.setReconnectDelay(NO_EVENT_DELAY * 2);
     wsManager.subscribeErrorHandler(errorHandler);
     popWebsocketAddErrorHandlerEvent();
@@ -1079,7 +1074,7 @@ public class DefaultWebsocketManagerTest {
   @Test
   public void testRemoveErrorHandler() throws Exception {
     // Initialize and manager and connect WS by sending a message
-    wsManager = new DefaultWebsocketManager(EXCHANGE_API, ws, null);
+    wsManager = new DefaultWebsocketClient(ws, null);
     wsManager.subscribeErrorHandler(errorHandler);
     popWebsocketAddErrorHandlerEvent();
     popWebsocketAddMessageHandlerEvent();
@@ -1101,7 +1096,7 @@ public class DefaultWebsocketManagerTest {
   
   @Test
   public void testUnsubscribeInvalidTopicIsIgnored() throws Exception {
-    wsManager = new DefaultWebsocketManager(EXCHANGE_API, ws, wsHook);
+    wsManager = new DefaultWebsocketClient(ws, wsHook);
     wsManager.subscribeErrorHandler(errorHandler);
     wsManager.setReconnectDelay(NO_EVENT_DELAY * 2);
     popWebsocketAddErrorHandlerEvent();
@@ -1118,7 +1113,7 @@ public class DefaultWebsocketManagerTest {
   
   @Test
   public void testDisposeDuringWaitReconnect() throws Exception {
-    wsManager = new DefaultWebsocketManager(EXCHANGE_API, ws, null);
+    wsManager = new DefaultWebsocketClient(ws, null);
     wsManager.setReconnectDelay(NO_EVENT_DELAY * 10);
     wsManager.subscribeErrorHandler(errorHandler);
     popWebsocketAddErrorHandlerEvent();
@@ -1141,7 +1136,7 @@ public class DefaultWebsocketManagerTest {
   
   @Test(expected = IllegalStateException.class)
   public void testSubscribeWhenDisposeThrows() {
-    wsManager = new DefaultWebsocketManager(EXCHANGE_API, ws, null);
+    wsManager = new DefaultWebsocketClient(ws, null);
     wsManager.dispose();
     String topic = "topic1";
     String subscribeTopicMsg = "subscribe:topic1";
@@ -1200,7 +1195,7 @@ public class DefaultWebsocketManagerTest {
     MockWebsocketHookEvent event = wsHook.waitUntilCount(1).pop();
     Assert.assertEquals(MockWebsocketHookEventType.INIT, event.getType());
     Assert.assertEquals(wsHook, event.getSource());
-    Assert.assertEquals(wsManager, event.getWebsocketManager());
+    Assert.assertEquals(wsManager, event.getWebsocketClient());
     return event;
   }
   
@@ -1276,7 +1271,7 @@ public class DefaultWebsocketManagerTest {
   }
   
   private void sleep(long delay) throws InterruptedException {
-    Thread.sleep(delay);
+    DemoUtil.sleep(delay);
   }
   
   private WebsocketException popError() throws TimeoutException {

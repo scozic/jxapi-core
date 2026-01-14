@@ -3,6 +3,14 @@
 	"description": "A sample Exchange descriptor file",
 	"basePackage": "com.foo.bar.gen",
 	"rateLimits":[],
+	"network": {
+		"httpClients": [
+			{
+				"name": "httpDefault",
+				"httpRequestInterceptorFactory": "com.foo.bar.BarHttpRequestInterceptorFactory"
+			}
+		]
+	},
 	"apis":[
 		{ 
 			"name": "MarketData",
@@ -12,6 +20,7 @@
 					"name": "exchangeInfo",
 					"httpMethod": "GET",
 					"description": "Fetch market information of symbols that can be traded",
+					"httpClient": "httpDefault",
 					"url": "https://com.sample.myexchange/exchangeInfo",
 					"request": {
 						"properties": [

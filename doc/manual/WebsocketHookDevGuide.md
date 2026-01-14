@@ -3,7 +3,7 @@
 <!-- BEGIN TABLE OF CONTENTS -->
   - [Websocket hook development guide](#websocket-hook-development-guide)
     - [WebsocketHook Methods](#websockethook-methods)
-      - [`init(WebsocketManager websocketManager)`](#initwebsocketmanager-websocketmanager)
+      - [`init(WebsocketClient websocketManager)`](#initwebsocketmanager-websocketmanager)
       - [`beforeConnect() throws WebsocketException`](#beforeconnect-throws-websocketexception)
       - [`afterConnect() throws WebsocketException`](#afterconnect-throws-websocketexception)
       - [`beforeDisconnect() throws WebsocketException`](#beforedisconnect-throws-websocketexception)
@@ -20,16 +20,16 @@ Notice there may be no multiplexing in which case API group should expose a sing
 In addition websocket API specifications may require sending specific messages after opening socket, for instance for authentication.
 Also, a 'heart beat' feature may be specified to make sure the socket link is alive, by sending regular 'ping' messages to the server or answering incoming ones.
 
-JXAPI manages heartbeat sending, automatic disconnecting after websocket error or no heartbeat response detected using [DefaultWebsocketManager](../../src/main/java/com/scz/jxapi/netutils/websocket/DefaultWebsocketManager.java) ... 
-But most likely some API websocket protocol specificities have to be implemented. This is made as simple as possible by implementing [WebsocketHook](../../src/main/java/com/scz/jxapi/netutils/websocket/WebsocketHook.java) interface.
+JXAPI manages heartbeat sending, automatic disconnecting after websocket error or no heartbeat response detected using [DefaultWebsocketClient](../../src/main/java/org/jxapi/netutils/websocket/DefaultWebsocketClient.java.java) ... 
+But most likely some API websocket protocol specificities have to be implemented. This is made as simple as possible by implementing [WebsocketHook](../../src/main/java/org/jxapi/netutils/websocket/WebsocketHook.java) interface.
 
-A sample implementation can be found in [DemoExchangeWebsocketHook](../../src/test/java/com/scz/jxapi/exchanges/demo/net/DemoExchangeWebsocketHook.java)
+A sample implementation can be found in [DemoExchangeWebsocketHook](../../src/test/java/org/jxapi/exchanges/demo/net/DemoExchangeWebsocketHook.java)
 
-`WebsocketHook` instances are created using a [WebsocketHookFactory](../../src/main/java/com/scz/jxapi/netutils/websocket/WebsocketHookFactory.java). This factory class must have a public constructor to be instantiated by reflection. Its full class name must be provided in exchange descriptor `websocketHookFactory` at 'exchange' or 'api group' level.
+`WebsocketHook` instances are created using a [WebsocketHookFactory](../../src/main/java/org/jxapi/netutils/websocket/WebsocketHookFactory.java). This factory class must have a public constructor to be instantiated by reflection. Its full class name must be provided in exchange descriptor `websocketHookFactory` property of each defined Websocket client in `network\websocketClients` (see [network](./ExchangeDescriptorFileDoc.md#network) ) section of exchange descriptor.
 
 ## WebsocketHook Methods
 
-### `init(WebsocketManager websocketManager)`
+### `init(WebsocketClient websocketManager)`
 
 Called after the websocket manager has been initialized, to bind this hook to the manager. This is where configuration that remains unchanged can be performed, such as subscribing 'technical' message listeners or customizing the manager's configuration like heartbeat timeout, no message timeout, or delay before reconnection.
 

@@ -17,10 +17,10 @@ package org.jxapi.netutils.websocket;
  * The multiplexing is not managed by this interface that only provides the
  * basic methods to connect, disconnect, send messages, and add/remove message
  * and error handlers.<br>
- * Rather, a {@link WebsocketManager} should be used to manage the multiplexing
+ * Rather, a {@link WebsocketClient} should be used to manage the multiplexing
  * of the websocket connection.<br>
  * 
- * @see WebsocketManager
+ * @see WebsocketClient
  */
 public interface Websocket {
 

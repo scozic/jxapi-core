@@ -12,11 +12,11 @@ import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.SerializerProvider;
 
 /**
- * Unit tests for {@link AbstractJsonMessageSerializer}.
+ * Unit tests for {@link AbstractJsonValueSerializer}.
  */
-public class AbstractJsonMessageSerializerTest {
+public class AbstractJsonValueSerializerTest {
 
-    private static class TestJsonMessageSerializer extends AbstractJsonMessageSerializer<TestObject> {
+    private static class TestJsonMessageSerializer extends AbstractJsonValueSerializer<TestObject> {
 
         protected TestJsonMessageSerializer() {
             super(TestObject.class);

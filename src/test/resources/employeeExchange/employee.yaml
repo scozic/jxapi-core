@@ -9,7 +9,14 @@ description: >
 docUrl: "https://www.example.com/docs/employee"
 basePackage: "org.jxapi.exchanges.employee.gen"
 httpUrl: "${config.server.baseHttpUrl}"
-httpRequestInterceptorFactory: "org.jxapi.exchanges.demo.net.DemoExchangeHttpRequestInterceptorFactory"
+network:
+ httpClients:
+  - name: httpDefault
+    httpRequestInterceptorFactory: org.jxapi.exchanges.demo.net.DemoExchangeHttpRequestInterceptorFactory
+ websocketClients:
+  - name: wsDefault
+    websocketUrl: ${config.server.baseWebsocketUrl}
+    websocketHookFactory: org.jxapi.exchanges.demo.net.DemoExchangeWebsocketHookFactory 
 constants:
   - name: defaultPageSize
     description: Default page size for paginated requests
@@ -19,3 +26,4 @@ constants:
     description: Maximum page size for paginated requests
     type: INT
     value: 10000
+      

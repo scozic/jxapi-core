@@ -2,8 +2,7 @@ package org.jxapi.netutils.rest;
 
 import org.junit.Assert;
 import org.junit.Test;
-
-import org.jxapi.exchange.ExchangeApi;
+import org.jxapi.exchange.Exchange;
 
 /**
  * Unit test for {@link HttpRequestExecutorFactory}
@@ -20,7 +19,7 @@ public class HttpRequestExceutorFactoryTest {
   public static class TestHttpRequestExceutorFactory implements HttpRequestExecutorFactory {
 
     @Override
-    public HttpRequestExecutor createExecutor(ExchangeApi exchangeApi) {
+    public HttpRequestExecutor createExecutor(Exchange exchange) {
       return null;
     }
     

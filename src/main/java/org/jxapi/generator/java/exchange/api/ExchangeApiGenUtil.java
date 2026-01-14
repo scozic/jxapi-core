@@ -10,7 +10,6 @@ import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
 import org.jxapi.exchange.ExchangeApi;
-import org.jxapi.exchange.descriptor.Constant;
 import org.jxapi.exchange.descriptor.gen.ExchangeApiDescriptor;
 import org.jxapi.exchange.descriptor.gen.ExchangeDescriptor;
 import org.jxapi.exchange.descriptor.gen.RestEndpointDescriptor;
@@ -19,7 +18,6 @@ import org.jxapi.exchange.descriptor.gen.WebsocketTopicMatcherDescriptor;
 import org.jxapi.generator.java.Imports;
 import org.jxapi.generator.java.JavaCodeGenUtil;
 import org.jxapi.generator.java.exchange.ExchangeGenUtil;
-import org.jxapi.generator.java.exchange.constants.ConstantsGenUtil;
 import org.jxapi.generator.java.pojo.PojoGenUtil;
 import org.jxapi.netutils.rest.HttpMethod;
 import org.jxapi.netutils.websocket.multiplexing.WSMTMFUtil;
@@ -654,59 +652,6 @@ public class ExchangeApiGenUtil {
         docPlaceHolderResolver, 
         defaultValuePlaceHolderResolver, 
         classBody);  
-  }
-  
-  /**
-   * Generates static variable declarations for endpoint names with given suffix.
-   * <p>
-   * For each endpoint name in <code>enpointNames</code>, a static variable is
-   * generated with name <code>endpointName+suffix</code> and value the quoted
-   * string of the endpoint name.
-   * <p>
-   * If <code>classBody</code> is not <code>null</code>, the generated static
-   * variable declarations are appended to it.
-   * 
-   * @param enpointNames List of endpoint names
-   * @param suffix       Suffix to append to endpoint name to generate static
-   *                     variable name
-   * @param classBody    StringBuilder to append generated field declarations to.
-   *                     Can be null, in which case no field declarations are
-   *                     appended.
-   * @return Map indexed with endpoint name, mapped to associated static variable
-   *         name.
-   */
-  public static Map<String, String> generateEndpointNameStaticVariablesDeclaration(
-      List<String> enpointNames, 
-      String suffix, 
-      StringBuilder classBody) {
-    Map<String, String> res = CollectionUtil.createMap();
-    Map<String, Constant> constants = CollectionUtil.createMap();
-    for (String f : enpointNames) {
-        Constant c = Constant.create(
-            f + suffix,
-            Type.STRING,
-           "Name of <code>" + f + "</code> " + suffix + " endpoint.",
-           JavaCodeGenUtil.getQuotedString(f)
-         );
-        constants.put(f, c);
-    }
-    
-    List<Constant> allConstants = new ArrayList<>(constants.values());
-    constants.entrySet().forEach(e -> {
-      Constant c = e.getValue();
-      res.put(e.getKey(), ConstantsGenUtil.getConstantVariableName(c, allConstants));
-      if (classBody != null) {
-        classBody.append("\n")
-        .append(ConstantsGenUtil.generateConstantDeclaration(
-          c, 
-          allConstants,
-          new Imports(), 
-          PlaceHolderResolver.NO_OP, 
-          PlaceHolderResolver.NO_OP)
-            .replace("public static final ", ""));
-      }
-    });
-    return res;     
   }
   
   /**

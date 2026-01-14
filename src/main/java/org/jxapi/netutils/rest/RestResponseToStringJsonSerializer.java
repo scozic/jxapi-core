@@ -17,6 +17,8 @@ import com.fasterxml.jackson.databind.ser.std.StdSerializer;
 @SuppressWarnings("rawtypes")
 public class RestResponseToStringJsonSerializer extends StdSerializer<RestResponse> {
 
+  private static final long serialVersionUID = 6975581442680256049L;
+
   /**
    * Default constructor
    */
