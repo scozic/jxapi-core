@@ -45,7 +45,13 @@ public class ExchangeGeneratorMainTest {
     Path projectSrcTestResources = Paths.get(".", "src", "test", "resources");
     Path descriptorFile = projectSrcTestResources.resolve("demoExchange.json");
     
-    ExchangeGeneratorMain.generateExchangeWrapperAndDemos(ExchangeDescriptorParser.fromJson(descriptorFile), tmpDir, baseJavaDocUrl, baseSrcUrl);
+    ExchangeGeneratorMain.generateExchangeWrapperAndDemos(
+        ExchangeDescriptorParser.fromJson(descriptorFile), 
+        tmpDir,
+        tmpDir.resolve(ExchangeGeneratorMain.DEFAULT_GENERATED_SOURCES_FOLDER),
+        tmpDir.resolve(ExchangeGeneratorMain.DEFAULT_GENERATED_TEST_SOURCES_FOLDER),
+        baseJavaDocUrl, 
+        baseSrcUrl);
     
     // Check the generated files
     Path actualSrcMainJava = tmpDir.resolve(Paths.get("src", "main", "java"));
@@ -96,7 +102,13 @@ public class ExchangeGeneratorMainTest {
     Path projectSrcTestResources = Paths.get(".", "src", "test", "resources");
     Path descriptorFile = projectSrcTestResources.resolve("employeeExchange.yaml");
     
-    ExchangeGeneratorMain.generateExchangeWrapperAndDemos(ExchangeDescriptorParser.fromYaml(descriptorFile), tmpDir, baseJavaDocUrl, baseSrcUrl);
+    ExchangeGeneratorMain.generateExchangeWrapperAndDemos(
+        ExchangeDescriptorParser.fromYaml(descriptorFile), 
+        tmpDir, 
+        tmpDir.resolve(ExchangeGeneratorMain.DEFAULT_GENERATED_SOURCES_FOLDER),
+        tmpDir.resolve(ExchangeGeneratorMain.DEFAULT_GENERATED_TEST_SOURCES_FOLDER),
+        baseJavaDocUrl, 
+        baseSrcUrl);
     
     // Check the generated files
     Path actualSrcMainJava = tmpDir.resolve(Paths.get("src", "main", "java"));

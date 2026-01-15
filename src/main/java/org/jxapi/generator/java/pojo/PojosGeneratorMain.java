@@ -40,6 +40,14 @@ public class PojosGeneratorMain {
    * JVM folder is used.
    */
   public static final String BASE_PROJECT_DIR_PROP = "baseProjectDir";
+  
+  /**
+   * Key for system property that can be passed to JVM running
+   * {@link #main(String[])} to specify the source directory relative to the base
+   * project folder where to generate the POJOs. If not set, "src/main/java" is
+   * used.
+   */
+  public static final String GENERATED_SOURCES_FOLDER_PROP = "srcDirectory";
 
   /**
    * Main entry point to generate exchange API wrappers for all exchange
@@ -50,7 +58,8 @@ public class PojosGeneratorMain {
   public static void main(String[] args) {
     try {
       String baseProjectDir = System.getProperty(BASE_PROJECT_DIR_PROP);
-      generatePojosInCurrentProject(baseProjectDir);
+      String srcDirectory = System.getProperty(GENERATED_SOURCES_FOLDER_PROP);
+      generatePojosInCurrentProject(baseProjectDir, srcDirectory);
     } catch (Throwable t) {
       log.error("Error from " + ExchangeGeneratorMain.class.getName() + ".main", t);
       System.exit(-1);
@@ -65,11 +74,16 @@ public class PojosGeneratorMain {
    * @param baseProjectDir the base folder of the project where to generate the
    *                       exchange API wrappers. If null, current folder (".") is
    *                       used.
+   * @param srcDirectory   the source directory relative to the base project                       
    * @throws Exception if an error occurs
    */
-  public static final void  generatePojosInCurrentProject(String baseProjectDir) throws Exception {
+  public static final void  generatePojosInCurrentProject(String baseProjectDir, String srcDirectory) throws Exception {
     baseProjectDir = Optional.ofNullable(baseProjectDir).orElse(".");
     Path projectFolder = Paths.get(baseProjectDir);
+    Path srcDir = Optional
+        .ofNullable(srcDirectory)
+          .map(dir -> Paths.get(dir))
+        .orElse(ExchangeGeneratorMain.DEFAULT_GENERATED_SOURCES_FOLDER);
     Path resources = projectFolder.resolve(DESCRIPTOR_FOLDER);
     if (!Files.exists(resources)) {
       resources.toFile().mkdirs();
@@ -82,7 +96,7 @@ public class PojosGeneratorMain {
     PojosDescriptorParseUtil.collectAndMergePojosDescriptors(resources)
         .forEach(pojosDescriptor -> {
           try {
-            generatePojosInProject(pojosDescriptor, projectFolder);
+            generatePojos(pojosDescriptor, srcDir);
           } catch (Exception ex) {
             // Remark: intentionally catching all exceptions to continue generation for other exchanges
             log.error("Error while generating POJOs with base package:{} : {}" ,
@@ -96,12 +110,6 @@ public class PojosGeneratorMain {
     if (ex != null) {
       throw ex;
     }
-    
-  }
-
-  private static void generatePojosInProject(PojosDescriptor pojosDescriptor, Path projectFolder) throws IOException {
-    Path outputSrcMainFolder = projectFolder.resolve(Paths.get("src", "main", "java"));
-    generatePojos(pojosDescriptor, outputSrcMainFolder);
     
   }
   
