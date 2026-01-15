@@ -54,8 +54,8 @@ public class ExchangeGeneratorMainTest {
         baseSrcUrl);
     
     // Check the generated files
-    Path actualSrcMainJava = tmpDir.resolve(Paths.get("src", "main", "java"));
-    Path actualSrcTestJava = tmpDir.resolve(Paths.get("src", "test", "java"));
+    Path actualSrcMainJava = tmpDir.resolve(ExchangeGeneratorMain.DEFAULT_GENERATED_SOURCES_FOLDER);
+    Path actualSrcTestJava = tmpDir.resolve(ExchangeGeneratorMain.DEFAULT_GENERATED_TEST_SOURCES_FOLDER);
     Path mainGenPackage = actualSrcMainJava.resolve(demoExchangePackage);
     Path testGenPackage = actualSrcTestJava.resolve(demoExchangePackage);
     
@@ -111,8 +111,8 @@ public class ExchangeGeneratorMainTest {
         baseSrcUrl);
     
     // Check the generated files
-    Path actualSrcMainJava = tmpDir.resolve(Paths.get("src", "main", "java"));
-    Path actualSrcTestJava = tmpDir.resolve(Paths.get("src", "test", "java"));
+    Path actualSrcMainJava = tmpDir.resolve(ExchangeGeneratorMain.DEFAULT_GENERATED_SOURCES_FOLDER);
+    Path actualSrcTestJava = tmpDir.resolve(ExchangeGeneratorMain.DEFAULT_GENERATED_TEST_SOURCES_FOLDER);
     Path mainGenPackage = actualSrcMainJava.resolve(demoExchangePackage);
     Path testGenPackage = actualSrcTestJava.resolve(demoExchangePackage);
     

@@ -65,12 +65,12 @@ public class ExchangeGeneratorMain {
   /**
    * Default folder where to generate main sources
    */
-  public static final Path DEFAULT_GENERATED_SOURCES_FOLDER = Paths.get("target", "generated-sources");
+  public static final Path DEFAULT_GENERATED_SOURCES_FOLDER = Paths.get("target", "generated-sources", "jxapi");
   
   /**
    * Default folder where to generate test sources
    */
-  public static final Path DEFAULT_GENERATED_TEST_SOURCES_FOLDER = Paths.get("target", "generated-test-sources");
+  public static final Path DEFAULT_GENERATED_TEST_SOURCES_FOLDER = Paths.get("target", "generated-test-sources", "jxapi");
   
   /**
    * Key for system property that can be passed to JVM running

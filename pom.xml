@@ -170,8 +170,8 @@
 						</mainClass>
 						<systemProperties>
 						<systemProperty>
-							<key>${genPojosSrcFolder}</key>
-							<value>src/gen/java</value>
+							<key>srcDirectory</key>
+							<value>${genPojosSrcFolder}</value>
 						</systemProperty>
 						</systemProperties>
 					</configuration>
