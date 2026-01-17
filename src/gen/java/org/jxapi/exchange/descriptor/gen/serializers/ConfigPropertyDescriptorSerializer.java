@@ -19,6 +19,8 @@ import static org.jxapi.util.JsonUtil.writeStringField;
 @Generated("org.jxapi.generator.java.pojo.JsonPojoSerializerGenerator")
 public class ConfigPropertyDescriptorSerializer extends AbstractJsonValueSerializer<ConfigPropertyDescriptor> {
   
+  private static final long serialVersionUID = 2475280454295970865L;
+  
   /**
    * Constructor
    */

@@ -18,6 +18,8 @@ import static org.jxapi.util.JsonUtil.writeStringField;
 @Generated("org.jxapi.generator.java.pojo.JsonPojoSerializerGenerator")
 public class WebsocketEndpointDescriptorSerializer extends AbstractJsonValueSerializer<WebsocketEndpointDescriptor> {
   
+  private static final long serialVersionUID = -4331439425826461065L;
+  
   /**
    * Constructor
    */

@@ -16,6 +16,8 @@ import static org.jxapi.util.JsonUtil.writeIntField;
 @Generated("org.jxapi.generator.java.pojo.JsonPojoSerializerGenerator")
 public class GenericResponseSerializer extends AbstractJsonValueSerializer<GenericResponse> {
   
+  private static final long serialVersionUID = 7520270830479836114L;
+  
   /**
    * Constructor
    */

@@ -14,6 +14,7 @@ import org.jxapi.util.Pojo;
  */
 public class TickerMeta implements Pojo<TickerMeta> {
 
+  private static final long serialVersionUID = 8100694114884759834L;
   private List<String> chains;
 
   public List<String> getChains() {

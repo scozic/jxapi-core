@@ -1025,7 +1025,9 @@ public class ExchangeGenUtilTest {
   }
   
   private static class TestExchangeDescriptor extends ExchangeDescriptor {
-    public TestExchangeDescriptor() {
+    private static final long serialVersionUID = -5540852152797264769L;
+
+	public TestExchangeDescriptor() {
       setId("MyExchange");
       setBasePackage("com.x.gen");
     }

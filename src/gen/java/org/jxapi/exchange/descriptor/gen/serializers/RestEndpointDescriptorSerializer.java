@@ -22,6 +22,8 @@ import static org.jxapi.util.JsonUtil.writeStringField;
 @Generated("org.jxapi.generator.java.pojo.JsonPojoSerializerGenerator")
 public class RestEndpointDescriptorSerializer extends AbstractJsonValueSerializer<RestEndpointDescriptor> {
   
+  private static final long serialVersionUID = 695972162215070755L;
+  
   /**
    * Constructor
    */

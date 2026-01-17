@@ -23,6 +23,8 @@ import com.fasterxml.jackson.databind.ser.std.StdSerializer;
  */
 public abstract class AbstractJsonValueSerializer<T> extends StdSerializer<T> implements MessageSerializer<T> {
   
+  private static final long serialVersionUID = -781509171850696587L;
+
   /**
    * Constructor
    * @param serializedClass the class of the serialized object

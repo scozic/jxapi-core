@@ -18,6 +18,7 @@ import com.fasterxml.jackson.databind.SerializerProvider;
  */
 public class ObjectJsonValueSerializer extends AbstractJsonValueSerializer<Object> {
 
+  private static final long serialVersionUID = 1556157038182265772L;
   private static final ObjectJsonValueSerializer INSTANCE = new ObjectJsonValueSerializer();
 
   /**

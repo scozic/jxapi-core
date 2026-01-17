@@ -19,6 +19,8 @@ import com.fasterxml.jackson.databind.SerializerProvider;
  */
 public class BigDecimalJsonValueSerializer extends AbstractJsonValueSerializer<BigDecimal> {
   
+  private static final long serialVersionUID = 7336771482111640294L;
+  
   private static final BigDecimalJsonValueSerializer INSTANCE = new BigDecimalJsonValueSerializer();
 
   /**

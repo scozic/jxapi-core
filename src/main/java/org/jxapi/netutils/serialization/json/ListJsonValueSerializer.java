@@ -20,6 +20,7 @@ import com.fasterxml.jackson.databind.ser.std.StdSerializer;
  */
 public class ListJsonValueSerializer<T> extends AbstractJsonValueSerializer<List<T>> {
 
+  private static final long serialVersionUID = -3149117333168465950L;
   protected final StdSerializer<T> elementSerializer;
   
   /**

@@ -16,6 +16,8 @@ import static org.jxapi.util.JsonUtil.writeIntField;
 @Generated("org.jxapi.generator.java.pojo.JsonPojoSerializerGenerator")
 public class EmployeeV1GetAllEmployeesRequestSerializer extends AbstractJsonValueSerializer<EmployeeV1GetAllEmployeesRequest> {
   
+  private static final long serialVersionUID = -7259729291763000435L;
+  
   /**
    * Constructor
    */

@@ -15,6 +15,8 @@ import com.fasterxml.jackson.databind.ser.std.StdSerializer;
  */
 public class ExchangeApiEventToStringJsonSerializer extends StdSerializer<ExchangeEvent> {
 
+  private static final long serialVersionUID = -2846854545550509909L;
+
   /**
    * Constructor that initializes the serializer for {@link ExchangeEvent}.
    */

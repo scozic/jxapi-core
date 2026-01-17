@@ -19,6 +19,8 @@ import static org.jxapi.util.JsonUtil.writeStringField;
 @Generated("org.jxapi.generator.java.pojo.JsonPojoSerializerGenerator")
 public class ConstantDescriptorSerializer extends AbstractJsonValueSerializer<ConstantDescriptor> {
   
+  private static final long serialVersionUID = -5162948237972625778L;
+  
   /**
    * Constructor
    */

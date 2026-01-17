@@ -141,7 +141,8 @@ public class PaginatedRestEndpointTest {
     
     private static class TestPaginatedRestRequest implements PaginatedRestRequest, Pojo<TestPaginatedRestRequest> {
       
-      private int currentPage = 1;
+      private static final long serialVersionUID = 1598818953015225869L;
+	  private int currentPage = 1;
 
       @Override
       public void setNextPage(PaginatedRestResponse lastPage) {
@@ -181,7 +182,8 @@ public class PaginatedRestEndpointTest {
     
     private static class TestPaginatedRestResponse implements PaginatedRestResponse, Pojo<TestPaginatedRestResponse> {
       
-      private boolean hasNext = false;
+      private static final long serialVersionUID = 4204875578130864590L;
+	  private boolean hasNext = false;
       private int page;
 
       @Override

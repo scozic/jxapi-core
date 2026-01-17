@@ -20,6 +20,7 @@ import com.fasterxml.jackson.databind.ser.std.StdSerializer;
  */
 public class MapJsonValueSerializer<T> extends AbstractJsonValueSerializer<Map<String, T>> {
 
+  private static final long serialVersionUID = -246627299365683049L;
   protected final StdSerializer<T> elementSerializer;
   
   @SuppressWarnings("unchecked")

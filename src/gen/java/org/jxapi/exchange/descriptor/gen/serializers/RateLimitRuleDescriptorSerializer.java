@@ -18,6 +18,8 @@ import static org.jxapi.util.JsonUtil.writeStringField;
 @Generated("org.jxapi.generator.java.pojo.JsonPojoSerializerGenerator")
 public class RateLimitRuleDescriptorSerializer extends AbstractJsonValueSerializer<RateLimitRuleDescriptor> {
   
+  private static final long serialVersionUID = -6068811743425871939L;
+  
   /**
    * Constructor
    */
