@@ -834,7 +834,9 @@ public class JsonUtilTest {
   
   public static class FooToStringJsonSerializer extends StdSerializer<Foo> {
 
-    public FooToStringJsonSerializer() {
+    private static final long serialVersionUID = -6845087478891618280L;
+
+	public FooToStringJsonSerializer() {
       super(Foo.class);
     }
 

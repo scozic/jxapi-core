@@ -18,6 +18,7 @@ import com.fasterxml.jackson.databind.SerializerProvider;
  */
 public class BooleanJsonValueSerializer extends AbstractJsonValueSerializer<Boolean> {
 
+  private static final long serialVersionUID = -3964140889096523061L;
   private static final BooleanJsonValueSerializer INSTANCE = new BooleanJsonValueSerializer();
 
   /**

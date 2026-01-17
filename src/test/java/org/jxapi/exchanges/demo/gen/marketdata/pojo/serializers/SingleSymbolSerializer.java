@@ -16,6 +16,8 @@ import static org.jxapi.util.JsonUtil.writeStringField;
 @Generated("org.jxapi.generator.java.pojo.JsonPojoSerializerGenerator")
 public class SingleSymbolSerializer extends AbstractJsonValueSerializer<SingleSymbol> {
   
+  private static final long serialVersionUID = -2714668707973806725L;
+  
   /**
    * Constructor
    */

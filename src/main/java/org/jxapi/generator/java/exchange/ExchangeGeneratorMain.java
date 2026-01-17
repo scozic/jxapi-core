@@ -62,7 +62,15 @@ public class ExchangeGeneratorMain {
      */
   public static final Path DESCRIPTOR_FOLDER = Paths.get("src", "main", "resources", "jxapi", "exchange");
   
-
+  /**
+   * Default folder where to generate main sources
+   */
+  public static final Path DEFAULT_GENERATED_SOURCES_FOLDER = Paths.get("target", "generated-sources", "jxapi");
+  
+  /**
+   * Default folder where to generate test sources
+   */
+  public static final Path DEFAULT_GENERATED_TEST_SOURCES_FOLDER = Paths.get("target", "generated-test-sources", "jxapi");
   
   /**
    * Key for system property that can be passed to JVM running
@@ -70,6 +78,20 @@ public class ExchangeGeneratorMain {
    * documentation
    */
   public static final String BASE_JAVADOC_URL_SYS_PROP = "baseJavaDocUrl";
+  
+  /**
+   * Key for system property that can be passed to JVM running
+   * {@link #main(String[])} to specify the main source directory relative to
+   * project folder where to write generated code.
+   */
+  public static final String SRC_MAIN_DIRECTORY_SYS_PROP = "srcMainDirectory";
+  
+  /**
+   * Key for system property that can be passed to JVM running
+   * {@link #main(String[])} to specify the test source directory relative to
+   * project folder where to write generated demo code.
+   */
+  public static final String SRC_TEST_DIRECTORY_SYS_PROP = "srcTestDirectory";
   
   /**
    * Key for system property that can be passed to JVM running
@@ -90,9 +112,16 @@ public class ExchangeGeneratorMain {
   public static void main(String[] args) {
     try {
       String baseProjectDir = System.getProperty(PojosGeneratorMain.BASE_PROJECT_DIR_PROP);
+      String mainSrcDirectory = System.getProperty(SRC_MAIN_DIRECTORY_SYS_PROP, DEFAULT_GENERATED_SOURCES_FOLDER.toString());
+      String testSrcDirectory = System.getProperty(SRC_TEST_DIRECTORY_SYS_PROP, DEFAULT_GENERATED_TEST_SOURCES_FOLDER.toString());
       String baseJavaDocUrl = System.getProperty(BASE_JAVADOC_URL_SYS_PROP);
       String baseSrcUrl = System.getProperty(BASE_SRC_URL_SYS_PROP);
-      generateExchangeWrappersInCurrentProject(baseProjectDir, baseJavaDocUrl, baseSrcUrl);
+      generateExchangeWrappersInCurrentProject(
+          baseProjectDir, 
+          mainSrcDirectory, 
+          testSrcDirectory, 
+          baseJavaDocUrl, 
+          baseSrcUrl);
     } catch (Throwable t) {
       log.error("Error from " + ExchangeGeneratorMain.class.getName() + ".main", t);
       System.exit(-1);
@@ -107,13 +136,20 @@ public class ExchangeGeneratorMain {
    * using {@link #generateExchangeWrapperAndDemos(ExchangeDescriptor, Path, String, String)}.
    * 
    * @param baseProjectDir Base project directory where the generated code will be written
+   * @param mainSrcDirectory The main source directory relative to project folder where to write generated code
+   * @param testSrcDirectory The test source directory relative to project folder where to write generated demo code
    * @param baseJavaDocUrl The base url for project classes javadoc, used for links generation
    * @param baseSrcUrl The base url for sources on public repo, used for links generation.
    * 
    * @throws Exception If error occurs during generation
    * @see #generateExchangeWrapperAndDemos(ExchangeDescriptor, Path, String, String)
    */
-  public static final void generateExchangeWrappersInCurrentProject(String baseProjectDir, String baseJavaDocUrl, String baseSrcUrl) throws Exception {
+  public static final void generateExchangeWrappersInCurrentProject(
+      String baseProjectDir, 
+      String mainSrcDirectory, 
+      String testSrcDirectory, 
+      String baseJavaDocUrl, 
+      String baseSrcUrl) throws Exception {
     baseProjectDir = Optional.ofNullable(baseProjectDir).orElse(".");
     Path projectFolder = Paths.get(baseProjectDir);
     Path resources = projectFolder.resolve(DESCRIPTOR_FOLDER);
@@ -128,7 +164,13 @@ public class ExchangeGeneratorMain {
     ExchangeDescriptorParser.collectAndMergeExchangeDescriptors(resources)
         .forEach(exchangeDescriptor -> {
           try {
-            generateExchangeWrapperAndDemos(exchangeDescriptor, projectFolder, baseJavaDocUrl, baseSrcUrl);
+            generateExchangeWrapperAndDemos(
+                exchangeDescriptor, 
+                projectFolder, 
+                Path.of(mainSrcDirectory), 
+                Path.of(testSrcDirectory),  
+                baseJavaDocUrl, 
+                baseSrcUrl);
           } catch (Exception ex) {
             // Remark: intentionally catching all exceptions to continue generation for other exchanges
             log.error("Error while generating exchange descriptor for exchange:"
@@ -159,17 +201,19 @@ public class ExchangeGeneratorMain {
    */
   public static void generateExchangeWrapperAndDemos(ExchangeDescriptor exchangeDescriptor,
                              Path projectFolder, 
+                             Path mainSrcDirectory,
+                             Path testSrcDirectory,
                              String baseJavaDocUrl, 
                              String baseSrcUrl) throws IOException {
     log.info("Generating exchange wrapper code for descriptor:{}", exchangeDescriptor.getId());
-    Path outputSrcMainFolder = projectFolder.resolve(Paths.get("src", "main", "java"));
+    Path outputSrcMainFolder = mainSrcDirectory;
     Path mainPackagePath = Paths.get(StringUtils.replace(exchangeDescriptor.getBasePackage(), ".", "/"));
     Path genMainPackagesFolder = outputSrcMainFolder.resolve(mainPackagePath);
     JavaCodeGenUtil.deletePath(genMainPackagesFolder);
     generateExchangeWrapper(exchangeDescriptor, outputSrcMainFolder);
     
     log.info("Generating exchange demos code for descriptor:{}", exchangeDescriptor.getId());
-    Path outputSrcTestFolder = projectFolder.resolve(Paths.get("src", "test", "java"));
+    Path outputSrcTestFolder = testSrcDirectory;
     Path genTestPackagesFolder = outputSrcTestFolder.resolve(mainPackagePath);
     JavaCodeGenUtil.deletePath(genTestPackagesFolder);
     List<ConfigPropertyDescriptor> demoProperties = EndpointDemoGenUtil.collectDemoConfigProperties(exchangeDescriptor);

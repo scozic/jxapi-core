@@ -5,6 +5,8 @@ package org.jxapi.netutils.websocket;
  */
 public class WebsocketException extends Exception {
   
+  private static final long serialVersionUID = 1134504158049401811L;
+
   /**
    * Constructor
    * @param t The cause of the exception

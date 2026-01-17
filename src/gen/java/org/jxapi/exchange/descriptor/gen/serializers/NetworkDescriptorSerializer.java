@@ -19,6 +19,8 @@ import static org.jxapi.util.JsonUtil.writeCustomSerializerField;
 @Generated("org.jxapi.generator.java.pojo.JsonPojoSerializerGenerator")
 public class NetworkDescriptorSerializer extends AbstractJsonValueSerializer<NetworkDescriptor> {
   
+  private static final long serialVersionUID = -709715477753710339L;
+  
   /**
    * Constructor
    */

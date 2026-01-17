@@ -18,7 +18,9 @@ public class AbstractJsonValueSerializerTest {
 
     private static class TestJsonMessageSerializer extends AbstractJsonValueSerializer<TestObject> {
 
-        protected TestJsonMessageSerializer() {
+        private static final long serialVersionUID = 1479296632702378548L;
+
+		protected TestJsonMessageSerializer() {
             super(TestObject.class);
         }
 

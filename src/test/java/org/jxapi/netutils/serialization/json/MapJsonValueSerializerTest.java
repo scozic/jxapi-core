@@ -23,7 +23,9 @@ import com.fasterxml.jackson.databind.ser.std.StdSerializer;
 public class MapJsonValueSerializerTest {
 
     private static class StringSerializer extends StdSerializer<String> {
-        protected StringSerializer() {
+        private static final long serialVersionUID = -8486853380882923848L;
+
+		protected StringSerializer() {
             super(String.class);
         }
 

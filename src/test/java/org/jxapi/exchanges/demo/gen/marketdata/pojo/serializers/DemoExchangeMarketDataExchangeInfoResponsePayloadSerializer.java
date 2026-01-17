@@ -18,6 +18,8 @@ import static org.jxapi.util.JsonUtil.writeStringField;
 @Generated("org.jxapi.generator.java.pojo.JsonPojoSerializerGenerator")
 public class DemoExchangeMarketDataExchangeInfoResponsePayloadSerializer extends AbstractJsonValueSerializer<DemoExchangeMarketDataExchangeInfoResponsePayload> {
   
+  private static final long serialVersionUID = -5123265136479426530L;
+  
   /**
    * Constructor
    */

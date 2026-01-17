@@ -23,7 +23,9 @@ import com.fasterxml.jackson.databind.ser.std.StdSerializer;
 public class ListJsonValueSerializerTest {
 
     private static class StringSerializer extends StdSerializer<String> {
-        protected StringSerializer() {
+        private static final long serialVersionUID = -6734860022235285020L;
+
+		protected StringSerializer() {
             super(String.class);
         }
 

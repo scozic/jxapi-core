@@ -72,9 +72,16 @@ public class JsonPojoSerializerGenerator extends JavaTypeGenerator {
     addImport(serializedTypeClassName);
     nonPrimitiveTypeFieldsSerializerDeclarations.forEach(this::appendToBody);
     appendToBody("\n");
+    appendToBody(generateSerialVersionUidDeclaration());
     generateConstructor();
     generateSerializeMethod();
     return super.generate();
+  }
+  
+  private String generateSerialVersionUidDeclaration() {
+	    return "private static final long serialVersionUID = " 
+	        + PojoGenUtil.generateSerialVersionUid(getName(), fields, List.of()) 
+	        + "L;\n\n";
   }
 
   private void generateConstructor() {

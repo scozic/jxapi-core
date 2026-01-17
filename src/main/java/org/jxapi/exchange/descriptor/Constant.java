@@ -33,6 +33,8 @@ import org.jxapi.util.Pojo;
  */
 public class Constant implements Pojo<Constant> {
 
+  private static final long serialVersionUID = -7170387779776648338L;
+
   /**
    * Factory method to create a constant instance
    * 

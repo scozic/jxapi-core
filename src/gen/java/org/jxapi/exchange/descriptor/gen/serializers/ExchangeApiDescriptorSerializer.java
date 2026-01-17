@@ -20,6 +20,8 @@ import static org.jxapi.util.JsonUtil.writeStringField;
 @Generated("org.jxapi.generator.java.pojo.JsonPojoSerializerGenerator")
 public class ExchangeApiDescriptorSerializer extends AbstractJsonValueSerializer<ExchangeApiDescriptor> {
   
+  private static final long serialVersionUID = -549713475401761102L;
+  
   /**
    * Constructor
    */
