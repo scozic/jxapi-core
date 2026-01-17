@@ -9,6 +9,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import org.glassfish.grizzly.http.util.HttpStatus;
 import org.junit.After;
@@ -25,6 +26,8 @@ import org.jxapi.netutils.rest.HttpResponse;
  * Unit test for {@link JavaNetHttpRequestExecutor}
  */
 public class JavaNetHttpRequestExecutorTest {
+	
+  private static final AtomicInteger THREAD_COUNTER = new AtomicInteger(1);
   
   private static final long TIMEOUT = 2000L;
 
@@ -37,7 +40,7 @@ public class JavaNetHttpRequestExecutorTest {
     mockHttpServer = new MockHttpServer();
     mockHttpServer.start();
     this.serverPort = mockHttpServer.getPort();
-    executor = new JavaNetHttpRequestExecutor();
+    executor = new JavaNetHttpRequestExecutor("JavaNetHttpRequestExecutorTest" + THREAD_COUNTER.getAndIncrement());
   }
   
   @After
