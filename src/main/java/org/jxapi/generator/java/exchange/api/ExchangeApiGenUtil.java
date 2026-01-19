@@ -6,7 +6,6 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.function.UnaryOperator;
-import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
 import org.jxapi.exchange.ExchangeApi;
@@ -108,7 +107,7 @@ public class ExchangeApiGenUtil {
         exchangeApiDescriptor.getRestEndpoints()
           .stream()
           .map(RestEndpointDescriptor::getName)
-          .collect(Collectors.toList()),
+          .toList(),
         restEndpointDescriptor.getName(), 
         request.getType(), 
         request.getObjectName(), 
@@ -140,7 +139,7 @@ public class ExchangeApiGenUtil {
       exchangeApiDescriptor.getRestEndpoints()
         .stream()
         .map(RestEndpointDescriptor::getName)
-        .collect(Collectors.toList()),
+        .toList(),
       restEndpointDescriptor.getName(), 
       response.getType(), 
       response.getObjectName(), 
@@ -172,7 +171,7 @@ public class ExchangeApiGenUtil {
       exchangeApiDescriptor.getWebsocketEndpoints()
         .stream()
         .map(WebsocketEndpointDescriptor::getName)
-        .collect(Collectors.toList()),
+        .toList(),
       websocketApi.getName(), 
       message.getType(), 
       message.getObjectName(), 
@@ -204,7 +203,7 @@ public class ExchangeApiGenUtil {
           exchangeApiDescriptor.getWebsocketEndpoints()
             .stream()
             .map(WebsocketEndpointDescriptor::getName)
-            .collect(Collectors.toList()),
+            .toList(),
           websocketApi.getName(), 
           request.getType(), 
           request.getObjectName(), 
@@ -233,7 +232,7 @@ public class ExchangeApiGenUtil {
     }
     String exchangeApiDescriptorName = JavaCodeGenUtil.getUniqueCamelCaseVariableNames(
         exchangeDescriptor.getApis()
-        .stream().map(ExchangeApiDescriptor::getName).collect(Collectors.toList()), true)
+        .stream().map(ExchangeApiDescriptor::getName).toList(), true)
         .get(exchangeApiDescriptor.getName());
     endpointName = JavaCodeGenUtil.getUniqueCamelCaseVariableNames(allEndpointNames, true).get(endpointName);
     return exchangeDescriptor.getBasePackage() + "." + exchangeApiDescriptor.getName().toLowerCase() + ".pojo."
@@ -251,7 +250,7 @@ public class ExchangeApiGenUtil {
    */
   public static String getRestApiMethodName(RestEndpointDescriptor restEndpointDescriptor, List<RestEndpointDescriptor> allRestEndpoints) {
     return getEndpointMethodOrVariableName(restEndpointDescriptor.getName(),
-        allRestEndpoints.stream().map(RestEndpointDescriptor::getName).collect(Collectors.toList()),
+        allRestEndpoints.stream().map(RestEndpointDescriptor::getName).toList(),
         JavaCodeGenUtil::firstLetterToLowerCase);
   }
 
@@ -268,7 +267,7 @@ public class ExchangeApiGenUtil {
       WebsocketEndpointDescriptor websocketEndpointDescriptor, 
       List<WebsocketEndpointDescriptor> allWebsocketEndpoints) {
     return "subscribe" + getEndpointMethodOrVariableName(websocketEndpointDescriptor.getName(),
-        allWebsocketEndpoints.stream().map(WebsocketEndpointDescriptor::getName).collect(Collectors.toList()),
+        allWebsocketEndpoints.stream().map(WebsocketEndpointDescriptor::getName).toList(),
         JavaCodeGenUtil::firstLetterToUpperCase);
   }
 
@@ -285,7 +284,7 @@ public class ExchangeApiGenUtil {
       WebsocketEndpointDescriptor websocketEndpointDescriptor, 
       List<WebsocketEndpointDescriptor> allWebsocketEndpoints) {
     return "unsubscribe" + getEndpointMethodOrVariableName(websocketEndpointDescriptor.getName(),
-             allWebsocketEndpoints.stream().map(WebsocketEndpointDescriptor::getName).collect(Collectors.toList()),
+             allWebsocketEndpoints.stream().map(WebsocketEndpointDescriptor::getName).toList(),
              JavaCodeGenUtil::firstLetterToUpperCase);
   }
   
@@ -527,7 +526,7 @@ public class ExchangeApiGenUtil {
   public static List<Field> resolveAllFieldProperties(ExchangeApiDescriptor exchangeApiDescriptor, 
                             List<Field> fields) {
     return fields.stream().map(f -> resolveFieldProperties(exchangeApiDescriptor, f))
-                .collect(Collectors.toList());
+                .toList();
   }
   
   /**
@@ -600,7 +599,7 @@ public class ExchangeApiGenUtil {
           clone.setName(getRestEndpointRequestDefaultValueVariableName(r));
           return clone;
         })
-        .collect(Collectors.toList());
+        .toList();
     return PojoGenUtil.generateDefaultValuesStaticFieldDeclarations(
         fields, 
         imports, 
@@ -645,7 +644,7 @@ public class ExchangeApiGenUtil {
           clone.setName(getWebsocketEndpointRequestDefaultValueVariableName(r));
           return clone;
         })
-        .collect(Collectors.toList());
+        .toList();
     return PojoGenUtil.generateDefaultValuesStaticFieldDeclarations(
         fields, 
         imports, 
@@ -1049,7 +1048,7 @@ public class ExchangeApiGenUtil {
         declaration.append(JavaCodeGenUtil.getGetAccessorMethodName(
             sub.getName(),
             type,
-            properties.stream().map(Field::getName).collect(Collectors.toList()))).append("()");
+            properties.stream().map(Field::getName).toList())).append("()");
         properties = CollectionUtil.emptyIfNull(sub.getProperties());
       }
     } 
