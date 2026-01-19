@@ -15,6 +15,9 @@ import org.jxapi.exchange.descriptor.gen.RateLimitRuleDescriptor;
 import org.jxapi.exchange.descriptor.gen.RestEndpointDescriptor;
 import org.jxapi.exchange.descriptor.gen.WebsocketClientDescriptor;
 import org.jxapi.exchange.descriptor.gen.WebsocketEndpointDescriptor;
+import org.jxapi.exchange.descriptor.gen.WebsocketTopicMatcherDescriptor;
+import org.jxapi.pojo.descriptor.Field;
+import org.jxapi.pojo.descriptor.Type;
 
 /**
  * Unit test for {@link ExchangeDescriptorMergeUtil}
@@ -77,51 +80,6 @@ public class ExchangeDescriptorMergeUtilTest {
     Assert.assertEquals(wsApi1, merged.getWebsocketEndpoints().get(0));
     Assert.assertEquals(wsApi2, merged.getWebsocketEndpoints().get(1));
     Assert.assertEquals(wsApi3, merged.getWebsocketEndpoints().get(2));
-  }
-  
-  @Test
-  public void testMergeExchangeApiDescriptorLists_DistinctApis() {
-    ExchangeApiDescriptor api1 = new ExchangeApiDescriptor();
-    api1.setName("myApi1");
-    ExchangeApiDescriptor api2 = new ExchangeApiDescriptor();
-    api2.setName("myApi2");
-    List<ExchangeApiDescriptor> list1 = List.of(api1);
-    List<ExchangeApiDescriptor> list2 = List.of(api2);
-    List<ExchangeApiDescriptor> merged = ExchangeDescriptorMergeUtil.mergeExchangeApiDescriptorLists(list1, list2);
-    Assert.assertEquals(2, merged.size());
-    Assert.assertEquals(api1, merged.get(0));
-    Assert.assertEquals(api2, merged.get(1));
-  }
-  
-  @Test
-  public void testMergeExchangeApiDescriptorLists_SameApis() {
-    ExchangeApiDescriptor api1 = new ExchangeApiDescriptor();
-    api1.setName("myApi1");
-    api1.setDescription("API1 description");
-    ExchangeApiDescriptor api2 = new ExchangeApiDescriptor();
-    api2.setName("myApi1");
-    api2.setHttpUrl("http://myapi2.com");
-    List<ExchangeApiDescriptor> list1 = List.of(api1);
-    List<ExchangeApiDescriptor> list2 = List.of(api2);
-    List<ExchangeApiDescriptor> merged = ExchangeDescriptorMergeUtil.mergeExchangeApiDescriptorLists(list1, list2);
-    Assert.assertEquals(1, merged.size());
-    ExchangeApiDescriptor mergedApi = merged.get(0);
-    Assert.assertEquals("API1 description", mergedApi.getDescription());
-    Assert.assertEquals("http://myapi2.com", mergedApi.getHttpUrl());
-  }
-  
-  @Test
-  public void testMergeExchangeApiDescriptorLists_OneNullList() {
-    ExchangeApiDescriptor api1 = new ExchangeApiDescriptor();
-    api1.setName("myApi1");
-    List<ExchangeApiDescriptor> list1 = List.of(api1);
-    List<ExchangeApiDescriptor> merged = ExchangeDescriptorMergeUtil.mergeExchangeApiDescriptorLists(list1, null);
-    Assert.assertEquals(1, merged.size());
-    Assert.assertEquals(api1, merged.get(0));
-    
-    merged = ExchangeDescriptorMergeUtil.mergeExchangeApiDescriptorLists(null, list1);
-    Assert.assertEquals(1, merged.size());
-    Assert.assertEquals(api1, merged.get(0));
   }
   
   @Test
@@ -414,4 +372,214 @@ public class ExchangeDescriptorMergeUtilTest {
         List.of(c1));
   }
   
+  @Test(expected = IllegalArgumentException.class)
+  public void testMergeFields_DifferentFieldNames() {
+    Field f1 = Field.builder().name("field1").build();
+    Field f2 = Field.builder().name("field2").build();
+    ExchangeDescriptorMergeUtil.mergeFields(f1, f2);
+  }
+	 
+  @Test
+	public void testMergeFields() {
+	    Field f1 = Field.builder()
+	      .name("field1")
+	      .type(Type.OBJECT)
+	      .objectName("com.x.mypojos.MyData")
+	      .objectDescription("MyData description")
+	      .description("Field 1 description")
+	      .implementedInterfaces(List.of("com.example.Interface1"))
+	      .property(Field.builder()
+            .name("prop1")
+            .type(Type.INT)
+            .objectDescription("T")
+            .build())
+	      .property(Field.builder()
+            .name("prop2")
+            .type(Type.BOOLEAN)
+            .build())
+	      .build();
+	    Field f2 = Field.builder()
+	        .name("field1")
+	        .description("Field 1 description")
+	        .property(Field.builder()
+	            .name("prop1")
+	            .description("Property 1 description")
+	            .build())
+	        .property(Field.builder()
+	            .name("prop3")
+	            .type(Type.BIGDECIMAL)
+	            .build())
+	        .implementedInterfaces(List.of("com.example.Interface2"))
+	        .build();
+	    
+	    Assert.assertEquals(f1, ExchangeDescriptorMergeUtil.mergeFields(f1, null));
+	    Assert.assertEquals(f1, ExchangeDescriptorMergeUtil.mergeFields(null, f1));
+	    
+	    Field merged = ExchangeDescriptorMergeUtil.mergeFields(f1, f2);
+	    Assert.assertEquals("field1", merged.getName());
+	    Assert.assertEquals(Type.OBJECT, merged.getType());
+	    Assert.assertEquals("com.x.mypojos.MyData", merged.getObjectName());
+	    Assert.assertEquals("MyData description", merged.getObjectDescription());
+	    Assert.assertEquals("Field 1 description", merged.getDescription());
+	    Assert.assertEquals(2, merged.getImplementedInterfaces().size());
+	    Assert.assertTrue(merged.getImplementedInterfaces().contains("com.example.Interface1"));
+	    Assert.assertTrue(merged.getImplementedInterfaces().contains("com.example.Interface2"));
+	    Assert.assertEquals(3, merged.getProperties().size());
+	    Assert.assertEquals("prop1", merged.getProperties().get(0).getName());
+	    Assert.assertEquals("Property 1 description", merged.getProperties().get(0).getDescription());
+      Assert.assertEquals(Type.INT, merged.getProperties().get(0).getType());
+      Assert.assertEquals("prop2", merged.getProperties().get(1).getName());
+      Assert.assertEquals(Type.BOOLEAN, merged.getProperties().get(1).getType());
+      Assert.assertEquals("prop3", merged.getProperties().get(2).getName());
+      Assert.assertEquals(Type.BIGDECIMAL, merged.getProperties().get(2).getType());
+	  }
+	 
+    @Test(expected = IllegalArgumentException.class)
+    public void testMergeRestEndpointDescriptors_DifferentEndpointNames() {
+      RestEndpointDescriptor e1 = RestEndpointDescriptor.builder().name("endpoint1").build();
+      RestEndpointDescriptor e2 = RestEndpointDescriptor.builder().name("endpoint2").build();
+      ExchangeDescriptorMergeUtil.mergeRestEndpointDescriptors(e1, e2);
+
+    }
+    
+    @Test
+    public void testMergeRestEndpointDescriptors() {
+      Field request1 = Field.builder()
+          .name("endpoint1Request")
+          .type(Type.STRING)
+          .implementedInterfaces(List.of("com.example.Interface1"))
+          .build();
+      Field request2 = Field.builder()
+            .name("endpoint1Request")
+            .description("Field 1 description")
+            .implementedInterfaces(List.of("com.example.Interface2"))
+            .build();
+      
+      Field response1 = Field.builder()
+          .name("endpoint1Response")
+          .type(Type.INT)
+          .implementedInterfaces(List.of("com.example.Interface3"))
+          .build();
+      Field response2 = Field.builder()
+          .name("endpoint1Response")
+          .description("Endpoint1 Response description")
+          .implementedInterfaces(List.of("com.example.Interface4"))
+          .build();
+      
+      RestEndpointDescriptor e1 = RestEndpointDescriptor.builder()
+        .name("endpoint1")
+        .httpMethod("GET")
+        .addToRateLimits("rule1")
+        .url("/api/v1/endpoint1")
+        .httpClient("defaultClient")
+        .request(request1)
+        .response(response1)
+        .build();
+      RestEndpointDescriptor e2 = RestEndpointDescriptor.builder()
+          .name("endpoint1")
+          .addToRateLimits("rule2")
+          .request(request2)
+          .response(response2)
+          .description("Endpoint 1 description")
+          .docUrl("https://api.exchange.com/docs/endpoint1")
+          .build();
+      Assert.assertEquals(e1, ExchangeDescriptorMergeUtil.mergeRestEndpointDescriptors(e1, null));
+      Assert.assertEquals(e2, ExchangeDescriptorMergeUtil.mergeRestEndpointDescriptors(null, e2));
+      RestEndpointDescriptor merged = ExchangeDescriptorMergeUtil.mergeRestEndpointDescriptors(e1, e2);
+      Assert.assertEquals("endpoint1", merged.getName());
+      Assert.assertEquals("GET", merged.getHttpMethod());
+      Assert.assertEquals("/api/v1/endpoint1", merged.getUrl());
+      Assert.assertEquals("Endpoint 1 description", merged.getDescription());
+      Assert.assertEquals("https://api.exchange.com/docs/endpoint1", merged.getDocUrl());
+      Assert.assertEquals("defaultClient", merged.getHttpClient());
+      Assert.assertEquals(2, merged.getRateLimits().size());
+      Assert.assertTrue(merged.getRateLimits().contains("rule1"));
+      Assert.assertTrue(merged.getRateLimits().contains("rule2"));
+      Assert.assertNotNull(merged.getRequest());
+      Assert.assertEquals("endpoint1Request", merged.getRequest().getName());
+      Assert.assertEquals(Type.STRING, merged.getRequest().getType());
+      Assert.assertEquals(2, merged.getRequest().getImplementedInterfaces().size());
+      Assert.assertTrue(merged.getRequest().getImplementedInterfaces().contains("com.example.Interface1"));
+      Assert.assertTrue(merged.getRequest().getImplementedInterfaces().contains("com.example.Interface2"));
+      Assert.assertNotNull(merged.getResponse());
+      Assert.assertEquals("endpoint1Response", merged.getResponse().getName());
+      Assert.assertEquals(Type.INT, merged.getResponse().getType());
+      Assert.assertEquals(2, merged.getResponse().getImplementedInterfaces().size());
+      Assert.assertTrue(merged.getResponse().getImplementedInterfaces().contains("com.example.Interface3"));
+      Assert.assertTrue(merged.getResponse().getImplementedInterfaces().contains("com.example.Interface4"));
+    }
+    
+    @Test(expected = IllegalArgumentException.class)
+    public void testMergeWebsocketEndpointDescriptors_DifferentEndpointNames() {
+      WebsocketEndpointDescriptor e1 = WebsocketEndpointDescriptor.builder().name("endpoint1").build();
+      WebsocketEndpointDescriptor e2 = WebsocketEndpointDescriptor.builder().name("endpoint2").build();
+      ExchangeDescriptorMergeUtil.mergeWebsocketEndpointDescriptors(e1, e2);
+    }
+    
+    @Test
+    public void testMergeWebsocketEndpointDescriptors() {
+      Field request1 = Field.builder()
+          .name("endpoint1Request")
+          .type(Type.STRING)
+          .implementedInterfaces(List.of("com.example.Interface1"))
+          .build();
+      Field request2 = Field.builder()
+            .name("endpoint1Request")
+            .description("Field 1 description")
+            .implementedInterfaces(List.of("com.example.Interface2"))
+            .build();
+      
+      Field message1 = Field.builder()
+          .name("endpoint1Response")
+          .type(Type.INT)
+          .implementedInterfaces(List.of("com.example.Interface3"))
+          .build();
+      Field message2 = Field.builder()
+          .name("endpoint1Response")
+          .description("Endpoint1 Response description")
+          .implementedInterfaces(List.of("com.example.Interface4"))
+          .build();
+      
+      WebsocketEndpointDescriptor e1 = WebsocketEndpointDescriptor.builder()
+        .name("endpoint1")
+        .description("Websocket Endpoint 1 description")
+        .request(request1)
+        .message(message1)
+        .websocketClient("wsClient1")
+        .build();
+      WebsocketEndpointDescriptor e2 = WebsocketEndpointDescriptor.builder()
+          .name("endpoint1")
+          .request(request2)
+          .message(message2)
+          .topic("myTopic")
+          .topicMatcher(WebsocketTopicMatcherDescriptor.builder()
+              .fieldName("f1")
+              .fieldValue("v1")
+              .build())
+          .docUrl("https://api.exchange.com/docs/ws/endpoint1")
+          .build();
+      Assert.assertEquals(e1, ExchangeDescriptorMergeUtil.mergeWebsocketEndpointDescriptors(e1, null));
+      Assert.assertEquals(e2, ExchangeDescriptorMergeUtil.mergeWebsocketEndpointDescriptors(null, e2));
+      WebsocketEndpointDescriptor merged = ExchangeDescriptorMergeUtil.mergeWebsocketEndpointDescriptors(e1, e2);
+      Assert.assertEquals("endpoint1", merged.getName());
+      Assert.assertEquals("https://api.exchange.com/docs/ws/endpoint1", merged.getDocUrl());
+      Assert.assertEquals("Websocket Endpoint 1 description", merged.getDescription());
+      Assert.assertEquals("wsClient1", merged.getWebsocketClient());
+      Assert.assertEquals("myTopic", merged.getTopic());
+      Assert.assertNotNull(merged.getTopicMatcher());
+      Assert.assertEquals("f1", merged.getTopicMatcher().getFieldName());
+      Assert.assertEquals("v1", merged.getTopicMatcher().getFieldValue());
+      Assert.assertNotNull(merged.getRequest());
+      Assert.assertEquals("endpoint1Request", merged.getRequest().getName());
+      Assert.assertEquals(Type.STRING, merged.getRequest().getType());
+      Assert.assertEquals(2, merged.getRequest().getImplementedInterfaces().size());
+      Assert.assertTrue(merged.getRequest().getImplementedInterfaces().contains("com.example.Interface1"));
+      Assert.assertTrue(merged.getRequest().getImplementedInterfaces().contains("com.example.Interface2"));
+      Assert.assertNotNull(merged.getMessage());
+      Assert.assertEquals("endpoint1Response", merged.getMessage().getName());
+      Assert.assertEquals(Type.INT, merged.getMessage().getType());
+      Assert.assertEquals(2, merged.getMessage().getImplementedInterfaces().size());
+      Assert.assertTrue(merged.getMessage().getImplementedInterfaces().contains("com.example.Interface3"));
+      Assert.assertTrue(merged.getMessage().getImplementedInterfaces().contains("com.example.Interface4"));
+    }
 }

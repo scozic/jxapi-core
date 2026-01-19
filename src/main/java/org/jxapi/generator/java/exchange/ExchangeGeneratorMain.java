@@ -107,7 +107,7 @@ public class ExchangeGeneratorMain {
    * descriptor files in the current project "src/main/resources/" folder.
    * 
    * @param args Not used
-   * @see #generateExchangeWrappersInCurrentProject(String, String, String)
+   * @see #generateExchangeWrappersInCurrentProject(String, String, String, String, String)
    */
   public static void main(String[] args) {
     try {
@@ -133,7 +133,7 @@ public class ExchangeGeneratorMain {
    * Generate exchange API wrappers for all exchange descriptor files in the
    * current project "src/main/resources/" folder. Will walk through all files in
    * the folder and generate Java code for each file ending with 'Descriptor.json'
-   * using {@link #generateExchangeWrapperAndDemos(ExchangeDescriptor, Path, String, String)}.
+   * using {@link #generateExchangeWrapperAndDemos(ExchangeDescriptor, Path, Path, Path, String, String)}.
    * 
    * @param baseProjectDir Base project directory where the generated code will be written
    * @param mainSrcDirectory The main source directory relative to project folder where to write generated code
@@ -142,7 +142,7 @@ public class ExchangeGeneratorMain {
    * @param baseSrcUrl The base url for sources on public repo, used for links generation.
    * 
    * @throws Exception If error occurs during generation
-   * @see #generateExchangeWrapperAndDemos(ExchangeDescriptor, Path, String, String)
+   * @see #generateExchangeWrapperAndDemos(ExchangeDescriptor, Path, Path, Path, String, String)
    */
   public static final void generateExchangeWrappersInCurrentProject(
       String baseProjectDir, 
@@ -310,13 +310,14 @@ public class ExchangeGeneratorMain {
     configProperties.addAll(Optional.ofNullable(exchangeDescriptor.getProperties()).orElse(List.of()));
     PlaceHolderResolver valuesPlaceHolderResolver = PlaceHolderResolver.create(ExchangeGenUtil.getValuesReplacements(exchangeDescriptor));
     PlaceHolderResolver descriptionPlaceHolderResolver = PlaceHolderResolver
-        .create(ExchangeGenUtil.getDescriptionReplacements(exchangeDescriptor, null));
-    new ExchangeDemoPropertiesTemplateGenerator(exchangeDescriptor.getId(), 
-                        configProperties, 
-                        demoProperties,
-                        valuesPlaceHolderResolver,
-                        descriptionPlaceHolderResolver)
-      .writeJavaFile(filePath);
+      .create(ExchangeGenUtil.getDescriptionReplacements(exchangeDescriptor, null));
+    new ExchangeDemoPropertiesTemplateGenerator(
+      exchangeDescriptor.getId(), 
+      configProperties, 
+      demoProperties,
+      valuesPlaceHolderResolver,
+      descriptionPlaceHolderResolver)
+    .writeJavaFile(filePath);
   }
 
 }

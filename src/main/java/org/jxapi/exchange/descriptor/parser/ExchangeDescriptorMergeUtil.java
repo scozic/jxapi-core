@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
+import java.util.function.Function;
 
 import org.jxapi.exchange.descriptor.Constant;
 import org.jxapi.exchange.descriptor.gen.ConfigPropertyDescriptor;
@@ -17,6 +18,7 @@ import org.jxapi.exchange.descriptor.gen.RestEndpointDescriptor;
 import org.jxapi.exchange.descriptor.gen.WebsocketClientDescriptor;
 import org.jxapi.exchange.descriptor.gen.WebsocketEndpointDescriptor;
 import org.jxapi.netutils.rest.ratelimits.RateLimitRule;
+import org.jxapi.pojo.descriptor.Field;
 import org.jxapi.util.CollectionUtil;
 import org.jxapi.util.DefaultConfigProperty;
 import org.jxapi.util.MergeUtil;
@@ -142,7 +144,7 @@ public class ExchangeDescriptorMergeUtil {
     res.setNetwork(mergeNetworks(e1.getNetwork(), e2.getNetwork()));
     res.setRateLimits(MergeUtil.mergeLists("rateLimits of exchange " + exchangeName, e1.getRateLimits(), e2.getRateLimits(), RateLimitRuleDescriptor::getId));
     res.setProperties(MergeUtil.mergeLists("properties of exchange " + exchangeName, e1.getProperties(), e2.getProperties(), ConfigPropertyDescriptor::getName));
-    res.setApis(mergeExchangeApiDescriptorLists(e1.getApis(), e2.getApis()));
+    res.setApis(MergeUtil.mergeLists("APIs of exchange " + exchangeName, e1.getApis(), e2.getApis(), ExchangeApiDescriptor::getName, ExchangeDescriptorMergeUtil::mergeExchangeApiDescriptors));
     return res;
   }
   
@@ -198,36 +200,6 @@ public class ExchangeDescriptorMergeUtil {
   }
   
   /**
-   * Merges two lists of exchange API descriptors.<br>
-   * If two APIs have the same name, the result will contain a single API
-   * descriptor with the name and merged properties and endpoints of the two input
-   * APIs.
-   * 
-   * @param l1 First list of API descriptors
-   * @param l2 Second list of API descriptors
-   * @return A new list of API descriptors, result of the merge of the two input
-   *         lists
-   * @see #mergeExchangeApiDescriptors(ExchangeApiDescriptor,
-   *      ExchangeApiDescriptor)
-   */
-  public static List<ExchangeApiDescriptor> mergeExchangeApiDescriptorLists(
-      List<ExchangeApiDescriptor> l1,
-      List<ExchangeApiDescriptor> l2) {
-    List<ExchangeApiDescriptor> res = new ArrayList<>();
-    for (List<ExchangeApiDescriptor> l: List.of(CollectionUtil.emptyIfNull(l1), CollectionUtil.emptyIfNull(l2))) {
-      for (ExchangeApiDescriptor api : l) {
-        ExchangeApiDescriptor existing = res.stream().filter(a -> a.getName().equals(api.getName())).findFirst().orElse(null);
-        if (existing != null) {
-          res.set(res.indexOf(existing), mergeExchangeApiDescriptors(existing, api));
-        } else {
-          res.add(api);
-        }
-      }
-    }
-    return res;
-  }
-  
-  /**
    * Merges two exchange API descriptors. The result will contain a single API
    * descriptor with the name and merged properties and endpoints of the two input
    * APIs.
@@ -235,6 +207,8 @@ public class ExchangeDescriptorMergeUtil {
    * @param a1 First API descriptor
    * @param a2 Second API descriptor
    * @return A new API descriptor, result of the merge of the two input API
+   * 
+   * @throws IllegalArgumentException If API descriptors do not have equal names.
    */
   public static ExchangeApiDescriptor mergeExchangeApiDescriptors(ExchangeApiDescriptor a1, ExchangeApiDescriptor a2) {
     ExchangeApiDescriptor res = new ExchangeApiDescriptor();
@@ -249,8 +223,108 @@ public class ExchangeDescriptorMergeUtil {
     res.setHttpUrl(MergeUtil.merge("httpUrl of API " + apiName, a1.getHttpUrl(), a2.getHttpUrl()));
     res.setDefaultWebsocketClient(MergeUtil.merge("defaultWebsocketClient of API " + apiName, a1.getDefaultWebsocketClient(), a2.getDefaultWebsocketClient()));
     res.setDefaultHttpClient(MergeUtil.merge("defaultHttpClient of API " + apiName, a1.getDefaultHttpClient(), a2.getDefaultHttpClient()));
-    res.setRestEndpoints(MergeUtil.mergeLists("REST endpoints of API " + apiName, a1.getRestEndpoints(), a2.getRestEndpoints(), RestEndpointDescriptor::getName));
+    res.setRestEndpoints(MergeUtil.mergeLists("REST endpoints of API " + apiName, a1.getRestEndpoints(), a2.getRestEndpoints(), RestEndpointDescriptor::getName, ExchangeDescriptorMergeUtil::mergeRestEndpointDescriptors));
     return res;
+  }
+
+  /**
+   * Merges two REST endpoint descriptors. The result will contain a single REST
+   * endpoint descriptor with the name and merged properties of the two input
+   * endpoints.
+   * 
+   * @param r1 First REST endpoint descriptor
+   * @param r2 Second REST endpoint descriptor
+   * @return A new REST endpoint descriptor, result of the merge of the two input
+   *         REST endpoint descriptors
+   * @throws IllegalArgumentException If endpoints do not have equal names.        
+   */
+  public static RestEndpointDescriptor mergeRestEndpointDescriptors(
+		  RestEndpointDescriptor r1,
+		  RestEndpointDescriptor r2) {
+    if (r1 == null) return r2;
+    if (r2 == null) return r1;
+  	RestEndpointDescriptor res = new RestEndpointDescriptor();
+  	String endpointName = r1.getName();
+  	if (!Objects.equals(endpointName, r2.getName())) {
+  	  throw new IllegalArgumentException(String.format("Cannot merge REST endpoints with different names:'%s' and '%s'", r1.getName(), r2.getName()));
+  	}
+  	res.setName(endpointName);
+  	res.setDescription(MergeUtil.merge("description of REST endpoint " + endpointName, r1.getDescription(), r2.getDescription()));
+  	res.setHttpMethod(MergeUtil.merge("httpMethod of REST endpoint " + endpointName, r1.getHttpMethod(), r2.getHttpMethod()));
+  	res.setDocUrl(MergeUtil.merge("docUrl of REST endpoint " + endpointName, r1.getDocUrl(), r2.getDocUrl()));
+  	res.setHttpClient(MergeUtil.merge("httpClient of REST endpoint " + endpointName, r1.getHttpClient(), r2.getHttpClient()));
+  	res.setPaginated(MergeUtil.merge("paginated of REST endpoint " + endpointName, r1.isPaginated(), r2.isPaginated()));
+  	res.setRateLimits(MergeUtil.mergeLists("rateLimit of REST endpoint " + endpointName, r1.getRateLimits(), r2.getRateLimits(), Function.identity()));
+  	res.setRequest(mergeFields(r1.getRequest(), r2.getRequest()));
+  	res.setResponse(mergeFields(r1.getResponse(), r2.getResponse()));
+  	res.setUrl(MergeUtil.merge("url of REST endpoint " + endpointName, r1.getUrl(), r2.getUrl()));
+  	res.setRequestHasBody(MergeUtil.merge("requestHasBody of REST endpoint " + endpointName, r1.isRequestHasBody(), r2.isRequestHasBody()));
+  	res.setRequestWeight(MergeUtil.merge("requestWeight of REST endpoint " + endpointName, r1.getRequestWeight(), r2.getRequestWeight()));
+  	return res;
+  }
+
+  /**
+   * Merges two field descriptors. The result will contain a single field
+   * descriptor with the name and merged properties of the two input fields.
+   * 
+   * @param f1 First field descriptor
+   * @param f2 Second field descriptor
+   * @return A new field descriptor, result of the merge of the two input field
+   *         descriptors
+   * @throws IllegalArgumentException if fields do not have equal names.        
+   */
+  public static Field mergeFields(Field f1, Field f2) {
+    if (f1 == null) return f2;
+    if (f2 == null) return f1;
+  	Field res = new Field();
+  	String fieldName = f1.getName();
+  	if (!Objects.equals(fieldName, f2.getName())) {
+  	  throw new IllegalArgumentException(String.format("Cannot merge fields with different names:'%s' and '%s'", f1.getName(), f2.getName()));
+  	}
+  	res.setName(fieldName);
+  	res.setType(MergeUtil.merge("type of field " + fieldName, f1.getType(), f2.getType()));
+  	res.setDescription(MergeUtil.merge("description of field " + fieldName, f1.getDescription(), f2.getDescription()));
+  	res.setMsgField(MergeUtil.merge("msgField of field " + fieldName, f1.getMsgField(), f2.getMsgField()));
+  	res.setObjectDescription(MergeUtil.merge("objectDescription of field " + fieldName, f1.getObjectDescription(), f2.getObjectDescription()));
+  	res.setObjectName(MergeUtil.merge("objectName of field " + fieldName, f1.getObjectName(), f2.getObjectName()));
+  	res.setIn(MergeUtil.merge("in of field " + fieldName, f1.getIn(), f2.getIn()));
+  	res.setImplementedInterfaces(MergeUtil.mergeLists("implementedInterfaces of field " + fieldName, f1.getImplementedInterfaces(), f2.getImplementedInterfaces(), Function.identity()));
+  	res.setDefaultValue(MergeUtil.merge("defaultValue of field " + fieldName, f1.getDefaultValue(), f2.getDefaultValue()));
+  	res.setSampleValue(MergeUtil.merge("sampleValue of field " + fieldName, f1.getSampleValue(), f2.getSampleValue()));
+  	res.setProperties(MergeUtil.mergeLists("properties of field " + fieldName, f1.getProperties(), f2.getProperties(), Field::getName, ExchangeDescriptorMergeUtil::mergeFields));
+  	return res;
+    }
+  
+  /**
+   * Merges two Websocket endpoint descriptors. The result will contain a single
+   * Websocket endpoint descriptor with the name and merged properties of the two
+   * input endpoints.
+   * 
+   * @param w1 First Websocket endpoint descriptor
+   * @param w2 Second Websocket endpoint descriptor
+   * @return A new Websocket endpoint descriptor, result of the merge of the two
+   *         input Websocket endpoint descriptors
+   * @throws IllegalArgumentException If endpoints do not have equal names.        
+   */
+  public static WebsocketEndpointDescriptor mergeWebsocketEndpointDescriptors(
+		  WebsocketEndpointDescriptor w1,
+		  WebsocketEndpointDescriptor w2) {
+    if (w1 == null) return w2;
+    if (w2 == null) return w1;
+  	WebsocketEndpointDescriptor res = new WebsocketEndpointDescriptor();
+  	String endpointName = w1.getName();
+  	if (!Objects.equals(endpointName, w2.getName())) {
+  	  throw new IllegalArgumentException(String.format("Cannot merge Websocket endpoints with different names:'%s' and '%s'", w1.getName(), w2.getName()));
+  	}
+  	res.setName(endpointName);
+  	res.setDescription(MergeUtil.merge("description of Websocket endpoint " + endpointName, w1.getDescription(), w2.getDescription()));
+  	res.setDocUrl(MergeUtil.merge("docUrl of Websocket endpoint " + endpointName, w1.getDocUrl(), w2.getDocUrl()));
+  	res.setWebsocketClient(MergeUtil.merge("websocketClient of Websocket endpoint " + endpointName, w1.getWebsocketClient(), w2.getWebsocketClient()));
+  	res.setTopic(MergeUtil.merge("topic of Websocket endpoint " + endpointName, w1.getTopic(), w2.getTopic()));
+  	res.setTopicMatcher(MergeUtil.merge("topicMatcher of Websocket endpoint " + endpointName, w1.getTopicMatcher(), w2.getTopicMatcher()));
+  	res.setRequest(mergeFields(w1.getRequest(), w2.getRequest()));
+  	res.setMessage(mergeFields(w1.getMessage(), w2.getMessage()));
+  	return res;
   }
 
 }

@@ -1,7 +1,7 @@
 package org.jxapi.util;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.function.BiFunction;
 import java.util.function.Function;
 
 /**
@@ -12,7 +12,8 @@ public class MergeUtil {
   private MergeUtil() {}
 
   /**
-   * Merges two lists of values of the same type. The result is a new list
+   * Merges two lists of values of the same type. Values are assumed not to be 'mergeable'.
+   * The result is a new list
    * containing all the values of the two input lists. If an item with the same
    * identifier (name) is present in both lists, an exception is thrown.
    * 
@@ -26,25 +27,58 @@ public class MergeUtil {
    *                                  is present in both lists
    */
   public static <T> List<T> mergeLists(String context, List<T> e1, List<T> e2, Function<T, String> idExtractor) {
-        List<T> res = new ArrayList<>();
-    if (e1 == null && e2 == null) {
-      return res;
-    } else if (e1 == null) {
-      return e2;
-    } else if (e2 == null) {
-      return e1;
-    }
-    
-    for (List<T> l : List.of(e1, e2)) {
-      for (T item : l) {
-        if (res.stream().anyMatch(c -> idExtractor.apply(c).equals(idExtractor.apply(item)))) {
-          throw new IllegalArgumentException(String.format("Duplicate ID found in values of list property %s:[%s]", context, idExtractor.apply(item)));
-        }
-        res.add(item);
-      }
-    }
-    return res;
-    }
+    return mergeLists(context, e1, e2, idExtractor, (item1, item2) -> {
+		  throw new IllegalArgumentException(String.format("Conflict: Found duplicate item for %s with id:%s", context, idExtractor.apply(item1)));
+		});
+  }
+  
+  /**
+   * Merges two lists of values of the same type. Values are assumed to be 'mergeable'.
+   * The result is a new list
+   * containing all the values of the two input lists. If an item with the same
+   * identifier (name) is present in both lists, the merger function is used to
+   * merge the two items.
+   * 
+   * @param <T>         Type of the values
+   * @param context     Context of the values (used in exception message)
+   * @param e1          First list of values
+   * @param e2          Second list of values
+   * @param idExtractor Function to extract the identifier (name) of the values
+   * @param merger      Function to merge two items with the same identifier
+   * @return A new unmodifiable list containing all the values of the two input lists
+   */
+  public static <T> List<T> mergeLists(String context, List<T> e1, List<T> e2, Function<T, String> idExtractor, BiFunction<T, T, T> merger) {
+  	if (e1 == null && e2 == null) {
+  	  return List.of();
+  	} else if (e1 == null) {
+  	  return e2;
+  	} else if (e2 == null) { 
+  	  return e1;
+  	}
+  	
+  	List<T> res = CollectionUtil.createList();
+  	for (List<T> l : List.of(e1, e2)) {
+  	  for (T item : l) {
+    		int existingIndex = -1;
+    		T existingItem = null;
+    		for (int i = 0; i < res.size(); i++) {	
+    		  T other = res.get(i);
+    		  if (idExtractor.apply(res.get(i)).equals(idExtractor.apply(item))) {
+    			existingIndex = i;  
+    			existingItem = other;
+    			break;
+    		  }
+    		}
+    		if (existingIndex >= 0) {
+    		  T mergedItem = merger.apply(existingItem, item);
+    		  res.set(existingIndex, mergedItem);
+    		} else {
+    		  res.add(item);
+  		  }
+  	  }
+  	}
+  	return List.copyOf(res);
+  }
 
   /**
    * Merges values of properties holding positive longs, assuming a negative value
@@ -61,23 +95,23 @@ public class MergeUtil {
    *                                  different
    */
   public static Long mergePositiveLongs(String context, Long e1, Long e2) {
-        if (e1 == null) {
-          return e2;
-        }
-        if (e2 == null) {
-          return e1;
-        }
-        if (e1.equals(e2)) {
-            return e1;
-        }
-        if (e1.longValue() < 0) {
-            return e2;
-        }
-        if (e2.longValue() < 0) {
-            return e1;
-        }
-        throw new IllegalArgumentException(String.format("Conflict: Found distinct values for %s:[%d] and [%d]", context, e1, e2));
+    if (e1 == null) {
+      return e2;
     }
+    if (e2 == null) {
+      return e1;
+    }
+    if (e1.equals(e2)) {
+      return e1;
+    }
+    if (e1.longValue() < 0) {
+      return e2;
+    }
+    if (e2.longValue() < 0) {
+      return e1;
+    }
+    throw new IllegalArgumentException(String.format("Conflict: Found distinct values for %s:[%d] and [%d]", context, e1, e2));
+  }
 
   /**
    * Merges two values of the same type. If the values are equal, the result is
@@ -99,8 +133,8 @@ public class MergeUtil {
       return e1;
     }
     if (e1.equals(e2)) {
-            return e1;
-        }
+      return e1;
+    }
     throw new IllegalArgumentException(String.format("Conflict: Found distinct values for %s:[%s] and [%s]", context, e1, e2));
   }
 
