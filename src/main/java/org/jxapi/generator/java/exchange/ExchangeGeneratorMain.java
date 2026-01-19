@@ -54,23 +54,25 @@ import org.slf4j.LoggerFactory;
  * 
  */
 public class ExchangeGeneratorMain {
-  
+
   private static final Logger log = LoggerFactory.getLogger(ExchangeGeneratorMain.class);
+  
+  private static final String JXAPI = "jxapi";
   
   /**
    * Folder where exchange descriptor files are located in the wrapper project.
      */
-  public static final Path DESCRIPTOR_FOLDER = Paths.get("src", "main", "resources", "jxapi", "exchange");
+  public static final Path DESCRIPTOR_FOLDER = Paths.get("src", "main", "resources", JXAPI, "exchange");
   
   /**
    * Default folder where to generate main sources
    */
-  public static final Path DEFAULT_GENERATED_SOURCES_FOLDER = Paths.get("target", "generated-sources", "jxapi");
+  public static final Path DEFAULT_GENERATED_SOURCES_FOLDER = Paths.get("target", "generated-sources", JXAPI);
   
   /**
    * Default folder where to generate test sources
    */
-  public static final Path DEFAULT_GENERATED_TEST_SOURCES_FOLDER = Paths.get("target", "generated-test-sources", "jxapi");
+  public static final Path DEFAULT_GENERATED_TEST_SOURCES_FOLDER = Paths.get("target", "generated-test-sources", JXAPI);
   
   /**
    * Key for system property that can be passed to JVM running

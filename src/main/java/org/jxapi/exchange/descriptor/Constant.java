@@ -2,7 +2,6 @@ package org.jxapi.exchange.descriptor;
 
 import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
 import org.jxapi.exchange.descriptor.gen.ConstantDescriptor;
 import org.jxapi.pojo.descriptor.Type;
@@ -105,7 +104,7 @@ public class Constant implements Pojo<Constant> {
   public static List<Constant> fromDescriptors(List<ConstantDescriptor> descriptors) {
     return CollectionUtil.emptyIfNull(descriptors).stream()
         .map(Constant::fromConstantDescriptor)
-        .collect(Collectors.toList());
+        .toList();
   }
 
   private String name;

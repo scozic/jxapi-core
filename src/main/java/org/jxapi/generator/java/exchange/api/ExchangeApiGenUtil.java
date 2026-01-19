@@ -788,6 +788,41 @@ public class ExchangeApiGenUtil {
     if (topicMatcherDescriptor == null) {
       return;
     }
+    
+    if (checkFieldValueTopicMatcherDescriptor(
+        exchangeId, 
+        apiName, 
+        endpointName, 
+        topicMatcherDescriptor)) {
+      return;
+    }
+    
+    if (checkAndTopicMatcherDescriptorValidity(
+        exchangeId, 
+        apiName, 
+        endpointName, 
+        topicMatcherDescriptor)) {
+      return;
+    }
+    
+    if (checkOrTopicMatcherDescriptorValidity(
+        exchangeId, 
+        apiName, 
+        endpointName, 
+        topicMatcherDescriptor)) {
+      return;
+    }
+    
+    throw new IllegalArgumentException(
+        INVALID_TOPIC_MATCHER_FOR_WEBSOCKET_ENDPOINT + endpointName + OF_EXCHANGE_API + apiName
+            + OF_EXCHANGE + exchangeId + ": either fieldName, 'and' or 'or' operator must be defined");
+  }
+  
+  private static boolean checkFieldValueTopicMatcherDescriptor(
+      String exchangeId, 
+      String apiName, 
+      String endpointName, 
+      WebsocketTopicMatcherDescriptor topicMatcherDescriptor) {
     if (topicMatcherDescriptor.getFieldName() != null) {
       if (topicMatcherDescriptor.getAnd() != null) {
         throw new IllegalArgumentException(
@@ -804,7 +839,17 @@ public class ExchangeApiGenUtil {
             + OF_EXCHANGE_API + apiName + OF_EXCHANGE + exchangeId
             + ": fieldName must be associated with either fieldValue or fieldRegexp");
       }
-    } else if (topicMatcherDescriptor.getAnd() != null) {
+      return true;
+    } 
+    return false;
+  }
+  
+  private static boolean checkAndTopicMatcherDescriptorValidity(
+      String exchangeId, 
+      String apiName, 
+      String endpointName, 
+      WebsocketTopicMatcherDescriptor topicMatcherDescriptor) {
+    if (topicMatcherDescriptor.getAnd() != null) {
       if (topicMatcherDescriptor.getOr() != null) {
         throw new IllegalArgumentException(
             INVALID_TOPIC_MATCHER_FOR_WEBSOCKET_ENDPOINT + endpointName + OF_EXCHANGE_API + apiName
@@ -817,7 +862,17 @@ public class ExchangeApiGenUtil {
       }
       topicMatcherDescriptor.getAnd().forEach(
           subMatcher -> checkValidWebsocketTopicMatcherDescriptor(exchangeId, apiName, endpointName, subMatcher));
-    } else if (topicMatcherDescriptor.getOr() != null) {
+      return true;
+    }
+    return false;
+  }
+  
+  private static boolean checkOrTopicMatcherDescriptorValidity(
+      String exchangeId, 
+      String apiName, 
+      String endpointName, 
+      WebsocketTopicMatcherDescriptor topicMatcherDescriptor) {
+    if (topicMatcherDescriptor.getOr() != null) {
       if (topicMatcherDescriptor.getFieldValue() != null || topicMatcherDescriptor.getFieldRegexp() != null) {
         throw new IllegalArgumentException(
             INVALID_TOPIC_MATCHER_FOR_WEBSOCKET_ENDPOINT + endpointName + OF_EXCHANGE_API + apiName
@@ -825,11 +880,9 @@ public class ExchangeApiGenUtil {
       }
       topicMatcherDescriptor.getOr().forEach(
           subMatcher -> checkValidWebsocketTopicMatcherDescriptor(exchangeId, apiName, endpointName, subMatcher));
-    } else {
-      throw new IllegalArgumentException(
-          INVALID_TOPIC_MATCHER_FOR_WEBSOCKET_ENDPOINT + endpointName + OF_EXCHANGE_API + apiName
-              + OF_EXCHANGE + exchangeId + ": either fieldName, 'and' or 'or' operator must be defined");
+      return true;
     }
+    return false;
   }
   
   /**

@@ -101,8 +101,7 @@ public class DemoUtil {
    */
   public static void logRestApiEvent(ExchangeEvent event) {
     switch (event.getType()) {
-    case HTTP_REQUEST:
-    case HTTP_RESPONSE:
+    case HTTP_REQUEST, HTTP_RESPONSE:
       log.debug("{}", event);
       break;
     default:
