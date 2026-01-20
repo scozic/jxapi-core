@@ -154,7 +154,7 @@ public class RestEndpointTest {
     }
     
     @Test(expected = IllegalStateException.class)
-    public void testSubmit_ExceptionForHttpRequestExecutorNotSet() throws InterruptedException {
+    public void testSubmit_ExceptionForHttpRequestExecutorNotSet() {
         String requestData = "Test Request Data";
         restEndpoint.setHttpRequestExecutor(null);
         restEndpoint.submit(requestData, null);

@@ -5,7 +5,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
-import java.util.stream.Collectors;
 
 /**
  * Manages imports in Java code generation.
@@ -94,7 +93,7 @@ public class Imports implements Iterable<String> {
    * @return A copy of the list of all imports
    */
   public List<String> getAllImports() {
-    return imps.stream().collect(Collectors.toList());
+    return imps.stream().toList();
   }
   
   /**

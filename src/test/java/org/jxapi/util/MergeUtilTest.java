@@ -1,7 +1,7 @@
 package org.jxapi.util;
 
 import java.util.List;
-import java.util.function.BiFunction;
+import java.util.function.BinaryOperator;
 import java.util.function.Function;
 
 import org.junit.Assert;
@@ -78,7 +78,7 @@ public class MergeUtilTest {
 	    List<MyType> list2 = List.of(new MyType("hello"), new MyType("world"));
 	    List<MyType> list3 = List.of(new MyType("bye"), new MyType("foo"));
 	    Function<MyType, String> idExtractor = MyType::getValue;
-	    BiFunction<MyType, MyType, MyType> itemMerger = (item1, item2) -> new MyType(item1 + "_" + item2); // keep first
+	    BinaryOperator<MyType> itemMerger = (item1, item2) -> new MyType(item1 + "_" + item2); // keep first
 	    
 	    Assert.assertEquals(list1, MergeUtil.mergeLists(null, list1, null, idExtractor, itemMerger));
 	    Assert.assertEquals(list1, MergeUtil.mergeLists(null, null, list1, null));

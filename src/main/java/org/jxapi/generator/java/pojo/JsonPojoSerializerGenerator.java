@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.TreeSet;
-import java.util.stream.Collectors;
 
 import org.jxapi.generator.java.Imports;
 import org.jxapi.generator.java.JavaCodeGenUtil;
@@ -115,7 +114,7 @@ public class JsonPojoSerializerGenerator extends JavaTypeGenerator {
     String getFieldValue = "value." + JavaCodeGenUtil.getGetAccessorMethodName(
         field.getName(),
         type,
-        fields.stream().map(Field::getName).collect(Collectors.toList())) + "()";
+        fields.stream().map(Field::getName).toList()) + "()";
     CanonicalType canonicalType = PojoGenUtil.getFieldType(field).getCanonicalType();
     if (!canonicalType.isPrimitive) {
       return generateNonPrimitiveTypeFieldSerializerDeclaration(field, getFieldValue, beforeParseFieldInstruction);

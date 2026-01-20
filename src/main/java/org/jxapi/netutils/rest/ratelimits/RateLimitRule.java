@@ -2,7 +2,6 @@ package org.jxapi.netutils.rest.ratelimits;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import org.jxapi.exchange.descriptor.gen.RateLimitRuleDescriptor;
 import org.jxapi.util.CollectionUtil;
@@ -87,7 +86,7 @@ public class RateLimitRule {
   public static List<RateLimitRule> fromDescriptors(List<RateLimitRuleDescriptor> descriptors) {
     return CollectionUtil.emptyIfNull(descriptors).stream()
         .map(RateLimitRule::fromDescriptor)
-        .collect(Collectors.toList());
+        .toList();
   }
   
   private String id;

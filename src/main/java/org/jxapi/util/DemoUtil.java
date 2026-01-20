@@ -100,12 +100,9 @@ public class DemoUtil {
    * @param event Event to log
    */
   public static void logRestApiEvent(ExchangeEvent event) {
-    switch (event.getType()) {
-    case HTTP_REQUEST, HTTP_RESPONSE:
+    if (event.getType() == ExchangeEventType.HTTP_REQUEST 
+        || event.getType() == ExchangeEventType.HTTP_RESPONSE) {
       log.debug("{}", event);
-      break;
-    default:
-      break;
     }
   }
 

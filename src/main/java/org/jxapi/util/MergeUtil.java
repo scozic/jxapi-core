@@ -1,8 +1,11 @@
 package org.jxapi.util;
 
+import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.function.BiFunction;
+import java.util.Map;
+import java.util.function.BinaryOperator;
 import java.util.function.Function;
+import java.util.stream.Stream;
 
 /**
  * Utility class for merging values.
@@ -47,38 +50,39 @@ public class MergeUtil {
    * @param merger      Function to merge two items with the same identifier
    * @return A new unmodifiable list containing all the values of the two input lists
    */
-  public static <T> List<T> mergeLists(String context, List<T> e1, List<T> e2, Function<T, String> idExtractor, BiFunction<T, T, T> merger) {
-  	if (e1 == null && e2 == null) {
-  	  return List.of();
-  	} else if (e1 == null) {
-  	  return e2;
-  	} else if (e2 == null) { 
-  	  return e1;
-  	}
-  	
-  	List<T> res = CollectionUtil.createList();
-  	for (List<T> l : List.of(e1, e2)) {
-  	  for (T item : l) {
-    		int existingIndex = -1;
-    		T existingItem = null;
-    		for (int i = 0; i < res.size(); i++) {	
-    		  T other = res.get(i);
-    		  if (idExtractor.apply(res.get(i)).equals(idExtractor.apply(item))) {
-    			existingIndex = i;  
-    			existingItem = other;
-    			break;
-    		  }
-    		}
-    		if (existingIndex >= 0) {
-    		  T mergedItem = merger.apply(existingItem, item);
-    		  res.set(existingIndex, mergedItem);
-    		} else {
-    		  res.add(item);
-  		  }
-  	  }
-  	}
-  	return List.copyOf(res);
+  public static <T> List<T> mergeLists(
+      String context,
+      List<T> e1,
+      List<T> e2,
+      Function<T, String> idExtractor,
+      BinaryOperator<T> merger) {
+
+  if (e1 == null && e2 == null) {
+      return List.of();
   }
+  if (e1 == null) {
+      return List.copyOf(e2);
+  }
+  if (e2 == null) {
+      return List.copyOf(e1);
+  }
+
+  Map<String, T> merged = new LinkedHashMap<>();
+
+  for (T item : Stream.concat(e1.stream(), e2.stream()).toList()) {
+      String id = idExtractor.apply(item);
+      T existing = merged.get(id);
+
+      if (existing == null) {
+          merged.put(id, item);
+      } else {
+          merged.put(id, merger.apply(existing, item));
+      }
+  }
+
+  return List.copyOf(merged.values());
+}
+
 
   /**
    * Merges values of properties holding positive longs, assuming a negative value
