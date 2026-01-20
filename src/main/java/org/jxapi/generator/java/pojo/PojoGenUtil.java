@@ -463,10 +463,7 @@ public class PojoGenUtil {
         imports.add(BigDecimal.class.getName());
       }
       return canonicalTypeClass.getSimpleName();
-    case BOOLEAN:
-    case INT:
-    case LONG:
-    case STRING:
+    case BOOLEAN, INT, LONG, STRING:
       return canonicalTypeClass.getSimpleName();
     case LIST:
       subTypeClassName = getClassNameForType(type.getSubType(), imports, objectClassName);
