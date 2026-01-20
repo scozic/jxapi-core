@@ -1,5 +1,13 @@
 package org.jxapi.pojo.descriptor;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.NotSerializableException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.util.List;
 
 import org.junit.Assert;
@@ -164,4 +172,70 @@ public class FieldTest {
       FieldBuilder fb = Field.builder();
       Assert.assertNotNull(fb);
     }
+    
+    private Field roundTrip(Field f) throws Exception {
+      ByteArrayOutputStream bos = new ByteArrayOutputStream();
+      ObjectOutputStream out = new ObjectOutputStream(bos);
+      out.writeObject(f);
+      out.close();
+
+      ByteArrayInputStream bis = new ByteArrayInputStream(bos.toByteArray());
+      ObjectInputStream in = new ObjectInputStream(bis);
+      Field clone = (Field) in.readObject();
+      in.close();
+
+      return clone;
+  }
+
+  @Test
+  public void testSerializationWithSerializableValues() throws Exception {
+      Field f = new Field();
+      f.setName("test");
+      f.setDescription("desc");
+      f.setSampleValue("a string");              // Serializable
+      f.setDefaultValue(List.of(1, 2, 3));       // Serializable list
+
+      Field clone = roundTrip(f);
+
+      assertEquals("test", clone.getName());
+      assertEquals("desc", clone.getDescription());
+      assertEquals("a string", clone.getSampleValue());
+      assertEquals(List.of(1, 2, 3), clone.getDefaultValue());
+  }
+
+  @Test
+  public void testSerializationWithNullValues() throws Exception {
+      Field f = new Field();
+      f.setName("nullTest");
+      f.setSampleValue(null);
+      f.setDefaultValue(null);
+
+      Field clone = roundTrip(f);
+
+      assertNull(clone.getSampleValue());
+      assertNull(clone.getDefaultValue());
+      assertEquals("nullTest", clone.getName());
+  }
+
+  @Test(expected = NotSerializableException.class)
+  public void testSerializationFailsWhenSampleValueNotSerializable() throws Exception {
+      Field f = new Field();
+      f.setSampleValue(new Object()); // NOT Serializable
+
+      ByteArrayOutputStream bos = new ByteArrayOutputStream();
+      ObjectOutputStream out = new ObjectOutputStream(bos);
+      out.writeObject(f); // should throw
+  }
+
+  @Test(expected = NotSerializableException.class)
+  public void testSerializationFailsWhenDefaultValueNotSerializable() throws Exception {
+      Field f = new Field();
+      f.setDefaultValue(new Object()); // NOT Serializable
+
+      ByteArrayOutputStream bos = new ByteArrayOutputStream();
+      ObjectOutputStream out = new ObjectOutputStream(bos);
+      out.writeObject(f); // should throw
+  }
+    
+    
 }

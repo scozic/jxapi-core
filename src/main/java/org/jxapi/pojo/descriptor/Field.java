@@ -1,5 +1,10 @@
 package org.jxapi.pojo.descriptor;
 
+import java.io.IOException;
+import java.io.NotSerializableException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -198,6 +203,52 @@ public class Field implements Pojo<Field> {
     clone.in = this.in;
     return clone;
   }
+  
+  private void writeObject(ObjectOutputStream out) throws IOException {
+    // Serialize all normal fields
+    out.defaultWriteObject();
+
+    // Validate and write sampleValue
+    if (sampleValue != null && !(sampleValue instanceof Serializable)) {
+        throw new NotSerializableException(
+            "sampleValue must be Serializable but was: " + sampleValue.getClass()
+        );
+    }
+    out.writeObject(sampleValue);
+
+    // Validate and write defaultValue
+    if (defaultValue != null && !(defaultValue instanceof Serializable)) {
+        throw new NotSerializableException(
+            "defaultValue must be Serializable but was: " + defaultValue.getClass()
+        );
+    }
+    out.writeObject(defaultValue);
+}
+
+
+private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
+    // Deserialize all normal fields
+    in.defaultReadObject();
+
+    // Read sampleValue
+    Object sv = in.readObject();
+    if (sv != null && !(sv instanceof Serializable)) {
+        throw new NotSerializableException(
+            "Deserialized sampleValue is not Serializable: " + sv.getClass()
+        );
+    }
+    this.sampleValue = sv;
+
+    // Read defaultValue
+    Object dv = in.readObject();
+    if (dv != null && !(dv instanceof Serializable)) {
+        throw new NotSerializableException(
+            "Deserialized defaultValue is not Serializable: " + dv.getClass()
+        );
+    }
+    this.defaultValue = dv;
+}
+
 
   /**
    * @return The name of the field
