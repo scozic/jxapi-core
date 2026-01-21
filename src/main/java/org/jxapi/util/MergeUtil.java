@@ -70,12 +70,21 @@ public class MergeUtil {
   Map<String, T> merged = new LinkedHashMap<>();
 
   for (T item : Stream.concat(e1.stream(), e2.stream()).toList()) {
-      String id = idExtractor.apply(item);
+    String id = idExtractor.apply(item);
+      
       T existing = merged.get(id);
 
       if (existing == null) {
           merged.put(id, item);
       } else {
+        T mergedItem = null;
+        try {
+          mergedItem = merger.apply(existing, item);
+        }  catch (Exception ex) {
+          throw new IllegalArgumentException(String.format(
+              "Error merging items with id:%s for %s: %s", id, context, ex.getMessage()), 
+              ex);
+        }
           merged.put(id, merger.apply(existing, item));
       }
   }

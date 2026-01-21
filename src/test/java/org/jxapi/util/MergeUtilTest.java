@@ -67,7 +67,7 @@ public class MergeUtilTest {
       Assert.fail("Expected IllegalArgumentException");
     } catch (IllegalArgumentException e) {
       // expected
-      Assert.assertEquals("Conflict: Found duplicate item for list property 'hello' with id:foo", e.getMessage());
+      Assert.assertEquals("Error merging items with id:foo for list property 'hello': Conflict: Found duplicate item for list property 'hello' with id:foo", e.getMessage());
     }
     
   }
