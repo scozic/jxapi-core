@@ -37,7 +37,7 @@ public class ExchangeDemoClassesGeneratorTest {
     Path pkgPath = Paths.get(".");
     checkJavaFilesCount(pkgPath, 2);
     ClassesGeneratorTestUtil.checkSourceFileExists(srcFolder.resolve(BASE_PKG), Paths.get("MyTestExchangeDemoProperties.java"));
-    pkgPath = pkgPath.resolve("marketData");
+    pkgPath = pkgPath.resolve("marketdata");
     checkJavaFilesCount(pkgPath, 1);
     pkgPath = pkgPath.resolve("demo");
     checkJavaFilesCount(pkgPath, 3);
@@ -54,7 +54,7 @@ public class ExchangeDemoClassesGeneratorTest {
     new ExchangeDemoClassesGenerator(exchange, null).generateClasses(srcFolder);
     Path pkgPath = Paths.get(".");
     checkJavaFilesCount(pkgPath, 2);
-    pkgPath = pkgPath.resolve("marketData");
+    pkgPath = pkgPath.resolve("marketdata");
     checkJavaFilesCount(pkgPath, 1);
     pkgPath = pkgPath.resolve("demo");
     checkJavaFilesCount(pkgPath, 1);
@@ -72,7 +72,7 @@ public class ExchangeDemoClassesGeneratorTest {
     ClassesGeneratorTestUtil.checkSourceFileExists(srcFolder.
         resolve(BASE_PKG),
         Paths.get("MyTestExchangeDemoProperties.java"));
-    pkgPath = pkgPath.resolve("marketData");
+    pkgPath = pkgPath.resolve("marketdata");
     checkJavaFilesCount(pkgPath, 1);
     pkgPath = pkgPath.resolve("demo");
     checkJavaFilesCount(pkgPath, 2);
@@ -87,7 +87,7 @@ public class ExchangeDemoClassesGeneratorTest {
   private Path checkSourceFileExists(Path srcFilePath) {
     return ClassesGeneratorTestUtil.checkSourceFileExists(srcFolder.
                                 resolve(BASE_PKG)
-                                .resolve("marketData")
+                                .resolve("marketdata")
                                 .resolve("demo"), 
                                 srcFilePath);
   }

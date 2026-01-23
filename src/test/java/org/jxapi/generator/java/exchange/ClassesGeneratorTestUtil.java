@@ -28,7 +28,7 @@ public class ClassesGeneratorTestUtil {
   public static void checkJavaFilesCount(Path folderPath, int count) {
     File folder = folderPath.toFile();
     if (!folder.exists()) {
-      Assert.assertEquals("Expected " + count + " files but folder does nto exist:" + folderPath, 0, count);
+      Assert.assertEquals("Expected " + count + " files but folder does nto exist:" + folder.getAbsolutePath(), 0, count);
     } else {
       Assert.assertTrue(folderPath + "is not a directory", folder.isDirectory());
       Assert.assertEquals("Expected " + count + " files in " + folder.getAbsolutePath() 
