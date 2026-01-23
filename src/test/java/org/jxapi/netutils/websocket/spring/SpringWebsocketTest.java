@@ -121,7 +121,7 @@ public class SpringWebsocketTest {
   }
   
   private MockWebsocketServerSession popClientConnectEvent() throws TimeoutException {
-    MockWebsocketServerEvent event = server.waitUntilCount(1).pop();
+    MockWebsocketServerEvent event = server.waitUntilCount(1, 1000000).pop();
     Assert.assertEquals(MockWebsocketServerEventType.CLIENT_CONNECT, event.getType());
     MockWebsocketServerSession session = event.getSession();
     Assert.assertNotNull(session);

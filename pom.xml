@@ -10,8 +10,7 @@
 	<version>0.22.1-SNAPSHOT</version>
 
 	<name>jxapi-core</name>
-	<!-- FIXME change it to the project's website -->
-	<url>http://www.example.com</url>
+	<url>https://github.com/scozic/jxapi.git</url>
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -28,21 +27,21 @@
 
 		<maven.compiler.plugin.version>3.10.1</maven.compiler.plugin.version>
 		<jacoco.version>0.8.13</jacoco.version>
-		<log4j.version>2.19.0</log4j.version>
-		<jackson.version>2.14.2</jackson.version>
-		<apache.commons.version>3.12.0</apache.commons.version>
-		<apache.commons.text.version>1.10.0</apache.commons.text.version>
-		<commons.codec.version>1.15</commons.codec.version>
-		<spring.version>5.2.2.RELEASE</spring.version>
-		<tyrus.version>1.9</tyrus.version>
-		<snakeyaml.version>2.3</snakeyaml.version>
+		<log4j.version>2.25.3</log4j.version>
+		<jackson.version>2.21.0</jackson.version>
+		<apache.commons.version>3.20.0</apache.commons.version>
+		<apache.commons.text.version>1.15.0</apache.commons.text.version>
+		<commons.codec.version>1.20.0</commons.codec.version>
+		<spring.version>7.0.3</spring.version>
+		<tyrus.version>2.2.1</tyrus.version>
+		<snakeyaml.version>2.5</snakeyaml.version>
 	</properties>
 
 	<dependencies>
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
-			<version>4.11</version>
+			<version>4.13.2</version>
 			<scope>test</scope>
 		</dependency>
 

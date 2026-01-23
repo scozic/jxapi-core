@@ -4,7 +4,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.websocket.DeploymentException;
+import jakarta.websocket.DeploymentException;
+
 
 import org.glassfish.tyrus.server.Server;
 import org.slf4j.Logger;
@@ -62,7 +63,7 @@ public class MockWebsocketServer extends GenericObserver<MockWebsocketServerEven
   }
   
   private void handle(MockWebsocketServerEvent e) {
-    if (!isStarted() || !e.getSession().getUri().equals(uri)) {
+    if (!isStarted() || !e.getSession().getUri().equals(url)) {
       return;
     }
     log.debug("handle:{}", e);
