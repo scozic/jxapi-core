@@ -77,15 +77,13 @@ public class MergeUtil {
       if (existing == null) {
           merged.put(id, item);
       } else {
-        T mergedItem = null;
         try {
-          mergedItem = merger.apply(existing, item);
-        }  catch (Exception ex) {
+          merged.put(id, merger.apply(existing, item));
+        }  catch (IllegalArgumentException ex) {
           throw new IllegalArgumentException(String.format(
               "Error merging items with id:%s for %s: %s", id, context, ex.getMessage()), 
               ex);
         }
-          merged.put(id, merger.apply(existing, item));
       }
   }
 
