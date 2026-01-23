@@ -54,23 +54,25 @@ import org.slf4j.LoggerFactory;
  * 
  */
 public class ExchangeGeneratorMain {
-  
+
   private static final Logger log = LoggerFactory.getLogger(ExchangeGeneratorMain.class);
+  
+  private static final String JXAPI = "jxapi";
   
   /**
    * Folder where exchange descriptor files are located in the wrapper project.
      */
-  public static final Path DESCRIPTOR_FOLDER = Paths.get("src", "main", "resources", "jxapi", "exchange");
+  public static final Path DESCRIPTOR_FOLDER = Paths.get("src", "main", "resources", JXAPI, "exchange");
   
   /**
    * Default folder where to generate main sources
    */
-  public static final Path DEFAULT_GENERATED_SOURCES_FOLDER = Paths.get("target", "generated-sources", "jxapi");
+  public static final Path DEFAULT_GENERATED_SOURCES_FOLDER = Paths.get("target", "generated-sources", JXAPI);
   
   /**
    * Default folder where to generate test sources
    */
-  public static final Path DEFAULT_GENERATED_TEST_SOURCES_FOLDER = Paths.get("target", "generated-test-sources", "jxapi");
+  public static final Path DEFAULT_GENERATED_TEST_SOURCES_FOLDER = Paths.get("target", "generated-test-sources", JXAPI);
   
   /**
    * Key for system property that can be passed to JVM running
@@ -107,7 +109,7 @@ public class ExchangeGeneratorMain {
    * descriptor files in the current project "src/main/resources/" folder.
    * 
    * @param args Not used
-   * @see #generateExchangeWrappersInCurrentProject(String, String, String)
+   * @see #generateExchangeWrappersInCurrentProject(String, String, String, String, String)
    */
   public static void main(String[] args) {
     try {
@@ -133,7 +135,7 @@ public class ExchangeGeneratorMain {
    * Generate exchange API wrappers for all exchange descriptor files in the
    * current project "src/main/resources/" folder. Will walk through all files in
    * the folder and generate Java code for each file ending with 'Descriptor.json'
-   * using {@link #generateExchangeWrapperAndDemos(ExchangeDescriptor, Path, String, String)}.
+   * using {@link #generateExchangeWrapperAndDemos(ExchangeDescriptor, Path, Path, Path, String, String)}.
    * 
    * @param baseProjectDir Base project directory where the generated code will be written
    * @param mainSrcDirectory The main source directory relative to project folder where to write generated code
@@ -142,7 +144,7 @@ public class ExchangeGeneratorMain {
    * @param baseSrcUrl The base url for sources on public repo, used for links generation.
    * 
    * @throws Exception If error occurs during generation
-   * @see #generateExchangeWrapperAndDemos(ExchangeDescriptor, Path, String, String)
+   * @see #generateExchangeWrapperAndDemos(ExchangeDescriptor, Path, Path, Path, String, String)
    */
   public static final void generateExchangeWrappersInCurrentProject(
       String baseProjectDir, 
@@ -310,13 +312,14 @@ public class ExchangeGeneratorMain {
     configProperties.addAll(Optional.ofNullable(exchangeDescriptor.getProperties()).orElse(List.of()));
     PlaceHolderResolver valuesPlaceHolderResolver = PlaceHolderResolver.create(ExchangeGenUtil.getValuesReplacements(exchangeDescriptor));
     PlaceHolderResolver descriptionPlaceHolderResolver = PlaceHolderResolver
-        .create(ExchangeGenUtil.getDescriptionReplacements(exchangeDescriptor, null));
-    new ExchangeDemoPropertiesTemplateGenerator(exchangeDescriptor.getId(), 
-                        configProperties, 
-                        demoProperties,
-                        valuesPlaceHolderResolver,
-                        descriptionPlaceHolderResolver)
-      .writeJavaFile(filePath);
+      .create(ExchangeGenUtil.getDescriptionReplacements(exchangeDescriptor, null));
+    new ExchangeDemoPropertiesTemplateGenerator(
+      exchangeDescriptor.getId(), 
+      configProperties, 
+      demoProperties,
+      valuesPlaceHolderResolver,
+      descriptionPlaceHolderResolver)
+    .writeJavaFile(filePath);
   }
 
 }

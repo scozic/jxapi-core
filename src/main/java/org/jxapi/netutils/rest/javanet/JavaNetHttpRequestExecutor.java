@@ -61,9 +61,18 @@ public class JavaNetHttpRequestExecutor extends AbstractHttpRequestExecutor {
   /**
    * Creates a new instance of this class. Will create and manage its own
    * HttpClient and ExecutorService.
+   * @param name The name prefix to use for threads created by the internal executor service
    */
-  public JavaNetHttpRequestExecutor() {
-    this(HttpClient.newHttpClient(), createJavaNetHttpClientExecutorService("HTTP"), true);
+  public JavaNetHttpRequestExecutor(String name) {
+    this(createJavaNetHttpClientExecutorService(name));
+  }
+  
+  private JavaNetHttpRequestExecutor(ExecutorService executorService) {
+	this(java.net.http.HttpClient.newBuilder()
+	         .executor(executorService)
+	         .build(), 
+	     executorService, 
+	     true);
   }
 
   /**

@@ -1,8 +1,12 @@
 package org.jxapi.exchange.descriptor;
 
+import java.io.IOException;
+import java.io.NotSerializableException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
 import org.jxapi.exchange.descriptor.gen.ConstantDescriptor;
 import org.jxapi.pojo.descriptor.Type;
@@ -105,7 +109,7 @@ public class Constant implements Pojo<Constant> {
   public static List<Constant> fromDescriptors(List<ConstantDescriptor> descriptors) {
     return CollectionUtil.emptyIfNull(descriptors).stream()
         .map(Constant::fromConstantDescriptor)
-        .collect(Collectors.toList());
+        .toList();
   }
 
   private String name;
@@ -246,6 +250,34 @@ public class Constant implements Pojo<Constant> {
     }
     return CompareUtil.compare(this.name, o.name);
   }
+  
+  private void writeObject(ObjectOutputStream out) throws IOException {
+    // Serialize all normal fields
+    out.defaultWriteObject();
+
+    // Validate and write sampleValue
+    if (value != null && !(value instanceof Serializable)) {
+        throw new NotSerializableException(
+            "sampleValue must be Serializable but was: " + value.getClass()
+        );
+    }
+    out.writeObject(value);
+}
+
+
+private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
+    // Deserialize all normal fields
+    in.defaultReadObject();
+
+    // Read sampleValue
+    Object sv = in.readObject();
+    if (sv != null && !(sv instanceof Serializable)) {
+        throw new NotSerializableException(
+            "Deserialized sampleValue is not Serializable: " + sv.getClass()
+        );
+    }
+    this.value = sv;
+}
 
   /**
    * @return String representation of the constant, see

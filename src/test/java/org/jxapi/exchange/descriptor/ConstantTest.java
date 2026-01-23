@@ -1,5 +1,14 @@
 package org.jxapi.exchange.descriptor;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.NotSerializableException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
@@ -271,4 +280,70 @@ public class ConstantTest {
       Assert.assertEquals("Second constant", constant2.getDescription());
       Assert.assertEquals(2, constant2.getValue());
     }
+    
+    private Constant roundTrip(Constant c) throws Exception {
+      ByteArrayOutputStream bos = new ByteArrayOutputStream();
+      ObjectOutputStream out = new ObjectOutputStream(bos);
+      out.writeObject(c);
+      out.close();
+
+      ByteArrayInputStream bis = new ByteArrayInputStream(bos.toByteArray());
+      ObjectInputStream in = new ObjectInputStream(bis);
+      Constant clone = (Constant) in.readObject();
+      in.close();
+
+      return clone;
+  }
+
+  @Test
+  public void testSerializationWithSerializableValue() throws Exception {
+      Constant c = new Constant();
+      c.setName("PI");
+      c.setDescription("Math constant");
+      c.setType(Type.BIGDECIMAL);
+      c.setValue("3.14159"); // Serializable
+
+      Constant clone = roundTrip(c);
+
+      assertEquals("PI", clone.getName());
+      assertEquals("Math constant", clone.getDescription());
+      assertEquals(Type.BIGDECIMAL, clone.getType());
+      assertEquals("3.14159", clone.getValue());
+  }
+
+  @Test
+  public void testSerializationWithNullValue() throws Exception {
+      Constant c = new Constant();
+      c.setName("NULL_TEST");
+      c.setValue(null);
+
+      Constant clone = roundTrip(c);
+
+      assertNull(clone.getValue());
+      assertEquals("NULL_TEST", clone.getName());
+  }
+
+  @Test(expected = NotSerializableException.class)
+  public void testSerializationFailsWhenValueNotSerializable() throws Exception {
+      Constant c = new Constant();
+      c.setValue(new Object()); // NOT Serializable
+
+      ByteArrayOutputStream bos = new ByteArrayOutputStream();
+      ObjectOutputStream out = new ObjectOutputStream(bos);
+      out.writeObject(c); // should throw
+  }
+
+  @Test
+  public void testSerializationOfGroupConstant() throws Exception {
+      Constant child = Constant.create("CHILD", Type.STRING, "child desc", "value");
+      Constant parent = Constant.createGroup("PARENT", "parent desc", List.of(child));
+
+      Constant clone = roundTrip(parent);
+
+      assertEquals("PARENT", clone.getName());
+      assertEquals("parent desc", clone.getDescription());
+      assertNotNull(clone.getConstants());
+      assertEquals(1, clone.getConstants().size());
+      assertEquals("CHILD", clone.getConstants().get(0).getName());
+  }
 }

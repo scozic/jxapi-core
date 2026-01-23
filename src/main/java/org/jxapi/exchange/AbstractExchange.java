@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Properties;
-import java.util.concurrent.ExecutorService;
 
 import org.apache.commons.lang3.StringUtils;
 import org.jxapi.netutils.DefaultNetwork;
@@ -17,14 +16,14 @@ import org.jxapi.netutils.rest.HttpRequestInterceptor;
 import org.jxapi.netutils.rest.HttpRequestInterceptorFactory;
 import org.jxapi.netutils.rest.javanet.JavaNetHttpRequestExecutor;
 import org.jxapi.netutils.rest.ratelimits.RequestThrottler;
-import org.jxapi.netutils.websocket.DefaultWebsocketFactory;
 import org.jxapi.netutils.websocket.DefaultWebsocketClient;
+import org.jxapi.netutils.websocket.DefaultWebsocketFactory;
 import org.jxapi.netutils.websocket.Websocket;
+import org.jxapi.netutils.websocket.WebsocketClient;
 import org.jxapi.netutils.websocket.WebsocketErrorHandler;
 import org.jxapi.netutils.websocket.WebsocketFactory;
 import org.jxapi.netutils.websocket.WebsocketHook;
 import org.jxapi.netutils.websocket.WebsocketHookFactory;
-import org.jxapi.netutils.websocket.WebsocketClient;
 import org.jxapi.observability.Observable;
 import org.jxapi.observability.SynchronizedObservable;
 import org.jxapi.util.DefaultDisposable;
@@ -79,8 +78,7 @@ public abstract class AbstractExchange extends DefaultDisposable implements Exch
   
   protected final RequestThrottler requestThrottler;
   
-  private java.net.http.HttpClient defaultJavaNetHttpClient;
-  private ExecutorService defaultJavaNetHttpClientExecutorService;
+  private HttpRequestExecutor defaultHttpRequestExecutor;
 
   private String httpUrl;
   
@@ -171,8 +169,8 @@ public abstract class AbstractExchange extends DefaultDisposable implements Exch
     if (requestThrottler != null) {
       requestThrottler.dispose();
     }
-    if (defaultJavaNetHttpClientExecutorService != null) {
-      defaultJavaNetHttpClientExecutorService.shutdown();
+    if (defaultHttpRequestExecutor != null) {
+    	defaultHttpRequestExecutor.dispose();
     }
     network.dispose();
   }
@@ -214,7 +212,10 @@ public abstract class AbstractExchange extends DefaultDisposable implements Exch
     if  (httpRequestExecutorFactoryClass != null) {
       httpRequestExecutor = (HttpRequestExecutorFactory.fromClassName(httpRequestExecutorFactoryClass)).createExecutor(this);
     } else {
-      httpRequestExecutor = new JavaNetHttpRequestExecutor(getDefaultJavaNetHttpClient(), defaultJavaNetHttpClientExecutorService);
+      if (defaultHttpRequestExecutor == null) {
+    	defaultHttpRequestExecutor = new JavaNetHttpRequestExecutor(id + "-" + name + "-http-");
+      }
+      httpRequestExecutor = defaultHttpRequestExecutor;
     }
     defaultRequestTimeout = Optional
         .ofNullable(defaultRequestTimeout)
@@ -227,17 +228,6 @@ public abstract class AbstractExchange extends DefaultDisposable implements Exch
       httpRequestExecutor.setRequestTimeout(requestTimeout);
     }
     createHttpClient(clientId, httpRequestInterceptorFactoryClass, httpRequestExecutor);
-  }
-  
-  private java.net.http.HttpClient getDefaultJavaNetHttpClient() {
-    if (defaultJavaNetHttpClient == null) {
-     defaultJavaNetHttpClientExecutorService = JavaNetHttpRequestExecutor.
-         createJavaNetHttpClientExecutorService(id + "-" + name + "-http-");
-     defaultJavaNetHttpClient = java.net.http.HttpClient.newBuilder()
-         .executor(defaultJavaNetHttpClientExecutorService)
-         .build();
-    }
-   return defaultJavaNetHttpClient;
   }
   
   private void createHttpClient(

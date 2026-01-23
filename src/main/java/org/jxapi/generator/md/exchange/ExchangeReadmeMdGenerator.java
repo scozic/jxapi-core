@@ -6,17 +6,16 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
-import org.jxapi.exchange.descriptor.gen.ConfigPropertyDescriptor;
 import org.jxapi.exchange.descriptor.Constant;
+import org.jxapi.exchange.descriptor.gen.ConfigPropertyDescriptor;
 import org.jxapi.exchange.descriptor.gen.ExchangeApiDescriptor;
 import org.jxapi.exchange.descriptor.gen.ExchangeDescriptor;
 import org.jxapi.exchange.descriptor.gen.RestEndpointDescriptor;
 import org.jxapi.exchange.descriptor.gen.WebsocketEndpointDescriptor;
-import org.jxapi.generator.html.XmlElement;
 import org.jxapi.generator.html.HtmlGenUtil;
+import org.jxapi.generator.html.XmlElement;
 import org.jxapi.generator.java.JavaCodeGenUtil;
 import org.jxapi.generator.java.exchange.ExchangeGenUtil;
 import org.jxapi.generator.java.exchange.api.ExchangeApiGenUtil;
@@ -337,11 +336,11 @@ public class ExchangeReadmeMdGenerator {
         .child(XmlElement.builder().tag("caption").content(tableName).build())
         .child(XmlElement.builder().tag("tr").children(columns.stream()
             .map(col -> XmlElement.builder().tag("th").content(col).build())
-            .collect(Collectors.toList())
+            .toList()
           ).build())
         .children(cells.stream()
             .map(row -> XmlElement.builder().tag("tr").children(row).build())
-            .collect(Collectors.toList()))
+            .toList())
         .build();
     return HtmlGenUtil.generateHtmlForElement(tableElement);
   }

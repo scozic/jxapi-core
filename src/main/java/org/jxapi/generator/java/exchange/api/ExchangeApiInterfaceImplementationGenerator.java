@@ -8,7 +8,6 @@ import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.TreeMap;
 import java.util.function.Function;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.apache.commons.lang3.StringUtils;
@@ -234,21 +233,21 @@ public class ExchangeApiInterfaceImplementationGenerator extends JavaTypeGenerat
     wsClientStaticVariables = ExchangeGenUtil.generateWebsocketClientNamesStaticVariablesDeclarations(network, null);
     
     restEndpointVariables = JavaCodeGenUtil.getUniqueCamelCaseVariableNames(
-          restApis.stream().map(RestEndpointDescriptor::getName).collect(Collectors.toList()),
+          restApis.stream().map(RestEndpointDescriptor::getName).toList(),
           false);
     
     wsEndpointVariables = JavaCodeGenUtil.getUniqueCamelCaseVariableNames(
-          wsApis.stream().map(WebsocketEndpointDescriptor::getName).collect(Collectors.toList()),
+          wsApis.stream().map(WebsocketEndpointDescriptor::getName).toList(),
           false);
     
     restEndpointNamesStaticVariables = ExchangeGenUtil.generateNamesStaticVariablesDeclarations(
-        restApis.stream().map(RestEndpointDescriptor::getName).collect(Collectors.toList()), 
+        restApis.stream().map(RestEndpointDescriptor::getName).toList(), 
         "RestApi", 
         null,
         "");
     
     wsEndpointNamesStaticVariables = ExchangeGenUtil.generateNamesStaticVariablesDeclarations(
-        wsApis.stream().map(WebsocketEndpointDescriptor::getName).collect(Collectors.toList()), 
+        wsApis.stream().map(WebsocketEndpointDescriptor::getName).toList(), 
         "WsApi", 
         null,
         "");
@@ -929,7 +928,7 @@ public class ExchangeApiInterfaceImplementationGenerator extends JavaTypeGenerat
         + JavaCodeGenUtil.getGetAccessorMethodName(
           f.getName(),
           type,
-          sieblings.stream().map(Field::getName).collect(Collectors.toList())) 
+          sieblings.stream().map(Field::getName).toList()) 
         + "()";
     }
     if (fieldUrlParamType == null 

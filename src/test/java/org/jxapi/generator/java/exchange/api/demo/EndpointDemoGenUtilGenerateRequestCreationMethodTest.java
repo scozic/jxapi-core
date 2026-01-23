@@ -75,28 +75,29 @@ public class EndpointDemoGenUtilGenerateRequestCreationMethodTest {
                   .build();
     
     checkCreateRestRequestMethodGeneration(param,
-        "/**\n"
-        + " * Creates a sample value for the myObjParam field of type MyExchangeMyApiMyRestEndpointRequest using sample value(s) defined in demo configuration properties.\n"
-        + " * \n"
-        + " * @param properties the configuration properties to use for the sample value generation.\n"
-        + " */\n"
-        + "public static MyExchangeMyApiMyRestEndpointRequest createMyObjParam(Properties properties) {\n"
-        + "  return Optional\n"
-        + "    .ofNullable(new MyExchangeMyApiMyRestEndpointRequestDeserializer().deserialize(MyExchangeDemoProperties.MyApi.Rest.MyRestEndpoint.getMyObjParam(properties)))\n"
-        + "    .orElse(MyExchangeMyApiMyRestEndpointRequest.builder()  \n"
-        + "      .foo(MyExchangeDemoProperties.MyApi.Rest.MyRestEndpoint.MyObjParam.getFoo(properties))\n"
-        + "      .hello(MyExchangeDemoProperties.MyApi.Rest.MyRestEndpoint.MyObjParam.getHello(properties))\n"
-        + "      .bar(Optional\n"
-        + "        .ofNullable(new ListJsonFieldDeserializer<>(new MyExchangeMyApiMyRestEndpointRequestBarDeserializer()).deserialize(MyExchangeDemoProperties.MyApi.Rest.MyRestEndpoint.MyObjParam.getBar(properties)))\n"
-        + "        .orElse(List.of(MyExchangeMyApiMyRestEndpointRequestBar.builder()  \n"
-        + "          .id(MyExchangeDemoProperties.MyApi.Rest.MyRestEndpoint.MyObjParam.Bar.getId(properties))\n"
-        + "          .enabled(MyExchangeDemoProperties.MyApi.Rest.MyRestEndpoint.MyObjParam.Bar.isEnabled(properties))\n"
-        + "          .time(MyExchangeDemoProperties.MyApi.Rest.MyRestEndpoint.MyObjParam.Bar.getTime(properties))\n"
-        + "          .bestBids(new MapJsonFieldDeserializer<>(new ListJsonFieldDeserializer<>(BigDecimalJsonFieldDeserializer.getInstance())).deserialize(MyExchangeDemoProperties.MyApi.Rest.MyRestEndpoint.MyObjParam.Bar.getBestBids(properties)))\n"
-        + "          .build())))\n"
-        + "      .build());\n"
-        + "}\n"
-        + "",  
+        """
+/**
+ * Creates a sample value for the myObjParam field of type MyExchangeMyApiMyRestEndpointRequest using sample value(s) defined in demo configuration properties.
+ *\s
+ * @param properties the configuration properties to use for the sample value generation.
+ */
+public static MyExchangeMyApiMyRestEndpointRequest createMyObjParam(Properties properties) {
+  return Optional
+    .ofNullable(new MyExchangeMyApiMyRestEndpointRequestDeserializer().deserialize(MyExchangeDemoProperties.MyApi.Rest.MyRestEndpoint.getMyObjParam(properties)))
+    .orElse(MyExchangeMyApiMyRestEndpointRequest.builder()\s\s
+      .foo(MyExchangeDemoProperties.MyApi.Rest.MyRestEndpoint.MyObjParam.getFoo(properties))
+      .hello(MyExchangeDemoProperties.MyApi.Rest.MyRestEndpoint.MyObjParam.getHello(properties))
+      .bar(Optional
+        .ofNullable(new ListJsonFieldDeserializer<>(new MyExchangeMyApiMyRestEndpointRequestBarDeserializer()).deserialize(MyExchangeDemoProperties.MyApi.Rest.MyRestEndpoint.MyObjParam.getBar(properties)))
+        .orElse(List.of(MyExchangeMyApiMyRestEndpointRequestBar.builder()\s\s
+          .id(MyExchangeDemoProperties.MyApi.Rest.MyRestEndpoint.MyObjParam.Bar.getId(properties))
+          .enabled(MyExchangeDemoProperties.MyApi.Rest.MyRestEndpoint.MyObjParam.Bar.isEnabled(properties))
+          .time(MyExchangeDemoProperties.MyApi.Rest.MyRestEndpoint.MyObjParam.Bar.getTime(properties))
+          .bestBids(new MapJsonFieldDeserializer<>(new ListJsonFieldDeserializer<>(BigDecimalJsonFieldDeserializer.getInstance())).deserialize(MyExchangeDemoProperties.MyApi.Rest.MyRestEndpoint.MyObjParam.Bar.getBestBids(properties)))
+          .build())))
+      .build());
+}
+""",  
          List.class,
          Optional.class,
          Properties.class,
@@ -118,14 +119,16 @@ public class EndpointDemoGenUtilGenerateRequestCreationMethodTest {
                .sampleValue(List.of(1,3,5,7))
                .build();
     checkCreateRestRequestMethodGeneration(param,
-        "/**\n"
-        + " * Creates a sample value for the myIntListParam field of type List<Integer> using sample value(s) defined in demo configuration properties.\n"
-        + " * \n"
-        + " * @param properties the configuration properties to use for the sample value generation.\n"
-        + " */\n"
-        + "public static List<Integer> createMyIntListParam(Properties properties) {\n"
-        + "  return new ListJsonFieldDeserializer<>(IntegerJsonFieldDeserializer.getInstance()).deserialize(MyExchangeDemoProperties.MyApi.Rest.MyRestEndpoint.getMyIntListParam(properties));\n"
-        + "}\n",
+        """
+/**
+ * Creates a sample value for the myIntListParam field of type List<Integer> using sample value(s) defined in demo configuration properties.
+ *\s
+ * @param properties the configuration properties to use for the sample value generation.
+ */
+public static List<Integer> createMyIntListParam(Properties properties) {
+  return new ListJsonFieldDeserializer<>(IntegerJsonFieldDeserializer.getInstance()).deserialize(MyExchangeDemoProperties.MyApi.Rest.MyRestEndpoint.getMyIntListParam(properties));
+}
+""",
            List.class,
            Properties.class,
            "com.x.gen.MyExchangeDemoProperties",
@@ -141,14 +144,16 @@ public class EndpointDemoGenUtilGenerateRequestCreationMethodTest {
                .sampleValue("[\"BTC\",\"ETH\"]")
                .build();
     checkCreateRestRequestMethodGeneration(param,
-        "/**\n"
-        + " * Creates a sample value for the myStringListParam field of type List<String> using sample value(s) defined in demo configuration properties.\n"
-        + " * \n"
-        + " * @param properties the configuration properties to use for the sample value generation.\n"
-        + " */\n"
-        + "public static List<String> createMyStringListParam(Properties properties) {\n"
-        + "  return new ListJsonFieldDeserializer<>(StringJsonFieldDeserializer.getInstance()).deserialize(MyExchangeDemoProperties.MyApi.Rest.MyRestEndpoint.getMyStringListParam(properties));\n"
-        + "}\n",
+        """
+/**
+ * Creates a sample value for the myStringListParam field of type List<String> using sample value(s) defined in demo configuration properties.
+ *\s
+ * @param properties the configuration properties to use for the sample value generation.
+ */
+public static List<String> createMyStringListParam(Properties properties) {
+  return new ListJsonFieldDeserializer<>(StringJsonFieldDeserializer.getInstance()).deserialize(MyExchangeDemoProperties.MyApi.Rest.MyRestEndpoint.getMyStringListParam(properties));
+}
+""",
            List.class,
            Properties.class,
            "com.x.gen.MyExchangeDemoProperties",
@@ -164,15 +169,16 @@ public class EndpointDemoGenUtilGenerateRequestCreationMethodTest {
                .sampleValue("[1234567890,9876543210]")
                .build();
     checkCreateRestRequestMethodGeneration(param,
-        "/**\n"
-        + " * Creates a sample value for the myLongListParam field of type List<Long> using sample value(s) defined in demo configuration properties.\n"
-        + " * \n"
-        + " * @param properties the configuration properties to use for the sample value generation.\n"
-        + " */\n"
-        + "public static List<Long> createMyLongListParam(Properties properties) {\n"
-        + "  return new ListJsonFieldDeserializer<>(LongJsonFieldDeserializer.getInstance()).deserialize(MyExchangeDemoProperties.MyApi.Rest.MyRestEndpoint.getMyLongListParam(properties));\n"
-        + "}\n"
-        + "",
+        """
+/**
+ * Creates a sample value for the myLongListParam field of type List<Long> using sample value(s) defined in demo configuration properties.
+ *\s
+ * @param properties the configuration properties to use for the sample value generation.
+ */
+public static List<Long> createMyLongListParam(Properties properties) {
+  return new ListJsonFieldDeserializer<>(LongJsonFieldDeserializer.getInstance()).deserialize(MyExchangeDemoProperties.MyApi.Rest.MyRestEndpoint.getMyLongListParam(properties));
+}
+""",
         List.class, 
         Properties.class,
         "com.x.gen.MyExchangeDemoProperties",
@@ -188,15 +194,16 @@ public class EndpointDemoGenUtilGenerateRequestCreationMethodTest {
                .sampleValue("[1234.56789,9876.54321]")
                .build();
     checkCreateRestRequestMethodGeneration(param,
-        "/**\n"
-        + " * Creates a sample value for the myBigDecimalListParam field of type List<BigDecimal> using sample value(s) defined in demo configuration properties.\n"
-        + " * \n"
-        + " * @param properties the configuration properties to use for the sample value generation.\n"
-        + " */\n"
-        + "public static List<BigDecimal> createMyBigDecimalListParam(Properties properties) {\n"
-        + "  return new ListJsonFieldDeserializer<>(BigDecimalJsonFieldDeserializer.getInstance()).deserialize(MyExchangeDemoProperties.MyApi.Rest.MyRestEndpoint.getMyBigDecimalListParam(properties));\n"
-        + "}\n"
-        + "",
+        """
+/**
+ * Creates a sample value for the myBigDecimalListParam field of type List<BigDecimal> using sample value(s) defined in demo configuration properties.
+ *\s
+ * @param properties the configuration properties to use for the sample value generation.
+ */
+public static List<BigDecimal> createMyBigDecimalListParam(Properties properties) {
+  return new ListJsonFieldDeserializer<>(BigDecimalJsonFieldDeserializer.getInstance()).deserialize(MyExchangeDemoProperties.MyApi.Rest.MyRestEndpoint.getMyBigDecimalListParam(properties));
+}
+""",
         BigDecimal.class,
         List.class,
         Properties.class,
@@ -213,15 +220,16 @@ public class EndpointDemoGenUtilGenerateRequestCreationMethodTest {
            .sampleValue("[true, false]")
            .build();
     checkCreateRestRequestMethodGeneration(param,
-        "/**\n"
-        + " * Creates a sample value for the myBooleanListParam field of type List<Boolean> using sample value(s) defined in demo configuration properties.\n"
-        + " * \n"
-        + " * @param properties the configuration properties to use for the sample value generation.\n"
-        + " */\n"
-        + "public static List<Boolean> createMyBooleanListParam(Properties properties) {\n"
-        + "  return new ListJsonFieldDeserializer<>(BooleanJsonFieldDeserializer.getInstance()).deserialize(MyExchangeDemoProperties.MyApi.Rest.MyRestEndpoint.getMyBooleanListParam(properties));\n"
-        + "}\n"
-        + "",
+        """
+/**
+ * Creates a sample value for the myBooleanListParam field of type List<Boolean> using sample value(s) defined in demo configuration properties.
+ *\s
+ * @param properties the configuration properties to use for the sample value generation.
+ */
+public static List<Boolean> createMyBooleanListParam(Properties properties) {
+  return new ListJsonFieldDeserializer<>(BooleanJsonFieldDeserializer.getInstance()).deserialize(MyExchangeDemoProperties.MyApi.Rest.MyRestEndpoint.getMyBooleanListParam(properties));
+}
+""",
         List.class,
         Properties.class,
         "com.x.gen.MyExchangeDemoProperties",
@@ -246,20 +254,21 @@ public class EndpointDemoGenUtilGenerateRequestCreationMethodTest {
                            .build())
                .build();
     checkCreateRestRequestMethodGeneration(param,
-        "/**\n"
-        + " * Creates a sample value for the myObjListParam field of type List<List<MyExchangeMyApiMyRestEndpointRequest>> using sample value(s) defined in demo configuration properties.\n"
-        + " * \n"
-        + " * @param properties the configuration properties to use for the sample value generation.\n"
-        + " */\n"
-        + "public static List<List<MyExchangeMyApiMyRestEndpointRequest>> createMyObjListParam(Properties properties) {\n"
-        + "  return Optional\n"
-        + "    .ofNullable(new ListJsonFieldDeserializer<>(new ListJsonFieldDeserializer<>(new MyExchangeMyApiMyRestEndpointRequestDeserializer())).deserialize(MyExchangeDemoProperties.MyApi.Rest.MyRestEndpoint.getMyObjListParam(properties)))\n"
-        + "    .orElse(List.of(List.of(MyExchangeMyApiMyRestEndpointRequest.builder()  \n"
-        + "      .foo(MyExchangeDemoProperties.MyApi.Rest.MyRestEndpoint.MyObjListParam.getFoo(properties))\n"
-        + "      .hello(MyExchangeDemoProperties.MyApi.Rest.MyRestEndpoint.MyObjListParam.getHello(properties))\n"
-        + "      .build())));\n"
-        + "}\n"
-        + "",
+        """
+/**
+ * Creates a sample value for the myObjListParam field of type List<List<MyExchangeMyApiMyRestEndpointRequest>> using sample value(s) defined in demo configuration properties.
+ *\s
+ * @param properties the configuration properties to use for the sample value generation.
+ */
+public static List<List<MyExchangeMyApiMyRestEndpointRequest>> createMyObjListParam(Properties properties) {
+  return Optional
+    .ofNullable(new ListJsonFieldDeserializer<>(new ListJsonFieldDeserializer<>(new MyExchangeMyApiMyRestEndpointRequestDeserializer())).deserialize(MyExchangeDemoProperties.MyApi.Rest.MyRestEndpoint.getMyObjListParam(properties)))
+    .orElse(List.of(List.of(MyExchangeMyApiMyRestEndpointRequest.builder()\s\s
+      .foo(MyExchangeDemoProperties.MyApi.Rest.MyRestEndpoint.MyObjListParam.getFoo(properties))
+      .hello(MyExchangeDemoProperties.MyApi.Rest.MyRestEndpoint.MyObjListParam.getHello(properties))
+      .build())));
+}
+""",
         List.class, 
         Optional.class,
         Properties.class,
@@ -286,15 +295,16 @@ public class EndpointDemoGenUtilGenerateRequestCreationMethodTest {
                            .build())
                .build();
     checkCreateRestRequestMethodGeneration(param,
-        "/**\n"
-        + " * Creates a sample value for the myObjMapParam field of type Map<String, MyExchangeMyApiMyRestEndpointRequest> using sample value(s) defined in demo configuration properties.\n"
-        + " * \n"
-        + " * @param properties the configuration properties to use for the sample value generation.\n"
-        + " */\n"
-        + "public static Map<String, MyExchangeMyApiMyRestEndpointRequest> createMyObjMapParam(Properties properties) {\n"
-        + "  return new MapJsonFieldDeserializer<>(new MyExchangeMyApiMyRestEndpointRequestDeserializer()).deserialize(MyExchangeDemoProperties.MyApi.Rest.MyRestEndpoint.getMyObjMapParam(properties));\n"
-        + "}\n"
-        + "",
+        """
+/**
+ * Creates a sample value for the myObjMapParam field of type Map<String, MyExchangeMyApiMyRestEndpointRequest> using sample value(s) defined in demo configuration properties.
+ *\s
+ * @param properties the configuration properties to use for the sample value generation.
+ */
+public static Map<String, MyExchangeMyApiMyRestEndpointRequest> createMyObjMapParam(Properties properties) {
+  return new MapJsonFieldDeserializer<>(new MyExchangeMyApiMyRestEndpointRequestDeserializer()).deserialize(MyExchangeDemoProperties.MyApi.Rest.MyRestEndpoint.getMyObjMapParam(properties));
+}
+""",
         Map.class, 
         Properties.class,
         "com.x.gen.MyExchangeDemoProperties",
@@ -321,15 +331,16 @@ public class EndpointDemoGenUtilGenerateRequestCreationMethodTest {
                .build();
     
     checkCreateRestRequestMethodGeneration(param,
-        "/**\n"
-        + " * Creates a sample value for the myObjMapListMapParam field of type Map<String, List<Map<String, MyExchangeMyApiMyRestEndpointRequest>>> using sample value(s) defined in demo configuration properties.\n"
-        + " * \n"
-        + " * @param properties the configuration properties to use for the sample value generation.\n"
-        + " */\n"
-        + "public static Map<String, List<Map<String, MyExchangeMyApiMyRestEndpointRequest>>> createMyObjMapListMapParam(Properties properties) {\n"
-        + "  return new MapJsonFieldDeserializer<>(new ListJsonFieldDeserializer<>(new MapJsonFieldDeserializer<>(new MyExchangeMyApiMyRestEndpointRequestDeserializer()))).deserialize(MyExchangeDemoProperties.MyApi.Rest.MyRestEndpoint.getMyObjMapListMapParam(properties));\n"
-        + "}\n"
-        + "",
+        """
+/**
+ * Creates a sample value for the myObjMapListMapParam field of type Map<String, List<Map<String, MyExchangeMyApiMyRestEndpointRequest>>> using sample value(s) defined in demo configuration properties.
+ *\s
+ * @param properties the configuration properties to use for the sample value generation.
+ */
+public static Map<String, List<Map<String, MyExchangeMyApiMyRestEndpointRequest>>> createMyObjMapListMapParam(Properties properties) {
+  return new MapJsonFieldDeserializer<>(new ListJsonFieldDeserializer<>(new MapJsonFieldDeserializer<>(new MyExchangeMyApiMyRestEndpointRequestDeserializer()))).deserialize(MyExchangeDemoProperties.MyApi.Rest.MyRestEndpoint.getMyObjMapListMapParam(properties));
+}
+""",
         List.class,
         Map.class, 
         Properties.class,
@@ -344,15 +355,16 @@ public class EndpointDemoGenUtilGenerateRequestCreationMethodTest {
   public void testGenerateEndpointParameterCreationMethodPrimitiveStringParameter() {
     Field param = Field.builder().type(Type.STRING).name("myStringParam").sampleValue("Hello World").build();
     checkCreateRestRequestMethodGeneration(param,
-        "/**\n"
-        + " * Creates a sample value for the myStringParam field of type String using sample value(s) defined in demo configuration properties.\n"
-        + " * \n"
-        + " * @param properties the configuration properties to use for the sample value generation.\n"
-        + " */\n"
-        + "public static String createMyStringParam(Properties properties) {\n"
-        + "  return MyExchangeDemoProperties.MyApi.Rest.MyRestEndpoint.getMyStringParam(properties);\n"
-        + "}\n"
-        + "",
+        """
+/**
+ * Creates a sample value for the myStringParam field of type String using sample value(s) defined in demo configuration properties.
+ *\s
+ * @param properties the configuration properties to use for the sample value generation.
+ */
+public static String createMyStringParam(Properties properties) {
+  return MyExchangeDemoProperties.MyApi.Rest.MyRestEndpoint.getMyStringParam(properties);
+}
+""",
         Properties.class,
         "com.x.gen.MyExchangeDemoProperties");
   }
@@ -361,15 +373,16 @@ public class EndpointDemoGenUtilGenerateRequestCreationMethodTest {
   public void  testGenerateEndpointParameterCreationMethodPrimitiveBigDecimalParameter() {
     Field param = Field.builder().type(Type.BIGDECIMAL).name("myBigDecimalParam").sampleValue("123.45").build();
     checkCreateRestRequestMethodGeneration(param,
-        "/**\n"
-        + " * Creates a sample value for the myBigDecimalParam field of type BigDecimal using sample value(s) defined in demo configuration properties.\n"
-        + " * \n"
-        + " * @param properties the configuration properties to use for the sample value generation.\n"
-        + " */\n"
-        + "public static BigDecimal createMyBigDecimalParam(Properties properties) {\n"
-        + "  return MyExchangeDemoProperties.MyApi.Rest.MyRestEndpoint.getMyBigDecimalParam(properties);\n"
-        + "}\n"
-        + "",
+        """
+/**
+ * Creates a sample value for the myBigDecimalParam field of type BigDecimal using sample value(s) defined in demo configuration properties.
+ *\s
+ * @param properties the configuration properties to use for the sample value generation.
+ */
+public static BigDecimal createMyBigDecimalParam(Properties properties) {
+  return MyExchangeDemoProperties.MyApi.Rest.MyRestEndpoint.getMyBigDecimalParam(properties);
+}
+""",
         BigDecimal.class, 
         Properties.class,
         "com.x.gen.MyExchangeDemoProperties");
@@ -379,15 +392,16 @@ public class EndpointDemoGenUtilGenerateRequestCreationMethodTest {
   public void testGenerateEndpointParameterCreationMethodPrimitiveIntegerParameter() {
     Field param = Field.builder().type(Type.INT).name("myIntParam").sampleValue(123).build();
     checkCreateRestRequestMethodGeneration(param,
-        "/**\n"
-        + " * Creates a sample value for the myIntParam field of type Integer using sample value(s) defined in demo configuration properties.\n"
-        + " * \n"
-        + " * @param properties the configuration properties to use for the sample value generation.\n"
-        + " */\n"
-        + "public static Integer createMyIntParam(Properties properties) {\n"
-        + "  return MyExchangeDemoProperties.MyApi.Rest.MyRestEndpoint.getMyIntParam(properties);\n"
-        + "}\n"
-        + "",
+        """
+/**
+ * Creates a sample value for the myIntParam field of type Integer using sample value(s) defined in demo configuration properties.
+ *\s
+ * @param properties the configuration properties to use for the sample value generation.
+ */
+public static Integer createMyIntParam(Properties properties) {
+  return MyExchangeDemoProperties.MyApi.Rest.MyRestEndpoint.getMyIntParam(properties);
+}
+""",
         Properties.class,
         "com.x.gen.MyExchangeDemoProperties");
   }
@@ -396,15 +410,16 @@ public class EndpointDemoGenUtilGenerateRequestCreationMethodTest {
   public void  testGenerateEndpointParameterCreationMethodPrimitiveLongParameter() {
     Field param = Field.builder().type(Type.LONG).name("myLongParam").sampleValue(123L).build();
     checkCreateRestRequestMethodGeneration(param,
-        "/**\n"
-        + " * Creates a sample value for the myLongParam field of type Long using sample value(s) defined in demo configuration properties.\n"
-        + " * \n"
-        + " * @param properties the configuration properties to use for the sample value generation.\n"
-        + " */\n"
-        + "public static Long createMyLongParam(Properties properties) {\n"
-        + "  return MyExchangeDemoProperties.MyApi.Rest.MyRestEndpoint.getMyLongParam(properties);\n"
-        + "}\n"
-        + "",
+        """
+/**
+ * Creates a sample value for the myLongParam field of type Long using sample value(s) defined in demo configuration properties.
+ *\s
+ * @param properties the configuration properties to use for the sample value generation.
+ */
+public static Long createMyLongParam(Properties properties) {
+  return MyExchangeDemoProperties.MyApi.Rest.MyRestEndpoint.getMyLongParam(properties);
+}
+""",
         Properties.class,
         "com.x.gen.MyExchangeDemoProperties");
   }
@@ -413,15 +428,16 @@ public class EndpointDemoGenUtilGenerateRequestCreationMethodTest {
   public void  testGenerateEndpointParameterCreationMethodPrimitiveBooleanParameter() {
     Field param = Field.builder().type(Type.BOOLEAN).name("myBooleanParam").sampleValue(true).build();
     checkCreateRestRequestMethodGeneration(param,
-        "/**\n"
-        + " * Creates a sample value for the myBooleanParam field of type Boolean using sample value(s) defined in demo configuration properties.\n"
-        + " * \n"
-        + " * @param properties the configuration properties to use for the sample value generation.\n"
-        + " */\n"
-        + "public static Boolean createMyBooleanParam(Properties properties) {\n"
-        + "  return MyExchangeDemoProperties.MyApi.Rest.MyRestEndpoint.isMyBooleanParam(properties);\n"
-        + "}\n"
-        + "",
+        """
+/**
+ * Creates a sample value for the myBooleanParam field of type Boolean using sample value(s) defined in demo configuration properties.
+ *\s
+ * @param properties the configuration properties to use for the sample value generation.
+ */
+public static Boolean createMyBooleanParam(Properties properties) {
+  return MyExchangeDemoProperties.MyApi.Rest.MyRestEndpoint.isMyBooleanParam(properties);
+}
+""",
         Properties.class,
         "com.x.gen.MyExchangeDemoProperties");
   }
@@ -440,26 +456,27 @@ public class EndpointDemoGenUtilGenerateRequestCreationMethodTest {
                .property(Field.builder().type("STRING_MAP").name("theVoidMap").build())
                .build();
     checkCreateRestRequestMethodGeneration(param,
-        "/**\n"
-        + " * Creates a sample value for the myObjParam field of type MyExchangeMyApiMyRestEndpointRequest using sample value(s) defined in demo configuration properties.\n"
-        + " * \n"
-        + " * @param properties the configuration properties to use for the sample value generation.\n"
-        + " */\n"
-        + "public static MyExchangeMyApiMyRestEndpointRequest createMyObjParam(Properties properties) {\n"
-        + "  return Optional\n"
-        + "    .ofNullable(new MyExchangeMyApiMyRestEndpointRequestDeserializer().deserialize(MyExchangeDemoProperties.MyApi.Rest.MyRestEndpoint.getMyObjParam(properties)))\n"
-        + "    .orElse(MyExchangeMyApiMyRestEndpointRequest.builder()  \n"
-        + "      .foo(MyExchangeDemoProperties.MyApi.Rest.MyRestEndpoint.MyObjParam.getFoo(properties))\n"
-        + "      .hello(MyExchangeDemoProperties.MyApi.Rest.MyRestEndpoint.MyObjParam.getHello(properties))\n"
-        + "      .aLong(MyExchangeDemoProperties.MyApi.Rest.MyRestEndpoint.MyObjParam.getALong(properties))\n"
-        + "      .bDecimal(MyExchangeDemoProperties.MyApi.Rest.MyRestEndpoint.MyObjParam.getBDecimal(properties))\n"
-        + "      .cBool(MyExchangeDemoProperties.MyApi.Rest.MyRestEndpoint.MyObjParam.isCBool(properties))\n"
-        + "      .theVoidStr(MyExchangeDemoProperties.MyApi.Rest.MyRestEndpoint.MyObjParam.getTheVoidStr(properties))\n"
-        + "      .theVoidList(new ListJsonFieldDeserializer<>(StringJsonFieldDeserializer.getInstance()).deserialize(MyExchangeDemoProperties.MyApi.Rest.MyRestEndpoint.MyObjParam.getTheVoidList(properties)))\n"
-        + "      .theVoidMap(new MapJsonFieldDeserializer<>(StringJsonFieldDeserializer.getInstance()).deserialize(MyExchangeDemoProperties.MyApi.Rest.MyRestEndpoint.MyObjParam.getTheVoidMap(properties)))\n"
-        + "      .build());\n"
-        + "}\n"
-        + "",
+        """
+/**
+ * Creates a sample value for the myObjParam field of type MyExchangeMyApiMyRestEndpointRequest using sample value(s) defined in demo configuration properties.
+ *\s
+ * @param properties the configuration properties to use for the sample value generation.
+ */
+public static MyExchangeMyApiMyRestEndpointRequest createMyObjParam(Properties properties) {
+  return Optional
+    .ofNullable(new MyExchangeMyApiMyRestEndpointRequestDeserializer().deserialize(MyExchangeDemoProperties.MyApi.Rest.MyRestEndpoint.getMyObjParam(properties)))
+    .orElse(MyExchangeMyApiMyRestEndpointRequest.builder()\s\s
+      .foo(MyExchangeDemoProperties.MyApi.Rest.MyRestEndpoint.MyObjParam.getFoo(properties))
+      .hello(MyExchangeDemoProperties.MyApi.Rest.MyRestEndpoint.MyObjParam.getHello(properties))
+      .aLong(MyExchangeDemoProperties.MyApi.Rest.MyRestEndpoint.MyObjParam.getALong(properties))
+      .bDecimal(MyExchangeDemoProperties.MyApi.Rest.MyRestEndpoint.MyObjParam.getBDecimal(properties))
+      .cBool(MyExchangeDemoProperties.MyApi.Rest.MyRestEndpoint.MyObjParam.isCBool(properties))
+      .theVoidStr(MyExchangeDemoProperties.MyApi.Rest.MyRestEndpoint.MyObjParam.getTheVoidStr(properties))
+      .theVoidList(new ListJsonFieldDeserializer<>(StringJsonFieldDeserializer.getInstance()).deserialize(MyExchangeDemoProperties.MyApi.Rest.MyRestEndpoint.MyObjParam.getTheVoidList(properties)))
+      .theVoidMap(new MapJsonFieldDeserializer<>(StringJsonFieldDeserializer.getInstance()).deserialize(MyExchangeDemoProperties.MyApi.Rest.MyRestEndpoint.MyObjParam.getTheVoidMap(properties)))
+      .build());
+}
+""",
         Optional.class,
         Properties.class,
         "com.x.gen.MyExchangeDemoProperties",

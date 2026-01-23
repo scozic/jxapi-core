@@ -40,11 +40,7 @@ public class WriteMdFileSummaryMain {
         throw new IllegalArgumentException("File does not exist: " + p);
       }
       
-      try (Stream<Path> paths = Files.walk(p)) {
-        paths.filter(Files::isRegularFile)
-             .filter(f -> f.toString().endsWith(".md"))
-             .forEach(WriteMdFileSummaryMain::writeSummaryToFile);
-      }
+      writeSummaryToFile(p);
       
     } catch (Throwable t) {
       log.error("Error occurred while writing summary Markdown file", t);
@@ -52,12 +48,25 @@ public class WriteMdFileSummaryMain {
     }
   }
 
-  private static void writeSummaryToFile(Path p) {
-    try {
-      Files.writeString(p , ExchangeReadmeMdGeneratorUtil.generateTableOfContent(Files.readString(p)));
-    } catch (IOException e) {
-      log.error("Error occurred while writing summary Markdown file", e);
+  public static void writeSummaryToFile(Path p) throws IOException {
+    if (!Files.exists(p)) {
+      throw new IllegalArgumentException("File does not exist: " + p);
     }
+    if (Files.isDirectory(p)) {
+      try (Stream<Path> paths = Files.walk(p)) {
+          for (Path f : paths
+                  .filter(Files::isRegularFile)
+                  .toList()) {
+              WriteMdFileSummaryMain.writeSummaryToFile(f);
+          }
+      }
+    } else if (isMarkdownFile(p)) {
+      Files.writeString(p , ExchangeReadmeMdGeneratorUtil.generateTableOfContent(Files.readString(p)));
+    }
+  }
+  
+  private static boolean isMarkdownFile(Path p) {
+    return p.toString().endsWith(".md");
   }
 
 }

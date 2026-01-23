@@ -1,12 +1,11 @@
 package org.jxapi.generator.html;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
-import org.springframework.util.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.jxapi.generator.java.JavaCodeGenUtil;
 import org.jxapi.util.CollectionUtil;
+import org.springframework.util.CollectionUtils;
 
 /**
  * Helper methods around HTML generation
@@ -40,7 +39,7 @@ public class HtmlGenUtil {
                 .tag("th")
                 .content(c)
                 .build())
-              .collect(Collectors.toList()))
+              .toList())
           .build());
     }
     if (!CollectionUtils.isEmpty(cells)) {
@@ -53,7 +52,7 @@ public class HtmlGenUtil {
                   .tag("td")
                   .content(c)
                   .build())
-                .collect(Collectors.toList()));
+                .toList());
         }
         tableBuilder.child(rowBuilder.build());
       });

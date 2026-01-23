@@ -181,11 +181,7 @@ public class JsonUtil {
    */
   public static String readCurrentString(JsonParser parser) throws IOException {
     switch (parser.currentToken()) {
-    case VALUE_STRING:
-    case VALUE_NUMBER_FLOAT:
-    case VALUE_NUMBER_INT:
-    case VALUE_FALSE:
-    case VALUE_TRUE:
+    case VALUE_STRING, VALUE_NUMBER_INT, VALUE_NUMBER_FLOAT, VALUE_FALSE, VALUE_TRUE:
       return parser.getText();
     case VALUE_NULL:
       return null;
@@ -470,8 +466,7 @@ public class JsonUtil {
    */
   public static void skipNextValue(JsonParser jsonParser) throws IOException {
     switch (jsonParser.nextToken()) {
-      case START_ARRAY:
-      case START_OBJECT:
+      case START_ARRAY, START_OBJECT:
         jsonParser.skipChildren();
         break;
       default:
@@ -530,8 +525,7 @@ public class JsonUtil {
                 list.add(readCurrentObject(parser));
             }
             return list;
-        case VALUE_TRUE:
-        case VALUE_FALSE:
+        case VALUE_TRUE, VALUE_FALSE:
             return parser.getBooleanValue();
         case VALUE_NULL:
             return null;

@@ -2,7 +2,6 @@ package org.jxapi.generator.java.exchange.api;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import org.jxapi.exchange.ExchangeApi;
 import org.jxapi.exchange.descriptor.gen.ExchangeApiDescriptor;
@@ -97,12 +96,12 @@ public class ExchangeApiInterfaceGenerator extends JavaTypeGenerator {
     List<RestEndpointDescriptor> restApis = CollectionUtil.emptyIfNull(exchangeApiDescriptor.getRestEndpoints());
     List<WebsocketEndpointDescriptor> wsApis = CollectionUtil.emptyIfNull(exchangeApiDescriptor.getWebsocketEndpoints());
     ExchangeGenUtil.generateNamesStaticVariablesDeclarations(
-        restApis.stream().map(RestEndpointDescriptor::getName).collect(Collectors.toList()), 
+        restApis.stream().map(RestEndpointDescriptor::getName).toList(), 
         "RestApi", 
         body,
         "");
     ExchangeGenUtil.generateNamesStaticVariablesDeclarations(
-        wsApis.stream().map(WebsocketEndpointDescriptor::getName).collect(Collectors.toList()), 
+        wsApis.stream().map(WebsocketEndpointDescriptor::getName).toList(), 
         "WsApi", 
         body,
         "");

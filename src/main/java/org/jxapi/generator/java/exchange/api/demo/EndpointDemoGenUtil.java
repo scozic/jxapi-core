@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Properties;
-import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
 import org.jxapi.exchange.Exchange;
@@ -523,7 +522,7 @@ public class EndpointDemoGenUtil {
       return CollectionUtil.emptyIfNull(exchangeDescriptor.getApis()).stream()
                 .map(EndpointDemoGenUtil::createDemoConfigPropertyGroup)
                 .filter(o -> !CollectionUtil.isEmpty(o.getProperties()))
-                .collect(Collectors.toList());
+                .toList();
   }
   
   private static ConfigPropertyDescriptor createDemoConfigPropertyGroup(ExchangeApiDescriptor api) {
@@ -543,7 +542,7 @@ public class EndpointDemoGenUtil {
                          endpoint.getName(), 
                          getEndpointDemoRequest(api, endpoint)))
                     .filter(o -> !CollectionUtil.isEmpty(o.getProperties()))
-                    .collect(Collectors.toList())
+                    .toList()
                 ).build(),
             ConfigPropertyDescriptor.builder()
               .name(WEBSOCKET_DEMO_GROUP_NAME)
@@ -556,11 +555,11 @@ public class EndpointDemoGenUtil {
                       endpoint.getName(), 
                       endpoint.getRequest()))
                     .filter(o -> !CollectionUtil.isEmpty(o.getProperties()))
-                    .collect(Collectors.toList())
+                    .toList()
                 ).build())
           .stream()
           .filter(o -> !CollectionUtil.isEmpty(o.getProperties()))
-            .collect(Collectors.toList()))
+          .toList())
         .build();
   }
   

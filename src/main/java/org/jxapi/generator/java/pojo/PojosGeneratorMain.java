@@ -15,6 +15,7 @@ import org.jxapi.pojo.descriptor.Field;
 import org.jxapi.pojo.descriptor.PojosDescriptor;
 import org.jxapi.pojo.descriptor.Type;
 import org.jxapi.pojo.parser.PojosDescriptorParseUtil;
+import org.jxapi.util.CollectionUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -88,7 +89,7 @@ public class PojosGeneratorMain {
     if (!Files.exists(resources)) {
       resources.toFile().mkdirs();
       Files.writeString(resources.resolve("README.txt"), 
-          "JXAPI Exchange descriptor files (.json or .yaml) should be written in this folder.\nYou may delete this README.txt file");
+          "JXAPI POJOs descriptor files (.json or .yaml) should be written in this folder.");
       return;
     }
     log.info("Generating exchange API wrapper and demos for all exchange descriptor files in {}", resources.toAbsolutePath());
@@ -143,23 +144,21 @@ public class PojosGeneratorMain {
         pojoDescriptor,
         basePackage + ".");
       
-    List<Field> properties = pojoDescriptor.getProperties();
-      if (properties!= null) {
-        new PojoClassesGenerator(
-            objectClassName, 
-            pojoDescriptor.getDescription(), 
-            properties,
-            pojoDescriptor.getImplementedInterfaces(),
-            null,
-            null).generateClasses(basePackageFolder);
+    List<Field> properties = CollectionUtil.emptyIfNull(pojoDescriptor.getProperties());
+    new PojoClassesGenerator(
+          objectClassName, 
+          pojoDescriptor.getDescription(), 
+          properties,
+          pojoDescriptor.getImplementedInterfaces(),
+          null,
+          null).generateClasses(basePackageFolder);
             
-          new JsonPojoSerializerClassesGenerator( 
-            objectClassName,
-            properties).generateClasses(basePackageFolder);
+    new JsonPojoSerializerClassesGenerator( 
+          objectClassName,
+          properties).generateClasses(basePackageFolder);
           
-          new JsonMessageDeserializerClassesGenerator(
-              objectClassName, 
-              properties).generateClasses(basePackageFolder);
-      }
+    new JsonMessageDeserializerClassesGenerator(
+          objectClassName, 
+          properties).generateClasses(basePackageFolder);
   }
 }

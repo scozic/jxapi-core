@@ -1,7 +1,6 @@
 package org.jxapi.netutils.websocket.multiplexing;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * Static helper class for WebSocket Message Topic Matcher Factory creation.
@@ -23,7 +22,7 @@ public class WSMTMFUtil {
     return () -> {
       List<WebsocketMessageTopicMatcher> matchers = operandFactories.stream()
           .map(WebsocketMessageTopicMatcherFactory::createWebsocketMessageTopicMatcher)
-          .collect(Collectors.toList());
+          .toList();
       return new AndWebsocketMessageTopicMatcher(matchers);
     };
   }
@@ -39,7 +38,7 @@ public class WSMTMFUtil {
     return () -> {
       List<WebsocketMessageTopicMatcher> matchers = operandFactories.stream()
           .map(WebsocketMessageTopicMatcherFactory::createWebsocketMessageTopicMatcher)
-          .collect(Collectors.toList());
+          .toList();
       return new OrWebsocketMessageTopicMatcher(matchers);
     };
   }

@@ -507,7 +507,7 @@ public class PojoGenerator extends JavaTypeGenerator {
   }
   
   private List<String> getAllFieldNames() {
-        return fields.stream().map(Field::getName).collect(Collectors.toList());
+        return fields.stream().map(Field::getName).toList();
   }
   
   private String getFieldClass(Field field) {

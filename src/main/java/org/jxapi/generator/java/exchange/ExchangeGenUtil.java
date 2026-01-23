@@ -94,7 +94,7 @@ public class ExchangeGenUtil {
     String apiUniqueName = JavaCodeGenUtil.getUniqueCamelCaseVariableNames(
         exchangeDescriptor.getApis().stream()
           .map(ExchangeApiDescriptor::getName)
-          .collect(Collectors.toList()),
+          .toList(),
         true)
       .get(exchangeApiDescriptor.getName());
     String simpleInterfaceName = JavaCodeGenUtil.firstLetterToUpperCase(exchangeDescriptor.getId()) 
@@ -318,7 +318,7 @@ public class ExchangeGenUtil {
   private static ConfigPropertyDescriptor findProperty(String propertyName, List<ConfigPropertyDescriptor> properties) {
     List<ConfigPropertyDescriptor> propertiesMatchingName = CollectionUtil.emptyIfNull(properties)
             .stream().filter(p -> propertyName.equals(p.getName()))
-            .collect(Collectors.toList());
+            .toList();
     if (CollectionUtil.isEmpty(propertiesMatchingName)) {
       return null; // Property not found
     } else {
@@ -782,7 +782,7 @@ public class ExchangeGenUtil {
    */
   public static Map<String, String> getApiGroupGetterMethodNames(List<ExchangeApiDescriptor> apis) {
     return JavaCodeGenUtil.getUniqueCamelCaseVariableNames(
-        apis.stream().map(ExchangeApiDescriptor::getName).collect(Collectors.toList()),
+        apis.stream().map(ExchangeApiDescriptor::getName).toList(),
         true)
       .entrySet()
       .stream()

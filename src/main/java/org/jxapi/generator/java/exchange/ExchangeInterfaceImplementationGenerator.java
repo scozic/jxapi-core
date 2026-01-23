@@ -193,7 +193,7 @@ public class ExchangeInterfaceImplementationGenerator extends JavaTypeGenerator 
   
   private Map<String, String> getApiVariableNames(List<ExchangeApiDescriptor> apis) {
     return JavaCodeGenUtil.getUniqueCamelCaseVariableNames(
-        apis.stream().map(ExchangeApiDescriptor::getName).collect(Collectors.toList()),
+        apis.stream().map(ExchangeApiDescriptor::getName).toList(),
         false)
       .entrySet()
       .stream()

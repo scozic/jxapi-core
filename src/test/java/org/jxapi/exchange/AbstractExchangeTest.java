@@ -56,7 +56,7 @@ public class AbstractExchangeTest {
 
     @Test
     public void testGetProperties() {
-        Properties properties = exchange.getProperties();
+        properties = exchange.getProperties();
         assertNotNull(properties);
         assertEquals("testValue", properties.getProperty("testKey"));
     }

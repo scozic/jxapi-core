@@ -5,8 +5,8 @@ import java.math.BigDecimal;
 import java.net.URI;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
@@ -77,8 +77,9 @@ public class EncodingUtil {
    */
   public static final String PRETTY_PRINT_LONG_STRING_REDUCE_SEPARATOR = "....";
   
-  private static final ThreadLocal<DateFormat> DEFAULT_TIMESTAMP_FORMAT = ThreadLocal.withInitial(() -> 
-    new SimpleDateFormat(DATE_FORMAT_ISO_8601));
+  private static final DateTimeFormatter DEFAULT_TIMESTAMP_FORMAT = DateTimeFormatter
+      .ofPattern(DATE_FORMAT_ISO_8601)
+      .withZone(ZoneId.systemDefault());
 
   private EncodingUtil() {
   }
@@ -105,7 +106,7 @@ public class EncodingUtil {
     if (date == null) {
       return null;
     }
-    return DEFAULT_TIMESTAMP_FORMAT.get().format(date);
+    return DEFAULT_TIMESTAMP_FORMAT.format(date.toInstant());
   }
 
   /**

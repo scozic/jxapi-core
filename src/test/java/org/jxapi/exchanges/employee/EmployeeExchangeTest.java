@@ -248,7 +248,7 @@ public class EmployeeExchangeTest {
   
   @Test
   public void testGetEmployee_InvalidUrlParam() throws InterruptedException, ExecutionException {
-    HttpRequestExecutor executor = new JavaNetHttpRequestExecutor();
+    HttpRequestExecutor executor = new JavaNetHttpRequestExecutor("EmployeeExchangeTest");
     try {
       HttpRequest request = new HttpRequest();
       request.setUrl(server.getHttpBaseUrl() + "/v1/employee/invalid");
@@ -271,7 +271,7 @@ public class EmployeeExchangeTest {
   }
   
   private void doTestAddOrUpdateEmployeeInvalidBody(HttpMethod method) throws InterruptedException, ExecutionException {
-    HttpRequestExecutor executor = new JavaNetHttpRequestExecutor();
+    HttpRequestExecutor executor = new JavaNetHttpRequestExecutor("EmployeeExchangeTest");
     try {
       HttpRequest request = new HttpRequest();
       request.setUrl(server.getHttpBaseUrl() + "/v1/employee");

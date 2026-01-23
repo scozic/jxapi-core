@@ -3,7 +3,6 @@ package org.jxapi.exchanges.employee;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 import org.jxapi.exchanges.employee.gen.EmployeeConstants;
 import org.jxapi.exchanges.employee.gen.v1.pojo.Employee;
@@ -61,7 +60,7 @@ public class DefaultEmployeeDatabase implements EmployeesDatabase {
     if (pageSize > EmployeeConstants.MAX_PAGE_SIZE) {
       throw new IllegalArgumentException("Page size must not exceed " + EmployeeConstants.MAX_PAGE_SIZE);
     }
-    return employees.values().stream().skip((page - 1) * pageSize).limit(pageSize).collect(Collectors.toList());
+    return employees.values().stream().skip((page - 1) * pageSize).limit(pageSize).toList();
   }
 
 }

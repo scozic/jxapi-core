@@ -5,7 +5,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
 import org.jxapi.exchange.CommonConfigProperties;
@@ -143,7 +142,7 @@ public class ExchangeDemoPropertiesTemplateGenerator {
   private static List<ConfigPropertyDescriptor> convertToConfigPropertyDescriptors(List<ConfigProperty> properties) {
     return properties.stream()
         .map(PropertiesGenUtil::asConfigPropertyDescriptor)
-        .collect(Collectors.toList());
+        .toList();
   }
   
   private String generateCommentedOutproperties(String description, List<ConfigPropertyDescriptor> properties, String prefix) {
