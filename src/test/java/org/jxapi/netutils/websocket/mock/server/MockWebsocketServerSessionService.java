@@ -4,7 +4,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.jxapi.observability.SynchronizedObservable;
-import org.slf4j.Logger;
 
 /**
  * Service class for the mock websocket server sessions.
@@ -23,8 +22,6 @@ import org.slf4j.Logger;
  * @see MockWebsocketServerEvent
  */
 public class MockWebsocketServerSessionService extends SynchronizedObservable<MockWebsocketServerListener, MockWebsocketServerEvent> {
-  
-  private static final Logger log = org.slf4j.LoggerFactory.getLogger(MockWebsocketServerSessionService.class);
 
   private static final MockWebsocketServerSessionService INSTANCE = new MockWebsocketServerSessionService();
   
@@ -35,10 +32,7 @@ public class MockWebsocketServerSessionService extends SynchronizedObservable<Mo
   private final Map<String, Map<String, MockWebsocketServerSession>> sessions = new HashMap<>();
   
   private MockWebsocketServerSessionService() {
-//    super((l, e) -> l.handleEvent(e));
-    super((l, e) -> { 
-      l.handleEvent(e);
-      });
+    super((l, e) -> l.handleEvent(e));
   }
   
   private synchronized void register(MockWebsocketServerSession session) {
@@ -48,10 +42,7 @@ public class MockWebsocketServerSessionService extends SynchronizedObservable<Mo
       sessions.put(session.getUri(), sessionsForUrl);
     }
     sessionsForUrl.put(session.getId(), session);
-    // FIXME
-    log.info("Registered new session:{}", session);
     dispatch(MockWebsocketServerEvent.createClientConnectEvent(session));
-    log.info("Dispatched client connect event for session:{} to {} listeners first:{}", session, listeners.size(), listeners.isEmpty() ? "none" : listeners.get(0));
   }
   
   private synchronized boolean unregister(MockWebsocketServerSession session) {
