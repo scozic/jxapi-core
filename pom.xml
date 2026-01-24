@@ -1,141 +1,162 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
 <project xmlns="http://maven.apache.org/POM/4.0.0"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-	<modelVersion>4.0.0</modelVersion>
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
-	<groupId>org.jxapi</groupId>
-	<artifactId>jxapi-core</artifactId>
-	<version>0.22.1-SNAPSHOT</version>
+  <modelVersion>4.0.0</modelVersion>
 
-	<name>jxapi-core</name>
-	<url>https://github.com/scozic/jxapi.git</url>
+  <!-- Tu possèdes jxapi.org, donc groupId valide -->
+  <groupId>org.jxapi</groupId>
+  <artifactId>jxapi-core</artifactId>
+  <version>0.22.1-SNAPSHOT</version>
 
-	<properties>
-		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-		
-		<maven.compiler.release>17</maven.compiler.release>
-		<sonar.java.coveragePlugin>jacoco</sonar.java.coveragePlugin>
-		<sonar.dynamicAnalysis>reuseReports</sonar.dynamicAnalysis>
-		<sonar.jacoco.reportPath>${project.basedir}/../target/jacoco.exec</sonar.jacoco.reportPath>
-		<sonar.language>java</sonar.language>
-		<sonar.coverage.exclusions>**/src/gen/**/*.java</sonar.coverage.exclusions>
+  <name>jxapi-core</name>
+  <description>Core utilities for JXAPI</description>
+  <url>https://github.com/scozic/jxapi-core</url>
 
-		<genPojosSrcFolder>src/gen/java</genPojosSrcFolder>
+  <!-- Obligatoire pour Maven Central -->
+  <licenses>
+    <license>
+      <name>Apache License, Version 2.0</name>
+      <url>https://www.apache.org/licenses/LICENSE-2.0</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
 
-		<maven.compiler.plugin.version>3.10.1</maven.compiler.plugin.version>
-		<jacoco.version>0.8.13</jacoco.version>
-		<log4j.version>2.25.3</log4j.version>
-		<jackson.version>2.21.0</jackson.version>
-		<apache.commons.version>3.20.0</apache.commons.version>
-		<apache.commons.text.version>1.15.0</apache.commons.text.version>
-		<commons.codec.version>1.20.0</commons.codec.version>
-		<spring.version>7.0.3</spring.version>
-		<tyrus.version>2.2.1</tyrus.version>
-		<snakeyaml.version>2.5</snakeyaml.version>
-	</properties>
+  <developers>
+    <developer>
+      <id>scozic</id>
+      <name>Sylvestre Cozic</name>
+      <email>scozic@noreply.github.com</email>
+      <url>https://github.com/scozic</url>
+    </developer>
+  </developers>
 
-	<dependencies>
-		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
-			<version>4.13.2</version>
-			<scope>test</scope>
-		</dependency>
+  <scm>
+    <url>https://github.com/scozic/jxapi-core</url>
+    <connection>scm:git:https://github.com/scozic/jxapi-core.git</connection>
+    <developerConnection>scm:git:git@github.com:scozic/jxapi-core.git</developerConnection>
+    <tag>HEAD</tag>
+  </scm>
 
-		<dependency>
-			<groupId>org.apache.commons</groupId>
-			<artifactId>commons-lang3</artifactId>
-			<version>${apache.commons.version}</version>
-		</dependency>
+  <!-- Dépôts Sonatype -->
+  <distributionManagement>
+    <snapshotRepository>
+      <id>sonatype-snapshots</id>
+      <url>https://s01.oss.sonatype.org/content/repositories/snapshots/</url>
+    </snapshotRepository>
+    <repository>
+      <id>sonatype-staging</id>
+      <url>https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+    </repository>
+  </distributionManagement>
 
-		<!-- https://mvnrepository.com/artifact/org.apache.commons/commons-text -->
-		<dependency>
-			<groupId>org.apache.commons</groupId>
-			<artifactId>commons-text</artifactId>
-			<version>${apache.commons.text.version}</version>
-		</dependency>
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 
-		<dependency>
-			<groupId>com.fasterxml.jackson.core</groupId>
-			<artifactId>jackson-databind</artifactId>
-			<version>${jackson.version}</version>
-		</dependency>
+    <maven.compiler.release>17</maven.compiler.release>
+	<genPojosSrcFolder>src/gen/java</genPojosSrcFolder>
+    <log4j.version>2.25.3</log4j.version>
+    <jackson.version>2.21.0</jackson.version>
+    <apache.commons.version>3.20.0</apache.commons.version>
+    <apache.commons.text.version>1.15.0</apache.commons.text.version>
+    <commons.codec.version>1.20.0</commons.codec.version>
+    <spring.version>7.0.3</spring.version>
+    <tyrus.version>2.2.1</tyrus.version>
+    <snakeyaml.version>2.5</snakeyaml.version>
+  </properties>
 
-		<dependency>
-			<groupId>org.apache.logging.log4j</groupId>
-			<artifactId>log4j-api</artifactId>
-			<version>${log4j.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.logging.log4j</groupId>
-			<artifactId>log4j-core</artifactId>
-			<version>${log4j.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.logging.log4j</groupId>
-			<artifactId>log4j-slf4j-impl</artifactId>
-			<version>${log4j.version}</version>
-		</dependency>
+  <dependencies>
 
-		<!-- https://mvnrepository.com/artifact/commons-codec/commons-codec -->
-		<dependency>
-			<groupId>commons-codec</groupId>
-			<artifactId>commons-codec</artifactId>
-			<version>${commons.codec.version}</version>
-		</dependency>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>4.13.2</version>
+      <scope>test</scope>
+    </dependency>
 
-		<!--
-		https://mvnrepository.com/artifact/org.springframework/spring-websocket -->
-		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-websocket</artifactId>
-			<version>${spring.version}</version>
-		</dependency>
+    <dependency>
+      <groupId>org.apache.commons</groupId>
+      <artifactId>commons-lang3</artifactId>
+      <version>${apache.commons.version}</version>
+    </dependency>
 
-		<!--
-		https://mvnrepository.com/artifact/org.springframework/spring-messaging -->
-		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-messaging</artifactId>
-			<version>${spring.version}</version>
-		</dependency>
+    <dependency>
+      <groupId>org.apache.commons</groupId>
+      <artifactId>commons-text</artifactId>
+      <version>${apache.commons.text.version}</version>
+    </dependency>
 
-		<!--
-		https://stackoverflow.com/questions/48309357/java-lang-noclassdeffounderror-javax-websocket-clientendpointconfigconfigurato -->
-		<dependency>
-			<groupId>org.glassfish.tyrus.bundles</groupId>
-			<artifactId>tyrus-standalone-client</artifactId>
-			<version>${tyrus.version}</version>
-		</dependency>
+    <dependency>
+      <groupId>commons-codec</groupId>
+      <artifactId>commons-codec</artifactId>
+      <version>${commons.codec.version}</version>
+    </dependency>
 
-		<!-- https://mvnrepository.com/artifact/org.glassfish.tyrus/tyrus-server -->
-		<dependency>
-			<groupId>org.glassfish.tyrus</groupId>
-			<artifactId>tyrus-server</artifactId>
-			<version>${tyrus.version}</version>
-			<scope>test</scope>
-		</dependency>
+    <dependency>
+      <groupId>com.fasterxml.jackson.core</groupId>
+      <artifactId>jackson-databind</artifactId>
+      <version>${jackson.version}</version>
+    </dependency>
 
-		<!--
-		https://mvnrepository.com/artifact/org.glassfish.tyrus/tyrus-container-grizzly-server -->
-		<dependency>
-			<groupId>org.glassfish.tyrus</groupId>
-			<artifactId>tyrus-container-grizzly-server</artifactId>
-			<version>${tyrus.version}</version>
-			<scope>test</scope>
-		</dependency>
+    <dependency>
+      <groupId>org.apache.logging.log4j</groupId>
+      <artifactId>log4j-api</artifactId>
+      <version>${log4j.version}</version>
+    </dependency>
 
-		<!-- https://mvnrepository.com/artifact/org.yaml/snakeyaml -->
-		<dependency>
-			<groupId>org.yaml</groupId>
-			<artifactId>snakeyaml</artifactId>
-			<version>${snakeyaml.version}</version>
-		</dependency>
+    <dependency>
+      <groupId>org.apache.logging.log4j</groupId>
+      <artifactId>log4j-core</artifactId>
+      <version>${log4j.version}</version>
+    </dependency>
 
-	</dependencies>
+    <dependency>
+      <groupId>org.apache.logging.log4j</groupId>
+      <artifactId>log4j-slf4j-impl</artifactId>
+      <version>${log4j.version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-websocket</artifactId>
+      <version>${spring.version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-messaging</artifactId>
+      <version>${spring.version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.glassfish.tyrus.bundles</groupId>
+      <artifactId>tyrus-standalone-client</artifactId>
+      <version>${tyrus.version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.glassfish.tyrus</groupId>
+      <artifactId>tyrus-server</artifactId>
+      <version>${tyrus.version}</version>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.glassfish.tyrus</groupId>
+      <artifactId>tyrus-container-grizzly-server</artifactId>
+      <version>${tyrus.version}</version>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.yaml</groupId>
+      <artifactId>snakeyaml</artifactId>
+      <version>${snakeyaml.version}</version>
+    </dependency>
+
+  </dependencies>
 
 	<profiles>
 		<profile>
@@ -171,69 +192,86 @@
 		</profile>
 	</profiles>
 
-	<build>
-		<pluginManagement>
-			<plugins>
-				<!-- Compiler plugin using release -->
-				<plugin>
-					<groupId>org.apache.maven.plugins</groupId>
-					<artifactId>maven-compiler-plugin</artifactId>
-					<version>${maven.compiler.plugin.version}</version>
-					<configuration>
-						<release>${maven.compiler.release}</release>
-					</configuration>
-				</plugin>
-				<plugin>
-					<groupId>org.codehaus.mojo</groupId>
-					<artifactId>exec-maven-plugin</artifactId>
-					<configuration>
-						<mainClass>
-							org.jxapi.generator.java.pojo.PojosGeneratorMain
-						</mainClass>
-						<systemProperties>
-							<systemProperty>
-								<key>srcDirectory</key>
-								<value>${genPojosSrcFolder}</value>
-							</systemProperty>
-						</systemProperties>
-					</configuration>
-				</plugin>
-			</plugins>
-		</pluginManagement>
-		<plugins>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-javadoc-plugin</artifactId>
-				<version>3.4.1</version>
-				<configuration>
-					<additionalJOptions>
-						<!-- Remove warnings about missing comments because
-						undocumented private fields/methods are common in this
-						project -->
-						<arg>-Xdoclint:all,-missing</arg>
-					</additionalJOptions>
-				</configuration>
-			</plugin>
-			<plugin>
-				<groupId>org.codehaus.mojo</groupId>
-				<artifactId>build-helper-maven-plugin</artifactId>
-				<version>3.3.0</version>
-				<executions>
-					<execution>
-						<id>add-source</id>
-						<phase>generate-sources</phase>
-						<goals>
-							<goal>add-source</goal>
-						</goals>
-						<configuration>
-							<sources>
-								<source>${genPojosSrcFolder}</source>
-							</sources>
-						</configuration>
-					</execution>
-				</executions>
-			</plugin>
-		</plugins>
-	</build>
+  <build>
+    <plugins>
+
+      <!-- Obligatoire : sources.jar -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-source-plugin</artifactId>
+        <version>3.3.0</version>
+        <executions>
+          <execution>
+            <id>attach-sources</id>
+            <goals><goal>jar</goal></goals>
+          </execution>
+        </executions>
+      </plugin>
+
+      <!-- Obligatoire : javadoc.jar -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-javadoc-plugin</artifactId>
+        <version>3.6.0</version>
+        <executions>
+          <execution>
+            <id>attach-javadocs</id>
+            <goals><goal>jar</goal></goals>
+          </execution>
+        </executions>
+      </plugin>
+
+      <!-- Obligatoire : signature GPG -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-gpg-plugin</artifactId>
+        <version>3.1.0</version>
+        <executions>
+          <execution>
+            <id>sign-artifacts</id>
+            <phase>verify</phase>
+            <goals><goal>sign</goal></goals>
+          </execution>
+        </executions>
+      </plugin>
+      
+      <plugin>
+		  <groupId>org.codehaus.mojo</groupId>
+		  <artifactId>exec-maven-plugin</artifactId>
+		  <version>3.6.3</version>
+		  <configuration>
+		    <mainClass>org.jxapi.generator.java.pojo.PojosGeneratorMain</mainClass>
+		    <systemProperties>
+		      <systemProperty>
+		        <key>srcDirectory</key>
+		        <value>${genPojosSrcFolder}</value>
+		      </systemProperty>
+		    </systemProperties>
+		  </configuration>
+		</plugin>
+		
+		<plugin>
+		  <groupId>org.codehaus.mojo</groupId>
+		  <artifactId>build-helper-maven-plugin</artifactId>
+		  <version>3.3.0</version>
+		  <executions>
+		    <execution>
+		      <id>add-source</id>
+		      <phase>generate-sources</phase>
+		      <goals>
+		        <goal>add-source</goal>
+		      </goals>
+		      <configuration>
+		        <sources>
+		          <source>${genPojosSrcFolder}</source>
+		        </sources>
+		      </configuration>
+		    </execution>
+		  </executions>
+		</plugin>
+
+
+    </plugins>
+  </build>
 
 </project>
