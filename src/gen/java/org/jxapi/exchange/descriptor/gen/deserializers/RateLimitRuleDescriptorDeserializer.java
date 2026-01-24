@@ -16,14 +16,14 @@ import static org.jxapi.util.JsonUtil.skipNextValue;
  * Parses incoming JSON messages into org.jxapi.exchange.descriptor.gen.RateLimitRuleDescriptor instances
  * @see org.jxapi.exchange.descriptor.gen.RateLimitRuleDescriptor
  */
-@Generated("org.jxapi.generator.java.pojo.JsonMessageDeserializerGenerator")
+@Generated("org.jxapi.generator.java.pojo.JsonPojoDeserializerGenerator")
 public class RateLimitRuleDescriptorDeserializer extends AbstractJsonMessageDeserializer<RateLimitRuleDescriptor> {
   
   @Override
   public RateLimitRuleDescriptor deserialize(JsonParser parser) throws IOException {
     RateLimitRuleDescriptor msg = new RateLimitRuleDescriptor();
     while(parser.nextToken() != JsonToken.END_OBJECT) {
-      switch(parser.getCurrentName()) {
+      switch(parser.currentName()) {
       case "id":
         msg.setId(readNextString(parser));
       break;

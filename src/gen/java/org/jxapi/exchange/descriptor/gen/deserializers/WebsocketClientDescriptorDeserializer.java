@@ -14,14 +14,14 @@ import static org.jxapi.util.JsonUtil.skipNextValue;
  * Parses incoming JSON messages into org.jxapi.exchange.descriptor.gen.WebsocketClientDescriptor instances
  * @see org.jxapi.exchange.descriptor.gen.WebsocketClientDescriptor
  */
-@Generated("org.jxapi.generator.java.pojo.JsonMessageDeserializerGenerator")
+@Generated("org.jxapi.generator.java.pojo.JsonPojoDeserializerGenerator")
 public class WebsocketClientDescriptorDeserializer extends AbstractJsonMessageDeserializer<WebsocketClientDescriptor> {
   
   @Override
   public WebsocketClientDescriptor deserialize(JsonParser parser) throws IOException {
     WebsocketClientDescriptor msg = new WebsocketClientDescriptor();
     while(parser.nextToken() != JsonToken.END_OBJECT) {
-      switch(parser.getCurrentName()) {
+      switch(parser.currentName()) {
       case "name":
         msg.setName(readNextString(parser));
       break;

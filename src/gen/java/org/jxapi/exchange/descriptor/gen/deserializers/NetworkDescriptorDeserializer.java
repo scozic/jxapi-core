@@ -16,7 +16,7 @@ import static org.jxapi.util.JsonUtil.skipNextValue;
  * Parses incoming JSON messages into org.jxapi.exchange.descriptor.gen.NetworkDescriptor instances
  * @see org.jxapi.exchange.descriptor.gen.NetworkDescriptor
  */
-@Generated("org.jxapi.generator.java.pojo.JsonMessageDeserializerGenerator")
+@Generated("org.jxapi.generator.java.pojo.JsonPojoDeserializerGenerator")
 public class NetworkDescriptorDeserializer extends AbstractJsonMessageDeserializer<NetworkDescriptor> {
   private ListJsonFieldDeserializer<HttpClientDescriptor> httpClientsDeserializer;
   private ListJsonFieldDeserializer<WebsocketClientDescriptor> websocketClientsDeserializer;
@@ -25,7 +25,7 @@ public class NetworkDescriptorDeserializer extends AbstractJsonMessageDeserializ
   public NetworkDescriptor deserialize(JsonParser parser) throws IOException {
     NetworkDescriptor msg = new NetworkDescriptor();
     while(parser.nextToken() != JsonToken.END_OBJECT) {
-      switch(parser.getCurrentName()) {
+      switch(parser.currentName()) {
       case "httpClients":
         parser.nextToken();
         if(httpClientsDeserializer == null) {

@@ -14,14 +14,14 @@ import static org.jxapi.util.JsonUtil.skipNextValue;
  * Parses incoming JSON messages into org.jxapi.exchanges.demo.gen.marketdata.pojo.SingleSymbol instances
  * @see org.jxapi.exchanges.demo.gen.marketdata.pojo.SingleSymbol
  */
-@Generated("org.jxapi.generator.java.pojo.JsonMessageDeserializerGenerator")
+@Generated("org.jxapi.generator.java.pojo.JsonPojoDeserializerGenerator")
 public class SingleSymbolDeserializer extends AbstractJsonMessageDeserializer<SingleSymbol> {
   
   @Override
   public SingleSymbol deserialize(JsonParser parser) throws IOException {
     SingleSymbol msg = new SingleSymbol();
     while(parser.nextToken() != JsonToken.END_OBJECT) {
-      switch(parser.getCurrentName()) {
+      switch(parser.currentName()) {
       case "s":
         msg.setSymbol(readNextString(parser));
       break;

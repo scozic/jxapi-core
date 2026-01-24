@@ -15,7 +15,7 @@ import static org.jxapi.util.JsonUtil.skipNextValue;
  * Parses incoming JSON messages into org.jxapi.exchange.descriptor.gen.WebsocketEndpointDescriptor instances
  * @see org.jxapi.exchange.descriptor.gen.WebsocketEndpointDescriptor
  */
-@Generated("org.jxapi.generator.java.pojo.JsonMessageDeserializerGenerator")
+@Generated("org.jxapi.generator.java.pojo.JsonPojoDeserializerGenerator")
 public class WebsocketEndpointDescriptorDeserializer extends AbstractJsonMessageDeserializer<WebsocketEndpointDescriptor> {
   private WebsocketTopicMatcherDescriptorDeserializer topicMatcherDeserializer;
   
@@ -23,7 +23,7 @@ public class WebsocketEndpointDescriptorDeserializer extends AbstractJsonMessage
   public WebsocketEndpointDescriptor deserialize(JsonParser parser) throws IOException {
     WebsocketEndpointDescriptor msg = new WebsocketEndpointDescriptor();
     while(parser.nextToken() != JsonToken.END_OBJECT) {
-      switch(parser.getCurrentName()) {
+      switch(parser.currentName()) {
       case "name":
         msg.setName(readNextString(parser));
       break;
