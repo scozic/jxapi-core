@@ -39,7 +39,7 @@ public class AbstractJsonMessageDeserializerTest {
     public AbstractJsonMessageDeserializerTestItem deserialize(JsonParser parser) throws IOException {
       AbstractJsonMessageDeserializerTestItem msg = new AbstractJsonMessageDeserializerTestItem();
       while (parser.nextToken() != JsonToken.END_OBJECT) {
-        switch (parser.getCurrentName()) {
+        switch (parser.currentName()) {
         case "name":
           msg.setName(parser.nextTextValue());
           break;

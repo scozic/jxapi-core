@@ -15,10 +15,12 @@ import java.util.Optional;
 
 import org.apache.commons.text.StringSubstitutor;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.databind.json.JsonMapper;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 
 /**
@@ -59,15 +61,20 @@ public class EncodingUtil {
    * @return the created object mapper
    */
   public static ObjectMapper createDefaultPojoToToStringObjectMapper(JsonSerializer<?>... additionalSerializers) {
-    ObjectMapper om = new ObjectMapper();
-    om.disable(SerializationFeature.FAIL_ON_EMPTY_BEANS);
-    om.enable(SerializationFeature.ORDER_MAP_ENTRIES_BY_KEYS);
-    om.setSerializationInclusion(Include.NON_NULL);
-    final SimpleModule serializerModule = new SimpleModule();
+
+    SimpleModule serializerModule = new SimpleModule();
     Arrays.stream(additionalSerializers).forEach(serializerModule::addSerializer);
-    om.registerModule(serializerModule);
-    return om;
-  }
+
+    return JsonMapper.builder()
+     .disable(SerializationFeature.FAIL_ON_EMPTY_BEANS)
+     .enable(SerializationFeature.ORDER_MAP_ENTRIES_BY_KEYS)
+     .defaultPropertyInclusion(
+         JsonInclude.Value.construct(Include.NON_NULL, Include.NON_NULL) 
+       )
+     .addModule(serializerModule)
+     .build();
+}
+
   
   /**
    * Separator used to reduce a long string to a maximum length by keeping the

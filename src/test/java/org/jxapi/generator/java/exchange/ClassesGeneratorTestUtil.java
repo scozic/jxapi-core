@@ -48,7 +48,7 @@ public class ClassesGeneratorTestUtil {
   public static synchronized Path generateTmpDir() throws IOException {
     Path p = Paths.get("tmp" 
               + new SimpleDateFormat("yyyyMMdd-HHmmss-SSS").format(new Date())
-              + (RandomUtils.nextInt() % 1000));
+              + (RandomUtils.secure().randomInt() % 1000));
     if (p.toFile().exists()) {
       long delay = 1;
       log.warn("Path {} already exists, waiting {}ms before retrying generation of tmp dir", 

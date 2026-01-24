@@ -8,7 +8,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicReference;
 
-import org.apache.commons.lang3.StringUtils;
 import org.jxapi.generator.java.JavaCodeGenUtil;
 import org.jxapi.generator.java.exchange.ExchangeGeneratorMain;
 import org.jxapi.pojo.descriptor.Field;
@@ -123,7 +122,7 @@ public class PojosGeneratorMain {
    * @throws IOException if an I/O error occurs
    */
   public static void generatePojos(PojosDescriptor pojosDescriptor, Path srcMainFolder) throws IOException {
-    Path mainPackagePath = Paths.get(StringUtils.replace(pojosDescriptor.getBasePackage(), ".", "/"));
+    Path mainPackagePath = Paths.get(pojosDescriptor.getBasePackage().replace('.', '/'));
     Path genPackagesFolder = srcMainFolder.resolve(mainPackagePath);
     JavaCodeGenUtil.deletePath(genPackagesFolder);
     log.info("Generating pojos with base package :{} in {}", 
