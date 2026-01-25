@@ -8,7 +8,7 @@
   <!-- Tu possèdes jxapi.org, donc groupId valide -->
   <groupId>org.jxapi</groupId>
   <artifactId>jxapi-core</artifactId>
-  <version>0.22.1-SNAPSHOT</version>
+  <version>0.23.0-SNAPSHOT</version>
 
   <name>jxapi-core</name>
   <description>Core utilities for JXAPI</description>
