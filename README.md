@@ -1,134 +1,166 @@
 
 # JXAPI
 
-Code generation tools to generate POJOs, or a full Java REST and/or Websocket API wrapper (client SDK) efficiently from JSON or YAML descriptor files.
+A powerful code generation tool for creating Java REST and WebSocket API client SDKs from JSON or YAML descriptor files.
 
 <!-- BEGIN TABLE OF CONTENTS -->
 <!-- END TABLE OF CONTENTS -->
 
-## Introduction
+## Overview
 
-This project provides code generation tools to generate Java POJOs and REST/Websocket API wrappers from JSON or YAML descriptor files.
+JXAPI generates comprehensive Java client libraries for REST and WebSocket APIs from simple JSON or YAML descriptor files. Originally designed for exchange APIs, it works with any REST or WebSocket API.
 
-Initially developed to generate Java wrappers for exchange APIs, it can be used to generate Java wrappers for any REST/Websocket API described in a JSON or YAML descriptor file.
+**Key capabilities:**
+- Generate Java POJOs for all data structures
+- Create complete REST API client wrappers 
+- Build WebSocket API clients with advanced features
+- Support for complex API requirements (rate limiting, authentication, multiplexing)
+- Generate standalone demo code and documentation
 
-As part of Java wrapper generation, Java POJOs are generated for each endpoint request, response, and message data structure.
-The generator allows to generate only those POJOs if needed, see [POJO only generation](./doc/manual/PojoOnlyGeneration.md) guide.
+You can generate only POJOs if needed - see the [POJO only generation](./doc/manual/PojoOnlyGeneration.md) guide.
 
-The role of the generator is similar to [openapi-maven-plugin](https://openapi-generator.tech/docs/plugins/#maven) but with a different approach: It is focused on generating efficient Java wrappers for not only REST but also Websocket APIs, with support for complex API features like request rate limits, websocket multiplexing, heartbeat management, etc. See [Comparison with OpenAPI](./doc/manual/ComparisonWithOpenAPI.md) for more details.
+## Why Choose JXAPI?
 
-## Comparison with OpenAPI
+While [OpenAPI](https://www.openapis.org/) is widely adopted and may be preferable for APIs with existing OpenAPI specifications, JXAPI excels in specific scenarios:
 
-The role of the generator is similar to [openapi-maven-plugin](https://openapi-generator.tech/docs/plugins/#maven) but with a different approach: JXAPI is focused on Java wrappers for not only REST but also Websocket APIs, with support for complex API features like request rate limits, websocket multiplexing, heartbeat management, etc. See below for more details.
+- **APIs without OpenAPI specifications** - Many existing APIs lack proper OpenAPI documentation
+- **WebSocket API support** - Essential for real-time data APIs like financial exchanges
+- **Java-optimized generation** - Specifically tailored for the Java ecosystem
 
-Since [OpenAPI](https://www.openapis.org/) is widely adopted, you may prefer using it, especially if you are responsible for the server-side specifications of REST APIs, or you are implementing a client SDK for an API that already provides OpenAPI specifications.
+See the [OpenAPI comparison](./doc/manual/ComparisonWithOpenAPI.md) for detailed differences.
 
-JXAPI has been designed to create wrappers for existing APIs that do not provide OpenAPI specifications, or that expose websocket endpoints, which is common for real-time data APIs like financial exchanges. Additionally, JXAPI is specifically tailored for Java code generation, providing optimized Java client libraries with features that leverage the Java ecosystem more effectively.
+### Key features
 
-In these situations, JXAPI offers several advantages:
+**🚀 Advanced Serialization**
+- Custom Jackson serializers/deserializers for optimal performance
+- Support for mixed data types (numeric/boolean as strings or native types)
+- Flexible field mapping between POJOs and JSON
+- Reusable POJO definitions across endpoints
 
-* **Flexible data type serialization**: JSON serialization/deserialization supports key features such as:
-  * Custom Jackson serializer and deserializer classes are generated, offering faster deserialization
-  * Deserialization supports numeric or boolean data provided either as native types or as JSON strings
-  * You can specify different field names in DTO POJOs than in serialized JSON, which is useful for APIs that use shorter field names to save bandwidth
-  * Other JXAPI POJO features: Specifying `objectName` for POJOs reused across endpoints
+**🔒 Production-Ready Features**
+- **Rate Limiting**: Built-in enforcement prevents API bans
+- **Authentication**: Custom HTTP request interceptors for complex auth flows
+- **Pagination**: Automatic handling of paginated responses
+- **Observability**: Built-in monitoring for metrics
 
-* **Custom HTTP request interceptors**: These can be used to implement authentication challenges and other request processing logic
+**🌐 WebSocket Excellence**
+- Multiplexed stream support on shared connections
+- Automatic heartbeat and connection management
+- Custom protocol handshake support
 
-* **WebSocket multiplexed stream support**: Handle multiple concurrent WebSocket streams on shared socket efficiently. See [WebSocket API endpoints](./doc/manual/ExchangeDescriptorFileDoc.md#websocket-api-endpoints) for more details
+**📁 Developer Experience**
+- **Modular Definitions**: Split large APIs into maintainable files
+- **Logical Organization**: Group endpoints into functional categories  
+- **Constants & Configuration**: Generated classes for API constants and config properties
+- **Demo Snippets**: Ready-to-run examples for every endpoint
+- **Auto Documentation**: Generated README with complete API reference
 
-* **HTTP request rate limiting**: Public APIs always have rate limits, and exceeding them can result in serious consequences such as IP banning. JXAPI wrappers enforce these limits by rejecting or throttling requests that would breach the limits. See [HTTP Request Rate Limiting](./doc/manual/ExchangeDescriptorFileDoc.md#api-request-rate-limit) for more details
+See detailed documentation: [Constants](./doc/manual/ExchangeDescriptorFileDoc.md#constants) | [Configuration](./doc/manual/ExchangeDescriptorFileDoc.md#configuration-properties) | [WebSocket Endpoints](./doc/manual/ExchangeDescriptorFileDoc.md#websocket-api-endpoints) | [Rate Limiting](./doc/manual/ExchangeDescriptorFileDoc.md#api-request-rate-limit)
 
-* **Built-in pagination support**: Many APIs use pagination for large datasets. JXAPI wrappers can handle pagination automatically, fetching subsequent pages without requiring clients to implement specific pagination logic. See [REST Request Pagination](./doc/manual/RestRequestPagination.md) for more details
+## Getting Started
 
-* **Modular API definitions**: Split large API specifications into multiple documents. For APIs with many endpoints, this is easier to maintain than a single large JSON or YAML file. Writing one file per endpoint based on the corresponding documentation page can be done more efficiently with AI assistants. See [Splitting large exchange definitions into multiple files](./doc/manual/ExchangeDescriptorFileDoc.md#splitting-large-exchange-definitions-into-multiple-files) for more details.
+JXAPI transforms JSON/YAML API descriptors into full-featured Java client libraries. The process is straightforward:
 
-* **Endpoint organization**: Group endpoints into logical categories, creating cleaner code with separate sub-interfaces for each functional area
+1. **Describe your API** in JSON or YAML (similar to OpenAPI format)
+2. **Generate the wrapper** with Maven integration
+3. **Add minimal custom code** for API-specific features:
+   - Authentication logic (API key/secret handling)
+   - Request formatting (query vs. body parameters)
+   - WebSocket protocol handshakes
 
-* **Constant definitions**: Define constants in endpoint descriptions or default values. The generated code provides a class with static final fields for these constants, organized into logical groups (for instance, all possible values for an enumerated request field), making the code more maintainable. See [Constants](./doc/manual/ExchangeDescriptorFileDoc.md#constants) for more details. See [Using the Wrapper](./doc/manual/UsingTheWrapper.md#constants) for how to use them.
+**Benefits:**
+- Eliminates manual POJO creation and HTTP client boilerplate
+- Handles complex features like rate limiting and WebSocket multiplexing
+- Generates comprehensive demos and documentation
+- Ideal for APIs with many endpoints or real-time requirements
 
-* **Configuration property definitions**: Declare configuration properties like API keys and secrets in the API specification. A dedicated class is generated for easier configuration management. Properties can also be organized into logical groups. See [Configuration Properties](./doc/manual/ExchangeDescriptorFileDoc.md#configuration-properties) for more details. See [Using the Wrapper](./doc/manual/UsingTheWrapper.md#configuration-properties) for how to use them.
+**AI-Friendly:** Descriptor files can be efficiently generated from API documentation using AI assistants.
 
-* **Observability**: Monitor client API usage using observability API. See [Observability](./doc/manual/UsingTheWrapper.md#observability) for more details.
+### 1. Project Setup
 
-* **Demo snippets**: Generated wrapper comes with standalone demo snippets to try sending a request and logging its response  for each REST endpoint, or subscription to websocket endpoint. This is useful to test the wrapper and understand how to use it. See [Demo Snippets](./doc/manual/UsingTheWrapper.md#demo-snippets) for more details.
+Create a new Java/Maven project and configure the JXAPI dependency and generation plugin in your `pom.xml`. See the complete [Wrapper Module Setup](doc/manual/WrapperModuleSetup.md) guide for detailed instructions.
 
-## REST/Websocket API Wrapper Generation
+### 2. Implement Custom Hooks (Optional)
 
-Many web services are consumed as HTTP REST or Websocket APIs for real-time data. Those APIs disseminate data as structured JSON objects.
+Write minimal Java code to handle API-specific protocol requirements:
 
-The generator will take as input a JSON or YAML file describing APIs, and generate request/response POJOs, Java interfaces to REST APIs and Websockets and their implementation, and also demo snippets and a documentation skeleton.
-You will also need to write a few lines of code for API-specific implementation aspects like:
- * Authentication challenge (like computing authorization header added requests using API key/secret and request parameters)
- * Request parameter formatting (use as query parameters or request body parameters)
- * Websocket API protocol specific handshake.
+**For REST APIs:** Implement `HttpRequestInterceptorFactory` to handle:
+- Authentication headers and signatures
+- Request preprocessing
+- Custom error handling
 
-The descriptor files are quite similar to [OpenAPI](https://www.openapis.org/) specifications. Read [here](./doc/manual/ComparisonWithOpenAPI.md) for a comparison with that project.
+**For WebSocket APIs:** Implement `WebsocketHookFactory` to handle:
+- Protocol handshakes
+- Connection authentication
+- Custom message formatting
 
-That can be achieved easily by specifying implementation REST+Websocket endpoint factories using hooks, check the wrapper development guide below.
+See development guides: [HTTP Request Interceptors](./doc/manual/HttpRequestInterceptorDevGuide.md) | [WebSocket Hooks](./doc/manual/WebsocketHookDevGuide.md)
 
-The JSON or YAML API descriptor file structure is simple and can be AI-generated from online API documentation.
-Using JXAPI to create a Java wrapper saves the time to write POJOs for endpoint request/response/messages DTOs, HTTP request management, request rate limits, and avoid issues that come with manually writing the code. The websocket endpoint management allows efficient implementation of multiplexing (subscribing to distinct streams on a single physical websocket), heartbeat, and handshake management. It is particularly efficient for using complex APIs with many endpoints.
+### 3. Create API Descriptor Files
 
-Follow the guide below to write such an API wrapper.
+Create `.yaml` or `.json` descriptor files in `src/main/jxapi/exchange/` to define your API endpoints, data structures, and configuration.
 
-### Project Bootstrap
+**💡 Pro Tip:** Use AI assistants to convert API documentation into descriptor files efficiently!
 
-See [Wrapper module Setup](doc/manual/WrapperModuleSetup.md): Basically, you just initialize a Java/Maven project, and add to the Maven `pom.xml` file a dependency to this project plus a plugin to run the generation of Java source files within the Maven build cycle.
+**Development Workflow:**
+1. Write descriptors incrementally (one endpoint at a time)
+2. Run `mvn jxapi:generate-exchange` goal to generate code
+3. Test with generated demo snippets
+4. Repeat until complete
 
-### Manage REST/Websocket API protocol specificites using custom hooks
-A few lines of Java code have to be written manually to manage API protocol specificities like authentication challenges.
-See dedicated guides:
- * If your wrapper exposes REST endpoints: You may set `httpRequestInterceptorFactory` property with full class name of [HttpRequestInterceptorFactory](./src/main/java/org/jxapi/netutils/rest/HttpRequestInterceptorFactory.java) that creates specific hooks for HTTP requests at the exchange or API group level. Such hooks are used to modify a request before it is sent, for instance adding it specific headers, as explained in [HttpRequestInterceptorDevGuide](./doc/manual/HttpRequestInterceptorDevGuide.md)
- * If your wrapper exposes websocket endpoints, you should set in `websocketHookFactory` property of the exchange descriptor file at the exchange or API group level with the full name of the class implementing [WebsocketHookFactory](./src/main/java/org/jxapi/netutils/websocket/WebsocketHookFactory.java) that creates specific hooks for the websocket protocol of your API, see [WebsocketHookDevGuide](./doc/manual/WebsocketHookDevGuide.md).
+This generates:
+- Wrapper code in `src/main/java/`
+- Demo snippets in `src/test/java/`  
+- Documentation in `_MyExchangeREADME.md_`
 
-### Write Descriptor File for API Descriptor
-Now the tedious work is done, let's create some API wrappers.
-You must create either a `.yaml` or `.json` exchange descriptor file in the `src/main/jxapi/exchange` folder of your module.
-Follow [Exchange descriptor file documentation](./doc/manual/ExchangeDescriptorFileDoc.md) guide to convert API documentation into such files.
+See the [Exchange Descriptor Documentation](./doc/manual/ExchangeDescriptorFileDoc.md) for complete syntax reference.
 
-AI assistants can be efficient to write such files &#128521;.
+### Generated Code Structure
 
-Running the `mvn exec:java` command triggers the generation of wrapper code in the `src/main/java` folder, demos in `src/test/java`, and a sample `_MyExchangeREADME.md_` file at the root of the module project.
-II recommend writing the API descriptor file incrementally and running the generator after adding an endpoint to run the demo snippet (see [Demos](#demo-snippets)) to ensure it works as expected.
-
-### Resulting Generated Code
-The resulting generated code includes:
- * Exchange interface, with a getter function to retrieve any exchange API.
- * Exchange interface implementation, with a constructor expecting a single `java.util.Properties` argument containing API configuration parameters like API KEY/Secret.
- * Exchange API interface for each exchange API defined in the root exchange, and implementation of that interface with:
-   * One function for each REST API. Calls are performed asynchronously and return an instance of `FutureRestResponse` which is a `java.util.concurrent.Future` object.
+**Core Components:**
+- **Exchange Interface** - Main entry point with API group accessors
+- **Exchange Implementation** - Configured with `Properties` (API keys, secrets, etc.)
+- **API Group Interfaces** - Logical groupings of related endpoints
+- **Async REST Methods** - Return `FutureRestResponse` (extends `Future`)
    * REST API methods take a request object as a parameter and a response object as a returned type which are generated Java POJOs carrying properties corresponding to parameters defined in the JSON file.
    * One _subscribe_ and one _unsubscribe_ method to subscribe/unsubscribe to Websocket endpoint topics. Subscription and stream message parameters are carried in generated POJOs.
  * Generated POJOs for each endpoint request, response, or message. Such POJOs implement multiple features like exposing builder classes, see [Generated Java POJOs](./doc/manual/GeneratedJavaPojos.md).
  * Demo snippets in `src/test/java` to test call to REST endpoints and websocket endpoint subscription, see [Demos](#demo-snippets).
  * A sample README.md file (name is prefixed with exchange name) that documents the wrapper and exposed API groups and nested endpoints.
 
-### Demo Snippets
+### 4. Test with Demo Snippets
 
-Generated source files include demo snippets to test each REST and Websocket endpoint, generated as classes with `public static void main(String[] args)` method in the `src/test/java` source folder of the project module.
+Each endpoint gets a runnable demo class in `src/test/java/` with sample requests and logging.
 
-When run, REST endpoint snippets will issue a request built using fields sample values from the descriptor file, then wait for a response and log it at INFO level.
+**REST Demos:** Send requests with sample data and log responses
+**WebSocket Demos:** Subscribe for 30 seconds (configurable) and log messages
 
-Websocket endpoint snippets will subscribe to the corresponding endpoint with a subscription request built using fields sample values from the descriptor file, and wait for some delay (configurable, default is 30s) before unsubscribing and exiting. Incoming messages will be logged at INFO level.
+**Configuration:**
+1. Copy `demo-<yourExchange>.properties.dist` to `demo-<yourExchange>.properties`
+2. Add API credentials and customize request parameters
+3. Add the properties file to `.gitignore`
 
-Generated wrapper configuration properties are loaded from the file `src/test/resources/demo-<yourExchange>.properties`. The generator will create a sample value of this file as `src/test/resources/demo-<yourExchange>.properties.dist` you should create a copy of, removing the `.dist` suffix. This `demo-<yourExchange>.properties` file should be added to the `.gitignore` file in case it contains sensitive information like API key/secret.
-Notice this file carries not only wrapper-specific properties but also common properties like `jxapi.httpRequestTimeout` (maximum timeout to wait for REST endpoint call response), see [CommonConfigProperties](./src/main/java/org/jxapi/exchange/CommonConfigProperties.java), and demo snippet-specific properties like `jxapi.demo.ws.subscriptionDuration` that controls the duration in ms of the subscription in websocket endpoint demo snippets. Also, for each parameter of each endpoint request created in demo snippets, a 'demo' specific configuration property is created and used in generated snippet code to tune the request sent. You may uncomment and customize any of the _demo.*_ prefixed properties.
+The configuration includes:
+- API credentials (keys, secrets)
+- Common settings (timeouts, etc.) - see [CommonConfigProperties](./src/main/java/org/jxapi/exchange/CommonConfigProperties.java)
+- Demo-specific settings (`jxapi.demo.*` prefix)
+- Per-endpoint sample parameters
 
-### Sample README.md
+### Generated Documentation
 
-A `<yourExchange>_README.md` file is also generated with the wrapper, with documentation describing:
- * The wrapper from its description in the descriptor.
- * Constants.
- * Configuration properties.
- * Description of each API group from the description in the descriptor file.
- * Description of each REST and Websocket endpoint of each API group.
+A complete `<yourExchange>_README.md` is generated containing:
+- Wrapper overview and configuration guide
+- API constants and configuration properties
+- Detailed endpoint documentation for each API group
+- Usage examples and integration instructions
 
-This file can be used as the _README.md_ file of the project, or referenced from it.
+Use this as your project's main README or reference it from your existing documentation.
 
-### Using the Wrapper
+### 5. Integration
 
-When demo snippets successfully run, your wrapper module is ready to be used. Add it as a dependency of your main project that needs to communicate with the API, and instantiate it just like in demo snippets. See [Using the wrapper](./doc/manual/UsingTheWrapper.md) guide.
+Once demos run successfully, add your wrapper as a dependency to your main project and instantiate it following the demo patterns.
+
+See the complete [Using the Wrapper](./doc/manual/UsingTheWrapper.md) guide for integration examples and best practices.
 
 ## Supported Exchanges
 TODO! Currently under development :)

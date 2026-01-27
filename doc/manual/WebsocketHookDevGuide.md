@@ -3,7 +3,7 @@
 <!-- BEGIN TABLE OF CONTENTS -->
   - [Websocket hook development guide](#websocket-hook-development-guide)
     - [WebsocketHook Methods](#websockethook-methods)
-      - [`init(WebsocketClient websocketManager)`](#initwebsocketmanager-websocketmanager)
+      - [`init(WebsocketClient websocketManager)`](#initwebsocketclient-websocketmanager)
       - [`beforeConnect() throws WebsocketException`](#beforeconnect-throws-websocketexception)
       - [`afterConnect() throws WebsocketException`](#afterconnect-throws-websocketexception)
       - [`beforeDisconnect() throws WebsocketException`](#beforedisconnect-throws-websocketexception)

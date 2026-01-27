@@ -40,6 +40,7 @@ This section describes such descriptor file.
       - [Rate Limit Levels](#rate-limit-levels)
       - [Example](#example)
     - [Placeholders](#placeholders)
+    - [Splitting large exchange definitions into multiple files](#splitting-large-exchange-definitions-into-multiple-files)
 
 <!-- END TABLE OF CONTENTS -->
 

@@ -38,8 +38,6 @@ The [Serializable](https://docs.oracle.com/javase/8/docs/api/java/io/Serializabl
 For each generated POJO, a JSON `Serializer` class extending [StdSerializer](https://javadoc.io/doc/com.fasterxml.jackson.core/jackson-databind/latest/com/fasterxml/jackson/databind/ser/std/StdSerializer.html), and `Deserializer` class is also generated, allowing serialization using the [Jackson](https://github.com/FasterXML/jackson) library.
 
 
-
-
 ## Generating only POJOs using jxapi-maven-plugin
 
 If you want to generate only POJOs for using JSON or YAML descriptor files, you may use the `jxapi-maven-plugin`.
