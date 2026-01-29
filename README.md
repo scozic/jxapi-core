@@ -109,8 +109,8 @@ Create `.yaml` or `.json` descriptor files in `src/main/jxapi/exchange/` to defi
 4. Repeat until complete
 
 This generates:
-- Wrapper code in `src/main/java/`
-- Demo snippets in `src/test/java/`  
+- Wrapper code in `target/generated-sources/jxapi/`
+- Demo snippets in `target/generated-test-sources/jxapi/`
 - Documentation in `_MyExchangeREADME.md_`
 
 See the [Exchange Descriptor Documentation](./doc/manual/ExchangeDescriptorFileDoc.md) for complete syntax reference.
@@ -130,7 +130,7 @@ See the [Exchange Descriptor Documentation](./doc/manual/ExchangeDescriptorFileD
 
 ### 4. Test with Demo Snippets
 
-Each endpoint gets a runnable demo class in `src/test/java/` with sample requests and logging.
+Each endpoint gets a runnable demo class in `target/generated-test-sources/jxapi` with sample requests and logging.
 
 **REST Demos:** Send requests with sample data and log responses
 **WebSocket Demos:** Subscribe for 30 seconds (configurable) and log messages
@@ -163,4 +163,4 @@ Once demos run successfully, add your wrapper as a dependency to your main proje
 See the complete [Using the Wrapper](./doc/manual/UsingTheWrapper.md) guide for integration examples and best practices.
 
 ## Supported Exchanges
-TODO! Currently under development :)
+[jxapi-kucoin](https://github.com/scozic/jxapi-kucoin): KuCoin exchange API wrapper generated with JXAPI.
