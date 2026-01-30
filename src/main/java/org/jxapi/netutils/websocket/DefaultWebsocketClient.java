@@ -18,6 +18,7 @@ import org.jxapi.netutils.websocket.multiplexing.WebsocketMessageTopicMatchStatu
 import org.jxapi.netutils.websocket.multiplexing.WebsocketMessageTopicMatcher;
 import org.jxapi.netutils.websocket.multiplexing.WebsocketMessageTopicMatcherFactory;
 import org.jxapi.util.DefaultDisposable;
+import org.jxapi.util.EncodingUtil;
 import org.jxapi.util.JsonUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -94,6 +95,7 @@ public class DefaultWebsocketClient extends DefaultDisposable implements Websock
   private long  noHeartBeatResponseTimeout = -1L;
   private AtomicBoolean heartBeatTaskCancelled = null;
   private AtomicBoolean heartBeatTimeoutTaskCancelled = null;
+  private long lastConnectTime = 0L;
   
   /**
    * Constructor
@@ -246,6 +248,7 @@ public class DefaultWebsocketClient extends DefaultDisposable implements Websock
       return;
     }
     log.info("Connecting WS:{}", this);
+    lastConnectTime = System.currentTimeMillis();
     try {
       if (websocketHook != null) {
         websocketHook.beforeConnect();
@@ -589,10 +592,20 @@ public class DefaultWebsocketClient extends DefaultDisposable implements Websock
    */
   private boolean waitReconnectDelay() {
     synchronized(waitReconnectDelayMonitor) {
-      long start = System.currentTimeMillis();
+      long nextTimeForReconnect = lastConnectTime + reconnectDelay;
+      if (log.isDebugEnabled()) {
+      log.debug("Last connection attempt:{} Waiting {}ms until {}, for reconnect delay {}ms to be elapsed for websocket [{}]", 
+        EncodingUtil.formatTimestamp(lastConnectTime), 
+        nextTimeForReconnect - System.currentTimeMillis(),
+        EncodingUtil.formatTimestamp(nextTimeForReconnect),
+        reconnectDelay,
+        this);
+      }
       try {
-        while(!isDisposed() && System.currentTimeMillis() - start < reconnectDelay) {
-          waitReconnectDelayMonitor.wait(reconnectDelay);
+        for (long now = System.currentTimeMillis(); 
+            !isDisposed() && now < nextTimeForReconnect; 
+            now = System.currentTimeMillis()) {
+          waitReconnectDelayMonitor.wait(nextTimeForReconnect - now);
         }
         return !isDisposed();
       } catch (InterruptedException ex) {
