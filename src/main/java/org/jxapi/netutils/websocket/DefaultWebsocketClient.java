@@ -565,7 +565,6 @@ public class DefaultWebsocketClient extends DefaultDisposable implements Websock
     if (!isDisposed()) {
       if (reconnectDelay > 0) {
         disconnect();
-        log.info("Will try to reconnect websocket [{}] in {}ms", this, reconnectDelay);
         if (waitReconnectDelay()) {
           try {
             connect();
@@ -605,7 +604,9 @@ public class DefaultWebsocketClient extends DefaultDisposable implements Websock
         for (long now = System.currentTimeMillis(); 
             !isDisposed() && now < nextTimeForReconnect; 
             now = System.currentTimeMillis()) {
-          waitReconnectDelayMonitor.wait(nextTimeForReconnect - now);
+          long delay = nextTimeForReconnect - now;
+          log.info("Will try to reconnect websocket [{}] in {}ms", this, delay);
+          waitReconnectDelayMonitor.wait(delay);
         }
         return !isDisposed();
       } catch (InterruptedException ex) {
