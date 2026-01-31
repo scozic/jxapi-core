@@ -9,7 +9,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicReference;
 
-import org.apache.commons.lang3.StringUtils;
 import org.jxapi.exchange.descriptor.gen.ConfigPropertyDescriptor;
 import org.jxapi.exchange.descriptor.gen.ExchangeApiDescriptor;
 import org.jxapi.exchange.descriptor.gen.ExchangeDescriptor;
@@ -209,7 +208,7 @@ public class ExchangeGeneratorMain {
                              String baseSrcUrl) throws IOException {
     log.info("Generating exchange wrapper code for descriptor:{}", exchangeDescriptor.getId());
     Path outputSrcMainFolder = mainSrcDirectory;
-    Path mainPackagePath = Paths.get(StringUtils.replace(exchangeDescriptor.getBasePackage(), ".", "/"));
+    Path mainPackagePath = Paths.get(exchangeDescriptor.getBasePackage().replace('.', '/'));
     Path genMainPackagesFolder = outputSrcMainFolder.resolve(mainPackagePath);
     JavaCodeGenUtil.deletePath(genMainPackagesFolder);
     generateExchangeWrapper(exchangeDescriptor, outputSrcMainFolder);

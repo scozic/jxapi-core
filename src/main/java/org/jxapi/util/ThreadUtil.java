@@ -1,13 +1,14 @@
 package org.jxapi.util;
 
 import java.util.concurrent.ThreadFactory;
-
-import org.apache.commons.lang3.concurrent.BasicThreadFactory;
+import java.util.concurrent.atomic.AtomicLong;
 
 /**
  * Helper methods around thread management.
  */
 public class ThreadUtil {
+  
+  private static final AtomicLong THREAD_COUNTER = new AtomicLong(0);
 
   private ThreadUtil() {}
   
@@ -17,6 +18,11 @@ public class ThreadUtil {
    * @return a new {@link ThreadFactory} instance
    */
   public static ThreadFactory createNamePrefixThreadFactory(String prefix) {
-    return new BasicThreadFactory.Builder().namingPattern(prefix + "%d").build();
+      return runnable -> {
+          Thread t = new Thread(runnable);
+          t.setName(prefix + THREAD_COUNTER.getAndIncrement());
+          return t;
+      };
   }
+
 }

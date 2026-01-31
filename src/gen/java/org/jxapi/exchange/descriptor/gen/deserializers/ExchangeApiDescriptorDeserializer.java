@@ -17,7 +17,7 @@ import static org.jxapi.util.JsonUtil.skipNextValue;
  * Parses incoming JSON messages into org.jxapi.exchange.descriptor.gen.ExchangeApiDescriptor instances
  * @see org.jxapi.exchange.descriptor.gen.ExchangeApiDescriptor
  */
-@Generated("org.jxapi.generator.java.pojo.JsonMessageDeserializerGenerator")
+@Generated("org.jxapi.generator.java.pojo.JsonPojoDeserializerGenerator")
 public class ExchangeApiDescriptorDeserializer extends AbstractJsonMessageDeserializer<ExchangeApiDescriptor> {
   private ListJsonFieldDeserializer<RestEndpointDescriptor> restEndpointsDeserializer;
   private ListJsonFieldDeserializer<WebsocketEndpointDescriptor> websocketEndpointsDeserializer;
@@ -26,7 +26,7 @@ public class ExchangeApiDescriptorDeserializer extends AbstractJsonMessageDeseri
   public ExchangeApiDescriptor deserialize(JsonParser parser) throws IOException {
     ExchangeApiDescriptor msg = new ExchangeApiDescriptor();
     while(parser.nextToken() != JsonToken.END_OBJECT) {
-      switch(parser.getCurrentName()) {
+      switch(parser.currentName()) {
       case "name":
         msg.setName(readNextString(parser));
       break;

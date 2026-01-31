@@ -12,13 +12,12 @@ import java.util.stream.StreamSupport;
 
 import org.glassfish.grizzly.http.server.Request;
 import org.glassfish.grizzly.http.server.Response;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.util.StringUtils;
-
 import org.jxapi.netutils.rest.HttpMethod;
 import org.jxapi.netutils.rest.HttpRequest;
 import org.jxapi.netutils.rest.HttpResponse;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.util.ObjectUtils;
 
 public class HttpServerUtil {
   
@@ -84,7 +83,7 @@ public class HttpServerUtil {
   public static String getRequestUrl(Request request) {
     StringBuilder url = new StringBuilder().append(request.getRequestURL().toString());
     String query = request.getQueryString();
-    if (!StringUtils.isEmpty(query)) {
+    if (!ObjectUtils.isEmpty(query)) {
       url.append("?").append(query);
     }
     return url.toString();

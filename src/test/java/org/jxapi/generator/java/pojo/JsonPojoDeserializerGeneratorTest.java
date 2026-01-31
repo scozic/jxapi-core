@@ -9,9 +9,9 @@ import org.jxapi.pojo.descriptor.Type;
 
 
 /**
- * Unit test for {@link JsonMessageDeserializerGenerator}
+ * Unit test for {@link JsonPojoDeserializerGenerator}
  */
-public class JsonMessageDeserializerGeneratorTest {
+public class JsonPojoDeserializerGeneratorTest {
 
   @Test
   public void testGenerateDeserializer() {
@@ -42,7 +42,7 @@ public class JsonMessageDeserializerGeneratorTest {
              .build()
     );
     
-    JsonMessageDeserializerGenerator generator = new JsonMessageDeserializerGenerator(deserialiazedTypeName, endpointParameters);
+    JsonPojoDeserializerGenerator generator = new JsonPojoDeserializerGenerator(deserialiazedTypeName, endpointParameters);
     Assert.assertEquals("package com.x.deserializers;\n"
         + "\n"
         + "import java.io.IOException;\n"
@@ -69,7 +69,7 @@ public class JsonMessageDeserializerGeneratorTest {
         + " * Parses incoming JSON messages into com.x.MyPojo instances\n"
         + " * @see com.x.MyPojo\n"
         + " */\n"
-        + "@Generated(\"org.jxapi.generator.java.pojo.JsonMessageDeserializerGenerator\")\n"
+        + "@Generated(\"org.jxapi.generator.java.pojo.JsonPojoDeserializerGenerator\")\n"
         + "public class MyPojoDeserializer extends AbstractJsonMessageDeserializer<MyPojo> {\n"
         + "  private ListJsonFieldDeserializer<MyPojoFoo> fooDeserializer;\n"
         + "  private MapJsonFieldDeserializer<List<MyPojoToto>> totoDeserializer;\n"
@@ -79,7 +79,7 @@ public class JsonMessageDeserializerGeneratorTest {
         + "  public MyPojo deserialize(JsonParser parser) throws IOException {\n"
         + "    MyPojo msg = new MyPojo();\n"
         + "    while(parser.nextToken() != JsonToken.END_OBJECT) {\n"
-        + "      switch(parser.getCurrentName()) {\n"
+        + "      switch(parser.currentName()) {\n"
         + "      case \"id\":\n"
         + "        msg.setId(readNextLong(parser));\n"
         + "      break;\n"

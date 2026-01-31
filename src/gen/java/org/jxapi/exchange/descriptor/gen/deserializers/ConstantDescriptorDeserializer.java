@@ -16,7 +16,7 @@ import static org.jxapi.util.JsonUtil.skipNextValue;
  * Parses incoming JSON messages into org.jxapi.exchange.descriptor.gen.ConstantDescriptor instances
  * @see org.jxapi.exchange.descriptor.gen.ConstantDescriptor
  */
-@Generated("org.jxapi.generator.java.pojo.JsonMessageDeserializerGenerator")
+@Generated("org.jxapi.generator.java.pojo.JsonPojoDeserializerGenerator")
 public class ConstantDescriptorDeserializer extends AbstractJsonMessageDeserializer<ConstantDescriptor> {
   private ListJsonFieldDeserializer<ConstantDescriptor> constantsDeserializer;
   
@@ -24,7 +24,7 @@ public class ConstantDescriptorDeserializer extends AbstractJsonMessageDeseriali
   public ConstantDescriptor deserialize(JsonParser parser) throws IOException {
     ConstantDescriptor msg = new ConstantDescriptor();
     while(parser.nextToken() != JsonToken.END_OBJECT) {
-      switch(parser.getCurrentName()) {
+      switch(parser.currentName()) {
       case "name":
         msg.setName(readNextString(parser));
       break;

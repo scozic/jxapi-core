@@ -16,14 +16,14 @@ import static org.jxapi.util.JsonUtil.skipNextValue;
  * Parses incoming JSON messages into org.jxapi.exchanges.demo.gen.marketdata.pojo.DemoExchangeMarketDataExchangeInfoResponsePayload instances
  * @see org.jxapi.exchanges.demo.gen.marketdata.pojo.DemoExchangeMarketDataExchangeInfoResponsePayload
  */
-@Generated("org.jxapi.generator.java.pojo.JsonMessageDeserializerGenerator")
+@Generated("org.jxapi.generator.java.pojo.JsonPojoDeserializerGenerator")
 public class DemoExchangeMarketDataExchangeInfoResponsePayloadDeserializer extends AbstractJsonMessageDeserializer<DemoExchangeMarketDataExchangeInfoResponsePayload> {
   
   @Override
   public DemoExchangeMarketDataExchangeInfoResponsePayload deserialize(JsonParser parser) throws IOException {
     DemoExchangeMarketDataExchangeInfoResponsePayload msg = new DemoExchangeMarketDataExchangeInfoResponsePayload();
     while(parser.nextToken() != JsonToken.END_OBJECT) {
-      switch(parser.getCurrentName()) {
+      switch(parser.currentName()) {
       case "symbol":
         msg.setSymbol(readNextString(parser));
       break;

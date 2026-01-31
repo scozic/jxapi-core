@@ -19,7 +19,7 @@ import static org.jxapi.util.JsonUtil.skipNextValue;
  * Parses incoming JSON messages into org.jxapi.exchange.descriptor.gen.ExchangeDescriptor instances
  * @see org.jxapi.exchange.descriptor.gen.ExchangeDescriptor
  */
-@Generated("org.jxapi.generator.java.pojo.JsonMessageDeserializerGenerator")
+@Generated("org.jxapi.generator.java.pojo.JsonPojoDeserializerGenerator")
 public class ExchangeDescriptorDeserializer extends AbstractJsonMessageDeserializer<ExchangeDescriptor> {
   private ListJsonFieldDeserializer<ConfigPropertyDescriptor> propertiesDeserializer;
   private ListJsonFieldDeserializer<ConstantDescriptor> constantsDeserializer;
@@ -31,7 +31,7 @@ public class ExchangeDescriptorDeserializer extends AbstractJsonMessageDeseriali
   public ExchangeDescriptor deserialize(JsonParser parser) throws IOException {
     ExchangeDescriptor msg = new ExchangeDescriptor();
     while(parser.nextToken() != JsonToken.END_OBJECT) {
-      switch(parser.getCurrentName()) {
+      switch(parser.currentName()) {
       case "id":
         msg.setId(readNextString(parser));
       break;

@@ -719,6 +719,9 @@ public class DefaultWebsocketClientTest {
     HeartBeatResponseSystemMsgHandler hbHandler = new HeartBeatResponseSystemMsgHandler();
     wsManager.addSystemMessageHandler("heartBeat",  WSMTMFUtil.value("myTopic", "heartBeat"), hbHandler);
     checkNoEvents();
+    
+    // Subscribe to topic
+    long startTime = System.currentTimeMillis();
     wsManager.subscribe(topic, topicMatcher, wsMessageHandler1);
     popWebsocketHookBeforeConnectEvent();
     popWebsocketConnectEvent();
@@ -743,7 +746,8 @@ public class DefaultWebsocketClientTest {
     popWebsocketHookAfterDisconnectEvent();
     
     // reconnect delay must be awaited before attempting reconnection
-    checkNoEvents();
+    long expectedReconnectTime = HEARTBEAT_INTERVAL - System.currentTimeMillis() + startTime;
+    checkNoEvents(expectedReconnectTime - 15L); // 15ms tolerance
     
     // Then reconnection should be initiated
     popWebsocketHookBeforeConnectEvent();
@@ -773,7 +777,7 @@ public class DefaultWebsocketClientTest {
     wsManager = new DefaultWebsocketClient(ws, null);
     popWebsocketAddErrorHandlerEvent();
     popWebsocketAddMessageHandlerEvent();
-    wsManager.setReconnectDelay(HEARTBEAT_INTERVAL);
+    wsManager.setReconnectDelay(HEARTBEAT_INTERVAL * 4);
     long noMessageTimeout = NO_EVENT_DELAY * 2 + 50L;
     wsManager.setNoMessageTimeout(noMessageTimeout);
     wsManager.subscribeErrorHandler(errorHandler);
@@ -790,10 +794,8 @@ public class DefaultWebsocketClientTest {
     // Disconnection should be initiated upon error
     popWebsocketDisconnectEvent();
     
-    // reconnect delay must be awaited before attempting reconnection
+    // Some delay must be awaited before attempting reconnection
     checkNoEvents();
-    
-    // Then reconnection should be initiated
     popWebsocketConnectEvent();
     
     checkNoEvents();
@@ -875,7 +877,6 @@ public class DefaultWebsocketClientTest {
     popWebsocketSendMessageEvent(msg1);
     popError();
     popWebsocketDisconnectEvent();
-    checkNoEvents();
     Assert.assertFalse(wsManager.isConnected());
     
     // Successful reconnection
@@ -1059,8 +1060,7 @@ public class DefaultWebsocketClientTest {
     popError();
     Assert.assertNotNull(sendMessageResult.get());
     
-    // Wait some time before 1st reconnection attempt is performed
-    checkNoEvents();
+    // First reconnection attempt performed quickly after error
     popWebsocketConnectEvent();
     popError();
     
@@ -1249,10 +1249,15 @@ public class DefaultWebsocketClientTest {
   }
   
   private void checkNoEvents() throws InterruptedException {
-    if (log.isDebugEnabled()) {
-      log.debug("Check no events during " + NO_EVENT_DELAY + "ms");
+    checkNoEvents(NO_EVENT_DELAY);
+  }
+  
+  private void checkNoEvents(long delay) throws InterruptedException {
+    if (delay <= 0L) {
+      return;
     }
-    sleep(NO_EVENT_DELAY);
+    log.debug("Check no events during {}ms", delay);
+    sleep(delay);
     if (ws.size() > 0) {
       Assert.fail("Received unexpected WebsocketEvent" + ws.pop());
     }

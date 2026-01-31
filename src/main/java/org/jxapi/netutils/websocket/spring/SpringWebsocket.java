@@ -3,6 +3,7 @@ package org.jxapi.netutils.websocket.spring;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
@@ -13,8 +14,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.task.TaskExecutor;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
-import org.springframework.util.concurrent.ListenableFuture;
-import org.springframework.util.concurrent.ListenableFutureCallback;
 import org.springframework.web.socket.CloseStatus;
 import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketHandler;
@@ -29,7 +28,7 @@ import org.jxapi.netutils.websocket.WebsocketException;
 /**
  * Websocket implementation using Spring's {@link StandardWebSocketClient}.
  * <p>
- * Implemntation notes:
+ * Implementation notes:
  * <ul>
  * <li>Uses internal own {@link ThreadPoolTaskExecutor} for handling websocket messages</li>
  * <li>Uses Grizzly's {@link ClientManager} for websocket connection management</li>
@@ -39,17 +38,17 @@ import org.jxapi.netutils.websocket.WebsocketException;
  * @see StandardWebSocketClient
  */
 public class SpringWebsocket extends AbstractWebsocket {
-  
+
   private static final Logger log = LoggerFactory.getLogger(SpringWebsocket.class);
 
   private static final long CONNECT_TIMEOUT = 30000L;
-  
+
   private ClientManager clientManager;
-  
+
   private ThreadPoolTaskExecutor taskExecutor;
-  
+
   private WebSocketSession webSocketSession;
-  
+
   private int taskExecutorCounter = 0;
 
   @Override
@@ -58,7 +57,7 @@ public class SpringWebsocket extends AbstractWebsocket {
     try {
       webSocketSession.sendMessage(new TextMessage(message));
     } catch (IOException e) {
-      throw new WebsocketException(toString() + " error occurred while sending message:" + message);
+      throw new WebsocketException(toString() + " error occurred while sending message:" + message, e);
     }
   }
 
@@ -70,29 +69,50 @@ public class SpringWebsocket extends AbstractWebsocket {
     this.taskExecutor.setMaxPoolSize(2);
     this.taskExecutor.setKeepAliveSeconds(5);
     this.taskExecutor.initialize();
+
     this.clientManager = ClientManager.createClient();
     this.clientManager.getProperties().put(GrizzlyClientProperties.SELECTOR_THREAD_POOL_CONFIG, null);
-    this.clientManager.getProperties().put(GrizzlyClientProperties.WORKER_THREAD_POOL_CONFIG, ThreadPoolConfig.defaultConfig().setCorePoolSize(1).setMaxPoolSize(1).setPoolName("WSDEMO_WORK"));
+    this.clientManager.getProperties().put(
+        GrizzlyClientProperties.WORKER_THREAD_POOL_CONFIG,
+        ThreadPoolConfig.defaultConfig().setCorePoolSize(1).setMaxPoolSize(1).setPoolName("WSDEMO_WORK")
+    );
+
     StandardWebSocketClient client = new StandardWebSocketClient(clientManager);
     client.setTaskExecutor(taskExecutor);
+
     URI uri = getHandShakeURI();
     log.info("Connecting websocket, URI:{}", uri);
+
     CountDownLatch websocketSessionAvailable = new CountDownLatch(1);
-    ListenableFuture<WebSocketSession> futureSession = client.doHandshake(new SpringWebsocketHandler(this.taskExecutor), new WebSocketHttpHeaders(), uri);
-    futureSession.addCallback(new WebsocketSessionCallback(websocketSessionAvailable));
+    CompletableFuture<WebSocketSession> futureSession = client.execute(
+        new SpringWebsocketHandler(this.taskExecutor), 
+        new WebSocketHttpHeaders(), 
+        uri);
+
+    WebsocketSessionCallback callback = new WebsocketSessionCallback(websocketSessionAvailable);
+    futureSession.whenComplete((result, ex) -> {
+      if (ex != null) {
+        callback.onFailure(ex);
+      } else {
+        callback.onSuccess(result);
+      }
+    });
+
     boolean sessionAvailable = false;
     try {
-      sessionAvailable = websocketSessionAvailable.await(CONNECT_TIMEOUT, TimeUnit.MILLISECONDS );
+      sessionAvailable = websocketSessionAvailable.await(CONNECT_TIMEOUT, TimeUnit.MILLISECONDS);
     } catch (InterruptedException e) {
       Thread.currentThread().interrupt();
       throw new WebsocketException("Interrupted while waiting for websocket handshake", e);
     }
+
     if (!sessionAvailable || webSocketSession == null) {
       String handShakeError = "Handshake failed: websocketSession not initialized";
       log.error("{}. Disposing resources before reconnection attempt", handShakeError);
       doDisconnect();
       throw new WebsocketException(handShakeError);
     }
+
     if (log.isDebugEnabled()) {
       log.debug("{}:Done handshake", this);
     }
@@ -104,11 +124,11 @@ public class SpringWebsocket extends AbstractWebsocket {
    * @throws WebsocketException if an error occurs while creating the URI, e.g. invalid URL.
    */
   protected URI getHandShakeURI() throws WebsocketException {
-    URI uri = null;
+    URI uri;
     try {
       uri = new URI(url);
     } catch (URISyntaxException e) {
-      throw new WebsocketException("Error creating URI for websocket base URL:" + url);
+      throw new WebsocketException("Error creating URI for websocket base URL:" + url, e);
     }
     String scheme = uri.getScheme();
     if (!"ws".equals(scheme) && !"wss".equals(scheme)) {
@@ -116,8 +136,6 @@ public class SpringWebsocket extends AbstractWebsocket {
     }
     return uri;
   }
-
-
 
   @Override
   protected void doDisconnect() {
@@ -131,15 +149,19 @@ public class SpringWebsocket extends AbstractWebsocket {
       log.error(ex.getMessage(), e);
       dispatchError(ex);
     }
-    clientManager.shutdown();
-    taskExecutor.shutdown();
+    if (clientManager != null) {
+      clientManager.shutdown();
+    }
+    if (taskExecutor != null) {
+      taskExecutor.shutdown();
+    }
     log.debug("Websocket is closed");
   }
 
   private class SpringWebsocketHandler implements WebSocketHandler {
-    
+
     private final TaskExecutor dispatchMessageExecutor;
-    
+
     public SpringWebsocketHandler(TaskExecutor dispatchMessageExecutor) {
       this.dispatchMessageExecutor = dispatchMessageExecutor;
     }
@@ -152,8 +174,7 @@ public class SpringWebsocket extends AbstractWebsocket {
     @Override
     public void handleMessage(WebSocketSession session, WebSocketMessage<?> message) throws Exception {
       log.debug("handleMessage:session:{}, message:{}", session, message);
-      if (message instanceof TextMessage) {
-        TextMessage m  = (TextMessage) message;
+      if (message instanceof TextMessage m) {
         dispatchMessageExecutor.execute(new DispatchTextMessageTask(m));
       } else {
         log.debug("handleMessage:message is not a TextMessage:{}", message);
@@ -177,50 +198,44 @@ public class SpringWebsocket extends AbstractWebsocket {
     public boolean supportsPartialMessages() {
       return false;
     }
-    
+
   }
-  
-  private class WebsocketSessionCallback implements ListenableFutureCallback<WebSocketSession> {
-    
+
+  private class WebsocketSessionCallback {
+
     private final CountDownLatch websocketSessionAvailable;
 
     public WebsocketSessionCallback(CountDownLatch websocketSessionAvailable) {
       this.websocketSessionAvailable = websocketSessionAvailable;
     }
 
-    @Override
     public void onSuccess(WebSocketSession result) {
       log.info("WebsocketSessionCallback:onSuccess:{}", result);
       webSocketSession = result;
       websocketSessionAvailable.countDown();
     }
 
-    @Override
     public void onFailure(Throwable ex) {
-      dispatchError(SpringWebsocket.this.toString() +  "Error raised on websocket session callback", ex);
+      dispatchError(SpringWebsocket.this.toString() + "Error raised on websocket session callback", ex);
       webSocketSession = null;
       websocketSessionAvailable.countDown();
     }
-    
+
   }
-  
+
   private class DispatchTextMessageTask implements Runnable {
-    
+
     private final TextMessage textMessage;
-    
+
     public DispatchTextMessageTask(TextMessage textMessage) {
       this.textMessage = textMessage;
     }
 
     @Override
     public void run() {
-      try {
-        String msg = new String(textMessage.asBytes());
-        log.debug("Dispatching message:{}", msg);
-        dispatchMessage(msg);
-      } catch (Exception ex) {
-        log.error("Error while dispatching message [" + new String(textMessage.asBytes()) + "]", ex);
-      }
+      String payload = textMessage.getPayload();
+      log.debug("DispatchTextMessageTask:payload:{}", payload);
+      dispatchMessage(payload);
     }
   }
 }

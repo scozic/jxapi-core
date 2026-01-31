@@ -7,6 +7,7 @@ import java.util.Map;
 
 import org.jxapi.netutils.deserialization.json.JsonDeserializer;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonGenerator;
@@ -19,6 +20,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.databind.json.JsonMapper;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.databind.ser.std.StdSerializer;
 
@@ -81,14 +83,18 @@ public class JsonUtil {
    *         </ul>
    */
   public static ObjectMapper createDefaultObjectMapper() {
-    ObjectMapper om = new ObjectMapper();
-    om.disable(SerializationFeature.FAIL_ON_EMPTY_BEANS);
-    om.enable(SerializationFeature.ORDER_MAP_ENTRIES_BY_KEYS);
-    om.setSerializationInclusion(Include.NON_NULL);
-    om.registerModule(EXCEPTION_SERIALIZATION_MODULE);
-    om.setConfig(om.getSerializationConfig().with(MapperFeature.SORT_PROPERTIES_ALPHABETICALLY));
-    return om;
-  }
+
+    return JsonMapper.builder()
+      .disable(SerializationFeature.FAIL_ON_EMPTY_BEANS)
+      .enable(SerializationFeature.ORDER_MAP_ENTRIES_BY_KEYS)
+      .enable(MapperFeature.SORT_PROPERTIES_ALPHABETICALLY)
+      .defaultPropertyInclusion(
+          JsonInclude.Value.construct(Include.NON_NULL, Include.NON_NULL)
+        )
+      .addModule(EXCEPTION_SERIALIZATION_MODULE)
+      .build();
+}
+
 
   /**
    * @param pojo The pojo to serialize as a JSON string.
@@ -446,7 +452,7 @@ public class JsonUtil {
 
     Map<String, T> res = CollectionUtil.createMap();
     while (parser.nextToken() != JsonToken.END_OBJECT) {
-      String key = parser.getCurrentName();
+      String key = parser.currentName();
       parser.nextToken();
       res.put(key, itemDeserializer.deserialize(parser));
     }
@@ -515,7 +521,7 @@ public class JsonUtil {
         case START_OBJECT:
             Map<String, Object> map = CollectionUtil.createMap();
             while (parser.nextToken() != JsonToken.END_OBJECT) {
-                String fieldName = parser.getCurrentName();
+                String fieldName = parser.currentName();
                 map.put(fieldName, readNextObject(parser));
             }
             return map;

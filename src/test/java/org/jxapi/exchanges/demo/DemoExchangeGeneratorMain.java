@@ -4,14 +4,12 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import org.jxapi.exchange.descriptor.gen.ExchangeDescriptor;
 import org.jxapi.exchange.descriptor.parser.ExchangeDescriptorParser;
 import org.jxapi.generator.java.JavaCodeGenUtil;
 import org.jxapi.generator.java.exchange.ExchangeGeneratorMain;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Static helper methods for triggering generation of DemoExchange java wrapper and demos code.
@@ -30,7 +28,7 @@ public class DemoExchangeGeneratorMain {
     Path exchangeDescriptorFile = srcTestResourcesFolder.resolve(Paths.get("demoExchange.json"));
     ExchangeDescriptor exchangeDescriptor = ExchangeDescriptorParser.fromJson(exchangeDescriptorFile);
     Path srcTestJavaFolder = srcTestFolder.resolve(Paths.get("java"));
-    Path mainPackagePath = Paths.get(StringUtils.replace(exchangeDescriptor.getBasePackage(), ".", "/"));
+    Path mainPackagePath = Paths.get(exchangeDescriptor.getBasePackage().replace('.', '/'));
     Path genMainPackagesFolder = srcTestJavaFolder.resolve(mainPackagePath);
     JavaCodeGenUtil.deletePath(genMainPackagesFolder);
     ExchangeGeneratorMain.generateExchangeWrapper(exchangeDescriptor, srcTestJavaFolder);

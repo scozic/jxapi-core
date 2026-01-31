@@ -3,7 +3,7 @@ package org.jxapi.netutils.websocket.mock.server;
 import java.io.IOException;
 import java.util.Objects;
 
-import javax.websocket.Session;
+import jakarta.websocket.Session;
 
 /**
  * Default implementation of the {@link MockWebsocketServerSession} interface

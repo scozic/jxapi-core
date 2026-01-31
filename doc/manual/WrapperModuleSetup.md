@@ -1,4 +1,4 @@
-# JXAPI JAVA API wrapper module creation
+# JXAPI JAVA POJO or API wrapper module creation
 
 The following section is about how to create a Maven/Java project exporting a JXAPI wrapper as JAR library. The following examples show module creation for a wrapper of an API called "myApi".
 
@@ -62,64 +62,33 @@ Next, define dependency to `jxapi-core` module, and `jxapi-maven-plugin` Maven p
   </dependencies>
 ```
 
-2. Add `exec-maven-plugin` which will allow running code generation using Maven command `mvn exec:java`
-
-```xml
-<project>
-  <build>
-		<pluginManagement>
-    ...
-			<plugins>
-				<plugin>
-					<groupId>org.codehaus.mojo</groupId>
-					<artifactId>exec-maven-plugin</artifactId>
-					<configuration>
-						<mainClass>
-							org.jxapi.generator.java.exchange.ExchangeGeneratorMain</mainClass>
-						<systemProperties>
-							<systemProperty>
-								<key>baseJavaDocUrl</key>
-								<value>${baseJavaDocUrl}</value>
-							</systemProperty>
-							<systemProperty>
-								<key>baseJavaSrcUrl</key>
-								<value>${baseSrcUrl}</value>
-							</systemProperty>
-						</systemProperties>
-					</configuration>
-				</plugin>
-			</plugins>
-		</pluginManagement>
-  </build>
-</project>
-```
-
-3. Add `jxapi-maven-plugin` to have code generation included in default Maven build cycle:
+2. Add `jxapi-maven-plugin` to have code generation included in default Maven build cycle:
 
 ```xml
 <project>
 ...
   <build>
     <plugins>
-        <plugin>
-            <groupId>org.jxapi</groupId>
-            <artifactId>jxapi-maven-plugin</artifactId>
-            <version>${jxapi.version}</version>
-            <configuration>
-              <baseProjectDir>${project.basedir}</baseProjectDir>
-              <baseJavaDocUrl>${baseJavaDocUrl}/</baseJavaDocUrl>
-              <baseSrcUrl>${baseSrcUrl}/</baseSrcUrl>
-            </configuration>
-            <executions>
-                <execution>
-                    <id>jxapi-exchange-generator</id>
-                    <phase>generate-sources</phase>
-                    <goals>
-                        <goal>jxapi-exchange-generator</goal>
-                    </goals>
-                </execution>
-            </executions>
-        </plugin>
+			<plugin>
+				<groupId>org.jxapi</groupId>
+				<artifactId>jxapi-maven-plugin</artifactId>
+				<version>${jxapi.version}</version>
+        <!-- Configure 'executions' if you want code generation integrated in build cycle -->
+				<executions>
+					<execution>
+						<id>jxapi-exchange-generator</id>
+						<phase>generate-sources</phase>
+						<goals>
+							<goal>jxapi-exchange-generator</goal>
+						</goals>
+					</execution>
+				</executions>
+				<configuration>
+					<baseProjectDir>${project.basedir}</baseProjectDir>
+					<baseJavaDocUrl>${baseJavaDocUrl}/</baseJavaDocUrl>
+					<baseSrcUrl>${baseSrcUrl}/</baseSrcUrl>
+				</configuration>
+			</plugin>
     </plugins>
   </build>
 </project>  

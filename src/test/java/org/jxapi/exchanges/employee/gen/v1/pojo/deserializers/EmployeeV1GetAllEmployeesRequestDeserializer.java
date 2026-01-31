@@ -14,14 +14,14 @@ import static org.jxapi.util.JsonUtil.skipNextValue;
  * Parses incoming JSON messages into org.jxapi.exchanges.employee.gen.v1.pojo.EmployeeV1GetAllEmployeesRequest instances
  * @see org.jxapi.exchanges.employee.gen.v1.pojo.EmployeeV1GetAllEmployeesRequest
  */
-@Generated("org.jxapi.generator.java.pojo.JsonMessageDeserializerGenerator")
+@Generated("org.jxapi.generator.java.pojo.JsonPojoDeserializerGenerator")
 public class EmployeeV1GetAllEmployeesRequestDeserializer extends AbstractJsonMessageDeserializer<EmployeeV1GetAllEmployeesRequest> {
   
   @Override
   public EmployeeV1GetAllEmployeesRequest deserialize(JsonParser parser) throws IOException {
     EmployeeV1GetAllEmployeesRequest msg = new EmployeeV1GetAllEmployeesRequest();
     while(parser.nextToken() != JsonToken.END_OBJECT) {
-      switch(parser.getCurrentName()) {
+      switch(parser.currentName()) {
       case "page":
         msg.setPage(readNextInteger(parser));
       break;

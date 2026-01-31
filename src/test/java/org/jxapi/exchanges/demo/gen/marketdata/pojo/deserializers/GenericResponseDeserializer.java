@@ -14,14 +14,14 @@ import static org.jxapi.util.JsonUtil.skipNextValue;
  * Parses incoming JSON messages into org.jxapi.exchanges.demo.gen.marketdata.pojo.GenericResponse instances
  * @see org.jxapi.exchanges.demo.gen.marketdata.pojo.GenericResponse
  */
-@Generated("org.jxapi.generator.java.pojo.JsonMessageDeserializerGenerator")
+@Generated("org.jxapi.generator.java.pojo.JsonPojoDeserializerGenerator")
 public class GenericResponseDeserializer extends AbstractJsonMessageDeserializer<GenericResponse> {
   
   @Override
   public GenericResponse deserialize(JsonParser parser) throws IOException {
     GenericResponse msg = new GenericResponse();
     while(parser.nextToken() != JsonToken.END_OBJECT) {
-      switch(parser.getCurrentName()) {
+      switch(parser.currentName()) {
       case "responseCode":
         msg.setResponseCode(readNextInteger(parser));
       break;

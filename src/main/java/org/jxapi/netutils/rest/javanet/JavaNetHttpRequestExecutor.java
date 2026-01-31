@@ -14,7 +14,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadFactory;
-import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicLong;
 
 import org.jxapi.netutils.rest.AbstractHttpRequestExecutor;
 import org.jxapi.netutils.rest.FutureHttpResponse;
@@ -31,7 +31,7 @@ import org.slf4j.LoggerFactory;
  */
 public class JavaNetHttpRequestExecutor extends AbstractHttpRequestExecutor {
   
-  private static final AtomicInteger THREAD_COUNTER = new AtomicInteger(1);
+  private static final AtomicLong THREAD_COUNTER = new AtomicLong(1L);
   
   private static final Logger log = LoggerFactory.getLogger(JavaNetHttpRequestExecutor.class);
   

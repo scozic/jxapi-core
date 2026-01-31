@@ -14,7 +14,7 @@ import static org.jxapi.util.JsonUtil.skipNextValue;
  * Parses incoming JSON messages into org.jxapi.exchanges.employee.gen.v1.pojo.EmployeeV1EmployeeUpdatesMessage instances
  * @see org.jxapi.exchanges.employee.gen.v1.pojo.EmployeeV1EmployeeUpdatesMessage
  */
-@Generated("org.jxapi.generator.java.pojo.JsonMessageDeserializerGenerator")
+@Generated("org.jxapi.generator.java.pojo.JsonPojoDeserializerGenerator")
 public class EmployeeV1EmployeeUpdatesMessageDeserializer extends AbstractJsonMessageDeserializer<EmployeeV1EmployeeUpdatesMessage> {
   private EmployeeDeserializer employeeDeserializer;
   
@@ -22,7 +22,7 @@ public class EmployeeV1EmployeeUpdatesMessageDeserializer extends AbstractJsonMe
   public EmployeeV1EmployeeUpdatesMessage deserialize(JsonParser parser) throws IOException {
     EmployeeV1EmployeeUpdatesMessage msg = new EmployeeV1EmployeeUpdatesMessage();
     while(parser.nextToken() != JsonToken.END_OBJECT) {
-      switch(parser.getCurrentName()) {
+      switch(parser.currentName()) {
       case "eventType":
         msg.setEventType(readNextString(parser));
       break;

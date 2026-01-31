@@ -19,7 +19,7 @@ import static org.jxapi.util.JsonUtil.skipNextValue;
  * Parses incoming JSON messages into org.jxapi.exchange.descriptor.gen.RestEndpointDescriptor instances
  * @see org.jxapi.exchange.descriptor.gen.RestEndpointDescriptor
  */
-@Generated("org.jxapi.generator.java.pojo.JsonMessageDeserializerGenerator")
+@Generated("org.jxapi.generator.java.pojo.JsonPojoDeserializerGenerator")
 public class RestEndpointDescriptorDeserializer extends AbstractJsonMessageDeserializer<RestEndpointDescriptor> {
   private final ListJsonFieldDeserializer<String> rateLimitsDeserializer = new ListJsonFieldDeserializer<>(StringJsonFieldDeserializer.getInstance());
   
@@ -27,7 +27,7 @@ public class RestEndpointDescriptorDeserializer extends AbstractJsonMessageDeser
   public RestEndpointDescriptor deserialize(JsonParser parser) throws IOException {
     RestEndpointDescriptor msg = new RestEndpointDescriptor();
     while(parser.nextToken() != JsonToken.END_OBJECT) {
-      switch(parser.getCurrentName()) {
+      switch(parser.currentName()) {
       case "name":
         msg.setName(readNextString(parser));
       break;

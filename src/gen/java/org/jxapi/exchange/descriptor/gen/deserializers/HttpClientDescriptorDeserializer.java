@@ -15,14 +15,14 @@ import static org.jxapi.util.JsonUtil.skipNextValue;
  * Parses incoming JSON messages into org.jxapi.exchange.descriptor.gen.HttpClientDescriptor instances
  * @see org.jxapi.exchange.descriptor.gen.HttpClientDescriptor
  */
-@Generated("org.jxapi.generator.java.pojo.JsonMessageDeserializerGenerator")
+@Generated("org.jxapi.generator.java.pojo.JsonPojoDeserializerGenerator")
 public class HttpClientDescriptorDeserializer extends AbstractJsonMessageDeserializer<HttpClientDescriptor> {
   
   @Override
   public HttpClientDescriptor deserialize(JsonParser parser) throws IOException {
     HttpClientDescriptor msg = new HttpClientDescriptor();
     while(parser.nextToken() != JsonToken.END_OBJECT) {
-      switch(parser.getCurrentName()) {
+      switch(parser.currentName()) {
       case "name":
         msg.setName(readNextString(parser));
       break;

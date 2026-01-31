@@ -5,7 +5,7 @@ JXAPI Java wrapper generator allows to write custom interceptors to alter HTTP r
 
 This is achieved by implementing [HttpRequestInterceptor](../../src/main/java/org/jxapi/netutils/rest/HttpRequestInterceptor.java) interface: `intercept(HttpRequest)` method allows to modify any part of an outgoing request: headers, URL, body... before it is submitted.
 
-In exchange descriptor JSON file you should declare property `httpRequestInterceptorFactory` property of structure describing an HTTP client among ones defined in `network\httpClients` part of exchange descriptor, with value containing name of a class implementing [HttpRequestInterceptorFactory](../../src/main/java/org/jxapi/netutils/rest/HttpRequestInterceptorFactory.java) class.
+In exchange descriptor JSON file you should declare property `httpRequestInterceptorFactory` property of structure describing an HTTP client among ones defined in `network\httpClients` part of exchange descriptor (see [network](./ExchangeDescriptorFileDoc.md#network) ), with value containing name of a class implementing [HttpRequestInterceptorFactory](../../src/main/java/org/jxapi/netutils/rest/HttpRequestInterceptorFactory.java) class.
 Such class must have a defaut public constructor. The `createInterceptor(Exchange exchange)` method implementation must return a `HttpRequestInterceptor` instance. 
 
 Here is an example of a simple `HttpRequestInterceptor` implementation that adds a custom header to each request:

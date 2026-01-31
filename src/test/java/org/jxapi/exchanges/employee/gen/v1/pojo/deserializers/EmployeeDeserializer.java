@@ -15,14 +15,14 @@ import static org.jxapi.util.JsonUtil.skipNextValue;
  * Parses incoming JSON messages into org.jxapi.exchanges.employee.gen.v1.pojo.Employee instances
  * @see org.jxapi.exchanges.employee.gen.v1.pojo.Employee
  */
-@Generated("org.jxapi.generator.java.pojo.JsonMessageDeserializerGenerator")
+@Generated("org.jxapi.generator.java.pojo.JsonPojoDeserializerGenerator")
 public class EmployeeDeserializer extends AbstractJsonMessageDeserializer<Employee> {
   
   @Override
   public Employee deserialize(JsonParser parser) throws IOException {
     Employee msg = new Employee();
     while(parser.nextToken() != JsonToken.END_OBJECT) {
-      switch(parser.getCurrentName()) {
+      switch(parser.currentName()) {
       case "id":
         msg.setId(readNextInteger(parser));
       break;

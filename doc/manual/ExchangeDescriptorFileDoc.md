@@ -40,6 +40,7 @@ This section describes such descriptor file.
       - [Rate Limit Levels](#rate-limit-levels)
       - [Example](#example)
     - [Placeholders](#placeholders)
+    - [Splitting large exchange definitions into multiple files](#splitting-large-exchange-definitions-into-multiple-files)
 
 <!-- END TABLE OF CONTENTS -->
 
@@ -648,7 +649,29 @@ Different policies may be specified using `Exchange#setRequestThrottlingMode(Req
 
   Defining constants and using placeholders to reference them improves clarity of generated wrapper and reduces duplication.
 
+## Splitting large exchange definitions into multiple files
 
+  For complex API specifications with many endpoints it is preferable to split exchange definition into multiple files. When running generator plugin in wrapper project module, it will scan `src/main/resources/jxapi` folder and aggregate all exchanges (multiple exchange can be specified) found in every .yaml and .json file.
+  
+  Have a look at [employeeExchange](../../src/test/resources/employeeExchange/) folder to see the same exchange as above defined in multiple files.
+
+  This has following advantages:
+  - Each endpoint can be defined in a separate file, making it easier to maintain and update.
+  - AI assistants can be used more effectively to generate or update endpoint definitions based on documentation pages.
+  - Reduces the risk of merge conflicts when multiple developers are working on the same exchange definition
+  - Encourages modular design and organization of API specifications.
+  - Can be used to segregate Java specific properties (like `implementedInterfaces`) from API specific definition itself.
+
+  When splitting exchange definition into multiple files, ensure that:
+  - Each file contains a valid JSON or YAML structure.
+  - The root structure of each file is either an `exchange` object or an `apis` list to be merged into parent exchange definition.
+  - File names should be descriptive of their content, e.g., `getTickerEndpoint.yaml` for a file defining a ticker endpoint.
+
+  When generator encounters multiple files defining the same exchange (same `id` property in `exchange` structure), it will merge them into a single exchange definition by aggregating API groups and endpoints and properties defined across files.
+  General rules for merging are:
+  - Properties with scalar values (like `name`, `description`) defined in multiple files will take single value from the first encountered definition. If conflicting values are found, an error is raised.
+  - List properties (like `apis`, `restEndpoints`, `websocketEndpoints`, `rateLimits`, `properties`, `constants`) are merged by concatenating lists from all definitions.
+  - Nested objects (like `network`, `exchange` properties) are merged recursively following the same rules.
 
 
 

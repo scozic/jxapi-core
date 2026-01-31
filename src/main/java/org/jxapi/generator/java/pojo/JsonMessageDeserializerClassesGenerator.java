@@ -63,7 +63,7 @@ public class JsonMessageDeserializerClassesGenerator implements ClassesGenerator
           .generateClasses(outputFolder);
       }
     }
-    JsonMessageDeserializerGenerator deserializerGenerator = new JsonMessageDeserializerGenerator(deserializedClassName, fields);
+    JsonPojoDeserializerGenerator deserializerGenerator = new JsonPojoDeserializerGenerator(deserializedClassName, fields);
     deserializerGenerator.writeJavaFile(outputFolder);
   }
 

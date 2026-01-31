@@ -16,7 +16,7 @@ import static org.jxapi.util.JsonUtil.skipNextValue;
  * Parses incoming JSON messages into org.jxapi.exchange.descriptor.gen.ConfigPropertyDescriptor instances
  * @see org.jxapi.exchange.descriptor.gen.ConfigPropertyDescriptor
  */
-@Generated("org.jxapi.generator.java.pojo.JsonMessageDeserializerGenerator")
+@Generated("org.jxapi.generator.java.pojo.JsonPojoDeserializerGenerator")
 public class ConfigPropertyDescriptorDeserializer extends AbstractJsonMessageDeserializer<ConfigPropertyDescriptor> {
   private ListJsonFieldDeserializer<ConfigPropertyDescriptor> propertiesDeserializer;
   
@@ -24,7 +24,7 @@ public class ConfigPropertyDescriptorDeserializer extends AbstractJsonMessageDes
   public ConfigPropertyDescriptor deserialize(JsonParser parser) throws IOException {
     ConfigPropertyDescriptor msg = new ConfigPropertyDescriptor();
     while(parser.nextToken() != JsonToken.END_OBJECT) {
-      switch(parser.getCurrentName()) {
+      switch(parser.currentName()) {
       case "name":
         msg.setName(readNextString(parser));
       break;

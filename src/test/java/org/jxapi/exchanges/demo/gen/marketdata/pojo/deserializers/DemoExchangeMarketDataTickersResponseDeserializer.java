@@ -16,7 +16,7 @@ import static org.jxapi.util.JsonUtil.skipNextValue;
  * Parses incoming JSON messages into org.jxapi.exchanges.demo.gen.marketdata.pojo.DemoExchangeMarketDataTickersResponse instances
  * @see org.jxapi.exchanges.demo.gen.marketdata.pojo.DemoExchangeMarketDataTickersResponse
  */
-@Generated("org.jxapi.generator.java.pojo.JsonMessageDeserializerGenerator")
+@Generated("org.jxapi.generator.java.pojo.JsonPojoDeserializerGenerator")
 public class DemoExchangeMarketDataTickersResponseDeserializer extends AbstractJsonMessageDeserializer<DemoExchangeMarketDataTickersResponse> {
   private MapJsonFieldDeserializer<DemoExchangeMarketDataTickersResponsePayload> payloadDeserializer;
   
@@ -24,7 +24,7 @@ public class DemoExchangeMarketDataTickersResponseDeserializer extends AbstractJ
   public DemoExchangeMarketDataTickersResponse deserialize(JsonParser parser) throws IOException {
     DemoExchangeMarketDataTickersResponse msg = new DemoExchangeMarketDataTickersResponse();
     while(parser.nextToken() != JsonToken.END_OBJECT) {
-      switch(parser.getCurrentName()) {
+      switch(parser.currentName()) {
       case "responseCode":
         msg.setResponseCode(readNextInteger(parser));
       break;

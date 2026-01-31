@@ -24,7 +24,7 @@ import org.jxapi.pojo.descriptor.Type;
 import org.jxapi.util.JsonUtil;
 
 /**
- * Generates a JSON message deserializer class for a given POJO class using
+ * Generates a JSON deserializer class for a given POJO class using
  * Jackson.
  * The generated deserializer class extends
  * {@link AbstractJsonMessageDeserializer} and implements the
@@ -35,7 +35,7 @@ import org.jxapi.util.JsonUtil;
  * @see JsonDeserializer
  * @see MessageDeserializer
  */
-public class JsonMessageDeserializerGenerator extends JavaTypeGenerator {
+public class JsonPojoDeserializerGenerator extends JavaTypeGenerator {
   
   private static final String STATIC = "static ";
   private final String deserializedTypeClassName;
@@ -48,7 +48,7 @@ public class JsonMessageDeserializerGenerator extends JavaTypeGenerator {
    * @param deserializedTypeClassName the fully qualified name of the POJO class to deserialize
    * @param fields the properties of the POJO class
    */
-  public JsonMessageDeserializerGenerator(String deserializedTypeClassName, List<Field> fields) {
+  public JsonPojoDeserializerGenerator(String deserializedTypeClassName, List<Field> fields) {
     super(PojoGenUtil.getJsonMessageDeserializerClassName(deserializedTypeClassName));
     this.deserializedTypeClassName = deserializedTypeClassName;
     this.fields = fields;
@@ -85,7 +85,7 @@ public class JsonMessageDeserializerGenerator extends JavaTypeGenerator {
         .append(simpleDeserializedClassName)
         .append("();\nwhile(parser.nextToken() != JsonToken.END_OBJECT) {\n");
     body.append(indent)
-        .append("switch(parser.getCurrentName()) {\n");
+        .append("switch(parser.currentName()) {\n");
     String dblIndent = indent + indent;
     fields.forEach(field -> {
       Type type = PojoGenUtil.getFieldType(field);
