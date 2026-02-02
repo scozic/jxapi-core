@@ -49,7 +49,7 @@
 # #### Demo configuration properties for exchangeInfo.request field object instance.
 # Demo configuration property for request.symbols field.<p>
 # The list of symbol to fetch market information for. Leave empty to fetch all markets
-# demo.MarketData.rest.exchangeInfo.request.symbols=[BTC_USDT, BNB_USDT]
+# demo.MarketData.rest.exchangeInfo.request.symbols=[BTC_USDT, ETH_USDT]
 
 # ### Configuration properties for REST postRestRequestDataTypeInt endpoint of MarketData API group
 # Demo configuration property for postRestRequestDataTypeInt.request field.

@@ -619,7 +619,9 @@ public class EndpointDemoGenUtil {
               .name(propertyName)
               .type(Type.STRING.toString())
               .description(rawValueDemoPropertyDescription)
-              .defaultValue(f.getSampleValue())
+              .defaultValue(Optional
+                  .ofNullable(f.getSampleValue())
+                  .orElse(f.getDefaultValue()))
               .build(),
           ConfigPropertyDescriptor.builder()
               .name(propertyName)
@@ -643,7 +645,9 @@ public class EndpointDemoGenUtil {
             parentField, 
             fieldName,
             fieldDescription))
-        .defaultValue(f.getSampleValue())
+        .defaultValue(Optional
+            .ofNullable(f.getSampleValue())
+            .orElse(f.getDefaultValue()))
         .build());
   }
   
