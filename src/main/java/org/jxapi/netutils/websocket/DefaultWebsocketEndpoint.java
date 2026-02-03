@@ -157,9 +157,7 @@ public class DefaultWebsocketEndpoint<M> implements WebsocketEndpoint<M> {
       listeners.put(subscriptionId, listener);
       if (listeners.size() == 1) {
         // First subscription
-        getWebsocketClient().subscribe(request.getTopic(), 
-                       request.getMessageTopicMatcherFactory(), 
-                       this::dispatch);
+        getWebsocketClient().subscribe(request, this::dispatch);
       }
     }
     

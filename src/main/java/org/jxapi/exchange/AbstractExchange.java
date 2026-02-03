@@ -61,6 +61,9 @@ public abstract class AbstractExchange extends DefaultDisposable implements Exch
    */
   protected final Map<String, ExchangeApi> apis = new HashMap<>();
   
+  /**
+   * The network used to manage HTTP clients and websocket clients.
+   */
   protected final DefaultNetwork network;
   
   /**
@@ -144,6 +147,7 @@ public abstract class AbstractExchange extends DefaultDisposable implements Exch
   /**
    * Subclasses should call this method to register every exposed {@link ExchangeApi}. 
    * @param <T> the type of the {@link ExchangeApi}
+   * @param name the name of the {@link ExchangeApi}
    * @param api the {@link ExchangeApi} to add
    * @return <code>api</code>
    */
@@ -245,6 +249,7 @@ public abstract class AbstractExchange extends DefaultDisposable implements Exch
    * Creates a websocket manager using the specified URL, websocket factory class name, and websocket hook factory class name.
    * Should be called by subclasses to create the websocket manager if there is at least one websocket endpoint.
    * 
+   * @param name The name of the websocket client.
    * @param url The URL of the websocket server. Can be <code>null</code> to set it later, or use the default URL defined by the websocket implementation.
    * @param websocketFactoryClassName The fully qualified class name of the websocket factory class that creates the websocket.
    * @param websocketHookFactoryClassName The fully qualified class name of the websocket hook factory class that creates the websocket hook.

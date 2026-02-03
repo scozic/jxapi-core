@@ -94,6 +94,20 @@ public abstract class AbstractExchangeApi extends DefaultDisposable implements E
     this.exchangeObserver.handleEvent(event);
   }
   
+  /**
+   * Creates a new WebsocketEndpoint instance with the specified endpoint name,
+   * websocket client ID, and message deserializer.
+   * 
+   * @param <M>                 The type of messages handled by the websocket
+   *                            endpoint.
+   * @param endpointName       The name of the websocket endpoint.
+   * @param wsClientId         The ID of the websocket client to use for this
+   *                           endpoint.
+   * @param messageDeserializer The message deserializer to use for this endpoint.
+   * @return A new WebsocketEndpoint instance.
+   * @throws IllegalStateException If no websocket client is found with the
+   *                               specified ID.
+   */
   protected <M> WebsocketEndpoint<M> createWebsocketEndpoint(String endpointName, String wsClientId, MessageDeserializer<M> messageDeserializer) {
     WebsocketClient websocketClient = exchange.getNetwork().getWebsocket(wsClientId);
     if (websocketClient == null) {
@@ -107,10 +121,36 @@ public abstract class AbstractExchangeApi extends DefaultDisposable implements E
     return websocketEndpoint;
   }
   
+  /**
+   * Creates a new RestEndpoint instance with the specified endpoint name and
+   * HTTP client ID.
+   * 
+   * @param <R>          The type of REST request handled by the endpoint.
+   * @param <A>          The type of REST response handled by the endpoint.
+   * @param name        The name of the REST endpoint.
+   * @param httpClientId The ID of the HTTP client to use for this endpoint.
+   * @return A new RestEndpoint instance.
+   * @throws IllegalStateException If no HTTP client is found with the specified
+   *                               ID.
+   */
   protected <R, A> RestEndpoint<R, A> createRestEndpoint(String name, String httpClientId) {
     return initRestEndpoint(new RestEndpoint<>(), name, httpClientId);
   }
   
+  /**
+   * Creates a new PaginatedRestEndpoint instance with the specified endpoint
+   * name and HTTP client ID.
+   * 
+   * @param <R>          The type of paginated REST request handled by the
+   *                     endpoint.
+   * @param <A>          The type of paginated REST response handled by the
+   *                     endpoint.
+   * @param name        The name of the paginated REST endpoint.
+   * @param httpClientId The ID of the HTTP client to use for this endpoint.
+   * @return A new PaginatedRestEndpoint instance.
+   * @throws IllegalStateException If no HTTP client is found with the specified
+   *                               ID.
+   */
   protected <R extends PaginatedRestRequest, A extends PaginatedRestResponse> RestEndpoint<R, A> createPaginatedRestEndpoint(String name, String httpClientId) {
     return initRestEndpoint(new PaginatedRestEndpoint<>(), name, httpClientId);
   }

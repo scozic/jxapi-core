@@ -39,14 +39,14 @@ public enum MockWebsocketHookEventType {
   AFTER_DISCONNECT,
 
   /**
-   * Event that is sent when the {@link MockWebsocketHook#getSubscribeRequestMessage(String)}
+   * Event that is sent when the {@link MockWebsocketHook#getSubscribeRequestMessage(WebsocketSubscribeRequest)}
    * method is called.
    */
   GET_SUBSCRIBE_REQUEST_MESSAGE,
 
   /**
    * Event that is sent when the
-   * {@link MockWebsocketHook#getUnSubscribeRequestMessage(String)} method is
+   * {@link MockWebsocketHook#getUnSubscribeRequestMessage(WebsocketSubscribeRequest)} method is
    * called.
    */
   GET_UNSUBSCRIBE_REQUEST_MESSAGE,

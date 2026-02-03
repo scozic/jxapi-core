@@ -247,9 +247,9 @@ public class DefaultWebsocketEndpointTest {
     final List<String> unsubscribeRequests = new ArrayList<>();
     
     @Override
-    public void subscribe(String topic, 
-                WebsocketMessageTopicMatcherFactory matcherFactory,
-                RawWebsocketMessageHandler messageHandler) {
+    public void subscribe(WebsocketSubscribeRequest subscribeRequest,
+                          RawWebsocketMessageHandler messageHandler) {
+      String topic = subscribeRequest.getTopic();
       if (subscribeRequests.containsKey(topic)) {
         throw new IllegalStateException("Already have a subscription for topic:" + topic);
       }

@@ -15,7 +15,7 @@ import org.jxapi.util.Disposable;
  * WebsocketClient allows to subscribe a single message handler to a topic.
  * The actual message that must be sent to the server to subscribe to a topic is
  * managed by the {@link WebsocketHook}, see
- * {@link WebsocketHook#getSubscribeRequestMessage(String)}.
+ * {@link WebsocketHook#getSubscribeRequestMessage(WebsocketSubscribeRequest)}.
  * Filtering incoming messages matching a topic is done by the
  * {@link WebsocketMessageTopicMatcher} that is used to match incoming messages
  * to a topic using a JSON parser to extract properties of incoming JSON
@@ -111,7 +111,7 @@ public interface WebsocketClient extends Disposable {
   /**
    * Adds a message handler to handle specific/non business messages. This is
    * similar to
-   * {@link #subscribe(String, WebsocketMessageTopicMatcherFactory, RawWebsocketMessageHandler)}
+   * {@link #subscribe(WebsocketSubscribeRequest, RawWebsocketMessageHandler)}
    * but for system messages.
    * 
    * @param topic          The topic for the system message to handle. Should be
@@ -127,29 +127,25 @@ public interface WebsocketClient extends Disposable {
 
   /**
    * Subscribes a message handler to a topic. The message handler will be called
-   * when a message is received from the server that matches the topic.
+   * when a message is received from the server that matches the topic. 
    * <br>
    * Client implementations must take care not to subscribe multiple message
    * handlers to the same topic. This is managed by the {@link WebsocketEndpoint}.
    * Subscribing a message handler for a topic that already has a message handler
    * will cause an error to be raised by the WebsocketClient.
    * 
-   * @param topic          The topic to subscribe to. Can be <code>null</code> if
-   *                       no multiplexing is required. In this case the message
-   *                       handler will be called for every message received.
-   * @param matcher        The matcher to use to match incoming messages to the
-   *                       topic. Can be <code>null</code> if no multiplexing is
-   *                       required.
-   * @param messageHandler The message handler to call when a message related to
-   *                       topic is received.
+   * @param subscribeRequest The subscribe request containing the topic and
+   *                         matcher factory.
+   * @param messageHandler   The message handler to call when a message related to
+   *                         topic is received.
    */
-  void subscribe(String topic, WebsocketMessageTopicMatcherFactory matcher, RawWebsocketMessageHandler messageHandler);
+  void subscribe(WebsocketSubscribeRequest subscribeRequest, RawWebsocketMessageHandler messageHandler);
 
   /**
    * Unsubscribes from a topic.
    * 
    * @param topic The topic to unsubscribe from.
-   * @see WebsocketClient#subscribe(String, WebsocketMessageTopicMatcherFactory, RawWebsocketMessageHandler)
+   * @see WebsocketClient#subscribe(WebsocketSubscribeRequest, RawWebsocketMessageHandler)
    */
   void unsubscribe(String topic);
 
