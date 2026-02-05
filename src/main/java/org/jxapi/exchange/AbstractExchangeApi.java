@@ -161,7 +161,7 @@ public abstract class AbstractExchangeApi extends DefaultDisposable implements E
       throw new IllegalStateException(String.format("[%s]:Cannot create REST endpoint [%s] as no HTTP client exists with ID [%s]", this.name, name, httpClientId));
     }
     restEndpoint.setName(name);
-    restEndpoint.setHttpRequestExecutor(httpClient);
+    restEndpoint.setHttpClient(httpClient);
     restEndpoint.setObserver(apiObserver);
     return restEndpoint;
   }

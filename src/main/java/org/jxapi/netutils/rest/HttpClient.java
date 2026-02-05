@@ -20,6 +20,8 @@ public class HttpClient extends AbstractHttpRequestExecutor {
    * 
    * @param interceptor the interceptor to apply before executing the request
    * @param executor    the executor to use for executing the request
+   * @param throttler   the request throttler to use for throttling requests. May
+   *                    be <code>null</code>.
    */
   public HttpClient(HttpRequestInterceptor interceptor, HttpRequestExecutor executor, RequestThrottler throttler) {
     this.interceptor = interceptor;

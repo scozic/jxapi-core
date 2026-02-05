@@ -79,6 +79,11 @@ public abstract class AbstractExchange extends DefaultDisposable implements Exch
   
   private final WebsocketErrorHandler wsErrorHandler = error -> dispatchApiEvent(ExchangeEvent.createWebsocketErrorEvent(error));
   
+  /**
+   * The request throttler used to handle rate limits for HTTP requests, if the
+   * exchange has rate limiting. Can be <code>null</code> if the exchange does not
+   * have rate limiting.
+   */
   protected final RequestThrottler requestThrottler;
   
   private HttpRequestExecutor defaultHttpRequestExecutor;

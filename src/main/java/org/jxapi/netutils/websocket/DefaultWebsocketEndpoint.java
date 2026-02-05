@@ -117,30 +117,58 @@ public class DefaultWebsocketEndpoint<M> implements WebsocketEndpoint<M> {
     this.getObserver().handleEvent(event);
   }
   
+  /**
+   * Returns the {@link WebsocketClient} used by this endpoint.
+   * @return the {@link WebsocketClient} used by this endpoint
+   */
   public WebsocketClient getWebsocketClient() {
     return websocketClient;
   }
 
+  /**
+   * Sets the {@link WebsocketClient} to be used by this endpoint.
+   * @param websocketClient the {@link WebsocketClient} to be used by this endpoint
+   */
   public void setWebsocketClient(WebsocketClient websocketClient) {
     this.websocketClient = websocketClient;
   }
 
+  /**
+   * Returns the {@link ExchangeObserver} used by this endpoint to dispatch events.
+   * @return the {@link ExchangeObserver} used by this endpoint to dispatch events
+   */
   public ExchangeObserver getObserver() {
     return observer;
   }
 
+  /**
+   * Sets the {@link ExchangeObserver} to be used by this endpoint to dispatch events.
+   * @param observer the {@link ExchangeObserver} to be used by this endpoint to dispatch events
+   */
   public void setObserver(ExchangeObserver observer) {
     this.observer = observer;
   }
 
+  /**
+   * Sets the endpoint name.
+   * @param endpointName the endpoint name to set
+   */
   public void setEndpointName(String endpointName) {
     this.endpointName = endpointName;
   }
 
+  /**
+   * Returns the {@link MessageDeserializer} used by this endpoint to deserialize incoming messages.
+   * @return the {@link MessageDeserializer} used by this endpoint to deserialize incoming messages
+   */
   public MessageDeserializer<M> getMessageDeserializer() {
     return messageDeserializer;
   }
 
+  /**
+   * Sets the {@link MessageDeserializer} to be used by this endpoint to deserialize incoming messages.
+   * @param messageDeserializer the {@link MessageDeserializer} to be used by this endpoint to deserialize incoming messages
+   */
   public void setMessageDeserializer(MessageDeserializer<M> messageDeserializer) {
     this.messageDeserializer = messageDeserializer;
   }

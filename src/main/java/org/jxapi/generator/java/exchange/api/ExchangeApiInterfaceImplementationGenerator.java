@@ -193,8 +193,12 @@ public class ExchangeApiInterfaceImplementationGenerator extends JavaTypeGenerat
   /**
    * Constructor.
    * 
-   * @param exchangeDescriptor    the exchange descriptor where the API is defined
-   * @param exchangeApiDescriptor the API descriptor to generate interface implementation for
+   * @param exchangeDescriptor     the exchange descriptor where the API is
+   *                               defined
+   * @param exchangeApiDescriptor  the API descriptor to generate interface
+   *                               implementation for
+   * @param docPlaceHolderResolver the resolver for placeholders in the generated
+   *                               code documentation
    */
   public ExchangeApiInterfaceImplementationGenerator(
     ExchangeDescriptor exchangeDescriptor, 
@@ -214,7 +218,6 @@ public class ExchangeApiInterfaceImplementationGenerator extends JavaTypeGenerat
     simpleImplementationName =  JavaCodeGenUtil.getClassNameWithoutPackage(getName());
     hasRestEnpoints = !CollectionUtils.isEmpty(exchangeApiDescriptor.getRestEndpoints());
     hasWsEnpoints = !CollectionUtils.isEmpty(exchangeApiDescriptor.getWebsocketEndpoints());
-    
   }
 
   @Override

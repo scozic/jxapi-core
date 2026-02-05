@@ -53,20 +53,34 @@ public class ConstantsGenUtil {
   }
   
   /**
-   * Generates the Java code for a declared <code>public static final</code> constant in a Java class.
+   * Generates the Java code for a declared <code>public static final</code>
+   * constant in a Java class.
    * <p>
    * Example:
+   * 
    * <pre>
    * {@code
    * Integer MY_INT = Integer.valueOf(42);
    * }
    * </pre>
-   * Where {@code MY_INT} is the constant name, {@code Integer} is the type of the constant and {@code 42} is the value of the constant.
-   * @param constant the constant to generate the declaration for
-   * @param sieblings the list of constants declared in the same class as the constant, used to avoid name clashes
-   * @param imports the set of imports to add to the generated code
-   * @param docPlaceHolderResolver the resolver for placeholders in the constant's description
-   * @param sampleValuePlaceHolderResolver the resolver for placeholders in the constant's sample value
+   * 
+   * Where {@code MY_INT} is the constant name, {@code Integer} is the type of the
+   * constant and {@code 42} is the value of the constant.
+   * 
+   * @param constant                       the constant to generate the
+   *                                       declaration for
+   * @param sieblings                      the list of constants declared in the
+   *                                       same class as the constant, used to
+   *                                       avoid name clashes
+   * @param imports                        the set of imports to add to the
+   *                                       generated code
+   * @param docPlaceHolderResolver         the resolver for placeholders in the
+   *                                       constant's description
+   * @param sampleValuePlaceHolderResolver the resolver for placeholders in the
+   *                                       constant's sample value
+   * @param modifiers                      the modifiers to use for the constant
+   *                                       declaration, for instance 'public
+   *                                       static final' or 'private static final'
    * @return the Java code for the constant declaration
    */
   public static String generateConstantDeclaration(Constant constant, 
