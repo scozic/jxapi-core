@@ -344,7 +344,7 @@ public class EndpointDemoGenUtil {
     StringBuilder builderInstruction = new StringBuilder();
     builderInstruction.append("\n");
     List<Field> properties = ExchangeApiGenUtil.resolveFieldProperties(exchangeApiDescriptor, field).getProperties();
-    for (Field childParam : properties) {
+    for (Field childParam : CollectionUtil.emptyIfNull(properties)) {
       String childParamName = childParam.getName();
       String childDemoPropertyName = demoPropertyName + "." + childParamName;
       String childClassName = PojoGenUtil.getFieldObjectClassName(childParam, objectClassName);

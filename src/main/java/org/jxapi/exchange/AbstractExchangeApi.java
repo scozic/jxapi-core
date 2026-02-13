@@ -13,7 +13,6 @@ import org.jxapi.netutils.websocket.DefaultWebsocketEndpoint;
 import org.jxapi.netutils.websocket.WebsocketClient;
 import org.jxapi.netutils.websocket.WebsocketEndpoint;
 import org.jxapi.observability.Observable;
-import org.jxapi.util.DefaultDisposable;
 import org.jxapi.util.EncodingUtil;
 
 /**
@@ -44,7 +43,7 @@ import org.jxapi.util.EncodingUtil;
  * @see ExchangeEvent
  * @see Observable
  */
-public abstract class AbstractExchangeApi extends DefaultDisposable implements ExchangeApi {
+public abstract class AbstractExchangeApi implements ExchangeApi {
 
   /**
    * The name of this exchange API group.
