@@ -1,0 +1,140 @@
+{
+	"id": "MyTestExchange",
+	"version": "1.0.0",
+	"description": "A sample Exchange descriptor file. Should be provided config properties: ${config.apiKey}, ${config.apiSecret}. Author: ${constants.author.firstName} ${constants.author.lastName}",
+	"docUrl": "https://docs.myexchange.com/api",
+	"basePackage": "com.foo.bar.gen",
+	"network": {
+		"httpClients": [
+			{
+				"name": "httpDefault",
+				"httpRequestInterceptorFactory": "com.foo.bar.BarHttpRequestInterceptorFactory"
+			}
+		],
+		"websocketClients": [
+			{
+				"name": "wsDefault",
+				"websocketUrl": "wss://com.foo.exchange/ws",
+				"websocketFactory": "com.foo.bar.BarWebsocketFactory",
+				"websocketHookFactory": "com.foo.bar.BarWebsocketHookFactory"
+			}
+		]
+	},
+	"properties": [
+		{"name": "apiKey", "description": "API key"},
+		{"name": "apiSecret", "description": "API secret"}
+	],
+	"constants": [
+		{"name": "pingMessage", "type":"STRING", "description": "Ping message", "value": "Ping!"},
+		{"name": "pongMessage", "type":"STRING", "description": "Pong message", "value": "Pong!"},
+		{
+			"name": "author",
+			"description": "Author first name: ${constants.author.firstName} and last name ${constants.author.lastName}",
+			"constants": [
+				{"name": "firstName", "type":"STRING", "description": "Author first name", "value": "Bob"},
+				{"name": "lastName", "type":"STRING", "description": "Author last name", "value": "Smith"}
+			]
+		},
+		{"name": "authorFullName", "type":"STRING", "description": "Author name like ${constants.authorFullName}", "value": "${constants.author.firstName} ${constants.author.lastName}"},
+		{"name": "allTickers", "type":"STRING", "description": "Constant for subscribing to all tickers", "value": "all"},
+		{"name": "demoSymbol", "type":"STRING", "description": "Value to use for 'symbol' property of endpoint demo snippet requests.", "value": "BTC_USDT"}
+	],
+	"apis":[
+		{ 
+			"name": "MarketData",
+			"description": "The market data API of MyTestExchange. Author: ${constants.authorFullName}",
+			"httpRequestInterceptorFactory": "com.foo.bar.BarHttpRequestInterceptorFactory",
+			"defaultHttpClient": "httpDefault",
+			"defaultWebsocketClient": "wsDefault",
+			"restEndpoints": [
+				{
+					"name": "exchangeInfo",
+					"httpMethod": "GET",
+					"description": "Fetch market information of symbols that can be traded. Author: ${constants.authorFullName}",
+					"docUrl": "https://docs.myexchange.com/api/rest/marketData/exchangeInfo",
+					"url": "https://com.sample.mycex/exchangeInfo",
+					"paginated": true,
+					"request":{
+						"implementedInterfaces": [
+							"com.foo.bar.MyTestExchangePaginatedRequest"
+						], 
+					    "description": "Request parameters for fetching exchange info. Author: ${constants.authorFullName}",
+						"properties": [
+							{"name":"symbols", "type": "STRING_LIST", "description":"The list of symbol to fetch market information for. Leave empty to fetch all markets. Author: ${constants.authorFullName}", "sampleValue":"[\"${constants.demoSymbol}\"]"},
+							{"name": "apiKey", "type":"STRING", "description":"API key, see ${config.apiKey}", "sampleValue": "${config.apiKey}"},
+							{"name": "author", "type":"STRING", "description":"Author name, see ${constants.authorFullName}", "sampleValue": "${constants.author.firstName} ${constants.author.lastName}"},
+							{"name": "page", "type": "INT", "description": "Page number to return, defaults to 1. Author: ${constants.authorFullName}", "sampleValue": 1}
+						]
+					},
+					"response":{
+						"implementedInterfaces": [
+							"com.foo.bar.MyTestExchangePaginatedResponse"
+						], 
+						"properties": [
+							{"name":"responseCode", "type": "INT", "description":"Request response code", "sampleValue":"0"},
+							{"name":"currentPage", "type": "INT", "description": "Current page index.", "sampleValue": 1},
+							{"name":"totalPages", "type": "INT", "description": "Total number of pages.", "sampleValue": 10},
+							{"name":"payload", "type": "OBJECT_LIST", "description":"List of market information for each requested symbol. Author: ${constants.authorFullName}", "properties":[
+									{"name":"symbol", "description":"Market symbol (STRING type implicit). Author: ${constants.authorFullName}", "sampleValue":"BTC_USDT"},
+									{"name":"minOrderSize", "type": "BIGDECIMAL", "description":"Minimum order amount. Author: ${constants.authorFullName}", "sampleValue":"0.0001"},
+									{"name":"levels", "type": "INT_LIST", "description":"Amount precision levels. Author: ${constants.authorFullName}", "sampleValue":[1,10,500]}
+								]
+							}
+						]
+					}
+				},
+				{
+					"name": "tickers",
+					"httpMethod": "GET",
+					"description": "Fetch current tickers. Author: ${constants.authorFullName}",
+					"url": "https://com.sample.mycex/tickers",
+					"request":{
+						"description": "Request parameters for fetching tickers. Author: ${constants.authorFullName}",
+						"properties": []
+					},
+					"response": { 
+						"properties": [
+							{"name":"responseCode", "type": "INT", "description":"Request response code. Author: ${constants.authorFullName}", "sampleValue":"0"},
+							{"name":"payload", "type": "OBJECT_MAP", "description":"Tickers for each symbol. Author: ${constants.authorFullName}", "properties":[
+									{"name":"last", "type": "BIGDECIMAL", "description":"Last traded price. Author: ${constants.authorFullName}", "sampleValue":10.0}
+								]
+							}
+						]
+					}
+				}
+			],
+			"websocketEndpoints": [
+				{
+					"name": "tickerStream",
+					"docUrl": "https://docs.myexchange.com/api/ws/marketData/tickerStream",
+					"topic": "${request.symbol}@ticker",
+					"description": "Subscribe to ticker stream. Author: ${constants.authorFullName}",
+					"request": {
+					    "description": "Request parameters for subscribing to ticker stream. Use ${constants.allTickers} to subscribe to every ticker. Author: ${constants.authorFullName}",
+						"properties": [
+							{"name": "symbol", "type":"STRING", "description":"Symbol to subscribe to ticker stream of. Use ${constants.allTickers} to subscribe to every ticker. Author: ${constants.authorFullName}", "sampleValue": "${constants.demoSymbol}"},
+							{"name": "apiKey", "type":"STRING", "description":"API key, see ${config.apiKey}", "sampleValue": "${config.apiKey}"}
+						]
+					},
+					"topicMatcher": {
+						"or": [
+							{"fieldName": "topic",  "fieldValue": "ticker"},
+							{"fieldName": "symbol",  "fieldValue": "${request.symbol}"}
+					    ]
+					},
+					"message": { 
+						"description": "Ticker message. Author: ${constants.authorFullName}",
+						"properties": [
+							{"name":"topic", "msgField":"t", "type": "STRING", "description":"Topic. Author: ${constants.authorFullName}", "sampleValue":"ticker"},
+							{"name":"symbol", "msgField":"s", "type": "STRING", "description":"Symbol name. Author: ${constants.authorFullName}", "sampleValue":"${constants.demoSymbol}"},
+                            {"name":"timestamp", "msgField":"T", "type": "LONG", "description":"Timestamp of the message. Author: ${constants.authorFullName}", "sampleValue":"1633036800000"},
+                            {"name":"priceChange", "msgField":"p", "type": "BIGDECIMAL", "description":"Price change in the last 24 hours. Author: ${constants.authorFullName}", "sampleValue":"100.00"},
+                            {"name":"priceChangePercent", "msgField":"P", "type": "BIGDECIMAL", "description":"Price change percent in the last 24 hours. Author: ${constants.authorFullName}", "sampleValue":"0.5"},
+							{"name":"last", "msgField":"p", "type": "BIGDECIMAL", "description":"Last traded price. Author: ${constants.authorFullName}", "sampleValue":"16000.00"}
+						]
+					}
+				}
+			]
+		}
+	]
+}

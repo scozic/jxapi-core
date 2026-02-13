@@ -1,0 +1,211 @@
+{
+	"id": "MyTestExchange",
+	"description": "A sample exchange descriptor file used in ExchangeApiInterfaceImplementationGeneratorTest unit test",
+	"basePackage": "com.foo.bar.gen",
+	"httpUrl": "https://myexchange.com",
+	"network": {
+		"httpClients": [
+			{
+				"name": "httpDefault"
+			},
+			{
+				"name": "trading",
+				"httpRequestInterceptorFactory": "com.foo.net.TradingInterceptorFactory",
+				"httpRequestExecutorFactory": "com.foo.net.TradingExecutorFactory",
+				"httpRequestTimeout": 2500
+			},
+			{
+				"name": "futuresMarketData",
+				"httpRequestInterceptorFactory": "com.foo.bar.FuturesMarketDataInterceptorFactory",
+				"httpRequestTimeout": 3000
+			},
+			{
+				"name": "futuresTrading",
+				"httpRequestInterceptorFactory": "com.foo.net.FuturesTradingInterceptorFactory",
+				"httpRequestTimeout": 3500
+			}
+		],
+		"websocketClients": [
+			{
+				"name": "wsDefault",
+				"websocketUrl": "wss://com.foo.exchange/ws",
+				"websocketFactory": "com.foo.bar.BarWebsocketFactory",
+				"websocketHookFactory": "com.foo.bar.BarWebsocketHookFactory"
+			}
+		]
+	},
+	"rateLimits": [
+		{"id": "futuresTradeGlobalWeightRule", "timeFrame": 2000,  "maxTotalWeight": 500},
+		{"id": "futuresTradeGlobalCountRule", "timeFrame": 1500,  "maxTotalWeight": 300},
+		{"id": "exchangeInfoCountRule", "timeFrame": 1500,  "maxTotalWeight": 300},
+		{"id": "unusedRule", "timeFrame": 10000,  "maxRequestCount": 250}
+	],
+	"apis":[
+		{ 
+			"name": "MarketData",
+			"description": "An API with no rate limits",
+			"restEndpoints": [
+				{
+					"name": "exchangeInfo",
+					"httpMethod": "GET",
+					"description": "Fetch market information of symbols that can be traded",
+					"url": "https://mycex.com/trading/exchangeInfo",
+					"request": {
+						"properties": [
+							{"name":"symbols", "type": "STRING_LIST", "description":"The list of symbol to fetch market information for. Leave empty to fetch all markets", "sampleValue":""}
+						]
+					},
+					"response":{ 
+						"properties":[
+							{"name":"responseCode", "type": "INT", "description":"Request response code", "sampleValue":"0"},
+							{"name":"payload", "type": "OBJECT_LIST", "description":"List of market information for each requested symbol", "properties":[
+								{"name":"symbol", "type": "STRING", "description":"Market symbol", "sampleValue":"BTC_USDT"},
+								{"name":"minOrderSize", "type": "BIGDECIMAL", "description":"Minimum order amount", "sampleValue":"0.0001"}
+							]}
+						]
+					}
+				}
+			],
+			"websocketEndpoints": [
+				{
+					"name": "tickerStream",
+					"topic": "${symbol}@ticker",
+					"description": "Subscribe to ticker stream",
+					"request": {
+						"properties": [
+							{"name": "symbol", "type":"STRING", "description":"Symbol to subscribe to ticker stream of", "sampleValue":"BTC_USDT"}
+						]
+					},
+					"topicMatcher": {
+						"and": [
+							{"fieldName": "topic",  "fieldValue": "ticker"},
+							{"fieldName": "symbol",  "fieldValue": "${request.symbol}"}
+						]
+					},
+					"message": {
+						"properties": [
+							{"name":"topic", "msgField":"t", "type": "STRING", "description":"Topic", "sampleValue":"ticker"},
+							{"name":"symbol", "msgField":"s", "type": "STRING", "description":"Symbol name", "sampleValue":"BTC_USDT"},
+							{"name":"last", "msgField":"p", "type": "BIGDECIMAL", "description":"Last traded price", "sampleValue":"16000.00"}
+						]
+					}
+				}
+			]
+		},
+		{ 
+			"name": "Trading",
+			"description": "An API group with one REST endpoint and no websocket endpoints.",
+			"httpUrl": "/spot",
+			"restEndpoints": [
+				{
+					"name": "exchangeInfo",
+					"httpMethod": "GET",
+					"description": "Fetch market information of symbols that can be traded",
+					"url": "/exchangeInfo",
+					"requestWeight": 60,
+					"httpClient": "trading",
+					"request": {
+						"properties": [
+								{"name":"symbols", "type": "STRING_LIST", "description":"The list of symbol to fetch market information for. Leave empty to fetch all markets", "sampleValue":""}
+						]
+					},
+					"response":{
+						"properties": [
+							{"name":"responseCode", "type": "INT", "description":"Request response code", "sampleValue":"0"},
+							{"name":"payload", "type": "OBJECT_LIST", "description":"List of market information for each requested symbol", "properties":[
+									{"name":"symbol", "type": "STRING", "description":"Market symbol", "sampleValue":"BTC_USDT"},
+									{"name":"minOrderSize", "type": "BIGDECIMAL", "description":"Minimum order amount", "sampleValue":"0.0001"}
+								]
+							}
+						]
+					}
+				}
+			]
+		},
+		{ 
+			"name": "FuturesMarketData",
+			"description": "An API with endpoint specific rate limit",
+			"defaultHttpClient": "futuresMarketData",
+			"httpUrl": "/futures",
+			"restEndpoints": [
+				{
+					"name": "exchangeInfo",
+					"httpMethod": "GET",
+					"description": "Fetch market information of symbols that can be traded",
+					"url": "/exchangeInfo",
+					"rateLimits": ["exchangeInfoCountRule"],
+					"request":{
+						"properties": [
+							{"name":"symbols", "type": "STRING_LIST", "description":"The list of symbol to fetch market information for. Leave empty to fetch all markets", "sampleValue":""}
+						]
+					},
+					"response":{ 
+						"properties": [
+							{"name":"responseCode", "type": "INT", "description":"Request response code", "sampleValue":"0"},
+							{"name":"payload", "type": "OBJECT_LIST", "description":"List of market information for each requested symbol", "properties":[
+									{"name":"symbol", "type": "STRING", "description":"Market symbol", "sampleValue":"BTC_USDT"},
+									{"name":"minOrderSize", "type": "BIGDECIMAL", "description":"Minimum order amount", "sampleValue":"0.0001"}
+								]
+							}
+						]
+					}
+				},
+				{
+					"name": "exchangeInfo2",
+					"httpMethod": "GET",
+					"description": "Same as exchangeInfo, uses same rate limit rule defined below without timeframe and maxRequest count attributes, because using same id is enough to reference previous.",
+					"url": "https://com.sample.v2.myexchange/exchangeInfo2",
+					"request": {
+						"properties": [
+							{"name":"symbols", "type": "STRING_LIST", "description":"The list of symbol to fetch market information for. Leave empty to fetch all markets", "sampleValue":""}
+						]
+					},
+					"response":{ 
+						"properties": [
+							{"name":"responseCode", "type": "INT", "description":"Request response code", "sampleValue":"0"},
+							{"name":"payload", "type": "OBJECT_LIST", "description":"List of market information for each requested symbol", "properties":[
+									{"name":"symbol", "type": "STRING", "description":"Market symbol", "sampleValue":"BTC_USDT"},
+									{"name":"minOrderSize", "type": "BIGDECIMAL", "description":"Minimum order amount", "sampleValue":"0.0001"}
+								]
+							}
+						]
+					}
+				}
+			]
+		},
+		{ 
+			"name": "FuturesTrading",
+			"description": "An API group with one REST endpoint using futuresTrading http client and 2 rate limit rules",
+			"defaultHttpClient": "futuresTrading",
+			"restEndpoints": [
+				{
+					"name": "exchangeInfo",
+					"httpMethod": "GET",
+					"description": "Fetch market information of symbols that can be traded",
+					"url": "https://myexchage.com/futuresTrading/exchangeInfo",
+					"requestWeight": 60,
+					"rateLimits": [
+						"futuresTradeGlobalWeightRule",
+						"futuresTradeGlobalCountRule"
+					],
+					"request": {
+						"properties": [
+							{"name":"symbols", "type": "STRING_LIST", "description":"The list of symbol to fetch market information for. Leave empty to fetch all markets", "sampleValue":""}
+						]
+					},
+					"response": {
+						"properties": [
+							{"name":"responseCode", "type": "INT", "description":"Request response code", "sampleValue":"0"},
+							{"name":"payload", "type": "OBJECT_LIST", "description":"List of market information for each requested symbol", "properties":[
+									{"name":"symbol", "type": "STRING", "description":"Market symbol", "sampleValue":"BTC_USDT"},
+									{"name":"minOrderSize", "type": "BIGDECIMAL", "description":"Minimum order amount", "sampleValue":"0.0001"}
+								]
+							}
+						]
+					}
+				}
+			]
+		}
+		
+	]
+}

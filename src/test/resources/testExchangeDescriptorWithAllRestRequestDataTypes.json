@@ -1,0 +1,493 @@
+{
+	"id": "MyTestExchange",
+	"description": "A sample Exchange descriptor file",
+	"httpUrl": "https://mycex.com",
+	"basePackage": "com.foo.bar.gen",
+	"constants": [
+		{"name": "myLongConst", "type":"LONG", "description": "A long constant", "value": 1234567890}
+	],
+	"network": {
+		"httpClients": [
+			{
+				"name": "httpDefault",
+				"httpRequestInterceptorFactory": "com.foo.bar.BarHttpRequestInterceptorFactory"
+			}
+		],
+		"websocketClients": [
+			{
+				"name": "wsDefault",
+				"websocketUrl": "wss://com.foo.exchange/ws",
+				"websocketFactory": "com.foo.bar.BarWebsocketFactory",
+				"websocketHookFactory": "com.foo.bar.BarWebsocketHookFactory"
+			}
+		]
+	},
+	"apis":[
+		{ 
+			"name": "MarketData",
+			"description": "The market data API of MyTestExchange, with different request data types for websocket and REST endpoints. Remark: Only OBJECT (default) and STRING are usually used, but any data type is supported",
+			"defaultHttpClient": "httpDefault",
+			"defaultWebsocketClient": "wsDefault",
+			"restEndpoints": [
+				{
+					"name": "postRestRequestDataTypeInt",
+					"httpMethod": "POST",
+					"description": "A sample REST endpoint using INT response data type",
+					"url": "/postInt",
+					"request": {
+						"type": "INT",
+						"sampleValue": 12345
+					},
+					"response": {
+						"objectName": "GenericResponse",
+						"properties": [
+							{"name":"responseCode", "type": "INT", "description":"Request response code", "sampleValue":"0"}
+						]
+					}
+				},
+				{
+					"name": "postRestRequestDataTypeLong",
+					"httpMethod": "POST",
+					"description": "A sample REST endpoint using LONG response data type",
+					"url": "/postLong",
+					"request": {
+						"type": "LONG",
+						"sampleValue": 123456789012
+					},
+					"response": {
+						"objectName": "GenericResponse"
+					}
+				},
+				{
+					"name": "postRestRequestDataTypeBigDecimal",
+					"httpMethod": "POST",
+					"description": "A sample REST endpoint using BIGDECIMAL response data type",
+					"url": "/postBigDecimal",
+					"request": {
+						"type": "BIGDECIMAL",
+						"sampleValue": 12345.678
+					},
+					"response": {
+						"objectName": "GenericResponse"
+					}
+				},
+				{
+					"name": "postRestRequestDataTypeStringImplicit",
+					"httpMethod": "POST",
+					"description": "A sample REST endpoint using STRING response data type",
+					"url": "/postString",
+					"request": {
+						"name": "hello",
+						"description": "Say Hi!",
+						"sampleValue": "Hello world!"
+					},
+					"response": {
+						"objectName": "GenericResponse"
+					}
+				},
+				{
+					"name": "postRestRequestDataTypeIntImplicitAsPathParam",
+					"httpMethod": "POST",
+					"description": "A sample REST endpoint using STRING response data type",
+					"url": "/postIntAsPathParam",
+					"requestHasBody": false,
+					"request": {
+						"name": "id",
+						"description": "Identifier",
+						"type": "INT",
+						"in": "PATH",
+						"sampleValue": 123
+					},
+					"response": {
+						"objectName": "GenericResponse"
+					}
+				},
+				{
+					"name": "postRestRequestDataTypeBoolean",
+					"httpMethod": "POST",
+					"description": "A sample REST endpoint using BOOLEAN response data type",
+					"url": "/postBoolean",
+					"request": {
+						"type": "BOOLEAN",
+						"sampleValue": true
+					},
+					"response": {
+						"objectName": "GenericResponse"
+					}
+				},
+				{
+					"name": "postRestRequestNoParameters",
+					"httpMethod": "POST",
+					"description": "A sample REST endpoint using POST method (HTTP request expecting a body), and no parameters. One String argument should be generated to pass raw body",
+					"url": "/postNoParameter",
+					"response": {
+						"objectName": "GenericResponse"
+					}
+				},
+				{
+					"name": "postRestRequestDataTypeObjectOneParameter",
+					"httpMethod": "POST",
+					"description": "A sample REST endpoint using OBJECT request data type (default, explicit here), and one parameter",
+					"url": "/postObjectOneParameter",
+					"request": {
+						"type": "OBJECT",
+						"properties": [
+							{"name":"singleArg", "type": "INT", "description":"Request single argument", "sampleValue":"0"}
+						]
+					},
+					"response": {
+						"objectName": "GenericResponse"
+					}
+				},
+				{
+					"name": "postRestRequestDataTypeIntListWithDefaultValue",
+					"httpMethod": "POST",
+					"description": "A sample REST endpoint using INT_LIST request data type",
+					"url": "/postIntList",
+					"request": {
+						"type": "INT_LIST",
+						"sampleValue": [1,3,5],
+						"defaultValue": [2,4,6]
+					},
+					"response": {
+						"objectName": "GenericResponse"
+					}
+				},
+				{
+					"name": "postRestRequestDataTypeObjectListMap",
+					"httpMethod": "POST",
+					"description": "A sample REST endpoint using OBJECT_LIST_MAP request data type",
+					"url": "/postObjectListMap",
+					"request": {
+						"type": "OBJECT_LIST_MAP",
+						"objectName": "SingleSymbol"
+					},
+					"response": {
+						"objectName": "GenericResponse"
+					}
+				},
+				{
+					"name": "deletetRestRequestDataTypeObjectAsBody",
+					"httpMethod": "DELETE",
+					"description": "A sample REST DELETE endpoint using OBJECT request data type, and request serialized as body",
+					"url": "/deletetRestRequestDataTypeObjectAsBody",
+					"requestHasBody": true,
+					"request": {
+						"type": "OBJECT_LIST_MAP",
+						"objectName": "SingleSymbol"
+					},
+					"response": {
+						"objectName": "GenericResponse"
+					}
+				},
+				{
+					"name": "deletetRestRequestDataTypeObjectAsQueryParams",
+					"httpMethod": "DELETE",
+					"description": "A sample REST endpoint using OBJECT_LIST_MAP request data type",
+					"url": "/deletetRestRequestDataTypeObjectAsQueryParams",
+					"request": {
+						"type": "OBJECT_LIST_MAP",
+						"objectName": "SingleSymbol"
+					},
+					"response": {
+						"objectName": "GenericResponse"
+					}
+				},
+				{
+					"name": "getRestRequestDataTypeObjectListMap",
+					"httpMethod": "GET",
+					"description": "A sample REST endpoint using GET (hence url query params) and object list map request type, and sample value with full structure.",
+					"url": "/getObjectListMap",
+					"request": {
+						"type": "OBJECT_LIST_MAP",
+						"objectName": "MultiSymbol",
+						"properties": [
+							{"name":"symbolList", "type": "STRING_LIST", "description":"List of full symbol names", "sampleValue":["BTC_USDT", "ETH_USDT"]},
+							{"name":"symbolMap", "type": "STRING_LIST_MAP", "description":"Symbols as a map of quote asset keys map with base asset as values", "sampleValue":{"USDT":["BTC_USDT", "ETH"]}},
+							{"name":"symbolObject", "type": "OBJECT", "msgField":"so", "objectName":"SingleSymbol"}
+						],
+						"sampleValue": "{\"foo\": [{\"symbol\": \"BTC_USDT\", \"symbolMap\": {\"USDT\": [\"BTC_USDT\", \"ETH\"]}, \"symbolObject\": {}}]}"
+					},
+					
+					"response": {
+						"objectName": "GenericResponse"
+					}
+				},
+				{
+					"name": "getRestRequestDataTypeEmptyObject",
+					"httpMethod": "GET",
+					"description": "A sample REST endpoint using GET (hence url query params) and empty request object",
+					"url": "/getEmptyObject",
+					"request": {
+						"type": "OBJECT",
+						"properties": []
+					},
+					"response": {
+						"objectName": "GenericResponse"
+					}
+				},
+				{
+					"name": "getRestRequestDataTypeExternalObject",
+					"httpMethod": "POST",
+					"description": "A sample REST endpoint using POST (hence request body) and request with object name representing a class with full package name, which is not to be generated",
+					"url": "/postEmptyObject",
+					"request": {
+						"objectName": "com.external.pkg.ExternalObject"
+					},
+					"response": {
+						"objectName": "GenericResponse"
+					}
+				},				
+				{
+					"name": "postRestRequestDataTypeRawObject",
+					"httpMethod": "POST",
+					"description": "A sample REST endpoint using POST (hence request body) and raw <code>java.lang.Object</code> request object",
+					"url": "/postEmptyObject",
+					"request": {
+						"objectName": "java.lang.Object"
+					},
+					"response": {
+						"objectName": "GenericResponse"
+					}
+				},
+				{
+					"name": "getRestRequestDataTypePrimitiveWithMsgField",
+					"httpMethod": "GET",
+					"description": "A sample REST endpoint using GET (hence url query params) primitive request type, with 'msgField' property defined. That msgField value should be used as query param argument name",
+					"url": "/getIntWithMsgField",
+					"request": {
+						"type": "INT",
+						"name": "age",
+						"msgField": "a"
+					},
+					"response": {
+						"objectName": "GenericResponse"
+					}
+				},
+				{
+					"name": "getRestRequestDataTypePrimitiveWithMsgFieldAsPathPAram",
+					"httpMethod": "GET",
+					"description": "A sample REST endpoint using GET (hence url query params) primitive request type, with 'msgField' property defined. That msgField value should be used as query param argument name",
+					"url": "/getIntWithMsgFieldAsPathParam",
+					"request": {
+						"type": "INT",
+						"name": "age",
+						"msgField": "a",
+						"in": "PATH"
+					},
+					"response": {
+						"objectName": "GenericResponse"
+					}
+				},
+				{
+					"name": "getRestRequestDataTypeWithBothPathAndQueryParams",
+					"httpMethod": "GET",
+					"description": "A sample REST endpoint using GET (hence url query params) primitive request type, with 'msgField' property defined. That msgField value should be used as query param argument name",
+					"url": "/getRestRequestDataTypeWithBothPathAndQueryParams",
+					"request": {
+						"properties": [
+							{
+								"name": "id",
+								"type": "INT",
+								"msgField": "i",
+								"in": "QUERY"
+							},
+							{
+								"name": "name",
+								"type": "STRING",
+								"msgField": "n",
+								"in": "PATH"
+							},
+							{
+								"name": "address",
+								"properties": [
+									{
+										"name": "street",
+										"type": "STRING",
+										"in": "QUERY"
+									},
+									{
+										"name": "city",
+										"type": "STRING",
+										"in": "PATH"
+									}
+								]
+							}
+							
+						]
+					},
+					"response": {
+						"objectName": "GenericResponse"
+					}
+				}
+			],
+			"websocketEndpoints": [
+				{
+					"name": "streamWithObjectRequestDataTypeZeroParameters",
+					"topic": "ticker",
+					"description": "Subscribe to stream with OBJECT request type (implicit) and no parameters",
+					"request": {
+						"properties": []
+					},
+					"topicMatcher": {
+						"fieldName": "topic",  
+						"fieldValue": "${topic}"
+					},
+					"message": {
+						"objectName":"Ticker",
+						"properties": [
+							{"name":"topic", "msgField":"t", "type": "STRING", "description":"Topic", "sampleValue":"ticker"},
+							{"name":"symbol", "msgField":"s", "type": "STRING", "description":"Symbol name", "sampleValue":"BTC_USDT"},
+							{"name":"last", "msgField":"p", "type": "BIGDECIMAL", "description":"Last traded price", "sampleValue":"16000.00"}
+						]
+					}
+				},
+				{
+					"name": "streamWithObjectRequestDataTypeOneParameter",
+					"topic": "ticker",
+					"description": "Subscribe to stream with OBJECT request type (default, explicit here) and parameter",
+					"request": {
+						"name": "symbolObj",
+						"objectName": "SingleSymbol",
+						"properties": [
+							{"name":"symbol", "type": "STRING", "msgField":"s", "description":"Symbol name", "sampleValue":"BTC_USDT"}
+						]
+					},
+					"topicMatcher": {
+						"fieldName": "topic",  
+						"fieldValue": "${topic}"
+					},
+					"message": {
+						"objectName":"Ticker"
+					}
+				},
+				{
+					"name": "streamWithIntRequestDataType",
+					"topic": "ticker",
+					"description": "Subscribe to stream with INT request type",
+					"request": {
+						"type": "INT"
+					},
+					"topicMatcher":	{
+						"fieldName": "topic",  "fieldValue": "streamWithIntRequestDataTypeTopic"
+					},
+					"message": {
+						"objectName":"Ticker"
+					}
+				},
+				{
+					"name": "streamWithLongRequestDataType",
+					"topic": "ticker",
+					"description": "Subscribe to stream with LONG request type",
+					"request": {
+						"type": "LONG",
+						"defaultValue": "${constants.myLongConst}"
+					},
+					"topicMatcher": {
+						"fieldName": "topic",  "fieldValue": "streamWithLongRequestDataTypeTopic"
+					},
+					"message": {
+						"objectName":"Ticker"
+					}
+				},
+				{
+					"name": "streamWithBigDecimalRequestDataType",
+					"topic": "ticker",
+					"description": "Subscribe to stream with BIGDECIMAL request type",
+					"request": {
+						"type": "BIGDECIMAL"
+					},
+					"topicMatcher": 
+						{"fieldName": "topic",  "fieldValue": "streamWithBigDecimalRequestDataTypeTopic"},
+					"message": {
+						"objectName":"Ticker"
+					}
+				},
+				{
+					"name": "streamWithStringRequestDataType",
+					"topic": "ticker",
+					"description": "Subscribe to stream with STRING request type",
+					"request": {
+						"name": "symbol",
+						"description": "Market symbol",
+						"sampleValue": "BTC_USDT"
+					},
+					"topicMatcher":	{
+						"fieldName": "topic",  
+						"fieldValue": "streamWithStringRequestDataTypeTopic"
+					},
+					"message": {
+						"objectName":"Ticker"
+					}
+				},
+				{
+					"name": "streamWithBooleanRequestDataType",
+					"topic": "ticker",
+					"description": "Subscribe to stream with BOOLEAN request type",
+					"request": {
+						"type": "BOOLEAN"
+					},
+					"topicMatcher":	{
+						"fieldName": "topic",  
+						"fieldValue": "streamWithBooleanRequestDataTypeTopic"
+					},
+					"message": {
+						"objectName":"Ticker"
+					}
+				},
+				{
+					"name": "streamWithStringListRequestDataType",
+					"topic": "ticker",
+					"description": "Subscribe to stream with STRING_LIST request type",
+					"request": {
+						"type": "STRING_LIST"
+					},
+					"topicMatcher":	{
+						"fieldName": "topic",  "fieldValue": "streamWithBooleanRequestDataTypeTopic"
+					},
+					"message": {
+						"objectName":"Ticker"
+					}
+				},
+				{
+					"name": "streamWithObjectListMapRequestDataType",
+					"topic": "ticker:${request.symbolList}",
+					"description": "Subscribe to stream with OBJECT_LIST_MAP request type. The objectName field is set to a name already defined in other API definition.",
+					"request": {
+						"objectName": "MultiSymbol",
+						"type": "OBJECT_LIST_MAP"
+					},
+					"topicMatcher":	{
+						"fieldName": "topic",  "fieldValue": "streamWithObjectListMapRequestDataTypeTopic"
+					},
+					"message": {
+						"objectName":"Ticker"
+					}
+				},
+				{
+					"name": "streamWithNullTopicAndNullRequest",
+					"description": "Subscribe to stream with null topic, request and message topic matcher. Remark: No topic matcher situation is realistic only when there is no websocket stream multiplexing, e.g. no 'topic' but a single endpoint handling all messages coming on websocket.",
+					"message": {
+						"objectName":"Ticker"
+					}
+				},
+				{
+					"name": "streamWithNullTopicAndPrimitiveTypeRequest",
+					"description": "Subscribe to stream with null topic, and primitive type request, without message topic matcher. The request is used in message topic matcher field template, so generated method implementation will perform subsitution with method request argument",
+					"request": {
+						"name": "myTopic",
+						"type": "STRING",
+						"sampleValue": "BTC_USDT"
+					},
+					"topicMatcher":	{
+						"fieldName": "topic",  "fieldValue": "ticker:${request}"
+					},
+					"message": {
+						"objectName":"Ticker"
+					}
+				}
+			]
+		}
+	]
+
+}

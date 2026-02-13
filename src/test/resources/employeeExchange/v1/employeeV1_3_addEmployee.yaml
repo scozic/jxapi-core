@@ -1,0 +1,12 @@
+id: "Employee"
+apis:
+ - name: v1    
+   restEndpoints:
+    - name: "addEmployee"
+      description: "Add a new employee"
+      httpMethod: "POST"
+      docUrl: "https://www.example.com/docs/employee/add"
+      url: "/employee"
+      request:
+       description: "Employee to add"
+       objectName: "Employee"

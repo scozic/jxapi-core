@@ -1,0 +1,9 @@
+id: "Employee"
+properties:
+ - name: server
+   description: Server related properties
+   properties:
+    - name: "baseHttpUrl"
+      description: "Base URL for REST endpoints the Employee Exchange API"
+    - name: "baseWebsocketUrl"
+      description: "Base URL for websocket endpoints of the Employee Exchange API"

@@ -1,0 +1,576 @@
+basePackage: org.jxapi.exchange.descriptor.gen
+pojos:
+  - name: exchange
+    objectName: ExchangeDescriptor
+    description: |
+      Root element of a JSON Exchange descriptor.<br>
+      This class describes an exchange and its APIs<br>
+      API will be described in groups of endpoints, as
+      {@link org.jxapi.exchange.descriptor.gen.ExchangeApiDescriptor} list.<br>
+      Rate limits will be described as {@link org.jxapi.netutils.rest.ratelimits.RateLimitRule} list. These limits
+      will be applied to all endpoints of each API group of the exchange.
+      
+      JSON example:
+      
+      <pre>
+      {
+          "name": "Binance",
+          "ID": "BINANCE",
+          "description": "Binance exchange",
+          "docUrl": "https://binance-docs.github.io/apidocs",
+          "basePackage": "org.jxapi.exchange.binance",
+          "properties": [
+            {
+              "name": "apiKey",
+              "type": "STRING",
+              "description": "API key for authentication",
+            }
+          ],
+          "constants": [
+            {
+              "name": "API_BASE_URL",
+              "description": "Base URL of the API",
+              "type": "STRING",
+              "value": "https://api.myexchange.com"
+            }
+          "apis": [
+            {
+              "name": "Spot",
+              "description": "Spot trading API",
+              "httpRequestExecutorFactory": "org.jxapi.netutils.rest.mock.MockHttpRequestExecutorFactory",
+              "httpRequestInterceptorFactory": "org.jxapi.netutils.rest.mock.MockHttpRequestInterceptorFactory",
+              "restEndpoints": [
+                // RESTendpoints here
+              ],
+              "websocketEndpoints": [
+                // Websocket endpoints here
+              ],
+            }
+          ],
+          "rateLimits": [
+            {
+              "timeFrame": 60000,
+                  "maxRequestCount": 1200,
+                  "maxTotalWeight": 1200
+            }
+          ]
+      }
+      </pre>
+      
+      <ul>
+      <li>name: the name of the exchange. Remark that this is map to the ID of the
+      exchange.</li>
+      <li>description: the description of the exchange.</li>
+      <li>basePackage: the base package of the exchange implementation
+      classes.</li>
+      <li>apis: the list of API groups of the exchange. See
+      {@link org.jxapi.exchange.descriptor.gen.ExchangeApiDescriptor}</li>
+      <li>rateLimits: the list of rate limits of the exchange. These limits will be
+      applied to all endpoints of each API group of the exchange. See
+      {@link org.jxapi.netutils.rest.ratelimits.RateLimitRule}</li>
+      <li>constants: list of constants that are used in context of the exchange
+      wrapper, for instance specific values for some APIs request/response/message
+      properties. See {@link org.jxapi.exchange.descriptor.Constant}</li>
+      <li>properties: list of configuration properties that can be configured for
+      the exchange wrapper, for instance API keys, secret keys, etc. See
+      {@link org.jxapi.util.DefaultConfigProperty}</li>
+      <li><code>httpRequestInterceptorFactory</code>,
+      <code>httpRequestExecutorFactory</code>, <code>httpRequestTimeout</code>,
+      <code>websocketFactory</code>, <code>websocketHookFactory</code> properties
+      can be set with default values for corresponding properties in
+      {@link org.jxapi.exchange.descriptor.gen.ExchangeApiDescriptor}: value defined in 
+      {@link org.jxapi.exchange.descriptor.gen.ExchangeDescriptor} is
+      used when undefined in {@link org.jxapi.exchange.descriptor.gen.ExchangeApiDescriptor}.
+      <li>httpUrl: the base URL of the HTTP (REST) API of the exchange. This URL
+      can be concateneted to websocket API group <code>httpUrl</code> property (see
+      {@link org.jxapi.exchange.descriptor.gen.ExchangeApiDescriptor#getHttpUrl()} ) and endpoint URL (see
+      {@link org.jxapi.exchange.descriptor.gen.RestEndpointDescriptor#getUrl()} when one of these properties are not
+      absolute)</li>
+      <li>websocketUrl: the base URL of the Websocket API of the exchange. This URL
+      can be concateneted to websocket API group <code>websocketUrl</code> property
+      if API group <code>websocketUrl</code> is not not absolute</li>
+      </ul>
+      
+      This class is used to map the JSON descriptor of an exchange. It is used to
+      generate code for the {@link org.jxapi.exchange.Exchange} interface and implementation.
+      
+      @see org.jxapi.exchange.Exchange
+      @see org.jxapi.exchange.descriptor.gen.ExchangeApiDescriptor
+    properties:
+      - name: id
+        description: The ID of the exchange
+        type: STRING
+      - name: jxapi
+        description: The JXAPI version supported by the exchange
+        type: STRING
+      - name: version
+        description: The version of the exchange descriptor
+        type: STRING
+      - name: description
+        description: The description of the exchange
+        type: STRING
+      - name: docUrl
+        description: The documentation URL of the exchange   
+        type: STRING
+      - name: basePackage
+        description: The base package of the exchange implementation classes
+        type: STRING
+      - name: httpUrl     
+        description: |
+          The base URL of the HTTP (REST) API of the exchange. This URL can be
+          concateneted to API group <code>httpUrl</code> and endpoint URL when one
+          of these properties are not absolute.
+        type: STRING
+      - name: afterInitHookFactory
+        description: |
+          The fully qualified class name of the
+          {@link org.jxapi.exchange.ExchangeHookFactory} to be used
+          to create an
+          {@link org.jxapi.exchange.ExchangeHook} that will be
+          executed just after the exchange wrapper initialization.
+        type: STRING
+      - name: properties
+        description: |
+           Represents a configuration property or a group of properties of an exchange like authentication credentials 
+           (API Key,secret) the wrapper client should provide to instantiate a wrapper.<br>
+           Exchange descriptor may contain a list of such properties as value of
+           'properties' property of exchange.<p>
+           The name of a property should be spelled 'camelCase' like a Java variable
+           name.
+           <p>
+           The value of a property can be a 'primitive' type e.g. {@link org.jxapi.pojo.descriptor.Type#STRING},
+           {@link org.jxapi.pojo.descriptor.Type#INT}, {@link org.jxapi.pojo.descriptor.Type#BOOLEAN}, 
+           {@link org.jxapi.pojo.descriptor.Type#BIGDECIMAL}, {@link org.jxapi.pojo.descriptor.Type#LONG}. 
+           It can't be a list, map, or object.<p>
+           The properties will be exposed as static properties of a generated Java class named [exchangeId]Constants. 
+           That class wlll list constants for property names and default values, and default 'getter' methods for 
+           retrieving their values from properties
+           <p>
+           The properties can be grouped together. For example, authentication
+           credentials can be grouped into a 'group' property called 'auth' with
+           sub-properties for API key, secret, etc listed. Those properties can be
+           referenced with key auth.apiKey, auth.apiSecret, etc. Groups may contain
+           other groups, so the structure is hierarchical.
+        objectName: ConfigPropertyDescriptor
+        type: OBJECT_LIST
+        properties:
+          - name: name
+            description: The name of the property
+            type: STRING
+          - name: description
+            description: The description of the property
+            type: STRING
+          - name: type
+            description: |
+                 Property value type, see {@link org.jxapi.pojo.descriptor.Type}, should be a primitive type e.g. 'STRING', 'INT', 'LONG', 'BIGDECIMAL', 'BOOLEAN'.
+                 When property is a group of sub-properties, this property is ignored.
+            type: STRING
+          - name: defaultValue
+            description: Default value of the property. Should be of the type specified in 'type' or string representation of the value of that type. Can be <code>null</code> if no default value.
+            objectName: java.lang.Object
+          - name: properties
+            description: The list of sub-properties if this property is a group of properties.
+            type: OBJECT_LIST
+            objectName: ConfigPropertyDescriptor
+      - name: constants
+        objectName: ConstantDescriptor
+        description: |
+          The list of constants that are used in context of the exchange.wrapper, for instance specific values for some APIs request/response/message properties.<br>
+          See {@link org.jxapi.exchange.descriptor.Constant} for details.
+        objectDescription: | 
+          Represents a constant value used across APIs of an exchange or a group of such constants.<br>
+          Exchange descriptor may contain a list of such constants as value of
+          'constants' property of exchange<br>
+          Such constants will be exposed as static final fields in a generated Java
+          class of the generated Java wrapper class for the exchange.<br>
+          A constant may not be a final constant but a 'group' of constants that functionally come together.
+          For example, when an exchange uses constants to represent bid or ask a side of, 
+          it makes sense to group them together in a single constant group.
+          In this case, final constants of the group will be exposed as static field of a nested public class
+          in the main constant class, named after group name. A constant represents a group when its 
+          <code>constants</code> property is set with a non empty list of nested constants<br>
+          The name of a constant should be a valid camel case Java identifier.<br>
+          The value of a constant must be a 'primitive' type e.g. {@link org.jxapi.pojo.descriptor.Type#STRING},
+          {@link org.jxapi.pojo.descriptor.Type#INT}, {@link org.jxapi.pojo.descriptor.Type#BOOLEAN}, 
+          {@link org.jxapi.pojo.descriptor.Type#BIGDECIMAL}, {@link org.jxapi.pojo.descriptor.Type#LONG}. 
+          It can't be a list, map, or object. <code>value</code>
+          and <code>type</code> properties are relevant only when constant is not a group.<br>
+          The name of a constant should provide a more readable name for the value. The
+          description allows to provide semantic details.<br>
+        properties:
+          - name: name
+            description: The name of the constant
+            type: STRING
+          - name: description
+            description: The description of the constant
+            type: STRING
+          - name: type
+            description: |
+              The type of the constant value, see {@link org.jxapi.pojo.descriptor.Type}, should be a primitive type e.g. 'STRING', 'INT', 'LONG', 'BIGDECIMAL', 'BOOLEAN'.
+              This property is relevant only when the constant is not a group of constants.
+            type: STRING
+          - name: value
+            description: |
+              The value of the constant. Should be of the type specified in 'type' or string representation of the value of that type. Can be <code>null</code> if constant is a group.
+            objectName: java.lang.Object
+          - name: constants
+            description: |
+              The list of nested constants if this constant is a group of constants.
+            type: OBJECT_LIST
+            objectName: ConstantDescriptor
+        type: OBJECT_LIST
+      - name: rateLimits
+        objectName: RateLimitRuleDescriptor
+        description: |
+          The list of rate limit rules that apply to all API groups of the exchange.<br>
+          See {@link org.jxapi.netutils.rest.ratelimits.RateLimitRule} for details.
+        objectDescription: |
+          Represents a rate limit rule that applies to all API groups of the exchange.<br>
+          Exchange descriptor may contain a list of such rate limit rules as value of
+          'rateLimits' property of exchange.<br>
+          Such rate limit rules will be applied to all endpoints of each API group of
+          the exchange.<br>
+          See {@link org.jxapi.netutils.rest.ratelimits.RateLimitRule} for details.
+        type: OBJECT_LIST
+        properties:
+          - name: id
+            description: Unique identifier of the rate limit rule
+            type: STRING
+          - name: timeFrame
+            description: Time frame in ms for which request count should not exceed limit.
+            type: LONG
+          - name: maxTotalWeight
+            description: The maximum cumulated weight of calls within time frame limitation. 
+            type: INT
+          - name: maxRequestCount
+            description: |
+              The maximum number of requests that can be attempted
+              within rolling time frame. A negative value means it
+              should not be taken into account and this rate limit
+              is expressed in cumulated weight.
+            type: INT
+          - name: granularity
+            description: |
+               The suggested granularity in ms to use when enforcing. This is the time unit used to keep
+               track of rate limit state. <br>
+               Every time a request is made, a request count is incremented for current time in ms, and 
+               a total weight is incremented for current time in ms. These values are stored with granularity 
+               that is if granularity is X ms, the counters are updated at time T are stored for
+                grain N*X where N*X &lt;= T and (N+1)*X &gt; n <br>
+               The grains for time older than rule's timeframe are purged before counting or updating.<br>
+               The number/total weight of calls that occurred on rolling time frame is then the sum of 
+               request count or weight for all grain.<br>
+               Default is 10ms. The finer the granularity, the more precise
+               the rate limit enforcement will be. However, the more memory will be used to
+               keep track of state, and the more CPU will be used to update or evaluate it.<br>
+            type: INT   
+            defaultValue: 10  
+      - name: network
+        description: |
+          Represents network configuration with HTTP clients for REST APIs and
+          Websocket clients for Websocket APIs of the exchange wrapper.
+        objectName: NetworkDescriptor
+        properties:
+          - name: httpClients
+            objectName: HttpClientDescriptor
+            type: OBJECT_LIST
+            description: | 
+              The list of HTTP clients that can be used by REST endpoints of the exchange wrapper.
+            objectDescription: |
+              Part of JSON document describing network configuration of a HTTP client that can be used by
+              REST endpoints of the exchange wrapper.  
+              Each client provides implementation of HTTP interceptor and executor factories.
+              The executor factory may not be set, in which case default
+              {@link org.jxapi.netutils.rest.javanet.JavaNetHttpRequestExecutor} is used.
+            properties:
+              - name: name
+                description: The unique name of the HTTP client
+                type: STRING
+              - name: httpRequestExecutorFactory
+                description: |
+                  The fully qualified class name of the
+                  {@link org.jxapi.netutils.rest.HttpRequestExecutorFactory} to use for
+                  REST endpoints using this HTTP client.
+                  Can be null, in which case default
+                  {@link org.jxapi.netutils.rest.javanet.JavaNetHttpRequestExecutor} instantiated.
+                type: STRING
+              - name: httpRequestInterceptorFactory
+                description: |
+                  The fully qualified class name of the
+                  {@link org.jxapi.netutils.rest.HttpRequestInterceptorFactory} to use
+                  for REST endpoints using this HTTP client.
+                type: STRING
+              - name: httpRequestTimeout
+                description: |
+                  The default HTTP request timeout in milliseconds to use for REST
+                  endpoints using this HTTP client.
+                type: LONG   
+          - name: websocketClients
+            objectName: WebsocketClientDescriptor
+            type: OBJECT_LIST
+            description: | 
+              The list of Websocket clients that can be used by Websocket endpoints of the exchange wrapper.
+              Each client provides implementation of Websocket factory and hook factories.
+              Factory can be a reference to another client defined in the list.
+            objectDescription: |
+              Part of JSON document describing network configuration of a 
+              exchange wrapper, describes a Websocket client that can be used by
+              Websocket endpoints of the exchange wrapper.
+            properties:
+              - name: name
+                description: The unique name of the Websocket client
+                type: STRING
+              - name: websocketUrl
+                description: |
+                  The URL (ws:// or wss://) of the Websocket connection.
+                type: STRING  
+              - name: websocketFactory
+                description: |
+                  The fully qualified class name of the
+                  {@link org.jxapi.netutils.websocket.WebsocketFactory} to use for
+                  Websocket endpoints using this Websocket client.
+                type: STRING
+              - name: websocketHookFactory
+                description: |
+                  The fully qualified class name of the
+                  {@link org.jxapi.netutils.websocket.WebsocketHookFactory} to use
+                  for Websocket endpoints using this Websocket client.
+                type: STRING
+      - name: apis
+        objectName: ExchangeApiDescriptor
+        description: |
+          The list of API groups of the exchange. Each API group describes a set of
+          REST and/or Websocket endpoints that share common configuration like base
+          URL, HTTP client, Websocket client, etc.<br>
+          See {@link org.jxapi.exchange.descriptor.gen.ExchangeApiDescriptor} for details.
+        objectDescription: |
+          Part of a JSON document descriptor that describes a group of REST and or
+          Websocket endpoints. Child element of ExchangeDescriptor. <br>
+          
+          <h2>Constants</h2>
+          <ul>
+          <li>Can be specified a List of constants that are used in context of this API group of the exchange wrapper, for instance specific values for some APIs request/response/message properties.</li>
+          <li>Each constant is described as a {@link org.jxapi.exchange.descriptor.Constant}</li>
+          </ul>
+          <h2>REST endpoints</h2>
+          <ul>
+          <li>There can be multiple REST endpoints, or no such endpoint, in which case <code>restEndpoints</code> property can be <code>null</code></li>
+          <li>Each REST endpoint is described as a {@link org.jxapi.exchange.descriptor.gen.RestEndpointDescriptor}</li>
+          <li>Each REST endpoint share the same HttpRequestExecutor and HttpRequestInterceptor, that are created from factories classes provided 
+          in <code>httpRequestExecutorFactory</code> and <code>httpRequestInterceptorFactory</code> properties </li>
+          <li><code>httpRequestExecutorFactory</code> property may be supplied to specify a factory class that creates HttpRequestExecutor instances, see {@link org.jxapi.netutils.rest.HttpRequestExecutorFactory}. When property is not set, default {@link org.jxapi.netutils.rest.javanet.JavaNetHttpRequestExecutor} is used</li>
+          <li><code>httpRequestInterceptorFactory</code> property may be supplied to specify a factory class that creates HttpRequestInterceptor instances, see {@link org.jxapi.netutils.rest.HttpRequestInterceptorFactory}. When property is not set, no request interceptor is used</li>
+          <li>API global Rate limits can be specified for the REST endpoints in <code>rateLimits</code> property. Those limits are shared among all defined REST endpoints.</li>
+          <li>Rate limits from enclosing exchange descriptor are inherited by the API descriptor. Exchange global limit are shared among all REST endpoints of every API specified in exchange</li>
+          </ul>
+          <h2>Websocket endpoints</h2>
+          <ul>
+          <li>There can be multiple Websocket endpoints, or no such endpoint, in which case <code>websocketEndpoints</code> property can be <code>null</code></li>
+          <li>Each Websocket endpoint is described as a {@link org.jxapi.exchange.descriptor.gen.WebsocketEndpointDescriptor}</li>
+          <li>Each Websocket endpoint share the same WebsocketFactory and WebsocketHook, that are created from factories classes provided in <code>websocketFactory</code> and <code>websocketHookFactory</code> properties</li>
+          <li><code>websocketFactory</code> property may be supplied to specify a factory class that creates Websocket instances, see {@link org.jxapi.netutils.websocket.WebsocketFactory}. When property is not set, default {@link org.jxapi.netutils.websocket.DefaultWebsocketFactory} is used</li>
+          <li><code>websocketHookFactory</code> property may be supplied to specify a factory class that creates WebsocketHook instances, see {@link org.jxapi.netutils.websocket.WebsocketHookFactory}. When property is not set, no websocket hook is used. Such hook is needed though to implement specific handshake, heartbeat management and socket multiplexing (e.g. subscribing to multiple topics using same socket)</li>
+          <li><code>websocketUrl</code> property may be supplied to specify the URL of the websocket endpoint. When property is not set, the URL is expected to be set by WebsocketHook on WebsocketClient during {@link org.jxapi.netutils.websocket.WebsocketHook#init(org.jxapi.netutils.websocket.WebsocketClient)} or {@link org.jxapi.netutils.websocket.WebsocketHook#beforeConnect()}</li>
+          </ul>
+          
+          @see org.jxapi.exchange.descriptor.gen.ExchangeDescriptor
+          @see org.jxapi.exchange.descriptor.gen.RestEndpointDescriptor
+          @see org.jxapi.exchange.descriptor.gen.WebsocketEndpointDescriptor
+          @see org.jxapi.netutils.rest.ratelimits.RateLimitRule
+          @see org.jxapi.netutils.rest.HttpRequestInterceptorFactory
+          @see org.jxapi.netutils.rest.HttpRequestExecutorFactory
+          @see org.jxapi.netutils.websocket.WebsocketFactory
+          @see org.jxapi.netutils.websocket.WebsocketHookFactory
+          @see org.jxapi.exchange.descriptor.Constant
+        type: OBJECT_LIST
+        properties:
+          - name: name
+            description: The unique name of the API group within the exchange
+            type: STRING
+          - name: description
+            description: The description of the API group
+            type: STRING
+          - name: httpUrl     
+            description: |
+              The base URL of the HTTP (REST) API of this API group. This URL can be
+              concateneted to endpoint URL when endpoint URL is not absolute.
+            type: STRING
+          - name: defaultHttpClient
+            description: |
+              The name of the default HTTP client to use for REST endpoints of this API group,
+              as defined in exchange 'network' section. When not set, first client in the list is used.
+            type: STRING
+          - name: defaultWebsocketClient
+            description: |
+              The name of the default Websocket client to use for Websocket endpoints of this API group,
+              as defined in exchange 'network' section. When not set, first client in the list is used.
+            type: STRING        
+          - name: restEndpoints
+            objectName: RestEndpointDescriptor
+            description: | 
+              The list of REST endpoints that belong to this API group.
+            objectDescription: |
+              Describes a REST endpoint as part of a larger exchange API defined in a JSON document.
+              These endpoints handle HTTP requests to a specific URL, process request parameters, and return a response.
+              
+              <h2>Endpoint Properties</h2>
+              The endpoint is defined by the following properties:
+              <ul>
+                <li>{@code name}: A unique identifier for the endpoint.</li>
+                <li>{@code httpClient}: The name of the HTTP client to use for this REST endpoint, as defined in exchange 'network' section. When not set, default client of API group is used.</li>
+                <li>{@code description}: A brief summary of the endpoint's purpose.</li>
+                <li>{@code url}: The URL of the endpoint.</li>
+                <li>{@code httpMethod}: The HTTP method for the request (e.g., GET, POST).</li>
+                <li>{@code request}: The data structure for the request.</li>
+                <li>{@code response}: The data structure for the response.</li>
+                <li>{@code requestWeight}: The cost of a request, used for rate limiting.</li>
+                <li>{@code rateLimits}: The rate limits applied to this endpoint.</li>
+              </ul>
+              
+              <h2>Request Serialization</h2>
+              <strong>Serialization to URL Parameters:</strong>
+              <ul>
+                <li>For HTTP methods that do not have a request body (e.g., {@code GET}, {@code DELETE}), the request is serialized into either URL path parameters (e.g., {@code /value1/value2}) or query parameters (e.g., {@code ?param1=value1}).</li>
+                <li>By default, request fields are serialized as query parameters. To serialize them as URL path parameters, set the {@link org.jxapi.pojo.descriptor.Field#getIn()} property to {@link org.jxapi.pojo.descriptor.UrlParameterType#PATH}.</li>
+                <li>If the request field is a primitive type, its value is URL-encoded and used as a single parameter.</li>
+                <li>If the request field is an object without the {@code in} property set, its child fields are serialized as parameters.</li>
+                <li>If the request field is an object with the {@code in} property set, or if it is a {@code MAP} or {@code LIST}, it is serialized as a URL-encoded JSON object.</li>
+                <li>All field values are URL-encoded.</li>
+              </ul>
+              
+              <h2>Code Generation</h2>
+              API endpoints are defined as child elements of an {@code api} element in the JSON document (see {@link org.jxapi.exchange.descriptor.gen.ExchangeApiDescriptor}).
+              This descriptor is used to generate method declarations in the API interface and their implementations.
+
+              <h2>Request and Response Properties</h2>
+              <ul>
+                <li>Both {@code request} and {@code response} are described as {@link org.jxapi.pojo.descriptor.Field} objects.</li>
+                <li>The name of the {@code request} field becomes the argument name in the generated API method.</li>
+                <li>The name of the {@code response} field is not used in code generation.</li>
+                <li>If {@code request} is omitted, the generated method will have no arguments.</li>
+                <li>If {@code response} is omitted, the method will return a {@code STRING} containing the raw response body. This is useful when only the status code is needed and the body is empty.</li>
+              </ul>
+              
+              @see org.jxapi.pojo.descriptor.Field
+              @see org.jxapi.netutils.rest.ratelimits.RateLimitRule
+              @see org.jxapi.generator.java.exchange.api.rest.RestEndpointClassesGenerator
+              @see org.jxapi.pojo.descriptor.Type
+              @see org.jxapi.netutils.rest.HttpMethod
+              @see org.jxapi.generator.java.exchange.api.ExchangeApiInterfaceImplementationGenerator
+              @see org.jxapi.generator.java.exchange.api.ExchangeApiClassesGenerator
+            type: OBJECT_LIST
+            properties:
+              - name: name
+                description: The unique name of the REST endpoint within the API group
+                type: STRING
+              - name: description
+                description: The description of the REST endpoint
+                type: STRING
+              - name: httpMethod
+                description: The HTTP method of the REST endpoint, e.g. GET, POST, DELETE, PUT
+                type: STRING
+              - name: url
+                description: The URL of the REST endpoint
+                type: STRING
+              - name: docUrl
+                description: The documentation URL of the REST endpoint   
+                type: STRING
+              - name: httpClient
+                description: |
+                  The name of the HTTP client to use for this REST endpoint, as defined
+                  in exchange 'network' section. When not set, default client of API
+                  group is used.
+                type: STRING
+              - name: requestWeight
+                description: |
+                  The weight of a request to this endpoint when evaluating rate limits.
+                type: INT
+              - name: rateLimits
+                description: | 
+                  The list of IDs of rate limits this REST API subject to. These must
+                  be defined either in enclosing exchange descriptor, see {@link org.jxapi.exchange.descriptor.gen.ExchangeDescriptor#getRateLimits()}.
+                type: STRING_LIST
+              - name: paginated
+                description: |
+                  Whether this endpoint supports pagination.
+                type: BOOLEAN
+              - name: requestHasBody
+                description: |
+                  Whether this endpoint's request has a body. If true, the request
+                  will be sent in the body of the HTTP request. If false, the request
+                  will be sent as URL parameters.
+                type: BOOLEAN
+              - name: request
+                description: The request data structure of the REST endpoint
+                objectName: org.jxapi.pojo.descriptor.Field
+              - name: response
+                description: The response data structure of the REST endpoint
+                objectName: org.jxapi.pojo.descriptor.Field
+          - name: websocketEndpoints
+            objectName: WebsocketEndpointDescriptor
+            description: | 
+              The list of Websocket endpoints that belong to this API group.
+            objectDescription: |
+              Part of JSON document describing a crypo exchange API, describes a websocket
+              endpoint where clients subscription can be performed using specified topic
+              and eventual additional parameters.
+              The structure of additional subscription parameters and response format are
+              described as {@link org.jxapi.pojo.descriptor.Field} lists.
+            type: OBJECT_LIST  
+            properties:
+              - name: name
+                description: The unique name of the Websocket endpoint within the API group
+                type: STRING
+              - name: description
+                description: The description of the Websocket endpoint
+                type: STRING
+              - name: topic
+                description: The topic to subscribe to for this Websocket endpoint
+                type: STRING
+              - name: websocketClient
+                description: |
+                  The name of the Websocket client to use for this Websocket endpoint, as defined
+                  in exchange 'network' section. When not set, default client of API
+                  group is used.
+                type: STRING
+              - name: docUrl
+                description: The documentation URL of the Websocket endpoint   
+                type: STRING
+              - name: request
+                description: The request data structure for subscribing to the endpoint
+                objectName: org.jxapi.pojo.descriptor.Field
+              - name: message
+                description: The message data structure received from the endpoint
+                objectName: org.jxapi.pojo.descriptor.Field
+              - name: topicMatcher
+                description: |
+                  The description of how to match incoming messages to this topic.
+                  This can be either the value or pattern of a specific field, or a logical combination of field matchers using AND/OR operations.
+                  Remarks:
+                  <ul>
+                  <li>One of <code>fieldName</code> or <code>and</code> or <code>or</code> must be provided.</li>
+                  <li>If <code>fieldName</code> is provided, either <code>fieldValue</code> or <code>fieldRegexp</code> must be provided.</li>
+                  </ul>
+                objectName: WebsocketTopicMatcherDescriptor
+                properties:
+                  - name: fieldName
+                    description: The name of the field to match
+                    type: STRING
+                  - name: fieldValue
+                    description: The value the field with 'fieldName' should have to match.
+                    objectName: java.lang.Object
+                  - name: fieldRegexp
+                    description: The pattern (Java regular expression) field with 'fieldName' should match.
+                    type: STRING                    
+                  - name: and
+                    description: |
+                      The list of sub-matchers that must all match in incoming messages to identify
+                      those belonging to this topic. This is a logical AND operation.
+                    type: OBJECT_LIST
+                    objectName: WebsocketTopicMatcherDescriptor
+                  - name: or
+                    description: |
+                      The list of sub-matchers where at least one must match in incoming messages to identify
+                      those belonging to this topic. This is a logical OR operation.
+                    type: OBJECT_LIST
+                    objectName: WebsocketTopicMatcherDescriptor                    

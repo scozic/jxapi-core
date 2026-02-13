@@ -1,0 +1,12 @@
+basePackage: org.jxapi.pojos2.gen
+pojos:
+  - name: foo
+    description: Foo object
+    properties:
+      - name: id
+        description: Identifier
+        type: STRING
+      - name: barList
+        description: List of Bar objects
+        type: OBJECT_LIST
+        objectName: Bar    

@@ -1,0 +1,171 @@
+{
+	"id": "MyTestExchange",
+	"description": "A sample Exchange descriptor file",
+	"basePackage": "com.foo.bar.gen",
+	"rateLimits":[],
+	"network": {
+		"httpClients": [
+			{
+				"name": "httpDefault",
+				"httpRequestInterceptorFactory": "com.foo.bar.BarHttpRequestInterceptorFactory"
+			}
+		],
+		"websocketClients": [
+			{
+				"name": "wsDefault",
+				"websocketUrl": "wss://com.foo.exchange/ws",
+				"websocketFactory": "com.foo.bar.BarWebsocketFactory",
+				"websocketHookFactory": "com.foo.bar.BarWebsocketHookFactory"
+			}
+		]
+	},
+	"apis":[
+		{ 
+			"name": "MarketData",
+			"description": "The market data API of MyTestExchange, with different response data types for websocket and REST endpoints. Remark: Only OBJECT (default) and STRING are usually used, but any data type is supported",
+			"defaultHttpClient": "httpDefault",
+			"defaultWebsocketClient": "wsDefault",
+			"restEndpoints": [
+				{
+					"name": "getRestResponseDataTypeInt",
+					"rateLimits": [],
+					"httpMethod": "GET",
+					"description": "A sample REST endpoint using INT response data type",
+					"url": "https://com.sample.mycex/getInt",
+					"response": {
+						"description": "A random int",
+						"type": "INT"
+					}
+				},
+				{
+					"name": "getRestResponseDataTypeLong",
+					"httpMethod": "GET",
+					"description": "A sample REST endpoint using LONG response data type",
+					"url": "https://com.sample.mycex/getLong",
+					"response": {
+						"type": "LONG"
+					}
+				},
+				{
+					"name": "getRestResponseDataTypeBigDecimal",
+					"httpMethod": "GET",
+					"description": "A sample REST endpoint using BIGDECIMAL response data type",
+					"url": "https://com.sample.mycex/getBigDecimal",
+					"response": {
+						"type": "BIGDECIMAL"
+					}
+				},
+				{
+					"name": "getRestResponseDataTypeString",
+					"httpMethod": "GET",
+					"description": "A sample REST endpoint using STRING response data type",
+					"url": "https://com.sample.mycex/getString",
+					"response": {
+						"type": "STRING"
+					}
+				},
+				{
+					"name": "getRestResponseDataTypeBoolean",
+					"httpMethod": "GET",
+					"description": "A sample REST endpoint using BOOLEAN response data type",
+					"url": "https://com.sample.mycex/getBigDecimal",
+					"response": {
+						"type": "BOOLEAN"
+					}
+				},
+				{
+					"name": "getRestResponseDataTypeObject",
+					"httpMethod": "GET",
+					"description": "A sample REST endpoint using OBJECT response data type (default type, explicit here)",
+					"url": "https://com.sample.mycex/getBigDecimal",
+					"response": {
+						"properties": [
+							{"name":"responseCode", "type": "INT", "description":"Request response code", "sampleValue":"0"}
+						]
+					}
+				},
+				{
+					"name": "getRestResponseDataTypeIntList",
+					"httpMethod": "GET",
+					"description": "A sample REST endpoint using INT_LIST response data type",
+					"url": "https://com.sample.mycex/getIntList",
+					"response": {
+						"type": "INT_LIST"
+					}
+				},
+				{
+					"name": "getRestResponseDataTypeObjectListMap",
+					"httpMethod": "GET",
+					"description": "A sample REST endpoint using OBJECT_LIST_MAP response data type",
+					"url": "https://com.sample.mycex/getObjectlistMap",
+					"response": {
+						"type": "OBJECT_LIST_MAP",
+						"properties": [
+							{"name":"responseCode", "type": "INT", "description":"Request response code", "sampleValue":"0"}
+						]
+					}
+				},
+				{
+					"name": "getRestEmptyResponseDataType",
+					"httpMethod": "GET",
+					"description": "A sample REST endpoint using empty response data type",
+					"url": "https://com.sample.mycex/getEmptyResponse"
+				},
+				{
+					"name": "getRestResponseDataTypeRawObject",
+					"httpMethod": "GET",
+					"description": "A sample REST endpoint using empty response data type",
+					"url": "https://com.sample.mycex/getEmptyResponse",
+					"response": {
+						"objectName": "java.lang.Object"
+					}
+				},
+				{
+					"name": "getRestResponseDataTypeExternalObject",
+					"httpMethod": "GET",
+					"description": "A sample REST endpoint using STRING_LIST response data type",
+					"url": "https://com.sample.mycex/getStringList",
+					"response": {
+						"objectName": "com.external.pkg.ExternalObject"
+					}
+				}
+
+			],
+			"websocketEndpoints": [
+				{
+					"name": "subscribeTicker",
+					"topic": "subscribeTickerTopic",
+					"description": "Subscribe to stream with OBJECT message type (default, explicit here)",
+					"topicMatcher": {
+						"fieldName": "topic",  
+						"fieldValue": "tickerMapList"
+					},
+					"message": { 
+						"type":"OBJECT",
+						"properties": [
+							{"name":"topic", "msgField":"t", "type": "STRING", "description":"Topic", "sampleValue":"ticker"},
+							{"name":"symbol", "msgField":"s", "type": "STRING", "description":"Symbol name", "sampleValue":"BTC_USDT"},
+							{"name":"last", "msgField":"p", "type": "BIGDECIMAL", "description":"Last traded price", "sampleValue":"16000.00"}
+						]
+					}
+				},
+				{
+					"name": "subscribeTickertMapListStream",
+					"topic": "subscribeTickerMapListTopic",
+					"description": "Subscribe to stream with OBJECT_MAP_LIST message type",
+					"topicMatcher": {
+						"fieldName": "topic",  
+						"fieldValue": "tickerMapList"
+					},
+					"message": {
+						"type": "OBJECT_MAP_LIST",
+						"properties": [
+							{"name":"topic", "msgField":"t", "type": "STRING", "description":"Topic", "sampleValue":"tickerMapList"},
+							{"name":"last", "msgField":"p", "type": "BIGDECIMAL", "description":"Last traded price", "sampleValue":"16000.00"}
+						]
+					}
+				}
+			]
+		}
+	]
+}

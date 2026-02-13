@@ -1,0 +1,113 @@
+# Demo configuration properties file for Employee exchange.
+# You should create a copy of this file without the '.dist' extension and add that .properties file
+# to your .gitignore because properties may carry sensitive data you do not want to commit.
+# The resulting file will be read as default configuration file for demo snippets.
+# Uncomment and set following properties and adjust their values per your needs.
+
+# Employee specific configuration properties
+
+# # Server related properties
+# Base URL for REST endpoints the Employee Exchange API
+# server.baseHttpUrl=
+
+# Base URL for websocket endpoints of the Employee Exchange API
+# server.baseWebsocketUrl=
+
+
+# Common configuration properties
+
+# The request timeout for calls to REST endpoints of every API. A negative value means no timeout (discouraged)
+# jxapi.httpRequestTimeout=
+
+# Sets the HTTP request throttling policy in case a rate limit rule is breached, for every exposed ExchangeApi, see enum org.jxapi.netutils.rest.ratelimits.RequestThrottlingMode
+# jxapi.requestThrottlingMode=
+
+# Set the max HTTP request throttle delay for rate limit rule enforcement, for every exposed ExchangeApi.
+# jxapi.maxRequestThrottleDelay=
+
+
+# Demo REST/WEBSOCKET snippets common configuration properties
+
+# The duration in ms of the subscription in websocket endpoint demo classes
+# jxapi.demo.ws.subscriptionDuration=30000
+
+# Delay in ms before exiting program after unsubscribing in websocked endpoint demo classes.
+# jxapi.demo.ws.delayBeforeExitAfterUnsubscription=1000
+
+
+# Demo REST/WEBSOCKET specific configuration properties
+
+# # Configuration properties for v1 API group endpoints demo snippets
+# ## Configuration properties for REST endpoints demo snippets of v1 API group
+# ### Configuration properties for REST getEmployee endpoint of v1 API group
+# Demo configuration property for getEmployee.id field.<p>
+# Employee ID
+# demo.v1.rest.getEmployee.id=1
+
+# ### Configuration properties for REST getAllEmployees endpoint of v1 API group
+# Demo configuration property for getAllEmployees.request field as raw JSON string value.<p>
+# Page request parameters for 'getAllEmployees' rest endpoint paginated requests.
+# demo.v1.rest.getAllEmployees.request=
+
+# #### Demo configuration properties for getAllEmployees.request field object instance.<p>
+# Page request parameters for 'getAllEmployees' rest endpoint paginated requests.
+# Demo configuration property for request.page field.<p>
+# Page number to return, defaults to 1.
+# demo.v1.rest.getAllEmployees.request.page=1
+
+# Demo configuration property for request.size field.<p>
+# Number of employees to return per page.<br> Defaults to {@link org.jxapi.exchanges.employee.gen.EmployeeConstants#DEFAULT_PAGE_SIZE}.<br> Maximum is {@link org.jxapi.exchanges.employee.gen.EmployeeConstants#MAX_PAGE_SIZE}.
+# 
+# demo.v1.rest.getAllEmployees.request.size=10
+
+# ### Configuration properties for REST addEmployee endpoint of v1 API group
+# Demo configuration property for addEmployee.request field as raw JSON string value.<p>
+# Employee to add
+# demo.v1.rest.addEmployee.request=
+
+# #### Demo configuration properties for addEmployee.request field object instance.<p>
+# Employee to add
+# Demo configuration property for request.id field.<p>
+# Employee ID
+# demo.v1.rest.addEmployee.request.id=1
+
+# Demo configuration property for request.firstName field.<p>
+# Employee first name
+# demo.v1.rest.addEmployee.request.firstName=John
+
+# Demo configuration property for request.lastName field.<p>
+# Employee last name
+# demo.v1.rest.addEmployee.request.lastName=Doe
+
+# Demo configuration property for request.profile field.<p>
+# Employee profile. See {@link org.jxapi.exchanges.employee.gen.EmployeeConstants.Profile}
+# demo.v1.rest.addEmployee.request.profile=REGULAR
+
+# ### Configuration properties for REST updateEmployee endpoint of v1 API group
+# Demo configuration property for updateEmployee.request field as raw JSON string value.<p>
+# Employee to update
+# demo.v1.rest.updateEmployee.request=
+
+# #### Demo configuration properties for updateEmployee.request field object instance.<p>
+# Employee to update
+# Demo configuration property for request.id field.<p>
+# Employee ID
+# demo.v1.rest.updateEmployee.request.id=1
+
+# Demo configuration property for request.firstName field.<p>
+# Employee first name
+# demo.v1.rest.updateEmployee.request.firstName=John
+
+# Demo configuration property for request.lastName field.<p>
+# Employee last name
+# demo.v1.rest.updateEmployee.request.lastName=Doe
+
+# Demo configuration property for request.profile field.<p>
+# Employee profile. See {@link org.jxapi.exchanges.employee.gen.EmployeeConstants.Profile}
+# demo.v1.rest.updateEmployee.request.profile=REGULAR
+
+# ### Configuration properties for REST deleteEmployee endpoint of v1 API group
+# Demo configuration property for deleteEmployee.id field.<p>
+# Employee ID
+# demo.v1.rest.deleteEmployee.id=1
+

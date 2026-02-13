@@ -1,0 +1,196 @@
+{
+	"id": "MyTestExchangeWithDifferentUrlQueryParams",
+	"description": "A sample exchange descriptor file with REST enbdpoints using query params",
+	"basePackage": "com.foo.bar.gen",
+	"httpUrl": "https://api.myexchange.com",
+	"network": {
+		"httpClients": [
+			{
+				"name": "httpDefault",
+				"httpRequestInterceptorFactory": "com.foo.bar.BarHttpRequestInterceptorFactory"
+			}
+		]
+	},
+	"apis":[
+		{ 
+			"name": "restApi",
+			"description": "Rest endpoints",
+			"defaultHttpClient": "httpDefault",
+			"restEndpoints": [
+				{
+					"name": "getRestRequestDataTypeInt",
+					"httpMethod": "GET",
+					"description": "A sample REST endpoint using INT request data type with GET method. Expecting one query param named id",
+					"url": "/getRestRequestDataTypeInt",
+					"request": {
+						"name": "id",
+						"type": "INT",
+						"sampleValue": 12345
+					},
+					"response": {
+						"objectName": "GenericResponse",
+						"properties": [
+							{"name":"responseCode", "type": "INT", "description":"Request response code", "sampleValue":"0"},
+							{"name":"persons", "type": "OBJECT_LIST", "objectName": "Person", "properties": [
+									{"name":"id", "type": "INT", "description":"Person id", "sampleValue":-1},
+									{"name":"name", "description":"Person name", "sampleValue":-1},
+									{"name":"age", "type": "INT", "description":"Person age", "sampleValue":-1},
+									{"name":"city", "type": "STRING", "description":"Address city", "sampleValue":"Rome"}
+								]
+							}
+						]
+					}
+				},
+				{
+					"name": "getRestRequestDataTypeObject",
+					"httpMethod": "GET",
+					"description": "A sample REST endpoint using INT request data type with GET method. Expecting 2 query param named 'age' and 'city'",
+					"url": "/getRestRequestDataTypeObject",
+					"request": {
+						"objectName":"PersonFilter",
+						"properties": [
+							{"name":"age", "type": "INT", "description":"Age filter", "sampleValue":-1},
+							{"name":"city", "type": "INT", "description":"City filter", "sampleValue":"Rome"}
+						]
+					},
+					"response": {
+						"objectName": "GenericResponse"
+					}
+				},
+				{
+					"name": "getRestRequestDataTypeStringList",
+					"httpMethod": "GET",
+					"description": "A sample REST endpoint using INT request data type with GET method. Expecting one query param named id",
+					"url": "/getRestRequestDataTypeStringList",
+					"request": {
+						"name": "ids",
+						"type": "STRING_LIST",
+						"sampleValue": "[\"Joe\",\"Anne\",\"Bill\"]"
+					},
+					"response": {
+						"objectName": "GenericResponse",
+						"type": "OBJECT_LIST", 
+						"properties": [
+							{"name":"responseCode", "type": "INT", "description":"Request response code", "sampleValue":"0"},
+							{"name":"persons", "type": "OBJECT_LIST", "objectName": "Person"}
+						]
+					}
+				},
+				{
+					"name": "deleteRestRequestDataTypeInt",
+					"httpMethod": "DELETE",
+					"description": "A sample REST endpoint using INT request data type. Expecting single param of primitive type to be passed as url parameter",
+					"url": "/deleteRestRequestDataTypeInt",
+					"request": {
+						"name": "id",
+						"type": "INT",
+						"sampleValue": 12345
+					},
+					"response": {
+						"objectName": "GenericResponse"
+					}
+				},
+				{
+					"name": "deleteRestRequestDataTypeIntAsQueryParam",
+					"httpMethod": "DELETE",
+					"description": "A sample REST endpoint using INT request data type. Expecting single param of primitive type to be passed single query param",
+					"url": "/deleteRestRequestDataTypeIntAsQueryParam",
+					"request": {
+						"name": "id",
+						"type": "INT",
+						"sampleValue": 12345
+					},
+					"response": {
+						"objectName": "GenericResponse"
+					}
+				},
+				{
+					"name": "deleteRestRequestDataTypeObject",
+					"httpMethod": "DELETE",
+					"description": "A sample REST endpoint using INT request data type. Expecting one query param named id",
+					"url": "/deleteRestRequestDataTypeObject",
+					"request": {
+						"objectName":"PersonFilter"
+					},
+					"response": {
+						"objectName": "GenericResponse"
+					}
+				},
+				{
+					"name": "putRestRequestDataTypeObject",
+					"httpMethod": "PUT",
+					"description": "A sample REST endpoint using OBJECT request data type with PUT method. Expecting no query params as object should be serialized as json in request body when PUT method is used",
+					"url": "/putRestRequestDataTypeObject",
+					"request": {
+						"objectName": "Person"
+					},
+					"response": {
+						"objectName": "GenericResponse"
+					}
+				},
+				{
+					"name": "putRestRequestDataTypeObject",
+					"httpMethod": "PUT",
+					"description": "A sample REST endpoint using OBJECT request data type with PUT method. Expecting no query params as object should be serialized as json in request body when PUT method is used",
+					"url": "/putRestRequestDataTypeObject",
+					"request": {
+						"objectName": "Person"
+					},
+					"response": {
+						"objectName": "GenericResponse"
+					}
+				},
+				{
+					"name": "putRestRequestDataTypeObjectUsingDefaultQueryParams",
+					"httpMethod": "PUT",
+					"description": "A sample REST endpoint using OBJECT request data type with PUT method. 'in' property set 'QUERY' should cause request to be generated using query params",
+					"url": "/putRestRequestDataTypeObjectUsingDefaultQueryParams",
+					"request": {
+						"objectName": "Person",
+						"in": "QUERY"
+					},
+					"response": {
+						"objectName": "GenericResponse"
+					}
+				},
+				{
+					"name": "postRestRequestDataTypeIntListAsQueryParam",
+					"description": "A sample REST endpoint using INT_LIST request data type",
+					"url": "/postRestRequestDataTypeIntListAsQueryParam",
+					"httpMethod": "POST",
+					"request": {
+						"name": "intListArg",
+						"type": "INT_LIST",
+						"in": "QUERY"
+					},
+					"response": {
+						"objectName": "GenericResponse"
+					}
+				},
+				{
+					"name": "getRestRequestDataTypeStringImplicit",
+					"httpMethod": "GET",
+					"description": "A sample REST endpoint using INT request data type with GET method. Expecting one query param named id",
+					"url": "/getRestRequestDataTypeInt",
+					"request": {
+						"name": "id",
+						"sampleValue": "bob123"
+					},
+					"response": {
+						"objectName": "GenericResponse",
+						"properties": [
+							{"name":"responseCode", "type": "INT", "description":"Request response code", "sampleValue":"0"},
+							{"name":"persons", "type": "OBJECT_LIST", "objectName": "Person", "properties": [
+									{"name":"id", "type": "INT", "description":"Person id", "sampleValue":-1},
+									{"name":"name", "description":"Person name", "sampleValue":-1},
+									{"name":"age", "type": "INT", "description":"Person age", "sampleValue":-1},
+									{"name":"city", "type": "STRING", "description":"Address city", "sampleValue":"Rome"}
+								]
+							}
+						]
+					}
+				}
+			]
+		}
+	]
+}

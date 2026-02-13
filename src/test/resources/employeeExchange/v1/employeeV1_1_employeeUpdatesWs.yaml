@@ -1,0 +1,17 @@
+id: "Employee"
+apis:
+ - name: v1    
+   websocketEndpoints:
+    - name: employeeUpdates
+      description: Employee updates websocket
+      docUrl: https://www.example.com/docs/employee/updates
+      message:
+       description: Employee update message
+       properties:
+        - name: eventType
+          description: Type of event, e.g. one of ${constants.updateEmployeeType.add}, ${constants.updateEmployeeType.update} or ${constants.updateEmployeeType.delete} (see ${constants.updateEmployeeType} constants).
+          sampleValue: ${constants.updateEmployeeType.update}
+        - name: employee
+          objectName: Employee
+          description: Employee that was updated
+          sampleValue: John

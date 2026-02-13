@@ -1,0 +1,56 @@
+{
+	"id": "MyTestExchange",
+	"description": "A sample exchange descriptor file used in ExchangeApiInterfaceImplementationGeneratorTest unit test, to test generation of API interface implementation with rateLimits rules defined at both exchange, API and REST endpoint levels",
+	"basePackage": "com.foo.bar.gen",
+	"network": {
+		"httpClients": [
+			{
+				"name": "httpDefault",
+				"httpRequestInterceptorFactory": "com.foo.bar.BarRequestInterceptorFactory"
+			}
+		]
+	},
+	"rateLimits": [
+		{"id": "exchangeGlobalRule", "timeFrame": 60000,  "maxRequestCount": 1000}
+	],
+	"apis":[
+		{ 
+			"name": "FuturesTrading",
+			"description": "An API with both API global and endpoint specific rate limits",
+			"rateLimits": [
+				{"id": "apiGlobalWeightRule", "timeFrame": 2000,  "maxTotalWeight": 500},
+				{"id": "unusedRule", "timeFrame": 10000,  "maxRequestCount": 250}
+			],
+			"defaultHttpClient": "httpDefault",
+			"restEndpoints": [
+				{
+					"name": "exchangeInfo",
+					"httpMethod": "GET",
+					"description": "Fetch market information of symbols that can be traded",
+					"url": "https://com.sample.myexchange/exchangeInfo",
+					"requestWeight": 60,
+					"rateLimits": [
+						"exchangeGlobalRule",
+						"apiGlobalWeightRule"
+					],
+					"request": {
+						"properties": [
+							{"name":"symbols", "type": "STRING_LIST", "description":"The list of symbol to fetch market information for. Leave empty to fetch all markets", "sampleValue":""}
+						]
+					},
+					"response": {
+						"properties": [
+							{"name":"responseCode", "type": "INT", "description":"Request response code", "sampleValue":"0"},
+							{"name":"payload", "type": "OBJECT_LIST", "description":"List of market information for each requested symbol", "properties":[
+									{"name":"symbol", "type": "STRING", "description":"Market symbol", "sampleValue":"BTC_USDT"},
+									{"name":"minOrderSize", "type": "BIGDECIMAL", "description":"Minimum order amount", "sampleValue":"0.0001"}
+								]
+							}
+						]
+					}
+				}
+			]
+		}
+		
+	]
+}

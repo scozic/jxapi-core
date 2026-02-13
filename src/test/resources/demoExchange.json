@@ -1,0 +1,199 @@
+{
+	"id": "DemoExchange",
+	"version": "1.0.0",
+	"description": "Demo Exchange. This exchange uses connects to mock HTTP server and websocket server. It is used to test and validate a full Java wrapper generated using JXAPI.",
+	"docUrl": "https://docs.myexchange.com/api",
+	"basePackage": "org.jxapi.exchanges.demo.gen",
+	"properties": [
+		{"name": "baseHttpUrl", "description": "Mock HTTP server base API URL", "defaultValue": "http://localhost:8080"},
+		{"name": "baseWebsocketUrl", "description": "Mock websocket server base API URL", "defaultValue": "ws://localhost:8090"},
+		{"name": "ws", "description": "Mock websocket server related properties", "properties":[
+				{"name": "websocketHeartBeatInterval", "type":"INT",  "description": "Mock websocket server expected heartBeat interval", "defaultValue": -1}
+			]
+		}
+	],
+	"constants": [
+		{"name": "pingMessage", "type":"STRING", "description": "Ping message", "value": "Ping!"},
+		{"name": "pongMessage", "type":"STRING", "description": "Pong message", "value": "Pong!"},
+		{"name": "defaultAge", "type":"INT", "description": "Default age", "value": 18},
+		{
+			"name": "user",
+			"description": "User data",
+			"constants": [
+				{"name": "id", "type":"STRING", "description": "User ID", "value": "user1"},
+				{"name": "age", "type":"INT", "description": "User age", "value": "${constants.defaultAge}"}
+			]
+			
+		},
+		{"name": "websocketLoginMessage", "type":"STRING", "description": "Message to send to websocket server after connecting to complete handshake", "value": "Hello!"},
+		{"name": "websocketLogoutMessage", "type":"STRING", "description": "Message to send to websocket server before disconnecting", "value": "Bye!"},
+		{"name": "responseCodeOk", "type":"INT",  "description": "Possible value in <i>responseCode</i> field of rest request response: Successful response", "value": 200},
+		{"name": "responseCodeInternalServerError", "type":"INT",  "description": "Possible value in <i>responseCode</i> field of rest request response: Server internal error", "value": 500},
+		{"name": "allTickers", "type":"STRING", "description": "Constant for subscribing to all tickers", "value": "ticker@all"},
+		{"name": "defaultSymbol", "type":"STRING", "description": "Default symbol to use in ticker related messages", "value": "BTC_USDT"}
+		
+	],
+	"network": {
+		"httpClients": [
+			{
+				"name": "httpDefault",
+				"httpRequestInterceptorFactory": "org.jxapi.exchanges.demo.net.DemoExchangeHttpRequestInterceptorFactory"
+			}
+		],
+		"websocketClients": [
+			{
+				"name": "wsDefault",
+				"websocketUrl": "${config.baseWebsocketUrl}",
+				"websocketHookFactory": "org.jxapi.exchanges.demo.net.DemoExchangeWebsocketHookFactory"
+			}
+		]
+	},
+	"httpUrl": "${config.baseHttpUrl}",
+	"afterInitHookFactory": "org.jxapi.exchange.MockExchangeHookFactory",
+	"apis":[
+		{ 
+			"name": "MarketData",
+			"description": "Demo exchange market data API",
+			"httpUrl": "/marketData",
+			"defaultHttpClient": "httpDefault",
+			"defaultWebsocketClient": "wsDefault",
+			"restEndpoints": [
+				{
+					"name": "exchangeInfo",
+					"httpMethod": "GET",
+					"description": "Fetch market information of symbols that can be traded",
+					"docUrl": "https://docs.myexchange.com/api/rest/marketData/exchangeInfo",
+					"url": "/exchangeInfo",
+					"request":{
+						"properties": [
+							{"name":"symbols", "type": "STRING_LIST", "description":"The list of symbol to fetch market information for. Leave empty to fetch all markets", "defaultValue":["${constants.defaultSymbol}", "ETH_USDT"], "sampleValue":["${constants.defaultSymbol}", "BNB_USDT"]}
+						]
+					},
+					"response":{ 
+						"properties": [
+							{"name":"responseCode", "type": "INT", "description":"Request response code", "sampleValue":"0"},
+							{"name":"payload", "type": "OBJECT_LIST", "description":"List of market information for each requested symbol", "properties":[
+									{"name":"symbol", "type": "STRING", "description":"Market symbol", "sampleValue":"BTC_USDT"},
+									{"name":"minOrderSize", "type": "BIGDECIMAL", "description":"Minimum order amount", "sampleValue":"0.0001"},
+									{"name":"orderTickSize", "type": "BIGDECIMAL", "description":"Price precision. Prce of an order should be a multiple of this value", "sampleValue":0.05},
+									{"name": "blob", "description": "Additional metadata for the symbol", "objectName": "java.lang.Object"}
+								]
+							}
+						]
+					}
+				},
+				{
+					"name": "tickers",
+					"httpMethod": "GET",
+					"description": "Fetch current tickers for all markets",
+					"url": "/tickers",
+					"response": { 
+						"properties": [
+							{"name":"responseCode", "type": "INT", "description":"Request response code", "sampleValue":"0"},
+							{"name":"payload", "type": "OBJECT_MAP", "description":"Tickers for each symbol", "properties":[
+									{"name":"last", "type": "BIGDECIMAL", "description":"Last traded price", "sampleValue":10.0},
+									{"name":"high", "type": "BIGDECIMAL", "description":"Last traded price", "sampleValue":10.0},
+									{"name":"low", "type": "BIGDECIMAL", "description":"Last traded price", "sampleValue":10.0},
+									{"name":"volume", "type": "BIGDECIMAL", "description":"Total traded amount in base asset during the last 24h from now", "sampleValue":10.0},
+									{"name":"time", "type": "LONG", "description":"Current time", "sampleValue":"now()"},
+									{"name": "meta", "description": "Additional metadata for the ticker", "objectName": "org.jxapi.exchanges.demo.TickerMeta"}
+								]
+							}
+						]
+					}
+				},
+				{
+					"name": "postRestRequestDataTypeInt",
+					"httpMethod": "POST",
+					"description": "A sample REST endpoint using INT response data type",
+					"url": "/postInt",
+					"request": {
+						"type": "INT",
+						"sampleValue": "${constants.user.age}"
+					},
+					"response": {
+						"objectName": "GenericResponse",
+						"properties": [
+							{"name":"responseCode", "type": "INT", "description":"Request response code", "sampleValue":"0"}
+						]
+					}
+				},
+				{
+					"name": "getRestRequestDataTypePrimitiveWithMsgField",
+					"httpMethod": "GET",
+					"description": "A sample REST endpoint using GET (hence url query params) primitive request type, with 'msgField' property defined. That msgField value should be used as query param argument name",
+					"url": "/getIntWithMsgField",
+					"request": {
+						"objectName": "AgeRequest",
+						"type": "INT",
+						"name": "age",
+						"msgField": "a",
+						"sampleValue": 18
+					},
+					"response": {
+						"objectName": "GenericResponse"
+					}
+				},
+				{
+					"name": "postRestRequestDataTypeIntList",
+					"httpMethod": "POST",
+					"description": "A sample REST endpoint using INT_LIST request data type",
+					"url": "/postIntList",
+					"request": {
+						"type": "INT_LIST",
+						"sampleValue": [1,3,5]
+					},
+					"response": {
+						"objectName": "GenericResponse"
+					}
+				},
+				{
+					"name": "postRestRequestDataTypeObjectListMap",
+					"httpMethod": "POST",
+					"description": "A sample REST endpoint using OBJECT_LIST_MAP request data type",
+					"url": "/postObjectListMap",
+					"request": {
+						"type": "OBJECT_LIST_MAP",
+						"objectName": "SingleSymbol",
+						"properties": [
+							{"name":"symbol", "type": "STRING", "msgField":"s", "description":"Symbol name", "sampleValue":"BTC_USDT"}
+						]
+					},
+					"response": {
+						"objectName": "GenericResponse"
+					}
+				}
+			],
+			"websocketEndpoints": [
+				{
+					"name": "tickerStream",
+					"docUrl": "https://docs.myexchange.com/api/ws/marketData/tickerStream",
+					"topic": "${request.symbol}@ticker",
+					"description": "Subscribe to ticker stream",
+					"request": {
+						"properties": [
+							{"name": "symbol", "type":"STRING", "description":"Symbol to subscribe to ticker stream of", "sampleValue":"ETH_USDT"}
+						]
+					},
+					"topicMatcher": {
+						"and": [
+							{"fieldName": "topic",  "fieldValue": "ticker"},
+							{"fieldName": "symbol",  "fieldValue": "${request.symbol}"}
+					    ]
+					},
+					"message": { 
+						"properties": [
+							{"name":"topic", "msgField":"t", "type": "STRING", "description":"Topic", "sampleValue":"ticker"},
+							{"name":"symbol", "msgField":"s", "type": "STRING", "description":"Symbol name", "sampleValue":"BTC_USDT"},
+							{"name":"last", "msgField":"p", "type": "BIGDECIMAL", "description":"Last traded price", "sampleValue":"16000.00"},
+							{"name":"high", "msgField":"h",  "type": "BIGDECIMAL", "description":"Last traded price", "sampleValue":10.0},
+							{"name":"low", "msgField":"l",  "type": "BIGDECIMAL", "description":"Last traded price", "sampleValue":10.0},
+							{"name":"volume", "msgField":"v",  "type": "BIGDECIMAL", "description":"Total traded amount in base asset during the last 24h from now", "sampleValue":10.0},
+							{"name":"time", "msgField":"d",  "type": "LONG", "description":"Current time", "sampleValue":"now()"}
+						]
+					}
+				}
+			]
+		}
+	]
+}

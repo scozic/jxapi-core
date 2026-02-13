@@ -1,0 +1,41 @@
+id: "Employee"
+apis:
+  - name: v1    
+    restEndpoints:
+    - name: getAllEmployees
+      description: Get all employees
+      httpMethod: GET
+      docUrl: https://www.example.com/docs/employee/getAll
+      url: /employees
+      paginated: true
+      request:
+        implementedInterfaces: 
+        - org.jxapi.exchanges.employee.EmployeePaginatedRequest
+        properties:
+        - name: page
+          type: INT
+          description: Page number to return, defaults to 1.
+          sampleValue: 1
+        - name: size
+          type: INT
+          description: >
+            Number of employees to return per page.<br>
+            Defaults to ${constants.defaultPageSize}.<br>
+            Maximum is ${constants.maxPageSize}.
+          sampleValue: 10
+      response:
+        implementedInterfaces:
+        - org.jxapi.exchanges.employee.EmployeePaginatedResponse
+        properties:
+        - name: page
+          type: INT
+          description: Page index, starting from 1
+          sampleValue: 1
+        - name: totalPages
+          type: INT
+          description: Total number of pages available
+          sampleValue: 10
+        - name: employees
+          description: List of employees in this page
+          objectName: Employee			
+          type: OBJECT_LIST   

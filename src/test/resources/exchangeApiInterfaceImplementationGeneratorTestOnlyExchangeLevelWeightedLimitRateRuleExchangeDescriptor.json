@@ -1,0 +1,51 @@
+{
+	"id": "MyTestExchange",
+	"description": "A sample exchange descriptor file used in ExchangeApiInterfaceImplementationGeneratorTest unit test, to test case where there is only rateLimits defined at exchange level, and no additionnal rules at API or  REST endpoint level but requestWeight.",
+	"basePackage": "com.foo.bar.gen",
+	"network": {
+		"httpClients": [
+			{
+				"name": "httpDefault",
+				"httpRequestInterceptorFactory": "com.foo.bar.BarRequestInterceptorFactory"
+			}
+		]
+	},
+	"rateLimits": [
+		{"id": "exchangeGlobalRule", "timeFrame": 60000,  "maxTotalWeight": 1000}
+	],
+	"apis":[
+		{ 
+			"name": "FuturesTrading",
+			"description": "An API with both API global and endpoint specific rate limits",
+			"rateLimits":[],
+			"restEndpoints": [
+				{
+					"name": "ExchangeInfo",
+					"httpMethod": "GET",
+					"description": "Fetch market information of symbols that can be traded",
+					"url": "https://com.sample.mycex/exchangeInfo",
+					"requestWeight": 60,
+					"rateLimits": [
+						"exchangeGlobalRule"
+					],
+					"request": {
+						"properties": [
+							{"name":"symbols", "type": "STRING_LIST", "description":"The list of symbol to fetch market information for. Leave empty to fetch all markets", "sampleValue":""}
+						]
+					},
+					"response":{
+						"properties": [
+							{"name":"responseCode", "type": "INT", "description":"Request response code", "sampleValue":"0"},
+							{"name":"payload", "type": "OBJECT_LIST", "description":"List of market information for each requested symbol", "properties":[
+									{"name":"symbol", "type": "STRING", "description":"Market symbol", "sampleValue":"BTC_USDT"},
+									{"name":"minOrderSize", "type": "BIGDECIMAL", "description":"Minimum order amount", "sampleValue":"0.0001"}
+								]
+							}
+						]
+					}
+				}
+			],
+			"websocketEndpoints": []
+		}
+	]
+}

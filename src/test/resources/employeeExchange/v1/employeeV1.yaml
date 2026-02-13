@@ -1,0 +1,7 @@
+id: "Employee"
+apis:
+ - name: v1
+   description: "Version 1 of the Employee API"
+   httpUrl: "v1"
+   defaultHttpClient: httpDefault
+   defaultWebsocketClient: wsDefault

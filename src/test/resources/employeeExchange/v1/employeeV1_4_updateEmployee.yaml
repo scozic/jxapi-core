@@ -1,0 +1,12 @@
+id: "Employee"
+apis:
+ - name: v1    
+   restEndpoints:
+    - name: "updateEmployee"
+      description: "Update an existing employee"
+      httpMethod: "PUT"
+      docUrl: "https://www.example.com/docs/employee/add"
+      url: "/employee"
+      request:
+       description: "Employee to update"
+       objectName: "Employee"

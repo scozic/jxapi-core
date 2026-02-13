@@ -1,0 +1,68 @@
+{
+	"id": "MyTestExchange",
+	"description": "A sample Exchange descriptor file",
+	"basePackage": "com.foo.bar.gen",
+	"rateLimits": [{"id":"MyTestExchangeGlobalRateLimit", "timeFrame": 1000,  "maxRequestCount": 10}],
+	"network": {
+		"websocketClients": [
+			{
+				"name": "wsDefault",
+				"websocketUrl": "wss://com.foo.exchange/ws",
+				"websocketFactory": "com.foo.bar.BarWebsocketFactory",
+				"websocketHookFactory": "com.foo.bar.BarWebsocketHookFactory"
+			}
+		]
+	},
+	"apis":[
+		{ 
+			"name": "MarketData",
+			"description": "The market data API of MyTestExchange",
+			"websocketEndpoints": [
+				{
+					"name": "tickerStreamStringObjectType",
+					"topic": "${request.symbol}@ticker",
+					"description": "Subscribe to ticker stream",
+					"request":{
+						"properties": [
+							{"name": "symbol", "type":"STRING", "description":"Symbol to subscribe to ticker stream of", "sampleValue":"BTC_USDT"}
+						]
+					},					
+					"topicMatcher": {
+						"and": [
+							{"fieldName": "subject",  "fieldValue": "ticker"},
+							{"fieldName": "symbol",  "fieldValue": "${request.symbol}"}
+					    ]
+					},
+					"message": {
+						"objectName": "TickerMessage",
+						"properties": [
+							{"name":"subject", "msgField":"t", "type": "STRING", "description":"Topic", "sampleValue":"ticker"},
+							{"name":"symbol", "type": "STRING", "description":"Symbol name", "sampleValue":"BTC_USDT"},
+							{"name":"last", "msgField":"p", "type": "BIGDECIMAL", "description":"Last traded price", "sampleValue":"16000.00"}
+						]
+					}
+				},				
+				{
+				"name": "tickerStreamStringRequestType",
+					"topic": "${request}@ticker",
+					"description": "Subscribe to ticker stream",
+					"request":{
+						"name": "symbol", 
+						"type":"STRING", 
+						"description":"Symbol to subscribe to ticker stream of", 
+						"sampleValue":"BTC_USDT"
+					},					
+					"topicMatcher": {
+						"and": [
+							{"fieldName": "subject",  "fieldValue": "${topic}"},
+							{"fieldName": "symbol",  "fieldValue": "${request}"}
+					    ]
+					},
+					"message": {
+						"objectName": "TickerMessage"
+					}
+				}
+			]
+		}
+	]
+}

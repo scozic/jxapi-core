@@ -1,0 +1,10 @@
+basePackage: org.jxapi.pojos2.gen
+pojos:
+  - name: bar
+    description: Bar object
+    properties:
+      - name: name
+        description: Name of the bar
+      - name: amount
+        description: Amount in the bar
+        type: BIGDECIMAL

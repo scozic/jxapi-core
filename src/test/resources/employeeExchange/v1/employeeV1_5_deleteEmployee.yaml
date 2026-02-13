@@ -1,0 +1,15 @@
+id: "Employee"
+apis:
+ - name: v1    
+   restEndpoints:
+    - name: "deleteEmployee"
+      description: "Delete an employee"
+      httpMethod: "DELETE"
+      docUrl: "https://www.example.com/docs/employee/delete"
+      url: "/employee"
+      request:
+       name: "id"
+       type: INT
+       description: "Employee ID"
+       sampleValue: 1
+       in: PATH

@@ -1,0 +1,84 @@
+# Demo configuration properties file for DemoExchange exchange.
+# You should create a copy of this file without the '.dist' extension and add that .properties file
+# to your .gitignore because properties may carry sensitive data you do not want to commit.
+# The resulting file will be read as default configuration file for demo snippets.
+# Uncomment and set following properties and adjust their values per your needs.
+
+# DemoExchange specific configuration properties
+
+# Mock HTTP server base API URL
+# baseHttpUrl=http://localhost:8080
+
+# Mock websocket server base API URL
+# baseWebsocketUrl=ws://localhost:8090
+
+# # Mock websocket server related properties
+# Mock websocket server expected heartBeat interval
+# ws.websocketHeartBeatInterval=-1
+
+
+# Common configuration properties
+
+# The request timeout for calls to REST endpoints of every API. A negative value means no timeout (discouraged)
+# jxapi.httpRequestTimeout=
+
+# Sets the HTTP request throttling policy in case a rate limit rule is breached, for every exposed ExchangeApi, see enum org.jxapi.netutils.rest.ratelimits.RequestThrottlingMode
+# jxapi.requestThrottlingMode=
+
+# Set the max HTTP request throttle delay for rate limit rule enforcement, for every exposed ExchangeApi.
+# jxapi.maxRequestThrottleDelay=
+
+
+# Demo REST/WEBSOCKET snippets common configuration properties
+
+# The duration in ms of the subscription in websocket endpoint demo classes
+# jxapi.demo.ws.subscriptionDuration=30000
+
+# Delay in ms before exiting program after unsubscribing in websocked endpoint demo classes.
+# jxapi.demo.ws.delayBeforeExitAfterUnsubscription=1000
+
+
+# Demo REST/WEBSOCKET specific configuration properties
+
+# # Configuration properties for MarketData API group endpoints demo snippets
+# ## Configuration properties for REST endpoints demo snippets of MarketData API group
+# ### Configuration properties for REST exchangeInfo endpoint of MarketData API group
+# Demo configuration property for exchangeInfo.request field as raw JSON string value.
+# demo.MarketData.rest.exchangeInfo.request=
+
+# #### Demo configuration properties for exchangeInfo.request field object instance.
+# Demo configuration property for request.symbols field.<p>
+# The list of symbol to fetch market information for. Leave empty to fetch all markets
+# demo.MarketData.rest.exchangeInfo.request.symbols=[BTC_USDT, BNB_USDT]
+
+# ### Configuration properties for REST postRestRequestDataTypeInt endpoint of MarketData API group
+# Demo configuration property for postRestRequestDataTypeInt.request field.
+# demo.MarketData.rest.postRestRequestDataTypeInt.request=18
+
+# ### Configuration properties for REST getRestRequestDataTypePrimitiveWithMsgField endpoint of MarketData API group
+# Demo configuration property for getRestRequestDataTypePrimitiveWithMsgField.age field.
+# demo.MarketData.rest.getRestRequestDataTypePrimitiveWithMsgField.age=18
+
+# ### Configuration properties for REST postRestRequestDataTypeIntList endpoint of MarketData API group
+# Demo configuration property for postRestRequestDataTypeIntList.request field.
+# demo.MarketData.rest.postRestRequestDataTypeIntList.request=[1, 3, 5]
+
+# ### Configuration properties for REST postRestRequestDataTypeObjectListMap endpoint of MarketData API group
+# Demo configuration property for postRestRequestDataTypeObjectListMap.request field as raw JSON string value.
+# demo.MarketData.rest.postRestRequestDataTypeObjectListMap.request=
+
+# #### Demo configuration properties for postRestRequestDataTypeObjectListMap.request field object instance.
+# Demo configuration property for request.symbol field.<p>
+# Symbol name
+# demo.MarketData.rest.postRestRequestDataTypeObjectListMap.request.symbol=BTC_USDT
+
+# ## Configuration properties for websocket endpoints demo snippets of MarketData API group
+# ### Configuration properties for websocket tickerStream endpoint of MarketData API group
+# Demo configuration property for tickerStream.request field as raw JSON string value.
+# demo.MarketData.ws.tickerStream.request=
+
+# #### Demo configuration properties for tickerStream.request field object instance.
+# Demo configuration property for request.symbol field.<p>
+# Symbol to subscribe to ticker stream of
+# demo.MarketData.ws.tickerStream.request.symbol=ETH_USDT
+
