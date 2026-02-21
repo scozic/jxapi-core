@@ -83,12 +83,15 @@ public class DefaultWebsocketEndpoint<M> implements WebsocketEndpoint<M> {
     }
     sub.removeListener(unsubscriptionId);
     String topic = sub.request.getTopic();
-    int remaining = subscriptionsByTopic.size();
+    int remaining = sub.listeners.size();
     if (remaining <= 0) {
-      log.debug("Unsubscribing from topic {}", topic);
+      log.debug("Unsubscribed from topic {}", topic);
       subscriptionsByTopic.remove(topic);
     } else {
-      log.debug("Unsubscribing from topic {} but still {} listeners", topic, remaining);
+      log.debug("Unsubscribing from topic {} but still {} listeners, first:{}", 
+          topic, 
+          remaining, 
+          sub.listeners.keySet().iterator().next());
     }
     return true;
   }
