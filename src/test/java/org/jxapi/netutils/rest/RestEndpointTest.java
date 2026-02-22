@@ -34,7 +34,11 @@ public class RestEndpointTest {
         mockSerializer = this::serialize;
 
         restEndpoint = new RestEndpoint<>();
-        restEndpoint.setHttpClient(new HttpClient(null, mockExecutor, null));
+        restEndpoint.setHttpClient(new HttpClient(
+            new DefaultHttpRequestInterceptor(), 
+            mockExecutor, 
+            null, 
+            new DefaultHttpResponseInterceptor()));
         restEndpoint.setDeserializer(mockDeserializer);
         restEndpoint.setSerializer(mockSerializer);
         restEndpoint.setUrl("http://example.com/api/test");
@@ -49,16 +53,6 @@ public class RestEndpointTest {
     
     private String deserialize(String data) {
       return "Deserialized:" + data;
-    }
-
-    @Test
-    public void testCreateHttpRequestWithBody() {
-        String requestData = "Test Request Data";
-        HttpRequest httpRequest = restEndpoint.createHttpRequest(requestData);
-        Assert.assertNotNull(httpRequest);
-        Assert.assertEquals("http://example.com/api/test", httpRequest.getUrl());
-        Assert.assertEquals(HttpMethod.POST, httpRequest.getHttpMethod());
-        Assert.assertEquals("Serialized:" + requestData, httpRequest.getBody());
     }
     
     @Test
@@ -99,7 +93,7 @@ public class RestEndpointTest {
       restEndpoint.setUrl("http://newexample.com/api");
       Assert.assertEquals("http://newexample.com/api", restEndpoint.getUrl());
       
-      HttpClient customHttpClient = new HttpClient(null, new MockHttpRequestExecutor(), null);
+      HttpClient customHttpClient = new HttpClient(null, new MockHttpRequestExecutor(), null, null);
       restEndpoint.setHttpClient(customHttpClient);
       Assert.assertEquals(customHttpClient, restEndpoint.getHttpClient());
       

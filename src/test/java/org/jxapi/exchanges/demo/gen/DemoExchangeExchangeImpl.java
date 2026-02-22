@@ -27,6 +27,7 @@ public class DemoExchangeExchangeImpl extends AbstractExchange implements DemoEx
     createHttpClient("httpDefault",
       "org.jxapi.exchanges.demo.net.DemoExchangeHttpRequestInterceptorFactory",
       null,
+      null,
       null);
     createWebsocketClient("wsDefault",
       EncodingUtil.substituteArguments("${config.baseWebsocketUrl}", "config.baseWebsocketUrl", DemoExchangeProperties.getBaseWebsocketUrl(properties)),

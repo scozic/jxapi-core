@@ -44,6 +44,8 @@ public class HttpResponse {
   private HttpRequest request;
   
   private Date time;
+  
+  private Object response;
 
   /**
    * @return HTTP response code
@@ -171,6 +173,24 @@ public class HttpResponse {
   @Override
   public String toString() {
     return JsonUtil.pojoToJsonString(this, TOSTRING_OBJECT_MAPPER);
+  }
+
+  /**
+   * Returns the deserialized response object, which is obtained by deserializing
+   * the response body using the message serializer set in the request. If no
+   * message serializer is set or response deserialization fails, this method may
+   * return <code>null</code>.
+   * 
+   * 
+   * @return The deserialized response object
+   * @see HttpRequest#setRequestSerializer(MessageSerializer)
+   */
+  public Object getResponse() {
+    return response;
+  }
+
+  public void setResponse(Object response) {
+    this.response = response;
   }
 
 }

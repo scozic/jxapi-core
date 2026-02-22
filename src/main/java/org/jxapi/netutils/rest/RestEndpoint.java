@@ -64,14 +64,8 @@ public class RestEndpoint<R, A> {
    */
   protected HttpRequest createHttpRequest(R requestData) {
     String u = url;
-    String body = null;
-    if (requestData != null) {
-      if (urlParamsSerializer != null) {
-        u = urlParamsSerializer.serializeUrlParams(requestData, u);
-      }
-      if (serializer != null) {
-        body = serializer.serialize(requestData);
-      }
+    if (requestData != null && urlParamsSerializer != null) {
+      u = urlParamsSerializer.serializeUrlParams(requestData, u);
     }
     return HttpRequest.create(
         name, 
@@ -80,7 +74,9 @@ public class RestEndpoint<R, A> {
         requestData, 
         rateLimitRules, 
         weight, 
-        body);
+        null, // Body will be serialized by interceptor, so we set it to null here
+        serializer,
+        deserializer);
   }
   
   /**
@@ -95,6 +91,7 @@ public class RestEndpoint<R, A> {
    *                         not paginated.
    * @return The response to the request, as a {@link FutureRestResponse}
    */
+  @SuppressWarnings("unchecked")
   protected FutureRestResponse<A> submit(R request, NextPageResolver<A> nextPageResolver) {
     if (httpClient == null) {
       throw new IllegalStateException("No " + HttpRequestExecutor.class.getSimpleName() + " set");
@@ -111,13 +108,7 @@ public class RestEndpoint<R, A> {
         response.setNextPageResolver(nextPageResolver);
         response.setPaginated(true);
       }
-      if(response.isOk()) {
-        try {
-          response.setResponse(deserializer.deserialize(httpResponse.getBody()));
-        } catch (Exception ex) {
-          response.setException(ex);
-        }
-      }
+      response.setResponse((A) httpResponse.getResponse());
       log.debug("{} {} < {}", httpRequest.getHttpMethod(), httpRequest.getEndpoint(), response);
       dispatchApiEvent(ExchangeEvent.createRestResponseEvent(response));
       try {

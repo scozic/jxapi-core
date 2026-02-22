@@ -35,7 +35,7 @@ public class PaginatedRestEndpointTest {
   public void setUp() {
       mockExecutor = new MockHttpRequestExecutor();
       restEndpoint = new PaginatedRestEndpoint<>();
-      restEndpoint.setHttpClient(new HttpClient(null, mockExecutor, null));
+      restEndpoint.setHttpClient(new HttpClient(new DefaultHttpRequestInterceptor(), mockExecutor, null, new DefaultHttpResponseInterceptor()));
       restEndpoint.setUrl("http://example.com/api/test");
       mockDeserializer = data -> {
         try {
@@ -71,7 +71,7 @@ public class PaginatedRestEndpointTest {
       restEndpoint.setUrl("http://newexample.com/api");
       Assert.assertEquals("http://newexample.com/api", restEndpoint.getUrl());
       
-      HttpClient httpClient = new HttpClient(null, mockExecutor, null);
+      HttpClient httpClient = new HttpClient(null, mockExecutor, null, null);
       restEndpoint.setHttpClient(httpClient);
       Assert.assertEquals(httpClient, restEndpoint.getHttpClient());
       

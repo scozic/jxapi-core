@@ -174,6 +174,7 @@ public class ExchangeInterfaceImplementationGeneratorTest {
         + "    createHttpClient(\"httpDefault\",\n"
         + "      null,\n"
         + "      null,\n"
+        + "      null,\n"
         + "      null);\n"
         + "    \n"
         + "     // APIs\n"
@@ -279,6 +280,7 @@ public class ExchangeInterfaceImplementationGeneratorTest {
             .name("httpDefault")
             .httpRequestInterceptorFactory("com.xyz.foo.gen.FooHttpRequestInterceptorFactory")
             .httpRequestExecutorFactory("com.xyz.foo.gen.FooHttpRequestExecutorFactory")
+            .httpResponseInterceptorFactory("com.xyz.foo.gen.FooHttpResponseInterceptorFactory")
             .httpRequestTimeout(15000L)
             .build())
         .addToWebsocketClients(WebsocketClientDescriptor.builder()
@@ -316,6 +318,7 @@ public class ExchangeInterfaceImplementationGeneratorTest {
         + "    createHttpClient(\"httpDefault\",\n"
         + "      \"com.xyz.foo.gen.FooHttpRequestInterceptorFactory\",\n"
         + "      \"com.xyz.foo.gen.FooHttpRequestExecutorFactory\",\n"
+        + "      \"com.xyz.foo.gen.FooHttpResponseInterceptorFactory\",\n"
         + "      15000);\n"
         + "    createWebsocketClient(\"wsDefault\",\n"
         + "      \"wss://foo.example.com/ws\",\n"
@@ -502,6 +505,7 @@ public class ExchangeInterfaceImplementationGeneratorTest {
         + "    createHttpClient(\"httpDefault\",\n"
         + "      \"com.xyz.foo.gen.FooHttpRequestInterceptorFactory\",\n"
         + "      \"com.xyz.foo.gen.FooHttpRequestExecutorFactory\",\n"
+        + "      null,\n"
         + "      null);\n"
         + "  }\n"
         + "  \n"
@@ -553,6 +557,7 @@ public class ExchangeInterfaceImplementationGeneratorTest {
         + "    // Network\n"
         + "    createHttpClient(\"httpDefault\",\n"
         + "      \"org.jxapi.exchanges.demo.net.DemoExchangeHttpRequestInterceptorFactory\",\n"
+        + "      null,\n"
         + "      null,\n"
         + "      null);\n"
         + "    createWebsocketClient(\"wsDefault\",\n"

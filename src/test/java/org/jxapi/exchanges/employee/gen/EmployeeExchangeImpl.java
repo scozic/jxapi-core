@@ -27,6 +27,7 @@ public class EmployeeExchangeImpl extends AbstractExchange implements EmployeeEx
     createHttpClient("httpDefault",
       "org.jxapi.exchanges.demo.net.DemoExchangeHttpRequestInterceptorFactory",
       null,
+      null,
       null);
     createWebsocketClient("wsDefault",
       EncodingUtil.substituteArguments("${config.server.baseWebsocketUrl}", "config.server.baseWebsocketUrl", EmployeeProperties.Server.getBaseWebsocketUrl(properties)),

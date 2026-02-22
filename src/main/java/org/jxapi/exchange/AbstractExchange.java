@@ -9,11 +9,15 @@ import java.util.Properties;
 import org.apache.commons.lang3.StringUtils;
 import org.jxapi.netutils.DefaultNetwork;
 import org.jxapi.netutils.Network;
+import org.jxapi.netutils.rest.HttpResponseInterceptorFactory;
+import org.jxapi.netutils.rest.DefaultHttpRequestInterceptor;
+import org.jxapi.netutils.rest.DefaultHttpResponseInterceptor;
 import org.jxapi.netutils.rest.HttpClient;
 import org.jxapi.netutils.rest.HttpRequestExecutor;
 import org.jxapi.netutils.rest.HttpRequestExecutorFactory;
 import org.jxapi.netutils.rest.HttpRequestInterceptor;
 import org.jxapi.netutils.rest.HttpRequestInterceptorFactory;
+import org.jxapi.netutils.rest.HttpResponseInterceptor;
 import org.jxapi.netutils.rest.javanet.JavaNetHttpRequestExecutor;
 import org.jxapi.netutils.rest.ratelimits.RequestThrottler;
 import org.jxapi.netutils.websocket.DefaultWebsocketClient;
@@ -216,6 +220,7 @@ public abstract class AbstractExchange extends DefaultDisposable implements Exch
       String clientId, 
       String httpRequestInterceptorFactoryClass,
       String httpRequestExecutorFactoryClass,
+      String httpResponseInterceptorFactoryClass,
       Long defaultRequestTimeout) {
     HttpRequestExecutor httpRequestExecutor = null;
     if  (httpRequestExecutorFactoryClass != null) {
@@ -236,18 +241,34 @@ public abstract class AbstractExchange extends DefaultDisposable implements Exch
     if (requestTimeout >= 0) {
       httpRequestExecutor.setRequestTimeout(requestTimeout);
     }
-    createHttpClient(clientId, httpRequestInterceptorFactoryClass, httpRequestExecutor);
+    createHttpClient(clientId, httpRequestInterceptorFactoryClass, httpRequestExecutor, httpResponseInterceptorFactoryClass);
   }
   
   private void createHttpClient(
       String name, 
       String httpRequestInterceptorFactoryClass,
-      HttpRequestExecutor httpRequestExecutor) {
+      HttpRequestExecutor httpRequestExecutor,
+      String httpResponseInterceptorFactoryClass) {
     HttpRequestInterceptor httpRequestInterceptor = null;
+    
     if (httpRequestInterceptorFactoryClass != null) {
       httpRequestInterceptor = ((HttpRequestInterceptorFactory) FactoryUtil.fromClassName(httpRequestInterceptorFactoryClass)).createInterceptor(this);
+    } else {
+      httpRequestInterceptor = new DefaultHttpRequestInterceptor();
     }
-    network.registerHttpClient(name, new HttpClient(httpRequestInterceptor, httpRequestExecutor, requestThrottler));
+    
+    HttpResponseInterceptor httpResponseInterceptor = null;
+    if (httpResponseInterceptorFactoryClass != null) {
+      httpResponseInterceptor = ((HttpResponseInterceptorFactory) FactoryUtil.fromClassName(httpResponseInterceptorFactoryClass)).createInterceptor(this);
+    } else {
+      httpResponseInterceptor = new DefaultHttpResponseInterceptor();
+    }
+    
+    network.registerHttpClient(name, new HttpClient(
+        httpRequestInterceptor, 
+        httpRequestExecutor, 
+        requestThrottler, 
+        httpResponseInterceptor));
   }
   
   /**

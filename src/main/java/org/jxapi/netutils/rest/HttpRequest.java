@@ -5,8 +5,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.jxapi.netutils.deserialization.MessageDeserializer;
 import org.jxapi.netutils.rest.ratelimits.RateLimitRule;
 import org.jxapi.netutils.rest.ratelimits.RequestThrottler;
+import org.jxapi.netutils.serialization.MessageSerializer;
 import org.jxapi.util.EncodingUtil;
 import org.jxapi.util.ExceptionToStringJsonSerializer;
 import org.jxapi.util.JsonUtil;
@@ -42,7 +44,7 @@ public class HttpRequest {
       Object request,
       List<RateLimitRule> rateLimits,
       int weight) {
-    return create(endpoint, url, httpMethod, request, rateLimits, weight, null);
+    return create(endpoint, url, httpMethod, request, rateLimits, weight, null, null, null);
   }
 
   /**
@@ -65,7 +67,9 @@ public class HttpRequest {
       Object request,
       List<RateLimitRule> rateLimits,
       int weight,
-      String body) {
+      String body,
+      MessageSerializer<?> requestSerializer,
+      MessageDeserializer<?> responseDeserializer) {
     HttpRequest r = new HttpRequest();
     r.setEndpoint(endpoint);
     r.setUrl(url);
@@ -75,6 +79,8 @@ public class HttpRequest {
     r.setWeight(weight);
     r.setTime(new Date());
     r.setBody(body);
+    r.setRequestSerializer(requestSerializer);
+    r.setResponseDeserializer(responseDeserializer);
     return r;
   }
 
@@ -130,6 +136,22 @@ public class HttpRequest {
    * actually sent.
    */
   private long throttledTime = 0L;
+  
+  /**
+   * Message serializer to use for this request. It may to be used by
+   * HttpRequestInterceptor to serialize the request object if needed.
+   * <p>
+   * In context of REST APIs, this will be set to default JSON serializer for the request type.
+   */
+  private MessageSerializer<?> requestSerializer;
+  
+  /**
+   * Message deserializer to use for this request. It may to be used by
+   * HttpRequestInterceptor to deserialize the response if needed.
+   * <p>
+   * In context of REST APIs, this will be set to default JSON deserializer for the response type.
+   */
+  private MessageDeserializer<?> responseDeserializer;
 
   /**
    * @return full request URL, including request parameters
@@ -314,4 +336,36 @@ public class HttpRequest {
   public String toString() {
     return JsonUtil.pojoToJsonString(this, TOSTRING_OBJECT_MAPPER);
   }
+
+  /**
+   * Returns the message serializer to use for this request. It may to be used by
+   * HttpRequestInterceptor to serialize the request object if needed.
+   * @return the message serializer to use for this request. In context of REST APIs, this will be set to default JSON serializer for the request type.
+   */
+  public MessageSerializer<?> getRequestSerializer() {
+    return requestSerializer;
+  }
+
+  /**
+   * Sets the message serializer to use for creating this request body. It may to be used by
+   * HttpRequestInterceptor to serialize the request object if needed.
+   * @param requestSerializer the message serializer to use for this request. In context of REST APIs, this will be set to default JSON serializer for the request type.
+   */
+  public void setRequestSerializer(MessageSerializer<?> requestSerializer) {
+    this.requestSerializer = requestSerializer;
+  }
+
+  public MessageDeserializer<?> getResponseDeserializer() {
+    return responseDeserializer;
+  }
+
+  /**
+   * Sets the message deserializer to use for this request. It may to be used by
+   * HttpRequestInterceptor to deserialize the response if needed.
+   * @param responseDeserializer the message deserializer to use for this request. In context of REST APIs, this will be set to default JSON deserializer for the response type.
+   */
+  public void setResponseDeserializer(MessageDeserializer<?> responseDeserializer) {
+    this.responseDeserializer = responseDeserializer;
+  }
+  
 }
