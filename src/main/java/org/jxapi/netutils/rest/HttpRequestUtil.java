@@ -116,8 +116,8 @@ public class HttpRequestUtil {
    * <code>null</code>, the body will not be modified.
    * 
    * @param request the request to serialize body of, should not be <code>null</code>.
-   * @see #setRequestSerializer(MessageSerializer)
-   * @see #setRequest(Object)
+   * @see HttpRequest#setRequestSerializer(MessageSerializer)
+   * @see HttpRequest#setRequest(Object)
    */
   @SuppressWarnings({ "rawtypes", "unchecked" })
   public static void serializeRequestBody(HttpRequest request) {
