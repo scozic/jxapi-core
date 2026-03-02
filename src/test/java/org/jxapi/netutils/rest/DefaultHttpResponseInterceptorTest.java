@@ -1,5 +1,6 @@
 package org.jxapi.netutils.rest;
 
+import org.junit.Assert;
 import org.junit.Test;
 
 /**
@@ -16,6 +17,6 @@ public class DefaultHttpResponseInterceptorTest {
     response.setBody("Hello");
     DefaultHttpResponseInterceptor interceptor = new DefaultHttpResponseInterceptor();
     interceptor.intercept(response);
-    assert response.getResponse().equals("Hello!");
+    Assert.assertEquals("Hello!", response.getResponse());
   }
 }

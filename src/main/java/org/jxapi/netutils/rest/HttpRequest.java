@@ -68,8 +68,8 @@ public class HttpRequest {
       List<RateLimitRule> rateLimits,
       int weight,
       String body,
-      MessageSerializer<?> requestSerializer,
-      MessageDeserializer<?> responseDeserializer) {
+      @SuppressWarnings("rawtypes") MessageSerializer requestSerializer,
+      @SuppressWarnings("rawtypes") MessageDeserializer responseDeserializer) {
     HttpRequest r = new HttpRequest();
     r.setEndpoint(endpoint);
     r.setUrl(url);
@@ -143,7 +143,8 @@ public class HttpRequest {
    * <p>
    * In context of REST APIs, this will be set to default JSON serializer for the request type.
    */
-  private MessageSerializer<?> requestSerializer;
+  @SuppressWarnings("rawtypes")
+  private MessageSerializer requestSerializer;
   
   /**
    * Message deserializer to use for this request. It may to be used by
@@ -151,7 +152,8 @@ public class HttpRequest {
    * <p>
    * In context of REST APIs, this will be set to default JSON deserializer for the response type.
    */
-  private MessageDeserializer<?> responseDeserializer;
+  @SuppressWarnings("rawtypes")
+  private MessageDeserializer responseDeserializer;
 
   /**
    * @return full request URL, including request parameters
@@ -342,7 +344,8 @@ public class HttpRequest {
    * HttpRequestInterceptor to serialize the request object if needed.
    * @return the message serializer to use for this request. In context of REST APIs, this will be set to default JSON serializer for the request type.
    */
-  public MessageSerializer<?> getRequestSerializer() {
+  @SuppressWarnings("rawtypes")
+  public MessageSerializer getRequestSerializer() {
     return requestSerializer;
   }
 
@@ -351,11 +354,16 @@ public class HttpRequest {
    * HttpRequestInterceptor to serialize the request object if needed.
    * @param requestSerializer the message serializer to use for this request. In context of REST APIs, this will be set to default JSON serializer for the request type.
    */
-  public void setRequestSerializer(MessageSerializer<?> requestSerializer) {
+  @SuppressWarnings("rawtypes")
+  public void setRequestSerializer(MessageSerializer requestSerializer) {
     this.requestSerializer = requestSerializer;
   }
 
-  public MessageDeserializer<?> getResponseDeserializer() {
+  /**
+   * @return the message deserializer to use for this request. In context of REST APIs, this will be set to default JSON deserializer for the response type.
+   */
+  @SuppressWarnings("rawtypes")
+  public MessageDeserializer getResponseDeserializer() {
     return responseDeserializer;
   }
 
@@ -364,7 +372,8 @@ public class HttpRequest {
    * HttpRequestInterceptor to deserialize the response if needed.
    * @param responseDeserializer the message deserializer to use for this request. In context of REST APIs, this will be set to default JSON deserializer for the response type.
    */
-  public void setResponseDeserializer(MessageDeserializer<?> responseDeserializer) {
+  @SuppressWarnings("rawtypes")
+  public void setResponseDeserializer(MessageDeserializer responseDeserializer) {
     this.responseDeserializer = responseDeserializer;
   }
   

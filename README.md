@@ -23,6 +23,7 @@ JXAPI generates comprehensive Java client libraries for REST and WebSocket APIs 
 - Generate standalone demo code and documentation
 
 You can generate only POJOs if needed - see the [POJO only generation](./doc/manual/PojoOnlyGeneration.md) guide.
+A complete manual and documentation are available in the [doc](./doc) folder of this repository, see the [index](./doc/index.md) for the full table of contents.
 
 ## Why Choose JXAPI?
 

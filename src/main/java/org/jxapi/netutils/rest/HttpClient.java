@@ -63,7 +63,6 @@ public class HttpClient extends AbstractHttpRequestExecutor {
             resp.setException(e);
           }        
         }
-//        return resp;
         processedResponse.complete(resp);
       });
       return processedResponse;

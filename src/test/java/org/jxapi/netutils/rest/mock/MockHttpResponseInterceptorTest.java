@@ -12,12 +12,12 @@ import org.jxapi.netutils.rest.HttpResponseInterceptor;
 public class MockHttpResponseInterceptorTest {
 
   private MockHttpResponseInterceptor interceptor;
-  private HttpResponse Response;
+  private HttpResponse response;
 
   @Before
   public void setUp() {
     interceptor = new MockHttpResponseInterceptor();
-    Response = new HttpResponse();
+    response = new HttpResponse();
   }
 
   @Test
@@ -33,16 +33,16 @@ public class MockHttpResponseInterceptorTest {
         Response.setHeader(headerName, headerValue);
       }
     });
-    interceptor.intercept(Response);
+    interceptor.intercept(response);
 
     // Assert
-    Assert.assertEquals(headerValue, Response.getHeaders().get(headerName).get(0));
+    Assert.assertEquals(headerValue, response.getHeaders().get(headerName).get(0));
   }
 
   @Test
   public void testIntercept_NoPreparedInterceptor() {
-    interceptor.intercept(Response);
-    Assert.assertNull(Response.getHeaders());
+    interceptor.intercept(response);
+    Assert.assertNull(response.getHeaders());
   }
 
   @Test
@@ -56,21 +56,21 @@ public class MockHttpResponseInterceptorTest {
     // Act
     interceptor.addPreparedInterceptor(new HttpResponseInterceptor() {
       @Override
-      public void intercept(HttpResponse Response) {
-        Response.setHeader(headerName1, headerValue1);
+      public void intercept(HttpResponse response) {
+        response.setHeader(headerName1, headerValue1);
       }
     });
     interceptor.addPreparedInterceptor(new HttpResponseInterceptor() {
       @Override
-      public void intercept(HttpResponse Response) {
-        Response.setHeader(headerName2, Response.getHeaders().get(headerName1).get(0) + headerValue2);
+      public void intercept(HttpResponse response) {
+        response.setHeader(headerName2, response.getHeaders().get(headerName1).get(0) + headerValue2);
       }
     });
-    interceptor.intercept(Response);
+    interceptor.intercept(response);
 
     // Assert
-    Assert.assertEquals(headerValue1, Response.getHeaders().get(headerName1).get(0));
-    Assert.assertEquals("Value1Value2", Response.getHeaders().get(headerName2).get(0));
+    Assert.assertEquals(headerValue1, response.getHeaders().get(headerName1).get(0));
+    Assert.assertEquals("Value1Value2", response.getHeaders().get(headerName2).get(0));
   }
 
   @Test(expected = RuntimeException.class)
@@ -81,7 +81,7 @@ public class MockHttpResponseInterceptorTest {
     // Act
     interceptor.addPreparedThrow(exception);
 
-    interceptor.intercept(Response);
+    interceptor.intercept(response);
   }
 
   @Test
@@ -89,7 +89,7 @@ public class MockHttpResponseInterceptorTest {
     // Arrange
     HttpResponseInterceptor preparedInterceptor = new HttpResponseInterceptor() {
       @Override
-      public void intercept(HttpResponse Response) {
+      public void intercept(HttpResponse response) {
         // Do nothing
       }
     };
@@ -103,7 +103,7 @@ public class MockHttpResponseInterceptorTest {
     // Arrange
     HttpResponseInterceptor preparedInterceptor = new HttpResponseInterceptor() {
       @Override
-      public void intercept(HttpResponse Response) {
+      public void intercept(HttpResponse response) {
         // Do nothing
       }
     };
