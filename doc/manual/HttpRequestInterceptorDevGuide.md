@@ -1,78 +1,206 @@
-# REST API request interception development guide
+# HTTP Request and Response Interceptor Development Guide
 
-## Request interception overview
+## Overview
 
-Most APIs REST interfaces require specific headers to be set in requests, for instance to carry authentication data.
-JXAPI Java wrapper generator allows to write custom interceptors to alter HTTP requests before they are submitted.
+When working with REST APIs, you often need to customize HTTP requests and responses. Common use cases include:
 
-Apart from customizing the request, interceptors also have the responsibility to serialize / deserialize request and response data, see [Body serialization and deserialization](#body-serialization-and-deserialization) section below for more details.
+- Adding authentication headers
+- Logging requests and responses
+- Modifying request URLs or bodies
+- Custom error handling
+- Rate limiting
 
-This is achieved by implementing [HttpRequestInterceptor](../../src/main/java/org/jxapi/netutils/rest/HttpRequestInterceptor.java) interface: `intercept(HttpRequest)` method allows to modify any part of an outgoing request: headers, URL, body... before it is submitted.
+JXAPI provides **interceptors** to handle these scenarios. Interceptors allow you to:
+1. **Modify outgoing HTTP requests** before they are sent
+2. **Process incoming HTTP responses** after they are received
+3. **Handle serialization/deserialization** of request and response data
 
-In exchange descriptor JSON file you should declare property `httpRequestInterceptorFactory` property of structure describing an HTTP client among ones defined in `network\httpClients` part of exchange descriptor (see [network](./ExchangeDescriptorFileDoc.md#network) ), with value containing name of a class implementing [HttpRequestInterceptorFactory](../../src/main/java/org/jxapi/netutils/rest/HttpRequestInterceptorFactory.java) class.
-Such class must have a defaut public constructor. The `createInterceptor(Exchange exchange)` method implementation must return a `HttpRequestInterceptor` instance. 
+## How Interceptors Work
 
-## Request interception
+### Request Interceptors
+Request interceptors implement the [HttpRequestInterceptor](../../src/main/java/org/jxapi/netutils/rest/HttpRequestInterceptor.java) interface. The `intercept(HttpRequest)` method lets you modify any part of an outgoing request:
+- Headers (authentication, content-type, etc.)
+- URL parameters
+- Request body
+- HTTP method
 
-JXAPI also allows to intercept HTTP responses by implementing the [HttpResponseInterceptor](../../src/main/java/org/jxapi/netutils/rest/HttpResponseInterceptor.java) interface and declaring the corresponding factory in exchange descriptor file with `httpResponseInterceptorFactory` property of HTTP client structure. Such factory class must expose a public default constructor, implement the [HttpResponseInterceptorFactory](../../src/main/java/org/jxapi/netutils/rest/HttpResponseInterceptorFactory.java) interface, and its `createInterceptor(Exchange exchange)` method must return a `HttpResponseInterceptor` instance.
+### Response Interceptors  
+Response interceptors implement the [HttpResponseInterceptor](../../src/main/java/org/jxapi/netutils/rest/HttpResponseInterceptor.java) interface. The `intercept(HttpResponse)` method lets you:
+- Process response headers and status codes
+- Handle errors
+- Log response data
+- Transform response bodies
 
-## Body serialization and deserialization
+### Factory Pattern
+Interceptors are created using factory classes:
+- **HttpRequestInterceptorFactory** creates request interceptors
+- **HttpResponseInterceptorFactory** creates response interceptors
 
-Interceptors have the responsibility serialize / deserialize HTTP request POJOs to body and deserialize response body to POJOs.
-When endpoint request definition specifies a body for the request, the *request* property of an HttpRequest is a POJO, that can be serialized to JSON using the `requestSerializer` property of the interceptor. This property is an instance of a class extending [StdSerializer](https://javadoc.io/doc/com.fasterxml.jackson.core/jackson-databind/latest/com/fasterxml/jackson/databind/ser/std/StdSerializer.html) that is generated for each request POJO. The `intercept(HttpRequest)` method implementation should serialize the request POJO to JSON and set it as the body of the request, unless specific needs require a different behavior, for instance altering the JSON structure or using another serialization format.
+These factories must have a public default constructor and implement the `createInterceptor(Exchange exchange)` method.
 
-When endpoint response definition specifies a body for the response, the *response* property of an HttpResponse is a String containing the JSON response body, and the interceptor must deserialize it to a POJO using the `responseDeserializer` property of the HTTP request associated to the response, which is an instance of a class extending [StdDeserializer](https://javadoc.io/doc/com.fasterxml.jackson.core/jackson-databind/latest/com/fasterxml/jackson/databind/deser/std/StdDeserializer.html) that is generated for each response POJO.
+## Configuration
 
-Wether request serialization or response deserialization should be peformed by the interceptor depends on the HTTP method of the endpoint, as follows:
-- For GET endpoints, only response deserialization is performed by the interceptor, as GET requests do not have a body.
-- For POST, PUT, PATCH, DELETE endpoints, both request serialization and response deserialization are performed by the interceptor, as those endpoints can have a body in both request and response.
-Also, it depends on definition of the endpoint in the exchange descriptor file, as only endpoints with a body defined for request or response will require serialization or deserialization to be performed by the interceptor.
-The generated `HttpRequest` instance carries the `requestSerializer` property only if the endpoint has a body defined for request and HTTP method applicable to it, and the `HttpResponse` instance carries the `responseDeserializer` property only if the endpoint has a body defined for response.
+To use interceptors, configure them in your exchange descriptor JSON file:
 
-Unless you have specific needs, you can extend the [DefaultHttpRequestInterceptor](../../src/main/java/org/jxapi/netutils/rest/DefaultHttpRequestInterceptor.java) class that provides a default implementation of `intercept(HttpRequest)` method to perform request serialization as described above using the generated JSON serializer for theh request, and override it to add custom behavior like adding headers or altering the URL.
+```json
+{
+  "network": {
+    "httpClients": [
+      {
+        "name": "myClient",
+        "httpRequestInterceptorFactory": "com.example.MyRequestInterceptorFactory",
+        "httpResponseInterceptorFactory": "com.example.MyResponseInterceptorFactory"
+      }
+    ]
+  }
+}
+```
 
-For response deserialization, you should also extend the [DefaultHttpResponseInterceptor](../../src/main/java/org/jxapi/netutils/rest/DefaultHttpResponseInterceptor.java) class that provides a default implementation of `intercept(HttpResponse)` method to perform response deserialization as described above using the generated JSON deserializers, and override it to add custom behavior like custom error handling.
+See the [network configuration documentation](./ExchangeDescriptorFileDoc.md#network) for more details.
 
-## Examples
+## Data Serialization and Deserialization
 
-### Request interception example
-Here is an example of a simple `HttpRequestInterceptor` implementation that adds a custom header to each request and keepsn default body serialization behavior by extending `DefaultHttpRequestInterceptor`:
+Interceptors are responsible for converting between Java objects (POJOs) and JSON data. This process varies depending on the HTTP method and endpoint configuration.
+
+### Request Serialization
+
+When an endpoint expects a request body:
+- The `HttpRequest.request` property contains a Java object (POJO)
+- Use the `HttpRequest.requestSerializer` to convert this object to JSON
+- Set the resulting JSON as the request body
+
+**Example flow:**
+```
+Java Object → JSON Serializer → JSON String → HTTP Request Body
+```
+
+### Response Deserialization
+
+When an endpoint returns a response body:
+- The `HttpResponse.response` property contains a JSON string
+- Use the `HttpRequest.responseDeserializer` to convert this JSON to a Java object
+- The result becomes your typed response object
+
+**Example flow:**
+```
+HTTP Response Body → JSON String → JSON Deserializer → Java Object
+```
+
+### When Serialization Occurs
+
+The need for serialization depends on the HTTP method and endpoint definition:
+
+| HTTP Method | Request Serialization | Response Deserialization |
+|-------------|----------------------|--------------------------|
+| GET         | ❌ No body            | ✅ If response has body   |
+| POST        | ✅ If request has body | ✅ If response has body   |
+| PUT         | ✅ If request has body | ✅ If response has body   |
+| PATCH       | ✅ If request has body | ✅ If response has body   |
+| DELETE      | ✅ If request has body | ✅ If response has body   |
+
+### Default Implementations
+
+For most use cases, you can extend the provided default classes:
+
+- **[DefaultHttpRequestInterceptor](../../src/main/java/org/jxapi/netutils/rest/DefaultHttpRequestInterceptor.java)**: Handles request serialization automatically
+- **[DefaultHttpResponseInterceptor](../../src/main/java/org/jxapi/netutils/rest/DefaultHttpResponseInterceptor.java)**: Handles response deserialization automatically
+
+These classes apply default JSON serialization/deserialization of request POJOs using Jackson's [StdSerializer](https://javadoc.io/doc/com.fasterxml.jackson.core/jackson-databind/latest/com/fasterxml/jackson/databind/ser/std/StdSerializer.html) and [StdDeserializer](https://javadoc.io/doc/com.fasterxml.jackson.core/jackson-databind/latest/com/fasterxml/jackson/databind/deser/std/StdDeserializer.html) that are generated for each POJO.
+These default request and response interceptors are used when no custom interceptor factories are defined in the exchange descriptor file.
+
+When extending `DefaultHttpRequestInterceptor` or `DefaultHttpResponseInterceptor`, always call `super.intercept()` to ensure proper serialization/deserialization:
 
 ```java
-public class CustomHeaderInterceptor extends DefaultHttpRequestInterceptor {
+@Override
+public void intercept(HttpRequest request) {
+    super.intercept(request); // Important: call this first
+    // Your custom logic here
+}
+
+## Implementation Examples
+
+### Example 1: Adding Custom Headers
+
+This example shows how to add authentication headers to every request:
+
+**Step 1: Create the Request Interceptor**
+```java
+public class AuthHeaderInterceptor extends DefaultHttpRequestInterceptor {
+    
+    private final String apiKey;
+    
+    public AuthHeaderInterceptor(String apiKey) {
+        this.apiKey = apiKey;
+    }
+    
     @Override
     public void intercept(HttpRequest request) {
-        super.intercept(request); // Call the default implementation to handle body serialization
-        request.addHeader("X-Custom-Header", "CustomValue");
+        // Handle default serialization first
+        super.intercept(request);
+        
+        // Add custom headers
+        request.addHeader("Authorization", "Bearer " + apiKey);
+        request.addHeader("Content-Type", "application/json");
     }
 }
 ```
 
-And the corresponding factory class:
-
+**Step 2: Create the Factory**
 ```java
-public class CustomHeaderInterceptorFactory implements HttpRequestInterceptorFactory {
+public class AuthHeaderInterceptorFactory implements HttpRequestInterceptorFactory {
+    
     @Override
     public HttpRequestInterceptor createInterceptor(Exchange exchange) {
-        return new CustomHeaderInterceptor();
+        // Get API key from exchange configuration or environment
+        String apiKey = getApiKeyFromConfig(exchange);
+        return new AuthHeaderInterceptor(apiKey);
+    }
+    
+    private String getApiKeyFromConfig(Exchange exchange) {
+        // Implementation depends on your configuration system
+        return System.getenv("API_KEY");
     }
 }
 ```
 
+### Example 2: Logging and Error Handling
 
-### Response interception example
-Here is an example of a simple `HttpResponseInterceptor` implementation that logs response status and keeps default body deserialization behavior by extending `DefaultHttpResponseInterceptor`:
+This example demonstrates response logging with custom error handling:
+
+**Step 1: Create the Response Interceptor**
 ```java
 public class LoggingResponseInterceptor extends DefaultHttpResponseInterceptor {
+    
+    private static final Logger logger = LoggerFactory.getLogger(LoggingResponseInterceptor.class);
+    
     @Override
     public void intercept(HttpResponse response) {
-        super.intercept(response); // Call the default implementation to handle body deserialization
-        System.out.println("Received response with status: " + response.getStatusCode());
+        // Log response details
+        logger.info("Received response - Status: {}, Content-Length: {}", 
+                   response.getStatusCode(), 
+                   response.getHeaders().get("Content-Length"));
+        
+        // Handle errors before deserialization
+        if (response.getStatusCode() >= 400) {
+            handleErrorResponse(response);
+            return;
+        }
+        
+        // Proceed with default deserialization
+        super.intercept(response);
     }
+    
+    private void handleErrorResponse(HttpResponse response) {
+        String errorBody = response.getResponse();
+        logger.error("API Error {}: {}", response.getStatusCode(), errorBody);
+    }
+}
 ```
-And the corresponding factory class:
+
+**Step 2: Create the Factory**
 ```java
 public class LoggingResponseInterceptorFactory implements HttpResponseInterceptorFactory {
+    
     @Override
     public HttpResponseInterceptor createInterceptor(Exchange exchange) {
         return new LoggingResponseInterceptor();
@@ -80,14 +208,30 @@ public class LoggingResponseInterceptorFactory implements HttpResponseIntercepto
 }
 ```
 
+### Example 3: Complete Setup
 
-In your exchange descriptor JSON file, you would then specify the `httpRequestInterceptorFactory` property like this:
+Here's how your exchange descriptor JSON should look:
 
 ```json
 {
-    "httpRequestInterceptorFactory": "org.jxapi.netutils.rest.CustomHeaderInterceptorFactory"
+  "network": {
+    "httpClients": [
+      {
+        "name": "myExchangeClient",
+        "baseUrl": "https://api.myexchange.com",
+        "httpRequestInterceptorFactory": "com.example.AuthHeaderInterceptorFactory",
+        "httpResponseInterceptorFactory": "com.example.LoggingResponseInterceptorFactory",
+        "timeout": 30000,
+        "retries": 3
+      }
+    ]
+  }
 }
 ```
 
-This setup ensures that every outgoing HTTP request will include the custom header defined in the interceptor.
+## Common Use Cases
+
+- **Authentication**: Add API keys, JWT tokens, or OAuth headers
+- **Custom Serialization**: Serialize request bodies in a specific format or handle complex data structures
+- **Rate Limiting**: When sophisticated rate limiting is needed (like weight of a request depending on its content), you can use interceptors to analyze request content override the default weight defined in the descriptor file, and implement custom rate limiting strategies.
 
