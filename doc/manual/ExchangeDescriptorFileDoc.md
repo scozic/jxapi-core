@@ -489,7 +489,7 @@ Remark: `OBJECT` is the default type for a `Field` when either `objectName` or `
 Example:
 ```json
 name: "exampleField"
- <!-- Remark 'type' needs not be specified because 'properties' is which implies type is 'OBJECT' --> 
+ ## Remark 'type' needs not be specified because 'properties' is which implies type is 'OBJECT'
 properties:
   - name: "id"
     type: "STRING"

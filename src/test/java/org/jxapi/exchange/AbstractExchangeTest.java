@@ -15,6 +15,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.jxapi.netutils.rest.mock.MockHttpRequestExecutorFactory;
 import org.jxapi.netutils.rest.mock.MockHttpRequestInterceptorFactory;
+import org.jxapi.netutils.rest.mock.MockHttpResponseInterceptorFactory;
 import org.jxapi.netutils.rest.ratelimits.RequestThrottler;
 import org.jxapi.netutils.websocket.mock.MockWebsocketFactory;
 import org.jxapi.netutils.websocket.mock.MockWebsocketHookFactory;
@@ -97,12 +98,10 @@ public class AbstractExchangeTest {
     @Test
     public void testCreateHttpClientWithDefaultExecutorAndNoInterceptor() {
         // Act
-        exchange.createHttpClient("testClient", null, null, 5000L);
+        exchange.createHttpClient("testClient", null, null, null, 5000L);
 
         // Assert
         assertNotNull(exchange.getHttpClient("testClient"));
-        
-        
     }
     
     @Test
@@ -113,6 +112,7 @@ public class AbstractExchangeTest {
           "customClient", 
           MockHttpRequestInterceptorFactory.class.getName(), 
           MockHttpRequestExecutorFactory.class.getName(), 
+          MockHttpResponseInterceptorFactory.class.getName(),
           5000L);
 
       // Assert

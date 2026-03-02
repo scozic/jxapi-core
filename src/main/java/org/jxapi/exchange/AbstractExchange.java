@@ -9,11 +9,15 @@ import java.util.Properties;
 import org.apache.commons.lang3.StringUtils;
 import org.jxapi.netutils.DefaultNetwork;
 import org.jxapi.netutils.Network;
+import org.jxapi.netutils.rest.HttpResponseInterceptorFactory;
+import org.jxapi.netutils.rest.DefaultHttpRequestInterceptor;
+import org.jxapi.netutils.rest.DefaultHttpResponseInterceptor;
 import org.jxapi.netutils.rest.HttpClient;
 import org.jxapi.netutils.rest.HttpRequestExecutor;
 import org.jxapi.netutils.rest.HttpRequestExecutorFactory;
 import org.jxapi.netutils.rest.HttpRequestInterceptor;
 import org.jxapi.netutils.rest.HttpRequestInterceptorFactory;
+import org.jxapi.netutils.rest.HttpResponseInterceptor;
 import org.jxapi.netutils.rest.javanet.JavaNetHttpRequestExecutor;
 import org.jxapi.netutils.rest.ratelimits.RequestThrottler;
 import org.jxapi.netutils.websocket.DefaultWebsocketClient;
@@ -61,6 +65,9 @@ public abstract class AbstractExchange extends DefaultDisposable implements Exch
    */
   protected final Map<String, ExchangeApi> apis = new HashMap<>();
   
+  /**
+   * The network used to manage HTTP clients and websocket clients.
+   */
   protected final DefaultNetwork network;
   
   /**
@@ -76,6 +83,11 @@ public abstract class AbstractExchange extends DefaultDisposable implements Exch
   
   private final WebsocketErrorHandler wsErrorHandler = error -> dispatchApiEvent(ExchangeEvent.createWebsocketErrorEvent(error));
   
+  /**
+   * The request throttler used to handle rate limits for HTTP requests, if the
+   * exchange has rate limiting. Can be <code>null</code> if the exchange does not
+   * have rate limiting.
+   */
   protected final RequestThrottler requestThrottler;
   
   private HttpRequestExecutor defaultHttpRequestExecutor;
@@ -144,6 +156,7 @@ public abstract class AbstractExchange extends DefaultDisposable implements Exch
   /**
    * Subclasses should call this method to register every exposed {@link ExchangeApi}. 
    * @param <T> the type of the {@link ExchangeApi}
+   * @param name the name of the {@link ExchangeApi}
    * @param api the {@link ExchangeApi} to add
    * @return <code>api</code>
    */
@@ -207,6 +220,7 @@ public abstract class AbstractExchange extends DefaultDisposable implements Exch
       String clientId, 
       String httpRequestInterceptorFactoryClass,
       String httpRequestExecutorFactoryClass,
+      String httpResponseInterceptorFactoryClass,
       Long defaultRequestTimeout) {
     HttpRequestExecutor httpRequestExecutor = null;
     if  (httpRequestExecutorFactoryClass != null) {
@@ -227,24 +241,41 @@ public abstract class AbstractExchange extends DefaultDisposable implements Exch
     if (requestTimeout >= 0) {
       httpRequestExecutor.setRequestTimeout(requestTimeout);
     }
-    createHttpClient(clientId, httpRequestInterceptorFactoryClass, httpRequestExecutor);
+    createHttpClient(clientId, httpRequestInterceptorFactoryClass, httpRequestExecutor, httpResponseInterceptorFactoryClass);
   }
   
   private void createHttpClient(
       String name, 
       String httpRequestInterceptorFactoryClass,
-      HttpRequestExecutor httpRequestExecutor) {
+      HttpRequestExecutor httpRequestExecutor,
+      String httpResponseInterceptorFactoryClass) {
     HttpRequestInterceptor httpRequestInterceptor = null;
+    
     if (httpRequestInterceptorFactoryClass != null) {
       httpRequestInterceptor = ((HttpRequestInterceptorFactory) FactoryUtil.fromClassName(httpRequestInterceptorFactoryClass)).createInterceptor(this);
+    } else {
+      httpRequestInterceptor = new DefaultHttpRequestInterceptor();
     }
-    network.registerHttpClient(name, new HttpClient(httpRequestInterceptor, httpRequestExecutor, requestThrottler));
+    
+    HttpResponseInterceptor httpResponseInterceptor = null;
+    if (httpResponseInterceptorFactoryClass != null) {
+      httpResponseInterceptor = ((HttpResponseInterceptorFactory) FactoryUtil.fromClassName(httpResponseInterceptorFactoryClass)).createInterceptor(this);
+    } else {
+      httpResponseInterceptor = new DefaultHttpResponseInterceptor();
+    }
+    
+    network.registerHttpClient(name, new HttpClient(
+        httpRequestInterceptor, 
+        httpRequestExecutor, 
+        requestThrottler, 
+        httpResponseInterceptor));
   }
   
   /**
    * Creates a websocket manager using the specified URL, websocket factory class name, and websocket hook factory class name.
    * Should be called by subclasses to create the websocket manager if there is at least one websocket endpoint.
    * 
+   * @param name The name of the websocket client.
    * @param url The URL of the websocket server. Can be <code>null</code> to set it later, or use the default URL defined by the websocket implementation.
    * @param websocketFactoryClassName The fully qualified class name of the websocket factory class that creates the websocket.
    * @param websocketHookFactoryClassName The fully qualified class name of the websocket hook factory class that creates the websocket hook.

@@ -24,7 +24,7 @@ import org.jxapi.util.Pojo;
 @JsonDeserialize(using = HttpClientDescriptorDeserializer.class)
 public class HttpClientDescriptor implements Pojo<HttpClientDescriptor> {
   
-  private static final long serialVersionUID = -5700991537515947254L;
+  private static final long serialVersionUID = -4008581722299815789L;
   
   /**
    * @return A new builder to build {@link HttpClientDescriptor} objects
@@ -36,6 +36,7 @@ public class HttpClientDescriptor implements Pojo<HttpClientDescriptor> {
   private String name;
   private String httpRequestExecutorFactory;
   private String httpRequestInterceptorFactory;
+  private String httpResponseInterceptorFactory;
   private Long httpRequestTimeout;
   
   /**
@@ -79,7 +80,13 @@ public class HttpClientDescriptor implements Pojo<HttpClientDescriptor> {
   /**
    * @return The fully qualified class name of the
    * {@link org.jxapi.netutils.rest.HttpRequestInterceptorFactory} to use
-   * for REST endpoints using this HTTP client.
+   * for REST endpoints using this HTTP client.<p>
+   * May be null, in which case a default interceptor that only performs default JSON serialization of request
+   * as body and addtion of <i>Content-Type</i> header set to <i>application/json</i> if applicable 
+   * (request is not null and HTTP method supports body) is used.
+   * <p>
+   * Such interceptor to add additional headers like authentication headers, or to perform 
+   * specific serialization of request body, should be implemented and specified here.
    * 
    */
   public String getHttpRequestInterceptorFactory() {
@@ -89,11 +96,39 @@ public class HttpClientDescriptor implements Pojo<HttpClientDescriptor> {
   /**
    * @param httpRequestInterceptorFactory The fully qualified class name of the
    * {@link org.jxapi.netutils.rest.HttpRequestInterceptorFactory} to use
-   * for REST endpoints using this HTTP client.
+   * for REST endpoints using this HTTP client.<p>
+   * May be null, in which case a default interceptor that only performs default JSON serialization of request
+   * as body and addtion of <i>Content-Type</i> header set to <i>application/json</i> if applicable 
+   * (request is not null and HTTP method supports body) is used.
+   * <p>
+   * Such interceptor to add additional headers like authentication headers, or to perform 
+   * specific serialization of request body, should be implemented and specified here.
    * 
    */
   public void setHttpRequestInterceptorFactory(String httpRequestInterceptorFactory) {
     this.httpRequestInterceptorFactory = httpRequestInterceptorFactory;
+  }
+  
+  /**
+   * @return The fully qualified class name of the
+   * {@link org.jxapi.netutils.rest.HttpResponseInterceptorFactory} to use
+   * for REST endpoints using this HTTP client.
+   * <p> May be null, in which case no response interceptor is used.
+   * 
+   */
+  public String getHttpResponseInterceptorFactory() {
+    return httpResponseInterceptorFactory;
+  }
+  
+  /**
+   * @param httpResponseInterceptorFactory The fully qualified class name of the
+   * {@link org.jxapi.netutils.rest.HttpResponseInterceptorFactory} to use
+   * for REST endpoints using this HTTP client.
+   * <p> May be null, in which case no response interceptor is used.
+   * 
+   */
+  public void setHttpResponseInterceptorFactory(String httpResponseInterceptorFactory) {
+    this.httpResponseInterceptorFactory = httpResponseInterceptorFactory;
   }
   
   /**
@@ -128,6 +163,7 @@ public class HttpClientDescriptor implements Pojo<HttpClientDescriptor> {
     return Objects.equals(this.name, o.name)
         && Objects.equals(this.httpRequestExecutorFactory, o.httpRequestExecutorFactory)
         && Objects.equals(this.httpRequestInterceptorFactory, o.httpRequestInterceptorFactory)
+        && Objects.equals(this.httpResponseInterceptorFactory, o.httpResponseInterceptorFactory)
         && Objects.equals(this.httpRequestTimeout, o.httpRequestTimeout);
   }
   
@@ -152,13 +188,17 @@ public class HttpClientDescriptor implements Pojo<HttpClientDescriptor> {
     if (res != 0) {
       return res;
     }
+    res = CompareUtil.compare(this.httpResponseInterceptorFactory, other.httpResponseInterceptorFactory);
+    if (res != 0) {
+      return res;
+    }
     res = CompareUtil.compare(this.httpRequestTimeout, other.httpRequestTimeout);
     return res;
   }
   
   @Override
   public int hashCode() {
-    return Objects.hash(name, httpRequestExecutorFactory, httpRequestInterceptorFactory, httpRequestTimeout);
+    return Objects.hash(name, httpRequestExecutorFactory, httpRequestInterceptorFactory, httpResponseInterceptorFactory, httpRequestTimeout);
   }
   
   @Override
@@ -167,6 +207,7 @@ public class HttpClientDescriptor implements Pojo<HttpClientDescriptor> {
     clone.name = this.name;
     clone.httpRequestExecutorFactory = this.httpRequestExecutorFactory;
     clone.httpRequestInterceptorFactory = this.httpRequestInterceptorFactory;
+    clone.httpResponseInterceptorFactory = this.httpResponseInterceptorFactory;
     clone.httpRequestTimeout = this.httpRequestTimeout;
     return clone;
   }
@@ -185,6 +226,7 @@ public class HttpClientDescriptor implements Pojo<HttpClientDescriptor> {
     private String name;
     private String httpRequestExecutorFactory;
     private String httpRequestInterceptorFactory;
+    private String httpResponseInterceptorFactory;
     private Long httpRequestTimeout;
     
     /**
@@ -218,13 +260,34 @@ public class HttpClientDescriptor implements Pojo<HttpClientDescriptor> {
      * Will set the value of <code>httpRequestInterceptorFactory</code> field in the builder
      * @param httpRequestInterceptorFactory The fully qualified class name of the
      * {@link org.jxapi.netutils.rest.HttpRequestInterceptorFactory} to use
-     * for REST endpoints using this HTTP client.
+     * for REST endpoints using this HTTP client.<p>
+     * May be null, in which case a default interceptor that only performs default JSON serialization of request
+     * as body and addtion of <i>Content-Type</i> header set to <i>application/json</i> if applicable 
+     * (request is not null and HTTP method supports body) is used.
+     * <p>
+     * Such interceptor to add additional headers like authentication headers, or to perform 
+     * specific serialization of request body, should be implemented and specified here.
      * 
      * @return Builder instance
      * @see #setHttpRequestInterceptorFactory(String)
      */
     public Builder httpRequestInterceptorFactory(String httpRequestInterceptorFactory)  {
       this.httpRequestInterceptorFactory = httpRequestInterceptorFactory;
+      return this;
+    }
+    
+    /**
+     * Will set the value of <code>httpResponseInterceptorFactory</code> field in the builder
+     * @param httpResponseInterceptorFactory The fully qualified class name of the
+     * {@link org.jxapi.netutils.rest.HttpResponseInterceptorFactory} to use
+     * for REST endpoints using this HTTP client.
+     * <p> May be null, in which case no response interceptor is used.
+     * 
+     * @return Builder instance
+     * @see #setHttpResponseInterceptorFactory(String)
+     */
+    public Builder httpResponseInterceptorFactory(String httpResponseInterceptorFactory)  {
+      this.httpResponseInterceptorFactory = httpResponseInterceptorFactory;
       return this;
     }
     
@@ -249,6 +312,7 @@ public class HttpClientDescriptor implements Pojo<HttpClientDescriptor> {
       res.name = this.name;
       res.httpRequestExecutorFactory = this.httpRequestExecutorFactory;
       res.httpRequestInterceptorFactory = this.httpRequestInterceptorFactory;
+      res.httpResponseInterceptorFactory = this.httpResponseInterceptorFactory;
       res.httpRequestTimeout = this.httpRequestTimeout;
       return res;
     }

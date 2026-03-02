@@ -6,6 +6,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.jxapi.netutils.websocket.DefaultWebsocketClient;
 import org.jxapi.netutils.websocket.WebsocketException;
+import org.jxapi.netutils.websocket.WebsocketSubscribeRequest;
 import org.jxapi.netutils.websocket.WebsocketClient;
 
 /**
@@ -97,7 +98,8 @@ public class MockWebsocketHookTest {
         String topic = "topic";
         String expectedMessage = "Subscribe request message";
         mockWebsocketHook.setSubscribeRequestMessage(topic, expectedMessage);
-        assertEquals(expectedMessage, mockWebsocketHook.getSubscribeRequestMessage(topic));
+        WebsocketSubscribeRequest request = WebsocketSubscribeRequest.create(expectedMessage, topic, null);
+        assertEquals(expectedMessage, mockWebsocketHook.getSubscribeRequestMessage(request));
         MockWebsocketHookEvent event = mockWebsocketHook.pop();
         assertEquals(MockWebsocketHookEventType.GET_SUBSCRIBE_REQUEST_MESSAGE, event.getType());
         assertEquals(mockWebsocketHook, event.getSource());
@@ -107,8 +109,9 @@ public class MockWebsocketHookTest {
     public void testSetUnSubscribeRequestMessage() {
         String topic = "topic";
         String expectedMessage = "Unsubscribe request message";
+        WebsocketSubscribeRequest request = WebsocketSubscribeRequest.create("subscribeRequest", topic, null);
         mockWebsocketHook.setUnSubscribeRequestMessage(topic, expectedMessage);
-        assertEquals(expectedMessage, mockWebsocketHook.getUnSubscribeRequestMessage(topic));
+        assertEquals(expectedMessage, mockWebsocketHook.getUnSubscribeRequestMessage(request));
         MockWebsocketHookEvent event = mockWebsocketHook.pop();
         assertEquals(MockWebsocketHookEventType.GET_UNSUBSCRIBE_REQUEST_MESSAGE, event.getType());
         assertEquals(mockWebsocketHook, event.getSource());

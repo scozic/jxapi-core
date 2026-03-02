@@ -44,6 +44,7 @@
 			"name": "MarketData",
 			"description": "The market data API of MyTestExchange. Author: ${constants.authorFullName}",
 			"httpRequestInterceptorFactory": "com.foo.bar.BarHttpRequestInterceptorFactory",
+			"httpResponseInterceptorFactory": "com.foo.bar.BarHttpResponseInterceptorFactory",
 			"defaultHttpClient": "httpDefault",
 			"defaultWebsocketClient": "wsDefault",
 			"restEndpoints": [

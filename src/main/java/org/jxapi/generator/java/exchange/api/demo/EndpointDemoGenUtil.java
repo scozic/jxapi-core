@@ -344,7 +344,7 @@ public class EndpointDemoGenUtil {
     StringBuilder builderInstruction = new StringBuilder();
     builderInstruction.append("\n");
     List<Field> properties = ExchangeApiGenUtil.resolveFieldProperties(exchangeApiDescriptor, field).getProperties();
-    for (Field childParam : properties) {
+    for (Field childParam : CollectionUtil.emptyIfNull(properties)) {
       String childParamName = childParam.getName();
       String childDemoPropertyName = demoPropertyName + "." + childParamName;
       String childClassName = PojoGenUtil.getFieldObjectClassName(childParam, objectClassName);
@@ -619,7 +619,9 @@ public class EndpointDemoGenUtil {
               .name(propertyName)
               .type(Type.STRING.toString())
               .description(rawValueDemoPropertyDescription)
-              .defaultValue(f.getSampleValue())
+              .defaultValue(Optional
+                  .ofNullable(f.getSampleValue())
+                  .orElse(f.getDefaultValue()))
               .build(),
           ConfigPropertyDescriptor.builder()
               .name(propertyName)
@@ -643,7 +645,9 @@ public class EndpointDemoGenUtil {
             parentField, 
             fieldName,
             fieldDescription))
-        .defaultValue(f.getSampleValue())
+        .defaultValue(Optional
+            .ofNullable(f.getSampleValue())
+            .orElse(f.getDefaultValue()))
         .build());
   }
   

@@ -242,6 +242,8 @@ public class ExchangeInterfaceImplementationGenerator extends JavaTypeGenerator 
           .append(ARG_SEPARATOR)
           .append(JavaCodeGenUtil.getQuotedString(httpClient.getHttpRequestExecutorFactory()))
           .append(ARG_SEPARATOR)
+          .append(JavaCodeGenUtil.getQuotedString(httpClient.getHttpResponseInterceptorFactory()))
+          .append(ARG_SEPARATOR)
           .append(httpClient.getHttpRequestTimeout())
           .append(");\n");
     }

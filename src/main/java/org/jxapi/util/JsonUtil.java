@@ -83,7 +83,6 @@ public class JsonUtil {
    *         </ul>
    */
   public static ObjectMapper createDefaultObjectMapper() {
-
     return JsonMapper.builder()
       .disable(SerializationFeature.FAIL_ON_EMPTY_BEANS)
       .enable(SerializationFeature.ORDER_MAP_ENTRIES_BY_KEYS)
@@ -479,7 +478,28 @@ public class JsonUtil {
         break;
     }
   }
-  
+
+  /**
+   * Reads (and consumes) the next token from the parser and returns it as a
+   * generic Object. The parser is expected to be positioned on the value to read.
+   * <p>
+   * The returned object type depends on the JSON structure:
+   * <ul>
+   * <li>JSON number (integer) - returns {@link Integer}</li>
+   * <li>JSON number (floating point) - returns {@link Double}</li>
+   * <li>JSON string - returns {@link String}</li>
+   * <li>JSON object - returns {@link Map}&lt;String, Object&gt;</li>
+   * <li>JSON array - returns {@link List}&lt;Object&gt;</li>
+   * <li>JSON boolean - returns {@link Boolean}</li>
+   * <li>JSON null - returns <code>null</code></li>
+   * </ul>
+   * <br>
+   * In case of JSON object or array, the method is called recursively to
+   * construct the full structure.
+   * @param parser The parser to read from
+   * @return The deserialized object
+   * @throws IOException Eventually thrown by the parser
+   */
   public static Object readNextObject(JsonParser parser) throws IOException {
     parser.nextToken();
     return readCurrentObject(parser);
@@ -539,12 +559,34 @@ public class JsonUtil {
             throw new IllegalArgumentException("Unsupported JSON token: " + token);
     }
   }
-  
+
+  /**
+   * Reads (and consumes) the next token from the parser and returns it as an
+   * object of the specified class. The parser is expected to be positioned on the
+   * value to read.
+   * 
+   * @param parser The parser to read from
+   * @param clazz  The class to deserialize the object into
+   * @param <T>    The type of the object to deserialize
+   * @return The deserialized object of type T
+   * @throws IOException Eventually thrown by the parser
+   */
   public static <T> T readNextObject(JsonParser parser, Class<T> clazz) throws IOException {
     parser.nextToken();
     return readCurrentObject(parser, clazz);
   }
-  
+
+  /**
+   * Reads the current token from the parser and returns it as an object of the
+   * specified class. The parser is expected to be positioned on the value to
+   * read.
+   * 
+   * @param parser The parser to read from
+   * @param clazz  The class to deserialize the object into
+   * @param <T>    The type of the object to deserialize
+   * @return The deserialized object of type T
+   * @throws IOException Eventually thrown by the parser
+   */
   public static <T> T readCurrentObject(JsonParser parser, Class<T> clazz) throws IOException {
     return parser.readValueAs(clazz);
   }

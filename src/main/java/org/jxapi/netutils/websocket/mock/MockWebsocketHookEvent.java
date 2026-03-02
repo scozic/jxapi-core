@@ -1,6 +1,7 @@
 package org.jxapi.netutils.websocket.mock;
 
 import org.jxapi.netutils.websocket.WebsocketClient;
+import org.jxapi.netutils.websocket.WebsocketSubscribeRequest;
 
 /**
  * Event that is sent by a {@link MockWebsocketHook} when one of its methods is
@@ -57,30 +58,33 @@ public class MockWebsocketHookEvent {
   }
 
   /**
-   * @param source the source of the event
-   * @param topic  the websocket subscription topic
-   * @return A new {@link MockWebsocketHookEventType#GET_SUBSCRIBE_REQUEST_MESSAGE}
+   * @param source           the source of the event
+   * @param subscribeRequest the websocket subscription topic
+   * @return A new
+   *         {@link MockWebsocketHookEventType#GET_SUBSCRIBE_REQUEST_MESSAGE}
    *         event for the given {@link MockWebsocketHook} and topic.
    */
-  public static MockWebsocketHookEvent createGetSubscribeRequestMessageEvent(MockWebsocketHook source, String topic) {
+  public static MockWebsocketHookEvent createGetSubscribeRequestMessageEvent(MockWebsocketHook source, WebsocketSubscribeRequest subscribeRequest) {
     MockWebsocketHookEvent e = new MockWebsocketHookEvent(MockWebsocketHookEventType.GET_SUBSCRIBE_REQUEST_MESSAGE,
         source);
-    e.setTopic(topic);
+    e.setSubscribeRequest(subscribeRequest);
+    e.setTopic(subscribeRequest.getTopic());
     return e;
   }
 
   /**
-   * @param source the source of the event
-   * @param topic  the websocket subscription topic
+   * @param source           the source of the event
+   * @param subscribeRequest the websocket unsubscription topic
    * @return A new
    *         {@link MockWebsocketHookEventType#GET_UNSUBSCRIBE_REQUEST_MESSAGE}
    *         event for the given {@link MockWebsocketHook} and topic.
    */
   public static MockWebsocketHookEvent createGetUnSubscribeRequestMessageEvent(MockWebsocketHook source,
-      String topic) {
+      WebsocketSubscribeRequest subscribeRequest) {
     MockWebsocketHookEvent e = new MockWebsocketHookEvent(
         MockWebsocketHookEventType.GET_UNSUBSCRIBE_REQUEST_MESSAGE, source);
-    e.setTopic(topic);
+    e.setSubscribeRequest(subscribeRequest);
+    e.setTopic(subscribeRequest.getTopic());
     return e;
   }
 
@@ -98,6 +102,8 @@ public class MockWebsocketHookEvent {
   private final MockWebsocketHook source;
 
   private WebsocketClient websocketClient;
+  
+  private WebsocketSubscribeRequest subscribeRequest;
 
   private String topic;
 
@@ -171,6 +177,24 @@ public class MockWebsocketHookEvent {
    */
   public void setTopic(String topic) {
     this.topic = topic;
+  }
+  
+  /**
+   * Get the subscribe request associated with this event.
+   * 
+   * @return The subscribe request.
+   */
+  public WebsocketSubscribeRequest getSubscribeRequest() {
+    return subscribeRequest;
+  }
+
+  /**
+   * Set the subscribe request associated with this event.
+   * 
+   * @param subscribeRequest The subscribe request to set.
+   */
+  public void setSubscribeRequest(WebsocketSubscribeRequest subscribeRequest) {
+    this.subscribeRequest = subscribeRequest;
   }
 
   @Override

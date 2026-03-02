@@ -103,18 +103,27 @@ public class WebsocketClientLoadTest {
     log.info("Preparing threads...");
     List<Thread> threads = prepareThreads(allMessages, nbThreads, iterations);
     log.info("Subscribing topics...");
-    wsManager.subscribe("topic1", 
-              WSMTMFUtil.value("f1", "val1"), 
-              wsMessageHandler1);
-    wsManager.subscribe("topic2", 
-        WSMTMFUtil.and(List.of(WSMTMFUtil.value("f2", "val2"), WSMTMFUtil.value("f5", "val5"))), 
-        wsMessageHandler2);
-    wsManager.subscribe("topic3", 
+    WebsocketSubscribeRequest websocketSubscribeRequest1 = WebsocketSubscribeRequest.create(
+        "sub1", 
+        "topic1", 
+        WSMTMFUtil.value("f1", "val1"));
+    wsManager.subscribe(websocketSubscribeRequest1, wsMessageHandler1);
+    
+    WebsocketSubscribeRequest websocketSubscribeRequest2 = WebsocketSubscribeRequest.create(
+        "sub2", 
+        "topic2", 
+        WSMTMFUtil.and(List.of(WSMTMFUtil.value("f2", "val2"), WSMTMFUtil.value("f5", "val5"))));
+    wsManager.subscribe(websocketSubscribeRequest2, wsMessageHandler2);
+    
+    WebsocketSubscribeRequest websocketSubscribeRequest3 = WebsocketSubscribeRequest.create(
+        "sub3", 
+        "topic3", 
         WSMTMFUtil.and(List.of(
             WSMTMFUtil.value("f1", "val1_2"), 
             WSMTMFUtil.value("f3", "val3"), 
-            WSMTMFUtil.value("f6", "val6"))), 
-        wsMessageHandler3);
+            WSMTMFUtil.value("f6", "val6"))));
+    wsManager.subscribe(websocketSubscribeRequest3, wsMessageHandler3);
+    
     DemoUtil.sleep(500L);
     log.info("Starting dispatch of {} messages, with {} messages related to one of {} subsribed topics", 
          totalMessageCount, 

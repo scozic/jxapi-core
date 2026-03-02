@@ -4,6 +4,7 @@ import java.util.Collections;
 import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
+import org.jxapi.netutils.serialization.MessageSerializer;
 import org.jxapi.util.CollectionUtil;
 
 /**
@@ -83,4 +84,66 @@ public class HttpRequestUtil {
     }
     return Collections.unmodifiableMap(result);
   }
+  
+    /**
+    * Set the "Content-Type" header of the request to "application/json".
+    * @param request the request to set header for, should not be <code>null</code>.
+    * @throws IllegalArgumentException if <code>request</code> is <code>null</code>.
+    */
+  public static void setContentTypeHeaderToJson(HttpRequest request) {
+    setContentTypeHeader(request, "application/json");
+  }
+  
+  /**
+   * Set the "Content-Type" header of the request to the specified content type.
+   * @param request the request to set header for, should not be <code>null</code>.
+   * @param contentType the content type to set in header, should not be <code>null</code> or empty.
+    * @throws IllegalArgumentException if <code>request</code> is <code>null</code>, or <code>contentType</code> is <code>null</code> or empty.
+   */
+  public static void setContentTypeHeader(HttpRequest request, String contentType) {
+    if (request == null) {
+      throw new IllegalArgumentException("HttpRequest cannot be null");
+    }
+    if (contentType == null || contentType.isEmpty()) {
+      throw new IllegalArgumentException("Content-Type cannot be null or empty");
+    }
+    request.setHeader("Content-Type", contentType);
+  }
+  
+  /**
+   * Will set the body of the request by serializing the request object using the
+   * message serializer if such serializer is set. If either message serializer or request object is
+   * <code>null</code>, the body will not be modified.
+   * 
+   * @param request the request to serialize body of, should not be <code>null</code>.
+   * @see HttpRequest#setRequestSerializer(MessageSerializer)
+   * @see HttpRequest#setRequest(Object)
+   */
+  @SuppressWarnings({ "rawtypes", "unchecked" })
+  public static void serializeRequestBody(HttpRequest request) {
+    Object requestObject = request.getRequest();
+    MessageSerializer serializer = request.getRequestSerializer();
+    if (requestObject != null && serializer != null) {
+      request.setBody(serializer.serialize(requestObject));
+    }
+  }
+  
+  /**
+   * Will set the response of the response by deserializing the response body using the
+   * message deserializer if such deserializer is set in the request that originated this response. If either message deserializer or response body is
+   * <code>null</code> or empty, the response will not be modified.
+   * 
+   * @param response the response to deserialize body of, should not be <code>null</code>.
+   * @see HttpResponse#getRequest()
+   * @see HttpRequest#getResponseDeserializer()
+   */
+  public static void deserializeResponseBody(HttpResponse response) {
+    HttpRequest request = response.getRequest();
+    if (request != null 
+        && request.getResponseDeserializer() != null 
+        && !StringUtils.isEmpty(response.getBody())) {
+      response.setResponse(request.getResponseDeserializer().deserialize(response.getBody()));
+    }
+  }
+  
 }
