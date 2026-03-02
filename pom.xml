@@ -5,16 +5,14 @@
 
   <modelVersion>4.0.0</modelVersion>
 
-  <!-- Tu possèdes jxapi.org, donc groupId valide -->
   <groupId>org.jxapi</groupId>
   <artifactId>jxapi-core</artifactId>
   <version>1.0.1-SNAPSHOT</version>
 
   <name>jxapi-core</name>
-  <description>Core utilities for JXAPI</description>
+  <description>A powerful code generation tool for creating Java REST and WebSocket API client SDKs from JSON or YAML descriptor files.</description>
   <url>https://github.com/scozic/jxapi-core</url>
 
-  <!-- Obligatoire pour Maven Central -->
   <licenses>
     <license>
       <name>Apache License, Version 2.0</name>
@@ -39,7 +37,6 @@
     <tag>HEAD</tag>
   </scm>
 
-  <!-- Dépôts Sonatype -->
   <distributionManagement>
 	<repository>
 	  <id>central</id>
@@ -195,7 +192,6 @@
   <build>
     <plugins>
 
-			<!-- Obligatoire : sources.jar -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-source-plugin</artifactId>
@@ -208,7 +204,6 @@
         </executions>
       </plugin>
 
-			<!-- Obligatoire : javadoc.jar -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-javadoc-plugin</artifactId>
@@ -221,7 +216,6 @@
         </executions>
       </plugin>
 
-			<!-- Obligatoire : signature GPG -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-gpg-plugin</artifactId>
