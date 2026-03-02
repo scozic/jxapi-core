@@ -298,8 +298,21 @@ pojos:
                 description: |
                   The fully qualified class name of the
                   {@link org.jxapi.netutils.rest.HttpRequestInterceptorFactory} to use
-                  for REST endpoints using this HTTP client.
+                  for REST endpoints using this HTTP client.<p>
+                  May be null, in which case a default interceptor that only performs default JSON serialization of request
+                  as body and addtion of <i>Content-Type</i> header set to <i>application/json</i> if applicable 
+                  (request is not null and HTTP method supports body) is used.
+                  <p>
+                  Such interceptor to add additional headers like authentication headers, or to perform 
+                  specific serialization of request body, should be implemented and specified here.
                 type: STRING
+              - name: httpResponseInterceptorFactory
+                description: |
+                  The fully qualified class name of the
+                  {@link org.jxapi.netutils.rest.HttpResponseInterceptorFactory} to use
+                  for REST endpoints using this HTTP client.
+                  <p> May be null, in which case no response interceptor is used.
+                type: STRING				
               - name: httpRequestTimeout
                 description: |
                   The default HTTP request timeout in milliseconds to use for REST

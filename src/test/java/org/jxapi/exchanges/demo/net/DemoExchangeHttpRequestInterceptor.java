@@ -2,6 +2,7 @@ package org.jxapi.exchanges.demo.net;
 
 import org.jxapi.exchanges.demo.gen.DemoExchangeExchange;
 import org.jxapi.exchanges.demo.gen.DemoExchangeProperties;
+import org.jxapi.netutils.rest.DefaultHttpRequestInterceptor;
 import org.jxapi.netutils.rest.HttpRequest;
 import org.jxapi.netutils.rest.HttpRequestInterceptor;
 import org.slf4j.Logger;
@@ -13,12 +14,13 @@ import org.slf4j.LoggerFactory;
  * @see DemoExchangeProperties#HOST
  * @see DemoExchangeProperties#HTTP_PORT
  */
-public class DemoExchangeHttpRequestInterceptor implements HttpRequestInterceptor {
+public class DemoExchangeHttpRequestInterceptor extends DefaultHttpRequestInterceptor {
   
   private static final Logger log = LoggerFactory.getLogger(DemoExchangeHttpRequestInterceptor.class);
   
   @Override
   public void intercept(HttpRequest request) {
+    super.intercept(request);
     log.debug("Intercepted request:{}", request);
   }
 

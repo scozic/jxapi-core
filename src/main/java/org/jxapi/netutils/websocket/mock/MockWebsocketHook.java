@@ -5,6 +5,7 @@ import java.util.Map;
 
 import org.jxapi.netutils.websocket.WebsocketException;
 import org.jxapi.netutils.websocket.WebsocketHook;
+import org.jxapi.netutils.websocket.WebsocketSubscribeRequest;
 import org.jxapi.netutils.websocket.WebsocketClient;
 import org.jxapi.observability.GenericObserver;
 
@@ -73,25 +74,26 @@ public class MockWebsocketHook extends GenericObserver<MockWebsocketHookEvent> i
   /**
    * Retrieves the request message for subscribing to the specified topic.
    * 
-   * @param topic The topic to subscribe to.
+   * @param subscribeRequest The subscribe request used to subscribe to the topic.
    * @return The request message for subscribing to the topic.
    */
   @Override
-  public String getSubscribeRequestMessage(String topic) {
-    this.handleEvent(MockWebsocketHookEvent.createGetSubscribeRequestMessageEvent(this, topic));
+  public String getSubscribeRequestMessage(WebsocketSubscribeRequest subscribeRequest) {
+    String topic = subscribeRequest.getTopic();
+    this.handleEvent(MockWebsocketHookEvent.createGetSubscribeRequestMessageEvent(this, subscribeRequest));
     return subscribeRequestMessages.get(topic);
   }
 
   /**
    * Retrieves the request message for unsubscribing from the specified topic.
    * 
-   * @param topic The topic to unsubscribe from.
+   * @param subscribeRequest The subscribe request used to subscribe to the topic being unsubscribed from.
    * @return The request message for unsubscribing from the topic.
    */
   @Override
-  public String getUnSubscribeRequestMessage(String topic) {
-    this.handleEvent(MockWebsocketHookEvent.createGetUnSubscribeRequestMessageEvent(this, topic));
-    return unSubscribeRequestMessages.get(topic);
+  public String getUnSubscribeRequestMessage(WebsocketSubscribeRequest subscribeRequest) {
+    this.handleEvent(MockWebsocketHookEvent.createGetUnSubscribeRequestMessageEvent(this, subscribeRequest));
+    return unSubscribeRequestMessages.get(subscribeRequest.getTopic());
   }
 
   /**

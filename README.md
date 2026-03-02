@@ -1,7 +1,12 @@
+# jxapi-core
 
-# JXAPI
+[![Maven Central](https://img.shields.io/maven-central/v/org.jxapi/jxapi-core.svg)](https://central.sonatype.com/artifact/org.jxapi/jxapi-core)
+[![Javadoc](https://javadoc.io/badge2/org.jxapi/jxapi-core/javadoc.svg)](https://javadoc.io/doc/org.jxapi/jxapi-core)
+[![License](https://img.shields.io/badge/license-Apache%202.0-blue.svg)](LICENSE)
+[![Build](https://github.com/scozic/jxapi-core/actions/workflows/build.yml/badge.svg)](https://github.com/scozic/jxapi-core/actions)
 
 A powerful code generation tool for creating Java REST and WebSocket API client SDKs from JSON or YAML descriptor files.
+
 
 <!-- BEGIN TABLE OF CONTENTS -->
 <!-- END TABLE OF CONTENTS -->
@@ -18,6 +23,7 @@ JXAPI generates comprehensive Java client libraries for REST and WebSocket APIs 
 - Generate standalone demo code and documentation
 
 You can generate only POJOs if needed - see the [POJO only generation](./doc/manual/PojoOnlyGeneration.md) guide.
+A complete manual and documentation are available in the [doc](./doc) folder of this repository, see the [index](./doc/index.md) for the full table of contents.
 
 ## Why Choose JXAPI?
 
@@ -164,3 +170,10 @@ See the complete [Using the Wrapper](./doc/manual/UsingTheWrapper.md) guide for 
 
 ## Supported Exchanges
 [jxapi-kucoin](https://github.com/scozic/jxapi-kucoin): KuCoin exchange API wrapper generated with JXAPI.
+
+## SEO Keywords
+
+Java API generator, Java SDK generator, REST API Java client, WebSocket Java client,  
+crypto exchange API, trading API Java, KuCoin Java API, Java code generation,  
+POJO generator, API wrapper generator, JXAPI, Java WebSocket framework,  
+Java REST framework, exchange API Java, real‑time API Java.

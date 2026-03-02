@@ -194,6 +194,10 @@ public class ExchangeGeneratorMain {
    * @param projectFolder      Project folder, the <code>src/main/java/</code>,
    *                           <code>src/test/java/</code> source folders and
    *                           README.md sample will be generated here.
+   * @param mainSrcDirectory   The the main source folder to generate sources in,
+   *                           like "src/gen/java' or 'target/generated-sources'
+   * @param testSrcDirectory   The tests source folder for generated demo snippet
+   *                           sources like 'target/generated-test-sources'
    * @param baseJavaDocUrl     The base url for project classes javadoc, used for
    *                           links generation
    * @param baseSrcUrl         The base url for sources on public repo, used for

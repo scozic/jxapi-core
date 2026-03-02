@@ -39,7 +39,15 @@ public class ExchangeApiGenUtil {
   private static final String OF_EXCHANGE = " of exchange:";
 
   private static final String OF_EXCHANGE_API = " of exchange API:";
-  
+
+  /**
+   * Name of the argument in generated method signatures for REST endpoint request
+   * or Websocket subscribe request.
+   * <p>
+   * This is used in generated method signatures for REST endpoint request or
+   * Websocket subscribe request, but not in the generated method implementation,
+   * where a fixed name is used to avoid name clashes with other variables.
+   */
   public static final String RAW_BODY_REST_REQUEST_ARG_NAME = "body";
 
   private ExchangeApiGenUtil() {}

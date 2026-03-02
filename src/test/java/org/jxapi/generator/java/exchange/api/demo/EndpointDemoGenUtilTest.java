@@ -257,7 +257,7 @@ public class EndpointDemoGenUtilTest {
                 .name("mySubParam")
                 .property(Field.builder()
                     .name("hello")
-                    .sampleValue("Hello World")
+                    .defaultValue("Hello World")
                     .build())
                 .build()
          ))

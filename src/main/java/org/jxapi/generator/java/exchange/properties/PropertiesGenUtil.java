@@ -383,7 +383,16 @@ public class PropertiesGenUtil {
     return property != null 
         && property.getProperties() != null;
   }
-  
+
+  /**
+   * Returns the {@link Type} of a given property. If the property does not have a
+   * type defined, it returns {@link Type#OBJECT} if the property is a group of
+   * properties, or {@link Type#STRING} if it is a simple property.
+   * 
+   * @param property the property to get the type for
+   * @return the {@link Type} of the given property, or <code>null</code> if the
+   *         input property is <code>null</code>
+   */
   public static Type getType(ConfigPropertyDescriptor property) {
     if (property == null) {
       return null;

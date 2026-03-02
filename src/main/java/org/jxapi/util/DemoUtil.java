@@ -41,10 +41,10 @@ public class DemoUtil {
     }
     RestResponse<T> response = futureResponse.get();
     if (!response.isOk()) {
-      throw new ExecutionException("Error in response:" + response, response.getException());
+      throw new ExecutionException("Error in response:" + JsonUtil.pojoToPrettyPrintJson(response), response.getException());
     }
     if (log.isInfoEnabled()) {
-      log.info("Got OK response:\n{}", JsonUtil.pojoToPrettyPrintJson(response.getResponse()));
+      log.info("Got OK response:\n{}", JsonUtil.pojoToPrettyPrintJson(response));
     }
     return response;
   }

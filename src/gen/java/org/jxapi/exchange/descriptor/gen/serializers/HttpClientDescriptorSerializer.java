@@ -17,7 +17,7 @@ import static org.jxapi.util.JsonUtil.writeStringField;
 @Generated("org.jxapi.generator.java.pojo.JsonPojoSerializerGenerator")
 public class HttpClientDescriptorSerializer extends AbstractJsonValueSerializer<HttpClientDescriptor> {
   
-  private static final long serialVersionUID = 6465082548405787209L;
+  private static final long serialVersionUID = -2424353803775428028L;
   
   /**
    * Constructor
@@ -33,6 +33,7 @@ public class HttpClientDescriptorSerializer extends AbstractJsonValueSerializer<
     writeStringField(gen, "name", value.getName());
     writeStringField(gen, "httpRequestExecutorFactory", value.getHttpRequestExecutorFactory());
     writeStringField(gen, "httpRequestInterceptorFactory", value.getHttpRequestInterceptorFactory());
+    writeStringField(gen, "httpResponseInterceptorFactory", value.getHttpResponseInterceptorFactory());
     writeLongField(gen, "httpRequestTimeout", value.getHttpRequestTimeout());
     gen.writeEndObject();
   }

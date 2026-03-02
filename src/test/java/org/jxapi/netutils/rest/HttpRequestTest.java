@@ -1,8 +1,12 @@
 package org.jxapi.netutils.rest;
 
 import org.junit.Test;
-
+import org.jxapi.netutils.deserialization.MessageDeserializer;
+import org.jxapi.netutils.deserialization.json.field.IntegerJsonFieldDeserializer;
 import org.jxapi.netutils.rest.ratelimits.RateLimitRule;
+import org.jxapi.netutils.serialization.MessageSerializer;
+import org.jxapi.netutils.serialization.json.IntegerJsonValueSerializer;
+import org.jxapi.netutils.serialization.json.StringJsonValueSerializer;
 
 import java.util.Date;
 import java.util.HashMap;
@@ -100,6 +104,22 @@ public class HttpRequestTest {
         request.setThrottledTime(1000);
         Assert.assertEquals(1000, request.getThrottledTime());
     }
+    
+    @Test
+    public void testSetMessageSerializer() {
+        HttpRequest request = new HttpRequest();
+        MessageSerializer<?> serializer = StringJsonValueSerializer.getInstance();
+        request.setRequestSerializer(serializer);
+        Assert.assertEquals(serializer, request.getRequestSerializer());
+    }
+    
+    @Test
+    public void testSetMessageDeserializer() {
+        HttpRequest request = new HttpRequest();
+        MessageDeserializer<?> deserializer = m -> m;
+        request.setResponseDeserializer(deserializer);
+        Assert.assertEquals(deserializer, request.getResponseDeserializer());
+    }
 
     @Test
     public void testToString() {
@@ -129,7 +149,16 @@ public class HttpRequestTest {
     @Test
     public void testCreate() {
       List<RateLimitRule> rateLimits = List.of(RateLimitRule.createRule("rule1", 60000, 50));
-        HttpRequest request = HttpRequest.create("endpoint", "http://example.com", HttpMethod.GET, "request", rateLimits, 10, "myBody");
+        HttpRequest request = HttpRequest.create(
+            "endpoint", 
+            "http://example.com", 
+            HttpMethod.GET, 
+            "request", 
+            rateLimits, 
+            10, 
+            "myBody", 
+            IntegerJsonValueSerializer.getInstance(), 
+            IntegerJsonFieldDeserializer.getInstance());
         Assert.assertEquals("endpoint", request.getEndpoint());
         Assert.assertEquals("http://example.com", request.getUrl());
         Assert.assertEquals(HttpMethod.GET, request.getHttpMethod());
@@ -137,6 +166,8 @@ public class HttpRequestTest {
         Assert.assertEquals(rateLimits, request.getRateLimits());
         Assert.assertEquals(10, request.getWeight());
         Assert.assertEquals("myBody", request.getBody());
+        Assert.assertEquals(IntegerJsonValueSerializer.getInstance(), request.getRequestSerializer());
+        Assert.assertEquals(IntegerJsonFieldDeserializer.getInstance(), request.getResponseDeserializer());
     }
     
     @Test
@@ -151,4 +182,6 @@ public class HttpRequestTest {
         Assert.assertEquals(10, request.getWeight());
         Assert.assertNull(request.getBody());
     }
+    
+     
 }

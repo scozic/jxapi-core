@@ -41,6 +41,7 @@ import org.jxapi.pojo.descriptor.Type;
 import org.jxapi.util.CollectionUtil;
 import org.jxapi.util.DeepCloneable;
 import org.jxapi.util.PlaceHolderResolver;
+import org.jxapi.util.Pojo;
 
 /**
  * Helper methods used in generation of POJOs and associated JSON serializer/deserializers.
@@ -169,7 +170,19 @@ public class PojoGenUtil {
     }
     return "CompareUtil.compare(" + thisCommaOther + ")";
   }
-  
+
+  /**
+   * Checks if the given field is of type java.lang.Object, that is if its type is
+   * an object type and its object name is 'java.lang.Object'.
+   * <p>
+   * This is a special case of generic object type field, such value is assumed to
+   * be of immutable and implementing {@link Pojo} parent interfaces.
+   * 
+   * @param field The field to check
+   * @return <code>true</code> if the field is of type java.lang.Object,
+   *         <code>false</code> otherwise
+   * @see Pojo        
+   */
   public static boolean isJavaLangObjectField(Field field) {
     return Object.class.getName().equals(field.getObjectName());
   }
@@ -841,6 +854,7 @@ public class PojoGenUtil {
    * @param type The type of the field to deserialize
    * @param objectClassName The object class name of the field to generate JsonFieldDeserializer for. 
    *               This parameter is used only if the type is an 'object' type (see {@link Type#isObject()} ).
+   * @param externalClass <code>true</code> if the class is not managed by generator.              
    * @param imports The imports of the generator context that will be populated with classes 
    *           used by returned type. That set must be not <code>null</code> and mutable.
    * @return The instruction to get or create a new instance of a {@link AbstractJsonMessageDeserializer} for the given type:

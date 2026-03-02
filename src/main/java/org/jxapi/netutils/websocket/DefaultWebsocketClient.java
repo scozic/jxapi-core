@@ -13,7 +13,9 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicLong;
+import java.util.function.Predicate;
 
+import org.apache.commons.lang3.StringUtils;
 import org.jxapi.netutils.websocket.multiplexing.WebsocketMessageTopicMatchStatus;
 import org.jxapi.netutils.websocket.multiplexing.WebsocketMessageTopicMatcher;
 import org.jxapi.netutils.websocket.multiplexing.WebsocketMessageTopicMatcherFactory;
@@ -145,16 +147,16 @@ public class DefaultWebsocketClient extends DefaultDisposable implements Websock
   }
 
   @Override
-  public void subscribe(String topic, 
-              WebsocketMessageTopicMatcherFactory matcherFactory,
+  public void subscribe(WebsocketSubscribeRequest request,
               RawWebsocketMessageHandler messageHandler) {
     checkNotDisposed();
-    log.debug("Scheduling subscribe request for topic:{}", topic);
+    log.debug("Scheduling subscribe request:{}", request);
+    String topic = request.getTopic();
     writeExecutor.execute(() -> {
       try {
         String top = Optional.ofNullable(topic).orElse("");
         log.debug("Executing subscribe request for topic:[{}]", top);
-        getOrCreateTopicManager(topic, matcherFactory, messageHandler);
+        getOrCreateTopicManager(request, messageHandler);
 
         // Remark: registered TopicManager before checking connection status and connecting if not already connected.
         // This is because the url provided for handshake may stand for a global stream endpoint (no topic/subscription)
@@ -163,7 +165,7 @@ public class DefaultWebsocketClient extends DefaultDisposable implements Websock
           log.debug("Executing subscribe request for topic:[{}]: not connected, connecting", top);
           connect();  
         }
-        sendToTopicSubscription(topic);
+        sendToTopicSubscription(request);
         log.debug("DONE Executing subscribe request for topic:[{}]", top);
       } catch (Exception ex) {
         notifyError(new WebsocketException("Error while subscribing to websocket for topic [" + topic + "]", ex));
@@ -171,13 +173,13 @@ public class DefaultWebsocketClient extends DefaultDisposable implements Websock
     });
   }
   
-  private synchronized TopicManager getOrCreateTopicManager(String topic, 
-        WebsocketMessageTopicMatcherFactory matcherFactory,
-        RawWebsocketMessageHandler messageHandler) {
-    String top = Optional.ofNullable(topic).orElse("");
+  private synchronized TopicManager getOrCreateTopicManager(
+      WebsocketSubscribeRequest request,
+      RawWebsocketMessageHandler messageHandler) {
+    String top = Optional.ofNullable(request.getTopic()).orElse("");
     TopicManager t = topics.get(top);
     if (t == null) {
-      t = new TopicManager(top, matcherFactory, messageHandler, false);
+      t = new TopicManager(request, messageHandler);
       topics.put(top, t);
     } else {
       throw new IllegalArgumentException("Already have a subscription for this topic");
@@ -185,12 +187,12 @@ public class DefaultWebsocketClient extends DefaultDisposable implements Websock
     return t;
   }
   
-  private void sendToTopicSubscription(String topic) {
+  private void sendToTopicSubscription(WebsocketSubscribeRequest request) {
     try {
       String subscribeRequestMessage = websocketHook == null? null: 
-                        websocketHook.getSubscribeRequestMessage(topic);
+                        websocketHook.getSubscribeRequestMessage(request);
       if (subscribeRequestMessage != null) {
-        log.debug("Sending topic subscribe request:{}", topic);
+        log.debug("Sending topic subscribe request:{}", request.getTopic());
         websocket.send(subscribeRequestMessage);
       }
     } catch (WebsocketException e) {
@@ -198,11 +200,11 @@ public class DefaultWebsocketClient extends DefaultDisposable implements Websock
     }
   }
   
-  private void unbscribeFromTopic(String topic) throws WebsocketException {
+  private void unbscribeFromTopic(WebsocketSubscribeRequest request) throws WebsocketException {
     String unsubscribeRequestMessage = websocketHook == null? null: 
-                      websocketHook.getUnSubscribeRequestMessage(topic);
+                      websocketHook.getUnSubscribeRequestMessage(request);
     if (unsubscribeRequestMessage != null) {
-      log.debug("Sending topic unsubscribe request:{}", topic);
+      log.debug("Sending topic unsubscribe request:{}", unsubscribeRequestMessage);
       websocket.send(unsubscribeRequestMessage);
     }
   }
@@ -225,7 +227,7 @@ public class DefaultWebsocketClient extends DefaultDisposable implements Websock
       try {
         TopicManager t = removeTopic(topic);
         if (t != null) {
-          unbscribeFromTopic(topic);
+          unbscribeFromTopic(t.subscribeRequest);
         }
       } catch (Exception ex) {
         dispatchWebsocketError(new WebsocketException("Error while unsubscribing from websocket topic [" + topic + "]", ex));
@@ -369,7 +371,7 @@ public class DefaultWebsocketClient extends DefaultDisposable implements Websock
   
   @Override
   public synchronized void addSystemMessageHandler(String topic, WebsocketMessageTopicMatcherFactory matcher, RawWebsocketMessageHandler messageHandler) {
-    this.systemMessageHandlers.add(new TopicManager(Optional.ofNullable(topic).orElse(""), matcher, messageHandler, true));
+    this.systemMessageHandlers.add(new TopicManager(StringUtils.defaultString(topic), matcher, messageHandler));
   }
   
   public long getReconnectDelay() {
@@ -503,7 +505,7 @@ public class DefaultWebsocketClient extends DefaultDisposable implements Websock
         log.debug("Dispatching message to handler for topic:[{}]  :[{}]", topic.manager.topic, rawMessage);
         topic.manager.messageHandler.handleWebsocketMessage(rawMessage);
         it.remove();
-        if (topic.manager.systemMessage) {
+        if (topic.manager.isSystemMessage()) {
 // System message handler matched that message. No need to keep processing to find other handlers.
           return true;
         }
@@ -627,9 +629,9 @@ public class DefaultWebsocketClient extends DefaultDisposable implements Websock
   
   private void resubscribeTopics() {
     log.info("Resubscribing {} topics after successful reconnection", topics.size());
-    for (String topic : topics.keySet()) {
-      sendToTopicSubscription(topic);
-    }
+    topics.values().stream()
+      .filter(Predicate.not(TopicManager::isSystemMessage))
+      .forEach(t -> sendToTopicSubscription(t.subscribeRequest)); 
     if (log.isInfoEnabled())
       log.info("Successfully resubscribed to {} topics after successful reconnection", topics.size());
   }
@@ -638,28 +640,58 @@ public class DefaultWebsocketClient extends DefaultDisposable implements Websock
    * A topic manager for a topic, with its message handler and message matcher.
    * Uses object pooling of {@link TopicMatcher} to reduce creation of objects in incoming message.
    */
-  protected class TopicManager {
+  private class TopicManager {
+    final WebsocketSubscribeRequest subscribeRequest;
     final WebsocketMessageTopicMatcherFactory matcherFactory;
     final RawWebsocketMessageHandler messageHandler;
     final String topic;
-    final boolean systemMessage;
     private final List<TopicMatcher> matcherPool = new ArrayList<>();
 
+    /**
+     * Constructor for normal topic manager
+     * @param subscribeRequest the subscribe request
+     * @param messageHandler the message handler
+     */
+    public TopicManager(WebsocketSubscribeRequest subscribeRequest, RawWebsocketMessageHandler messageHandler) {
+      this(subscribeRequest.getTopic(), 
+           subscribeRequest.getMessageTopicMatcherFactory(), 
+           messageHandler, 
+           subscribeRequest);
+    }
+    
+    /**
+     * Constructor for system message topic manager
+     * @param topic the topic to manage
+     * @param matcherFactory the factory to create message matchers
+     * @param messageHandler the message
+     */
+    public TopicManager(
+        String topic, 
+        WebsocketMessageTopicMatcherFactory matcherFactory, 
+        RawWebsocketMessageHandler messageHandler) {
+      this(topic, matcherFactory, messageHandler, null);
+    }
+    
     /**
      * Constructor
      * @param topic the topic to manage
      * @param matcherFactory the factory to create message matchers
      * @param messageHandler the message
-     * @param systemMessage whether this is a system message topic
+     * @param subscribeRequest the subscribe request, or null for system message topics
      */
-    public TopicManager(String topic, 
-              WebsocketMessageTopicMatcherFactory matcherFactory,
-              RawWebsocketMessageHandler messageHandler, 
-              boolean systemMessage) {
+    private TopicManager(
+        String topic, 
+        WebsocketMessageTopicMatcherFactory matcherFactory, 
+        RawWebsocketMessageHandler messageHandler, 
+        WebsocketSubscribeRequest subscribeRequest) {
       this.topic = topic;
       this.matcherFactory = matcherFactory;
       this.messageHandler = messageHandler;
-      this.systemMessage = systemMessage;
+      this.subscribeRequest = subscribeRequest;
+    }
+    
+    public boolean isSystemMessage() {
+      return subscribeRequest == null;
     }
     
     /**
@@ -755,10 +787,7 @@ public class DefaultWebsocketClient extends DefaultDisposable implements Websock
         } else {
           websocket.send(hearBeatMessage);
         }
-        if (log.isDebugEnabled()) {
-          log.debug("Sending heartbeat:{}", hearBeatMessage);
-        }
-        
+        log.debug("Sending heartbeat:{}", hearBeatMessage);
         scheduleHeartBeatTask(this);
       } catch (Exception ex) {        
         onError(new WebsocketException("Error while sending heartbeat", ex));

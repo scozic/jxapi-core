@@ -119,18 +119,18 @@ public interface WebsocketHook {
    */
   default void afterDisconnect() throws WebsocketException {
   }
-
+  
   /**
    * Get the message to send to subscribe to a topic.
    * <p>
    * This method must be overridden when the API protocol supports multiplexing
    * and requires sending a specific message to subscribe to a topic.
    * 
-   * @param topic the topic to subscribe to
+   * @param subscribeRequest the subscribe request used to subscribe to the topic
    * @return the message to send to subscribe to the topic, or <code>null</code>
    *         if no message is required, which means no multiplexing is supported.
    */
-  default String getSubscribeRequestMessage(String topic) {
+  default String getSubscribeRequestMessage(WebsocketSubscribeRequest subscribeRequest) {
     return null;
   }
 
@@ -140,12 +140,13 @@ public interface WebsocketHook {
    * This method must be overridden when the API protocol supports multiplexing
    * and requires sending a specific message to unsubscribe from a topic.
    * 
-   * @param topic the topic to unsubscribe from
+   * @param subscribeRequest the subscribe request used to subscribe to the topic being
+   *                unsubscribed from
    * @return the message to send to unsubscribe from the topic, or
    *         <code>null</code> if no message is required, which means no
    *         multiplexing is supported.
    */
-  default String getUnSubscribeRequestMessage(String topic) {
+  default String getUnSubscribeRequestMessage(WebsocketSubscribeRequest subscribeRequest) {
     return null;
   }
 

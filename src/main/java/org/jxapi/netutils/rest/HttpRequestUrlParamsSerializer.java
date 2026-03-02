@@ -17,6 +17,14 @@ public interface HttpRequestUrlParamsSerializer<R> {
    */
   String serializeUrlParams(R request, String baseUrl);
   
+  /**
+   * Returns a {@link HttpRequestUrlParamsSerializer} that does not serialize any
+   * parameters and simply returns the base URL.
+   *
+   * @param <R> the type of the request
+   * @return a {@link HttpRequestUrlParamsSerializer} that does not serialize any
+   *         parameters
+   */
   static <R> HttpRequestUrlParamsSerializer<R> noParams() {
     return (request, url) -> url;
   }

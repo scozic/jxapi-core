@@ -1,6 +1,8 @@
 package org.jxapi.netutils.rest;
 
 import org.jxapi.netutils.rest.ratelimits.RequestThrottler;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * HttpRequestExecutor implementation that applies an interceptor before executing the request
@@ -10,8 +12,11 @@ import org.jxapi.netutils.rest.ratelimits.RequestThrottler;
  * @see HttpRequestExecutor
  */
 public class HttpClient extends AbstractHttpRequestExecutor {
+  
+  private static final Logger log = LoggerFactory.getLogger(HttpClient.class);
 
   private final HttpRequestInterceptor interceptor;
+  private final HttpResponseInterceptor responseInterceptor;
   private final HttpRequestExecutor executor;
   private final RequestThrottler throttler;
   
@@ -20,11 +25,17 @@ public class HttpClient extends AbstractHttpRequestExecutor {
    * 
    * @param interceptor the interceptor to apply before executing the request
    * @param executor    the executor to use for executing the request
+   * @param throttler   the request throttler to use for throttling requests. May
+   *                    be <code>null</code>.
    */
-  public HttpClient(HttpRequestInterceptor interceptor, HttpRequestExecutor executor, RequestThrottler throttler) {
+  public HttpClient(HttpRequestInterceptor interceptor, 
+                    HttpRequestExecutor executor, 
+                    RequestThrottler throttler, 
+                    HttpResponseInterceptor responseInterceptor) {
     this.interceptor = interceptor;
     this.executor = executor;
     this.throttler = throttler;
+    this.responseInterceptor = responseInterceptor;
   }
   
   @Override
@@ -33,9 +44,30 @@ public class HttpClient extends AbstractHttpRequestExecutor {
       interceptor.intercept(request);
     }
     if (throttler != null) {
-      return throttler.submit(request, executor::execute);
+      return processResponse(throttler.submit(request, executor::execute));
+    } else {
+      return processResponse(executor.execute(request));
     }
-    return executor.execute(request);
+    
+  }
+  
+  private FutureHttpResponse processResponse(FutureHttpResponse response) {
+    if (responseInterceptor != null) {
+      FutureHttpResponse processedResponse = new FutureHttpResponse();
+      response.thenAccept(resp -> {
+        if (resp.getException() == null) {
+          try {
+            responseInterceptor.intercept(resp);
+          } catch (Exception e) {
+            log.error("Exception in response interceptor for response {}: {}", resp, e.getMessage(), e); 
+            resp.setException(e);
+          }        
+        }
+        processedResponse.complete(resp);
+      });
+      return processedResponse;
+    }
+    return response;
   }
 
   /**
@@ -58,6 +90,13 @@ public class HttpClient extends AbstractHttpRequestExecutor {
    */
   public RequestThrottler getThrottler() {
     return throttler;
+  }
+
+  /**
+   * @return the interceptor that is applied after receiving the response. May be <code>null</code>.
+   */
+  public HttpResponseInterceptor getResponseInterceptor() {
+    return responseInterceptor;
   }
 
 }

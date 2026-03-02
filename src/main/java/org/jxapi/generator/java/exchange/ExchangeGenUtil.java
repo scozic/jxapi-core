@@ -73,7 +73,12 @@ public class ExchangeGenUtil {
    * @see ConfigProperty
    */
   public static final String DEMO_CONFIG_PLACEHOLDER_PREFIX = "demo.config.";
-  
+
+  /**
+   * Pattern to identify placeholders in descriptions and sample values. The pattern
+   * looks for strings like <code>${placeholderName}</code> and captures the
+   * placeholder name in a group.
+   */
   public static final Pattern PLACEHOLDER_PATERN = Pattern.compile("\\$\\{([^}]+)}");
   
   /**
@@ -822,6 +827,7 @@ public class ExchangeGenUtil {
    * @param classBody    StringBuilder to append generated field declarations to.
    *                     Can be null, in which case no field declarations are
    *                     appended.
+   * @param modifiers    The modifiers for the property like "public static"                     
    * @return Map indexed with name, mapped to associated static variable
    *         name.
    */

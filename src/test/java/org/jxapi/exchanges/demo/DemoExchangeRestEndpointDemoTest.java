@@ -77,7 +77,7 @@ public class DemoExchangeRestEndpointDemoTest {
     MockHttpRequest mockRequest = mockHttpServer.popRequest(DEFAULT_WAIT_RESPONSE_TIMEOUT);
     
     HttpRequest actualRequest = mockRequest.getHttpRequest();
-    Assert.assertEquals(baseHttpUrl + "/marketData/exchangeInfo?symbols=%5B%22BTC_USDT%22%2C%22BNB_USDT%22%5D", 
+    Assert.assertEquals(baseHttpUrl + "/marketData/exchangeInfo?symbols=%5B%22BTC_USDT%22%2C%22ETH_USDT%22%5D", 
                         actualRequest.getUrl());
     Assert.assertEquals(HttpMethod.GET, actualRequest.getHttpMethod());
     

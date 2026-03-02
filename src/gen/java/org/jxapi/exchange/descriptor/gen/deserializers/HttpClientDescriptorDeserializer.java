@@ -32,6 +32,9 @@ public class HttpClientDescriptorDeserializer extends AbstractJsonMessageDeseria
       case "httpRequestInterceptorFactory":
         msg.setHttpRequestInterceptorFactory(readNextString(parser));
       break;
+      case "httpResponseInterceptorFactory":
+        msg.setHttpResponseInterceptorFactory(readNextString(parser));
+      break;
       case "httpRequestTimeout":
         msg.setHttpRequestTimeout(readNextLong(parser));
       break;

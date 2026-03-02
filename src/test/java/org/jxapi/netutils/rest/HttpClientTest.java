@@ -10,6 +10,7 @@ import org.junit.Test;
 import org.jxapi.netutils.rest.mock.MockFutureHttpResponse;
 import org.jxapi.netutils.rest.mock.MockHttpRequestExecutor;
 import org.jxapi.netutils.rest.mock.MockHttpRequestInterceptor;
+import org.jxapi.netutils.rest.mock.MockHttpResponseInterceptor;
 import org.jxapi.netutils.rest.ratelimits.RateLimitReachedException;
 import org.jxapi.netutils.rest.ratelimits.RateLimitRule;
 import org.jxapi.netutils.rest.ratelimits.RequestThrottler;
@@ -26,6 +27,7 @@ public class HttpClientTest {
   
   private MockHttpRequestExecutor mockExecutor;
   private MockHttpRequestInterceptor mockInterceptor;
+  private MockHttpResponseInterceptor mockResponseInterceptor;
   private RequestThrottler requestThrottler;
   private int requestCount = 0;
   
@@ -34,6 +36,8 @@ public class HttpClientTest {
     mockExecutor = new MockHttpRequestExecutor();
     mockInterceptor = new MockHttpRequestInterceptor();
     mockInterceptor.addPreparedInterceptor(r -> r.setBody("Intercepted:" + r.getBody()));
+    mockResponseInterceptor = new MockHttpResponseInterceptor();
+    mockResponseInterceptor.addPreparedInterceptor(r -> r.setBody("Intercepted response:" + r.getBody()));
     requestThrottler = new RequestThrottler();
     requestThrottler.setThrottlingMode(RequestThrottlingMode.BLOCK);
     requestCount = 0;
@@ -41,10 +45,11 @@ public class HttpClientTest {
   
   @Test
   public void testGetters() {
-    HttpClient client = new HttpClient(mockInterceptor, mockExecutor, requestThrottler);
+    HttpClient client = new HttpClient(mockInterceptor, mockExecutor, requestThrottler, mockResponseInterceptor);
     Assert.assertEquals(mockInterceptor, client.getInterceptor());
     Assert.assertEquals(mockExecutor, client.getExecutor());
     Assert.assertEquals(requestThrottler, client.getThrottler());
+    Assert.assertEquals(mockResponseInterceptor, client.getResponseInterceptor());
   }
   
   @After
@@ -54,7 +59,7 @@ public class HttpClientTest {
   
   @Test
   public void testExecute_NoThrottler_NoInterceptor() {
-    HttpClient client = new HttpClient(null, mockExecutor, null);
+    HttpClient client = new HttpClient(null, mockExecutor, null, null);
     for (int i = 0; i < 5; i++) {
       HttpRequest request = createTestRequest();
       client.execute(request);
@@ -64,18 +69,55 @@ public class HttpClientTest {
   }
   
   @Test
-  public void testExecute_WithInterceptor_NoThrottler() {
-    HttpClient client = new HttpClient(mockInterceptor, mockExecutor, null);
+  public void testExecute_WithRequestAndResponseInterceptor_NoThrottler() throws InterruptedException, ExecutionException {
+    HttpClient client = new HttpClient(mockInterceptor, mockExecutor, null, mockResponseInterceptor);
     HttpRequest request = createTestRequest();
     
-    client.execute(request);
+    FutureHttpResponse futureResponse = client.execute(request);
     MockFutureHttpResponse mockRequest = mockExecutor.popRequest();
     Assert.assertEquals("Intercepted:TestBody1", mockRequest.getRequest().getBody());
+    HttpResponse response = new HttpResponse();
+    response.setRequest(mockRequest.getRequest());
+    response.setBody("Test response body");
+    mockRequest.complete(response);
+    HttpResponse finalResponse = futureResponse.get();
+    Assert.assertEquals("Intercepted response:Test response body", finalResponse.getBody());
+  }
+  
+  @Test
+  public void testExecute_WithResponseInterceptor_NoThrottler_ErrorInResponseInterceptor() throws InterruptedException, ExecutionException {
+    HttpClient client = new HttpClient(null, mockExecutor, null, mockResponseInterceptor);
+    HttpRequest request = createTestRequest();
+    mockResponseInterceptor.addPreparedInterceptor(r -> { throw new RuntimeException("Response interceptor error"); });
+    FutureHttpResponse futureResponse = client.execute(request);
+    MockFutureHttpResponse mockRequest = mockExecutor.popRequest();
+    HttpResponse response = new HttpResponse();
+    response.setRequest(mockRequest.getRequest());
+    response.setBody("Test response body");
+    mockRequest.complete(response);
+    HttpResponse finalResponse = futureResponse.get();
+    Assert.assertEquals("Response interceptor error", finalResponse.getException().getMessage());
+  }
+  
+  @Test
+  public void testExecute_WithResponseInterceptor_NoThrottler_ErrorInReturnedResponse() throws InterruptedException, ExecutionException {
+    HttpClient client = new HttpClient(null, mockExecutor, null, mockResponseInterceptor);
+    HttpRequest request = createTestRequest();
+    mockResponseInterceptor.addPreparedInterceptor(r -> { throw new RuntimeException("Response interceptor error"); });
+    FutureHttpResponse futureResponse = client.execute(request);
+    MockFutureHttpResponse mockRequest = mockExecutor.popRequest();
+    HttpResponse response = new HttpResponse();
+    response.setException(new RuntimeException("Response network error"));
+    response.setRequest(mockRequest.getRequest());
+    response.setBody("Test response body");
+    mockRequest.complete(response);
+    HttpResponse finalResponse = futureResponse.get();
+    Assert.assertEquals("Response network error", finalResponse.getException().getMessage());
   }
   
   @Test
   public void testExecute_WithInterceptor_AndThrottler() throws InterruptedException, ExecutionException {
-    HttpClient client = new HttpClient(mockInterceptor, mockExecutor, requestThrottler);
+    HttpClient client = new HttpClient(mockInterceptor, mockExecutor, requestThrottler, null);
     HttpRequest request1 = createTestRequest();
     client.execute(request1);
     MockFutureHttpResponse mockRequest = mockExecutor.popRequest();

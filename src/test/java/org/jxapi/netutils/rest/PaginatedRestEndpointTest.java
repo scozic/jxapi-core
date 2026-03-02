@@ -35,7 +35,7 @@ public class PaginatedRestEndpointTest {
   public void setUp() {
       mockExecutor = new MockHttpRequestExecutor();
       restEndpoint = new PaginatedRestEndpoint<>();
-      restEndpoint.setHttpRequestExecutor(mockExecutor);
+      restEndpoint.setHttpClient(new HttpClient(new DefaultHttpRequestInterceptor(), mockExecutor, null, new DefaultHttpResponseInterceptor()));
       restEndpoint.setUrl("http://example.com/api/test");
       mockDeserializer = data -> {
         try {
@@ -71,8 +71,9 @@ public class PaginatedRestEndpointTest {
       restEndpoint.setUrl("http://newexample.com/api");
       Assert.assertEquals("http://newexample.com/api", restEndpoint.getUrl());
       
-      restEndpoint.setHttpRequestExecutor(mockExecutor);
-      Assert.assertEquals(mockExecutor, restEndpoint.getHttpRequestExecutor());
+      HttpClient httpClient = new HttpClient(null, mockExecutor, null, null);
+      restEndpoint.setHttpClient(httpClient);
+      Assert.assertEquals(httpClient, restEndpoint.getHttpClient());
       
       restEndpoint.setRateLimitRules(null);
       Assert.assertNull(restEndpoint.getRateLimitRules());
@@ -92,7 +93,7 @@ public class PaginatedRestEndpointTest {
       
       Assert.assertTrue(restEndpoint.isPaginated());
       
-      Assert.assertEquals("PaginatedRestEndpoint{\"httpMethod\":\"PUT\",\"name\":\"TestEndpoint\",\"url\":\"http://newexample.com/api\",\"httpRequestExecutor\":{\"disposed\":false,\"requestTimeout\":30000,\"submittedRequests\":[]},\"deserializer\":{},\"serializer\":{},\"rateLimitRules\":[{\"id\":\"myRule\",\"timeFrame\":30000,\"maxRequestCount\":15,\"maxTotalWeight\":-1,\"granularity\":10}],\"weight\":5,\"observer\":{\"defaulTimeout\":2000,\"allEvents\":[]},\"urlParamsSerializer\":{},\"paginated\":true}", restEndpoint.toString());
+      Assert.assertEquals("PaginatedRestEndpoint{\"httpMethod\":\"PUT\",\"name\":\"TestEndpoint\",\"url\":\"http://newexample.com/api\",\"httpClient\":{\"disposed\":false,\"requestTimeout\":30000,\"executor\":{\"disposed\":false,\"requestTimeout\":30000,\"submittedRequests\":[]}},\"deserializer\":{},\"serializer\":{},\"rateLimitRules\":[{\"id\":\"myRule\",\"timeFrame\":30000,\"maxRequestCount\":15,\"maxTotalWeight\":-1,\"granularity\":10}],\"weight\":5,\"observer\":{\"defaulTimeout\":2000,\"allEvents\":[]},\"urlParamsSerializer\":{},\"paginated\":true}", restEndpoint.toString());
     }
     
     @Test

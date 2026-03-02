@@ -34,7 +34,11 @@ public class RestEndpointTest {
         mockSerializer = this::serialize;
 
         restEndpoint = new RestEndpoint<>();
-        restEndpoint.setHttpRequestExecutor(mockExecutor);
+        restEndpoint.setHttpClient(new HttpClient(
+            new DefaultHttpRequestInterceptor(), 
+            mockExecutor, 
+            null, 
+            new DefaultHttpResponseInterceptor()));
         restEndpoint.setDeserializer(mockDeserializer);
         restEndpoint.setSerializer(mockSerializer);
         restEndpoint.setUrl("http://example.com/api/test");
@@ -49,18 +53,6 @@ public class RestEndpointTest {
     
     private String deserialize(String data) {
       return "Deserialized:" + data;
-    }
-
-    @Test
-    public void testCreateHttpRequestWithBody() {
-        String requestData = "Test Request Data";
-
-        HttpRequest httpRequest = restEndpoint.createHttpRequest(requestData);
-
-        Assert.assertNotNull(httpRequest);
-        Assert.assertEquals("http://example.com/api/test", httpRequest.getUrl());
-        Assert.assertEquals(HttpMethod.POST, httpRequest.getHttpMethod());
-        Assert.assertEquals("Serialized:" + requestData, httpRequest.getBody());
     }
     
     @Test
@@ -101,8 +93,9 @@ public class RestEndpointTest {
       restEndpoint.setUrl("http://newexample.com/api");
       Assert.assertEquals("http://newexample.com/api", restEndpoint.getUrl());
       
-      restEndpoint.setHttpRequestExecutor(mockExecutor);
-      Assert.assertEquals(mockExecutor, restEndpoint.getHttpRequestExecutor());
+      HttpClient customHttpClient = new HttpClient(null, new MockHttpRequestExecutor(), null, null);
+      restEndpoint.setHttpClient(customHttpClient);
+      Assert.assertEquals(customHttpClient, restEndpoint.getHttpClient());
       
       restEndpoint.setDeserializer(mockDeserializer);
       Assert.assertEquals(mockDeserializer, restEndpoint.getDeserializer());
@@ -128,7 +121,7 @@ public class RestEndpointTest {
       
       Assert.assertFalse(restEndpoint.isPaginated());
       
-      Assert.assertEquals("RestEndpoint{\"httpMethod\":\"PUT\",\"name\":\"TestEndpoint\",\"url\":\"http://newexample.com/api\",\"httpRequestExecutor\":{\"disposed\":false,\"requestTimeout\":30000,\"submittedRequests\":[]},\"deserializer\":{},\"serializer\":{},\"rateLimitRules\":[{\"id\":\"myRule\",\"timeFrame\":30000,\"maxRequestCount\":15,\"maxTotalWeight\":-1,\"granularity\":10}],\"weight\":5,\"observer\":{\"defaulTimeout\":2000,\"allEvents\":[]},\"urlParamsSerializer\":{},\"paginated\":false}", restEndpoint.toString());
+      Assert.assertEquals("RestEndpoint{\"httpMethod\":\"PUT\",\"name\":\"TestEndpoint\",\"url\":\"http://newexample.com/api\",\"httpClient\":{\"disposed\":false,\"requestTimeout\":30000,\"executor\":{\"disposed\":false,\"requestTimeout\":30000,\"submittedRequests\":[]}},\"deserializer\":{},\"serializer\":{},\"rateLimitRules\":[{\"id\":\"myRule\",\"timeFrame\":30000,\"maxRequestCount\":15,\"maxTotalWeight\":-1,\"granularity\":10}],\"weight\":5,\"observer\":{\"defaulTimeout\":2000,\"allEvents\":[]},\"urlParamsSerializer\":{},\"paginated\":false}", restEndpoint.toString());
     }
     
     @Test
@@ -156,7 +149,7 @@ public class RestEndpointTest {
     @Test(expected = IllegalStateException.class)
     public void testSubmit_ExceptionForHttpRequestExecutorNotSet() {
         String requestData = "Test Request Data";
-        restEndpoint.setHttpRequestExecutor(null);
+        restEndpoint.setHttpClient(null);
         restEndpoint.submit(requestData, null);
     }
     
